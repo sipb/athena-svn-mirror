@@ -33,7 +33,7 @@
 
 typedef enum {
 	GCONF_KEY_EDITOR_NEW_KEY,
-	GCONF_KEY_EDITOR_EDIT_KEY,
+	GCONF_KEY_EDITOR_EDIT_KEY
 } GConfKeyEditorAction;
 
 typedef struct _GConfKeyEditor GConfKeyEditor;
@@ -49,6 +49,8 @@ struct _GConfKeyEditor {
 	GtkWidget *int_widget;
 	GtkWidget *string_widget;
 	GtkWidget *float_widget;
+
+	GtkWidget *non_writable_label;
 	
 	GtkWidget *path_label;
 	GtkWidget *path_box;
@@ -58,7 +60,7 @@ struct _GConfKeyEditor {
 	GtkWidget *list_widget;
 	GtkListStore *list_model;
 	GtkWidget *list_type_menu;
-	GtkWidget *remove_button, *go_up_button, *go_down_button;
+	GtkWidget *edit_button, *remove_button, *go_up_button, *go_down_button;
 
 };
 
@@ -81,5 +83,7 @@ void                 gconf_key_editor_set_key_name (GConfKeyEditor *editor,
 						    const char     *path);
 G_CONST_RETURN char *gconf_key_editor_get_key_name (GConfKeyEditor *editor);
 
+void gconf_key_editor_set_writable	(GConfKeyEditor *editor,
+					 gboolean        writable);
 
 #endif /* __GCONF_KEY_EDITOR_H__ */

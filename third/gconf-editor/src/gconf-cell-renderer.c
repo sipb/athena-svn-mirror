@@ -39,6 +39,7 @@ enum {
 
 enum {
 	CHANGED,
+	CHECK_WRITABLE,
 	LAST_SIGNAL
 };
 
@@ -94,6 +95,7 @@ gconf_cell_renderer_set_property (GObject *object, guint param_id, const GValue 
 
 			case GCONF_VALUE_LIST:
 			case GCONF_VALUE_SCHEMA:
+			case GCONF_VALUE_PAIR:
 				new_mode = GTK_CELL_RENDERER_MODE_INERT;
 				break;
 			default:
@@ -174,6 +176,14 @@ gconf_cell_renderer_get_size (GtkCellRenderer *cell, GtkWidget *widget, GdkRecta
 					    widget, cell_area,
 					    x_offset, y_offset, width, height);
 		break;
+	case GCONF_VALUE_PAIR:
+		g_object_set (G_OBJECT (cellvalue->text_renderer),
+			      "text", gconf_value_to_string (cellvalue->value),
+			      NULL);
+		gtk_cell_renderer_get_size (cellvalue->text_renderer,
+					    widget, cell_area,
+					    x_offset, y_offset, width, height);
+		break;
 	default:
 		g_print ("get_size: Unknown type: %d\n", cellvalue->value->type);
 		break;
@@ -199,7 +209,7 @@ gconf_cell_renderer_text_editing_done (GtkCellEditable *entry, GConfCellRenderer
 		gconf_value_set_string (value, new_text);
 		break;
 	case GCONF_VALUE_FLOAT:
-		gconf_value_set_float (value, (gint)(g_ascii_strtod (new_text, NULL)));
+		gconf_value_set_float (value, (gdouble)(g_ascii_strtod (new_text, NULL)));
 		break;
 	case GCONF_VALUE_INT:
 		gconf_value_set_int (value, (gint)(g_ascii_strtod (new_text, NULL)));
@@ -210,6 +220,14 @@ gconf_cell_renderer_text_editing_done (GtkCellEditable *entry, GConfCellRenderer
 	}
 	
 	g_signal_emit (cell, gconf_cell_signals[CHANGED], 0, path, value);
+}
+
+static gboolean
+gconf_cell_renderer_check_writability (GConfCellRenderer *cell, const gchar *path)
+{
+	gboolean ret = TRUE;
+	g_signal_emit (cell, gconf_cell_signals[CHECK_WRITABLE], 0, path, &ret);
+	return ret;
 }
 
 GtkCellEditable *
@@ -224,7 +242,12 @@ gconf_cell_renderer_start_editing (GtkCellRenderer      *cell,
 	GtkWidget *entry;
 	GConfCellRenderer *cellvalue;
 	gchar *tmp_str;
+
 	cellvalue = GCONF_CELL_RENDERER (cell);
+
+	/* If not writable then we definately can't edit */
+	if ( ! gconf_cell_renderer_check_writability (cellvalue, path))
+		return NULL;
 	
 	switch (cellvalue->value->type) {
 	case GCONF_VALUE_INT:
@@ -350,6 +373,13 @@ gconf_cell_renderer_render (GtkCellRenderer *cell, GdkWindow *window, GtkWidget 
 		gtk_cell_renderer_render (cellvalue->text_renderer, window, widget,
 					  background_area, cell_area, expose_area, flags);
 		break;
+	case GCONF_VALUE_PAIR:
+		g_object_set (G_OBJECT (cellvalue->text_renderer),
+			      "text", gconf_value_to_string (cellvalue->value),
+			      NULL);
+		gtk_cell_renderer_render (cellvalue->text_renderer, window, widget,
+					  background_area, cell_area, expose_area, flags);
+		break;
 
 	default:
 		g_print ("render: Unknown type: %d\n", cellvalue->value->type);
@@ -388,6 +418,15 @@ gconf_cell_renderer_class_init (GConfCellRendererClass *klass)
 			      G_TYPE_NONE, 2,
 			      G_TYPE_STRING,
 			      GCONF_TYPE_VALUE);
+	gconf_cell_signals[CHECK_WRITABLE] =
+		g_signal_new ("check_writable",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GConfCellRendererClass, changed),
+			      (GSignalAccumulator) NULL, NULL,
+			      gconf_marshal_BOOLEAN__STRING,
+			      G_TYPE_BOOLEAN, 1,
+			      G_TYPE_STRING);
 }
 
 static void

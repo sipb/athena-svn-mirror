@@ -37,7 +37,7 @@ enum {
 	GCONF_TREE_MODEL_NAME_COLUMN,
 	GCONF_TREE_MODEL_CLOSED_ICON_COLUMN,
 	GCONF_TREE_MODEL_OPEN_ICON_COLUMN,
-	GCONF_TREE_MODEL_NUM_COLUMNS,
+	GCONF_TREE_MODEL_NUM_COLUMNS
 };
 
 struct _GConfTreeModel {
@@ -61,5 +61,6 @@ gchar *gconf_tree_model_get_gconf_name (GConfTreeModel *tree_model, GtkTreeIter 
 gchar *gconf_tree_model_get_gconf_path (GConfTreeModel *tree_model, GtkTreeIter *iter);
 
 GtkTreePath *gconf_tree_model_get_tree_path_from_gconf_path (GConfTreeModel *tree_model, const char *path);
+void gconf_tree_model_set_client (GConfTreeModel *model, GConfClient *client);
 
 #endif /* __GCONF_TREE_MODEL_H__ */

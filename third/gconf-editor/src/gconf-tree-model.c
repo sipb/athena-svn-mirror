@@ -6,6 +6,8 @@ typedef struct _Node Node;
 
 #define NODE(x) ((Node *)(x))
 
+static void gconf_tree_model_clear_node (GtkTreeModel *tree_model, Node *node);
+
 static GdkPixbuf *closed_icon;
 static GdkPixbuf *open_icon;
 
@@ -24,8 +26,8 @@ struct _Node {
 GtkTreePath *
 gconf_tree_model_get_tree_path_from_gconf_path (GConfTreeModel *tree_model, const char *key)
 {
-	GtkTreePath *path;
-	GtkTreeIter iter, child_iter;
+	GtkTreePath *path = NULL;
+	GtkTreeIter iter, child_iter, found_iter;
 	gchar *tmp_str;
 	gchar **key_array;
 	int i;
@@ -52,10 +54,8 @@ gconf_tree_model_get_tree_path_from_gconf_path (GConfTreeModel *tree_model, cons
 		 * code isn't handling those incomplete levels yet (that
 		 * needs some current level/gconf directory comparing code)
 		 */
-		if (!gtk_tree_model_iter_children (GTK_TREE_MODEL (tree_model), &child_iter, &iter)) {
-			g_strfreev (key_array);
-			return NULL;
-		}
+		if (!gtk_tree_model_iter_children (GTK_TREE_MODEL (tree_model), &child_iter, &iter))
+			break;
 
 		found = FALSE;
 		do {
@@ -64,19 +64,20 @@ gconf_tree_model_get_tree_path_from_gconf_path (GConfTreeModel *tree_model, cons
 					    -1);
 
 			if (strcmp (tmp_str, key_array[i]) == 0) {
+				found_iter = child_iter;
 				found = TRUE;
 				break;
 			}
 		} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (tree_model), &child_iter));
 
-		if (!found) {
-			g_strfreev (key_array);
-			return NULL;
-		}
+		if (!found)
+			break;
 		iter = child_iter;
 	}
 
-	path = gtk_tree_model_get_path (GTK_TREE_MODEL (tree_model), &child_iter);
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (tree_model), &found_iter);
+
+	g_strfreev (key_array);
 
 	return path;
 }
@@ -251,7 +252,7 @@ gconf_tree_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, gint co
 	case GCONF_TREE_MODEL_NAME_COLUMN:
 		g_value_init (value, G_TYPE_STRING);
 
-		if (node->parent == NULL)
+		if (node == NULL || node->parent == NULL)
 			g_value_set_string (value, "/");
 		else {
 			gchar *ptr;
@@ -421,23 +422,36 @@ gconf_tree_model_ref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
 }
 
 static void
+gconf_tree_model_free_node (GtkTreeModel *tree_model, Node *node)
+{
+	gconf_tree_model_clear_node (tree_model, node);
+	if (node->path)
+		g_free (node->path);
+	g_free (node);
+}
+
+static void
+gconf_tree_model_clear_node (GtkTreeModel *tree_model, Node *node)
+{
+	Node *children;
+
+	children = node->children;
+	node->children = NULL;
+	while (children) {
+		Node *next = children->next;
+		gconf_tree_model_free_node (tree_model, children);
+		children = next;
+	}
+}
+
+static void
 gconf_tree_model_unref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
 	Node *node = iter->user_data;
 	node->ref_count -= 1;
 
-	if (node->ref_count == 0) {
-
-		if ((node->parent != NULL) && (node->parent->children == node))
-			node->parent->children = node->next;
-		if (node->next != NULL)
-			node->next->prev = node->prev;
-		if (node->prev != NULL)
-			node->prev->next = node->next;
-
-		g_free (node->path);
-		g_free (node);
-	}
+	if (node->ref_count == 0)
+		gconf_tree_model_clear_node (tree_model, node);
 }
 
 static void
@@ -476,6 +490,13 @@ gconf_tree_model_init (GConfTreeModel *model)
 
 	model->root = root;
 	model->client = gconf_client_get_default ();
+}
+
+void
+gconf_tree_model_set_client (GConfTreeModel *model, GConfClient *client)
+{
+	g_object_unref (model->client);
+	model->client = client;
 }
 
 GType

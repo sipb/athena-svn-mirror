@@ -16,9 +16,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <config.h>
 #include "gconf-util.h"
 
 #include <string.h>
+
+/* We are defining this here because is internal, but there is no other way to
+ * know if an user can write into default/mandatory gconf values */
+GConfEngine *gconf_engine_get_local               (const char  *address,
+                                                   GError     **err);
+
 
 GType
 gconf_value_get_type (void)
@@ -73,21 +80,14 @@ gconf_value_type_to_string (GConfValueType value_type)
 GConfSchema *
 gconf_client_get_schema_for_key (GConfClient *client, const char *key)
 {
+	GConfEngine *engine;
 	GConfEntry *entry;
 	const char *schema_name;
 	GConfSchema *schema;
-	
-	entry = gconf_client_get_entry (client, key, NULL, TRUE, NULL);
+
+	engine = gconf_engine_get_for_address (GCONF_DEFAULTS_SOURCE, NULL);
+	entry = gconf_engine_get_entry (engine, key, NULL, TRUE, NULL);
 	schema_name = gconf_entry_get_schema_name (entry);
-	
-	if (schema_name == NULL) {
-#if 0
-		/* Clear the cache and try again */
-		gconf_client_clear_cache (client);
-#endif
-		entry = gconf_client_get_entry (client, key, NULL, TRUE, NULL);
-		schema_name = gconf_entry_get_schema_name (entry);
-	}
 
 	if (schema_name == NULL)
 		return NULL;
@@ -96,3 +96,56 @@ gconf_client_get_schema_for_key (GConfClient *client, const char *key)
 
 	return schema;
 }
+
+gboolean
+gconf_client_can_edit_defaults (void)
+{
+	GConfEngine *defaults_engine = NULL;
+	GError *error = NULL;
+
+	defaults_engine = gconf_engine_get_local (GCONF_DEFAULTS_SOURCE, NULL);
+	if (error) {
+		return FALSE;
+	}
+
+	gconf_engine_set_bool (defaults_engine, "/apps/gconf-editor/can_edit_defaults", FALSE, &error);
+	if (error) {
+		gconf_engine_unref (defaults_engine);
+		return FALSE;
+	}
+	gconf_engine_suggest_sync (defaults_engine, &error);
+	if (error) {
+		gconf_engine_unref (defaults_engine);
+		return FALSE;
+	}
+	gconf_engine_unref (defaults_engine);
+	return TRUE;
+}
+
+gboolean
+gconf_client_can_edit_mandatory (void)
+{
+	GConfEngine *defaults_engine = NULL;
+	GError *error = NULL;
+
+	defaults_engine = gconf_engine_get_local (GCONF_MANDATORY_SOURCE, NULL);
+	if (error) {
+		return FALSE;
+	}
+
+	gconf_engine_set_bool (defaults_engine, "/apps/gconf-editor/can_edit_mandatory", FALSE, &error);
+	if (error) {
+		gconf_engine_unref (defaults_engine);
+		return FALSE;
+	}
+	gconf_engine_suggest_sync (defaults_engine, &error);
+	if (error) {
+		gconf_engine_unref (defaults_engine);
+		return FALSE;
+	}	
+	gconf_engine_unref (defaults_engine);
+	return TRUE;
+}
+
+	
+

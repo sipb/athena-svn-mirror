@@ -1,0 +1,459 @@
+# Nepali Translation of gconf-editior
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gconf-editior package.
+# Pawan Chitrakar <pawan@nplinux.org> , 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gconf-editior\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-08 20:20+0200\n"
+"PO-Revision-Date: 2004-09-05 20:44+0545\n"
+"Last-Translator: Pawan Chitrakar <pawan@nplinux.org>\n"
+"Language-Team: Nepali <info@mpp.org.np>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/gconf-editor.desktop.in.h:1
+msgid "Configuration Editor"
+msgstr "सम्पादक ढाँचा"
+
+#: data/gconf-editor.desktop.in.h:2
+msgid "Directly edit your entire configuration database"
+msgstr ""
+
+#: data/gconf-editor.schemas.in.h:1
+msgid "Bookmarks"
+msgstr "बुकमार्कहरु"
+
+#: data/gconf-editor.schemas.in.h:2
+msgid "gconf-editor folder bookmarks"
+msgstr "फाइलपत्र बुकमार्कहरु को जिकोन्फ- सम्पादक"
+
+#: src/gconf-bookmarks-dialog.c:207
+#, fuzzy
+msgid "Edit Bookmarks"
+msgstr "बुकमार्क सम्पादन गर्नु"
+
+#: src/gconf-editor-application.c:58 src/gconf-editor-application.c:69
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:698
+#, c-format
+msgid ""
+"Cannot create GConf engine. Error was:\n"
+"%s"
+msgstr ""
+"जिकोन्फ यन्त्र निर्माण गर्न सकेन। \n"
+"%s मा समस्या थियो"
+
+#: src/gconf-editor-window.c:341
+#, c-format
+msgid "Couldn't display help: %s"
+msgstr "%s सहयोगि देखाउन सकेन"
+
+#: src/gconf-editor-window.c:376
+msgid "translator_credits"
+msgstr "सम्पादक _ विश्वास"
+
+#: src/gconf-editor-window.c:386
+msgid "GConf-Editor"
+msgstr "जिकोन्फ - सम्पादक"
+
+#: src/gconf-editor-window.c:388
+msgid "An editor for the GConf configuration system."
+msgstr "जिकोन्फ ढाँचा पद्दतिको लागि एउटा सम्पादक"
+
+#: src/gconf-editor-window.c:423
+#, c-format
+msgid ""
+"Couldn't unset key. Error was:\n"
+"%s"
+msgstr ""
+"किलाई बिस्थापित गर्न सकिएन ।\n"
+"%s मा समस्या थियो"
+
+#: src/gconf-editor-window.c:448
+#, c-format
+msgid ""
+"Could not create key. The error is:\n"
+"%s"
+msgstr ""
+"किलाई निर्माण गर्न सकिएन ।\n"
+"%s मा समस्या थियो"
+
+#: src/gconf-editor-window.c:530
+#, c-format
+msgid ""
+"Could not change key value. Error message:\n"
+"%s"
+msgstr ""
+"किको मुल्यलाई परिवर्तन गर्न सकिएन ।\n"
+"%s मा समस्या थियो"
+
+#: src/gconf-editor-window.c:562
+msgid ""
+"Currently pairs and schemas can't be edited. This will be changed in a later "
+"version."
+msgstr ""
+"तत्कालिन जोडि हरु र रुपरेखाहरु सम्पादन गर्न सकिएन। पछिको उत्पादनको ब्यापारिक नाममा यो "
+"परिवर्तन गरिने छ"
+
+#: src/gconf-editor-window.c:677 src/gconf-editor-window.c:722
+#, c-format
+msgid ""
+"Could not sync value. Error was:\n"
+"%s"
+msgstr ""
+"मुल्यलाई एकिकरण गर्न सकिएन ।\n"
+"%s मा समस्या थियो"
+
+#: src/gconf-editor-window.c:728
+msgid "_File"
+msgstr "_लेखपत्र"
+
+#: src/gconf-editor-window.c:729
+msgid "_Edit"
+msgstr "_सम्पादन गर्नु"
+
+#: src/gconf-editor-window.c:730
+msgid "_Search"
+msgstr ""
+
+#: src/gconf-editor-window.c:731
+msgid "_Bookmarks"
+msgstr "_बुकमार्कस"
+
+#: src/gconf-editor-window.c:732
+msgid "_Help"
+msgstr "_सहयोग"
+
+#: src/gconf-editor-window.c:734
+#, fuzzy
+msgid "New _Settings Window"
+msgstr "नयाँ द्वार स्थापित"
+
+#: src/gconf-editor-window.c:735
+msgid "Open a new gconf editor window editing current settings"
+msgstr "द्वार सम्पादन तत्काल स्थापित गरिन  एउटा जिकोन्फ सम्पादक खोल"
+
+#: src/gconf-editor-window.c:737
+#, fuzzy
+msgid "New _Defaults Window"
+msgstr "नयाँ पुर्व निर्धारित द्वार"
+
+#: src/gconf-editor-window.c:738
+msgid "Open a new gconf editor window editing system default settings"
+msgstr "पुर्व निर्धारित द्वार सम्पादन पद्दति स्थापित गरिन  एउटा जिकोन्फ सम्पादक खोल"
+
+#: src/gconf-editor-window.c:740
+#, fuzzy
+msgid "New _Mandatory Window"
+msgstr "नायाँ आदेशक द्वार "
+
+#: src/gconf-editor-window.c:741
+msgid "Open a new gconf editor window editing system mandatory settings"
+msgstr "द्वार सम्पादन पद्दति आदेशक स्थापित गरिन  एउटा जिकोन्फ सम्पादक खोल"
+
+#: src/gconf-editor-window.c:743
+#, fuzzy
+msgid "_Close Window"
+msgstr "द्वार बन्द गर"
+
+#: src/gconf-editor-window.c:743
+msgid "Close this window"
+msgstr "यो द्वार बन्द गर"
+
+#: src/gconf-editor-window.c:745
+msgid "_Quit"
+msgstr "अन्त्य"
+
+#: src/gconf-editor-window.c:745
+msgid "Quit the gconf editor"
+msgstr "जिकोन्फ सम्पादक अन्त्य गर"
+
+#: src/gconf-editor-window.c:748
+#, fuzzy
+msgid "_Copy Key Name"
+msgstr "कि नाम को नक्कल गर"
+
+#: src/gconf-editor-window.c:748
+msgid "Copy the name of the selected key"
+msgstr "छानिएको कि को नाम नक्कल गर"
+
+#: src/gconf-editor-window.c:750
+msgid "_Find..."
+msgstr ""
+
+#: src/gconf-editor-window.c:750
+msgid "Find patterns in keys and values"
+msgstr ""
+
+#: src/gconf-editor-window.c:752
+msgid "_List Recent Keys"
+msgstr ""
+
+#: src/gconf-editor-window.c:752
+msgid "Show recently modified keys"
+msgstr ""
+
+#: src/gconf-editor-window.c:755
+#, fuzzy
+msgid "_Add Bookmark"
+msgstr "बुकमार्क जोड"
+
+#: src/gconf-editor-window.c:755
+msgid "Add a bookmark to the selected directory"
+msgstr "छानिएको निर्देसिकामा बुकमार्क जोड"
+
+#: src/gconf-editor-window.c:757
+#, fuzzy
+msgid "_Edit Bookmarks"
+msgstr "बुकमार्कहरु _सम्पादन गर"
+
+#: src/gconf-editor-window.c:757
+msgid "Edit the bookmarks"
+msgstr "बुकमार्कहरु सम्पादन गर"
+
+#: src/gconf-editor-window.c:760
+msgid "_Contents"
+msgstr "_बिषय बस्तुहरु"
+
+#: src/gconf-editor-window.c:760
+msgid "Open the help contents for the gconf editor"
+msgstr "जिकोन्फ सम्पादकको लागि बिषय बस्तु सहयोगि खोल"
+
+#: src/gconf-editor-window.c:762
+msgid "_About"
+msgstr "_बारेमा"
+
+#: src/gconf-editor-window.c:762
+msgid "Show the about dialog for the gconf editor"
+msgstr "जिकोन्फ सम्पादकको लागि संबादको बारेमा देखाउ"
+
+#: src/gconf-editor-window.c:765
+#, fuzzy
+msgid "_New Key..."
+msgstr "नयाँ कि......."
+
+#: src/gconf-editor-window.c:765
+msgid "Create a new key"
+msgstr "एउटा नयाँकि निर्माण गर"
+
+#: src/gconf-editor-window.c:767
+#, fuzzy
+msgid "_Edit Key..."
+msgstr "कि....सम्पादन गर"
+
+#: src/gconf-editor-window.c:767
+msgid "Edit the selected key"
+msgstr "छानिएको कि सम्पादन गर"
+
+#: src/gconf-editor-window.c:769
+#, fuzzy
+msgid "_Unset Key..."
+msgstr "कि.....बिसथापित गर"
+
+#: src/gconf-editor-window.c:769
+msgid "Unset the selected key"
+msgstr "छानिएको कि बिस्थापित गर"
+
+#: src/gconf-editor-window.c:771
+#, fuzzy
+msgid "Set as _Default"
+msgstr "पुर्वनिर्धारित को रुपमा स्थापित गर"
+
+#: src/gconf-editor-window.c:771
+msgid "Set the selected key to be the default"
+msgstr "पुर्वनिर्धारित को रुपमा छानिएको कि स्थापित गर"
+
+#: src/gconf-editor-window.c:773
+#, fuzzy
+msgid "Set as _Mandatory"
+msgstr "आदेशक को रुपमा स्थापित गर"
+
+#: src/gconf-editor-window.c:773
+msgid "Set the selected key to the mandatory"
+msgstr "आदेसकको लागि छानिएको कि स्थापित गर"
+
+#: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
+#: src/gconf-editor-window.c:1321
+msgid "GConf editor"
+msgstr "जिकोन्फ सम्पादक"
+
+#: src/gconf-editor-window.c:875
+#, c-format
+msgid "GConf editor - %s"
+msgstr "%s जिकोन्फ सम्पादक"
+
+#: src/gconf-editor-window.c:1057 src/gconf-editor-window.c:1058
+#: src/gconf-editor-window.c:1059 src/gconf-editor-window.c:1060
+#: src/gconf-editor-window.c:1089 src/gconf-editor-window.c:1097
+#: src/gconf-editor-window.c:1106 src/gconf-editor-window.c:1566
+#: src/gconf-editor-window.c:1578 src/gconf-editor-window.c:1590
+#: src/gconf-editor-window.c:1605
+msgid "(None)"
+msgstr "केहि पानि छैन"
+
+#: src/gconf-editor-window.c:1463
+msgid "Name"
+msgstr "नाम"
+
+#: src/gconf-editor-window.c:1486
+msgid "Value"
+msgstr "मुल्य"
+
+#: src/gconf-editor-window.c:1513
+msgid "Key Documentation"
+msgstr "कि दस्तावेजहरु"
+
+#: src/gconf-editor-window.c:1542 src/gconf-key-editor.c:600
+msgid "This key is not writable"
+msgstr "यो कि लेख्नयोग्य छैन"
+
+#: src/gconf-editor-window.c:1555
+msgid "This key has no schema"
+msgstr "यो कि संग रुपरेखा छैन"
+
+#: src/gconf-editor-window.c:1560
+msgid "Key Name:"
+msgstr "कि नाम"
+
+#: src/gconf-editor-window.c:1573
+msgid "Key Owner:"
+msgstr "सांचो स्वामि"
+
+#: src/gconf-editor-window.c:1585
+msgid "Short Description:"
+msgstr "छोटो बर्णन"
+
+#: src/gconf-editor-window.c:1598
+msgid "Long Description:"
+msgstr "लामो बर्णन"
+
+#: src/gconf-key-editor.c:82
+msgid "T_rue"
+msgstr "सत्य"
+
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:246
+#: src/gconf-key-editor.c:354 src/gconf-key-editor.c:634
+msgid "_False"
+msgstr "झुठ"
+
+#: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
+msgid "Integer"
+msgstr "पूर्ण संख्या"
+
+#: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
+msgid "Boolean"
+msgstr "योजक चिन्ह"
+
+#: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
+msgid "String"
+msgstr "सुत्र"
+
+#: src/gconf-key-editor.c:127
+msgid "Float"
+msgstr "तरंग बनाउनु"
+
+#: src/gconf-key-editor.c:129
+msgid "List"
+msgstr "सुचि"
+
+#: src/gconf-key-editor.c:219
+msgid "Add new list entry"
+msgstr "नयाँ सुचि प्रवेश जोड"
+
+#: src/gconf-key-editor.c:237
+msgid "_New list element:"
+msgstr "नयाँ सुची तत्व "
+
+#: src/gconf-key-editor.c:324
+msgid "Edit list entry"
+msgstr "सुची प्रवेश सम्पादन गर"
+
+#: src/gconf-key-editor.c:342
+msgid "_Edit list element:"
+msgstr "सुची तत्व सम्पादन गर"
+
+#: src/gconf-key-editor.c:554
+msgid "Key path:"
+msgstr "कि बाटो"
+
+#: src/gconf-key-editor.c:566
+msgid "Key _name:"
+msgstr "कि _नाम"
+
+#: src/gconf-key-editor.c:579
+msgid "_Type:"
+msgstr "_प्रकार"
+
+#: src/gconf-key-editor.c:620 src/gconf-key-editor.c:633
+#: src/gconf-key-editor.c:646 src/gconf-key-editor.c:657
+#: src/gconf-key-editor.c:680
+msgid "Key _value:"
+msgstr "कि मुल्य"
+
+#: src/gconf-key-editor.c:672
+msgid "List _type:"
+msgstr "सुचि प्रकार"
+
+#: src/gconf-key-editor.c:785
+msgid "New key"
+msgstr "नायाँ कि"
+
+#: src/gconf-key-editor.c:789
+msgid "Edit key"
+msgstr "कि सम्पादन गर्नु"
+
+#: src/gconf-search-dialog.c:61
+msgid "Pattern not found"
+msgstr ""
+
+#: src/gconf-search-dialog.c:143
+msgid "Find"
+msgstr ""
+
+#: src/gconf-search-dialog.c:145
+msgid "_Search for: "
+msgstr ""
+
+#: src/gconf-search-dialog.c:166
+msgid "Search also in key _names"
+msgstr ""
+
+#: src/gconf-search-dialog.c:169
+msgid "Search also in key _values"
+msgstr ""
+
+#: src/gedit-output-window.c:350
+#, fuzzy
+msgid "Close the output window"
+msgstr "यो द्वार बन्द गर"
+
+#: src/gedit-output-window.c:388
+msgid "Copy selected lines"
+msgstr ""
+
+#: src/gedit-output-window.c:408
+#, fuzzy
+msgid "Clear the output window"
+msgstr "यो द्वार बन्द गर"
+
+#: src/gedit-output-window.c:448
+msgid "Output Lines"
+msgstr ""
+
+#: src/main.c:40
+#, c-format
+msgid "Invalid key \"%s\": %s"
+msgstr "\"%s\": %s अमान्य कि"
+
+#~ msgid "Skip caveat dialog"
+#~ msgstr "चेतावनि दिने संवादलाइ छाडिदेउ"
+
+#~ msgid "This key defines if gconf-editor should skip the warning dialog"
+#~ msgstr ""
+#~ "यदि जिकोन्फ- सम्पादकले कुनै चेतावनि दिने संवादलाइ छाडनुछ भने यो किले परिभाषित गर्छ"
+
+#~ msgid "_Show this dialog again"
+#~ msgstr "_फेरि यो संबाद देखाउ"

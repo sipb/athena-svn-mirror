@@ -4,262 +4,352 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gconf-editor for latvian\n"
-"POT-Creation-Date: 2002-12-10 18:40+0100\n"
-"PO-Revision-Date: 2002-08-27 00:57GMT+0020\n"
-"Last-Translator: Pçteris Kriğjânis <peteris.krisjanis@os.lv>\n"
+"Project-Id-Version: gconf-editor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-08 20:20+0200\n"
+"PO-Revision-Date: 2002-12-21 01:57+0200\n"
+"Last-Translator: Artis Trops <hornet@navigators.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
 
 #: data/gconf-editor.desktop.in.h:1
 msgid "Configuration Editor"
-msgstr "Konfigurâcijas Redaktors"
+msgstr "KonfigurÄcijas Redaktors"
 
 #: data/gconf-editor.desktop.in.h:2
 msgid "Directly edit your entire configuration database"
-msgstr "Pa tieğo rediìç visu konfigurâcijas datubâzi"
+msgstr "Pa tieÅ¡o rediÄ£Ä“ visu konfigurÄcijas datubÄzi"
 
-#: src/gconf-bookmarks-dialog.c:204
-msgid "Edit bookmarks"
-msgstr "Rediìçt grâmatzîmes"
+#: data/gconf-editor.schemas.in.h:1
+#, fuzzy
+msgid "Bookmarks"
+msgstr "/_GrÄmatzÄ«mes"
 
-#: src/gconf-editor-window.c:159
-msgid "About GConf-Editor"
-msgstr "Par GConf-Editor"
+#: data/gconf-editor.schemas.in.h:2
+#, fuzzy
+msgid "gconf-editor folder bookmarks"
+msgstr "RediÄ£Ä“t grÄmatzÄ«mes"
 
-#: src/gconf-editor-window.c:187
+#: src/gconf-bookmarks-dialog.c:207
+#, fuzzy
+msgid "Edit Bookmarks"
+msgstr "RediÄ£Ä“t grÄmatzÄ«mes"
+
+#: src/gconf-editor-application.c:58 src/gconf-editor-application.c:69
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:698
+#, fuzzy, c-format
+msgid ""
+"Cannot create GConf engine. Error was:\n"
+"%s"
+msgstr ""
+"NevarÄ“ju izveidot atsÄ“gu. KÄ¼Å«da:\n"
+"%s"
+
+#: src/gconf-editor-window.c:341
+#, c-format
+msgid "Couldn't display help: %s"
+msgstr ""
+
+#: src/gconf-editor-window.c:376
+msgid "translator_credits"
+msgstr ""
+
+#: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
 msgstr "GConf-Editor"
 
-#: src/gconf-editor-window.c:188
+#: src/gconf-editor-window.c:388
 msgid "An editor for the GConf configuration system."
-msgstr "GConf konfigurâcijas sistçmas redaktors."
+msgstr "GConf konfigurÄcijas sistÄ“mas redaktors."
 
-#: src/gconf-editor-window.c:189
-msgid "Copyright (C) Anders Carlsson 2001, 2002"
-msgstr "Autortiesîbas (C) Anders Carlsson 2001, 2002"
-
-#: src/gconf-editor-window.c:202
-msgid "/_File"
-msgstr "/_Fails"
-
-#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
-#, fuzzy
-msgid "/File/tearoff1"
-msgstr "/Fails/sep1"
-
-#: src/gconf-editor-window.c:204
-msgid "/File/_New window"
-msgstr "/Fails/_Jauns logs"
-
-#: src/gconf-editor-window.c:205
-msgid "/File/_Close window"
-msgstr "/Fails/_Aizvçrt logu"
-
-#: src/gconf-editor-window.c:206
-msgid "/File/sep1"
-msgstr "/Fails/sep1"
-
-#: src/gconf-editor-window.c:207
-msgid "/File/_Quit"
-msgstr "/Fails/_Iziet"
-
-#: src/gconf-editor-window.c:208
-msgid "/_Edit"
-msgstr "/_Rediìçt"
-
-#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
-msgid "/Edit/tearoff2"
-msgstr ""
-
-#: src/gconf-editor-window.c:210
-msgid "/Edit/_Copy key name"
-msgstr "/Rediìçt/_Kopçt atslçgas nosaukumu"
-
-#: src/gconf-editor-window.c:211
-msgid "/_Bookmarks"
-msgstr "/_Grâmatzîmes"
-
-#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
-#, fuzzy
-msgid "/Bookmarks/tearoff3"
-msgstr "/_Grâmatzîmes"
-
-#: src/gconf-editor-window.c:213
-msgid "/Bookmarks/_Add bookmark"
-msgstr "/Grâmatzîmes/_Pievienot grâmatzîmi"
-
-#: src/gconf-editor-window.c:214
-msgid "/Bookmarks/_Edit bookmarks..."
-msgstr "/Grâmatzîmes/_Rediìçt grâmatzîmes..."
-
-#: src/gconf-editor-window.c:215
-msgid "/_Help"
-msgstr "/_Palîdzîba"
-
-#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
-msgid "/Help/tearoff4"
-msgstr ""
-
-#: src/gconf-editor-window.c:217
-msgid "/Help/_About..."
-msgstr "/Palîdzîba/_Par..."
-
-#: src/gconf-editor-window.c:228
-#, fuzzy
-msgid "/File/New window"
-msgstr "/Fails/_Jauns logs"
-
-#: src/gconf-editor-window.c:229
-#, fuzzy
-msgid "/File/Close window"
-msgstr "/Fails/_Aizvçrt logu"
-
-#: src/gconf-editor-window.c:230
-#, fuzzy
-msgid "/File/Quit"
-msgstr "/Fails/_Iziet"
-
-#: src/gconf-editor-window.c:231
-#, fuzzy
-msgid "/Edit/Copy key name"
-msgstr "/Rediìçt/_Kopçt atslçgas nosaukumu"
-
-#: src/gconf-editor-window.c:232
-#, fuzzy
-msgid "/Help/About..."
-msgstr "/Palîdzîba/_Par..."
-
-#: src/gconf-editor-window.c:277
+#: src/gconf-editor-window.c:423
 #, c-format
 msgid ""
 "Couldn't unset key. Error was:\n"
 "%s"
 msgstr ""
-"Nevarçju noòemt atslçgu. Kïûda:\n"
+"NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
 "%s"
 
-#: src/gconf-editor-window.c:301
+#: src/gconf-editor-window.c:448
 #, c-format
 msgid ""
 "Could not create key. The error is:\n"
 "%s"
 msgstr ""
-"Nevarçju izveidot atsçgu. Kïûda:\n"
+"NevarÄ“ju izveidot atsÄ“gu. KÄ¼Å«da:\n"
 "%s"
 
-#: src/gconf-editor-window.c:376
+#: src/gconf-editor-window.c:530
 #, c-format
 msgid ""
 "Could not change key value. Error message:\n"
 "%s"
 msgstr ""
-"Nevarçju izmainît atslçgas vçrtîbu. Kïûdas paziòojums:\n"
+"NevarÄ“ju izmainÄ«t atslÄ“gas vÄ“rtÄ«bu. KÄ¼Å«das paziÅ†ojums:\n"
 "%s"
 
-#: src/gconf-editor-window.c:407
+#: src/gconf-editor-window.c:562
 #, fuzzy
 msgid ""
-"Currently pairs and schemas can't be edited. This will be change in a later "
+"Currently pairs and schemas can't be edited. This will be changed in a later "
 "version."
 msgstr ""
-"Uz doto brîdi saraksti, pâri un shçmas nevar tikt rediìçti. To varçs vçlâkâ "
-"versijâ."
+"Å obrÄ«d pÄri un shÄ“mas nevar tikt rediÄ£Ä“tas. Å is mainÄ«sies vÄ“lÄkÄ versijÄ."
 
-#: src/gconf-editor-window.c:441
-msgid "/_New key..."
-msgstr "/Jauna atslçga..."
+#: src/gconf-editor-window.c:677 src/gconf-editor-window.c:722
+#, fuzzy, c-format
+msgid ""
+"Could not sync value. Error was:\n"
+"%s"
+msgstr ""
+"NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
+"%s"
 
-#: src/gconf-editor-window.c:442
-msgid "/Edit key..."
-msgstr "/Rediìçt atslçgu..."
-
-#: src/gconf-editor-window.c:443
-msgid "/sep1"
-msgstr "/sep1"
-
-#: src/gconf-editor-window.c:444
-msgid "/_Unset key"
-msgstr "/_Noòemt atslçgu"
-
-#: src/gconf-editor-window.c:448
+#: src/gconf-editor-window.c:728
 #, fuzzy
-msgid "/New key..."
-msgstr "/Jauna atslçga..."
+msgid "_File"
+msgstr "/_Fails"
 
-#: src/gconf-editor-window.c:449
+#: src/gconf-editor-window.c:729
 #, fuzzy
-msgid "/Unset key"
-msgstr "/_Noòemt atslçgu"
+msgid "_Edit"
+msgstr "/_RediÄ£Ä“t"
 
-#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
-#: src/gconf-editor-window.c:831
+#: src/gconf-editor-window.c:730
+msgid "_Search"
+msgstr ""
+
+#: src/gconf-editor-window.c:731
+#, fuzzy
+msgid "_Bookmarks"
+msgstr "/_GrÄmatzÄ«mes"
+
+#: src/gconf-editor-window.c:732
+#, fuzzy
+msgid "_Help"
+msgstr "/_PalÄ«dzÄ«ba"
+
+#: src/gconf-editor-window.c:734
+msgid "New _Settings Window"
+msgstr ""
+
+#: src/gconf-editor-window.c:735
+msgid "Open a new gconf editor window editing current settings"
+msgstr ""
+
+#: src/gconf-editor-window.c:737
+msgid "New _Defaults Window"
+msgstr ""
+
+#: src/gconf-editor-window.c:738
+msgid "Open a new gconf editor window editing system default settings"
+msgstr ""
+
+#: src/gconf-editor-window.c:740
+msgid "New _Mandatory Window"
+msgstr ""
+
+#: src/gconf-editor-window.c:741
+msgid "Open a new gconf editor window editing system mandatory settings"
+msgstr ""
+
+#: src/gconf-editor-window.c:743
+#, fuzzy
+msgid "_Close Window"
+msgstr "/Fails/_AizvÄ“rt logu"
+
+#: src/gconf-editor-window.c:743
+#, fuzzy
+msgid "Close this window"
+msgstr "/Fails/AizvÄ“rt logu"
+
+#: src/gconf-editor-window.c:745
+#, fuzzy
+msgid "_Quit"
+msgstr "/Fails/_Iziet"
+
+#: src/gconf-editor-window.c:745
+#, fuzzy
+msgid "Quit the gconf editor"
+msgstr "GConf redaktors"
+
+#: src/gconf-editor-window.c:748
+#, fuzzy
+msgid "_Copy Key Name"
+msgstr "/RediÄ£Ä“t/_KopÄ“t atslÄ“gas nosaukumu"
+
+#: src/gconf-editor-window.c:748
+msgid "Copy the name of the selected key"
+msgstr ""
+
+#: src/gconf-editor-window.c:750
+msgid "_Find..."
+msgstr ""
+
+#: src/gconf-editor-window.c:750
+msgid "Find patterns in keys and values"
+msgstr ""
+
+#: src/gconf-editor-window.c:752
+msgid "_List Recent Keys"
+msgstr ""
+
+#: src/gconf-editor-window.c:752
+msgid "Show recently modified keys"
+msgstr ""
+
+#: src/gconf-editor-window.c:755
+#, fuzzy
+msgid "_Add Bookmark"
+msgstr "/_GrÄmatzÄ«mes"
+
+#: src/gconf-editor-window.c:755
+msgid "Add a bookmark to the selected directory"
+msgstr ""
+
+#: src/gconf-editor-window.c:757
+#, fuzzy
+msgid "_Edit Bookmarks"
+msgstr "RediÄ£Ä“t grÄmatzÄ«mes"
+
+#: src/gconf-editor-window.c:757
+#, fuzzy
+msgid "Edit the bookmarks"
+msgstr "RediÄ£Ä“t grÄmatzÄ«mes"
+
+#: src/gconf-editor-window.c:760
+msgid "_Contents"
+msgstr ""
+
+#: src/gconf-editor-window.c:760
+msgid "Open the help contents for the gconf editor"
+msgstr ""
+
+#: src/gconf-editor-window.c:762
+msgid "_About"
+msgstr ""
+
+#: src/gconf-editor-window.c:762
+msgid "Show the about dialog for the gconf editor"
+msgstr ""
+
+#: src/gconf-editor-window.c:765
+#, fuzzy
+msgid "_New Key..."
+msgstr "/Jauna atslÄ“ga..."
+
+#: src/gconf-editor-window.c:765
+msgid "Create a new key"
+msgstr ""
+
+#: src/gconf-editor-window.c:767
+#, fuzzy
+msgid "_Edit Key..."
+msgstr "/RediÄ£Ä“t atslÄ“gu..."
+
+#: src/gconf-editor-window.c:767
+msgid "Edit the selected key"
+msgstr ""
+
+#: src/gconf-editor-window.c:769
+#, fuzzy
+msgid "_Unset Key..."
+msgstr "/_NoÅ†emt atslÄ“gu"
+
+#: src/gconf-editor-window.c:769
+msgid "Unset the selected key"
+msgstr ""
+
+#: src/gconf-editor-window.c:771
+msgid "Set as _Default"
+msgstr ""
+
+#: src/gconf-editor-window.c:771
+msgid "Set the selected key to be the default"
+msgstr ""
+
+#: src/gconf-editor-window.c:773
+msgid "Set as _Mandatory"
+msgstr ""
+
+#: src/gconf-editor-window.c:773
+msgid "Set the selected key to the mandatory"
+msgstr ""
+
+#: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
+#: src/gconf-editor-window.c:1321
 msgid "GConf editor"
 msgstr "GConf redaktors"
 
-#: src/gconf-editor-window.c:473
+#: src/gconf-editor-window.c:875
 #, c-format
 msgid "GConf editor - %s"
 msgstr "GConf redaktors - %s"
 
-#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
-#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
-#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
-#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
-#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
-#: src/gconf-editor-window.c:1025
+#: src/gconf-editor-window.c:1057 src/gconf-editor-window.c:1058
+#: src/gconf-editor-window.c:1059 src/gconf-editor-window.c:1060
+#: src/gconf-editor-window.c:1089 src/gconf-editor-window.c:1097
+#: src/gconf-editor-window.c:1106 src/gconf-editor-window.c:1566
+#: src/gconf-editor-window.c:1578 src/gconf-editor-window.c:1590
+#: src/gconf-editor-window.c:1605
 msgid "(None)"
 msgstr "(Nekas)"
 
-#: src/gconf-editor-window.c:923
+#: src/gconf-editor-window.c:1463
 msgid "Name"
 msgstr "Nosaukums"
 
-#: src/gconf-editor-window.c:944
+#: src/gconf-editor-window.c:1486
 msgid "Value"
-msgstr "Vçrtîba"
+msgstr "VÄ“rtÄ«ba"
 
-#. Create details area
-#: src/gconf-editor-window.c:970
+#: src/gconf-editor-window.c:1513
 msgid "Key Documentation"
-msgstr "Atslçgas Dokumentâcija"
+msgstr "AtslÄ“gas DokumentÄcija"
 
-#: src/gconf-editor-window.c:980
+#: src/gconf-editor-window.c:1542 src/gconf-key-editor.c:600
+msgid "This key is not writable"
+msgstr ""
+
+#: src/gconf-editor-window.c:1555
+msgid "This key has no schema"
+msgstr ""
+
+#: src/gconf-editor-window.c:1560
 msgid "Key Name:"
-msgstr "Atslçgas Nosaukums:"
+msgstr "AtslÄ“gas Nosaukums:"
 
-#: src/gconf-editor-window.c:993
+#: src/gconf-editor-window.c:1573
 msgid "Key Owner:"
-msgstr "Atslçgas Îpağnieks:"
+msgstr "AtslÄ“gas ÄªpaÅ¡nieks:"
 
-#: src/gconf-editor-window.c:1005
+#: src/gconf-editor-window.c:1585
 msgid "Short Description:"
-msgstr "Îsais Apraksts:"
+msgstr "Äªsais Apraksts:"
 
-#: src/gconf-editor-window.c:1018
+#: src/gconf-editor-window.c:1598
 msgid "Long Description:"
 msgstr "Garais Apraksts:"
 
 #: src/gconf-key-editor.c:82
-#, fuzzy
 msgid "T_rue"
-msgstr "_Pareizi"
+msgstr "P_atiessi"
 
-#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
-#: src/gconf-key-editor.c:484
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:246
+#: src/gconf-key-editor.c:354 src/gconf-key-editor.c:634
 msgid "_False"
 msgstr "_Nepareizi"
 
 #: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
 msgid "Integer"
-msgstr "Skaitïu"
+msgstr "SkaitÄ¼u"
 
 #: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
 msgid "Boolean"
-msgstr "Bûla"
+msgstr "BÅ«la"
 
 #: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
 msgid "String"
@@ -267,60 +357,199 @@ msgstr "Virkne"
 
 #: src/gconf-key-editor.c:127
 msgid "Float"
-msgstr ""
+msgstr "PlÅ«stoÅ¡s"
 
 #: src/gconf-key-editor.c:129
 msgid "List"
-msgstr ""
+msgstr "Saraksts"
 
-#: src/gconf-key-editor.c:217
+#: src/gconf-key-editor.c:219
 msgid "Add new list entry"
-msgstr ""
+msgstr "Pievienot jaunu saraksta ierakstu"
 
-#: src/gconf-key-editor.c:235
+#: src/gconf-key-editor.c:237
 msgid "_New list element:"
-msgstr ""
+msgstr "_Jauns saraksta elements:"
 
-#: src/gconf-key-editor.c:419
+#: src/gconf-key-editor.c:324
+#, fuzzy
+msgid "Edit list entry"
+msgstr "Pievienot jaunu saraksta ierakstu"
+
+#: src/gconf-key-editor.c:342
+#, fuzzy
+msgid "_Edit list element:"
+msgstr "_Jauns saraksta elements:"
+
+#: src/gconf-key-editor.c:554
 msgid "Key path:"
-msgstr "Atslçgas ceïğ:"
+msgstr "AtslÄ“gas ceÄ¼Å¡:"
 
-#: src/gconf-key-editor.c:431
+#: src/gconf-key-editor.c:566
 msgid "Key _name:"
-msgstr "Atslçgas _nosaukums:"
+msgstr "AtslÄ“gas _nosaukums:"
 
-#: src/gconf-key-editor.c:444
+#: src/gconf-key-editor.c:579
 msgid "_Type:"
 msgstr "_Tips:"
 
-#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
-#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
-#: src/gconf-key-editor.c:530
+#: src/gconf-key-editor.c:620 src/gconf-key-editor.c:633
+#: src/gconf-key-editor.c:646 src/gconf-key-editor.c:657
+#: src/gconf-key-editor.c:680
 msgid "Key _value:"
-msgstr "Atslçgas _vçrtîba:"
+msgstr "AtslÄ“gas _vÄ“rtÄ«ba:"
 
-#: src/gconf-key-editor.c:522
+#: src/gconf-key-editor.c:672
 msgid "List _type:"
-msgstr ""
+msgstr "Saraksta _tips:"
 
-#: src/gconf-key-editor.c:628
+#: src/gconf-key-editor.c:785
 msgid "New key"
-msgstr "Jauna atslçga"
+msgstr "Jauna atslÄ“ga"
 
-#: src/gconf-key-editor.c:632
+#: src/gconf-key-editor.c:789
 msgid "Edit key"
-msgstr "Rediìçt atslçgu"
+msgstr "RediÄ£Ä“t atslÄ“gu"
 
-#: src/gconf-message-dialog.c:184
-msgid "_Show this dialog again"
-msgstr "_Parâdiet ğo dialogu vçlreiz"
-
-#: src/main.c:53
-msgid ""
-"This tool allows you to directly edit your configuration database. This is "
-"not the recommended way of setting desktop preferences. Use this tool at "
-"your own risk."
+#: src/gconf-search-dialog.c:61
+msgid "Pattern not found"
 msgstr ""
-"Ğis rîks atïauj jums tieği rediìçt jûsu konfigurâcijas datubâzi. Ğis nav "
-"rekomendçts veids kâ uzstâdît darbvirsmas preferences. Lietojiet ğo rîku pçc "
-"jûsu pağu izvçles."
+
+#: src/gconf-search-dialog.c:143
+msgid "Find"
+msgstr ""
+
+#: src/gconf-search-dialog.c:145
+msgid "_Search for: "
+msgstr ""
+
+#: src/gconf-search-dialog.c:166
+msgid "Search also in key _names"
+msgstr ""
+
+#: src/gconf-search-dialog.c:169
+msgid "Search also in key _values"
+msgstr ""
+
+#: src/gedit-output-window.c:350
+msgid "Close the output window"
+msgstr ""
+
+#: src/gedit-output-window.c:388
+msgid "Copy selected lines"
+msgstr ""
+
+#: src/gedit-output-window.c:408
+msgid "Clear the output window"
+msgstr ""
+
+#: src/gedit-output-window.c:448
+msgid "Output Lines"
+msgstr ""
+
+#: src/main.c:40
+#, c-format
+msgid "Invalid key \"%s\": %s"
+msgstr ""
+
+#~ msgid "About GConf-Editor"
+#~ msgstr "Par GConf-Editor"
+
+#~ msgid "/File/tearoff1"
+#~ msgstr "/Fails/tearoff1"
+
+#~ msgid "/File/_New window"
+#~ msgstr "/Fails/_Jauns logs"
+
+#~ msgid "/File/sep1"
+#~ msgstr "/Fails/sep1"
+
+#~ msgid "/Edit/tearoff2"
+#~ msgstr "/RediÄ£Ä“t/tearoff2"
+
+#~ msgid "/Bookmarks/tearoff3"
+#~ msgstr "/GrÄmatzÄ«mes/tearoff3"
+
+#~ msgid "/Bookmarks/_Add bookmark"
+#~ msgstr "/GrÄmatzÄ«mes/_Pievienot grÄmatzÄ«mi"
+
+#~ msgid "/Bookmarks/_Edit bookmarks..."
+#~ msgstr "/GrÄmatzÄ«mes/_RediÄ£Ä“t grÄmatzÄ«mes..."
+
+#~ msgid "/Help/tearoff4"
+#~ msgstr "/PalÄ«dzÄ«ba/tearoff4"
+
+#~ msgid "/Help/_About..."
+#~ msgstr "/PalÄ«dzÄ«ba/_Par..."
+
+#~ msgid "/File/New window"
+#~ msgstr "/Fails/Jauns logs"
+
+#~ msgid "/File/Quit"
+#~ msgstr "/Fails/Iziet"
+
+#~ msgid "/Edit/Copy key name"
+#~ msgstr "/RediÄ£Ä“t/KopÄ“t atslÄ“gas nosaukumu"
+
+#~ msgid "/Help/About..."
+#~ msgstr "/PalÄ«dzÄ«ba/Par..."
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not get schema location. Error was:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
+#~ "%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not get schema. Error was:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
+#~ "%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not set schema. Error was:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
+#~ "%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not associate schema. Error was:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "NevarÄ“ju noÅ†emt atslÄ“gu. KÄ¼Å«da:\n"
+#~ "%s"
+
+#~ msgid "/sep1"
+#~ msgstr "/sep1"
+
+#, fuzzy
+#~ msgid "/sep2"
+#~ msgstr "/sep1"
+
+#~ msgid "/New key..."
+#~ msgstr "/Jauna atslÄ“ga..."
+
+#~ msgid "/Unset key"
+#~ msgstr "/AtslÄ“gt atslÄ“gu"
+
+#~ msgid "_Show this dialog again"
+#~ msgstr "_ParÄdiet Å¡o dialogu vÄ“lreiz"
+
+#~ msgid ""
+#~ "This tool allows you to directly edit your configuration database. This "
+#~ "is not the recommended way of setting desktop preferences. Use this tool "
+#~ "at your own risk."
+#~ msgstr ""
+#~ "Å is rÄ«ks atÄ¼auj jums tieÅ¡i rediÄ£Ä“t jÅ«su konfigurÄcijas datubÄzi. Å is nav "
+#~ "rekomendÄ“ts veids kÄ uzstÄdÄ«t darbvirsmas preferences. Lietojiet Å¡o rÄ«ku "
+#~ "pÄ“c jÅ«su paÅ¡u izvÄ“les."
+
+#~ msgid "Copyright (C) Anders Carlsson 2001, 2002"
+#~ msgstr "AutortiesÄ«bas Â© Anders Carlsson 2001, 2002"

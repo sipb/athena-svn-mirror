@@ -1,14 +1,18 @@
-# Gconf-editor po
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Hungarian translation of gconf-editor.
+# Copyright (C) 2002, 2003, 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gconf-editor package.
 # Szabolcs Ban <shooby@gnome.hu>, 2002.
-# Andras Timar <timar@gnome.hu>, 2002.
+# Andras Timar <timar@gnome.hu>, 2002, 2003.
+# Laszlo Dvornik <dvornik@gnome.hu>, 2004.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: gconf-editor VERSION\n"
-"POT-Creation-Date: 2002-12-10 18:40+0100\n"
-"PO-Revision-Date: 2002-12-02 15:18+0100\n"
-"Last-Translator: Andras Timar <timar@gnome.hu>\n"
-"Language-Team: Hungarian <translation-team-hu@sourceforge.net>\n"
+"Project-Id-Version: gconf-editor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-08 20:20+0200\n"
+"PO-Revision-Date: 2004-08-03 16:09+0200\n"
+"Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
+"Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,113 +23,51 @@ msgstr "Konfigurációszerkesztő"
 
 #: data/gconf-editor.desktop.in.h:2
 msgid "Directly edit your entire configuration database"
-msgstr "A konfigurációs adatbázisodat szerkeszti közvetlenül"
+msgstr "A konfigurációs adatbázisát szerkeszti közvetlenül"
 
-#: src/gconf-bookmarks-dialog.c:204
-msgid "Edit bookmarks"
+#: data/gconf-editor.schemas.in.h:1
+msgid "Bookmarks"
+msgstr "Könyvjelzők"
+
+#: data/gconf-editor.schemas.in.h:2
+msgid "gconf-editor folder bookmarks"
+msgstr "gconf-szerkesztő mappakönyvjelzők"
+
+#: src/gconf-bookmarks-dialog.c:207
+msgid "Edit Bookmarks"
 msgstr "Könyvjelzők szerkesztése"
 
-#: src/gconf-editor-window.c:159
-msgid "About GConf-Editor"
-msgstr "Konfigurációszerkesztő névjegye"
+#: src/gconf-editor-application.c:58 src/gconf-editor-application.c:69
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:698
+#, c-format
+msgid ""
+"Cannot create GConf engine. Error was:\n"
+"%s"
+msgstr ""
+"Nem lehet létrehozni a GConf-motort. A hiba:\n"
+"%s"
 
-#: src/gconf-editor-window.c:187
+#: src/gconf-editor-window.c:341
+#, c-format
+msgid "Couldn't display help: %s"
+msgstr "Nem lehet megjeleníteni a súgót: %s"
+
+#: src/gconf-editor-window.c:376
+msgid "translator_credits"
+msgstr ""
+"Bán Szabolcs <shooby@gnome.hu>\n"
+"Dvornik László <dvornik@gnome.hu>\n"
+"Tímár András <timar@gnome.hu>"
+
+#: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
-msgstr "Konfigurációszerkesztő"
+msgstr "GConf-szerkesztő"
 
-#: src/gconf-editor-window.c:188
+#: src/gconf-editor-window.c:388
 msgid "An editor for the GConf configuration system."
-msgstr "A GConf konfigurációs adatbázis szerkesztője"
+msgstr "A GConf konfigurációs rendszer szerkesztője."
 
-#: src/gconf-editor-window.c:189
-msgid "Copyright (C) Anders Carlsson 2001, 2002"
-msgstr "Copyright (C) Anders Carlsson 2001, 2002"
-
-#: src/gconf-editor-window.c:202
-msgid "/_File"
-msgstr "/_Fájl"
-
-#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
-msgid "/File/tearoff1"
-msgstr "/Fájl/tearoff1"
-
-#: src/gconf-editor-window.c:204
-msgid "/File/_New window"
-msgstr "/Fájl/Ú_j ablak"
-
-#: src/gconf-editor-window.c:205
-msgid "/File/_Close window"
-msgstr "/Fájl/Ablak _bezárása"
-
-#: src/gconf-editor-window.c:206
-msgid "/File/sep1"
-msgstr "/Fájl/sep1"
-
-#: src/gconf-editor-window.c:207
-msgid "/File/_Quit"
-msgstr "/Fájl/_Kilépés"
-
-#: src/gconf-editor-window.c:208
-msgid "/_Edit"
-msgstr "/S_zerkesztés"
-
-#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
-msgid "/Edit/tearoff2"
-msgstr "/Szerkesztés/tearoff2"
-
-#: src/gconf-editor-window.c:210
-msgid "/Edit/_Copy key name"
-msgstr "/Szerkesztés/_Kulcsnév másolása"
-
-#: src/gconf-editor-window.c:211
-msgid "/_Bookmarks"
-msgstr "/_Könyvjelzők"
-
-#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
-msgid "/Bookmarks/tearoff3"
-msgstr "/Könyvjelzők/tearoff3"
-
-#: src/gconf-editor-window.c:213
-msgid "/Bookmarks/_Add bookmark"
-msgstr "/Könyvjelzők/_Könyvjelző hozzáadása"
-
-#: src/gconf-editor-window.c:214
-msgid "/Bookmarks/_Edit bookmarks..."
-msgstr "/Könyvjelzők/_Könyvjelzők szerkesztése..."
-
-#: src/gconf-editor-window.c:215
-msgid "/_Help"
-msgstr "/_Súgó"
-
-#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
-msgid "/Help/tearoff4"
-msgstr "/Súgó/tearoff4"
-
-#: src/gconf-editor-window.c:217
-msgid "/Help/_About..."
-msgstr "/Súgó/_Névjegy..."
-
-#: src/gconf-editor-window.c:228
-msgid "/File/New window"
-msgstr "/Fájl/Új ablak"
-
-#: src/gconf-editor-window.c:229
-msgid "/File/Close window"
-msgstr "/Fájl/Ablak bezárása"
-
-#: src/gconf-editor-window.c:230
-msgid "/File/Quit"
-msgstr "/Fájl/Kilépés"
-
-#: src/gconf-editor-window.c:231
-msgid "/Edit/Copy key name"
-msgstr "/Szerkesztés/Kulcsnév másolása"
-
-#: src/gconf-editor-window.c:232
-msgid "/Help/About..."
-msgstr "/Súgó/Névjegy..."
-
-#: src/gconf-editor-window.c:277
+#: src/gconf-editor-window.c:423
 #, c-format
 msgid ""
 "Couldn't unset key. Error was:\n"
@@ -134,7 +76,7 @@ msgstr ""
 "Nem lehet törölni a kulcsot. A hiba:\n"
 "%s"
 
-#: src/gconf-editor-window.c:301
+#: src/gconf-editor-window.c:448
 #, c-format
 msgid ""
 "Could not create key. The error is:\n"
@@ -143,7 +85,7 @@ msgstr ""
 "Nem lehet létrehozni a kulcsot. A hiba:\n"
 "%s"
 
-#: src/gconf-editor-window.c:376
+#: src/gconf-editor-window.c:530
 #, c-format
 msgid ""
 "Could not change key value. Error message:\n"
@@ -152,83 +94,236 @@ msgstr ""
 "Nem lehet megváltoztatni a kulcs értékét. A hiba:\n"
 "%s"
 
-#: src/gconf-editor-window.c:407
+#: src/gconf-editor-window.c:562
 msgid ""
-"Currently pairs and schemas can't be edited. This will be change in a later "
+"Currently pairs and schemas can't be edited. This will be changed in a later "
 "version."
 msgstr ""
-"Jelenleg a párok és sémák nem szerkeszthetők. Ez változni fog egy következő "
+"Jelenleg a párok és sémák nem szerkeszthetőek. Ez változni fog egy következő "
 "verzióban."
 
-#: src/gconf-editor-window.c:441
-msgid "/_New key..."
-msgstr "/Ú_j kulcs"
+#: src/gconf-editor-window.c:677 src/gconf-editor-window.c:722
+#, c-format
+msgid ""
+"Could not sync value. Error was:\n"
+"%s"
+msgstr ""
+"Nem lehet szinkronizálni az értéket. A hiba:\n"
+"%s"
 
-#: src/gconf-editor-window.c:442
-msgid "/Edit key..."
-msgstr "/Kulcs szerkesztése..."
+#: src/gconf-editor-window.c:728
+msgid "_File"
+msgstr "_Fájl"
 
-#: src/gconf-editor-window.c:443
-msgid "/sep1"
-msgstr "/sep1"
+#: src/gconf-editor-window.c:729
+msgid "_Edit"
+msgstr "S_zerkesztés"
 
-#: src/gconf-editor-window.c:444
-msgid "/_Unset key"
-msgstr "/Kulcs _törlése"
+#: src/gconf-editor-window.c:730
+msgid "_Search"
+msgstr "_Keresés"
 
-#: src/gconf-editor-window.c:448
-msgid "/New key..."
-msgstr "/Új kulcs..."
+#: src/gconf-editor-window.c:731
+msgid "_Bookmarks"
+msgstr "_Könyvjelzők"
 
-#: src/gconf-editor-window.c:449
-msgid "/Unset key"
-msgstr "/Kulcs törlése"
+#: src/gconf-editor-window.c:732
+msgid "_Help"
+msgstr "_Súgó"
 
-#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
-#: src/gconf-editor-window.c:831
+#: src/gconf-editor-window.c:734
+msgid "New _Settings Window"
+msgstr "Új _beállítások ablak"
+
+#: src/gconf-editor-window.c:735
+msgid "Open a new gconf editor window editing current settings"
+msgstr ""
+"Új gconf-szerkesztőablak megnyitása a jelenlegi beállítások szerkesztéséhez"
+
+#: src/gconf-editor-window.c:737
+msgid "New _Defaults Window"
+msgstr "Új _alapértelmezett ablak"
+
+#: src/gconf-editor-window.c:738
+msgid "Open a new gconf editor window editing system default settings"
+msgstr ""
+"Új gconf-szerkesztőablak megnyitása az alapértelmezett rendszerbeállítások "
+"szerkesztéséhez"
+
+#: src/gconf-editor-window.c:740
+msgid "New _Mandatory Window"
+msgstr "Új _kötelező ablak"
+
+#: src/gconf-editor-window.c:741
+msgid "Open a new gconf editor window editing system mandatory settings"
+msgstr ""
+"Új gconf-szerkesztőablak megnyitása a kötelező rendszerbeállítások "
+"szerkesztéséhez"
+
+#: src/gconf-editor-window.c:743
+msgid "_Close Window"
+msgstr "Ablak _bezárása"
+
+#: src/gconf-editor-window.c:743
+msgid "Close this window"
+msgstr "Ablak bezárása"
+
+#: src/gconf-editor-window.c:745
+msgid "_Quit"
+msgstr "_Kilépés"
+
+#: src/gconf-editor-window.c:745
+msgid "Quit the gconf editor"
+msgstr "Kilépés a GConf-szerkesztőből"
+
+#: src/gconf-editor-window.c:748
+msgid "_Copy Key Name"
+msgstr "Kulcsnév _másolása"
+
+#: src/gconf-editor-window.c:748
+msgid "Copy the name of the selected key"
+msgstr "A kijelölt kulcs nevének másolása"
+
+#: src/gconf-editor-window.c:750
+msgid "_Find..."
+msgstr "_Keresés..."
+
+#: src/gconf-editor-window.c:750
+msgid "Find patterns in keys and values"
+msgstr "Minták keresése kulcsokban és értékekben"
+
+#: src/gconf-editor-window.c:752
+msgid "_List Recent Keys"
+msgstr "Legutóbbi kulcsok _listázása"
+
+#: src/gconf-editor-window.c:752
+msgid "Show recently modified keys"
+msgstr "Nemrég módosított kulcsok megjelenítése"
+
+#: src/gconf-editor-window.c:755
+msgid "_Add Bookmark"
+msgstr "Könyvjelző hozzá_adása"
+
+#: src/gconf-editor-window.c:755
+msgid "Add a bookmark to the selected directory"
+msgstr "Könyvjelző hozzáadása a kijelölt könyvtárhoz"
+
+#: src/gconf-editor-window.c:757
+msgid "_Edit Bookmarks"
+msgstr "Könyvjelzők s_zerkesztése"
+
+#: src/gconf-editor-window.c:757
+msgid "Edit the bookmarks"
+msgstr "Könyvjelzők szerkesztése"
+
+#: src/gconf-editor-window.c:760
+msgid "_Contents"
+msgstr "_Tartalom"
+
+#: src/gconf-editor-window.c:760
+msgid "Open the help contents for the gconf editor"
+msgstr "A gconf-szerkesztő súgótartalmának megjelenítése"
+
+#: src/gconf-editor-window.c:762
+msgid "_About"
+msgstr "_Névjegy"
+
+#: src/gconf-editor-window.c:762
+msgid "Show the about dialog for the gconf editor"
+msgstr "A gconf-szerkesztő névjegyének megjelenítése"
+
+#: src/gconf-editor-window.c:765
+msgid "_New Key..."
+msgstr "Ú_j kulcs..."
+
+#: src/gconf-editor-window.c:765
+msgid "Create a new key"
+msgstr "Új kulcs létrehozása"
+
+#: src/gconf-editor-window.c:767
+msgid "_Edit Key..."
+msgstr "Kulcs s_zerkesztése..."
+
+#: src/gconf-editor-window.c:767
+msgid "Edit the selected key"
+msgstr "A kijelölt kulcs szerkesztése"
+
+#: src/gconf-editor-window.c:769
+msgid "_Unset Key..."
+msgstr "Kulcs _törlése..."
+
+#: src/gconf-editor-window.c:769
+msgid "Unset the selected key"
+msgstr "A kijelölt kulcs törlése"
+
+#: src/gconf-editor-window.c:771
+msgid "Set as _Default"
+msgstr "Beállítás _alapértelmezettként"
+
+#: src/gconf-editor-window.c:771
+msgid "Set the selected key to be the default"
+msgstr "A kijelölt kulcs beállítása alapértelmezettként"
+
+#: src/gconf-editor-window.c:773
+msgid "Set as _Mandatory"
+msgstr "Beállítás _kötelezőként"
+
+#: src/gconf-editor-window.c:773
+msgid "Set the selected key to the mandatory"
+msgstr "A kijelölt kulcs beállítása kötelezőként"
+
+#: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
+#: src/gconf-editor-window.c:1321
 msgid "GConf editor"
 msgstr "GConf-szerkesztő"
 
-#: src/gconf-editor-window.c:473
+#: src/gconf-editor-window.c:875
 #, c-format
 msgid "GConf editor - %s"
 msgstr "GConf-szerkesztő - %s"
 
-#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
-#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
-#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
-#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
-#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
-#: src/gconf-editor-window.c:1025
+#: src/gconf-editor-window.c:1057 src/gconf-editor-window.c:1058
+#: src/gconf-editor-window.c:1059 src/gconf-editor-window.c:1060
+#: src/gconf-editor-window.c:1089 src/gconf-editor-window.c:1097
+#: src/gconf-editor-window.c:1106 src/gconf-editor-window.c:1566
+#: src/gconf-editor-window.c:1578 src/gconf-editor-window.c:1590
+#: src/gconf-editor-window.c:1605
 msgid "(None)"
 msgstr "(Nincs)"
 
-#: src/gconf-editor-window.c:923
+#: src/gconf-editor-window.c:1463
 msgid "Name"
 msgstr "Név"
 
-#: src/gconf-editor-window.c:944
+#: src/gconf-editor-window.c:1486
 msgid "Value"
 msgstr "Érték"
 
-#. Create details area
-#: src/gconf-editor-window.c:970
+#: src/gconf-editor-window.c:1513
 msgid "Key Documentation"
 msgstr "Kulcs dokumentációja"
 
-#: src/gconf-editor-window.c:980
+#: src/gconf-editor-window.c:1542 src/gconf-key-editor.c:600
+msgid "This key is not writable"
+msgstr "Ez a kulcs nem írható"
+
+#: src/gconf-editor-window.c:1555
+msgid "This key has no schema"
+msgstr "Ennek a kulcsnak nincs sémája"
+
+#: src/gconf-editor-window.c:1560
 msgid "Key Name:"
 msgstr "Kulcs neve:"
 
-#: src/gconf-editor-window.c:993
+#: src/gconf-editor-window.c:1573
 msgid "Key Owner:"
 msgstr "Kulcs tulajdonosa:"
 
-#: src/gconf-editor-window.c:1005
+#: src/gconf-editor-window.c:1585
 msgid "Short Description:"
 msgstr "Rövid leírás:"
 
-#: src/gconf-editor-window.c:1018
+#: src/gconf-editor-window.c:1598
 msgid "Long Description:"
 msgstr "Hosszú leírás:"
 
@@ -236,79 +331,114 @@ msgstr "Hosszú leírás:"
 msgid "T_rue"
 msgstr "_Igaz"
 
-#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
-#: src/gconf-key-editor.c:484
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:246
+#: src/gconf-key-editor.c:354 src/gconf-key-editor.c:634
 msgid "_False"
 msgstr "_Hamis"
 
 #: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
 msgid "Integer"
-msgstr "Szám"
+msgstr "Egész"
 
 #: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
 msgid "Boolean"
-msgstr "Boolean"
+msgstr "Logikai"
 
 #: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
 msgid "String"
-msgstr "Szöveg"
+msgstr "Karakterlánc"
 
 #: src/gconf-key-editor.c:127
 msgid "Float"
-msgstr "Úszó"
+msgstr "Lebegő"
 
 #: src/gconf-key-editor.c:129
 msgid "List"
 msgstr "Lista"
 
-#: src/gconf-key-editor.c:217
+#: src/gconf-key-editor.c:219
 msgid "Add new list entry"
 msgstr "Új listaelem hozzáadása"
 
-#: src/gconf-key-editor.c:235
+#: src/gconf-key-editor.c:237
 msgid "_New list element:"
 msgstr "Ú_j listaelem:"
 
-#: src/gconf-key-editor.c:419
-msgid "Key path:"
-msgstr "Kulcs elérés:"
+#: src/gconf-key-editor.c:324
+msgid "Edit list entry"
+msgstr "Listaelem szerkesztése"
 
-#: src/gconf-key-editor.c:431
+#: src/gconf-key-editor.c:342
+msgid "_Edit list element:"
+msgstr "Listaelem s_zerkesztése:"
+
+#: src/gconf-key-editor.c:554
+msgid "Key path:"
+msgstr "Kulcs útvonala:"
+
+#: src/gconf-key-editor.c:566
 msgid "Key _name:"
 msgstr "Kulcs _neve:"
 
-#: src/gconf-key-editor.c:444
+#: src/gconf-key-editor.c:579
 msgid "_Type:"
-msgstr "_Típusa:"
+msgstr "_Típus:"
 
-#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
-#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
-#: src/gconf-key-editor.c:530
+#: src/gconf-key-editor.c:620 src/gconf-key-editor.c:633
+#: src/gconf-key-editor.c:646 src/gconf-key-editor.c:657
+#: src/gconf-key-editor.c:680
 msgid "Key _value:"
 msgstr "Kulcs é_rtéke:"
 
-#: src/gconf-key-editor.c:522
+#: src/gconf-key-editor.c:672
 msgid "List _type:"
-msgstr "Lista_típus:"
+msgstr "Lista _típusa:"
 
-#: src/gconf-key-editor.c:628
+#: src/gconf-key-editor.c:785
 msgid "New key"
 msgstr "Új kulcs"
 
-#: src/gconf-key-editor.c:632
+#: src/gconf-key-editor.c:789
 msgid "Edit key"
 msgstr "Kulcs szerkesztése"
 
-#: src/gconf-message-dialog.c:184
-msgid "_Show this dialog again"
-msgstr "_Mutasd ezt az ablakot legközelebb is"
+#: src/gconf-search-dialog.c:61
+msgid "Pattern not found"
+msgstr "Minta nem található"
 
-#: src/main.c:53
-msgid ""
-"This tool allows you to directly edit your configuration database. This is "
-"not the recommended way of setting desktop preferences. Use this tool at "
-"your own risk."
-msgstr ""
-"Ezzel az eszközzel közvetlenül szerkeszthető a konfigurációs adatbázis. Ez a "
-"módszer nem ajánlott a munkaasztal beállítására. Csak a saját felelősségedre "
-"használd ezt az eszközt!"
+#: src/gconf-search-dialog.c:143
+msgid "Find"
+msgstr "Keresés"
+
+#: src/gconf-search-dialog.c:145
+msgid "_Search for: "
+msgstr "_Keresés erre: "
+
+#: src/gconf-search-dialog.c:166
+msgid "Search also in key _names"
+msgstr "Keresés a kulcs_nevekben is"
+
+#: src/gconf-search-dialog.c:169
+msgid "Search also in key _values"
+msgstr "Keresés a kulcsé_rtékekben is"
+
+#: src/gedit-output-window.c:350
+msgid "Close the output window"
+msgstr "Kimeneti ablak bezárása"
+
+#: src/gedit-output-window.c:388
+msgid "Copy selected lines"
+msgstr "Kijelölt sorok másolása"
+
+#: src/gedit-output-window.c:408
+msgid "Clear the output window"
+msgstr "Kimeneti ablak törlése"
+
+#: src/gedit-output-window.c:448
+msgid "Output Lines"
+msgstr "Kimenet sorai"
+
+#: src/main.c:40
+#, c-format
+msgid "Invalid key \"%s\": %s"
+msgstr "\"%s\" érvénytelen kulcs: %s"

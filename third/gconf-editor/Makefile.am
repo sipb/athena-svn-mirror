@@ -1,4 +1,4 @@
-SUBDIRS = data src po
+SUBDIRS = data src po docs
 
 EXTRA_DIST = \
 	intltool-extract.in		\

@@ -59,30 +59,38 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+GCONFTOOL = @GCONFTOOL@
 GCONF_EDITOR_CFLAGS = @GCONF_EDITOR_CFLAGS@
 GCONF_EDITOR_LIBS = @GCONF_EDITOR_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -96,10 +104,12 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
+LIB = @LIB@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -109,20 +119,15 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 
-INCLUDES = \
-	-DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DGCONF_EDITOR_IMAGEDIR=\""$(datadir)/pixmaps/gconf-editor"\" \
-	-DIMAGEDIR=\""$(datadir)/pixmaps"\" \
-	-I$(includedir)		\
-	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED -DGNOME_VFS_DISABLE_DEPRECATED \
-	$(GCONF_EDITOR_CFLAGS)	
+INCLUDES =  	-DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	-DDATADIR=\""$(datadir)"\" 		-DGCONF_EDITOR_IMAGEDIR=\""$(datadir)/pixmaps/gconf-editor"\" 	-DIMAGEDIR=\""$(datadir)/pixmaps"\" 	$(GCONF_EDITOR_CFLAGS)	
 
 
 bin_PROGRAMS = gconf-editor
@@ -130,40 +135,13 @@ bin_PROGRAMS = gconf-editor
 gconf_editor_built_headers = gconf-marshal.h
 gconf_editor_built_cfiles = gconf-marshal.c
 
-gconf_editor_SOURCES = \
-	gconf-bookmarks.c		\
-	gconf-bookmarks.h		\
-	gconf-bookmarks-dialog.c	\
-	gconf-bookmarks-dialog.h	\
-	gconf-cell-renderer.c		\
-	gconf-cell-renderer.h 		\
-	gconf-editor-application.c	\
-	gconf-editor-application.h	\
-	gconf-editor-window.c		\
-	gconf-editor-window.h		\
-	gconf-key-editor.c		\
-	gconf-key-editor.h		\
-	gconf-list-model.c		\
-	gconf-list-model.h		\
-	gconf-message-dialog.c		\
-	gconf-message-dialog.h		\
-	gconf-stock-icons.c		\
-	gconf-stock-icons.h		\
-	gconf-tree-model.c		\
-	gconf-tree-model.h		\
-	gconf-util.c			\
-	gconf-util.h			\
-	main.c				\
-	$(gconf_editor_built_headers)	\
-	$(gconf_editor_built_cfiles)
+gconf_editor_SOURCES =  	gconf-bookmarks.c			gconf-bookmarks.h			gconf-bookmarks-dialog.c		gconf-bookmarks-dialog.h		gconf-cell-renderer.c			gconf-cell-renderer.h 			gconf-editor-application.c		gconf-editor-application.h		gconf-editor-window.c			gconf-editor-window.h			gconf-key-editor.c			gconf-key-editor.h			gconf-list-model.c			gconf-list-model.h			gconf-stock-icons.c			gconf-stock-icons.h			gconf-tree-model.c			gconf-tree-model.h			gconf-util.c				gconf-util.h				gedit-output-window.c			gedit-output-window.h			gconf-search.h                  	gconf-search.c                  	gconf-search-dialog.h           	gconf-search-dialog.c           	main.c					$(gconf_editor_built_headers)		$(gconf_editor_built_cfiles)
 
 
-gconf_editor_LDADD = \
-	$(GCONF_EDITOR_LIBS)
+gconf_editor_LDADD =  	$(GCONF_EDITOR_LIBS)
 
 
-EXTRA_DIST = \
-	gconf-marshal.list
+EXTRA_DIST =  	gconf-marshal.list
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -173,16 +151,20 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 gconf_editor_OBJECTS =  gconf-bookmarks.$(OBJEXT) \
 gconf-bookmarks-dialog.$(OBJEXT) gconf-cell-renderer.$(OBJEXT) \
 gconf-editor-application.$(OBJEXT) gconf-editor-window.$(OBJEXT) \
 gconf-key-editor.$(OBJEXT) gconf-list-model.$(OBJEXT) \
-gconf-message-dialog.$(OBJEXT) gconf-stock-icons.$(OBJEXT) \
-gconf-tree-model.$(OBJEXT) gconf-util.$(OBJEXT) main.$(OBJEXT) \
+gconf-stock-icons.$(OBJEXT) gconf-tree-model.$(OBJEXT) \
+gconf-util.$(OBJEXT) gedit-output-window.$(OBJEXT) \
+gconf-search.$(OBJEXT) gconf-search-dialog.$(OBJEXT) main.$(OBJEXT) \
 gconf-marshal.$(OBJEXT)
 gconf_editor_DEPENDENCIES = 
 gconf_editor_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -331,24 +313,32 @@ gconf-bookmarks.o: gconf-bookmarks.c gconf-bookmarks.h \
 	gconf-editor-window.h gconf-stock-icons.h gconf-tree-model.h
 gconf-cell-renderer.o: gconf-cell-renderer.c ../config.h \
 	gconf-cell-renderer.h gconf-util.h gconf-marshal.h
-gconf-editor-application.o: gconf-editor-application.c \
-	gconf-editor-application.h gconf-editor-window.h
+gconf-editor-application.o: gconf-editor-application.c ../config.h \
+	gconf-editor-application.h gconf-editor-window.h \
+	gconf-tree-model.h gconf-list-model.h
 gconf-editor-window.o: gconf-editor-window.c ../config.h \
 	gconf-editor-window.h gconf-bookmarks.h \
 	gconf-bookmarks-dialog.h gconf-list-model.h gconf-tree-model.h \
 	gconf-cell-renderer.h gconf-editor-application.h \
-	gconf-key-editor.h gconf-stock-icons.h gconf-util.h
+	gconf-key-editor.h gconf-stock-icons.h gconf-util.h \
+	gedit-output-window.h gconf-search-dialog.h
 gconf-key-editor.o: gconf-key-editor.c ../config.h gconf-cell-renderer.h \
 	gconf-key-editor.h
 gconf-list-model.o: gconf-list-model.c gconf-list-model.h gconf-util.h
-gconf-marshal.o: gconf-marshal.c gconf-marshal.h
-gconf-message-dialog.o: gconf-message-dialog.c ../config.h \
-	gconf-message-dialog.h
+gconf-marshal.o: gconf-marshal.c ./gconf-marshal.h
+gconf-search-dialog.o: gconf-search-dialog.c gconf-search.h \
+	gconf-editor-window.h gedit-output-window.h gconf-tree-model.h \
+	gconf-list-model.h gconf-search-dialog.h gconf-stock-icons.h
+gconf-search.o: gconf-search.c gconf-search.h gconf-editor-window.h \
+	gedit-output-window.h gconf-tree-model.h gconf-list-model.h \
+	gconf-search-dialog.h
 gconf-stock-icons.o: gconf-stock-icons.c gconf-stock-icons.h
 gconf-tree-model.o: gconf-tree-model.c gconf-tree-model.h
-gconf-util.o: gconf-util.c gconf-util.h
+gconf-util.o: gconf-util.c ../config.h gconf-util.h
+gedit-output-window.o: gedit-output-window.c ../config.h \
+	gedit-output-window.h
 main.o: main.c ../config.h gconf-editor-application.h \
-	gconf-stock-icons.h gconf-message-dialog.h
+	gconf-stock-icons.h gconf-editor-window.h
 
 info-am:
 info: info-am

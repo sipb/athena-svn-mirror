@@ -18,45 +18,67 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
+#include <gconf/gconf.h>
 #include <libintl.h>
 
 #include "gconf-editor-application.h"
 #include "gconf-stock-icons.h"
-#include "gconf-message-dialog.h"
+#include "gconf-editor-window.h"
 
-#define _(x) gettext(x)
+
+static void
+invalid_arg_error_dialog (GtkWindow  *parent,
+			  const char *key,
+			  const char *error_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (parent,
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_CLOSE,
+					 _("Invalid key \"%s\": %s"),
+					 key, error_message);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (gtk_widget_destroy), NULL);
+
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+
+	gtk_widget_show (dialog);
+}
 
 gint
 main (gint argc, gchar **argv)
 {
-	GtkWidget *window, *dialog;
+	GtkWidget *window;
 
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gtk_init (&argc, &argv);
+
+	gnome_program_init ("gconf-editor", VERSION, 
+			    LIBGNOMEUI_MODULE, argc, argv,
+			    GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
+
 
 	/* Register our stock icons */
 	gconf_stock_icons_register ();
 
-	window = gconf_editor_application_create_editor_window ();
-	gtk_widget_show (window);
-	
-	/* Put up a caveat dialog */
-	if (gconf_message_dialog_should_show ("caveat-dialog")) {
-		dialog = gconf_message_dialog_new (GTK_WINDOW (window), 0,
-						   GTK_MESSAGE_WARNING,
-						   GTK_BUTTONS_OK,
-						   "caveat-dialog",
-						   _("This tool allows you to directly edit your configuration database. "
-						     "This is not the recommended way of setting desktop preferences. "
-						     "Use this tool at your own risk."));
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+	window = gconf_editor_application_create_editor_window (GCONF_EDITOR_WINDOW_NORMAL);
+	gtk_widget_show_now (window);
+
+	if (argc > 1) {
+		char *reason;
+
+		if (gconf_valid_key (argv [1], &reason))
+			gconf_editor_window_go_to (GCONF_EDITOR_WINDOW (window), argv [1]);
+		else {
+			invalid_arg_error_dialog (GTK_WINDOW (window), argv [1], reason);
+			g_free (reason);
+		}
 	}
-	
+
 	gtk_main ();
 	
 	return 0;
