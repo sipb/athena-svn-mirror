@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.8 1990-02-14 15:16:48 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.9 1990-02-15 18:21:52 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -38,7 +38,9 @@ t_ask(Request,topic)
   int status;
   char file[NAME_SIZE];
   struct stat statbuf;
-
+  int instance;
+  
+  instance = Request->requester.instance;
   set_option(Request->options,VERIFY);
   status = OAsk(Request,topic,NULL);
   unset_option(Request->options, VERIFY);
@@ -177,5 +179,13 @@ t_ask(Request,topic)
       status = handle_response(status, Request);
       break;
     }
+
+  if (instance != Request->requester.instance)
+    {
+      printf("You are now %s [%d].\n",Request->requester.username,
+	     Request->requester.instance);
+      User.instance =  Request->requester.instance;
+    }
+
   return(status);
 }
