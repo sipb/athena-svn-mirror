@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.22 2003-03-23 06:53:47 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.23 2003-03-26 04:07:39 amb Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -83,8 +83,8 @@ static void read_upgrade_list(struct package **pkgtab, const char *listname);
 static void read_exception_list(struct package **pkgtab, const char *listname);
 static void read_installed_versions(struct package **pkgtab);
 static void decide_actions(struct package **pkgtab, int public);
-static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
-			    int copy);
+static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
+			    int hashmarks, int copy);
 static void *notify(const void *arg, rpmCallbackType what,
 		    unsigned long amount, unsigned long total,
 		    const void *pkgKey, void *data);
@@ -121,7 +121,7 @@ static void usage(void);
 int main(int argc, char **argv)
 {
   struct package *pkgtab[HASHSIZE];
-  int i, c, public = 0, dryrun = 0, hashmarks = 0, copy = 0;
+  int i, c, depcheck = 0, public = 0, dryrun = 0, hashmarks = 0, copy = 0;
   const char *oldlistname, *newlistname, *upgradelistname;
 
   /* Initialize rpmlib. */
@@ -131,12 +131,15 @@ int main(int argc, char **argv)
   rpmSetVerbosity(RPMMESS_NORMAL);
   progname = strrchr(argv[0], '/');
   progname = (progname == NULL) ? argv[0] : progname + 1;
-  while ((c = getopt(argc, argv, "chnpu:v")) != EOF)
+  while ((c = getopt(argc, argv, "cdhnpu:v")) != EOF)
     {
       switch (c)
 	{
 	case 'c':
 	  copy = 1;
+	  break;
+	case 'd':
+	  depcheck = 1;
 	  break;
 	case 'h':
 	  hashmarks = 1;
@@ -179,7 +182,7 @@ int main(int argc, char **argv)
 
   /* Decide what updates to perform, and do them. */
   decide_actions(pkgtab, public);
-  perform_updates(pkgtab, dryrun, hashmarks, copy);
+  perform_updates(pkgtab, depcheck, dryrun, hashmarks, copy);
 
   exit(0);
 }
@@ -350,8 +353,8 @@ static void decide_actions(struct package **pkgtab, int public)
     }
 }
 
-static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
-			    int copy)
+static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
+			    int hashmarks, int copy)
 {
   int r, i, npackages;
   struct package *pkg;
@@ -363,7 +366,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
   char *pkgname;
   struct notify_data ndata;
 
-  if (!dryrun)
+  if (!dryrun || depcheck)
     {
       if (rpmdbOpen(NULL, &db, O_RDWR, 0644))
 	die("Can't open RPM database for writing");
@@ -387,7 +390,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
 	{
 	  if (dryrun)
 	    display_action(pkg, pkg->action);
-	  else if (pkg->action == UPDATE)
+	  if ((!dryrun || depcheck) && pkg->action == UPDATE)
 	    {
 	      schedule_update(pkg, ts, copy);
 	      npackages++;
@@ -395,7 +398,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
 	}
     }
 
-  if (dryrun)
+  if (dryrun && !depcheck)
     return;
 
   /* Walk through the database and add transactions to erase packages
@@ -427,6 +430,11 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
       fprintf(stderr, "Update would break dependencies:\n");
       rpmpsPrint(NULL, rpmtsProblems(ts));
       exit(1);
+    }
+  if (depcheck)
+    {
+      rpmdbClose(db);
+      return;
     }
 
   rpmtsOrder(ts);
@@ -1255,6 +1263,6 @@ static void die(const char *fmt, ...)
 
 static void usage()
 {
-  fprintf(stderr, "Usage: %s [-p] oldlist newlist\n", progname);
+  fprintf(stderr, "Usage: %s [-cdhnpv] [-u upgradelist] oldlist newlist\n", progname);
   exit(1);
 }
