@@ -173,7 +173,7 @@ getline(cfp)
 getq(namelist)
 	struct queue *(*namelist[]);
 {
-#ifdef _IBMR2
+#ifdef POSIX
 	register struct dirent *d;
 #else
 	register struct direct *d;
