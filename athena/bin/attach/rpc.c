@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.9 1991-06-02 23:36:36 probe Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.10 1992-01-06 15:55:23 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -30,9 +30,13 @@ static int first_free = 0;
 
 bool_t xdr_krbtkt(xdrs, authp)
     XDR *xdrs;
-    KTEXT_ST *authp;
+    KTEXT authp;
 {
-    return xdr_opaque(xdrs, authp, sizeof(KTEXT_ST));
+    KTEXT_ST auth;
+
+    auth = *authp;
+    auth.length = htonl(authp->length);
+    return xdr_opaque(xdrs, &auth, sizeof(KTEXT_ST));
 }
 
 /*
