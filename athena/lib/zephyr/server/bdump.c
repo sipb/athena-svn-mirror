@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.54 2001-02-27 04:43:01 zacheiss Exp $
+ *	$Id: bdump.c,v 1.55 2004-02-29 06:34:04 zacheiss Exp $
  *	$Author: zacheiss $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -18,7 +18,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.54 2001-02-27 04:43:01 zacheiss Exp $";
+static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.55 2004-02-29 06:34:04 zacheiss Exp $";
 #endif /* lint */
 
 /*
@@ -725,13 +725,7 @@ get_tgt()
 		   krb_get_err_text(retval));
 	    return 1;
 	}
-	s = (Sched *) check_key_sched_cache(serv_key);
-	if (s) {
-	    serv_ksched = *s;
-	} else {
-	    des_key_sched(serv_key, serv_ksched.s);
-	    add_to_key_sched_cache(serv_key, &serv_ksched);
-	}
+	des_key_sched(serv_key, serv_ksched.s);
 #endif /* !NOENCRYPTION */
     }
     return(0);
