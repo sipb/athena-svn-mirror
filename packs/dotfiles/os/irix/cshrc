@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.1 1999-02-10 15:21:40 rbasch Exp $
+# $Id: cshrc,v 1.2 1999-02-26 23:33:02 danw Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -130,9 +130,11 @@ if (! $?ENV_SET) then
 	# customizations" option was selected to begin the session.
 
 	if ((! $?NOCALLS) && (-r ~/.path)) then
-		source ~/.path				# User-specified path
+		# User-specified path
+		source ~/.path
 	else
-		set path=($HOME/$bindir $athena_path .)	# Standard Athena path
+		# Standard Athena path
+		set path=(`athdir $HOME` $athena_path .)
 	endif
 
 	# Make sure applications can properly find their appdefs, etc.
