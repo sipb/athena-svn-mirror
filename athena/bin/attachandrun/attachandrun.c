@@ -17,7 +17,7 @@
  * Intended mainly for use by scripts.
  */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.1 2000-03-15 20:53:10 ghudson Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.2 2000-04-14 20:53:52 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -135,7 +135,7 @@ static char *run_attach(const char *locker)
   waitpid(pid, &status, 0);
   if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
     exit(1);
-  if (!*lock_path)
+  if (!*locker_path)
     {
       fprintf(stderr, "%s: attach failed to output locker path\n", progname);
       exit(1);
