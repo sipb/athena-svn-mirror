@@ -10,13 +10,14 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.29 1988-07-26 16:58:20 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.30 1988-07-26 17:08:34 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
 
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr_err.h>
+#include <zephyr/zephyr_conf.h>
 
 #include <errno.h>
 #include <sys/types.h>
