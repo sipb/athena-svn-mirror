@@ -92,6 +92,7 @@ Distribution sites for software under third
 	gcc		ftp.gnu.org:pub/gnu/gcc
 	gmake		ftp.gnu.org:pub/gnu/make
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
+	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	kermit		http://www.columbia.edu/kermit
