@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.61 2001-03-04 21:13:19 ghudson Exp $
+# $Id: do.sh,v 1.62 2001-03-26 20:31:43 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -138,9 +138,9 @@ case `uname -s` in
 SunOS)
 	OS=solaris
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-	PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
-	CC=/usr/gcc/bin/gcc
-	CXX=/usr/gcc/bin/g++
+	PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin:/usr/gcc/bin
+	CC=gcc
+	CXX=g++
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
