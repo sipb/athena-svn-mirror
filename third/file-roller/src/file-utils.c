@@ -961,9 +961,24 @@ get_last_field (const char *line,
 char *
 get_temp_work_dir (void)
 {
+#ifdef sun
+	/* Athena hack: Solaris does not provide mkdtemp().  The
+	   upstream mainline fixes this problem by including a
+	   mkdtemp() implementation; since we don't want to backport
+	   that big of a change, hack around the problem instead.  A
+	   mkdir() of get_temp_work_dir_name() should only fail if
+	   someone is attempting a /tmp attack, so aborting is
+	   acceptable if not ideal. */
+	char *dir = get_temp_work_dir_name();
+
+	if (mkdir (dir, 0700) == -1)
+		abort();
+	return dir;
+#else
 	char temp_dir_template[] = "/tmp/fr-XXXXXX";
 	g_assert (mkdtemp (temp_dir_template) != NULL);
 	return g_strdup (temp_dir_template);
+#endif
 }
 
 
