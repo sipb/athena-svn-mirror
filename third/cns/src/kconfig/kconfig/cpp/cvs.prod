@@ -1,2 +1,0 @@
-CVS won't create an empty directory with 'cvs co cns' 
-so this dummy file get's cvs to do the right thing.
