@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.23 1992-05-08 16:21:58 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.24 1992-07-13 16:46:16 lwvanels Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -43,7 +43,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.23 1992-05-08 16:21:58 epeisach Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.24 1992-07-13 16:46:16 lwvanels Exp $";
 #endif
 
 #ifndef NULL
@@ -386,6 +386,9 @@ char **argv;
 	     * when it is ready
 	     */
 	    signal(SIGUSR1, SIG_IGN);
+	    /* dm ignores sigpipe; because of this, all of the children (ie, */
+	    /* the entire session) inherit this unless we fix it now */
+	    signal(SIGPIPE, SIG_DFL);
 	    execv(loginargv[0], loginargv);
 	    message("dm: X login failed exec\n");
 	    _exit(1);
