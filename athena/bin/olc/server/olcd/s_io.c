@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.23 1991-04-09 01:27:05 lwvanels Exp $
+ *	$Id: s_io.c,v 1.24 1991-05-06 23:20:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.23 1991-04-09 01:27:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.24 1991-05-06 23:20:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,8 +49,12 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 extern char DaemonHost[];			/* Name of daemon's machine. */
 extern int errno;
 
+#ifndef MIN
 #define	MIN(a,b)	((a)>(b)?(b):(a))
+#endif
+#ifndef MAX
 #define MAX(a,b)        ((a)<(b)?(b):(a))
+#endif
 
 /*
  * Note: All functions that deal with I/O on sockets in this file use the
