@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.35 1992-10-01 11:33:39 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.36 1992-11-30 19:04:04 mar Exp $
  */
 
 #include <stdio.h>
@@ -162,6 +162,8 @@ char *display;
 	    } else
 	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
  	}
+	if (strcmp(pwd->pw_name, user))
+	  return("Unable to find account information (incorrect hesiod name found).");
 #ifdef _AIX
 	/*
 	 * Because the default shell is /bin/csh, and we wish to provide
@@ -197,7 +199,8 @@ char *display;
     setrgid(pwd->pw_gid);
 #endif
 
-    if ((msg = get_tickets(user, passwd)) != NULL && pwd->pw_uid) {
+    if ((msg = get_tickets(user, passwd)) != NULL &&
+	(pwd->pw_uid || local_passwd)) {
 	if (!local_ok) {
 	    cleanup(NULL);
 	    return(msg);
