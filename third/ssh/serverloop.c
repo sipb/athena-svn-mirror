@@ -14,8 +14,11 @@ Server main loop for handling the interactive session.
 */
 
 /*
- * $Id: serverloop.c,v 1.1.1.2 1998-05-13 19:11:16 danw Exp $
+ * $Id: serverloop.c,v 1.2 1999-01-21 23:10:47 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.2  1998/05/13 19:11:16  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.16  1998/05/04 13:36:28  kivinen
  * 	Fixed no_port_forwarding_flag so that it will also disable
  * 	local port forwardings from the server side. Moved
@@ -116,8 +119,12 @@ RETSIGTYPE sigchld_handler(int sig)
 {
   int wait_pid;
   debug("Received SIGCHLD.");
+#ifdef HAVE_WAITPID
+  wait_pid = waitpid(child_pid, (int *)&child_wait_status, WNOHANG);
+#else
   wait_pid = wait((int *)&child_wait_status);
-  if (wait_pid != -1)
+#endif
+  if (wait_pid > 0)
     {
       if (wait_pid != child_pid)
 	error("Strange, got SIGCHLD and wait returned pid %d but child is %d",
