@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.29 1998-02-17 19:56:25 danw Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.30 1998-03-17 15:17:11 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -89,9 +89,9 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 8.1"
-  ln -s /afs/athena.mit.edu/system/sun4x_55/srvd-8.1 /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_55/os /tmp/os
+  echo "standard installation - 8.2"
+  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
   ;;
 
 Y)
@@ -108,14 +108,38 @@ Y)
        ln -s /afs/athena.mit.edu/system/sun4m_54/srvd.80 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4m_54/os /tmp/os 
        ;;
-   *)
+   8.1)
        echo "installing 8.1"
-       ln -s /afs/athena.mit.edu/system/sun4x_55/srvd-8.1 /tmp/srvd
-       ln -s /afs/athena.mit.edu/system/sun4x_55/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4m_55/srvd-8.1 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4m_55/os /tmp/os 
+       ;;
+   *)
+       echo "installing 8.2"
+       ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
        ;;
    esac
    echo "done choosing rev"
    ;;
+esac
+
+case $CUSTOM in
+Y)
+   echo "Automatic reboot after installation? [n]"
+   read rebooting
+   case "x$rebooting" in
+   xn|xN|x)
+     REBOOT=N; echo "No automatic reboot after installation"; export REBOOT
+     ;;
+   *)
+     REBOOT=Y; echo "Automatic reboot after installation"; export REBOOT
+     ;;
+   esac
+   ;;
+
+*)     
+     REBOOT=Y; echo "Automatic reboot after installation"; export REBOOT;
+     ;;
 esac
 
 ls -l /srvd
