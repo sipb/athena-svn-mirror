@@ -124,6 +124,10 @@ if [ "${PUBLIC}" = "true" ]; then
 
 	rm -f /etc/named.local /etc/X0.hosts
 	touch /etc/named.local /etc/X0.hosts
+
+	find /lost+found -type f -mtime +3 -exec rm -f {} \;
+	find /usr/vice/cache/lost+found -type f -exec rm -f {} \;
+
 	if [ -f /srvd/.rvdinfo ]; then
             NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
