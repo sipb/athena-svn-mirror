@@ -1,0 +1,24 @@
+# $Id: Makefile.athena,v 1.1 2005-03-31 22:12:43 ghudson Exp $
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f config.cache
+	CONFIG_SITE=`pwd`/config.site.athena ./configure \
+	  --with-krb4=/usr/athena --with-krb5=/usr/athena \
+	  --with-db3-include=/usr/athena/include \
+	  --with-db3-libs=/usr/athena/lib --enable-openssl \
+	  --with-openssl-includes=/usr/athena/include/openssl \
+	  --with-openssl-libs=/usr/athena/lib
+
+all:
+	${MAKE}
+
+clean:
+	${MAKE} clean
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"
+	rm -f "$$DESTDIR/usr/athena/bin/evolution"
+	ln -s evolution-2.0 "$$DESTDIR/usr/athena/bin/evolution"
