@@ -1,12 +1,13 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <bstring.h>
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
-#include "pcP.h"
+#include "pc_bsd.h"
 
 pc_state *pc_init(void)
 {
@@ -82,6 +83,9 @@ int pc_addfd(pc_state *s, pc_fd *fd)
  
   if (fd->events & PC_WRITE)
     FD_SET(fd->fd, &(s->writefds));
+
+  if (fd->events & (PC_READ | PC_WRITE))
+    s->nfds = MAX(s->nfds, fd->fd + 1);
 
   return 0;
 }
@@ -290,6 +294,17 @@ pc_message *pc_receive(pc_port *p)
   return m;
 }
 
+fd_print(fd_set *r)
+{
+  int i;
+
+  for (i = 0; i < FD_SETSIZE; i++)
+    if (FD_ISSET(i, r))
+      fprintf(stderr, "%d ", i);
+
+  printf("\n");
+}
+
 pc_message *pc_wait(pc_state *s)
 {
   int i, j;
@@ -300,6 +315,8 @@ pc_message *pc_wait(pc_state *s)
 
   r = s->readfds;
   w = s->writefds;
+
+  fd_print(&r);
 
   m = malloc(sizeof(pc_message));
   if (m == NULL)
