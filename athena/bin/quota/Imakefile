@@ -27,7 +27,7 @@ MACHLIBS= -lrpcsvc
 MACHLIBS= -lrpclib
 #endif
 
-#if defined(_IBMR2) || defined(SOLARIS)
+#if defined(_IBMR2) || defined(SOLARIS) || defined(sgi)
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 #endif
 
