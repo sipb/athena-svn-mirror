@@ -1,6 +1,9 @@
 #ifdef __NetBSD__
 OSLIBS=-lcompat
 #endif
+#ifdef SOLARIS
+OSLIBS=-lsocket -lnsl -lbsd
+#endif
 
 CFLAGS=-I${AFSDIR}/include
 LDDEFS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs
