@@ -23,6 +23,9 @@ RCSID("$OpenBSD: sshconnect1.c,v 1.39 2001/07/05 20:32:47 stevesk Exp $");
 #endif
 #ifdef KRB5
 #include <krb5.h>
+#ifndef HEIMDAL
+#define krb5_get_err_text(context,code) error_message(code)
+#endif /* !HEIMDAL */
 #endif
 #ifdef AFS
 #include <kafs.h>
@@ -47,6 +50,7 @@ RCSID("$OpenBSD: sshconnect1.c,v 1.39 2001/07/05 20:32:47 stevesk Exp $");
 #include "cipher.h"
 #include "canohost.h"
 #include "auth.h"
+#include "compat.h"
 
 /* Session id for the current session. */
 u_char session_id[16];
@@ -502,6 +506,40 @@ try_krb4_authentication(void)
 
 #ifdef KRB5
 static int
+ssh1_krb5_common(krb5_context *context, krb5_auth_context *auth_context)
+{
+	int problem;
+
+	if (*context == NULL) {
+		problem = krb5_init_context(context);
+		if (problem) {
+			debug("Kerberos v5: krb5_init_context failed");
+			return problem;
+		}
+	}
+	
+	if (*auth_context == NULL) {
+		problem = krb5_auth_con_init(*context, auth_context);
+		if (problem) {
+			debug("Kerberos v5: krb5_auth_con_init failed");
+			return problem;
+		}
+	}
+
+#ifndef HEIMDAL	
+	problem = krb5_auth_con_setflags(*context, *auth_context,
+					 KRB5_AUTH_CONTEXT_RET_TIME);
+	if (problem) {
+		debug("Kerberos v5: krb5_auth_con_setflags failed");
+		return problem;
+	}				 
+#endif
+
+	return 0;
+
+}
+
+static int
 try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 {
 	krb5_error_code problem;
@@ -516,13 +554,12 @@ try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 	
 	memset(&ap, 0, sizeof(ap));
 	
-	problem = krb5_init_context(context);
+	problem = ssh1_krb5_common(context, auth_context);
 	if (problem) {
-		debug("Kerberos v5: krb5_init_context failed");
 		ret = 0;
 		goto out;
 	}
-	
+
 	tkfile = krb5_cc_default_name(*context);
 	if (strncmp(tkfile, "FILE:", 5) == 0)
 		tkfile += 5;
@@ -542,9 +579,10 @@ try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 	}
 	
 	remotehost = get_canonical_hostname(1);
-	
+
 	problem = krb5_mk_req(*context, auth_context, AP_OPTS_MUTUAL_REQUIRED,
 	    "host", remotehost, NULL, ccache, &ap);
+
 	if (problem) {
 		debug("Kerberos v5: krb5_mk_req failed: %s",
 		    krb5_get_err_text(*context, problem));
@@ -599,8 +637,11 @@ try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 	if (reply != NULL)
 		krb5_free_ap_rep_enc_part(*context, reply);
 	if (ap.length > 0)
+#ifdef HEIMDAL
 		krb5_data_free(&ap);
-	
+#else
+		xfree(ap.data);
+#endif	
 	return (ret);
 }
 
@@ -612,18 +653,36 @@ send_krb5_tgt(krb5_context context, krb5_auth_context auth_context)
 	krb5_data outbuf;
 	krb5_ccache ccache = NULL;
 	krb5_creds creds;
+#ifdef HEIMDAL
 	krb5_kdc_flags flags;
+#else
+	int forwardable;
+#endif
 	const char *remotehost;
 	
 	memset(&creds, 0, sizeof(creds));
 	memset(&outbuf, 0, sizeof(outbuf));
 	
-	fd = packet_get_connection_in();
-	
-	problem = krb5_auth_con_setaddrs_from_fd(context, auth_context, &fd);
+	problem = ssh1_krb5_common(&context, &auth_context);
 	if (problem)
 		goto out;
 	
+	fd = packet_get_connection_in();
+
+#ifdef HEIMDAL	
+	problem = krb5_auth_con_setaddrs_from_fd(context, auth_context, &fd);
+	if (problem)
+		goto out;
+#else
+        problem = krb5_auth_con_genaddrs(context, auth_context, fd,
+			KRB5_AUTH_CONTEXT_GENERATE_REMOTE_FULL_ADDR |
+			KRB5_AUTH_CONTEXT_GENERATE_LOCAL_FULL_ADDR);
+	if (problem) {
+		debug("krb5_auth_con_genaddrs: %.100s", error_message(problem));
+                goto out;
+        }
+#endif
+
 	problem = krb5_cc_default(context, &ccache);
 	if (problem)
 		goto out;
@@ -631,15 +690,23 @@ send_krb5_tgt(krb5_context context, krb5_auth_context auth_context)
 	problem = krb5_cc_get_principal(context, ccache, &creds.client);
 	if (problem)
 		goto out;
-	
+
+#ifdef HEIMDAL
 	problem = krb5_build_principal(context, &creds.server,
 	    strlen(creds.client->realm), creds.client->realm,
 	    "krbtgt", creds.client->realm, NULL);
+#else
+	problem = krb5_build_principal(context, &creds.server,
+	    creds.client->realm.length, creds.client->realm.data,
+	    "krbtgt", creds.client->realm.data, NULL);
+#endif
+
 	if (problem)
 		goto out;
 	
 	creds.times.endtime = 0;
-	
+
+#ifdef HEIMDAL	
 	flags.i = 0;
 	flags.b.forwarded = 1;
 	flags.b.forwardable = krb5_config_get_bool(context,  NULL,
@@ -651,7 +718,18 @@ send_krb5_tgt(krb5_context context, krb5_auth_context auth_context)
 	    ccache, flags.i, remotehost, &creds, &outbuf);
 	if (problem)
 		goto out;
-	
+#else
+	forwardable = 1;
+
+	remotehost = get_canonical_hostname(1);
+
+        problem = krb5_fwd_tgt_creds (context, auth_context, 
+            remotehost, creds.client, creds.server, ccache, forwardable,
+            &outbuf);
+        if (problem)
+        	goto out;
+#endif
+
 	packet_start(SSH_CMSG_HAVE_KERBEROS_TGT);
 	packet_put_string((char *)outbuf.data, outbuf.length);
 	packet_send();
@@ -1141,6 +1219,15 @@ ssh_userauth1(const char *local_user, const char *server_user, char *host,
 		packet_disconnect("Protocol error: got %d in response to SSH_CMSG_USER", type);
 	
 #ifdef KRB5
+	/* Try Kerberos v5 TGT passing. for ssh.com */
+	if ((supported_authentications & (1 << SSH_PASS_KERBEROS_TGT)) &&
+	    options.kerberos_tgt_passing && (datafellows & SSH_OLD_KRB5)) {
+	        debug("Trying Kerberos v5 TGT forwarding (compatibility).");
+		if (options.cipher == SSH_CIPHER_NONE)
+			log("WARNING: Encryption is disabled! Ticket will be transmitted in the clear!");
+		send_krb5_tgt(context, auth_context);
+	}
+
 	if ((supported_authentications & (1 << SSH_AUTH_KERBEROS)) &&
             options.kerberos_authentication) {
 		debug("Trying Kerberos v5 authentication.");
@@ -1242,9 +1329,11 @@ ssh_userauth1(const char *local_user, const char *server_user, char *host,
 
  success:
 #ifdef KRB5
-	/* Try Kerberos v5 TGT passing. */
+	/* Try Kerberos v5 TGT passing (ssh.com compat handled above). */
 	if ((supported_authentications & (1 << SSH_PASS_KERBEROS_TGT)) &&
-	    options.kerberos_tgt_passing && context && auth_context) {
+	    options.kerberos_tgt_passing && context && auth_context &&
+	    !(datafellows & SSH_OLD_KRB5) ) {
+	        debug("Trying Kerberos v5 TGT forwarding.");
 		if (options.cipher == SSH_CIPHER_NONE)
 			log("WARNING: Encryption is disabled! Ticket will be transmitted in the clear!");
 		send_krb5_tgt(context, auth_context);

@@ -12,8 +12,17 @@
 #include "includes.h"
 RCSID("$OpenBSD: servconf.c,v 1.89 2001/08/16 19:18:34 jakob Exp $");
 
-#if defined(KRB4) || defined(KRB5)
+#if defined(KRB4)
 #include <krb.h>
+#endif
+#if defined(KRB5)
+#ifdef HEIMDAL
+#include <krb.h>
+#else
+/* Bodge - but then, so is using the kerberos IV KEYFILE to get a Kerberos V
+ * keytab */
+#define KEYFILE "/etc/krb5.keytab"
+#endif
 #endif
 #ifdef AFS
 #include <kafs.h>
@@ -76,6 +85,9 @@ initialize_server_options(ServerOptions *options)
 #endif
 #if defined(AFS) || defined(KRB5)
 	options->kerberos_tgt_passing = -1;
+#endif
+#ifdef KRB5
+	options->kerberos524 = -1;
 #endif
 #ifdef AFS
 	options->afs_token_passing = -1;
@@ -179,7 +191,11 @@ fill_default_server_options(ServerOptions *options)
 #endif
 #if defined(AFS) || defined(KRB5)
 	if (options->kerberos_tgt_passing == -1)
-		options->kerberos_tgt_passing = 0;
+		options->kerberos_tgt_passing = 1;
+#endif
+#ifdef KRB5
+	if (options->kerberos524 == -1)
+	  	options->kerberos524 = 1;
 #endif
 #ifdef AFS	
 	if (options->afs_token_passing == -1)
@@ -231,6 +247,9 @@ typedef enum {
 #if defined(AFS) || defined(KRB5)
 	sKerberosTgtPassing,
 #endif
+#ifdef KRB5
+	sKerberos524,
+#endif
 #ifdef AFS
 	sAFSTokenPassing,
 #endif
@@ -278,6 +297,9 @@ static struct {
 #endif
 #if defined(AFS) || defined(KRB5)
 	{ "kerberostgtpassing", sKerberosTgtPassing },
+#endif
+#ifdef KRB5
+	{ "kerberos524", sKerberos524 },
 #endif
 #ifdef AFS
 	{ "afstokenpassing", sAFSTokenPassing },
@@ -606,6 +628,11 @@ parse_flag:
 #if defined(AFS) || defined(KRB5)
 		case sKerberosTgtPassing:
 			intptr = &options->kerberos_tgt_passing;
+			goto parse_flag;
+#endif
+#ifdef KRB5
+		case sKerberos524:
+			intptr = &options->kerberos524;
 			goto parse_flag;
 #endif
 #ifdef AFS

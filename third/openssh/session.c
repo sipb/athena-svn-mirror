@@ -77,6 +77,9 @@ RCSID("$OpenBSD: session.c,v 1.102 2001/09/16 14:46:54 markus Exp $");
 #define is_winnt       (GetVersion() < 0x80000000)
 #endif
 
+#include <al.h>
+extern int setpag();
+
 /* AIX limits */
 #if defined(HAVE_GETUSERATTR) && !defined(S_UFSIZE_HARD) && defined(S_UFSIZE)
 # define S_UFSIZE_HARD  S_UFSIZE "_hard"
@@ -90,6 +93,14 @@ RCSID("$OpenBSD: session.c,v 1.102 2001/09/16 14:46:54 markus Exp $");
 
 #ifdef _AIX
 # include <uinfo.h>
+#endif
+
+#ifdef KRB5
+#include <krb5.h>
+#include <krb.h>
+#ifndef HEIMDAL
+#define krb5_get_err_text(context,code) error_message(code)
+#endif /* !HEIMDAL */
 #endif
 
 /* types */
@@ -163,6 +174,23 @@ char *aixloginmsg;
 #ifdef HAVE_LOGIN_CAP
 static login_cap_t *lc;
 #endif
+
+void try_afscall(int (*func)(void))
+{
+#ifdef SIGSYS
+  struct sigaction sa, osa;
+
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGSYS, &sa, &osa);
+#endif
+  func();
+#ifdef SIGSYS
+  sigaction(SIGSYS, &osa, NULL);
+#endif
+}
+
 
 void
 do_authenticated(Authctxt *authctxt)
@@ -314,35 +342,9 @@ do_authenticated1(Authctxt *authctxt)
 			
 #if defined(AFS) || defined(KRB5)
 		case SSH_CMSG_HAVE_KERBEROS_TGT:
-			if (!options.kerberos_tgt_passing) {
-				verbose("Kerberos TGT passing disabled.");
-			} else {
-				char *kdata = packet_get_string(&dlen);
-				packet_integrity_check(plen, 4 + dlen, type);
-				
-				/* XXX - 0x41, see creds_to_radix version */
-				if (kdata[0] != 0x41) {
-#ifdef KRB5
-					krb5_data tgt;
-					tgt.data = kdata;
-					tgt.length = dlen;
-					
-					if (auth_krb5_tgt(s->authctxt, &tgt))
-						success = 1;
-					else
-						verbose("Kerberos v5 TGT refused for %.100s", s->authctxt->user);
-#endif /* KRB5 */
-				} else {
-#ifdef AFS
-					if (auth_krb4_tgt(s->authctxt, kdata))
-						success = 1;
-					else
-						verbose("Kerberos v4 TGT refused for %.100s", s->authctxt->user);
-#endif /* AFS */
-				}
-				xfree(kdata);
-			}
-			break;
+		  	success =
+			  do_auth1_kerberos_tgt_pass(s->authctxt, plen, type);
+		  	break;
 #endif /* AFS || KRB5 */
 			
 #ifdef AFS
@@ -395,6 +397,51 @@ do_authenticated1(Authctxt *authctxt)
 			packet_start_compression(compression_level);
 		}
 	}
+}
+
+/*
+ * This is called from both do_authenticated1(), for the normal case,
+ * and also from do_authloop(), for compatibility with ssh.com.
+ */
+
+int do_auth1_kerberos_tgt_pass(Authctxt *authctxt, int plen, int type)
+{
+	int success;
+	u_int dlen;
+
+#if defined(AFS) || defined(KRB5)
+	if (!options.kerberos_tgt_passing) {
+		verbose("Kerberos TGT passing disabled.");
+	} else {
+		char *kdata = packet_get_string(&dlen);
+		packet_integrity_check(plen, 4 + dlen, type);
+		
+		/* XXX - 0x41, see creds_to_radix version */
+		if (kdata[0] != 0x41) {
+#ifdef KRB5
+			krb5_data tgt;
+			tgt.data = kdata;
+			tgt.length = dlen;
+			
+			if (auth_krb5_tgt(authctxt, &tgt))
+				success = 1;
+			else
+				verbose("Kerberos v5 TGT refused for %.100s",
+				    authctxt->user);
+#endif /* KRB5 */
+		} else {
+#ifdef AFS
+			if (auth_krb4_tgt(authctxt, kdata))
+				success = 1;
+			else
+				verbose("Kerberos v4 TGT refused for %.100s",
+				    authctxt->user);
+#endif /* AFS */
+		}
+		xfree(kdata);
+	}
+#endif /* AFS || KRB5 */
+	return success;
 }
 
 /*
@@ -657,6 +704,81 @@ do_pre_login(Session *s)
 void
 do_exec(Session *s, const char *command)
 {
+#if KRB5
+		/* Now that we have krb5 tickets (via forwarding or
+		   password auth, do the krb524init */
+			if (options.kerberos524 && s->authctxt->krb5_user) {
+				static char tktname[512];
+				int problem;
+				krb5_creds increds, *v5creds;
+				krb5_data *realm;
+				CREDENTIALS v4creds;
+				
+				krb524_init_ets(s->authctxt->krb5_ctx);
+				realm = krb5_princ_realm(s->authctxt->krb5_ctx,
+				    s->authctxt->krb5_user);
+
+
+				memset(&increds, 0, sizeof(increds));
+				if ((problem = krb5_build_principal_ext(
+				    s->authctxt->krb5_ctx,
+				    &(increds.server),
+				    realm->length, realm->data, 6,
+				    "krbtgt", realm->length, realm->data,
+				    NULL)))
+					goto out;
+			
+				increds.client = s->authctxt->krb5_user;
+				increds.times.endtime = 0;
+				increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+				if ((problem = krb5_get_credentials(
+				    s->authctxt->krb5_ctx, 0,
+				    s->authctxt->krb5_fwd_ccache, &increds,
+				    &v5creds)))
+					goto out;
+  
+				if ((problem = krb524_convert_creds_kdc(
+				    s->authctxt->krb5_ctx, v5creds,
+				    &v4creds)))
+					goto out;
+
+				sprintf(tktname, "KRBTKFILE=/tmp/tkt_p%d",
+				    getpid());
+				putenv(xstrdup(tktname));
+				if (problem = in_tkt(v4creds.pname,
+				    v4creds.pinst))
+					goto out;
+
+				if ((problem = krb_save_credentials(
+				    v4creds.service,
+				    v4creds.instance,
+				    v4creds.realm, v4creds.session,
+				    v4creds.lifetime, v4creds.kvno,
+				    &(v4creds.ticket_st), v4creds.issue_date)))
+					goto out;
+
+				chown(tkt_string(), s->authctxt->pw->pw_uid,
+				      s->authctxt->pw->pw_gid);
+
+			out:
+				if (problem) {
+					debug("krb524 failed: %s",
+					      krb5_get_err_text(
+						  s->authctxt->krb5_ctx,
+						  problem));
+					krb5_cleanup_proc(s->authctxt);
+				}
+			}
+#endif
+  /*
+   * This must be the wrong place for this, and it's really just a kludge
+   * for Angie's requirement...
+   * XXX
+   */
+			try_afscall(setpag);
+			al_acct_create(s->authctxt->user, NULL, s->pid, 1,
+				       0, NULL);
+
 	if (forced_command) {
 		original_command = command;
 		command = forced_command;
@@ -1282,6 +1404,11 @@ do_child(Session *s, const char *command)
 	if (s->authctxt->krb5_ticket_file)
 		child_set_env(&env, &envsize, "KRB5CCNAME",
 		    s->authctxt->krb5_ticket_file);
+	/*
+	 * XXX something bad might happen if you did Krb4 at the same time...
+	 */
+	if ((cp = getenv("KRBTKFILE")) != NULL)
+		child_set_env(&env, &envsize, "KRBTKFILE", cp);
 #endif
 #ifdef USE_PAM
 	/* Pull in any environment variables that may have been set by PAM. */
@@ -1291,6 +1418,23 @@ do_child(Session *s, const char *command)
 	if (auth_get_socket_name() != NULL)
 		child_set_env(&env, &envsize, SSH_AUTHSOCKET_ENV_NAME,
 			      auth_get_socket_name());
+
+	{ /* more hacks */
+		sprintf(buf, "/tmp/xauth-%s-%d", s->authctxt->user,
+			(int)getpid());
+		if (mkdir(buf, S_IRWXU) == -1)
+		{
+			/* XXX */
+			fprintf(stderr, "Could not create xauth directory %s: %s\n"
+				"Disabling X forwarding.\n", buf, strerror(errno));
+		}
+		else
+		{
+			strcat(buf, "/Xauthority");
+			child_set_env(&env, &envsize, "XAUTHORITY", buf);
+		}
+	}      
+
 
 	/* read $HOME/.ssh/environment. */
 	if (!options.use_login) {
@@ -1302,7 +1446,7 @@ do_child(Session *s, const char *command)
 		/* dump the environment */
 		fprintf(stderr, "Environment:\n");
 		for (i = 0; env[i]; i++)
-			fprintf(stderr, "  %.200s\n", env[i]);
+			fprintf(stderr, "  %.300s\n", env[i]);
 	}
 	/* we have to stash the hostname before we close our socket. */
 	if (options.use_login)

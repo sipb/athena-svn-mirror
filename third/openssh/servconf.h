@@ -87,6 +87,9 @@ typedef struct {
 	int     kerberos_tgt_passing;	/* If true, permit Kerberos TGT
 					 * passing. */
 #endif
+#ifdef KRB5
+	int	kerberos524;	/* If true, get k4 tickets from k5 tickets */
+#endif
 #ifdef AFS
 	int     afs_token_passing;	/* If true, permit AFS token passing. */
 #endif

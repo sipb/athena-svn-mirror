@@ -26,6 +26,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+int	 do_auth1_kerberos_tgt_pass(Authctxt *, int, int);
 void	 do_authenticated(Authctxt *);
 
 int	 session_open(Authctxt*, int);

@@ -68,7 +68,7 @@ get_authname(int type)
 static void
 do_authloop(Authctxt *authctxt)
 {
-	int authenticated = 0;
+	int authenticated = 0, nonauthentication = 0;
 	u_int bits;
 	RSA *client_host_key;
 	BIGNUM *n;
@@ -109,6 +109,7 @@ do_authloop(Authctxt *authctxt)
 	for (;;) {
 		/* default to fail */
 		authenticated = 0;
+		nonauthentication = 0;
 
 		info[0] = '\0';
 
@@ -141,6 +142,7 @@ do_authloop(Authctxt *authctxt)
 						    " tktuser %.100s",
 						    client_user);
 						xfree(client_user);
+						client_user = NULL;
 					}
 #endif /* KRB4 */
 				} else {
@@ -155,6 +157,7 @@ do_authloop(Authctxt *authctxt)
 						    " tktuser %.100s",
 						    client_user);
 						xfree(client_user);
+						client_user = NULL;
 					}
 #endif /* KRB5 */
 				}
@@ -164,10 +167,25 @@ do_authloop(Authctxt *authctxt)
 #endif /* KRB4 || KRB5 */
 			
 #if defined(AFS) || defined(KRB5)
-			/* XXX - punt on backward compatibility here. */
-		case SSH_CMSG_HAVE_KERBEROS_TGT:
-			packet_send_debug("Kerberos TGT passing disabled before authentication.");
+		case SSH_CMSG_HAVE_KERBEROS_TGT: {
+		   	/*
+		   	 * This is for backwards compatibility with SSH.COM's
+			 * implementation, which passes the TGT before
+			 * authenticating.
+			 *
+			 * Perhaps this should be disallowed from other
+			 * client versions?
+			 */
+		        int s;
+
+		  	s = do_auth1_kerberos_tgt_pass(authctxt, plen, type);
+			packet_start(s ? SSH_SMSG_SUCCESS : SSH_SMSG_FAILURE);
+			packet_send();
+			packet_write_wait();
+			nonauthentication = 1;
+		}
 			break;
+
 #ifdef AFS
 		case SSH_CMSG_HAVE_AFS_TOKEN:
 			packet_send_debug("AFS token passing disabled before authentication.");
@@ -334,6 +352,16 @@ do_authloop(Authctxt *authctxt)
 		if (authenticated && !do_pam_account(pw->pw_name, client_user))
 			authenticated = 0;
 #endif
+
+		/*
+		 * If we received a non-authentication message, right now
+		 * only possible for Kerberos 5 TGT passing 
+		 * support for SSH.COM compatibility, assume that the
+		 * FAILURE/SUCCESS return has already been handled, skip
+		 * the logging, and restart the loop.
+		 */
+		if (nonauthentication)
+			continue;
 
 		/* Log before sending the reply */
 		auth_log(authctxt, authenticated, get_authname(type), info);

@@ -1,4 +1,4 @@
-/* $Id: acconfig.h,v 1.1.1.1 2001-11-15 19:23:25 ghudson Exp $ */
+/* $Id: acconfig.h,v 1.2 2001-11-15 19:54:11 ghudson Exp $ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -186,6 +186,12 @@
 
 /* Define if libc defines __progname */
 #undef HAVE___PROGNAME
+
+/* Define if you want Kerberos 5 support */
+#undef KRB5
+
+/* Define this if you are using Heimdal version of Kerberos V5 */
+#undef HEIMDAL
 
 /* Define if you want Kerberos 4 support */
 #undef KRB4
