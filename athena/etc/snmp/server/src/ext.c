@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.5 1990-04-26 16:30:03 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.6 1990-05-26 13:37:10 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  90/04/26  16:30:03  tom
+ * changed some ifdefs
+ * 
  * Revision 1.4  90/04/25  00:19:55  tom
  * backward compat. for relversion
  * 
@@ -33,7 +36,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.5 1990-04-26 16:30:03 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.6 1990-05-26 13:37:10 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -723,42 +726,52 @@ objident statLogin = {
 
 objident statDkNParts = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 1
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1
+};
+
+objident statDkPath = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 2
+};
+
+objident statDkDname = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 3
 };
 
 objident statDkTotal = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 2
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 4
 };
 
 objident statDkUsed = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 3
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 5
 };
 
 objident statDkFree = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 4
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 6
 };
 
 objident statDkAvail = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 5
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 7
 };
 
 objident statDkITotal = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 6
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 8
 };
 
 objident statDkIUsed = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 7
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 9
 };
 
 objident statDkIFree = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 8
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 10
 };
 
 objident vpR = {
@@ -1614,17 +1627,12 @@ objident acCacheDir = {
 #ifdef KERBEROS
 objident kcRealm = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 2
 };
 
 objident kcKey = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 2
-};
-
-objident kcServer = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 6
 };
 #endif KERBEROS
 
@@ -1902,6 +1910,8 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #endif LOGIN
 
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
+{ &statDkPath,   lu_disk,     NULL, N_DKPATH,       NULL_OBJINST|VAL_STR  },
+{ &statDkDname,  lu_disk,     NULL, N_DKDNAME,      NULL_OBJINST|VAL_STR  },
 { &statDkTotal,  lu_disk,     NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkUsed,   lu_disk,     NULL, N_PTUSED,       NULL_OBJINST|VAL_INT  },
 { &statDkFree,   lu_disk,     NULL, N_PTFREE,       NULL_OBJINST|VAL_INT  },
@@ -2108,8 +2118,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 
 #ifdef KERBEROS
 { &kcRealm,      lu_kerberos, NULL, N_KRBCREALM,    NULL_OBJINST|VAL_STR  },
-{ &kcKey,        lu_kerberos, NULL, N_KRBCREALM,    NULL_OBJINST|VAL_INT  },
-{ &kcServer,     lu_kerberos, NULL, N_KRBCSERVER,   NULL_OBJINST|VAL_STR  },
+{ &kcKey,        lu_kerberos, NULL, N_KRBCKEY,      NULL_OBJINST|VAL_INT  },
 #endif KERBEROS
 
 #ifdef ZEPHYR
