@@ -2,7 +2,7 @@
 #
 # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.1 1990-04-16 17:12:42 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.2 1990-04-16 18:06:09 epeisach Exp $
 
 
 LPROGS = pscomm lps40comm
@@ -49,6 +49,6 @@ install: ${LPROGS} ${BPROGS}
 	install -c -m 755 -o root -g staff psif	$(DESTDIR)$(PSLIBDIR)/psint.sh
 
 clean:
-	rm -f - *.o config.c ${BPROGS} ${LPROGS} *BAK *CKP .emacs_[0-9]*
+	rm -f - *.o config.c ${BPROGS} ${LPROGS} *BAK *CKP .emacs_[0-9]* *~
 
 depend:
