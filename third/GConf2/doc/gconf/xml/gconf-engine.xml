@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf-engine">
+<refmeta>
+<refentrytitle>GConfEngine</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConfEngine</refname><refpurpose>
+a GConf "database"</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GConfEngine">GConfEngine</link>;
+<link linkend="GConfEngine">GConfEngine</link>* <link linkend="gconf-engine-get-default">gconf_engine_get_default</link>       (void);
+<link linkend="GConfEngine">GConfEngine</link>* <link linkend="gconf-engine-get-for-address">gconf_engine_get_for_address</link>   (const <link linkend="gchar">gchar</link> *address,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfEngine">GConfEngine</link>* <link linkend="gconf-engine-get-local">gconf_engine_get_local</link>         (const <link linkend="char">char</link> *address,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-engine-unref">gconf_engine_unref</link>              (<link linkend="GConfEngine">GConfEngine</link> *conf);
+<link linkend="void">void</link>        <link linkend="gconf-engine-ref">gconf_engine_ref</link>                (<link linkend="GConfEngine">GConfEngine</link> *conf);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A <link linkend="GConfEngine"><type>GConfEngine</type></link> represents a connection to the GConf database. The
+default <link linkend="GConfEngine"><type>GConfEngine</type></link>, returned from <link linkend="gconf-engine-get-default"><function>gconf_engine_get_default()</function></link>, represents the
+user's normal configuration source search path. Configuration-related
+utilities, such as a configuration editor tool, might wish to access a
+particular configuration source directly; they can obtain a
+non-default <link linkend="GConfEngine"><type>GConfEngine</type></link> with <link linkend="gconf-engine-get-for-address"><function>gconf_engine_get_for_address()</function></link>.
+</para>
+
+<para>
+Once you have a <link linkend="GConfEngine"><type>GConfEngine</type></link>, you can query and manipulate
+configuration values.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfEngine"/>struct GConfEngine</title>
+<indexterm><primary>GConfEngine</primary></indexterm><programlisting>struct GConfEngine;</programlisting>
+<para>
+An opaque data type representing one or more configuration sources.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-default"/>gconf_engine_get_default ()</title>
+<indexterm><primary>gconf_engine_get_default</primary></indexterm><programlisting><link linkend="GConfEngine">GConfEngine</link>* gconf_engine_get_default       (void);</programlisting>
+<para>
+Returns the default <link linkend="GConfEngine"><type>GConfEngine</type></link>. All clients should use this, unless 
+they are special configuration-related tools. The caller of this
+function assumes one reference count, and must call
+<link linkend="gconf-engine-unref"><function>gconf_engine_unref()</function></link> at some point. It's fairly important to unref the
+<link linkend="GConfEngine"><type>GConfEngine</type></link>, to cleanly close the connection to
+<application>gconfd</application>. So if possible close the connection
+before exiting your application. see ? <link linkend="printf"><function>printf()</function></link> <function><link linkend="printf"><function>printf()</function></link></function>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the default <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-for-address"/>gconf_engine_get_for_address ()</title>
+<indexterm><primary>gconf_engine_get_for_address</primary></indexterm><programlisting><link linkend="GConfEngine">GConfEngine</link>* gconf_engine_get_for_address   (const <link linkend="gchar">gchar</link> *address,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Obtains a special <link linkend="GConfEngine"><type>GConfEngine</type></link>; mostly useful for specialized
+GConf-related tools. Normal clients shouldn't need to use it.
+As with <link linkend="gconf-engine-get-default"><function>gconf_engine_get_default()</function></link>, the returned <link linkend="GConfEngine"><type>GConfEngine</type></link> should be
+unreferenced by the caller of this function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>address</parameter>&nbsp;:</term>
+<listitem><simpara>a configuration source address.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-local"/>gconf_engine_get_local ()</title>
+<indexterm><primary>gconf_engine_get_local</primary></indexterm><programlisting><link linkend="GConfEngine">GConfEngine</link>* gconf_engine_get_local         (const <link linkend="char">char</link> *address,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Obtain a local (non-process-transparent) <link linkend="GConfEngine"><type>GConfEngine</type></link>. Local engines
+do not support notification, and can only access config databases
+directly (they do not use the multiple sources in a path system
+supported by nonlocal engines).
+</para><variablelist role="params">
+<varlistentry><term><parameter>address</parameter>&nbsp;:</term>
+<listitem><simpara>address of local database
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>return location of an allocated <link linkend="GError"><type>GError</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-unref"/>gconf_engine_unref ()</title>
+<indexterm><primary>gconf_engine_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_engine_unref              (<link linkend="GConfEngine">GConfEngine</link> *conf);</programlisting>
+<para>
+Decreases the reference count of a <link linkend="GConfEngine"><type>GConfEngine</type></link> by one; if the
+reference count reaches 0, destroys the <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-ref"/>gconf_engine_ref ()</title>
+<indexterm><primary>gconf_engine_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_engine_ref                (<link linkend="GConfEngine">GConfEngine</link> *conf);</programlisting>
+<para>
+Increases the reference count of a <link linkend="GConfEngine"><type>GConfEngine</type></link> by one.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

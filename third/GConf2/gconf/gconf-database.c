@@ -27,28 +27,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-/* This makes hash table safer when debugging */
-#ifndef GCONF_ENABLE_DEBUG
-#define safe_g_hash_table_insert g_hash_table_insert
-#else
-static void
-safe_g_hash_table_insert(GHashTable* ht, gpointer key, gpointer value)
-{
-  gpointer oldkey = NULL, oldval = NULL;
-
-  if (g_hash_table_lookup_extended(ht, key, &oldkey, &oldval))
-    {
-      gconf_log(GCL_WARNING, "Hash key `%s' is already in the table!",
-                (gchar*) key);
-      return;
-    }
-  else
-    {
-      g_hash_table_insert(ht, key, value);
-    }
-}
-#endif
-
 /*
  * Forward decls
  */
@@ -222,7 +200,6 @@ impl_ConfigDatabase_set(PortableServer_Servant servant,
                         CORBA_Environment * ev)
 {
   GConfDatabase *db = (GConfDatabase*) servant;
-  gchar* str;
   GConfValue* val;
   GError* error = NULL;
 
@@ -243,15 +220,16 @@ impl_ConfigDatabase_set(PortableServer_Servant servant,
       return;
     }
       
-  str = gconf_value_to_string(val);
-
 #if 0
-  /* reduce traffice to the logfile */
-  gconf_log(GCL_DEBUG, "Received request to set key `%s' to `%s'", key, str);
-#endif
-  
-  g_free(str);
+  {
+    gchar* str = gconf_value_to_string(val);
 
+    /* reduce traffice to the logfile */
+    gconf_log(GCL_DEBUG, "Received request to set key `%s' to `%s'", key, str);
+
+    g_free(str);
+  }
+#endif
   
   gconf_database_set(db, key, val, value, &error);
 
@@ -800,7 +778,10 @@ static POA_ConfigDatabase3__epv server3_epv = {
 
 static POA_ConfigDatabase3__vepv poa_server_vepv = { &base_epv, &server_epv, &server2_epv, &server3_epv };
 
-static void gconf_database_really_sync(GConfDatabase* db);
+static void gconf_database_really_sync (GConfDatabase *db);
+static void source_notify_cb           (GConfSource   *source,
+					const gchar   *location,
+					GConfDatabase *db);
 
 GConfDatabase*
 gconf_database_new (GConfSources  *sources)
@@ -831,6 +812,10 @@ gconf_database_new (GConfSources  *sources)
   db->listeners = gconf_listeners_new();
 
   db->sources = sources;
+
+  gconf_sources_set_notify_func (db->sources,
+				 (GConfSourceNotifyFunc) source_notify_cb,
+				 db);
 
   db->last_access = time(NULL);
 
@@ -1027,6 +1012,58 @@ gconf_database_schedule_sync(GConfDatabase* db)
     }
 }
 
+static void
+source_notify_cb (GConfSource   *source,
+		  const gchar   *location,
+		  GConfDatabase *db)
+{
+  g_return_if_fail (source != NULL);
+  g_return_if_fail (location != NULL);
+  g_return_if_fail (db != NULL);
+
+  if (gconf_sources_is_affected (db->sources, source, location))
+    {
+      GConfValue  *value;
+      ConfigValue *cvalue;
+      GError      *error;
+      gboolean     is_default;
+      gboolean     is_writable;
+
+      error = NULL;
+      is_default = is_writable = FALSE;
+
+      value = gconf_database_query_value (db,
+					  location,
+					  NULL,
+					  TRUE,
+					  NULL,
+					  &is_default,
+					  &is_writable,
+					  &error);
+      if (error != NULL)
+	{
+	  gconf_log (GCL_WARNING,
+		     _("Error obtaining new value for `%s' after change notification from backend `%s': %s"),
+		     location,
+		     source->address,
+		     error->message);
+	  g_error_free (error);
+	  return;
+	}
+
+      cvalue = gconf_corba_value_from_gconf_value (value);
+      gconf_database_notify_listeners (db,
+				       NULL,
+				       location,
+				       cvalue,
+				       is_default,
+				       is_writable,
+				       FALSE);
+      CORBA_free (cvalue);
+      gconf_value_free (value);
+    }
+}
+
 CORBA_unsigned_long
 gconf_database_readd_listener   (GConfDatabase       *db,
                                  ConfigListener       who,
@@ -1046,6 +1083,8 @@ gconf_database_readd_listener   (GConfDatabase       *db,
 
   cnxn = gconf_listeners_add (db->listeners, where, l,
                               (GFreeFunc)listener_destroy);
+
+  gconf_sources_add_listener (db->sources, cnxn, where);
 
   if (l->name == NULL)
     l->name = g_strdup_printf ("%u", cnxn);
@@ -1092,7 +1131,10 @@ void
 gconf_database_remove_listener (GConfDatabase       *db,
                                 CORBA_unsigned_long  cnxn)
 {
-  Listener *l = NULL;
+  union {
+      Listener *l;
+      gpointer l_ptr;
+  } l = { NULL };
   GError *err;
   const gchar *location = NULL;
 
@@ -1105,7 +1147,7 @@ gconf_database_remove_listener (GConfDatabase       *db,
   gconf_log(GCL_DEBUG, "Removing listener %u", (guint)cnxn);
 
   if (!gconf_listeners_get_data (db->listeners, cnxn,
-                                 (gpointer*)&l,
+                                 &(l.l_ptr),
                                  &location))
     {
       gconf_log (GCL_WARNING, _("Listener ID %lu doesn't exist"),
@@ -1115,18 +1157,20 @@ gconf_database_remove_listener (GConfDatabase       *db,
   else
     {
       gconf_log (GCL_DEBUG, "Name of listener %u is %s",
-                 (guint) cnxn, l->name);
+                 (guint) cnxn, l.l->name);
     }
   
   err = NULL;
   if (!gconfd_logfile_change_listener (db, FALSE, cnxn,
-                                       l->obj, location, &err))
+                                       l.l->obj, location, &err))
     {
       gconf_log (GCL_WARNING, _("Failed to log removal of listener to logfile (most likely harmless, may result in a notification weirdly reappearing): %s"),
                  err->message);
       g_error_free (err);
     }
   
+  gconf_sources_remove_listener (db->sources, cnxn);
+
   /* calls destroy notify */
   gconf_listeners_remove (db->listeners, cnxn);
 }
@@ -1179,10 +1223,12 @@ notify_listeners_cb(GConfListeners* listeners,
 
 void
 gconf_database_notify_listeners (GConfDatabase       *db,
+				 GConfSources        *modified_sources,
                                  const gchar         *key,
                                  const ConfigValue   *value,
                                  gboolean             is_default,
-                                 gboolean             is_writable)
+                                 gboolean             is_writable,
+				 gboolean             notify_others)
 {
   ListenerNotifyClosure closure;
   GSList* tmp;
@@ -1211,6 +1257,16 @@ gconf_database_notify_listeners (GConfDatabase       *db,
       gconf_listeners_remove(db->listeners, dead);
 
       tmp = g_slist_next(tmp);
+    }
+
+  if (notify_others)
+    {
+      g_return_if_fail (modified_sources != NULL);
+
+      gconfd_notify_other_listeners (db, modified_sources, key);
+
+      g_list_free (modified_sources->sources);
+      g_free (modified_sources);
     }
 }
 
@@ -1272,6 +1328,7 @@ gconf_database_set   (GConfDatabase      *db,
                       GError        **err)
 {
   GError *error = NULL;
+  GConfSources *modified_sources;
   
   g_assert(db->listeners != NULL);
   g_return_if_fail(err == NULL || *err == NULL);
@@ -1283,10 +1340,12 @@ gconf_database_set   (GConfDatabase      *db,
   gconf_log(GCL_DEBUG, "Received request to set key `%s'", key);
 #endif
   
-  gconf_sources_set_value(db->sources, key, value, &error);
+  gconf_sources_set_value(db->sources, key, value, &modified_sources, &error);
 
   if (error)
     {
+      g_assert (modified_sources == NULL);
+
       gconf_log(GCL_ERR, _("Error setting value for `%s': %s"),
                 key, error->message);
       
@@ -1298,14 +1357,16 @@ gconf_database_set   (GConfDatabase      *db,
     {
       gconf_database_schedule_sync(db);
       
-      gconf_database_notify_listeners(db, key, cvalue,
-                                      /* Can't possibly be the default,
-                                         since we just set it,
-                                         and must be writable since
-                                         setting it succeeded.
-                                      */
-                                      FALSE,
-                                      TRUE);
+      /* Can't possibly be the default, since we just set it,
+       * and must be writable since setting it succeeded.
+       */
+      gconf_database_notify_listeners (db,
+				       modified_sources,
+				       key,
+				       cvalue,
+                                       FALSE,
+				       TRUE,
+				       TRUE);
     }
 }
 
@@ -1317,6 +1378,7 @@ gconf_database_unset (GConfDatabase      *db,
 {
   ConfigValue* val;
   GError* error = NULL;
+  GConfSources *modified_sources = NULL;
   
   g_return_if_fail(err == NULL || *err == NULL);
   
@@ -1326,10 +1388,12 @@ gconf_database_unset (GConfDatabase      *db,
   
   gconf_log(GCL_DEBUG, "Received request to unset key `%s'", key);
 
-  gconf_sources_unset_value(db->sources, key, locale, &error);
+  gconf_sources_unset_value(db->sources, key, locale, &modified_sources, &error);
 
   if (error != NULL)
     {
+      g_assert (modified_sources == NULL);
+
       gconf_log(GCL_ERR, _("Error unsetting `%s': %s"),
                 key, error->message);
 
@@ -1374,8 +1438,13 @@ gconf_database_unset (GConfDatabase      *db,
           
       gconf_database_schedule_sync(db);
 
-      gconf_database_notify_listeners(db, key, val, TRUE, is_writable);
-      
+      gconf_database_notify_listeners(db,
+				      modified_sources,
+				      key,
+				      val,
+				      TRUE,
+				      is_writable,
+				      TRUE);
       CORBA_free(val);
     }
 }
@@ -1410,6 +1479,8 @@ gconf_database_recursive_unset (GConfDatabase      *db,
    */
   if (error != NULL)
     {
+      g_assert (notifies == NULL);
+
       gconf_log (GCL_ERR, _("Error unsetting \"%s\": %s"),
                  key, error->message);
 
@@ -1428,24 +1499,24 @@ gconf_database_recursive_unset (GConfDatabase      *db,
       const gchar* locale_list[] = { NULL, NULL };
       gboolean is_writable = TRUE;
       gboolean is_default = TRUE;
-      char *notify_key = tmp->data;
-      
+      GConfUnsetNotify *notify = tmp->data;
 
       locale_list[0] = locale;
       new_value = gconf_database_query_value (db,
-                                              notify_key,
+                                              notify->key,
                                               locale_list,
                                               TRUE,
                                               NULL,
                                               &is_default,
                                               &is_writable,
                                               &error);
-
       if (error)
-        gconf_log (GCL_ERR, _("Error getting new value for \"%s\": %s"),
-                   notify_key, error->message);
-      g_propagate_error (err, error);
-      error = NULL;
+	{
+	  gconf_log (GCL_ERR, _("Error getting new value for \"%s\": %s"),
+		     notify->key, error->message);
+	  g_propagate_error (err, error);
+	  error = NULL;
+	}
       
       if (new_value != NULL)
         {
@@ -1459,11 +1530,17 @@ gconf_database_recursive_unset (GConfDatabase      *db,
           
       gconf_database_schedule_sync (db);
 
-      gconf_database_notify_listeners (db, notify_key, val,
-                                       is_default, is_writable);
+      gconf_database_notify_listeners (db,
+				       notify->modified_sources,
+				       notify->key,
+				       val,
+                                       is_default,
+				       is_writable,
+				       TRUE);
       
       CORBA_free (val);
-      g_free (notify_key);
+      g_free (notify->key);
+      g_free (notify);
       
       tmp = tmp->next;
     }
@@ -1508,13 +1585,13 @@ gconf_database_remove_dir  (GConfDatabase  *db,
   
   db->last_access = time(NULL);
   
-  gconf_log(GCL_DEBUG, "Received request to remove dir `%s'", dir);
+  gconf_log (GCL_DEBUG, "Received request to remove directory \"%s\"", dir);
   
   gconf_sources_remove_dir(db->sources, dir, err);
 
   if (err && *err != NULL)
     {
-      gconf_log(GCL_ERR, _("Error removing dir `%s': %s"),
+      gconf_log (GCL_ERR, _("Error removing directory \"%s\": %s"),
                  dir, (*err)->message);
     }
   else
@@ -1561,13 +1638,13 @@ gconf_database_all_dirs (GConfDatabase  *db,
   
   db->last_access = time(NULL);
     
-  gconf_log(GCL_DEBUG, "Received request to list all subdirs in `%s'", dir);
+  gconf_log (GCL_DEBUG, "Received request to list all subdirs in `%s'", dir);
 
   subdirs = gconf_sources_all_dirs (db->sources, dir, err);
 
   if (err && *err != NULL)
     {
-      gconf_log(GCL_ERR, _("Error listing dirs in `%s': %s"),
+      gconf_log (GCL_ERR, _("Error listing dirs in `%s': %s"),
                  dir, (*err)->message);
     }
   return subdirs;
@@ -1643,17 +1720,43 @@ gconf_database_clear_cache (GConfDatabase  *db,
   gconf_sources_clear_cache(db->sources);
 }
 
-const gchar*
+const gchar *
 gconf_database_get_persistent_name (GConfDatabase *db)
 {
-  if (db->persistent_name == NULL)
+  GList   *tmp;
+  GString *str = NULL;
+
+  if (db->persistent_name != NULL)
+    return db->persistent_name;
+
+  if (db->sources == NULL || db->sources->sources == NULL)
     {
-      if (db->sources->sources)
-        db->persistent_name =
-          g_strdup (((GConfSource*)db->sources->sources->data)->address);
-      else
-        db->persistent_name = g_strdup ("empty");
+      db->persistent_name = g_strdup ("empty");
+      return db->persistent_name;
     }
+
+  tmp = db->sources->sources;
+  while (tmp != NULL)
+    {
+      GConfSource *source = tmp->data;
+
+      if (str == NULL)
+	{
+	  str = g_string_new (source->address);
+	}
+      else
+        {
+          g_string_append_c (str, GCONF_DATABASE_LIST_DELIM);
+          g_string_append (str, source->address);
+        }
+
+      tmp = tmp->next;
+    }
+
+  g_assert (str != NULL);
+
+  db->persistent_name = str->str;
+  g_string_free (str, FALSE);
 
   return db->persistent_name;
 }

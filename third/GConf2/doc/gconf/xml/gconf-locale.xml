@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf-locale">
+<refmeta>
+<refentrytitle>gconf-locale</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gconf-locale</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GConfLocaleCache">GConfLocaleCache</link>;
+<link linkend="GConfLocaleCache">GConfLocaleCache</link>* <link linkend="gconf-locale-cache-new">gconf_locale_cache_new</link>    (void);
+<link linkend="void">void</link>        <link linkend="gconf-locale-cache-free">gconf_locale_cache_free</link>         (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache);
+<link linkend="void">void</link>        <link linkend="gconf-locale-cache-expire">gconf_locale_cache_expire</link>       (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache,
+                                             <link linkend="guint">guint</link> max_age_exclusive_in_seconds);
+struct      <link linkend="GConfLocaleList">GConfLocaleList</link>;
+<link linkend="void">void</link>        <link linkend="gconf-locale-list-ref">gconf_locale_list_ref</link>           (<link linkend="GConfLocaleList">GConfLocaleList</link> *list);
+<link linkend="void">void</link>        <link linkend="gconf-locale-list-unref">gconf_locale_list_unref</link>         (<link linkend="GConfLocaleList">GConfLocaleList</link> *list);
+<link linkend="GConfLocaleList">GConfLocaleList</link>* <link linkend="gconf-locale-cache-get-list">gconf_locale_cache_get_list</link>
+                                            (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache,
+                                             const <link linkend="gchar">gchar</link> *locale);
+<link linkend="gchar">gchar</link>**     <link linkend="gconf-split-locale">gconf_split_locale</link>              (const <link linkend="gchar">gchar</link> *locale);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfLocaleCache"/>struct GConfLocaleCache</title>
+<indexterm><primary>GConfLocaleCache</primary></indexterm><programlisting>struct GConfLocaleCache;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-cache-new"/>gconf_locale_cache_new ()</title>
+<indexterm><primary>gconf_locale_cache_new</primary></indexterm><programlisting><link linkend="GConfLocaleCache">GConfLocaleCache</link>* gconf_locale_cache_new    (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-cache-free"/>gconf_locale_cache_free ()</title>
+<indexterm><primary>gconf_locale_cache_free</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_locale_cache_free         (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-cache-expire"/>gconf_locale_cache_expire ()</title>
+<indexterm><primary>gconf_locale_cache_expire</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_locale_cache_expire       (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache,
+                                             <link linkend="guint">guint</link> max_age_exclusive_in_seconds);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>max_age_exclusive_in_seconds</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfLocaleList"/>struct GConfLocaleList</title>
+<indexterm><primary>GConfLocaleList</primary></indexterm><programlisting>struct GConfLocaleList {
+
+  const gchar** list;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-list-ref"/>gconf_locale_list_ref ()</title>
+<indexterm><primary>gconf_locale_list_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_locale_list_ref           (<link linkend="GConfLocaleList">GConfLocaleList</link> *list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-list-unref"/>gconf_locale_list_unref ()</title>
+<indexterm><primary>gconf_locale_list_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_locale_list_unref         (<link linkend="GConfLocaleList">GConfLocaleList</link> *list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-locale-cache-get-list"/>gconf_locale_cache_get_list ()</title>
+<indexterm><primary>gconf_locale_cache_get_list</primary></indexterm><programlisting><link linkend="GConfLocaleList">GConfLocaleList</link>* gconf_locale_cache_get_list
+                                            (<link linkend="GConfLocaleCache">GConfLocaleCache</link> *cache,
+                                             const <link linkend="gchar">gchar</link> *locale);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-split-locale"/>gconf_split_locale ()</title>
+<indexterm><primary>gconf_split_locale</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**     gconf_split_locale              (const <link linkend="gchar">gchar</link> *locale);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

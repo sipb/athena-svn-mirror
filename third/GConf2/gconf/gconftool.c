@@ -29,6 +29,13 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <locale.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+typedef enum {
+  LOAD_SCHEMA_FILE,
+  LOAD_ENTRY_FILE
+} LoadType;
 
 static int set_mode = FALSE;
 static int get_mode = FALSE;
@@ -37,8 +44,12 @@ static int all_entries_mode = FALSE;
 static int all_subdirs_mode = FALSE;
 static char* dir_exists = NULL;
 static int recursive_list = FALSE;
+static int dump_values = FALSE;
 static int set_schema_mode = FALSE;
 static char* value_type = NULL;
+static int get_type_mode = FALSE;
+static int get_list_size_mode = FALSE;
+static int get_list_element_mode = FALSE;
 static char* value_list_type = NULL;
 static char* value_car_type = NULL;
 static char* value_cdr_type = NULL;
@@ -49,9 +60,12 @@ static char* short_desc = NULL;
 static char* long_desc = NULL;
 static char* owner = NULL;
 static char* schema_file = NULL;
+static char* entry_file = NULL;
+static char* unload_entry_file = NULL;
 static const char* config_source = NULL;
 static int use_local_source = FALSE;
 static int makefile_install_mode = FALSE;
+static int makefile_uninstall_mode = FALSE;
 static int break_key_mode = FALSE;
 static int break_dir_mode = FALSE;
 static int short_docs_mode = FALSE;
@@ -59,6 +73,7 @@ static int long_docs_mode = FALSE;
 static int schema_name_mode = FALSE;
 static int associate_schema_mode = FALSE;
 static int dissociate_schema_mode = FALSE;
+static int ignore_schema_defaults = FALSE;
 static int default_source_mode = FALSE;
 static int recursive_unset_mode = FALSE;
 static int do_version = FALSE;
@@ -138,12 +153,39 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "dump",
+    '\0',
+    POPT_ARG_NONE,
+    &dump_values,
+    0,
+    N_("Dump to standard output an XML description of all entries under a directory, recursively."),
+    NULL
+  },
+  {
+    "load",
+    '\0',
+    POPT_ARG_STRING,
+    &entry_file,
+    0,
+    N_("Load from the specified file an XML description of values and set them relative to a directory."),
+    NULL
+  },
+  {
+    "unload",
+    '\0',
+    POPT_ARG_STRING,
+    &unload_entry_file,
+    0,
+    N_("Unload a set of values described in an XML file."),
+    NULL
+  },
+  {
     "recursive-list",
     'R',
     POPT_ARG_NONE,
     &recursive_list,
     0,
-    N_("Print all subdirectories and entries under a dir, recursively."),
+    N_("Print all subdirectories and entries under a directory, recursively."),
     NULL
   },
   { 
@@ -190,7 +232,34 @@ struct poptOption options[] = {
     0,
     N_("Specify the type of the value being set, or the type of the value a schema describes. Unique abbreviations OK."),
     N_("int|bool|float|string|list|pair")
-  },  
+  },
+  {
+    "get-type",
+    'T',
+    POPT_ARG_NONE,
+    &get_type_mode,
+    0,
+    N_("Print the data type of a key to standard output."),
+    NULL
+  },
+  {
+    "get-list-size",
+    '\0',
+    POPT_ARG_NONE,
+    &get_list_size_mode,
+    0,
+    N_("Get the number of elements in a list key."),
+    NULL
+  },
+  {
+    "get-list-element",
+    '\0',
+    POPT_ARG_NONE,
+    &get_list_element_mode,
+    0,
+    N_("Get a specific element from a list key, numerically indexed."),
+    NULL
+  },
   { 
     "list-type",
     '\0',
@@ -282,6 +351,15 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "makefile-uninstall-rule",
+    '\0',
+    POPT_ARG_NONE,
+    &makefile_uninstall_mode,
+    0,
+    N_("Properly uninstalls schema files on the command line from the database. GCONF_CONFIG_SOURCE environment variable should be set to a non-default config source or set to the empty string to use the default."),
+    NULL
+  },
+  {
     "break-key",
     '\0',
     POPT_ARG_NONE,
@@ -345,6 +423,15 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "ignore-schema-defaults",
+    '\0',
+    POPT_ARG_NONE,
+    &ignore_schema_defaults,
+    0,
+    N_("Ignore schema defaults when reading values."),
+    NULL
+  },
+  {
     "get-default-source",
     '\0',
     POPT_ARG_NONE,
@@ -375,20 +462,28 @@ struct poptOption options[] = {
 
 static int do_break_key(GConfEngine* conf, const gchar** args);
 static int do_break_directory(GConfEngine* conf, const gchar** args);
-static int do_makefile_install(GConfEngine* conf, const gchar** args);
+static int do_makefile_install(GConfEngine* conf, const gchar** args, gboolean unload);
 static int do_recursive_list(GConfEngine* conf, const gchar** args);
+static int do_dump_values(GConfEngine* conf, const gchar** args);
 static int do_all_pairs(GConfEngine* conf, const gchar** args);
 static void list_pairs_in_dir(GConfEngine* conf, const gchar* dir, guint depth);
+static int get_schema_from_xml(xmlNodePtr node, gchar **schema_key, GHashTable** schemas_hash, GSList **applyto_list);
+static int get_first_value_from_xml(xmlNodePtr node, GConfValue** ret_value);
+static void print_value_in_xml(GConfValue* value, int indent);
+static void dump_entries_in_dir(GConfEngine* conf, const gchar* dir, const gchar *base_dir);
 static gboolean do_dir_exists(GConfEngine* conf, const gchar* dir);
 static void do_spawn_daemon(GConfEngine* conf);
 static int do_get(GConfEngine* conf, const gchar** args);
 static int do_set(GConfEngine* conf, const gchar** args);
+static int do_get_type(GConfEngine* conf, const gchar** args);
+static int do_get_list_size(GConfEngine* conf, const gchar** args);
+static int do_get_list_element(GConfEngine* conf, const gchar** args);
 static int do_set_schema(GConfEngine* conf, const gchar** args);
 static int do_all_entries(GConfEngine* conf, const gchar** args);
 static int do_unset(GConfEngine* conf, const gchar** args);
 static int do_recursive_unset (GConfEngine* conf, const gchar** args);
 static int do_all_subdirs(GConfEngine* conf, const gchar** args);
-static int do_load_schema_file(GConfEngine* conf, const gchar* file);
+static int do_load_file(GConfEngine* conf, LoadType load_type, gboolean unload, const gchar* file, const gchar** base_dirs);
 static int do_short_docs (GConfEngine *conf, const gchar **args);
 static int do_long_docs (GConfEngine *conf, const gchar **args);
 static int do_get_schema_name (GConfEngine *conf, const gchar **args);
@@ -408,22 +503,31 @@ main (int argc, char** argv)
   xmlKeepBlanksDefault(1);
 
   setlocale (LC_ALL, "");
-  _gconf_init_i18n ();
+  bindtextdomain (GETTEXT_PACKAGE,GCONF_LOCALE_DIR);
   textdomain (GETTEXT_PACKAGE);
   
   ctx = poptGetContext("gconftool", argc, (const char **) argv, options, 0);
 
   poptReadDefaultConfig(ctx, TRUE);
 
+  if (argc < 2) 
+    {
+      poptPrintUsage (ctx, stdout, 0);
+      return 1;
+    } 
+
   while((nextopt = poptGetNextOpt(ctx)) > 0)
     /*nothing*/;
 
+  /* delay bind_textdomain_codeset call after popt has handled --help and --usage */
+  _gconf_init_i18n ();
+
   if(nextopt != -1) 
     {
-      fprintf(stderr, _("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-              poptBadOption(ctx, 0),
-              poptStrerror(nextopt),
-              argv[0]);
+      g_printerr (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+		  poptBadOption(ctx, 0),
+		  poptStrerror(nextopt),
+		  argv[0]);
       return 1;
     }
 
@@ -438,145 +542,199 @@ main (int argc, char** argv)
   if ((get_mode && set_mode) ||
       (get_mode && unset_mode))
     {
-      fprintf(stderr, _("Can't get and set/unset simultaneously\n"));
+      g_printerr (_("Can't get and set/unset simultaneously\n"));
       return 1;
     }
 
   if ((set_mode && get_mode) ||
-      (set_mode && unset_mode))
+      (set_mode && unset_mode) ||
+      (set_mode && get_type_mode) ||
+      (set_mode && get_list_size_mode) ||
+      (set_mode && get_list_element_mode)) 
     {
-      fprintf(stderr, _("Can't set and get/unset simultaneously\n"));
+      g_printerr (_("Can't set and get/unset simultaneously\n"));
+      return 1;
+    }
+
+  if ((get_type_mode && set_mode) ||
+      (get_type_mode && unset_mode))
+    {
+      g_printerr (_("Can't get type and set/unset simultaneously\n"));
       return 1;
     }
 
   if ((all_entries_mode && get_mode) ||
       (all_entries_mode && set_mode) ||
-      (all_entries_mode && unset_mode))
+      (all_entries_mode && get_type_mode) ||
+      (all_entries_mode && unset_mode) ||
+      (all_entries_mode && get_list_size_mode) ||
+      (all_entries_mode && get_list_element_mode))
     {
-      fprintf(stderr, _("Can't use --all-entries with --get or --set\n"));
+      g_printerr (_("Can't use --all-entries with --get or --set\n"));
       return 1;
     }
 
   if ((all_subdirs_mode && get_mode) ||
       (all_subdirs_mode && set_mode) ||
-      (all_subdirs_mode && unset_mode))
+      (all_subdirs_mode && get_type_mode) ||
+      (all_subdirs_mode && unset_mode) ||
+      (all_subdirs_mode && get_list_size_mode) ||
+      (all_subdirs_mode && get_list_element_mode))
     {
-      fprintf(stderr, _("Can't use --all-dirs with --get or --set\n"));
+      g_printerr (_("Can't use --all-dirs with --get or --set\n"));
       return 1;
     }
 
   if ((recursive_list && get_mode) ||
       (recursive_list && set_mode) ||
       (recursive_list && unset_mode) ||
+      (recursive_list && get_type_mode) ||
+      (recursive_list && get_list_size_mode) ||
+      (recursive_list && get_list_element_mode) ||
       (recursive_list && all_entries_mode) ||
       (recursive_list && all_subdirs_mode))
     {
-      fprintf(stderr, _("--recursive-list should not be used with --get, --set, --unset, --all-entries, or --all-dirs\n"));
+      g_printerr (_("--recursive-list should not be used with --get, --set, --unset, --all-entries, or --all-dirs\n"));
       return 1;
     }
 
   if ((set_schema_mode && get_mode) ||
       (set_schema_mode && set_mode) ||
       (set_schema_mode && unset_mode) ||
+      (set_schema_mode && get_type_mode) ||
+      (set_schema_mode && get_list_size_mode) ||
+      (set_schema_mode && get_list_element_mode) ||
       (set_schema_mode && all_entries_mode) ||
       (set_schema_mode && all_subdirs_mode))
     {
-      fprintf(stderr, _("--set_schema should not be used with --get, --set, --unset, --all-entries, --all-dirs\n"));
+      g_printerr (_("--set_schema should not be used with --get, --set, --unset, --all-entries, --all-dirs\n"));
       return 1;
-    }  
+    }
 
   if ((value_type != NULL) && !(set_mode || set_schema_mode))
     {
-      fprintf(stderr, _("Value type is only relevant when setting a value\n"));
+      g_printerr (_("Value type is only relevant when setting a value\n"));
       return 1;
     }
 
   if (set_mode && (value_type == NULL))
     {
-      fprintf(stderr, _("Must specify a type when setting a value\n"));
+      g_printerr (_("Must specify a type when setting a value\n"));
+      return 1;
+    }
+
+  if (ignore_schema_defaults && !(get_mode || all_entries_mode ||
+				  dump_values || recursive_list ||
+				  get_list_size_mode || get_list_element_mode))
+    {
+      g_printerr (_("--ignore-schema-defaults is only relevant with --get, --all-entries, --dump, --recursive-list, --get-list-size or --get-list-element\n"));
       return 1;
     }
 
   if (ping_gconfd && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                       all_subdirs_mode || all_entries_mode || recursive_list || 
-                      spawn_gconfd || dir_exists || schema_file || makefile_install_mode ||
+                      get_type_mode || get_list_size_mode || get_list_element_mode ||
+                      spawn_gconfd || dir_exists || schema_file ||
+                      makefile_install_mode || makefile_uninstall_mode ||
                       break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("Ping option must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "-p/--ping");
       return 1;
     }
 
   if (dir_exists && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                      all_subdirs_mode || all_entries_mode || recursive_list || 
-                     spawn_gconfd || schema_file || makefile_install_mode ||
+                     get_type_mode || get_list_size_mode || get_list_element_mode ||
+                     spawn_gconfd || schema_file ||
+                     makefile_install_mode || makefile_uninstall_mode ||
                      break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("--dir-exists option must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--dir-exists");
       return 1;
     }
 
   if (schema_file && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                       all_subdirs_mode || all_entries_mode || recursive_list || 
-                      spawn_gconfd || dir_exists || makefile_install_mode ||
+                      get_type_mode || get_list_size_mode || get_list_element_mode ||
+                      spawn_gconfd || dir_exists ||
+                      makefile_install_mode || makefile_uninstall_mode ||
                       break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("--install-schema-file must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--install-schema-file");
       return 1;
     }
 
 
   if (makefile_install_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
+                                makefile_uninstall_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
                                 break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("--makefile-install-rule must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--makefile-install-rule");
       return 1;
     }
-
-
+  
+  if (makefile_uninstall_mode && (shutdown_gconfd || set_mode || get_mode ||
+                                  unset_mode || all_subdirs_mode ||
+                                  all_entries_mode || recursive_list || 
+                                  makefile_install_mode ||
+                                  spawn_gconfd || dir_exists || schema_file ||
+                                  break_key_mode || break_dir_mode || short_docs_mode ||
+                                  long_docs_mode || schema_name_mode))
+    {
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--makefile-uninstall-rule");
+      return 1;
+    }
+  
   if (break_key_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
-                                makefile_install_mode || break_dir_mode || short_docs_mode ||
+                                makefile_install_mode || makefile_uninstall_mode ||
+                                break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("--break-key must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--break-key");
       return 1;
     }
 
   
   if (break_dir_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
-                                break_key_mode || makefile_install_mode || short_docs_mode ||
+                                break_key_mode || makefile_install_mode ||
+                                makefile_uninstall_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
     {
-      fprintf(stderr, _("--break-directory must be used by itself.\n"));
+      g_printerr (_("%s option must be used by itself.\n"),
+		      "--break-directory");
       return 1;
     }
 
-  /* FIXME not checking that --recursive-unset is used alone */
+  /* FIXME not checking that --recursive-unset, --dump or --load are used alone */
   
   if (use_local_source && config_source == NULL)
     {
-      fprintf(stderr, _("You must specify a config source with --config-source when using --direct\n"));
+      g_printerr (_("You must specify a config source with --config-source when using --direct\n"));
       return 1;
     }
 
-  if (config_source && !use_local_source)
-    {
-      fprintf (stderr, _("You should use --direct when using a non-default configuration source\n"));
-      return 1;
-    }
-  
   if (!gconf_init(argc, argv, &err))
     {
-      fprintf(stderr, _("Failed to init GConf: %s\n"), err->message);
+      g_printerr (_("Failed to init GConf: %s\n"), err->message);
       g_error_free(err);
       err = NULL;
       return 1;
@@ -608,8 +766,15 @@ main (int argc, char** argv)
       g_print (_("GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"));
       makefile_install_mode = FALSE;
     }
-  
-  if (makefile_install_mode)
+
+  if (makefile_uninstall_mode &&
+      g_getenv ("GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL"))
+    {
+      g_print (_("GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL is set, not uninstalling schemas\n"));
+      makefile_uninstall_mode = FALSE;
+    }
+
+  if (makefile_install_mode || makefile_uninstall_mode)
     {
       g_assert (config_source == NULL);
 
@@ -618,7 +783,7 @@ main (int argc, char** argv)
 
       if (config_source == NULL)
         {
-          fprintf(stderr, _("Must set the GCONF_CONFIG_SOURCE environment variable\n"));
+          g_printerr (_("Must set the GCONF_CONFIG_SOURCE environment variable\n"));
           return 1;
         }
 
@@ -638,16 +803,22 @@ main (int argc, char** argv)
     conf = gconf_engine_get_default();
   else
     {
+      GSList *addresses;
+
+      addresses = gconf_persistent_name_get_address_list (config_source);
+
       if (use_local_source)
-        conf = gconf_engine_get_local(config_source, &err);
+        conf = gconf_engine_get_local_for_addresses (addresses, &err);
       else
-        conf = gconf_engine_get_for_address(config_source, &err);
+        conf = gconf_engine_get_for_addresses (addresses, &err);
+
+      gconf_address_list_free (addresses);
     }
   
   if (conf == NULL)
     {
       g_assert(err != NULL);
-      fprintf(stderr, _("Failed to access configuration source(s): %s\n"), err->message);
+      g_printerr (_("Failed to access configuration source(s): %s\n"), err->message);
       g_error_free(err);
       err = NULL;
       return 1;
@@ -677,13 +848,37 @@ main (int argc, char** argv)
     {
       gint retval;
 
-      retval = do_load_schema_file(conf, schema_file);
+      retval = do_load_file(conf, LOAD_SCHEMA_FILE, FALSE, schema_file, NULL);
+
+      gconf_engine_unref(conf);
+
+      return retval;
+    }
+
+  if (entry_file != NULL)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      gint retval;
+
+      retval = do_load_file(conf, LOAD_ENTRY_FILE, FALSE, entry_file, args);
 
       gconf_engine_unref(conf);
 
       return retval;
     }
   
+  if (unload_entry_file != NULL)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      gint retval;
+
+      retval = do_load_file(conf, LOAD_ENTRY_FILE, TRUE, unload_entry_file, args);
+
+      gconf_engine_unref(conf);
+
+      return retval;
+    }
+
   if (spawn_gconfd)
     {
       do_spawn_daemon(conf);
@@ -694,7 +889,23 @@ main (int argc, char** argv)
   if (makefile_install_mode)
     {
       const gchar** args = poptGetArgs(ctx);
-      gint retval = do_makefile_install (conf, args);
+      gint retval;
+
+      umask (022);
+      retval = do_makefile_install (conf, args, FALSE);
+      
+      gconf_engine_unref (conf);
+
+      return retval;
+    }
+
+  if (makefile_uninstall_mode)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      gint retval;
+
+      umask (022);
+      retval = do_makefile_install (conf, args, TRUE);
       
       gconf_engine_unref (conf);
 
@@ -738,6 +949,36 @@ main (int argc, char** argv)
       if (do_set(conf, args) == 1)
         {
           gconf_engine_unref(conf);
+          return 1;
+        }
+    }
+
+  if (get_type_mode)
+    {
+      const gchar** args = poptGetArgs (ctx);
+      if (do_get_type (conf, args) == 1)
+        {
+          gconf_engine_unref (conf);
+          return 1;
+        }
+    }
+
+  if (get_list_size_mode)
+    {
+      const gchar** args = poptGetArgs (ctx);
+      if (do_get_list_size (conf, args) == 1)
+        {
+          gconf_engine_unref (conf);
+          return 1;
+        }
+    }
+
+  if (get_list_element_mode)
+    {
+      const gchar** args = poptGetArgs (ctx);
+      if (do_get_list_element (conf, args) == 1)
+        {
+          gconf_engine_unref (conf);
           return 1;
         }
     }
@@ -857,6 +1098,17 @@ main (int argc, char** argv)
         }
     }
 
+  if (dump_values)
+    {
+      const gchar** args = poptGetArgs(ctx);
+
+      if (do_dump_values(conf, args) == 1)
+        {
+          gconf_engine_unref(conf);
+          return 1;
+        }
+    }
+
   poptFreeContext(ctx);
 
   gconf_engine_unref(conf);
@@ -869,8 +1121,8 @@ main (int argc, char** argv)
       
   if (err != NULL)
     {
-      fprintf(stderr, _("Shutdown error: %s\n"),
-              err->message);
+      g_printerr (_("Shutdown error: %s\n"),
+		  err->message);
       g_error_free(err);
       err = NULL;
     }
@@ -892,7 +1144,7 @@ recurse_subdir_list(GConfEngine* conf, GSList* subdirs, const gchar* parent, gui
     {
       gchar* s = tmp->data;
       
-      printf("%s%s:\n", whitespace, s);
+      g_print ("%s%s:\n", whitespace, s);
       
       list_pairs_in_dir(conf, s, depth);
 
@@ -912,7 +1164,7 @@ do_recursive_list(GConfEngine* conf, const gchar** args)
 {
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify one or more dirs to recursively list.\n"));
+      g_printerr (_("Must specify one or more directories to recursively list.\n"));
       return 1;
     }
 
@@ -933,6 +1185,66 @@ do_recursive_list(GConfEngine* conf, const gchar** args)
 }
 
 static void 
+recurse_subdir_dump(GConfEngine* conf, GSList* dirs, const gchar* base_dir)
+{
+  GSList* tmp;
+
+  tmp = dirs;
+  
+  while (tmp != NULL)
+    {
+      gchar* s = tmp->data;
+      GSList* subdirs;
+      
+      dump_entries_in_dir(conf, s, base_dir);
+
+      subdirs = g_slist_sort(gconf_engine_all_dirs(conf, s, NULL),
+			     (GCompareFunc)strcmp);
+
+      recurse_subdir_dump(conf, subdirs, base_dir);
+
+      g_free(s);
+      
+      tmp = tmp->next;
+    }
+  
+  g_slist_free(dirs);
+}
+
+static int
+do_dump_values(GConfEngine* conf, const gchar** args)
+{
+  if (args == NULL)
+    {
+      g_printerr (_("Must specify one or more directories to dump.\n"));
+      return 1;
+    }
+
+  g_print ("<gconfentryfile>\n");
+
+  while (*args)
+    {
+      GSList* subdirs;
+
+      g_print ("  <entrylist base=\"%s\">\n", *args);
+
+      subdirs = g_slist_sort(gconf_engine_all_dirs(conf, *args, NULL),
+			     (GCompareFunc)strcmp);
+
+      dump_entries_in_dir(conf, *args, *args);
+
+      recurse_subdir_dump(conf, subdirs, *args);
+
+      g_print ("  </entrylist>\n");
+ 
+      ++args;
+    }
+
+  g_print ("</gconfentryfile>\n");
+  return 0;
+}
+
+static void 
 list_pairs_in_dir(GConfEngine* conf, const gchar* dir, guint depth)
 {
   GSList* pairs;
@@ -946,7 +1258,7 @@ list_pairs_in_dir(GConfEngine* conf, const gchar* dir, guint depth)
           
   if (err != NULL)
     {
-      fprintf(stderr, _("Failure listing entries in `%s': %s\n"),
+      g_printerr (_("Failure listing entries in `%s': %s\n"),
               dir, err->message);
       g_error_free(err);
       err = NULL;
@@ -961,14 +1273,15 @@ list_pairs_in_dir(GConfEngine* conf, const gchar* dir, guint depth)
           GConfEntry* pair = tmp->data;
           gchar* s;
 
-          if (gconf_entry_get_value (pair))
+          if (gconf_entry_get_value (pair) && 
+	      (!ignore_schema_defaults || !gconf_entry_get_is_default (pair)))
             s = gconf_value_to_string (gconf_entry_get_value (pair));
           else
             s = g_strdup(_("(no value set)"));
           
-          printf(" %s%s = %s\n", whitespace,
-                 gconf_key_key (gconf_entry_get_key (pair)),
-                 s);
+          g_print (" %s%s = %s\n", whitespace,
+		   gconf_key_key (gconf_entry_get_key (pair)),
+		   s);
 
           g_free(s);
                   
@@ -994,6 +1307,257 @@ do_all_pairs(GConfEngine* conf, const gchar** args)
   return 0;
 }
 
+/* FIXME: only prints the schema for the current locale.
+ *        Need some way of getting the schemas for all locales.
+ */
+static void
+print_schema_in_xml(GConfValue* value, int indent)
+{
+  GConfSchema* schema;
+  GConfValueType type;
+  GConfValueType list_type;
+  GConfValueType car_type;
+  GConfValueType cdr_type;
+  GConfValue* default_value;
+  const gchar* owner;
+  const gchar* short_desc;
+  const gchar* long_desc;
+  gchar* whitespace;
+
+  whitespace = g_strnfill(indent, ' ');
+
+  schema = gconf_value_get_schema(value);
+
+  type = gconf_schema_get_type(schema);
+  list_type = gconf_schema_get_list_type(schema);
+  car_type = gconf_schema_get_car_type(schema);
+  cdr_type = gconf_schema_get_cdr_type(schema);
+
+  owner = gconf_schema_get_owner(schema);
+  default_value = gconf_schema_get_default_value(schema);
+  short_desc = gconf_schema_get_short_desc(schema);
+  long_desc = gconf_schema_get_long_desc(schema);
+
+  g_print ("%s<schema>\n", whitespace);
+
+  if (owner)
+    g_print ("%s  <owner>%s</owner>\n", whitespace, owner);
+
+  g_print ("%s  <type>%s</type>\n", whitespace, gconf_value_type_to_string(type));
+
+  if (type == GCONF_VALUE_LIST)
+    g_print ("%s  <list_type>%s</list_type>\n", whitespace, gconf_value_type_to_string(list_type));
+  else if (type == GCONF_VALUE_PAIR)
+    {
+      g_print ("%s  <car_type>%s</car_type>\n", whitespace, gconf_value_type_to_string(car_type));
+      g_print ("%s  <cdr_type>%s</cdr_type>\n", whitespace, gconf_value_type_to_string(cdr_type));
+    }
+
+  g_print ("%s  <locale name=\"%s\">\n", whitespace, gconf_schema_get_locale (schema));
+
+  if (default_value)
+    {
+      g_print ("%s    <default_value>\n", whitespace);
+      print_value_in_xml(default_value, indent + 6);
+      g_print ("%s    </default_value>\n", whitespace);
+    }
+
+  if (short_desc)
+    {
+      gchar* tmp = g_markup_escape_text(short_desc, -1);
+      g_print ("%s    <short>%s</short>\n", whitespace, tmp);
+      g_free(tmp);
+    }
+
+  if (long_desc)
+    {
+      gchar* tmp = g_markup_escape_text(long_desc, -1);
+      g_print ("%s    <long>%s</long>\n", whitespace, tmp);
+      g_free(tmp);
+    }
+
+  g_print ("%s  </locale>\n", whitespace);
+
+  g_print ("%s</schema>\n", whitespace);
+
+  g_free(whitespace);
+}
+
+static void
+print_pair_in_xml(GConfValue* value, int indent)
+{
+  gchar* whitespace;
+
+  whitespace = g_strnfill(indent, ' ');
+
+  g_print ("%s<pair>\n", whitespace);
+
+  g_print ("%s  <car>\n", whitespace);
+  print_value_in_xml(gconf_value_get_car(value), indent + 4);
+  g_print ("%s  </car>\n", whitespace);
+
+  g_print ("%s  <cdr>\n", whitespace);
+  print_value_in_xml(gconf_value_get_cdr(value), indent + 4);
+  g_print ("%s  </cdr>\n", whitespace);
+
+  g_print ("%s</pair>\n", whitespace);
+
+  g_free(whitespace);
+}
+
+static void
+print_list_in_xml(GConfValue* value, int indent)
+{
+  GConfValueType list_type;
+  GSList* tmp;
+  gchar* whitespace;
+
+  whitespace = g_strnfill(indent, ' ');
+
+  list_type = gconf_value_get_list_type(value);
+
+  g_print ("%s<list type=\"%s\">\n", whitespace, gconf_value_type_to_string(list_type));
+
+  tmp = gconf_value_get_list(value);
+  while (tmp)
+    {
+      print_value_in_xml(tmp->data, indent + 4);
+
+      tmp = tmp->next;
+    }
+
+  g_print ("%s</list>\n", whitespace);
+
+  g_free(whitespace);
+}
+
+static void
+print_value_in_xml(GConfValue* value, int indent)
+{
+  gchar* whitespace;
+  gchar* tmp;
+
+  whitespace = g_strnfill(indent, ' ');
+
+  g_print ("%s<value>\n", whitespace);
+
+  switch (value->type)
+    {
+    case GCONF_VALUE_INT:
+      tmp = gconf_value_to_string(value);
+      g_print ("%s  <int>%s</int>\n", whitespace, tmp);
+      g_free(tmp);
+      break;
+    case GCONF_VALUE_FLOAT:
+      tmp = gconf_value_to_string(value);
+      g_print ("%s  <float>%s</float>\n", whitespace, tmp);
+      g_free(tmp);
+      break;
+    case GCONF_VALUE_STRING:
+      tmp = g_markup_escape_text(gconf_value_get_string(value), -1);
+      g_print ("%s  <string>%s</string>\n", whitespace, (tmp[0] == ' ' && tmp[1] == '\0') ? "" : tmp);
+      g_free(tmp);
+      break;
+    case GCONF_VALUE_BOOL:
+      tmp = gconf_value_to_string(value);
+      g_print ("%s  <bool>%s</bool>\n", whitespace, tmp);
+      g_free(tmp);
+      break;
+    case GCONF_VALUE_LIST:
+      print_list_in_xml(value, indent + 2);
+      break;
+    case GCONF_VALUE_PAIR:
+      print_pair_in_xml(value, indent + 2);
+      break;
+    case GCONF_VALUE_SCHEMA:
+      print_schema_in_xml(value, indent + 2);
+      break;
+    default:
+      g_assert_not_reached();
+      break;
+    }
+
+  g_print ("%s</value>\n", whitespace);
+
+  g_free(whitespace);
+}
+
+static inline const gchar*
+get_key_relative(const gchar* key, const gchar* dir)
+{
+  int i;
+
+  g_assert(key != NULL);
+  g_assert(dir != NULL);
+
+  i = 0;
+  while (dir [i])
+    {
+      if (dir [i] != key [i])
+        return key;
+      ++i;
+    }
+
+  if (key [i] != '/' || key [i] == '\0')
+    return key;
+
+  ++i;
+
+  return key + i;
+}
+
+static int
+compare_entries (GConfEntry* a, GConfEntry *b)
+{
+  return strcmp(gconf_entry_get_key(a), gconf_entry_get_key(b));
+}
+
+static void 
+dump_entries_in_dir(GConfEngine* conf, const gchar* dir, const gchar* base_dir)
+{
+  GSList* entries;
+  GSList* tmp;
+  GError* err = NULL;
+  
+  entries = g_slist_sort(gconf_engine_all_entries(conf, dir, &err),
+			 (GCompareFunc)compare_entries);
+          
+  if (err != NULL)
+    {
+      g_printerr (_("Failure listing entries in `%s': %s\n"),
+		  dir, err->message);
+      g_error_free(err);
+      err = NULL;
+    }
+
+  tmp = entries;
+  while (tmp != NULL)
+    {
+      GConfEntry* entry = tmp->data;
+
+      g_print ("    <entry>\n");
+
+      g_print ("      <key>%s</key>\n",
+	       get_key_relative(gconf_entry_get_key(entry), base_dir));
+
+      /* <schema_key> will only be relative if its under the base dir */
+      if (gconf_entry_get_schema_name(entry))
+        g_print ("      <schema_key>%s</schema_key>\n",
+		 get_key_relative(gconf_entry_get_schema_name(entry), base_dir));
+
+      if (entry->value && 
+	  (!ignore_schema_defaults || !gconf_entry_get_is_default(entry)))
+        print_value_in_xml(entry->value, 6);
+
+      g_print ("    </entry>\n");
+
+      gconf_entry_free(entry);
+
+      tmp = tmp->next;
+    }
+  g_slist_free(entries);
+}
+
 static gboolean
 do_dir_exists(GConfEngine* conf, const gchar* dir)
 {
@@ -1004,7 +1568,7 @@ do_dir_exists(GConfEngine* conf, const gchar* dir)
   
   if (err != NULL)
     {
-      fprintf(stderr, "%s\n", err->message);
+      g_printerr ("%s\n", err->message);
       g_error_free(err);
       err = NULL;
     }
@@ -1019,10 +1583,25 @@ do_spawn_daemon(GConfEngine* conf)
 
   if (!gconf_spawn_daemon(&err))
     {
-      fprintf(stderr, _("Failed to spawn the config server (gconfd): %s\n"), 
-              err->message);
+      g_printerr (_("Failed to spawn the config server (gconfd): %s\n"), 
+		  err->message);
       g_error_free(err);
       err = NULL;
+    }
+}
+
+static inline GConfValue *
+get_maybe_without_default (GConfEngine  *conf,
+			   const gchar  *key,
+			   GError      **err)
+{
+  if (!ignore_schema_defaults)
+    {
+      return gconf_engine_get (conf, key, err);
+    }
+  else
+    {
+      return gconf_engine_get_without_default (conf, key, err);
     }
 }
 
@@ -1033,7 +1612,7 @@ do_get(GConfEngine* conf, const gchar** args)
 
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify a key or keys to get\n"));
+      g_printerr (_("Must specify a key or keys to get\n"));
       return 1;
     }
       
@@ -1044,7 +1623,7 @@ do_get(GConfEngine* conf, const gchar** args)
 
       err = NULL;
 
-      value = gconf_engine_get (conf, *args, &err);
+      value = get_maybe_without_default (conf, *args, &err);
          
       if (value != NULL)
         {
@@ -1052,7 +1631,7 @@ do_get(GConfEngine* conf, const gchar** args)
             {
               s = gconf_value_to_string(value);
 
-              printf("%s\n", s);
+              g_print ("%s\n", s);
 
               g_free(s);
             }
@@ -1068,19 +1647,19 @@ do_get(GConfEngine* conf, const gchar** args)
               const gchar* owner = gconf_schema_get_owner(sc);
               GConfValue* def_value = gconf_schema_get_default_value(sc);
               
-              printf(_("Type: %s\n"), gconf_value_type_to_string(stype));
-              printf(_("List Type: %s\n"), gconf_value_type_to_string(slist_type));
-              printf(_("Car Type: %s\n"), gconf_value_type_to_string(scar_type));
-              printf(_("Cdr Type: %s\n"), gconf_value_type_to_string(scdr_type));
+              g_print (_("Type: %s\n"), gconf_value_type_to_string(stype));
+              g_print (_("List Type: %s\n"), gconf_value_type_to_string(slist_type));
+              g_print (_("Car Type: %s\n"), gconf_value_type_to_string(scar_type));
+              g_print (_("Cdr Type: %s\n"), gconf_value_type_to_string(scdr_type));
               if (def_value)
                 s = gconf_value_to_string (def_value);
               else
                 s = NULL;
-              printf(_("Default Value: %s\n"), def_value ? s : _("Unset"));
+              g_print (_("Default Value: %s\n"), def_value ? s : _("Unset"));
               g_free (s);
-              printf(_("Owner: %s\n"), owner ? owner : _("Unset"));
-              printf(_("Short Desc: %s\n"), short_desc ? short_desc : _("Unset"));
-              printf(_("Long Desc: %s\n"), long_desc ? long_desc : _("Unset"));
+              g_print (_("Owner: %s\n"), owner ? owner : _("Unset"));
+              g_print (_("Short Desc: %s\n"), short_desc ? short_desc : _("Unset"));
+              g_print (_("Long Desc: %s\n"), long_desc ? long_desc : _("Unset"));
             }
 
           gconf_value_free(value);
@@ -1089,11 +1668,11 @@ do_get(GConfEngine* conf, const gchar** args)
         {
           if (err == NULL)
             {
-              fprintf(stderr, _("No value set for `%s'\n"), *args);
+              g_printerr (_("No value set for `%s'\n"), *args);
             }
           else
             {
-              fprintf(stderr, _("Failed to get value for `%s': %s\n"),
+              g_printerr (_("Failed to get value for `%s': %s\n"),
                       *args, err->message);
               g_error_free(err);
               err = NULL;
@@ -1136,7 +1715,7 @@ read_value_type(const char *string)
 	  type = GCONF_VALUE_SCHEMA;
 	  break;
 	default:
-	  fprintf(stderr, _("Don't understand type `%s'\n"), string);
+	  g_printerr (_("Don't understand type `%s'\n"), string);
 	}
       break;
     case 'l':
@@ -1148,7 +1727,7 @@ read_value_type(const char *string)
       type = GCONF_VALUE_PAIR;
       break;
     default:
-      fprintf(stderr, _("Don't understand type `%s'\n"), string);
+      g_printerr (_("Don't understand type `%s'\n"), string);
     }
   return type;
 }
@@ -1160,7 +1739,7 @@ do_set(GConfEngine* conf, const gchar** args)
   
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify alternating keys/values as arguments\n"));
+      g_printerr (_("Must specify alternating keys/values as arguments\n"));
       return 1;
     }
 
@@ -1180,7 +1759,7 @@ do_set(GConfEngine* conf, const gchar** args)
 
       if (value == NULL)
         {
-          fprintf(stderr, _("No value to set for key: `%s'\n"), key);
+          g_printerr (_("No value to set for key: `%s'\n"), key);
           return 1;
         }
 
@@ -1208,7 +1787,7 @@ do_set(GConfEngine* conf, const gchar** args)
 
       if (type == GCONF_VALUE_SCHEMA)
         {
-          fprintf(stderr, _("Cannot set schema as value\n"));
+          g_printerr (_("Cannot set schema as value\n"));
           return 1;
 	}
 
@@ -1218,7 +1797,7 @@ do_set(GConfEngine* conf, const gchar** args)
           list_type != GCONF_VALUE_FLOAT &&
           list_type != GCONF_VALUE_BOOL)
         {
-          fprintf(stderr, _("When setting a list you must specify a primitive list-type\n"));
+          g_printerr (_("When setting a list you must specify a primitive list-type\n"));
           return 1;
 	}
 
@@ -1232,7 +1811,7 @@ do_set(GConfEngine* conf, const gchar** args)
             cdr_type != GCONF_VALUE_FLOAT &&
             cdr_type != GCONF_VALUE_BOOL)))
         {
-          fprintf(stderr, _("When setting a pair you must specify a primitive car-type and cdr-type\n"));
+          g_printerr (_("When setting a pair you must specify a primitive car-type and cdr-type\n"));
           return 1;
 	}
 
@@ -1247,8 +1826,8 @@ do_set(GConfEngine* conf, const gchar** args)
 
       if (gval == NULL)
         {
-          fprintf(stderr, _("Error: %s\n"),
-                  err->message);
+          g_printerr (_("Error: %s\n"),
+		      err->message);
           g_error_free(err);
           err = NULL;
           return 1;
@@ -1260,8 +1839,8 @@ do_set(GConfEngine* conf, const gchar** args)
 
       if (err != NULL)
         {
-          fprintf(stderr, _("Error setting value: %s\n"),
-                  err->message);
+          g_printerr (_("Error setting value: %s\n"),
+		      err->message);
           g_error_free(err);
           err = NULL;
           return 1;
@@ -1278,13 +1857,167 @@ do_set(GConfEngine* conf, const gchar** args)
 
   if (err != NULL)
     {
-      fprintf(stderr, _("Error syncing: %s\n"),
+      g_printerr (_("Error syncing: %s\n"),
               err->message);
       return 1;
     }
 
   return 0;
 }
+
+static int
+do_get_type(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+
+  if (args == NULL)
+    {
+      g_printerr (_("Must specify a key or keys to get type\n"));
+      return 1;
+    }
+      
+  while (*args)
+    {
+      GConfValue* value;
+
+      err = NULL;
+
+      value = get_maybe_without_default (conf, *args, &err);
+         
+      if (value != NULL)
+	{
+	  g_print ("%s\n", gconf_value_type_to_string (value->type));
+	}
+      else
+        {
+          if (err == NULL)
+            {
+              g_printerr (_("No value set for `%s'\n"), *args);
+            }
+          else
+            {
+              g_printerr (_("Failed to get value for `%s': %s\n"),
+			  *args, err->message);
+              g_error_free (err);
+              err = NULL;
+            }
+        }
+ 
+      ++args;
+    }
+  return 0;
+}
+
+static int
+do_get_list_size(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+  GConfValue *list = NULL;
+
+  if (args == NULL || *args == NULL)
+    {
+      g_printerr (_("Must specify a key to lookup size of.\n"));
+      return 1;
+    }
+
+  list = get_maybe_without_default (conf, *args, &err);
+
+  if (list == NULL)
+    {
+      if (err == NULL)
+	{
+	  g_printerr (_("No value set for `%s'\n"), *args);
+	}
+      else
+	{
+	  g_printerr (_("Failed to get value for `%s': %s\n"),
+		      *args, err->message);
+	  g_error_free (err);
+	  err = NULL;
+	}
+
+      return 1;
+    }
+
+  if (list->type != GCONF_VALUE_LIST)
+    {
+      g_printerr (_("Key %s is not a list.\n"), *args);
+      return 1;
+    }
+
+  g_print ("%u\n", g_slist_length (gconf_value_get_list (list)));
+
+  return 0;
+}
+
+static int
+do_get_list_element(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+  GConfValue *list = NULL, *element = NULL;
+  GSList *iter = NULL;
+  gchar* s = NULL;
+  int idx = 0;
+
+  if (args == NULL || *args == NULL)
+    {
+      g_printerr (_("Must specify a key from which to get list element.\n"));
+      return 1;
+    }
+
+  list = get_maybe_without_default (conf, *args, &err);
+
+  if (list == NULL)
+    {
+      if (err == NULL)
+	{
+	  g_printerr (_("No value set for `%s'\n"), *args);
+	}
+      else
+	{
+	  g_printerr (_("Failed to get value for `%s': %s\n"),
+		      *args, err->message);
+	  g_error_free (err);
+	  err = NULL;
+	}
+
+      return 1;
+    }
+
+  if (list->type != GCONF_VALUE_LIST)
+    {
+      g_printerr (_("Key %s is not a list.\n"), *args);
+      return 1;
+    }
+
+  if (args[1] == NULL)
+    {
+      g_printerr (_("Must specify list index.\n"));
+      return 1;
+    }
+
+  idx = atoi (args[1]);
+  if (idx < 0)
+    {
+      g_printerr (_("List index must be non-negative.\n"));
+      return 1;
+    }
+
+  iter = gconf_value_get_list (list);
+  element = g_slist_nth_data (iter, idx);
+
+  if (element == NULL)
+    {
+      g_printerr (_("List index is out of bounds.\n"));
+      return 1;
+    }
+
+  s = gconf_value_to_string (element);
+  g_print ("%s\n", s);
+  g_free (s);
+
+  return 0;
+} 
 
 enum
 {
@@ -1301,7 +2034,7 @@ do_schema_info (GConfEngine *conf, const gchar **args,
 
   if (args == NULL)
     {
-      fprintf (stderr, _("Must specify a key or keys on the command line\n"));
+      g_printerr (_("Must specify a key or keys on the command line\n"));
       return 1;
     }
       
@@ -1321,11 +2054,11 @@ do_schema_info (GConfEngine *conf, const gchar **args,
 
           if (s == NULL)
             {
-              fprintf (stderr, _("No schema known for `%s'\n"), *args);
+              g_printerr (_("No schema known for `%s'\n"), *args);
             }
           else if (info == SCHEMA_INFO_SCHEMA_NAME)
             {
-              printf ("%s\n", s);
+              g_print ("%s\n", s);
             }
           else
             {
@@ -1352,25 +2085,25 @@ do_schema_info (GConfEngine *conf, const gchar **args,
                     }
                   
                   if (docs)
-                    printf ("%s\n", docs);
+                    g_print ("%s\n", docs);
                   else
-                    fprintf (stderr, _("No doc string stored in schema at '%s'\n"),
-                             s);
+                    g_printerr (_("No doc string stored in schema at '%s'\n"),
+				s);
                 }
               else if (err != NULL)
                 {
-                  fprintf (stderr, _("Error getting schema at '%s': %s\n"),
-                           s, err->message);
+                  g_printerr (_("Error getting schema at '%s': %s\n"),
+			      s, err->message);
                   g_error_free (err);
                 }
               else
                 {
                   if (val == NULL)
-                    fprintf (stderr, _("No schema stored at '%s'\n"),
-                             s);
+                    g_printerr (_("No schema stored at '%s'\n"),
+				s);
                   else
-                    fprintf (stderr, _("Value at '%s' is not a schema\n"),
-                             s);
+                    g_printerr (_("Value at '%s' is not a schema\n"),
+				s);
                 }
 
               if (val)
@@ -1383,12 +2116,12 @@ do_schema_info (GConfEngine *conf, const gchar **args,
         {
           if (err == NULL)
             {
-              fprintf(stderr, _("No value set for `%s'\n"), *args);
+              g_printerr (_("No value set for `%s'\n"), *args);
             }
           else
             {
-              fprintf(stderr, _("Failed to get value for `%s': %s\n"),
-                      *args, err->message);
+              g_printerr (_("Failed to get value for `%s': %s\n"),
+			  *args, err->message);
               g_error_free(err);
               err = NULL;
             }
@@ -1423,17 +2156,17 @@ do_associate_schema (GConfEngine *conf, const gchar **args)
 {
   GError *err;
   
-  if (args[0] == NULL || args[1] == NULL || args[2] != NULL)
+  if (!args || args[0] == NULL || args[1] == NULL || args[2] != NULL)
     {
-      fprintf (stderr, _("Must specify a schema name followed by the key name to apply it to\n"));
+      g_printerr (_("Must specify a schema name followed by the key name to apply it to\n"));
       return 1;
     }
 
   err = NULL;
   if (!gconf_engine_associate_schema (conf, args[1], args[0], &err))
     {
-      fprintf (stderr, _("Error associating schema name '%s' with key name '%s': %s\n"),
-               args[0], args[1], err->message);
+      g_printerr (_("Error associating schema name '%s' with key name '%s': %s\n"),
+		  args[0], args[1], err->message);
       g_error_free (err);
 
       return 1;
@@ -1448,9 +2181,9 @@ do_dissociate_schema (GConfEngine *conf, const gchar **args)
   GError *err;
   gboolean failed;
   
-  if (args[0] == NULL)
+  if (!args || args[0] == NULL)
     {
-      fprintf (stderr, _("Must specify a schema name followed by the key name to apply it to\n"));
+      g_printerr (_("Must specify keys to unapply schema from\n"));
       return 1;
     }
 
@@ -1460,8 +2193,8 @@ do_dissociate_schema (GConfEngine *conf, const gchar **args)
       err = NULL;
       if (!gconf_engine_associate_schema (conf, *args, NULL, &err))
         {
-          fprintf (stderr, _("Error removing schema name from '%s': %s\n"),
-                   *args, err->message);
+          g_printerr (_("Error removing schema name from '%s': %s\n"),
+		      *args, err->message);
           g_error_free (err);
           failed = TRUE;
         }
@@ -1485,7 +2218,7 @@ do_set_schema(GConfEngine* conf, const gchar** args)
   
   if ((args == NULL) || (args[1] != NULL))
     {
-      fprintf(stderr, _("Must specify key (schema name) as the only argument\n"));
+      g_printerr (_("Must specify key (schema name) as the only argument\n"));
       return 1;
     }
       
@@ -1527,7 +2260,7 @@ do_set_schema(GConfEngine* conf, const gchar** args)
           type != GCONF_VALUE_FLOAT &&
           type != GCONF_VALUE_BOOL)
 	{
-          fprintf(stderr, _("List type must be a primitive type: string, int, float or bool\n"));
+          g_printerr (_("List type must be a primitive type: string, int, float or bool\n"));
           return 1;
 
 	}
@@ -1547,7 +2280,7 @@ do_set_schema(GConfEngine* conf, const gchar** args)
           type != GCONF_VALUE_FLOAT &&
           type != GCONF_VALUE_BOOL)
 	{
-          fprintf(stderr, _("Pair car type must be a primitive type: string, int, float or bool\n"));
+          g_printerr (_("Pair car type must be a primitive type: string, int, float or bool\n"));
           return 1;
 
 	}
@@ -1567,7 +2300,7 @@ do_set_schema(GConfEngine* conf, const gchar** args)
           type != GCONF_VALUE_FLOAT &&
           type != GCONF_VALUE_BOOL)
 	{
-          fprintf(stderr, _("Pair cdr type must be a primitive type: string, int, float or bool\n"));
+          g_printerr (_("Pair cdr type must be a primitive type: string, int, float or bool\n"));
           return 1;
 
 	}
@@ -1582,8 +2315,8 @@ do_set_schema(GConfEngine* conf, const gchar** args)
       
   if (err != NULL)
     {
-      fprintf(stderr, _("Error setting value: %s"),
-              err->message);
+      g_printerr (_("Error setting value: %s"),
+		  err->message);
       g_error_free(err);
       err = NULL;
       return 1;
@@ -1596,8 +2329,8 @@ do_set_schema(GConfEngine* conf, const gchar** args)
       
   if (err != NULL)
     {
-      fprintf(stderr, _("Error syncing: %s"),
-              err->message);
+      g_printerr (_("Error syncing: %s"),
+		  err->message);
       g_error_free(err);
       err = NULL;
       return 1;
@@ -1611,7 +2344,7 @@ do_all_entries(GConfEngine* conf, const gchar** args)
 {
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify one or more dirs to get key/value pairs from.\n"));
+      g_printerr (_("Must specify one or more directories to get key/value pairs from.\n"));
       return 1;
     }
   
@@ -1625,7 +2358,7 @@ do_unset(GConfEngine* conf, const gchar** args)
   
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify one or more keys to unset.\n"));
+      g_printerr (_("Must specify one or more keys to unset.\n"));
       return 1;
     }
 
@@ -1636,8 +2369,8 @@ do_unset(GConfEngine* conf, const gchar** args)
 
       if (err != NULL)
         {
-          fprintf(stderr, _("Error unsetting `%s': %s\n"),
-                  *args, err->message);
+          g_printerr (_("Error unsetting `%s': %s\n"),
+		      *args, err->message);
           g_error_free(err);
           err = NULL;
         }
@@ -1656,7 +2389,7 @@ do_recursive_unset (GConfEngine* conf, const gchar** args)
 {
   if (args == NULL)
     {
-      fprintf (stderr, _("Must specify one or more keys to recursively unset.\n"));
+      g_printerr (_("Must specify one or more keys to recursively unset.\n"));
       return 1;
     }  
       
@@ -1670,14 +2403,16 @@ do_recursive_unset (GConfEngine* conf, const gchar** args)
                                     &err);
       if (err != NULL)
         {
-          fprintf (stderr, _("Failure during recursive unset of \"%s\": %s\n"),
-                   *args, err->message);
+          g_printerr (_("Failure during recursive unset of \"%s\": %s\n"),
+		      *args, err->message);
           g_error_free (err);
         }
       
       ++args;
     }
 
+  gconf_engine_suggest_sync (conf, NULL); /* ignore errors */
+  
   return 0;
 }
 
@@ -1688,7 +2423,7 @@ do_all_subdirs(GConfEngine* conf, const gchar** args)
   
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify one or more dirs to get subdirs from.\n"));
+      g_printerr (_("Must specify one or more directories to get subdirs from.\n"));
       return 1;
     }
       
@@ -1709,7 +2444,7 @@ do_all_subdirs(GConfEngine* conf, const gchar** args)
             {
               gchar* s = tmp->data;
 
-              printf(" %s\n", s);
+              g_print (" %s\n", s);
 
               g_free(s);
 
@@ -1722,8 +2457,8 @@ do_all_subdirs(GConfEngine* conf, const gchar** args)
         {
           if (err != NULL)
             {
-              fprintf(stderr, _("Error listing dirs: %s\n"),
-                      err->message);
+              g_printerr (_("Error listing dirs: %s\n"),
+			  err->message);
               g_error_free(err);
               err = NULL;
             }
@@ -1733,6 +2468,474 @@ do_all_subdirs(GConfEngine* conf, const gchar** args)
     }
 
   return 0;
+}
+
+static void
+hash_listify_foreach(gpointer key, gpointer val, gpointer user_data)
+{
+  GSList** values;
+  GConfSchema* schema;
+  GConfValue* value;
+
+  values = user_data;
+  schema = val;
+
+  value = gconf_value_new(GCONF_VALUE_SCHEMA);
+
+  gconf_value_set_schema_nocopy(value, schema);
+
+  *values = g_slist_prepend(*values, value);
+}
+
+static int
+get_list_value_from_xml(xmlNodePtr node, GConfValue** ret_value)
+{
+  xmlNodePtr iter;
+  GConfValue* value = NULL;
+  GConfValueType list_type;
+  GSList* list = NULL;
+  char* list_type_str;
+
+  list_type_str = xmlGetProp(node, "type");
+  if (!list_type_str)
+    {
+      g_printerr ("WARNING: must specify a list type for using <list type=\"type\">\n");
+      return 1;
+    }
+
+  list_type = gconf_value_type_from_string(list_type_str);
+
+  xmlFree(list_type_str);
+
+  if (list_type == GCONF_VALUE_INVALID)
+    {
+      g_printerr ("WARNING: invalid list type '%s'\n", list_type_str);
+      return 1;
+    }
+
+  iter = node->xmlChildrenNode;
+
+  while (iter != NULL)
+    {
+      if (strcmp(iter->name, "value") == 0) 
+        {
+          GConfValue* element = NULL;
+
+          if (get_first_value_from_xml(iter, &element) == 0)
+            {
+              if (element->type == list_type)
+                list = g_slist_prepend (list, element);
+              else
+                g_printerr ("WARNING: list type and element type do not match: %s != %s\n",
+			    gconf_value_type_to_string (list_type),
+			    gconf_value_type_to_string (element->type));
+            }
+        }
+
+      iter = iter->next;
+    }
+
+  list = g_slist_reverse(list);
+
+  value = gconf_value_new(GCONF_VALUE_LIST);
+
+  gconf_value_set_list_type(value, list_type);
+  gconf_value_set_list_nocopy(value, list);
+
+  *ret_value = value;
+
+  return 0;
+}
+
+static inline void
+get_car_cdr_value(xmlNodePtr node, GConfValue** ret_value)
+{
+  xmlNodePtr iter;
+
+  iter = node->xmlChildrenNode;
+  while (iter != NULL)
+    {
+      if (strcmp(iter->name, "value") == 0)
+        get_first_value_from_xml(iter, ret_value);
+
+      iter = iter->next;
+    }
+}
+
+static int
+get_pair_value_from_xml(xmlNodePtr node, GConfValue** ret_value)
+{
+  xmlNodePtr iter;
+  GConfValue* value = NULL;
+  GConfValue* cdr = NULL;
+  GConfValue* car = NULL;
+  int retval = 0;
+
+  iter = node->xmlChildrenNode;
+
+  while (iter != NULL)
+    {
+      if (strcmp(iter->name, "car") == 0)
+        get_car_cdr_value(iter, &car);
+
+      else if (strcmp(iter->name, "cdr") == 0)
+        get_car_cdr_value(iter, &cdr);
+
+      iter = iter->next;
+    }
+
+  if (car && cdr)
+    {
+      value = gconf_value_new(GCONF_VALUE_PAIR);
+
+      gconf_value_set_car(value, car);
+      gconf_value_set_cdr(value, cdr);
+    }
+  else
+    {
+      g_printerr (_("WARNING: must specify both a <car> and a <cdr> in a <pair>\n"));
+      retval = 1;
+    }
+
+  if (car)
+    gconf_value_free(car);
+  if (cdr)
+    gconf_value_free(cdr);
+
+  *ret_value = value;
+
+  return retval;
+}
+
+static int
+get_schema_values_from_xml(xmlNodePtr node, GSList** ret_values)
+{
+  GHashTable* schemas_hash;
+  GSList* values = NULL;
+  GSList* applyto_list;
+  GSList* tmp;
+  gchar* schema_key;
+    
+  if (get_schema_from_xml(node, &schema_key, &schemas_hash, &applyto_list) == 1)
+    return 1;
+    
+  if (schema_key != NULL)
+    g_printerr (_("WARNING: key specified (%s) for schema under a <value> - ignoring\n"),
+            schema_key);
+    
+  g_hash_table_foreach(schemas_hash, hash_listify_foreach, &values);
+    
+  g_hash_table_destroy(schemas_hash);
+    
+  tmp = applyto_list;
+  while (tmp != NULL)
+    {
+      g_free(tmp->data);
+      tmp = tmp->next;
+    }
+  g_slist_free(applyto_list);
+    
+  g_free(schema_key);
+
+  *ret_values = values;
+
+  return 0;
+}
+
+static int
+get_values_from_xml(xmlNodePtr node, GSList** ret_values)
+{
+  xmlNodePtr iter;
+  GSList* values = NULL;
+  GConfValue* value = NULL;
+
+  iter = node->xmlChildrenNode;
+
+  if (!iter)
+    {
+      g_printerr (_("WARNING: must have a child node under <value>\n"));
+      return 1;
+    }
+
+  if (strcmp(node->name, "value") != 0)
+    {
+      g_printerr (_("WARNING: node <%s> not understood\n"), node->name);
+      return 1;
+    }
+
+  while (iter)
+    {
+      GError* error = NULL;
+      char* content;
+
+      if (strcmp(iter->name, "int") == 0)
+        {
+          if ((content = xmlNodeGetContent(iter)) != NULL)
+            {
+              value = gconf_value_new_from_string(GCONF_VALUE_INT, content, &error);
+              if (value == NULL)
+                {
+                  g_assert(error != NULL);
+    
+                  g_printerr (_("WARNING: Failed to parse int value `%s'\n"), content);
+    
+                  g_error_free(error);
+                  error = NULL;
+                }
+              else
+                {
+                  g_assert(error == NULL);
+                }
+              xmlFree(content);
+            }
+        }
+      else if (strcmp(iter->name, "float") == 0)
+        {
+          if ((content = xmlNodeGetContent(iter)) != NULL)
+            {
+              value = gconf_value_new_from_string(GCONF_VALUE_FLOAT, content, &error);
+              if (value == NULL)
+                {
+                  g_assert(error != NULL);
+    
+                  g_printerr (_("WARNING: Failed to parse float value `%s'\n"), content);
+    
+                  g_error_free(error);
+                  error = NULL;
+                }
+              else
+                {
+                  g_assert(error == NULL);
+                }
+              xmlFree(content);
+            }
+    
+        }
+      else if (strcmp(iter->name, "string") == 0)
+        {
+          if ((content = xmlNodeGetContent(iter)) != NULL)
+            {
+              value = gconf_value_new_from_string(GCONF_VALUE_STRING, content, &error);
+              if (value == NULL)
+                {
+                  g_assert(error != NULL);
+    
+                  g_printerr (_("WARNING: Failed to parse string value `%s'\n"), content);
+    
+                  g_error_free(error);
+                  error = NULL;
+                }
+              else
+                {
+                  g_assert(error == NULL);
+                }
+              xmlFree(content);
+            }
+        }
+      else if (strcmp(iter->name, "bool") == 0)
+        {
+          if ((content = xmlNodeGetContent(iter)) != NULL)
+            {
+              value = gconf_value_new_from_string(GCONF_VALUE_BOOL, content, &error);
+              if (value == NULL)
+                {
+                  g_assert(error != NULL);
+    
+                  g_printerr (_("WARNING: Failed to parse boolean value `%s'\n"), content);
+    
+                  g_error_free(error);
+                  error = NULL;
+                }
+              else
+                {
+                  g_assert(error == NULL);
+                }
+              xmlFree(content);
+            }
+        }
+      else if (strcmp(iter->name, "list") == 0)
+        get_list_value_from_xml(iter, &value);
+
+      else if (strcmp(iter->name, "pair") == 0)
+        get_pair_value_from_xml(iter, &value);
+
+      else if (strcmp(iter->name, "schema") == 0)
+        get_schema_values_from_xml(iter, &values);
+
+      iter = iter->next;
+    }    
+
+  /* common case */
+  if (value)
+    {
+      g_assert (values == NULL);
+      values = g_slist_prepend(values, value);
+    }
+
+  *ret_values = values;
+
+  return 0;
+}
+
+/* Confusingly, parsing a <value> can give you multiple
+ * values in the case of schemas. Use this if you're sure
+ * there it can't be a schema.
+ */
+static int
+get_first_value_from_xml(xmlNodePtr node, GConfValue** ret_value)
+{
+  GConfValue* value = NULL;
+  GSList* values;
+  GSList* tmp;
+
+  if (get_values_from_xml(node, &values) == 1)
+    return 1;
+
+  g_assert (g_slist_length(values) <= 1);
+
+  tmp = values;
+  while (tmp)
+    {
+      if (!value)
+        value = tmp->data;
+      else
+        gconf_value_free(tmp->data);
+      tmp = tmp->next;
+    }
+  g_slist_free(values);
+
+  *ret_value = value;
+
+  return 0;
+}
+
+/*
+ * Loading entries
+ */
+
+typedef struct {
+  gchar *key;
+  GConfValueType type;
+  GConfValueType list_type;
+  GConfValueType car_type;
+  GConfValueType cdr_type;
+  GConfValue* value;
+} EntryInfo;
+
+static void
+set_values(GConfEngine* conf, gboolean unload, const gchar* base_dir, const gchar* key, const char* schema_key, GSList* values)
+{
+  GSList* tmp;
+  gchar* full_key;
+ 
+  if (base_dir)
+    full_key = gconf_concat_dir_and_key(base_dir, key);
+  else
+    full_key = g_strdup(key);
+
+  if (unload || schema_key)
+    {
+      gchar* full_schema_key = NULL;
+      GError* error = NULL;
+
+      if (!unload)
+        {
+          if (base_dir && *schema_key != '/')
+            full_schema_key = gconf_concat_dir_and_key(base_dir, schema_key);
+          else
+            full_schema_key = g_strdup(schema_key);
+        }
+
+      if (!gconf_engine_associate_schema(conf, full_key, full_schema_key,  &error))
+        {
+          g_assert(error != NULL);
+          
+          g_printerr (_("WARNING: failed to associate schema `%s' with key `%s': %s\n"),
+                      full_schema_key, full_key, error->message);
+          g_error_free(error);
+        }
+
+      g_free(full_schema_key);
+    }
+
+  tmp = values;
+  while (tmp)
+    {
+      GConfValue* value = tmp->data;
+      GError* error;
+
+      error = NULL;
+      if (!unload)
+        gconf_engine_set(conf, full_key, value, &error);
+      else
+        gconf_engine_unset(conf, full_key, &error);
+      if (error != NULL)
+        {
+          g_printerr (_("Error setting value: %s\n"), error->message);
+          g_error_free(error);
+          error = NULL;
+        }
+
+      tmp = tmp->next;
+    }
+
+  g_free(full_key);
+}
+
+static int
+process_entry(GConfEngine* conf, gboolean unload, xmlNodePtr node, const gchar** base_dirs, const char* orig_base)
+{
+  xmlNodePtr iter;
+  GSList* values = NULL;
+  GSList* tmp;
+  char* key = NULL;
+  char* schema_key = NULL;
+  int retval = 0;
+
+  iter = node->xmlChildrenNode;
+  while (iter)
+    {
+      if (strcmp(iter->name, "key") == 0)
+        key = xmlNodeGetContent(iter);
+
+      else if (strcmp(iter->name, "value") == 0)
+        get_values_from_xml(iter, &values);
+
+      else if (strcmp(iter->name, "schema_key") == 0)
+        schema_key = xmlNodeGetContent(iter);
+
+      iter = iter->next;
+    }
+
+  if (key && (values || schema_key))
+    {
+      if (!base_dirs)
+        set_values(conf, unload, orig_base, key, schema_key, values);
+
+      else while (*base_dirs)
+        {
+          set_values(conf, unload, *base_dirs, key, schema_key, values);
+          ++base_dirs;
+        }
+    }
+  else
+    retval = 1;
+
+  tmp = values;
+  while (tmp)
+    {
+      gconf_value_free(tmp->data);
+      tmp = tmp->next;
+    }
+  g_slist_free(values);
+
+  if (key)
+    xmlFree(key);
+
+  if (schema_key)
+    xmlFree(schema_key);
+
+  return retval;
 }
 
 /*
@@ -1751,21 +2954,19 @@ struct _SchemaInfo {
   GConfValueType cdr_type;
   GConfValue* global_default;
   GHashTable* hash;
-  GConfEngine* conf;
 };
 
 static int
 fill_default_from_string(SchemaInfo* info, const gchar* default_value,
                          GConfValue** retloc)
 {
-  g_return_val_if_fail(info->key != NULL, 1);
   g_return_val_if_fail(default_value != NULL, 1);
 
   switch (info->type)
     {
     case GCONF_VALUE_INVALID:
-      fprintf(stderr, _("WARNING: invalid or missing type for schema (%s)\n"),
-              info->key);
+      g_printerr (_("WARNING: invalid or missing type for schema (%s)\n"),
+		  info->key);
       break;
 
     case GCONF_VALUE_LIST:
@@ -1773,8 +2974,8 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
         GError* error = NULL;
         if (info->list_type == GCONF_VALUE_INVALID)
 	  {
-            fprintf(stderr, _("WARNING: invalid or missing list_type for schema (%s)\n"),
-                    info->key);
+            g_printerr (_("WARNING: invalid or missing list_type for schema (%s)\n"),
+			info->key);
             break;
 	  }
         *retloc = gconf_value_new_list_from_string(info->list_type,
@@ -1784,7 +2985,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
           {
             g_assert(error != NULL);
 
-            fprintf(stderr, _("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
+            g_printerr (_("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
 
             g_error_free(error);
             error = NULL;
@@ -1802,7 +3003,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
         if (info->car_type == GCONF_VALUE_INVALID ||
 	    info->cdr_type == GCONF_VALUE_INVALID)
 	  {
-            fprintf(stderr, _("WARNING: invalid or missing car_type or cdr_type for schema (%s)\n"),
+            g_printerr (_("WARNING: invalid or missing car_type or cdr_type for schema (%s)\n"),
                     info->key);
             break;
 	  }
@@ -1814,7 +3015,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
           {
             g_assert(error != NULL);
 
-            fprintf(stderr, _("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
+            g_printerr (_("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
 
             g_error_free(error);
             error = NULL;
@@ -1827,7 +3028,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
       break;
 
     case GCONF_VALUE_SCHEMA:
-      fprintf(stderr, _("WARNING: You cannot set a default value for a schema\n"));
+      g_printerr (_("WARNING: You cannot set a default value for a schema\n"));
       break;
 
     case GCONF_VALUE_STRING:
@@ -1843,7 +3044,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
           {
             g_assert(error != NULL);
 
-            fprintf(stderr, _("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
+            g_printerr (_("WARNING: Failed to parse default value `%s' for schema (%s)\n"), default_value, info->key);
 
             g_error_free(error);
             error = NULL;
@@ -1856,7 +3057,7 @@ fill_default_from_string(SchemaInfo* info, const gchar* default_value,
       break;
       
     default:
-      fprintf(stderr, _("WARNING: gconftool internal error, unknown GConfValueType\n"));
+      g_printerr (_("WARNING: gconftool internal error, unknown GConfValueType\n"));
       break;
     }
 
@@ -1868,6 +3069,7 @@ extract_global_info(xmlNodePtr node,
                     SchemaInfo* info)
 {
   xmlNodePtr iter;
+  xmlNodePtr default_value_node = NULL;
   char* default_value = NULL;
       
   iter = node->xmlChildrenNode;
@@ -1903,8 +3105,8 @@ extract_global_info(xmlNodePtr node,
                 {
                   info->type = gconf_value_type_from_string(tmp);
                   if (info->type == GCONF_VALUE_INVALID)
-                    fprintf(stderr, _("WARNING: failed to parse type name `%s'\n"),
-                            tmp);
+                    g_printerr (_("WARNING: failed to parse type name `%s'\n"),
+				tmp);
                   xmlFree(tmp);
                 }
             }
@@ -1920,12 +3122,12 @@ extract_global_info(xmlNodePtr node,
 		      info->list_type != GCONF_VALUE_BOOL)
 		    {
 		      info->list_type = GCONF_VALUE_INVALID;
-                      fprintf(stderr, _("WARNING: list_type can only be int, float, string or bool and not `%s'\n"),
-                              tmp);
+                      g_printerr (_("WARNING: list_type can only be int, float, string or bool and not `%s'\n"),
+				  tmp);
 		    }
                   else if (info->list_type == GCONF_VALUE_INVALID)
-                    fprintf(stderr, _("WARNING: failed to parse type name `%s'\n"),
-                            tmp);
+                    g_printerr (_("WARNING: failed to parse type name `%s'\n"),
+				tmp);
     		  xmlFree(tmp);
                 }
             }
@@ -1941,12 +3143,12 @@ extract_global_info(xmlNodePtr node,
 		      info->car_type != GCONF_VALUE_BOOL)
 		    {
 		      info->car_type = GCONF_VALUE_INVALID;
-                      fprintf(stderr, _("WARNING: car_type can only be int, float, string or bool and not `%s'\n"),
-                              tmp);
+                      g_printerr (_("WARNING: car_type can only be int, float, string or bool and not `%s'\n"),
+				  tmp);
 		    }
                   else if (info->car_type == GCONF_VALUE_INVALID)
-                    fprintf(stderr, _("WARNING: failed to parse type name `%s'\n"),
-                            tmp);
+                    g_printerr (_("WARNING: failed to parse type name `%s'\n"),
+				tmp);
                   xmlFree(tmp);
                 }
             }
@@ -1962,18 +3164,30 @@ extract_global_info(xmlNodePtr node,
 		      info->cdr_type != GCONF_VALUE_BOOL)
 		    {
 		      info->cdr_type = GCONF_VALUE_INVALID;
-                      fprintf(stderr, _("WARNING: cdr_type can only be int, float, string or bool and not `%s'\n"),
-                              tmp);
+                      g_printerr (_("WARNING: cdr_type can only be int, float, string or bool and not `%s'\n"),
+				  tmp);
 		    }
                   else if (info->cdr_type == GCONF_VALUE_INVALID)
-                    fprintf(stderr, _("WARNING: failed to parse type name `%s'\n"),
-                            tmp);
+                    g_printerr (_("WARNING: failed to parse type name `%s'\n"),
+				tmp);
                   xmlFree(tmp);
                 }
             }
           else if (strcmp(iter->name, "default") == 0)
             {
               default_value = xmlNodeGetContent(iter);
+            }
+          else if (strcmp(iter->name, "default_value") == 0)
+            {
+              xmlNodePtr tmp_node = iter->xmlChildrenNode;
+
+              while (tmp_node)
+                {
+                  if (strcmp(tmp_node->name, "value") == 0)
+                    default_value_node = tmp_node;
+
+                  tmp_node = tmp_node->next;
+                }
             }
           else if (strcmp(iter->name, "locale") == 0)
             {
@@ -1987,59 +3201,49 @@ extract_global_info(xmlNodePtr node,
               if (tmp)
                 {
                   info->apply_to = g_slist_prepend(info->apply_to, g_strdup(tmp));
-                  free(tmp);
+                  xmlFree(tmp);
                 }
               else
-                fprintf(stderr, _("WARNING: empty <applyto> node"));
+                g_printerr (_("WARNING: empty <applyto> node"));
             }
           else
-            fprintf(stderr, _("WARNING: node <%s> not understood below <schema>\n"),
-                    iter->name);
+            g_printerr (_("WARNING: node <%s> not understood below <schema>\n"),
+			iter->name);
 
         }
       
       iter = iter->next;
     }
 
-  if (info->key == NULL)
-    {
-      fprintf(stderr, _("WARNING: no key specified for schema\n"));
-      if (default_value != NULL)
-        free(default_value);
-      return 1;
-    }
-
-  g_assert(info->key != NULL);
-
   if (info->type == GCONF_VALUE_LIST &&
       info->list_type == GCONF_VALUE_INVALID)
     {
-      fprintf(stderr, _("WARNING: no <list_type> specified for schema of type list\n"));
+      g_printerr (_("WARNING: no <list_type> specified for schema of type list\n"));
     }
-
 
   if (info->type == GCONF_VALUE_PAIR &&
       info->car_type == GCONF_VALUE_INVALID)
     {
-      fprintf(stderr, _("WARNING: no <car_type> specified for schema of type pair\n"));
+      g_printerr (_("WARNING: no <car_type> specified for schema of type pair\n"));
     }
 
   if (info->type == GCONF_VALUE_PAIR &&
       info->cdr_type == GCONF_VALUE_INVALID)
     {
-      fprintf(stderr, _("WARNING: no <cdr_type> specified for schema of type pair\n"));
+      g_printerr (_("WARNING: no <cdr_type> specified for schema of type pair\n"));
     }
   
-  /* Have to do this last, because the type may come after the default
-     value
-  */
-  if (default_value != NULL)
-    {
-      fill_default_from_string(info, default_value, &info->global_default);
+  if (default_value_node != NULL)
+    get_first_value_from_xml (default_value_node, &info->global_default);
 
-      free(default_value);
-      default_value = NULL;
-    }
+  else if (default_value != NULL)
+    /* Have to do this last, because the type may come after the default
+     * value
+     */
+    fill_default_from_string(info, default_value, &info->global_default);
+
+  if (default_value)
+    xmlFree(default_value);
 
   return 0;
 }
@@ -2055,13 +3259,13 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
 
   if (name == NULL)
     {
-      fprintf(stderr, _("WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"));
+      g_printerr (_("WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"));
       return 1;
     }
 
   if (g_hash_table_lookup(info->hash, name) != NULL)
     {
-      fprintf(stderr, _("WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"),
+      g_printerr (_("WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"),
               name);
       xmlFree(name);
       return 1;
@@ -2071,12 +3275,11 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
 
   gconf_schema_set_locale(schema, name);
 
-  xmlFree(name);
+  /* Only set the global default on the C locale */
+  if (strcmp(name, "C") == 0 && info->global_default != NULL)
+    gconf_schema_set_default_value(schema, info->global_default);
 
   /* Fill in the global info */
-  if (info->global_default != NULL)
-    gconf_schema_set_default_value(schema, info->global_default);
-      
   if (info->type != GCONF_VALUE_INVALID)
     gconf_schema_set_type(schema, info->type);
 
@@ -2092,6 +3295,7 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
   if (info->owner != NULL)
     gconf_schema_set_owner(schema, info->owner);
 
+  xmlFree(name);
 
   /* Locale-specific info */
   iter = node->xmlChildrenNode;
@@ -2100,17 +3304,34 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
     {
       if (iter->type == XML_ELEMENT_NODE)
         {
-          if (strcmp(iter->name, "default") == 0)
+          if (strcmp(iter->name, "default_value") == 0)
+            {
+              GConfValue* val = NULL;
+              xmlNodePtr tmp_node;
+
+              tmp_node = iter->xmlChildrenNode;
+              while (tmp_node)
+                {
+                  if (strcmp(tmp_node->name, "value") == 0)
+                    {
+                      get_first_value_from_xml(tmp_node, &val);
+                      if (val)
+                        gconf_schema_set_default_value_nocopy(schema, val);
+                      break;
+                    }
+                  tmp_node = tmp_node->next;
+                }
+            }
+          else if (strcmp(iter->name, "default") == 0)
             {
               GConfValue* val = NULL;
               char* tmp;
 
               tmp = xmlNodeGetContent(iter);
-
               if (tmp != NULL)
                 {
                   fill_default_from_string(info, tmp, &val);
-                  if (val != NULL)
+                  if (val)
                     gconf_schema_set_default_value_nocopy(schema, val);
 
                   xmlFree(tmp);
@@ -2142,8 +3363,8 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
             }
           else
             {
-              fprintf(stderr, _("WARNING: Invalid node <%s> in a <locale> node\n"),
-                      iter->name);
+              g_printerr (_("WARNING: Invalid node <%s> in a <locale> node\n"),
+			  iter->name);
             }
         }
       
@@ -2157,60 +3378,30 @@ process_locale_info(xmlNodePtr node, SchemaInfo* info)
   return 0;
 }
 
-static void
-hash_foreach(gpointer key, gpointer value, gpointer user_data)
-{
-  SchemaInfo* info;
-  GConfSchema* schema;
-  GError* error = NULL;
-  
-  info = user_data;
-  schema = value;
-  
-  if (!gconf_engine_set_schema(info->conf, info->key, schema, &error))
-    {
-      g_assert(error != NULL);
-
-      fprintf(stderr, _("WARNING: failed to install schema `%s' locale `%s': %s\n"),
-              info->key, gconf_schema_get_locale(schema), error->message);
-      g_error_free(error);
-      error = NULL;
-    }
-  else
-    {
-      g_assert(error == NULL);
-      printf(_("Installed schema `%s' for locale `%s'\n"),
-             info->key, gconf_schema_get_locale(schema));
-    }
-      
-  gconf_schema_free(schema);
-}
-
-
 static int
-process_key_list(GConfEngine* conf, const gchar* schema_name, GSList* keylist)
+process_key_list(GConfEngine* conf, gboolean unload, const gchar* schema_name, GSList* keylist)
 {
   GSList* tmp;
-  GError* error = NULL;
 
   tmp = keylist;
-
   while (tmp != NULL)
     {
-      if (!gconf_engine_associate_schema(conf, tmp->data, schema_name,  &error))
+      GError* error = NULL;
+
+      if (!gconf_engine_associate_schema(conf, tmp->data, !unload ? schema_name : NULL, &error))
         {
           g_assert(error != NULL);
           
-          fprintf(stderr, _("WARNING: failed to associate schema `%s' with key `%s': %s\n"),
-                  schema_name, (gchar*)tmp->data, error->message);
+          g_printerr (_("WARNING: failed to associate schema `%s' with key `%s': %s\n"),
+		      schema_name, (gchar*)tmp->data, error->message);
           g_error_free(error);
           error = NULL;
         }
       else
         {
           g_assert(error == NULL);
-          printf(_("Attached schema `%s' to key `%s'\n"),
-                 schema_name, (gchar*)tmp->data);
+          g_print (_("Attached schema `%s' to key `%s'\n"),
+		   schema_name, (gchar*)tmp->data);
         }
           
       tmp = g_slist_next(tmp);
@@ -2220,7 +3411,7 @@ process_key_list(GConfEngine* conf, const gchar* schema_name, GSList* keylist)
 }
 
 static int
-process_schema(GConfEngine* conf, xmlNodePtr node)
+get_schema_from_xml(xmlNodePtr node, gchar **schema_key, GHashTable** schemas_hash, GSList **applyto_list)
 {
   xmlNodePtr iter;
   SchemaInfo info;
@@ -2234,11 +3425,10 @@ process_schema(GConfEngine* conf, xmlNodePtr node)
   info.owner = NULL;
   info.global_default = NULL;
   info.hash = g_hash_table_new(g_str_hash, g_str_equal);
-  info.conf = conf;
   
   extract_global_info(node, &info);
 
-  if (info.key == NULL || info.type == GCONF_VALUE_INVALID)
+  if (info.type == GCONF_VALUE_INVALID)
     {
       g_free(info.owner);
 
@@ -2275,29 +3465,23 @@ process_schema(GConfEngine* conf, xmlNodePtr node)
               process_locale_info(iter, &info);
             }
           else
-            fprintf(stderr, _("WARNING: node <%s> not understood below <schema>\n"),
-                    iter->name);
+            g_printerr (_("WARNING: node <%s> not understood below <schema>\n"),
+			iter->name);
         }
           
       iter = iter->next;
     }
 
-  /* Attach schema to keys */
-
-  process_key_list(conf, info.key, info.apply_to);
-
   if (g_hash_table_size(info.hash) == 0)
     {
-      fprintf(stderr, _("You must have at least one <locale> entry in a <schema>\n"));
+      g_printerr (_("You must have at least one <locale> entry in a <schema>\n"));
       return 1;
     }
+
+  *schema_key = info.key;
+  *schemas_hash = info.hash;
+  *applyto_list = info.apply_to;
       
-  /* Now install each schema in the hash into the GConfEngine */
-  g_hash_table_foreach(info.hash, hash_foreach, &info);
-
-  g_hash_table_destroy(info.hash);
-
-  g_free(info.key);
   g_free(info.owner);
   if (info.global_default)
     gconf_value_free(info.global_default);
@@ -2305,33 +3489,152 @@ process_schema(GConfEngine* conf, xmlNodePtr node)
   return 0;
 }
 
-static int
-process_schema_list(GConfEngine* conf, xmlNodePtr node)
+static void
+hash_install_foreach(gpointer key, gpointer value, gpointer user_data)
 {
-  xmlNodePtr iter;
+  struct {
+    GConfEngine* conf;
+    gboolean unload;
+    char* key;
+  } *info;
+  GConfSchema* schema;
+  GError* error = NULL;
+  
+  info = user_data;
+  schema = value;
 
+  if (!info->unload)
+    {
+      if (!gconf_engine_set_schema(info->conf, info->key, schema, &error))
+	{
+	  g_assert(error != NULL);
+
+	  g_printerr (_("WARNING: failed to install schema `%s' locale `%s': %s\n"),
+		      info->key, gconf_schema_get_locale(schema), error->message);
+	  g_error_free(error);
+	  error = NULL;
+	}
+      else
+	{
+	  g_assert(error == NULL);
+	  g_print (_("Installed schema `%s' for locale `%s'\n"),
+		   info->key, gconf_schema_get_locale(schema));
+	}
+    }
+  else
+    {
+      if (!gconf_engine_unset (info->conf, info->key, &error))
+	{
+	  g_assert(error != NULL);
+
+	  g_printerr (_("WARNING: failed to uninstall schema `%s' locale `%s': %s\n"),
+		      info->key, gconf_schema_get_locale(schema), error->message);
+	  g_error_free(error);
+	  error = NULL;
+	}
+      else
+	{
+	  g_assert(error == NULL);
+	  g_print (_("Uninstalled schema `%s' from locale `%s'\n"),
+		   info->key, gconf_schema_get_locale(schema));
+	}
+    }
+
+  gconf_schema_free(schema);
+}
+
+static int
+process_schema(GConfEngine* conf, gboolean unload, xmlNodePtr node)
+{
+  struct {
+    GConfEngine* conf;
+    gboolean unload;
+    char* key;
+  } hash_foreach_info;
+  GHashTable* schemas_hash = NULL;
+  GSList* applyto_list = NULL;
+  GSList* tmp;
+  gchar* schema_key = NULL;
+  int retval = 0;
+
+  if (get_schema_from_xml(node, &schema_key, &schemas_hash, &applyto_list) == 1)
+    return 1;
+
+  g_assert(schemas_hash != NULL);
+
+  if (schema_key != NULL)
+    {
+      process_key_list(conf, unload, schema_key, applyto_list);
+
+      hash_foreach_info.conf = conf;
+      hash_foreach_info.unload = unload;
+      hash_foreach_info.key = schema_key;
+      g_hash_table_foreach(schemas_hash, hash_install_foreach, &hash_foreach_info);
+    }
+  else
+    {
+      g_printerr (_("WARNING: no key specified for schema\n"));
+      retval = 1;
+    }
+
+  g_hash_table_destroy(schemas_hash);
+
+  tmp = applyto_list;
+  while (tmp != NULL)
+    {
+      g_free(tmp->data);
+      tmp = tmp->next;
+    }
+  g_slist_free(applyto_list);
+
+  g_free(schema_key);
+
+  return retval;
+}
+
+static int
+process_list(GConfEngine* conf, LoadType load_type, gboolean unload, xmlNodePtr node, const gchar** base_dirs)
+{
+#define LOAD_TYPE_TO_LIST(t) ((t == LOAD_SCHEMA_FILE) ? "schemalist" : "entrylist")
+
+  xmlNodePtr iter;
+  char* orig_base = NULL;
+  
   iter = node->xmlChildrenNode;
+
+  if (load_type == LOAD_ENTRY_FILE)
+    orig_base = xmlGetProp(node, "base");
 
   while (iter != NULL)
     {
       if (iter->type == XML_ELEMENT_NODE)
         {
-          if (strcmp(iter->name, "schema") == 0)
-            process_schema(conf, iter);
+          if (load_type == LOAD_SCHEMA_FILE && strcmp(iter->name, "schema") == 0)
+            process_schema(conf, unload, iter);
+          else if (load_type == LOAD_ENTRY_FILE && strcmp(iter->name, "entry") == 0)
+            process_entry(conf, unload, iter, base_dirs, orig_base);
           else
-            fprintf(stderr, _("WARNING: node <%s> not understood below <schemalist>\n"),
-                    iter->name);
+            g_printerr (_("WARNING: node <%s> not understood below <%s>\n"),
+			iter->name, LOAD_TYPE_TO_LIST(load_type));
         }
       
       iter = iter->next;
     }
 
+  if (orig_base)
+    xmlFree(orig_base);
+
   return 0;
+
+#undef LOAD_TYPE_TO_LIST
 }
 
 static int
-do_load_schema_file(GConfEngine* conf, const gchar* file)
+do_load_file(GConfEngine* conf, LoadType load_type, gboolean unload, const gchar* file, const gchar** base_dirs)
 {
+#define LOAD_TYPE_TO_ROOT(t) ((t == LOAD_SCHEMA_FILE) ? "gconfschemafile" : "gconfentryfile")
+#define LOAD_TYPE_TO_LIST(t) ((t == LOAD_SCHEMA_FILE) ? "schemalist" : "entrylist")
+
   xmlDocPtr doc;
   xmlNodePtr iter;
   GError * err = NULL;
@@ -2342,15 +3645,15 @@ do_load_schema_file(GConfEngine* conf, const gchar* file)
   if (doc == NULL)
     {
       if (errno != 0)
-        fprintf(stderr, _("Failed to open `%s': %s\n"),
-                file, strerror(errno));
+        g_printerr (_("Failed to open `%s': %s\n"),
+		    file, strerror(errno));
       return 1;
     }
 
   if (doc->xmlRootNode == NULL)
     {
-      fprintf(stderr, _("Document `%s' is empty?\n"),
-              file);
+      g_printerr (_("Document `%s' is empty?\n"),
+		  file);
       return 1;
     }
 
@@ -2359,10 +3662,10 @@ do_load_schema_file(GConfEngine* conf, const gchar* file)
     {
       if (iter->type == XML_ELEMENT_NODE)
         { 
-          if (strcmp(iter->name, "gconfschemafile") != 0)
+          if (strcmp(iter->name, LOAD_TYPE_TO_ROOT(load_type)) != 0)
             {
-              fprintf(stderr, _("Document `%s' has the wrong type of root node (<%s>, should be <gconfschemafile>)\n"),
-                      file, iter->name);
+              g_printerr (_("Document `%s' has the wrong type of root node (<%s>, should be <%s>)\n"),
+			  file, iter->name, LOAD_TYPE_TO_ROOT(load_type));
               return 1;
             }
           else
@@ -2374,8 +3677,8 @@ do_load_schema_file(GConfEngine* conf, const gchar* file)
   
   if (iter == NULL)
     {
-      fprintf(stderr, _("Document `%s' has no top level <gconfschemafile> node\n"),
-              file);
+      g_printerr (_("Document `%s' has no top level <%s> node\n"),
+		  file, LOAD_TYPE_TO_ROOT(load_type));
       return 1;
     }
 
@@ -2385,11 +3688,11 @@ do_load_schema_file(GConfEngine* conf, const gchar* file)
     {
       if (iter->type == XML_ELEMENT_NODE)
         {
-          if (strcmp(iter->name, "schemalist") == 0)
-            process_schema_list(conf, iter);
+          if (strcmp(iter->name, LOAD_TYPE_TO_LIST(load_type)) == 0)
+            process_list(conf, load_type, unload, iter, base_dirs);
           else
-            fprintf(stderr, _("WARNING: node <%s> below <gconfschemafile> not understood\n"),
-                    iter->name);
+            g_printerr (_("WARNING: node <%s> below <%s> not understood\n"),
+			iter->name, LOAD_TYPE_TO_ROOT(load_type));
         }
           
       iter = iter->next;
@@ -2399,29 +3702,32 @@ do_load_schema_file(GConfEngine* conf, const gchar* file)
 
   if (err != NULL)
     {
-      fprintf(stderr, _("Error syncing config data: %s"),
-              err->message);
+      g_printerr (_("Error syncing config data: %s"),
+		  err->message);
       g_error_free(err);
       return 1;
     }
   
   return 0;
+
+#undef LOAD_TYPE_TO_LIST
+#undef LOAD_TYPE_TO_ROOT
 }
 
 static int
-do_makefile_install(GConfEngine* conf, const gchar** args)
+do_makefile_install(GConfEngine* conf, const gchar** args, gboolean unload)
 {
   GError* err = NULL;
   
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify some schema files to install\n"));
+      g_printerr (_("Must specify some schema files to install\n"));
       return 1;
     }
 
   while (*args)
     {
-      if (do_load_schema_file(conf, *args) != 0)
+      if (do_load_file(conf, LOAD_SCHEMA_FILE, unload, *args, NULL) != 0)
         return 1;
 
       ++args;
@@ -2431,8 +3737,8 @@ do_makefile_install(GConfEngine* conf, const gchar** args)
 
   if (err != NULL)
     {
-      fprintf(stderr, _("Error syncing config data: %s"),
-              err->message);
+      g_printerr (_("Error syncing config data: %s"),
+		  err->message);
       g_error_free(err);
       return 1;
     }
@@ -2448,12 +3754,12 @@ typedef enum {
 static gboolean
 check_err(GError** err)
 {
-  printf(".");
+  g_print (".");
   
   if (*err != NULL)
     {
-      fprintf(stderr, _("\n%s\n"),
-              (*err)->message);
+      g_printerr (_("\n%s\n"),
+		  (*err)->message);
       g_error_free(*err);
       *err = NULL;
       return TRUE;
@@ -2472,8 +3778,8 @@ key_breakage(GConfEngine* conf, const gchar* key, BreakagePhase phase)
       gconf_engine_unset(conf, key, &error);
       if (error != NULL)
         {
-          fprintf(stderr, _("Failed to unset breakage key %s: %s\n"),
-                  key, error->message);
+          g_printerr (_("Failed to unset breakage key %s: %s\n"),
+		      key, error->message);
           g_error_free(error);
           return FALSE;
         }
@@ -2487,7 +3793,7 @@ key_breakage(GConfEngine* conf, const gchar* key, BreakagePhase phase)
       GConfValue* val;
       GSList* list = NULL;
       
-      printf("  +");
+      g_print ("  +");
       
       gconf_engine_set_string(conf, key, "", &error);
       if (check_err(&error))
@@ -2585,7 +3891,7 @@ key_breakage(GConfEngine* conf, const gchar* key, BreakagePhase phase)
       g_slist_free(list);
       list = NULL;
       
-      printf("\n");
+      g_print ("\n");
     }
   else
     g_assert_not_reached();
@@ -2598,13 +3904,13 @@ do_break_key(GConfEngine* conf, const gchar** args)
 {
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify some keys to break\n"));
+      g_printerr (_("Must specify some keys to break\n"));
       return 1;
     }
   
   while (*args)
     {
-      printf(_("Trying to break your application by setting bad values for key:\n  %s\n"), *args);
+      g_print (_("Trying to break your application by setting bad values for key:\n  %s\n"), *args);
       
       if (!key_breakage(conf, *args, BreakageSetBadValues))
         return 1;
@@ -2622,7 +3928,7 @@ do_break_directory(GConfEngine* conf, const gchar** args)
 {
   if (args == NULL)
     {
-      fprintf(stderr, _("Must specify some directories to break\n"));
+      g_printerr (_("Must specify some directories to break\n"));
       return 1;
     }
   
@@ -2641,7 +3947,7 @@ do_break_directory(GConfEngine* conf, const gchar** args)
           ++i;
         }
 
-      printf(_("Trying to break your application by setting bad values for keys in directory:\n  %s\n"), *args);
+      g_print (_("Trying to break your application by setting bad values for keys in directory:\n  %s\n"), *args);
 
       i = 0;
       while (i < 10)
@@ -2683,7 +3989,7 @@ do_get_default_source (const gchar** args)
   gchar buf[512];
   FILE *f;
 
-  /* Try with $sysconfdir/gconf/schema-install-source */
+  /* Try with $sysgconfdir/schema-install-source */
   f = fopen(GCONF_ETCDIR"/schema-install-source", "r");
 
   if (f != NULL)
@@ -2695,7 +4001,7 @@ do_get_default_source (const gchar** args)
 	  g_strchomp(source);
 	  if (*source != '\0')
 	    {
-	      printf("%s\n", source);
+	      g_print ("%s\n", source);
 	      return 0;
 	    }
 	}
@@ -2703,7 +4009,7 @@ do_get_default_source (const gchar** args)
 
   /* Use default database */
   source = g_strconcat("xml::", GCONF_ETCDIR, "/gconf.xml.defaults", NULL);
-  printf("%s\n", source);
+  g_print ("%s\n", source);
   g_free(source);
 
   return 0;

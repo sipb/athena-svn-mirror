@@ -1,315 +1,64 @@
-<HTML
-><HEAD
-><TITLE
->GError</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GConf Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="GConf Reference Documentation"
-HREF="gconf-reference.html"><LINK
-REL="PREVIOUS"
-TITLE="GConf Core Interfaces"
-HREF="gconf-gconf.html"><LINK
-REL="NEXT"
-TITLE="GConfValue, GConfEntry, GConfMetaInfo"
-HREF="gconf-gconf-value.html"></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GConf Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="gconf-gconf.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="gconf-reference.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="gconf-gconf-value.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><H1
-><A
-NAME="GCONF-GCONF-ERROR">GError</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN2398"
-></A
-><H2
->Name</H2
->GError&nbsp;--&nbsp;error reporting.</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN2401"><H2
->Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="SYNOPSIS"
->&#13;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GError</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gconf-gconf-engine.html" title="GConfEngine"><link rel="next" href="gconf-gconf-internals.html" title="gconf-internals"><link rel="chapter" href="ch01.html" title="[Insert title here]"><link rel="refentry" href="gconf-GConfClient.html" title="GConfClient"><link rel="refentry" href="gconf-gconf-backend.html" title="gconf-backend"><link rel="refentry" href="gconf-gconf-engine.html" title="GConfEngine"><link rel="refentry" href="gconf-gconf-error.html" title="GError"><link rel="refentry" href="gconf-gconf-internals.html" title="gconf-internals"><link rel="refentry" href="gconf-gconf-listeners.html" title="gconf-listeners"><link rel="refentry" href="gconf-gconf-schema.html" title="gconf-schema"><link rel="refentry" href="gconf-gconf-sources.html" title="gconf-sources"><link rel="refentry" href="gconf-gconf-value.html" title="GConfValue, GConfEntry, GConfMetaInfo"><link rel="refentry" href="gconf-gconf.html" title="GConf Core Interfaces"><link rel="refentry" href="gconf-gconf-locale.html" title="gconf-locale"><link rel="refentry" href="gconf-gconf-changeset.html" title="GConfChangeSet"><link rel="section" href="gconf-gconf-error.html#id2662464" title="Description"><link rel="section" href="gconf-gconf-error.html#id2697185" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gconf-gconf-engine.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gconf-gconf-internals.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gconf-gconf-error"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GError</span></h2><p>GError &#8212; 
+error reporting.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
-enum        <A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
->;
-GError*     <A
-HREF="gconf-gconf-error.html#GCONF-ERROR-NEW"
->gconf_error_new</A
->                 (<A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> en,
+
+
+enum        <a href="gconf-gconf-error.html#GConfError">GConfError</a>;
+GError*     <a href="gconf-gconf-error.html#gconf-error-new">gconf_error_new</a>                 (<a href="gconf-gconf-error.html#GConfError">GConfError</a> en,
                                              const gchar *format,
                                              ...);
-void        <A
-HREF="gconf-gconf-error.html#GCONF-SET-ERROR"
->gconf_set_error</A
->                 (GError **err,
-                                             <A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> en,
+void        <a href="gconf-gconf-error.html#gconf-set-error">gconf_set_error</a>                 (GError **err,
+                                             <a href="gconf-gconf-error.html#GConfError">GConfError</a> en,
                                              const gchar *format,
                                              ...);
-GError*     <A
-HREF="gconf-gconf-error.html#GCONF-COMPOSE-ERRORS"
->gconf_compose_errors</A
->            (GError *err1,
-                                             GError *err2);</PRE
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2417"
-></A
-><H2
->Description</H2
-><P
->The GError object is used to report errors that occur in GConf
+GError*     <a href="gconf-gconf-error.html#gconf-compose-errors">gconf_compose_errors</a>            (GError *err1,
+                                             GError *err2);
+</pre></div><div class="refsect1" lang="en"><a name="id2662464"></a><h2>Description</h2><p>
+The <span class="type">GError</span> object is used to report errors that occur in GConf
 library routines. All functions that report errors work the same way:
-<P
-></P
-><UL
-><LI
-><P
->The last argument to the function is a GError**, a pointer to a
-location where a GError* can be placed.</P
-></LI
-><LI
-><P
->This last argument may be <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
->, in which case no
-error will be returned.</P
-></LI
-><LI
-><P
->If non-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
->, the argument should be the address of a 
-GError* variable, which should be initialized to
-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
->. </P
-></LI
-><LI
-><P
->If an error occurs, a GError will be allocated and placed in the
-return location; the caller must free the GError with
-g_error_free(). If no error occurs, the return location will be
-left untouched. That is, the test <TT
-CLASS="LITERAL"
->error != NULL</TT
-> 
-should always be a reliable indicator of whether the operation failed.</P
-></LI
-></UL
-></P
-><P
->It's also common that the return value of a function indicates whether
-or not an error occurred. Typically, <SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> is returned
-on success. In some cases, a <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> return value
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+The last argument to the function is a <span class="type">GError</span>**, a pointer to a
+location where a <span class="type">GError</span>* can be placed.
+</p></li><li><p>
+This last argument may be <span class="symbol">NULL</span>, in which case no
+error will be returned.
+</p></li><li><p>
+If non-<span class="symbol">NULL</span>, the argument should be the address of a 
+<span class="type">GError</span>* variable, which should be initialized to
+<span class="symbol">NULL</span>. 
+</p></li><li><p>
+If an error occurs, a <span class="type">GError</span> will be allocated and placed in the
+return location; the caller must free the <span class="type">GError</span> with
+<tt class="function">g_error_free()</tt>. If no error occurs, the return location will be
+left untouched. That is, the test <tt class="literal">error != NULL</tt> 
+should always be a reliable indicator of whether the operation failed.
+</p></li></ul></div><p>
+</p><p>
+It's also common that the return value of a function indicates whether
+or not an error occurred. Typically, <span class="symbol">TRUE</span> is returned
+on success. In some cases, a <span class="symbol">NULL</span> return value
 indicates failure. Either way, if the return value indicates failure
-and you passed a non-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> value for the last argument
-to the function, a GError will be returned. If the return value
-indicates success, then a GError will never be returned.  These
+and you passed a non-<span class="symbol">NULL</span> value for the last argument
+to the function, a <span class="type">GError</span> will be returned. If the return value
+indicates success, then a <span class="type">GError</span> will never be returned.  These
 relationships are guaranteed; that is, you can reliably use the return
-value to decide whether a GError was placed in the return
-location. If a function does <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->not</I
-></SPAN
-> indicate
+value to decide whether a <span class="type">GError</span> was placed in the return
+location. If a function does <span class="emphasis"><em>not</em></span> indicate
 success/failure by return value, you must check whether the
-GError is <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to detect errors.</P
-><P
->Here's a short error handling example:
-<TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->  GError* err = NULL;
+<span class="type">GError</span> is <span class="symbol">NULL</span> to detect errors.
+</p><p>
+Here's a short error handling example:
+</p><pre class="programlisting">
+  GError* err = NULL;
 
   if (!gconf_init(&amp;err))
     {
-      fprintf(stderr, _("Failed to init GConf: <TT
-CLASS="LITERAL"
->s</TT
->\n"), err-&#62;message);
+      fprintf(stderr, _("Failed to init GConf: <tt class="literal">s</tt>\n"), err-&gt;message);
       g_error_free(err); 
       err = NULL;
-    }</PRE
-></TD
-></TR
-></TABLE
-></P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2453"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2455"
-></A
-><H3
-><A
-NAME="GCONFERROR"
-></A
->enum GConfError</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->typedef enum { /*&lt; prefix=GCONF_ERROR &gt;*/
+    }
+</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2697185"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2697190"></a><h3><a name="GConfError"></a>enum GConfError</h3><a class="indexterm" name="id2697199"></a><pre class="programlisting">typedef enum { /*&lt; prefix=GCONF_ERROR &gt;*/
   GCONF_ERROR_SUCCESS = 0,
   GCONF_ERROR_FAILED = 1,        /* Something didn't work, don't know why, probably unrecoverable
                                     so there's no point having a more specific errno */
@@ -330,750 +79,59 @@ CLASS="PROGRAMLISTING"
   GCONF_ERROR_LOCK_FAILED = 14,  /* Failed to get a lockfile */
   GCONF_ERROR_NO_WRITABLE_DATABASE = 15, /* nowhere to write a value */
   GCONF_ERROR_IN_SHUTDOWN = 16   /* server is shutting down */
-} GConfError;</PRE
-></TD
-></TR
-></TABLE
-><P
->The <A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> enumeration allows client applications to
+} GConfError;
+</pre><p>
+The <a href="gconf-gconf-error.html#GConfError"><span class="type">GConfError</span></a> enumeration allows client applications to
 differentiate between different kinds of error. You may wish to take
-specific actions depending on the error type.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2461"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#F0F0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_SUCCESS</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that no error occurred, won't be returned in a GError.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_FAILED</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates failure, but no more specific <A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> applied.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_NO_SERVER</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that the GConf server couldn't be contacted, probably a CORBA problem.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_NO_PERMISSION</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that permission to access some resource was denied.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_BAD_ADDRESS</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that a configuration source address was syntactically invalid or impossible to resolve.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_BAD_KEY</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that a key was malformed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_PARSE_ERROR</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that some parsing was done (perhaps in a backend) and it failed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_CORRUPT</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that some part of the database is corrupt.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_TYPE_MISMATCH</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that a specific type was required, and another type was found.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_IS_DIR</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that an operation only applicable to keys was performed on a directory.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_IS_KEY</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that an operation only applicable to directories was performed on a key.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_OVERRIDDEN</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->indicates that the administrator has imposed a mandatory value, and it could not be changed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_OAF_ERROR</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_LOCAL_ENGINE</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_LOCK_FAILED</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_NO_WRITABLE_DATABASE</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_ERROR_IN_SHUTDOWN</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2536"
-></A
-><H3
-><A
-NAME="GCONF-ERROR-NEW"
-></A
->gconf_error_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GError*     gconf_error_new                 (<A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> en,
+specific actions depending on the error type.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GCONF_ERROR_SUCCESS</tt></span></td><td>indicates that no error occurred, won't be returned in a <span class="type">GError</span>.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_FAILED</tt></span></td><td>indicates failure, but no more specific <a href="gconf-gconf-error.html#GConfError"><span class="type">GConfError</span></a> applied.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_NO_SERVER</tt></span></td><td>indicates that the GConf server couldn't be contacted, probably a CORBA problem.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_NO_PERMISSION</tt></span></td><td>indicates that permission to access some resource was denied.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_BAD_ADDRESS</tt></span></td><td>indicates that a configuration source address was syntactically invalid or impossible to resolve.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_BAD_KEY</tt></span></td><td>indicates that a key was malformed.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_PARSE_ERROR</tt></span></td><td>indicates that some parsing was done (perhaps in a backend) and it failed.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_CORRUPT</tt></span></td><td>indicates that some part of the database is corrupt.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_TYPE_MISMATCH</tt></span></td><td>indicates that a specific type was required, and another type was found.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_IS_DIR</tt></span></td><td>indicates that an operation only applicable to keys was performed on a directory.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_IS_KEY</tt></span></td><td>indicates that an operation only applicable to directories was performed on a key.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_OVERRIDDEN</tt></span></td><td>indicates that the administrator has imposed a mandatory value, and it could not be changed.
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_OAF_ERROR</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_LOCAL_ENGINE</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_LOCK_FAILED</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_NO_WRITABLE_DATABASE</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GCONF_ERROR_IN_SHUTDOWN</tt></span></td><td>
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2655098"></a><h3><a name="gconf-error-new"></a>gconf_error_new ()</h3><a class="indexterm" name="id2655105"></a><pre class="programlisting">GError*     gconf_error_new                 (<a href="gconf-gconf-error.html#GConfError">GConfError</a> en,
                                              const gchar *format,
-                                             ...);</PRE
-></TD
-></TR
-></TABLE
-><P
->Creates a new error. Normally the GConf library does this, but you
-might find a reason to do it as well. <TT
-CLASS="PARAMETER"
-><I
->en</I
-></TT
-> is the error number, <TT
-CLASS="PARAMETER"
-><I
->format</I
-></TT
->
-is a printf()-style format for the error message, and the variable
-argument list is the same as in printf(). </P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2546"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->en</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the error number.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->format</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->printf()-style format for error description.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->...</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->arguments required by the <TT
-CLASS="PARAMETER"
-><I
->format</I
-></TT
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->newly-allocated GError.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2569"
-></A
-><H3
-><A
-NAME="GCONF-SET-ERROR"
-></A
->gconf_set_error ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gconf_set_error                 (GError **err,
-                                             <A
-HREF="gconf-gconf-error.html#GCONFERROR"
->GConfError</A
-> en,
+                                             ...);</pre><p>
+Creates a new error. Normally the GConf library does this, but you
+might find a reason to do it as well. <i class="parameter"><tt>en</tt></i> is the error number, <i class="parameter"><tt>format</tt></i>
+is a <tt class="function">printf()</tt>-style format for the error message, and the variable
+argument list is the same as in <tt class="function">printf()</tt>. 
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>en</tt></i> :</span></td><td>the error number.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>format</tt></i> :</span></td><td><tt class="function">printf()</tt>-style format for error description.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>arguments required by the <i class="parameter"><tt>format</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>newly-allocated <span class="type">GError</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654198"></a><h3><a name="gconf-set-error"></a>gconf_set_error ()</h3><a class="indexterm" name="id2654206"></a><pre class="programlisting">void        gconf_set_error                 (GError **err,
+                                             <a href="gconf-gconf-error.html#GConfError">GConfError</a> en,
                                              const gchar *format,
-                                             ...);</PRE
-></TD
-></TR
-></TABLE
-><P
->Internal function.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2577"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->en</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->format</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->...</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2598"
-></A
-><H3
-><A
-NAME="GCONF-COMPOSE-ERRORS"
-></A
->gconf_compose_errors ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GError*     gconf_compose_errors            (GError *err1,
-                                             GError *err2);</PRE
-></TD
-></TR
-></TABLE
-><P
->Internal function.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2606"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err1</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err2</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="gconf-gconf.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="gconf-reference.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="gconf-gconf-value.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->GConf Core Interfaces</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->GConfValue, GConfEntry, GConfMetaInfo</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+                                             ...);</pre><p>
+Internal function.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>en</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>format</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654280"></a><h3><a name="gconf-compose-errors"></a>gconf_compose_errors ()</h3><a class="indexterm" name="id2654288"></a><pre class="programlisting">GError*     gconf_compose_errors            (GError *err1,
+                                             GError *err2);</pre><p>
+Internal function.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>err1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err2</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gconf-gconf-engine.html"><b>&lt;&lt; GConfEngine</b></a></td><td align="right"><a accesskey="n" href="gconf-gconf-internals.html"><b>gconf-internals &gt;&gt;</b></a></td></tr></table></body></html>

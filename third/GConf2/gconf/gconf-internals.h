@@ -39,6 +39,8 @@
 #include "gconf-sources.h"
 #include "GConfX.h"
 
+#define GCONF_DATABASE_LIST_DELIM ';'
+
 gchar*       gconf_key_directory  (const gchar* key);
 const gchar* gconf_key_key        (const gchar* key);
 
@@ -66,6 +68,10 @@ GConfSchema*  gconf_schema_from_corba_schema            (const ConfigSchema *cs)
 
 gchar* gconf_object_to_string (CORBA_Object obj,
                                GError **err);
+
+char   *gconf_address_list_get_persistent_name (GSList     *addresses);
+GSList *gconf_persistent_name_get_address_list (const char *persistent_name);
+void    gconf_address_list_free                (GSList     *addresses);
 
 const gchar*   gconf_value_type_to_string   (GConfValueType  type);
 GConfValueType gconf_value_type_from_string (const gchar    *str);
@@ -141,9 +147,6 @@ void   gconf_unquote_string_inplace (gchar        *str,
 GConfValue* gconf_value_decode (const gchar *encoded);
 gchar*      gconf_value_encode (GConfValue  *val);
 
-/* FIXME is this used? */
-gchar* gconf_quote_percents (const gchar* src);
-
 /*
  * List/pair conversion stuff
  */
@@ -190,6 +193,8 @@ GConfLock* gconf_get_lock_or_current_holder (const gchar  *lock_directory,
 ConfigServer gconf_get_current_lock_holder  (const gchar *lock_directory,
                                              GString     *failure_log);
 
+void gconf_daemon_blow_away_locks (void);
+
 GError*  gconf_error_new  (GConfError en,
                            const gchar* format, ...) G_GNUC_PRINTF (2, 3);
 
@@ -232,11 +237,8 @@ guint    gconf_CORBA_Object_hash  (gconstpointer key);
 
 
 /* FIXME move to public eventually */
-GConfEntry* gconf_entry_copy (const GConfEntry *src);
 gboolean    gconf_entry_equal (const GConfEntry *a,
                                const GConfEntry *b);
-void        gconf_entry_ref   (GConfEntry *entry);
-void        gconf_entry_unref (GConfEntry *entry);
 int         gconf_value_compare (const GConfValue *value_a,
                                  const GConfValue *value_b);
 
@@ -246,6 +248,8 @@ void gconf_value_set_string_nocopy (GConfValue *value,
                                     char       *str);
 
 void _gconf_init_i18n (void);
+
+gboolean gconf_use_local_locks (void);
 
 #endif /* GCONF_ENABLE_INTERNALS */
 

@@ -125,7 +125,8 @@ static void gconf_client_finalize              (GObject* object);
 
 static gboolean gconf_client_cache          (GConfClient *client,
                                              gboolean     take_ownership,
-                                             GConfEntry  *entry);
+                                             GConfEntry  *entry,
+                                             gboolean    preserve_schema_name);
 
 static gboolean gconf_client_lookup         (GConfClient *client,
                                              const char  *key,
@@ -139,6 +140,7 @@ static void gconf_client_queue_notify       (GConfClient *client,
                                              const char  *key);
 static void gconf_client_flush_notifies     (GConfClient *client);
 static void gconf_client_unqueue_notifies   (GConfClient *client);
+static void notify_one_entry (GConfClient *client, GConfEntry  *entry);
 
 static GConfEntry* get (GConfClient  *client,
                         const gchar  *key,
@@ -339,8 +341,8 @@ gconf_client_real_unreturned_error (GConfClient* client, GError* error)
               error->code == GCONF_ERROR_NO_WRITABLE_DATABASE)
             return;
           
-          fprintf (stderr, _("GConf Error: %s\n"),
-                   error->message);
+          g_printerr (_("GConf Error: %s\n"),
+                      error->message);
         }
     }
 }
@@ -357,8 +359,8 @@ gconf_client_real_error            (GConfClient* client, GError* error)
         }
       else
         {
-          fprintf (stderr, _("GConf Error: %s\n"),
-                   error->message);
+          g_printerr (_("GConf Error: %s\n"),
+                      error->message);
         }
     }
 }
@@ -405,7 +407,7 @@ notify_from_server_callback (GConfEngine* conf, guint cnxn_id,
    * listeners or functions connected to value_changed.
    * We know this key is under a directory in our dir list.
    */
-  changed = gconf_client_cache (client, FALSE, entry);                                
+  changed = gconf_client_cache (client, FALSE, entry, TRUE);
 
   if (!changed)
     return; /* don't do the notify */
@@ -544,7 +546,7 @@ gconf_client_add_dir     (GConfClient* client,
 
   g_return_if_fail (gconf_valid_key (dirname, NULL));
 
-  trace ("Adding dir '%s'\n", dirname);
+  trace ("Adding directory '%s'\n", dirname);
   
   d = g_hash_table_lookup (client->dir_hash, dirname);
 
@@ -682,7 +684,7 @@ gconf_client_remove_dir  (GConfClient* client,
 {
   Dir* found = NULL;
 
-  trace ("Removing dir '%s'\n", dirname);
+  trace ("Removing directory '%s'\n", dirname);
   
   found = g_hash_table_lookup (client->dir_hash,
                                dirname);
@@ -746,6 +748,22 @@ gconf_client_notify_remove  (GConfClient* client,
 }
 
 void
+gconf_client_notify (GConfClient* client, const char* key)
+{
+  GConfEntry *entry;
+
+  g_return_if_fail (client != NULL);
+  g_return_if_fail (GCONF_IS_CLIENT(client));
+  g_return_if_fail (key != NULL);
+
+  entry = gconf_client_get_entry (client, key, NULL, TRUE, NULL);
+  if (entry != NULL)
+    {
+      notify_one_entry (client, entry);
+    }
+}
+
+void
 gconf_client_set_error_handling(GConfClient* client,
                                 GConfClientErrorHandlingMode mode)
 {
@@ -782,7 +800,7 @@ static void
 cache_pairs_in_dir(GConfClient* client, const gchar* path);
 
 static void 
-recurse_subdir_list(GConfClient* client, GSList* subdirs, const gchar* parent)
+recurse_subdir_list(GConfClient* client, GSList* subdirs)
 {
   GSList* tmp;
 
@@ -791,18 +809,15 @@ recurse_subdir_list(GConfClient* client, GSList* subdirs, const gchar* parent)
   while (tmp != NULL)
     {
       gchar* s = tmp->data;
-      gchar* full = gconf_concat_dir_and_key(parent, s);
       
-      cache_pairs_in_dir(client, full);
+      cache_pairs_in_dir(client, s);
 
       PUSH_USE_ENGINE (client);
       recurse_subdir_list(client,
-                          gconf_engine_all_dirs (client->engine, full, NULL),
-                          full);
+                          gconf_engine_all_dirs (client->engine, s, NULL));
       POP_USE_ENGINE (client);
 
       g_free(s);
-      g_free(full);
       
       tmp = g_slist_next(tmp);
     }
@@ -856,7 +871,7 @@ cache_entry_list_destructively (GConfClient *client,
     {
       GConfEntry* entry = tmp->data;
       
-      gconf_client_cache (client, TRUE, entry);
+      gconf_client_cache (client, TRUE, entry, FALSE);
       
       tmp = g_slist_next (tmp);
     }
@@ -878,8 +893,8 @@ cache_pairs_in_dir(GConfClient* client, const gchar* dir)
   
   if (error != NULL)
     {
-      fprintf(stderr, _("GConf warning: failure listing pairs in `%s': %s"),
-              dir, error->message);
+      g_printerr (_("GConf warning: failure listing pairs in `%s': %s"),
+                  dir, error->message);
       g_error_free(error);
       error = NULL;
     }
@@ -915,13 +930,7 @@ gconf_client_preload    (GConfClient* client,
 
     case GCONF_CLIENT_PRELOAD_ONELEVEL:
       {
-        GSList* subdirs;
-
         trace ("Onelevel preload of '%s'\n", dirname);
-        
-        PUSH_USE_ENGINE (client);
-        subdirs = gconf_engine_all_dirs (client->engine, dirname, NULL);
-        POP_USE_ENGINE (client);
         
         cache_pairs_in_dir (client, dirname);
       }
@@ -939,7 +948,7 @@ gconf_client_preload    (GConfClient* client,
         
         cache_pairs_in_dir(client, dirname);
           
-        recurse_subdir_list(client, subdirs, dirname);
+        recurse_subdir_list(client, subdirs);
       }
       break;
 
@@ -979,6 +988,28 @@ gconf_client_unset          (GConfClient* client,
   
   PUSH_USE_ENGINE (client);
   gconf_engine_unset(client->engine, key, &error);
+  POP_USE_ENGINE (client);
+  
+  handle_error(client, error, err);
+
+  if (error != NULL)
+    return FALSE;
+  else
+    return TRUE;
+}
+
+gboolean
+gconf_client_recursive_unset (GConfClient *client,
+                              const char     *key,
+                              GConfUnsetFlags flags,
+                              GError        **err)
+{
+  GError* error = NULL;
+
+  trace ("Unsetting '%s'\n", key);
+  
+  PUSH_USE_ENGINE (client);
+  gconf_engine_recursive_unset(client->engine, key, flags, &error);
   POP_USE_ENGINE (client);
   
   handle_error(client, error, err);
@@ -1081,7 +1112,7 @@ gconf_client_dir_exists(GConfClient* client,
   GError* error = NULL;
   gboolean retval;
 
-  trace ("Checking whether dir '%s' exists...\n", dir);
+  trace ("Checking whether directory '%s' exists...\n", dir);
   
   PUSH_USE_ENGINE (client);
   retval = gconf_engine_dir_exists (client->engine, dir, &error);
@@ -1208,7 +1239,7 @@ get (GConfClient *client,
       if (key_being_monitored (client, key))
         {
           /* cache a copy of val */
-          gconf_client_cache (client, FALSE, entry);
+          gconf_client_cache (client, FALSE, entry, FALSE);
         }
 
       /* We don't own the entry, we're returning this copy belonging
@@ -1851,7 +1882,8 @@ gconf_client_value_changed          (GConfClient* client,
 static gboolean
 gconf_client_cache (GConfClient *client,
                     gboolean     take_ownership,
-                    GConfEntry  *new_entry)
+                    GConfEntry  *new_entry,
+                    gboolean     preserve_schema_name)
 {
   gpointer oldkey = NULL, oldval = NULL;
 
@@ -1873,6 +1905,10 @@ gconf_client_cache (GConfClient *client,
           if (!take_ownership)
             new_entry = gconf_entry_copy (new_entry);
           
+          if (preserve_schema_name)
+            gconf_entry_set_schema_name (new_entry, 
+                                         gconf_entry_get_schema_name (entry));
+
           g_hash_table_replace (client->cache_hash,
                                 new_entry->key,
                                 new_entry);
@@ -2320,8 +2356,8 @@ notify_listeners_callback(GConfListeners* listeners,
                           gpointer listener_data,
                           gpointer user_data)
 {
-  struct ClientAndEntry* cae = user_data;
   Listener* l = listener_data;
+  struct ClientAndEntry* cae = user_data;
   
   g_return_if_fail (cae != NULL);
   g_return_if_fail (cae->client != NULL);

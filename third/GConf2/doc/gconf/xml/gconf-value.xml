@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf-value">
+<refmeta>
+<refentrytitle>GConfValue, GConfEntry, GConfMetaInfo</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConfValue, GConfEntry, GConfMetaInfo</refname><refpurpose>
+A <link linkend="GConfValue"><type>GConfValue</type></link> stores a dynamically-typed value. A <link linkend="GConfEntry"><type>GConfEntry</type></link> stores a
+key-value pair.  A <link linkend="GConfMetaInfo"><type>GConfMetaInfo</type></link> stores metainformation about a key.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="GConfValueType">GConfValueType</link>;
+struct      <link linkend="GConfValue">GConfValue</link>;
+#define     <link linkend="GCONF-VALUE-TYPE-VALID-CAPS">GCONF_VALUE_TYPE_VALID</link>          (x)
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-new">gconf_value_new</link>                 (<link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-copy">gconf_value_copy</link>                (const <link linkend="GConfValue">GConfValue</link> *src);
+<link linkend="void">void</link>        <link linkend="gconf-value-free">gconf_value_free</link>                (<link linkend="GConfValue">GConfValue</link> *value);
+const <link linkend="char">char</link>* <link linkend="gconf-value-get-string">gconf_value_get_string</link>          (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="int">int</link>         <link linkend="gconf-value-get-int">gconf_value_get_int</link>             (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="double">double</link>      <link linkend="gconf-value-get-float">gconf_value_get_float</link>           (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-value-get-list-type">gconf_value_get_list_type</link>    (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-value-get-list">gconf_value_get_list</link>            (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-get-car">gconf_value_get_car</link>             (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-get-cdr">gconf_value_get_cdr</link>             (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-value-get-bool">gconf_value_get_bool</link>            (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-value-get-schema">gconf_value_get_schema</link>         (const <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-int">gconf_value_set_int</link>             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gint">gint</link> the_int);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-string">gconf_value_set_string</link>          (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="gchar">gchar</link> *the_str);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-float">gconf_value_set_float</link>           (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gdouble">gdouble</link> the_float);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-bool">gconf_value_set_bool</link>            (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gboolean">gboolean</link> the_bool);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-schema">gconf_value_set_schema</link>          (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *sc);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-schema-nocopy">gconf_value_set_schema_nocopy</link>   (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfSchema">GConfSchema</link> *sc);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-car">gconf_value_set_car</link>             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfValue">GConfValue</link> *car);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-car-nocopy">gconf_value_set_car_nocopy</link>      (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValue">GConfValue</link> *car);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-cdr">gconf_value_set_cdr</link>             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfValue">GConfValue</link> *cdr);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-cdr-nocopy">gconf_value_set_cdr_nocopy</link>      (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValue">GConfValue</link> *cdr);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-list-type">gconf_value_set_list_type</link>       (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-list-nocopy">gconf_value_set_list_nocopy</link>     (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GSList">GSList</link> *list);
+<link linkend="void">void</link>        <link linkend="gconf-value-set-list">gconf_value_set_list</link>            (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GSList">GSList</link> *list);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-value-to-string">gconf_value_to_string</link>           (const <link linkend="GConfValue">GConfValue</link> *value);
+struct      <link linkend="GConfMetaInfo">GConfMetaInfo</link>;
+<link linkend="GConfMetaInfo">GConfMetaInfo</link>* <link linkend="gconf-meta-info-new">gconf_meta_info_new</link>          (void);
+<link linkend="void">void</link>        <link linkend="gconf-meta-info-free">gconf_meta_info_free</link>            (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);
+const <link linkend="char">char</link>* <link linkend="gconf-meta-info-get-schema">gconf_meta_info_get_schema</link>      (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);
+const <link linkend="char">char</link>* <link linkend="gconf-meta-info-get-mod-user">gconf_meta_info_get_mod_user</link>    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);
+<link linkend="GTime">GTime</link>       <link linkend="gconf-meta-info-mod-time">gconf_meta_info_mod_time</link>        (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);
+<link linkend="void">void</link>        <link linkend="gconf-meta-info-set-schema">gconf_meta_info_set_schema</link>      (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             const <link linkend="gchar">gchar</link> *schema_name);
+<link linkend="void">void</link>        <link linkend="gconf-meta-info-set-mod-user">gconf_meta_info_set_mod_user</link>    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             const <link linkend="gchar">gchar</link> *mod_user);
+<link linkend="void">void</link>        <link linkend="gconf-meta-info-set-mod-time">gconf_meta_info_set_mod_time</link>    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             <link linkend="GTime">GTime</link> mod_time);
+struct      <link linkend="GConfEntry">GConfEntry</link>;
+<link linkend="GConfEntry">GConfEntry</link>* <link linkend="gconf-entry-new-nocopy">gconf_entry_new_nocopy</link>          (<link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *val);
+<link linkend="void">void</link>        <link linkend="gconf-entry-free">gconf_entry_free</link>                (<link linkend="GConfEntry">GConfEntry</link> *entry);
+const <link linkend="char">char</link>* <link linkend="gconf-entry-get-key">gconf_entry_get_key</link>             (const <link linkend="GConfEntry">GConfEntry</link> *entry);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-entry-get-value">gconf_entry_get_value</link>           (const <link linkend="GConfEntry">GConfEntry</link> *entry);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-entry-steal-value">gconf_entry_steal_value</link>         (<link linkend="GConfEntry">GConfEntry</link> *entry);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-entry-get-is-default">gconf_entry_get_is_default</link>      (const <link linkend="GConfEntry">GConfEntry</link> *entry);
+const <link linkend="char">char</link>* <link linkend="gconf-entry-get-schema-name">gconf_entry_get_schema_name</link>     (const <link linkend="GConfEntry">GConfEntry</link> *entry);
+<link linkend="void">void</link>        <link linkend="gconf-entry-set-is-default">gconf_entry_set_is_default</link>      (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gboolean">gboolean</link> is_default);
+<link linkend="void">void</link>        <link linkend="gconf-entry-set-schema-name">gconf_entry_set_schema_name</link>     (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             const <link linkend="gchar">gchar</link> *name);
+<link linkend="void">void</link>        <link linkend="gconf-entry-set-value-nocopy">gconf_entry_set_value_nocopy</link>    (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="GConfValue">GConfValue</link> *val);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+<link linkend="GConfValue"><type>GConfValue</type></link> stores one of the value types GConf understands; GConf
+uses <link linkend="GConfValue"><type>GConfValue</type></link> to pass values around because it doesn't know the
+type of its values at compile time. 
+</para>
+
+<para>
+A <link linkend="GConfEntry"><type>GConfEntry</type></link> pairs a relative key
+name with a value, for example if the value "10" is stored at the key 
+"/foo/bar/baz", the <link linkend="GConfEntry"><type>GConfEntry</type></link> will store "baz" and "10".
+</para>
+
+<para>
+A <link linkend="GConfMetaInfo"><type>GConfMetaInfo</type></link> object holds metainformation about a key, such as 
+its last modification time and the name of the schema associated with
+it. You should rarely if ever need to use <link linkend="GConfMetaInfo"><type>GConfMetaInfo</type></link>.
+(In fact you can't get the metainfo for a key using the current API.)
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfValueType"/>enum GConfValueType</title>
+<indexterm><primary>GConfValueType</primary></indexterm><programlisting>typedef enum { /*&lt; prefix=GCONF_VALUE &gt;*/
+  GCONF_VALUE_INVALID,
+  GCONF_VALUE_STRING,
+  GCONF_VALUE_INT,
+  GCONF_VALUE_FLOAT,
+  GCONF_VALUE_BOOL,
+  GCONF_VALUE_SCHEMA,
+
+  /* unfortunately these aren't really types; we want list_of_string,
+     list_of_int, etc.  but it's just too complicated to implement.
+     instead we'll complain in various places if you do something
+     moronic like mix types in a list or treat pair&lt;string,int&gt; and
+     pair&lt;float,bool&gt; as the same type. */
+  GCONF_VALUE_LIST,
+  GCONF_VALUE_PAIR
+  
+} GConfValueType;
+</programlisting>
+<para>
+Used to indicate the type of a <link linkend="GConfValue"><type>GConfValue</type></link>.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GCONF_VALUE_INVALID</literal></term>
+<listitem><simpara>Never the type of a <link linkend="GConfValue"><type>GConfValue</type></link> obtained from GConf functions; used to indicate errors and the like.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_STRING</literal></term>
+<listitem><simpara>String value (<link linkend="gchar"><type>gchar</type></link>*).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_INT</literal></term>
+<listitem><simpara>Integer value (<link linkend="gint"><type>gint</type></link>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_FLOAT</literal></term>
+<listitem><simpara>Floating point value (<link linkend="gdouble"><type>gdouble</type></link>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_BOOL</literal></term>
+<listitem><simpara>Boolean value (<link linkend="gboolean"><type>gboolean</type></link>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_SCHEMA</literal></term>
+<listitem><simpara>Schema value (<link linkend="GConfSchema"><type>GConfSchema</type></link>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_LIST</literal></term>
+<listitem><simpara>List of <link linkend="GConfValue"><type>GConfValue</type></link>; <link linkend="GConfValue"><type>GConfValue</type></link> elements must have
+a primitive type (i.e. they may not be lists or pairs), and all elements
+of a list must have the same type.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_VALUE_PAIR</literal></term>
+<listitem><simpara>Pair of <link linkend="GConfValue"><type>GConfValue</type></link>; the first field (car) and the second
+field (cdr) may have different types. The two elements of a pair must be primitive
+types, not lists or pairs.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfValue"/>struct GConfValue</title>
+<indexterm><primary>GConfValue</primary></indexterm><programlisting>struct GConfValue {
+
+  GConfValueType type;
+};
+</programlisting>
+<para>
+Represents a dynamically-typed value. The <parameter>type</parameter> field tells you the
+type of the value; the other fields should be accessed with the
+accessor functions and macros.
+</para>
+
+<para>
+<emphasis>A <link linkend="GConfValue"><type>GConfValue</type></link> should always
+be initialized before use. That is, you should not use a <link linkend="GConfValue"><type>GConfValue</type></link>
+unless you have called one of the functions beginning with
+"gconf_value_set_".</emphasis>. For lists, initialization has two
+steps: first you must set the list element type, then you must set the
+list value.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GConfValueType">GConfValueType</link> <structfield>type</structfield></term>
+<listitem><simpara>The <link linkend="GConfValueType"><type>GConfValueType</type></link> of this <link linkend="GConfValue"><type>GConfValue</type></link>. The only field of
+<link linkend="GConfValue"><type>GConfValue</type></link> you should access directly.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GCONF-VALUE-TYPE-VALID-CAPS"/>GCONF_VALUE_TYPE_VALID()</title>
+<indexterm><primary>GCONF_VALUE_TYPE_VALID</primary></indexterm><programlisting>#define GCONF_VALUE_TYPE_VALID(x) (((x) &gt; GCONF_VALUE_INVALID) &amp;&amp; ((x) &lt;= GCONF_VALUE_PAIR))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-new"/>gconf_value_new ()</title>
+<indexterm><primary>gconf_value_new</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_new                 (<link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+Creates a new <link linkend="GConfValue"><type>GConfValue</type></link> with type <parameter>type</parameter>. The type is immutable after
+creation; values have a fixed type. You <emphasis>must</emphasis>
+initialize the <link linkend="GConfValue"><type>GConfValue</type></link> after creation; that is, you must set its 
+value with one of the "setter" functions.
+</para><variablelist role="params">
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>type of the new <link linkend="GConfValue"><type>GConfValue</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-copy"/>gconf_value_copy ()</title>
+<indexterm><primary>gconf_value_copy</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_copy                (const <link linkend="GConfValue">GConfValue</link> *src);</programlisting>
+<para>
+Copies a <link linkend="GConfValue"><type>GConfValue</type></link>. The copy is a deep copy, that is, any allocated
+memory inside the <link linkend="GConfValue"><type>GConfValue</type></link> will also be copied.
+</para><variablelist role="params">
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> to copy.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link> identical to <parameter>src</parameter>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-free"/>gconf_value_free ()</title>
+<indexterm><primary>gconf_value_free</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_free                (<link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Deallocates a <link linkend="GConfValue"><type>GConfValue</type></link>. Also deallocates any allocated memory
+inside the <link linkend="GConfValue"><type>GConfValue</type></link> (such as lists, pair members, strings, and schemas).
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> to destroy.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-string"/>gconf_value_get_string ()</title>
+<indexterm><primary>gconf_value_get_string</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_value_get_string          (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <symbol>const gchar*</symbol> for a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_STRING</literal>. The returned string is <emphasis>not</emphasis> a
+copy, don't try to free it. It is "owned" by the <link linkend="GConfValue"><type>GConfValue</type></link> and will
+be destroyed when the <link linkend="GConfValue"><type>GConfValue</type></link> is destroyed.
+</para>
+
+<para>
+If the <link linkend="GConfValue"><type>GConfValue</type></link> is not initialized (i.e. no one has called
+<link linkend="gconf-value-set-string"><function>gconf_value_set_string()</function></link>) then the string may be
+<symbol>NULL</symbol>, but of course you should not try to use an
+uninitialized <link linkend="GConfValue"><type>GConfValue</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-int"/>gconf_value_get_int ()</title>
+<indexterm><primary>gconf_value_get_int</primary></indexterm><programlisting><link linkend="int">int</link>         gconf_value_get_int             (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <link linkend="gint"><type>gint</type></link> for a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_INT</literal>. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-float"/>gconf_value_get_float ()</title>
+<indexterm><primary>gconf_value_get_float</primary></indexterm><programlisting><link linkend="double">double</link>      gconf_value_get_float           (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <link linkend="gdouble"><type>gdouble</type></link> for a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_FLOAT</literal>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-list-type"/>gconf_value_get_list_type ()</title>
+<indexterm><primary>gconf_value_get_list_type</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_value_get_list_type    (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns the type of the list elements in a <link linkend="GConfValue"><type>GConfValue</type></link> with type 
+<literal>GCONF_VALUE_LIST</literal>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-list"/>gconf_value_get_list ()</title>
+<indexterm><primary>gconf_value_get_list</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_value_get_list            (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <link linkend="GSList"><type>GSList</type></link> containing <link linkend="GConfValue"><type>GConfValue</type></link> objects. Each <link linkend="GConfValue"><type>GConfValue</type></link> in
+the returned list will have the type returned by
+<link linkend="gconf-value-get-list-type"><function>gconf_value_get_list_type()</function></link>. Remember that the empty <link linkend="GSList"><type>GSList</type></link> is equal to
+<symbol>NULL</symbol>.  The list is not a copy; it is "owned" by the
+<link linkend="GConfValue"><type>GConfValue</type></link> and will be destroyed when the <link linkend="GConfValue"><type>GConfValue</type></link> is destroyed.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-car"/>gconf_value_get_car ()</title>
+<indexterm><primary>gconf_value_get_car</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_get_car             (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns the first member (car) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The car is another <link linkend="GConfValue"><type>GConfValue</type></link>, with a primitive
+type (bool, int, float, string, schema).
+</para>
+
+<para>
+The returned value is not a copy; it is "owned" by the pair and will
+be destroyed when the pair is destroyed.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-cdr"/>gconf_value_get_cdr ()</title>
+<indexterm><primary>gconf_value_get_cdr</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_get_cdr             (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns the second member (cdr) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The cdr is another <link linkend="GConfValue"><type>GConfValue</type></link>, with a primitive
+type (bool, int, float, string, schema).
+</para>
+
+<para>
+The returned value is not a copy; it is "owned" by the pair and will
+be destroyed when the pair is destroyed.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-bool"/>gconf_value_get_bool ()</title>
+<indexterm><primary>gconf_value_get_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_value_get_bool            (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <link linkend="gboolean"><type>gboolean</type></link> for a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_BOOL</literal>. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-get-schema"/>gconf_value_get_schema ()</title>
+<indexterm><primary>gconf_value_get_schema</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_value_get_schema         (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Returns a <link linkend="GConfSchema"><type>GConfSchema</type></link> for a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_SCHEMA</literal>. If the <link linkend="GConfValue"><type>GConfValue</type></link> is uninitialized, it 
+may return <symbol>NULL</symbol>; but of course you should have
+initialized the <link linkend="GConfValue"><type>GConfValue</type></link>. The GConf library will not return values
+with a <symbol>NULL</symbol> schema.
+</para>
+
+<para>
+The returned value is not a copy; it is "owned" by the <link linkend="GConfValue"><type>GConfValue</type></link> and will
+be destroyed when the <link linkend="GConfValue"><type>GConfValue</type></link> is destroyed.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-int"/>gconf_value_set_int ()</title>
+<indexterm><primary>gconf_value_set_int</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_int             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gint">gint</link> the_int);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_INT</literal>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> of type <literal>GCONF_VALUE_INT</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_int</parameter>&nbsp;:</term>
+<listitem><simpara>the integer.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-string"/>gconf_value_set_string ()</title>
+<indexterm><primary>gconf_value_set_string</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_string          (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="gchar">gchar</link> *the_str);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_STRING</literal>. <parameter>the_str</parameter> is copied.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> of type <literal>GCONF_VALUE_STRING</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_str</parameter>&nbsp;:</term>
+<listitem><simpara>the string.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-float"/>gconf_value_set_float ()</title>
+<indexterm><primary>gconf_value_set_float</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_float           (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gdouble">gdouble</link> the_float);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_FLOAT</literal>. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> of type <literal>GCONF_VALUE_FLOAT</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_float</parameter>&nbsp;:</term>
+<listitem><simpara>the floating point number.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-bool"/>gconf_value_set_bool ()</title>
+<indexterm><primary>gconf_value_set_bool</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_bool            (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gboolean">gboolean</link> the_bool);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_BOOL</literal>. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> of type <literal>GCONF_VALUE_BOOL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_bool</parameter>&nbsp;:</term>
+<listitem><simpara>a boolean value (<symbol>TRUE</symbol> or <symbol>FALSE</symbol>).
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-schema"/>gconf_value_set_schema ()</title>
+<indexterm><primary>gconf_value_set_schema</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_schema          (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *sc);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_SCHEMA</literal>. The
+<link linkend="GConfSchema"><type>GConfSchema</type></link> is copied. Alternatively you can use
+<link linkend="gconf-value-set-schema-nocopy"><function>gconf_value_set_schema_nocopy()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_SCHEMA</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfSchema"><type>GConfSchema</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-schema-nocopy"/>gconf_value_set_schema_nocopy ()</title>
+<indexterm><primary>gconf_value_set_schema_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_schema_nocopy   (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfSchema">GConfSchema</link> *sc);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_SCHEMA</literal>. The <link linkend="GConfSchema"><type>GConfSchema</type></link> is <emphasis>not</emphasis>
+copied; the <link linkend="GConfValue"><type>GConfValue</type></link> takes ownership of it, and it should only be
+accessed via the <link linkend="gconf-value-get-schema"><function>gconf_value_get_schema()</function></link> macro. This function is provided 
+as a more efficient version of <link linkend="gconf-value-set-schema"><function>gconf_value_set_schema()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_SCHEMA</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfSchema"><type>GConfSchema</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-car"/>gconf_value_set_car ()</title>
+<indexterm><primary>gconf_value_set_car</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_car             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfValue">GConfValue</link> *car);</programlisting>
+<para>
+Sets the value of the first field (car) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The <link linkend="GConfValue"><type>GConfValue</type></link> is copied. Alternatively, use
+<link linkend="gconf-value-set-car-nocopy"><function>gconf_value_set_car_nocopy()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_PAIR</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfValue"><type>GConfValue</type></link> to set as the car of the pair.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-car-nocopy"/>gconf_value_set_car_nocopy ()</title>
+<indexterm><primary>gconf_value_set_car_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_car_nocopy      (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValue">GConfValue</link> *car);</programlisting>
+<para>
+Sets the value of the first field (car) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The <link linkend="GConfValue"><type>GConfValue</type></link> is <emphasis>not</emphasis> copied;
+the <link linkend="GConfValue"><type>GConfValue</type></link> takes ownership of it. Alternatively, use
+<link linkend="gconf-value-set-car"><function>gconf_value_set_car()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_PAIR</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfValue"><type>GConfValue</type></link> to set as the car of the pair.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-cdr"/>gconf_value_set_cdr ()</title>
+<indexterm><primary>gconf_value_set_cdr</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_cdr             (<link linkend="GConfValue">GConfValue</link> *value,
+                                             const <link linkend="GConfValue">GConfValue</link> *cdr);</programlisting>
+<para>
+Sets the value of the second field (cdr) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The <link linkend="GConfValue"><type>GConfValue</type></link> is copied. Alternatively, use
+<link linkend="gconf-value-set-cdr-nocopy"><function>gconf_value_set_cdr_nocopy()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_PAIR</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfValue"><type>GConfValue</type></link> to set as the cdr of the pair.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-cdr-nocopy"/>gconf_value_set_cdr_nocopy ()</title>
+<indexterm><primary>gconf_value_set_cdr_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_cdr_nocopy      (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValue">GConfValue</link> *cdr);</programlisting>
+<para>
+Sets the value of the second field (cdr) of a <link linkend="GConfValue"><type>GConfValue</type></link> with type
+<literal>GCONF_VALUE_PAIR</literal>. The <link linkend="GConfValue"><type>GConfValue</type></link> is <emphasis>not</emphasis> copied;
+the <link linkend="GConfValue"><type>GConfValue</type></link> takes ownership of it. Alternatively, use
+<link linkend="gconf-value-set-cdr"><function>gconf_value_set_cdr()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_PAIR</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfValue"><type>GConfValue</type></link> to set as the cdr of the pair.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-list-type"/>gconf_value_set_list_type ()</title>
+<indexterm><primary>gconf_value_set_list_type</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_list_type       (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+Sets the type of the elements in a <link linkend="GConfValue"><type>GConfValue</type></link> of type
+<literal>GCONF_VALUE_LIST</literal>. All the elements in the list must have the same
+type. You must set the list type before you can set the list value.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_LIST</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>the type of elements in this list.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-list-nocopy"/>gconf_value_set_list_nocopy ()</title>
+<indexterm><primary>gconf_value_set_list_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_list_nocopy     (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GSList">GSList</link> *list);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_LIST</literal>.  The
+<parameter>list</parameter> argument should be a <link linkend="GSList"><type>GSList</type></link> of <link linkend="GConfValue"><type>GConfValue</type></link>. Each <link linkend="GConfValue"><type>GConfValue</type></link> in
+the list must have the same type, and this type must be specified in
+advance with <link linkend="gconf-value-set-list-type"><function>gconf_value_set_list_type()</function></link>. This function does
+<emphasis>not</emphasis> copy the list; the <link linkend="GConfValue"><type>GConfValue</type></link> will take
+ownership of the list and its contents, and they will be destroyed
+when the <link linkend="GConfValue"><type>GConfValue</type></link> is destroyed. Alternatively, use
+<link linkend="gconf-value-set-list"><function>gconf_value_set_list()</function></link> to make a copy.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_LIST</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GSList"><type>GSList</type></link> of <link linkend="GConfValue"><type>GConfValue</type></link> to set as the list value.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-set-list"/>gconf_value_set_list ()</title>
+<indexterm><primary>gconf_value_set_list</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_value_set_list            (<link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GSList">GSList</link> *list);</programlisting>
+<para>
+Sets the value of a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_LIST</literal>.  The
+<parameter>list</parameter> argument should be a <link linkend="GSList"><type>GSList</type></link> of <link linkend="GConfValue"><type>GConfValue</type></link>. Each <link linkend="GConfValue"><type>GConfValue</type></link> in
+the list must have the same type, and this type must be specified in
+advance with <link linkend="gconf-value-set-list-type"><function>gconf_value_set_list_type()</function></link>. This function copies the
+list; it will not modify the <parameter>list</parameter> argument.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> with type <literal>GCONF_VALUE_LIST</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GSList"><type>GSList</type></link> of <link linkend="GConfValue"><type>GConfValue</type></link> to set as the list value.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-to-string"/>gconf_value_to_string ()</title>
+<indexterm><primary>gconf_value_to_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_value_to_string           (const <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Creates a human-readable string representation of a <link linkend="GConfValue"><type>GConfValue</type></link>. This
+is intended for debugging and the like; the string representation is
+not suitable for reliable machine parsing (that is, you shouldn't use
+this function to save a value to a file or anything like that). The
+exact nature of the string representation may change in future
+versions. The returned string is newly-allocated and must be freed
+with <link linkend="g-free"><function>g_free()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a newly-allocated string representing the <link linkend="GConfValue"><type>GConfValue</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfMetaInfo"/>struct GConfMetaInfo</title>
+<indexterm><primary>GConfMetaInfo</primary></indexterm><programlisting>struct GConfMetaInfo {
+
+  gchar* schema;
+  gchar* mod_user; /* user owning the daemon that made the last modification */
+  GTime  mod_time; /* time of the modification */
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-new"/>gconf_meta_info_new ()</title>
+<indexterm><primary>gconf_meta_info_new</primary></indexterm><programlisting><link linkend="GConfMetaInfo">GConfMetaInfo</link>* gconf_meta_info_new          (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-free"/>gconf_meta_info_free ()</title>
+<indexterm><primary>gconf_meta_info_free</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_meta_info_free            (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-get-schema"/>gconf_meta_info_get_schema ()</title>
+<indexterm><primary>gconf_meta_info_get_schema</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_meta_info_get_schema      (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-get-mod-user"/>gconf_meta_info_get_mod_user ()</title>
+<indexterm><primary>gconf_meta_info_get_mod_user</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_meta_info_get_mod_user    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-mod-time"/>gconf_meta_info_mod_time ()</title>
+<indexterm><primary>gconf_meta_info_mod_time</primary></indexterm><programlisting><link linkend="GTime">GTime</link>       gconf_meta_info_mod_time        (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-set-schema"/>gconf_meta_info_set_schema ()</title>
+<indexterm><primary>gconf_meta_info_set_schema</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_meta_info_set_schema      (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             const <link linkend="gchar">gchar</link> *schema_name);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>schema_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-set-mod-user"/>gconf_meta_info_set_mod_user ()</title>
+<indexterm><primary>gconf_meta_info_set_mod_user</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_meta_info_set_mod_user    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             const <link linkend="gchar">gchar</link> *mod_user);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_user</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-meta-info-set-mod-time"/>gconf_meta_info_set_mod_time ()</title>
+<indexterm><primary>gconf_meta_info_set_mod_time</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_meta_info_set_mod_time    (<link linkend="GConfMetaInfo">GConfMetaInfo</link> *gcmi,
+                                             <link linkend="GTime">GTime</link> mod_time);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gcmi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_time</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfEntry"/>struct GConfEntry</title>
+<indexterm><primary>GConfEntry</primary></indexterm><programlisting>struct GConfEntry {
+
+  char *key;
+  GConfValue *value;
+};
+</programlisting>
+<para>
+Stores an entry from a GConf "directory," including a key-value pair,
+the name of the schema applicable to this entry, whether the value is
+a default value, and whether GConf can write a new value at this
+key. <parameter>key</parameter> should be an absolute key, not a relative key.  (Note that
+internally GConf breaks this rule sometimes; but in the public
+interface, <parameter>key</parameter> is always an absolute key.)  To access the key and
+value, use <link linkend="gconf-entry-get-key"><function>gconf_entry_get_key()</function></link> and <link linkend="gconf-entry-get-value"><function>gconf_entry_get_value()</function></link>.
+</para>
+
+<warning><para>Value can be <symbol>NULL</symbol>, indicating that the
+value is not set.</para></warning><variablelist role="struct">
+<varlistentry>
+<term><link linkend="char">char</link> *<structfield>key</structfield></term>
+<listitem><simpara>an absolute key name
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GConfValue">GConfValue</link> *<structfield>value</structfield></term>
+<listitem><simpara>
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-new-nocopy"/>gconf_entry_new_nocopy ()</title>
+<indexterm><primary>gconf_entry_new_nocopy</primary></indexterm><programlisting><link linkend="GConfEntry">GConfEntry</link>* gconf_entry_new_nocopy          (<link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *val);</programlisting>
+<para>
+Creates a new <link linkend="GConfEntry"><type>GConfEntry</type></link> with key <parameter>key</parameter> and value <parameter>val</parameter>. <parameter>key</parameter> should be a full
+path to the key, starting with '/'. Neither the key nor the value is copied;
+both are freed when the <link linkend="GConfEntry"><type>GConfEntry</type></link> is freed. The string will be freed with
+<link linkend="g-free"><function>g_free()</function></link> so should be allocated with a GLib function, not <link linkend="malloc"><function>malloc()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key name
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>the value
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GConfentry"><type>GConfentry</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-free"/>gconf_entry_free ()</title>
+<indexterm role="deprecated"><primary>gconf_entry_free</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_entry_free                (<link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<warning><para><literal>gconf_entry_free</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Destroys a <link linkend="GConfEntry"><type>GConfEntry</type></link>, freeing the key, the value, and the entry itself.
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEntry"><type>GConfEntry</type></link> to free.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-get-key"/>gconf_entry_get_key ()</title>
+<indexterm><primary>gconf_entry_get_key</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_entry_get_key             (const <link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<para>
+Accesses the <parameter>key</parameter> field of a <link linkend="GConfEntry"><type>GConfEntry</type></link>. The returned key is not a
+copy, and should not be freed or modified.
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-get-value"/>gconf_entry_get_value ()</title>
+<indexterm><primary>gconf_entry_get_value</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_entry_get_value           (const <link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<para>
+Accesses the <parameter>value</parameter> field of a <link linkend="GConfEntry"><type>GConfEntry</type></link>. The returned value is not
+a copy, and should not be freed or modified. If you have called
+<link linkend="gconf-entry-steal-value"><function>gconf_entry_steal_value()</function></link>, the returned value will be
+<symbol>NULL</symbol>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-steal-value"/>gconf_entry_steal_value ()</title>
+<indexterm><primary>gconf_entry_steal_value</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_entry_steal_value         (<link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<para>
+Extracts the value from a <link linkend="GConfEntry"><type>GConfEntry</type></link>, leaving the <parameter>value</parameter> field in
+<link linkend="GConfEntry"><type>GConfEntry</type></link> set to <symbol>NULL</symbol>. Destroying the <link linkend="GConfEntry"><type>GConfEntry</type></link>
+will <emphasis>not</emphasis> destroy the value; the caller of
+<link linkend="gconf-entry-steal-value"><function>gconf_entry_steal_value()</function></link> assumes ownership of it.
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEntry"><type>GConfEntry</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GConfValue"><type>GConfValue</type></link> that the caller must free.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-get-is-default"/>gconf_entry_get_is_default ()</title>
+<indexterm><primary>gconf_entry_get_is_default</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_entry_get_is_default      (const <link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-get-schema-name"/>gconf_entry_get_schema_name ()</title>
+<indexterm><primary>gconf_entry_get_schema_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_entry_get_schema_name     (const <link linkend="GConfEntry">GConfEntry</link> *entry);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-set-is-default"/>gconf_entry_set_is_default ()</title>
+<indexterm><primary>gconf_entry_set_is_default</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_entry_set_is_default      (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gboolean">gboolean</link> is_default);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_default</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-set-schema-name"/>gconf_entry_set_schema_name ()</title>
+<indexterm><primary>gconf_entry_set_schema_name</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_entry_set_schema_name     (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             const <link linkend="gchar">gchar</link> *name);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-entry-set-value-nocopy"/>gconf_entry_set_value_nocopy ()</title>
+<indexterm><primary>gconf_entry_set_value_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_entry_set_value_nocopy    (<link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="GConfValue">GConfValue</link> *val);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

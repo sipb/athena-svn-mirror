@@ -9,8 +9,8 @@ INCLUDES=								\
 	-DG_LOG_DOMAIN=\"GConf\"					\
 	-DGCONF_LOCALE_DIR=\""$(gconflocaledir)"\"			\
         -DGCONF_SRCDIR=\""$(absolute_top_srcdir)"\"			\
-	-DGCONF_CONFDIR=\""$(sysconfdir)/gconf/$(MAJOR_VERSION)"\"	\
-	-DGCONF_ETCDIR=\""$(sysconfdir)/gconf"\"			\
+	-DGCONF_CONFDIR=\""$(sysgconfdir)/$(MAJOR_VERSION)"\"		\
+	-DGCONF_ETCDIR=\""$(sysgconfdir)"\"				\
 	-DGCONF_BINDIR=\""$(bindir)"\"					\
 	-DGCONF_SERVERDIR=\""$(libexecdir)"\"           \
 	-DGCONF_BUILDDIR=\""$(top_builddir)"\"				\
@@ -35,20 +35,14 @@ libexec_PROGRAMS = gconfd-2 $(SANITY_CHECK)
 
 CORBA_SOURCECODE = GConfX-common.c GConfX-skels.c GConfX-stubs.c GConfX.h
 
-## not BUILT_SOURCES which seems to make a mess. fix with automake 1.5?
-built_sourcecode = 			\
+BUILT_SOURCES = 			\
 	$(CORBA_SOURCECODE)		\
 	gconfmarshal.h			\
 	gconfmarshal.c
 
 $(libgconf_2_la_OBJECTS) $(gconftool_2_OBJECTS) $(gconfd_2_OBJECTS): $(built_sourcecode)
 
-CLEANFILES = \
-	$(built_sourcecode)	\
-	stamp-gconfmarshal.h	\
-	stamp-gconfmarshal.c	\
-	stamp-gconfmarshal.h    \
-	stamp-gconfmarshal.c
+CLEANFILES = $(BUILT_SOURCES)
 
 dist-hook:
 	cd $(distdir) ; rm -f $(CLEANFILES)
@@ -115,35 +109,26 @@ libgconf_2_la_SOURCES = \
 	gconf-enum-types.c	\
 	$(CORBA_SOURCECODE)
 
-libgconf_2_la_LDFLAGS = -version-info $(GCONF_CURRENT):$(GCONF_REVISION):$(GCONF_AGE)
+libgconf_2_la_LDFLAGS = -version-info $(GCONF_CURRENT):$(GCONF_REVISION):$(GCONF_AGE) -no-undefined
 
 libgconf_2_la_LIBADD = $(INTLLIBS) $(DEPENDENT_LIBS)
 
 EXTRA_DIST=GConfX.idl default.path.in gconfmarshal.list regenerate-enum-header.sh regenerate-enum-footer.sh
 
 install-data-local:
-	-mkdir -p $(DESTDIR)$(sysconfdir)/gconf/$(MAJOR_VERSION)
-	$(INSTALL_DATA) default.path $(DESTDIR)$(sysconfdir)/gconf/$(MAJOR_VERSION)/path
+	$(mkinstalldirs) $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)
+	$(INSTALL_DATA) default.path $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)/path
 
-gconfmarshal.h: @REBUILD@ stamp-gconfmarshal.h
-	@true
+uninstall-local:
+	rm -f $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)/path
 
-gconfmarshal.c: @REBUILD@ stamp-gconfmarshal.c
-	@true
+gconfmarshal.h: gconfmarshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gconf_marshal > $@
 
-stamp-gconfmarshal.h: @REBUILD@ gconfmarshal.list
-	cd $(srcdir) \
-	&& glib-genmarshal --prefix=gconf_marshal gconfmarshal.list --header >> xgen-gmh \
-	&& (cmp -s xgen-gmh gconfmarshal.h || cp xgen-gmh gconfmarshal.h) \
-	&& rm -f xgen-gmh xgen-gmh~
-
-stamp-gconfmarshal.c: @REBUILD@ gconfmarshal.list
-	cd $(srcdir) \
-	&& glib-genmarshal --prefix=gconf_marshal gconfmarshal.list --body >> xgen-gmc \
-	&& (cmp -s xgen-gmc gconfmarshal.c || cp xgen-gmc gconfmarshal.c) \
-	&& rm -f xgen-gmc xgen-gmc~
+gconfmarshal.c: gconfmarshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gconfmarshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gconf_marshal >> $@
 
 regenerate-built-sources:
 	GCONF_SRCDIR=$(srcdir) $(srcdir)/regenerate-enum-header.sh $(gconf_headers)
 	GCONF_SRCDIR=$(srcdir) $(srcdir)/regenerate-enum-footer.sh $(gconf_headers)
-

@@ -1,0 +1,1323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf">
+<refmeta>
+<refentrytitle>GConf Core Interfaces</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConf Core Interfaces</refname><refpurpose>
+Basic functions to initialize GConf and get/set values</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-init">gconf_init</link>                      (<link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> **argv,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-preinit">gconf_preinit</link>                   (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> mod_info);
+<link linkend="void">void</link>        <link linkend="gconf-postinit">gconf_postinit</link>                  (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> mod_info);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-is-initialized">gconf_is_initialized</link>            (void);
+<link linkend="void">void</link>        (<link linkend="GConfNotifyFunc">*GConfNotifyFunc</link>)              (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="guint">guint</link>       <link linkend="gconf-engine-notify-add">gconf_engine_notify_add</link>         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfNotifyFunc">GConfNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-engine-notify-remove">gconf_engine_notify_remove</link>      (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="guint">guint</link> cnxn);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-engine-get">gconf_engine_get</link>                (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-engine-get-with-locale">gconf_engine_get_with_locale</link>    (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-engine-get-without-default">gconf_engine_get_without_default</link>
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfEntry">GConfEntry</link>* <link linkend="gconf-engine-get-entry">gconf_engine_get_entry</link>          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-engine-get-default-from-schema">gconf_engine_get_default_from_schema</link>
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set">gconf_engine_set</link>                (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-unset">gconf_engine_unset</link>              (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-associate-schema">gconf_engine_associate_schema</link>   (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *schema_key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-engine-all-entries">gconf_engine_all_entries</link>        (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-engine-all-dirs">gconf_engine_all_dirs</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-engine-suggest-sync">gconf_engine_suggest_sync</link>       (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-dir-exists">gconf_engine_dir_exists</link>         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-valid-key">gconf_valid_key</link>                 (const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gchar">gchar</link> **why_invalid);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-key-is-below">gconf_key_is_below</link>              (const <link linkend="gchar">gchar</link> *above,
+                                             const <link linkend="gchar">gchar</link> *below);
+<link linkend="gdouble">gdouble</link>     <link linkend="gconf-engine-get-float">gconf_engine_get_float</link>          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gint">gint</link>        <link linkend="gconf-engine-get-int">gconf_engine_get_int</link>            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-engine-get-string">gconf_engine_get_string</link>         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-get-bool">gconf_engine_get_bool</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-engine-get-schema">gconf_engine_get_schema</link>        (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-engine-get-list">gconf_engine_get_list</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-get-pair">gconf_engine_get_pair</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-float">gconf_engine_set_float</link>          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-int">gconf_engine_set_int</link>            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-string">gconf_engine_set_string</link>         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-bool">gconf_engine_set_bool</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-schema">gconf_engine_set_schema</link>         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-list">gconf_engine_set_list</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-set-pair">gconf_engine_set_pair</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);
+struct      <link linkend="GConfEnumStringPair">GConfEnumStringPair</link>;
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-string-to-enum">gconf_string_to_enum</link>            (<link linkend="GConfEnumStringPair">GConfEnumStringPair</link> lookup_table[],
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> *enum_value_retloc);
+const <link linkend="gchar">gchar</link>* <link linkend="gconf-enum-to-string">gconf_enum_to_string</link>           (<link linkend="GConfEnumStringPair">GConfEnumStringPair</link> lookup_table[],
+                                             <link linkend="gint">gint</link> enum_value);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+These functions initialize GConf, and communicate with the
+<application>gconfd</application> server via a
+<link linkend="GConfEngine"><type>GConfEngine</type></link> object. You can install a notification
+request on the server, get values, set values, list directories, and associate
+schema names with keys.
+</para>
+
+<para>
+Most of this interface is replicated in the <link linkend="GObject"><type>GObject</type></link> wrapper
+(<link linkend="GConfClient"><type>GConfClient</type></link> object); an alternative to the value-setting functions
+is the <link linkend="GConfChangeSet"><type>GConfChangeSet</type></link> interface.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gconf-init"/>gconf_init ()</title>
+<indexterm role="deprecated"><primary>gconf_init</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_init                      (<link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> **argv,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<warning><para><literal>gconf_init</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Initializes the GConf library. Creates a connection to a CORBA ORB, and
+initializes OAF (the object activation framework) if it isn't already
+initialized.
+</para><variablelist role="params">
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> otherwise.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-preinit"/>gconf_preinit ()</title>
+<indexterm role="deprecated"><primary>gconf_preinit</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_preinit                   (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> mod_info);</programlisting>
+<warning><para><literal>gconf_preinit</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_info</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-postinit"/>gconf_postinit ()</title>
+<indexterm role="deprecated"><primary>gconf_postinit</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_postinit                  (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> mod_info);</programlisting>
+<warning><para><literal>gconf_postinit</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_info</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-is-initialized"/>gconf_is_initialized ()</title>
+<indexterm role="deprecated"><primary>gconf_is_initialized</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_is_initialized            (void);</programlisting>
+<warning><para><literal>gconf_is_initialized</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Asks whether the library has been initialized.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> if the library has been initialized.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfNotifyFunc"/>GConfNotifyFunc ()</title>
+<indexterm><primary>GConfNotifyFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GConfNotifyFunc)              (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+A callback function invoked when a key's value changes. The <parameter>cnxn_id</parameter> parameter
+will be the connection ID returned from <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>. <parameter>key</parameter> will be the
+full path of the changed key, <parameter>value</parameter> will be the new value if the key is set.
+If the key is unset, <parameter>value</parameter> will be the default value if one exists, or
+<symbol>NULL</symbol> otherwise. <parameter>is_default</parameter> indicates whether a value is a
+default setting or a user setting. If <parameter>value</parameter> is <symbol>NULL</symbol>,
+<parameter>is_default</parameter> will be <symbol>TRUE</symbol>. <parameter>user_data</parameter> is the data passed to
+<link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfEngine"><type>GConfEngine</type></link> passed to <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cnxn_id</parameter>&nbsp;:</term>
+<listitem><simpara>the ID returned from <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>the user data passed to <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-notify-add"/>gconf_engine_notify_add ()</title>
+<indexterm><primary>gconf_engine_notify_add</primary></indexterm><programlisting><link linkend="guint">guint</link>       gconf_engine_notify_add         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfNotifyFunc">GConfNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Registers a notification request with the <application>gconfd</application>
+server.  The server will notify the client when any key at or below
+<parameter>namespace_section</parameter> is set or unset. Try to watch the smallest possible part of
+the namespace; otherwise you will slow down the server and your application with
+unnecessary notifications. Note that you should prefer <link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>
+if you're using the <link linkend="GObject"><type>GObject</type></link> wrapper library, because
+<link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link> does not require a client-server conversation for
+every callback. <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link> requests a different server notification for
+every callback. The function returns an ID you can use to remove the
+notification request; 0 is an invalid ID, and is returned if an error occurs.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to monitor for changes.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>namespace_section</parameter>&nbsp;:</term>
+<listitem><simpara>the directory or key to watch; you will be notified of changes at or below this point.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>the callback to invoke when a notification is received from the server.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>the data to pass to the callback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>an ID for the notification request, or 0 on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-notify-remove"/>gconf_engine_notify_remove ()</title>
+<indexterm><primary>gconf_engine_notify_remove</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_engine_notify_remove      (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="guint">guint</link> cnxn);</programlisting>
+<para>
+Removes a notification request.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfEngine"><type>GConfEngine</type></link> you were monitoring for changes.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cnxn</parameter>&nbsp;:</term>
+<listitem><simpara>The ID returned by <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get"/>gconf_engine_get ()</title>
+<indexterm><primary>gconf_engine_get</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_engine_get                (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Returns the <link linkend="GConfValue"><type>GConfValue</type></link> stored at <parameter>key</parameter>, or <symbol>NULL</symbol> if no value is
+set. You must call <link linkend="gconf-value-free"><function>gconf_value_free()</function></link> to free the returned value. If you know
+the expected type of the value, you probably want to use the type-specific
+convenience wrappers (<link linkend="gconf-engine-get-int"><function>gconf_engine_get_int()</function></link>, etc.)  because they will do the
+type-checking for you and return the appropriate type. Automatically returns the
+default value for a key, if the key is unset and a default exists.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to get the value from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset and no default exists.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-with-locale"/>gconf_engine_get_with_locale ()</title>
+<indexterm><primary>gconf_engine_get_with_locale</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_engine_get_with_locale    (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the value appropriate for a particular locale. Right now,
+only values of type <literal>GCONF_VALUE_SCHEMA</literal> are localized; the locale is
+meaningless for other value types. Also, <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link> automatically
+requests the value in the user's current locale. So this function is
+only useful if you want a schema for some locale other than the user's
+current locale. Except for the additional argument, this function is
+identical to <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link> in all respects.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to get the value from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>preferred locale (as in the locale-related environment variables).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-without-default"/>gconf_engine_get_without_default ()</title>
+<indexterm><primary>gconf_engine_get_without_default</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_engine_get_without_default
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Identical to <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link>, except that it will return <symbol>NULL</symbol> in
+place of the default value if the key is unset. Note that <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link> can also
+return <symbol>NULL</symbol> if no default exists or an error occurs.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to get the value from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-entry"/>gconf_engine_get_entry ()</title>
+<indexterm><primary>gconf_engine_get_entry</primary></indexterm><programlisting><link linkend="GConfEntry">GConfEntry</link>* gconf_engine_get_entry          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Obtain the full <link linkend="GConfEntry"><type>GConfEntry</type></link> for a value.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_schema_default</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-default-from-schema"/>gconf_engine_get_default_from_schema ()</title>
+<indexterm><primary>gconf_engine_get_default_from_schema</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_engine_get_default_from_schema
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Returns the default value stored in the key's schema, if the key has a schema
+associated and the schema exists and the schema contains a default value.  Note
+that <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link>, <link linkend="gconf-engine-get-string"><function>gconf_engine_get_string()</function></link>, and so on already return the default value
+if no other value is found, so normally you do not need this function. This
+function is just for convenience; you could also get the <link linkend="GConfMetaInfo"><type>GConfMetaInfo</type></link> for the
+key, read the schema name from there, then look up the schema by name and
+extract the default value.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to get the value from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to get the default value for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set"/>gconf_engine_set ()</title>
+<indexterm><primary>gconf_engine_set</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set                (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Sets the value of <parameter>key</parameter> to <parameter>value</parameter>. Does not modify the passed-in
+<link linkend="GConfValue"><type>GConfValue</type></link>, you must free it yourself. You may prefer a type-specific
+convenience wrapper, such as <link linkend="gconf-engine-set-int"><function>gconf_engine_set_int()</function></link>.
+</para>
+
+<para>
+ An error of note is <literal>GCONF_OVERRIDDEN</literal>, indicating that the system
+administrator has "forced" a value for this key. If no writable
+configuration sources exist, it is not an error, but GConf will just
+forget all your values; this allows users to have a configuration-free
+setup without a constant barrage of error messages.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to set the value in.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to set.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>the new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-unset"/>gconf_engine_unset ()</title>
+<indexterm><primary>gconf_engine_unset</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_unset              (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Unsets the value of <parameter>key</parameter>; if <parameter>key</parameter> is already unset, has no effect.  An
+error of note is <literal>GCONF_OVERRIDDEN</literal>, indicating that the system
+administrator has "forced" a value for this key.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to unset.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-associate-schema"/>gconf_engine_associate_schema ()</title>
+<indexterm><primary>gconf_engine_associate_schema</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_associate_schema   (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *schema_key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Directs GConf to find the schema for <parameter>key</parameter> at location
+<parameter>schema_key</parameter>. That is, the value stored at <parameter>schema_key</parameter> should have type
+<link linkend="GCONF-VALUE-SCHEMA-CAPS"><type>GCONF_VALUE_SCHEMA</type></link>, and be descriptive of <parameter>key</parameter>. Normally you don't
+call this function from C code; you can ship a special file with your
+application and ask <application>gconftool</application> to install
+schema associations into the database during "make install."
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>the key to associate the schema with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>schema_key</parameter>&nbsp;:</term>
+<listitem><simpara>the key where the schema will be stored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-all-entries"/>gconf_engine_all_entries ()</title>
+<indexterm><primary>gconf_engine_all_entries</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_engine_all_entries        (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Lists the key-value pairs in <parameter>dir</parameter>. Does not list subdirectories; for
+that use <link linkend="gconf-engine-all-dirs"><function>gconf_engine_all_dirs()</function></link>. The returned list contains <link linkend="GConfEntry"><type>GConfEntry</type></link>
+objects. A <link linkend="GConfEntry"><type>GConfEntry</type></link> contains an <emphasis>absolute</emphasis> key
+and a value. The list is not recursive, it contains only the immediate
+children of <parameter>dir</parameter>.  To free the returned list, <link linkend="gconf-entry-free"><function>gconf_entry_free()</function></link>
+each list element, then <link linkend="g-slist-free"><function>g_slist_free()</function></link> the list itself.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>Directory to list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>List of <link linkend="GConfEntry"><type>GConfEntry</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-all-dirs"/>gconf_engine_all_dirs ()</title>
+<indexterm><primary>gconf_engine_all_dirs</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_engine_all_dirs           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Lists the subdirectories in <parameter>dir</parameter>. The returned list contains allocated
+strings. Each string is the absolute path of a subdirectory. You should <link linkend="g-free"><function>g_free()</function></link> each string in the list, then <link linkend="g-slist-free"><function>g_slist_free()</function></link> the list itself.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>Directory to get subdirectories from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>List of allocated subdirectory names.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-suggest-sync"/>gconf_engine_suggest_sync ()</title>
+<indexterm><primary>gconf_engine_suggest_sync</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_engine_suggest_sync       (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Suggests to <application>gconfd</application> that you've just finished
+a block of changes, and it would be an optimal time to sync to
+permanent storage. This is only a suggestion; and
+<application>gconfd</application> will eventually sync even if you
+don't call <link linkend="gconf-engine-suggest-sync"><function>gconf_engine_suggest_sync()</function></link>. This function is just a "hint"
+provided to <application>gconfd</application> to maximize efficiency
+and minimize data loss.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfEngine"><type>GConfEngine</type></link> to suggest syncing to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-dir-exists"/>gconf_engine_dir_exists ()</title>
+<indexterm><primary>gconf_engine_dir_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_dir_exists         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Queries whether the directory <parameter>dir</parameter> exists in the GConf
+database. Returns <symbol>TRUE</symbol> or <symbol>FALSE</symbol>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>Directory to check for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> or <symbol>FALSE</symbol>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-valid-key"/>gconf_valid_key ()</title>
+<indexterm><primary>gconf_valid_key</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_valid_key                 (const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gchar">gchar</link> **why_invalid);</programlisting>
+<para>
+Asks whether a key is syntactically correct, that is, it ensures that
+the key consists of slash-separated strings and contains only legal
+characters. Normally you shouldn't need to call this function; the
+GConf functions all check this for you and return an error if the key
+is invalid. However, it may be useful to validate input to an entry
+field or the like. If you pass a non-<symbol>NULL</symbol> address as
+the <parameter>why_invalid</parameter> argument, an allocated string is returned explaining
+why the key is invalid, if it is. If the key is valid the <parameter>why_invalid</parameter>
+argument is unused.
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to check.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>why_invalid</parameter>&nbsp;:</term>
+<listitem><simpara>return location for an explanation of the problem, if any. <link linkend="g-free"><function>g_free()</function></link> the returned string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> if the key is valid, or <symbol>FALSE</symbol> if not.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-key-is-below"/>gconf_key_is_below ()</title>
+<indexterm><primary>gconf_key_is_below</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_key_is_below              (const <link linkend="gchar">gchar</link> *above,
+                                             const <link linkend="gchar">gchar</link> *below);</programlisting>
+<para>
+Asks whether the key <parameter>below</parameter> would be found below the key <parameter>above</parameter>, were
+they both to exist in the database. For example, <symbol>/foo</symbol>
+is always found below <symbol>/</symbol> and above
+<symbol>/foo/bar</symbol>. This probably isn't useful but GConf uses
+it internally so here it is if you need it.
+</para><variablelist role="params">
+<varlistentry><term><parameter>above</parameter>&nbsp;:</term>
+<listitem><simpara>the key on the "left hand side" of the predicate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>below</parameter>&nbsp;:</term>
+<listitem><simpara>the key on the "right hand side."
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> or <symbol>FALSE</symbol>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-float"/>gconf_engine_get_float ()</title>
+<indexterm><primary>gconf_engine_get_float</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     gconf_engine_get_float          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the floating point number (<literal>GCONF_VALUE_FLOAT</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-float is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+0.0 is returned.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or 0.0 if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-int"/>gconf_engine_get_int ()</title>
+<indexterm><primary>gconf_engine_get_int</primary></indexterm><programlisting><link linkend="gint">gint</link>        gconf_engine_get_int            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the integer (<literal>GCONF_VALUE_INT</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-integer is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+0 is returned.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or 0 if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-string"/>gconf_engine_get_string ()</title>
+<indexterm><primary>gconf_engine_get_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_engine_get_string         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the string (<literal>GCONF_VALUE_STRING</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-string is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+<symbol>NULL</symbol> is returned.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>allocated string (value of <parameter>key</parameter>), or <symbol>NULL</symbol> if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-bool"/>gconf_engine_get_bool ()</title>
+<indexterm><primary>gconf_engine_get_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_get_bool           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the boolean value (<literal>GCONF_VALUE_BOOL</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-bool is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+<symbol>FALSE</symbol> is returned.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or <symbol>FALSE</symbol> if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-schema"/>gconf_engine_get_schema ()</title>
+<indexterm><primary>gconf_engine_get_schema</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_engine_get_schema        (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the schema (<literal>GCONF_VALUE_SCHEMA</literal>) stored at <parameter>key</parameter>.
+Automatically performs type-checking, so if a non-schema is stored at
+<parameter>key</parameter>, an error is returned. If no value is set or an error occurs,
+<symbol>NULL</symbol> is returned.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter> as an allocated <link linkend="GConfSchema"><type>GConfSchema</type></link>, or <symbol>NULL</symbol> if no value was obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-list"/>gconf_engine_get_list ()</title>
+<indexterm><primary>gconf_engine_get_list</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_engine_get_list           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the list (<literal>GCONF_VALUE_LIST</literal>) stored at <parameter>key</parameter>.  Automatically
+performs type-checking, so if a non-list is stored at <parameter>key</parameter>, or the
+list does not contain elements of type <parameter>list_type</parameter>, an error is
+returned. If no value is set or an error occurs, <symbol>NULL</symbol>
+is returned. Note that <symbol>NULL</symbol> is also the empty list,
+so if you need to distinguish the empty list from an unset value, you
+must use <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link> to obtain a raw <link linkend="GConfValue"><type>GConfValue</type></link>.
+</para>
+
+<para>
+<emphasis>Remember that GConf lists can only store primitive types:
+<literal>GCONF_VALUE_FLOAT</literal>, <literal>GCONF_VALUE_INT</literal>, <literal>GCONF_VALUE_BOOL</literal>,
+<literal>GCONF_VALUE_STRING</literal>, <literal>GCONF_VALUE_SCHEMA</literal>.</emphasis> Also remember
+that lists must be uniform, you may not mix types in the same list.
+</para>
+
+<para>
+The type of the list elements depends on <parameter>list_type</parameter>. A <link linkend="GConfValue"><type>GConfValue</type></link>
+with type <literal>GCONF_VALUE_LIST</literal> normally stores a list of more <link linkend="GConfValue"><type>GConfValue</type></link>
+objects. <link linkend="gconf-engine-get-list"><function>gconf_engine_get_list()</function></link> automatically converts to primitive C
+types. Thus, the list-&gt;data fields in the returned list 
+contain:
+ 
+<informaltable pgwide="1" frame="none">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry><literal>GCONF_VALUE_INT</literal></entry>
+<entry>The integer itself, converted with <link linkend="GINT-TO-POINTER-CAPS"><function>GINT_TO_POINTER()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_BOOL</literal></entry>
+<entry>The bool itself, converted with <link linkend="GINT-TO-POINTER-CAPS"><function>GINT_TO_POINTER()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_FLOAT</literal></entry>
+<entry>A pointer to <link linkend="gdouble"><type>gdouble</type></link>, which should be freed with <link linkend="g-free"><function>g_free()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_STRING</literal></entry>
+<entry>A pointer to <link linkend="gchar"><type>gchar</type></link>, which should be freed with <link linkend="g-free"><function>g_free()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_SCHEMA</literal></entry>
+<entry>A pointer to <link linkend="GConfSchema"><type>GConfSchema</type></link>, which should be freed with <link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link></entry>
+</row>
+
+</tbody></tgroup></informaltable>
+
+In the <literal>GCONF_VALUE_FLOAT</literal> and <literal>GCONF_VALUE_STRING</literal> cases, you must
+<link linkend="g-free"><function>g_free()</function></link> each list element. In the <literal>GCONF_VALUE_SCHEMA</literal> case you must
+<link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link> each element. In all cases you must free the
+list itself with <link linkend="g-slist-free"><function>g_slist_free()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of each list element.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>an allocated list, with elements as described above.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-pair"/>gconf_engine_get_pair ()</title>
+<indexterm><primary>gconf_engine_get_pair</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_get_pair           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the pair (<literal>GCONF_VALUE_PAIR</literal>) stored at <parameter>key</parameter>.  Automatically
+performs type-checking, so if a non-pair is stored at <parameter>key</parameter>, or the
+pair does not have the right <parameter>car_type</parameter> and <parameter>cdr_type</parameter>, an error is
+returned. Remember that the <firstterm>car</firstterm> of a pair is
+its first value, and the <firstterm>cdr</firstterm> is its second
+value, in the Lisp tradition. 
+</para>
+
+<para>
+<emphasis>Remember that GConf pairs can only store primitive types:
+<literal>GCONF_VALUE_FLOAT</literal>, <literal>GCONF_VALUE_INT</literal>, <literal>GCONF_VALUE_BOOL</literal>,
+<literal>GCONF_VALUE_STRING</literal>, <literal>GCONF_VALUE_SCHEMA</literal>.</emphasis>
+</para>
+
+<para>
+<link linkend="gconf-engine-get-pair"><function>gconf_engine_get_pair()</function></link> stores the two fields of the pair in the locations
+pointed to by <parameter>car_retloc</parameter> and <parameter>cdr_retloc</parameter>. The type of these pointers
+depends on the corresponding <parameter>car_type</parameter> and <parameter>cdr_type</parameter>:
+ 
+<informaltable pgwide="1" frame="none">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry><literal>GCONF_VALUE_INT</literal></entry>
+<entry>pointer to <link linkend="gint"><type>gint</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_BOOL</literal></entry>
+<entry>pointer to <link linkend="gboolean"><type>gboolean</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_FLOAT</literal></entry>
+<entry>pointer to <link linkend="gdouble"><type>gdouble</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_STRING</literal></entry>
+<entry>pointer to <link linkend="gchar"><type>gchar</type></link>*</entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_SCHEMA</literal></entry>
+<entry>pointer to <link linkend="GConfSchema"><type>GConfSchema</type></link>*</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+
+In the <literal>GCONF_VALUE_STRING</literal> case, you must <link linkend="g-free"><function>g_free()</function></link> the string(s)
+stored in the return location(s). In the <literal>GCONF_VALUE_SCHEMA</literal> case you
+must <link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link> the returned schema. If there's an error
+or the value is unset, <parameter>car_retloc</parameter> and <parameter>cdr_retloc</parameter> are left unchanged.
+</para>
+
+<para>
+<link linkend="gconf-engine-get-pair"><function>gconf_engine_get_pair()</function></link> returns <symbol>TRUE</symbol> on success.
+</para>
+
+<para>
+An example of <link linkend="gconf-engine-get-pair"><function>gconf_engine_get_pair()</function></link> in action:
+<programlisting>
+gdouble car = 10.0;
+gchar* cdr  = NULL; 
+GError* error = NULL;
+
+if (!gconf_engine_get_pair(conf, "/foo", 
+                    GCONF_VALUE_FLOAT,
+                    GCONF_VALUE_STRING, 
+                    &amp;car, &amp;cdr, &amp;error))
+  {
+    /* Note: car/cdr should be untouched, because an error occurred */
+    g_assert(error != NULL);
+    fprintf(stderr, "Error: <literal>s</literal>\n", error->message);
+    g_error_free(error);
+    error = NULL;
+  }
+else
+  {
+    /* Note: car/cdr may be untouched even though there was no error, 
+       if no value was set for "/foo"
+     */
+    printf("Found pair (<literal>g</literal>,<literal>s</literal>)\n", car, cdr);
+    if (cdr != NULL)
+      g_free(cdr);
+  }
+</programlisting>
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>desired type of the pair's first field (car).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>desired type of the pair's second field (cdr).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>address of a return location for the car.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>address of a return location for the cdr.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-float"/>gconf_engine_set_float ()</title>
+<indexterm><primary>gconf_engine_set_float</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_float          (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a float (GCONF_VALUE_FLOAT), <link linkend="gconf-engine-set-float"><function>gconf_engine_set_float()</function></link> will fail.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-int"/>gconf_engine_set_int ()</title>
+<indexterm><primary>gconf_engine_set_int</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_int            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store an integer (GCONF_VALUE_INT), <link linkend="gconf-engine-set-int"><function>gconf_engine_set_int()</function></link> will fail.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-string"/>gconf_engine_set_string ()</title>
+<indexterm><primary>gconf_engine_set_string</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_string         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a string (GCONF_VALUE_STRING), <link linkend="gconf-engine-set-string"><function>gconf_engine_set_string()</function></link> will fail.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-bool"/>gconf_engine_set_bool ()</title>
+<indexterm><primary>gconf_engine_set_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_bool           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but but doesn't store a boolean (GCONF_VALUE_BOOL), <link linkend="gconf-engine-set-bool"><function>gconf_engine_set_bool()</function></link> will fail.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-schema"/>gconf_engine_set_schema ()</title>
+<indexterm><primary>gconf_engine_set_schema</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_schema         (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a schema value (GCONF_VALUE_SCHEMA), <link linkend="gconf-engine-set-schema"><function>gconf_engine_set_schema()</function></link> will fail.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-list"/>gconf_engine_set_list ()</title>
+<indexterm><primary>gconf_engine_set_list</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_list           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of each list element.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-set-pair"/>gconf_engine_set_pair ()</title>
+<indexterm><primary>gconf_engine_set_pair</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_set_pair           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfEngine"><type>GConfEngine</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of the pair's first field (car).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of the pair's second field (cdr).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_car</parameter>&nbsp;:</term>
+<listitem><simpara>address of the car.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_cdr</parameter>&nbsp;:</term>
+<listitem><simpara>address of the cdr.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfEnumStringPair"/>struct GConfEnumStringPair</title>
+<indexterm><primary>GConfEnumStringPair</primary></indexterm><programlisting>struct GConfEnumStringPair {
+
+  gint enum_value;
+  const gchar* str;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-string-to-enum"/>gconf_string_to_enum ()</title>
+<indexterm><primary>gconf_string_to_enum</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_string_to_enum            (<link linkend="GConfEnumStringPair">GConfEnumStringPair</link> lookup_table[],
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> *enum_value_retloc);</programlisting>
+<para>
+It's best to store enumeration values as strings rather than integers. This is
+robust against changes in the enumeration, and also human-readable.
+This function makes it more convenient to store enums as strings.
+</para>
+
+<para>
+The first argument is a lookup table, typically declared statically as follows:
+<programlisting>
+static GConfEnumStringPair foo_enum_lookup_table[] = {
+  { FOO_BLAH, "Blah" },
+  { FOO_BAR,  "Bar"  },
+  { 0, NULL }
+};
+</programlisting>
+Note that the last element of the table is <literal>{ 0, NULL }</literal>.
+Typically the strings you use should be semi-human-readable, for GTK+ and GNOME
+stripping off the library prefix and converting to StudlyCaps is the recommended
+convention.
+</para>
+
+<para>
+The function returns <symbol>TRUE</symbol> if a match for the string is found,
+and if a match is found the enum value is placed in <parameter>enum_value_retloc</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>lookup_table</parameter>&nbsp;:</term>
+<listitem><simpara>a lookup table mapping enum values to strings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>the string to convert to an enum value.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>enum_value_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>the address of an enum variable.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> if a match was found.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-enum-to-string"/>gconf_enum_to_string ()</title>
+<indexterm><primary>gconf_enum_to_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gconf_enum_to_string           (<link linkend="GConfEnumStringPair">GConfEnumStringPair</link> lookup_table[],
+                                             <link linkend="gint">gint</link> enum_value);</programlisting>
+<para>
+See <link linkend="gconf-string-to-enum"><function>gconf_string_to_enum()</function></link> for background information on this function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>lookup_table</parameter>&nbsp;:</term>
+<listitem><simpara>a lookup table mapping enum values to strings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>enum_value</parameter>&nbsp;:</term>
+<listitem><simpara>the enumeration value to convert to a string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a pointer to the proper string in the lookup table, or <symbol>NULL</symbol> if no match was found.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -424,7 +424,7 @@ gconf_corba_value_from_gconf_value (const GConfValue* value)
 }
 
 ConfigValue*  
-gconf_invalid_corba_value ()
+gconf_invalid_corba_value (void)
 {
   ConfigValue* cv;
 
@@ -917,6 +917,82 @@ gconf_load_source_path(const gchar* filename, GError** err)
   return l;
 }
 
+char *
+gconf_address_list_get_persistent_name (GSList *addresses)
+{
+  GSList  *tmp;
+  GString *str = NULL;
+
+  if (!addresses)
+    {
+      return g_strdup ("empty");
+    }
+
+  tmp = addresses;
+  while (tmp != NULL)
+    {
+      const char *address = tmp->data;
+
+      if (str == NULL)
+	{
+	  str = g_string_new (address);
+	}
+      else
+        {
+          g_string_append_c (str, GCONF_DATABASE_LIST_DELIM);
+          g_string_append (str, address);
+        }
+
+      tmp = tmp->next;
+    }
+
+  return g_string_free (str, FALSE);
+}
+
+GSList *
+gconf_persistent_name_get_address_list (const char *persistent_name)
+{
+  char   delim [2] = { GCONF_DATABASE_LIST_DELIM, '\0' };
+  char **address_vector;
+
+  address_vector = g_strsplit (persistent_name, delim, -1);
+  if (address_vector != NULL)
+    {
+      GSList  *retval = NULL;
+      int      i;
+
+      i = 0;
+      while (address_vector [i] != NULL)
+        {
+          retval = g_slist_append (retval, g_strdup (address_vector [i]));
+          ++i;
+        }
+
+      g_strfreev (address_vector);
+
+      return retval;
+    }
+  else
+    {
+      return g_slist_append (NULL, g_strdup (persistent_name));
+    }
+}
+
+void
+gconf_address_list_free (GSList *addresses)
+{
+  GSList *tmp;
+
+  tmp = addresses;
+  while (tmp != NULL)
+    {
+      g_free (tmp->data);
+      tmp = tmp->next;
+    }
+
+  g_slist_free (addresses);
+}
+
 /* This should also support concatting filesystem dirs and keys, 
    or dir and subdir.
 */
@@ -1017,56 +1093,13 @@ gconf_current_locale(void)
  * Log
  */
 
-gchar*
-gconf_quote_percents(const gchar* src)
-{
-  gchar* dest;
-  const gchar* s;
-  gchar* d;
-
-  g_return_val_if_fail(src != NULL, NULL);
-  
-  /* waste memory! woo-hoo! */
-  dest = g_malloc0(strlen(src)*2+4);
-  
-  d = dest;
-  
-  s = src;
-  while (*s)
-    {
-      switch (*s)
-        {
-        case '%':
-          {
-            *d = '%';
-            ++d;
-            *d = '%';
-            ++d;
-          }
-          break;
-          
-        default:
-          {
-            *d = *s;
-            ++d;
-          }
-          break;
-        }
-      ++s;
-    }
-
-  /* End with NULL */
-  *d = '\0';
-  
-  return dest;
-}
-
 #include <syslog.h>
 
 void
 gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
 {
   gchar* msg;
+  gchar* convmsg;
   va_list args;
   int syslog_pri = LOG_DEBUG;
 
@@ -1119,7 +1152,14 @@ gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
           break;
         }
 
-      syslog(syslog_pri, "%s", msg);
+      convmsg = g_locale_from_utf8 (msg, -1, NULL, NULL, NULL);
+      if (!convmsg)
+        syslog (syslog_pri, "%s", msg);
+      else
+        {
+	  syslog (syslog_pri, "%s", convmsg);
+	  g_free (convmsg);
+	}
     }
   else
     {
@@ -1130,13 +1170,13 @@ gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
         case GCL_CRIT:
         case GCL_ERR:
         case GCL_WARNING:
-          fprintf(stderr, "%s\n", msg);
+          g_printerr ("%s\n", msg);
           break;
       
         case GCL_NOTICE:
         case GCL_INFO:
         case GCL_DEBUG:
-          printf("%s\n", msg);
+          g_print ("%s\n", msg);
           break;
 
         default:
@@ -2414,7 +2454,7 @@ read_current_server_and_set_warning (const gchar *iorfile,
        * or <pid>:none for gconftool
        */
       str = buf;
-      while (isdigit(*str))
+      while (isdigit ((unsigned char) *str))
         ++str;
 
       if (*str == ':')
@@ -2701,6 +2741,24 @@ gconf_get_current_lock_holder  (const gchar *lock_directory,
   return server;
 }
 
+void
+gconf_daemon_blow_away_locks (void)
+{
+  char *lock_directory;
+  char *iorfile;
+  
+  lock_directory = gconf_get_lock_dir ();
+
+  iorfile = g_strconcat (lock_directory, "/ior", NULL);
+
+  if (unlink (iorfile) < 0)
+    g_printerr (_("Failed to unlink lock file %s: %s\n"),
+                iorfile, g_strerror (errno));
+
+  g_free (iorfile);
+  g_free (lock_directory);
+}
+
 static CORBA_ORB gconf_orb = CORBA_OBJECT_NIL;      
 
 CORBA_ORB
@@ -2754,8 +2812,22 @@ gconf_orb_release (void)
 
 char*
 gconf_get_daemon_dir (void)
-{
-  return g_strconcat (g_get_home_dir (), "/.gconfd", NULL);
+{  
+  if (gconf_use_local_locks ())
+    {
+      char *s;
+      char *subdir;
+
+      subdir = g_strconcat ("gconfd-", g_get_user_name (), NULL);
+      
+      s = g_build_filename (g_get_tmp_dir (), subdir, NULL);
+
+      g_free (subdir);
+
+      return s;
+    }
+  else
+    return g_strconcat (g_get_home_dir (), "/.gconfd", NULL);
 }
 
 char*
@@ -2798,7 +2870,7 @@ ConfigServer
 gconf_activate_server (gboolean  start_if_not_found,
                        GError  **error)
 {
-  ConfigServer server;
+  ConfigServer server = CORBA_OBJECT_NIL;
   int p[2] = { -1, -1 };
   char buf[1];
   GError *tmp_err;
@@ -2806,48 +2878,58 @@ gconf_activate_server (gboolean  start_if_not_found,
   char *gconfd_dir;
   char *lock_dir;
   GString *failure_log;
+  struct stat statbuf;
   CORBA_Environment ev;
+  gboolean dir_accessible;
 
   failure_log = g_string_new (NULL);
   
   gconfd_dir = gconf_get_daemon_dir ();
   
-  if (mkdir (gconfd_dir, 0700) < 0 && errno != EEXIST)
-    gconf_log (GCL_WARNING, _("Failed to create %s: %s"),
-               gconfd_dir, g_strerror (errno));
+  dir_accessible = stat (gconfd_dir, &statbuf) >= 0;
+
+  if (!dir_accessible && errno != ENOENT)
+    {
+      server = CORBA_OBJECT_NIL;
+      gconf_log (GCL_WARNING, _("Failed to stat %s: %s"),
+		 gconfd_dir, g_strerror (errno));
+    }
+  else if (dir_accessible)
+    {
+      g_string_append (failure_log, " 1: ");
+      lock_dir = gconf_get_lock_dir ();
+      server = gconf_get_current_lock_holder (lock_dir, failure_log);
+      g_free (lock_dir);
+
+      /* Confirm server exists */
+      CORBA_exception_init (&ev);
+
+      if (!CORBA_Object_is_nil (server, &ev))
+	{
+	  ConfigServer_ping (server, &ev);
+      
+	  if (ev._major != CORBA_NO_EXCEPTION)
+	    {
+	      server = CORBA_OBJECT_NIL;
+
+	      g_string_append_printf (failure_log,
+				      _("Server ping error: %s"),
+				      CORBA_exception_id (&ev));
+	    }
+	}
+
+      CORBA_exception_free (&ev);
+  
+      if (server != CORBA_OBJECT_NIL)
+	{
+	  g_string_free (failure_log, TRUE);
+	  g_free (gconfd_dir);
+	  return server;
+	}
+    }
 
   g_free (gconfd_dir);
 
-  g_string_append (failure_log, " 1: ");
-  lock_dir = gconf_get_lock_dir ();
-  server = gconf_get_current_lock_holder (lock_dir, failure_log);
-  g_free (lock_dir);
-
-  /* Confirm server exists */
-  CORBA_exception_init (&ev);
-
-  if (!CORBA_Object_is_nil (server, &ev))
-    {
-      ConfigServer_ping (server, &ev);
-      
-      if (ev._major != CORBA_NO_EXCEPTION)
-        {
-          server = CORBA_OBJECT_NIL;
-
-          g_string_append_printf (failure_log,
-                                  _("Server ping error: %s"),
-                                  CORBA_exception_id (&ev));
-        }
-    }
-
-  CORBA_exception_free (&ev);
-  
-  if (server != CORBA_OBJECT_NIL)
-    {
-      g_string_free (failure_log, TRUE);
-      return server;
-    }
-  
   if (start_if_not_found)
     {
       /* Spawn server */
@@ -2958,4 +3040,25 @@ _gconf_init_i18n (void)
 #endif
       done = TRUE;
     }
+}
+
+enum { UNKNOWN, LOCAL, NORMAL };
+
+gboolean
+gconf_use_local_locks (void)
+{
+  static int local_locks = UNKNOWN;
+  
+  if (local_locks == UNKNOWN)
+    {
+      const char *l =
+        g_getenv ("GCONF_GLOBAL_LOCKS");
+
+      if (l && atoi (l) == 1)
+        local_locks = NORMAL;
+      else
+        local_locks = LOCAL;
+    }
+
+  return local_locks == LOCAL;
 }
