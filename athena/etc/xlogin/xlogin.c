@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.23 2001-08-04 21:31:53 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.24 2002-02-22 14:54:56 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -1289,7 +1289,7 @@ static void reset(void)
   WcSetValueCB(appShell, "*lmenuEntry4.leftBitmap: white", NULL);
   WcSetValueCB(appShell, "*lmenuEntry5.leftBitmap: white", NULL);
   WcSetValueCB(appShell, "*lmenuEntry7.leftBitmap: white", NULL);
-  WcSetValueCB(appShell, "*selection.label:  ", NULL);
+  WcSetValueCB(appShell, "*selection.label: ", NULL);
   WcSetValueCB(appShell, "*name_input.displayCaret: TRUE", NULL);
 
   tb.firstPos = tb.length = 0;
