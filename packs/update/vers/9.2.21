@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Remove current Java packages.
+[ -d /var/sadm/pkg/SUNWj3rt && pkgrm -n -a $LIBDIR/noask SUNWj3rt
+[ -d /var/sadm/pkg/SUNWj3rtx && pkgrm -n -a $LIBDIR/noask SUNWj3rtx
+[ -d /var/sadm/pkg/SUNWj3dev && pkgrm -n -a $LIBDIR/noask SUNWj3dev
+[ -d /var/sadm/pkg/SUNWj3man && pkgrm -n -a $LIBDIR/noask SUNWj3man
+[ -d /var/sadm/pkg/SUNWj3dmo && pkgrm -n -a $LIBDIR/noask SUNWj3dmo
+[ -d /var/sadm/pkg/SUNWj3dvx && pkgrm -n -a $LIBDIR/noask SUNWj3dvx
+
+# Add new ones.
+echo "SUNWj3cfg"					>> $PACKAGES
+echo "SUNWj3dev"					>> $PACKAGES
+echo "SUNWj3dmo"					>> $PACKAGES
+echo "SUNWj3dmx"					>> $PACKAGES
+echo "SUNWj3dvx"					>> $PACKAGES
+echo "SUNWj3jmp"					>> $PACKAGES
+echo "SUNWj3man"					>> $PACKAGES
+echo "SUNWj3rt"						>> $PACKAGES
+echo "SUNWj3rtx"					>> $PACKAGES
