@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.37 1989-12-13 10:32:14 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.38 1990-01-10 11:38:52 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -995,7 +995,7 @@ char *vers;
 		zdbug((LOG_DEBUG,"cblock %s",buf));
 	}		
 #endif KERBEROS
-	if ((retval = bdump_send_list_tcp(SERVACK, bdump_sin.sin_port,
+	if ((retval = bdump_send_list_tcp(SERVACK, client->zct_sin.sin_port,
 					  ZEPHYR_ADMIN_CLASS,
 					  num > 1 ? "CBLOCK" : "",
 					  ADMIN_NEWCLT, client->zct_principal,
@@ -1015,11 +1015,11 @@ char *vers;
 		lyst[i * NUM_FIELDS + 1] = sub->zst_classinst;
 		lyst[i * NUM_FIELDS + 2] = sub->zst_recipient;
 		i++;
-		if (i > 7) {
+		if (i >= 7) {
 			/* we only put 7 in each packet, so we don't
 			   run out of room */
 			if ((retval = bdump_send_list_tcp(ACKED,
-							  bdump_sin.sin_port,
+							  client->zct_sin.sin_port,
 							  ZEPHYR_CTL_CLASS, "",
 							  CLIENT_SUBSCRIBE, "",
 							  "", lyst,
@@ -1033,7 +1033,8 @@ char *vers;
 		}
 	}
 	if (i) {
-		if ((retval = bdump_send_list_tcp(ACKED, bdump_sin.sin_port,
+		if ((retval = bdump_send_list_tcp(ACKED,
+						  client->zct_sin.sin_port,
 						  ZEPHYR_CTL_CLASS, "",
 						  CLIENT_SUBSCRIBE, "", "",
 						  lyst, i * NUM_FIELDS))
