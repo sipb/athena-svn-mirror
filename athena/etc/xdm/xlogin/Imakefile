@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.38 1996-09-20 04:18:55 ghudson Exp $
+# $Id: Imakefile,v 1.39 1996-11-23 17:51:54 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -63,6 +63,7 @@ install_file(bitmaps/is2.xbm,/etc/athena/login/bitmaps/is2.xbm)
 install_file(bitmaps/is3.xbm,/etc/athena/login/bitmaps/is3.xbm)
 install_file(bitmaps/is4.xbm,/etc/athena/login/bitmaps/is4.xbm)
 install_file(bitmaps/is5.xbm,/etc/athena/login/bitmaps/is5.xbm)
+install_file(bitmaps/menu16,/etc/athena/login/bitmaps/menu16)
 install_file(bitmaps/Ctrl-P,/etc/athena/login/bitmaps/Ctrl-P)
 install_file(bitmaps/F1,/etc/athena/login/bitmaps/F1)
 install_file(bitmaps/F2,/etc/athena/login/bitmaps/F2)
