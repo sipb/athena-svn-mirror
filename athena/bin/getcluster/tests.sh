@@ -1,6 +1,6 @@
 #!/bin/sh
 # Test getcluster's ability to do proper version resolution.
-# $Id: tests.sh,v 1.1 1996-06-06 05:28:55 ghudson Exp $
+# $Id: tests.sh,v 1.2 1996-06-06 17:32:06 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/tests.sh,v $
 
 temp=/tmp/test.out.$$
@@ -8,6 +8,8 @@ temp=/tmp/test.out.$$
 # Test version resolution for AUTOUPDATE false.
 AUTOUPDATE=false export AUTOUPDATE
 VAR= export VAR
+NEW_TESTING_RELEASE= export NEW_TESTING_RELEASE
+NEW_PRODUCTION_RELEASE= export NEW_PRODUCTION_RELEASE
 ./getcluster -b -d ignored 7.7P << EOM > $temp
 var value3 7.8
 var value1 7.6
@@ -15,7 +17,8 @@ var value2 7.7
 var value4 8.0
 EOM
 . $temp
-if [ "`grep -c . $temp`" != 1 -o "$VAR" != value2 ]; then
+if [ "`grep -c . $temp`" != 2 -o "$VAR" != value2 -o \
+     "$NEW_PRODUCTION_RELEASE" != 8.0 ]; then
 	echo "Test 1 failed."
 	rm -f $temp
 	exit 1
@@ -25,6 +28,8 @@ echo "Test 1 passed."
 # Test version resolution for AUTOUPDATE true, no testing versions
 AUTOUPDATE=true export AUTOUPDATE
 VAR= export VAR
+NEW_TESTING_RELEASE= export NEW_TESTING_RELEASE
+NEW_PRODUCTION_RELEASE= export NEW_PRODUCTION_RELEASE
 ./getcluster -b -d ignored 7.7P << EOM > $temp
 var value4 8.0
 var value3 7.8
@@ -42,6 +47,8 @@ echo "Test 2 passed."
 # Test version resolution for AUTOUPDATE true, testing versions
 AUTOUPDATE=true export AUTOUPDATE
 VAR= export VAR
+NEW_TESTING_RELEASE= export NEW_TESTING_RELEASE
+NEW_PRODUCTION_RELEASE= export NEW_PRODUCTION_RELEASE
 ./getcluster -b -d ignored 7.7P << EOM > $temp
 var value4 8.0 t
 var value3 7.8
@@ -49,7 +56,8 @@ var value1 7.6
 var value2 7.7
 EOM
 . $temp
-if [ "`grep -c . $temp`" != 1 -o "$VAR" != value3 ]; then
+if [ "`grep -c . $temp`" != 2 -o "$VAR" != value3 -o \
+     "$NEW_TESTING_RELEASE" != 8.0 ]; then
 	echo "Test 3 failed."
 	rm -f $temp
 	exit 1
@@ -66,6 +74,8 @@ VAR2= export VAR2
 VAR3= export VAR3
 VAR4= export VAR4
 VAR5= export VAR5
+NEW_TESTING_RELEASE= export NEW_TESTING_RELEASE
+NEW_PRODUCTION_RELEASE= export NEW_PRODUCTION_RELEASE
 ./getcluster -b -d ignored 7.7P << EOM > $temp
 var3 var3value2 7.7 t
 var1 var1value1 8.0 t
@@ -82,9 +92,9 @@ var4 var4value3 8.0
 var2 var2value2 8.0 t
 EOM
 . $temp
-if [ "`grep -c . $temp`" != 4 -o "$VAR1" != "" -o "$VAR2" != var2value1 -o \
-	"$VAR3" != var3value2 -o "$VAR4" != var4value3 -o \
-	"$VAR5" != var5value1 ]; then
+if [ "`grep -c . $temp`" != 5 -o "$VAR2" != var2value1 -o \
+     "$VAR3" != var3value2 -o "$VAR4" != var4value3 -o \
+     "$VAR5" != var5value1 -o "$NEW_TESTING_RELEASE" != 8.0 ]; then
 	echo "Test 4 failed."
 	rm -f $temp
 	exit 1
