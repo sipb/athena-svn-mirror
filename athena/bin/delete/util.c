@@ -11,17 +11,9 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.13 1989-11-26 19:21:04 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.14 1989-12-15 04:33:19 jik Exp $";
 #endif
 
-#ifdef AFS_MOUNTPOINTS
-/*
- * I assume there's a "right" header file to include to get the symbol
- * VICE defined, but I can't find it, and if VICE isn't defined then
- * certain header files don't load properly, so I'm doing it by hand.
- */
-#define VICE
-#endif
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
@@ -32,13 +24,8 @@
 #include <errno.h>
 #ifdef AFS_MOUNTPOINTS
 #include <sys/ioctl.h>
-#include <sys/vice.h>
-/*
- * there has to be a global header file that contains this
- * information, but once again, I can't find it, so this is the best I
- * can do.  Sigh.
- */
-#include <venus/uvenus.h>
+#include <afs/vice.h>
+#include <afs/venus.h>
 #endif
 #include "delete_errs.h"
 #include "directories.h"
