@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.3 1989-08-20 15:57:01 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.4 1989-08-22 13:58:45 tjcoppet Exp $
  */
 
 #include <stdio.h>                  
@@ -36,6 +36,8 @@
 #include <olc/requests.h>
 #include <olc/procs.h>
 #include <olc/status.h>
+
+#define VERSION_STRING "2.2b"
 
 /* 
  * service definitions 
@@ -56,6 +58,7 @@ extern char REALM[];
 extern char INSTANCE[];
 #endif KERBEROS
 
+extern PERSON User;
 extern STATUS Status_Table[];
 
 /*
