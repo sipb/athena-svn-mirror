@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.13 1987-11-15 23:54:19 jtkohl Exp $";
+static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.14 1987-11-20 12:33:33 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -271,27 +271,30 @@ ZServerDesc_t *server;
 			clt_ack(notice, who, AUTH_FAILED);
 		return;
 	}
+#ifdef OLD_COMPAT
+	if (!strcmp(notice->z_version, OLD_ZEPHYR_VERSION)) {
+		if (!strcmp(notice->z_opcode, LOCATE_HIDE)) {
+			zdbug((LOG_DEBUG,"old hide"));
+			if (ulogin_expose_user(notice, EXPOSE_OPSTAFF)) {
+				if (server == me_server)
+					clt_ack(notice, who, NOT_FOUND);
+				return;
+			}
+		} else if (!strcmp(notice->z_opcode, LOCATE_UNHIDE)) {
+			zdbug((LOG_DEBUG,"user unhide"));
+			if (ulogin_expose_user(notice, EXPOSE_REALMVIS)) {
+				if (server == me_server)
+					clt_ack(notice, who, NOT_FOUND);
+				return;
+			}
+		}
+	} else
+#endif /* OLD_COMPAT */
 	if (!strcmp(notice->z_opcode, LOCATE_LOCATE)) {
 		zdbug((LOG_DEBUG,"locate"));
 		ulogin_locate(notice, who);
 		/* does xmit and ack itself, so return */
 		return;
-#ifdef notdef
-	} else if (!strcmp(notice->z_opcode, LOCATE_HIDE)) {
-		zdbug((LOG_DEBUG,"user hide"));
-		if (ulogin_expose_user(notice, INVISIBLE)) {
-			if (server == me_server)
-				clt_ack(notice, who, NOT_FOUND);
-			return;
-		}
-	} else if (!strcmp(notice->z_opcode, LOCATE_UNHIDE)) {
-		zdbug((LOG_DEBUG,"user unhide"));
-		if (ulogin_expose_user(notice, VISIBLE)) {
-			if (server == me_server)
-				clt_ack(notice, who, NOT_FOUND);
-			return;
-		}
-#endif notdef
 	} else {
 		syslog(LOG_ERR, "unknown uloc opcode %s", notice->z_opcode);
 		if (server == me_server)
