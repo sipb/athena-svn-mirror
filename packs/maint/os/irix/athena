@@ -1,4 +1,4 @@
-# $Id: athena,v 1.2 1999-02-09 19:55:58 ghudson Exp $
+# $Id: athena,v 1.3 1999-02-26 21:03:56 rbasch Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -36,9 +36,10 @@ env > /var/athena/env.boot
 
 # Clean up the password file.
 $ECHO "Cleaning up passwd file: \c"
-if [ -f /etc/passwd.local ]; then
+if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
 	$ECHO "recovered from passwd.local... \c"
 	cp /etc/passwd.local /etc/passwd
+	cp /etc/shadow.local /etc/shadow
 fi
 $ECHO "done."
 
@@ -107,8 +108,14 @@ if [ "$PUBLIC" = true ]; then
 		chmod 644 /etc/passwd.local
 		chown root /etc/passwd.local
 	fi
+	if [ -r /srvd/etc/shadow ]; then
+		cp -p /srvd/etc/shadow /etc/shadow.local
+		chmod 600 /etc/shadow.local
+		chown root /etc/shadow.local
+	fi
 	cp -p /etc/passwd.local /etc/passwd
-	rm -f /etc/shadow
+	cp -p /etc/shadow.local /etc/shadow
+	chmod 600 /etc/shadow
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 	cp -p /srvd/etc/athena/athinfo.access /etc/athena/athinfo.access
