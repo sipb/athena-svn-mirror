@@ -1,0 +1,176 @@
+.\" 
+.\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ispell/ispell.1,v $
+.\"	$Author: epeisach $
+.\"	$Locker:  $
+.\"	$Log: not supported by cvs2svn $
+.\"Revision 1.1  84/08/15  23:33:19  wjmadden
+.\"Initial revision
+.\"
+.\"Revision 1.2  84/07/06  13:17:09  root
+.\"Corrected revision date
+.\"
+.\"
+.\"Revision 1.1  84/06/26  15:24:43  root
+.\"Initial revision
+.\"
+.\" 
+.\" 
+.TH ISPELL 1 "Revision B--July 1984"
+.FM mit 1.1
+.SH NAME
+ispell \- spelling correction for a file
+.SH SYNOPSIS
+ispell file ...
+.br
+ispell [
+.B \-l
+] [
+.B \-a
+]
+.SH DESCRIPTION
+.PP
+.I Ispell
+is a spelling correction program.  It checks the spelling of the words
+in a file against the words in its own dictionary, and also against the
+words in your own private dictionary, if you have one.
+.PP
+The most common way to use
+.I ispell
+is: ispell filename.
+.I Ispell
+peruses the file, displaying each word that does not appear in 
+its dictionary, as well as a list of "near misses."
+.I Ispell
+types each misspelled word at the top of the screen.  A misspelled word
+is any word not contained in
+.I ispell's
+dictionary or in your own private dictionary.
+.I Ispell
+also lists near misses, if any, on the following lines.
+Near misses are words contained in the dictionary that differ from the
+displayed word by a single letter, a missing or extra letter,
+or a pair of transposed, or interchanged letters.  Finally,
+.I ispell
+displays the two lines that contain the misspelled word at the bottom of
+the screen, so that you can recognize the context of the word within the
+file.  Reverse-video terminals highlight the displayed word.
+
+You may respond with one of the following commands:
+
+.nf
+?        Display help
+0-9      Replace with one of the suggested words
+<space>  Accept the word this time only
+a        Accept the word for the rest of this file
+i        Accept the word, and put it in your private dictionary
+r        Replace the misspelled word completely
+q        Write the rest of this file, ignoring misspellings and
+         start next file
+x or ^C  Exit immediately.  Asks for confirmation, leaves file
+         unchanged
+^L       Redraw screen
+^Z       Stop execution and return to shell
+!        Shell escape
+.fi
+
+The other way to use
+.I ispell
+is to pick one of these options:
+
+.TP 10
+.B \-l
+the "list" option, produces a list of misspelled words from
+standard input to standard output.
+.TP 10
+.B \-a
+allows the user access from other programs, using a "pipe."  Interactive
+users can use this mode to correct spelling of single words.  Exit from
+this mode using
+.B ^C
+or
+.B ^D.
+In this mode,
+.I ispell
+expects the input to consist of single words.
+.I Ispell
+reads each word, checks it against its own dictionary, and your private
+dictionary, if present, then delivers a single line to standard output.
+The output lines may be:
+.RS 15
+.TP 5
+.B *
+\fIispell\fR found the word in the supplied dictionary (spelling OK)
+.TP 5
+.B + <word>
+\fIispell\fR found the word, with any of various suffixes removed
+.TP 5
+.B & <list of near misses>
+\fIispell\fR cannot find the word, but found near misses.  The list of
+near misses is separated by spaces.  \fIIspell\fR capitalizes each near
+miss if the input word appears in capitals.
+.TP 5
+.B #
+\fIispell\fR found neither the input word, nor any near misses, in
+either dictionary.
+.RE
+.SH COMMENTS
+.I Ispell
+provides interactive spelling correction, an improvement from the older
+.I spell(1)
+program.
+.I Spell(1)
+merely lists misspelled words out of context;
+.I ispell
+lets you correct them in context.
+
+.I Ispell
+uses raw mode input.  It executes single-letter commands immediately as
+you type them, without waiting for a RETURN.
+
+.I Ispell
+doesn't confirm individual spelling corrections and returns to the shell
+without any indication of completion when finished perusing the file.
+
+.I Ispell
+provides no way to back up and fix unintended or unwanted changes.
+
+.I Ispell
+now requires about five seconds, varying with system load, to read in
+the hash table.
+
+Perhaps
+.I ispell
+should allow more than ten choices for near misses.
+
+.I Ispell
+stores the hash table as a quarter-megabyte array.
+
+.I Ispell
+should understand more
+.I troff
+and
+.I scribe
+syntax, and handle contractions more intelligently.
+.SH FILES
+.nf
+$HOME/.ispell.words           Your private dictionary.
+/usr/dict/ispell.hash         The hashed version of the
+                              stored directory.
+/usr/athena/ispell/*          Other related files.
+.fi
+.SH BUGS
+.I Ispell
+will clog your tty line if you ask for the help screen when using the
+IBM 3101 terminal emulator on an IBM PC XT.
+.SH SEE ALSO
+spell(1)
+.SH AUTHOR
+Pace Willisson (pace@mit-vax), with slight modifications by Tony Della
+Fera, DEC/Project Athena
+
+.I Ispell
+is a modification of an already existing program.  Similar versions of
+.I ispell,
+sometimes known as
+.I spell,
+appear on the MIT ITS and DEC TOPS-20 systems.
