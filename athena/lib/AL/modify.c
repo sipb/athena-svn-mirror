@@ -81,6 +81,7 @@ ALmodifyLinesOfFile(ALsession session,
   int cnt, fd= -1;
   FILE *oldfile=(FILE *)0;
   char buf[1024];
+  struct stat stat_buf;
   char *ctxt;			/* error context */
 
   /* open lock file */
@@ -89,7 +90,15 @@ ALmodifyLinesOfFile(ALsession session,
 
   /* open file to read from */
   if ((oldfile = fopen(filename, "r"))== (FILE *)0)
-    ALreturnError(session, (long) errno, filename);
+    { ctxt=filename; goto CLEANUP; }
+
+  /* get file protection mode of file to read */
+  if (stat(filename, &stat_buf) < 0)
+    { ctxt=filename; goto CLEANUP; }
+
+  /* set lockfile protection */
+  if (fchmod(fd, stat_buf.st_mode) < 0)
+    { ctxt=lockfilename; goto CLEANUP; }
 
   /* modify the file, line by line */
   while (fgets(buf, 1024, oldfile) != (char*)0)
