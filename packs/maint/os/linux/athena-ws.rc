@@ -81,6 +81,7 @@ case "$1" in
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
+		fix-xconfig
 		rm -rf /.hushlogin /etc/X0.hosts \
 			&& rm -f /etc/nologin.persist \
 			&& rm -rf /etc/ssh_host_key* \
