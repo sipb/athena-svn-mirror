@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v $
- *      $Author: raeburn $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,13 +13,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.9 1991-01-09 02:37:57 raeburn Exp $";
+static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.10 1991-12-05 15:35:39 lwvanels Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #include "new_memory.h"
 #include "char_stack.h"
 #include "string_dictionary.h"
@@ -286,7 +287,7 @@ string verbatim(str)
 
    temp=lbreak(&str,allmaskable_set);
    while(*str) {
-      bracketnum=(int) (index(brackets,str[0])-brackets);
+      bracketnum=(int) (strchr(brackets,str[0])-brackets);
       temp=string_Concat2(temp,openbracket[bracketnum]);
       temp=string_Concat2(temp,temp2=lany(&str," "));
       free(temp2);
