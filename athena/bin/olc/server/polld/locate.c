@@ -113,6 +113,13 @@ PTF *person;
   new_status = LOGGED_OUT;
   write(fd,"\r\n",2);
   f = fdopen(fd,"r");
+  if (f == NULL) {
+    alarm(0);
+    signal(SIGALRM, SIG_IGN);
+    close(fd);
+    return(LOC_ERROR);
+  }
+
   len = strlen(person->username);
   while (fgets(namebuf,BUF_SIZE,f) != NULL) {
     if (strncmp(namebuf,person->username,len) == 0) {
@@ -122,6 +129,7 @@ PTF *person;
   }
   
   fclose(f);
+  close(fd);
   signal(SIGALRM, SIG_IGN);
   alarm(0);
 
