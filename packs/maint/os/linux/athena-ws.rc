@@ -70,6 +70,14 @@ case "$1" in
 		echo
 	fi
 
+	if [ -e /dev/fd0 ]; then
+		echo -n "Fixing permissions on floppy device"
+		chmod 666 /dev/fd0* \
+			 && success "floppy device chmod" \
+				 || failure "floppy device chmod"
+		echo
+	fi
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
