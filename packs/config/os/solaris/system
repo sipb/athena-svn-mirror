@@ -81,6 +81,6 @@ forceload: misc/obpsym
 set shmsys:shminfo_shmmax=16777216
 set shmsys:shminfo_shmseg=8
 
-* Zero dosynctodr so that xntpd doesn't compete with the hardware time
+* Zero dosynctodr so that ntpd doesn't compete with the hardware time
 * of day clock for synchronization.
 set dosynctodr=0
