@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.1 1990-04-19 12:17:59 jfc Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.2 1990-04-19 12:18:09 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -253,7 +253,7 @@ bad_hes_line:
  * Make the directories necessary for a mount point - set the number
  * of directories created in the attachtab structure
  */
-make_mntpt(at)
+int make_mntpt(at)
     struct _attachtab *at;
 {
     char bfr[BUFSIZ],*ptr;
@@ -277,7 +277,7 @@ make_mntpt(at)
 	return (FAILURE);
     }
     
-    oldmask = umask(0);
+    oldmask = umask(022);
 
     ptr = bfr+1;		/* Pass initial / */
 
@@ -308,7 +308,7 @@ make_mntpt(at)
 /*
  * Delete a previously main mountpoint
  */
-rm_mntpt(at)
+int rm_mntpt(at)
     struct _attachtab *at;
 {
     char bfr[BUFSIZ], *ptr;
@@ -347,7 +347,7 @@ rm_mntpt(at)
 /*
  * Internal spiffed up getopt
  */
-internal_getopt(arg, cl)
+char internal_getopt(arg, cl)
     char *arg;
     struct command_list *cl;
 {
@@ -388,7 +388,7 @@ make_temp_name(filename, name)
  * another attach process.
  */
 
-really_in_use(name)
+int really_in_use(name)
     char *name;
 {
     int fd, ret;
@@ -413,7 +413,7 @@ really_in_use(name)
  * Mark a filesystem as being frobbed with
  */
 
-mark_in_use(name)
+void mark_in_use(name)
     char *name;
 {
     static int fd;
@@ -439,7 +439,7 @@ mark_in_use(name)
     unlink(filename);
     fd = open(filename, O_CREAT, 0644);
     if (!fd) {
-	    fprintf(stderr,"Can't open %s: %s\n", ATTACHTAB,
+	    fprintf(stderr,"Can't open %s: %s\n", attachtab_fn,
 		    sys_errlist[errno]);
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
@@ -474,7 +474,7 @@ fd_dump()
  * sensitive for explicit.
  */
 
-hescmp(at, s)
+int hescmp(at, s)
     struct _attachtab *at;
     char *s;
 {
@@ -492,8 +492,8 @@ char *strdup(s)
 	register char	*cp;
 	
 	if (!(cp = malloc(strlen(s)+1))) {
-		printf("Out of memory!!!\n");
-		abort();
+		fprintf(stderr, "attach: out of memory, exiting...\n");
+		exit(1);
 	}
 	return(strcpy(cp,s));
 }
@@ -501,18 +501,19 @@ char *strdup(s)
 /*
  * Check to see if we have root priv's; give an error if we don't.
  */
-check_root_privs(progname)
+void check_root_privs(progname)
 	char	*progname;
 {
-	if (!getuid() || !geteuid() || (debug_flag))
+	if (!real_uid || !effective_uid || (debug_flag))
 		return;
 	fprintf(stderr,
 		"%s must be setuid to root for this operation to succeed.\n",
 		progname);
 	exit(ERR_FATAL);
+	/* NOTREACHED */
 }
 
-add_options(mopt, string)
+void add_options(mopt, string)
 	struct mntopts	*mopt;
 	char		*string;
 {
@@ -608,7 +609,7 @@ add_options(mopt, string)
 			mopt->tsa.ufs.ufs_flags |= M_NODEV;
 		}
 #endif /* ultrix */
-
+#ifndef AIX
 		else if (!strcmp(str, "nosuid")) {
 #ifdef ultrix
 #ifdef NFS
@@ -622,6 +623,7 @@ add_options(mopt, string)
 		    mopt->flags |= M_NOSUID;
 #endif /* ultrix */
 		}
+#endif	/* AIX */
 #ifdef NFS
 		else if (mopt->type == MOUNT_NFS) {
 			if (!strcmp(str, "soft"))
@@ -793,11 +795,11 @@ char *struid(uid)
 	int	uid;
 {
 	struct	passwd	*pw;
-	static char	buff[256];
+	static char	buff[64];
 
 	pw = getpwuid(uid);
 	if (pw)
-		strcpy(buff, pw->pw_name);
+		strncpy(buff, pw->pw_name, sizeof(buff));
 	else
 		sprintf(buff, "#%d", uid);
 	return(buff);
@@ -852,6 +854,16 @@ int clean_attachtab(atp)
 	for(i=0;i<atp->nowners;i++)
 		if(NULL == (pw = getpwuid(atp->owners[i]))) {
 			int j;
+			/* Unmap */
+			if (atp->fs->type == TYPE_NFS && do_nfsid) {
+				if (debug_flag)
+					fprintf(stderr,
+						"nfs unmap(%s, %d)\n",
+						atp->host, atp->owners[i]);
+				(void) nfsid(atp->host, atp->hostaddr, 
+					     MOUNTPROC_KUIDUMAP, 1,
+					     atp->hesiodname, 0, atp->owners[i]);
+			}
 			for(j=i+1;j<atp->nowners;j++)
 				atp->owners[j-1] = atp->owners[j];
 			atp->nowners--;
@@ -880,7 +892,7 @@ int is_an_owner(at,uid)
 {
 	register int i;
 	if (!at->nowners)
-		return(1);	/* If noone claims it, anyone can have it */
+		return(1);	/* If no one claims it, anyone can have it */
 	for(i=0;i<at->nowners;i++)
 		if(at->owners[i] == uid)
 			return 1;
@@ -933,3 +945,23 @@ char *ownerlist(atp)
 	return ret;
 }
 
+
+int parse_username(s)
+	char	*s;
+{
+	struct	passwd	*pw;
+	char	*os = s;
+       
+	pw = getpwnam(s);
+	if (pw)
+		return(pw->pw_uid);
+	else {
+		if (*s == '#')
+			s++;
+		if (isdigit(*s))
+			return(atoi(s));
+		fprintf(stderr, "Can't parse username/uid string: %s\n", os);
+		exit(1);
+		/* NOTREACHED */
+	}
+}
