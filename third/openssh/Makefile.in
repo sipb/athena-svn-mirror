@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 2002-02-16 22:47:12 zacheiss Exp $
+# $Id: Makefile.in,v 1.7 2002-04-13 21:58:41 ghudson Exp $
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -190,15 +190,15 @@ install-files: scard-install
 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)1
 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)8
 	$(srcdir)/mkinstalldirs $(DESTDIR)$(libexecdir)
-	$(INSTALL) -m $(SSH_MODE) -s ssh $(DESTDIR)$(bindir)/ssh
-	$(INSTALL) -m 0755 -s scp $(DESTDIR)$(bindir)/scp
-	$(INSTALL) -m 0755 -s ssh-add $(DESTDIR)$(bindir)/ssh-add
-	$(INSTALL) -m 0755 -s ssh-agent $(DESTDIR)$(bindir)/ssh-agent
-	$(INSTALL) -m 0755 -s ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
-	$(INSTALL) -m 0755 -s ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
-	$(INSTALL) -m 0755 -s sshd $(DESTDIR)$(sbindir)/sshd
-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp $(DESTDIR)$(bindir)/sftp
-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp-server $(DESTDIR)$(SFTP_SERVER)
+	$(INSTALL) -m $(SSH_MODE) ssh $(DESTDIR)$(bindir)/ssh
+	$(INSTALL) -m 0755 scp $(DESTDIR)$(bindir)/scp
+	$(INSTALL) -m 0755 ssh-add $(DESTDIR)$(bindir)/ssh-add
+	$(INSTALL) -m 0755 ssh-agent $(DESTDIR)$(bindir)/ssh-agent
+	$(INSTALL) -m 0755 ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
+	$(INSTALL) -m 0755 ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
+	$(INSTALL) -m 0755 sshd $(DESTDIR)$(sbindir)/sshd
+	@NO_SFTP@$(INSTALL) -m 0755 sftp $(DESTDIR)$(bindir)/sftp
+	@NO_SFTP@$(INSTALL) -m 0755 sftp-server $(DESTDIR)$(SFTP_SERVER)
 	$(INSTALL) -m 644 ssh.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh.1
 	$(INSTALL) -m 644 scp.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/scp.1
 	$(INSTALL) -m 644 ssh-add.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-add.1
@@ -227,12 +227,7 @@ install-files: scard-install
 		echo "$(DESTDIR)$(sysconfdir)/sshd_config already exists, install will not overwrite"; \
 	fi
 	if [ -f ssh_prng_cmds -a ! -z "$(INSTALL_SSH_PRNG_CMDS)" ]; then \
-		$(PERL) $(srcdir)/fixprogs ssh_prng_cmds $(ENT); \
-		if [ ! -f $(DESTDIR)$(sysconfdir)/ssh_prng_cmds ] ; then \
-			$(INSTALL) -m 644 ssh_prng_cmds.out $(DESTDIR)$(sysconfdir)/ssh_prng_cmds; \
-		else \
-			echo "$(DESTDIR)$(sysconfdir)/ssh_prng_cmds already exists, install will not overwrite"; \
-		fi ; \
+		$(INSTALL) -m 644 ssh_prng_cmds $(DESTDIR)$(sysconfdir)/ssh_prng_cmds; \
 	fi
 	if [ ! -f $(DESTDIR)$(sysconfdir)/moduli ]; then \
 		if [ -f $(DESTDIR)$(sysconfdir)/primes ]; then \
