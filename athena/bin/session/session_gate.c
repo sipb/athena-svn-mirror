@@ -2,8 +2,8 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.6 1990-12-12 18:33:23 probe Exp $
- *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.7 1991-02-05 15:55:38 mar Exp $
+ *	$Author: mar $
  */
 
 #include <signal.h>
@@ -119,6 +119,10 @@ void logout( )
 {
     int f;
 
+    /* Ignore Alarm in child since HUP probably arrived during
+     * sleep() in main loop.
+     */
+    signal(SIGALRM, SIG_IGN);
     unlink(filename);
     f = open(".logout", O_RDONLY, 0);
     if (f >= 0) {
