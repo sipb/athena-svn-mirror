@@ -12,7 +12,7 @@
 . /etc/rc.d/init.d/functions
 
 . /etc/sysconfig/network
-. /etc/sysconfig/athena-xntp
+. /etc/athena/rc.conf
 
 PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 

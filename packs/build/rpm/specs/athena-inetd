@@ -22,13 +22,10 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/athena $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp inetd.conf.athena $RPM_BUILD_ROOT/etc/athena/inetd.conf
 cp inetd.conf $RPM_BUILD_ROOT/etc/inetd.conf.minimal
 cp athena-inetd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
-cp athena-inetd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-inetd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-inetd
 
 # Rename the program
 mv $RPM_BUILD_ROOT/etc/athena/inetd $RPM_BUILD_ROOT/etc/athena/athena-inetd
@@ -51,11 +48,14 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
 	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
 
+[ grep -q ACCESSON /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+ACCESSON=false;		export ACCESSON		#  Access on by default
+EOF
+
 %files
 /etc/athena/athena-inetd
 %config /etc/inetd.conf.minimal
 %config /etc/athena/inetd.conf
-%config /etc/sysconfig/athena-inetd
 /etc/rc.d
 /usr/athena
 

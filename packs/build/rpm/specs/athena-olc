@@ -20,14 +20,15 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
-cp olc.conf $RPM_BUILD_ROOT/etc/sysconfig/olc
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/olc
 
 %post
 chkconfig --add olc
+
+[ grep -q OLC /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+OLC=false;		export OLC		#  OLC daemon?
+EOF
 
 %description
 The Online Consultant system enables a variety of styles of
@@ -36,4 +37,3 @@ interaction with the Athena Online Consultants.
 %files
 /etc/rc.d
 /usr
-%config /etc/sysconfig/olc

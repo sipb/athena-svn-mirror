@@ -24,13 +24,10 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp aliases $RPM_BUILD_ROOT/etc/aliases
 cp sendmail.cf $RPM_BUILD_ROOT/etc/sendmail.cf
 cp athena-sendmail.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sendmail
-cp athena-sendmail.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-sendmail
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sendmail
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-sendmail
 mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 
@@ -38,11 +35,14 @@ ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 chkconfig --add athena-sendmail
 /usr/sbin/sendmail -bi
 
+[ grep -q SENDMAIL /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
+EOF
+
 %files
 %config /etc/sendmail.st
 %config /etc/aliases
 %config /etc/sendmail.cf
-%config /etc/sysconfig/athena-sendmail
 %dir /var/spool/mqueue
 /etc/rc.d
 /usr/athena

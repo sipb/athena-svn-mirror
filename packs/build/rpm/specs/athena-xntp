@@ -22,12 +22,9 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
 cp athena-xntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
-cp athena-xntp.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
 
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
@@ -35,10 +32,21 @@ mkdir -p $RPM_BUILD_ROOT/var/athena
 %post
 chkconfig --add athena-xntp
 
+[ grep -q TIMESRV /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+TIMESRV=false;		export TIMESRV		#  Time server?
+EOF
+
+[ grep -q TIMECLIENT /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+TIMECLIENT=true;	export TIMECLIENT	#  Timed client?
+EOF
+
+[ grep -q TIMEHUB /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
+EOF
+
 %files
 /etc/rc.d
 /etc/athena
 /usr
 %dir /var/athena
 %config /etc/ntp.conf
-%config /etc/sysconfig/athena-xntp
