@@ -27,11 +27,24 @@ m,24)
   # Reset the card to defaults (in case there's a new monitor).
   # Then try to configure the card to 1152x900x76 at depth 24.
   # Redirect stdin so if m64config asks for a confirmation
-  # (because it can't be sure the monitor can do this) the
-  # answer is "no."  Make all failures silent; if we end up in
-  # 8-bit mode, that's not a tragedy.
+  # (because it can't be sure the monitor supports this resolution)
+  # the answer is "no."  In that case, if the card supports depth 24,
+  # try to configure it with that depth at the default resolution,
+  # bypassing confirmation if the monitor's supported resolutions
+  # are unknown.
   m64config -defaults
-  m64config -res 1152x900x76 -depth 24 < /dev/null > /dev/null 2>&1
+  m64config -res 1152x900x76 -depth 24 < /dev/null > /dev/null 2>&1 || {
+    conf=noconfirm
+    eval `m64config -prconf | nawk '
+      /^Monitor possible resolution/ { print "conf=;"; }
+      /^Current resolution setting:/ { print "defres=" $4 ";"; }
+      /^Possible depths:.*24(,|$)/ { print "depth24=true;"; }
+      /^Current depth:/ { print "curdepth=" $3 ";"; }'`
+    if [ "$curdepth" -ne 24 -a "$depth24" = true -a \
+	 -n "$defres" -a "$defres" != none ]; then
+      m64config -res "$defres" $conf -depth 24 < /dev/null > /dev/null 2>&1
+    fi
+  }
   ;;
 m,8)
   # Reset the card to defaults (in case there's a new monitor).
