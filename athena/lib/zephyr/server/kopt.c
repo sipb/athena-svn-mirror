@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kopt.c,v $
- * $Author: probe $
+ * $Author: ghudson $
  *
  * Copyright 1985, 1986, 1987, 1988, 1990, 1991 by the Massachusetts
  * Institute of Technology.
@@ -19,7 +19,7 @@
 #ifndef lint
 #ifndef SABER
 static char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.9 1994-08-18 15:07:40 probe Exp $";
+    "$Id: kopt.c,v 1.10 1994-11-11 19:13:34 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -33,7 +33,7 @@ static char *rcsid_rd_req_c =
 #include "zserver.h"
 
 /* Byte ordering */
-extern int krbONE;
+static int krbONE;
 #define		HOST_BYTE_ORDER	(* (char *) &krbONE)
 
 #define		KRB_PROT_VERSION 	4
