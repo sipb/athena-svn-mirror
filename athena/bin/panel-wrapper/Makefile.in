@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001-01-12 18:22:47 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-03-28 01:39:57 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -16,8 +16,8 @@ DEFS=@DEFS@
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
-LIBS=`gtk-config --libs`
-ALL_CFLAGS=`gtk-config --cflags` ${CPPFLAGS} ${CFLAGS} ${DEFS}
+LIBS=`gnome-config --libs gnomeui`
+ALL_CFLAGS=`gnome-config --cflags gnomeui` ${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 all: panel-wrapper
 
