@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.60 2001-06-20 17:34:30 ghudson Exp $
+# $Id: reactivate.sh,v 1.61 2001-07-09 20:15:05 zacheiss Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -13,6 +13,7 @@ pidfile=/var/athena/reactivate.pid
 countfile=/var/athena/reactivate.count
 nologin=/etc/nologin
 made_nologin=false
+afsconfig=/afs/athena.mit.edu/system/config/afs
 
 umask 22
 . /etc/athena/rc.conf
@@ -249,6 +250,16 @@ if [ "$full" = true ]; then
 	# Reconfigure AFS state
 	if [ "$AFSCLIENT" != "false" ]; then
 		/etc/athena/config_afs > /dev/null 2>&1 &
+	fi
+	# If the encrypt file doesn't exist, disable AFS encryption.
+	# Only do this on Linux for now, since other platforms aren't
+	# running a client that supports encryption.
+	if [ linux = "$HOSTTYPE" ]; then
+		if  [ -f $afsconfig/encrypt ]; then
+			/bin/athena/fs setcrypt on
+		else
+			/bin/athena/fs setcrypt off
+		fi
 	fi
 fi
 
