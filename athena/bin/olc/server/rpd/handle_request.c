@@ -8,12 +8,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.15 1991-05-07 11:08:17 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.16 1991-08-23 15:25:06 raek Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include "rpd.h"
+
+#include "/mit/olcdev/src/clients/lib/lib_err.h"
 
 #ifndef KERBEROS
 /* Still need kerberos defs for compatabile protocols.. */
@@ -179,7 +181,7 @@ handle_request(fd, from)
     /* Twit! */
     syslog(LOG_WARNING,"Request from %s@%s who is not on the acl\n",
 	    principal_buffer, inet_ntoa(from.sin_addr));
-    output_len = htonl(ERR_NO_ACL);
+    output_len = htonl(OLCL_NO_ACL);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
@@ -192,7 +194,7 @@ handle_request(fd, from)
       ((request == REPLAY_KILL_REQ) && strcmp(their_info.pname,tusername))) {
     syslog(LOG_WARNING, "Request to delete %s's new messages from %s@%s\n",
 	   username,principal_buffer, inet_ntoa(from.sin_addr));
-    output_len = htonl(ERR_OTHER_SHOW);
+    output_len = htonl(OLCL_OTHER_SHOW);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
@@ -218,7 +220,7 @@ handle_request(fd, from)
     break;
   default:
     /* Sorry, not here- */
-    output_len = htonl(ERR_NOT_HERE);
+    output_len = htonl(OLCL_NOT_HERE);
     write(fd,&output_len,sizeof(u_long));
     return;
   }
@@ -226,9 +228,9 @@ handle_request(fd, from)
     /* Didn't get response; determine if it's an error or simply that the */
     /* question just doesn't exist based on result */
     if (result == 0)
-      output_len = htonl(ERR_NO_SUCH_Q);
+      output_len = htonl(OLCL_NO_SUCH_Q);
     else
-      output_len = htonl(ERR_SERV);
+      output_len = htonl(OLCL_SERV_ERR);
     write(fd,&output_len,sizeof(u_long));
   }
   else {
