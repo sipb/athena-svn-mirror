@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.14 1991-01-03 15:35:25 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.15 1991-03-29 02:16:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.14 1991-01-03 15:35:25 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.15 1991-03-29 02:16:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -38,9 +38,10 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 
 ERRCODE
-t_ask(Request,topic)
+t_ask(Request,topic,q_file)
      REQUEST *Request;
      char *topic;
+     char *q_file;
 {
   int status;
   char file[NAME_SIZE];
@@ -68,7 +69,7 @@ t_ask(Request,topic)
 
     case ERROR:
       fprintf(stderr, 
-	 "An error has occurred while contacting server.  Please try again.\n");
+	 "An error has 1occurred while contacting server.  Please try again.\n");
       if(OLC)
 	exit(1);
       else
@@ -99,7 +100,7 @@ t_ask(Request,topic)
     case HAS_QUESTION:
       printf("Your current instance is busy, creating another one for you.\n");
       set_option(Request->options, SPLIT_OPT);
-      t_ask(Request,topic);
+      t_ask(Request,topic,q_file);
       break;
       
     case ALREADY_SIGNED_ON:
@@ -122,48 +123,51 @@ t_ask(Request,topic)
   if(status!=SUCCESS)
     return(status);
 
-  make_temp_name(file);
-  printf("Please enter your question.  ");
-  printf("End with a ^D or '.' on a line by itself.\n");
-
-  if (input_text_into_file(file) != SUCCESS)
-    {
-      fprintf(stderr,"An error occurred while reading your");
-      fprintf(stderr," message; unable to continue.\n");
-    }
-
-  status = what_now(file, FALSE,NULL);
-  if (status == ERROR)
-    {
-      fprintf(stderr,"An error occurred while reading your");
-      fprintf(stderr," message; unable to continue.\n");
-      (void) unlink(file);
-      return(ERROR);
-    }
-  else
-    if (status == NO_ACTION)
+  if ((q_file == NULL) || (q_file[0] == '\0')) {
+    make_temp_name(file);
+    printf("Please enter your question.  ");
+    printf("End with a ^D or '.' on a line by itself.\n");
+    
+    if (input_text_into_file(file) != SUCCESS)
       {
-        printf("Your question has been cancelled.\n");
-        (void) unlink(file);
+	fprintf(stderr,"An error occurred while reading your");
+	fprintf(stderr," message; unable to continue.\n");
+      }
+    
+    status = what_now(file, FALSE,NULL);
+    if (status == ERROR)
+      {
+	fprintf(stderr,"An error occurred while reading your");
+	fprintf(stderr," message; unable to continue.\n");
+	(void) unlink(file);
+	return(ERROR);
+      }
+    else
+      if (status == NO_ACTION)
+	{
+	  printf("Your question has been cancelled.\n");
+	  (void) unlink(file);
+	  if(OLC)
+	    exit(1);
+	  return(SUCCESS);
+	}
+    
+    (void) stat(file, &statbuf);
+    if (statbuf.st_size == 0)
+      {
+	printf("You have not entered a question.\n");
+	(void) unlink(file);
 	if(OLC)
 	  exit(1);
-        return(SUCCESS);
+	return(SUCCESS);
       }
-
-  (void) stat(file, &statbuf);
-  if (statbuf.st_size == 0)
-    {
-      printf("You have not entered a question.\n");
-      (void) unlink(file);
-      if(OLC)
-	exit(1);
-      return(SUCCESS);
-    }
-
-
-  status = OAsk(Request,topic,file);
-
-  (void) unlink(file);
+    status = OAsk(Request,topic,file);
+    (void) unlink(file);
+  }
+  else {
+    status = OAsk(Request,topic,q_file);
+    (void) unlink(file);
+  }
 
   switch(status)
     {

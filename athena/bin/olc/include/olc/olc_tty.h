@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.10 1991-03-05 14:50:54 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.11 1991-03-29 02:17:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -40,7 +40,7 @@ int t_list_acl P((REQUEST *Request , char *acl , char *file ));
 int t_get_accesses P((REQUEST *Request , char *file ));
 
 /* t_ask.c */
-ERRCODE t_ask P((REQUEST *Request , char *topic ));
+ERRCODE t_ask P((REQUEST *Request , char *topic , char *q_file));
 
 /* t_connect.c */
 ERRCODE t_grab P((REQUEST *Request , int flag , int hold ));
