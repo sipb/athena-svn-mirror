@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1997-04-30 22:59:03 ghudson Exp $
+# $Id: Makefile,v 1.9 1997-08-13 16:06:56 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -36,7 +36,7 @@ install:
 	ln -s athena/krb.realms ${DESTDIR}${ETCDIR}/krb.realms
 	rm -f ${DESTDIR}${ETCDIR}/passwd
 	ln -s ${CONFIG}/passwd/${ATHENA_SYS}/passwd ${DESTDIR}${ETCDIR}/passwd
-	rm -f ${DESTDIR}${ATHRECTDIR}/gdss_public_key
+	rm -f ${DESTDIR}${ATHRETCDIR}/gdss_public_key
 	ln -s /afs/net.mit.edu/system/config/gdss_public_key \
 		${DESTDIR}${ATHRETCDIR}/gdss_public_key
 	rm -f ${DESTDIR}${ATHLIBDIR}/quickstations
