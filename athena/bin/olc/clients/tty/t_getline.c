@@ -1,6 +1,6 @@
 #ifndef lint
 static char     rcsid[] =
-"$Id: t_getline.c,v 1.5 1995-08-23 20:18:06 cfields Exp $";
+"$Id: t_getline.c,v 1.6 1997-04-30 18:06:50 ghudson Exp $";
 #endif
 
 /* 
@@ -99,6 +99,7 @@ static char *copyright = "Copyright (C) 1991, Chris Thewalt";
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
+#include <unistd.h>
 
 extern int      isatty();	
 
@@ -160,9 +161,6 @@ struct termio   tty, old_tty;
 #else
 #include <sgtty.h>
 struct sgttyb   tty, old_tty;
-#endif
-#ifndef sgi
-extern int      ioctl();
 #endif
 
 void
@@ -752,10 +750,12 @@ hist_save(p)
 #endif
 /* makes a copy of the string */
 {
-    char *s = 0;
+    char *s = NULL;
 
-    if (p && ((s = (char *) malloc(strlen(p)+1)) != 0)) {
-            strcpy(s, p);
+    if (p) {
+      s = malloc(strlen(p)+1);
+      if (s)
+	strcpy(s, p);
     }
     return s;
 }
