@@ -1,4 +1,4 @@
-# $Id: packages,v 1.108.2.1 2000-09-23 19:32:29 ghudson Exp $
+# $Id: packages,v 1.108.2.2 2001-03-09 20:31:27 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -97,6 +97,7 @@ athena/etc/messaged		requires gms
 athena/etc/mkcred
 athena/etc/newsyslog		except linux
 athena/etc/rkinitd		requires krb5,athena/lib/rkinit
+athena/etc/rpmupdate		on linux
 athena/etc/synctree
 athena/etc/track
 athena/etc/writed
