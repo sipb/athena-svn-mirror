@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.18 1997-02-22 18:55:14 ghudson Exp $
+/* $Id: cleanup.c,v 2.18.2.1 1997-08-12 03:50:49 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -44,7 +44,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.18 1997-02-22 18:55:14 ghudson Exp $";
+char *version = "$Id: cleanup.c,v 2.18.2.1 1997-08-12 03:50:49 ghudson Exp $";
 
 
 
@@ -136,6 +136,12 @@ char *argv[];
 
     /* snapshot info */
 
+#ifdef SYSV
+    if (lckpwdf() != 0) {
+	unlink(nologin_fn);
+	exit(1);
+    }
+#endif
     lock_file("/etc/ptmp");
     lock_file("/etc/gtmp");
     pword = get_password_entries();
@@ -146,6 +152,9 @@ char *argv[];
     }
     unlock_file("/etc/ptmp");
     unlock_file("/etc/gtmp");
+#ifdef SYSV
+    ulckpwdf();
+#endif
     procs = get_processes();
     if (fail || pword == NULL || users == NULL || procs == NULL) {
 	unlink(nologin_fn);
