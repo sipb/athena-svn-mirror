@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.22 1990-06-07 23:36:17 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.23 1990-09-26 04:12:16 jik Exp $
 #
 
 DESTDIR=
@@ -22,7 +22,7 @@ DEFINES=	$(AFSDEFINES)
 # These variables apply only if you want this program to recognize
 # Andrew File System mount points.  If you don't want to support AFS,
 # then set all the variables starting with "AFS" to nothing.
-AFSBLD=		bld
+AFSBLD=		bld.3.0
 AFSINC=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/include
 AFSLIB=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/lib
 AFSINCS=	-I$(AFSINC)
