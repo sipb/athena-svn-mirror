@@ -10,12 +10,12 @@
  */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.13 1991-12-04 13:25:47 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.14 1992-01-17 07:49:57 lwvanels Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.13 1991-12-04 13:25:47 lwvanels Exp $";
+static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.14 1992-01-17 07:49:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -170,7 +170,8 @@ ae_expire(ae)
   }
   ae->len = 0;
   ae->expire_time = 0;
-  ae->principal = 0;
+  free_zstring(ae->principal);
+  ae->principal= 0;
 }
 
 static int
