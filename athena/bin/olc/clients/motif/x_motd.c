@@ -18,17 +18,18 @@
  *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
- *      $Id: x_motd.c,v 1.8 1992-06-11 17:14:21 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: x_motd.c,v 1.9 1997-04-30 17:46:29 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.8 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.9 1997-04-30 17:46:29 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -66,15 +67,16 @@ x_get_motd(Request,type,file,dialog)
 	  return(ERROR);
 	}
 	  
-      if ((motd = malloc((1 + statbuf.st_size) * sizeof(char)))
-	  == (char *) NULL)
+      motd = malloc(1 + statbuf.st_size);
+      if (motd == NULL)
 	{
 	  MuError("x_get_motd: unable to malloc space for motd.");
 	  STANDARD_CURSOR;
 	  return(ERROR);
 	}
 
-      if ((fd = open(file, O_RDONLY, 0)) < 0)
+      fd = open(file, O_RDONLY, 0);
+      if (fd < 0)
 	{
 	  close(fd);
 	  free(motd);
