@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.2 1988-06-10 14:43:55 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.3 1988-06-21 19:45:53 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  88/06/10  14:43:55  don
+ * moved incl_devs (-d option) control to gettail() from update_files();
+ * 
  * Revision 4.1  88/05/17  19:00:31  don
  * fixed another bug in GLOBAL handling, by simplifying pattern-list
  * traversal. now, global-list is chained onto end of each entry's list.
@@ -52,7 +55,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.2 1988-06-10 14:43:55 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.3 1988-06-21 19:45:53 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -69,7 +72,7 @@ unsigned short type;
 int entnum;
 {
 	static char exc_dir[ LINELEN] = "";
-	List_element **except, *elt = NULL, *q;
+	List_element **except, *q;
 	char retval = NORMALCASE, *tail, *wholename;
 	unsigned int k;
 	Entry *e = &entries[ entnum], *g = &entries[ 0];
@@ -101,9 +104,7 @@ int entnum;
 	k = hash( tail = *pathp);
 
 	if ( e->names.table && ( except = lookup( tail, k, &e->names))) {
-		elt = *except;		/* save the matching element */
-		*except = NEXT( elt);	/* delete it from hash table */
-		retval = FLAG( elt);
+		retval = FLAG( *except);
 	}
 	else if ( g->names.table && ( except = lookup( tail, k, &g->names))) {
 		retval = FLAG( *except);
@@ -202,11 +203,11 @@ log2( len) unsigned short len; {
 }
 
 store( list_elt, p) List_element *list_elt; Table *p; {
-	List_element **collisions, **next;
+	List_element **collisionp, **nextp;
 
-	collisions = &p->table[ hash( TEXT( list_elt)) >> p->shift];
-	if ( ! *collisions) {
-	    *collisions = list_elt;	/* store list-elt in hash table */
+	collisionp = &p->table[ hash( TEXT( list_elt)) >> p->shift];
+	if ( ! *collisionp) {
+	    *collisionp = list_elt;	/* store list-elt in hash table */
 	    NEXT( list_elt) = NULL;
 	    return;
 	}
@@ -214,16 +215,18 @@ store( list_elt, p) List_element *list_elt; Table *p; {
 	 * if list_elt is already present in the table,
 	 * ensure that FORCE_LINK overrides DONT_TRACK.
 	 */ 
-	for ( next = collisions; *next; next = PNEXT( *next)) {
-	    switch( SIGN( strcmp( *next, list_elt))) {
+	for ( nextp = collisionp; *nextp; nextp = PNEXT( *nextp)) {
+	    switch( SIGN( strcmp( *nextp, list_elt))) {
 	    case -1: continue;
-	    case  1: NEXT( list_elt) = *next;
-		     *next = list_elt;
-		     return;
-	    case  0: FLAG( *next) |= FLAG( list_elt);
+	    case  1: break;				/* switch */
+	    case  0: FLAG( *nextp) |= FLAG( list_elt);
 		     return; /* infequent case last */
 	    }
+	    break;	/* loop */
 	}
+	NEXT( list_elt) = *nextp;
+	*nextp = list_elt;
+	return;
 }
 List_element *
 add_list_elt( str, flag, top) char *str; char flag; List_element **top; {
