@@ -43,7 +43,7 @@ prog::	objs								@@\
 clean::									@@\
 	$(RM) prog							@@\
 
-#ifndef static_program(prog,objs,ldflags,libs)
+#ifndef static_program
 #define static_program(prog,objs,ldflags,libs)				@@\
 build_program(prog,objs,ldflags,libs)
 #endif
