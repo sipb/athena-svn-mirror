@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.5 2001-09-04 17:13:01 zacheiss Exp $";
+static char rcsid[] = "$Id: process.c,v 1.6 2002-05-24 18:37:50 zacheiss Exp $";
 #endif /* not lint */
 
 /*
@@ -216,5 +216,6 @@ find_user(name, tty)
 			}
 		}
 	}
+	endutent();
 	return (status);
 }
