@@ -26,7 +26,7 @@ if [ -s "$DEADFILES" ]; then
   done
 fi
 
-yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
+yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
 
 if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" ]; then
   pkglog=$UPDATE_ROOT/var/athena/update.pkglog
@@ -95,7 +95,7 @@ track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib
 rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 echo "Copying kernel modules from /srvd/kernel"
-cp -p /srvd/kernel/fs/* "$UPDATE_ROOT/kernel/fs"
+cp -p -r /srvd/kernel/fs/* "$UPDATE_ROOT/kernel/fs"
 
 rm -f "$UPDATE_ROOT/var/spool/cron/crontabs/uucp"
 
