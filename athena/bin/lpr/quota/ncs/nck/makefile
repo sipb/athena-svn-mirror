@@ -36,7 +36,7 @@ idl.tar: rmakefile
 	make -f rmakefile idl.tar
 
 rmakefile: pmakefile
-	rm -f rmakefile
+	rm -f rmakefile foo.c
 	cp pmakefile foo.c
 	(cc -E foo.c ${DEFS} | sed -e 's/^#.*//' -e 's/^[ \f	]$$//' -e 's/^ /	/' > rmakefile)
-	rm foo.c
+	rm -f foo.c
