@@ -1,0 +1,368 @@
+#!/bin/sh
+
+PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc
+
+prog=`basename $0`
+
+usage="Usage: $prog [--help] [--auto] [--disk busnum devnum] [--diskless] [--boothost host] [--dist path] [--root path] [--swap] [--skiprepart] [--hdrsize megs] [--swapsize megs] [--cachesize megs] [--hostname hostname] [--ipaddr ipaddr]"
+
+#
+# Parse arguments.
+#
+while [ -n "$1" ]; do
+    case "$1" in
+
+    --help)
+	echo $usage
+	exit 0;;
+
+    --auto)
+	AIS_AUTO=1;;
+
+    --disk)
+	AIS_BUS=$2
+	AIS_DEV=$3
+	shift 2;;
+
+    --diskless)
+	AIS_MODE=diskless;;
+
+    --dist)
+	AIS_DIST=$2
+	shift;;
+
+    --root)
+	AIS_ROOT=$2
+	shift;;
+
+    --boothost)
+	AIS_BOOTHOST=$2
+	shift;;
+
+    --swap)
+	AIS_MODE=swap;;
+
+    --skiprepart)
+	AIS_REPARTITION=0;;
+
+    --hdrsize)
+	AIS_HDRSIZE=$2
+	shift;;
+
+    --swapsize)
+	AIS_SWAPSIZE=$2
+	shift;;
+
+    --cachesize)
+	AIS_CACHESIZE=$2
+	shift;;
+
+    --hostname)
+	AIS_HOST=$2
+	shift;;
+
+    --ipaddr)
+	AIS_ADDR=$2
+	shift;;
+
+    *)
+	echo "$prog: Unknown option $1"
+	echo $usage
+	exit 1;;
+    esac
+    shift
+done
+
+#
+# Set up default values (default to internal disk, swap partition, mount
+# on /root, prompt for inputs).
+#
+AIS_BASE=${AIS_BASE:-/afs/dev/project/ais}
+AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
+AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
+AIS_CPUBOARD=${AIS_CPUBOARD:-`uname -m`}
+AIS_OSVERSION=${AIS_OSVERSION:-`uname -r`}
+
+eval `hinv | awk '\
+    /CPU: MIPS/			{ p = $3 }				\
+    /Graphics board:/		{ g = $3 }				\
+    /graphics installed/	{ g = $1 }				\
+    END			{ printf("AIS_CPU=%s; AIS_GRAPHICS=%s", p, g); }'`
+
+# AFSDIST is separated only because there isn't an AFS distribution in
+# the AFS locker for 6.3 yet.
+# MODLOADAFS is separated because AFS is still a bit broken in 6.3.
+case ${AIS_OSVERSION} in
+    6.2)
+	AIS_SYS=${AIS_SYS:-sgi_62}
+	AIS_OPSSYS=${AIS_OPSSYS:-62}
+	AIS_SYSTEM=IRIX62
+	AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}/${AIS_SYS}}
+	AIS_AFSDIST=${AIS_AFSDIST:-/afs/athena.mit.edu/system/afsuser/dist/3.4a.patches.4/${AIS_SYS}/root.client}
+	AIS_MODLOADAFS=${AIS_MODLOADAFS:-1}
+	;;
+    6.3)
+	AIS_SYS=${AIS_SYS:-sgi_63}
+	AIS_OPSSYS=${AIS_OPSSYS:-63}
+	AIS_SYSTEM=IRIX63
+	AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}/${AIS_SYS}}
+	AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
+	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
+	;;
+    *)
+	echo "$0: unknown operating system version (${AIS_OSVERSION})"
+	exit 1
+	;;
+esac
+
+case ${AIS_CPUBOARD} in
+    IP22)
+	AIS_MACHINE=INDY
+	;;
+    IP32)
+	AIS_MACHINE=O2
+	;;
+    *)
+	echo "$0: unknown CPU board (${AIS_CPUBOARD})"
+	exit 1
+	;;
+esac
+
+AIS_VERSION=0.9.1
+AIS_ROOTFSTYPE=${AIS_ROOTFSTYPE:-xfs}
+AIS_AUTO=${AIS_AUTO:-0}
+AIS_BUS=${AIS_BUS:-0}
+AIS_UTIL=${AIS_UTIL:-/ais}
+AIS_DEV=${AIS_DEV:-1}
+AIS_ATHENAVERS=${AIS_ATHENAVERS:-8.1}
+AIS_DIST=${AIS_DIST:-/afs/dev/system/${AIS_SYS}/install}
+AIS_SRVD=${AIS_SRVD:-/afs/dev/system/${AIS_SYS}/srvd-${AIS_ATHENAVERS}}
+AIS_OS=${AIS_OS:-/afs/dev/system/${AIS_SYS}/os}
+AIS_LOCALBITS=${AIS_LOCALBITS:-"/ram"}
+AIS_ROOT=${AIS_ROOT:-/root}
+AIS_FUTUREROOT=${AIS_FUTUREROOT:-/root}
+AIS_MODE=${AIS_MODE:-root}
+AIS_HDRSIZE=${AIS_HDRSIZE:-2}
+AIS_SWAPSIZE=${AIS_SWAPSIZE:-150}
+AIS_CACHESIZE=${AIS_CACHESIZE:-100}
+AIS_HOST=${AIS_HOST:-nobody}
+AIS_ADDR=${AIS_ADDR:-0.0.0.0}
+AIS_DOMAIN=${AIS_DOMAIN:-MIT.EDU}
+AIS_REPARTITION=${AIS_REPARTITION:-1}
+AIS_BOOTHOST=${AIS_BOOTHOST:-tae-kwon-leap}
+AIS_BOOTROOTDIR=${AIS_BOOTROOTDIR:-/var/boot}
+AIS_BOOTSUBDIR=${AIS_BOOTSUBDIR:-sgi/${AIS_OPSSYS}}
+AIS_NFSHOST=${AIS_NFSHOST:-${AIS_BOOTHOST}}
+AIS_NFSROOTDIR=${AIS_NFSROOTDIR:-/inst}
+AIS_NFSSUBDIR=${AIS_NFSSUBDIR:-${AIS_SYS}}
+AIS_LOGFILE=${AIS_LOGFILE:-/var/athena/install.log}
+
+export AIS_BOOTROOTDIR AIS_BOOTSUBDIR AIS_VERSION
+export AIS_NFSROOTDIR AIS_NFSSUBDIR AIS_OPSSYS
+export AIS_ROOTFSTYPE AIS_BOOTHOST AIS_NFSHOST AIS_CPU AIS_GRAPHICS
+export AIS_CPUBOARD AIS_OSLIB AIS_SRVD AIS_OS AIS_OSVERSION AIS_REPARTITION
+export AIS_SYS AIS_AFSDIST AIS_AUTO AIS_BUS AIS_BASE AIS_LIB AIS_EXEC
+export AIS_UTIL AIS_DEV AIS_DIST AIS_LOCALBITS AIS_ROOT AIS_FUTUREROOT AIS_MODE
+export AIS_HDRSIZE AIS_SWAPSIZE AIS_CACHESIZE AIS_HOST AIS_ADDR AIS_DOMAIN
+export AIS_MODLOADAFS AIS_ATHENAVERS AIS_SYSTEM AIS_MACHINE AIS_LOGFILE
+
+disk=/dev/dsk/dks${AIS_BUS}d${AIS_DEV}
+rdisk=/dev/rdsk/dks${AIS_BUS}d${AIS_DEV}
+basedev="scsi(${AIS_BUS})disk(${AIS_DEV})rdisk(0)"
+disk_vh=${rdisk}vh
+
+if [ ${AIS_CPUBOARD} = "IP32" ]; then
+    basedev="pci(0)${basedev}"
+fi
+
+imagename()
+{
+    board=$1
+    cpu=$2
+    graphics=$3
+
+    case ${board} in
+	IP22)
+	    bootimage="athena-sgi62-"
+	    ;;
+	IP32)
+	    bootimage="athena-sgi63-"
+	    ;;
+	*)
+	    echo "Unrecognized board type: ${board}"
+	    ;;
+    esac
+    AIS_BOARD="CPUBOARD=${board}"
+
+    case ${cpu} in
+	R4400)
+	    hdwr="44"
+	    AIS_ARCH="CPUARCH=R4000"
+	    ;;
+	R4600)
+	    hdwr="46"
+	    AIS_ARCH="CPUARCH=R4000"
+	    ;;
+	R5000)
+	    hdwr="50"
+	    AIS_ARCH="CPUARCH=R5000"
+	    ;;
+	*)
+	    echo "Unrecognized CPU type: ${cpu}"
+	    exit 1
+	    ;;
+    esac
+
+    case ${graphics} in
+	GR3-XZ)
+	    hdwr="${hdwr}xz"
+	    AIS_GFXB="GFXBOARD=EXPRESS"
+	    AIS_SUBG="SUBGR=EXPRESS"
+	    ;;
+	Indy)
+	    hdwr="${hdwr}xl"
+	    if [ ${cpu} = "R5000" ]; then
+		AIS_GFXB="GFXBOARD=NEWPORT"
+		AIS_SUBG="SUBGR=NEWTON"
+	    else
+		AIS_GFXB="GFXBOARD=NEWPORT"
+		AIS_SUBG="SUBGR=NG1"
+	    fi
+	    ;;
+	CRM)
+	    hdwr="${hdwr}cr"
+	    AIS_GFXB="GFXBOARD=CRIME"
+	    AIS_SUBG="SUBGR=CRM"
+	    ;;
+	*)
+	    echo "Unrecognized graphics subsystem: ${graphics}"
+	    exit 1
+	    ;;
+    esac
+
+    bootimage="${bootimage}${hdwr}"
+    export AIS_BOARD AIS_ARCH AIS_GFXB AIS_SUBG
+}
+localize()
+{
+    mv $1 $1.symlink
+    if [ $? -eq 0 ]; then
+	cp -p $1.symlink $1
+	if [ $? -eq 0 ]; then
+	    rm -f $1.symlink
+	else
+	    echo "localize: copying file for $1 failed"
+	    mv $1.symlink $1
+	fi
+    else
+	echo "localize: renaming $1 failed"
+    fi
+}
+
+# Athena "customizations" to OS. Need to be done whenever inst updates
+# the OS. This is stuff that can't be done by track. This code is needed
+# both by the installation software and the update software.
+
+# SGI's getty runs scheme instead of /usr/bin/login, if it exists.
+# We don't want this, so we move it out of the way.
+if [ -f ${AIS_ROOT}/usr/lib/iaf/scheme ]; then
+    mv ${AIS_ROOT}/usr/lib/iaf/scheme ${AIS_ROOT}/usr/lib/iaf/scheme.old
+fi
+
+# Midi startup doesn't have an /etc/config option. Sigh.
+# Note that for rc?.d scripts, we use test -l instead of -f. This
+# is because sometimes there are absolute symlinks involved, while
+# absolute paths during an install really live under ${AIS_ROOT},
+# so that test -f may fail even if there is a link there.
+if [ -l ${AIS_ROOT}/etc/rc2.d/S98midi ]; then
+    mv ${AIS_ROOT}/etc/rc2.d/S98midi ${AIS_ROOT}/etc/rc2.d/s98midi
+fi
+
+if [ -l ${AIS_ROOT}/etc/rc0.d/K02midi ]; then
+    mv ${AIS_ROOT}/etc/rc0.d/K02midi ${AIS_ROOT}/etc/rc0.d/k02midi
+fi
+
+# ns_admin runs a config script (and therefore makes noise) whether
+# its /etc/config file shuts it off or not. SIGH.
+if [ -l ${AIS_ROOT}/etc/rc2.d/S60ns_admin ]; then
+    mv ${AIS_ROOT}/etc/rc2.d/S60ns_admin ${AIS_ROOT}/etc/rc2.d/s60ns_admin
+fi
+
+if [ -l ${AIS_ROOT}/etc/rc0.d/K30ns_admin ]; then
+    mv ${AIS_ROOT}/etc/rc0.d/K30ns_admin ${AIS_ROOT}/etc/rc0.d/k30ns_admin
+fi
+
+# So, setsym and all of the objects in IP*boot need to be installed
+# locally for the proper functioning of autoconfig. Or, more
+# specifically, to enable autoconfig to function well enough to tweak
+# all the devices. Or, more specifically, to enable autoconfig to
+# function well enough to tweak the camera device. Because the camera
+# doesn't work unless you've run autoconfig since you last booted. So
+# the only reason I'm doing this hack at the moment is so that the
+# camera will work. (Actually, setsym is not needed under 6.2, but
+# what the heck.)
+localize ${AIS_ROOT}/usr/sbin/setsym
+
+sysgendir=${AIS_ROOT}/usr/cpu/sysgen/${AIS_CPUBOARD}boot
+for i in `find $sysgendir -follow -fstype afs -print`; do
+    localize $i
+done
+
+case ${AIS_OSVERSION} in
+    6.2)
+	# bsdlpr startup doesn't have an /etc/config option in 6.2
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S61bsdlpr ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S61bsdlpr ${AIS_ROOT}/etc/rc2.d/s61bsdlpr
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K26bsdlpr ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K26bsdlpr ${AIS_ROOT}/etc/rc0.d/k26bsdlpr
+	fi
+
+	# XXX Set up temporary license to use 7.2 C compiler - change this
+	# XXX when licensing issues are resolved!
+	# XXX
+	# XXX /etc/flexlm/license.dat is one of the default license files
+	# XXX (see /var/flexlm/licensefile.db)
+	mkdir -p ${AIS_ROOT}/etc/flexlm
+	chmod 755 ${AIS_ROOT}/etc/flexlm
+	cat > ${AIS_ROOT}/etc/flexlm/license.dat <<EOF
+#
+# FLEXlm license file
+#
+SERVER ${AIS_HOST} ANY 31411
+DAEMON sgifd /usr/etc/sgifd
+FEATURE cc sgifd 7.000 01-mar-98 1 AC3356D1EFC42D1738F9 \\
+vendor_info="C" DUP_GROUP="U" ISSUER="Silicon Graphics, Inc."
+EOF
+	chmod 644 ${AIS_ROOT}/etc/flexlm/license.dat
+	# XXX flexlm is config'ed off by default
+	rm -f ${AIS_ROOT}/etc/config/flexlm
+	echo "on" > ${AIS_ROOT}/etc/config/flexlm
+	chmod 644 ${AIS_ROOT}/etc/config/flexlm
+	# XXX Configure the license manager daemon to use our license file
+	rm -f ${AIS_ROOT}/etc/config/lmgrd.options
+	echo "-c /etc/flexlm/license.dat" > \
+	    ${AIS_ROOT}/etc/config/lmgrd.options
+	chmod 555 ${AIS_ROOT}/etc/config/lmgrd.options
+	# XXX inst leaves /var/tmp not world-writable, but lmgrd, running
+	# XXX as guest, needs to create its lock file there, so lmgrd
+	# XXX fails to start after first boot (permissions fixed later in
+	# XXX boot by rmtmpfiles).  So chmod it here so it starts first
+	# XXX time, every time.
+	chmod 1777 ${AIS_ROOT}/var/tmp
+	# XXX end temporary license setup
+	;;
+
+    6.3)
+	# This particular file is the only nonlocal one in sysgen/system. Its
+	# absence causes autoconfig to complain at boot time, though doesn't
+	# prevent the camera from working.
+	localize ${AIS_ROOT}/var/sysgen/system/fddi.sm
+
+	# setmon -x actually modifies a file in the filesystem, hence
+	# the chroot.
+	chroot ${AIS_ROOT} /usr/gfx/setmon -x 75hz
+	;;
+esac
+
+exit 0
