@@ -18,6 +18,7 @@ tmpl_sources =				\
 	tmpl/initialization.sgml	\
 	tmpl/query.sgml			\
 	tmpl/registration.sgml		\
+	tmpl/debugging.sgml		\
 	$(NULL)
 
 

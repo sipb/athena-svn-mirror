@@ -29,6 +29,7 @@
 #include <popt.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "liboaf/liboaf.h"
 
@@ -108,6 +109,8 @@ main (int argc, char *argv[])
 
 	poptFreeContext (ctx);
 
+        LIBXML_TEST_VERSION
+
 	ml = g_main_new (FALSE);
 
 	orb = oaf_init (argc, argv);
@@ -139,7 +142,8 @@ main (int argc, char *argv[])
                 if (config_file_od_source_dir) {
 			g_string_append_c (real_od_source_dir, ':');
 			g_string_append (real_od_source_dir,
-					 config_file_od_source_dir);                        
+					 config_file_od_source_dir);
+			g_free (config_file_od_source_dir);
                 }
 		if (gnome_env_od_source_dir) {
                         gnome_dirs = g_strsplit (gnome_env_od_source_dir, ":", -1);

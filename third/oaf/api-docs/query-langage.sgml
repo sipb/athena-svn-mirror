@@ -4,7 +4,7 @@
 <sect1>
 <title>The OAF query langage</title>
 <para>
-OAF has a query langage used to request components with
+OAF has a query language used to request components with
 specific properties from the OAF daemon.
 The API call <function>oaf_activate</function> takes a
 <emphasis>requirements</emphasis> parameter which is
@@ -31,7 +31,7 @@ with either 'Control' or 'Embeddable' as long as they supported the
 </para>
 </sect1>
 
-<sect1>
+<sect1 id="query-syntax">
 <title>Syntax</title>
 
 <sect2 id="oaf-query-ref-types">

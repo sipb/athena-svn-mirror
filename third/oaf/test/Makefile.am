@@ -66,4 +66,5 @@ oaf-slay: $(srcdir)/oaf-slay.tmpl
 
 EXTRA_DIST=empty.idl oaf-slay.tmpl $(oaffiles) broken.oafinfo
 
-TESTS=oaf-test-client
+check:
+	OAF_INFO_PATH="$(top_srcdir)/test:$$OAF_INFO_PATH" PATH="$(top_builddir)/test:$$PATH" $(top_builddir)/test/oaf-test-client

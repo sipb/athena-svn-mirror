@@ -677,6 +677,8 @@ impl_OAF_ActivationContext_activate_async(impl_POA_OAF_ActivationContext *
                 return;
         }
 
+	g_free (hostname);
+
         /* return the correct value back to the client */
         OAF_ActivationCallback_report_activation_succeeded (callback_object, retval, ev);
 }
@@ -940,7 +942,8 @@ ac_aid_to_query_string (OAF_ActivationID aid)
         char *domain_requirement;
 	OAFActivationInfo *ainfo;
 
-        /* FIXME: this is completely broken. we activate by AID, not IID. */
+        /* FIXME bugzilla.eazel.com 4659: this is completely broken.
+		   We activate by AID, not IID. */
         if (strncmp ("OAFIID:", aid, 7) == 0) {
                 tmp_aid = g_strconcat ("OAFAID:[", aid, "]", NULL);
                 ainfo = oaf_actid_parse (tmp_aid);
@@ -991,10 +994,6 @@ ac_context_to_string_array (CORBA_Context context, char **sort_criteria, CORBA_E
 	char *context_username;
 	char *context_hostname;
 	char *context_domain;
-
-        /* FIXME bugzilla.eazel.com 2730: either I am doing something
-         * really wrong here or CORBA_Context is broken in ORBit 
-         */
 
         context_username = ac_CORBA_Context_get_value (context, "username", ev);
         context_hostname = ac_CORBA_Context_get_value (context, "hostname", ev);
@@ -1097,6 +1096,7 @@ impl_OAF_ActivationContext_activate_from_id_async
         ac_context_to_string_array (ctx, sort_criteria, ev);
         if (ev->_major != CORBA_NO_EXCEPTION) {
                 char *message;
+		g_free (requirements);
                 servant->refs--;
                 message = g_strconcat (_("Could not parse context: "), CORBA_exception_id (ev), NULL);
                 OAF_ActivationCallback_report_activation_failed (callback_object,

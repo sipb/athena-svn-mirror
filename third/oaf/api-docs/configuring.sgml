@@ -22,7 +22,7 @@ If <emphasis>GNOME_PATH=/opt/gnome:/opt/gnome/oaf</emphasis>, OAF will parse
 </para>
 
 <para>
-The above env variables are kept for comatibility purposes with older versions of 
+The above env variables are kept for compatibility purposes with older versions of 
 OAF and for GNOME integration. OAF has a much nicer configuration file which allows 
 you to control which directories are parsed by OAF. This XML configuration file
 is located in ${prefix}/etc/oaf/oaf-config.xml. An empty oaf-config.xml and 

@@ -37,24 +37,26 @@ const struct _msg_ent _msg_tbl[] = {
   {"iid %s has a NULL type", 28},
   {"iid %s has a NULL location", 29},
   {"invalid character '%c' in iid '%s'", 30},
-  {"Trying dir %s\n", 31},
   {"\
 The OAF configuration file was not read successfully. Please, check it is \
-valid in: %s", 32},
-  {"Could not save OAF configuration file.\n", 33},
+valid in: %s", 31},
+  {"CORBA CosNaming service.", 32},
+  {"Name service", 33},
+  {"Could not save OAF configuration file.\n", 34},
   {"\
-Please, make sure you have permissions to write OAF configuration file.\n", 34},
-  {"Successfully wrote OAF configuration file.\n", 35},
+Please, make sure you have permissions to write OAF configuration file.\n", 35},
+  {"Successfully wrote OAF configuration file.\n", 36},
   {"\
 OAF configuration file is:\n\
-    %s\n", 36},
-  {"%s already in OAF configuration file\n", 37},
-  {"OAF configuration file contains:\n", 38},
-  {"Directory to remove from OAF configuration file", 39},
-  {"directory path", 40},
-  {"Directory to add to OAF configuration file", 41},
-  {"Display directories in OAF configuration file", 42},
-  {"Display path to OAF configuration file", 43},
+    %s\n", 37},
+  {"%s already in OAF configuration file\n", 38},
+  {"OAF configuration file contains:\n", 39},
+  {"Directory to remove from OAF configuration file", 40},
+  {"directory path", 41},
+  {"Directory to add to OAF configuration file", 42},
+  {"Display directories in OAF configuration file", 43},
+  {"Display path to OAF configuration file", 44},
+  {"No server corresponding to your query", 45},
 };
 
-int _msg_tbl_length = 43;
+int _msg_tbl_length = 45;

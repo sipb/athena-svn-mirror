@@ -94,11 +94,11 @@ static void add_directory (const char *directory)
 
         /* make sure the directory we want to add is not already
            in the config file */
-        search_node = doc->root->childs;
+        search_node = doc->xmlRootNode->xmlChildrenNode;
         while (search_node != NULL) {
                 if (strcmp (search_node->name, "searchpath") == 0) {
                         xmlNodePtr item_node;
-                        item_node = search_node->childs;
+                        item_node = search_node->xmlChildrenNode;
                         while (item_node != NULL) {
                                 if (strcmp (item_node->name, "item") == 0) {
                                         char *dir_path;
@@ -122,7 +122,7 @@ static void add_directory (const char *directory)
                 xmlNodePtr new_node;
 
                 /* add the directory to the config file */
-                search_node = doc->root->childs;
+                search_node = doc->xmlRootNode->xmlChildrenNode;
                 /* go to the first searchpath node */
                 while (strcmp (search_node->name, "searchpath") != 0) {
                         search_node = search_node->next;                        
@@ -143,11 +143,11 @@ static void remove_directory (const char *directory)
 
         doc = open_file ();
 
-        search_node = doc->root->childs;
+        search_node = doc->xmlRootNode->xmlChildrenNode;
         while (search_node != NULL) {
                 if (strcmp (search_node->name, "searchpath") == 0) {
                         xmlNodePtr item_node;
-                        item_node = search_node->childs;
+                        item_node = search_node->xmlChildrenNode;
                         while (item_node != NULL) {
                                 if (strcmp (item_node->name, "item") == 0) {
                                         char *dir_path;
@@ -183,11 +183,11 @@ static void display_directories (void)
 
         g_print (_("OAF configuration file contains:\n"));
 
-        search_node = doc->root->childs;
+        search_node = doc->xmlRootNode->xmlChildrenNode;
         while (search_node != NULL) {
                 if (strcmp (search_node->name, "searchpath") == 0) {
                         xmlNodePtr item_node;
-                        item_node = search_node->childs;
+                        item_node = search_node->xmlChildrenNode;
                         while (item_node != NULL) {
                                 if (strcmp (item_node->name, "item") == 0) {
                                         char *dir_path;

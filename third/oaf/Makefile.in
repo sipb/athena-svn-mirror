@@ -81,14 +81,12 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LD = @LD@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OAF_MAJOR_VERSION = @OAF_MAJOR_VERSION@
 OAF_MICRO_VERSION = @OAF_MICRO_VERSION@
 OAF_MINOR_VERSION = @OAF_MINOR_VERSION@
@@ -106,6 +104,9 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 YACC = @YACC@
 l = @l@
@@ -405,7 +406,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

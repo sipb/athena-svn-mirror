@@ -186,16 +186,16 @@ static int oaf_ior_fd = 1;
 static char *oaf_activate_iid = NULL;
 
 struct poptOption oaf_popt_options[] = {
-
-	{"oaf-od-ior", '\0', POPT_ARG_STRING, &oaf_od_ior, 0,
-	 N_("Object directory to use when registering servers"), "IOR"},
-	{"oaf-ior-fd", '\0', POPT_ARG_INT, &oaf_ior_fd, 0,
-	 N_("File descriptor to print IOR on"), N_("FD")},
-	{"oaf-activate-iid", '\0', POPT_ARG_STRING, &oaf_activate_iid, 0,
-	 N_("IID to activate"), "IID"},
-        {"oaf-private", '\0', POPT_ARG_NONE, &oaf_private, 0,
-         N_("Prevent registering of server with OAF"), NULL},
-	{NULL}
+  {NULL, '\0', POPT_ARG_INTL_DOMAIN, PACKAGE, 0, NULL, NULL},
+  {"oaf-od-ior", '\0', POPT_ARG_STRING, &oaf_od_ior, 0,
+   N_("Object directory to use when registering servers"), "IOR"},
+  {"oaf-ior-fd", '\0', POPT_ARG_INT, &oaf_ior_fd, 0,
+   N_("File descriptor to print IOR on"), N_("FD")},
+  {"oaf-activate-iid", '\0', POPT_ARG_STRING, &oaf_activate_iid, 0,
+   N_("IID to activate"), "IID"},
+  {"oaf-private", '\0', POPT_ARG_NONE, &oaf_private, 0,
+   N_("Prevent registering of server with OAF"), NULL},
+  {NULL}
 };
 
 const char *
@@ -218,7 +218,7 @@ cmdline_check (const OAFRegistrationLocation * regloc,
 {
 	if (!strcmp (regcat->name, "IDL:OAF/ObjectDirectory:1.0")) {
 		*ret_distance = 0;
-		return g_strdup (oaf_od_ior);
+		return g_strdup (oaf_od_ior?oaf_od_ior:getenv("OAF_OD_IOR"));
 	}
 
 	return NULL;
@@ -304,7 +304,7 @@ local_activator (const OAFRegistrationCategory * regcat, const char **cmd,
 		|| STRMATCH (regcat->hostname, oaf_hostname_get ()))
 	    && (!regcat->domain
 		|| STRMATCH (regcat->domain, oaf_domain_get ()))) {
-		return oaf_server_by_forking (cmd, fd_arg, NULL, ev);
+		return oaf_server_by_forking (cmd, fd_arg, NULL, NULL, ev);
 	}
 
 	return CORBA_OBJECT_NIL;
@@ -481,7 +481,3 @@ const char liboaf_version[] = VERSION;
 const guint liboaf_major_version = OAF_MAJOR_VERSION,
 	liboaf_minor_version = OAF_MINOR_VERSION,
 	liboaf_micro_version = OAF_MICRO_VERSION;
-
-
-
-

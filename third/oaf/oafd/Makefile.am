@@ -38,14 +38,21 @@ oafd_SOURCES=					\
 LDADD=../liboaf/liboaf.la \
 	@ORBIT_LIBS@ -lORBitCosNaming -lname-server \
 	@XML_LIBS@ \
+	@INTLLIBS@ \
 	@GLIB_LIBS@
 
 oaf_client_SOURCES=client.c
 
 oafinfodir=$(pkgdatadir)
-oafinfo_DATA=oafd.oafinfo
 
-EXTRA_DIST=ac-query-lex.l ac-query-parse.y oafd.oafinfo
+oaf_in_files = OAF_naming-service.oaf.in
+oafinfo_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST=ac-query-lex.l ac-query-parse.y $(oaf_in_files) $(oafinfo_DATA)
+
+
 
 YFLAGS                  = -d -v
 

@@ -19,4 +19,5 @@ INCLUDES = 					\
 oaf_sysconf_LDADD =			\
 	$(XML_LIBS)			\
 	$(GLIB_LIBS)			\
+	$(INTLLIBS)			\
 	$(NULL)

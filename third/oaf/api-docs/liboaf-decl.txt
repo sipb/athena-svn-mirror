@@ -144,6 +144,20 @@ char **argv
 </FUNCTION>
 
 <FUNCTION>
+<RETURNS>void</RETURNS>
+<NAME>oaf_set_test_components_enabled</NAME>
+gboolean val
+</FUNCTION>
+
+
+<FUNCTION>
+<RETURNS>gboolean</RETURNS>
+<NAME>oaf_get_test_components_enabled</NAME>
+void
+</FUNCTION>
+
+
+<FUNCTION>
 <RETURNS>gboolean</RETURNS>
 <NAME>oaf_is_initialized</NAME>
 void
