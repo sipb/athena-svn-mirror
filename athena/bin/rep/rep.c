@@ -28,8 +28,9 @@
  *           uucp: uwvax\!geowhiz\!karsh
  */
 
-static const char rcsid[] = "$Id: rep.c,v 1.4 1997-01-11 19:13:41 ghudson Exp $";
+static const char rcsid[] = "$Id: rep.c,v 1.5 1998-09-01 20:59:16 ghudson Exp $";
 
+#include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
