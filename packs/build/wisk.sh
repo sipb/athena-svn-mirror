@@ -2,7 +2,19 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.40 $
+# usage: wisk [-install | -installman ] [-zap] [startpackage [endpackage]]
+#
+#	-install	only do make installs
+#	-installman	only do make install.man (the only thing that does it)
+#	-zap		on DECstation, run a newfs on the /srvd partition,
+#			if you're using a local one. Uses a hard coded
+#			value that was once right, but probably isn't now.
+#	startpackage	the name (such as third/supported/emacs) of the
+#			package in the package list to start building at
+#	endpackage	the name of the package in the package list to
+#			stop building at
+
+# $Revision: 1.41 $
 
 umask 2
 
@@ -206,6 +218,13 @@ switch ($package)
 	# Probably want this in build/bin... change Imake.tmpl...
 	mkdir -p $SRVD/usr/athena/bin
 	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
+
+# The wrong hack for now. Should make a copy of what we use for posterity,
+# and link to that.
+if (machine == "sun4" || $machine == "sgi") then
+	rm $BUILD/transarc
+	ln -s /afs/athena/astaff/project/afsdev/dist/@sys $BUILD/transarc
+endif
 
 	mkdir $BUILD/bin
 	cd $BUILD/support/imake
