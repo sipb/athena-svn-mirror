@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.6 1990-12-12 15:26:39 lwvanels Exp $
+ *	$Id: structs.h,v 1.7 1991-02-24 11:46:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -46,6 +46,9 @@ typedef struct tPERSON
   char    nickname[STRING_SIZE];     /* Person's first name. */
   char    title[LABEL_SIZE];         /* Person's title */
   char    machine[LABEL_SIZE];       /* Person's current machine. */
+#ifdef m68k
+  char    pad[2];
+#endif  
 } PERSON;
 
 
