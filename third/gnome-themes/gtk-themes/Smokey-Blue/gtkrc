@@ -1,0 +1,262 @@
+style "default"{
+
+#fonts
+  fg[NORMAL] = "#000000"
+  fg[PRELIGHT]  = "#000000"
+  fg[SELECTED] = "#000000"
+
+#selected areas
+  base[SELECTED] = "#8a8aa0"
+  base[ACTIVE]     = "#e3e3e3"
+  base[PRELIGHT]   = "#E5E5F7"
+  base[INSENSITIVE]= "#ced0d7"
+  bg[SELECTED]= "#828aa4"
+
+#app backgrouds
+  bg_pixmap[NORMAL]	= "lines_background.png"
+  bg_pixmap[PRELIGHT]	= "lines_background_blue.png"
+}class "GtkWidget" style "default"
+
+style "bubble-button"{
+  engine "pixmap" {
+
+#
+# Check marks
+#
+    image 
+      {
+        function        = CHECK
+	recolorable     = TRUE
+	shadow          = OUT
+	overlay_file    = "check1.png"
+	overlay_stretch = FALSE
+      }
+    image 
+      {
+        function        = CHECK
+	recolorable     = TRUE
+	shadow          = IN
+	overlay_file    = "check2.png"
+	overlay_stretch = FALSE
+      }
+#
+# Option marks
+#
+    image 
+      {
+        function        = OPTION
+	recolorable     = TRUE
+	shadow          = OUT
+	overlay_file    = "option1.png"
+	overlay_border  = { 0, 0, 0, 0 }
+	overlay_stretch = FALSE
+      }
+    image 
+      {
+        function        = OPTION
+	recolorable     = TRUE
+	shadow          = IN
+	overlay_file    = "option2.png"
+	overlay_border  = { 0, 0, 0, 0 }
+	overlay_stretch = FALSE
+      }
+
+    image {
+        function        = BOX
+	file            = "bubble-grey.png"
+	state		= NORMAL
+	border          = {10,5,5,10}
+	stretch         = TRUE
+    }
+    image {
+        function        = BOX
+	file            = "bubble-grey.png"
+	state		= INSENSITIVE
+	border          = {10,5,5,10}
+	stretch         = TRUE
+    }
+    image {
+        function        = BOX
+	file            = "bubble-blue-prelight.png"
+	state		= PRELIGHT
+	border          = {10,5,5,10}
+	stretch         = TRUE
+    }
+    image {
+        function        = BOX
+	file            = "bubble-blue-pressed.png"
+	state		= ACTIVE
+	border          = {10,5,5,10}
+	stretch         = TRUE
+    }
+  }
+}class "GtkButton" style "bubble-button"
+
+style "bubble-range"{
+  GtkRange::slider_width = 14
+  GtkRange::stepper_size = 14
+  engine "pixmap" {
+    image {
+	function        = BOX
+	file            = "bubble-grey.png"
+	detail		= "trough"
+	border          = {8,8,8,8}
+	stretch         = TRUE
+    }
+    image {
+	function        = BOX
+	file            = "bubble-blue.png"
+	state		= NORMAL
+	border          = {8,8,8,8}
+	stretch         = TRUE
+    }
+    image {
+	function	= BOX
+	file		= "bubble-grey.png"
+	state		= INSENSITIVE
+	border		= {8,8,8,8}
+	stretch		= TRUE
+    }
+    image {
+	function	= BOX
+	file		= "bubble-blue-prelight.png"
+	state		= PRELIGHT
+	border		= {8,8,8,8}
+	stretch		= TRUE
+    }
+    image {
+	function	= BOX
+	file		= "bubble-blue-pressed.png"
+	state		= ACTIVE
+	border		= {8,8,8,8}
+	stretch		= TRUE
+    }
+    image {
+	function        = SLIDER
+	file            = "bubble-blue.png"
+	border          = {2,2,5,5}
+	state		= NORMAL
+	stretch         = TRUE
+	orientation	= VERTICAL
+    }
+
+    image {
+	function        = SLIDER
+	file            = "bubble-blue-prelight.png"
+	state		= PRELIGHT
+	border          = {2,2,5,5}
+	stretch         = TRUE
+	orientation	= VERTICAL
+    }
+    image {
+	function        = SLIDER
+	file            = "bubble-blue.png"
+	border          = {5,5,2,2}
+	state		= NORMAL
+	stretch         = TRUE
+
+    }
+    image {
+	function        = SLIDER
+	file            = "bubble-blue-prelight.png"
+	state		= PRELIGHT
+	border          = {5,5,2,2}
+	stretch         = TRUE
+	orientation	= HORIZONTAL
+    }
+  }
+}class "GtkRange" style "bubble-range"
+
+style "bubble-notebook"{
+  engine "pixmap" {
+    image {
+        function        = EXTENSION
+        state           = ACTIVE
+        file            = "halfbubble-top-grey1.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = BOTTOM
+    }
+    image {
+        function        = EXTENSION
+        state           = ACTIVE
+        file            = "halfbubble-bottom-grey.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = TOP
+    }
+    image {
+        function        = EXTENSION
+        state           = ACTIVE
+        file            = "halfbubble-right-grey.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = RIGHT
+    }
+    image {
+        function        = EXTENSION
+        state           = ACTIVE
+        file            = "halfbubble-left-grey.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = LEFT
+    }
+    image {
+        function        = EXTENSION
+        file            = "halfbubble-top-blue1.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = BOTTOM
+    }
+    image {
+        function        = EXTENSION
+        file            = "halfbubble-bottom-blue.png"
+        border          = {2,1,1,2}
+        stretch         = TRUE
+        gap_side        = TOP
+    }
+    image {
+        function        = EXTENSION
+        file            = "halfbubble-right-blue.png"
+        border          = {3,3,3,3}
+        stretch         = TRUE
+        gap_side        = RIGHT
+    }
+    image {
+        function        = EXTENSION
+        file            = "halfbubble-left-blue.png"
+        border          = {3,3,3,3}
+        stretch         = TRUE
+        gap_side        = LEFT
+    }
+
+#
+# How to draw the box of a notebook when it isnt attached to a tab
+#
+    image {
+        function        = BOX
+        file            = "bubble-grey.png"
+        border          = {4,3,3,4}
+        stretch         = TRUE
+        gap_side        = TOP
+    }
+  }
+}class "GtkNotebook" style "bubble-notebook"
+
+style "bubble-menuitem"{
+  engine "pixmap" {
+    image {
+        function        = BOX
+	file            = "bubble-blue.png"
+	border          = {8,8,8,8}
+	stretch         = TRUE
+    }
+  }
+}class "GtkMenuItem" style "bubble-menuitem"
+
+style "bubble-tooltip"{
+ bg_pixmap[NORMAL]      = "<none>"
+ bg_pixmap[PRELIGHT]    = "<none>"
+ bg_pixmap[ACTIVE]      = "<none>"
+ bg_pixmap[INSENSITIVE] = "<none>"
+}widget "gtk-tooltips" style "bubble-tooltip"

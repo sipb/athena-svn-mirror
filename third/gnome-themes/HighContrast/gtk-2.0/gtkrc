@@ -8,7 +8,7 @@
 #
 # email: bill.haneman@sun.com
 
-pixmap_path "/gnome/head/INSTALL/share/themes/HighContrastLargePrint/pixmaps"
+pixmap_path "/gnome/share/themes/HighContrastLargePrint/pixmaps"
 
 style "default"
 {

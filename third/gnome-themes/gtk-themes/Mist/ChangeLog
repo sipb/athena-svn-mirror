@@ -1,0 +1,10 @@
+2002-11-11  Dave Camp  <dave@ximian.com>
+
+	* Started one of these things.
+
+	* Fixed up the xthickness and ythickness in the gtk2 theme.
+	Things should be a bit thinner now.
+
+	* Made focus a bit nicer in gtk1.
+
+	* Made CList look a bit better in gtk1.

@@ -3,11 +3,16 @@
 
 
 themedir = $(datadir)/themes/HighContrastLargePrint
+
 theme_in_files = index.theme.in
 theme_DATA = $(theme_in_files:.theme.in=.theme)
 
 SUBDIRS= gtk-2.0 pixmaps icons
 
 EXTRA_DIST= index.theme index.theme.in
-#DISTCLEANFILES= index.theme
+DISTCLEANFILES= index.theme
 
+if CORE_THEMES_ONLY
+install: install-recursive
+	mv $(datadir)/themes/HighContrastLargePrint/index.theme $(datadir)/themes/HighContrastLargePrint/index.theme~
+endif

@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Smokey Blue
+Type=X-GNOME-Metatheme
+_Comment=A soft glassy appearance
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Smokey-Blue
+MetacityTheme=Smokey
+IconTheme=Smokey-Blue

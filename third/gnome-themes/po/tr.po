@@ -1,12 +1,13 @@
 # Turkish translation of gnome-themes.
-# Copyright (C) 2003 gnome-themes' copyright holder
+# Copyright (C) 2003 gnome-themes' copyright holders
 # This file is distributed under the same license as the gnome-themes package.
+# Barbaros Ulutas <tebarul@yahoo.com>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gt\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-18 16:22+0000\n"
+"Project-Id-Version: gnome-desktop-themes\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-01-31 15:18+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +16,7 @@ msgstr ""
 
 #: HighContrast/index.theme.in.h:1
 msgid "Black-on-white text and icons"
-msgstr "Beyaz üzerine siyah metin ve simgeler"
+msgstr "Siyah üzerine beyaz metin ve simgeler"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
@@ -23,31 +24,31 @@ msgstr "Yüksek Parlaklık"
 
 #: HighContrastInverse/index.theme.in.h:1
 msgid "High Contrast Inverse"
-msgstr "Ters Yüksek Parlaklık"
+msgstr "Tersine Yüksek Parlaklık"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
-msgstr "Siyah üzerine beyaz metin ve simgeler"
+msgstr "Beyaz üzerine siyah metin ve simgeler"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
 msgid "High Contrast Large"
-msgstr "Yüksek Parlaklık (Büyük)"
+msgstr "Büyük Yüksek Parlaklık"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
-msgstr "Beyaz üzerine siyah metin ve simgeler (büyük)"
+msgstr "Büyük siyah üzerine beyaz metin ve simgeler"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
-msgstr ""
+msgstr "Ters Yüksek Parlaklık Büyük Baskı "
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
-msgstr ""
+msgstr "Büyük beyaz üzerine siyah metin ve simgeler"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
-msgstr ""
+msgstr "Büyük Baskı"
 
 #: LargePrint/index.theme.in.in.h:2
 msgid "Large text and icons"
@@ -59,12 +60,85 @@ msgstr "Düşük Parlaklık"
 
 #: LowContrast/index.theme.in.h:2
 msgid "Muted text and icons"
-msgstr "Yumuşak metin ve simgeler"
+msgstr "Silik metin ve simgeler"
 
 #: LowContrastLargePrint/index.theme.in.in.h:1
 msgid "Large muted text and icons"
-msgstr "Yumuşak metin ve simgeler (büyük)"
+msgstr "Büyük silik metin ve simgeler"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
+msgstr "Düşük Parlaklık Büyük Baskı"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Püf Noktasi"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Deniz mavisi vurgularla yumuşak eğimler"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Hafif portakal görünümü"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Büyük Kayalıklar"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Mütevazi bir görünüm"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Sis"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Okyanus Rüyası"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr ""
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr ""
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr ""
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+#, fuzzy
+msgid "A soft glassy appearance"
+msgstr "Hafif portakal görünümü"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr ""
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr ""
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr ""
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr ""
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr ""
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr ""
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
 msgstr ""

@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Mist
+Type=X-GNOME-Metatheme
+_Comment=A minimalistic appearance
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Mist
+MetacityTheme=Mist
+IconTheme=Flat-Blue
