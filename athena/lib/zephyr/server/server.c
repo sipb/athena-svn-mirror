@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Id: server.c,v 1.41 1989-10-27 11:33:34 jtkohl Exp $";
+static char rcsid_server_c[] = "$Id: server.c,v 1.42 1989-12-06 09:09:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1122,12 +1122,13 @@ free_server_list(list)
 register char **list;
 {
 	register int i;
+	char **orig_list = list;
 
 	if (!nhosts)			/* nothing allocated */
 		return;
 	for (; *list; list++)
 	    xfree(*list);
-	xfree(list);
+	xfree(orig_list);
 	return;
 }
 #endif !HESIOD
