@@ -8,7 +8,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: server_defines.h,v 1.6 1999-03-06 16:48:29 ghudson Exp $
+ *	$Id: server_defines.h,v 1.7 2002-07-05 21:32:34 zacheiss Exp $
  */
 
 #include <mit-copyright.h>
@@ -78,7 +78,7 @@
 
 /* for notifications */
 
-#define OLCD_TIMEOUT    10
+#define OLCD_TIMEOUT    5
 
 /* random internal flags */
 
