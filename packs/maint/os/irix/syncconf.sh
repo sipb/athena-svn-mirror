@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.6 2000-01-01 05:40:20 ghudson Exp $
+# $Id: syncconf.sh,v 1.7 2000-04-24 15:02:41 rbasch Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -91,7 +91,7 @@ append()
 
 update()
 {
-	$maybe ln "$1" "$1.saved"
+	$maybe ln -f "$1" "$1.saved"
 	$maybe /bin/athena/syncupdate "$1.new" "$1"
 }
 
