@@ -52,13 +52,13 @@ die "Patchlevel of perl ($patchlevel)",
 	if $patchlevel != $Config{'PATCHLEVEL'};
 
 # Fetch some frequently-used items from %Config
-$installbin = $Config{installbin};
-$installscript = $Config{installscript};
-$installprivlib = $Config{installprivlib};
-$installarchlib = $Config{installarchlib};
-$installsitelib = $Config{installsitelib};
-$installsitearch = $Config{installsitearch};
-$installman1dir = $Config{installman1dir};
+$installbin = $ENV{"DESTDIR"} . $Config{installbin};
+$installscript = $ENV{"DESTDIR"} . $Config{installscript};
+$installprivlib = $ENV{"DESTDIR"} . $Config{installprivlib};
+$installarchlib = $ENV{"DESTDIR"} . $Config{installarchlib};
+$installsitelib = $ENV{"DESTDIR"} . $Config{installsitelib};
+$installsitearch = $ENV{"DESTDIR"} . $Config{installsitearch};
+$installman1dir = $ENV{"DESTDIR"} . $Config{installman1dir};
 $man1ext = $Config{man1ext};
 $libperl = $Config{libperl};
 # Shared library and dynamic loading suffixes.

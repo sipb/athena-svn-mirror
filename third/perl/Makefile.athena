@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.9 1999-08-16 22:24:42 danw Exp $
+# $Id: Makefile.athena,v 1.10 1999-09-15 20:32:26 mwhitson Exp $
 
 SHELL=/bin/sh
 
@@ -6,9 +6,6 @@ prepare:
 	rm -f config.sh
 	./Configure -ds -E -Dprefix=/usr/athena -Dcc="$$COMPILER" \
 		-Dperladmin=bugs@mit.edu
-	sed -e "s,^install\(.*\)=',install\1='$$SRVD," \
-		config.sh > config.sh.new
-	mv config.sh.new config.sh
 	./Configure -S
 
 clean:
@@ -24,7 +21,9 @@ check:
 install:
 	${MAKE} install "DESTDIR=$$SRVD"
 	dir=`pwd`; \
-	sed -e '/^chdir/d' -e "s:/usr:$$SRVD/usr:" utils/h2ph > h2phsrvd; \
+	sed -e '/^chdir/d' -e "s:/usr:$$SRVD/usr:" \
+	 -e "s:\$$Config{install:\"$$SRVD\"\.\$$Config{install:" \
+	 utils/h2ph > h2phsrvd; \
 	chmod 755 h2phsrvd; \
 	(cd /os/usr/include && find . -type f -print | xargs \
 	 "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" "$$dir/h2phsrvd"); \
