@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +18,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.1 1987-08-06 22:34:37 rfrench Exp $";
+static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.2 1988-01-20 17:34:57 jtkohl Exp $";
 #endif lint
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -136,7 +136,7 @@ char *find_message(notice,fp)
 	gotone = 0;
 	lastwasnt = 0;
 	
-	while (fgets(bfr,sizeof bfr,fp) > 0) {
+	while (fgets(bfr,sizeof bfr,fp) != (char *)0) {
 		if (*bfr == '>') {
 			if (lastwasnt)
 				gotone = 0;
