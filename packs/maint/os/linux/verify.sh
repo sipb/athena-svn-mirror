@@ -69,7 +69,7 @@ exec 3<&-
 total=`rpm -qa | wc -l`
 n=0
 for rpm in `rpm -qa`; do
-  failures="$failures `rpm -V $rpm | awk '{print $NF}'`"
+  failures="$failures `rpm -V --nomd5 $rpm | awk '{print $NF}'`"
   n=$[$n+1]
   printf "\rVerifying: %3d%% of packages" $[$n*100/$total]
 done
