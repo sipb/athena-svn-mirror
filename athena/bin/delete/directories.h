@@ -16,7 +16,6 @@ typedef struct filrec {
      struct filrec *dirs;
      struct filrec *files;
      struct filrec *next;
-     Boolean requested;
      Boolean specified;
      Boolean freed;
 } filerec;
@@ -30,7 +29,6 @@ static filerec default_cwd = {
      (filerec *) NULL,
      (filerec *) NULL,
      False,
-     False,
      False
 };
 
@@ -42,7 +40,6 @@ static filerec default_root = {
      (filerec *) NULL,
      (filerec *) NULL,
      (filerec *) NULL,
-     False,
      False,
      False
 };
@@ -56,7 +53,6 @@ static filerec default_directory = {
      (filerec *) NULL,
      (filerec *) NULL,
      False,
-     False,
      False
 };
 
@@ -69,6 +65,28 @@ static filerec default_file = {
      (filerec *) NULL,
      (filerec *) NULL,
      False,
-     False,
      False
 };
+
+
+
+
+filerec *add_directory_to_parent();
+filerec *add_file_to_parent();
+filerec *add_path_to_tree();
+filerec *find_child();
+filerec *first_in_directory();
+filerec *first_specified_in_directory();
+filerec *get_cwd_tree();
+filerec *get_root_tree();
+filerec *next_directory();
+filerec *next_in_directory();
+filerec *next_leaf();
+filerec *next_specified_directory();
+filerec *next_specified_in_directory();
+filerec *next_specified_leaf();
+
+filetype find_file_type();
+
+char *get_leaf_path();
+char *lastpart(), *firstpart();

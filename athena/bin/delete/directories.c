@@ -54,10 +54,9 @@ initialize_tree()
 }
 
 
-filerec *add_path_to_tree(path, ftype, requested)
+filerec *add_path_to_tree(path, ftype)
 char *path;
 filetype ftype;
-Boolean requested;
 {
      filerec *parent, *leaf;
      char next_name[MAXNAMLEN];
@@ -80,8 +79,7 @@ Boolean requested;
 
      strcpy(next_name, firstpart(ptr, ptr));
      while (*ptr) {
-	  parent = add_directory_to_parent(parent, next_name, requested,
-					   False);
+	  parent = add_directory_to_parent(parent, next_name, False);
 	  if (! parent) {
 	       perror(whoami);
 	       return ((filerec *) NULL);
@@ -89,10 +87,9 @@ Boolean requested;
 	  strcpy(next_name, firstpart(ptr, ptr));
      }
      if (ftype == FtFile)
-	  leaf = add_file_to_parent(parent, next_name, requested, True);
+	  leaf = add_file_to_parent(parent, next_name, True);
      else
-	  leaf = add_directory_to_parent(parent, next_name, requested,
-					 True);
+	  leaf = add_directory_to_parent(parent, next_name, True);
 
      if (! leaf) {
 	  perror(whoami);
@@ -124,23 +121,30 @@ char *path;
 filerec *next_leaf(leaf)
 filerec *leaf;
 {
-     if (leaf->dirs)
-	  return(leaf->dirs);
-     else if (leaf->files)
-	  return(leaf->files);
-     else if (leaf->next)
-	  return(leaf->next);
-     else
-	  return((filerec *) NULL);
+     filerec *new;
+     
+     if (leaf->ftype == FtDirectory) {
+	  new = first_in_directory(leaf);
+	  if (new)
+	       return(new);
+	  new = next_directory(leaf);
+	  return(new);
+     }
+     else {
+	  new = next_in_directory(leaf);
+	  return(new);
+     }
 }
 
 
 filerec *next_specified_leaf(leaf)
 filerec *leaf;
 {
-     while (leaf = next_leaf_down(leaf))
-	  if (leaf->specified)
-	       return(leaf);
+     char buf[MAXPATHLEN];
+     
+     while (leaf = next_leaf(leaf))
+     if (leaf->specified)
+	  return(leaf);
      return((filerec *) NULL);
 }
 
@@ -148,28 +152,26 @@ filerec *leaf;
 filerec *next_directory(leaf)
 filerec *leaf;
 {
+     filerec *ret;
      if (leaf->ftype == FtFile)
 	  leaf = leaf->parent;
      if (leaf)
-	  return(leaf->next);
+	  ret = leaf->next;
      else
-	  return((filerec *) NULL);
+	  ret = (filerec *) NULL;
+     if (ret) if (ret->freed)
+	  ret = next_directory(ret);
+     return(ret);
 }
 
 
 filerec *next_specified_directory(leaf)
 filerec *leaf;
 {
-     if (leaf->ftype == FtFile)
-	  leaf = leaf->parent;
-     if (! leaf)
-	  return ((filerec *) NULL);
-     while (leaf->next)
-	  if (leaf->next->specified)
-	       return(leaf->next);
-	  else
-	       leaf = leaf->next;
-     return ((char *) NULL);
+     while (leaf = next_directory(leaf))
+	  if (leaf->specified)
+	       return(leaf);
+     return ((filerec *) NULL);
 }
 
 
@@ -177,12 +179,17 @@ filerec *leaf;
 filerec *next_in_directory(leaf)
 filerec *leaf;
 {
+     filerec *ret;
+     
      if (leaf->next)
-	  return(leaf->next);
-     else if ((leaf->ftype == FtDirectory) && leaf->parent)
-	  return(leaf->parent->files);
+	  ret = leaf->next;
+     else if ((leaf->ftype == FtFile) && leaf->parent)
+	  ret = leaf->parent->dirs;
      else
-	  return ((filerec *) NULL);
+	  ret = (filerec *) NULL;
+     if (ret) if (ret->freed)
+	  ret = next_in_directory(ret);
+     return (ret);
 }
 
 
@@ -202,26 +209,31 @@ filerec *leaf;
 filerec *first_in_directory(leaf)
 filerec *leaf;
 {
+     filerec *ret;
+     
      if (leaf->ftype != FtDirectory)
-	  return ((filerec *) NULL);
-     else if (leaf->dirs)
-	  return (leaf->dirs);
+	  ret = (filerec *) NULL;
      else if (leaf->files)
-	  return (leaf->files);
+	  ret = leaf->files;
+     else if (leaf->dirs)
+	  ret =  leaf->dirs;
      else
-	  return ((filerec *) NULL);
+	  ret = (filerec *) NULL;
+     if (ret) if (ret->freed)
+	  ret = next_in_directory(ret);
+     return(ret);
 }
 
 
-filerec *first_specified_in_directory(leaf);
+filerec *first_specified_in_directory(leaf)
 filerec *leaf;
 {
      leaf = first_in_directory(leaf);
      
-     if (ptr->specified)
+     if (leaf->specified)
 	  return(leaf);
      else
-	  ptr = next_specified_in_directory(leaf);
+	  leaf = next_specified_in_directory(leaf);
      return ((filerec *) NULL);
 }
 
@@ -233,11 +245,11 @@ filerec *leaf;
      
      printf("%s\n", get_leaf_path(leaf, buf));
      if (leaf->dirs)
-	  print_paths_down_from(leaf->dirs);
+	  print_paths_from(leaf->dirs);
      if (leaf->files)
-	  print_paths_down_from(leaf->files);
+	  print_paths_from(leaf->files);
      if (leaf->next)
-	  print_paths_down_from(leaf->next);
+	  print_paths_from(leaf->next);
      return(0);
 }
 
@@ -250,19 +262,19 @@ filerec *leaf;
      if (leaf->specified)
 	  printf("%s\n", get_leaf_path(leaf, buf));
      if (leaf->dirs)
-	  print_specified_paths_down_from(leaf->dirs);
+	  print_specified_paths_from(leaf->dirs);
      if (leaf->files)
-	  print_specified_paths_down_from(leaf->files);
+	  print_specified_paths_from(leaf->files);
      if (leaf->next)
-	  print_specified_paths_down_from(leaf->next);
+	  print_specified_paths_from(leaf->next);
      return(0);
 }
      
 
-filerec *add_file_to_parent(parent, name, requested, specified)
+filerec *add_file_to_parent(parent, name, specified)
 filerec *parent;
 char *name;
-Boolean requested, specified;
+Boolean specified;
 {
      filerec *files, *last = (filerec *) NULL;
      
@@ -274,7 +286,6 @@ Boolean requested, specified;
 	  files = files->next;
      }
      if (files) {
-	  files->requested = requested;
 	  files->specified = (files->specified || specified);
 	  return(files);
      }
@@ -301,7 +312,6 @@ Boolean requested, specified;
 	  last = parent->files;
      }
      strcpy(last->name, name);
-     last->requested = requested;
      last->specified = specified;
      return(last);
 }
@@ -310,10 +320,10 @@ Boolean requested, specified;
 
 
 
-filerec *add_directory_to_parent(parent, name, requested, specified)
+filerec *add_directory_to_parent(parent, name, specified)
 filerec *parent;
 char *name;
-Boolean requested, specified;
+Boolean specified;
 {
      filerec *directories, *last = (filerec *) NULL;
      
@@ -325,7 +335,6 @@ Boolean requested, specified;
 	  directories = directories->next;
      }
      if (directories) {
-	  directories->requested = requested;
 	  directories->specified = (directories->specified || specified);
 	  return(directories);
      }
@@ -352,8 +361,7 @@ Boolean requested, specified;
 	  last = parent->dirs;
      }
      strcpy(last->name, name);
-     last->requested = requested;
-     last->requested = specified;
+     last->specified = specified;
      return(last);
 }
 
@@ -365,34 +373,32 @@ free_leaf(leaf)
 filerec *leaf;
 {
      leaf->freed = True;
-     if (leaf->previous) {
-	  leaf->previous->next = leaf->next;
-	  if (leaf->previous->freed)
-	       free_leaf(leaf->previous);
-     }
-     if (leaf->ftype = FtDirectory) {
-	  if (leaf->parent->dirs == leaf) {
-	       leaf->parent->dirs = leaf->next;
-	       if (leaf->parent->freed)
-		    free_leaf(leaf->parent);
+     if (! (leaf->dirs || leaf->files)) {
+	  if (leaf->previous)
+	       leaf->previous->next = leaf->next;
+	  if (leaf->next)
+	       leaf->next->previous = leaf->previous;
+	  if (leaf->ftype = FtDirectory) {
+	       if (leaf->parent->dirs == leaf) {
+		    leaf->parent->dirs = leaf->next;
+		    if (leaf->parent->freed)
+			 free_leaf(leaf->parent);
+	       }
 	  }
-     }
-     else {
-	  if (leaf->parent->files == leaf) {
-	       leaf->parent->files = leaf->next;
-	       if (leaf->parent->freed)
-		    free_leaf(leaf->parent);
+	  else {
+	       if (leaf->parent->files == leaf) {
+		    leaf->parent->files = leaf->next;
+		    if (leaf->parent->freed)
+			 free_leaf(leaf->parent);
+	       }
 	  }
-     }
-     if (leaf->next)
-	  leaf->next->previous = leaf->previous;
-     
-     if ((leaf->parent) && /* we don't want to call this on a tree root! */
-	 (! (leaf->ftype = FtDirectory) && (leaf->files || leaf->dirs)))
+	  if (leaf->parent) { /* we don't want to call this on a tree root! */
 #ifdef DEBUG
-	  printf("Freeing leaf %s\n", leaf->name);
+	       printf("Freeing leaf %s\n", leaf->name);
 #endif
-	  free(leaf);
+	       free(leaf);
+	  }
+     }
      return(0);
 }     
 
@@ -433,7 +439,7 @@ char *old_path, *new_path;
      char rest_old[MAXPATHLEN], rest_new[MAXPATHLEN];
 
      filerec *current;
-     
+
      if (*old_path == '/') {
 	  current = &root_tree;
 	  old_path++;
@@ -451,12 +457,8 @@ char *old_path, *new_path;
      strcpy(next_new, firstpart(new_path, rest_new));
      while (*next_old && *next_new) {
 	  current = find_child(current, next_old);
-	  if (current) {
-#ifdef DEBUG
-	       printf("changing %s to %s\n", current->name, next_new);
-#endif	       
+	  if (current)
 	       strcpy(current->name, next_new);
-	  }
 	  else
 	       return(1);
 	  strcpy(next_old, firstpart(rest_old, rest_old));

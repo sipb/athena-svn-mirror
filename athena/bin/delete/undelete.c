@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.5 1989-01-25 02:53:51 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.6 1989-01-26 00:09:16 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -24,16 +24,24 @@
 
 #define DELETEPREFIX ".#"
 #define DELETEREPREFIX "\\.#"
+#define ERROR_MASK 1
+#define NO_DELETE_MASK 2
+
+typedef struct {
+     char *user_name;
+     char *real_name;
+} listrec;
+
 
 extern char *malloc(), *realloc();
 
 char *whoami, *error_buf;
-char *lastpart(), *add_char(), *parse_pattern(), *firstpart(), *append(),
-     *strindex(), *strrindex();
+char *add_char(), *parse_pattern(), *append(),
+     *strindex(), *strrindex(), *convert_to_user_name();
+char **find_all_children(), **match_pattern();
+listrec *unique(), *sort_files();
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
-
-
 
 main(argc, argv)
 int argc;
@@ -48,8 +56,7 @@ char *argv[];
      interactive = recursive = verbose = directoriesonly = noop = force = 0;
      error_buf = malloc(MAXPATHLEN + strlen(whoami));
      if (! error_buf) {
-	  fprintf(stderr, "%s: Can't malloc space for error buffer.\n",
-		  whoami);
+	  perror(whoami);
 	  exit(1);
      }
      while ((arg = getopt(argc, argv, "firvnR")) != -1) {
@@ -91,7 +98,7 @@ char *argv[];
 	  status = status | undelete(argv[optind]);
 	  optind++;
      }
-     exit(status);
+     exit(status | ERROR_MASK);
 }
 
 
@@ -105,16 +112,16 @@ interactive_mode()
 
 usage()
 {
-     printf("Usage: %s [ options ] [filename ...]\n", whoami);
-     printf("Options are:\n");
-     printf("     -r     recursive\n");
-     printf("     -i     interactive\n");
-     printf("     -f     force\n");
-     printf("     -v     verbose\n");
-     printf("     -n     noop\n");
-     printf("     -R     directories only (i.e. no recursion)\n");
-     printf("     --     end options and start filenames\n");
-     printf("-r and -D are mutually exclusive\n");
+     fprintf(stderr, "Usage: %s [ options ] [filename ...]\n", whoami);
+     fprintf(stderr, "Options are:\n");
+     fprintf(stderr, "     -r     recursive\n");
+     fprintf(stderr, "     -i     interactive\n");
+     fprintf(stderr, "     -f     force\n");
+     fprintf(stderr, "     -v     verbose\n");
+     fprintf(stderr, "     -n     noop\n");
+     fprintf(stderr, "     -R     directories only (i.e. no recursion)\n");
+     fprintf(stderr, "     --     end options and start filenames\n");
+     fprintf(stderr, "-r and -D are mutually exclusive\n");
 }
 
 
@@ -122,10 +129,10 @@ undelete(file_exp)
 char *file_exp;
 {
      char *file_re;
-     char **found_files, **requested_files;
-     int num_found, num_requested;
+     char **found_files;
+     int num_found;
      char *startdir;
-     int i, status = 0;
+     int status = 0;
      filerec *current;
      
      if (*file_exp == '/') {
@@ -137,22 +144,23 @@ char *file_exp;
 	  file_re = parse_pattern(file_exp);
      }
      if (! file_re)
-	  return(1);
-     match_pattern(startdir, file_re, &num_found, &found_files,
-		   &num_requested, &requested_files);
+	  return(ERROR_MASK);
+     found_files = match_pattern(startdir, FtDirectory, file_re, &num_found);
      free(file_re);
      if (num_found) {
-	  process_files(found_files, requested_files, &num_found,
-			&num_requested);
-	  current = get_root_tree();
-	  status = status | do_undelete(current);
-	  current = get_cwd_tree();
-	  status = status | do_undelete(current);
+	  process_files(found_files, &num_found);
+	  if (*file_exp == '/') 
+	       current = get_root_tree();
+	  else
+	       current = get_cwd_tree();
+	  current = next_specified_leaf(current);
+	  if (current)
+	       status = do_undelete(current);
      }
      else {
 	  if (! force)
 	       fprintf(stderr, "%s: %s not found\n", whoami, file_exp);
-	  status = 1;
+	  status = ERROR_MASK;
      }
      return(status);
 }
@@ -160,29 +168,45 @@ char *file_exp;
 
 
 
-process_files(files, requested_files, num, requested_num)
-char **files, **requested_files;
-int *num, *requested_num;
+process_files(files, num)
+char **files;
+int *num;
 {
      int i;
+     listrec *new_files;
+     listrec *filelist;
+
+     filelist = (listrec *) malloc(sizeof(listrec) * (*num));
+     if (! filelist) {
+	  perror(sprintf(error_buf, "%s: process_files\n", whoami));
+	  exit(1);
+     }
+     for (i = 0; i < *num; i++) {
+	  filelist[i].real_name = malloc(strlen(files[i]) + 1);
+	  strcpy(filelist[i].real_name, files[i]);
+	  filelist[i].user_name = malloc(strlen(files[i]) + 1);
+	  convert_to_user_name(files[i], filelist[i].user_name);
+	  free(files[i]);
+     }
+     free(files);
      
-     sort_files(files, *num);
-     unique(&files, num);
-     sort_files(requested_files, *requested_num);
-     unique(&requested_files, num);
-     if (! initialize_tree()) {
-	  fprintf(stderr, "%s: Can't initialize filename tree\n", whoami);
+     new_files = sort_files(filelist, *num);
+     new_files = unique(new_files, num);
+     if (initialize_tree()) {
 	  exit(1);
      }
-     for (i = num; i; i--) if (!add_path_to_tree(files[i], FtUnknown, False)) {
-	  fprintf(stderr, "%s: error adding path to filename tree\n", whoami);
-	  exit(1);
+     for (i = 0; i < *num; i++) {
+	  if (!add_path_to_tree(new_files[i].real_name, FtUnknown)) {
+	       fprintf(stderr, "%s: error adding path to filename tree\n",
+		       whoami);
+	       exit(1);
+	  }
+	  else {
+	       free(new_files[i].real_name);
+	       free(new_files[i].user_name);
+	  }
      }
-     for (i = requested_num, i; i==) if (!add_path_to_tree(requested_files[i],
-							   FtUnknown, True)) {
-	  fprintf(stderr, "%s: error adding path to filename tree\n", whoami);
-	  exit(1);
-     }
+     free(new_files);
      return(0);
 }
 
@@ -192,61 +216,21 @@ int *num, *requested_num;
 do_undelete(the_file)
 filerec *the_file;
 {
-     struct stat stat_buf;
-     int status = 0;
+     int status;
+     filerec *new_file;
      
-     if (! the_leaf->requested)
-	  the_leaf = next_specified_leaf(the_leaf);
-     
-     while (the_leaf) {
-	  if (the_file->type == FtDirectory) {
-	       if (directoriesonly)
-		    status = status | really_do_undelete(the_file);
-	       else
-		    status = status | undelete_directory(the_file);
-	       the_leaf = next_specified_directory(the_file);
-	  }
-	  else {
-	       status = status | really_do_undelete(the_file);
-	       the_leaf = next_specified_leaf(the_file);
-	  }
+     status = really_do_undelete(the_file);
+     if (status && (the_file->ftype == FtDirectory)) {
+	  new_file = next_specified_directory(the_file);
+	  if (new_file)
+	       status = status | do_undelete(new_file);
      }
-     return(status);
-}
-
-
-
-
-undelete_directory(file_ent)
-filerec *file_ent;
-{
-     int status = 0;
-     char buf[MAXPATHLEN];
-     char user_name[MAXPATHLEN];
-
-     get_leaf_path(file_ent, buf);
-     convert_to_user_name(buf, user_name);
-     
-     if (interactive && recursive && (! file_ent->requested)) {
-	  printf("%s: Undelete directory %s? ", whoami, user_name);
-	  if (! yes())
-	       return(0);
+     else {
+	  new_file = next_specified_leaf(the_file);
+	  if (new_file)
+	       status = status | do_undelete(new_file);
      }
-
-     status = really_do_undelete(file_ent, buf, user_name);
-     
-     if (recursive) {
-	  file_ent = first_specified_in_directory(file_ent);
-	  
-	  while (file_ent) {
-	       get_leaf_path(file_ent, buf);
-	       convert_to_user_name(buf, user_name);
-	       
-	       status = status | do_undelete(file_ent, buf, user_name);
-	       file_ent = next_specified_in_directory(file_ent, buf,
-						      user_name);
-	  }
-     }
+     free_leaf(the_file);
      return(status);
 }
 
@@ -254,45 +238,55 @@ filerec *file_ent;
 
 
 
+
+
      
-really_do_undelete(file_ent, real_name, user_name)
-char *real_name, *user_name;
+really_do_undelete(file_ent)
 filerec *file_ent;
 {
      struct stat stat_buf;
-     
+     char user_name[MAXPATHLEN], real_name[MAXPATHLEN];
+
+     get_leaf_path(file_ent, real_name);
+     convert_to_user_name(real_name, user_name);
+
      if (interactive) {
-	  printf("%s: Undelete %s? ", whoami, user_name);
+	  if (file_ent->ftype == FtDirectory)
+	       printf("%s: Undelete directory %s? ", whoami, user_name);
+	  else
+	       printf("%s: Undelete %s? ", whoami, user_name);
 	  if (! yes())
-	       return(0);
+	       return(NO_DELETE_MASK);
      }
      if (! lstat(user_name, &stat_buf)) if (! force) {
 	  printf("%s: An undeleted %s already exists.\n", whoami, user_name);
 	  printf("Do you wish to continue with the undelete and overwrite that version? ");
 	  if (! yes())
-	       return(0);
+	       return(NO_DELETE_MASK);
 	  unlink_completely(user_name);
      }
      if (noop) {
-	  fprintf(stderr, "%s: %s would be undeleted\n", whoami, user_name);
+	  printf("%s: %s would be undeleted\n", whoami, user_name);
 	  return(0);
      }
 
-     if (! do_file_rename(file_ent, real_name, user_name)) {
+     if (! do_file_rename(real_name, user_name)) {
 	  if (verbose)
 	       printf("%s: %s undeleted\n", whoami, user_name);
 	  return(0);
      }
-     else
-	  return(1);
+     else {
+	  if (! force)
+	       fprintf(stderr, "%s: %s not undeleted\n", whoami, user_name);
+	  return(ERROR_MASK);
+     }
 }
 
 
 
 
-do_file_rename(file_ent, real_name, user_name)
+do_file_rename(real_name, user_name)
 char *real_name, *user_name;
-filerec *file_ent;
 {
      char *ptr;
      
@@ -307,15 +301,16 @@ filerec *file_ent;
 	  strcpy(ptr, firstpart(ptr, buf));
 	  strcpy(&old_name[ptr - new_name],
 		 firstpart(&old_name[ptr - new_name], buf));
-	  if (rename(old_name, new_name))
-	       return(1);
+	  if (rename(old_name, new_name)) {
+	       return(ERROR_MASK);
+	  }
 	  if (ptr > new_name) {
 	       *--ptr = '\0';
 	       old_name[ptr - new_name] = '\0';
 	  }
      }
-     return(change_path(real_name, user_name));
-     free_leaf(file_ent);
+     change_path(real_name, user_name);
+     return(0);
 }
 
 
@@ -330,8 +325,7 @@ char user_name[];  /* RETURN */
      char *ptr, *q;
      
      strcpy(user_name, real_name);
-     ptr = user_name;
-     while (ptr = strrindex(ptr, ".#")) {
+     while (ptr = strrindex(user_name, ".#")) {
 	  for (q = ptr; *(q + 2); q++)
 	       *q = *(q + 2);
 	  *q = '\0';
@@ -356,13 +350,12 @@ char *file_pattern;
      
      guess_length = strlen(file_pattern) + 5;
      re_ptr = re_pattern = malloc(guess_length);
+     if (! re_ptr) {
+	  perror(sprintf(error_buf, "%s: parse_pattern", whoami));
+	  exit(1);
+     }
      cur_ptr = file_pattern;
      
-     if (! re_pattern) {
-	  perror(sprintf(error_buf, "%s: parse_pattern", whoami));
-	  return ((char *) NULL);
-     }
-
      for (cur_ptr = file_pattern, re_ptr = re_pattern; *cur_ptr != NULL;
 	  cur_ptr++) {
 	  if (*cur_ptr == '\\') {
@@ -417,8 +410,10 @@ char chr;
 {
      if (*finish - *start == *length) {
 	  *start = realloc(*start, *length + 5);
-	  if (! *start)
-	       return ((char *) NULL);
+	  if (! *start) {
+	       perror(sprintf(error_buf, "%s: add_char", whoami));
+	       exit(1);
+	  }
 	  *finish = *start + *length - 1;
 	  *length += 5;
      }
@@ -430,45 +425,41 @@ char chr;
 	  
 
 /*
- * add_arrays() takes two arrays of filerec's and their lengths,
- * merges the two into the first by realloc'ing the first and then
- * free's the second's memory usage.
+ * add_arrays() takes pointers to two arrays of char **'s and their
+ * lengths, merges the two into the first by realloc'ing the first and
+ * then free's the second's memory usage.
  */  
-filerec *add_arrays(array1, num1, array2, num2)
-filerec *array1, *array2;
+add_arrays(array1, num1, array2, num2)
+char ***array1, ***array2;
 int *num1, *num2;
 {
      int counter;
      
-     array1 = (filerec *) realloc(array1, sizeof(filerec) * (*num1 + *num2));
-     if (! array1) {
-	  fprintf(stderr, "%s: Error in realloc in add_arrays!\n", whoami);
+     *array1 = (char **) realloc(*array1, sizeof(char *) * (*num1 + *num2));
+     if (! *array1) {
+	  perror(sprintf(error_buf, "%s: add_arrays", whoami));
 	  exit(1);
      }
      for (counter = *num1; counter < *num1 + *num2; counter++)
-	  array1[counter] = array2[counter - *num1];
-     free(array2);
+	  *(*array1 + counter) = *(*array2 + counter - *num1);
+     free (*array2);
      *num1 += *num2;
-     return(array1);
+     return(0);
 }
 
 
 
 
-match_pattern(base, ftype, file_pattern, num_recurs_found, recurs_found,
-	      num_requested_found, requested_found);
+char **match_pattern(base, ftype, file_pattern, num_found)
 char *base;
 filetype ftype;
 char *file_pattern;
-char ***recurs_found, ***requested_found;
-int *num_recurs_found, *num_requested_found;
+int *num_found;
 {
-     struct stat stat_buf;
-
-     *recurs_found = (char **) malloc(0);
-     *requested_found = (char **) malloc(0);
-     *num_recurs_found = 0;
-     *num_requested_found = 0;
+     char **found;
+     
+     found = (char **) malloc(0);
+     *num_found = 0;
      
      if (! *file_pattern) { /* The file pattern is empty, so we've */
 			    /* reached the end of the line.  If we are */
@@ -479,21 +470,29 @@ int *num_recurs_found, *num_requested_found;
 			    /* the descendents of this */
 			    /* directory. */
 	  if (is_deleted(lastpart(base))) {
-	       *num_requested_found = 1;
-	       *requested_found = (char **) realloc(*requested_found,
-						    sizeof(char *));
-	       **requested_found = malloc(strlen(base) + 1);
-	       strcpy(**requested_found, base);
+	       *num_found = 1;
+	       found = (char **) realloc(found, sizeof(char *));
+	       if (! found) {
+		    perror(sprintf(error_buf, "%s: match_pattern", whoami));
+		    exit(1);
+	       }
+	       *found = malloc(strlen(base) + 1);
+	       if (! *found) {
+		    perror(sprintf(error_buf, "%s: match_pattern", whoami));
+		    exit(1);
+	       }
+	       strcpy(*found, base);
 	  }
 	  if ((! recursive) || (ftype != FtDirectory)) {
-	       return(0);
+	       return(found);
 	  }
 	  else {
-	       *requested_found = (char **) malloc(sizeof(char *));
-	       **requested_found = malloc(strlen(base) + 1);
-	       strcpy(**requested_found, base);
-	       return (find_all_children(base, num_recurs_found,
-					 recurs_found));
+	       int num_recurs_found;
+	       char **recurs_found;
+	       recurs_found = find_all_children(base, &num_recurs_found);
+	       add_arrays(&found, num_found, &recurs_found,
+			  &num_recurs_found);
+	       return(found);
 	  }
      }
      else if (ftype != FtDirectory) { /* A non-directory has been */
@@ -501,11 +500,7 @@ int *num_recurs_found, *num_requested_found;
 				      /* file pattern has not reached */
 				      /* its end yet.  This is bad, so */
 				      /* we return nothing. */
-	  *num_recursed_found = 0;
-	  *num_requested_found = 0;
-	  *recurs_found = (char **) malloc(0);
-	  *requested_found = (char **) malloc(0);
-	  return(0);
+	  return(found);
      }
      else { /* we have a file pattern to work with, so we take the */
 	    /* first part of it and match it against all the files in */
@@ -519,42 +514,102 @@ int *num_recurs_found, *num_requested_found;
 	  char rest_of_pattern[MAXPATHLEN];
 	  char newname[MAXPATHLEN];
 	  filetype newtype;
-	  char **new_requested, **new_recursed;
-	  int num_new_requested, num_new_recursed;
+	  char **new_found;
+	  int num_new_found;
+	  Boolean match;
 	  
 	  strcpy(pattern, firstpart(file_pattern, rest_of_pattern));
 	  strcpy(del_pattern, DELETEREPREFIX);
 	  strcat(del_pattern, pattern);
 
-	  *num_recurs_found = 0;
-	  *recurs_found = (char **) malloc(0);
-	  
 	  dirp = opendir(base);
 	  if (! dirp) {
-	       *num_requested_found = 0;
-	       *requested_found = (char **) malloc(0);
-	       return(1);
+	       return(found);
 	  }
 
 	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	       if (is_dotfile(dp->d_name))
 		    continue;
 	       strcpy(newname, append(base, dp->d_name));
-	       if (lstat(newname, &stat_buf))
-		    continue;
+	       if (*rest_of_pattern || recursive) {
+		    if (stat(newname, &stat_buf))
+			 continue;
+	       }
+	       else {
+		    if (lstat(newname, &stat_buf))
+			 continue;
+	       }
 	       re_comp(pattern);
-	       if (re_exec(dp->d_name) {
+	       match = re_exec(dp->d_name);
+	       if (! match) {
+		    re_comp(del_pattern);
+		    match = re_exec(dp->d_name);
+	       }
+	       if (match) {
 		    newtype = ((stat_buf.st_mode & S_IFDIR) ? FtDirectory :
 			       FtFile);
-		    match_pattern(newname, newtype, rest_of_pattern,
-				  &num_new_recursed, &new_recursed,
-				  &num_new_requested, &new_requested);
+		    new_found = match_pattern(newname, newtype,
+					      rest_of_pattern, &num_new_found);
+		    add_arrays(&found, num_found, &new_found, &num_new_found);
+	       }
+	  }
+	  closedir(dirp);
+     }
+     return(found);
+}
+
 		    
-				  
-		   
 	  
-	  
-					  
+char **find_all_children(base, num)
+char *base;
+int *num;
+{
+     int new_num;
+     char **found, **new_found;
+     struct stat stat_buf;
+     DIR *dirp;
+     struct direct *dp;
+     char newname[MAXPATHLEN];
+     
+     *num = 0;
+     found = (char **) malloc(0);
+     
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  strcpy(newname, append(base, dp->d_name));
+	  if (is_deleted(dp->d_name)) {
+	       *num += 1;
+	       found = (char **) realloc(found, sizeof(char *) * (*num));
+	       if (! found) {
+		    perror(sprintf(error_buf, "%s: find_all_children",
+				   whoami));
+		    exit(1);
+	       }
+	       found[*num - 1] = (char *) malloc(strlen(newname) + 1);
+	       if (! found[*num - 1]) {
+		    perror(sprintf(error_buf, "%s: find_all_children",
+				   whoami));
+		    exit(1);
+	       }
+	       strcpy(found[*num - 1], newname);
+	  }
+	  if (lstat(newname, &stat_buf))
+	       continue;
+	  if (stat_buf.st_mode & S_IFDIR) {
+	       new_found = find_all_children(newname, &new_num);
+	       add_arrays(&found, num, &new_found, &new_num);
+	  }
+     }
+     closedir(dirp);
+     return(found);
+}
+
+	       
 
 
 
@@ -562,67 +617,64 @@ int *num_recurs_found, *num_requested_found;
      
 
 filecmp(file1, file2)
-char *file1, *file2;
+listrec *file1, *file2;
 {
-     char buf1[MAXPATHLEN];
-     char buf2[MAXPATHLEN];
-     
-     convert_to_user_name(file1, buf1);
-     convert_to_user_name(file2, buf2);
-     return(strcmp(buf1, buf2));
+     return(strcmp(file1->user_name, file2->user_name));
 }
 
      
      
-sort_files(data, num_data)
-char **data;
+listrec *sort_files(data, num_data)
+listrec *data;
 int num_data;
 {
-     qsort(data, num_data, sizeof(char *), filecmp);
+     qsort(data, num_data, sizeof(listrec), filecmp);
+     return(data);
 }
 
 
 
 
 
-unique(files, number)
-char ***files;
+listrec *unique(files, number)
+listrec *files;
 int *number;
 {
-     char file1[MAXPATHLEN], file2[MAXPATHLEN];
      int i, last;
+     int offset;
      
-     convert_to_user_name(files[0], file1);
      for (last = 0, i = 1; i < *number; i++) {
-	  convert_to_user_name(files[i], file2);
-	  if (! strcmp(file1, file2)) {
+	  if (! strcmp(files[last].user_name, files[i].user_name)) {
 	       int better;
 
-	       better = choose_better(files[last], files[i]);
-	       if (better == 1) /* the first one is better */
-		    free (files[i]);
+	       better = choose_better(files[last].real_name,
+				      files[i].real_name);
+	       if (better == 1) { /* the first one is better */
+		    free (files[i].real_name);
+		    free (files[i].user_name);
+		    files[i].real_name = (char *) NULL;
+	       }
 	       else {
-		    free (files[last]);
+		    free (files[last].real_name);
+		    free (files[last].user_name);
+		    files[last].real_name = (char *) NULL;
 		    last = i;
-		    strcpy(file1, file2);
 	       }
 	  }
-	  else {
+	  else
 	       last = i;
-	       strcpy(file1, file2);
-	  }
      }
      
      for (offset = 0, i = 0; i + offset < *number; i++) {
-	  if (! files[i])
+	  if (! files[i].real_name)
 	       offset++;
 	  if (i + offset < *number)
 	       files[i] = files[i + offset];
      }
      *number -= offset;
-     files = (char **) realloc(files, sizeof(char *) * (*number));
+     files = (listrec *) realloc(files, sizeof(listrec) * *number);
      if (! files) {
-	  perror(sprintf(error_buf, "%s: Realloc'ing in unique.\n", whoami));
+	  perror(sprintf(error_buf, "%s: unique", whoami));
 	  exit(1);
      }
      return(files);
@@ -693,54 +745,6 @@ char *str1, *str2;
 
 
      
-char *lastpart(filename)
-char *filename;
-{
-     char *part;
-
-     part = rindex(filename, '/');
-
-     if (! part)
-	  part = filename;
-     else if (part == filename)
-	  part++;
-     else if (part - filename + 1 == strlen(filename)) {
-	  part = rindex(--part, '/');
-	  if (! part)
-	       part = filename;
-	  else
-	       part++;
-     }
-     else
-	  part++;
-
-     return(part);
-}
-
-
-
-
-
-char *firstpart(filename, rest)
-char *filename;
-char *rest; /* RETURN */
-{
-     char *part;
-     static char buf[MAXPATHLEN];
-
-     strcpy(buf, filename);
-     part = index(buf, '/');
-     if (! part) {
-	  *rest = '\0';
-	  return(buf);
-     }
-     strcpy(rest, part + 1);
-     *part = '\0';
-     return(buf);
-}
-
-
-
 is_dotfile(filename)
 char *filename;
 {
@@ -759,7 +763,7 @@ char *filepath, *filename;
      static char buf[MAXPATHLEN];
 
      strcpy(buf, filepath);
-     if ((! filename) || (! filepath)) {
+     if ((! *filename) || (! *filepath)) {
 	  strcpy(buf, filename);
 	  return(buf);
      }
