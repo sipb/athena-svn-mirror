@@ -63,7 +63,9 @@ pngtest: pngtest.o libpng.a
 test: pngtest
 	./pngtest
 
-install: libpng.a
+install: install-static install-shared
+
+install-static: libpng.a
 	-@mkdir $(INCPATH)
 	-@mkdir $(LIBPATH)
 	cp png.h $(INCPATH)
@@ -79,7 +81,8 @@ install-shared: $(SHAREDLIB).$(SONUM).$(VER)
 	(cd $(LIBPATH); if test -f $(SHAREDLIB).$(SONUM).$(VER); then \
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM); \
 	ln -s $(SHAREDLIB).$(SONUM).$(VER) $(SHAREDLIB).$(SONUM); \
-	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB))
+	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB); \
+	fi)
 
 clean:
 	rm -f *.o libpng.a pngtest pngout.png $(SHAREDLIB) $(SHAREDLIB).$(SONUM)*
