@@ -1,4 +1,4 @@
-# $Id: athena,v 1.62 1998-05-20 14:55:07 danw Exp $
+# $Id: athena,v 1.63 1998-07-15 18:36:32 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -19,6 +19,13 @@ panic=`dmesg | awk '
 	/UNIX\(R\)/	{ if (++boots == 2) panic = ""; }
 	END		{ print panic; }'`
 logger -p user.notice "Booting$panic"
+
+# We load a kernel module misc/obpsym to enable symbolic prom
+# debugging.  This module also sets the obpdebug kernel variable when
+# it loads, which causes panics to drop into the prom instead of
+# rebooting.  Turn off obpdebug now.
+echo "Clearing obpdebug."
+echo obpdebug/W0 | adb -k -w /dev/ksyms /dev/mem
 
 # Read configuration variables
 . /etc/athena/rc.conf
