@@ -507,11 +507,11 @@ There are three rel-eng machines for each platform:
 
 Here is a list of the rel-eng machines for each platform:
 
-			Sun        O2          Linux
+			Sun                  O2          Linux
 
-Current release build	downy      bounce      snuggle
-New release build	maytag     whirlpool   kenmore
-Crash and burn		sourcery   reaper-man  feet-of-clay
+Current release build	downy                bounce      snuggle
+New release build	maytag               whirlpool   kenmore
+Crash and burn		the-colour-of-magic  reaper-man  men-at-arms
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
