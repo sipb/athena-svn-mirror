@@ -18,7 +18,7 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olcd.h,v 1.51 1999-06-29 21:31:06 ghudson Exp $
+ *	$Id: olcd.h,v 1.52 1999-06-29 22:43:07 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -134,7 +134,7 @@ int is_topic (int *topics , int code );
 void write_question_info ( QUESTION *q );
 
 /* db.c */
-int get_specialties (USER *user );
+void get_specialties (USER *user );
 void get_acls (USER *user );
 int load_db (void );
 void load_user (USER *user );
