@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.12 1991-08-23 11:23:32 raek Exp $
+ *	$Id: procs.h,v 1.13 1991-08-23 12:10:16 raek Exp $
  *	$Author: raek $
  */
 
@@ -132,8 +132,6 @@ ERRCODE OMailHeader P((REQUEST *Request , char *file , char *username , char *re
 /* status.c */
 ERRCODE OListPerson P((REQUEST *Request , LIST **data ));
 ERRCODE OWho P((REQUEST *Request , LIST *data ));
-ERRCODE OGetStatusString P((int status , char *string ));
-ERRCODE OGetStatusCode P((char *string , int *status ));
 ERRCODE OGetUsername P((REQUEST *Request , char *username ));
 ERRCODE OGetHostname P((REQUEST *Request , char *hostname ));
 ERRCODE OGetConnectedUsername P((REQUEST *Request , char *username ));
@@ -155,8 +153,8 @@ ERRCODE query_mailhost P((int s , char *name ));
 ERRCODE can_receive_mail P((char *name ));
 ERRCODE call_program P((char *program , char *argument ));
 void expand_hostname P((char *hostname , char *instance , char *realm ));
-ERRCODE sendmail P((char **smargs ));
-ERRCODE file_length P((char *file ));
+int sendmail P((char **smargs ));
+int file_length P((char *file ));
 
 /* System: */
 
