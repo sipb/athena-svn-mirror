@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.9 1990-07-02 13:44:02 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.10 1990-07-02 14:29:42 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.9 1990-07-02 13:44:02 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.10 1990-07-02 14:29:42 epeisach Exp $";
 #endif lint
 
 /*
@@ -42,6 +42,7 @@ static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
 #define	FILTERERR	3
 #define	ACCESS		4
 
+static int	network;		/* true if network access to printer */
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
 
@@ -293,7 +294,7 @@ printit(file)
 	 * Try to lock control file.  If we fail, defer processing
 	 * this file till later
 	 */
-	 if (flock(fileno(cfp), LOCK_EX|LOCK_NB) < 0) {
+	 if (!network && (flock(fileno(cfp), LOCK_EX|LOCK_NB) < 0)) {
 		 if (errno == EWOULDBLOCK) {
 			 /*
 			  * We couldn't get the lock.  Probably lprm
@@ -1330,7 +1331,13 @@ openpr()
 	if (lflag)syslog(LOG_INFO, "Opening printer (LP = \"%s\")", LP);
 	if (*LP) {
 		for (i = 1; ; i = i < 32 ? i << 1 : i) {
-			pfd = open(LP, RW ? O_RDWR : O_WRONLY);
+		        if (LP[0] == '@') {
+			        pfd = tcp_conn(&LP[1]);
+				network = 1;
+			} else {
+			        pfd = open(LP, RW ? O_RDWR : O_WRONLY);
+				network = 0;
+			}
 			if (lflag) syslog(LOG_INFO, "LP opened.");
 			if (pfd >= 0)
 				break;
