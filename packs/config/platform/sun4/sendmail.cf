@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.5 1997-03-17 22:31:00 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.6 1997-03-28 10:36:00 ghudson Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: ghudson $
 #
@@ -68,7 +68,7 @@ De$j Sendmail $v/$V ready at $b
 ###################
 
 # location of alias file
-OA/usr/lib/aliases
+OA/etc/mail/aliases
 # default delivery mode (deliver in background)
 Odbackground
 # (don't) connect to "expensive" mailers
@@ -93,8 +93,6 @@ OS/usr/lib/sendmail.st
 Os
 # default timeout interval
 OT3d
-# time zone names (V6 only)
-OtEST,EDT
 # default UID
 Ou1
 # wizard's password
