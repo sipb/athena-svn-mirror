@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.11 1990-10-18 06:24:25 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.12 1990-11-14 12:30:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.11 1990-10-18 06:24:25 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.12 1990-11-14 12:30:44 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -69,7 +72,7 @@ command_loop(Command_Table, prompt)
 #ifdef CSH
   struct stat statbuf;
   char configfile[128];
-#endif CSH
+#endif /* CSH */
   
   subsystem = 1;
   
@@ -86,7 +89,7 @@ command_loop(Command_Table, prompt)
     } 
   else 
     {
-#endif CSH
+#endif /* CSH */
 
       while(1) 
 	{
@@ -131,7 +134,7 @@ command_loop(Command_Table, prompt)
 
 #ifdef CSH
    }
-#endif CSH
+#endif /* CSH */
 }
 
 /*
@@ -158,7 +161,7 @@ do_command(Command_Table, arguments)
 #ifdef CSH
   if(*arguments[0] == '\\') /* want to escape olc command */
     return(-1);
-#endif CSH
+#endif /* CSH */
 
   index = command_index(Command_Table, arguments[0]);
   
@@ -172,9 +175,9 @@ do_command(Command_Table, arguments)
 
 #ifdef CSH
 	return(-1);
-#else  CSH
+#else  /* CSH */
 	return(ERROR);
-#endif CSH
+#endif /* CSH */
       }
     else 
       {
@@ -273,16 +276,6 @@ expand_variable(Request,var)
   struct tm *time_info;
   char buf[BUF_SIZE];
   LIST list;
-
-  int     uid;                       /* Person's user ID. */
-  int     instance;                  /* the user's instance id */
-  char    username[LOGIN_SIZE+1];    /* Person's username. */
-  char    realname[LABEL_SIZE];      /* Person's real name. */
-  char    realm[REALM_SZ];           /* current realm */
-  char    inst[INST_SZ];             /* oh well */
-  char    nickname[STRING_SIZE];     /* Person's first name. */
-  char    title[LABEL_SIZE];         /* Person's title */
-  char    machine[LABEL_SIZE];       /* Person's current machine. */
 
   for (uinfo=0; uinfo < NUML; uinfo++)
     {
@@ -503,9 +496,6 @@ expand_arguments(Request,arguments)
     }
 }
 
-
-extern int IsAlpha();
-
 set_prompt(Request, prompt, inprompt)
      REQUEST *Request;
      char *prompt;
@@ -550,3 +540,75 @@ set_prompt(Request, prompt, inprompt)
 	}
     }
 }
+
+/*
+ * Function: parse_command_line() parses a command line into individual words.
+ * Arguments:	command_line:	A pointer to the command line string.
+ *		arguments:	A pointer to an array that will contain the
+ *				parsed arguments.
+ * Returns:	SUCCESS or ERROR.
+ * Notes:
+ *	Get each word in the command line and set up a pointer to it.
+ *      Kludge it so phrases can be quoted.
+ */
+
+ERRCODE
+parse_command_line(command_line, arguments)
+     char *command_line;
+     char arguments[MAX_ARGS][MAX_ARG_LENGTH];
+{
+  char *current;		/* Current place in the command line.*/
+  int argcount;		        /* Running counter of arguments. */
+  char *get_next_word();	/* Get the next word in a line. */
+  char buf[BUF_SIZE];
+  char *bufP;
+  int quote = 0;
+  int first = 1;
+
+  current = command_line;
+  argcount = 0;
+  while ((current = get_next_word(current, buf, NotWhiteSpace))
+	 != (char *) NULL)
+    {
+      if(buf[0] == '\"')
+	{
+	  quote = TRUE;
+	  bufP = &buf[1];
+	}
+      else
+	bufP = &buf[0];
+
+      if(quote)
+	{
+	  if(bufP[strlen(bufP)-1] == '\"')
+	    {
+	      bufP[strlen(bufP)-1] = '\0';
+	     (void) strcat(arguments[argcount],bufP);
+	      quote = FALSE;
+	      first = 1;
+	      ++argcount;
+	    }
+	  else
+	    {
+	      if(first)
+		{
+		  (void) strcpy(arguments[argcount],bufP);
+		  first = 0;
+		}
+	      else
+		(void) strcat(arguments[argcount],bufP);
+
+	      (void) strcat(arguments[argcount]," ");
+	    }
+	}
+      else
+	{
+	  (void) strcpy(arguments[argcount],bufP);
+	  argcount++;
+	}
+    }
+  
+  *arguments[argcount] = '\0';
+  return(SUCCESS);
+}
+
