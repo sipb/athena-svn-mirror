@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.5 1990-11-14 17:24:47 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.6 1991-01-23 15:09:21 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v $ */
 /* $Author: epeisach $ */
 /*
@@ -295,6 +295,9 @@ char *buf;
 #define ADDNUM(f,n) if((n) != 0) {(void) sprintf(buf1,"%s=%d ",f,n); (void) strcat(buf, buf1);}
 
 #define ADDTIME(f,n) if ((n) != -1) {(void) sprintf(buf1,"%s=%d ",f,n); (void) strcat(buf, buf1);}
+
+    if((line->user.name == 0) && (line->user.instance == 0) && 
+       (line->user.realm == 0)) return 0;
 
     ADDTIME("t",line->time);
 
