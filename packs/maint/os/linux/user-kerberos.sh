@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-kerberos.sh,v 1.1 2002-12-09 22:56:12 ghudson Exp $
+# $Id: user-kerberos.sh,v 1.2 2003-02-26 18:44:48 zacheiss Exp $
 #
 # Manipulate Kerberos tickets as appropriate in response to network events.
 #
@@ -9,22 +9,12 @@
 
 case "$EVENT" in
 resume|net-up)
-  # If hostname changed, then kdestroy.
+  # If hostname changed, then krb524init.
   if [ "x$OLDHOSTNAME" != "x$HOSTNAME" ]; then
-    echo "IP Address changed.  Tickets destroyed.."
-    kdestroy -q
+    echo "IP Address changed.  Getting new krb4 tickets."
+    krb524init
   fi
 
-  klist -s
-  if [ $? -ne 0 ]; then
-    if [ -n "$DISPLAY" ]; then
-      grenew
-    else
-      echo "You need new tickets. Get them now by typing \"renew\"."
-      echo "You have 60 seconds...."
-      sleep 60
-    fi
-  fi
   ;;
 esac
 
