@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 1996-11-20 15:43:41 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 1998-03-20 23:36:13 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -7,14 +7,14 @@ compiler.sun4:
 	@echo /mit/sunsoft/sun4bin/cc
 
 prepare:
-	./configure --prefix=/usr/gcc
+	CC=`${MAKE} -f Makefile.athena "compiler.$${HOSTTYPE}"` \
+		./configure --prefix=/usr/gcc
 
 clean:
 	${MAKE} clean
 
 all:
-	compiler=`${MAKE} -f Makefile.athena "compiler.$${HOSTTYPE}"`; \
-	${MAKE} all CC="$$compiler" LANGUAGES=c
+	${MAKE} all LANGUAGES=c
 	${MAKE} stage1
 	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=C
 
