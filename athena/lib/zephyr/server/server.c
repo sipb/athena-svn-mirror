@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.22 1988-02-05 14:36:05 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.23 1988-02-05 14:38:39 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -526,6 +526,8 @@ ZNotice_t *notice;
 		return(ZERR_NONE);	/* XXX */
 	}
 	/* remove the locations, too */
+	if (zdebug)
+		syslog(LOG_DEBUG, "kill_clt clt_dereg");
 	client_deregister(client, host, 1);
 	return(ZERR_NONE);
 }
