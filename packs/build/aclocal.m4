@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.15 2002-02-18 16:00:14 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.16 2002-02-18 21:28:12 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -96,6 +96,7 @@ if test "$ss" != no; then
 		CPPFLAGS="$CPPFLAGS -I$ss/include"
 		LDFLAGS="$LDFLAGS -L$ss/lib"
 	fi
+	AC_CHECK_LIB(curses, initscr)
 	AC_CHECK_LIB(readline, readline)
 	AC_CHECK_LIB(ss, ss_perror, :,
 		     [AC_MSG_ERROR(ss library not found)], -lcom_err)
