@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.2 1989-08-08 14:42:19 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.3 1989-08-22 14:03:07 tjcoppet Exp $";
 #endif
 
 
@@ -198,10 +198,18 @@ write_message_to_user(k, message, flags)
   if (k == (KNUCKLE *) NULL)
     return(ERROR);
 
-  result = write_message(k->user->username, k->user->machine,
-			 "OLC-Daemon", DaemonHost, message);
+  if(k->user->no_knuckles > 1)
+    {
+      sprintf(msgbuf,"To: %s %s@%s (%d)\n",k->title,k->user->username,
+	      k->user->realm,k->instance);
+      strcat(msgbuf,message);
+      result = write_message(k->user->username, k->user->machine,
+			     "OLC-Daemon", DaemonHost, msgbuf);
+    }
+  else
+    result = write_message(k->user->username, k->user->machine,
+			     "OLC-Daemon", DaemonHost, message);
   
-  sub_status(k, NOT_HERE);
   switch(result)
     {
     case ERROR:

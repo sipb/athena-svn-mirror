@@ -50,6 +50,7 @@ extern int errno;		      /* System error number. */
 extern PROC  Proc_List[];              /* OLC Proceedure Table */
 char DaemonHost[LINE_LENGTH];	      /* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
+static int request_count = 0;
 
 #ifdef KERBEROS
 static long ticket_time = 0L;         /* Timer on kerberos ticket */
@@ -241,10 +242,7 @@ main(argc, argv)
     }
 
   if (!string_eq(hostname, daemon_host_entry->h_name)) 
-    {
-      log_error("not running on correct machine");
-      exit(ERROR);
-    }
+      log_error("warning: hesiod information doesn't point here");
 
   if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) == 
       (struct servent *)NULL)
@@ -387,7 +385,6 @@ process_request(fd, from)
   int index;		/* Index in proc. table. */
   int auth;             /* status from authentication */
   struct hostent *hp;	/* host sending request */
-  int count = 0;
   int f;
 
 #ifdef TEST
@@ -444,7 +441,8 @@ process_request(fd, from)
     {
 
 #ifdef	TEST
-      printf("%d> Got %s request from %s\n",count++,
+      ++request_count;
+      printf("%d> Got %s request from %s\n",request_count,
 	     Proc_List[index].description,
 	     request.requester.username);
 #endif	TEST
@@ -596,10 +594,10 @@ get_kerberos_ticket()
   if(ticket_time < NOW - (96L * 5L) + 15L) 
     {
       sprintf(mesg, "get new tickets: %s %s ", K_SERVICE, sinstance);
-      log_status(mesg);
+      log_error(mesg);
       dest_tkt();
       if((ret = get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
-			       "krbtgt", "ATHENA.MIT.EDU",
+			       "krbtgt", SERVER_REALM,    
 			       96, SRVTAB_FILE)) != KSUCCESS)
 	{
 	  sprintf(mesg,"get_tkt: %s", krb_err_txt[ret]);
