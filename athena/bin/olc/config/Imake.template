@@ -175,7 +175,13 @@
 #endif
 #endif /* ibm */
 
-
+#ifndef concat
+#ifdef __STDC__
+#define concat(x,y) x##y
+#else
+#define concat(x,y) x/**/y
+#endif
+#endif
 
 #ifndef MacroIncludeFile
 /**/# WARNING:  Imake.tmpl not configured; guessing at definitions!!!
@@ -198,6 +204,9 @@
 /**/###########################################################################
 /**/# site-specific configuration parameters - edit site.def to change
 #include <site.def>
+
+/**/###########################################################################
+/**/# end of site-specific code
 
 /*
  * defaults for various generic parameters; set in site.def if needed
@@ -342,6 +351,9 @@
 #ifndef DefaultCCOptions
 #define DefaultCCOptions /* as nothing: this is for floating point, etc. */
 #endif
+#ifndef DefaultCPlusPlusOptions
+#define DefaultCPlusPlusOptions /* empty */
+#endif
 #ifndef LibraryCCOptions
 #define LibraryCCOptions DefaultCCOptions
 #endif
@@ -387,6 +399,9 @@
 #endif
 #ifndef CcCmd
 #define CcCmd cc
+#endif
+#ifndef CPlusPlusCmd
+#define CPlusPlusCmd g++
 #endif
 #if HasFortran
 #ifndef FortranCmd			/* for xgks */
@@ -514,6 +529,7 @@
                AR = ArCmd
   BOOTSTRAPCFLAGS = BootstrapCFlags	/* set if cpp doesn't have uniq sym */
                CC = CcCmd
+              C++ = CPlusPlusCmd
 #if HasFortran
                FC = FortranCmd
       FDEBUGFLAGS = FortranDebugFlags
@@ -572,6 +588,8 @@
       COMPATFLAGS = CompatibilityFlags
        ALLDEFINES = $(STD_INCLUDES) $(INCLUDES) $(STD_DEFINES) $(DEFINES) $(COMPATFLAGS)
            CFLAGS = $(CDEBUGFLAGS) $(CCOPTIONS) $(ALLDEFINES)
+       C++OPTIONS = DefaultCPlusPlusOptions
+         C++FLAGS = $(C++OPTIONS) $(CFLAGS)
         LINTFLAGS = $(LINTOPTS) -DLINT $(ALLDEFINES)
            LDLIBS = $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
         LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) 
@@ -581,16 +599,19 @@
 			.emacs_* tags TAGS make.log MakeOut
 
     IMAKE_DEFINES = /* leave blank, for command line use only */
+            IMAKE = imake
 #ifdef UseInstalled
          IRULESRC = $(CONFIGDIR)	/* used in rules file */
-        IMAKE_CMD = $(IMAKE) -DUseInstalled -I$(IRULESRC) $(IMAKE_DEFINES)
+        IMAKE_CMD = $(IMAKE) -DUseInstalled -I$(IRULESRC) $(IMAKE_DEFINES) -s Makefile
 #else
          IRULESRC = $(CONFIGSRC)
-        IMAKE_CMD = $(NEWTOP)$(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES)
+        IMAKE_CMD = $(NEWTOP)$(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES) -s Makefile
 #endif
-     ICONFIGFILES = $(IRULESRC)/Imake.tmpl $(IRULESRC)/Imake.rules \
+     ICONFIGFILES = $(IRULESRC)/Imake.template $(IRULESRC)/Imake.rules \
 			$(IRULESRC)/Project.tmpl $(IRULESRC)/site.def \
 			$(IRULESRC)/$(MACROFILE)
+MAKEDEPEND = makedepend
+DEPEND = $(MAKEDEPEND)
 
 
 /*
@@ -609,6 +630,7 @@
 
 /**/###########################################################################
 /**/# common rules for all Makefiles - do not edit
+
 /*
  * These need to be here so that rules in Imakefile occur first;  the blank
  * all is to make sure that an empty Imakefile doesn't default to make clean.
@@ -639,8 +661,10 @@ osaber:
 /**/###########################################################################
 /**/# rules for building in SUBDIRS - do not edit
 
+MakeSubdirs($(SUBDIRS))
 InstallSubdirs($(SUBDIRS))
 InstallManSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))
 CleanSubdirs($(SUBDIRS))
 TagSubdirs($(SUBDIRS))
 MakefileSubdirs($(SUBDIRS))
