@@ -41,7 +41,8 @@ set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/is
 
 set end="config/dotfiles config/config"
 
-#I removed athena/bin/inittty as there was no Imakefile there
+# athena/bin/inittty is not listed now. Hopefully we have a better
+# solution now.
  
 set outfile="/usr/tmp/washlog.`date '+%y.%m.%d.%H'`"
 set SRVD="/srvd"
@@ -64,17 +65,21 @@ else if ($machine == "rsaix" ) then
 foreach package ( setup $libs1 $third $libs2 $etcs $bins )
 else
 
-foreach package ( $machine  setup athena/lib/syslog $libs1 $third $libs2 $etcs $bins )
+# if ($machine == "decmips")...
+
+foreach package ( $machine/kits/install_srvd setup $machine athena/lib/syslog $libs1 $third $libs2 $etcs $bins )
 
 endif
 switch ($package)
 	case setup
 	(echo in setup >>& $outfile)
+	mkdir /build/bin
 	cd /build/support/imake
 		((make -f Makefile.ini clean >>& $outfile) && \
 			(make -f Makefile.ini >>& $outfile ) && \
 			(cp imake /build/bin >>& $outfile) && \
-			(chmod 755 /build/bin/imake >>& $outfile))
+			(chmod 755 /build/bin/imake >>& $outfile) && \
+			(cp /source/xmkmf /build/bin >>& $outfile))
 		if ($status == 1 ) then
 			echo "We bombed in imake" >>& $outfile
 		endif
@@ -82,6 +87,7 @@ switch ($package)
 		(cd /build/sun4/include; make install)
 	endif
 
+	rehash
 	cd /build/support/install
 	((echo "In install" >>& $outfile) &&\
 	(xmkmf . >>& $outfile) &&\
@@ -90,27 +96,26 @@ switch ($package)
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
 	endif
+
+	# Hack...
+	if ($machine == "decmips") then
+		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix /build/bin/mkdep >>& $outfile)
+	rehash
 	breaksw
 
-	case decmips
+	case decmips/kits/install_srvd
 #	This is scary.
 #	Unmount /srvd remove the directory make a link then at the end 
-# reverse the process
+#	reverse the process.
+#WARNING: There's a newfs here. Make sure it gets changed appropriately.
 	umount /srvd >>& $outfile
 	rmdir /srvd >>& $outfile
 	ln -s /afs/rel-eng/system/pmax_ul4/srvd /srvd >>& $outfile
 	mkdir /srvd.tmp >>& $outfile
+	newfs /dev/rrz3d fuji2266 >>& $outfile
 	mount /dev/rz3d /srvd.tmp >>& $outfile
 	(echo In $package >>& $outfile)
-	( cd /build/$package ; make Makefiles >>& $outfile ) 
-	(echo $package : make clean >>& $outfile )
-	( cd /build/$package ; make clean >>& $outfile )
-	(echo $package : make depend >>& $outfile )
-	( cd /build/$package ; make depend >>& $outfile ) 
-	(echo $package : make all >>& $outfile )
-	( cd /build/$package ; make all >>& $outfile ) 
-	(echo $package : make install >>& $outfile )
-	( cd /build/$package ; make install DESTDIR=/srvd.tmp >>& $outfile )
+	( cd /build/$package ; make base update setup1 DESTDIR=/srvd.tmp >>& $outfile )
 	umount /srvd.tmp >>& $outfile
 	fsck /dev/rz3d >>& $outfile
 	rmdir /srvd.tmp >>& $outfile
@@ -123,6 +128,30 @@ switch ($package)
 #	endif
 	breaksw
 
+	case decmips
+# This is gross. Same as complex, no depend. The Imakefile in
+# decmips/sys is, um, kind of impressive, and can't do a make
+# depend before a make all.
+# Sigh. There are gross interdependencies that can't be resolved
+# at this level, which aren't noticed when you're building from
+# a non-pure machine.
+	cp -p /source/decmips/sys/fs/nfs/nfs_mapctl.h /usr/include/nfs
+	((echo In $package : make Makefile  >>& $outfile ) && \
+	((cd /build/$package;xmkmf . ) >>& $outfile ) && \
+	(echo In $package : make Makefiles>>& $outfile ) && \
+	((cd /build/$package;make Makefiles) >>& $outfile )  && \
+	(echo In $package : make clean >>& $outfile ) && \
+	((cd /build/$package;make clean) >>& $outfile ) && \
+	(echo In $package : make all >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ) && \
+	(echo In $package : make install >>& $outfile ) && \
+	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))  
+	if ($status == 1 ) then
+		echo "We bombed at $package"  >>& $outfile
+		exit -1
+	endif
+	breaksw
+		
 	case third/unsupported/perl
 	case third/unsupported/perl-4.036
 	(echo In $package >>& $outfile)
@@ -143,7 +172,7 @@ switch ($package)
 	(echo In $package >>& $outfile)
 	( cd /build/$package ; make clean >>& $outfile )
 	( cd /build/$package ; make >>& $outfile )
-	(cd /build/$package ; make install DESTDIR=/srvd >>& $outfile )
+	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
 	breaksw
 
 	case third/unsupported/top
@@ -163,7 +192,7 @@ switch ($package)
 	if ($machine != "rsaix" ) then
 	( cd /build/$package ; make clean >>& $outfile )
 	( cd /build/$package ; make >>& $outfile )
-        ( cd /build/$package ; make install DESTDIR=/srvd >>& $outfile )
+        ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
 	endif
         breaksw
 
@@ -386,3 +415,4 @@ switch ($package)
 endsw
 end
 echo ending `date` >>& $outfile
+cp -p $outfile /build/washlog.`date '+%y.%m.%d.%H'`"
