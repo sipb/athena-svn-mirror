@@ -1,0 +1,10 @@
+Name: athena-gnome-print
+Summary: GNOME printing libraries, for Athena
+Copyright: LGPL
+Group: System Environment/Base
+
+Requires: athena-gnome-libs athena-libxml
+
+%description
+The gnome-print package contains libraries and fonts that are needed
+by GNOME applications wanting to print.

@@ -1,0 +1,10 @@
+Name: athena-GConf
+Summary: The GNOME configuration database system, for Athena
+Copyright: LGPL
+Group: System Environment/Base
+
+Requires: athena-gnome-libs athena-libxml athena-gnome-print
+Requires: athena-gdk-pixbuf athena-oaf
+
+%description
+GConf is the GNOME Configuration database system.

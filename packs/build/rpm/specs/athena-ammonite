@@ -1,0 +1,13 @@
+Name: athena-ammonite
+Summary: The Ammonite HTTP proxy, for Athena
+Copyright: GPL
+Group: User Interface/Desktop
+
+Requires: athena-gnome-libs athena-libxml athena-GConf athena-oaf
+
+%description
+Ammonite is a non-caching client-side HTTP proxy with a set of special
+features required by Eazel to communicate with Eazel Services.
+Ammonite provides the user authentication and encryption features used
+by Eazel Services.  It is part of the GNOME project, and its source
+code can be found in the GNOME CVS repository.
