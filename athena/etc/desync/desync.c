@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.6 1999-10-19 20:23:21 danw Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.7 1999-10-21 04:28:47 ghudson Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -35,6 +35,7 @@ static const char rcsid[] = "$Id: desync.c,v 1.6 1999-10-19 20:23:21 danw Exp $"
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
+#include <time.h>
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long) -1)
