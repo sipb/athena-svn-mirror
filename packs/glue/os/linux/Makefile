@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1999-06-13 21:28:31 ghudson Exp $
+# $Id: Makefile,v 1.2 2000-03-13 18:16:45 tb Exp $
 
 SHELL=/bin/sh
 
@@ -7,6 +7,7 @@ all:
 check:
 
 install:
+	rm -f ${DESTDIR}/usr/athena/bin/xlock
 
 clean:
 
