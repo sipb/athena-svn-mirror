@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.9 1997-12-30 18:33:10 ghudson Exp $
+# $Id: syncconf.sh,v 1.10 1998-03-06 02:50:45 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -104,6 +104,10 @@ handle()
 		netmask=$1
 		gateway=$4
 
+		# Get the first component of the hostname for the hosts
+		# file.
+		first=`expr "$HOST" : '\([^.]*\)\.'`
+
 		put	/etc/nodename "$HOST"
 		put	"/etc/hostname.$NETDEV" "$HOST"
 		put	/etc/defaultrouter "$gateway"
@@ -111,7 +115,7 @@ handle()
 		append	/etc/inet/hosts "# Internet host table"
 		append	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
-		append	/etc/inet/hosts "$ADDR  $HOST.mit.edu $HOST"
+		append	/etc/inet/hosts "$ADDR  $HOST $first"
 		put	/etc/inet/netmasks "# Netmask for this host"
 		append	/etc/inet/netmasks "$ADDR	$netmask"
 

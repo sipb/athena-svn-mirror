@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2 1997-12-30 18:30:34 ghudson Exp $
+# $Id: syncconf.sh,v 1.3 1998-03-06 02:50:42 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -220,6 +220,10 @@ handle()
 		broadcast=$3
 		gateway=$4
 
+		# Get the first component of the hostname for the hosts
+		# file.
+		first=`expr "$HOST" : '\([^.]*\)\.'`
+
 		put    /etc/sys_id $HOST
 		put    $config/staticroute.options $gateway
 		put    $config/ifconfig-1.options "netmask $netmask"
@@ -228,7 +232,7 @@ handle()
 		append /etc/hosts "# Internet host table"
 		append /etc/hosts "#"
 		append /etc/hosts "127.0.0.1  localhost"
-		append /etc/hosts "$ADDR  $HOST.mit.edu $HOST"
+		append /etc/hosts "$ADDR  $HOST $first"
 		;;
 
 	*)
