@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-kerberos.sh,v 1.2 2003-02-26 18:44:48 zacheiss Exp $
+# $Id: user-kerberos.sh,v 1.3 2003-06-10 15:14:08 ghudson Exp $
 #
 # Manipulate Kerberos tickets as appropriate in response to network events.
 #
@@ -8,9 +8,10 @@
 . "$1" || exit 1
 
 case "$EVENT" in
-resume|net-up)
-  # If hostname changed, then krb524init.
-  if [ "x$OLDHOSTNAME" != "x$HOSTNAME" ]; then
+net-up)
+  # If this is the only interface and the IP Address changed
+  # then get new v4 tickets
+  if [ $NETDEVCOUNT -eq 1 -a "x$OLDIPADDR" != "x$IPADDR" ]; then
     echo "IP Address changed.  Getting new krb4 tickets."
     krb524init
   fi

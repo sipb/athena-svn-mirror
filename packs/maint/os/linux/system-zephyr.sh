@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-zephyr.sh,v 1.1 2002-12-09 22:56:11 ghudson Exp $
+# $Id: system-zephyr.sh,v 1.2 2003-06-10 15:14:07 ghudson Exp $
 #
 # Start zhm at the first net-up event.
 #
@@ -18,7 +18,14 @@ PATH=/etc/athena:/bin/athena:/user/athena/bin:$PATH
 # Ignore everything but net-up events.
 case "$EVENT" in
 net-up)
-  if [ -f /var/athena/zhm.pid ]; then
+  # Only HUP the host manager if:
+  #   1) this is the only device up, and
+  #   2) the address changed.
+  #
+  # i.e. the device is just coming up, or we got a different IP address.
+  #
+  if [ -f /var/athena/zhm.pid -a $NETDEVCOUNT -eq 1 -a \
+      "x$OLDIPADDR" != "x$IPADDR" ]; then
     kill -HUP `cat /var/athena/zhm.pid` 2> /dev/null && exit 0
   fi
 
