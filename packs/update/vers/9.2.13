@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cp -p /os/etc/vold.conf /etc
