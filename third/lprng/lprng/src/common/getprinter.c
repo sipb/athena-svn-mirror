@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getprinter.c,v 1.2 2001-03-07 01:19:22 ghudson Exp $";
+"$Id: getprinter.c,v 1.2.4.1 2002-11-13 19:53:12 ghudson Exp $";
 
 
 #include "lp.h"
@@ -42,18 +42,18 @@ char *Get_printer(void)
 	char *s = Printer_DYN;
 
 	DEBUG1("Get_printer: original printer '%s'", s );
-	if( s == 0 ) s = getenv( "PRINTER" );
-	if( s == 0 ) s = getenv( "LPDEST" );
-	if( s == 0 ) s = getenv( "NGPRINTER" );
+	if( s == 0 || *s == 0) s = getenv( "PRINTER" );
+	if( s == 0 || *s == 0) s = getenv( "LPDEST" );
+	if( s == 0 || *s == 0) s = getenv( "NGPRINTER" );
 
-	if( s == 0 ){
+	if( s == 0 || *s == 0){
 		Get_all_printcap_entries();
 		if( All_line_list.count ){
 			s = All_line_list.list[0];
 		}
 	}
-	if( s == 0 ) s = Default_printer_DYN;
-	if( s == 0 ){
+	if( s == 0 || *s == 0) s = Default_printer_DYN;
+	if( s == 0 || *s == 0){
 		fatal( LOG_ERR, "Get_printer: no printer name available" );
 	}
 	Set_DYN(&Printer_DYN,s);
