@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.7 1994-02-17 10:13:30 miki Exp $
+ *    $Id: machtype_sun4.c,v 1.8 1994-03-30 10:38:03 miki Exp $
  *    $Locker:  $
  */
 
@@ -118,12 +118,12 @@ kvm_t *kv;
       if (verbose) {
         printf(buf);
       } else {
-        p = index(buf,' '); /* skip "Athena" */
-        p = index(p+1,' '); /* skip "RVD" */
-        p = index(p+1,' '); /* Skip "RSAIX" */
-        p = index(p+1,' '); /* skip "version" */
+        p = strchr(buf,' '); /* skip "Athena" */
+        p = strchr(p+1,' '); /* skip "RVD" */
+        p = strchr(p+1,' '); /* Skip "RSAIX" */
+        p = strchr(p+1,' '); /* skip "version" */
         strncpy(rvd_version,p+1,256);
-        p = index(rvd_version,' ');
+        p = strchr(rvd_version,' ');
         *p = '\0';
         printf("%s\n",rvd_version);
       }
@@ -144,12 +144,12 @@ kvm_t *kv;
       if (verbose) {
         printf(buf);
       } else {
-        p = index(buf,' '); /* skip "Athena" */
-        p = index(p+1,' '); /* skip "Workstation/Server" */
-        p = index(p+1,' '); /* Skip "RSAIX" */
-        p = index(p+1,' '); /* skip "version" */
+        p = strchr(buf,' '); /* skip "Athena" */
+        p = strchr(p+1,' '); /* skip "Workstation/Server" */
+        p = strchr(p+1,' '); /* Skip "RSAIX" */
+        p = strchr(p+1,' '); /* skip "version" */
         strncpy(loc_version,p+1,256);
-        p = index(loc_version,' ');
+        p = strchr(loc_version,' ');
         *p = '\0';
         printf("%s\n",loc_version);
       }
