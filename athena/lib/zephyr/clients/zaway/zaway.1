@@ -1,4 +1,4 @@
-.\"	$Id: zaway.1,v 1.9 1999-07-21 12:34:18 ghudson Exp $
+.\"	$Id: zaway.1,v 1.9.2.1 2000-07-17 18:12:55 ghudson Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -77,11 +77,11 @@ not able to receive your message.
 .in -5
 .sp
 If a user name does not match any of those listed in the file, and no
-"*" or "%" field is specified, no return message is sent.
-All messages are preceded by the line "Automated reply:".
-To avoid loops, messages are not sent in response to messages beginning
-with "Automated reply:" or sent by the same Kerberos principal as the
-user running 
+"*" or "%" field is specified, no return message is sent.  All
+messages are preceded by a signature "Automated reply:".  To avoid
+loops, messages are not sent in response to messages beginning with an
+"Automated reply:" signature or sent by the same Kerberos principal as
+the user running
 .I zaway.
 
 .SH SAMPLE FILE
