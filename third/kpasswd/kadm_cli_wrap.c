@@ -56,7 +56,7 @@ clear_secrets()
  * data about the connection between the server and client, the services 
  * used, the locations and other fun things 
  */
-int INTERFACE
+int
 kadm_init_link(n, i, r)
 char n[];
 char i[];
@@ -112,7 +112,7 @@ char r[];
  * key. Returns no actual data from the master server, since this is called
  * by a user 
  */
-int INTERFACE
+int
 kadm_change_pw(newkey)
 des_cblock newkey;		       /* The DES form of the users key */
 {
@@ -133,7 +133,7 @@ des_cblock newkey;		       /* The DES form of the users key */
  * key. Returns no actual data from the master server, since this is called
  * by a user 
  */
-int INTERFACE
+int
 kadm_change_pw2(newkey, pwstring, retstring)
 des_cblock newkey;		       /* The DES form of the users key */
 char	*pwstring;
