@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #include <sys/time.h>		/* System time definitions. */
@@ -34,9 +34,11 @@
 #include <olc/olc.h>
 #include <olcd.h>
 
+extern int errno;
+
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.15 1990-01-16 11:35:34 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.16 1990-01-17 05:40:22 vanharen Exp $";
 #endif
 
 #if __STDC__
@@ -303,7 +305,7 @@ init_log(knuckle, question) KNUCKLE *knuckle; char *question;
 #endif
 {
   FILE *logfile;		/* Ptr. to user's log file. */
-  char error[ERRSIZE];	        /* Error message. */
+  char error[ERROR_SIZE];	        /* Error message. */
   char current_time[32];	/* Current time value. */
   char topic[TOPIC_SIZE];	/* Real topic. */
 	
@@ -372,7 +374,7 @@ terminate_log_answered(knuckle) KNUCKLE *knuckle;
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
-  char error[ERRSIZE];	        /* Error message. */
+  char error[ERROR_SIZE];	        /* Error message. */
   char time_buf[32];	        /* Current time. */
 	
   question = knuckle->question;
@@ -418,7 +420,7 @@ terminate_log_unanswered(knuckle) KNUCKLE *knuckle;
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
-  char error[ERRSIZE];	/* Error message. */
+  char error[ERROR_SIZE];	/* Error message. */
   char current_time[32];	/* Current time. */
   
   question = knuckle->question;
@@ -461,7 +463,7 @@ terminate_log_crash(knuckle) KNUCKLE *knuckle;
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
-  char error[ERRSIZE];	        /* Error message. */
+  char error[ERROR_SIZE];	        /* Error message. */
   char current_time[32];	/* Current time. */
   
   question = knuckle->question;
@@ -506,13 +508,13 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
 #endif
 {
   QUESTION *question;
-  char error[ERRSIZE];	        /* Error message. */
-  char notesfile[NAME_LENGTH];  /* Name of notesfile. */
-  char newfile[NAME_LENGTH];    /* New file name. */
-  char topic[NAME_LENGTH];
+  char error[ERROR_SIZE];	        /* Error message. */
+  char notesfile[NAME_SIZE];  /* Name of notesfile. */
+  char newfile[NAME_SIZE];    /* New file name. */
+  char topic[NAME_SIZE];
   int fd;			/* File descriptor of log. */
   int pid, pid2;		/* Process ID for fork. */
-  char msgbuf[BUFSIZ];
+  char msgbuf[BUF_SIZE];
   
 #ifdef TEST
   printf("dispose title: %s\n",knuckle->question->title);
