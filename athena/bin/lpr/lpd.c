@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.22 1997-10-13 21:50:43 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.23 1997-12-03 21:56:34 ghudson Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.22 1997-10-13 21:50:43 ghudson Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.23 1997-12-03 21:56:34 ghudson Exp $";
 #endif
 
 /*
@@ -672,7 +672,7 @@ chkhost(f)
 	hostf = fopen("/etc/hosts.equiv", "r");
 again:
 	if (hostf) {
-		if (!_validuser(hostf, ahost, DUMMY, DUMMY, baselen)) {
+		if (!validuser(hostf, ahost, DUMMY, DUMMY, baselen)) {
 			(void) fclose(hostf);
 			return;
 		}
@@ -717,19 +717,13 @@ perr(msg)
 	char *msg;
 {
 	extern char *name;
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-	extern int errno;
 
 	if (lflag)
 		syslog(LOG_INFO, "%s: %s: %m", name, msg);
-	printf("%s: %s: ", name, msg);
-	fputs(errno < sys_nerr ? sys_errlist[errno] : "Unknown error" , stdout);
-	putchar('\n');
+	printf("%s: %s: %s\n", name, msg, strerror(errno));
 }
 
-#if defined(_AUX_SOURCE) || defined(SOLARIS)
-_validuser(hostf, rhost, luser, ruser, baselen)
+validuser(hostf, rhost, luser, ruser, baselen)
 char *rhost, *luser, *ruser;
 FILE *hostf;
 int baselen;
@@ -754,7 +748,7 @@ int baselen;
 		} else
 			user = p;
 		*p = '\0';
-		if (_checkhost(rhost, ahost, baselen) &&
+		if (checkhost(rhost, ahost, baselen) &&
 		    !strcmp(ruser, *user ? user : luser)) {
 			return (0);
 		}
@@ -762,7 +756,7 @@ int baselen;
 	return (-1);
 }
 
-_checkhost(rhost, lhost, len)
+checkhost(rhost, lhost, len)
 char *rhost, *lhost;
 int len;
 {
@@ -798,4 +792,3 @@ int len;
 	return(!strcmp(domainp, rhost + len +1));
 
 }
-#endif
