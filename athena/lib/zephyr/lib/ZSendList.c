@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.7 1988-05-17 21:23:37 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.8 1988-06-15 20:47:42 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.7 1988-05-17 21:23:37 rfrench Exp $";
+static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.8 1988-06-15 20:47:42 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -25,6 +25,16 @@ Code_t ZSendList(notice, list, nitems, cert_routine)
     char *list[];
     int nitems;
     int (*cert_routine)();
+{
+    return(ZSrvSendList(notice, list, nitems, cert_routine, Z_XmitFragment));
+}
+
+Code_t ZSrvSendList(notice, list, nitems, cert_routine, send_routine)
+    ZNotice_t *notice;
+    char *list[];
+    int nitems;
+    int (*cert_routine)();
+    int (*send_routine)();
 {
     Code_t retval;
     ZNotice_t newnotice;
@@ -38,7 +48,7 @@ Code_t ZSendList(notice, list, nitems, cert_routine)
     if ((retval = ZParseNotice(buffer, len, &newnotice)) != ZERR_NONE)
 	return (retval);
     
-    retval = Z_SendFragmentedNotice(&newnotice, len);
+    retval = Z_SendFragmentedNotice(&newnotice, len, send_routine);
 
     free(buffer);
 
