@@ -1,0 +1,1032 @@
+2004-08-30  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/dectalk/dectalksynthesisdriver.c: Fix the build.
+
+	* configure.in: Updated version number.
+
+	* NEWS: Updated.
+
+2004-08-27  Bill Haneman <bill.haneman@sun.com>
+
+	* drivers/festival/festivalsynthesisdriver.c:
+	(festival_driverInit):
+	Don't initialize the driver if the festival executable can't be
+	found. 
+	(get_voice_list):
+	Return an empty voice list if the driver can't be initialized.
+	[bug #150518].
+
+	* test/test-speech.c:
+	Print an error message if the specified driver can't be initialized.
+	
+2004-07-28  Bill Haneman <bill.haneman@sun.com>
+
+	* drivers/freetts/.../FreeTTSSynthesisDriver.java:
+	(voiceMatchesSpec): Private, new.
+	(getVoices): Use voiceMatchesSpec method, to do inexact
+	locale matching (see bug #129186).  Also, fix return value
+	of getVoices (), which was previously causing a CORBA error.
+
+	* drivers/theta/thetasynthesisdriver.c:
+	(lang_matches_spec): New method for doing fuzzy
+	locale matching.
+	(prune_voice_list): Use lang_matches_spec (see bug #129186).
+
+	* drivers/theta/dectalksynthesisdriver.c:
+	(lang_matches_spec): New method for doing fuzzy
+	locale matching.
+	(prune_voice_list): Use lang_matches_spec (see bug #129186).
+	TODO: move to common code area instead of cut-n-paste.
+
+	* test/test-speech.c:
+	(do_test): Ask the user for a locale for which voices are to be
+	listed, or "all" to list all voices.  Also ask for a gender, 
+	'm' or 'f'.
+	
+2004-07-22  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Added en_us.jar and cmulex.jar, cmu_us_kal.jar to
+	FREETTS_CLASSPATH.  Fix for problem with FreeTTS 1.2 driver.
+
+	* test/test-speech.c: More error checking and diagnostics
+	when connecting to servers.
+	
+	* drivers/freetts/.../FreeTTSSpeaker.java:
+	(getParameterValue): Multiple FreeTTS-internal volume by 100, 
+	to normalize to gnome-speech's "0 to 100%" convention.
+	(setParameterValue): Divide user-specified volume percent by
+	100, to normalize to FreeTTS' idea of volume range.
+	
+	Fix for bug #148269.
+	
+2004-06-10  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* gnome-speech.spec.in: Disable dependency checking for the Theta
+	and DECtalk rpms.
+
+	* configure.in: Update version number.
+
+	* gnome-speech.spec.in: Remove typos -- will fix RPM
+	dependency issues later.
+
+	* NEWS: Updated.
+
+2004-06-09  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* gnome-speech.spec.in: Added to cvs.
+
+	* Makefile.am (EXTRA_DIST): Added gnome-speech spec file.
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Updated
+	to use FreeTTS 1.2.
+
+	* configure.in: Changed version to 0.3.3.
+	Generate gnome-speech spec file.
+	(FREETTS_JAR_DIR): Updated for FreeTTS 1.2.
+
+	* README: Updated the FreeTTS requirement to version 1.2.
+
+2004-06-01  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* Made .server files include the full paths to the synthesis
+	driver binaries.
+
+2004-05-20  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Fix FreeTTS driver build when JAVA_HOME is not
+	set.  Fixdd Cepstral Theta build to use theta-config.
+	
+2004-05-11  James Henstridge  <james@daa.com.au>
+
+	* configure.in: remove GNOME_PLATFORM_GNOME_2 macro, which is a
+	no-op and deprecated.
+
+2004-04-13  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* autogen.sh: Require version 1.7
+
+	* configure.in: Remove check for gtk-doc as it is not used.
+
+	* drivers/dectalk/Makefile.am: Merge LDADD and LDFLAGS.
+	Add CLEANFILES.
+
+	* drivers/eloquence/Makefile.am: Merge LADADD and LDFLAGS.
+	Add CLEANFILES.
+
+	* drivers/festival/Makefile.am: Merge LADADD and LDFLAGS.
+	Add CLEANFILES.
+
+	* drivers/freetts/java/Makefile.am: Correct use of CLEANFILES.
+
+	* drivers/freetts/native/Makefile.am: Use AM_LDFLAGS
+	instead of LDFLAGS. Correct use of CLEANFILES.
+
+	* drivers/theta/Makefile.am: Merge use of LDADD and
+	LDFLAGS. Add CLEANFILES.
+
+	* drivers/viavoice/Makefile.am: Merge use of LDADD and LDFLAGS.
+
+	* gnome-speech/Makefile.am: Remove use of LDFLAGS.
+
+	* test/Makefile.am: Merge LDADD and LDFLAGS.
+	
+	This fixes bug #137338.
+	
+2004-04-05  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Add drivers/freetts/java/org/Makefile,
+	drivers/freetts/java/org/GNOME/Makefile,
+	drivers/freetts/java/org/GNOME/Speech/Makefile
+
+	* drivers/freetts/Makefile.am: Specify SUBDIRS even if 
+	BUILD_FREETTS_DRIVER is not defined.
+
+	Remove Makefile in drivers/freetts/java/org, 
+	drivers/freetts/java/org/GNOME, drivers/freetss/java/org/GNOME?Speech
+	and added Makefile.am.
+
+2004-04-03  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	* drivers/freetts/java/Makefile.am:
+          stop breaking the build.  Makefile files should not be commited,
+          please commit the right Makefile.am files.
+
+2004-03-31  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Add drivers/freetts/java/org/Makefile,
+	drivers/freetts/java/org/GNOME/Makefile,
+	drivers/freetts/java/org/GNOME/Speech/Makefile
+
+	* drivers/freetts/Makefile.am: Specify SUBDIRS even if 
+	BUILD_FREETTS_DRIVER is not defined
+
+	* drivers/freetts/java/Makefile.am: Specify SUBDIRS as org.
+
+	This fixes bug #137337, missing freetts driver files in source tarball.
+
+2004-03-05  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* NEWS: Updated
+
+	* configure.in: Updated.
+
+	* drivers/festival/festivalsynthesisdriver.c
+	drivers/dectalk/dectalksynthesisdriver.c
+	drivers/theta/thetasynthesisdriver.c
+	drivers/freetts/java/org/GNOME/FreeTTSSynthesisDriver.java:
+	Drivers now check the language tag specified in the voice_spec
+	passed to the getVoices and createSpeaker functions.
+	
+2004-03-03  Marc Mulcahy  <marc@plbb.net>
+
+	* drivers/theta/thetasynthesisdriver.c: Fix compiler warnings.
+	
+2004-01-20  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+ 	* Update to version 0.3.1.
+
+	* NEWS: Updated.
+
+	*
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java:
+	Fix driver IID string.
+	
+	* configure.in: Fix finding jar when no JAVA_HOME is set.  Updated
+	to version 0.3.1.
+
+	* drivers/freetts/org: Removed (old FreeTTS driver code).
+	
+2003-12-23  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice__get_driverVersion): Update.  (main): Update.
+
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival__get_driverVersion): Update.  (main): Update.
+
+	* drivers/dectalk/dectalksynthesisdriver.c
+	(dectalk__get_driverVersion): Update.  (main): Update.
+
+	* drivers/theta/thetasynthesisdriver.c (theta__get_driverVersion):
+	Update.  (main): Update.
+
+2003-12-21  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (select_server): Update.
+
+	* drivers/dectalk/GNOME_Speech_SynthesisDriver_Dectalk.server.in:
+	Update.
+
+	* drivers/freetts/GNOME_Speech_SynthesisDriver_FreeTTS.server.in:
+	Update.
+
+	*
+	drivers/festival/GNOME_Speech_SynthesisDriver_Festival.server.in:
+	Update.
+
+	*
+	drivers/viavoice/GNOME_Speech_SynthesisDriver_Viavoice.server.in:
+	Update.
+
+2003-12-08  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* idl/GNOME_Speech_SynthesisDriver.idl: Changed language parameter
+	of VoiceInfo struct to a string.
+	
+	* drivers/theta/GNOME_Speech_SynthesisDriver_Theta.server.in:
+	Update IDL version.
+	
+	* drivers/theta/thetasynthesisdriver.c (get_voice_list): Support
+	new language string.
+	
+	*
+	drivers/festival/GNOME_Speech_SynthesisDriver_Festival.server.in:
+	Update IDL version.
+	
+	* drivers/festival/festivalsynthesisdriver.c (get_voice_list):
+	Support for new language string.
+	
+	* drivers/viavoice/viavoicesynthesisdriver.c (get_voice_list):
+	Support for new language string.
+	
+	*
+	drivers/viavoice/GNOME_Speech_SynthesisDriver_Viavoice.server.in:
+	Update IDL version.
+
+	* drivers/dectalk/dectalksynthesisdriver.c (get_voice_list):
+	Support for new language string.
+	
+	* drivers/dectalk/GNOME_Speech_SynthesisDriver_Dectalk.server.in:
+	Update IDL version.
+	
+2003-11-24  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Updated to versin 0.2.8.
+
+	* NEWS: Updated for 0.2.8.
+
+2003-10-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* drivers/viavoice/viavoicesysthesisdriver.c (index_queue_destroy):
+	Move declaration to top of function. Patch from Damien Carbery for
+	bug #121187.
+
+	* gnome-speech/speakers.c: Fix compiler warning.
+
+2003-09-29  Marc Mulcahy  <marc.mulcahy@sun.com>
+	
+	* drivers/freetts/freetts-synthesis-driver.in: Modified
+	freetts-synthesis-driver shell script to look for the Java binary
+	in either the location specified by the JAVA_HOME environment
+	variable, or in the user's current path.
+	
+2003-09-23  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Check for the java header file generator for the
+	JNI stuff in the FreeTTS Driver.  fix the conditional to not build
+	the Java package if the Java bridge is not installed.
+	
+	*
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java:
+	put the calls to the client's callback in a try catch block to
+	handle the case of a dead client.
+	
+	* drivers/freetts/native/Makefile.am (freettsdriver.h): Use the Java header generator found by configure.in.
+	
+
+2003-09-23  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (wait_test): Don't create a callback object
+	without a main loop.  Behavior is undefined, (apparently hanging).
+
+2003-08-25  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Increased version to 0.2.7
+
+	* NEWS: Updated
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Fixed
+	refcounting bug.
+	
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_synthesis_driver_say): Fix broken escaping of strings.
+	
+2003-08-25  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in java/Makefile.am drivers/freetts/java/Makefile.am:
+	Make Java-related checking more thorough.  Make building Java
+	support conditional on having the gnome-java-bridge.jar file
+	installed.  Make building the FreeTTS driver require also building
+	the Java support.  If with-java-home is specified, look for the
+	jar utility in that directory also.  Added diagnostic output to
+	configure script to print out what drivers will be built, and the
+	build settings which will be used for each built driver.
+	
+
+2003-08-19  Marc Mulcahy  <marc.mulcahy@sun.com>	
+
+	* configure.in (FREETTS_CLASSPATH): Applied Damien Carbery's
+	patch to fix build on Solaris X86.
+	
+2003-08-19  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Fix LT versioning.
+	
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice_driverInit): Turn off dictionary processing and put
+	engine in manual synthesis mode.
+	
+2003-08-13  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* Release version 0.2.6
+
+	* gnome-speech/Makefile.am (dist-hook): Don't include generated
+	sources in distribution.
+	
+	* add doc/Makefile.am to cvs.
+	
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_synthesis_driver_class_init): Fix compilation errors.
+	
+2003-08-12  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Reved to 0.2.5.
+
+	* NEWS: Updated
+
+	* idl/Makefile.am (idl_DATA): Fix build.
+	
+	* doc/Makefile.am (EXTRA_DIST) configure.in Makefile.am (SUBDIRS):
+	Add doc/gnome-speech.html to distribution.
+	
+2003-08-12 Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* doc/gnome-speech.html: Checked in an initial attempt at
+	documentation.
+	
+2003-08-11 Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* Release 0.2.4.
+
+	* NEWS: Updated for 0.2.4
+
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice_synthesis_driver_say): Return -1 from say if synthesis
+	fails.  The viavoice engine has a bug which causes it to fail and
+	then never recover.  This at least notifies the client when speech
+	fails with Viavoice.  No other solution for this.
+	
+
+	* test/test-speech.c (do_test): Unref the SynthesisDriver object
+	(all driver implementations now exit when the SynthesisDriver is
+	unrefed)
+
+	* drivers/dectalk/dectalksynthesisdriver.c
+	(dectalk_synthesis_driver_finalize): Wait for speech to finish
+	before destroying the TTS handle.
+	
+	* drivers/theta/thetasynthesisdriver.c
+	(theta_synthesis_driver_finalize): Shutdown the server when the
+	SynthesisDriver object is destroyed.
+	
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice_synthesis_driver_finalize): Shutdown the server when the
+	SynthesisDriver object is destroyed.
+	
+	* drivers/dectalk/dectalksynthesisdriver.c
+	(dectalk_synthesis_driver_finalize): Shutdown the server when the
+	SynthesisDriver object is destroyed.
+
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_synthesis_driver_finalize): Shutdown the server when
+	SynthesisDriver is finalized.
+	
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice_synthesis_driver_set_voice): Delete debug message.
+	
+2003-08-08  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/theta/thetasynthesisdriver.h
+	(theta_synthesis_driver_is_speaking): Fix comment.
+	
+	* drivers/theta/thetaspeaker.h (IS_THETA_SPEAKER): More cut 'n
+	paste fixes.
+	
+	* drivers/theta/thetasynthesisdriver.h: Remove references to
+	DECTalk headers-- that's what I get for cut 'n paste!
+	
+2003-07-31  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (callback_test): Ensure callback is unrefed
+	if the callback registration fails.
+	
+	* drivers/festival/GNOME_Speech_SynthesisDriver_Festival.server.in:
+	Fixed typo.
+
+2003-07-31  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	*
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java:
+	Fix typo.
+	
+2003-07-31  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (speech_interrupt_test): Don't leak the
+	callback object.
+	(main): Don't call bonobo_object_unref_release
+	on the SynthesisDriver object.
+
+2003-07-31  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* gnome-speech/Makefile.am (INCLUDES): Use WARN_CFLAGS.
+
+	* drivers/freetts/native/Makefile.am (INCLUDES): Use WARN_CFLAGS.
+	
+2003-07-31  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(index_queue_entry_destroy): Applied Damien Carbery's fix for
+	compilation errors.
+
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_synthesis_driver_class_init): Applied Damien Carbery's
+	fix for compilation errors.
+	
+2003-07-30  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/viavoicesynthesisdriver.c (main): Don't
+	initialize threads,-- this driver doesn't use them anymore.
+
+	* drivers/dectalk/dectalksynthesisdriver.c (main): Check to see if
+	threads have already been initialized before initializing them.
+		
+2003-07-30  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/theta/thetasynthesisdriver.c
+	(theta_synthesis_driver_say): I broke callbacks when trying to
+	make wait work.  Since we're not supporting it, I've reverted that
+	change to fix callbacks.
+	
+2003-07-30  Marc Mulcahy  <marc.mulcahy@sun.com
+
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	(viavoice_synthesis_driver_stop): Always return TRUE-- stop always
+	works.
+
+	* gnome-speech/speaker.c (speaker_class_init): Eliminate unused
+	variable.  (speaker_refresh_parameters): Return false if no
+	speaker passed in.  (find_parameter): Formatting.
+	(parameter_private_destroy): Formatting.  (speaker_finalize):
+	Addded to fix memory leak.  (speaker_class_init): Add
+	speaker_finalize.
+
+
+2003-07-30  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (main): Fix memory leak.
+	
+	* drivers/freetts/native/freettsdriver.c: Fixed compiler warning.
+	
+	* drivers/freetts/org/GNOME/Speech/FreeTTSSynthesisDriver.java: Fixed typo.
+	
+2003-07-29  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* README: Updated
+
+	* INSTALL.in: Updated
+
+	* drivers/theta: Added a driver for the Cepstral Theta TTS Engine.
+	
+	* test/test-speech.c: Added Speech Interrupt test and wait test.
+
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_synthesis_driver_say): Fixed festival bug where strings
+	containing certain characters were not spoken.
+	
+
+	* test/test-speech.c test/callback.c test/callback.h: Fixed up
+	test.
+	
+	* drivers/viavoice/viavoicespeaker.c
+	drivers/viavoice/viavoicespeaker.h
+	drivers/viavoice/viavoicesynthesisdriver.c
+	drivers/viavoice/viavoicesynthesisdriver.h: Rewrote Viavoice
+	Driver.
+	
+	* drivers/dectalk/dectalkspeaker.c
+	drivers/dectalk/dectalkspeaker.h
+	drivers/dectalk/dectalksynthesisdriver.c
+	drivers/dectalk/dectalksynthesisdriver.h: Rewrote DECTalk
+	Driver.
+	
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java:
+	Rewrote FreeTTS driver.
+
+	* configure.in: Fixed automake conditionals.
+	
+	* drivers/freetts/GNOME_Speech_SynthesisDriver_FreeTTS.server.in:
+	Added IDL:GNOME/Speech/SpeechCallback:0.2 to the repo_ids
+	attribute.
+	
+	* drivers/eloquence/GNOME_Speech_SynthesisDriver_Eloquence.server.in:
+	Added IDL:GNOME/Speech/SpeechCallback:0.2 to the repo_ids
+	attribute.
+
+	* drivers/viavoice/GNOME_Speech_SynthesisDriver_Viavoice.server.in:
+	Added IDL:GNOME/Speech/SpeechCallback:0.2 to the repo_ids
+	attribute.
+
+	* drivers/dectalk/GNOME_Speech_SynthesisDriver_Dectalk.server.in:
+  	Added IDL:GNOME/Speech/SpeechCallback:0.2 to the repo_ids
+	attribute.
+
+	* idl: Clean up IDL build system.
+
+	* gnome-speech/Makefile.am gnome-speech/gnome-speech.h
+	gnome-speech/speaker.c gnome-speech/speaker.h: Updated for new
+	IDL.
+	
+	* Added INSTALL.in, an improved INSTALL file.
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* gnome-speech/Makefile.am
+	(libgnomespeech_la_SOURCES): don't link the imodule
+	into the main library [ it's a separate library for
+	scripting bindings ]. Install the typelib in
+	libdir/orbit-2.0
+
+2003-06-08 Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* idl/GNOME_Speech.idl: Added to provide a file to includ all
+	GNOME Speech idl files.
+
+	* idl/GNOME_Speech_SynthesisDriver.idl: Added copyright info.
+	fixed build.
+	
+	* idl/GNOME_Speech_Speaker.idl: Add copyright info.  Fixed build.
+
+	* idl/GNOME_Speech_SpeechCallback.idl: Add copyright info.  Fixed
+	build.
+
+2003-05-19  Marc Mulcahy <marc.mulcahy@sun.com>
+	
+	* drivers/freetts drivers/viavoice drivers/dectalk drivers/eloquence:
+	Standardized pitch parameter name to pitch.	
+
+	* drivers/dectalk/dectalkspeaker.c (dectalk_callback): Fixed
+	callbacks.
+	
+2003-05-16  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in: Fixed package name.
+	
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Correctly
+	report FreeTTS speech range range as 0-999 not 0-1000.
+	
+2003-05-06    <bill.haneman@sun.com>
+
+	* configure.in: Release 0.2.1.
+	
+2003-04-08  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/Makefile.am drivers/freetts/Makefile.am
+	drivers/viavoice/Makefile.am: Autoconf fixups to not install the
+	.server files for drivers which aren't built.
+	
+2003-04-02  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: remove stray " on newline poisoning configure.
+
+	* gnome-speech/Makefile.am: prune bogus -g -werror flags,
+	get CLEANFILES set right for my more anal autotools.
+
+2003-03-27  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in drivers/eloquence/Makefile.am: Fixe Eloquence driver autoconf stuff.
+	
+2003-03-27  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (speaker_say_print): Print before speaking.
+
+2003-03-25  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in drivers/Makefile.am drivers/eloquence: Checked in Rich
+	Burridge's initial Eloquence driver implementation.
+
+	* configure.in drivers/Makefile.am drivers/dectalk: Added Rich
+	Burridge's DECTalk Software driver implementation.
+		
+2003-03-03  Colin Walters  <walters@gnu.org>
+
+	* test/Makefile.am (EXTRA_DIST): Add callback.h.
+
+	* idl/Makefile.am (idl_DATA): Add GNOME_Speech_SpeechCallback.idl,
+	GNOME_Speech_Speaker.idl.
+
+	* drivers/viavoice/Makefile.am (serverinfo_in_files): New
+	variable.  Use it for serverinfo_DATA and EXTRA_DIST.
+
+	* drivers/freetts/Makefile.am: Remove BUILD_FREETTS_DRIVER
+	conditional here.
+	
+	* drivers/freetts/native/Makefile.am (lib_LTLIBRARIES): Move
+	BUILD_FREETTS_DRIVER conditional to here from
+	drivers/freetts/Makefile.am.
+
+	* Makefile.am (EXTRA_DIST): Remove xml-i18n-extract.in,
+	xml-i18n-merge.in, xml-i18n-update.in.
+
+2003-02-12 Adi Dascal <ad@baum.ro>
+
+	* drivers/viavoice/viavoicespeaker.c:
+    	(viavoice_speaker_finalize): removed eciStop call because any synthesis
+	     which is underway when eciDelete function is called it is 
+	     immediately terminated, so there is no need of this call.
+
+	* drivers/viavoice/viavoicesynthesisdriver.c:
+    	(viavoice__get_synthesizerVersion) : get version from TTS, do not 
+	    hardcode it.
+    	(get_voice_list):
+	- removed a leak - delete the temporar handle 
+	    (eciDelete (tmp_handle) ).
+	- for eciGetVoiceName, nameBuffer (3rd param), should be 
+	    ECI_VOICE_NAME_LENGTH + 1 bytes long. Otherwise, a long voice 
+	    name may corrupt memory.
+	    
+	* test/callback.c:
+    	(callback_notify): added default case for switch.
+    	(callback_finalize): added.
+    	(callback_class_init): assign value to object_class->finalize.
+
+	* test/test-speech.c:
+    	(callback_test): unref the cb.
+    	(do_test): removed leak by CORBA_free-ing the "voices"
+
+2003-01-23  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* README: Minor formatting and content fix-ups.
+
+2003-01-23  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Remove reference to dectalk
+
+	* drivers/Makefile.am: Remove reference to dectalk
+
+	* gnome-speech/speaker.c (impl_setParameterValue): Fix typo
+
+	* test/callback.c: Add include of <bonobo/bonob-main.h> to remove
+	compiler warning.
+
+2003-01-22  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* gnome-speech/speaker.c: Return boolean as it should.  thanks to
+	Michael Meeks for catching this one.
+
+2002-12-19  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Added
+	start and end of speech callback notifications.  Also fixed
+	the implementation of the manipulation of speech parameters.
+
+	* drivers/freetts/native/freettsdriver.c: Removed debugging print
+	statements.
+	
+2002-12-17  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Fixes
+	to make the FreeTTS Driver a bit more robust-- still crashes after
+	several instances are created, but speaker creation time is reduced
+	and more than four can now apparently be created at once.	
+
+2002-12-16  Daniel Elstner  <daniel.elstner@gmx.net>
+
+	* configure.in (BUILD_JAVA_PACKAGE): In the AM_CONDITIONAL(),
+	test for 'no' instead of the empty string.
+	(BUILD_FREETTS_DRIVER_SOLARIS): Add missing 'test' to the
+	AM_CONDITIONAL() argument.
+
+2002-12-12  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/native/freettsdriver.c: Passs command-line arguments
+	to bonobo.
+	
+	* drivers/freetts/freetts-synthesis-driver.in: Pass on the arguments
+	we'll get from bonobo-activation to the VM.
+	
+2002-12-04  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c test/callback.c test/callback.h Makefile.am:
+	Added callback test.
+
+	* drivers/viavoice/viavoicesynthesisdriver.c: Removed unused static function.
+
+	* drivers/viavoice/viavoicespeaker.c: implemented Non-threaded working
+	callbacks.
+
+2002-11-26  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Include Makefiles for drivers/freetts/java and 
+	drivers/freetts/native in AC_OUTPUT.
+
+	* test/test-speech.c:
+	(do_test):
+	Don't segfault if the voices list is empty.
+
+	* drivers/viavoice/viavoicesynthesisdriver.c:
+	(voice_info_list_from_voice_list):
+	Set the length of the returned infolist to zero
+	when returning an empty list, instead of returning NULL.
+
+2002-11-21  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java:
+	Fixed casting error.
+	
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSpeaker.java: Fixed NULL return values.
+	
+	* test/test-speech.c (parameter_tests): Added exception check to
+	prevent against segv.
+	
+2002-11-20  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java
+	drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java: a
+	few more tweaks, but still not working.
+
+	* test/test-speech.c (do_test): Added another exception check.
+
+2002-11-14  Michael Meeks  <michael@ximian.com>
+
+	* test/test-speech.c (do_test): fix misc.
+	uninitalized problems / warnings.
+
+2002-11-13  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* test/test-speech.c (do_test): Added exception check when querying
+	for its list of voices.
+	
+	* drivers/festival/festivalsynthesisdriver.c (festival_createSpeaker):
+	Fixed memory leak.
+	
+	* drivers/viavoice/viavoicespeaker.c (viavoice_say): Removed broken
+	callback implementation.
+	(viavoice_speaker_finalize): Fixed memory leak.
+
+	* drivers/viavoice/viavoicesynthesisdriver.c (viavoice_createSpeaker):
+	Fix memory leaks.
+
+	* test/test-speech.c (do_test): Fix memory leaks.
+	
+
+2002-11-07  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/festival: Imported speaker files.
+
+2002-11-06  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/festival: Ported driver to new api.
+
+	* drivers/freetts: Started port to new api.
+
+2002-10-23  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	Removed old festival and viavoice driver code.
+
+2002-10-23  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	Initial merge of new api branch back onto head.
+
+2002-10-22  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* Updated to 0.2 API.
+
+2002-10-07  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/viavoice-tts-driver/Makefile.am: Fix warning
+
+2002-09-17  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* configure.in drivers/freetts/native/Makefile.am: Added support for 
+	building Linux and Solaris FreeTTS drivers.
+
+	* drivers/freetts/freetts-synthesis-driver.in: Made Solaris happy.
+	
+2002-09-17  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/native/Makefile.am (CLEANFILES): Added
+	freettsdriver.h to the CLEANFILES list so it is removed on
+	'make clean'.	
+
+	* drivers/freetts/native/Makefile.am (libfreettsdriver_la_SOURCES):
+	Re-ordered sources so freettsdriver.h is built first (duh).
+
+2002-09-17  Marc Mulcahy <marc.mulcahy@sun.com>
+	(libfreettsdriver_la_SOURCES): Re-ordered source files so freettsdriver.h is built first (duh).
+
+	* configure.in drivers/freetts: Fixed the mess I made with the
+	previous commit.
+
+2002-09-17  Marc Mulcahy <marc.mulchy@sun.com>
+
+	* test/test-speech.c: Added print statement to show initialization.
+
+	* configure.in drivers/Makefile.am driver/freetts: Checked in new Java
+	implementation of FreeTTS driver.
+
+2002-09-17  Marc Mulcahy <marc.mulcahy@suncom>
+
+	* drivers/FreeTTS: Removed old version of FreeTTS driver to make way
+	for the new Java implementation.
+
+2002-09-13  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/festival/festivalsynthesisdriver.c
+	(festival_driverInit): Remove unused variable
+	(festival_read): removed
+
+	* drivers/viavoice/viavoicesynthesisdriver.c (viavoice_set_pitch):
+	 Added return value
+	(viavoice_stop): Added return value.
+
+2002-09-13  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* gnome-speech/synthesisdriver.c gnome-speech/synthesisdriver.h
+	drivers/viavoice/viavoicesynthesisdriver.c
+	drivers/viavoice/viavoicesynthesisdriver.h
+	drivers/festival/festivalsynthesisdriver.c
+	drivers/festival/festivalsynthesisdriver.h test/test-speech.c: Addded
+	copyright and file description headers.
+
+2002-09-13  Michael Meeks  <michael@ximian.com>
+
+	* gnome-speech/synthesisdriver.c
+	(impl_getParameterValueDescription): don't use
+	uninitialized variable.
+
+	* test/test-speech.c (main): fix ev / select_server
+	(select_server): upd.
+	(driver_say_print): impl. helper.
+	(parameter_tests): use helper throught.
+	(do_test): don't double free, use helper.
+	include stdlib.h for atoi etc.
+	(parameter_tests): pass ev around more normally.
+	(main): free exceptions at end, do a debug
+	shutdown, so we can track ref leaks correctly.
+
+2002-09-12  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* configure.in drivers/Makefile.am drivers/festival: Added basic
+	festival driver.
+
+2002-09-12  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/viavoicesynthesisdriver.h: Fixed cut and paste
+	foolishness.
+
+2002-09-12  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* configure.in drivers/viavoice: Fixed .server file namespace.
+
+2002-09-12  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* test/test-speech.c: Applied Michael's cleanup patch.
+
+2002-09-12  Michael Meeks  <michael@ximian.com>
+
+       * gnome-speech/synthesisdriver.c
+       (impl_getParameterValueDescription): fix uninitialized
+       variable use, and NULL string return.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/viavoice/viavoicessynthesisdriver.c: Got rid of temp testing
+	code.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* Makefile.am: Added java to list of subdirs to build.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers: Added subdirectory for GNOME Speech drivers.
+
+	* drivers/viavoice: Added initial re-implementation of IBM Viavoice
+	TTS driver.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* configure.in java: Added java package.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* idl/GNOME_Speech_SynthesisDriver.idl: Made stop and say functions
+	return booleans so they are compatible with the previous version of
+	the idl.  I eventually want to change most functions to throw
+	exceptions rather than returning ambiguous return values.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* test/test-speech.c: Speech enabled the test program.  Added
+	interactive test for parameter support.
+
+2002-09-11  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* gnome-speech/*.*: Removing old files
+
+2002-08-14  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/FreeTTS: Added initial implementation of FreeTTS driver.
+
+2002-08-13  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* gnome-speech/synthesisdriver.c: Hooked up getSupportedParameters and
+	getParameterValueDescription.
+
+2002-08-13  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* idl/GNOME_Speech_SynthesisDriver.idl: Modified parameter functions
+	to take and return doubles as parameter values.
+
+2002-08-13  Marc Mulcahy <marc.mulcahy@suyn.com>
+
+	* gnome-speech/synthesisdriver.c gnome-speech/synthesisdriver.h:
+	Initial implementation of SynthesisDriver base class.
+
+	* idl/GNOME_Speech_SynthesisDriver.idl: Reworked parameter interface
+	definitions.
+
+	* test/test-speech.c: Beginnings of new interactive test suite.
+
+	* drivers: Deleted viavoice-tts-driver and festival-tts-driver
+	subdirectories.
+
+	* drivers/FreeTTS: Added initial implementation of FreeTTS driver.
+
+2002-07-26  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* idl/GNOME_Speech_SynthesisDriver.idl idl/Makefile.am: Renamed
+	SynthesisDriver.idl to GNOME_Speech_SynthesisDriver.idl to clean
+	up naming.
+	
+2002-07-26  Marc Mulcahy <marc.mulcahy@sun.com>
+
+	Branched to gnome_speech0-1 for API redesign.
+
+>>>>>>> 1.7.2.28
+2002-06-04 Bill Haneman <bill.haneman@sun.com>
+
+	reverted removal of namespace.
+	
+	* Makefile.am:
+	Add 'idl' directory to SUBDIRS.
+
+	* gnome-speech-1.0.pc.in:
+	Change idldir to @datadir@/idl/gnome-speech-1.0.
+
+	* gnome-speech/speech_synthesis_driver.h:
+	Changed references to 
+	* gnome-speech/speech_synthesis_driver.c:
+	(speech_synthesis_driver_class_init):
+	Changed reference to POA to reflect new namespace.
+
+	* test/test-speech.c:
+	(main):
+	Changed references to Speech_SynthesisDriver and its methods,
+	to reflect namespace.
+	
+	* idl/SynthesisDriver.idl:
+	Put this in the GNOME/Speech namespace.
+
+	* idl/Makefile.am:
+	Changed idldir to match gnome-speech-1.0.pc,
+	"$(datadir)/idl/gnome-speech-1.0"
+	
+	
+2001-12-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	Get .cvsignores working properly.
+
+2001-12-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* drivers/festival-tts-driver/festival-tts-driver.c
+	drivers/viavoice-tts-driver/viavoice-tts-driver.c: check return
+	value from bonobo_activation_active_server_register as per Michael's suggestion
+
+2001-12-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* .cvsignore: Shutup CVS
+
+	2001-12-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* test/festival_sleep_pid: removed extraneous output of festival speech server
+
+	2001-12-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	Initial import into CVS
+	

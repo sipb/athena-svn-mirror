@@ -1,0 +1,96 @@
+Summary: GNOME Desktop text-to-speech services
+Name: gnome-speech
+Version: 0.3.5
+Release: 1
+License: LGPL
+Group: Desktop/Accessibility
+URL: http://www.gnome.org/
+Source0: gnome-speech-%{version}.tar.gz
+BuildRoot: %{_tmppath}/gnome-speech-%{version}-%{release}-buildroot
+
+%description
+GNOME Speech
+
+%package devel
+Summary:	The files needed for developing a gnome-speedh driver
+Group:		Development/Libraries
+Requires:	%name = %{PACKAGE_VERSION}
+Requires:	libbonobo-devel
+
+%description devel
+The files needed for developing a gnome-speedh driver
+
+%package festival
+Summary:	The gnome-speech Festival driver
+Group:		Desktop/Accessibility
+Requires:	%name = %{PACKAGE_VERSION}
+Requires:	festival
+
+%description festival
+The gnome-speech Festival driver
+
+%package dectalk
+Summary:	The gnome-speech DECtalk driver
+Group:		Desktop/Accessibility
+Requires:	%name = %{PACKAGE_VERSION}
+AutoReqProv: off
+
+%description dectalk
+The gnome-speech DECtalk driver
+
+%package theta
+Summary:	The gnome-speech Theta driver
+Group:		Desktop/Accessibility
+Requires:	%name = %{PACKAGE_VERSION}
+AutoReqProv: off
+
+%description theta
+The gnome-speech Theta driver
+
+%prep
+%setup -q
+
+%build
+%configure
+make
+
+%install
+%makeinstall
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%doc
+%{_libdir}/lib*.so.*
+
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/lib*.so
+%{_includedir}/gnome-speech-1.0
+%{_libdir}/pkgconfig/*pc
+%{_datadir}/idl/gnome-speech-1.0
+%{_bindir}/test-speech
+
+%files festival
+%{_bindir}/festival-synthesis-driver
+%{_libdir}/bonobo/servers/GNOME_Speech_SynthesisDriver_Festival.server
+
+%files dectalk
+%{_bindir}/dectalk-synthesis-driver
+%{_libdir}/bonobo/servers/GNOME_Speech_SynthesisDriver_Dectalk.server
+
+%files theta
+%{_bindir}/theta-synthesis-driver
+%{_libdir}/bonobo/servers/GNOME_Speech_SynthesisDriver_Theta.server
+
+
+%changelog
+* Mon Jun  7 2004 Marc Mulcahy <marc.mulcahy@sun.com>:
+  Split each driver into its own package.
+  Re-added the ORBit typelibs for use with Orca.
+* Fri May  9 2003 Jonathan Blandford <jrb@redhat.com> speech-1
+- Initial build.
+
+
