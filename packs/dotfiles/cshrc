@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.8 2004-06-19 00:29:46 ghudson Exp $
+# $Id: cshrc,v 1.9 2004-09-11 16:52:11 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -32,10 +32,11 @@ switch ("$HOSTTYPE")
 case sun4:
   set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena \
 		    /usr/openwin/bin /usr/openwin/demo /usr/dt/bin /usr/bin \
-                    /usr/ccs/bin /usr/sbin /sbin /usr/ucb )
+                    /usr/ccs/bin /usr/sbin /sbin /usr/sfw/bin /usr/ucb )
   set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+  set athena_manpath=${athena_manpath}:/usr/sfw/man
   breaksw
-  case linux:
+case linux:
   set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena /usr/bin \
 		    /bin /usr/X11R6/bin /usr/sbin /sbin )
   set athena_manpath=/usr/athena/man:/usr/share/man:/usr/X11R6/man
