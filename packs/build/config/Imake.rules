@@ -260,4 +260,4 @@ Makefiles:: Makefile							@@\
 
 #define create_depend(files)						@@\
 depend::								@@\
-	makedepend ${CFLAGS} files
+	makedepend -- ${CFLAGS} -- files
