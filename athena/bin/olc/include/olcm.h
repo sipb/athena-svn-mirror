@@ -10,7 +10,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcm.h,v $
- *      $Id: olcm.h,v 1.2 1991-11-06 15:43:34 lwvanels Exp $
+ *      $Id: olcm.h,v 1.3 1992-01-07 19:02:14 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
@@ -20,6 +20,7 @@
 #define DFLT_SERVER	"fionavar.mit.edu"
 #define DFLT_USERNAME	"nobody"
 #define OLCR_PATH	"/usr/local/olcr"
+#define STOCK_FILE	"/usr/athena/lib/olc/olcm_default_reply"
 #define SYSLOG_FACILITY LOG_LOCAL6
 
 #ifdef KERBEROS
