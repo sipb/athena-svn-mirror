@@ -11,37 +11,123 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.21 1991-02-20 17:27:03 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.9 1989-05-04 14:21:39 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <sys/param.h>
-#ifdef SYSV
-#include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
 #include <strings.h>
-#endif /* SYSV */
-#include <errno.h>
-#include <com_err.h>
+#include <sys/stat.h>
+#include "directories.h"
 #include "pattern.h"
 #include "util.h"
-#include "directories.h"
 #include "undelete.h"
-#include "shell_regexp.h"
 #include "mit-copyright.h"
-#include "delete_errs.h"
-#include "errors.h"
-#include "stack.h"
 
-extern char *realloc();
-extern int errno;
-extern char *whoami;
+static char *add_char();
 
-void free_list();
+extern char *malloc(), *realloc();
+
+extern char *whoami, *error_buf;
+
+/*
+ * parse_pattern returns an area of memory allocated by malloc when it
+ * is successful.  Therefore, other procedures calling parse_pattern
+ * should use free() to free the region of memory when they are done
+ * with it.
+ */
+char *parse_pattern(file_pattern)
+char *file_pattern;
+{
+     char *re_pattern, *cur_ptr, *re_ptr;
+     int guess_length;
+     
+     guess_length = strlen(file_pattern) + 5;
+     re_ptr = re_pattern = malloc(guess_length);
+     if (! re_ptr) {
+	  perror(sprintf(error_buf, "%s: parse_pattern", whoami));
+	  exit(1);
+     }
+     
+     for (cur_ptr = file_pattern, re_ptr = re_pattern; *cur_ptr != NULL;
+	  cur_ptr++) {
+	  if (*cur_ptr == '\\') {
+	       if (! cur_ptr[1]) {
+		    fprintf(stderr,
+			    "%s: parse_pattern: incomplete expression\n",
+			    whoami);
+		    return((char *) NULL);
+	       }
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '\\'))
+		    return ((char *) NULL);
+	       cur_ptr++;
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, *cur_ptr))
+		    return ((char *) NULL);
+	       continue;
+	  }
+	  else if (*cur_ptr == '*') {
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
+		    return ((char *) NULL);
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '*'))
+		    return ((char *) NULL);
+	       continue;
+	  }
+	  else if (*cur_ptr == '?') {
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
+		    return ((char *) NULL);
+	       continue;
+	  }
+	  else if (*cur_ptr == '.') {
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '\\'))
+		    return ((char *) NULL);
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
+		    return ((char *) NULL);
+	  }
+	  else {
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, *cur_ptr))
+		    return ((char *) NULL);
+	  }
+     }
+     if (! add_char(&re_pattern, &re_ptr, &guess_length, '\0'))
+	  return ((char *) NULL);
+     return (re_pattern);
+}
+
+
+
+
+
+
+/*
+ * add_char() takes two char **, a length which is the current amount
+ * of space implemented for the string pointed to by the first *(char **),
+ * and a character to add to the string.  It reallocs extra space if
+ * necessary, adds the character, and messes with the pointers if necessary.
+ */
+static char *add_char(start, finish, length, chr)
+char **start, **finish;
+int *length;
+char chr;
+{
+     if (*finish - *start == *length) {
+	  *start = realloc(*start, *length + 5);
+	  if (! *start) {
+	       perror(sprintf(error_buf, "%s: add_char", whoami));
+	       exit(1);
+	  }
+	  *finish = *start + *length - 1;
+	  *length += 5;
+     }
+     **finish = chr;
+     (*finish)++;
+     return(*start);
+}
+
+	  
+
+
 
 
 /*
@@ -49,24 +135,22 @@ void free_list();
  * lengths, merges the two into the first by realloc'ing the first and
  * then free's the second's memory usage.
  */  
-int add_arrays(array1, num1, array2, num2)
+add_arrays(array1, num1, array2, num2)
 char ***array1, ***array2;
 int *num1, *num2;
 {
      int counter;
      
-     *array1 = (char **) realloc((char *) *array1, (unsigned)
-				 (sizeof(char *) * (*num1 + *num2)));
+     *array1 = (char **) realloc(*array1, sizeof(char *) * (*num1 + *num2));
      if (! *array1) {
-	  set_error(errno);
-	  error("realloc");
-	  return error_code;
+	  perror(sprintf(error_buf, "%s: add_arrays", whoami));
+	  exit(1);
      }
      for (counter = *num1; counter < *num1 + *num2; counter++)
 	  *(*array1 + counter) = *(*array2 + counter - *num1);
-     free ((char *) *array2);
+     free (*array2);
      *num1 += *num2;
-     return 0;
+     return(0);
 }
 
 
@@ -74,918 +158,356 @@ int *num1, *num2;
 
 
 
-/*
- * Add a string to a list of strings.
- */
-int add_str(strs, num, str)
-char ***strs;
+
+char **add_str(strs, num, str)
+char **strs;
 int num;
 char *str;
 {
-     char **ary;
-
-     ary = *strs = (char **) realloc((char *) *strs, (unsigned)
-				     (sizeof(char *) * (num + 1)));
-     if (! *strs) {
-	  set_error(errno);
-	  error("realloc");
-	  return error_code;
+     strs = (char **) realloc(strs, sizeof(char *) * (num + 1));
+     if (! strs) {
+	  perror(sprintf(error_buf, "%s: add_str", whoami));
+	  exit(1);
      }
-     ary[num] = Malloc((unsigned) (strlen(str) + 1));
-     if (! ary[num]) {
-	  set_error(errno);
-	  error("Malloc");
-	  return error_code;
+     strs[num] = malloc(strlen(str) + 1);
+     if (! strs[num]) {
+	  perror(sprintf(error_buf, "%s: add_str", whoami));
+	  exit(1);
      }
-     (void) strcpy(ary[num], str);
-     return 0;
+     strcpy(strs[num], str);
+     return(strs);
 }
 
 
 
 
 
-/*
- * Find_matches will behave unpredictably if you try to use it to find
- * very strange combinations of file types, for example only searching
- * for undeleted files in the top-level directory, while searching
- * recursively for deleted files.  Basically, there are some conflicts
- * between options that I don't list here because I don't think I'll
- * ever need to use those combinations.
- */
-/*
- * Function: find_matches(char *name, int *num_found, char ***found,
- *   			  int options)
- *
- * Requires: name points to a NULL-terminated string, representing a
- *   filename pattern with regular filename characters, path
- *   separators and shell wildcard characters []*?; num_found points
- *   to a valid int memory storage location; found points to a valid
- *   char ** memory storage location.
- *
- * Effects: Returns a list of all the files in the file hierarchy that
- *   match the options specified in options and that match name.
- *   Options are:
- *
- *   FIND_UNDELETED search for and return undeleted files
- * 
- *   FIND_DELETED search for and return deleted files
- *
- *   FIND_CONTENTS means that if matches are directories (or links to
- *     directories), the contents of the directory should be matched
- *     in addition to the directory itself
- * 
- *   RECURS_FIND_DELETED to search all undeleted subdirectories
- *     recursively of matched directories looking for deleted files
- *
- *   RECURS_FIND_UNDELETED to search all undeleted subdirectories
- *     recursively of matched directories looking for undeleted files
- * 
- *   RECURS_DELETED to recursively return all contents of deleted
- *     directories in addition to the directories themselves
- *   
- *   FOLLW_LINKS to pursue symlinks to directories and continue down
- *     the referenced directories when searching recursively (if the
- *     initial string is an undeleted symlink it is always traversed;
- *     deleted symlinks are never traversed)
- *   
- *   FOLLW_MOUNTPOINTS to traverse mount points when searching
- *     recursively (if the initial string is a mountpoint it is always
- *     traversed)
- *
- *   FIND_DOTFILES forces the system to recognize dot files instead of
- *     discarding them when looking for files
- *
- *   If the first character of name is '/', the search is conducted
- *   absolutely from the root of the hierarchy; else, it is conducted
- *   relative to the current working directory.  The number of
- *   matching files is returned in *num_found, and a list of file
- *   names is returned in *found.  If there are no errors, the return
- *   value is 0; else the return value represents the error code of
- *   the error which occurred.  No matter how many file names are
- *   returned, the memory location addressed in *found is a valid
- *   pointer according to Malloc() and can be released using free()
- *   safely.  However, if an error value is returned, the caller
- *   should not attempt to use the values stored in *num_found or
- *   *found.
- *
- * Modifies: *num_found, *found.
- */
-int find_matches(name, num_found, found, options)
-char *name;
+
+
+char **find_deleted_matches(base, expression, num_found)
+char *base, *expression;
 int *num_found;
-char ***found;
-int options;
 {
-     char 	**matched_files, **return_files, **recurs_files;
-     int 	num_matched_files = 0, num_return_files = 0,
-                num_recurs_files = 0;
-     int	retval;
-     int	i;
-#ifdef DEBUG
-     int	j;
-#endif
-     int	match_options = 0;
-
-#ifdef DEBUG
-     fprintf(stderr, "Entering find_matches, name = %s, options = %d.\n",
-	     name, options);
-#endif
-     
-     match_options = options & (FIND_DELETED | FIND_UNDELETED);
-     if (options & (RECURS_FIND_DELETED | RECURS_FIND_UNDELETED |
-		    FIND_CONTENTS))
-	  match_options |= FIND_UNDELETED;
-     
-     if (! match_options) {
-	  set_error(PAT_NO_FILES_REQUESTED);
-	  error("find_matches");
-	  return error_code;
-     }
-     
-     retval = do_match(name, &num_matched_files, &matched_files,
-		       match_options & FIND_UNDELETED,
-		       match_options & FIND_DELETED);
-     if (retval) {
-	  error(name);
-	  return retval;
-     }
-     if (num_matched_files == 0) {
-	  *num_found = num_matched_files;
-	  *found = matched_files;
-#ifdef DEBUG
-	  fprintf(stderr, "No matches found, returning.\n");
-#endif
-	  return 0;
-     }
-
-#ifdef DEBUG
-     fprintf(stderr, "The following matches were found:\n");
-     for (i = 0; i < num_matched_files; i++)
-	  fprintf(stderr, "  %s\n", matched_files[i]);
-#endif
-     
-     if (options & RECURS) {
-	  return_files = (char **) Malloc(0);
-	  if (! return_files) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
-	  num_return_files = 0;
-
-	  for (i = 0; i < num_matched_files; i++) {
-
-	       retval = do_recurs(matched_files[i], &num_recurs_files,
-				  &recurs_files, options);
-	       if (retval) {
-		    error(matched_files[i]);
-		    return retval;
-	       }
-
-	       if (num_recurs_files) {
-		    retval = add_arrays(&return_files, &num_return_files,
-					&recurs_files, &num_recurs_files);
-		    if (retval) {
-			 error("add_arrays");
-			 return retval;
-		    }
-#ifdef DEBUG
-		    fprintf(stderr,
-			    "Just added the following to return_files:\n");
-		    for (j = num_return_files - num_recurs_files;
-			 j < num_return_files; j++)
-			 fprintf(stderr, "  %s\n", return_files[j]);
-#endif
-	       }
-	       
-	       if (is_deleted(lastpart(matched_files[i]))) {
-		    if (options & FIND_DELETED) {
-			 retval = add_str(&return_files, num_return_files,
-					  matched_files[i]);
-			 if (retval) {
-			      error("add_str");
-			      return retval;
-			 }
-			 num_return_files++;
-#ifdef DEBUG
-			 fprintf(stderr, "Just added %s to return_files.\n",
-				 return_files[num_return_files-1]);
-#endif
-		    }
-	       }
-	       else if (options & FIND_UNDELETED) {
-		    retval = add_str(&return_files, num_return_files,
-				     matched_files[i]);
-		    if (retval) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num_return_files++;
-#ifdef DEBUG
-		    fprintf(stderr, "Just added %s to return_files.\n",
-			    return_files[num_return_files-1]);
-#endif
-	       }
-	  }
-	  free_list(matched_files, num_matched_files);
-	  *num_found = num_return_files;
-	  *found = return_files;
-     }
-     else {
-	  *num_found = num_matched_files;
-	  *found = matched_files;
-     }
-
-     return 0;
-}
-
-
-
-
-	  
-	  
-		    
-	       
-#define string_push(str)\
-	  strsize = strlen(str);\
-	  retval = push(str, strsize);\
-	  if (! retval)\
-	       retval |= push(&strsize, sizeof(int));\
-	  if (retval) {\
-	       error("push");\
-	       (void) popall();\
-	       return retval;\
-	  }
-#define string_pop(str)\
-	  retval = pop(&strsize, sizeof(int));\
-	  if (! retval)\
-	       retval = pop(str, strsize);\
-	  if (! retval)\
-	       str[strsize] = '\0'
-	  
-	  
-
-
-
-
-/*
- * Function: do_match(char *name, int *num_found, char ***found,
- * 		      Boolean match_undeleted, Boolean match_deleted)
- *
- * Requires: name points to a NULL-terminated string, representing a
- *   filename pattern with regular filename characters, path
- *   separators and shell wildcard characters []*?; num_found points
- *   to a valid int memory storage location; found points to a valid
- *   char ** memory storage location.
- *
- * Effects: Returns a list of all the files in the file hierarchy that
- *   match name.  If match_undeleted is true, will return undeleted
- *   files that match; if match_deleted is true, will return
- *   deleted_files that match.  If the first character of name is '/',
- *   the search is conducted absolutely from the root of the
- *   hierarchy; else, it is conducted relative to the current working
- *   directory.  The number of matching files is returned in
- *   *num_found, and a list of file names is returned in *found.  If
- *   there are no errors, the return value is 0; else the return value
- *   represents the error code of the error which occurred.  No matter
- *   how many file names are returned, the memory location addressed
- *   in *found is a valid pointer according to Malloc() and can be
- *   released using free() safely.  However, if an error value is
- *   returned, the caller should not attempt to use the values stored
- *   in *num_found or *found.
- *
- * Modifies: *num_found, *found.
- *
- * Algorithm:
- *
- * start:
- *   base = "" or "/",
- *   name = name or name + 1
- *   initialze found and num_found
- *   dirp = Opendir(base)
- *   first = firstpart(name, rest) (assigns rest as side-effect)
- *   if (! *first) {
- *     add string to list if appropriate
- *     return
- * 
- * loop:
- *   dp = readdir(dirp)
- *   if (! dp) goto updir
- *   compare dp->d_name to first -- match?
- *     yes - goto downdir
- *     no - are we looking for deleted and is dp->d_name deleted?
- *       yes - compare undeleted dp->d_name to first -- match?
- *         yes - goto downdir
- *         no - goto loop
- *       no - goto loop
- *
- * downdir:
- *   save dirp, rest, first and base on stack
- *   first = firstpart(rest, rest)
- *   base = dp->d_name appended to base
- *   is first an empty string?
- *      yes - put back dirp, rest, first, base
- *            goto loop
- *   try to open dir base - opens?
- *      yes - goto loop
- *      no - is the error ENOTDIR?
- *	       yes - don't worry about it
- * 	       no - report the error
- * 	     restore dirp, rest, first, base from stack
- *           goto loop
- *
- * updir:
- *   close dirp
- *   restore base, rest, first from stack
- *   STACK_EMPTY?
- *     yes - return from procedure with results
- *   restore dirp from stack
- *   goto loop
- */
-int do_match(name, num_found, found, match_undeleted, match_deleted)
-char *name;
-int *num_found;
-char ***found;
-Boolean match_undeleted, match_deleted;
-{
-     char base[MAXPATHLEN];
      struct direct *dp;
      DIR *dirp;
+     char **found;
+     int num;
+     char **next;
+     int num_next;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
-     int retval;
-     int strsize;
-     struct stat statbuf;
-#ifdef PATTERN_DEBUG
-     int j;
-#endif
-     
+     char new[MAXPATHLEN];
+
 #ifdef DEBUG
-     printf("do_match: looking for %s\n", name);
+     printf("Looking for %s in %s\n", expression, base);
 #endif
+     found = (char **) malloc(0);
+     *num_found = num = 0;
 
-     /* start: */
-     
-     if (*name == '/') {
-	  *base = '/';
-	  *(base + 1) = '\0';
-	  name++;
-     }
-     else 
-	  *base = '\0';
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
 
-     *found = (char **) Malloc(0);
-     if (! *found) {
-	  set_error(errno);
-	  error("Malloc");
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: return 1.\n");
-#endif
-	  return error_code;
-     }
-     *num_found = 0;
-     
-     dirp = Opendir(base);
-     if (! dirp) {
-	  set_error(errno);
-	  error(base);
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: return 2.\n");
-#endif
-	  return error_code;
-     }
-     (void) strcpy(first, firstpart(name, rest));
-     if ((! *first) && (match_undeleted)) {
-	  retval = add_str(found, *num_found, base);
-	  if (retval) {
-	       error("add_str");
-	       (void) popall();
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "do_match: return 3.\n");
-#endif
-	       return retval;
-	  }
-	  (*num_found)++;
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: return 4.\n");
-#endif
-	  return 0;
-     }
-     
-     while (1) {
-	  dp = readdir(dirp);
-	  if (! dp) goto updir;
+     strcpy(first, reg_firstpart(expression, rest));
+     re_comp(first);
 
-	  retval = reg_cmp(first, dp->d_name);
-#ifdef PATTERN_DEBUG
-	fprintf(stderr, "do_match: comparing %s to %s returns %d.\n",
-		first, dp->d_name, retval);
-#endif
-	  if (retval < 0) {
-	       error("reg_cmp");
-	       goto updir;
-	  }
-
-	  if (retval == REGEXP_MATCH) goto downdir;
-
-	  if (is_deleted(dp->d_name) && match_deleted) {
-	       retval = reg_cmp(first, &dp->d_name[2]);
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr,
-		       "do_match: deleted compare of %s to %s returns %d.\n",
-		       first, &dp->d_name[2], retval);
-#endif
-	       if (retval < 0) {
-		    error("reg_cmp");
-		    goto updir;
-	       }
-
-	       if (retval == REGEXP_MATCH)
-		    goto downdir;
-	       else
-		    continue;
-	  }
-	  else
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name)) /* skip dot files */
 	       continue;
-
-     downdir:
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: downdir\n");
-#endif
-	  retval = push(&dirp, sizeof(DIR *));
-	  if (retval) {
-	       error("push");
-	       (void) popall();
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "do_match: return 5.\n");
-#endif
-	       return retval;
+	  if (re_exec(dp->d_name) && *rest) {
+	       strcpy(new, append(base, dp->d_name));
+	       next = find_deleted_matches(new, rest, &num_next);
+	       add_arrays(&found, &num, &next, &num_next);
 	  }
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: pushing %s, %s, %s\n", first, rest, base);
-#endif
-	  string_push(first);
-	  string_push(rest);
-	  string_push(base);
-	  (void) strcpy(base, append(base, dp->d_name));
-	  (void) strcpy(first, firstpart(rest, rest));
-	  if (! *first) {
-	       if (is_deleted(lastpart(base))) {
-		    if (match_deleted) {
-			 retval = add_str(found, *num_found, base);
-			 if (retval) {
-			      error("add_str");
-			      (void) popall();
-#ifdef PATTERN_DEBUG
-			      fprintf(stderr, "do_match: return 6.\n");
-#endif
-			      return retval;
-			 }
-			 (*num_found)++;
-		    }
+	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_deleted_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
 	       }
-	       else if (match_undeleted) {
-		    retval = add_str(found, *num_found, base);
-		    if (retval) {
-			 error("add_str");
-			 (void) popall();
-#ifdef PATTERN_DEBUG
-			 fprintf(stderr, "do_match: return 7.\n");
-#endif
-			 return retval;
-		    }
-		    (*num_found)++;
+	       else {
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
 	       }
-	       string_pop(base);
-	       string_pop(rest);
-	       string_pop(first);
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "do_match: popped %s, %s, %s\n", first,
-		       rest, base);
-#endif
-	       (void) pop(&dirp, sizeof(DIR *));
-	       continue;
 	  }
-
-	  if (! stat(base, &statbuf)) {
-	       if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
-		    dirp = Opendir(base);
-	  }
-	  else {
-	       dirp = NULL;
-	  }
-	  if (! dirp) {
-	       set_error(errno);
-	       error(base);
-	       string_pop(base);
-	       string_pop(rest);
-	       string_pop(first);
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "do_match: popped %s, %s, %s\n", first,
-		       rest, base);
-#endif
-	       (void) pop(&dirp, sizeof(DIR *));
-	       continue;
-	  }
-	  else 
-	       continue;
-
-     updir:
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: updir\n");
-#endif
-	  closedir(dirp);
-	  string_pop(base);
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: popped %s\n", base);
-#endif
-	  if (retval) {
-	       if (retval != STACK_EMPTY) {
-		    error("pop");
-		    (void) popall();
-#ifdef PATTERN_DEBUG
-		    fprintf(stderr, "do_match: return 8.\n");
-#endif
-		    return retval;
-	       }
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "Returning %d word%s from do_match:\n",
-		       *num_found,
-		       *num_found == 1 ? "" : "s");
-	       for (j = 0; j < *num_found; j++)
-		    fprintf(stderr, "\t%s\n", (*found)[j]);
-	       fprintf(stderr, "do_match: return 9.\n");
-#endif
-	       return 0;
-	  }
-	  string_pop(rest);
-	  string_pop(first);
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: popped %s, %s\n", rest, first);
-#endif
-	  retval = pop(&dirp, sizeof(DIR *));
-	  if (retval) {
-	       error("pop");
-	       (void) popall();
-#ifdef PATTERN_DEBUG
-	       fprintf(stderr, "do_match: return 10.\n");
-#endif
-	       return retval;
-	  }
-	  continue;
      }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
 }
 
 
 
 
 
-
-/*
- * Function: do_recurs(char *name, int *num_found, char ***found,
- * 		       int options)
- *
- * Requires: name points to a NULL-terminated string, representing a
- *   filename; points to a valid int memory storage location; found
- *   points to a valid char ** memory storage location.
- *
- * Effects: Returns a list of all the files in the file hierarchy that
- *   are underneath the specified file, governed by the options set in
- *   options.  Options are as described in the find_matches() description.
- *   RECURS_FIND_DELETED and RECURS_DELETED imply FIND_DELETED.
- *   RECURS_FIND_UNDELETED implies FIND_UNDELETED.
- *
- * Modifies: *num_found, *found.
- *
- * Algorithm:
- *
- * start:
- *   initialze found and num_found
- *   strcopy(base, name)
- *   check if we just opened a deleted symlink and return if we did
- *   dirp = Opendir(base)
- *   check RECURS options and set FIND options as appropriate
- * 
- * loop:
- *   dp = readdir(dirp)
- *   if (! dp) goto updir
- *   is dp deleted?
- *     yes - is FIND_DELETED set?
- *             yes - add to list
- *                   is RECURS_DELETED set?
- *        	       yes - goto downdir
- *                     no - goto loop
- * 	       no - goto loop
- *     no - is FIND_UNDELETED set?
- *            yes - is the file a dotfile?
- * 		      yes - is FIND_DOTFILES set?
- * 			      yes - add to list
- * 			    goto loop
- * 		      no - add to list
- *                  are RECURS_FIND_DELETED and FIND_DELETED set?
- * 		      yes - goto downdir
- *                  is RECURS_FIND_UNDELETED set?
- * 		      yes - goto downdir
- * 		      no - goto loop
- * 	      no - goto loop
- *             
- * downdir:
- *   save dirp, base on stack
- *   base = dp->d_name appended to base
- *   try to open base -- opens?
- *     yes - is FOLLW_LINKS set?
- *             yes - is it deleted?
- * 		     yes - is it a link?
- * 			   yes - close the directory
- * 				 restore base and dirp
- * 				 goto loop
- *             no - is it a link?
- *                     yes - close the directory
- * 			     restore base and dirp
- * 			     goto loop
- *           is FOLLW_MOUNTPOINTS set?
- *             no - is it a mountpoint?
- *       	       yes - close the directory
- *                           restore base and dirp
- *                           goto loop
- *     no - is the error ENOTDIR?
- * 	      yes - don't worry about it
- * 	      no - report the error
- * 	    restore base and dirp
- *          goto loop
- * 
- * updir:
- *   close dirp
- *   restore base from stack
- *   STACK_EMPTY?
- *     yes - return from procedure with results
- *   restore dirp from stack
- *   goto loop
- */
-int do_recurs(name, num_found, found, options)
-char *name;
+char **find_matches(base, expression, num_found)
+char *base, *expression;
 int *num_found;
-char ***found;
-int options;
 {
-     char base[MAXPATHLEN];
      struct direct *dp;
      DIR *dirp;
-     int retval;
-     int strsize;
-     struct stat statbuf;
-     int use_stat;
-
-#ifdef DEBUG
-     fprintf(stderr, "do_recurs: opening %s\n", name);
-#endif
-
-     /* start: */
+     char **found;
+     int num;
+     char **next;
+     int num_next;
+     char first[MAXNAMLEN], rest[MAXPATHLEN];
+     char new[MAXPATHLEN];
      
-     *found = (char **) Malloc(0);
-     if (! *found) {
-	  set_error(errno);
-	  error("Malloc");
-	  return error_code;
-     }
-     *num_found = 0;
-     strcpy(base, name);
+#ifdef DEBUG
+     printf("Looking for %s in %s\n", expression, base);
+#endif
+     found = (char **) malloc(0);
+     *num_found = num = 0;
 
-     if (lstat(base, &statbuf)) {
-	  set_error(errno);
-	  error(base);
-	  return error_code;
-     }
-	 
-     if (is_link(base, &statbuf)) {
-	  /* Never follow deleted symlinks */
-	  if (is_deleted(lastpart(base))) {
-	       return 0;
-	  }
-	  if (stat(base, &statbuf)) {
-	       if (errno == ENOENT) {
-		    extern int readlink();
-		    char pathbuf[MAXPATHLEN];
-		    int cc;
-		    
-		    /* What the link is pointing to does not exist; */
-		    /* this is a warning, not an error.		    */
-		    set_warning(errno);
-		    cc = readlink(base, pathbuf, MAXPATHLEN);
-		    if (cc > 0) {
-			 char error_buf[2*MAXPATHLEN+20];
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
 
-			 pathbuf[(cc == MAXPATHLEN) ? (cc - 1) : cc] = '\0';
-			 sprintf(error_buf, "%s (pointed to by %s)", pathbuf,
-				 base);
-			 error(error_buf);
-		    }
-		    else {
-			 error(base);
-		    }
+     strcpy(first, reg_firstpart(expression, rest));
 
-		    return 0;
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  re_comp(first);
+	  if (re_exec(dp->d_name)) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
 	       }
 	       else {
-		    set_error(errno);
-		    error(base);
-		    return error_code;
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
 	       }
 	  }
-     }
-
-     if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
-	  return 0;
-     
-     dirp = Opendir(base);
-     if (! dirp) {
-#ifdef DEBUG
-	  fprintf(stderr, "Couldn't open %s.\n", base);
-#endif
-	  set_error(errno);
-	  error(base);
-	  return error_code;
-     }
-
-     if (options & (RECURS_FIND_DELETED | RECURS_DELETED))
-	  options |= FIND_DELETED;
-     if (options & RECURS_FIND_UNDELETED)
-	  options |= FIND_UNDELETED;
-     
-     while (1) {
-	  dp = readdir(dirp);
-	  if (! dp) goto updir;
-
-	  if (is_deleted(dp->d_name)) {
-	       if (options & FIND_DELETED) {
-		    retval = add_str(found, *num_found,
-				     append(base, dp->d_name));
-		    if (retval) {
-			 error("add_str");
-			 (void) popall();
-			 return retval;
-		    }
-		    (*num_found)++;
-		    if (options & RECURS_DELETED)
-			 goto downdir;
-		    else
-			 continue;
-	       }
-	       else
-		    continue;
-	  }
-
-	  if (options & FIND_UNDELETED) {
-	       if (is_dotfile(dp->d_name)) {
-		    if (options & FIND_DOTFILES) {
-			 retval = add_str(found, *num_found,
-					  append(base, dp->d_name));
-			 if (retval) {
-			      error("add_str");
-			      (void) popall();
-			      return retval;
-			 }
-		    }
-		    continue;
+	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
 	       }
 	       else {
-		    retval = add_str(found, *num_found,
-				     append(base, dp->d_name));
-		    if (retval) {
-			 error("add_str");
-			 (void) popall();
-			 return retval;
-		    }
-		    (*num_found)++;
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
 	       }
 	  }
-
-	  if (! is_dotfile(dp->d_name)) {
-	       if (options & RECURS_FIND_DELETED)
-		    goto downdir;
-	       if (options & RECURS_FIND_UNDELETED)
-		    goto downdir;
-	  }
-	  
-	  continue;
-	  
-	       
-     downdir:
-	  retval = push(&dirp, sizeof(DIR *));
-	  if (retval) {
-	       error("push");
-	       (void) popall();
-	       return retval;
-	  }
-	  string_push(base);
-	  (void) strcpy(base, append(base, dp->d_name));
-
-	  /*
-	   * Originally, I did an Opendir() right at the start and
-	   * then only checked things if the Opendir resulted in an
-	   * error.  However, this is inefficient, because the
-	   * Opendir() procedure works by first calling open() on the
-	   * file, and *then* calling fstat on the file descriptor
-	   * that is returned.  since most of the time we will be
-	   * trying to open things that are not directory, it is much
-	   * more effecient to do the stat first here and to do the
-	   * Opendir only if the stat results are satisfactory.
-	   */
-	  use_stat = (options & FOLLW_LINKS) && (! is_deleted(lastpart(base)));
-	  if (use_stat)
-	       retval = stat(base, &statbuf);
-	  else
-	       retval = lstat(base, &statbuf);
-	  if (retval == -1) {
-	       set_error(errno);
-	       error(base);
-	       string_pop(base);
-	       (void) pop(&dirp, sizeof(DIR *));
-	       continue;
-	  }
-	  /* It's not a directory, so punt it and continue. */
-	  if ((statbuf.st_mode & S_IFMT) != S_IFDIR) {
-	       string_pop(base);
-	       (void) pop(&dirp, sizeof(DIR *));
-	       continue;
-	  }
-
-	  /* Actually try to open it. */
-	  dirp = Opendir(base);
-	  if (! dirp) {
-	       set_error(errno);
-	       error(base);
-	       string_pop(base);
-	       (void) pop(&dirp, sizeof(DIR *));
-	       continue;
-	  }
-	  
-	  if (! (options & FOLLW_MOUNTPOINTS)) {
-	       if (is_mountpoint(base, use_stat ? (struct stat *) NULL :
-				 &statbuf)) {
-		    closedir(dirp);
-		    set_warning(PAT_IS_MOUNT);
-		    error(base);
-		    string_pop(base);
-		    (void) pop(&dirp, sizeof(DIR *));
-		    continue;
-	       }
-#ifdef DEBUG
-	       else {
-		    fprintf(stderr,
-			    "do_recurs: %s isn't a mountpoint, following.\n",
-			    base);
-	       }
-#endif
-	  }
-#ifdef DEBUG
-	  printf("do_recurs: opening %s\n", base);
-#endif
-	  continue;
-	  
-     updir:
-	  closedir(dirp);
-	  string_pop(base);
-	  if (retval) {
-	       if (retval != STACK_EMPTY) {
-		    error("pop");
-		    (void) popall();
-		    return retval;
-	       }
-	       return 0;
-	  }
-	  retval = pop(&dirp, sizeof(DIR *));
-	  if (retval) {
-	       error("pop");
-	       (void) popall();
-	       return retval;
-	  }
-	  continue;
      }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
 }
 
 
-void free_list(list, num)
-char **list;
-int num;
+
+
+
+
+
+char **find_recurses(base, num_found)
+char *base;
+int *num_found;
 {
-     int i;
+     DIR *dirp;
+     struct direct *dp;
+     char newname[MAXPATHLEN];
+     char **found, **new_found;
+     int found_num, new_found_num;
+     struct stat stat_buf;
+     
+#ifdef DEBUG
+     printf("Looking for subs of %s\n", base);
+#endif
+     found = (char **) malloc(0);
+     *num_found = found_num = 0;
+     
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
 
-     for (i = 0; i < num; i++)
-	  free(list[i]);
-
-     free((char *) list);
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  strcpy(newname, append(base, dp->d_name));
+	  found = add_str(found, found_num, newname);
+	  found_num++;
+	  if (lstat(newname, &stat_buf))
+	       continue;
+	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
+	       new_found = find_recurses(newname, &new_found_num);
+	       add_arrays(&found, &found_num, &new_found, &new_found_num);
+	  }
+     }
+     closedir(dirp);
+     *num_found = found_num;
+     return(found);
 }
 
 
 
 
+
+
+char **find_deleted_recurses(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char newname[MAXPATHLEN];
+     char **found, **new_found;
+     int found_num, new_found_num;
+     struct stat stat_buf;
+     
+     found = (char **) malloc(0);
+     *num_found = found_num = 0;
+     
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+
+	  strcpy(newname, append(base, dp->d_name));
+	  
+	  if (is_deleted(dp->d_name)) {
+	       found = add_str(found, found_num, newname);
+	       found_num++;
+	  }
+	  if (lstat(newname, &stat_buf)) {
+	       continue;
+	  }
+	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
+	       new_found = find_deleted_recurses(newname, &new_found_num);
+	       add_arrays(&found, &found_num, &new_found, &new_found_num);
+	  }
+     }
+     closedir(dirp);
+     *num_found = found_num;
+     return(found);
+}
+
+
+
+
+
+
+char **find_contents(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+
+#ifdef DEBUG
+     printf("Looking for contents of %s\n", base);
+#endif
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  found = add_str(found, num, append(base, dp->d_name));
+	  num += 1;
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+
+
+     
+char **find_deleted_contents(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+
+#ifdef DEBUG
+     printf("Looking for deleted contents of %s\n", base);
+#endif
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  if (is_deleted(dp->d_name)) {
+	       found = add_str(found, num, append(base, dp->d_name));
+	       num += 1;
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+
+
+
+
+char **find_deleted_contents_recurs(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+     struct stat stat_buf;
+     char newname[MAXPATHLEN];
+     char **new_found;
+     int new_found_num;
+     
+#ifdef DEBUG
+     printf("Looking for recursive deleted contents of %s\n", base);
+#endif
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  if (is_deleted(dp->d_name)) {
+	       strcpy(newname, append(base, dp->d_name));
+	       found = add_str(found, num, newname);
+	       num += 1;
+	       if (lstat(newname, &stat_buf))
+		    continue;
+	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
+		    new_found = find_recurses(newname, &new_found_num);
+		    add_arrays(&found, &num, &new_found, &new_found_num);
+	       }
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+     
 
 
 /*
- * returns true if the filename has no globbing wildcards in it.  That
- * means no non-quoted question marks, asterisks, or open square
- * braces.  Assumes a null-terminated string, and a valid globbing
+ * returns true if the filename has no regular expression wildcards in
+ * it.  That means no non-quoted dots or asterisks.  Assumes a
+ * null-terminated string, and a valid regular expression.
  */
 int no_wildcards(name)
 char *name;
@@ -995,11 +517,9 @@ char *name;
 	  case '\\':
 	       name++;
 	       break;
-	  case '?':
+	  case '.':
 	       return(0);
 	  case '*':
-	       return(0);
-	  case '[':
 	       return(0);
 	  }
      } while (*++name);
