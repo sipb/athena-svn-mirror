@@ -20,7 +20,14 @@
 
 /*
 	raw.c
+
+	This file contains code for reading and writing raw audio
+	data files.
 */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "afinternal.h"
 #include "audiofile.h"
@@ -82,12 +89,22 @@ status _af_raw_read_init (AFfilesetup filesetup, AFfilehandle filehandle)
 	}
 	else
 	{
-		off_t	filesize;
+		AFfileoffset	filesize;
 		filesize = af_flength(filehandle->fh);
 		if (filesize == -1)
 			track->totalfframes = -1;
 		else
+		{
+			/* Ensure that the data offset is valid. */
+			if (track->fpos_first_frame > filesize)
+			{
+				_af_error(AF_BAD_FILESETUP, "data offset is larger than file size");
+				return AF_FAIL;
+			}
+
+			filesize -= track->fpos_first_frame;
 			track->totalfframes = filesize / _af_format_frame_size(&track->f, AF_FALSE);
+		}
 		track->data_size = filesize;
 	}
 

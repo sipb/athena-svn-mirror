@@ -1,8 +1,6 @@
-News for the Audio File Library version 0.2.3
-Michael Pruett <mpruett@sgi.com>
+News for Audio File Library version 0.2.5
+Michael Pruett <michael@68k.org>
 
-Added support for IMA and MS ADPCM.
+Fix bugs related to processing 24-bit audio data.
 
-Added support for AF_QUERYTYPE_COMPRESSION.
-
-Cleaned up code in many places.
+Made AIFF/AIFF-C parsing more robust.

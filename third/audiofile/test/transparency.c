@@ -28,7 +28,12 @@
 	If this program fails, something in the Audio File Library is broken.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef __USE_SGI_HEADERS__
@@ -81,7 +86,7 @@ int main (int argc, char **argv)
 	if (outfile == AF_NULL_FILEHANDLE)
 	{
 		fprintf(stderr, "could not open file %s for writing\n", argv[1]);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 
 	result = afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 2);
@@ -89,14 +94,14 @@ int main (int argc, char **argv)
 	{
 		fprintf(stderr, "afWriteFrames did not return expected result\n");
 		fprintf(stderr, "got %ld, expected 2\n", result);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer + 4, 2);
 	if (result != 2)
 	{
 		fprintf(stderr, "afWriteFrames did not return expected result\n");
 		fprintf(stderr, "got %ld, expected 2\n", result);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 
 	afCloseFile(outfile);
@@ -105,7 +110,7 @@ int main (int argc, char **argv)
 	if (outfile == AF_NULL_FILEHANDLE)
 	{
 		fprintf(stderr, "could not open file %s for writing\n", argv[1]);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 
 	result = afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 4);
@@ -113,7 +118,7 @@ int main (int argc, char **argv)
 	{
 		fprintf(stderr, "afWriteFrames did not return expected result\n");
 		fprintf(stderr, "got %ld, expected 4\n", result);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 
 	afCloseFile(outfile);

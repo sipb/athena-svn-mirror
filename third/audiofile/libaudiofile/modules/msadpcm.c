@@ -24,6 +24,10 @@
 	This module implements Microsoft ADPCM compression.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <errno.h>
 #include <string.h>
 #include <assert.h>
@@ -41,7 +45,7 @@
 
 #define CHNK(X)
 
-_AFmodule ms_adpcm_decompress;
+static _AFmodule ms_adpcm_decompress;
 
 typedef struct ms_adpcm_state
 {
@@ -372,7 +376,7 @@ static void ms_adpcm_reset2 (_AFmoduleinst *i)
 	assert(d->track->nextfframe % framesPerBlock == 0);
 }
 
-_AFmodule ms_adpcm_decompress =
+static _AFmodule ms_adpcm_decompress =
 {
 	"ms_adpcm_decompress",
 	ms_adpcm_decompress_describe,

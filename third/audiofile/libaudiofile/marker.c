@@ -25,6 +25,10 @@
 	This file contains routines for dealing with loop markers.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -33,7 +37,7 @@
 #include "afinternal.h"
 #include "util.h"
 
-static _Marker *findMarkerByID (_Track *track, int markerid)
+_Marker *_af_marker_find_by_id (_Track *track, int markerid)
 {
 	int	i;
 
@@ -170,9 +174,9 @@ void afInitMarkComment(AFfilesetup setup, int trackid, int markid,
 
 	length = strlen(commstr);
 
-	if (track->markers[markno].name)
-		free(track->markers[markno].name);
-	if ((track->markers[markno].name = _af_malloc(length+1)) == NULL)
+	if (track->markers[markno].comment)
+		free(track->markers[markno].comment);
+	if ((track->markers[markno].comment = _af_malloc(length+1)) == NULL)
 		return;
 	strcpy(track->markers[markno].comment, commstr);
 }
@@ -191,7 +195,7 @@ char *afGetMarkName (AFfilehandle file, int trackid, int markid)
 	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
 		return NULL;
 
-	if ((marker = findMarkerByID(track, markid)) == NULL)
+	if ((marker = _af_marker_find_by_id(track, markid)) == NULL)
 		return NULL;
 
 	return marker->name;
@@ -211,7 +215,7 @@ char *afGetMarkComment (AFfilehandle file, int trackid, int markid)
 	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
 		return NULL;
 
-	if ((marker = findMarkerByID(track, markid)) == NULL)
+	if ((marker = _af_marker_find_by_id(track, markid)) == NULL)
 		return NULL;
 
 	return marker->comment;
@@ -235,7 +239,7 @@ void afSetMarkPosition (AFfilehandle file, int trackid, int markid,
 	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
 		return;
 
-	if ((marker = findMarkerByID(track, markid)) == NULL)
+	if ((marker = _af_marker_find_by_id(track, markid)) == NULL)
 		return;
 
 	if (pos < 0)
@@ -286,7 +290,7 @@ AFframecount afGetMarkPosition (AFfilehandle file, int trackid, int markid)
 	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
 		return 0L;
 
-	if ((marker = findMarkerByID(track, markid)) == NULL)
+	if ((marker = _af_marker_find_by_id(track, markid)) == NULL)
 		return 0L;
 
 	return marker->position;

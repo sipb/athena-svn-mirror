@@ -26,6 +26,10 @@
 	sound files.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <assert.h>
 #include <sys/types.h>
 #include <stdlib.h>
@@ -237,7 +241,7 @@ static status WriteCOMM (const AFfilehandle file)
 	af_fwrite(&sb, 2, 1, file->fh);
 
 	/* sample rate, 10 bytes */
-	ConvertToIeeeExtended(track->f.sampleRate, eb);
+	_af_convert_to_ieee_extended(track->f.sampleRate, eb);
 	af_fwrite(eb, 10, 1, file->fh);
 
 	if (file->fileFormat == AF_FILE_AIFFC)
@@ -400,7 +404,7 @@ static status WriteINST (AFfilehandle file)
 
 static status WriteMARK (AFfilehandle file)
 {
-	off_t		chunkStartPosition, chunkEndPosition;
+	AFfileoffset	chunkStartPosition, chunkEndPosition;
 	u_int32_t	length = 0;
 	u_int16_t	numMarkers, sb;
 	int		i, *markids;

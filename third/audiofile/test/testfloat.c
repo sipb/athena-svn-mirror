@@ -26,8 +26,14 @@
 	the AIFF-C, WAVE, NeXT .snd, and IRCAM file formats.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+
 #include <audiofile.h>
 
 #define TEST_FILE "/tmp/test.float"
@@ -121,4 +127,6 @@ void testfloat (int fileFormat)
 	}
 
 	ensure(afCloseFile(file) == 0, "error closing file");
+
+	cleanup();
 }

@@ -50,8 +50,8 @@ static status _afOpenFile (int access, AFvirtualfile *vf, const char *filename,
 
 int _af_identify (AFvirtualfile *vf, int *implemented)
 {
-	off_t	curpos;
-	int	i;
+	AFfileoffset	curpos;
+	int		i;
 
 	curpos = af_ftell(vf);
 
@@ -265,6 +265,40 @@ AFfilehandle afOpenFile (const char *filename, const char *mode, AFfilesetup set
 	return filehandle;
 }
 
+AFfilehandle afOpenVirtualFile (AFvirtualfile *vfile, const char *mode,
+	AFfilesetup setup)
+{
+	AFfilehandle	filehandle;
+	int		access; 
+
+	if (vfile == NULL)
+	{
+		_af_error(AF_BAD_FILEHANDLE, "null virtual filehandle");
+		return AF_NULL_FILEHANDLE;
+	}
+
+	if (mode == NULL)
+	{
+		_af_error(AF_BAD_ACCMODE, "null access mode");
+		return AF_NULL_FILEHANDLE;
+	}
+
+	if (mode[0] == 'r')
+		access = _AF_READ_ACCESS;
+	else if (mode[0] == 'w')
+		access = _AF_WRITE_ACCESS;
+	else
+	{
+		_af_error(AF_BAD_ACCMODE, "unrecognized access mode '%s'", mode);
+		return AF_NULL_FILEHANDLE;
+	}
+
+	if (_afOpenFile(access, vfile, NULL, &filehandle, setup) != AF_SUCCEED)
+		af_fclose(vfile);
+
+	return filehandle;
+}
+
 static status _afOpenFile (int access, AFvirtualfile *vf, const char *filename,
 	AFfilehandle *file, AFfilesetup filesetup)
 {
@@ -403,11 +437,6 @@ static status _afOpenFile (int access, AFvirtualfile *vf, const char *filename,
 #else
 		track->v.byteOrder = AF_BYTEORDER_LITTLEENDIAN;
 #endif
-
-		if (track->f.sampleWidth > 16 &&
-			(track->f.sampleFormat == AF_SAMPFMT_TWOSCOMP ||
-			track->f.sampleFormat == AF_SAMPFMT_UNSIGNED))
-			track->v.sampleWidth = 32;
 
 		if (_AFinitmodules(filehandle, track) == AF_FAIL)
 		{

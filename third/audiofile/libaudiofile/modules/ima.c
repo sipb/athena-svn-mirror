@@ -19,11 +19,15 @@
 */
 
 /*
-	afima.c
+	ima.c
 
 	This module implements IMA ADPCM compression for the Audio File
 	Library.
 */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <errno.h>
 #include <string.h>
@@ -42,7 +46,7 @@
 
 #define CHNK(X)
 
-_AFmodule ima_adpcm_decompress;
+static _AFmodule ima_adpcm_decompress;
 
 typedef struct
 {
@@ -73,7 +77,7 @@ static int ima_adpcm_decode_block (ima_adpcm_data *ima, u_int8_t *encoded,
 
 	encoded += 4;
 
-	adpcm_decoder(encoded, decoded, ima->samplesPerBlock - 1, &state);
+	_af_adpcm_decoder(encoded, decoded, ima->samplesPerBlock - 1, &state);
 
 	return outputLength;
 }
@@ -253,7 +257,7 @@ static void ima_adpcm_reset2 (_AFmoduleinst *i)
 	assert(d->track->nextfframe % framesPerBlock == 0);
 }
 
-_AFmodule ima_adpcm_decompress =
+static _AFmodule ima_adpcm_decompress =
 {
 	"ima_adpcm_decompress",
 	ima_adpcm_decompress_describe,

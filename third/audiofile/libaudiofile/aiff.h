@@ -28,6 +28,14 @@
 #ifndef AIFF_H
 #define AIFF_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+
 #define _AF_AIFF_NUM_INSTPARAMS 9
 #define _AF_AIFF_NUM_COMPTYPES 2
 
@@ -84,13 +92,13 @@ int _af_aifc_get_version (AFfilehandle);
 
 typedef struct _AIFFInfo
 {
-	off_t	miscellaneousPosition;
-	off_t	FVER_offset;
-	off_t	COMM_offset;
-	off_t	MARK_offset;
-	off_t	INST_offset;
-	off_t	AESD_offset;
-	off_t	SSND_offset;
+	AFfileoffset	miscellaneousPosition;
+	AFfileoffset	FVER_offset;
+	AFfileoffset	COMM_offset;
+	AFfileoffset	MARK_offset;
+	AFfileoffset	INST_offset;
+	AFfileoffset	AESD_offset;
+	AFfileoffset	SSND_offset;
 } _AIFFInfo;
 
 #endif

@@ -4,11 +4,11 @@ AC_INIT(libaudiofile/aiff.c)
 PACKAGE=audiofile
 AUDIOFILE_MAJOR_VERSION=0
 AUDIOFILE_MINOR_VERSION=2
-AUDIOFILE_MICRO_VERSION=3
+AUDIOFILE_MICRO_VERSION=5
 AUDIOFILE_VERSION=${AUDIOFILE_MAJOR_VERSION}.${AUDIOFILE_MINOR_VERSION}.${AUDIOFILE_MICRO_VERSION}
 
 dnl set version info for libaudiofile.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
-AUDIOFILE_VERSION_INFO=2:3:2
+AUDIOFILE_VERSION_INFO=2:5:2
 
 AC_SUBST(AUDIOFILE_MAJOR_VERSION)
 AC_SUBST(AUDIOFILE_MINOR_VERSION)
@@ -20,12 +20,13 @@ VERSION=$AUDIOFILE_VERSION
 
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AM_CONFIG_HEADER(config.h)
-AM_PROG_LIBTOOL
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
 
 dnl Checks for libraries.
 dnl Check for the ldexp function in the math library.
@@ -37,11 +38,17 @@ AC_SUBST(AUDIO_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h unistd.h)
+AC_CHECK_HEADERS(fcntl.h unistd.h inttypes.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
+
+dnl Disable large file support by default.
+if test "x$enable_largefile" = "x"; then
+	enable_largefile=no
+fi
+AC_SYS_LARGEFILE
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 
@@ -83,8 +90,10 @@ AC_OUTPUT([
 	audiofile.pc
 	sfcommands/Makefile 
 	test/Makefile 
+	examples/Makefile 
 	libaudiofile/Makefile 
 	libaudiofile/modules/Makefile 
 	docs/Makefile 
+	win32/Makefile 
 	Makefile 
 	audiofile-config], [case "$CONFIG_FILES" in *audiofile-config*) chmod +x audiofile-config;; esac])

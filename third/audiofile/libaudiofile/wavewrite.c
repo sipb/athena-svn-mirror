@@ -35,6 +35,10 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+
 #include "audiofile.h"
 #include "afinternal.h"
 #include "byteorder.h"
@@ -47,6 +51,7 @@ status _af_wave_update (AFfilehandle file);
 static status WriteFormat (AFfilehandle file);
 static status WriteFrameCount (AFfilehandle file);
 static status WriteMiscellaneous (AFfilehandle file);
+static status WriteCues (AFfilehandle file);
 static status WriteData (AFfilehandle file);
 
 _WAVEInfo *waveinfo_new (void)
@@ -56,6 +61,7 @@ _WAVEInfo *waveinfo_new (void)
 	waveinfo->factOffset = 0;
 	waveinfo->miscellaneousStartOffset = 0;
 	waveinfo->totalMiscellaneousSize = 0;
+	waveinfo->markOffset = 0;
 	waveinfo->dataSizeOffset = 0;
 
 	return waveinfo;
@@ -253,6 +259,37 @@ status _af_wave_update (AFfilehandle file)
 		af_fwrite(&fileLength, 4, 1, file->fh);
 	}
 
+	/*
+		Write the actual data that was set after initializing
+		the miscellaneous IDs.	The size of the data will be
+		unchanged.
+	*/
+	WriteMiscellaneous(file);
+
+	/* Write the new positions; the size of the data will be unchanged. */
+	WriteCues(file);
+
+	return AF_SUCCEED;
+}
+
+/* Convert an Audio File Library miscellaneous type to a WAVE type. */
+static status misc_type_to_wave (int misctype, u_int32_t *miscid)
+{
+	if (misctype == AF_MISC_AUTH)
+		memcpy(miscid, "IART", 4);
+	else if (misctype == AF_MISC_NAME)
+		memcpy(miscid, "INAM", 4);
+	else if (misctype == AF_MISC_COPY)
+		memcpy(miscid, "ICOP", 4);
+	else if (misctype == AF_MISC_ICMT)
+		memcpy(miscid, "ICMT", 4);
+	else if (misctype == AF_MISC_ICRD)
+		memcpy(miscid, "ICRD", 4);
+	else if (misctype == AF_MISC_ISFT)
+		memcpy(miscid, "ISFT", 4);
+	else
+		return AF_FAIL;
+
 	return AF_SUCCEED;
 }
 
@@ -264,12 +301,21 @@ status WriteMiscellaneous (AFfilehandle filehandle)
 	{
 		int		i;
 		u_int32_t	miscellaneousBytes;
+		u_int32_t 	chunkSize;
 
-		/* Start at 4 to account for 'INFO' chunk id. */
-		miscellaneousBytes = 4;
+		/* Start at 12 to account for 'LIST', size, and 'INFO'. */
+		miscellaneousBytes = 12;
 
+		/* Then calculate the size of the whole INFO chunk. */
 		for (i=0; i<filehandle->miscellaneousCount; i++)
 		{
+			u_int32_t	miscid;
+
+			/* Skip miscellaneous data of an unsupported type. */
+			if (misc_type_to_wave(filehandle->miscellaneous[i].type,
+				&miscid) == AF_FAIL)
+				continue;
+
 			/* Account for miscellaneous type and size. */
 			miscellaneousBytes += 8;
 			miscellaneousBytes += filehandle->miscellaneous[i].size;
@@ -281,12 +327,202 @@ status WriteMiscellaneous (AFfilehandle filehandle)
 			assert(miscellaneousBytes % 2 == 0);
 		}
 
-		wave->miscellaneousStartOffset = af_ftell(filehandle->fh);
+		if (wave->miscellaneousStartOffset == 0)
+			wave->miscellaneousStartOffset = af_ftell(filehandle->fh);
+		else
+			af_fseek(filehandle->fh, wave->miscellaneousStartOffset, SEEK_SET);
+
 		wave->totalMiscellaneousSize = miscellaneousBytes;
 
-		/* Add 8 to account for length of 'LIST' chunk id and size. */
-		af_fseek(filehandle->fh, miscellaneousBytes + 8, SEEK_CUR);
+		/*
+			Write the data.  On the first call to this
+			function (from _af_wave_write_init), the
+			data won't be available, af_fseek is used to
+			reserve space until the data has been provided.
+			On subseuent calls to this function (from
+			_af_wave_update), the data will really be written.
+		*/
+
+		/* Write 'LIST'. */
+		af_fwrite("LIST", 4, 1, filehandle->fh);
+
+		/* Write the size of the following chunk. */
+		chunkSize = miscellaneousBytes-8;
+		chunkSize = HOST_TO_LENDIAN_INT32(chunkSize);
+		af_fwrite(&chunkSize, sizeof (u_int32_t), 1, filehandle->fh);
+
+		/* Write 'INFO'. */
+		af_fwrite("INFO", 4, 1, filehandle->fh);
+
+		/* Write each miscellaneous chunk. */
+		for (i=0; i<filehandle->miscellaneousCount; i++)
+		{
+			u_int32_t	miscsize = HOST_TO_LENDIAN_INT32(filehandle->miscellaneous[i].size);
+			u_int32_t 	miscid = 0;
+
+			/* Skip miscellaneous data of an unsupported type. */
+			if (misc_type_to_wave(filehandle->miscellaneous[i].type,
+				&miscid) == AF_FAIL)
+				continue;
+
+			af_fwrite(&miscid, 4, 1, filehandle->fh);
+			af_fwrite(&miscsize, 4, 1, filehandle->fh);
+			if (filehandle->miscellaneous[i].buffer != NULL)
+			{
+				u_int8_t	zero = 0;
+
+				af_fwrite(filehandle->miscellaneous[i].buffer, filehandle->miscellaneous[i].size, 1, filehandle->fh);
+
+				/* Pad if necessary. */
+				if ((filehandle->miscellaneous[i].size%2) != 0)
+					af_fwrite(&zero, 1, 1, filehandle->fh);
+			}
+			else
+			{
+				int	size;
+				size = filehandle->miscellaneous[i].size;
+
+				/* Pad if necessary. */
+				if ((size % 2) != 0)
+					size++;
+				af_fseek(filehandle->fh, size, SEEK_CUR);
+			}
+		}
 	}
+
+	return AF_SUCCEED;
+}
+
+static status WriteCues (AFfilehandle file)
+{
+	int		i, *markids, markCount;
+	u_int32_t	numCues, cueChunkSize, listChunkSize;
+	_Track		*track = &file->tracks[0];
+	_WAVEInfo	*wave;
+
+	assert(file);
+
+	markCount = afGetMarkIDs(file, AF_DEFAULT_TRACK, NULL);
+	if (markCount == 0)
+		return AF_SUCCEED;
+
+	wave = file->formatSpecific;
+
+	if (wave->markOffset == 0)
+		wave->markOffset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, wave->markOffset, SEEK_SET);
+
+	af_fwrite("cue ", 4, 1, file->fh);
+
+	/*
+		The cue chunk consists of 4 bytes for the number of cue points
+		followed by 24 bytes for each cue point record.
+	*/
+	cueChunkSize = 4 + markCount * 24;
+	cueChunkSize = HOST_TO_LENDIAN_INT32(cueChunkSize);
+	af_fwrite(&cueChunkSize, sizeof (u_int32_t), 1, file->fh);
+	numCues = HOST_TO_LENDIAN_INT32(markCount);
+	af_fwrite(&numCues, sizeof (u_int32_t), 1, file->fh);
+
+	markids = _af_calloc(markCount, sizeof (int));
+	assert(markids != NULL);
+	afGetMarkIDs(file, AF_DEFAULT_TRACK, markids);
+
+	/* Write each marker to the file. */
+	for (i=0; i < markCount; i++)
+	{
+		u_int32_t	identifier, position, chunkStart, blockStart;
+		u_int32_t	sampleOffset;
+		AFframecount	markposition;
+
+		identifier = HOST_TO_LENDIAN_INT32(markids[i]);
+		af_fwrite(&identifier, sizeof (u_int32_t), 1, file->fh);
+
+		position = HOST_TO_LENDIAN_INT32(i);
+		af_fwrite(&position, sizeof (u_int32_t), 1, file->fh);
+
+		/* For now the RIFF id is always the first data chunk. */
+		af_fwrite("data", 4, 1, file->fh);
+
+		/*
+			For an uncompressed WAVE file which contains
+			only one data chunk, chunkStart and blockStart
+			are zero.
+		*/
+		chunkStart = 0;
+		af_fwrite(&chunkStart, sizeof (u_int32_t), 1, file->fh);
+
+		blockStart = 0;
+		af_fwrite(&blockStart, sizeof (u_int32_t), 1, file->fh);
+
+		markposition = afGetMarkPosition(file, AF_DEFAULT_TRACK, markids[i]);
+
+		/* Sample offsets are stored in the WAVE file as frames. */
+		sampleOffset = HOST_TO_LENDIAN_INT32(markposition);
+		af_fwrite(&sampleOffset, sizeof (u_int32_t), 1, file->fh);
+	}
+
+	/*
+		Now write the cue names which is in a master list chunk
+		with a subchunk for each cue's name.
+	*/
+
+	listChunkSize = 4;
+	for (i=0; i<markCount; i++)
+	{
+		const char *name;
+
+		name = afGetMarkName(file, AF_DEFAULT_TRACK, markids[i]);
+
+		/*
+			Each label chunk consists of 4 bytes for the
+			"labl" chunk ID, 4 bytes for the chunk data
+			size, 4 bytes for the cue point ID, and then
+			the length of the label as a Pascal-style string.
+
+			In all, this is 12 bytes plus the length of the
+			string, its size byte, and a trailing pad byte
+			if the length of the chunk is otherwise odd.
+		*/
+		listChunkSize += 12 + (strlen(name) + 1) +
+			((strlen(name) + 1) % 2);
+	}
+
+	af_fwrite("LIST", 4, 1, file->fh);
+	listChunkSize = HOST_TO_LENDIAN_INT32(listChunkSize);
+	af_fwrite(&listChunkSize, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite("adtl", 4, 1, file->fh);
+
+	for (i=0; i<markCount; i++)
+	{
+		const char	*name;
+		u_int32_t	labelSize, cuePointID;
+
+		name = afGetMarkName(file, AF_DEFAULT_TRACK, markids[i]);
+
+		/* Make labelSize even if it is not already. */
+		labelSize = 4+(strlen(name)+1) + ((strlen(name) + 1) % 2);
+		labelSize = HOST_TO_LENDIAN_INT32(labelSize);
+		cuePointID = HOST_TO_LENDIAN_INT32(markids[i]);
+
+		af_fwrite("labl", 4, 1, file->fh);
+		af_fwrite(&labelSize, 4, 1, file->fh);
+		af_fwrite(&cuePointID, 4, 1, file->fh);
+		af_fwrite(name, strlen(name) + 1, 1, file->fh);
+		/*
+			If the name plus the size byte comprises an odd
+			length, add another byte to make the string an
+			even length.
+		*/
+		if (((strlen(name) + 1) % 2) != 0)
+		{
+			u_int8_t	c=0;
+			af_fwrite(&c, 1, 1, file->fh);
+		}
+	}
+
+	free(markids);
 
 	return AF_SUCCEED;
 }
@@ -306,6 +542,7 @@ status _af_wave_write_init (AFfilesetup setup, AFfilehandle filehandle)
 	af_fwrite("WAVE", 4, 1, filehandle->fh);
 
 	WriteMiscellaneous(filehandle);
+	WriteCues(filehandle);
 	WriteFormat(filehandle);
 	WriteFrameCount(filehandle);
 	WriteData(filehandle);
