@@ -114,13 +114,13 @@ veryclean: clean
 install: top top.1 install-top install-$(MANSTY)
 
 install-top:
-	$(INSTALL) -o $(OWNER) -m $(MODE) -g $(GROUP) top $(BINDIR)
+	$(INSTALL) -o $(OWNER) -m $(MODE) -g $(GROUP) top ${DESTDIR}$(BINDIR)
 
 install-man:
-	$(INSTALL) top.1 $(MANDIR)/top.$(MANEXT)
+	$(INSTALL) top.1 ${DESTDIR}$(MANDIR)/top.$(MANEXT)
 
 install-catman:
-	tbl top.1 | nroff -man > $(MANDIR)/top.$(MANEXT)
+	tbl top.1 | nroff -man > ${DESTDIR}$(MANDIR)/top.$(MANEXT)
 
 installmeta: top top.1
 	$(INSTALL) -o $(OWNER) -m 755 -g $(GROUP) metatop $(BINDIR)/top
