@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zctl.c,v 1.31 1999-08-13 00:19:38 danw Exp $
+ *	$Id: zctl.c,v 1.31.8.1 2003-11-04 19:32:47 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #ifndef lint
-static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.31 1999-08-13 00:19:38 danw Exp $";
+static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.31.8.1 2003-11-04 19:32:47 ghudson Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -137,7 +137,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.31 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.31.8.1 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
@@ -463,7 +463,8 @@ subscribe(argc,argv)
 		return;
 	} 
 
-	retval = (*argv[0] == 's') ? ZSubscribeTo(&sub2,1,(u_short)wgport) :
+	retval = (*argv[0] == 's') ?
+		ZSubscribeToSansDefaults(&sub2,1,(u_short)wgport) :
 		ZUnsubscribeTo(&sub2,1,(u_short)wgport);
 	
 	if (retval != ZERR_NONE)
@@ -548,7 +549,7 @@ int unsub;
 	}
 	fix_macros(subs,&sub2,1);
 	if (retval = (unsub ? ZUnsubscribeTo(&sub2,1,(u_short)wgport) :
-		       ZSubscribeTo(&sub2,1,(u_short)wgport)))
+		       ZSubscribeToSansDefaults(&sub2,1,(u_short)wgport)))
 		ss_perror(sci_idx,retval,
 			  unsub ? "while unsubscribing" :
 			  "while subscribing");
