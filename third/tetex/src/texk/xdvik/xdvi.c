@@ -118,7 +118,7 @@ static	char	copyright[] =
 #define MKTEXPK MAKEPK
 
 #if	defined(PS_GS) && !defined(GS_PATH)
-#define	GS_PATH	"gs"
+#define	GS_PATH	"/usr/athena/libexec/gs"
 #endif
 
 #if A4
