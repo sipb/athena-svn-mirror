@@ -102,26 +102,30 @@ imported into:
 	xdvi from dviware/xdvi			xdvi
 	fonts/cm/mf/*				lib/mf/typefaces/cm
 	fonts/latex/mf/* (ignore symlinks)	lib/mf/typefaces/latex
-	fonts/ams/amsfonts/sources/euler/*	lib/mf/typefaces/euler
-	fonts/ams/amsfonts/sources/symbols/*	lib/mf/typefaces/ams
-	fonts/ams/amsfonts/sources/extracm/*	lib/mf/typefaces/cm-ams
-	fonts/ams/amsfonts/sources/cyrillic/*	lib/mf/typefaces/cyrillic
+	fonts/amsfonts/sources/euler/*		lib/mf/typefaces/euler
+	fonts/amsfonts/sources/symbols/*	lib/mf/typefaces/ams
+	fonts/amsfonts/sources/extracm/*	lib/mf/typefaces/cm-ams
+	fonts/amsfonts/sources/cyrillic/*	lib/mf/typefaces/cyrillic
 	fonts/punk/*				lib/mf/typefaces/other
 	fonts/tengwar/*				lib/mf/typefaces/tolkien
 	fonts/cirth/*				lib/mf/typefaces/tolkien
 	fonts/oca/*				lib/mf/typefaces/ocr
 	fonts/ocr-a/*				lib/mf/typefaces/ocr
 	fonts/ocr-b/*				lib/mf/typefaces/ocr
-	fonts/amsfonts/sources/modes.mf		lib/mf/macros
+	fonts/amsfonts/sources/*.mf		lib/mf/macros
 	systems/knuth/lib/*.mf*	(must gunzip)	lib/mf/macros
 	systems/knuth/lib/*.tex (must gunzip)	lib/tex/macros
-	fonts/ams/amstex/ams* (include amssym)	lib/tex/macros
-	fonts/ams/amsltx11/inputs/*		lib/tex/macros/amslatex/inputs
-	fonts/ams/amsltx11/fontsel/*		lib/tex/macros/amslatex/fontsel
+	macros/amstex/ams* (include amssym)	lib/tex/macros
+(*)	fonts/ams/amsltx11/inputs/*		lib/tex/macros/amslatex/inputs
+(*)	fonts/ams/amsltx11/fontsel/*		lib/tex/macros/amslatex/fontsel
 	biblio/bibtex/distribs/styles/*		lib/tex/macros/bib
 	macros/latex209/distribs/latex/sty/*	lib/tex/macros/latex
 	macros/latex209/distribs/latex/doc/*	lib/tex/macros/latex
 	macros/latex209/distribs/latex/general/* lib/tex/macros/latex
+
+(*) These directories seem to have disappeared in a reorganization of
+    the CTAN archive, and their contents will need to be located again
+    if they are ever to be updated.
 
 This is pretty complicated (especially when you add in our own files,
 plus the stuff in lib/tex/macros/other which we don't bother
