@@ -15,7 +15,7 @@
 
 /* This file implements the main athdir library calls. */
 
-static char rcsid[] = "$Id: athdir.c,v 1.1 1998-03-17 03:43:26 cfields Exp $";
+static char rcsid[] = "$Id: athdir.c,v 1.2 1998-05-30 15:58:35 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -115,21 +115,23 @@ Editorial editorials[] = {
  *	%m = machine
  * %foo is inserted if the corresponding string is NULL.
  * If this happens, expand returns 1 (not a valid path).
+ * If expand runs out of memory, it returns -1 (and path is NULL).
  * Otherwise, expand returns 0.
  */
-static int expand(char *path, char *template, char *dir,
+static int expand(char **path, char *template, char *dir,
 	   char *type, char *sys, char *machine)
 {
-  char *src, *dst;
-  int somenull = 0;
+  char *src, *dst, *oldpath;
+  int somenull = 0, size;
 
   src = template;
-  dst = path;
+  size = strlen(template) + 1;
+  dst = oldpath = *path = malloc(size);
   *dst = '\0';
 
   while (*src != '\0')
     {
-      if (*src != '%' && *src != '\0')
+      if (*src != '%')
 	*dst++ = *src++;
       else
 	{
@@ -139,6 +141,11 @@ static int expand(char *path, char *template, char *dir,
 	  src++;						\
 	  if (string)						\
 	    {							\
+	      *path = realloc(*path, size += strlen(string));	\
+	      if (!*path)					\
+		return -1;					\
+	      dst = *path + (dst - oldpath);			\
+	      oldpath = *path;					\
 	      strcpy(dst, string);				\
 	      dst += strlen(string);				\
 	    }							\
@@ -222,7 +229,7 @@ char **athdir_get_paths(char *base_path, char *type,
 			char *sys, char **syscompat, char *machine,
 			char *aux, int flags)
 {
-  char path[MAXPATHLEN];
+  char *path;
   string_list *path_list = NULL, *compat_list = NULL;
   int t, j, complete, preferredFlavor, want_break;
   struct stat statbuf;
@@ -315,8 +322,11 @@ char **athdir_get_paths(char *base_path, char *type,
 	  for (current_compat = syscompat; *current_compat != NULL;
 	       current_compat++)
 	    {
-	      complete = !expand(path, conventions[j].name,
+	      complete = !expand(&path, conventions[j].name,
 				 base_path, type, *current_compat, hosttype);
+
+	      if (!path)
+		return NULL;
 
 	      /* If we're listing everything, or we only care about the
 	       * first match for creation purposes (both cases where we
@@ -326,7 +336,11 @@ char **athdir_get_paths(char *base_path, char *type,
 		  ((flags & ATHDIR_SUPPRESSSEARCH) && complete))
 		{
 		  if (athdir__add_string(&path_list, path, 0))
-		    return NULL;
+		    {
+		      free(path);
+		      return NULL;
+		    }
+		  free(path);
 		  
 		  /* In this case (first match for creation) we're done. */
 		  if (flags & ATHDIR_SUPPRESSSEARCH)
@@ -339,10 +353,16 @@ char **athdir_get_paths(char *base_path, char *type,
 		if (complete && !stat(path, &statbuf))
 		  {
 		    if (athdir__add_string(&path_list, path, 0))
-		      return NULL;
+		      {
+			free(path);
+			return NULL;
+		      }
+		    free(path);
 		    want_break = 1;
 		    break;
 		  }
+	      else
+		free(path);
 
 	      /* Don't loop over @sys values unless ATSYSflag. */
 	      if (!(conventions[j].flavor & ATSYSflag))
