@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_c[] = "$Id: hostm.c,v 1.39 1992-01-17 09:40:18 lwvanels Exp $";
+static char rcsid_hostm_c[] = "$Id: hostm.c,v 1.40 1992-08-14 12:09:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -260,7 +260,7 @@ hostm_flush(host, server)
 			} else
 				lhp = lhp->q_forw;
 
-	if ((clist = host->zh_clients)) {
+	if ((clist = host->zh_clients) != NULLZCLT) {
 	  for (clt = clist->q_forw; clt != clist; clt = clist->q_forw) {
 	    /* client_deregister frees this client & subscriptions
 	       & locations and remque()s the client */
@@ -476,8 +476,8 @@ host_not_losing(who)
 			if (zdebug)
 				syslog(LOG_DEBUG,"h_not_lose clt_dereg");
 #endif
-			client_deregister(lhp->lh_client, lhp->lh_host, 1);
 			server_kill_clt(lhp->lh_client);
+			client_deregister(lhp->lh_client, lhp->lh_host, 1);
 			xremque(lhp);
 			xfree(lhp);
 			/* now that the remque adjusted the linked list,
