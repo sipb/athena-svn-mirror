@@ -22,15 +22,10 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.2 1989-07-31 15:14:52 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.3 1989-07-31 16:00:07 vanharen Exp $";
 #endif
 
 #include "xolc.h"
-
-/*extern Widget
-  w_motd_scrl,
-  w_motd_dlg;
-*/
 
 ERRCODE
 x_get_motd(Request,type,file)

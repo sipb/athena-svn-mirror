@@ -13,35 +13,11 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.2 1989-07-31 15:01:26 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.3 1989-07-31 16:01:12 vanharen Exp $";
 #endif
 
 #include "xolc.h"
 
-/*extern Widget			/* Widget ID's */
-/*  w_newq_btn,
-  w_contq_btn,
-  w_stock_btn,
-  w_quit_btn,
-  w_help_btn,
-  w_contq_form,
-  w_connect_lbl,
-  w_topic_lbl,
-  w_replay_scrl,
-  w_send_btn,
-  w_done_btn,
-  w_cancel_btn,
-  w_savelog_btn,
-  w_motd_btn,
-  w_update_btn,
-  w_motd_dlg,
-  w_help_dlg,
-  w_error_dlg,
-  w_motd_form,
-  w_motd_scrl,
-  toplevel,
-  main_form;
-*/
   /**************************************************************/
   /*  Procedures						*/
   /**************************************************************/

@@ -25,7 +25,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.3 1989-07-31 15:52:09 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.4 1989-07-31 16:01:46 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -37,14 +37,6 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 static MrmHierarchy	Hierarchy;     /* MRM database hierarchy id */
 static MrmCode		class;
 
-/*extern Widget				/* Widget ID's */
-/*  w_newq_btn,
-  w_contq_btn,
-  w_stock_btn,
-  w_motd_form,
-  toplevel,
-  main_form;
-*/
 static Display *display;
 static Window root;
 static int screen;
