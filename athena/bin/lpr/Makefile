@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
-#	$Author: epeisach $
+#	$Author: probe $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.3 1989-10-20 09:26:07 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.4 1989-10-20 10:06:53 probe Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.

@@ -28,7 +28,7 @@ file-system-description must follow a particular syntax,
 which is described in subscriptionlist(5).
 For a prototype, see the usual default, /srvd/etc/athena/lib/slists/sys_rvd.
 The general default is <workdir>/slists/sys_rvd, where <workdir> is
-the "local working directory", as described under the -d option below.
+the "local working directory", as described under the -W option below.
 .PP
 When
 .B track
@@ -103,8 +103,29 @@ The most commonly-used options are:
 Specify the source ( librarian) root-directory or mount-point.
 The default value is /srvd.
 .TP
+.B \-I
+Ignore file-protections ( uid, gid, mode-bits) when tracking as a subscriber.
+However, if track creates a file on the subscriber,
+the copy will get the librarian's copy's protections.
+.TP
 .B \-T<todir>
 Specify the destination root directory, or mount-point. The default is /.
+.TP
+.B \-W<workdir>
+Change the local working directory (i.e. the directory on the local machine) to
+.I workdir.
+The default is /mnt/etc/athena/lib, where /mnt is the librarian mount-point.
+The working directory is the place where
+.B track
+will look for the
+.I subscriptionlist
+(default: slists/sys_rvd),
+and the
+.I statfile
+(default: stats/sys_rvd).
+In order to write a statfile (-w option),
+.B track
+must have permission to write in the local working directory.
 .TP
 .B \-c
 When updating,
@@ -114,22 +135,6 @@ The librarian's checksums are always recorded in the
 .I statfile.
 -c slows the update,
 but the checksums enable track to detect file-system corruption.
-.TP
-.B \-d<workdir>
-Change the local working directory (i.e. the directory on the local machine) to
-.I workdir.
-The default is /mnt/etc/athena/lib, where /mnt is the librarian mount-point.
-The working directory is the place where
-.B track
-will look for
-.I statfiles
-(e.g., stats/sys_rvd),
-and
-.I subscriptionlists
-(e.g., slists/sys_rvd).
-In order to write a statfile (-w option),
-.B track
-must have permission to write in its local working directory.
 .TP
 .B \-f
 Force the update.  Don't be gentle about what is destroyed.  Normally
@@ -145,7 +150,7 @@ This output goes to stderr, but not into the TRACKLOG.
 .B \-s -
 Use the named file as the statfile, or use stdio if "-s -" is used.
 The default is <workdir>/stats/sys_rvd, where <workdir> is the working-dir
-specified by the -d option.
+specified by the -W option.
 .TP
 .B \-v
 Produces a very verbose description of what is happening during the update:
@@ -164,7 +169,7 @@ This option turns on -c.
 .PP
 The less commonly-used options:
 .TP
-.B \-i
+.B \-d
 Include devices and special files in update. 
 .TP
 .B \-m[recipient]
