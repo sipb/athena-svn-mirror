@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.24 1991-03-28 16:36:47 lwvanels Exp $
+ *	$Id: olc.c,v 1.25 1991-03-28 16:45:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.24 1991-03-28 16:36:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.25 1991-03-28 16:45:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -161,6 +161,7 @@ main(argc, argv)
 {
   char *tty;		       
   char *prompt;
+  char buf[BUFSIZ];
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -202,11 +203,21 @@ main(argc, argv)
 	   * this is a kludge, but the other interface is already
 	   * there
 	   */
+#ifdef sun
+	  sprintf(buf,"OLCD_HOST=%s",argv[1]);
+	  putenv(buf);
+#else
 	  (void) setenv ("OLCD_HOST", argv[1], 1);
+#endif
 	  ++argv, --argc;
       }
       else if (!strcmp (argv[0], "-port")) {
+#ifdef sun
+	  sprintf(buf,"OLCD_PORT=%s",argv[1]);
+	  putenv(buf);
+#else
 	  (void) setenv ("OLCD_PORT", argv[1], 1);
+#endif
 	  ++argv, --argc;
       }
       else {
