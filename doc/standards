@@ -75,6 +75,9 @@ for multi-line comments.  As recommended in the Gnu coding standards,
 your comments should normally be complete, capitalized sentences
 ending with a period.
 
+Write prototypes for all of your functions.  Include argument names in
+your prototypes, to help the reader understand what they mean.
+
 Software engineering practices
 ------------------------------
 
