@@ -20,6 +20,13 @@ SUN*)
 	mkdir /var/sadm
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
 
+	# Fix gettime entry in root crontab.
+	cronentry='45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB > /dev/null'
+	mv /var/spool/cron/crontabs/root /tmp/crontab.old
+	sed -e '/gettime -s/d' /tmp/crontab.old > /var/spool/cron/crontabs/root
+	echo "$cronentry" >> /var/spool/cron/crontabs/root
+	chmod 444 /var/spool/cron/crontabs/root
+
 	# Overwrite ${AUXDEVS} with just D20appletalk.  One of the
 	# 7.7 updates also specified D10audio, which is no longer
 	# necessary.
