@@ -350,6 +350,7 @@ int main(argc, argv)
 		   error_message(status));
 	    exit(1);
     }
+    ktv4_init(bsd_context);
 #endif
     
     /* Analyse parameters. */
