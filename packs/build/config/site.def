@@ -17,7 +17,6 @@
 #define NOLINT
 #define LintFlags -DSYSV -DPOSIX -DPOSIX_FLOCK
 #define ProfCcFlags -p1
-#define CDebugFlags -O2
 #define CcFlags LintFlags
 #define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR)
 #define LdLibs  
