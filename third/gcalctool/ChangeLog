@@ -1,5 +1,5 @@
 
-/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/ChangeLog,v 1.1.1.1 2004-10-06 18:43:27 ghudson Exp $
+/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/ChangeLog,v 1.1.1.2 2005-03-10 19:15:56 ghudson Exp $
  *
  *  Copyright (c) 1987-2004 Sun Microsystems, Inc.
  *  All Rights Reserved.
@@ -7,6 +7,42 @@
 
 gcalctool change history.
 =========================
+
+2005-01-12 Rich Burridge <rich.burridge@sun.com>
+
+    * Fixed bug #163468 (http://bugzilla.gnome.org/show_bug.cgi?id=163468)
+      Pressing "(<Del>)" would cause gcalctool to crash.
+
+2004-11-04 Rich Burridge <rich.burridge@sun.com>
+
+    * Fixed bug #157277 (http://bugzilla.gnome.org/show_bug.cgi?id=157277)
+      Entering "(" followed by Clr using the mouse to click on the buttons,
+      caused a bogus character to be displayed and the display wasn't 
+      cleared.
+
+2004-10-12 Rich Burridge <rich.burridge@sun.com>
+
+    * Generated a new tarball distribution for GNOME 2.8.1.
+
+2004-09-28  Pawan Chitrakar  <pawan@nplinux.org>
+                                                                                
+        * configure.in: Added 'ne' Nepali to ALL_LINGUAS.
+	
+2004-09-28  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+      
+2004-09-20 Rich Burridge <rich.burridge@sun.com>
+
+    * Generated a tarball distribution for GNOME 2.8.1.
+
+2004-09-17  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #152742.
+	
+	* gcalctool/gtk.c (entries): Mark top-level menu entries for
+	translation.
+	(create_kframe): call g_a_g_set_translation_domain().
 
 2004-09-13 Rich Burridge <rich.burridge@sun.com>
 

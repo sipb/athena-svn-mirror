@@ -1,5 +1,5 @@
 
-/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/gcalctool/functions.c,v 1.1.1.1 2004-10-06 18:42:19 ghudson Exp $
+/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/gcalctool/functions.c,v 1.1.1.2 2005-03-10 19:15:32 ghudson Exp $
  *
  *  Copyright (c) 1987-2003 Sun Microsystems, Inc. All Rights Reserved.
  *           
@@ -709,7 +709,7 @@ do_paren()
             return;
         }
     }
-    paren_disp(v->current->func_char);
+    paren_disp(v->current->value[0]);
 }
 
 
