@@ -20,7 +20,7 @@ LIB=		${DESTDIR}/${MACHTYPE}lib
 #
 # See manual for 'cc' for more detail
 #
-CFLAGS=
+CFLAGS=-L../../lib/obj
 
 all:
 	@-for i in $(DIRS) ; do \
@@ -32,7 +32,7 @@ all:
 install:
 	@-for i in $(DIRS) ; do \
 		cd $$i ; \
-		make CFLAGS="$(CFLAGS)" BIN="$(BIN)" LIB="$(LIB)" MAN1="$(MAN1)" MAN3="$(MAN3)" MAN8="$(MAN8)" install ; \
+		make CFLAGS="$(CFLAGS)" BIN="$(BIN)" LIB="$(LIB)" MAN1="$(MAN1)" MAN3="$(MAN3)" MAN8="$(MAN8)" DESTDIR=$(DESTDIR) install ; \
 		cd .. ; \
 	done
 
