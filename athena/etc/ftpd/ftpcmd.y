@@ -28,6 +28,7 @@
 static char sccsid[] = "@(#)ftpcmd.y	5.13 (Berkeley) 11/30/88";
 #endif /* not lint */
 
+#define NULL 0
 #include <sys/types.h>
 #include <sys/socket.h>
 
@@ -41,6 +42,11 @@ static char sccsid[] = "@(#)ftpcmd.y	5.13 (Berkeley) 11/30/88";
 #include <pwd.h>
 #include <setjmp.h>
 #include <syslog.h>
+#ifdef ATHENA
+#include "athena_ftpd.h"
+
+char *athena_etext;
+#endif
 
 extern	struct sockaddr_in data_dest;
 extern	int logged_in;
@@ -82,7 +88,7 @@ char	*index();
 	MRSQ	MRCP	ALLO	REST	RNFR	RNTO
 	ABOR	DELE	CWD	LIST	NLST	SITE
 	STAT	HELP	NOOP	XMKD	XRMD	XPWD
-	XCUP	STOU
+	XCUP	STOU	ATCH
 
 	LEXERR
 
@@ -103,6 +109,18 @@ cmd:		USER SP username CRLF
 			extern struct passwd *sgetpwnam();
 
 			logged_in = 0;
+#ifdef ATHENA
+			if (athena)
+			  {
+			    athena_logout(pw);
+#ifdef _IBMR2
+			    seteuid_rios(0);
+#else
+			    seteuid(0);
+#endif /* _IBMR2 */
+			    pw = NULL;
+			  }
+#endif /* ATHENA */
 			if (strcmp((char *) $3, "ftp") == 0 ||
 			  strcmp((char *) $3, "anonymous") == 0) {
 			     if (checkuser("ftp") &&
@@ -117,17 +135,19 @@ cmd:		USER SP username CRLF
 			     } else {
 				  reply(530, "Anonymous ftp not allowed.");
 			     }
-			} else if (checkuser((char *) $3)) {
+			} else {
 				guest = 0;
 				pw = sgetpwnam((char *) $3);
-				if (pw == NULL) {
-					reply(530, "User %s unknown.", $3);
-				}
+				if (pw == NULL)
+				  reply(530, "User %s unknown.", $3);
 				else {
+				  if (checkuser((char *) $3))
 				    reply(331, "Password required for %s.", $3);
+				  else {
+				    reply(530, "User %s access denied.", $3);
+				    pw = NULL;
+				  }
 				}
-			} else {
-				reply(530, "User %s access denied.", $3);
 			}
 			free((char *) $3);
 		}
@@ -135,6 +155,27 @@ cmd:		USER SP username CRLF
 		= {
 			pass((char *) $3);
 			free((char *) $3);
+		}
+	|	ATCH check_login SP pathname CRLF
+		= {
+#ifdef ATHENA
+		  if (athena)
+		    {
+			if ($2 && $4 != NULL)
+			  {
+			    athena_etext = athena_attach(pw, (char *) $4,
+				 (athena_login == LOGIN_KERBEROS) ? 1 : 0);
+			    if (athena_etext == NULL)
+			      ack("ATCH");
+			    else
+			      reply(550, athena_etext);
+			  }
+			if ($4 != NULL)
+				free((char *) $4);
+		    }
+		  else
+		    reply(502, "ATCH command not enabled");
+#endif
 		}
 	|	PORT SP host_port CRLF
 		= {
@@ -558,6 +599,11 @@ struct tab cmdtab[] = {		/* In order defined in RFC 765 */
 	{ "CDUP", XCUP, ARGS, 1,	"(change to parent directory)" },
 	{ "XCUP", XCUP, ARGS, 1,	"(change to parent directory)" },
 	{ "STOU", STOU, STR1, 1,	"<sp> file-name" },
+#ifdef ATHENA
+	{ "ATCH", ATCH, STR1, 1,	"<sp> filesystem-name" },
+#else
+	{ "ATCH", ATCH, STR1, 0,	"(attach filsystem)" },
+#endif
 	{ NULL,   0,    0,    0,	0 }
 };
 
