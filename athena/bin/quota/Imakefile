@@ -1,5 +1,5 @@
 DEFINES=-DUW $(MACHDEFS) \
-	-I. -I../../bin.athena/attach -I/usr/local/include
+	-I. -I../../athena.bin/attach -I../../bin.athena/attach -I/usr/local/include
 INSTOPT=-o root -m 4755
 
 OBJS = quota.o attachtab.o afsquota.o $(MACHOBJS)
