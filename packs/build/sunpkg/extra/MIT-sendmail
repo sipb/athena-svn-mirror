@@ -7,7 +7,6 @@ usrlibdir=/usr/lib
 initd=/etc/init.d
 rc2=/etc/rc2.d
 rc0=/etc/rc0.d
-mquedir=/var/spool/mqueue
 
 mkdir -p $2$etcdir
 mkdir -p $2$maildir
@@ -16,7 +15,6 @@ mkdir -p $2$usrlibdir
 mkdir -p $2$initd
 mkdir -p $2$rc2
 mkdir -p $2$rc0
-mkdir -p $2$mquedir
 
 cp $1/packs/config/aliases $2$maildir
 chmod 644 $2$maildir/aliases

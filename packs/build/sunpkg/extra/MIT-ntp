@@ -9,9 +9,6 @@ mkdir -p $2$initd
 mkdir -p $2$rc2
 mkdir -p $2$rc0
 
-# It will need this to run.
-mkdir -p $2/var/athena
-
 cp $1/packs/config/ntp.conf $2$etcdir
 chmod 644 $2$etcdir/ntp.conf
 cp $1/packs/maint/os/$OS/athena-ntp.rc $2$initd/athena-ntp

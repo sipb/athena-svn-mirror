@@ -8,11 +8,9 @@ cp athena-version src/appl/athena-version
 
 etcdir=/etc
 athretcdir=/etc/athena
-sessdir=/var/athena/sessions
 
 mkdir -p $2$etcdir
 mkdir -p $2$athretcdir
-mkdir -p -m 700 $2$sessdir
 
 cp $1/packs/config/ftpusers $2$etcdir
 chmod 644 $2$etcdir/ftpusers
