@@ -86,8 +86,7 @@ static int update_passwd(FILE *fp)
   return AL_SUCCESS;
 }
 
-/*
- * This is an internal function.  Its contract is to clean up after a
+/* This is an internal function.  Its contract is to clean up after a
  * failed attempt to write the new passwd file.
  */
 
@@ -147,7 +146,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
       return (errno == ENOMEM) ? AL_ENOMEM : AL_ENOUSER;
     }
 
-  /* uid must not conflict with one already in passwd file */
+  /* uid must not conflict with one already in passwd file. */
   tmppwd = al__getpwuid(pwd->pw_uid);
   if (tmppwd)
     {

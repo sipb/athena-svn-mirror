@@ -9,16 +9,14 @@
 #include "al.h"
 #include "al_private.h"
 
-/* 
- * These variables are to be treated as constants except by
+/* These variables are to be treated as constants except by
  * test programs.
  */
 
 char *al__session_dir = PATH_SESSIONS;
 
 
-/*
- * This is an internal function.  Its contract is to zero out the
+/* This is an internal function.  Its contract is to zero out the
  * informational fields in a record structure.
  */
 void zero_record(struct al_record *r)
@@ -28,8 +26,7 @@ void zero_record(struct al_record *r)
   r->groups = r->pids = 0;
 }
 
-/*
- * This is an internal function.  Its contract is to open the session
+/* This is an internal function.  Its contract is to open the session
  * record, lock it, and parse its contents into record.
  */
 int al__get_session_record(const char *username,
@@ -40,16 +37,16 @@ int al__get_session_record(const char *username,
   struct flock fl;
   sigset_t smask;
 
-  /* No POSIX limit on username size; allocate space for filename */
+  /* No POSIX limit on username size; allocate space for filename. */
   session_file = malloc(strlen(al__session_dir) + strlen(username) + 2);
   if (!session_file)
     return AL_ENOMEM;
   sprintf(session_file, "%s/%s", al__session_dir, username);
 
-  /* Zero the fields that correspond to state saved on disk */
+  /* Zero the fields that correspond to state saved on disk. */
   zero_record(record);
 
-  /* Open and lock the session record */
+  /* Open and lock the session record. */
   fd = open(session_file, O_CREAT|O_RDWR, 0600);
   if (fd == -1)
     return AL_ESESSION;
@@ -60,7 +57,7 @@ int al__get_session_record(const char *username,
   fcntl(fd, F_SETLKW, &fl);
   record->fp = fdopen(fd, "r+");
 
-  /* Get the first line (0 or 1; passwd created) */
+  /* Get the first line (0 or 1; passwd created). */
   switch (al__read_line(record->fp, &buf, &bufsize))
     {
     case -1:			/* error */
@@ -78,7 +75,7 @@ int al__get_session_record(const char *username,
       break;
     }
 
-  /* Get the second line (0 or 1; homedir attached) */
+  /* Get the second line (0 or 1; homedir attached). */
   switch (al__read_line(record->fp, &buf, &bufsize))
     {
     case -1:			/* error */
@@ -100,7 +97,7 @@ int al__get_session_record(const char *username,
       break;
     }
 
-  /* Get the third line (0 or 1old_homedir) */
+  /* Get the third line (0 or 1old_homedir). */
   switch (al__read_line(record->fp, &buf, &bufsize))
     {
     case -1:			/* error */
@@ -133,7 +130,7 @@ int al__get_session_record(const char *username,
       break;
     }
 
-  /* Get the fourth line (gid1:gid2:...gidn:) */
+  /* Get the fourth line (gid1:gid2:...gidn:). */
   switch (al__read_line(record->fp, &buf, &bufsize))
     {
     case -1:			/* error */
@@ -145,7 +142,7 @@ int al__get_session_record(const char *username,
       return AL_WBADSESSION;
 
     default:			/* got line */
-      /* make sure it's a list of numbers each followed by a colon */
+      /* Make sure it's a list of numbers each followed by a colon. */
       ptr1 = buf;
       record->ngroups = 0;
       while (*ptr1)
@@ -158,7 +155,7 @@ int al__get_session_record(const char *username,
 	  record->ngroups++;
 	  ptr1++;
 	}
-      /* Parse the numbers into an array of gid_t */
+      /* Parse the numbers into an array of gid_t. */
       record->groups = malloc(record->ngroups * sizeof(gid_t));
       if (!record->groups)
 	{
@@ -170,7 +167,7 @@ int al__get_session_record(const char *username,
 	record->groups[i++] = atoi(ptr1);
     }
 
-  /* Get the fifth line (pid1:pid2:...pidn:) */
+  /* Get the fifth line (pid1:pid2:...pidn:). */
   switch (al__read_line(record->fp, &buf, &bufsize))
     {
     case -1:			/* error */
@@ -182,7 +179,7 @@ int al__get_session_record(const char *username,
       return AL_WBADSESSION;
 
     default:			/* got line */
-      /* make sure it's a list of numbers each followed by a colon */
+      /* Make sure it's a list of numbers each followed by a colon. */
       ptr1 = buf;
       record->npids = 0;
       while (*ptr1)
@@ -195,7 +192,7 @@ int al__get_session_record(const char *username,
 	  record->npids++;
 	  ptr1++;
 	}
-      /* Parse the numbers into an array of pid_t */
+      /* Parse the numbers into an array of pid_t. */
       record->pids = malloc(record->npids * sizeof(pid_t));
       if (!record->pids)
 	{
@@ -207,8 +204,7 @@ int al__get_session_record(const char *username,
 	record->pids[i++] = atoi(ptr1);
     }
 
-  /*
-   * Block signals that might kill process while record info on disk
+  /* Block signals that might kill process while record info on disk
    * doesn't match reality.
    */
   sigemptyset(&smask);
@@ -226,8 +222,7 @@ int al__get_session_record(const char *username,
 cleanup:
   if (retval == AL_ESESSION)
     {
-      /*
-       * Relinquish the lock in case this OS violates POSIX.1 B.6.5.2
+      /* Relinquish the lock in case this OS violates POSIX.1 B.6.5.2
        * by not automatically relinquishing it when the fd is closed.
        */
       fl.l_type = F_UNLCK;
@@ -249,8 +244,7 @@ cleanup:
   return retval;
 }
 
-/*
- * This is an internal function.  Its contract is to write out a new
+/* This is an internal function.  Its contract is to write out a new
  * session record according to what's in record, drop the fcntl lock,
  * and close the file descriptor.
  */
@@ -278,8 +272,7 @@ int al__put_session_record(struct al_record *record)
   else
     ftruncate(fileno(record->fp), 0);
 
-  /*
-   * Relinquish the lock in case this OS violates POSIX.1 B.6.5.2
+  /* Relinquish the lock in case this OS violates POSIX.1 B.6.5.2
    * by not automatically relinquishing it when the fd is closed.
    */
   fl.l_type = F_UNLCK;

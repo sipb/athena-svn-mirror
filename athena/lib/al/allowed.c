@@ -10,8 +10,7 @@
 #include "al.h"
 #include "al_private.h"
 
-/*
- * The al_login_allowed() function determines whether a user is allowed
+/* The al_login_allowed() function determines whether a user is allowed
  * to log in.  The calling process provides an indication of whether the
  * login session is from a remote host.  The al_login_allowed() function
  * has no side-effects.
@@ -116,7 +115,7 @@ cleanup:
 	      *filetext = malloc(1 + st.st_size);
 	      if (*filetext)
 		{
-		  /* zero all in case fewer chars read than expected */
+		  /* Zero all in case fewer chars read than expected. */
 		  memset(*filetext, 0, 1 + st.st_size);
 		  fread(*filetext, sizeof(char), st.st_size, retfile);
 		}

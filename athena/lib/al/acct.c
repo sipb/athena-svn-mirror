@@ -5,8 +5,7 @@
 #include "al.h"
 #include "al_private.h"
 
-/*
- * The al_acct_create() function has the following side-effects:
+/* The al_acct_create() function has the following side-effects:
  *
  * 	* If a login record is not already present for this user:
  * 		- The user is added to the system passwd database if
@@ -67,7 +66,7 @@ int al_acct_create(const char *username, const char *cryptpw,
   struct al_record record;
   pid_t *newpids;
 
-  /* Get and lock the session record */
+  /* Get and lock the session record. */
   retval = al__get_session_record(username, &record);
   if (AL_ISWARNING(retval))
     warns[nwarns++] = retval;
@@ -77,9 +76,9 @@ int al_acct_create(const char *username, const char *cryptpw,
 	return retval;
     }
 
-  if (!record.exists)		/* we're first interested in this user */
+  if (!record.exists)		/* We're first interested in this user. */
     {
-      /* Add the user to the passwd file if necessary */
+      /* Add the user to the passwd file if necessary. */
       retval = al__add_to_passwd(username, &record, cryptpw);
       if (AL_ISWARNING(retval))
 	warns[nwarns++] = retval;
@@ -89,10 +88,10 @@ int al_acct_create(const char *username, const char *cryptpw,
 	    goto cleanup;
 	}
 
-      /* Make sure user added to passwd file can be cleaned up later */
+      /* Make sure user added to passwd file can be cleaned up later. */
       record.exists = 1;
 
-      /* Add the user's groups to the group file if not already there */
+      /* Add the user's groups to the group file if not already there. */
       retval = al__add_to_group(username, &record);
       if (AL_ISWARNING(retval))
 	warns[nwarns++] = retval;
@@ -111,12 +110,12 @@ int al_acct_create(const char *username, const char *cryptpw,
       record.npids = 1;
       record.pids[0] = sessionpid;
     }
-  else				/* other processes also interested in user */
+  else				/* Other processes also interested in user. */
     {
       /* Update the encrypted password entry if we added a passwd line. */
       al__update_cryptpw(username, &record, cryptpw);
 
-      /* Add pid to record if not already there */
+      /* Add pid to record if not already there. */
       for (i = 0; i < record.npids; i++)
 	{
 	  if (record.pids[i] == sessionpid)
@@ -147,7 +146,7 @@ int al_acct_create(const char *username, const char *cryptpw,
 	goto cleanup;
     }
 
-  /* Set warnings */
+  /* Set warnings. */
   if (nwarns > 0)
     {
       warns[nwarns++] = AL_SUCCESS;
@@ -184,8 +183,7 @@ static int revert(const char *username, struct al_record *record)
   return reterr;
 }
 
-/*
- * The al_acct_revert() function has the following side effects:
+/* The al_acct_revert() function has the following side effects:
  *
  * 	* If a login record for the user exists and sessionpid is in
  * 	  the record's list of pids of active login sessions:
@@ -226,8 +224,7 @@ int al_acct_revert(const char *username, pid_t sessionpid)
   return al__put_session_record(&record);
 }
 
-/*
- * The al_acct_cleanup() function has the following side effects:
+/* The al_acct_cleanup() function has the following side effects:
  *
  * 	* If a login record for the user exists:
  * 	  - All pids in the login record are checked for existence and
@@ -250,7 +247,7 @@ int al_acct_cleanup(const char *username)
 
   if (record.exists)
     {
-      /* remove nonexistent processes from pid list */
+      /* Remove nonexistent processes from pid list. */
       i = 0;
       while (i < record.npids)
 	{
