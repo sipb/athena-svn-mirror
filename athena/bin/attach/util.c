@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.8 1990-11-15 22:39:44 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.9 1990-11-16 07:58:02 probe Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -221,7 +221,7 @@ int parse_hes(hes, at, errorname)
 	    while (t = index(t,' '))
 		    *t = ',';
 	    at->mode = 'n';
-	    strcpy(at->mntpt, "/");
+	    strcpy(at->mntpt, "localhost");
     } else {
 
 	    if (!(cp = strtok(NULL, TOKSEP)))
