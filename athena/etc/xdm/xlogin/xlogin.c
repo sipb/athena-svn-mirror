@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.44 1994-07-31 03:03:52 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.44.1.1 1995-11-27 02:39:34 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -56,6 +56,12 @@
 
 #ifndef MOTD_FILENAME
 #define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.77"
+#endif
+
+#ifdef sgi
+char athconsole[64];
+FILE *xdmstream;
+int xdmfd;
 #endif
 
 #define OWL_AWAKE 0
@@ -232,7 +238,7 @@ GC owlGC, isGC;
 Display *dpy;
 Window owlWindow, isWindow;
 int owlNumBitmaps, isNumBitmaps;
-unsigned int owlWidth, owlHeight, isWidth, isHeight;
+/* unsigned */ int owlWidth, owlHeight, isWidth, isHeight;
 int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
 Pixmap owlBitmaps[20], isBitmaps[20];
 struct timeval starttime;
@@ -270,13 +276,40 @@ main(argc, argv)
   Arg args[1];
   int i;
   unsigned acc = 0;
-#ifdef SOLARIS
-  static char buf[1024];
-#endif
   int pid;
 
 #ifdef POSIX
   sigemptyset(&sig_zero);
+#endif
+
+#ifdef sgi
+  /*
+   * Get stderr and stdout for our own uses - we don't want them going
+   * through various paths of xdm. Under Irix, xdm does a lot of the
+   * actually logging-in; it calls xlogin with stdout a pipe it listens
+   * to to determine whom to log in. We need this communication, but we
+   * also want stdout to work correctly (out to console). So we make
+   * a copy of the stdout stream, and then reopen stdout to whatever
+   * tty we belong to (or /dev/console, if that doesn't work).
+   */
+  if (nanny_getTty(athconsole, sizeof(athconsole)))
+    strcpy(athconsole, "/dev/console");
+
+  xdmfd = dup(fileno(stdout));
+  if (xdmfd != -1)
+    {
+      xdmstream = fdopen(xdmfd, "w");
+      if (NULL == freopen(athconsole, "w", stdout))
+	(void)freopen("/dev/console", "w", stdout);
+    }
+  else
+    xdmstream = stdout; /* Some stuff will break, but better than losing. */
+  /* Actually, losing gracefully might be wise... */
+
+  if (NULL == freopen(athconsole, "w", stderr))
+    (void)freopen("/dev/console", "w", stderr);
+  /* if (stderr == NULL)
+     tough luck; */
 #endif
 
   /* Have to find this argument before initializing the toolkit.
@@ -311,6 +344,7 @@ main(argc, argv)
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal) 0);
 
+#ifndef sgi
   /* Tell the display manager we're ready, just like the X server
      handshake. This code used to be right before XtMainLoop. However,
      under Ultrix dm is required to open /dev/xcons and manually pipe
@@ -330,6 +364,7 @@ main(argc, argv)
   if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
     kill(getppid(), SIGUSR1);
 #endif
+#endif /* not sgi */
 
   /* Call reactivate with the -prelogin option. This restores /etc/passwd,
      blows away stray processes, runs access_off, and a couple of other
@@ -435,9 +470,9 @@ main(argc, argv)
 
 #define MASK	KeyReleaseMask | ButtonReleaseMask
   XtAddEventHandler(saver, MASK,
-		    FALSE, unsave, TRUE);
+		    FALSE, unsave, NULL);
   XtAddEventHandler(hitanykey, MASK,
-		    FALSE, unsave, TRUE);
+		    FALSE, unsave, NULL);
 
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
@@ -497,7 +532,7 @@ main(argc, argv)
 						 transientShellWidgetClass,
 						 root, NULL, 0);
 		      XtAddEventHandler(savershell[i], MASK,
-					FALSE, unsave, TRUE);
+					FALSE, unsave, NULL);
 		    }
 		}
 	    }
@@ -563,7 +598,8 @@ start_reactivate(data, timerid)
     struct timeval now;
 
 
-#ifdef SOLARIS
+#ifndef sgi /* Not our problem on the SGI. */
+#ifdef SYSV
     gettimeofday(&now);
 #else
     gettimeofday(&now, NULL);
@@ -572,13 +608,14 @@ start_reactivate(data, timerid)
 	fprintf(stderr, "Restarting X Server\n");
 	exit(0);
     }
+#endif /* sgi */
 
     do_motd();
 
     if ((file = open(UTMPF, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (utmp.ut_name[0] != 0
-#if defined(_AIX) || defined(SOLARIS)
+#if defined(_AIX) || defined(SYSV)
 		&& utmp.ut_type == USER_PROCESS
 #endif
 		) {
@@ -597,7 +634,7 @@ start_reactivate(data, timerid)
     }
 
     /* clear console */
-  sigconsCB(NULL, "clear", NULL);
+    sigconsCB(NULL, "clear", NULL);
 
     activation_state = REACTIVATING;
     activation_pid = fork();
@@ -848,7 +885,6 @@ Cardinal *n;
     if (curr_timerid)
       XtRemoveTimeOut(curr_timerid);
 
-
     XtSetArg(args[0], XtNleftBitmap, &bm1);
     XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry1"), args, 1);
     XtSetArg(args[0], XtNleftBitmap, &bm2);
@@ -923,7 +959,14 @@ Cardinal *n;
       tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x1410, hotline@mit.edu.";
     else {
 	setAutoRepeat(autorep);
+#ifndef sgi /* Fonts be local on the SGI. */
  	setFontPath();
+#endif
+#ifdef sgi
+	/* We obtained the tty earlier from nanny. */
+	resources.tty = athconsole + 5;
+#endif
+
 	XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		     0, 0, 0, 0, 300, 300);
  	XFlush(dpy);
@@ -967,13 +1010,17 @@ Cardinal *n;
 {
     Widget target;
 
-#if defined(_AIX) && defined(_IBMR2)
+#if defined(_AIX) && defined(_IBMR2) || defined(sgi)
     static int done_once = 0;
 
     /* This crock works around the an invalid argument error on the
      * XSetInputFocus() call below the very first time it is called,
      * only when running on the RIOS.  We still don't know just what
      * causes it.
+     * I sure wish I'd modified this comment when I added sgi to
+     * the ifdef the first time. I should try taking it back out to
+     * find out; should also see if the problem has gone away under
+     * AIX (this code dating from the R3 days).
      */
     if (done_once == 0) {
 	done_once++;
@@ -1075,7 +1122,9 @@ Cardinal *n;
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
+#ifndef sgi /* All fonts local on SGI. */
     setFontPath();
+#endif
     setAutoRepeat(autorep);
     XFlush(dpy);
     XtCloseDisplay(dpy);
@@ -1313,7 +1362,7 @@ void (*abort_proc)();
 		       XtNcallback, oldcallback, NULL);
     else
       XtAddCallback(WcFullNameToWidget(appShell, "*query*cont"),
-		    XtNcallback, setvalue, &done);
+		    XtNcallback, (XtCallbackProc)setvalue, &done);
     XtAddCallback(WcFullNameToWidget(appShell, "*query*giveup"),
 		  XtNcallback, abort_proc, NULL);
     oldcallback = abort_proc;
@@ -1323,7 +1372,7 @@ void (*abort_proc)();
     /* repeat main_loop here so we can check status & return */
     done = 0;
     while (!done) {
-	XtAppNextEvent(_XtDefaultAppContext(), &e);
+	XtAppNextEvent((XtAppContext)_XtDefaultAppContext(), &e);
 	XtDispatchEvent(&e);
     }
 
@@ -1706,11 +1755,15 @@ String s;
     exit(1);
 }
 
+/* Because we're not willing to bet this will work under Ultrix. */
+#if defined(SOLARIS) || defined(sgi)
+#define POSIXWAIT
+#endif
 
 static void catch_child()
 {
     int pid;
-#ifndef SOLARIS
+#ifndef POSIXWAIT
     union wait status;
 #else
     int status;
@@ -1718,7 +1771,7 @@ static void catch_child()
     char *number();
 
 
-#ifdef SOLARIS
+#ifdef POSIXWAIT
     pid = waitpid(-1, &status, WNOHANG);
 #else
     pid = wait3(&status, WNOHANG, 0);
@@ -1734,13 +1787,13 @@ static void catch_child()
 	    fprintf(stderr, "XLogin: child %d exited\n", pid);
 	}
     } else if (pid == attach_pid) {
-#ifdef SOLARIS
+#ifdef POSIXWAIT
 	attach_state = WEXITSTATUS(status);
 #else
 	attach_state = status.w_retcode;
 #endif
     } else if (pid == attachhelp_pid) {
-#ifdef SOLARIS
+#ifdef POSIXWAIT
 	attachhelp_state =  WEXITSTATUS(status);
 #else
 	attachhelp_state =  status.w_retcode;
@@ -1748,7 +1801,7 @@ static void catch_child()
     } else if (pid == quota_pid) {
 	quota_pid = 0;
     } else
-#ifdef SOLARIS
+#ifdef POSIXWAIT
       fprintf(stderr, "XLogin: child %d exited with status %d\n",
 	      pid, WEXITSTATUS(status));
 #else
@@ -1758,6 +1811,7 @@ static void catch_child()
 }
 
 
+#ifndef SYSV
 char *strdup(string)
 char *string;
 {
@@ -1767,7 +1821,7 @@ char *string;
       return(NULL);
     return(strcpy(cp,string));
 }
-
+#endif
 
 static void setFontPath()
 {
