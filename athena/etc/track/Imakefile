@@ -1,11 +1,11 @@
 /*
- * $Id: Imakefile,v 1.10 1997-04-17 20:34:49 ghudson Exp $
+ * $Id: Imakefile,v 1.11 1998-01-26 06:23:11 ghudson Exp $
  */
 
 #define ISUBDIRS doc
 
 OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
-LIBS= -ll $(OSLIBS)
+LIBS= $(OSLIBS)
 
 /* This is really gross.  Solaris 2.5.1 bumps the version number on
  * libresolv, so anything built with -lresolv doesn't work during the

@@ -1,6 +1,8 @@
 %{
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
+
+#undef yywrap
 %}
 %%
 
@@ -55,6 +57,12 @@ GLOBAL		{
 			return(NEWLINE);
 		}
 %%
+
+int yywrap()
+{
+	return 1;
+}
+
 #undef input
 /* this version of input() is identical to yylex' original,
  * except for the expression "endchar^='\177'", which is
