@@ -15,7 +15,6 @@ change keys while traversing.
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <ndbm.h>
 #include <sys/file.h>
 
 #include "lert.h"     

@@ -56,7 +56,6 @@ pending fixes 1/26/95
 #endif
 #include <fcntl.h>
 #include <sys/socket.h>
-#include <ndbm.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
