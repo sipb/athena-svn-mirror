@@ -41,6 +41,9 @@
 #ifndef ALibDir
 #define ALibDir $(ATHBASEDIR)/lib
 #endif
+#ifndef AShareDir
+#define AShareDir $(ATHBASEDIR)/share
+#endif
 #ifndef ABinDir
 #define ABinDir $(ATHBASEDIR)/bin
 #endif
@@ -187,6 +190,7 @@ ATHVERS = ${IRULESRC}/update.conf
 ATHBASEDIR=/usr/athena
 
 ATHLIBDIR=ALibDir
+ATHSHAREDIR=AShareDir
 ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
 ATHETCDIR=AEtcDir
