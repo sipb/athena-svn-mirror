@@ -1,14 +1,7 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
-/* Define if you have the strdup function.  */
-#undef HAVE_STRDUP
-
-/* Define if you have gethostname in the nsl library (-lnsl).  */
-#undef HAVE_LIBNSL
-
-/* Define if you have string.h.  */
-#undef HAVE_STRING_H
+/* Define to empty if the keyword does not work.  */
+#undef const
 
 /* Define if we should use execvp (which looks up PATH) instead of execv. */
 #undef USE_EXECVP
@@ -17,4 +10,11 @@
  * or just "compress" if USE_EXECVP is defined */
 #undef COMPRESS
 
-#endif /* CONFIG_H */
+/* Define if you have the strdup function.  */
+#undef HAVE_STRDUP
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
+/* Define if you have the nsl library (-lnsl).  */
+#undef HAVE_LIBNSL
