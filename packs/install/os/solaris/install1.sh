@@ -4,14 +4,13 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.25 2002-04-12 22:15:09 miki Exp $
+### $Id: install1.sh,v 1.26 2003-07-29 21:19:04 miki Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
 export PATH
 umask 2
 
-bootdevice="disk"; export bootdevice
 # Use format to get information about the available drives.
 format < /dev/null | awk '/^[ 	]*[0-9]\./ { print; }' > /tmp/disks
 
@@ -92,12 +91,12 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 9.1"
-  REV=9.1
-  ln -s /afs/athena.mit.edu/system/sun4x_58/srvd-9.1 /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_58/os-9.1 /tmp/os
-  ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/cdrom /tmp/cdrom
-  ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/patches /tmp/patches
+  echo "standard installation - 9.2"
+  REV=9.2
+  ln -s /afs/athena.mit.edu/system/sun4x_59/srvd-9.2 /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_59/os /tmp/os
+  ln -s /afs/athena.mit.edu/system/sun4x_59/install/cdrom /tmp/cdrom
+  ln -s /afs/athena.mit.edu/system/sun4x_59/install/patches /tmp/patches
   ;;
 
 Y)
@@ -158,13 +157,21 @@ Y)
        ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/cdrom /tmp/cdrom
        ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/patches /tmp/patches
        ;;
+   9.2)
+       echo "installing 9.2"
+       REV=9.2
+       ln -s /afs/athena.mit.edu/system/sun4x_59/srvd-9.2 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_59/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_59/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_59/install/patches /tmp/patches
+       ;;
     *)
-       echo "installing 9.1"
-       REV=9.1
-       ln -s /afs/athena.mit.edu/system/sun4x_58/srvd-9.1 /tmp/srvd
-       ln -s /afs/athena.mit.edu/system/sun4x_58/os-9.1 /tmp/os
-       ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/cdrom /tmp/cdrom
-       ln -s /afs/athena.mit.edu/system/sun4x_58/install-9.1/patches /tmp/patches
+       echo "installing 9.2"
+       REV=9.2
+       ln -s /afs/athena.mit.edu/system/sun4x_59/srvd-9.2 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_59/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_59/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_59/install/patches /tmp/patches
        ;;
    esac
    echo "done choosing rev"
@@ -234,9 +241,6 @@ Y)
      format 
      partitioning=one
      export partitioning
-     echo "boot device you want to boot from ?"
-     read bootdevice
-     export bootdevice
      echo "Done asking questions for custom install."
      ;;
 *)
@@ -441,7 +445,7 @@ type=install; export type
 date >/tmp/install.log
 
 case $REV in
- 8.4|9.0|9.1)
+ 8.4|9.0|9.1|9.2)
     sh /srvd/install/install2.sh | tee -a /tmp/install.log
     ;;
  *)
