@@ -3,6 +3,14 @@
 #include "Imlib.h"
 #include "Imlib_private.h"
 
+#ifndef HAVE_BASENAME
+#include <string.h>
+#endif
+
+#ifdef __EMX__
+extern const char *__XOS2RedirRoot(const char*);
+#endif
+
 static int PaletteLUTGet(ImlibData *id);
 static void PaletteLUTSet(ImlibData *id);
 
@@ -155,20 +163,50 @@ int
 Imlib_load_colors(ImlibData * id, char *file)
 {
   FILE               *f;
-  char                s[256];
+  char                s[1024];
   int                 i;
   int                 pal[768];
   int                 r, g, b;
   int                 rr, gg, bb;
 
+#ifndef __EMX__
   f = fopen(file, "r");
+#else
+  if (*file =='/')
+    f = fopen(__XOS2RedirRoot(file), "rt");
+  else
+    f = fopen(file, "rt");
+#endif
+
+#ifndef __EMX__
+  if (!f)
+    {
+      char *ctmp;
+
+#ifdef HAVE_BASENAME
+      ctmp = basename(file);
+#else
+      char *base;
+
+      base = strrchr(file, '/');
+      if (base)
+	ctmp = base + 1;
+      else
+        ctmp = file;
+#endif /* HAVE_BASENAME */
+        
+      if(ctmp) { snprintf(s, sizeof(s), "%s/%s", SYSCONFDIR, ctmp);
+      f = fopen(s, "r"); }
+    }
+#endif /* __EMX__ */
+
   if (!f)
     {
       fprintf(stderr, "ImLib ERROR: Cannot find palette file %s\n", file);
       return 0;
     }
   i = 0;
-  while (fgets(s, 256, f))
+  while (fgets(s, sizeof(s), f))
     {
       if (s[0] == '0')
 	{

@@ -1,3 +1,43 @@
+2001-07-31 Mark Crichton  <crichton@gimp.org>
+
+	* imlib.spec.in: Bug #58116.  Update spec file for packagers.
+	* README: Bumped up version number
+
+2001-07-31 Mark Crichton  <crichton@gimp.org>
+
+	* Added man pages.  Yes.  Man pages.  For Imlib.
+
+2001-07-17 Mark Crichton  <crichton@gimp.org>
+
+        * utils/imlib_config.c: Fixed Debian bug #68403: Added locale support
+	for imlib_config.
+	* Various other build fixes.
+	 
+2001-05-29 Mark Crichton  <crichton@gimp.org>
+
+	* configure.in: Some cleanups for libtool 1.4 support
+
+2001-03-27 Mark Crichton  <crichton@gimp.org>
+
+        * imlib-config.in: reordered libs line for improved effect on 
+	some systems.
+	*README: Bumped up to 1.9.10
+
+2001-02-14 Mark Crichton  <crichton@gimp.org>
+
+        * configure.in: Bumped up to 1.9.9.
+        * README: warning about last release of Imlib1
+        * MAINTAINERS: added crichton@gimp.org
+
+2000-09-30  Martin Baulig  <baulig@suse.de>
+
+	* imlib.pc.in, imlibgdk.pc.in: Provide pkg-config scripts.
+
+	* configure.in: Create *.pc scripts from the *.pc.in
+	templates.
+	* Makefile.am (pkgconfig_DATA): Install the *.pc
+	scripts in `$(libdir)/pkgconfig'.
+
 2000-05-20 Mark Crichton  <crichton@gimp.org>
 
         * configure.in: Bumped up to 1.9.8.1.

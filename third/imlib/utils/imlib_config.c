@@ -1499,6 +1499,7 @@ list_vis()
 int
 main(int argc, char **argv)
 {
+   gtk_set_locale();
    gtk_init(&argc, &argv);
    gdk_imlib_init();
    list_vis();

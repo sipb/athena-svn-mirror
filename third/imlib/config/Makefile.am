@@ -6,3 +6,5 @@ imrc: imrc.in
 		< $(srcdir)/imrc.in > imrc.tmp \
 	&& mv imrc.tmp imrc
 
+clean-local:
+	rm -f imrc

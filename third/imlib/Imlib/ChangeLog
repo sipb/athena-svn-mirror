@@ -1,3 +1,18 @@
+2001-07-28  Mark Crichton  <crichton@gimp.org>
+
+	* load.c: Fixed PNG loader for greyscale.  Resolves bug #57858
+
+2001-05-29  Mark Crichton  <crichton@gimp.org>
+
+	* misc.c: Made x_error static.  Resolves bug #52838
+
+2001-03-27 Mark Crichton  <crichton@gimp.org>
+
+        * Imlib/Makefile.am: cosmetic changes to allow build-time changes
+        of variables instead of at configure.
+	* colors.c: Added basename replacement for systems w/o basename 
+	(bugzilla #51998)
+
 1999-12-05  John Harper  <john@dcs.warwick.ac.uk>
 	* rend.c (Imlib_render): stop GC caching leaking memory
 

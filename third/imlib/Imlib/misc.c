@@ -4,6 +4,10 @@
 #include "Imlib_private.h"
 #include <locale.h>
 
+#ifdef __EMX__
+extern const char *__XOS2RedirRoot(const char *);
+#endif
+
 #ifndef HAVE_SNPRINTF
 #define snprintf my_snprintf
 #ifdef HAVE_STDARGS
@@ -15,7 +19,7 @@ int                 my_snprintf(va_alist);
 #endif
 #endif
 
-char                x_error;
+static char                x_error;
 
 static void
 HandleXError(Display * d, XErrorEvent * ev)
@@ -183,9 +187,22 @@ Imlib_init(Display * disp)
 
   old_locale = strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
+
+#ifndef __EMX__
   f = fopen(s, "r");
+#else
+  f = fopen(s, "rt");
+#endif
+
   if (!f)
-    f = fopen(SYSTEM_IMRC, "r");
+    {
+#ifndef __EMX__
+      f = fopen(SYSTEM_IMRC, "r");
+#else
+      f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+#endif
+    }
+
   if (f)
     {
       while (fgets(s, 4096, f))
@@ -415,7 +432,8 @@ Imlib_init(Display * disp)
 		{
 		  if (xvir[i].depth == id->x.depth)
 		    {
-		      if ((xvir[i].class > clas) && (xvir[i].class != DirectColor))
+		      if ((xvir[i].class > clas) && 
+			  (xvir[i].class != DirectColor))
 			{
 			  maxn = i;
 			  clas = xvir[i].class;
@@ -725,9 +743,22 @@ Imlib_init_with_params(Display * disp, ImlibInitParams * p)
   snprintf(s, sizeof(s), "%s/.imrc", homedir);
   old_locale = strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
+
+#ifndef __EMX__
   f = fopen(s, "r");
+#else
+  f = fopen(s, "rt");
+#endif
+
   if (!f)
-    f = fopen(SYSTEM_IMRC, "r");
+    {
+#ifndef __EMX__
+      f = fopen(SYSTEM_IMRC, "r");
+#else
+      f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+#endif
+    }
+  
   if (f)
     {
       while (fgets(s, 4096, f))
@@ -1388,5 +1419,9 @@ Imlib_get_colormap(ImlibData * id)
 char               *
 Imlib_get_sysconfig(ImlibData * id)
 {
+#ifndef __EMX__
   return strdup(SYSTEM_IMRC);
+#else
+  return strdup(__XOS2RedirRoot(SYSTEM_IMRC));
+#endif
 }

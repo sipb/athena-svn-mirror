@@ -7,7 +7,7 @@
 #include <gdk/gdkx.h>
 #include <locale.h>
 
-char                x_error;
+static char                x_error;
 
 static void
 HandleXError(Display * d, XErrorEvent * ev)
@@ -508,8 +508,19 @@ gdk_imlib_init()
       xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
       if (xvir)
 	{
-	  if (xvir->red_mask != 0xf800)
-	    id->x.render_depth = 15;
+	  if (xvir->red_mask == 0xf800)
+	    id->x.render_depth = 16;
+          /* This is a butt ugly hack to get the iPAQ to work! */
+          /* The proper way is to fix it, counting bits and storing
+           * mask values, but I dont think I can do this w/o breaking
+           * the API!  Damn...
+           */
+          else if (xvir->red_mask == 0xf000) {
+            printf("Detected an iPAQ...\n");
+	    id->x.render_depth = 12;
+          } else 
+            id->x.render_depth=15;
+
 	  XFree(xvir);
 	}
     }
@@ -1045,8 +1056,19 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
       xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
       if (xvir)
 	{
-	  if (xvir->red_mask != 0xf800)
-	    id->x.render_depth = 15;
+	  if (xvir->red_mask == 0xf800)
+	    id->x.render_depth = 16;
+          /* This is a butt ugly hack to get the iPAQ to work! */
+          /* The proper way is to fix it, counting bits and storing
+           * mask values, but I dont think I can do this w/o breaking
+           * the API!  Damn...
+           */
+          else if (xvir->red_mask == 0xf000) {
+            printf("Detected an iPAQ...\n");
+            id->x.render_depth = 12;
+          } else
+            id->x.render_depth = 15;
+
 	  XFree(xvir);
 	}
     }

@@ -14,3 +14,7 @@ imlib_config_LDADD = \
 	$(top_builddir)/gdk_imlib/libgdk_imlib.la	\
 	@GTK_LIBS@					\
 	@GDK_SUPPORT_LIBS@
+
+man_MANS = imlib_config.1
+
+EXTRA_DIST = $(man_MANS)
