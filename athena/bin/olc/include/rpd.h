@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.11 1991-03-28 08:43:02 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.12 1991-04-11 09:52:08 lwvanels Exp $
  */
 
 #include "nl_requests.h"
@@ -19,6 +19,10 @@
 #include <strings.h>
 #include <ctype.h>
 #include <syslog.h>
+
+#ifndef MIN
+#define        MIN(a,b) (((a)<(b))?(a):(b))
+#endif
 
 struct 	entry {
   int fd;		/* file descriptor */
