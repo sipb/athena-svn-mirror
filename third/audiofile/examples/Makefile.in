@@ -93,7 +93,7 @@ noinst_PROGRAMS = \
 	@TEST_BIN@
 
 
-EXTRA_PROGRAMS = irixread irixtestloop linuxtest
+EXTRA_PROGRAMS = irixread irixtestloop linuxtest osxplay
 
 irixread_SOURCES = irixread.c sgi.c sgi.h
 irixread_LDADD = $(top_builddir)/libaudiofile/libaudiofile.la @AUDIO_LIB@
@@ -103,6 +103,9 @@ irixtestloop_LDADD = $(top_builddir)/libaudiofile/libaudiofile.la @AUDIO_LIB@
 
 linuxtest_SOURCES = linuxtest.c
 
+osxplay_SOURCES = osxplay.c
+osxplay_LDFLAGS = -framework AudioUnit -framework CoreServices
+
 LDADD = $(top_builddir)/libaudiofile/libaudiofile.la
 
 DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
@@ -111,7 +114,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = irixread$(EXEEXT) irixtestloop$(EXEEXT) \
-	linuxtest$(EXEEXT)
+	linuxtest$(EXEEXT) osxplay$(EXEEXT)
 noinst_PROGRAMS = adddcoffset$(EXEEXT) power$(EXEEXT) @TEST_BIN@
 PROGRAMS = $(noinst_PROGRAMS)
 
@@ -133,6 +136,10 @@ linuxtest_OBJECTS = $(am_linuxtest_OBJECTS)
 linuxtest_LDADD = $(LDADD)
 linuxtest_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 linuxtest_LDFLAGS =
+am_osxplay_OBJECTS = osxplay.$(OBJEXT)
+osxplay_OBJECTS = $(am_osxplay_OBJECTS)
+osxplay_LDADD = $(LDADD)
+osxplay_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 power_SOURCES = power.c
 power_OBJECTS = power.$(OBJEXT)
 power_LDADD = $(LDADD)
@@ -147,7 +154,8 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/adddcoffset.Po $(DEPDIR)/irixread.Po \
 @AMDEP_TRUE@	$(DEPDIR)/irixtestloop.Po $(DEPDIR)/linuxtest.Po \
-@AMDEP_TRUE@	$(DEPDIR)/power.Po $(DEPDIR)/sgi.Po
+@AMDEP_TRUE@	$(DEPDIR)/osxplay.Po $(DEPDIR)/power.Po \
+@AMDEP_TRUE@	$(DEPDIR)/sgi.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -157,9 +165,9 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 DIST_SOURCES = adddcoffset.c $(irixread_SOURCES) $(irixtestloop_SOURCES) \
-	$(linuxtest_SOURCES) power.c
+	$(linuxtest_SOURCES) $(osxplay_SOURCES) power.c
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = adddcoffset.c $(irixread_SOURCES) $(irixtestloop_SOURCES) $(linuxtest_SOURCES) power.c
+SOURCES = adddcoffset.c $(irixread_SOURCES) $(irixtestloop_SOURCES) $(linuxtest_SOURCES) $(osxplay_SOURCES) power.c
 
 all: all-am
 
@@ -196,6 +204,9 @@ irixtestloop$(EXEEXT): $(irixtestloop_OBJECTS) $(irixtestloop_DEPENDENCIES)
 linuxtest$(EXEEXT): $(linuxtest_OBJECTS) $(linuxtest_DEPENDENCIES) 
 	@rm -f linuxtest$(EXEEXT)
 	$(LINK) $(linuxtest_LDFLAGS) $(linuxtest_OBJECTS) $(linuxtest_LDADD) $(LIBS)
+osxplay$(EXEEXT): $(osxplay_OBJECTS) $(osxplay_DEPENDENCIES) 
+	@rm -f osxplay$(EXEEXT)
+	$(LINK) $(osxplay_LDFLAGS) $(osxplay_OBJECTS) $(osxplay_LDADD) $(LIBS)
 power$(EXEEXT): $(power_OBJECTS) $(power_DEPENDENCIES) 
 	@rm -f power$(EXEEXT)
 	$(LINK) $(power_LDFLAGS) $(power_OBJECTS) $(power_LDADD) $(LIBS)
@@ -210,6 +221,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/irixread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/irixtestloop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/linuxtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/osxplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/power.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sgi.Po@am__quote@
 

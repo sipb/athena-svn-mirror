@@ -310,7 +310,9 @@ typedef struct _AFfilehandle
 
 	bool	seekok;
 
-        AFvirtualfile	*fh;
+	AFvirtualfile	*fh;
+
+	char	*fileName;
 
 	int	fileFormat;
 
@@ -325,11 +327,6 @@ typedef struct _AFfilehandle
 
 	void	*formatSpecific;	/* format-specific data */
 } _AFfilehandle;
-
-enum
-{
-	AIFC_VERSION_1 = 0xa2805140
-};
 
 enum
 {

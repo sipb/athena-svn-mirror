@@ -37,9 +37,13 @@
 #include "util.h"
 #include "modules.h"
 
-#ifndef _MSC_VER
+#if defined(WIN32) || defined(__CYGWIN__)
+#include <io.h>
+#include <fcntl.h>
+#define SETBINARYMODE(fp) 	_setmode(_fileno(fp), _O_BINARY)
+#else
 #define SETBINARYMODE(x)
-#endif
+#endif /* WIN32 || __CYGWIN__ */
 
 extern _Unit _af_units[];
 
@@ -392,6 +396,10 @@ static status _afOpenFile (int access, AFvirtualfile *vf, const char *filename,
 	filehandle->valid = _AF_VALID_FILEHANDLE;
 	filehandle->fh = vf;
 	filehandle->access = access;
+	if (filename != NULL)
+		filehandle->fileName = strdup(filename);
+	else
+		filehandle->fileName = NULL;
 	filehandle->fileFormat = fileFormat;
 	filehandle->formatSpecific = NULL;
 
@@ -522,6 +530,10 @@ static void freeFileHandle (AFfilehandle filehandle)
 	}
 
 	filehandle->valid = 0;
+
+	if (filehandle->fileName != NULL)
+		free(filehandle->fileName);
+
 	fileFormat = filehandle->fileFormat;
 
 	if (filehandle->formatSpecific != NULL)
