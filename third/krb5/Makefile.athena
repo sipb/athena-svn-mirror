@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.14 1998-07-15 18:33:45 ghudson Exp $
+# $Id: Makefile.athena,v 1.15 1998-12-20 05:40:39 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -6,7 +6,7 @@ ATHINCDIR=/usr/athena/include
 
 prepare:
 	rm -f src/config.cache
-	cd src && ./configure --with-krb4=yes
+	cd src && CPPFLAGS=" " ./configure --with-krb4=yes
 
 clean:
 	cd src && ${MAKE} clean
