@@ -2,18 +2,14 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.4 1995-03-27 04:05:55 cfields Exp $
+# $Id: Xsession.sgi,v 1.5 1995-05-28 20:47:15 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
-exec > /etc/athena/consdev 2>&1
-
 initlib="/usr/athena/lib/init"
-#defsession=1
-#defsession=$1
-#defsessioncmd="$2"
-defsession=$ARG1
-defsessioncmd="$ARG2"
+
+defsession=$1
+defsessioncmd="$2"
 
 attach -q $USER
 
