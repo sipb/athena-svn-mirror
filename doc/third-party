@@ -258,7 +258,7 @@ which uses an X-style Imakefile:
 
 	SHELL=/bin/sh
 
-	configure:
+	prepare:
 		imake "-I$$XCONFIGDIR" -DUseInstalled "-DSRCDIR=$$SOURCE"
 		${MAKE} Makefiles
 
