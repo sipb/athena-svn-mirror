@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1999-04-09 19:12:22 ghudson Exp $
+# $Id: Makefile,v 1.9 1999-04-19 13:20:48 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -91,6 +91,8 @@ install:
 	ln -s ${CONFIG}/license/sgi/license.dat ${DESTDIR}${FLEXLM}/license.dat
 	rm -f ${DESTDIR}${NCS}/glb_site.txt
 	ln -s ${CONFIG}/license/sgi/glb_site.txt ${DESTDIR}${NCS}/glb_site.txt
+	rm -f ${DESTDIR}${ETCDIR}/shadow
+	ln -s ${CONFIG}/passwd/${ATHENA_SYS}/shadow ${DESTDIR}${ETCDIR}/shadow
 
 clean:
 
