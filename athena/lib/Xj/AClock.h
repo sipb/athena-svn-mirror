@@ -1,5 +1,5 @@
 /*
- * $Id: AClock.h,v 1.2 1999-01-22 23:16:46 ghudson Exp $
+ * $Id: AClock.h,v 1.3 1999-01-29 00:39:25 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -16,6 +16,7 @@
 #define ANGLES 256 /* 1K of data for 90 degrees */
 #define CIRCLE (4 * ANGLES)
 #define SCALE 65536
+#undef PI
 #define PI 3.14159365358979
 #define HALFPI (PI / 2.0)
 
