@@ -16,7 +16,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.58 2001-03-01 00:47:05 zacheiss Exp $";
+static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.59 2001-07-03 03:28:31 zacheiss Exp $";
 #endif
 #endif
 
@@ -186,14 +186,19 @@ add_subscriptions(who, subs, notice, server)
 		}
 	    }
 	}
-	if (realm && !bdumping && server && server == me_server) {
-	    retval = subscr_realm_sendit(who, subs, notice, realm);
-	    if (retval != ZERR_NONE) {
-		free_subscriptions(subs);
-		free_string(sender);
-		return(retval);
+	if (realm && !bdumping) {
+	    if (server && server == me_server) {
+	        retval = subscr_realm_sendit(who, subs, notice, realm);
+	        if (retval != ZERR_NONE) {
+		    free_subscriptions(subs);
+		    free_string(sender);
+		    return(retval);
+		} else {
+		    /* free this one, will get from ADD */
+		    free_subscription(subs);
+		}
 	    } else {
-	      free_subscription(subs); /* free this one, will get from ADD */
+	            /* Indicates we leaked traffic back to our realm */
 	    }
 	} else {
 	  retval = triplet_register(who, &subs->dest, NULL);
@@ -1475,7 +1480,10 @@ subscr_check_foreign_subs(notice, who, server, realm, newsubs)
 		    syslog(LOG_WARNING, "subscr auth not verifiable %s (%s) class %s",
 			   sender->string, rlm->name, 
 			   subs->dest.classname->string);
-		    continue; 
+		    free_subscriptions(newsubs);
+		    free_string(sender);
+		    free(text);
+		    return ZSRV_CLASSRESTRICTED;
 		} 
 	    } 
 	    if (!access_check(sender->string, acl, SUBSCRIBE)) {
