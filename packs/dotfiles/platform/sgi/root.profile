@@ -1,4 +1,4 @@
-# $Id: root.profile,v 1.2 1997-12-28 17:47:38 ghudson Exp $
+# $Id: root.profile,v 1.3 1998-08-14 04:00:31 ghudson Exp $
 
 # Set the interrupt character to Ctrl-c and do clean backspacing.
 if [ -t 0 ]
@@ -16,18 +16,6 @@ fi
 if [ ! -f $HOME/.wshttymode -a -t 0 ]
 then
     stty -g > $HOME/.wshttymode
-fi
-
-# Set the default X server.
-if [ ${DISPLAY:-setdisplay} = setdisplay ]
-then
-    if [ ${REMOTEHOST:-islocal} != islocal ]
-    then
-        DISPLAY=${REMOTEHOST}:0
-    else
-        DISPLAY=:0
-    fi
-    export DISPLAY
 fi
 
 #
