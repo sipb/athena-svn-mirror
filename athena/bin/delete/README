@@ -102,6 +102,15 @@ before I release them to the general public.  If you are interested in
 doing this, please let me know.
 
 
+			     ARCHIVE SITE
+
+The most recent version of the delete package and patches to get from
+previous versions to the most recent version are archived on
+pit-manager.mit.edu (18.72.1.58).  You can retrieve them via anonymous
+ftp in the directory /pub/delete, or via mail-server (send a message
+with the subject "help" to "mail-server@pit-manager.mit.edu").
+
+
 			     FINAL NOTES
 
 As usual, suggestions and bug fixes are always welcomed.
