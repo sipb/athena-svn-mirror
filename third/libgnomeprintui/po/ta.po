@@ -1,0 +1,682 @@
+# Tamil translation of libgnomeprintui.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2001.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Tamil libgnomeprintui 1.9\n"
+"POT-Creation-Date: 2002-12-27 21:55-0500\n"
+"PO-Revision-Date: 2002-11-02 18:58-0500\n"
+"Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
+"Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# libgnomeprintui/gnome-font-dialog.c:164
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:174
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Font family"
+msgstr "±ØòÐ-Å¨¸ ÌÎõÀõ"
+
+#: libgnomeprintui/gnome-font-dialog.c:210
+msgid "The list of font families available"
+msgstr "¸¢¨¼ì¸ìÜÊÂ ±ØòÐ-Å¨¸ ÌÎõÀ ÀðÊ"
+
+# libgnomeprintui/gnome-font-dialog.c:197
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:221
+msgid "Style"
+msgstr "À¡½¢"
+
+# libgnomeprintui/gnome-font-dialog.c:259
+#: libgnomeprintui/gnome-font-dialog.c:263
+msgid "Font style"
+msgstr "±ØòÐ-Å¨¸ À¡½¢:"
+
+#: libgnomeprintui/gnome-font-dialog.c:264
+msgid "The list of styles available for the selected font family"
+msgstr "¦¾Ã¢×¦ºöÐûÇ ±ØòÐ-Å¨¸ ÌÎõÀí¸Ç¢ý À¡½¢û ÀðÊ"
+
+# libgnomeprintui/gnome-font-dialog.c:259
+#: libgnomeprintui/gnome-font-dialog.c:297
+msgid "Font _size:"
+msgstr "±ØòÐ-Å¨¸ «Ç×:"
+
+# libgnomeprintui/gnome-font-dialog.c:688
+#: libgnomeprintui/gnome-font-dialog.c:784
+msgid "This font does not have sample"
+msgstr "­ó¾ ±ØòÐ Å¨¸ìÌ ¯¾¡Ã½õ ¸¢¨¼Â¡Ð"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#: libgnomeprintui/gnome-font-dialog.c:892
+msgid "Font Preview"
+msgstr "±ØòÐ-Å¨¸ Óý¸¡ñÀ¢"
+
+#: libgnomeprintui/gnome-font-dialog.c:893
+msgid "Displays some example text in the selected font"
+msgstr "¦¾Ã¢×¦ºö¾ ±ØòÐ-Å¨¸Â¢ø ¯¾¡Ã½í¸Ç¡¸ ¯¨Ã ¸¡ñÀ¢ì¸×õ"
+
+# libgnomeprintui/gnome-font-dialog.c:807
+#: libgnomeprintui/gnome-font-dialog.c:908
+msgid "Font Selection"
+msgstr "±ØòÐ Å¨¸ ¦¾¡¢× ¦ºö¾ø"
+
+# libgnomeprintui/gnome-print-copies.c:248
+#: libgnomeprintui/gnome-print-copies.c:247
+msgid "Copies"
+msgstr "¿¸ø¸û"
+
+# libgnomeprintui/gnome-print-copies.c:259
+#: libgnomeprintui/gnome-print-copies.c:256
+msgid "N_umber of copies:"
+msgstr "±ò¾¨É ¿¸ø¸û:"
+
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+
+# libgnomeprintui/gnome-print-copies.c:283
+#: libgnomeprintui/gnome-print-copies.c:285
+msgid "_Collate"
+msgstr "«ÎìÌ"
+
+#: libgnomeprintui/gnome-print-copies.c:290
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+
+# libgnomeprintui/gnome-print-dialog.c:175
+#: libgnomeprintui/gnome-print-dialog.c:191
+msgid "Print range"
+msgstr "«îº¢Îõ Å£îÍ"
+
+# libgnomeprintui/gnome-print-dialog.c:341
+#: libgnomeprintui/gnome-print-dialog.c:229
+msgid "_All"
+msgstr "«¨ÉòÐõ"
+
+# libgnomeprintui/gnome-print-dialog.c:371
+# libgnomeprintui/gnome-print-dialog.c:385
+#: libgnomeprintui/gnome-print-dialog.c:251
+msgid "_Selection"
+msgstr "¦¾¡¢× ¦ºö¾Ð"
+
+#: libgnomeprintui/gnome-print-dialog.c:351
+msgid "_Job"
+msgstr "_À½¢"
+
+# libgnomeprintui/gnome-printer-dialog.c:112
+#: libgnomeprintui/gnome-print-dialog.c:366
+msgid "P_rinter"
+msgstr "«î_Íô¦À¡È¢"
+
+#: libgnomeprintui/gnome-print-dialog.c:376
+msgid "Pap_er"
+msgstr "¸¡_¸¢¾õ"
+
+#: libgnomeprintui/gnome-print-dialog.c:383
+msgid "Error in loading printer configuration"
+msgstr "«îÍô¦À¡È¢ «Á÷¨Å ²üÚõ§À¡Ð À¢¨Æ"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: libgnomeprintui/gnome-print-dialog.c:388
+msgid "Gnome Print Dialog"
+msgstr "¸§É¡õ «îÍô¦À¡È¢ ¯¨ÃÂ¡¼ø"
+
+# libgnomeprintui/gnome-print-dialog.c:446
+#: libgnomeprintui/gnome-print-dialog.c:530
+msgid "_From:"
+msgstr "_­í¸¢ÕóÐ:"
+
+#: libgnomeprintui/gnome-print-dialog.c:544
+msgid "Sets the start of the range of pages to be printed"
+msgstr "«îº¢Îõ Å£îº¢ý Ó¾ø Àì¸ò¨¾ «¨ÁìÌõ"
+
+# libgnomeprintui/gnome-print-dialog.c:460
+#: libgnomeprintui/gnome-print-dialog.c:554
+msgid "_To:"
+msgstr "_­¾ðÌ:"
+
+#: libgnomeprintui/gnome-print-dialog.c:568
+msgid "Sets the end of the range of pages to be printed"
+msgstr "«îº¢Îõ Å£îº¢ý ¸¨¼º¢ Àì¸ò¨¾ «¨ÁìÌõ"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#: libgnomeprintui/gnome-print-master-preview.c:595
+msgid "Page Preview"
+msgstr "¸¡¸¢¾õ Óý¸¡ñðº¢"
+
+#: libgnomeprintui/gnome-print-master-preview.c:596
+msgid "The preview of a page in the document to be printed"
+msgstr "«îº¢¼ô§À¡Ìõ ¬Å½ò¾¢ø µ÷ Àì¸ò¾¢ý Óý¸¡ðº¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:641
+#: libgnomeprintui/gnome-print-master-preview.c:652
+msgid "P_age: "
+msgstr "_Àì¸õ:"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-master-preview.c:661
+msgid "of"
+msgstr "þø"
+
+# libgnomeprintui/gnome-print-master-preview.c:641
+#: libgnomeprintui/gnome-print-master-preview.c:667
+msgid "Page total"
+msgstr "¦Á¡ò¾ Àì¸í¸û"
+
+#: libgnomeprintui/gnome-print-master-preview.c:668
+msgid "The total number of pages in the document"
+msgstr "¬Å½ò¾¢ø ¯ûÇ ¦Á¡ò¾ Àì¸í¸û"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#: libgnomeprintui/gnome-print-master-preview.c:743
+msgid "/_Preview"
+msgstr "/_Óý¸¡ñðº¢"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#: libgnomeprintui/gnome-print-master-preview.c:745
+msgid "/Preview/_Print"
+msgstr "/Óý¸¡ñÀ¢/_«îº¢Î"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#: libgnomeprintui/gnome-print-master-preview.c:748
+msgid "/Preview/_Close"
+msgstr "/Óý¸¡ñðº¢/_ãÎ"
+
+# libgnomeprintui/gnome-print-master-preview.c:689
+#: libgnomeprintui/gnome-print-master-preview.c:752
+msgid "/_View"
+msgstr "/_¸¡ðº¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:681
+#: libgnomeprintui/gnome-print-master-preview.c:754
+msgid "/View/Zoom _1:1"
+msgstr "/¸¡ðº¢/1:1 ãÄ «Ç×"
+
+#: libgnomeprintui/gnome-print-master-preview.c:757
+msgid "/View/Zoom to _Fit"
+msgstr "/¸¡ðº¢/Àì¸ò¾¢ø ¦À¡ÕóÐÁ¡Õ"
+
+# libgnomeprintui/gnome-print-master-preview.c:681
+#: libgnomeprintui/gnome-print-master-preview.c:760
+msgid "/View/Zoom _In"
+msgstr "/¸¡ðº¢/¦À¡¢¾¡¸ ¸¡ðÎ"
+
+# libgnomeprintui/gnome-print-master-preview.c:682
+#: libgnomeprintui/gnome-print-master-preview.c:763
+msgid "/View/Zoom _Out"
+msgstr "/¸¡ðº¢/º¢È¢¾¡¸ ¸¡ðÎ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:767
+msgid "/_Go"
+msgstr "/_§À¡"
+
+# libgnomeprintui/gnome-print-master-preview.c:667
+#: libgnomeprintui/gnome-print-master-preview.c:769
+msgid "/Go/_First Page"
+msgstr "/§À¡/Ó¾ø Àì¸õ"
+
+# libgnomeprintui/gnome-print-master-preview.c:670
+#: libgnomeprintui/gnome-print-master-preview.c:772
+msgid "/Go/_Previous Page"
+msgstr "/§À¡/­¾üÌ ÓýÀì¸õ"
+
+# libgnomeprintui/gnome-print-master-preview.c:673
+#: libgnomeprintui/gnome-print-master-preview.c:775
+msgid "/Go/_Next Page"
+msgstr "/§À¡/«Îò¾ Àì¸õ"
+
+# libgnomeprintui/gnome-print-master-preview.c:676
+#: libgnomeprintui/gnome-print-master-preview.c:778
+msgid "/Go/_Last Page"
+msgstr "/§À¡/¸¨¼º¢ô Àì¸õ"
+
+# libgnomeprintui/gnome-print-master-preview.c:695
+#: libgnomeprintui/gnome-print-master-preview.c:843
+msgid "Prints the current file"
+msgstr "¾ü§À¡¨¾Â §¸¡ô¨À «îº¢Îõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: libgnomeprintui/gnome-print-master-preview.c:847
+msgid "Closes print preview window"
+msgstr "«îº¢Î-Óý¸¡ðº¢ º¡ÇÃò¨¾ ãÎõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:667
+# libgnomeprintui/gnome-print-master-preview.c:698
+#: libgnomeprintui/gnome-print-master-preview.c:858
+msgid "Shows the first page"
+msgstr "Ó¾ø Àì¸ò¨¾ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:670
+# libgnomeprintui/gnome-print-master-preview.c:701
+#: libgnomeprintui/gnome-print-master-preview.c:860
+msgid "Shows the previous page"
+msgstr "­¾üÌÓý ¸¡ðÊÂ Àì¸ò¨¾ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:673
+# libgnomeprintui/gnome-print-master-preview.c:704
+#: libgnomeprintui/gnome-print-master-preview.c:862
+msgid "Shows the next page"
+msgstr "«Îò¾ Àì¸ò¨¾ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:676
+# libgnomeprintui/gnome-print-master-preview.c:707
+#: libgnomeprintui/gnome-print-master-preview.c:864
+msgid "Shows the last page"
+msgstr "¸¨¼º¢ô Àì¸ò¨¾ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:681
+#: libgnomeprintui/gnome-print-master-preview.c:869
+msgid "Zooms 1:1"
+msgstr "1:1 «ÇÅ¢ø ¸¡ðÎõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:712
+#: libgnomeprintui/gnome-print-master-preview.c:871
+msgid "Zooms to fit the whole page"
+msgstr "ÓØ Àì¸ò¾¢ø ¦À¡ÕòÐÁ¡Ú ¦À¡¢¾¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:710
+#: libgnomeprintui/gnome-print-master-preview.c:873
+msgid "Zooms the page in"
+msgstr "Àì¸ò¨¾ ¦À¡¢¾¡¸ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:711
+#: libgnomeprintui/gnome-print-master-preview.c:875
+msgid "Zooms the page out"
+msgstr "Àì¸ò¨¾ º¢È¢¾¡¸ì ¸¡ñÀ¢ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: libgnomeprintui/gnome-print-master-preview.c:984
+msgid "Gnome Print Preview"
+msgstr "¸§É¡õ «îº¢Îõ-Óý¸¡ðº¢"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1518
+msgid "Pt"
+msgstr "Ò"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1519
+msgid "mm"
+msgstr "Á¢.Á£"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1520
+msgid "cm"
+msgstr "¦º.Á£"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1521
+msgid "m"
+msgstr "Á£"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1522
+msgid "in"
+msgstr "þ"
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:1603
+msgid "Paper and layout"
+msgstr "¸¡¸¢¾Óõ ­¼ «¨Á×õ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1615
+msgid "Paper _size:"
+msgstr "¸¡¸¢¾ «Ç×:"
+
+#. Create spinbuttons for paper size
+#: libgnomeprintui/gnome-print-paper-selector.c:1627
+msgid "_Width:"
+msgstr "_«¸Äõ:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1643
+msgid "_Height:"
+msgstr "¯ÂÃõ:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1666
+msgid "Metric selector"
+msgstr "«Çò¾ø ¦¾Ã¢× ¦ºö¾ø"
+
+# libgnomeprintui/gnome-print-paper-selector.c:1393¹¦É¡¦Á
+#: libgnomeprintui/gnome-print-paper-selector.c:1667
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr "¸¡¸¢¾ò¾¢ý «¸Äõ ÁüÚõ ¯ÂÃõ «¨ÁìÌõ§À¡Ð ÀÂýÀÎò¾ §ÅñÊÂ «Çò¾ø"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1670
+msgid "_Feed orientation:"
+msgstr "°ðÎ ¾¢¨º «¨Á×:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1685
+msgid "Page _orientation:"
+msgstr "¸¡¸¢¾ ¾¢¨º «¨Á×:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:1697
+msgid "_Layout:"
+msgstr "­¼ «¨Á×:"
+
+# libgnomeprintui/gnome-print-dialog.c:239
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:1709
+#: libgnomeprintui/gnome-print-paper-selector.c:1719
+msgid "Preview"
+msgstr "Óý¸¡ñðº¢"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1720
+msgid "Preview of the page size, orientation and layout"
+msgstr "Àì¸ò¾¢ý «Ç×, ¾¢¨º «¨Á×, «¨ÁôÒ Óý¸¡ðº¢"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1739
+msgid "Margins"
+msgstr "µÃí¸û"
+
+# libgnomeprintui/gnome-print-dialog.c:460
+#: libgnomeprintui/gnome-print-paper-selector.c:1773
+msgid "Top"
+msgstr "§Áø"
+
+# libgnomeprintui/gnome-print-dialog.c:460
+#: libgnomeprintui/gnome-print-paper-selector.c:1776
+msgid "Bottom"
+msgstr "¸£ú"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1779
+msgid "Left"
+msgstr "­¼Ð"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1782
+msgid "Right"
+msgstr "ÅÄÐ"
+
+#. Fill optionmenus from config
+#: libgnomeprintui/gnome-print-paper-selector.c:1824
+msgid "No papers defined"
+msgstr "¸¡¸¢¾í¸û Å¨ÃÂÚì¸Å¢ø¨Ä"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1835
+#: libgnomeprintui/gnome-print-paper-selector.c:1837
+msgid "No orientations defined"
+msgstr "¾¢¨º «¨Á×¸û Å¨ÃÂÚì¸Å¢ø¨Ä"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1839
+msgid "No layouts defined"
+msgstr "«¨ÁôÒ¸û Å¨ÃÂÚì¸Å¢ø¨Ä"
+
+# libgnomeprintui/gnome-printer-dialog.c:112
+#: libgnomeprintui/gnome-printer-dialog.c:123
+msgid "Printer"
+msgstr "«îÍô¦À¡È¢"
+
+# libgnomeprintui/gnome-printer-dialog.c:123
+#: libgnomeprintui/gnome-printer-dialog.c:132
+msgid "State:"
+msgstr "¿¢¨Ä:"
+
+# libgnomeprintui/gnome-printer-dialog.c:124
+#: libgnomeprintui/gnome-printer-dialog.c:135
+msgid "Type:"
+msgstr "Å¨¸:"
+
+# libgnomeprintui/gnome-printer-dialog.c:125
+#: libgnomeprintui/gnome-printer-dialog.c:138
+msgid "Comment:"
+msgstr "ÌÈ¢ôÒ¨Ã:"
+
+# libgnomeprintui/gnome-printer-dialog.c:131
+#: libgnomeprintui/gnome-printer-dialog.c:140
+msgid "Co_nfigure"
+msgstr "ÅÊÅ¨Á"
+
+#: libgnomeprintui/gnome-printer-dialog.c:147
+msgid "Adjust the settings of the selected printer"
+msgstr "¦¾Ã¢×¦ºöÐûÇ «îÍô¦À¡È¢Â¢ý «¨Áô¨À Á¡üÚ"
+
+# libgnomeprintui/gnome-printer-dialog.c:120
+#: libgnomeprintui/gnome-printer-dialog.c:158
+msgid "Pr_inter:"
+msgstr "«îÍô_¦À¡È¢:"
+
+# libgnomeprintui/gnome-printer-dialog.c:121
+#: libgnomeprintui/gnome-printer-dialog.c:167
+msgid "_Settings:"
+msgstr "_«¨Á×¸û:"
+
+# libgnomeprintui/gnome-printer-dialog.c:122
+#: libgnomeprintui/gnome-printer-dialog.c:176
+msgid "_Location:"
+msgstr "_­¼õ:"
+
+# libgnomeprintui/gnome-printer-dialog.c:343
+#: libgnomeprintui/gnome-printer-dialog.c:445
+msgid "Select Printer"
+msgstr "«îÍô¦À¡È¢¨Âò ¦¾Ã¢×¦ºö"
+
+# libgnomeprintui/gnome-printer-dialog.c:343
+#: libgnomeprintui/gpaui/add-printer-dialog.c:59
+#: libgnomeprintui/gpaui/config-dialog.c:58
+msgid "Select printer model"
+msgstr "«îÍô¦À¡È¢ ÀÊÁò¨¾ ¦¾Ã¢×¦ºö"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:67
+#: libgnomeprintui/gpaui/config-dialog.c:66
+msgid "Manufacturer"
+msgstr "¯üÀò¾¢Â¡Ç÷"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:86
+#: libgnomeprintui/gpaui/config-dialog.c:85
+msgid "Model"
+msgstr "ÀÊÁõ"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:109
+#: libgnomeprintui/gpaui/config-dialog.c:108
+msgid "Name"
+msgstr "¦ÀÂ÷"
+
+# libgnomeprintui/gpaui/printer-selector.c:210
+# libgnomeprintui/gpaui/printer-selector.c:217
+#: libgnomeprintui/gpaui/add-printer-dialog.c:267
+#: libgnomeprintui/gpaui/config-dialog.c:266
+msgid "Add printer"
+msgstr "Ò¾¢Â «îÍô¦À¡È¢¨Âî §º÷"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:279
+#: libgnomeprintui/gpaui/config-dialog.c:278
+msgid "From PPD..."
+msgstr "PPD­ø ­ÕóÐ..."
+
+# libgnomeprintui/gpaui/media-orientation.c:58
+#: libgnomeprintui/gpaui/media-orientation.c:60
+msgid "Portrait"
+msgstr "¯ÕÅ¸¡ðº¢"
+
+# libgnomeprintui/gpaui/media-orientation.c:63
+#: libgnomeprintui/gpaui/media-orientation.c:65
+msgid "Landscape"
+msgstr "¿¢Äì¸¡ðº¢"
+
+# libgnomeprintui/gpaui/media-orientation.c:68
+#: libgnomeprintui/gpaui/media-orientation.c:70
+msgid "Rotate 180"
+msgstr "180 ÍÆüº¢"
+
+# libgnomeprintui/gpaui/printer-selector.c:207
+#: libgnomeprintui/gpaui/printer-selector.c:188
+msgid "Manage printers"
+msgstr "«îÍô¦À¡È¢¸¨Ç ¿¢÷Å¸¢"
+
+# libgnomeprintui/gpaui/printer-selector.c:210
+# libgnomeprintui/gpaui/printer-selector.c:217
+#. No printers
+#: libgnomeprintui/gpaui/printer-selector.c:195
+msgid "Add new printer"
+msgstr "Ò¾¢Â «îÍô¦À¡È¢¨Âî §º÷"
+
+# libgnomeprintui/gpaui/settings-selector.c:218
+#: libgnomeprintui/gpaui/settings-selector.c:155
+msgid "No printer selected"
+msgstr "«îÍô¦À¡È¢ ¦¾Ã¢×¦ºöÂÅ¢ø¨Ä"
+
+# libgnomeprintui/gpaui/settings-selector.c:229
+#: libgnomeprintui/gpaui/settings-selector.c:166
+msgid "No settings available"
+msgstr "«¨Á×¸û ²Ðõ ­ø¨Ä"
+
+# libgnomeprintui/gpaui/settings-selector.c:272
+#: libgnomeprintui/gpaui/settings-selector.c:209
+msgid "Add new settings"
+msgstr "Ò¾¢Â «¨Á×¸¨Ç §º÷"
+
+# libgnomeprintui/gpaui/transport-selector.c:306
+#: libgnomeprintui/gpaui/transport-selector.c:47
+msgid "Default printer"
+msgstr "¦¸¡¼¡¿¢¨Ä «îÍô¦À¡È¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: tests/sample_code.c:125
+msgid "My App Print Preview"
+msgstr "±ÉÐ ¿¢ÃÄ¢ý «îÍô¦À¡È¢ Óý¸¡ðº¢"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr "output.pdfÂ¢ý Ó¾ø ±ØòÐ-Å¨¸¨Â ±ÎòÐ font.dumpÂ¢ø §À¡Îõ"
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "font.dumpÂ¢ý ±ØòÐ-Å¨¸ ¾¨Äô ÀÌ¾¢¨Â À¢Ã¢ò¦¾ÎìÌõ"
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "±ØòÐ-Å¨¸Â¢ý ¯¼õ¨À À¢Ã¢ò¦¾ÎìÌõ"
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "±ØòÐ Å¨¸Â¢ý ¯¼õ¨À Á¨ÈÂ£Î ¿£ìÌõ"
+
+#: tests/testprint.c:72
+msgid "Render from metafile"
+msgstr "Á£-§¸¡ôÀ¢Ä¢ÕóÐ Å¨Ã"
+
+# tests/testprint.c:48
+#: tests/testprint.c:72 tests/testprint.c:78
+msgid "PATH"
+msgstr "À¡¨¾"
+
+#: tests/testprint.c:73
+msgid "Bring up font dialog"
+msgstr "±ØòÐ Å¨¸ ¯¨ÃÂ¡¼¨Äì ¸¡ðÎ¸"
+
+#: tests/testprint.c:74
+msgid "Bring up printer dialog"
+msgstr "«îÍô§À¡È¢ ¯¨ÃÂ¡¼¨Äì ¸¡ðÎ¸"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: tests/testprint.c:75
+msgid "Bring up print dialog"
+msgstr "«îº¢Î ¯¨ÃÂ¡¼¨Äì ¸¡ñÀ¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:871
+#: tests/testprint.c:76
+msgid "Use GnomePrintMasterPreview"
+msgstr "GnomePrintMasterPreview ÀÂýÀÎòÐ"
+
+#: tests/testprint.c:77
+msgid "Show paper dialog"
+msgstr "¸¡¸¢¾ ¯¨ÃÂ¡¼¨Äì ¸¡ñÀ¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:695
+#: tests/testprint.c:78
+msgid "Print text file"
+msgstr "¯¨Ã §¸¡ô¨À «îº¢Î¸"
+
+# libgnomeprintui/gpaui/transport-selector.c:41
+#~ msgid "Printer default location"
+#~ msgstr "«îÍô¦À¡È¢Â¢ý ¦¸¡¼¡¿¢¨Ä ­¼õ"
+
+# libgnomeprintui/gnome-print-dialog.c:446
+#~ msgid "from:"
+#~ msgstr "­í¸¢ÕóÐ:"
+
+# libgnomeprintui/gnome-print-dialog.c:460
+#~ msgid "to:"
+#~ msgstr "­¾ðÌ:"
+
+#~ msgid "Paper Size"
+#~ msgstr "¸¡¸¢¾ «Ç×"
+
+#~ msgid "Orientation"
+#~ msgstr "¾¢¨º «¨Á×"
+
+#~ msgid "Scaling"
+#~ msgstr "«Ç×Á¡üÈõ"
+
+#~ msgid "%0.3g%s x %0.3g%s"
+#~ msgstr "%0.3g%s x %0.3g%s"
+
+# libgnomeprintui/gpaui/transport-selector.c:302
+#~ msgid "Line printer: %s"
+#~ msgstr "ÅÃ¢-«îÍô¦À¡È¢: %s"
+
+# libgnomeprintui/gnome-print-dialog.c:238
+# libgnomeprintui/gnome-print-master-preview.c:695
+#~ msgid "Print"
+#~ msgstr "«îº¢Î"
+
+# libgnomeprintui/gnome-print-dialog.c:507
+#~ msgid "f_rom:"
+#~ msgstr "­í¸¢ÕóÐ:"
+
+# libgnomeprintui/gnome-print-dialog.c:524
+#~ msgid "_to:"
+#~ msgstr "­¾ðÌ:"
+
+# libgnomeprintui/gnome-print-master-preview.c:682
+#~ msgid "Zooms out"
+#~ msgstr "º¢È¢¾¡ìÌõ"
+
+# libgnomeprintui/gnome-print-master-preview.c:698
+#~ msgid "First"
+#~ msgstr "Ó¾ø"
+
+# libgnomeprintui/gnome-print-master-preview.c:701
+#~ msgid "Back"
+#~ msgstr "À¢ý"
+
+# libgnomeprintui/gnome-print-master-preview.c:704
+#~ msgid "Next"
+#~ msgstr "«Îò¾Ð"
+
+# libgnomeprintui/gnome-print-master-preview.c:707
+#~ msgid "Last"
+#~ msgstr "¸¨¼º¢"
+
+# libgnomeprintui/gnome-print-master-preview.c:710
+#~ msgid "Zoom in"
+#~ msgstr "¦À¡¢¾¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:711
+#~ msgid "Zoom out"
+#~ msgstr "º¢È¢¾¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:712
+#~ msgid "Fit"
+#~ msgstr "¦À¡Õò¾Á¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:713
+#~ msgid "Fit Wide"
+#~ msgstr "«¸ÄôÀÊ ¦À¡Õò¾Á¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:713
+#~ msgid "Zooms to fit the width of the page"
+#~ msgstr "Àì¸ò¾¢ý «¸Äò¾¢ø ¦À¡ÕòÐõÅ¨Ã ¦À¡¢¾¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:714
+#~ msgid "Fit Tall"
+#~ msgstr "¯ÂÃôÀÊ ¦À¡Õò¾Á¡ìÌ"
+
+# libgnomeprintui/gnome-print-master-preview.c:714
+#~ msgid "Zooms to fit the height of the page"
+#~ msgstr "Àì¸ò¾¢ý ¯ÂÃò¾¢ø ¦À¡ÕòÐõÅ¨Ã ¦À¡¢¾¡ìÌ"

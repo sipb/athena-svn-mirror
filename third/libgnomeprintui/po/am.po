@@ -1,0 +1,517 @@
+# Translations into the Amharic Language.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libgnomeprintui package.
+# Ge'ez Frontier Foundation <locales@geez.org>, 2002.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprintui VERSION\n"
+"POT-Creation-Date: 2002-12-27 21:55-0500\n"
+"PO-Revision-Date: 2002-12-21 22:37+EDT\n"
+"Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
+"Language-Team: Amharic <locales@geez.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:174
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Font family"
+msgstr "የፊደል ቅርጽ ቤተሰብ"
+
+#: libgnomeprintui/gnome-font-dialog.c:210
+msgid "The list of font families available"
+msgstr "የፊደል ቅርጹ ዝርያ ዝርዝር ማግኘት ይቻላል"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:221
+msgid "Style"
+msgstr "ዘይቤ"
+
+#: libgnomeprintui/gnome-font-dialog.c:263
+msgid "Font style"
+msgstr "የፊደል ቅርጽ ዘይቤ"
+
+#: libgnomeprintui/gnome-font-dialog.c:264
+msgid "The list of styles available for the selected font family"
+msgstr "ለተመረጠው የፊደል ቅርጽ ዝርያ የዘይቤዎች ዝርዝር ማግኘት ይቻላል"
+
+#: libgnomeprintui/gnome-font-dialog.c:297
+msgid "Font _size:"
+msgstr "የፊደል ቅርጽ _መጠን፦"
+
+#: libgnomeprintui/gnome-font-dialog.c:784
+msgid "This font does not have sample"
+msgstr "ይህ የፊደል ቅርጽ ናሙና የለውም"
+
+#: libgnomeprintui/gnome-font-dialog.c:892
+msgid "Font Preview"
+msgstr "የፊደል ቅርጽ ቅድመ እይታ"
+
+#: libgnomeprintui/gnome-font-dialog.c:893
+msgid "Displays some example text in the selected font"
+msgstr "በተመረጠው የፊደል ቅርጽ ውስጥ አንዳንድ ምሳሌዎች ያሳያል"
+
+#: libgnomeprintui/gnome-font-dialog.c:908
+msgid "Font Selection"
+msgstr "የፊደል ቅርጽ ምርጫ"
+
+#: libgnomeprintui/gnome-print-copies.c:247
+msgid "Copies"
+msgstr "ግልባጮች"
+
+#: libgnomeprintui/gnome-print-copies.c:256
+msgid "N_umber of copies:"
+msgstr "የግልባጮች _ቁጥር፦"
+
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr "ሰነዱ ተባዝቶ በሚታተምበት ጊዜ ምስሉ ጽሑፎቹን አነፃፅሮ በተራ ያሳያል"
+
+#: libgnomeprintui/gnome-print-copies.c:285
+msgid "_Collate"
+msgstr "ጽሑፎችን በቅደም ተከተል _አስቀምጥ"
+
+#: libgnomeprintui/gnome-print-copies.c:290
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr "የሰነዱ ቅጂዎች በየጣልቃ ወረቀት ከመጨመር ለየብቻ ወይም በየተራ ቢታተሙ"
+
+#: libgnomeprintui/gnome-print-dialog.c:191
+msgid "Print range"
+msgstr "የሕትመት ብዛት"
+
+#: libgnomeprintui/gnome-print-dialog.c:229
+msgid "_All"
+msgstr "_ሁሉም"
+
+#: libgnomeprintui/gnome-print-dialog.c:251
+msgid "_Selection"
+msgstr "_ምርጫ"
+
+#: libgnomeprintui/gnome-print-dialog.c:351
+msgid "_Job"
+msgstr "_ስራ"
+
+#: libgnomeprintui/gnome-print-dialog.c:366
+msgid "P_rinter"
+msgstr "_ማተሚያ "
+
+#: libgnomeprintui/gnome-print-dialog.c:376
+msgid "Pap_er"
+msgstr "_ወረቀት"
+
+#: libgnomeprintui/gnome-print-dialog.c:383
+msgid "Error in loading printer configuration"
+msgstr "የማተሚያውን ማስተካከያ በሚጭንበት ጊዜ ስህተት ተፈጥሯል"
+
+#: libgnomeprintui/gnome-print-dialog.c:388
+msgid "Gnome Print Dialog"
+msgstr "የኖም ህትመት መምረጫ"
+
+#: libgnomeprintui/gnome-print-dialog.c:530
+msgid "_From:"
+msgstr "_ከ፦"
+
+#: libgnomeprintui/gnome-print-dialog.c:544
+msgid "Sets the start of the range of pages to be printed"
+msgstr "የሚታተሙተን የገጾች ብዛት መጀመሪያ ያስተካክላል"
+
+#: libgnomeprintui/gnome-print-dialog.c:554
+msgid "_To:"
+msgstr "_ወደ፦"
+
+#: libgnomeprintui/gnome-print-dialog.c:568
+msgid "Sets the end of the range of pages to be printed"
+msgstr "ሊታተሙ ያሉትን አጠቃላይ የገጾችን ብዛት ያስተካክላል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:595
+msgid "Page Preview"
+msgstr "የገጽ ቅድመ እይታ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:596
+msgid "The preview of a page in the document to be printed"
+msgstr "በሰነዱ ውስጥ ሊታተም ያለው የገጹ ቅድመ እይታ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:652
+msgid "P_age: "
+msgstr "_ገጽ፦ "
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-master-preview.c:661
+msgid "of"
+msgstr "የ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:667
+msgid "Page total"
+msgstr "አጠቃላይ ገጽ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:668
+msgid "The total number of pages in the document"
+msgstr "በሰነዱ ውስጥ ያሉት አጠቃላይ የገጾቹ ብዛት"
+
+#: libgnomeprintui/gnome-print-master-preview.c:743
+msgid "/_Preview"
+msgstr "/ቅድመ ዕይታ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:745
+msgid "/Preview/_Print"
+msgstr "/ቅድመ ዕይታ/_አትም"
+
+#: libgnomeprintui/gnome-print-master-preview.c:748
+msgid "/Preview/_Close"
+msgstr "/ቅድመ ዕይታ/_ዝጋ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:752
+msgid "/_View"
+msgstr "/_ተመልከት"
+
+#: libgnomeprintui/gnome-print-master-preview.c:754
+msgid "/View/Zoom _1:1"
+msgstr "/ተመልከት/ቅርበትና ርቀት _1:1"
+
+#: libgnomeprintui/gnome-print-master-preview.c:757
+msgid "/View/Zoom to _Fit"
+msgstr "/ተመልከት/በመስኮቱ _ልክ አጉላ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:760
+msgid "/View/Zoom _In"
+msgstr "/ተመልከት/ከ_ቅርበት እይታ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:763
+msgid "/View/Zoom _Out"
+msgstr "/ተመልከት/ከ_ርቀት እይታ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:767
+msgid "/_Go"
+msgstr "/_ሂድ ወደ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:769
+msgid "/Go/_First Page"
+msgstr "/ሂድ ወደ/የ_መጀመሪያው ገጽ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:772
+msgid "/Go/_Previous Page"
+msgstr "/ሂድ ወደ/_ያለፈው ገጽ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:775
+msgid "/Go/_Next Page"
+msgstr "/ሂድ ወደ/የሚ_ቀጥለው ገጽ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:778
+msgid "/Go/_Last Page"
+msgstr "/ሂድ ወደ/የመ_ጨረሻው ገጽ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:843
+msgid "Prints the current file"
+msgstr "አሁን ያለውን ፋይል ያትማል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:847
+msgid "Closes print preview window"
+msgstr "የህትመት ቅድመ ዕይታ መስኮቱን ይዘጋል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:858
+msgid "Shows the first page"
+msgstr "የመጀመሪያው ገጽ ይታይ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:860
+msgid "Shows the previous page"
+msgstr "ያለፈውን ገጽ አሳይ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:862
+msgid "Shows the next page"
+msgstr "የሚቀጥለውን ገጽ አሳይ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:864
+msgid "Shows the last page"
+msgstr "የመጨረሻው ገጽ ይታይ"
+
+#: libgnomeprintui/gnome-print-master-preview.c:869
+msgid "Zooms 1:1"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:871
+msgid "Zooms to fit the whole page"
+msgstr "በሁሉም ገጽ ልክ እንዲሆን ያጐላል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:873
+msgid "Zooms the page in"
+msgstr "የገጹን መግቢያ ያጐላል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:875
+msgid "Zooms the page out"
+msgstr "የገጹን መውጫ ያጐላል"
+
+#: libgnomeprintui/gnome-print-master-preview.c:984
+msgid "Gnome Print Preview"
+msgstr "የኖም ቅድመ ህትመት ዕይታ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1518
+msgid "Pt"
+msgstr "ነጥብ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1519
+msgid "mm"
+msgstr "ሚ/ሜ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1520
+msgid "cm"
+msgstr "ሴ/ሜ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1521
+msgid "m"
+msgstr "ሜ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1522
+msgid "in"
+msgstr "ኢ"
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:1603
+msgid "Paper and layout"
+msgstr "ገጽ እና እቅድ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1615
+msgid "Paper _size:"
+msgstr "የወረከት _መጠን፦"
+
+#. Create spinbuttons for paper size
+#: libgnomeprintui/gnome-print-paper-selector.c:1627
+msgid "_Width:"
+msgstr "_ስፋት፦"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1643
+msgid "_Height:"
+msgstr "_እርዝማኔ፦"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1666
+msgid "Metric selector"
+msgstr "የመለኪያ ዘዴ መምረጫ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1667
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr "የወረቀቱ ስፋትና ቁመት በሚያስተካክሉበት ጊዜ የመለኪያውን ዘዴ ይገልፃል።"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1670
+msgid "_Feed orientation:"
+msgstr "የ_ማተሚያ ይዞታዎች፦"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1685
+msgid "Page _orientation:"
+msgstr "የ_ገጽ አቀማመጥ፦"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:1697
+msgid "_Layout:"
+msgstr "_እቅድ፦"
+
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:1709
+#: libgnomeprintui/gnome-print-paper-selector.c:1719
+msgid "Preview"
+msgstr "ቅድመ ዕይታ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1720
+msgid "Preview of the page size, orientation and layout"
+msgstr "የገጹን መጠን፥ አቀማመጥ እና እቅድ ቅድመ እይታ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1739
+msgid "Margins"
+msgstr "ህዳጎች"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1773
+msgid "Top"
+msgstr "ወደ ላይ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1776
+msgid "Bottom"
+msgstr "ወደ ታች"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1779
+msgid "Left"
+msgstr "ግራ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1782
+msgid "Right"
+msgstr "ቀኝ"
+
+#. Fill optionmenus from config
+#: libgnomeprintui/gnome-print-paper-selector.c:1824
+msgid "No papers defined"
+msgstr "የተገለፀ የወረቀቶች ዓይነት የለም"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1835
+#: libgnomeprintui/gnome-print-paper-selector.c:1837
+msgid "No orientations defined"
+msgstr "የተገለፀ አቀማመጥ የለም"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1839
+msgid "No layouts defined"
+msgstr "የተገለፀ እቅድ የለም"
+
+#: libgnomeprintui/gnome-printer-dialog.c:123
+msgid "Printer"
+msgstr "ማተሚያ"
+
+#: libgnomeprintui/gnome-printer-dialog.c:132
+msgid "State:"
+msgstr "ሁኔታ፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:135
+msgid "Type:"
+msgstr "ዓይነት፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:138
+msgid "Comment:"
+msgstr "አስተያየት፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:140
+msgid "Co_nfigure"
+msgstr "_ለውጡ"
+
+#: libgnomeprintui/gnome-printer-dialog.c:147
+msgid "Adjust the settings of the selected printer"
+msgstr "የተመረጠውን የማተሚያ ይዞታዎች አስተካክል"
+
+#: libgnomeprintui/gnome-printer-dialog.c:158
+msgid "Pr_inter:"
+msgstr "_ማተሚያ፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:167
+msgid "_Settings:"
+msgstr "_ምርጫዎች፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:176
+msgid "_Location:"
+msgstr "_ቦታ፦"
+
+#: libgnomeprintui/gnome-printer-dialog.c:445
+msgid "Select Printer"
+msgstr "ማተሚያ ምረጥ"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:59
+#: libgnomeprintui/gpaui/config-dialog.c:58
+msgid "Select printer model"
+msgstr "የማተሚያውን ሞዴል ምረጡ"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:67
+#: libgnomeprintui/gpaui/config-dialog.c:66
+msgid "Manufacturer"
+msgstr "አምራቹ"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:86
+#: libgnomeprintui/gpaui/config-dialog.c:85
+msgid "Model"
+msgstr "ሞዴል"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:109
+#: libgnomeprintui/gpaui/config-dialog.c:108
+msgid "Name"
+msgstr "ስም"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:267
+#: libgnomeprintui/gpaui/config-dialog.c:266
+msgid "Add printer"
+msgstr "ማተሚያ ጨምር"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:279
+#: libgnomeprintui/gpaui/config-dialog.c:278
+msgid "From PPD..."
+msgstr "ከ PPD..."
+
+#: libgnomeprintui/gpaui/media-orientation.c:60
+msgid "Portrait"
+msgstr "በቁም"
+
+#: libgnomeprintui/gpaui/media-orientation.c:65
+msgid "Landscape"
+msgstr "አግድም"
+
+#: libgnomeprintui/gpaui/media-orientation.c:70
+msgid "Rotate 180"
+msgstr "በ180 ያሽከርክሩ"
+
+#: libgnomeprintui/gpaui/printer-selector.c:188
+msgid "Manage printers"
+msgstr "ማተሚያዎቹን ይቆጣጠሩ"
+
+#. No printers
+#: libgnomeprintui/gpaui/printer-selector.c:195
+msgid "Add new printer"
+msgstr "አዲስ ማተሚያ ጨምር"
+
+#: libgnomeprintui/gpaui/settings-selector.c:155
+msgid "No printer selected"
+msgstr "ምንም ዓይነት ማተሚያ አልተመረጠም"
+
+#: libgnomeprintui/gpaui/settings-selector.c:166
+msgid "No settings available"
+msgstr "የሚገኙ ይዞታዎች የሉም"
+
+#: libgnomeprintui/gpaui/settings-selector.c:209
+msgid "Add new settings"
+msgstr "አዲስ ይዞታዎች ጨምር"
+
+#: libgnomeprintui/gpaui/transport-selector.c:47
+msgid "Default printer"
+msgstr "የነበረው ማተሚያ"
+
+#: tests/sample_code.c:125
+msgid "My App Print Preview"
+msgstr "የኔ App ቅድመ ህትመት ዕይታ"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr "የመጀመሪያውን የፊደል ቅርጽ ከoutput.pdf ለይቶ አውጥቶ font.dump ውስጥ ያስቀምጠዋል።"
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "ከfont.dump ውስጥ የፊደል ቅርጹን አናት ለይቶ ያወጣል"
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "የፊደሉን ቅርጽ አካል ለይቶ ያወጣል"
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "የጽሑፉን ቅርጽ አካል ፍቺ ይሰጣል"
+
+#: tests/testprint.c:72
+msgid "Render from metafile"
+msgstr "ከmetafile ተረጎመ/ምላሽ ሰጠ"
+
+#: tests/testprint.c:72 tests/testprint.c:78
+msgid "PATH"
+msgstr "መተላለፊያ"
+
+#: tests/testprint.c:73
+msgid "Bring up font dialog"
+msgstr "የፊደል ቅርጽ መምረጫ አቅርብ"
+
+#: tests/testprint.c:74
+msgid "Bring up printer dialog"
+msgstr "የማተሚያ መምረጫ አቅርብ"
+
+#: tests/testprint.c:75
+msgid "Bring up print dialog"
+msgstr "የሕትመት መምረጫ አቅርብ"
+
+#: tests/testprint.c:76
+msgid "Use GnomePrintMasterPreview"
+msgstr "GnomePrintMasterPreview ተጠቀም"
+
+#: tests/testprint.c:77
+msgid "Show paper dialog"
+msgstr "የወረቀት መምረጫ አሳይ"
+
+#: tests/testprint.c:78
+msgid "Print text file"
+msgstr "የጽሑፍ ፋይሉን አትም"
