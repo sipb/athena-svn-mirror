@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.9 1994-03-25 15:58:42 miki Exp $
+ * $Id: unmount.c,v 1.10 1994-06-20 14:42:14 vrt Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.9 1994-03-25 15:58:42 miki Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.10 1994-06-20 14:42:14 vrt Exp $";
 
 #include "attach.h"
 
@@ -67,8 +67,11 @@ unmount_42(errname, mntpt, dev)
 		wait(&status);
 		break;
 	}
+#if !defined(SOLARIS) && !defined(linux)
 	return(status ? FAILURE : SUCCESS);
-
+#else
+	return(status == 0 || ! is_mountpoint (mntpt) ? SUCCESS : FAILURE);
+#endif
 #else /* !UMOUNT_CMD */
 
 #if defined(_AIX) && (AIXV > 30)
@@ -309,5 +312,35 @@ xdr_fhandle(xdrs, fhp)
         return (FALSE);
 }
 
+#endif
+
+#if defined(SOLARIS) || defined(linux)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+
+int is_mountpoint (dirname)
+    char *dirname;
+{
+    struct stat rootstat, pointstat;
+    char *parent;
+    int len;
+
+    parent = strdup (dirname);
+    len = strlen (parent) - 1;
+    while (dirname[len] == '/') len--;
+    while (len > 0 && dirname[len] != '/') len--;
+    len++;
+    parent[len] = 0;
+
+    if (stat (parent, &rootstat) < 0) {
+      return (FALSE);
+    }
+    if (stat (dirname, &pointstat) < 0) {
+      return (FALSE);
+    }
+    free (parent);
+    return (rootstat.st_dev != pointstat.st_dev);
+}
 #endif
 
