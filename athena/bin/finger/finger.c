@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.35 1998-01-03 16:38:35 ghudson Exp $
+ * $Id: finger.c,v 1.36 1999-01-24 21:47:33 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.35 1998-01-03 16:38:35 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.36 1999-01-24 21:47:33 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -177,7 +177,7 @@ int MMLEN = 15;
 int unbrief = 1;		/* -b option default */
 int header = 1;			/* -f option default */
 int hack = 1;			/* -h option default */
-int idle = 0;			/* -i option default */
+int idlep = 0;			/* -i option default */
 int large = 0;			/* -l option default */
 int match = 1;			/* -m option default */
 int plan = 1;			/* -p option default */
@@ -224,7 +224,7 @@ main(argc, argv)
 				hack = 0;
 				break;
 			case 'i':
-				idle = 1;
+				idlep = 1;
 				unquick = 0;
 				break;
 			case 'l':
@@ -249,7 +249,7 @@ main(argc, argv)
 				fprintf(stderr, "Usage: finger [-bfhilmpqsw] [login1 [login2 ...] ]\n");
 				exit(1);
 			}
-	if (unquick || idle)
+	if (unquick || idlep)
 		(void) time(&tloc);
 	/*
 	 * *argv == 0 means no names given 
@@ -471,6 +471,7 @@ donames(argv)
 				memcpy(new->host, user.ut_host, HMAX);
 				new->host[HMAX] = 0;
 				new->loginat = UTTIME(user);
+				new->logintime = NULL;
 				new->pwd = p->pwd;
 				new->loggedin = 1;
 				new->original = 0;
@@ -554,7 +555,7 @@ print(personn)
 		}
 		else {
 			printf("Login      TTY      When");
-			if (idle)
+			if (idlep)
 				printf("               Idle");
 			(void) putchar('\n');
 		}
@@ -677,7 +678,7 @@ quickprint(pers)
 {
 	printf("%-8.8s  ", pers->name);
 	if (pers->loggedin) {
-		if (idle) {
+		if (idlep) {
 			findidle(pers);
 			printf("%c%-8s %-16.16s", pers->writable ? ' ' : '*',
 			       pers->tty, ctime(&pers->loginat));
