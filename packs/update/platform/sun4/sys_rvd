@@ -4,21 +4,23 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.19 1996-05-09 15:56:40 ghudson Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.20 1996-05-09 20:13:52 ghudson Exp $
 	/core::::
 	/etc:::			# These are specific to each machine.
 		crontab.root.add
 		ftpusers
+		group
 		mail
-		system
 		inet/inetd.conf
 		inet/netmasks	
 		inet/services
-			# The following are symbolic links; no update is
-			# needed
-		-> gateways
-		-> inet/protocols
+		passwd
+		passwd.fallback
 		-> shells
+		system
+		shadow
+		shadow.fallback
+		syslog.conf
 		:
 	/etc/mail:::
 		sendmail.cf
