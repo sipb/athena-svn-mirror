@@ -185,7 +185,10 @@ ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= /usr/athena/bin/mkdirhier
 
-ATHVERS = ${IRULESRC}/update.conf
+/* Reference this through the build tree instead of through ${IRULESRC}, to
+ * allow patchlevel to be different on different platforms.  This can be
+ * revisited when patchlevels are numbers and not letters. */
+ATHVERS = /build/support/config/cf/update.conf
 
 ATHBASEDIR=/usr/athena
 
