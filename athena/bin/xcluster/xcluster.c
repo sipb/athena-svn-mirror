@@ -1,5 +1,5 @@
 /*
- * $Id: xcluster.c,v 1.3 1999-02-14 17:11:02 danw Exp $
+ * $Id: xcluster.c,v 1.4 1999-03-01 18:30:05 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Id: xcluster.c,v 1.3 1999-02-14 17:11:02 danw Exp $";
+"$Id: xcluster.c,v 1.4 1999-03-01 18:30:05 ghudson Exp $";
 #endif	/* lint */
 
 #include "mit-copyright.h"
@@ -147,7 +147,7 @@ static XjResource appResources[] =
 
 #undef offset
 
-int div;
+int divis;
 int xleft = 0, yleft = 0;
 struct cluster *circled = NULL;
 Pixmap pixmap_on = (Pixmap) NULL, pixmap_off = (Pixmap) NULL;
@@ -175,25 +175,25 @@ int resize(draw, foo, data)
   div_x = (width / draw->core.width) + 1;
   div_y = (height / draw->core.height) + 1;
 
-  div = (div_x > div_y) ? div_x : div_y;
+  divis = (div_x > div_y) ? div_x : div_y;
 
   if (parms.zoom)
     {
-      if (div == div_y)
+      if (divis == div_y)
 	{
-	  yleft = (2500-ly)/div;
-	  xleft = -lx/div + ((draw->core.width - (hx - lx)/div) / 2);
+	  yleft = (2500-ly)/divis;
+	  xleft = -lx/divis + ((draw->core.width - (hx - lx)/divis) / 2);
 	}
       else
 	{
-	  xleft = (2500-lx)/div;
-	  yleft = -ly/div + ((draw->core.height - (hy - ly)/div) / 2);
+	  xleft = (2500-lx)/divis;
+	  yleft = -ly/divis + ((draw->core.height - (hy - ly)/divis) / 2);
 	}
     }
   else
     {
-      yleft = (draw->core.height - (max_y/div)) / 2;
-      xleft = (draw->core.width - (max_x/div)) / 2;
+      yleft = (draw->core.height - (max_y/divis)) / 2;
+      xleft = (draw->core.width - (max_x/divis)) / 2;
     }
 
   if (points2 == NULL)
@@ -201,8 +201,8 @@ int resize(draw, foo, data)
 
   for (i=0; i < num_points; i++)
     {
-      points2[i].x = points[i].x / div + xleft;
-      points2[i].y = points[i].y / div + yleft;
+      points2[i].x = points[i].x / divis + xleft;
+      points2[i].y = points[i].y / divis + yleft;
     }
   XClearWindow(XjDisplay(draw), XjWindow(draw));
 
@@ -212,12 +212,12 @@ int resize(draw, foo, data)
     XFreePixmap(XjDisplay(map), pixmap_off);
   pixmap_on = XCreatePixmap(XjDisplay(map), 
 			    XjWindow(map),
-			    800/div+2, 800/div+2,
+			    800/divis+2, 800/divis+2,
 			    DefaultDepth(XjDisplay(map), 
 					 DefaultScreen(XjDisplay(map))));
   pixmap_off = XCreatePixmap(XjDisplay(map), 
 			     XjWindow(map),
-			     800/div+2, 800/div+2,
+			     800/divis+2, 800/divis+2,
 			     DefaultDepth(XjDisplay(map), 
 					  DefaultScreen(XjDisplay(map))));
   circled = NULL;
@@ -237,29 +237,29 @@ void draw_circle(c)
     {
       XCopyArea(XjDisplay(map), pixmap_off, XjWindow(map),
 		((DrawingJet) map)->drawing.foreground_gc,
-		0, 0, 800/div+2, 800/div+2,
-		(circled->x_coord-400)/div+xleft-1,
-		(circled->y_coord-400)/div+yleft-1);
+		0, 0, 800/divis+2, 800/divis+2,
+		(circled->x_coord-400)/divis+xleft-1,
+		(circled->y_coord-400)/divis+yleft-1);
     }
 
   if (c != NULL  &&  circled != c  &&  map_gc != NULL)
     {
       XCopyArea(XjDisplay(map), XjWindow(map), pixmap_off,
 		((DrawingJet) map)->drawing.foreground_gc,
-		(c->x_coord-400)/div + xleft - 1,
-		(c->y_coord-400)/div + yleft - 1,
-		800/div+2, 800/div+2,
+		(c->x_coord-400)/divis + xleft - 1,
+		(c->y_coord-400)/divis + yleft - 1,
+		800/divis+2, 800/divis+2,
 		0, 0);
       XDrawArc(XjDisplay(map), XjWindow(map), map_gc,
-	       (c->x_coord-400)/div + xleft,
-	       (c->y_coord-400)/div + yleft,
-	       800/div, 800/div,
+	       (c->x_coord-400)/divis + xleft,
+	       (c->y_coord-400)/divis + yleft,
+	       800/divis, 800/divis,
 	       0, 64 * 365);
       XCopyArea(XjDisplay(map), XjWindow(map), pixmap_on,
 		((DrawingJet) map)->drawing.foreground_gc,
-		(c->x_coord-400)/div + xleft - 1,
-		(c->y_coord-400)/div + yleft - 1,
-		800/div+2, 800/div+2,
+		(c->x_coord-400)/divis + xleft - 1,
+		(c->y_coord-400)/divis + yleft - 1,
+		800/divis+2, 800/divis+2,
 		0, 0);
       /* There's only 360 degrees in a circle, I know, but for the */
       /* xterminal, we have to go a bit extra.  Sigh. */
@@ -316,11 +316,11 @@ int expos(draw, foo, data)
   for (c = cluster_list; c != NULL; c = c->next)
     {
       XDrawLine(XjDisplay(draw), XjWindow(draw), map_gc,
-                (c->x_coord-100)/div +xleft, (c->y_coord-100)/div +yleft,
-                (c->x_coord+100)/div +xleft, (c->y_coord+100)/div +yleft);
+                (c->x_coord-100)/divis +xleft, (c->y_coord-100)/divis +yleft,
+                (c->x_coord+100)/divis +xleft, (c->y_coord+100)/divis +yleft);
       XDrawLine(XjDisplay(draw), XjWindow(draw), map_gc,
-                (c->x_coord-100)/div +xleft, (c->y_coord+100)/div +yleft,
-                (c->x_coord+100)/div +xleft, (c->y_coord-100)/div +yleft);
+                (c->x_coord-100)/divis +xleft, (c->y_coord+100)/divis +yleft,
+                (c->x_coord+100)/divis +xleft, (c->y_coord-100)/divis +yleft);
       if (c == Current)
 	{
 	  draw_circle(c);
@@ -516,13 +516,13 @@ struct cluster *find_cluster(a, b)
   struct cluster *closest_cluster, *curr;
 
   closest_cluster = curr = cluster_list;
-  closest_distance = SQUARE(curr->x_coord/div + xleft - a)
-    + SQUARE(curr->y_coord/div + yleft - b);
+  closest_distance = SQUARE(curr->x_coord/divis + xleft - a)
+    + SQUARE(curr->y_coord/divis + yleft - b);
 
   for(; curr != NULL; curr=curr->next)
     {
-      distance = SQUARE(curr->x_coord/div + xleft - a)
-	+ SQUARE(curr->y_coord/div + yleft - b);
+      distance = SQUARE(curr->x_coord/divis + xleft - a)
+	+ SQUARE(curr->y_coord/divis + yleft - b);
       if (distance < closest_distance)
         {
           closest_distance = distance;
@@ -585,15 +585,15 @@ int flash(data, id)
       if (state)
 	XCopyArea(XjDisplay(map), pixmap_on, XjWindow(map),
 		  ((DrawingJet) map)->drawing.foreground_gc,
-		  0, 0, 800/div+2, 800/div+2,
-		  (circled->x_coord-400)/div+xleft-1,
-		  (circled->y_coord-400)/div+yleft-1);
+		  0, 0, 800/divis+2, 800/divis+2,
+		  (circled->x_coord-400)/divis+xleft-1,
+		  (circled->y_coord-400)/divis+yleft-1);
       else
 	XCopyArea(XjDisplay(map), pixmap_off, XjWindow(map),
 		  ((DrawingJet) map)->drawing.foreground_gc,
-		  0, 0, 800/div+2, 800/div+2,
-		  (circled->x_coord-400)/div+xleft-1,
-		  (circled->y_coord-400)/div+yleft-1);
+		  0, 0, 800/divis+2, 800/divis+2,
+		  (circled->x_coord-400)/divis+xleft-1,
+		  (circled->y_coord-400)/divis+yleft-1);
     }
   state = !state;
   (void) XjAddWakeup(flash, 0, 1000);
