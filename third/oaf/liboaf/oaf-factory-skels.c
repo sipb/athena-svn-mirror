@@ -11,6 +11,7 @@ _ORBIT_GNOME_ObjectFactory_CannotActivate_marshal(GIOPSendBuffer *
 						  CORBA_Environment * ev)
 {
 }
+
 void
 _ORBIT_skel_GNOME_ObjectFactory_manufactures(POA_GNOME_ObjectFactory *
 					     _ORBIT_servant,
@@ -238,32 +239,33 @@ get_skel_GNOME_ObjectFactory(POA_GNOME_ObjectFactory * servant,
 
    switch (opname[0]) {
      case 'c':
-      if (strcmp((opname + 1), "reate_object"))
-	 break;
-      *impl =
-	 (gpointer) servant->vepv->GNOME_ObjectFactory_epv->create_object;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_create_object;
-      break;
+	if (strcmp((opname + 1), "reate_object"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_ObjectFactory_epv->create_object;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_create_object;
+	break;
      case 'm':
-      if (strcmp((opname + 1), "anufactures"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_ObjectFactory_epv->manufactures;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_manufactures;
-      break;
+	if (strcmp((opname + 1), "anufactures"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_ObjectFactory_epv->manufactures;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_manufactures;
+	break;
      case 'r':
-      if (strcmp((opname + 1), "ef"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_ObjectFactory_epv->ref;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_ref;
-      break;
+	if (strcmp((opname + 1), "ef"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_ObjectFactory_epv->ref;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_ref;
+	break;
      case 'u':
-      if (strcmp((opname + 1), "nref"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_ObjectFactory_epv->unref;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_unref;
-      break;
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_ObjectFactory_epv->unref;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_ObjectFactory_unref;
+	break;
      default:
-      break;
+	break;
    }
    return NULL;
 }
@@ -275,6 +277,7 @@ init_local_objref_GNOME_ObjectFactory(CORBA_Object obj,
    obj->vepv[GNOME_ObjectFactory__classid] =
       servant->vepv->GNOME_ObjectFactory_epv;
 }
+
 void
 POA_GNOME_ObjectFactory__init(PortableServer_Servant servant,
 			      CORBA_Environment * env)

@@ -106,6 +106,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 YACC = @YACC@
@@ -375,37 +376,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-empty-common.o: empty-common.c empty.h
-empty-server.o: empty-server.c empty.h ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h
-empty-skels.o: empty-skels.c empty.h
-empty-stubs.o: empty-stubs.c empty.h
-oaf-run-query.o: oaf-run-query.c ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h empty.h
-oaf-test-async.o: oaf-test-async.c ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h ../liboaf/oaf-async.h
-oaf-test-client.o: oaf-test-client.c ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h empty.h
 
 info-am:
 info: info-am

@@ -1,3 +1,142 @@
+2001-02-26  Robin * Slomkowski  <rslomkow@rslomkow.org>
+
+	* configure.in: upped the version to 0.6.4
+
+2001-02-26  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	Fixed bugzilla.eazel.com bug 6981 (Unregistering servers causes
+	failure when activating a re-registered version), AKA
+	bugzilla.ximian.com bug 1559
+
+	* liboaf/oaf-servreg.c (oaf_active_server_register): Call the
+	ObjectDirectory registration method _before_ returning the IOR to
+	avoid a race condition when activating the same server twice in
+	rapid succession. This fixes the bugs above.
+
+	* docs/standard-attributes.txt: Document new attributes.
+
+2001-02-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: George Lebl  <jirka@5z.com>
+
+	Fixed bug 6728 (inherited file descriptors stymie automounter)
+
+	* oafd/main.c (main): Replace stdin, stdout and stderr with
+	/dev/null to avoid automounter problems when these are redirected
+	by the OS to a log file. However, do not do this if
+	OAF_DEBUG_OUTPUT is set to a non-empty value, so that there is
+	still a way to get debug output.
+
+2001-02-15  Darin Adler  <darin@eazel.com>
+
+	* liboaf/oaf-mainloop.c: (oaf_get_popt_table_name):
+	Fix "OAF Options" to be "OAF options" to match all the other
+	popt option sections which use lower case (except GNOME).
+
+2001-02-15  Dan Damian  <dand@dnttm.ro>
+
+	* configure.in (ALL_LINGUAS): added "ro" (Romanian".
+
+2001-02-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	* configure.in, NEWS: Updated for 0.6.3
+
+2001-02-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 6266 (oafd process size frows as you use Nautilus). Two of
+	these leak fixes are from a patch by <migras@atlas.uvigo.se>. In
+	the process fixed 2728 (Memory leak to avoid segfaulting) - turns
+	out it is now safe to free.
+
+	* oafd/ac-corba.c (ac_query_run): Free the requirements and sort
+	item query expressions when done (thanks to <migras@atlas.uvigo.se>).
+	
+	(impl_OAF_ActivationContext_activate_from_id): Free requirements
+	string.
+	
+	(impl_OAF_ActivationContext_activate_from_id_async): Free
+	requirements string.
+
+	* oafd/ac-query-expr.c (qexp_free): Free function name for functions.
+	
+	(qexp_function_new): turn wacky for loop into equivalent while loop
+
+	(qexp_evaluate_id): Set needs_free to TRUE (thanks to
+	<migras@atlas.uvigo.se>).
+	
+	* oafd/ac-query-lex.l, oafd/ac-query-parse.y: Reformatted a bit.
+
+2001-02-06  Maciej Stachowiak  <mjs@eazel.com>
+
+	* Makefile.am: Put .in versions xml-i18n-tools in EXTRA_DIST.
+	* .cvsignore: Add .in versions of xml-i18n-tools.
+
+2001-02-05  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* configure.in (ALL_LINGUAS): Added pt_BR to ALL_LINGUAS.
+
+2001-02-03  Michael Meeks  <michael@helixcode.com>
+
+	* test/oaf-slay.tmpl: cope with SunOS elegantly.
+
+2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* liboaf/liboaf.h: Move oaf_popt_options to oaf-mainloop.h *
+	liboaf/oaf-mainloop.h, liboaf/oaf-mainloop.c
+	(oaf_get_popt_table_name): New call to get the proper name for the
+	oaf options table (a translated copy of the string "OAF Options").
+
+2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Changes to help fix bug 5510 (descriptions of OAF-specific options
+	in --help are not translated).
+
+	* liboaf/Makefile.am: pass OAF_TEXTDOMAIN define.
+	* liboaf/oaf-mainloop.c: (oaf_init): Call bindtextdomain so popt
+	options etc get translated right.
+
+2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	Fix bug 6170 (OAF should have an easy way to prefer components
+	according to a prioritized preference list on query or activate)
+	
+	* oafd/ac-query-expr.c: (qexp_func_prefer_by_list_order): Add a
+	new query language operator to allow sorting results according to
+	an explicit preference list.
+	(qexp_constant_compare): Fix comparing numeric constants. The
+	previous version was numerically unstable and would give
+	inconsistent results when comparing two equal numbers (such as -1
+	to -1, as revealed by the change above).
+
+	* api-docs/query-langage.sgml, docs/query-language.txt: Document
+	the new operator.
+
+2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	* oafd/main.c (main): Change working directory to "/" on startup
+	to fix bug 6059 (oafd's cwd stymies automounter), patch from
+	Wolfgang Sourdeau <wolfgang@ultim.net>
+	
+2001-01-25  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+	
+	* liboaf/oaf-plugin.c (oaf_plugin_unuse): Defer unloading shlib to
+	idle time to fix 2736 (shared libraries for components will never
+	be unloaded).
+	
+	(oaf_plugin_real_unuse): The idle handler. 
+
 2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	* NEWS: Updated for 0.6.2

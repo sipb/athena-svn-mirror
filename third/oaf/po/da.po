@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.2\n"
-"POT-Creation-Date: 2000-10-25 01:50+0200\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
 "PO-Revision-Date: 2000-10-20 01:28+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -22,7 +22,7 @@ msgstr "Objektkatalog som skal bruges ved registrering af tjenere"
 msgid "File descriptor to print IOR on"
 msgstr "Fildeskriptor som IOR skal skrives til"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:67
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "FD"
 
@@ -34,21 +34,25 @@ msgstr "IID som skal aktiveres"
 msgid "Prevent registering of server with OAF"
 msgstr "Forhindr registrering af tjener hos OAF"
 
-#: liboaf/oaf-registration.c:323
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr ""
+
+#: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
 msgstr "Kunne ikke starte en ny proces"
 
-#: liboaf/oaf-registration.c:344
+#: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Barn modtog signal %u (%s)"
 
-#: liboaf/oaf-registration.c:350
+#: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Ukendt \"non-exit\" fejl (status er %u)"
 
-#: liboaf/oaf-registration.c:426
+#: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
 msgstr "Exec fejlede: %d (%s)\n"
@@ -65,47 +69,47 @@ msgstr "Forespørgsel mislykkedes: "
 msgid "Activation failed: "
 msgstr "Aktivering mislykkedes: "
 
-#: oafd/ac-corba.c:1092
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr "Kunne ikke fortolke AID"
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr "Kunne ikke fortolke omgivelser"
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr "Kunne ikke aktivere server: "
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr "Katalog til indlæsning af .oafinfo filer"
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr "KATALOG"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr "Domæne for ObjectDirectory"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr "DOMÆNE"
 
-#: oafd/main.c:62
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Virk som en ActivationContext (standard er kun som et ObjectDirectory)"
 
-#: oafd/main.c:67
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
 msgstr "Fildeskriptor som IOR skal skrives til"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr "Søgeudtryk der skal evalueres"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr "UDTRYK"
 
@@ -114,12 +118,12 @@ msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Vi kan endnu ikke behandle aktivering af shlib objekter i en fjernproces"
 
-#: oafd/od-load.c:122 oafd/od-load.c:152
+#: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Egenskab '%s' har ingen værdi"
 
-#: oafd/od-load.c:172
+#: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
 msgstr "en NUL iid er ugyldig"
 
@@ -128,20 +132,15 @@ msgstr "en NUL iid er ugyldig"
 msgid "iid %s has a NULL type"
 msgstr "iid %s har en NUL type"
 
-#: oafd/od-load.c:178
+#: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
 msgstr "iid %s har et NUL sted"
 
-#: oafd/od-load.c:186
+#: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
 msgstr "Ugyldigt tegn '%c' i iid '%s'"
-
-#: oafd/od-load.c:219
-#, c-format
-msgid "Trying dir %s\n"
-msgstr "Prøver katalog %s\n"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -151,6 +150,14 @@ msgid ""
 msgstr ""
 "OAF konfigurationsfilen blev ikke læst korrekt ind. Venlist tjek om den er "
 "gyldig i: %s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr ""
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr ""
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -203,3 +210,10 @@ msgstr "Vis kataloger i OAF konfigurationsfil"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Vis sti til OAF konfigurationsfil"
+
+#: liboaf/oaf-async-corba.c:182
+msgid "No server corresponding to your query"
+msgstr ""
+
+#~ msgid "Trying dir %s\n"
+#~ msgstr "Prøver katalog %s\n"

@@ -51,6 +51,7 @@ qexp_free (QueryExpr * qexp)
 
 	switch (qexp->type) {
 	case EXPR_FUNCTION:
+                g_free (qexp->u.function_value.func_name);
 		g_slist_foreach (qexp->u.function_value.arguments,
 				 (GFunc) qexp_free, NULL);
 		g_slist_free (qexp->u.function_value.arguments);
@@ -188,9 +189,11 @@ qexp_function_new (char *name, GSList * exprlist)
 	retval->u.function_value.func_name = name;
 	retval->u.function_value.arguments = exprlist;
 
-	for (cur = exprlist; cur && !((QueryExpr *) cur->data)->has_fields;
-	     cur = cur->next)	/* */
-		;
+        cur = exprlist;
+        
+	while (cur != NULL && !((QueryExpr *) cur->data)->has_fields) {
+                cur = cur->next;
+        }
 
 	retval->has_fields = cur ? TRUE : FALSE;
 
@@ -409,15 +412,12 @@ qexp_constant_compare (const QueryExprConst * c1, const QueryExprConst * c2)
 			break;
 		case CONST_NUMBER:
 			{
-				gdouble diff =
-					c2->u.v_number - c1->u.v_number;
-
-				if (diff > 0)
+				if (c2->u.v_number > c1->u.v_number)
 					return 1;
-				else if (diff < 0)
+				else if (c2->u.v_number < c1->u.v_number)
 					return -1;
 				else
-					return -1;
+					return 0;
 			}
 			break;
 		default:
@@ -472,6 +472,10 @@ static QueryExprConst qexp_func_has_all (OAF_ServerInfo * si, QueryExpr * e,
 					 QueryContext * qctx);
 static QueryExprConst qexp_func_has (OAF_ServerInfo * si, QueryExpr * e,
 				     QueryContext * qctx);
+
+static QueryExprConst qexp_func_prefer_by_list_order (OAF_ServerInfo * si, QueryExpr * e,
+                                                      QueryContext * qctx);
+
 static QueryExprConst qexp_func_defined (OAF_ServerInfo * si, QueryExpr * e,
 					 QueryContext * qctx);
 static QueryExprConst qexp_func_max (OAF_ServerInfo * si, QueryExpr * e,
@@ -483,6 +487,7 @@ static const QueryExprFuncInfo qexp_func_impls[] = {
 	{"has_one", qexp_func_has_one, 2},
 	{"has_all", qexp_func_has_all, 2},
 	{"has", qexp_func_has, 2},
+	{"prefer_by_list_order", qexp_func_prefer_by_list_order, 2},
 	{"defined", qexp_func_defined, 1},
 	{"max", qexp_func_max, 1},
 	{"min", qexp_func_min, 1},
@@ -653,6 +658,58 @@ qexp_func_has (OAF_ServerInfo * si, QueryExpr * e, QueryContext * qctx)
 
 	return retval;
 }
+
+
+
+static QueryExprConst
+qexp_func_prefer_by_list_order (OAF_ServerInfo *si, 
+                                QueryExpr *e, 
+                                QueryContext *qctx)
+{
+	QueryExprConst retval, item, list;
+	char **check_one, *check_two;
+	int i;
+        int position;
+
+	item = qexp_evaluate (si, e->u.function_value.arguments->data, qctx);
+	list = qexp_evaluate (si, e->u.function_value.arguments->next->data, qctx);
+
+	retval.value_known = TRUE;
+
+	if (!item.value_known || !list.value_known) {
+		retval.type = CONST_BOOLEAN;
+		retval.u.v_boolean = FALSE;
+	} else if (item.type != CONST_STRING || list.type != CONST_STRINGV) {
+		retval.value_known = FALSE;
+	} else {
+                position = -1;
+		
+                check_one = list.u.v_stringv;
+		check_two = item.u.v_string;
+
+		for (i = 0; check_one[i] != NULL; i++) {
+			if (position == -1 && 
+                            strcmp (check_one[i], check_two) == 0) {
+                                position = i;
+                        }
+		}
+
+                if (position != -1) {
+                        position = i - position;
+                }
+
+		retval.type = CONST_NUMBER;
+		retval.u.v_number = position;
+	}
+
+	retval.needs_free = FALSE;
+
+	qexp_constant_unuse (item);
+	qexp_constant_unuse (list);
+
+	return retval;
+}
+
 
 static QueryExprConst
 qexp_func_defined (OAF_ServerInfo * si, QueryExpr * e, QueryContext * qctx)
@@ -837,13 +894,7 @@ qexp_evaluate_id (OAF_ServerInfo * si, QueryExpr * e, QueryContext * qctx)
 						int i;
 						retval.type = CONST_STRINGV;
 
-						/* FIXME bugzilla.eazel.com 2728: Not freeing this freshly consed up
-						 * constant leaks memory. But freeing it makes
-						 * oafd segfault whenever it encounters a stringv
-						 * value of more than 3 items, so I am hacking it
-						 * for now. 
-                                                 */
-						/* retval.needs_free = TRUE; */
+						retval.needs_free = TRUE; 
 
 						retval.u.v_stringv =
 							g_malloc (sizeof

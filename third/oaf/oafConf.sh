@@ -1,7 +1,7 @@
 #
 # Configuration file for OAF
 #
-prefix=/gnome
+prefix=/usr
 exec_prefix=${prefix}
 
 orbit_includes="`/gnome/bin/orbit-config --cflags server`"
@@ -19,5 +19,5 @@ done
 OAF_LIBDIR="-L${exec_prefix}/lib $orbit_libdirs"
 OAF_LIBS="-loaf $orbit_libs"
 OAF_INCLUDEDIR="-I${prefix}/include $orbit_includes"
-MODULE_VERSION="oaf-0.6.2"
+MODULE_VERSION="oaf-0.6.5"
 

@@ -31,8 +31,8 @@
 #include <stdlib.h>
 
 void yyerror(char *s);
-int yylex();
-void initFlex(const char *s);
+int yylex ();
+void initFlex (const char *s);
 
 static QueryExpr *parsed_expression;
 %}
@@ -106,34 +106,34 @@ binop: P_MULTIPLY { $$ = P_MULTIPLY; }
 | P_AND { $$ = P_AND; }
 | P_XOR { $$ = P_XOR; };
 
-expr_binop: expr_obvious binop expr { $$ = qexp_binop_new($1, $2, $3); };
+expr_binop: expr_obvious binop expr { $$ = qexp_binop_new ($1, $2, $3); };
 
-expr_unop: P_NOT expr_obvious { $$ = qexp_unop_new(P_NOT, $2); }
-| P_SUBTRACT expr_obvious %prec P_NEGATE { $$ = qexp_unop_new(P_NEGATE, $2); };
+expr_unop: P_NOT expr_obvious { $$ = qexp_unop_new (P_NOT, $2); }
+| P_SUBTRACT expr_obvious %prec P_NEGATE { $$ = qexp_unop_new (P_NEGATE, $2); };
 
 expr_constant: P_CONST_STRING {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRING;
 	  qctmp.u.v_string = $1;
-	  $$ = qexp_constant_new(qctmp);
+	  $$ = qexp_constant_new (qctmp);
         }
-	| P_CONST_NUMBER {
+        | P_CONST_NUMBER {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_NUMBER;
 	  qctmp.u.v_number = $1;
-	  $$ = qexp_constant_new(qctmp);
+	  $$ = qexp_constant_new (qctmp);
 	}
-	| P_CONST_BOOLEAN {
+        | P_CONST_BOOLEAN {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_BOOLEAN;
 	  qctmp.u.v_boolean = $1;
-	  $$ = qexp_constant_new(qctmp);
+	  $$ = qexp_constant_new (qctmp);
 	}
 	| expr_stringv {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRINGV;
 	  qctmp.u.v_stringv = $1;
-	  $$ = qexp_constant_new(qctmp);
+	  $$ = qexp_constant_new (qctmp);
 	};
 
 expr_stringv: LBRACKET stringlist RBRACKET {
@@ -142,58 +142,59 @@ expr_stringv: LBRACKET stringlist RBRACKET {
   GSList *cur;
 
   n = g_slist_length($2);
-  new_stringv = g_new(char *, n + 1);
-  for(cur = $2, i = 0; i < n; i++, cur = cur->next) {
+  new_stringv = g_new (char *, n + 1);
+  for (cur = $2, i = 0; i < n; i++, cur = cur->next) {
     new_stringv[i] = cur->data;
   }
   new_stringv[i] = NULL;
 
-  g_slist_free($2);
+  g_slist_free ($2);
 
   $$ = new_stringv;
 };
 
-stringlist: P_CONST_STRING { $$ = g_slist_prepend(NULL, $1); }
-	| stringlist COMMA P_CONST_STRING { $$ = g_slist_append($1, $3); };
+stringlist: P_CONST_STRING { $$ = g_slist_prepend (NULL, $1); }
+	| stringlist COMMA P_CONST_STRING { $$ = g_slist_append ($1, $3); };
 
-expr_variable: P_DOLLAR P_CONST_ID { $$ = qexp_variable_new($2); }
+expr_variable: P_DOLLAR P_CONST_ID { $$ = qexp_variable_new ($2); }
 
-expr_function: P_CONST_ID LPAREN exprlist RPAREN { $$ = qexp_function_new($1, $3); }
-	| P_CONST_ID LPAREN RPAREN { $$ = qexp_function_new($1, NULL); }
+expr_function: P_CONST_ID LPAREN exprlist RPAREN { $$ = qexp_function_new ($1, $3); }
+	| P_CONST_ID LPAREN RPAREN { $$ = qexp_function_new ($1, NULL); }
 	| P_CONST_ID PERIOD P_CONST_ID LPAREN exprlist RPAREN {
-	$$ = qexp_function_new($3, g_slist_prepend($5, qexp_id_new($1))); }
+	$$ = qexp_function_new($3, g_slist_prepend ($5, qexp_id_new ($1))); }
 	| P_CONST_ID PERIOD P_CONST_ID LPAREN RPAREN {
-	$$ = qexp_function_new($3, g_slist_prepend(NULL, qexp_id_new($1))); };
+	$$ = qexp_function_new($3, g_slist_prepend (NULL, qexp_id_new ($1))); };
 
-expr_id: P_CONST_ID { $$ = qexp_id_new($1); };
+expr_id: P_CONST_ID { $$ = qexp_id_new ($1); };
 
 %%
 
 static GString *parse_errors = NULL;
 
-void yyerror ( char *s )
+void yyerror (char *s)
 {
-  g_string_append(parse_errors, s);
-  g_string_append_c(parse_errors, '\n');
+  g_string_append (parse_errors, s);
+  g_string_append_c (parse_errors, '\n');
 }
 
-const char *qexp_parse( const char *_code, QueryExpr **retme )
+const char *qexp_parse (const char *_code, 
+			QueryExpr **retme)
 {
   parsed_expression = NULL;
 
-  g_assert(retme);
+  g_assert (retme);
 
-  if(!parse_errors)
-    parse_errors = g_string_new(NULL);
+  if (!parse_errors)
+    parse_errors = g_string_new (NULL);
   else
-    g_string_truncate(parse_errors, 0);
+    g_string_truncate (parse_errors, 0);
 
-  initFlex( _code );
+  initFlex (_code);
   yyparse();
 
   *retme = parsed_expression;
 
-  if(parse_errors->len)
+  if (parse_errors->len)
     return parse_errors->str;
   else
     return NULL;

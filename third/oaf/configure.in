@@ -3,7 +3,7 @@ AC_INIT(idl/oaf.idl)
 
 OAF_MAJOR_VERSION=0
 OAF_MINOR_VERSION=6
-OAF_MICRO_VERSION=2
+OAF_MICRO_VERSION=5
 OAF_VERSION="$OAF_MAJOR_VERSION.$OAF_MINOR_VERSION.$OAF_MICRO_VERSION"
 AM_INIT_AUTOMAKE(oaf, $OAF_VERSION)
 AC_SUBST(OAF_MAJOR_VERSION)
@@ -36,7 +36,7 @@ AC_PROG_MAKE_SET
 AC_ISC_POSIX
 
 dnl internationalization support
-ALL_LINGUAS="da de es fi fr ga gl hu it ja ko no ru sk sl sv tr uk pl"
+ALL_LINGUAS="da de es fi fr ga gl hu it ja ko no pt_BR ro ru sk sl sv tr uk pl"
 AM_GNU_OAF_GETTEXT
 
 

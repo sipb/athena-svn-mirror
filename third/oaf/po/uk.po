@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2000-10-25 01:50+0200\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
 "PO-Revision-Date: 2000-08-16 18:00+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <linux@linux.org.ua>\n"
@@ -21,7 +21,7 @@ msgstr "Каталог об'╓кта, що використову╓ться п╕д час ре╓страц╕╖ сервер╕в"
 msgid "File descriptor to print IOR on"
 msgstr "Дескриптор файлу для друку IOR"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:67
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "ФД"
 
@@ -33,114 +33,112 @@ msgstr "IID до активац╕╖"
 msgid "Prevent registering of server with OAF"
 msgstr "Попередити ре╜╕страц╕ю сервера з OAF"
 
-#: liboaf/oaf-registration.c:323
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr "Параметри OAF"
+
+#: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
 msgstr "Не вдалося розгалудити процес"
 
-#: liboaf/oaf-registration.c:344
+#: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Нащадок отримав си╜нал %u (%s)"
 
-#: liboaf/oaf-registration.c:350
+#: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
-msgstr ""
+msgstr "Нев╕дома нефатальна помилка (стан -- %u)"
 
-#: liboaf/oaf-registration.c:426
+#: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
 msgstr "Виконання не вдалось: %d (%s)\n"
 
 #: oafd/ac-corba.c:476
 msgid "Couldn't find which child the server was listed in"
-msgstr ""
+msgstr "Не вдалося знайти нащадка, в якому вказано сервер"
 
 #: oafd/ac-corba.c:645
 msgid "Query failed: "
-msgstr ""
+msgstr "Зб╕й зипиту: "
 
 #: oafd/ac-corba.c:673
 msgid "Activation failed: "
-msgstr ""
+msgstr "Зб╕й активац╕╖: "
 
-#: oafd/ac-corba.c:1092
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
-msgstr ""
+msgstr "Не вдалося проанал╕зувати AID"
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
-msgstr ""
+msgstr "Не вдалося проанал╕зувати контекст: "
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
-msgstr ""
-
-#: oafd/main.c:57
-msgid "Directory to read .oafinfo files from"
-msgstr ""
-
-#: oafd/main.c:57
-msgid "DIRECTORY"
-msgstr ""
-
-#: oafd/main.c:59
-msgid "Domain of ObjectDirectory"
-msgstr ""
-
-#: oafd/main.c:59
-msgid "DOMAIN"
-msgstr ""
+msgstr "Не вдалося активувати сервер: "
 
 #: oafd/main.c:62
-msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
-msgstr ""
+msgid "Directory to read .oafinfo files from"
+msgstr "Каталог для зчитування файл╕в .oafinfo"
+
+#: oafd/main.c:62
+msgid "DIRECTORY"
+msgstr "КАТАЛОГ"
+
+#: oafd/main.c:64
+msgid "Domain of ObjectDirectory"
+msgstr "Домен ObjectDirectory"
+
+#: oafd/main.c:64
+msgid "DOMAIN"
+msgstr "ДОМЕН"
 
 #: oafd/main.c:67
-#, fuzzy
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "Слугувати ActivationContext (типовим ╓ лише ObjectDirectory)"
+
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
-msgstr "Дескриптор файлу для друку IOR"
+msgstr "Дескриптор файлу для запису IOR"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
-msgstr ""
+msgstr "Вираз запиту для перетворення"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "EXPRESSION"
-msgstr ""
+msgstr "ВИРАЗ"
 
 #: oafd/od-activate.c:62
 msgid "We don't handle activating shlib objects in a remote process yet"
-msgstr ""
+msgstr "Ми ще не обробля╓мо активац╕ю об'╓кт╕в shlib у в╕ддаленому процес╕"
 
-#: oafd/od-load.c:122 oafd/od-load.c:152
+#: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
-msgstr ""
+msgstr "Властив╕сть \"%s\" не ма╓ значення"
 
-#: oafd/od-load.c:172
+#: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
-msgstr ""
+msgstr "iid NULL не в╕рний"
 
 #: oafd/od-load.c:175
 #, c-format
 msgid "iid %s has a NULL type"
 msgstr "iid %s ма╓ тип NULL"
 
-#: oafd/od-load.c:178
+#: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
 msgstr "iid %s ма╓ розм╕щення NULL"
 
-#: oafd/od-load.c:186
+#: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
 msgstr "нев╕рний символ  \"%c\" в iid \"%s\""
-
-#: oafd/od-load.c:219
-#, c-format
-msgid "Trying dir %s\n"
-msgstr "Проба каталогу %s\n"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -150,6 +148,14 @@ msgid ""
 msgstr ""
 "Файл конф╕╜урац╕╖ OAF не було усп╕шно зчитано. Переконайтесь, що в╕н в╕рний "
 "в : %s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Серв╕с CosNaming CORBA."
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr "Назва серв╕су"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -170,11 +176,13 @@ msgid ""
 "OAF configuration file is:\n"
 "    %s\n"
 msgstr ""
+"Конф╕╜урац╕йним файлом OAF ╓:\n"
+"    %s\n"
 
 #: utils/oaf-sysconf.c:108
 #, c-format
 msgid "%s already in OAF configuration file\n"
-msgstr ""
+msgstr "%s вже в конф╕╜урац╕йному файл╕ OAF\n"
 
 #: utils/oaf-sysconf.c:184
 msgid "OAF configuration file contains:\n"
@@ -182,20 +190,24 @@ msgstr "Файл конф╕╜урац╕╖ OAF м╕стить:\n"
 
 #: utils/oaf-sysconf.c:216
 msgid "Directory to remove from OAF configuration file"
-msgstr ""
+msgstr "Каталоги для вилучення з конф╕гурац╕йного файлу OAF"
 
 #: utils/oaf-sysconf.c:216 utils/oaf-sysconf.c:219
 msgid "directory path"
-msgstr ""
+msgstr "каталог"
 
 #: utils/oaf-sysconf.c:219
 msgid "Directory to add to OAF configuration file"
-msgstr ""
+msgstr "Каталоги для додавання у конф╕╜урац╕йний файл OAF"
 
 #: utils/oaf-sysconf.c:222
 msgid "Display directories in OAF configuration file"
-msgstr ""
+msgstr "Показати каталоги у конф╕╜урац╕йному файл╕ OAF"
 
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
-msgstr ""
+msgstr "Показати шлях до конф╕╜урац╕йного файлу OAF"
+
+#: liboaf/oaf-async-corba.c:182
+msgid "No server corresponding to your query"
+msgstr "Нема╓ сервера, що в╕дпов╕да╓ вашому запиту"

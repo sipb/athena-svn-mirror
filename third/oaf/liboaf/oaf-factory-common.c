@@ -181,6 +181,7 @@ CORBA_sequence_CORBA_string__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 CORBA_char **
 CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
@@ -205,6 +206,7 @@ GNOME_stringlist__alloc(void)
 {
    return CORBA_sequence_CORBA_string__alloc();
 }
+
 gpointer
 GNOME_ObjectFactory_CannotActivate__free(gpointer mem, gpointer dat,
 					 CORBA_boolean free_strings)

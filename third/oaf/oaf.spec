@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name		oaf
-%define ver		0.6.2
+%define ver		0.6.5
 %define RELEASE		1
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr

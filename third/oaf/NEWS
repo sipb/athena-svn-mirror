@@ -1,6 +1,52 @@
+===================================
+oaf-0.6.5
+---------
+
+New in this release fixed the perl5.00404 bug
+NO other changes
+
+====================================
+oaf-0.6.4
+---------
+
+New in this release
+
+* fixed Unregistering servers causes failure when activating a
+  re-registered version (mjs)
+
+* fixed automounter problems (mjs)
+
+* fixed popt options (Darin)
+
+* added Romanian support (Dan Damian)
+
+====================================
+oaf-0.6.3
+---------
+
+New in this release:
+
+* Memory leak fixes (Maciej, migras)
+
+* SunOS support for oaf-slay (Michael)
+
+* Assorted bug fixes (Maciej)
+
+* Added new query language operator `prefer_by_list_order' for
+  preferring particular components in priority order when available. (Maciej)
+
+* Change working directory to "/" to avoiding mount issues (Wolfgang Sourdeau)
+	
+* Fix bug that made uloading shlib servers impossible (Maciej)
+
+* New translations (Gustavo Maciel Dias Vieira)
+
+
 ====================================
 oaf-0.6.2
 ---------
+
+New in this release:
 
 * Leak fixes (Ali)
 

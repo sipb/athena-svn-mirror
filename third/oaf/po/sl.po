@@ -1,11 +1,11 @@
-# Slovenian translation file for Balsa.
+# Slovenian translation file for OAF.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Andraz Tori <andraz.tori1@guest.arnes.si> 2000
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: balsa\n"
-"POT-Creation-Date: 2000-11-11 11:35+0100\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
 "PO-Revision-Date: 2000-09-04 21:51+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -19,9 +19,9 @@ msgstr "Predmetni imenik, ki naj se uporabi ob registraciji stre¾nikov"
 
 #: liboaf/oaf-mainloop.c:193
 msgid "File descriptor to print IOR on"
-msgstr "Datoteèni deskriptor kamor naj se ispisuje IOR"
+msgstr "Datoteèni deskriptor kamor naj se izpisuje IOR"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:67
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "FD"
 
@@ -33,21 +33,25 @@ msgstr "IID, ki naj se aktivira"
 msgid "Prevent registering of server with OAF"
 msgstr "Prepreèi registracijo stre¾nika pri OAF"
 
-#: liboaf/oaf-registration.c:323
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr "Mo¾nosti OAF"
+
+#: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
 msgstr "Nisem se mogel razvejiti novega procesa"
 
-#: liboaf/oaf-registration.c:344
+#: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Otrok je dobil signal %u (%s)"
 
-#: liboaf/oaf-registration.c:350
+#: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
-msgstr "Neznana ne-izhodna napaka (status je %u)"
+msgstr "Neznana ne-izhodna napaka (stanje je %u)"
 
-#: liboaf/oaf-registration.c:426
+#: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
 msgstr "Exec neuspe¹en: %d (%s)\n"
@@ -64,47 +68,47 @@ msgstr "Poizvedba ni uspela: "
 msgid "Activation failed: "
 msgstr "Aktivacija ni uspela: "
 
-#: oafd/ac-corba.c:1092
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr "Nisem mogel razèleniti AID"
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr "Nisem mogel razèleniti konteksta: "
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr "Nisem mogel aktivirati stre¾nika: "
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr "Imenik iz katerega naj se preberejo .oafinfo datoteke"
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr "IMENIK"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr "Domena ImenikaPredmetov"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr "DOMENA"
 
-#: oafd/main.c:62
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Slu¾i kot ActivationContext (privzeto je kot ImenikPredmetov)"
 
-#: oafd/main.c:67
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
 msgstr "Datoteèni deskriptor kamor naj se ispi¹e IOR"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr "Pozvedbeni izraz, ki naj se ovrednoti"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr "IZRAZ"
 
@@ -112,12 +116,12 @@ msgstr "IZRAZ"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Ne znamo ¹e aktivirati shlib predmetov v oddaljenem procesu"
 
-#: oafd/od-load.c:122 oafd/od-load.c:152
+#: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Lastnost '%s' nima vrednosti"
 
-#: oafd/od-load.c:172
+#: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
 msgstr "NULL iid ni veljaven"
 
@@ -126,20 +130,15 @@ msgstr "NULL iid ni veljaven"
 msgid "iid %s has a NULL type"
 msgstr "iid %s ima tip NULL"
 
-#: oafd/od-load.c:178
+#: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
 msgstr "iid %s ima lokacijo NULL"
 
-#: oafd/od-load.c:186
+#: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
 msgstr "napaèen znak '%c' v iid '%s'"
-
-#: oafd/od-load.c:219
-#, c-format
-msgid "Trying dir %s\n"
-msgstr "Posku¹am imenik %s\n"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -149,6 +148,14 @@ msgid ""
 msgstr ""
 "The OAF nastavitvena datoteka ni bila uspe¹no prebrana. Prosim preverite ali "
 "je veljavna v: %s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Storitev CORBA CosNaming."
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr "Storitev imen"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -202,3 +209,10 @@ msgstr "Poka¾i imenike v OAF nastavitveni datoteki"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Poka¾i pot do OAF nastavitvene datoteke"
+
+#: liboaf/oaf-async-corba.c:182
+msgid "No server corresponding to your query"
+msgstr "Noben stre¾nik ne ustreza va¹i poizvedbi"
+
+#~ msgid "Trying dir %s\n"
+#~ msgstr "Posku¹am imenik %s\n"

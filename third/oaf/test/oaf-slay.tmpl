@@ -1,8 +1,6 @@
 #!/usr/bin/perl
 
 $oaf_dir="@oafdir@";
-$killall='killall';
-$kill_params=' -q -9 ';
 
 print "Warning, this program may arbitrarily terminate all manner of vital apps\n use with extreme caution...\n";
 
@@ -10,6 +8,19 @@ chdir ($oaf_dir);
 opendir (DIR, $oaf_dir) || die "can't opendir oaf_dir: $!";
 @files = readdir (DIR);
 closedir DIR;
+
+$sysname=`uname -s`;
+chomp ($sysname);
+
+if ($sysname eq "SunOS") {
+    $killall="pkill";
+    $kill_params=' -9 ';
+} else {
+    $killall="killall";
+    $kill_params=' -q -9 ';
+}
+
+# print "Killall :'", $killall, "' params '", $kill_params, "'\n";
 
 while ($fname = shift (@files)) {
 	open (FILE, $fname);

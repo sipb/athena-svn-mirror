@@ -3,12 +3,11 @@
 # Mathieu Lacage <mathieu@eazel.com>, 2000.
 # Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: oaf 0.6.1\n"
-"POT-Creation-Date: 2001-01-10 15:20+0100\n"
-"PO-Revision-Date: 2001-01-10 15:21+0100\n"
+"Project-Id-Version: oaf 0.6.3\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
+"PO-Revision-Date: 2001-02-20 12:25+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +22,7 @@ msgstr "Objet répertoire à utiliser durant l'enregistrement des serveurs"
 msgid "File descriptor to print IOR on"
 msgstr "Descripteur de fichier où imprimer l'IOR"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:68
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "FD"
 
@@ -34,6 +33,10 @@ msgstr "IID à activer"
 #: liboaf/oaf-mainloop.c:197
 msgid "Prevent registering of server with OAF"
 msgstr "Empèche le serveur de s'enregistrer avec OAF"
+
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr "Options OAF"
 
 #: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
@@ -67,48 +70,48 @@ msgstr "Échec de la requête :"
 msgid "Activation failed: "
 msgstr "Échec de l'activation :"
 
-#: oafd/ac-corba.c:1091
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr "Ne peut analyser l'AID"
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr "Ne peut analyser le contexte : "
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr "Ne peut activer le serveur : "
 
-#: oafd/main.c:58
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr "Répertoire dans lequel lire les fichiers .oafinfo"
 
-#: oafd/main.c:58
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr "RÉPERTOIRE"
 
-#: oafd/main.c:60
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr "Domaine d'ObjectDirectory"
 
-#: oafd/main.c:60
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr "DOMAINE"
 
-#: oafd/main.c:63
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Sert comme un ActivationContext (est seulement un ObjectDirectory par défaut)"
 
-#: oafd/main.c:68
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
 msgstr "Descripteur de fichier où l'IOR est écrit"
 
-#: oafd/main.c:73
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr "Expression de recherche à évaluer"
 
-#: oafd/main.c:73
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr "EXPRESSION"
 
@@ -121,7 +124,7 @@ msgstr ""
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
-msgstr "La propriété '%s' n'a pas de valeur"
+msgstr "La propriété « %s » n'a pas de valeur"
 
 #: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
@@ -140,7 +143,7 @@ msgstr "l'IID %s a une location NULL"
 #: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "caractère '%c' invalide dans l'IID '%s'"
+msgstr "caractère « %c » invalide dans l'IID « %s »"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -150,6 +153,14 @@ msgid ""
 msgstr ""
 "Le fichier de configuration de OAF n'a pu être lu avec succès. Veuillez "
 "vérifier qu'il est valide dans : %s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Service CORBA CosNaming"
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr "Service de noms"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -206,7 +217,7 @@ msgstr "Affiche le chemin du fichier de configuration de OAF."
 
 #: liboaf/oaf-async-corba.c:182
 msgid "No server corresponding to your query"
-msgstr "Aucun serveur correspondant à votre requète"
+msgstr "Aucun serveur correspondant à votre requête"
 
 #~ msgid "Trying dir %s\n"
 #~ msgstr "Essaie le répertoire %s\n"

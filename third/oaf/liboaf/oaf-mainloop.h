@@ -26,6 +26,8 @@
 #ifndef OAF_MAINLOOP_H
 #define OAF_MAINLOOP_H
 
+#include <popt.h>
+
 CORBA_ORB      oaf_orb_init   (int   *argc, 
 			       char **argv);
 CORBA_ORB      oaf_orb_get    (void);
@@ -44,6 +46,10 @@ const char    *oaf_hostname_get     (void);
 const char    *oaf_session_name_get (void);
 const char    *oaf_domain_get       (void);
 #define oaf_username_get() g_get_user_name()
+
+char          *oaf_get_popt_table_name (void);
+
+extern struct poptOption oaf_popt_options[];
 
 #endif /* OAF_MAINLOOP_H */
 

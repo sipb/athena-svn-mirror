@@ -17,11 +17,11 @@ the beginning.
 #include <stdlib.h>
 #define YY_NO_UNPUT
 
-static char* putSymbol( char *_name );
-static char* putString( char *_name );
-static int yywrap(void);
+static char* putSymbol (char *_name);
+static char* putString (char *_name);
+static int yywrap (void);
 int yylex (void);
-void initFlex( const char *_code );
+void initFlex (const char *_code);
 
 %}
 
@@ -61,12 +61,12 @@ DIGIT	[0-9]
 (TRUE|true|True|YES|yes|Yes) { yylval.val_boolean = TRUE; return P_CONST_BOOLEAN; }
 (FALSE|false|False|NO|no|No) { yylval.val_boolean = FALSE; return P_CONST_BOOLEAN; }
 
-"'"(\\'|[^'])+"'" { yylval.val_string = putString( yytext ); return P_CONST_STRING; }
+"'"(\\'|[^'])+"'" { yylval.val_string = putString (yytext); return P_CONST_STRING; }
 
-{DIGIT}+"."{DIGIT}+ { yylval.val_number = atof( yytext ); return P_CONST_NUMBER; }
-{DIGIT}+ { yylval.val_number = atof( yytext ); return P_CONST_NUMBER; }
+{DIGIT}+"."{DIGIT}+ { yylval.val_number = atof (yytext); return P_CONST_NUMBER; }
+{DIGIT}+ { yylval.val_number = atof (yytext); return P_CONST_NUMBER; }
 
-[a-zA-Z_][a-zA-Z0-9_:]* { yylval.val_string = putSymbol( yytext ); return P_CONST_ID; }
+[a-zA-Z_][a-zA-Z0-9_:]* { yylval.val_string = putSymbol (yytext); return P_CONST_ID; }
 
 [ \t\n\r]+          /* eat up whitespace */
 
@@ -75,32 +75,31 @@ DIGIT	[0-9]
 %%
 
 static char *
-putSymbol( char *_name )
+putSymbol (char *_name)
 {
-  return g_strdup(_name);
+  return g_strdup (_name);
 }
 
 static char *
-putString( char *_str )
+putString (char *_str)
 {
-  int l = strlen( _str );
-  char *p = (char*)g_malloc( l + 1);
+  int l = strlen (_str);
+  char *p = (char*) g_malloc (l + 1);
   char *s = _str + 1;
   char *d = p;
-  while ( s < _str + l - 1 )
+  while (s < _str + l - 1)
   {
-     if ( *s != '\\' )
+     if (*s != '\\') {
         *d++ = *s++;
-     else
-     {
+     } else {
         s++;
-        if ( *s == '\\' )
+        if (*s == '\\')
           *d++ = '\\';
-        else if ( *s == 'n' )
+        else if (*s == 'n')
           *d++ = '\n';
-        else if ( *s == 'r' )
+        else if (*s == 'r')
           *d++ = '\r';
-        else if ( *s == 't' )
+        else if (*s == 't')
           *d++ = '\t';
         s++;
      }
@@ -111,14 +110,14 @@ putString( char *_str )
 }
 
 void
-initFlex( const char *_code )
+initFlex (const char *_code)
 {
-  yy_switch_to_buffer( yy_scan_string( _code ) );
+  yy_switch_to_buffer (yy_scan_string (_code));
 }
 
 static int
-yywrap(void)
+yywrap (void)
 {
-  yy_delete_buffer( YY_CURRENT_BUFFER );
+  yy_delete_buffer (YY_CURRENT_BUFFER);
   return 1;
 }

@@ -365,6 +365,22 @@ oaf_is_initialized (void)
 }
 
 
+/**
+ * oaf_init:
+ *
+ * Get the table name to use for the oaf popt options table when
+ * registering with libgnome
+ * 
+ * Return value: A localized copy of the string "OAF options"
+ */
+
+char *
+oaf_get_popt_table_name ()
+{
+        bindtextdomain (PACKAGE, OAF_LOCALEDIR);
+        return _("OAF options");
+}
+
 
 /**
  * oaf_init:
@@ -384,6 +400,8 @@ oaf_init (int argc, char **argv)
 	int i;
 
 	g_return_val_if_fail (is_initialized == FALSE, oaf_orb);
+
+        bindtextdomain (PACKAGE, OAF_LOCALEDIR);
 
 	oaf_preinit (NULL, NULL);
 
