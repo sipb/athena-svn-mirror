@@ -24,32 +24,17 @@
  *
  */
 
-#define __GNOME_FONT_DIALOG_C__
-
 #include <config.h>
 
 #include <string.h>
 #include <stdlib.h>
-#include <atk/atkobject.h>
-#include <atk/atkrelationset.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkcombo.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtkcellrenderertext.h>
+#include <atk/atk.h>
+#include <gtk/gtk.h>
 #include <libgnomeprint/gnome-pgl.h>
+
 #include "gnome-print-i18n.h"
 #include "gnome-font-dialog.h"
+#include "gnome-printui-marshal.h"
 
 struct _GnomeFontSelection
 {
@@ -101,10 +86,10 @@ static void gnome_font_selection_init (GnomeFontSelection *fontsel);
 static void gnome_font_selection_destroy (GtkObject *object);
 
 static void gnome_font_selection_select_family (GtkTreeSelection *selection, gpointer data);
-static void gnome_font_selection_select_style (GtkTreeSelection *selection, gpointer data);
-static void gnome_font_selection_select_size (GtkEditable * editable, gpointer data);
+static void gnome_font_selection_select_style  (GtkTreeSelection *selection, gpointer data);
+static void gnome_font_selection_select_size   (GtkEditable * editable, gpointer data);
 static void gnome_font_selection_fill_families (GnomeFontSelection * fontsel);
-static void gnome_font_selection_fill_styles (GnomeFontSelection * fontsel);
+static void gnome_font_selection_fill_styles   (GnomeFontSelection * fontsel);
 static gboolean find_row_to_select_cb (GtkTreeModel *model,
 				       GtkTreePath *path,
 				       GtkTreeIter *iter,
@@ -113,43 +98,48 @@ static gboolean find_row_to_select_cb (GtkTreeModel *model,
 static GtkHBoxClass *gfs_parent_class = NULL;
 static guint gfs_signals[LAST_SIGNAL] = {0};
 
-GtkType
+GType
 gnome_font_selection_get_type ()
 {
-	static GtkType font_selection_type = 0;
-	if (!font_selection_type) {
-		static const GtkTypeInfo fontsel_type_info = {
-			"GnomeFontSelection",
-			sizeof (GnomeFontSelection),
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
 			sizeof (GnomeFontSelectionClass),
-			(GtkClassInitFunc) gnome_font_selection_class_init,
-			(GtkObjectInitFunc) gnome_font_selection_init,
 			NULL, NULL,
-			(GtkClassInitFunc) NULL,
+			(GClassInitFunc) gnome_font_selection_class_init,
+			NULL, NULL,
+			sizeof (GnomeFontSelection),
+			0,
+			(GInstanceInitFunc) gnome_font_selection_init,
+			NULL
 		};
-		font_selection_type = gtk_type_unique (GTK_TYPE_HBOX, &fontsel_type_info);
+		type = g_type_register_static (GTK_TYPE_HBOX, "GnomeFontSelection", &info, 0);
 	}
-	return font_selection_type;
+	return type;
 }
 
 static void
 gnome_font_selection_class_init (GnomeFontSelectionClass *klass)
 {
-	GtkObjectClass *object_class;
+	GtkObjectClass *gtk_object_class;
+	GObjectClass *object_class;
   
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
   
 	gfs_parent_class = gtk_type_class (GTK_TYPE_HBOX);
   
-	gfs_signals[FONT_SET] = gtk_signal_new ("font_set",
-						GTK_RUN_FIRST,
-						G_OBJECT_CLASS_TYPE (klass),
-						GTK_SIGNAL_OFFSET (GnomeFontSelectionClass, font_set),
-						gtk_marshal_NONE__POINTER,
-						GTK_TYPE_NONE,
-						1, GTK_TYPE_POINTER);
+	gfs_signals[FONT_SET] = g_signal_new ("font_set",
+					      G_OBJECT_CLASS_TYPE (object_class),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (GnomeFontSelectionClass, font_set),
+					      NULL, NULL,
+					      libgnomeprintui_marshal_VOID__POINTER,
+					      G_TYPE_NONE,
+					      1,
+					      G_TYPE_POINTER);
 
-	object_class->destroy = gnome_font_selection_destroy;
+	gtk_object_class->destroy = gnome_font_selection_destroy;
 }
 
 static void
@@ -210,20 +200,17 @@ gnome_font_selection_init (GnomeFontSelection * fontsel)
 	atk_object_set_description (atko, _("The list of font families available"));
 
 	/* Fontbox */
-
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show (vb);
 	gtk_box_pack_start ((GtkBox *) fontsel, vb, TRUE, TRUE, 0);
 	fontsel->fontbox = vb;
 
 	/* Style frame */
-
 	f = gtk_frame_new (_("Style"));
 	gtk_widget_show (f);
 	gtk_box_pack_start ((GtkBox *) vb, f, TRUE, TRUE, 0);
 
 	/* Stylebox */
-
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_container_set_border_width ((GtkContainer *) vb, 4);
 	gtk_widget_show (vb);
@@ -271,13 +258,13 @@ gnome_font_selection_init (GnomeFontSelection * fontsel)
 	fontsel->sizebox = hb;
 
 	c = gtk_combo_new ();
-	gtk_widget_set_usize (c, 64, -1);
+	gtk_widget_set_size_request (c, 64, -1);
 	gtk_combo_set_value_in_list ((GtkCombo *) c, FALSE, FALSE);
 	gtk_combo_set_use_arrows ((GtkCombo *) c, TRUE);
 	gtk_combo_set_use_arrows_always ((GtkCombo *) c, TRUE);
 	gtk_widget_show (c);
-	gtk_signal_connect (GTK_OBJECT (((GtkCombo *) c)->entry), "changed",
-			    GTK_SIGNAL_FUNC (gnome_font_selection_select_size), fontsel);
+	g_signal_connect (G_OBJECT (((GtkCombo *) c)->entry), "changed",
+			  (GCallback) gnome_font_selection_select_size, fontsel);
 	gtk_box_pack_end ((GtkBox *) hb, c, FALSE, FALSE, 0);
 	fontsel->size = c;
 
@@ -347,20 +334,18 @@ gnome_font_selection_new ()
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	fontsel = gtk_type_new (GNOME_TYPE_FONT_SELECTION);
+	fontsel = g_object_new (GNOME_TYPE_FONT_SELECTION, NULL);
   
 	gnome_font_selection_fill_families (fontsel);
 
 	/* Select first font in family list */
 
 	model = gtk_tree_view_get_model ((GtkTreeView*) fontsel->family);
-	if (gtk_tree_model_get_iter_first (model, &iter))
-	  {
-	    GtkTreeSelection *selection;
-
-	    selection = gtk_tree_view_get_selection ((GtkTreeView*) fontsel->family);
-	    gtk_tree_selection_select_iter (selection, &iter);
-	  }
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		GtkTreeSelection *selection;
+		selection = gtk_tree_view_get_selection ((GtkTreeView*) fontsel->family);
+		gtk_tree_selection_select_iter (selection, &iter);
+	}
 
 	return GTK_WIDGET (fontsel);
 }
@@ -411,7 +396,8 @@ gnome_font_selection_select_style (GtkTreeSelection *selection, gpointer data)
 
 	fontsel = GNOME_FONT_SELECTION (data);
 
-	if (!fontsel->selectedfamily) return;
+	if (!fontsel->selectedfamily)
+		return;
 
 	tree_view = gtk_tree_selection_get_tree_view (selection);
 	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
@@ -420,15 +406,17 @@ gnome_font_selection_select_style (GtkTreeSelection *selection, gpointer data)
 	gtk_tree_model_get_value (model, &iter, 0, &value);
 	style = g_value_get_string (&value);
 
-	if (fontsel->selectedface) gnome_font_face_unref (fontsel->selectedface);
+	if (fontsel->selectedface)
+		gnome_font_face_unref (fontsel->selectedface);
 	fontsel->selectedface = gnome_font_face_find_from_family_and_style (fontsel->selectedfamily, style);
 
-	if (fontsel->selectedfont) gnome_font_unref (fontsel->selectedfont);
+	if (fontsel->selectedfont)
+		gnome_font_unref (fontsel->selectedfont);
 	fontsel->selectedfont = gnome_font_face_get_font_default (fontsel->selectedface, fontsel->selectedsize);
 
 	g_value_unset(&value);
 
-	gtk_signal_emit (GTK_OBJECT (fontsel), gfs_signals[FONT_SET], fontsel->selectedfont);
+	g_signal_emit (G_OBJECT (fontsel), gfs_signals[FONT_SET], 0, fontsel->selectedfont);
 }
 
 static void
@@ -439,7 +427,8 @@ gnome_font_selection_select_size (GtkEditable * editable, gpointer data)
 
 	fontsel = GNOME_FONT_SELECTION (data);
 
-	if (!fontsel->selectedface) return;
+	if (!fontsel->selectedface)
+		return;
 
 	sizestr = gtk_editable_get_chars (GTK_EDITABLE (GTK_COMBO (fontsel->size)->entry), 0, -1);
 
@@ -447,10 +436,11 @@ gnome_font_selection_select_size (GtkEditable * editable, gpointer data)
 
 	g_free (sizestr);
 
-	if (fontsel->selectedfont) gnome_font_unref (fontsel->selectedfont);
+	if (fontsel->selectedfont)
+		gnome_font_unref (fontsel->selectedfont);
 	fontsel->selectedfont = gnome_font_face_get_font_default (fontsel->selectedface, fontsel->selectedsize);
 
-	gtk_signal_emit (GTK_OBJECT (fontsel), gfs_signals[FONT_SET], fontsel->selectedfont);
+	g_signal_emit (GTK_OBJECT (fontsel), gfs_signals[FONT_SET], 0, fontsel->selectedfont);
 }
 
 static void
@@ -499,14 +489,11 @@ gnome_font_selection_fill_styles (GnomeFontSelection * fontsel)
 	}
 
 	/* Select first font in style list */
-
-	if (gtk_tree_model_get_iter_first ((GtkTreeModel *) store, &iter))
-	  {
-	    GtkTreeSelection *selection;
-
-	    selection = gtk_tree_view_get_selection ((GtkTreeView*) fontsel->style);
-	    gtk_tree_selection_select_iter (selection, &iter);
-	  }
+	if (gtk_tree_model_get_iter_first ((GtkTreeModel *) store, &iter)) {
+		GtkTreeSelection *selection;
+		selection = gtk_tree_view_get_selection ((GtkTreeView*) fontsel->style);
+		gtk_tree_selection_select_iter (selection, &iter);
+	}
 }
 
 
@@ -526,7 +513,8 @@ gnome_font_selection_get_font (GnomeFontSelection * fontsel)
 	g_return_val_if_fail (fontsel != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_SELECTION (fontsel), NULL);
 
-	if (!fontsel->selectedface) return NULL;
+	if (!fontsel->selectedface)
+		return NULL;
 
 	return gnome_font_face_get_font_default (fontsel->selectedface, fontsel->selectedsize);
 }
@@ -537,7 +525,8 @@ gnome_font_selection_get_face (GnomeFontSelection * fontsel)
 	g_return_val_if_fail (fontsel != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_SELECTION (fontsel), NULL);
 
-	if (fontsel->selectedface) gnome_font_face_ref (fontsel->selectedface);
+	if (fontsel->selectedface)
+		gnome_font_face_ref (fontsel->selectedface);
 
 	return fontsel->selectedface;
 }
@@ -593,22 +582,20 @@ find_row_to_select_cb (GtkTreeModel *model,
 		       GtkTreeIter *iter,
 		       gpointer user_data)
 {
-  GnomeFontSelectionSetFontData *data = user_data;
-  gchar *family;
-  gint cmp;
+	GnomeFontSelectionSetFontData *data = user_data;
+	gchar *family;
+	gint cmp;
+	
+	gtk_tree_model_get (model, iter, 0, &family, -1);
+	
+	cmp = strcmp (family, data->row_to_select);
+	g_free (family);
+	
+	if (cmp != 0)
+		return FALSE;
 
-  gtk_tree_model_get (model, iter, 0, &family, -1);
-
-  cmp = strcmp (family, data->row_to_select);
-  g_free (family);
-
-  if (cmp == 0)
-    {
-      gtk_tree_selection_select_path (data->selection, path);
-      return TRUE;
-    }
-
-  return FALSE;
+	gtk_tree_selection_select_path (data->selection, path);
+	return TRUE;
 }
 
 
@@ -638,23 +625,24 @@ static void gnome_font_preview_update (GnomeFontPreview * preview);
 
 static GtkImageClass *gfp_parent_class = NULL;
 
-GtkType
-gnome_font_preview_get_type()
+GType
+gnome_font_preview_get_type ()
 {
-	static GtkType font_preview_type = 0;
-	if (!font_preview_type) {
-		static const GtkTypeInfo gfp_type_info = {
-			"GnomeFontPreview",
-			sizeof (GnomeFontPreview),
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
 			sizeof (GnomeFontPreviewClass),
-			(GtkClassInitFunc) gnome_font_preview_class_init,
-			(GtkObjectInitFunc) gnome_font_preview_init,
 			NULL, NULL,
-			(GtkClassInitFunc) NULL,
+			(GClassInitFunc) gnome_font_preview_class_init,
+			NULL, NULL,
+			sizeof (GnomeFontPreview),
+			0,
+			(GInstanceInitFunc) gnome_font_preview_init,
+			NULL
 		};
-		font_preview_type = gtk_type_unique (GTK_TYPE_IMAGE, &gfp_type_info);
+		type = g_type_register_static (GTK_TYPE_IMAGE, "GnomeFontPreview", &info, 0);
 	}
-	return font_preview_type;
+	return type;
 }
 
 static void
@@ -680,7 +668,7 @@ gnome_font_preview_init (GnomeFontPreview * preview)
 	preview->font = NULL;
 	preview->color = 0x000000ff;
 
-	gtk_widget_set_usize (w, 64, MIN_PREVIEW_HEIGHT);
+	gtk_widget_set_size_request (w, 64, MIN_PREVIEW_HEIGHT);
 }
 
 static void
@@ -709,7 +697,7 @@ gnome_font_preview_new (void)
 {
 	GnomeFontPreview * preview;
   
-	preview = gtk_type_new (GNOME_TYPE_FONT_PREVIEW);
+	preview = g_object_new (GNOME_TYPE_FONT_PREVIEW, NULL);
 
 	return GTK_WIDGET (preview);
 }
@@ -720,7 +708,8 @@ gnome_font_preview_set_phrase (GnomeFontPreview * preview, const guchar *phrase)
 	g_return_if_fail (preview != NULL);
 	g_return_if_fail (GNOME_IS_FONT_PREVIEW (preview));
 
-	if (preview->text) g_free (preview->text);
+	if (preview->text)
+		g_free (preview->text);
 
 	if (phrase) {
 		preview->text = g_strdup (phrase);
@@ -742,7 +731,8 @@ gnome_font_preview_set_font (GnomeFontPreview * preview, GnomeFont * font)
 
 	gnome_font_ref (font);
 
-	if (preview->font) gnome_font_unref (preview->font);
+	if (preview->font)
+		gnome_font_unref (preview->font);
 
 	preview->font = font;
 
@@ -781,7 +771,8 @@ gnome_font_preview_update (GnomeFontPreview *preview)
 			sample = preview->text;
 		} else {
 			sample = gnome_font_face_get_sample (gnome_font_get_face (preview->font));
-			if (!sample) sample = _("This font does not have sample");
+			if (!sample)
+				sample = _("This font does not have sample");
 		}
 		gl = gnome_glyphlist_from_text_dumb (preview->font, preview->color, 0.0, 0.0, sample);
 		pgl = gnome_pgl_from_gl (gl, identity, GNOME_PGL_RENDER_DEFAULT);
@@ -810,7 +801,7 @@ gnome_font_preview_update (GnomeFontPreview *preview)
 	}
 
 	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 }
 
 /*****************************************************************************
@@ -835,23 +826,23 @@ static void gfsd_update_preview (GnomeFontSelection * fs, GnomeFont * font, Gnom
 
 static GtkDialogClass *gfsd_parent_class = NULL;
 
-GtkType
+GType
 gnome_font_dialog_get_type (void)
 {
-	static GtkType font_dialog_type = 0;
-	if (!font_dialog_type) {
-		GtkTypeInfo fontsel_diag_info = {
-			"GnomeFontDialog",
-			sizeof (GnomeFontDialog),
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
 			sizeof (GnomeFontDialogClass),
-			(GtkClassInitFunc) gnome_font_dialog_class_init,
-			(GtkObjectInitFunc) gnome_font_dialog_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) gnome_font_dialog_class_init,
+			NULL, NULL,
+			sizeof (GnomeFontDialog),
+			0,
+			(GInstanceInitFunc) gnome_font_dialog_init
 		};
-		font_dialog_type = gtk_type_unique (GTK_TYPE_DIALOG, &fontsel_diag_info);
+		type = g_type_register_static (GTK_TYPE_DIALOG, "GnomeFontDialog", &info, 0);
 	}
-  
-	return font_dialog_type;
+	return type;
 }
 
 static void
@@ -878,7 +869,6 @@ gnome_font_dialog_init (GnomeFontDialog *fontseldiag)
 	gtk_dialog_set_default_response (GTK_DIALOG (fontseldiag), GTK_RESPONSE_CANCEL);
 
 	gtk_container_set_border_width (GTK_CONTAINER (fontseldiag), 4);
-	gtk_window_set_policy (GTK_WINDOW (fontseldiag), FALSE, TRUE, TRUE);
 
 	fontseldiag->fontsel = gnome_font_selection_new ();
 	gtk_widget_show (fontseldiag->fontsel);
@@ -895,8 +885,8 @@ gnome_font_dialog_init (GnomeFontDialog *fontseldiag)
 	font = gnome_font_selection_get_font ((GnomeFontSelection *) fontseldiag->fontsel);
 	gnome_font_preview_set_font ((GnomeFontPreview *) fontseldiag->preview, font);
 
-	gtk_signal_connect (GTK_OBJECT (fontseldiag->fontsel), "font_set",
-			    GTK_SIGNAL_FUNC (gfsd_update_preview), fontseldiag);
+	g_signal_connect (G_OBJECT (fontseldiag->fontsel), "font_set",
+			  (GCallback) gfsd_update_preview, fontseldiag);
 }
 
 GtkWidget*
@@ -904,7 +894,7 @@ gnome_font_dialog_new	(const gchar	  *title)
 {
 	GnomeFontDialog *fontseldiag;
   
-	fontseldiag = gtk_type_new (GNOME_TYPE_FONT_DIALOG);
+	fontseldiag = g_object_new (GNOME_TYPE_FONT_DIALOG, NULL);
 	gtk_window_set_title (GTK_WINDOW (fontseldiag), title ? title : _("Font Selection"));
 
 	return GTK_WIDGET (fontseldiag);

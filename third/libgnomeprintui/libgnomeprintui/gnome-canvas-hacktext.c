@@ -1,7 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-canvas-hacktext.c: Hacktext item type for GnomeCanvas widget
- *                           This is mainly used for gnome-print preview context
+ *  gnome-canvas-hacktext.c: Hacktext CanvasItem, used for the PrintPreview context
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -27,45 +26,45 @@
  *
  */
 
-#define __GNOME_CANVAS_HACKTEXT_C__
-#define noVERBOSE
-
 /*
- * TODO:
- * - Clipping
+ * FIXME: TODO: Clipping
  */
 
-/* These includes are set up for standalone compile. If/when this codebase
-   is integrated into libgnomeui, the includes will need to change. */
+#include <config.h>
+
 #include <math.h>
 #include <string.h>
+
+#include <libgnomeprint/gnome-pgl.h>
 #include <libgnomeprint/gnome-font.h>
 #include <libgnomeprint/gnome-rfont.h>
-#include <libgnomeprint/gnome-pgl.h>
+
 #include "gnome-canvas-hacktext.h"
+#include "gnome-print-i18n.h"
 
 enum {
-	ARG_0,
-	ARG_TEXT,
-	ARG_GLYPHLIST,
-	ARG_FILL_COLOR,
-	ARG_FILL_COLOR_RGBA,
-	ARG_FONT,
-	ARG_X,
-	ARG_Y
+	PROP_0,
+	PROP_TEXT,
+	PROP_GLYPHLIST,
+	PROP_FILL_COLOR,
+	PROP_FILL_COLOR_RGBA,
+	PROP_FONT,
+	PROP_X,
+	PROP_Y
 };
 
 
 static void gnome_canvas_hacktext_class_init    (GnomeCanvasHacktextClass *class);
 static void gnome_canvas_hacktext_init          (GnomeCanvasHacktext      *hacktext);
-static void gnome_canvas_hacktext_destroy       (GtkObject               *object);
-static void gnome_canvas_hacktext_set_arg       (GtkObject               *object,
-						 GtkArg                  *arg,
-						 guint                    arg_id);
-static void gnome_canvas_hacktext_get_arg       (GtkObject               *object,
-						 GtkArg                  *arg,
-						 guint                    arg_id);
-
+static void gnome_canvas_hacktext_destroy       (GtkObject                *object);
+static void gnome_canvas_hacktext_set_property  (GObject                  *object,
+						 guint                    param_id,
+						 const GValue             *value,
+						 GParamSpec               *pspec);
+static void gnome_canvas_hacktext_get_property  (GObject                  *object,
+						 guint                    param_id,
+						 GValue                   *value,
+						 GParamSpec               *pspec);
 static void   gnome_canvas_hacktext_update      (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static void   gnome_canvas_hacktext_realize     (GnomeCanvasItem *item);
 static void   gnome_canvas_hacktext_unrealize   (GnomeCanvasItem *item);
@@ -89,58 +88,99 @@ struct _GnomeCanvasHacktextPriv {
 GtkType
 gnome_canvas_hacktext_get_type (void)
 {
-	static GtkType hacktext_type = 0;
-
-	if (!hacktext_type) {
-		GtkTypeInfo hacktext_info = {
-			"GnomeCanvasHacktext",
-			sizeof (GnomeCanvasHacktext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (GnomeCanvasHacktextClass),
-			(GtkClassInitFunc) gnome_canvas_hacktext_class_init,
-			(GtkObjectInitFunc) gnome_canvas_hacktext_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) gnome_canvas_hacktext_class_init,
+			NULL, NULL,
+			sizeof (GnomeCanvasHacktext),
+			0,
+			(GInstanceInitFunc) gnome_canvas_hacktext_init,
+			NULL
 		};
-
-		hacktext_type = gtk_type_unique (gnome_canvas_item_get_type (), &hacktext_info);
+		type = g_type_register_static (GNOME_TYPE_CANVAS_ITEM, "GnomeCanvasHacktext", &info, 0);
 	}
-
-	return hacktext_type;
+	return type;
 }
 
 static void
 gnome_canvas_hacktext_class_init (GnomeCanvasHacktextClass *class)
 {
+	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+	parent_class = g_type_class_peek_parent (class);
 
-	/* when this gets checked into libgnomeui, change the
-           GTK_TYPE_POINTER to GTK_TYPE_GNOME_CANVAS_HACKTEXT, and add an
-           entry to gnome-boxed.defs */
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::text", GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::glyphlist", GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_GLYPHLIST);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::fill_color", GTK_TYPE_STRING, GTK_ARG_WRITABLE, ARG_FILL_COLOR);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::fill_color_rgba", GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_FILL_COLOR_RGBA);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::font", GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_FONT);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::x", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_X);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::y", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_Y);
+	gobject_class->set_property = gnome_canvas_hacktext_set_property;
+	gobject_class->get_property = gnome_canvas_hacktext_get_property;
+
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_TEXT,
+		 g_param_spec_string ("text",
+				      _("Text"),
+				      _("Text to render"),
+				      NULL,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property
+                (gobject_class,
+                 PROP_X,
+                 g_param_spec_double ("x", NULL, NULL,
+				      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+        g_object_class_install_property
+                (gobject_class,
+                 PROP_Y,
+                 g_param_spec_double ("y", NULL, NULL,
+				      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+	 g_object_class_install_property
+		(gobject_class,
+		 PROP_GLYPHLIST,
+		 g_param_spec_pointer ("glyphlist",
+				       _("Glyphlist"),
+				       _("Glyphlist"),
+				       (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+	 g_object_class_install_property
+                (gobject_class,
+                 PROP_FILL_COLOR,
+                 g_param_spec_string ("fill_color",
+				      _("Color"),
+				      _("Text color, as string"),
+                                      NULL,
+                                      G_PARAM_WRITABLE));
+	 g_object_class_install_property
+                (gobject_class,
+                 PROP_FILL_COLOR_RGBA,
+                 g_param_spec_uint ("fill_color_rgba",
+				    _("Color"),
+				    _("Text color, as an R/G/B/A combined integer"),
+				    0, G_MAXUINT, 0,
+				    (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+	 g_object_class_install_property
+		 (gobject_class,
+		  PROP_FONT,
+		  g_param_spec_object ("font",
+				       _("Font"),
+				       _("Font as a GnomeFont struct"),
+				       GNOME_TYPE_FONT,
+				       (G_PARAM_READABLE | G_PARAM_WRITABLE)));
 
 	object_class->destroy = gnome_canvas_hacktext_destroy;
-	object_class->set_arg = gnome_canvas_hacktext_set_arg;
-	object_class->get_arg = gnome_canvas_hacktext_get_arg;
 
-	item_class->update = gnome_canvas_hacktext_update;
-	item_class->realize = gnome_canvas_hacktext_realize;
+	item_class->update    = gnome_canvas_hacktext_update;
+	item_class->realize   = gnome_canvas_hacktext_realize;
 	item_class->unrealize = gnome_canvas_hacktext_unrealize;
-	item_class->point = gnome_canvas_hacktext_point;
-	item_class->bounds = gnome_canvas_hacktext_bounds;
-	item_class->render = gnome_canvas_hacktext_render;
+	item_class->point     = gnome_canvas_hacktext_point;
+	item_class->bounds    = gnome_canvas_hacktext_bounds;
+	item_class->render    = gnome_canvas_hacktext_render;
 }
 
 static void
@@ -148,9 +188,9 @@ gnome_canvas_hacktext_init (GnomeCanvasHacktext *hacktext)
 {
 	hacktext->text = NULL;
 	hacktext->priv = g_new (GnomeCanvasHacktextPriv, 1);
+	hacktext->priv->pgl = NULL;
 	hacktext->priv->font = NULL;
 	hacktext->priv->glyphlist = NULL;
-	hacktext->priv->pgl = NULL;
 
 	art_affine_identity (hacktext->priv->affine);
 }
@@ -171,9 +211,12 @@ gnome_canvas_hacktext_destroy (GtkObject *object)
 	}
 
 	if (hacktext->priv) {
-		if (hacktext->priv->font) gnome_font_unref (hacktext->priv->font);
-		if (hacktext->priv->glyphlist) gnome_glyphlist_unref (hacktext->priv->glyphlist);
-		if (hacktext->priv->pgl) gnome_pgl_destroy (hacktext->priv->pgl);
+		if (hacktext->priv->font)
+			gnome_font_unref (hacktext->priv->font);
+		if (hacktext->priv->glyphlist)
+			gnome_glyphlist_unref (hacktext->priv->glyphlist);
+		if (hacktext->priv->pgl)
+			gnome_pgl_destroy (hacktext->priv->pgl);
 		g_free (hacktext->priv);
 		hacktext->priv = NULL;
 	}
@@ -194,7 +237,8 @@ art_drect_hacktext (ArtDRect *bbox, GnomeCanvasHacktext *hacktext)
 		gnome_canvas_update_now (GNOME_CANVAS_ITEM (hacktext)->canvas);
 	}
 
-	if (!hacktext->priv->pgl) return;
+	if (!hacktext->priv->pgl)
+		return;
 
 	gnome_pgl_bbox (hacktext->priv->pgl, bbox);
 }
@@ -218,27 +262,14 @@ get_bounds (GnomeCanvasHacktext *hacktext, double *bx1, double *by1, double *bx2
 	*by2 = bbox.y1;
 }
 
-#ifdef IFED_OUT_BY_CHEMA_TO_KILL_COMPILE_WARNING
-/* Convenience function to set a GC's foreground color to the specified pixel value */
 static void
-set_gc_foreground (GdkGC *gc, gulong pixel)
-{
-	GdkColor c;
-
-	if (!gc)
-		return;
-
-	c.pixel = pixel;
-	gdk_gc_set_foreground (gc, &c);
-}
-#endif
-
-static void
-gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+gnome_canvas_hacktext_set_property (GObject               *object,
+				    guint                 param_id,
+				    const GValue          *value,
+				    GParamSpec            *pspec)
 {
 	GnomeCanvasItem *item;
 	GnomeCanvasHacktext *bp;
-	char *text;
 	GnomeGlyphList * gl;
 	GdkColor color;
 	GnomeFont * font;
@@ -246,10 +277,8 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	item = GNOME_CANVAS_ITEM (object);
 	bp = GNOME_CANVAS_HACKTEXT (object);
 
-	switch (arg_id) {
-	case ARG_TEXT:
-		text = GTK_VALUE_POINTER (*arg);
-
+	switch (param_id) {
+	case PROP_TEXT:
 		if (bp->text) {
 			g_free (bp->text);
 			bp->text = NULL;
@@ -260,13 +289,13 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			bp->priv->glyphlist = NULL;
 		}
 
-		if (text) bp->text = g_strdup (text);
+		bp->text = g_value_dup_string (value);
 
 		gnome_canvas_item_request_update (item);
 		break;
 
-	case ARG_GLYPHLIST:
-		gl = GTK_VALUE_POINTER (*arg);
+	case PROP_GLYPHLIST:
+		gl = g_value_get_pointer (value);
 
 		if (bp->text) {
 			g_free (bp->text);
@@ -278,9 +307,9 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			bp->priv->glyphlist = NULL;
 		}
 
-		/* fixme: should be duplicate() */
-
-		if (gl) gnome_glyphlist_ref (gl);
+		/* FIXME: should be duplicate() (Lauris) */
+		if (gl)
+			gnome_glyphlist_ref (gl);
 
 		bp->priv->glyphlist = gl;
 
@@ -288,8 +317,8 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 		break;
 
-	case ARG_FILL_COLOR:
-		if (gnome_canvas_get_color (item->canvas, GTK_VALUE_STRING (*arg), &color)) {
+	case PROP_FILL_COLOR:
+		if (gnome_canvas_get_color (item->canvas, g_value_get_string (value), &color)) {
 			bp->fill_set = TRUE;
 			bp->fill_pixel = color.pixel;
 			bp->fill_rgba =
@@ -305,31 +334,33 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		gnome_canvas_item_request_update (item);
 		break;
 
-	case ARG_FILL_COLOR_RGBA:
+	case PROP_FILL_COLOR_RGBA:
 		bp->fill_set = TRUE;
-		bp->fill_rgba = GTK_VALUE_UINT (*arg);
+		bp->fill_rgba = g_value_get_uint (value);
 
 		/* should probably request repaint on the fill_svp */
 		gnome_canvas_item_request_update (item);
 
 		break;
 
-	case ARG_FONT:
-		font = GTK_VALUE_POINTER (*arg);
-		if (font) gnome_font_ref (font);
-		if (bp->priv->font) gnome_font_unref (bp->priv->font);
+	case PROP_FONT:
+		font = g_value_get_object (value);
+		if (font)
+			gnome_font_ref (font);
+		if (bp->priv->font)
+			gnome_font_unref (bp->priv->font);
 		bp->priv->font = font;
 		bp->size = gnome_font_get_size (bp->priv->font);
 		gnome_canvas_item_request_update (item);
 		break;
 
-	case ARG_X:
-		bp->x = GTK_VALUE_DOUBLE (*arg);
+	case PROP_X:
+		bp->x = g_value_get_double (value);
 		gnome_canvas_item_request_update (item);
 		break;
 
-	case ARG_Y:
-		bp->y = GTK_VALUE_DOUBLE (*arg);
+	case PROP_Y:
+		bp->y = g_value_get_double (value);
 		gnome_canvas_item_request_update (item);
 		break;
 
@@ -339,37 +370,38 @@ gnome_canvas_hacktext_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 static void
-gnome_canvas_hacktext_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+gnome_canvas_hacktext_get_property (GObject               *object,
+				    guint                 param_id,
+				    GValue                *value,
+				    GParamSpec            *pspec)
 {
+	GnomeCanvasHacktextPriv *priv;
 	GnomeCanvasHacktext *bp;
 
 	bp = GNOME_CANVAS_HACKTEXT (object);
+	priv = (GnomeCanvasHacktextPriv *) bp->priv;
 
-	switch (arg_id) {
-	case ARG_TEXT:
-		if (bp->text) {
-			GTK_VALUE_POINTER (*arg) = g_strdup (bp->text);
-		} else
-			GTK_VALUE_POINTER (*arg) = NULL;
+	switch (param_id) {
+	case PROP_TEXT:
+		g_value_set_string (value, bp->text);
 		break;
-	case ARG_FILL_COLOR_RGBA:
-		GTK_VALUE_UINT (*arg) = bp->fill_color;
+	case PROP_GLYPHLIST:
+		g_value_set_pointer (value, priv->glyphlist);
+		break;		
+	case PROP_FILL_COLOR_RGBA:
+		g_value_set_uint (value, bp->fill_color);
 		break;
-
-	case ARG_FONT:
-		GTK_VALUE_POINTER (*arg) = bp->priv->font;
+	case PROP_FONT:
+		g_value_set_object (value, bp->priv->font);
 		break;
-
-	case ARG_X:
-		GTK_VALUE_DOUBLE (*arg) = bp->x;
+	case PROP_X:
+		g_value_set_double (value, bp->x);
 		break;
-
-	case ARG_Y:
-		GTK_VALUE_DOUBLE (*arg) = bp->y;
+	case PROP_Y:
+		g_value_set_double (value, bp->y);
 		break;
-
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
 	}
 }
@@ -385,7 +417,8 @@ gnome_canvas_hacktext_update (GnomeCanvasItem *item, double *affine, ArtSVP *cli
 	if (parent_class->update)
 		(* parent_class->update) (item, affine, clip_path, flags);
 
-	if (hacktext->priv->pgl) gnome_canvas_hacktext_req_repaint (hacktext, NULL);
+	if (hacktext->priv->pgl)
+		gnome_canvas_hacktext_req_repaint (hacktext, NULL);
 
 	gnome_canvas_item_reset_bounds (item);
 
@@ -402,7 +435,8 @@ gnome_canvas_hacktext_update (GnomeCanvasItem *item, double *affine, ArtSVP *cli
 			hacktext->priv->glyphlist = NULL;
 		}
 
-		if (!hacktext->priv->font) return;
+		if (!hacktext->priv->font)
+			return;
 
 		hacktext->priv->glyphlist = gnome_glyphlist_from_text_dumb (hacktext->priv->font, hacktext->fill_rgba,
 									    0.0, 0.0,
@@ -414,7 +448,8 @@ gnome_canvas_hacktext_update (GnomeCanvasItem *item, double *affine, ArtSVP *cli
 
 		pgl = gnome_pgl_from_gl (hacktext->priv->glyphlist, hacktext->priv->affine, GNOME_PGL_RENDER_DEFAULT);
 
-		if (hacktext->priv->pgl) gnome_pgl_destroy (hacktext->priv->pgl);
+		if (hacktext->priv->pgl)
+			gnome_pgl_destroy (hacktext->priv->pgl);
 
 		hacktext->priv->pgl = pgl;
 	}
@@ -457,11 +492,13 @@ gnome_canvas_hacktext_point (GnomeCanvasItem *item, double mx, double my,
 
 	hacktext = (GnomeCanvasHacktext *) item;
 
-	if (!hacktext->priv->pgl) return 1e18;
+	if (!hacktext->priv->pgl)
+		return 1e18;
 
 	*actual_item = item;
 
-	if (gnome_pgl_test_point (hacktext->priv->pgl, cx, cy)) return 0.0;
+	if (gnome_pgl_test_point (hacktext->priv->pgl, cx, cy))
+		return 0.0;
 
 	return 1e18;
 }
@@ -492,7 +529,8 @@ gnome_canvas_hacktext_req_repaint (GnomeCanvasHacktext *hacktext,
 
 	g_return_if_fail (hacktext->priv);
 
-	if (!hacktext->priv->pgl) return;
+	if (!hacktext->priv->pgl)
+		return;
 
 	if (gnome_pgl_bbox (hacktext->priv->pgl, &gbbox)) {
 		ArtIRect ibox;
@@ -512,7 +550,8 @@ gnome_canvas_hacktext_render (GnomeCanvasItem *item,
 
 	g_return_if_fail (hacktext->priv);
 
-	if (!hacktext->priv->pgl) return;
+	if (!hacktext->priv->pgl)
+		return;
 
 	gnome_canvas_buf_ensure_buf (buf);
 	buf->is_buf = TRUE;

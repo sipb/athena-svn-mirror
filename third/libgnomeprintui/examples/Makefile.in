@@ -66,17 +66,21 @@ CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CFLAGS = @LIBGLADE_CFLAGS@
 LIBGLADE_LIBS = @LIBGLADE_LIBS@
@@ -93,6 +97,8 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -108,15 +114,17 @@ cxxflags_set = @cxxflags_set@
 @WITH_LIBGLADE_TRUE@CLEANFILES = *.bak *~ *.ps
 @WITH_LIBGLADE_FALSE@CLEANFILES = example_10 *.bak *~ *.ps
 
-noinst_PROGRAMS =  	example_01 	example_02 	example_03 	example_04 	example_05 	example_06 	example_08 $(glade_programs)
+noinst_PROGRAMS =  	example_01 	example_02 	example_03 	example_04 	example_05 	example_06 	example_08 	example_09 $(glade_programs)
 
 
 INCLUDES =  	-I$(top_srcdir) 	$(LIBGNOMEPRINTUI_CFLAGS) $(libglade_cflags)
 
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@libgnomeprint_local = $(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@libgnomeprint_local = $(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@libgnomeprint_local = 
 
-print_libs =  	$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la 	$(libgnomeprint_local) 	$(LIBGNOMEPRINTUI_LIBS) $(libglade_libs)
+EXTRA_DIST = sample-image.png example_10.glade example_10.gladep README
+
+print_libs =  	$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la 	$(libgnomeprint_local) 	$(LIBGNOMEPRINTUI_LIBS) $(libglade_libs)
 
 
 example_01_SOURCES = example_01.c
@@ -126,6 +134,7 @@ example_04_SOURCES = example_04.c
 example_05_SOURCES = example_05.c
 example_06_SOURCES = example_06.c
 example_08_SOURCES = example_08.c
+example_09_SOURCES = example_09.c
 
 @WITH_LIBGLADE_TRUE@example_10_SOURCES = example_10.c
 
@@ -136,6 +145,7 @@ example_04_LDADD = $(print_libs)
 example_05_LDADD = $(print_libs)
 example_06_LDADD = $(print_libs)
 example_08_LDADD = $(print_libs)
+example_09_LDADD = $(print_libs)
 
 @WITH_LIBGLADE_TRUE@example_10_LDADD = $(print_libs)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -145,11 +155,12 @@ CONFIG_CLEAN_FILES =
 @WITH_LIBGLADE_TRUE@example_02$(EXEEXT) example_03$(EXEEXT) \
 @WITH_LIBGLADE_TRUE@example_04$(EXEEXT) example_05$(EXEEXT) \
 @WITH_LIBGLADE_TRUE@example_06$(EXEEXT) example_08$(EXEEXT) \
-@WITH_LIBGLADE_TRUE@example_10$(EXEEXT)
+@WITH_LIBGLADE_TRUE@example_09$(EXEEXT) example_10$(EXEEXT)
 @WITH_LIBGLADE_FALSE@noinst_PROGRAMS =  example_01$(EXEEXT) \
 @WITH_LIBGLADE_FALSE@example_02$(EXEEXT) example_03$(EXEEXT) \
 @WITH_LIBGLADE_FALSE@example_04$(EXEEXT) example_05$(EXEEXT) \
-@WITH_LIBGLADE_FALSE@example_06$(EXEEXT) example_08$(EXEEXT)
+@WITH_LIBGLADE_FALSE@example_06$(EXEEXT) example_08$(EXEEXT) \
+@WITH_LIBGLADE_FALSE@example_09$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -157,91 +168,103 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 example_01_OBJECTS =  example_01.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_01_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_01_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_01_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_01_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_01_LDFLAGS = 
 example_02_OBJECTS =  example_02.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_02_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_02_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_02_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_02_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_02_LDFLAGS = 
 example_03_OBJECTS =  example_03.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_03_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_03_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_03_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_03_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_03_LDFLAGS = 
 example_04_OBJECTS =  example_04.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_04_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_04_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_04_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_04_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_04_LDFLAGS = 
 example_05_OBJECTS =  example_05.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_05_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_05_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_05_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_05_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_05_LDFLAGS = 
 example_06_OBJECTS =  example_06.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_06_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_06_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_06_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_06_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_06_LDFLAGS = 
 example_08_OBJECTS =  example_08.$(OBJEXT)
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_08_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_08_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_08_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_08_DEPENDENCIES =  \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la \
-@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
 example_08_LDFLAGS = 
+example_09_OBJECTS =  example_09.$(OBJEXT)
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@example_09_DEPENDENCIES =  \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@example_09_DEPENDENCIES =  \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_FALSE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@example_09_DEPENDENCIES =  \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_FALSE@@WITH_LIBGLADE_FALSE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@example_09_DEPENDENCIES =  \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la \
+@EXAMPLES_USE_LOCAL_LIBGNOMEPRINT_TRUE@@WITH_LIBGLADE_TRUE@$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la
+example_09_LDFLAGS = 
 @WITH_LIBGLADE_TRUE@example_10_OBJECTS =  example_10.$(OBJEXT)
 @WITH_LIBGLADE_TRUE@example_10_DEPENDENCIES =  \
-@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2.la
+@WITH_LIBGLADE_TRUE@$(top_builddir)/libgnomeprintui/libgnomeprintui-2-2.la
 @WITH_LIBGLADE_FALSE@example_10_DEPENDENCIES = 
 example_10_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -255,8 +278,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(example_01_SOURCES) $(example_02_SOURCES) $(example_03_SOURCES) $(example_04_SOURCES) $(example_05_SOURCES) $(example_06_SOURCES) $(example_08_SOURCES) $(example_10_SOURCES)
-OBJECTS = $(example_01_OBJECTS) $(example_02_OBJECTS) $(example_03_OBJECTS) $(example_04_OBJECTS) $(example_05_OBJECTS) $(example_06_OBJECTS) $(example_08_OBJECTS) $(example_10_OBJECTS)
+SOURCES = $(example_01_SOURCES) $(example_02_SOURCES) $(example_03_SOURCES) $(example_04_SOURCES) $(example_05_SOURCES) $(example_06_SOURCES) $(example_08_SOURCES) $(example_09_SOURCES) $(example_10_SOURCES)
+OBJECTS = $(example_01_OBJECTS) $(example_02_OBJECTS) $(example_03_OBJECTS) $(example_04_OBJECTS) $(example_05_OBJECTS) $(example_06_OBJECTS) $(example_08_OBJECTS) $(example_09_OBJECTS) $(example_10_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -349,6 +372,10 @@ example_06$(EXEEXT): $(example_06_OBJECTS) $(example_06_DEPENDENCIES)
 example_08$(EXEEXT): $(example_08_OBJECTS) $(example_08_DEPENDENCIES)
 	@rm -f example_08$(EXEEXT)
 	$(LINK) $(example_08_LDFLAGS) $(example_08_OBJECTS) $(example_08_LDADD) $(LIBS)
+
+example_09$(EXEEXT): $(example_09_OBJECTS) $(example_09_DEPENDENCIES)
+	@rm -f example_09$(EXEEXT)
+	$(LINK) $(example_09_LDFLAGS) $(example_09_OBJECTS) $(example_09_LDADD) $(LIBS)
 
 example_10$(EXEEXT): $(example_10_OBJECTS) $(example_10_DEPENDENCIES)
 	@rm -f example_10$(EXEEXT)

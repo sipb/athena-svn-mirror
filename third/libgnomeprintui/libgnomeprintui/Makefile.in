@@ -66,17 +66,21 @@ CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CFLAGS = @LIBGLADE_CFLAGS@
 LIBGLADE_LIBS = @LIBGLADE_LIBS@
@@ -93,6 +97,8 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -102,41 +108,45 @@ cxxflags_set = @cxxflags_set@
 
 SUBDIRS = gpaui
 
-lib_LTLIBRARIES = libgnomeprintui-2.la
+lib_LTLIBRARIES = libgnomeprintui-2-2.la
 
-INCLUDES =  	-I$(top_srcdir) 	$(LIBGNOMEPRINTUI_CFLAGS) 	-DG_LOG_DOMAIN=\"libgnomeprintui\" 	-DVERSION=\"$(VERSION)\" 	-DWE_ARE_LIBGNOMEPRINT_UI 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DGNOME_PRINT_LIBDIR=\"$(libdir)/gnome-print\" 	-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\" 
-
-
-libgnomeprintui_2_la_LIBADD =  	gpaui/libgpaui.la 	$(LIBGNOMEPRINTUI_LIBS)
+INCLUDES =  	-I$(top_srcdir) 	$(LIBGNOMEPRINTUI_CFLAGS) 	-DG_LOG_DOMAIN=\"libgnomeprintui\" 	-DVERSION=\"$(VERSION)\" 	-DWE_ARE_LIBGNOMEPRINT_INTERNALS 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DGNOME_PRINT_LIBDIR=\"$(libdir)/gnome-print\" 	-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\" 		-DG_DISABLE_DEPRECATED					-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED			-DGNOME_DISABLE_DEPRECATED
 
 
-libgnomeprintui_2_la_SOURCES =  	gnome-print-i18n.c gnome-print-i18n.h 	gnome-print-preview.c gnome-print-preview-private.h 	gnome-canvas-hacktext.c gnome-canvas-hacktext.h 	gnome-print-master-preview.c 	gnome-font-dialog.c 	gnome-printer-dialog.c 	gnome-print-copies.c 	gnome-print-dialog.c 	gnome-print-paper-selector.c
+libgnomeprintui_2_2_la_LIBADD =  	gpaui/libgpaui.la 	$(LIBGNOMEPRINTUI_LIBS)
 
 
-libgnomeprintuiincdir = $(includedir)/libgnomeprintui-2.0/libgnomeprintui
+BUILT_SOURCES = gnome-printui-marshal.c  gnome-printui-marshal.h
 
-libgnomeprintuiinc_HEADERS =  	gnome-print-preview.h 	gnome-print-master-preview.h 	gnome-font-dialog.h 	gnome-printer-dialog.h 	gnome-print-copies.h 	gnome-print-dialog.h 	gnome-print-paper-selector.h
+libgnomeprintui_2_2_la_SOURCES =  	gnome-print-i18n.c           gnome-print-i18n.h				gnome-print-preview.c        gnome-print-preview-private.h		gnome-canvas-hacktext.c      gnome-canvas-hacktext.h			gnome-print-job-preview.c		gnome-printer-selector.c     gnome-printer-selector.h			gnome-print-copies.c         gnome-print-copies.h			gnome-print-dialog.c         gnome-print-dialog-private.h		gnome-font-dialog.c			gnome-print-paper-preview.c  gnome-print-paper-preview.h		gnome-print-unit-selector.c		gnome-print-paper-selector.c		$(BUILT_SOURCES)
 
 
-EXTRA_DIST = libgnomeprintui-2.0.pc.in
+libgnomeprintuiincdir = $(includedir)/libgnomeprintui-2.2/libgnomeprintui
+
+libgnomeprintuiinc_HEADERS =  	gnome-print-preview.h 	gnome-font-dialog.h 	gnome-print-dialog.h 	gnome-print-unit-selector.h 	gnome-print-paper-selector.h 	gnome-print-job-preview.h	
+
+
+EXTRA_DIST = libgnomeprintui-2.2.pc.in gnome-printui-marshal.list
+CLEANFILES = $(BUILD_SOURCES)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libgnomeprintui-2.0.pc
+pkgconfig_DATA = libgnomeprintui-2.2.pc
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  libgnomeprintui-2.0.pc
+CONFIG_CLEAN_FILES =  libgnomeprintui-2.2.pc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-libgnomeprintui_2_la_LDFLAGS = 
-libgnomeprintui_2_la_DEPENDENCIES =  gpaui/libgpaui.la
-libgnomeprintui_2_la_OBJECTS =  gnome-print-i18n.lo \
+libgnomeprintui_2_2_la_LDFLAGS = 
+libgnomeprintui_2_2_la_DEPENDENCIES =  gpaui/libgpaui.la
+libgnomeprintui_2_2_la_OBJECTS =  gnome-print-i18n.lo \
 gnome-print-preview.lo gnome-canvas-hacktext.lo \
-gnome-print-master-preview.lo gnome-font-dialog.lo \
-gnome-printer-dialog.lo gnome-print-copies.lo gnome-print-dialog.lo \
-gnome-print-paper-selector.lo
+gnome-print-job-preview.lo gnome-printer-selector.lo \
+gnome-print-copies.lo gnome-print-dialog.lo gnome-font-dialog.lo \
+gnome-print-paper-preview.lo gnome-print-unit-selector.lo \
+gnome-print-paper-selector.lo gnome-printui-marshal.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -145,15 +155,15 @@ DATA =  $(pkgconfig_DATA)
 
 HEADERS =  $(libgnomeprintuiinc_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in libgnomeprintui-2.0.pc.in
+DIST_COMMON =  Makefile.am Makefile.in libgnomeprintui-2.2.pc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgnomeprintui_2_la_SOURCES)
-OBJECTS = $(libgnomeprintui_2_la_OBJECTS)
+SOURCES = $(libgnomeprintui_2_2_la_SOURCES)
+OBJECTS = $(libgnomeprintui_2_2_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -165,7 +175,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-libgnomeprintui-2.0.pc: $(top_builddir)/config.status libgnomeprintui-2.0.pc.in
+libgnomeprintui-2.2.pc: $(top_builddir)/config.status libgnomeprintui-2.2.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
@@ -237,8 +247,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libgnomeprintui-2.la: $(libgnomeprintui_2_la_OBJECTS) $(libgnomeprintui_2_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgnomeprintui_2_la_LDFLAGS) $(libgnomeprintui_2_la_OBJECTS) $(libgnomeprintui_2_la_LIBADD) $(LIBS)
+libgnomeprintui-2-2.la: $(libgnomeprintui_2_2_la_OBJECTS) $(libgnomeprintui_2_2_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgnomeprintui_2_2_la_LDFLAGS) $(libgnomeprintui_2_2_la_OBJECTS) $(libgnomeprintui_2_2_la_LIBADD) $(LIBS)
 
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
@@ -388,6 +398,48 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+gnome-canvas-hacktext.lo gnome-canvas-hacktext.o : \
+	gnome-canvas-hacktext.c ../config.h gnome-canvas-hacktext.h \
+	gnome-print-i18n.h
+gnome-font-dialog.lo gnome-font-dialog.o : gnome-font-dialog.c \
+	../config.h gnome-print-i18n.h gnome-font-dialog.h \
+	gnome-printui-marshal.h
+gnome-print-copies.lo gnome-print-copies.o : gnome-print-copies.c \
+	../config.h gnome-print-i18n.h gnome-print-copies.h \
+	gnome-printui-marshal.h
+gnome-print-dialog.lo gnome-print-dialog.o : gnome-print-dialog.c \
+	../config.h gnome-print-i18n.h gnome-printer-selector.h \
+	gpaui/gpa-widget.h gnome-print-paper-selector.h \
+	gnome-print-copies.h gnome-print-dialog.h \
+	gnome-print-dialog-private.h
+gnome-print-i18n.lo gnome-print-i18n.o : gnome-print-i18n.c ../config.h \
+	gnome-print-i18n.h
+gnome-print-job-preview.lo gnome-print-job-preview.o : \
+	gnome-print-job-preview.c ../config.h \
+	gnome-print-preview-private.h gnome-print-preview.h \
+	gnome-print-i18n.h gnome-print-job-preview.h \
+	gnome-print-preview.h
+gnome-print-paper-preview.lo gnome-print-paper-preview.o : \
+	gnome-print-paper-preview.c gnome-print-paper-preview.h \
+	gpaui/gpa-paper-preview-item.h
+gnome-print-paper-selector.lo gnome-print-paper-selector.o : \
+	gnome-print-paper-selector.c ../config.h gnome-print-i18n.h \
+	gnome-print-paper-selector.h gnome-print-unit-selector.h \
+	gnome-print-paper-preview.h gpaui/gpa-paper-preview-item.h \
+	gpaui/gpa-option-menu.h gpaui/gpa-widget.h
+gnome-print-preview.lo gnome-print-preview.o : gnome-print-preview.c \
+	../config.h gnome-canvas-hacktext.h \
+	gnome-print-preview-private.h gnome-print-preview.h
+gnome-print-unit-selector.lo gnome-print-unit-selector.o : \
+	gnome-print-unit-selector.c ../config.h \
+	gnome-print-unit-selector.h
+gnome-printer-selector.lo gnome-printer-selector.o : \
+	gnome-printer-selector.c ../config.h gnome-print-i18n.h \
+	gnome-printer-selector.h gpaui/gpa-widget.h \
+	gpaui/gpa-printer-selector.h gpaui/gpa-widget.h \
+	gpaui/gpa-settings-selector.h gpaui/gpa-transport-selector.h
+gnome-printui-marshal.lo gnome-printui-marshal.o : \
+	gnome-printui-marshal.c gnome-printui-marshal.h
 
 info-am:
 info: info-recursive
@@ -422,12 +474,14 @@ installdirs-am:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
@@ -474,6 +528,13 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+gnome-printui-marshal.h: gnome-printui-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=libgnomeprintui_marshal > $@
+
+gnome-printui-marshal.c: gnome-printui-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gnome-printui-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=libgnomeprintui_marshal >> $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

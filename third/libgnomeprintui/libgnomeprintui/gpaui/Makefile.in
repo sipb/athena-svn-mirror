@@ -65,17 +65,21 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CFLAGS = @LIBGLADE_CFLAGS@
 LIBGLADE_LIBS = @LIBGLADE_LIBS@
@@ -92,6 +96,8 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -101,13 +107,13 @@ cxxflags_set = @cxxflags_set@
 
 noinst_LTLIBRARIES = libgpaui.la
 
-INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/intl 	$(LIBGNOMEPRINTUI_CFLAGS)
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/intl 	-I$(top_srcdir)/libgnomeprintui 	-DWE_ARE_LIBGNOMEPRINT_INTERNALS 	$(LIBGNOMEPRINTUI_CFLAGS) 		-DG_DISABLE_DEPRECATED					-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED			-DGNOME_DISABLE_DEPRECATED
 
 
-CPPFLAGS =  	-DWE_ARE_LIBGNOMEPRINT_UI 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\" 
+CPPFLAGS =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\" 
 
 
-libgpaui_la_SOURCES =  	gpa-widget.c gpa-widget.h 	printer-selector.c printer-selector.h 	settings-selector.c settings-selector.h 	transport-selector.c transport-selector.h
+libgpaui_la_SOURCES =  	gpa-widget.c         gpa-widget.h 		gpa-option-menu.c        gpa-option-menu.h 	gpa-printer-selector.c   gpa-printer-selector.h   	gpa-settings-selector.c  gpa-settings-selector.h  	gpa-transport-selector.c gpa-transport-selector.h 		gpa-paper-preview-item.c gpa-paper-preview-item.h 		gpa-tree-viewer.c        gpa-tree-viewer.h 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -119,13 +125,14 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LIBS = @LIBS@
 libgpaui_la_LDFLAGS = 
 libgpaui_la_LIBADD = 
-libgpaui_la_OBJECTS =  gpa-widget.lo printer-selector.lo \
-settings-selector.lo transport-selector.lo
+libgpaui_la_OBJECTS =  gpa-widget.lo gpa-option-menu.lo \
+gpa-printer-selector.lo gpa-settings-selector.lo \
+gpa-transport-selector.lo gpa-paper-preview-item.lo gpa-tree-viewer.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -246,6 +253,26 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gpa-option-menu.lo gpa-option-menu.o : gpa-option-menu.c ../../config.h \
+	gpa-widget.h gpa-option-menu.h \
+	../../libgnomeprintui/gnome-print-i18n.h
+gpa-paper-preview-item.lo gpa-paper-preview-item.o : \
+	gpa-paper-preview-item.c ../../config.h \
+	gpa-paper-preview-item.h
+gpa-printer-selector.lo gpa-printer-selector.o : gpa-printer-selector.c \
+	../../config.h ../../libgnomeprintui/gnome-print-i18n.h \
+	gpa-printer-selector.h gpa-widget.h
+gpa-settings-selector.lo gpa-settings-selector.o : \
+	gpa-settings-selector.c ../../config.h \
+	../../libgnomeprintui/gnome-print-i18n.h \
+	gpa-settings-selector.h gpa-widget.h
+gpa-transport-selector.lo gpa-transport-selector.o : \
+	gpa-transport-selector.c ../../config.h \
+	../../libgnomeprintui/gnome-print-i18n.h \
+	gpa-transport-selector.h gpa-widget.h
+gpa-tree-viewer.lo gpa-tree-viewer.o : gpa-tree-viewer.c ../../config.h \
+	gpa-tree-viewer.h
+gpa-widget.lo gpa-widget.o : gpa-widget.c ../../config.h gpa-widget.h
 
 info-am:
 info: info-am
@@ -321,13 +348,6 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-#	media-orientation.c media-orientation.h
-
-#
-#	add-printer-dialog.c add-printer-dialog.h
-#
-#	config-dialog.c config-dialog.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

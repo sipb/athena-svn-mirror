@@ -28,7 +28,7 @@
  */
 
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-job.h>
 #include <libgnomeprintui/gnome-print-dialog.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkdialog.h>
@@ -50,14 +50,14 @@ static void
 my_print (void)
 {
 	GnomePrintContext *gpc;
-	GnomePrintMaster *gpm;
+	GnomePrintJob *job;
 	GtkWidget *dialog;
 	gint response;
 
 	/* Create the objects */
-	gpm    = gnome_print_master_new ();
-	dialog = gnome_print_dialog_new_from_master (gpm, "Sample print dialog", 0);
-	gpc    = gnome_print_master_get_context (gpm);
+	job    = gnome_print_job_new (NULL);
+	dialog = gnome_print_dialog_new (job, "Sample print dialog", 0);
+	gpc    = gnome_print_job_get_context (job);
 
 	/* Run the dialog */
 	gtk_widget_show (dialog);
@@ -70,8 +70,11 @@ my_print (void)
 	/* Draw & print */
 	g_print ("Printing ...\n");
 	my_draw (gpc);
-	gnome_print_master_close (gpm);
-	gnome_print_master_print (gpm);
+	gnome_print_job_close (job);
+	gnome_print_job_print (job);
+
+	g_object_unref (G_OBJECT (gpc));
+	g_object_unref (G_OBJECT (job));
 }
 
 int

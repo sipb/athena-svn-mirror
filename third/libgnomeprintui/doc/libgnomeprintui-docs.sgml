@@ -1,0 +1,33 @@
+<!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!ENTITY libgnomeprintui-gnome-font-dialog SYSTEM "sgml/gnome-font-dialog.sgml">
+<!ENTITY libgnomeprintui-gnome-print-copies SYSTEM "sgml/gnome-print-copies.sgml">
+<!ENTITY libgnomeprintui-gnome-print-dialog SYSTEM "sgml/gnome-print-dialog.sgml">
+<!ENTITY libgnomeprintui-gnome-printer-selector SYSTEM "sgml/gnome-printer-selector.sgml">
+<!ENTITY libgnomeprintui-gnome-print-job-preview SYSTEM "sgml/gnome-print-job-preview.sgml">
+<!ENTITY libgnomeprintui-gnome-print-paper-selector SYSTEM "sgml/gnome-print-paper-selector.sgml">
+<!ENTITY libgnomeprintui-gnome-print-preview SYSTEM "sgml/gnome-print-preview.sgml">
+
+]>
+<book id="index">
+  <bookinfo>
+    <title>GNOME Print UI Reference Manual</title>
+  </bookinfo>
+
+  <chapter id="libgnomeprintui">
+    <title>GNOME Print UI Overview</title>
+    <para>
+FIXME: Add an overview
+    </para>
+  </chapter>
+
+  <chapter>
+    <title>API Reference</title>
+    &libgnomeprintui-gnome-font-dialog;
+    &libgnomeprintui-gnome-print-copies;
+    &libgnomeprintui-gnome-print-dialog;
+    &libgnomeprintui-gnome-printer-selector;
+    &libgnomeprintui-gnome-print-job-preview;
+    &libgnomeprintui-gnome-print-paper-selector;
+    &libgnomeprintui-gnome-print-preview;
+  </chapter>
+</book>

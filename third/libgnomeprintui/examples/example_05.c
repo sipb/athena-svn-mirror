@@ -27,8 +27,9 @@
  * See README
  */
 
+#include <string.h>
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-job.h>
 #include <libgnomeprint/gnome-print-config.h>
 
 static void
@@ -44,50 +45,59 @@ my_draw (GnomePrintContext *gpc)
 }
 
 static void
-my_set_names (GnomePrintMaster *gpm)
+my_set_names (GnomePrintJob *job)
 {
 	GnomePrintConfig *config;
-	gchar *output_filename;
+	gchar *printer;
 	
-	config = gnome_print_master_get_config (gpm);
-	
-	output_filename = g_strdup ("output_05.ps");
-	gnome_print_config_set (config, GNOME_PRINT_KEY_OUTPUT_FILENAME, output_filename);
-	g_print ("Printing to: %s\n", output_filename);
-	g_free (output_filename);
+	config = gnome_print_job_get_config (job);
 
+	/* Set the printer */
+	gnome_print_config_set (config, "Printer", "GENERIC");
+	printer = gnome_print_config_get (config, "Printer");
+	if (strcmp (printer, "GENERIC") != 0) {
+		g_warning ("Could not set printer to GENERIC Postscript");
+		return;
+	}
+	g_free (printer);
+	
+	gnome_print_job_print_to_file (job, "output_05.ps");
 	gnome_print_config_set (config, GNOME_PRINT_KEY_DOCUMENT_NAME, "Sample gnome-print document");
 }
 
 static void
-my_dump_orientation (GnomePrintMaster *gpm)
+my_dump_orientation (GnomePrintJob *job)
 {
 	GnomePrintConfig *config;
 	gchar *orientation;
 
-	config = gnome_print_master_get_config (gpm);
+	config = gnome_print_job_get_config (job);
 
 	orientation = gnome_print_config_get (config, GNOME_PRINT_KEY_ORIENTATION);
 	g_print ("Orientation is: %s\n", orientation);
-	g_free (orientation);
+	if (orientation)
+		g_free (orientation);
 }
 
 static void
 my_print (void)
 {
-	GnomePrintMaster *gpm;
+	GnomePrintJob *job;
 	GnomePrintContext *gpc;
 
-	gpm = gnome_print_master_new ();
-	gpc = gnome_print_master_get_context (gpm);
+	job = gnome_print_job_new (NULL);
+	gpc = gnome_print_job_get_context (job);
 
-	my_set_names (gpm);
-	my_dump_orientation (gpm);
+	my_set_names (job);
+	my_dump_orientation (job);
 	
 	my_draw (gpc);
 
-	gnome_print_master_close (gpm);
-	gnome_print_master_print (gpm);
+	gnome_print_job_close (job);
+	gnome_print_job_print (job);
+
+	g_object_unref (G_OBJECT (gpc));
+	g_object_unref (G_OBJECT (job));
 }
 
 int

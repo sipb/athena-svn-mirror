@@ -28,7 +28,7 @@
  */
 
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-job.h>
 
 static void
 my_draw (GnomePrintContext *gpc)
@@ -45,16 +45,19 @@ my_draw (GnomePrintContext *gpc)
 static void
 my_print (void)
 {
-	GnomePrintMaster *gpm;
 	GnomePrintContext *gpc;
+	GnomePrintJob *job;
 
-	gpm = gnome_print_master_new ();
-	gpc = gnome_print_master_get_context (gpm);
+	job = gnome_print_job_new (NULL);
+	gpc = gnome_print_job_get_context (job);
 
 	my_draw (gpc);
 
-	gnome_print_master_close (gpm);
-	gnome_print_master_print (gpm);
+	gnome_print_job_close (job);
+	gnome_print_job_print (job);
+
+	g_object_unref (G_OBJECT (gpc));
+	g_object_unref (G_OBJECT (job));
 }
 
 int

@@ -1,0 +1,268 @@
+<!-- ##### SECTION Title ##### -->
+gnome-font-dialog
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GNOME_TYPE_FONT_SELECTION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_FONT_SELECTION ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_FONT_SELECTION_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_IS_FONT_SELECTION ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_IS_FONT_SELECTION_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_FONT_SELECTION_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_TYPE_FONT_DIALOG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_FONT_DIALOG ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_FONT_DIALOG_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_IS_FONT_DIALOG ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_IS_FONT_DIALOG_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_FONT_DIALOG_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### STRUCT GnomeFontSelection ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeFontSelectionClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeFontPreview ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeFontPreviewClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeFontDialog ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeFontDialogClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_font_selection_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_selection_get_face ##### -->
+<para>
+
+</para>
+
+@fontsel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_selection_get_size ##### -->
+<para>
+
+</para>
+
+@fontsel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_selection_get_font ##### -->
+<para>
+
+</para>
+
+@fontsel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_selection_set_font ##### -->
+<para>
+
+</para>
+
+@fontsel: 
+@font: 
+
+
+<!-- ##### FUNCTION gnome_font_preview_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_preview_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_preview_set_phrase ##### -->
+<para>
+
+</para>
+
+@preview: 
+@phrase: 
+
+
+<!-- ##### FUNCTION gnome_font_preview_set_font ##### -->
+<para>
+
+</para>
+
+@preview: 
+@font: 
+
+
+<!-- ##### FUNCTION gnome_font_preview_set_color ##### -->
+<para>
+
+</para>
+
+@preview: 
+@color: 
+
+
+<!-- ##### FUNCTION gnome_font_dialog_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_dialog_new ##### -->
+<para>
+
+</para>
+
+@title: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_dialog_get_fontsel ##### -->
+<para>
+
+</para>
+
+@gfsd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_dialog_get_preview ##### -->
+<para>
+
+</para>
+
+@gfsd: 
+@Returns: 
+
+

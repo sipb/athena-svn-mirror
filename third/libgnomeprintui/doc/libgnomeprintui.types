@@ -1,0 +1,19 @@
+#include <libgnomeprintui/gnome-font-dialog.h>
+#include <libgnomeprintui/gnome-print-copies.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
+#include <libgnomeprintui/gnome-printer-selector.h>
+#include <libgnomeprintui/gnome-print-job-preview.h>
+#include <libgnomeprintui/gnome-print-paper-selector.h>
+#include <libgnomeprintui/gnome-print-preview.h>
+#include <libgnomeprintui/gnome-print-unit-selector.h>
+
+gnome_font_selection_get_type
+gnome_font_preview_get_type
+gnome_font_dialog_get_type
+gnome_print_copies_selector_get_type
+gnome_print_dialog_get_type
+gnome_printer_selector_get_type
+gnome_print_job_preview_get_type
+gnome_paper_selector_get_type
+gnome_print_unit_selector_get_type
+gnome_print_preview_get_type
