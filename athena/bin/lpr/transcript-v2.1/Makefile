@@ -2,7 +2,7 @@
 #
 # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.6 1990-08-25 17:54:31 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.7 1990-08-25 17:57:18 epeisach Exp $
 
 
 LPROGS = pscomm #lps40comm
@@ -22,14 +22,13 @@ CFLAGS = -O -DBSD -DSYSLOG -DZEPHYR
 
 programs all:	${LPROGS} ${BPROGS}
 
+Makefile: Imakefile
+	-mv -f Makefile Makefile.bak
+	/lib/cpp -E Imakefile Makefile 
+
 pscomm: pscomm.o psutil.o config.o
-	if [ `/bin/athena/machtype` = "mac" ]; then \
 		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
-			-lcom_err -lkrb -ldes -lposix ; \
-	else \
-		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
-			-lcom_err -lkrb -ldes ; \
-	fi
+			-lcom_err -lkrb -ldes 
 
 lps40comm: lps40comm.o psutil.o config.o
 	cc ${CFLAGS} -o lps40comm lps40comm.o psutil.o config.o
