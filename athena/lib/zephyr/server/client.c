@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_client_c[] =
-    "$Id: client.c,v 1.28 1994-08-01 08:43:41 probe Exp $";
+    "$Id: client.c,v 1.29 1994-10-31 05:33:22 ghudson Exp $";
 #endif
 
 /*
@@ -100,6 +100,7 @@ client_register(notice, who, client, server, wantdefaults)
 
 	(*client)->last_msg = 0;
 	(*client)->last_check = 0;
+	(*client)->last_send = 0;
 
 	if (!(clist = (ZClientList_t *) xmalloc(sizeof(ZClientList_t)))) {
 	  xfree(*client);
