@@ -222,7 +222,7 @@ LIBLPR_OBJS = \
 
 LPD_OBJS= lpd.o \
 	lpd_getparms.o lpd_rcvjob.o lpd_secure.o lpd_status.o lpd_jobs.o \
-	lpd_sendmail.o lpd_remove.o lpd_control.o
+	lpd_sendmail.o lpd_remove.o lpd_control.o lpd_k4auth.o
 
 LPR_OBJS= lpr.o lpr_getparms.o \
 	lpr_chkparms.o lpr_cpyfiles.o lpr_makejob.o
@@ -270,7 +270,7 @@ liblpr.a: $(LIBLPR_OBJS)
 lpr: $(LPR_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
 lpd: $(LPD_OBJS) liblpr.a
-	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS) -lkrb4 -ldes425
 lpq: $(LPQ_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
 lprm: $(LPRM_OBJS) liblpr.a
