@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 2002-04-09 19:26:00 zacheiss Exp $
+# $Id: Makefile.athena,v 1.5 2002-05-16 19:17:44 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -33,7 +33,7 @@ all:
 	   ${MAKE} dest_nolibafs ; \
 	   ${MAKE} only_libafs_tree ; \
 	   for mp in SP MP; do \
-		for arch in i386 i586 i686; do \
+		for arch in BOOT i386 i586 i686 athlon; do \
 			./redhat-fix $$arch $$mp src/config/redhat-fix.h ; \
 			${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
 				LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: redhat-fix,v 1.1 2002-02-07 20:58:52 zacheiss Exp $
+# $Id: redhat-fix,v 1.2 2002-05-16 19:17:43 zacheiss Exp $
 
 function PrintDefine() {
     case $3 in
@@ -41,20 +41,36 @@ function PrintDefine() {
 function PrintRedhatKernelFix() {
     archlist="i386 i586 i686"
     arch="$1"
+    up=0
+    smp=0
+    ent=0
+    bm=0
     if [ "$2" = "MP" ]; then
-	ent=0
 	smp=1
-	up=0
     elif [ "$2" = "EP" ]; then
 	ent=1
-	smp=0
-	up=0
+    elif [ "$2" = "BM" ]; then
+	bm=1
     else
-	ent=0
-	smp=0
 	up=1
     fi
     file="$3"
+
+    # deal with the various boot kernels
+    boot=0
+    bootsmp=0
+
+    # arch of 'BOOT' == 386
+    if [ "$arch" = "BOOT" ]; then
+        if [ "$up" = 1 ]; then
+            boot=1
+            up=0
+        elif [ "$smp" = 1 ]; then
+            bootsmp=1
+            smp=0
+        fi
+        arch=i386
+    fi
 
     rm -f $file
     touch $file
@@ -62,8 +78,11 @@ function PrintRedhatKernelFix() {
     PrintDefine "REDHAT_FIX_H" "" ifn,def,nl $file
 
     PrintDefine "__BOOT_KERNEL_ENTERPRISE" $ent und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BIGMEM" $bm und,def,nl $file
     PrintDefine "__BOOT_KERNEL_SMP" $smp und,def,nl $file
     PrintDefine "__BOOT_KERNEL_UP" $up und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BOOT" $boot und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BOOTSMP" $bootsmp und,def,nl $file
 
     PrintDefine \"/boot/kernel.h\" "" inc,nl $file	# include file
 
