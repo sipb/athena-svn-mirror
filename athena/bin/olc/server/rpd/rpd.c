@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.5 1990-12-02 23:09:33 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.6 1990-12-02 23:21:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -27,7 +27,11 @@ main()
   signal(SIGTERM,clean_up);
   signal(SIGPIPE,SIG_IGN);
 
+#ifdef mips
+  openlog("rpd",LOG_PID);  /* Broken ultrix syslog.. */
+#else
   openlog("rpd",LOG_CONS | LOG_PID,SYSLOG_FACILITY);
+#endif
 
   /* Fork off */
   switch (fork()) {
