@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.20 1988-06-25 17:24:16 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.21 1988-06-25 17:40:41 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.20 1988-06-25 17:24:16 jtkohl Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.21 1988-06-25 17:40:41 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -63,11 +63,10 @@ Z_SendLocation(class, opcode, auth, format)
     char *bptr[3];
     char *display, *ttyp;
     struct hostent *hent;
+    short wg_port = ZGetWGPort();
 
     notice.z_kind = ACKED;
-    notice.z_port = ZGetWGPort();
-    if (notice.z_port == -1)
-	        notice.z_port = 0;
+    notice.z_port = (u_short) ((wg_port == -1) ? 0 : wg_port);
     notice.z_class = class;
     notice.z_class_inst = ZGetSender();
     notice.z_opcode = opcode;
