@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/util/valprint.c,v 1.1 1994-09-18 12:56:50 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/util/valprint.c,v 1.2 1995-07-12 03:17:52 cfields Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18  12:56:50  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:16:26  snmpdev
  * Initial revision
  * 
@@ -35,6 +38,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #include "../../h/conf.h"
 #ifdef BSD
 #include <stdio.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #endif /* BSD */
 #ifdef SVR3WIN
