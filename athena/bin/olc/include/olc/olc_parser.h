@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.9 1991-03-05 14:50:20 lwvanels Exp $
+ *	$Id: olc_parser.h,v 1.10 1991-09-11 10:49:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 /* These really don't return anything useful.  */
-typedef int (*Pfunction)OPrototype((char **));
+typedef ERRCODE (*Pfunction)OPrototype((char **));
 
 #include <mit-copyright.h>
 #include <olc/olc_tty.h>
@@ -52,8 +52,8 @@ ERRCODE do_olc_acl P((char **arguments ));
 ERRCODE do_olc_ask P((char **arguments ));
 
 /* p_cmdloop.c */
-int command_loop P((COMMAND Command_Table [], char *prompt ));
-int do_command P((COMMAND Command_Table [], char *arguments []));
+void command_loop P((COMMAND Command_Table [], char *prompt ));
+ERRCODE do_command P((COMMAND Command_Table [], char *arguments []));
 ERRCODE command_index P((COMMAND Command_Table [], char *command_name ));
 char *expand_variable P((REQUEST *Request , char *var ));
 int expand_arguments P((REQUEST *Request , char **arguments ));
@@ -69,16 +69,16 @@ ERRCODE do_olc_on P((char **arguments ));
 ERRCODE do_olc_off P((char **arguments ));
 
 /* p_describe.c */
-int do_olc_describe P((char **arguments ));
+ERRCODE do_olc_describe P((char **arguments ));
 
 /* p_instance.c */
-int do_olc_instance P((char **arguments ));
+ERRCODE do_olc_instance P((char **arguments ));
 
 /* p_list.c */
 ERRCODE do_olc_list P((char **arguments ));
 
 /* p_local.c */
-int do_quit P((char *arguments []));
+ERRCODE do_quit P((char *arguments []));
 ERRCODE do_olc_help P((char *arguments []));
 ERRCODE do_olc_list_cmds P((char *arguments []));
 
@@ -87,16 +87,16 @@ ERRCODE do_olc_replay P((char **arguments ));
 ERRCODE do_olc_show P((char **arguments ));
 
 /* p_misc.c */
-int do_olc_load_user P((char **arguments ));
-int do_olc_dump P((char **arguments ));
-int do_olc_dbinfo P((char **arguments ));
+ERRCODE do_olc_load_user P((char **arguments ));
+ERRCODE do_olc_dump P((char **arguments ));
+ERRCODE do_olc_dbinfo P((char **arguments ));
 
 /* p_motd.c */
-int do_olc_motd P((char **arguments ));
-int do_olc_hours P((char **arguments ));
+ERRCODE do_olc_motd P((char **arguments ));
+ERRCODE do_olc_hours P((char **arguments ));
 
 /* p_queue.c */
-int do_olc_queue P((char **arguments ));
+ERRCODE do_olc_queue P((char **arguments ));
 
 /* p_resolve.c */
 ERRCODE do_olc_done P((char **arguments ));
