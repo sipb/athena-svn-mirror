@@ -138,6 +138,7 @@ Distribution sites for software under third
 	librep		librep.sourceforge.net:pub/librep
 	libungif	prtr-13.ucsc.edu:pub/libungif
 	libxml		ftp.gnome.org:pub/GNOME/stable/sources/libxml
+	libxml2		ftp.gnome.org:pub/GNOME/stable/sources/libxml
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
 	medusa		ftp.gnome.org:pub/GNOME/unstable/sources/medusa
@@ -153,6 +154,7 @@ Distribution sites for software under third
 	perl		ftp.cpan.org:pub/CPAN/src
 	pine		ftp.cac.washington.edu:pine
 			ftp.cac.washington.edu:mail/kerberos4-patches.tar.Z
+	pkgconfig	http://www.freedesktop.org/software/pkgconfig.html
 	popt		ftp.rpm.org:pub/rpm/dist/rpm-4.0.x
 	readline	ftp.gnu.org:pub/gnu/readline
 	rcs		ftp.gnu.org:pub/gnu/rcs
