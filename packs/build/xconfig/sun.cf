@@ -59,7 +59,6 @@ XCOMM operating system:  OSName
 #define OptimizedCDebugFlags -O2
 #else
 #define SharedLibraryCcCmd cc
-#define ExtraLoadFlags -B/usr/bin/
 #define AllocateLocalDefines /**/
 #endif
 
