@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.24 2003-03-26 16:34:52 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.25 2003-05-07 05:11:49 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -166,6 +166,17 @@ int main(int argc, char **argv)
     usage();
   oldlistname = argv[0];
   newlistname = argv[1];
+
+  /* Work around a bug in rpm 4.2's rpmlib which allowed several of
+   * Red Hat 9's packages to be built with missing epoch
+   * specifications in requirements (gnome-libs-devel, ORBit-devel,
+   * esound-devel, probably others).  The missing epochs are
+   * mistakenly let through at install time, but are checked for when
+   * we try to remove a package which Provides the same thing as the
+   * Red Hat package.  See
+   * https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=81965
+   */
+  { extern int _rpmds_nopromote; _rpmds_nopromote = 0; }
 
   /* Initialize the package hash table. */
   for (i = 0; i < HASHSIZE; i++)
