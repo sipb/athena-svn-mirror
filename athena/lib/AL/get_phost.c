@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char *rcsid_phost_c =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.8 1993-04-29 09:59:48 vrt Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.9 1993-06-01 12:55:07 vrt Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -59,6 +59,7 @@ char * krb_get_phost(alias)
 	do {
 		if (isupper(*p)) *p=tolower(*p);
 	} while  (*p++);
+        p = h->h_name;
 	strcpy(phost,p);
 #else
         p = phost = h->h_name;
