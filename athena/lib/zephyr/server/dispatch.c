@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.2 1987-07-01 04:23:48 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.3 1987-07-01 18:09:53 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -91,7 +91,7 @@ struct sockaddr_in *who;
 		server_dispatch(notice, auth, who);
 		return;
 	} else if (class_is_hm(notice)) {
-		syslog(LOG_WARNING, "HM_CTL received?");
+		hostm_dispatch(notice, auth, who);
 		return;
 	} else if (class_is_control(notice)) {
 		control_dispatch(notice, auth, who);
