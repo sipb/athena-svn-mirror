@@ -1,0 +1,18 @@
+#!/bin/sh -
+# Version-specific update script for 7.4A
+
+case "${MACH}" in
+DS*)
+	echo "/etc/nsyslog.conf"	>> ${CONFCHG}
+	;;
+RS*)
+        if [ -f /etc/security/login.cfg ]; then
+                echo "Updating console/remote login banner"
+		rm -f /tmp/login.cfg.new /etc/security/login.cfg.orig
+                sed -e "s/ (Athena Release 7.3)\\n\\r/" \
+		    -e "s/\\n\\n\\rC/\\n\\rC/" /etc/security/login.cfg > /tmp/login.cfg.new
+                cp -p /etc/security/login.cfg /etc/security/login.cfg.orig
+                mv /tmp/login.cfg.new /etc/security/login.cfg
+        fi
+	;;
+esac
