@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.18 1999-12-16 01:58:11 danw Exp $
+ * $Id: track.h,v 4.19 2003-03-20 20:19:57 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <errno.h>
 
 /* Default working directory - under to- or from- root */
 #define DEF_WORKDIR	"/usr/athena/lib"
@@ -126,7 +127,6 @@ typedef struct entry {
 } Entry ;
 extern Entry entries[];
 
-extern int errno;
 extern int cksumflag;
 extern int forceflag;
 extern int ignore_prots;
