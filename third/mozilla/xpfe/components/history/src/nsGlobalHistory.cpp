@@ -106,9 +106,6 @@ nsIPrefBranch* nsGlobalHistory::gPrefBranch = nsnull;
 
 #define PREF_BRANCH_BASE                        "browser."
 #define PREF_BROWSER_HISTORY_EXPIRE_DAYS        "history_expire_days"
-#define PREF_BROWSER_STARTUP_PAGE               "startup.page"
-#define PREF_BROWSER_TABS_LOADONNEWTAB          "tabs.loadOnNewTab"
-#define PREF_BROWSER_WINDOWS_LOADONNEWWINDOW    "windows.loadOnNewWindow"
 #define PREF_AUTOCOMPLETE_ONLY_TYPED            "urlbar.matchOnlyTyped"
 #define PREF_AUTOCOMPLETE_ENABLED               "urlbar.autocomplete.enabled"
 
@@ -448,7 +445,7 @@ nsMdbTableEnumerator::~nsMdbTableEnumerator()
 }
 
 
-NS_IMPL_ISUPPORTS1(nsMdbTableEnumerator, nsISimpleEnumerator);
+NS_IMPL_ISUPPORTS1(nsMdbTableEnumerator, nsISimpleEnumerator)
 
 NS_IMETHODIMP
 nsMdbTableEnumerator::HasMoreElements(PRBool* _result)
@@ -614,20 +611,6 @@ nsGlobalHistory::AddPage(const char *aURL)
 
   nsresult rv = AddPageToDatabase(aURL, GetNow());
   NS_ENSURE_SUCCESS(rv, rv);
-
-  if (gPrefBranch) {
-    PRInt32 choice = 0;
-    gPrefBranch->GetIntPref(PREF_BROWSER_STARTUP_PAGE, &choice);
-    if (choice != 2) {
-      gPrefBranch->GetIntPref(PREF_BROWSER_WINDOWS_LOADONNEWWINDOW, &choice);
-      if (choice != 2)
-        gPrefBranch->GetIntPref(PREF_BROWSER_TABS_LOADONNEWTAB, &choice);
-    }
-    if (choice == 2) {
-      rv = SaveLastPageVisited(aURL);
-      NS_ENSURE_SUCCESS(rv, rv);
-    }
-  }
 
   return NS_OK;
 }
@@ -904,37 +887,19 @@ nsGlobalHistory::GetRowValue(nsIMdbRow *aRow, mdb_column aCol,
 
 // Copy an array of 16-bit values, reversing the byte order.
 void
-nsGlobalHistory::SwapBytes(const PRUint16 *source, PRUint16 *dest, int len)
+nsGlobalHistory::SwapBytes(const PRUnichar *source, PRUnichar *dest,
+                           PRInt32 aLen)
 {
   PRUint16 c;
   const PRUint16 *inp;
   PRUint16 *outp;
-  int i;
+  PRInt32 i;
 
   inp = source;
   outp = dest;
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < aLen; i++) {
     c = *inp++;
     *outp++ = (((c >> 8) & 0xff) | (c << 8));
-  }
-  return;
-}
-      
-// Copy an array of 32-bit values, reversing the byte order.
-void
-nsGlobalHistory::SwapBytes(const PRUint32 *source, PRUint32 *dest, int len)
-{
-  PRUint32 c;
-  const PRUint32 *inp;
-  PRUint32 *outp;
-  int i;
-
-  inp = source;
-  outp = dest;
-  for (i = 0; i < len; i++) {
-    c = *inp++;
-    *outp++ = (((c >> 24) & 0xff) | ((c >> 8) & 0xff00) |
-               ((c << 8) & 0xff0000) | (c << 24));
   }
   return;
 }
@@ -1259,8 +1224,8 @@ nsGlobalHistory::IsVisited(const char *aURL, PRBool *_retval)
   return NS_OK;
 }
 
-nsresult
-nsGlobalHistory::SaveLastPageVisited(const char *aURL)
+NS_IMETHODIMP
+nsGlobalHistory::SetLastPageVisited(const char *aURL)
 {
   NS_ENSURE_TRUE(aURL, NS_ERROR_FAILURE);
   NS_ENSURE_STATE(mMetaRow);
@@ -4093,7 +4058,7 @@ nsGlobalHistory::OnStartLookup(const PRUnichar *searchString,
   // there is no need to proceed with the search
   nsAutoString cut(searchString);
   AutoCompleteCutPrefix(cut, nsnull);
-  if (cut.Length() == 0) {
+  if (cut.IsEmpty()) {
     listener->OnAutoComplete(results, status);
     return NS_OK;
   }
@@ -4167,9 +4132,8 @@ nsGlobalHistory::AutoCompleteSearch(const nsAString& aSearchString,
   if (aPrevResults) {
     nsXPIDLString prevURL;
     aPrevResults->GetSearchString(getter_Copies(prevURL));
-    nsDependentString prevURLStr(prevURL);
     // if search string begins with the previous search string, it's a go
-    searchPrevious = Substring(aSearchString, 0, prevURLStr.Length()).Equals(prevURLStr);
+    searchPrevious = StringBeginsWith(aSearchString, prevURL);
   }
     
   nsCOMPtr<nsISupportsArray> resultItems;
@@ -4291,7 +4255,7 @@ nsGlobalHistory::AutoCompleteGetExcludeInfo(const nsAString& aURL, AutocompleteE
   PRInt32 i;
   for (i = 0; i < mIgnoreSchemes.Count(); ++i) {
     nsString* string = mIgnoreSchemes.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       aExclude->schemePrefix = i;
       index = string->Length();
       break;
@@ -4320,7 +4284,7 @@ nsGlobalHistory::AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aEx
     if (aExclude && i == aExclude->schemePrefix)
       continue;
     nsString* string = mIgnoreSchemes.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       idx = string->Length();
       break;
     }
@@ -4334,7 +4298,7 @@ nsGlobalHistory::AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aEx
     if (aExclude && i == aExclude->hostnamePrefix)
       continue;
     nsString* string = mIgnoreHostnames.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       idx = string->Length();
       break;
     }
@@ -4373,7 +4337,7 @@ nsGlobalHistory::AutoCompleteCompare(nsAString& aHistoryURL,
 {
   AutoCompleteCutPrefix(aHistoryURL, aExclude);
   
-  return Substring(aHistoryURL, 0, aUserURL.Length()).Equals(aUserURL);
+  return StringBeginsWith(aHistoryURL, aUserURL);
 }
 
 int PR_CALLBACK 

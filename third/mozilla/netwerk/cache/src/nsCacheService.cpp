@@ -40,7 +40,6 @@
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranchInternal.h"
-#include "nsIPref.h"
 #include "nsILocalFile.h"
 #include "nsDirectoryServiceDefs.h"
 #include "nsAppDirectoryServiceDefs.h"
@@ -110,7 +109,7 @@ private:
     PRInt32                 mMemoryCacheCapacity;
 };
 
-NS_IMPL_ISUPPORTS1(nsCacheProfilePrefObserver, nsIObserver);
+NS_IMPL_ISUPPORTS1(nsCacheProfilePrefObserver, nsIObserver)
 
 
 nsresult
@@ -403,7 +402,7 @@ nsCacheProfilePrefObserver::MemoryCacheEnabled()
 
 nsCacheService *   nsCacheService::gService = nsnull;
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsCacheService, nsICacheService);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsCacheService, nsICacheService)
 
 nsCacheService::nsCacheService()
     : mCacheServiceLock(nsnull),
@@ -937,11 +936,11 @@ nsCacheService::ActivateEntry(nsCacheRequest * request,
     }
 
     if (!entry) {
-		if (! (request->AccessRequested() & nsICache::ACCESS_WRITE)) {
-			// this is a READ-ONLY request
-		    rv = NS_ERROR_CACHE_KEY_NOT_FOUND;
-			goto error;
-		}
+        if (! (request->AccessRequested() & nsICache::ACCESS_WRITE)) {
+            // this is a READ-ONLY request
+            rv = NS_ERROR_CACHE_KEY_NOT_FOUND;
+            goto error;
+        }
 
         entry = new nsCacheEntry(request->mKey,
                                  request->IsStreamBased(),
@@ -1261,8 +1260,8 @@ nsCacheService::SetMemoryCacheCapacity(PRInt32  capacity)
  * If browser.cache.memory.capacity is negative or not present, we use a
  * formula that grows less than linearly with the amount of system memory.
  *
- * RAM	Cache
- * ---	-----
+ *   RAM   Cache
+ *   ---   -----
  *   32 Mb   2 Mb
  *   64 Mb   4 Mb
  *  128 Mb   8 Mb
