@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.2 1996-09-19 22:23:33 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.3 1997-02-21 21:51:50 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -35,14 +35,14 @@ void XjCopyValue(where, resource, value)
      XjResource *resource;
      XjArgVal value;
 {
-  memcpy(where + resource->resource_offset,
+  memcpy((char *) where + resource->resource_offset,
 	 &value,
 	(resource->resource_size > 4) ? 4 : resource->resource_size);
 }
 #endif
 
 #define XjCopyValue(where, resource, value) \
-  memcpy((where) + (resource)->resource_offset, \
+  memcpy((char *)(where) + (resource)->resource_offset, \
 	&(value), \
 	((resource)->resource_size > 4) ? 4 : (resource)->resource_size)
 
