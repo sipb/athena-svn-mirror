@@ -1,0 +1,37 @@
+GLOBAL : *.CKP *.local *.pid :
+# $Id: sys_rvd,v 1.1 1999-06-16 14:41:56 ghudson Exp $
+	/core::::
+	/etc:::
+		aliases
+		crontab
+		ftpusers
+		group
+		ifhp.conf
+		inetd.conf
+		lpd.conf
+		named.conf
+		ntp.conf
+		passwd
+		passwd.fallback
+		sendmail.cf
+		services
+		shells
+		sshd_config
+		syslog.conf
+		:
+	/etc/athena:::
+		athinfo.access
+		athinfo.defs
+		attach.conf
+		inetd.conf
+		newsyslog.conf
+		rc.conf
+		-> shutdown_notify
+		-> zephyr.desc
+		-> zephyr.vars
+		:
+	/usr:::
+		-> afsws
+		-> athena
+		:
+	/var::::

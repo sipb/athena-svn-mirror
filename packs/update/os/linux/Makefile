@@ -1,12 +1,17 @@
-# $Id: Makefile,v 1.1 1999-06-13 21:30:13 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-06-16 14:41:46 ghudson Exp $
 
-SHELL=/bin/sh
+SLISTS=/usr/athena/lib/slists
+UPDATE=/usr/athena/lib/update
 
 all:
 
 check:
 
 install:
+	mkdir -p ${DESTDIR}${UPDATE}
+	mkdir -p ${DESTDIR}${SLISTS}
+	install -c -m 0444 configfiles ${DESTDIR}${UPDATE}
+	install -c -m 0444 sys_rvd ${DESTDIR}${SLISTS}
 
 clean:
 
