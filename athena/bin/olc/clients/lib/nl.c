@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.7 1991-09-10 11:19:01 lwvanels Exp $
+ *	$Id: nl.c,v 1.8 1992-05-02 15:48:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.7 1991-09-10 11:19:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.8 1992-05-02 15:48:59 lwvanels Exp $";
 #endif
 #endif
 
@@ -110,7 +110,8 @@ KTEXT_ST my_auth;
   retcode = get_k_auth(&my_auth);
   if (retcode != SUCCESS) {
     close(fd);
-    return(retcode);
+    *outlen = -retcode;
+    return(-1);
   }
   i = htonl((u_long) my_auth.length);
   if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
