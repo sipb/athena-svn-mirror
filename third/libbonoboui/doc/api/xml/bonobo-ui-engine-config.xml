@@ -1,0 +1,329 @@
+<refentry id="libbonoboui-bonobo-ui-engine-config">
+<refmeta>
+<refentrytitle>bonobo-ui-engine-config</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBOUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-ui-engine-config</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="BonoboUIEngineConfigPrivate">BonoboUIEngineConfigPrivate</link>;
+struct      <link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>;
+struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass</link>;
+<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>* <link linkend="bonobo-ui-engine-config-construct">bonobo_ui_engine_config_construct</link>
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             <link linkend="GtkWindow">GtkWindow</link> *opt_parent);
+<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>* <link linkend="bonobo-ui-engine-config-new">bonobo_ui_engine_config_new</link>
+                                            (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             <link linkend="GtkWindow">GtkWindow</link> *opt_parent);
+<link linkend="char">char</link>*       (<link linkend="BonoboUIEngineConfigFn">*BonoboUIEngineConfigFn</link>)       (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *config_node,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *popup_engine);
+<link linkend="void">void</link>        (<link linkend="BonoboUIEngineConfigVerbFn">*BonoboUIEngineConfigVerbFn</link>)   (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *opt_state,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *popup_engine,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *popup_node);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-connect">bonobo_ui_engine_config_connect</link> (<link linkend="GtkWidget">GtkWidget</link> *widget,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             const <link linkend="char">char</link> *path,
+                                             <link linkend="BonoboUIEngineConfigFn">BonoboUIEngineConfigFn</link> config_fn,
+                                             <link linkend="BonoboUIEngineConfigVerbFn">BonoboUIEngineConfigVerbFn</link> verb_fn);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-serialize">bonobo_ui_engine_config_serialize</link>
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-hydrate">bonobo_ui_engine_config_hydrate</link> (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-add">bonobo_ui_engine_config_add</link>     (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *attr,
+                                             const <link linkend="char">char</link> *value);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-remove">bonobo_ui_engine_config_remove</link>  (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *attr);
+<link linkend="void">void</link>        <link linkend="bonobo-ui-engine-config-configure">bonobo_ui_engine_config_configure</link>
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);
+<link linkend="BonoboUIEngine">BonoboUIEngine</link>* <link linkend="bonobo-ui-engine-config-get-engine">bonobo_ui_engine_config_get_engine</link>
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboUIEngineConfigPrivate"/>struct BonoboUIEngineConfigPrivate</title>
+<indexterm><primary>BonoboUIEngineConfigPrivate</primary></indexterm><programlisting>struct BonoboUIEngineConfigPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIEngineConfig"/>struct BonoboUIEngineConfig</title>
+<indexterm><primary>BonoboUIEngineConfig</primary></indexterm><programlisting>struct BonoboUIEngineConfig {
+
+	GObject parent;
+
+	BonoboUIEngineConfigPrivate *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIEngineConfigClass"/>struct BonoboUIEngineConfigClass</title>
+<indexterm><primary>BonoboUIEngineConfigClass</primary></indexterm><programlisting>struct BonoboUIEngineConfigClass {
+
+	GObjectClass parent_class;
+
+	gpointer       dummy;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-construct"/>bonobo_ui_engine_config_construct ()</title>
+<indexterm><primary>bonobo_ui_engine_config_construct</primary></indexterm><programlisting><link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>* bonobo_ui_engine_config_construct
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             <link linkend="GtkWindow">GtkWindow</link> *opt_parent);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-new"/>bonobo_ui_engine_config_new ()</title>
+<indexterm><primary>bonobo_ui_engine_config_new</primary></indexterm><programlisting><link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>* bonobo_ui_engine_config_new
+                                            (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             <link linkend="GtkWindow">GtkWindow</link> *opt_parent);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIEngineConfigFn"/>BonoboUIEngineConfigFn ()</title>
+<indexterm><primary>BonoboUIEngineConfigFn</primary></indexterm><programlisting><link linkend="char">char</link>*       (*BonoboUIEngineConfigFn)       (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *config_node,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *popup_engine);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>config_node</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>popup_engine</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIEngineConfigVerbFn"/>BonoboUIEngineConfigVerbFn ()</title>
+<indexterm><primary>BonoboUIEngineConfigVerbFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*BonoboUIEngineConfigVerbFn)   (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *opt_state,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *popup_engine,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *popup_node);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>popup_engine</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>popup_node</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-connect"/>bonobo_ui_engine_config_connect ()</title>
+<indexterm><primary>bonobo_ui_engine_config_connect</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_connect (<link linkend="GtkWidget">GtkWidget</link> *widget,
+                                             <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
+                                             const <link linkend="char">char</link> *path,
+                                             <link linkend="BonoboUIEngineConfigFn">BonoboUIEngineConfigFn</link> config_fn,
+                                             <link linkend="BonoboUIEngineConfigVerbFn">BonoboUIEngineConfigVerbFn</link> verb_fn);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>config_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>verb_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-serialize"/>bonobo_ui_engine_config_serialize ()</title>
+<indexterm><primary>bonobo_ui_engine_config_serialize</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_serialize
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-hydrate"/>bonobo_ui_engine_config_hydrate ()</title>
+<indexterm><primary>bonobo_ui_engine_config_hydrate</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_hydrate (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-add"/>bonobo_ui_engine_config_add ()</title>
+<indexterm><primary>bonobo_ui_engine_config_add</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_add     (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *attr,
+                                             const <link linkend="char">char</link> *value);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>attr</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-remove"/>bonobo_ui_engine_config_remove ()</title>
+<indexterm><primary>bonobo_ui_engine_config_remove</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_remove  (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
+                                             const <link linkend="char">char</link> *path,
+                                             const <link linkend="char">char</link> *attr);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>attr</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-configure"/>bonobo_ui_engine_config_configure ()</title>
+<indexterm><primary>bonobo_ui_engine_config_configure</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_config_configure
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-engine-config-get-engine"/>bonobo_ui_engine_config_get_engine ()</title>
+<indexterm><primary>bonobo_ui_engine_config_get_engine</primary></indexterm><programlisting><link linkend="BonoboUIEngine">BonoboUIEngine</link>* bonobo_ui_engine_config_get_engine
+                                            (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -13,6 +13,8 @@
 #include <glib/gmacros.h>
 #include <gtk/gtk.h>
 
+#ifndef BONOBO_UI_DISABLE_DEPRECATED
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_UI_TOOLBAR_ITEM			(bonobo_ui_toolbar_item_get_type ())
@@ -94,5 +96,7 @@ gboolean                  bonobo_ui_toolbar_item_get_pack_end     (BonoboUIToolb
 void                      bonobo_ui_toolbar_item_activate         (BonoboUIToolbarItem     *item);
 
 G_END_DECLS
+
+#endif
 
 #endif /* __BONOBO_UI_TOOLBAR_ITEM_H__ */

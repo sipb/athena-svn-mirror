@@ -99,7 +99,7 @@ sample_doc_get_type (void)
 }
 
 SampleDoc *
-sample_doc_new ()
+sample_doc_new (void)
 {
 	SampleDoc *doc = g_object_new (SAMPLE_DOC_TYPE, NULL);
 

@@ -360,7 +360,7 @@ bonobo_ui_toolbar_button_item_construct (BonoboUIToolbarButtonItem *button_item,
 
 	gtk_button_set_relief (button_widget, GTK_RELIEF_NONE);
 
-	GTK_WIDGET_SET_FLAGS (button_widget, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS (button_widget, GTK_CAN_FOCUS);
 
 	gtk_container_add (GTK_CONTAINER (button_item), GTK_WIDGET (button_widget));
 

@@ -16,10 +16,14 @@
 #include <libgnomecanvas/gnome-canvas.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
+#include <gtk/gtk.h>
+#include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-canvas-component.h>
 #include <bonobo/bonobo-ui-marshal.h>
+#undef BONOBO_DISABLE_DEPRECATED
+#include <bonobo/bonobo-xobject.h>
 
 enum {
 	SET_BOUNDS,
@@ -42,6 +46,15 @@ struct _BonoboCanvasComponentPrivate {
 #define ICLASS(x) GNOME_CANVAS_ITEM_CLASS ((GTK_OBJECT_GET_CLASS (x)))
 
 static GObjectClass *gcc_parent_class;
+
+static gboolean do_update_flag = FALSE;
+
+typedef struct
+{
+        gpointer *arg1;
+        gpointer *arg2;
+} EmitLater;
+
 
 static gboolean
 CORBA_SVP_Segment_to_SVPSeg (Bonobo_Canvas_SVPSegment *seg, ArtSVPSeg *art_seg)
@@ -194,6 +207,9 @@ impl_Bonobo_Canvas_Component_update (PortableServer_Servant     servant,
 	ArtSVP *svp = NULL;
 	Bonobo_Canvas_ArtUTA *cuta;
 
+	GnomeCanvasItemClass *gci_class = gtk_type_class (
+					gnome_canvas_item_get_type ());
+
 	restore_state (item, state);
 	for (i = 0; i < 6; i++)
 		affine [i] = aff [i];
@@ -221,7 +237,7 @@ impl_Bonobo_Canvas_Component_update (PortableServer_Servant     servant,
 			}
 		}
 	}
-	
+
 	invoke_update (item, (double *)aff, svp, flags);
 
 	if (svp){
@@ -247,6 +263,10 @@ impl_Bonobo_Canvas_Component_update (PortableServer_Servant     servant,
 	/*
 	 * Now, mark our canvas as fully up to date
 	 */
+
+        /* Clears flags for root item. */
+	(* gci_class->update) (item->canvas->root, affine, svp, flags);
+
 	if (item->canvas->redraw_area) {
 		art_uta_free (item->canvas->redraw_area);
 		item->canvas->redraw_area = NULL;
@@ -260,15 +280,17 @@ static GdkGC *the_gc;
 
 static void
 impl_Bonobo_Canvas_Component_realize (PortableServer_Servant  servant,
-				      Bonobo_Canvas_window_id window,
+				      const CORBA_char       *window,
 				      CORBA_Environment      *ev)
 {
 	Gcc *gcc = GCC (bonobo_object_from_servant (servant));
 	GnomeCanvasItem *item = GNOME_CANVAS_ITEM (gcc->priv->item);
-	GdkWindow *gdk_window = gdk_window_foreign_new (window);
+	GdkWindow *gdk_window = gdk_window_foreign_new_for_display
+		(gtk_widget_get_display (GTK_WIDGET (item->canvas)),
+		 bonobo_control_x11_from_window_id (window));
 
 	if (gdk_window == NULL) {
-		g_warning ("Invalid window id passed=0x%x", window);
+		g_warning ("Invalid window id passed='%s'", window);
 		return;
 	}
 
@@ -332,7 +354,7 @@ my_gdk_pixmap_foreign_release (GdkPixmap *pixmap)
 static void
 impl_Bonobo_Canvas_Component_draw (PortableServer_Servant        servant,
 				   const Bonobo_Canvas_State    *state,
-				   const Bonobo_Canvas_window_id drawable,
+				   const CORBA_char             *drawable_id,
 				   CORBA_short                   x,
 				   CORBA_short                   y,
 				   CORBA_short                   width,
@@ -344,10 +366,12 @@ impl_Bonobo_Canvas_Component_draw (PortableServer_Servant        servant,
 	GdkPixmap *pix;
 	
 	gdk_flush ();
-	pix = gdk_pixmap_foreign_new (drawable);
+	pix = gdk_pixmap_foreign_new_for_display
+		(gtk_widget_get_display (GTK_WIDGET (item->canvas)),
+		 bonobo_control_x11_from_window_id (drawable_id));
 
 	if (pix == NULL){
-		g_warning ("Invalid window id passed=0x%x", drawable);
+		g_warning ("Invalid window id passed='%s'", drawable_id);
 		return;
 	}
 
@@ -416,14 +440,19 @@ impl_Bonobo_Canvas_Component_contains (PortableServer_Servant servant,
 {
 	Gcc *gcc = GCC (bonobo_object_from_servant (servant));
 	GnomeCanvasItem *item = GNOME_CANVAS_ITEM (gcc->priv->item);
-	GnomeCanvasItem *new_item;
+        GnomeCanvasItem *new_item;
+        int cx, cy;
 	CORBA_boolean ret;
-	
+
+        gnome_canvas_w2c (item->canvas, x, y, &cx, &cy);
+
 	if (getenv ("CC_DEBUG"))
 		printf ("Point %g %g: ", x, y);
-	ret = ICLASS (item)->point (item, x, y, 0, 0, &new_item) == 0.0;
+	ret = ICLASS (item)->point (item, x, y, cx, cy, &new_item) == 0.0 &&
+                new_item != NULL;
 	if (getenv ("CC_DEBUG"))
 		printf ("=> %s\n", ret ? "yes" : "no");
+	
 	return ret;
 }
 
@@ -516,6 +545,7 @@ Bonobo_Gdk_Event_to_GdkEvent (const Bonobo_Gdk_Event *gnome_event, GdkEvent *gdk
 		gdk_event->crossing.y      = gnome_event->_u.crossing.y;
 		gdk_event->crossing.x_root = gnome_event->_u.crossing.x_root;
 		gdk_event->crossing.y_root = gnome_event->_u.crossing.y_root;
+		gdk_event->crossing.state  = gnome_event->_u.crossing.state;
 		switch (gnome_event->_u.crossing.mode){
 		case Bonobo_Gdk_NORMAL:
 			gdk_event->crossing.mode = GDK_CROSSING_NORMAL;
@@ -533,11 +563,92 @@ Bonobo_Gdk_Event_to_GdkEvent (const Bonobo_Gdk_Event *gnome_event, GdkEvent *gdk
 	g_assert_not_reached ();
 }
 
-static void
-free_event (GdkEvent *event)
+/**
+ * handle_event:
+ * @canvas: the pseudo-canvas that this component is part of.
+ * @ev: The GdkEvent event as set up for the component.
+ *
+ * Returns: True if a canvas item handles the event and returns true.
+ *
+ * Passes the remote item's event back into the local pseudo-canvas so that
+ * canvas items can see events the normal way as if they were not using bonobo.
+ */
+static gboolean 
+handle_event(GtkWidget *canvas, GdkEvent *ev)
 {
-	if (event->type == GDK_KEY_RELEASE || event->type == GDK_KEY_PRESS)
-		g_free (event->key.string);
+        GtkWidgetClass *klass = GTK_WIDGET_GET_CLASS(canvas);
+        gboolean retval = FALSE;
+
+        switch (ev->type) {
+                case GDK_ENTER_NOTIFY:
+                        gnome_canvas_world_to_window(GNOME_CANVAS(canvas),
+                                        ev->crossing.x, ev->crossing.y,
+                                        &ev->crossing.x, &ev->crossing.y);
+                        retval = (klass->enter_notify_event)(canvas, 
+                                        &ev->crossing);
+                        break;
+                case GDK_LEAVE_NOTIFY:
+                        gnome_canvas_world_to_window(GNOME_CANVAS(canvas),
+                                        ev->crossing.x, ev->crossing.y,
+                                        &ev->crossing.x, &ev->crossing.y);
+                        retval = (klass->leave_notify_event)(canvas, 
+                                        &ev->crossing);
+                        break;
+                case GDK_MOTION_NOTIFY:
+                        gnome_canvas_world_to_window(GNOME_CANVAS(canvas),
+                                        ev->motion.x, ev->motion.y,
+                                        &ev->motion.x, &ev->motion.y);
+                        retval = (klass->motion_notify_event)(canvas, 
+                                        &ev->motion);
+                        break;
+                case GDK_BUTTON_PRESS:
+                case GDK_2BUTTON_PRESS:
+                case GDK_3BUTTON_PRESS:
+                        gnome_canvas_world_to_window(GNOME_CANVAS(canvas),
+                                        ev->button.x, ev->button.y,
+                                        &ev->button.x, &ev->button.y);
+                        retval = (klass->button_press_event)(canvas, 
+                                        &ev->button);
+                        break;
+                case GDK_BUTTON_RELEASE:
+                        gnome_canvas_world_to_window(GNOME_CANVAS(canvas),
+                                        ev->button.x, ev->button.y,
+                                        &ev->button.x, &ev->button.y);
+                        retval = (klass->button_release_event)(canvas, 
+                                        &ev->button);
+                        break;
+                case GDK_KEY_PRESS:
+                        retval = (klass->key_press_event)(canvas, &ev->key);
+                        break;
+                case GDK_KEY_RELEASE:
+                        retval = (klass->key_release_event)(canvas, &ev->key);
+                        break;
+                case GDK_FOCUS_CHANGE:
+                        if (&ev->focus_change.in)
+                                retval = (klass->focus_in_event)(canvas,
+                                        &ev->focus_change);
+                        else
+                                retval = (klass->focus_out_event)(canvas,
+                                        &ev->focus_change);
+                        break;
+                default:
+                        g_warning("Canvas event not handled %d", ev->type);
+                        break;
+
+        }
+        return retval;
+}
+
+static gboolean
+handle_event_later (EmitLater *data)
+{
+        GtkWidget *canvas = GTK_WIDGET(data->arg1);
+        GdkEvent *event = (GdkEvent *)data->arg2;
+
+        handle_event(canvas, event);
+        gdk_event_free(event);
+        g_free(data);
+        return FALSE;
 }
 
 /*
@@ -552,21 +663,42 @@ impl_Bonobo_Canvas_Component_event (PortableServer_Servant     servant,
 {
 	Gcc *gcc = GCC (bonobo_object_from_servant (servant));
 	GnomeCanvasItem *item = GNOME_CANVAS_ITEM (gcc->priv->item);
-	GdkEvent gdk_event;
-	int retval;
-
-	Bonobo_Gdk_Event_to_GdkEvent (gnome_event, &gdk_event);
+	GdkEvent *gdk_event = gdk_event_new(GDK_NOTHING);
+	CORBA_boolean retval = FALSE;
+        EmitLater *data;
 
 	restore_state (item, state);
+        
+        gdk_event->any.window = item->canvas->layout.bin_window;
+        g_object_ref(gdk_event->any.window);
 
-	g_signal_emit_by_name (gcc, "event", &gdk_event);
+	Bonobo_Gdk_Event_to_GdkEvent (gnome_event, gdk_event);
 
-	if (ICLASS (item)->event)
-		retval = ICLASS (item)->event (item, &gdk_event);
-	else
-		retval = FALSE;
+        /*
+         * Problem: When dealing with multiple canvas component's within the
+         * same process it is possible to get to this point when one of the
+         * pseudo-canvas's is inside its idle loop.  This is normally not a
+         * problem unless an event from one component can trigger a request for
+         * an update on another component.
+         *
+         * Solution: If any component is in do_update, set up an idle_handler
+         * and send the event later. If the event is sent later, the client will
+         * get a false return value.  Normally this value is used to determine
+         * whether or not to propagate the event up the canvas group tree.
+         */
 
-	free_event (&gdk_event);
+        if (!do_update_flag) {
+                retval = handle_event(GTK_WIDGET(item->canvas), gdk_event);
+                gdk_event_free(gdk_event);
+        }
+        else {
+                data = g_new0(EmitLater, 1);
+                data->arg1 = (gpointer)item->canvas;
+                data->arg2 = (gpointer)gdk_event;
+                /* has a higher priority then do_update*/
+                g_idle_add_full(GDK_PRIORITY_REDRAW-10,
+                                (GSourceFunc)handle_event_later, data, NULL);
+        }
 
 	return retval;
 }
@@ -592,13 +724,37 @@ impl_Bonobo_Canvas_Component_setCanvasSize (PortableServer_Servant servant,
 }
 
 static void
+set_bounds_later(EmitLater *data)
+{
+        CORBA_Environment ev;
+
+        CORBA_exception_init (&ev);
+
+        g_signal_emit(GCC(data->arg1), gcc_signals [SET_BOUNDS], 0, (const
+                                Bonobo_Canvas_DRect *) data->arg2, &ev);
+
+        g_free(data);
+        CORBA_exception_free(&ev);
+}
+
+static void
 impl_Bonobo_Canvas_Component_setBounds (PortableServer_Servant     servant,
 					const Bonobo_Canvas_DRect *bbox,
 					CORBA_Environment         *ev)
 {
 	Gcc *gcc = GCC (bonobo_object_from_servant (servant));
+        EmitLater *data;
 
-	g_signal_emit (gcc, gcc_signals [SET_BOUNDS], 0, bbox, &ev);
+        if (!do_update_flag) {
+                g_signal_emit (gcc, gcc_signals [SET_BOUNDS], 0, bbox, &ev);
+        }
+        else {
+                data = g_new0(EmitLater, 1);
+                data->arg1 = (gpointer)gcc;
+                data->arg2 = (gpointer)bbox;
+                g_idle_add_full(GDK_PRIORITY_REDRAW-10,
+                                (GSourceFunc)set_bounds_later, data, NULL);
+        }
 }
 
 static void
@@ -685,7 +841,7 @@ bonobo_canvas_component_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboCanvasComponent, 
 			   Bonobo_Canvas_Component,
 			   PARENT_TYPE,
-			   bonobo_canvas_component);
+			   bonobo_canvas_component)
 
 
 /**
@@ -809,23 +965,21 @@ rih_update (GnomeCanvasItem *item, double affine [6], ArtSVP *svp, int flags)
 {
 	RootItemHack *rih = (RootItemHack *) item;
 	CORBA_Environment ev;
-	GnomeCanvasItemClass *gci_class = gtk_type_class (
-					gnome_canvas_item_get_type ());
 
 	CORBA_exception_init (&ev);
+
+        /* If we get here then we know the GnomeCanvas must be inside
+         * do_update. The flag tells ALL components not to send events that
+         * might trigger another update request and thereby cause the canvas
+         * NEED_UPDATE flags to become unsyncronized.
+         */
+        do_update_flag = TRUE;
+
 	Bonobo_Canvas_ComponentProxy_requestUpdate (rih->proxy, &ev);
+
+        do_update_flag = FALSE;
+
 	CORBA_exception_free (&ev);
-
-	/*
-	 * Mark our canvas and item as fully updated
-	 */
-
-	(* gci_class->update) (item, affine, svp, flags);
-
-	if (item->canvas->redraw_area)
-		art_uta_free (item->canvas->redraw_area);
-	item->canvas->redraw_area = NULL;
-	item->canvas->need_redraw = FALSE;
 }
 
 static void
@@ -898,8 +1052,12 @@ bonobo_canvas_new (gboolean is_aa, Bonobo_Canvas_ComponentProxy proxy)
 
 	canvas->root = GNOME_CANVAS_ITEM (root_item_hack_new (canvas, proxy));
 
+        /* A hack to prevent gtkwidget from issuing a warning about there not
+           being a parent class. */
+        gtk_container_add(GTK_CONTAINER (gtk_window_new(GTK_WINDOW_TOPLEVEL)),
+                            GTK_WIDGET(canvas));
 	gtk_widget_realize (GTK_WIDGET (canvas));
-	
+
 	/* Gross */
 	GTK_WIDGET_SET_FLAGS (canvas, GTK_VISIBLE | GTK_MAPPED);
 
@@ -990,3 +1148,103 @@ bonobo_canvas_component_get_ui_container (BonoboCanvasComponent *comp,
 	return corba_uic;
 }
 
+/* BonoboCanvasComponentFactory is used to replace the old BonoboEmbeddable
+ * object.  It sets up a canvas component factory to conform with the current
+ * Bonobo IDL.
+ */
+
+#define BONOBO_CANVAS_COMPONENT_FACTORY_TYPE       \
+   (bonobo_canvas_component_factory_get_type())
+
+#define BONOBO_CANVAS_COMPONENT_FACTORY(o)    \
+   (G_TYPE_CHECK_INSTANCE_CAST ((o),\
+   BONOBO_CANVAS_COMPONENT_FACTORY_TYPE, BonoboCanvasComponentFactory))
+
+typedef struct _BonoboCanvasComponentFactoryPrivate \
+   BonoboCanvasComponentFactoryPrivate;
+
+typedef struct {
+        BonoboObject base;
+        BonoboCanvasComponentFactoryPrivate *priv;
+} BonoboCanvasComponentFactory;
+
+typedef struct {
+        BonoboObjectClass parent_class;
+
+        POA_Bonobo_CanvasComponentFactory__epv epv;
+} BonoboCanvasComponentFactoryClass;
+       
+GType bonobo_canvas_component_factory_get_type(void) G_GNUC_CONST;
+
+struct _BonoboCanvasComponentFactoryPrivate {
+   GnomeItemCreator item_creator;
+   void *item_creator_data;
+};
+
+static GObjectClass *gccf_parent_class;
+
+static Bonobo_Canvas_Component
+impl_Bonobo_canvas_component_factory_createCanvasItem (
+   PortableServer_Servant servant, CORBA_boolean aa,
+   const Bonobo_Canvas_ComponentProxy _item_proxy,
+   CORBA_Environment *ev)
+{
+        BonoboCanvasComponentFactory *factory = BONOBO_CANVAS_COMPONENT_FACTORY(
+              bonobo_object_from_servant (servant));
+        Bonobo_Canvas_ComponentProxy item_proxy;
+        BonoboCanvasComponent *component;
+        GnomeCanvas *pseudo_canvas;
+
+        if (factory->priv->item_creator == NULL)
+                return CORBA_OBJECT_NIL;
+
+        item_proxy = CORBA_Object_duplicate (_item_proxy, ev);
+
+	pseudo_canvas = bonobo_canvas_new (aa, item_proxy);
+
+        component = (*factory->priv->item_creator)(
+                /*factory,*/ pseudo_canvas, factory->priv->item_creator_data);
+
+        return bonobo_object_dup_ref (BONOBO_OBJREF (component), ev);
+}
+
+static void
+bonobo_canvas_component_factory_class_init (
+      BonoboCanvasComponentFactoryClass *klass)
+{
+        POA_Bonobo_CanvasComponentFactory__epv *epv = &klass->epv;
+
+        gccf_parent_class = g_type_class_peek_parent(klass);
+        epv->createCanvasComponent = 
+           impl_Bonobo_canvas_component_factory_createCanvasItem;
+}
+
+static void
+bonobo_canvas_component_factory_init (BonoboCanvasComponentFactory *factory)
+{
+        factory->priv = g_new0 (BonoboCanvasComponentFactoryPrivate, 1);
+}
+
+BONOBO_TYPE_FUNC_FULL (BonoboCanvasComponentFactory,
+                       Bonobo_CanvasComponentFactory,
+                       BONOBO_TYPE_X_OBJECT,
+                       bonobo_canvas_component_factory);
+
+/**
+ * bonobo_canvas_component_factory_new:
+ * @item_factory: A callback invoke when the container activates the object.
+ * @user_data: User data pointer.
+ *
+ * Returns: The object to be passed into bonobo_generic_factory_main.
+ */
+BonoboObject *bonobo_canvas_component_factory_new(
+      GnomeItemCreator item_factory, void *user_data)
+{
+        BonoboCanvasComponentFactory *factory;
+        factory = g_object_new (BONOBO_CANVAS_COMPONENT_FACTORY_TYPE, NULL);
+
+        factory->priv->item_creator = item_factory;
+        factory->priv->item_creator_data = user_data;
+
+        return BONOBO_OBJECT(factory); 
+}

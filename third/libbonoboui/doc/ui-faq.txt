@@ -1,3 +1,4 @@
+#### Moved this to api/ui-faq.xml
 
 Frequently asked questions about the Bonobo UI Handler, version 0.1
 by Michael Meeks <michael@helixcode.com>

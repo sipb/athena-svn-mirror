@@ -23,12 +23,13 @@
   @NOTATION@
 */
 
+#include "config.h"
 #include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <bonobo/bonobo-dock.h>
-#include <bonobo/bonobo-dock-band.h>
-#include <bonobo/bonobo-dock-item.h>
+#include "bonobo-dock.h"
+#include "bonobo-dock-band.h"
+#include "bonobo-dock-item.h"
 #include <libgnome/gnome-macros.h>
 
 GNOME_CLASS_BOILERPLATE (BonoboDock, bonobo_dock,
@@ -78,7 +79,6 @@ static void     bonobo_dock_forall              (GtkContainer *container,
                                                 gboolean include_internals,
                                                 GtkCallback callback,
                                                 gpointer callback_data);
-static void     bonobo_dock_destroy             (GtkObject *object);
 static void     bonobo_dock_finalize            (GObject *object);
 
 static void     size_request_v                 (GList *list,
@@ -168,7 +168,6 @@ bonobo_dock_class_init (BonoboDockClass *class)
   widget_class = (GtkWidgetClass *) class;
   container_class = (GtkContainerClass *) class;
 
-  object_class->destroy = bonobo_dock_destroy;
   gobject_class->finalize = bonobo_dock_finalize;
 
   widget_class->size_request = bonobo_dock_size_request;
@@ -658,14 +657,6 @@ bonobo_dock_forall (GtkContainer *container,
 
   if (dock->client_area != NULL)
     (* callback) (dock->client_area, callback_data);
-}
-
-static void
-bonobo_dock_destroy (GtkObject *object)
-{
-  /* remember, destroy can be run multiple times! */
-  if (GTK_OBJECT_CLASS (parent_class)->destroy)
-    (* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
@@ -1657,10 +1648,10 @@ insert_into_band_list (BonoboDock     *dock,
 }
 
 gint
-bonobo_dock_handle_key_nav (BonoboDock     *dock,
-			    BonoboDockBand *band,
-			    BonoboDockItem *item,
-			    GdkEventKey    *event)
+_bonobo_dock_handle_key_nav (BonoboDock     *dock,
+			     BonoboDockBand *band,
+			     BonoboDockItem *item,
+			     GdkEventKey    *event)
 {
   GList   *entry;
   GList  **band_list;
@@ -1819,64 +1810,4 @@ bonobo_dock_handle_key_nav (BonoboDock     *dock,
   g_object_unref (G_OBJECT (item));
 
   return TRUE;
-}
-
-void
-bonobo_dock_focus_roll (BonoboDock *dock)
-{
-	GList *focusable = NULL;
-	GList *l, *bands = NULL, *grips = NULL;
-
-	bands = NULL;
-	bands = g_list_concat (bands, g_list_copy (dock->top_bands));
-	bands = g_list_concat (bands, g_list_copy (dock->bottom_bands));
-	bands = g_list_concat (bands, g_list_copy (dock->right_bands));
-	bands = g_list_concat (bands, g_list_copy (dock->left_bands));
-
-	for (l = bands; l; l = l->next) {
-		GList *l2, *children;
-
-		children = gtk_container_get_children (l->data);
-		
-		for (l2 = children; l2; l2 = l2->next) {
-			GtkWidget *grip;
-
-			if (BONOBO_IS_DOCK_ITEM (l2->data) &&
-			    (grip = bonobo_dock_item_get_grip (BONOBO_DOCK_ITEM (l2->data))))
-				grips = g_list_prepend (grips, grip);
-		}
-	}
-
-	g_list_free (bands);
-
-	for (l = dock->floating_children; l; l = l->next) {
-		GtkWidget *grip;
-
-		if (BONOBO_IS_DOCK_ITEM (l->data) &&
-		    (grip = bonobo_dock_item_get_grip (BONOBO_DOCK_ITEM (l->data))))
-			grips = g_list_prepend (grips, grip);
-	}
-
-	for (l = grips; l; l = l->next) {
-		if (GTK_WIDGET_DRAWABLE (l->data) &&
-		    GTK_WIDGET_CAN_FOCUS (l->data))
-			focusable = g_list_prepend (focusable, l->data);
-	}
-
-	g_list_free (grips);
-
-	for (l = focusable; l; l = l->next) {
-		if (GTK_WIDGET_HAS_FOCUS (l->data))
-			break;
-	}
-
-	if (!l || l->next == NULL)
-		l = focusable;
-	else
-		l = l->next;
-	
-	if (l)
-		gtk_widget_grab_focus (l->data);
-
-	g_list_free (focusable);
 }

@@ -23,11 +23,12 @@ G_BEGIN_DECLS
 #define BONOBO_IS_CANVAS_ITEM(o)         (GTK_CHECK_TYPE((o), bonobo_canvas_item_get_type ()))
 
 typedef struct _BonoboCanvasItemPrivate BonoboCanvasItemPrivate;
+typedef struct _BonoboCanvasItem        BonoboCanvasItem;
 
-typedef struct {
+struct _BonoboCanvasItem {
 	GnomeCanvasItem         canvas_item;
 	BonoboCanvasItemPrivate *priv;
-} BonoboCanvasItem;
+};
 
 typedef struct {
 	GnomeCanvasItemClass parent_class;

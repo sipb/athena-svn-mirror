@@ -8,17 +8,18 @@
  * Copyright (C) 2002 Sun Microsystems, Inc.
  */
 
-#include <string.h>
+#include "config.h"
+#include "bonobo-a11y.h"
+#include "bonobo-dock-band.h"
+#include "bonobo-dock-item-grip.h"
 #include <glib-object.h>
 #include <atk/atkstateset.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkaccessible.h>
 #include <gtk/gtkbindings.h>
 #include <libgnome/gnome-macros.h>
-#include <bonobo/bonobo-i18n.h>
-#include <bonobo/bonobo-a11y.h>
-#include <bonobo/bonobo-dock-band.h>
-#include <bonobo/bonobo-dock-item-grip.h>
+#include <glib/gi18n.h>
+#include <string.h>
 
 #define DRAG_HANDLE_SIZE 10
 
@@ -31,7 +32,7 @@ static guint signals [LAST_SIGNAL];
 static AtkObjectClass *a11y_parent_class = NULL;
 
 GNOME_CLASS_BOILERPLATE (BonoboDockItemGrip, bonobo_dock_item_grip,
-			 GtkWidget, GTK_TYPE_WIDGET);
+			 GtkWidget, GTK_TYPE_WIDGET)
 
 static gint
 bonobo_dock_item_grip_expose (GtkWidget      *widget,
@@ -90,10 +91,14 @@ grip_item_a11y_ref_state_set (AtkObject *accessible)
 {
 	AtkStateSet *state_set;
 	BonoboDockItemGrip *grip;
+	GtkWidget *widget;
 
 	state_set = a11y_parent_class->ref_state_set (accessible);
-	grip = BONOBO_DOCK_ITEM_GRIP (
-		GTK_ACCESSIBLE (accessible)->widget);
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (widget == NULL)
+		return state_set;
+
+	grip = BONOBO_DOCK_ITEM_GRIP (widget);
 
 	if (grip == NULL)
 		return state_set;
@@ -171,9 +176,13 @@ bonobo_dock_item_grip_do_action (AtkAction *action,
 				 gint       i)
 {
 	BonoboDockItemGrip *grip;
+	GtkWidget *widget;
 
-	grip = BONOBO_DOCK_ITEM_GRIP (
-		GTK_ACCESSIBLE (action)->widget);
+	widget = GTK_ACCESSIBLE (action)->widget;
+	if (widget == NULL)
+		return FALSE;
+
+	grip = BONOBO_DOCK_ITEM_GRIP (widget);
 
 	if (grip->item->behavior & BONOBO_DOCK_ITEM_BEH_LOCKED)
 		return FALSE;
@@ -195,9 +204,13 @@ static gint
 bonobo_dock_item_grip_get_n_actions (AtkAction *action)
 {
 	BonoboDockItemGrip *grip;
+	GtkWidget *widget;
 
-	grip = BONOBO_DOCK_ITEM_GRIP (
-		GTK_ACCESSIBLE (action)->widget);
+	widget = GTK_ACCESSIBLE (action)->widget;
+	if (widget == NULL)
+		return 0;
+
+	grip = BONOBO_DOCK_ITEM_GRIP (widget);
 
 	if (grip->item->behavior & BONOBO_DOCK_ITEM_BEH_LOCKED)
 		return 0;
@@ -255,15 +268,9 @@ bonobo_dock_item_grip_activate (BonoboDockItemGrip *grip)
 }
 
 static void
-bonobo_dock_item_grip_dispose (GObject *object)
-{
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
-}
-
-static void
 bonobo_dock_item_grip_instance_init (BonoboDockItemGrip *grip)
 {
-	GTK_WIDGET_SET_FLAGS (grip, GTK_CAN_FOCUS);
+/*	GTK_WIDGET_SET_FLAGS (grip, GTK_CAN_FOCUS); */
 	GTK_WIDGET_SET_FLAGS (grip, GTK_NO_WINDOW);
 }
 
@@ -285,7 +292,7 @@ bonobo_dock_item_grip_key_press_event (GtkWidget   *widget,
   BonoboDockItemGrip *grip = (BonoboDockItemGrip *) widget;
 
   if (!grip->item->is_floating && band &&
-      bonobo_dock_band_handle_key_nav (band, grip->item, event))
+      _bonobo_dock_band_handle_key_nav (band, grip->item, event))
     {
       if (had_focus && !GTK_WIDGET_HAS_FOCUS (widget))
         gtk_widget_grab_focus (widget);
@@ -299,12 +306,9 @@ static void
 bonobo_dock_item_grip_class_init (BonoboDockItemGripClass *klass)
 {
 	GtkBindingSet  *binding_set;
-	GObjectClass   *gobject_class = (GObjectClass *) klass;
 	GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
 
 	parent_class = g_type_class_peek_parent (klass);
-
-	gobject_class->dispose = bonobo_dock_item_grip_dispose;
 
 	widget_class->expose_event = bonobo_dock_item_grip_expose;
 	widget_class->get_accessible = bonobo_dock_item_grip_get_accessible;

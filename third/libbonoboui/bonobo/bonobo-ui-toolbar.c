@@ -242,7 +242,9 @@ hide_popup_window (BonoboUIToolbar *toolbar)
 
 	priv = toolbar->priv;
 
-	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	gdk_display_pointer_ungrab
+		(gtk_widget_get_display (priv->popup_window),
+		 GDK_CURRENT_TIME);
 
 	gtk_grab_remove (priv->popup_window);
 	gtk_widget_hide (priv->popup_window);
@@ -531,6 +533,8 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 	int extra_space;
 	int num_expandable_items;
 	int popup_item_size;
+	int item_size_left_to_place;
+	int acc_space;
 	gboolean first_expandable;
 	GList *p;
 
@@ -573,6 +577,7 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 
 	/* first, make a pass through the items to layout the ones that are packed on the right */
 	priv->end_position = allocation->x + available_space;
+	acc_space = 0;
 	for (p = g_list_last (priv->items); p != NULL; p = p->prev) {
 
 		item = BONOBO_UI_TOOLBAR_ITEM (p->data);
@@ -582,14 +587,15 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 		gtk_widget_get_child_requisition (GTK_WIDGET (item), &child_requisition);
 
 		if (priv->orientation == GTK_ORIENTATION_HORIZONTAL) {
-			available_space -= child_requisition.width;
+			acc_space += child_requisition.width;
+			item_size_left_to_place -= child_requisition.width;
 			priv->end_position -= child_requisition.width;
 			
 			child_allocation.x = priv->end_position;
 			child_allocation.width = child_requisition.width;
 			child_allocation.height = priv->max_height;
 		} else {
-			available_space -= child_requisition.height;
+			acc_space += child_requisition.height;
 			priv->end_position -= child_requisition.height;
 			
 			child_allocation.y = priv->end_position;
@@ -599,6 +605,11 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 		
 		gtk_widget_size_allocate (GTK_WIDGET (item), &child_allocation);
 	}
+	available_space -= acc_space;
+	if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+		item_size_left_to_place = priv->total_width - acc_space;
+	else
+		item_size_left_to_place = priv->total_height - acc_space;
 	
 	/* make a pass through the items to determine how many fit */	
 	space_required = 0;
@@ -608,8 +619,7 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 	child_allocation.y = allocation->y + border_width;
 
 	for (p = priv->items; p != NULL; p = p->next) {
-		int    item_size;
-		GList *l;
+		int item_size;
 
 		item = BONOBO_UI_TOOLBAR_ITEM (p->data);
 		if (! GTK_WIDGET_VISIBLE (item) || GTK_WIDGET (item)->parent != GTK_WIDGET (toolbar) ||
@@ -623,24 +633,15 @@ size_allocate_helper (BonoboUIToolbar *toolbar,
 		else
 			item_size = child_requisition.height;
 
-		for (l = p->next; l; l = l->next) {
-			GtkWidget *widget = GTK_WIDGET (l->data);
-
-			if (GTK_WIDGET_VISIBLE (widget) &&
-			    widget->parent == GTK_WIDGET (toolbar) &&
-			    ! bonobo_ui_toolbar_item_get_pack_end (BONOBO_UI_TOOLBAR_ITEM (widget)))
-				break;
-		}
-
-		if (!l) {
-			if (space_required + item_size > available_space)
-				break;
-		} else {
-			if (space_required + item_size > available_space - popup_item_size)
-				break;
-		}
-
+/*		g_message ("Item  size %4d, space_required %4d, available %4d left to place %4d",
+			   item_size, space_required, available_space, item_size_left_to_place); */
+		
+		if (item_size_left_to_place > available_space - space_required &&
+		    space_required + item_size > available_space - popup_item_size)
+			break;
+		
 		space_required += item_size;
+		item_size_left_to_place -= item_size;
 
 		if (bonobo_ui_toolbar_item_get_expandable (item))
 			num_expandable_items ++;
@@ -870,6 +871,7 @@ impl_expose_event (GtkWidget *widget,
 {
 	BonoboUIToolbar *toolbar;
 	BonoboUIToolbarPrivate *priv;
+	GtkShadowType shadow_type;
 	GList *p;
 
 	if (! GTK_WIDGET_DRAWABLE (widget))
@@ -877,6 +879,18 @@ impl_expose_event (GtkWidget *widget,
 
 	toolbar = BONOBO_UI_TOOLBAR (widget);
 	priv = toolbar->priv;
+
+	gtk_widget_style_get (widget, "shadow_type", &shadow_type, NULL);
+
+	gtk_paint_box (widget->style,
+		       widget->window,
+		       GTK_WIDGET_STATE (widget),
+		       shadow_type,
+		       &event->area, widget, "toolbar",
+		       widget->allocation.x,
+		       widget->allocation.y,
+		       widget->allocation.width,
+		       widget->allocation.height);
 
 	for (p = priv->items; p != NULL; p = p->next) {
 		GtkWidget *item_widget;
@@ -1015,7 +1029,10 @@ impl_get_property (GObject    *object,
 {
 	BonoboUIToolbar *toolbar = BONOBO_UI_TOOLBAR (object);
 	BonoboUIToolbarPrivate *priv = toolbar->priv;
+	gint border_width;
 
+	border_width = GTK_CONTAINER (object)->border_width;
+	
 	switch (property_id) {
 	case PROP_ORIENTATION:
 		g_value_set_uint (
@@ -1028,17 +1045,17 @@ impl_get_property (GObject    *object,
 		update_sizes (toolbar);
 		if (bonobo_ui_toolbar_get_orientation (toolbar) ==
 		    GTK_ORIENTATION_HORIZONTAL)
-			g_value_set_uint (value, priv->total_width);
+			g_value_set_uint (value, priv->total_width + 2 * border_width);
 		else
-			g_value_set_uint (value, priv->max_width);
+			g_value_set_uint (value, priv->max_width + 2 * border_width);
 		break;
 	case PROP_PREFERRED_HEIGHT:
 		update_sizes (toolbar);
 		if (bonobo_ui_toolbar_get_orientation (toolbar) ==
 		    GTK_ORIENTATION_HORIZONTAL)
-			g_value_set_uint (value, priv->max_height);
+			g_value_set_uint (value, priv->max_height + 2 * border_width);
 		else
-			g_value_set_uint (value, priv->total_height);
+			g_value_set_uint (value, priv->total_height + 2 * border_width);
 		break;
 	default:
 		break;
@@ -1086,7 +1103,6 @@ bonobo_ui_toolbar_class_init (BonoboUIToolbarClass *toolbar_class)
 	widget_class->map           = impl_map;
 	widget_class->unmap         = impl_unmap;
 	widget_class->expose_event  = impl_expose_event;
-	widget_class->focus         = bonobo_widget_clobber_focus;
 
 	container_class = GTK_CONTAINER_CLASS (toolbar_class);
 	container_class->remove = impl_remove;
@@ -1152,6 +1168,15 @@ bonobo_ui_toolbar_class_init (BonoboUIToolbarClass *toolbar_class)
 				NULL, NULL,
 				g_cclosure_marshal_VOID__VOID,
 				G_TYPE_NONE, 0);
+
+	gtk_widget_class_install_style_property (
+	        widget_class,
+		g_param_spec_enum ("shadow_type",
+				   _("Shadow type"),
+				   _("Style of bevel around the toolbar"),
+				   GTK_TYPE_SHADOW_TYPE,
+				   GTK_SHADOW_OUT,
+				   G_PARAM_READABLE));
 }
 
 static void

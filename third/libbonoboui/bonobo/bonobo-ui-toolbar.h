@@ -15,6 +15,8 @@
 #include <gtk/gtkcontainer.h>
 #include "bonobo-ui-toolbar-item.h"
 
+#ifndef BONOBO_UI_DISABLE_DEPRECATED
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_UI_TOOLBAR            (bonobo_ui_toolbar_get_type ())
@@ -74,6 +76,8 @@ void                  bonobo_ui_toolbar_show_tooltips    (BonoboUIToolbar      *
 GList                *bonobo_ui_toolbar_get_children     (BonoboUIToolbar      *toolbar);
 
 G_END_DECLS
+
+#endif
 
 #endif /* _BONOBO_UI_TOOLBAR_H_ */
 

@@ -1,84 +1,89 @@
+# translation of el.po to Greek
 # Greek translation of libbonoboui.
 # Copyright (C) 2003 Simos Xenitellis.
-# Simos Xenitellis <simos74@gmx.net>, 2002,2003.
 #
 # simos: 71 messages, 16Aug2002, initial translation.
 # simos: 92 messages, 05Nov2002, completed translation..
 # kostas : 05Jan2003 updated translation for Gnome 2.1x
+# kostas : 03Sep2003, 96 messages,updated translation for Gnome 2.4
+# Simos Xenitellis <simos74@gmx.net>, 2002,2003.
+# Kostas Papadimas <pkst@gmx.net>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonoboui 2.0.1\n"
-"POT-Creation-Date: 2003-01-21 14:27+0000\n"
-"PO-Revision-Date: 2003-01-05 12:34+0200\n"
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"PO-Revision-Date: 2003-09-03 17:46+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.0\n"
 
 #
-#: bonobo/bonobo-canvas-item.c:647
+#: bonobo/bonobo-canvas-item.c:667
 msgid "corba factory"
 msgstr "εργοστάσιο CORBA"
 
-#: bonobo/bonobo-canvas-item.c:648
+#: bonobo/bonobo-canvas-item.c:668
 msgid "The factory pointer"
 msgstr "Ο δείκτης εργοστασίου"
 
-#: bonobo/bonobo-canvas-item.c:657
+#: bonobo/bonobo-canvas-item.c:677
 msgid "corba UI container"
 msgstr "δοχείο γραφικής διασύνδεσης (UI) CORBA"
 
-#: bonobo/bonobo-canvas-item.c:658
+#: bonobo/bonobo-canvas-item.c:678
 msgid "The User interface container"
 msgstr "Το δοχείο γραφικής διασύνδεσης"
 
-#: bonobo/bonobo-dock-item-grip.c:236
+#: bonobo/bonobo-dock-item-grip.c:249
 msgid "Dock the toolbar"
 msgstr "Αγκύρωση της εργαλειοθήκης"
 
-#: bonobo/bonobo-dock-item-grip.c:237
+#: bonobo/bonobo-dock-item-grip.c:250
 msgid "Un dock the toolbar"
 msgstr "Απαγκύρωση εργαλειοθήκης"
 
-#: bonobo/bonobo-dock-item.c:291 bonobo/bonobo-dock-item.c:292
+#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Τύπος σκιάς"
 
-#: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Προσανατολισμός"
 
-#: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Επιθυμητό πλάτος"
 
-#: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
+#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Επιθυμητό ύψος"
 
-#: bonobo/bonobo-file-selector-util.c:383
+#: bonobo/bonobo-file-selector-util.c:351
 msgid "Select a file to open"
 msgstr "Επιλογή αρχείου προς ανάγνωση"
 
-#: bonobo/bonobo-file-selector-util.c:411
+#: bonobo/bonobo-file-selector-util.c:379
 msgid "Select files to open"
 msgstr "Επιλογή αρχείων για άνοιγμα"
 
-#: bonobo/bonobo-file-selector-util.c:440
+#: bonobo/bonobo-file-selector-util.c:408
 msgid "Select a filename to save"
 msgstr "Επιλογή ονόματος αρχείου για αποθήκευση"
 
-#: bonobo/bonobo-plug.c:372
+#: bonobo/bonobo-plug.c:412
 msgid "Event Forwarding"
 msgstr "Προώθηση Γεγονότων"
 
-#: bonobo/bonobo-plug.c:373
+#: bonobo/bonobo-plug.c:413
 msgid "Whether X events should be forwarded"
 msgstr "Πότε τα γεγονότα Χ πρέπει να προωθούνται"
 
@@ -90,7 +95,7 @@ msgstr "Πότε τα γεγονότα Χ πρέπει να προωθούντα
 #
 # #-#-#-#-#  nautilus.nautilus-gnome-1.el.po (nautilus 0.8.3)  #-#-#-#-#
 #
-#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:415
+#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
 msgid "Name"
 msgstr "Όνομα"
 
@@ -109,8 +114,8 @@ msgstr "Διασυνδέσεις που απαιτούνται"
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
-"A NULL_terminated array of interfaces which a server must support in order "
-"to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
+"A NULL-terminated array of interfaces which a server must support in order "
+"to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
 "Ένας πίνακας διασυνδέσεων διαχωριζόμενος με χαρακτήρες NULL που ο "
@@ -126,66 +131,66 @@ msgstr "Καταχώρηση απαίτησης διασύνδεσης"
 msgid "One of the interfaces that's required"
 msgstr "Μία από τις διασυνδέσεις που απαιτούνται"
 
-#: bonobo/bonobo-ui-config-widget.c:267
+#: bonobo/bonobo-ui-config-widget.c:268
 msgid "Visible"
 msgstr "Ορατό"
 
 #
-#: bonobo/bonobo-ui-config-widget.c:274
+#: bonobo/bonobo-ui-config-widget.c:275
 msgid "_Show"
 msgstr "_Εμφάνιση"
 
-#: bonobo/bonobo-ui-config-widget.c:281
+#: bonobo/bonobo-ui-config-widget.c:282
 msgid "_Hide"
 msgstr "_Απόκρυψη"
 
-#: bonobo/bonobo-ui-config-widget.c:287
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_View tooltips"
 msgstr "_Εμφάνιση υποδείξεων"
 
 #
-#: bonobo/bonobo-ui-config-widget.c:292
+#: bonobo/bonobo-ui-config-widget.c:293
 msgid "Toolbars"
 msgstr "Εργαλειοθήκες"
 
 #
-#: bonobo/bonobo-ui-config-widget.c:302
+#: bonobo/bonobo-ui-config-widget.c:303
 msgid "toolbars"
 msgstr "εργαλειοθήκες"
 
-#: bonobo/bonobo-ui-config-widget.c:313 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Look"
 msgstr "Εμφάνιση"
 
-#: bonobo/bonobo-ui-config-widget.c:322 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "_Icon"
 msgstr "_Εικονίδιο"
 
-#: bonobo/bonobo-ui-config-widget.c:328
+#: bonobo/bonobo-ui-config-widget.c:329
 msgid "_Text and Icon"
 msgstr "_Κείμενο και Εικονίδια"
 
-#: bonobo/bonobo-ui-config-widget.c:334
+#: bonobo/bonobo-ui-config-widget.c:335
 msgid "Text only"
 msgstr "Μόνο κείμενο"
 
-#: bonobo/bonobo-ui-config-widget.c:340
+#: bonobo/bonobo-ui-config-widget.c:341
 msgid "_Priority text only"
 msgstr "Μόνο κείμενο _προτεραιότητας"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "Debug"
 msgstr "Αποσφαλμάτωση"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "_Dump XML"
 msgstr "_Απόρριψη XML"
 
-#: bonobo/bonobo-ui-engine.c:89
+#: bonobo/bonobo-ui-engine.c:91
 msgid "Dump the entire UI's XML description to the console"
 msgstr "Απόρριψη ολόκληρης της περιγραφής UI's XML στην κονσόλα"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:522
 msgid "Configure UI"
 msgstr "Ρύθμιση Διασύνδεσης Χρήστη"
 
@@ -196,7 +201,7 @@ msgstr "Διακόπτες αποσφαλμάτωσης του Gdk για ενε
 
 #
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
-#: bonobo/bonobo-ui-init-gtk.c:162 bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
 msgid "FLAGS"
 msgstr "FLAGS"
 
@@ -216,138 +221,128 @@ msgid "DISPLAY"
 msgstr "ΟΘΌΝΗ"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "X screen to use"
 msgstr "Οθόνη X προς χρήση"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "SCREEN"
 msgstr "ΟΘΌΝΗ"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:129
+#: bonobo/bonobo-ui-init-gtk.c:128
 msgid "Make X calls synchronous"
 msgstr "Χρήση σύγχρονων κλήσεων X"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:135
+#: bonobo/bonobo-ui-init-gtk.c:134
 msgid "Don't use X shared memory extension"
 msgstr "Απενεργοποίηση επεκτασης χρήσης κοινής μνήμης στα X"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "Program name as used by the window manager"
 msgstr "Όνομα προγράμματος όπως δηλώνεται από το διαχειριστή παραθύρων"
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "NAME"
 msgstr "ΌΝΟΜΑ"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "Program class as used by the window manager"
 msgstr "Τάξη προγράμματος όπως δηλώνεται από το διαχειριστή παραθύρων"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "CLASS"
 msgstr "ΤΑΞΗ"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:146
-msgid "HOST"
-msgstr "ΣΥΣΤΗΜΑ"
-
-#: bonobo/bonobo-ui-init-gtk.c:150
-msgid "PORT"
-msgstr "ΘΥΡΑ"
-
-#
-#: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
-msgid "STYLE"
-msgstr "ΣΤΥΛ"
-
-#
-#: bonobo/bonobo-ui-init-gtk.c:162
+#: bonobo/bonobo-ui-init-gtk.c:144
 msgid "Gtk+ debugging flags to set"
 msgstr "Διακόπτες αποσφαλμάτωσης του Gtk+ για ενεργοποίηση"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:147
 msgid "Gtk+ debugging flags to unset"
 msgstr "Διακόπτες αποσφαλμάτωσης του Gtk+ για απενεργοποίηση"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:168
+#: bonobo/bonobo-ui-init-gtk.c:150
 msgid "Make all warnings fatal"
 msgstr "Όλες οι προειδοποιήσεις ολέθριες"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "Load an additional Gtk module"
 msgstr "Φόρτωση επιπρόσθετου συστατικού Gtk"
 
 #
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "MODULE"
 msgstr "ΣΥΣΤΑΤΙΚΌ"
 
-#: bonobo/bonobo-ui-init-gtk.c:180
+#: bonobo/bonobo-ui-init-gtk.c:162
 msgid "GTK+"
 msgstr "GTK+"
 
 #
-#: bonobo/bonobo-ui-main.c:188
+#: bonobo/bonobo-ui-main.c:202
 msgid "Bonobo GUI support"
 msgstr "Υποστήριξη Γραφικού Περιβάλλοντος Διασύνδεσης (ΓΠΔ) Bonobo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "B_oth"
 msgstr "_Και τα δύο"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "T_ext"
 msgstr "_Κείμενο"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Hide t_ips"
 msgstr "Απόκρυ_ψη υποδείξεων"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Show t_ips"
 msgstr "Εμ_φάνιση υποδείξεων"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "_Hide toolbar"
 msgstr "_Απόκρυψη εργαλειοθήκης"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "Customi_ze"
 msgstr "Παραμετρο_ποίηση"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:556
 msgid "Customize the toolbar"
 msgstr "Παραμετροποίηση γραμμής εντολών"
 
-#: bonobo/bonobo-ui-toolbar.c:1113
+#: bonobo/bonobo-ui-toolbar.c:1129
 msgid "is floating"
 msgstr "αιωρείται"
 
-#: bonobo/bonobo-ui-toolbar.c:1114
+#: bonobo/bonobo-ui-toolbar.c:1130
 msgid "whether the toolbar is floating"
 msgstr "αν η εργαλειοθήκη αιωρήται"
 
-#: bonobo/bonobo-ui-util.c:616
+#: bonobo/bonobo-ui-toolbar.c:1176
+msgid "Style of bevel around the toolbar"
+msgstr "Στυλ γωνίας γύρω από την εργαλειοθήκη"
+
+#: bonobo/bonobo-ui-util.c:629
 msgid "_Contents"
 msgstr "Περιε_χόμενα"
 
 # #-#-#-#-#  gnome-libs.gnome-libs-1-0.el.po (gnome-libs 1.2.12)  #-#-#-#-#
 #
-#: bonobo/bonobo-ui-util.c:617
+#: bonobo/bonobo-ui-util.c:630
 msgid "View help for this application"
 msgstr "Εμφάνιση βοήθειας για την εφαρμογή"
 
-#: bonobo/bonobo-window.c:416
+#: bonobo/bonobo-window.c:347
 msgid "Name of the window - used for configuration serialization."
 msgstr ""
 "Το όνομα του παραθύρου - για χρήση στη μετατροπή κατ' αλληλουχία των "
@@ -467,6 +462,17 @@ msgstr "Καλημέρα, Κόσμε!"
 msgid "Cannot init libbonoboui code"
 msgstr "Αποτυχία αρχικοποίησης κώδικα libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:133
+#: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "Αδύνατη η αρχικοποίηση της γραφικής διασύνδεσης του Bonobo "
+
+#
+#~ msgid "HOST"
+#~ msgstr "ΣΥΣΤΗΜΑ"
+
+#~ msgid "PORT"
+#~ msgstr "ΘΥΡΑ"
+
+#
+#~ msgid "STYLE"
+#~ msgstr "ΣΤΥΛ"

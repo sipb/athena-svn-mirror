@@ -32,6 +32,10 @@
  */
 
 #include <config.h>
+#include "bonobo-dock-item.h"
+#include "bonobo-dock-band.h"
+#include "bonobo-dock-item-grip.h"
+#include "bonobo-ui-marshal.h"
 
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -40,13 +44,8 @@
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtkwindow.h>
 
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
-#include <bonobo/bonobo-i18n.h>
-#include <bonobo/bonobo-dock-band.h>
-#include <bonobo/bonobo-dock-item.h>
-#include <bonobo/bonobo-ui-private.h>
-#include <bonobo/bonobo-ui-marshal.h>
-#include <bonobo/bonobo-dock-item-grip.h>
 
 struct _BonoboDockItemPrivate {
 	GtkWidget *grip;
@@ -132,6 +131,8 @@ check_guint_arg (GObject *object,
 {
   GParamSpec *pspec;
 
+  g_return_val_if_fail (object != NULL, FALSE);
+
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (object), name);
   if (pspec != NULL) {
     GValue value = { 0, };
@@ -153,6 +154,9 @@ get_preferred_width (BonoboDockItem *dock_item)
   guint preferred_width;
 
   child = GTK_BIN (dock_item)->child;
+
+  if (!child)
+    return 0;
 
   if (! check_guint_arg (G_OBJECT (child), "preferred_width", &preferred_width))
     {
@@ -178,6 +182,9 @@ get_preferred_height (BonoboDockItem *dock_item)
 
   child = GTK_BIN (dock_item)->child;
 
+  if (!child)
+    return 0;
+
   if (! check_guint_arg (G_OBJECT (child), "preferred_height", &preferred_height))
     {
       GtkRequisition child_requisition;
@@ -194,92 +201,16 @@ get_preferred_height (BonoboDockItem *dock_item)
   return preferred_height;
 }
 
-static gboolean
-bonobo_gtk_container_focus_move (GtkContainer     *container,
-				 GList            *children,
-				 GtkDirectionType  direction)
-{
-  GtkWidget *focus_child;
-  GtkWidget *child;
-
-  focus_child = container->focus_child;
-
-  while (children)
-    {
-      child = children->data;
-      children = children->next;
-
-      if (!child)
-	continue;
-      
-      if (focus_child)
-        {
-          if (focus_child == child)
-            {
-              focus_child = NULL;
-
-		if (gtk_widget_child_focus (child, direction))
-		  return TRUE;
-            }
-        }
-      else if (GTK_WIDGET_DRAWABLE (child) &&
-               gtk_widget_is_ancestor (child, GTK_WIDGET (container)))
-        {
-          if (gtk_widget_child_focus (child, direction))
-            return TRUE;
-        }
-    }
-
-  return FALSE;
-}
-
-/*
- * FIXME: this is a hack because in un-docked toolbars
- * bad things happen if we traverse up the GdkWindow
- * hierarchy doing dumb things like GtkContainer does.
- */
-gboolean
-bonobo_widget_clobber_focus (GtkWidget        *widget,
-			     GtkDirectionType  direction)
-{
-  gboolean has_focus_chain;
-  GList *focus_chain = NULL;
-  GList *children = NULL;
-  gboolean return_val = FALSE;
-  GtkContainer *container;
-
-  container = GTK_CONTAINER (widget);
-
-  has_focus_chain = gtk_container_get_focus_chain (
-	  container, &focus_chain);
-
-  if (has_focus_chain)
-    children = g_list_copy (focus_chain);
-  else
-    children = gtk_container_get_children (container);
-
-  if (direction == GTK_DIR_TAB_BACKWARD || direction == GTK_DIR_LEFT)
-    children = g_list_reverse (children);
-
-  return_val = bonobo_gtk_container_focus_move (container, children, direction);
-
-  g_list_free (children);
-
-  return return_val;
-}
-
 static void
-bonobo_dock_item_class_init (BonoboDockItemClass *class)
+bonobo_dock_item_class_init (BonoboDockItemClass *klass)
 {
-  GtkObjectClass *object_class;
   GObjectClass *gobject_class;
   GtkWidgetClass *widget_class;
   GtkContainerClass *container_class;
 
-  object_class = (GtkObjectClass *) class;
-  gobject_class = (GObjectClass *) class;
-  widget_class = (GtkWidgetClass *) class;
-  container_class = (GtkContainerClass *) class;
+  gobject_class = (GObjectClass *) klass;
+  widget_class = (GtkWidgetClass *) klass;
+  container_class = (GtkContainerClass *) klass;
 
   gobject_class->set_property = bonobo_dock_item_set_property;
   gobject_class->get_property = bonobo_dock_item_get_property;
@@ -326,7 +257,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   dock_item_signals[DOCK_DRAG_BEGIN] =
 	  g_signal_new ("dock_drag_begin",
-			G_TYPE_FROM_CLASS (object_class),
+			G_TYPE_FROM_CLASS (gobject_class),
 			G_SIGNAL_RUN_LAST,
 			G_STRUCT_OFFSET (BonoboDockItemClass,
 					 dock_drag_begin),
@@ -336,7 +267,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   dock_item_signals[DOCK_DRAG_MOTION] =
 	  g_signal_new ("dock_drag_motion",
-			G_TYPE_FROM_CLASS (object_class),
+			G_TYPE_FROM_CLASS (gobject_class),
 			G_SIGNAL_RUN_LAST,
 			G_STRUCT_OFFSET (BonoboDockItemClass, dock_drag_motion),
 			NULL, NULL,
@@ -345,7 +276,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   dock_item_signals[DOCK_DRAG_END] =
 	  g_signal_new ("dock_drag_end",
-			G_TYPE_FROM_CLASS (object_class),
+			G_TYPE_FROM_CLASS (gobject_class),
 			G_SIGNAL_RUN_LAST,
 			G_STRUCT_OFFSET (BonoboDockItemClass, dock_drag_end),
 			NULL, NULL,
@@ -354,7 +285,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   dock_item_signals[DOCK_DETACH] =
 	  g_signal_new ("dock_detach",
-			G_TYPE_FROM_CLASS (object_class),
+			G_TYPE_FROM_CLASS (gobject_class),
 			G_SIGNAL_RUN_LAST,
 			G_STRUCT_OFFSET (BonoboDockItemClass, dock_detach),
 			NULL, NULL,
@@ -363,7 +294,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   dock_item_signals[ORIENTATION_CHANGED] =
 	  g_signal_new ("orientation_changed",
-			G_TYPE_FROM_CLASS (object_class),
+			G_TYPE_FROM_CLASS (gobject_class),
 			G_SIGNAL_RUN_LAST,
 			G_STRUCT_OFFSET (BonoboDockItemClass, orientation_changed),
 			NULL, NULL,
@@ -374,7 +305,6 @@ bonobo_dock_item_class_init (BonoboDockItemClass *class)
 
   widget_class->map = bonobo_dock_item_map;
   widget_class->unmap = bonobo_dock_item_unmap;
-  widget_class->focus = bonobo_widget_clobber_focus;
   widget_class->realize = bonobo_dock_item_realize;
   widget_class->unrealize = bonobo_dock_item_unrealize;
   widget_class->style_set = bonobo_dock_item_style_set;
@@ -605,12 +535,8 @@ bonobo_dock_item_realize (GtkWidget *widget)
   if (di->_priv->grip)
     gtk_widget_set_parent_window (di->_priv->grip, di->bin_window);
 
-#ifdef HAVE_GTK_MULTIHEAD
-  root_window = gdk_screen_get_root_window (
-			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
-#else
-  root_window = gdk_get_default_root_window ();
-#endif
+  root_window = gdk_screen_get_root_window
+	  (gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
   
   attributes.x = 0;
   attributes.y = 0;
@@ -780,14 +706,18 @@ bonobo_dock_item_size_allocate (GtkWidget     *widget,
 
 	  grip_alloc.x = grip_alloc.y = 0;
 
-          if (di->orientation == GTK_ORIENTATION_HORIZONTAL) {
-            child_allocation.x += DRAG_HANDLE_SIZE;
-
-            grip_alloc.width = DRAG_HANDLE_SIZE;
-          } else {
-            child_allocation.y += DRAG_HANDLE_SIZE;
-
+          if (di->orientation != GTK_ORIENTATION_HORIZONTAL) {
             grip_alloc.height = DRAG_HANDLE_SIZE;
+            child_allocation.y += DRAG_HANDLE_SIZE;
+          } else {
+            grip_alloc.width = DRAG_HANDLE_SIZE;
+	    if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR) {
+	      child_allocation.x += DRAG_HANDLE_SIZE;
+	    } else {
+	      GtkRequisition child_requisition;
+	      gtk_widget_get_child_requisition (child, &child_requisition);
+	      grip_alloc.x = child_requisition.width;
+	    }
 	  }
 
 	  gtk_widget_size_allocate (di->_priv->grip, &grip_alloc);
@@ -855,34 +785,9 @@ bonobo_dock_item_paint (GtkWidget      *widget,
 {
   GtkBin *bin;
   BonoboDockItem *di;
-  guint width;
-  guint height;
-  guint border_width;
-  gint drag_handle_size = DRAG_HANDLE_SIZE;
-
-  if (!BONOBO_DOCK_ITEM_NOT_LOCKED (widget))
-    drag_handle_size = 0;
 
   bin = GTK_BIN (widget);
   di = BONOBO_DOCK_ITEM (widget);
-
-  border_width = GTK_CONTAINER (di)->border_width;
-
-  if (di->is_floating)
-    {
-      width = bin->child->allocation.width + 2 * border_width;
-      height = bin->child->allocation.height + 2 * border_width;
-    }
-  else if (di->orientation == GTK_ORIENTATION_HORIZONTAL)
-    {
-      width = widget->allocation.width - drag_handle_size;
-      height = widget->allocation.height;
-    }
-  else
-    {
-      width = widget->allocation.width;
-      height = widget->allocation.height - drag_handle_size;
-    }
 
   if (!event)
     gtk_paint_box(widget->style,
@@ -928,7 +833,9 @@ bonobo_dock_item_expose (GtkWidget      *widget,
 static void
 bonobo_dock_item_drag_end (BonoboDockItem *di)
 {
-  gdk_pointer_ungrab (GDK_CURRENT_TIME);
+  gdk_display_pointer_ungrab
+	  (gtk_widget_get_display (GTK_WIDGET (di)),
+	   GDK_CURRENT_TIME);
 
   di->in_drag = FALSE;
 
@@ -966,7 +873,10 @@ bonobo_dock_item_button_changed (GtkWidget      *widget,
       switch (di->orientation)
 	{
 	case GTK_ORIENTATION_HORIZONTAL:
-	  in_handle = event->x < DRAG_HANDLE_SIZE;
+	  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
+	    in_handle = event->x < DRAG_HANDLE_SIZE;
+	  else
+	    in_handle = event->x > widget->allocation.width - DRAG_HANDLE_SIZE;
 	  break;
 	case GTK_ORIENTATION_VERTICAL:
 	  in_handle = event->y < DRAG_HANDLE_SIZE;
@@ -1022,12 +932,8 @@ bonobo_dock_item_motion (GtkWidget      *widget,
   if (event->window != di->bin_window)
     return FALSE;
 
-#ifdef HAVE_GTK_MULTIHEAD
-  root_window = gdk_screen_get_root_window (
-			gdk_drawable_get_screen (GDK_DRAWABLE (event->window)));
-#else
-  root_window = gdk_get_default_root_window ();
-#endif
+  root_window = gdk_screen_get_root_window
+	  (gdk_drawable_get_screen (GDK_DRAWABLE (event->window)));
 
   gdk_window_get_pointer (root_window, &new_x, &new_y, NULL);
   
@@ -1430,7 +1336,9 @@ bonobo_dock_item_grab_pointer (BonoboDockItem *item)
 
   item->in_drag = TRUE;
 
-  fleur = gdk_cursor_new (GDK_FLEUR);
+  fleur = gdk_cursor_new_for_display
+	  (gtk_widget_get_display (GTK_WIDGET (item)),
+	   GDK_FLEUR);
 
   /* Hm, not sure this is the right thing to do, but it seems to work.  */
   while (gdk_pointer_grab (item->bin_window,

@@ -14,6 +14,8 @@
 #include <glib/gmacros.h>
 #include "bonobo-ui-toolbar-button-item.h"
 
+#ifndef BONOBO_UI_DISABLE_DEPRECATED
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_UI_TOOLBAR_TOGGLE_BUTTON_ITEM             (bonobo_ui_toolbar_toggle_button_item_get_type ())
@@ -50,5 +52,7 @@ void      bonobo_ui_toolbar_toggle_button_item_set_active  (BonoboUIToolbarToggl
 gboolean  bonobo_ui_toolbar_toggle_button_item_get_active  (BonoboUIToolbarToggleButtonItem *item);
 
 G_END_DECLS
+
+#endif
 
 #endif /* _BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_H_ */

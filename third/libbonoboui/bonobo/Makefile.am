@@ -15,11 +15,13 @@ INCLUDES = \
 	-DG_DISABLE_DEPRECATED				\
 	-DGDK_DISABLE_DEPRECATED			\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGDK_MULTIHEAD_SAFE				\
 	-DGTK_DISABLE_DEPRECATED			\
 	-DGNOME_DISABLE_DEPRECATED			\
 	-DBONOBO_DISABLE_DEPRECATED			\
 	-DG_LOG_DOMAIN=\"Bonobo\"			\
-	-DVERSION=\"$(VERSION)\"
+	-DVERSION=\"$(VERSION)\"			\
+	-DBONOBO_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"
 
 lib_LTLIBRARIES = libbonoboui-2.la
 
@@ -75,8 +77,11 @@ libbonoboui_h_sources = \
 	bonobo-zoomable-frame.h			\
 	bonobo-zoomable.h
 
+libbonoboui_2_la_LDFLAGS = \
+	-no-undefined
+
 libbonoboui_2_la_LIBADD = \
-	$(BONOBOUI_LIBS)
+	$(BONOBOUI_LIBS) ${X_LIBS}
 
 libbonoboui_2_la_SOURCES = \
 	bonobo-a11y.c				\
@@ -152,16 +157,14 @@ libbonoboinclude_HEADERS = \
 	$(libbonoboui_h_sources) \
 	$(libbonoboui_built_public_sources)
 
-$(srcdir)/bonobo-ui-marshal.h: bonobo-ui-marshal.list $(GLIB_GENMARSHAL)
+bonobo-ui-marshal.h: bonobo-ui-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=bonobo_ui_marshal > $@
 
-$(srcdir)/bonobo-ui-marshal.c: bonobo-ui-marshal.list $(GLIB_GENMARSHAL)
+bonobo-ui-marshal.c: bonobo-ui-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=bonobo_ui_marshal > $@
 
-$(srcdir)/bonobo-ui-type-builtins.c: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
-	cd $(srcdir) \
-	&& $(GLIB_MKENUMS) \
-			--fhead "#include \"libbonoboui.h\"\n\n" \
+bonobo-ui-type-builtins.c: $(GLIB_MKENUMS) $(libbonoboui_h_sources)
+	$(GLIB_MKENUMS) --fhead "#include \"libbonoboui.h\"\n\n" \
 			--fhead "#include \"bonobo-ui-type-builtins.h\"\n\n" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
 			--vhead "static const G@Type@Value _@enum_name@_values[] = {" \
@@ -172,14 +175,12 @@ $(srcdir)/bonobo-ui-type-builtins.c: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
 			--vtail "  if (!type)\n" \
 			--vtail "    type = g_@type@_register_static (\"@EnumName@\", _@enum_name@_values);\n\n" \
 			--vtail "  return type;\n}\n\n" \
-		$(libbonoboui_h_sources) > xgen-gtbec \
+		$(filter-out $<,$^) > xgen-gtbec \
 	&& cp xgen-gtbec $(@F) \
 	&& rm -f xgen-gtbec
 
-$(srcdir)/bonobo-ui-type-builtins.h: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
-	cd $(srcdir) \
-	&& $(GLIB_MKENUMS) \
-			--fhead "#ifndef __BONOBO_UI_TYPE_BUILTINS_H__\n" \
+bonobo-ui-type-builtins.h: $(GLIB_MKENUMS) $(libbonoboui_h_sources)
+	$(GLIB_MKENUMS) --fhead "#ifndef __BONOBO_UI_TYPE_BUILTINS_H__\n" \
 			--fhead "#define __BONOBO_UI_TYPE_BUILTINS_H__ 1\n\n" \
 			--fhead "#include <glib-object.h>\n\n" \
 			--fhead "G_BEGIN_DECLS\n\n" \
@@ -188,18 +189,17 @@ $(srcdir)/bonobo-ui-type-builtins.h: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
 			--fprod "\n/* --- @filename@ --- */" \
 			--eprod "#define BONOBO_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n" \
 			--eprod "GType @enum_name@_get_type (void);\n" \
-		$(libbonoboui_h_sources) > xgen-gth \
+		$(filter-out $<,$^) > xgen-gth \
 	&& cp xgen-gth $(@F) \
 	&& rm -f xgen-gth
 
-$(srcdir)/libbonoboui.defs: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
-	cd $(srcdir) \
-	&& $(GLIB_MKENUMS) --comments ";; @comment@" \
+libbonoboui.defs: $(libbonoboui_h_sources) $(GLIB_MKENUMS)
+	$(GLIB_MKENUMS) --comments ";; @comment@" \
 			--fprod "; enumerations from \"@filename@\"\n " \
 	                --vhead "(define-@type@ @EnumName@" \
 	                --vprod "   (@valuenick@ @VALUENAME@)" \
 	                --vtail ")" \
-	                $(libbonoboui_h_sources) > xgen-gdef \
+			$(filter-out $<,$^) > xgen-gdef \
 	&& (cmp -s xgen-gdef libbonoboui.defs || cp xgen-gdef libbonoboui.defs) \
 	&& rm -f xgen-gdef
 
@@ -207,9 +207,10 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libbonoboui-2.0.pc
 
 EXTRA_DIST = bonobo-insert-component.xpm libbonoboui-2.0.pc.in \
-	bonobo-ui-marshal.list
+	libbonoboui-2.0-uninstalled.pc.in bonobo-ui-marshal.list
 CLEANFILES = $(libbonoboui_built_sources)
 
+BUILT_SOURCE = $(libbonoboui_built_sources)
 DONT_DIST_SOURCE = $(libbonoboui_built_sources)
 
 dist-hook:

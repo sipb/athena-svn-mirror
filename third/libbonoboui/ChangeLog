@@ -1,3 +1,824 @@
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.0.
+
+2004-09-08  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+  
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* bonobo/bonobo-control.c: (bonobo_control_get_ambient_properties),
+	(bonobo_control_set_transient_for): NULL vs 0 stuff.
+	* bonobo/bonobo-dock-layout.c: (bonobo_dock_layout_create_string):
+	Same.
+	* bonobo/bonobo-selector.c: (bonobo_selector_instance_init),
+	(bonobo_selector_set_property): Same here too.
+	* bonobo/bonobo-socket.c: Use correct type for the bitfield.
+	* bonobo/bonobo-ui-preferences.c: (keys_changed_fn):
+	gtk_idle_add() is deprecated. Use g_idle_add instead.
+	* bonobo/bonobo-ui-sync-status.c: 
+	(impl_bonobo_ui_sync_status_state): Cast to avoid a warning.
+	* bonobo/bonobo-ui-sync-toolbar.c: (get_dock_item): Fix warning.
+	* bonobo/bonobo-window.c: (bonobo_window_instance_init):
+	NULL vs 0 again
+	* samples/compound-doc/container/document.c: (sample_doc_new):
+	Ansi argument list again.
+	* samples/container/bonobo-sample-container.c: NULL vs 0 again.
+	* tests/test-moniker.c: Same here.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-06-25  Muktha  <muktha.narayan@wipro.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(check_excess_widgets): Add a check for NULL in
+	g_message.
+
+2004-05-14  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.6.1
+
+2004-05-14  Takao Fujiwara  <Takao.Fujiwara@Sun.COM>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_translate_ui): use direct
+	gettext call to cover all domains.
+
+	* bonobo/bonobo-ui-main.c (do_low_level_init) 
+	(bonobo_ui_init_full): initialize i18n bits /
+	gettext package / code-set.
+
+	* bonobo/Makefile.am: define
+	BONOBO_EXPLICIT_TRANSLATION_DOMAIN. (#13872)
+
+2004-05-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_set_ui): don't add a broken
+	file to the cache.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_to_string): add pre-condition.
+
+2004-04-27  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock-band.c (check_guint_arg):
+	add pre-condition.
+
+2004-04-16  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.
+
+2004-03-21 Alastair McKinstry <mckinstry@debian.org>
+
+	* configure.in: Added ga to ALL_LINGUAS.
+
+2004-03-18  Alexander Larsson  <alexl@redhat.com>
+
+	* bonobo/bonobo-control-frame.c (bonobo_control_frame_set_ui_container):
+	Move activated check inside check for NIL, since we use this
+	function with NIL from dispose.
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-15  Alexander Larsson  <alexl@redhat.com>
+
+	* doc/api/Makefile.am:
+	Pass flag needed to access all gtk-doc:ed headers.
+	Fixed gtk-doc build on 64bit systems.
+
+2004-03-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.4
+
+2004-03-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-toggle-button-item.h,
+	* bonobo/bonobo-ui-toolbar-button-item.h,
+	* bonobo/bonobo-ui-toolbar-item.h,
+	* bonobo/bonobo-ui-toolbar.h: add deprecated flags,
+	should never have been exposed.
+
+2004-03-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* bonobo/Makefile.am, bonobo/libbonoboui-2.0-uninstalled.pc.in,
+	configure.in: Add uninstalled pc file, so that we can link
+	the library without installing it.
+
+2004-03-05  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-file-selector-util.c (response_cb):
+	don't do bad things.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-02-25  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added sr@ije to ALL_LINGUAS.
+
+2004-02-24  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.3.
+
+2004-02-16  Arvind Samptur <arvind.samptur@wipro.com>
+
+	* bonobo/bonobo-window.c: (bonobo_window_class_init): upd.
+	(bonobo_window_focus): bin: always was a bad idea.
+	
+2004-02-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock-item.c (check_guint_arg): 
+	add pre-condition.
+	(get_preferred_height, get_preferred_width): return 0
+	if we have no child; odd.
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-25  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-dock-* : revert the use of the G_DEFINE_TYPE macros
+	  until the new typename prefixed versions are put into a release.
+	  right now CVS prefixes, and 2.3.2 does not, but cvs has not yet
+	  bumped it version.  Which makes a mess.
+
+2004-01-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/*.c: add #include "config.h"s where they
+	were missing - thanks to Morten.
+
+2004-01-23  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-dock-band.h : Use the  G_TYPE macros in place of
+	  GTK_CHECK
+	* bonobo/bonobo-dock-item-grip.h : ditto.
+	* bonobo/bonobo-dock-item.h : ditto.
+	* bonobo/bonobo-dock-layout.h : ditto.
+	* bonobo/bonobo-dock.h : ditto.
+
+	* bonobo/bonobo-dock-band.c : Port to G_DEFINE_TYPE in place of
+	  GNOME_CLASS_BOILERPLATE
+	* bonobo/bonobo-dock-item-grip.c : ditto.
+	* bonobo/bonobo-dock-item.c : ditto.
+	* bonobo/bonobo-dock.c : ditto.
+
+	* configure.in  : bump gobject req to 2.3.2 to enable the use of
+	  G_DEFINE_TYPE
+
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* bonobo/bonobo-ui-init-gtk.c: Remove gxid-host and gxid-port 
+	from POPT_ARGs (they are not supported on gtk 2.3)
+
+2004-01-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.2
+
+2004-01-15  Jason Leach  <leach@wam.umd.edu>
+
+	* configure.in: require gtk2 >= 2.3.1
+
+2004-01-14  Albert Chin-A-Young  <china@thewrittenword.com>
+
+	* bonobo/bonobo-dock-item.h, bonobo/bonobo-dock-band.h,
+	bonobo/bonobo-dock.h: fix (signed) enum bitfields
+
+	* bonobo/bonobo-canvas-item.c: fix trailing comma in enum.
+
+	* bonobo/bonobo-ui-util.c (read_four_bytes): bin bogus const.
+
+2004-01-12  Sergey V. Udaltsov  <sergey.oudaltsov@clients.ie>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_xml_set_image):
+	handle image loading with a defined size for svg artwork.
+
+2004-01-07  Alexander Larsson  <alexl@redhat.com>
+
+	* bonobo/bonobo-ui-sync-status.c (impl_bonobo_ui_sync_status_build): 
+	Handle the pack-start behaviour attribute
+
+2004-01-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-status.c
+	(has_item_to_the_right): add to deal with pack-end fun.
+	(impl_bonobo_ui_sync_status_state): upd. logic.
+
+2003-12-30  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-control.c (impl_Bonobo_Control_activate): Ahem,
+	flip my reversed condition.
+
+2003-12-29  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-control.c (impl_Bonobo_Control_activate): Fixed
+	the emission logic; actually test against the old activation
+	state.  Also, call bonobo_control_activate_notify() to notify the
+	control frame.
+
+2003-12-15  JP Rosevear <jpr@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c (toolbar_build_widget): do a
+	memmove instead of a strcpy because the strings overlap
+
+2003-12-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c
+	(size_allocate_helper): fix bug where item + <small item>
+	where small item was < sizeof expander popup would cause
+	the last 2 items to always hit the expander. Cleaned up
+	logic, simplified a tad. X#49949
+
+2003-12-08  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.1
+
+	* bonobo/bonobo-control.c (bonobo_control_do_popup_full),
+	(bonobo_control_do_popup_path): split out / add a more
+	useful API variant.
+
+2003-12-05  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* bonobo/bonobo-file-selector-util.c: (response_cb),
+	(create_gtk_selector): Replace GtkFileSelection with
+	GtkFileChooser.
+
+	* samples/compound-doc/container/container-filesel.c:
+	(container_request_file):
+	* samples/compound-doc/container/container-filesel.h:
+	* samples/compound-doc/container/container-menu.c:
+	(load_response_cb), (save_response_cb), (verb_FileSaveAs_cb),
+	(verb_FileLoad_cb): ditto.
+
+2003-12-06  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): add keys test.
+
+	* bonobo/bonobo-ui-engine.c
+	(impl_emit_verb_on, impl_emit_event_on): inhibit
+	event / verb emission on insensitive command nodes,
+	fixes keybindings problem; thanks to Chris Toshok.
+	
+	* bonobo/bonobo-control.c (create_plug):
+	emit 'plug_created' signal.
+	(bonobo_control_get_plug): expose and document.
+
+2003-10-29  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am (DISTCLEANFILES): add .
+
+2003-10-29  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.4.1
+
+2003-10-29  Steve Chaplin  <stevech1097@yahoo.com.au>
+
+	* configure.in: add setup for PKG_CONFIG,
+	fixing configure bug.
+
+2003-10-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* COPYING.LIB: added LGPL. COPYING is GPL.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-09-28  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-09-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* bonobo/bonobo-ui-sync-menu.h:
+	* bonobo/bonobo-ui-sync-toolbar.h: Added missing
+	prototypes to get rid of warnings. Fixes bug #122757.
+
+2003-09-15  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_build)
+	(impl_bonobo_ui_sync_menu_build_placeholder): use
+	gtk_separator_menu_item_new to create separators, fixes #122314
+	( screen reader menu item count) (Michael gave the hint).
+
+2003-09-09  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-08-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+2003-08-31  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2003-08-27  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.4.0
+
+2003-08-22  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS.
+	
+2003-08-21  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+       * samples/container/bonobo-sample-container.c: define
+         POPT_TABLEEND when compiling with older popt
+
+2003-08-11  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.6
+
+2003-08-06  Yuedong Du  <yuedong.du@sun.com>
+
+	* bonobo/bonobo-ui-util.c: (bonobo_ui_util_build_help_menu): add
+	shortcut F1 to help menu entry, fix bug 47376
+
+2003-08-04  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes #118705.
+
+	* bonobo/bonobo-socket.c (BonoboSocketPrivate): Removed the
+	toplevel field, as GtkSocket already has such a field.
+	(bonobo_socket_hierarchy_changed): Oops, chain to the parent
+	handler.
+	(bonobo_socket_finalize): Don't tweak priv->toplevel.
+	(bonobo_socket_instance_init): Likewise.
+	(bonobo_socket_dispose): Use the GtkSocket's toplevel.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(bonobo_ui_toolbar_button_item_construct): Unset GTK_CAN_FOCUS.
+
+2003-07-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* bonobo/bonobo-dock-item-grip.c:
+	Check what widget still exists before referring to it.
+	This fixes bug #118041.
+
+2003-07-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_instance_init): Create a
+	private structure for the socket.
+	(bonobo_socket_finalize): Free the private structure.
+	(toplevel_set_focus_cb): New callback for GtkWindow::set_focus().
+	We use this to keep track of the focused widget and
+	activate/deactivate the control frame as appropriate --- our
+	focus_in/out handlers will not be called if the embedded plug is
+	in-process.
+	(bonobo_socket_hierarchy_changed): New handler for
+	GtkWidget::hierarchy_changed().  We must monitor the focused
+	widget on our toplevel, so we pick up toplevel changes here.
+
+2003-07-09  Michael Meeks  <michael@ximian.com>
+
+	* doc/api/tmpl/bonobo-widget.sgml: fix docs.
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.3
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* tests/control/test-control.c (test_gtk_weakrefs):
+	instantiate a button to test, not a base GTK_OBJECT
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* doc/api/Makefile.am (INCLUDES): setup right.
+
+	* bonobo/Makefile.am: fix write-protected srcdir horrors.
+
+	* samples/container/Makefile.am: dist -ui.xml
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: require libbonobo >= 2.3.3
+
+	* bonobo/Makefile.am: add -DGDK_MULTIHEAD_SAFE
+
+	* bonobo/bonobo-canvas-component.c
+	(impl_Bonobo_Canvas_Component_realize),
+	(impl_Bonobo_Canvas_Component_draw): upd.
+
+	* bonobo/bonobo-canvas-item.c (gbi_draw, gbi_realize):
+	handle the wid more sanely.
+
+2003-06-10  Morten Welinder  <mortenw@gnome.org>
+
+	* bonobo/bonobo-canvas-component.c
+	(impl_Bonobo_Canvas_Component_realize),
+	(impl_Bonobo_Canvas_Component_draw),
+	* bonobo/bonobo-canvas-item.c
+	(impl_Bonobo_Canvas_ComponentProxy_grabFocus),
+	* bonobo/bonobo-control-frame.c (bonobo_control_frame_get_remote_window),
+	* bonobo/bonobo-control.c (bonobo_control_set_transient_for):
+	multi-head fixes.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_button_event) 
+	(bonobo_plug_button_event, bonobo_plug_button_event): ditto.
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-plug.c (bonobo_plug_new_for_display): impl.
+	(bonobo_plug_construct_full): impl.
+	
+	* configure.in: bin multi-head checks.
+
+	* bonobo/bonobo-ui-init-gtk.c (bonobo_ui_gtk_options),
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_motion),
+	* bonobo/bonobo-control.c (impl_Bonobo_Control_getWindowId),
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_realize),
+	* bonobo/bonobo-control.c (bonobo_control_do_popup_full): 
+	bin multi-head conditionals.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_remote_window_id): clean out
+	the not HAVE_MULTIHEAD path.
+
+2003-06-10  Morten Welinder  <mortenw@gnome.org>
+
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_drag_end) 
+	(bonobo_dock_item_grab_pointer): multi head fixes.
+
+	* bonobo/bonobo-ui-main.c (do_low_level_init): ditto.
+
+	* bonobo/bonobo-ui-toolbar.c (hide_popup_window): ditto.
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/bonobo-sample-controls.c
+	(main): bin registration iid generation.
+
+	* samples/canvdemo/circle.c (main): ditto.
+
+2003-05-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c
+	(bonobo_ui_toolbar_class_init): bin clobber_focus.
+
+	* bonobo/bonobo-ui-toolbar-item.c
+	(bonobo_ui_toolbar_item_class_init): bin clobber_focus
+
+	* bonobo/bonobo-dock-item.c
+	(bonobo_gtk_container_focus_move): bin this.
+	(bonobo_widget_clobber_focus): bin this too.
+	(bonobo_dock_item_class_init): upd. #78220
+
+2003-05-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump version to 2.3.1
+
+2003-05-29  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_size_allocate) : respect
+	  widget direction.
+	(bonobo_dock_item_button_changed) : ditto.
+	(bonobo_dock_item_paint) : remove some dead code.
+
+2003-05-23  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS
+
+2003-05-19  Christian Neumair  <chris@gnome-de.org>
+
+	* bonobo/bonobo-selector.c: Fixed a minor typo.
+
+2003-05-19  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added Limburgish to ALL_LINGUAS
+
+2003-05-15 Bob Gibbs <gibbsrc@npt.nuwc.navy.mil>
+
+	* bonobo-canvas-component.[ch]:
+	(bonobo_canvas_component_factory_new): new.  Convenience to replace old
+	embeddable way of creating the canvas component.
+	(impl_Bonobo_Canvas_Component_bounds): Mapped state for crossing event.
+	(impl_Bonobo_Canvas_Component_contains): Fixed to return proper
+	inside/outside value.  Was always returning true.
+	(impl_Bonobo_Canvas_Component_update): Call rih group update here vice
+	inside rih_update. Solves for case where a request_update is made while
+	the component is waiting for a response.
+	(handle_event): new. Passes the remote item's event back into the local
+        pseudo-canvas so that canvas items can see events the normal way as if
+        they were not using bonobo.
+	(rih_update): Moved rih group update into
+        impl_Bonobo_Canvas_Component_update.  This solves for case where a
+        request_update is made while the component is waiting for a response to
+        its last Bonobo_Canvas_ComponentProxy_requestUpdate.
+	(impl_Bonobo_Canvas_Component_event): Added do_update_flag check to
+        prevent signal from being emitted when any pseudo-canvas is in its
+        do_update. Fixed alloc/de-alloc of gdk_event structure.
+	(handle_event_later): new. Emits event signal sometime after do_update
+        finishes.
+	(free_event): removed. Replaced by gdk_event_free.
+	(impl_Bonobo_Canvas_Component_setBounds): Added do_update_flag check to
+        prevent signal from being emitted when any pseudo-canvas is in its
+        do_update. This procedure is in IDL but does not appear to be invoke by
+        the client ever.
+	(set_bounds_later):  new. Emits bounds signal sometime after do_update
+        finishes.
+	(bonobo_canvas_new): Put into container to prevent gtk warning.
+	(bonobo_canvas_component_factory_new): new.  Convenience to replace old
+        embeddable way of creating the canvas component.
+
+	* bonobo-canvas-item.c
+	(gbi_set_property): Moved proxy_size_allocate call from gbi_set_property
+        to gbi_realize. Sometimes widget is not realized when user sets the
+        properties.
+	(gdk_event_to_bonobo_event): fixed x/y mixup for motion notify
+	(bonobo_canvas_item_class_init): Make sure set_property callback is
+        initialized before calling install_property.
+	(impl_Bonobo_Canvas_ComponentProxy_requestUpdate): Added idle_handler
+        that gets invoked whenever the canvas has already had one added.  This
+        solves for case of NEED_UPDATE flags getting out of sync and canvas
+        refusing to update the remote item forever thereafter. See code for
+        further details.
+	(create_proxy): Fixed to allocate space for base epv before
+        initializing.
+
+	* samples/canvdemo/*: Added demo / test program & docs.
+
+2003-05-13  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* configure.in (LDFLAGS):
+	* bonobo/Makefile.am (libbonoboui_2_la_LIBADD): 
+	add -lX11 to LDFLAGS, fixing #112531.
+	
+2003-05-13  Anders Carlsson  <andersca@codefactory.se>
+
+	* bonobo/bonobo-ui-preferences.c: Accept both-horiz as well.
+
+2003-05-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* MAINTAINERS: Declare myself as documentation maintainer.
+
+2003-05-09  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* bonobo/Makefile.am (libbonoboui_2_la_LIBADD):
+	* tests/Makefile.am (LDADD):
+	remove -lpopt. Now -lpopt is supplied by libgnome-2.0.pc.
+
+2003-05-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* bonobo/bonobo-ui-preferences.c: Add a NULL entry last
+	in the list of toolbar styles so we won't get a segfault
+	when the gconf key is invalid.
+
+2003-05-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-04-29  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* bonobo/Makefile.am (libbonoboui_2_la_LIBADD): Fix link order.
+
+2003-04-18  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* bonobo/Makefile.am (libbonoboui_2_la_LIBADD): add -lpopt.
+
+	* bonobo/Makefile.am (libbonoboui_2_la_LDFLAG): add -no-undefined.
+
+	* glade/Makefile.am (libbonobo_la_LDFLAGS): ditto.
+
+2003-04-15  Michael Meeks  <michael@ximian.com>
+
+	* samples/container/*: the start of a nice sample
+	container from Sergey V. Oudaltsov
+	<sergey.oudaltsov@clients.ie>
+
+	* samples/container/Makefile.am,
+	* samples/Makefile.am,
+	* configure.in: add sample container to build.
+
+2003-04-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock-item-grip.c
+	(bonobo_dock_item_grip_instance_init): disable can-focus.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(bonobo_ui_toolbar_button_item_construct): ditto.
+
+	* bonobo/bonobo-dock.c (bonobo_dock_focus_roll): bin this.
+
+	* bonobo/bonobo-window.c (bonobo_window_key_press_event) 
+	(bonobo_window_key_release_event, bonobo_window_focus): bin
+	allow_all_focus nonsense.
+
+2003-04-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* bonobo/bonobo-canvas-component.c, bonobo/bonobo-control-frame.c,
+	bonobo/bonobo-control.c, bonobo/bonobo-property-control.c,
+	bonobo/bonobo-ui-component.c, bonobo/bonobo-ui-container.c,
+	bonobo/bonobo-zoomable-frame.c, bonobo/bonobo-zoomable.c:
+	Remove semicolon after macro BONOBO_TYPE_FUNC_FULL; this fixes
+	compiler warning when using FORTE compiler.
+
+2003-04-07  Gustavo Giraldez  <gustavo.giraldez@gmx.net>
+
+	* bonobo/bonobo-ui-toolbar.c (impl_get_property): Add container's
+	border_width to the returned preferred_width and preferred_height
+	so the toolbar gets enough allocation space when it's in a
+	non-exclusive dock item.
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* Makefile.am (EXTRA_DIST): Include gtk-doc.make in the
+	distribution.
+
+	* doc/api/figures/Makefile.am: Don't delete the png files when
+	doing make maintainer-clean.
+
+	* configure.in: Use the macro GTK_DOC_CHECK to check for gtk-doc.
+
+	* Makefile.am (DISTCHECK_CONFIGURE_FLAGS): Pass --enable-gtk-doc
+	to configure when making distcheck, otherwise it fails.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require automake 1.6.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freeedomink.org>
+
+	* configure.in: Added "ml" in ALL_LINGUUAS
+
+2003-03-04  Radek Doulik  <rodo@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (execute_state_updates):
+	increase/decrease bonobo_ui_engine_inhibit_events counter
+	(real_exec_verb): return if bonobo_ui_engine_inhibit_events
+	counter > 0
+	(real_emit_ui_event): ditto
+
+2003-03-01  Dave Camp  <dave@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-control-item.c: (impl_set_tooltip),
+	(impl_realize), (impl_unrealize), (impl_size_allocate), (impl_map),
+	(impl_unmap), (bonobo_ui_toolbar_control_item_class_init),
+	(bonobo_ui_toolbar_control_item_construct): Implement tooltips
+	with an input only window instead of a GtkEventBox.
+
+2003-02-28  Michael Meeks  <michael@localhost.localdomain>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_xml_set_image):
+	NULL check on text, to guard against broken client XML,
+	add warning too.
+
+2003-02-25  Rodney Dawes  <dobey@free.fr>
+
+	* *: create gnome-2-2 branch and commit following patch to HEAD
+	* bonobo/bonobo-ui-sync-toolbar.c: Move _set_border_width () call
+	* bonobo/bonobo-ui-toolbar.c: Add shadow_type style property, to match
+	GtkToolbar drawing
+	
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-14  Alex Duggan  <aldug@astrolinux.com>
+
+	* configure.in: require gtk+ >= 2.2.0 for the
+	multi-screen stuff.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-02-03  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* configure.in: Write makefile doc/api/figures/Makefile.
+
+	* doc/api/tmpl/bonobo-control-frame.sgml: Include the figure
+	control-frame.png.
+
+	* doc/api/tmpl/bonobo-control.sgml: Include control.png figure.
+
+	* doc/api/figures/control-frame.dia, doc/api/figures/control.dia:
+	New uml class diagrams showing the Bonobo::Control and
+	Bonobo::ControlFrame interfaces.
+	
+	* doc/api/figures/Makefile.am: New makefile to convert .dia to
+	.png.
+
+	* doc/api/Makefile.am (HTML_IMAGES): Include the two new figures.
+
+2003-01-29  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-zoomable.h: Removed declaration of the
+	non-implememented function bonobo_zoomable_corba_object_create().
+
+2003-01-27  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/Makefile.am (content_files): Added ui-faq.xml.
+
+	* doc/api/libbonoboui-docs.sgml: Include the new FAQ in the docs.
+
+	* doc/api/ui-faq.xml: ditto
+
+	* doc/ui-faq.txt: Converted all of this to docbook and moved to
+	api/ui-faq.xml
+
+2003-01-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/libbonoboui-sections.txt: Removed canvas sections.
+
+	* doc/api/Makefile.am (IGNORE_HFILES): Don't ignore
+	bonobo-ui-engine-config.h. Ignore canvas headers.
+
+	* doc/api/libbonoboui-docs.sgml: Added some missing
+	sections. Removed canvas sections, since I realized they're
+	deprecated.
+
+	* doc/api/tmpl/bonobo-item-container.sgml,
+	  doc/api/tmpl/bonobo-item-handler.sgml,
+	  doc/api/tmpl/bonobo-ui-toolbar-button-item.sgml,
+	  doc/api/tmpl/bonobo-ui-toolbar-icon.sgml,
+	  doc/api/tmpl/bonobo-ui-toolbar-item.sgml,
+	  doc/api/tmpl/bonobo-ui-toolbar-toggle-button-item.sgml,
+	  doc/api/tmpl/bonobo-win.sgml: Removed these files.
+
+	* doc/api/tmpl/bonobo-a11y.sgml,
+	  doc/api/tmpl/bonobo-file-selector-util.sgml,
+	  doc/api/tmpl/bonobo-property-control.sgml,
+	  doc/api/tmpl/bonobo-selector-widget.sgml,
+          doc/api/tmpl/bonobo-ui-config-widget.sgml,
+          doc/api/tmpl/bonobo-ui-engine-config.sgml,
+          doc/api/tmpl/bonobo-ui-main.sgml,
+          doc/api/tmpl/bonobo-ui-preferences.sgml,
+          doc/api/tmpl/bonobo-window.sgml,
+          doc/api/tmpl/bonobo-wrapper.sgml: Added these new template files.
+
+	* doc/api/tmpl/bonobo-socket.sgml: Some changes to convert from
+	SGML to XML.
+
+	* doc/api/libbonoboui-docs.sgml: Added the main documentation
+	file, based on bonobo-api.sgml, converted to XML and docbook
+	4.1.2.
+
+	* doc/api/libbonoboui.types: Added this file, with list of GObject
+	type's, for gtkdoc-scangobj.
+
+	* doc/api/Makefile.am: Replaced this entire makefile, based on
+	libbonobo's doc/api/Makefile.am.
+
+	* doc/Makefile.am (SUBDIRS): Enable recursion into the 'api'
+	directory, to build the api docs.
+
+	* configure.in: Added gtk-doc check and --enable argument; Write
+	doc/api/Makefile.
+
+	* doc/api/tmpl/bonobo-ui-component.sgml,
+	doc/api/tmpl/bonobo-ui-container.sgml: replaced #bonobo-ui-util
+	with an appropriate xref.
+
+	* bonobo/bonobo-window.h, bonobo/bonobo-selector.h,
+	bonobo/bonobo-canvas-item.h, bonobo/bonobo-canvas-component.h:
+	Split struct declaration from typedef, otherwise gtkdoc gets
+	confused.
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2003-01-21  Michael Meeks  <michael@ximian.com>
 
 	* Version 2.2.0
@@ -591,7 +1412,7 @@ Mon Jun 03 15:30:08 2002  George Lebl <jirka@5z.com>
 	* bonobo/bonobo-dock-item.c (bonobo_dock_item_set_behavior): added
 	this (non-public, but exported) function.
 
-2002-05-28  Gustavo Gir�ldez  <gustavo.giraldez@gmx.net>
+2002-05-28  Gustavo GirÃ¡ldez  <gustavo.giraldez@gmx.net>
 
 	* bonobo/bonobo-ui-util.c (bonobo_ui_util_fixup_icons): Don't leak
 	the pixbuf.
@@ -618,12 +1439,12 @@ Mon Jun 03 15:30:08 2002  George Lebl <jirka@5z.com>
 	pass the view as the transient parent if it's a
 	GtkWindow.
 
-2002-05-22  Gustavo Gir�ldez  <gustavo.giraldez@gmx.net>
+2002-05-22  Gustavo GirÃ¡ldez  <gustavo.giraldez@gmx.net>
 
 	* bonobo/bonobo-ui-config-widget.c (look_cb, set_values,
 	widgets_init): Add "Text only" option.
 	
-2002-05-22  Gustavo Gir�ldez  <gustavo.giraldez@gmx.net>
+2002-05-22  Gustavo GirÃ¡ldez  <gustavo.giraldez@gmx.net>
 
 	* bonobo/bonobo-ui-config-widget.c (look_cb): Changed "text" by
 	"both_horiz" for priority text setting.
@@ -722,7 +1543,7 @@ Mon Jun 03 15:30:08 2002  George Lebl <jirka@5z.com>
 
 	* po/POTFILES.in: update.
 
-2002-05-07  Jon K�re Hellan  <Jon.Kare.hellan@uninett.no>
+2002-05-07  Jon KÃ¥re Hellan  <Jon.Kare.hellan@uninett.no>
 
 	* bonobo/bonobo-control.c (bonobo_control_set_transient_for):
 	Catch exception.
@@ -4106,7 +4927,7 @@ Sun Sep 02 00:50:00 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: Added sv to ALL_LINGUAS.
 
-2001-07-02  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-07-02  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* bonobo/bonobo-canvas-component.c, bonobo/bonobo-control.c,
 	bonobo/bonobo-control-frame.c, bonobo/bonobo-embeddable.c,
@@ -4150,7 +4971,7 @@ Sat Jun 30 16:11:37 2001  Jonathan Blandford  <jrb@redhat.com>
 	* bonobo/bonobo-ui-node.c (do_strip): Move XML_TEXT_NODE to the
 	"suspicious" branch so whitespace nodes are stripped from the tree.
 
-2001-06-19  H�ctor Garc�a �lvarez <hector@scouts-es.org>
+2001-06-19  HÃ©ctor GarcÃ­a Ãlvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 

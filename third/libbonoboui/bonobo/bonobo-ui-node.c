@@ -1107,6 +1107,8 @@ bonobo_ui_node_to_string (BonoboUINode *node,
 {
 	GString *str = g_string_sized_new (64);
 
+	g_return_val_if_fail (node != NULL, NULL);
+
 	internal_to_string (str, node, recurse);
 
 /*	fprintf (stderr, "nodes to string: '%s'", str->str); */

@@ -1,0 +1,716 @@
+<!-- ##### SECTION ./tmpl/bonobo-canvas-component.sgml:Long_Description ##### -->
+<para>
+  The BonoboCanvasComponent objects are used to wrap GnomeCanvasItems
+  and export them to container applications.  Typically the
+  bonobo_component_canvas_new() function will be invoked in a callback
+  from a BonoboEmbeddable object.
+</para>
+
+<para>
+  Here is an example of how to export Gnome Canvas Items in a simple
+  way.  
+  <example>
+    <title>Wrapping a Gnome Canvas Item</title>
+    <programlisting>
+
+/*
+ * Here is where the GnomeCanvasItem (in this case an ellipse)
+ * is created and wrapped in a BonoboCanvasComponent.
+ *
+ * This function is invoked on demand on the embeddable
+ * argument.  Embeddables are the document model, and the
+ * items returned are the views.  
+ */
+BonoboCanvasComponent *
+my_item_creator (BonoboEmbeddable *embeddable,
+                 GnomeCanvas      *canvas,
+                 void             *data)
+{
+        GnomeCanvasItem *item = gnome_canvas_item_new (
+		gnome_canvas_root (canvas),
+                gnome_canvas_ellipse_get_type (),
+                "x1", 5.0,  "y1", 5.0,
+                "x2", 95.0, "y2", 95.0,
+                "fill_color", "white",
+                "outline_color", "black",
+                NULL);
+
+        return bonobo_canvas_component_new (item);
+}
+
+/*
+ * This is a routine that creates a BonoboEmbeddable that
+ * uses CanvasItems.
+ */
+BonoboEmbeddable *make_embeddable (void)
+{
+       return bonobo_embeddable_new_canvas_item (my_item_creator, NULL);
+}
+    </programlisting>
+  </example>
+</para>
+
+<para>
+  Applications that do not use the base #BonoboEmbeddable class, but
+  use their own types derived from the #BonoboEmbeddable can use the
+  bonobo_embeddable_construct() during their construction phase. 
+</para>
+
+<para>
+  On the client side (the application that will embed this component)
+  an object of the type #BonoboCanvasItem is used.
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-component.sgml:See_Also ##### -->
+<para>
+  #BonoboEmbeddable, #BonoboCanvasItem
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-component.sgml:Short_Description ##### -->
+Class for exporting BonoboCanvasItems through BonoboEmbeddables to
+other applications.
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-component.sgml:Title ##### -->
+BonoboCanvasComponent
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-item.sgml:Long_Description ##### -->
+<para>
+   The Bonobo Canvas Item is a Canvas item that will allow you to
+   embed an arbitrary Canvas Item that lives in in a remote
+   Embeddable.  On the remote end, the #BonoboCanvasComponent class is
+   used to wrap an arbitrary #GnomeCanvasItem and export it. 
+</para>
+
+<para>
+   This allows arbitrarily shaped components to be inserted into an
+   application.  Both Xlib and AA canvas items are supported.
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-item.sgml:See_Also ##### -->
+<para>
+   #BonoboCanvasComponent, #BonoboEmbeddable, #BonoboObjectClient.
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-item.sgml:Short_Description ##### -->
+A GNOME Canvas Item that can be used to embed remote Bonobo GNOME
+Canvas Items.
+
+
+<!-- ##### SECTION ./tmpl/bonobo-canvas-item.sgml:Title ##### -->
+BonoboCanvasItem
+
+
+<!-- ##### SECTION ./tmpl/bonobo-client-site.sgml:Long_Description ##### -->
+<para>
+   The <classname>BonoboClientSite</classname> implements the
+   <classname>Bonobo::ClientSite</classname> CORBA interface.  It acts
+   as the container-side contact for
+   <classname>BonoboEmbeddable</classname> objects.
+</para>
+
+<para>
+   For each object embedded in your application, you should create a
+   <classname>BonoboClientSite</classname> object.  
+</para>
+
+<para>
+   Once you have a handle on a remote object that implements the
+   <classname>Bonobo::Embeddable</classname> interface (typically
+   returned by bonobo_object_activate() or
+   bonobo_get_object () or wrapper with
+   bonobo_object_client_from_corba ()) of type
+   <classname>BonoboObjectClient</classname>), you will have to bind
+   this object to the <classname>BonoboClientSite</classname> using the
+   bonobo_client_site_bind_embeddable ().  Once this is done, you will
+   be able to request a #BonoboView on the #BonoboClientSite.  
+</para>
+
+<para>
+   The #BonoboClientSite object also provides access to the remote
+   BonoboEmbeddable object's verb list.  
+</para>
+
+<example>
+   <title>Sample usage</title>
+
+   <para>
+      This demostrates the use of the #BonoboClientSite object.  This
+      launches the object specified, creates a #BonoboClientSite,
+      then requests a new #BonoboViewFrame and finally it returns the
+      widget that represents that component.
+   </para>
+      
+   <programlisting>
+GtkWidget *
+create_widget_from_component (BonoboContainer *container, const char *id)
+{
+	BonoboObjectClient *server;
+	BonoboClientSite   *client_site;
+	BonoboViewFrame    *view_frame;
+
+	/*
+	 * Launch the requested component
+	 */
+	server = bonobo_object_activate (id, 0);
+	if (!server){
+		printf ("Could not activate the server");
+		return NULL;
+	}
+
+	client_site = bonobo_client_site_new (app->container);
+
+	/*
+	 * Add this client site to the container
+	 */
+	bonobo_container_add (container, BONOBO_OBJECT (client_site));
+
+	/*
+	 * Bind the component to the client site
+	 */
+	bonobo_client_site_bind_embeddable (client_site, server);
+
+	/*
+	 * Create a new BonoboView, and then get a GtkWidget
+	 */
+	view_frame = bonobo_client_site_embeddable_new_view (client_site);
+
+	/*
+	 * Get the widget for this view.
+	 */
+
+	 return bonobo_view_frame_get_wrapper (view_frame);
+}
+
+   </programlisting>
+</example>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-client-site.sgml:See_Also ##### -->
+<para>
+  #BonoboEmbeddable, #BonoboContainer, #BonoboObjectClient, #BonoboViewFrame
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-client-site.sgml:Short_Description ##### -->
+Container side object embedding server.
+
+
+<!-- ##### SECTION ./tmpl/bonobo-client-site.sgml:Title ##### -->
+BonoboClientSite
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Long_Description ##### -->
+<para>
+   The <classname>BonoboTransient</classname> is used to create
+   transient objects.  These objects only exist during the lifetime of
+   the method execution of the interface they implement: they are
+   created on demand and destroyed after the method invocation
+   finishes. 
+</para>
+
+<para>
+   Transient objects are an optimization useful when it is possible
+   for a very large set of object to exist but there is no need to
+   have implementations of the servers running all the time, as they
+   can be created on the demand to satisfy the requests of client
+   applications. 
+</para>
+
+<para>
+   For example, consider the case in which a large list of objects
+   needs to be returned to a client application.  For example, an
+   object reference could be returned for every file on a directory.
+   But it would be wasteful to keep one server running for each file.
+   And given that the program has all the information available to
+   create the servers on demand, you want to use this system.
+</para>
+
+<para>
+   This can be used for implementations of the IDL:Bonobo/PropertyBag
+   interface, as there are in theories thousands of keys that could be
+   returned, but the method invocations on each object is short-lived,
+   so it is efficient to just create servers to satisfy an object
+   request on demand, and destroy them when the request is done.
+</para>
+
+<para>
+   To create such object, you first need to create a
+   <classname>BonoboTransient</classname> object, and then for every
+   virtual object that you want to expose to the world, you invoke the
+   bonobo_transient_create_objref() function to create a new CORBA
+   object reference. 
+</para>
+
+<para>
+   bonobo_transient_new() will create a new POA inside the POA you
+   specify (you can use CORBA_OBJECT_NIL to get the POA to be created
+   in the default Bonobo POA).  All object references created with
+   bonobo_transient_create_objref() will live in this new POA. 
+</para>
+
+<para>
+   The bonobo_transient_new() function takes an argument that
+   specifies the function that will be used to create the temporary
+   CORBA servant that will satisfy an incoming request.  And a
+   function that will be used to destroy the servant when the request
+   processing is done. 
+</para>
+
+<para>
+   The bonobo_transient_create_objref() function takes a number of
+   arguments:
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      The name of the object you want to create.  This name will be
+      passed to the servant creation routine when an incoming request
+      for that object comes in.  Your servant creation routine should
+      be able to create a servant from the data you expose as the
+      name (it can be a stringified representation of an in-process
+      pointer for all that we care).
+    </para>
+  </listitem>
+
+  <listitem>
+    <para>
+      The interface name implemented by the object named before.  This
+      is the CORBA interface name that your object implements, for
+      example "IDL:Echo/echo:1.0".
+    </para>
+  </listitem>
+</itemizedlist>
+
+<para>
+   Here is an example of how to use BonoboTransient:
+   <example>
+     <title>Using BonoboTransient</title>
+     <programlisting>
+BonoboTransient *my_transient = NULL;
+
+static PortableServer_Servant
+create_servant (PortableServer_POA  poa,
+                BonoboTransient    *bt,
+                char               *name,
+                void               *my_callback_data)
+{
+        MyServant *servant;
+
+	if (!my_validate_name (name))
+        	return NULL;
+
+        servant = g_new0 (MyServant, 1);
+        servant->vepv = my_servant_get_epv ();
+        servant->my_data = g_strdup ("Hello world!");
+        POA_My_Iface__init ((PortableServer_Servant) servant, &amp;ev);
+        return servant;
+}
+
+void
+destroy_servant (PortableServer_Servant servant, void *my_callback_data)
+{
+        CORBA_Environment ev;
+
+        g_free (servant->my_data);
+        CORBA_exception_init (&amp;ev);
+        POA_My_Iface__fini (servant, &amp;ev);
+        CORBA_exception_free (&amp;ev);
+}
+
+CORBA_Object
+impl_Some_Iface (PortableServer_Servant servant, CORBA_Environment *ev)
+{
+	return bonobo_transient_create_objref (
+        	my_transient, "IDL:My/Iface:1.0",
+                "hello",
+                ev);
+}
+
+void
+init_transient ()
+{
+	my_transient = bonobo_transient_new (
+		CORBA_OBJECT_NIL,
+                create_servant,
+                destroy_servant,
+                NULL);
+}
+
+
+     </programlisting>
+   </example>
+</para>
+ 
+<para>
+   The previous example shows: how the
+   <parameter>my_transient</parameter> object is first created, and what
+   the implementations for the create_servant and destroy_servant look
+   like.  It does not make use of the user pointer, so it passes
+   NULL.  However, in practice, applications will most likely want to
+   pass data here to the new_servant and destroy_servant methods.  
+</para>
+
+<para>
+   The impl_Some_Iface is a method that we assume in the example will
+   be part of the implementation of a CORBA server.  This method will
+   be invoked at some time to get an object reference to one of the
+   transient objects (in this case, we have called our object "hello"
+   and it implements the interface IDL:My/Iface:1.0).
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:See_Also ##### -->
+<para>
+  <classname>BonoboPropertyBag</classname>
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Short_Description ##### -->
+Creates a server that will handle transient objects.
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Title ##### -->
+BonoboTransient
+
+
+<!-- ##### SECTION ./tmpl/bonobo-ui-config-widget.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-ui-config-widget.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-ui-config-widget.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/bonobo-ui-config-widget.sgml:Title ##### -->
+bonobo-ui-config-widget
+
+
+<!-- ##### STRUCT BonoboCanvasComponent ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL BonoboCanvasComponent::event ##### -->
+<para>
+
+</para>
+
+@bonobocanvascomponent: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL BonoboCanvasComponent::set-bounds ##### -->
+<para>
+
+</para>
+
+@bonobocanvascomponent: the object which received the signal.
+@arg1: 
+@arg2: 
+@bbox: The bounding box.
+@ev: CORBA Environment to return errors on.
+
+<!-- ##### TYPEDEF BonoboCanvasComponentClass ##### -->
+<para>
+  
+</para>
+
+
+<!-- ##### STRUCT BonoboCanvasComponentPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT BonoboCanvasItem ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboCanvasItemClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT BonoboCanvasItemPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT BonoboClientSite ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL BonoboClientSite::save-object ##### -->
+<para>
+
+</para>
+
+@bonoboclientsite: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL BonoboClientSite::show-window ##### -->
+<para>
+
+</para>
+
+@bonoboclientsite: the object which received the signal.
+@arg1: 
+
+<!-- ##### TYPEDEF BonoboClientSiteClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboTransient ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboTransientClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION BonoboTransientServantDestroy ##### -->
+<para>
+
+</para>
+
+@servant: 
+@data: 
+
+<!-- ##### USER_FUNCTION BonoboTransientServantNew ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@name: 
+@data: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_construct ##### -->
+<para>
+
+</para>
+
+@comp: 
+@item: 
+@Returns: 
+@corba_canvas_comp: 
+@ccomp: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_get_item ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_get_ui_container ##### -->
+<para>
+
+</para>
+
+@comp: 
+@opt_ev: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_grab ##### -->
+<para>
+
+</para>
+
+@comp: 
+@mask: 
+@cursor: 
+@time: 
+@opt_ev: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_new ##### -->
+<para>
+
+</para>
+
+@item: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_canvas_component_ungrab ##### -->
+<para>
+
+</para>
+
+@comp: 
+@time: 
+@opt_ev: 
+
+<!-- ##### FUNCTION bonobo_canvas_item_set_bounds ##### -->
+<para>
+
+</para>
+
+@item: 
+@x1: 
+@y1: 
+@x2: 
+@y2: 
+
+<!-- ##### FUNCTION bonobo_canvas_new ##### -->
+<para>
+
+</para>
+
+@is_aa: 
+@proxy: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_bind_embeddable ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@object: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_construct ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@container: 
+@Returns: 
+@corba_client_site: 
+
+<!-- ##### FUNCTION bonobo_client_site_free_verbs ##### -->
+<para>
+
+</para>
+
+@verb_list: 
+
+<!-- ##### FUNCTION bonobo_client_site_get_container ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_get_embeddable ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_get_verbs ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_new ##### -->
+<para>
+
+</para>
+
+@container: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_new_item ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@uic: 
+@group: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_client_site_new_view ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@uic: 
+@Returns: 
+@uih: 
+
+<!-- ##### FUNCTION bonobo_client_site_new_view_full ##### -->
+<para>
+
+</para>
+
+@client_site: 
+@uic: 
+@visible_cover: 
+@active_view: 
+@Returns: 
+@uih: 
+
+<!-- ##### FUNCTION bonobo_transient_construct ##### -->
+<para>
+
+</para>
+
+@transient: 
+@poa: 
+@new_servant: 
+@destroy_servant: 
+@data: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_transient_create_objref ##### -->
+<para>
+</para>
+
+@transient: 
+@iface_name: 
+@name: 
+@ev: 
+@Returns: 
+
+<!-- ##### FUNCTION bonobo_transient_new ##### -->
+<para>
+
+</para>
+
+@poa: 
+@new_servant: 
+@destroy_servant: 
+@data: 
+@Returns: 
+

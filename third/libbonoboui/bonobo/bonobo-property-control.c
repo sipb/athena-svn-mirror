@@ -160,7 +160,7 @@ bonobo_property_control_init (BonoboPropertyControl *property_control)
 BONOBO_TYPE_FUNC_FULL (BonoboPropertyControl, 
 			   Bonobo_PropertyControl,
 			   PARENT_TYPE,
-			   bonobo_property_control);
+			   bonobo_property_control)
 
 /**
  * bonobo_property_control_construct:

@@ -1,7 +1,7 @@
 <oaf_info>
 
 <oaf_server iid="OAFIID:Bonobo_Sample_ControlFactory" type="exe"
-	location="/opt/kgnome2.2/lib/bonobo-2.0/samples/bonobo-sample-controls-2">
+	location="/gnome/head/INSTALL/lib/bonobo-2.0/samples/bonobo-sample-controls-2">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/GenericFactory:1.0"/>
 	</oaf_attribute>

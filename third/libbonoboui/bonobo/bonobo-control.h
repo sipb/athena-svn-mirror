@@ -46,9 +46,10 @@ typedef struct {
 
 	POA_Bonobo_Control__epv epv;
 
-	gpointer dummy[3];
+	gpointer dummy[2];
 
 	/* Signals. */
+	void (*plug_created)   (BonoboControl *control);
 	void (*disconnected)   (BonoboControl *control);
 	void (*set_frame)      (BonoboControl *control);
 	void (*activate)       (BonoboControl *control, gboolean state);
@@ -81,6 +82,7 @@ void                        bonobo_control_unset_transient_for     (BonoboContro
 GType                       bonobo_control_get_type                (void) G_GNUC_CONST;
 BonoboControl              *bonobo_control_construct               (BonoboControl       *control,
 								    GtkWidget           *widget);
+BonoboPlug                 *bonobo_control_get_plug                (BonoboControl       *control);
 BonoboUIComponent          *bonobo_control_get_ui_component        (BonoboControl       *control);
 void                        bonobo_control_set_ui_component        (BonoboControl       *control,
 								    BonoboUIComponent   *component);
@@ -123,6 +125,14 @@ gboolean                    bonobo_control_do_popup_full           (BonoboContro
 								    GtkMenuPositionFunc  func,
 								    gpointer             data,
 								    guint                button,
+								    guint32              activate_time);
+gboolean                    bonobo_control_do_popup_path           (BonoboControl       *control,
+								    GtkWidget           *parent_menu_shell,
+								    GtkWidget           *parent_menu_item,
+								    GtkMenuPositionFunc  func,
+								    gpointer             data,
+								    guint                button,
+								    const char          *popup_path,
 								    guint32              activate_time);
 
 /* Simple lifecycle helpers - using the 'disconnected' signal */

@@ -5,6 +5,6 @@
 
 void container_request_file (SampleApp    *app,
 			     gboolean      save,
-			     GtkSignalFunc cb,
+			     GCallback     cb,
 			     gpointer      user_data);
 #endif

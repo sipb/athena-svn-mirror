@@ -25,12 +25,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_WINDOW_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_WINDOW))
 
 typedef struct _BonoboWindowPrivate BonoboWindowPrivate;
+typedef struct _BonoboWindow        BonoboWindow;
 
-typedef struct {
+struct _BonoboWindow {
 	GtkWindow             parent;
 	
 	BonoboWindowPrivate  *priv;
-} BonoboWindow;
+};
 
 typedef struct {
 	GtkWindowClass    parent_class;

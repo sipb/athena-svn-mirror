@@ -7,78 +7,80 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
-"POT-Creation-Date: 2003-01-21 14:27+0000\n"
-"PO-Revision-Date: 2003-01-07 10:33+EDT\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"PO-Revision-Date: 2003-02-03 10:16+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/bonobo-canvas-item.c:647
+#: bonobo/bonobo-canvas-item.c:667
 msgid "corba factory"
 msgstr "የcorba ፋብሪካ"
 
-#: bonobo/bonobo-canvas-item.c:648
+#: bonobo/bonobo-canvas-item.c:668
 msgid "The factory pointer"
 msgstr ""
 
-#: bonobo/bonobo-canvas-item.c:657
+#: bonobo/bonobo-canvas-item.c:677
 msgid "corba UI container"
 msgstr ""
 
-#: bonobo/bonobo-canvas-item.c:658
+#: bonobo/bonobo-canvas-item.c:678
 msgid "The User interface container"
 msgstr ""
 
-#: bonobo/bonobo-dock-item-grip.c:236
+#: bonobo/bonobo-dock-item-grip.c:249
 msgid "Dock the toolbar"
 msgstr ""
 
-#: bonobo/bonobo-dock-item-grip.c:237
+#: bonobo/bonobo-dock-item-grip.c:250
 msgid "Un dock the toolbar"
 msgstr ""
 
-#: bonobo/bonobo-dock-item.c:291 bonobo/bonobo-dock-item.c:292
+#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr ""
 
-#: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "አቀማመጥ"
 
-#: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr ""
 
-#: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
+#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr ""
 
-#: bonobo/bonobo-file-selector-util.c:383
+#: bonobo/bonobo-file-selector-util.c:351
 msgid "Select a file to open"
 msgstr ""
 
-#: bonobo/bonobo-file-selector-util.c:411
+#: bonobo/bonobo-file-selector-util.c:379
 msgid "Select files to open"
 msgstr ""
 
-#: bonobo/bonobo-file-selector-util.c:440
+#: bonobo/bonobo-file-selector-util.c:408
 msgid "Select a filename to save"
 msgstr "ለማስቀመጥ የፋይል ስም ምረጡ"
 
-#: bonobo/bonobo-plug.c:372
+#: bonobo/bonobo-plug.c:412
 msgid "Event Forwarding"
 msgstr ""
 
-#: bonobo/bonobo-plug.c:373
+#: bonobo/bonobo-plug.c:413
 msgid "Whether X events should be forwarded"
 msgstr ""
 
-#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:415
+#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
 msgid "Name"
 msgstr "ስም"
 
@@ -92,8 +94,8 @@ msgstr ""
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
-"A NULL_terminated array of interfaces which a server must support in order "
-"to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
+"A NULL-terminated array of interfaces which a server must support in order "
+"to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
 
@@ -105,63 +107,63 @@ msgstr ""
 msgid "One of the interfaces that's required"
 msgstr ""
 
-#: bonobo/bonobo-ui-config-widget.c:267
+#: bonobo/bonobo-ui-config-widget.c:268
 msgid "Visible"
 msgstr "የሚታይ"
 
-#: bonobo/bonobo-ui-config-widget.c:274
+#: bonobo/bonobo-ui-config-widget.c:275
 msgid "_Show"
 msgstr "አሳይ (_S)"
 
-#: bonobo/bonobo-ui-config-widget.c:281
+#: bonobo/bonobo-ui-config-widget.c:282
 msgid "_Hide"
 msgstr "ደብቅ (_H)"
 
-#: bonobo/bonobo-ui-config-widget.c:287
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_View tooltips"
 msgstr "የመስሪያውን ፍንጭ አሳይ"
 
-#: bonobo/bonobo-ui-config-widget.c:292
+#: bonobo/bonobo-ui-config-widget.c:293
 msgid "Toolbars"
 msgstr "ቱልባሮች"
 
-#: bonobo/bonobo-ui-config-widget.c:302
+#: bonobo/bonobo-ui-config-widget.c:303
 msgid "toolbars"
 msgstr "ቱልባሮች"
 
-#: bonobo/bonobo-ui-config-widget.c:313 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Look"
 msgstr ""
 
-#: bonobo/bonobo-ui-config-widget.c:322 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "_Icon"
 msgstr "ምልክት (_I)"
 
-#: bonobo/bonobo-ui-config-widget.c:328
+#: bonobo/bonobo-ui-config-widget.c:329
 msgid "_Text and Icon"
 msgstr "ጽሑፍና ምልክት (_T)"
 
-#: bonobo/bonobo-ui-config-widget.c:334
+#: bonobo/bonobo-ui-config-widget.c:335
 msgid "Text only"
 msgstr "ጽሑፉን ብቻ"
 
-#: bonobo/bonobo-ui-config-widget.c:340
+#: bonobo/bonobo-ui-config-widget.c:341
 msgid "_Priority text only"
 msgstr ""
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "Debug"
 msgstr "አስተካክል"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "_Dump XML"
 msgstr "_XML አስወጣ"
 
-#: bonobo/bonobo-ui-engine.c:89
+#: bonobo/bonobo-ui-engine.c:91
 msgid "Dump the entire UI's XML description to the console"
 msgstr ""
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:522
 msgid "Configure UI"
 msgstr "UIን ለወጡ"
 
@@ -170,7 +172,7 @@ msgid "Gdk debugging flags to set"
 msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
-#: bonobo/bonobo-ui-init-gtk.c:162 bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
 msgid "FLAGS"
 msgstr ""
 
@@ -186,123 +188,115 @@ msgstr "Xን ለመጠቀም አሳይ"
 msgid "DISPLAY"
 msgstr "አሳይ"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "X screen to use"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "SCREEN"
 msgstr "እስክሪን"
 
-#: bonobo/bonobo-ui-init-gtk.c:129
+#: bonobo/bonobo-ui-init-gtk.c:128
 msgid "Make X calls synchronous"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:135
+#: bonobo/bonobo-ui-init-gtk.c:134
 msgid "Don't use X shared memory extension"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "Program name as used by the window manager"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "NAME"
 msgstr "ስም"
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "Program class as used by the window manager"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "CLASS"
-msgstr ""
+msgstr "መደብ"
 
-#: bonobo/bonobo-ui-init-gtk.c:146
-msgid "HOST"
-msgstr "እንግዳ ተቀባይ"
-
-#: bonobo/bonobo-ui-init-gtk.c:150
-msgid "PORT"
-msgstr "ፖርት"
-
-#: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
-msgid "STYLE"
-msgstr "ዘይቤ"
-
-#: bonobo/bonobo-ui-init-gtk.c:162
+#: bonobo/bonobo-ui-init-gtk.c:144
 msgid "Gtk+ debugging flags to set"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:147
 msgid "Gtk+ debugging flags to unset"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:168
+#: bonobo/bonobo-ui-init-gtk.c:150
 msgid "Make all warnings fatal"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "Load an additional Gtk module"
 msgstr ""
 
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "MODULE"
 msgstr "አቅድ"
 
-#: bonobo/bonobo-ui-init-gtk.c:180
+#: bonobo/bonobo-ui-init-gtk.c:162
 msgid "GTK+"
 msgstr "GTK+"
 
-#: bonobo/bonobo-ui-main.c:188
+#: bonobo/bonobo-ui-main.c:202
 msgid "Bonobo GUI support"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "B_oth"
 msgstr "ሁለትም (_o)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "T_ext"
 msgstr "ጽሑፍ (_e)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Hide t_ips"
 msgstr "ፍንጮችን ደብቅ (_i)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Show t_ips"
 msgstr "ፍንጮች አሳይ (_i)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "_Hide toolbar"
 msgstr "ቱልባሩን ደብቅ (_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "Customi_ze"
 msgstr "አስተካክል (_z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:556
 msgid "Customize the toolbar"
 msgstr ""
 
-#: bonobo/bonobo-ui-toolbar.c:1113
+#: bonobo/bonobo-ui-toolbar.c:1129
 msgid "is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-toolbar.c:1114
+#: bonobo/bonobo-ui-toolbar.c:1130
 msgid "whether the toolbar is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-util.c:616
+#: bonobo/bonobo-ui-toolbar.c:1176
+msgid "Style of bevel around the toolbar"
+msgstr ""
+
+#: bonobo/bonobo-ui-util.c:629
 msgid "_Contents"
 msgstr "ይዞታዎች (_C)"
 
-#: bonobo/bonobo-ui-util.c:617
+#: bonobo/bonobo-ui-util.c:630
 msgid "View help for this application"
 msgstr "ለእዚህ መጠቀሚያ ፕሮግራም መረጃ አሳይ"
 
-#: bonobo/bonobo-window.c:416
+#: bonobo/bonobo-window.c:347
 msgid "Name of the window - used for configuration serialization."
 msgstr ""
 
@@ -399,6 +393,15 @@ msgstr "ሠላም ዓለም!"
 msgid "Cannot init libbonoboui code"
 msgstr ""
 
-#: samples/controls/bonobo-sample-controls.c:133
+#: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr ""
+
+#~ msgid "HOST"
+#~ msgstr "እንግዳ ተቀባይ"
+
+#~ msgid "PORT"
+#~ msgstr "ፖርት"
+
+#~ msgid "STYLE"
+#~ msgstr "ዘይቤ"

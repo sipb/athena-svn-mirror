@@ -1,0 +1,18 @@
+#include <libbonoboui.h>
+
+bonobo_canvas_component_get_type
+bonobo_canvas_item_get_type
+bonobo_control_frame_get_type
+bonobo_control_get_type
+bonobo_plug_get_type
+bonobo_selector_get_type
+bonobo_socket_get_type
+bonobo_ui_component_get_type
+bonobo_ui_container_get_type
+bonobo_ui_engine_get_type
+bonobo_ui_sync_get_type
+bonobo_widget_get_type
+bonobo_property_control_get_type
+bonobo_socket_get_type
+bonobo_window_get_type
+

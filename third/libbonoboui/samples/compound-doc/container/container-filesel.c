@@ -1,37 +1,30 @@
 #include "config.h"
-#include <gtk/gtkfilesel.h>
+#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtkstock.h>
 #include "container-filesel.h"
 #include "container.h"
-
-static void
-cancel_cb (GtkWidget *caller, GtkWidget *fs)
-{
-	gtk_widget_destroy (fs);
-}
 
 void
 container_request_file (SampleApp    *app,
 			gboolean      save,
-			GtkSignalFunc cb,
+			GCallback     cb,
 			gpointer      user_data)
 {
 	GtkWidget *fs;
 
 	app->fileselection = fs =
-	    gtk_file_selection_new ("Select file");
+	    gtk_file_chooser_dialog_new ("Select file",
+					 GTK_WINDOW (app->win),
+					 save ? GTK_FILE_CHOOSER_ACTION_SAVE
+					      : GTK_FILE_CHOOSER_ACTION_OPEN,
+					 GTK_STOCK_CANCEL,
+					 GTK_RESPONSE_CANCEL,
+					 save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN,
+					 GTK_RESPONSE_OK,
+					 NULL);
 
-	if (save)
-		gtk_file_selection_show_fileop_buttons (GTK_FILE_SELECTION (fs));
-	else
-		gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (fs));
-
-	g_signal_connect_data (G_OBJECT (GTK_FILE_SELECTION (fs)->ok_button),
-			       "clicked", G_CALLBACK (cb), user_data,
-			       NULL, 0);
-
-	g_signal_connect_data (G_OBJECT (GTK_FILE_SELECTION (fs)->cancel_button),
-			       "clicked", G_CALLBACK (cancel_cb), fs,
-			       NULL, 0);
+	g_signal_connect (G_OBJECT (fs),
+			  "response", G_CALLBACK (cb), user_data);
 
 	gtk_window_set_modal (GTK_WINDOW (fs), TRUE);
 

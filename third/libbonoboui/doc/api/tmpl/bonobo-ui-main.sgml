@@ -1,0 +1,104 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-ui-main
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO LIBBONOBOUI_MODULE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION libbonobo_ui_module_info_get ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO BONOBO_UI_GTK_MODULE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_ui_gtk_module_info_get ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_is_initialized ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_init ##### -->
+<para>
+
+</para>
+
+@app_name: 
+@app_version: 
+@argc: 
+@argv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_main ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_ui_init_full ##### -->
+<para>
+
+</para>
+
+@app_name: 
+@app_version: 
+@argc: 
+@argv: 
+@orb: 
+@poa: 
+@manager: 
+@full_init: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_setup_x_error_handler ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_ui_debug_shutdown ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

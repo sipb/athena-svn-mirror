@@ -1,82 +1,85 @@
 # Czech translation of libbonoboui
 # Copyright (C) 2002 Free Software Foundation, Inc.
-# Miloslav Trmac <mitr@volny.cz>, 2002.
+# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
+# Miloslav Trmac <mitr@volny.cz>, 2002, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui VERSION\n"
-"POT-Creation-Date: 2003-01-21 14:27+0000\n"
-"PO-Revision-Date: 2002-12-06 12:36+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"PO-Revision-Date: 2004-01-27 16:18+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/bonobo-canvas-item.c:647
+#: bonobo/bonobo-canvas-item.c:667
 msgid "corba factory"
 msgstr "factory corba"
 
-#: bonobo/bonobo-canvas-item.c:648
+#: bonobo/bonobo-canvas-item.c:668
 msgid "The factory pointer"
 msgstr "Ukazatel na factory"
 
-#: bonobo/bonobo-canvas-item.c:657
+#: bonobo/bonobo-canvas-item.c:677
 msgid "corba UI container"
 msgstr "rámec corba UI"
 
-#: bonobo/bonobo-canvas-item.c:658
+#: bonobo/bonobo-canvas-item.c:678
 msgid "The User interface container"
 msgstr "Rámec uživatelského rozhraní"
 
-#: bonobo/bonobo-dock-item-grip.c:236
+#: bonobo/bonobo-dock-item-grip.c:249
 msgid "Dock the toolbar"
 msgstr "Dokovat nástrojovou lištu"
 
-#: bonobo/bonobo-dock-item-grip.c:237
+#: bonobo/bonobo-dock-item-grip.c:250
 msgid "Un dock the toolbar"
 msgstr "Odtrhnout nástrojovou lištu"
 
-#: bonobo/bonobo-dock-item.c:291 bonobo/bonobo-dock-item.c:292
+#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Typ stínu"
 
-#: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Orientace"
 
-#: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Preferovaná šířka"
 
-#: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
+#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Preferovaná výška"
 
-#: bonobo/bonobo-file-selector-util.c:383
+#: bonobo/bonobo-file-selector-util.c:351
 msgid "Select a file to open"
 msgstr "Zvolte soubor pro otevření"
 
-#: bonobo/bonobo-file-selector-util.c:411
+#: bonobo/bonobo-file-selector-util.c:379
 msgid "Select files to open"
 msgstr "Zvolte soubory pro otevření"
 
-#: bonobo/bonobo-file-selector-util.c:440
+#: bonobo/bonobo-file-selector-util.c:408
 msgid "Select a filename to save"
 msgstr "Zvolte jméno souboru pro uložení"
 
-#: bonobo/bonobo-plug.c:372
+#: bonobo/bonobo-plug.c:412
 msgid "Event Forwarding"
 msgstr "Přeposílání událostí"
 
-#: bonobo/bonobo-plug.c:373
+#: bonobo/bonobo-plug.c:413
 msgid "Whether X events should be forwarded"
 msgstr "Jestli mají být přeposílány události X"
 
-#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:415
+#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
 msgid "Name"
 msgstr "Jméno"
 
@@ -90,8 +93,8 @@ msgstr "Požadovaná rozhraní"
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
-"A NULL_terminated array of interfaces which a server must support in order "
-"to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
+"A NULL-terminated array of interfaces which a server must support in order "
+"to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
 "Pole ukončené NULL obsahující rozhraní, které musí server podporovat, aby "
@@ -106,63 +109,63 @@ msgstr "Vložení požadovaného rozhraní"
 msgid "One of the interfaces that's required"
 msgstr "Jedno z požadovaných rozhraní"
 
-#: bonobo/bonobo-ui-config-widget.c:267
+#: bonobo/bonobo-ui-config-widget.c:268
 msgid "Visible"
 msgstr "Viditelné"
 
-#: bonobo/bonobo-ui-config-widget.c:274
+#: bonobo/bonobo-ui-config-widget.c:275
 msgid "_Show"
 msgstr "_Zobrazit"
 
-#: bonobo/bonobo-ui-config-widget.c:281
+#: bonobo/bonobo-ui-config-widget.c:282
 msgid "_Hide"
 msgstr "_Skrýt"
 
-#: bonobo/bonobo-ui-config-widget.c:287
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_View tooltips"
 msgstr "_Zobrazit tipy"
 
-#: bonobo/bonobo-ui-config-widget.c:292
+#: bonobo/bonobo-ui-config-widget.c:293
 msgid "Toolbars"
 msgstr "Nástrojové lišty"
 
-#: bonobo/bonobo-ui-config-widget.c:302
+#: bonobo/bonobo-ui-config-widget.c:303
 msgid "toolbars"
 msgstr "nástrojové lišty"
 
-#: bonobo/bonobo-ui-config-widget.c:313 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Look"
 msgstr "Vzhled"
 
-#: bonobo/bonobo-ui-config-widget.c:322 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "_Icon"
 msgstr "_Ikona"
 
-#: bonobo/bonobo-ui-config-widget.c:328
+#: bonobo/bonobo-ui-config-widget.c:329
 msgid "_Text and Icon"
 msgstr "_Text a ikona"
 
-#: bonobo/bonobo-ui-config-widget.c:334
+#: bonobo/bonobo-ui-config-widget.c:335
 msgid "Text only"
 msgstr "Jen text"
 
-#: bonobo/bonobo-ui-config-widget.c:340
+#: bonobo/bonobo-ui-config-widget.c:341
 msgid "_Priority text only"
 msgstr "Jen _důležitý text"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "Debug"
 msgstr "Ladit"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "_Dump XML"
 msgstr "_Vypsat XML"
 
-#: bonobo/bonobo-ui-engine.c:89
+#: bonobo/bonobo-ui-engine.c:91
 msgid "Dump the entire UI's XML description to the console"
 msgstr "Vypsat celý XML popis UI na konzolu"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:522
 msgid "Configure UI"
 msgstr "Nastavit UI"
 
@@ -171,7 +174,7 @@ msgid "Gdk debugging flags to set"
 msgstr "Nastavit ladicí volby Gdk"
 
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
-#: bonobo/bonobo-ui-init-gtk.c:162 bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
 msgid "FLAGS"
 msgstr "VOLBY"
 
@@ -187,123 +190,115 @@ msgstr "Použít X displej"
 msgid "DISPLAY"
 msgstr "DISPLAY"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "X screen to use"
 msgstr "Použít X obrazovku"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "SCREEN"
 msgstr "OBRAZOVKA"
 
-#: bonobo/bonobo-ui-init-gtk.c:129
+#: bonobo/bonobo-ui-init-gtk.c:128
 msgid "Make X calls synchronous"
 msgstr "Použít synchronní volání X"
 
-#: bonobo/bonobo-ui-init-gtk.c:135
+#: bonobo/bonobo-ui-init-gtk.c:134
 msgid "Don't use X shared memory extension"
 msgstr "Nepoužívat rozšířené X o sdílenou paměť"
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "Program name as used by the window manager"
 msgstr "Jméno programu, jak je používá manažer oken"
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "NAME"
 msgstr "JMÉNO"
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "Program class as used by the window manager"
 msgstr "Třída programu, jak ji používá manažer oken"
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "CLASS"
 msgstr "TŘÍDA"
 
-#: bonobo/bonobo-ui-init-gtk.c:146
-msgid "HOST"
-msgstr "POČÍTAČ"
-
-#: bonobo/bonobo-ui-init-gtk.c:150
-msgid "PORT"
-msgstr "PORT"
-
-#: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
-msgid "STYLE"
-msgstr "STYL"
-
-#: bonobo/bonobo-ui-init-gtk.c:162
+#: bonobo/bonobo-ui-init-gtk.c:144
 msgid "Gtk+ debugging flags to set"
 msgstr "Nastavit ladicí volby Gtk+"
 
-#: bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:147
 msgid "Gtk+ debugging flags to unset"
 msgstr "Zrušit ladicí volby Gtk+"
 
-#: bonobo/bonobo-ui-init-gtk.c:168
+#: bonobo/bonobo-ui-init-gtk.c:150
 msgid "Make all warnings fatal"
 msgstr "Všechna varování považovat za fatální"
 
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "Load an additional Gtk module"
 msgstr "Nahrát přídavný modul Gtk"
 
-#: bonobo/bonobo-ui-init-gtk.c:171
+#: bonobo/bonobo-ui-init-gtk.c:153
 msgid "MODULE"
 msgstr "MODUL"
 
-#: bonobo/bonobo-ui-init-gtk.c:180
+#: bonobo/bonobo-ui-init-gtk.c:162
 msgid "GTK+"
 msgstr "GTK+"
 
-#: bonobo/bonobo-ui-main.c:188
+#: bonobo/bonobo-ui-main.c:202
 msgid "Bonobo GUI support"
 msgstr "Podpora GUI Bonobo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "B_oth"
 msgstr "_Obojí"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "T_ext"
 msgstr "T_ext"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Hide t_ips"
 msgstr "Skrýt t_ipy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Show t_ips"
 msgstr "Zobrazit t_ipy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "_Hide toolbar"
 msgstr "_Skrýt lištu nástrojů"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "Customi_ze"
 msgstr "_Upravit"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:556
 msgid "Customize the toolbar"
 msgstr "_Upravit lištu nástrojů"
 
-#: bonobo/bonobo-ui-toolbar.c:1113
+#: bonobo/bonobo-ui-toolbar.c:1129
 msgid "is floating"
 msgstr "je plovoucí"
 
-#: bonobo/bonobo-ui-toolbar.c:1114
+#: bonobo/bonobo-ui-toolbar.c:1130
 msgid "whether the toolbar is floating"
 msgstr "jestli je lišta nástrojů plovoucí"
 
-#: bonobo/bonobo-ui-util.c:616
-msgid "_Contents"
-msgstr "O_bsah"
+#: bonobo/bonobo-ui-toolbar.c:1176
+msgid "Style of bevel around the toolbar"
+msgstr "Velikost okrajů okolo lišty nástrojů"
 
-#: bonobo/bonobo-ui-util.c:617
+#: bonobo/bonobo-ui-util.c:629
+msgid "_Contents"
+msgstr "_Obsah"
+
+#: bonobo/bonobo-ui-util.c:630
 msgid "View help for this application"
 msgstr "Zobrazit nápovědu pro tuto aplikaci"
 
-#: bonobo/bonobo-window.c:416
+#: bonobo/bonobo-window.c:347
 msgid "Name of the window - used for configuration serialization."
 msgstr "Jméno okna - používané pro serializaci konfigurace."
 
@@ -365,7 +360,7 @@ msgstr "Vybrat"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:3
 msgid "_About..."
-msgstr "_O programu..."
+msgstr "O _aplikaci..."
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:4
 msgid "_Edit"
@@ -398,8 +393,17 @@ msgstr "Ahoj, světe!"
 
 #: samples/bonoboui/hello.c:312
 msgid "Cannot init libbonoboui code"
-msgstr "Nelze inicializovat kód libbonoboui"
+msgstr "Nemohu inicializovat kód libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:133
+#: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
-msgstr "Nelze inicializovat Bonobo UI"
+msgstr "Nemohu inicializovat Bonobo UI"
+
+#~ msgid "HOST"
+#~ msgstr "POČÍTAČ"
+
+#~ msgid "PORT"
+#~ msgstr "PORT"
+
+#~ msgid "STYLE"
+#~ msgstr "STYL"

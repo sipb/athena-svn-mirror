@@ -1,0 +1,75 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-ui-preferences</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-ui.html" title="Bonobo UI"><link rel="previous" href="libbonoboui-bonobo-ui-sync.html" title="BonoboUISync"><link rel="next" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="refentry" href="libbonoboui-faq.html" title="Common Questions"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="refentry" href="libbonoboui-bonobo-control.html" title="BonoboControl"><link rel="refentry" href="libbonoboui-bonobo-control-frame.html" title="BonoboControlFrame"><link rel="refentry" href="libbonoboui-bonobo-property-control.html" title="bonobo-property-control"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="refentry" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="refentry" href="libbonoboui-bonobo-window.html" title="bonobo-window"><link rel="refentry" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><link rel="refentry" href="libbonoboui-bonobo-ui-container.html" title="BonoboUIContainer"><link rel="refentry" href="libbonoboui-bonobo-ui-util.html" title="bonobo-ui-util"><link rel="refentry" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="refentry" href="libbonoboui-bonobo-ui-engine.html" title="BonoboUIEngine"><link rel="refentry" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><link rel="refentry" href="libbonoboui-bonobo-ui-sync.html" title="BonoboUISync"><link rel="refentry" href="libbonoboui-bonobo-ui-preferences.html" title="bonobo-ui-preferences"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="refentry" href="libbonoboui-bonobo-plug.html" title="BonoboPlug"><link rel="refentry" href="libbonoboui-bonobo-socket.html" title="BonoboSocket"><link rel="refentry" href="libbonoboui-bonobo-wrapper.html" title="bonobo-wrapper"><link rel="refentry" href="libbonoboui-bonobo-selector.html" title="BonoboSelector"><link rel="refentry" href="libbonoboui-bonobo-selector-widget.html" title="bonobo-selector-widget"><link rel="refentry" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><link rel="refentry" href="libbonoboui-bonobo-a11y.html" title="bonobo-a11y"><link rel="section" href="libbonoboui-bonobo-ui-preferences.html#id2883133" title="Description"><link rel="section" href="libbonoboui-bonobo-ui-preferences.html#id2883143" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-ui-sync.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-ui.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th><td><a accesskey="n" href="bonobo-support-utilities.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-ui-preferences"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-ui-preferences</span></h2><p>bonobo-ui-preferences &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-CAPS">BONOBO_UI_PAD</a>
+#define     <a href="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-SMALL-CAPS">BONOBO_UI_PAD_SMALL</a>
+#define     <a href="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-BIG-CAPS">BONOBO_UI_PAD_BIG</a>
+void        <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-add-engine">bonobo_ui_preferences_add_engine</a>
+                                            (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
+void        <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-remove-engine">bonobo_ui_preferences_remove_engine</a>
+                                            (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
+BonoboUIToolbarStyle <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-toolbar-style">bonobo_ui_preferences_get_toolbar_style</a>
+                                            (void);
+gboolean    <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-menus-have-icons">bonobo_ui_preferences_get_menus_have_icons</a>
+                                            (void);
+gboolean    <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-menus-have-tearoff">bonobo_ui_preferences_get_menus_have_tearoff</a>
+                                            (void);
+gboolean    <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-menubar-detachable">bonobo_ui_preferences_get_menubar_detachable</a>
+                                            (void);
+gboolean    <a href="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-toolbar-detachable">bonobo_ui_preferences_get_toolbar_detachable</a>
+                                            (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2883133"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2883143"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2883149"></a><h3><a name="BONOBO-UI-PAD-CAPS"></a>BONOBO_UI_PAD</h3><a class="indexterm" name="id2883160"></a><pre class="programlisting">#define BONOBO_UI_PAD          8
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2883175"></a><h3><a name="BONOBO-UI-PAD-SMALL-CAPS"></a>BONOBO_UI_PAD_SMALL</h3><a class="indexterm" name="id2883187"></a><pre class="programlisting">#define BONOBO_UI_PAD_SMALL    4
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2883202"></a><h3><a name="BONOBO-UI-PAD-BIG-CAPS"></a>BONOBO_UI_PAD_BIG</h3><a class="indexterm" name="id2883214"></a><pre class="programlisting">#define BONOBO_UI_PAD_BIG      12
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2883229"></a><h3><a name="bonobo-ui-preferences-add-engine"></a>bonobo_ui_preferences_add_engine ()</h3><a class="indexterm" name="id2883240"></a><pre class="programlisting">void        bonobo_ui_preferences_add_engine
+                                            (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883288"></a><h3><a name="bonobo-ui-preferences-remove-engine"></a>bonobo_ui_preferences_remove_engine ()</h3><a class="indexterm" name="id2883301"></a><pre class="programlisting">void        bonobo_ui_preferences_remove_engine
+                                            (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883347"></a><h3><a name="bonobo-ui-preferences-get-toolbar-style"></a>bonobo_ui_preferences_get_toolbar_style ()</h3><a class="indexterm" name="id2883360"></a><pre class="programlisting">BonoboUIToolbarStyle bonobo_ui_preferences_get_toolbar_style
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883398"></a><h3><a name="bonobo-ui-preferences-get-menus-have-icons"></a>bonobo_ui_preferences_get_menus_have_icons ()</h3><a class="indexterm" name="id2883411"></a><pre class="programlisting">gboolean    bonobo_ui_preferences_get_menus_have_icons
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883447"></a><h3><a name="bonobo-ui-preferences-get-menus-have-tearoff"></a>bonobo_ui_preferences_get_menus_have_tearoff ()</h3><a class="indexterm" name="id2883460"></a><pre class="programlisting">gboolean    bonobo_ui_preferences_get_menus_have_tearoff
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883497"></a><h3><a name="bonobo-ui-preferences-get-menubar-detachable"></a>bonobo_ui_preferences_get_menubar_detachable ()</h3><a class="indexterm" name="id2883510"></a><pre class="programlisting">gboolean    bonobo_ui_preferences_get_menubar_detachable
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883547"></a><h3><a name="bonobo-ui-preferences-get-toolbar-detachable"></a>bonobo_ui_preferences_get_toolbar_detachable ()</h3><a class="indexterm" name="id2883560"></a><pre class="programlisting">gboolean    bonobo_ui_preferences_get_toolbar_detachable
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonoboui-bonobo-ui-sync.html"><b>&lt;&lt; BonoboUISync</b></a></td><td align="right"><a accesskey="n" href="bonobo-support-utilities.html"><b>Supporting Classes &gt;&gt;</b></a></td></tr></table></body></html>

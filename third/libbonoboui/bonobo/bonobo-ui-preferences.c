@@ -23,7 +23,9 @@ static GConfEnumStringPair toolbar_styles[] = {
         { BONOBO_UI_TOOLBAR_STYLE_TEXT_ONLY,      "text" },
         { BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY,     "icons" },
         { BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT, "both" },
-        { BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,  "both_horiz" }
+        { BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,  "both_horiz" },
+	{ BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,  "both-horiz" },
+	{ -1, NULL }
 };
 
 static GConfClient *client;
@@ -201,5 +203,5 @@ keys_changed_fn (GConfClient *client, guint cnxn_id, GConfEntry *entry, gpointer
 	if (update_engines_idle_id != 0)
 		return;
 
-	update_engines_idle_id = gtk_idle_add (update_engines_idle_callback, NULL);
+	update_engines_idle_id = g_idle_add (update_engines_idle_callback, NULL);
 }

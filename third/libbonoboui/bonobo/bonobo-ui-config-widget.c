@@ -8,6 +8,7 @@
  * Copyright 2001 Ximian, Inc.
  */
 
+#include "config.h"
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <bonobo/bonobo-i18n.h>

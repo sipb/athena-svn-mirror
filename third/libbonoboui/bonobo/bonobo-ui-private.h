@@ -40,10 +40,6 @@ void       bonobo_ui_toolbar_control_item_set_sensitive
                                           (BonoboUIToolbarControlItem *item,
 					   gboolean                    sensitive);
 
-
-gboolean   bonobo_widget_clobber_focus    (GtkWidget        *widget,
-					   GtkDirectionType  direction);
-
 GtkWidget *bonobo_ui_toolbar_button_item_get_image (BonoboUIToolbarButtonItem *item);
 
 #ifndef   DEBUG_UI

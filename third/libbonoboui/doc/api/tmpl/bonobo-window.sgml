@@ -1,0 +1,145 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-window
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT BonoboWindowPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT BonoboWindow ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG BonoboWindow:win-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT BonoboWindowClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@dummy: 
+
+<!-- ##### FUNCTION bonobo_window_construct ##### -->
+<para>
+
+</para>
+
+@win: 
+@ui_container: 
+@win_name: 
+@title: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_new ##### -->
+<para>
+
+</para>
+
+@win_name: 
+@title: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_set_contents ##### -->
+<para>
+
+</para>
+
+@win: 
+@contents: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_contents ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_ui_engine ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_ui_container ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_set_name ##### -->
+<para>
+
+</para>
+
+@win: 
+@win_name: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_name ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_accel_group ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_add_popup ##### -->
+<para>
+
+</para>
+
+@win: 
+@popup: 
+@path: 
+
+
+<!-- ##### FUNCTION bonobo_window_remove_popup ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+
+

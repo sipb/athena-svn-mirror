@@ -284,7 +284,7 @@ toolbar_build_widget (BonoboUISync *sync,
 			len = strlen (label);
 			for (i = 0; i < len; i++) {
 				if (label [i] == '_') {
-					strcpy (label+i, label+i+1);
+					memmove (label+i, label+i+1, strlen (label+i+1) + 1);
 					len--;
 				}
 			}
@@ -386,12 +386,13 @@ get_dock_item (BonoboUISyncToolbar *sync,
 	       const char          *dockname)
 {
 	guint dummy;
+	BonoboDockPlacement *dummy_placement = NULL;
 	
 	g_return_val_if_fail (dockname != NULL, NULL);
 
 	return bonobo_dock_get_item_by_name (sync->dock,
 					    dockname,
-					    &dummy, &dummy,
+					    dummy_placement, &dummy,
 					    &dummy, &dummy);
 }
 
@@ -650,7 +651,6 @@ create_dockitem (BonoboUISyncToolbar *sync,
 		dockname, beh));
 
 	bonobo_dock_item_set_shadow_type (item, GTK_SHADOW_OUT);
-	gtk_container_set_border_width (GTK_CONTAINER (item), 2);
 
 	if ((prop = bonobo_ui_node_peek_attr (node, "placement"))) {
 		if (!strcmp (prop, "top"))
@@ -684,6 +684,7 @@ create_dockitem (BonoboUISyncToolbar *sync,
 		
 	toolbar = BONOBO_UI_TOOLBAR (bonobo_ui_toolbar_new ());
 
+	gtk_container_set_border_width (GTK_CONTAINER (toolbar), 2);
 	gtk_container_add (GTK_CONTAINER (item),
 			   GTK_WIDGET (toolbar));
 	gtk_widget_show (GTK_WIDGET (toolbar));

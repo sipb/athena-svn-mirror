@@ -1,3 +1,5 @@
+SUBDIRS = api
+
 text_files =				\
 	README				\
 	object-hierarchy.txt		\

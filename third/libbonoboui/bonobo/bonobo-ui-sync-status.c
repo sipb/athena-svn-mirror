@@ -60,6 +60,32 @@ remove_hint_cb (BonoboUIEngine   *engine,
 	}
 }
 
+/* Only works for non-end packed @widget */
+static gboolean
+has_item_to_the_right (GtkBox *box, GtkWidget *widget)
+{
+	GList *l;
+	gboolean passed_us = FALSE;
+	gboolean has_to_right = FALSE;
+
+	g_return_val_if_fail (GTK_IS_BOX (box), FALSE);
+
+	for (l = box->children; l; l=l->next) {
+		GtkBoxChild *child = l->data;
+
+		if (child->widget == widget) {
+			passed_us = TRUE;
+			
+		} else if (GTK_WIDGET_VISIBLE (child->widget)) {
+			if (child->pack == GTK_PACK_END || passed_us) {
+				has_to_right = TRUE;
+				break;
+			}
+		}
+	}
+	return has_to_right;
+}
+
 static void
 impl_bonobo_ui_sync_status_state (BonoboUISync     *sync,
 				  BonoboUINode     *node,
@@ -96,6 +122,8 @@ impl_bonobo_ui_sync_status_state (BonoboUISync     *sync,
 			    !atoi (hidden))
 				has_grip = FALSE;
 		}
+		if (has_item_to_the_right (GTK_BOX(parent), widget))
+			has_grip = FALSE;
 
 		gtk_statusbar_set_has_resize_grip (msync->main_status, has_grip);
 		
@@ -140,6 +168,19 @@ clobber_request_cb (GtkWidget      *widget,
 	requisition->width = 1;
 }
 
+static gboolean 
+string_array_contains (char **str_array, const char *match)
+{
+	int i = 0;
+	char *string;
+
+	while ((string = str_array [i++]))
+		if (strcmp (string, match) == 0)
+			return TRUE;
+
+	return FALSE;
+}
+
 static GtkWidget *
 impl_bonobo_ui_sync_status_build (BonoboUISync     *sync,
 				  BonoboUINode     *node,
@@ -177,12 +218,27 @@ impl_bonobo_ui_sync_status_build (BonoboUISync     *sync,
 		gtk_box_pack_start (GTK_BOX (parent), widget, TRUE, TRUE, 0);
 			
 	} else if (bonobo_ui_node_has_name (node, "control")) {
+		char *behavior;
+		char **behavior_array;
 
 		widget = bonobo_ui_engine_build_control (sync->engine, node);
+		if (widget) {
+			behavior_array = NULL;
+			if ((behavior = bonobo_ui_engine_get_attr (node, cmd_node, "behavior"))) {
+				behavior_array = g_strsplit (behavior, ",", -1);
+				bonobo_ui_node_free_string (behavior);
+			}
 
-		if (widget)
-			gtk_box_pack_end (GTK_BOX (parent), widget,
-					  FALSE, FALSE, 0);
+			if (behavior_array != NULL && 
+			    string_array_contains (behavior_array, "pack-start"))
+				gtk_box_pack_start (GTK_BOX (parent), widget,
+						    FALSE, FALSE, 0);
+			else
+				gtk_box_pack_end (GTK_BOX (parent), widget,
+						  FALSE, FALSE, 0);
+
+			g_strfreev (behavior_array);
+		}
 	}
 
 	if (widget)
@@ -267,6 +323,7 @@ impl_dispose (GObject *object)
 	BonoboUISyncStatus *sync = (BonoboUISyncStatus *) object;
 
 	if (sync->status) {
+		gtk_widget_destroy (GTK_WIDGET (sync->status));
 		g_object_unref (sync->status);
 		sync->status = NULL;
 	}

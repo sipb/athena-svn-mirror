@@ -27,14 +27,16 @@
 #ifndef _BONOBO_DOCK_BAND_H
 #define _BONOBO_DOCK_BAND_H
 
+#include <glib-object.h>
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_DOCK_BAND            (bonobo_dock_band_get_type ())
-#define BONOBO_DOCK_BAND(obj)            (GTK_CHECK_CAST ((obj), BONOBO_TYPE_DOCK_BAND, BonoboDockBand))
-#define BONOBO_DOCK_BAND_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_BAND, BonoboDockBandClass))
-#define BONOBO_IS_DOCK_BAND(obj)         (GTK_CHECK_TYPE ((obj), BONOBO_TYPE_DOCK_BAND))
-#define BONOBO_IS_DOCK_BAND_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_BAND))
-#define BONOBO_DOCK_BAND_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), BONOBO_TYPE_DOCK_BAND, BonoboDockBandClass))
+#define BONOBO_DOCK_BAND(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), BONOBO_TYPE_DOCK_BAND, BonoboDockBand))
+#define BONOBO_DOCK_BAND_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_BAND, BonoboDockBandClass))
+#define BONOBO_IS_DOCK_BAND(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BONOBO_TYPE_DOCK_BAND))
+#define BONOBO_IS_DOCK_BAND_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_BAND))
+#define BONOBO_DOCK_BAND_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), BONOBO_TYPE_DOCK_BAND, BonoboDockBandClass))
 
 typedef struct _BonoboDockBand BonoboDockBand;
 typedef struct _BonoboDockBandPrivate BonoboDockBandPrivate;
@@ -65,8 +67,8 @@ struct _BonoboDockBand
   guint max_space_requisition : 16;
   guint num_children : 8;
   guint new_for_drag : 1;
-  gboolean doing_drag : 1;
-  GtkOrientation orientation : 1;
+  guint doing_drag : 1;
+  guint orientation : 1;
 
   /*< private >*/
   BonoboDockBandPrivate *_priv;
@@ -147,11 +149,7 @@ void           bonobo_dock_band_layout_add       (BonoboDockBand *band,
                                                  guint band_num);
 
 #ifdef BONOBO_UI_INTERNAL
-gint bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
-				      BonoboDockItem *item,
-				      GdkEventKey    *event);
-gint bonobo_dock_handle_key_nav      (BonoboDock     *dock,
-				      BonoboDockBand *band,
+gint _bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
 				      BonoboDockItem *item,
 				      GdkEventKey    *event);
 #endif /* BONOBO_UI_INTERNAL */

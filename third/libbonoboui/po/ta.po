@@ -1,413 +1,404 @@
+# translation of ta.po to Tamil
 # Tamil translation of libbonoboui2.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Balaji Narayanan <balaji.narayanan@wipro.com>, 2001..
-# 
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# Balaji Narayanan <balaji.narayanan@wipro.com>, 2001.
+# Dinesh Nadarajah <dinesh_list@sbcglobal.net>, 2004.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Tamil libbonoboui2 1.7\n"
-"POT-Creation-Date: 2003-01-21 14:27+0000\n"
-"PO-Revision-Date: 2001-09-28 18:53-0500\n"
-"Last-Translator: Balaji Narayanan <balaji.narayanan@wipro.com>\n"
-"Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"PO-Revision-Date: 2004-08-19 16:27+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 
-#: bonobo/bonobo-canvas-item.c:647
+#: bonobo/bonobo-canvas-item.c:667
 msgid "corba factory"
-msgstr ""
+msgstr "கோர்பா (corba) தொழிற்சாலை"
 
-#: bonobo/bonobo-canvas-item.c:648
+#: bonobo/bonobo-canvas-item.c:668
 msgid "The factory pointer"
-msgstr ""
+msgstr "தொழிற்சாலை சுட்டி"
 
-#: bonobo/bonobo-canvas-item.c:657
+#: bonobo/bonobo-canvas-item.c:677
 msgid "corba UI container"
-msgstr ""
+msgstr "கோர்பா UI தாங்கி"
 
-#: bonobo/bonobo-canvas-item.c:658
+#: bonobo/bonobo-canvas-item.c:678
 msgid "The User interface container"
-msgstr ""
+msgstr "பயனர் þடைமுகப் தாங்கி"
 
-#: bonobo/bonobo-dock-item-grip.c:236
-#, fuzzy
+#: bonobo/bonobo-dock-item-grip.c:249
 msgid "Dock the toolbar"
-msgstr "¸ÕÅ¢ô ÀÄ¨¸¨Â ¾É¢ôÀÂÉ¡ìÌ"
+msgstr "கருவிப்பட்டையை ஒட்டுக"
 
-#: bonobo/bonobo-dock-item-grip.c:237
-#, fuzzy
+#: bonobo/bonobo-dock-item-grip.c:250
 msgid "Un dock the toolbar"
-msgstr "¸ÕÅ¢ô ÀÄ¨¸¨Â ¾É¢ôÀÂÉ¡ìÌ"
+msgstr "கருவிப்பட்டையைக் கழட்டுக"
 
-#: bonobo/bonobo-dock-item.c:291 bonobo/bonobo-dock-item.c:292
+#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
-msgstr "¿¢Æø Å¨¸"
+msgstr "நிழல் வகை"
 
-#: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
-msgstr "¾¢¨º «¨Á×"
+msgstr "திசை அமைவு"
 
-#: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
-msgstr "Å¢ÕôÀÁ¡É «¸Äõ"
+msgstr "விருப்பமான அகலம்"
 
-#: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
+#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
-msgstr "Å¢ÕôÀÁ¡É ¯ÂÃõ"
+msgstr "விருப்பமான உயரம்"
 
-#: bonobo/bonobo-file-selector-util.c:383
+#: bonobo/bonobo-file-selector-util.c:351
 msgid "Select a file to open"
-msgstr ""
+msgstr "திறப்பதற்கு ஒர் கோப்பு தெரிவு செய்யவும்"
 
-#: bonobo/bonobo-file-selector-util.c:411
+#: bonobo/bonobo-file-selector-util.c:379
 msgid "Select files to open"
-msgstr ""
+msgstr "திறப்பதற்கு கோப்புகளை தெரிவு செய்யவும்"
 
-#: bonobo/bonobo-file-selector-util.c:440
+#: bonobo/bonobo-file-selector-util.c:408
 msgid "Select a filename to save"
-msgstr ""
+msgstr "சேமிற்பதற்கு ஓர் கோப்பு பெயரை தெரிவு செய்யவும்"
 
-#: bonobo/bonobo-plug.c:372
+#: bonobo/bonobo-plug.c:412
 msgid "Event Forwarding"
-msgstr ""
+msgstr "நிகழ்வு முன்செலுத்துதல்"
 
-#: bonobo/bonobo-plug.c:373
+#: bonobo/bonobo-plug.c:413
 msgid "Whether X events should be forwarded"
-msgstr ""
+msgstr "X நிகழ்வுகளை முன்செலுத்த வேண்டுமா"
 
-#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:415
+#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
 msgid "Name"
-msgstr "¦ÀÂ÷"
+msgstr "பெயர்"
 
 #: bonobo/bonobo-selector-widget.c:322
 msgid "Description"
-msgstr "Å¢ÅÃ¢ôÒ"
+msgstr "விவரிப்பு"
 
 #: bonobo/bonobo-selector.c:345
 msgid "Interfaces required"
-msgstr ""
+msgstr "þடைமுகங்கள் வேண்டும்"
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
-"A NULL_terminated array of interfaces which a server must support in order "
-"to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
+"A NULL-terminated array of interfaces which a server must support in order "
+"to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
+"தேர்வு பட்டியால் தேர்வு செய்யப்பட எதுவுமில்லாமல் செயல்முடியும் இடைமுகத்திற்கு ஆதரவு "
+"வேண்டும். பொதுவாக \"IDL:Bonobo/Embeddable:1.0\" இடைமுகம் காட்டப்படும்"
 
 #: bonobo/bonobo-selector.c:348
 msgid "Interface required entry"
-msgstr ""
+msgstr "þடைமுகத்திற்கு தேவையான நுளைவு"
 
 #: bonobo/bonobo-selector.c:349
 msgid "One of the interfaces that's required"
-msgstr ""
+msgstr "தேவையான ஓர் þடைமுகம்"
 
-#: bonobo/bonobo-ui-config-widget.c:267
+#: bonobo/bonobo-ui-config-widget.c:268
 msgid "Visible"
-msgstr "À¡÷ì¸ììÜÊÂÐ"
+msgstr "பார்க்கக்க்கூடியது"
 
-#: bonobo/bonobo-ui-config-widget.c:274
+#: bonobo/bonobo-ui-config-widget.c:275
 msgid "_Show"
-msgstr "_¸¡ñÀ¢"
+msgstr "_காண்பி"
 
-#: bonobo/bonobo-ui-config-widget.c:281
+#: bonobo/bonobo-ui-config-widget.c:282
 msgid "_Hide"
-msgstr "_Á¨È"
+msgstr "_மறை"
 
-#: bonobo/bonobo-ui-config-widget.c:287
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_View tooltips"
-msgstr "_¸ÕÅ¢ ¯¾Å¢¸¨Ç ¸¡ñÀ¢"
+msgstr "_கருவி உதவிகளை காண்பி"
 
-#: bonobo/bonobo-ui-config-widget.c:292
+#: bonobo/bonobo-ui-config-widget.c:293
 msgid "Toolbars"
-msgstr "¸ÕÅ¢ô ÀÄ¨¸¸û"
+msgstr "கருவிப் பலகைகள்"
 
-#: bonobo/bonobo-ui-config-widget.c:302
-#, fuzzy
+#: bonobo/bonobo-ui-config-widget.c:303
 msgid "toolbars"
-msgstr "¸ÕÅ¢ô ÀÄ¨¸¸û"
+msgstr "கருவிப்பட்டைகள்"
 
-#: bonobo/bonobo-ui-config-widget.c:313 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Look"
-msgstr "À¡÷"
+msgstr "பார்"
 
-#: bonobo/bonobo-ui-config-widget.c:322 bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "_Icon"
-msgstr "_ÌÕõÀ¼õ"
+msgstr "_குரும்படம்"
 
-#: bonobo/bonobo-ui-config-widget.c:328
+#: bonobo/bonobo-ui-config-widget.c:329
 msgid "_Text and Icon"
-msgstr "_¯¨ÃÔõ ÌÕõÀ¼Óõ"
+msgstr "_உரையும் குரும்படமும்"
 
-#: bonobo/bonobo-ui-config-widget.c:334
-#, fuzzy
+#: bonobo/bonobo-ui-config-widget.c:335
 msgid "Text only"
-msgstr "_¯¨ÃÔõ ÌÕõÀ¼Óõ"
+msgstr "உரை மட்டும்"
 
-#: bonobo/bonobo-ui-config-widget.c:340
+#: bonobo/bonobo-ui-config-widget.c:341
 msgid "_Priority text only"
-msgstr "_ÓýÛÃ¢¨Á ¯¨Ã ÁðÎõ"
+msgstr "_முன்னுரிமை உரை மட்டும்"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "Debug"
-msgstr ""
+msgstr "பிழை நீக்குக"
 
-#: bonobo/bonobo-ui-engine.c:88
+#: bonobo/bonobo-ui-engine.c:90
 msgid "_Dump XML"
-msgstr ""
+msgstr "XML கொட்டுக"
 
-#: bonobo/bonobo-ui-engine.c:89
+#: bonobo/bonobo-ui-engine.c:91
 msgid "Dump the entire UI's XML description to the console"
-msgstr ""
+msgstr "UIþன் முழு XML விவரணத்தை முனையத்தில் போடுக"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:522
 msgid "Configure UI"
-msgstr "UI³ ¯ÕÅ¡ìÌ"
+msgstr "UIஐ உருவாக்கு"
 
 #: bonobo/bonobo-ui-init-gtk.c:113
 msgid "Gdk debugging flags to set"
-msgstr ""
+msgstr "அமைக்கவேண்டிய Gdk பிழை நீக்கல் கொடிகள்"
 
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
-#: bonobo/bonobo-ui-init-gtk.c:162 bonobo/bonobo-ui-init-gtk.c:165
+#: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
 msgid "FLAGS"
-msgstr ""
+msgstr "கொடிகள்"
 
 #: bonobo/bonobo-ui-init-gtk.c:116
 msgid "Gdk debugging flags to unset"
-msgstr ""
+msgstr "நீக்க வேண்டிய Gdk பிழை-நீக்கல் கொடிகள்"
 
 #: bonobo/bonobo-ui-init-gtk.c:120
 msgid "X display to use"
-msgstr ""
+msgstr "பயன்படுத்த வேண்டிய X காட்சி"
 
 #: bonobo/bonobo-ui-init-gtk.c:120
 msgid "DISPLAY"
-msgstr ""
+msgstr "காட்சி"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "X screen to use"
-msgstr ""
+msgstr "பயன்படுத்த வேண்டிய X திரை"
 
-#: bonobo/bonobo-ui-init-gtk.c:125
+#: bonobo/bonobo-ui-init-gtk.c:124
 msgid "SCREEN"
-msgstr ""
+msgstr "திரை"
 
-#: bonobo/bonobo-ui-init-gtk.c:129
+#: bonobo/bonobo-ui-init-gtk.c:128
 msgid "Make X calls synchronous"
-msgstr ""
+msgstr "X அழைப்புகளை ஒத்தியக்கமாக ஆக்குக"
 
-#: bonobo/bonobo-ui-init-gtk.c:135
+#: bonobo/bonobo-ui-init-gtk.c:134
 msgid "Don't use X shared memory extension"
-msgstr ""
+msgstr "Xþன் பகிர் நினைவக நீட்டிப்புகளை புழங்கவேண்டாம்"
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "Program name as used by the window manager"
-msgstr ""
+msgstr "சாளரமேலாளர் பயன்படுத்தும் நிரலின் பெயர்"
 
-#: bonobo/bonobo-ui-init-gtk.c:139
+#: bonobo/bonobo-ui-init-gtk.c:138
 msgid "NAME"
-msgstr ""
+msgstr "பெயர்"
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "Program class as used by the window manager"
-msgstr ""
+msgstr "சாளரமேலாளர் பயன்படுத்தும் நிரல் வகுப்பு"
 
-#: bonobo/bonobo-ui-init-gtk.c:142
+#: bonobo/bonobo-ui-init-gtk.c:141
 msgid "CLASS"
-msgstr ""
+msgstr "வகுப்பு"
 
-#: bonobo/bonobo-ui-init-gtk.c:146
-msgid "HOST"
-msgstr ""
+#: bonobo/bonobo-ui-init-gtk.c:144
+msgid "Gtk+ debugging flags to set"
+msgstr "அமைக்க வேண்டிய் Gtk+ பிழை-நீக்கல் கொடிகள்"
+
+#: bonobo/bonobo-ui-init-gtk.c:147
+msgid "Gtk+ debugging flags to unset"
+msgstr "நீக்க வேண்டிய் Gtk+ பிழை-நீக்கல் கொடிகள்"
 
 #: bonobo/bonobo-ui-init-gtk.c:150
-msgid "PORT"
-msgstr ""
+msgid "Make all warnings fatal"
+msgstr "அனைத்து எச்சரிக்கைகளையும் கொல் பிழைகளாக்குக"
 
-#: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
-msgid "STYLE"
-msgstr ""
+#: bonobo/bonobo-ui-init-gtk.c:153
+msgid "Load an additional Gtk module"
+msgstr "þன்னுமோர் Gtk கூறு ஏற்றவும்"
+
+#: bonobo/bonobo-ui-init-gtk.c:153
+msgid "MODULE"
+msgstr "கூறு"
 
 #: bonobo/bonobo-ui-init-gtk.c:162
-msgid "Gtk+ debugging flags to set"
-msgstr ""
-
-#: bonobo/bonobo-ui-init-gtk.c:165
-msgid "Gtk+ debugging flags to unset"
-msgstr ""
-
-#: bonobo/bonobo-ui-init-gtk.c:168
-msgid "Make all warnings fatal"
-msgstr ""
-
-#: bonobo/bonobo-ui-init-gtk.c:171
-msgid "Load an additional Gtk module"
-msgstr ""
-
-#: bonobo/bonobo-ui-init-gtk.c:171
-msgid "MODULE"
-msgstr ""
-
-#: bonobo/bonobo-ui-init-gtk.c:180
 msgid "GTK+"
-msgstr ""
+msgstr "GTK+"
 
-#: bonobo/bonobo-ui-main.c:188
+#: bonobo/bonobo-ui-main.c:202
 msgid "Bonobo GUI support"
-msgstr ""
+msgstr "போனபோ GUI ஆதரவு"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "B_oth"
-msgstr "_­ÃñÎõ"
+msgstr "_இரண்டும்"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:552
+#: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "T_ext"
-msgstr "¯_¨Ã"
+msgstr "உ_ரை"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Hide t_ips"
-msgstr "¯¾_Å¢¸¨Ç Á¨È"
+msgstr "உத_விகளை மறை"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Show t_ips"
-msgstr "¯_¾Å¢¸¨Ç ¸¡ñÀ¢"
-
-#: bonobo/bonobo-ui-sync-toolbar.c:554
-msgid "_Hide toolbar"
-msgstr "¸ÕÅ¢ô _ÀÄ¨¸¨Â Á¨È"
-
-#: bonobo/bonobo-ui-sync-toolbar.c:554
-msgid "Customi_ze"
-msgstr "_¾É¢ôÀÂÉ¡ìÌ"
+msgstr "உ_தவிகளை காண்பி"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:555
+msgid "_Hide toolbar"
+msgstr "கருவிப் _பலகையை மறை"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:555
+msgid "Customi_ze"
+msgstr "_தனிப்பயனாக்கு"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:556
 msgid "Customize the toolbar"
-msgstr "¸ÕÅ¢ô ÀÄ¨¸¨Â ¾É¢ôÀÂÉ¡ìÌ"
+msgstr "கருவிப் பலகையை தனிப்பயனாக்கு"
 
-#: bonobo/bonobo-ui-toolbar.c:1113
+#: bonobo/bonobo-ui-toolbar.c:1129
 msgid "is floating"
-msgstr ""
+msgstr "மிதக்கின்றது"
 
-#: bonobo/bonobo-ui-toolbar.c:1114
+#: bonobo/bonobo-ui-toolbar.c:1130
 msgid "whether the toolbar is floating"
-msgstr ""
+msgstr "கருவிப் பட்டை மிதக்கின்றதா"
 
-#: bonobo/bonobo-ui-util.c:616
+#: bonobo/bonobo-ui-toolbar.c:1176
+msgid "Style of bevel around the toolbar"
+msgstr "கருவிப்பட்டை நிழலின் பாணி"
+
+#: bonobo/bonobo-ui-util.c:629
 msgid "_Contents"
-msgstr ""
+msgstr "_¯ûÇ¼ì¸í¸û"
 
-#: bonobo/bonobo-ui-util.c:617
+#: bonobo/bonobo-ui-util.c:630
 msgid "View help for this application"
-msgstr ""
+msgstr "þன்நிரலுக்கான உதவியைப் பார்க்கவும்"
 
-#: bonobo/bonobo-window.c:416
+#: bonobo/bonobo-window.c:347
 msgid "Name of the window - used for configuration serialization."
-msgstr ""
+msgstr "þச்சாளரத்தின் பெயர் - தொடர்நிலை அமைவுக்காக பயன்படுத்தப்படும்."
 
 #: bonobo/bonobo-zoomable.c:326
 msgid "Zoom level"
-msgstr ""
+msgstr "அளவுமாற்றம் அளவு"
 
 #: bonobo/bonobo-zoomable.c:327
 msgid "The degree of enlargment"
-msgstr ""
+msgstr "பெரிதாக்குதல் அளவு"
 
 #: bonobo/bonobo-zoomable.c:335
 msgid "Minimum Zoom level"
-msgstr ""
+msgstr "ஆகக்குறைந்த பெரிதாக்குதல் அளவு"
 
 #: bonobo/bonobo-zoomable.c:336
 msgid "The minimum degree of enlargment"
-msgstr ""
+msgstr "ஆகக்குறைந்த பெரிதாக்குதல் அளவு"
 
 #: bonobo/bonobo-zoomable.c:344
 msgid "Maximum Zoom level"
-msgstr ""
+msgstr "ஆகக்கூடிய பெரிதாக்கல் அளவு"
 
 #: bonobo/bonobo-zoomable.c:345
 msgid "The maximum degree of enlargment"
-msgstr ""
+msgstr "ஆகக்கூடிய பெரிதாக்குதல் அளவு"
 
 #: bonobo/bonobo-zoomable.c:353
 msgid "Has a minimum Zoom level"
-msgstr ""
+msgstr "ஆகக்குறைந்த பெரிதாக்குதல் அளவு உண்டு"
 
 #: bonobo/bonobo-zoomable.c:354
 msgid "Whether we have a valid minimum zoom level"
-msgstr ""
+msgstr "செல்லுபடியான ஆகக்குறைந்த பெரிதாக்குதல் அளவு உண்டா"
 
 #: bonobo/bonobo-zoomable.c:361
 msgid "Has a maximum Zoom level"
-msgstr ""
+msgstr "ஆகக்கூடிய பெரிதாக்குதல் அளவு உண்டு"
 
 #: bonobo/bonobo-zoomable.c:362
 msgid "Whether we have a valid maximum zoom level"
-msgstr ""
+msgstr "செல்லுபடியான ஆகக்கூடிய பெரிதாக்குதல் அளவு உண்டா"
 
 #: bonobo/bonobo-zoomable.c:369
 msgid "Is continuous"
-msgstr ""
+msgstr "தொடர்ந்தது"
 
 #: bonobo/bonobo-zoomable.c:370
 msgid "Whether we zoom continuously (as opposed to jumps)"
-msgstr ""
+msgstr "(பிரிநிலை þல்லாமல்) தொடர்ந்த முறையில் அளவு மாற்றம்"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:1
 msgid "About this application"
-msgstr ""
+msgstr "­ó¾ ¿¢Ã¨Äô ÀüÈ¢"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:2
 msgid "Select"
-msgstr ""
+msgstr "தெரிவுசெய்க"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:3
 msgid "_About..."
-msgstr ""
+msgstr "_பற்றி..."
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:4
 msgid "_Edit"
-msgstr ""
+msgstr "_தொகு"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
-#, fuzzy
 msgid "_File"
-msgstr "_Á¨È"
+msgstr "_கோப்பு"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:6
 msgid "_Select"
-msgstr ""
+msgstr "_தெரிவுசெய்க"
 
 #: samples/bonoboui/hello.c:63
 msgid "This does nothing; it is only a demonstration."
-msgstr ""
+msgstr "இது ஓர் எடுத்துக்காட்டல் மட்டுமே; வேரேதும் செய்யாது."
 
 #: samples/bonoboui/hello.c:145
 msgid "BonoboUI-Hello."
-msgstr ""
+msgstr "BonoboUI-வணக்கம்."
 
 #: samples/bonoboui/hello.c:217
 msgid "Gnome Hello"
-msgstr ""
+msgstr "கனோம் வணக்கம்"
 
 #. Create Label and put it in the Button:
 #: samples/bonoboui/hello.c:272
 msgid "Hello, World!"
-msgstr ""
+msgstr "அனைவருக்கும், வணக்கம்!"
 
 #: samples/bonoboui/hello.c:312
 msgid "Cannot init libbonoboui code"
-msgstr "libbonoboui ÌÈ¢Ó¨È¨Â ¦¾¡¼ì¸ ­ÂÄÅ¢ø¨Ä"
+msgstr "libbonoboui குறிமுறையை தொடக்க இயலவில்லை"
 
-#: samples/controls/bonobo-sample-controls.c:133
+#: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
-msgstr ""
-
-#~ msgid "Can not bonobo_ui_init"
-#~ msgstr "bonobo_ui_init ­ÂÄÅ¢ø¨Ä"
-
-#~ msgid "Select an object"
-#~ msgstr "´Õ ­Äì¨¸ §¾÷× ¦ºö"
+msgstr "போனபோ UI துவக்க முடியவில்லை"

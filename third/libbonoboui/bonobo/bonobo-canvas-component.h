@@ -69,6 +69,16 @@ Bonobo_UIContainer      bonobo_canvas_component_get_ui_container (BonoboCanvasCo
 GnomeCanvas *bonobo_canvas_new (gboolean                     is_aa,
 				Bonobo_Canvas_ComponentProxy proxy);
 
+
+/* Sets up a callback to be invoked when the container activates the object.
+ * Creating the component factory will do nothing until the container connects.
+ */
+typedef BonoboCanvasComponent *(*GnomeItemCreator) 
+   (GnomeCanvas *canvas, void *user_data);
+
+BonoboObject *bonobo_canvas_component_factory_new(GnomeItemCreator item_factory,
+      void *data);
+
 G_END_DECLS
 
 #endif /* BONOBO_UI_DISABLE_DEPRECATED */
