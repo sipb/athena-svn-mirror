@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.27 1996-08-10 05:36:21 ghudson Exp $
+ * $Id: aklog_main.c,v 1.28 1997-11-11 19:26:07 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.27 1996-08-10 05:36:21 ghudson Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.28 1997-11-11 19:26:07 ghudson Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -15,7 +15,7 @@ static char *rcsid = "$Id: aklog_main.c,v 1.27 1996-08-10 05:36:21 ghudson Exp $
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <krb.h>
@@ -66,9 +66,6 @@ typedef struct {
 
 
 struct afsconf_cell ak_cellconfig; /* General information about the cell */
-
-extern int errno;
-extern char *sys_errlist[];
 
 static aklog_params params;	/* Various aklog functions */
 static char msgbuf[BUFSIZ];	/* String for constructing error messages */
@@ -521,7 +518,7 @@ static char *next_path(origpath)
 	if (link = (params.readlink(pathtocheck, linkbuf, 
 				    sizeof(linkbuf)) > 0)) {
 	    if (++symlinkcount > MAXSYMLINKS) {
-		sprintf(msgbuf, "%s: %s\n", progname, sys_errlist[ELOOP]);
+		sprintf(msgbuf, "%s: %s\n", progname, strerror(ELOOP));
 		params.pstderr(msgbuf);
 		params.exitprog(AKLOG_BADPATH);
 	    }
@@ -708,14 +705,14 @@ static int auth_to_path(path)
 		 * a problem... 
 		 */
 		sprintf(msgbuf, "%s: stat(%s): %s\n", progname, 
-			pathtocheck, sys_errlist[errno]);
+			pathtocheck, strerror(errno));
 		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
 	    else if (! isdir) {
 		/* Allow only directories */
 		sprintf(msgbuf, "%s: %s: %s\n", progname, pathtocheck,
-			sys_errlist[ENOTDIR]);
+			strerror(ENOTDIR));
 		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
