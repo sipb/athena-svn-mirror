@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.10 1990-12-12 13:49:44 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.11 1991-03-01 12:02:46 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.10 1990-12-12 13:49:44 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.11 1991-03-01 12:02:46 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -33,6 +33,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #include "quota_limits.h"
 #include "quota_ncs.h"
 #include "pfm.h"
+#include <strings.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -86,6 +87,7 @@ char *argv[];
     unsigned oldalarmtime;
     status_$t fst;
     static pfm_$cleanup_rec crec;
+    char *p;
 
     prog = ((prog = rindex(argv[0],'/')) ? ++prog : argv[0]);
     if(argc != 1) {
@@ -123,11 +125,14 @@ char *argv[];
        exit(1);
    }
 
+    /* Get the host name, and make sure it's only the first comp. */
     if(gethostname(myhostname, MAXHOSTNAMELEN)) {
 	syslog(LOG_ERR, "Unable to determine own hostname");	
 	exit(1);
     }
-    
+    if ((p=index(myhostname, '.')) != NULL)
+	*p = '\0';
+
     if(access(CACHEDIR, R_OK)) {
 	syslog(LOG_ERR, "s_chkaf: Cannot access %s - exiting\n", CACHEDIR);
 	exit(1);
@@ -652,17 +657,23 @@ krb_ktext *auth;
     }
 
     /* We need a krb_mk_req - first check for new tgt */
-    if(((ret = 
-	 krb_get_cred("krbtgt", KRB_REALM, my_realm, &cred)) != KSUCCESS) ||
-       ((cred.issue_date + (cred.lifetime * 5 * 60)) < time((long *) 0) + 120))
-	    {
-		if ((ret = krb_get_svc_in_tkt("rcmd", myhostname, my_realm,
-					      "krbtgt", KRB_REALM,
-					      96, NULL)) != KSUCCESS) {
-		    syslog(LOG_ERR, "Could not get new tgt %s",krb_err_txt[ret]);
-		    return 1;
-		}
-	    }
+    /* Make sure we have an up-to-date tgt */
+    ret = krb_get_cred("krbtgt", my_realm, my_realm, &cred);
+    if (ret != KSUCCESS || ((cred.issue_date + (cred.lifetime * 5 * 60)) <
+			    time((long *) 0) + 120)) {
+	/* If not, get one */
+#ifdef DEBUG 
+	syslog(LOG_DEBUG, "Requesting krbtgt.%s for rcmd.%s@%s",
+	       my_realm, myhostname, my_realm);
+#endif
+	ret = krb_get_svc_in_tkt("rcmd", myhostname, my_realm,
+				 "krbtgt", my_realm, 96, NULL);
+	if (ret != KSUCCESS) {
+	    syslog(LOG_ERR, "Could not get new tgt %s",krb_err_txt[ret]);
+	    return 1;
+	}
+    }
+
 mkreq:
     if((ret = krb_mk_req(auth, KLPQUOTA_SERVICE, hostname,
 			 rpqauth[ent].realm, 0)) != KSUCCESS) {
