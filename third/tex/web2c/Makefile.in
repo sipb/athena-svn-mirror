@@ -41,7 +41,7 @@ texinputdir = $(datadir)/tex/macros
 mfinputdir = $(datadir)/mf/macros
 
 # The top-level font directory.
-fontdir = $(datadir)/tex//fonts
+fontdir = $(datadir)/tex/fonts
 
 # Where memory dumps are installed.
 fmtdir = $(datadir)/tex/formats
