@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.21 1993-10-16 21:51:26 probe Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.22 1993-11-19 15:35:02 probe Exp $";
 #endif /* lint */
 
 /*
@@ -65,9 +65,6 @@ char *whenleave;
 char *reminder_message = NULL;
 char buff[100];
 int use_zephyr=1, oldpid;
-
-extern uid_t getuid();
-long time();
 
 main(argc, argv)
 char **argv;
@@ -333,7 +330,7 @@ char *msg;
 	    }
 	    sprintf(real_message,"%c%s\n%s",'\0',msg,reminder_message);
 
-	    (void) _BZERO((char *)&notice, sizeof(notice));
+	    (void) memset((char *)&notice, 0, sizeof(notice));
 	    notice.z_kind = ACKED;
 	    notice.z_port = 0;
 	    notice.z_class = MESSAGE_CLASS;
