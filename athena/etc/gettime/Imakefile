@@ -1,8 +1,9 @@
 #
-# $Id: Imakefile,v 1.15 1992-05-03 19:05:02 epeisach Exp $
+# $Id: Imakefile,v 1.16 1993-02-03 17:52:26 probe Exp $
 #
+# Remember: most conditionalization should be done in the package, not here.
 
-#define ISUBDIRS cleanup ftpd netconfig newsyslog nfsc rvd synctree track xdm
+#define ISUBDIRS cleanup ftpd inetd netconfig newsyslog nfsc rvd synctree track xdm
 
 #ifdef ultrix
 XSCRIPTS=console-getty
