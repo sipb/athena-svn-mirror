@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.4 1989-08-07 13:48:46 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.5 1989-08-09 22:32:34 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -242,7 +242,7 @@ handle_response(response, req)
      REQUEST *req;
 {
 #ifdef KERBEROS
-  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc. If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone. Schedules and phone numbers are posted in\nthe clusters.";
+  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc. If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
 #endif KERBEROS
 
   switch(response)
@@ -253,11 +253,14 @@ handle_response(response, req)
       return(NO_ACTION);   
 
     case SIGNED_OFF:
-      printf("You have signed off of OLC.\n");
+      if(isme(req))
+	printf("You have signed off of OLC.\n");
+      else
+	printf("%s is singed off of OLC.\n",req->target.username);
       return(SUCCESS);
 
     case NOT_SIGNED_ON:
-      if(string_eq(req->target.username,req->requester.username))
+      if(isme(req))
 	fprintf(stderr, "You are not signed on to OLC.\n");
       else
 	fprintf(stderr, "%s (%d) is not signed on to OLC.\n",
@@ -265,19 +268,32 @@ handle_response(response, req)
       return(NO_ACTION);   
 
     case NO_QUESTION:
-      fprintf(stderr,"%s (%d) does not have a question.\n",req->target.username, req->target.instance);
+      if(isme(req))
+	{
+	  fprintf(stderr,"You no longer have a question in OLC.\n");
+	  if(OLC)
+	    {
+	      printf("If you wish to ask another question, use 'olc' again.\n");
+	      exit(1);
+	    }
+	}
+      else
+	fprintf(stderr,"%s (%d) does not have a question.\n",
+		req->target.username, req->target.instance);
       return(ERROR);
 
     case HAS_QUESTION:
-      fprintf(stderr,"You have a question.\n");
+      if(isme(req))
+	fprintf(stderr,"You have a question.\n");
+      else
+	fprintf(stderr,"%s (%d) does not have a question.\n",
+		req->target.username,req->target.instance);
       return(ERROR);
 
     case NOT_CONNECTED:
-      if(string_eq(req->target.username,req->requester.username))
-	{
-	  fprintf(stderr,"You are not connected nor do you seem to have a question.\n");
-	  fprintf(stderr,"Perhaps you should ask one.\n");
-	}
+      if(isme(req))
+	fprintf(stderr,"You are not connected to a %s.\n", 
+		OLC?"consultant":"user");	  
       else
 	fprintf(stderr,"%s (%d) is not connected nor is asking a question.\n",
 		req->target.username,req->target.instance);
