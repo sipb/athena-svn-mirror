@@ -1,4 +1,4 @@
-# $Id: packages,v 1.221 2003-03-26 06:26:42 ghudson Exp $
+# $Id: packages,v 1.222 2003-03-26 06:38:13 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -33,13 +33,14 @@
 
 # These tools are critical to the build process and need to be built
 # first.
-third/gmake			early except linux
+third/gmake			early on solaris
 third/gcc			early on solaris
 third/binutils			early on solaris
+third/rpm			early on solaris
 third/m4			early
 third/autoconf			early
-athena/bin/install		early on solaris,irix
-third/pkgconfig			early except linux
+athena/bin/install		early on solaris
+third/pkgconfig			early on solaris
 third/sed			early on solaris
 third/bison			early on solaris
 third/flex			early on solaris
@@ -57,7 +58,7 @@ athena/bin/bugme		requires Xj
 athena/bin/config_console
 athena/bin/cxref
 athena/bin/dash			requires Xj,krb5,athena/lib/athdir
-athena/bin/delete		requires afsbin,openafs,et
+athena/bin/delete		requires openafs,et
 athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
@@ -76,10 +77,10 @@ athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
 athena/bin/mail-dialog		requires gnome-libs
 athena/bin/neos			requires fxcl,krb5,hesiod
-athena/bin/newpag		requires afsbin,openafs
+athena/bin/newpag		requires openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,openmotif,Mu,wcl
 athena/bin/passwd		requires krb5,al
-athena/bin/quota		requires locker,afsbin,openafs
+athena/bin/quota		requires locker,openafs
 athena/bin/revert-to-dash
 athena/bin/rkinit		requires krb5,athena/lib/rkinit
 athena/bin/saferm
@@ -91,7 +92,7 @@ athena/bin/xcluster		requires Xj,hesiod
 athena/bin/xdsc			requires discuss
 
 athena/etc/athinfod
-athena/etc/athlsync		requires afsbin,openafs
+athena/etc/athlsync		requires openafs
 athena/etc/athstatusd		on linux
 athena/etc/busyd		requires larv
 athena/etc/cleanup		requires al,locker
@@ -102,7 +103,7 @@ athena/etc/dm			requires al
 athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
 athena/etc/larvnetd		requires larv,ares,hesiod
-athena/etc/listsuidcells	requires afsbin,openafs
+athena/etc/listsuidcells	requires openafs
 athena/etc/messaged		requires gms
 athena/etc/mkcred
 athena/etc/newsyslog		except linux
@@ -115,7 +116,7 @@ athena/etc/xlogin		requires krb5,al,wcl,larv
 
 athena/lib/Mu			package libMu
 athena/lib/Xj			package libXj
-athena/lib/al			requires hesiod,afsbin,openafs package libal
+athena/lib/al			requires hesiod,openafs package libal
 athena/lib/ares
 athena/lib/athdir		package libathdir
 athena/lib/et			package libet
@@ -123,15 +124,14 @@ athena/lib/gms			requires et
 athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
-athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,openafs,et
+athena/lib/locker		requires zephyr,krb5,hesiod,openafs,et
 athena/lib/rkinit		requires krb5,et package librkinit
 athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
 third/acme			except solaris requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
-third/afsbin			on irix
-third/afs-krb5			requires krb5,afsbin,openafs,et
+third/afs-krb5			requires krb5,openafs,et
 third/at-spi			except linux requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
 third/atk			except linux requires glib2,gettext
 third/audiofile			except linux
@@ -197,7 +197,7 @@ third/intlfonts			requires emacs
 third/intltool			except linux requires perl
 third/ispell
 third/jot
-third/jpeg			except linux,irix
+third/jpeg			except linux
 third/kermit
 third/krb5			requires et,ss package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
@@ -229,7 +229,6 @@ third/libxml2			except linux requires zlib
 third/libxslt			except linux requires libxml2
 third/libzvt			except linux requires glib2,gtk2,libart_lgpl
 third/linc			except linux requires glib2,openssl
-third/look			on irix
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp
 third/lprng/lprng		requires krb5,zephyr,hesiod
@@ -243,7 +242,7 @@ third/nautilus-media		requires gstreamer,libgnome,libgnomeui,eel,nautilus
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
-third/openafs			except irix
+third/openafs
 third/openmotif			on linux
 third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			requires perl
@@ -264,18 +263,17 @@ third/scrollkeeper		except linux requires intltool,libxml2,libxslt
 third/sendmail			requires hesiod,tcp_wrappers,db
 third/soup			except linux requires glib,libxml,popt,openssl
 third/startup-notification	except linux
-third/sysinfo			on solaris,irix,linux
-third/talk			on solaris,irix
+third/sysinfo
+third/talk			on solaris
 third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
 third/tetex			requires texinfo
 third/texinfo
 third/tiff			except linux requires jpeg,zlib
-third/top			except irix,linux
+third/top			except linux
 third/traceroute		on solaris
 third/vte			except linux requires gettext,glib2,pango,libzvt,Xft
 third/wcl			requires openmotif
-third/whois			on irix
 third/x11-ssh-askpass
 third/x3270
 third/xalf			requires gtk,control-center
