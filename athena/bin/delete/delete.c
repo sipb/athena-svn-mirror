@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.9 1989-01-26 00:08:12 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.10 1989-01-26 09:56:07 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -340,8 +340,11 @@ int recursed;
 
 yes() {
      char buf[BUFSIZ];
-
-     fgets(buf, BUFSIZ, stdin);
+     char *val;
+     
+     val = fgets(buf, BUFSIZ, stdin);
+     if (! val)
+	  exit(1);
      if (! index(buf, '\n')) do
 	  fgets(buf + 1, BUFSIZ - 1, stdin);
      while (! index(buf + 1, '\n'));

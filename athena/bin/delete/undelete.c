@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.6 1989-01-26 00:09:16 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.7 1989-01-26 09:56:44 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -38,7 +38,7 @@ extern char *malloc(), *realloc();
 char *whoami, *error_buf;
 char *add_char(), *parse_pattern(), *append(),
      *strindex(), *strrindex(), *convert_to_user_name();
-char **find_all_children(), **match_pattern();
+char **find_all_children(), **match_pattern(), **find_dir_contents();
 listrec *unique(), *sort_files();
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
@@ -105,7 +105,28 @@ char *argv[];
 
 interactive_mode()
 {
-     return(0);
+     char buf[MAXPATHLEN];
+     char *ptr;
+     int status = 0;
+
+     if (verbose) {
+	  printf("Enter the files to be undeleted, one file per line.\n");
+	  printf("Hit <RETURN> on a line by itself to exit.\n\n");
+     }
+     do {
+	  printf("%s: ", whoami);
+	  ptr = fgets(buf, MAXPATHLEN, stdin);
+	  if (! ptr) {
+	       printf("\n");
+	       exit(status | ERROR_MASK);
+	  }
+	  ptr = index(buf, '\n');  /* fgets breakage */
+	  if (ptr)
+	       *ptr = '\0';
+	  if (! *buf)
+	       exit(status | ERROR_MASK);
+	  status = status | undelete(buf);
+     } while (*ptr);
 }
 
 
@@ -483,7 +504,15 @@ int *num_found;
 	       }
 	       strcpy(*found, base);
 	  }
-	  if ((! recursive) || (ftype != FtDirectory)) {
+	  if ((ftype == FtDirectory) && (! recursive) &&
+	      (! directoriesonly)) {
+	       int num_dir_found;
+	       char **dir_found;
+	       dir_found = find_dir_contents(base, &num_dir_found);
+	       add_arrays(&found, num_found, &dir_found, &num_dir_found);
+	  }
+	  else if ((! recursive) || (ftype != FtDirectory) ||
+		   directoriesonly) {
 	       return(found);
 	  }
 	  else {
@@ -612,6 +641,46 @@ int *num;
 	       
 
 
+char **find_dir_contents(base, num)
+char *base;
+int *num;
+{
+     char **found;
+     DIR *dirp;
+     struct direct *dp;
+     char newname[MAXPATHLEN];
+     
+     *num = 0;
+     found = (char **) malloc(0);
+     
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+	  if (! is_deleted(dp->d_name))
+	       continue;
+	  strcpy(newname, append(base, dp->d_name));
+	  *num += 1;
+	  found = (char **) realloc(found, sizeof(char *) * (*num));
+	  if (! found) {
+	       perror(sprintf(error_buf, "%s: find_dir_contents",
+			      whoami));
+	       exit(1);	
+	  }
+	  found[*num - 1] = (char *) malloc(strlen(newname) + 1);
+	  if (! found[*num - 1]) {
+	       perror(sprintf(error_buf, "%s: find_dir_contents",
+			      whoami));
+	       exit(1);
+	  }
+	  strcpy(found[*num - 1], newname);
+     }
+     closedir(dirp);
+     return(found);
+}
 
 		    
      
@@ -783,8 +852,11 @@ char *filepath, *filename;
 
 yes() {
      char buf[BUFSIZ];
-
-     fgets(buf, BUFSIZ, stdin);
+     char *val;
+     
+     val = fgets(buf, BUFSIZ, stdin);
+     if (! val)
+	  exit(1);
      if (! index(buf, '\n')) do
 	  fgets(buf + 1, BUFSIZ - 1, stdin);
      while (! index(buf + 1, '\n'));
