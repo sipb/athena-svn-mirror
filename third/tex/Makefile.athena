@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 1997-02-25 07:23:46 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 1997-02-27 21:26:22 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -23,7 +23,7 @@ all:
 	cd web2c && ${MAKE} programs
 	cd web2c && MFINPUTS=`pwd`/../lib/mf// ${MAKE} bases
 	cd lib && ${MAKE} all
-	cd web2c && TEXINPUTS=`pwd`/../lib/tex// \
+	cd web2c && TEXINPUTS=.:`pwd`/../lib/tex// \
 		TEXFONTS=`pwd`/../lib/tex// ${MAKE} fmts
 	cd web2c && ${MAKE} manpages
 	cd xdvi && ${MAKE} all
