@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -23,11 +23,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -44,10 +40,10 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_func.c	10.8 (Sleepycat) 4/10/98";
+static const char revid[] = "$Id: hash_func.c,v 1.1.1.2 2002-02-11 16:25:49 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -207,13 +203,13 @@ __ham_func5(key, len)
 	u_int32_t len;
 {
 	const u_int8_t *k, *e;
-        u_int32_t h;
+	u_int32_t h;
 
 	k = key;
 	e = k + len;
-        for (h = 0; k < e; ++k) {
-                h *= 16777619;
-                h ^= *k;
-        }
-        return (h);
+	for (h = 0; k < e; ++k) {
+		h *= 16777619;
+		h ^= *k;
+	}
+	return (h);
 }

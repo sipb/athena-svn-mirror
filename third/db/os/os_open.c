@@ -1,152 +1,91 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_open.c	10.33 (Sleepycat) 10/12/98";
+static const char revid[] = "$Id: os_open.c,v 1.1.1.2 2002-02-11 16:27:30 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#include <errno.h>
 #include <fcntl.h>
-#include <signal.h>
-#include <unistd.h>
+#include <string.h>
 #endif
 
 #include "db_int.h"
-#include "os_jump.h"
-
-/*
- * __db_open --
- *	Open a file descriptor.
- *
- * PUBLIC: int __db_open __P((const char *, u_int32_t, u_int32_t, int, int *));
- */
-int
-__db_open(name, arg_flags, ok_flags, mode, fdp)
-	const char *name;
-	u_int32_t arg_flags, ok_flags;
-	int mode, *fdp;
-{
-#if !defined(_WIN32) && defined(HAVE_SIGFILLSET)
-	sigset_t set, oset;
-#endif
-	int flags, ret;
-
-	if (arg_flags & ~ok_flags)
-		return (EINVAL);
-
-	flags = 0;
-
-	/*
-	 * DB requires the semantic that two files opened at the same time
-	 * with O_CREAT and O_EXCL set will return failure in at least one.
-	 */
-	if (arg_flags & DB_CREATE)
-		flags |= O_CREAT;
-
-	if (arg_flags & DB_EXCL)
-		flags |= O_EXCL;
-
-	if (arg_flags & DB_RDONLY)
-		flags |= O_RDONLY;
-	else
-		flags |= O_RDWR;
-
-#if defined(_WIN32) || defined(WIN16)
-#ifdef _MSC_VER
-	if (arg_flags & DB_SEQUENTIAL)
-		flags |= _O_SEQUENTIAL;
-	else
-		flags |= _O_RANDOM;
-
-	if (arg_flags & DB_TEMPORARY)
-		flags |= _O_TEMPORARY;
-#endif
-	flags |= O_BINARY | O_NOINHERIT;
-#endif
-
-	if (arg_flags & DB_TRUNCATE)
-		flags |= O_TRUNC;
-
-#if !defined(_WIN32) && defined(HAVE_SIGFILLSET)
-	/*
-	 * We block every signal we can get our hands on so that the temporary
-	 * file isn't left around if we're interrupted at the wrong time.  Of
-	 * course, if we drop core in-between the calls we'll hang forever, but
-	 * that's probably okay.  ;-)
-	 */
-	if (arg_flags & DB_TEMPORARY) {
-		(void)sigfillset(&set);
-		(void)sigprocmask(SIG_BLOCK, &set, &oset);
-	}
-#endif
-
-	/* Open the file. */
-	if ((ret = __os_open(name, flags, mode, fdp)) != 0)
-		return (ret);
-
-#if !defined(_WIN32)
-	/* Delete any temporary file; done for Win32 by _O_TEMPORARY. */
-	if (arg_flags & DB_TEMPORARY) {
-		(void)__os_unlink(name);
-#if defined(HAVE_SIGFILLSET)
-		(void)sigprocmask(SIG_SETMASK, &oset, NULL);
-#endif
-	}
-#endif
-
-#if !defined(_WIN32) && !defined(WIN16) && !defined(VMS)
-	/*
-	 * Deny access to any child process.
-	 *	VMS: does not have fd inheritance.
-	 *	Win32: done by O_NOINHERIT.
-	 */
-	if (fcntl(*fdp, F_SETFD, 1) == -1) {
-		ret = errno;
-
-		(void)__os_close(*fdp);
-		return (ret);
-	}
-#endif
-	return (0);
-}
 
 /*
  * __os_open --
  *	Open a file.
  *
- * PUBLIC: int __os_open __P((const char *, int, int, int *));
+ * PUBLIC: int __os_open __P((DB_ENV *, const char *, u_int32_t, int, DB_FH *));
  */
 int
-__os_open(name, flags, mode, fdp)
+__os_open(dbenv, name, flags, mode, fhp)
+	DB_ENV *dbenv;
 	const char *name;
-	int flags, mode, *fdp;
+	u_int32_t flags;
+	int mode;
+	DB_FH *fhp;
 {
-	*fdp = __db_jump.j_open != NULL ?
-	    __db_jump.j_open(name, flags, mode) : open(name, flags, mode);
-	return (*fdp == -1 ? errno : 0);
-}
+	int oflags, ret;
 
-/*
- * __os_close --
- *	Close a file descriptor.
- *
- * PUBLIC: int __os_close __P((int));
- */
-int
-__os_close(fd)
-	int fd;
-{
-	int ret;
+	oflags = 0;
 
-	ret = __db_jump.j_close != NULL ? __db_jump.j_close(fd) : close(fd);
-	return (ret == 0 ? 0 : errno);
+	/*
+	 * DB requires the POSIX 1003.1 semantic that two files opened at the
+	 * same time with DB_OSO_CREATE/O_CREAT and DB_OSO_EXCL/O_EXCL flags
+	 * set return an EEXIST failure in at least one.
+	 */
+	if (LF_ISSET(DB_OSO_CREATE))
+		oflags |= O_CREAT;
+
+	if (LF_ISSET(DB_OSO_EXCL))
+		oflags |= O_EXCL;
+
+#if defined(O_DSYNC) && defined(XXX_NEVER_SET)
+	/*
+	 * !!!
+	 * We should get better performance if we push the log files to disk
+	 * immediately instead of waiting for the sync.  However, Solaris
+	 * (and likely any other system based on the 4BSD filesystem releases),
+	 * doesn't implement O_DSYNC correctly, only flushing data blocks and
+	 * not inode or indirect blocks.
+	 */
+	if (LF_ISSET(DB_OSO_LOG))
+		oflags |= O_DSYNC;
+#endif
+
+	if (LF_ISSET(DB_OSO_RDONLY))
+		oflags |= O_RDONLY;
+	else
+		oflags |= O_RDWR;
+
+	if (LF_ISSET(DB_OSO_TRUNC))
+		oflags |= O_TRUNC;
+
+	/* Open the file. */
+	if ((ret = __os_openhandle(dbenv, name, oflags, mode, fhp)) != 0)
+		return (ret);
+
+	/*
+	 * Delete any temporary file.
+	 *
+	 * !!!
+	 * There's a race here, where we've created a file and we crash before
+	 * we can unlink it.  Temporary files aren't common in DB, regardless,
+	 * it's not a security problem because the file is empty.  There's no
+	 * reasonable way to avoid the race (playing signal games isn't worth
+	 * the portability nightmare), so we just live with it.
+	 */
+	if (LF_ISSET(DB_OSO_TEMP))
+		(void)__os_unlink(dbenv, name);
+
+	return (0);
 }

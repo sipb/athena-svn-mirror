@@ -1,10 +1,10 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)Dbt.java	10.3 (Sleepycat) 4/10/98
+ *	$Id: Dbt.java,v 1.1.1.2 2002-02-11 16:28:47 ghudson Exp $
  */
 
 package com.sleepycat.db;
@@ -76,13 +76,14 @@ public class Dbt
     public Dbt(byte[] data)
     {
         init();
-        set_data(data);
+        internal_set_data(data);
+        if (data != null)
+            set_size(data.length);
     }
 
     public Dbt(byte[] data, int off, int len)
     {
-        init();
-        internal_set_data(data);
+        this(data);
         set_ulen(len);
         set_offset(off);
     }
@@ -98,7 +99,7 @@ public class Dbt
 
     // private data
     //
-    private long private_info_ = 0;
+    private long private_dbobj_ = 0;
 
     static {
         Db.load_db();

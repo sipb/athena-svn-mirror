@@ -1,68 +1,87 @@
 # See the file LICENSE for redistribution information.
 #
-# Copyright (c) 1996, 1997, 1998
+# Copyright (c) 1996, 1997, 1998, 1999, 2000
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test006.tcl	10.4 (Sleepycat) 4/10/98
+#	$Id: test006.tcl,v 1.1.1.2 2002-02-11 16:27:04 ghudson Exp $
 #
 # DB Test 6 {access method}
 # Keyed delete test.
 # Create database.
 # Go through database, deleting all entries by key.
-proc test006 { method {nentries 10000} {reopen 6} args} {
-	set tnum Test00$reopen
-	set args [convert_args $method $args]
+proc test006 { method {nentries 10000} {reopen 0} {tnum 6} args} {
+	source ./include.tcl
+
 	set do_renumber [is_rrecno $method]
-	set method [convert_method $method]
-	puts -nonewline "$tnum: $method ($args) $nentries equal small key; medium data pairs"
-	if {$reopen == 7} {
-		puts "(with close)"
+	set args [convert_args $method $args]
+	set omethod [convert_method $method]
+
+	if { $tnum < 10 } {
+		set tname Test00$tnum
+		set dbname test00$tnum
+	} else {
+		set tname Test0$tnum
+		set dbname test0$tnum
+	}
+	puts -nonewline "$tname: $method ($args) "
+	puts -nonewline "$nentries equal small key; medium data pairs"
+	if {$reopen == 1} {
+		puts " (with close)"
 	} else {
 		puts ""
 	}
 
-	# Get global declarations since tcl doesn't support
-	# any useful equivalent to #defines!
-	source ./include.tcl
-
 	# Create the database and open the dictionary
-	set testfile $tnum.db
+	set eindex [lsearch -exact $args "-env"]
+	#
+	# If we are using an env, then testfile should just be the db name.
+	# Otherwise it is the test directory and the name.
+	if { $eindex == -1 } {
+		set testfile $testdir/$dbname.db
+	} else {
+		set testfile $dbname.db
+	}
 
-	set flags 0
-	set txn 0
+	set pflags ""
+	set gflags ""
+	set txn ""
 	set count 0
+	if { [is_record_based $method] == 1 } {
+	   append gflags " -recno"
+	}
 
 	# Here is the loop where we put and get each key/data pair
 
 	cleanup $testdir
-	set db [eval [concat dbopen \
-	    $testfile [expr $DB_CREATE | $DB_TRUNCATE] 0644 $method $args]]
+	set db [eval {berkdb_open \
+	     -create -truncate -mode 0644} $args {$omethod $testfile}]
 	error_check_good dbopen [is_valid_db $db] TRUE
+
 	set did [open $dict]
 	while { [gets $did str] != -1 && $count < $nentries } {
-		if { [string compare $method DB_RECNO] == 0 } {
+		if { [is_record_based $method] == 1 } {
 			set key [expr $count + 1 ]
-			set put putn
 		} else {
 			set key $str
-			set put put
 		}
 
-		set datastr [ make_data_str $str ]
+		set datastr [make_data_str $str]
 
-		$db $put $txn $key $datastr $flags
-		set ret [$db get $txn $key $flags]
-		if { [string compare $ret $datastr] != 0 } {
-			puts "$tnum: put $datastr got $ret"
-			return
-		}
+		set ret [eval {$db put} \
+		    $txn $pflags {$key [chop_data $method $datastr]}]
+		error_check_good put $ret 0
+
+		set ret [eval {$db get} $gflags {$key}]
+		error_check_good "$tname: put $datastr got $ret" \
+		    $ret [list [list $key [pad_data $method $datastr]]]
 		incr count
 	}
 	close $did
 
-	if { $reopen == 7 } {
+	if { $reopen == 1 } {
 		error_check_good db_close [$db close] 0
-		set db [ dbopen $testfile 0 0 DB_UNKNOWN ]
+
+		set db [eval {berkdb_open} $args {$testfile}]
 		error_check_good dbopen [is_valid_db $db] TRUE
 	}
 
@@ -74,15 +93,19 @@ proc test006 { method {nentries 10000} {reopen 6} args} {
 	while { [gets $did str] != -1 && $count < $nentries } {
 		if { $do_renumber == 1 } {
 			set key 1
-		} elseif { [string compare $method DB_RECNO] == 0 } {
+		} elseif { [is_record_based $method] == 1 } {
 			incr key
 		} else {
 			set key $str
 		}
 
-		set datastr [ make_data_str $str ]
+		set datastr [make_data_str $str]
 
-		set ret [ $db del $txn $key $flags ]
+		set ret [eval {$db get} $gflags {$key}]
+		error_check_good "$tname: get $datastr got $ret" \
+		    $ret [list [list $key [pad_data $method $datastr]]]
+
+		set ret [eval {$db del} $txn {$key}]
 		error_check_good db_del:$key $ret 0
 		incr count
 	}

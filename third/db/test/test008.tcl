@@ -1,19 +1,23 @@
 # See the file LICENSE for redistribution information.
 #
-# Copyright (c) 1996, 1997, 1998
+# Copyright (c) 1996, 1997, 1998, 1999, 2000
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test008.tcl	10.5 (Sleepycat) 4/28/98
-
+#	$Id: test008.tcl,v 1.1.1.2 2002-02-11 16:28:24 ghudson Exp $
+#
 # DB Test 8 {access method}
 # Take the source files and dbtest executable and enter their names as the
 # key with their contents as data.  After all are entered, begin looping
 # through the entries; deleting some pairs and then readding them.
 proc test008 { method {nentries 10000} {reopen 8} {debug 0} args} {
-	set tnum Test00$reopen
-	set method [convert_method $method]
-	if { [string compare $method DB_RECNO] == 0 } {
-		puts "Test00$reopen skipping for method RECNO"
+	source ./include.tcl
+
+	set tnum test00$reopen
+	set args [convert_args $method $args]
+	set omethod [convert_method $method]
+
+	if { [is_record_based $method] == 1 } {
+		puts "Test00$reopen skipping for method $method"
 		return
 	}
 
@@ -24,44 +28,53 @@ proc test008 { method {nentries 10000} {reopen 8} {debug 0} args} {
 		puts ""
 	}
 
-	# Get global declarations since tcl doesn't support
-	# any useful equivalent to #defines!
-	source ./include.tcl
-
 	# Create the database and open the dictionary
-	set testfile $tnum.db
+	set eindex [lsearch -exact $args "-env"]
+	#
+	# If we are using an env, then testfile should just be the db name.
+	# Otherwise it is the test directory and the name.
+	if { $eindex == -1 } {
+		set testfile $testdir/$tnum.db
+	} else {
+		set testfile $tnum.db
+	}
 	set t1 $testdir/t1
 	set t2 $testdir/t2
 	set t3 $testdir/t3
 	set t4 $testdir/t4
 
-
 	cleanup $testdir
-	set db [eval [concat dbopen \
-	    $testfile [expr $DB_CREATE | $DB_TRUNCATE] 0644 $method $args]]
+
+	set db [eval {berkdb_open -create -truncate -mode 0644} $args {$omethod $testfile}]
 	error_check_good dbopen [is_valid_db $db] TRUE
-	set flags 0
-	set txn 0
+
+	set pflags ""
+	set gflags ""
+	set txn ""
 
 	# Here is the loop where we put and get each key/data pair
-	set file_list [glob ../*/*.c ./dbtest ./dbtest.exe]
+	set file_list [glob ../*/*.c ./*.o ./*.lo ./*.exe]
 
 	set count 0
 	puts "\tTest00$reopen.a: Initial put/get loop"
 	foreach f $file_list {
 		set names($count) $f
 		set key $f
-		$db putbin $txn $key ./$f $flags
-		set ret [$db getbin $t4 $txn $key $flags]
-		error_check_good Test00$reopen:diff(./$f,$t4) \
-		    [catch { exec $DIFF ./$f $t4 } res] 0
+
+		put_file $db $txn $pflags $f
+
+		get_file $db $txn $gflags $f $t4
+
+		error_check_good Test00$reopen:diff($f,$t4) \
+		    [filecmp $f $t4] 0
 
 		incr count
 	}
 
 	if {$reopen == 9} {
 		error_check_good db_close [$db close] 0
-		set db [ dbopen $testfile 0 0 DB_UNKNOWN ]
+
+		set db [eval {berkdb_open} $args $testfile]
 		error_check_good dbopen [is_valid_db $db] TRUE
 	}
 
@@ -71,18 +84,18 @@ proc test008 { method {nentries 10000} {reopen 8} {debug 0} args} {
 	puts "\tTest00$reopen.b: Delete re-add loop"
 	foreach i "1 2 4 8 16" {
 		for {set ndx 0} {$ndx < $count} { incr ndx $i} {
-			set r [$db del $txn $names($ndx) $flags]
+	 set r [eval {$db del} $txn {$names($ndx)}]
 			error_check_good db_del:$names($ndx) $r 0
 		}
 		for {set ndx 0} {$ndx < $count} { incr ndx $i} {
-			set r [$db putbin $txn $names($ndx) $names($ndx) $flags]
-			error_check_good db_putbin:$names($ndx) $r 0
+	 put_file $db $txn $pflags $names($ndx)
 		}
 	}
 
 	if {$reopen == 9} {
 		error_check_good db_close [$db close] 0
-		set db [ dbopen $testfile 0 0 DB_UNKNOWN ]
+		set db [eval {berkdb_open} $args $testfile]
+		error_check_good dbopen [is_valid_db $db] TRUE
 	}
 
 	# Now, reopen the file and make sure the key/data pairs look right.
@@ -94,21 +107,21 @@ proc test008 { method {nentries 10000} {reopen 8} {debug 0} args} {
 		puts $oid $f
 	}
 	close $oid
-	exec $SORT $t2.tmp > $t2
-	exec $RM $t2.tmp
-	exec $SORT $t1 > $t3
+	filesort $t2.tmp $t2
+	fileremove $t2.tmp
+	filesort $t1 $t3
 
 	error_check_good Test00$reopen:diff($t3,$t2) \
-	    [catch { exec $DIFF $t3 $t2 } res] 0
+	    [filecmp $t3 $t2] 0
 
 	# Now, reopen the file and run the last test again in reverse direction.
 	puts "\tTest00$reopen.d: Dump contents backward"
-	dump_bin_file_direction $db $txn $t1 test008.check $DB_LAST $DB_PREV
+	dump_bin_file_direction $db $txn $t1 test008.check "-last" "-prev"
 
-	exec $SORT $t1 > $t3
+	filesort $t1 $t3
 
 	error_check_good Test00$reopen:diff($t3,$t2) \
-	    [catch { exec $DIFF $t3 $t2 } res] 0
+	    [filecmp $t3 $t2] 0
 	error_check_good close:$db [$db close] 0
 }
 
@@ -116,6 +129,6 @@ proc test008.check { binfile tmpfile } {
 	global tnum
 	source ./include.tcl
 
-	error_check_good diff(./$binfile,$tmpfile) \
-	    [catch { exec $DIFF ./$binfile $tmpfile } res] 0
+	error_check_good diff($binfile,$tmpfile) \
+	    [filecmp $binfile $tmpfile] 0
 }

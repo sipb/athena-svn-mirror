@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)lock_util.c	10.10 (Sleepycat) 9/20/98";
+static const char revid[] = "$Id: lock_util.c,v 1.1.1.2 2002-02-11 16:26:59 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -18,7 +18,6 @@ static const char sccsid[] = "@(#)lock_util.c	10.10 (Sleepycat) 9/20/98";
 #endif
 
 #include "db_int.h"
-#include "shqueue.h"
 #include "db_page.h"
 #include "db_shash.h"
 #include "hash.h"
@@ -41,34 +40,25 @@ __lock_cmp(dbt, lock_obj)
 {
 	void *obj_data;
 
-	if (lock_obj->type != DB_LOCK_OBJTYPE)
-		return (0);
-
 	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
 	return (dbt->size == lock_obj->lockobj.size &&
 		memcmp(dbt->data, obj_data, dbt->size) == 0);
 }
 
 /*
- * PUBLIC: int __lock_locker_cmp __P((u_int32_t, DB_LOCKOBJ *));
+ * PUBLIC: int __lock_locker_cmp __P((u_int32_t, DB_LOCKER *));
  */
 int
-__lock_locker_cmp(locker, lock_obj)
+__lock_locker_cmp(locker, sh_locker)
 	u_int32_t locker;
-	DB_LOCKOBJ *lock_obj;
+	DB_LOCKER *sh_locker;
 {
-	void *obj_data;
-
-	if (lock_obj->type != DB_LOCK_LOCKER)
-		return (0);
-
-	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
-	return (memcmp(&locker, obj_data, sizeof(u_int32_t)) == 0);
+	return (locker == sh_locker->id);
 }
 
 /*
  * The next two functions are the hash functions used to store objects in the
- * lock hash table.  They are hashing the same items, but one (__lock_ohash)
+ * lock hash tables.  They are hashing the same items, but one (__lock_ohash)
  * takes a DBT (used for hashing a parameter passed from the user) and the
  * other (__lock_lhash) takes a DB_LOCKOBJ (used for hashing something that is
  * already in the lock manager).  In both cases, we have a special check to
@@ -86,7 +76,7 @@ __lock_locker_cmp(locker, lock_obj)
  * a good hash, but we want a fast hash more than we want a good one, when
  * we're coming through this code path.
  */
-#define FAST_HASH(P) {			\
+#define	FAST_HASH(P) {			\
 	u_int32_t __h;			\
 	u_int8_t *__cp, *__hp;		\
 	__hp = (u_int8_t *)&__h;	\
@@ -122,14 +112,9 @@ u_int32_t
 __lock_lhash(lock_obj)
 	DB_LOCKOBJ *lock_obj;
 {
-	u_int32_t tmp;
 	void *obj_data;
 
 	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
-	if (lock_obj->type == DB_LOCK_LOCKER) {
-		memcpy(&tmp, obj_data, sizeof(u_int32_t));
-		return (tmp);
-	}
 
 	if (lock_obj->lockobj.size == sizeof(DB_LOCK_ILOCK))
 		FAST_HASH(obj_data);
@@ -139,8 +124,9 @@ __lock_lhash(lock_obj)
 
 /*
  * __lock_locker_hash --
- *	Hash function for entering lockers into the hash table.  Since these
- *	are simply 32-bit unsigned integers, just return the locker value.
+ *	Hash function for entering lockers into the locker hash table.
+ *	Since these are simply 32-bit unsigned integers, just return
+ *	the locker value.
  *
  * PUBLIC: u_int32_t __lock_locker_hash __P((u_int32_t));
  */

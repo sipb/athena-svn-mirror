@@ -1,4 +1,4 @@
-# @(#)range.awk	10.1 (Sleepycat) 11/1/98
+# $Id: range.awk,v 1.1.1.2 2002-02-11 16:24:32 ghudson Exp $
 #
 # Print out a range of the log
 

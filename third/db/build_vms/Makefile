@@ -1,4 +1,4 @@
-# @(#)Makefile	10.2 (Sleepycat) 11/2/98
+# $Id: Makefile,v 1.1.1.2 2002-02-11 16:25:24 ghudson Exp $
 #
 
 srcdir=	../dist/..
@@ -621,7 +621,6 @@ $(libdb)(hash_stat): [-.hash]hash_stat.c
 	$(CC) $(CFLAGS) $?
 	libr/replace $(libdb) hash_stat.obj
 	delete hash_stat.obj;*
-
 
 # Lock source files.
 $(libdb)(lock): [-.lock]lock.c

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_dir.c	10.19 (Sleepycat) 10/12/98";
+static const char revid[] = "$Id: os_dir.c,v 1.1.1.2 2002-02-11 16:29:34 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,7 +31,6 @@ static const char sccsid[] = "@(#)os_dir.c	10.19 (Sleepycat) 10/12/98";
 # endif
 #endif
 
-#include <errno.h>
 #endif
 
 #include "db_int.h"
@@ -41,10 +40,11 @@ static const char sccsid[] = "@(#)os_dir.c	10.19 (Sleepycat) 10/12/98";
  * __os_dirlist --
  *	Return a list of the files in a directory.
  *
- * PUBLIC: int __os_dirlist __P((const char *, char ***, int *));
+ * PUBLIC: int __os_dirlist __P((DB_ENV *, const char *, char ***, int *));
  */
 int
-__os_dirlist(dir, namesp, cntp)
+__os_dirlist(dbenv, dir, namesp, cntp)
+	DB_ENV *dbenv;
 	const char *dir;
 	char ***namesp;
 	int *cntp;
@@ -57,17 +57,21 @@ __os_dirlist(dir, namesp, cntp)
 	if (__db_jump.j_dirlist != NULL)
 		return (__db_jump.j_dirlist(dir, namesp, cntp));
 
+#ifdef HAVE_VXWORKS
+	if ((dirp = opendir((char *)dir)) == NULL)
+#else
 	if ((dirp = opendir(dir)) == NULL)
-		return (errno);
+#endif
+		return (__os_get_errno());
 	names = NULL;
 	for (arraysz = cnt = 0; (dp = readdir(dirp)) != NULL; ++cnt) {
 		if (cnt >= arraysz) {
 			arraysz += 100;
-			if ((ret = __os_realloc(&names,
-			    arraysz * sizeof(names[0]))) != 0)
+			if ((ret = __os_realloc(dbenv,
+			    arraysz * sizeof(names[0]), NULL, &names)) != 0)
 				goto nomem;
 		}
-		if ((ret = __os_strdup(dp->d_name, &names[cnt])) != 0)
+		if ((ret = __os_strdup(dbenv, dp->d_name, &names[cnt])) != 0)
 			goto nomem;
 	}
 	(void)closedir(dirp);
@@ -78,6 +82,8 @@ __os_dirlist(dir, namesp, cntp)
 
 nomem:	if (names != NULL)
 		__os_dirfree(names, cnt);
+	if (dirp != NULL)
+		(void)closedir(dirp);
 	return (ret);
 }
 
@@ -94,8 +100,9 @@ __os_dirfree(names, cnt)
 {
 	if (__db_jump.j_dirfree != NULL)
 		__db_jump.j_dirfree(names, cnt);
-
-	while (cnt > 0)
-		__os_free(names[--cnt], 0);
-	__os_free(names, 0);
+	else {
+		while (cnt > 0)
+			__os_free(names[--cnt], 0);
+		__os_free(names, 0);
+	}
 }

@@ -1,13 +1,30 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db.src	10.8 (Sleepycat) 9/20/98
+ *	$Id: db.src,v 1.1.1.2 2002-02-11 16:25:21 ghudson Exp $
  */
 
 PREFIX	db
+
+INCLUDE	#include "db_config.h"
+INCLUDE
+INCLUDE #ifndef NO_SYSTEM_INCLUDES
+INCLUDE #include <sys/types.h>
+INCLUDE
+INCLUDE #include <ctype.h>
+INCLUDE #include <errno.h>
+INCLUDE #include <string.h>
+INCLUDE #endif
+INCLUDE
+INCLUDE #include "db_int.h"
+INCLUDE #include "db_page.h"
+INCLUDE #include "db_dispatch.h"
+INCLUDE #include "db_am.h"
+INCLUDE #include "txn.h"
+INCLUDE
 
 /*
  * addrem -- Add or remove an entry from a duplicate page.
@@ -25,9 +42,9 @@ PREFIX	db
  * If the dbt was NULL then the hdr is a complete item to be
  * pasted on the page.
  */
-BEGIN addrem
+BEGIN addrem		41
 ARG	opcode		u_int32_t	lu
-ARG	fileid		u_int32_t	lu
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 ARG	indx		u_int32_t	lu
 ARG	nbytes		size_t		lu
@@ -45,9 +62,9 @@ END
  * pageimage:	entire page contents.
  * pagelsn:	former lsn of the page.
  */
-BEGIN split
+DEPRECATED split	42
 ARG	opcode		u_int32_t	lu
-ARG	fileid		u_int32_t	lu
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 DBT	pageimage	DBT		s
 POINTER	pagelsn		DB_LSN *	lu
@@ -68,9 +85,9 @@ END
  *		may be used later if we actually do overwrites of big key/
  *		data items in place.
  */
-BEGIN big
+BEGIN big		43
 ARG	opcode		u_int32_t	lu
-ARG	fileid		u_int32_t	lu
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 ARG	prev_pgno	db_pgno_t	lu
 ARG	next_pgno	db_pgno_t	lu
@@ -88,8 +105,8 @@ END
  * adjust:	the adjustment being made.
  * lsn:		the page's original lsn.
  */
-BEGIN ovref
-ARG	fileid		u_int32_t	lu
+BEGIN ovref		44
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 ARG	adjust		int32_t		ld
 POINTER	lsn		DB_LSN *	lu
@@ -106,9 +123,9 @@ END
  * next:	the next page.
  * lsn_next:	the previous page's original lsn.
  */
-BEGIN relink
+BEGIN relink		45
 ARG	opcode		u_int32_t	lu
-ARG	fileid		u_int32_t	lu
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 POINTER	lsn		DB_LSN *	lu
 ARG	prev		db_pgno_t	lu
@@ -126,8 +143,8 @@ END
  * nextpgno:	new page number being added.
  * nextlsn:	lsn of nextpgno;
  */
-BEGIN addpage
-ARG	fileid		u_int32_t	lu
+DEPRECATED addpage	46
+ARG	fileid		int32_t		ld
 ARG	pgno		db_pgno_t	lu
 POINTER	lsn		DB_LSN *	lu
 ARG	nextpgno	db_pgno_t	lu
@@ -143,10 +160,19 @@ END
  * data:	data parameter
  * flags:	flags parameter
  */
-BEGIN debug
+BEGIN debug		47
 DBT	op		DBT		s
-ARG	fileid		u_int32_t	lu
+ARG	fileid		int32_t		ld
 DBT	key		DBT		s
 DBT	data		DBT		s
 ARG	arg_flags	u_int32_t	lu
+END
+
+/*
+ * noop -- do nothing, but get an LSN.
+ */
+BEGIN noop		48
+ARG	fileid		int32_t		ld
+ARG	pgno		db_pgno_t	lu
+POINTER	prevlsn		DB_LSN *	lu
 END

@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_fput.c	10.24 (Sleepycat) 9/27/98";
+static const char revid[] = "$Id: mp_fput.c,v 1.1.1.2 2002-02-11 16:26:39 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -16,11 +16,18 @@ static const char sccsid[] = "@(#)mp_fput.c	10.24 (Sleepycat) 9/27/98";
 #include <errno.h>
 #endif
 
+#ifdef  HAVE_RPC
+#include "db_server.h"
+#endif
+
 #include "db_int.h"
-#include "shqueue.h"
 #include "db_shash.h"
 #include "mp.h"
-#include "common_ext.h"
+
+#ifdef HAVE_RPC
+#include "gen_client_ext.h"
+#include "rpc_client_ext.h"
+#endif
 
 /*
  * memp_fput --
@@ -33,40 +40,48 @@ memp_fput(dbmfp, pgaddr, flags)
 	u_int32_t flags;
 {
 	BH *bhp;
+	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	MPOOL *mp;
-	int wrote, ret;
+	MPOOL *c_mp, *mp;
+	int ret, wrote;
 
 	dbmp = dbmfp->dbmp;
-	mp = dbmp->mp;
+	dbenv = dbmp->dbenv;
+	mp = dbmp->reginfo[0].primary;
 
-	MP_PANIC_CHECK(dbmp);
+#ifdef HAVE_RPC
+	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
+		return (__dbcl_memp_fput(dbmfp, pgaddr, flags));
+#endif
+
+	PANIC_CHECK(dbenv);
 
 	/* Validate arguments. */
 	if (flags) {
-		if ((ret = __db_fchk(dbmp->dbenv, "memp_fput", flags,
+		if ((ret = __db_fchk(dbenv, "memp_fput", flags,
 		    DB_MPOOL_CLEAN | DB_MPOOL_DIRTY | DB_MPOOL_DISCARD)) != 0)
 			return (ret);
-		if ((ret = __db_fcchk(dbmp->dbenv, "memp_fput",
+		if ((ret = __db_fcchk(dbenv, "memp_fput",
 		    flags, DB_MPOOL_CLEAN, DB_MPOOL_DIRTY)) != 0)
 			return (ret);
 
 		if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(dbmfp, MP_READONLY)) {
-			__db_err(dbmp->dbenv,
+			__db_err(dbenv,
 			    "%s: dirty flag set for readonly file page",
 			    __memp_fn(dbmfp));
 			return (EACCES);
 		}
 	}
 
-	LOCKREGION(dbmp);
+	R_LOCK(dbenv, dbmp->reginfo);
 
 	/* Decrement the pinned reference count. */
-	if (dbmfp->pinref == 0)
-		__db_err(dbmp->dbenv,
-		    "%s: put: more blocks returned than retrieved",
-		    __memp_fn(dbmfp));
-	else
+	if (dbmfp->pinref == 0) {
+		__db_err(dbenv,
+		    "%s: more pages returned than retrieved", __memp_fn(dbmfp));
+		R_UNLOCK(dbenv, dbmp->reginfo);
+		return (EINVAL);
+	} else
 		--dbmfp->pinref;
 
 	/*
@@ -77,22 +92,27 @@ memp_fput(dbmfp, pgaddr, flags)
 	 */
 	if (dbmfp->addr != NULL && pgaddr >= dbmfp->addr &&
 	    (u_int8_t *)pgaddr <= (u_int8_t *)dbmfp->addr + dbmfp->len) {
-		UNLOCKREGION(dbmp);
+		R_UNLOCK(dbenv, dbmp->reginfo);
 		return (0);
 	}
 
 	/* Convert the page address to a buffer header. */
 	bhp = (BH *)((u_int8_t *)pgaddr - SSZA(BH, buf));
 
+	/* Convert the buffer header to a cache. */
+	c_mp = BH_TO_CACHE(dbmp, bhp);
+
+/* UNLOCK THE REGION, LOCK THE CACHE. */
+
 	/* Set/clear the page bits. */
 	if (LF_ISSET(DB_MPOOL_CLEAN) && F_ISSET(bhp, BH_DIRTY)) {
-		++mp->stat.st_page_clean;
-		--mp->stat.st_page_dirty;
+		++c_mp->stat.st_page_clean;
+		--c_mp->stat.st_page_dirty;
 		F_CLR(bhp, BH_DIRTY);
 	}
 	if (LF_ISSET(DB_MPOOL_DIRTY) && !F_ISSET(bhp, BH_DIRTY)) {
-		--mp->stat.st_page_clean;
-		++mp->stat.st_page_dirty;
+		--c_mp->stat.st_page_clean;
+		++c_mp->stat.st_page_dirty;
 		F_SET(bhp, BH_DIRTY);
 	}
 	if (LF_ISSET(DB_MPOOL_DISCARD))
@@ -103,9 +123,9 @@ memp_fput(dbmfp, pgaddr, flags)
 	 * application returns a page twice.
 	 */
 	if (bhp->ref == 0) {
-		__db_err(dbmp->dbenv, "%s: page %lu: unpinned page returned",
+		__db_err(dbenv, "%s: page %lu: unpinned page returned",
 		    __memp_fn(dbmfp), (u_long)bhp->pgno);
-		UNLOCKREGION(dbmp);
+		R_UNLOCK(dbenv, dbmp->reginfo);
 		return (EINVAL);
 	}
 
@@ -115,26 +135,34 @@ memp_fput(dbmfp, pgaddr, flags)
 	 * chain.  The rest gets done at last reference close.
 	 */
 	if (--bhp->ref > 0) {
-		UNLOCKREGION(dbmp);
+		R_UNLOCK(dbenv, dbmp->reginfo);
 		return (0);
 	}
 
-	/* Move the buffer to the head/tail of the LRU chain. */
-	SH_TAILQ_REMOVE(&mp->bhq, bhp, q, __bh);
+	/*
+	 * Move the buffer to the head/tail of the LRU chain.  We do this
+	 * before writing the buffer for checkpoint purposes, as the write
+	 * can discard the region lock and allow another process to acquire
+	 * buffer.  We could keep that from happening, but there seems no
+	 * reason to do so.
+	 */
+	SH_TAILQ_REMOVE(&c_mp->bhq, bhp, q, __bh);
 	if (F_ISSET(bhp, BH_DISCARD))
-		SH_TAILQ_INSERT_HEAD(&mp->bhq, bhp, q, __bh);
+		SH_TAILQ_INSERT_HEAD(&c_mp->bhq, bhp, q, __bh);
 	else
-		SH_TAILQ_INSERT_TAIL(&mp->bhq, bhp, q);
+		SH_TAILQ_INSERT_TAIL(&c_mp->bhq, bhp, q);
 
 	/*
 	 * If this buffer is scheduled for writing because of a checkpoint, we
-	 * need to write it (if we marked it dirty), or update the checkpoint
-	 * counters (if we didn't mark it dirty).  If we try to write it and
-	 * can't, that's not necessarily an error, but set a flag so that the
-	 * next time the memp_sync function runs we try writing it there, as
-	 * the checkpoint application better be able to write all of the files.
+	 * need to write it (if it's dirty), or update the checkpoint counters
+	 * (if it's not dirty).  If we try to write it and can't, that's not
+	 * necessarily an error as it's not completely unreasonable that the
+	 * application have permission to write the underlying file, but set a
+	 * flag so that the next time the memp_sync function is called we try
+	 * writing it there, as the checkpoint thread of control better be able
+	 * to write all of the files.
 	 */
-	if (F_ISSET(bhp, BH_WRITE))
+	if (F_ISSET(bhp, BH_WRITE)) {
 		if (F_ISSET(bhp, BH_DIRTY)) {
 			if (__memp_bhwrite(dbmp,
 			    dbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
@@ -142,10 +170,11 @@ memp_fput(dbmfp, pgaddr, flags)
 		} else {
 			F_CLR(bhp, BH_WRITE);
 
-			--dbmfp->mfp->lsn_cnt;
 			--mp->lsn_cnt;
+			--dbmfp->mfp->lsn_cnt;
 		}
+	}
 
-	UNLOCKREGION(dbmp);
+	R_UNLOCK(dbenv, dbmp->reginfo);
 	return (0);
 }

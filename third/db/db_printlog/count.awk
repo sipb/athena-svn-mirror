@@ -1,4 +1,4 @@
-# @(#)count.awk	10.1 (Sleepycat) 11/1/98
+# $Id: count.awk,v 1.1.1.2 2002-02-11 16:24:32 ghudson Exp $
 #
 # Print out the number of log records for transactions that we
 # encountered.
