@@ -1,4 +1,4 @@
-# $Id: packages,v 1.137 2001-06-05 19:15:47 ghudson Exp $
+# $Id: packages,v 1.137.2.1 2001-06-27 18:23:29 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -176,7 +176,6 @@ third/oaf			requires libxml,ORBit,popt,flex
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
-third/pine			requires krb5,hesiod
 third/popt			except linux
 third/rcs			on solaris
 third/read-edid			on linux
