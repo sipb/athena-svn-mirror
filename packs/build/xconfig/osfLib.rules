@@ -1,33 +1,32 @@
-XCOMM $XConsortium: sunLib.rules,v 1.9 92/06/28 17:43:02 rws Exp $
+XCOMM $XConsortium: osfLib.rules,v 1.3 92/06/28 19:53:30 rws Exp $
 
 /*
- * SunOS shared library rules
+ * OSF/1 shared library rules
  */
 
 #ifndef HasSharedLibraries
 #define HasSharedLibraries YES
 #endif
+#ifndef SeparateSharedCompile
+#define SeparateSharedCompile NO
+#endif
 #ifndef SharedDataSeparation
-#define SharedDataSeparation YES
+#define SharedDataSeparation NO
 #endif
 #ifndef SharedCodeDef
-#define SharedCodeDef -DSHAREDCODE
+#define SharedCodeDef /**/
 #endif
 #ifndef SharedLibraryDef
-#define SharedLibraryDef -DSUNSHLIB
+#define SharedLibraryDef /**/
 #endif
 #ifndef ShLibIncludeFile
-#define ShLibIncludeFile <sunLib.tmpl>
+#define ShLibIncludeFile <osfLib.tmpl>
 #endif
 #ifndef SharedLibraryLoadFlags
-#define SharedLibraryLoadFlags -assert pure-text
+#define SharedLibraryLoadFlags -shared -no_archive
 #endif
 #ifndef PositionIndependentCFlags
-#if HasGcc2
-#define PositionIndependentCFlags -fpic
-#else
-#define PositionIndependentCFlags -pic
-#endif
+#define PositionIndependentCFlags /**/
 #endif
 
 /*
@@ -38,6 +37,8 @@ XCOMM $XConsortium: sunLib.rules,v 1.9 92/06/28 17:43:02 rws Exp $
 install:: Concat(lib,libname.so.rev) 					@@\
 	MakeDir($(DESTDIR)dest)						@@\
 	$(INSTALL) -c $(INSTLIBFLAGS) Concat(lib,libname.so.rev) $(DESTDIR)dest @@\
+	$(RM) Concat($(DESTDIR)dest/lib,libname.so)			@@\
+	$(LN) Concat(lib,libname.so.rev) Concat($(DESTDIR)dest/lib,libname.so)
 
 #endif /* InstallSharedLibrary */
 
@@ -45,17 +46,13 @@ install:: Concat(lib,libname.so.rev) 					@@\
  * InstallSharedLibraryData - generate rules to install the shared library data
  */
 #ifndef InstallSharedLibraryData
-#define	InstallSharedLibraryData(libname,rev,dest)			@@\
-install:: Concat(lib,libname.sa.rev)					@@\
-	MakeDir($(DESTDIR)dest)						@@\
-	$(INSTALL) -c $(INSTLIBFLAGS) Concat(lib,libname.sa.rev) $(DESTDIR)dest @@\
-	RanLibrary($(RANLIBINSTFLAGS) Concat($(DESTDIR)dest/lib,libname.sa.rev))
-
+#define	InstallSharedLibraryData(libname,rev,dest)
 #endif /* InstallSharedLibraryData */
 
+
 /*
- * NormalSharedLibraryTarget - generate rules to create a shared library;
- * build it into a different name so that the we do not hose people by having
+ * SharedLibraryTarget - generate rules to create a shared library;
+ * build it into a different name so that we do not hose people by having
  * the library gone for long periods.
  */
 #ifndef SharedLibraryTarget
@@ -64,12 +61,14 @@ AllTarget(Concat(lib,libname.so.rev))					@@\
 									@@\
 Concat(lib,libname.so.rev):  solist					@@\
 	$(RM) $@~							@@\
-	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) solist $(REQUIREDLIBS)) @@\
+	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) -package $@ -soname $@ solist $(REQUIREDLIBS) -lc) @@\
 	$(RM) $@ 							@@\
 	$(MV) $@~ $@							@@\
+	$(RM) Concat(lib,libname.so)					@@\
+	$(LN) $@ Concat(lib,libname.so)					@@\
 									@@\
 clean::									@@\
-	$(RM) Concat(lib,libname.so.rev)
+	$(RM) Concat(lib,libname.so.rev) Concat(lib,libname.so)
 
 #endif /* SharedLibraryTarget */
 
@@ -77,20 +76,9 @@ clean::									@@\
  * SharedLibraryDataTarget - generate rules to create shlib data file;
  */
 #ifndef SharedLibraryDataTarget
-#define SharedLibraryDataTarget(libname,rev,salist)			@@\
-AllTarget(Concat(lib,libname.sa.rev))					@@\
-									@@\
-Concat(lib,libname.sa.rev):  salist					@@\
-	$(RM) $@							@@\
-	$(AR) $@ salist							@@\
-	RanLibrary($@)							@@\
-									@@\
-clean::									@@\
-	$(RM) Concat(lib,libname.sa.rev)
+#define SharedLibraryDataTarget(libname,rev,salist)
+#endif /* SharedLibraryTarget */
 
-#endif /* SharedLibraryDataTarget */
-
-#if SunPost411FCSLd
 #ifndef XmuDependencyRule
 #define XmuDependencyRule()						@@\
 libXmu.so.$(SOXMUREV): $(EXTENSIONSRC)/lib/libXext.so.$(SOXEXTREV)	@@\
@@ -98,4 +86,3 @@ libXmu.so.$(SOXMUREV): $(EXTENSIONSRC)/lib/libXext.so.$(SOXEXTREV)	@@\
 $(EXTENSIONSRC)/lib/libXext.so.$(SOXEXTREV):				@@\
 	cd $(EXTENSIONSRC)/lib; make libXext.so.$(SOXEXTREV)
 #endif /* XmuDependencyRule */
-#endif

@@ -1,8 +1,17 @@
-XCOMM $XConsortium: ibmLib.tmpl,v 1.5 92/05/08 09:02:58 rws Exp $
+XCOMM $XConsortium: ibmLib.tmpl,v 1.6 92/06/28 17:43:45 rws Exp $
 
 /*
  * AIX shared library template
  */
+
+#define SharedXextReqs $(XLIBONLY)
+#define SharedXmuReqs $(XTOOLLIB) $(XLIB)
+#define SharedOldXReqs $(XLIBONLY)
+#define SharedXtReqs $(XLIBONLY)
+#define SharedXawReqs $(XMULIB) $(XTOOLLIB) $(XLIB)
+#define SharedXinputReqs $(XLIB)
+#define SharedXTestReqs $(XLIB)
+#define SharedPexReqs $(XLIBONLY)
 
 PICFLAGS = PositionIndependentCFlags
 
@@ -16,7 +25,8 @@ PICFLAGS = PositionIndependentCFlags
 #endif
 #if SharedLibX
           DEPXLIB = $(DEPEXTENSIONLIB) /* _UseCat($(USRLIBDIR),$(XLIBSRC),/libX11.a) */
-             XLIB = $(EXTENSIONLIB) _Use(-lX11,-L$(XLIBSRC) -lX11)
+         XLIBONLY = _Use(-lX11,-L$(XLIBSRC) -lX11)
+             XLIB = $(EXTENSIONLIB) $(XLIBONLY)
 #endif
 #if SharedLibXmu
         DEPXMULIB = /* _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.a) */

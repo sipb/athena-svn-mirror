@@ -1,47 +1,47 @@
-XCOMM $XConsortium: sunLib.tmpl,v 1.18 92/06/28 17:42:28 rws Exp $
+XCOMM $XConsortium: osfLib.tmpl,v 1.3 92/06/28 20:57:19 rws Exp $
 
 /*
- * SunOS shared library template
+ * OSF/1 shared library template
  */
 
 #ifndef SharedXlibRev
-#define SharedXlibRev 4.10
+#define SharedXlibRev 5.0
 #endif
 #ifndef SharedOldXRev
-#define SharedOldXRev 4.10
+#define SharedOldXRev 5.0
 #endif
+#define SharedOldXReqs $(XLIBONLY)
 #ifndef SharedXtRev
-#define SharedXtRev 4.10
+#define SharedXtRev 5.0
 #endif
+#define SharedXtReqs $(XLIBONLY)
 #ifndef SharedXawRev
 #define SharedXawRev 5.0
 #endif
+#define SharedXawReqs $(XMULIB) $(XTOOLLIB) $(XLIB) -init _XawFixupVendorShell
 #ifndef SharedXmuRev
-#define SharedXmuRev 4.10
+#define SharedXmuRev 5.0
 #endif
-#if SunPost411FCSLd
-#if NormalLibXmu
-#define SharedXmuReqs -L../$(TOOLKITSRC) -lXt -L../$(EXTENSIONSRC)/lib -lXext -L../$(XLIBSRC) -lX11
-#else
 #define SharedXmuReqs $(XTOOLLIB) $(XLIB)
-#endif
-#endif
 #ifndef SharedXextRev
-#define SharedXextRev 4.10
+#define SharedXextRev 5.0
+#define SharedXextReqs $(XLIBONLY)
 #endif
 #ifndef SharedXinputRev
-#define SharedXinputRev 4.10
+#define SharedXinputRev 5.0
 #endif
+#define SharedXinputReqs $(XLIB)
 #ifndef SharedXTestRev
 #define SharedXTestRev 1.0
 #endif
+#define SharedXTestReqs $(XLIB)
 #ifndef SharedXTrapRev
 #define SharedXTrapRev 1.0
 #endif
 #ifndef SharedPexRev
 #define SharedPexRev 1.0
 #endif
-
+#define SharedPexReqs $(XLIBONLY)
 
 SHLIBLDFLAGS = SharedLibraryLoadFlags
 PICFLAGS = PositionIndependentCFlags
@@ -60,24 +60,19 @@ PICFLAGS = PositionIndependentCFlags
              XLIB = $(EXTENSIONLIB) $(XLIBONLY)
 #endif
 #if SharedLibXmu
-/* Sun shared libraries are deficient in link semantics */
-        DEPXMULIB = _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.sa.$(SOXMUREV))
-       XMULIBONLY = _Use(-lXmu,-L$(XMUSRC) -lXmu)
-           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu -L$(TOOLKITSRC) -L$(EXTENSIONSRC)/lib -L$(XLIBSRC))
-#if !defined(UseInstalled) && !defined(XawClientLibs)
-#define XawClientLibs $(XAWLIB) $(XMULIBONLY) $(XTOOLLIB) $(XLIB)
-#endif
+        DEPXMULIB = /* _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.sa.$(SOXMUREV) */
+           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu)
 #endif
 #if SharedOldLibX
        DEPOLDXLIB = /* _UseCat($(USRLIBDIR),$(OLDXLIBSRC),/liboldX.sa.$(SOOLDXREV)) */
           OLDXLIB = _Use(-loldX,-L$(OLDXLIBSRC) -loldX)
 #endif
 #if SharedLibXt
-      DEPXTOOLLIB = _UseCat($(USRLIBDIR),$(TOOLKITSRC),/libXt.sa.$(SOXTREV))
+      DEPXTOOLLIB = /* _UseCat($(USRLIBDIR),$(TOOLKITSRC),/libXt.sa.$(SOXTREV)) */
          XTOOLLIB = _Use(-lXt,-L$(TOOLKITSRC) -lXt)
 #endif
 #if SharedLibXaw
-        DEPXAWLIB = _UseCat($(USRLIBDIR),$(AWIDGETSRC),/libXaw.sa.$(SOXAWREV))
+        DEPXAWLIB = /* _UseCat($(USRLIBDIR),$(AWIDGETSRC),/libXaw.sa.$(SOXAWREV)) */
            XAWLIB = _Use(-lXaw,-L$(AWIDGETSRC) -lXaw)
 #endif
 #if SharedLibXinput

@@ -6,7 +6,7 @@
  * DoNormalLib, DoSharedLib, DoDebugLib, DoProfileLib
  */
 
-XCOMM $XConsortium: Library.tmpl,v 1.13 92/05/28 12:04:33 rws Exp $
+XCOMM $XConsortium: Library.tmpl,v 1.14 92/06/28 17:39:33 rws Exp $
 
 #ifndef LibraryCcCmd
 #if DoSharedLib && defined(SharedLibraryCcCmd)
@@ -27,6 +27,9 @@ XCOMM $XConsortium: Library.tmpl,v 1.13 92/05/28 12:04:33 rws Exp $
 #endif
 #ifndef LibraryCDebugFlags
 #define LibraryCDebugFlags OptimizedCDebugFlags
+#endif
+#ifndef SeparateSharedCompile
+#define SeparateSharedCompile YES
 #endif
 #ifndef AvoidNullMakeCommand
 #define AvoidNullMakeCommand NO
@@ -60,7 +63,7 @@ CDEBUGFLAGS = LibraryCDebugFlags
 #define _ProfiledCleanDir() $(_NULLCMD_)
 #endif
 
-#if DoSharedLib && DoNormalLib
+#if DoSharedLib && DoNormalLib && SeparateSharedCompile
 #define _SharedLibMkdir() LibMkdir(shared)
 #define _SharedObjCompile(options) SharedLibObjCompile(options)
 #define _SharedCleanDir() LibCleanDir(shared)
@@ -70,7 +73,7 @@ CDEBUGFLAGS = LibraryCDebugFlags
 #define _SharedCleanDir() $(_NULLCMD_)
 #endif
 
-#if DoSharedLib && !DoNormalLib
+#if DoSharedLib && !DoNormalLib && SeparateSharedCompile
 #define _NormalObjCompile(options) NormalSharedLibObjCompile(options)
 #else
 #define _NormalObjCompile(options) NormalLibObjCompile(options)

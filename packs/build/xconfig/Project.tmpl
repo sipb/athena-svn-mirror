@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.149 92/06/01 19:39:56 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.151 92/06/28 17:41:17 rws Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -395,6 +395,9 @@ XCOMM $XConsortium: Project.tmpl,v 1.149 92/06/01 19:39:56 rws Exp $
 #ifndef XtErrorPrefix
 #define XtErrorPrefix /* as empty string */
 #endif
+#ifndef XtExtraDefines
+#define XtExtraDefines /* as empty string */
+#endif
 #ifndef XtWarningPrefix
 #define XtWarningPrefix /* as empty string */
 #endif
@@ -528,7 +531,8 @@ XCOMM X Window System make variables; this need to be coordinated with rules
  * Makefile.
  */
           PATHSEP = /			/* for building filenames */
-        USRLIBDIR = UsrLibDir		/* libraries */
+        USRLIBDIR = UsrLibDir		/* nonshared libraries */
+         SHLIBDIR = ShLibDir            /* shared libraries */
            BINDIR = BinDir		/* programs */
           INCROOT = IncRoot		/* base of where to put header files */
      BUILDINCROOT = BuildIncRoot	/* base of build loc */
@@ -675,7 +679,8 @@ XCOMM X Window System make variables; this need to be coordinated with rules
 #endif
 #if !SharedLibX
           DEPXLIB = $(DEPEXTENSIONLIB) _UseCat($(USRLIBDIR),$(XLIBSRC),/libX11.a)
-             XLIB = $(EXTENSIONLIB) LoaderLibPrefix _Use(-lX11,$(XLIBSRC)/libX11.a)
+         XLIBONLY = LoaderLibPrefix _Use(-lX11,$(XLIBSRC)/libX11.a)
+             XLIB = $(EXTENSIONLIB) $(XLIBONLY)
 #endif
       DEPXAUTHLIB = _UseCat($(USRLIBDIR),$(XAUTHSRC),/libXau.a)
          XAUTHLIB = LoaderLibPrefix _Use(-lXau,$(DEPXAUTHLIB))
