@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.12 1989-11-22 21:24:54 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.13 1989-11-26 19:21:04 jik Exp $";
 #endif
 
 #ifdef AFS_MOUNTPOINTS
@@ -319,7 +319,7 @@ struct stat *oldbuf;
 	  statbuf = *oldbuf;
      else if (lstat(name, &statbuf) < 0) {
 	  set_error(errno);
-	  error("is_mountpoint");
+	  error(name);
 	  return 0;
      }
 
@@ -327,7 +327,7 @@ struct stat *oldbuf;
 
      if (strlen(name) + 4 /* length of "/.." + a NULL */ > MAXPATHLEN) {
 	  set_error(ENAMETOOLONG);
-	  error("is_mountpoint");
+	  error(name);
 	  return 0;
      }
 
@@ -335,7 +335,7 @@ struct stat *oldbuf;
      strcat(buf, "/..");
      if (lstat(buf, &statbuf) < 0) {
 	  set_error(errno);
-	  error("is_mountpoint");
+	  error(name);
 	  return 0;
      }
 
@@ -376,7 +376,7 @@ struct stat *oldbuf;
      else {
 	  if (errno != EINVAL) {
 	       set_error(errno);
-	       error("is_mountpoint");
+	       error(name);
 	  }
      }
 #endif /* AFS_MOUNTPOINTS */
