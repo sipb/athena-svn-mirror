@@ -194,19 +194,19 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-@HAVE_X_FALSE@@INCLUDE_HANGUL_X_TRUE@pango_hangul_x_la_DEPENDENCIES = 
 @HAVE_X_TRUE@@INCLUDE_HANGUL_X_TRUE@pango_hangul_x_la_DEPENDENCIES = 
 @HAVE_X_TRUE@@INCLUDE_HANGUL_X_FALSE@pango_hangul_x_la_DEPENDENCIES =  \
 @HAVE_X_TRUE@@INCLUDE_HANGUL_X_FALSE@$(top_builddir)/pango/libpangox-$(PANGO_API_VERSION).la \
 @HAVE_X_TRUE@@INCLUDE_HANGUL_X_FALSE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
 @HAVE_X_FALSE@@INCLUDE_HANGUL_X_FALSE@pango_hangul_x_la_DEPENDENCIES = 
+@HAVE_X_FALSE@@INCLUDE_HANGUL_X_TRUE@pango_hangul_x_la_DEPENDENCIES = 
 pango_hangul_x_la_OBJECTS =  hangul-x.lo
-@HAVE_XFT_TRUE@@INCLUDE_HANGUL_XFT_FALSE@pango_hangul_xft_la_DEPENDENCIES =  \
-@HAVE_XFT_TRUE@@INCLUDE_HANGUL_XFT_FALSE@$(top_builddir)/pango/libpangoxft-$(PANGO_API_VERSION).la \
-@HAVE_XFT_TRUE@@INCLUDE_HANGUL_XFT_FALSE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
-@HAVE_XFT_FALSE@@INCLUDE_HANGUL_XFT_TRUE@pango_hangul_xft_la_DEPENDENCIES = 
-@HAVE_XFT_FALSE@@INCLUDE_HANGUL_XFT_FALSE@pango_hangul_xft_la_DEPENDENCIES = 
-@HAVE_XFT_TRUE@@INCLUDE_HANGUL_XFT_TRUE@pango_hangul_xft_la_DEPENDENCIES = 
+@INCLUDE_HANGUL_XFT_TRUE@@HAVE_XFT_FALSE@pango_hangul_xft_la_DEPENDENCIES = 
+@INCLUDE_HANGUL_XFT_FALSE@@HAVE_XFT_TRUE@pango_hangul_xft_la_DEPENDENCIES =  \
+@INCLUDE_HANGUL_XFT_FALSE@@HAVE_XFT_TRUE@$(top_builddir)/pango/libpangoxft-$(PANGO_API_VERSION).la \
+@INCLUDE_HANGUL_XFT_FALSE@@HAVE_XFT_TRUE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
+@INCLUDE_HANGUL_XFT_TRUE@@HAVE_XFT_TRUE@pango_hangul_xft_la_DEPENDENCIES = 
+@INCLUDE_HANGUL_XFT_FALSE@@HAVE_XFT_FALSE@pango_hangul_xft_la_DEPENDENCIES = 
 pango_hangul_xft_la_OBJECTS =  hangul-xft.lo
 libpango_hangul_x_la_LDFLAGS = 
 libpango_hangul_x_la_LIBADD = 

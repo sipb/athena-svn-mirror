@@ -173,10 +173,10 @@ EXTRA_DIST = \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-@HAVE_CXX_TRUE@check_PROGRAMS =  testboundaries$(EXEEXT) \
-@HAVE_CXX_TRUE@testcolor$(EXEEXT) cxx-test$(EXEEXT)
 @HAVE_CXX_FALSE@check_PROGRAMS =  testboundaries$(EXEEXT) \
 @HAVE_CXX_FALSE@testcolor$(EXEEXT)
+@HAVE_CXX_TRUE@check_PROGRAMS =  testboundaries$(EXEEXT) \
+@HAVE_CXX_TRUE@testcolor$(EXEEXT) cxx-test$(EXEEXT)
 noinst_PROGRAMS =  gen-all-unicode$(EXEEXT) dump-boundaries$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 

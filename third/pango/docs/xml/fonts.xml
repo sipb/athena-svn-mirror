@@ -1529,6 +1529,9 @@ Returns <literal>TRUE</literal> if <parameter>object</parameter> is a <link link
 <refsect2>
 <title><anchor id="PangoFontMapClass"/>struct PangoFontMapClass</title>
 <programlisting>struct PangoFontMapClass {
+
+  GObjectClass parent_class;
+
   
   PangoFont *   (*load_font)     (PangoFontMap               *fontmap,
 				  PangoContext               *context,
@@ -1547,6 +1550,11 @@ Returns <literal>TRUE</literal> if <parameter>object</parameter> is a <link link
 The <link linkend="PangoFontMapClass">PangoFontMapClass</link> structure holds the virtual functions for
 a particular <link linkend="PangoFontMap">PangoFontMap</link> implementation.
 </para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GObjectClass">GObjectClass</link> <structfield>parent_class</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
 <varlistentry>
 <term><link linkend="PangoFont">PangoFont</link>* (*<structfield>load_font</structfield>) (PangoFontMap               *fontmap,
 				  PangoContext               *context,
@@ -1703,6 +1711,9 @@ The GObject type for <link linkend="PangoFontset">PangoFontset</link>.
 <refsect2>
 <title><anchor id="PangoFontsetClass"/>struct PangoFontsetClass</title>
 <programlisting>struct PangoFontsetClass {
+
+  GObjectClass parent_class;
+
    
   PangoFont *       (*get_font)     (PangoFontset  *fontset,
 				     guint          wc);
@@ -1716,6 +1727,11 @@ The GObject type for <link linkend="PangoFontset">PangoFontset</link>.
 The <link linkend="PangoFontsetClass">PangoFontsetClass</link> structure holds the virtual functions for
 a particular <link linkend="PangoFontset">PangoFontset</link> implementation.
 </para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GObjectClass">GObjectClass</link> <structfield>parent_class</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
 <varlistentry>
 <term><link linkend="PangoFont">PangoFont</link>* (*<structfield>get_font</structfield>) (PangoFontset  *fontset,
 				     guint          wc)</term>

@@ -172,12 +172,12 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-@HAVE_X_TRUE@@INCLUDE_TAMIL_X_TRUE@pango_tamil_x_la_DEPENDENCIES = 
-@HAVE_X_FALSE@@INCLUDE_TAMIL_X_FALSE@pango_tamil_x_la_DEPENDENCIES = 
-@HAVE_X_TRUE@@INCLUDE_TAMIL_X_FALSE@pango_tamil_x_la_DEPENDENCIES =  \
-@HAVE_X_TRUE@@INCLUDE_TAMIL_X_FALSE@$(top_builddir)/pango/libpangox-$(PANGO_API_VERSION).la \
-@HAVE_X_TRUE@@INCLUDE_TAMIL_X_FALSE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
-@HAVE_X_FALSE@@INCLUDE_TAMIL_X_TRUE@pango_tamil_x_la_DEPENDENCIES = 
+@INCLUDE_TAMIL_X_TRUE@@HAVE_X_TRUE@pango_tamil_x_la_DEPENDENCIES = 
+@INCLUDE_TAMIL_X_FALSE@@HAVE_X_FALSE@pango_tamil_x_la_DEPENDENCIES = 
+@INCLUDE_TAMIL_X_TRUE@@HAVE_X_FALSE@pango_tamil_x_la_DEPENDENCIES = 
+@INCLUDE_TAMIL_X_FALSE@@HAVE_X_TRUE@pango_tamil_x_la_DEPENDENCIES =  \
+@INCLUDE_TAMIL_X_FALSE@@HAVE_X_TRUE@$(top_builddir)/pango/libpangox-$(PANGO_API_VERSION).la \
+@INCLUDE_TAMIL_X_FALSE@@HAVE_X_TRUE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
 pango_tamil_x_la_OBJECTS =  tamil-x.lo
 libpango_tamil_x_la_LDFLAGS = 
 libpango_tamil_x_la_LIBADD = 

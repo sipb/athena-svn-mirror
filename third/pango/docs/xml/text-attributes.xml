@@ -263,6 +263,7 @@ The GObject type for <link linkend="PangoAttrType">PangoAttrType</link>.
 <refsect2>
 <title><anchor id="PangoAttrClass"/>struct PangoAttrClass</title>
 <programlisting>struct PangoAttrClass {
+
   PangoAttrType type;
   PangoAttribute * (*copy) (const PangoAttribute *attr);
   void             (*destroy) (PangoAttribute *attr);
