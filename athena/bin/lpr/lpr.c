@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.5 1990-07-03 12:56:27 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.6 1990-07-05 14:41:33 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.5 1990-07-03 12:56:27 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.6 1990-07-05 14:41:33 epeisach Exp $";
 #endif lint
 
 /*
@@ -606,7 +606,7 @@ card(c, p2)
 nfile(n)
 	char *n;
 {
-	register f;
+	register int f;
 	int oldumask = umask(0);		/* should block signals */
 
 	f = creat(n, FILMOD);
@@ -637,7 +637,7 @@ nfile(n)
  */
 cleanup()
 {
-	register i;
+	register int i;
 
 	signal(SIGHUP, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
