@@ -123,8 +123,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     setutent();
 
     /* Look for an existing utmp entry for this line, and use its id
-     * if found.  This also positions the file pointer properly for
-     * pututline().
+     * if found.  This also should position the file pointer properly
+     * for pututline(), but sometimes fails under Solaris 7, so for
+     * now always rewind before writing.
      */
     strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
     utptr = getutline(&ut);
@@ -141,8 +142,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 	  strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
 #endif
       }
-    else
-      setutent();		/* Reset the file pointer for pututline(). */
+    setutent();			/* Reset the file pointer for pututline(). */
 	
     pututline(&ent);
     endutent();
