@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.4 2004-04-23 13:49:19 rbasch Exp $
+# $Id: install-srvd.sh,v 1.5 2004-07-30 20:54:51 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -94,6 +94,7 @@ fi
 
 pkgdest="$srvd/pkg/$newver"
 pkg_order="$source/packs/update/os/solaris/pkg-order.pl"
+pkg_prune="$source/packs/update/os/solaris/pkg-prune.sh"
 
 # Create a pkgadd admin file for installing packages non-interactively.
 admin=/tmp/admin$$
@@ -156,6 +157,7 @@ for pkg in $pkgs ; do
     echo "Skipping $pkg (already installed)"
   else
     echo "$pkg"
+
     # Create OS directories ahead of time to avoid pkgadd complaints
     # about them being owned by an unknown (AFS) uid.
     pkgmap="$pkgsrc/$pkg/pkgmap"
@@ -165,6 +167,15 @@ for pkg in $pkgs ; do
 	$maybe chown root "$srvd/$dir"
       fi
     done
+
+    # Note whether this is an update of an existing package.
+    if pkginfo -q -R "$srvd" ; then
+      update=true
+    else
+      update=false
+    fi
+
+    # Install the package.
     $maybe pkgadd -R "$srvd" -a "$admin" -n -d "$pkgsrc" "$pkg"
     status=$?
     case $status in
@@ -173,6 +184,13 @@ for pkg in $pkgs ; do
       exit 1
       ;;
     esac
+
+    # If we updated an existing version of the package, remove any old
+    # files that are not present in the new version.
+    if [ $update = true ]; then
+      $maybe sh $pkg_prune -R "$srvd" -d "$pkgsrc" "$pkg"
+    fi
+
     # Nuke any previous version of the package in the srvd pkg directory.
     # pkgtrans has an overwrite option, but it does not work well with
     # symlinks.
