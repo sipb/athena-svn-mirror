@@ -1,12 +1,13 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v $
-#	$Author: dgg $
+#	$Author: builder $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.2 1984-12-13 12:10:16 dgg Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.3 1985-07-01 16:30:53 builder Exp $
 #
 
 
 DESTDIR=
+PHYSLOC=
 # mon makefile
 #
 #  Beware dependencies on mon.h are not properly stated.
@@ -21,7 +22,7 @@ mon: $(OBJS) mon.h
 	cc -o mon $(OBJS) -lcurses -ltermlib
 
 install:
-	install -c -s -g memory -m 2755 mon ${DESTDIR}/etc/athena/mon
+	install -c -s -g memory -m 2755 mon ${DESTDIR}${PHYSLOC}/usr/athena/mon
 
 clean:
 	rm -f core *.o mon a.out
