@@ -1,0 +1,514 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+CC = @CC@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
+LT_RELEASE = @LT_RELEASE@
+LT_REVISION = @LT_REVISION@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+PTY_HELPER_GID = @PTY_HELPER_GID@
+PTY_HELPER_UID = @PTY_HELPER_UID@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+UTIL_LIBS = @UTIL_LIBS@
+VERSION = @VERSION@
+ZVT_BINARY_AGE = @ZVT_BINARY_AGE@
+ZVT_CFLAGS = @ZVT_CFLAGS@
+ZVT_INTERFACE_AGE = @ZVT_INTERFACE_AGE@
+ZVT_LIBS = @ZVT_LIBS@
+ZVT_MAJOR_VERSION = @ZVT_MAJOR_VERSION@
+ZVT_MICRO_VERSION = @ZVT_MICRO_VERSION@
+ZVT_MINOR_VERSION = @ZVT_MINOR_VERSION@
+ZVT_VERSION = @ZVT_VERSION@
+
+ptyhelperdir = $(libexecdir)/libzvt-2.0
+
+noinst_PROGRAMS = zterm test-utmp
+ptyhelper_PROGRAMS = gnome-pty-helper
+lib_LTLIBRARIES = libzvt-2.0.la
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libzvt-2.0.pc
+
+INCLUDES =  	-I$(top_srcdir) 					$(ZVT_CFLAGS)					        -DGNOMEZVTLIBDIR=\""$(libdir)"\" 		        -DGNOMEZVTDATADIR=\""$(datadir)"\" 		        -DGNOMEZVTPIXMAPDIR=\""$(datadir)/pixmaps"\"	        -DGNOMEZVTBINDIR=\""$(bindir)"\" 		        -DGNOMEZVTLOCALSTATEDIR=\""$(localstatedir)"\" 	        -DGNOMEZVTLOCALEDIR=\""$(gnomelocaledir)"\" 		-DGTK_VERSION=\""$(GTK_VERSION)"\"			-DG_LOG_DOMAIN=\"ZVT\"					-DPTY_HELPER_DIR=\""$(ptyhelperdir)"\"			-DG_DISABLE_DEPRECATED			-DGDK_DISABLE_DEPRECATED		-DGDK_PIXBUF_DISABLE_DEPRECATED 	-DGTK_DISABLE_DEPRECATED
+
+
+libzvt_2_includedir = $(includedir)/libzvt-2.0/libzvt
+
+libzvt_2_include_HEADERS =  	libzvt.h lists.h background.h vt.h vtx.h
+
+
+libzvt_2_0_la_SOURCES =  	libzvt.h 	libzvt-init.c 	gnome-login-support.h		gnome-login-support.c		lists.h				lists.c				subshell.h			subshell.c			subshell-includes.h		update.c			vt.c				vt.h				vtx.h				background.c			background.h			zvtterm.c			zvt-marshal.c			zvt-marshal.h			zvt-accessible.c		zvt-accessible.h		zvt-accessible-factory.c		zvt-accessible-factory.h
+
+
+libzvt_2_0_la_LIBADD = $(ZVT_LIBS)
+
+libzvt_2_0_la_LDFLAGS =  	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+
+
+BUILT_SOURCES =  	zvt-marshal.h		zvt-marshal.c
+
+
+gnome_pty_helper_SOURCES =  	gnome-pty-helper.c            gnome-login-support.c         gnome-utmp.c
+
+
+gnome_pty_helper_LDADD = $(UTIL_LIBS)
+
+# Since we do gnome-pty-helper manually, include the relevant sources here
+EXTRA_DIST = TODO BUGS README		gnome-pty.h gnome-pty-helper.c gnome-utmp.c zvt-marshal.list zvt-marshal.c
+
+
+zterm_SOURCES = zterm.c
+zterm_INCLUDES = $(INCLUDES)
+
+zterm_LDADD =  	libzvt-2.0.la				$(ZVT_LIBS) $(UTIL_LIBS)
+
+
+test_utmp_SOURCES =  	gnome-utmp.c				test-utmp.c
+
+
+test_utmp_LDADD = 
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES =  libzvt-2.0.pc
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libzvt_2_0_la_DEPENDENCIES = 
+libzvt_2_0_la_OBJECTS =  libzvt-init.lo gnome-login-support.lo lists.lo \
+subshell.lo update.lo vt.lo background.lo zvtterm.lo zvt-marshal.lo \
+zvt-accessible.lo zvt-accessible-factory.lo
+noinst_PROGRAMS =  zterm$(EXEEXT) test-utmp$(EXEEXT)
+ptyhelper_PROGRAMS =  gnome-pty-helper$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS) $(ptyhelper_PROGRAMS)
+
+zterm_OBJECTS =  zterm.$(OBJEXT)
+zterm_DEPENDENCIES =  libzvt-2.0.la
+zterm_LDFLAGS = 
+test_utmp_OBJECTS =  gnome-utmp.$(OBJEXT) test-utmp.$(OBJEXT)
+test_utmp_DEPENDENCIES = 
+test_utmp_LDFLAGS = 
+gnome_pty_helper_OBJECTS =  gnome-pty-helper.$(OBJEXT) \
+gnome-login-support.$(OBJEXT) gnome-utmp.$(OBJEXT)
+gnome_pty_helper_DEPENDENCIES = 
+gnome_pty_helper_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(pkgconfig_DATA)
+
+HEADERS =  $(libzvt_2_include_HEADERS)
+
+DIST_COMMON =  README AUTHORS Makefile.am Makefile.in TODO \
+libzvt-2.0.pc.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gnutar
+GZIP_ENV = --best
+SOURCES = $(libzvt_2_0_la_SOURCES) $(zterm_SOURCES) $(test_utmp_SOURCES) $(gnome_pty_helper_SOURCES)
+OBJECTS = $(libzvt_2_0_la_OBJECTS) $(zterm_OBJECTS) $(test_utmp_OBJECTS) $(gnome_pty_helper_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps libzvt/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+libzvt-2.0.pc: $(top_builddir)/config.status libzvt-2.0.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libzvt-2.0.la: $(libzvt_2_0_la_OBJECTS) $(libzvt_2_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libzvt_2_0_la_LDFLAGS) $(libzvt_2_0_la_OBJECTS) $(libzvt_2_0_la_LIBADD) $(LIBS)
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+mostlyclean-ptyhelperPROGRAMS:
+
+clean-ptyhelperPROGRAMS:
+	-test -z "$(ptyhelper_PROGRAMS)" || rm -f $(ptyhelper_PROGRAMS)
+
+distclean-ptyhelperPROGRAMS:
+
+maintainer-clean-ptyhelperPROGRAMS:
+
+install-ptyhelperPROGRAMS: $(ptyhelper_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(ptyhelperdir)
+	@list='$(ptyhelper_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(ptyhelperdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(ptyhelperdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-ptyhelperPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(ptyhelper_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(ptyhelperdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+zterm$(EXEEXT): $(zterm_OBJECTS) $(zterm_DEPENDENCIES)
+	@rm -f zterm$(EXEEXT)
+	$(LINK) $(zterm_LDFLAGS) $(zterm_OBJECTS) $(zterm_LDADD) $(LIBS)
+
+test-utmp$(EXEEXT): $(test_utmp_OBJECTS) $(test_utmp_DEPENDENCIES)
+	@rm -f test-utmp$(EXEEXT)
+	$(LINK) $(test_utmp_LDFLAGS) $(test_utmp_OBJECTS) $(test_utmp_LDADD) $(LIBS)
+
+gnome-pty-helper$(EXEEXT): $(gnome_pty_helper_OBJECTS) $(gnome_pty_helper_DEPENDENCIES)
+	@rm -f gnome-pty-helper$(EXEEXT)
+	$(LINK) $(gnome_pty_helper_LDFLAGS) $(gnome_pty_helper_OBJECTS) $(gnome_pty_helper_LDADD) $(LIBS)
+
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
+	done
+
+install-libzvt_2_includeHEADERS: $(libzvt_2_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libzvt_2_includedir)
+	@list='$(libzvt_2_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libzvt_2_includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libzvt_2_includedir)/$$p; \
+	done
+
+uninstall-libzvt_2_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libzvt_2_include_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libzvt_2_includedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = libzvt
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES install-exec-local
+install-exec: install-exec-am
+
+install-data-am: install-ptyhelperPROGRAMS install-pkgconfigDATA \
+		install-libzvt_2_includeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-ptyhelperPROGRAMS \
+		uninstall-pkgconfigDATA \
+		uninstall-libzvt_2_includeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(ptyhelperdir) \
+		$(DESTDIR)$(pkgconfigdir) \
+		$(DESTDIR)$(libzvt_2_includedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-ptyhelperPROGRAMS mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-noinstPROGRAMS clean-ptyhelperPROGRAMS clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-ptyhelperPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-ptyhelperPROGRAMS \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS mostlyclean-ptyhelperPROGRAMS \
+distclean-ptyhelperPROGRAMS clean-ptyhelperPROGRAMS \
+maintainer-clean-ptyhelperPROGRAMS uninstall-ptyhelperPROGRAMS \
+install-ptyhelperPROGRAMS uninstall-pkgconfigDATA install-pkgconfigDATA \
+uninstall-libzvt_2_includeHEADERS install-libzvt_2_includeHEADERS tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-local install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+$(srcdir)/zvt-marshal.h: Makefile.am zvt-marshal.list
+	cd $(srcdir) \
+	&& glib-genmarshal --prefix=zvt_marshal zvt-marshal.list --header > xgen-gmh \
+	&& (cmp -s xgen-gmh zvt-marshal.h || cp xgen-gmh zvt-marshal.h) \
+	&& rm -f xgen-gmh xgen-gmh~
+
+$(srcdir)/zvt-marshal.c: Makefile.am zvt-marshal.list
+	cd $(srcdir) \
+	&& echo "#include \"zvt-marshal.h\"" > xgen-gmc \
+	&& glib-genmarshal --prefix=zvt_marshal zvt-marshal.list --body >> xgen-gmc \
+	&& (cmp -s xgen-gmc zvt-marshal.c || cp xgen-gmc zvt-marshal.c) \
+	&& rm -f xgen-gmc xgen-gmc~
+
+install-exec-local: install-ptyhelperPROGRAMS
+	-file=$(DESTDIR)$(ptyhelperdir)/gnome-pty-helper; \
+	chown @PTY_HELPER_UID@ $$file && chgrp @PTY_HELPER_GID@ $$file && chmod u+s $$file
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

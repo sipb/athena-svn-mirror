@@ -1,0 +1,147 @@
+AC_INIT(libzvt/libzvt.h)
+
+# Making releases:
+#   ZVT_MICRO_VERSION += 1;
+#   ZVT_INTERFACE_AGE += 1;
+#   ZVT_BINARY_AGE += 1;
+# if any functions have been added, set ZVT_INTERFACE_AGE to 0.
+# if backwards compatibility has been broken,
+# set ZVT_BINARY_AGE _and_ ZVT_INTERFACE_AGE to 0.
+#
+ZVT_MAJOR_VERSION=2
+ZVT_MINOR_VERSION=0
+ZVT_MICRO_VERSION=1
+ZVT_INTERFACE_AGE=1
+ZVT_BINARY_AGE=1
+ZVT_VERSION=$ZVT_MAJOR_VERSION.$ZVT_MINOR_VERSION.$ZVT_MICRO_VERSION
+
+AC_SUBST(ZVT_MAJOR_VERSION)
+AC_SUBST(ZVT_MINOR_VERSION)
+AC_SUBST(ZVT_MICRO_VERSION)
+AC_SUBST(ZVT_VERSION)
+AC_SUBST(ZVT_INTERFACE_AGE)
+AC_SUBST(ZVT_BINARY_AGE)
+
+# libtool versioning
+LT_RELEASE=$ZVT_MAJOR_VERSION.$ZVT_MINOR_VERSION
+LT_CURRENT=`expr $ZVT_MICRO_VERSION - $ZVT_INTERFACE_AGE`
+LT_REVISION=$ZVT_INTERFACE_AGE
+LT_AGE=`expr $ZVT_BINARY_AGE - $ZVT_INTERFACE_AGE`
+LT_CURRENT_MINUS_AGE=`expr $LT_CURRENT - $LT_AGE`
+AC_SUBST(LT_RELEASE)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+AC_SUBST(LT_CURRENT_MINUS_AGE)
+
+VERSION=$ZVT_VERSION
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(libzvt, $VERSION)
+
+AM_MAINTAINER_MODE
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_STDC_HEADERS
+AM_PROG_LIBTOOL
+
+dnl
+dnl zvt checks
+dnl
+AC_CHECK_HEADERS(sys/select.h sys/time.h sys/un.h paths.h sys/syslimits.h sys/fsuid.h)
+
+dnl
+dnl check for -D_SOCKADDR_LEN, which is required on Tru64 UNIX
+dnl
+AC_MSG_CHECKING([for sa_len in struct sockaddr])
+AC_TRY_COMPILE(
+    [#include <sys/socket.h>],
+    [struct sockaddr s; s.sa_len;],
+    [sa_len_ok=yes],
+    [sa_len_ok=no])
+AC_MSG_RESULT($sa_len_ok)
+if test x$sa_len_ok = xno; then
+    AC_MSG_CHECKING([for sa_len with -D_SOCKADDR_LEN])
+    xCPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS -D_SOCKADDR_LEN"
+    AC_TRY_COMPILE(
+	[#include <sys/socket.h>],
+	[struct sockaddr s; s.sa_len;],
+	[AC_DEFINE(_SOCKADDR_LEN)
+	 sa_len_ok=yes],
+	[sa_len_ok=no])
+    CPPFLAGS="$xCPPFLAGS"
+fi
+AC_MSG_RESULT($sa_len_ok)
+
+dnl
+dnl gnome-pty-support checks
+dnl
+
+AC_MSG_CHECKING([for Unix98 sendmsg])
+AC_TRY_LINK([
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+],[
+struct msghdr hdr;
+hdr.msg_control = NULL;
+hdr.msg_controllen = 0;
+sendmsg (0, &hdr, 0);
+],[
+AC_DEFINE(HAVE_SENDMSG)
+AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+
+AC_CHECK_UTMP
+dnl AC_CHECK_LASTLOG
+
+AC_CHECK_HEADERS(pty.h util.h libutil.h ttyent.h)
+
+AC_CHECK_LIB(util, openpty,
+    [
+    AC_CHECK_LIB(util, login_tty, [AC_DEFINE(HAVE_LOGIN_TTY)])
+    AC_DEFINE(HAVE_OPENPTY)
+    AC_DEFINE(HAVE_LIBUTIL)
+    UTIL_LIBS="-lutil"
+    AC_SUBST(UTIL_LIBS)
+    ])
+
+AC_CHECK_FUNCS(grantpt utmpxname utmpname getutmpx getutent getttyent)
+AC_CHECK_FUNCS(updwtmpx updwtmp fcntl flock strrchr seteuid setreuid setresuid)
+
+AC_CHECK_HEADERS(stropts.h)
+
+# this seems like a decent way to do this
+PTY_HELPER_UID=root
+PTY_HELPER_GID=root
+case "$host" in
+	*-*-darwin*)
+	  PTY_HELPER_GID=admin
+	  ;;
+esac
+AC_SUBST(PTY_HELPER_UID)
+AC_SUBST(PTY_HELPER_GID)
+
+PKG_CHECK_MODULES(ZVT,
+[
+	glib-2.0 >= 1.3.11
+	gmodule-2.0 >= 1.3.11
+	gtk+-2.0 >= 1.3.11
+	libart-2.0 >= 2.3.5
+])
+
+AC_SUBST(ZVT_LIBS)
+AC_SUBST(ZVT_CFLAGS)
+
+if test x$ac_cv_func_grantpt = xyes; then
+	:
+else
+	AC_CHECK_LIB(pt, grantpt)
+fi
+
+AC_OUTPUT([
+Makefile
+libzvt/Makefile
+libzvt/libzvt-2.0.pc
+])
