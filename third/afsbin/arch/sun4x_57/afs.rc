@@ -33,6 +33,34 @@ killproc() {            # kill the named process(es)
 case $1 in
 'start')
 
+umask 022
+
+#
+# Athena additions
+#
+. /etc/athena/rc.conf
+if [ "$AFSCLIENT" = false ]; then
+	exit 0
+fi
+AFSCLIENTNUM=4
+if [ "$AFSCLIENT" != true ]; then
+	AFSCLIENTNUM="$AFSCLIENT"
+else
+	AFSCLIENTNUM=4
+fi
+OPTIONS="-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
+if [ \( "$AFSADJUST" = true -o $PUBLIC = true \) -a -d /usr/vice/cache/ ]; then
+	echo "Adjusting the cache size" > /dev/console
+	rm -f /usr/vice/etc/cacheinfo.old
+	mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
+	df -bk /usr/vice/cache/ | awk '
+		(NR == 2) {
+			printf("/afs:/usr/vice/cache:%d\n", int($2 * 3 / 4));
+		}' > /usr/vice/etc/cacheinfo
+	sed -n '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
+		/usr/vice/etc/cacheinfo	> /dev/console
+fi
+
 #
 # Make sure afs exists in /etc/name_to_sysnum
 #
@@ -92,10 +120,10 @@ else
 fi
 
 #
-# Start the AFS server processes if a bosserver exists
+# Start the AFS server processes if this is an AFS server
 #
 
-if [ -x /usr/afs/bin/bosserver ]; then
+if [ "$AFSSRV" = true ]; then
 	echo "Starting AFS Server processes"
 	/usr/afs/bin/bosserver &
 	OPTIONS="$OPTIONS -nosettime"
@@ -129,7 +157,7 @@ do
 done
 
 echo "Starting afsd"
-/usr/vice/etc/afsd $OPTIONS
+/etc/afsd $OPTIONS
 
 #
 # Run package to update the disk
