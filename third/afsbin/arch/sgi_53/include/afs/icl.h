@@ -1,0 +1,277 @@
+#ifndef _ICL_H__ENV_
+#define _ICL_H__ENV_ 1
+
+/*
+ * @OSF_COPYRIGHT@
+ * COPYRIGHT NOTICE
+ * Copyright (c) 1990, 1991, 1992, 1993 Open Software Foundation, Inc.
+ * ALL RIGHTS RESERVED (DCE).  See the file named COPYRIGHT.DCE in the
+ * src directory for the full copyright text.
+ */
+#ifdef	KERNEL
+#include "param.h"
+#include "osi.h"
+#include "lock.h"
+#include "afs_trace.h"
+#else
+#include <lock.h>
+typedef struct Lock afs_lock_t;
+#endif
+
+#define ICL_LOGSPERSET		8	/* max logs per set */
+#define ICL_DEFAULTEVENTS	1024	/* default events per event set */
+#define ICL_DEFAULT_LOGSIZE	60*1024	/* number of words in default log size */
+
+#define osi_dlock_t afs_lock_t
+extern osi_dlock_t icl_lock;	/* lock for log and set refcounts */
+extern int icl_inited;
+extern struct icl_log *icl_allLogs;
+extern struct icl_set *icl_allSets;
+
+/* define an in-core logging package */
+struct icl_set {
+    int32 refCount;		/* reference count */
+    int32 states;		/* state flags */
+    osi_dlock_t lock;		/* lock */
+    struct icl_set *nextp;	/* next dude in all known tables */
+    char *name;			/* name of set */
+    struct icl_log *logs[ICL_LOGSPERSET];	/* logs */
+    int32 nevents;		/* count of events */
+    char *eventFlags;		/* pointer to event flags */
+};
+
+/* set flags */
+#define ICL_SETF_DELETED	1
+#define	ICL_SETF_ACTIVE		2
+#define	ICL_SETF_FREED		4
+#define	ICL_SETF_PERSISTENT	8
+
+#ifdef ICL_DEFAULT_ENABLED
+#define ICL_DEFAULT_SET_STATES	0	/* was ICL_SETF_ACTIVE*/
+#else /* ICL_DEFAULT_ENABLED */
+
+#ifdef ICL_DEFAULT_DISABLED
+#define ICL_DEFAULT_SET_STATES	ICL_SETF_FREED
+#endif /* ICL_DEFAULT_DISABLED */
+
+#endif /* ICL_DEFAULT_ENABLED */
+
+#ifndef ICL_DEFAULT_SET_STATES
+/* if not changed already, default to ACTIVE on created sets */
+#define ICL_DEFAULT_SET_STATES	0	/* was ICL_SETF_ACTIVE */
+#endif /* ICL_DEFAULT_SET_STATES */
+
+/* bytes required by eventFlags array, for x events */
+#define ICL_EVENTBYTES(x)	((((x) - 1) | 7) + 1)
+
+/* functions for finding a particular event */
+#define ICL_EVENTBYTE(x)	(((x) & 0x3ff) >> 3)
+#define ICL_EVENTMASK(x)	(1 << ((x) & 0x7))
+#define ICL_EVENTOK(setp, x)	((x&0x3ff) >= 0 && (x&0x3ff) < (setp)->nevents)
+
+/* define ICL syscalls by name!! */
+#define ICL_OP_COPYOUT		1
+#define	ICL_OP_ENUMLOGS		2
+#define	ICL_OP_CLRLOG		3
+#define	ICL_OP_CLRSET		4
+#define ICL_OP_CLRALL		5
+#define ICL_OP_ENUMSETS		6
+#define	ICL_OP_SETSTAT		7
+#define	ICL_OP_SETSTATALL	8
+#define ICL_OP_SETLOGSIZE	9
+#define	ICL_OP_ENUMLOGSBYSET	10
+#define ICL_OP_GETSETINFO	11
+#define ICL_OP_GETLOGINFO	12
+#define ICL_OP_COPYOUTCLR	13
+/* Determine version number and type size info from icl package. */
+#define ICL_OP_VERSION		14
+
+/* define setstat commands */
+#define ICL_OP_SS_ACTIVATE	1
+#define ICL_OP_SS_DEACTIVATE	2
+#define ICL_OP_SS_FREE		3
+
+/* define set status flags */
+#define	ICL_FLAG_ACTIVE		1
+#define	ICL_FLAG_FREED		2
+
+/* The format of the circular log is:
+ * 1'st word:
+ * <8 bits: size of record in longs> <6 bits: p1 type> <6 bits: p2 type>
+ *     <6 bits: p3 type> <6 bits: p4 type>
+ * <32 bits: opcode>
+ * <32 bits: pid>
+ * <32 bits: timestamp in microseconds>
+ * <p1 rep>
+ * <p2 rep>
+ * <p3 rep>
+ * <p4 rep>
+ *
+ * Note that the representation for each parm starts at a new 32 bit
+ * offset, and only the represented parameters are marshalled.
+ * You can tell if a particular parameter exists by looking at its
+ * type; type 0 means the parameter does not exist.
+ */
+
+/* descriptor of the circular log.  Note that it can never be 100% full
+ * since we break the ambiguity of head == tail by calling that
+ * state empty.
+ */
+struct icl_log {
+    int refCount;		/* reference count */
+    int setCount;		/* number of non-FREED sets pointing to this guy */
+    osi_dlock_t lock;		/* lock */
+    char *name;			/* log name */
+    struct icl_log *nextp;	/* next log in system */
+    int32 logSize;		/* allocated # of elements in log */
+    int32 logElements;		/* # of elements in log right now */
+    int32 *datap;		/* pointer to the data */
+    int32 firstUsed;		/* first element used */
+    int32 firstFree;		/* index of first free dude */
+    long baseCookie;	/* cookie value of first entry */
+    int32 states;		/* state bits */
+    u_int32 lastTS;	/* last timestamp written to this log */
+};
+
+/* macro used to compute size of parameter when in log, used by
+ * icl_AppendRecord below.
+ *
+ * Note that "tsize" and "rsize" are free variables!
+ * I use rsize to determine correct alignment (and hence size).
+ */
+#if defined(AFS_ALPHA_ENV) || defined(AFS_SGI61_ENV)
+/* long and pointer are 2 rsize words. */
+#define ICL_SIZEHACK(t1, p1) \
+    MACRO_BEGIN \
+	if ((t1) == ICL_TYPE_STRING) { \
+	    tsize = (int)((unsigned)(strlen((char *)(p1)) + 4) >> 2); \
+	} else if ((t1) == ICL_TYPE_HYPER) \
+	    tsize = 2; \
+	else if ((t1) == ICL_TYPE_FID) \
+	    tsize = 4; \
+	else if ((t1) == ICL_TYPE_INT32) \
+	    tsize = 1; \
+	else \
+	    tsize = 2; \
+	/* now add in the parameter */ \
+	rsize += tsize; \
+    MACRO_END
+#else /* AFS_ALPHA_ENV */
+/* Default for everything being 32 bit ints. */
+#define ICL_SIZEHACK(t1, p1) \
+    MACRO_BEGIN \
+	if ((t1) == ICL_TYPE_STRING) { \
+	    tsize = (int)((unsigned)(strlen((char *)(p1)) + 4) >> 2); \
+	} else if ((t1) == ICL_TYPE_HYPER) \
+	    tsize = 2; \
+	else if ((t1) == ICL_TYPE_FID) \
+	    tsize = 4; \
+	else tsize = 1; \
+	/* now add in the parameter */ \
+	rsize += tsize; \
+    MACRO_END
+#endif /* AFS_ALPHA_ENV */
+
+/* log flags */
+#define ICL_LOGF_DELETED	1	/* freed */
+#define ICL_LOGF_WAITING	2	/* waiting for output to appear */
+#define ICL_LOGF_PERSISTENT	4	/* persistent */
+
+/* macros for calling these things easily */
+#define ICL_SETACTIVE(setp)	((setp) && (setp->states & ICL_SETF_ACTIVE))
+#define icl_Trace0(set, id) \
+    (ICL_SETACTIVE(set) ? icl_Event0(set, id, 1<<24) : 0)
+#define icl_Trace1(set, id, t1, p1) \
+    (ICL_SETACTIVE(set) ? icl_Event1(set, id, (1<<24)+((t1)<<18), (long)(p1)) : 0)
+#define icl_Trace2(set, id, t1, p1, t2, p2) \
+    (ICL_SETACTIVE(set) ? icl_Event2(set, id, (1<<24)+((t1)<<18)+((t2)<<12), \
+				       (long)(p1), (long)(p2)) : 0)
+#define icl_Trace3(set, id, t1, p1, t2, p2, t3, p3) \
+    (ICL_SETACTIVE(set) ? icl_Event3(set, id, (1<<24)+((t1)<<18)+((t2)<<12)+((t3)<<6), \
+				       (long)(p1), (long)(p2), (long)(p3)) : 0)
+#define icl_Trace4(set, id, t1, p1, t2, p2, t3, p3, t4, p4) \
+    (ICL_SETACTIVE(set) ? icl_Event4(set, id, (1<<24)+((t1)<<18)+((t2)<<12)+((t3)<<6)+(t4), \
+				       (long)(p1), (long)(p2), (long)(p3), (long)(p4)) : 0)
+
+/* types for icl_trace macros; values must be less than 64.  If
+ * you add a new type here, don't forget to check for ICL_MAXEXPANSION
+ * changing.
+ */
+#define ICL_TYPE_NONE		0	/* parameter doesn't exist */
+#define ICL_TYPE_LONG		1
+#define ICL_TYPE_INT32		7
+#define ICL_TYPE_POINTER	2
+#define ICL_TYPE_HYPER		3
+#define ICL_TYPE_STRING		4
+#define ICL_TYPE_FID		5
+#define	ICL_TYPE_UNIXDATE	6
+
+/* max # of words put in the printf buffer per parameter */
+#define ICL_MAXEXPANSION	4
+
+/* define flags to be used by icl_CreateSetWithFlags */
+#define ICL_CRSET_FLAG_DEFAULT_ON	1
+#define ICL_CRSET_FLAG_DEFAULT_OFF	2
+#define ICL_CRSET_FLAG_PERSISTENT	4
+
+/* define flags to be used by icl_CreateLogWithFlags */
+#define ICL_CRLOG_FLAG_PERSISTENT	1
+
+/* input flags */
+#define ICL_COPYOUTF_WAITIO		1	/* block for output */
+#define ICL_COPYOUTF_CLRAFTERREAD	2	/* clear log after reading */
+/* output flags */
+#define ICL_COPYOUTF_MISSEDSOME		1	/* missed some output */
+
+#define lock_ObtainWrite	ObtainWriteLock
+#define lock_ReleaseWrite	ReleaseWriteLock
+
+#ifdef	KERNEL
+#undef	osi_copyout
+#define osi_copyout		copyout
+#if	(defined(AFS_AUX_ENV) || defined(AFS_AIX22_ENV))
+#define osi_copyinstr		bcopyin
+#else
+#define osi_copyinstr		copyinstr
+#endif
+extern struct icl_set *cm_iclSetp;
+#else
+#define	osi_Alloc		malloc
+#define	osi_Free(a,b)		free(a)
+#define	osi_ThreadUnique()	9999	/*XXX */
+#define	PRIVATE			static
+
+#define ICL_RPC_MAX_SETS (64)
+#define ICL_RPC_MAX_LOGS (64)
+ 
+typedef struct icl_setinfo {
+    u_char setName[32];
+    u_int32 states;
+} icl_setinfo_t;
+ 
+typedef struct icl_loginfo {
+    u_char logName[32];
+    u_int32 logSize;
+    u_int32 logElements;
+    u_int32 states;
+} icl_loginfo_t;
+ 
+typedef struct icl_bulkSetinfo {
+    u_int32 count;
+    icl_setinfo_t setinfo[1];
+} icl_bulkSetinfo_t;
+ 
+typedef struct icl_bulkLoginfo {
+    u_int32 count;
+    icl_loginfo_t loginfo[1];
+} icl_bulkLoginfo_t;
+ 
+#endif
+
+
+#define	ICL_ERROR_NOSET		9001
+#define	ICL_ERROR_NOLOG		9002
+#define	ICL_ERROR_CANTOPEN	9003
+#define	ICL_INFO_TIMESTAMP	9004
+
+#endif /* _ICL_H__ENV_ */
