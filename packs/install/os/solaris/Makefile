@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 2001-03-01 20:58:10 miki Exp $
+# $Id: Makefile,v 1.11 2002-01-30 15:49:13 miki Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -21,6 +21,7 @@ install:
 	install -c -m 0444 format.input.ST34342A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST39120A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST39140A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST340824A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.label ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.seagate.5660 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.Seagate.medalist ${DESTDIR}${INSTALL}
