@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.10 1990-11-15 15:35:28 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.11 1991-01-23 13:23:24 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.10 1990-11-15 15:35:28 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.11 1991-01-23 13:23:24 epeisach Exp $";
 #endif lint
 
 /*
@@ -718,8 +718,11 @@ cleanup()
 test(file)
 	char *file;
 {
-#if !defined(mips) && !defined(_AUX_SOURCE)
+#if !defined(_AUX_SOURCE) && !defined(LP_COFF_DEFINES)
 	struct exec execb;
+#endif
+#if defined(LP_COFF_DEFINES)
+	struct filehdr execb;
 #endif
 	register int fd;
 	register char *cp;
@@ -746,8 +749,9 @@ test(file)
 		printf("%s: cannot open %s\n", name, file);
 		return(-1);
 	}
-#if !defined(mips) && !defined(_AUX_SOURCE)
+#if !defined(_AUX_SOURCE)
 	if (read(fd, &execb, sizeof(execb)) == sizeof(execb))
+#ifndef LP_COFF_DEFINES
 		switch((int) execb.a_magic) {
 		case A_MAGIC1:
 		case A_MAGIC2:
@@ -761,7 +765,17 @@ test(file)
 			printf("%s: %s is an archive file", name, file);
 			goto error1;
 		}
-#endif /* mips */
+#else /* LP_COFF_DEFINES */
+	if(ISCOFF(execb.f_magic)) {
+			printf("%s: %s is an executable program", name, file);
+			goto error1;
+		}
+	if(execb.f_magic == ARMAG) {
+			printf("%s: %s is an archive file", name, file);
+			goto error1;
+		}
+#endif /* coff */
+#endif /* AUX */
 	(void) close(fd);
 	if (rflag) {
 		if ((cp = rindex(file, '/')) == NULL) {
