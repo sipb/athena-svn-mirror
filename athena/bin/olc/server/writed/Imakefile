@@ -1,0 +1,6 @@
+#
+# $Id: Imakefile,v 1.1 1991-04-16 13:16:58 lwvanels Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/Imakefile,v $
+#
+
+SimpleProgramTarget(writed)
