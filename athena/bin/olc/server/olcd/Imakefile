@@ -1,35 +1,15 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.11 1991-01-01 14:11:56 lwvanels Exp $
+ * $Id: Imakefile,v 1.12 1991-01-07 01:47:42 lwvanels Exp $
  */
 
 /*#define Profiling*/
-/*#define UseCPlusPlus*/
-/*#define NoGCC*/
 
 #ifdef Profiling
 LIBSUFFIX=_p
 EXTRA_LOAD_FLAGS=-pg
 #endif
 
-/*
- * Define UseCPlusPlus to use G++ for compiling; otherwise, standard
- * $(CC) is used.  (NoGCC forces /bin/cc instead of the compiler
- * specified in site.def.)
- */
-
-#ifdef UseCPlusPlus
-/* NOTE:  acl_files.c must be compiled as C code, not C++ */
-misc=-lg++
-
-.c.o:
-	$(C++) $(C++FLAGS) -c $<
-#else
-misc=
-#ifdef NoGCC
-CC=/bin/cc
-#endif		/* NoGCC */
-#endif		/* UseCPlusPlus */
 
 SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
 	data.c notify.c utils.c list.c acl_files.c \
@@ -38,10 +18,6 @@ SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
 OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
 	data.o notify.o utils.o list.o acl_files.o \
 	requests_olc.o requests_admin.o syslog.o statistics.o motd.o
-
-L_SRCS=	lumberjack.c
-
-L_OBJS= lumberjack.o
 
 LOCAL_LIBRARIES=$(COMMONLIB)
 
@@ -60,14 +36,10 @@ SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib) $(misc)
 INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
-NormalProgramTarget(lumberjack,$(L_OBJS),,,)
-
-saber_lumberjack:
-	#load $(ALLDEFINES) $(L_SRCS)
 
 SaberProgramTarget(olcd,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 DependTarget()
 LintTarget()
 
-AllTarget(olcd lumberjack)
+AllTarget(olcd)
