@@ -41,10 +41,10 @@ clocksysdir = $(datadir)/applets/Clocks
 clocksys_DATA = clock_applet.desktop
 
 malchecksysdir = $(datadir)/applets/Network
-malchecksys_DATA = mailcheck_applet.desktop
+#malchecksys_DATA = mailcheck_applet.desktop
 
 printersysdir = $(datadir)/applets/Utility
-printersys_DATA = printer.desktop
+#printersys_DATA = printer.desktop
 
 genutilgnorbadir  = $(sysconfdir)/CORBA/servers
 genutilgnorba_DATA = gen_util.gnorba
