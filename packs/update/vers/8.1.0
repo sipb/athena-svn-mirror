@@ -49,6 +49,10 @@ sun4)
 		# of aliases for local users in /etc/mail/aliases.
 		echo "/etc/mail/aliases"	>> "$CONFCHG"
 	fi
+
+	# Mailboxes need to have mail as their group owner for
+	# sendmail to be able to deliver mail there.
+	chgrp -R mail /var/mail
 	;;
 
 sgi)
