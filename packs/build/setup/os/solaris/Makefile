@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:32:43 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-08-12 15:44:39 danw Exp $
 
 USRBIN=/usr/bin
 ATHINCDIR=/usr/athena/include
@@ -30,7 +30,7 @@ install:
 	install -c -m 444 auth_kerb.h ${DESTDIR}${ATHINCDIR}/rpc
 	install -c -m 444 libbsd.a ${DESTDIR}${ATHLIBDIR}
 	rm -f ${DESTDIR}/core
-	ln -s var/athena/core.root ${DESTDIR}/core
+	ln -s dev/null ${DESTDIR}/core
 	rm -f ${DESTDIR}/bin
 	ln -s usr/bin ${DESTDIR}/bin
 
