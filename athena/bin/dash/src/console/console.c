@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.14 1997-12-03 21:43:18 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.15 1998-07-16 20:01:38 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -435,11 +435,12 @@ int input(fd, pfd)
   ctrl[0] = '^';
   l = read(*pfd, inputbuf, INPUTSIZE);
 
-  if (l < 1)
+  if (l < 0)
     {
       XjReadCallback((XjCallbackProc)NULL, *pfd, (caddr_t) pfd);
-      return 0;
-      /* close(0); */
+      sprintf(inputbuf, "Error reading from fd %d: %s\n", *pfd,
+	      strerror(errno));
+      l = strlen(inputbuf);
     }
 
   if (l != 0)
