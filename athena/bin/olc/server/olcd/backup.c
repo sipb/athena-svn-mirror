@@ -17,18 +17,18 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.24 1992-03-16 15:38:13 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: backup.c,v 1.25 1993-08-12 17:27:48 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.24 1992-03-16 15:38:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.25 1993-08-12 17:27:48 cfields Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
-#include <olcd.h>
+
 
 #include <ctype.h>              /* Character type macros. */
 #include <signal.h>             /* System signal definitions. */
@@ -36,7 +36,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>           /* System file defs. */
 #include <setjmp.h>             /* For string validation kludge */
 #include <pwd.h>
-
+#include <olcd.h>
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -47,8 +47,16 @@ static int write_knuckle_info P((int fd , KNUCKLE *knuckle ));
 static int read_knuckle_info P((int fd , KNUCKLE *knuckle ));
 static int write_user_info P((int fd , USER *user ));
 static int read_user_info P((int fd , USER *user ));
+
 static void ensure_consistent_state P((void ));
 static void type_error P((int fd , char *string ));
+
+static int ascii_write_knuckle_info P((FILE *fd , KNUCKLE *knuckle ));
+static int ascii_write_user_info P((FILE *fd , USER *user ));
+#ifdef notdone
+static int ascii_read_knuckle_info P((int fd , KNUCKLE *knuckle ));
+static int ascii_read_user_info P((int fd , USER *user ));
+#endif
 
 #undef P
 
@@ -326,13 +334,14 @@ void
   KNUCKLE **k_ptr, **k_again; /* Current user. */
   int fd;			   /* Backup file descriptor. */
   int i;
+  char buf[BUF_SIZE];
   
   ensure_consistent_state();
   
   if ((fd = open(BACKUP_TEMP, O_CREAT | O_WRONLY | O_TRUNC, 0600)) < 0) 
     {
       log_error("backup_data: unable to open backup file: %m");
-      goto PUNT;
+      goto PUNT_BACKUP;
     }
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
@@ -343,14 +352,14 @@ void
 	  if (write_user_info(fd, (*k_ptr)->user) != SUCCESS) 
 	    {
 	      log_error("backup_data: unable to write_user");
-	      goto PUNT;
+	      goto PUNT_BACKUP;
 	    }
 	  k_again = (*k_ptr)->user->knuckles;
 	  for(i=0; i< (*k_ptr)->user->no_knuckles; i++)
 	    if (write_knuckle_info(fd, *(k_again+i)) != SUCCESS) 
 	      {
 		log_error("backup_data: unable to write_knuckle");
-		goto PUNT;
+		goto PUNT_BACKUP;
 	      }
 	}
     }
@@ -358,13 +367,15 @@ void
      sizeof(char) * STRING_SIZE)
     {
       log_error("backup_data: unable to write data sep: %m");
-      goto PUNT;
+      goto PUNT_BACKUP;
     }
   needs_backup = 0;
   
   (void) rename(BACKUP_TEMP, BACKUP_FILE);
+  (void) sprintf(buf, "%s.ascii", BACKUP_TEMP);
+  dump_data(buf);
   
- PUNT:
+ PUNT_BACKUP:
   (void) close(fd); 
   log_status("Backup completed.");
 }
@@ -435,11 +446,11 @@ void
 	  if(uptr == (USER *) NULL)
 	    {
 	      log_error("load_data (failed malloc)");
-	      goto PUNT;
+	      goto PUNT_LOAD;
 	    }
 	  status = read_user_info(fd,uptr);
 	  if(status != SUCCESS)
-	    goto PUNT;
+	    goto PUNT_LOAD;
 	  
 	  nk = uptr->no_knuckles;
 	  uptr->no_knuckles = 0;
@@ -457,10 +468,10 @@ void
 	  if(skip)
 	    continue;
 	  if(status != SUCCESS)
-	    goto PUNT;
+	    goto PUNT_LOAD;
 	  status = insert_knuckle(kptr);
 	  if (status != SUCCESS)
-	    goto PUNT; 
+	    goto PUNT_LOAD; 
 	  kptr->user = uptr;
 	  if (kptr->question == NULL)
 	    kptr->title = uptr->title2;
@@ -482,7 +493,7 @@ void
   
   successful = 1;
   
- PUNT:
+ PUNT_LOAD:
   if (!successful) 
     {
       log_status("Load failed, punting...\n");
@@ -542,71 +553,133 @@ char *string;
 }
 
 void
-  dump_data(file)
-char *file;
+dump_data(file)
+     char *file;
 {
   FILE *fp;
   int no_knuckles;
   KNUCKLE **k_ptr, **k_again;	/* Current user. */
-  int i;
+  int i=0;
+  extern int request_count;
+  extern int request_counts[OLC_NUM_REQUESTS];
+  extern PROC *proc_list;
   
   ensure_consistent_state();
   fp = fopen(file,"w");
-  
+
+  if (fp == NULL)
+    {
+      log_error("dump_data: unable to open ascii dump file: %m");
+      return;
+    }
+
+  fprintf(fp, "\nRequest count data...\n");
+  fprintf(fp, "Total number of requests: %d\n", request_count);
+  while (proc_list[i].proc_code != UNKNOWN_REQUEST)
+    {
+      fprintf(fp, " %d\t%s\n", request_counts[i], proc_list[i].description);
+      i++;
+    }
+
   for (k_ptr = Knuckle_List, no_knuckles = 0; *k_ptr; k_ptr++)
     no_knuckles++;
-  fprintf(fp,"\nNumber of knuckles:: %d\n",no_knuckles);
+  fprintf(fp,"\nNumber of knuckles: %d\n",no_knuckles);
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
-      if((*k_ptr)->instance == 0)
+      if(((*k_ptr)->instance == 0) && (((*k_ptr)->user->no_knuckles > 1) ||
+				       is_active((*k_ptr))))
 	{
-	  fprintf(fp,"\n\nuser...");
-	  fprintf(fp,"\nuser:     %s",(*k_ptr)->user->username);
-	  fprintf(fp,"\nuid:      %d",(*k_ptr)->user->uid);
-	  fprintf(fp,"\nrealname: %s",(*k_ptr)->user->realname);
-	  fprintf(fp,"\ntitle:    %s",(*k_ptr)->title);
-	  fprintf(fp,"\nmachine:  %s",(*k_ptr)->user->machine);
-	  fprintf(fp,"\nstatus:   %d",(*k_ptr)->user->status);
-	  fprintf(fp,"\nmax_ask:  %d",(*k_ptr)->user->max_ask);
-	  fprintf(fp,"\nmax_ans:  %d",(*k_ptr)->user->max_answer);
-	  fprintf(fp,"\n");
+	  if (ascii_write_user_info(fp, (*k_ptr)->user) != SUCCESS) 
+	    {
+	      log_error("dump_data: unable to write_user");
+	      goto PUNT_DUMP;
+	    }
 	  k_again = (*k_ptr)->user->knuckles;
 	  for(i=0; i< (*k_ptr)->user->no_knuckles; i++)
-	    {
-	      fprintf(fp,"\n\nknuckle...");
-	      fprintf(fp,"\ninstance:     %d", (*(k_again+i))->instance);
-	      fprintf(fp,"\nstatus:       %d", (*(k_again+i))->status);
-	      fprintf(fp,"\ncusername:    %d", (*(k_again+i))->cusername);
-	      fprintf(fp,"\ncinstance:    %d", (*(k_again+i))->cinstance);
-	      if(is_connected((*(k_again+i))))
-		{
-		  fprintf(fp,"\n\nconnected...");
-		  fprintf(fp,"\nrcusername:   %d",
-			  (*(k_again+i))->connected->user->username);
-		  fprintf(fp,"\nrcinstance:   %d",
-			  (*(k_again+i))->connected->instance);
-		}
-	      if(has_question((*(k_again+i))))
-		{
-		  fprintf(fp,"\n\nquestion...");
-		  fprintf(fp,"\nlogfile:    %s",
-			  (*(k_again+i))->question->logfile);
-		  fprintf(fp,"\nnseen:      %d",
-			  (*(k_again+i))->question->nseen);
-		  fprintf(fp,"\ntopic:      %s",
-			  (*(k_again+i))->question->topic);
-		  fprintf(fp,"\ntcode:      %d",
-			  (*(k_again+i))->question->topic_code);
-		  fprintf(fp,"\ntitle:      %s",
-			  (*(k_again+i))->question->title);
-		  fprintf(fp,"\nowner:      %s",
-			  (*(k_again+i))->question->owner->user->username);
-		  fprintf(fp,"\nownerin:    %d",
-			  (*(k_again+i))->question->owner->instance);
-		}
-	    }
+	    if (ascii_write_knuckle_info(fp, *(k_again+i)) != SUCCESS) 
+	      {
+		log_error("dump_data: unable to write_knuckle");
+		goto PUNT_DUMP;
+	      }
 	}
     }
+
+ PUNT_DUMP:
   fclose(fp);
 }
+
+static int
+ascii_write_user_info(fp, user)
+     FILE *fp;
+     USER *user;
+{
+  fprintf(fp,"\n\nuser...");
+  fprintf(fp,"\nuid:      %d", user->uid);
+  fprintf(fp,"\nusername: %s", user->username);
+  fprintf(fp,"\nrealname: %s", user->realname);
+  fprintf(fp,"\nnickname: %s", user->nickname);
+  fprintf(fp,"\ntitle1:   %s", user->title1);
+  fprintf(fp,"\ntitle2:   %s", user->title2);
+  fprintf(fp,"\nmachine:  %s", user->machine);
+  fprintf(fp,"\nrealm:    %s", user->realm);
+  fprintf(fp,"\nspeclts:  %d", user->specialties);
+  fprintf(fp,"\nnum_spec: %d", user->no_specialties);
+  fprintf(fp,"\npermssns: %d", user->permissions);
+  fprintf(fp,"\nstatus:   %d", user->status);
+  fprintf(fp,"\nnumknuck: %d", user->no_knuckles);
+  fprintf(fp,"\nmax_ask:  %d", user->max_ask);
+  fprintf(fp,"\nmax_ans:  %d", user->max_answer);
+  fprintf(fp,"\n");
+
+  return(SUCCESS);
+}
+
+
+
+
+static int
+ascii_write_knuckle_info(fp, knuckle)
+     FILE *fp;
+     KNUCKLE *knuckle;
+{
+int i;
+
+  fprintf(fp,"\n\nknuckle...");
+  fprintf(fp,"\ntitle:        %s", knuckle->title);
+  fprintf(fp,"\ninstance:     %d", knuckle->instance);
+  fprintf(fp,"\ntimestamp:    %ld", knuckle->timestamp);
+  fprintf(fp,"\nstatus:       %d", knuckle->status);
+  fprintf(fp,"\ncusername:    %s", ((knuckle->cusername &&
+				     knuckle->cusername[0])
+				    ? knuckle->cusername : "(nobody)"));
+  fprintf(fp,"\ncinstance:    %d", knuckle->cinstance);
+  fprintf(fp,"\nnm_file:      %s", knuckle->nm_file);
+  fprintf(fp,"\nnew_messages: %d", knuckle->new_messages);
+
+  if(knuckle->question != (QUESTION *) NULL && 
+     knuckle->question->owner == knuckle) 
+    {
+      fprintf(fp,"\n\nquestion...");
+      fprintf(fp,"\nlogfile:      %s", knuckle->question->logfile);
+      fprintf(fp,"\ninfofile:     %s", knuckle->question->infofile);
+      fprintf(fp,"\nseen:         ");
+      for (i=0; i< knuckle->question->nseen; i++)
+	fprintf(fp,"%d ", knuckle->question->seen[i]);
+      fprintf(fp,"\nnseen:        %d", knuckle->question->nseen);
+      fprintf(fp,"\ntopic:        %s", knuckle->question->topic);
+      fprintf(fp,"\ntopic_code:   %d", knuckle->question->topic_code);
+      fprintf(fp,"\ntitle:        %s", knuckle->question->title);
+      fprintf(fp,"\nnote:         %s", knuckle->question->note);
+      fprintf(fp,"\ncomment:      %s", knuckle->question->comment);
+      fprintf(fp,"\nstats...");
+      fprintf(fp,"\nnum_crepl     %d", knuckle->question->stats.n_crepl);
+      fprintf(fp,"\nnum_cmail     %d", knuckle->question->stats.n_cmail);
+      fprintf(fp,"\nnum_urepl     %d", knuckle->question->stats.n_urepl);
+      fprintf(fp,"\ntime_to_fr    %d", knuckle->question->stats.time_to_fr);
+    }
+  fprintf(fp, "\n");
+
+  return(SUCCESS);
+}
+
