@@ -25,10 +25,10 @@ ac_help="$ac_help
 ac_help="$ac_help
   --disable-force_localhost      disable force_localhost default"
 ac_help="$ac_help
-  --with-lpddir=DIR       where to install the lpd binary.  default: \$(bindir)"
+  --with-lpddir=DIR       where to install the lpd binary.  default: \$(sbindir)"
 ac_help="$ac_help
   --with-admindir=DIR     where to install the administrative commands, like
-                          checkpc, lpc, etc.                default: \$(bindir)
+                          checkpc, lpc, etc.                default: \$(sbindir)
 "
 ac_help="$ac_help
   --enable-nls           use Native Language Support"
@@ -1235,7 +1235,7 @@ if test "${with_lpddir+set}" = set; then
   withval="$with_lpddir"
   LPRNGLPDDIR=$withval
 else
-  LPRNGLPDDIR='${bindir}'
+  LPRNGLPDDIR='${sbindir}'
 
 fi
 
@@ -1252,7 +1252,7 @@ if test "${with_admindir+set}" = set; then
   withval="$with_admindir"
   LPRNGADMINDIR=$withval
 else
-  LPRNGADMINDIR='${bindir}'
+  LPRNGADMINDIR='${sbindir}'
 
 fi
 

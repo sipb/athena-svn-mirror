@@ -54,9 +54,9 @@ dnl want the user informed during the configure process where stuff is going
 dnl
 AC_MSG_CHECKING(where to install the lpd binary)
 AC_ARG_WITH(lpddir,
-[  --with-lpddir=DIR       where to install the lpd binary.  default: \$(bindir)],
+[  --with-lpddir=DIR       where to install the lpd binary.  default: \$(sbindir)],
 	LPRNGLPDDIR=$withval,
-	LPRNGLPDDIR='${bindir}'
+	LPRNGLPDDIR='${sbindir}'
 )
 
 AC_MSG_RESULT($LPRNGLPDDIR)
@@ -78,10 +78,10 @@ dnl
 AC_MSG_CHECKING(where to install the LPRng administrative commands)
 AC_ARG_WITH(admindir,
 [  --with-admindir=DIR     where to install the administrative commands, like
-                          checkpc, lpc, etc.                default: \$(bindir)]
+                          checkpc, lpc, etc.                default: \$(sbindir)]
 ,
 	LPRNGADMINDIR=$withval,
-	LPRNGADMINDIR='${bindir}'
+	LPRNGADMINDIR='${sbindir}'
 )
 
 AC_MSG_RESULT($LPRNGADMINDIR)
