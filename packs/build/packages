@@ -1,4 +1,4 @@
-# $Id: packages,v 1.84 1999-09-02 14:32:03 ghudson Exp $
+# $Id: packages,v 1.85 1999-09-10 17:16:37 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -33,112 +33,120 @@ third/autoconf			early
 athena/bin/install		on solaris,irix early
 athena/bin/imake		on solaris early
 
+# Initial packs setup
 packs/build/setup		early
-third/afsbin
-athena/lib/et
-third/readline
-athena/lib/ss			requires readline,et
-athena/lib/hesiod
-athena/lib/ares
-third/krb5
-athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
-athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
-athena/lib/al			requires hesiod,afsbin
-athena/etc/synctree
-third/motif			on linux
-third/motif/clients/mwm		on solaris
-athena/lib/Mu
-athena/lib/Xj
-third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod
-third/wcl			requires motif
-third/tcp_wrappers		except linux
-third/tcsh			requires hesiod
-third/emacs			requires hesiod,krb5
-third/tex			late
-third/top			except irix,linux
-third/sysinfo			on solaris,irix,linux
-third/rcs			on solaris
-third/patch			on solaris
-third/jot
-third/lam
-third/rs
-third/nmh			requires krb5,hesiod
-third/x3270
-third/xmh
-third/talk			on solaris,irix
-third/traceroute		on solaris
-third/look			on irix
-third/whois			on irix
-third/ispell			except linux
-third/ssh			requires krb5,tcp_wrappers
-third/kermit
-third/xntp
-third/bind
-third/kpasswd			requires krb5
-third/ksrvutil			requires krb5
-third/inetd			requires tcp_wrappers
-third/mdoc
-third/lprng/ifhp
-third/lprng/lprng		requires krb5,zephyr,hesiod
-third/lprng/athena
-third/xscreensaver		requires krb5
-third/intlfonts			requires emacs
-third/sendmail			requires hesiod,tcp_wrappers
-third/bash
-athena/lib/acl
-athena/lib/neos			requires krb5,hesiod
-athena/lib/athdir
-athena/lib/larv
-athena/etc/track
-athena/etc/newsyslog
-athena/etc/cleanup		requires al
-athena/etc/listsuidcells	requires afsbin
-athena/etc/gettime
-athena/etc/xdm			requires krb5,al,wcl,larv,Mu
-athena/etc/desync
-athena/etc/busyd		requires larv
-athena/etc/larvnetd		requires larv,ares,hesiod
-athena/etc/cviewd		requires larv
-athena/etc/athinfod
-athena/etc/console		requires Xj
-athena/etc/mkcred
-athena/bin/aklog		requires krb5,afsbin,et
-athena/bin/newpag		requires afsbin
-athena/bin/voldump		requires afsbin,hesiod
-athena/bin/session
-athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
-athena/bin/finger		requires hesiod,zephyr
-athena/bin/sendbug
-athena/bin/just
-athena/bin/rep
-athena/bin/cxref
+
+# Athena software
 athena/bin/access
-athena/bin/dent
+athena/bin/aklog		requires krb5,afsbin,et
+athena/bin/athdir		requires athena/lib/athdir
+athena/bin/athinfo
 athena/bin/attach		requires locker
-athena/bin/dash			requires Xj,krb5,athena/lib/athdir
-athena/bin/xcluster		requires Xj,hesiod
 athena/bin/bugme		requires Xj
-athena/bin/xmore
-athena/bin/xdsc			requires discuss
-athena/bin/rkinit		requires krb5
-athena/bin/discuss		requires krb5,zephyr,ss,et
-athena/bin/from			requires hesiod,krb5
+athena/bin/cxref
+athena/bin/dash			requires Xj,krb5,athena/lib/athdir
 athena/bin/delete		requires afsbin,et
+athena/bin/dent
+athena/bin/discuss		requires krb5,zephyr,ss,et
+athena/bin/finger		requires hesiod,zephyr
+athena/bin/from			requires hesiod,krb5
 athena/bin/getcluster		requires hesiod
 athena/bin/gms			requires hesiod,et
+athena/bin/hesinfo		requires hesiod
 athena/bin/hostinfo		requires bind,perl
+athena/bin/just
 athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
-athena/bin/write
-athena/bin/athdir		requires athena/lib/athdir
-athena/bin/quota		requires locker,afsbin
-athena/bin/saferm
+athena/bin/newpag		requires afsbin
+athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
 athena/bin/passwd		requires krb5,al
-athena/bin/hesinfo		requires hesiod
-athena/bin/athinfo
-third/perl
-third/transcript		requires perl
+athena/bin/quota		requires locker,afsbin
+athena/bin/rep
+athena/bin/rkinit		requires krb5
+athena/bin/saferm
+athena/bin/sendbug
+athena/bin/session
+athena/bin/voldump		requires afsbin,hesiod
+athena/bin/write
+athena/bin/xcluster		requires Xj,hesiod
+athena/bin/xdsc			requires discuss
+athena/bin/xmore
 
+athena/etc/athinfod
+athena/etc/busyd		requires larv
+athena/etc/cleanup		requires al
+athena/etc/console		requires Xj
+athena/etc/cviewd		requires larv
+athena/etc/desync
+athena/etc/gettime
+athena/etc/larvnetd		requires larv,ares,hesiod
+athena/etc/listsuidcells	requires afsbin
+athena/etc/mkcred
+athena/etc/newsyslog
+athena/etc/synctree
+athena/etc/track
+athena/etc/xdm			requires krb5,al,wcl,larv,Mu
+
+athena/lib/Mu
+athena/lib/Xj
+athena/lib/acl
+athena/lib/al			requires hesiod,afsbin
+athena/lib/ares
+athena/lib/athdir
+athena/lib/et
+athena/lib/hesiod
+athena/lib/larv
+athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
+athena/lib/neos			requires krb5,hesiod
+athena/lib/ss			requires readline,et
+athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
+
+# Third-party software
+third/afsbin
+third/bash
+third/bind
+third/emacs			requires hesiod,krb5
+third/inetd			requires tcp_wrappers
+third/intlfonts			requires emacs
+third/ispell			except linux
+third/jot
+third/kermit
+third/kpasswd			requires krb5
+third/krb5
+third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod
+third/ksrvutil			requires krb5
+third/lam
+third/look			on irix
+third/lprng/athena
+third/lprng/ifhp
+third/lprng/lprng		requires krb5,zephyr,hesiod
+third/mdoc
+third/motif			on linux
+third/motif/clients/mwm		on solaris
+third/nmh			requires krb5,hesiod
+third/patch			on solaris
+third/perl
+third/rcs			on solaris
+third/readline
+third/rs
+third/sendmail			requires hesiod,tcp_wrappers
+third/ssh			requires krb5,tcp_wrappers
+third/sysinfo			on solaris,irix,linux
+third/talk			on solaris,irix
+third/tcp_wrappers		except linux
+third/tcsh			requires hesiod
+third/tex			late
+third/top			except irix,linux
+third/traceroute		on solaris
+third/transcript		requires perl
+third/wcl			requires motif
+third/whois			on irix
+third/x3270
+third/xmh
+third/xntp
+third/xscreensaver		requires krb5
+
+# Final packs stuff
 packs/config			late
 packs/dotfiles			late
 packs/glue			late
