@@ -1,108 +1,90 @@
-# gtk+ Greek PO file
-# Copyright (C) 1999 Free Software Foundation, Inc.
-# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
-# Simos Xenitellis <simos@hellug.gr>, 1999.
+# Norwegian translation of gtk+.
+# Copyright (C) 1998,1999 Free Software Foundation, Inc.
+# Kjartan Maraas <kmaraas@online.no>, 1998,1999.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtk+ 1.2.6\n"
+"Project-Id-Version: gtk+ 1.2.5\n"
 "POT-Creation-Date: 2000-05-19 07:11+0200\n"
-"PO-Revision-Date: 1999-10-22 22:43-0000\n"
-"Last-Translator: Spiros Papadimitriou <spapadim+@cs.cmu.edu>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"PO-Revision-Date: 2000-02-04 09:55+0100\n"
+"Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
+"Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-7\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
 
-#
 #: gtk/gtkcolorsel.c:221
 msgid "Hue:"
-msgstr "Απόχρωση:"
+msgstr "Glψd:"
 
-#
 #: gtk/gtkcolorsel.c:222
 msgid "Saturation:"
-msgstr "Κορεσμός:"
+msgstr "Metning:"
 
-#
 #: gtk/gtkcolorsel.c:223
 msgid "Value:"
-msgstr "Τιμή:"
+msgstr "Verdi:"
 
-#
 #: gtk/gtkcolorsel.c:224
 msgid "Red:"
-msgstr "Κόκκινο:"
+msgstr "Rψd:"
 
-#
 #: gtk/gtkcolorsel.c:225
 msgid "Green:"
-msgstr "Πράσινο:"
+msgstr "Grψnn:"
 
-#
 #: gtk/gtkcolorsel.c:226
 msgid "Blue:"
-msgstr "Μπλέ:"
+msgstr "Blε:"
 
-#
 #: gtk/gtkcolorsel.c:227
 msgid "Opacity:"
-msgstr "Διαφάνεια:"
+msgstr "Ugjennomsiktighet:"
 
-#
 #. The OK button
 #: gtk/gtkcolorsel.c:1727 gtk/gtkfilesel.c:469 gtk/gtkfontsel.c:3492
 #: gtk/gtkgamma.c:416
 msgid "OK"
-msgstr "Εντάξει"
+msgstr "OK"
 
-#
 #. The Cancel button
 #: gtk/gtkcolorsel.c:1733 gtk/gtkfilesel.c:476 gtk/gtkfilesel.c:856
 #: gtk/gtkfilesel.c:956 gtk/gtkfilesel.c:1071 gtk/gtkfontsel.c:3505
 #: gtk/gtkgamma.c:424
 msgid "Cancel"
-msgstr "¶κυρο"
+msgstr "Avbryt"
 
-#
 #: gtk/gtkcolorsel.c:1738
 msgid "Help"
-msgstr "Βοήθεια"
+msgstr "Hjelp"
 
-#
 #. The directories clist
 #: gtk/gtkfilesel.c:418
 msgid "Directories"
-msgstr "Κατάλογοι"
+msgstr "Kataloger"
 
-#
 #. The files clist
 #: gtk/gtkfilesel.c:437
 msgid "Files"
-msgstr "Αρχεία"
+msgstr "Filer"
 
-#
 #: gtk/gtkfilesel.c:507 gtk/gtkfilesel.c:1466
 #, c-format
 msgid "Directory unreadable: %s"
-msgstr "Μη αναγνώσιμος κατάλογος: %s"
+msgstr "Uleseleg katalog: %s"
 
-#
 #: gtk/gtkfilesel.c:539
 msgid "Create Dir"
-msgstr "Δημιουργία καταλόγου"
+msgstr "Lag katalog"
 
-#
 #: gtk/gtkfilesel.c:550 gtk/gtkfilesel.c:925
 msgid "Delete File"
-msgstr "Διαγραφή αρχείου"
+msgstr "Slett fil"
 
-#
 #: gtk/gtkfilesel.c:561 gtk/gtkfilesel.c:1029
 msgid "Rename File"
-msgstr "Μετονομασία αρχείου"
+msgstr "Gi fila nytt navn"
 
-#
 #.
 #. gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
 #. (GtkSignalFunc) gtk_file_selection_fileop_destroy,
@@ -110,500 +92,375 @@ msgstr "Μετονομασία αρχείου"
 #.
 #: gtk/gtkfilesel.c:722
 msgid "Error"
-msgstr "Σφάλμα"
+msgstr "Feil"
 
-#
 #. close button
 #: gtk/gtkfilesel.c:745 gtk/gtkinputdialog.c:354
 msgid "Close"
-msgstr "Κλείσιμο"
+msgstr "Lukk"
 
-#
 #: gtk/gtkfilesel.c:820
 msgid "Create Directory"
-msgstr "Δημιουργία καταλόγου"
+msgstr "Lag katalog"
 
-#
 #: gtk/gtkfilesel.c:834
 msgid "Directory name:"
-msgstr "Όνομα καταλόγου:"
+msgstr "Katalognavn:"
 
-#
 #. buttons
 #: gtk/gtkfilesel.c:847
 msgid "Create"
-msgstr "Δημιουργία"
+msgstr "Lag"
 
-#
 #. buttons
 #: gtk/gtkfilesel.c:947
 msgid "Delete"
-msgstr "Διαγραφή"
+msgstr "Slett"
 
-#
 #. buttons
 #: gtk/gtkfilesel.c:1062
 msgid "Rename"
-msgstr "Μετονομασία"
+msgstr "Gi nytt navn"
 
-#
 #: gtk/gtkfilesel.c:1445
 msgid "Selection: "
-msgstr "Επιλογή: "
+msgstr "Valg:"
 
-#
 #: gtk/gtkfontsel.c:210
 msgid "Foundry:"
-msgstr "Χυτήριο:"
+msgstr "Form:"
 
-#
 #: gtk/gtkfontsel.c:211
 msgid "Family:"
-msgstr "Οικογένεια:"
+msgstr "Familie:"
 
-#
 #: gtk/gtkfontsel.c:212
 msgid "Weight:"
-msgstr "Βάρος:"
+msgstr "Tyngde:"
 
-#
 #: gtk/gtkfontsel.c:213
 msgid "Slant:"
-msgstr "Κλίση:"
+msgstr "Helling:"
 
-#
 #: gtk/gtkfontsel.c:214
 msgid "Set Width:"
-msgstr "Ορισμός πλάτους:"
+msgstr "Sett bredde:"
 
-#
 #: gtk/gtkfontsel.c:215
 msgid "Add Style:"
-msgstr "Προσθήκη στυλ:"
+msgstr "Legg til stil:"
 
-#
 #: gtk/gtkfontsel.c:216
 msgid "Pixel Size:"
-msgstr "Μέγεθος σε pixel:"
+msgstr "Pixelstorleik:"
 
-#
 #: gtk/gtkfontsel.c:217
 msgid "Point Size:"
-msgstr "Μέγεθος σε στιγμές"
+msgstr "Punktstorleik:"
 
-#
 #: gtk/gtkfontsel.c:218
 msgid "Resolution X:"
-msgstr "Χ ανάλυση:"
+msgstr "Opplψsning X:"
 
-#
 #: gtk/gtkfontsel.c:219
 msgid "Resolution Y:"
-msgstr "Υ ανάλυση:"
+msgstr "Opplψsning Y:"
 
-#
 #: gtk/gtkfontsel.c:220
 msgid "Spacing:"
-msgstr "Διάκενα:"
+msgstr "Mellomrom:"
 
-#
 #: gtk/gtkfontsel.c:221
 msgid "Average Width:"
-msgstr "Μέσο πλάτος:"
+msgstr "Gjennomsnittleg bredde:"
 
-#
 #: gtk/gtkfontsel.c:222
 msgid "Charset:"
-msgstr "Σύνολο χαρακτήρων:"
+msgstr "Tegnsett:"
 
-#
 #. Number of internationalized titles here must match number
 #. of NULL initializers above
 #: gtk/gtkfontsel.c:459
 msgid "Font Property"
-msgstr "Ιδιότητες γραμματοσειράς:"
+msgstr "Egenskaper for skrifttype"
 
-#
 #: gtk/gtkfontsel.c:460
 msgid "Requested Value"
-msgstr "Επιθυμητή τιμή"
+msgstr "Etterspψrd verdi"
 
-#
 #: gtk/gtkfontsel.c:461
 msgid "Actual Value"
-msgstr "Πραγματικκή τιμή"
+msgstr "Verkeleg verdi"
 
-#
 #: gtk/gtkfontsel.c:494
 msgid "Font"
-msgstr "Γραμματοσειρά"
+msgstr "Skrifttype"
 
-#
 #: gtk/gtkfontsel.c:504 gtk/gtkfontsel.c:2181 gtk/gtkfontsel.c:2411
 msgid "Font:"
-msgstr "Γραμματοσειρά:"
+msgstr "Skrifttype:"
 
-#
 #: gtk/gtkfontsel.c:509
 msgid "Font Style:"
-msgstr "Στυλ γραμματοσειράς:"
+msgstr "Skrifttypens stil:"
 
-#
 #: gtk/gtkfontsel.c:514
 msgid "Size:"
-msgstr "Μέγεθος:"
+msgstr "Storleik:"
 
-#
 #: gtk/gtkfontsel.c:646 gtk/gtkfontsel.c:868
 msgid "Reset Filter"
-msgstr "Επαναρχικοποίηση Φίλτρου"
+msgstr "Nullstill filter"
 
-#
 #: gtk/gtkfontsel.c:660
 msgid "Metric:"
-msgstr "Μονάδες:"
+msgstr "Tyngde:"
 
-#
 #: gtk/gtkfontsel.c:664
 msgid "Points"
-msgstr "Στιγμές"
+msgstr "Punkter"
 
-#
 #: gtk/gtkfontsel.c:671
 msgid "Pixels"
-msgstr "Pixel"
+msgstr "Piksler"
 
-#
 #. create the text entry widget
 #: gtk/gtkfontsel.c:687
 msgid "Preview:"
-msgstr "Προεπισκόπιση:"
+msgstr "Forhεndsvisning:"
 
-#
 #: gtk/gtkfontsel.c:716
 msgid "Font Information"
-msgstr "Πληροφορίες γραμματοσειράς"
+msgstr "Informasjon om skrifttype"
 
-#
 #: gtk/gtkfontsel.c:749
 msgid "Requested Font Name:"
-msgstr "Επιθυμητό Όνομα Γραμματοσειράς:"
+msgstr "Etterspψrd navn pε skrifttype:"
 
-#
 #: gtk/gtkfontsel.c:760
 msgid "Actual Font Name:"
-msgstr "Πραγματικό Όνομα Γραμματοσειράς:"
+msgstr "Verkeleg navn pε skrifttype:"
 
-#
 #: gtk/gtkfontsel.c:771
 #, c-format
 msgid "%i fonts available with a total of %i styles."
-msgstr "%i γραμματοσειρές είναι διαθέσιμες με %i συνολικά στυλ."
+msgstr "%i skrifttyper tilgjengeleg med totalt %i stiler."
 
-#
 #: gtk/gtkfontsel.c:786
 msgid "Filter"
-msgstr "Φίλτρο"
+msgstr "Filter"
 
-#
 #: gtk/gtkfontsel.c:799
 msgid "Font Types:"
-msgstr "Τύποι Γραμματοσειρών:"
+msgstr "Skrifttyper:"
 
-#
 #: gtk/gtkfontsel.c:807
 msgid "Bitmap"
-msgstr "Πλέγμα κουκίδων"
+msgstr "Bilde"
 
-#
 #: gtk/gtkfontsel.c:813
 msgid "Scalable"
-msgstr "Κλιμακούμενο"
+msgstr "Skalerbart"
 
-#
 #: gtk/gtkfontsel.c:819
 msgid "Scaled Bitmap"
-msgstr "Κλιμακωμένο πλέγμα κουκίδων"
+msgstr "Skalert bilde"
 
-#
 #: gtk/gtkfontsel.c:890
 msgid "*"
 msgstr "*"
 
-#
 #. Convert '(nil)' weights to 'regular', since it looks nicer.
 #: gtk/gtkfontsel.c:1215
 msgid "(nil)"
-msgstr "(κενό)"
+msgstr "(nil)"
 
-#
 #: gtk/gtkfontsel.c:1215
 msgid "regular"
-msgstr "κανονικό"
+msgstr "vanleg"
 
-#
 #: gtk/gtkfontsel.c:1220 gtk/gtkfontsel.c:1973
 msgid "italic"
-msgstr "πλάγια"
+msgstr "kursiv"
 
-#
 #: gtk/gtkfontsel.c:1221 gtk/gtkfontsel.c:1974
 msgid "oblique"
-msgstr "λοξά"
+msgstr "hellende"
 
-#
 #: gtk/gtkfontsel.c:1222 gtk/gtkfontsel.c:1975
 msgid "reverse italic"
-msgstr "ανάποδα πλάγια"
+msgstr "omvendt kursiv"
 
-#
 #: gtk/gtkfontsel.c:1223 gtk/gtkfontsel.c:1976
 msgid "reverse oblique"
-msgstr "ανάποδα λοξά"
+msgstr "omvendt hellende"
 
-#
 #: gtk/gtkfontsel.c:1224 gtk/gtkfontsel.c:1977
 msgid "other"
-msgstr "άλλο"
+msgstr "anna"
 
-#
 #: gtk/gtkfontsel.c:1231
 msgid "[M]"
 msgstr "[M]"
 
-#
 #: gtk/gtkfontsel.c:1232
 msgid "[C]"
 msgstr "[C]"
 
-#
 #: gtk/gtkfontsel.c:1793
 msgid "The selected font is not available."
-msgstr "Η επιλεγμένη γραμματοσειρά δεν είναι διαθέσιμη."
+msgstr "Den velgte skrifttypen er ikkje tilgjengelig."
 
-#
 #: gtk/gtkfontsel.c:1799
 msgid "The selected font is not a valid font."
-msgstr "Η επιλεγμένη γραμματοσειρά δεν είναι έγκυρη."
+msgstr "Den velgte skrifttypen er ikkje en gyldig skrifttype."
 
-#
 #: gtk/gtkfontsel.c:1857
 msgid "This is a 2-byte font and may not be displayed correctly."
-msgstr ""
-"Η παρούσα είναι γραμματοσειρά 2 byte και πιθανόν να μην απεικονισθεί σωστά."
+msgstr "Dette er ein 2-byte skrifttype og vil kanskje ikkje vises riktig."
 
-#
 #: gtk/gtkfontsel.c:1961 gtk/gtkinputdialog.c:607
 msgid "(unknown)"
-msgstr "(άγνωστο)"
+msgstr "(ukjent)"
 
-#
 #: gtk/gtkfontsel.c:1972
 msgid "roman"
-msgstr "roman"
+msgstr "romansk"
 
-#
 #: gtk/gtkfontsel.c:1984
 msgid "proportional"
-msgstr "αναλογικά"
+msgstr "proporsjonal"
 
-#
 #: gtk/gtkfontsel.c:1985
 msgid "monospaced"
-msgstr "monospaced"
+msgstr "med lik bredde"
 
-#
 #: gtk/gtkfontsel.c:1986
 msgid "char cell"
-msgstr "κελί χαρακτήρα"
+msgstr "tegncelle"
 
-#
 #: gtk/gtkfontsel.c:2186
 msgid "Font: (Filter Applied)"
-msgstr "Γραμματοσειρά: (Φιλτραρισμένη)"
+msgstr "Skrifttype: (med filter pε)"
 
-#
 #: gtk/gtkfontsel.c:2662
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
-msgstr "Υπέρβαση ορίου MAX_FONTS. Πιθανό να λείπουν μερικές γραμματοσειρές."
+msgstr "MAX_FONTS oversteget. Nokon skrifttyper mangler kanskje."
 
-#
 #: gtk/gtkfontsel.c:3499
 msgid "Apply"
-msgstr "Εφαρμογή"
+msgstr "Bruk"
 
-#
 #: gtk/gtkfontsel.c:3521
 msgid "Font Selection"
-msgstr "Επιλογή Γραμματοσειράς"
+msgstr "Valg av skrifttype"
 
-#
 #: gtk/gtkgamma.c:396
 msgid "Gamma"
-msgstr "Γάμμα"
+msgstr "Gamma"
 
-#
 #: gtk/gtkgamma.c:403
 msgid "Gamma value"
-msgstr "Τιμή γάμμα"
+msgstr "Gammaverdi"
 
-#
 #. shell and main vbox
 #: gtk/gtkinputdialog.c:200
 msgid "Input"
-msgstr "Είσοδος"
+msgstr "Inndata"
 
-#
 #: gtk/gtkinputdialog.c:208
 msgid "No input devices"
-msgstr "Δεν υπάρχουν συσκευές εισόδου"
+msgstr "Ingen innenheter"
 
-#
 #: gtk/gtkinputdialog.c:237
 msgid "Device:"
-msgstr "Συσκευή:"
+msgstr "Enhet:"
 
-#
 #: gtk/gtkinputdialog.c:253
 msgid "Disabled"
-msgstr "Ανενεργό"
+msgstr "Slεtt av"
 
-#
 #: gtk/gtkinputdialog.c:261
 msgid "Screen"
-msgstr "Οθόνη"
+msgstr "Skjerm"
 
-#
 #: gtk/gtkinputdialog.c:269
 msgid "Window"
-msgstr "Παράθυρο"
+msgstr "Vindu"
 
-#
 #: gtk/gtkinputdialog.c:277
 msgid "Mode: "
-msgstr "Κατάσταση λειτουργίας: "
+msgstr "Modus: "
 
-#
 #. The axis listbox
 #: gtk/gtkinputdialog.c:307
 msgid "Axes"
-msgstr "¶ξονες"
+msgstr "Akser"
 
-#
 #. Keys listbox
 #: gtk/gtkinputdialog.c:323
 msgid "Keys"
-msgstr "Πλήκτρα"
+msgstr "Taster"
 
-#
 #. We create the save button in any case, so that clients can
 #. connect to it, without paying attention to whether it exits
 #: gtk/gtkinputdialog.c:345
 msgid "Save"
-msgstr "Αποθήκευση"
+msgstr "Lagre"
 
-#
 #: gtk/gtkinputdialog.c:500
 msgid "X"
-msgstr "Χ"
+msgstr "X"
 
-#
 #: gtk/gtkinputdialog.c:501
 msgid "Y"
-msgstr "Ψ"
+msgstr "Y"
 
-#
 #: gtk/gtkinputdialog.c:502
 msgid "Pressure"
-msgstr "Πίεση"
+msgstr "Trykk"
 
-#
 #: gtk/gtkinputdialog.c:503
 msgid "X Tilt"
-msgstr "Χ-κλίση"
+msgstr "X-helling"
 
-#
 #: gtk/gtkinputdialog.c:504
 msgid "Y Tilt"
-msgstr "Ψ-κλίση"
+msgstr "Y-helling"
 
-#
 #: gtk/gtkinputdialog.c:544
 msgid "none"
-msgstr "καμία"
+msgstr "ingen"
 
-#
 #: gtk/gtkinputdialog.c:578 gtk/gtkinputdialog.c:614
 msgid "(disabled)"
-msgstr "(ανενεργό)"
+msgstr "(slεtt av)"
 
-#
 #. and clear button
 #: gtk/gtkinputdialog.c:692
 msgid "clear"
-msgstr "καθαρισμός"
+msgstr "tψm"
 
-#
 #: gtk/gtknotebook.c:2059 gtk/gtknotebook.c:4131
 #, c-format
 msgid "Page %u"
-msgstr "Σελίδα %u"
+msgstr "Side %u"
 
-#
 #: gtk/gtkrc.c:1702
 #, c-format
 msgid "Unable to locate image file in pixmap_path: \"%s\" line %d"
-msgstr "Το αρχείο εικόνας δε βρέθηκε στο pixmap_path: \"%s\" line %d"
+msgstr "Kunne ikkje finne bildefila i pixmap_patg: \"%s\" linje %d"
 
-#
 #: gtk/gtkrc.c:1705
 #, c-format
 msgid "Unable to locate image file in pixmap_path: \"%s\""
-msgstr "Το αρχείο εικόνας δε βρέθηκε στο pixmap_path: \"%s\""
+msgstr "Kunne ikkje finne bildefila i pixmap_path: \"%s\""
 
-#
 #: gtk/gtkthemes.c:79
 #, c-format
 msgid "Unable to locate loadable module in module_path: \"%s\","
-msgstr "Το module δε βρέθηκε στο module_path: \"%s\","
+msgstr "Kunne ikke finne lesbar modul i module_path: \"%s\","
 
-#
 #: gtk/gtktipsquery.c:180
 msgid "--- No Tip ---"
-msgstr "--- Καμία συμβουλή ---"
-
-#
-#~ msgid "heavy"
-#~ msgstr "παχύ"
-
-#
-#~ msgid "extrabold"
-#~ msgstr "υπέρ-έντονο"
-
-#
-#~ msgid "bold"
-#~ msgstr "έντονο"
-
-#
-#~ msgid "demibold"
-#~ msgstr "ημι-έντονο"
-
-#
-#~ msgid "medium"
-#~ msgstr "μεσαίο"
-
-#
-#~ msgid "normal"
-#~ msgstr "κανονικό"
-
-#
-#~ msgid "light"
-#~ msgstr "ελαφρύ"
-
-#
-#~ msgid "extralight"
-#~ msgstr "υπερ-ελαφρύ"
-
-#
-#~ msgid "thin"
-#~ msgstr "λεπτό"
+msgstr "--- Ingen tips ---"

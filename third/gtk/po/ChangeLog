@@ -1,3 +1,23 @@
+2000-05-20  Kenneth Christiansen <kenneth@gnome.org>
+
+        * update.sh: update
+
+2000-05-20  Kjartan Maraas  <kmaraas@gnu.org>
+
+	* nn.po: Added Norwegian translation (nynorsk dialect).
+
+2000-05-18 Szabolcs BAN <shooby@gnome.hu>
+
+	* hu.po: Finished Hungarian translations.
+
+2000-05-18 Pauli Virtanen <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Minor finnish update.
+
+2000-04-29  Pablo Saratxaga <pablo@mandrakesoft.com>
+        
+        * wa.po: small fixes
+
 2000-02-15  Shirasaki Yasuhiro  <yasuhiro@gnome.gr.jp>
 
 	* ja.po: Updated Japanese translation.

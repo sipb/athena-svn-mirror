@@ -20,7 +20,7 @@
 <P>So, after you have installed GTK+ there are a couple of things that can
 ease you into developing applications with it. There is the
 GTK+ Tutorial 
-<A HREF="http://www.gtk.org/tutorial/">&lt;http://www.gtk.org/tutorial/&gt;</A>, which is undergoing 
+<A HREF="http://www.gtk.org/tutorial/">http://www.gtk.org/tutorial/</A>, which is undergoing 
 development. This will introduce you to writing applications using C.
 <P>The Tutorial doesn't (yet) contain information on all of the widgets
 that are in GTK+. For example code on how to use the basics of all the
@@ -101,7 +101,7 @@ are:
 </UL>
 <P>You'll find these packages on the GNU main ftp server (
 <A HREF="ftp://ftp.gnu.org/">ftp://ftp.gnu.org/</A>) or on any GNU mirror.
-<P>In order to use the powerfull autoconf/automake scheme, you must create
+<P>In order to use the powerful autoconf/automake scheme, you must create
 a configure.in which may look like:
 <P>
 <BLOCKQUOTE><CODE>
@@ -110,7 +110,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for a GTK+ based program
 
 AC_INIT(myprg.c)dnl
-AM_INIT_AUTOMAKE(mypkbname,0.0.1)dnl
+AM_INIT_AUTOMAKE(mypkgname,0.0.1)dnl
 AM_CONFIG_HEADER(config.h)dnl
 
 dnl Checks for programs.
@@ -137,6 +137,15 @@ CLEANFILES      = *~
 DISTCLEANFILES  = .deps/*.P
 </PRE>
 </CODE></BLOCKQUOTE>
+<P>If your project contains more than one subdirectory, you'll have to
+create one Makefile.am in each directory plus a master Makefile.am
+which will look like:
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+SUBDIRS         = mydir1 mydir2 mydir3
+</PRE>
+</CODE></BLOCKQUOTE>
 <P>then, to use these, simply type the following commands:
 <P>
 <PRE>
@@ -145,9 +154,10 @@ autoheader
 autoconf
 automake --add-missing --include-deps --foreign 
 </PRE>
-<P>For further informations, you should look at the autoconf and the automake
-documentation (the shipped info files are really easy to understand, and there
-are plenty of web resources that deal with autoconf and/or automake).
+<P>For further information, you should look at the autoconf and the
+automake documentation (the shipped info files are really easy to
+understand, and there are plenty of web resources that deal with
+autoconf and automake).
 <P>
 <H2><A NAME="ss4.6">4.6 I try to debug my GTK+ application with gdb, but it hangs my X server when I hit some breakpoint. Any Idea ?</A>
 </H2>
