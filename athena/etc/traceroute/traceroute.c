@@ -1,6 +1,6 @@
 #ifndef lint
 static char *rcsid =
-	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.3 1994-04-07 12:43:45 miki Exp $ (LBL)";
+	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.4 1996-09-20 04:11:57 ghudson Exp $ (LBL)";
 #endif
 
 /*
@@ -191,7 +191,7 @@ static char *rcsid =
 
 #include <stdio.h>
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/time.h>
 
 #include <sys/param.h>
@@ -211,15 +211,6 @@ static char *rcsid =
 #define	MAXPACKET	65535	/* max ip packet size */
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN	64
-#endif
-
-#ifndef FD_SET
-#define NFDBITS         (8*sizeof(fd_set))
-#define FD_SETSIZE      NFDBITS
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
-#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
 #endif
 
 #define Fprintf (void)fprintf
@@ -289,7 +280,7 @@ main(argc, argv)
 
 
 	oix = optlist;
-	bzero(optlist, sizeof(optlist));
+	memset(optlist, 0, sizeof(optlist));
 
 	argc--, av++;
 	while (argc && *av[0] == '-')  {
@@ -314,7 +305,7 @@ main(argc, argv)
 				if (isdigit(*av[0])) {
 				  gw = inet_addr(*av);
 				  if (gw) {
-				    bcopy(&gw, oix, sizeof(u_long));
+				    memcpy(oix, &gw, sizeof(u_long));
 				  } else {
 				    Fprintf(stderr, "Unknown host %s\n",av[0]);
 				    exit(1);
@@ -322,7 +313,7 @@ main(argc, argv)
 				} else {
 				  hp = gethostbyname(av[0]);
 				  if (hp) {
-				    bcopy(hp->h_addr, oix, sizeof(u_long));
+				    memcpy(oix, hp->h_addr, sizeof(u_long));
 				  } else {
 				    Fprintf(stderr, "Unknown host %s\n",av[0]);
 				    exit(1);
@@ -402,7 +393,7 @@ main(argc, argv)
 #endif
 
 
-	(void) bzero((char *)&whereto, sizeof(struct sockaddr));
+	(void) memset(&whereto, 0, sizeof(struct sockaddr));
 	to->sin_family = AF_INET;
 	to->sin_addr.s_addr = inet_addr(av[0]);
 	if (to->sin_addr.s_addr != -1) {
@@ -412,7 +403,7 @@ main(argc, argv)
 		hp = gethostbyname(av[0]);
 		if (hp) {
 			to->sin_family = hp->h_addrtype;
-			bcopy(hp->h_addr, (caddr_t)&to->sin_addr, hp->h_length);
+			memcpy(&to->sin_addr, hp->h_addr, hp->h_length);
 			hostname = hp->h_name;
 		} else {
 			Printf("%s: unknown host %s\n", argv[0], av[0]);
@@ -433,7 +424,7 @@ main(argc, argv)
 		perror("traceroute: malloc");
 		exit(1);
 	}
-	(void) bzero((char *)outpacket, datalen);
+	(void) memset(outpacket, 0, datalen);
 	outpacket->ip.ip_dst = to->sin_addr;
 	outpacket->ip.ip_tos = tos;
 
@@ -462,7 +453,7 @@ main(argc, argv)
 	if (lsrr > 0) {
 	  lsrr++;
 	  optlist[IPOPT_OLEN]=IPOPT_MINOFF-1+(lsrr*sizeof(u_long));
-	  bcopy((caddr_t)&to->sin_addr, oix, sizeof(u_long));
+	  memcpy(oix, &to->sin_addr, sizeof(u_long));
 	  oix += sizeof(u_long);
 	  while ((oix - optlist)&3) oix++;		/* Pad to an even boundry */
 
@@ -498,7 +489,7 @@ main(argc, argv)
 				  (char *)&on, sizeof(on));
 
 	if (source) {
-		(void) bzero((char *)&from, sizeof(struct sockaddr));
+		(void) memset(&from, 0, sizeof(struct sockaddr));
 		from.sin_family = AF_INET;
 		from.sin_addr.s_addr = inet_addr(source);
 		if (from.sin_addr.s_addr == -1) {
@@ -822,7 +813,7 @@ inetname(in)
 	if (first && !nflag) {
 		first = 0;
 		if (gethostname(domain, MAXHOSTNAMELEN) == 0 &&
-		    (cp = index(domain, '.')))
+		    (cp = strchr(domain, '.')))
 			(void) strcpy(domain, cp + 1);
 		else
 			domain[0] = 0;
@@ -831,7 +822,7 @@ inetname(in)
 	if (!nflag && in.s_addr != INADDR_ANY) {
 		hp = gethostbyaddr((char *)&in, sizeof (in), AF_INET);
 		if (hp) {
-			if ((cp = index(hp->h_name, '.')) &&
+			if ((cp = strchr(hp->h_name, '.')) &&
 			    !strcmp(cp + 1, domain))
 				*cp = 0;
 			cp = hp->h_name;
