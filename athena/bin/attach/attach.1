@@ -1,4 +1,4 @@
-.\" $Id: attach.1,v 1.7 1991-08-15 14:03:56 lwvanels Exp $
+.\" $Id: attach.1,v 1.8 1991-08-15 16:36:37 lwvanels Exp $
 .\"
 .TH ATTACH 1 "1 July 1991"
 .ds ]W MIT Project Athena
@@ -142,7 +142,7 @@ effect with AFS filesystems.)
 .IP "-setuid -suid or -S"
 This option can be used by a trusted user to forcibly mount a
 filesystem without the nosuid option.  This can be used to override
-the fact a /etc/nosuid file exists or that the system administrator
+the fact that the system administrator
 has made an entry such that the filesystem would normally be mounted
 nosuid.
 .IP "-override or -O"
@@ -182,14 +182,6 @@ The first thing \fIattach\fP and \fIdetach\fP do is to attempt to read
 in /etc/athena/attach.conf, which can be used by the system administrator to
 customize the behavior of \fIattach\fP and \fIdetach\fP.  See
 \fIattach.conf(5)\fP for more information.
-
-If the user running attach is not root and the file \fI/etc/nosuid\fP
-exists, filesystems are forceably mounted with the nosuid mount option.
-This provides some security on a private workstation against users
-attaching filesystems which contain set-uid programs.  This feature is
-provided for backwards compatibility; the perferred method is to
-specify filesystems which should be mounted nosuid by specifying them
-in the attach.conf file.
 
 If an NFS attach is successful, a mapping for the user is established
 to the NFS server (under the restraints of the -y, -n, and -g options
