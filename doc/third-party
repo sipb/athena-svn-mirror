@@ -163,18 +163,13 @@ AFS binaries are placed under arch/<architecture name> for each
 architecture.  For each platform, you should do an import of the
 "include" and "lib" directories of the dest tree, using the vendor tag
 "transarc" and a release tag like "afs-3_4a_patches_2".  For "lib",
-you will have to use the option "-I \!", and you will also need to
-import in domestic/lib.  At the top level, you should have afsd, fs,
-tokens, unlog, and possibly afs.rc; we don't bother with "cvs import"
-for these files.  You will also need the kernel module itself, which
-varies per platform.
+you will have to use the option "-I \!".  At the top level, you should
+have afsd, fs, tokens, unlog, and possibly afs.rc; we don't bother
+with "cvs import" for these files.  You will also need the kernel
+module itself, which varies per platform.
 
 You must do "cvs admin -kb" (or import/checkin with the -kb option) on
 binary files so that they won't get trashed by RCS ID mangling.
-
-For the sgi_53 and sun4m_54 platforms, we did not do an import of the
-"include" and "lib" directories, so you should just update the files
-with normal checkins.
 
 LPRng
 -----
