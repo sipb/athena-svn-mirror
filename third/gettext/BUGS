@@ -1,4 +1,0 @@
-List of known bugs and limitations:
-
-- getting the string for `dcgettext' or `dgettext' fails if the first
-  argument is some different than a list of identifiers or strings.
