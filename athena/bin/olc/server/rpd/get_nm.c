@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.1 1990-12-31 21:15:03 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.2 1991-01-27 20:08:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -44,9 +44,9 @@ int nuke;
     }
   }
 
-  len = read(fd,buf,buflen);
-  if (len != buflen) {
-    syslog(LOG_ERR,"fdcache: read: %m on %s",fnbuf);
+  len = read(fd,buf,statbuf.st_size);
+  if (len != statbuf.st_size) {
+    syslog(LOG_ERR,"get_nm: read: %m on %s",fnbuf);
     close(fd);
     free(buf);
     buflen = 0;
