@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-kerberos.sh,v 1.1 2002-12-09 22:56:12 ghudson Exp $
+# $Id: user-kerberos.sh,v 1.1.2.1 2002-12-09 23:31:16 ghudson Exp $
 #
 # Manipulate Kerberos tickets as appropriate in response to network events.
 #

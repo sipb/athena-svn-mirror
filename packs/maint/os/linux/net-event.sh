@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: net-event.sh,v 1.1 2002-11-06 20:37:10 ghudson Exp $
+# $Id: net-event.sh,v 1.1.2.1 2002-12-09 23:30:41 ghudson Exp $
 #
 # net-event:	the network event script.  This script is called from a
 #		number of various system scripts.  The first argument is

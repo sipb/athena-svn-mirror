@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-sendmail.sh,v 1.1 2002-12-09 22:56:10 ghudson Exp $
+# $Id: system-sendmail.sh,v 1.1.2.1 2002-12-09 23:30:58 ghudson Exp $
 #
 # Run the sendmail queue on net-up events.
 #

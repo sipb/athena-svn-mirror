@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-zephyr.sh,v 1.1 2002-12-09 22:56:14 ghudson Exp $
+# $Id: user-zephyr.sh,v 1.1.2.1 2002-12-09 23:30:43 ghudson Exp $
 #
 # Refresh zephyr subscriptions on network up events.
 #

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-afs.sh,v 1.1 2002-12-09 22:56:09 ghudson Exp $
+# $Id: system-afs.sh,v 1.1.2.1 2002-12-09 23:31:02 ghudson Exp $
 #
 # Check the AFS servers at net-up events.
 #

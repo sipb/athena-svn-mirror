@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-net-event.sh,v 1.1 2002-11-06 20:37:10 ghudson Exp $
+# $Id: user-net-event.sh,v 1.1.2.1 2002-12-09 23:30:53 ghudson Exp $
 #
 # user-net-event:	This is run in the user's environment from the
 #			neteventd process.  It takes a single argument,

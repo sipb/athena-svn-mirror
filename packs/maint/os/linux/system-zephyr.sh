@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-zephyr.sh,v 1.1 2002-12-09 22:56:11 ghudson Exp $
+# $Id: system-zephyr.sh,v 1.1.2.1 2002-12-09 23:30:56 ghudson Exp $
 #
 # Start zhm at the first net-up event.
 #

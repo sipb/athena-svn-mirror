@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: user-xauth.sh,v 1.1 2002-12-09 22:56:13 ghudson Exp $
+# $Id: user-xauth.sh,v 1.1.2.1 2002-12-09 23:31:04 ghudson Exp $
 #
 # Fix the xauth keys (if you are using xauth) to match your new
 # hostname (if the hostname changed).

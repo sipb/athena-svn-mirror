@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-time.sh,v 1.1 2002-12-09 22:56:11 ghudson Exp $
+# $Id: system-time.sh,v 1.1.2.1 2002-12-09 23:30:39 ghudson Exp $
 #
 # Reset the system time on network up events.
 #
