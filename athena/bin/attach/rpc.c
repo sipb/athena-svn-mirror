@@ -6,9 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-#ifndef lint
-static char rcsid_rpc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.3 1990-04-19 13:11:54 jfc Exp $";
-#endif lint
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.4 1990-07-04 22:59:44 jfc Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -226,7 +224,8 @@ spoofunix_create_default(spoofname, uid)
 	machname[MAX_MACHINE_NAME] = 0;
 	gid = getegid();
 	if ((len = getgroups(NGROUPS,gids)) < 0) {
-		fprintf(stderr,"Fatal error: User in too many groups!\n");
+		fprintf(stderr,"%s: Fatal error: User in too many groups!\n", 
+			progname);
 		exit(1);
 	} 
 	return (authunix_create(machname, uid, gid,
@@ -266,8 +265,8 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 	if (debug_flag)
 	    printf("Host previously errored - ignoring\n");
 	if (errorout)
-	    fprintf(stderr, "%s: Ignoring %s due to previous host errors\n",
-		    errname, host);
+	    fprintf(stderr, "%s: Ignoring host %s for filesystem %s due to previous host errors\n",
+		    progname, host, errname);
 	/*
 	 * Don't bother setting error status...we already will have
 	 * before
@@ -305,16 +304,27 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 	    if (debug_flag)
 		printf("krb_mk_req failed! status = %d\n", status);
 	    if (status == KDC_PR_UNKNOWN) {
-		    fprintf(stderr, "%s: (warning) Host %s isn't registered\n",
-			    errname, host);
-		    fprintf(stderr, "%s: with kerberos; mapping failed.\n",
-			    errname);
-		    return(SUCCESS);
+	      if(inattach) {
+		fprintf(stderr,
+			"%s: (warning) Host %s isn't registered with kerberos\n",
+			progname, host);
+		fprintf(stderr, "\tmapping failed for filesystem %s.\n",
+			errname);
+		return(SUCCESS);
+	      } else {
+		fprintf(stderr, "%s: Host %s isn't registered with kerberos\n",
+			progname, host);
+	      } 
+	    } else {
+	      if (errorout)
+		{
+		  fprintf(stderr, "%s: Could not get Kerberos ticket for filesystem %s\n",
+			  progname, errname);
+		  fprintf(stderr, "%s: realm %s instance %s, kerberos error is: %s\n",
+			  realm, instance,
+			  krb_err_txt[status]);
+		}
 	    }
-	    if (errorout)
-		fprintf(stderr, "%s: Could not get Kerberos ticket for realm %s instance %s:\n%s\n",
-			errname, realm, instance,
-			krb_err_txt[status]);
 	    error_status = ERR_KERBEROS;
 	    return (FAILURE);
 	}
@@ -326,7 +336,8 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
      */
     if ((client = rpc_create(addr, &sin)) == NULL) {
 	if (errorout)
-	    fprintf(stderr, "%s: Server %s not responding\n", errname, host);
+	    fprintf(stderr, "%s: server %s not responding (for filesystem %s)\n",
+		    progname, host, errname);
 	/*
 	 * Error status set by rpc_create
 	 */
@@ -348,36 +359,36 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 	if (errorout) {
 	    switch (rpc_stat) {
 	    case RPC_TIMEDOUT:
-		fprintf(stderr, "%s: Timeout while contacting mount daemon on %s\n",
-			errname, host);
+		fprintf(stderr, "%s: timeout while contacting mount daemon on %s (for filesystem %s)\n",
+			progname, host, errname);
 		if (inattach)
-		    fprintf(stderr, "%s:   while mapping - try attach -n\n",
+		    fprintf(stderr, "\twhile mapping - try attach -n\n",
 			    errname);
 		error_status = ERR_HOST;
 		break;
 	    case RPC_AUTHERROR:
-		fprintf(stderr, "%s: Authentication failed\n",
-			errname, host);
+		fprintf(stderr, "%s: Authentication failed to host %s for filesystem %s\n",
+			progname, host, errname);
 		error_status = ERR_AUTHFAIL;
 		break;
 	    case RPC_PMAPFAILURE:
-		fprintf(stderr, "%s: Can't find mount daemon on %s\n",
-			errname, host);
+		fprintf(stderr, "%s: Can't find mount daemon on %s for filesystem %s\n",
+			progname, host, errname);
 		error_status = ERR_HOST;
 		break;
 	    case RPC_PROGUNAVAIL:
 	    case RPC_PROGNOTREGISTERED:
-		fprintf(stderr, "%s: Mount daemon not available on %s\n",
-			errname, host);
+		fprintf(stderr, "%s: Mount daemon not available on %s (filesystem %s)\n",
+			progname, host, errname);
 		error_status = ERR_HOST;
 		break;
 	    case RPC_PROCUNAVAIL:
-		fprintf(stderr, "%s: (warning) Mount daemon on %s doesn't understand UID maps\n",
-		       errname, host);
+		fprintf(stderr, "%s: Warning: mount daemon on %s doesn't understand UID maps\n\t(filesystem %s)",
+		       progname, host, errname);
 		return(SUCCESS);
 	    default:
-		fprintf(stderr, "%s: System error contacting server %s\n",
-			errname, host);
+		fprintf(stderr, "%s: System error contacting server %s for filesystem %s\n",
+			progname, host, errname);
 		error_status = ERR_HOST;
 		break;
 	    }
