@@ -95,6 +95,8 @@ for failure in $failures; do
     /etc/xinetd.conf | \
     /etc/xinetd.d/* | \
     /etc/athena/rc.conf | \
+    /etc/athena/athinfo.access | \
+    /etc/athena/local-lockers.conf | \
     /etc/conf.linuxconf | \
     /etc/man.config )
         ;;
@@ -197,6 +199,8 @@ cp $config/etc/X11/prefdm /etc/X11/prefdm
 cp $config/etc/X11/fs/config /etc/X11/fs/config
 cp $config/usr/X11R6/lib/X11/app-defaults/XTerm \
     /usr/X11R6/lib/X11/app-defaults/XTerm
+cp $config/etc/athena/athinfo.access /etc/athena
+cp $config/etc/athena/local-lockers.conf /etc/athena
 
 if [ -r $config/etc/athena/rc.conf ]; then
   sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
