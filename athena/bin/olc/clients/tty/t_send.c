@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.16 1991-01-21 17:11:32 lwvanels Exp $
+ *	$Id: t_send.c,v 1.17 1991-01-23 13:47:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.16 1991-01-21 17:11:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.17 1991-01-23 13:47:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,7 +36,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <sys/errno.h>
 
 ERRCODE
 t_reply(Request,file,editor)    
@@ -212,7 +212,6 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
   LIST list;
   struct stat statbuf;
   char buf[BUF_SIZE];
-  char tmp_file[NAME_SIZE];
   char *username;
   char *realname;
   char *message;
@@ -265,34 +264,25 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	  (!strncmp(message,"No new messages.", 16)))
 	message = (char *) NULL;
 
-      make_temp_name(tmp_file);
+      if (file[0] == '\0')
+	make_temp_name(file);
 
-      if (header)
-	(void) OMailHeader(Request, tmp_file, username, realname,
-			   list.topic, DEFAULT_MAILHUB, message);
+      status = stat(file,&statbuf);
 
-      if (file[0] != '\0') {
-	int fd1, fd2;
-	char *tmp;
-
-	fd1 = open(tmp_file,O_WRONLY|O_CREAT,0644);
-	fd2 = open(file,O_RDONLY,0644);
-	if (fd2 < 0) {
-	  fprintf(stderr,"No such file %s. . . aborting\n",file);
-	  close(fd1);
+      if (status != 0) {
+	if ((errno == ENOENT) && header)
+	  (void) OMailHeader(Request, file, username, realname,
+			     list.topic, DEFAULT_MAILHUB, message);
+	else {
+	  fprintf(stderr,"Error with file \"%s\": %s", file,
+		  sys_errlist[errno]);
 	  return(ERROR);
 	}
-	lseek(fd1,0,L_XTND);
-	fstat(fd2,&statbuf);
-	tmp = malloc(statbuf.st_size);
-	read(fd2,tmp,statbuf.st_size);
-	write(fd1,tmp,statbuf.st_size);
-	close(fd1);
-	close(fd2);
       }
-	
+
+
       if (!noedit) {
-	status = edit_message(tmp_file,editor);
+	status = edit_message(file,editor);
 	if(status == ERROR)
 	  {
 	    fprintf(stderr,"Error editing file. . . aborting\n");
@@ -302,7 +292,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	  if(status)
 	    return(status);
       
-	status = what_now(tmp_file,FALSE,NULL);
+	status = what_now(file,FALSE,NULL);
 	if(status == ERROR)
 	  {
 	    fprintf(stderr,"An error occurred while reading your");
@@ -315,13 +305,13 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	    return(status);
       }
 
-      (void) stat(tmp_file, &statbuf);
+      (void) stat(file, &statbuf);
       if (statbuf.st_size == 0) 
 	{
 	  printf("No message to send.\n");
 	  return(NO_ACTION);
 	}
-      if (mail_message(username, Request->requester.username,tmp_file, smargs)
+      if (mail_message(username, Request->requester.username,file, smargs)
 	  == SUCCESS)
 	printf("Mail message sent.\n");
       else 
@@ -339,7 +329,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
       return(status);
     }
 
-  status = OMail(Request,tmp_file);
+  status = OMail(Request,file);
   
   switch(status)
     {
@@ -351,6 +341,6 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
       return(status);
     }  
 
-  unlink(tmp_file);
+  unlink(file);
   return(status);
 }
