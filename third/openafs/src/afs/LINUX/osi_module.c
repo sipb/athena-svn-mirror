@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.4 2003-03-20 00:09:34 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.5 2003-03-24 12:33:55 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -25,9 +25,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/o
 #include <linux/slab.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
 #include <linux/init.h>
+#include <linux/sched.h>
 #endif
 #ifndef EXPORTED_SYS_CALL_TABLE
-#include <linux/sched.h>
 #include <linux/syscall.h>
 #endif
 
@@ -452,14 +452,26 @@ static long get_page_offset(void)
     struct task_struct *p, *q;
 
     /* search backward thru the circular list */
-#ifdef DEFINED_PREV_TASK
-    for(q = current; p = q; q = prev_task(p))
-#else
-    for(p = current; p; p = p->prev_task)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+    read_lock(&tasklist_lock);
 #endif
-	if (p->pid == 1)
-	    return p->addr_limit.seg;
-
-    return 0;
+    /* search backward thru the circular list */
+#ifdef DEFINED_PREV_TASK
+    for(q = current; p = q; q = prev_task(p)) {
+#else
+    for(p = current; p; p = p->prev_task) {
+#endif
+	    if (p->pid == 1) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+		    read_unlock(&tasklist_lock);
+#endif
+		    return p->addr_limit.seg;
+	    }
+    }
+  
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+    read_unlock(&tasklist_lock);
+#endif
+  return 0;
 #endif
 }
