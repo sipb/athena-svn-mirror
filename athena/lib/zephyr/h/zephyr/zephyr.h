@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.30 1988-07-26 17:08:34 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.31 1989-05-04 17:19:57 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -184,6 +184,7 @@ extern int ZMakeAuthentication();
 
 #define ZEPHYR_CTL_CLIENT	"CLIENT"	/* Inst: From client */
 #define CLIENT_SUBSCRIBE	"SUBSCRIBE"	/* Opcode: Subscribe */
+#define CLIENT_SUBSCRIBE_NODEFS	"SUBSCRIBE_NODEFS"	/* Opcode: Subscribe */
 #define CLIENT_UNSUBSCRIBE	"UNSUBSCRIBE"	/* Opcode: Unsubsubscribe */
 #define CLIENT_CANCELSUB	"CLEARSUB"	/* Opcode: Clear all subs */
 #define CLIENT_GIMMESUBS	"GIMME"		/* Opcode: Give me subs */
