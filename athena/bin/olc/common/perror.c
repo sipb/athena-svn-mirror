@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.1 1990-11-15 08:57:37 lwvanels Exp $
+ *	$Id: perror.c,v 1.2 1991-02-24 11:27:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -17,6 +17,9 @@
 #include <sys/file.h>
 #include <sys/uio.h>
 #include <sys/time.h>           /* System time definitions. */
+#ifdef m68k
+#include <time.h>
+#endif
 
 char *wday[] = 
 {
@@ -91,6 +94,8 @@ extern char *sys_errlist[];
 extern int errno;
 static char time_buf[25];
  
+#ifndef m68k
+/* punt it all, the mac can't deal with multiply defined symbols */
 #ifdef mips
 int errno; /* declared in same file as perror in libc,
 	      so we must declare it here to avoid
@@ -144,3 +149,4 @@ perror(msg)
 	(void) writev(2, iov, (v - iov) + 1);
 }
 
+#endif
