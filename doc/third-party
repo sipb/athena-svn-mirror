@@ -143,7 +143,7 @@ Distribution sites for software under third
 	lprng		ftp.astart.com:pub/LPRng; see below
 	medusa		ftp.gnome.org:pub/GNOME/unstable/sources/medusa
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
-	nautilus	ftp.gnome.org:pub/GNOME/unstable/sources/nautilus
+	nautilus	ftp.gnome.org:pub/GNOME/stable/sources/nautilus
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
 	oaf		ftp.gnome.org:pub/GNOME/stable/sources/oaf
