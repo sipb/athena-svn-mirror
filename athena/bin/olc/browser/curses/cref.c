@@ -1,26 +1,40 @@
-/* This file is part of the CREF finder.  It contains the primary command
- * loop.
- *
- *	Win Treese
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
  *	MIT Project Athena
- *
- *	Created:	8/10/85
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v $
- *	$Author: treese $
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+/* This file is part of the CREF finder.  It contains the primary command
+ * loop.
+ *
+ *	$Source:
+ *	$Author:
+ *      $Header:
  */
 
+
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.8 1986-02-09 16:41:17 treese Exp $";
+static char *rcsid_cref_c = "$Header: ";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
 #include <sys/file.h>			/* System file definitions. */
-
+#include <strings.h>
 #include "cref.h"			/* CREF finder defs. */
 #include "globals.h"			/* Global variable defs. */
 
@@ -29,14 +43,12 @@ static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
  *		argv:	Array of command line arguments.
  * Returns:	Nothing.
  * Notes:
- *	The arguments to this function are not currently used.
  */
 
 main(argc, argv)
      int argc;
      char *argv[];
 {
-  check_consultant();
   init_display();
   init_globals();
   parse_args(argc, argv);
@@ -71,8 +83,7 @@ command_loop()
 	{
 	  move(LINES - 3, strlen(CREF_PROMPT) + 3);
 	  clrtoeol();
-	  message(1, "");
-	  mvaddstr(LINES-2, 3, "Read section? ");
+	  message(1, "Read section:");
 	  refresh();
 	  *inbuf = (char) command;
 	  *(inbuf+1) = (char) NULL;
@@ -87,11 +98,18 @@ command_loop()
 	    }
 	}
       else if (command == '\n')
-	continue;
+	{
+	  message(1,"");
+	  continue;
+	}
       else if (command == ' ')
-	next_page();
+	{
+	  message(1,"");
+	  next_page();
+	}
       else
 	{
+	  message(1,"");
 	  for (index = 0; index < Command_Count; index++)
 	    {
 	      if (command == (int) Command_Table[index].command)
@@ -128,11 +146,11 @@ parse_args(argc, argv)
       case 'r':
 	strcpy(filename, optarg);
 	if (filename[0] != '/')
-	    err_exit("Invalid root directory:", filename);
+	    err_exit("Root directory must be full pathname:", filename);
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
 	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_exit("Invalid CREF directory:", Current_Dir);
+	  err_exit("No CREF index file in this directory:\n", Current_Dir);
 	break;
       case 's':
 	strcpy(filename, optarg);
@@ -142,13 +160,13 @@ parse_args(argc, argv)
 	break;
       case 'f':
 	strcpy(filename, optarg);
-	if (filename[0] == '-')
-	  err_exit("Invalid file offset:", filename);
+	if (filename[0] == '-' || filename[0] == '/')
+	  err_exit("Pathname should be relative to root dir:\n", filename);
 	strcpy(Current_Dir, Root_Dir);
 	strcat(Current_Dir, "/");
 	strcat(Current_Dir, filename);
 	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_exit("Invalid CREF directory:\n", Current_Dir);
+	  err_exit("No CREF index file in this directory:\n", Current_Dir);
 	break;
       case 'a':
 	strcpy(filename, optarg);
@@ -159,7 +177,7 @@ parse_args(argc, argv)
       case 'c':
 	strcpy(filename, optarg);
 	if (filename[0] != '/')
-	    err_exit("Invalid root directory:", filename);
+	    err_exit("New root directory must be full pathname:\n", filename);
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
 	if (create_cref_dir(Current_Dir) != SUCCESS)
@@ -181,6 +199,6 @@ parse_args(argc, argv)
 
 usage()
 {
-  fprintf(stderr, "Usage: cref [-r rootdir] [-s savefile] [-f file_offset] ");
-  fprintf(stderr, "[-a abbrev_file]");
+  fprintf(stderr, "Usage: cref [-c new_rootdir[-r existing_rootdir]\n");
+  fprintf(stderr, "       [-s savefile] [-f file_offset] [-a abbrev_file]\n");
 }
