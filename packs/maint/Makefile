@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15.2.5 2003-10-26 20:12:55 ghudson Exp $
+# $Id: Makefile,v 1.15.2.6 2003-11-04 19:32:34 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
