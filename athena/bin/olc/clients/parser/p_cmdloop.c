@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.24 1999-07-30 18:25:55 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.25 1999-08-02 12:26:26 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.24 1999-07-30 18:25:55 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.25 1999-08-02 12:26:26 ghudson Exp $";
 #endif
 #endif
 
@@ -128,7 +128,6 @@ command_loop(Command_Table, prompt)
       else
 	do_command(Command_Table, arguments);
     }
-  return;
 }
 
 /*
@@ -465,6 +464,7 @@ expand_variable(Request,var)
 }
 
 
+void
 expand_arguments(Request,arguments)
      REQUEST *Request;
      char **arguments;
@@ -482,6 +482,7 @@ expand_arguments(Request,arguments)
     }
 }
 
+void
 set_prompt(Request, prompt, inprompt)
      REQUEST *Request;
      char *prompt;

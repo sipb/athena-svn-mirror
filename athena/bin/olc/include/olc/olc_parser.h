@@ -16,7 +16,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_parser.h,v 1.16 1999-07-08 22:56:54 ghudson Exp $
+ *	$Id: olc_parser.h,v 1.17 1999-08-02 12:26:28 ghudson Exp $
  */
 
 
@@ -51,8 +51,8 @@ void command_loop (COMMAND Command_Table [], char *prompt );
 ERRCODE do_command (COMMAND Command_Table [], char *arguments []);
 ERRCODE command_index (COMMAND Command_Table [], char *command_name );
 char *expand_variable (REQUEST *Request , char *var );
-int expand_arguments (REQUEST *Request , char **arguments );
-int set_prompt (REQUEST *Request , char *prompt , char *inprompt );
+void expand_arguments (REQUEST *Request , char **arguments );
+void set_prompt (REQUEST *Request , char *prompt , char *inprompt );
 ERRCODE parse_command_line (char *command_line ,
 			    char arguments [MAX_ARGS ][MAX_ARG_LENGTH ]);
 void sigint_handler (int signal);
