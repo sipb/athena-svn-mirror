@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v 1.2 1989-01-27 04:49:07 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v 1.3 1989-02-01 10:13:27 jik Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -27,6 +27,8 @@ expunge, purge \- permanent removal of \fIdelete\fR\^d files
 .B \-v
 ] [
 .B \-l
+] [
+.B \-y
 ] [
 .B \-\|\-
 ] [ filename [ ... ]]
@@ -79,10 +81,12 @@ When a non-deleted directory is passed to \fIexpunge\fR, the
 .BR \-r
 option causes the directory to be searced recursively for deleted
 files.  If the recursive option is \fInot\fR specified, only the
-direct children of the non-deleted directory are examined.
+direct children of the non-deleted directory are examined.  A
+recursive search of a large directory can take quite a while.
 .TP
 .B \-i
-The user is prompted for confirmation before each file or directory is
+The user is prompted for confirmation with the name of the file and
+its size in kilobytes before each file or directory is
 restored.
 .TP
 .B \-f
@@ -108,7 +112,8 @@ option not specified.
 .B \-v
 Causes 
 .I expunge
-to report each file as it is expunged.
+to report each file as it is expunged, as well as the size of the file
+and a running total of the number of kilobytes expunged.
 .TP
 .B \-l
 Causes 
@@ -116,6 +121,11 @@ Causes
 to list all found files before expunging them, similar to the actions
 of
 .I purge.
+.TP
+.B \-y
+The total number of kilobytes expunged is printed after
+.I expunge
+is finished removing files.
 .TP
 .B \-\|\-
 Two dashes indicate that all arguments following it are to be treated
