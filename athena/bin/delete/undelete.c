@@ -11,14 +11,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.24 1991-06-04 22:07:21 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.25 1991-06-25 16:15:14 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #ifdef POSIX
 #include <dirent.h>
-#define direct dirent
 #else
 #include <sys/dir.h>
 #endif
@@ -545,7 +544,11 @@ char *filename;
      char buf[MAXPATHLEN];
      struct stat stat_buf;
      DIR *dirp;
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
      int retval;
      int status = 0;
      

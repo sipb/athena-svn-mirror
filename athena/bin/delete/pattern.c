@@ -11,14 +11,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.23 1991-06-04 22:06:14 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.24 1991-06-25 16:15:00 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #ifdef POSIX
 #include <dirent.h>
-#define direct dirent
 #else
 #include <sys/dir.h>
 #endif
@@ -422,7 +421,11 @@ char ***found;
 Boolean match_undeleted, match_deleted;
 {
      char base[MAXPATHLEN];
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
      DIR *dirp;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      int retval;
@@ -743,7 +746,11 @@ char ***found;
 int options;
 {
      char base[MAXPATHLEN];
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
      DIR *dirp;
      int retval;
      int strsize;

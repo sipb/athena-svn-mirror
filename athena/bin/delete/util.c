@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.23 1991-06-04 22:06:34 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.24 1991-06-25 16:15:20 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -22,7 +22,6 @@ typedef unsigned short uid_t;
 #endif
 #ifdef POSIX
 #include <dirent.h>
-#define direct dirent
 #else
 #include <sys/dir.h>
 #endif
