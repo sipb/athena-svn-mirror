@@ -1,10 +1,9 @@
-# $Id: Makefile,v 1.7 1997-03-28 10:35:34 ghudson Exp $
+# $Id: Makefile,v 1.8 1997-04-30 22:52:18 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHX11LIB=/usr/athena/lib/X11
 KEYMAPS=${ATHX11LIB}/keymaps
-APPDEFS=${ATHX11LIB}/app-defaults
 KEYTABLES=/usr/openwin/share/etc/keytables
 DEFAULT=/etc/default
 INET=/etc/inet
@@ -26,7 +25,6 @@ install:
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHX11LIB}
 	mkdir -p ${DESTDIR}${KEYMAPS}
-	mkdir -p ${DESTDIR}${APPDEFS}
 	mkdir -p ${DESTDIR}${KEYTABLES}
 	mkdir -p ${DESTDIR}${DEFAULT}
 	mkdir -p ${DESTDIR}${INET}
@@ -40,7 +38,6 @@ install:
 	install -c -m 0644 AthenaModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 AthenaType5Keypad ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 AthenaType5Rubout ${DESTDIR}${KEYMAPS}
-	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 SunModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 SunType5Keypad ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 SunType5Rubout ${DESTDIR}${KEYMAPS}
