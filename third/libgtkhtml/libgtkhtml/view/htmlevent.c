@@ -260,8 +260,6 @@ html_event_mouse_move (HtmlView *view, GdkEventMotion *event)
 	if (!view->root)
 		return;
 	
-	html_selection_update (view, event);
-
 	box = html_event_find_root_box (view->root, (gint)event->x, (gint)event->y);
 	
 	node = html_event_find_parent_dom_node (box);

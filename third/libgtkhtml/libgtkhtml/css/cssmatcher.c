@@ -2354,7 +2354,7 @@ css_matcher_apply_rule (HtmlDocument *document, HtmlStyle *style, HtmlStyle *par
 		break;
 		
 	default:
-		g_warning ("Unhandled property: %d %s\n", prop, html_atom_list_get_string (html_atom_list, prop));
+		g_print ("Unhandled property: %d %s\n", prop, html_atom_list_get_string (html_atom_list, prop));
 	}
 }
 

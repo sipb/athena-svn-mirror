@@ -67,9 +67,9 @@ struct _HtmlBoxTable {
 	/* The table caption if any */
 	HtmlBoxTableCaption *caption;
 	/* FALSE if the info cache has to be updated */
-	gboolean up_to_date:1;
+	guint up_to_date:1;
 
-	gboolean cell_border:1;
+	guint cell_border:1;
 	gint16 cell_padding;
 };
 

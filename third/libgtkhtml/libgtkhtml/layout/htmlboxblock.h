@@ -42,8 +42,8 @@ typedef struct _HtmlBoxBlockClass HtmlBoxBlockClass;
 struct _HtmlBoxBlock {
 	HtmlBox parent_object;
 	HtmlLineBox *line;
-	gboolean force_relayout:1;
-	gboolean last_was_min_max:1;
+	guint force_relayout:1;
+	guint last_was_min_max:1;
 
 	gint float_magic_value;
 	gint full_width;

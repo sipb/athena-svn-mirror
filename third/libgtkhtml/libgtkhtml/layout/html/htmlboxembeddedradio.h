@@ -38,7 +38,7 @@ G_BEGIN_DECLS
 
 struct _HtmlBoxEmbeddedRadio {
 	HtmlBoxEmbedded parent_object;
-	gboolean added_to_group:1;
+	guint added_to_group:1;
 };
 
 struct _HtmlBoxEmbeddedRadioClass {

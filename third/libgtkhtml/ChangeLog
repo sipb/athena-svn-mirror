@@ -1,3 +1,111 @@
+2005-02-12  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS, configure.in: Updated for 2.6.3 release
+
+2005-02-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgtkhtml/util/htmlatomlist.c: (html_atom_list_get_atom): Don't
+	strdup stuff into g_ascii_strdown() since that allocates a new string
+	anyway. Fixes almost 400 kb leakage from opening slashdot...
+
+2005-02-07  Rodney Dawes  <dobey@novell.com>
+
+	* libgtkhtml/document/htmlparser.c (html_comment):
+	(html_characters, html_startElement, html_endElement):
+	(html_startDocument, html_endDocument): Update all these functions
+	to call the xmlSAX2 versions of the deprecated functions
+
+	Fixes #164808
+
+2005-02-04  Rodney Dawes  <dobey@novell.com>
+
+	* autogen.sh: Replace with an autogen.sh that uses gnome-common
+
+2005-01-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_get_box_text_for_offset): 
+	Return NULL at end of function; bug #165455; patch from Chris Lahey.
+
+2005-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssmatcher.c (css_matcher_apply_rule): Change
+	g_warning to g_print; bug 163071; fix from Pawel Sawek.
+
+2004-12-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_update_focus_element): New
+	function from refactored code which updates focus element when cursor
+	is moved or toggled showing.
+	(html_view_notify_cursor_position): New function from refactored
+	code called by html_view_set_cursor_position.
+	(html_view_toggle_cursor): Add call to html_view_notify_cursor_position.
+	(move_cursor): Removed refactored code with call as 
+	html_view_set_cursor_position now causes code to be executed.
+
+	Fixes bug #160705.
+
+	(html_view_focus_element): Correct condition under which adjustment is
+	set to 0.
+
+2004-11-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlviewaccessible.c 
+	(html_view_accessible_initialize): Connect after grab_focus instead of
+	before. This ensure that when widget is focused for the first time
+	We report focus on the focused link. This was a regression caused by
+	fix for bug 156582.
+	(html_view_accessible_grab_focus_cb): Report focus on HtmlView
+	when fovus moves from a link. Fixes bug #157330.
+	
+2004-11-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (move_cursor): Keep offset value relative 
+	to start of htmlView rather than start of current of current 
+	HtmlBoxText when finding current object. Fixes bug #157328.
+
+2004-10-27  Thomas Fitzsimmons	<fitzsim@redhat.com>			       
+
+	* autogen.sh: Support non-srcdir builds. Bug #156554
+
+2004-10-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Depend on gail 1.8
+	* libgtkhtml/a11y/htmlviewaccessible.c: Remove set_focus_object().
+	Fixes bug #156582.
+
+2004-09-12  Peter Williams  <peter@newton.cx>
+
+	* libgtkhtml/view/htmlview.c (html_view_motion_notify): Move the
+	button press check to after the html_event_mouse_move call, so
+	that the on_url signal is fired even if the mouse button isn't 
+	being pressed. Move the call to html_selection_update from
+	html_event_mouse_move to after the button-press check.
+
+	* libgtkhtml/view/htmlevent.c (html_event_mouse_move): Don't call
+	html_selection_update here.
+
+2004-09-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y.htmlboxaccessible.c 
+	libgtkhtml/a11y/htmlboxtextaccessible.c 
+	libgtkhtml/a11y/htmlboxblocktextaccessible.c 
+	libgtkhtml/graphics/htmlimagefactory.c libgtkhtml/layout/htmlbox.h
+	libgtkhtml/layout/htmlboxblock.h  libgtkhtml/layout/htmlboxtable.h
+	libgtkhtml/layout/htmlboxtext.h 
+	libgtkhtml/layout/htmlboxembeddedbutton.c
+	libgtkhtml/layout/htmlboxembeddedradio.h
+	libgtkhtml/layout/htmlboxembeddedtextarea.c
+	libgtkhtml/util/htmlatomlist.c libgtkhtml/view/htmlview.c
+	tests/browser-window.c tests-dom-test-node-menu.c
+	tests/dom-test-window.c tests/prop-editor.c tests/simple.c:
+	Fix for bug 151005; patch from Kjartan Marass.
+
+2004-06-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (move_cursor):  Unset focus element 
+	before setting the cursor position and selection bound. Fix for
+	remaining problem in bug #143502.
+
 2004-06-08  Padraig O'Briain  <padraig.obriain@sun.com>
 
         * Release 2.6.2

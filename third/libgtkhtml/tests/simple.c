@@ -452,8 +452,8 @@ main (gint argc, gchar **argv)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size (GTK_WINDOW (window), 600, 400);
 	
-	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-			    GTK_SIGNAL_FUNC (cb_delete_event), NULL);
+	g_signal_connect (window, "delete_event",
+			  G_CALLBACK (cb_delete_event), NULL);
 
 	hpaned = gtk_hpaned_new ();
 
@@ -477,23 +477,23 @@ main (gint argc, gchar **argv)
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_label ("Time 1,000 relayouts");
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (cb_relayouts), view);
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (cb_relayouts), view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_label ("Time 1,000 repaints");
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (cb_repaints), view);
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (cb_repaints), view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	
 	button = gtk_button_new_with_label ("Dump tree");
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (cb_dump_boxes), view);
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (cb_dump_boxes), view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_label ("Clear document");
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (cb_clear_doc), view);
+	g_signal_connect (button, "clicked",
+			    G_CALLBACK (cb_clear_doc), view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	/* FIXME: ugly ugly! */

@@ -32,7 +32,7 @@ html_box_embedded_textarea_handle_html_properties (HtmlBox *self, xmlNode *n)
 {
 	HtmlBoxEmbedded *embedded = HTML_BOX_EMBEDDED (self);
 	HtmlStyle *style = HTML_BOX_GET_STYLE (self);
-	GtkTextView *textview;
+	GtkWidget *textview;
 	gchar *str;
 	gint rows = -1, cols = -1;
 
@@ -44,9 +44,9 @@ html_box_embedded_textarea_handle_html_properties (HtmlBox *self, xmlNode *n)
 		parent_class->handle_html_properties (self, n);
 
 
-	gtk_text_view_set_buffer (textview, dom_html_text_area_element_get_text_buffer (DOM_HTML_TEXT_AREA_ELEMENT (HTML_BOX (embedded)->dom_node)));
+	gtk_text_view_set_buffer (GTK_TEXT_VIEW (textview), dom_html_text_area_element_get_text_buffer (DOM_HTML_TEXT_AREA_ELEMENT (HTML_BOX (embedded)->dom_node)));
 
-	gtk_text_view_set_wrap_mode (textview, GTK_WRAP_WORD);
+	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
 
 	if ((str = xmlGetProp (n, "rows"))) {
@@ -69,7 +69,7 @@ html_box_embedded_textarea_handle_html_properties (HtmlBox *self, xmlNode *n)
 
 	if ((str = xmlGetProp (n, "readonly"))) {
 		
-		gtk_text_view_set_editable (textview, FALSE);
+		gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
 		xmlFree (str);
 	}
 }

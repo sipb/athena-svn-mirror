@@ -53,8 +53,8 @@ dom_test_exception_dialog (GtkWindow *parent, DomException exc)
 					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					 GTK_MESSAGE_ERROR,   GTK_BUTTONS_OK,
 					 "An exception occured!: %s", dom_exception_get_name (exc));
-	gtk_signal_connect (GTK_OBJECT (dialog), "response",
-			    GTK_SIGNAL_FUNC (dom_test_dialog_response), NULL);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (dom_test_dialog_response), NULL);
 
 	gtk_widget_show_all (dialog);
 	
@@ -84,8 +84,8 @@ dom_test_node_dialog_run (DomTestTreeModelType type, GtkWindow *parent, const gc
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 250, 300);
 	
-	gtk_signal_connect (GTK_OBJECT (dialog), "response",
-			    GTK_SIGNAL_FUNC (dom_test_dialog_response), &result);
+	g_signal_connect (dialog, "response",
+			    G_CALLBACK (dom_test_dialog_response), &result);
 	
 	frame = gtk_frame_new (message);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
@@ -143,8 +143,8 @@ dom_test_string_dialog_run (GtkWindow *parent, const gchar *message, const gchar
 					      GTK_RESPONSE_CANCEL,
 					      NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	gtk_signal_connect (GTK_OBJECT (dialog), "response",
-			    GTK_SIGNAL_FUNC (dom_test_dialog_response), &result);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (dom_test_dialog_response), &result);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
@@ -381,14 +381,14 @@ dom_test_node_menu_new (DomTestWindow *window, DomNode *node)
 
 		if (dom_Node_hasChildNodes (node)) {
 			item = gtk_menu_item_new_with_label ("removeChild");
-			gtk_signal_connect (GTK_OBJECT (item), "activate", 
-					    GTK_SIGNAL_FUNC (dom_test_node_remove_child), &context);
+			g_signal_connect (item, "activate", 
+					  G_CALLBACK (dom_test_node_remove_child), &context);
 			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		}
 
 		item = gtk_menu_item_new_with_label ("appendChild");
-		gtk_signal_connect (GTK_OBJECT (item), "activate", 
-				    GTK_SIGNAL_FUNC (dom_test_node_append_child), &context);
+		g_signal_connect (item, "activate", 
+				    G_CALLBACK (dom_test_node_append_child), &context);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		
 	}
@@ -400,8 +400,8 @@ dom_test_node_menu_new (DomTestWindow *window, DomNode *node)
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_menu_item_new ());
 
 		item = gtk_menu_item_new_with_label ("set data");
-		gtk_signal_connect (GTK_OBJECT (item), "activate", 
-				    GTK_SIGNAL_FUNC (dom_test_character_data_set_data), &context);
+		g_signal_connect (item, "activate", 
+				    G_CALLBACK (dom_test_character_data_set_data), &context);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 	}
@@ -413,13 +413,13 @@ dom_test_node_menu_new (DomTestWindow *window, DomNode *node)
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_menu_item_new ());
 
 		item = gtk_menu_item_new_with_label ("createElement");
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (dom_test_document_create_element), &context);
+		g_signal_connect (item, "activate",
+				  G_CALLBACK (dom_test_document_create_element), &context);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 		item = gtk_menu_item_new_with_label ("createTextNode");
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (dom_test_document_create_text_node), &context);
+		g_signal_connect (item, "activate",
+				  G_CALLBACK (dom_test_document_create_text_node), &context);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 	}
