@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.9 1997-03-26 07:00:53 ghudson Exp $
+## $Id: os_rvd,v 1.10 1997-05-13 20:00:11 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -12,6 +12,7 @@ GLOBAL : *.CKP *.local *.pid :
 		etc
 		mnt
 		-> opt
+		platform
 		proc
 		tmp
 		usr
@@ -100,6 +101,13 @@ GLOBAL : *.CKP *.local *.pid :
 	/etc/init.d:::
 		*.old
 		:
+	/platform:::
+		-> sun4c
+		-> sun4d
+		-> sun4m
+		-> sun4mL
+		-> sun4u
+		:
 	/usr::: 
 		-> 4lib
 		-> aset
@@ -115,6 +123,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> oasys
 		-> old
 		openwin
+		-> platform
+		-> proc
 		-> sadm
 		sbin
 		share
@@ -122,6 +132,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> ucb
 		-> ucbinclude
 		-> vmsys
+		-> xpg4
 		:
 	/usr/dt:::
 		-> include
@@ -148,6 +159,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> dispadmin
 		-> dumpolp
 		-> edquota
+		-> fn*
 		-> fuser
 		-> *4x
 		-> g*config
@@ -193,6 +205,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> *share*
 		-> spray
 		-> snoop
+		-> ssa*
 		-> swmtool
 		-> sys-unconfig
 		-> tcx*
@@ -206,7 +219,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> zdump
 		:
 	/usr/share:::
-		->man
+		-> man
+		-> release_info
 		-> src
 		lib	
 		:
@@ -331,6 +345,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> fmt
 		-> ftp
 		-> fmli
+		-> fn*
 		-> get*
 		-> fmtmsg
 		-> graph
@@ -354,6 +369,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> lastcomm
 		-> listusers
 		-> listdgrp
+		-> locale*
 		-> look
  		-> lp*
 		-> *bib
@@ -376,9 +392,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> *pack
 		-> page
 		-> paste
+		-> patch
+		-> pax
 		-> pic
 		-> pg
 		-> pkg*
+		-> prex
 		-> rcp
 		-> rdate
 		-> refer
@@ -392,6 +411,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> roffbib
 		-> script
 		-> sdiff
+		-> solstice
 		-> sort*
 		-> showrev
 		-> srchtxt
@@ -412,6 +432,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> tplot
 		-> troff
 		-> tbl
+		-> tnf*
 		-> truss
 		-> ttyhstmgr
 		-> uncompress
@@ -439,6 +460,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> calp*
 		-> defaults
 		-> diffh
+		-> firmware
 		-> fs/fd
 		-> fs/hsfs
 		-> font
@@ -533,6 +555,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> a*
 		-> b*
 		-> calc*
+		-> cm*
 		-> co*
 		-> cp*
 		-> d*
@@ -582,6 +605,9 @@ GLOBAL : *.CKP *.local *.pid :
 		etc
 		:
 	/usr/openwin/share/etc:::
+		-> devdata
+		-> devhandlers
+		-> gpiutils
 		 keytables
 		-> xnews
 		-> workspace
