@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.7 1990-11-28 15:06:40 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.8 1990-11-28 15:11:07 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -32,7 +32,7 @@
  * Function declarations.
  */
 extern void AriRegisterAthena ();
-static void move_instructions(), screensave(), unsave();
+static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), initOwl(), catch_child();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
