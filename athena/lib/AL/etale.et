@@ -1,0 +1,22 @@
+#
+# Error table for Athena Login library
+# These errors mean the login process should not continue
+#
+# $Author: brlewis $
+# $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/etale.et,v $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/etale.et,v 1.1 1994-03-28 13:35:07 brlewis Exp $
+#
+# Copyright (c) 1994, Massachusetts Institute of Technology
+# For copying and distribution information, see the file
+# "mit-copyright.h".
+#
+
+error_table ale
+
+error_code ALerrUserUnknown,	"User unknown"
+error_code ALerrIllegalHesiod,	"Illegal Hesiod entry"
+error_code ALerrNoLock,		"Unable to lock file"
+error_code ALerrNOCREATE,	"You are not allowed to log in"
+error_code ALerrNOREMOTE,	"You are not allowed to log in remotely"
+error_code ALerrNOLOGIN,	"Logins temporarily disabled"
+end
