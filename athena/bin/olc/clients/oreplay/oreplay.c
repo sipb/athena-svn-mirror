@@ -8,14 +8,27 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.18 1991-02-01 16:28:55 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.19 1991-03-11 13:42:45 lwvanels Exp $";
 #endif
 #endif
 
-#include "oclient.h"
+#include <stdio.h>
+#include <sys/param.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <strings.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/file.h>
+#include <sys/stat.h>
+
+#include <olc/olc.h>
+#include <nl_requests.h>
 
 int i_list;
 int i_show;
+int select_timeout;
 
 #ifdef __STDC__
 # define        P(s) s
@@ -29,38 +42,32 @@ void punt P((int fd , char *filename ));
 
 #undef P
 
+char DaemonHost[MAXHOSTNAMELEN];
 
 main(argc,argv)
      int argc;
      char **argv;
 {
   int sock;    /* the socket */
-  long len;
-  struct sockaddr_in sin;
-  struct servent *sent;
+  int len;
   char username[9], tusername[9];
   int instance, tinstance;
   int c;
   char **olc_servers;
   char *buf;
+  int bufsiz;
   char filename[128];
-  int total_read;
   struct hostent *hp;
   int output_fd;
   extern char *optarg;
   extern int optind;
-  int version;
   char templ[80];
   int temp_fd;
   int gimme_raw;
   int nuke;
-#ifdef KERBEROS
-  KTEXT_ST my_auth;
-  int auth_result;
-  char server_instance[INST_SZ];
-  char server_realm[REALM_SZ];
-#endif /* KERBEROS */
+  long code;
 
+  select_timeout = 600;
   i_list = 0;
   gimme_raw = 0;
   output_fd = 1;
@@ -121,8 +128,6 @@ main(argc,argv)
 
   if (i_list) {
     /* list */
-    instance = -1;
-    strcpy(username,"qlist");
     switch (argc-optind) {
     case 2:
       tinstance = atoi(argv[optind+1]);
@@ -154,7 +159,7 @@ main(argc,argv)
   if (hp == NULL) {
 #ifdef HESIOD
     if ((olc_servers = hes_resolve("OLC","SLOC")) == NULL) {
-      fprintf(stderr,"%s: Unable to get hesiod infomration for OLC/SLOC\n",
+      fprintf(stderr,"%s: Unable to get hesiod information for OLC/SLOC\n",
 	      argv[0]);
       punt(output_fd,filename);
     }
@@ -163,86 +168,35 @@ main(argc,argv)
       fprintf(stderr,"%s: Unknown host %s\n",argv[0],olc_servers[0]);
       punt(output_fd,filename);
     }
+    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
 #else /* HESIOD */
     fprintf(stderr,"%s: no server specified\n",argv[0]);
     punt(output_fd,filename);
 #endif /* HESIOD */
   }
-
-  if ((sent = getservbyname("ols","tcp")) == NULL) {
-    fprintf(stderr,"%s: ols/tcp unknown service\n",argv[0]);
-    punt(output_fd,filename);
-  }
-
-#ifdef KERBEROS
-  expand_hostname(hp->h_name, server_instance, server_realm);
-  auth_result = krb_mk_req(&my_auth,K_SERVICE,server_instance,server_realm,0);
-  if (auth_result != MK_AP_OK) {
-    if (auth_result == MK_AP_TGTEXP) {
-      fprintf(stderr,"%s: Your kerberos ticket-granting-ticket expired\n",argv[0]); 
-      punt(output_fd,filename);
-    }
-    else {
-      fprintf(stderr,"%s: unknown kerberos error: %s\n",argv[0],
-	      krb_err_txt[auth_result]);
-      punt(output_fd,filename);
-    }
-  }
-#endif KERBEROS
-
-  bzero(&sin,sizeof(sin));
-  bcopy(hp->h_addr,(char *)&sin.sin_addr,hp->h_length);
-  sin.sin_family = hp->h_addrtype;
-  sin.sin_port = sent->s_port;
-  
-  if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-    perror("socket");
-    punt(output_fd,filename);
-  }
-  
-  /* This is a hack; the connection is occasionally refused the first time */
-  /* for an unknown reason */
-
-  if (connect(sock,(struct sockaddr *)&sin,sizeof(sin)) < 0) {
-    perror(" connect");
-    punt(output_fd,filename);
-  }
-  
-  version = htonl((u_long) VERSION);
-  write(sock,&version,sizeof(version));
-
-  if (i_show)
-    version = htonl((u_long) (nuke ? SHOW_KILL_REQ : SHOW_NO_KILL_REQ));
   else
-    if (nuke) {
-      version = htonl((u_long) REPLAY_KILL_REQ);
-    } else {
-      version = htonl((u_long) LIST_REQ);
-    }
+    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
 
-  write(sock,&version,sizeof(version));
+  if (open_connection_to_nl_daemon(&sock) != SUCCESS)
+    punt(output_fd,filename);
 
-  write(sock,username,9);
-  instance = htonl(instance);
-  write(sock,&instance,sizeof(instance));
-
-  if (!i_show && nuke) {
-    write(sock,tusername,9);
-    tinstance = htonl(tinstance);
-    write(sock,&tinstance,sizeof(tinstance));
+  bufsiz = 4096;
+  if ((buf = (char *) malloc(bufsiz)) == NULL) {
+    fprintf(stderr,"%s: unable to allocate %d bytes\n",argv[0],bufsiz);
+    punt(output_fd,filename);
   }
 
-#ifdef KERBEROS
-  my_auth.length = htonl(my_auth.length);
-  write(sock,&(my_auth.length),sizeof(my_auth.length));
-  write(sock,my_auth.dat,ntohl(my_auth.length));
-#endif KERBEROS
+  if (i_show) { 
+    code = nl_get_nm(sock,&buf,&bufsiz,username,instance,nuke,&len);
+  } else if (i_list) {
+    code = nl_get_qlist(sock,&buf,&bufsiz,&len);
+  } else {
+    code = nl_get_log(sock,&buf,&bufsiz,username,instance,&len);
+  }
 
-  read(sock,&len,sizeof(len));
-  len = ntohl(len);
-  if (len < 0) {
-    if (len >= -256)
-      switch (len) {
+  if (code < 0) {
+    if (code >= -256)
+      switch (code) {
       case ERR_NO_SUCH_Q:
 	if (i_show)
 	  fprintf(stderr,"No new messages\n");
@@ -269,8 +223,7 @@ main(argc,argv)
       fprintf(stderr,"Unknown error %d\n",-len);
     punt(output_fd,filename);
   }
-  buf = malloc(len);
-  total_read = 0;
+
   if (!gimme_raw && i_list) {
     /* Format list to output it... */
     temp_fd = output_fd;  /* Save the "real" output file descriptor away so */
@@ -278,27 +231,22 @@ main(argc,argv)
 			  /* then process to look "nice */
     strcpy(templ,"/tmp/oreplayXXXXXX");
     mktemp(templ);
-    if ((output_fd = open(templ,O_RDWR|O_EXCL|O_CREAT,0644)) < 0) {
+    if ((output_fd = open(templ,O_RDWR|O_EXCL|O_CREAT,0600)) < 0) {
       perror("olist: opening temp file");
       punt(temp_fd,filename);
     }
   }
 
-  while (total_read < len) {
-    c = read(sock,(buf + total_read),(int)len);
-    total_read += c;
-  }
-  write(output_fd,buf,total_read);
-  close(sock);
+  write(output_fd,buf,len);
 
 /* If it's the special case where they want status of the user as well, */
 /* continue on */
 
   if (i_list && (tusername[0] != '\0')) {
-    char *p1,*p2,*status,*ip; /* current position in buffer */
+    char *p1,*p2,*status; /* current position in buffer */
     int n;        /* number of users in this queue */
     int nq;
-    int i,j,inst;
+    int i,inst;
     int len;
     int right_user;
     char obuf[100];
