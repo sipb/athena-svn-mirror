@@ -3,6 +3,8 @@
  *      Student Consulting Staff
  *	MIT Project Athena
  *
+ *	Lucien Van Elsen
+ *	MIT Project Athena
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
  *      Permission to use, copy, modify, and distribute this program
@@ -22,12 +24,14 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.4 1991-04-14 17:26:29 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.5 1991-09-10 15:13:20 lwvanels Exp $
  */
 
 #ifndef lint
+#ifndef SABER
 static char *rcsid_globals_c = "$Header: ";
-#endif	lint
+#endif
+#endif
 
 #include <mit-copyright.h>
 
