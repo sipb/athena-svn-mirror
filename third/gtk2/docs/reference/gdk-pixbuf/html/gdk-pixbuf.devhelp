@@ -3,8 +3,8 @@
 <chapters>
 <sub name="API Reference" link="rn01.html">
 <sub name="Initialization and Versions" link="gdk-pixbuf-Versioning.html">
-<sub name="Description" link="gdk-pixbuf-Versioning.html#id2771835"/>
-<sub name="Details" link="gdk-pixbuf-Versioning.html#id2771852">
+<sub name="Description" link="gdk-pixbuf-Versioning.html#id2771866"/>
+<sub name="Details" link="gdk-pixbuf-Versioning.html#id2771884">
 <sub name="gdk_pixbuf_version" link="gdk-pixbuf-Versioning.html#gdk-pixbuf-version"/>
 <sub name="GDK_PIXBUF_VERSION" link="gdk-pixbuf-Versioning.html#GDK-PIXBUF-VERSION-CAPS"/>
 <sub name="GDK_PIXBUF_MAJOR" link="gdk-pixbuf-Versioning.html#GDK-PIXBUF-MAJOR-CAPS"/>
@@ -13,9 +13,9 @@
 </sub>
 </sub>
 <sub name="The GdkPixbuf Structure" link="gdk-pixbuf-gdk-pixbuf.html">
-<sub name="Object Hierarchy" link="gdk-pixbuf-gdk-pixbuf.html#id2772454"/>
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf.html#id2772478"/>
-<sub name="Details" link="gdk-pixbuf-gdk-pixbuf.html#id2772499">
+<sub name="Object Hierarchy" link="gdk-pixbuf-gdk-pixbuf.html#id2772485"/>
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf.html#id2772509"/>
+<sub name="Details" link="gdk-pixbuf-gdk-pixbuf.html#id2772530">
 <sub name="enum GdkPixbufError" link="gdk-pixbuf-gdk-pixbuf.html#GdkPixbufError"/>
 <sub name="GDK_PIXBUF_ERROR" link="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-ERROR-CAPS"/>
 <sub name="enum GdkColorspace" link="gdk-pixbuf-gdk-pixbuf.html#GdkColorspace"/>
@@ -33,31 +33,31 @@
 </sub>
 </sub>
 <sub name="Reference Counting and Memory Mangement" link="gdk-pixbuf-refcounting.html">
-<sub name="Description" link="gdk-pixbuf-refcounting.html#id2770765"/>
-<sub name="Details" link="gdk-pixbuf-refcounting.html#id2834388">
+<sub name="Description" link="gdk-pixbuf-refcounting.html#id2770776"/>
+<sub name="Details" link="gdk-pixbuf-refcounting.html#id2834396">
 <sub name="gdk_pixbuf_ref ()" link="gdk-pixbuf-refcounting.html#gdk-pixbuf-ref"/>
 <sub name="gdk_pixbuf_unref ()" link="gdk-pixbuf-refcounting.html#gdk-pixbuf-unref"/>
 <sub name="GdkPixbufDestroyNotify ()" link="gdk-pixbuf-refcounting.html#GdkPixbufDestroyNotify"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-refcounting.html#id2834685"/>
+<sub name="See Also" link="gdk-pixbuf-refcounting.html#id2834693"/>
 </sub>
 <sub name="File Loading" link="gdk-pixbuf-file-loading.html">
-<sub name="Description" link="gdk-pixbuf-file-loading.html#id2834169"/>
-<sub name="Details" link="gdk-pixbuf-file-loading.html#id2834208">
+<sub name="Description" link="gdk-pixbuf-file-loading.html#id2834101"/>
+<sub name="Details" link="gdk-pixbuf-file-loading.html#id2834140">
 <sub name="gdk_pixbuf_new_from_file ()" link="gdk-pixbuf-file-loading.html#gdk-pixbuf-new-from-file"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-file-loading.html#id2834984"/>
+<sub name="See Also" link="gdk-pixbuf-file-loading.html#id2834993"/>
 </sub>
 <sub name="File saving" link="gdk-pixbuf-file-saving.html">
-<sub name="Description" link="gdk-pixbuf-file-saving.html#id2834844"/>
-<sub name="Details" link="gdk-pixbuf-file-saving.html#id2834857">
+<sub name="Description" link="gdk-pixbuf-file-saving.html#id2834776"/>
+<sub name="Details" link="gdk-pixbuf-file-saving.html#id2834788">
 <sub name="gdk_pixbuf_savev ()" link="gdk-pixbuf-file-saving.html#gdk-pixbuf-savev"/>
 <sub name="gdk_pixbuf_save ()" link="gdk-pixbuf-file-saving.html#gdk-pixbuf-save"/>
 </sub>
 </sub>
 <sub name="Image Data in Memory" link="gdk-pixbuf-creating.html">
-<sub name="Description" link="gdk-pixbuf-creating.html#id2835913"/>
-<sub name="Details" link="gdk-pixbuf-creating.html#id2836062">
+<sub name="Description" link="gdk-pixbuf-creating.html#id2835922"/>
+<sub name="Details" link="gdk-pixbuf-creating.html#id2836071">
 <sub name="gdk_pixbuf_new ()" link="gdk-pixbuf-creating.html#gdk-pixbuf-new"/>
 <sub name="gdk_pixbuf_new_from_data ()" link="gdk-pixbuf-creating.html#gdk-pixbuf-new-from-data"/>
 <sub name="gdk_pixbuf_new_from_xpm_data ()" link="gdk-pixbuf-creating.html#gdk-pixbuf-new-from-xpm-data"/>
@@ -65,11 +65,11 @@
 <sub name="gdk_pixbuf_new_subpixbuf ()" link="gdk-pixbuf-creating.html#gdk-pixbuf-new-subpixbuf"/>
 <sub name="gdk_pixbuf_copy ()" link="gdk-pixbuf-creating.html#gdk-pixbuf-copy"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-creating.html#id2837248"/>
+<sub name="See Also" link="gdk-pixbuf-creating.html#id2837257"/>
 </sub>
 <sub name="Inline data" link="gdk-pixbuf-inline.html">
-<sub name="Description" link="gdk-pixbuf-inline.html#id2837591"/>
-<sub name="Details" link="gdk-pixbuf-inline.html#id2837603">
+<sub name="Description" link="gdk-pixbuf-inline.html#id2837599"/>
+<sub name="Details" link="gdk-pixbuf-inline.html#id2837611">
 <sub name="struct GdkPixdata" link="gdk-pixbuf-inline.html#GdkPixdata"/>
 <sub name="enum GdkPixdataType" link="gdk-pixbuf-inline.html#GdkPixdataType"/>
 <sub name="enum GdkPixdataDumpType" link="gdk-pixbuf-inline.html#GdkPixdataDumpType"/>
@@ -83,8 +83,8 @@
 </sub>
 </sub>
 <sub name="Scaling" link="gdk-pixbuf-scaling.html">
-<sub name="Description" link="gdk-pixbuf-scaling.html#id2839864"/>
-<sub name="Details" link="gdk-pixbuf-scaling.html#id2839464">
+<sub name="Description" link="gdk-pixbuf-scaling.html#id2839873"/>
+<sub name="Details" link="gdk-pixbuf-scaling.html#id2839473">
 <sub name="enum GdkInterpType" link="gdk-pixbuf-scaling.html#GdkInterpType"/>
 <sub name="gdk_pixbuf_scale_simple ()" link="gdk-pixbuf-scaling.html#gdk-pixbuf-scale-simple"/>
 <sub name="gdk_pixbuf_scale ()" link="gdk-pixbuf-scaling.html#gdk-pixbuf-scale"/>
@@ -92,28 +92,28 @@
 <sub name="gdk_pixbuf_composite ()" link="gdk-pixbuf-scaling.html#gdk-pixbuf-composite"/>
 <sub name="gdk_pixbuf_composite_color ()" link="gdk-pixbuf-scaling.html#gdk-pixbuf-composite-color"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-scaling.html#id2842224"/>
+<sub name="See Also" link="gdk-pixbuf-scaling.html#id2842233"/>
 </sub>
 <sub name="Rendering" link="gdk-pixbuf-gdk-pixbuf-rendering.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-rendering.html#id2772334"/>
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-rendering.html#id2772365"/>
 </sub>
 <sub name="Drawables to Pixbufs" link="gdk-pixbuf-gdk-pixbuf-from-drawables.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-from-drawables.html#id2840262"/>
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-from-drawables.html#id2840271"/>
 </sub>
 <sub name="Utilities" link="gdk-pixbuf-util.html">
-<sub name="Description" link="gdk-pixbuf-util.html#id2842438"/>
-<sub name="Details" link="gdk-pixbuf-util.html#id2842455">
+<sub name="Description" link="gdk-pixbuf-util.html#id2842447"/>
+<sub name="Details" link="gdk-pixbuf-util.html#id2842464">
 <sub name="gdk_pixbuf_add_alpha ()" link="gdk-pixbuf-util.html#gdk-pixbuf-add-alpha"/>
 <sub name="gdk_pixbuf_copy_area ()" link="gdk-pixbuf-util.html#gdk-pixbuf-copy-area"/>
 <sub name="gdk_pixbuf_saturate_and_pixelate ()" link="gdk-pixbuf-util.html#gdk-pixbuf-saturate-and-pixelate"/>
 <sub name="gdk_pixbuf_fill ()" link="gdk-pixbuf-util.html#gdk-pixbuf-fill"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-util.html#id2843271"/>
+<sub name="See Also" link="gdk-pixbuf-util.html#id2843280"/>
 </sub>
 <sub name="Animations" link="gdk-pixbuf-animation.html">
-<sub name="Object Hierarchy" link="gdk-pixbuf-animation.html#id2843705"/>
-<sub name="Description" link="gdk-pixbuf-animation.html#id2843743"/>
-<sub name="Details" link="gdk-pixbuf-animation.html#id2843779">
+<sub name="Object Hierarchy" link="gdk-pixbuf-animation.html#id2843714"/>
+<sub name="Description" link="gdk-pixbuf-animation.html#id2843751"/>
+<sub name="Details" link="gdk-pixbuf-animation.html#id2843786">
 <sub name="struct GdkPixbufAnimation" link="gdk-pixbuf-animation.html#GdkPixbufAnimation-struct"/>
 <sub name="struct GdkPixbufAnimationIter" link="gdk-pixbuf-animation.html#GdkPixbufAnimationIter-struct"/>
 <sub name="gdk_pixbuf_animation_new_from_file ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-new-from-file"/>
@@ -129,15 +129,15 @@
 <sub name="gdk_pixbuf_animation_iter_on_currently_loading_frame ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-on-currently-loading-frame"/>
 <sub name="gdk_pixbuf_animation_iter_get_pixbuf ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-get-pixbuf"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-animation.html#id2845397"/>
+<sub name="See Also" link="gdk-pixbuf-animation.html#id2845404"/>
 </sub>
 <sub name="GdkPixbufLoader" link="GdkPixbufLoader.html">
-<sub name="Object Hierarchy" link="GdkPixbufLoader.html#id2845722"/>
-<sub name="Signal Prototypes" link="GdkPixbufLoader.html#id2845745"/>
-<sub name="Description" link="GdkPixbufLoader.html#id2845928">
-<sub name="Loading an animation" link="GdkPixbufLoader.html#id2846086"/>
+<sub name="Object Hierarchy" link="GdkPixbufLoader.html#id2845729"/>
+<sub name="Signal Prototypes" link="GdkPixbufLoader.html#id2845752"/>
+<sub name="Description" link="GdkPixbufLoader.html#id2845936">
+<sub name="Loading an animation" link="GdkPixbufLoader.html#id2846092"/>
 </sub>
-<sub name="Details" link="GdkPixbufLoader.html#id2846146">
+<sub name="Details" link="GdkPixbufLoader.html#id2846154">
 <sub name="struct GdkPixbufLoader" link="GdkPixbufLoader.html#GdkPixbufLoader-struct"/>
 <sub name="gdk_pixbuf_loader_new ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new"/>
 <sub name="gdk_pixbuf_loader_new_with_type ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new-with-type"/>
@@ -148,17 +148,17 @@
 <sub name="gdk_pixbuf_loader_get_animation ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-get-animation"/>
 <sub name="gdk_pixbuf_loader_close ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-close"/>
 </sub>
-<sub name="Signals" link="GdkPixbufLoader.html#id2847270">
+<sub name="Signals" link="GdkPixbufLoader.html#id2847277">
 <sub name="The &quot;area-prepared&quot; signal" link="GdkPixbufLoader.html#GdkPixbufLoader-area-prepared"/>
 <sub name="The &quot;area-updated&quot; signal" link="GdkPixbufLoader.html#GdkPixbufLoader-area-updated"/>
 <sub name="The &quot;closed&quot; signal" link="GdkPixbufLoader.html#GdkPixbufLoader-closed"/>
 <sub name="The &quot;size-prepared&quot; signal" link="GdkPixbufLoader.html#GdkPixbufLoader-size-prepared"/>
 </sub>
-<sub name="See Also" link="GdkPixbufLoader.html#id2847802"/>
+<sub name="See Also" link="GdkPixbufLoader.html#id2847809"/>
 </sub>
 <sub name="Module Interface" link="gdk-pixbuf-Module-Interface.html">
-<sub name="Description" link="gdk-pixbuf-Module-Interface.html#id2848286"/>
-<sub name="Details" link="gdk-pixbuf-Module-Interface.html#id2848555">
+<sub name="Description" link="gdk-pixbuf-Module-Interface.html#id2848292"/>
+<sub name="Details" link="gdk-pixbuf-Module-Interface.html#id2848561">
 <sub name="gdk_pixbuf_set_option ()" link="gdk-pixbuf-Module-Interface.html#gdk-pixbuf-set-option"/>
 <sub name="gdk_pixbuf_get_formats ()" link="gdk-pixbuf-Module-Interface.html#gdk-pixbuf-get-formats"/>
 <sub name="gdk_pixbuf_format_get_name ()" link="gdk-pixbuf-Module-Interface.html#gdk-pixbuf-format-get-name"/>
@@ -180,16 +180,16 @@
 </sub>
 </sub>
 <sub name="gdk-pixbuf Xlib initialization" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2847941"/>
-<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2847980">
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2851293"/>
+<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2851333">
 <sub name="gdk_pixbuf_xlib_init ()" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#gdk-pixbuf-xlib-init"/>
 <sub name="gdk_pixbuf_xlib_init_with_depth ()" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#gdk-pixbuf-xlib-init-with-depth"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2851487"/>
+<sub name="See Also" link="gdk-pixbuf-gdk-pixbuf-xlib-init.html#id2851544"/>
 </sub>
 <sub name="Xlib Rendering" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#id2851747"/>
-<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#id2851774">
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#id2851803"/>
+<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#id2851832">
 <sub name="gdk_pixbuf_xlib_render_threshold_alpha ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#gdk-pixbuf-xlib-render-threshold-alpha"/>
 <sub name="gdk_pixbuf_xlib_render_to_drawable ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#gdk-pixbuf-xlib-render-to-drawable"/>
 <sub name="gdk_pixbuf_xlib_render_to_drawable_alpha ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#gdk-pixbuf-xlib-render-to-drawable-alpha"/>
@@ -197,14 +197,14 @@
 </sub>
 </sub>
 <sub name="X Drawables to Pixbufs" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id2852350"/>
-<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id2852999">
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id2852175"/>
+<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id2853056">
 <sub name="gdk_pixbuf_xlib_get_from_drawable ()" link="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#gdk-pixbuf-xlib-get-from-drawable"/>
 </sub>
 </sub>
 <sub name="XlibRGB" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html">
-<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2854039"/>
-<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2854064">
+<sub name="Description" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2854095"/>
+<sub name="Details" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2854121">
 <sub name="struct XlibRgbCmap" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XlibRgbCmap"/>
 <sub name="enum XlibRgbDither" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XlibRgbDither"/>
 <sub name="xlib_rgb_init ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-init"/>
@@ -229,21 +229,21 @@
 <sub name="xlib_rgb_get_display ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-get-display"/>
 <sub name="xlib_rgb_get_screen ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-get-screen"/>
 </sub>
-<sub name="See Also" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2856610"/>
+<sub name="See Also" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#id2856666"/>
 </sub>
 </sub>
 <sub name="Porting applications from Imlib to gdk-pixbuf" link="apa.html">
-<sub name="Introduction" link="apa.html#id2853560"/>
+<sub name="Introduction" link="apa.html#id2853616"/>
 <sub name="Differences between Imlib and gdk-pixbuf" link="apas02.html">
-<sub name="Initialization" link="apas02.html#id2856777"/>
-<sub name="Memory management" link="apas02.html#id2856825"/>
-<sub name="The Rendering Process" link="apas02.html#id2856951"/>
+<sub name="Initialization" link="apas02.html#id2856832"/>
+<sub name="Memory management" link="apas02.html#id2856880"/>
+<sub name="The Rendering Process" link="apas02.html#id2857006"/>
 </sub>
 <sub name="Converting Applications to gdk-pixbuf" link="apas03.html">
-<sub name="Image loading and creation" link="apas03.html#id2857048"/>
-<sub name="Rendering Images" link="apas03.html#id2857168"/>
-<sub name="Scaling Images" link="apas03.html#id2857252"/>
-<sub name="Getting Image Data from a Drawable" link="apas03.html#id2857366"/>
+<sub name="Image loading and creation" link="apas03.html#id2857103"/>
+<sub name="Rendering Images" link="apas03.html#id2857223"/>
+<sub name="Scaling Images" link="apas03.html#id2857307"/>
+<sub name="Getting Image Data from a Drawable" link="apas03.html#id2857421"/>
 </sub>
 </sub>
 <sub name="License" link="license.html"/>
@@ -314,7 +314,7 @@
 <function name="gdk_pixbuf_animation_iter_get_delay_time ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-get-delay-time"/>
 <function name="gdk_pixbuf_animation_iter_on_currently_loading_frame ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-on-currently-loading-frame"/>
 <function name="gdk_pixbuf_animation_iter_get_pixbuf ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-get-pixbuf"/>
-<function name="Loading an animation" link="GdkPixbufLoader.html#id2846086"/>
+<function name="Loading an animation" link="GdkPixbufLoader.html#id2846092"/>
 <function name="struct GdkPixbufLoader" link="GdkPixbufLoader.html#GdkPixbufLoader-struct"/>
 <function name="gdk_pixbuf_loader_new ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new"/>
 <function name="gdk_pixbuf_loader_new_with_type ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new-with-type"/>

@@ -618,8 +618,6 @@ EXTRA_DIST = $(gtk_private_h_sources) $(gtk_extra_sources) $(gtk_built_sources) 
 	gtkrc.default		\
 	gtkrc.key.default	\
 	gtkrc.key.emacs		\
-	makefile.mingw		\
-	makefile.mingw.in	\
 	makefile.msc		\
 	makefile.msc.in		\
 @STRIP_END@
@@ -670,8 +668,7 @@ gtk_query_immodules_2_0_LDADD = $(LDADDS)
 gtk_query_immodules_2_0_SOURCES = queryimmodules.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  makefile.mingw makefile.msc gtkversion.h \
-gtk-win32.rc
+CONFIG_CLEAN_FILES =  makefile.msc gtkversion.h gtk-win32.rc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -813,7 +810,7 @@ DATA =  $(noinst_DATA)
 HEADERS =  $(gtkinclude_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in gtk-win32.rc.in gtkversion.h.in \
-makefile.mingw.in makefile.msc.in
+makefile.msc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -833,8 +830,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-makefile.mingw: $(top_builddir)/config.status makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 makefile.msc: $(top_builddir)/config.status makefile.msc.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 gtkversion.h: $(top_builddir)/config.status gtkversion.h.in
@@ -1715,14 +1710,14 @@ gtkfilesel.lo gtkfilesel.o : gtkfilesel.c ../config.h \
 	gtksettings.h gtkrc.h gtkcellrenderertext.h gtkcellrenderer.h \
 	gtkcelleditable.h gtkentry.h gtkeditable.h gtkimcontext.h \
 	gtkmenu.h gtkmenushell.h gtkfilesel.h gtkdialog.h gtkwindow.h \
-	gtkhbox.h gtkbox.h gtkhbbox.h gtkbbox.h gtklabel.h gtkmisc.h \
-	gtkliststore.h gtktreemodel.h gtktreesortable.h gtkmain.h \
-	gtkprivate.h gtkscrolledwindow.h gtkhscrollbar.h gtkscrollbar.h \
-	gtkrange.h gtkvscrollbar.h gtkviewport.h gtkstock.h \
-	gtktreeselection.h gtktreeview.h gtktreeviewcolumn.h gtkdnd.h \
-	gtkselection.h gtktreeview.h gtkvbox.h gtkmenu.h gtkmenuitem.h \
-	gtkitem.h gtkoptionmenu.h gtkbutton.h gtkdialog.h \
-	gtkmessagedialog.h gtkintl.h gtkdnd.h gtkeventbox.h gtkhpaned.h \
+	gtkhbox.h gtkbox.h gtkhbbox.h gtkbbox.h gtkintl.h gtklabel.h \
+	gtkmisc.h gtkliststore.h gtktreemodel.h gtktreesortable.h \
+	gtkmain.h gtkprivate.h gtkscrolledwindow.h gtkhscrollbar.h \
+	gtkscrollbar.h gtkrange.h gtkvscrollbar.h gtkviewport.h \
+	gtkstock.h gtktreeselection.h gtktreeview.h gtktreeviewcolumn.h \
+	gtkdnd.h gtkselection.h gtktreeview.h gtkvbox.h gtkmenu.h \
+	gtkmenuitem.h gtkitem.h gtkoptionmenu.h gtkbutton.h gtkdialog.h \
+	gtkmessagedialog.h gtkdnd.h gtkeventbox.h gtkhpaned.h \
 	gtkpaned.h
 gtkfixed.lo gtkfixed.o : gtkfixed.c gtkfixed.h ../gdk/gdk.h \
 	../gdk/gdkcolor.h ../gdk/gdktypes.h ../gdk/gdkconfig.h \
@@ -2253,12 +2248,13 @@ gtkliststore.lo gtkliststore.o : gtkliststore.c gtktreemodel.h \
 	../gdk/gdkscreen.h ../gdk/gdkselection.h ../gdk/gdkvisual.h \
 	../gdk/gdkwindow.h gtkwidget.h gtkaccelgroup.h gtkadjustment.h \
 	gtkstyle.h gtksettings.h gtkrc.h gtkselection.h
-gtkmain.lo gtkmain.o : gtkmain.c ../gdk/gdkconfig.h gtkaccelmap.h \
-	gtkaccelgroup.h ../gdk/gdk.h ../gdk/gdkcolor.h \
-	../gdk/gdktypes.h ../gdk/gdkcursor.h ../gdk/gdkdisplay.h \
-	../gdk/gdkevents.h ../gdk/gdkdnd.h ../gdk/gdkinput.h \
-	../gdk/gdkdrawable.h ../gdk/gdkgc.h ../gdk/gdkrgb.h \
-	../gdk-pixbuf/gdk-pixbuf.h ../gdk-pixbuf/gdk-pixbuf-features.h \
+gtkmain.lo gtkmain.o : gtkmain.c ../gdk/gdkconfig.h ../config.h \
+	gtkintl.h gtkaccelmap.h gtkaccelgroup.h ../gdk/gdk.h \
+	../gdk/gdkcolor.h ../gdk/gdktypes.h ../gdk/gdkcursor.h \
+	../gdk/gdkdisplay.h ../gdk/gdkevents.h ../gdk/gdkdnd.h \
+	../gdk/gdkinput.h ../gdk/gdkdrawable.h ../gdk/gdkgc.h \
+	../gdk/gdkrgb.h ../gdk-pixbuf/gdk-pixbuf.h \
+	../gdk-pixbuf/gdk-pixbuf-features.h \
 	../gdk-pixbuf/gdk-pixbuf-loader.h \
 	../gdk-pixbuf/gdk-pixbuf-enum-types.h ../gdk/gdkenumtypes.h \
 	../gdk/gdkfont.h ../gdk/gdkimage.h ../gdk/gdkkeys.h \
@@ -2270,7 +2266,7 @@ gtkmain.lo gtkmain.o : gtkmain.c ../gdk/gdkconfig.h gtkaccelmap.h \
 	gtkdebug.h gtkadjustment.h gtkstyle.h gtksettings.h gtkrc.h \
 	gtkdnd.h gtkselection.h gtkversion.h gtkmain.h gtkrc.h \
 	gtkselection.h gtksettings.h gtkwidget.h gtkwindow.h gtkbin.h \
-	gtkprivate.h ../config.h gtkdebug.h gtkintl.h
+	gtkprivate.h gtkdebug.h
 gtkmarshal.lo gtkmarshal.o : gtkmarshal.c
 gtkmarshalers.lo gtkmarshalers.o : gtkmarshalers.c
 gtkmenu.lo gtkmenu.o : gtkmenu.c ../gdk/gdkkeysyms.h gtkaccelmap.h \
@@ -2383,22 +2379,6 @@ gtkmisc.lo gtkmisc.o : gtkmisc.c gtkcontainer.h ../gdk/gdk.h \
 	gtkobject.h gtktypeutils.h gtktypebuiltins.h gtkdebug.h \
 	gtkadjustment.h gtkstyle.h gtksettings.h gtkrc.h gtkmisc.h \
 	gtkintl.h ../config.h
-gtkmnemonichash.lo gtkmnemonichash.o : gtkmnemonichash.c \
-	gtkmnemonichash.h ../gdk/gdk.h ../gdk/gdkcolor.h \
-	../gdk/gdktypes.h ../gdk/gdkconfig.h ../gdk/gdkcursor.h \
-	../gdk/gdkdisplay.h ../gdk/gdkevents.h ../gdk/gdkdnd.h \
-	../gdk/gdkinput.h ../gdk/gdkdrawable.h ../gdk/gdkgc.h \
-	../gdk/gdkrgb.h ../gdk-pixbuf/gdk-pixbuf.h \
-	../gdk-pixbuf/gdk-pixbuf-features.h \
-	../gdk-pixbuf/gdk-pixbuf-loader.h \
-	../gdk-pixbuf/gdk-pixbuf-enum-types.h ../gdk/gdkenumtypes.h \
-	../gdk/gdkfont.h ../gdk/gdkimage.h ../gdk/gdkkeys.h \
-	../gdk/gdkdisplaymanager.h ../gdk/gdkpango.h ../gdk/gdkpixbuf.h \
-	../gdk/gdkpixmap.h ../gdk/gdkproperty.h ../gdk/gdkregion.h \
-	../gdk/gdkscreen.h ../gdk/gdkselection.h ../gdk/gdkvisual.h \
-	../gdk/gdkwindow.h gtkwidget.h gtkaccelgroup.h gtkenums.h \
-	gtkobject.h gtktypeutils.h gtktypebuiltins.h gtkdebug.h \
-	gtkadjustment.h gtkstyle.h gtksettings.h gtkrc.h
 gtknotebook.lo gtknotebook.o : gtknotebook.c gtknotebook.h ../gdk/gdk.h \
 	../gdk/gdkcolor.h ../gdk/gdktypes.h ../gdk/gdkconfig.h \
 	../gdk/gdkcursor.h ../gdk/gdkdisplay.h ../gdk/gdkevents.h \

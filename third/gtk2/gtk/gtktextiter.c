@@ -3302,6 +3302,9 @@ gtk_text_iter_backward_sentence_starts (GtkTextIter      *iter,
 {
   g_return_val_if_fail (iter != NULL, FALSE);
 
+  if (count == 0)
+    return FALSE;
+
   if (count < 0)
     return gtk_text_iter_forward_sentence_ends (iter, -count);
 
@@ -5080,7 +5083,10 @@ _gtk_text_btree_get_iter_at_first_toggle (GtkTextBTree   *tree,
   else
     {
       iter_init_from_byte_offset (iter, tree, line, 0);
+
+      if (!gtk_text_iter_toggles_tag (iter, tag))
       gtk_text_iter_forward_to_tag_toggle (iter, tag);
+
       check_invariants (iter);
       return TRUE;
     }

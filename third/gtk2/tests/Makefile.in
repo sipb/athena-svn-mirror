@@ -323,6 +323,18 @@ EXTRA_DIST = @STRIP_BEGIN@ 	\
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+@USE_X11_FALSE@noinst_PROGRAMS =  simple$(EXEEXT) testcalendar$(EXEEXT) \
+@USE_X11_FALSE@testdnd$(EXEEXT) testgtk$(EXEEXT) testinput$(EXEEXT) \
+@USE_X11_FALSE@testmenus$(EXEEXT) testmultidisplay$(EXEEXT) \
+@USE_X11_FALSE@testmultiscreen$(EXEEXT) testrgb$(EXEEXT) \
+@USE_X11_FALSE@testselection$(EXEEXT) testtext$(EXEEXT) \
+@USE_X11_FALSE@testtextbuffer$(EXEEXT) testtreeedit$(EXEEXT) \
+@USE_X11_FALSE@testtreeview$(EXEEXT) testtreefocus$(EXEEXT) \
+@USE_X11_FALSE@testtreeflow$(EXEEXT) testtreecolumns$(EXEEXT) \
+@USE_X11_FALSE@testtreesort$(EXEEXT) treestoretest$(EXEEXT) \
+@USE_X11_FALSE@testxinerama$(EXEEXT) pixbuf-read$(EXEEXT) \
+@USE_X11_FALSE@pixbuf-lowmem$(EXEEXT) pixbuf-randomly-modified$(EXEEXT) \
+@USE_X11_FALSE@pixbuf-random$(EXEEXT)
 @USE_X11_TRUE@noinst_PROGRAMS =  simple$(EXEEXT) testcalendar$(EXEEXT) \
 @USE_X11_TRUE@testdnd$(EXEEXT) testgtk$(EXEEXT) testinput$(EXEEXT) \
 @USE_X11_TRUE@testmenus$(EXEEXT) testmultidisplay$(EXEEXT) \
@@ -336,18 +348,6 @@ CONFIG_CLEAN_FILES =
 @USE_X11_TRUE@testxinerama$(EXEEXT) pixbuf-read$(EXEEXT) \
 @USE_X11_TRUE@pixbuf-lowmem$(EXEEXT) pixbuf-randomly-modified$(EXEEXT) \
 @USE_X11_TRUE@pixbuf-random$(EXEEXT)
-@USE_X11_FALSE@noinst_PROGRAMS =  simple$(EXEEXT) testcalendar$(EXEEXT) \
-@USE_X11_FALSE@testdnd$(EXEEXT) testgtk$(EXEEXT) testinput$(EXEEXT) \
-@USE_X11_FALSE@testmenus$(EXEEXT) testmultidisplay$(EXEEXT) \
-@USE_X11_FALSE@testmultiscreen$(EXEEXT) testrgb$(EXEEXT) \
-@USE_X11_FALSE@testselection$(EXEEXT) testtext$(EXEEXT) \
-@USE_X11_FALSE@testtextbuffer$(EXEEXT) testtreeedit$(EXEEXT) \
-@USE_X11_FALSE@testtreeview$(EXEEXT) testtreefocus$(EXEEXT) \
-@USE_X11_FALSE@testtreeflow$(EXEEXT) testtreecolumns$(EXEEXT) \
-@USE_X11_FALSE@testtreesort$(EXEEXT) treestoretest$(EXEEXT) \
-@USE_X11_FALSE@testxinerama$(EXEEXT) pixbuf-read$(EXEEXT) \
-@USE_X11_FALSE@pixbuf-lowmem$(EXEEXT) pixbuf-randomly-modified$(EXEEXT) \
-@USE_X11_FALSE@pixbuf-random$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 

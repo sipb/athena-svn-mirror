@@ -607,12 +607,11 @@ palette_paint (GtkWidget    *drawing_area,
 {
   if (drawing_area->window == NULL)
     return;
-  
-  gdk_window_clear_area (drawing_area->window,
-			 area->x,
-			 area->y,
-			 area->width, 
-			 area->height);
+
+  gdk_draw_rectangle (drawing_area->window,
+                      drawing_area->style->bg_gc[GTK_STATE_NORMAL],
+                      TRUE,
+                      area->x, area->y, area->width, area->height);
   
   if (GTK_WIDGET_HAS_FOCUS (drawing_area))
     {
@@ -1375,9 +1374,9 @@ hex_changed (GtkWidget *hex_entry,
   text = gtk_editable_get_chars (GTK_EDITABLE (priv->hex_entry), 0, -1);
   if (gdk_color_parse (text, &color))
     {
-      priv->color[COLORSEL_RED] = CLAMP (color.red/65280.0, 0.0, 1.0);
-      priv->color[COLORSEL_GREEN] = CLAMP (color.green/65280.0, 0.0, 1.0);
-      priv->color[COLORSEL_BLUE] = CLAMP (color.blue/65280.0, 0.0, 1.0);
+      priv->color[COLORSEL_RED] = CLAMP (color.red/65535.0, 0.0, 1.0);
+      priv->color[COLORSEL_GREEN] = CLAMP (color.green/65535.0, 0.0, 1.0);
+      priv->color[COLORSEL_BLUE] = CLAMP (color.blue/65535.0, 0.0, 1.0);
       gtk_rgb_to_hsv (priv->color[COLORSEL_RED],
 		      priv->color[COLORSEL_GREEN],
 		      priv->color[COLORSEL_BLUE],

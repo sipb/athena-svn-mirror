@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkTextView</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkTextView</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -870,13 +870,21 @@ href="../glib/glib-Basic-Types.html#gboolean"
                                              <a
 href="../glib/glib-Basic-Types.html#gint"
 >gint</a> count);</pre><p>
-Moves <i><tt>iter</tt></i> up or down by <i><tt>count</tt></i> display (wrapped) lines.
-See <a href="GtkTextView.html#gtk-text-view-forward-display-line">gtk_text_view_forward_display_line</a>() for an explanation of
-display lines vs. paragraphs.</p><p>
+Move the iterator a given number of characters visually, treating
+it as the strong cursor position. If <i><tt>count</tt></i> is positive, then the
+new strong cursor position will be <i><tt>count</tt></i> positions to the right of
+the old cursor position. If <i><tt>count</tt></i> is negative then the new strong
+cursor position will be <i><tt>count</tt></i> positions to the left of the old
+cursor position.
+</p><p>
+In the presence of bidirection text, the correspondence
+between logical and visual order will depend on the direction
+of the current run, and there may be jumps when the cursor
+is moved off of the end of a run.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_view</tt></i> :</span></td><td> a <a href="GtkTextView.html" title="GtkTextView">GtkTextView</a>
 </td></tr><tr><td><span class="term"><i><tt>iter</tt></i> :</span></td><td> a <a href="gtk-GtkTextIter.html#GtkTextIter">GtkTextIter</a>
-</td></tr><tr><td><span class="term"><i><tt>count</tt></i> :</span></td><td> number of lines to move
+</td></tr><tr><td><span class="term"><i><tt>count</tt></i> :</span></td><td>   number of characters to move (negative moves left, positive moves right)
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt>TRUE</tt> if <i><tt>iter</tt></i> moved and is not on the end iterator
 </td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-view-add-child-at-anchor"></a>gtk_text_view_add_child_at_anchor ()</h3><pre class="programlisting">void        gtk_text_view_add_child_at_anchor
                                             (<a href="GtkTextView.html" title="GtkTextView">GtkTextView</a> *text_view,

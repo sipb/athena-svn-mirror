@@ -174,8 +174,6 @@ EXTRA_DIST = \
 	gdkconfig.h.win32 	\
 	gdk.def 		\
 	gdkmarshalers.list	\
-	makefile.mingw 		\
-	makefile.mingw.in 	\
 	makeenums.pl		\
 	makefile.msc
 
@@ -326,6 +324,7 @@ libgdk_win32_2_0_la_LIBADD = \
 	win32/libgdk-win32.la $(wintab_lib) $(ie55uuid_lib) \
 	@GDK_DEP_LIBS@
 
+libgdk_win32_2_0_la_DEPENDENCIES = gdk.def
 
 lib_LTLIBRARIES = $(gdktargetlib)
 
@@ -343,7 +342,7 @@ configexecincludedir = $(libdir)/gtk-2.0/include
 BUILT_SOURCES = stamp-gc-h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  makefile.mingw
+CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -372,22 +371,6 @@ gdkpolyreg-generic.lo gdkrgb.lo gdkrectangle.lo gdkregion-generic.lo \
 gdkscreen.lo gdkselection.lo gdkvisual.lo gdkwindow.lo gdkenumtypes.lo \
 gdkkeynames.lo
 libgdk_win32_2_0_la_LDFLAGS = 
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_FALSE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_FALSE@win32/libgdk-win32.la
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_TRUE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_TRUE@win32/libgdk-win32.la
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_FALSE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_FALSE@win32/libgdk-win32.la
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_FALSE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_FALSE@win32/libgdk-win32.la
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_TRUE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_FALSE@@HAVE_WINTAB_TRUE@win32/libgdk-win32.la
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_TRUE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_TRUE@win32/libgdk-win32.la
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_TRUE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_FALSE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_TRUE@win32/libgdk-win32.la
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_FALSE@libgdk_win32_2_0_la_DEPENDENCIES =  \
-@HAVE_IE55_TRUE@@PLATFORM_WIN32_TRUE@@HAVE_WINTAB_FALSE@win32/libgdk-win32.la
 libgdk_win32_2_0_la_OBJECTS =  gdk.lo gdkcolor.lo gdkcursor.lo \
 gdkdisplay.lo gdkdnd.lo gdkdraw.lo gdkevents.lo gdkfont.lo gdkgc.lo \
 gdkglobals.lo gdkkeys.lo gdkkeyuni.lo gdkimage.lo gdkdisplaymanager.lo \
@@ -404,7 +387,7 @@ DATA =  $(noinst_DATA)
 
 HEADERS =  $(gdkinclude_HEADERS)
 
-DIST_COMMON =  COPYING Makefile.am Makefile.in makefile.mingw.in
+DIST_COMMON =  COPYING Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -424,8 +407,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-makefile.mingw: $(top_builddir)/config.status makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
 
@@ -756,7 +737,7 @@ gdkkeyuni.lo gdkkeyuni.o : gdkkeyuni.c gdk.h gdkcolor.h gdktypes.h \
 	../gdk-pixbuf/gdk-pixbuf-enum-types.h gdkenumtypes.h gdkfont.h \
 	gdkimage.h gdkkeys.h gdkdisplaymanager.h gdkpango.h gdkpixbuf.h \
 	gdkpixmap.h gdkproperty.h gdkregion.h gdkscreen.h \
-	gdkselection.h gdkvisual.h gdkwindow.h
+	gdkselection.h gdkvisual.h gdkwindow.h gdkkeysyms.h
 gdkpango.lo gdkpango.o : gdkpango.c gdkcolor.h gdktypes.h gdkconfig.h \
 	gdkgc.h gdkcolor.h gdkpango.h gdkrgb.h gdkprivate.h gdkevents.h \
 	gdkdnd.h gdkinput.h gdkfont.h gdkgc.h gdkimage.h gdkregion.h \

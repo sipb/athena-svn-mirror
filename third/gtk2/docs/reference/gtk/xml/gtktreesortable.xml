@@ -62,7 +62,7 @@ void        <link linkend="gtk-tree-sortable-set-default-sort-func">gtk_tree_sor
 <refsect1>
 <title>Implementations</title>
 <para>
-GtkTreeSortable is implemented by <link linkend="GtkTreeStore">GtkTreeStore</link>, <link linkend="GtkListStore">GtkListStore</link> and <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>.
+GtkTreeSortable is implemented by <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>, <link linkend="GtkTreeStore">GtkTreeStore</link> and <link linkend="GtkListStore">GtkListStore</link>.
 </para>
 </refsect1>
 

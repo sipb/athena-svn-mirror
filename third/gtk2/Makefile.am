@@ -8,7 +8,6 @@ AUTOMAKE_OPTIONS = 1.4
 
 EXTRA_DIST =			\
 	HACKING			\
-	gtk+.spec.in		\
 	makecopyright		\
 	NEWS.pre-1-0		\
 	ChangeLog.pre-1-0	\
@@ -17,7 +16,7 @@ EXTRA_DIST =			\
 	README.cvs-commits	\
 	README.win32		\
 	config.h.win32		\
-	gtk-zip.sh		\
+	gtk-zip.sh.in		\
 	sanitize-la.sh		\
 	po/README.translators	\
 	po/makefile.mingw	\
@@ -149,14 +148,13 @@ install-data-hook:
 	 rm -f gdk-2.0.pc && cp -f gdk-$(GDKTARGET)-2.0.pc gdk-2.0.pc && \
 	 rm -f gtk+-2.0.pc && cp -f gtk+-$(GDKTARGET)-2.0.pc gtk+-2.0.pc)
 
-dist-hook: gtk+.spec
+dist-hook:
 	if test -f $(srcdir)/INSTALL.in && test -f $(srcdir)/README.in ; then \
 	     CONFIG_FILES="INSTALL:$(srcdir)/INSTALL.in README:$(srcdir)/README.in" \
 	     CONFIG_HEADERS= \
 	     $(SHELL) config.status \
 	     && cp INSTALL README $(distdir) ; \
-	fi \
-	&& cp gtk+.spec $(distdir)
+	fi
 
 .PHONY: files release sanity snapshot
 

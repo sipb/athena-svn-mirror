@@ -74,6 +74,8 @@ static void gtk_tree_store_set_column_type (GtkTreeStore *tree_store,
 
 
 /* DND interfaces */
+static gboolean real_gtk_tree_store_row_draggable   (GtkTreeDragSource *drag_source,
+						   GtkTreePath       *path);
 static gboolean gtk_tree_store_drag_data_delete   (GtkTreeDragSource *drag_source,
 						   GtkTreePath       *path);
 static gboolean gtk_tree_store_drag_data_get      (GtkTreeDragSource *drag_source,
@@ -231,6 +233,7 @@ gtk_tree_store_tree_model_init (GtkTreeModelIface *iface)
 static void
 gtk_tree_store_drag_source_init (GtkTreeDragSourceIface *iface)
 {
+  iface->row_draggable = real_gtk_tree_store_row_draggable;
   iface->drag_data_delete = gtk_tree_store_drag_data_delete;
   iface->drag_data_get = gtk_tree_store_drag_data_get;
 }
@@ -1561,6 +1564,12 @@ gtk_tree_store_iter_is_valid (GtkTreeStore *tree_store,
 /* DND */
 
 
+static gboolean real_gtk_tree_store_row_draggable (GtkTreeDragSource *drag_source,
+                                                   GtkTreePath       *path)
+{
+  return TRUE;
+}
+               
 static gboolean
 gtk_tree_store_drag_data_delete (GtkTreeDragSource *drag_source,
                                  GtkTreePath       *path)
@@ -2104,7 +2113,7 @@ gtk_tree_store_swap (GtkTreeStore *tree_store,
   g_free (order);
 }
 
-/* WARNING: this function is *incredibly* fragily. Please smashtest after
+/* WARNING: this function is *incredibly* fragile. Please smashtest after
  * making changes here.
  *	-Kris
  */
@@ -2328,6 +2337,8 @@ gtk_tree_store_move (GtkTreeStore *tree_store,
 	  /* after with sibling = NULL prepends */
 	  g_node_insert_after (parent, NULL, node);
 	}
+
+      handle_b = FALSE;
     }
 
   if (handle_b)
@@ -2394,13 +2405,13 @@ gtk_tree_store_move (GtkTreeStore *tree_store,
 	  order[i] = i;
     }
 
-  path = gtk_tree_path_new ();
-  gtk_tree_model_rows_reordered (GTK_TREE_MODEL (tree_store),
-				 path, NULL, order);
+  if (depth)
+    path = gtk_tree_model_get_path (GTK_TREE_MODEL (tree_store), &parent_iter);
+  else
+    path = gtk_tree_path_new ();
 
-  for (i = 0; i < length; i++)
-    g_print ("%2d ", order[i]);
-  g_print ("\n");
+  gtk_tree_model_rows_reordered (GTK_TREE_MODEL (tree_store),
+				 path, &parent_iter, order);
 
   gtk_tree_path_free (path);
   if (position)
@@ -2527,7 +2538,12 @@ gtk_tree_store_sort_helper (GtkTreeStore *tree_store,
 
   node = parent->children;
   if (node == NULL || node->next == NULL)
-    return;
+    {
+      if (recurse && node && node->children)
+        gtk_tree_store_sort_helper (tree_store, node, TRUE);
+
+      return;
+    }
 
   g_assert (GTK_TREE_STORE_IS_SORTED (tree_store));
 
@@ -2806,7 +2822,7 @@ gtk_tree_store_get_sort_column_id (GtkTreeSortable  *sortable,
 
   g_return_val_if_fail (GTK_IS_TREE_STORE (sortable), FALSE);
 
-  if (tree_store->sort_column_id == -1)
+  if (tree_store->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
     return FALSE;
 
   if (sort_column_id)
@@ -2831,7 +2847,7 @@ gtk_tree_store_set_sort_column_id (GtkTreeSortable  *sortable,
       (tree_store->order == order))
     return;
 
-  if (sort_column_id != -1)
+  if (sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
     {
       GtkTreeDataSortHeader *header = NULL;
 
@@ -2849,9 +2865,9 @@ gtk_tree_store_set_sort_column_id (GtkTreeSortable  *sortable,
   tree_store->sort_column_id = sort_column_id;
   tree_store->order = order;
 
-  gtk_tree_store_sort (tree_store);
-
   gtk_tree_sortable_sort_column_changed (sortable);
+
+  gtk_tree_store_sort (tree_store);
 }
 
 static void
@@ -2898,6 +2914,9 @@ gtk_tree_store_set_sort_func (GtkTreeSortable        *sortable,
   header->func = func;
   header->data = data;
   header->destroy = destroy;
+
+  if (tree_store->sort_column_id == sort_column_id)
+    gtk_tree_store_sort (tree_store);
 }
 
 static void
@@ -2921,6 +2940,9 @@ gtk_tree_store_set_default_sort_func (GtkTreeSortable        *sortable,
   tree_store->default_sort_func = func;
   tree_store->default_sort_data = data;
   tree_store->default_sort_destroy = destroy;
+
+  if (tree_store->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
+    gtk_tree_store_sort (tree_store);
 }
 
 static gboolean
@@ -2948,6 +2970,3 @@ validate_gnode (GNode* node)
       iter = iter->next;
     }
 }
-
-
-

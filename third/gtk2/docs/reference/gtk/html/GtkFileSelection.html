@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkFileSelection</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkFileSelection</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -154,7 +154,32 @@ void create_file_selection (void) {
 }
 
 </pre></div><p>
-</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkFileSelection-struct"></a>struct GtkFileSelection</h3><pre class="programlisting">struct GtkFileSelection;</pre><p>
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkFileSelection-struct"></a>struct GtkFileSelection</h3><pre class="programlisting">struct GtkFileSelection {
+  GtkWidget *dir_list;
+  GtkWidget *file_list;
+  GtkWidget *selection_entry;
+  GtkWidget *selection_text;
+  GtkWidget *main_vbox;
+  GtkWidget *ok_button;
+  GtkWidget *cancel_button;
+  GtkWidget *help_button;
+  GtkWidget *history_pulldown;
+  GtkWidget *history_menu;
+  GList     *history_list;
+  GtkWidget *fileop_dialog;
+  GtkWidget *fileop_entry;
+  gchar     *fileop_file;
+  gpointer   cmpl_state;
+  
+  GtkWidget *fileop_c_dir;
+  GtkWidget *fileop_del_file;
+  GtkWidget *fileop_ren_file;
+  
+  GtkWidget *button_area;
+  GtkWidget *action_area;
+
+};
+</pre><p>
 The <a href="GtkFileSelection.html" title="GtkFileSelection">GtkFileSelection</a> struct contains the following <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> fields:
 
 </p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td>*fileop_dialog;</td><td>the dialog box used to display the <a href="GtkFileSelection.html" title="GtkFileSelection">GtkFileSelection</a>. It can be customized by adding/removing widgets from it using the standard <a href="GtkDialog.html" title="GtkDialog">GtkDialog</a> functions.</td></tr><tr><td>*ok_button, *cancel_button;</td><td>the two main buttons that signals should be connected to in order to perform an action when the user hits either OK or Cancel.</td></tr><tr><td>*history_pulldown;</td><td>the <a href="GtkOptionMenu.html" title="GtkOptionMenu">GtkOptionMenu</a> used to create the drop-down directory history.</td></tr><tr><td>*fileop_c_dir, *fileop_del_file, *fileop_ren_file;</td><td>the buttons that appear at the top of the file selection dialog. These &quot;operation buttons&quot; can be hidden and redisplayed with <a href="GtkFileSelection.html#gtk-file-selection-hide-fileop-buttons">gtk_file_selection_hide_fileop_buttons</a>() and  <a href="GtkFileSelection.html#gtk-file-selection-show-fileop-buttons">gtk_file_selection_show_fileop_buttons</a>() respectively.</td></tr></tbody></table></div><p>

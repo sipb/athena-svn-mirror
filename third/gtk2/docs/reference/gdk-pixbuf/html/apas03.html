@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Converting Applications to gdk-pixbuf</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Converting Applications to gdk-pixbuf</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -29,10 +29,10 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style><link rel="home" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="apa.html" title="Appendix A. Porting applications from Imlib to gdk-pixbuf"><link rel="previous" href="apas02.html" title="Differences between Imlib and gdk-pixbuf"><link rel="next" href="license.html" title="Appendix B. License"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="apas02.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="apa.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The gdk-pixbuf Library</th><td><a accesskey="n" href="license.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="id2857020"></a>Converting Applications to gdk-pixbuf</h2></div></div><p>
+      </style><link rel="home" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="apa.html" title="Appendix A. Porting applications from Imlib to gdk-pixbuf"><link rel="previous" href="apas02.html" title="Differences between Imlib and gdk-pixbuf"><link rel="next" href="license.html" title="Appendix B. License"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="apas02.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="apa.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The gdk-pixbuf Library</th><td><a accesskey="n" href="license.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="id2857075"></a>Converting Applications to gdk-pixbuf</h2></div></div><p>
 	This sections describes the actual changes you need to make in
 	an Imlib program to make it use gdk-pixbuf instead.
-      </p><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857048"></a>Image loading and creation</h3></div></div><p>
+      </p><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857103"></a>Image loading and creation</h3></div></div><p>
 	  The gdk-pixbuf library can load image files synchronously
 	  (i.e. with a single function call), create images from RGB
 	  data in memory, and as a convenience, it can also create
@@ -66,7 +66,7 @@
 	  with it.  This can be thought of as a replacement for
 	  <tt>gdk_imlib_destroy_image()</tt> but with much
 	  cleaner semantics.
-	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857168"></a>Rendering Images</h3></div></div><p>
+	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857223"></a>Rendering Images</h3></div></div><p>
 	  Applications that use Imlib must first call
 	  <tt>gdk_imlib_render()</tt> to render the whole
 	  image data onto a pixmap that Imlib creates.  Then they
@@ -90,7 +90,7 @@
 	  trivially simple applications should find a use for this
 	  function, since usually you want finer control of how things
 	  are rendered.
-	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857252"></a>Scaling Images</h3></div></div><p>
+	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857307"></a>Scaling Images</h3></div></div><p>
 	  Imlib lets you render scaled image data at the time you
 	  call <tt>gdk_imlib_render()</tt>.  Again, this
 	  unfortunately scales and renders the whole image onto a new
@@ -101,7 +101,7 @@
 	  one.  These functions can also perform compositing
 	  operations against the data in the destination pixbuf or
 	  against a solid color or a colored checkerboard.
-	  <sup>[<a name="id2857289" href="#ftn.id2857289">1</a>]</sup>
+	  <sup>[<a name="id2857344" href="#ftn.id2857344">1</a>]</sup>
 	</p><p>
 	  Very simple applications may find it sufficient to use
 	  <tt>gdk_pixbuf_scale_simple()</tt> or
@@ -116,7 +116,7 @@
 	  These functions let you scale and composite an arbitrary
 	  region of the source pixbuf onto a destination pixbuf that
 	  you provide.
-	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857366"></a>Getting Image Data from a Drawable</h3></div></div><p>
+	</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2857421"></a>Getting Image Data from a Drawable</h3></div></div><p>
 	  Imlib lets you create an image by fetching a drawable's
 	  contents from the X server and converting those into RGB
 	  data.  This is done with the
@@ -127,7 +127,7 @@
 	  <tt>gdk_pixbuf_get_from_drawable()</tt> function
 	  instead.  It lets you specify a destination pixbuf instead
 	  of always creating a new one for you.
-	</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id2857289" href="#id2857289">1</a>] </sup>
+	</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id2857344" href="#id2857344">1</a>] </sup>
 	      You can use a colored checkerboard as the background for
 	      compositing when you want to provide a visual indication
 	      that the image has partially opaque areas.  This is

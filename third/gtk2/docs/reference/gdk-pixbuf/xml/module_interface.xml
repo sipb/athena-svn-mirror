@@ -613,6 +613,9 @@ is loaded and must set the function pointers of the <link linkend="GdkPixbufModu
 <title><anchor id="GdkPixbufAnimationClass"/>struct GdkPixbufAnimationClass</title>
 <programlisting>struct GdkPixbufAnimationClass {
 
+        GObjectClass parent_class;
+
+
         gboolean                (*is_static_image)  (GdkPixbufAnimation *anim);
 
         GdkPixbuf*              (*get_static_image) (GdkPixbufAnimation *anim);
@@ -631,6 +634,11 @@ Modules supporting animations must derive a type from
 <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>, providing suitable implementations of the 
 virtual functions.
 </para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GObjectClass">GObjectClass</link> <structfield>parent_class</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
 <varlistentry>
 <term><link linkend="gboolean">gboolean</link> (*<structfield>is_static_image</structfield>) (GdkPixbufAnimation *anim)</term>
 <listitem><simpara>returns whether the given animation is just a static image.
@@ -660,6 +668,9 @@ virtual functions.
 <title><anchor id="GdkPixbufAnimationIterClass"/>struct GdkPixbufAnimationIterClass</title>
 <programlisting>struct GdkPixbufAnimationIterClass {
 
+        GObjectClass parent_class;
+
+
         int        (*get_delay_time)   (GdkPixbufAnimationIter *iter);
 
         GdkPixbuf* (*get_pixbuf)       (GdkPixbufAnimationIter *iter);
@@ -675,6 +686,11 @@ Modules supporting animations must derive a type from
 <link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>, providing suitable implementations of the 
 virtual functions.
 </para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GObjectClass">GObjectClass</link> <structfield>parent_class</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
 <varlistentry>
 <term>int (*<structfield>get_delay_time</structfield>) (GdkPixbufAnimationIter *iter)</term>
 <listitem><simpara>returns the time in milliseconds that the current frame 

@@ -164,7 +164,7 @@ at application run time.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-MICRO-VERSION-CAPS"/>GTK_MICRO_VERSION</title>
-<programlisting>#define GTK_MICRO_VERSION				(0)
+<programlisting>#define GTK_MICRO_VERSION				(1)
 </programlisting>
 <para>
 Like <link linkend="gtk-micro-version">gtk_micro_version</link>, but from the headers used at
@@ -173,7 +173,7 @@ at application run time.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-BINARY-AGE-CAPS"/>GTK_BINARY_AGE</title>
-<programlisting>#define GTK_BINARY_AGE					(200)
+<programlisting>#define GTK_BINARY_AGE					(201)
 </programlisting>
 <para>
 Like <link linkend="gtk-binary-age">gtk_binary_age</link>, but from the headers used at
@@ -182,7 +182,7 @@ at application run time.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-INTERFACE-AGE-CAPS"/>GTK_INTERFACE_AGE</title>
-<programlisting>#define GTK_INTERFACE_AGE				(0)
+<programlisting>#define GTK_INTERFACE_AGE				(1)
 </programlisting>
 <para>
 Like <link linkend="gtk-interface-age">gtk_interface_age</link>, but from the headers used at

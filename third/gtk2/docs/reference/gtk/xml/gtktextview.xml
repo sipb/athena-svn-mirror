@@ -941,9 +941,18 @@ display lines vs. paragraphs.</para>
                                              <link linkend="GtkTextIter">GtkTextIter</link> *iter,
                                              <link linkend="gint">gint</link> count);</programlisting>
 <para>
-Moves <parameter>iter</parameter> up or down by <parameter>count</parameter> display (wrapped) lines.
-See <link linkend="gtk-text-view-forward-display-line">gtk_text_view_forward_display_line</link>() for an explanation of
-display lines vs. paragraphs.</para>
+Move the iterator a given number of characters visually, treating
+it as the strong cursor position. If <parameter>count</parameter> is positive, then the
+new strong cursor position will be <parameter>count</parameter> positions to the right of
+the old cursor position. If <parameter>count</parameter> is negative then the new strong
+cursor position will be <parameter>count</parameter> positions to the left of the old
+cursor position.
+</para>
+<para>
+In the presence of bidirection text, the correspondence
+between logical and visual order will depend on the direction
+of the current run, and there may be jumps when the cursor
+is moved off of the end of a run.</para>
 <para>
 
 </para><variablelist role="params">
@@ -954,7 +963,7 @@ display lines vs. paragraphs.</para>
 <listitem><simpara> a <link linkend="GtkTextIter">GtkTextIter</link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>count</parameter>&nbsp;:</term>
-<listitem><simpara> number of lines to move
+<listitem><simpara>   number of characters to move (negative moves left, positive moves right)
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>iter</parameter> moved and is not on the end iterator
 </simpara></listitem></varlistentry>

@@ -3,8 +3,8 @@
 <chapters>
 <sub name="API Reference" link="reference.html">
 <sub name="General" link="gdk-General.html">
-<sub name="Description" link="gdk-General.html#id2770464"/>
-<sub name="Details" link="gdk-General.html#id2770478">
+<sub name="Description" link="gdk-General.html#id2770457"/>
+<sub name="Details" link="gdk-General.html#id2770471">
 <sub name="gdk_init ()" link="gdk-General.html#gdk-init"/>
 <sub name="gdk_init_check ()" link="gdk-General.html#gdk-init-check"/>
 <sub name="gdk_parse_args ()" link="gdk-General.html#gdk-parse-args"/>
@@ -39,14 +39,14 @@
 </sub>
 </sub>
 <sub name="Multi-head Support Overview" link="multihead.html">
-<sub name="Overview" link="multihead.html#id2772629"/>
-<sub name="See Also" link="multihead.html#id2835846"/>
+<sub name="Overview" link="multihead.html#id2772621"/>
+<sub name="See Also" link="multihead.html#id2835833"/>
 </sub>
 <sub name="GdkDisplay" link="GdkDisplay.html">
-<sub name="Object Hierarchy" link="GdkDisplay.html#id2836588"/>
-<sub name="Signal Prototypes" link="GdkDisplay.html#id2836612"/>
-<sub name="Description" link="GdkDisplay.html#id2836660"/>
-<sub name="Details" link="GdkDisplay.html#id2836746">
+<sub name="Object Hierarchy" link="GdkDisplay.html#id2836574"/>
+<sub name="Signal Prototypes" link="GdkDisplay.html#id2836598"/>
+<sub name="Description" link="GdkDisplay.html#id2836647"/>
+<sub name="Details" link="GdkDisplay.html#id2836733">
 <sub name="struct GdkDisplay" link="GdkDisplay.html#GdkDisplay-struct"/>
 <sub name="gdk_display_open ()" link="GdkDisplay.html#gdk-display-open"/>
 <sub name="gdk_display_get_default ()" link="GdkDisplay.html#gdk-display-get-default"/>
@@ -71,16 +71,16 @@
 <sub name="struct GdkDisplayPointerHooks" link="GdkDisplay.html#GdkDisplayPointerHooks"/>
 <sub name="gdk_display_set_pointer_hooks ()" link="GdkDisplay.html#gdk-display-set-pointer-hooks"/>
 </sub>
-<sub name="Signals" link="GdkDisplay.html#id2839599">
+<sub name="Signals" link="GdkDisplay.html#id2839584">
 <sub name="The &quot;closed&quot; signal" link="GdkDisplay.html#GdkDisplay-closed"/>
 </sub>
 </sub>
 <sub name="GdkDisplayManager" link="GdkDisplayManager.html">
-<sub name="Object Hierarchy" link="GdkDisplayManager.html#id2839757"/>
-<sub name="Properties" link="GdkDisplayManager.html#id2839780"/>
-<sub name="Signal Prototypes" link="GdkDisplayManager.html#id2839814"/>
-<sub name="Description" link="GdkDisplayManager.html#id2839866"/>
-<sub name="Details" link="GdkDisplayManager.html#id2839888">
+<sub name="Object Hierarchy" link="GdkDisplayManager.html#id2839742"/>
+<sub name="Properties" link="GdkDisplayManager.html#id2839766"/>
+<sub name="Signal Prototypes" link="GdkDisplayManager.html#id2839798"/>
+<sub name="Description" link="GdkDisplayManager.html#id2839852"/>
+<sub name="Details" link="GdkDisplayManager.html#id2839873">
 <sub name="struct GdkDisplayManager" link="GdkDisplayManager.html#GdkDisplayManager-struct"/>
 <sub name="gdk_display_manager_get ()" link="GdkDisplayManager.html#gdk-display-manager-get"/>
 <sub name="gdk_display_manager_get_default_display ()" link="GdkDisplayManager.html#gdk-display-manager-get-default-display"/>
@@ -88,16 +88,16 @@
 <sub name="gdk_display_manager_list_displays ()" link="GdkDisplayManager.html#gdk-display-manager-list-displays"/>
 <sub name="gdk_display_get_core_pointer ()" link="GdkDisplayManager.html#gdk-display-get-core-pointer"/>
 </sub>
-<sub name="Properties" link="GdkDisplayManager.html#id2840466"/>
-<sub name="Signals" link="GdkDisplayManager.html#id2840514">
+<sub name="Properties" link="GdkDisplayManager.html#id2840451"/>
+<sub name="Signals" link="GdkDisplayManager.html#id2840499">
 <sub name="The &quot;display-opened&quot; signal" link="GdkDisplayManager.html#GdkDisplayManager-display-opened"/>
 </sub>
 </sub>
 <sub name="GdkScreen" link="GdkScreen.html">
-<sub name="Object Hierarchy" link="GdkScreen.html#id2841338"/>
-<sub name="Signal Prototypes" link="GdkScreen.html#id2841361"/>
-<sub name="Description" link="GdkScreen.html#id2841405"/>
-<sub name="Details" link="GdkScreen.html#id2841453">
+<sub name="Object Hierarchy" link="GdkScreen.html#id2841324"/>
+<sub name="Signal Prototypes" link="GdkScreen.html#id2841347"/>
+<sub name="Description" link="GdkScreen.html#id2841390"/>
+<sub name="Details" link="GdkScreen.html#id2841439">
 <sub name="struct GdkScreen" link="GdkScreen.html#GdkScreen-struct"/>
 <sub name="gdk_screen_get_default ()" link="GdkScreen.html#gdk-screen-get-default"/>
 <sub name="gdk_screen_get_default_colormap ()" link="GdkScreen.html#gdk-screen-get-default-colormap"/>
@@ -123,13 +123,13 @@
 <sub name="gdk_screen_broadcast_client_message ()" link="GdkScreen.html#gdk-screen-broadcast-client-message"/>
 <sub name="gdk_screen_get_setting ()" link="GdkScreen.html#gdk-screen-get-setting"/>
 </sub>
-<sub name="Signals" link="GdkScreen.html#id2844203">
+<sub name="Signals" link="GdkScreen.html#id2844189">
 <sub name="The &quot;size-changed&quot; signal" link="GdkScreen.html#GdkScreen-size-changed"/>
 </sub>
 </sub>
 <sub name="Points, Rectangles and Regions" link="gdk-Points-Rectangles-and-Regions.html">
-<sub name="Description" link="gdk-Points-Rectangles-and-Regions.html#id2845079"/>
-<sub name="Details" link="gdk-Points-Rectangles-and-Regions.html#id2845219">
+<sub name="Description" link="gdk-Points-Rectangles-and-Regions.html#id2845066"/>
+<sub name="Details" link="gdk-Points-Rectangles-and-Regions.html#id2845206">
 <sub name="struct GdkPoint" link="gdk-Points-Rectangles-and-Regions.html#GdkPoint"/>
 <sub name="struct GdkRectangle" link="gdk-Points-Rectangles-and-Regions.html#GdkRectangle"/>
 <sub name="gdk_rectangle_intersect ()" link="gdk-Points-Rectangles-and-Regions.html#gdk-rectangle-intersect"/>
@@ -161,9 +161,9 @@
 </sub>
 </sub>
 <sub name="Graphics Contexts" link="gdk-Graphics-Contexts.html">
-<sub name="Object Hierarchy" link="gdk-Graphics-Contexts.html#id2849625"/>
-<sub name="Description" link="gdk-Graphics-Contexts.html#id2849648"/>
-<sub name="Details" link="gdk-Graphics-Contexts.html#id2849697">
+<sub name="Object Hierarchy" link="gdk-Graphics-Contexts.html#id2849612"/>
+<sub name="Description" link="gdk-Graphics-Contexts.html#id2849635"/>
+<sub name="Details" link="gdk-Graphics-Contexts.html#id2849684">
 <sub name="struct GdkGC" link="gdk-Graphics-Contexts.html#GdkGC-struct"/>
 <sub name="struct GdkGCValues" link="gdk-Graphics-Contexts.html#GdkGCValues"/>
 <sub name="enum GdkGCValuesMask" link="gdk-Graphics-Contexts.html#GdkGCValuesMask"/>
@@ -206,9 +206,9 @@
 </sub>
 </sub>
 <sub name="Drawing Primitives" link="gdk-Drawing-Primitives.html">
-<sub name="Object Hierarchy" link="gdk-Drawing-Primitives.html#id2856249"/>
-<sub name="Description" link="gdk-Drawing-Primitives.html#id2856273"/>
-<sub name="Details" link="gdk-Drawing-Primitives.html#id2856340">
+<sub name="Object Hierarchy" link="gdk-Drawing-Primitives.html#id2856235"/>
+<sub name="Description" link="gdk-Drawing-Primitives.html#id2856258"/>
+<sub name="Details" link="gdk-Drawing-Primitives.html#id2856325">
 <sub name="struct GdkDrawable" link="gdk-Drawing-Primitives.html#GdkDrawable-struct"/>
 <sub name="gdk_drawable_ref ()" link="gdk-Drawing-Primitives.html#gdk-drawable-ref"/>
 <sub name="gdk_drawable_unref ()" link="gdk-Drawing-Primitives.html#gdk-drawable-unref"/>
@@ -248,9 +248,9 @@
 </sub>
 </sub>
 <sub name="Bitmaps and Pixmaps" link="gdk-Bitmaps-and-Pixmaps.html">
-<sub name="Object Hierarchy" link="gdk-Bitmaps-and-Pixmaps.html#id2864042"/>
-<sub name="Description" link="gdk-Bitmaps-and-Pixmaps.html#id2864073"/>
-<sub name="Details" link="gdk-Bitmaps-and-Pixmaps.html#id2864109">
+<sub name="Object Hierarchy" link="gdk-Bitmaps-and-Pixmaps.html#id2864027"/>
+<sub name="Description" link="gdk-Bitmaps-and-Pixmaps.html#id2864058"/>
+<sub name="Details" link="gdk-Bitmaps-and-Pixmaps.html#id2864094">
 <sub name="struct GdkPixmap" link="gdk-Bitmaps-and-Pixmaps.html#GdkPixmap-struct"/>
 <sub name="gdk_pixmap_new ()" link="gdk-Bitmaps-and-Pixmaps.html#gdk-pixmap-new"/>
 <sub name="gdk_bitmap_create_from_data ()" link="gdk-Bitmaps-and-Pixmaps.html#gdk-bitmap-create-from-data"/>
@@ -267,8 +267,8 @@
 </sub>
 </sub>
 <sub name="GdkRGB" link="gdk-GdkRGB.html">
-<sub name="Description" link="gdk-GdkRGB.html#id2866766"/>
-<sub name="Details" link="gdk-GdkRGB.html#id2866897">
+<sub name="Description" link="gdk-GdkRGB.html#id2866750"/>
+<sub name="Details" link="gdk-GdkRGB.html#id2866850">
 <sub name="gdk_rgb_init ()" link="gdk-GdkRGB.html#gdk-rgb-init"/>
 <sub name="gdk_draw_rgb_image ()" link="gdk-GdkRGB.html#gdk-draw-rgb-image"/>
 <sub name="gdk_draw_rgb_image_dithalign ()" link="gdk-GdkRGB.html#gdk-draw-rgb-image-dithalign"/>
@@ -292,11 +292,11 @@
 <sub name="gdk_rgb_ditherable ()" link="gdk-GdkRGB.html#gdk-rgb-ditherable"/>
 <sub name="gdk_rgb_set_verbose ()" link="gdk-GdkRGB.html#gdk-rgb-set-verbose"/>
 </sub>
-<sub name="See Also" link="gdk-GdkRGB.html#id2870402"/>
+<sub name="See Also" link="gdk-GdkRGB.html#id2870387"/>
 </sub>
 <sub name="Images" link="gdk-Images.html">
-<sub name="Description" link="gdk-Images.html#id2870894"/>
-<sub name="Details" link="gdk-Images.html#id2871058">
+<sub name="Description" link="gdk-Images.html#id2870879"/>
+<sub name="Details" link="gdk-Images.html#id2871043">
 <sub name="struct GdkImage" link="gdk-Images.html#GdkImage"/>
 <sub name="gdk_image_new ()" link="gdk-Images.html#gdk-image-new"/>
 <sub name="enum GdkImageType" link="gdk-Images.html#GdkImageType"/>
@@ -310,11 +310,11 @@
 <sub name="gdk_image_put_pixel ()" link="gdk-Images.html#gdk-image-put-pixel"/>
 <sub name="gdk_image_get_pixel ()" link="gdk-Images.html#gdk-image-get-pixel"/>
 </sub>
-<sub name="See Also" link="gdk-Images.html#id2872981"/>
+<sub name="See Also" link="gdk-Images.html#id2872965"/>
 </sub>
 <sub name="Pixbufs" link="gdk-Pixbufs.html">
-<sub name="Description" link="gdk-Pixbufs.html#id2873446"/>
-<sub name="Details" link="gdk-Pixbufs.html#id2873459">
+<sub name="Description" link="gdk-Pixbufs.html#id2873432"/>
+<sub name="Details" link="gdk-Pixbufs.html#id2873442">
 <sub name="gdk_pixbuf_render_threshold_alpha ()" link="gdk-Pixbufs.html#gdk-pixbuf-render-threshold-alpha"/>
 <sub name="gdk_pixbuf_render_to_drawable ()" link="gdk-Pixbufs.html#gdk-pixbuf-render-to-drawable"/>
 <sub name="gdk_pixbuf_render_to_drawable_alpha ()" link="gdk-Pixbufs.html#gdk-pixbuf-render-to-drawable-alpha"/>
@@ -325,8 +325,8 @@
 </sub>
 </sub>
 <sub name="Colormaps and Colors" link="gdk-Colormaps-and-Colors.html">
-<sub name="Description" link="gdk-Colormaps-and-Colors.html#id2876551"/>
-<sub name="Details" link="gdk-Colormaps-and-Colors.html#id2876639">
+<sub name="Description" link="gdk-Colormaps-and-Colors.html#id2876536"/>
+<sub name="Details" link="gdk-Colormaps-and-Colors.html#id2876624">
 <sub name="struct GdkColor" link="gdk-Colormaps-and-Colors.html#GdkColor"/>
 <sub name="struct GdkColormap" link="gdk-Colormaps-and-Colors.html#GdkColormap"/>
 <sub name="gdk_colormap_new ()" link="gdk-Colormaps-and-Colors.html#gdk-colormap-new"/>
@@ -356,8 +356,8 @@
 </sub>
 </sub>
 <sub name="Visuals" link="gdk-Visuals.html">
-<sub name="Description" link="gdk-Visuals.html#id2880570"/>
-<sub name="Details" link="gdk-Visuals.html#id2880750">
+<sub name="Description" link="gdk-Visuals.html#id2880553"/>
+<sub name="Details" link="gdk-Visuals.html#id2880733">
 <sub name="struct GdkVisual" link="gdk-Visuals.html#GdkVisual"/>
 <sub name="enum GdkVisualType" link="gdk-Visuals.html#GdkVisualType"/>
 <sub name="enum GdkByteOrder" link="gdk-Visuals.html#GdkByteOrder"/>
@@ -375,11 +375,11 @@
 <sub name="gdk_visual_unref()" link="gdk-Visuals.html#gdk-visual-unref"/>
 <sub name="gdk_visual_get_screen ()" link="gdk-Visuals.html#gdk-visual-get-screen"/>
 </sub>
-<sub name="See Also" link="gdk-Visuals.html#id2882656"/>
+<sub name="See Also" link="gdk-Visuals.html#id2882640"/>
 </sub>
 <sub name="Fonts" link="gdk-Fonts.html">
-<sub name="Description" link="gdk-Fonts.html#id2883788"/>
-<sub name="Details" link="gdk-Fonts.html#id2884393">
+<sub name="Description" link="gdk-Fonts.html#id2883772"/>
+<sub name="Details" link="gdk-Fonts.html#id2884376">
 <sub name="struct GdkFont" link="gdk-Fonts.html#GdkFont"/>
 <sub name="enum GdkFontType" link="gdk-Fonts.html#GdkFontType"/>
 <sub name="gdk_font_load ()" link="gdk-Fonts.html#gdk-font-load"/>
@@ -413,8 +413,8 @@
 </sub>
 </sub>
 <sub name="Cursors" link="gdk-Cursors.html">
-<sub name="Description" link="gdk-Cursors.html#id2888950"/>
-<sub name="Details" link="gdk-Cursors.html#id2888963">
+<sub name="Description" link="gdk-Cursors.html#id2888934"/>
+<sub name="Details" link="gdk-Cursors.html#id2888945">
 <sub name="struct GdkCursor" link="gdk-Cursors.html#GdkCursor"/>
 <sub name="enum GdkCursorType" link="gdk-Cursors.html#GdkCursorType"/>
 <sub name="gdk_cursor_new ()" link="gdk-Cursors.html#gdk-cursor-new"/>
@@ -427,9 +427,9 @@
 </sub>
 </sub>
 <sub name="Windows" link="gdk-Windows.html">
-<sub name="Object Hierarchy" link="gdk-Windows.html#id2895510"/>
-<sub name="Description" link="gdk-Windows.html#id2895540"/>
-<sub name="Details" link="gdk-Windows.html#id2895620">
+<sub name="Object Hierarchy" link="gdk-Windows.html#id2895494"/>
+<sub name="Description" link="gdk-Windows.html#id2895525"/>
+<sub name="Details" link="gdk-Windows.html#id2895605">
 <sub name="struct GdkWindow" link="gdk-Windows.html#GdkWindow-struct"/>
 <sub name="enum GdkWindowType" link="gdk-Windows.html#GdkWindowType"/>
 <sub name="enum GdkWindowClass" link="gdk-Windows.html#GdkWindowClass"/>
@@ -551,8 +551,8 @@
 </sub>
 </sub>
 <sub name="Events" link="gdk-Events.html">
-<sub name="Description" link="gdk-Events.html#id2913562"/>
-<sub name="Details" link="gdk-Events.html#id2913604">
+<sub name="Description" link="gdk-Events.html#id2913544"/>
+<sub name="Details" link="gdk-Events.html#id2913586">
 <sub name="enum GdkEventType" link="gdk-Events.html#GdkEventType"/>
 <sub name="enum GdkEventMask" link="gdk-Events.html#GdkEventMask"/>
 <sub name="GDK_CURRENT_TIME" link="gdk-Events.html#GDK-CURRENT-TIME-CAPS"/>
@@ -583,11 +583,11 @@
 <sub name="gdk_event_get_screen ()" link="gdk-Events.html#gdk-event-get-screen"/>
 <sub name="gdk_setting_get ()" link="gdk-Events.html#gdk-setting-get"/>
 </sub>
-<sub name="See Also" link="gdk-Events.html#id2917809"/>
+<sub name="See Also" link="gdk-Events.html#id2917792"/>
 </sub>
 <sub name="Event Structures" link="gdk-Event-Structures.html">
-<sub name="Description" link="gdk-Event-Structures.html#id2918157"/>
-<sub name="Details" link="gdk-Event-Structures.html#id2918191">
+<sub name="Description" link="gdk-Event-Structures.html#id2918140"/>
+<sub name="Details" link="gdk-Event-Structures.html#id2918174">
 <sub name="union GdkEvent" link="gdk-Event-Structures.html#GdkEvent"/>
 <sub name="struct GdkEventAny" link="gdk-Event-Structures.html#GdkEventAny"/>
 <sub name="struct GdkEventKey" link="gdk-Event-Structures.html#GdkEventKey"/>
@@ -618,10 +618,10 @@
 </sub>
 </sub>
 <sub name="Key Values" link="gdk-Keyboard-Handling.html">
-<sub name="Object Hierarchy" link="gdk-Keyboard-Handling.html#id2924459"/>
-<sub name="Signal Prototypes" link="gdk-Keyboard-Handling.html#id2924482"/>
-<sub name="Description" link="gdk-Keyboard-Handling.html#id2924552"/>
-<sub name="Details" link="gdk-Keyboard-Handling.html#id2924832">
+<sub name="Object Hierarchy" link="gdk-Keyboard-Handling.html#id2924441"/>
+<sub name="Signal Prototypes" link="gdk-Keyboard-Handling.html#id2924464"/>
+<sub name="Description" link="gdk-Keyboard-Handling.html#id2924535"/>
+<sub name="Details" link="gdk-Keyboard-Handling.html#id2924814">
 <sub name="struct GdkKeymap" link="gdk-Keyboard-Handling.html#GdkKeymap-struct"/>
 <sub name="struct GdkKeymapKey" link="gdk-Keyboard-Handling.html#GdkKeymapKey"/>
 <sub name="gdk_keymap_get_default ()" link="gdk-Keyboard-Handling.html#gdk-keymap-get-default"/>
@@ -641,14 +641,14 @@
 <sub name="gdk_keyval_to_unicode ()" link="gdk-Keyboard-Handling.html#gdk-keyval-to-unicode"/>
 <sub name="gdk_unicode_to_keyval ()" link="gdk-Keyboard-Handling.html#gdk-unicode-to-keyval"/>
 </sub>
-<sub name="Signals" link="gdk-Keyboard-Handling.html#id2927360">
+<sub name="Signals" link="gdk-Keyboard-Handling.html#id2927341">
 <sub name="The &quot;direction-changed&quot; signal" link="gdk-Keyboard-Handling.html#GdkKeymap-direction-changed"/>
 <sub name="The &quot;keys-changed&quot; signal" link="gdk-Keyboard-Handling.html#GdkKeymap-keys-changed"/>
 </sub>
 </sub>
 <sub name="Selections" link="gdk-Selections.html">
-<sub name="Description" link="gdk-Selections.html#id2927935"/>
-<sub name="Details" link="gdk-Selections.html#id2928031">
+<sub name="Description" link="gdk-Selections.html#id2927917"/>
+<sub name="Details" link="gdk-Selections.html#id2928012">
 <sub name="GdkSelection" link="gdk-Selections.html#GdkSelection"/>
 <sub name="GdkSelectionType" link="gdk-Selections.html#GdkSelectionType"/>
 <sub name="GdkTarget" link="gdk-Selections.html#GdkTarget"/>
@@ -679,8 +679,8 @@
 </sub>
 </sub>
 <sub name="Drag and Drop" link="gdk-Drag-and-Drop.html">
-<sub name="Description" link="gdk-Drag-and-Drop.html#id2930942"/>
-<sub name="Details" link="gdk-Drag-and-Drop.html#id2930976">
+<sub name="Description" link="gdk-Drag-and-Drop.html#id2930924"/>
+<sub name="Details" link="gdk-Drag-and-Drop.html#id2930958">
 <sub name="gdk_drag_get_selection ()" link="gdk-Drag-and-Drop.html#gdk-drag-get-selection"/>
 <sub name="gdk_drag_abort ()" link="gdk-Drag-and-Drop.html#gdk-drag-abort"/>
 <sub name="gdk_drop_reply ()" link="gdk-Drag-and-Drop.html#gdk-drop-reply"/>
@@ -702,8 +702,8 @@
 </sub>
 </sub>
 <sub name="Properties and Atoms" link="gdk-Properties-and-Atoms.html">
-<sub name="Description" link="gdk-Properties-and-Atoms.html#id2934700"/>
-<sub name="Details" link="gdk-Properties-and-Atoms.html#id2934762">
+<sub name="Description" link="gdk-Properties-and-Atoms.html#id2934684"/>
+<sub name="Details" link="gdk-Properties-and-Atoms.html#id2934746">
 <sub name="struct GdkAtom" link="gdk-Properties-and-Atoms.html#GdkAtom"/>
 <sub name="GDK_ATOM_TO_POINTER()" link="gdk-Properties-and-Atoms.html#GDK-ATOM-TO-POINTER-CAPS"/>
 <sub name="GDK_POINTER_TO_ATOM()" link="gdk-Properties-and-Atoms.html#GDK-POINTER-TO-ATOM-CAPS"/>
@@ -728,8 +728,8 @@
 </sub>
 </sub>
 <sub name="Threads" link="gdk-Threads.html">
-<sub name="Description" link="gdk-Threads.html#id2933862"/>
-<sub name="Details" link="gdk-Threads.html#id2938653">
+<sub name="Description" link="gdk-Threads.html#id2933845"/>
+<sub name="Details" link="gdk-Threads.html#id2938636">
 <sub name="GDK_THREADS_ENTER()" link="gdk-Threads.html#GDK-THREADS-ENTER-CAPS"/>
 <sub name="GDK_THREADS_LEAVE()" link="gdk-Threads.html#GDK-THREADS-LEAVE-CAPS"/>
 <sub name="gdk_threads_init ()" link="gdk-Threads.html#gdk-threads-init"/>
@@ -739,8 +739,8 @@
 </sub>
 </sub>
 <sub name="Input" link="gdk-Input.html">
-<sub name="Description" link="gdk-Input.html#id2939172"/>
-<sub name="Details" link="gdk-Input.html#id2939197">
+<sub name="Description" link="gdk-Input.html#id2939156"/>
+<sub name="Details" link="gdk-Input.html#id2939181">
 <sub name="gdk_input_add_full ()" link="gdk-Input.html#gdk-input-add-full"/>
 <sub name="enum GdkInputCondition" link="gdk-Input.html#GdkInputCondition"/>
 <sub name="GdkInputFunction ()" link="gdk-Input.html#GdkInputFunction"/>
@@ -748,11 +748,11 @@
 <sub name="gdk_input_add ()" link="gdk-Input.html#gdk-input-add"/>
 <sub name="gdk_input_remove ()" link="gdk-Input.html#gdk-input-remove"/>
 </sub>
-<sub name="See Also" link="gdk-Input.html#id2940002"/>
+<sub name="See Also" link="gdk-Input.html#id2939985"/>
 </sub>
 <sub name="Input Devices" link="gdk-Input-Devices.html">
-<sub name="Description" link="gdk-Input-Devices.html#id2940599"/>
-<sub name="Details" link="gdk-Input-Devices.html#id2940881">
+<sub name="Description" link="gdk-Input-Devices.html#id2940582"/>
+<sub name="Details" link="gdk-Input-Devices.html#id2940863">
 <sub name="struct GdkDevice" link="gdk-Input-Devices.html#GdkDevice"/>
 <sub name="enum GdkInputSource" link="gdk-Input-Devices.html#GdkInputSource"/>
 <sub name="enum GdkInputMode" link="gdk-Input-Devices.html#GdkInputMode"/>
@@ -775,8 +775,8 @@
 </sub>
 </sub>
 <sub name="Pango Interaction" link="gdk-Pango-Interaction.html">
-<sub name="Description" link="gdk-Pango-Interaction.html#id2943740"/>
-<sub name="Details" link="gdk-Pango-Interaction.html#id2943752">
+<sub name="Description" link="gdk-Pango-Interaction.html#id2943723"/>
+<sub name="Details" link="gdk-Pango-Interaction.html#id2943736">
 <sub name="gdk_pango_context_get ()" link="gdk-Pango-Interaction.html#gdk-pango-context-get"/>
 <sub name="gdk_pango_context_get_for_screen ()" link="gdk-Pango-Interaction.html#gdk-pango-context-get-for-screen"/>
 <sub name="gdk_pango_context_set_colormap ()" link="gdk-Pango-Interaction.html#gdk-pango-context-set-colormap"/>
@@ -789,8 +789,8 @@
 </sub>
 </sub>
 <sub name="X Window System Interaction" link="gdk-X-Window-System-Interaction.html">
-<sub name="Description" link="gdk-X-Window-System-Interaction.html#id2946702"/>
-<sub name="Details" link="gdk-X-Window-System-Interaction.html#id2946714">
+<sub name="Description" link="gdk-X-Window-System-Interaction.html#id2946684"/>
+<sub name="Details" link="gdk-X-Window-System-Interaction.html#id2946697">
 <sub name="GDK_ROOT_WINDOW()" link="gdk-X-Window-System-Interaction.html#GDK-ROOT-WINDOW-CAPS"/>
 <sub name="GDK_ROOT_PARENT()" link="gdk-X-Window-System-Interaction.html#GDK-ROOT-PARENT-CAPS"/>
 <sub name="GDK_DISPLAY()" link="gdk-X-Window-System-Interaction.html#GDK-DISPLAY-CAPS"/>

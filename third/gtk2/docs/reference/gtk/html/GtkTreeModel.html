@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkTreeModel</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkTreeModel</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -246,7 +246,7 @@ href="../glib/glib-Basic-Types.html#gint"
   GInterface
    +----GtkTreeModel
 </pre></div><div class="refsect1"><h2>Implementations</h2><p>
-GtkTreeModel is implemented by <a href="GtkTreeStore.html" title="GtkTreeStore">GtkTreeStore</a>, <a href="GtkListStore.html" title="GtkListStore">GtkListStore</a> and <a href="GtkTreeModelSort.html" title="GtkTreeModelSort">GtkTreeModelSort</a>.
+GtkTreeModel is implemented by <a href="GtkTreeModelSort.html" title="GtkTreeModelSort">GtkTreeModelSort</a>, <a href="GtkTreeStore.html" title="GtkTreeStore">GtkTreeStore</a> and <a href="GtkListStore.html" title="GtkListStore">GtkListStore</a>.
 </p></div><div class="refsect1"><h2>Prerequisites</h2><p>
 GtkTreeModel requires <a
 href="../gobject/gobject-The-Base-Object-Type.html#GObject"
@@ -323,7 +323,7 @@ Models are accessed on a node/column level of granularity.  One can
 query for the value of a model at a certain node and a certain column
 on that node.  There are two structures used to reference a particular
 node in a model.  They are the <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> and the <a href="GtkTreeModel.html#GtkTreeIter">GtkTreeIter</a>
-<sup>[<a name="id3041184" href="#ftn.id3041184">1</a>]</sup>
+<sup>[<a name="id3041200" href="#ftn.id3041200">1</a>]</sup>
 Most of the interface consists of operations on a <a href="GtkTreeModel.html#GtkTreeIter">GtkTreeIter</a>.
 </p><p>
 A path is essentially a potential node.  It is a location on a model
@@ -1189,6 +1189,6 @@ href="../glib/glib-Basic-Types.html#gpointer"
 
 </td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>See Also</h2><p>
 <a href="GtkTreeView.html" title="GtkTreeView">GtkTreeView</a>, <a href="GtkTreeStore.html" title="GtkTreeStore">GtkTreeStore</a>, <a href="GtkListStore.html" title="GtkListStore">GtkListStore</a>, <a href="gtk-GtkTreeView-drag-and-drop.html" title="GtkTreeView drag-and-drop">GtkTreeDnd</a>, <a href="GtkTreeSortable.html" title="GtkTreeSortable">GtkTreeSortable</a>
-</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id3041184" href="#id3041184">1</a>] </sup>
+</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id3041200" href="#id3041200">1</a>] </sup>
 Here, iter is short for &#8220;iterator&#8221;
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="TreeWidget.html"><b>&lt;&lt; Tree and List Widget Overview</b></a></td><td align="right"><a accesskey="n" href="GtkTreeSelection.html"><b>GtkTreeSelection &gt;&gt;</b></a></td></tr></table></body></html>

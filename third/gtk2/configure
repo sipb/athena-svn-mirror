@@ -248,9 +248,9 @@ $as_unset CDPATH
 #
 GTK_MAJOR_VERSION=2
 GTK_MINOR_VERSION=2
-GTK_MICRO_VERSION=0
-GTK_INTERFACE_AGE=0
-GTK_BINARY_AGE=200
+GTK_MICRO_VERSION=1
+GTK_INTERFACE_AGE=1
+GTK_BINARY_AGE=201
 GTK_VERSION=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION.$GTK_MICRO_VERSION
 GTK_API_VERSION=2.0
 
@@ -8425,7 +8425,7 @@ STRIP_DUMMY=
 
 
 # i18n stuff
-ALL_LINGUAS="az be bg ca cs cy da de el en_GB en@IPA es et eu fa fi fr ga gl he hi hr hu ia it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv tr uk vi wa zh_TW zh_CN"
+ALL_LINGUAS="am az be bg ca cs cy da de el en_GB en@IPA es et eu fa fi fr ga gl he hi hr hu ia it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_TW zh_CN"
 
 
 for ac_header in locale.h
@@ -10340,13 +10340,15 @@ echo $ECHO_N "checking for dimm.h... $ECHO_C" >&6
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
-#include <windows.h>
-#include <objbase.h>
-#ifdef __GNUC__
 /* The w32api imm.h clashes a bit with the IE5.5 dimm.h */
+#ifdef __GNUC__
 #define IMEMENUITEMINFOA hidden_IMEMENUITEMINFOA
 #define IMEMENUITEMINFOW hidden_IMEMENUITEMINFOW
+#endif
+#include <windows.h>
+#include <objbase.h>
 #include <imm.h>
+#ifdef __GNUC__
 #undef IMEMENUITEMINFOA
 #undef IMEMENUITEMINFOW
 #endif
@@ -11603,17 +11605,11 @@ echo $ECHO_N "checking whether to build gmodulized gdk-pixbuf... $ECHO_C" >&6
 if test "${enable_modules+set}" = set; then
   enableval="$enable_modules"
 
-	if test x$withval = xyes; then
-	    with_modules=yes
-        else
-            with_modules=no
-	fi
-
 fi;
 
 dynworks=false
 deps=
-if test x$with_modules = xno; then
+if test x$enable_modules = xno; then
     echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
 else
@@ -15151,7 +15147,7 @@ _ACEOF
 
 
 
-if test x$with_xinput = xxfree; then
+if test x$with_xinput = xxfree || test x$with_xinput = xyes; then
   XINPUT_XFREE_TRUE=
   XINPUT_XFREE_FALSE='#'
 else
@@ -16151,7 +16147,7 @@ else
   HAVE_SGML2HTML_FALSE=
 fi
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ac_config_files="$ac_config_files config.h.win32 gtk-zip.sh gtk+.spec Makefile gdk-pixbuf-2.0.pc gdk-2.0.pc gtk+-2.0.pc gdk-pixbuf-2.0-uninstalled.pc gdk-2.0-uninstalled.pc gtk+-2.0-uninstalled.pc m4macros/Makefile po/Makefile.in build/Makefile build/win32/Makefile build/win32/dirent/Makefile demos/Makefile demos/gtk-demo/Makefile demos/gtk-demo/geninclude.pl tests/Makefile docs/Makefile docs/reference/Makefile docs/reference/gdk-pixbuf/Makefile docs/reference/gdk-pixbuf/version.xml docs/reference/gdk/Makefile docs/reference/gdk/version.xml docs/reference/gtk/Makefile docs/reference/gtk/version.xml docs/faq/Makefile docs/tutorial/Makefile gdk-pixbuf/Makefile gdk-pixbuf/makefile.mingw gdk-pixbuf/gdk_pixbuf.rc gdk-pixbuf/gdk-pixbuf-features.h gdk-pixbuf/pixops/Makefile gdk-pixbuf/pixops/makefile.mingw gdk/Makefile gdk/makefile.mingw gdk/x11/Makefile gdk/win32/Makefile gdk/win32/makefile.mingw gdk/win32/rc/Makefile gdk/win32/rc/gdk.rc gdk/linux-fb/Makefile gtk/Makefile gtk/makefile.mingw gtk/makefile.msc gtk/gtkversion.h gtk/gtk-win32.rc gtk/stock-icons/Makefile gtk/theme-bits/Makefile modules/Makefile modules/input/Makefile contrib/Makefile contrib/gdk-pixbuf-xlib/Makefile contrib/gdk-pixbuf-xlib/gdk-pixbuf-xlib-2.0.pc"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ac_config_files="$ac_config_files config.h.win32 gtk-zip.sh Makefile gdk-pixbuf-2.0.pc gdk-2.0.pc gtk+-2.0.pc gdk-pixbuf-2.0-uninstalled.pc gdk-2.0-uninstalled.pc gtk+-2.0-uninstalled.pc m4macros/Makefile po/Makefile.in build/Makefile build/win32/Makefile build/win32/dirent/Makefile demos/Makefile demos/gtk-demo/Makefile demos/gtk-demo/geninclude.pl tests/Makefile docs/Makefile docs/reference/Makefile docs/reference/gdk-pixbuf/Makefile docs/reference/gdk-pixbuf/version.xml docs/reference/gdk/Makefile docs/reference/gdk/version.xml docs/reference/gtk/Makefile docs/reference/gtk/version.xml docs/faq/Makefile docs/tutorial/Makefile gdk-pixbuf/Makefile gdk-pixbuf/gdk_pixbuf.rc gdk-pixbuf/gdk-pixbuf-features.h gdk-pixbuf/pixops/Makefile gdk/Makefile gdk/x11/Makefile gdk/win32/Makefile gdk/win32/rc/Makefile gdk/win32/rc/gdk.rc gdk/linux-fb/Makefile gtk/Makefile gtk/makefile.msc gtk/gtkversion.h gtk/gtk-win32.rc gtk/stock-icons/Makefile gtk/theme-bits/Makefile modules/Makefile modules/input/Makefile contrib/Makefile contrib/gdk-pixbuf-xlib/Makefile contrib/gdk-pixbuf-xlib/gdk-pixbuf-xlib-2.0.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -16697,7 +16693,6 @@ do
   # Handling of arguments.
   "config.h.win32" ) CONFIG_FILES="$CONFIG_FILES config.h.win32" ;;
   "gtk-zip.sh" ) CONFIG_FILES="$CONFIG_FILES gtk-zip.sh" ;;
-  "gtk+.spec" ) CONFIG_FILES="$CONFIG_FILES gtk+.spec" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "gdk-pixbuf-2.0.pc" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf-2.0.pc" ;;
   "gdk-2.0.pc" ) CONFIG_FILES="$CONFIG_FILES gdk-2.0.pc" ;;
@@ -16725,21 +16720,16 @@ do
   "docs/faq/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/faq/Makefile" ;;
   "docs/tutorial/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/tutorial/Makefile" ;;
   "gdk-pixbuf/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/Makefile" ;;
-  "gdk-pixbuf/makefile.mingw" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/makefile.mingw" ;;
   "gdk-pixbuf/gdk_pixbuf.rc" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/gdk_pixbuf.rc" ;;
   "gdk-pixbuf/gdk-pixbuf-features.h" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/gdk-pixbuf-features.h" ;;
   "gdk-pixbuf/pixops/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/pixops/Makefile" ;;
-  "gdk-pixbuf/pixops/makefile.mingw" ) CONFIG_FILES="$CONFIG_FILES gdk-pixbuf/pixops/makefile.mingw" ;;
   "gdk/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk/Makefile" ;;
-  "gdk/makefile.mingw" ) CONFIG_FILES="$CONFIG_FILES gdk/makefile.mingw" ;;
   "gdk/x11/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk/x11/Makefile" ;;
   "gdk/win32/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk/win32/Makefile" ;;
-  "gdk/win32/makefile.mingw" ) CONFIG_FILES="$CONFIG_FILES gdk/win32/makefile.mingw" ;;
   "gdk/win32/rc/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk/win32/rc/Makefile" ;;
   "gdk/win32/rc/gdk.rc" ) CONFIG_FILES="$CONFIG_FILES gdk/win32/rc/gdk.rc" ;;
   "gdk/linux-fb/Makefile" ) CONFIG_FILES="$CONFIG_FILES gdk/linux-fb/Makefile" ;;
   "gtk/Makefile" ) CONFIG_FILES="$CONFIG_FILES gtk/Makefile" ;;
-  "gtk/makefile.mingw" ) CONFIG_FILES="$CONFIG_FILES gtk/makefile.mingw" ;;
   "gtk/makefile.msc" ) CONFIG_FILES="$CONFIG_FILES gtk/makefile.msc" ;;
   "gtk/gtkversion.h" ) CONFIG_FILES="$CONFIG_FILES gtk/gtkversion.h" ;;
   "gtk/gtk-win32.rc" ) CONFIG_FILES="$CONFIG_FILES gtk/gtk-win32.rc" ;;

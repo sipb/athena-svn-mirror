@@ -248,6 +248,7 @@ INCLUDES = @STRIP_BEGIN@ 			\
 	-DGTK_BINARY_VERSION=\"@GTK_BINARY_VERSION@\"	\
 	-DG_DISABLE_DEPRECATED			\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
+	-DPREFIX=\"$(prefix)\"			\
 	@INCLUDED_LOADER_DEFINE@ 		\
 	@GTK_DEBUG_FLAGS@			\
 	@GDK_PIXBUF_DEP_CFLAGS@			\
@@ -393,8 +394,6 @@ CLEANFILES += xgen-gmc
 
 EXTRA_DIST =			\
         gdk-pixbuf-csource.1    \
-	makefile.mingw		\
-	makefile.mingw.in	\
 	makefile.msc		\
 	gdk_pixbuf.def		\
 	gdk_pixbuf.rc		\
@@ -435,12 +434,16 @@ install-data-local: install-ms-lib install-libtool-import-lib
 	  echo "***" ; \
 	fi
 
+if CROSS_COMPILING
+else
 all-local: gdk-pixbuf.loaders
+endif
 
 gdk-pixbuf.loaders: $(loader_LTLIBRARIES) gdk-pixbuf-query-loaders
-	if find . -name 'libpixbufloader-*.so' | grep 'so' > /dev/null ; then \
+	LOADERS=`echo libpixbufloader-*.la` ; \
+	if test "x$$LOADERS" != 'xlibpixbufloader-*.la' ; then \
           echo "Writing a gdk-pixbuf.loader file to use when running examples before installing gdk-pixbuf."; \
-	  GDK_PIXBUF_MODULEDIR=.libs $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders > ./gdk-pixbuf.loaders ;\
+	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders $$LOADERS > ./gdk-pixbuf.loaders ;\
 	else \
           echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
 	  touch gdk-pixbuf.loaders; \

@@ -9,52 +9,52 @@
 <sub name="Extra Configuration Options" link="gtk-building.html#extra-configuration-options"/>
 </sub>
 <sub name="Compiling GTK+ Applications" link="gtk-compiling.html">
-<sub name="Compiling GTK+ Applications on UNIX" link="gtk-compiling.html#id2773200"/>
+<sub name="Compiling GTK+ Applications on UNIX" link="gtk-compiling.html#id2773191"/>
 </sub>
 <sub name="Running GTK+ Applications" link="gtk-running.html">
-<sub name="Running and debugging GTK+ Applications" link="gtk-running.html#id2834667">
-<sub name="Common commandline options" link="gtk-running.html#id2834674"/>
-<sub name="Environment variables" link="gtk-running.html#id2835126"/>
+<sub name="Running and debugging GTK+ Applications" link="gtk-running.html#id2834656">
+<sub name="Common commandline options" link="gtk-running.html#id2834663"/>
+<sub name="Environment variables" link="gtk-running.html#id2835114"/>
 </sub>
 </sub>
 <sub name="Using GTK+ on Windows" link="gtk-windows.html">
-<sub name="Using GTK+ on Windows" link="gtk-windows.html#id2834539"/>
+<sub name="Using GTK+ on Windows" link="gtk-windows.html#id2834528"/>
 </sub>
 <sub name="Using GTK+ on the Framebuffer" link="gtk-framebuffer.html">
-<sub name="GTK+ for the Linux Framebuffer" link="gtk-framebuffer.html#id2834595">
-<sub name="Build requirements" link="gtk-framebuffer.html#id2834611"/>
-<sub name="Hardware requirements" link="gtk-framebuffer.html#id2835932"/>
-<sub name="Building and installing" link="gtk-framebuffer.html#id2835949"/>
-<sub name="Fonts" link="gtk-framebuffer.html#id2835989"/>
-<sub name="Running" link="gtk-framebuffer.html#id2836011"/>
-<sub name="Debug features" link="gtk-framebuffer.html#id2836147"/>
+<sub name="GTK+ for the Linux Framebuffer" link="gtk-framebuffer.html#id2834584">
+<sub name="Build requirements" link="gtk-framebuffer.html#id2834600"/>
+<sub name="Hardware requirements" link="gtk-framebuffer.html#id2835921"/>
+<sub name="Building and installing" link="gtk-framebuffer.html#id2835937"/>
+<sub name="Fonts" link="gtk-framebuffer.html#id2835978"/>
+<sub name="Running" link="gtk-framebuffer.html#id2836000"/>
+<sub name="Debug features" link="gtk-framebuffer.html#id2836136"/>
 </sub>
 </sub>
 <sub name="Using GTK+ on the X Window System" link="gtk-x11.html">
-<sub name="GTK+ for the X Window System" link="gtk-x11.html#id2835818"/>
+<sub name="GTK+ for the X Window System" link="gtk-x11.html#id2835807"/>
 <sub name="Understanding the X11 architecture" link="gtk-x11.html#gtk-X11-arch">
-<sub name="Server, client, window manager" link="gtk-x11.html#id2835909"/>
+<sub name="Server, client, window manager" link="gtk-x11.html#id2835898"/>
 </sub>
 </sub>
 <sub name="Changes from 1.0 to 1.2" link="gtk-changes-1-2.html">
-<sub name="Incompatible changes from 1.0 to 1.2" link="gtk-changes-1-2.html#id2836212"/>
+<sub name="Incompatible changes from 1.0 to 1.2" link="gtk-changes-1-2.html#id2836201"/>
 </sub>
 <sub name="Changes from 1.2 to 2.0" link="gtk-changes-2-0.html">
-<sub name="Incompatible changes from 1.2 to 2.0" link="gtk-changes-2-0.html#id2837959"/>
+<sub name="Incompatible changes from 1.2 to 2.0" link="gtk-changes-2-0.html#id2837948"/>
 </sub>
 <sub name="Mailing lists and bug reports" link="gtk-resources.html">
-<sub name="Filing a bug report or feature request" link="gtk-resources.html#id2836454"/>
-<sub name="Submitting Patches" link="gtk-resources.html#id2836496"/>
-<sub name="Mailing lists" link="gtk-resources.html#id2836543"/>
+<sub name="Filing a bug report or feature request" link="gtk-resources.html#id2836443"/>
+<sub name="Submitting Patches" link="gtk-resources.html#id2836486"/>
+<sub name="Mailing lists" link="gtk-resources.html#id2836532"/>
 </sub>
 <sub name="Common Questions" link="gtk-question-index.html">
-<sub name="Questions and Answers" link="gtk-question-index.html#id2842179"/>
+<sub name="Questions and Answers" link="gtk-question-index.html#id2842168"/>
 </sub>
 </sub>
 <sub name="GTK+ Core Reference" link="gtkbase.html">
 <sub name="Main loop and Events" link="gtk-General.html">
-<sub name="Description" link="gtk-General.html#id2845108"/>
-<sub name="Details" link="gtk-General.html#id2845277">
+<sub name="Description" link="gtk-General.html#id2845097"/>
+<sub name="Details" link="gtk-General.html#id2845266">
 <sub name="gtk_set_locale ()" link="gtk-General.html#gtk-set-locale"/>
 <sub name="gtk_disable_setlocale ()" link="gtk-General.html#gtk-disable-setlocale"/>
 <sub name="gtk_get_default_language ()" link="gtk-General.html#gtk-get-default-language"/>
@@ -106,13 +106,13 @@
 <sub name="gtk_get_event_widget ()" link="gtk-General.html#gtk-get-event-widget"/>
 <sub name="gtk_propagate_event ()" link="gtk-General.html#gtk-propagate-event"/>
 </sub>
-<sub name="See Also" link="gtk-General.html#id2850367"/>
+<sub name="See Also" link="gtk-General.html#id2850357"/>
 </sub>
 <sub name="Accelerator Groups" link="gtk-Keyboard-Accelerators.html">
-<sub name="Object Hierarchy" link="gtk-Keyboard-Accelerators.html#id2851169"/>
-<sub name="Signal Prototypes" link="gtk-Keyboard-Accelerators.html#id2851191"/>
-<sub name="Description" link="gtk-Keyboard-Accelerators.html#id2851325"/>
-<sub name="Details" link="gtk-Keyboard-Accelerators.html#id2851424">
+<sub name="Object Hierarchy" link="gtk-Keyboard-Accelerators.html#id2851159"/>
+<sub name="Signal Prototypes" link="gtk-Keyboard-Accelerators.html#id2851181"/>
+<sub name="Description" link="gtk-Keyboard-Accelerators.html#id2851315"/>
+<sub name="Details" link="gtk-Keyboard-Accelerators.html#id2851414">
 <sub name="struct GtkAccelGroup" link="gtk-Keyboard-Accelerators.html#GtkAccelGroup-struct"/>
 <sub name="gtk_accel_group_new ()" link="gtk-Keyboard-Accelerators.html#gtk-accel-group-new"/>
 <sub name="gtk_accel_group_ref" link="gtk-Keyboard-Accelerators.html#gtk-accel-group-ref"/>
@@ -137,15 +137,15 @@
 <sub name="gtk_accelerator_set_default_mod_mask ()" link="gtk-Keyboard-Accelerators.html#gtk-accelerator-set-default-mod-mask"/>
 <sub name="gtk_accelerator_get_default_mod_mask ()" link="gtk-Keyboard-Accelerators.html#gtk-accelerator-get-default-mod-mask"/>
 </sub>
-<sub name="Signals" link="gtk-Keyboard-Accelerators.html#id2854268">
+<sub name="Signals" link="gtk-Keyboard-Accelerators.html#id2854258">
 <sub name="The &quot;accel-activate&quot; signal" link="gtk-Keyboard-Accelerators.html#GtkAccelGroup-accel-activate"/>
 <sub name="The &quot;accel-changed&quot; signal" link="gtk-Keyboard-Accelerators.html#GtkAccelGroup-accel-changed"/>
 </sub>
-<sub name="See Also" link="gtk-Keyboard-Accelerators.html#id2854411"/>
+<sub name="See Also" link="gtk-Keyboard-Accelerators.html#id2854400"/>
 </sub>
 <sub name="Accelerator Maps" link="gtk-Accelerator-Maps.html">
-<sub name="Description" link="gtk-Accelerator-Maps.html#id2854850"/>
-<sub name="Details" link="gtk-Accelerator-Maps.html#id2854862">
+<sub name="Description" link="gtk-Accelerator-Maps.html#id2854839"/>
+<sub name="Details" link="gtk-Accelerator-Maps.html#id2854852">
 <sub name="GtkAccelMapForeach ()" link="gtk-Accelerator-Maps.html#GtkAccelMapForeach"/>
 <sub name="gtk_accel_map_add_entry ()" link="gtk-Accelerator-Maps.html#gtk-accel-map-add-entry"/>
 <sub name="gtk_accel_map_lookup_entry ()" link="gtk-Accelerator-Maps.html#gtk-accel-map-lookup-entry"/>
@@ -161,8 +161,8 @@
 </sub>
 </sub>
 <sub name="Clipboards" link="gtk-Clipboards.html">
-<sub name="Description" link="gtk-Clipboards.html#id2856968"/>
-<sub name="Details" link="gtk-Clipboards.html#id2857198">
+<sub name="Description" link="gtk-Clipboards.html#id2856958"/>
+<sub name="Details" link="gtk-Clipboards.html#id2857186">
 <sub name="struct GtkClipboard" link="gtk-Clipboards.html#GtkClipboard"/>
 <sub name="GtkClipboardReceivedFunc ()" link="gtk-Clipboards.html#GtkClipboardReceivedFunc"/>
 <sub name="GtkClipboardTextReceivedFunc ()" link="gtk-Clipboards.html#GtkClipboardTextReceivedFunc"/>
@@ -182,11 +182,11 @@
 <sub name="gtk_clipboard_wait_for_text ()" link="gtk-Clipboards.html#gtk-clipboard-wait-for-text"/>
 <sub name="gtk_clipboard_wait_is_text_available ()" link="gtk-Clipboards.html#gtk-clipboard-wait-is-text-available"/>
 </sub>
-<sub name="See Also" link="gtk-Clipboards.html#id2860007"/>
+<sub name="See Also" link="gtk-Clipboards.html#id2859995"/>
 </sub>
 <sub name="Drag and Drop" link="gtk-Drag-and-Drop.html">
-<sub name="Description" link="gtk-Drag-and-Drop.html#id2861065"/>
-<sub name="Details" link="gtk-Drag-and-Drop.html#id2861103">
+<sub name="Description" link="gtk-Drag-and-Drop.html#id2861055"/>
+<sub name="Details" link="gtk-Drag-and-Drop.html#id2861092">
 <sub name="enum GtkDestDefaults" link="gtk-Drag-and-Drop.html#GtkDestDefaults"/>
 <sub name="enum GtkTargetFlags" link="gtk-Drag-and-Drop.html#GtkTargetFlags"/>
 <sub name="gtk_drag_dest_set ()" link="gtk-Drag-and-Drop.html#gtk-drag-dest-set"/>
@@ -216,8 +216,8 @@
 </sub>
 </sub>
 <sub name="Stock Items" link="gtk-Stock-Items.html">
-<sub name="Description" link="gtk-Stock-Items.html#id2865707"/>
-<sub name="Details" link="gtk-Stock-Items.html#id2865781">
+<sub name="Description" link="gtk-Stock-Items.html#id2865694"/>
+<sub name="Details" link="gtk-Stock-Items.html#id2865767">
 <sub name="struct GtkStockItem" link="gtk-Stock-Items.html#GtkStockItem"/>
 <sub name="gtk_stock_add ()" link="gtk-Stock-Items.html#gtk-stock-add"/>
 <sub name="gtk_stock_add_static ()" link="gtk-Stock-Items.html#gtk-stock-add-static"/>
@@ -299,9 +299,9 @@
 </sub>
 </sub>
 <sub name="Themeable Stock Images" link="gtk-Themeable-Stock-Images.html">
-<sub name="Object Hierarchy" link="gtk-Themeable-Stock-Images.html#id2870168"/>
-<sub name="Description" link="gtk-Themeable-Stock-Images.html#id2870192"/>
-<sub name="Details" link="gtk-Themeable-Stock-Images.html#id2870324">
+<sub name="Object Hierarchy" link="gtk-Themeable-Stock-Images.html#id2870155"/>
+<sub name="Description" link="gtk-Themeable-Stock-Images.html#id2870179"/>
+<sub name="Details" link="gtk-Themeable-Stock-Images.html#id2870311">
 <sub name="struct GtkIconSource" link="gtk-Themeable-Stock-Images.html#GtkIconSource"/>
 <sub name="struct GtkIconFactory" link="gtk-Themeable-Stock-Images.html#GtkIconFactory-struct"/>
 <sub name="struct GtkIconSet" link="gtk-Themeable-Stock-Images.html#GtkIconSet"/>
@@ -348,15 +348,15 @@
 </sub>
 </sub>
 <sub name="Resource Files" link="gtk-Resource-Files.html">
-<sub name="Object Hierarchy" link="gtk-Resource-Files.html#id2876150"/>
-<sub name="Description" link="gtk-Resource-Files.html#id2876174">
-<sub name="Default files" link="gtk-Resource-Files.html#id2876186"/>
-<sub name="Pathnames and patterns" link="gtk-Resource-Files.html#id2876352"/>
-<sub name="Toplevel declarations" link="gtk-Resource-Files.html#id2876564"/>
-<sub name="Styles" link="gtk-Resource-Files.html#id2876855"/>
-<sub name="Key bindings" link="gtk-Resource-Files.html#id2877816"/>
+<sub name="Object Hierarchy" link="gtk-Resource-Files.html#id2876137"/>
+<sub name="Description" link="gtk-Resource-Files.html#id2876161">
+<sub name="Default files" link="gtk-Resource-Files.html#id2876174"/>
+<sub name="Pathnames and patterns" link="gtk-Resource-Files.html#id2876339"/>
+<sub name="Toplevel declarations" link="gtk-Resource-Files.html#id2876550"/>
+<sub name="Styles" link="gtk-Resource-Files.html#id2876842"/>
+<sub name="Key bindings" link="gtk-Resource-Files.html#id2877802"/>
 </sub>
-<sub name="Details" link="gtk-Resource-Files.html#id2878098">
+<sub name="Details" link="gtk-Resource-Files.html#id2878084">
 <sub name="struct GtkRcStyle" link="gtk-Resource-Files.html#GtkRcStyle-struct"/>
 <sub name="enum GtkRcFlags" link="gtk-Resource-Files.html#GtkRcFlags"/>
 <sub name="enum GtkRcTokenType" link="gtk-Resource-Files.html#GtkRcTokenType"/>
@@ -389,10 +389,10 @@
 </sub>
 </sub>
 <sub name="Settings" link="GtkSettings.html">
-<sub name="Object Hierarchy" link="GtkSettings.html#id2881475"/>
-<sub name="Properties" link="GtkSettings.html#id2881499"/>
-<sub name="Description" link="GtkSettings.html#id2881858"/>
-<sub name="Details" link="GtkSettings.html#id2881870">
+<sub name="Object Hierarchy" link="GtkSettings.html#id2881461"/>
+<sub name="Properties" link="GtkSettings.html#id2881485"/>
+<sub name="Description" link="GtkSettings.html#id2881845"/>
+<sub name="Details" link="GtkSettings.html#id2881856">
 <sub name="struct GtkSettings" link="GtkSettings.html#GtkSettings-struct"/>
 <sub name="struct GtkSettingsValue" link="GtkSettings.html#GtkSettingsValue"/>
 <sub name="gtk_settings_get_default ()" link="GtkSettings.html#gtk-settings-get-default"/>
@@ -409,11 +409,11 @@
 <sub name="gtk_settings_set_long_property ()" link="GtkSettings.html#gtk-settings-set-long-property"/>
 <sub name="gtk_settings_set_double_property ()" link="GtkSettings.html#gtk-settings-set-double-property"/>
 </sub>
-<sub name="Properties" link="GtkSettings.html#id2883405"/>
+<sub name="Properties" link="GtkSettings.html#id2883391"/>
 </sub>
 <sub name="Bindings" link="gtk-Bindings.html">
-<sub name="Description" link="gtk-Bindings.html#id2884612"/>
-<sub name="Details" link="gtk-Bindings.html#id2884623">
+<sub name="Description" link="gtk-Bindings.html#id2884598"/>
+<sub name="Details" link="gtk-Bindings.html#id2884610">
 <sub name="struct GtkBindingSet" link="gtk-Bindings.html#GtkBindingSet"/>
 <sub name="struct GtkBindingEntry" link="gtk-Bindings.html#GtkBindingEntry"/>
 <sub name="struct GtkBindingSignal" link="gtk-Bindings.html#GtkBindingSignal"/>
@@ -433,8 +433,8 @@
 </sub>
 </sub>
 <sub name="Standard Enumerations" link="gtk-Standard-Enumerations.html">
-<sub name="Description" link="gtk-Standard-Enumerations.html#id2886447"/>
-<sub name="Details" link="gtk-Standard-Enumerations.html#id2886460">
+<sub name="Description" link="gtk-Standard-Enumerations.html#id2886433"/>
+<sub name="Details" link="gtk-Standard-Enumerations.html#id2886446">
 <sub name="enum GtkAccelFlags" link="gtk-Standard-Enumerations.html#GtkAccelFlags"/>
 <sub name="enum GtkAnchorType" link="gtk-Standard-Enumerations.html#GtkAnchorType"/>
 <sub name="enum GtkArrowType" link="gtk-Standard-Enumerations.html#GtkArrowType"/>
@@ -476,16 +476,16 @@
 </sub>
 </sub>
 <sub name="Graphics Contexts" link="gtk-Graphics-Contexts.html">
-<sub name="Description" link="gtk-Graphics-Contexts.html#id2886158"/>
-<sub name="Details" link="gtk-Graphics-Contexts.html#id2889117">
+<sub name="Description" link="gtk-Graphics-Contexts.html#id2886144"/>
+<sub name="Details" link="gtk-Graphics-Contexts.html#id2889103">
 <sub name="gtk_gc_get ()" link="gtk-Graphics-Contexts.html#gtk-gc-get"/>
 <sub name="gtk_gc_release ()" link="gtk-Graphics-Contexts.html#gtk-gc-release"/>
 </sub>
 </sub>
 <sub name="Styles" link="GtkStyle.html">
-<sub name="Object Hierarchy" link="GtkStyle.html#id2893943"/>
-<sub name="Description" link="GtkStyle.html#id2893966"/>
-<sub name="Details" link="GtkStyle.html#id2893978">
+<sub name="Object Hierarchy" link="GtkStyle.html#id2893931"/>
+<sub name="Description" link="GtkStyle.html#id2893954"/>
+<sub name="Details" link="GtkStyle.html#id2893966">
 <sub name="GTK_STYLE_ATTACHED()" link="GtkStyle.html#GTK-STYLE-ATTACHED-CAPS"/>
 <sub name="struct GtkStyle" link="GtkStyle.html#GtkStyle-struct"/>
 <sub name="gtk_style_new ()" link="GtkStyle.html#gtk-style-new"/>
@@ -551,8 +551,8 @@
 </sub>
 </sub>
 <sub name="Selections" link="gtk-Selections.html">
-<sub name="Description" link="gtk-Selections.html#id2909518"/>
-<sub name="Details" link="gtk-Selections.html#id2909593">
+<sub name="Description" link="gtk-Selections.html#id2909505"/>
+<sub name="Details" link="gtk-Selections.html#id2909580">
 <sub name="struct GtkTargetEntry" link="gtk-Selections.html#GtkTargetEntry"/>
 <sub name="struct GtkTargetList" link="gtk-Selections.html#GtkTargetList"/>
 <sub name="struct GtkTargetPair" link="gtk-Selections.html#GtkTargetPair"/>
@@ -579,11 +579,11 @@
 <sub name="gtk_selection_data_copy ()" link="gtk-Selections.html#gtk-selection-data-copy"/>
 <sub name="gtk_selection_data_free ()" link="gtk-Selections.html#gtk-selection-data-free"/>
 </sub>
-<sub name="See Also" link="gtk-Selections.html#id2912637"/>
+<sub name="See Also" link="gtk-Selections.html#id2912625"/>
 </sub>
 <sub name="Version Information" link="gtk-Feature-Test-Macros.html">
-<sub name="Description" link="gtk-Feature-Test-Macros.html#id2912897"/>
-<sub name="Details" link="gtk-Feature-Test-Macros.html#id2912913">
+<sub name="Description" link="gtk-Feature-Test-Macros.html#id2912884"/>
+<sub name="Details" link="gtk-Feature-Test-Macros.html#id2912897">
 <sub name="gtk_major_version" link="gtk-Feature-Test-Macros.html#gtk-major-version"/>
 <sub name="gtk_minor_version" link="gtk-Feature-Test-Macros.html#gtk-minor-version"/>
 <sub name="gtk_micro_version" link="gtk-Feature-Test-Macros.html#gtk-micro-version"/>
@@ -599,13 +599,13 @@
 </sub>
 </sub>
 <sub name="Signals" link="gtk-Signals.html">
-<sub name="Description" link="gtk-Signals.html#id2914369">
-<sub name="What are signals?" link="gtk-Signals.html#id2914411"/>
-<sub name="How are signals used?" link="gtk-Signals.html#id2914494"/>
-<sub name="Basic Terminology" link="gtk-Signals.html#id2914528"/>
-<sub name="A brief note on how they work." link="gtk-Signals.html#id2914673"/>
+<sub name="Description" link="gtk-Signals.html#id2914356">
+<sub name="What are signals?" link="gtk-Signals.html#id2914397"/>
+<sub name="How are signals used?" link="gtk-Signals.html#id2914481"/>
+<sub name="Basic Terminology" link="gtk-Signals.html#id2914514"/>
+<sub name="A brief note on how they work." link="gtk-Signals.html#id2914660"/>
 </sub>
-<sub name="Details" link="gtk-Signals.html#id2914730">
+<sub name="Details" link="gtk-Signals.html#id2914717">
 <sub name="GTK_SIGNAL_OFFSET" link="gtk-Signals.html#GTK-SIGNAL-OFFSET-CAPS"/>
 <sub name="enum GtkSignalRunType" link="gtk-Signals.html#GtkSignalRunType"/>
 <sub name="gtk_signal_new ()" link="gtk-Signals.html#gtk-signal-new"/>
@@ -638,11 +638,11 @@
 <sub name="gtk_signal_handler_pending_by_func()" link="gtk-Signals.html#gtk-signal-handler-pending-by-func"/>
 <sub name="gtk_signal_default_marshaller" link="gtk-Signals.html#gtk-signal-default-marshaller"/>
 </sub>
-<sub name="See Also" link="gtk-Signals.html#id2919293"/>
+<sub name="See Also" link="gtk-Signals.html#id2919279"/>
 </sub>
 <sub name="Types" link="gtk-Types.html">
-<sub name="Description" link="gtk-Types.html#id2920335"/>
-<sub name="Details" link="gtk-Types.html#id2920349">
+<sub name="Description" link="gtk-Types.html#id2920322"/>
+<sub name="Details" link="gtk-Types.html#id2920336">
 <sub name="GtkType" link="gtk-Types.html#GtkType"/>
 <sub name="GtkFundamentalType" link="gtk-Types.html#GtkFundamentalType"/>
 <sub name="GTK_CLASS_NAME()" link="gtk-Types.html#GTK-CLASS-NAME-CAPS"/>
@@ -720,15 +720,15 @@
 <sub name="GTK+ Widgets and Objects" link="gtkobjects.html"/>
 </chapters>
 <functions>
-<function name="Common commandline options" link="gtk-running.html#id2834674"/>
-<function name="Environment variables" link="gtk-running.html#id2835126"/>
-<function name="Build requirements" link="gtk-framebuffer.html#id2834611"/>
-<function name="Hardware requirements" link="gtk-framebuffer.html#id2835932"/>
-<function name="Building and installing" link="gtk-framebuffer.html#id2835949"/>
-<function name="Fonts" link="gtk-framebuffer.html#id2835989"/>
-<function name="Running" link="gtk-framebuffer.html#id2836011"/>
-<function name="Debug features" link="gtk-framebuffer.html#id2836147"/>
-<function name="Server, client, window manager" link="gtk-x11.html#id2835909"/>
+<function name="Common commandline options" link="gtk-running.html#id2834663"/>
+<function name="Environment variables" link="gtk-running.html#id2835114"/>
+<function name="Build requirements" link="gtk-framebuffer.html#id2834600"/>
+<function name="Hardware requirements" link="gtk-framebuffer.html#id2835921"/>
+<function name="Building and installing" link="gtk-framebuffer.html#id2835937"/>
+<function name="Fonts" link="gtk-framebuffer.html#id2835978"/>
+<function name="Running" link="gtk-framebuffer.html#id2836000"/>
+<function name="Debug features" link="gtk-framebuffer.html#id2836136"/>
+<function name="Server, client, window manager" link="gtk-x11.html#id2835898"/>
 <function name="gtk_set_locale ()" link="gtk-General.html#gtk-set-locale"/>
 <function name="gtk_disable_setlocale ()" link="gtk-General.html#gtk-disable-setlocale"/>
 <function name="gtk_get_default_language ()" link="gtk-General.html#gtk-get-default-language"/>
@@ -981,11 +981,11 @@
 <function name="gtk_icon_source_set_size_wildcarded ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-size-wildcarded"/>
 <function name="gtk_icon_source_set_state ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-state"/>
 <function name="gtk_icon_source_set_state_wildcarded ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-state-wildcarded"/>
-<function name="Default files" link="gtk-Resource-Files.html#id2876186"/>
-<function name="Pathnames and patterns" link="gtk-Resource-Files.html#id2876352"/>
-<function name="Toplevel declarations" link="gtk-Resource-Files.html#id2876564"/>
-<function name="Styles" link="gtk-Resource-Files.html#id2876855"/>
-<function name="Key bindings" link="gtk-Resource-Files.html#id2877816"/>
+<function name="Default files" link="gtk-Resource-Files.html#id2876174"/>
+<function name="Pathnames and patterns" link="gtk-Resource-Files.html#id2876339"/>
+<function name="Toplevel declarations" link="gtk-Resource-Files.html#id2876550"/>
+<function name="Styles" link="gtk-Resource-Files.html#id2876842"/>
+<function name="Key bindings" link="gtk-Resource-Files.html#id2877802"/>
 <function name="struct GtkRcStyle" link="gtk-Resource-Files.html#GtkRcStyle-struct"/>
 <function name="enum GtkRcFlags" link="gtk-Resource-Files.html#GtkRcFlags"/>
 <function name="enum GtkRcTokenType" link="gtk-Resource-Files.html#GtkRcTokenType"/>
@@ -1185,10 +1185,10 @@
 <function name="GTK_BINARY_AGE" link="gtk-Feature-Test-Macros.html#GTK-BINARY-AGE-CAPS"/>
 <function name="GTK_INTERFACE_AGE" link="gtk-Feature-Test-Macros.html#GTK-INTERFACE-AGE-CAPS"/>
 <function name="GTK_CHECK_VERSION()" link="gtk-Feature-Test-Macros.html#GTK-CHECK-VERSION-CAPS"/>
-<function name="What are signals?" link="gtk-Signals.html#id2914411"/>
-<function name="How are signals used?" link="gtk-Signals.html#id2914494"/>
-<function name="Basic Terminology" link="gtk-Signals.html#id2914528"/>
-<function name="A brief note on how they work." link="gtk-Signals.html#id2914673"/>
+<function name="What are signals?" link="gtk-Signals.html#id2914397"/>
+<function name="How are signals used?" link="gtk-Signals.html#id2914481"/>
+<function name="Basic Terminology" link="gtk-Signals.html#id2914514"/>
+<function name="A brief note on how they work." link="gtk-Signals.html#id2914660"/>
 <function name="GTK_SIGNAL_OFFSET" link="gtk-Signals.html#GTK-SIGNAL-OFFSET-CAPS"/>
 <function name="enum GtkSignalRunType" link="gtk-Signals.html#GtkSignalRunType"/>
 <function name="gtk_signal_new ()" link="gtk-Signals.html#gtk-signal-new"/>
@@ -1446,10 +1446,10 @@
 <function name="gtk_image_new ()" link="GtkImage.html#gtk-image-new"/>
 <function name="gtk_image_set ()" link="GtkImage.html#gtk-image-set"/>
 <function name="gtk_image_get ()" link="GtkImage.html#gtk-image-get"/>
-<function name="Mnemonics" link="GtkLabel.html#id2957912"/>
-<function name="Markup (styled text)" link="GtkLabel.html#id2958052"/>
-<function name="Selectable labels" link="GtkLabel.html#id2958181"/>
-<function name="Text layout" link="GtkLabel.html#id2958202"/>
+<function name="Mnemonics" link="GtkLabel.html#id2957908"/>
+<function name="Markup (styled text)" link="GtkLabel.html#id2958048"/>
+<function name="Selectable labels" link="GtkLabel.html#id2958178"/>
+<function name="Text layout" link="GtkLabel.html#id2958198"/>
 <function name="struct GtkLabel" link="GtkLabel.html#GtkLabel-struct"/>
 <function name="gtk_label_new ()" link="GtkLabel.html#gtk-label-new"/>
 <function name="gtk_label_set_text ()" link="GtkLabel.html#gtk-label-set-text"/>
@@ -1907,8 +1907,8 @@
 <function name="The &quot;set-anchor&quot; signal" link="GtkTextView.html#GtkTextView-set-anchor"/>
 <function name="The &quot;set-scroll-adjustments&quot; signal" link="GtkTextView.html#GtkTextView-set-scroll-adjustments"/>
 <function name="The &quot;toggle-overwrite&quot; signal" link="GtkTextView.html#GtkTextView-toggle-overwrite"/>
-<function name="Columns and cell renderers" link="TreeWidget.html#id3038313"/>
-<function name="Selection handling" link="TreeWidget.html#id3038856"/>
+<function name="Columns and cell renderers" link="TreeWidget.html#id3038331"/>
+<function name="Selection handling" link="TreeWidget.html#id3038874"/>
 <function name="struct GtkTreeModel" link="GtkTreeModel.html#GtkTreeModel-struct"/>
 <function name="struct GtkTreeIter" link="GtkTreeModel.html#GtkTreeIter"/>
 <function name="struct GtkTreePath" link="GtkTreeModel.html#GtkTreePath"/>
@@ -2189,7 +2189,7 @@
 <function name="gtk_cell_renderer_toggle_get_active ()" link="GtkCellRendererToggle.html#gtk-cell-renderer-toggle-get-active"/>
 <function name="gtk_cell_renderer_toggle_set_active ()" link="GtkCellRendererToggle.html#gtk-cell-renderer-toggle-set-active"/>
 <function name="The &quot;toggled&quot; signal" link="GtkCellRendererToggle.html#GtkCellRendererToggle-toggled"/>
-<function name="Performance Considerations" link="GtkListStore.html#id3092571"/>
+<function name="Performance Considerations" link="GtkListStore.html#id3092585"/>
 <function name="struct GtkListStore" link="GtkListStore.html#GtkListStore-struct"/>
 <function name="gtk_list_store_new ()" link="GtkListStore.html#gtk-list-store-new"/>
 <function name="gtk_list_store_newv ()" link="GtkListStore.html#gtk-list-store-newv"/>
@@ -2783,7 +2783,7 @@
 <function name="gtk_misc_set_padding ()" link="GtkMisc.html#gtk-misc-set-padding"/>
 <function name="gtk_misc_get_alignment ()" link="GtkMisc.html#gtk-misc-get-alignment"/>
 <function name="gtk_misc_get_padding ()" link="GtkMisc.html#gtk-misc-get-padding"/>
-<function name="Description" link="GtkObject.html#id3198870"/>
+<function name="Description" link="GtkObject.html#id3198900"/>
 <function name="struct GtkObject" link="GtkObject.html#GtkObject-struct"/>
 <function name="GTK_OBJECT_TYPE()" link="GtkObject.html#GTK-OBJECT-TYPE-CAPS"/>
 <function name="GTK_OBJECT_TYPE_NAME()" link="GtkObject.html#GTK-OBJECT-TYPE-NAME-CAPS"/>

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Module Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Module Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -452,6 +452,9 @@ href="../glib/glib-Basic-Types.html#gboolean"
 
 </td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GdkPixbufAnimationClass"></a>struct GdkPixbufAnimationClass</h3><pre class="programlisting">struct GdkPixbufAnimationClass {
 
+        GObjectClass parent_class;
+
+
         gboolean                (*is_static_image)  (GdkPixbufAnimation *anim);
 
         GdkPixbuf*              (*get_static_image) (GdkPixbufAnimation *anim);
@@ -469,6 +472,9 @@ Modules supporting animations must derive a type from
 <a href="gdk-pixbuf-animation.html#GdkPixbufAnimation">GdkPixbufAnimation</a>, providing suitable implementations of the 
 virtual functions.
 </p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObjectClass"
+>GObjectClass</a> <i><tt>parent_class</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> (*<i><tt>is_static_image</tt></i>) (GdkPixbufAnimation *anim)</span></td><td>returns whether the given animation is just a static image.
 </td></tr><tr><td><span class="term"><a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>* (*<i><tt>get_static_image</tt></i>) (GdkPixbufAnimation *anim)</span></td><td>returns a static image representing the given animation.
@@ -479,6 +485,9 @@ href="../glib/glib-Basic-Types.html#gboolean"
                                              const GTimeVal     *start_time)</span></td><td>returns an iterator for the given animation.
 
 </td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GdkPixbufAnimationIterClass"></a>struct GdkPixbufAnimationIterClass</h3><pre class="programlisting">struct GdkPixbufAnimationIterClass {
+
+        GObjectClass parent_class;
+
 
         int        (*get_delay_time)   (GdkPixbufAnimationIter *iter);
 
@@ -493,7 +502,10 @@ href="../glib/glib-Basic-Types.html#gboolean"
 Modules supporting animations must derive a type from 
 <a href="gdk-pixbuf-animation.html#GdkPixbufAnimationIter">GdkPixbufAnimationIter</a>, providing suitable implementations of the 
 virtual functions.
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term">int (*<i><tt>get_delay_time</tt></i>) (GdkPixbufAnimationIter *iter)</span></td><td>returns the time in milliseconds that the current frame 
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObjectClass"
+>GObjectClass</a> <i><tt>parent_class</tt></i></span></td><td>
+</td></tr><tr><td><span class="term">int (*<i><tt>get_delay_time</tt></i>) (GdkPixbufAnimationIter *iter)</span></td><td>returns the time in milliseconds that the current frame 
   should be shown.
 </td></tr><tr><td><span class="term"><a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>* (*<i><tt>get_pixbuf</tt></i>) (GdkPixbufAnimationIter *iter)</span></td><td>returns the current frame.
 </td></tr><tr><td><span class="term"><a
