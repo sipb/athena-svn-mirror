@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.2 1991-06-28 13:37:22 epeisach Exp $
+ * $Id: Imakefile,v 1.3 1991-06-30 14:19:25 epeisach Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -28,18 +28,23 @@ DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota $(MACHD)
 LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes $(MACHL)
 
 
-CXREF=/usr/ucb/ctags -x
+CXREF=ctags -x
 ROOT=root
 DAEMON=daemon
+#if defined(_IBMR2)
+SPGRP=printq
+#else
 SPGRP=daemon
-OPERATOR=OPERATOR
+#endif
 
 #ifdef _IBMR2
-LIBDIR=$(ATHLIBDIR)
+LIBDIR=$(ATHETCDIR)
 BINDIR=$(ATHBINDIR)
+USRETCDIR=$(ATHETCDIR)
 #else
 LIBDIR=/usr/lib
 BINDIR=/usr/ucb
+USRETCDIR=/usr/etc
 #endif
 
 # OP_GID is the group ID for group operator
@@ -73,13 +78,14 @@ LPRSimpleProgram(s_lprm,s_lprm.o s_rmjob.o startdaemon.o s_common.o \
 	 printcap.o,$(LIBS),$(BINDIR))
 /* note that following is setgid only */
 LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o startdaemon.o s_common.o \
-	 printcap.o,$(LIBS),/usr/etc)
-
-SimpleProgram(lptest,lptest.c,,$(BINDIR))
-SimpleProgram(pac,pac.o printcap.o,$(LIBS),/usr/etc)
+	 printcap.o,$(LIBS),$(USRETCDIR))
 
 saber_lpr:
 	/**/#load lpr.c printcap.c netsend.c common.c $(LIBS)
+
+#ifndef _IBMR2
+SimpleProgram(lptest,lptest.c,,$(BINDIR))
+SimpleProgram(pac,pac.o printcap.o,$(LIBS),$(USRETCDIR))
 
 install_script(print.sh,,/usr/ucb/print)
 install_script(makespools,,/etc/makespools)
@@ -89,7 +95,7 @@ install::
 	-ln -s lpr ${DESTDIR}${BINDIR}/lpr.ucb
 	@echo  To build spooling directories:
 	@echo makespools ${DESTDIR} 775 ${DAEMON} ${SPGRP}
-
+#endif
 
 /* Specify that should trust all hosts on 18.xx.xx.xx */
 SpecialObject(lpd.o,lpd.c,-Dws)
@@ -103,12 +109,14 @@ make_o_o(lprm)
 make_o_o(lpc)
 
 
+#ifndef _IBMR2
 build_program(o_lprm,o_lprm.o s_rmjob.o startdaemon.o s_common.o printcap.o,\
 	,$(LIBS))
-install_program(o_lprm,-o root -g $(OP_GID) -m 6754,/usr/etc)
+install_program(o_lprm,-o root -g $(OP_GID) -m 6754,$(USRETCDIR))
 build_program(o_lpc,o_lpc.o cmds.o cmdtab.o startdaemon.o \
 	s_common.o printcap.o,,$(LIBS))
-install_program(o_lpc,-o root -g $(OP_GID) -m 6754,/usr/etc)
+install_program(o_lpc,-o root -g $(OP_GID) -m 6754,$(USRETCDIR))
+#endif
 
 #if 0
 install_file(printcap,/etc/printcap)
