@@ -88,7 +88,7 @@ krb5_sigtype  sendsig();
 #define UCB_RSH "/usr/ucb/rsh"
 #endif
 
-#define RSH_BUFSIZ 4096
+#define RSH_BUFSIZ 8192
 
 krb5_context bsd_context;
 krb5_creds *cred;
