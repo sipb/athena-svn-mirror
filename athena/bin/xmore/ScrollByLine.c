@@ -2,7 +2,7 @@
  * xman - X window system manual page display program.
  *
  * $XConsortium: ScrollByL.c,v 1.5 89/01/06 18:41:40 kit Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.3 1989-10-15 04:35:26 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.4 1990-05-01 14:49:05 epeisach Exp $
  *
  * Copyright 1987, 1988 Massachusetts Institute of Technology
  *
@@ -41,9 +41,14 @@
 #include	<X11/IntrinsicP.h>
 #include	"ScrollByLine.h"
 #include	"ScrollByLineP.h"
-#include        <X11/Scroll.h>
 #include	<X11/StringDefs.h>
+#if XtSpecificationRelease < 4
+#include        <X11/Scroll.h>
 #include	<X11/XawMisc.h>
+#else
+#include        <X11/Xaw/Scrollbar.h>
+#define   XtScrollBarSetThumb XawScrollbarSetThumb
+#endif
 
 /* Default Translation Table */
 
@@ -699,8 +704,6 @@ int pos;
   location = (float) sblw->scroll_by_line.line_pointer / 
              (float) sblw->scroll_by_line.lines; 
   XtScrollBarSetThumb( vbar, location , (float) -1 );
-  
-
 }
 
 static void 

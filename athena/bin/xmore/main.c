@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.1 1990-05-01 14:46:59 epeisach Exp $";
+  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.2 1990-05-01 14:48:49 epeisach Exp $";
 #endif lint
 
 /*	This is the file main.c for the Xmore, a file browsing utility
@@ -12,7 +12,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v $
  *      $Author: epeisach $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.1 1990-05-01 14:46:59 epeisach Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.2 1990-05-01 14:48:49 epeisach Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -87,7 +87,7 @@ int argc;
     AddCursor(top,main_cursor); /* must be done after realize. */
     XtMainLoop();
   }
-    printf("useage: xmore filename\n");
+    printf("usage: xmore filename\n");
 }
 
 /*	Function Name: CreateScroll
@@ -141,7 +141,7 @@ Widget parent;
 }
 
 /*	Function Name: CreatePane
- *	Description: This function Creates a VPaned widget with a help
+ *	Description: This function Creates a vPaned widget with a help
  *                   button in the top pane.
  *	Arguments: parent - the parent of the vpane.
  *	Returns: pane - the Vpaned widget.
@@ -163,8 +163,13 @@ Widget parent;
   XtSetArg(arglist[num_args], XtNheight, DEFAULT_HEIGHT);
   num_args++;
 
+#if XtSpecificationRelease < 4
   pane = XtCreateWidget("VPanedTop",vPanedWidgetClass,
 			  parent,arglist, num_args);
+#else
+  pane = XtCreateWidget("PanedTop",panedWidgetClass,
+			  parent,arglist, num_args);
+#endif
 
   num_args = 0;
   form = XtCreateWidget("formButtons",formWidgetClass,pane,
@@ -195,7 +200,11 @@ Widget parent;
   XtSetArg(arglist[num_args], XtNborderWidth, &border_width);
   num_args++;
   XtGetValues(quit, arglist, num_args);
+#if XtSpecificationRelease < 4
   XtPanedSetMinMax( form, 2, height + 2 * (height_vert + border_width) );
+#else
+  XawPanedSetMinMax( form, 2, height + 2 * (height_vert + border_width) );
+#endif
 
   XtManageChild(form);
   return(pane);

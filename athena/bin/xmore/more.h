@@ -6,8 +6,8 @@
  *	By:		Chris D. Peterson
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v $
- *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.2 1989-10-15 04:39:24 probe Exp $
+ *      $Author: epeisach $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.3 1990-05-01 14:48:52 epeisach Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -31,11 +31,18 @@
 /* X toolkit Include files */
 
 #include <X11/Intrinsic.h>
+#if XtSpecificationRelease < 4
 #include <X11/AsciiText.h>
 #include <X11/Command.h>
 #include <X11/Form.h>
-#include <X11/Shell.h>
 #include <X11/VPaned.h>
+#else
+#include <X11/Xaw/AsciiText.h>
+#include <X11/Xaw/Command.h>
+#include <X11/Xaw/Form.h>
+#include <X11/Xaw/Paned.h>
+#endif
+#include <X11/Shell.h>
 
 /* program specific include files */
 

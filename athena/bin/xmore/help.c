@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.1 1990-05-01 14:46:52 epeisach Exp $";
+  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.2 1990-05-01 14:48:44 epeisach Exp $";
 #endif lint
 
 /*	This is the file help.c for the Xmore, a file browsing utility
@@ -11,7 +11,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v $
  *      $Author: epeisach $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.1 1990-05-01 14:46:52 epeisach Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.2 1990-05-01 14:48:44 epeisach Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -106,8 +106,13 @@ CreateHelp()
   XtSetArg(arglist[num_args], XtNwidth, help_width);
   num_args++;
 
+#if XtSpecificationRelease < 4
   pane = XtCreateWidget("Help_VPaned",vPanedWidgetClass,help_widget,
 			arglist,num_args);
+#else
+  pane = XtCreateWidget("Help_Paned",panedWidgetClass,help_widget,
+			arglist,num_args);
+#endif
 
   num_args = 0;
   XtSetArg(arglist[num_args], XtNborderWidth, 0);
@@ -125,15 +130,29 @@ CreateHelp()
   num_args++;
   XtSetArg(arglist[num_args], XtNstring, help_page);
   num_args++;
+#if XtSpecificationRelease < 4
   XtSetArg(arglist[num_args], XtNtextOptions, scrollVertical);
   num_args++;
+#else
+  XtSetArg(arglist[num_args],XtNscrollVertical,XawtextScrollAlways);
+  num_args++;
+  XtSetArg(arglist[num_args],XtNscrollHorizontal,XawtextScrollWhenNeeded);
+  num_args++;
+  XtSetArg(arglist[num_args],XtNuseStringInPlace, TRUE);
+  num_args++;
+#endif
   /* make the text shown a square box. */
   XtSetArg(arglist[num_args], XtNheight, help_width);
   num_args++;
   
 
+#if XtSpecificationRelease < 4
   (void) XtCreateManagedWidget("Help_Text",asciiStringWidgetClass, pane,
 			       arglist, num_args);
+#else
+  (void) XtCreateManagedWidget("Help_Text",asciiTextWidgetClass, pane,
+			       arglist, num_args);
+#endif
 
   XtManageChild(pane);
   XtRealizeWidget(help_widget);
