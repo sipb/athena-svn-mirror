@@ -1,9 +1,16 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.3 1990-11-01 18:44:57 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.4 1990-11-16 15:45:06 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
-				warningShell, getSessionShell
+				warningShell, getSessionShell, queryShell
+
+!-------------------------------------------------------
+!  Program resources
+!-------------------------------------------------------
 *title:				xlogin
 *saveTimeout:			60
+*activateTimeout:		90
+xlogin.reactivateProg:		/etc/athena/reactivate
+*sessionScript:			/etc/athena/login/Xsession
 
 xlogin*top:			ChainTop
 xlogin*bottom:			ChainTop
@@ -38,13 +45,16 @@ xlogin*bottom:			ChainTop
 *getSessionShell.wcConstructor:	XtCreateTransientShell
 *getSessionShell.wcChildren:	getsession
 
+*queryShell.wcConstructor:	XtCreateTransientShell
+*queryShell.wcChildren:		query
+
 
 ! ------------------------------------------------------------
 !		General Resources.
 ! ------------------------------------------------------------
 
 xlogin.Geometry: 		580x305+205+75
-*bitmapFilePath:		/mit/xdm/src/xlogin:/usr/lib/X11/bitmaps
+*bitmapFilePath:		/etc/athena/login
 *BorderWidth:			0
 *Background:			white
 *Foreground:			black
@@ -77,13 +87,13 @@ xlogin.Geometry: 		580x305+205+75
 *logo*right:			ChainLeft
 
 *eyes.wcClass:			labelWidgetClass
-*eyes.bitmap:			/mit/xdm/src/xlogin/owleyes0.xbm
-*eyes.label:			/mit/xdm/src/xlogin/owleyes0.xbm \
-				/mit/xdm/src/xlogin/owleyes1.xbm \
-				/mit/xdm/src/xlogin/owleyes2.xbm \
-				/mit/xdm/src/xlogin/owleyes3.xbm \
-				/mit/xdm/src/xlogin/owleyes4.xbm \
-				/mit/xdm/src/xlogin/owleyes5.xbm
+*eyes.bitmap:			/etc/athena/login/owleyes0.xbm
+*eyes.label:			/etc/athena/login/owleyes0.xbm \
+				/etc/athena/login/owleyes1.xbm \
+				/etc/athena/login/owleyes2.xbm \
+				/etc/athena/login/owleyes3.xbm \
+				/etc/athena/login/owleyes4.xbm \
+				/etc/athena/login/owleyes5.xbm
 !  defaultDistance = 20, plus offset into owl bitmap of 55, 26
 !  plus 4,2 for normal internal spacing.  geez!
 *eyes.horizDistance:		79
@@ -97,7 +107,8 @@ xlogin.Geometry: 		580x305+205+75
 !  plus 4,2 for normal internal spacing.  Then play with the numbers
 !  'til it looks ok...
 *version.wcClass:		labelWidgetClass
-*version.label:			7.2 
+! there's a space after the version label to make the picture look right
+*version.label:			7.1 
 *version.horizDistance:		56
 *version.vertDistance:		99
 *version.internalWidth:		0
@@ -131,6 +142,7 @@ xlogin.Geometry: 		580x305+205+75
 *clock.fromVert:		*host
 *clock.fromHoriz:		*logo
 *clock.horizDistance:		130
+*clock.width:			300
 *clock.vertDistance:		-5
 
 *mesg.wcClass:			labelWidgetClass
@@ -200,9 +212,7 @@ xlogin.Geometry: 		580x305+205+75
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
 			setfocus(*pword_input) \n\
-	None <Key>:	insert-char() \
-			idleReset() \n\
-	Shift <Key>:	insert-char() \
+	<Key>:		insert-char() \
 			idleReset()
 
 *password.wcClass:		labelWidgetClass
@@ -250,29 +260,14 @@ xlogin.Geometry: 		580x305+205+75
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
-	<Key>Return:	login() \n\
-	<Key>KP_Enter:	login() \n\
+	<Key>Return:	WcSetValueACT(this.borderColor: white) \
+			login() \n\
+	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
+			login() \n\
 	Ctrl<Key>m:	login() \n\
-	None <Key>:	insert-char() \
-			idleReset() \n\
-	Shift <Key>:	insert-char() \
+	<Key>:		insert-char() \
 			idleReset()
 
-!	<Key>Return:	WcSetValueACT(this.borderColor: white) \
-!			WcSetValueACT(*name_input.displayCaret: TRUE) \
-!			WcSetValueACT(*name_input.borderColor: black) \
-!			idleReset() \
-!			setfocus(*name_input) \n\
-!	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
-!			WcSetValueACT(*name_input.displayCaret: TRUE) \
-!			WcSetValueACT(*name_input.borderColor: black) \
-!			idleReset() \
-!			setfocus(*name_input) \n\
-!	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
-!			WcSetValueACT(*name_input.displayCaret: TRUE) \
-!			WcSetValueACT(*name_input.borderColor: black) \
-!			idleReset() \
-!			setfocus(*name_input) \n\
 
 *selection.wcClass:		labelWidgetClass
 *selection.label:		
@@ -327,7 +322,7 @@ xlogin.Geometry: 		580x305+205+75
 
 *lmenuEntry1.label:		Your usual login session
 *lmenuEntry2.label:		Ignore your customizations
-*lmenuEntry3.label:		Quick login
+*lmenuEntry3.label:		Terminal-style session
 *lmenuEntry4.label:		Specify special login
 *lmenuEntry5.label:		Start Over
 
@@ -345,7 +340,7 @@ xlogin.Geometry: 		580x305+205+75
 			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
-			WcSetValueCB(*selection.label: Quick login session selected)
+			WcSetValueCB(*selection.label: Terminal-style login session selected)
 *lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
@@ -362,7 +357,7 @@ xlogin.Geometry: 		580x305+205+75
 				omenuEntry4, omenuEntry5, omenuEntry6, \
 				menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
-				omenuEntry10
+				omenuEntry10, omenuEntry11
 
 *menuLine.wcClass:		smeLineObjectClass
 *omenuEntry1.wcClass:		smeBSBObjectClass
@@ -375,37 +370,39 @@ xlogin.Geometry: 		580x305+205+75
 *omenuEntry8.wcClass:		smeBSBObjectClass
 *omenuEntry9.wcClass:		smeBSBObjectClass
 *omenuEntry10.wcClass:		smeBSBObjectClass
+*omenuEntry11.wcClass:		smeBSBObjectClass
 
 *omenuEntry1.label:		Information
 *omenuEntry1.justify:		center
 !*omenuEntry1.sensitive:		False
 *omenuEntry2.label:		Athena On-Line Help (olh)
-*omenuEntry2.callback:		runCB(/mit/xdm/src/conf/olh)
+*omenuEntry2.callback:		runCB(/usr/athena/lib/login/olh)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
-!*omenuEntry3.callback:		runCB(/mit/xdm/src/conf/xcluster)
+*omenuEntry3.callback:		runCB(/usr/athena/lib/login/xcluster)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
-*omenuEntry4.callback:		runCB(/mit/xdm/src/conf/techinfo)
-*omenuEntry5.label:		MIT Library Card Catalog (Barton)
-*omenuEntry5.callback:		runCB(/mit/xdm/src/conf/barton)
+*omenuEntry4.callback:		runCB(/usr/athena/lib/login/techinfo)
+*omenuEntry5.label:		Library Access
+*omenuEntry5.callback:		runCB(/usr/athena/lib/login/library)
 *omenuEntry6.label:		Display Workstation Configuration
-*omenuEntry6.callback:		runCB(/mit/xdm/src/conf/machine)
+*omenuEntry6.callback:		runCB(/usr/athena/lib/login/machine)
 *omenuEntry7.label:		Other
 *omenuEntry7.justify:		center
 !*omenuEntry7.sensitive:		False
 *omenuEntry8.label:		Login to MITVMA
-*omenuEntry8.callback:		runCB(/mit/xdm/src/conf/mitvma)
-*omenuEntry9.label:		Update Mail Info
-*omenuEntry9.callback:		runCB(/mit/xdm/src/conf/moira)
-*omenuEntry10.label:		Shutdown Window System
-*omenuEntry10.callback:		WcExitCB(3)
+*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
+*omenuEntry9.label:		Update MIT Mailhub Info (Moira)
+*omenuEntry9.callback:		runCB(/usr/athena/lib/login/moira)
+*omenuEntry10.label:		Electronic Ombudsman (Lucy)
+*omenuEntry10.callback:		runCB(/usr/athena/lib/login/lucy)
+*omenuEntry11.label:		Shutdown Window System
+*omenuEntry11.callback:		WcExitCB(3)
 
 *register.wcClass:		commandWidgetClass
 *register.vertDistance:		10
 *register.horizDistance:	175
 *register.label:		Register for an Account
 *register.fromVert:		*loptions
-*register.callback:		runCB(/mit/xdm/src/conf/register)
-!*register.callback:	WcTraceCB(register)
+*register.callback:		runCB(/usr/athena/lib/login/register)
 
 
 ! ------------------------------------------------------------
@@ -452,17 +449,15 @@ xlogin.Geometry: 		580x305+205+75
 	<FocusOut>:	focus-out() \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
 	<Key>Return:	WcPopdownACT(*getSessionShell) \
-			setfocus(*name_input) \
+			setCorrectFocus(*name_input) \
 			idleReset() \n\
 	<Key>KP_Enter:	WcPopdownACT(*getSessionShell) \
-			setfocus(*name_input) \
+			setCorrectFocus(*name_input) \
 			idleReset() \n\
 	Ctrl<Key>m:	WcPopdownACT(*getSessionShell) \
-			setfocus(*name_input) \
+			setCorrectFocus(*name_input) \
 			idleReset() \n\
-	None <Key>:	insert-char() \
-			idleReset() \n\
-	Shift <Key>:	insert-char() \
+	<Key>:		insert-char() \
 			idleReset()
 
 *doit.wcClass:			commandWidgetClass
@@ -479,7 +474,34 @@ xlogin.Geometry: 		580x305+205+75
 				WcSetValueCB(*selection.label: )
 
 
-*warningShell.geometry:		400x300+285+205
+*queryShell.geometry:		400x300+290+210
+*queryShell.borderWidth:	3
+*queryShell.borderColor:	black
+
+*query.wcClass:			dialogWidgetClass
+*query.icon:			question
+*query.label:			Login Incomplete
+*query.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*query.label.width:		250
+*query.value:			this will be replaced before it is used
+*query.wcChildren:		cont, giveup
+
+*cont.WcClass:			commandWidgetClass
+*cont.label:			continue
+
+*giveup.WcClass:		commandWidgetClass
+*giveup.label:			abort
+*giveup.fromHoriz:		*cont
+
+*query*value.width:		380
+*query*value.height:		160
+*query*value.borderWidth:	0
+*query*value.autoFill:		True
+*query*value.resize:		False
+*query*value.displayCaret:	False
+*query*value.translations:	#replace
+
+*warningShell.geometry:		400x300+290+210
 *warningShell.borderWidth:	3
 *warningShell.borderColor:	black
 
