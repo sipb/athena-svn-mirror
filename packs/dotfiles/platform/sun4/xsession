@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.16 1990-12-13 15:50:27 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.17 1990-12-13 16:51:31 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -54,21 +54,21 @@ setenv XSESSION $$
 # Set the sleep time for waiting between launching large applications.
 # These can be overridden in the ~/.cshrc or ~/.environment files.
 
-switch (`machtype -c`)
+switch (`/bin/athena/machtype -c`)
     case VAXSTAR:
-	setenv SLEEP_TIME 10
+	set sleep_time=10
 	breaksw
     case MVAX-II:
-	setenv SLEEP_TIME 10
+	set sleep_time=10
 	breaksw
     case RTPC_ROMPC:
-	setenv SLEEP_TIME 6
+	set sleep_time=6
 	breaksw
     case PS2-*:
-	setenv SLEEP_TIME 6
+	set sleep_time=6
 	breaksw
     default:
-	setenv SLEEP_TIME 0
+	set sleep_time=0
 endsw
 
 # The ~/.cshrc file sets environment variables, attaches lockers, and sets
@@ -102,9 +102,9 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
 if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 ($WINDOW_MANAGER &)
-sleep $SLEEP_TIME
+sleep $sleep_time
 # mwm takes twice as long to start
-if ($WINDOW_MANAGER =~ mwm) sleep $SLEEP_TIME	
+if ($WINDOW_MANAGER =~ mwm) sleep $sleep_time	
 
 
 # *******************   ACTIVITY STARTUP   *******************
@@ -122,7 +122,7 @@ if ($WINDOW_MANAGER =~ mwm) sleep $SLEEP_TIME
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
 	(xterm -geometry 80x56+0+0 &)
-	sleep $SLEEP_TIME
+	sleep $sleep_time
 endif
 
 
@@ -134,21 +134,21 @@ endif
 	if ((! $?skip_xlogout) && (! -r ~/.dashrc)) then
 	if ($?verbose_login) echo "Creating logout button..."
 	(/usr/athena/dash -l &)
-	sleep $SLEEP_TIME
-	sleep $SLEEP_TIME
+	sleep $sleep_time
+	sleep $sleep_time
 	else if ((! $?skip_xlogout) && (-r ~/.dashrc)) then
 	if ($?verbose_login) \
 		echo "Starting Athena Dashboard with logout button..."
 	(/usr/athena/dash -all &)
-	sleep $SLEEP_TIME
-	sleep $SLEEP_TIME
+	sleep $sleep_time
+	sleep $sleep_time
 	else if (($?skip_xlogout) && (! -r ~/.dashrc)) then
 	# run nothing 
 	else if (($?skip_xlogout) && (-r ~/.dashrc)) then
 	if ($?verbose_login) echo "Starting Athena Dashboard..."
 	(/usr/athena/dash &)
-	sleep $SLEEP_TIME
-	sleep $SLEEP_TIME
+	sleep $sleep_time
+	sleep $sleep_time
 	else echo Error in xsession - we should never arrive here!
 	endif
 
@@ -162,7 +162,7 @@ if (! $?skip_x_startup) then
 	# message of the day as windowgram
 	( /usr/etc/zwgc; \
 		if ($status == 0) /bin/athena/get_message -new -zephyr &)
-	sleep $SLEEP_TIME
+	sleep $sleep_time
 	/usr/new/mh/bin/msgchk -nonotify nomail		# Check for mail
 	(/usr/athena/olc who &) >& /dev/null		# Ping the OLC server
 endif
