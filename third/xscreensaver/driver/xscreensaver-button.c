@@ -234,11 +234,12 @@ int main(int argc, char **argv)
 static Pixmap get_pixmap(Widget toplevel)
 {
   Screen *screen = XtScreen(toplevel);
+  unsigned long *pixels, npixels;
 
   return xscreensaver_logo(screen, DefaultVisualOfScreen(screen),
 			   RootWindowOfScreen(screen),
 			   DefaultColormapOfScreen(screen),
-			   1, NULL, NULL, NULL, 0);
+			   1, &pixels, &npixels, NULL, 0);
   
 }
 
