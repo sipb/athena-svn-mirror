@@ -1,4 +1,4 @@
-# $Id: packages,v 1.209 2003-02-15 23:49:38 ghudson Exp $
+# $Id: packages,v 1.210 2003-02-16 07:19:46 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -46,7 +46,6 @@ third/flex			early on solaris
 
 # Athena software
 athena/bin/access
-athena/bin/aklog		requires krb5,afsbin,openafs,et
 athena/bin/athdir		requires athena/lib/athdir
 athena/bin/athinfo
 athena/bin/athneteventd		on linux
@@ -132,6 +131,7 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 # Third-party software
 third/acme			except solaris requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
 third/afsbin			on irix
+third/afs-krb5			requires krb5,afsbin,openafs,et
 third/at-spi			requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
 third/atk			requires glib2,gettext
 third/audiofile
