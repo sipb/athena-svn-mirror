@@ -1,7 +1,4 @@
-# root's csh login profile
-#
-# $Revision: 1.1 $
-#
+# $Id: root.login,v 1.2 1997-12-28 17:45:48 ghudson Exp $
 
 if (! $?ENVONLY) then
 	# Set the interrupt character to Ctrl-c and do clean backspacing.
@@ -33,8 +30,5 @@ if ($?DISPLAY == 0) then
     endif
 endif
 
-#
-# Athena tweaks
-#
-unset noglob
-umask 2
+# Athena tweak
+umask 022
