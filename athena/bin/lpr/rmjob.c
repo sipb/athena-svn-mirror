@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.4 1990-07-05 14:44:19 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.5 1991-06-28 13:35:42 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.4 1990-07-05 14:44:19 epeisach Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.5 1991-06-28 13:35:42 epeisach Exp $";
 #endif lint
 
 /*
@@ -58,7 +58,11 @@ rmjob()
 	register int i;
 #else /* SERVER */
 	register int i, nitems;
+#ifdef POSIX
+	struct dirent **files;
+#else
 	struct direct **files;
+#endif
 #endif /* SERVER */
 
 	assasinated = 0;	/* Haven't killed it yet! */
@@ -475,7 +479,11 @@ chkremote()
  * Return 1 if the filename begins with 'cf'
  */
 iscf(d)
+#ifdef POSIX
+	struct dirent *d;
+#else
 	struct direct *d;
+#endif
 {
 	return(d->d_name[0] == 'c' && d->d_name[1] == 'f');
 }

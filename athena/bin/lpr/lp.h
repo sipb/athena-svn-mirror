@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.6 1990-11-16 10:04:54 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.7 1991-06-28 13:34:37 epeisach Exp $
  */
 
 /*
@@ -23,7 +23,11 @@
 #include <sys/types.h>
 #endif
 #include <sys/file.h>
+#ifdef POSIX
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/un.h>
