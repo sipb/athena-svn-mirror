@@ -1,6 +1,10 @@
-# $Id: Imakefile,v 1.9 1991-07-22 01:23:23 probe Exp $
+# $Id: Imakefile,v 1.10 1991-07-31 22:12:00 lwvanels Exp $
 
 USRSCRIPTS=mitvma
+
+# These here only for 7.2 backwards compat; should eventually be removed
+COMPATSCRIPTS=library lucy moira register techinfo xcluster xinfo
+
 ETCSCRIPTS=machine
 BITMAPS=menu16
 
@@ -12,6 +16,9 @@ install_file(config,/etc/athena/login/config)
 
 install::
 	-for i in $(USRSCRIPTS); do \
+		$(INSTALL) -m 0555 $$i $(DESTDIR)/usr/athena/lib/login/$$i; \
+		done
+	-for i in $(COMPATSCRIPTS); do \
 		$(INSTALL) -m 0555 $$i $(DESTDIR)/usr/athena/lib/login/$$i; \
 		done
 	-for i in $(ETCSCRIPTS); do \
