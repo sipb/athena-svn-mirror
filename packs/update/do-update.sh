@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.38 2000-09-21 15:08:30 ghudson Exp $
+# $Id: do-update.sh,v 1.39 2001-10-23 23:32:37 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -30,6 +30,14 @@ undup() {
 		esac
 	done
 }
+
+# Let reactivate know that an update is running.
+onexit()
+{
+	rm -rf /var/athena/update.running
+}
+trap onexit EXIT
+touch /var/athena/update.running
 
 echo "Starting update at `date`."
 . /srvd/usr/athena/lib/update/update-environment

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.16 2000-05-31 17:59:40 ghudson Exp $
+# $Id: finish-update.sh,v 1.17 2001-10-23 23:32:37 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -71,3 +71,4 @@ if [ -d "$SERVERDIR" ]; then
 	/srvd/usr/athena/bin/mkserv -v update < /dev/null
 fi
 echo "Finished with update at `date`."
+rm -rf /var/athena/update.running

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.22 2001-08-16 14:48:16 ghudson Exp $
+# $Id: update_ws.sh,v 1.23 2001-10-23 23:32:41 rbasch Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -241,8 +241,12 @@ failupdate() {
   if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
     kill `cat /var/athena/dm.pid`
   fi
+  rm -rf /var/athena/update.running
   errorout "*** The update has failed ***"
 }
+
+# Let reactivate know that an update is running.
+touch /var/athena/update.running
 
 # Do the update.
 {
@@ -272,6 +276,8 @@ failupdate() {
   rm -f /var/athena/rc.conf.sync
   echo "Ending update from $oldvers to $newvers at `date`."
 } 2>&1 | tee /var/athena/update.log
+
+rm -rf /var/athena/update.running
 
 if [ -n "$auto" ]; then
   echo "Automatic update done; system will reboot in 15 seconds."
