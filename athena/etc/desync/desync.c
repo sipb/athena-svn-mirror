@@ -1,28 +1,27 @@
+/* Copyright 1996, 1997 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+static const char rcsid[] = "$Id: desync.c,v 1.3 1997-03-14 21:21:06 ghudson Exp $";
+
 /*
  * desync - desynchronize cron jobs on networks
  *
  * This program is a tool which sleeps an ip-address dependent period
- * of time in order to skew over the course of an hour cron jobs that
- * would otherwise be synchronized. It should reside on local disk so
- * as not to cause a fileserver load at its own invocation. It avoids
- * the use of the stdio libraries in an effort to keep binary size to
- * a minimum (for DS3100's). Similarly, it gets the host's ip address
- * from rc.conf in order to avoid linking with resolver routines. (ip
- * addresses are used rather than hostnames in order to avoid any
- * systematic biases that may occur due to various cluster naming
- * schemes. That, and that's how it was done before.)
- *
- * There are two reasons this program exists:
- *
- *   1. It's smaller than sleep under Ultrix, and I'm paranoid about
- *	disk space on the 3100's. That is, it's cheaper than bringing
- *	sleep local, which is what the old method used. (Loading sleep
- *	itself is currently causing load spikes.)
- *
- *   2. The current mechanism keeps getting broken on various platforms
- *	because noone pays attention to the fact that it needs to inherit
- *	environment variables from rc.conf. This code will avoid that
- *	breakage in the future.
+ * of time in order to skew over the course of a set time cron jobs
+ * that would otherwise be synchronized. It should reside on local disk
+ * so as not to cause a fileserver load at its own invocation.
  */
 
 #include <sys/types.h>
@@ -31,145 +30,145 @@
 #include <ctype.h>
 #include <string.h>
 #include <netinet/in.h>
-#ifdef BIG
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 
-char *name;
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned long) -1)
 #endif
 
-#ifndef NULL
-#define NULL 0
-#endif
+#define CONF SYSCONFDIR "/rc.conf"
 
-#define CONF "/etc/athena/rc.conf"
+static char *progname;
 
-char *readFile(file)
-     char *file;
+static unsigned long get_addr(void);
+
+int main(int argc, char **argv)
 {
-  int cc, d;
-  struct stat info;
-  char *buf;
+  const char *timefile = NULL;
+  int range, interval, c;
+  unsigned long tval, ip;
+  FILE *fp;
 
-  d = open(file, O_RDONLY, 0);
-  if (d < 0)
+  /* Save the program name. */
+  progname = argv[0];
+
+  /* Parse command-line flags. */
+  while ((c = getopt(argc, argv, "t:")) != -1)
     {
-#ifdef BIG
-      fprintf(stderr, "%s: Couldn't open %s (errno %d)\n", name, file, errno);
-#endif
-      return NULL;
+      switch (c) {
+      case 't':
+	timefile = optarg;
+	break;
+      default:
+	fprintf(stderr, "Usage: %s [-t timefile] [interval]\n");
+	return 2;
+      }
     }
 
-  if (fstat(d, &info))
+  /* Get the time interval from the remaining argument, if there is one. */
+  argc -= optind;
+  argv += optind;
+  range = (argc == 1) ? atoi(argv[0]) : 3600;
+
+  ip = get_addr();
+  if (ip == INADDR_NONE)
+    return 2;
+
+  srand(ntohl(ip));
+  interval = rand() % range;
+
+  if (timefile)
     {
-#ifdef BIG
-      fprintf(stderr, "%s: Couldn't stat %s (errno %d)\n", name, file, errno);
-#endif
-      close(d);
-      return NULL;
-    }
-
-  buf = (char *)malloc(info.st_size + 1);
-  if (buf == NULL)
-    {
-#ifdef BIG
-      fprintf(stderr, "%s: Couldn't allocate %d bytes\n", name, info.st_size);
-#endif
-      close(d);
-      return NULL;
-    }
-
-  cc = read(d, buf, info.st_size);
-  if (cc == -1)
-    {
-#ifdef BIG
-      fprintf(stderr, "%s: Couldn't read %s (errno %d)\n", name, file, errno);
-#endif
-      free(buf);
-      close(d);
-      return NULL;
-    }
-
-  if (cc != info.st_size)
-    {
-#ifdef BIG
-      fprintf(stderr, "%s: Didn't read expected number of bytes from %s\n",
-              name, file);
-#endif
-      free(buf);
-      close(d);
-      return NULL;
-    }
-
-  close(d);
-  buf[info.st_size] = '\0';
-  return buf;
-}
-
-char *getAddr(name)
-     char *name;
-{
-  int found = 0;
-  static char addr[20];
-  char *buf;
-  int i;
-
-  buf = readFile(name);
-  if (buf == NULL)
-    return NULL;
-
-  while (!found)
-    {
-      while (*buf != 'A' && *buf != '\0')
-	buf++;
-      if (*buf++ == '\0') return NULL;
-      if (buf[0] == 'D' && buf[1] == 'D' && buf[2] == 'R')
+      fp = fopen(timefile, "r");
+      if (fp)
 	{
-	  buf += 3;
-	  while (isspace(*buf)) buf++;
-	  if (*buf == '=')
+	  if (fscanf(fp, "%lu", &tval) != 1)
 	    {
-	      buf++;
-	      found = 1;
+	      fprintf(stderr, "%s: Invalid time file %s\n", progname,
+		      timefile);
+	      return 2;
 	    }
+	  fclose(fp);
+	  if (time(NULL) >= tval)
+	    {
+	      unlink(timefile);
+	      return 0;
+	    }
+	  else
+	    return 1;
+	}
+      else
+	{
+	  if (interval == 0)
+	    return 0;
+	  fp = fopen(timefile, "w");
+	  if (fp == NULL)
+	    {
+	      fprintf(stderr, "%s: Couldn't open %s for writing: %s\n",
+		      progname, timefile, strerror(errno));
+	      return 2;
+	    }
+	  fprintf(fp, "%lu\n", (unsigned long)(time(NULL) + interval));
+	  fclose(fp);
+	  return 1;
 	}
     }
+  else
+    sleep(interval);
 
-  if (found)
-    {
-      while (isspace(*buf)) buf++;
-      for (i = 0; *buf != ';' && *buf != '\0' && i < sizeof(addr) - 1; i++)
-	addr[i] = *buf++;
-      addr[i] = '\0';
-      return addr;
-    }
-
-  return NULL;
+  return 0;
 }
 
-int main(argc, argv)
-     int argc;
-     char **argv;
+static unsigned long get_addr()
 {
-  char *addr, *low;
-  int num, range;
-  long ip;
+  FILE *fp;
+  char buf[128], *p, *q;
+  unsigned long ip;
 
-#ifdef BIG
-  name = argv[0];
-#endif
-
-  range = (argc == 2) ? atoi(argv[1]) : 3600;
-  addr = getAddr(CONF);
-  if (addr)
+  /* Open rc.conf for reading. */
+  fp = fopen(CONF, "r");
+  if (!fp)
     {
-      ip = inet_addr(addr);
-      if (ip != -1)
+      fprintf(stderr, "%s: Can't open %s for reading: %s\n", progname, CONF,
+	      strerror(errno));
+      return INADDR_NONE;
+    }
+
+  /* Look for the line setting ADDR. */
+  while (fgets(buf, sizeof(buf), fp) != NULL)
+    {
+      if (strncmp(buf, "ADDR", 4) == 0)
 	{
-	  srand(ntohl(ip));
-	  sleep(rand() % range);
-	  exit(0);
+	  /* Find the value (or go on if ADDR isn't followed by '='). */
+	  p = buf + 4;
+	  while (isspace(*p))
+	    p++;
+	  if (*p != '=')
+	    continue;
+	  p++;
+	  while (isspace(*p))
+	    p++;
+
+	  /* Truncate after the address. */
+	  q = p;
+	  while (isdigit(*q) || *q == '.')
+	    q++;
+	  *q = 0;
+
+	  /* Parse the value into an IP address and test its validity. */
+	  ip = inet_addr(p);
+	  if (ip == INADDR_NONE)
+	    fprintf(stderr, "%s: Invalid address: %s\n", progname, p);
+
+	  fclose(fp);
+	  return ip;
 	}
     }
-  exit(1);
+
+  /* We didn't find it. */
+  fclose(fp);
+  fprintf(stderr, "%s: Can't find ADDR line in %s\n", progname, CONF);
+  return INADDR_NONE;
 }
