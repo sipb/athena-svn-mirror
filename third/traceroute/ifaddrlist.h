@@ -18,7 +18,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.h,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)
+ * @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.h,v 1.1.1.1.4.1 2000-01-07 23:03:20 ghudson Exp $ (LBL)
  */
 
 struct ifaddrlist {
@@ -26,4 +26,4 @@ struct ifaddrlist {
 	char *device;
 };
 
-int	ifaddrlist(struct ifaddrlist **, char *);
+int	ifaddrlist(struct ifaddrlist **, char *, int);
