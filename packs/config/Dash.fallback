@@ -58,15 +58,12 @@ item separator:		"___________________"				[ahelp/50][misc/900][graphicsediting/1
 item xcluster:		"Athena Cluster Map"				[ahelp/70]			exec("xcluster")			;
 item adir:		"Athena Directory"				[ahelp/100]					                        ;
 
-item minidesc:		"Minicourse Descriptions" -rsaix -decmips	[minic/5]   add("infoagents"),exec("Netscape http://web.mit.edu//minidev/Public/Misc/mini_desc.asc");
-item minicur:		"Current Schedule" -rsaix -decmips		[minic/10]  add("infoagents"),exec("Netscape http://web.mit.edu/minidev/Public/Misc/mini_curr.asc");
-item mininext:		"Next Session Schedule" -rsaix -decmips		[minic/20]  add("infoagents"),exec("Netscape http://web.mit.edu/minidev/Public/Misc/mini_next.asc");
+item minidesc:		"Minicourse Descriptions" -rsaix -decmips	[minic/5]   add("infoagents"),exec("htmlview http://web.mit.edu//minidev/Public/Misc/mini_desc.asc");
+item minicur:		"Current Schedule" -rsaix -decmips		[minic/10]  add("infoagents"),exec("htmlview http://web.mit.edu/minidev/Public/Misc/mini_curr.asc");
+item mininext:		"Next Session Schedule" -rsaix -decmips		[minic/20]  add("infoagents"),exec("htmlview http://web.mit.edu/minidev/Public/Misc/mini_next.asc");
 
-item ishelp:		"Information Systems help"			[chelp]									;
-item mchelp:		"Microcomputing help"				[chelp]									;
+item ishelp:		"I/S Computing Help Desk" 			[chelp]									;
 item mcsales:		"Microcomputer sales"				[chelp]									;
-item nshelp:		"Network Services help"				[chelp]									;
-item pahelp:		"Athena information and help"			[chelp]									;
 item sipb:		"Student Information Processing Board"		[chelp]									;
 
 menu mail:		"Mail"			{email}			[communication]								;
@@ -153,8 +150,9 @@ item frameviewer4:	"Viewer"				[framestuff4/5]			add("frame"),exec("viewer -ver 
 
 item aboutpictures:	"About picture editors"				[graphicsediting/0]							;
 item idraw:		"Idraw"				-rsaix -sun4	[graphicsediting/1] 			add("sipb"),exec("idraw")	;
-item xpaint:		"Xpaint"					[graphicsediting/3]			add("graphics"),exec("xpaint")	;
-item xfig:		"Xfig"						[graphicsediting/2]			add("sipb"),exec("xfig")	;
+item xpaint:		"Xpaint"					[graphicsediting/4]			add("graphics"),exec("xpaint")	;
+item xfig:		"Xfig"						[graphicsediting/3]			add("sipb"),exec("xfig")	;
+item tgif:		"Tgif"						[graphicsediting/2]			add("sipb"),exec("tgif")	;
 item xv:		"XV"						[graphicsediting/6]			add("graphics"),exec("xv")	;
 item graphother:	"Other"						[graphicsediting/7]							;
 ! item with weight 10 in this menu is a separator.												;
@@ -162,8 +160,8 @@ item xwd:		"xwd/xwud"					[graphicsediting/30]							;
 item xdpr:		"xdpr"						[graphicsediting/30]			exec("xdpr")			;
 item bitmap:		"bitmap"					[graphicsediting/20]							;
 
-item autocad13:		"AutoCAD 13" -vax -rt -rsaix -decmips		[cad/10]   add("autocad"),exec("autocad -version 13")                        ;
-item autocad12:		"AutoCAD 12" -vax -rt				[cad/20]   add("autocad"),exec("autocad -version 12")                         ;
+item autocad13:		"AutoCAD 13"  -rsaix -decmips		[cad/10]   add("autocad"),exec("autocad -version 13")                        ;
+item autocad12:		"AutoCAD 12" 				[cad/20]   add("autocad"),exec("autocad -version 12")                         ;
 
 
 
@@ -195,27 +193,24 @@ menu spreadsheets:	"Spreadsheets"		{spreadsheets}		[numeric]								;
 menu analyplot:		"Analysis and Plotting"  {analysis,plotting}	[numeric]								;
 
 item aboutspreadsheets:	"About spreadsheets"				[spreadsheets/1]					                ;
-item sc:		"SC"			-sun4			[spreadsheets/10] 		add("sipb"),exec("xterm -e sc")		;
-item xess:		"Xess"			-rt 			[spreadsheets/10][201/40]	add("xess"),exec("xess")		;
+item sc:		"SC"						[spreadsheets/10] 		add("sipb"),exec("xterm -e sc")		;
+item xess:		"Xess"			 			[spreadsheets/10][201/40]	add("xess"),exec("xess")		;
 
-item splus:		"S-PLUS"  	-rt -vax 			[analysis]			add("splus"),exec("xterm -e splus")	;
-item sas:		"SAS"		-rt -vax -sgi 			[analysis,plotting]		add("sas"),exec("sas") 			;
+item splus:		"S-PLUS"  	 -vax 			[analysis]			add("splus"),exec("xterm -e splus")	;
+item sas:		"SAS"		-vax -sgi 			[analysis,plotting]		add("sas"),exec("sas") 			;
 item xmath:		"Xmath"		-sun4				[plotting/5,math/3] 		add("xmath"),exec("xterm -e xmath")	;
 item prochart:		"ProChart"	-sun4				[plotting]			add("prochart"),exec("prochart")	;
 !item maple:		"Maple"		-sun4				[plotting]  			add("maple"),exec("/afs/athena/system/config/dash/maple");
-item maple:		"Maple V Release 3"	-rt -vax		[plotting]  			add("maple"),exec("maple")              ;
-item tecplot:		"Tecplot"		-rt -vax		[plotting]			add("tecplot"),exec("tecplot")		;
-item matlab:		"MATLAB"					[201/30][course6][course16][analysis,plotting]		add("matlab"),exec("matlab") 	;
+item maple:		"Maple V Release 3"	 -vax		[plotting]  			add("maple"),exec("maple")              ;
+item tecplot:		"Tecplot"		-vax		[plotting]			add("tecplot"),exec("tecplot")		;
+item matlab:		"MATLAB"					[201/30][course6/5][course16][analysis,plotting]		add("matlab"),exec("matlab") 	;
 ! item mathlib:		"Math Libraries"				[analysis]					                        ;
 
 item rights:		"Rights of Use"					[misc]									;
 item sendbug:		"Send a bug report"				[misc][ahelp/49]			exec("xterm -e sendbug")	;
-menu library:		"MIT Libraries"		{library}		[misc/100]								;
+item library:		"MIT Libraries"					[misc/100]				add("library"),exec("library");
 item sis:		"Student Info Svcs"				[misc]					add("sis"),exec("xterm -e sis")	;
 item logout:		"Logout of Athena"				[misc/1000]  -verify	createMapTree("logoutDialog"),mapTree("logoutDialog"),warpTree("logoutDialog") ;
-
-item barton:		"MIT Libraries Services"			[library]			add("library"),exec("library");
-item OWL:		"OWL"						[mhelp/70][library]		add("library"),exec("xterm -name OWL -e owl");
 
 !item lucyann:		"Lucy is available"				[announce]								;
 
@@ -252,50 +247,50 @@ item aboutneos:		"About NEOS"					[neos] ;
 item eos:		"Eos"						[neos/10]								exec("eos")	;
 item grade:		"Grade"						[neos/10]								exec("grade")	;
 
-item fishwrap:		"Fishwrap"	-decmips				[frosh/10][misc/90]			add("infoagents"),exec("Netscape http://fishwrap.mit.edu/") ;
+item fishwrap:		"Fishwrap"	-decmips				[frosh/10][misc/90]			add("infoagents"),exec("htmlview http://fishwrap.mit.edu/") ;
 help fishwrap:
-"This launches the Netscape interface to Fishwrap, the MIT Media 
+"This brings up the  Fishwrap home page in an existing web browser,
+or starts a new browser if one is not running.  Fishwrap is the MIT Media 
 Laboratory's experimental interactive newspaper project.  The project
 tailors the content of your paper based on regional or topical interest from
 news wires like the AP, Reuters and Knight-Ridder. 
+";
 
-If you're already running Netscape, you can simply open the following URL:
-
-               http://fishwrap.mit.edu/
-
-to start the Fishwrap.";
-
-item esg7.01:		"ESG 7.01 Hyper Textbook"			[esg/1]			add("infoagents"),exec("Mosaic http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
+item esg7.01:		"ESG 7.01 Hyper Textbook"			[esg/1]			add("infoagents"),exec("htmlview http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
 
 menu 100:		"1.00"				{100}		[course1]	;
- item 100homepage:	"1.00 Homepage"					[100/05]		add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/1/1.00/www/100.html") ;
+ item 100homepage:	"1.00 Homepage"					[100/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.00/www/100.html") ;
 
 menu 1124:		"1.124"				{1124}		[course1]	;
- item 1124homepage:	"1.124 Homepage"				[1124/05]		add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/1/1.124/www/home.html") ;
+ item 1124homepage:	"1.124 Homepage"				[1124/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.124/www/home.html") ;
 
 menu 1125:		"1.125"				{1125}		[course1]	;
- item 1125homepage:	"1.125 Homepage"				[1125/05]		add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/1/1.125/www/overview.html") ;
+ item 1125homepage:	"1.125 Homepage"				[1125/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.125/www/overview.html") ;
 
-item tunsim:		"Tunnel Simulator"	-rsaix -rt -sgi		[course1]		add("simsuper"),exec("xterm -title Tunnel_Simulator -e menu")	;
+item tunsim:		"Tunnel Simulator"	-rsaix  -sgi		[course1]		add("simsuper"),exec("xterm -title Tunnel_Simulator -e menu")	;
 item assess:		"Assess"	-rsaix -sun4			[course1] 				add("1.101"),exec("xterm -n Assess -e assess")	;
-item growltiger:	"Growltiger"	 -rt 				[course1] 				add("growltiger"),exec("growltiger")            ;
+item growltiger:	"Growltiger"	  				[course1] 				add("growltiger"),exec("growltiger")            ;
 
 !item geologytutor:	"Geology Tutor"	-rsaix	-sun4			[course1] 			attach("1.38"),exec("xterm -e /mit/1.38/STARTUP")	;
 
+item meweb:		"me.mit.edu ME Homepage"			[course2/02]		add("infoagents"),exec("htmlview http://me.mit.edu/") ;
+ help meweb:
+"The WWW server for the Mechanical 
+Engineering Department.
+";
+
 menu 2001:		"2.001"				{2001}		[course2/05]										;
-item 2001web:		"2.001 Home Page"				[2001/10]		add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/2/2.001/www/home.html") ;
+item 2001web:		"2.001 Home Page"				[2001/10]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.001/www/home.html") ;
 
  item 2001frame2d:	"Matrix Methods - Frame2d"	-rsaix -vax 	[2001/15]			     add("2.01"),exec("frame2d");
  item 2001truss2d:	"Matrix Methods - Truss2d"	-rsaix -vax 	[2001/20]			     add("2.01"),exec("truss2d");
 
 
 menu 2004:		"2.004"				{2004}		[course2/10]	;
- item 2004mhomepage:	"2.004 Mosaic Homepage"			[2004/05]	add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/2/2.004/www/home1.html") ;
- item 2004nhomepage:	"2.004 Netscape Homepage"	-decmips		[2004/05]	add("infoagents"),exec("Netscape http://web.mit.edu/afs/athena.mit.edu/course/2/2.004/www/home.html") ;
+ item 2004homepage:	"2.004 Homepage"				[2004/05]	add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.004/www/home.html") ;
 
 menu 2010:		"2.010"				{2010}		[course2/12]	;
- item 2010mhomepage:	"2.010 Mosaic Homepage"			[2010/05]	add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/2/2.010/www/index.html") ;
- item 2010nhomepage:	"2.010 Netscape Homepage"	-decmips		[2010/05]	add("infoagents"),exec("Netscape http://web.mit.edu/afs/athena.mit.edu/course/2/2.010/www/index.html") ;
+ item 2010homepage:	"2.010 Homepage"				[2010/05]	add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.010/www/index.html") ;
 
 menu 201:		"2.01"				{201}		[course2/15]										;
 
@@ -307,7 +302,7 @@ menu 201:		"2.01"				{201}		[course2/15]										;
  item 201taxonomy:	"Matrix Methods - Taxonomy"	-rsaix -vax -sgi [201/20]			     add("2.01"),exec("Taxonomy");
 
 menu 2032:		"2.032"				{2032}		[course2/17]	;
- item 2032homepage:	"2.032 Homepage"			[2032/05]	add("infoagents"),exec("Mosaic http://web.mit.edu/2.032/www/home.html") ;
+ item 2032homepage:	"2.032 Homepage"			[2032/05]	add("infoagents"),exec("htmlview http://web.mit.edu/2.032/www/home.html") ;
 
 menu 206J:		"2.06J Mechanical Vibration"	{206J}		[course2/20]										;
 
@@ -324,22 +319,10 @@ item 220help:		"Finding Help"					[220/20]	add("2.20"),sh("/mit/2.20/scripts/cou
 item 220news:		"New News"					[220/30] 	add("2.20"),sh("/mit/2.20/scripts/count_news") ;
 
 menu 2660:		"2.670"			 	{2670}		[course2/30]							;
- item 2670page:		"2.670 Mosaic Homepage"				[2670/10]	add("infoagents"),exec("Mosaic http://me.mit.edu/2.670");
+ item 2670page:		"2.670 Homepage"				[2670/10]	add("infoagents"),exec("htmlview http://me.mit.edu/2.670");
 
-menu 270:		"2.70 Intro to Design"	 {270}			[course2/35]							;
- item 270engineer:	"Pro/Engineer- CAD/CAM"	 -vax -decmips		[270/10]	add("parametric"),exec("proeng");
- item 270guide:		"Pro/USERGUIDE"		 -vax -decmips		[270/20]	add("parametric"),exec("proguide");
 
-item adina6-1:		"ADINA 6.1"			 -vax			[course2/40]						setup("adina"),exec("xterm -n ADINA");
- help adina6-1:
-"ADINA is a finite-element analysis package used in
-Mechanical Engineering graduate courses.  No support
-or assistance is available outside of those courses.
-Please direct all questions to your instructor or TA
-if appropriate.
-";
-
-item adina:		"ADINA"			 -vax			[course2/45]						add("adina"),exec("runaui");
+item adina:		"ADINA"			 -vax			[course2/35]						add("adina"),exec("runaui");
  help adina:
 "ADINA is a finite-element analysis package used in
 Mechanical Engineering graduate courses.  No support
@@ -348,7 +331,26 @@ Please direct all questions to your instructor or TA
 if appropriate.
 ";
 
-item clascon:		"Clascon"	-rsaix	-sun4			[course2/50][course6][course16] 			setup("16.00"),exec("xterm -n Clascon")	;
+item cat:		"CAT"		-rsaix	-sun4			[course2/40] 							add("2.40"),exec("CAT")	;
+
+item mematlab:		"MATLAB"					[course2/45]	add("matlab"),exec("matlab");
+ help mematlab:
+"An interactive 'matrix laboratory' for manipulating 
+matrices, plotting data sets, and general numerical
+computation.
+
+To run:  add matlab; matlab
+";
+
+item proeng:		"Pro/ENGINEER"	 		-vax -decmips	[course2/50]	add("parametric"),exec("proeng");
+ help proeng:
+"Solid modelling software from Parametric 
+Technologies, Inc.  For support/assistance 
+contact your TA or advisor.
+
+To run:  add parametric; proeng
+";
+
 menu visdycon:		"Visdycon"		{visd}			[course2/60] 							;
  item sysresp:		"System Response"				[visd/05]				add("visdycon"),exec("sysresp");
  item rlocus:		"Root Locus"					[visd/10]				add("visdycon"),exec("rlocus");
@@ -356,8 +358,6 @@ menu visdycon:		"Visdycon"		{visd}			[course2/60] 							;
  item bodiag:		"Bode Diagrams" -rsaix -sun4 -dec -sgi		[visd/20]				add("visdycon");
  item visinfo:		"Information"					[visd/25]				setup("visdycon"),exec("xterm -n Visdycon");
  item vihelp:		"Visdycon Help"					[visd/30]							;
-
-item cat:		"CAT"		-rsaix	-sun4			[course2/70] 							add("2.40"),exec("CAT")	;
 
 
 menu 300:		"3.00"			{300}			[course3/10]                                                       ;
@@ -371,178 +371,109 @@ menu 300:		"3.00"			{300}			[course3/10]                                        
 ";
 
 menu 3041:		"3.041"			{3041}			[course3/20]					                ;
-  item 3041www:		"3.041 WWW Page"	[3041]   add("infoagents"),exec("Mosaic http://web.mit.edu/course/3/3.041/html/homepage.html")	;
+  item 3041www:		"3.041 WWW Page"	[3041]   add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.041/html/homepage.html")	;
 
 item 3091:		"3.091"		 				[course3/30]	 			setup("3.091"),exec("xterm -n 3.091")	;
 
-item 311:		"3.11 WWW Page"					[course3/50]  add("infoagents"),exec("Mosaic http://web.mit.edu/course/3/3.11/www/home.html")  ;
+item 311:		"3.11 WWW Page"					[course3/50]  add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.11/www/home.html")  ;
 
 menu 3185:		"3.185"			{3185}			[course3/60]										;
 
  item 3185gas:		"Gas Properties"	-sun4			[3185/10]  add("3.185"),exec("Propgas")							;
  item 3185heat:		"Heat Transfer"		-sun4			[3185/20]  add("3.185"),exec("Heattrans")						;
  item 3185fluid:	"Fluid Flow"		-sun4			[3185/30]  add("3.185"),exec("Fluidflow")						;
- item 3185home:		"3.185 Homepage"				[3185/40]  add("infoagents"),exec("Mosaic http://web.mit.edu/3.185/www/")   ;
+ item 3185home:		"3.185 Homepage"				[3185/40]  add("infoagents"),exec("htmlview http://web.mit.edu/3.185/www/")   ;
 
  help 3185home:
-"This launches the Mosaic interface to the 3.185 
-World Wide Web home page.  
+"This brings up the 3.185 World Wide
+ Web home page in an existing browser,
+ or starts a new browser if one is 
+ not running.  
 
-If you're already running Mosaic, you can simply open 
-the following URL:
-
-              http://web.mit.edu/3.185/www/
-
-to view the page.
 ";
 
-item 3s32:		"3-S32 WWW Page"				[course3/80]	add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/3/3s32/www/index.html") ;
+item 3s32:		"3-S32 WWW Page"				[course3/80]	add("infoagents"),exec("htmlview http://web.mit.edu/3s32/www/index.html") ;
 
-item 353:		"3.53 WWW Page"					[course3/70]  add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena.mit.edu/course/3/3.53/www/index.html")  ;
+item 353:		"3.53 WWW Page"					[course3/70]  add("infoagents"),exec("htmlview http://web.mit.edu/3.53/www/index.html")  ;
 
 menu 4.203:		"4.203"			{4203}			[course4/1]                                                                               ;
+  item 4023Manual:	"AutoCAD Manual"	-decmips		[4203/5]		add("autocad"),exec("/mit/autocad/bin/dtext");
 
  item 4203tips:		"Helpful Tips"    -decmips -rsaix		[4203/10]		attach("4.203"),add("frame"),exec("reader +viewerIsServer -file /mit/4.203/Help/tips");
- item 4203acad12:	"AutoCAD 12"	-vax -sgi 			[4203/25]		add("4.203"),exec("/mit/4.203/%Mbin/autocad -version 12")                     ;
- item 4203acad13:	"AutoCAD 13"	-vax -decmips -rsaix		[4203/20]		add("4.203"),exec("/mit/4.203/%Mbin/autocad -version 13")                     ;
+ item 4203acad12:	"AutoCAD 12"	-sgi 			[4203/25]		add("4.203"),exec("/mit/4.203/bin/autocad -version 12")                     ;
+ item 4203acad13:	"AutoCAD 13"	-decmips -rsaix		[4203/20]		add("4.203"),exec("/mit/4.203/bin/autocad -version 13")                     ;
 
  menu 4203Assign:	"Assignments"		{4203assign}		[4203/30]                                                                                 ;
-  item 4203Assign1:	"Assignment 1"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment1.ez");
-  item 4203Assign2:	"Assignment 2"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment2.ez");
-  item 4203Assign3:	"Assignment 3"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment3.ez");
-  item 4203Assign4:	"Assignment 4"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment4.ez");
-  item 4203Assign5:	"Assignment 5"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment5.ez");
-  item 4203Assign6:	"Assignment 6"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment6.ez");
-  item 4203Assign7:	"Assignment 7"	-rt -vax -rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment7.ez");
+  item 4203Assign1:	"Assignment 1"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment1.ez");
+  item 4203Assign2:	"Assignment 2"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment2.ez");
+  item 4203Assign3:	"Assignment 3"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment3.ez");
+  item 4203Assign4:	"Assignment 4"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment4.ez");
+  item 4203Assign5:	"Assignment 5"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment5.ez");
+  item 4203Assign6:	"Assignment 6"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment6.ez");
+  item 4203Assign7:	"Assignment 7"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment7.ez");
 
  menu 4203Handouts:	"Handouts"		{4203hand}		[4203/40]                                                                                 ;
-  item 4203Hand1:	"Handout 1"	-rt -vax -rsaix -decmips -sun4	[4203hand/1]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout1.ez");
-  item 4203Hand2:	"Handout 2"	-rt -vax -rsaix -decmips -sun4	[4203hand/2]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout2.ez");
-  item 4203Hand3:	"Handout 3"	-rt -vax -rsaix -decmips -sun4	[4203hand/3]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout3.ez");
-  item 4203Hand4:	"Handout 4"	-rt -vax -rsaix -decmips -sun4	[4203hand/4]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout4.ez");
-  item 4203Hand5:	"Handout 5"	-rt -vax -rsaix -decmips -sun4	[4203hand/5]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout5.ez");
-  item 4203Hand6:	"Handout 6"	-rt -vax -rsaix -decmips -sun4	[4203hand/6]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout6.ez");
-  item 4203Hand7:	"Handout 7"	-rt -vax -rsaix -decmips -sun4	[4203hand/7]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout7.ez");
-  item 4203Hand8:	"Handout 8"	-rt -vax -rsaix -decmips -sun4	[4203hand/8]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout8.ez");
-  item 4203Hand9:	"Handout 9"	-rt -vax -rsaix -decmips -sun4	[4203hand/9]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout9.ez");
-  item 4203Hand10:	"Handout 10"	-rt -vax -rsaix -decmips -sun4	[4203hand/10]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout10.ez");
+  item 4203Hand1:	"Handout 1"	-rsaix -decmips -sun4	[4203hand/1]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout1.ez");
+  item 4203Hand2:	"Handout 2"	-rsaix -decmips -sun4	[4203hand/2]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout2.ez");
+  item 4203Hand3:	"Handout 3"	-rsaix -decmips -sun4	[4203hand/3]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout3.ez");
+  item 4203Hand4:	"Handout 4"	-rsaix -decmips -sun4	[4203hand/4]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout4.ez");
+  item 4203Hand5:	"Handout 5"	-rsaix -decmips -sun4	[4203hand/5]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout5.ez");
+  item 4203Hand6:	"Handout 6"	-rsaix -decmips -sun4	[4203hand/6]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout6.ez");
+  item 4203Hand7:	"Handout 7"	-rsaix -decmips -sun4	[4203hand/7]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout7.ez");
+  item 4203Hand8:	"Handout 8"	-rsaix -decmips -sun4	[4203hand/8]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout8.ez");
+  item 4203Hand9:	"Handout 9"	-rsaix -decmips -sun4	[4203hand/9]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout9.ez");
+  item 4203Hand10:	"Handout 10"	-rsaix -decmips -sun4	[4203hand/10]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout10.ez");
 
-menu aboutcrl:		"About the CRL"		{aboutcrl}		[course4/2]                                                                 		;
-menu aboutcrl2:		"About the CRL"		{aboutcrl2}		[course11/2]                                                                 		;
- item askcrl:		"Ask the Staff"			[aboutcrl/1][aboutcrl2/1]								 		;
+menu aboutcrl:		"About the CRL"		{aboutcrl}		[course4/2]                                                                 	;
+menu aboutcrl2:		"About the CRL"		{aboutcrl2}		[course11/2]                                                                 	;
+ item askcrl:		"Ask the Staff"					[aboutcrl/1][aboutcrl2/1]							;
  help askcrl:
 "To get more help from CRL on any topic, send email
 to <crlhelp@mit.edu> and someone from the Lab Staff 
 will get back to you as soon as possible." ;
 
- item crlolh:		"Answers"	-rsaix -decmips	[aboutcrl/2][aboutcrl2/2]	attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/help/about-crl.doc")	;
+ item crlolh:		"Answers"	-rsaix -decmips			[aboutcrl/2][aboutcrl2/2]	attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/help/about-crl.doc")	;
 
-!menu 511:		"5.11"			{511}			[course5/10]										;
+item 511:		"5.11 Home Page"				[course5/10]      add("infoagents"),exec("htmlview http://web.mit.edu/5.11/www/") ;
 
- item 511mosaic:	"5.11 Home Page (Mosaic)"			[course5/10]      add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/5/5.11/www/") ;
+item emf:		"6.013 Electromagnetic Fields and Energy"	[course6/10] -rsaix -decmips -sun4	attach("6.013"),exec("xterm -title 6.013 -e /mit/6.013/.attachrc");
+item 6012homepage:	"6.012 Homepage"	-decmips		[course6/20]		add("infoagents"),exec("htmlview http://web.mit.edu/6.012/www/home.html") ;
+item quantphys:		"6.021J Quantitative Physiology"		[course6/30] 				setup("6.021J"),exec("xterm -n qp")		;
+! cvsim is placed onto the 6.022J menu further down in this file;
+menu 6022jcvsim:	"6.022J"		 {6022j}		[course6/40]					                         ;
+  item 6022cvsim:	"CVSIM"						[6022j] -rsaix -sgi		add("hst"),exec("xterm -e cvsim")	;
 
-  help 511mosaic:
+item 6041:		"6.041/6.431 Probabilistic Systems Analysis"    [course6/50] -rsaix          		    setup("6.041"),exec("xterm -n 6.041/6.431") ;
+item 6070homepage:	"6.070 Homepage"				[course6/60]		add("infoagents"),exec("htmlview http://web.mit.edu/6.070/index.html") ;
+item 6071homepage:	"6.071 Homepage"				[course6/70]		add("infoagents"),exec("htmlview http://web.mit.edu/6.071/www/home.html") ;
+item 6111:		"6.111 Digital Design Tools"			[course6/80] -rsaix -sun4				 setup("6.111"),exec("xterm -n 6.111")  ;
 
-"This application launches a new Mosaic window to view the 
-5.11 WWW Home Page.  If you're already running Mosaic, you 
-can simply open the following URL:
+item 6270:		"6.270 Robot Design"				[course6/90] -rsaix -sun4			setup("6.270"),exec("xterm -n 6.270")           ;
+item 6728:		"6.728 Home Page"				[course6/100]  add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
+item 6730:		"6.730 Home Page"				[course6/110]  add("infoagents"),exec("htmlview http://web.mit.edu/6.730/www/home.html");
+item 6965:		"6.965 Home Page"				[course6/120]  add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
+item 701:		"7.01x Home Page"				[course7]	add("infoagents"),exec("htmlview http://web.mit.edu/7.01x/www");
+item 801:		"8.01 Home Page"				[course8/05]	add("infoagents"),exec("htmlview http://web.mit.edu/8.01/www")	;
+item 803:		"8.03 Home Page"				[course8/10]	add("infoagents"),exec("htmlview http://web.mit.edu/8.03/Spring/Homepage.html");
 
-       http://web.mit.edu/afs/athena/course/5/5.11/www/
-
-";
-
-! item 511welcome:	"Welcome to 5.11"				[511/10]		attach("5.11"),sh("ez 2>/dev/null -geometry 700x600 /mit/5.11/511welcome.ez");
-!	help 511welcome: "An Overview of 5.11 on Athena." ;
-! menu 511mischands:	"Misc. Handouts"		{511mischands}	[511/20]										;
-!  item 511sigfigs:	"Significant Figures"				[511mischands/10] attach("5.11"),sh("ez 2>/dev/null -geometry 600x700 /mit/5.11/SigFigs");
-! menu 517z1wandw:		"When and Where"		{511wandw}	[511/30]										;
-!  item 511findata:	"Find a TA"					[511wandw/10] 		attach("5.11"),sh("ez 2>/dev/null -geometry 700x500 /mit/5.11/511TAs.ez");
-!	help 511findata: 
-!"A list of TA recitations, 
-!and office hours.";
-!  item 511recit:	"Recitations"					[511wandw/20]										;
-!	help 511recit: "See: Find a TA";
-!  item 511ohours:	"Office Hours"					[511wandw/30]										;
-!	help 511ohours: "See: Find a TA";
-!  item 511tutor:	"Tutorials"					[511wandw/40]										;
-!	help 511tutor: 
-!"Tutorials are offered:
-!Tues. and Wed. 3-5pm 
-!in the TA room 4-465.";
-!  item 511ex1info:	"Exam I Info"					[511wandw/50]		attach("5.11"),sh("ez 2>/dev/null -geometry 600x500 /mit/5.11/Exam1Info.ez");
-!	help 511ex1info:	"Summary of Exam I.";
-!  item 511ex2info:	"Exam II Info"					[511wandw/60]		attach("5.11"),sh("ez 2>/dev/null -geometry 600x500 /mit/5.11/Exam2Info.ez");
-!	help 511ex2info:	"Summary of Exam II.";
-!  item 511ex3info:	"Exam III Info"					[511wandw/70]		attach("5.11"),sh("ez 2>/dev/null -geometry 600x500 /mit/5.11/Exam3Info.ez");
-!	help 511ex3info:	"Summary of Exam III.";
-!  item 511finalinfo:	"Final Exam Info"				[511wandw/80]		attach("5.11"),sh("ez 2>/dev/null -geometry 600x500 /mit/5.11/FinalInfo.ez");
-!	help 511finalinfo:	
-!"Announcements about
-!the upcoming exam.";
-! item 511emailta:	"Email your TA"					[511/40]		attach("5.11"),sh("ez 2>/dev/null -geometry 500x500 /mit/5.11/511TAemail.ez");
-!	help 511emailta: 	"A list of TA e-mail addresses.";
-! item 511olta:		"OLTA"						[511/50]		add("olta"),exec("xterm -e olta")				;
-!	help 511olta: 
-!"If you have a general question
-!about 5.11, try OLTA. Most 
-!questions will be answered by 
-!the next school day.";
+ item 804:		"8.04 Home Page"				[course8/20]	add("infoagents"),exec("htmlview http://web.mit.edu/8.04/www/8.04.html");
 
 
-
-item emf:		"6.013 Electromagnetic Fields and Energy"	[course6] -rsaix -decmips -sun4	attach("6.013"),exec("xterm -title 6.013 -e /mit/6.013/.attachrc");
-item 6012homepage:	"6.012 Homepage"	-decmips		[course6]		add("infoagents"),exec("Netscape http://web.mit.edu/6.012/www/home.html") ;
-item quantphys:		"6.021J Quantitative Physiology"		[course6] 				setup("6.021J"),exec("xterm -n qp")		;
-item 6041:		"6.041/6.431 Probabilistic Systems Analysis"    [course6] -rsaix          		    setup("6.041"),exec("xterm -n 6.041/6.431") ;
-item 6070homepage:	"6.070 Homepage"				[course6]		add("infoagents"),exec("Mosaic http://web.mit.edu/6.070/index.html") ;
-item 6071homepage:	"6.071 Homepage"				[course6]		add("infoagents"),exec("Mosaic http://web.mit.edu/6.071/www/home.html") ;
-item 6111:		"6.111 Digital Design Tools"			[course6] -rsaix -sun4				 setup("6.111"),exec("xterm -n 6.111")  ;
-
-item 6270:		"6.270 Robot Design"				[course6] -rsaix -sun4			setup("6.270"),exec("xterm -n 6.270")           ;
-item 6728:		"6.728 Home Page"				[course6]  add("infoagents"),exec("Mosaic /afs/athena/course/6/6.728/www/home.html");
-item 6730:		"6.730 Home Page"				[course6]  add("infoagents"),exec("Mosaic /afs/athena/course/6/6.730/www/home.html");
-item 6965:		"6.965 Home Page"				[course6]  add("infoagents"),exec("Mosaic /afs/athena/course/6/6.728/www/home.html");
-
-item 801:		"8.01 Home Page"				[course8/05]	add("infoagents"),exec("Mosaic http://web.mit.edu/8.01/www")	;
-item 803:		"8.03 Home Page"				[course8/10]	add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/8/8.03/Spring/Homepage.html");
-
- item 804:		"8.04 Home Page"				[course8/20]	add("infoagents"),exec("Mosaic /afs/athena/course/8/8.04/www/8.04.html");
-
-
-item todor:		"Todor"		-rsaix -sun4			[course10/30][1304][course16]			setup("16.00"),exec("xterm -n Todor")	;
 item pplot:		"Pplot"	 	-rsaix -decmips -sun4		[course10/40]		attach("10.001"),exec("xterm -e /mit/10.001/pplot/%M.bin/pplot");
 
 menu 10001:		"10.001"		{10001}			[course10/10]										;
- item 10001mosaic:	"10.001 Home Page (Mosaic)"			[10001/05]      add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/10/10.001/Web/10_001homepage.html") ;
+ item 10001web:		"10.001 Home Page"				[10001/05]      add("infoagents"),exec("htmlview http://web.mit.edu/10.001/Web/10_001homepage.html") ;
 
 
-menu 10213:		"10.213"		{10213}			[course10/20]	;
- item 10213mosaic:	"10.213 Home Page (Mosaic)"			[course10/25]      add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/10/10.213/www/10213hp.html") ;
+menu 10213web:		"10.213"		{10213}			[course10/20]	;
+ item 10213:		"10.213 Home Page"				[course10/25]      add("infoagents"),exec("htmlview http://web.mit.edu/10.213/www/10213hp.html") ;
 
-  help 10213mosaic:
+menu 10490web:		"10.490"		{10490}			[course10/28]										;
+ item 10490:		"10.490 Home Page"				[course10/29]      add("infoagents"),exec("htmlview http://web.mit.edu/10.490/Web/index.html") ;
 
-"This application launches a new Mosaic window to view the 
-10.213 WWW Home Page.  If you're already running Mosaic, you 
-can simply open the following URL:
+ item 10491:		"10.491 Home Page"				[course10/30]      add("infoagents"),exec("htmlview http://web.mit.edu/10.491/Web/index.html") ;
 
-       http://web.mit.edu/afs/athena/course/10/10.213/www/10213hp.html
-
-";
-
-menu 10490:		"10.490"		{10490}			[course10/28]										;
- item 10490mosaic:	"10.490 Home Page (Mosaic)"			[course10/29]      add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/10/10.490/Web/index.html") ;
-
-  help 10490mosaic:
-
-"This application launches a new Mosaic window to view the 
-10.490 WWW Home Page.  If you're already running Mosaic, you 
-can simply open the following URL:
-
-       http://web.mit.edu/afs/athena/course/10/10.490/www/
-
-";
-
-menu 10550:		"10.550"		{10550}			[course10/30]	;
+menu 10550:		"10.550"		{10550}			[course10/31]	;
  item 10550control:	"10.550 Control Modules"			[10550/10]	attach("10.550"),add("matlab"),exec("matlab /mit/10.550/Courseware/PCM")	;
 
  item xmap:		"MITMapper"	-sun4				[course11/10]				attach("crldata"),add("crlbin"),exec("mitmap")	;
@@ -553,7 +484,7 @@ menu 10550:		"10.550"		{10550}			[course10/30]	;
  menu 11521:		"11.521"			{11521}		[course11/40]										;
   item 11521tips:	"Helpful Tips"	-decmips -rsaix			[11521/10]	attach("11.521"),add("frame"),exec("reader +viewerIsServer -file /mit/11.521/Help/tips");
 
-item mathematica:	"Mathematica"		-vax -rt -sun4		[course12]                      add("math"),exec("mathematica");
+item mathematica:	"Mathematica"		 -sun4			[course12]                      add("math"),exec("mathematica");
  help mathematica:
 "A limited number of Mathematica licenses are available on Athena.  
 The package is supported only on the context of a course; please
@@ -581,14 +512,14 @@ menu 1304:		"13.04"			{1304}			[course13]										;
 menu 1380J:		"13.80J"		{1380J}			[course13]										;
 menu shipdesign:	"Ship Design"		{shipdesign}		[course13]										;
 
-item ducksoup:		"Ducksoup"	-rsaix -rt -decmips -sun4	[1300] 		attach("13.00"),cd("/mit/13.00/%Mbin/ducksoup.d"),exec("DUCKSOUP")	;
+item ducksoup:		"Ducksoup"	-rsaix  -decmips -sun4	[1300] 		attach("13.00"),cd("/mit/13.00/%Mbin/ducksoup.d"),exec("DUCKSOUP")	;
 
-item prophd:		"PROP-HD"	 -rsaix -rt -sun4		[1304]				add("13.04"),exec("xterm -e /mit/13.04/%Mbin/prophd")	;
+item prophd:		"PROP-HD"	 -rsaix  -sun4		[1304]				add("13.04"),exec("xterm -e /mit/13.04/%Mbin/prophd")	;
 
-item SHCP:		"SHCP"		-rt -rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/shcp/%Mbin/runshcp")	;
-item ASSET:		"ASSET"		-rt -rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/asset/runasset")	 	;
+item SHCP:		"SHCP"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/shcp/%Mbin/runshcp")	;
+item ASSET:		"ASSET"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/asset/runasset")	 	;
 item RUNSUB:		"Runsub"	-rsaix	-sun4			[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/subs/%Mbin/runsub")	;
-item PC01:		"PC01"		-rt -rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/pc01/pc01.e")             ;
+item PC01:		"PC01"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/pc01/pc01.e")             ;
 item SEAKEEP:		"Seakeep"	-rsaix -decmips	-sun4		[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/seakeep/seakeep/%Mbin/seakeep") ;
 item TSS86:		"TSS86"		-rsaix -decmips	-sun4		[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/tss86/%Mbin/tss86")       ;
 item WIND:		"Wind"		-rsaix -decmips	-sun4		[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/wind/%Mbin/wind")         ;
@@ -599,24 +530,28 @@ menu 1401:		"14.01"		{1401}				[course14]									;
 menu 1421j:		"14.21J"	{1421j}				[course14]									;
 menu 14a02:		"14a02"		{14a02}				[course14]									;
 
-item 14.01page:		"14.01 Home Page"				[1401/10]	add("infoagents"),exec("Mosaic http://web.mit.edu/course/14/14.01/www/")	;
-item 1421jpage:		"14.21J Home Page"				[1421j/10]	add("infoagents"),exec("Mosaic http://web.mit.edu/course/14/14.21j/www/index.html");
+item 14.01page:		"14.01 Home Page"				[1401/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14.01/www/")	;
+item 1421jpage:		"14.21J Home Page"				[1421j/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14.21j/www/index.html");
 
-item 14a02page:		"14a02 Home Page"				[14a02/10]	add("infoagents"),exec("Mosaic http://web.mit.edu/course/14/14a02/www/index.html");
+item 14a02page:		"14a02 Home Page"				[14a02/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14a02/www/index.html");
 
 item sst:		"SST"		-rsaix -decmips	-sun4		[course17] 			add("econsst"),exec("xterm -e /mit/econsst/bin/sst")	;
-item gmats:		"GMATS"		-rsaix 	-sun4			[course17] 			attach("17.803"),exec("/mit/17.803/%Mbin/gmats.%M")	;
 
-menu 1803:		"18.03"		{1803}				[course18]										;
-! item ode:		"ODE"			-rsaix -sgi 		[1803]	 					add("18.03"),exec("ode")		;
- item 1803xphased:	"xphased"				[1803]	 					add("18.03"),exec("xphased")		;
+menu 1803:		"18.03"		{1803}				[course18]						;
+! item ode:		"ODE"			-rsaix -sgi 		[1803]	 	add("18.03"),exec("ode")		;
+ item 1803page:		"18.03 Home Page"				[1803]		add("infoagents"),exec("htmlview http://www-math.mit.edu/18.03/");
+ item 1803maple:	"Maple"						[1803]		add("maple"),exec("maple")		;
+ item 1803matlab:	"Matlab"					[1803]		add("matlab"),exec("matlab")		;
+ item 1803x1:		"xphased 1"		-rsaix -decmips		[1803]		add("18.03"),exec("x1")		;
+ item 1803x2:		"xphased 2"		-rsaix -decmips		[1803]		add("18.03"),exec("x2")		;
+
 menu 18385:		"18.385"	{18385}				[course18]										;
- item dstool:		"18.385 dstool" -rsaix -rt -sgi -decmips	[18385]		add("18.385"),exec("xterm -sb -e dstool")		;
+ item dstool:		"18.385 dstool" -rsaix  -sgi -decmips	[18385]		add("18.385"),exec("xterm -sb -e dstool")		;
 
- item xphased:		"18.385 xphased" -rsaix -rt -sgi -decmips	[18385]		add("18.385"),exec("xterm -sb -e xphased")		;
+ item xphased:		"18.385 xphased" -rsaix -decmips	[18385]		add("18.385"),exec("xphased")		;
 
 menu 1806:		"18.06"		{1806}				[course18]										;
-item 1806page:		"18.06 Home Page"				[1806]		add("infoagents"),exec("Mosaic http://web.mit.edu/course/18/18.06/www/index.html");
+item 1806page:		"18.06 Home Page"				[1806]		add("infoagents"),exec("htmlview http://web.mit.edu/course/18/18.06/www/index.html");
 
 menu 1802s:		"18.02s"	 {1802s}			[course18]										;
  item 1802ssyll:	"Syllabus"					[1802s/10]  attach("18.02s"),exec("xdvi /mit/18.02s/syllabus.dvi")			;
@@ -626,7 +561,7 @@ menu french:		"French"	{french}			[course21/5]					                             
 
 menu french2:		"French II"	{french2}			[french]					                                        ;
 
-item french2home:		"French II Home Page"			[french2]	add("infoagents"),exec("Mosaic http://web.mit.edu/course/21/21.french/francaisII/")                   ;
+item french2home:		"French II Home Page"			[french2]	add("infoagents"),exec("htmlview http://web.mit.edu/course/21/21.french/francaisII/")                   ;
 
 menu japanese:		"Japanese"	{japanese}			[course21/10]	;
 
@@ -939,14 +874,15 @@ Bug-reports:  email to <bug-nihongo@mit.edu>
 
 
 menu filmstudies:	"Film and Media Studies"  {filmstudies} 	[course21/15]	;
-item flmstudpg:		"Film and Media Homepage"		[filmstudies/10]  add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/21/21fms/Program/home.html &");
+item flmstudpg:		"Film and Media Homepage"		[filmstudies/10]  add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Program/home.html");
 menu flmcrs:		"Courses"		{flmcrs}	[filmstudies/20]	;
-item 21L907:		"21L907 Media, Culture and Society"    	[flmcrs/5]	add("infoagents"),exec("Mosaic http://web.mit.edu/afs/athena/course/21/21fms/Courses/Theory/home.html &")	;
+item 21L907:		"21L907 Media, Culture and Society"    	[flmcrs/5]	add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Courses/Theory/home.html")	;
 
 menu humstudies:	"Writing and Humanistic Studies"  {humstudies}	[course21/20]  ;
-item 21w783page:	"21w.783 Homepage"			[humstudies/10]  add("infoagents"),exec("Mosaic http://web.mit.edu/21w783/www/home.html &");
+item 21w783page:	"21w.783 Homepage"			[humstudies/10]  add("infoagents"),exec("htmlview http://web.mit.edu/21w783/www/home.html");
+item 21w794page:	"21w.794 Homepage"			[humstudies/15]  add("infoagents"),exec("htmlview http://web.mit.edu/21w794/www/home.htm"l);
 
-item cvsim:		"CVSIM"						[courseHST] -rsaix  		add("hst"),exec("xterm -e cvsim")	;
+item cvsim:		"CVSIM"						[courseHST] -rsaix -sgi		add("hst"),exec("xterm -e cvsim")	;
 
 
 !these next 6 items dont do anything- they have no menus to be contained in.  Hmm.
@@ -1488,6 +1424,20 @@ Other help: man xfig
 Bug reports: send email to <bug-sipb@mit.edu>
 ";
 
+help tgif:
+"Tgif is an interactive 2-d drawing facility which   
+supports  hierarchical  construction  of drawings and easy 
+navigation between sets of drawings.  It  can  also  be used 
+to launch applications and as a hyper-graphics (or 
+hyper-structured-graphics) browser on the WWW.
+
+To run on a workstation:  add sipb ; tgif &
+
+Other help:  man tgif
+
+Bug reports:  send email to <bug-sipb@mit.edu>
+";
+
 help xpaint:
 "Xpaint is another popular drawing program on Athena.
 It provides much of the same functionality as MacDraw.
@@ -1698,8 +1648,7 @@ Bug reports:  use sendbug
 ";
 
 help schemelang:
-"Scheme is a dialect of Lisp taught in 6.001 at MIT.  Scheme is only available
-for DECstations.
+"Scheme is a dialect of Lisp taught in 6.001 at MIT.  
 
 Other help:  Scheme on Athena (AC-84) from Graphic Arts
                            Revised^3 Report on the Algorithmic Language Scheme, available
@@ -1951,27 +1900,15 @@ Phone x3-6776.
 help psych:
 "Phone x3-2916.";
 
-help ishelp:
-"Access to Information Systems and
-Athena help lines via a voice-mail
-menu tree, dial x3-2001.";
-
-help mchelp:
-"Information Systems Micro Computer Help 
-Line, dial x3-0001.";
-
 help mcsales:
 "MIT Computer Connection -- sales and service 
 of Apple, DEC, IBM, NeXT and SUN computers.  
 Dial x3-7686 or stop by W20-021.";
 
-help nshelp:
-"For help with MITnet or other computer
-networks, dial x3-4101.";
-
-help pahelp:
-"For help with Athena, call the Athena 
-Consultants, x3-4435.";
+help ishelp:
+"Macintosh questions	-- x3-1101
+DOS/Windows/PC questions	-- x3-1102
+Network/other questions	-- x3-1104";
 
 help sipb:
 "Student-staffed group that provides help
@@ -2737,29 +2674,12 @@ To run on a workstation:   add sas ; sas &
 Bug reports:  use sendbug
 ";
 
-help barton:
+help library:
 "Connect to the Athena interface for the 
 MIT Libraries Services.
 
 To run:    add library; library";
 
-help OWL:
-"Ask a librarian!  Topics include:
-    aero            Aeronautics/Astronautics
-    arch            Architecture/Art/Islamic Studies
-    biz               Business/Social Sciences
-    eaps            Earth/Atmospheric/Planetary Sciences
-    eng             Engineering/Computer Science
-    hum           Humanities
-    med            Medicine/Neuroscience
-    archives     MIT History/Theses/Publications
-    music         Music
-    sci               Science/Math/Chemical Eng/Nuclear Eng
-    urban         Urban Planning/Real Estate
-    visual          Visual Collections
-    general       General
-
-To run:    add library ; owl";
 
 help assess:
 "Assess is an interactive program for utility assessment
@@ -2774,13 +2694,6 @@ environment for experimenting with structure behavior and
 design. 
 
 To run:	    add growltiger; growltiger &";
-
-help clascon:
-"Clascon is a a construction and analysis package for linear,
-time-invariant feedback systems using classical control theory
-techniques.  It is run as a subset of the Todor software.
-
-To run on a workstation:   setup 16.00";
 
 help vihelp:
 "VISDYCON stands for VISual DYNamics and CONtrol.
@@ -2837,13 +2750,6 @@ for the 6.270 LEGO Robot Competition.
 
 To run: setup 6.270";
 
-help todor:
-"Todor is a set of over twenty programs covering topics ranging
-from multi-element airfoil system design to kinetic theory of gases
-and statistical thermodynamics.
-
-To run:     setup 16.00";
-
 help pplot:
 "Pplot is a plotting package which includes curve fitting and axis
 labelling routines.
@@ -2873,13 +2779,6 @@ help sst:
 statistical functions.  It has its own tutorial.
 
 To run:     attach econsst ;  /mit/econsst/bin/sst";
-
-help gmats:
-"GMATS (Graphs Make Argument Theory Simple) is an interactive
-graphics program for the analysis of the logial structure of
-debates and arguments.
-
-To run on a workstation:   attach 17.803 ;  /mit/17.803/gmats &";
 
 help cvsim:
 "The Cardiovascular Simulator (CVSIM) is a realtime physiological
