@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.14 1997-02-22 18:43:41 ghudson Exp $
+# $Id: update_ws.sh,v 1.15 1997-03-14 21:30:22 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -176,6 +176,19 @@ EOF
 	esac
 
 	exit 1
+fi
+
+if [ "$AUTO" = true ]; then
+	# The packs are newer and we want to take the update, but not
+	# necessarily right now.  Use desync to stagger the update
+	# over a four-hour period.  (Use the version from /srvd for
+	# now to make sure the -t option works, since that option was
+	# not introduced until 8.1.)
+
+	/srvd/etc/athena/desync -t /etc/athena/.update.desync 14400
+	if [ $? -ne 0 ]; then
+		exit 0
+	fi
 fi
 
 # If this is a private workstations, make sure we can recreate the mkserv
