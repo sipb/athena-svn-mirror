@@ -1,7 +1,7 @@
 # Note that this is NOT a relocatable package
 Summary:          Allows several audio streams to play on a single audio device.
 Name:             esound
-Version:          0.2.34
+Version:          0.2.35
 Release:          1
 License:          GPL
 Group:            System Environment/Daemons

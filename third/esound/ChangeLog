@@ -1,8 +1,64 @@
-2004-03-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
+2004-08-12  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
+	* configure.in:
+	* NEWS
+	Release 0.2.35
+
+2004-08-12  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio_alsa09.c:
+	Use Alsa default alias when no card is specified (bug #144318,
+	original fix from Cyrille Chepelov)
+
+2004-08-12  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* .cvsignore:
+	Quiet CVS.
+
+	* docs/esd.1.in:
+	* esd.c: (main):
+	* esd.conf:
+	* esd_config.c: (esd_config_read), (esd_config_read_file):
+	Fix regression caused by patch for bug #118230 (bug #147293).
+	Add new default options in configuration file and as environment
+	variable, always used. spawn_options behaviour is back to normal.
+	Add commandline options to enable beeps, disable termination and
+	disable autostandby.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* esd.h: ANSI argument list fix.
+	* esdlib.c: (esd_send_auth): NULL vs 0 usage. Also
+	fix usage of esd_connect_unix() in a few places.
+
+2004-08-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio_oss.c:
+	* configure.in:
+	* esddsp.c:
+	GNU/kFreeBSD support (bug #149816, patch from 
+	Robert Milan <rmh@debian.org>).
+
+2004-06-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* docs/esddsp.1.in:
+	* esddsp.c: (dsp_init), (mmapemu_flush), (open), (dspctl), (close),
+	(mmap), (munmap):
+	* esddsp.in:
+	MMAP support for esddsp (from artsdsp) (bug #144157,
+	patch from Olivier Blin <oliv.blin@laposte.net>).
+
+2004-04-30  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* docs/esd.1.in:
+	Fix location of configuration file (Craig Routledge
+	<webstuff@craigroutledge.com>).
+
+2004-03-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
+ 
 	* NEWS:
 	* configure.in:
-	Release 0.2.34
+        Release 0.2.34
 
 2004-03-03  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
