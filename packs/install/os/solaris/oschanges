@@ -32,4 +32,4 @@ ln -s ../libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/libfont.so
 ln -s ../libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
 
 # Generate windex files so apropos works
-chroot ${UPDATE_ROOT:-/} catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
+chroot ${UPDATE_ROOT:-/} /usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
