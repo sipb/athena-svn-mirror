@@ -33,13 +33,10 @@ CFILES		=	pc_err.c nanny.c pc_bsd.c cons_sysv.c var.c cvt.c \
 			dpy_irix.c nannylib.c testtty.c testsetUser.c \
 			testloginUser.c
 
-LIBS		=	-L/build/athena/lib/AL -lAL -L. -lnanny -lcom_err \
-			-lhesiod
+LIBS		=	-lAL -L. -lnanny -lcom_err -lhesiod
 
 AFSLIBS		=	-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx \
 			-lsys -llwp
-
-DEFINES		=	-I/build/athena/lib
 
 AnsiCC()
 
