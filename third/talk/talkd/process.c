@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp $";
+static char rcsid[] = "$Id: process.c,v 1.2 1996-10-13 07:08:54 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -53,7 +53,15 @@ static char rcsid[] = "$Id: process.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp 
 #include <syslog.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_PATHS_H
 #include <paths.h>
+#endif
+#ifndef _PATH_UTMP
+#define _PATH_UTMP GUESSED_PATH_UTMP
+#endif
+#ifndef _PATH_DEV
+#define _PATH_DEV "/dev/"
+#endif
 
 CTL_MSG *find_request();
 CTL_MSG *find_match();
