@@ -1,4 +1,4 @@
-/* $Id: Imakefile,v 1.2 1996-05-03 06:59:25 ghudson Exp $
+/* $Id: Imakefile,v 1.3 1996-05-07 21:38:13 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/Imakefile,v $
  */
 
@@ -16,4 +16,5 @@ OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
 
 build_program(aklog,$(OBJS),,$(AFSLIBS) $(LIBS))
 install_program(aklog,,${ATHRBINDIR})
+install_man(aklog.1,aklog.1)
 
