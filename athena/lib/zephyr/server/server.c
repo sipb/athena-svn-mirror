@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.17 1987-11-16 21:44:56 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.18 1987-11-20 12:32:59 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -679,7 +679,6 @@ ZServerDesc_t *server;
 		send_stats(who);
 		return;
 	}
-#ifdef notdef
 	syslog(LOG_INFO, "disp: new server?");
 	if (server_register(notice, auth, who) != ZERR_NONE)
 		syslog(LOG_INFO, "new server failed");
@@ -689,7 +688,6 @@ ZServerDesc_t *server;
 		       ntohs(who->sin_port));
 		hello_respond(who, DONT_ADJUST, auth);
 	}
-#endif notdef
 	return;
 }
 
