@@ -1,0 +1,83 @@
+#ident	"@(#)keytable.map	1.8 92/09/23 KEYTABLES SMI"
+#
+# Copyright (c) 1990, Sun Microsystems, Inc.  RESTRICTED RIGHTS LEGEND:
+# Use, duplication, or disclosure by the Government is subject to
+# restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in
+# Technical Data and Computer Software clause at DFARS 52.227-7013 and
+# in similar clauses in the FAR and NASA FAR Supplement.
+#
+#
+#       Copyright (C) 1990 Sun Microsystems, Inc.
+#
+# Keytable map (Type and Layout mapped to keytable_file)
+########################################################################
+# keytable.map
+#
+# The keytable map associates a keyboard with its corresponding keytable.
+# Keytables are located in $OPENWINHOME/etc/keytables.
+#
+# The keyboard Type and Layout are generally obtained from the kernel using
+# appropriate ioctl calls.  The keyboard Type is stored in a keyboard ROM.
+# The keyboard Layout is determined by a DIP switch setting.
+#
+# Notes:
+# To test a new keytable before installing it, copy it to $HOME/.keytable
+# and start the server.  (Remember to remove $HOME/.keytable after testing.)
+#
+# Format of an entry:
+# Type  Layout  Keytable_filename
+#
+Type    Layout  Filename
+0	0	US4.kt			# Default keytable
+#
+2	0	US2.kt
+3	0	US3.kt
+#
+# Type 4 Keyboards
+#
+4	0	US4.kt			# Sun US Type 4 keyboard
+4	1	US4.kt			# Also Sun US Type 4 keyboard
+4	2	FranceBelg4.kt
+4	3	Canada4.kt
+4	4	Denmark4.kt
+4	5	Germany4.kt
+4	6	Italy4.kt
+4	7	Netherland4.kt
+4	8	Norway4.kt
+4	9	Portugal4.kt
+4	10	SpainLatAm4.kt
+4	11	SwedenFin4.kt
+4	12	Switzer_Fr4.kt
+4	13	Switzer_Ge4.kt
+4	14	UK4.kt
+4	16	Korea4.kt
+4	17	Taiwan4.kt
+#
+# Uncomment either the PC compatible or Sun compatible layout
+4	19	US101A_PC.kt		# Sun 101A -- PC compatible layout
+#4	19	US101A_Sun.kt		# Sun 101A -- Sun compatible layout
+#
+4	32	Japan4.kt
+#
+# Type 5 Keyboards
+#
+# Type 5 keyboards identify themselves as type 4 for backward compatibility
+#
+4	33	US5.kt
+4	34	US_UNIX5.kt
+4	35	France5.kt
+4	36	Denmark5.kt
+4	37	Germany5.kt
+4	38	Italy5.kt
+4	39	Netherland5.kt
+4	40	Norway5.kt
+4	41	Portugal5.kt
+4	42	Spain5.kt
+4	43	Sweden5.kt
+4	44	Switzer_Fr5.kt
+4	45	Switzer_Ge5.kt
+4	46	UK5.kt
+4	47	Korea5.kt
+4	48	Taiwan5.kt
+4	49	Japan5.kt
+4	50	Canada_Fr5.kt
