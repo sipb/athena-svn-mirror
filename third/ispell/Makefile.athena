@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1997-09-29 08:52:51 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1998-01-31 03:56:57 ghudson Exp $
 
 SHELL=/bin/sh
 IMAN=buildhash.1 findaffix.1 munchlist.1 tryaffix.1
@@ -52,6 +52,8 @@ install:
 		"$$SRVD${ATHSHAREDIR}"
 	rm -f "$$SRVD${ATHSHAREDIR}/american.hash"
 	cd "$$SRVD${ATHSHAREDIR}" && ln americanmed+.hash american.hash
+	rm -f "$$SRVD${ATHSHAREDIR}/english.hash"
+	cd "$$SRVD${ATHSHAREDIR}" && ln americanmed+.hash english.hash
 	install -c -m 444 buildhash.1 "$$SRVD${ATHMANDIR}/man1"
 	install -c -m 444 findaffix.1 "$$SRVD${ATHMANDIR}/man1"
 	install -c -m 444 ispell.1 "$$SRVD${ATHMANDIR}/man1"
