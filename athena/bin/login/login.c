@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.13 1987-09-22 14:33:14 dyer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.14 1987-10-25 01:19:15 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.13 1987-09-22 14:33:14 dyer Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.14 1987-10-25 01:19:15 rfrench Exp $";
 #endif	lint
 
 /*
@@ -31,6 +31,8 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
  * login -h hostname (for telnetd, etc.)
  */
 
+#define ZEPHYR
+	
 #include <sys/param.h>
 #ifndef VFS
 #include <sys/quota.h>
@@ -1009,7 +1011,7 @@ dofork()
 {
     int child,retval,i;
 #ifdef ZEPHYR
-    int zephyrable,wgpid;
+    int wgcpid;
 #endif ZEPHYR
 
     if(!(child=fork()))
@@ -1019,34 +1021,9 @@ dofork()
     chdir("/");	/* Let's not keep the fs busy... */
     
 #ifdef ZEPHYR
-    zephyrable = 1;
-    if ((retval = ZInitialize()) != ZERR_NONE) {
-	    com_err("login",retval,"initializing");
-	    zephyrable = 0;
-    }
-    if (zephyrable && (retval = ZOpenPort((int *)0) != ZERR_NONE)) {
-	    com_err("login",retval,"opening port");
-	    zephyrable = 0;
-    } 
-
-    if (zephyrable && krbflag)
-	    if (!fork()) {
-		    setuid(pwd->pw_uid);
-		    (void) ZSetLocation();
-		    exit(0);
-	    }
-
-    wgcpid = 0;
-    
-    if (krbflag && !(wgcpid = fork())) {
+    if (!(wgcpid = fork())) {
 	    setuid(pwd->pw_uid);
 	    execl("/usr/etc/zwgc","zwgc",0);
-	    exit (1);
-    }
-
-    if (krbflag && !fork()) {
-	    setuid(pwd->pw_uid);
-	    execl("/usr/athena/zinit","zinit",0);
 	    exit (1);
     }
 #endif ZEPHYR
@@ -1069,15 +1046,6 @@ dofork()
     if (attachedflag)
 	    (void) detach_homedir();
 
-#ifdef ZEPHYR
-    if (zephyrable && krbflag)
-	    if (!fork()) {
-		    setuid(pwd->pw_uid);
-		    (void) ZUnsetLocation();
-		    exit(0);
-	    } 
-#endif ZEPHYR
-    
     if (tmppwflag)
 	    if (remove_pwent(pwd))
 		    puts("Couldn't remove password entry");
