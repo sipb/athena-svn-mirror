@@ -6,8 +6,8 @@
  *	By:		Chris D. Peterson
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v $
- *      $Author: kit $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.1 1988-05-24 14:04:50 kit Exp $
+ *      $Author: probe $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.2 1989-10-15 04:39:24 probe Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -26,7 +26,7 @@
 
 #include <X11/X.h>
 #include <X11/Xatom.h>
-#include <X11/Atoms.h>
+#include <X11/StringDefs.h>
 
 /* X toolkit Include files */
 
