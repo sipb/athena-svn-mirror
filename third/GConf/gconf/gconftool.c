@@ -37,6 +37,7 @@ static char* dir_exists = NULL;
 static int recursive_list = FALSE;
 static int set_schema_mode = FALSE;
 static char* value_type = NULL;
+static int get_type_mode = FALSE;
 static char* value_list_type = NULL;
 static char* value_car_type = NULL;
 static char* value_cdr_type = NULL;
@@ -176,7 +177,16 @@ struct poptOption options[] = {
     0,
     N_("Specify the type of the value being set, or the type of the value a schema describes. Unique abbreviations OK."),
     N_("int|bool|float|string|list|pair")
-  },  
+  },
+  {
+    "get-type",
+    'T',
+    POPT_ARG_NONE,
+    &get_type_mode,
+    0,
+    N_("Print the data type of a key to standard output."),
+    NULL
+  },
   { 
     "list-type",
     '\0',
@@ -351,6 +361,7 @@ static gboolean do_dir_exists(GConfEngine* conf, const gchar* dir);
 static void do_spawn_daemon(GConfEngine* conf);
 static int do_get(GConfEngine* conf, const gchar** args);
 static int do_set(GConfEngine* conf, const gchar** args);
+static int do_get_type(GConfEngine* conf, const gchar** args);
 static int do_set_schema(GConfEngine* conf, const gchar** args);
 static int do_all_entries(GConfEngine* conf, const gchar** args);
 static int do_unset(GConfEngine* conf, const gchar** args);
@@ -399,6 +410,13 @@ main (int argc, char** argv)
       (set_mode && unset_mode))
     {
       fprintf(stderr, _("Can't set and get/unset simultaneously\n"));
+      return 1;
+    }
+
+  if ((get_type_mode && set_mode) ||
+      (get_type_mode && unset_mode))
+    {
+      fprintf(stderr, _("Can't get type and set/unset simultaneously\n"));
       return 1;
     }
 
@@ -681,6 +699,16 @@ main (int argc, char** argv)
     {
       const gchar** args = poptGetArgs(ctx);
       if (do_set(conf, args) == 1)
+        {
+          gconf_engine_unref(conf);
+          return 1;
+        }
+    }
+
+  if (get_type_mode)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      if (do_get_type(conf, args)  == 1)
         {
           gconf_engine_unref(conf);
           return 1;
@@ -1207,6 +1235,49 @@ do_set(GConfEngine* conf, const gchar** args)
       return 1;
     }
 
+  return 0;
+}
+
+static int
+do_get_type(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+
+  if (args == NULL)
+    {
+      fprintf(stderr, _("Must specify a key or keys to get type\n"));
+      return 1;
+    }
+      
+  while (*args)
+    {
+      GConfValue* value;
+
+      err = NULL;
+
+      value = gconf_engine_get (conf, *args, &err);
+         
+      if (value != NULL)
+	{
+	  printf("%s\n", gconf_value_type_to_string(value->type));
+	}
+      else
+        {
+          if (err == NULL)
+            {
+              fprintf(stderr, _("No value set for `%s'\n"), *args);
+            }
+          else
+            {
+              fprintf(stderr, _("Failed to get value for `%s': %s\n"),
+                      *args, err->message);
+              g_error_free(err);
+              err = NULL;
+            }
+        }
+ 
+      ++args;
+    }
   return 0;
 }
 
