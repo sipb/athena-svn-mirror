@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.15 1990-02-23 19:40:31 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.16 1990-03-01 21:49:16 raeburn Exp $";
 #endif
 
 
@@ -473,14 +473,16 @@ delete_knuckle(knuckle,cont)
      int cont;
 #endif /* STDC */
 {
-  int n_knuckles, knuckle_idx;
+  int n_knuckles, knuckle_idx = -1;
   char msgbuf[BUFSIZ];
   KNUCKLE **k_ptr;
   int i;
 
-  for (n_knuckles=0; Knuckle_List[n_knuckles] != knuckle; n_knuckles++)
-      if (!Knuckle_List[n_knuckles])
-	  return;
+  for (n_knuckles = 0; Knuckle_List[n_knuckles]; n_knuckles++)
+      if (Knuckle_List[n_knuckles] == knuckle)
+	  knuckle_idx = n_knuckles;
+  if (knuckle_idx == -1)
+      return;
 
   Knuckle_List[knuckle_idx]  = Knuckle_List[n_knuckles-1];
   Knuckle_List[n_knuckles-1] = (KNUCKLE *) NULL;
@@ -493,18 +495,17 @@ delete_knuckle(knuckle,cont)
   /* maintain continuity in the user knuckle list */
   k_ptr = knuckle->user->knuckles;
   for(i=0;i<knuckle->user->no_knuckles;i++)
-    if(knuckle == *(k_ptr+i))
-      break;
+      if (knuckle == k_ptr[i])
+	  break;
   
-  *(k_ptr+i) = *(k_ptr+(knuckle->user->no_knuckles-1));
-  *(k_ptr+(knuckle->user->no_knuckles-1)) = (KNUCKLE *) NULL;
-  
+  k_ptr[i] = k_ptr[knuckle->user->no_knuckles - 1];
+  k_ptr[knuckle->user->no_knuckles - 1] = 0;
 
   /* delete user if last knuckle */
-  if(knuckle->user->no_knuckles == 1)
-    free((char *) knuckle->user);
+  if (knuckle->user->no_knuckles == 1)
+      free((char *) knuckle->user);
   else
-    knuckle->user->no_knuckles -= 1;
+      knuckle->user->no_knuckles--;
 
   /* free question */
   if(knuckle->question != (QUESTION *) NULL)
