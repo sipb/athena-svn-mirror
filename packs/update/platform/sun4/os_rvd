@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.18 1998-05-11 15:01:25 ghudson Exp $
+## $Id: os_rvd,v 1.19 1998-05-17 03:28:44 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -257,6 +257,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> spray
 		-> snoop
 		-> ssa*
+		static
 		-> swmtool
 		-> sys-unconfig
 		-> tcx*
@@ -268,6 +269,10 @@ GLOBAL : *.CKP *.local *.pid :
 		-> rest*
 		-> volcopy
 		-> zdump
+		:
+	/usr/sbin/static:::
+		-> rcp
+		-> tar
 		:
 	/usr/share:::
 		-> man
@@ -594,7 +599,22 @@ GLOBAL : *.CKP *.local *.pid :
 		-> X*
 		-> enc*
 		-> 100dpi*
-		misc/*.old
+		75dpi
+		misc
+	/usr/openwin/lib/X11/fonts/75dpi:::
+		-> char*
+		-> helv*
+		-> lu*
+		-> symb*
+		-> t*
+		:
+	/usr/openwin/lib/X11/fonts/misc:::
+		hanglg16.pcf.Z
+		hanglm16.pcf.Z
+		hanglm24.pcf.Z
+		jiskan16.pcf.Z
+		jiskan24.pcf.Z
+		k14.pcf.Z
 		:
 	/usr/openwin/server:::
 		etc
