@@ -189,6 +189,9 @@ the Athena repository):
 	perl $CVSROOT/CVSROOT/timestamps.pl
 	cvs import -d -m "Import emacs 22.3." third/emacs fsf emacs-22_3
 
+Make sure to use the same vendor tag name for subsequent imports, or
+the next step won't work right.
+
 After importing, you should take care of files which have been removed
 from one version to the next, since CVS doesn't do a good job.  Here
 is an example:
