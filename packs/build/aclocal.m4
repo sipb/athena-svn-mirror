@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.16 2002-02-18 21:28:12 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.17 2002-03-02 16:40:45 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -159,6 +159,7 @@ AC_DEFUN(ATHENA_AFS_CHECK,
 [AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
 AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+AC_CHECK_FUNC(res_send, :, AC_CHECK_LIB(resolv, res_send))
 if test "$afs" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$afs/include"
 	LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
