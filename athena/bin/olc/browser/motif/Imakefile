@@ -8,7 +8,7 @@
 #
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v $
 #       $Author: lwvanels $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.6 1991-06-29 18:45:48 lwvanels Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.7 1991-06-30 13:47:37 lwvanels Exp $
 #
 
 SRCS		=	main.c callbacks.c MriRegAll.c
@@ -20,8 +20,12 @@ INCLUDES	=	-I/mit/motif/include
 
 #if DoUsageLog
 LOCAL_LIBS = $(LOGGERLIB)
+SYS_LIBS   	=	$(HesiodLib) $(MotifWCLLib) $(MotifUtilLib) \
+			$(MotifLib) $(MotifToolLib) $(XLib) 
 #else
 LOCAL_LIBS =
+SYS_LIBS   	=	$(MotifWCLLib) $(MotifUtilLib) \
+			$(MotifLib) $(MotifToolLib) $(XLib)
 #endif
 
 NormalProgramTarget(xbrowser,$(OBJS),,$(LOCAL_LIBS),$(SYS_LIBS))
