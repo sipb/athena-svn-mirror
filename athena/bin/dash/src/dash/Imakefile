@@ -46,9 +46,16 @@ OBJS		=	dash.o ${K_OBJ}
 SRCS		=	dash.c ${K_SRC}
 
 XJLIB		=	../lib/libXj.a
+
+#ifdef SOLARIS
+D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
+			${XMULIB} ${K_LIB} ${M_LIB} /usr/ucblib/libucb.a
+CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11 /usr/ucblib/libucb.a
+#else
 D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
 			${XMULIB} ${K_LIB} ${M_LIB}
 CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
+#endif
 
 #if defined(MacIIArchitecture)
 M_LIB		=	-lmalloc
