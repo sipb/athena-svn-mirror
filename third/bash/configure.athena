@@ -1,1 +1,0 @@
-./configure --bindir=/bin/athena --with-afs
