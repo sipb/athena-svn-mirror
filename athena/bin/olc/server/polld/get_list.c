@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v $
- *	$Id: get_list.c,v 1.3 1991-01-27 15:38:24 lwvanels Exp $
+ *	$Id: get_list.c,v 1.4 1991-02-01 23:50:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.3 1991-01-27 15:38:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.4 1991-02-01 23:50:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,13 +34,15 @@ get_user_list(users,max_people)
   char junk[BUF_SIZE], *p;
   int i,n,queues;
   int n_people = 0;
+  int n_queues;
 
   f = fopen(LIST_FILE_NAME,"r");
   if (f == NULL) {
     syslog(LOG_ERR,"Could not open queue list file");
     return(-1);
   }
-  for (queues = 0;queues < 3;queues++) {
+  fscanf(f,"%d\n",&n_queues);
+  for (queues = 0;queues < n_queues;queues++) {
     fgets(junk,BUF_SIZE,f); /* queue name */
     fscanf(f,"%d",&n); /* Number of entries in this queue */
     for(i=0;i<n;i++) {
