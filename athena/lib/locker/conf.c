@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.5 1999-10-30 19:33:10 danw Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.6 1999-12-10 16:31:10 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -388,7 +388,7 @@ static int parse_fs_list(locker_context context, char *line, void *val)
   line = strtok_r(data, " \t", &lasts);
   if (!line || !lasts)
     return LOCKER_EATTACHCONF;
-  for (line = lasts + 1; isspace((unsigned char)*line); line++)
+  for (line = lasts; isspace((unsigned char)*line); line++)
     ;
 
   status = add_regexp(context, lst, data);
