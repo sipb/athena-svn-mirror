@@ -1,0 +1,26 @@
+		       Kerberos 4 IMAP Patchkit
+			   1 December 1998
+			     Mark Crispin
+
+     The Kerberos 4 IMAP patchkit consists of a set of modules and
+patches to the IMAP toolkit to enable Kerberos 4 client-only support
+in c-client.  There is server support.
+
+     This patchkit is completely unsupported.  Use it at your own
+risk.
+
+     To build the IMAP tookit with the Kerberos 4 IMAP patchkit, move
+the entire contents of the kerberos/ directory into
+imap-4.???/src/kerberos, then do a make command with krb listed as one
+of the EXTRAAUTHENTICATORS.
+
+     For example, assuming that you just obtained imap-4.5.tar.Z and
+this kerberos4-patches.tar.Z distribution and desire to build on a
+Digital UNIX 4.0 system.  You would follow a procedure somewhat like
+this:
+	% zcat imap-4.5.tar.Z | tar xf -
+	% zcat kerberos4-patches.tar.Z | tar xf -
+	% mv kerberos imap-4.5/src
+	% cd imap-4.5
+	% make os4 EXTRAAUTHENTICATORS=krb
+
