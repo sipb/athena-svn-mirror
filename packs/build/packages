@@ -1,4 +1,4 @@
-# $Id: packages,v 1.106 2000-04-12 21:03:54 ghudson Exp $
+# $Id: packages,v 1.107 2000-04-14 20:51:29 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -49,7 +49,8 @@ athena/bin/aklog		requires krb5,afsbin,et
 athena/bin/athdir		requires athena/lib/athdir
 athena/bin/athinfo
 athena/bin/athrun
-athena/bin/attach		requires locker
+athena/bin/attach		requires locker,athena/lib/athdir
+athena/bin/attachandrun		requires athena/lib/athdir
 athena/bin/bugme		requires Xj
 athena/bin/config_console
 athena/bin/cxref
@@ -112,7 +113,7 @@ athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
-athena/lib/rkinit		requires krb5,et
+athena/lib/rkinit		requires krb5,et package librkinit
 athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
