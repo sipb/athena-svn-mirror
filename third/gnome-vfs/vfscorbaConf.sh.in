@@ -1,8 +1,0 @@
-#
-# Configuration file for using the gnome-vfs library with the CORBA-based
-# asynchronous backend.
-#
-VFSCORBA_LIBDIR="@VFSCORBA_LIBDIR@"
-VFSCORBA_LIBS="@VFSCORBA_LIBS@"
-VFSCORBA_INCLUDEDIR="@VFSCORBA_INCLUDEDIR@"
-MODULE_VERSION="gnome-vfs-@VERSION@"

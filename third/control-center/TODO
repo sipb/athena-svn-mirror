@@ -1,2 +1,0 @@
- * Allow users to disable setting certain properties through the capplets (i.e., disable
-   running the capplet with --init-session-settings on startup)
