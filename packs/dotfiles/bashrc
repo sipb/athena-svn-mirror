@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.8 1999-08-09 19:30:41 tb Exp $
+# $Id: bashrc,v 1.9 1999-08-10 16:06:47 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -191,7 +191,7 @@ Mail () { more /usr/prototype_user/README.mail ; }
 #   aliases dealing with x window system
 xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
-if [ "${XSESSION+set}" == set ]; then
+if [ "${XSESSION+set}" = set ]; then
 	if [ -z "$XSESSION" ]; then
 		logout () { end_session && exit; }		# logout for X
 	else
