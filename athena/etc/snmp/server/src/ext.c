@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.0 1992-04-22 02:04:48 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.1 1992-04-22 02:39:32 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  02:04:48  tom
+ * release 7.4
+ * 
  * Revision 1.9  90/07/17  14:18:10  tom
  * removed kcKey variable
  * commented out variables for build on decmips
@@ -53,7 +56,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.0 1992-04-22 02:04:48 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.1 1992-04-22 02:39:32 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -898,12 +901,12 @@ objident statTime = {
 };
 
 objident loadRunTime = {
-        11,					/* Length of variable */
+        13,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 3, 1, 1, 1
 };
 
 objident loadCPU = {
-        11,
+        13,
 	1, 3, 6, 1, 4, 1, 20, 1, 3, 3, 2, 1, 1
 };
 
@@ -915,58 +918,58 @@ objident statLogin = {
 /* @begin(backward compatibility for pre 7.4) */
 
 objident statDkNParts = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 1
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1
 };
 
 objident statDkPath = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 2
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 2
 };
 
 objident statDkDname = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 3
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 3
 };
 
 objident statDkTotal = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 4
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 4
 };
 
 objident statDkUsed = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 5
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 5
 };
 
 objident statDkFree = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 6
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 6
 };
 
 objident statDkAvail = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 7
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 7
 };
 
 objident statDkITotal = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 8
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 8
 };
 
 objident statDkIUsed = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 9
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 9
 };
 
 objident statDkIFree = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 10
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 10
 };
 
 objident statDkType = {
-        12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 15
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 15
 };
 /* @end(backward compatibility for pre 7.4) */
 
