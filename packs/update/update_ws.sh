@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.47 2000-05-19 18:31:10 ghudson Exp $
+# $Id: update_ws.sh,v 1.48 2000-05-19 18:54:28 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -232,7 +232,7 @@ failupdate() {
     echo "Attempting to reattach old system packs"
     detach "$SYSLIB"
     AUTOUPDATE=false getcluster -l /etc/athena/cluster.local \
-      "$HOST" "$version"` > /var/athena/cluster.oldrel
+      "$HOST" "$version" > /var/athena/cluster.oldrel
     if [ -s /var/athena/cluster.oldrel ]; then
       . /var/athena/cluster.oldrel
     fi
@@ -246,7 +246,7 @@ sun4)
   # Make sure /usr is a 100MB partition, or it can't run the current release.
   # Since roughly 7% of the partition is lost to filesystem overhead, we
   # check for a filesystem size of 90MB or greater.
-  usrsize=`df -k /usr | awk '{ x = $2' }' END { print x; }' `
+  usrsize=`df -k /usr | awk '{ x = $2; } END { print x; }'`
   if [ 92160 -gt "$usrsize" ]; then
     echo "/usr partition is not big enough for Athena release 8.4 and higher."
     echo "You must reinstall to take this update."
@@ -266,10 +266,11 @@ sun4)
   # the available amount as long as we don't exhaust minfree.
   case $version in
   8.[0123].*|7.*)
-    usrspace=`df -k /usr | awk '{ x = $4 }' END { print x; }'`
+    usrspace=`df -k /usr | awk '{ x = $4; } END { print x; }'`
     if [ 35840 -gt "$usrspace" ]; then
       echo "The /usr partition must have 35MB free for this update.  Please"
       echo "reinstall of clean local files off of the /usr partition."
+      failupdate
     fi
     ;;
   esac
