@@ -41,6 +41,7 @@ if [ ! -f /etc/athena/rc.conf ]; then
 # SYNCCONFIG is set to true.
 
 EOF
+fi
 
 %files
 /usr/athena/man/mandesc
