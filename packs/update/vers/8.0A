@@ -1,15 +1,9 @@
 #!/bin/sh -
-# Version-specific update script for 7.6A
+# Version-specific update script for 8.0A
 
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
-VS2*)	;;
-DS*)
-	echo "NEWUNIX=true"                     >> ${CONFVARS}
-	;;
-RSAIX)
-	;;
 SUN*)
 	# Remove obsolete files.
 	rm -rf /etc/*.sun /etc/TIMEZONE.temp /etc/athena/*old
@@ -44,17 +38,18 @@ SUN*)
 	touch /var/log/authlog /var/log/syslog
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
 
-	# Fix /etc/hosts if it's broken
-	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
-		echo "/etc/hosts was moved to /etc/hosts.old"
-		rm -f /etc/hosts.old
-		mv /etc/hosts /etc/hosts.old
-		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
-			/etc/hosts.old > /etc/hosts
-	fi
-
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                       >> ${CONFVARS}
 	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
 esac
+
+# Fix /etc/hosts if it's broken
+if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
+	echo "/etc/hosts was moved to /etc/hosts.old"
+	rm -f /etc/hosts.old
+	mv /etc/hosts /etc/hosts.old
+	sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
+		/etc/hosts.old > /etc/hosts
+fi
+
