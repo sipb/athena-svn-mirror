@@ -21,8 +21,4 @@ LOGGERLIB	=	$(TOP)/logger/liblogger$(LIBSUFFIX).a
 
 #define DebuggableDebugFlags -g
 
-#ifndef sgi
 STD_INCLUDES	=	-I$(TOP)/include -I/mit/motif/include -I/usr/athena/include
-#else
-STD_INCLUDES	=	-I$(TOP)/include -I. -I/usr/include -I$(TOP)/libMu -I/usr/athena/include
-#endif
