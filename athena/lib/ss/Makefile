@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.4 1989-10-11 11:04:19 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.5 1989-10-11 11:50:45 probe Exp $
 #	$Locker:  $
 
 MACHINE=`/bin/athena/machtype`
@@ -160,7 +160,7 @@ clean:
 		ss_err.h ss_err.c ct.tab.c ct.tab.h cmd_tbl.c \
 		lex.yy.c y.tab.c \
 		libss.a libss_p.a llib-lss.ln mk_cmds \
-		ss.ar ss.tar \
+		ss.ar ss.tar std_rqs.c \
 		TAGS test profiled/*.o
 
 # 'make depend' code
