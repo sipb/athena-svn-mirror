@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.44 $
+# $Revision: 1.45 $
 
 umask 2
 
@@ -76,7 +76,7 @@ switch ( $machine )
     breaksw
 
   case sgi
-    set machthird="athena/ucb/look athena/lib/AL"
+    set machthird="third/unsupported/transcript-v2.1 athena/ucb/look athena/lib/AL"
 endsw
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
