@@ -22,7 +22,7 @@ struct _EggRecentItem {
 	gchar *mime_type;
 	time_t timestamp;
 
-	gboolean private;
+	gboolean private_data;
 
 	GList *groups;
 	
@@ -34,8 +34,8 @@ GType		egg_recent_item_get_type (void) G_GNUC_CONST;
 /* constructors */
 EggRecentItem * egg_recent_item_new (void);
 
-void		egg_recent_item_ref (EggRecentItem *item);
-void		egg_recent_item_unref (EggRecentItem *item);
+EggRecentItem *	egg_recent_item_ref (EggRecentItem *item);
+EggRecentItem *	egg_recent_item_unref (EggRecentItem *item);
 
 /* automatically fetches the mime type, etc */
 EggRecentItem * egg_recent_item_new_from_uri (const gchar *uri);
@@ -44,6 +44,7 @@ gboolean egg_recent_item_set_uri (EggRecentItem *item, const gchar *uri);
 gchar * egg_recent_item_get_uri (const EggRecentItem *item);
 gchar * egg_recent_item_get_uri_utf8 (const EggRecentItem *item);
 gchar * egg_recent_item_get_uri_for_display (const EggRecentItem *item);
+gchar * egg_recent_item_get_short_name (const EggRecentItem *item);
 
 void egg_recent_item_set_mime_type (EggRecentItem *item, const gchar *mime);
 gchar * egg_recent_item_get_mime_type (const EggRecentItem *item);

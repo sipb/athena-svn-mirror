@@ -1,0 +1,1151 @@
+# Irish (Gaeilge) Translation of File Roller.
+# Copyright (C) 2004 Paul Duffy <dubhtach@zion.nuigalway.ie>
+# This file is distributed under the same license as the file-roller package.
+# Paul Duffy <dubhthach@zion.nuigalway.ie>, 2003
+# Alastair McKinstry <mckinstry@computer.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: file-roller HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"PO-Revision-Date: 2004-02-04 08:10+0000\n"
+"Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
+"Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1? 0 : n==2 ? 1 : 2; \n"
+
+#: component/File_Roller_Component.server.in.in.h:1
+#, fuzzy
+msgid "Create Archive..."
+msgstr "Cruathaigh C_artlann Nua"
+
+#: component/File_Roller_Component.server.in.in.h:2
+msgid "Extract Here"
+msgstr ""
+
+#: component/File_Roller_Component.server.in.in.h:3
+msgid "File Roller Component add operations"
+msgstr ""
+
+#: component/File_Roller_Component.server.in.in.h:4
+msgid "File Roller Component extract operations"
+msgstr ""
+
+#: component/File_Roller_Component.server.in.in.h:5
+msgid "File roller component"
+msgstr ""
+
+#: file-roller.desktop.in.h:1
+#, fuzzy
+msgid "Archive Manager"
+msgstr "Saghas Cartlann:"
+
+#: file-roller.desktop.in.h:2
+#, fuzzy
+msgid "Create and modify an archive"
+msgstr "Cruathaigh C_artlann Nua"
+
+#: src/actions.c:97
+msgid "Automatic"
+msgstr "Uathfheidhmeach"
+
+#: src/actions.c:98
+msgid "Arj (.arj)"
+msgstr "Arj (.arj)"
+
+#: src/actions.c:99
+msgid "Ear (.ear)"
+msgstr "Ear (.ear)"
+
+#: src/actions.c:100
+msgid "Jar (.jar)"
+msgstr "Jar (.jar)"
+
+#: src/actions.c:101
+msgid "Lha (.lzh)"
+msgstr "Lha (.lzh)"
+
+#: src/actions.c:102
+msgid "Rar (.rar)"
+msgstr "Rar (.rar)"
+
+#: src/actions.c:103
+msgid "Tar uncompressed (.tar)"
+msgstr ""
+
+#: src/actions.c:104
+msgid "Tar compressed with bzip (.tar.bz)"
+msgstr ""
+
+#: src/actions.c:105
+msgid "Tar compressed with bzip2 (.tar.bz2)"
+msgstr ""
+
+#: src/actions.c:106
+msgid "Tar compressed with gzip (.tar.gz)"
+msgstr ""
+
+#: src/actions.c:107
+msgid "Tar compressed with lzop (.tar.lzo)"
+msgstr ""
+
+#: src/actions.c:108
+msgid "Tar compressed with compress (.tar.Z)"
+msgstr ""
+
+#: src/actions.c:109
+msgid "War (.war)"
+msgstr "War (.war)"
+
+#: src/actions.c:110
+msgid "Zip (.zip)"
+msgstr "Zip (.zip)"
+
+#: src/actions.c:111
+msgid "Zoo (.zoo)"
+msgstr "Zoo (.zoo)"
+
+#: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+msgid "Could not create the archive"
+msgstr "Teip ag cruthaigh an cartlann"
+
+#: src/actions.c:177 src/actions.c:501 src/dlg-batch-add.c:102
+msgid "You have to specify an archive name."
+msgstr ""
+
+#: src/actions.c:197 src/actions.c:521
+msgid "You don't have permission to create an archive in this folder"
+msgstr ""
+
+#: src/actions.c:227 src/actions.c:542 src/actions.c:725 src/actions.c:906
+msgid "The archive already exists.  Do you want to overwrite it?"
+msgstr ""
+
+#: src/actions.c:230 src/actions.c:545 src/actions.c:728 src/actions.c:909
+msgid "Overwrite"
+msgstr ""
+
+#: src/actions.c:247 src/actions.c:562
+msgid "Could not delete the old archive."
+msgstr ""
+
+#: src/actions.c:293
+msgid "New"
+msgstr "Nua"
+
+#: src/actions.c:305 src/actions.c:434 src/actions.c:621
+msgid "All archives"
+msgstr "Gacg Cartlann"
+
+#: src/actions.c:312 src/actions.c:441 src/actions.c:628
+msgid "All files"
+msgstr "Gach Comhadaí"
+
+#: src/actions.c:322 src/actions.c:636
+msgid "Archive type:"
+msgstr "Saghas Cartlann:"
+
+#: src/actions.c:422 src/ui.h:114
+msgid "Open"
+msgstr "Oscail"
+
+#: src/actions.c:500 src/actions.c:520
+msgid "Could not save the archive"
+msgstr "Teip ag sábhaíl an cartlann"
+
+#: src/actions.c:609
+msgid "Save"
+msgstr "Sábháil"
+
+#: src/actions.c:751
+msgid "Could not copy the archive"
+msgstr ""
+
+#: src/actions.c:771
+msgid "Could not move the archive"
+msgstr ""
+
+#: src/actions.c:800
+msgid "Copy"
+msgstr "Cóip"
+
+#: src/actions.c:800
+msgid "Move"
+msgstr "Bog"
+
+#: src/actions.c:805 src/ui.h:66
+msgid "_Copy"
+msgstr "Cói_p"
+
+#: src/actions.c:805
+msgid "_Move"
+msgstr "_Bog"
+
+#: src/actions.c:876 src/window.c:4924
+msgid "Rename"
+msgstr "Athainmigh"
+
+#: src/actions.c:877
+msgid "New archive name (without extension)"
+msgstr ""
+
+#: src/actions.c:881 src/window.c:4929
+msgid "_Rename"
+msgstr "_Athainmigh"
+
+#: src/actions.c:982
+msgid ""
+"The archive cannot be moved to the Trash. Do you want to delete it "
+"permanently?"
+msgstr ""
+
+#: src/actions.c:1219 src/window.c:4643
+msgid "Last Output"
+msgstr ""
+
+#: src/actions.c:1239 src/dlg-extract.c:87
+msgid "Could not display help"
+msgstr ""
+
+#: src/actions.c:1272
+msgid "translator_credits"
+msgstr ""
+"Paul Duffy <dubhtach@zion.nuigalway.ie>\n"
+"Alastair McKinstry <mckinstry@computer.org>"
+
+#. Create the application.
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
+#: src/window.c:1286 src/window.c:3111
+msgid "File Roller"
+msgstr "File Roller"
+
+#: src/actions.c:1283
+msgid "An archive manager for GNOME."
+msgstr ""
+
+#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
+#: src/dlg-add-folder.c:247
+#, c-format
+msgid "You don't have the right permissions to read files from folder \"%s\""
+msgstr ""
+
+#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
+#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+msgid "Could not add the files to the archive"
+msgstr "Níl cead agat comhadaí a chuir leis an cartlann seo."
+
+#: src/dlg-add-files.c:179
+#, fuzzy
+msgid "Add Files"
+msgstr "Comhadaí"
+
+#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+msgid "_Add only if newer"
+msgstr ""
+
+#: src/dlg-add-folder.c:309
+#, fuzzy
+msgid "Add a Folder"
+msgstr "Fillteán"
+
+#: src/dlg-add-folder.c:322
+msgid "_Include subfolders"
+msgstr ""
+
+#: src/dlg-add-folder.c:323
+msgid "Exclude folders that are symbolic lin_ks"
+msgstr ""
+
+#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+msgid "example: *.o; *.bak"
+msgstr "sampla: *.o; *.bak"
+
+#: src/dlg-add-folder.c:327
+msgid "_Include files:"
+msgstr ""
+
+#: src/dlg-add-folder.c:332
+msgid "E_xclude files:"
+msgstr ""
+
+#: src/dlg-add-folder.c:335
+msgid "_Load Options"
+msgstr "Roghnachais _Lódáil"
+
+#: src/dlg-add-folder.c:336
+msgid "Sa_ve Options"
+msgstr "Roghnachais _Sábháil"
+
+#: src/dlg-add-folder.c:796
+msgid "Save Options"
+msgstr ""
+
+#: src/dlg-add-folder.c:797
+msgid "Options Name:"
+msgstr ""
+
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
+#: src/window.c:3969
+msgid "Archive type not supported."
+msgstr ""
+
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+msgid "Destination folder does not exist.  Do you want to create it?"
+msgstr ""
+
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+msgid "Create _Folder"
+msgstr "Cruthaigh _Fillteán"
+
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#, c-format
+msgid "Could not create the destination folder: %s."
+msgstr ""
+
+#: src/dlg-batch-add.c:189
+#, fuzzy
+msgid "Archive not created"
+msgstr "Saghas Cartlann:"
+
+#: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
+#: src/window.c:4234 src/window.c:4254
+msgid "Extraction not performed"
+msgstr ""
+
+#: src/dlg-extract.c:216
+#, c-format
+msgid ""
+"You don't have the right permissions to extract archives in the folder \"%s\""
+msgstr ""
+
+#: src/dlg-extract.c:380
+msgid "Files"
+msgstr "Comhadaí"
+
+#: src/dlg-extract.c:388 src/dlg-extract.c:438
+msgid "    "
+msgstr "    "
+
+#: src/dlg-extract.c:397 src/file_roller.glade.h:17
+msgid "_Files:"
+msgstr "_Comhadaí:"
+
+#: src/dlg-extract.c:408 src/file_roller.glade.h:20
+msgid "example: *.txt; *.doc"
+msgstr "sampalaí: *.txt; *.doc"
+
+#: src/dlg-extract.c:411 src/file_roller.glade.h:14
+msgid "_All files"
+msgstr "G_ach Comhadaí"
+
+#: src/dlg-extract.c:418 src/file_roller.glade.h:19
+msgid "_Selected files"
+msgstr ""
+
+#: src/dlg-extract.c:429
+msgid "Actions"
+msgstr ""
+
+#: src/dlg-extract.c:445
+msgid "R_e-create folders"
+msgstr ""
+
+#: src/dlg-extract.c:449
+msgid "Over_write existing files"
+msgstr ""
+
+#: src/dlg-extract.c:453
+msgid "Do not e_xtract older files"
+msgstr ""
+
+#: src/dlg-extract.c:459 src/file_roller.glade.h:18
+msgid "_Password:"
+msgstr "_Pasfhocal:"
+
+#: src/dlg-extract.c:467
+msgid "_Open destination folder after extraction"
+msgstr ""
+
+#: src/dlg-extract.c:494 src/ui.h:94
+msgid "Extract"
+msgstr ""
+
+#: src/dlg-prop.c:105
+msgid "Path:"
+msgstr "Bealach"
+
+#: src/dlg-prop.c:118
+msgid "Name:"
+msgstr "Ainm:"
+
+#: src/dlg-prop.c:125
+#, c-format
+msgid "%s Properties"
+msgstr "Álbachtaí %s"
+
+#: src/dlg-prop.c:134
+msgid "Modified on:"
+msgstr ""
+
+#: src/dlg-prop.c:140 src/window.c:425
+msgid "%d %B %Y, %H:%M"
+msgstr "%d %B %Y %H:%M"
+
+#: src/dlg-prop.c:148
+#, fuzzy
+msgid "Archive size:"
+msgstr "Saghas Cartlann:"
+
+#: src/dlg-prop.c:159
+#, fuzzy
+msgid "Content size:"
+msgstr "Méid chomad:"
+
+#: src/dlg-prop.c:178
+msgid "Compression ratio:"
+msgstr ""
+
+#: src/dlg-prop.c:193
+msgid "Number of files:"
+msgstr "Uimhir na Comhadaí"
+
+#: src/file-data.c:28
+msgid "Unknown type"
+msgstr "Saghas gan Aithne"
+
+#: src/file-data.c:29
+msgid "Symbolic link"
+msgstr "Ceangal Siombalach"
+
+#: src/file-utils.c:558
+msgid "Cannot find a terminal, using xterm, even if it may not work"
+msgstr ""
+
+#: src/file_roller.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: src/file_roller.glade.h:2
+msgid ""
+"<i><b>Note:</b> the password will be used to encrypt files you add to the "
+"current archive, and to decrypt files you extract from the current archive. "
+"When the archive is closed the password will be deleted.</i>"
+msgstr ""
+
+#: src/file_roller.glade.h:3
+msgid "A_vailable application:"
+msgstr ""
+
+#: src/file_roller.glade.h:4
+msgid "C_reate"
+msgstr ""
+
+#: src/file_roller.glade.h:5
+#, fuzzy
+msgid "Create Archive"
+msgstr "Cruathaigh C_artlann Nua"
+
+#: src/file_roller.glade.h:6
+msgid "Delete"
+msgstr "Dealaigh"
+
+#: src/file_roller.glade.h:7
+msgid "Load Options"
+msgstr "Roghnachais Lôdáil"
+
+#: src/file_roller.glade.h:8
+msgid "Open Files"
+msgstr "Oscail Comhadaí"
+
+#: src/file_roller.glade.h:9
+msgid "Open with an _application"
+msgstr "Oscail le _Cláir"
+
+#: src/file_roller.glade.h:10
+msgid "Password"
+msgstr "Pasfhocal"
+
+#: src/file_roller.glade.h:11
+msgid "R_ecent applications:"
+msgstr ""
+
+#: src/file_roller.glade.h:12
+msgid "View File"
+msgstr "Feic ar Comhad"
+
+#: src/file_roller.glade.h:13
+msgid "View with internal _viewer"
+msgstr ""
+
+#: src/file_roller.glade.h:15
+msgid "_Application:"
+msgstr "_Cláir"
+
+#: src/file_roller.glade.h:16
+msgid "_Archive:"
+msgstr "C_artlann:"
+
+#: src/fr-archive.c:606
+msgid "The file does not exist."
+msgstr ""
+
+#: src/fr-command-tar.c:396
+msgid "Adding file: "
+msgstr ""
+
+#: src/fr-command-tar.c:442
+msgid "Removing file: "
+msgstr ""
+
+#: src/fr-command-tar.c:451 src/window.c:1388
+msgid "Deleting files from archive"
+msgstr ""
+
+#: src/fr-command-tar.c:484
+msgid "Extracting file: "
+msgstr ""
+
+#: src/fr-command-tar.c:529
+msgid "Recompressing archive"
+msgstr ""
+
+#: src/fr-command-tar.c:663
+msgid "Decompressing archive"
+msgstr ""
+
+#: src/fr-stock.c:44
+msgid "_Add"
+msgstr "_Suimigh"
+
+#: src/fr-stock.c:45
+msgid "_Extract"
+msgstr ""
+
+#: src/fr-stock.c:46 src/ui.h:36 src/ui.h:170
+msgid "_View"
+msgstr "_Amharc"
+
+#. Button
+#: src/gtk-utils.c:421
+msgid "Command _Line Output"
+msgstr ""
+
+#: src/main.c:60
+msgid "Add files to the specified archive and quit the program"
+msgstr ""
+
+#: src/main.c:61
+msgid "ARCHIVE"
+msgstr "CARTLANN"
+
+#: src/main.c:64
+msgid "Add files asking the name of the archive and quit the program"
+msgstr ""
+
+#: src/main.c:68
+msgid "Extract archives to the specified folder and quit the program"
+msgstr ""
+
+#: src/main.c:69 src/main.c:77
+msgid "FOLDER"
+msgstr "FILLTEÁN"
+
+#: src/main.c:72
+msgid "Extract archives asking the destination folder and quit the program"
+msgstr ""
+
+#: src/main.c:76
+msgid "Default folder to use for the '--add' and '--extract' commands"
+msgstr ""
+
+#: src/main.c:80
+msgid "Create destination folder without asking confirmation"
+msgstr ""
+
+#: src/ui.h:34
+msgid "_Archive"
+msgstr "C_artlann"
+
+#: src/ui.h:35
+msgid "_Edit"
+msgstr "_Eagar"
+
+#: src/ui.h:37
+msgid "_Help"
+msgstr ""
+
+#: src/ui.h:38
+msgid "_Arrange Files"
+msgstr ""
+
+#: src/ui.h:39
+msgid "Open R_ecent"
+msgstr ""
+
+#: src/ui.h:42
+msgid "_About"
+msgstr "F_aoi"
+
+#: src/ui.h:43
+msgid "Information about the program"
+msgstr "Eolas faoin an chláir seo."
+
+#: src/ui.h:46
+#, fuzzy
+msgid "_Add Files..."
+msgstr "_Suimigh..."
+
+#: src/ui.h:47 src/ui.h:51
+msgid "Add files to the archive"
+msgstr ""
+
+#: src/ui.h:50
+msgid "Add"
+msgstr "Suimigh"
+
+#: src/ui.h:54
+#, fuzzy
+msgid "Add a _Folder..."
+msgstr "Cruthaigh _Fillteán"
+
+#: src/ui.h:55
+#, fuzzy
+msgid "Add a folder to the archive"
+msgstr "Níl cead agat comhadaí a chuir leis an cartlann seo."
+
+#: src/ui.h:58
+msgid "_Close"
+msgstr ""
+
+#: src/ui.h:59
+#, fuzzy
+msgid "Close the current archive"
+msgstr "Teip ag sábhaíl an cartlann"
+
+#: src/ui.h:62
+msgid "_Contents"
+msgstr ""
+
+#: src/ui.h:63
+msgid "Display the File Roller Manual"
+msgstr ""
+
+#: src/ui.h:67
+msgid "Copy the selection"
+msgstr ""
+
+#: src/ui.h:70
+msgid "Cop_y..."
+msgstr "Cói_p..."
+
+#: src/ui.h:71
+msgid "Copy current archive to another folder"
+msgstr "Cópail an cartlann seo go dtí comhadlann eile"
+
+#: src/ui.h:74
+msgid "Cu_t"
+msgstr ""
+
+#: src/ui.h:75
+msgid "Cut the selection"
+msgstr ""
+
+#: src/ui.h:78
+msgid "_Delete..."
+msgstr "_Dealaigh..."
+
+#: src/ui.h:79
+#, fuzzy
+msgid "Delete the selection from the archive"
+msgstr "Níl cead agat comhadaí a chuir leis an cartlann seo."
+
+#: src/ui.h:82
+msgid "Move to _Trash"
+msgstr ""
+
+#: src/ui.h:83
+msgid "Move current archive to trash"
+msgstr ""
+
+#: src/ui.h:86
+msgid "Dese_lect All"
+msgstr ""
+
+#: src/ui.h:87
+msgid "Deselect all files"
+msgstr ""
+
+#: src/ui.h:90
+msgid "_Extract..."
+msgstr ""
+
+#: src/ui.h:91 src/ui.h:95
+msgid "Extract files from the archive"
+msgstr ""
+
+#: src/ui.h:98
+msgid "_Last Output"
+msgstr ""
+
+#: src/ui.h:99
+msgid "View the output produced by the last executed command"
+msgstr ""
+
+#: src/ui.h:102
+msgid "_Move..."
+msgstr "_Bog..."
+
+#: src/ui.h:103
+msgid "Move current archive to another folder"
+msgstr ""
+
+#: src/ui.h:106
+msgid "_New"
+msgstr "_Nua"
+
+#: src/ui.h:107
+msgid "Create a new archive"
+msgstr ""
+
+#: src/ui.h:110
+#, fuzzy
+msgid "_Open..."
+msgstr "_Athainmigh..."
+
+#: src/ui.h:111 src/ui.h:115
+msgid "Open archive"
+msgstr "Oscail Cartlann"
+
+#: src/ui.h:118
+msgid "Open Fi_les..."
+msgstr "Oscail Co_mhadaí..."
+
+#: src/ui.h:119
+msgid "Open selected files with an application"
+msgstr ""
+
+#: src/ui.h:122
+msgid "Pass_word..."
+msgstr "Pas_fhocal"
+
+#: src/ui.h:123
+msgid "Specify a password for this archive"
+msgstr ""
+
+#: src/ui.h:126 src/window.c:5036
+msgid "_Paste"
+msgstr ""
+
+#: src/ui.h:127
+msgid "Paste the clipboard"
+msgstr ""
+
+#: src/ui.h:130
+msgid "_Properties"
+msgstr "_Âlbachtaí"
+
+#: src/ui.h:131
+msgid "Show archive properties"
+msgstr ""
+
+#: src/ui.h:134
+#, fuzzy
+msgid "_Quit"
+msgstr "_Eagar"
+
+#: src/ui.h:135
+#, fuzzy
+msgid "Quit the application"
+msgstr "Oscail le _Cláir"
+
+#: src/ui.h:138
+msgid "_Reload"
+msgstr "_Áthlód"
+
+#: src/ui.h:139
+msgid "Reload current archive"
+msgstr ""
+
+#: src/ui.h:142 src/ui.h:146
+msgid "_Rename..."
+msgstr "_Athainmigh..."
+
+#: src/ui.h:143
+msgid "Rename the selection"
+msgstr ""
+
+#: src/ui.h:147
+msgid "Rename current archive"
+msgstr ""
+
+#: src/ui.h:150
+msgid "Save _As..."
+msgstr ""
+
+#: src/ui.h:151
+msgid "Save the current archive with a different name"
+msgstr ""
+
+#: src/ui.h:154
+msgid "Select _All"
+msgstr "Pioc G_ach rud"
+
+#: src/ui.h:155
+msgid "Select all files"
+msgstr "Pioc gach comhad"
+
+#: src/ui.h:158
+msgid "_Stop"
+msgstr "_Stad"
+
+#: src/ui.h:159
+msgid "Stop current operation"
+msgstr ""
+
+#: src/ui.h:162
+msgid "_Test Integrity"
+msgstr ""
+
+#: src/ui.h:163
+msgid "Test whether the archive contains errors"
+msgstr ""
+
+#: src/ui.h:166
+msgid "_View File"
+msgstr "Fe_ic ar an Comhad"
+
+#: src/ui.h:167 src/ui.h:171
+msgid "View the selected file"
+msgstr ""
+
+#: src/ui.h:179
+msgid "_Toolbar"
+msgstr ""
+
+#: src/ui.h:180
+msgid "View the main toolbar"
+msgstr ""
+
+#: src/ui.h:184
+msgid "Stat_usbar"
+msgstr ""
+
+#: src/ui.h:185
+msgid "View the statusbar"
+msgstr ""
+
+#: src/ui.h:189
+msgid "_Reversed Order"
+msgstr ""
+
+#: src/ui.h:190
+msgid "Reverse the list order"
+msgstr ""
+
+#: src/ui.h:199
+msgid "View All _Files"
+msgstr "Feic ar gach _Comhadaí"
+
+#: src/ui.h:202
+msgid "View as a F_older"
+msgstr "Feic mar C_omhadlann"
+
+#: src/ui.h:210
+msgid "by _Name"
+msgstr ""
+
+#: src/ui.h:211
+msgid "Sort file list by name"
+msgstr ""
+
+#: src/ui.h:213
+msgid "by _Size"
+msgstr ""
+
+#: src/ui.h:214
+msgid "Sort file list by file size"
+msgstr ""
+
+#: src/ui.h:216
+msgid "by T_ype"
+msgstr ""
+
+#: src/ui.h:217
+msgid "Sort file list by type"
+msgstr ""
+
+#: src/ui.h:219
+msgid "by _Date modified"
+msgstr ""
+
+#: src/ui.h:220
+msgid "Sort file list by modification time"
+msgstr ""
+
+#: src/ui.h:222
+msgid "by _Location"
+msgstr ""
+
+#: src/ui.h:223
+msgid "Sort file list by location"
+msgstr ""
+
+#: src/window.c:698
+msgid "Folder"
+msgstr "Fillteán"
+
+#: src/window.c:863
+msgid "[read only]"
+msgstr "[leámh amhain]"
+
+#: src/window.c:957
+#, c-format
+msgid "%d file (%s)"
+msgid_plural "%d files (%s)"
+msgstr[0] "%d Comhadaí (%s)"
+msgstr[1] "%d Comhadaí (%s)"
+msgstr[2] "%d Comhadaí (%s)"
+
+#: src/window.c:962
+#, c-format
+msgid "%d file selected (%s)"
+msgid_plural "%d files selected (%s)"
+msgstr[0] "%d Comhadaí (%s)"
+msgstr[1] "%d Comhadaí (%s)"
+msgstr[2] "%d Comhadaí (%s)"
+
+#: src/window.c:1385
+msgid "Reading archive"
+msgstr "Ag leigh an Cartlann"
+
+#: src/window.c:1391
+msgid "Adding files to archive"
+msgstr ""
+
+#: src/window.c:1394
+msgid "Extracting files from archive"
+msgstr ""
+
+#: src/window.c:1397
+msgid "Testing archive"
+msgstr ""
+
+#: src/window.c:1400
+msgid "Getting the file list"
+msgstr ""
+
+#: src/window.c:1407
+msgid "wait please..."
+msgstr ""
+
+#: src/window.c:1484
+#, c-format
+msgid "Could not display the folder \"%s\""
+msgstr ""
+
+#: src/window.c:1543
+msgid ""
+"This archive is password protected.\n"
+"Please specify a password with the command: Edit->Password"
+msgstr ""
+
+#: src/window.c:1545
+msgid ""
+"The specified password is not valid, please specify a new password with the "
+"command: Edit->Password"
+msgstr ""
+
+#: src/window.c:1550 src/window.c:2169
+msgid "Could not perform the operation"
+msgstr ""
+
+#: src/window.c:1575
+msgid "An error occurred while extracting files."
+msgstr ""
+
+#: src/window.c:1579
+msgid "An error occurred while loading the archive."
+msgstr ""
+
+#: src/window.c:1583
+msgid "An error occurred while deleting files from the archive."
+msgstr ""
+
+#: src/window.c:1587
+msgid "An error occurred while adding files to the archive."
+msgstr ""
+
+#: src/window.c:1591
+msgid "An error occurred while testing archive."
+msgstr ""
+
+#: src/window.c:1600
+msgid "Command not found."
+msgstr ""
+
+#: src/window.c:1603
+msgid "Command exited abnormally."
+msgstr ""
+
+#: src/window.c:1732
+msgid "Test Result"
+msgstr ""
+
+#: src/window.c:1968
+msgid "You don't have the right permissions."
+msgstr ""
+
+#: src/window.c:2006
+msgid "You can't add an archive to itself."
+msgstr "Níl tú in ann cartlann a chuir leis féin."
+
+#: src/window.c:2203
+msgid ""
+"Do you want to add this file to the current archive or open it as a new "
+"archive?"
+msgstr ""
+"An bhfuil tú ag iaraigh na comhadaí seo a chuir leis an cartlann seo, nó "
+"oscail i cartlann nua?"
+
+#: src/window.c:2240
+msgid "Do you want to create a new archive with these files?"
+msgstr ""
+"An bhfuil tú ag iaraigh cartlann nua a cruathaigh le haighaidh na comhadaí "
+"seo?"
+
+#: src/window.c:2243
+msgid "Create _Archive"
+msgstr "Cruathaigh C_artlann Nua"
+
+#: src/window.c:2564
+msgid "Size"
+msgstr "Méid"
+
+#: src/window.c:2565
+msgid "Type"
+msgstr "Saghas"
+
+#: src/window.c:2566
+msgid "Date Modified"
+msgstr ""
+
+#: src/window.c:2567
+msgid "Location"
+msgstr ""
+
+#: src/window.c:2574
+msgid "Name"
+msgstr "Ainm"
+
+#: src/window.c:3031
+#, fuzzy, c-format
+msgid "Open '%s'"
+msgstr "Oscail Comhadaí"
+
+#: src/window.c:3350
+msgid "Go to the previous visited location"
+msgstr ""
+
+#: src/window.c:3358
+msgid "Go to the next visited location"
+msgstr ""
+
+#: src/window.c:3366
+msgid "Go up one level"
+msgstr ""
+
+#: src/window.c:3374
+msgid "Go to the home location"
+msgstr ""
+
+#. current location
+#: src/window.c:3393
+msgid "Location:"
+msgstr "Áit:"
+
+#: src/window.c:3904
+#, c-format
+msgid "Could not open \"%s\""
+msgstr "Teip ag oscailt \"%s\""
+
+#: src/window.c:3962
+#, c-format
+msgid "Could not save the archive \"%s\""
+msgstr ""
+
+#: src/window.c:4856
+msgid "The new name is void."
+msgstr ""
+
+#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+msgid "Please use a different name."
+msgstr ""
+
+#: src/window.c:4860
+msgid "The new name is equal to the old one."
+msgstr ""
+
+#: src/window.c:4869
+#, c-format
+msgid ""
+"The name \"%s\" is not valid because it cannot contain the characters: %s\n"
+"\n"
+"%s"
+msgstr ""
+
+#: src/window.c:4925
+msgid "New folder name"
+msgstr "Ainm nua do fillteán"
+
+#: src/window.c:4925
+msgid "New file name"
+msgstr "Ainm nua do comhad"
+
+#: src/window.c:4946
+msgid "Could not rename the folder"
+msgstr ""
+
+#: src/window.c:4946
+msgid "Could not rename the file"
+msgstr ""
+
+#: src/window.c:5031
+msgid "Paste Selection"
+msgstr ""
+
+#: src/window.c:5032
+msgid "Destination folder"
+msgstr ""
+
+#: src/window.c:5614
+msgid "Add files to an archive"
+msgstr ""
+
+#: src/window.c:5641
+msgid "Extract archive"
+msgstr ""
+
+#~ msgid "_Zip"
+#~ msgstr "_Zip"
+
+#~ msgid "Low"
+#~ msgstr "Iseal"
+
+#~ msgid "_Location"
+#~ msgstr "_Áit"
+
+#~ msgid "_Size"
+#~ msgstr "_Méid"
+
+#~ msgid "_Type"
+#~ msgstr "_Saghas"
+
+#~ msgid "View"
+#~ msgstr "Feic ar"
+
+#~ msgid "Stop"
+#~ msgstr "Stad"

@@ -20,13 +20,17 @@ applications_DATA = file-roller.applications
 mimedir = $(datadir)/mime-info
 mime_DATA = file-roller.mime file-roller.keys
 
+distcleancheck_listfiles = find . -type f -print | grep -v 'omf\.out'
+
+distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper' | grep -v 'omf' | grep -v 'figures'
+
+
 EXTRA_DIST = 			\
 	AUTHORS			\
 	HACKING			\
 	MAINTAINERS		\
 	NEWS			\
 	README			\
-	acinclude.m4		\
 	file-roller.spec	\
 	file-roller.spec.in	\
 	intltool-merge.in	\
@@ -39,3 +43,10 @@ EXTRA_DIST = 			\
 	$(applications_DATA)	\
 	$(mime_DATA)		\
 	$(icon_DATA)
+
+DISTCLEANFILES =                        \
+	po/.intltool-merge-cache        \
+	$(desktop_DATA)                 \
+	intltool-extract                \
+	intltool-merge                  \
+	intltool-update

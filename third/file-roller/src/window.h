@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +27,9 @@
 #include "egg-recent.h"
 #include "fr-archive.h"
 #include "typedefs.h"
+#include "file-list.h"
 
-#define GCONF_NOTIFICATIONS 9
+#define GCONF_NOTIFICATIONS 8
 
 enum {
 	COLUMN_FILE_DATA,
@@ -48,7 +49,8 @@ typedef enum {
 	FR_BATCH_ACTION_ADD_INTERACT,
 	FR_BATCH_ACTION_EXTRACT,
 	FR_BATCH_ACTION_EXTRACT_INTERACT,
-	FR_BATCH_ACTION_CLOSE
+	FR_BATCH_ACTION_CLOSE,
+	FR_BATCH_ACTION_QUIT
 } FRBatchAction;
 
 typedef struct {
@@ -58,18 +60,35 @@ typedef struct {
 } FRBatchActionDescription;
 
 typedef struct {
+	guint      converting : 1;
+	char      *temp_dir;
+	FRArchive *new_archive;
+} FRConvertData;
+
+typedef enum {
+	FR_CLIPBOARD_OP_CUT,
+	FR_CLIPBOARD_OP_COPY
+} FRClipboardOp;
+
+typedef struct {
         GtkWidget *      app;
 	GtkWidget *      list_view;
 	GtkListStore *   list_store;
 	GtkListStore *   empty_store;
 	GtkWidget *      toolbar;
 	GtkWidget *      statusbar;
-	GtkWidget *      progress;
-
 	GtkWidget *      location_bar;
-	GtkWidget *      location_opt;
+	GtkWidget *      location_entry;
 	GtkWidget *      location_label;
 	GtkWidget *      up_button;
+	GtkWidget *      home_button;
+	GtkWidget *      back_button;
+	GtkWidget *      fwd_button;
+
+	GtkTooltips     *tooltips;
+	guint            help_message_cid;
+	guint            list_info_cid;
+	guint            progress_cid;
 
 	GtkWidget *      up_arrows[5];
 	GtkWidget *      down_arrows[5];
@@ -100,7 +119,8 @@ typedef struct {
 	GtkSortType      sort_type;
 
 	WindowListMode   list_mode;
-	char *           current_dir;
+	GList *          history;
+	GList *          history_current;
 	char *           password;
 	FRCompression    compression;
 
@@ -109,49 +129,22 @@ typedef struct {
 	gint             activity_ref;              /* when > 0 some activity
                                                      * is present. */
 
-	/* Menu items. */
+	VisitDirHandle  *vd_handle;
 
-	GtkWidget *      mitem_new_archive;
-	GtkWidget *      mitem_open_archive;
-	GtkWidget *      mitem_close;
-	GtkWidget *      mitem_recents_menu;
+	FRConvertData    convert_data;
 
-	GtkWidget *      mitem_archive_prop;
-	GtkWidget *      mitem_move_archive;
-	GtkWidget *      mitem_copy_archive;
-	GtkWidget *      mitem_rename_archive;
-	GtkWidget *      mitem_delete_archive;
+	gboolean         stoppable;
 
-	GtkWidget *      mitem_view_toolbar;
-	GtkWidget *      mitem_view_statusbar;
-	GtkWidget *      mitem_view_flat;
-	GtkWidget *      mitem_view_as_dir;
-	GtkWidget *      mitem_sort[5];
-	GtkWidget *      mitem_sort_reversed;
-	GtkWidget *      mitem_password;
+	GList           *clipboard;
+	guint            clipboard_op : 1;
+	char            *clipboard_current_dir;
 
-	GtkWidget *      mitem_add;
-	GtkWidget *      mitem_delete;
-	GtkWidget *      mitem_extract;
-	GtkWidget *      mitem_test;
-	GtkWidget *      mitem_view;
-	GtkWidget *      mitem_open;
-	GtkWidget *      mitem_stop;
-	GtkWidget *      mitem_reload;
+	GtkActionGroup  *actions;
 
-	GtkWidget *      toolbar_new;
-	GtkWidget *      toolbar_open;
-	GtkWidget *      toolbar_add;
-	GtkWidget *      toolbar_delete;
-	GtkWidget *      toolbar_extract;
-	GtkWidget *      toolbar_view;
-	GtkWidget *      toolbar_stop;
-
-	GtkWidget *      file_popup_menu;
-	GtkWidget *      popupmenu_file[8];
-
-	EggRecentViewGtk *recent_view;
+	EggRecentViewUIManager *recent_view;
 	EggRecentModel   *recent_model;
+	GtkWidget        *file_popup_menu;
+	GtkWidget        *mitem_recents_menu;
 
 	/* drag data */
 
@@ -171,23 +164,31 @@ typedef struct {
 					 * too .*/
 
 	GList *  dropped_file_list;     /* the list of dropped files. */
-	gboolean add_dropped_files;     /* whether we must add dropped files
+	gboolean add_after_creation;    /* whether we must add dropped files
 					 * after creating an archive. */
+	gboolean add_after_opening;     /* whether we must add dropped files
+					 * after opening an archive. Used in 
+					 * batch mode to avoid unnecessary 
+					 * archive loading. */
+
 	gboolean adding_dropped_files;  /* whether we are adding dropped 
 					 * files. */
 	gboolean update_dropped_files;  /* the update flag of the add 
 					 * operation.  */
 
-	/* batch mode data */
+	gboolean extracting_dragged_files;
+	gboolean extracting_dragged_files_interrupted;
 
-	GtkWidget *batch_win;         /* Window to show when in batch mode. */
-	GtkWidget *batch_action_lbl;      
-	GtkWidget *batch_message_lbl;
-	GtkWidget *batch_quit_button;
-	GtkWidget *batch_help_button;
-	GtkWidget *batch_image;
-       
-	GdkPixbuf *batch_icon;
+	/* progress dialog data */
+
+	GtkWidget *progress_dialog;
+	GtkWidget *pd_message;
+	GtkWidget *pd_progress_bar;
+	gboolean   progress_pulse;
+	guint      progress_timeout;  /* Timeout to display the progress dialog. */
+	guint      hide_progress_timeout;  /* Timeout to hide the progress dialog. */
+
+	/* batch mode data */
 
 	gboolean   batch_mode;          /* whether we are in a non interactive
 					 * mode. */
@@ -198,49 +199,92 @@ typedef struct {
 	guint      cnxn_id[GCONF_NOTIFICATIONS];
 
 	gulong     theme_changed_handler_id;
+	gboolean   non_interactive;
 } FRWindow;
 
 
 FRWindow * window_new                       ();
 
-void       window_close                     (FRWindow   *window);
+void       window_close                     (FRWindow      *window);
 
 /* archive operations */
 
-void       window_archive_new               (FRWindow   *window, 
-					     const char *filename);
+gboolean   window_archive_new               (FRWindow      *window, 
+					     const char    *filename);
 
-void       window_archive_open              (FRWindow   *window, 
-					     const char *filename);
+gboolean   window_archive_open              (FRWindow      *window, 
+					     const char    *filename,
+					     GtkWindow     *parent);
 
-void       window_archive_reload            (FRWindow   *window);
+void       window_archive_save_as           (FRWindow      *window, 
+					     const char    *filename);
 
-void       window_archive_rename            (FRWindow   *window, 
-					     const char *filename);
+void       window_archive_reload            (FRWindow      *window);
 
-void       window_archive_add_files         (FRWindow   *window,
-					     GList      *file_list,
-					     gboolean    update);
+void       window_archive_rename            (FRWindow      *window, 
+					     const char    *filename);
 
-void       window_archive_extract           (FRWindow   *window,
-					     GList      *file_list,
-					     const char *extract_to_dir,
-					     gboolean    skip_older,
-					     gboolean    overwrite,
-					     gboolean    junk_paths,
-					     const char *password);
+void       window_archive_add               (FRWindow      *window,
+					     GList         *file_list,
+					     const char    *base_dir,
+					     const char    *dest_dir,
+					     gboolean       update,
+					     const char    *password,
+					     FRCompression  compression);
 
-void       window_archive_close             (FRWindow   *window);
+void       window_archive_add_with_wildcard (FRWindow      *window,
+					     const char    *include_files,
+					     const char    *exclude_files,
+					     const char    *base_dir,
+					     const char    *dest_dir,
+					     gboolean       update,
+					     gboolean       recursive,
+					     gboolean       follow_links,
+					     const char    *password,
+					     FRCompression  compression);
 
-void       window_set_password              (FRWindow   *window,
-					     const char *password);
+void       window_archive_add_directory     (FRWindow      *window,
+					     const char    *directory,
+					     const char    *base_dir,
+					     const char    *dest_dir,
+					     gboolean       update,
+					     const char    *password,
+					     FRCompression  compression);
+
+void       window_archive_add_items         (FRWindow      *window,
+					     GList         *item_list,
+					     gboolean       update);
+
+void       window_archive_remove            (FRWindow      *window,
+					     GList         *file_list,
+					     FRCompression  compression);
+
+void       window_archive_extract           (FRWindow      *window,
+					     GList         *file_list,
+					     const char    *extract_to_dir,
+					     const char    *base_dir,
+					     gboolean       skip_older,
+					     gboolean       overwrite,
+					     gboolean       junk_paths,
+					     const char    *password);
+
+void       window_archive_close             (FRWindow      *window);
+
+void       window_set_password              (FRWindow      *window,
+					     const char    *password);
 
 /**/
 
 void       window_go_to_location            (FRWindow       *window, 
-					     char           *path);
+					     const char     *path);
+
+const char*window_get_current_location      (FRWindow       *window);
 
 void       window_go_up_one_level           (FRWindow       *window);
+
+void       window_go_back                   (FRWindow       *window);
+
+void       window_go_forward                (FRWindow       *window);
 
 void       window_set_list_mode             (FRWindow       *window, 
 					     WindowListMode  list_mode);
@@ -258,7 +302,17 @@ GList *    window_get_file_list_selection   (FRWindow    *window,
 GList *    window_get_file_list_pattern     (FRWindow    *window,
 					     const char  *pattern);
 
+void       window_rename_selection          (FRWindow    *window);
+
+void       window_cut_selection             (FRWindow    *window);
+
+void       window_copy_selection            (FRWindow    *window);
+
+void       window_paste_selection           (FRWindow    *window);
+
 /**/
+
+void       window_stop                      (FRWindow    *window);
 
 void       window_start_activity_mode       (FRWindow    *window);
 
@@ -266,7 +320,8 @@ void       window_stop_activity_mode        (FRWindow    *window);
 
 /**/
 
-void       window_view_last_output          (FRWindow *window); 
+void       window_view_last_output          (FRWindow *window,
+					     const char *title); 
 
 void       window_view_file                 (FRWindow *window, 
 					     char     *file);
@@ -332,5 +387,12 @@ void       window_archive__open_add           (FRWindow      *window,
 					       GList         *file_list);
 
 void       window_archive__close              (FRWindow      *window);
+
+void       window_archive__quit               (FRWindow      *window);
+
+
+/**/
+
+void       window_convert_data_free           (FRWindow *window);
 
 #endif /* FR_WINDOW_H */

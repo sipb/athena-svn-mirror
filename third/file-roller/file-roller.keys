@@ -22,7 +22,19 @@ application/x-lzop-compressed-tar
 	short_list_application_ids_for_intermediate_user_level=file-roller
 	short_list_application_ids_for_advanced_user_level=file-roller
 
+application/x-arj
+	icon_filename=gnome-compressed
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+
 application/zip
+	icon_filename=gnome-compressed
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+
+application/x-java-archive
 	icon_filename=gnome-compressed
 	short_list_application_ids_for_novice_user_level=file-roller
 	short_list_application_ids_for_intermediate_user_level=file-roller
@@ -65,6 +77,12 @@ application/x-compress
 	short_list_application_ids_for_advanced_user_level=file-roller 
 
 application/x-lzop
+	icon_filename=gnome-compressed
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+
+application/x-zoo
 	icon_filename=gnome-compressed
 	short_list_application_ids_for_novice_user_level=file-roller
 	short_list_application_ids_for_intermediate_user_level=file-roller

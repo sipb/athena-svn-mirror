@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  */
 
-#include <fnmatch.h>
+#include <config.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,8 +39,12 @@
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <gconf/gconf-client.h>
 #include "file-utils.h"
+#include "utf8-fnmatch.h"
+
 
 #define BUF_SIZE 4096
+#define MAX_PATTERNS 128
+
 
 gboolean
 path_is_file (const gchar *path)
@@ -117,6 +121,25 @@ dir_is_empty (const gchar *path)
 	closedir (dp);
 
 	return TRUE;
+}
+
+
+/* Check whether the path_src is contained in path_dest */
+gboolean
+path_in_path (const char  *path_src,
+	      const char  *path_dest)
+{
+	int path_src_l, path_dest_l;
+
+	if ((path_src == NULL) || (path_dest == NULL))
+		return FALSE;
+	
+	path_src_l = strlen (path_src);
+	path_dest_l = strlen (path_dest);
+	
+	return ((path_dest_l > path_src_l)
+		&& (strncmp (path_src, path_dest, path_src_l) == 0)
+		&& ((path_src_l == 1) || (path_dest[path_src_l] == '/')));
 }
 
 
@@ -434,57 +457,50 @@ path_list_dup (GList *path_list)
 }
 
 
-/* characters to escape */
-static gchar bad_char[] = { '$', '\'', '`', '"', '\\', '!', '?', '*',
-			    ' ', '(', ')', '[', ']', '&', '|', '@', '#',
-			    ';', '=', '-' };
-
-/* the size of bad_char */
-static const gint bad_chars = sizeof (bad_char) / sizeof (gchar);
-
-
 /* counts how many characters to escape in @str. */
-static gint
-count_chars_to_escape (const gchar *str)
+static int
+count_chars_to_escape (const char *str, 
+		       const char *meta_chars)
 {
-	const gchar *s;
-	gint i, n;
+	int         meta_chars_n = strlen (meta_chars);
+	const char *s;
+	int         n = 0;
 
-	n = 0;
-	for (s = str; *s != 0; s++)
-		for (i = 0; i < bad_chars; i++)
-			if (*s == bad_char[i]) {
+	for (s = str; *s != 0; s++) {
+		int i;
+		for (i = 0; i < meta_chars_n; i++) 
+			if (*s == meta_chars[i]) {
 				n++;
 				break;
 			}
+	}
 	return n;
 }
 
 
-/* escape with backslash the file name. */
-gchar*
-shell_escape (const gchar *filename)
+/* escape with backslash the string @str. */
+char*
+escape_str (const char *str, 
+	    const char *meta_chars)
 {
-	gchar *escaped;
-	gint i, new_l;
-	const gchar *s;
-	gchar *t;
+	int         meta_chars_n = strlen (meta_chars);
+	char       *escaped;
+	int         i, new_l;
+	const char *s;
+	char       *t;
 
-	if (filename == NULL) 
+	if (str == NULL) 
 		return NULL;
 
-	new_l = strlen (filename) + count_chars_to_escape (filename);
+	new_l = strlen (str) + count_chars_to_escape (str, meta_chars);
 	escaped = g_malloc (new_l + 1);
 
-	s = filename;
+	s = str;
 	t = escaped;
 	while (*s) {
-		gboolean is_bad;
-	
-		is_bad = FALSE;
-		for (i = 0; (i < bad_chars) && !is_bad; i++)
-			is_bad = (*s == bad_char[i]);
-
+		gboolean is_bad = FALSE;
+		for (i = 0; (i < meta_chars_n) && !is_bad; i++)
+			is_bad = (*s == meta_chars[i]);
 		if (is_bad)
 			*t++ = '\\';
 		*t++ = *s++;
@@ -492,6 +508,14 @@ shell_escape (const gchar *filename)
 	*t = 0;
 
 	return escaped;
+}
+
+
+/* escape with backslash the file name. */
+char*
+shell_escape (const char *filename)
+{
+	return escape_str (filename, "$\'`\"\\!?* ()[]&|@#:;=-");
 }
 
 
@@ -575,15 +599,13 @@ application_get_command (const GnomeVFSMimeApplication *app)
 }
 
 
-#define CASE_INSENSITIVE (1 << 4)
-
-
 gboolean
 match_patterns (char       **patterns, 
-		const char  *string)
+		const char  *string,
+		int          flags)
 {
-	gint i;
-	gint result;
+	int i;
+	int result;
        
 	if (patterns[0] == NULL)
 		return TRUE;
@@ -594,7 +616,7 @@ match_patterns (char       **patterns,
 	result = FNM_NOMATCH;
 	i = 0;
 	while ((result != 0) && (patterns[i] != NULL)) {
-		result = fnmatch (patterns[i], string, CASE_INSENSITIVE);
+		result = g_utf8_fnmatch (patterns[i], string, flags);
 		i++;
 	}
 	
@@ -602,15 +624,367 @@ match_patterns (char       **patterns,
 }
 
 
+static const char *
+g_utf8_strstr (const char *haystack, const char *needle)
+{
+	const char *s;
+	gsize       i;
+	gsize       haystack_len = g_utf8_strlen (haystack, -1);
+	gsize       needle_len = g_utf8_strlen (needle, -1);
+	int         needle_size = strlen (needle);
+
+	s = haystack;
+	for (i = 0; i <= haystack_len - needle_len; i++) {
+		if (strncmp (s, needle, needle_size) == 0)
+			return s;
+		s = g_utf8_next_char(s);
+	}
+
+	return NULL;
+}
+
+
+static char**
+g_utf8_strsplit (const char *string,
+		 const char *delimiter,
+		 int         max_tokens)
+{
+	GSList      *string_list = NULL, *slist;
+	char       **str_array;
+	const char  *s;
+	guint        n = 0;
+	const char  *remainder;
+
+	g_return_val_if_fail (string != NULL, NULL);
+	g_return_val_if_fail (delimiter != NULL, NULL);
+	g_return_val_if_fail (delimiter[0] != '\0', NULL);
+	
+	if (max_tokens < 1)
+		max_tokens = G_MAXINT;
+	
+	remainder = string;
+	s = g_utf8_strstr (remainder, delimiter);
+	if (s != NULL) {
+		gsize delimiter_size = strlen (delimiter);
+		
+		while (--max_tokens && (s != NULL)) {
+			gsize  size = s - remainder;
+			char  *new_string;
+
+			new_string = g_new (char, size + 1);
+			strncpy (new_string, remainder, size);
+			new_string[size] = 0;
+
+			string_list = g_slist_prepend (string_list, new_string);
+			n++;
+			remainder = s + delimiter_size;
+			s = g_utf8_strstr (remainder, delimiter);
+		}
+	}
+	if (*string) {
+		n++;
+		string_list = g_slist_prepend (string_list, g_strdup (remainder));
+	}
+	
+	str_array = g_new (char*, n + 1);
+	
+	str_array[n--] = NULL;
+	for (slist = string_list; slist; slist = slist->next)
+		str_array[n--] = slist->data;
+	
+	g_slist_free (string_list);
+	
+	return str_array;
+}
+
+
+static char*
+g_utf8_strchug (char *string)
+{
+	char     *scan;
+	gunichar  c;
+
+	g_return_val_if_fail (string != NULL, NULL);
+	
+	scan = string;
+	c = g_utf8_get_char (scan);
+	while (g_unichar_isspace (c)) {
+		scan = g_utf8_next_char (scan);
+		c = g_utf8_get_char (scan);
+	}
+
+	g_memmove (string, scan, strlen (scan) + 1);
+	
+	return string;
+}
+
+
+static char*
+g_utf8_strchomp (char *string)
+{
+	char   *scan;
+	gsize   len;
+ 
+	g_return_val_if_fail (string != NULL, NULL);
+	
+	len = g_utf8_strlen (string, -1);
+
+	if (len == 0)
+		return string;
+
+	scan = g_utf8_offset_to_pointer (string, len - 1);
+
+	while (len--) {
+		gunichar c = g_utf8_get_char (scan);
+		if (g_unichar_isspace (c))
+			*scan = '\0';
+		else
+			break;
+		scan = g_utf8_find_prev_char (string, scan);
+	}
+	
+	return string;
+}
+
+
+#define g_utf8_strstrip(string)    g_utf8_strchomp (g_utf8_strchug (string))
+
+
 char **
 search_util_get_patterns (const char *pattern_string)
 {
-	gchar **patterns;
-	gint    i;
+	char **patterns;
+	int    i;
 	
-	patterns = g_strsplit (pattern_string, ";", 10);
+	patterns = g_utf8_strsplit (pattern_string, ";", MAX_PATTERNS);
 	for (i = 0; patterns[i] != NULL; i++) 
-		patterns[i] = g_strstrip (patterns[i]);
+		patterns[i] = g_utf8_strstrip (patterns[i]);
 	
 	return patterns;
+}
+
+
+GnomeVFSFileSize
+get_dest_free_space (const char  *path)
+{
+	char             *escaped;
+	GnomeVFSURI      *uri;
+	GnomeVFSResult    result;
+	GnomeVFSFileSize  ret_val;
+
+	escaped = gnome_vfs_escape_path_string (path);
+	uri = gnome_vfs_uri_new (escaped);
+	g_free (escaped);
+
+	result = gnome_vfs_get_volume_free_space (uri, &ret_val);
+
+	gnome_vfs_uri_unref (uri);
+
+	if (result != GNOME_VFS_OK)
+		return (GnomeVFSFileSize) 0;
+	else
+		return ret_val;
+}
+
+
+#define SPECIAL_DIR(x) (! strcmp (x, "..") || ! strcmp (x, "."))
+
+
+static gboolean 
+path_list_new (const char  *path, 
+	       GList      **files, 
+	       GList      **dirs)
+{
+	DIR *dp;
+	struct dirent *dir;
+	struct stat stat_buf;
+	GList *f_list = NULL;
+	GList *d_list = NULL;
+
+	dp = opendir (path);
+	if (dp == NULL) return FALSE;
+
+	while ((dir = readdir (dp)) != NULL) {
+		gchar *name;
+		gchar *filepath;
+
+		/* Skip removed files */
+		if (dir->d_ino == 0) 
+			continue;
+
+		name = dir->d_name;
+		if (strcmp (path, "/") == 0)
+			filepath = g_strconcat (path, name, NULL);
+		else
+			filepath = g_strconcat (path, "/", name, NULL);
+
+		if (stat (filepath, &stat_buf) >= 0) {
+			if (dirs  
+			    && S_ISDIR (stat_buf.st_mode) 
+			    && ! SPECIAL_DIR (name))
+			{
+				d_list = g_list_prepend (d_list, filepath);
+				filepath = NULL;
+			} else if (files && S_ISREG (stat_buf.st_mode)) {
+				f_list = g_list_prepend (f_list, filepath);
+				filepath = NULL;
+			}
+		}
+
+		if (filepath) g_free (filepath);
+	}
+	closedir (dp);
+
+	if (dirs) *dirs = g_list_reverse (d_list);
+	if (files) *files = g_list_reverse (f_list);
+
+	return TRUE;
+}
+
+
+gboolean
+rmdir_recursive (const gchar *directory)
+{
+	GList    *files, *dirs;
+	GList    *scan;
+	gboolean  error = FALSE;
+
+	if (! path_is_dir (directory)) 
+		return FALSE;
+
+	path_list_new (directory, &files, &dirs);
+
+	for (scan = files; scan; scan = scan->next) {
+		char *file = scan->data;
+		if ((unlink (file) < 0)) {
+			g_warning ("Cannot delete %s\n", file);
+			error = TRUE;
+		}
+	}
+	path_list_free (files);
+
+	for (scan = dirs; scan; scan = scan->next) {
+		char *sub_dir = scan->data;
+		if (rmdir_recursive (sub_dir) == FALSE)
+			error = TRUE;
+		if (rmdir (sub_dir) == 0)
+			error = TRUE;
+	}
+	path_list_free (dirs);
+
+	if (rmdir (directory) == 0)
+		error = TRUE;
+
+	return !error;
+}
+
+
+char *
+_g_strdup_with_max_size (const char *s,
+			 int         max_size)
+{
+	char *result;
+	int   l = strlen (s);
+
+	if (l > max_size) {
+		char *first_half;
+		char *second_half;
+		int   offset;
+		int   half_max_size = max_size / 2 + 1;
+
+		first_half = g_strndup (s, half_max_size);
+		offset = half_max_size + l - max_size;
+		second_half = g_strndup (s + offset, half_max_size);
+
+		result = g_strconcat (first_half, "...", second_half, NULL);
+
+		g_free (first_half);
+		g_free (second_half);
+	} else
+		result = g_strdup (s);
+
+	return result;
+}
+
+
+const char *
+eat_spaces (const char *line)
+{
+	while ((*line == ' ') && (*line != 0))
+		line++;
+	return line;
+}
+
+
+char **
+split_line (const char *line, 
+	    int   n_fields)
+{
+	char       **fields;
+	const char  *scan, *field_end;
+	int          i;
+
+	fields = g_new0 (char *, n_fields + 1);
+	fields[n_fields] = NULL;
+
+	scan = eat_spaces (line);
+	for (i = 0; i < n_fields; i++) {
+		field_end = strchr (scan, ' ');
+		if (field_end != NULL) {
+			fields[i] = g_strndup (scan, field_end - scan);
+			scan = eat_spaces (field_end);
+		}
+	}
+
+	return fields;
+}
+
+
+const char *
+get_last_field (const char *line,
+		int         last_field)
+{
+	const char *field;
+	int         i;
+
+	last_field--;
+	field = eat_spaces (line);
+	for (i = 0; i < last_field; i++) {
+		field = strchr (field, ' ');
+		field = eat_spaces (field);
+	}
+
+	return field;
+}
+
+
+char *
+get_temp_work_dir (void)
+{
+	char temp_dir_template[] = "/tmp/fr-XXXXXX";
+	g_assert (mkdtemp (temp_dir_template) != NULL);
+	return g_strdup (temp_dir_template);
+}
+
+
+#define MAX_TRIES 50
+
+
+char *
+get_temp_work_dir_name (void)
+{
+	char       *result = NULL;
+	static int  count = 0;
+	int         try = 0;
+
+	do {
+		g_free (result);
+		result = g_strdup_printf ("%s%s.%d.%d",
+					  g_get_tmp_dir (),
+					  "/file-roller",
+					  getpid (),
+					  count++);
+	} while (path_is_file (result) && (try++ < MAX_TRIES));
+
+	return result;
 }

@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,14 +40,26 @@ typedef struct _FRProcessClass  FRProcessClass;
 
 #define BUFFER_SIZE 16384
 
-typedef struct {
-	GList *args;        /* command to execute */
-	char  *dir;         /* working directory */
-	guint  sticky : 1;  /* whether the command must be executed even if
-			     * a previous command has failed. */
-} FRCommandInfo;
 
 typedef void (*ProcLineFunc) (char *line, gpointer data);
+typedef void (*ProcFunc)     (gpointer data);
+
+
+typedef struct {
+	GList *args;              /* command to execute */
+	char  *dir;               /* working directory */
+	guint  sticky : 1;        /* whether the command must be executed even
+				   * if a previous command has failed. */
+	guint  ignore_error : 1;  /* whether to continue to execute other 
+				   * commands if this command fails. */
+
+	ProcFunc begin_func;
+	gpointer begin_data;
+
+	ProcFunc end_func;
+	gpointer end_data;
+} FRCommandInfo;
+
 
 struct _FRProcess {
 	GObject  __parent;
@@ -94,15 +106,18 @@ struct _FRProcess {
 					* commands. */
 };
 
+
 struct _FRProcessClass {
 	GObjectClass __parent_class;
 
 	/* -- Signals -- */
 
-	void (* start) (FRProcess   *fr_proc);
+	void (* start)         (FRProcess   *fr_proc);
 
-	void (* done)  (FRProcess   *fr_proc,
-			FRProcError *error);
+	void (* done)          (FRProcess   *fr_proc,
+				FRProcError *error);
+
+	void (* sticky_only)   (FRProcess   *fr_proc);
 };
 
 
@@ -118,6 +133,14 @@ void        fr_process_begin_command        (FRProcess    *fr_proc,
 void        fr_process_add_arg              (FRProcess    *fr_proc, 
 					     const char   *arg);
 
+void        fr_process_set_begin_func       (FRProcess    *fr_proc, 
+					     ProcFunc      func,
+					     gpointer      func_data);
+
+void        fr_process_set_end_func         (FRProcess    *fr_proc, 
+					     ProcFunc      func,
+					     gpointer      func_data);
+
 void        fr_process_end_command          (FRProcess    *fr_proc);
 
 void        fr_process_set_working_dir      (FRProcess    *fr_proc, 
@@ -125,6 +148,9 @@ void        fr_process_set_working_dir      (FRProcess    *fr_proc,
 
 void        fr_process_set_sticky           (FRProcess    *fr_proc, 
 					     gboolean      sticky);
+
+void        fr_process_set_ignore_error     (FRProcess    *fr_proc, 
+					     gboolean      ignore_error);
 
 void        fr_process_use_standard_locale  (FRProcess    *fr_proc,
 					     gboolean      use_stand_locale);

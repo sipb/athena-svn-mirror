@@ -23,6 +23,16 @@ extern void fr_marshal_VOID__INT_POINTER (GClosure     *closure,
 /* VOID:VOID (fr-marshal.list:4) */
 #define fr_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID
 
+/* VOID:DOUBLE (fr-marshal.list:5) */
+#define fr_marshal_VOID__DOUBLE	g_cclosure_marshal_VOID__DOUBLE
+
+/* VOID:STRING (fr-marshal.list:6) */
+#define fr_marshal_VOID__STRING	g_cclosure_marshal_VOID__STRING
+
+/* VOID:BOOL (fr-marshal.list:7) */
+#define fr_marshal_VOID__BOOLEAN	g_cclosure_marshal_VOID__BOOLEAN
+#define fr_marshal_VOID__BOOL	fr_marshal_VOID__BOOLEAN
+
 G_END_DECLS
 
 #endif /* __fr_marshal_MARSHAL_H__ */

@@ -1,23 +1,22 @@
-<?xml version="1.0" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <omf>
   <resource>
     <creator>
-      Alexander Kirillov
+      docs@gnome.org (GDP)
     </creator>
     <maintainer>
-      Alexander Kirillov
+      docs@gnome.org (GDP)
     </maintainer>
     <title>
-      File Roller Manual V2.0
+      File Roller Manual V2.5
     </title>
     <date>
-      2002-06-04
+      2004-03-11
     </date>
-    <version identifier="2.0" date="2002-06-04" 
-    description="Updated for GNOME 2.0, program version 1.107"/>
-    <subject category="GNOME|Applications"/>
+    <version identifier="2.5" date="2004-03-11" description="Updated for GNOME 2.6, program version 2.5.6"/>
+    <subject category="GNOME|Applications|System Tools"/>
     <description>
-      User manual for File Roller. 
+      User manual for the File Roller application. 
     </description>
     <type>
       user's guide
@@ -26,6 +25,6 @@
     <identifier url="file-roller.xml"/>
     <language code="C"/>
     <relation seriesid="dffe1822-789b-11d6-842e-812e852e3415"/>
-    <rights type="GNU FDL" license.version="1.1" holder="Alexander Kirillov"/>
-  </resource>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
+  </resource>        
 </omf>
