@@ -18,9 +18,10 @@
  * conventions used within the rkinit library.
  */
 
-static const char rcsid[] = "$Id: rk_krb.c,v 1.3 2000-02-20 05:10:05 ghudson Exp $";
+static const char rcsid[] = "$Id: rk_krb.c,v 1.4 2001-04-04 21:17:13 ghudson Exp $";
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
