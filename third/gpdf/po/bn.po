@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2003-07-05 02:07+0530\n"
 "Last-Translator: Sayamindu Dasgupta <unmadindu@Softhome.net>\n"
 "Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.1\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "পি-ডি-এফ ফাইল প্রদর্শক"
 
@@ -119,85 +119,85 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "বোনোবো চালানো গেল না!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "পিডিএফ নথি"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr "পুরো পর্দা জুড়ে দেখানো থামাও"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "ফাইল লোড করো"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 #, fuzzy
 msgid "PDF Documents"
 msgstr "পিডিএফ নথি"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr ""
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "ডেরেক বি নূনবার্গ, এক্স-পিডিএফ-এর লেখক।"
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "মার্টিন ক্রেট্জস্মার, গ্নোম পোর্ট মেন্টেনার।"
 
 # msgstr "মার্টিন ক্রেট্জস্মার, গুহ্‌নোম পোর্ট রক্ষণাবেক্ষণকারী।"
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "মাইকেল মীক্স, গুহ্‌নোম পোর্ট স্রষ্টা।"
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "রেমি কোহেন-স্কালি"
 
 # msgstr "মাইকেল মীক্স, গুহ্‌নোম পোর্ট সৃষ্টা"
 # "স্রষ্টা" শব্দটার পরিবর্তে অন্য কিছু কি Use করা যায় না? "স্রষ্টা" শুনলেই কেমন জানি সৃষ্টিকর্তার কথা মনে হয় ;-)
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "মিগুয়েল দি ঈকাজা।"
 
 # বার বার দাঁড়ি দিতে ভুলে যাচ্ছো। DS এর বদভ্যাস
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "ন্যাট ফ্রিয়েডম্যান।"
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "রবি প্রতাপ।"
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "চি বিন হোহ্‌ <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "ব্রেডা ম্যাক-কোল্গান <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "সায়মিন্দু দাশগুপ্ত <unmadindu@bengalinux.org>\n"
 "(অঙ্কুর প্রকল্পের পক্ষ থেকে)"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "গ্লিফ এবং কগ, এলএলসি ও লেখকবৃন্দ"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "গ্নোম পিডিএফ প্রদর্শক"
 
 # msgstr "গুহ্‌নোম পিডিএফ প্রদর্শক"
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "এক্স-পিডিএফ ভিত্তিক একটি পিডিএফ প্রদর্শক"
 
@@ -264,16 +264,16 @@ msgstr "দুঃখিত, এখনো অ্যানোটেশন ফি�
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "দুঃখিত, এখনো অ্যানোটেশন প্লাগ-ইন ম্যানেজমেন্ট কাজ করে না..."
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, fuzzy, c-format
 msgid "** Unknown %s **"
 msgstr "অজানা"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "শিরোনাম"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "পৃষ্ঠা"
 
@@ -511,20 +511,20 @@ msgstr ""
 msgid "PDF Properties"
 msgstr "পিডিএফ বৈশিষ্টাবলী"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "%s লোড করা সম্ভব হয় নি"
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "বুকমার্ক"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "পৃষ্ঠা সমূহ"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "অ্যানোটেশন"
 
@@ -643,20 +643,20 @@ msgstr "শিরোনাম:"
 msgid "Unknown"
 msgstr "অজানা"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "দেখার জন্য শিরোনাম অনুযায়ী সাইডবারের পৃষ্ঠাটিকে নির্বাচন করুন"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "পৃষ্ঠা টুল মেনু খোলার জন্য ক্লিক্‌ করুন"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "সম্ভব হলে পৃষ্ঠাটিকে সরিয়ে ফেলো"
 
 # msgstr "অ্যাপলিকেশন পরিচিতি"
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "সাইডবার বন্ধ করো"
 
@@ -691,37 +691,37 @@ msgstr "অ্যাপ্লিকেশন চালু করার প্র
 msgid "Go to page #%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "নথী হিসাবে প্রদর্শন"
 

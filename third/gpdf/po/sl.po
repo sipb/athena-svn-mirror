@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2004-01-08 23:05+0200\n"
 "Last-Translator: Luka Napotnik <nluka@email.si>\n"
 "Language-Team: Language-Team: Slovenian <translation-team-sl@lists."
 "sourceforge.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "PDF pregledovalnik"
 
@@ -95,7 +95,7 @@ msgstr ""
 
 #: shell/gpdf-window-ui.xml.h:12
 msgid "_Help"
-msgstr "_PomoË"
+msgstr "_Pomoƒç"
 
 #: shell/gpdf-window-ui.xml.h:13
 msgid "_Open..."
@@ -110,80 +110,80 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Nisem uspel inicializirati Bonobo!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "PDF dokument"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr ""
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
-msgstr "Naloæi datoteko"
+msgstr "Nalo≈æi datoteko"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 #, fuzzy
 msgid "PDF Documents"
 msgstr "PDF dokument"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr ""
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, avtor programa Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
-msgstr "Martin Kretzschmar, vzdræevalec prenosa na GNOME"
+msgstr "Martin Kretzschmar, vzdr≈æevalec prenosa na GNOME"
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, izvirni prenos na GNOME."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC in avtorji"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "GNOME pregledovalnik datotek PDF"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
-msgstr "Pregledovalnik PDF, temeljeË na Xpdf"
+msgstr "Pregledovalnik PDF, temeljeƒç na Xpdf"
 
 #: xpdf/GNOME_PDF.server.in.in.h:2
 msgid "GNOME PDF viewer factory"
@@ -241,17 +241,17 @@ msgstr ""
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr ""
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, fuzzy, c-format
 msgid "** Unknown %s **"
 msgstr "Neznano"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 #, fuzzy
 msgid "Title"
 msgstr "Naslov:"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Stran"
 
@@ -261,11 +261,11 @@ msgstr "Nazaj"
 
 #: xpdf/gpdf-control-ui.xml.h:2
 msgid "Best Fit"
-msgstr "Najboljπa lega"
+msgstr "Najbolj≈°a lega"
 
 #: xpdf/gpdf-control-ui.xml.h:3
 msgid "Best _Fit"
-msgstr "Najboljπa _lega"
+msgstr "Najbolj≈°a _lega"
 
 #: xpdf/gpdf-control-ui.xml.h:4
 msgid "Change the visibility of the sidebar"
@@ -273,7 +273,7 @@ msgstr ""
 
 #: xpdf/gpdf-control-ui.xml.h:5
 msgid "Expand to a larger size"
-msgstr "Razπiri na veËje"
+msgstr "Raz≈°iri na veƒçje"
 
 #: xpdf/gpdf-control-ui.xml.h:6
 msgid "First"
@@ -281,11 +281,11 @@ msgstr "Prvi"
 
 #: xpdf/gpdf-control-ui.xml.h:7
 msgid "Fit Width"
-msgstr "Prikroji πirino"
+msgstr "Prikroji ≈°irino"
 
 #: xpdf/gpdf-control-ui.xml.h:8
 msgid "Fit page _width"
-msgstr "Prikroji πirino strani"
+msgstr "Prikroji ≈°irino strani"
 
 #: xpdf/gpdf-control-ui.xml.h:9
 msgid "Fo_rward"
@@ -321,7 +321,7 @@ msgstr "Zunaj"
 
 #: xpdf/gpdf-control-ui.xml.h:17
 msgid "Previous"
-msgstr "Prejπnje"
+msgstr "Prej≈°nje"
 
 #: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
 msgid "Print"
@@ -345,15 +345,15 @@ msgstr "Shrani trenutni dokument PDF v novo datoteko"
 
 #: xpdf/gpdf-control-ui.xml.h:23
 msgid "Shrink to a smaller size"
-msgstr "Pomanjπa velikost"
+msgstr "Pomanj≈°a velikost"
 
 #: xpdf/gpdf-control-ui.xml.h:24
 msgid "Size to fit the page"
-msgstr "PoveËa do velikosti strani"
+msgstr "Poveƒça do velikosti strani"
 
 #: xpdf/gpdf-control-ui.xml.h:25
 msgid "Size to fit the page width"
-msgstr "PoveËa do velikosti πirine strani"
+msgstr "Poveƒça do velikosti ≈°irine strani"
 
 #: xpdf/gpdf-control-ui.xml.h:26
 msgid "View properties of the displayed document"
@@ -373,15 +373,15 @@ msgstr "Glej naslednjo stran"
 
 #: xpdf/gpdf-control-ui.xml.h:30
 msgid "View the previous page"
-msgstr "Glej prejπnjo stran"
+msgstr "Glej prej≈°njo stran"
 
 #: xpdf/gpdf-control-ui.xml.h:31
 msgid "Zoom _In"
-msgstr "P_oveËava"
+msgstr "P_oveƒçava"
 
 #: xpdf/gpdf-control-ui.xml.h:32
 msgid "Zoom _Out"
-msgstr "Po_manjπava"
+msgstr "Po_manj≈°ava"
 
 #: xpdf/gpdf-control-ui.xml.h:33
 msgid "_Back"
@@ -405,7 +405,7 @@ msgstr "Na_slednja stran"
 
 #: xpdf/gpdf-control-ui.xml.h:39
 msgid "_Previous Page"
-msgstr "Pr_ejπnja stran"
+msgstr "Pr_ej≈°nja stran"
 
 #: xpdf/gpdf-control-ui.xml.h:40
 msgid "_Print..."
@@ -434,16 +434,16 @@ msgid ""
 "You were trying to print to a printer using the \"%s\" driver. This program "
 "requires a PostScript printer driver."
 msgstr ""
-"Poskuπali ste tiskati na tiskalnik z uporabo gonilnika \"%s\". Ta program "
-"zahteva tiskalniπki gonilnik PostScript."
+"Posku≈°ali ste tiskati na tiskalnik z uporabo gonilnika \"%s\". Ta program "
+"zahteva tiskalni≈°ki gonilnik PostScript."
 
 #: xpdf/gpdf-control.cc:894
 msgid ""
 "You were trying to print to a printer that does not use PostScript. This "
 "program requires a PostScript printer driver."
 msgstr ""
-"Poskuπali ste natisniti na tiskalnik, ki ne uporablja PostScript. Ta program "
-"potrebuje tiskalniπki gonilnik PostScript."
+"Posku≈°ali ste natisniti na tiskalnik, ki ne uporablja PostScript. Ta program "
+"potrebuje tiskalni≈°ki gonilnik PostScript."
 
 #: xpdf/gpdf-control.cc:898
 msgid "Printing is not supported on this printer."
@@ -479,27 +479,27 @@ msgstr ""
 msgid "PDF Properties"
 msgstr "Lastnosti PDF"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "Nalaganje %s je spodletelo."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr ""
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 #, fuzzy
 msgid "Pages"
 msgstr "_Strani"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr ""
 
 #: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
 msgid "Link"
-msgstr "Bliænjica"
+msgstr "Bli≈ænjica"
 
 #: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
 msgid "UsingHandCursor"
@@ -507,7 +507,7 @@ msgstr "UsingHandCursor"
 
 #: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
 msgid "Links"
-msgstr "Bliænjice"
+msgstr "Bli≈ænjice"
 
 #: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
 msgid "_Open Document"
@@ -516,7 +516,7 @@ msgstr "O_dpri dokumnet"
 #: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
 #, fuzzy
 msgid "Enter document password:"
-msgstr "Vnesite uporabniπko geslo dokumenta:"
+msgstr "Vnesite uporabni≈°ko geslo dokumenta:"
 
 #: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
 #, fuzzy
@@ -524,7 +524,7 @@ msgid ""
 "This document is encrypted and this operation requires the document's "
 "password"
 msgstr ""
-"Ta dokument je zaklenjen z geslom in ta operacija zahteva geslo uporabniπko "
+"Ta dokument je zaklenjen z geslom in ta operacija zahteva geslo uporabni≈°ko "
 "geslo dokumenta"
 
 #. translators: page catalog is a part of the PDF file
@@ -532,19 +532,19 @@ msgstr ""
 #: xpdf/gpdf-persist-file.cc:337
 msgid "The PDF file is damaged. Its page catalog could not be read"
 msgstr ""
-"Ta datoteka PDF je poπkodovana. Nisem mogel prebrati njenega kataloga strani"
+"Ta datoteka PDF je po≈°kodovana. Nisem mogel prebrati njenega kataloga strani"
 
 #: xpdf/gpdf-persist-file.cc:341
 msgid ""
 "The PDF file is damaged or it is not a PDF file. It could not be repaired"
 msgstr ""
-"Ta datoteka PDF je poπkodovana ali ni veljavna datoteka PDF. Ni je bilo "
-"mogoËe popraviti"
+"Ta datoteka PDF je po≈°kodovana ali ni veljavna datoteka PDF. Ni je bilo "
+"mogoƒçe popraviti"
 
 #: xpdf/gpdf-persist-file.cc:345
 #, fuzzy
 msgid "The PDF document is encrypted and you didn't enter the correct password"
-msgstr "Ta dokument PDF je πifriran, a niste vnesli pravilnega gesla"
+msgstr "Ta dokument PDF je ≈°ifriran, a niste vnesli pravilnega gesla"
 
 #: xpdf/gpdf-print-progress-dialog.glade.h:1
 msgid "Printing"
@@ -568,7 +568,7 @@ msgstr "Ustvarjalec:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:4
 msgid "Keywords:"
-msgstr "KljuËne besede:"
+msgstr "Kljuƒçne besede:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:5
 msgid "Modified:"
@@ -576,7 +576,7 @@ msgstr "Spremenjeno:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:6
 msgid "Number of Pages:"
-msgstr "©tevilo strani:"
+msgstr "≈†tevilo strani:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:7
 msgid "Optimized:"
@@ -584,7 +584,7 @@ msgstr "Optimizacija:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:8
 msgid "PDF Version:"
-msgstr "PDF razliËica:"
+msgstr "PDF razliƒçica:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:9
 msgid "Producer:"
@@ -612,19 +612,19 @@ msgstr "Naslov:"
 msgid "Unknown"
 msgstr "Neznano"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 #, fuzzy
 msgid "Close sidebar"
 msgstr "Zapri okno"
@@ -660,37 +660,37 @@ msgstr ""
 msgid "Go to page #%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Pogled dokumenta"
 
@@ -712,12 +712,12 @@ msgid ""
 "This shows the current page number. To jump to another page, enter its "
 "number."
 msgstr ""
-"To pokaæe πtevilko trenutne strani. Za skok na drugo stran, vpiπite njeno "
-"πtevilko."
+"To poka≈æe ≈°tevilko trenutne strani. Za skok na drugo stran, vpi≈°ite njeno "
+"≈°tevilko."
 
 #: xpdf/pdf-info-dict-util.cc:203
 msgid "Encrypted"
-msgstr "©ifrirano"
+msgstr "≈†ifrirano"
 
 #: xpdf/pdf-info-dict-util.cc:203
 msgid "None"
@@ -756,4 +756,4 @@ msgstr "Ne"
 #~ "document's owner password"
 #~ msgstr ""
 #~ "Ta dokument je zaklenjen z geslom in ta operacija potrebuje geslo "
-#~ "lastniπko geslo dokumenta"
+#~ "lastni≈°ko geslo dokumenta"

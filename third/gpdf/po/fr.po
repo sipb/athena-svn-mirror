@@ -7,17 +7,17 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gpdf 2.7.90\n"
+"Project-Id-Version: gpdf 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
-"PO-Revision-Date: 2004-08-25 00:45+0200\n"
-"Last-Translator: Laurent Richard <laurent.richard@lilit.be>\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
+"PO-Revision-Date: 2004-10-17 13:40+0200\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "Visionneur de fichiers PDF"
 
@@ -110,65 +110,65 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Impossible d'initialiser Bonobo !\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "Document PDF"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
-msgstr "Quitte le plein écran"
+msgstr "Quitter le mode plein écran"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "Charger un fichier"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "Documents PDF"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "Tous les fichiers"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, auteur de Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Martin Kretzschmar, mainteneur du port GNOME."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, créateur du port GNOME."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Rémi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "Mainteneur :\n"
@@ -177,15 +177,15 @@ msgstr ""
 "Contributeur :\n"
 "Christophe Merlet (RedFox) <redfox@redfoxcenter.org>"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC et ses auteurs"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "Visionneur de fichiers PDF pour GNOME"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "Un visionneur de fichiers PDF basé sur Xpdf"
 
@@ -248,18 +248,18 @@ msgstr "Le filtre d'annotations n'est pas encore implémenté ... Désolé."
 #: xpdf/gpdf-annots-view.cc:1087
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr ""
-"La gestion d'annotations des greffons n'est pas encore implémenté... Désolé"
+"La gestion des greffons d'annotations n'est pas encore implémenté... Désolé"
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, c-format
 msgid "** Unknown %s **"
 msgstr "** Inconnu %s **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "Titre"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Page"
 
@@ -277,11 +277,11 @@ msgstr "Taille _idéale"
 
 #: xpdf/gpdf-control-ui.xml.h:4
 msgid "Change the visibility of the sidebar"
-msgstr "Changer la visibilité de la barre latérale"
+msgstr "Change la visibilité de la barre latérale"
 
 #: xpdf/gpdf-control-ui.xml.h:5
 msgid "Expand to a larger size"
-msgstr "Agrandi a une taille plus grande"
+msgstr "Agrandis à une taille plus grande"
 
 #: xpdf/gpdf-control-ui.xml.h:6
 msgid "First"
@@ -305,11 +305,11 @@ msgstr "Avancer"
 
 #: xpdf/gpdf-control-ui.xml.h:11
 msgid "Go backward in history"
-msgstr "Revenir en arrière dans l'historique"
+msgstr "Recule dans l'historique"
 
 #: xpdf/gpdf-control-ui.xml.h:12
 msgid "Go forward in history"
-msgstr "Avancer dans l'historique"
+msgstr "Avance dans l'historique"
 
 #: xpdf/gpdf-control-ui.xml.h:13
 msgid "In"
@@ -349,11 +349,11 @@ msgstr "Enregistrer une copie"
 
 #: xpdf/gpdf-control-ui.xml.h:22
 msgid "Save the current PDF document with a new filename"
-msgstr "Enregistre le document PDF actuel sous un nouveau nom de fichiers"
+msgstr "Enregistre le document PDF actuel sous un nouveau nom"
 
 #: xpdf/gpdf-control-ui.xml.h:23
 msgid "Shrink to a smaller size"
-msgstr "Réduit à une taille plus petite"
+msgstr "Réduis à une taille plus petite"
 
 #: xpdf/gpdf-control-ui.xml.h:24
 msgid "Size to fit the page"
@@ -450,8 +450,8 @@ msgid ""
 "You were trying to print to a printer that does not use PostScript. This "
 "program requires a PostScript printer driver."
 msgstr ""
-"Vous avez essayé d'imprimer sur une imprimante qui n'utilise pas le "
-"PostScript. Ce programme nécessite un pilote d'impression PostScript."
+"Vous avez essayé d'imprimer sur une imprimante qui n'utilise pas PostScript. "
+"Ce programme nécessite un pilote d'impression PostScript."
 
 #: xpdf/gpdf-control.cc:898
 msgid "Printing is not supported on this printer."
@@ -488,20 +488,20 @@ msgstr "Le fichier ne peut être enregistré en tant que « %s »."
 msgid "PDF Properties"
 msgstr "Propriétés PDF"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "Le chargement de %s a échoué."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "Pages"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "Annotations"
 
@@ -617,20 +617,20 @@ msgstr "Titre :"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr ""
 "Selectionner la page de la barre latérale par son titre pour l'afficher"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "Cliquez pour ouvrir la page du menu des outils"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "Supprimer la page si elle est supprimable"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "Ferme la barre latérale"
 
@@ -650,12 +650,12 @@ msgstr "Aucune application n'a été trouvée pour ouvrir l'URI : %s"
 
 #: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
 msgid "Application Launch Failure!"
-msgstr "Échec lors du lancement de l'application !"
+msgstr "Le lancement de l'application a échoué !"
 
 #: xpdf/gpdf-view.cc:388
 #, c-format
 msgid "Failed to launch %s for URI: %s"
-msgstr "Impossible de lancer %s depuis l'adresse : %s"
+msgstr "Le lancement de %s depuis l'URI a échoué : %s"
 
 #: xpdf/gpdf-view.cc:404
 msgid "Application Launch notification!"
@@ -666,37 +666,37 @@ msgstr "Notification de lancement d'application !"
 msgid "Go to page #%d"
 msgstr "Aller à la page #%d"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr "Aller au fichier %s:#%d"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr "Exécution : %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr "Naviguer %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr "Action : %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr "Film : %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr "Action inconnue : %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Vue document"
 

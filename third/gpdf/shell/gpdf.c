@@ -368,11 +368,16 @@ gpdf_window_close (GPdfWindow *gpdf_window)
 {
 	g_return_if_fail (GPDF_IS_NON_NULL_WINDOW (gpdf_window));
 
-	bonobo_control_frame_set_autoactivate
-	  (bonobo_widget_get_control_frame (gpdf_window->priv->bonobo_widget),
-	   FALSE);
-	bonobo_control_frame_control_deactivate
-	  (bonobo_widget_get_control_frame (gpdf_window->priv->bonobo_widget));
+	if (gpdf_window_has_contents (gpdf_window)) {
+		bonobo_control_frame_set_autoactivate (
+			bonobo_widget_get_control_frame (
+				gpdf_window->priv->bonobo_widget),
+			FALSE);
+		bonobo_control_frame_control_deactivate (
+			bonobo_widget_get_control_frame (
+				gpdf_window->priv->bonobo_widget));
+	}
+
 	gtk_widget_destroy (GTK_WIDGET (gpdf_window));
 
 	if (window_list == NULL)
@@ -467,6 +472,30 @@ gpdf_window_init_fullscreen_popup (GPdfWindow *gpdf_window)
 			  gpdf_window);
 
 	gtk_window_add_accel_group (GTK_WINDOW (gpdf_window), accel_group);
+}
+
+static gboolean
+gpdf_window_focus_in_event (GtkWidget *widget, GdkEventFocus *event)
+{
+	GPdfWindow *gpdf_window = GPDF_WINDOW (widget);
+
+	if (gpdf_window->priv->exit_fullscreen_popup) {
+		gtk_widget_show (gpdf_window->priv->exit_fullscreen_popup);
+	}
+
+	return GTK_WIDGET_CLASS (parent_class)->focus_in_event (widget, event);
+}
+
+static gboolean
+gpdf_window_focus_out_event (GtkWidget *widget, GdkEventFocus *event)
+{
+	GPdfWindow *gpdf_window = GPDF_WINDOW (widget);
+
+	if (gpdf_window->priv->exit_fullscreen_popup) {
+		gtk_widget_hide (gpdf_window->priv->exit_fullscreen_popup);
+	}
+
+	return GTK_WIDGET_CLASS (parent_class)->focus_out_event (widget, event);
 }
 
 static gboolean
@@ -776,6 +805,8 @@ gpdf_window_class_init (GPdfWindowClass *klass)
 
 	widget_class->delete_event = gw_delete_event;
 	widget_class->drag_data_received = gw_drag_data_received;
+	widget_class->focus_in_event = gpdf_window_focus_in_event;
+	widget_class->focus_out_event = gpdf_window_focus_out_event;
 }
 
 static void

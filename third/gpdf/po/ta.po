@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
-"PO-Revision-Date: 2004-09-04 15:19+0530\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
+"PO-Revision-Date: 2004-10-08 20:12+0530\n"
 "Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
 "Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "PDF காட்டி"
 
@@ -83,7 +83,7 @@ msgstr "_பற்றி"
 
 #: shell/gpdf-window-ui.xml.h:8
 msgid "_Close"
-msgstr "_ãÎ¸"
+msgstr "மூடு"
 
 #: shell/gpdf-window-ui.xml.h:9
 msgid "_Contents"
@@ -99,12 +99,12 @@ msgstr "_முழுத் திரையில்"
 
 #: shell/gpdf-window-ui.xml.h:12
 msgid "_Help"
-msgstr "_¯¾Å¢"
+msgstr "உதவி"
 
 # xpdf/gpdf.cc:99
 #: shell/gpdf-window-ui.xml.h:13
 msgid "_Open..."
-msgstr "_¾¢Èì¸×õ..."
+msgstr "திற..."
 
 #: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
 msgid "_View"
@@ -116,83 +116,83 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "பொனோபோவைத் தொடக்க முடியவில்லை\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "PDF ஆவணம்"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
-msgstr "முழுத்திறையிலிருந்து வெளிச்செல்க"
+msgstr "முழுதிரையிலிருந்து வெளிச்செல்"
 
 # xpdf/gpdf.cc:183
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "கோப்பை ஏற்று"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "PDF ஆவணம்"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "எல்லா கோப்புகளும்"
 
 # xpdf/gpdf.cc:318
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "டெரெக் பி. நூன்பெயர்க் , Xpdf ஆசிரியர்."
 
 # xpdf/gpdf.cc:319
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "மார்டின் கிரெட்செமார், கனோம் பதிவம்-ஐப் பேணுபவர்"
 
 # xpdf/gpdf.cc:319
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "மைகில் மீக்ஸ், கனோம் பதிவம்-ஐப் பேணுபவர்"
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
 # xpdf/gpdf.cc:320
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
 # xpdf/gpdf.cc:321
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "ரவி பிரதாப்."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "ஷீ பின் ஹோக் <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "ப்ரென்டா மெக்கோகன்<BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
-msgstr "மொழிபெயர்பாளர் நன்றிகள்"
+msgstr "மொழிபெயர்த்தவர்கள்"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC மற்றும் ஆசிரியர்"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
-msgstr "கனோம் PDF காட்டி"
+msgstr "க்னோம் PDF காட்டி"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "Xpdf சார்ந்த ஓர் PDF காட்டி"
 
@@ -218,7 +218,7 @@ msgid ""
 "Check your gconf setup, look at gpdf FAQ for \n"
 "more info"
 msgstr ""
-"gpdf விருபங்களின் முறைமையை காணவில்லை. \n"
+"gpdf விருப்பங்களின் முறைமையை காணவில்லை. \n"
 "gconf அமைப்பை சோதிக்கவும், gpdf FAQ வை \n"
 "பார்க்கவும்"
 
@@ -257,17 +257,17 @@ msgstr "குறிப்புரை செயல்படுத்தப்�
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "குறிப்புரை சொருகுபொருள் மேலாண்மை இன்னும் செயல்படுத்தப்படவில்லை மன்னிக்கவும்"
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, c-format
 msgid "** Unknown %s **"
 msgstr "** தெரியாதது%s **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "தலைப்பு"
 
 # xpdf/bonobo-application-x-pdf.cc:659
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "பக்கம்"
 
@@ -305,7 +305,7 @@ msgstr "அகலம் பொருத்துக"
 # xpdf/bonobo-application-x-pdf.cc:641
 #: xpdf/gpdf-control-ui.xml.h:8
 msgid "Fit page _width"
-msgstr "_பக்கத்தின் அகலத்திட்கு பொருந்து"
+msgstr "_பக்கத்தின் அகலத்திற்கு பொருந்து"
 
 #: xpdf/gpdf-control-ui.xml.h:9
 msgid "Fo_rward"
@@ -325,7 +325,7 @@ msgstr "வரலாறில் முன்னால் போகவும்"
 
 #: xpdf/gpdf-control-ui.xml.h:13
 msgid "In"
-msgstr "பெரிது"
+msgstr "உள்"
 
 # xpdf/bonobo-application-x-pdf.cc:706
 #: xpdf/gpdf-control-ui.xml.h:14
@@ -360,7 +360,7 @@ msgstr "பண்பு_கள்"
 
 #: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
 msgid "Save a Copy"
-msgstr "நகல் ஒன்றை சேமித்து வைக்கவும்"
+msgstr "ஒரு நகடுக்கடுக்கவும்"
 
 #: xpdf/gpdf-control-ui.xml.h:22
 msgid "Save the current PDF document with a new filename"
@@ -374,7 +374,7 @@ msgstr "சிறிய அளவிற்குச் சுருங்கி�
 # xpdf/bonobo-application-x-pdf.cc:1014
 #: xpdf/gpdf-control-ui.xml.h:24
 msgid "Size to fit the page"
-msgstr "பக்கத்தில் பொருந்துமாறு அலவு"
+msgstr "பக்கத்தில் பொருந்துமாறு அளவு"
 
 #: xpdf/gpdf-control-ui.xml.h:25
 msgid "Size to fit the page width"
@@ -416,7 +416,7 @@ msgstr "அளவைச் சிறிதாக்கு"
 
 #: xpdf/gpdf-control-ui.xml.h:33
 msgid "_Back"
-msgstr "_À¢ý"
+msgstr "பின்"
 
 # xpdf/bonobo-application-x-pdf.cc:1001
 #: xpdf/gpdf-control-ui.xml.h:35
@@ -440,15 +440,15 @@ msgstr "_அடுத்த பக்கம்"
 # xpdf/bonobo-application-x-pdf.cc:1004
 #: xpdf/gpdf-control-ui.xml.h:39
 msgid "_Previous Page"
-msgstr "_þதற்கு முன்பக்கம்"
+msgstr "முந்தைய பக்கம்"
 
 #: xpdf/gpdf-control-ui.xml.h:40
 msgid "_Print..."
-msgstr "_«îº¢Î¸..."
+msgstr "அச்சடி..."
 
 #: xpdf/gpdf-control-ui.xml.h:41
 msgid "_Save a Copy..."
-msgstr "நகல் ஒன்றை சேமிக்கவும்..."
+msgstr "நகலெடுக்கவும்..."
 
 #: xpdf/gpdf-control-ui.xml.h:42
 msgid "_Sidebar"
@@ -461,7 +461,7 @@ msgstr "ஆவணம் பிழை"
 #: xpdf/gpdf-control.cc:763
 #, c-format
 msgid "Printing: Page %d."
-msgstr "அச்சிடுவது: பக்கம் %d."
+msgstr "அச்சடிக்கிறது: பக்கம் %d.."
 
 #: xpdf/gpdf-control.cc:891
 #, c-format
@@ -500,7 +500,7 @@ msgstr "இந்த கோப்பை மேலெழுதி சேமிக
 
 #: xpdf/gpdf-control.cc:1058
 msgid "_Replace"
-msgstr "(_R)மாற்று"
+msgstr "மாற்று"
 
 #: xpdf/gpdf-control.cc:1068
 msgid "Question"
@@ -516,21 +516,21 @@ msgid "PDF Properties"
 msgstr "PDF பண்புகள்"
 
 # xpdf/gpdf.cc:183
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "%s ஏற்றல் நொடிப்படைந்தது."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "புத்தகக்குறிகள்"
 
 # xpdf/bonobo-application-x-pdf.cc:659
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "பக்கங்கள்"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "குறிப்புரை"
 
@@ -589,7 +589,7 @@ msgstr "ஆசிரியர்:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:2
 msgid "Created:"
-msgstr "படைத்தது:"
+msgstr "உருவாக்கியவர்:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:3
 msgid "Creator:"
@@ -641,19 +641,19 @@ msgstr "தலைப்பு:"
 msgid "Unknown"
 msgstr "தெரியாதது"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "பக்க பட்டி பக்கத்தை தலைப்பை காட்டுமாறு தேர்வு செய்யவும்"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "பக்க கருவி மெனுவை க்ளிக் செய்து திறக்கவும்"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "நீக்க முடிந்தால் பக்கத்தை நீக்கவும்"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "ஓரப்பட்டையை மூடுக"
 
@@ -688,37 +688,37 @@ msgstr "பயன்பாடு துவக்க அறிக்கை!"
 msgid "Go to page #%d"
 msgstr "பக்கம் #%d க்கு செல்"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr "பக்கம் %s:#%d க்கு செல்"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr "துவக்கு: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr "உலாவு %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr "செயல்: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr "திரைப்படம்: %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr "தெரியாத செயல்: %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "ஆவணம் காட்சி"
 

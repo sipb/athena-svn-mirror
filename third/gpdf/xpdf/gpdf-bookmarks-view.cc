@@ -765,53 +765,6 @@ gpdf_bookmarks_view_update_popup_actions (GPdfBookmarksView *bookmarks_view)
 	}
 }
 
-static gboolean
-gpdf_bookmarks_view_bookmark_select_func (GtkTreeSelection  *selection,
-					  GtkTreeModel	    *model,
-					  GtkTreePath	    *path,
-					  gboolean	     path_currently_selected,
-					  gpointer	     data)
-{
-	GPdfBookmarksView *bookmarks_view;
-	GPdfBookmarksViewPrivate *priv;	
-	GValue selection_item = {0,};
-	GtkTreeIter iterator;
-	OutlineItem *item;
-	gboolean ret = FALSE;
-
-	bookmarks_view = GPDF_BOOKMARKS_VIEW (data);
-	
-	g_return_val_if_fail (GPDF_IS_NON_NULL_BOOKMARKS_VIEW (bookmarks_view),
-			      FALSE);
-
-	do {
-		priv = bookmarks_view->priv;
-
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (priv->model),
-					 &iterator,
-					 path);
-
-		/* handle only if is about to be selected */
-		if (!gtk_tree_selection_get_selected (selection, 
-						      &model,
-						      &iterator)) {
-			gtk_tree_model_get_value (GTK_TREE_MODEL (priv->model),
-						  &iterator,
-						  GPDF_BKVIEW_COLUMN4,
-						  &selection_item);
-			item = (OutlineItem *)g_value_peek_pointer ((const GValue*) &selection_item);
-
-			gpdf_bookmarks_view_emit_bookmark_selected (bookmarks_view,
-								    item ? item->getAction () : NULL);
-		}
-		
-		ret = TRUE;
-	}
-	while (0); 
-
-	return ret;
-}
-
 static void
 gpdf_bookmarks_view_flat_recurse_outlines (GPdfBookmarksView *bookmarks_view)
 {
@@ -1044,11 +997,6 @@ gpdf_bookmarks_view_update_bookmarks_tree (GPdfBookmarksView *bookmarks_view)
 		gtk_tree_view_set_model (GTK_TREE_VIEW (priv->treeview),
 					 GTK_TREE_MODEL (priv->model));
 		
-		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->treeview));
-		gtk_tree_selection_set_select_function (selection,
-							gpdf_bookmarks_view_bookmark_select_func,
-							bookmarks_view, NULL);
-		
 		gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (priv->treeview), TRUE);
 		
 		renderer = gtk_cell_renderer_pixbuf_new ();
@@ -1086,12 +1034,27 @@ static void
 gpdf_bookmarks_view_selection_changed_cb (GtkTreeSelection *selection, gpointer data)
 {
 	GPdfBookmarksView *bookmarks_view = GPDF_BOOKMARKS_VIEW (data);
+	GtkTreeIter iterator;
+	GtkTreeModel *model;
+	OutlineItem *item;
+	GValue selection_item = {0,};
 
 	g_return_if_fail (GPDF_IS_NON_NULL_BOOKMARKS_VIEW (bookmarks_view));
 	
 	if (!bookmarks_view->priv->generation_terminated) return;
 		
 	gpdf_bookmarks_view_update_popup_actions (bookmarks_view);
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iterator)) {
+		gtk_tree_model_get_value (GTK_TREE_MODEL (model),
+					  &iterator,
+					  GPDF_BKVIEW_COLUMN4,
+					  &selection_item);
+		item = (OutlineItem *)g_value_peek_pointer ((const GValue*) &selection_item);
+
+		gpdf_bookmarks_view_emit_bookmark_selected (bookmarks_view,
+							    item ? item->getAction () : NULL);
+	}
 }
 
 static void

@@ -1,6 +1,7 @@
 # Indonesia translation of gpdf.
 # Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# Mohammad DAMT <mdamt@bisnisweb.com>
 # Ahmad Riza H Nst <ari@160c.afraid.org>, 2003.
 # 
 # 
@@ -8,21 +9,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
-"PO-Revision-Date: 2004-05-08 20:06+0700\n"
-"Last-Translator: Ahmad Riza H Nst <ari@160c.afraid.org>\n"
-"Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
+"PO-Revision-Date: 2004-10-27 04:17+0700\n"
+"Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
+"Language-Team: Indonesia <l10n@gnome.linux.or.id>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "Penampil PDF"
 
 #: gpdf.desktop.in.h:2
 msgid "View PDF files"
-msgstr "Tampilkan file PDF"
+msgstr "Tampilkan berkas PDF"
 
 #: gpdf.schemas.in.h:1
 msgid "Default sidebar page"
@@ -42,7 +43,7 @@ msgstr " (Unicode yang salah)"
 
 #: shell/gpdf-recent-view-toolitem.c:195
 msgid "Open a recently used file"
-msgstr "Buka file yang sedang digunakan"
+msgstr "Buka berkas yang sedang digunakan"
 
 #: shell/gpdf-recent-view-toolitem.c:199
 msgid "Recent"
@@ -66,7 +67,7 @@ msgstr "Buka"
 
 #: shell/gpdf-window-ui.xml.h:5
 msgid "Open a file"
-msgstr "Buka sebuah file"
+msgstr "Buka sebuah berkas"
 
 #: shell/gpdf-window-ui.xml.h:6
 msgid "Toggle fullscreen mode"
@@ -82,23 +83,23 @@ msgstr "T_utup"
 
 #: shell/gpdf-window-ui.xml.h:9
 msgid "_Contents"
-msgstr "_Isi"
+msgstr "Daftar _Isi"
 
 #: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
 msgid "_File"
-msgstr "_File"
+msgstr "_Berkas"
 
 #: shell/gpdf-window-ui.xml.h:11
 msgid "_Full Screen"
-msgstr "_Laya Penuh"
+msgstr "_Layar Penuh"
 
 #: shell/gpdf-window-ui.xml.h:12
 msgid "_Help"
-msgstr "_Bantuan"
+msgstr "Ba_ntuan"
 
 #: shell/gpdf-window-ui.xml.h:13
 msgid "_Open..."
-msgstr "Bu_ka"
+msgstr "_Buka..."
 
 #: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
 msgid "_View"
@@ -109,77 +110,77 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Tidak dapat mengenali Bonobo!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "Dokumen PDF"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
-msgstr "Keluar Layar Penuh"
+msgstr "Tutup Layar Penuh"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
-msgstr "Load file"
+msgstr "Buka berkas"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "Dokumen PDF"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "Seluruh File"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, penulis Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Martin Kretzschmar, pemelihara port ke GNOME."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, pemorting ke GNOME."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <<cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr "Ahmad Riza H Nst <ari@160c.afraid.org>"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC and authors"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "Penampil PDF di GNOME"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "Sebuah penampil PDF berdasarkan Xpdf"
 
@@ -220,7 +221,7 @@ msgstr ""
 
 #: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
 msgid "Parent control"
-msgstr ""
+msgstr "Kendali induk"
 
 #: xpdf/gpdf-annots-view.cc:916
 msgid "Owner/Title"
@@ -243,16 +244,16 @@ msgstr "Fasilitas penyaringan Anotasi belum lagi diterapkan... Maaf ya."
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "Tambahan fasilitas pengaturan anotasi belun lagi diterapkan... Maaf ya"
 
-#: xpdf/gpdf-bookmarks-view.cc:924
-#, fuzzy, c-format
+#: xpdf/gpdf-bookmarks-view.cc:877
+#, c-format
 msgid "** Unknown %s **"
-msgstr "Tidak diketahui"
+msgstr "** %s tidak diketahui **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "Judul"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Halaman"
 
@@ -262,15 +263,15 @@ msgstr "Kembali"
 
 #: xpdf/gpdf-control-ui.xml.h:2
 msgid "Best Fit"
-msgstr "Penempatan terbaik"
+msgstr "Penempatan Terbaik"
 
 #: xpdf/gpdf-control-ui.xml.h:3
 msgid "Best _Fit"
-msgstr "Penempatan _terbaik"
+msgstr "Penempatan _Terbaik"
 
 #: xpdf/gpdf-control-ui.xml.h:4
 msgid "Change the visibility of the sidebar"
-msgstr "Rubah ke terlihatan dari sidebar"
+msgstr "Rubah penampakan sidebar"
 
 #: xpdf/gpdf-control-ui.xml.h:5
 msgid "Expand to a larger size"
@@ -282,7 +283,7 @@ msgstr "Pertama"
 
 #: xpdf/gpdf-control-ui.xml.h:7
 msgid "Fit Width"
-msgstr "Pas sesuai lebar"
+msgstr "Pas Sesuai Lebar"
 
 #: xpdf/gpdf-control-ui.xml.h:8
 msgid "Fit page _width"
@@ -290,19 +291,19 @@ msgstr "Pas den_gan lebar halaman"
 
 #: xpdf/gpdf-control-ui.xml.h:9
 msgid "Fo_rward"
-msgstr "Ke_depan"
+msgstr "_Maju"
 
 #: xpdf/gpdf-control-ui.xml.h:10
 msgid "Forward"
-msgstr "Kedepan"
+msgstr "Maju"
 
 #: xpdf/gpdf-control-ui.xml.h:11
 msgid "Go backward in history"
-msgstr "Kembali ke belakang sesuai sejarah"
+msgstr "Kembali ke belakang sesuai riwayat"
 
 #: xpdf/gpdf-control-ui.xml.h:12
 msgid "Go forward in history"
-msgstr "Pergi ke depan sesuai sejarah"
+msgstr "Maju ke depan sesuai riwayat"
 
 #: xpdf/gpdf-control-ui.xml.h:13
 msgid "In"
@@ -330,7 +331,7 @@ msgstr "Cetak"
 
 #: xpdf/gpdf-control-ui.xml.h:19
 msgid "Print the current file"
-msgstr "Cetak file ini"
+msgstr "Cetak berkas ini"
 
 #: xpdf/gpdf-control-ui.xml.h:20
 msgid "Proper_ties"
@@ -342,7 +343,7 @@ msgstr "Simpan sebuat Salinan"
 
 #: xpdf/gpdf-control-ui.xml.h:22
 msgid "Save the current PDF document with a new filename"
-msgstr "Simpan dokumen PDF ini dalam file baru"
+msgstr "Simpan dokumen PDF ini dalam berkas baru"
 
 #: xpdf/gpdf-control-ui.xml.h:23
 msgid "Shrink to a smaller size"
@@ -386,15 +387,15 @@ msgstr "Perke_cil"
 
 #: xpdf/gpdf-control-ui.xml.h:33
 msgid "_Back"
-msgstr "Kemba_li"
+msgstr "Kem_bali"
 
 #: xpdf/gpdf-control-ui.xml.h:35
 msgid "_First Page"
-msgstr "Halama_n pertama"
+msgstr "Halama_n Pertama"
 
 #: xpdf/gpdf-control-ui.xml.h:36
 msgid "_Go"
-msgstr "_Jalan"
+msgstr "B_uka"
 
 #: xpdf/gpdf-control-ui.xml.h:37
 msgid "_Last Page"
@@ -435,16 +436,16 @@ msgid ""
 "You were trying to print to a printer using the \"%s\" driver. This program "
 "requires a PostScript printer driver."
 msgstr ""
-"Anda mencoba mencetak ke printer menggunakan driver \"%s\". Program ini "
-"membutuhkan sebuah driver printer PostScript."
+"Anda mencetak ke printer menggunakan driver \"%s\". Program ini membutuhkan "
+"sebuah driver printer PostScript."
 
 #: xpdf/gpdf-control.cc:894
 msgid ""
 "You were trying to print to a printer that does not use PostScript. This "
 "program requires a PostScript printer driver."
 msgstr ""
-"Anda mencoba untuk mencetak ke printer yang tidak menggunakan PostScript. "
-"Program ini membutuhkan sebuah driver printer PostScript."
+"Anda untuk mencetak ke printer yang tidak menggunakan PostScript. Program "
+"ini membutuhkan sebuah driver printer PostScript."
 
 #: xpdf/gpdf-control.cc:898
 msgid "Printing is not supported on this printer."
@@ -457,43 +458,43 @@ msgstr "_Halaman"
 #: xpdf/gpdf-control.cc:1043
 #, c-format
 msgid "A file named \"%s\" already exists."
-msgstr ""
+msgstr "Berkas bernama \"%s\" sudah ada."
 
 #: xpdf/gpdf-control.cc:1049
 msgid "Do you want to replace it with the one you are saving?"
-msgstr ""
+msgstr "Apakah Anda ingin menggantinya dengan berkas yang Anda simpan ini?"
 
 #: xpdf/gpdf-control.cc:1058
 msgid "_Replace"
-msgstr ""
+msgstr "_Ganti"
 
 #: xpdf/gpdf-control.cc:1068
 msgid "Question"
-msgstr ""
+msgstr "Pertanyaan"
 
 #: xpdf/gpdf-control.cc:1082
 #, c-format
 msgid "The file could not be saved as \"%s\"."
-msgstr ""
+msgstr "Berkas tidak dapat disimpan dengan nama \"%s\"."
 
 #: xpdf/gpdf-control.cc:1195
 msgid "PDF Properties"
 msgstr "Keterangan PDF ini"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
-msgstr "Loading %s gagal."
+msgstr "%s tidak dapat dibuka."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "Tanda buku"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "Halaman"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "Anotasi"
 
@@ -515,24 +516,24 @@ msgstr "Buka D_okumen"
 
 #: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
 msgid "Enter document password:"
-msgstr "Masukkan password dokumen:"
+msgstr "Masukkan sandi dokumen:"
 
 #: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
 msgid ""
 "This document is encrypted and this operation requires the document's "
 "password"
-msgstr "Dokumen ini diacak dan operasi ini memerlukan password dokumen ini"
+msgstr "Dokumen ini diacak dan operasi ini memerlukan sandi dokumen ini"
 
 #. translators: page catalog is a part of the PDF file
 #. The last period (.) is missing on purpose
 #: xpdf/gpdf-persist-file.cc:337
 msgid "The PDF file is damaged. Its page catalog could not be read"
-msgstr "File PDF nya rusak. Halaman katalognya tidak bisa dibaca"
+msgstr "Berkas PDF nya rusak. Halaman katalognya tidak bisa dibaca"
 
 #: xpdf/gpdf-persist-file.cc:341
 msgid ""
 "The PDF file is damaged or it is not a PDF file. It could not be repaired"
-msgstr "File PDF nya rusak atau ini bukan file PDF. Tidak bisa diperbaiki"
+msgstr "Berkas PDF nya rusak atau ini bukan berkas PDF. Tidak bisa diperbaiki"
 
 #: xpdf/gpdf-persist-file.cc:345
 msgid "The PDF document is encrypted and you didn't enter the correct password"
@@ -581,7 +582,7 @@ msgstr "Versi PDF:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:9
 msgid "Producer:"
-msgstr "Produser:"
+msgstr "Program pembuat:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:10
 msgid "Security:"
@@ -605,25 +606,25 @@ msgstr "Judul:"
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "Pilih halaman sidebar dari jurul untuk menampilkannya"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "Klik untuk membuka menu alat halaman"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "Buang halaman jika dia dapat dibuang"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "Tutup sidebar"
 
 #: xpdf/gpdf-thumbnails-view.cc:1467
 msgid "Thumbnail Generation feature not yet implemented... Sorry."
-msgstr "Fasilitas penghasil cuplikan belun lagi diterapkan... Maaf ya"
+msgstr "Fasilitas penghasil cuplikan belum lagi diterapkan... Maaf ya"
 
 #: xpdf/gpdf-thumbnails-view.cc:1483
 msgid "All Thumbnails Generation feature not yet implemented... Sorry."
@@ -632,7 +633,7 @@ msgstr "Seluruh fasilitas penghasil cuplikan belum lagi diterapkan... Maaf ya"
 #: xpdf/gpdf-view.cc:378
 #, c-format
 msgid "No application was found to open the URI: %s"
-msgstr ""
+msgstr "Tidak ada aplikasi yang dapat membuka URI: %s"
 
 #: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
 msgid "Application Launch Failure!"
@@ -650,39 +651,39 @@ msgstr "Pemberitahuan peluncuran aplikasi"
 #: xpdf/gpdf-view.cc:514
 #, c-format
 msgid "Go to page #%d"
-msgstr ""
+msgstr "Buka halaman #%d"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
-msgstr ""
+msgstr "BUka berkas %s: #%d"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
-msgstr ""
+msgstr "Luncurkan: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
-msgstr ""
+msgstr "Jelajahi %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
-msgstr ""
+msgstr "Kegiatan: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
-msgstr ""
+msgstr "Film: %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
-msgstr ""
+msgstr "Tindakan tidak diketahui: %s!"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Tampilan Dokumen"
 
@@ -724,48 +725,3 @@ msgstr "Ya"
 #: xpdf/pdf-info-dict-util.cc:219
 msgid "No"
 msgstr "Tidak"
-
-#~ msgid "Quit the program"
-#~ msgstr "Tutup program"
-
-#~ msgid "_Quit"
-#~ msgstr "K_eluar"
-
-#~ msgid "PDF file viewer"
-#~ msgstr "Penampil file PDF"
-
-#~ msgid "Print preview is not available in this program."
-#~ msgstr "Tampilan cetak tidak ada pada program ini."
-
-#~ msgid "Enter document owner password:"
-#~ msgstr "Masukkan password pemilik dokumen:"
-
-#, fuzzy
-#~ msgid ""
-#~ "This document is password protected and this operation requires the "
-#~ "document's owner password"
-#~ msgstr ""
-#~ "Dokumen ini dilindungi oleh password dan operasi ini memerlukan password "
-#~ "pemilik dokumen ini"
-
-#~ msgid "Save Document as ..."
-#~ msgstr "Simpan dokumen sebagai ..."
-
-#~ msgid "_Save document as"
-#~ msgstr "_Simpan dokumen sebagai"
-
-#~ msgid "Select a text file"
-#~ msgstr "Pilih file teks"
-
-#~ msgid "Please enter owner password ..."
-#~ msgstr "Masukkan password pemilik ..."
-
-#~ msgid "Please enter user password ..."
-#~ msgstr "Masukkan password pengguna ..."
-
-#~ msgid ""
-#~ "The PDF file is encrypted and requires a password. This program does not "
-#~ "support password-protected files"
-#~ msgstr ""
-#~ "File PDF dalam bentuk sandi dan membutuhkan password. Program ini tidak "
-#~ "mendukung file yang dilindungi dengan password"

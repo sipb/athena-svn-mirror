@@ -4,7 +4,7 @@ dnl Copyright 1999-2000 Ximian, Inc.
 dnl Copyright 2002-2004 Martin Kretzschmar
 
 AC_PREREQ(2.52)
-AC_INIT(gpdf, 2.8.0,
+AC_INIT(gpdf, 2.8.3,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=gpdf])
 STABLE_RELEASE=true
 
@@ -326,6 +326,17 @@ if test x"$GCONFTOOL" = xno; then
 fi
 
 AM_GCONF_SOURCE_2
+
+dnl Check the freetype version
+AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+if test "x$FREETYPE_CONFIG" != "xno" ; then
+  vers=`$FREETYPE_CONFIG --version 2>/dev/null | sed -e 's/libfreetype //' | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+  if test -n "$vers" && test "$vers" -le 9005003; then
+    AC_DEFINE_UNQUOTED(HAVE_FREETYPE_217_OR_OLDER, 1, [Define to 1 if your system has the freetype library 2.1.7 or older])
+  else
+    AC_DEFINE_UNQUOTED(HAVE_FREETYPE_217_OR_OLDER, 0, [Define to 1 if your system has the freetype library 2.1.7 or older])
+  fi
+fi
 
 dnl Fix for bug #121730
 

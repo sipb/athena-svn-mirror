@@ -1,3 +1,42 @@
+Version 2.8.3
+-------------
+
+* Fix for CAN 2005-0064 (Derek Noonburg)
+
+* Fix font encoding code for Type1C fonts and freetype > 2.1.7
+
+Version 2.8.2
+-------------
+
+* Fix potential buffer overflow in xpdf colorspace handling code.
+  (Derek Noonburg) - CAN 2004-1125
+
+* Fix bookmarks navigation. (Martin Sjogren, Marco Pesenti Gritti) - #159937
+
+* Show "Exit Fullscreen" button only on current workspace. (Gordon
+  Ingram) - #161225
+
+* Fix crash with broken embedded fonts. (Martin) - #161066
+
+* Fix several crashes with mouse-over-links. (Martin) - #156784
+
+* Translation updates: Vincent van Adrighem (nl)
+
+Version 2.8.1
+-------------
+
+* Fix integer overflows (Discovered in xpdf by Chris Evans, Patch by
+  Dan Williams) - CAN 2004-0888, #156729
+
+* Fix some crashes with http URLs. (Mark McLoughlin) - #153159, #151364
+
+* Check for NULL BonoboControlFrames. (Loic Minier) - (#151364)
+
+* Handle not-installed schemas better. (Muktha Narayan, Martin) - #151172
+
+* Translation updates: Meelad Zakaria (fa), Jesus Bravo Alvarez (gl),
+  Christophe Merlet (fr), Mohammad DAMT (id), Martin Willemoes Hansen (da)
+
 Version 2.8.0
 -------------
 
@@ -22,6 +61,8 @@ Version 2.7.91
 * Fix crash with mailto Links (Dan Williams) - #150476
 
 * Tighten libgnomeprint dependency. (agriffis,foser@gentoo.org)
+
+* Update egg-recent code. (Mark McLoughlin)
 
 * Translation updates: Changwoo Ryu (ko), Christian Rose (sv), Dafyss
   Tomos (cy), Danilo Segan (sr), Artur Flinta (pl), Leonid Kanter

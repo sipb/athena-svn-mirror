@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
-"PO-Revision-Date: 2004-08-25 09:52+0530\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
+"PO-Revision-Date: 2004-10-26 17:07+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,9 @@ msgstr ""
 "\n"
 "\n"
 "\n"
+"\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "PDF દેખાડનાર"
 
@@ -55,7 +56,7 @@ msgstr "છેલ્લુ"
 
 #: shell/gpdf-window-ui.xml.h:1
 msgid "About this application"
-msgstr "અા કાર્યક્રમ વિશે"
+msgstr "આ કાર્યક્રમ વિશે"
 
 #: shell/gpdf-window-ui.xml.h:2
 msgid "Close window"
@@ -63,7 +64,7 @@ msgstr "વિન્ડો બંધ કરો"
 
 #: shell/gpdf-window-ui.xml.h:3
 msgid "Online manual for this application"
-msgstr "અા કાર્યક્રમ માટે ઓનલાઈન મદદ"
+msgstr "આ કાર્યક્રમ માટે ઓનલાઈન મદદ"
 
 #: shell/gpdf-window-ui.xml.h:4
 msgid "Open"
@@ -116,69 +117,69 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "બોનોબોને શરુ કરી શકાયુ નહિં!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "PDF દસ્તાવેજ"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr "પૂર્ણ સ્ક્રીનમાંથી બહાર નીકળો"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "ફાઈલ લાવો"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "PDF દસ્તાવેજો"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "બધી ફાઈલો"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, Xpdf ના લેખક."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Martin Kretzschmar, જીનોમ પોર્ટ વ્યવસ્થાપક."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, જીનોમ પોર્ટ બનાવનાર."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "નીરવ <nirav@magnet-i.com>\n"
-"અંકિત <ankit644@linux.net>\n"
+"અંકિત <ankit644@yahoo.com>\n"
 "અંકુર <ankur_surti@linux.net>\n"
 "અતિત <shahatit_84@linux.net>\n"
 "ભાવિન <bhavinshah@linux.net>\n"
@@ -186,17 +187,17 @@ msgstr ""
 "ખુશ્બુ <khushbu_hi21@yahoo.co.in>\n"
 "શ્વેતા <sweta2782@yahoo.co.in>."
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "ગ્લીફ & કોગ, LLC અને લેખકો"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "જીનોમ PDF દેખાડનાર"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
-msgstr "Xpdf પર અાધારિત PDF દેખાડનાર"
+msgstr "Xpdf પર આધારિત PDF દેખાડનાર"
 
 #: xpdf/GNOME_PDF.server.in.in.h:2
 msgid "GNOME PDF viewer factory"
@@ -262,16 +263,16 @@ msgstr "નોંધણી પ્લગઈન વ્યવસ્થાની લ
 # gnome-session/gsm-client-row.c:43
 # #-#-#-#-#  gnome-session.gnome-2-2.hi.po (gnome-session VERSION)  #-#-#-#-#
 # gnome-session/gsm-client-row.c:43
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, c-format
 msgid "** Unknown %s **"
 msgstr "** અજ્ઞાત %s **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
-msgstr "શિર્શક"
+msgstr "શીર્ષક"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "પાનુ"
 
@@ -309,19 +310,19 @@ msgstr "પાનાંની પહોળાઈ બેસાડો (_w)"
 
 #: xpdf/gpdf-control-ui.xml.h:9
 msgid "Fo_rward"
-msgstr "અાગળ ભગાવો (_r)"
+msgstr "આગળ ભગાવો (_r)"
 
 #: xpdf/gpdf-control-ui.xml.h:10
 msgid "Forward"
-msgstr "અાગળ ભગાવો"
+msgstr "આગળ ભગાવો"
 
 #: xpdf/gpdf-control-ui.xml.h:11
 msgid "Go backward in history"
-msgstr "ઈતિહાસમાં પાછળ જાઅાે"
+msgstr "ઈતિહાસમાં પાછળ જાઓ"
 
 #: xpdf/gpdf-control-ui.xml.h:12
 msgid "Go forward in history"
-msgstr "ઈતિહાસમાં અાગળ જાઅાે"
+msgstr "ઈતિહાસમાં આગળ જાઓ"
 
 #: xpdf/gpdf-control-ui.xml.h:13
 msgid "In"
@@ -413,7 +414,7 @@ msgstr "પહેલું પાનું (_F)"
 
 #: xpdf/gpdf-control-ui.xml.h:36
 msgid "_Go"
-msgstr "જાઅો (_G)"
+msgstr "જાઓ (_G)"
 
 #: xpdf/gpdf-control-ui.xml.h:37
 msgid "_Last Page"
@@ -454,24 +455,24 @@ msgid ""
 "You were trying to print to a printer using the \"%s\" driver. This program "
 "requires a PostScript printer driver."
 msgstr ""
-"તમે \"%s\" ડ્રાઈવરનો ઉપયોગ કરીને છાપવાનો પ્રયત્ન કરી રહ્યા હતા. અા લખાણને "
-"પોસ્ટસ્ક્રિપ્ટ પ્રિન્ટર ડ્રાઈવરની જરુર છે."
+"તમે \"%s\" ડ્રાઈવરનો ઉપયોગ કરીને છાપવાનો પ્રયત્ન કરી રહ્યા હતા. આ લખાણને પોસ્ટસ્ક્રિપ્ટ "
+"પ્રિન્ટર ડ્રાઈવરની જરુર છે."
 
 #: xpdf/gpdf-control.cc:894
 msgid ""
 "You were trying to print to a printer that does not use PostScript. This "
 "program requires a PostScript printer driver."
 msgstr ""
-"તમે અેવા પ્રિન્ટર પર છાપવાનો પ્રયાસ કરી રહ્યા હતા જે પોસ્ટસ્ક્રિપ્ટ વાપરતું નથી. અા "
+"તમે એવા પ્રિન્ટર પર છાપવાનો પ્રયાસ કરી રહ્યા હતા જે પોસ્ટસ્ક્રિપ્ટ વાપરતું નથી. આ "
 "કાર્યક્રમને પોસ્ટસ્ક્રિપ્ટ પ્રિન્ટર ડ્રાઈવરની જરુર છે."
 
 #: xpdf/gpdf-control.cc:898
 msgid "Printing is not supported on this printer."
-msgstr "અા પ્રિન્ટર પર છાપવા માટેનો અાધાર નથી."
+msgstr "આ પ્રિન્ટર પર છાપવા માટેનો આધાર નથી."
 
 #: xpdf/gpdf-control.cc:937
 msgid "_Pages"
-msgstr "પાનાંઅો (_P)"
+msgstr "પાનાંઓ (_P)"
 
 #: xpdf/gpdf-control.cc:1043
 #, c-format
@@ -497,24 +498,24 @@ msgstr "ફાઈલ \"%s\" તરીકે સંગ્રહી શકાઈ �
 
 #: xpdf/gpdf-control.cc:1195
 msgid "PDF Properties"
-msgstr "PDFના ગુણધર્મો"
+msgstr "PDF ના ગુણધર્મો"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
-msgstr "%sને લાવવામાં નિષ્ફળતા."
+msgstr "%s ને લાવવામાં નિષ્ફળતા."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "બુકમાર્કો"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
-msgstr "પાનાંઅો"
+msgstr "પાનાંઓ"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
-msgstr "નાંેધણીઓ"
+msgstr "નોંધણીઓ"
 
 #: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
 msgid "Link"
@@ -551,7 +552,7 @@ msgstr "PDF ફાઈલ ઈજાગ્રસ્ત છે. એનું સૂ
 #: xpdf/gpdf-persist-file.cc:341
 msgid ""
 "The PDF file is damaged or it is not a PDF file. It could not be repaired"
-msgstr "PDF ફાઈલ બગડી ગઈ છે અથવા તે PDF ફાઈલ નથી. તે સાજી કરી શકાય અેમ નથી"
+msgstr "PDF ફાઈલ બગડી ગઈ છે અથવા તે PDF ફાઈલ નથી. તે સાજી કરી શકાય એમ નથી"
 
 #: xpdf/gpdf-persist-file.cc:345
 msgid "The PDF document is encrypted and you didn't enter the correct password"
@@ -612,7 +613,7 @@ msgstr "વિષય:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:12
 msgid "Title:"
-msgstr "શિર્શક:"
+msgstr "શીર્ષક:"
 
 # #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
 # gnome-session/gsm-client-row.c:43
@@ -628,19 +629,19 @@ msgstr "શિર્શક:"
 msgid "Unknown"
 msgstr "અજાણ્યુ"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "બાજુની પટ્ટીનું પાનુ દર્શાવવા માટે શીર્ષક પ્રમાણે પસંદ કરો"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "પાનાનુ સાધન મેનુ ખોલવા માટે ક્લિક કરો"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "જો પાનુ દૂર કરી શકાય એમ હોય તો તેને કાઢી નાખો"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "બાજુની પટ્ટી બંધ કરો"
 
@@ -675,37 +676,37 @@ msgstr "કાર્યક્રમ લાવવામાં નોંધણી!
 msgid "Go to page #%d"
 msgstr "પાના #%d પર જાઓ"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr "ફાઈલ %s:#%d પર જાઓ"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr "લાવો: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr "%s શોધો"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr "ક્રિયા: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr "ફિલ્મ: %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr "અજ્ઞાત ક્રિયા: %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "દસ્તાવેજનો દેખાવ"
 

@@ -526,7 +526,7 @@ gpdf_view_link_entered_cb (GPdfLinksCanvasLayer *links_layer,
 		  link_gotor = dynamic_cast <LinkGoToR *> (action);
 		  link_dest = link_gotor->getDest ();
 		  named_dest = link_gotor->getNamedDest ();
-		  filename = link_gotor->getNamedDest ();
+		  filename = link_gotor->getFileName ();
 		  if (link_dest != NULL) {
 		      link_dest = link_dest->copy ();
 		  } else if (named_dest != NULL) {
@@ -544,17 +544,30 @@ gpdf_view_link_entered_cb (GPdfLinksCanvasLayer *links_layer,
 		      
 		      delete link_dest;
 		  }
-		  text = g_strdup_printf (_("Go to file %s:#%d"), filename->getCString (), page); 
+		  if (filename)
+			  text = g_strdup_printf (_("Go to file %s:#%d"), filename->getCString (), page);
+		  else
+			  text = g_strdup_printf (_("Go to file %s:#%d"), "", page);
 		  break;
 	      }		
 	      case actionLaunch:
 	      {
 		  LinkLaunch *link_launch = NULL;
-		  
-		  link_launch = dynamic_cast <LinkLaunch *> (link_launch);
-		  text = g_strdup_printf (_("Launch: %s %s"),
-					  link_launch->getFileName ()->getCString (), 
-					  link_launch->getParams ()->getCString ());
+		  GString *str;
+		  const char *filename;
+		  const char *params;
+
+		  link_launch = dynamic_cast <LinkLaunch *> (action);
+		  if (!link_launch)
+			  break;
+
+		  str = link_launch->getFileName ();
+		  filename = str ? str->getCString () : "";
+
+		  str = link_launch->getParams ();
+		  params = str ? str->getCString () : "";
+
+		  text = g_strdup_printf (_("Launch: %s %s"), filename, params);
 		  break;
 	      }
 	      case actionURI:

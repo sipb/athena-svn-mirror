@@ -1,3 +1,117 @@
+2005-01-27  Martin Kretzschmar  <martink@gnome.org>
+
+	* NEWS, configure.in: Version 2.8.3.
+
+2005-01-26  Martin Kretzschmar  <martink@gnome.org>
+
+	* configure.in: Test for freetype <= or > 2.1.7.
+
+	* xpdf/GPOutputDev.cc (getFontFaceEmbedded): ifdef out Type1C
+	cid-to-gid code which is no longer necessary/breaks with freetype
+	> 2.1.7 (e.g. firefox ad). Ported from kpdf.
+
+2005-01-26  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* xpdf/XRef.cc:
+	
+	Fix CAN-2005-0064
+
+2005-01-07  Martin Kretzschmar  <martink@gnome.org>
+
+	* configure.in: Version 2.8.2.
+
+	* xpdf/gpdf-view.cc (gpdf_view_link_entered_cb): undo string
+	freeze breakage.
+
+	* NEWS: update.
+
+	Backports from HEAD:
+	
+	2004-12-22  Martin Kretzschmar  <martink@gnome.org>
+
+	* xpdf/gpdf-view.cc (gpdf_view_link_entered_cb): fix typos and add
+	NULL-checks to fix crashes on link mouse-over. Fixes Bug #156784,
+	Bug #159966, half of Bug #159386.
+
+	2004-12-21  Martin Kretzschmar  <martink@gnome.org>
+
+	* xpdf/GPOutputDev.cc (getFontFaceEmbedded): FoFiTrueType::make
+	etc. can return NULL. Use the fallback in that case. Fixes crash
+	part of Bug #161066.
+
+	2004-12-21  Gordon Ingram  <ggi@btinternet.com>
+
+	* shell/gpdf.c (gpdf_window_focus_in_event, gpdf_window_focus_out_event)
+	(gpdf_window_class_init): Show the fullscreen button only when
+	the window is active. Stolen from epiphany. Fixes #161225.
+
+2005-01-07  Martin Kretzschmar  <martink@gnome.org>
+
+	* xpdf/GfxState.cc (GfxDeviceNColorSpace::parse),
+	xpdf/Gfx.cc (doImage): update to xpdf 3.00pl2. Check that the PDF
+	file supplied color components count i within the allowed range.
+	Fixes buffer overflow vulnerability.
+
+	Fixes Bug #162084 and Bug #163026
+	http://www.idefense.com/application/poi/display?id=172
+	CAN-2004-1125
+	
+	Also thanks to Matthias Geerdsen <vorlon@gentoo.org> and Marco
+	Pesenti Gritti <marco@gnome.org>.
+	
+2005-01-03  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* xpdf/gpdf-bookmarks-view.cc:
+
+	Fix click on bookmarks bar items #276482
+
+2004-12-06  Martin Kretzschmar  <martink@gnome.org>
+
+	* configure.in, NEWS: Version 2.8.1.
+
+	* COPYING: fix FSF address.
+	
+	* gpdf.desktop.in: change gpdf %U to gpdf %F because there are
+	problems with most URI schemes.
+
+2004-11-06  Martin Kretzschmar  <martink@gnome.org>
+
+	* xpdf/gpdf-control.cc (gpdf_control_sidebar_page_changed_cb): if
+	no known page id matches, use the bookmarks page.
+	(gpdf_control_sidebar_page_changed_cb): remove annotations view
+	special case (which would segfault if !page_id), obsolete with the
+	change above.
+
+	* xpdf/gpdf-sidebar.c (page_compare_func)
+	(gpdf_sidebar_find_page_by_id): moved up in the file.
+	(gpdf_sidebar_sanitize_page_id): sanitizes an untrusted, possibly
+	NULL page_id value to a known page_id (with "bookmarks" as
+	default).
+	(gpdf_sidebar_show): pipe the gconf value for the page id through
+	gpdf_sidebar_sanitize_page_id.
+
+	Also fixes Bug #151172 ("segfaults if schema not
+	installed"). Initial patch by Muktha <muktha.narayan@wipro.com>.
+
+2004-11-06  Loic Minier  <lool@via.ecp.fr>
+
+	* shell/gpdf.c (gpdf_window_close): if we don't have a
+	BonoboWidget, don't try to work with its ControlFrame. Fixes
+	asserts when starting gpdf and closing immediately. Patch from
+	Bug #151364.
+
+2004-11-05  Dan Williams  <dcbw@redhat.com>
+
+	* xpdf/Catalog.cc, xpdf/XRef.cc: Fix for a number of integer
+	overflow bugs discovered by Chris Evans. CAN-2004-0888,
+	Bug #156729, Red Hat Bug #137420.
+
+2004-09-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* xpdf/GnomeVFSStream.cc (reset, fillBuf): check gnome_vfs_foo
+	return values.  Fixes crashes with gnome-vfs' http method.  Bug
+	#153159, #151364, Red Hat Bug #132469, half of Debian Bug #268873.
+	
 2004-09-13  Martin Kretzschmar  <m_kretzschmar@gmx.net>
 
 	* configure.in, NEWS: Version 2.8.0.

@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * $Id: gpdf-sidebar.c,v 1.1.1.1 2004-10-06 18:43:56 ghudson Exp $
+ * $Id: gpdf-sidebar.c,v 1.1.1.2 2005-03-10 20:47:30 ghudson Exp $
  */
 
 #include <string.h>
@@ -171,6 +171,39 @@ gpdf_sidebar_size_allocate (GtkWidget *widget,
 	gtk_widget_size_allocate (frame, &child_allocation);
 }
 
+static gint 
+page_compare_func (gconstpointer a, gconstpointer b)
+{
+	GPdfSidebarPage *page = (GPdfSidebarPage *)a;
+
+	return strcmp (page->id, (char*) b);
+}
+
+static GPdfSidebarPage *
+gpdf_sidebar_find_page_by_id (GPdfSidebar *sidebar, const char *page_id)
+{
+	GList *l;
+	
+	l = g_list_find_custom (sidebar->priv->pages, page_id,
+				page_compare_func);
+	if (!l)
+		return NULL;
+	
+	return (GPdfSidebarPage *)l->data;
+}
+
+static const char *
+gpdf_sidebar_sanitize_page_id (GPdfSidebar *sidebar, const char *id)
+{
+	if (!id)
+		return "bookmarks";
+
+	if (!gpdf_sidebar_find_page_by_id (sidebar, id))
+		return "bookmarks";
+
+	return id;
+}
+
 static void
 gpdf_sidebar_show (GtkWidget *widget)
 {
@@ -180,8 +213,9 @@ gpdf_sidebar_show (GtkWidget *widget)
 	{
 		const char *id;
 
-		id = eel_gconf_get_string (CONF_WINDOWS_SIDEBAR_PAGE);
-		g_return_if_fail (id != NULL);
+		id = gpdf_sidebar_sanitize_page_id (
+			sidebar,
+			eel_gconf_get_string (CONF_WINDOWS_SIDEBAR_PAGE));
 		
 		gpdf_sidebar_select_page (sidebar, id);
 	}
@@ -543,28 +577,6 @@ gpdf_sidebar_add_page	(GPdfSidebar *sidebar,
 	
 	sidebar->priv->pages = g_list_append (sidebar->priv->pages,
 		       			      (gpointer)page);
-}
-
-static gint 
-page_compare_func (gconstpointer  a,
-                   gconstpointer  b)
-{
-	GPdfSidebarPage *page = (GPdfSidebarPage *)a;
-
-	return strcmp (page->id, (char*) b);
-}
-
-static GPdfSidebarPage *
-gpdf_sidebar_find_page_by_id (GPdfSidebar *sidebar,
-                              const char *page_id)
-{
-	GList *l;
-	
-	l = g_list_find_custom (sidebar->priv->pages, page_id,
-				page_compare_func);
-	if (!l) return NULL;
-	
-	return (GPdfSidebarPage *)l->data;
 }
 
 gboolean 
