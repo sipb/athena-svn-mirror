@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.11 1997-10-13 21:57:46 ghudson Exp $
+# $Id: Makefile.athena,v 1.12 1997-10-25 14:53:52 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -11,7 +11,8 @@ prepare:
 	rm -f src/config.cache
 	cd src && CC="$$COMPILER" CONFIG_SITE= \
 		./configure --prefix=/usr/athena --datadir=/usr/athena/lib \
-		--sbindir=/usr/athena/etc --sysconfdir=/etc/athena
+		--sbindir=/usr/athena/etc --sysconfdir=/etc/athena \
+		--with-afs=/usr/afsws
 
 clean:
 	cd src && ${MAKE} clean
