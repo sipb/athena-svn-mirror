@@ -64,7 +64,7 @@ I.ROOT-SERVERS.NET.      3600000      A     192.36.148.17
 ; temporarily housed at NSI (InterNIC)
 ;
 .                        3600000      NS    J.ROOT-SERVERS.NET.
-J.ROOT-SERVERS.NET.      3600000      A     198.41.0.10
+J.ROOT-SERVERS.NET.      3600000      A     192.58.128.30
 ;
 ; housed in LINX, operated by RIPE NCC
 ;
