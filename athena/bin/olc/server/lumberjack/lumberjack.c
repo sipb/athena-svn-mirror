@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.15 1991-05-06 23:19:03 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.16 1991-09-22 11:26:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.15 1991-05-06 23:19:03 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.16 1991-09-22 11:26:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -24,10 +24,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/wait.h>
 #include <strings.h>
 #include <stdio.h>
-#if !defined(_AIX) && !defined(SYSV) && !defined(WEXITSTATUS)
-/* BSD, need to define macro to get at exit status */
-#define	WEXITSTATUS(st)	(st).w_retcode
-#define	WTERMSIG(st)	(st).w_termsig
+#ifdef _POSIX_SOURCE
+#include <dirent.h>
+#include <fcntl.h>
 #endif
 
 #include <olcd.h>
@@ -39,17 +38,23 @@ main (argc, argv)
      char **argv;
 {
   DIR *dirp;			/* pointer to directory */
+#ifdef _POSIX_SOURCE
+  struct dirent *next;
+#else
   struct direct *next;		/* directory entry */
+#endif
   int lock_fd;			/* file descriptor of lock file */
   int fd;			/* file descriptor of control file */
   int retval;			/* Error code returned by system */
   FILE *file;			/* file stream used to read control file */
-#if !defined(_i386) && !defined(SYSV)
-  union wait status;
-#else
+#ifdef _POSIX_SOURCE
   int status;
+#else
+  union wait status;
 #endif
-
+#ifdef _POSIX_SOURCE
+  struct flock flk;
+#endif
   char logname[SIZE];		/* name of log file */
   char title[SIZE];		/* title assigned to log */
   char topic[SIZE];		/* topic of question, also meeting name */
@@ -93,17 +98,29 @@ main (argc, argv)
  *  If we can't open/create the lock file and lock it, exit.
  */
 
-  if ((lock_fd = open(LOCKFILE, O_CREAT, 0666)) < 0)
+  if ((lock_fd = open(LOCKFILE, O_CREAT|O_RDWR, 0666)) < 0)
     {
       syslog(LOG_ERR,"open (lock file): %m");
       exit(-1);
     }
+#ifdef _POSIX_SOURCE
+  flk.l_type = F_WRLCK;
+  flk.l_whence = SEEK_SET;
+  flk.l_start = 0;
+  flk.l_len = 1;
+  if (fcntl(lock_fd,F_SETLK,&flk) == -1) {
+    syslog(LOG_ERR,"getting lock: %m");
+    close(lock_fd);
+    exit(-1);
+  }
+#else
   if (flock(lock_fd, LOCK_EX | LOCK_NB))
     {
       syslog(LOG_ERR,"flock: %m");
       close(lock_fd);
       exit(-1);
     }
+#endif
 
 /*
  * Find out where we're supposed to be putting these logs...
@@ -131,7 +148,15 @@ main (argc, argv)
     {
       syslog(LOG_ERR,"opendir: %m");
       close(lock_fd);
+#ifdef _POSIX_SOURCE
+      flk.l_type = F_UNLCK;
+      if (fcntl(lock_fd,F_SETLK,&flk) == -1) {
+	syslog(LOG_ERR,"clearing lock: %m");
+	close(lock_fd);
+      }
+#else
       flock(lock_fd, LOCK_UN);
+#endif
       exit(-1);
     }
 
@@ -238,5 +263,13 @@ main (argc, argv)
 	}
     }
   closedir(dirp);
+#ifdef _POSIX_SOURCE
+  flk.l_type = F_UNLCK;
+  if (fcntl(lock_fd,F_SETLK,&flk) == -1) {
+    syslog(LOG_ERR,"clearing lock: %m");
+    close(lock_fd);
+  }
+#else
   flock(lock_fd, LOCK_UN);
+#endif
 }
