@@ -28,12 +28,11 @@ WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 ******************************************************************/
-
 #ifdef KINETICS
 #include "gw.h"
 #endif
 
-#if !defined(KINETICS)
+#if (defined(unix) && !defined(KINETICS))
 #include <sys/types.h>
 #include <netinet/in.h>
 #endif
@@ -194,7 +193,7 @@ asn_parse_string(data, datalength, type, string, strlength)
 	ERROR("I don't support such long strings");
 	return NULL;
     }
-    bcopy((char *)bufp, (char *)string, (int)asn_length);
+    memcpy((char *)string, (char *)bufp, (int)asn_length);
     *strlength = (int)asn_length;
     *datalength -= (int)asn_length + (bufp - data);
     return bufp + asn_length;
@@ -230,7 +229,7 @@ asn_build_string(data, datalength, type, string, strlength)
 	return NULL;
     if (*datalength < strlength)
 	return NULL;
-    bcopy((char *)string, (char *)data, strlength);
+    memcpy((char *)data, (char *)string, strlength);
     *datalength -= strlength;
     return data + strlength;
 }
@@ -326,7 +325,7 @@ asn_parse_length(data, length)
 	    ERROR("we can't support data lengths that long");
 	    return NULL;
 	}
-	bcopy((char *)data + 1, (char *)length, (int)lengthbyte);
+	memcpy((char *)length, (char *)data + 1, (int)lengthbyte);
 	*length = ntohl(*length);
 	*length >>= (8 * ((sizeof *length) - lengthbyte));
 	return data + lengthbyte + 1;
@@ -467,7 +466,7 @@ asn_build_objid(data, datalength, type, objid, objidlength)
     register u_long subid, mask, testmask;
     register int bits, testbits;
 
-    bcopy((char *)objid, (char *)objbuf, objidlength * sizeof(oid));
+    memcpy((char *)objbuf, (char *)objid, objidlength * sizeof(oid));
     /* transform size in bytes to size in subid's */
     /* encode the first two components into the first subidentifier */
     op[1] = op[1] + (op[0] * 40);
@@ -499,7 +498,7 @@ asn_build_objid(data, datalength, type, objid, objidlength)
 	return NULL;
     if (*datalength < asnlength)
 	return NULL;
-    bcopy((char *)buf, (char *)data, asnlength);
+    memcpy((char *)data, (char *)buf, asnlength);
     *datalength -= asnlength;
     return data + asnlength;
 }

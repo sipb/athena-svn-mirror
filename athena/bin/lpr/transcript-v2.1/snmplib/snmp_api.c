@@ -26,10 +26,15 @@ SOFTWARE.
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#include <time.h>
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#ifdef _AIX
+#include <sys/select.h>
+#endif
+
 #include "asn1.h"
 #include "snmp.h"
 #include "snmp_impl.h"
@@ -42,7 +47,6 @@ SOFTWARE.
 #endif
 
 #ifndef BSD4_3
-
 typedef long	fd_mask;
 #define NFDBITS	(sizeof(fd_mask) * NBBY)	/* bits per mask */
 
@@ -155,10 +159,10 @@ snmp_open(session)
     /* Copy session structure and link into list */
     slp = (struct session_list *)malloc(sizeof(struct session_list));
     slp->internal = isp = (struct snmp_internal_session *)malloc(sizeof(struct snmp_internal_session));
-    bzero((char *)isp, sizeof(struct snmp_internal_session));
+    memset((char *)isp, 0, sizeof(struct snmp_internal_session));
     slp->internal->sd = -1; /* mark it not set */
     slp->session = (struct snmp_session *)malloc(sizeof(struct snmp_session));
-    bcopy((char *)session, (char *)slp->session, sizeof(struct snmp_session));
+    memcpy((char *)slp->session, (char *)session, sizeof(struct snmp_session));
     session = slp->session;
     /* now link it in. */
     slp->next = Sessions;
@@ -178,11 +182,11 @@ snmp_open(session)
     /* Fill in defaults if necessary */
     if (session->community_len != SNMP_DEFAULT_COMMUNITY_LEN){
 	cp = (u_char *)malloc((unsigned)session->community_len);
-	bcopy((char *)session->community, (char *)cp, session->community_len);
+	memcpy((char *)cp, (char *)session->community, session->community_len);
     } else {
 	session->community_len = strlen(DEFAULT_COMMUNITY);
 	cp = (u_char *)malloc((unsigned)session->community_len);
-	bcopy((char *)DEFAULT_COMMUNITY, (char *)cp, session->community_len);
+	memcpy((char *)cp, (char *)DEFAULT_COMMUNITY, session->community_len);
     }
     session->community = cp;	/* replace pointer with pointer to new data */
 
@@ -206,7 +210,7 @@ snmp_open(session)
     isp->sd = sd;
     if (session->peername != SNMP_DEFAULT_PEERNAME){
 	if ((addr = inet_addr(session->peername)) != -1){
-	    bcopy((char *)&addr, (char *)&isp->addr.sin_addr, sizeof(isp->addr.sin_addr));
+	    memcpy((char *)&isp->addr.sin_addr, (char *)&addr, sizeof(isp->addr.sin_addr));
 	} else {
 	    hp = gethostbyname(session->peername);
 	    if (hp == NULL){
@@ -218,7 +222,7 @@ snmp_open(session)
 		}
 		return 0;
 	    } else {
-		bcopy((char *)hp->h_addr, (char *)&isp->addr.sin_addr, hp->h_length);
+		memcpy((char *)&isp->addr.sin_addr, (char *)hp->h_addr, hp->h_length);
 	    }
 	}
 	isp->addr.sin_family = AF_INET;
@@ -346,7 +350,7 @@ snmp_build(session, pdu, packet, out_length)
     cp = asn_build_header(buf, &length, (u_char)(ASN_SEQUENCE | ASN_CONSTRUCTOR), totallength);
     if (cp == NULL)
 	return -1;
-    bcopy((char *)packet, (char *)cp, totallength);
+    memcpy((char *)cp, (char *)packet, totallength);
     totallength += cp - buf;
 
     length = *out_length;
@@ -403,7 +407,7 @@ snmp_build(session, pdu, packet, out_length)
     }
     if (length < totallength)
 	return -1;
-    bcopy((char *)buf, (char *)cp, totallength);
+    memcpy((char *)cp, (char *)buf, totallength);
     totallength += cp - packet;
 
     length = PACKET_LENGTH;
@@ -412,7 +416,7 @@ snmp_build(session, pdu, packet, out_length)
 	return -1;
     if (length < totallength)
 	return -1;
-    bcopy((char *)packet, (char *)cp, totallength);
+    memcpy((char *)cp, (char *)packet, totallength);
     totallength += cp - buf;
 
     length = *out_length;
@@ -421,7 +425,7 @@ snmp_build(session, pdu, packet, out_length)
 	return -1;
     if ((*out_length - (cp - packet)) < totallength)
 	return -1;
-    bcopy((char *)buf, (char *)cp, totallength);
+    memcpy((char *)cp, (char *)buf, totallength);
     totallength += cp - packet;
     *out_length = totallength;
     return 0;
@@ -482,7 +486,7 @@ snmp_parse(session, pdu, data, length)
 	if (data == NULL)
 	    return -1;
 	pdu->enterprise = (oid *)malloc(pdu->enterprise_length * sizeof(oid));
-	bcopy((char *)objid, (char *)pdu->enterprise, pdu->enterprise_length * sizeof(oid));
+	memcpy((char *)pdu->enterprise, (char *)objid, pdu->enterprise_length * sizeof(oid));
 
 	four = 4;
 	data = asn_parse_string(data, &length, &type, (u_char *)&pdu->agent_addr.sin_addr.s_addr, &four);
@@ -518,7 +522,7 @@ snmp_parse(session, pdu, data, length)
 	if (data == NULL)
 	    return -1;
 	op = (oid *)malloc((unsigned)vp->name_length * sizeof(oid));
-	bcopy((char *)objid, (char *)op, vp->name_length * sizeof(oid));
+	memcpy((char *)op, (char *)objid, vp->name_length * sizeof(oid));
 	vp->name = op;
 
 	len = PACKET_LENGTH;
@@ -542,7 +546,7 @@ snmp_parse(session, pdu, data, length)
 		asn_parse_objid(var_val, &len, &vp->type, objid, &vp->val_len);
 		vp->val_len *= sizeof(oid);
 		vp->val.objid = (oid *)malloc((unsigned)vp->val_len);
-		bcopy((char *)objid, (char *)vp->val.objid, vp->val_len);
+		memcpy((char *)vp->val.objid, (char *)objid, vp->val_len);
 		break;
 	    case ASN_NULL:
 		break;
@@ -598,7 +602,7 @@ snmp_send(session, pdu)
 	pdu->reqid = 1;	/* give a bogus non-error reqid for traps */
 	if (pdu->enterprise_length == SNMP_DEFAULT_ENTERPRISE_LENGTH){
 	    pdu->enterprise = (oid *)malloc(sizeof(DEFAULT_ENTERPRISE));
-	    bcopy((char *)DEFAULT_ENTERPRISE, (char *)pdu->enterprise, sizeof(DEFAULT_ENTERPRISE));
+	    memcpy((char *)pdu->enterprise, (char *)DEFAULT_ENTERPRISE, sizeof(DEFAULT_ENTERPRISE));
 	    pdu->enterprise_length = sizeof(DEFAULT_ENTERPRISE)/sizeof(oid);
 	}
 	if (pdu->time == SNMP_DEFAULT_TIME)
@@ -606,7 +610,7 @@ snmp_send(session, pdu)
     }
     if (pdu->address.sin_addr.s_addr == SNMP_DEFAULT_ADDRESS){
 	if (isp->addr.sin_addr.s_addr != SNMP_DEFAULT_ADDRESS){
-	    bcopy((char *)&isp->addr, (char *)&pdu->address, sizeof(pdu->address));
+	    memcpy((char *)&pdu->address, (char *)&isp->addr, sizeof(pdu->address));
 	} else {
 	    fprintf(stderr, "No remote IP address specified\n");
 	    snmp_errno = SNMPERR_BAD_ADDRESS;

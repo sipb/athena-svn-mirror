@@ -30,6 +30,10 @@ SOFTWARE.
 #include <sys/time.h>
 #include <errno.h>
 
+#ifdef _AIX
+#include <sys/select.h>
+#endif
+
 #include "asn1.h"
 #include "snmp.h"
 #include "snmp_impl.h"
@@ -62,7 +66,7 @@ snmp_pdu_create(command)
     struct snmp_pdu *pdu;
 
     pdu = (struct snmp_pdu *)malloc(sizeof(struct snmp_pdu));
-    bzero((char *)pdu, sizeof(struct snmp_pdu));
+    memset((char *)pdu, 0, sizeof(struct snmp_pdu));
     pdu->command = command;
     pdu->errstat = SNMP_DEFAULT_ERRSTAT;
     pdu->errindex = SNMP_DEFAULT_ERRINDEX;
@@ -95,7 +99,7 @@ snmp_add_null_var(pdu, name, name_length)
 
     vars->next_variable = NULL;
     vars->name = (oid *)malloc(name_length * sizeof(oid));
-    bcopy((char *)name, (char *)vars->name, name_length * sizeof(oid));
+    memcpy((char *)vars->name, (char *)name, name_length * sizeof(oid));
     vars->name_length = name_length;
     vars->type = ASN_NULL;
     vars->val.string = NULL;
@@ -119,33 +123,36 @@ snmp_synch_input(op, session, reqid, pdu, magic)
     if (op == RECEIVED_MESSAGE && pdu->command == GET_RSP_MSG){
 	/* clone the pdu */
 	state->pdu = newpdu = (struct snmp_pdu *)malloc(sizeof(struct snmp_pdu));
-	bcopy((char *)pdu, (char *)newpdu, sizeof(struct snmp_pdu));
+	memcpy((char *)newpdu, (char *)pdu, sizeof(struct snmp_pdu));
 	newpdu->variables = 0;
 	var = pdu->variables;
 	if (var != NULL){
 	    newpdu->variables = newvar = (struct variable_list *)malloc(sizeof(struct variable_list));
-	    bcopy((char *)var, (char *)newvar, sizeof(struct variable_list));
+	    memcpy((char *)newvar, (char *)var, sizeof(struct variable_list));
 	    if (var->name != NULL){
 		newvar->name = (oid *)malloc(var->name_length * sizeof(oid));
-		bcopy((char *)var->name, (char *)newvar->name, var->name_length * sizeof(oid));
+		memcpy((char *)newvar->name, (char *)var->name,
+		       var->name_length * sizeof(oid));
 	    }
 	    if (var->val.string != NULL){
 		newvar->val.string = (u_char *)malloc(var->val_len);
-		bcopy((char *)var->val.string, (char *)newvar->val.string, var->val_len);
+		memcpy((char *)newvar->val.string, (char *)var->val.string, var->val_len);
 	    }
 	    newvar->next_variable = 0;
 	    while(var->next_variable){
 		newvar->next_variable = (struct variable_list *)malloc(sizeof(struct variable_list));
 		var = var->next_variable;
 		newvar = newvar->next_variable;
-		bcopy((char *)var, (char *)newvar, sizeof(struct variable_list));
+		memcpy((char *)newvar, (char *)var, sizeof(struct variable_list));
 		if (var->name != NULL){
 		    newvar->name = (oid *)malloc(var->name_length * sizeof(oid));
-		    bcopy((char *)var->name, (char *)newvar->name, var->name_length * sizeof(oid));
+		    memcpy((char *)newvar->name, (char *)var->name,
+			   var->name_length * sizeof(oid));
 		}
 		if (var->val.string != NULL){
 		    newvar->val.string = (u_char *)malloc(var->val_len);
-		    bcopy((char *)var->val.string, (char *)newvar->val.string, var->val_len);
+		    memcpy((char *)newvar->val.string, (char *)var->val.string,
+			   var->val_len);
 		}
 		newvar->next_variable = 0;
 	    }
@@ -182,7 +189,7 @@ snmp_fix_pdu(pdu, command)
 	return NULL;
     /* clone the pdu */
     newpdu = (struct snmp_pdu *)malloc(sizeof(struct snmp_pdu));
-    bcopy((char *)pdu, (char *)newpdu, sizeof(struct snmp_pdu));
+    memcpy((char *)newpdu, (char *)pdu, sizeof(struct snmp_pdu));
     newpdu->variables = 0;
     newpdu->command = command;
     newpdu->reqid = SNMP_DEFAULT_REQID;
@@ -196,14 +203,15 @@ snmp_fix_pdu(pdu, command)
     }
     if (var != NULL){
 	newpdu->variables = newvar = (struct variable_list *)malloc(sizeof(struct variable_list));
-	bcopy((char *)var, (char *)newvar, sizeof(struct variable_list));
+	memcpy((char *)newvar, (char *)var, sizeof(struct variable_list));
 	if (var->name != NULL){
 	    newvar->name = (oid *)malloc(var->name_length * sizeof(oid));
-	    bcopy((char *)var->name, (char *)newvar->name, var->name_length * sizeof(oid));
+	    memcpy((char *)newvar->name, (char *)var->name,
+		   var->name_length * sizeof(oid));
 	}
 	if (var->val.string != NULL){
 	    newvar->val.string = (u_char *)malloc(var->val_len);
-	    bcopy((char *)var->val.string, (char *)newvar->val.string, var->val_len);
+	    memcpy((char *)newvar->val.string, (char *)var->val.string, var->val_len);
 	}
 	newvar->next_variable = 0;
 	copied++;
@@ -214,14 +222,14 @@ snmp_fix_pdu(pdu, command)
 		continue;
 	    newvar->next_variable = (struct variable_list *)malloc(sizeof(struct variable_list));
 	    newvar = newvar->next_variable;
-	    bcopy((char *)var, (char *)newvar, sizeof(struct variable_list));
+	    memcpy((char *)newvar, (char *)var, sizeof(struct variable_list));
 	    if (var->name != NULL){
 		newvar->name = (oid *)malloc(var->name_length * sizeof(oid));
-		bcopy((char *)var->name, (char *)newvar->name, var->name_length * sizeof(oid));
+		memcpy((char *)newvar->name, (char *)var->name, var->name_length * sizeof(oid));
 	    }
 	    if (var->val.string != NULL){
 		newvar->val.string = (u_char *)malloc(var->val_len);
-		bcopy((char *)var->val.string, (char *)newvar->val.string, var->val_len);
+		memcpy((char *)newvar->val.string, (char *)var->val.string, var->val_len);
 	    }
 	    newvar->next_variable = 0;
 	    copied++;
