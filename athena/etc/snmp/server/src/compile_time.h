@@ -1,0 +1,1 @@
+#define COMPILE_TIME  "Fri Dec 18 15:24:59 EST 1992"
