@@ -141,24 +141,11 @@ test03()
   VERIFY(str01 == "ultra");
 }
 
-// We wrongly used __n1 instead of __foldn1 in the length_error
-// check at the beginning of replace(__pos, __n1, __s, __n2)
-void
-test04()
-{
-  bool test = true;
-  std::string str01 = "londinium";
-  std::string str02 = "cydonia";
-
-  str01.replace(0, 20, str02.c_str(), 3);
-  VERIFY(str01 == "cyd");
-}
-
 // Some more tests for 
 // template<typename InputIter>
 //   string& replace(iterator it1, iterator it2, InputIter j1, InputIter j2)
 void
-test05()
+test04()
 {
   bool test = true;
   std::string str01 = "geogaddi";
@@ -189,6 +176,19 @@ test05()
   char* ptr2 = &*str01.end();
   str02.replace(str02.begin(), str02.end(), ptr1, ptr2);
   VERIFY(str02 == "geogaddi");
+}
+
+// We wrongly used __n1 instead of __foldn1 in the length_error
+// check at the beginning of replace(__pos, __n1, __s, __n2)
+void
+test05()
+{
+  bool test = true;
+  std::string str01 = "londinium";
+  std::string str02 = "cydonia";
+
+  str01.replace(0, 20, str02.c_str(), 3);
+  VERIFY(str01 == "cyd");
 }
 
 int main()

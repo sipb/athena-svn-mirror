@@ -231,30 +231,6 @@ DEFUN(read_zip_member, (jcf, zipd, zipf),
 	  return 0;
 }
 
-#if JCF_USE_STDIO
-const char *
-DEFUN(open_class, (filename, jcf, stream, dep_name),
-      const char *filename AND JCF *jcf AND FILE* stream
-      AND const char *dep_name)
-{
-  if (jcf)
-    {
-      if (dep_name != NULL)
-	jcf_dependency_add_file (dep_name, 0);
-      JCF_ZERO (jcf);
-      jcf->buffer = NULL;
-      jcf->buffer_end = NULL;
-      jcf->read_ptr = NULL;
-      jcf->read_end = NULL;
-      jcf->read_state = stream;
-      jcf->filename = filename;
-      jcf->filbuf = jcf_filbuf_from_stdio;
-    }
-  else
-    fclose (stream);
-  return filename;
-}
-#else
 const char *
 DEFUN(open_class, (filename, jcf, fd, dep_name),
       const char *filename AND JCF *jcf AND int fd AND const char *dep_name)
@@ -289,24 +265,16 @@ DEFUN(open_class, (filename, jcf, fd, dep_name),
     close (fd);
   return filename;
 }
-#endif
 
 
 const char *
 DEFUN(find_classfile, (filename, jcf, dep_name),
       char *filename AND JCF *jcf AND const char *dep_name)
 {
-#if JCF_USE_STDIO
-  FILE *stream = fopen (filename, "rb");
-  if (stream == NULL)
-    return NULL;
-  return open_class (arg, jcf, stream, dep_name);
-#else
   int fd = open (filename, O_RDONLY | O_BINARY);
   if (fd < 0)
     return NULL;
   return open_class (filename, jcf, fd, dep_name);
-#endif
 }
 
 #if JCF_USE_SCANDIR
@@ -375,6 +343,7 @@ DEFUN(caching_stat, (filename, buf),
 {
 #if JCF_USE_SCANDIR
   char *sep;
+  char origsep = 0;
   char *base;
   memoized_dirlist_entry *dent;
   void **slot;
@@ -388,15 +357,20 @@ DEFUN(caching_stat, (filename, buf),
 
   /* Get the name of the directory.  */
   sep = strrchr (filename, DIR_SEPARATOR);
+#ifdef DIR_SEPARATOR_2
+  if (! sep)
+    sep = strrchr (filename, DIR_SEPARATOR_2);
+#endif
   if (sep)
     {
+      origsep = *sep;
       *sep = '\0';
       base = sep + 1;
     }
   else
     base = filename;
 
-  /* Obtain the entry for this directory form the hash table.  */
+  /* Obtain the entry for this directory from the hash table.  */
   slot = htab_find_slot (memoized_dirlists, filename, INSERT);
   if (!*slot)
     {
@@ -407,20 +381,19 @@ DEFUN(caching_stat, (filename, buf),
       /* Unfortunately, scandir is not fully standardized.  In
 	 particular, the type of the function pointer passed as the
 	 third argument sometimes takes a "const struct dirent *"
-	 parameter, and sometimes just a "struct dirent *".  We rely
-	 on the ability to interchange these two types of function
-	 pointers.  */
+	 parameter, and sometimes just a "struct dirent *".  We cast
+	 to (void *) so that either way it is quietly accepted.  */
       dent->num_files = scandir (filename, &dent->files, 
-				 java_or_class_file, 
+				 (void *) java_or_class_file, 
 				 alphasort);
       *slot = dent;
     }
   else
     dent = *((memoized_dirlist_entry **) slot);
 
-  /* Put the spearator back.  */
+  /* Put the separator back.  */
   if (sep)
-    *sep = DIR_SEPARATOR;
+    *sep = origsep;
 
   /* If the file is not in the list, there is no need to stat it; it
      does not exist.  */
@@ -461,11 +434,7 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
       const char *classname AND int classname_length AND JCF *jcf AND int source_ok)
 
 {
-#if JCF_USE_STDIO
-  FILE *stream;
-#else
   int fd;
-#endif
   int i, k, java = -1, class = -1;
   struct stat java_buf, class_buf;
   char *dep_file;
@@ -491,10 +460,10 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
   /* Allocate and zero out the buffer, since we don't explicitly put a
      null pointer when we're copying it below.  */
   buflen = jcf_path_max_len () + classname_length + 10;
-  buffer = (char *) ALLOC (buflen);
+  buffer = ALLOC (buflen);
   memset (buffer, 0, buflen);
 
-  java_buffer = (char *) alloca (buflen);
+  java_buffer = alloca (buflen);
 
   jcf->java_source = 0;
 
@@ -554,7 +523,8 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
 	  strcpy (java_buffer, path_name);
 	  l = strlen (java_buffer);
 	  for (m = 0; m < classname_length; ++m)
-	    java_buffer[m + l] = (classname[m] == '.' ? '/' : classname[m]);
+	    java_buffer[m + l] = (classname[m] == '.'
+				  ? DIR_SEPARATOR : classname[m]);
 	  strcpy (java_buffer + m + l, ".java");
 	  java = caching_stat (java_buffer, &java_buf);
 	  if (java == 0)
@@ -578,34 +548,13 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
     dep_file = java_buffer;
   else
     dep_file = buffer;
-#if JCF_USE_STDIO
-  if (!class)
-    {
-      SOURCE_FRONTEND_DEBUG (("Trying %s", buffer));
-      stream = fopen (buffer, "rb");
-      if (stream)
-	goto found;
-    }
-  /* Give .java a try, if necessary */
-  if (!java)
-    {
-      strcpy (buffer, java_buffer);
-      SOURCE_FRONTEND_DEBUG (("Trying %s", buffer));
-      stream = fopen (buffer, "r");
-      if (stream)
-	{
-	  jcf->java_source = 1;
-	  goto found;
-	}
-    }
-#else
   if (!class)
     {
       SOURCE_FRONTEND_DEBUG ((stderr, "[Class selected: %s]\n",
 			      classname+classname_length-
 			      (classname_length <= 30 ? 
 			       classname_length : 30)));
-      fd = open (buffer, O_RDONLY | O_BINARY);
+      fd = JCF_OPEN_EXACT_CASE (buffer, O_RDONLY | O_BINARY);
       if (fd >= 0)
 	goto found;
     }
@@ -617,14 +566,13 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
 			      classname+classname_length-
 			      (classname_length <= 30 ? 
 			       classname_length : 30)));
-      fd = open (buffer, O_RDONLY);
+      fd = JCF_OPEN_EXACT_CASE (buffer, O_RDONLY);
       if (fd >= 0)
 	{
 	  jcf->java_source = 1;
 	  goto found;
 	}
     }
-#endif
 
   free (buffer);
 
@@ -635,12 +583,6 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
 
   return NULL;
  found:
-#if JCF_USE_STDIO
-  if (jcf->java_source)
-    return NULL;		/* FIXME */
-  else
-    return open_class (buffer, jcf, stream, dep_file);
-#else
   if (jcf->java_source)
     {
       JCF_ZERO (jcf);		/* JCF_FINISH relies on this */
@@ -652,7 +594,6 @@ DEFUN(find_class, (classname, classname_length, jcf, source_ok),
     buffer = (char *) open_class (buffer, jcf, fd, dep_file);
   jcf->classname = xstrdup (classname);
   return buffer;
-#endif
 }
 
 void

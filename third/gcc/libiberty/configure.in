@@ -11,14 +11,19 @@ ORIGINAL_LD_FOR_MULTILIBS=$LD
 
 dnl We use these options to decide which functions to include.
 AC_ARG_WITH(target-subdir,
-[  --with-target-subdir=SUBDIR      Configuring in a subdirectory])
+[  --with-target-subdir=SUBDIR      Configuring in a subdirectory for target])
+AC_ARG_WITH(build-subdir,
+[  --with-build-subdir=SUBDIR       Configuring in a subdirectory for build])
 AC_ARG_WITH(cross-host,
 [  --with-cross-host=HOST           Configuring with a cross compiler])
 AC_ARG_WITH(newlib,
 [  --with-newlib                    Configuring with newlib])
 
 if test "${srcdir}" = "."; then
-  if test -z "${with_target_subdir}"; then
+  if test -n "${with_build_subdir}"; then
+    libiberty_topdir="${srcdir}/../.."
+    with_target_subdir=
+  elif test -z "${with_target_subdir}"; then
     libiberty_topdir="${srcdir}/.."
   else
     if test "${with_target_subdir}" != "."; then
@@ -30,6 +35,7 @@ if test "${srcdir}" = "."; then
 else
   libiberty_topdir="${srcdir}/.."
 fi
+AC_SUBST(libiberty_topdir)
 AC_CONFIG_AUX_DIR($libiberty_topdir)
 
 dnl Very limited version of automake's enable-maintainer-mode
@@ -95,6 +101,16 @@ AC_CHECK_TOOL(RANLIB, ranlib, :)
 
 LIB_AC_PROG_CC
 
+AC_PROG_CC_C_O
+# autoconf is lame and doesn't give us any substitution variable for this.
+if eval "test \"`echo '$ac_cv_prog_cc_'${ac_cc}_c_o`\" = no"; then
+  NO_MINUS_C_MINUS_O=yes
+else
+  OUTPUT_OPTION='-o $@'
+fi
+AC_SUBST(NO_MINUS_C_MINUS_O)
+AC_SUBST(OUTPUT_OPTION)
+
 AC_ISC_POSIX
 AC_C_CONST
 AC_C_INLINE
@@ -126,18 +142,19 @@ AC_SUBST_FILE(host_makefile_frag)
 # It's OK to check for header files.  Although the compiler may not be
 # able to link anything, it had better be able to at least compile
 # something.
-AC_CHECK_HEADERS(sys/file.h sys/param.h limits.h stdlib.h string.h unistd.h strings.h sys/time.h time.h sys/resource.h sys/stat.h sys/mman.h fcntl.h alloca.h)
+AC_CHECK_HEADERS(sys/file.h sys/param.h limits.h stdlib.h malloc.h string.h unistd.h strings.h sys/time.h time.h sys/resource.h sys/stat.h sys/mman.h fcntl.h alloca.h sys/pstat.h sys/sysmp.h sys/sysinfo.h machine/hal_sysinfo.h sys/table.h sys/sysctl.h sys/systemcfg.h)
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
 
 libiberty_AC_DECLARE_ERRNO
 
 AC_CHECK_TYPE(uintptr_t, unsigned long)
+# Given the above check, we always have uintptr_t or a fallback
+# definition.  So define HAVE_UINTPTR_T in case any imported code
+# relies on it.
+AC_DEFINE(HAVE_UINTPTR_T, 1, [Define if you have the \`uintptr_t' type.])
 
-if test $ac_cv_type_uintptr_t = yes
-then
-  AC_DEFINE(HAVE_UINTPTR_T, 1, [Define if you have the \`uintptr_t' type.])
-fi
+AC_TYPE_PID_T
 
 # This is the list of functions which libiberty will provide if they
 # are not available on the host.
@@ -189,6 +206,7 @@ funcs="$funcs waitpid"
 vars="sys_errlist sys_nerr sys_siglist"
 
 checkfuncs="getrusage on_exit psignal strerror strsignal sysconf times sbrk gettimeofday"
+checkfuncs="$checkfuncs pstat_getstatic pstat_getdynamic sysmp getsysinfo table sysctl"
 
 # These are neither executed nor required, but they help keep
 # autoheader happy without adding a bunch of text to acconfig.h.
@@ -200,6 +218,7 @@ if test "x" = "y"; then
   AC_CHECK_FUNCS(strtod strtol strtoul tmpnam vasprintf vfprintf vprintf)
   AC_CHECK_FUNCS(vsprintf waitpid getrusage on_exit psignal strerror strsignal)
   AC_CHECK_FUNCS(sysconf times sbrk gettimeofday ffs)
+  AC_CHECK_FUNCS(pstat_getstatic pstat_getdynamic sysmp getsysinfo table sysctl)
   AC_DEFINE(HAVE_SYS_ERRLIST, 1, [Define if you have the sys_errlist variable.])
   AC_DEFINE(HAVE_SYS_NERR,    1, [Define if you have the sys_nerr variable.])
   AC_DEFINE(HAVE_SYS_SIGLIST, 1, [Define if you have the sys_siglist variable.])
@@ -211,6 +230,7 @@ fi
 
 setobjs=
 CHECK=
+target_header_dir=
 if test -n "${with_target_subdir}"; then
 
   # We are being configured as a target library.  AC_REPLACE_FUNCS
@@ -245,6 +265,27 @@ if test -n "${with_target_subdir}"; then
 
   fi
 
+  # We may wish to install the target headers somewhere.
+  AC_ARG_ENABLE(install-libiberty,
+  [  --enable-install-libiberty       Install headers for end users],
+  enable_install_libiberty=$enableval,
+  enable_install_libiberty=no)dnl
+  
+  # Option parsed, now set things appropriately.
+  case x"$enable_install_libiberty" in
+    xyes|x)
+      target_header_dir=libiberty
+      ;;
+    xno)   
+      target_header_dir=
+      ;;
+    *) 
+      # This could be sanity-checked in various ways...
+      target_header_dir="${enable_install_libiberty}"
+      ;;
+  esac
+
+
 else
 
    # Not a target library, so we set things up to run the test suite.
@@ -253,6 +294,7 @@ else
 fi
 
 AC_SUBST(CHECK)
+AC_SUBST(target_header_dir)
 
 case "${host}" in
   *-*-cygwin* | *-*-mingw*)
@@ -382,6 +424,17 @@ if test -z "${setobjs}"; then
       AC_MSG_RESULT(no)
     fi
   done
+
+  # special check for _system_configuration because AIX <4.3.2 do not
+  # contain the `physmem' member.
+  AC_MSG_CHECKING([for external symbol _system_configuration])
+  AC_TRY_COMPILE([#include <sys/systemcfg.h>],
+                 [double x = _system_configuration.physmem;],
+    [AC_MSG_RESULT([yes])
+    AC_DEFINE(HAVE__SYSTEM_CONFIGURATION, 1,
+              [Define if you have the _system_configuration variable.])],
+    [AC_MSG_RESULT([no])])
+
   AC_CHECK_FUNCS($checkfuncs)
 fi
 
@@ -400,7 +453,7 @@ AC_SUBST(INSTALL_DEST)
 AC_OUTPUT(Makefile testsuite/Makefile,
 [test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h
 if test -n "$CONFIG_FILES"; then
-  if test -n "${with_target_subdir}"; then
+  if test -n "${with_build_subdir}" || test -n "${with_target_subdir}"; then
     # FIXME: We shouldn't need to set ac_file
     ac_file=Makefile
     LD="${ORIGINAL_LD_FOR_MULTILIBS}"
@@ -411,8 +464,10 @@ srcdir=${srcdir}
 host=${host}
 target=${target}
 with_target_subdir=${with_target_subdir}
+with_build_subdir=${with_build_subdir}
 with_multisubdir=${with_multisubdir}
 ac_configure_args="--enable-multilib ${ac_configure_args}"
 CONFIG_SHELL=${CONFIG_SHELL-/bin/sh}
+ORIGINAL_LD_FOR_MULTILIBS="${ORIGINAL_LD_FOR_MULTILIBS}"
 libiberty_topdir=${libiberty_topdir}
 )

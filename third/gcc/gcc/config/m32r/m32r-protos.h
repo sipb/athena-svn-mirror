@@ -1,20 +1,20 @@
 /* Prototypes for m32r.c functions used in the md file & elsewhere.
-   Copyright (C) 1999, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 
-This file is part of GNU CC.
+This file is part of GCC.
 
-GNU CC is free software; you can redistribute it and/or modify
+GCC is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2, or (at your option)
 any later version.
 
-GNU CC is distributed in the hope that it will be useful,
+GCC is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GNU CC; see the file COPYING.  If not, write to
+along with GCC; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
@@ -33,10 +33,7 @@ extern void   m32r_finalize_pic			PARAMS ((void));
 extern void   m32r_asm_file_start		PARAMS ((FILE *));
 extern int    direct_return 			PARAMS ((void));
 #ifdef TREE_CODE
-extern void   m32r_select_section		PARAMS ((tree, int));
-extern void   m32r_encode_section_info		PARAMS ((tree));
 extern enum m32r_function_type m32r_compute_function_type PARAMS ((tree));
-extern void   m32r_select_section 		PARAMS ((tree, int));
 
 #ifdef HAVE_MACHINE_MODES
 extern void   m32r_setup_incoming_varargs	PARAMS ((CUMULATIVE_ARGS *, Mmode, tree, int *, int));
@@ -47,7 +44,6 @@ extern int    function_arg_partial_nregs	PARAMS ((CUMULATIVE_ARGS *, Mmode, tree
 #ifdef RTX_CODE
 extern int    easy_di_const			PARAMS ((rtx));
 extern int    easy_df_const			PARAMS ((rtx));
-extern int    m32r_select_cc_mode		PARAMS ((int, rtx, rtx));
 extern rtx    gen_compare			PARAMS ((enum rtx_code, rtx, rtx, int));
 extern rtx    gen_split_move_double		PARAMS ((rtx *));
 extern int    m32r_address_code			PARAMS ((rtx));
@@ -87,6 +83,7 @@ extern int    large_insn_p			PARAMS ((rtx, Mmode));
 extern int    conditional_move_operand		PARAMS ((rtx, Mmode));
 extern int    carry_compare_operand		PARAMS ((rtx, Mmode));
 extern int    m32r_block_immediate_operand 	PARAMS ((rtx, Mmode));
+extern int    m32r_block_small_immediate_operand 	PARAMS ((rtx, Mmode));
 extern int    extend_operand			PARAMS ((rtx, Mmode));
 extern int    reg_or_eq_int16_operand		PARAMS ((rtx, Mmode));
 extern int    int8_operand			PARAMS ((rtx, Mmode));

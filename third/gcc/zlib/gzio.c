@@ -5,7 +5,7 @@
  * Compile this file with -DNO_DEFLATE to avoid the compression code.
  */
 
-/* @(#) $Id: gzio.c,v 1.1.1.2 2003-01-22 21:25:12 ghudson Exp $ */
+/* @(#) $Id: gzio.c,v 1.1.1.3 2004-02-10 14:07:29 zacheiss Exp $ */
 
 #include <stdio.h>
 

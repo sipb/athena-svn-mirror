@@ -6,9 +6,8 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                            $Revision: 1.1.1.1 $
 --                                                                          --
---          Copyright (C) 1997-2000 Free Software Foundation, Inc.          --
+--          Copyright (C) 1997-2001 Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -46,14 +45,12 @@
 with Ada.Command_Line;     use Ada.Command_Line;
 with Ada.Text_IO;          use Ada.Text_IO;
 with GNAT.OS_Lib;          use GNAT.OS_Lib;
-with Gnatvsn;              use Gnatvsn;
 with Interfaces.C_Streams; use Interfaces.C_Streams;
 with Osint;                use Osint;
 with Sdefault;             use Sdefault;
 with System;
 
 procedure GnatLbr is
-   pragma Ident (Gnat_Version_String);
 
    type Lib_Mode is (None, Create, Set, Delete);
    Next_Arg  : Integer;
