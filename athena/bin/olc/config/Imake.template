@@ -4,7 +4,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $XConsortium: Imake.tmpl,v 1.60 89/10/17 11:59:34 jim Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.10 1991-04-15 15:53:35 lwvanels Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
