@@ -1,0 +1,816 @@
+# EOG 0.6 Hungarian translation
+# Copyright (C) 2001 Gergő Érdi <cactus@cactus.rulez.org>
+# Andras Timar <timar@gnome.hu>, 2002.
+msgid ""
+msgstr ""
+"Project-Id-Version: eog\n"
+"POT-Creation-Date: 2002-11-17 10:46+0100\n"
+"PO-Revision-Date: 2002-08-13 14:24+0200\n"
+"Last-Translator: Andras Timar <timar@gnome.hu>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: collection/GNOME_EOG_Collection.server.in.h:1
+msgid "EOG Image Collection"
+msgstr "EOG képgyűjtemény"
+
+#: collection/GNOME_EOG_Collection.server.in.h:2
+msgid "EOG Image Collection Viewer"
+msgstr "EOG képgyűjteménynéző"
+
+#: collection/GNOME_EOG_Collection.server.in.h:3
+msgid "EOG Image collection view factory"
+msgstr "EOG képgyűjteménynéző factory"
+
+#: eog.desktop.in.h:1
+msgid "Eye of Gnome Image Viewer"
+msgstr "EOG képnéző"
+
+#: eog.desktop.in.h:2
+msgid "View many different types of images"
+msgstr "Sokféle képtípus megtekintésére alkalmas program"
+
+#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:691
+msgid "EOG Image"
+msgstr "EOG kép"
+
+#: libeog/GNOME_EOG.server.in.in.h:2
+msgid "EOG Image Viewer"
+msgstr "EOG képnéző"
+
+#: libeog/GNOME_EOG.server.in.in.h:3
+msgid "EOG Image viewer factory"
+msgstr "EOG képnéző factory"
+
+#: libeog/GNOME_EOG.server.in.in.h:4
+msgid "Embeddable EOG Image"
+msgstr "Beilleszthető EOG kép"
+
+#: libeog/image-view.c:1853
+msgid "interpolation type"
+msgstr "interpoláció módja"
+
+#: libeog/image-view.c:1854
+msgid "the type of interpolation to use"
+msgstr "a használandó interpolációs módszer"
+
+#: libeog/image-view.c:1860 libeog/image-view.c:1867
+msgid "check type"
+msgstr "rácsminta típusa"
+
+#: libeog/image-view.c:1861
+msgid "the type of chequering to use"
+msgstr "a használandó rácsozás típusa"
+
+#: libeog/image-view.c:1868
+msgid "the size of chequers to use"
+msgstr "a használandó rács sűrűsége"
+
+#: libeog/image-view.c:1874
+msgid "dither"
+msgstr "színközelítés"
+
+#: libeog/image-view.c:1875
+msgid "dither type"
+msgstr "színközelítés módja"
+
+#: shell/eog-preferences.c:162
+#, c-format
+msgid ""
+"Could not display help for the preferences dialog.\n"
+"%s"
+msgstr ""
+"Nem jeleníthető meg a beállítások párbeszédablakához tartozó súgó.\n"
+"%s"
+
+#: shell/eog-preferences.c:214
+msgid "Eye of Gnome Preferences"
+msgstr "Az Eye of Gnome beállításai"
+
+#: shell/eog-shell-ui.xml.h:1
+msgid "About this application"
+msgstr "Információk a programról"
+
+#: shell/eog-shell-ui.xml.h:2
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: shell/eog-shell-ui.xml.h:3
+msgid "Change preferences"
+msgstr "Beállítások megváltoztatása"
+
+#: shell/eog-shell-ui.xml.h:4
+msgid "Close"
+msgstr "Bezárás"
+
+#: shell/eog-shell-ui.xml.h:5
+msgid "Close window"
+msgstr "Ablak bezárása"
+
+#: shell/eog-shell-ui.xml.h:6
+msgid "Contents"
+msgstr "Tartalom"
+
+#: shell/eog-shell-ui.xml.h:7
+msgid "Help On this application"
+msgstr "Az alkalmazás súgója"
+
+#: shell/eog-shell-ui.xml.h:8 shell/main.c:205
+msgid "Open"
+msgstr "Megnyitás"
+
+#: shell/eog-shell-ui.xml.h:9
+msgid "Open a file"
+msgstr "Megnyit egy fájlt"
+
+#: shell/eog-shell-ui.xml.h:10
+msgid "Open a new window"
+msgstr "Új ablakot nyit"
+
+#: shell/eog-shell-ui.xml.h:11
+msgid "Open in new window"
+msgstr "Megnyitás új ablakban"
+
+#: shell/eog-shell-ui.xml.h:12
+msgid "Open in this window"
+msgstr "Megnyitás az aktuális ablakban"
+
+#: shell/eog-shell-ui.xml.h:13
+msgid "Quit the program"
+msgstr "Kilépés a programból"
+
+#: shell/eog-shell-ui.xml.h:14
+msgid "_About"
+msgstr "_Névjegy"
+
+#: shell/eog-shell-ui.xml.h:15
+msgid "_Close"
+msgstr "_Bezárás"
+
+#: shell/eog-shell-ui.xml.h:16
+msgid "_Edit"
+msgstr "S_zerkesztés"
+
+#: shell/eog-shell-ui.xml.h:17
+msgid "_File"
+msgstr "_Fájl"
+
+#: shell/eog-shell-ui.xml.h:18
+msgid "_Help"
+msgstr "_Súgó"
+
+#: shell/eog-shell-ui.xml.h:19
+msgid "_New Window"
+msgstr "Új _ablak"
+
+#: shell/eog-shell-ui.xml.h:20
+msgid "_Open..."
+msgstr "_Megnyitás..."
+
+#: shell/eog-shell-ui.xml.h:21
+msgid "_Preferences..."
+msgstr "_Beállítások..."
+
+#: shell/eog-shell-ui.xml.h:22
+msgid "_Quit"
+msgstr "_Kilépés"
+
+#: shell/eog-shell-ui.xml.h:23
+msgid "_View"
+msgstr "_Nézet"
+
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: shell/eog-window.c:239
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+"Érdi Gergő <cactus@cactus.rulez.org>\n"
+"Tímár András <timar@gnome.hu>"
+
+#: shell/eog-window.c:244 shell/eog-window.c:623 shell/main.c:449
+msgid "Eye of Gnome"
+msgstr "Eye of Gnome"
+
+#: shell/eog-window.c:246
+msgid "Copyright (C) 2000-2002 The Free Software Foundation"
+msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
+
+#: shell/eog-window.c:247
+msgid "The GNOME image viewing and cataloging program."
+msgstr "A GNOME képnézegető és katalogizáló programja"
+
+#: shell/eog-window.c:284
+#, c-format
+msgid ""
+"Could not display help for Eye of Gnome.\n"
+"%s"
+msgstr ""
+"Nem jeleníthető meg az Eye of Gnome súgója.\n"
+"%s"
+
+#: shell/eog-window.c:781
+msgid "Open Image"
+msgstr "Kép megnyitása"
+
+#: shell/main.c:172
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to open\n"
+"them in a collection instead?"
+msgstr ""
+"%i ablak egyidejű megnyitására\n"
+"készülsz. Nem akarod inkább \n"
+"gyűjteményként megnyitni ezeket?"
+
+#: shell/main.c:177
+msgid "Single Windows"
+msgstr "Külön ablakokban"
+
+#: shell/main.c:178
+msgid "Collection"
+msgstr "Gyűjteményként"
+
+#: shell/main.c:202
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to continue?"
+msgstr ""
+"%i ablak egyidejű megnyitására\n"
+"készülsz. Folytatod?"
+
+#: shell/main.c:285
+#, c-format
+msgid ""
+"Could not access %s\n"
+"Eye of Gnome will not be able to display this file."
+msgstr ""
+"Nem elérhető: %s\n"
+"Az Eye of Gnome nem tudja megjeleníteni ezt a fájlt."
+
+#: shell/main.c:289
+#, c-format
+msgid ""
+"The following files cannot be displayed because Eye of Gnome was not able to "
+"access them:\n"
+"%s"
+msgstr ""
+"A következő fájlokat nem lehet megjeleníteni, mert az Eye of Gnome nem fér "
+"hozzájuk:\n"
+"%s"
+
+#: shell/main.c:461
+msgid "Could not initialize GnomeVFS!\n"
+msgstr "Gnome-VFS inicializáció sikertelen!\n"
+
+#: shell/main.c:464
+msgid "Could not initialize Bonobo!\n"
+msgstr "Bonobo inicializáció sikertelen!\n"
+
+#: shell/util.c:48
+#, c-format
+msgid "Could not open `%s'"
+msgstr "`%s' megnyitása nem sikerült"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:1
+msgid "1:1"
+msgstr "1:1"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:2
+msgid "Fit"
+msgstr "Illeszkedés"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
+msgid "In"
+msgstr "Nagyítás"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:4
+msgid "Out"
+msgstr "Kicsinyítés"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:5
+msgid "Zoom _1:1"
+msgstr "_1:1 méret"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:6
+msgid "Zoom _In"
+msgstr "_Nagyítás"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:7
+msgid "Zoom _Out"
+msgstr "_Kicsinyítés"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:8
+msgid "Zoom to _Fit"
+msgstr "_Illeszkedés"
+
+#: viewer/eog-image-view-ui.xml.h:1
+msgid "Check _size"
+msgstr "Rácsminta _mérete"
+
+#: viewer/eog-image-view-ui.xml.h:2
+msgid "Check _type"
+msgstr "Rácsminta _típusa"
+
+#: viewer/eog-image-view-ui.xml.h:3
+msgid "Full Screen"
+msgstr "Teljes képernyő"
+
+#: viewer/eog-image-view-ui.xml.h:4 viewer/preferences.c:63
+msgid "Large"
+msgstr "Nagy"
+
+#: viewer/eog-image-view-ui.xml.h:5 viewer/preferences.c:62
+msgid "Medium"
+msgstr "Közepes"
+
+#: viewer/eog-image-view-ui.xml.h:6
+msgid "Nea_rest Neighbour"
+msgstr "Legközelebbi _szomszéd"
+
+#: viewer/eog-image-view-ui.xml.h:7
+msgid "Normal (_pseudocolor)"
+msgstr "Normál (_pszeudo-színek)"
+
+#: viewer/eog-image-view-ui.xml.h:8
+msgid "Previews the image to be printed"
+msgstr "Előnézetet ad a nyomtatandó képről"
+
+#: viewer/eog-image-view-ui.xml.h:9
+msgid "Print Pre_view"
+msgstr "Nyomtatási _kép"
+
+#: viewer/eog-image-view-ui.xml.h:10
+msgid "Print S_etup"
+msgstr "Nyomtatás _beállítása"
+
+#: viewer/eog-image-view-ui.xml.h:11
+msgid "Print image to the printer"
+msgstr "Kinyomtatja a képet"
+
+#: viewer/eog-image-view-ui.xml.h:12
+msgid "Setup the page settings for your current printer"
+msgstr "Oldalbeállítás az aktuális nyomtatóhoz"
+
+#: viewer/eog-image-view-ui.xml.h:13 viewer/preferences.c:61
+msgid "Small"
+msgstr "Kicsi"
+
+#: viewer/eog-image-view-ui.xml.h:14
+msgid "_Bilinear"
+msgstr "_Bilineáris"
+
+#: viewer/eog-image-view-ui.xml.h:15
+msgid "_Black"
+msgstr "_Fekete"
+
+#: viewer/eog-image-view-ui.xml.h:16
+msgid "_Dark"
+msgstr "_Sötét"
+
+#: viewer/eog-image-view-ui.xml.h:17
+msgid "_Dither"
+msgstr "Szín_közelítés"
+
+#: viewer/eog-image-view-ui.xml.h:18
+msgid "_Gray"
+msgstr "S_zürke"
+
+#: viewer/eog-image-view-ui.xml.h:19
+msgid "_Hyperbolic"
+msgstr "_Hiperbolikus"
+
+#: viewer/eog-image-view-ui.xml.h:20
+msgid "_Interpolation"
+msgstr "_Interpoláció"
+
+#: viewer/eog-image-view-ui.xml.h:21
+msgid "_Light"
+msgstr "_Világos"
+
+#: viewer/eog-image-view-ui.xml.h:22
+msgid "_Maximum (high color)"
+msgstr "_Teljes (sokszínes)"
+
+#: viewer/eog-image-view-ui.xml.h:23
+msgid "_Midtone"
+msgstr "_Közepes"
+
+#: viewer/eog-image-view-ui.xml.h:24
+msgid "_None"
+msgstr "_Nincs"
+
+#: viewer/eog-image-view-ui.xml.h:25
+msgid "_Print"
+msgstr "_Nyomtatás"
+
+#: viewer/eog-image-view-ui.xml.h:26
+msgid "_Save As..."
+msgstr "_Mentés másként..."
+
+#: viewer/eog-image-view-ui.xml.h:27
+msgid "_Tiles"
+msgstr "_Mozaik"
+
+#: viewer/eog-image-view-ui.xml.h:28
+msgid "_White"
+msgstr "F_ehér"
+
+#: viewer/eog-image-view.c:300
+#, c-format
+msgid "Could not save image as '%s': %s."
+msgstr ""
+"A kép `%s' néven való elmentése közben a következő hiba lépett fel: %s."
+
+#: viewer/eog-image-view.c:351
+msgid "Save As"
+msgstr "Mentés másként"
+
+#: viewer/eog-image-view.c:926
+msgid "Print Image"
+msgstr "Kép nyomtatása"
+
+#: viewer/eog-image-view.c:934
+msgid "Pages"
+msgstr "Oldalak"
+
+#: viewer/eog-image-view.c:1021
+msgid "Print Preview"
+msgstr "Nyomtatási előnézet"
+
+#: viewer/eog-image-view.c:1027
+msgid "Printing of image failed"
+msgstr "A kép nyomtatása nem sikerült"
+
+#: viewer/eog-image-view.c:1843
+msgid "Display"
+msgstr "Megjelenítés"
+
+#: viewer/eog-image-view.c:2064
+msgid "Interpolation"
+msgstr "Interpoláció módja"
+
+#: viewer/eog-image-view.c:2067
+msgid "Dither"
+msgstr "Színközelítés"
+
+#: viewer/eog-image-view.c:2070
+msgid "Check Type"
+msgstr "Rácsminta típusa"
+
+#: viewer/eog-image-view.c:2073
+msgid "Check Size"
+msgstr "Rácsminta mérete"
+
+#: viewer/eog-image-view.c:2076
+msgid "Image Width"
+msgstr "Kép szélessége"
+
+#: viewer/eog-image-view.c:2079
+msgid "Image Height"
+msgstr "Kép magassága"
+
+#: viewer/eog-image-view.c:2082
+msgid "Window Title"
+msgstr "Ablak címe"
+
+#: viewer/eog-image-view.c:2085
+msgid "Statusbar Text"
+msgstr "Állapotsor szövege"
+
+#: viewer/eog-image.c:470
+msgid "Couldn't initialize GnomeVFS!\n"
+msgstr "A Gnome-VFS inicializálása sikertelen!\n"
+
+#: viewer/eog-print-setup.c:76
+msgid "pts"
+msgstr "pts"
+
+#: viewer/eog-print-setup.c:76
+msgid "points"
+msgstr "pont"
+
+#: viewer/eog-print-setup.c:77
+msgid "mm"
+msgstr "mm"
+
+#: viewer/eog-print-setup.c:77
+msgid "millimeter"
+msgstr "milliméter"
+
+#: viewer/eog-print-setup.c:78
+msgid "cm"
+msgstr "cm"
+
+#: viewer/eog-print-setup.c:78
+msgid "centimeter"
+msgstr "centiméter"
+
+#: viewer/eog-print-setup.c:79
+msgid "inch"
+msgstr "hüvelyk"
+
+#: viewer/eog-print-setup.c:469
+msgid "Print Setup"
+msgstr "Nyomtatás beállítása"
+
+#: viewer/eog-print-setup.c:476
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: viewer/eog-print-setup.c:478
+msgid "Print preview"
+msgstr "Nyomtatási előnézet"
+
+#: viewer/eog-print-setup.c:547
+msgid "Units: "
+msgstr "Egység:"
+
+#. First page
+#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
+msgid "Paper"
+msgstr "Papír"
+
+#: viewer/eog-print-setup.c:569
+msgid "Paper size:"
+msgstr "Papírméret:"
+
+#. Orientation
+#: viewer/eog-print-setup.c:586
+msgid "Orientation"
+msgstr "Tájolás"
+
+#: viewer/eog-print-setup.c:593
+msgid "Portrait"
+msgstr "Álló"
+
+#: viewer/eog-print-setup.c:600
+msgid "Landscape"
+msgstr "Fekvő"
+
+#. Margins
+#: viewer/eog-print-setup.c:609
+msgid "Margins"
+msgstr "Margók"
+
+#. Top margin
+#: viewer/eog-print-setup.c:617
+msgid "Top:"
+msgstr "Fent:"
+
+#. Left margin
+#: viewer/eog-print-setup.c:635
+msgid "Left:"
+msgstr "Baloldalt:"
+
+#. Right margin
+#: viewer/eog-print-setup.c:653
+msgid "Right:"
+msgstr "Jobboldalt:"
+
+#. Bottom margin
+#: viewer/eog-print-setup.c:671
+msgid "Bottom:"
+msgstr "Lent:"
+
+#. Second page
+#: viewer/eog-print-setup.c:689
+msgid "Image"
+msgstr "Kép"
+
+#. Scale
+#: viewer/eog-print-setup.c:697
+msgid "Scale"
+msgstr "Méretezés"
+
+#: viewer/eog-print-setup.c:701
+msgid "Adjust to:"
+msgstr "Igazítás:"
+
+#: viewer/eog-print-setup.c:706
+msgid "Fit to page"
+msgstr "Oldalmérethez igazítva"
+
+#: viewer/eog-print-setup.c:725
+#, no-c-format
+msgid "% of original size"
+msgstr "Az eredeti méret %-a"
+
+#. Center on page
+#: viewer/eog-print-setup.c:731
+msgid "Center"
+msgstr "Középre"
+
+#: viewer/eog-print-setup.c:735
+msgid "Horizontally"
+msgstr "Vízszintesen"
+
+#: viewer/eog-print-setup.c:742
+msgid "Vertically"
+msgstr "Függőlegesen"
+
+#. Overlap
+#: viewer/eog-print-setup.c:751
+msgid "Overlapping"
+msgstr "Átfedés"
+
+#: viewer/eog-print-setup.c:755
+msgid "Overlap horizontally by "
+msgstr "Vízszintes átfedés: "
+
+#: viewer/eog-print-setup.c:760
+msgid "Overlap vertically by "
+msgstr "Függőleges átfedés: "
+
+#. Third page
+#: viewer/eog-print-setup.c:797
+msgid "Printing"
+msgstr "Nyomtatás"
+
+#. Helpers
+#: viewer/eog-print-setup.c:805
+msgid "Helpers"
+msgstr "Segédprogramok"
+
+#: viewer/eog-print-setup.c:806
+msgid "Print cutting help"
+msgstr "Képszétvágás kezelése"
+
+#: viewer/eog-print-setup.c:812
+msgid "Print overlap help"
+msgstr "Képátlapolás kezelése"
+
+#. Page order
+#: viewer/eog-print-setup.c:821
+msgid "Page order"
+msgstr "Oldalak sorrendje"
+
+#. Down right
+#: viewer/eog-print-setup.c:827
+msgid "Down, then right"
+msgstr "Lefelé, majd jobbra"
+
+#. Right down
+#: viewer/eog-print-setup.c:844
+msgid "Right, then down"
+msgstr "Jobbra, majd lefelé"
+
+#: viewer/preferences.c:33
+msgid "Nearest Neighbour Interpolation"
+msgstr "Közelítés a legközelebbi szomszéd alapján"
+
+# Nagyon szar...
+#: viewer/preferences.c:35
+msgid "Tiles Interpolation"
+msgstr "Mozaikszerű közelítés"
+
+#: viewer/preferences.c:37
+msgid "Bilinear Interpolation"
+msgstr "Bilineáris közelítés"
+
+#: viewer/preferences.c:39
+msgid "Hyperbolic Interpolation"
+msgstr "Hiperbolikus közelítés"
+
+#: viewer/preferences.c:44
+msgid "No dithering"
+msgstr "Nincs színközelítés"
+
+#: viewer/preferences.c:45
+msgid "Normal (pseudocolor) dithering"
+msgstr "Normál (pszeudo-színes) színközelítés"
+
+#: viewer/preferences.c:46
+msgid "Maximum (high color) dithering"
+msgstr "Teljes (sokszínes) színközelítés"
+
+#: viewer/preferences.c:51
+msgid "Dark"
+msgstr "Sötét"
+
+#: viewer/preferences.c:52
+msgid "Midtone"
+msgstr "Közepes"
+
+#: viewer/preferences.c:53
+msgid "Light"
+msgstr "Világos"
+
+#: viewer/preferences.c:54
+msgid "Black"
+msgstr "Fekete"
+
+#: viewer/preferences.c:55
+msgid "Gray"
+msgstr "Szürke"
+
+#: viewer/preferences.c:56
+msgid "White"
+msgstr "Fehér"
+
+#: viewer/preferences.c:175
+msgid "_Interpolation:"
+msgstr "_Interpoláció:"
+
+#: viewer/preferences.c:187
+msgid "_Dither:"
+msgstr "Szín_közelítés:"
+
+#: viewer/preferences.c:199
+msgid "Check _type:"
+msgstr "Rácsminta _típusa:"
+
+#: viewer/preferences.c:211
+msgid "Check _size:"
+msgstr "Rácsminta _mérete:"
+
+#~ msgid "Unable to open %s."
+#~ msgstr "Nem lehet megnyitni: %s."
+
+#~ msgid "Image Viewer"
+#~ msgstr "Képmegjelenítő"
+
+#, fuzzy
+#~ msgid "_Settings"
+#~ msgstr "_Beállítások"
+
+#~ msgid "Check size large"
+#~ msgstr "Rácsminta mérete"
+
+#~ msgid "Check size medium"
+#~ msgstr "Közepes méretű rács"
+
+#~ msgid "Check size small"
+#~ msgstr "Kisméretű rács"
+
+#~ msgid "Check type _black"
+#~ msgstr "_Fekete rács"
+
+#~ msgid "Check type _dark"
+#~ msgstr "_Sötét rács"
+
+#~ msgid "Check type _gray"
+#~ msgstr "S_zürke rács"
+
+#~ msgid "Check type _light"
+#~ msgstr "_Világos rács"
+
+#~ msgid "Check type _midtone"
+#~ msgstr "_Középsötét rács"
+
+#~ msgid "Check type _white"
+#~ msgstr "_Fehér rács"
+
+#~ msgid "Save _As"
+#~ msgstr "Mentés má_sként"
+
+#~ msgid "_Bilinear Interpolation"
+#~ msgstr "_Bilineáris közelítés"
+
+#~ msgid "_No dithering"
+#~ msgstr "_Nincs színközelítés"
+
+# Nagyon szar...
+#~ msgid "_Tiles Interpolation"
+#~ msgstr "_Csempézéses közelítés"
+
+#~ msgid "Eye Of Gnome"
+#~ msgstr "Eye Of Gnome"
+
+#~ msgid "Can't handle URI: %s"
+#~ msgstr "%s URI-jal nem tudok mit kezdeni"
+
+#~ msgid "I could not initialize GnomeVFS!\n"
+#~ msgstr "Gnome-VFS inicializáció sikertelen\n"
+
+#~ msgid "I could not initialize Bonobo"
+#~ msgstr "Bonobo inicializáció sikertelen"
+
+#, fuzzy
+#~ msgid "Preferences"
+#~ msgstr "_Beállítások"
+
+#, fuzzy
+#~ msgid "Open an image file"
+#~ msgstr "Megnyit egy fájlt"
+
+#, fuzzy
+#~ msgid "Close the current window"
+#~ msgstr "Ablak bezárása"
+
+#, fuzzy
+#~ msgid "_Open Image..."
+#~ msgstr "_Megnyit..."
+
+#, fuzzy
+#~ msgid "_Close This Window"
+#~ msgstr "Ablak bezárása"
+
+#, fuzzy
+#~ msgid "_Fit to Window"
+#~ msgstr "Új _ablak"
