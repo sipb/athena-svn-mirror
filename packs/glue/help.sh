@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: help.sh,v 1.1 2002-10-08 23:28:13 ghudson Exp $
+# $Id: help.sh,v 1.1.2.1 2002-10-09 00:02:10 ghudson Exp $
 
 url=file://localhost/afs/athena.mit.edu/astaff/project/olh/index.html
 
