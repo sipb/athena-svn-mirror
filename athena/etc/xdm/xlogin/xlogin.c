@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.13 1991-06-28 20:27:33 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.14 1991-07-19 15:41:23 epeisach Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -14,6 +14,14 @@
 #include <X11/Xaw/Text.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
+/* Define the following if restarting the X server does not restore
+ * auto-repeat properly
+ */
+
+#ifdef ultrix
+#define BROKEN_AUTO_REP
+#endif
 
 #define OWL_AWAKE 0
 #define OWL_SLEEPY 1
@@ -36,6 +44,8 @@ extern void AriRegisterAthena ();
 extern unsigned long random();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), initOwl(), catch_child(), setFontPath();
+static void setAutoRepeat();
+static int getAutoRepeat();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
@@ -117,7 +127,7 @@ static XtResource my_resources[] = {
   {"srvdcheck", XtCFile, XtRString, sizeof(String),
      Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
   {"fontPath", XtCString, XtRString, sizeof(String),
-     Offset(fontpath), XtRImmediate, "/usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/" },
+     Offset(fontpath), XtRImmediate, "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/" },
 };
 
 #undef Offset
@@ -160,6 +170,11 @@ int attach_state, attach_pid;
 int attachhelp_state, attachhelp_pid, quota_pid;
 int exiting = FALSE;
 extern char *defaultpath;
+
+/*
+ * Local Globals
+ */
+static int autorep;
 
 
 /******************************************************************************
@@ -226,6 +241,16 @@ main(argc, argv)
 
   /* clear console */
   sigconsCB(NULL, "clear", NULL);
+
+  /* Turn off keyboard autorepeat - triggers bugs when ^P used to 
+   * shutdown for a console login
+   */
+#ifdef BROKEN_AUTO_REP
+  autorep = AutoRepeatModeOn;
+#else
+  autorep = getAutoRepeat();
+#endif
+  setAutoRepeat(AutoRepeatModeOff);
 
   /*
    *  Create widget tree below toplevel shell using Xrm database
@@ -577,12 +602,13 @@ Cardinal *n;
     if (access(resources.srvdcheck, F_OK) != 0)
       tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
     else {
+	setAutoRepeat(autorep);
  	setFontPath();
  	XFlush(dpy);
 	tb.ptr = dologin(login, passwd, mode, script, resources.tty,
 			 resources.session, DisplayString(dpy));
+	setAutoRepeat(AutoRepeatModeOff);
     }
-
     XtMapWidget(appShell);
     XtPopup(WcFullNameToWidget(appShell, "*warningShell"), XtGrabExclusive);
     tb.firstPos = 0;
@@ -711,6 +737,7 @@ Cardinal *n;
     }
     sigconsCB(NULL, "hide", NULL);
     setFontPath();
+    setAutoRepeat(autorep);
     XFlush(dpy);
     XtCloseDisplay(dpy);
 
@@ -723,6 +750,9 @@ Cardinal *n;
 #endif
 #if defined(_AIX) && defined(_IBMR2)
     setenv("hosttype", "rsaix", 1);
+#endif
+#if defined(ultrix) && defined(mips)
+    setenv("hosttype", "decmips", 1);
 #endif
 
     setreuid(DAEMON, DAEMON);
@@ -1201,3 +1231,21 @@ static void setFontPath()
 
     XSetFontPath(dpy, dirlist, ndirs);
 }
+
+static void setAutoRepeat(mode)
+int mode;
+{
+    XKeyboardControl cntrl;
+
+    cntrl.auto_repeat_mode = mode;
+    XChangeKeyboardControl(dpy,KBAutoRepeatMode,&cntrl);
+}
+
+#ifndef BROKEN_AUTO_REP
+static int getAutoRepeat()
+{
+    XKeyboardState st;
+    XGetKeyboardControl(dpy, &st);
+    return st.global_auto_repeat;
+}
+#endif 
