@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.14 2004-09-07 13:24:26 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.15 2005-03-06 21:11:52 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -18,6 +18,7 @@ fi
 #   3  failed to send command
 #   4  usage error
 moz_remote=$MOZILLA_FIVE_HOME/mozilla-xremote-client
+moz_progname=mozilla
 
 # The following lockers need to be attached to run plugins and helper
 # applications.
@@ -192,7 +193,7 @@ case "$1" in
 esac
 
 # See if there is a running instance of Mozilla.
-remote_error=`$moz_remote "ping()" 2>&1 >/dev/null`
+remote_error=`$moz_remote -a "$moz_progname" "ping()" 2>&1 >/dev/null`
 case $? in
 0)
   found_running=true
@@ -244,7 +245,7 @@ fi
 # binary.
 if [ $# -eq 0 ]; then
   if [ "$found_running" = true ]; then
-    exec $moz_remote "xfeDoCommand(openBrowser)"
+    exec $moz_remote -a "$moz_progname" "xfeDoCommand(openBrowser)"
   else
     exec $MOZILLA_FIVE_HOME/mozilla-bin
   fi
@@ -274,6 +275,6 @@ esac
 # Mozilla to open the URL in a new window.  Otherwise, start the
 # standard binary with the given arguments.
 if [ "$found_running" = true -a -n "$url" ]; then
-  exec $moz_remote "openURL($url,new-window)"
+  exec $moz_remote -a "$moz_progname" "openURL($url,new-window)"
 fi
 exec $MOZILLA_FIVE_HOME/mozilla-bin "$@"
