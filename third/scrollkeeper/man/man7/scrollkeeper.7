@@ -1,0 +1,57 @@
+.TH SCROLLKEEPER 7 "Dec 5, 2001" "scrollkeeper"
+.SH NAME
+ScrollKeeper \- An open document cataloging and metadata management
+system.
+
+
+.SH DESCRIPTION
+ScrollKeeper is a system for managing document metadata.  
+Its primary function is to act as a card catalog for documents, keeping
+track of what documents are available, where they can be found, and
+various attributes of the documents such as their language, format, 
+subject, version, and position in a contents list.  It also manages
+other metadata such as document indices.
+
+ScrollKeeper acts as a middle layer between applications and help browsers.
+When applications install documentation, the documentation is registered
+with ScrollKeeper.  Any ScrollKeeper-aware help browser on the system
+can then access this information.  In this way, ScrollKeeper is a 
+compatibility layer which allows any help browser to interface to all
+the documentation on a system, provided the package which ships the
+documentation registers it with ScrollKeeper.  It also removes much of the
+burden from application packagers and help browser developers by providing
+a standard set of tools and by doing much of the work inside of ScrollKeeper.
+
+.SH RESOURCES
+The ScrollKeeper web pages can be found at 
+http://scrollkeeper.sourceforge.net and the mailing list can be found
+at http://lists.sourceforge.net/lists/listinfo/scrollkeeper-devel.
+
+.SH AVAILABILITY
+ScrollKeeper is licensed under the GNU Lesser Public License (LGPL).
+A copy of this license can be read in the file COPYING shipped
+with ScrollKeeper.
+
+The latest version of ScrollKeeper can be found at 
+http://sourceforge.net/projects/scrollkeeper.
+
+.SH FILES
+.I /etc/scrollkeeper.conf
+.br
+.I /var/log/scrollkeeper.log
+.br
+.I /var/lib/scrollkeeper/*
+
+.SH AUTHOR
+Laszlo Kovacs   <laszlo.kovacs@sun.com>
+.br
+Dan Mueth       <d-mueth@uchicago.edu>
+
+.SH SEE ALSO
+scrollkeeper-config(1),
+scrollkeeper-gen-seriesid(1),
+scrollkeeper.conf(5),
+scrollkeeper-preinstall(8),
+scrollkeeper-rebuilddb(8) 
+scrollkeeper-update(8) 
+

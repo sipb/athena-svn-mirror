@@ -1,0 +1,470 @@
+
+                   -----------------------------------------
+                   |  ScrollKeeper 0.3/0.4 Specifications  |
+                   |                                       |
+                   |      Laszlo Kovacs & Dan Mueth        |
+                   |                                       |
+                   |              Jan 12, 2002             |
+                   -----------------------------------------
+
+
+   This document is arranged as follows:
+     I.    Introduction
+     II.   Definitions and Overview
+     III.  Building, Installing, and Uninstalling
+     IV.   Other Tools for Admin and Packaging
+     V .   ScrollKeeper Internals
+     VI.   Example File Snippits
+
+
+I. Introduction
+
+This document describes the functional design of ScrollKeeper and
+the basics of how ScrollKeeper can be used in a self-consistent way.
+For more details on details about the implementation, read the 
+source or ask on the mailing list.  For more information on how 
+to use ScrollKeeper, see the example package, scrollkeeper-example1, 
+and the documentation that accompanies it.
+
+Note: 
+   Several parts of ScrollKeeper were designed around the needs of
+   packaging systems such as RPM.  In this document RPM is used
+   as an example packaging system, although other packaging systems 
+   should be treated similarly.  ScrollKeeper is intended to work 
+   with various packaging system on Unix-like operating systems.
+
+
+II. Definitions and Overview
+
+Contents List - This is a list of documents on the system (or more
+generally, including docs which are not local to the single machine),
+sorted into a tree.  The tree is usually sorted by subject using 
+a controlled list of subjects. 
+
+TOC (Table of Contents) - This is a tree representing the sections
+and subsections of a document.  The TOC can be extracted from an SGML/XML
+file.
+
+Extended Contents List - This is the Contents List with the TOC for
+each document merged into it.  It allow the user to not only navigate 
+through the the docs on the system, but also the sections within 
+each doc, all in one tree.
+
+Index - An index is a list of terms and concepts with links to places
+where these topics are discussed.  Indices may index a single document
+or a collection of documents. 
+
+Generally a help browser will want to present all of the above
+information to the user.  The Contents List is determined from all
+of the OMF metadata, which is obtained either from standalone OMF files
+or (in the future) by extracting it directly from DocBook documents
+which have this metadata in them.  The TOC and index generated directly from 
+DocBook documents.  (The TOC is generated from the sectioning tags, while
+the index can only be generated if the DocBook indexing tags are included
+in the document.)  Since all of this is metadata and must
+be accessed rather frequently, and to avoid potential performance
+problems, this metadata is processed only at install and uninstall
+time. The data is stored in XML files for easy access by the help
+browser and ScrollKeeper as necessary.
+
+Notes regarding ScrollKeeper 0.2:
+  * ScrollKeeper 0.2 only supports local documents.
+  * ScrollKeeper 0.2 uses a subject categorization and a 
+    strictly-enforced controlled list for the categories.
+  * ScrollKeeper 0.2 extracts the TOC from DocBook/SGML documents.
+
+Notes regarding ScrollKeeper 0.4:
+  * ScrollKeeper 0.4 focusses on support for DocBook/XML documents.  It also
+    has support for some DocBook/SGML documents, but not all DocBook/SGML
+    documents will parse properly.
+
+III. Building, Installing, and Uninstalling
+
+i. Building
+
+The OMF documents are manipulated during the application
+build process, generally as part of 'make all'.  The purpose of this
+is to specify the URL of the document where it will actually be 
+installed, which is not generally known until build time.
+
+This processing is done by 'scrollkeeper-preinstall'.  This generally
+takes three parameters: the URL for the installed document, the
+original OMF metadata file in XML, and the name that the generated
+OMF file should be written to. For example:
+
+   scrollkeeper-preinstall                  \
+       file:$(docdir)/foo-manual.sgml       \
+       foo-manual-fr.omf                    \
+       $(omf-dir)/foo-manual-fr.omf
+
+Note:
+  Note that this requires ScrollKeeper to be installed on the machine
+  of the packager.  
+
+Note:
+  Also note that $(docdir) typically is based on $(prefix) which is 
+  set to include $RPMBUILDROOT during the 'make install' step when 
+  building RPMs.  Thus, one must use timestamps to guarantee that the 
+  'scrollkeeper-preinstall' step is only executed once, during the 
+  'make' step and not during the 'make install' step.  Otherwise the 
+  URL will be wrong, having the $RPMBUILDROOT in it.
+
+If the path where the generated OMF file is written does not exist, 
+it is created.  So in this example, the OMF file 
+$(omf-dir)/foo-manual-fr.omf is created by copying the OMF file
+foo-manual-fr.omf, replacing the IDENTIFIER with 
+file:$(docdir)/foo-manual.sgml.  If $(omf-dir) did not exist, it
+is created.
+
+Note that the OMF file is named <document_title>-<locale>.omf to 
+avoid collisions between OMF files within a package when they are
+installed.
+
+ii. Installing
+
+Installation is done by first copying the document and OMF file into
+place and then having ScrollKeeper update its database by calling
+'scrollkeeper-update'.
+
+install:
+      install foo-manual.sgml $(docdir)
+      install $(omf-dir)/foo-manual-fr.omf $(pkgomfdir)
+      -scrollkeeper-update -p $(SCROLLKEEPER_DB_DIR)
+
+SCROLLKEEPER_DB_DIR is the directory to use as the ScrollKeeper
+database directory.  It should be based on $localstatedir so that
+it points to the real system database when installing, and point 
+the RPMBUILDROOT when building RPMs.  For example, if the application
+is configured with --localstatedir=/var/lib, then 
+SCROLLKEEPER_DB_DIR should be set to $(localstatedir)/scrollkeeper.
+
+The -p option is important for building and testing purposes and
+should always be used when packaging applications.  When building RPMs,
+for example, it guarantees that instead of actually modifying the primary
+database on the builder's machine, it generates and modifies a new
+database under RPMBUILDROOT.  It is clearly useful for testing purposes
+as well.
+
+scrollkeeper-update identifies the presence of a new or modified OMF 
+file in $(omf-dir)and registers new metadata. 
+
+Uninstalling is done using 'scrollkeeper-update' as well.
+
+uninstall:
+       rm $(docdir)/foo-manual.sgml
+       rm $(pkgomfdir)/foo-manual-fr.omf
+       scrollkeeper-update -p $(SCROLLKEEPER_DB_DIR)
+
+scrollkeeper-update identifies that the OMF file was removed from
+OMFDIR and unregisters the old metadata.
+
+scrollkeeper-update also has a "-v" (verbose) flag which sends
+warnings and errors to STDOUT in addition to the log file 
+(/var/log/scrollkeeper.log) where these messages are normally sent.
+
+
+IV. Other Tools for Admin and Packaging
+
+In addition to the commands described above (scrollkeeper-preinstall
+and scrollkeeper-update), ScrollKeeper provides the following
+additional utilities:
+
+scrollkeeper-rebuilddb:
+This is used to rebuild the ScrollKeeper database completely using
+only the original OMF files in OMFDIR.   It also has a "-p" option which
+allows one to specify the output directory of the newly created
+database. It has a "-v" (verbose) option to output errors and 
+warnings to the STDOUT.  All errors and warnings are also sent
+to the log file (typically /var/log/scrollkeeper.log).
+
+scrollkeeper-config:
+This is used to return various configuration paths for ScrollKeeper.
+  Options:
+    --help              Prints scrollkeeper-config usage.
+    --version           Prints Scrollkeeper version.
+    --prefix            Scrollkeeper configure prefix. (eg. /usr)
+    --localstatedir     Scrollkeeper configure localstatedir. (eg. /var)
+    --pkglocalstatedir  Scrollkeeper data directory. 
+                                   (eg. /var/lib/scrollkeeper)
+    --pkgdatadir        Scrollkeeper home directory. 
+                                   (eg. /usr/share/scrollkeeper)
+    --omfdir            Directory where ScrollKeeper looks for OMF files.
+                                   (eg. /usr/share`/omf)
+
+scrollkeeper.conf:
+This is a very short and simple system-wide configuration file for 
+ScrollKeeper.  For now it merely allows the distributor or sys admin 
+to customize the default search path (OMF_DIR) to find OMF files on 
+the system.  Other customizations will be added to this file in later 
+releases.
+
+V. ScrollKeeper Internals
+
+This section describes some details about scrollkeeper functions.
+
+$SCROLLKEEPER_DB_DIR is the directory where ScrollKeeper keeps its
+current data files.  (It is typically /var/lib/scrollkeeper.)
+
+$SCROLLKEEPER_DIR is the directory where ScrollKeeper installs its
+static data files and docs (typically /usr/share/scrollkeeper). All
+the content list template files for every locale are stored here.
+
+$SCROLLKEEPER_DOC_DIR is the directory where ScrollKeeper
+installs its development related info files such as README, license files
+etc (typically /usr/share/doc/scrollkeeper-$version).
+
+$OMFDIR is the directory where packages must install their OMF files
+and where ScrollKeeper looks to find OMF files. (This is typically
+/usr/share/omf.) To set this variable, it searches the following list
+from top to bottom for a definition:
+  1) The commandline argument, -o
+  2) The environment variable, $OMF_DIR
+  3) The variable definition of OMF_DIR in scrollkeeper.conf, typically
+     in /etc.
+  4) The path given by 'scrollkeeper-update --omfdir'
+
+scrollkeeper-update [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]
+It looks for added, removed, or updated files in OMF_DIR and its
+subdirectories and then calls scrollkeeper-install and
+scrollkeeper-uninstall as necessary.
+     -v - verbose flag, messages are printed to stderr also apart from
+               /var/log/scrollkeeper.log.
+     -p - specify the Scrollkeeper database directory (defaults to
+              scrollkeeper-config --pkglocalstatedir)
+     -o - specify an OMF directory 
+
+Multiple OMF directories can be specified by setting the environment
+variable OMF_DIR or in scrollkeeper.conf.
+
+scrollkeeper-install [-v] [-p <scrollkeeper_db_dir>] <omfname>
+     (If the -v flag is used, various errors will be sent to STDERR
+      throughout the following process.)
+  1) Define a path, $scrollkeeper_db_dir, to be <scrollkeeper-db_dir>
+     if the -p option is used, or `scrollkeeper-config 
+     --pkglocalstatedir` otherwise.
+  2) If the content list template files were not all copied to the
+     database directory (first run) then copy them and create the 
+     extended content list files also (right now these will be 
+     the same as the simple content list files).
+  3) For each entry in <omfname> do the following:
+    A) Verify that the URL in the OMF entry exists.  (eg. the file
+       it points to on the drive actually exists.) If it fails this
+       test, abort all further action on this OMF entry.
+    B) Add the entry to $scrollkeeper_db_dir/scrollkeeper-docs.
+       (This file is created if it doesn`t exist.) (see V. for
+       format)
+    C) Update Contents List:
+      a) Determine title, language, and position(s) in Contents List
+         from TITLE, LANGUAGE, and SUBJECT.category respectively.
+      b) Verify that the SUBJECT.category lies within the controlled list
+         of categories for the locale specified by LANGUAGE
+      c) Add this document to the Content List file in the
+         appropriate language's directory:
+            $scrollkeeper_db_dir/<LANGUAGE>/scrollkeeper_cl.xml
+            (See V. for format.) (Note the doc ID is used as an
+            attribute to make uninstallation easy.)
+    D) (For DocBook docs only.) Extract TOC from doc, placing it
+       into a file: <scrollkeeper_db_dir>/TOC/<IDNUMBER>
+       (This file is created if it doesn`t exist, or overwritten if
+       it does.)
+    E) (For SGML and XML docs only.) Insert TOC into an
+       "extended contents list".  This is the Contents List with TOC
+       listed as a sub-tree for each doc.  As above, the doc ID is used to
+       make uninstallation easy.  This file is at:
+          $scrollkeeper_db_dir/<LANGUAGE>/scrollkeeper_extended_cl.xml
+
+scrollkeeper-uninstall [-v] [-p <scrollkeeper_db_dir>] <omfname>
+  (Flags are the same as those in scrollkeeper-install.)
+  1) Define a path, $scrollkeeper_db_dir, to be <scrollkeeper-db_dir>
+     if the -p option is used, or `scrollkeeper-config 
+     --pkglocalstatedir` otherwise.
+  2) Identify the doc ID of the specified doc using
+      $scrollkeeper-db-dir/scrollkeeper_docs 
+  3) Remove the doc from $scrollkeeper-db-dir/scrollkeeper_docs
+     and $scrollkeeper-db-dir/<LANGUAGE>/* (both contents list files).
+  4) Remove the TOC file for the doc: $scrollkeeper-db-dir/TOC/<docid>
+
+scrollkeeper-rebuilddb [-v] [-p <scrollkeeper_db_dir>]:
+  (Flags are the same as those in scrollkeeper-install.)
+  1) Define a path, $scrollkeeper_db_dir, to be <scrollkeeper-db_dir>
+     if the -p option is used, or `scrollkeeper-config 
+     --pkglocalstatedir` otherwise.
+  2) Delete the old database (ie. 'rm -rf $scrollkeeper_db_dir/*')
+  3) Run 'scrollkeeper-update -p $scrollkeeper_db_dir' which
+     creates a new database in $scrollkeeper_db_dir and registers
+     all OMF files in it.
+  (This can be used whenever the database is corrupted or becomes
+   out-of-date.  It is also an easy (brute-force) way to allow for
+   ScrollKeeper to update its databases when a new version is installed,
+   allowing one to break database compatibility between versions of
+   ScrollKeeper.)
+
+
+-- For use by help browsers --
+scrollkeeper-get-contents-list <language>:
+  1) Returns the path:
+        ${pkglocalstatedir}/<language>/scrollkeeper_cl.xml if it
+     exists
+
+scrollkeeper-get-extended-contents-list <language>:
+  1) Returns the path:
+        ${pkglocalstatedir}/<language>/scrollkeeper_extended_cl.xml
+     if it exists
+
+scrollkeeper-get-toc-from-docpath <docpath>:
+  1) Looks in ${pkglocalstatedir}/scrollkeeper-docs to find doc id
+     for <docpath>
+  2) Returns the path:
+        ${pkglocalstatedir}/TOC/<docid>
+
+-- i18n support --
+The main new feature in release 0.3 is per-document fallback support.
+This means that if a document is not installed in the current locale, 
+then Scrollkeeper is able to fall back to other translations of
+the document if they exist. The language list for fallback is stored
+in the environment variable LANGUAGE. When the browser asks for a content list,
+all the languages from the list will be considered to create a tree as
+complete as possible. Fallback is possible only through docs that use
+a unique ID to indentify uniquely a document and all its translations.
+
+The ID is generated by:
+
+scrollkeeper-gen-seriesid
+
+This has to be run without arguments and it prints a unique ID on the 
+screen.  No matter where the script is run, chances of generating the 
+same ID are very low.
+
+The generated ID has to be added to the OMF files of all the translations 
+of the same document like this:
+
+<relation seriesid="seriesid"/>
+
+see example below.
+
+After this per document fallback support should work.
+
+--Logging--
+
+The default behavior of ScrollKeeper is to send errors, warnings, and 
+progress notices to a log file and not to STDOUT.  Some ScrollKeeper commands
+{scrollkeeper-rebuilddb, scrollkeeper-update, scrollkeeper-install,
+scrollkeeper-uninstall} can be called with the -v (verbose) flag.  This
+flag causes all messages which go to the log file to also be sent to STDOUT.
+
+
+VI. Example File Snippits
+
+scrollkeeper-docs:
+     This is used to keep track of which docs are on the system
+     listing the location of their OMF metadata, and identifying
+     each doc by a code which can be used to simplify
+     uninstallation and some other tasks.
+     It also has a timestamp from when the OMF file was last
+     written so that scrollkeeper-update can detect when an OMF 
+     file has been updated. Finally it also holds the locale to 
+     which the doc was installed.
+
+   /usr/doc/omf/foo-manual-fr.omf               \
+                000001                          \
+                /usr/doc/foo/foo-manual.sgml    \
+                Sun Oct 29 13:48:50             \
+                C
+   /usr/doc/omf/bar-manual-en_US.omf            \
+                000002                          \
+                /usr/doc/bar/bar-manual.sgml    \
+                Tue Oct 24 02:47:28             \
+                en_US
+   /usr/doc/omf/foob-manual-da.omf              \
+                000003                          \
+                /usr/doc/foob/foob-manual.sgml  \
+                Tue Oct 24 02:47:28             \
+                da
+
+scrollkeeper_cl.xml:
+     This is a simple XML file which reveals what the Contents
+     List looks like and where the OMF files and doc are at. This 
+     is used by the help browser to display the Contents List.
+           [We will need to write up a simple DTD.]
+
+      <sect>
+        <title>Applications</title>
+        <sect>
+          <title>Games</title>
+          <doc docid="000050">
+            <doctitle>FreeCell</doctitle>
+            <docomf>/usr/local/games/freecell/freecell-omf.xml</docomf>
+            <docsource>/usr/local/games/freecell/freecell.sgml</docsource>
+            <docformat>SGML</docformat>
+          </doc>
+        </sect>
+      </sect>
+
+TOC/<IDNUMBER>:
+     Contains a description of the sectioning layout of the doc.
+     It also provides URI's for each doc section. Sections
+     without URIs are not included, since they can't be linked to.
+
+scrollkeeper_extended_cl.xml:
+     Similar to scrollkeeper-contents-list.xml, except has TOC
+     info in it too.  This is used by the help browser to display the
+     "Extended Contents List".
+
+      <sect>
+        <title>Applications</title>
+        <sect>
+          <title>Games</title>
+          <doc docid="000050">
+            <doctitle>FreeCell</doctitle>
+            <docomf>/usr/local/games/freecell/freecell-omf.xml</docomf>
+            <docsource>/usr/local/games/freecell/freecell.sgml</docsource>
+            <docformat>SGML</docformat>
+            <toc>
+             <tocsect1 linkid="introduction">Introduction to \ 
+                                                     FreeCell</tocsect1>
+             <tocsect1 linkid="playing">Playing FreeCell
+              <tocsect2 linkid="winning">Winning FreeCell</tocsect2>
+             </tocsect1>
+            </toc>
+          </doc>
+        </sect>
+      </sect>
+
+
+foo-manual.omf:
+     This is the metadata file of the doc. Typically it looks like:
+
+     <omf>
+      <resource>
+       <title>
+        ScrollKeeper Manual
+       </title>
+       <creator>
+         <person>
+           <firstName>Dan</firstName>
+           <lastName>Mueth</lastName>
+           <email>d-mueth@uchicago.edu</email>
+         </person>
+       </creator>
+       <subject>
+         <category>System|Other</category>
+       </subject>
+       <description>
+        This document describes what ScrollKeeper is, the basics of how it
+        works, basic system administration and maintenance of ScrollKeeper,
+        how to create packages which register documents with ScrollKeeper,
+        and the exported functionality for help browsers.
+       </description>
+       <type>
+        manual
+       </type>
+       <format mime="text/sgml"/>
+       <relation seriesid="0bb19496-4b87-11d5-8e3d-f0dc97dbfcaa"/>
+       <identifier
+         url="/usr/share/scrollkeeper/doc/scrollkeeper_manual/C/scrollkeeper_manual.sgml"/>
+       <language code="C"/>
+      </resource>
+     </omf>
+
+It is based on the OMF specification about document metadata:
+    http://www.ibiblio.org/osrt/omf/

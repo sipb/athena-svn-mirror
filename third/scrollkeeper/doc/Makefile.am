@@ -1,6 +1,7 @@
 SUBDIRS = 					\
-	scrollkeeper_manual
+	writing_scrollkeeper_omf_files	
 
 EXTRA_DIST=                                     \
-        sgmldocs.make
+        omf.make				\
+        xmldocs.make
 
