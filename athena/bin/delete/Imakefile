@@ -5,7 +5,7 @@
 /**/#
 /**/#     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
 /**/#     $Author: jik $
-/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.4 1991-02-18 16:33:44 jik Exp $
+/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.5 1991-02-18 16:42:35 jik Exp $
 /**/#
 
 DESTDIR=
@@ -52,7 +52,8 @@ ETLIBS=		-lcom_err
 INCLUDES=	$(ETINCS) $(AFSINCS)
 LDFLAGS=	$(ETLDFLAGS) $(AFSLDFLAGS) 
 LIBS= 		$(ETLIBS) $(AFSLIBS)
-CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
+CDEBUGFLAGS=	-O
+CFLAGS= 	$(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LINTFLAGS=	-u $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LINTLIBS=	
 

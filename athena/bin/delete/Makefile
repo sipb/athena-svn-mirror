@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.24 1991-01-31 18:26:40 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.25 1991-02-18 16:42:27 jik Exp $
 #
 
 DESTDIR=
@@ -46,7 +46,8 @@ ETLIBS=		-lcom_err
 INCLUDES=	$(ETINCS) $(AFSINCS)
 LDFLAGS=	$(ETLDFLAGS) $(AFSLDFLAGS) 
 LIBS= 		$(ETLIBS) $(AFSLIBS)
-CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
+CDEBUGFLAGS=	-O
+CFLAGS= 	$(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LINTFLAGS=	-u $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LINTLIBS=	
 
