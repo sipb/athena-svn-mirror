@@ -40,12 +40,12 @@ INCLUDES	=	-I.. ${LOCAL_INCLUDES}
 
 AllTarget(${CONSOLE})
 NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
-InstallProgram($(CONSOLE),$(DESTDIR)$(CONSOLE_BIN_DIR))
+InstallProgram($(CONSOLE),$(CONSOLE_BIN_DIR))
 
-InstallNonExec(${CONSOLE}.8,${DESTDIR}${MAN_DIR}/man8/${CONSOLE}.8)
-InstallNonExec(Console,${DESTDIR}${CONSOLE_APP_DIR}/Console)
-InstallNonExec(console.xbm,${DESTDIR}${CONSOLE_XBM_DIR}/console.xbm)
-InstallNonExec(gray,${DESTDIR}${CONSOLE_XBM_DIR}/gray)
+InstallNonExec(${CONSOLE}.8,${MAN_DIR}/man8/${CONSOLE}.8)
+InstallNonExec(Console,${CONSOLE_APP_DIR}/Console)
+InstallNonExec(console.xbm,${CONSOLE_XBM_DIR}/console.xbm)
+InstallNonExec(gray,${CONSOLE_XBM_DIR}/gray)
 
 DependTarget()
 
