@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.48 2000-06-19 03:48:29 ghudson Exp $
+# $Id: reactivate.sh,v 1.49 2000-06-22 13:37:43 ghudson Exp $
 
 trap "" 1 15
 
@@ -67,17 +67,14 @@ rm -f /var/tmp/!!!SuperLock!!!
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
-	case "$HOSTTYPE" in
-	sun4)
+	if [ sun4 = "$HOSTTYPE" -a -f /tmp/ps_data ]; then
 		cp -p /tmp/ps_data /var/athena/ps_data
 		nuke /tmp > /dev/null 2>&1
 		cp -p /var/athena/ps_data /tmp/ps_data
 		rm -f /var/athena/ps_data
-		;;
-	*)
+	else
 		nuke /tmp > /dev/null 2>&1
-		;;
-	esac
+	fi
 	nuke /var/athena/tmphomedir > /dev/null 2>&1
 fi
 
