@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.58 1998-02-17 23:56:57 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.59 1998-02-20 21:01:29 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -10,6 +10,7 @@
 
 #include <mit-copyright.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -36,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.58 1998-02-17 23:56:57 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.59 1998-02-20 21:01:29 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -94,9 +95,24 @@ char *consolepidf = "/var/athena/console.pid";
 char *dmpidf = "/var/athena/dm.pid";
 char *consolelog = "/var/athena/console.log";
 
-void die(), child(), catchalarm(), xready(), shutdown();
-void loginready(), clean_groups();
-char *number(), *getconf(), **parseargs();
+static void die(int signo);
+static void child(int signo);
+static void catchalarm(int signo);
+static void xready(int signo);
+static void shutdown(int signo);
+static void loginready(int signo);
+static char *number(int x);
+static char *getconf(char *file, char *name);
+static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
+static void console_login(char *conf, char *msg);
+static void start_console(char *line, char **argv);
+static void cleanup(char *tty);
+#ifdef TRACE
+static void trace(char *msg);
+#endif
+#ifdef SOLARIS
+static int grabconsole(void);
+#endif
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -111,13 +127,10 @@ char *number(), *getconf(), **parseargs();
 static    int max_fd;
 
 #ifdef SOLARIS
-int
-grabconsole()
+static int grabconsole(void)
 {
-    int	tty, console;
-    int cc;
+    int	console;
     int		p[2];
-    char buf[BUFSIZ];
     
     if (pipe(p) < 0) {
        fprintf(stderr, "dm: could not open pipe: %s\n",strerror(errno));
@@ -134,20 +147,21 @@ grabconsole()
 	exit(1);
     }
     return(p[0]);
-  }
+}
 #endif
 
 /* Setup signals, start X, start console, start login, wait */
 
-main(argc, argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
     char *consoletty, *conf, *p;
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
-    int pgrp, file, tries, console = TRUE, on = 1;
+    int pgrp, file, tries, console = TRUE;
+#ifdef TIOCCONS
+    int on = 1;
+#endif
 
     char dpyname[10], dpyacl[40];
     Display *dpy;
@@ -282,20 +296,20 @@ char **argv;
     loginargv = parseargs(p, logintty, "-tty", logintty);
 
     /* Signal Setup */
-    sigact.sa_handler = (void (*)())SIG_IGN;
+    sigact.sa_handler = SIG_IGN;
     sigaction(SIGTSTP, &sigact, NULL);
     sigaction(SIGTTIN, &sigact, NULL);
     sigaction(SIGTTOU, &sigact, NULL);
     sigaction(SIGPIPE, &sigact, NULL); /* so that X pipe errors don't nuke us */
-    sigact.sa_handler = (void (*)())shutdown;
+    sigact.sa_handler = shutdown;
     sigaction(SIGFPE, &sigact, NULL);
-    sigact.sa_handler = (void (*)())die;
+    sigact.sa_handler = die;
     sigaction(SIGHUP, &sigact, NULL);
     sigaction(SIGINT, &sigact, NULL);
     sigaction(SIGTERM, &sigact, NULL);
-    sigact.sa_handler = (void (*)())child;
+    sigact.sa_handler = child;
     sigaction(SIGCHLD, &sigact, NULL);
-    sigact.sa_handler = (void (*)())catchalarm;
+    sigact.sa_handler = catchalarm;
     sigaction(SIGALRM, &sigact, NULL);
     close(0);
     close(1);
@@ -334,7 +348,7 @@ char **argv;
 	    /* ignoring SIGUSR1 will cause the server to send us a SIGUSR1
 	     * when it is ready to accept connections
 	     */
-	    sigact.sa_handler = (void (*)())SIG_IGN;
+	    sigact.sa_handler = SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
 	    p = *xargv;
 	    *xargv = "X";
@@ -346,7 +360,7 @@ char **argv;
 		    strerror(errno));
 	    break;
 	default:
-	    sigact.sa_handler = (void (*)())xready;
+	    sigact.sa_handler = xready;
 	    sigaction(SIGUSR1, &sigact, NULL);
 	    sprintf(xpidf, xpids, dpynum);
 	    if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
@@ -367,7 +381,7 @@ char **argv;
 		else
 		  fprintf(stderr,"dm: X failed to become ready\n");
 	    }
-	    sigact.sa_handler = (void (*)())SIG_IGN;
+	    sigact.sa_handler = SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
 	}
 	if (x_running == RUNNING) break;
@@ -439,7 +453,7 @@ char **argv;
 	fprintf(stderr,"Starting X Login\n");
 #endif
 	login_running = STARTUP;
-	sigact.sa_handler = (void (*)())loginready;
+	sigact.sa_handler = loginready;
         sigaction(SIGUSR1, &sigact, NULL);
 	loginpid = fork();
 	switch (loginpid) {
@@ -462,11 +476,11 @@ char **argv;
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
 	     */
-	    sigact.sa_handler = (void (*)())SIG_IGN;
+	    sigact.sa_handler = SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
 	    /* dm ignores sigpipe; because of this, all of the children (ie, */
 	    /* the entire session) inherit this unless we fix it now */
-            sigact.sa_handler = (void (*)())SIG_DFL;;
+            sigact.sa_handler = SIG_DFL;;
             sigaction(SIGPIPE, &sigact, NULL);
 	    execv(loginargv[0], loginargv);
 	    fprintf(stderr,"dm: X login failed exec: %s\n", strerror(errno));
@@ -490,7 +504,7 @@ char **argv;
 	}
 	if (login_running == RUNNING) break;
     }
-    sigact.sa_handler = (void (*)())SIG_IGN;
+    sigact.sa_handler = SIG_IGN;
     sigaction(SIGUSR1, &sigact, NULL);
     alarm(0);
     if (login_running != RUNNING)
@@ -542,8 +556,7 @@ char **argv;
 
 /* Start a login on the raw console */
 
-console_login(conf, msg)
-char *conf, msg;
+static void console_login(char *conf, char *msg)
 {
     int i, graceful = FALSE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
@@ -626,9 +639,7 @@ char *conf, msg;
  * from the display manager.
  */
 
-start_console(line, argv)
-char *line;
-char **argv;
+static void start_console(char *line, char **argv)
 {
     static struct timeval last_try = { 0, 0 };
     struct timeval now;
@@ -780,7 +791,7 @@ char **argv;
 
 /* Kill children and hang around forever */
 
-void shutdown()
+static void shutdown(int signo)
 {
     int pgrp, i;
     struct termios tc;
@@ -812,15 +823,13 @@ void shutdown()
 
 /* Kill children, remove password entry */
 
-cleanup(tty)
-char *tty;
+static void cleanup(char *tty)
 {
-    int file, found;
+    int found;
     struct utmp utmp;    
 #ifdef SOLARIS
     struct utmpx utmpx;    
     struct utmpx *utx_tmp;
-    char * ttyn;
     char new_id[20];
     register int f;
     char *p;
@@ -915,16 +924,15 @@ char *tty;
  * appropriate flags
  */
 
-void child()
+static void child(int signo)
 {
     int pid;
     int status;
-    char *number();
     struct sigaction sigact;
 
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags = 0;
-    sigact.sa_handler = (void (*)())child;
+    sigact.sa_handler = child;
     sigaction(SIGCHLD, &sigact, NULL);
     pid = waitpid(-1, &status, WNOHANG);
     if (pid == 0 || pid == -1) return;
@@ -968,7 +976,7 @@ void child()
 }
 
 
-void xready()
+static void xready(int signo)
 {
 #ifdef DEBUG
     fprintf(stderr,"X Server ready\n");
@@ -976,7 +984,7 @@ void xready()
     x_running = RUNNING;
 }
 
-void loginready()
+static void loginready(int signo)
 {
 #ifdef DEBUG
     fprintf(stderr,"X Login ready\n");
@@ -986,7 +994,7 @@ void loginready()
 
 /* When an alarm happens, just note it and return */
 
-void catchalarm()
+static void catchalarm(int signo)
 {
 #ifdef DEBUG
     fprintf(stderr,"Alarm!\n");
@@ -997,7 +1005,7 @@ void catchalarm()
 
 /* kill children and go away */
 
-void die()
+static void die(int signo)
 {
 #ifdef DEBUG
     fprintf(stderr,"Killing children and exiting\n");
@@ -1010,11 +1018,7 @@ void die()
  * of strings.  The array is in malloc'ed memory.
  */
 
-char **parseargs(line, extra, extra1, extra2)
-char *line;
-char *extra;
-char *extra1;
-char *extra2;
+static char **parseargs(char *line, char *extra, char *extra1, char *extra2)
 {
     int i = 0;
     char *p = line;
@@ -1054,8 +1058,7 @@ char *extra2;
  * static buffer.  The string will be newline and null terminated.
  */
 
-char *number(x)
-int x;
+static char *number(int x)
 {
 #define NDIGITS 16
     static char buffer[NDIGITS];
@@ -1079,9 +1082,7 @@ int x;
  * value, or NULL on error.
  */
 
-char *getconf(file, name)
-char *file;
-char *name;
+static char *getconf(char *file, char *name)
 {
     static char buf[8192];
     static int inited = 0;
@@ -1123,10 +1124,8 @@ char *name;
     return(NULL);
 }
 
-
 #ifdef TRACE
-trace(msg)
-char *msg;
+static void trace(char *msg)
 {
     int f;
 
