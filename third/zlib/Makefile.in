@@ -92,14 +92,14 @@ minigzip: minigzip.o $(LIBS)
 	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
 
 install: $(LIBS)
-	-@if [ ! -d $(includedir)  ]; then mkdir $(includedir); fi
-	-@if [ ! -d $(libdir) ]; then mkdir $(libdir); fi
-	cp zlib.h zconf.h $(includedir)
-	chmod 644 $(includedir)/zlib.h $(includedir)/zconf.h
-	cp $(LIBS) $(libdir)
-	cd $(libdir); chmod 755 $(LIBS)
-	-@(cd $(libdir); $(RANLIB) libz.a || true) >/dev/null 2>&1
-	cd $(libdir); if test -f $(SHAREDLIB).$(VER); then \
+	mkdir -p $(DESTDIR)$(includedir)
+	mkdir -p $(DESTDIR)$(libdir)
+	cp zlib.h zconf.h $(DESTDIR)$(includedir)
+	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
+	cp $(LIBS) $(DESTDIR)$(libdir)
+	cd $(DESTDIR)$(libdir); chmod 755 $(LIBS)
+	-@(cd $(DESTDIR)$(libdir); $(RANLIB) libz.a || true) >/dev/null 2>&1
+	cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIB).$(VER); then \
 	  rm -f $(SHAREDLIB) $(SHAREDLIB).1; \
 	  ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB); \
 	  ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB).1; \
