@@ -32,6 +32,7 @@ SUN*)
 	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
 	rm -rf /etc/group.std /etc/passwd.std /etc/shadow.std
 	rm -rf /auto_update /patch /.cshrc.mine /.tcshrc
+	rm -rf /usr/lib/learn /usr/lib/lint /usr/etc /usr/new
 
 	# Create new directories and files, make /var/sadm local (otherwise
 	# "showrev" fails).
@@ -64,7 +65,18 @@ SUN*)
 	;;
 
 INDY)
+	rm -rf /usr/ucb /usr/lib/learn /etc/sendmail.cf.Oct.28.16:34:09
+	rm -rf /etc/config/athenalogin /etc/config/syspack
+	rm -rf /etc/config/syspack.options /etc/config/zhm
+	rm -rf /usr/bin/X11/xdm.sgi /etc/athena/timed /etc/athena/timedc
+	rm -rf /etc/athena/reconfigure /var/X11/xdm/*.sgi
+
+	echo "/etc/athena/attach.conf"		>> ${CONFCHG}
+	echo "/etc/ftpusers"			>> ${CONFCHG}
 	echo "/var/spool/cron/crontabs/root"	>> ${CONFCHG}
+	echo "/etc/inetd.conf"			>> ${CONFCHG}
+	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
+	echo "/etc/shells"			>> ${CONFCHG}
 
 	hostname=`cat /etc/sys_id`
 	netaddress=`awk /$hostname'/{ print $1 }' /etc/hosts`
