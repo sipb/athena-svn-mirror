@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.24 1991-10-31 15:05:07 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.25 1991-11-05 13:47:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.24 1991-10-31 15:05:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.25 1991-11-05 13:47:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -259,7 +259,7 @@ olc_change_acl(fd,request)
 		return(send_response(fd,USER_NOT_FOUND));
 	      if(user != (USER *) NULL)
 		if(user->permissions & a_ptr->code)
-		  user->permissions |= ~(a_ptr->code);
+		  user->permissions &= ~(a_ptr->code);
 	      if(acl_delete(a_ptr->file, name) <0)
 		if(acl_add(a_ptr->file, name) <0)
 		  return(send_response(fd,ERROR));
@@ -528,3 +528,44 @@ olc_set_user_status(fd,request)
   needs_backup = TRUE;
   return(SUCCESS);
 }
+
+#ifdef ZEPHYR
+ERRCODE
+olc_toggle_zephyr(fd,request)
+     int fd;
+     REQUEST *request;
+{
+  KNUCKLE *requester;
+  int punt_time,status;
+  char buf[BUFSIZ];
+
+  status = find_knuckle(&(request->requester), &requester);
+  if(status != SUCCESS)
+    return(send_response(fd,status));
+  
+  if(!is_allowed(requester->user, ADMIN_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+
+  send_response(fd,SUCCESS);
+  if (request->options & OFF_OPT) {
+    read_int_from_fd(fd,&punt_time);
+    if (punt_time == -1)
+      punt_time = ZEPHYR_PUNT_TIME;
+    if (punt_time == 0) {
+      sprintf(buf,"Disabling zephyr indefinitely");
+    } else {
+      sprintf(buf,"Disabling zephyr for %d minutes",punt_time);
+    }
+    log_status(buf);
+    olc_broadcast_message("syslog",buf, "system");
+    toggle_zephyr(1,punt_time);
+  } else {
+    sprintf(buf,"Attempting to enable zephyr");
+    log_status(buf);
+    toggle_zephyr(0,0);
+    olc_broadcast_message("syslog",buf, "system");
+  }
+  needs_backup = FALSE;
+  return(SUCCESS);
+}
+#endif
