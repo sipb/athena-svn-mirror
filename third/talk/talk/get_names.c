@@ -45,6 +45,7 @@ static char rcsid[] = "$NetBSD: get_names.c,v 1.4 1994/12/09 02:14:16 jtc Exp $"
 #include <protocols/talkd.h>
 #include <pwd.h>
 #include <string.h>
+#include <stdlib.h>
 #include "talk.h"
 
 #ifndef MAXHOSTNAMELEN
@@ -77,14 +78,16 @@ get_names(argc, argv)
 		printf("Standard input must be a tty, not a pipe or a file\n");
 		exit(-1);
 	}
-	if ((my_name = getlogin()) == NULL) {
-		struct passwd *pw;
+	if ((my_name = getenv("USER")) == NULL) {
+		if ((my_name = getlogin()) == NULL) {
+			struct passwd *pw;
 
-		if ((pw = getpwuid(getuid())) == NULL) {
-			printf("You don't exist. Go away.\n");
-			exit(-1);
+			if ((pw = getpwuid(getuid())) == NULL) {
+				printf("You don't exist. Go away.\n");
+				exit(-1);
+			}
+			my_name = pw->pw_name;
 		}
-		my_name = pw->pw_name;
 	}
 	gethostname(hostname, sizeof (hostname));
 	my_machine_name = hostname;
