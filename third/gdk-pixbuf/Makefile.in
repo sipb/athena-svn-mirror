@@ -116,10 +116,20 @@ SUBDIRS = gdk-pixbuf demo doc
 bin_SCRIPTS = gdk-pixbuf-config
 
 confexecdir = $(libdir)
-confexec_DATA =  	gdk_pixbufConf.sh			gdk_pixbuf_xlibConf.sh			gnomecanvaspixbufConf.sh
+confexec_DATA = \
+	gdk_pixbufConf.sh		\
+	gdk_pixbuf_xlibConf.sh		\
+	gnomecanvaspixbufConf.sh
 
 
-EXTRA_DIST =  	gdk_pixbufConf.sh.in			gdk_pixbuf_xlibConf.sh.in		gnomecanvaspixbufConf.sh.in		gdk-pixbuf-config.in			gdk-pixbuf.m4				gdk-pixbuf.spec				gdk-pixbuf.spec.in
+EXTRA_DIST = \
+	gdk_pixbufConf.sh.in		\
+	gdk_pixbuf_xlibConf.sh.in	\
+	gnomecanvaspixbufConf.sh.in	\
+	gdk-pixbuf-config.in		\
+	gdk-pixbuf.m4			\
+	gdk-pixbuf.spec			\
+	gdk-pixbuf.spec.in
 
 
 m4datadir = $(datadir)/aclocal
@@ -135,8 +145,8 @@ DATA =  $(confexec_DATA) $(m4data_DATA)
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in \
-gdk-pixbuf-config.in gdk-pixbuf.spec.in install-sh ltconfig ltmain.sh \
-missing mkinstalldirs
+gdk-pixbuf-config.in gdk-pixbuf.spec.in install-sh ltmain.sh missing \
+mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

@@ -115,7 +115,7 @@ int         <link linkend="xlib-rgb-get-depth">xlib_rgb_get_depth</link>        
 </programlisting>
   <para>
     FIXME: Describe this.
-  </para><informaltable pgwide="1" frame="none" role="struct">
+  </para><informaltable pgwide=1 frame="none" role="struct">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ int         <link linkend="xlib-rgb-get-depth">xlib_rgb_get_depth</link>        
     <symbol>XLIB_RGB_DITHER_MAX</symbol> will provide dithering on
     pseudocolor and 16-bit truecolor or &ldquo;high color&rdquo;
     displays.
-  </para><informaltable pgwide="1" frame="none" role="enum">
+  </para><informaltable pgwide=1 frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -185,7 +185,7 @@ display.  This function or <link linkend="xlib-rgb-init-with-depth">xlib_rgb_ini
 using any of the other functions in XlibRGB.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -209,7 +209,7 @@ function or <link linkend="xlib-rgb-init">xlib_rgb_init</link>() must be called 
 functions in XlibRGB.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -235,7 +235,7 @@ triplet.  It calls <link linkend="xlib-rgb-xpixel-from-rgb">xlib_rgb_xpixel_from
 returned pixel value to set the GC's foreground.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -257,7 +257,7 @@ triplet.  It calls <link linkend="xlib-rgb-xpixel-from-rgb">xlib_rgb_xpixel_from
 returned pixel value to set the GC's background.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -288,7 +288,7 @@ offsets; applications that need to render partial regions of a buffer to
 build the final image should use <link linkend="xlib-draw-rgb-image-dithalign">xlib_draw_rgb_image_dithalign</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -344,7 +344,7 @@ separately to form the final image; the dither offsets let you align the
 dither mask appropriately.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -403,7 +403,7 @@ faster results than <link linkend="xlib-draw-rgb-image">xlib_draw_rgb_image</lin
 32-bit boundaries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -454,7 +454,7 @@ intensity values.  An image will thus look as a GGGGGG sequence of 8-bit
 values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -496,7 +496,7 @@ upper-left corner of the rectangular region to render.
 FIXME</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -517,7 +517,7 @@ FIXME</para>
 Frees an XlibRGB colormap.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -542,7 +542,7 @@ Frees an XlibRGB colormap.</para>
 FIXME</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -585,7 +585,7 @@ FIXME</para>
 Queries whether XlibRGB supports dithering for its chosen visual.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -603,7 +603,7 @@ print information about the visual and colormap it chooses.  You normally do
 not need to use this function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -621,7 +621,7 @@ trying to allocate color cells from the system colormap.  This should be
 called before initializing XlibRGB.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -639,7 +639,7 @@ system color map for XlibRGB to use it.  If the specified number of colors is
 not available, XlibRGB will install its own private colormap.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -655,7 +655,7 @@ not available, XlibRGB will install its own private colormap.</para>
 Queries the X colormap that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -670,7 +670,7 @@ Queries the X colormap that XlibRGB is using.</para>
 Queries the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -685,7 +685,7 @@ Queries the visual that XlibRGB is using.</para>
 Queries the visual info structure for the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -700,7 +700,7 @@ Queries the visual info structure for the visual that XlibRGB is using.</para>
 Queries the depth of the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -715,7 +715,7 @@ Queries the depth of the visual that XlibRGB is using.</para>
 Queries the X display that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -730,7 +730,7 @@ Queries the X display that XlibRGB is using.</para>
 Queries the screen that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -35,6 +35,7 @@ Known bugs:
 
 #include <config.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include "gdk-pixbuf-private.h"
@@ -139,6 +140,7 @@ struct ico_progressive_state {
 	gint Type;		/*
 				   32 = RGB + alpha
 				   24 = RGB
+				   16 = 555 RGB
 				   8 = 8 bit colormapped
 				   4  = 4 bpp colormapped
 				   1  = 1 bit bitonal
@@ -163,30 +165,46 @@ void gdk_pixbuf__ico_image_stop_load(gpointer data);
 gboolean gdk_pixbuf__ico_image_load_increment(gpointer data, guchar * buf, guint size);
 
 
+static void 
+context_free (struct ico_progressive_state *context)
+{
+	if (context->LineBuf != NULL)
+		free (context->LineBuf);
+	context->LineBuf = NULL;
+	if (context->HeaderBuf != NULL)
+		free (context->HeaderBuf);
+
+	if (context->pixbuf)
+		gdk_pixbuf_unref (context->pixbuf);
+
+	g_free (context);
+}
 
 /* Shared library entry point --> Can go when generic_image_load
    enters gdk-pixbuf-io */
 GdkPixbuf *
 gdk_pixbuf__ico_image_load (FILE *f)
 {
-	guchar *membuf;
+	guchar membuf[4096];
 	size_t length;
 	struct ico_progressive_state *State;
 
 	GdkPixbuf *pb;
 
 	State = gdk_pixbuf__ico_image_begin_load(NULL, NULL, NULL, NULL, NULL);
-	membuf = g_malloc(4096);
 
-	g_assert(membuf != NULL);
+	if (State == NULL)
+		return NULL;
 
 	while (feof(f) == 0) {
-		length = fread(membuf, 1, 4096, f);
+		length = fread(membuf, 1, sizeof (membuf), f);
 		if (length > 0)
-			gdk_pixbuf__ico_image_load_increment(State, membuf, length);
-
+			if (!gdk_pixbuf__ico_image_load_increment(State, membuf, length)) {
+				gdk_pixbuf__ico_image_stop_load (State);
+				return NULL;
+			}
 	}
-	g_free(membuf);
+
 	if (State->pixbuf != NULL)
 		gdk_pixbuf_ref(State->pixbuf);
 
@@ -196,7 +214,7 @@ gdk_pixbuf__ico_image_load (FILE *f)
 	return pb;
 }
 
-static void
+static gboolean
 DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 {
 /* For ICO's we have to be very clever. There are multiple images possible
@@ -217,11 +235,14 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
  	State->HeaderSize = 6 + IconCount*16;
 
  	if (State->HeaderSize>State->BytesInHeaderBuf) {
- 		State->HeaderBuf=g_realloc(State->HeaderBuf,State->HeaderSize);
+		guchar *tmp=realloc(State->HeaderBuf,State->HeaderSize);
+		if (!tmp)
+			return FALSE;
+		State->HeaderBuf = tmp;
  		State->BytesInHeaderBuf = State->HeaderSize;
  	}
  	if (Bytes < State->HeaderSize)
- 		return;
+ 		return TRUE;
 
  	/* We now have all the "short-specs" of the versions
  	   So we iterate through them and select the best one */
@@ -252,17 +273,23 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 		Ptr += 16;
 	}
 
+	if (State->DIBoffset < 0)
+		return FALSE; /* Invalid header */
+
 	/* We now have a winner, pointed to in State->DIBoffset,
 	   so we know how many bytes are in the "header" part. */
 
 	State->HeaderSize = State->DIBoffset + 40; /* 40 = sizeof(InfoHeader) */
 
  	if (State->HeaderSize>State->BytesInHeaderBuf) {
- 		State->HeaderBuf=g_realloc(State->HeaderBuf,State->HeaderSize);
+		guchar *tmp=realloc(State->HeaderBuf,State->HeaderSize);
+		if (!tmp)
+			return FALSE;
+		State->HeaderBuf = tmp;
  		State->BytesInHeaderBuf = State->HeaderSize;
  	}
 	if (Bytes<State->HeaderSize)
-		return;
+		return TRUE;
 
 	BIH = Data+State->DIBoffset;
 
@@ -274,16 +301,20 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 
 	State->Header.width =
 	    (int)(BIH[7] << 24) + (BIH[6] << 16) + (BIH[5] << 8) + (BIH[4]);
+	if (State->Header.width == 0)
+		return FALSE;
+
 	State->Header.height =
 	    (int)(BIH[11] << 24) + (BIH[10] << 16) + (BIH[9] << 8) + (BIH[8])/2;
 	    /* /2 because the BIH height includes the transparency mask */
+	if (State->Header.height == 0)
+		return FALSE;
+
 	State->Header.depth = (BIH[15] << 8) + (BIH[14]);;
 
 	State->Type = State->Header.depth;
 	if (State->Lines>=State->Header.height)
 		State->Type = 1; /* The transparency mask is 1 bpp */
-
-
 
 	/* Determine the  palette size. If the header indicates 0, it
 	   is actually the maximum for the bpp. You have to love the
@@ -300,15 +331,19 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 	State->HeaderSize+=I;
 
  	if (State->HeaderSize>State->BytesInHeaderBuf) {
- 		State->HeaderBuf=g_realloc(State->HeaderBuf,State->HeaderSize);
+		guchar *tmp=realloc(State->HeaderBuf,State->HeaderSize);
+		if (!tmp)
+			return FALSE;
+		State->HeaderBuf = tmp;
  		State->BytesInHeaderBuf = State->HeaderSize;
  	}
  	if (Bytes < State->HeaderSize)
- 		return;
+ 		return TRUE;
 
 	if ((BIH[16] != 0) || (BIH[17] != 0) || (BIH[18] != 0)
 	    || (BIH[19] != 0)) {
-		g_assert(0); /* Compressed icons aren't allowed */
+		/* Compressed icons are not supported */
+		return FALSE;
 	}
 
 	/* Negative heights mean top-down pixel-order */
@@ -335,9 +370,8 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 		if ((State->Header.width & 7) != 0)
 			State->LineWidth++;
 	} else {
-		/* FIXME: Unsupported type; report it upstream */
-		g_error ("DecodeHeader(): Unsupported ICO type");
-		return;
+		/* Unsupported ICO type */
+		return FALSE;
 	}
 
 	/* Pad to a 32 bit boundary */
@@ -345,21 +379,21 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 		State->LineWidth = (State->LineWidth / 4) * 4 + 4;
 
 
-	if (State->LineBuf == NULL)
-		State->LineBuf = g_malloc(State->LineWidth);
+	if (State->LineBuf == NULL) {
+		State->LineBuf = malloc(State->LineWidth);
+		if (!State->LineBuf)
+			return FALSE;
+	}
 
 	g_assert(State->LineBuf != NULL);
 
+
 	if (State->pixbuf == NULL) {
-		/* ICOs always have an alpha channel, which will be set in a
-		 * second pass after the main pixel data has been read.
-		 */
 		State->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
 						(gint) State->Header.width,
 						(gint) State->Header.height);
-		/* FIXME: gdk_pixbuf_new() could return NULL and we are not
-		 * dealing with it!
-		 */
+		if (!State->pixbuf)
+			return FALSE;
 
 		if (State->prepared_func != NULL)
 			/* Notify the client that we are ready to go */
@@ -368,6 +402,7 @@ DecodeHeader (guchar *Data, gint Bytes, struct ico_progressive_state *State)
 
 	}
 
+	return TRUE;
 }
 
 /*
@@ -391,7 +426,11 @@ gdk_pixbuf__ico_image_begin_load (ModulePreparedNotifyFunc prepared_func,
 	context->user_data = user_data;
 
 	context->HeaderSize = 54;
-	context->HeaderBuf = g_malloc(14 + 40 + 4*256 + 512);
+	context->HeaderBuf = malloc(14 + 40 + 4*256 + 512);
+	if (!context->HeaderBuf) {
+		g_free (context);
+		return NULL;
+	}
 	/* 4*256 for the colormap */
 	context->BytesInHeaderBuf = 14 + 40 + 4*256 + 512 ;
 	context->HeaderDone = 0;
@@ -423,19 +462,9 @@ gdk_pixbuf__ico_image_stop_load (gpointer data)
 	struct ico_progressive_state *context =
 	    (struct ico_progressive_state *) data;
 
-
 	g_return_if_fail(context != NULL);
 
-	if (context->LineBuf != NULL)
-		g_free(context->LineBuf);
-	context->LineBuf = NULL;
-	if (context->HeaderBuf != NULL)
-		g_free(context->HeaderBuf);
-
-	if (context->pixbuf)
-		gdk_pixbuf_unref(context->pixbuf);
-
-	g_free(context);
+	context_free (context);
 }
 
 
@@ -763,11 +792,10 @@ gdk_pixbuf__ico_image_load_increment (gpointer data, guchar * buf, guint size)
 
 		}
 
-		if (context->HeaderDone >= 6)
-			DecodeHeader(context->HeaderBuf,
-				     context->HeaderDone, context);
-
-
+		if (context->HeaderDone >= 6) {
+			if (!DecodeHeader(context->HeaderBuf, context->HeaderDone, context))
+				return FALSE;
+		}
 	}
 
 	return TRUE;

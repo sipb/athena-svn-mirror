@@ -4,7 +4,7 @@
 >Differences between Imlib and gdk-pixbuf</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="The gdk-pixbuf Library"
@@ -124,14 +124,12 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="AEN3715"
->Differences between <SPAN
+NAME="AEN3715">Differences between <SPAN
 CLASS="APPLICATION"
 >Imlib</SPAN
 > and <SPAN
 CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
-></A
 ></H1
 ><P
 >	Generally, applications that use <SPAN
@@ -162,9 +160,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN3725"
->Initialization</A
-></H2
+NAME="AEN3725">Initialization</H2
 ><P
 >	  The <SPAN
 CLASS="APPLICATION"
@@ -217,9 +213,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN3738"
->Memory management</A
-></H2
+NAME="AEN3738">Memory management</H2
 ><P
 >	  The <SPAN
 CLASS="APPLICATION"
@@ -259,9 +253,12 @@ HREF="gdk-pixbuf-refcounting.html#GDK-PIXBUF-UNREF"
 >;
 	  this will decrease the reference count by 1.  When the
 	  reference count drops to zero, the pixbuf gets destroyed or
-	  <I
+	  <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >finalized</I
+></SPAN
 > and its memory is freed.
 	</P
 ><P
@@ -305,9 +302,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN3756"
->The Rendering Process</A
-></H2
+NAME="AEN3756">The Rendering Process</H2
 ><P
 >	  The <SPAN
 CLASS="APPLICATION"

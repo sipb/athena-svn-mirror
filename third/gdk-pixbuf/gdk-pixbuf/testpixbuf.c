@@ -390,6 +390,7 @@ new_testrgb_window (GdkPixbuf *pixbuf, gchar *title)
 				    TRUE, TRUE, 0);
 
 	drawing_area = gtk_drawing_area_new ();
+	gtk_object_set_data (GTK_OBJECT (window), "drawing_area", drawing_area);
 
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_drawing_area_size (GTK_DRAWING_AREA(drawing_area), w, h);
@@ -485,14 +486,19 @@ static void
 progressive_updated_callback(GdkPixbufLoader* loader, guint x, guint y, guint width, guint height, gpointer data)
 {
         GtkWidget** window_loc = data;
+	GtkDrawingArea *drawing_area;
+	GdkRectangle r;
 
-/*  	g_print ("progressive_updated_callback:\n\t%d\t%d\t%d\t%d\n", x, y, width, height); */
+	g_assert (*window_loc != NULL);
 
-        if (*window_loc != NULL)
-                gtk_widget_queue_draw_area(*window_loc,
-					   x, y, width, height);
+	drawing_area = gtk_object_get_data (*window_loc, "drawing_area");
+	g_assert (drawing_area != NULL);
 
-        return;
+	r.x = x;
+	r.y = y;
+	r.width = width;
+	r.height = height;
+	gtk_widget_draw (GTK_WIDGET (drawing_area), &r);
 }
 
 static int readlen = 4096;
@@ -565,7 +571,7 @@ main (int argc, char **argv)
 		readlen=4096;
                 {
                         GtkWidget* rgb_window = NULL;
-			ProgressFileStatus   status;
+			static ProgressFileStatus   status;
 
                         pixbuf_loader = gdk_pixbuf_loader_new ();
 			status.loader = pixbuf_loader;

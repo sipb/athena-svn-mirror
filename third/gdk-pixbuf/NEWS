@@ -1,3 +1,57 @@
+Version 0.22.0 "Carousing Penguin"
+---------------------------------
+
+* Made the GIF loader handle animations with frames whose bounds go outside
+  of the base image's bounds (Federico).
+
+* Made the GIF loader handle zero-sized frames that GifBuilder and
+  similar crap spits sometimes (Federico).
+
+* The PNM loader doesn't abort() anymore if it cannot allocate memory
+  (Federico).
+
+Version 0.21.0 "Deadly Fumes"
+-----------------------------
+
+* Fixed a g_object_unref() -> gdk_pixbuf_unref() thinko (Federico).
+
+Version 0.20.0 "I love the smell of XTOL in the morning"
+--------------------------------------------------------
+
+* Merged the patch from Red Hat Linux 8.0 to fix the crash on
+  corrupted/short GIFs - Ximian #29040 (patch by Elliot Lee
+  <sopwith@redhat.com>).
+
+* Fixed the RGB 565 LSB -> MSB case in gdk-pixbuf-drawable - #79463
+  (Federico).
+
+* Fixed the update region notification in the BMP loader (Federico).
+
+* Merged the BMP loader changes from GTK+ HEAD -- check all reallocs,
+  fix 16bpp BI_RGB thinko, properly handle BI_RLE4 and skips and jumps
+  (changes by Matthias Clasen <maclas@gmx.de>).
+
+* Merged the ICO loader changes from GTK+ HEAD (changes by Matthias
+  Clasen <maclas@gmx.de>).
+
+Version 0.19.0 "Schmeek"
+------------------------
+
+* Fixed libtool flags for MacOS X (Jacob).
+
+* Merged changes from gtk+/gdk-pixbuf HEAD into the JPEG loader --
+  fixes CMYK JPEG problems (changes by Matthias Clasen).
+
+Version 0.18.0 "No White Clouds in My Blue Sky"
+-----------------------------------------------
+
+* Fixed the RGB 565 MSB -> MSB case in gdk-pixbuf-drawable - #79190
+  (Federico).
+
+* Fixed alignment issues in the BMP loader - #84083 (Federico).
+
+* Merged pixops.c from GTK+ HEAD as of 2002/Jun/18 (Federico).
+
 Version 0.17.0 "Your Wise Men Don't Know How It Feels"
 ------------------------------------------------------
 

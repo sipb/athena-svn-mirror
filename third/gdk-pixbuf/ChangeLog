@@ -1,3 +1,119 @@
+2002-12-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.22.0 "Carousing Penguin"
+
+	* configure.in: Bumped version number to 0.22.0.
+
+	* gdk-pixbuf/io-gif.c (gif_get_frame_info): Do not bail out on
+	zero-sized frames.  GifBuilder may spit such frames for "just
+	delay, no image".
+
+	* gdk-pixbuf/io-pnm.c (gdk_pixbuf__pnm_image_load_increment): Do
+	not call g_error() if we cannot allocate the pixbuf.
+
+2002-12-17  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-gif.c (gif_get_frame_info): Do not bail out on
+	frames whose bounds are partially outside of the base bounds.
+	(clip_frame): New utility function.
+	(gif_fill_in_pixels): Clip to the frame's pixbuf.
+	(gif_get_lzw): Clip to the frame's pixbuf.
+
+	Now we can load peng-movie.4.gif, which is of utmost importance.
+
+2002-10-17  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.21.0 "Deadly Fumes"
+
+	* configure.in: Bumped version number to 0.21.0.
+
+	* gdk-pixbuf/io-jpeg.c (gdk_pixbuf__jpeg_image_load): Oops, use
+	gdk_pixbuf_unref(), not g_object_unref().
+
+2002-09-27  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.20.0 "I love the smell of XTOL in the morning".
+
+	* configure.in: Bumped version number to 0.20.0.
+
+2002-09-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-io.c: Merged the changes from GTK+ HEAD
+	that change the order of tests to avoid false positives.
+
+	* gdk-pixbuf/io-ico.c: Merged the ICO loader fixes from GTK+ HEAD
+	up to 2002-09-27.
+
+2002-09-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-bmp.c: Merged the BMP loader fixes from GTK+ HEAD
+	up to 2002-09-04 -- check all reallocs, fix 16bpp BI_RGB thinko,
+	properly handle BI_RLE4 and skips and jumps.
+	(OneLine): Fix the update region notification to handle
+	top-to-bottom and bottom-to-top BMPs correctly.
+
+	* gdk-pixbuf/testpixbuf.c (new_testrgb_window): Set the
+	drawing_area as object data on the window so that we can fetch it
+	correctly from the updated callback.
+	(progressive_updated_callback): Fetch the drawing area and draw on
+	it.
+	(main): Make the status variable static so that it can live
+	throughout the main loop.  Ugh.
+
+2002-09-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-gif.c: Merged the patch from Red Hat Linux 8.0 to
+	fix the crash on corrupted/short GIFs (patch by Elliot Lee
+	<sopwith@redhat.com>).  Fixes Ximian Bugzilla #29040.
+
+2002-09-25  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-drawable.c (rgb565lsb): Fixed the LSB ->
+	MSB case.  Fixes #79463 for GNOME 1.4.
+
+	[This had not been committed; it is in GTK+ 2.0 and HEAD already.]
+
+2002-09-12  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.19.0 "Schmeek".
+
+	* configure.in: Bumped version number to 0.19.0.
+
+2002-09-12  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-jpeg.c: Merged changes from GTK+ HEAD up to
+	revision 1.45 -- 2002/07/02, better colorspace support for the
+	JPEG loader.
+
+2002-09-11  jacob berkman  <jacob@ximian.com>
+
+	* gdk-pixbuf/Makefile.am (libpixbufloader_*_la_LDFLAGS):
+	remove -version-info and add -avoid-version (this is what
+	gtk 2 has)
+
+2002-06-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.18.0 "No White Clouds in My Blue Sky".
+
+	* configure.in: Bumped version number to 0.18.0.
+
+	* gdk-pixbuf/pixops/pixops.c: Merged from GTK+ HEAD up to
+	2002/Jun/13.
+
+2002-06-07  Federico Mena Quintero  <federico@ximian.com>
+
+	* io-bmp.c (lsb_32):
+	(lsb_16): New functions to fetch 32 or 16-bit little-endian values
+	starting at a specific memory location.  We do this instead of
+	GINT32_FROM_LE() as the latter is simply dereferences a cast,
+	which doesn't work on platforms with alignment requirements.
+	Fixes #84083.
+
+2002-06-03  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-drawable.c (rgb565msb): Fix the MSB -> MSB
+	case.  Fixes #79190.
+
 2002-04-18  Federico Mena Quintero  <federico@ximian.com>
 
 	Released 0.17.0 "Your Wise Men Don't Know How It Feels".
@@ -12,7 +128,7 @@
 2002-04-15  Federico Mena Quintero  <federico@ximian.com>
 
 	* gdk-pixbuf/gdk-pixbuf-loader.c (gdk_pixbuf_loader_close): Only
-	cal the stop_load function on the module if its context is not
+	call the stop_load function on the module if its context is not
 	NULL.
 
 2002-04-15  Federico Mena Quintero  <federico@ximian.com>

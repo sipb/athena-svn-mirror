@@ -63,7 +63,7 @@ pixels with full opacity if <parameter>substitute_color</parameter> is <link lin
 substituted for zero opacity.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -102,7 +102,7 @@ Copies a rectangular area from <parameter>src_pixbuf</parameter> to <parameter>d
 pixbuf formats is done automatically.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

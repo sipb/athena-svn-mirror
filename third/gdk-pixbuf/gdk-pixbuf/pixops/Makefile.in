@@ -120,12 +120,21 @@ noinst_PROGRAMS = timescale
 timescale_SOURCES = timescale.c
 timescale_LDADD = libpixops.la $(GLIB_LIBS) -lm
 
-@USE_MMX_TRUE@mmx_sources = 	have_mmx.S				scale_line_22_33_mmx.S 			composite_line_22_4a4_mmx.S 		composite_line_color_22_4a4_mmx.S
+@USE_MMX_TRUE@mmx_sources = @USE_MMX_TRUE@\
+@USE_MMX_TRUE@	have_mmx.S			\
+@USE_MMX_TRUE@	scale_line_22_33_mmx.S 		\
+@USE_MMX_TRUE@	composite_line_22_4a4_mmx.S 	\
+@USE_MMX_TRUE@	composite_line_color_22_4a4_mmx.S
 
-libpixops_la_SOURCES =  	pixops.c				pixops.h				pixops-internal.h			$(mmx_sources)
+libpixops_la_SOURCES = \
+	pixops.c			\
+	pixops.h			\
+	pixops-internal.h		\
+	$(mmx_sources)
 
 
-EXTRA_DIST =  	DETAILS
+EXTRA_DIST = \
+	DETAILS
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

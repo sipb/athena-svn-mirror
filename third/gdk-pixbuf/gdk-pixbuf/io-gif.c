@@ -485,6 +485,8 @@ gif_lzw_clear_code (GifContext *context)
 	return 0;
 }
 
+#define CHECK_LZW_SP() if ((guchar *) context->lzw_sp >= ((guchar *) context->lzw_stack + sizeof (context->lzw_stack))) return -2
+
 static int
 lzw_read_byte (GifContext *context)
 {
@@ -555,11 +557,13 @@ lzw_read_byte (GifContext *context)
 		incode = code;
 
 		if (code >= context->lzw_max_code) {
+		        CHECK_LZW_SP();
 			*(context->lzw_sp)++ = context->lzw_firstcode;
 			code = context->lzw_oldcode;
 		}
 
 		while (code >= context->lzw_clear_code) {
+		        CHECK_LZW_SP();
 			*(context->lzw_sp)++ = context->lzw_table[1][code];
 
 			if (code == context->lzw_table[0][code]) {
@@ -570,6 +574,7 @@ lzw_read_byte (GifContext *context)
 			code = context->lzw_table[0][code];
 		}
 
+		CHECK_LZW_SP();
 		*(context->lzw_sp)++ = context->lzw_firstcode = context->lzw_table[1][code];
 
 		if ((code = context->lzw_max_code) < (1 << MAX_LZW_BITS)) {
@@ -586,6 +591,7 @@ lzw_read_byte (GifContext *context)
 		context->lzw_oldcode = incode;
 
 		if (context->lzw_sp > context->lzw_stack) {
+		        CHECK_LZW_SP();
 			my_retval = *--(context->lzw_sp);
 			return my_retval;
 		}
@@ -602,22 +608,55 @@ gif_set_get_lzw (GifContext *context)
 	context->draw_pass = 0;
 }
 
+/* Clips the current frame to the base dimensions.  Returns the clipped offsets and width/height. */
+static void
+clip_frame (GifContext *context, int *x, int *y, int *w, int *h)
+{
+	*x = MAX (0, context->x_offset);
+	*y = MAX (0, context->y_offset);
+	*w = MIN (context->width, context->x_offset + context->frame_len) - *x;
+	*h = MIN (context->height, context->y_offset + context->frame_height) - *y;
+
+	if (w > 0 && h > 0)
+		return;
+
+	/* The frame is completely off-bounds */
+
+	*x = 0;
+	*y = 0;
+	*w = 0;
+	*h = 0;
+}
+
 static void
 gif_fill_in_pixels (GifContext *context, guchar *dest, gint offset, guchar v)
 {
 	guchar *pixel = NULL;
+	int frame_x, frame_y, frame_width, frame_height;
+	int xpos, ypos;
+	
+	clip_frame (context, &frame_x, &frame_y, &frame_width, &frame_height);
 
-	if (context->gif89.transparent != -1) {
-		pixel = dest + (context->draw_ypos + offset) * gdk_pixbuf_get_rowstride (context->pixbuf) + context->draw_xpos * 4;
-		*pixel = context->color_map [0][(guchar) v];
-		*(pixel+1) = context->color_map [1][(guchar) v];
-		*(pixel+2) = context->color_map [2][(guchar) v];
-		*(pixel+3) = (guchar) ((v == context->gif89.transparent) ? 0 : 65535);
-	} else {
-		pixel = dest + (context->draw_ypos + offset) * gdk_pixbuf_get_rowstride (context->pixbuf) + context->draw_xpos * 3;
-		*pixel = context->color_map [0][(guchar) v];
-		*(pixel+1) = context->color_map [1][(guchar) v];
-		*(pixel+2) = context->color_map [2][(guchar) v];
+	xpos = context->draw_xpos + context->x_offset;
+	ypos = context->draw_ypos + offset + context->y_offset;
+
+	if (xpos >= frame_x && xpos < frame_x + frame_width &&
+	    ypos >= frame_y && ypos < frame_y + frame_height) {
+		xpos -= frame_x;
+		ypos -= frame_y;
+
+		if (context->gif89.transparent != -1) {
+			pixel = dest + ypos * gdk_pixbuf_get_rowstride (context->pixbuf) + xpos * 4;
+			*pixel = context->color_map [0][(guchar) v];
+			*(pixel+1) = context->color_map [1][(guchar) v];
+			*(pixel+2) = context->color_map [2][(guchar) v];
+			*(pixel+3) = (guchar) ((v == context->gif89.transparent) ? 0 : 65535);
+		} else {
+			pixel = dest + ypos * gdk_pixbuf_get_rowstride (context->pixbuf) + xpos * 3;
+			*pixel = context->color_map [0][(guchar) v];
+			*(pixel+1) = context->color_map [1][(guchar) v];
+			*(pixel+2) = context->color_map [2][(guchar) v];
+		}
 	}
 }
 
@@ -664,20 +703,40 @@ gif_get_lzw (GifContext *context)
 	gboolean bound_flag;
 	gint first_pass; /* bounds for emitting the area_updated signal */
 	gint v;
+	int frame_x, frame_y, frame_width, frame_height;
+	int rowstride;
+
+	clip_frame (context, &frame_x, &frame_y, &frame_width, &frame_height);
 
 	if (context->pixbuf == NULL) {
-		context->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-						  context->gif89.transparent != -1,
-						  8,
-						  context->frame_len,
-						  context->frame_height);
+		if (frame_width == 0 || frame_height == 0) {
+			guchar *pixels;
+
+			/* If it is a clipped-out frame, we just output a single transparent
+			 * pixel.
+			 */
+			context->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 1, 1);
+			if (!context->pixbuf)
+				return -2;
+
+			pixels = gdk_pixbuf_get_pixels (context->pixbuf);
+			pixels[0] = 0;
+			pixels[1] = 0;
+			pixels[2] = 0;
+			pixels[3] = 0;
+		} else
+			context->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+							  context->gif89.transparent != -1,
+							  8,
+							  frame_width,
+							  frame_height);
 
 		if (context->prepare_func)
 			(* context->prepare_func) (context->pixbuf, context->user_data);
 		if (context->animation || context->frame_done_func || context->anim_done_func) {
 			context->frame = g_new (GdkPixbufFrame, 1);
-			context->frame->x_offset = context->x_offset;
-			context->frame->y_offset = context->y_offset;;
+			context->frame->x_offset = frame_x;
+			context->frame->y_offset = frame_y;
 			context->frame->delay_time = context->gif89.delay_time;
 			switch (context->gif89.disposal) {
 			case 0:
@@ -708,30 +767,43 @@ gif_get_lzw (GifContext *context)
 			}
 		}
 	}
+
 	dest = gdk_pixbuf_get_pixels (context->pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (context->pixbuf);
 
 	bound_flag = FALSE;
 	lower_bound = upper_bound = context->draw_ypos;
 	first_pass = context->draw_pass;
 
 	while (TRUE) {
+		int xpos, ypos;
+
 		v = lzw_read_byte (context);
 		if (v < 0) {
 			goto finished_data;
 		}
 		bound_flag = TRUE;
 
-		if (context->gif89.transparent != -1) {
-			temp = dest + context->draw_ypos * gdk_pixbuf_get_rowstride (context->pixbuf) + context->draw_xpos * 4;
-			*temp = context->color_map [0][(guchar) v];
-			*(temp+1) = context->color_map [1][(guchar) v];
-			*(temp+2) = context->color_map [2][(guchar) v];
-			*(temp+3) = (guchar) ((v == context->gif89.transparent) ? 0 : -1);
-		} else {
-			temp = dest + context->draw_ypos * gdk_pixbuf_get_rowstride (context->pixbuf) + context->draw_xpos * 3;
-			*temp = context->color_map [0][(guchar) v];
-			*(temp+1) = context->color_map [1][(guchar) v];
-			*(temp+2) = context->color_map [2][(guchar) v];
+		xpos = context->draw_xpos + context->x_offset;
+		ypos = context->draw_ypos + context->y_offset;
+
+		if (xpos >= frame_x && xpos < frame_x + frame_width &&
+		    ypos >= frame_y && ypos < frame_y + frame_height) {
+			xpos -= frame_x;
+			ypos -= frame_y;
+
+			if (context->gif89.transparent != -1) {
+				temp = dest + ypos * rowstride + xpos * 4;
+				*temp = context->color_map [0][(guchar) v];
+				*(temp+1) = context->color_map [1][(guchar) v];
+				*(temp+2) = context->color_map [2][(guchar) v];
+				*(temp+3) = (guchar) ((v == context->gif89.transparent) ? 0 : -1);
+			} else {
+				temp = dest + ypos * rowstride + xpos * 3;
+				*temp = context->color_map [0][(guchar) v];
+				*(temp+1) = context->color_map [1][(guchar) v];
+				*(temp+2) = context->color_map [2][(guchar) v];
+			}
 		}
 
 		if (context->prepare_func && context->frame_interlace)
@@ -796,13 +868,22 @@ gif_get_lzw (GifContext *context)
 	v = 0;
  finished_data:
 	if (bound_flag && context->update_func) {
+		int y, height;
+
 		if (lower_bound <= upper_bound && first_pass == context->draw_pass) {
-			(* context->update_func)
-				(context->pixbuf,
-				 0, lower_bound,
-				 gdk_pixbuf_get_width (context->pixbuf),
-				 upper_bound - lower_bound,
-				 context->user_data);
+			y = lower_bound + context->y_offset;
+			height = upper_bound - lower_bound;
+
+			y = MAX (frame_y, y);
+			height = MIN (frame_height, lower_bound + context->y_offset + height);
+
+			if (height > 0)
+				(* context->update_func) (context->pixbuf,
+							  0,
+							  y - frame_y,
+							  gdk_pixbuf_get_width (context->pixbuf),
+							  height,
+							  context->user_data);
 		} else {
 			if (lower_bound <= upper_bound) {
 				(* context->update_func)
@@ -812,18 +893,23 @@ gif_get_lzw (GifContext *context)
 					 gdk_pixbuf_get_height (context->pixbuf),
 					 context->user_data);
 			} else {
-				(* context->update_func)
-					(context->pixbuf,
-					 0, 0,
-					 gdk_pixbuf_get_width (context->pixbuf),
-					 upper_bound,
-					 context->user_data);
-				(* context->update_func)
-					(context->pixbuf,
-					 0, lower_bound,
-					 gdk_pixbuf_get_width (context->pixbuf),
-					 gdk_pixbuf_get_height (context->pixbuf),
-					 context->user_data);
+				height = MAX (frame_height, upper_bound + context->y_offset);
+				if (height > 0)
+					(* context->update_func)
+						(context->pixbuf,
+						 0, 0,
+						 gdk_pixbuf_get_width (context->pixbuf),
+						 height,
+						 context->user_data);
+
+				y = MAX (0, lower_bound + context->y_offset);
+				if (y < frame_height)
+					(* context->update_func)
+						(context->pixbuf,
+						 0, y,
+						 gdk_pixbuf_get_width (context->pixbuf),
+						 gdk_pixbuf_get_height (context->pixbuf),
+						 context->user_data);
 			}
 		}
 	}
@@ -938,6 +1024,7 @@ static gint
 gif_get_frame_info (GifContext *context)
 {
 	unsigned char buf[9];
+
 	if (!gif_read (context, buf, 9)) {
 		return -1;
 	}
@@ -947,8 +1034,7 @@ gif_get_frame_info (GifContext *context)
 	context->x_offset = LM_to_uint (buf[0], buf[1]);
 	context->y_offset = LM_to_uint (buf[2], buf[3]);
 
-	if (context->frame_height > context->height) {
-		/* we don't want to resize things.  So we exit */
+	if (context->frame_len < 0 || context->frame_height < 0) {
 		context->state = GIF_DONE;
 		return -2;
 	}

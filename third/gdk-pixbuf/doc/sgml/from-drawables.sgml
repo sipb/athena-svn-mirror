@@ -88,7 +88,7 @@ inferior windows of a different depth than that of the source window will also
 be undefined.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
