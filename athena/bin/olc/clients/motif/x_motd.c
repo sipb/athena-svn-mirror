@@ -18,13 +18,13 @@
  *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
- *      $Id: x_motd.c,v 1.6 1991-03-24 14:26:03 lwvanels Exp $
+ *      $Id: x_motd.c,v 1.7 1991-08-12 13:43:19 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.6 1991-03-24 14:26:03 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.7 1991-08-12 13:43:19 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -75,6 +75,8 @@ x_get_motd(Request,type,file,dialog)
 
       if ((fd = open(file, O_RDONLY, 0)) < 0)
 	{
+	  close(fd);
+	  free(motd);
 	  MuError("x_get_motd: unable to open motd file for read.");
 	  STANDARD_CURSOR;
 	  return(ERROR);
@@ -82,6 +84,8 @@ x_get_motd(Request,type,file,dialog)
 
       if ((read(fd, motd, statbuf.st_size)) != statbuf.st_size)
 	{
+	  close(fd);
+	  free(motd);
 	  MuError("x_get_motd: unable to read motd correctly.");
 	  STANDARD_CURSOR;
 	  return(ERROR);
