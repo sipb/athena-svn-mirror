@@ -18,6 +18,14 @@
 #include <a.out.h>
 #include <ar.h>
 
+#if defined(AIX) && defined(i386) && !defined(OMAGIC)
+#	define OMAGIC	MAG_OVERLAY
+#	define NMAGIC	MAG_NSHWRT
+#	define ZMAGIC	MAG_SHROT
+#	define A_MAGIC4 MAG_SHROTSEP
+/* We still need more? Or lib's? */
+#endif
+
 #ifndef A_MAGIC1	/* must be a VM/UNIX system */
 #	define A_MAGIC1	OMAGIC
 #	define A_MAGIC2	NMAGIC
