@@ -5,9 +5,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-#ifndef lint
-static char rcsid_nfs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.3 1990-04-21 17:40:58 jfc Exp $";
-#endif lint
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.4 1990-07-06 10:57:19 jfc Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -70,14 +68,15 @@ nfs_attach(at, mopt, errorout)
 
 	if (myhostname[0]) {
 		if (host_compare(myhostname, at->host)) {
-			fprintf(stderr,
-				"Doing an NFS self mount.  %s\n",
-				override ? "Error overridden..." :
-				"Bad news!");
 			if (!override) {
+				fprintf(stderr,
+					"%s: (filesystem %s) NFS self mount not allowed.\n",
+					progname, at->hesiodname);
 				error_status = ERR_ATTACHNOTALLOWED;
 				return(FAILURE);
 			}
+			fprintf(stderr, "%s: (filesystem %s) warning: NFS self mount\n",
+				progname, at->hesiodname);
 		}
 	}
 
@@ -85,13 +84,13 @@ nfs_attach(at, mopt, errorout)
 		if (nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDMAP,
 			  errorout, at->hesiodname, 1, real_uid) == FAILURE) {
 			if (mopt->flags & M_RDONLY) {
-				printf("%s: Warning, mapping failed, continuing with read-only mount.\n",
-				       at->hesiodname);
+				printf("%s: Warning, mapping failed for filesystem %s,\n\tcontinuing with read-only mount.\n",
+				       progname, at->hesiodname);
 				/* So the mount rpc wins */
 				clear_errored(at->hostaddr); 
 			} else if(at->mode == 'm') {
-				printf("%s: Warning, mapping failed.\n", 
-				       at->hesiodname);
+				printf("%s: Warning, mapping failed for filesystem %s.\n", 
+				       progname, at->hesiodname);
 				error_status = 0;
 				clear_errored(at->hostaddr);
 			} else
@@ -135,7 +134,8 @@ nfs_detach(at)
 	if ((at->mode != 'n') && do_nfsid &&
 	    nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP, 1,
 		  at->hesiodname,0, real_uid) == FAILURE)
-		printf("Couldn't unmap %s, continuing.....\n", at->host);
+		printf("%s: Warning: couldn't unmap filesystem %s/host %s\n",
+		       progname, at->hesiodname, at->host);
 
 	if (at->flags & FLAG_PERMANENT) {
 		if (debug_flag)
@@ -164,15 +164,15 @@ char **nfs_explicit(name)
     strcpy(host, name);
     dir = index(host, ':');
     if (!dir) {
-	fprintf(stderr, "%s: Illegal explicit definition for type %s\n",
-		name, filsys_type);
+	fprintf(stderr, "%s: Illegal explicit definition \"%s\" for type %s\n",
+		progname, name, filsys_type);
 	return (0);
     }
     *dir = '\0';
     dir++;
     if (*dir != '/') {
-	fprintf(stderr, "%s: Illegal explicit definition for type %s\n",
-		name, filsys_type);
+	fprintf(stderr, "%s: Illegal explicit definition \"%s\" for type %s\n",
+		progname, name, filsys_type);
 	return (0);
     }
     if (!nfs_mount_dir)
