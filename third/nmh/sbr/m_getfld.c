@@ -2,7 +2,7 @@
 /*
  * m_getfld.c -- read/parse a message
  *
- * $Id: m_getfld.c,v 1.1.1.1 1999-02-07 18:14:09 danw Exp $
+ * $Id: m_getfld.c,v 1.2 2000-08-23 19:08:53 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -259,7 +259,7 @@ m_getfld (int state, unsigned char *name, unsigned char *buf,
 		bp = sp = (unsigned char *) iob->_ptr - 1;
 		j = (cnt = iob->_cnt+1) < i ? cnt : i;
 #endif
-		while ((c = *bp++) != ':' && c != '\n' && --j >= 0)
+		while (--j >= 0 && (c = *bp++) != ':' && c != '\n')
 		    *cp++ = c;
 
 		j = bp - sp;
