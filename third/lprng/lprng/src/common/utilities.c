@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: utilities.c,v 1.1.1.4 2000-03-31 15:47:59 mwhitson Exp $";
+"$Id: utilities.c,v 1.2 2000-04-04 13:50:55 ghudson Exp $";
 
 #include "lp.h"
 
@@ -352,8 +352,8 @@ int safestrcasecmp (const char *s1, const char *s2)
 	if( (s1 == 0 ) && s2 ) return( -1 );
 	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;;) {
-		c1 = *((unsigned char *)s1)++;
-		c2 = *((unsigned char *)s2)++;
+		c1 = *((unsigned char *)s1++);
+		c2 = *((unsigned char *)s2++);
 		if( isupper(c1) ) c1 = tolower(c1);
 		if( isupper(c2) ) c2 = tolower(c2);
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
@@ -369,8 +369,8 @@ int safestrncasecmp (const char *s1, const char *s2, int len )
 	if( (s1 == 0 ) && s2 ) return( -1 );
 	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;len>0;--len){
-		c1 = *((unsigned char *)s1)++;
-		c2 = *((unsigned char *)s2)++;
+		c1 = *((unsigned char *)s1++);
+		c2 = *((unsigned char *)s2++);
 		if( isupper(c1) ) c1 = tolower(c1);
 		if( isupper(c2) ) c2 = tolower(c2);
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
