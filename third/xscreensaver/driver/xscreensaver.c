@@ -1115,11 +1115,18 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 
   if (event->xclient.message_type != XA_SCREENSAVER)
     {
+/* Message disabled as a local Athena change, since we get it spuriously
+ * on Solaris (which has no screensaver extensions) when clients send
+ * WM_CHANGE_STATE messages to the root window.  Not sure why.  Problem
+ * reported to jwz.
+ */
+#if 0
       char *str;
       str = XGetAtomName (si->dpy, event->xclient.message_type);
       fprintf (stderr, "%s: unrecognised ClientMessage type %s received\n",
 	       blurb(), (str ? str : "(null)"));
       if (str) XFree (str);
+#endif
       return False;
     }
   if (event->xclient.format != 32)
