@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.4 1990-04-21 17:39:21 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.5 1990-07-04 14:46:57 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -95,12 +95,12 @@ retry:
 	    unlock_attachtab();
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
-	    else
+	    else if(verbose)
 		printf("%s: Already attached", name);
 #ifdef NFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_NFS) {
 		int ret;
-		if (!print_path)
+		if (verbose && !print_path)
 		    printf("...mapping\n");
 		
 		ret = nfsid(atp->host, atp->hostaddr,
@@ -114,8 +114,8 @@ retry:
 #endif
 #ifdef AFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_AFS) {
-		    if (!print_path)
-			    printf("...mapping\n");
+		    if (verbose && !print_path)
+			    printf("...authenticating\n");
 		    return(afs_auth(atp->hesiodname, atp->hostdir,
 				    AFSAUTH_DOAUTH |
 				    (use_zephyr ? AFSAUTH_DOZEPHYR : 0)));
