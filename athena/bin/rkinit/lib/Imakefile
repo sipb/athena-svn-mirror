@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Imakefile,v 1.1 1991-05-13 15:59:22 epeisach Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Imakefile,v 1.2 1991-05-13 15:59:35 epeisach Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Imakefile,v $
 #  $Author: epeisach $
 #
@@ -29,7 +29,4 @@ depend::
 
 clean::
 	rm -f core *.o *~ *.bak librkinit.a rkinit_err.h rkinit_err.c
-
-# DO NOT DELETE THIS LINE -- make depend depends on it.
-
 
