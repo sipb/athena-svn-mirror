@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.5 1998-01-24 01:47:20 danw Exp $
+ * $Id: auth-kerberos.c,v 1.6 1998-07-14 17:34:49 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1998/01/24 01:47:20  danw
+ * merge in changes for 1.2.22
+ *
  * Revision 1.4  1997/11/19 20:44:42  danw
  * do chown later
  *
@@ -261,9 +264,10 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   krb524_init_ets(ssh_context);
   realm = krb5_princ_realm(ssh_context, (*creds)->client);
   memset(&increds, 0, sizeof(increds));
-  if (retval = krb5_build_principal(ssh_context, &(increds.server),
-				    realm->length, realm->data, "krbtgt",
-				    realm->data, NULL))
+  if (retval = krb5_build_principal_ext(ssh_context, &(increds.server),
+					realm->length, realm->data, 6,
+					"krbtgt", realm->length, realm->data,
+					NULL);
     goto errout2;
 
   increds.client = (*creds)->client;

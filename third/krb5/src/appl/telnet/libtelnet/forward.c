@@ -108,13 +108,16 @@ int try_convert524(kcontext, ccache)
 
     /* cc->ccache, already set up */
     /* client->me, already set up */
-    if ((kpccode = krb5_build_principal(kcontext,
-				        &kpcserver, 
-				        krb5_princ_realm(kcontext, me)->length,
-				        krb5_princ_realm(kcontext, me)->data,
-				        "krbtgt",
-				        krb5_princ_realm(kcontext, me)->data,
-					NULL)))
+    if ((kpccode =
+	 krb5_build_principal_ext(kcontext,
+				  &kpcserver, 
+				  krb5_princ_realm(kcontext, me)->length,
+				  krb5_princ_realm(kcontext, me)->data,
+				  6,
+				  "krbtgt",
+				  krb5_princ_realm(kcontext, me)->length,
+				  krb5_princ_realm(kcontext, me)->data,
+				  NULL)))
       return kpccode;
 
     memset((char *) &increds, 0, sizeof(increds));
