@@ -1,0 +1,16 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:06:16 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} "CC=$$COMPILER"
+
+check:
+
+install:
+	${MAKE} install install.man "DESTDIR=$$SRVD"

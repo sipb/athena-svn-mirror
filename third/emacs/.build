@@ -1,9 +1,0 @@
-# $Id: .build,v 1.1 1996-10-03 03:58:58 ghudson Exp $
-
-echo In ${package}: rm -f config.cache && rm -f config.cache &&
-echo In ${package}: ./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop --with-hesiod --with-kerberos &&
-./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
-	--with-hesiod --with-kerberos &&
-echo In ${package}: make clean && make clean &&
-echo In ${package}: make all && make all &&
-echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd

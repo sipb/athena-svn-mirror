@@ -1,8 +1,0 @@
-# $Id: .build,v 1.2 1996-10-12 04:52:35 ghudson Exp $
-
-CC="$compiler" export CC
-echo In ${package}: make clean && make clean &&
-echo In ${package}: make && make &&
-echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd &&
-echo In ${package}: make install.man DESTDIR=$srvd &&
-make install.man DESTDIR=$srvd

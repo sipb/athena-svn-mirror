@@ -1,0 +1,17 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:06:02 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	imake "-I$$XCONFIGDIR" -DUseInstalled "-DSRCDIR=$$SOURCE"
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} config.h all
+
+check:
+
+install:
+	${MAKE} install install.man "DESTDIR=$$SRVD"

@@ -1,0 +1,18 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:21 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	imake -DTOPDIR=`pwd` -I./config
+	${MAKE} Makefiles
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install install.man DESTDIR="$$SRVD"

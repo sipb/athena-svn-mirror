@@ -1,0 +1,20 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:48 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	rm -f config.cache
+	./configure
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} depend all
+
+check:
+
+install:
+	cd include && ${MAKE} install DESTDIR="$$SRVD"
+	cd lib/krb5 && ${MAKE} install DESTDIR="$$SRVD"
+	cd lib/crypto && ${MAKE} install DESTDIR="$$SRVD"

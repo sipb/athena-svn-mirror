@@ -1,0 +1,24 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:52 ghudson Exp $
+
+SHELL=/bin/sh
+
+compiler.sun4:
+	@/bin/athena/attach -h -n -q sunsoft
+	@echo /mit/sunsoft/sun4bin/cc
+
+configure:
+	./configure --prefix=/usr/gcc
+
+clean:
+	${MAKE} clean
+
+all:
+	compiler=`${MAKE} "compiler.$${HOSTTYPE}"`; \
+	${MAKE} all CC="$compiler" LANGUAGES=c
+	${MAKE} stage1
+	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=C
+
+check:
+
+install:
+	${MAKE} install "prefix=$$SRVD/usr/gcc" LANGUAGES=c

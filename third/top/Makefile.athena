@@ -1,0 +1,20 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:06:19 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	rm -f .defaults
+	cp "defaults.$$HOSTTYPE" .defaults
+	module=`sed -n "s/^set module = '\(.*\)'$/\1/p" .defaults`; \
+	./Configure "$module"
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install "DESTDIR=$$SRVD"

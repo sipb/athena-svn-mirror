@@ -1,0 +1,18 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:09 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	imake "-I$$CONFIGDIR"
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	-mkdir -p "$$SRVD/usr/athena/bin"
+	./pinstall -c -m 555 pinstall "$$SRVD/usr/athena/bin/install"

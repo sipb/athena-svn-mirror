@@ -1,0 +1,19 @@
+# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:58 ghudson Exp $
+
+SHELL=/bin/sh
+
+configure:
+	rm -f config.cache
+	./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
+		--with-hesiod --with-kerberos
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install "DESTDIR=$$SRVD"

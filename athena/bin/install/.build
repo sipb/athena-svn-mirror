@@ -1,8 +1,0 @@
-# $Id: .build,v 1.1 1996-09-20 01:58:38 ghudson Exp $
-
-echo In ${package}: imake -I$configdir && imake "-I$configdir" &&
-echo In ${package}: make clean && make clean &&
-echo In ${package}: make all && make all &&
-echo In ${package}: Installing pinstall in $srvd/usr/athena/bin &&
-(mkdir -p $srvd/usr/athena/bin;
-./pinstall -c -s -m 555 pinstall $srvd/usr/athena/bin/install)
