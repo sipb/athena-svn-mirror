@@ -2,7 +2,7 @@
  * Imakefile for the Athena Login library
  *
  * $Author: cfields $
- * $Id: Imakefile,v 1.4 1994-08-21 18:51:50 cfields Exp $
+ * $Id: Imakefile,v 1.5 1995-05-26 20:39:50 cfields Exp $
  *
  * Copyright 1994 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -20,7 +20,13 @@ LIB=-lcom_err -lkrb -ldes -lhesiod
 
 INC=-I..
 
+# We don't want the BSD garbage, and this is the only way I can
+# figure out how to get rid of it.
+#ifdef _AIX
+DEFINES=${INC} ${DEBUG} -U_BSD
+#else
 DEFINES=${INC} ${DEBUG}
+#endif
 
 AnsiCC()
 
