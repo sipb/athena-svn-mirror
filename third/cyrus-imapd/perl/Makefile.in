@@ -1,5 +1,5 @@
 # SIEVE Makefile for cyrus software
-# $Id: Makefile.in,v 1.1.1.2 2003-02-14 21:39:09 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2003-04-22 22:38:13 rbasch Exp $
 #
 # @configure_input@
 # 
@@ -86,7 +86,7 @@ install::
 	@for d in  $(SUBDIRS); \
 	do \
 		(cd $$d; echo "### Making" install "in" `pwd`;	\
-			$(MAKE) $(MFLAGS) DESTDIR=$(DESTDIR) install) || exit 1; \
+			$(MAKE) $(MFLAGS) DESTDIR=$(DESTDIR) PREFIX=$(DESTDIR)$(prefix) pure_install) || exit 1; \
 	done
 
 clean::
