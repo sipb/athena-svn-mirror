@@ -757,19 +757,16 @@ do_exec(Session *s, const char *command)
 #if KRB5
   if (s->authctxt->krb5_ticket_file)
     {
+      havecred = 1;
       if (options.kerberos524 && s->authctxt->krb5_user)
 	{
 	  status = do_krb524_conversion(s->authctxt);
 	  if (status)
-	    {
-	      debug("krb524 failed: %s",
-		    krb5_get_err_text(s->authctxt->krb5_ctx, status));
-	      krb5_cleanup_proc(s->authctxt);
-	    }
-	  else
-	    havecred = 1;
+	    debug("krb524 failed: %s",
+		  krb5_get_err_text(s->authctxt->krb5_ctx, status));
 	}
     }
+  
 #endif
      	try_afscall(setpag);
 	atexit(krb_cleanup);
