@@ -1,3 +1,19 @@
+Wed Jan 23 23:46:32 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: releasing 1.8.17
+
+2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Patch from Ian Goldberg <ian@cypherpunks.ca>.]
+
+	* parserold.c (xmlOldParseAttValue): Ensure you've got enough
+	characters in your readahead buffer before you check NXT(1).
+
+2001-09-07  Jody Goldberg <jgoldberg@home.com>
+
+	* tree.c (xmlStaticCopyNode) : back port a fix from xml2
+	  to correctly namespace copied nodes.
+
 Fri Sep 14 16:00:18 CEST 2001 Daniel Veillard <daniel@veillard.com>
 
 	* configure.in: fixing #60387 with the provided patch from
