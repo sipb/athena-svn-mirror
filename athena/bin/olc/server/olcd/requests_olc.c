@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.64 2001-09-04 17:11:38 zacheiss Exp $
+ *	$Id: requests_olc.c,v 1.65 2003-06-04 18:16:54 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.64 2001-09-04 17:11:38 zacheiss Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.65 2003-06-04 18:16:54 zacheiss Exp $";
 #endif
 #endif
 
@@ -1322,7 +1322,10 @@ olc_send(fd, request)
 
   /* Always set the status to PENDING if it was previously in PICKUP */
   if (target->status == PICKUP)
-    set_status(target, PENDING);
+    {
+      set_status(target, PENDING);
+      needs_backup = TRUE;
+    }
 
   if (!is_connected(target))
     {
