@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: jtkohl $
+ * $Author: lwvanels $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Id: getrealm.c,v 4.6 1990-01-02 13:35:56 jtkohl Exp $";
+"$Id: getrealm.c,v 4.7 1991-08-07 16:04:35 lwvanels Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -73,7 +73,12 @@ char *host;
 		krb_get_lrealm(ret_realm, 1);
 	}
 
+#ifdef ATHENA_CONF_FALLBACK
+	if (((trans_file = fopen(KRB_RLM_TRANS, "r")) == (FILE *) 0) &&
+	    ((trans_file = fopen(KRB_FB_RLM_TRANS, "r")) == (FILE *) 0)) {
+#else
 	if ((trans_file = fopen(KRB_RLM_TRANS, "r")) == (FILE *) 0) {
+#endif
 		/* krb_errno = KRB_NO_TRANS */
 		return(ret_realm);
 	}
