@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.39 1991-03-28 13:28:14 lwvanels Exp $
+ *	$Id: olcd.c,v 1.40 1991-03-28 23:25:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.39 1991-03-28 13:28:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.40 1991-03-28 23:25:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -46,7 +46,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <signal.h>		/* Signal definitions. */
 
 #ifdef ZEPHYR
-#include <com_err.h>
 #include <zephyr/zephyr.h>
 #endif /* ZEPHYR */
 
@@ -198,8 +197,12 @@ main (argc, argv)
 #ifdef ZEPHYR
 	/** We must ZInitialize now, *before* we use "log_error" **/
 	/** for  the first time, as errors are broadcast via zephyr. **/
-    if ((ret = ZInitialize()) != ZERR_NONE)
-      com_err ("main", ret, "couldn't ZInitialize");
+    if ((ret = ZInitialize()) != ZERR_NONE) {
+      char buf[BUFSIZ];
+
+      sprintf(buf,"Error in ZInitialize: %d",ret);
+      log_zephyr_error(buf);
+    }
 #endif /* ZEPHYR */  
     
     /*
