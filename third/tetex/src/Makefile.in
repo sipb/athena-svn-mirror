@@ -80,13 +80,12 @@ install: all
                 $(MAKE) $@) || exit 1; \
 	done
 	$(srcdir)/selfautofix "$(bindir)" "$(texmf)/web2c"
-	cd $(bindir); for i in $(ALLPROGS); do test -f $$i && { echo strip $$i; strip $$i || true; }; done; true
-	test -f $(scriptdir)/mktexlsr && \
+	test -f ${DESTDIR}$(scriptdir)/mktexlsr && \
 	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/mktexlsr
-	test -f $(scriptdir)/texconfig && \
-	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/texconfig init
+	    ${DESTDIR}$(scriptdir)/mktexlsr ${DESTDIR}${texmf}
+	test -f ${DESTDIR}$(scriptdir)/texconfig && \
+	  TEXMFMAIN=${DESTDIR}$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
+	    ${DESTDIR}$(scriptdir)/texconfig init
 
 install-exec:
 	for dir in $(ESUBDIRS); do \
@@ -94,10 +93,9 @@ install-exec:
 	   (cd $$dir && PATH=$(scriptdir):$(bindir):$(PATH) \
               $(MAKE) $@) || exit 1; \
 	done
-	cd $(bindir); for i in $(ALLPROGS); do test -f $$i && { echo strip $$i; strip $$i || true; }; done; true
-	test -f $(scriptdir)/texlinks && \
+	test -f ${DESTDIR}$(scriptdir)/texlinks && \
 	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/texlinks
+	    ${DESTDIR}$(scriptdir)/texlinks
 
 strip:
 
