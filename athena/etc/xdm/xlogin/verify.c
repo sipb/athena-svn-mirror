@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.21 1992-04-30 12:39:59 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.22 1992-05-07 16:06:38 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -1116,7 +1116,7 @@ char *add_to_group(user, grplist)
 		while (gmem[i]) i++;
 		i++;
 	    }
-	    gmem_new = (char *)malloc(gmem_new, i + strlen(user) + 2);
+	    gmem_new = (char *)malloc(i + strlen(user) + 2);
 	    strcpy(gmem_new, user);
 	    memcpy(gmem_new + strlen(user)+1, gmem, i+1);
 	}
