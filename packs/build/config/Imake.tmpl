@@ -80,7 +80,7 @@
 #define CDebugFlags -O
 #endif
 #ifndef ProfCcFlags
-#define ProfCcFlags -pg
+#define ProfCcFlags -p
 #endif
 #ifndef LdFlags
 #define LdFlags
@@ -108,12 +108,12 @@ IRULESRC = $(CONFIGSRC)
 IMAKE= imake
 IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
 #else
-IMAKE= $(TOP)/imake/imake
+IMAKE= $(TOP)/util/imake/imake
 IFLAGS= -I$(IRULESRC)
 #endif
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
-MKDIRHIER= sh $(CONFIGSRC)/mkdirhier.sh
+MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
 ATHLIBDIR=ALibDir
 ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
@@ -125,7 +125,8 @@ CC=CcCmd
 LD=LdCmd
 AS=AsCmd
 RM=RmCmd
-CFLAGS=CDebugFlags CcFlags $(DEFINES) -I$(ATHINCDIR)
+CDEBUG=CDebugFlags
+CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I$(ATHINCDIR)
 LDFLAGS=LdFlags $(CFLAGS) -L$(ATHLIBDIR)
 LDLIBS=LdLibs
 
@@ -137,6 +138,8 @@ install_dirs::
 
 clean::
 depend::
+
+FRC::
 
 /**/###########################################################################
 /**/# start of Imakefile
@@ -151,8 +154,6 @@ clean::
 #if defined(SUBDIRS) || defined(ISUBDIRS)
 /**/###########################################################################
 /**/# rules for building in SUBDIRS - do not edit
-
-FRC::
 
 #ifdef ISUBDIRS
 do_subdirs_imakefile(ISUBDIRS)

@@ -6,6 +6,9 @@
  * ProfiledObjectRule()			- Build profiled objects/libraries
  * SpecialObject(obj,depends,options)	- Build a special object
  *
+ * cmd_table(tbl)			- build a command table module (tbl.ct)
+ * error_table(tbl)			- build an error table module (tbl.et)
+ *
  * SimpleProgram(prog,objs,libs,dest)	- Build/install a program    (simple)
  * build_program(prog,objs,ldflags,libs)- Build a program            (complex)
  * install_program(prog,instflags,dest)	- Install a program          (complex)
@@ -34,7 +37,7 @@ $(DESTDIR)dir:								@@\
 #define build_program(prog,objs,ldflags,libs)				@@\
 all::	prog								@@\
 prog::	objs								@@\
-	$(LD) $(LDFLAGS) ldflags -o prog objs libs $(LDLIBS)		@@\
+	$(LD) ldflags $(LDFLAGS) -o prog objs libs $(LDLIBS)		@@\
 clean::									@@\
 	$(RM) prog							@@\
 
@@ -95,6 +98,24 @@ all_profiled install_profiled::
 CC=AnsiCcCmd								@@\
 LD=AnsiLdCmd
 
+#define error_table(tbl)						@@\
+all:: tbl/**/.o								@@\
+depend tbl/**/.o:: tbl/**/.c tbl/**/.h					@@\
+tbl/**/.c tbl/**/.h: tbl/**/.et						@@\
+	$(RM) tbl/**/.c tbl/**/.h					@@\
+	compile_et tbl/**/.et						@@\
+clean::									@@\
+	$(RM) tbl/**/.c tbl/**/.h
+
+#define cmd_table(tbl)							@@\
+all:: tbl/**/.o								@@\
+depend tbl/**/.o:: tbl/**/.c						@@\
+tbl/**/.c: tbl/**/.ct							@@\
+	$(RM) tbl/**/.c tbl/**/.h					@@\
+	mk_cmds tbl/**/.ct						@@\
+clean::									@@\
+	$(RM) tbl/**/.c
+
 #define build_library(base,objs)					@@\
 all::	lib/**/base.a							@@\
 lib/**/base.a::	objs							@@\
@@ -133,14 +154,27 @@ Makefile:: $(ICONFIGFILE)						@@\
         else exit 0; fi                                                 @@\
 	$(IMAKE) $(IFLAGS) -DNEWTOP=$(TOP)
 
-#define foreach_subdirs(name,subdirs)					@@\
+#define foreach_subdirs_flags(name,subdirs,flgs)			@@\
 name:: FRC								@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
 		(cd $$d; echo "### Making" name "in" `pwd`;	\	@@\
-			make $(FLAGS) $(MFLAGS) DESTDIR=$(DESTDIR) name ; \ @@\
+			make $(MFLAGS) flgs DESTDIR=$(DESTDIR) name; \	@@\
 			echo "### Done with" `pwd`);		\	@@\
 	done
+
+#define do_subdirs_flags(subdirs,flgs)					@@\
+	foreach_subdirs_flags(all, subdirs, flgs)			@@\
+	foreach_subdirs_flags(install, subdirs, flgs)			@@\
+	foreach_subdirs_flags(clean, subdirs, flgs)			@@\
+	foreach_subdirs_flags(depend, subdirs, flgs)			@@\
+subdirs:: FRC								@@\
+	@(cd $@; echo "### Making" all "in" `pwd`;	\		@@\
+		make $(MFLAGS) flgs DESTDIR=$(DESTDIR) all ; \		@@\
+		echo "### Done with" `pwd`)
+
+#define foreach_subdirs(name,subdirs)					@@\
+	foreach_subdirs_flags(name,subdirs,)
 
 #define do_subdirs(subdirs)						@@\
 	foreach_subdirs(all, subdirs)					@@\
@@ -149,7 +183,7 @@ name:: FRC								@@\
 	foreach_subdirs(depend, subdirs)				@@\
 subdirs:: FRC								@@\
 	@(cd $@; echo "### Making" all "in" `pwd`;	\		@@\
-		make $(FLAGS) $(MFLAGS) DESTDIR=$(DESTDIR) all ; \	@@\
+		make $(MFLAGS) DESTDIR=$(DESTDIR) all ; \		@@\
 		echo "### Done with" `pwd`)
 
 #define do_subdirs_imakefile(subdirs)					@@\
