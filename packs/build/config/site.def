@@ -21,6 +21,7 @@
  */
 #if defined(ultrix) && defined(mips)
 #define LintFlags -DPOSIX
+#define NOLINT
 #define CcFlags LintFlags
 #endif
 
