@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.12 1990-07-04 12:04:24 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.13 1990-07-07 10:25:38 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.12 1990-07-04 12:04:24 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.13 1990-07-07 10:25:38 epeisach Exp $";
 #endif lint
 
 /*
@@ -106,8 +106,10 @@ char	pxwidth[10] = "-x";	/* page width in pixels */
 char	pxlength[10] = "-y";	/* page length in pixels */
 char	indent[10] = "-i0";	/* indentation size in characters */
 char	cost[10] = "-m";		/* Cost/page option */
+char    qacct[128] = "-a";
 char	tempfile[] = "errsXXXXXX"; /* file name for filter output */
 int 	lflag;			/* Log info flag */
+int     account_flag = 0;
 
 printjob()
 {
@@ -364,6 +366,7 @@ printit(file)
 
 	/* pass 1 */
 
+	account_flag = 0;
 	while (getline(cfp))
 		switch (line[0]) {
 		case 'H':
@@ -384,6 +387,14 @@ printit(file)
 #endif ZEPHYR
 					goto pass2;
 				}
+			}
+			continue;
+
+		case 'A':   /* For old client compatibility */
+	        case 'Q':
+			if (line[1] != '\0') {
+			    strcat(qacct, line+1);
+			    account_flag = 1;
 			}
 			continue;
 
@@ -472,7 +483,6 @@ printit(file)
 		case 'M':
 		case 'Z':
 		case 'E':	/* From multics days */
-	        case 'Q':	       /* Account numbers not implemented yet */
 			continue;
 		}
 
@@ -664,6 +674,8 @@ print(format, file)
 	av[n++] = "-h";
 	av[n++] = fromhost;
 	av[n++] = cost;
+	if (account_flag)
+	    av[n++] = qacct;
 	av[n++] = AF;
 	av[n] = 0;
 	fo = pfd;
