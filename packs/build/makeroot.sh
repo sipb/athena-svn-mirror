@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.24 2004-05-16 21:19:01 ghudson Exp $
+# $Id: makeroot.sh,v 1.25 2005-03-31 16:08:21 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -59,39 +59,38 @@ action=nocheck
 basedir=default
 EOF
 
-  # Install packages.
+  # Install packages.  For platform-dependent packages, the package
+  # directory name is $pkg.$suffix, where $suffix is 'u' for sun4u, etc.
+  suffix=`uname -m | sed -e 's|sun4||g'`
   for i in `cat /install/cdrom/.order.install`; do
-    echo "$i: \c"
-    pkgadd -n -R "$root" -a "$admin" -d /install/cdrom "$i"
+    if [ -d "/install/cdrom/$i.$suffix" ] ; then
+      pkgdir="$i.$suffix"
+    else
+      pkgdir="$i"
+    fi
+    echo "$pkgdir: \c"
+    pkgadd -n -R "$root" -a "$admin" -d /install/cdrom "$pkgdir"
   done 2>/dev/null
   cp /install/cdrom/INST_RELEASE "$root/var/sadm/system/admin"
   rm -f "$admin"
 
   # Install patches.
-  jot -b y 50 | patchadd -d -R "$root" -u -M /install/patches \
-    `cat /install/patches/current-patches`
+  if [ -s /install/patches/current-patches ]; then
+    yes | patchadd -d -R "$root" -u -M /install/patches \
+      `cat /install/patches/current-patches`
+  fi
 
-  # /usr/lib/isaexec (a front end which selects between the sparcv7 and
-  # sparcv9 versions of a binary) doesn't work in a chrooted environment
-  # (getexecname() fails due to lack of procfs).  The only binary
-  # linked to isaexec relevant to the build system is "sort".  Work
-  # around the problem by copying the sparcv9 "sort" to /usr/bin,
-  # since ensuring that procfs is always mounted in the chroot area is a
-  # little messy.
-  rm -f "$root/usr/bin/sort"
-  cp "$root/usr/bin/sparcv9/sort" "$root/usr/bin/sort"
-
-  # Make devices.
-  cd "$root"
-  drvconfig -r devices -p "$root/etc/path_to_inst"
-  devlinks -t "$root/etc/devlink.tab" -r "$root"
-  disks -r "$root"
+  # Set up mount points for various special file systems and directories
+  # which will be looped back through the real file system.
+  cp /dev/null "$root/etc/mnttab"
+  mkdir -p "$root/dev"
+  mkdir -p "$root/devices"
+  mkdir -p "$root/proc"
+  mkdir -p "$root/afs"
+  mkdir -p "$root/opt/SUNWspro"
 
   # third/gnome-utils wants to know where to look for log messages.
   touch "$root/var/adm/messages"
-
-  # pkgadd needs to use mnttab.  We can fake it out by copying /etc/mnttab.
-  cp /etc/mnttab "$root/etc"
 
   # Make links into destination area.
   ln -s ../build/athtools/usr/athena "$root/usr/athena"
