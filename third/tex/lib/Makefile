@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1997-02-25 07:33:27 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-02-26 17:04:47 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -25,8 +25,9 @@ install:
 	-mkdir -p ${DESTDIR}${TYPEFACES}/other
 	-mkdir -p ${DESTDIR}${TYPEFACES}/tolkien
 	-mkdir -p ${DESTDIR}${TEXMACROS}/amslatex
-	-mkdir -p ${DESTDIR}${TEXMACROS}/amslatex/fontsel
+	-mkdir -p ${DESTDIR}${TEXMACROS}/amslatex/classes
 	-mkdir -p ${DESTDIR}${TEXMACROS}/amslatex/inputs
+	-mkdir -p ${DESTDIR}${TEXMACROS}/amslatex/math
 	-mkdir -p ${DESTDIR}${TEXMACROS}/bib
 	-mkdir -p ${DESTDIR}${TEXMACROS}/latex
 	-mkdir -p ${DESTDIR}${TEXMACROS}/other/mainz/doc
@@ -46,10 +47,12 @@ install:
 	install -c -m 444 mf/typefaces/tolkien/*.mf \
 		${DESTDIR}${TYPEFACES}/tolkien
 	install -c -m 444 tex/macros/*.* ${DESTDIR}${TEXMACROS}
-	install -c -m 444 tex/macros/amslatex/fontsel/*.* \
-		${DESTDIR}${TEXMACROS}/amslatex/fontsel
+	install -c -m 444 tex/macros/amslatex/classes/*.* \
+		${DESTDIR}${TEXMACROS}/amslatex/classes
 	install -c -m 444 tex/macros/amslatex/inputs/*.* \
 		${DESTDIR}${TEXMACROS}/amslatex/inputs
+	install -c -m 444 tex/macros/amslatex/math/*.* \
+		${DESTDIR}${TEXMACROS}/amslatex/math
 	install -c -m 444 tex/macros/bib/*.* ${DESTDIR}${TEXMACROS}/bib
 	install -c -m 444 tex/macros/latex/*.* ${DESTDIR}${TEXMACROS}/latex
 	install -c -m 444 tex/macros/other/*.* ${DESTDIR}${TEXMACROS}/other
