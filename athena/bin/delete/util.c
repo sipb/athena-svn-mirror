@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.17 1990-06-07 13:05:30 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.18 1990-09-26 03:47:37 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -239,7 +239,7 @@ timed_out(file_ent, current_time, min_days)
 filerec *file_ent;
 time_t current_time, min_days;
 {
-     if ((current_time - file_ent->specs.st_mtime) / 86400 >= min_days)
+     if ((current_time - file_ent->specs.st_ctime) / 86400 >= min_days)
 	  return(1);
      else
 	  return(0);
