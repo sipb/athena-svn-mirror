@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.28 1990-12-12 15:23:26 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.29 1990-12-17 08:33:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.28 1990-12-12 15:23:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.29 1990-12-17 08:33:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -132,7 +132,7 @@ olc_on(fd, request)
   else if(request->options & ON_URGENT)
     request->options = URGENT;
   else
-    request->options = SECOND;
+    request->options = DUTY;
 
   if(is_signed_on(target))
     {
@@ -143,8 +143,8 @@ olc_on(fd, request)
 
   strcpy(target->title, target->user->title2);
   sign_on(target,request->options);
-  sprintf(msgbuf,"%s %s (%s) signed on.",cap(target->title),
-	  target->user->realname, target->user->username);
+  sprintf(msgbuf,"%s %s (%s [%d]) signed on.",cap(target->title),
+	  target->user->realname, target->user->username, target->instance);
 
 #ifdef LOG
   log_status(msgbuf);
@@ -451,8 +451,8 @@ olc_who(fd,request)
 		}
 	    }
 	  else
-	    if (!(requester->status & REFERRED))
-	      set_status(requester, PENDING);
+/*	    if (!(requester->status & REFERRED))
+	      set_status(requester, PENDING); */
 	    olc_broadcast_message("resurrection",message, 
 				  requester->question->topic);
 	}
@@ -997,6 +997,7 @@ olc_forward(fd, request)
     KNUCKLE *target, *requester, *consultant;
     char msgbuf[BUF_SIZE];	         /* Message buffer. */
     int  status;	                 /* Status flag */
+    char *dest_q;
     
     status = find_knuckle(&(request->requester), &requester);
     if (status)
@@ -1062,12 +1063,7 @@ olc_forward(fd, request)
 	target->question = (QUESTION *) NULL;
 	goto handle_off;
     }
-    else {
-	(void) sprintf(msgbuf, "Question forwarded by %s.",
-		       requester->user->username);
-	log_daemon(target,msgbuf);
-	set_status(target,PENDING);
-	
+    else {	
 	(void) sprintf(msgbuf, "Your question is being forwarded to another %s...\n",
 		       DEFAULT_TITLE2);
 	(void) write_message_to_user(target,
@@ -1084,7 +1080,7 @@ olc_forward(fd, request)
 					 msgbuf,
 					 NULL_FLAG);
 	    sprintf(msgbuf,
-		    "%s %s [%d]'s \"%s\" question forwarded (not connected).",
+		    "%s %s [%d]'s \"%s\" question forwarded.",
 		    target->title, 
 		    target->user->username,
 		    target->instance,
@@ -1094,6 +1090,23 @@ olc_forward(fd, request)
 	}
       }
     
+    set_status(target, PENDING);
+    dest_q = "pending";
+
+    /* handle status recommendations (pending/active by default)*/
+    if(is_option(request->options,STATUS_REFERRED)) {
+	set_status(target,REFERRED);
+	dest_q = "refer";
+      }
+    if(is_option(request->options,STATUS_PICKUP)) {
+	set_status(target,PICKUP);
+	dest_q = "pickup";
+      }
+
+    (void) sprintf(msgbuf, "Question forwarded by %s to %s.",
+		   requester->user->username, dest_q);
+    log_daemon(target,msgbuf);
+
 #ifdef LOG
     sprintf(msgbuf,"%s [%d] forwards %s [%d]",
 	    requester->user->username,requester->instance,
@@ -1105,14 +1118,6 @@ olc_forward(fd, request)
 	free_new_messages(consultant);
 	disconnect_knuckles(target, consultant);
     }
-
-    set_status(target, PENDING);
-    
-    /* handle status recommendations (pending/active by default)*/
-    if(is_option(request->options,STATUS_REFERRED))
-	set_status(target,REFERRED);
-    if(is_option(request->options,STATUS_PICKUP))
-	set_status(target,PICKUP);
 
 handle_off:
     if (!consultant)
@@ -1202,8 +1207,8 @@ olc_off(fd, request)
     else
       send_response(fd,SUCCESS);
 
-  sprintf(msgbuf,"%s %s (%s) signed off.", cap(target->title),
-	  target->user->realname, target->user->username);
+  sprintf(msgbuf,"%s %s (%s [%d]) signed off.", cap(target->title),
+	  target->user->realname, target->user->username, target->instance);
   olc_broadcast_message("nol",msgbuf,"off");
 
 #ifdef LOG
