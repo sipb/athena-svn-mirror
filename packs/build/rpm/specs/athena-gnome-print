@@ -24,8 +24,7 @@ mkdir $RPM_BUILD_ROOT
 
 # Adapted from gnome-print's spec file.  Only works on Linux systems.
 install -m 644 run-gnome-font-install $RPM_BUILD_ROOT/usr/athena/share/fonts
-cd fonts
-install -m 644 *.font $RPM_BUILD_ROOT/usr/athena/share/fonts
+(cd fonts && install -m 644 *.font $RPM_BUILD_ROOT/usr/athena/share/fonts)
 
 find $RPM_BUILD_ROOT -type f -or -type l |
     sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
