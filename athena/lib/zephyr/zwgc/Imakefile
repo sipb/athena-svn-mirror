@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Id: Imakefile,v 1.6 1989-11-30 09:53:35 jtkohl Exp $
+/**/#	$Id: Imakefile,v 1.7 1989-12-18 13:29:11 jtkohl Exp $
 /**/#
 
 SUBDIRS= Memory String Dictionary
@@ -57,11 +57,13 @@ GENERATED= port_dictionary.c port_dictionary.h \
 DEPENDSRCS= ${CODE} ${GENERATED}
 
 /*
- * The pathname for the installed default description file.
+ * The pathnames for the installed default description file & applications
+ * default file.
  */
 ZWGCDESC=$(ACLDIR)/zwgc.desc
+APPDEF=$(ACLDIR)/zwgc_resources
 
-DEFINES=-DREVSTACK -DDEFDESC=\"$(ZWGCDESC)\"
+DEFINES=-DREVSTACK -DDEFDESC=\"$(ZWGCDESC)\" -DAPPDEFDATABASE=\"$(APPDEF)\"
 
 normal_obj_rule()
 
