@@ -1,4 +1,4 @@
-/* $Id: config_console.c,v 1.1 1999-10-30 11:27:28 kcr Exp $
+/* $Id: config_console.c,v 1.2 1999-11-17 00:03:15 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,6 +9,8 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -18,9 +20,7 @@
 char *pidfile = "/var/athena/console.pid";
 
 
-main(argc, argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
     char *name, buf[256];
     FILE *f;
