@@ -13,24 +13,57 @@
 #include <pwd.h>
 #include <hesiod.h>
 #include <string.h>
+#ifdef SYSV
+#include <shadow.h>
+#endif
+
+#if defined(sgi) && defined(SHADOW)
+extern int _getpwent_no_shadow;
+#endif
 
 /* Fill in elements of Athena login session */
-
 long
-ALsetUser(ALsession session, char *uname, ALflag_t initial_flags)
+ALinitUser(ALsession session, ALflag_t initial_flags)
 {
-  /* make com_err work */
-  initialize_ale_error_table();
-  initialize_alw_error_table();
+  int i;
 
-  memset(session, 0, sizeof(*session));
-  session->flags = initial_flags;
+  ALflagClear(session, ALflagAll);
+  ALflagSet(session, initial_flags);
+
   /* set flags according to noattach, nocreate, noremote, nologin */
   if (ALfileExists(ALfileNOLOGIN)) ALflagSet(session, ALhaveNOLOGIN);
   if (ALfileExists(ALfileNOCREATE)) ALflagSet(session, ALhaveNOCREATE);
   if (ALfileExists(ALfileNOREMOTE)) ALflagSet(session, ALhaveNOREMOTE);
   if (ALfileExists(ALfileNOATTACH)) ALflagSet(session, ALhaveNOATTACH);
+  if (ALfileExists(ALfileNOCRACK)) ALflagSet(session, ALhaveNOCRACK);
 
+#ifdef SHADOW
+  /* Under Irix, we need to support the shadow password file if and
+     only if it alrady exists, so we set a flag to keep track of that
+     information here. To keep the code cleaner elsewhere, we go ahead
+     and set this flag regardless of whether we're using Irix. */
+  if (ALfileExists(SHADOW))
+    {
+      ALflagSet(session, ALhaveSHADOW);
+#ifdef sgi
+      /* Irix tries to be helpful and return the password field from
+	 /etc/shadow when getpwnam is used. Since other OS's don't do
+	 this, it might be rather unexpected, so we shut off this
+	 behavior to keep from shooting ourselves in the foot later. */
+      _getpwent_no_shadow = 1;
+#endif
+    }
+#endif
+
+  for (i = 0; i < ALlockMAX; i++)
+    ALlock_fd(session, i) = -1;
+
+  return 0L;
+}
+
+long
+ALsetUser(ALsession session, char *uname)
+{
   /* find user in passwd file */
   session->pwd = getpwnam(uname);
 
