@@ -2,15 +2,16 @@
  * 	signals.c -- deal with concerting signal names to numbers and back.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v $
- * 	$Author: bert $
+ * 	$Author: ghudson $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v 1.1 1995-11-15 21:25:39 bert Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v 1.2 1996-05-07 19:55:17 ghudson Exp $";
 #endif
 
 #include <string.h>
 #include <sys/signal.h>
+#include "config.h"
 #include "signames.h"
 
 struct signal_map {
