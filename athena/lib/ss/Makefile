@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.1 1989-02-27 19:06:15 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.2 1989-09-18 10:59:07 epeisach Exp $
 #	$Locker:  $
 
 MACHINE=`/bin/athena/machtype`
@@ -16,7 +16,7 @@ INCDIR=
 
 # flags
 
-CFLAGS=	-O -I.
+CFLAGS=	-O -I. -g
 
 LINTFLAGS= -uhv
 
@@ -78,7 +78,7 @@ install: all
 	ranlib ${DESTDIR}/usr/athena/lib/libss_p.a
 	@rm -rf ${DESTDIR}/usr/include/ss
 	@mkdir ${DESTDIR}/usr/include/ss
-	cp ss.h ss_internal.h copyright.h ${DESTDIR}/usr/include/ss/
+	cp ss.h ss_err.h ss_internal.h copyright.h ${DESTDIR}/usr/include/ss/
 	cp copyright.h ${DESTDIR}/usr/include/ss/mit-sipb-copyright.h
 
 tags:	TAGS
