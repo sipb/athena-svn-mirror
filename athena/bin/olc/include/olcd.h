@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.22 1990-12-05 21:32:14 lwvanels Exp $
+ *	$Id: olcd.h,v 1.23 1990-12-09 16:55:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -62,6 +62,7 @@ extern char *STDERR_LOG;
 extern char *DATABASE_FILE;
 extern char *TOPIC_FILE;
 extern char *MOTD_FILE;
+extern char *MOTD_TIMEOUT_FILE;
 extern char *SPECIALTY_DIR;
 extern char *ACL_DIR;
 
@@ -159,7 +160,10 @@ typedef struct tKNUCKLE
                                         (on priorities, pending, etc..) */
   char   cusername[LOGIN_SIZE];
   int    cinstance;
-  char   *new_messages;              /* new messages from this connection */
+  char   nm_file[NAME_SIZE+6];
+  int    new_messages;              /* new messages for this knuckle */
+				    /* 0 = none, 1 = yes, -1 = unknown */
+  
 } KNUCKLE;
 
 typedef struct tQUESTION
@@ -299,7 +303,8 @@ int connect_knuckles P((KNUCKLE *a , KNUCKLE *b ));
 void disconnect_knuckles P((KNUCKLE *a , KNUCKLE *b ));
 void free_new_messages P((KNUCKLE *knuckle ));
 int match_maker P((KNUCKLE *knuckle ));
-void new_message P((char **msg_field , KNUCKLE *sender , char *message ));
+void new_message P((KNUCKLE *target , KNUCKLE *sender , char *message ));
+int has_new_messages P((KNUCKLE *target ));
 QUEUE_STATUS *get_status_info P((void ));
 int verify_topic P((char *topic ));
 int owns_question P((KNUCKLE *knuckle ));
@@ -343,6 +348,10 @@ void log_long_description P((KNUCKLE *owner , KNUCKLE *sender , char *message ))
 ERRCODE init_log P((KNUCKLE *knuckle , char *question , char *machinfo ));
 ERRCODE terminate_log_answered P((KNUCKLE *knuckle ));
 ERRCODE terminate_log_unanswered P((KNUCKLE *knuckle ));
+
+/* motd.c */
+void check_motd_timeout P((void ));
+void set_motd_timeout P((KNUCKLE *requester ));
 
 /* notify.c */
 ERRCODE write_message P((char *touser , char *tomachine , char *fromuser , char *frommachine , char *message ));
