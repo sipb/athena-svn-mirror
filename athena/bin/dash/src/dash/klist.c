@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.1 1991-09-03 11:15:30 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.2 1991-12-17 11:34:44 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -43,11 +43,15 @@ extern char *krb_err_txt[];
 #define TICKET_GRANTING_TICKET	"krbtgt"
 #endif
 
+#define WARN1_TIME 15
+#define WARN2_TIME 5
+
 static Warning *old_warn = NULL;
 static int ok();
 extern char line1[], line2[];
 
-int checkTkts()
+void checkTkts(info, id)
+     int info, id;
 {
   char pname[ANAME_SZ];
   char pinst[INST_SZ];
@@ -63,7 +67,9 @@ int checkTkts()
   int diff;
   unsigned int timeout = 5*60*1000;	/* 5 minutes... */
 
-  line1[0] = line2[0] = '\0';
+  line1[0] = '\0';
+
+  strcpy(line2, "Type `renew' to re-authenticate.");
 
   if ((file = getenv("KRBTKFILE")) == NULL)
     file = TKT_FILE;
@@ -71,11 +77,11 @@ int checkTkts()
 
   if (stat(file, &statbuf))
     {
-      sprintf(line1, "Could not stat `%s':", file);
       if (errno == 0 || errno > sys_nerr)
-	sprintf(line2, "Error %d", errno);
+	sprintf(line1, "Could not stat `%s':  Error %d", file, errno);
       else
-	sprintf(line2, "%s", sys_errlist[errno]);
+	sprintf(line1, "%s: `%s'", sys_errlist[errno], file);
+
       ret = 1;
       goto done;
     }
@@ -116,8 +122,8 @@ int checkTkts()
    */
   if ((k_errno = krb_get_tf_realm(file, prealm)) != KSUCCESS)
     {
-      strcpy(line1, "can't find realm of ticket file:");
-      sprintf(line2, "%s", krb_err_txt[k_errno]);
+      sprintf(line1, "can't find realm of ticket file: %s",
+	      krb_err_txt[k_errno]);
       ret = 1;
       goto done;
     }
@@ -150,25 +156,23 @@ int checkTkts()
 	  if (diff < 0)
 	    {
 	      strcpy(line1, "Your authentication has expired.");
-	      strcpy(line2, "Type `renew' to re-authenticate.");
 	      ret = 3;			/* has expired */
 	      goto done;
 	    }
-	  if (diff < 5 * 60)		/* inside of 5 minutes? */
+
+	  if (diff < WARN1_TIME * 60)	/* inside of 15 minutes? */
 	    {
-	      strcpy(line1,
-		     "Your authentication will expire in less than 5 minutes.");
-	      strcpy(line2, "Type `renew' to re-authenticate.");
+	      char *expire_str =
+		"Your authentication will expire in less than %d minutes.";
 	      timeout = 60*1000;	/* set timeout to 1 minute... */
-	      ret = 2;
-	      goto done;
-	    }
-	  else if (diff < 15 * 60)	/* inside of 15 minutes? */
-	    {
-	      strcpy(line1,
-		     "Your authentication will expire in less than 15 minutes.");
-	      strcpy(line2, "Type `renew' to re-authenticate.");
-	      timeout = 60*1000;	/* set timeout to 1 minute... */
+
+	      if (diff < WARN2_TIME * 60)	/* inside of 5 minutes? */
+		{
+		  sprintf(line1, expire_str, WARN2_TIME);
+		  ret = 2;
+		  goto done;
+		}
+	      sprintf(line1, expire_str, WARN1_TIME);
 	      ret = 1;
 	      goto done;
 	    }
@@ -180,7 +184,6 @@ int checkTkts()
     }
 
   strcpy(line1, "You have no authentication.");
-  strcpy(line2, "Type `renew' to re-authenticate.");
   ret = 1;			/* no tgt found */
 
 
@@ -210,7 +213,7 @@ int checkTkts()
   old_ret = ret;
   (void) tf_close();
   XjAddWakeup(checkTkts, NULL, timeout);
-  return ret;
+  /*  return ret;  */
 }
 
 static int ok(who, w, data)
