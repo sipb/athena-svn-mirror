@@ -95,6 +95,7 @@ Distribution sites for software under third
 	ammonite	ftp.gnome.org:pub/GNOME/unstable/sources/ammonite
 	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
 	bind		ftp.isc.org:isc/bind/src
+	binutils	ftp.gnu.org:pub/gnu/binutils
 	bonobo		ftp.gnome.org:pub/GNOME/unstable/sources/bonobo
 	bzip2		sourceware.cygnus.com:pub/bzip2/v100
 	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
