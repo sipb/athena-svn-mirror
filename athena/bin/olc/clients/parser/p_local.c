@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.4 1990-04-25 16:42:30 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.5 1990-04-26 09:12:03 vanharen Exp $";
 #endif
 
 
@@ -41,17 +41,17 @@ extern char *HELP_FILE, *HELP_DIR, *HELP_EXT;
 do_quit(arguments)
      char *arguments[];
 {
-  REQUEST *Request;
+  REQUEST Request;
   LIST *list, *l;
   int status;
 #ifdef lint
   *arguments = (char *) NULL;
 #endif lint
   
-  if(fill_request(Request) != SUCCESS)
+  if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
-  status = OListPerson(Request,&list);
+  status = OListPerson(&Request,&list);
   switch (status)
     {
     case SUCCESS:
@@ -90,7 +90,7 @@ do_quit(arguments)
       break;
 
     default:
-      status = handle_response(status, Request);
+      status = handle_response(status, &Request);
       break;
     }
 
