@@ -567,53 +567,22 @@ eel_gdk_color_is_dark (GdkColor *color)
 }
 
 /**
- * eel_stipple_bitmap_for_screen:
- * 
- * Get pointer to 50% stippled bitmap suitable for use
- * on @screen. This is a global object; do not free.
- */
-GdkBitmap *
-eel_stipple_bitmap_for_screen (GdkScreen *screen)
-{
-	static char       stipple_bits[] = { 0x02, 0x01 };
-	static GPtrArray *stipples = NULL;
-	int screen_num, n_screens, i;
-
-	if (stipples == NULL) {
-		n_screens = gdk_display_get_n_screens (
-					gdk_screen_get_display (screen));
-		stipples = g_ptr_array_sized_new (n_screens);
-
-		for (i = 0; i < n_screens; i++) {
-			g_ptr_array_index (stipples, i) = NULL;
-		}
-	}
-
-	screen_num = gdk_screen_get_number (screen);
-
-	if (g_ptr_array_index (stipples, screen_num) == NULL) {
-		g_ptr_array_index (stipples, screen_num) =
-			gdk_bitmap_create_from_data (
-				gdk_screen_get_root_window (screen),
-				stipple_bits, 2, 2);
-	}
-
-	return g_ptr_array_index (stipples, screen_num);
-}
-
-/**
  * eel_stipple_bitmap:
- *
- * Get pointer to 50% stippled bitmap suitable for use
- * on the default screen. This is a global object; do
- * not free.
- *
- * This method is not multiscreen safe. Do not use it.
+ * 
+ * Get pointer to singleton 50% stippled bitmap.
+ * This is a global object; do not free.
  */
 GdkBitmap *
 eel_stipple_bitmap ()
 {
-	return eel_stipple_bitmap_for_screen (gdk_screen_get_default ());
+	static GdkBitmap *stipple = NULL;
+
+	if (stipple == NULL) {
+		char stipple_bits[] = { 0x02, 0x01 };
+		stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);	
+	}
+
+	return stipple;
 }
 
 /**

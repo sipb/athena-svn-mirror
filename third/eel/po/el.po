@@ -2,7 +2,7 @@
 # Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 # Simos Xenitellis <simos@hellug.gr>, 2001, 2002.
 # Initialized from Translation Memory, 2001.
-# Clean messages should be ok.
+# Clean messages should be ok. 
 #
 # simos: 652 messages, 19Feb2001, more messages remaining.
 # simos: 713 messages, 20Feb2001, more messages remaining.
@@ -20,77 +20,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel 2.0.4\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
-"PO-Revision-Date: 2002-12-03 10:02+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
+"PO-Revision-Date: 2002-08-19 11:36+0100\n"
+"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr "X"
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr "Y"
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr "Κείμενο"
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr "Το κείμενο της ετικέτας"
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr "Στοίχιση"
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"Η στοίχιση των γραμμών στο κείμενο της ετικέτας μεταξύ τους. Αυτό ΔΕΝ "
-"επηρεάζει την στοίχιση της ετικέτας στον χώρο της. Βλέπε για αυτό GtkMisc::"
-"xalign. "
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr "Αναδίπλωση γραμμής"
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr "Αν ορισθεί, θα αναδιπλώνονται γραμμές αν το κείμενο γίνει πολύ πλατύ."
-
-#: eel/eel-editable-label.c:384
-msgid "Cursor Position"
-msgstr "Θέση δρομέα"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr "Η τρέχουσα θέση του δρομέα εισαγωγής."
-
-#: eel/eel-editable-label.c:394
-msgid "Selection Bound"
-msgstr "Όριο επιλογής"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr "Η θέση του αντίθετου άκρου της επιλογής από τον δρομέα σε χαρακτήρες."
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr "Επιλογή όλων"
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr "Μέθοδοι εισαγωγής"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -135,12 +71,12 @@ msgstr "1/1/00, 1:00 πμ"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 πμ"
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
 "Δεν επιλέχθηκε εικόνα. Πρέπει να κάντε κλικ στην εικόνα για να την επιλέξτε."
 
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
 msgstr "Δεν έγινε επιλογή"
 
@@ -156,10 +92,6 @@ msgstr "Κωδι_κός:"
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr "Απομνημόνευση αυτού του κωδικού"
-
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr "Κατηγορίε_ς:"
 
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
@@ -185,6 +117,10 @@ msgstr "Ερώτηση"
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
 msgstr " (ακατάλληλο Unicode)"
+
+#, fuzzy
+#~ msgid "position"
+#~ msgstr "Ερώτηση"
 
 #~ msgid "_Move here"
 #~ msgstr "_Μετακίνηση εδώ"

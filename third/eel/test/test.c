@@ -211,7 +211,6 @@ test_pixbuf_new_named (const char *name, float scale)
 // 	g_free (text);
 // }
 
-#if 0
 int
 test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 {
@@ -226,7 +225,6 @@ test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 
 	return result;
 }
-#endif
 
 void 
 test_window_set_title_with_pid (GtkWindow *window,

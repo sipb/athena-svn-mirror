@@ -56,7 +56,6 @@ struct EelWrapTableDetails
 	GList *children;
 
 	gboolean is_scrolled : 1;
-	guint cols;
 };
 
 static void          eel_wrap_table_class_init           (EelWrapTableClass   *wrap_table_class);
@@ -80,7 +79,6 @@ static void          eel_wrap_table_size_allocate        (GtkWidget           *w
 							  GtkAllocation       *allocation);
 static void          eel_wrap_table_map                  (GtkWidget           *widget);
 static void          eel_wrap_table_unmap                (GtkWidget           *widget);
-static void          eel_wrap_table_realize              (GtkWidget           *widget);
 
 /* GtkContainerClass methods */
 static void          eel_wrap_table_add                  (GtkContainer        *container,
@@ -131,7 +129,6 @@ eel_wrap_table_class_init (EelWrapTableClass *wrap_table_class)
  	widget_class->expose_event = eel_wrap_table_expose_event;
 	widget_class->map = eel_wrap_table_map;
 	widget_class->unmap = eel_wrap_table_unmap;
-	widget_class->realize = eel_wrap_table_realize;
 
  	/* GtkContainerClass */
 	container_class->add = eel_wrap_table_add;
@@ -186,7 +183,6 @@ eel_wrap_table_init (EelWrapTable *wrap_table)
 	wrap_table->details = g_new0 (EelWrapTableDetails, 1);
 	wrap_table->details->x_justification = EEL_JUSTIFICATION_BEGINNING;
 	wrap_table->details->y_justification = EEL_JUSTIFICATION_END;
-	wrap_table->details->cols = 1;
 }
 
 static void
@@ -387,16 +383,6 @@ eel_wrap_table_unmap (GtkWidget *widget)
 	}
 }
 
-static void
-eel_wrap_table_realize (GtkWidget *widget)
-{
-	g_return_if_fail (EEL_IS_WRAP_TABLE (widget));
-
-	GTK_WIDGET_CLASS (parent_class)->realize (widget);
-
-	gtk_widget_queue_resize (widget);
-}
-
 /* GtkContainerClass methods */
 static void
 eel_wrap_table_add (GtkContainer *container,
@@ -490,23 +476,6 @@ eel_wrap_table_child_type (GtkContainer   *container)
 }
 
 /* Private EelWrapTable methods */
-static int
-wrap_table_get_num_fitting (int available,
-			    int spacing,
-			    int max_child_size)
-{
-	int num;
-
-  	g_return_val_if_fail (available >= 0, 0);
-  	g_return_val_if_fail (max_child_size > 0, 0);
-  	g_return_val_if_fail (spacing >= 0, 0);
-	
-	num = (available + spacing) / (max_child_size + spacing);
-	num = MAX (num, 1);
-
-	return num;
-}
-
 static void
 wrap_table_layout (EelWrapTable *wrap_table)
 {
@@ -514,7 +483,6 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	EelArtIPoint pos;
 	EelDimensions max_child_dimensions;
 	ArtIRect content_bounds;
-	guint num_cols;
 
  	g_return_if_fail (EEL_IS_WRAP_TABLE (wrap_table));
 
@@ -522,15 +490,6 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	content_bounds = wrap_table_get_content_bounds (wrap_table);
 	pos.x = content_bounds.x0;
 	pos.y = content_bounds.y0;
-
-	num_cols = wrap_table_get_num_fitting (GTK_WIDGET (wrap_table)->allocation.width,
-					       wrap_table->details->x_spacing,
-					       max_child_dimensions.width);
-	if (num_cols != wrap_table->details->cols) {
-		wrap_table->details->cols = num_cols;
-		gtk_widget_queue_resize (GTK_WIDGET (wrap_table));
-		return;
-	}
 
 	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
@@ -648,6 +607,23 @@ wrap_table_get_max_child_dimensions (const EelWrapTable *wrap_table)
 	}
 
 	return max_dimensions;
+}
+
+static int
+wrap_table_get_num_fitting (int available,
+			    int spacing,
+			    int max_child_size)
+{
+	int num;
+
+  	g_return_val_if_fail (available >= 0, 0);
+  	g_return_val_if_fail (max_child_size > 0, 0);
+  	g_return_val_if_fail (spacing >= 0, 0);
+	
+	num = (available + spacing) / (max_child_size + spacing);
+	num = MAX (num, 1);
+
+	return num;
 }
 
 static EelDimensions

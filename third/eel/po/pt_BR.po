@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel 1.0.2\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
 "PO-Revision-Date: 2002-06-11T02:38-0300\n"
 "Last-Translator: Gustavo Noronha Silva <kov@debian.org>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>, Debian-"
@@ -13,68 +13,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr ""
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr ""
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr ""
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr ""
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr ""
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr ""
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
-
-#: eel/eel-editable-label.c:384
-#, fuzzy
-msgid "Cursor Position"
-msgstr "Pergunta"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr ""
-
-#: eel/eel-editable-label.c:394
-#, fuzzy
-msgid "Selection Bound"
-msgstr "Nenhuma seleção foi feita"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr ""
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr ""
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -118,13 +56,13 @@ msgstr "1/1/00, 1:00"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
 "Nenhuma imagem foi selecionada. Você deve clicar em uma imagem para "
 "selecioná-la."
 
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
 msgstr "Nenhuma seleção foi feita"
 
@@ -139,10 +77,6 @@ msgstr "_Senha:"
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr "Lembrar esta senha"
-
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr ""
 
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
@@ -167,6 +101,10 @@ msgstr "Pergunta"
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
 msgstr "(Unicode inválido)"
+
+#, fuzzy
+#~ msgid "position"
+#~ msgstr "Pergunta"
 
 #~ msgid "_Move here"
 #~ msgstr "_Mover aqui"

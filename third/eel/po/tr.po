@@ -1,82 +1,18 @@
 # Turkish translation of eel.
 # Copyright (C) 2000-2001 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
-# Ã–mer FadÄ±l USTA <omer_fad@hotmail.com>, 2001
-# 
+# Ömer Fadýl USTA <omer_fad@hotmail.com>, 2001
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: eel 1.0\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
-"PO-Revision-Date: 2001-12-25 13:26+0100\n"
-"Last-Translator: Ã–mer FadÄ±l USTA <omer_fad@hotmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
+"PO-Revision-Date: 2002-09-18 04:45+0300\n"
+"Last-Translator: Ömer Fadýl USTA <omer_fad@hotmail.com>\n"
+"Language-Team: GNOME Turk <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr ""
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr ""
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr ""
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr ""
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr ""
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr ""
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
-
-# libnautilus-extensions/nautilus-stock-dialogs.c:538
-#: eel/eel-editable-label.c:384
-#, fuzzy
-msgid "Cursor Position"
-msgstr "Soru"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr ""
-
-# components/help/converters/gnome-db2html2/sect-elements.c:1027
-#: eel/eel-editable-label.c:394
-#, fuzzy
-msgid "Selection Bound"
-msgstr "seÃ§im yapÄ±lmadÄ±"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr ""
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr ""
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -84,7 +20,7 @@ msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"GConf hatasÄ±:\n"
+"GConf hatasý:\n"
 "  %s"
 
 #: eel/eel-gconf-extensions.c:87
@@ -94,15 +30,15 @@ msgid ""
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"GConf hatasÄ±:\n"
+"GConf hatasý:\n"
 "  %s\n"
-"DiÄŸer tÃ¼m hatalar terminalden gÃ¶zlenebilir."
+"Diðer tüm hatalar terminalden gözlenebilir."
 
 # libnautilus-extensions/nautilus-stock-dialogs.c:466
 # libnautilus-extensions/nautilus-stock-dialogs.c:506
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "GConf hatasÄ±"
+msgstr "GConf hatasý"
 
 # libnautilus-extensions/nautilus-glib-extensions.c:1192
 #. localizers: These strings are part of the strftime
@@ -125,34 +61,28 @@ msgstr "1/1/00, 1:00"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
-msgstr "HiÃ§ resim seÃ§ilmedi. Bir resmi Ã¼zerine tÄ±klayarak seÃ§melisiniz."
+msgstr "Hiç resim seçilmedi. Bir resmi üzerine týklayarak seçmelisiniz."
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1027
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
-msgstr "seÃ§im yapÄ±lmadÄ±"
+msgstr "seçim yapýlmadý"
 
 # components/services/summary/nautilus-view/nautilus-summary-dialogs.c:129
 #: eel/eel-password-dialog.c:203
-#, fuzzy
 msgid "_Username:"
-msgstr "KullanÄ±cÄ± adÄ±:"
+msgstr "_Kullanýcý adý:"
 
 # components/services/summary/nautilus-view/nautilus-summary-dialogs.c:136
 #: eel/eel-password-dialog.c:210
-#, fuzzy
 msgid "_Password:"
-msgstr "Parola:"
+msgstr "_Parola:"
 
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
-msgstr "Bu parolayÄ± hatÄ±rla"
-
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr ""
+msgstr "Bu parolayý hatýrla"
 
 # components/help/hyperbola-filefmt.c:630
 # libnautilus-extensions/nautilus-stock-dialogs.c:446
@@ -163,12 +93,12 @@ msgstr "Bilgi"
 # libnautilus-extensions/nautilus-stock-dialogs.c:508
 #: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "AyrÄ±ntÄ±lar"
+msgstr "Ayrýntýlar"
 
 # libnautilus-extensions/nautilus-stock-dialogs.c:456
 #: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "UyarÄ±"
+msgstr "Uyarý"
 
 # libnautilus-extensions/nautilus-stock-dialogs.c:466
 # libnautilus-extensions/nautilus-stock-dialogs.c:506
@@ -183,19 +113,24 @@ msgstr "Soru"
 
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (geçersiz Unicode)"
+
+# libnautilus-extensions/nautilus-stock-dialogs.c:538
+#, fuzzy
+#~ msgid "position"
+#~ msgstr "Soru"
 
 #~ msgid "_Move here"
-#~ msgstr "_Buraya taÅŸÄ±"
+#~ msgstr "_Buraya taþý"
 
 #~ msgid "_Copy here"
 #~ msgstr "_Buraya kopyala"
 
 #~ msgid "_Link here"
-#~ msgstr "_Buraya baÄŸla"
+#~ msgstr "_Buraya baðla"
 
 #~ msgid "Cancel"
-#~ msgstr "Ä°ptal"
+#~ msgstr "Ýptal"
 
 # src/nautilus-shell-ui.xml.h:40
 #~ msgid "Normal"
@@ -207,7 +142,7 @@ msgstr ""
 
 # components/music/mpg123.c:61
 #~ msgid "Bold"
-#~ msgstr "KalÄ±n"
+#~ msgstr "Kalýn"
 
 # src/nautilus-bookmarks-window.c:127
 #~ msgid "Book"
@@ -218,7 +153,7 @@ msgstr ""
 #~ msgstr "Siyah"
 
 #~ msgid "Demibold"
-#~ msgstr "YarÄ± KalÄ±n"
+#~ msgstr "Yarý Kalýn"
 
 # src/Nautilus_shell.oaf.in.h:3
 #~ msgid "Light"
@@ -226,40 +161,40 @@ msgstr ""
 
 # src/file-manager/fm-properties-window.c:1200
 #~ msgid "Italic"
-#~ msgstr "YatÄ±k"
+#~ msgstr "Yatýk"
 
 # components/music/mpg123.c:31
 #~ msgid "Oblique"
-#~ msgstr "EÄŸimli"
+#~ msgstr "Eðimli"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:114
 #~ msgid "Reverse Italic"
-#~ msgstr "Ters YatÄ±k"
+#~ msgstr "Ters Yatýk"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:19
 #~ msgid "Reverse Oblique"
-#~ msgstr "Ters EÄŸimli"
+#~ msgstr "Ters Eðimli"
 
 # components/music/mpg123.c:32
 #~ msgid "Other"
-#~ msgstr "DiÄŸer"
+#~ msgstr "Diðer"
 
 # src/file-manager/fm-properties-window.c:983
 #~ msgid "Condensed"
-#~ msgstr "SÄ±kÄ±"
+#~ msgstr "Sýký"
 
 #~ msgid "Semicondensed"
-#~ msgstr "YarÄ± sÄ±kÄ±"
+#~ msgstr "Yarý sýký"
 
 # libnautilus-extensions/nautilus-program-chooser.c:1294
 #~ msgid "More..."
-#~ msgstr "DiÄŸer..."
+#~ msgstr "Diðer..."
 
 #~ msgid " -_,;.?/&"
 #~ msgstr " -_,;.?/&"
 
 #~ msgid "Beginner"
-#~ msgstr "BaÅŸlangÄ±Ã§"
+#~ msgstr "Baþlangýç"
 
 #~ msgid "Intermediate"
 #~ msgstr "Orta"

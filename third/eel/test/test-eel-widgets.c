@@ -3,6 +3,7 @@
 #include <eel/eel-caption-table.h>
 #include <eel/eel-radio-button-group.h>
 #include <eel/eel-string-picker.h>
+#include <eel/eel-text-caption.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-ui-init.h>
@@ -29,12 +30,15 @@ static void test_radio_group                     (void);
 static void test_radio_group_horizontal          (void);
 static void test_caption_table                   (void);
 static void test_string_picker                   (void);
+static void test_text_caption                    (void);
 static void test_ok_dialog                       (void);
 
 /* Callbacks */
 static void test_radio_changed_callback          (GtkWidget *button_group,
 						  gpointer   user_data);
 static void string_picker_changed_callback       (GtkWidget *string_picker,
+						  gpointer   user_data);
+static void text_caption_changed_callback        (GtkWidget *text_caption,
 						  gpointer   user_data);
 static void test_caption_table_activate_callback (GtkWidget *button_group,
 						  gint       active_index,
@@ -51,6 +55,7 @@ main (int argc, char * argv[])
 	test_radio_group_horizontal ();
 	test_caption_table ();
 	test_string_picker ();
+	test_text_caption ();
 	test_ok_dialog ();
 
 	gtk_main ();
@@ -234,6 +239,31 @@ test_string_picker (void)
 }
 
 static void
+test_text_caption (void)
+{
+	GtkWidget		*window;
+	GtkWidget		*picker;
+	
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (window), "text caption test");
+
+	picker = eel_text_caption_new ();
+	
+	eel_caption_set_title_label (EEL_CAPTION (picker), "Home Page:");
+
+	eel_text_caption_set_text (EEL_TEXT_CAPTION (picker), "file:///tmp");
+	
+	gtk_container_add (GTK_CONTAINER (window), picker);
+	
+	g_signal_connect (picker,
+			    "changed",
+			    G_CALLBACK (text_caption_changed_callback),
+			    (gpointer) NULL);
+
+	gtk_widget_show_all (window);
+}
+
+static void
 string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 {
 	char	  *text;
@@ -245,6 +275,21 @@ string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 
 	g_print ("string_picker_changed_callback(%s)\n", text);
 
+	g_free (text);
+}
+
+static void
+text_caption_changed_callback (GtkWidget *text_caption, gpointer user_data)
+{
+	char	  *text;
+
+	g_assert (text_caption != NULL);
+	g_assert (EEL_IS_TEXT_CAPTION (text_caption));
+
+	text = eel_text_caption_get_text (EEL_TEXT_CAPTION (text_caption));
+
+	g_print ("text_caption_changed_callback(%s)\n", text);
+	
 	g_free (text);
 }
 

@@ -34,6 +34,7 @@
 #include <eel/eel-ellipsizing-label.h>
 #include <eel/eel-enumeration.h>
 #include <eel/eel-features.h>
+#include <eel/eel-font-picker.h>
 #include <eel/eel-gconf-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -49,6 +50,10 @@
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-password-dialog.h>
+#include <eel/eel-preferences-box.h>
+#include <eel/eel-preferences-group.h>
+#include <eel/eel-preferences-item.h>
+#include <eel/eel-preferences-pane.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-radio-button-group.h>
 #include <eel/eel-self-checks.h>
@@ -56,6 +61,7 @@
 #include <eel/eel-string-list.h>
 #include <eel/eel-string-picker.h>
 #include <eel/eel-string.h>
+#include <eel/eel-text-caption.h>
 #include <eel/eel-types.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-wrap-table.h>

@@ -30,7 +30,6 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 
-#include "eel-accessibility.h"
 #include "eel-gtk-macros.h"
 #include "eel-glib-extensions.h"
 
@@ -381,22 +380,6 @@ eel_radio_button_group_set_entry_description_text (EelRadioButtonGroup *button_g
 	}
 }
 
-/* Set an item's accessible description. */
-void
-eel_radio_button_group_set_entry_accessible_description (EelRadioButtonGroup *button_group,
-							 guint entry_index,
-							 const char *description)
-{
-	TableRow	*row;
-
- 	g_return_if_fail (button_group != NULL);
-	g_return_if_fail (EEL_IS_RADIO_BUTTON_GROUP (button_group));
-	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
-
-	row = g_list_nth_data (button_group->details->rows, entry_index);
-	eel_accessibility_set_description (row->button, description);
-}
-
 void
 eel_radio_button_group_clear (EelRadioButtonGroup *button_group)
 {
@@ -430,4 +413,5 @@ eel_radio_button_group_clear (EelRadioButtonGroup *button_group)
 	button_group->details->group = NULL;
 	button_group->details->num_items = 0;
 }
+
 

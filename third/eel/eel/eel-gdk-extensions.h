@@ -27,7 +27,6 @@
 #define EEL_GDK_EXTENSIONS_H
 
 #include <gdk/gdktypes.h>
-#include <gdk/gdkwindow.h>
 
 #define EEL_RGB_COLOR_RED	0xFF0000
 #define EEL_RGB_COLOR_GREEN	0x00FF00
@@ -128,7 +127,6 @@ void                eel_fill_rectangle                     (GdkDrawable         
 gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
 
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
-GdkBitmap *         eel_stipple_bitmap_for_screen          (GdkScreen *screen);
 GdkBitmap *         eel_stipple_bitmap                     (void);
 
 

@@ -86,6 +86,7 @@ GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_CANVAS_REQUIRED = @GNOME_CANVAS_REQUIRED@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -121,39 +122,168 @@ NULL =
 
 lib_LTLIBRARIES = libeel-2.la
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"Eel\"					-I$(top_srcdir)						$(EEL_CFLAGS)						-DDATADIR=\""$(datadir)"\"				-DSOURCE_DATADIR=\""$(top_srcdir)/data"\"		-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"		-DG_DISABLE_DEPRECATED					-DGDK_DISABLE_DEPRECATED				-DGDK_PIXBUF_DISABLE_DEPRECATED				-DGTK_DISABLE_DEPRECATED				-DGNOME_DISABLE_DEPRECATED				$(NULL)
+INCLUDES = \
+	-DG_LOG_DOMAIN=\"Eel\"				\
+	-I$(top_srcdir)					\
+	$(EEL_CFLAGS)					\
+	-DDATADIR=\""$(datadir)"\"			\
+	-DSOURCE_DATADIR=\""$(top_srcdir)/data"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
+	-DBONOBO_DISABLE_DEPRECATED			\
+	-DEEL_COMPILATION				\
+	$(NULL)
 
 
-# FIXME: put this back once the registration_id stuff is cleared up
-#	-DBONOBO_DISABLE_DEPRECATED
-
-libeel_2_la_LDFLAGS =  	-version-info @EEL_VERSION_INFO@		$(EEL_LIBS)					$(RENDER_LIBS)					$(NULL)
-
-
-EGGFILES =  	egg-screen-exec.h       	egg-screen-exec.c       	$(NULL)
+libeel_2_la_LDFLAGS = \
+	-version-info @EEL_VERSION_INFO@	\
+	$(EEL_LIBS)				\
+	$(RENDER_LIBS)				\
+	$(NULL)
 
 
-libeel_2_la_SOURCES =  	eel-accessibility.c				eel-art-extensions.c				eel-art-gtk-extensions.c			eel-background.c				eel-background-box.c                    	eel-canvas.c					eel-canvas-util.c				eel-canvas-rect-ellipse.c			eel-caption-table.c				eel-caption.c					eel-cell-renderer-pixbuf-list.c			eel-dateedit-extensions.c			eel-debug-drawing.c				eel-debug.c					eel-editable-label.c				eel-ellipsizing-label.c				eel-enumeration.c				eel-features.c					eel-gconf-extensions.c				eel-gdk-extensions.c				eel-gdk-pixbuf-extensions.c			eel-generous-bin.c				eel-glib-extensions.c				eel-gnome-extensions.c				eel-graphic-effects.c				eel-gtk-container.c				eel-gtk-extensions.c				eel-i18n.c					eel-image-chooser.c				eel-image-table.c				eel-labeled-image.c				eel-lib-self-check-functions.c			eel-pango-extensions.c				eel-password-dialog.c				eel-preferences-glade.c				eel-preferences.c				eel-radio-button-group.c			eel-self-checks.c				eel-stock-dialogs.c				eel-string-list.c				eel-string-picker.c				eel-string.c					eel-types.c					eel-vfs-extensions.c				eel-wrap-table.c				eel-xml-extensions.c				eel-lib-self-check-functions.h			$(EGGFILES)					$(NULL)
+libeel_2_la_SOURCES = \
+	eel-accessibility.c			\
+	eel-art-extensions.c			\
+	eel-art-gtk-extensions.c		\
+	eel-background.c			\
+	eel-background-box.c                    \
+	eel-canvas-rect.c			\
+	eel-caption-table.c			\
+	eel-caption.c				\
+	eel-cell-renderer-pixbuf-list.c		\
+	eel-dateedit-extensions.c		\
+	eel-debug-drawing.c			\
+	eel-debug.c				\
+	eel-ellipsizing-label.c			\
+	eel-enumeration.c			\
+	eel-features.c				\
+	eel-font-picker.c			\
+	eel-gconf-extensions.c			\
+	eel-gdk-extensions.c			\
+	eel-gdk-pixbuf-extensions.c		\
+	eel-generous-bin.c			\
+	eel-glib-extensions.c			\
+	eel-gnome-extensions.c			\
+	eel-graphic-effects.c			\
+	eel-gtk-container.c			\
+	eel-gtk-extensions.c			\
+	eel-i18n.c				\
+	eel-image-chooser.c			\
+	eel-image-table.c			\
+	eel-labeled-image.c			\
+	eel-lib-self-check-functions.c		\
+	eel-pango-extensions.c			\
+	eel-password-dialog.c			\
+	eel-preferences-box.c			\
+	eel-preferences-group.c			\
+	eel-preferences-item.c			\
+	eel-preferences-pane.c			\
+	eel-preferences.c			\
+	eel-radio-button-group.c		\
+	eel-self-checks.c			\
+	eel-stock-dialogs.c			\
+	eel-string-list.c			\
+	eel-string-picker.c			\
+	eel-string.c				\
+	eel-text-caption.c			\
+	eel-types.c				\
+	eel-vfs-extensions.c			\
+	eel-wrap-table.c			\
+	eel-xml-extensions.c			\
+	eel-lib-self-check-functions.h		\
+	$(NULL)
 
 
 libeelincludedir = $(includedir)/eel-2/eel
 
-eel_headers =  	eel-accessibility.h				eel-art-extensions.h				eel-art-gtk-extensions.h			eel-background.h				eel-background-box.h                    	eel-canvas.h					eel-canvas-util.h				eel-canvas-rect-ellipse.h			eel-caption-table.h				eel-caption.h					eel-cell-renderer-pixbuf-list.h			eel-dateedit-extensions.h			eel-debug-drawing.h				eel-debug.h					eel-editable-label.h				eel-ellipsizing-label.h				eel-enumeration.h				eel-features.h					eel-gconf-extensions.h				eel-gdk-extensions.h				eel-gdk-pixbuf-extensions.h			eel-generous-bin.h				eel-glib-extensions.h				eel-gnome-extensions.h				eel-graphic-effects.h				eel-gtk-container.h				eel-gtk-extensions.h				eel-gtk-macros.h				eel-i18n.h					eel-image-chooser.h				eel-image-table.h				eel-labeled-image.h				eel-pango-extensions.h				eel-password-dialog.h				eel-preferences-glade.h				eel-preferences.h				eel-radio-button-group.h			eel-self-checks.h				eel-stock-dialogs.h				eel-string-list.h				eel-string-picker.h				eel-string.h					eel-types.h					eel-vfs-extensions.h				eel-wrap-table.h				eel-xml-extensions.h				eel.h						$(NULL)
+eel_headers = \
+	eel-accessibility.h			\
+	eel-art-extensions.h			\
+	eel-art-gtk-extensions.h		\
+	eel-background.h			\
+	eel-background-box.h                    \
+	eel-canvas-rect.h			\
+	eel-caption-table.h			\
+	eel-caption.h				\
+	eel-cell-renderer-pixbuf-list.h		\
+	eel-dateedit-extensions.h		\
+	eel-debug-drawing.h			\
+	eel-debug.h				\
+	eel-ellipsizing-label.h			\
+	eel-enumeration.h			\
+	eel-features.h				\
+	eel-font-picker.h			\
+	eel-gconf-extensions.h			\
+	eel-gdk-extensions.h			\
+	eel-gdk-pixbuf-extensions.h		\
+	eel-generous-bin.h			\
+	eel-glib-extensions.h			\
+	eel-gnome-extensions.h			\
+	eel-graphic-effects.h			\
+	eel-gtk-container.h			\
+	eel-gtk-extensions.h			\
+	eel-gtk-macros.h			\
+	eel-i18n.h				\
+	eel-image-chooser.h			\
+	eel-image-table.h			\
+	eel-labeled-image.h			\
+	eel-pango-extensions.h			\
+	eel-password-dialog.h			\
+	eel-preferences-box.h			\
+	eel-preferences-group.h			\
+	eel-preferences-item.h			\
+	eel-preferences-pane.h			\
+	eel-preferences.h			\
+	eel-radio-button-group.h		\
+	eel-self-checks.h			\
+	eel-stock-dialogs.h			\
+	eel-string-list.h			\
+	eel-string-picker.h			\
+	eel-string.h				\
+	eel-text-caption.h			\
+	eel-types.h				\
+	eel-vfs-extensions.h			\
+	eel-wrap-table.h			\
+	eel-xml-extensions.h			\
+	eel.h					\
+	$(NULL)
 
 
-libeelinclude_HEADERS =  	$(eel_headers)					eel-type-builtins.h				eel-marshal.h					$(NULL)
+libeelinclude_HEADERS = \
+	$(eel_headers)				\
+	eel-type-builtins.h			\
+	eel-marshal.h				\
+	$(NULL)
 
 
-marshal_sources =  	eel-marshal.h					eel-marshal.c					$(NULL)
+marshal_sources = \
+	eel-marshal.h				\
+	eel-marshal.c				\
+	$(NULL)
 
 
-stamp_sources =  	eel-enums.defs					eel-type-builtins-evals.c			$(NULL)
+stamp_sources = \
+	eel-enums.defs				\
+	eel-type-builtins-evals.c		\
+	$(NULL)
 
 
-stamps =  	eel-makeenums-stamp				eel-stamp					$(NULL)
+stamps = \
+	eel-makeenums-stamp			\
+	eel-stamp				\
+	$(NULL)
 
 
-maketypes_sources =  	eel-type-builtins.h				eel-type-builtins-ids.c				eel-type-builtins-vars.c			$(NULL)
+maketypes_sources = \
+	eel-type-builtins.h			\
+	eel-type-builtins-ids.c			\
+	eel-type-builtins-vars.c		\
+	$(NULL)
 
 
 noinst_PROGRAMS = check-program
@@ -165,14 +295,17 @@ check_program_LDFLAGS = $(check_program_DEPENDENCIES) -lm
 
 TESTS = check-eel
 
-EXTRA_DIST =  	check-eel					eelmarshal.list					makeenums.pl					maketypes.awk					update-from-egg.sh				$(NULL)
+EXTRA_DIST = \
+	check-eel				\
+	eelmarshal.list				\
+	makeenums.pl				\
+	maketypes.awk				\
+	$(NULL)
 
 
 built_sources = $(stamps) $(stamp_sources) $(maketypes_sources) $(marshal_sources)
 CLEANFILES = $(built_sources)
 DONT_DIST_FILES = $(built_sources)
-
-EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  eel-features.h
@@ -186,20 +319,21 @@ LIBS = @LIBS@
 libeel_2_la_LIBADD = 
 libeel_2_la_OBJECTS =  eel-accessibility.lo eel-art-extensions.lo \
 eel-art-gtk-extensions.lo eel-background.lo eel-background-box.lo \
-eel-canvas.lo eel-canvas-util.lo eel-canvas-rect-ellipse.lo \
-eel-caption-table.lo eel-caption.lo eel-cell-renderer-pixbuf-list.lo \
-eel-dateedit-extensions.lo eel-debug-drawing.lo eel-debug.lo \
-eel-editable-label.lo eel-ellipsizing-label.lo eel-enumeration.lo \
-eel-features.lo eel-gconf-extensions.lo eel-gdk-extensions.lo \
+eel-canvas-rect.lo eel-caption-table.lo eel-caption.lo \
+eel-cell-renderer-pixbuf-list.lo eel-dateedit-extensions.lo \
+eel-debug-drawing.lo eel-debug.lo eel-ellipsizing-label.lo \
+eel-enumeration.lo eel-features.lo eel-font-picker.lo \
+eel-gconf-extensions.lo eel-gdk-extensions.lo \
 eel-gdk-pixbuf-extensions.lo eel-generous-bin.lo eel-glib-extensions.lo \
 eel-gnome-extensions.lo eel-graphic-effects.lo eel-gtk-container.lo \
 eel-gtk-extensions.lo eel-i18n.lo eel-image-chooser.lo \
 eel-image-table.lo eel-labeled-image.lo eel-lib-self-check-functions.lo \
-eel-pango-extensions.lo eel-password-dialog.lo eel-preferences-glade.lo \
-eel-preferences.lo eel-radio-button-group.lo eel-self-checks.lo \
-eel-stock-dialogs.lo eel-string-list.lo eel-string-picker.lo \
-eel-string.lo eel-types.lo eel-vfs-extensions.lo eel-wrap-table.lo \
-eel-xml-extensions.lo egg-screen-exec.lo
+eel-pango-extensions.lo eel-password-dialog.lo eel-preferences-box.lo \
+eel-preferences-group.lo eel-preferences-item.lo \
+eel-preferences-pane.lo eel-preferences.lo eel-radio-button-group.lo \
+eel-self-checks.lo eel-stock-dialogs.lo eel-string-list.lo \
+eel-string-picker.lo eel-string.lo eel-text-caption.lo eel-types.lo \
+eel-vfs-extensions.lo eel-wrap-table.lo eel-xml-extensions.lo
 noinst_PROGRAMS =  check-program$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -379,327 +513,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-check-program.o: check-program.c ../config.h eel-debug.h \
-	eel-glib-extensions.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-art-extensions.h eel-string-list.h
-eel-accessibility.lo eel-accessibility.o : eel-accessibility.c \
-	../config.h eel-accessibility.h
-eel-art-extensions.lo eel-art-extensions.o : eel-art-extensions.c \
-	../config.h eel-art-extensions.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-art-extensions.h eel-string-list.h
-eel-art-gtk-extensions.lo eel-art-gtk-extensions.o : \
-	eel-art-gtk-extensions.c ../config.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-art-extensions.h
-eel-background-box.lo eel-background-box.o : eel-background-box.c \
-	../config.h eel-background-box.h eel-gtk-macros.h \
-	eel-background.h
-eel-background-style.lo eel-background-style.o : eel-background-style.c \
-	../config.h eel-background-style.h eel-background.h \
-	eel-gdk-extensions.h
-eel-background.lo eel-background.o : eel-background.c ../config.h \
-	eel-background.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-glib-extensions.h eel-gnome-extensions.h eel-gtk-macros.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-string-list.h eel-string.h eel-marshal.h eel-types.h \
-	eel-type-builtins.h eel-type-builtins.h eel-canvas.h \
-	eel-canvas-util.h
-eel-canvas-rect-ellipse.lo eel-canvas-rect-ellipse.o : \
-	eel-canvas-rect-ellipse.c ../config.h eel-canvas-rect-ellipse.h \
-	eel-canvas.h eel-canvas-util.h
-eel-canvas-rect.lo eel-canvas-rect.o : eel-canvas-rect.c ../config.h \
-	eel-canvas-rect.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-art-extensions.h eel-string-list.h
-eel-canvas-simple-rect.lo eel-canvas-simple-rect.o : \
-	eel-canvas-simple-rect.c ../config.h eel-canvas-simple-rect.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h
-eel-canvas-util.lo eel-canvas-util.o : eel-canvas-util.c ../config.h \
-	eel-canvas.h eel-canvas-util.h
-eel-canvas.lo eel-canvas.o : eel-canvas.c ../config.h eel-canvas.h \
-	eel-i18n.h eel-marshal.h
-eel-caption-table.lo eel-caption-table.o : eel-caption-table.c \
-	../config.h eel-caption-table.h eel-accessibility.h \
-	eel-gtk-macros.h
-eel-caption.lo eel-caption.o : eel-caption.c ../config.h eel-caption.h \
-	eel-accessibility.h eel-gtk-macros.h eel-glib-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-art-extensions.h
-eel-cell-renderer-pixbuf-list.lo eel-cell-renderer-pixbuf-list.o : \
-	eel-cell-renderer-pixbuf-list.c ../config.h \
-	eel-cell-renderer-pixbuf-list.h eel-gtk-macros.h
-eel-clickable-image.lo eel-clickable-image.o : eel-clickable-image.c \
-	../config.h eel-clickable-image.h eel-labeled-image.h \
-	eel-label.h eel-scalable-font.h eel-string-list.h \
-	eel-art-extensions.h eel-smooth-widget.h \
-	eel-gdk-pixbuf-extensions.h eel-image.h eel-gtk-macros.h \
-	eel-gtk-extensions.h eel-gdk-extensions.h \
-	eel-art-gtk-extensions.h eel-gtk-extensions.h \
-	eel-graphic-effects.h
-eel-clist.lo eel-clist.o : eel-clist.c ../config.h eel-clist.h \
-	eel-marshal.h
-eel-ctree.lo eel-ctree.o : eel-ctree.c ../config.h eel-marshal.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-graphic-effects.h eel-gtk-extensions.h eel-gdk-extensions.h \
-	eel-ctree.h eel-list.h eel-clist.h
-eel-dateedit-extensions.lo eel-dateedit-extensions.o : \
-	eel-dateedit-extensions.c ../config.h eel-dateedit-extensions.h \
-	eel-glib-extensions.h
-eel-debug-drawing.lo eel-debug-drawing.o : eel-debug-drawing.c \
-	../config.h eel-debug-drawing.h eel-gdk-pixbuf-extensions.h \
-	eel-art-extensions.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-debug.h \
-	eel-gdk-extensions.h eel-gdk-pixbuf-extensions.h \
-	eel-gtk-extensions.h eel-gtk-macros.h
-eel-debug.lo eel-debug.o : eel-debug.c ../config.h eel-debug.h
-eel-dnd.lo eel-dnd.o : eel-dnd.c ../config.h eel-dnd.h \
-	eel-glib-extensions.h eel-string.h eel-vfs-extensions.h
-eel-editable-label.lo eel-editable-label.o : eel-editable-label.c \
-	eel-editable-label.h eel-i18n.h eel-marshal.h
-eel-ellipsizing-label.lo eel-ellipsizing-label.o : \
-	eel-ellipsizing-label.c ../config.h eel-ellipsizing-label.h \
-	eel-gtk-macros.h eel-pango-extensions.h eel-string.h
-eel-enumeration.lo eel-enumeration.o : eel-enumeration.c ../config.h \
-	eel-enumeration.h eel-string-list.h eel-debug.h \
-	eel-glib-extensions.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-art-extensions.h eel-string.h eel-i18n.h
-eel-features.lo eel-features.o : eel-features.c eel-features.h
-eel-font-manager.lo eel-font-manager.o : eel-font-manager.c ../config.h \
-	eel-font-manager.h eel-glib-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string-list.h \
-	eel-string.h
-eel-font-picker.lo eel-font-picker.o : eel-font-picker.c ../config.h \
-	eel-font-picker.h eel-caption.h
-eel-gconf-extensions.lo eel-gconf-extensions.o : eel-gconf-extensions.c \
-	../config.h eel-gconf-extensions.h eel-string-list.h \
-	eel-debug.h eel-glib-extensions.h eel-stock-dialogs.h \
-	eel-string.h eel-i18n.h
-eel-gdk-extensions.lo eel-gdk-extensions.o : eel-gdk-extensions.c \
-	../config.h eel-gdk-extensions.h eel-glib-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string.h
-eel-gdk-font-extensions.lo eel-gdk-font-extensions.o : \
-	eel-gdk-font-extensions.c ../config.h eel-gdk-font-extensions.h \
-	eel-glib-extensions.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-art-extensions.h eel-string-list.h \
-	eel-string-list.h eel-string.h
-eel-gdk-pixbuf-extensions.lo eel-gdk-pixbuf-extensions.o : \
-	eel-gdk-pixbuf-extensions.c ../config.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-debug-drawing.h \
-	eel-gdk-pixbuf-extensions.h eel-debug.h eel-gdk-extensions.h \
-	eel-glib-extensions.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-string-list.h eel-string.h
-eel-generous-bin.lo eel-generous-bin.o : eel-generous-bin.c ../config.h \
-	eel-generous-bin.h eel-gtk-macros.h
-eel-glib-extensions.lo eel-glib-extensions.o : eel-glib-extensions.c \
-	../config.h eel-glib-extensions.h eel-debug.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string.h eel-i18n.h
-eel-glyph.lo eel-glyph.o : eel-glyph.c ../config.h eel-glyph.h \
-	eel-scalable-font.h eel-string-list.h eel-art-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-scalable-font-private.h eel-gdk-extensions.h \
-	eel-debug-drawing.h
-eel-gnome-extensions.lo eel-gnome-extensions.o : eel-gnome-extensions.c \
-	../config.h eel-gnome-extensions.h eel-art-extensions.h \
-	eel-gdk-extensions.h eel-glib-extensions.h eel-gtk-extensions.h \
-	eel-gdk-extensions.h eel-stock-dialogs.h eel-i18n.h \
-	egg-screen-exec.h
-eel-gobject-extensions.lo eel-gobject-extensions.o : \
-	eel-gobject-extensions.c ../config.h eel-gobject-extensions.h
-eel-graphic-effects.lo eel-graphic-effects.o : eel-graphic-effects.c \
-	../config.h eel-graphic-effects.h
-eel-gtk-container.lo eel-gtk-container.o : eel-gtk-container.c \
-	../config.h eel-gtk-container.h eel-art-extensions.h
-eel-gtk-extensions.lo eel-gtk-extensions.o : eel-gtk-extensions.c \
-	../config.h eel-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-glib-extensions.h eel-gnome-extensions.h \
-	eel-pango-extensions.h eel-string.h eel-marshal.h eel-marshal.c
-eel-i18n.lo eel-i18n.o : eel-i18n.c ../config.h eel-i18n.h
-eel-image-chooser.lo eel-image-chooser.o : eel-image-chooser.c \
-	../config.h eel-image-chooser.h eel-art-extensions.h \
-	eel-gtk-extensions.h eel-gdk-extensions.h
-eel-image-table.lo eel-image-table.o : eel-image-table.c ../config.h \
-	eel-image-table.h eel-wrap-table.h eel-art-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-art-extensions.h eel-debug-drawing.h \
-	eel-gdk-pixbuf-extensions.h eel-gtk-extensions.h \
-	eel-gtk-macros.h eel-labeled-image.h eel-marshal.h
-eel-image-with-background.lo eel-image-with-background.o : \
-	eel-image-with-background.c ../config.h \
-	eel-image-with-background.h eel-image.h eel-smooth-widget.h \
-	eel-art-extensions.h eel-gdk-pixbuf-extensions.h \
-	eel-background.h eel-gdk-pixbuf-extensions.h
-eel-image.lo eel-image.o : eel-image.c ../config.h eel-image.h \
-	eel-smooth-widget.h eel-art-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-debug-drawing.h \
-	eel-gdk-extensions.h eel-gdk-pixbuf-extensions.h \
-	eel-gtk-extensions.h eel-gtk-macros.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-string-list.h eel-marshal.h eel-string.h
-eel-label-with-background.lo eel-label-with-background.o : \
-	eel-label-with-background.c ../config.h \
-	eel-label-with-background.h eel-label.h eel-scalable-font.h \
-	eel-string-list.h eel-art-extensions.h eel-smooth-widget.h \
-	eel-gdk-pixbuf-extensions.h eel-background.h \
-	eel-gdk-pixbuf-extensions.h
-eel-label.lo eel-label.o : eel-label.c ../config.h eel-label.h \
-	eel-scalable-font.h eel-string-list.h eel-art-extensions.h \
-	eel-smooth-widget.h eel-gdk-pixbuf-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-debug-drawing.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-gtk-extensions.h \
-	eel-gtk-macros.h eel-marshal.h eel-scalable-font-private.h \
-	eel-smooth-text-layout.h eel-string.h
-eel-labeled-image.lo eel-labeled-image.o : eel-labeled-image.c \
-	../config.h eel-labeled-image.h eel-art-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-art-extensions.h eel-debug-drawing.h \
-	eel-gdk-pixbuf-extensions.h eel-gtk-container.h \
-	eel-gtk-extensions.h eel-gtk-macros.h eel-accessibility.h
-eel-lib-self-check-functions.lo eel-lib-self-check-functions.o : \
-	eel-lib-self-check-functions.c ../config.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h
-eel-list-column-title.lo eel-list-column-title.o : \
-	eel-list-column-title.c ../config.h eel-list-column-title.h \
-	eel-list.h eel-clist.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-gtk-macros.h
-eel-list.lo eel-list.o : eel-list.c ../config.h eel-list.h eel-clist.h \
-	eel-dnd.h eel-marshal.h eel-list-column-title.h \
-	eel-background.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-art-extensions.h \
-	eel-glib-extensions.h eel-graphic-effects.h \
-	eel-gtk-extensions.h eel-gtk-macros.h
-eel-pango-extensions.lo eel-pango-extensions.o : eel-pango-extensions.c \
-	../config.h eel-pango-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h
-eel-password-dialog.lo eel-password-dialog.o : eel-password-dialog.c \
-	../config.h eel-password-dialog.h eel-caption-table.h \
-	eel-gnome-extensions.h eel-gtk-macros.h eel-i18n.h
-eel-preferences-box.lo eel-preferences-box.o : eel-preferences-box.c \
-	../config.h eel-preferences-box.h eel-preferences-pane.h \
-	eel-preferences-group.h eel-preferences.h eel-string-list.h \
-	eel-gconf-extensions.h eel-preferences-item.h \
-	eel-gtk-extensions.h eel-gdk-extensions.h eel-gtk-macros.h \
-	eel-string.h eel-i18n.h
-eel-preferences-glade.lo eel-preferences-glade.o : \
-	eel-preferences-glade.c eel-preferences-glade.h \
-	eel-preferences.h eel-string-list.h eel-gconf-extensions.h \
-	eel-string-list.h
-eel-preferences-group.lo eel-preferences-group.o : \
-	eel-preferences-group.c ../config.h eel-preferences-group.h \
-	eel-preferences.h eel-string-list.h eel-gconf-extensions.h \
-	eel-preferences-item.h eel-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-macros.h
-eel-preferences-item.lo eel-preferences-item.o : eel-preferences-item.c \
-	../config.h eel-preferences-item.h eel-preferences.h \
-	eel-string-list.h eel-gconf-extensions.h eel-accessibility.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h eel-art-extensions.h eel-enumeration.h \
-	eel-font-picker.h eel-caption.h eel-glib-extensions.h \
-	eel-gtk-extensions.h eel-marshal.h eel-preferences.h \
-	eel-radio-button-group.h eel-string-picker.h eel-string.h \
-	eel-text-caption.h
-eel-preferences-pane.lo eel-preferences-pane.o : eel-preferences-pane.c \
-	../config.h eel-preferences-pane.h eel-preferences-group.h \
-	eel-preferences.h eel-string-list.h eel-gconf-extensions.h \
-	eel-preferences-item.h eel-gtk-macros.h eel-gtk-extensions.h \
-	eel-gdk-extensions.h eel-string.h eel-string-list.h
-eel-preferences.lo eel-preferences.o : eel-preferences.c ../config.h \
-	eel-preferences.h eel-string-list.h eel-gconf-extensions.h \
-	eel-debug.h eel-gconf-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-enumeration.h eel-glib-extensions.h \
-	eel-string-list.h eel-string.h
-eel-radio-button-group.lo eel-radio-button-group.o : \
-	eel-radio-button-group.c ../config.h eel-radio-button-group.h \
-	eel-accessibility.h eel-gtk-macros.h eel-glib-extensions.h
-eel-region.lo eel-region.o : eel-region.c ../config.h eel-region.h \
-	eel-glib-extensions.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-art-extensions.h
-eel-scalable-font.lo eel-scalable-font.o : eel-scalable-font.c \
-	../config.h eel-scalable-font-private.h eel-scalable-font.h \
-	eel-string-list.h eel-art-extensions.h eel-background.h \
-	eel-font-manager.h eel-gdk-pixbuf-extensions.h \
-	eel-glib-extensions.h eel-glyph.h eel-gdk-pixbuf-extensions.h \
-	eel-gtk-macros.h eel-lib-self-check-functions.h \
-	eel-self-checks.h eel-string.h
-eel-self-checks.lo eel-self-checks.o : eel-self-checks.c ../config.h \
-	eel-self-checks.h eel-art-extensions.h eel-string-list.h
-eel-smooth-text-layout-cache.lo eel-smooth-text-layout-cache.o : \
-	eel-smooth-text-layout-cache.c ../config.h \
-	eel-smooth-text-layout-cache.h eel-smooth-text-layout.h \
-	eel-art-extensions.h eel-scalable-font.h eel-string-list.h \
-	eel-gtk-macros.h eel-smooth-text-layout.h eel-debug.h \
-	eel-self-checks.h
-eel-smooth-text-layout.lo eel-smooth-text-layout.o : \
-	eel-smooth-text-layout.c ../config.h eel-smooth-text-layout.h \
-	eel-art-extensions.h eel-scalable-font.h eel-string-list.h \
-	eel-gtk-macros.h eel-gdk-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-string.h eel-glyph.h \
-	eel-gdk-pixbuf-extensions.h eel-debug-drawing.h
-eel-smooth-widget.lo eel-smooth-widget.o : eel-smooth-widget.c \
-	../config.h eel-smooth-widget.h eel-art-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-gdk-extensions.h \
-	eel-art-gtk-extensions.h eel-gdk-extensions.h \
-	eel-gtk-extensions.h
-eel-stock-dialogs.lo eel-stock-dialogs.o : eel-stock-dialogs.c \
-	../config.h eel-stock-dialogs.h eel-glib-extensions.h \
-	eel-gnome-extensions.h eel-string.h eel-i18n.h
-eel-string-list.lo eel-string-list.o : eel-string-list.c ../config.h \
-	eel-string-list.h eel-glib-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string.h
-eel-string-picker.lo eel-string-picker.o : eel-string-picker.c \
-	../config.h eel-string-picker.h eel-caption.h eel-string-list.h \
-	eel-glib-extensions.h eel-gtk-macros.h eel-string.h
-eel-string.lo eel-string.o : eel-string.c ../config.h eel-string.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h
-eel-text-caption.lo eel-text-caption.o : eel-text-caption.c ../config.h \
-	eel-text-caption.h eel-caption.h eel-gtk-macros.h \
-	eel-glib-extensions.h
-eel-types.lo eel-types.o : eel-types.c ../config.h eel.h \
-	eel-art-extensions.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-background.h \
-	eel-caption-table.h eel-caption.h eel-dateedit-extensions.h \
-	eel-ellipsizing-label.h eel-enumeration.h eel-string-list.h \
-	eel-features.h eel-gconf-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-generous-bin.h \
-	eel-glib-extensions.h eel-gnome-extensions.h \
-	eel-graphic-effects.h eel-gtk-container.h eel-gtk-macros.h \
-	eel-image-chooser.h eel-image-table.h eel-wrap-table.h \
-	eel-labeled-image.h eel-pango-extensions.h \
-	eel-password-dialog.h eel-preferences.h \
-	eel-radio-button-group.h eel-self-checks.h eel-stock-dialogs.h \
-	eel-string-picker.h eel-string.h eel-types.h \
-	eel-type-builtins.h eel-vfs-extensions.h eel-xml-extensions.h \
-	eel-type-builtins-vars.c eel-type-builtins-evals.c \
-	eel-type-builtins-ids.c
-eel-vfs-extensions.lo eel-vfs-extensions.o : eel-vfs-extensions.c \
-	../config.h eel-i18n.h eel-vfs-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string.h
-eel-viewport.lo eel-viewport.o : eel-viewport.c ../config.h \
-	eel-viewport.h eel-smooth-widget.h eel-art-extensions.h \
-	eel-gdk-pixbuf-extensions.h eel-gtk-macros.h
-eel-wrap-table.lo eel-wrap-table.o : eel-wrap-table.c ../config.h \
-	eel-wrap-table.h eel-art-extensions.h eel-art-gtk-extensions.h \
-	eel-gdk-extensions.h eel-gtk-extensions.h eel-art-extensions.h \
-	eel-gtk-extensions.h eel-gtk-macros.h eel-types.h \
-	eel-type-builtins.h
-eel-xml-extensions.lo eel-xml-extensions.o : eel-xml-extensions.c \
-	../config.h eel-xml-extensions.h eel-string.h eel-i18n.h
-egg-screen-exec.lo egg-screen-exec.o : egg-screen-exec.c ../config.h \
-	egg-screen-exec.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
@@ -846,9 +659,6 @@ dist-hook:
 	for file in $(DONT_DIST_FILES) ; do \
 	    rm -f $(distdir)/$$file ; \
 	done
-
-regenerate-built-sources:
-	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

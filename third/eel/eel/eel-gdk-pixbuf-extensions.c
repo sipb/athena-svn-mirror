@@ -222,14 +222,13 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 					      bytes_read,
 					      NULL)) {
 			result = GNOME_VFS_ERROR_WRONG_FORMAT;
-		} else {
-			gnome_vfs_async_read (handle->vfs_handle,
-					      handle->buffer,
-					      sizeof (handle->buffer),
-					      file_read_callback,
-					      handle);
-			return;
 		}
+		gnome_vfs_async_read (handle->vfs_handle,
+				      handle->buffer,
+				      sizeof (handle->buffer),
+				      file_read_callback,
+				      handle);
+		return;
 	}
 
 	load_done (handle, result, result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF);
