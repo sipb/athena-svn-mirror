@@ -6,8 +6,8 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: jfc $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.12 1990-02-18 20:50:05 jfc Exp $
+ *      $Author: raeburn $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.13 1990-10-19 07:11:48 raeburn Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -89,7 +89,7 @@ extern void init_queue(), retransmit_queue();
 
 #ifndef ok
 #define MACHINE "unknown"
-#endif ok
+#endif
 #undef ok
 
 #endif !__HM_H__
