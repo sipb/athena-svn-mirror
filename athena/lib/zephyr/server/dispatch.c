@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.3 1987-07-01 18:09:53 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.4 1987-07-02 19:06:27 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -34,6 +34,13 @@ static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/at
  *	struct sockaddr_in *who;
  *	ZSentType sent;
  *
+ * void nack_release(client)
+ *	ZClient_t *client;
+ *
+ * void sendit(notice, auth, who)
+ *	ZNotice_t *notice;
+ *	int auth;
+ *	struct sockaddr_in *who;
  */
 
 static void xmit(), rexmit(), nack_cancel();
@@ -103,15 +110,7 @@ struct sockaddr_in *who;
 		ulocate_dispatch(notice, auth, who);
 		return;
 	} else if (class_is_admin(notice)) {
-		/* this had better be a HELLO message--start of acquisition
-		   protocol */
-		syslog(LOG_INFO, "disp: new server?");
-		if (server_register(notice, who) != ZERR_NONE)
-			syslog(LOG_INFO, "new server failed");
-		else
-			syslog(LOG_INFO, "new server %s, %d",
-			       inet_ntoa(who->sin_addr),
-			       ntohs(who->sin_port));
+		server_adispatch(notice, auth, who);
 		return;
 	}
 
