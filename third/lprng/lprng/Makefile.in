@@ -59,19 +59,6 @@ TAGS clean install::
 #
 #BSD 	$(MAKE) -f Makefile.bsd MAKETARGET=$@ $(DIRS)
 
-install::
-	#install default versions of the lpd.conf and lpd.perm files
-	f=$(LPD_CONF_PATH) ; \
-	if [ -z "$$f" ] ; then f=/etc/lpd.conf; fi; \
-	if [ ! -f "$$f" ] ; then \
-		$(INSTALL) -m 644 $(SRC)/src/lpd.conf $$f; \
-	fi;
-	if [ ! -f /etc/lpd.perms ] ; then \
-		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms; \
-	else \
-		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms.sample; \
-	fi;
-
 info dvi check:
 
 realclean mostlyclean distclean: clean

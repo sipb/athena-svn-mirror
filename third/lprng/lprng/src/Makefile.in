@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.8 1999-05-05 18:09:24 mwhitson Exp $
+# $Id: Makefile.in,v 1.9 1999-05-15 03:27:10 mwhitson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -328,13 +328,6 @@ install: all ${INSTALL_LIB} ${INSTALL_BIN} ${INSTALL_MAINT}
 	${INSTALLCMD} -m $(NORM_PERMS) lpraccnt ${INSTALL_MAINT}
 	rm -f ${INSTALL_BIN}/lp;     ln -s lpr  ${INSTALL_BIN}/lp;
 	rm -f ${INSTALL_BIN}/cancel; ln -s lprm ${INSTALL_BIN}/cancel;
-	f=/etc/lpd.conf; \
-	if [ -n "$(LPD_CONF_PATH)" ] ; then f=$(LPD_CONF_PATH); fi; \
-	if [ ! -f "$$f" ] ; then \
-		${INSTALLCMD} -m $(NORM_PERMS) lpd.conf $$f ; \
-	else \
-		${INSTALLCMD} -m $(NORM_PERMS) lpd.conf $$f.sample ; \
-	fi;
 
 ${INSTALL_LIB}::
 	${SRC}/mkinstalldirs $@
