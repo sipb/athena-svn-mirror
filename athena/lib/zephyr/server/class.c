@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_class_c[] =
-    "$Id: class.c,v 1.15 1990-11-13 17:04:34 raeburn Exp $";
+    "$Id: class.c,v 1.16 1990-11-17 01:25:19 raeburn Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -324,7 +324,7 @@ class_get_acl(ZString class_name)
 
 	/* walk down the list, looking for a match */
 	for (ptr2 = ptr->q_forw; ptr2 != ptr; ptr2 = ptr2->q_forw)
-	    if (ptr2->zct_dest.classname == class_name)
+	    if (ptr2->zct_dest == d)
 		return(ptr2->zct_acl);
 
 	/* fell off the end, no match ==> not restricted */
