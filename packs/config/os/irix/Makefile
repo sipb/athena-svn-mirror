@@ -1,11 +1,13 @@
-# $Id: Makefile,v 1.6 1999-03-31 15:11:39 ghudson Exp $
+# $Id: Makefile,v 1.7 1999-04-02 19:38:18 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
 DEFAULT=/etc/default
 ATHRETCDIR=/etc/athena
+ATHX11LIB=/usr/athena/lib/X11
+APPDEFS=${ATHX11LIB}/app-defaults
 X11LIB=/usr/lib/X11
-APPDEFS=${X11LIB}/app-defaults
+X11APPDEFS=${X11LIB}/app-defaults
 FONTS=${X11LIB}/fonts/100dpi
 FLEXLM=/var/flexlm
 CRONTABS=/var/spool/cron/crontabs
@@ -25,6 +27,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${SGICONFIG}
 	mkdir -p ${DESTDIR}${X11LIB}
+	mkdir -p ${DESTDIR}${X11APPDEFS}
 	mkdir -p ${DESTDIR}${APPDEFS}
 	mkdir -p ${DESTDIR}${FONTS}
 	mkdir -p ${DESTDIR}${CRONTABS}
@@ -34,13 +37,13 @@ install:
 	mkdir -p ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
-	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
+	install -c -m 0644 4DWm ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
-	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Mwm ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
-	install -c -m 0644 Toolchest ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Toolchest ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 appletalk ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
