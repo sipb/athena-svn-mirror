@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.12 1987-08-01 15:29:02 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.13 1987-09-15 11:29:33 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.12 1987-08-01 15:29:02 rfrench Exp $";
+static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.13 1987-09-15 11:29:33 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -46,7 +46,7 @@ Code_t ZLocateUser(user,nlocs)
 	notice.z_default_format = "";
 	notice.z_message_len = 0;
 
-	if ((retval = ZSendNotice(&notice,ZNOAUTH)) != ZERR_NONE)
+	if ((retval = ZSendNotice(&notice,ZAUTH)) != ZERR_NONE)
 		return (retval);
 
 	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,NULL,
