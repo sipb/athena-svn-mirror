@@ -193,7 +193,7 @@ case "$1" in
 			rm -f /usr/vice/etc/cacheinfo.old
 			mv -f /usr/vice/etc/cacheinfo \
 				/usr/vice/etc/cacheinfo.old
-			df -bk /usr/vice/cache/ | awk '
+			df -k /usr/vice/cache/ | awk '
 				(NR == 2) {
 					printf "/afs:/usr/vice/cache:";
 					print int($3 * 3 / 4);
