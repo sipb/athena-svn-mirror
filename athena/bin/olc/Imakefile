@@ -1,12 +1,12 @@
 #
-# $Id: Imakefile,v 1.6 1990-11-17 19:10:51 lwvanels Exp $
+# $Id: Imakefile,v 1.7 1990-11-27 14:34:25 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
 #
 
 #define IHaveSubdirs
-SUBDIRS=common clients man lib # server+
+SUBDIRS=replayer common clients man lib # server+
 RM=rm -f
 MV=mv -f
 
