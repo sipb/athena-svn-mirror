@@ -1,4 +1,4 @@
-# $Id: packages,v 1.242 2003-05-05 17:59:21 ghudson Exp $
+# $Id: packages,v 1.243 2003-05-05 19:32:57 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -183,7 +183,7 @@ third/gnome-media		except linux requires gettext,intltool,glib2,libgnomeui,esoun
 third/gnome-mime-data		requires gettext
 third/gnome-panel		except linux requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
-third/gnome-terminal		except linux requires gettext,gtk2,GConf2,libglade2,libgnomeui,vte,startup-notification,Xft,pcre
+third/gnome-terminal		except linux requires gettext,gtk2,GConf2,libglade2,libgnomeui,vte,startup-notification,Xft
 third/gnome-themes		except linux requires gettext,intltool,gtk2,gtk-engines,gtk-thinice-engine
 third/gnome-utils		except linux requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
@@ -276,7 +276,7 @@ third/texinfo
 third/tiff			except linux requires jpeg
 third/top			except linux
 third/traceroute		on solaris
-third/vte			except linux requires gettext,glib2,pango,Xft
+third/vte			except linux requires gettext,glib2,pango,Xft,pcre
 third/wcl			requires openmotif
 third/x11-ssh-askpass
 third/x3270
