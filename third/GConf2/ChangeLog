@@ -1,3 +1,45 @@
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.1.
+
+2004-10-04  Mark McLoughlin  <mark@skynet.ie>
+
+	GConf part of fix for gconf-editor spewing warnings
+	on startup. See bug #144833.
+
+	* backends/markup-backend.c: (resolve_address): if the
+	toplevel directory isn't writable, mark the whole source
+	as non-writable.
+
+2004-09-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gconf/gconf-internals.c: (gconf_activate_server):
+	Fix pipe misuse reported by valgrind. Suggested fix
+	by Mark McLoughlin. Closes bug #153929.
+
+2004-09-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gconf/gconf-sanity-check.c: (main): Plug a leak.
+	* gconf/gconfd.c: (main): Plug a couple of leaks.
+	Ref bug #153929. Still one to go.
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	Leak identified by Kjartan in bug #153891.
+
+	* gconf/gconfd.c: (gconf_server_load_sources):
+	Plug leak.
+	
+	* gconf/gconf-internals.c:
+	(gconf_load_source_path): remove some crufty code,
+	don't unneccessarily copy strings.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0.1 ====================
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.1.
