@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.12 2000-03-29 19:54:01 ghudson Exp $
+# $Id: Makefile.athena,v 1.13 2000-03-31 14:59:00 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -8,7 +8,7 @@ dist:
 # cc to be gcc.
 prepare:
 	rm -f config.cache
-	. ./compiler && CC=$$cc CONFIG_SITE= ./configure --prefix=/usr/gcc
+	. ./compiler && CC=$$cc ./configure --prefix=/usr/gcc
 
 clean:
 	${MAKE} clean
