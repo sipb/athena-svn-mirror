@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.3 2001-01-12 18:23:58 ghudson Exp $
+;; $Id: site-init.jl,v 1.4 2001-01-13 15:03:12 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Set the default theme.
@@ -32,7 +32,7 @@
 				    '(frame-type . border-only))
 
 ;; Menu customizations
-(require 'sawfish.wm.ext.menus)
+(require 'sawfish.wm.menus)
 (require 'sawfish.wm.ext.old-window-menu)
 (setq menu-program-stays-running t)
 (menu-start-process)
