@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
-#	$Author: probe $
+#	$Author: raeburn $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.5 1989-10-22 16:42:18 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.6 1989-11-15 11:29:19 raeburn Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -29,6 +29,7 @@ ROOT=root
 DAEMON=daemon
 SPGRP=daemon
 OPERATOR=OPERATOR
+LN=ln -s
 # OP_GID is the group ID for group operator
 OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
@@ -45,27 +46,27 @@ lpd:	lpdchar.o s_common.o printcap.o
 
 s_rmjob.o: rmjob.c lp.h lp.local.h
 	rm -f s_rmjob.c
-	ln rmjob.c s_rmjob.c
+	$(LN) rmjob.c s_rmjob.c
 	${CC} ${CFLAGS} -c -DSERVER s_rmjob.c
 
 s_common.o: lp.h lp.local.h common.c
 	rm -f s_common.c
-	ln common.c s_common.c
+	$(LN) common.c s_common.c
 	${CC} ${CFLAGS} -c -DSERVER s_common.c
 
 s_lpr.o: lpr.c lp.h lp.local.h
 	rm -f s_lpr.c
-	ln lpr.c s_lpr.c
+	$(LN) lpr.c s_lpr.c
 	$(CC) ${CFLAGS} -c -DSERVER s_lpr.c
 
 s_lpq.o: lpq.c lp.h lp.local.h
 	rm -f s_lpq.c
-	ln lpq.c s_lpq.c
+	$(LN) lpq.c s_lpq.c
 	$(CC) ${CFLAGS} -c -DSERVER s_lpq.c
 
 s_lprm.o: lprm.c lp.h lp.local.h
 	rm -f s_lprm.c
-	ln lprm.c s_lprm.c
+	$(LN) lprm.c s_lprm.c
 	$(CC) ${CFLAGS} -c -DSERVER s_lprm.c
 
 lpd.o: lpd.c
@@ -111,12 +112,12 @@ pac:	pac.o printcap.o
 
 o_lprm.o: lp.h lp.local.h 
 	rm -f o_lprm.c 
-	ln lprm.c o_lprm.c
+	$(LN) lprm.c o_lprm.c
 	${CC} ${CFLAGS} -c -D${OPERATOR} o_lprm.c
 
 o_lpc.o: lp.h lp.local.h 
 	rm -f o_lpc.c
-	ln lpc.c o_lpc.c
+	$(LN) lpc.c o_lpc.c
 	${CC} ${CFLAGS} -c -D${OPERATOR} o_lpc.c
 
 lpd.o lpr.o lpq.o lprm.o o_lprm.o pac.o: lp.h lp.local.h
