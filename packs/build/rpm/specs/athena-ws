@@ -26,6 +26,8 @@ MESSAGE
 exit 1
 fi
 
+cd os/linux && cc -O -o vortex-diag vortex-diag.c
+
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
   cat 1>&2 << MESSAGE
@@ -49,6 +51,7 @@ cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
+cp os/linux/vortex-diag $RPM_BUILD_ROOT/etc/athena/vortex-diag
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 
 # This file actually goes in the athena-afs package.
@@ -210,6 +213,15 @@ if /sbin/lspci -n|grep -q 8086:2445 ; then
 alias sound-slot-0 i810_audio
 options i810_audio ftsodell=1
 EOF
+  fi
+fi
+
+# A bug in the 3C509 driver causes Dell GX150 and GX240 machines to
+# fail to autonegotiate.  Twiddling the eeprom settings on the card
+# works around this problem, so do that for now.
+if /sbin/lspci -n | grep -q 10b7:9200; then
+  if /etc/athena/vortex-diag | grep -q "Would write"; then
+    /etc/athena/vortex-diag -w > /dev/null
   fi
 fi
 
