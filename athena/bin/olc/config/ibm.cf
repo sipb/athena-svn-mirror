@@ -1,0 +1,8 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.1 1990-09-18 13:12:59 lwvanels Exp $ */
+#ifdef PS2Architecture
+#define SystemV 1
+#endif
+
+#ifdef RtArchitecture
+#define HasSaber 1
+#endif

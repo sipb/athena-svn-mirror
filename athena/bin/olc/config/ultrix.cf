@@ -1,0 +1,20 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ultrix.cf,v 1.1 1990-09-18 13:13:28 lwvanels Exp $ */
+
+#undef ProfiledLibraryObjectRule
+#define ProfiledLibraryObjectRule()	NormalLibraryObjectRule()
+
+#undef ProfiledLibraryTarget
+#define ProfiledLibraryTarget(name,objs)
+
+#ifdef MipsArchitecture
+#define ArCmd	ar r
+#if 0 /* although -g doesn't work, gcc is less buggy on this code... */
+#undef HaveGcc
+#define HaveGcc	0
+#undef DefaultCDebugFlags
+#define DefaultCDebugFlags -g3 -O2
+#else
+#undef DefaultCDebugFlags
+#define DefaultCDebugFlags -O /* gcc cannot produce -g info */
+#endif
+#endif
