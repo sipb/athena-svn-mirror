@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Icon.c,v 1.1 1991-09-03 11:06:58 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Icon.c,v 1.2 1991-09-04 10:11:50 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -101,7 +101,9 @@ static void realize(me)
   values.function = GXcopy;
   values.foreground = me->icon.foreground;
   values.background = me->icon.background;
-  valuemask = GCForeground | GCBackground | GCFunction;
+  values.graphics_exposures = False;
+  valuemask = ( GCForeground | GCBackground | GCFunction
+	       | GCGraphicsExposures );
 
   me->icon.gc = XCreateGC(me->core.display,
 			   me->core.window,
@@ -213,14 +215,17 @@ void SetIcon(me, state)
 {
   me->icon.inverted = state;
 
-  XCopyPlane(me->core.display,
-	     me->icon.pixmap->pixmap,
-	     me->core.window,
-	     state ? me->icon.gc : me->icon.reversegc,
-	     0, 0,
-	     me->icon.pixmap->width,
-	     me->icon.pixmap->height,
-	     me->icon.x,
-	     me->icon.y,
-	     1);
+  if (me->icon.pixmap)
+    {
+      XCopyPlane(me->core.display,
+		 me->icon.pixmap->pixmap,
+		 me->core.window,
+		 state ? me->icon.gc : me->icon.reversegc,
+		 0, 0,
+		 me->icon.pixmap->width,
+		 me->icon.pixmap->height,
+		 me->icon.x,
+		 me->icon.y,
+		 1);
+    }
 }
