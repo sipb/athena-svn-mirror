@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.17 1991-06-28 20:27:17 probe Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.18 1991-06-30 21:05:37 probe Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -545,7 +545,7 @@ xlogin.Geometry: 		580x325+205+75
 				setfocusCB(*name_input)
 *abort.wcClass:			commandWidgetClass
 *abort.fromHoriz:		*doit
-*abort.label			abort
+*abort.label:			abort
 *abort.callback:		WcPopdownCB(*getSessionShell), \
 				setfocusCB(*name_input), \
 				WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
