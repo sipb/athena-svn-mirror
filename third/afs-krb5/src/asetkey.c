@@ -1,5 +1,5 @@
 /*
- * $Id: asetkey.c,v 1.1.1.1 2003-02-13 00:14:46 zacheiss Exp $
+ * $Id: asetkey.c,v 1.2 2005-03-13 21:36:41 zacheiss Exp $
  *
  * asetkey - Manipulates an AFS KeyFile
  *
@@ -77,7 +77,7 @@ char **argv; {
 		exit(1);
 	}
 
-	code = afsconf_AddKey(tdir, kvno, key->contents);
+	code = afsconf_AddKey(tdir, kvno, key->contents, 1);
 	if (code) {
 	    printf("setkey: failed to set key, code %d.\n", code);
 	    exit(1);
