@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.7 1994-07-26 15:10:09 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.8 1994-08-24 03:40:04 cfields Exp $
 ### $Locker:  $
 
 
@@ -132,8 +132,10 @@ then
     echo "copying kvm..."
     mkdir /root/usr/kvm
     (cd /srvd/usr/kvm.4c; tar cf - . ) | (cd /root/usr/kvm; tar xf - . )
+    echo "copying /usr/kernel"
+    mkdir /root/usr/kernel
     (cd /srvd/usr/kernel; tar cf - . ) | (cd /root/usr/kernel; tar xf - . )
-    cp -p /srvd/kadb /root/kadb	
+    cp -p /srvd/kadb /root/kadb
 else
     echo "copying 4m kernel"
     mkdir /root/kernel;
@@ -141,8 +143,10 @@ else
     echo "getting usr/kvm.4m"
     mkdir /root/usr/kvm
     (cd /srvd/usr/kvm; tar cf - . ) | (cd /root/usr/kvm; tar xf - . )
+    echo "copying /usr/kernel "
+    mkdir /root/usr/kernel
     (cd /srvd/usr/kernel; tar cf - . ) | (cd /root/usr/kernel; tar xf - . )
-    cp -p /srvd/kadb.4c /root/kadb 
+    cp -p /srvd/kadb.4c /root/kadb
 fi
 
 cd /root
@@ -162,10 +166,9 @@ cp /dev/null etc/dumpdates
 cp /dev/null ups_data
 cp -p /srvd/etc/ftpusers etc/
 cp -p /srvd/etc/inetd.conf etc/
+cp -p /srvd/etc/services etc/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
 cp -p /srvd/etc/minor_perm etc/minor_perm
-#cp -p /srvd/etc/motd etc/
-cp -p /srvd/etc/services etc/
 
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
@@ -223,10 +226,10 @@ cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/spool/mqueue/syslog
 cp -p /srvd/etc/crontab.root.add  /root/var/spool/cron/crontabs/root
 echo "Installing bootblocks on root "
-cp -p /srvd/ufsboot /root
+cp -p /ufsboot /root
 /usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
 cd /root
-#ln -s usr/tmp/core.root core
+
 echo "Unmounting filesystems and checking them"
 cd /
 
@@ -240,6 +243,6 @@ fsck -F ufs $rusrdrive
 /usr/sbin/fsck -F ufs $rrootdrive
 sleep 5
 echo "rebooting now"
-/usr/sbin/reboot
+reboot
 
 
