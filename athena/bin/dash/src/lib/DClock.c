@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.11 1998-02-28 18:03:02 danw Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.12 1998-07-27 16:07:08 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -73,8 +73,8 @@ static XjResource resources[] = {
 
 #undef offset
 
-static void wakeup(), expose(), initialize(), realize(), querySize(),
-  move(), resize(), destroy(), parse_formats();
+static void wakeup(), expose(), realize(), querySize(),
+  move(), resize(), destroy();
 static char *get_label();
 static Boolean event_handler();
 
@@ -84,7 +84,7 @@ DClockClassRec dClockClassRec = {
     /* jet size   */		sizeof(DClockRec),
     /* classInitialize */	NULL,
     /* classInitialized? */	1,
-    /* initialize */		initialize,
+    /* initialize */		NULL,
     /* prerealize */    	NULL,
     /* realize */		realize,
     /* event */			event_handler,
@@ -101,13 +101,6 @@ DClockClassRec dClockClassRec = {
 JetClass dClockJetClass = (JetClass)&dClockClassRec;
 
 
-static void initialize(me)
-     DClockJet me;
-{
-  parse_formats(me);		/* Parse the format string... */
-}
-
-  
 /*
  * Things are currently broken screenwise.
  * It will be fun to fix later. :)
@@ -120,13 +113,13 @@ static void realize(me)
   int w, len;
 
   me->dClock.current_fmt = w = 1;
-  len = strlen(get_label(me)) + 9 + me->dClock.num_fmts[w];
+  len = strlen(get_label(me)) + 15;
   me->dClock.current_fmt = w = 0;
-  len = MAX(len, strlen(get_label(me)) + 9 + me->dClock.num_fmts[w]);
+  len = MAX(len, strlen(get_label(me)) + 15);
 
 /*
  *  Add in some extra.  9 is the difference between the longest
- *  {month,day}name and the shortest of each. Add in num_fmts for extra
+ *  {month,day}name and the shortest of each. Add in some more for extra
  *  security.
  *
  *  This will actually give us a rectangle that will be too big, but
@@ -363,193 +356,87 @@ static char *get_label(me)
 {
   static char outbuf[BUFSIZ];
   struct tm *tp;
-  int i;
   struct timeval tv;
   struct timezone tz;
-  caddr_t f[MAX_FMTS];
+  char *in, *out, *start, fmbuf[10];
 
   gettimeofday(&tv, &tz);
   tv.tv_sec += me->dClock.timeOffset;
 
   tp = localtime((time_t *) &tv.tv_sec);
 
-  for (i=0; i < MAX_FMTS; i++)
+  in = me->dClock.format[me->dClock.current_fmt];
+  for (out = outbuf; *in; in++)
     {
-      switch(me->dClock.fmt_type[me->dClock.current_fmt][i])
+      if (*in != '%')
+	*out++ = *in;
+      else
 	{
-	  /*
-	   * 'w' = weekday name (Monday - Sunday)
-	   * 'n' = monthname (January - December)
-	   * 'M' = Month number (1 - 12)
-	   * 'D' = Day of month (1 - {28,30,31})
-	   * 'C' = Century (all but last two digits of year - ex: 19)
-	   * 'Y' = Year number (no century - ex: 91)
-	   * 'e' = european time (24 hour time)
-	   * 'h' = hour number (1 - 12)
-	   * 'm' = minute (0 - 60)
-	   * 's' = seconds (0 - 60)
-	   * 'A' = AMPM ("AM" or "PM")
-	   * 'a' = ampm ("am" or "pm")
-	   * 'z' = timeZone (ex: EDT, EST, CDT, CST, etc.)
-	   * 'o' = day Of year (1 - 366)
-	   */
-
-	case '!':
-	  f[i] = (caddr_t) 0;
-	  break;
-	case 'w':
-	  f[i] = (caddr_t) wday[tp->tm_wday];
-	  break;
-	case 't':		/* 't' for backwards-compatibility */
-	case 'n':
-	  f[i] = (caddr_t) month[tp->tm_mon];
-	  break;
-	case 'M':
-	  f[i] = (caddr_t) (tp->tm_mon + 1);
-	  break;
-	case 'D':
-	  f[i] = (caddr_t) tp->tm_mday;
-	  break;
-	case 'C':
-	  f[i] = (caddr_t) ((tp->tm_year + 1900) / 100);
-	  break;
-	case 'Y':
-	  f[i] = (caddr_t) (tp->tm_year % 100);
-	  break;
-	case 'e':
-	  f[i] = (caddr_t) tp->tm_hour;
-	  break;
-	case 'h':
-	  f[i] = (caddr_t) ((tp->tm_hour > 12)
-			    ? (tp->tm_hour - 12)
-			    : ((tp->tm_hour == 0)
-			       ? 12
-			       : tp->tm_hour));
-	  break;
-	case 'm':
-	  f[i] = (caddr_t) tp->tm_min;
-	  break;
-	case 's':
-	  f[i] = (caddr_t) tp->tm_sec;
-	  break;
-	case 'A':
-	  f[i] = (caddr_t) ((tp->tm_hour) > 11 ? "PM" : "AM");
-	  break;
-	case 'a':
-	  f[i] = (caddr_t) ((tp->tm_hour) > 11 ? "pm" : "am");
-	  break;
-	case 'z':
-#if defined (AIX_ARCH) || defined(MAC_ARCH) || defined(SOLARIS) || defined(sgi)
- 	  f[i] = (caddr_t) tzname[tp->tm_isdst];
-#else
-#if defined (ULTRIX_ARCH)
-	  f[i] = (caddr_t) timezone(tz.tz_minuteswest, tp->tm_isdst);
-#else
-	  f[i] = (caddr_t) tp->tm_zone;
-#endif
-#endif
-	  break;
-	case 'o':
-	  f[i] = (caddr_t) (tp->tm_yday + 1);
-	  break;
-	default:
-	  f[i] = (caddr_t) "?";
-	  break;
-	}
-    }
-
-  vsprintf(outbuf, me->dClock.fmts[me->dClock.current_fmt], f);
-  return(outbuf);
-}
-
-
-static void parse_formats(me)
-     DClockJet me;
-{
-  char *s_ptr, *f_ptr;
-  int i, j;
-
-  for (i = 0; i < 2; i++)
-    {
-      me->dClock.num_fmts[i] = 0;
-      s_ptr = me->dClock.format[i];
-      f_ptr = me->dClock.fmts[i];
-
-      while (*s_ptr != '\0')
-	{
-	  if (*s_ptr != '%')
-	    *f_ptr++ = *s_ptr++;
-	  else
+	  start = in++;
+	  while (!isalpha(*in))
+	    in++;
+	  sprintf(fmbuf, "%.*s%c", in - start, start,
+		  strchr("MDCYehmso", *in) ? 'd' : 's');
+	  switch (*in)
 	    {
-	      if (*(s_ptr+1) == '%')
-		{
-		  *f_ptr++ = '%';  *f_ptr++ = '%';
-		  s_ptr += 2;
-		}
-	      else
-		{
-		  while(!isalpha(*s_ptr))
-		    *f_ptr++ = *s_ptr++;
-
-		  switch(me->dClock.fmt_type[i][me->dClock.num_fmts[i]]
-			 = *s_ptr++)
-		    /* YES, I really do want an assignment here... */
-		    {
-		      /*
-		       * 'w' = weekday name (Monday - Sunday)
-		       * 'n' = monthname (January - December)
-		       * 'M' = Month number (1 - 12)
-		       * 'D' = Day of month (1 - {28,30,31})
-		       * 'C' = Century (all but last two digits of year)
-		       * 'Y' = Year number (no century - ex: 91)
-		       * 'e' = european time (24 hour time)
-		       * 'h' = hour number (1 - 12)
-		       * 'm' = minute (0 - 60)
-		       * 's' = seconds (0 - 60)
-		       * 'A' = AMPM ("AM" or "PM")
-		       * 'a' = ampm ("am" or "pm")
-		       * 'z' = timeZone (ex: EDT, EST, CDT, CST, etc.)
-		       * 'o' = day Of year (1 - 366)
-		       */
-
-		    case 'w':
-		    case 'n':
-		    case 't':	/* 't' for backwards-compatibility */
-		    case 'A':
-		    case 'a':
-		    case 'z':
-		      *f_ptr++ = 's';
-		      (me->dClock.num_fmts[i])++;
-		      break;
-
-		    case 'M':
-		    case 'D':
-		    case 'C':
-		    case 'Y':
-		    case 'e':
-		    case 'h':
-		    case 'm':
-		    case 's':
-		    case 'o':
-		      *f_ptr++ = 'd';
-		      (me->dClock.num_fmts[i])++;
-		      break;
-
-		    default:
-		      *f_ptr++ = 's';
-		      (me->dClock.num_fmts[i])++;
-		      break;
-		    }
-		}
+	    case 'w': /* 'w' = weekday name (Monday - Sunday) */
+	      sprintf(out, fmbuf, wday[tp->tm_wday]);
+	      break;
+	    case 'n': /* 'n' = monthname (January - December) */
+	    case 't': /* backward compatibility */
+	      sprintf(out, fmbuf, month[tp->tm_mon]);
+	      break;
+	    case 'M': /* 'M' = Month number (1 - 12) */
+	      sprintf(out, fmbuf, tp->tm_mon + 1);
+	      break;
+	    case 'D': /* 'D' = Day of month (1 - {28,30,31}) */
+	      sprintf(out, fmbuf, tp->tm_mday);
+	      break;
+	    case 'C': /* 'C' = Century (all but last 2 dig of year - ex: 19) */
+	      sprintf(out, fmbuf, (tp->tm_year + 1900) / 100);
+	      break;
+	    case 'Y': /* 'Y' = Year number (no century - ex: 91) */
+	      sprintf(out, fmbuf, tp->tm_year % 100);
+	      break;
+	    case 'e': /* 'e' = european time (24 hour time) */
+	      sprintf(out, fmbuf, tp->tm_hour);
+	      break;
+	    case 'h': /* 'h' = hour number (1 - 12) */
+	      sprintf(out, fmbuf, (tp->tm_hour > 12) ? (tp->tm_hour - 12) :
+		      ((tp->tm_hour == 0) ? 12 : tp->tm_hour));
+	      break;
+	    case 'm': /* 'm' = minute (0 - 60) */
+	      sprintf(out, fmbuf, tp->tm_min);
+	      break;
+	    case 's': /* 's' = seconds (0 - 60) */
+	      sprintf(out, fmbuf, tp->tm_sec);
+	      break;
+	    case 'A': /* 'A' = AMPM ("AM" or "PM") */
+	      sprintf(out, fmbuf, (tp->tm_hour > 11) ? "PM" : "AM");
+	      break;
+	    case 'a': /* 'a' = ampm ("am" or "pm") */
+	      sprintf(out, fmbuf, (tp->tm_hour > 11) ? "pm" : "am");
+	      break;
+	    case 'z': /* 'z' = timeZone (ex: EDT, EST, CDT, CST, etc.) */
+#if defined(SOLARIS) || defined(sgi)
+	      sprintf(out, fmbuf, tzname[tp->tm_isdst]);
+#else
+	      sprintf(out, fmbuf, tp->tm_zone);
+#endif
+	      break;
+	    case 'o': /* 'o' = day Of year (1 - 366) */
+	      sprintf(out, fmbuf, tp->tm_yday + 1);
+	      break;
+	    default:
+	      sprintf(out, fmbuf, "?");
+	      break;
 	    }
+	  out += strlen(out);
 	}
-      for (j = me->dClock.num_fmts[i]; j < MAX_FMTS; j++)
-	{
-	  me->dClock.fmt_type[i][j] = '!';
-	  *f_ptr++ = '%'; *f_ptr++ = 'c';
-	}
-      *f_ptr = '\0';
     }
+
+  *out = '\0';
+  return(outbuf);
 }
 
 static Boolean event_handler(me, event)
