@@ -1,0 +1,31 @@
+#
+# Internet server configuration database
+# MIT Project Athena
+#
+#	$Source: /afs/dev.mit.edu/source/repository/packs/config/os/irix/inetd.conf.athena,v $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/os/irix/inetd.conf.athena,v 1.1 1998-12-25 19:32:49 ghudson Exp $
+#
+
+# Services moved from SGI's inetd.conf to be switched.
+
+shell	stream	tcp	nowait	switched	root	/usr/etc/rshd	rshd
+login	stream	tcp	nowait	switched	root	/usr/etc/rlogind	rlogind
+
+# Services moved from SGI's inetd.conf here because IRIX 5.3's inetd is stupid
+# and logs errors when a service is run as a user other than root.
+
+finger	stream	tcp	nowait	unswitched	guest	/usr/etc/fingerd	fingerd
+
+# Athena services.
+
+ntalk	dgram	udp	wait	unswitched	root	/usr/athena/etc/talkd	ntalkd
+telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a cred
+ftp	stream	tcp	nowait	switched	root	/usr/athena/etc/ftpd	ftpd -a off
+kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
+klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
+eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k -e
+rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
+gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
+write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
+busypoll dgram	udp	wait	unswitched	guest	/etc/athena/busyd	busyd
+athinfo	stream	tcp	nowait	unswitched	root	/etc/athena/athinfod	athinfod

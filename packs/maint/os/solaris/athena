@@ -1,0 +1,356 @@
+# $Id: athena,v 1.1 1998-12-25 19:33:53 ghudson Exp $
+# /etc/init.d/athena - Start/Stop the athena daemons
+
+# First, set up some useful variables.
+
+HOME=/; export HOME
+PATH=/bin:/usr/ucb:/usr/sbin:/etc:/sbin; export PATH
+
+umask 022
+
+case $1 in
+'start')
+
+echo "Beginning Athena startup tasks"
+
+# Let the log host know that we're booting, and whether there was a panic.
+panic=`dmesg | awk '
+	/^panic/	{ panic = " (" $0 ")"; boots = 0; }
+	/UNIX\(R\)/	{ if (++boots == 2) panic = ""; }
+	END		{ print panic; }'`
+logger -p user.notice "Booting$panic"
+
+# Syslog partition information for release planning purposes.
+rootdev=`mount | sed -n '/^\/ /s#^/ on \(/dev/dsk/[^ ]*\).*$#\1#p'`
+prtvtoc "$rootdev" | awk '
+	BEGIN				{ printf "Partition info: "; }
+	/ sectors\/cylinder$/		{ scyl = $2; }
+	/ accessible cylinders$/	{ printf "total %d", $2 * scyl; }
+	$7 == "/"			{ printf " root %d", $5; }
+	$7 == "/usr"			{ printf " usr %d", $5; }
+	$7 == "/var"			{ printf " var %d", $5; }
+	END				{ print ""; }' | logger -p user.notice
+
+# We load a kernel module misc/obpsym to enable symbolic prom
+# debugging.  This module also sets the obpdebug kernel variable when
+# it loads, which causes panics to drop into the prom instead of
+# rebooting.  Turn off obpdebug now.
+echo "Clearing obpdebug."
+echo obpdebug/W0 | adb -k -w /dev/ksyms /dev/mem
+
+# Read configuration variables
+. /etc/athena/rc.conf
+
+# Store boot-time environment for starting server processes later.
+rm -f /var/athena/env.boot
+env > /var/athena/env.boot
+
+# Clean up the password file.
+echo "Cleaning up passwd file... \c"
+if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
+	echo "recovered from passwd.local... \c"
+	cp /etc/passwd.local /etc/passwd
+	cp /etc/shadow.local /etc/shadow
+fi
+echo "done."
+
+# Clean up the group file.
+if [ -f /etc/group.local ]; then
+	echo "Recovering group file... \c"
+	cp /etc/group.local /etc/group
+	echo "done."
+fi
+
+# Make sure /var/athena/core.root exists.
+if [ ! -r /var/athena/core.root ]; then
+	touch /var/athena/core.root
+	chmod 660 /var/athena/core.root
+	chown root:daemon /var/athena/core.root
+fi
+
+# Remove old cruft, locks, and login session records.
+rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/*
+rm -f /var/tmp/!!!SuperLock!!!
+
+# Reset time with the time hub
+if [ "$TIMECLIENT" = true ]; then
+	echo "Setting time: \c"
+	/etc/athena/gettime -s "$TIMEHUB"
+fi
+
+# afsd is started by init.d/afs.  We just do our little additions here.
+if [ "$AFSCLIENT" != false ]; then
+	sh /etc/athena/config_afs
+fi
+
+echo "Loading pcfile system... \c"
+/usr/sbin/modload /usr/kernel/fs/pcfs
+echo "done."
+echo "Loading fd driver... \c"
+/usr/sbin/modload /usr/kernel/fs/fdfs
+echo "done."
+
+if [ "$NFSCLIENT" != false ]; then
+	echo "Flushing old NFS connections... \c"
+	/bin/athena/fsid -p -q -a
+	echo "done."
+fi
+
+echo "Removing old attach mount points"
+/bin/athena/detach -L -O -n -h -a
+
+if [ "$PUBLIC" = true ]; then
+	cp /dev/null /var/athena/attachtab
+fi
+
+if [ "$RVDCLIENT" = true ]; then
+	echo "Getting cluster information"
+	/etc/athena/save_cluster_info
+	if [ -f /var/athena/clusterinfo.bsh ]; then
+		. /var/athena/clusterinfo.bsh
+		echo "Attaching system libraries"
+		/bin/athena/attach -h -n -o hard -O $SYSLIB
+	fi
+fi
+
+# Take a new release, if necessary.
+echo "Checking for a new release"
+if [ -x /srvd/auto_update ]; then
+	/srvd/auto_update rc
+fi
+
+# Whenever Solaris decides to configure the devices directory, it insists
+# on creating /dev/audio and /dev/audioctl mode 600 (which would require
+# various CD-playing programs to be setuid), despite our efforts.  Make
+# sure they're world-writable.
+chmod 666 /dev/audio /dev/audioctl
+
+# If this is a PUBLIC workstation, ensure that that there are no hacks.
+# Do not update rc.conf if the workstation and srvd are different versions.
+if [ "$PUBLIC" = true ]; then
+	echo "Beginning public workstation cleanup"
+	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist /usr/local
+	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
+	rm -f /etc/ssh_*
+	if [ -r /srvd/etc/passwd ]; then
+		cp -p /srvd/etc/passwd /etc/passwd.local
+		chmod 644 /etc/passwd.local
+		chown root /etc/passwd.local
+	fi
+	if [ -r /srvd/etc/shadow ]; then
+		cp -p /srvd/etc/shadow /etc/shadow.local
+		chmod 600 /etc/shadow.local
+		chown root /etc/shadow.local
+	fi
+	cp -p /etc/passwd.local /etc/passwd
+	cp -p /etc/shadow.local /etc/shadow
+	chmod 600 /etc/shadow
+	cp -p /srvd/etc/group /etc/group.local
+	cp -p /etc/group.local /etc/group
+	cp -p /srvd/etc/athena/athinfo.access /etc/athena/athinfo.access
+
+	cp -p /srvd/etc/netspy /etc/netspy
+	cp /dev/null /etc/X0.hosts
+	cp -p /etc/inet/hosts /etc/inet/hosts.save
+	if [ -f /srvd/.rvdinfo ]; then
+		# Do not track or update config files if the workstation and
+		# srvd are different versions.
+		newv=`awk '{ a = $5; } END { print a; }' /srvd/.rvdinfo`
+		thisv=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
+		if [ "$newv" = "$thisv" ]; then
+			echo "Running track"
+			/usr/athena/etc/track -F /os -T / \
+				-W /srvd/usr/athena/lib \
+				-s stats/os_rvd slists/os_rvd
+			/usr/athena/etc/track
+			cp -p /etc/inet/hosts.save /etc/inet/hosts
+			rm -f /etc/inet/hosts.save
+			if [ -f /srvd/etc/athena/rc.conf ]; then
+	       			sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
+				  -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
+				  -e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
+				  -e "s#^NETMEDIA=[^;]*#NETMEDIA=$NETMEDIA#" \
+				  -e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
+				  -e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
+				  /srvd/etc/athena/rc.conf \
+				  > /etc/athena/rc.conf
+				. /etc/athena/rc.conf
+			fi
+			configs=`cat /srvd/usr/athena/lib/update/configfiles`
+			for i in $configs; do
+				if [ -f /srvd$i ]; then
+					cp -p /srvd$i $i
+				else
+					cp -p /os$i $i
+				fi
+			done
+			platform=`uname -m`
+			cp -p "/srvd/etc/driver_aliases.$platform"  \
+ 			  /etc/driver_aliases
+			cp -p "/srvd/etc/driver_classes.$platform" \
+	 		  /etc/driver_classes
+			cp -p "/srvd/etc/minor_perm.$platform" /etc/minor_perm
+			cp -p "/srvd/etc/name_to_major.$platform" \
+			  /etc/name_to_major
+			ps -e | awk '$4 == "inetd" { print $1; }' \
+				| xargs kill -HUP
+		fi
+	fi
+
+	# MAE tries to open /dev/dsk/c0t6d0s[02] to read the floppy
+	# and CDROM, and complains if they can't be read.  (In the
+	# case of the floppy, it can still read the disk by going
+	# through vold, but it can't read the CD-ROM.)  Work around
+	# that here.  Better solutions are welcome.
+	chmod a+r /dev/dsk/c0t6d0s0 /dev/dsk/c0t6d0s2
+
+	echo "Ending public workstation cleanup"
+fi
+
+echo "Removing sendmail temporary files"
+if [ -d /var/spool/mqueue ]; then
+	(cd /var/spool/mqueue && rm -f nf* lf*)
+fi
+# Sync aliases db.
+/usr/lib/sendmail -bi
+
+# Start standard daemons.
+echo "Starting Athena daemons: \c"
+
+if [ "$TIMECLIENT" = true ]; then
+	echo "xntpd... \c"
+	/etc/athena/xntpd &
+fi
+
+# Start Athena's inetd
+echo "inetd... \c"
+if [ "$ACCESSON" = true ]; then
+	/etc/athena/inetd -n &
+else
+	/etc/athena/inetd &
+fi
+
+if [ "$KRBSRV" != false -a -f /.k ]; then
+	echo "kerberos... \c"
+	if [ "$KRBSRV" = true ]; then
+		krbopt="-n"
+	else
+		krbopt="-r $KRBSRV -n"
+	fi
+	/usr/athena/etc/kerberos $krbopt &
+	if [ "$KADMSRV" = true ]; then
+		echo "kadmind... \c"
+		/usr/athena/etc/kadmind $krbopt &
+	fi
+fi
+
+if [ "$KNETD" = true ]; then
+	echo "knetd... \c"
+	/usr/athena/etc/knetd &
+fi
+
+if [ "$SENDMAIL" = true ]; then
+	echo  "sendmail... \c"
+	/usr/lib/sendmail -bd -q1h
+fi
+
+if [ "$OLC" = true ]; then
+	echo "olcd... \c"
+	/usr/athena/etc/olcd &
+	echo "rpd... \c"
+	/usr/athena/etc/rpd &
+fi
+
+if [ "$ZSERVER" = true ] ; then
+	echo "zephyrd... \c"
+	/usr/athena/etc/zephyrd &
+fi
+
+if [ "$ZCLIENT" = true ]; then
+	echo "zhm... \c"
+	/etc/athena/zhm &
+fi
+
+if [ "$LPD" = true ]; then
+	echo "lpd... \c"
+	/usr/athena/etc/lpd &
+fi
+
+if [ "$MRUPDATE" = true ]; then
+	echo "update_server... \c"
+	/usr/athena/etc/update_server &
+fi
+
+if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
+	echo "sshd... \c"
+	/etc/athena/sshd &
+fi
+
+echo "done."
+
+if [ "$PUBLIC" = true ]; then
+	echo "Clearing out /mit... \c"
+	rm -f /mit/*
+	rmdir /mit/* 2>/dev/null
+	echo "done."
+fi
+
+echo "Editing /etc/motd... \c"
+awk '{ prev = $0; } END { print prev; }' /etc/athena/version > /tmp/t1
+if [ "$PUBLIC" != true ]; then
+	awk '{ if (NR > 1) print $0; }' /etc/motd >> /tmp/t1
+fi
+mv -f /tmp/t1 /etc/motd
+chmod 644 /etc/motd
+echo "done."
+
+echo "Fixing noattach, nocreate, noremote, and nologin... \c"
+if [ "$NOCREATE" = true ]; then
+	touch /etc/nocreate
+else
+	rm -f /etc/nocreate
+fi
+
+if [ "$NOATTACH" = true ]; then
+	touch /etc/noattach
+else
+	rm -f /etc/noattach
+fi
+
+if [ "$NOREMOTE" = true ]; then
+        touch /etc/noremote
+else
+        rm -f /etc/noremote
+fi
+
+echo "done."
+
+if [ -r /etc/nologin.persist ]; then
+	cp /etc/nologin.persist /etc/nologin
+	echo "Logins disabled."
+else
+	rm -f /etc/nologin
+	echo "Logins now possible."
+fi
+
+echo "Ending Athena startup tasks"
+
+	;;
+'stop')
+	if [ -s /var/athena/snmpd.pid ]; then
+		kill `cat /var/athena/snmpd.pid`
+	fi
+	if [ -s /var/athena/zhm.pid ]; then
+		kill `cat /var/athena/zhm.pid`
+	fi
+	if [ -s /var/athena/inetd.pid ]; then
+		kill `cat /var/athena/inetd.pid`
+	fi
+	if [ -s /var/athena/sshd.pid ]; then
+		kill `cat /var/athena/sshd.pid`
+	fi
+	;;
+*)
+	echo "usage: /etc/rc2.d/S90athena {start|stop}"
+	;;
+esac
