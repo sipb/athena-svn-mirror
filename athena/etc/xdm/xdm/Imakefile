@@ -1,33 +1,22 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.8 1992-07-17 18:33:18 miki Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.9 1992-11-08 19:29:37 probe Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
-DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM -U_BSD -U_BSD_INCLUDES
-#else
-#ifdef ultrix
-DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM
-#else
-/* Not aix or ultrix.  Must be bsd or sunos */
-DEFINES= -I. -DTCPCONN -DUNIXCONN -DX_NOT_POSIX -DX_NOT_STDC_ENV \
-	-DXDM -DSIGNALRETURNSINT $(AFSINC)
+OSDEFS= -U_BSD -U_BSD_INCLUDES
 #endif
+#if defined(vax) || defined(ibm032) || defined(sun)
+OSDEFS= -DX_NOT_POSIX -DX_NOT_STDC_ENV -DSIGNALRETURNSINT
 #endif
-
-#if defined(UseInstalled)
-AFSLIBS = /mit/afsdev/bld/dest/lib/afs/libsys.a
-AFSINC = -I/mit/afsdev/bld/dest/include
-#else
-AFSLIBS = /usr/local/lib/afs/libsys.a
-AFSINC = -I/usr/local/include
-#endif
+DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM $(OSDEFS)
+AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
 
 #ifdef sun
-MACHLIBS = -lm
+OSLIBS = -lm
 #endif
 #ifdef _IBMR2
-MACHLIBS = -ls -lodm -lcfg
+OSLIBS = -ls -lodm -lcfg
 #endif
-LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(MACHLIBS)
+LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(OSLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
 	greet.o netaddr.o reset.o resource.o protodpy.o policy.o \
