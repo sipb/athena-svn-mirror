@@ -1,4 +1,4 @@
-# $Id: packages,v 1.105 2000-04-07 22:28:26 ghudson Exp $
+# $Id: packages,v 1.106 2000-04-12 21:03:54 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -71,7 +71,6 @@ athena/bin/newpag		requires afsbin
 athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,afsbin
-athena/bin/rep
 athena/bin/rkinit		requires krb5,athena/lib/rkinit
 athena/bin/saferm
 athena/bin/sendbug
