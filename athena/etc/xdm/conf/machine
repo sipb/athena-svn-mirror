@@ -2,6 +2,13 @@
 
 PATH=/bin:/bin/athena:/usr/bsd:/usr/ucb:/usr/bin:/usr/athena/bin
 
+# bsd or sysv style echo
+TESTECHO=`echo -n`
+case "$TESTECHO" in
+   -n) N=''; C='\c';;
+   *)  N='-n'; C='';;
+esac
+
 if [ -f /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
 fi
@@ -39,28 +46,29 @@ case `/bin/athena/machtype -c` in
 		df="/bin/df";;
 	esac
 
-echo `hostname` "is a" $type 					
-echo -n "Release: "						
-tail -1 /etc/athena/version | awk '{print $5}'		
-echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1}'`
-echo -n "System pack is: " 					
-cat /srvd/.rvdinfo 						
-echo "Hesiod information:" 					
-hesinfo `hostname` cluster | awk '{printf("\t%s\n", $0)}'	
-echo "Address: " $ADDR						
+echo `hostname` "is a" $type
+echo $N "Release: $C"
+tail -1 /etc/athena/version | awk '{print $5}'
+echo "   O/S pack attached: " `attach | awk '$2=="/os" {print $1;s=1} END {if (s==0) print "none"}'`
+echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1;s=1} END {if (s==0) print "none"}'`
+echo $N "System pack is: $C"
+cat /srvd/.rvdinfo
+echo "Hesiod information:"
+hesinfo `hostname` cluster | awk '{printf("\t%s\n", $0)}'
+echo "Address: " $ADDR
 if [ "${PUBLIC}" = "true" ]; then
-	echo "This is a public workstation."			
+	echo "This is a public workstation."
 fi
-echo "Memory: " `/bin/athena/machtype -v -M` 			
-echo -n "Display head: "					
-machtype -v -d							
-echo "Disks:"							
-machtype -v -r| awk '{printf("\t%s\n", $0)}'			
-echo "Disk space:"						
+echo "Memory: " `/bin/athena/machtype -v -M`
+echo $N "Display head: $C"
+machtype -v -d
+echo "Disks:"
+machtype -v -r| awk '{printf("\t%s\n", $0)}'
+echo "Disk space:"
 $df
-echo								
-echo								
-echo -n "Press ENTER or RETURN to exit."
+echo
+echo
+echo $N "Press ENTER or RETURN to exit.$C"
 
 read foo
 
