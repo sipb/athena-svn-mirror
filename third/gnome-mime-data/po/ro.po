@@ -2,25 +2,24 @@
 # gnome-vfs
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # Marius Andreiana <mandreiana@yahoo.com>, 2001.
-# Mugurel Tudor <mugurelu@go.ro>, 2003
+# Mugurel Tudor <mugurelu@go.ro>, 2003-2004
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-mime-data.HEAD.ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-22 19:09+0000\n"
-"PO-Revision-Date: 2003-09-02 16:11+0300\n"
+"POT-Creation-Date: 2004-10-25 20:51+0200\n"
+"PO-Revision-Date: 2004-03-21 18:54+0200\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team:  <@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.1\n"
 
 #: gnome-vfs.keys.in.h:1
 msgid "2D chemical structure"
-msgstr ""
+msgstr "Structură chimică 2D"
 
 #: gnome-vfs.keys.in.h:2
 msgid "3D Studio image"
@@ -135,9 +134,8 @@ msgid "Binary program"
 msgstr "Program binar"
 
 #: gnome-vfs.keys.in.h:30
-#, fuzzy
 msgid "BitTorrent seed file"
-msgstr "Fişier comprimat bzip2"
+msgstr "Fişier seed BitTorrent"
 
 #: gnome-vfs.keys.in.h:31
 msgid "Blender file"
@@ -201,7 +199,7 @@ msgstr "Dispozitiv de tip caracter"
 
 #: gnome-vfs.keys.in.h:46
 msgid "Cinelerra editing sheet"
-msgstr ""
+msgstr "Foaie de editare Cinelerra"
 
 #: gnome-vfs.keys.in.h:47
 msgid "Comma-separated text document"
@@ -229,7 +227,7 @@ msgstr "Desen Corel Draw"
 
 #: gnome-vfs.keys.in.h:53
 msgid "Crystalline structure model"
-msgstr ""
+msgstr "Model de structură cristalină"
 
 #: gnome-vfs.keys.in.h:54
 msgid "DCL script"
@@ -248,9 +246,8 @@ msgid "DSSSL document"
 msgstr "Document DSSSL"
 
 #: gnome-vfs.keys.in.h:58
-#, fuzzy
 msgid "DV video"
-msgstr "Video AVI"
+msgstr "Video DV"
 
 #: gnome-vfs.keys.in.h:59
 msgid "DXF vector graphic"
@@ -281,9 +278,8 @@ msgid "Directory information file"
 msgstr "Fişier informaţie director"
 
 #: gnome-vfs.keys.in.h:66
-#, fuzzy
 msgid "DjVu image"
-msgstr "Imagine 3D Studio"
+msgstr "Imagine DjVu"
 
 #: gnome-vfs.keys.in.h:67
 msgid "Document type definition"
@@ -566,9 +562,8 @@ msgid "Java source code"
 msgstr "Cod sursă Java"
 
 #: gnome-vfs.keys.in.h:137
-#, fuzzy
 msgid "JavaScript source code"
-msgstr "Cod sursă Java"
+msgstr "Cod sursă JavaScript"
 
 #: gnome-vfs.keys.in.h:138
 msgid "KDE application details"
@@ -651,14 +646,12 @@ msgid "MPEG video"
 msgstr "Video MPEG"
 
 #: gnome-vfs.keys.in.h:158
-#, fuzzy
 msgid "MPEG-4 audio"
-msgstr "Audio MP3"
+msgstr "Audio MPEG-4"
 
 #: gnome-vfs.keys.in.h:159
-#, fuzzy
 msgid "MS ASF audio"
-msgstr "Video MS ASF"
+msgstr "Audio MS ASF"
 
 #: gnome-vfs.keys.in.h:160
 msgid "MS ASF video"
@@ -733,1235 +726,741 @@ msgid "MathML document"
 msgstr "Document MathML"
 
 #: gnome-vfs.keys.in.h:178
+msgid "Matroska video"
+msgstr "Video Matroska"
+
+#: gnome-vfs.keys.in.h:179
 msgid "Memory dump"
 msgstr "Dump memorie"
 
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:180
 msgid "Message"
 msgstr "Mesaj"
 
-#: gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:181
 msgid "Message digest"
 msgstr "Mesaj digest"
 
-#: gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:182
 msgid "Message in several formats"
 msgstr "Mesaj în câteva formate"
 
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:183
 msgid "Microsoft Excel spreadsheet"
 msgstr "Foaie de calcul Microsoft Excel"
 
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:184
 msgid "Microsoft PowerPoint document"
 msgstr "Document Microsoft PowerPoint"
 
-#: gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:185
 msgid "Microsoft WMV playlist"
 msgstr "Listă Microsoft WMV"
 
-#: gnome-vfs.keys.in.h:185
+#: gnome-vfs.keys.in.h:186
 msgid "Microsoft WMV video"
 msgstr "Video Microsoft WMV"
 
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:187
 msgid "Microsoft Word document"
 msgstr "Document Microsoft Word"
 
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:188
 msgid "Microsoft video"
 msgstr "Video Microsoft"
 
-#: gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:189
 msgid "Monkey audio"
 msgstr "Audio Monkey"
 
-#: gnome-vfs.keys.in.h:189
+#: gnome-vfs.keys.in.h:190
 msgid "Mozilla bookmarks file"
 msgstr "Fişier semne de carte Mozilla"
 
-#: gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:191
 msgid "Multi-part message"
 msgstr "Mesaj multi-parte"
 
-#: gnome-vfs.keys.in.h:191
+#: gnome-vfs.keys.in.h:192
 msgid "NES ROM"
 msgstr "ROM NES"
 
-#: gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:193
 msgid "Named pipe"
 msgstr "Conector pipe cu nume"
 
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:194
 msgid "Nautilus link"
 msgstr "Legătură Nautilus"
 
-#: gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:195
 msgid "Netscape bookmarks file"
 msgstr "Fişier cu semne de carte Netscape"
 
-#: gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:196
 msgid "Nintendo64 ROM"
 msgstr "ROM Nintendo64"
 
-#: gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:197
 msgid "Nullsoft video"
 msgstr "Video Nullsoft"
 
-#: gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:198
 msgid "ODA document"
 msgstr "Document ODA"
 
-#: gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:199
 msgid "Object code"
 msgstr "Cod obiect"
 
-#: gnome-vfs.keys.in.h:199
-#, fuzzy
-msgid "Objective C source code"
-msgstr "Cod sursă C"
-
 #: gnome-vfs.keys.in.h:200
+msgid "Objective C source code"
+msgstr "Cod sursă Objective C"
+
+#: gnome-vfs.keys.in.h:201
 msgid "Ogg audio"
 msgstr "Audio ogg"
 
-#: gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:202
 msgid "OpenOffice.org Impress presentation"
 msgstr "Prezentare OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:203
 msgid "OpenOffice.org Impress presentation template"
 msgstr "Şablon prezentare OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:203
+#: gnome-vfs.keys.in.h:204
 msgid "OpenOffice.org Math document"
 msgstr "Document OpenOffice.org Math"
 
-#: gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:205
 msgid "OpenOffice.org Writer document"
 msgstr "Document OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:206
 msgid "OpenOffice.org Writer global document"
 msgstr "Document global OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:207
 msgid "OpenOffice.org Writer template"
 msgstr "Şablon StarOffice Writer"
 
-#: gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:208
 msgid "OpenOffice.org drawing"
 msgstr "Desen OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:209
 msgid "OpenOffice.org drawing template"
 msgstr "Şablon desen OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:210
 msgid "OpenOffice.org spreadsheet"
 msgstr "Foaie de calcul OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:211
 msgid "OpenOffice.org spreadsheet template"
 msgstr "Şablon pentru foaie de calcul OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:212
 msgid "OpenType font"
 msgstr "Font OpenType"
 
-#: gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:213
 msgid "PBM image"
 msgstr "Imagine PBM"
 
-#: gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:214
 msgid "PC Paintbrush image"
 msgstr "Imagine PC Paintbrush"
 
-#: gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:215
 msgid "PCF font"
 msgstr "Font PCF"
 
-#: gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:216
 msgid "PDF document"
 msgstr "Document PDF"
 
-#: gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:217
 msgid "PEF program"
 msgstr "Program PEF"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:218
 msgid "PGM image"
 msgstr "Imagine PGM"
 
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:219
 msgid "PGN chess game"
 msgstr "Joc şah PGN"
 
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:220
 msgid "PGP keys"
 msgstr "Chei PGP"
 
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:221
 msgid "PGP message"
 msgstr "Mesaj PGP"
 
-#: gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:222
 msgid "PGP signature"
 msgstr "Semnătură PGP"
 
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:223
 msgid "PGP-encrypted file"
 msgstr "Fişier criptat PGP"
 
-#: gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:224
 msgid "PHP script"
 msgstr "Script PHP"
 
-#: gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:225
 msgid "PICT image"
 msgstr "Imagine PICT"
 
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:226
 msgid "PNG image"
 msgstr "Imagine PNG"
 
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:227
 msgid "PNM image"
 msgstr "Imagine PNM"
 
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:228
 msgid "PPM image"
 msgstr "Imagine PPM"
 
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:229
 msgid "Packages"
 msgstr "Pachete"
 
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:230
 msgid "Palm OS database"
 msgstr "Bază de date Palm OS"
 
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:231
 msgid "Palm Pixmap image"
 msgstr "Imagine Palm Pixmap"
 
-#: gnome-vfs.keys.in.h:231
+#: gnome-vfs.keys.in.h:232
 msgid "Partial email message"
 msgstr "Mesaj email parţial"
 
-#: gnome-vfs.keys.in.h:232
+#: gnome-vfs.keys.in.h:233
 msgid "Pascal source code"
 msgstr "Cod sursă Pascal"
 
-#: gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:234
 msgid "Perl script"
 msgstr "Script Perl"
 
-#: gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:235
 msgid "Photo CD image"
 msgstr "Imagine Photo CD"
 
-#: gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:236
 msgid "Photoshop document"
 msgstr "Document Photoshop"
 
-#: gnome-vfs.keys.in.h:236
+#: gnome-vfs.keys.in.h:237
 msgid "Plain text document"
 msgstr "Document text simplu"
 
-#: gnome-vfs.keys.in.h:237
+#: gnome-vfs.keys.in.h:238
 msgid "Playlist"
 msgstr "Listă"
 
-#: gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:239
 msgid "PostScript Type 1 font"
 msgstr "Font PostScript Type 1"
 
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:240
 msgid "PostScript document"
 msgstr "Document PostScript"
 
-#: gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:241
 msgid "Profiler results"
 msgstr "Rezultate profiler"
 
-#: gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:242
 msgid "Project Plan"
 msgstr "Planificator proiect"
 
-#: gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:243
 msgid "Python byte code"
 msgstr "Cod byte Python"
 
-#: gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:244
 msgid "Python source code"
 msgstr "Cod sursă Python"
 
-#: gnome-vfs.keys.in.h:244
+#: gnome-vfs.keys.in.h:245
 msgid "QuickTime movie"
 msgstr "Film QuickTIme"
 
-#: gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:246
 msgid "Quicken document"
 msgstr "Document Quicken"
 
-#: gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:247
 msgid "Quicken for Windows document"
 msgstr "Document Quicken for Windows"
 
-#: gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:248
 msgid "RAR archive"
 msgstr "Arhivă RAR"
 
-#: gnome-vfs.keys.in.h:248
+#: gnome-vfs.keys.in.h:249
 msgid "README document"
 msgstr "Document README"
 
-#: gnome-vfs.keys.in.h:249
+#: gnome-vfs.keys.in.h:250
 msgid "RGB image"
 msgstr "Imagine RGB"
 
-#: gnome-vfs.keys.in.h:250
+#: gnome-vfs.keys.in.h:251
 msgid "RIFF audio"
 msgstr "Audio RIFF"
 
-#: gnome-vfs.keys.in.h:251
+#: gnome-vfs.keys.in.h:252
 msgid "RPM package"
 msgstr "Pachet RPM"
 
-#: gnome-vfs.keys.in.h:252
+#: gnome-vfs.keys.in.h:253
 msgid "Raw Gray Sample"
 msgstr "Eşantion Raw Gray"
 
-#: gnome-vfs.keys.in.h:253
+#: gnome-vfs.keys.in.h:254
 msgid "RealAudio document"
 msgstr "Document RealAudio"
 
-#: gnome-vfs.keys.in.h:254
+#: gnome-vfs.keys.in.h:255
 msgid "RealAudio/Video document"
 msgstr "Document RealAudio/Video"
 
-#: gnome-vfs.keys.in.h:255
+#: gnome-vfs.keys.in.h:256
 msgid "RealVideo video"
 msgstr "Video RealVideo"
 
-#: gnome-vfs.keys.in.h:256
+#: gnome-vfs.keys.in.h:257
 msgid "Reference to remote file"
 msgstr "Referinţă la fişier la distanţă"
 
-#: gnome-vfs.keys.in.h:257
+#: gnome-vfs.keys.in.h:258
 msgid "Rejected patch file"
 msgstr "Fişier patch respins"
 
-#: gnome-vfs.keys.in.h:258
+#: gnome-vfs.keys.in.h:259
 msgid "Rich text document"
 msgstr "Document rich text"
 
-#: gnome-vfs.keys.in.h:259
+#: gnome-vfs.keys.in.h:260
 msgid "S/MIME file"
 msgstr "Fişier S/MIME"
 
-#: gnome-vfs.keys.in.h:260
+#: gnome-vfs.keys.in.h:261
 msgid "S/MIME signature"
 msgstr "Semnătură S/MIME"
 
-#: gnome-vfs.keys.in.h:261
+#: gnome-vfs.keys.in.h:262
 msgid "SGI video"
 msgstr "Video SGI"
 
-#: gnome-vfs.keys.in.h:262
+#: gnome-vfs.keys.in.h:263
 msgid "SGML document"
 msgstr "Document SGML"
 
-#: gnome-vfs.keys.in.h:263
+#: gnome-vfs.keys.in.h:264
 msgid "SHOUTcast playlist"
 msgstr "Listă SHOUTcast"
 
-#: gnome-vfs.keys.in.h:264
+#: gnome-vfs.keys.in.h:265
 msgid "SMIL script"
 msgstr "Script SMIL"
 
-#: gnome-vfs.keys.in.h:265
+#: gnome-vfs.keys.in.h:266
 msgid "SQL code"
 msgstr "Cod SQL"
 
-#: gnome-vfs.keys.in.h:266
+#: gnome-vfs.keys.in.h:267
 msgid "SUN Rasterfile"
 msgstr "Rasterfile SUN"
 
-#: gnome-vfs.keys.in.h:267
+#: gnome-vfs.keys.in.h:268
 msgid "SV4 CPIO archive"
 msgstr "Arhivă SV4 CPIO"
 
-#: gnome-vfs.keys.in.h:268
+#: gnome-vfs.keys.in.h:269
 msgid "SV4 CPIP archive (with CRC)"
 msgstr "Arhivă SV4 CPIO (cu CRC)"
 
-#: gnome-vfs.keys.in.h:269
+#: gnome-vfs.keys.in.h:270
 msgid "SVG art"
 msgstr "Artă SVG"
 
-#: gnome-vfs.keys.in.h:270
+#: gnome-vfs.keys.in.h:271
 msgid "Samba share"
 msgstr "Partajare Samba"
 
-#: gnome-vfs.keys.in.h:271
+#: gnome-vfs.keys.in.h:272
 msgid "Scheme source code"
 msgstr "Cod sursă Scheme"
 
-#: gnome-vfs.keys.in.h:272
+#: gnome-vfs.keys.in.h:273
 msgid "Scream Tracker 3 audio"
 msgstr "Audio Scream Tracker 3"
 
-#: gnome-vfs.keys.in.h:273
+#: gnome-vfs.keys.in.h:274
 msgid "Scream Tracker audio"
 msgstr "Audio Scream Tracker"
 
-#: gnome-vfs.keys.in.h:274
+#: gnome-vfs.keys.in.h:275
 msgid "Scream Tracker instrument"
 msgstr "Instrument Scream Tracker"
 
-#: gnome-vfs.keys.in.h:275
+#: gnome-vfs.keys.in.h:276
 msgid "Search results"
 msgstr "Rezultate căutare"
 
-#: gnome-vfs.keys.in.h:276
+#: gnome-vfs.keys.in.h:277
 msgid "Security"
 msgstr "Securitate"
 
-#: gnome-vfs.keys.in.h:277
+#: gnome-vfs.keys.in.h:278
 msgid "Setext document"
 msgstr "Document Setext"
 
-#: gnome-vfs.keys.in.h:278
+#: gnome-vfs.keys.in.h:279
 msgid "Shared Printer"
 msgstr "Imprimantă partajată"
 
-#: gnome-vfs.keys.in.h:279
+#: gnome-vfs.keys.in.h:280
 msgid "Shared library"
 msgstr "Bibliotecă comună"
 
-#: gnome-vfs.keys.in.h:280
+#: gnome-vfs.keys.in.h:281
 msgid "Shell archive"
 msgstr "Arhivă shell"
 
-#: gnome-vfs.keys.in.h:281
+#: gnome-vfs.keys.in.h:282
 msgid "Shell script"
 msgstr "Script shell"
 
-#: gnome-vfs.keys.in.h:282
+#: gnome-vfs.keys.in.h:283
 msgid "Signed message"
 msgstr "Mesaj semnat"
 
-#: gnome-vfs.keys.in.h:283
+#: gnome-vfs.keys.in.h:284
 msgid "Silicon Graphics image"
 msgstr "Imagine Silicon Graphics"
 
-#: gnome-vfs.keys.in.h:284
+#: gnome-vfs.keys.in.h:285
 msgid "Socket"
 msgstr "Socket"
 
-#: gnome-vfs.keys.in.h:285
+#: gnome-vfs.keys.in.h:286
 msgid "Software Development"
 msgstr "Dezvoltare software"
 
-#: gnome-vfs.keys.in.h:286
+#: gnome-vfs.keys.in.h:287
 msgid "Software Development/ROM Images"
 msgstr "Dezvoltare software/Imagini ROM"
 
-#: gnome-vfs.keys.in.h:287
+#: gnome-vfs.keys.in.h:288
 msgid "Software Development/Source Code"
 msgstr "Dezvoltare Software/Cod sursă"
 
-#: gnome-vfs.keys.in.h:288
+#: gnome-vfs.keys.in.h:289
 msgid "Software author credits"
 msgstr "Credite autor software"
 
-#: gnome-vfs.keys.in.h:289
+#: gnome-vfs.keys.in.h:290
 msgid "Software installation instructions"
 msgstr "Intrucţiuni instalare software"
 
-#: gnome-vfs.keys.in.h:290
+#: gnome-vfs.keys.in.h:291
 msgid "Software license terms"
 msgstr "Termeni licenţiere software"
 
-#: gnome-vfs.keys.in.h:291
+#: gnome-vfs.keys.in.h:292
 msgid "Source code patch"
 msgstr "Patch cod sursă"
 
-#: gnome-vfs.keys.in.h:292
+#: gnome-vfs.keys.in.h:293
 msgid "Speech document"
 msgstr "Document vocal"
 
-#: gnome-vfs.keys.in.h:293
+#: gnome-vfs.keys.in.h:294
 msgid "Speedo font"
 msgstr "Font Speedo"
 
-#: gnome-vfs.keys.in.h:294
+#: gnome-vfs.keys.in.h:295
 msgid "Spreadsheet Interchange document"
 msgstr "Document Spreadsheet Interchange"
 
-#: gnome-vfs.keys.in.h:295
+#: gnome-vfs.keys.in.h:296
 msgid "Stampede package"
 msgstr "Pachet Stampede"
 
-#: gnome-vfs.keys.in.h:296
+#: gnome-vfs.keys.in.h:297
 msgid "StarCalc spreadsheet"
 msgstr "Foaie de calcul StarCalc"
 
-#: gnome-vfs.keys.in.h:297
+#: gnome-vfs.keys.in.h:298
 msgid "StarChart chart"
 msgstr "Diagramă StarChart"
 
-#: gnome-vfs.keys.in.h:298
+#: gnome-vfs.keys.in.h:299
 msgid "StarDraw drawing"
 msgstr "Desen StarDraw"
 
-#: gnome-vfs.keys.in.h:299
+#: gnome-vfs.keys.in.h:300
 msgid "StarImpress presentation"
 msgstr "Prezentare StarImpress"
 
-#: gnome-vfs.keys.in.h:300
+#: gnome-vfs.keys.in.h:301
 msgid "StarMail file"
 msgstr "Fişier StarMail"
 
-#: gnome-vfs.keys.in.h:301
+#: gnome-vfs.keys.in.h:302
 msgid "StarMath document"
 msgstr "Document StarMath"
 
-#: gnome-vfs.keys.in.h:302
+#: gnome-vfs.keys.in.h:303
 msgid "StarOffice extended metafile image"
 msgstr "Metafişier imagine extins StarOffice"
 
-#: gnome-vfs.keys.in.h:303
+#: gnome-vfs.keys.in.h:304
 msgid "StarWriter document"
 msgstr "Document StarWriter"
 
-#: gnome-vfs.keys.in.h:304
+#: gnome-vfs.keys.in.h:305
 msgid "Style sheet"
 msgstr "Foaie de stil"
 
-#: gnome-vfs.keys.in.h:305
+#: gnome-vfs.keys.in.h:306
 msgid "Sun mu-law audio"
 msgstr "Audio Sun ľ-law"
 
-#: gnome-vfs.keys.in.h:306
+#: gnome-vfs.keys.in.h:307
 msgid "SunOS News font"
 msgstr "Font SunOS News"
 
-#: gnome-vfs.keys.in.h:307
+#: gnome-vfs.keys.in.h:308
 msgid "Symbolic link"
 msgstr "Legătură simbolică"
 
-#: gnome-vfs.keys.in.h:308
+#: gnome-vfs.keys.in.h:309
 msgid "System"
 msgstr "Sistem"
 
-#: gnome-vfs.keys.in.h:309
+#: gnome-vfs.keys.in.h:310
 msgid "TIFF image"
 msgstr "Imagine TIFF"
 
-#: gnome-vfs.keys.in.h:310
+#: gnome-vfs.keys.in.h:311
 msgid "Tab-separated text document"
 msgstr "Document text separat prin tab"
 
-#: gnome-vfs.keys.in.h:311
+#: gnome-vfs.keys.in.h:312
 msgid "Tar archive"
 msgstr "Arhivă tar"
 
-#: gnome-vfs.keys.in.h:312
+#: gnome-vfs.keys.in.h:313
 msgid "Tar archive (Bzip2-compressed)"
 msgstr "Arhivă tar (comprimată bzip2)"
 
-#: gnome-vfs.keys.in.h:313
+#: gnome-vfs.keys.in.h:314
 msgid "Tar archive (Gzip-compressed)"
 msgstr "Arhivă tar (comprimată gzip)"
 
-#: gnome-vfs.keys.in.h:314
+#: gnome-vfs.keys.in.h:315
 msgid "TarGA image"
 msgstr "Imagine TarGA"
 
-#: gnome-vfs.keys.in.h:315
+#: gnome-vfs.keys.in.h:316
 msgid "Tcl script"
 msgstr "Script Tcl"
 
-#: gnome-vfs.keys.in.h:316
+#: gnome-vfs.keys.in.h:317
 msgid "TeX document"
 msgstr "Document TeX"
 
-#: gnome-vfs.keys.in.h:317
+#: gnome-vfs.keys.in.h:318
 msgid "TeX dvi document"
 msgstr "Document TeX dvi"
 
-#: gnome-vfs.keys.in.h:318
+#: gnome-vfs.keys.in.h:319
 msgid "TeX font"
 msgstr "Font TeX"
 
-#: gnome-vfs.keys.in.h:319
+#: gnome-vfs.keys.in.h:320
 msgid "TeX font metrics"
 msgstr "Dimensiuni font TeX"
 
-#: gnome-vfs.keys.in.h:320
+#: gnome-vfs.keys.in.h:321
 msgid "TeXInfo document"
 msgstr "Document TexInfo"
 
-#: gnome-vfs.keys.in.h:321
+#: gnome-vfs.keys.in.h:322
 msgid "Theme"
 msgstr "Temă"
 
-#: gnome-vfs.keys.in.h:322
+#: gnome-vfs.keys.in.h:323
 msgid "ToutDoux document"
 msgstr "Document ToutDoux"
 
-#: gnome-vfs.keys.in.h:323
+#: gnome-vfs.keys.in.h:324
 msgid "Troff document"
 msgstr "Document Troff"
 
-#: gnome-vfs.keys.in.h:324
+#: gnome-vfs.keys.in.h:325
 msgid "Troff me input document"
 msgstr "Document intrare troff me"
 
-#: gnome-vfs.keys.in.h:325
+#: gnome-vfs.keys.in.h:326
 msgid "Troff mm input document"
 msgstr "Document intrare troff mm"
 
-#: gnome-vfs.keys.in.h:326
+#: gnome-vfs.keys.in.h:327
 msgid "Troff ms input document"
 msgstr "Document intrare troff ms"
 
-#: gnome-vfs.keys.in.h:327
+#: gnome-vfs.keys.in.h:328
 msgid "TrueType font"
 msgstr "Font TrueType"
 
-#: gnome-vfs.keys.in.h:328
+#: gnome-vfs.keys.in.h:329
 msgid "Truevision Targa image"
 msgstr "Imagine Truevision Targa"
 
-#: gnome-vfs.keys.in.h:329
+#: gnome-vfs.keys.in.h:330
 msgid "USENET news message"
 msgstr "MEsaj ştiri USENET"
 
-#: gnome-vfs.keys.in.h:330
+#: gnome-vfs.keys.in.h:331
 msgid "Unidata netCDF document"
 msgstr "Document Unidata netCDF"
 
-#: gnome-vfs.keys.in.h:331
+#: gnome-vfs.keys.in.h:332
 msgid "Unknown type"
 msgstr "Tip necunoscut"
 
-#: gnome-vfs.keys.in.h:332
+#: gnome-vfs.keys.in.h:333
 msgid "User Interface"
 msgstr "Interfaţă utilizator"
 
-#: gnome-vfs.keys.in.h:333
+#: gnome-vfs.keys.in.h:334
 msgid "User Interface/Fonts"
 msgstr "Interfaţă utilizator/Fonturi"
 
-#: gnome-vfs.keys.in.h:334
+#: gnome-vfs.keys.in.h:335
 msgid "Ustar archive"
 msgstr "Arhivă ustar"
 
-#: gnome-vfs.keys.in.h:335
+#: gnome-vfs.keys.in.h:336
 msgid "V font"
 msgstr "Font V"
 
-#: gnome-vfs.keys.in.h:336
+#: gnome-vfs.keys.in.h:337
 msgid "VOC audio"
 msgstr "Audio VOC"
 
-#: gnome-vfs.keys.in.h:337
+#: gnome-vfs.keys.in.h:338
 msgid "VRML document"
 msgstr "Document VRML"
 
-#: gnome-vfs.keys.in.h:338
+#: gnome-vfs.keys.in.h:339
+msgid "Verilog source code"
+msgstr "Cod sursă Verilog"
+
+#: gnome-vfs.keys.in.h:340
 msgid "Video"
 msgstr "Video"
 
-#: gnome-vfs.keys.in.h:339
+#: gnome-vfs.keys.in.h:341
 msgid "Vivo video"
 msgstr "Video Vivo"
 
-#: gnome-vfs.keys.in.h:340
+#: gnome-vfs.keys.in.h:342
 msgid "WAIS source code"
 msgstr "Cod sursă WAIS"
 
-#: gnome-vfs.keys.in.h:341
+#: gnome-vfs.keys.in.h:343
 msgid "Wave audio"
 msgstr "Audio wave"
 
-#: gnome-vfs.keys.in.h:342
+#: gnome-vfs.keys.in.h:344
 msgid "Wavelet video"
 msgstr "Video Wavelet"
 
-#: gnome-vfs.keys.in.h:343
+#: gnome-vfs.keys.in.h:345
 msgid "Web folder"
 msgstr "Dosar web"
 
-#: gnome-vfs.keys.in.h:344
+#: gnome-vfs.keys.in.h:346
 msgid "Windows bitmap image"
 msgstr "Imagine bitmap Windows"
 
-#: gnome-vfs.keys.in.h:345
+#: gnome-vfs.keys.in.h:347
 msgid "Windows icon image"
 msgstr "Imagine icon Windows"
 
-#: gnome-vfs.keys.in.h:346
+#: gnome-vfs.keys.in.h:348
 msgid "Windows metafile graphics"
 msgstr "Metafişier grafic Windows"
 
-#: gnome-vfs.keys.in.h:347
+#: gnome-vfs.keys.in.h:349
 msgid "WordPerfect document"
 msgstr "Document WordPerfect"
 
-#: gnome-vfs.keys.in.h:348
+#: gnome-vfs.keys.in.h:350
 msgid "X bitmap image"
 msgstr "Imagine bitmap X"
 
-#: gnome-vfs.keys.in.h:349
+#: gnome-vfs.keys.in.h:351
 msgid "X window image"
 msgstr "Imagine X window"
 
-#: gnome-vfs.keys.in.h:350
+#: gnome-vfs.keys.in.h:352
 msgid "XBEL bookmarks file"
 msgstr "Fişier cu semne de carte XBEL"
 
-#: gnome-vfs.keys.in.h:351
+#: gnome-vfs.keys.in.h:353
 msgid "XML document"
 msgstr "Document XML"
 
-#: gnome-vfs.keys.in.h:352
+#: gnome-vfs.keys.in.h:354
 msgid "XPM image"
 msgstr "Imagine XPM"
 
-#: gnome-vfs.keys.in.h:353
+#: gnome-vfs.keys.in.h:355
 msgid "Xbase database"
 msgstr "Bază de date Xbase"
 
-#: gnome-vfs.keys.in.h:354
+#: gnome-vfs.keys.in.h:356
 msgid "Yacc grammar source code"
 msgstr "Cod sursă Yacc grammar"
 
-#: gnome-vfs.keys.in.h:355
+#: gnome-vfs.keys.in.h:357
 msgid "Z shell script"
 msgstr "Script Z shell"
 
-#: gnome-vfs.keys.in.h:356
+#: gnome-vfs.keys.in.h:358
 msgid "Zip archive"
 msgstr "Arhivă zip"
 
-#: gnome-vfs.keys.in.h:357
+#: gnome-vfs.keys.in.h:359
 msgid "Zoo archive"
 msgstr "Arhivă zoo"
 
-#: gnome-vfs.keys.in.h:358
+#: gnome-vfs.keys.in.h:360
 msgid "gettext translation"
 msgstr "traducere gettext"
 
-#: gnome-vfs.keys.in.h:359
+#: gnome-vfs.keys.in.h:361
 msgid "iPod software"
 msgstr "Software iPod"
 
-#: gnome-vfs.keys.in.h:360
+#: gnome-vfs.keys.in.h:362
 msgid "xfig vector graphic"
 msgstr "grafică vectorială xfig"
-
-#, fuzzy
-#~ msgid "GNOME theme package"
-#~ msgstr "Pachet Debian"
-
-#, fuzzy
-#~ msgid "Yacc source file"
-#~ msgstr "Cod sursă Java"
-
-#~ msgid "arj archive"
-#~ msgstr "Arhivă arj"
-
-#, fuzzy
-#~ msgid "audio"
-#~ msgstr "Audio MOD"
-
-#~ msgid "gtar archive"
-#~ msgstr "arhivă gtar"
-
-#~ msgid "M3 audio URL"
-#~ msgstr "URL audio MP3"
-
-#~ msgid "GNOME application details"
-#~ msgstr "Detalii aplicaţie GNOME"
-
-#~ msgid "%s:%d contains NUL characters."
-#~ msgstr "%s:%d conţine caractere NUL"
-
-#~ msgid "%s:%d contains no method name."
-#~ msgstr "%s:%d nu conţine nici un nume de metodă."
-
-#~ msgid "%s:%d contains no module name."
-#~ msgstr "%s:%d nu conţine nici un nume de modul."
-
-#~ msgid "Configuration file `%s' was not found: %s"
-#~ msgstr "Fişierul configurare `%s' nu a fost găsit: %s"
-
-#~ msgid "Could not parse: %s"
-#~ msgstr "N-am putut procesa: %s"
-
-#~ msgid "More parsing errors will be ignored."
-#~ msgstr "Mai multe erori de procesare vor fi ignorate."
-
-#~ msgid "No error"
-#~ msgstr "Nici o eroare"
-
-#~ msgid "File not found"
-#~ msgstr "Fişierul nu a fost găsit"
-
-#~ msgid "Internal error"
-#~ msgstr "Eroare internă"
-
-#~ msgid "Invalid parameters"
-#~ msgstr "Parametrii invalid"
-
-#~ msgid "Unsupported operation"
-#~ msgstr "Operaţiune nesuportată"
-
-#~ msgid "I/O error"
-#~ msgstr "Eroare I/O"
-
-#~ msgid "Data corrupted"
-#~ msgstr "Date corupte"
-
-#~ msgid "Format not valid"
-#~ msgstr "Formatul nu este valid"
-
-#~ msgid "Bad file handle"
-#~ msgstr "Descriptor fişier prost"
-
-#~ msgid "File too big"
-#~ msgstr "Fişierul prea mare"
-
-#~ msgid "No space left on device"
-#~ msgstr "Nu mai este spaţiu pe dispozitiv"
-
-#~ msgid "Read-only file system"
-#~ msgstr "Sistem fişiere doar-citire"
-
-#~ msgid "Invalid URI"
-#~ msgstr "URI invalid"
-
-#~ msgid "File not open"
-#~ msgstr "Fişierul nu este deschis"
-
-#~ msgid "Open mode not valid"
-#~ msgstr "Modul deschidere nu este valid"
-
-#~ msgid "Access denied"
-#~ msgstr "Acces respins"
-
-#~ msgid "Too many open files"
-#~ msgstr "Prea multe fişiere deschise"
-
-#~ msgid "End of file"
-#~ msgstr "Sfârşit fişier"
-
-#~ msgid "Not a directory"
-#~ msgstr "Nu este un director"
-
-#~ msgid "Operation in progress"
-#~ msgstr "Operaţia în progres"
-
-#~ msgid "Operation interrupted"
-#~ msgstr "Operaţia întreruptă"
-
-#~ msgid "File exists"
-#~ msgstr "Fişierul există "
-
-#~ msgid "Looping links encountered"
-#~ msgstr "Am înâlnit legături care ciclează"
-
-#~ msgid "Operation not permitted"
-#~ msgstr "Operaţia nu este permisă"
-
-#~ msgid "Is a directory"
-#~ msgstr "Este un director"
-
-#~ msgid "Not enough memory"
-#~ msgstr "Memorie insuficientă"
-
-#~ msgid "Host not found"
-#~ msgstr "Gazda nu a fost găsită"
-
-#~ msgid "Host name not valid"
-#~ msgstr "Numele gazdei este invalid"
-
-#~ msgid "Host has no address"
-#~ msgstr "Gazda nu are adresă"
-
-#~ msgid "Login failed"
-#~ msgstr "Login eşuat"
-
-#~ msgid "Operation cancelled"
-#~ msgstr "S-a renunţat la operaţie"
-
-#~ msgid "Directory busy"
-#~ msgstr "Directorul este ocupat"
-
-#~ msgid "Directory not empty"
-#~ msgstr "Directorul nu este gol"
-
-#~ msgid "Too many links"
-#~ msgstr "Prea multe legături"
-
-#~ msgid "Read only file system"
-#~ msgstr "Sistem fişier doar-citire"
-
-#~ msgid "Not on the same file system"
-#~ msgstr "Nu se află pe acelaşi sistem de fişiere"
-
-#~ msgid "Name too long"
-#~ msgstr "Numele este prea lung"
-
-#~ msgid "Service not available"
-#~ msgstr "Serviciul nu este disponibil"
-
-#~ msgid "Request obsoletes service's data"
-#~ msgstr "Cerere pentru date servicii ieşite din uz"
-
-#, fuzzy
-#~ msgid "Protocol error"
-#~ msgstr "Nici o eroare"
-
-#~ msgid "Unknown error"
-#~ msgstr "Eroare necunoscută"
-
-#~ msgid "1 byte"
-#~ msgstr "1 octet"
-
-#~ msgid "%u bytes"
-#~ msgstr "%u octet"
-
-#~ msgid "%.1f K"
-#~ msgstr "%.1f K"
-
-#~ msgid "%.1f MB"
-#~ msgstr "%.1f MB"
-
-#~ msgid "%.1f GB"
-#~ msgstr "%.1f GB"
-
-#~ msgid "Unknown op type %u"
-#~ msgstr "Tip op necunoscut %u"
-
-#~ msgid "Cannot create pipe for open GIOChannel: %s"
-#~ msgstr "Nu pot crea conectorul pipe pentru deschiderea GIOChannel: %s"
-
-#, fuzzy
-#~ msgid "Unknown job kind %u"
-#~ msgstr "ID activitate necunoscut %u"
-
-#~ msgid "Operation stopped"
-#~ msgstr "Operaţia oprită"
-
-#~ msgid "Unknown GnomeVFSSeekPosition %d"
-#~ msgstr "GnomeVFSSeekPosition %d necunoscut"
-
-#~ msgid "GNOME VFS already initialized."
-#~ msgstr "GNOME VFS a fost deja iniţializat."
-
-#~ msgid "Dying."
-#~ msgstr "Mor."
-
-#~ msgid "Error reading: %s"
-#~ msgstr "Eroare citire: %s"
-
-#~ msgid "Error writing: %s"
-#~ msgstr "Eroare scriere: %s"
-
-#~ msgid "Cannot write: %s"
-#~ msgstr "Nu pot scrie: %s"
-
-#~ msgid "Cannot create temporary file name `%s'"
-#~ msgstr "Nu pot crea fişierul temporar `%s' "
-
-#~ msgid "Cannot create socket: %s"
-#~ msgstr "Nu pot crea socketul: %s"
-
-#~ msgid "Cannot bind `%s': %s"
-#~ msgstr "Nu pot lega `%s': %s"
-
-#~ msgid "Cannot listen on `%s': %s"
-#~ msgstr "Nu pot asculta pe `%s': %s"
-
-#~ msgid "Cannot accept connections on `%s': %s"
-#~ msgstr "Nu pot accepta conexiuni pe `%s': %s"
-
-#~ msgid "Cannot initialize CORBA."
-#~ msgstr "Nu pot iniţializa CORBA"
-
-#~ msgid "Cannot resolve initial reference to RootPOA."
-#~ msgstr "Nu pot rezolva referinţa iniţială la RootPOA"
-
-#~ msgid "Cannot activate POA manager."
-#~ msgstr "Nu pot activa managerul POA"
-
-#~ msgid "Usage: %s <ior> [<ior_fd>]\n"
-#~ msgstr "Folosire: %s <ior> [<ior_fd>]\n"
-
-#~ msgid "Cannot open file descriptor %d."
-#~ msgstr "Nu pot deschide descriptorul fişier %d."
-
-#~ msgid "Notify interface for `%s' not found."
-#~ msgstr "Interfaţa notificare pentru `%s' nu a fost găsită."
-
-#~ msgid "Cannot setup Request object."
-#~ msgstr "Nu pot seta obiectul Cerere."
-
-#~ msgid "Cannot extract IOR."
-#~ msgstr "Nu pot extrage IOR."
-
-#~ msgid "Got weird string from the slave process: `%s'"
-#~ msgstr "Am obţinut şir ciudat de la procesul dependent: `%s'"
-
-#~ msgid "Cannot get object for `%s'"
-#~ msgstr "Nu pot obţine obiectul pentru `%s'"
-
-#~ msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
-#~ msgstr "Nu pot omorî GNOME::VFS::Slave::Notify -- excepţie %s"
-
-#~ msgid "Cannot connect socket `%s': %s"
-#~ msgstr "Nu pot conecta socketul `%s': %s"
-
-#~ msgid "Cannot initialize GNOME::VFS:Slave::Notify"
-#~ msgstr "Nu pot iniţializa GNOME::VFS:Slave::Notify"
-
-#~ msgid "Cannot reset GNOME::VFS::Slave %s -- exception %s"
-#~ msgstr "Nu pot reseta GNOME::VFS:Slave %s - excepţie %s"
-
-#~ msgid "Cannot reset GNOME::VFS::Slave (IOR unknown) -- exception %s"
-#~ msgstr "Nu pot reseta GNOME::VFS::Slave (IOR necunoscut) -- excepţie %s"
-
-#~ msgid "Cannot kill GNOME::VFS::Slave %s -- exception %s"
-#~ msgstr "Nu pot omorî GNOME::VFS::Slave %s -- excepţie %s"
-
-#~ msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
-#~ msgstr "Nu pot omorî GNOME::VFS::Slave (IOR necunoscut) -- excepţie %s"
-
-#~ msgid "%s to retrieve"
-#~ msgstr "%s pentru a fi primit"
-
-#~ msgid "Closing connection to %s"
-#~ msgstr "Închid conexiunea la %s"
-
-#~ msgid "%s of %s read"
-#~ msgstr "Am citit %s din %s"
-
-#~ msgid "%s read"
-#~ msgstr "Am citit %s"
-
-#~ msgid "Back"
-#~ msgstr "Înapoi"
-
-#~ msgid "Go to the previously visited directory"
-#~ msgstr "Mergi la directorul precedent vizitat"
-
-#~ msgid "Up"
-#~ msgstr "Sus"
-
-#~ msgid "Go to the parent directory"
-#~ msgstr "Mergi la directorul părinte"
-
-#~ msgid "Forward"
-#~ msgstr "Înainte"
-
-#~ msgid "Go to the next visited directory"
-#~ msgstr "Mergi la directorul următor visitat"
-
-#~ msgid "Rescan"
-#~ msgstr "Rescanează"
-
-#~ msgid "Rescan the current directory"
-#~ msgstr "Rescanează directorul curent"
-
-#~ msgid "Home"
-#~ msgstr "Acasă"
-
-#~ msgid "Go to the home directory"
-#~ msgstr "Mergi la directorul acasă"
-
-#~ msgid "Name"
-#~ msgstr "Nume"
-
-#~ msgid "Size"
-#~ msgstr "Mărime"
-
-#~ msgid "Date"
-#~ msgstr "Data"
-
-#~ msgid "Enter name:"
-#~ msgstr "Introduceţi numele:"
-
-#~ msgid "Show:"
-#~ msgstr "Arată:"
-
-#~ msgid "Show dotfiles"
-#~ msgstr "Arată fişierele care încep cu ."
-
-#~ msgid "Edit Applications List"
-#~ msgstr "Editează lista aplicaţiilor"
-
-#~ msgid "Select applications to appear in menu for mime type \"%s\""
-#~ msgstr ""
-#~ "Selectează aplicaţiile pentru a apărea în meniu pentru tipul mine \"%s\""
-
-#~ msgid "Add Application..."
-#~ msgstr "Adaugă aplicaţie..."
-
-#~ msgid "Edit Application..."
-#~ msgstr "Editează aplicaţie..."
-
-#~ msgid "Delete Application"
-#~ msgstr "Şterge aplicaţie"
-
-#~ msgid "Edit Components List"
-#~ msgstr "Editează lista componentelor"
-
-#~ msgid "Select views to appear in menu for mime type \"%s\""
-#~ msgstr ""
-#~ "Selectează vizualizările pentru a apare în meniu pentru tipul mime \"%s\""
-
-#~ msgid ""
-#~ "The MIME type entered contained upper case characters. Upper case "
-#~ "characters were changed to lower case for you."
-#~ msgstr ""
-#~ "Tipul MIME introdus conţine litere mari. Ele au fost schimbate în litere "
-#~ "mici pentru dvs."
-
-#~ msgid "Add New MIME Type"
-#~ msgstr "Adaugă tip MIME nou"
-
-#~ msgid "Add Mime Type"
-#~ msgstr "Adaugă tip MIME"
-
-#~ msgid ""
-#~ "Add a new Mime Type\n"
-#~ "For example:  image/tiff; text/x-scheme"
-#~ msgstr ""
-#~ "Adaugă un nou tip Mime Type\n"
-#~ "De examplu:  image/tiff; text/x-scheme"
-
-#~ msgid "Mime Type:"
-#~ msgstr "Tip mime:"
-
-#~ msgid "Type in a description for this mime-type."
-#~ msgstr "Introduceţi o descriere pentru acest tip mime."
-
-#~ msgid "Description:"
-#~ msgstr "Descriere:"
-
-#~ msgid "File Extensions "
-#~ msgstr "Extensii fişier "
-
-#~ msgid "Add..."
-#~ msgstr "Adaugă..."
-
-#~ msgid "    Remove    "
-#~ msgstr "    Elimina    "
-
-#~ msgid "Add New Extension"
-#~ msgstr "Adaugă extensie nouă"
-
-#~ msgid ""
-#~ "Type in the extensions for this mime-type.\n"
-#~ "For example:  .html, .htm"
-#~ msgstr ""
-#~ "Introduceţi extensiile pentru acest tip mime.\n"
-#~ "De examplu:  .html, .htm"
-
-#~ msgid "Extension:"
-#~ msgstr "Extensia:"
-
-#~ msgid "New Application"
-#~ msgstr "Aplicaţie nouă"
-
-#~ msgid "Application Command:"
-#~ msgstr "Comandă aplicaţie:"
-
-#~ msgid "Open Behavior"
-#~ msgstr "Purtare la deschidere"
-
-#~ msgid "Can open multiple files"
-#~ msgstr "Nu pot deschide fişiere multiple"
-
-#~ msgid "Expects URIs as arguments"
-#~ msgstr "Aşteaptă URIuri ca argumente"
-
-#~ msgid "Edit Application"
-#~ msgstr "Editează aplicaţie"
-
-#~ msgid "Can open from URI"
-#~ msgstr "Nu pot deschide de la URI"
-
-#~ msgid "Mime Type"
-#~ msgstr "Tip mime"
-
-#~ msgid "Change Icon"
-#~ msgstr "Schimbă iconul"
-
-#~ msgid "Change File Extensions"
-#~ msgstr "Schimbă extensiile fişier"
-
-#~ msgid "Default Action:"
-#~ msgstr "Acţiunea implicită:"
-
-#~ msgid "Use Viewer"
-#~ msgstr "Foloseşte vizualizator"
-
-#~ msgid "Open With Application"
-#~ msgstr "Deschide cu aplicaţie"
-
-#~ msgid "Edit List"
-#~ msgstr "Editează lista"
-
-#~ msgid "Add new Mime type..."
-#~ msgstr "Adaugă tip mime nou..."
-
-#~ msgid "Delete this Mime type..."
-#~ msgstr "Şterge acest tip mime..."
-
-#~ msgid "Revert to System Defaults"
-#~ msgstr "Restaurează setările implicite"
-
-#~ msgid "No Description"
-#~ msgstr "Fără descriere"
-
-#~ msgid "None"
-#~ msgstr "Nimic"
-
-#~ msgid ""
-#~ "Reverting to system settings\n"
-#~ "will lose all your personal \n"
-#~ "Mime configuration.\n"
-#~ "Revert to System Settings ?\n"
-#~ msgstr ""
-#~ "Restaurarea la setările implicite\n"
-#~ "va pierde toate configuraţiile MIME\n"
-#~ "personale.\n"
-#~ "Restaurează setările implicite ?\n"
-
-#~ msgid "none"
-#~ msgstr "nimic"
-
-#~ msgid "View as %s"
-#~ msgstr "Vizualizează ca %s"
-
-#~ msgid "Description"
-#~ msgstr "Descriere"
-
-#~ msgid "Extension"
-#~ msgstr "Extensie"
-
-#~ msgid "Default Action"
-#~ msgstr "Acţiune implicită"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "Nu găsesc hbox, folosesc un selector fişiere normal"
-
-#~ msgid "Preview"
-#~ msgstr "Previzualizare"

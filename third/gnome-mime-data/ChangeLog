@@ -1,3 +1,144 @@
+2004-10-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-vfs.applications: Remove trailing whitespace
+	* gnome-vfs.keys.in: Remove non-existant icon for
+	Matroska Video format.
+
+2004-10-11  James Henstridge  <james@jamesh.id.au>
+
+	* Makefile.am: remove intltool stuff on distclean.  Remove
+	gnome-vfs.keys on clean.
+
+	* configure.in: modernise makefile a bit.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require Automake >= 1.7.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-16  Gurban M. Tewekgeli  <gmtavakkoli@yahoo.com>
+
+	* po/tk.po: Added Turkmen translation.
+	* configure.in: Add "tk" to ALL_LINGUAS
+
+2004-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-06-24  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-vfs.applications: fix gvim command and name (were 
+	swapped).
+
+2004-05-29  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime: add text/x-lua for Lua scripts (Closes: #131484)
+
+2004-05-29  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in: Translate mime descriptions for Real Player,
+	patch adapted from Takao Fujiwara <Takao.Fujiwara@Sun.COM>
+	(Closes: #138615)
+
+2004-05-04  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.applications : back out all the aliases and new mime
+	  types.  gnome-mime is not setup to handle aliases nicely and has not
+	  branched, so there is still a string freeze.
+
+2004-05-03  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: recognise python scripts from their headers
+	(Closes: #132062)
+
+2004-04-28  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.applications : update to clarify that gnumeric supports
+	  gnome-vfs
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-22  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	XBEL type is now application/x-xbel, like in
+	shared-mime-info
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB (British) to ALL_LINGUAS
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-01 Dinesh Nadarajah <dinesh_list@sbcglobal.net>
+
+        * ta.po: Started Tamil Translation
+
+2004-03-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-vfs.applications: Remove the -p option from
+	gnome-sound-recorder since it's not supported anymore.
+
+2004-02-29  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
+2004-02-25  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added sr@ije to ALL_LINGUAS.
+
+2004-02-06  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-05  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-vfs.keys.in:
+	Use nautilus-media oafid, not old music view one
+
+2004-01-06  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: fix detection of Mr Project/Planner files
+	(Closes: #130662)
+
+2004-01-05  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in: add an icon for the Matroska videos
+
+2003-12-30  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in: change the label of Matroska video file to
+	Matroska video (thanks Menthos) (Closes: #130178)
+
+2003-12-27  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime: add Matroska support as application/x-matroska
+
+2003-12-26  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime: added Verilog source files as text/x-verilog-src
+	(Closes: #130021)
+
 2003-12-22  Bastien Nocera  <hadess@hadess.net>
 
 	* configure.in: update to 2.4.1

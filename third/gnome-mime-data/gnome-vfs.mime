@@ -279,6 +279,9 @@ application/x-lhz
 application/x-magicpoint
 	ext: mgp
 
+application/x-matroska
+	ext: mkv mka mks
+
 application/x-mif
 	ext: mif
 
@@ -380,11 +383,11 @@ application/x-wais-source
 application/x-xbase
 	ext: dbf
 
+application/x-xbel
+	ext: xbel
+
 application/x-zoo
 	ext: zoo
-
-application/xbel
-	ext: xbel
 
 application/zip
 	ext: zip
@@ -699,6 +702,9 @@ text/x-javascript
 text/x-literate-haskell
 	ext: lhs
 
+text/x-lua
+	ext: lua
+
 text/x-lyx
 	ext: lyx
 
@@ -771,6 +777,9 @@ text/x-vcalendar
 
 text/x-vcard
 	ext: gcrd
+
+text/x-verilog-src
+	ext: v vl vh verilog
 
 text/x-yacc
 	ext: yacc y
