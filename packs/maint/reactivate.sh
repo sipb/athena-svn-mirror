@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.66 2001-09-16 17:25:38 ghudson Exp $
+# $Id: reactivate.sh,v 1.67 2001-10-23 23:35:07 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -19,17 +19,11 @@ umask 22
 . /etc/athena/rc.conf
 
 # Quit now if in the middle of an update.
-THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
-case "$THISVERS" in
-[0-9]*|Layered)
-	# Not in an update, OK.
-	;;
-*)
+if [ -f /var/athena/update.running ]; then
 	# In an update, quit now.
 	echo "reactivate: This workstation is in the middle of an update."
 	exit 1
-	;;
-esac
+fi
 
 if [ "$1" = -prelogin ]; then
 	if [ "$PUBLIC" = "false" ]; then
@@ -161,6 +155,7 @@ if [ -f /var/athena/clusterinfo.bsh ] ; then
 fi
 
 # Determine where the config files live
+THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 if [ "$HOSTTYPE" = linux -a -n "$SYSPREFIX" ]; then
 	config=$SYSPREFIX/config/$THISVERS
 else
