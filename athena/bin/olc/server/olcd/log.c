@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.28 1990-12-12 15:17:23 lwvanels Exp $
+ *	$Id: log.c,v 1.29 1990-12-17 08:30:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.28 1990-12-12 15:17:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.29 1990-12-17 08:30:59 lwvanels Exp $";
 #endif
 #endif
 
@@ -577,7 +577,7 @@ char *os;
     /* Load translations */
     trans_file = fopen(MACH_TRANS_FILE,"r");
     if (trans_file == NULL)
-      log_error("trans_m_i: could not open translation file %%m");
+      log_error("trans_m_i: could not open translation file %m");
     else {
       fscanf(trans_file,"%d\n",&n_mach);
       mach = calloc(n_mach,sizeof(TRANS));
