@@ -106,6 +106,7 @@ for failure in $failures; do
     # These are managed by other parts of the system which work to make
     # sure they are correct.
     /etc/motd | \
+    /usr/vice/etc/CellAlias | \
     /usr/vice/etc/CellServDB | \
     /usr/lib/umb-scheme/slibcat | \
     /etc/sysconfig/openafs | \
