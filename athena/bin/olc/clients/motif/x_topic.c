@@ -1,3 +1,32 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains procedures for exectuting olc commands.
+ *
+ *      Win Treese
+ *      Dan Morgan
+ *      Bill Saphir
+ *      MIT Project Athena
+ *
+ *      Ken Raeburn
+ *      MIT Information Systems
+ *
+ *      Tom Coppeto
+ *	Chris VanHaren
+ *	Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v $
+ *      $Author: lwvanels $
+ */
+
+#ifndef lint
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v 1.2 1991-03-06 15:40:52 lwvanels Exp $";
+#endif
+
+#include <Xm/List.h>
+
 #include "xolc.h"
 
 TOPIC TopicTable[256];
