@@ -4,8 +4,10 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <limits.h>
 #include <string.h>
+#include <time.h>
 #include <hesiod.h>
 
 #ifndef INADDR_NONE
@@ -19,7 +21,6 @@ static void usage(void);
 static void shellenv(char **hp, char *ws_version, int bourneshell);
 static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
-static void free_list(char **list);
 static char **readcluster(FILE *f);
 static char **merge(char **l1, char **l2);
 static int vercmp(const char *v1, const char *v2);
@@ -61,7 +62,7 @@ static void *emalloc(size_t size);
 
 int main(int argc, char **argv)
 {
-  char buf[256], **hp, **fp, **lp, **or1, **or2;
+  char **hp, **fp, **lp, **or1, **or2;
   int debug = 0, bourneshell = 0, ch;
   char *fallbackfile = NULL, *localfile = NULL;
   FILE *f;
@@ -159,7 +160,7 @@ int main(int argc, char **argv)
 static char **merge(char **l1, char **l2)
 {
   int size, point, i, j, ret, sizefroml1;
-  char **lp, **nl;
+  char **nl;
   char var[256], compvar[256], dummy[256];
 
   if (l1 == NULL)
@@ -210,19 +211,7 @@ static char **merge(char **l1, char **l2)
   return nl;
 }
 
-static void free_list(char **list)
-{
-  char **c;
-
-  if (list == NULL)
-      return;
-
-  for (c = list; *c != NULL; c++)
-    free(*c);
-  free(list);
-}
-
-static void usage()
+static void usage(void)
 {
   fprintf(stderr, "Usage: getcluster [-f fallbackfile] [-l localfile]"
 	  " [-b] [-d] hostname version\n");

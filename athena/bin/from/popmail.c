@@ -1,11 +1,9 @@
 /* 
- * $Id: popmail.c,v 1.10 1999-01-22 23:10:24 ghudson Exp $
+ * $Id: popmail.c,v 1.11 1999-09-21 01:40:07 danw Exp $
  *
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.10 1999-01-22 23:10:24 ghudson Exp $";
-#endif /* lint || SABER */
+static const char rcsid[] = "$Id: popmail.c,v 1.11 1999-09-21 01:40:07 danw Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -16,12 +14,16 @@ static char *rcsid = "$Id: popmail.c,v 1.10 1999-01-22 23:10:24 ghudson Exp $";
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <unistd.h>
+#include <stdarg.h>
 #ifdef HAVE_HESIOD
 #include <hesiod.h>
 #endif
 #ifdef HAVE_KRB4
 #include <krb.h>
 #endif
+
+#include "from.h"
 
 #define NOTOK (-1)
 #define OK 0
@@ -31,17 +33,14 @@ extern FILE *sfi;
 extern FILE *sfo;
 extern char Errmsg[80];
 #ifdef HAVE_KRB4
-char *PrincipalHostname();
 #define KPOP_PORT 1109
 #endif
 extern int popmail_debug;
 
-pop_init(host)
-char *host;
+int pop_init(char *host)
 {
     register struct hostent *hp;
     register struct servent *sp;
-    int lport = IPPORT_RESERVED - 1;
     struct sockaddr_in sin;
     register int s;
 #ifdef HAVE_KRB4
@@ -49,6 +48,8 @@ char *host;
     int rem;
     long authopts;
     char *hostname;
+#else
+    int lport = IPPORT_RESERVED - 1;
 #endif
 
     if (!host)
@@ -132,13 +133,14 @@ char *host;
     return(OK);
 }
 
-/*VARARGS1*/
-pop_command(fmt, a, b, c, d)
-char *fmt;
+int pop_command(char *fmt, ...)
 {
     char buf[4096];
+    va_list ap;
 
-    (void) sprintf(buf, fmt, a, b, c, d);
+    va_start(ap, fmt);
+    vsprintf(buf, fmt, ap);
+    va_end(ap);
 
     if (popmail_debug) fprintf(stderr, "---> %s\n", buf);
     if (putline(buf, Errmsg, sfo) == NOTOK) return(NOTOK);
@@ -158,8 +160,7 @@ char *fmt;
 }
 
     
-pop_stat(nmsgs, nbytes)
-int *nmsgs, *nbytes;
+int pop_stat(int *nmsgs, int *nbytes)
 {
     char buf[4096];
 
@@ -182,10 +183,7 @@ int *nmsgs, *nbytes;
 }
 
 
-putline(buf, err, f)
-char *buf;
-char *err;
-FILE *f;
+int putline(char *buf, char *err, FILE *f)
 {
     fprintf(f, "%s\r\n", buf);
     (void) fflush(f);
@@ -196,10 +194,7 @@ FILE *f;
     return(OK);
 }
 
-getline(buf, n, f)
-char *buf;
-register int n;
-FILE *f;
+int getline(char *buf, int n, FILE *f)
 {
     register char *p;
     int c;
@@ -224,10 +219,7 @@ FILE *f;
     return(OK);
 }
 
-multiline(buf, n, f)
-char *buf;
-register int n;
-FILE *f;
+int multiline(char *buf, int n, FILE *f)
 {
     if (getline(buf, n, f) != OK) return (NOTOK);
     if (*buf == '.') {

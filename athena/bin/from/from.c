@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.23 1999-01-22 23:10:24 ghudson Exp $
+ * $Id: from.c,v 1.24 1999-09-21 01:40:06 danw Exp $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -7,9 +7,7 @@
  * and the old UCB from functionality.
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.23 1999-01-22 23:10:24 ghudson Exp $";
-#endif /* lint || SABER */
+static const char rcsid[] = "$Id: from.c,v 1.24 1999-09-21 01:40:06 danw Exp $";
 
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -20,9 +18,13 @@ static char *rcsid = "$Id: from.c,v 1.23 1999-01-22 23:10:24 ghudson Exp $";
 #include <ctype.h>
 #include <sys/stat.h>
 #include <termios.h>
+#include <unistd.h>
 #ifdef HAVE_HESIOD
 #include <hesiod.h>
 #endif
+
+#include "from.h"
+
 #define NOTOK (-1)
 #define OK 0
 #define DONE 1
@@ -44,11 +46,8 @@ char    *default_err = "Cannot stat the \"ok\" file.. unable to continue with re
 
 FILE 	*sfi, *sfo;
 char 	Errmsg[80];
-char	*getlogin(), *parse_from_field();
 extern int	optind;
 extern char     *optarg;
-struct	passwd *getpwuid();
-uid_t	getuid();
 
 int	popmail_debug, verbose, unixmail, popmail, report, totals;
 int	exuser, nonomail;
@@ -69,10 +68,23 @@ char *Verbose_List[] = {
 	"to", "from", "subject", "date", NULL
 	};
 
-	
-main(argc, argv)
-	int	argc;
-	char	**argv;
+static int parse_args(int argc, char **argv);
+static void lusage(void);
+static int getmail_pop(char *user, char *host, int printhdr);
+static void header_scan(char *line, int *last_header);
+static int pop_scan(int msgno, void (*action)(char *, int *));
+static void error(char *s1);
+static int list_compare(char *s, char **list);
+static void make_lower_case(char *s);
+static char *parse_from_field(char *str);
+static int getmail_unix(char *user);
+static int match(char *line, char *str);
+static void print_report(char **headers, int num_headers, int winlength);
+#ifdef OFF_SWITCH
+static int pop_ok(void);
+#endif
+
+int main(int argc, char **argv)
 {
 	int	locmail = -1, remmail = -1;
 
@@ -83,23 +95,21 @@ main(argc, argv)
 	  remmail = getmail_pop(user, host, locmail);
 	if (!nonomail && (report || verbose || totals) &&
 	    (unixmail == 0 || locmail == 0) &&
-	    (popmail == 0 || remmail == 0))
+	    (popmail == 0 || remmail == 0)) {
 	  if (exuser)
 	    printf ("%s doesn't have any mail waiting.\n", user);
 	  else
 	    puts("You don't have any mail waiting.");
+	}
 
-	exit (unixmail && locmail < 0 || popmail && remmail < 0);
+	exit ((unixmail && locmail < 0) || (popmail && remmail < 0));
 }
 
-parse_args(argc,argv)
-	int	argc;
-	register char **argv;
+static int parse_args(int argc, char **argv)
 {
 	register struct passwd *pp;
 	char *cp;
 	int	c;
-	extern char	*getenv();
 #ifdef HAVE_HESIOD
 	struct hes_postoffice *p;
 #endif
@@ -202,22 +212,19 @@ parse_args(argc,argv)
 	return 0;
 }
 
-lusage()
+static void lusage(void)
 {
 	fprintf(stderr, "Usage: %s [-v | -r | -t] [-p | -u] [-s sender] [-h host] [user]\n", progname);
 	exit(1);
 }
 
 
-getmail_pop(user, host, printhdr)
-     char	*user,*host;
-     int	printhdr;
+static int getmail_pop(char *user, char *host, int printhdr)
 {
 	int nmsgs, nbytes, linelength;
 	char response[128];
 	register int i, j;
 	struct winsize windowsize;
-	int	header_scan();
 
 #ifdef OFF_SWITCH
 	if(pop_ok() == NOTOK)
@@ -305,14 +312,12 @@ getmail_pop(user, host, printhdr)
 	return nmsgs;
 }
 
-header_scan(line, last_header)
-	char	*line;
-	int	*last_header;
+static void header_scan(char *line, int *last_header)
 {
 	char	*keyword, **search_list;
 	register int	i;
 	
-	if (*last_header && isspace(*line)) {
+	if (*last_header && isspace((int)*line)) {
 		headers[num_headers++] = strdup(line);
 		return;
 	}
@@ -326,7 +331,7 @@ header_scan(line, last_header)
 	  }
 	(void) strncpy(keyword,line,i);
 	keyword[i]='\0';
-	MakeLowerCase(keyword);
+	make_lower_case(keyword);
 	if (sender && !strcmp(keyword,"from")) {
 		char *mail_from = parse_from_field(line+i+1);
 		if (strcmp(sender, mail_from))
@@ -346,9 +351,7 @@ header_scan(line, last_header)
 		*last_header = 0;	
 }
 
-pop_scan(msgno,action)
-	int	msgno;
-	int	(*action)();
+static int pop_scan(int msgno, void (*action)(char *, int *))
 {	
 	char buf[4096];
 	int	headers = 1;
@@ -387,22 +390,15 @@ pop_scan(msgno,action)
 	}
 }
 
-/* Print error message.  `s1' is printf control string, `s2' is arg for it. */
+/* Print error message. */
 
-/*VARARGS1*/
-error (s1, s2)
-     char *s1, *s2;
+static void error(char *s)
 {
-  fprintf (stderr, "pop: ");
-  fprintf (stderr, s1, s2);
-  putc ('\n', stderr);
+  fprintf(stderr, "pop: %s\n", s);
 }
 
-int list_compare(s,list)
-      char *s,**list;
+static int list_compare(char *s, char **list)
 {
-      char *retval;
-
       while (*list!=NULL) {
 	      if (strcmp(*list++, s) == 0)
 		      return(1);
@@ -410,31 +406,32 @@ int list_compare(s,list)
       return(0);
 }
 
-MakeLowerCase(s)
-      char *s;
+static void make_lower_case(char *s)
 {
-      int i;
-      for (i=0;s[i];i++)
-              s[i]=isupper(s[i]) ? tolower(s[i]) : s[i];
+      do
+              *s = tolower(*s);
+      while (*s++);
 }
 
-char *parse_from_field(str)
-	char	*str;
+static char *parse_from_field(char *str)
 {
 	register char	*cp, *scr;
 	char		*stored;
 	
 	stored = scr = strdup(str);
-	while (*scr && isspace(*scr))
+	while (*scr && isspace((int)*scr))
 		scr++;
-	if (cp = strchr(scr, '<'))
-		scr = cp+1;
-	if (cp = strchr(scr, '@'))
+	cp = strchr(scr, '<');
+	if (cp)
+		scr = cp + 1;
+	cp = strchr(scr, '@');
+	if (cp)
 		*cp = '\0';
-	if (cp = strchr(scr, '>'))
+	cp = strchr(scr, '>');
+	if (cp)
 		*cp = '\0';
 	scr = strdup(scr);
-	MakeLowerCase(scr);
+	make_lower_case(scr);
 	free(stored);
 	return(scr);
 }
@@ -443,21 +440,18 @@ char *parse_from_field(str)
  * Do the old unix mail lookup.
  */
 
-getmail_unix(user)
-     char *user;
+static int getmail_unix(char *user)
 {
 	char lbuf[BUFSIZ];
 	char lbuf2[BUFSIZ];
 	int havemail = 0, stashed = 0;
 	register char *name;
-	char *getlogin();
 	char *maildrop;
 	char *maildir;
 
 	if (sender != NULL)
 	  for (name = sender; *name; name++)
-	    if (isupper(*name))
-	      *name = tolower(*name);
+	    *name = tolower(*name);
 
 	maildrop = getenv("MAILDROP");
 	if (maildrop && *maildrop) {
@@ -502,9 +496,9 @@ getmail_unix(user)
 	if (totals && havemail) {
 		struct stat st;
 		if (fstat(0, &st) != -1)
-			printf("You have %d local message%s (%d bytes).\n",
+			printf("You have %d local message%s (%lu bytes).\n",
 			       havemail, havemail > 1 ? "s" : "",
-			       st.st_size);
+			       (unsigned long)st.st_size);
 		else
 			printf("You have %d local message%s.\n",
 			       havemail, havemail > 1 ? "s" : "");
@@ -512,8 +506,7 @@ getmail_unix(user)
 	return havemail;
 }
 
-match (line, str)
-	register char *line, *str;
+static int match(char *line, char *str)
 {
 	register char ch;
 
@@ -522,7 +515,7 @@ match (line, str)
 	if (*line == '\n')
 		return (0);
 	while (*str && *line != ' ' && *line != '\t' && *line != '\n') {
-		ch = isupper(*line) ? tolower(*line) : *line;
+		ch = tolower(*line);
 		if (ch != *str++)
 			return (0);
 		line++;
@@ -530,9 +523,7 @@ match (line, str)
 	return (*str == '\0');
 }
 
-print_report(headers, num_headers, winlength)
-     char **headers;
-     int num_headers, winlength;
+static void print_report(char **headers, int num_headers, int winlength)
 {
   int j, len;
   char *p, *from_field = 0, *subject_field = 0, *buf, *buf1;
@@ -604,7 +595,7 @@ print_report(headers, num_headers, winlength)
 
 #ifdef OFF_SWITCH
 
-pop_ok()
+static int pop_ok(void)
 {
   FILE *fp;
   struct stat sbuf;
