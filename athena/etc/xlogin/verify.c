@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.8 1999-12-28 14:54:24 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.9 2000-02-08 18:44:16 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -71,7 +71,20 @@ static const char rcsid[] = "$Id: verify.c,v 1.8 1999-12-28 14:54:24 ghudson Exp
 #define MAXENVIRON 32
 
 #define MOTD "/etc/motd"
-#ifndef HAVE_GETUTXENT
+
+#ifdef HAVE_GETUTXENT
+/* We need to know where the wtmpx file is for updwtmpx(), sadly. */
+#if defined(WTMPX_FILE)
+#define WTMPX WTMPX_FILE
+#elif defined(_PATH_WTMPX)
+#define WTMPX _PATH_WTMPX
+#else
+#define WTMPX "/var/adm/wtmpx"
+#endif
+#else /* HAVE_GETUTXENT */
+/* Lacking the System V utmpx interfaces, we need to know where the
+ * utmp and wtmp files are.
+ */
 #if defined(UTMP_FILE)
 #define UTMP UTMP_FILE
 #define WTMP WTMP_FILE
@@ -82,7 +95,8 @@ static const char rcsid[] = "$Id: verify.c,v 1.8 1999-12-28 14:54:24 ghudson Exp
 #define UTMP "/var/adm/utmp"
 #define WTMP "/var/adm/wtmp"
 #endif
-#endif
+#endif /* HAVE_GETUTXENT */
+
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
@@ -795,7 +809,7 @@ static void add_utmp(char *user, char *tty, char *display)
       break;
   pututxline(&utx_entry);
 
-  updwtmpx(WTMPX_FILE, &utx_entry);
+  updwtmpx(WTMPX, &utx_entry);
 }
 #else /* HAVE_GETUTXENT && !HAVE_LOGIN */
 static void add_utmp(char *user, char *tty, char *display)
