@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.8 1988-06-15 20:47:42 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.9 1990-12-22 17:28:14 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.8 1988-06-15 20:47:42 jtkohl Exp $";
+static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.9 1990-12-22 17:28:14 jfc Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -24,7 +24,7 @@ Code_t ZSendList(notice, list, nitems, cert_routine)
     ZNotice_t *notice;
     char *list[];
     int nitems;
-    int (*cert_routine)();
+    Z_AuthProc cert_routine;
 {
     return(ZSrvSendList(notice, list, nitems, cert_routine, Z_XmitFragment));
 }
