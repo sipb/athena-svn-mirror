@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2003-04-02 15:34:56 ghudson Exp $
+# $Id: Makefile,v 1.9.2.1 2004-01-02 17:25:12 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -7,7 +7,7 @@ ATHRETCDIR=/etc/athena
 ATHMANDIR=/usr/athena/man
 
 STRIPFILES=${DESTDIR}${ATHRBINDIR}/* ${DESTDIR}${ATHRETCDIR}/* \
-	${DESTDIR}/usr/lib/sendmail
+	${DESTDIR}/usr/lib/sendmail.real
 
 all:
 
