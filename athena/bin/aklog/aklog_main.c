@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.9 1990-10-21 18:11:32 qjb Exp $
+ * $Id: aklog_main.c,v 1.10 1990-12-23 13:41:48 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
- * $Author: qjb $
+ * $Author: probe $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.9 1990-10-21 18:11:32 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.10 1990-12-23 13:41:48 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -353,7 +353,7 @@ static int auth_to_cell(cell, realm)
 	atoken.kvno = c.kvno;
 	atoken.startTime = c.issue_date;
 	/* ticket lifetime is in five-minutes blocks. */
-	atoken.endTime = c.issue_date + (c.lifetime * 5 * 60);
+	atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
 	bcopy (c.session, &atoken.sessionKey, 8);
 	atoken.ticketLen = c.ticket_st.length;
 	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
