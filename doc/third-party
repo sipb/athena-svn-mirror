@@ -168,6 +168,7 @@ Distribution sites for software under third
   gtk2                  ftp.gtk.org:pub/gtk
   gtkhtml               ftp.gnome.org:pub/gnome/sources/gtkhtml
   gtkhtml3              ftp.gnome.org:pub/gnome/sources/gtkhtml
+  ifplugd		http://0pointer.de/lennart/projects/ifplugd/
   imlib                 (Formerly www.rasterman.com; imlib 1 is dead now)
   inetd                 From NetBSD (ftp.netbsd.org), usr.sbin/inetd
   intlfonts             ftp.gnu.org:pub/gnu/intlfonts
@@ -180,6 +181,7 @@ Distribution sites for software under third
   libart_lgpl           ftp.gnome.org:pub/gnome/sources/libart_lgpl
   libbonobo             ftp.gnome.org:pub/gnome/sources/libbonobo
   libbonoboui           ftp.gnome.org:pub/gnome/sources/libbonoboui
+  libdaemon		http://0pointer.de/lennart/projects/libdaemon/
   libgail-gnome         ftp.gnome.org:pub/gnome/sources/libgail-gnome
   libghttp              ftp.gnome.org:pub/gnome/sources/libghttp
   libglade              ftp.gnome.org:pub/gnome/sources/libglade
