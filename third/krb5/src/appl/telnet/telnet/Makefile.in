@@ -1,3 +1,7 @@
+thisconfigdir=.
+myfulldir=appl/telnet/telnet
+mydir=.
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 # derived from the original Makefile.generic
 #
 # Copyright (c) 1991 The Regents of the University of California.
@@ -28,6 +32,9 @@ ARPA_TELNET= $(srcdir)/../arpa/telnet.h
 EXTRALIBS=@EXTRALIBS@
 LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
+
 SRCS=	authenc.c commands.c main.c network.c ring.c \
 	sys_bsd.c telnet.c terminal.c \
 	utilities.c $(GETOPT_SRC)
@@ -40,9 +47,8 @@ OBJS=	authenc.o commands.o main.o network.o ring.o sys_bsd.o \
 
 all:: telnet
 
-telnet:	$(OBJS) $(DEPLIBS) ../libtelnet/libtelnet.a
-	$(LD) -o $@ $(LDFLAGS) $(LDARGS) $(OBJS) ../libtelnet/libtelnet.a \
-	$(LOCAL_LIBRARIES) $(LIBS)
+telnet:	$(OBJS) $(KRB4COMPAT_DEPLIBS) ../libtelnet/libtelnet.a
+	$(CC_LINK) -o $@ $(OBJS) ../libtelnet/libtelnet.a $(LOCAL_LIBRARIES) $(KRB4COMPAT_LIBS)
 
 clean::
 	$(RM) telnet

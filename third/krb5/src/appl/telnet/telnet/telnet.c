@@ -2311,7 +2311,7 @@ telnet(user)
 	send_will(TELOPT_ENCRYPT, 1);
 	while (1) {
 	    if (my_want_state_is_wont(TELOPT_AUTHENTICATION)) {
-		printf("\nServer refused to negotiation authentication, which is required\n");
+		printf("\nServer refused to negotiate authentication, which is required\n");
 		printf("for encryption.\n\r");
 		break;
 	    }

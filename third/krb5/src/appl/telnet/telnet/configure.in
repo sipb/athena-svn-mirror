@@ -2,8 +2,7 @@ AC_INIT(telnet.c)
 CONFIG_RULES
 AC_PROG_INSTALL
 AC_VFORK
-AC_CHECK_HEADERS(string.h arpa/nameser.h)
-AC_HAVE_HEADERS(unistd.h sys/select.h stdlib.h arpa/inet.h)
+AC_CHECK_HEADERS(string.h arpa/nameser.h unistd.h sys/select.h stdlib.h arpa/inet.h sys/filio.h)
 AC_CHECK_LIB(termcap,main,AC_DEFINE(TERMCAP)
 LIBS="$LIBS -ltermcap",
   AC_CHECK_LIB(curses,setupterm,LIBS="$LIBS -lcurses",
@@ -24,10 +23,6 @@ if test -z "$ac_sysv_termio"; then
   fi
 fi
 fi
-AC_FUNC_CHECK(gettosbyname,AC_DEFINE(HAS_GETTOS))
-AC_HEADER_CHECK(sys/filio.h,AC_DEFINE(FILIO_H))
-AC_HEADER_CHECK(sys/stream.h,AC_DEFINE(STREAMS))
-AC_FUNC_CHECK(cgetent,AC_DEFINE(HAS_CGETENT))
 CHECK_SIGNALS
 if test "$KRB4_LIB" = ''; then
 	AC_MSG_RESULT(No Kerberos 4 authentication)
@@ -41,8 +36,8 @@ dnl Fix post beta-6
 withval=no
 AC_ARG_WITH([krb4],[],,withval=yes)
 if test $withval = no; then
-	KRB4_CRYPTO_LIB='-ldes425'
-	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
+	DES425_LIB='-ldes425'
+	DES425_DEPIB='$(TOPLIBD)/libdes425$(DEPLIBEXT)'
 fi
 dnl
 EXTRALIBS=
@@ -66,8 +61,5 @@ if test $with_afs != no; then
 				    [EXTRALIBS="$EXTRALIBS -lcompat"])])
 fi
 dnl
-USE_KRB4_LIBRARY
-USE_ANAME
-KRB5_LIBRARIES
-V5_USE_SHARED_LIB
+KRB5_BUILD_PROGRAM
 V5_AC_OUTPUT_MAKEFILE
