@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Machines which first ran mkserv at 8.4 may have group-writable
+# /var/server/usr directories, which sendmail does not like.
+if [ -d /var/server/usr ]; then
+  chmod 755 /var/server/usr
+fi
