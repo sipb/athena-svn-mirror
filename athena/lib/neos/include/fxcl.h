@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.1 1992-12-07 13:36:10 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.2 1993-02-03 12:50:04 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,7 @@
 #define _fxcl_h_
 
 #ifndef lint
-static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.1 1992-12-07 13:36:10 probe Exp $";
+static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.2 1993-02-03 12:50:04 probe Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -27,6 +27,7 @@ static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <fxcl_err.h>
 #include <krb_err.h>
 #include <sys/param.h>
+#include <time.h>
 
 #define paper_clear(p) bzero((char *) p, sizeof(Paper))
 #define paper_copy(a, b)  bcopy((char *) a, (char *) b, sizeof(Paper))
