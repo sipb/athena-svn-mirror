@@ -1,11 +1,11 @@
 /*
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.4 1990-07-06 10:57:19 jfc Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.5 1991-01-22 16:22:10 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -82,7 +82,7 @@ nfs_attach(at, mopt, errorout)
 
 	if ((at->mode != 'n') && do_nfsid)
 		if (nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDMAP,
-			  errorout, at->hesiodname, 1, real_uid) == FAILURE) {
+			  errorout, at->hesiodname, 1, owner_uid) == FAILURE) {
 			if (mopt->flags & M_RDONLY) {
 				printf("%s: Warning, mapping failed for filesystem %s,\n\tcontinuing with read-only mount.\n",
 				       progname, at->hesiodname);
@@ -118,7 +118,7 @@ nfs_attach(at, mopt, errorout)
 	if (mountfs(at, fsname, mopt, errorout) == FAILURE) {
 		if ((at->mode != 'n') && do_nfsid)
 			nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP,
-			      errorout, at->hesiodname, 1, real_uid);
+			      errorout, at->hesiodname, 1, owner_uid);
 		return (FAILURE);
 	}
 
@@ -133,7 +133,7 @@ nfs_detach(at)
 {
 	if ((at->mode != 'n') && do_nfsid &&
 	    nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP, 1,
-		  at->hesiodname,0, real_uid) == FAILURE)
+		  at->hesiodname,0, owner_uid) == FAILURE)
 		printf("%s: Warning: couldn't unmap filesystem %s/host %s\n",
 		       progname, at->hesiodname, at->host);
 
