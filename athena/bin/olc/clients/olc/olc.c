@@ -19,17 +19,17 @@
  *	Lucien Van Elsen
  *      MIT Project Athena
  *
- * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * Copyright (C) 1989-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.37 1996-09-20 02:15:28 ghudson Exp $
+ *	$Id: olc.c,v 1.38 1997-04-30 17:49:40 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.37 1996-09-20 02:15:28 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.38 1997-04-30 17:49:40 ghudson Exp $";
 #endif
 #endif
 
@@ -44,99 +44,97 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 #include <netdb.h>
 #include <string.h>
+#include <unistd.h>
 
 #ifdef KERBEROS
 extern int krb_ap_req_debug;
 #endif /* KERBEROS */
 
+/* Template structure used to build the command table for different clients */
+typedef struct tCOMMAND_template  {
+  int when;
+  COMMAND command;
+} COMMAND_TMPL;
+
+COMMAND *build_command_table(COMMAND_TMPL *tmpl);
+
+/* Constants used for selecting when a command should be available.
+ *   If you are adding a condition with a different meaning, add a new
+ *   constant [here and in build_command_table()] and, possibly, a new
+ *   configuration option in incarnate.c.  Please don't piggyback new
+ *   functionality off of existing options just because they correspond in
+ *   currently existing clients.
+ */
+#define CONSULT   (1<<0)	/* may be used only in consulting client */
+#define USER      (1<<1)	/* may be used only in non-consluting client */
+#define ANSWERS   (1<<2)	/* may be used if service has stock answers */
+#define HOURS     (1<<3)	/* may be used if service has posted hours */
+#define HELP      (1<<4)	/* may be used unless help is unavailable */
+/* For values bigger than (1<<30), change COMMAND_TMPL.when to a long. =) */
 
 /*
- * OLC command table.  Each line is an entry for a function that OLC will
+ * OLC command table.  Each line is an entry for a function that OLC may
  * perform.  The syntax is:
  *
- *     "command name", function-name, "description"
+ *     when, {"command name", function-name, "description"},
  *
+ * <when> determines when the command is to be active.  It must be some
+ *      combination of the constants defined above, or 0 indicating the
+ *      command should work always.  [Bitwise ORing (|) of constants
+ *      indicates that both/all conditions should be fulfilled.]
  *  "command name" is the name of the function as the user would type it.
  *  <function name> is the name of the function to be executed when the user
  *	types the name.
  *  "description" is a short descriptive phrase about what the command does
  *
- * Both of the function names above serve as pointers to the functions they
+ * Function names above serve as pointers to the functions they
  * name.  They should be declared above as "extern" so the compiler knows
  * what to do.
  */
-
-COMMAND OLC_Command_Table[] = {
-  "?",		do_olc_list_cmds,	"List available commands",
-  "help",	do_olc_help,		"Describe the various commands.",
-#ifndef OLTA
-  "answers",	do_olc_stock,		"Read answers to common questions",
-#endif
-  "ask",	do_olc_ask,		"Ask a question",
-  "cancel",	do_olc_cancel,		"Cancel your question",
-  "done",	do_olc_done,		"Mark your question resolved",
-  "exit",	do_quit,		"Temporarily exit",
-  "hours",      do_olc_hours,		"Print the staffed hours",
-  "motd",	do_olc_motd,		"See message of the day",
-  "quit",	do_quit,		"Temporarily exit",
-  "replay",	do_olc_replay,		"Replay the conversation so far",
-  "send",	do_olc_send,		"Send a message",
-  "show",	do_olc_show,		"Show any new messages",
-  "status",	do_olc_status,		"Print your status",
-  "topic",	do_olc_topic,		"Find question topic",
-  "version",	do_olc_version,		"Print version number",
-  "who",	do_olc_who,		"Find out who you're connected to",
-  (char *) NULL, (ERRCODE (*)()) NULL,	""
-  };
-  
-COMMAND OLCR_Command_Table[] = {
-  "?",		do_olc_list_cmds,	"List available commands",
-  "help",	do_olc_help,		"Describe the various commands",
-  "acl",	do_olc_acl,		"Display/Change accesses.",
-#ifndef OLTA
-  "answers",	do_olc_stock,		"Read answers to common questions",
-#endif
-  "ask",	do_olc_ask,		"Ask a question",
-  "cancel",	do_olc_cancel,		"Cancel a question",
-  "comment",	do_olc_comment, 	"Make a comment",
-  "dbinfo",	do_olc_dbinfo,		"Display database info.",
-  "dbload",	do_olc_load_user,	"Reload user attributes.",
-  "describe",	do_olc_describe,	"Show/Change summary info",
-  "done",	do_olc_done,		"Resolve question",	
-  "exit",	do_quit,		"Quit",
-  "forward",	do_olc_forward,		"Forward a question",
-  "grab",	do_olc_grab,		"Grab a user",
-  "hours",      do_olc_hours,		"Print staffed hours",
-  "instance",	do_olc_instance,	"Show/Change default instance",
-  "list",	do_olc_list,		"List the world",
-  "mail",	do_olc_mail,		"Mail a message",
-  "motd",	do_olc_motd,		"See motd",
-  "off",	do_olc_off,		"Sign off",
-  "on",		do_olc_on,		"Sign on",
-  "quit",	do_quit,		"Quit",
-  "replay",	do_olc_replay,		"Replay the conversation",	   
-  "send",	do_olc_send,		"Send a message",		       
-  "show",	do_olc_show,		"Show any new messages",
-  "status",	do_olc_status,		"Find your status",
-#ifndef OLTA
-  "stock",	do_olc_stock,		"Browse thru stock answers",
-#endif
-  "topic",	do_olc_topic,		"Show/Change question topic",
-  "version",	do_olc_version,		"Print version number",
-  "who",	do_olc_who,		"Find status for current instance",
+COMMAND_TMPL Command_Table_Template[] = {
+ {0,       {"?",        do_olc_list_cmds, "List available commands"}},
+ {HELP,    {"help",     do_olc_help,      "Describe the various commands"}},
+ {CONSULT, {"acl",      do_olc_acl,       "Display/Change access privileges"}},
+ {ANSWERS, {"answers",  do_olc_stock,     "Read answers to common questions"}},
+ {0,       {"ask",      do_olc_ask,       "Ask a question"}},
+ {USER,    {"cancel",   do_olc_cancel,    "Cancel your question"}},
+ {CONSULT, {"cancel",   do_olc_cancel,    "Cancel a question"}},
+ {CONSULT, {"comment",  do_olc_comment,   "Make a comment"}},
+ {CONSULT, {"dbinfo",   do_olc_dbinfo,    "Display database info."}},
+ {CONSULT, {"dbload",   do_olc_load_user, "Reload user attributes."}},
+ {CONSULT, {"describe", do_olc_describe,  "Show/Change summary info"}},
+ {USER,    {"done",     do_olc_done,      "Mark your question resolved"}},
+ {CONSULT, {"done",     do_olc_done,      "Resolve a question"}},
+ {0,       {"exit",     do_quit,          "Temporarily exit"}},
+ {CONSULT, {"forward",  do_olc_forward,   "Forward a question"}},
+ {CONSULT, {"grab",     do_olc_grab,      "Grab a user"}},
+ {HOURS,   {"hours",    do_olc_hours,     "Print hours when staffed"}},
+ {CONSULT, {"instance", do_olc_instance,  "Show/Change default instance"}},
+ {CONSULT, {"list",     do_olc_list,      "List the world"}},
+ {CONSULT, {"mail",     do_olc_mail,      "Mail a message"}},
+ {0,       {"motd",     do_olc_motd,      "See the message of the day"}},
+ {CONSULT, {"off",      do_olc_off,       "Sign off"}},
+ {CONSULT, {"on",       do_olc_on,        "Sign on"}},
+ {0,       {"quit",     do_quit,          "Temporarily exit"}},
+ {0,       {"replay",   do_olc_replay,    "Replay the conversation so far"}},
+ {0,       {"send",     do_olc_send,      "Send a message"}},
+ {0,       {"show",     do_olc_show,      "Show any new messages"}},
+ {0,       {"status",   do_olc_status,    "Display your status"}},
+ /* "stock" used to be consultants-only.  Now it's like "answers". --bert */
+ {ANSWERS, {"stock",    do_olc_stock,     "Browse thru stock answers"}},
+ {USER,    {"topic",    do_olc_topic,     "Find question topic"}},
+ {CONSULT, {"topic",    do_olc_topic,     "Show/Change question topic"}},
+ {0,       {"version",  do_olc_version,   "Print version number"}},
+ {USER,    {"who",      do_olc_who,       "Find out who you're connected to"}},
+ {CONSULT, {"who",      do_olc_who,       "Find status for current instance"}},
 #ifdef ZEPHYR
-  "zephyr",	do_olc_zephyr,		"Toggle daemon zephyr use",
+ {CONSULT, {"zephyr",   do_olc_zephyr,    "Toggle daemon zephyr use"}},
 #endif
-  (char *) NULL, (ERRCODE(*)()) NULL,	""
-  };
-
+ {-1,      {NULL,       NULL,             ""}}
+};
 
 COMMAND *Command_Table;
 char *program;
-int OLC=0;
-char *HELP_FILE;
-char *HELP_EXT;
-char *HELP_DIR;
 
 int select_timeout = 300;
 
@@ -162,14 +160,13 @@ int select_timeout = 300;
  *	the command interpreter.
  */
 
+int
 main(argc, argv)
      int argc;
      char **argv;
 {
-  char *prompt;
-#ifdef PUTENV
-  char buf[BUFSIZ];
-#endif
+  char *prompt = NULL;
+  char *config;
   ERRCODE status;
 #ifdef POSIX
   struct sigaction act;
@@ -186,63 +183,42 @@ main(argc, argv)
   if(*program == '/')
      ++program;
 
-  if(string_eq(program,"olc"))
-    {
-      Command_Table = OLC_Command_Table;
-      prompt=OLC_PROMPT;
-      HELP_FILE = OLC_HELP_FILE;
-      HELP_DIR =  OLC_HELP_DIR;
-      HELP_EXT =  OLC_HELP_EXT;
-      OLC=1;
-    }
-  else
-    {       
-      Command_Table = OLCR_Command_Table;
-      prompt=OLCR_PROMPT;
-      HELP_FILE = OLCR_HELP_FILE;
-      HELP_DIR =  OLCR_HELP_DIR;
-      HELP_EXT =  OLCR_HELP_EXT;
-    }
-
+  config = getenv("OLXX_CONFIG");
+  if (config == NULL)
+    config = OLC_CONFIG_PATH;
+ 
   ++argv, --argc;
   while (argc > 0 && argv[0][0] == '-') {
-      if (!strcmp (argv[0], "-prompt")) {
-	  prompt = argv[1];
-	  ++argv, --argc;
+      if (!strcmp (argv[0], "-name") && (argc>1)) {
+	program = argv[1];
+	++argv, --argc;
       }
-      else if (!strcmp (argv[0], "-server")) {
-	  /*
-	   * this is a kludge, but the other interface is already
-	   * there
-	   */
-#ifdef PUTENV
-	  sprintf(buf,"OLCD_HOST=%s",argv[1]);
-	  putenv(buf);
-#else
-	  (void) setenv ("OLCD_HOST", argv[1], 1);
-#endif
-	  ++argv, --argc;
+      else if (!strcmp (argv[0], "-config") && (argc>1)) {
+	config = argv[1];
+	++argv, --argc;
       }
-      else if (!strcmp (argv[0], "-port")) {
-#ifdef PUTENV
-	  sprintf(buf,"OLCD_PORT=%s",argv[1]);
-	  putenv(buf);
-#else
-	  (void) setenv ("OLCD_PORT", argv[1], 1);
-#endif
-	  ++argv, --argc;
+      else if (!strcmp (argv[0], "-prompt") && (argc>1)) {
+	prompt = argv[1];
+	++argv, --argc;
       }
-      else if (!strcmp (argv[0], "-inst")) {
-#ifdef PUTENV
-	sprintf(buf,"OLCD_INST=%s",argv[1]);
-	putenv(buf);
-#else
-	(void) setenv("OLCD_INST", argv[1], 1);
-#endif
+      else if (!strcmp (argv[0], "-server") && (argc>1)) {
+	/*
+	 * this is a kludge, but the other interface is already
+	 * there
+	 */
+	set_env_var ("OLCD_HOST", argv[1]);
+	++argv, --argc;
+      }
+      else if (!strcmp (argv[0], "-port") && (argc>1)) {
+	set_env_var ("OLCD_PORT", argv[1]);
+	++argv, --argc;
+      }
+      else if (!strcmp (argv[0], "-inst") && (argc>1)) {
+	set_env_var ("OLCD_INST", argv[1]);
 	++argv, --argc;
       }
       else {
-	  fprintf (stderr, "%s: unknown control argument %s\n",
+	  fprintf (stderr, "%s: flag unknown or its argument is missing: %s\n",
 		   program, argv[0]);
 	  exit (1);
       }
@@ -250,14 +226,21 @@ main(argc, argv)
       --argc;
   }
 
+  if (incarnate(program, config) == FATAL) {
+    /* Fatal problem.  Messages indicating causes were already displayed... */
+    exit(1);
+  }
+
+  Command_Table = build_command_table(Command_Table_Template);
+
 #ifdef POSIX
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-  act.sa_handler= (void (*)()) SIG_IGN;
+  act.sa_handler= SIG_IGN;
   (void) sigaction(SIGPIPE, &act, NULL);
-#else
+#else /* not POSIX */
   signal(SIGPIPE, SIG_IGN);
-#endif
+#endif /* not POSIX */
   if (argc)
     {
       OInitialize();
@@ -266,11 +249,110 @@ main(argc, argv)
     }
   else 
     {
+      if (prompt == NULL)
+	prompt = client_default_prompt();
       (void) do_olc_init();
       command_loop(Command_Table, prompt);
     }
+  exit(0);
 }
 
+/* Construct the command table.
+ * Arguments:	tmpl: a template for building the table.
+ * Returns:	a pointer to the table (which is allocated using malloc).
+ * Non-local returns: exits with code 1 if malloc fails.
+ * Notes:
+ *	The code is currently somewhat inefficient, but it only runs
+ *	on startup.
+ */
+COMMAND *build_command_table(COMMAND_TMPL *tmpl)
+{
+  COMMAND_TMPL *entry;
+  COMMAND *table, *next;
+  int num_entries;
+
+  int consult = client_is_consulting_client();
+  int user =    client_is_user_client();
+  int answers = client_has_answers();
+  int hours =   client_has_hours();
+  int help =    client_has_help();
+
+  /* first, make a dry run to count how many fields we need. */
+  num_entries = 1;    /* count the trailing NULL-filled record */
+  for (entry = tmpl; entry->when >= 0; entry++)
+    {
+      /* "entry->when" specifies which criteria must be satisfied for the
+       * command to be included in the command table.  Each bit specifies a
+       * criterion to consider (if the bit is set).  ORing bits means all
+       * of the corresponding criteria must be true; 0 means no
+       * requirements, i.e. always include.
+       */
+      if (((entry->when & CONSULT) ? consult : 1) &&
+	  ((entry->when & USER) ?    user    : 1) &&
+	  ((entry->when & ANSWERS) ? answers : 1) &&
+	  ((entry->when & HOURS) ?   hours   : 1) &&
+	  ((entry->when & HELP) ?    help    : 1))
+	num_entries++;
+    }
+
+  /* allocate memory for a new table */
+  table = malloc(num_entries * sizeof(COMMAND));
+  if (table == NULL)
+    {
+      fprintf(stderr, "Out of memory, can't build command table.\n");
+      exit(1);
+    }
+
+  /* fill the table */
+  next = table;
+  for (entry = tmpl; entry->when >= 0; entry++)
+    {
+      /* "entry->when" specifies which criteria must be satisfied for the
+       * command to be included in the command table.  [See above.]
+       */
+      if (((entry->when & CONSULT) ? consult : 1) &&
+	  ((entry->when & USER) ?    user    : 1) &&
+	  ((entry->when & ANSWERS) ? answers : 1) &&
+	  ((entry->when & HOURS) ?   hours   : 1) &&
+	  ((entry->when & HELP) ?    help    : 1))
+	{
+	  memcpy(next, &(entry->command), sizeof(COMMAND));
+	  next++;
+	}
+    }
+
+  /* fill the last entry with empty data */
+  next->command_name = NULL;
+  next->command_function = NULL;
+  next->description = "";
+
+  return table;
+}
+
+
+/* Set an environment variable.
+ * Arguments:	var: a string containing the name of the variable.
+ *		value: a string containing the new value.
+ * Returns:	nothing.
+ * Non-local returns: on some platforms, exits with code 1 if malloc fails.
+ */
+
+void
+set_env_var(const char *var, const char *value)
+{
+#ifdef PUTENV
+  char *buf = malloc(strlen(var)+strlen(value)+2);
+  if (buf == NULL)
+    {
+      fprintf(stderr, "Out of memory, can't expand environment.\n");
+      exit(1);
+    }
+  sprintf(buf, "%s=%s", var, value);
+  putenv(buf);
+#else
+  setenv (var, value, 1);
+#endif
+}
 
 /*
  * Function:	olc_init() completes the initialization process for
@@ -319,11 +401,11 @@ do_olc_init()
   switch(status) 
     {
     case USER_NOT_FOUND:
-      printf("Welcome to %s, ",OLC_SERVICE_NAME);
+      printf("Welcome to %s, ",client_service_name());
       printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	     VERSION_STRING);
-      printf("Copyright (c) 1989 by ");
-      printf("the Massachusetts Institute of Technology.\n\n");
+      printf("Copyright (c) 1989-1997 by "
+	     "the Massachusetts Institute of Technology.\n\n");
       first = 1;
 	
       break;
@@ -331,11 +413,11 @@ do_olc_init()
     case CONNECTED:
     case SUCCESS:
       read_int_from_fd(fd, &n);
-      printf("Welcome back to %s. ",OLC_SERVICE_NAME);
+      printf("Welcome back to %s. ",client_service_name());
       printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	     VERSION_STRING);
-      printf("Copyright (c) 1989 by ");
-      printf("the Massachusetts Institute of Technology.\n\n");
+      printf("Copyright (c) 1989-1997 by "
+	     "the Massachusetts Institute of Technology.\n\n");
 
       if(t_set_default_instance(&Request) != SUCCESS)
 	fprintf(stderr,"Error setting default instance... continuing.\n");
@@ -345,7 +427,7 @@ do_olc_init()
 
       break; 
    case PERMISSION_DENIED:
-      printf("You are not allowed to use %s.\n",OLC_SERVICE_NAME);
+      printf("You are not allowed to use %s.\n",client_service_name());
       exit(1);
     default:
       if(handle_response(status, &Request) == ERROR)
@@ -356,14 +438,16 @@ do_olc_init()
 
   make_temp_name(file);
   Request.request_type = OLC_MOTD;
-  t_get_file(&Request,OLC,file,FALSE);
+  t_get_file(&Request,0,file,FALSE);
   unlink(file);
 
-  if(OLC)
+  if(client_is_user_client())
     {
-      printf("\nTo see answers to common questions, type:      answers\n");
-      printf("To see the hours %s is staffed, type:         hours\n",
-	     OLC_SERVICE_NAME);
+      if (client_has_answers())
+	printf("\nTo see answers to common questions, type:      answers\n");
+      if (client_has_hours())
+	printf("To see the hours %s is staffed, type:         hours\n",
+	       client_service_name());
       if (first)
 	{
 	  topic[0]='\0';
