@@ -1,6 +1,6 @@
 Summary: Themes collection for GNOME
 Name: gnome-themes
-Version: 2.8.0
+Version: 2.8.2
 Release: 0
 License: GPL
 Group: User Interface/Desktop

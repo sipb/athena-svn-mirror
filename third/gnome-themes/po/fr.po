@@ -1,16 +1,17 @@
 # French Tranlation of gnome-themes.
-# Copyright (C) 2002-2003 Free Software Foundation, Inc.
+# Copyright (C) 2002-2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-themes package.
+#
 # maintainer: Baptiste Mille-Mathias <bmm80@ifrance.com>, 2002.
 # Christophe Fergeau <teuf@users.sourceforge.net>, 2003.
-# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2003.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2003-2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 2.3.2.1\n"
+"Project-Id-Version: gnome-themes 2.8.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 13:42+0100\n"
-"PO-Revision-Date: 2003-06-08 21:16+0200\n"
+"POT-Creation-Date: 2004-12-03 18:20+0000\n"
+"PO-Revision-Date: 2004-10-17 11:52+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -83,11 +84,11 @@ msgstr "Aspect arrondi avec des reflets pourpres"
 
 #: desktop-themes/Glider/index.theme.in.h:1
 msgid "Glider"
-msgstr ""
+msgstr "Glider"
 
 #: desktop-themes/Glider/index.theme.in.h:2
 msgid "Simple, smooth and aesthetically pleasing"
-msgstr ""
+msgstr "Simple, fluide et esthétiquement agréable"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
@@ -152,15 +153,3 @@ msgstr "Smokey-Blue"
 #: icon-themes/Smokey-Red/index.theme.in.h:1
 msgid "Smokey-Red"
 msgstr "Smokey-Red"
-
-#~ msgid "Default"
-#~ msgstr "Défaut"
-
-#~ msgid "Plain"
-#~ msgstr "Classique"
-
-#~ msgid "Default Gnome Theme"
-#~ msgstr "Thème Gnome par défaut"
-
-#~ msgid "Gnome"
-#~ msgstr "Gnome"

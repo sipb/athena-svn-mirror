@@ -1,3 +1,31 @@
+2.8.2
+=====
+
+New/updated translations:
+
+2004-10-28  Mohammad DAMT  <mdamt@bisnisweb.com>
+       * id.po: Updated Indonesian translation
+
+ 2004-10-17  Christophe Merlet  <redfox@redfoxcenter.org>
+       * fr.po: Updated French translation.
+
+2.8.1
+=====
+
+Bugfixes:
+- Patch to fix crash-causing namespace issue
+  (Robert Basch, bug #116693).
+
+New/updated translations:
+
+2004-09-22  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+       * ru.po: Updated Russian translation
+       from Russian team <gnome-cyr@gnome.org>.
+
+2004-09-15  Alessio Frusciante  <algol@firenze.linux.it>
+       * it.po: Updated Italian translation by
+       Luca Ferretti <elle.uca@infinito.it>.
+
 2.8.0
 =====
 

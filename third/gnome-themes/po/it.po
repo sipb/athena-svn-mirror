@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 13:42+0100\n"
-"PO-Revision-Date: 2003-10-06 22:19+0200\n"
+"POT-Creation-Date: 2004-12-03 18:20+0000\n"
+"PO-Revision-Date: 2004-09-06 09:18+0200\n"
 "Last-Translator: Luca Ferretti <elle.ucainfinito.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -82,13 +82,18 @@ msgstr "Crux"
 msgid "Smooth gradients with teal highlights"
 msgstr "Gradienti armoniosi con decorazioni verde anatra"
 
+# glider:   1. aliante
+#           2. aliantista
+#           3. idroplano
+# to glide: 1. scorrere, far scorrere, scivolare, sdrucciolare
+#           2. 
 #: desktop-themes/Glider/index.theme.in.h:1
 msgid "Glider"
-msgstr ""
+msgstr "Aliante"
 
 #: desktop-themes/Glider/index.theme.in.h:2
 msgid "Simple, smooth and aesthetically pleasing"
-msgstr ""
+msgstr "Semplice, armonioso ed esteticamente piacevole"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"

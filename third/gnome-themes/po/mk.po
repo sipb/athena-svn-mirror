@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes.HEAD.mk\n"
+"Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 13:42+0100\n"
-"PO-Revision-Date: 2004-06-25 18:40+0200\n"
+"POT-Creation-Date: 2004-12-03 18:20+0000\n"
+"PO-Revision-Date: 2004-09-18 10:52+0200\n"
 "Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -89,11 +89,11 @@ msgstr "Фини градиенти со темни светли површин�
 
 #: desktop-themes/Glider/index.theme.in.h:1
 msgid "Glider"
-msgstr ""
+msgstr "Глајдер"
 
 #: desktop-themes/Glider/index.theme.in.h:2
 msgid "Simple, smooth and aesthetically pleasing"
-msgstr ""
+msgstr "Едноставно, мазно и естетски задоволувачко"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"

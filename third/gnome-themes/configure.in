@@ -3,7 +3,7 @@ AC_INIT(LargePrint)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(gnome-themes, 2.8.0)
+AM_INIT_AUTOMAKE(gnome-themes, 2.8.2)
 
 # Honor aclocal flags
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"

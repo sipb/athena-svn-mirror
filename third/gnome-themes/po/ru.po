@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 13:42+0100\n"
-"PO-Revision-Date: 2003-07-10 16:27+0400\n"
+"POT-Creation-Date: 2004-12-03 18:20+0000\n"
+"PO-Revision-Date: 2003-09-22 08:22+0400\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -81,11 +81,11 @@ msgstr "Гладкие переходы, имитирующие окраску �
 
 #: desktop-themes/Glider/index.theme.in.h:1
 msgid "Glider"
-msgstr ""
+msgstr "Планёр"
 
 #: desktop-themes/Glider/index.theme.in.h:2
 msgid "Simple, smooth and aesthetically pleasing"
-msgstr ""
+msgstr "Простая, плавная и приятная эстетически"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
