@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.9 1988-06-15 17:54:21 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.10 1988-06-15 22:55:16 jtkohl Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
@@ -61,6 +61,9 @@ extern struct _Z_InputQ *__Q_Head, *__Q_Tail;
 	 * touched by an incoming fragment */
 #define Z_NOTICETIMELIMIT	30	/* seconds */
 
+	/* Number of old uid's to keep around to help filter out duplicates */
+#define Z_FILTERDEPTH		10	/* uid's */
+
 extern int __Zephyr_open; /* 0 if the library opened the FD, 1 otherwise */
 extern int __HM_set; /* 0 if the library set the dest addr, 1 otherwise */
 extern int __Zephyr_server; /* 0 if normal client, 1 if server */
@@ -81,5 +84,6 @@ extern long random();
 
 extern struct _Z_InputQ *Z_GetFirstCompelte();
 extern struct _Z_InputQ *Z_GetNextComplete();
+extern Code_t Z_XmitFragment();
 
 #endif !__ZINTERNAL_H__
