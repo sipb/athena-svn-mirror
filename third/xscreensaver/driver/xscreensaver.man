@@ -177,7 +177,8 @@ grabbed for too long can cause problems.
 .B maxIdleTime\fP (class \fBTime\fP)
 This is how many minutes the screensaver is allowed to run before the
 password dialog box displays a prompt allowing an arbitrary user to
-kill the running X session (default 20 minutes.)
+kill the running X session by typing Control-L.  The default is 20
+minutes.
 .TP 8
 .B visualID\fP (class \fBVisualID\fP)
 Specify which X visual to use by default.  (Note carefully that this resource
