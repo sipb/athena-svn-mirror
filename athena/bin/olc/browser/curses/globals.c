@@ -35,6 +35,7 @@ static char *rcsid_globals_c = "$Header: ";
 #include <pwd.h>			/* Password file entry defs. */
 
 #include "cref.h"			/* CREF definitions. */
+#include "globals.h"			/* Global variable defs. */
 
 /* Function declarations for the command table. */
 
@@ -89,7 +90,6 @@ int Previous_Index;			/* Upper level CREF entry. */
 ENTRY Entry_Table[MAX_ENTRIES];		/* Table of CREF entries. */
 int Entry_Count;			/* Number of entries. */
 int Index_Start;			/* Current top of index. */
-int Prev_Index_Start;			/* Upper level top of index. */
 int Command_Count;			/* Number of CREF commands. */
 char Save_File[FILENAME_SIZE];		/* Default save file. */
 char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
@@ -111,7 +111,7 @@ init_globals()
   struct passwd *user_info;		/* User password entry. */
 
   Command_Count = sizeof(Command_Table)/sizeof(COMMAND);
-  strcpy(Root_Dir, CREF_ROOT);
+  strcpy(Root_Dir, (CREF) ? CREF_ROOT : STOCK_ROOT);
   set_current_dir(Root_Dir);
   Current_Index = 1;
   Entry_Count = 0;
