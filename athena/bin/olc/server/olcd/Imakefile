@@ -12,7 +12,7 @@ DEPLIBS=$(LOCAL_LIBRARIES)
 
 SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib)
 
-INCLUDES= -I../include
+INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
