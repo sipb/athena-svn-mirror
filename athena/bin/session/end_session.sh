@@ -3,8 +3,8 @@
 #  end_session - Sends hangup signal to all session_gate processes
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v 1.1 1991-07-05 01:07:58 probe Exp $
-#	$Author: probe $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v 1.2 1992-03-13 07:35:56 epeisach Exp $
+#	$Author: epeisach $
 #
 
 MAX_PASSES=10
@@ -13,7 +13,7 @@ DELAY_TIME=6
 
 trap "exit 6" 2 3
 
-chdir /
+cd /
 
 #  Process the argument list.
 
