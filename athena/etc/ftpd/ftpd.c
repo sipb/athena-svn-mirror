@@ -1075,6 +1075,10 @@ dolog(sin)
 dologout(status)
 	int status;
 {
+	/* Avoid window where SIGURG could go back to main loop after euid
+	 * is 0. */
+	transflag = 0;
+
 #if defined(ATHENA) && defined(_IBMR2)
   	seteuid_rios(0);
 #else
