@@ -1,5 +1,8 @@
 PC	[^\"]
 AN	[A-Z_a-z0-9]
+%{
+#include <strings.h>
+%}
 %%
 
 error_table	return ERROR_TABLE;
@@ -22,5 +25,5 @@ end		return END;
 .		{ return (*yytext); }
 %%
 #ifndef lint
-static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_lex.lex.l,v 1.1 1989-11-07 00:04:53 jik Exp $";
+static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_lex.lex.l,v 1.2 1989-11-07 19:00:35 jik Exp $";
 #endif
