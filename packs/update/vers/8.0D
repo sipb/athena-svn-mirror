@@ -1,0 +1,46 @@
+#!/bin/sh -
+# Version-specific update script for 8.0D
+
+case ${MACH} in
+SUN*)
+	# Fix host line in /etc/athena/rc.conf if necessary.
+	realhost="`uname -n | tr a-z A-Z`"
+	rchost="`echo "$HOST" | tr a-z A-Z`"
+	if [ "$realhost" != "$rchost" -o \
+	     "`grep -c 'export host' /etc/athena/rc.conf`" -eq 1 ]; then
+		if [ "$realhost" != "$rchost" ]; then HOST="$realhost"; fi
+		ed -s /etc/athena/rc.conf << EOM
+/^HOST=/c
+HOST=$HOST;	export HOST		# name of machine
+.
+w
+q
+EOM
+		echo "Corrected HOST line in /etc/athena/rc.conf."
+	fi
+
+	# Fix address line in /etc/athena/rc.conf if necessary.
+	if [ "`ifconfig -a | grep -c "$ADDR"`" -eq 0 ]; then
+		# Resolving $HOST might be better, but I'm loathe to rely on
+		# name resolution when we've removed so many files in earlier
+		# update scripts.
+		ADDR="`ifconfig le0 | awk '/^	inet/ { print $2 }'`"
+		ed -s /etc/athena/rc.conf << EOM
+/^ADDR=/c
+ADDR=$ADDR;	export ADDR		# address of machine
+.
+w
+q
+EOM
+		echo "Corrected ADDR line in /etc/athena/rc.conf."
+	fi
+
+	# Remove more obsolete symlinks.
+	rm -f /SUNWcg12 /SUNWdiag /SUNWgt /SUNWits
+
+	;;
+
+INDY)
+	;;
+esac
+
