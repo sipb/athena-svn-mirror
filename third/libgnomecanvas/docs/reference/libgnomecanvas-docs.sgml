@@ -1,0 +1,45 @@
+<!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!ENTITY libgnomecanvas-GnomeCanvasBpath SYSTEM "sgml/gnome-canvas-bpath.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasClipgroup SYSTEM "sgml/gnome-canvas-clipgroup.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasEllipse SYSTEM "sgml/gnome-canvas-rect-ellipse.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasGroup SYSTEM "sgml/gnome-canvas-group.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasItem SYSTEM "sgml/gnome-canvas-item.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasLine SYSTEM "sgml/gnome-canvas-line.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasPixbuf SYSTEM "sgml/gnome-canvas-pixbuf.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasPolygon SYSTEM "sgml/gnome-canvas-polygon.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasRE SYSTEM "sgml/gnome-canvas-re.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasRect SYSTEM "sgml/gnome-canvas-rect.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasRichText SYSTEM "sgml/gnome-canvas-rich-text.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasShape SYSTEM "sgml/gnome-canvas-shape.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasText SYSTEM "sgml/gnome-canvas-text.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasWidget SYSTEM "sgml/gnome-canvas-widget.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvas SYSTEM "sgml/gnome-canvas.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasPathDef SYSTEM "sgml/gnome-canvas-path-def.sgml">
+<!ENTITY libgnomecanvas-gnome-canvas-util SYSTEM "sgml/gnome-canvas-util.sgml">
+]>
+<book id="index">
+  <bookinfo>
+    <title>GNOME Canvas Library Reference Manual</title>
+  </bookinfo>
+
+  <chapter>
+    <title>GNOME Canvas Library (libgnomecanvas)</title>
+    &libgnomecanvas-GnomeCanvas;
+    &libgnomecanvas-GnomeCanvasBpath;
+    &libgnomecanvas-GnomeCanvasClipgroup;
+    &libgnomecanvas-GnomeCanvasEllipse;
+    &libgnomecanvas-GnomeCanvasGroup;
+    &libgnomecanvas-GnomeCanvasItem;
+    &libgnomecanvas-GnomeCanvasLine;
+    &libgnomecanvas-GnomeCanvasPixbuf;
+    &libgnomecanvas-GnomeCanvasPolygon;
+    &libgnomecanvas-GnomeCanvasRE;
+    &libgnomecanvas-GnomeCanvasRect;
+    &libgnomecanvas-GnomeCanvasRichText;
+    &libgnomecanvas-GnomeCanvasShape;
+    &libgnomecanvas-GnomeCanvasText;
+    &libgnomecanvas-GnomeCanvasWidget;
+    &libgnomecanvas-GnomeCanvasPathDef;
+    &libgnomecanvas-gnome-canvas-util;
+  </chapter>
+</book>

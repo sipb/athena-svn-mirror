@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+GnomeCanvasShape
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomeCanvasShape ##### -->
+<para>
+
+</para>
+
+@item: 
+@priv: 
+
+<!-- ##### STRUCT GnomeCanvasShapePriv ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_canvas_shape_set_path_def ##### -->
+<para>
+
+</para>
+
+@shape: 
+@def: 
+<!-- # Unused Parameters # -->
+@object: 
+
+
+<!-- ##### FUNCTION gnome_canvas_shape_get_path_def ##### -->
+<para>
+
+</para>
+
+@shape: 
+@Returns: 
+<!-- # Unused Parameters # -->
+@object: 
+
+
