@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.10 1999-09-22 22:10:27 danw Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.11 2000-01-11 19:06:19 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -594,9 +594,12 @@ static int update_group(FILE *fp, int fd)
   struct flock fl;
   int status;
 
-  /* Close fp, checking for errors.  If everything is okay, move the temp
-   * file into place. */
-  status = ferror(fp);
+  /* Flush out and close fp, checking for errors.  If everything is
+   * okay, move the temp file into place.
+   */
+  fflush(fp);
+  status = (fsync(fileno(fp)) == -1);
+  status = ferror(fp) || status;
   if (fclose(fp) == 0 && !status)
     {
       status = rename(PATH_GROUP_TMP, PATH_GROUP);

@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.16 2000-01-10 15:54:13 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.17 2000-01-11 19:06:22 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -109,7 +109,9 @@ static int update_passwd(FILE *fp)
 #endif
   int status;
 
-  status = ferror(fp);
+  fflush(fp);
+  status = (fsync(fileno(fp)) == -1);
+  status = ferror(fp) || status;
   if (fclose(fp) || status)
     {
       unlink(PATH_PASSWD_TMP);
@@ -297,7 +299,9 @@ int al__add_to_passwd(const char *username, struct al_record *record,
       fprintf(shadow_out, "%s:%s:%lu::::::\n", pwd->pw_name, passwd,
 	      (unsigned long) (time(NULL) / (60 * 60 * 24)));
     }
-  retval = ferror(shadow_out);
+  fflush(shadow_out);
+  retval = (fsync(fileno(shadow_out)) == -1);
+  retval = ferror(shadow_out) || retval;
   retval = fclose(shadow_out) || retval;
   shadow_out = NULL;
   if (retval)
@@ -406,7 +410,10 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
     }
   if (retval == -1)
     goto cleanup;
-  retval = fclose(shadow_out);
+  fflush(shadow_out);
+  retval = (fsync(fileno(shadow_out)) == -1);
+  retval = ferror(shadow_out) || retval;
+  retval = fclose(shadow_out) || retval;
   shadow_out = NULL;
   if (retval)
     goto cleanup;
@@ -542,7 +549,7 @@ int al__update_cryptpw(const char *username, struct al_record *record,
 
   fclose(in);
 #ifdef HAVE_SHADOW
-  fsync(fileno(out));
+  status = (fsync(fileno(out)) == -1) || status;
   status = ferror(out) || status;
   if (fclose(out) || status)
     unlink(PATH_SHADOW_TMP);
