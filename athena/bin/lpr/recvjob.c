@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.7 1990-12-12 13:12:06 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.8 1991-06-28 13:16:17 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.7 1990-12-12 13:12:06 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.8 1991-06-28 13:16:17 epeisach Exp $";
 #endif lint
 
 /*
@@ -155,7 +155,7 @@ find_dev(dev, type)
 	register int type;
 {
 	register DIR *dfd = opendir("/dev");
-#ifdef _IBMR2
+#if defined(_IBMR2) || defined(POSIX)
 	struct dirent *dir;
 #else
 	struct direct *dir;
