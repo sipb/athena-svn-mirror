@@ -1,13 +1,25 @@
 #ifdef ATHENA
 #include <stdio.h>
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <pwd.h>
+#ifdef SOLARIS
+#include <shadow.h>
+#include <signal.h>
+#endif
 #include <sys/file.h>
 #include <krb.h>
 #include <hesiod.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef SYSV
+#include <fcntl.h>
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/wait.h>
 #include <utmp.h>
 #ifdef _IBMR2
@@ -19,6 +31,12 @@
 #include <sys/param.h>
 #include <sys/mount.h>
 #include <sys/fs_types.h>
+#endif
+#ifdef SYSV
+#include <sys/mkdev.h>
+#endif
+#ifndef SOLARIS
+#define SETPAG 
 #endif
 
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
@@ -74,7 +92,11 @@ struct passwd *athena_getpwnam(user)
   if (!( /* If we already have looked this user up, don't do it again */
 	athena_pwd.pw_name && !strcmp(athena_pwd.pw_name, user) ))
     {
+#ifdef SOLARIS
+      if ((pwd = get_pwnam(user)) != NULL)
+#else
       if ((pwd = getpwnam(user)) != NULL)
+#endif
 	local_passwd = TRUE;
       else
 	{
@@ -84,8 +106,12 @@ struct passwd *athena_getpwnam(user)
 	    pwd = NULL;
 	}
 
-      if (pwd)
+      if (pwd) 
+#ifdef POSIX
+	memmove(&athena_pwd, pwd, sizeof(struct passwd));
+#else
 	bcopy(pwd, &athena_pwd, sizeof(struct passwd));
+#endif
       else
 	return NULL;
     }
@@ -143,12 +169,110 @@ char *password;
 #define WEXITSTATUS(x)  (((union wait *)&(x))->w_retcode)
 #endif
 #define PEXITSTATUS(x)  ((x>>8) & 255)
+#ifdef SOLARIS
+remove_from_passwd(p)
+struct passwd *p;
+{
+    FILE *newfile;
+    struct passwd *copypw;
+    struct stat statb;
+    int cnt, fd;
+
+    cnt = 10;
+    while (cnt-- > 0 &&
+	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
+      sleep(1);
+    if (fd < 0) {
+	printf("Failed to remove you from /etc/passwd\n");
+    }
+    if ((newfile = fdopen(fd, "w")) != NULL) {
+	setpwent();
+	while ((copypw = getpwent()) != 0)
+	    if (copypw->pw_uid != p->pw_uid)
+		    fprintf(newfile, "%s:%s:%d:%d:%s:%s:%s\n",
+			    copypw->pw_name,
+			    copypw->pw_passwd,
+			    copypw->pw_uid,
+			    copypw->pw_gid,
+			    copypw->pw_gecos,
+			    copypw->pw_dir,
+			    copypw->pw_shell);
+	endpwent();
+	fclose(newfile);
+	if (stat("/etc/ptmp", &statb) != 0 || statb.st_size < 80) {
+	    printf("Failed to cleanup login\n");
+	} else
+	  rename("/etc/ptmp", "/etc/passwd");
+	if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+	    printf("Failed to cleanup login\n");
+	    sleep(12);
+	    if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+		newfile = fopen("/etc/passwd", "w");
+		fprintf(newfile, "root:x:0:1:System PRIVILEGED Account:/:/bin/csh\n");
+		fclose(newfile);
+	    }
+	}
+      return(0);
+    }else return(1);
+}
+#endif
+
+#ifdef SOLARIS
+remove_from_shadow(pwd)
+struct passwd *pwd;
+{
+    FILE *newfile;
+    struct passwd *copypw;
+    struct spwd   *copyspw;
+    struct stat statb;
+    int cnt, fd;
+
+
+    cnt = 10;
+    while (cnt-- > 0 &&
+	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0600)) < 0)
+      sleep(1);
+    if (fd < 0) {
+	printf("Failed to remove you from /etc/shadow\n");
+    }
+    if ((newfile = fdopen(fd, "w")) != NULL) {
+        setspent();
+	while ((copyspw = getspent()) != 0)
+	    if (strcmp(copyspw->sp_namp , pwd->pw_name)) {
+		    fprintf(newfile, "%s:%s:%d::::::\n",
+			    copyspw->sp_namp,
+			    copyspw->sp_pwdp,
+			    copyspw->sp_lstchg);
+		  }
+	endspent();
+	fclose(newfile);
+	if (stat("/etc/ptmp", &statb) != 0 || statb.st_size < 80) {
+	    printf("Failed to cleanup login\n");
+	} else
+	  rename("/etc/ptmp", "/etc/shadow");
+	if (stat("/etc/shadow", &statb) != 0 || statb.st_size < 80) {
+	    printf("Failed to cleanup login\n");
+	    sleep(12);
+	    if (stat("/etc/shadow", &statb) != 0 || statb.st_size < 80) {
+		newfile = fopen("/etc/shadow", "w");
+		fprintf(newfile, "root::6445::::::");
+		fclose(newfile);
+	    }
+	}
+	return(0);
+    } else return(1);
+}
+#endif 
 
 char *add_to_passwd(p)
 struct passwd *p;
 {
     int i, fd = -1;
+#ifndef SOLARIS
     FILE *etc_passwd;
+#else
+    FILE *etc_passwd, *etc_shadow;
+#endif
     static char passerr[100];
 
 #ifdef _IBMR2
@@ -210,6 +334,7 @@ struct passwd *p;
     putuserpw(&pw_stuff);
     endpwdb();
 #else	/* RIOS */
+#ifndef SOLARIS
     for (i = 0; i < 10; i++)
       if ((fd = open("/etc/ptmp", O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
 	  errno == EEXIST)
@@ -242,6 +367,43 @@ struct passwd *p;
     (void) fclose(etc_passwd);
     (void) close(fd);
     (void) unlink("/etc/ptmp");
+#else
+    long lastchg = DAY_NOW;
+
+/* lock the passwd and the shadow file */
+    if (lckpwdf()) {
+       sprintf(passerr, "Warning: Couldn't put you in the password-shadow file;\
+           couldn't lock", errno);
+	return(passerr);
+    }
+    etc_passwd = fopen("/etc/passwd", "a");
+    if (etc_passwd == NULL) {
+        sprintf(passerr, "Warning: Couldn't put you in the password file; error %d in open", ferror(etc_passwd));
+	(void)ulckpwdf();
+	return(passerr);
+    }
+    etc_shadow = fopen("/etc/shadow", "a");
+    if (etc_shadow == NULL) {
+        sprintf(passerr, "Warning: Couldn't put you in the shadow file; error %d in open", ferror(etc_shadow));
+	(void)ulckpwdf();
+	return(passerr);
+    }
+    fprintf(etc_shadow,"%s:%s:%d::::::\n",
+     	    p->pw_name,
+	    p->pw_passwd,
+            lastchg);
+    (void) fclose(etc_shadow);
+    fprintf(etc_passwd, "%s:%s:%d:%d:%s:%s:%s\n",
+	    p->pw_name,
+	    "x",
+	    p->pw_uid,
+	    p->pw_gid,
+	    p->pw_gecos,
+	    p->pw_dir,
+	    p->pw_shell);
+    (void) fclose(etc_passwd);
+    (void) ulckpwdf();
+#endif /* SOLARIS */
 #endif	/* RIOS */
 
     return(NULL);
@@ -259,12 +421,14 @@ char *athena_authenticate(user, passwd)
   int child, error, i;
   char *errstring = NULL;
   static char errbuf[1024];
-#ifndef _AUX_SOURCE
+#if !defined(_AUX_SOURCE) && !defined(SOLARIS)
   union wait status;
 #else
   int status;
 #endif
-
+#ifdef POSIX
+  struct sigaction act;
+#endif
   athena_login = LOGIN_NONE;
 
   pwd = athena_getpwnam(user);
@@ -305,12 +469,16 @@ char *athena_authenticate(user, passwd)
       setruid_rios(pwd->pw_uid);
       setrgid_rios(pwd->pw_gid);
 #else
+#ifdef SOLARIS
+      setuid(pwd->pw_uid);
+      setgid(pwd->pw_gid);
+#else
       setruid(pwd->pw_uid);
       setrgid(pwd->pw_gid);
 #endif
-
+#endif
       error = get_tickets(user, passwd);
-      bzero(passwd, strlen(passwd));
+      memset(passwd, 0, strlen(passwd));
       _exit(error);
     }
 
@@ -319,18 +487,30 @@ char *athena_authenticate(user, passwd)
       sprintf(errbuf, "Fork to get tickets failed with error %d", errno);
       if (local_ok)
 	athena_login = LOGIN_LOCAL;
-      bzero(passwd, strlen(passwd));
-      return errbuf;
+        memset(passwd, 0, strlen(passwd));
+        return errbuf;
     }
 
-#ifdef _IBMR2
+#if defined(_IBMR2) || defined(SOLARIS)
+#ifdef POSIX
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  act.sa_handler= (void (*)()) SIG_DFL;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_DFL);
+#endif
   (void)waitpid(child, &status, 0);
+#ifdef POSIX
+  act.sa_handler= (void (*)()) SIG_IGN;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_IGN);
+#endif
 #else
   (void)wait(&status);
 #endif
-  bzero(passwd, strlen(passwd));
+  memset(passwd, 0, strlen(passwd));
 
 #ifdef POSIX
   if (!WIFEXITED(status))
@@ -383,15 +563,17 @@ char *athena_attach(pw, dir, auth)
 {
   int attach_error, child;
   int v, out, err;
-#ifndef _AUX_SOURCE
+#if !defined(_AUX_SOURCE) && !defined(SOLARIS)
   union wait status;
 #else
   int status;
 #endif
-
+#ifdef POSIX
+  struct sigaction act;
+#endif
   if (!(child = fork()))
     {
-#ifdef _AIX
+#if defined(_AIX) || defined (SOLARIS)
       setuid(pw->pw_uid);
       setgid(pw->pw_gid);
 #else
@@ -417,10 +599,22 @@ char *athena_attach(pw, dir, auth)
       return att_errbuf;
     }
 
-#ifdef _IBMR2
+#if defined(_IBMR2) || defined(SOLARIS)
+#ifdef POSIX
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  act.sa_handler= (void (*)()) SIG_DFL;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_DFL);
+#endif
   (void)waitpid(child, &status, 0);
+#ifdef POSIX
+  act.sa_handler= (void (*)()) SIG_DFL;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_IGN);
+#endif
 #else
   (void)wait(&status);
 #endif
@@ -583,7 +777,9 @@ fork_dest_tkt(pw)
      struct passwd *pw;
 {
   int child, status;
-
+#ifdef POSIX
+  struct sigaction act;
+#endif
   if (!(child = fork()))
     {
       /* set real uid/gid for kerberos library */
@@ -591,8 +787,13 @@ fork_dest_tkt(pw)
       setruid_rios(pw->pw_uid);
       setrgid_rios(pw->pw_gid);
 #else
+#ifdef SOLARIS
+      setuid(pw->pw_uid);
+      setgid(pw->pw_gid);
+#else
       setruid(pw->pw_uid);
       setrgid(pw->pw_gid);
+#endif
 #endif
 
       dest_tkt();
@@ -604,15 +805,27 @@ fork_dest_tkt(pw)
 /*      sprintf(errbuf, "Fork to get tickets failed with error %d", errno);
       if (local_ok)
 	athena_login = LOGIN_LOCAL;
-      bzero(passwd, strlen(passwd));
+      memset(passwd, 0, strlen(passwd));
       return errbuf;*/
       return;
     }
 
-#ifdef _IBMR2
+#if defined(_IBMR2) || defined(SOLARIS)
+#ifdef POSIX
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  act.sa_handler= (void (*)()) SIG_DFL;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_DFL);
+#endif
   (void)waitpid(child, &status, 0);
+#ifdef POSIX
+  act.sa_handler= (void (*)()) SIG_IGN;
+  (void) sigaction (SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, SIG_IGN);
+#endif
 #else
   (void)wait(&status);
 #endif
@@ -627,7 +840,6 @@ athena_logout(pw)
   FILE *att, *unlog;
   int detach_error, unlog_error, pid;
   char str_uid[10];
-
   if (athena_login != LOGIN_NONE)
     {
       /* destroy kerberos tickets */
@@ -648,7 +860,13 @@ athena_logout(pw)
 	    }
 	}
       athena_login = LOGIN_NONE;
+#ifdef SOLARIS
+      /* lock before */
+      if (lckpwdf()) return;
 
+      remove_from_passwd(pw);
+      remove_from_shadow(pw);
+#endif
 #ifdef oldcode
       if (!user_logged_in(pw->pw_name))
 	{
