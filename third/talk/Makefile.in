@@ -1,0 +1,19 @@
+# $Id: Makefile.in,v 1.1 1996-10-13 07:01:58 ghudson Exp $
+
+SHELL=/bin/sh
+SUBDIRS=talk talkd
+
+all:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+
+check:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+
+install:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+
+clean:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+
+distclean:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
