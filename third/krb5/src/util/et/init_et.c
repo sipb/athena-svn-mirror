@@ -36,11 +36,11 @@ struct foobar {
 };
 
 int init_error_table(msgs, base, count)
-    const char FAR * const FAR * msgs;
+    const char * const * msgs;
     int base;
     int count;
 {
-    struct foobar FAR * new_et;
+    struct foobar * new_et;
 
     if (!base || !count || !msgs)
 	return 0;
@@ -58,10 +58,10 @@ int init_error_table(msgs, base, count)
     return 0;
 }
 
-KRB5_DLLIMP extern errcode_t KRB5_CALLCONV et_init(ectx)
-	et_ctx FAR *ectx;
+extern errcode_t KRB5_CALLCONV et_init(ectx)
+	et_ctx *ectx;
 {
-	struct et_context FAR *ctx;
+	struct et_context *ctx;
 
 	ctx = malloc(sizeof(struct et_context));
 	if (!ctx)
@@ -74,10 +74,10 @@ KRB5_DLLIMP extern errcode_t KRB5_CALLCONV et_init(ectx)
 	return 0;
 }
 
-KRB5_DLLIMP extern void KRB5_CALLCONV et_shutdown(ectx)
+extern void KRB5_CALLCONV et_shutdown(ectx)
 	et_ctx ectx;	
 {
-	struct et_list FAR *p, FAR *n;
+	struct et_list *p, *n;
 
 	p = ectx->tables;
 	while (p) {
@@ -88,19 +88,19 @@ KRB5_DLLIMP extern void KRB5_CALLCONV et_shutdown(ectx)
 	free(ectx);
 }
 
-KRB5_DLLIMP extern errcode_t KRB5_CALLCONV et_add_error_table(ectx, tbl)
+extern errcode_t KRB5_CALLCONV et_add_error_table(ectx, tbl)
 	et_ctx ectx;
-	struct error_table FAR *tbl;
+	struct error_table *tbl;
 {
-	struct et_list FAR *link;
+	struct et_list *e;
 
-	link = malloc(sizeof(struct et_list));
-	if (!link)
+	e = malloc(sizeof(struct et_list));
+	if (!e)
 		return ENOMEM;
 	
-	link->table = tbl;
-	link->next = ectx->tables;
-	ectx->tables = link;
+	e->table = tbl;
+	e->next = ectx->tables;
+	ectx->tables = e;
 	
 	return 0;
 }

@@ -21,16 +21,11 @@
  */
 
 /*
- * $Id: disp_com_err_status.c,v 1.1.1.3 2002-05-02 16:56:35 rbasch Exp $
+ * $Id: disp_com_err_status.c,v 1.1.1.4 2004-02-27 04:02:41 zacheiss Exp $
  */
 
 #include "gssapiP_generic.h"
-
-#if TARGET_OS_MAC
-#include <Kerberos/com_err.h>
-#else
 #include "com_err.h"
-#endif
 
 /* XXXX internationalization!! */
 

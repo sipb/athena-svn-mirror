@@ -51,6 +51,10 @@ times|
   
 	8. The client and server close the TCP/IP connection and
 	   destroy the GSS-API context.
+
+The client also supports the -v1 flag which uses an older exchange
+format compatible with previous releases of Kerberos and with samples
+shipped in the Microsoft SDK.
   
 The server's command line usage is
   
@@ -80,7 +84,8 @@ is used).  The command-line options have the following meanings:
 The client's command line usage is
 
 	gss-client [-port port] [-mech mechanism] [-d] [-f] [-q]
-		[-ccount count] [-mcount count] [-na] [-nw] [-nx] [-nm]
+        [-seq] [-noreplay] [-nomutual]		
+        [-ccount count] [-mcount count] [-na] [-nw] [-nx] [-nm]
 		host service_name msg
 
 where host is the host running the server, service_name is the service
@@ -100,6 +105,14 @@ the following meanings:
 	TGT will be sent to the server, which will put it in its
 	credential cache (you must have acquired your tickets with
 	"kinit -f" for this to work).
+
+-seq Tells the client to enforce ordered message delivery via
+    sequencing.  
+
+-noreplay Tells the client to disable the use of replay
+    detection.
+
+-nomutual Tells the client to disable the use of mutual authentication.
 
 -f	Tells the client that the "msg" argument is actually the name
 	of a file whose contents should be used as the message.
@@ -147,4 +160,4 @@ This application was originally written by Barry Jaspan of OpenVision
 Technologies, Inc.  It was updated significantly by Jonathan Kamens of
 OpenVision Technologies, Inc.
 
-$Id: README,v 1.1.1.2 2001-12-05 20:47:22 rbasch Exp $
+$Id: README,v 1.1.1.3 2004-02-27 04:06:37 zacheiss Exp $

@@ -1,9 +1,74 @@
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-12-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* t_crc.c: Declare local functions static. 
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-19  Ezra Peisach  <epeisach@bu.edu>
+
+	* Makefile.in (clean-unix): Remove t_crc.o and t_crc.
+
+2002-01-07  Tom Yu  <tlyu@mit.edu>
+
+	* crc.pl: New file; perl script to do generate some test vectors
+	and CRC tables.
+
+	* CRC.pm: New file; perl module to implement CRCs in terms of
+	polynomial arithmetic (verrrry slooow).
+
+	* Poly.pm: New file; perl module to do polynomial arithmetic in
+	the field of integers mod 2.
+
+	* t_crc.c: New file; do some sanity checks (and timing checks,
+	more useful when building shift-4 as well).
+
+	* Makefile.in (check-unix): Add rules for building, running
+	t_crc.
+
+	* crc32.c (mit_crc32_shift4): Add new function, usually not
+	compiled, for shift-4 implementation of CRC32.
+
+	* crc-32.h: Add (conditionalized) prototype for the shift-4
+	function; remove checksum_entry (it's no longer used).
+
+	* crctest.c: Removed.
+
+	* crc-test: Removed.
+
+	* crc.c: Removed.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* crc.c: Make prototypes unconditional.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* crc.c: Don't declare pointers FAR any more.
+
+2001-03-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* crc-32.h: Stop using PROTOTYPE macro.
+
+2001-03-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* crc-32.h, crc.c, crc32.c: Use const instead of krb5_const.
+
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:15:59 1999  Danilo Almeida  <dalmeida@mit.edu>
 

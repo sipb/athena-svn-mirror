@@ -1,4 +1,6 @@
+#if !defined(lint) && defined(SCCSIDS)
 static  char sccsid[] = "@(#)bindresvport.c	2.2 88/07/29 4.0 RPCSRC 1.8 88/02/08 SMI";
+#endif
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
  * unrestricted use provided that this legend is included on all tape
@@ -33,33 +35,36 @@ static  char sccsid[] = "@(#)bindresvport.c	2.2 88/07/29 4.0 RPCSRC 1.8 88/02/08
  */
 
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <gssrpc/rpc.h>
+#include <errno.h>
 
 /*
  * Bind a socket to a privileged IP port
  */
-gssrpc_bindresvport(sd, sin)
+int
+gssrpc_bindresvport(sd, sockin)
 	int sd;
-	struct sockaddr_in *sin;
+	struct sockaddr_in *sockin;
 {
 	int res;
 	static short port;
 	struct sockaddr_in myaddr;
-	extern int errno;
 	int i;
 
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
 
-	if (sin == (struct sockaddr_in *)0) {
-		sin = &myaddr;
-		memset(sin, 0, sizeof (*sin));
-		sin->sin_family = AF_INET;
-	} else if (sin->sin_family != AF_INET) {
+	if (sockin == (struct sockaddr_in *)0) {
+		sockin = &myaddr;
+		memset(sockin, 0, sizeof (*sockin));
+		sockin->sin_family = AF_INET;
+	} else if (sockin->sin_family != AF_INET) {
 		errno = EPFNOSUPPORT;
 		return (-1);
 	}
@@ -69,11 +74,11 @@ gssrpc_bindresvport(sd, sin)
 	res = -1;
 	errno = EADDRINUSE;
 	for (i = 0; i < NPORTS && res < 0 && errno == EADDRINUSE; i++) {
-		sin->sin_port = htons(port++);
+		sockin->sin_port = htons(port++);
 		if (port > ENDPORT) {
 			port = STARTPORT;
 		}
-		res = bind(sd, (struct sockaddr *) sin,
+		res = bind(sd, (struct sockaddr *) sockin,
 			   sizeof(struct sockaddr_in));
 	}
 	return (res);

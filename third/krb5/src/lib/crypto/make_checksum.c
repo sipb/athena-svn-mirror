@@ -29,13 +29,13 @@
 #include "etypes.h"
 #include "dk.h"
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
+krb5_error_code KRB5_CALLCONV
 krb5_c_make_checksum(context, cksumtype, key, usage, input, cksum)
      krb5_context context;
      krb5_cksumtype cksumtype;
-     krb5_const krb5_keyblock *key;
+     const krb5_keyblock *key;
      krb5_keyusage usage;
-     krb5_const krb5_data *input;
+     const krb5_data *input;
      krb5_checksum *cksum;
 {
     int i, e1, e2;
@@ -62,7 +62,7 @@ krb5_c_make_checksum(context, cksumtype, key, usage, input, cksum)
 	return(ENOMEM);
 
     data.length = cksum->length;
-    data.data = cksum->contents;
+    data.data = (char *) cksum->contents;
 
     if (krb5_cksumtypes_list[i].keyhash) {
 	/* check if key is compatible */
@@ -85,7 +85,7 @@ krb5_c_make_checksum(context, cksumtype, key, usage, input, cksum)
 	    }
 	}
 
-	ret = (*(krb5_cksumtypes_list[i].keyhash->hash))(key, 0, input, &data);
+	ret = (*(krb5_cksumtypes_list[i].keyhash->hash))(key, usage, 0, input, &data);
     } else if (krb5_cksumtypes_list[i].flags & KRB5_CKSUMFLAG_DERIVE) {
 	/* any key is ok */
 #ifdef ATHENA_DES3_KLUDGE
@@ -108,6 +108,13 @@ krb5_c_make_checksum(context, cksumtype, key, usage, input, cksum)
     if (!ret) {
 	cksum->magic = KV5M_CHECKSUM;
 	cksum->checksum_type = cksumtype;
+	if (krb5_cksumtypes_list[i].trunc_size) {
+	    krb5_octet *trunc;
+	    cksum->length = krb5_cksumtypes_list[i].trunc_size;
+	    trunc = (krb5_octet *) realloc(cksum->contents, cksum->length);
+	    if (trunc)
+		cksum->contents = trunc;
+	}
     }
 
 cleanup:

@@ -42,10 +42,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef	__P
-#define __P(x)	()
-#endif
-static char *__findenv __P((const char *, int *)); 
+#include "misc-proto.h"
+
+static char *__findenv (const char *, int *); 
 
 /*
  * setenv --
@@ -53,6 +52,7 @@ static char *__findenv __P((const char *, int *));
  *	"value".  If rewrite is set, replace any current value.
  */
 #ifndef HAVE_SETENV
+int
 setenv(name, value, rewrite)
 	register const char *name;
 	register const char *value;
@@ -61,6 +61,7 @@ setenv(name, value, rewrite)
 	extern char **environ;
 	static int alloced;			/* if allocated space before */
 	register char *c;
+	const char *c2;
 	int l_value, offset;
 
 	if (*value == '=')			/* no `=' in value */
@@ -70,7 +71,7 @@ setenv(name, value, rewrite)
 		if (!rewrite)
 			return (0);
 		if (strlen(c) >= l_value) {	/* old larger; copy over */
-			while (*c++ = *value++);
+			while ((*c++ = *value++));
 			return (0);
 		}
 	} else {					/* create new slot */
@@ -95,12 +96,12 @@ setenv(name, value, rewrite)
 		environ[cnt + 1] = NULL;
 		offset = cnt;
 	}
-	for (c = (char *)name; *c && *c != '='; ++c);	/* no `=' in name */
+	for (c2 = name; *c2 && *c2 != '='; ++c2);	/* no `=' in name */
 	if (!(environ[offset] =			/* name + `=' + value */
-	    malloc((size_t)((int)(c - name) + l_value + 2))))
+	    malloc((size_t)((int)(c2 - name) + l_value + 2))))
 		return (-1);
 	for (c = environ[offset]; (*c = *name++) && *c != '='; ++c);
-	for (*c++ = '='; *c++ = *value++;);
+	for (*c++ = '='; (*c++ = *value++););
 	return (0);
 }
 #endif
@@ -153,7 +154,7 @@ __findenv(name, offset)
 	int *offset;
 {
 	extern char **environ;
-	register int len;
+	register unsigned int len;
 	register const char *np;
 	register char **p, *c;
 

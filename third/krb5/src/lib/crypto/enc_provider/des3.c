@@ -43,11 +43,10 @@ k5_des3_keysize(size_t *keybytes, size_t *keylength)
 }
 
 static krb5_error_code
-k5_des3_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-		krb5_const krb5_data *input, krb5_data *output, int encrypt)
+k5_des3_docrypt(const krb5_keyblock *key, const krb5_data *ivec,
+		const krb5_data *input, krb5_data *output, int enc)
 {
     mit_des3_key_schedule schedule;
-    int ret;
 
     /* key->enctype was checked by the caller */
 
@@ -60,7 +59,7 @@ k5_des3_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
     if (input->length != output->length)
 	return(KRB5_BAD_MSIZE);
 
-    switch (ret = mit_des3_key_sched(*(mit_des3_cblock *)key->contents,
+    switch (mit_des3_key_sched(*(mit_des3_cblock *)key->contents,
 				     schedule)) {
     case -1:
 	return(KRB5DES_BAD_KEYPAR);
@@ -73,8 +72,8 @@ k5_des3_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
     mit_des3_cbc_encrypt((krb5_pointer) input->data,
 			 (krb5_pointer) output->data, input->length,
 			 schedule[0], schedule[1], schedule[2],
-			 ivec?ivec->data:(char *)mit_des_zeroblock,
-			 encrypt);
+			 ivec?(unsigned char *) ivec->data:(unsigned char *)mit_des_zeroblock,
+			 enc);
 
     memset(schedule, 0, sizeof(schedule));
 
@@ -82,21 +81,21 @@ k5_des3_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
 }
 
 static krb5_error_code
-k5_des3_encrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-		krb5_const krb5_data *input, krb5_data *output)
+k5_des3_encrypt(const krb5_keyblock *key, const krb5_data *ivec,
+		const krb5_data *input, krb5_data *output)
 {
     return(k5_des3_docrypt(key, ivec, input, output, 1));
 }
 
 static krb5_error_code
-k5_des3_decrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-		krb5_const krb5_data *input, krb5_data *output)
+k5_des3_decrypt(const krb5_keyblock *key, const krb5_data *ivec,
+		const krb5_data *input, krb5_data *output)
 {
     return(k5_des3_docrypt(key, ivec, input, output, 0));
 }
 
 static krb5_error_code
-k5_des3_make_key(krb5_const krb5_data *randombits, krb5_keyblock *key)
+k5_des3_make_key(const krb5_data *randombits, krb5_keyblock *key)
 {
     int i;
 
@@ -127,10 +126,12 @@ k5_des3_make_key(krb5_const krb5_data *randombits, krb5_keyblock *key)
     return(0);
 }
 
-const struct krb5_enc_provider krb5_enc_des3 = {
+const struct krb5_enc_provider krb5int_enc_des3 = {
     k5_des3_block_size,
     k5_des3_keysize,
     k5_des3_encrypt,
     k5_des3_decrypt,
-    k5_des3_make_key
+    k5_des3_make_key,
+    krb5int_des_init_state,
+    krb5int_default_free_state
 };

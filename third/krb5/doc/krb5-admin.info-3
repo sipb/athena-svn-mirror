@@ -1,5 +1,781 @@
-This is Info file krb5-admin.info, produced by Makeinfo version 1.68
-from the input file admin.texinfo.
+This is krb5-admin.info, produced by makeinfo version 4.0 from
+admin.texinfo.
+
+
+File: krb5-admin.info,  Node: Deleting Policies,  Prev: Adding or Modifying Policies,  Up: Policies
+
+Deleting Policies
+-----------------
+
+To delete a policy, use the `kadmin' `delete_policy' command, which
+requires the "delete" administrative privilege.  The syntax is:
+
+     delete_policy [-force] policy_name
+
+The `delete_policy' command has the alias `delpol'.  It prompts for
+confirmation before deletion.  For example:
+
+     kadmin: delete_policy guests
+     Are you sure you want to delete the policy "guests"?
+     (yes/no): yes
+     kadmin:
+
+Note that you must cancel the policy from all principals before deleting
+it.  The `delete_policy' command will fail if it is in use by any
+principals.
+
+
+File: krb5-admin.info,  Node: Global Operations on the Kerberos Database,  Next: Cross-realm Authentication,  Prev: Policies,  Up: Administrating the Kerberos Database
+
+Global Operations on the Kerberos Database
+==========================================
+
+* Menu:
+
+* Dumping a Kerberos Database to a File::
+* Restoring a Kerberos Database from a Dump File::
+* Creating a Stash File::
+* Creating and Destroying a Kerberos Database::
+
+The `kdb5_util' command is the primary tool for administrating the
+Kerberos database.  The syntax is:
+
+     kdb5_util command [kdb5_util_options] [command_options]
+
+The `kdb5_util' command takes the following options, which override the
+defaults specified in the configuration files:
+
+-r realm
+     specifies the the Kerberos realm of the database.
+
+-d database_name
+     specifies the name under which the principal database is stored.
+
+-k master_key_type
+     specifies the key type of the master key in the database.
+
+-M master_key_name
+     specifies the principal name of the master key in the database.
+
+-m
+     indicates that the master database password should be read from
+     the TTY rather than fetched from a file on disk.
+
+-sf stash_file
+     specifies the stash file of the master database password
+
+-P password
+     specifies the master database password.  MIT does not recommend
+     using this option.
+
+
+File: krb5-admin.info,  Node: Dumping a Kerberos Database to a File,  Next: Restoring a Kerberos Database from a Dump File,  Prev: Global Operations on the Kerberos Database,  Up: Global Operations on the Kerberos Database
+
+Dumping a Kerberos Database to a File
+-------------------------------------
+
+To dump a Kerberos database into a file, use the `kdb5_util' `dump'
+command on one of the KDCs.  The syntax is:
+
+     kdb5_util dump [-old] [-b6] [-b7] [-ov]
+     [-verbose] [-mkey_convert] [-new_mkey_file] [filename
+     [principals...]]
+
+The `kdb5_util dump' command takes the following options:
+
+-old
+     causes the dump to be in the Kerberos 5 Beta 5 and earlier dump
+     format ("kdb5_edit load_dump version 2.0").
+
+-b6
+     causes the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
+     load_dump version 3.0").
+
+-b7
+     causes the dump to be in the Kerberos 5 Beta 7 format ("kdbt_edit
+     load_dump version 4").
+
+-ov
+     causes the dump to be in ovsec_adm_export format.  Currently, the
+     only way to preserve per-principal policy information is to use
+     this in conjunction with a normal dump.
+
+-verbose
+     causes the name of each principal and policy to be printed as it is
+     dumped.
+
+-mkey_convert
+     prompts for a new master password, and then dumps the database with
+     all keys reencrypted in this new master key
+
+-new_mkey_file
+     reads a new key from the default keytab and then dumps the database
+     with all keys reencrypted in this new master key
+
+For example:
+
+     shell% kdb5_util dump dumpfile
+     shell%
+
+     shell% kbd5_util dump -verbose dumpfile
+     kadmin/admin@ATHENA.MIT.EDU
+     krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     kadmin/history@ATHENA.MIT.EDU
+     K/M@ATHENA.MIT.EDU
+     kadmin/changepw@ATHENA.MIT.EDU
+     shell%
+
+If you specify which principals to dump, you must use the full
+principal, as in the following example.  (The line beginning with => is
+a continuation of the previous line.):
+
+     shell% kdb5_util dump -verbose dumpfile K/M@ATHENA.MIT.EDU
+     => kadmin/admin@ATHENA.MIT.EDU
+     kadmin/admin@ATHENA.MIT.EDU
+     K/M@ATHENA.MIT.EDU
+     shell%
+
+Otherwise, the principals will not match those in the database and will
+not be dumped:
+
+     shell% kdb5_util dump -verbose dumpfile K/M kadmin/admin
+     shell%
+
+If you do not specify a dump file, `kdb5_util' will dump the database
+to the standard output.
+
+There is currently a bug where the default dump format omits the
+per-principal policy information.  In order to dump all the data
+contained in the Kerberos database, you must perform a normal dump (with
+no option flags) and an additional dump using the "-ov" flag to a
+different file.
+
+
+File: krb5-admin.info,  Node: Restoring a Kerberos Database from a Dump File,  Next: Creating a Stash File,  Prev: Dumping a Kerberos Database to a File,  Up: Global Operations on the Kerberos Database
+
+Restoring a Kerberos Database from a Dump File
+----------------------------------------------
+
+To restore a Kerberos database dump from a file, use the `kdb5_util'
+`load' command on one of the KDCs.  The syntax is:
+
+     kdb5_util load [-old] [-b6] [-b7] [-ov] [-verbose]
+     [-update] [-hash] dumpfilename dbname [admin_dbname]
+
+The `kdb5_util load' command takes the following options:
+
+-old
+     requires the dump to be in the Kerberos 5 Beta 5 and earlier dump
+     format ("kdb5_edit load_dump version 2.0").
+
+-b6
+     requires the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
+     load_dump version 3.0").
+
+-b7
+     requires the dump to be in the Kerberos 5 Beta 7 format ("kdb5_edit
+     load_dump version 4").
+
+-ov
+     requires the dump to be in ovsec_adm_export format.
+
+-verbose
+     causes the name of each principal and policy to be printed as it is
+     loaded.
+
+-update
+     causes records from the dump file to be updated in or added to the
+     existing database.  This is useful in conjunction with an
+     ovsec_adm_export format dump if you want to preserve per-principal
+     policy information, since the current default format does not
+     contain this data.
+
+-hash
+     causes the database to be stored as a hash rather than a binary
+     tree.
+
+For example:
+
+     shell% kdb5_util load dumpfile principal
+     shell%
+
+     shell% kdb5_util load -update dumpfile principal
+     shell%
+
+If the database file exists, and the -update flag was not given,
+`kdb5_util' will overwrite the existing database.
+
+
+File: krb5-admin.info,  Node: Creating a Stash File,  Next: Creating and Destroying a Kerberos Database,  Prev: Restoring a Kerberos Database from a Dump File,  Up: Global Operations on the Kerberos Database
+
+Creating a Stash File
+---------------------
+
+A stash file allows a KDC to authenticate itself to the database
+utilities, such as `kadmin', `kadmind', `krb5kdc', and `kdb5_util'.
+
+To create a stash file, use the `kdb5_util' `stash' command.  The
+syntax is:
+
+     kdb5_util stash [-f keyfile]
+
+For example:
+
+     shell% kdb5_util stash
+     kdb5_util: Cannot find/read stored master key while reading master key
+     kdb5_util: Warning: proceeding without master key
+     Enter KDC database master key:  <= Type the KDC database master password.
+     shell%
+
+If you do not specify a stash file, `kdb5_util' will stash the key in
+the file specified in your `kdc.conf' file.
+
+
+File: krb5-admin.info,  Node: Creating and Destroying a Kerberos Database,  Prev: Creating a Stash File,  Up: Global Operations on the Kerberos Database
+
+Creating and Destroying a Kerberos Database
+-------------------------------------------
+
+If you need to create a new Kerberos database, use the `kdb5_util'
+`create' command.  The syntax is:
+
+     kdb5_util create [-s]
+
+If you specify the `-s' option, `kdb5_util' will stash a copy of the
+master key in a stash file.  (*Note Creating a Stash File::.)  For
+example:
+
+     shell% /usr/local/sbin/kdb5_util -r ATHENA.MIT.EDU create -s
+     kdb5_util: No such file or directory while setting active database to
+     => '/usr/local/var/krb5kdc/principal'
+     Initializing database '/usr/local/var/krb5kdc/principal' for
+     => realm 'ATHENA.MIT.EDU',
+     master key name 'K/M@ATHENA.MIT.EDU'
+     You will be prompted for the database Master Password.
+     It is important that you NOT FORGET this password.
+     Enter KDC database master key:  <= Type the master password.
+     Re-enter KDC database master key to verify:  <= Type it again.
+     shell%
+
+If you need to destroy the current Kerberos database, use the
+`kdb5_util' `destroy' command.  The syntax is:
+
+     kdb5_util destroy [-f]
+
+The `destroy' command destroys the database, first overwriting the disk
+sectors and then unlinking the files.  If you specify the `-f' option,
+`kdb5_util' will not prompt you for a confirmation before destroying
+the database.
+
+     shell% /usr/local/sbin/kdb5_util -r ATHENA.MIT.EDU destroy
+     kdb5_util: Deleting KDC database stored in /usr/local/var/krb5kdc/principal, are you sure
+     (type yes to confirm)? <== yes
+     OK, deleting database '/usr/local/var/krb5kdc/principal'...
+     
+     shell%
+
+
+File: krb5-admin.info,  Node: Cross-realm Authentication,  Prev: Global Operations on the Kerberos Database,  Up: Administrating the Kerberos Database
+
+Cross-realm Authentication
+==========================
+
+In order for a KDC in one realm to authenticate Kerberos users in a
+different realm, it must share a key with the KDC in the other realm.
+In both databases, there must be krbtgt service principals for realms.
+These principals should all have the same passwords, key version
+numbers, and encryption types.  For example, if the administrators of
+ATHENA.MIT.EDU and EXAMPLE.COM wanted to authenticate across the
+realms, they would run the following commands on the KDCs in both
+realms:
+
+     shell%: kadmin.local -e "des3-hmac-sha1:normal des-cbc-crc:v4"
+     kadmin: add_princ -requires_preauth krbtgt/ATHENA.MIT.EDU@EXAMPLE.COM
+     Enter password for principal krbtgt/ATHENA.MIT.EDU@EXAMPLE.COM:
+     Re-enter password for principal krbtgt/ATHENA.MIT.EDU@EXAMPLE.COM:
+     kadmin: add_princ -requires_preauth krbtgt/EXAMPLE.COM@ATHENA.MIT.EDU
+     Enter password for principal krbtgt/EXAMPLE.COM@ATHENA.MIT.EDU:
+     Enter password for principal krbtgt/EXAMPLE.COM@{No value for `PRIMARYREALML'}:
+     kadmin:
+
+Even if most principals in a realm are generally created with the
+requires_preauth flag enabled, this flag is not desirable on
+cross-realm authentication keys because doing so makes it impossible to
+disable preauthentication on a service-by-service basis.  Disabling it
+as in the example above is recommended.
+
+It is also very important that these principals have good passwords.
+MIT recommends that TGT principal passwords be at least 26 characters
+of random ASCII text.
+
+
+File: krb5-admin.info,  Node: Application Servers,  Next: Backups of Secure Hosts,  Prev: Administrating the Kerberos Database,  Up: Top
+
+Application Servers
+*******************
+
+If you need to install the Kerberos V5 programs on an application
+server, please refer to the Kerberos V5 Installation Guide.  Once you
+have installed the software, you need to add that host to the Kerberos
+database (*note Adding or Modifying Principals::), and generate a
+"keytab" for that host, that contains the host's key.  You also need to
+make sure the host's clock is within your maximum clock skew of the
+KDCs.
+
+* Menu:
+
+* Keytabs::
+* Clock Skew::
+* Getting DNS Information Correct::
+* Configuring Your Firewall to Work With Kerberos V5::
+
+
+File: krb5-admin.info,  Node: Keytabs,  Next: Clock Skew,  Prev: Application Servers,  Up: Application Servers
+
+Keytabs
+=======
+
+A "keytab" is a host's copy of its own keylist, which is analogous to a
+user's password.  An application server that needs to authenticate
+itself to the KDC has to have a keytab that contains its own principal
+and key.  Just as it is important for users to protect their passwords,
+it is equally important for hosts to protect their keytabs.  You should
+always store keytab files on local disk, and make them readable only by
+root, and you should never send a keytab file over a network in the
+clear.  Ideally, you should run the `kadmin' command to extract a
+keytab on the host on which the keytab is to reside.
+
+* Menu:
+
+* Adding Principals to Keytabs::
+* Removing Principals from Keytabs::
+
+
+File: krb5-admin.info,  Node: Adding Principals to Keytabs,  Next: Removing Principals from Keytabs,  Prev: Keytabs,  Up: Keytabs
+
+Adding Principals to Keytabs
+----------------------------
+
+To generate a keytab, or to add a principal to an existing keytab, use
+the `ktadd' command from `kadmin', which requires the "inquire"
+administrative privilege.  (If you use the -glob princ_exp option, it
+also requires the "list" administrative privilege.)  The syntax is:
+
+     ktadd [-k[eytab] keytab] [-q] [-e
+     key:salt_list] [principal | -glob princ_exp]
+     [...]
+
+The `ktadd' command takes the following switches:
+
+-k[eytab] keytab
+     use keytab as the keytab file.  Otherwise, `ktadd' will use the
+     default keytab file (`/etc/krb5.keytab').
+
+-e "enc:salt..."
+     Uses the specified list of enctype-salttype pairs for setting the
+     key of the principal.  The quotes are necessary if there are
+     multiple enctype-salttype pairs.  This will not function against
+     kadmin daemons earlier than krb5-1.2.  See *Note Supported
+     Encryption Types:: and *Note Salts:: for all possible values.
+
+-q
+     run in quiet mode.  This causes `ktadd' to display less verbose
+     information.
+
+principal | -glob principal expression
+     add principal, or all principals matching principal expression to
+     the keytab.  The rules for principal expression are the same as
+     for the kadmin `list_principals' (*note Retrieving a List of
+     Principals::) command.
+
+Here is a sample session, using configuration files that enable only
+`des-cbc-crc' encryption. (The line beginning with => is a continuation
+of the previous line.)
+
+     kadmin: ktadd host/daffodil.mit.edu@ATHENA.MIT.EDU
+     kadmin: Entry for principal host/daffodil.mit.edu@ATHENA.MIT.EDU with
+          kvno 2, encryption type DES-CBC-CRC added to keytab
+          WRFILE:/etc/krb5.keytab.
+     kadmin:
+
+     kadmin: ktadd -k /usr/local/var/krb5kdc/kadmind.keytab
+     => kadmin/admin kadmin/changepw
+     kadmin: Entry for principal kadmin/admin@ATHENA.MIT.EDU with
+          kvno 3, encryption type DES-CBC-CRC added to keytab
+          WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
+     kadmin:
+
+
+File: krb5-admin.info,  Node: Removing Principals from Keytabs,  Prev: Adding Principals to Keytabs,  Up: Keytabs
+
+Removing Principals from Keytabs
+--------------------------------
+
+To remove a principal from an existing keytab, use the kadmin
+`ktremove' command.  The syntax is:
+
+     ktremove [-k[eytab] keytab] [-q] principal [kvno | all | old]
+
+The `ktremove' command takes the following switches:
+
+-k[eytab] keytab
+     use keytab as the keytab file.  Otherwise, `ktremove' will use the
+     default keytab file (`/etc/krb5.keytab').
+
+-q
+     run in quiet mode.  This causes `ktremove' to display less verbose
+     information.
+
+principal
+     the principal to remove from the keytab.  (Required.)
+
+kvno
+     remove all entries for the specified principal whose Key Version
+     Numbers match kvno.
+
+all
+     remove all entries for the specified principal
+
+old
+     remove all entries for the specified principal except those with
+     the highest kvno.
+
+For example:
+
+     kadmin: ktremove -k /usr/local/var/krb5kdc/kadmind.keytab kadmin/admin
+     kadmin: Entry for principal kadmin/admin with kvno 3 removed
+          from keytab WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
+     kadmin:
+
+
+File: krb5-admin.info,  Node: Clock Skew,  Next: Getting DNS Information Correct,  Prev: Keytabs,  Up: Application Servers
+
+Clock Skew
+==========
+
+In order to prevent intruders from resetting their system clocks in
+order to continue to use expired tickets, Kerberos V5 is set up to
+reject ticket requests from any host whose clock is not within the
+specified maximum clock skew of the KDC (as specified in the `kdc.conf'
+file).  Similarly, hosts are configured to reject responses from any
+KDC whose clock is not within the specified maximum clock skew of the
+host (as specified in the `krb5.conf' file).  The default value for
+maximum clock skew is 300 seconds, or five minutes.
+
+MIT suggests that you add a line to client machines' `/etc/rc' files to
+synchronize the machine's clock to your KDC at boot time.  On UNIX
+hosts, assuming you had a kdc called `kerberos' in your realm, this
+would be:
+
+     gettime -s kerberos
+
+If the host is not likely to be rebooted frequently, you may also want
+to set up a cron job that adjusts the time on a regular basis.
+
+
+File: krb5-admin.info,  Node: Getting DNS Information Correct,  Next: Configuring Your Firewall to Work With Kerberos V5,  Prev: Clock Skew,  Up: Application Servers
+
+Getting DNS Information Correct
+===============================
+
+Several aspects of Kerberos rely on name service.  In order for Kerberos
+to provide its high level of security, it is less forgiving of name
+service problems than some other parts of your network.  It is important
+that your Domain Name System (DNS) entries and your hosts have the
+correct information.
+
+Each host's canonical name must be the fully-qualified host name
+(including the domain), and each host's IP address must reverse-resolve
+to the canonical name.
+
+Other than the `localhost' entry, make all entries in each machine's
+`/etc/hosts' file in the following form:
+
+     IP address      fully-qualified hostname        aliases
+
+Here is a sample `/etc/hosts' file:
+
+     # this is a comment
+     127.0.0.1       localhost localhost@mit.edu
+     10.0.0.6       daffodil.mit.edu trillium wake-robin
+
+Additionally, on Solaris machines, you need to be sure the "hosts"
+entry in the file
+`/etc/nsswitch.conf' includes the source "dns" as well as "file".
+
+Finally, each host's keytab file must include a host/key pair for the
+host's canonical name.  You can list the keys in a keytab file by
+issuing the command `klist -k'.  For example:
+
+     viola# klist -k
+     Keytab name: /etc/krb5.keytab
+     KVNO Principal
+     ---- ------------------------------------------------------------
+        1 host/daffodil.mit.edu@ATHENA.MIT.EDU
+
+If you telnet to the host with a fresh credentials cache (ticket file),
+and then `klist', the host's service principal should be
+host/fully-qualified-hostname@REALM_NAME.
+
+
+File: krb5-admin.info,  Node: Configuring Your Firewall to Work With Kerberos V5,  Prev: Getting DNS Information Correct,  Up: Application Servers
+
+Configuring Your Firewall to Work With Kerberos V5
+==================================================
+
+If you need off-site users to be able to get Kerberos tickets in your
+realm, they must be able to get to your KDC.  This requires either that
+you have a slave KDC outside your firewall, or you configure your
+firewall to allow UDP requests into at least one of your KDCs, on
+whichever port the KDC is running.  (The default is port 88; other
+ports may be specified in the KDC's kdc.conf file.)  Similarly, if you
+need off-site users to be able to change their passwords in your realm,
+they must be able to get to your Kerberos admin server.  The default
+port for the admin server is 749.
+
+If your on-site users inside your firewall will need to get to KDCs in
+other realms, you will also need to configure your firewall to allow
+outgoing TCP and UDP requests to port 88.  Additionally, if they will
+need to get to any Kerberos V4 KDCs, you may also need to allow TCP and
+UDP requests to port 750.  If your on-site users inside your firewall
+will need to get to Kerberos admin servers in other realms, you will
+also need to allow outgoing TCP and UDP requests to port
+749.
+
+If any of your KDCs are outside your firewall, you will need to allow
+`kprop' requests to get through to the remote KDC.  `Kprop' uses the
+krb5_prop service on port 754 (tcp).
+
+If you need your off-site users to have access to machines inside your
+firewall, you need to allow TCP connections from their off-site hosts on
+the appropriate ports for the programs they will be using.  The
+following lines from `/etc/services' show the default port numbers for
+the Kerberos V5 programs:
+
+     ftp           21/tcp           # Kerberos ftp and telnet use the
+     telnet        23/tcp           # default ports
+     kerberos      88/udp    kdc    # Kerberos V5 KDC
+     kerberos      88/tcp    kdc    # Kerberos V5 KDC
+     klogin        543/tcp          # Kerberos authenticated rlogin
+     kshell        544/tcp   cmd    # and remote shell
+     kerberos-adm  749/tcp          # Kerberos 5 admin/changepw
+     kerberos-adm  749/udp          # Kerberos 5 admin/changepw
+     krb5_prop     754/tcp          # Kerberos slave propagation
+     eklogin       2105/tcp         # Kerberos auth. & encrypted rlogin
+     krb524        4444/tcp         # Kerberos 5 to 4 ticket translator
+
+By default, Kerberos V5 `telnet' and `ftp' use the same ports as the
+standard `telnet' and `ftp' programs, so if you already allow telnet
+and ftp connections through your firewall, the Kerberos V5 versions
+will get through as well.  If you do not already allow telnet and ftp
+connections through your firewall, but need your users to be able to
+use Kerberos V5 telnet and ftp, you can either allow ftp and telnet
+connections on the standard ports, or switch these programs to
+non-default port numbers and allow ftp and telnet connections on those
+ports to get through.
+
+Kerberos V5 `rlogin' uses the `klogin' service, which by default uses
+port 543.  Encrypted Kerberos V5 rlogin uses the `eklogin' service,
+which by default uses port 2105.
+
+Kerberos V5 `rsh' uses the `kshell' service, which by default uses port
+544.  However, the server must be able to make a TCP connection from
+the kshell port to an arbitrary port on the client, so if your users
+are to be able to use `rsh' from outside your firewall, the server they
+connect to must be able to send outgoing packets to arbitrary port
+numbers.  Similarly, if your users need to run `rsh' from inside your
+firewall to hosts outside your firewall, the outside server needs to be
+able to connect to an arbitrary port on the machine inside your
+firewall.  Because Kerberos V5 `rcp' uses `rsh', the same issues apply.
+If you need to use `rsh' (or `rcp') through your firewall and are
+concerned with the security implications of allowing connections to
+arbitrary ports, MIT suggests that you have rules that specifically
+name these applications and, if possible, list the allowed hosts.
+
+The book `UNIX System Security', by David Curry, is a good starting
+point for learning to configure firewalls.
+
+
+File: krb5-admin.info,  Node: Backups of Secure Hosts,  Next: Bug Reporting,  Prev: Application Servers,  Up: Top
+
+Backups of Secure Hosts
+***********************
+
+When you back up a secure host, you should exclude the host's keytab
+file from the backup.  If someone obtained a copy of the keytab from a
+backup, that person could make any host masquerade as the host whose
+keytab was compromised.  This could be particularly dangerous if the
+compromised keytab was from one of your KDCs.  If the machine has a disk
+crash and the keytab file is lost, it is easy to generate another keytab
+file.  (*Note Adding Principals to Keytabs::.)  If you are unable to
+exclude particular files from backups, you should ensure that the
+backups are kept as secure as the host's root password.
+
+* Menu:
+
+* Backing Up the Kerberos Database::
+
+
+File: krb5-admin.info,  Node: Backing Up the Kerberos Database,  Prev: Backups of Secure Hosts,  Up: Backups of Secure Hosts
+
+Backing Up the Kerberos Database
+================================
+
+As with any file, it is possible that your Kerberos database could
+become corrupted.  If this happens on one of the slave KDCs, you might
+never notice, since the next automatic propagation of the database would
+install a fresh copy.  However, if it happens to the master KDC, the
+corrupted database would be propagated to all of the slaves during the
+next propagation.  For this reason, MIT recommends that you back up
+your Kerberos database regularly.  Because the master KDC is
+continuously dumping the database to a file in order to propagate it to
+the slave KDCs, it is a simple matter to have a cron job periodically
+copy the dump file to a secure machine elsewhere on your network.  (Of
+course, it is important to make the host where these backups are stored
+as secure as your KDCs, and to encrypt its transmission across your
+network.)  Then if your database becomes corrupted, you can load the
+most recent dump onto the master KDC.  (*Note Restoring a Kerberos
+Database from a Dump File::.)
+
+
+File: krb5-admin.info,  Node: Bug Reporting,  Next: Appendix,  Prev: Backups of Secure Hosts,  Up: Top
+
+Bug Reporting
+*************
+
+In any complex software, there will be bugs.  If you have successfully
+built and installed Kerberos V5, please use the `krb5-send-pr' program
+to fill out a Problem Report should you encounter any errors in our
+software.
+
+Bug reports that include proposed fixes are especially welcome.  If you
+do include fixes, please send them using either context diffs or unified
+diffs (using `diff -c' or `diff -u', respectively).  Please be careful
+when using "cut and paste" or other such means to copy a patch into a
+bug report; depending on the system being used, that can result in
+converting TAB characters into spaces, which makes applying the patches
+more difficult.
+
+The `krb5-send-pr' program is installed in the directory
+`/usr/local/sbin'.
+
+The `krb5-send-pr' program enters the problem report into our Problem
+Report Management System (PRMS), which automatically assigns it to the
+engineer best able to help you with problems in the assigned category.
+
+The `krb5-send-pr' program will try to intelligently fill in as many
+fields as it can.  You need to choose the "category", "class",
+"severity", and "priority" of the problem, as well as giving us as much
+information as you can about its exact nature.
+
+The PR category will be one of:
+
+     krb5-admin   krb5-appl    krb5-build   krb5-clients
+     krb5-doc     krb5-kdc     krb5-libs    krb5-misc
+     pty          telnet       test
+
+Choose the category that best describes the area under which your
+problem falls.
+
+The class can be "sw-bug", "doc-bug", "change-request", or "support".
+The first two are exactly as their names imply.  Use change-request
+when the software is behaving according to specifications, but you want
+to request changes in some feature or behavior.  The support class is
+intended for more general questions about building or using Kerberos V5.
+
+The severity of the problem indicates the problem's impact on the
+usability of Kerberos V5.  If a problem is "critical", that means the
+product, component or concept is completely non-operational, or some
+essential functionality is missing, and no workaround is known.  A
+"serious" problem is one in which the product, component or concept is
+not working properly or significant functionality is missing.  Problems
+that would otherwise be considered critical are rated serious when a
+workaround is known.  A "non-critical" problem is one that is indeed a
+problem, but one that is having a minimal effect on your ability to use
+Kerberos V5.  E.g., The product, component or concept is working in
+general, but lacks features, has irritating behavior, does something
+wrong, or doesn't match its documentation.  The default severity is
+serious.
+
+The priority indicates how urgent this particular problem is in
+relation to your work.  Note that low priority does not imply low
+importance.  A priority of "high" means a solution is needed as soon as
+possible.  A priority of "medium" means the problem should be solved no
+later than the next release.  A priority of "low" means the problem
+should be solved in a future release, but it is not important to your
+work how soon this happens.  The default priority is medium.
+
+Note that a given severity does not necessarily imply a given priority.
+For example, a non-critical problem might still have a high priority if
+you are faced with a hard deadline.  Conversely, a serious problem might
+have a low priority if the feature it is disabling is one that you do
+not need.
+
+It is important that you fill in the release field and tell us what
+changes you have made, if any.
+
+A sample filled-out form from a company named "Toasters, Inc." might
+look like this:
+
+     To: krb5-bugs@mit.edu
+     Subject: misspelled "Kerberos" in title of installation guide
+     From: jcb
+     Reply-To: jcb
+     Cc:
+     X-send-pr-version: 3.99
+     
+     
+     >Submitter-Id:	mit
+     >Originator:	Jeffrey C. Gilman Bigler
+     >Organization:
+     mit
+     >Confidential:	no
+     >Synopsis:	Misspelled "Kerberos" in title of installation guide
+     >Severity:	non-critical
+     >Priority:	low
+     >Category:	krb5-doc
+     >Class:		doc-bug
+     >Release:	1.0-development
+     >Environment:
+     	<machine, os, target, libraries (multiple lines)>
+     System: ULTRIX imbrium 4.2 0 RISC
+     Machine: mips
+     >Description:
+             Misspelled "Kerberos" in title of "Kerboros V5 Installation Guide"
+     >How-To-Repeat:
+             N/A
+     >Fix:
+             Correct the spelling.
+
+If the `krb5-send-pr' program does not work for you, or if you did not
+get far enough in the process to have an installed and working
+`krb5-send-pr', you can generate your own form, using the above as an
+example.
+
+
+File: krb5-admin.info,  Node: Appendix,  Prev: Bug Reporting,  Up: Top
+
+Appendix
+********
+
+* Menu:
+
+* Errors::
+* kadmin Time Zones::
+
+
+File: krb5-admin.info,  Node: Errors,  Next: kadmin Time Zones,  Prev: Appendix,  Up: Appendix
+
+Kerberos Error Messages
+=======================
+
+* Menu:
+
+* Kerberos V5 Library Error Codes::
+* Kerberos V5 Database Library Error Codes::
+* Kerberos V5 Magic Numbers Error Codes::
+* ASN.1 Error Codes::
+* GSSAPI Error Codes::
 
 
 File: krb5-admin.info,  Node: Kerberos V5 Library Error Codes,  Next: Kerberos V5 Database Library Error Codes,  Prev: Errors,  Up: Errors
@@ -69,7 +845,7 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
  24. KRB5KDC_ERR_PREAUTH_FAILED:  Preauthentication failed
 
- 25. KRB5KDC_ERR_PREAUTH_REQUIRED:  Additional preauthentication
+ 25. KRB5KDC_ERR_PREAUTH_REQUIRED:  Additional pre-authentication
      required
 
  26. KRB5KDC_ERR_SERVER_NOMATCH:  Requested server and ticket don't
@@ -124,9 +900,10 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
  50. KRB5KRB_AP_ERR_INAPP_CKSUM:  Inappropriate type of checksum in
      message
 
- 51. KRB5PLACEHOLD_51:  KRB5 error code 51
+ 51. KRB5KRB_AP_PATH_NOT_ACCEPTED: Policy rejects transited path
 
- 52. KRB5PLACEHOLD_52:  KRB5 error code 52
+ 52. KRB5KRB_ERR_RESPONSE_TOO_BIG: Response too big for UDP, retry with
+     TCP
 
  53. KRB5PLACEHOLD_53:  KRB5 error code 53
 
@@ -279,8 +1056,7 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
 127. KRB5PLACEHOLD_127:  KRB5 error code 127
 
-128. KRB5_ERR_RCSID:  $Id: admin.texinfo,v 1.12.2.6.2.1 2001/09/26
-     00:46:07 raeburn Exp $
+128. KRB5_ERR_RCSID:  (RCS Id string for the krb5 error table)
 
 129. KRB5_LIBOS_BADLOCKFLAG:  Invalid flag for file lock mode
 
@@ -294,9 +1070,10 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
 134. KRB5_PARSE_MALFORMED:  Malformed representation of principal
 
-135. KRB5_CONFIG_CANTOPEN:  Can't open/find configuration file
+135. KRB5_CONFIG_CANTOPEN:  Can't open/find Kerberos configuration file
 
-136. KRB5_CONFIG_BADFORMAT:  Improper format of configuration file
+136. KRB5_CONFIG_BADFORMAT:  Improper format of Kerberos configuration
+     file
 
 137. KRB5_CONFIG_NOTENUFSPACE:  Insufficient space to return complete
      information
@@ -421,11 +1198,11 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
 194. KRB5_FCC_PERM:  Credentials cache file permissions incorrect
 
-195. KRB5_FCC_NOFILE:  No credentials cache file found
+195. KRB5_FCC_NOFILE:  No credentials cache found
 
-196. KRB5_FCC_INTERNAL:  Internal file credentials cache error
+196. KRB5_FCC_INTERNAL:  Internal credentials cache error
 
-197. KRB5_CC_WRITE:  Error writing to credentials cache file
+197. KRB5_CC_WRITE:  Error writing to credentials cache
 
 198. KRB5_CC_NOMEM:  No more memory to allocate (in credentials cache
      code)
@@ -493,6 +1270,39 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
 224. KRB5_SAM_UNSUPPORTED:  Bad SAM flags in obtain_sam_padata
 
+225. KRB5_KT_NAME_TOOLONG: Keytab name too long
+
+226. KRB5_KT_KVNONOTFOUND: Key version number for principal in key
+     table is incorrect
+
+227. KRB5_APPL_EXPIRED: This application has expired
+
+228. KRB5_LIB_EXPIRED: This Krb5 library has expired
+
+229. KRB5_CHPW_PWDNULL: New password cannot be zero length
+
+230. KRB5_CHPW_FAIL: Password change failed
+
+231. KRB5_KT_FORMAT: Bad format in keytab
+
+232. KRB5_NOPERM_ETYPE: Encryption type not permitted
+
+233. KRB5_CONFIG_ETYPE_NOSUPP: No supported encryption types (config
+     file error?)
+
+234. KRB5_OBSOLETE_FN: Program called an obsolete, deleted function
+
+235. KRB5_EAI_FAIL: unknown getaddrinfo failure
+
+236. KRB5_EAI_NODATA: no data available for host/domain name
+
+237. KRB5_EAI_NONAME: host/domain name not found
+
+238. KRB5_EAI_SERVICE: service name unknown
+
+239. KRB5_ERR_NUMERIC_REALM: Cannot determine realm for numeric host
+     address
+
 
 File: krb5-admin.info,  Node: Kerberos V5 Database Library Error Codes,  Next: Kerberos V5 Magic Numbers Error Codes,  Prev: Kerberos V5 Library Error Codes,  Up: Errors
 
@@ -501,8 +1311,7 @@ Kerberos V5 Database Library Error Codes
 
 This is the Kerberos v5 database library error code table.
 
-  0. KRB5_KDB_RCSID:  $Id: admin.texinfo,v 1.12.2.6.2.1 2001/09/26
-     00:46:07 raeburn Exp $
+  0. KRB5_KDB_RCSID:  (RCS Id string for the kdb error table)
 
   1. KRB5_KDB_INUSE:  Entry already exists in database
 
@@ -556,412 +1365,10 @@ This is the Kerberos v5 database library error code table.
 
  25. KRB5_KDB_BAD_ENCTYPE:  Unsupported encryption type
 
-
-File: krb5-admin.info,  Node: Kerberos V5 Magic Numbers Error Codes,  Next: ASN.1 Error Codes,  Prev: Kerberos V5 Database Library Error Codes,  Up: Errors
+ 26. KRB5_KDB_BAD_CREATEFLAGS: Bad database creation flags
 
-Kerberos V5 Magic Numbers Error Codes
--------------------------------------
+ 27. KRB5_KDB_NO_PERMITTED_KEY: No matching key in entry having a
+     permitted enc type
 
-This is the Kerberos v5 magic numbers error code table.
-
-  0. KV5M_NONE:  Kerberos V5 magic number table
-
-  1. KV5M_PRINCIPAL:  Bad magic number for krb5_principal structure
-
-  2. KV5M_DATA:  Bad magic number for krb5_data structure
-
-  3. KV5M_KEYBLOCK:  Bad magic number for krb5_keyblock structure
-
-  4. KV5M_CHECKSUM:  Bad magic number for krb5_checksum structure
-
-  5. KV5M_ENCRYPT_BLOCK:  Bad magic number for krb5_encrypt_block
-     structure
-
-  6. KV5M_ENC_DATA:  Bad magic number for krb5_enc_data structure
-
-  7. KV5M_CRYPTOSYSTEM_ENTRY:  Bad magic number for
-     krb5_cryptosystem_entry structure
-
-  8. KV5M_CS_TABLE_ENTRY:  Bad magic number for krb5_cs_table_entry
-     structure
-
-  9. KV5M_CHECKSUM_ENTRY:  Bad magic number for krb5_checksum_entry
-     structure
-
- 10. KV5M_AUTHDATA:  Bad magic number for krb5_authdata structure
-
- 11. KV5M_TRANSITED:  Bad magic number for krb5_transited structure
-
- 12. KV5M_ENC_TKT_PART:  Bad magic number for krb5_enc_tkt_part
-     structure
-
- 13. KV5M_TICKET:  Bad magic number for krb5_ticket structure
-
- 14. KV5M_AUTHENTICATOR:  Bad magic number for krb5_authenticator
-     structure
-
- 15. KV5M_TKT_AUTHENT:  Bad magic number for krb5_tkt_authent structure
-
- 16. KV5M_CREDS:  Bad magic number for krb5_creds structure
-
- 17. KV5M_LAST_REQ_ENTRY:  Bad magic number for krb5_last_req_entry
-     structure
-
- 18. KV5M_PA_DATA:  Bad magic number for krb5_pa_data structure
-
- 19. KV5M_KDC_REQ:  Bad magic number for krb5_kdc_req structure
-
- 20. KV5M_ENC_KDC_REP_PART:  Bad magic number for
-     krb5_enc_kdc_rep_part structure
-
- 21. KV5M_KDC_REP:  Bad magic number for krb5_kdc_rep structure
-
- 22. KV5M_ERROR:  Bad magic number for krb5_error structure
-
- 23. KV5M_AP_REQ:  Bad magic number for krb5_ap_req structure
-
- 24. KV5M_AP_REP:  Bad magic number for krb5_ap_rep structure
-
- 25. KV5M_AP_REP_ENC_PART:  Bad magic number for
-     krb5_ap_rep_enc_part structure
-
- 26. KV5M_RESPONSE:  Bad magic number for krb5_response structure
-
- 27. KV5M_SAFE:  Bad magic number for krb5_safe structure
-
- 28. KV5M_PRIV:  Bad magic number for krb5_priv structure
-
- 29. KV5M_PRIV_ENC_PART:  Bad magic number for krb5_priv_enc_part
-     structure
-
- 30. KV5M_CRED:  Bad magic number for krb5_cred structure
-
- 31. KV5M_CRED_INFO:  Bad magic number for krb5_cred_info structure
-
- 32. KV5M_CRED_ENC_PART:  Bad magic number for krb5_cred_enc_part
-     structure
-
- 33. KV5M_PWD_DATA:  Bad magic number for krb5_pwd_data structure
-
- 34. KV5M_ADDRESS:  Bad magic number for krb5_address structure
-
- 35. KV5M_KEYTAB_ENTRY:  Bad magic number for krb5_keytab_entry
-     structure
-
- 36. KV5M_CONTEXT:  Bad magic number for krb5_context structure
-
- 37. KV5M_OS_CONTEXT:  Bad magic number for krb5_os_context structure
-
- 38. KV5M_ALT_METHOD:  Bad magic number for krb5_alt_method structure
-
- 39. KV5M_ETYPE_INFO_ENTRY:  Bad magic number for
-     krb5_etype_info_entry structure
-
- 40. KV5M_DB_CONTEXT:  Bad magic number for krb5_db_context structure
-
- 41. KV5M_AUTH_CONTEXT:  Bad magic number for krb5_auth_context
-     structure
-
- 42. KV5M_KEYTAB:  Bad magic number for krb5_keytab structure
-
- 43. KV5M_RCACHE:  Bad magic number for krb5_rcache structure
-
- 44. KV5M_CCACHE:  Bad magic number for krb5_ccache structure
-
- 45. KV5M_PREAUTH_OPS:  Bad magic number for krb5_preauth_ops
-
- 46. KV5M_SAM_CHALLENGE:  Bad magic number for krb5_sam_challenge
-
- 47. KV5M_SAM_KEY:  Bad magic number for krb5_sam_key
-
- 48. KV5M_ENC_SAM_RESPONSE_ENC:  Bad magic number for
-     krb5_enc_sam_response_enc
-
- 49. KV5M_SAM_RESPONSE:  Bad magic number for krb5_sam_response
-
- 50. KV5M_PREDICTED_SAM_RESPONSE:  Bad magic number for
-     krb5_predicted_sam_response
-
- 51. KV5M_PASSWD_PHRASE_ELEMENT:  Bad magic number for
-     passwd_phrase_element
-
-
-File: krb5-admin.info,  Node: ASN.1 Error Codes,  Next: GSSAPI Error Codes,  Prev: Kerberos V5 Magic Numbers Error Codes,  Up: Errors
-
-ASN.1 Error Codes
------------------
-
-  0. ASN1_BAD_TIMEFORMAT:  ASN.1 failed call to system time library
-
-  1. ASN1_MISSING_FIELD:  ASN.1 structure is missing a required field
-
-  2. ASN1_MISPLACED_FIELD:  ASN.1 unexpected field number
-
-  3. ASN1_TYPE_MISMATCH:  ASN.1 type numbers are inconsistent
-
-  4. ASN1_OVERFLOW:  ASN.1 value too large
-
-  5. ASN1_OVERRUN:  ASN.1 encoding ended unexpectedly
-
-  6. ASN1_BAD_ID:  ASN.1 identifier doesn't match expected value
-
-  7. ASN1_BAD_LENGTH:  ASN.1 length doesn't match expected value
-
-  8. ASN1_BAD_FORMAT:  ASN.1 badly-formatted encoding
-
-  9. ASN1_PARSE_ERROR:  ASN.1 parse error
-
-
-File: krb5-admin.info,  Node: GSSAPI Error Codes,  Prev: ASN.1 Error Codes,  Up: Errors
-
-GSSAPI Error Codes
-------------------
-
-Generic GSSAPI Errors:
-
-  0. G_BAD_SERVICE_NAME:  No  in SERVICE-NAME name string
-
-  1. G_BAD_STRING_UID: STRING-UID-NAME contains nondigits
-
-  2. G_NOUSER:  UID does not resolve to username
-
-  3. G_VALIDATE_FAILED:  Validation error
-
-  4. G_BUFFER_ALLOC:  Couldn't allocate gss_buffer_t data
-
-  5. G_BAD_MSG_CTX:  Message context invalid
-
-  6. G_WRONG_SIZE:  Buffer is the wrong size
-
-  7. G_BAD_USAGE:  Credential usage type is unknown
-
-  8. G_UNKNOWN_QOP:  Unknown quality of protection specified
-
-  9. G_BAD_HOSTNAME:  Hostname in SERVICE-NAME string could not be
-     canonicalized
-
-Kerberos 5 GSSAPI Errors:
-
-  0. KG_CCACHE_NOMATCH:  Principal in credential cache does not match
-     desired name
-
-  1. KG_KEYTAB_NOMATCH:  No principal in keytab matches desired name
-
-  2. KG_TGT_MISSING:  Credential cache has no TGT
-
-  3. KG_NO_SUBKEY:  Authenticator has no subkey
-
-  4. KG_CONTEXT_ESTABLISHED:  Context is already fully established
-
-  5. KG_BAD_SIGN_TYPE:  Unknown signature type in token
-
-  6. KG_BAD_LENGTH:  Invalid field length in token
-
-  7. KG_CTX_INCOMPLETE:  Attempt to use incomplete security context
-
-  8. KG_CONTEXT:  Bad magic number for krb5_gss_ctx_id_t
-
-  9. KG_CRED:  Bad magic number for krb5_gss_cred_id_t
-
- 10. KG_ENC_DESC:  Bad magic number for krb5_gss_enc_desc
-
-
-File: krb5-admin.info,  Node: kadmin Time Zones,  Prev: Errors,  Up: Appendix
-
-kadmin Time Zones
-=================
-
-This is a complete listing of the time zones recognized by the `kadmin'
-command.
-
-gmt
-     Greenwich Mean Time
-
-ut, utc
-     Universal Time (Coordinated).
-
-wet
-     Western European Time.  (Same as GMT.)
-
-bst
-     British Summer Time.  (1 hour ahead of GMT.)
-
-wat
-     West Africa Time.  (1 hour behind GMT.)
-
-at
-     Azores Time.  (2 hours behind GMT.)
-
-bst
-     Brazil Standard Time.  (3 hours behind GMT.)  Note that the
-     abbreviation BST also stands for British Summer Time.
-
-gst
-     Greenland Standard Time.  (3 hours behind GMT.)  Note that the
-     abbreviation GST also stands for Guam Standard Time.
-
-nft
-     Newfoundland Time.  (3.5 hours behind GMT.)
-
-nst
-     Newfoundland Standard Time.  (3.5 hours behind GMT.)
-
-ndt
-     Newfoundland Daylight Time.  (2.5 hours behind GMT.)
-
-ast
-     Atlantic Standard Time.  (4 hours behind GMT.)
-
-adt
-     Atlantic Daylight Time.  (3 hours behind GMT.)
-
-est
-     Eastern Standard Time.  (5 hours behind GMT.)
-
-edt
-     Eastern Daylight Time.  (4 hours behind GMT.)
-
-cst
-     Central Standard Time.  (6 hours behind GMT.)
-
-cdt
-     Central Daylight Time.  (5 hours behind GMT.)
-
-mst
-     Mountain Standard Time.  (7 hours behind GMT.)
-
-mdt
-     Mountain Daylight Time.  (6 hours behind GMT.)
-
-pst
-     Pacific Standard Time.  (8 hours behind GMT.)
-
-pdt
-     Pacific Daylight Time.  (7 hours behind GMT.)
-
-yst
-     Yukon Standard Time.  (9 hours behind GMT.)
-
-ydt
-     Yukon Daylight Time.  (8 hours behind GMT.)
-
-hst
-     Hawaii Standard Time.  (10 hours behind GMT.)
-
-hdt
-     Hawaii Daylight Time.  (9 hours behind GMT.)
-
-cat
-     Central Alaska Time.  (10 hours behind GMT.)
-
-ahst
-     Alaska-Hawaii Standard Time.  (10 hours behind GMT.)
-
-nt
-     Nome Time.  (11 hours behind GMT.)
-
-idlw
-     International Date Line West Time.  (12 hours behind GMT.)
-
-cet
-     Central European Time.  (1 hour ahead of GMT.)
-
-met
-     Middle European Time.  (1 hour ahead of GMT.)
-
-mewt
-     Middle European Winter Time.  (1 hour ahead of GMT.)
-
-mest
-     Middle European Summer Time.  (2 hours ahead of GMT.)
-
-swt
-     Swedish Winter Time.  (1 hour ahead of GMT.)
-
-sst
-     Swedish Summer Time.  (1 hours ahead of GMT.)
-
-fwt
-     French Winter Time.  (1 hour ahead of GMT.)
-
-fst
-     French Summer Time.  (2 hours ahead of GMT.)
-
-eet
-     Eastern Europe Time; Russia Zone 1.  (2 hours ahead of GMT.)
-
-bt
-     Baghdad Time; Russia Zone 2.  (3 hours ahead of GMT.)
-
-it
-     Iran Time.  (3.5 hours ahead of GMT.)
-
-zp4
-     Russia Zone 3.  (4 hours ahead of GMT.)
-
-zp5
-     Russia Zone 4.  (5 hours ahead of GMT.)
-
-ist
-     Indian Standard Time.  (5.5 hours ahead of GMT.)
-
-zp6
-     Russia Zone 5.  (6 hours ahead of GMT.)
-
-nst
-     North Sumatra Time.  (6.5 hours ahead of GMT.)  Note that the
-     abbreviation NST is also used for Newfoundland Stanard Time.
-
-sst
-     South Sumatra Time; Russia Zone 6.  (7 hours ahead of GMT.)  Note
-     that SST is also Swedish Summer Time.
-
-wast
-     West Australian Standard Time.  (7 hours ahead of GMT.)
-
-wadt
-     West Australian Daylight Time.  (8 hours ahead of GMT.)
-
-jt
-     Java Time.  (7.5 hours ahead of GMT.)
-
-cct
-     China Coast Time; Russia Zone 7.  (8 hours ahead of GMT.)
-
-jst
-     Japan Standard time; Russia Zone 8.  (9 hours ahead of GMT.)
-
-kst
-     Korean Standard Time.  (9 hours ahead of GMT.)
-
-cast
-     Central Australian Standard Time.  (9.5 hours ahead of GMT.)
-
-cadt
-     Central Australian Daylight Time.  (10.5 hours ahead of GMT.)
-
-east
-     Eastern Australian Standard Time.  (10 hours ahead of GMT.)
-
-eadt
-     Eastern Australian Daylight Time.  (11 hours ahead of GMT.)
-
-gst
-     Guam Standard Time; Russia Zone 9.  (10 hours ahead of GMT.)
-
-kdt
-     Korean Daylight Time.  (10 hours ahead of GMT.)
-
-nzt
-     New Zealand Time.  (12 hours ahead of GMT.)
-
-nzst
-     New Zealand Standard Time.  (12 hours ahead of GMT.)
-
-nzdt
-     New Zealand Daylight Time.  (13 hours ahead of GMT.)
-
-idle
-     International Date Line East.  (12 hours ahead of GMT.)
-
+ 28. KRB5_KDB_NO_MATCHING_KEY: No matching key in entry
 

@@ -3,14 +3,14 @@
  * 	object.
  */
 
+#include "prof_int.h"
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #include <errno.h>
-
-#include "prof_int.h"
 
 /* Find a 4-byte integer type */
 #if	(SIZEOF_SHORT == 4)
@@ -23,7 +23,7 @@ typedef	int	prof_int32;
 error(do not have a 4-byte integer type)
 #endif	/* SIZEOF_LONG == 4 */
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_init(files, ret_profile)
 	const_profile_filespec_t *files;
 	profile_t *ret_profile;
@@ -46,7 +46,7 @@ profile_init(files, ret_profile)
 	    for (fs = files; !PROFILE_LAST_FILESPEC(*fs); fs++) {
 		retval = profile_open_file(*fs, &new_file);
 		/* if this file is missing, skip to the next */
-		if (retval == ENOENT) {
+		if (retval == ENOENT || retval == EACCES) {
 			continue;
 		}
 		if (retval) {
@@ -73,19 +73,15 @@ profile_init(files, ret_profile)
         return 0;
 }
 
-#ifndef macintosh
-/* 
- * On MacOS, profile_init_path is the same as profile_init
- */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_init_path(filepath, ret_profile)
 	const_profile_filespec_list_t filepath;
 	profile_t *ret_profile;
 {
 	int n_entries, i;
-	int ent_len;
+	unsigned int ent_len;
 	const char *s, *t;
-	char **filenames;
+	profile_filespec_t *filenames;
 	errcode_t retval;
 
 	/* count the distinct filename components */
@@ -95,7 +91,7 @@ profile_init_path(filepath, ret_profile)
 	}
 	
 	/* the array is NULL terminated */
-	filenames = (char**) malloc((n_entries+1) * sizeof(char*));
+	filenames = (profile_filespec_t*) malloc((n_entries+1) * sizeof(char*));
 	if (filenames == 0)
 		return ENOMEM;
 
@@ -119,7 +115,8 @@ profile_init_path(filepath, ret_profile)
 	/* cap the array */
 	filenames[i] = 0;
 
-	retval = profile_init(filenames, ret_profile);
+	retval = profile_init((const_profile_filespec_t *) filenames, 
+			      ret_profile);
 
 	/* count back down and free the entries */
 	while(--i >= 0) free(filenames[i]);
@@ -127,17 +124,8 @@ profile_init_path(filepath, ret_profile)
 
 	return retval;
 }
-#else
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
-profile_init_path(filelist, ret_profile)
-	profile_filespec_list_t filelist;
-	profile_t *ret_profile;
-{
-	return profile_init (filelist, ret_profile);
-}
-#endif
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_flush(profile)
 	profile_t	profile;
 {
@@ -150,7 +138,7 @@ profile_flush(profile)
 	return 0;
 }
 
-KRB5_DLLIMP void KRB5_CALLCONV
+void KRB5_CALLCONV
 profile_abandon(profile)
 	profile_t	profile;
 {
@@ -167,7 +155,7 @@ profile_abandon(profile)
 	free(profile);
 }
 
-KRB5_DLLIMP void KRB5_CALLCONV
+void KRB5_CALLCONV
 profile_release(profile)
 	profile_t	profile;
 {
@@ -198,12 +186,8 @@ errcode_t profile_ser_size(unused, profile, sizep)
     required = 3*sizeof(prof_int32);
     for (pfp = profile->first_file; pfp; pfp = pfp->next) {
 	required += sizeof(prof_int32);
-#ifdef PROFILE_USES_PATHS
-	if (pfp->filespec)
-	    required += strlen(pfp->filespec);
-#else
-	required += sizeof (profile_filespec_t);
-#endif
+	if (pfp->data->filespec)
+	    required += strlen(pfp->data->filespec);
     }
     *sizep += required;
     return 0;
@@ -249,22 +233,14 @@ errcode_t profile_ser_externalize(unused, profile, bufpp, remainp)
 	    pack_int32(PROF_MAGIC_PROFILE, &bp, &remain);
 	    pack_int32(fcount, &bp, &remain);
 	    for (pfp = profile->first_file; pfp; pfp = pfp->next) {
-#ifdef PROFILE_USES_PATHS
-		slen = (pfp->filespec) ?
-		    (prof_int32) strlen(pfp->filespec) : 0;
+		slen = (pfp->data->filespec) ?
+		    (prof_int32) strlen(pfp->data->filespec) : 0;
 		pack_int32(slen, &bp, &remain);
 		if (slen) {
-		    memcpy(bp, pfp->filespec, (size_t) slen);
+		    memcpy(bp, pfp->data->filespec, (size_t) slen);
 		    bp += slen;
 		    remain -= (size_t) slen;
 		}
-#else
-		slen = sizeof (FSSpec);
-		pack_int32(slen, &bp, &remain);
-		memcpy (bp, &(pfp->filespec), (size_t) slen);
-		bp += slen;
-		remain -= (size_t) slen;
-#endif
 	    }
 	    pack_int32(PROF_MAGIC_PROFILE, &bp, &remain);
 	    retval = 0;
@@ -329,15 +305,11 @@ errcode_t profile_ser_internalize(unused, profilep, bufpp, remainp)
 	memset(flist, 0, sizeof(char *) * (fcount+1));
 	for (i=0; i<fcount; i++) {
 		if (!unpack_int32(&tmp, &bp, &remain)) {
-#ifdef PROFILE_USES_PATHS
 			flist[i] = (char *) malloc((size_t) (tmp+1));
 			if (!flist[i])
 				goto cleanup;
 			memcpy(flist[i], bp, (size_t) tmp);
 			flist[i][tmp] = '\0';
-#else
-			memcpy (&flist[i], bp, (size_t) tmp);
-#endif
 			bp += tmp;
 			remain -= (size_t) tmp;
 		}
@@ -349,7 +321,8 @@ errcode_t profile_ser_internalize(unused, profilep, bufpp, remainp)
 		goto cleanup;
 	}
 
-	if ((retval = profile_init(flist, profilep)))
+	if ((retval = profile_init((const_profile_filespec_t *) flist, 
+				   profilep)))
 		goto cleanup;
 	
 	*bufpp = bp;
@@ -357,12 +330,10 @@ errcode_t profile_ser_internalize(unused, profilep, bufpp, remainp)
     
 cleanup:
 	if (flist) {
-#ifdef PROFILE_USES_PATHS
 		for (i=0; i<fcount; i++) {
 			if (flist[i])
 				free(flist[i]);
 		}
-#endif
 		free(flist);
 	}
 	return(retval);

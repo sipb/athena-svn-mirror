@@ -1,4 +1,29 @@
 /*
+ * Copyright 2003  by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.	Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ *
+ */
+
+/*
  * Copyright 1994 by OpenVision Technologies, Inc.
  * 
  * Permission to use, copy, modify, distribute, and sell this software
@@ -23,38 +48,17 @@
 #include "k5-int.h"		/* we need krb5_context::clockskew */
 #include <stdio.h>
 #include <sys/types.h>
+
+#ifdef _WIN32
+#include "port-sockets.h"
+#else
 #include <sys/time.h>
 #include <netinet/in.h>
-#if TARGET_OS_MAC
-#include <Kerberos/krb.h>
-#include <Kerberos/krb524.h>
-#include "cr_tkt.h"
-#else
-#include <krb.h>
-#include "krb524.h"
 #endif
+#include <krb.h>
+#include "krb524d.h"
 
-/* rather than copying the cmu code, these values are derived from
-   a calculation based on the table and comments found there.
-   the expression (in elisp) is:
-   (defun cmu-to-secs2 (j)
-      (if (< j 128) (* j 5 60)
-         (round (* 38400 (expt 1.06914489 (- j 128))))))
-   and is low by one for 16 values but is exact for the others.
- */
-
-static long cmu_seconds[] = 
-{
-  38400,  41055,  43894,  46929,  50174,  53643,  57352,  61318,
-  65558,  70091,  74937,  80119,  85658,  91581,  97914,  104684,
-  111922,  119661,  127935,  136781,  146239,  156350,  167161,  178720,
-  191077,  204289,  218415,  233517,  249663,  266926,  285383,  305116,
-  326213,  348769,  372885,  398668,  426233,  455705,  487215,  520903,
-  556921,  595430,  636600,  680618,  727679,  777995,  831789,  889303,
-  950794,  1016536,  1086825,  1161973,  1242317,  1328217,  1420057,  1518246,
-  1623225,  1735463,  1855462,  1983757,  2120924,  2267575,  2424366, 2591999,
-  0
-};
+static int krb524d_debug = 0;
 
 /*
  * Convert a v5 ticket for server to a v4 ticket, using service key
@@ -69,9 +73,9 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
      struct sockaddr_in *saddr;
 {
      char pname[ANAME_SZ], pinst[INST_SZ], prealm[REALM_SZ];
-     char sname[ANAME_SZ], sinst[INST_SZ];
+     char sname[ANAME_SZ], sinst[INST_SZ], srealm[REALM_SZ];
      krb5_enc_tkt_part *v5etkt;
-     int ret, lifetime, deltatime;
+     int ret, lifetime, v4endtime;
      krb5_timestamp server_time;
      struct sockaddr_in *sinp = (struct sockaddr_in *)saddr;
      krb5_address kaddr;
@@ -82,17 +86,38 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
      }
      v5etkt = v5tkt->enc_part2;
 
+     if (v5etkt->transited.tr_contents.length != 0) {
+	 /* Some intermediate realms transited -- do we accept them?
+
+	    Simple answer: No.
+
+	    More complicated answer: Check our local config file to
+	    see if the path is correct, and base the answer on that.
+	    This denies the krb4 application server any ability to do
+	    its own validation as krb5 servers can.
+
+	    Fast answer: Not right now.  */
+	  krb5_free_enc_tkt_part(context, v5etkt);
+	  v5tkt->enc_part2 = NULL;
+	  return KRB5KRB_AP_ERR_ILL_CR_TKT;
+     }
+     /* We could also encounter a case where luser@R1 gets a ticket
+	for krbtgt/R3@R2, and then tries to convert it.  But the
+	converted ticket would be one the v4 KDC code should reject
+	anyways.  So we don't need to worry about it here.  */
+
      if ((ret = krb524_convert_princs(context, v5etkt->client, v5tkt->server,
 				     pname, pinst, prealm, sname,
-				     sinst))) {
+				     sinst, srealm))) {
 	  krb5_free_enc_tkt_part(context, v5etkt);
 	  v5tkt->enc_part2 = NULL;
 	  return ret;
      }
-     
-     if (v5etkt->session->enctype != ENCTYPE_DES_CBC_CRC ||
+     if ((v5etkt->session->enctype != ENCTYPE_DES_CBC_CRC &&
+	  v5etkt->session->enctype != ENCTYPE_DES_CBC_MD4 &&
+	  v5etkt->session->enctype != ENCTYPE_DES_CBC_MD5) ||
 	 v5etkt->session->length != sizeof(C_Block)) {
-	  if (krb524_debug)
+	  if (krb524d_debug)
 	       fprintf(stderr, "v5 session keyblock type %d length %d != C_Block size %d\n",
 		       v5etkt->session->enctype,
 		       v5etkt->session->length,
@@ -103,32 +128,31 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
      }
      
      /* V4 has no concept of authtime or renew_till, so ignore them */
-     /* V4 lifetime is 1 byte, in 5 minute increments */
      if (v5etkt->times.starttime == 0)
 	  v5etkt->times.starttime = v5etkt->times.authtime;
      /* rather than apply fit an extended v5 lifetime into a v4 range,
 	give out a v4 ticket with as much of the v5 lifetime is available
 	"now" instead. */
      if ((ret = krb5_timeofday(context, &server_time))) {
-         if (krb524_debug)
+         if (krb524d_debug)
 	      fprintf(stderr, "krb5_timeofday failed!\n");
 	 krb5_free_enc_tkt_part(context, v5etkt);
 	 v5tkt->enc_part2 = NULL;
 	 return ret;       
      }
-     if (   (server_time+context->clockskew >= v5etkt->times.starttime)
-	 && (server_time-context->clockskew <= v5etkt->times.endtime)) {
-          deltatime = v5etkt->times.endtime - (server_time-context->clockskew);
-	  lifetime = deltatime / 300;
-	  /* if (lifetime > 255) lifetime = 255; */
-	  if (lifetime > 127) {
-	      /* use the CMU algorithm instead: */
-	      long *clist = cmu_seconds;
-	      while(*clist && *clist < deltatime) clist++;
-	      lifetime = 128 + (clist - cmu_seconds);
-	  }
+     if ((server_time + context->clockskew >= v5etkt->times.starttime)
+	 && (server_time - context->clockskew <= v5etkt->times.endtime)) {
+	  lifetime = krb_time_to_life(server_time, v5etkt->times.endtime);
+	  v4endtime = krb_life_to_time(server_time, lifetime);
+	  /*
+	   * Adjust start time backwards if the lifetime value
+	   * returned by krb_time_to_life() maps to a longer lifetime
+	   * than that of the original krb5 ticket.
+	   */
+	  if (v4endtime > v5etkt->times.endtime)
+	      server_time -= v4endtime - v5etkt->times.endtime;
      } else {
-          if (krb524_debug)
+          if (krb524d_debug)
 	       fprintf(stderr, "v5 ticket time out of bounds\n");
 	  krb5_free_enc_tkt_part(context, v5etkt);
 	  v5tkt->enc_part2 = NULL;
@@ -145,14 +169,14 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
      kaddr.contents = (krb5_octet *)&sinp->sin_addr;
 
      if (!krb5_address_search(context, &kaddr, v5etkt->caddrs)) {
-	 if (krb524_debug)
+	 if (krb524d_debug)
 	     fprintf(stderr, "Invalid v5creds address information.\n");
 	 krb5_free_enc_tkt_part(context, v5etkt);
 	 v5tkt->enc_part2 = NULL;
 	 return KRB524_BADADDR;
      }
 
-     if (krb524_debug)
+     if (krb524d_debug)
 	printf("startime = %ld, authtime = %ld, lifetime = %ld\n",
 	       (long) v5etkt->times.starttime,
 	       (long) v5etkt->times.authtime,
@@ -165,7 +189,7 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
 				 pname,
 				 pinst,
 				 prealm,
-				 *((unsigned long *)kaddr.contents),
+				 sinp->sin_addr.s_addr,
 				 (char *) v5etkt->session->contents,
 				 lifetime,
 				 /* issue_data */
@@ -173,26 +197,8 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
 				 sname,
 				 sinst,
 				 v4_skey->contents);
-     } else {
-	 /* Force enctype to be raw if using DES3. */
-	 if (v4_skey->enctype == ENCTYPE_DES3_CBC_SHA1 ||
-	     v4_skey->enctype == ENCTYPE_LOCAL_DES3_HMAC_SHA1)
-	     v4_skey->enctype = ENCTYPE_DES3_CBC_RAW;
-	 ret = krb_cr_tkt_krb5(v4tkt,
-			       0, /* flags */			     
-			       pname,
-			       pinst,
-			       prealm,
-			       *((unsigned long *)kaddr.contents),
-			       (char *) v5etkt->session->contents,
-			       lifetime,
-			       /* issue_data */
-			       server_time,
-			       sname,
-			       sinst,
-			       v4_skey);
      }
-
+     else abort();
      krb5_free_enc_tkt_part(context, v5etkt);
      v5tkt->enc_part2 = NULL;
      if (ret == KSUCCESS)

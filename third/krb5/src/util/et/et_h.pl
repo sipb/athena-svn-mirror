@@ -1,3 +1,8 @@
+eval 'exec /usr/athena/bin/perl -S $0 ${1+"$@"}'
+    if $running_under_some_shell;
+			# this emulates #! processing on NIH machines.
+			# (remove #! line above if indigestible)
+
 eval '$'.$1.'$2;' while $ARGV[0] =~ /^([A-Za-z_0-9]+=)(.*)/ && shift;
 			# process any FOO=bar switches
 
@@ -132,15 +137,7 @@ line: while (<>) {
 	&Pick('>', $outfile) &&
 	    (print $fh '');
 	&Pick('>', $outfile) &&
-	    (print $fh '#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))');
-	&Pick('>', $outfile) &&
-	    (print $fh '#include <KerberosComErr/KerberosComErr.h>');
-	&Pick('>', $outfile) &&
-	    (print $fh '#else');
-	&Pick('>', $outfile) &&
 	    (print $fh '#include <com_err.h>');
-	&Pick('>', $outfile) &&
-	    (print $fh '#endif');
 	&Pick('>', $outfile) &&
 	    (print $fh '');
     }
@@ -194,11 +191,15 @@ else {
 &Pick('>', $outfile) &&
     (print $fh '');
 &Pick('>', $outfile) &&
-    (print $fh '#if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh) && !(defined(__MACH__) && defined(__APPLE__))');
+    (print $fh
+
+      '#if !defined(_WIN32)');
 &Pick('>', $outfile) &&
     (print $fh '/* for compatibility with older versions... */');
 &Pick('>', $outfile) &&
-    (print $fh 'extern void initialize_' . $table_name . '_error_table ();');
+    (print $fh 'extern void initialize_' . $table_name .
+
+      '_error_table () /*@modifies internalState@*/;');
 &Pick('>', $outfile) &&
     (print $fh '#define init_' . $table_name . '_err_tbl initialize_' .
 

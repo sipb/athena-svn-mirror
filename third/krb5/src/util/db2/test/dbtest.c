@@ -31,13 +31,13 @@
  * SUCH DAMAGE.
  */
 
-#ifndef lint
+#if !defined(lint) && defined(LIBC_SCCS)
 static char copyright[] =
 "@(#) Copyright (c) 1992, 1993, 1994\n\
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
-#ifndef lint
+#if !defined(lint) && defined(LIBC_SCCS)
 static char sccsid[] = "@(#)dbtest.c	8.17 (Berkeley) 9/1/94";
 #endif /* not lint */
 
@@ -54,13 +54,22 @@ static char sccsid[] = "@(#)dbtest.c	8.17 (Berkeley) 9/1/94";
 #include <unistd.h>
 
 #include "db-int.h"
+#ifdef STATISTICS
+#include "btree.h"
+#endif
 
 enum S { COMMAND, COMPARE, GET, PUT, REMOVE, SEQ, SEQFLAG, KEY, DATA };
+
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+#define ATTR(x) __attribute__(x)
+#else
+#define ATTR(x)
+#endif
 
 void	 compare __P((DBT *, DBT *));
 DBTYPE	 dbtype __P((char *));
 void	 dump __P((DB *, int));
-void	 err __P((const char *, ...));
+void	 err __P((const char *, ...)) ATTR ((__format__(__printf__,1,2))) ATTR ((__noreturn__));
 void	 get __P((DB *, DBT *));
 void	 getdata __P((DB *, DBT *, DBT *));
 void	 put __P((DB *, DBT *, DBT *));
@@ -171,7 +180,7 @@ main(argc, argv)
 		/* Delete the newline, displaying the key/data is easier. */
 		if (ofd == STDOUT_FILENO && (t = strchr(p, '\n')) != NULL)
 			*t = '\0';
-		if ((len = strlen(buf)) == 0 || isspace(*p) || *p == '#')
+		if ((len = strlen(buf)) == 0 || isspace((int) *p) || *p == '#')
 			continue;
 
 		/* Convenient gdb break point. */
@@ -343,9 +352,11 @@ compare(db1, db2)
 	register size_t len;
 	register u_char *p1, *p2;
 
-	if (db1->size != db2->size)
-		err("compare failed: key->data len %lu != data len %lu\n",
-		    db1->size, db2->size);
+	if (db1->size != db2->size) {
+		printf("compare failed: key->data len %lu != data len %lu\n",
+		    (u_long) db1->size, (u_long) db2->size);
+		exit (1);
+	}
 
 	len = MIN(db1->size, db2->size);
 	for (p1 = db1->data, p2 = db2->data; len--;)
@@ -376,10 +387,11 @@ get(dbp, kp)
 #define	NOSUCHKEY	"get failed, no such key\n"
 		if (ofd != STDOUT_FILENO) {
 			(void)write(ofd, NOSUCHKEY, sizeof(NOSUCHKEY) - 1);
-			exit (1);
+			exit(1);
 		} else
-			err(stderr, "%d: %.*s: %s",
-			    lineno, MIN(kp->size, 20), kp->data, NOSUCHKEY);
+			(void)fprintf(stderr, "%lu: %.*s: %s",
+			    lineno, (int) MIN(kp->size, 20), (char *) kp->data, 
+				      NOSUCHKEY);
 #undef	NOSUCHKEY
 		break;
 	}
@@ -435,11 +447,12 @@ rem(dbp, kp)
 		if (ofd != STDOUT_FILENO)
 			(void)write(ofd, NOSUCHKEY, sizeof(NOSUCHKEY) - 1);
 		else if (flags != R_CURSOR)
-			(void)fprintf(stderr, "%d: %.*s: %s", 
-			    lineno, MIN(kp->size, 20), kp->data, NOSUCHKEY);
+			(void)fprintf(stderr, "%lu: %.*s: %s", 
+			    lineno, (int) MIN(kp->size, 20), (char *) kp->data, 
+				      NOSUCHKEY);
 		else
 			(void)fprintf(stderr,
-			    "%d: rem of cursor failed\n", lineno);
+			    "%lu: rem of cursor failed\n", lineno);
 #undef	NOSUCHKEY
 		break;
 	}
@@ -479,11 +492,12 @@ seq(dbp, kp)
 		if (ofd != STDOUT_FILENO)
 			(void)write(ofd, NOSUCHKEY, sizeof(NOSUCHKEY) - 1);
 		else if (flags == R_CURSOR)
-			(void)fprintf(stderr, "%d: %.*s: %s", 
-			    lineno, MIN(kp->size, 20), kp->data, NOSUCHKEY);
+			(void)fprintf(stderr, "%lu: %.*s: %s", 
+			    lineno, (int) MIN(kp->size, 20), (char *) kp->data, 
+				      NOSUCHKEY);
 		else
 			(void)fprintf(stderr,
-			    "%d: seq (%s) failed\n", lineno, sflags(flags));
+			    "%lu: seq (%s) failed\n", lineno, sflags(flags));
 #undef	NOSUCHKEY
 		break;
 	}
@@ -495,17 +509,17 @@ dump(dbp, rev)
 	int rev;
 {
 	DBT key, data;
-	int flags, nflags;
+	int lflags, nflags;
 
 	if (rev) {
-		flags = R_LAST;
+		lflags = R_LAST;
 		nflags = R_PREV;
 	} else {
-		flags = R_FIRST;
+		lflags = R_FIRST;
 		nflags = R_NEXT;
 	}
-	for (;; flags = nflags)
-		switch (dbp->seq(dbp, &key, &data, flags)) {
+	for (;; lflags = nflags)
+		switch (dbp->seq(dbp, &key, &data, lflags)) {
 		case 0:
 			(void)write(ofd, data.data, data.size);
 			if (ofd == STDOUT_FILENO)
@@ -527,7 +541,7 @@ setflags(s)
 {
 	char *p;
 
-	for (; isspace(*s); ++s);
+	for (; isspace((int) *s); ++s);
 	if (*s == '\n' || *s == '\0')
 		return (0);
 	if ((p = strchr(s, '\n')) != NULL)
@@ -547,10 +561,10 @@ setflags(s)
 }
 
 char *
-sflags(flags)
-	int flags;
+sflags(lflags)
+	int lflags;
 {
-	switch (flags) {
+	switch (lflags) {
 	case R_CURSOR:		return ("R_CURSOR");
 	case R_FIRST:		return ("R_FIRST");
 	case R_IAFTER:		return ("R_IAFTER");
@@ -580,8 +594,8 @@ dbtype(s)
 }
 
 void *
-setinfo(type, s)
-	DBTYPE type;
+setinfo(db_type, s)
+	DBTYPE db_type;
 	char *s;
 {
 	static BTREEINFO ib;
@@ -592,10 +606,10 @@ setinfo(type, s)
 	if ((eq = strchr(s, '=')) == NULL)
 		err("%s: illegal structure set statement", s);
 	*eq++ = '\0';
-	if (!isdigit(*eq))
+	if (!isdigit((int) *eq))
 		err("%s: structure set statement must be a number", s);
 		
-	switch (type) {
+	switch (db_type) {
 	case DB_BTREE:
 		if (!strcmp("flags", s)) {
 			ib.flags = atoi(eq);
@@ -685,7 +699,7 @@ rfile(name, lenp)
 	int fd;
 	char *np;
 
-	for (; isspace(*name); ++name);
+	for (; isspace((int) *name); ++name);
 	if ((np = strchr(name, '\n')) != NULL)
 		*np = '\0';
 	if ((fd = open(name, O_RDONLY, 0)) < 0 ||
@@ -724,14 +738,14 @@ usage()
 	exit(1);
 }
 
-#if __STDC__
+#ifdef __STDC__
 #include <stdarg.h>
 #else
 #include <varargs.h>
 #endif
 
 void
-#if __STDC__
+#ifdef __STDC__
 err(const char *fmt, ...)
 #else
 err(fmt, va_alist)
@@ -740,7 +754,7 @@ err(fmt, va_alist)
 #endif
 {
 	va_list ap;
-#if __STDC__
+#ifdef __STDC__
 	va_start(ap, fmt);
 #else
 	va_start(ap);

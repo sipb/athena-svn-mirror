@@ -1,3 +1,125 @@
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* ss.h: Don't declare errno.  Include errno.h.
+
+2003-02-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (std_rqs.c): Depend on ct_c.sed and ct_c.awk.
+
+2003-01-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* parse.c: Include errno.h for declaration of errno.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL, and
+	certainly not twice.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* pager.c: Remove declaration of errno
+
+	* help.c: Remove declaration of errno
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (depend-dependencies): Was previously
+	depend-prerecurse.
+
+2002-09-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (LOCALINCLUDES): Drop references to .. and et
+	directories in source and build trees.
+	(depend-prerecurse): Depend on 'includes'.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(HDRS)): Depend on 'includes'.
+	(std_rqs.c): Depend on mk_cmds.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* mk_cmds.c, ss_internal.h: Make prototypes unconditional.
+	* ss_internal.h (PROTOTYPE, const, volatile): Delete.
+	(pointer): Always use void*.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): Don't include ss_err.h.
+	(depend-prerecurse): Depend on ss_err.h.
+
+2001-06-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* request_tbl.c (ss_add_request_table): Delete unnecessary cast in
+	size arg to realloc.
+
+	* invocation.c (ss_delete_invocation): Delete unnecessary cast in
+	arg to free.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* request_tbl.c (ss_add_request_table): Do not cast argument to
+	realloc() to char *.
+
+2001-04-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (unixmac): Target deleted.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Change AC_RETSIGTYPE to AC_TYPE_SIGNAL.
+
+2000-08-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* ss_internal.h: Only use fake sigmask, sigblock and sigsetmask if
+	USE_SIGPROCMASK is defined and not POSIX_SIGNALS.
+
+2000-08-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* listen.c (ss_quit): Now returns void.  Fix type of argument ARGV
+	to fit prototype.
+
+	* ss.h (ss_execute_line) [__STDC__]: Make prototype
+	unconditional.
+	(ss_quit): Use __SS_PROTO and return void, as with other
+	command functions.
+
+2000-08-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* requests.c (DECLARE): Fix prototype for dispatch functions to
+	properly match what is expected by ss library.
+
+	* pager.c (ss_pager_create): Cast return from fork to int for use
+	in switch statement.
+
+	* ss.h: Provide full prototype for ss_name(). Add prototypes for
+	ss_execute_line(), ss_delete_invocation(), ss_add_info_dir(),
+	ss_delete_info_dir(), ss_abort_subsystem(), ss_get_prompt(),
+	ss_set_prompt(), ss_add_request_table(),
+	ss_delete_request_table(), ss_quit().
+
+	* ss_internal.h: Made full prototypes for ss_parse(),
+	ss_page_stdin(), ss_pagre_create(). Add prototypes for
+	ss_self_identify(), ss_subsystem_name(), ss_subsystem_version(),
+	ss_unimplemented(). Moved ss_execute_line() to ss.h
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* test_ss.c (main): Change usage of ss_listen to agree with 
+	prototype.
+
+	* ss.h: Add prototype for ss_listen() and ss_create_invocation()
+
 2000-05-01  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* help.c (ss_help): Don't overflow buffers "buffer" or "buf".
@@ -10,12 +132,12 @@
 
 	* listen.c (ss_listen): Local var END should be volatile.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-01-20  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

@@ -26,33 +26,28 @@
 
 #include "asn1_make.h"
 
-asn1_error_code asn1_make_etag(buf, class, tagnum, in_len, retlen)
-     asn1buf * buf;
-     const asn1_class class;
-     const asn1_tagnum tagnum;
-     const int in_len;
-     int * retlen;
+asn1_error_code asn1_make_etag(asn1buf *buf, asn1_class asn1class,
+			       asn1_tagnum tagnum, unsigned int in_len,
+			       unsigned int *retlen)
 {
-  return asn1_make_tag(buf,class,CONSTRUCTED,tagnum,in_len,retlen);
+  return asn1_make_tag(buf,asn1class,CONSTRUCTED,tagnum,in_len,retlen);
 }
 
-asn1_error_code asn1_make_tag(buf, class, construction, tagnum, in_len, retlen)
-     asn1buf * buf;
-     const asn1_class class;
-     const asn1_construction construction;
-     const asn1_tagnum tagnum;
-     const int in_len;
-     int * retlen;
+
+asn1_error_code asn1_make_tag(asn1buf *buf, asn1_class asn1class,
+			      asn1_construction construction,
+			      asn1_tagnum tagnum, unsigned int in_len,
+			      unsigned int *retlen)
 {
   asn1_error_code retval;
-  int sumlen=0, length;
+  unsigned int sumlen=0, length;
 
   if(tagnum > ASN1_TAGNUM_MAX) return ASN1_OVERFLOW;
 
   retval = asn1_make_length(buf,in_len, &length);
   if(retval) return retval;
   sumlen += length;
-  retval = asn1_make_id(buf,class,construction,tagnum,&length);
+  retval = asn1_make_id(buf,asn1class,construction,tagnum,&length);
   if(retval) return retval;
   sumlen += length;
 
@@ -60,10 +55,7 @@ asn1_error_code asn1_make_tag(buf, class, construction, tagnum, in_len, retlen)
   return 0;
 }
 
-asn1_error_code asn1_make_length(buf, in_len, retlen)
-     asn1buf * buf;
-     const int in_len;
-     int * retlen;
+asn1_error_code asn1_make_length(asn1buf *buf, const unsigned int in_len, unsigned int *retlen)
 {
   asn1_error_code retval;
 
@@ -89,18 +81,15 @@ asn1_error_code asn1_make_length(buf, in_len, retlen)
   return 0;
 }
 
-asn1_error_code asn1_make_id(buf, class, construction, tagnum, retlen)
-     asn1buf * buf;
-     const asn1_class class;
-     const asn1_construction construction;
-     const asn1_tagnum tagnum;
-     int * retlen;
+asn1_error_code asn1_make_id(asn1buf *buf, asn1_class asn1class,
+			     asn1_construction construction,
+			     asn1_tagnum tagnum, unsigned int *retlen)
 {
   asn1_error_code retval;
 
   if(tagnum < 31) {
-    retval = asn1buf_insert_octet(buf, (asn1_octet) (class | construction |
-				       (asn1_octet)tagnum));
+    retval = asn1buf_insert_octet(buf, (asn1_octet) (asn1class | construction |
+						     (asn1_octet)tagnum));
     if(retval) return retval;
     *retlen = 1;
   }else{
@@ -118,7 +107,7 @@ asn1_error_code asn1_make_id(buf, class, construction, tagnum, retlen)
       length++;
     }
 
-    retval = asn1buf_insert_octet(buf, (asn1_octet) (class | construction | 0x1F));
+    retval = asn1buf_insert_octet(buf, (asn1_octet) (asn1class | construction | 0x1F));
     if(retval) return retval;
     length++;
     *retlen = length;
@@ -127,13 +116,10 @@ asn1_error_code asn1_make_id(buf, class, construction, tagnum, retlen)
   return 0;
 }
 
-asn1_error_code asn1_make_sequence(buf, seq_len, retlen)
-     asn1buf * buf;
-     const int seq_len;
-     int * retlen;
+asn1_error_code asn1_make_sequence(asn1buf *buf, const unsigned int seq_len, unsigned int *retlen)
 {
   asn1_error_code retval;
-  int len, sum=0;
+  unsigned int len, sum=0;
 
   retval = asn1_make_length(buf,seq_len,&len);
   if(retval) return retval;
@@ -146,13 +132,10 @@ asn1_error_code asn1_make_sequence(buf, seq_len, retlen)
   return 0;
 }
 
-asn1_error_code asn1_make_set(buf, set_len, retlen)
-     asn1buf * buf;
-     const int set_len;
-     int * retlen;
+asn1_error_code asn1_make_set(asn1buf *buf, const unsigned int set_len, unsigned int *retlen)
 {
   asn1_error_code retval;
-  int len, sum=0;
+  unsigned int len, sum=0;
 
   retval = asn1_make_length(buf,set_len,&len);
   if(retval) return retval;
@@ -165,11 +148,7 @@ asn1_error_code asn1_make_set(buf, set_len, retlen)
   return 0;
 }
 
-asn1_error_code asn1_make_string(buf, length, string, retlen)
-     asn1buf * buf;
-     const int length;
-     const char * string;
-     int * retlen;
+asn1_error_code asn1_make_string(asn1buf *buf, const unsigned int length, const char *string, int *retlen)
 {
   asn1_error_code retval;
 

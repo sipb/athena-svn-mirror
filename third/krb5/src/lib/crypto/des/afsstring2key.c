@@ -4,6 +4,31 @@
  * based on lib/crypto/des/string2key.c from MIT V5 
  * and on lib/des/afs_string_to_key.c from UMD.
  * constructed by Mark Eichin, Cygnus Support, 1995.
+ * made thread-safe by Ken Raeburn, MIT, 2001.
+ */
+
+/*
+ * Copyright 2001 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
 /*
@@ -36,13 +61,17 @@
 #include "des_int.h"
 #include <ctype.h>
 
-static char *afs_crypt PROTOTYPE((char*,char*));
+#define afs_crypt mit_afs_crypt
+char *afs_crypt (const char *, const char *, char *);
+
+#undef min
+#define min(a,b) ((a)>(b)?(b):(a))
 
 krb5_error_code
 mit_afs_string_to_key (keyblock, data, salt)
-     krb5_keyblock FAR * keyblock;
-     const krb5_data FAR * data;
-     const krb5_data FAR * salt;
+     krb5_keyblock * keyblock;
+     const krb5_data * data;
+     const krb5_data * salt;
 {
   /* totally different approach from MIT string2key. */
   /* much of the work has already been done by the only caller 
@@ -50,12 +79,21 @@ mit_afs_string_to_key (keyblock, data, salt)
      set up. */
   
     char *realm = salt->data;
-    register int i;
-    register krb5_octet *key = keyblock->contents;
+    unsigned int i, j;
+    krb5_octet *key = keyblock->contents;
 
     if (data->length <= 8) {
-      char password[9];		/* trailing nul for crypt() */
-      strncpy(password, realm, 8);
+      /* One block only.  Run afs_crypt and use the first eight
+	 returned bytes after the copy of the (fixed) salt.
+
+	 Since the returned bytes are alphanumeric, the output is
+	 limited to 2**48 possibilities; for each byte, only 64
+	 possible values can be used.  */
+      unsigned char password[9]; /* trailing nul for crypt() */
+      char afs_crypt_buf[16];
+
+      memset (password, 0, sizeof (password));
+      memcpy (password, realm, min (salt->length, 8));
       for (i=0; i<8; i++)
 	if (isupper(password[i]))
 	  password[i] = tolower(password[i]);
@@ -65,7 +103,11 @@ mit_afs_string_to_key (keyblock, data, salt)
 	if (password[i] == '\0')
 	  password[i] = 'X';
       password[8] = '\0';
-      strncpy(key, (char *) afs_crypt(password, "#~") + 2, 8);
+      /* Out-of-bounds salt characters are equivalent to a salt string
+	 of "p1".  */
+      strncpy((char *) key,
+	      (char *) afs_crypt((char *) password, "#~", afs_crypt_buf) + 2,
+	      8);
       for (i=0; i<8; i++)
 	key[i] <<= 1;
       /* now fix up key parity again */
@@ -73,18 +115,19 @@ mit_afs_string_to_key (keyblock, data, salt)
       /* clean & free the input string */
       memset(password, 0, (size_t) sizeof(password));
     } else {
+      /* Multiple blocks.  Do a CBC checksum, twice, and use the
+	 result as the new key.  */
       mit_des_cblock ikey, tkey;
-
-      static mit_des_key_schedule key_sked;
-      int pw_len = strlen(realm)+data->length;
-      char *password = malloc(pw_len+1);
+      mit_des_key_schedule key_sked;
+      unsigned int pw_len = salt->length+data->length;
+      unsigned char *password = malloc(pw_len+1);
       if (!password) return ENOMEM;
 
-      /* some bound checks from the original code are elided here as
+      /* Some bound checks from the original code are elided here as
 	 the malloc above makes sure we have enough storage. */
-      strcpy (password, data->data);
-      for (i=data->length; *realm; i++) {
-	password[i] = *realm++;
+      memcpy (password, data->data, data->length);
+      for (i=data->length, j = 0; j < salt->length; i++, j++) {
+	password[i] = realm[j];
 	if (isupper(password[i]))
 	  password[i] = tolower(password[i]);
       }
@@ -144,8 +187,8 @@ mit_afs_string_to_key (keyblock, data, salt)
  *	netatalk@terminator.cc.umich.edu
  */
 
-static void krb5_afs_crypt_setkey PROTOTYPE((char*));
-static void krb5_afs_encrypt PROTOTYPE((char*,long));
+static void krb5_afs_crypt_setkey (char*, char*, char(*)[48]);
+static void krb5_afs_encrypt (char*,long,char*,char (*)[48]);
 
 /*
  * Initial permutation,
@@ -221,7 +264,6 @@ static const char	PC2_D[] = {
 /*
  * The E bit-selection table.
  */
-static char	E[48];
 static const char	e[] = {
 	32, 1, 2, 3, 4, 5,
 	 4, 5, 6, 7, 8, 9,
@@ -255,79 +297,61 @@ static const char	P[] = {
  */
 static const char	S[8][64] = {
 	{14, 4,13, 1, 2,15,11, 8, 3,10, 6,12, 5, 9, 0, 7,
-	 0,15, 7, 4,14, 2,13, 1,10, 6,12,11, 9, 5, 3, 8,
-	 4, 1,14, 8,13, 6, 2,11,15,12, 9, 7, 3,10, 5, 0,
-	15,12, 8, 2, 4, 9, 1, 7, 5,11, 3,14,10, 0, 6,13},
+	  0,15, 7, 4,14, 2,13, 1,10, 6,12,11, 9, 5, 3, 8,
+	  4, 1,14, 8,13, 6, 2,11,15,12, 9, 7, 3,10, 5, 0,
+	 15,12, 8, 2, 4, 9, 1, 7, 5,11, 3,14,10, 0, 6,13},
  
 	{15, 1, 8,14, 6,11, 3, 4, 9, 7, 2,13,12, 0, 5,10,
-	 3,13, 4, 7,15, 2, 8,14,12, 0, 1,10, 6, 9,11, 5,
-	 0,14, 7,11,10, 4,13, 1, 5, 8,12, 6, 9, 3, 2,15,
-	13, 8,10, 1, 3,15, 4, 2,11, 6, 7,12, 0, 5,14, 9},
+	  3,13, 4, 7,15, 2, 8,14,12, 0, 1,10, 6, 9,11, 5,
+	  0,14, 7,11,10, 4,13, 1, 5, 8,12, 6, 9, 3, 2,15,
+	 13, 8,10, 1, 3,15, 4, 2,11, 6, 7,12, 0, 5,14, 9},
  
 	{10, 0, 9,14, 6, 3,15, 5, 1,13,12, 7,11, 4, 2, 8,
-	13, 7, 0, 9, 3, 4, 6,10, 2, 8, 5,14,12,11,15, 1,
-	13, 6, 4, 9, 8,15, 3, 0,11, 1, 2,12, 5,10,14, 7,
-	 1,10,13, 0, 6, 9, 8, 7, 4,15,14, 3,11, 5, 2,12},
+	 13, 7, 0, 9, 3, 4, 6,10, 2, 8, 5,14,12,11,15, 1,
+	 13, 6, 4, 9, 8,15, 3, 0,11, 1, 2,12, 5,10,14, 7,
+	  1,10,13, 0, 6, 9, 8, 7, 4,15,14, 3,11, 5, 2,12},
  
-	 {7,13,14, 3, 0, 6, 9,10, 1, 2, 8, 5,11,12, 4,15,
-	13, 8,11, 5, 6,15, 0, 3, 4, 7, 2,12, 1,10,14, 9,
-	10, 6, 9, 0,12,11, 7,13,15, 1, 3,14, 5, 2, 8, 4,
-	 3,15, 0, 6,10, 1,13, 8, 9, 4, 5,11,12, 7, 2,14},
+	{ 7,13,14, 3, 0, 6, 9,10, 1, 2, 8, 5,11,12, 4,15,
+	 13, 8,11, 5, 6,15, 0, 3, 4, 7, 2,12, 1,10,14, 9,
+	 10, 6, 9, 0,12,11, 7,13,15, 1, 3,14, 5, 2, 8, 4,
+	  3,15, 0, 6,10, 1,13, 8, 9, 4, 5,11,12, 7, 2,14},
  
-	 {2,12, 4, 1, 7,10,11, 6, 8, 5, 3,15,13, 0,14, 9,
-	14,11, 2,12, 4, 7,13, 1, 5, 0,15,10, 3, 9, 8, 6,
-	 4, 2, 1,11,10,13, 7, 8,15, 9,12, 5, 6, 3, 0,14,
-	11, 8,12, 7, 1,14, 2,13, 6,15, 0, 9,10, 4, 5, 3},
+	{ 2,12, 4, 1, 7,10,11, 6, 8, 5, 3,15,13, 0,14, 9,
+	 14,11, 2,12, 4, 7,13, 1, 5, 0,15,10, 3, 9, 8, 6,
+	  4, 2, 1,11,10,13, 7, 8,15, 9,12, 5, 6, 3, 0,14,
+	 11, 8,12, 7, 1,14, 2,13, 6,15, 0, 9,10, 4, 5, 3},
  
 	{12, 1,10,15, 9, 2, 6, 8, 0,13, 3, 4,14, 7, 5,11,
-	10,15, 4, 2, 7,12, 9, 5, 6, 1,13,14, 0,11, 3, 8,
-	 9,14,15, 5, 2, 8,12, 3, 7, 0, 4,10, 1,13,11, 6,
-	 4, 3, 2,12, 9, 5,15,10,11,14, 1, 7, 6, 0, 8,13},
+	 10,15, 4, 2, 7,12, 9, 5, 6, 1,13,14, 0,11, 3, 8,
+	  9,14,15, 5, 2, 8,12, 3, 7, 0, 4,10, 1,13,11, 6,
+	  4, 3, 2,12, 9, 5,15,10,11,14, 1, 7, 6, 0, 8,13},
  
-	 {4,11, 2,14,15, 0, 8,13, 3,12, 9, 7, 5,10, 6, 1,
-	13, 0,11, 7, 4, 9, 1,10,14, 3, 5,12, 2,15, 8, 6,
-	 1, 4,11,13,12, 3, 7,14,10,15, 6, 8, 0, 5, 9, 2,
-	 6,11,13, 8, 1, 4,10, 7, 9, 5, 0,15,14, 2, 3,12},
+	{ 4,11, 2,14,15, 0, 8,13, 3,12, 9, 7, 5,10, 6, 1,
+	 13, 0,11, 7, 4, 9, 1,10,14, 3, 5,12, 2,15, 8, 6,
+	  1, 4,11,13,12, 3, 7,14,10,15, 6, 8, 0, 5, 9, 2,
+	  6,11,13, 8, 1, 4,10, 7, 9, 5, 0,15,14, 2, 3,12},
  
 	{13, 2, 8, 4, 6,15,11, 1,10, 9, 3,14, 5, 0,12, 7,
-	 1,15,13, 8,10, 3, 7, 4,12, 5, 6,11, 0,14, 9, 2,
-	 7,11, 4, 1, 9,12,14, 2, 0, 6,10,13,15, 3, 5, 8,
-	 2, 1,14, 7, 4,10, 8,13,15,12, 9, 0, 3, 5, 6,11},
+	  1,15,13, 8,10, 3, 7, 4,12, 5, 6,11, 0,14, 9, 2,
+	  7,11, 4, 1, 9,12,14, 2, 0, 6,10,13,15, 3, 5, 8,
+	  2, 1,14, 7, 4,10, 8,13,15,12, 9, 0, 3, 5, 6,11},
 };
  
-/*
- * The C and D arrays used to calculate the key schedule.
- */
  
-static char	C[28];
-static char	D[28];
-/*
- * The key schedule.
- * Generated from the key.
- */
-static char	KS[16][48];
- 
-/*
- * The current block, divided into 2 halves.
- */
-static char	L[64];
-static char	*R=&L[32];
-
-static char	tempL[32];
-static char	f[32];
- 
-/*
- * The combination of the key and the input, before selection.
- */
-static char	preS[48];
- 
-static char *afs_crypt(pw, salt)
-     char *pw;
-     char *salt;
+char *afs_crypt(pw, salt, iobuf)
+     const char *pw;
+     const char *salt;
+     char *iobuf;		/* must be at least 16 bytes */
 {
-	register int i, j, c;
+	int i, j, c;
 	int temp;
-	static char block[66], iobuf[16];
+	char block[66];
+	char E[48];
+	/*
+	 * The key schedule.
+	 * Generated from the key.
+	 */
+	char KS[16][48];
  
 	for(i=0; i<66; i++)
 		block[i] = 0;
@@ -337,11 +361,11 @@ static char *afs_crypt(pw, salt)
 		i++;
 	}
 	
-	krb5_afs_crypt_setkey(block);
-	
+	krb5_afs_crypt_setkey(block, E, KS);
+
 	for(i=0; i<66; i++)
 		block[i] = 0;
- 
+
 	for(i=0;i<2;i++){
 		c = *salt++;
 		iobuf[i] = c;
@@ -358,7 +382,7 @@ static char *afs_crypt(pw, salt)
 		}
 	
 	for(i=0; i<25; i++)
-		krb5_afs_encrypt(block,0);
+		krb5_afs_encrypt(block,0,E,KS);
 	
 	for(i=0; i<11; i++){
 		c = 0;
@@ -381,11 +405,16 @@ static char *afs_crypt(pw, salt)
  * Set up the key schedule from the key.
  */
  
-static void krb5_afs_crypt_setkey(key)
+static void krb5_afs_crypt_setkey(key, E, KS)
      char *key;
+     char *E, (*KS)[48];
 {
 	register int i, j, k;
 	int t;
+	/*
+	 * The C and D arrays used to calculate the key schedule.
+	 */
+	char C[28], D[28];
  
 	/*
 	 * First, generate C and D by permuting
@@ -434,12 +463,24 @@ static void krb5_afs_crypt_setkey(key)
  * The payoff: encrypt a block.
  */
  
-static void krb5_afs_encrypt(block, edflag)
+static void krb5_afs_encrypt(block, edflag, E, KS)
      char *block;
      long edflag;
+     char *E, (*KS)[48];
 {
 	int i, ii;
-	register int t, j, k;
+	int t, j, k;
+	char tempL[32];
+	char f[32];
+	/*
+	 * The current block, divided into 2 halves.
+	 */
+	char L[64];
+	char *const R = &L[32];
+	/*
+	 * The combination of the key and the input, before selection.
+	 */
+	char preS[48];
 
 	/*
 	 * First, permute the bits in the input

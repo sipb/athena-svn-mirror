@@ -44,22 +44,17 @@
 /* due to argument promotion rules, we need to use the DECLARG/OLDDECLARG
    stuff... */
 krb5_error_code
-krb5_encode_kdc_rep(context, type, encpart, using_subkey, client_key,
-		    dec_rep, enc_rep)
-    krb5_context context;
-    const krb5_msgtype type;
-    const krb5_enc_kdc_rep_part * encpart;
-    int using_subkey;
-    const krb5_keyblock * client_key;
-    krb5_kdc_rep * dec_rep;
-    krb5_data ** enc_rep;
+krb5_encode_kdc_rep(krb5_context context, krb5_msgtype type,
+		    const krb5_enc_kdc_rep_part *encpart,
+		    int using_subkey, const krb5_keyblock *client_key,
+		    krb5_kdc_rep *dec_rep, krb5_data **enc_rep)
 {
     krb5_data *scratch;
     krb5_error_code retval;
     krb5_enc_kdc_rep_part tmp_encpart;
     krb5_keyusage usage;
 
-    if (!valid_enctype(dec_rep->enc_part.enctype))
+    if (!krb5_c_valid_enctype(dec_rep->enc_part.enctype))
 	return KRB5_PROG_ETYPE_NOSUPP;
 
     switch (type) {

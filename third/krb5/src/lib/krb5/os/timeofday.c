@@ -32,14 +32,8 @@
 
 #include <time.h>
 
-#ifndef HAVE_ERRNO
-extern int errno;
-#endif
-
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_timeofday(context, timeret)
-    krb5_context context;
-    register krb5_int32 FAR *timeret;
+krb5_error_code KRB5_CALLCONV
+krb5_timeofday(krb5_context context, register krb5_int32 *timeret)
 {
     krb5_os_context os_ctx = context->os_context;
     time_t tval;
@@ -48,17 +42,7 @@ krb5_timeofday(context, timeret)
 	    *timeret = os_ctx->time_offset;
 	    return 0;
     }
-#if TARGET_OS_MAC
-{
-	krb5_int32 usecs;
-	krb5_error_code	kret;
-
-	if (kret = krb5_crypto_us_timeofday((krb5_int32 *)&tval, &usecs))
-		return kret;
-}
-#else
     tval = time(0);
-#endif
     if (tval == (time_t) -1)
 	return (krb5_error_code) errno;
     if (os_ctx->os_flags & KRB5_OS_TOFFSET_VALID)

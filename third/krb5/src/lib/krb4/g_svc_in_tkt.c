@@ -1,22 +1,34 @@
 /*
- * g_svc_in_tkt.c
+ * lib/krb4/g_svc_in_tkt.c
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
+#include <string.h>
+#include <stdlib.h>
 #include "krb.h"
 #include "prot.h"
-#include <string.h>
-
-#ifndef NULL
-#define NULL 0
-#endif
-
-extern char *krb__get_srvtabname();
+#include "krb4int.h"
 
 /*
  * This file contains two routines: srvtab_to_key(), which gets
@@ -62,11 +74,11 @@ static int srvtab_to_key(user, instance, realm, srvtab, key)
  * It returns the return value of the krb_get_in_tkt() call.
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_svc_in_tkt(user, instance, realm, service, sinstance, life, srvtab)
-    char FAR *user, FAR *instance, FAR *realm, FAR *service, FAR *sinstance;
+    char *user, *instance, *realm, *service, *sinstance;
     int life;
-    char FAR *srvtab;
+    char *srvtab;
 {
     return(krb_get_in_tkt(user, instance, realm, service, sinstance, life,
                           (key_proc_type) srvtab_to_key, NULL, srvtab));
@@ -83,6 +95,7 @@ static int stub_key(user,instance,realm,passwd,key)
    return 0;
 }
 
+int
 krb_get_svc_in_tkt_preauth(user, instance, realm, service, sinstance, life, srvtab)
     char *user, *instance, *realm, *service, *sinstance;
     int life;
@@ -105,6 +118,7 @@ krb_get_svc_in_tkt_preauth(user, instance, realm, service, sinstance, life, srvt
 
 /* DEC's dss-kerberos adds krb_svc_init; simple enough */
 
+int
 krb_svc_init(user,instance,realm,lifetime,srvtab_file,tkt_file)
     char *user;
     char *instance;
@@ -117,10 +131,11 @@ krb_svc_init(user,instance,realm,lifetime,srvtab_file,tkt_file)
 	krb_set_tkt_string(tkt_file);
 
     return krb_get_svc_in_tkt(user,instance,realm,
-			      "krbtgt",realm,lifetime,srvtab_file);
+			      KRB_TICKET_GRANTING_TICKET,realm,lifetime,srvtab_file);
 }
 
 
+int
 krb_svc_init_preauth(user,instance,realm,lifetime,srvtab_file,tkt_file)
     char *user;
     char *instance;
@@ -133,5 +148,5 @@ krb_svc_init_preauth(user,instance,realm,lifetime,srvtab_file,tkt_file)
         krb_set_tkt_string(tkt_file);
  
     return krb_get_svc_in_tkt_preauth(user,instance,realm,
-                              	      "krbtgt",realm,lifetime,srvtab_file);
+                              	      KRB_TICKET_GRANTING_TICKET,realm,lifetime,srvtab_file);
 }

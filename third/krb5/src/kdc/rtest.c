@@ -31,11 +31,10 @@
 #include "kdc_util.h"
 #include "extern.h"
 
-krb5_principal 
-make_princ(ctx, str, prog)
-    krb5_context ctx;
-    const char *str;
-    const char *prog;
+void krb5_klog_syslog(void);
+
+static krb5_principal 
+make_princ(krb5_context ctx, const char *str, const char *prog)
 {
     krb5_principal ret;
     char *dat;
@@ -59,10 +58,8 @@ make_princ(ctx, str, prog)
 }
 
 int
-main(argc,argv)
-    int	argc;
-    char *argv[];
-    {
+main(int argc, char **argv)
+{
 	krb5_data otrans;
 	krb5_data ntrans;
 	krb5_principal tgs, cl, sv;
@@ -88,7 +85,10 @@ main(argc,argv)
 	ntrans.data = 0;
 
 	otrans.length = strlen(argv[1]);
-	otrans.data = (char *) malloc(otrans.length);
+	if (otrans.length) 
+	  otrans.data = (char *) malloc(otrans.length);
+	else 
+	  otrans.data = 0;
 	memcpy(otrans.data,argv[1], otrans.length);
 
 	tgs = make_princ(kdc_context, argv[2], argv[0]);
@@ -100,7 +100,8 @@ main(argc,argv)
 	printf("%s\n",ntrans.data);
 
 	/* Free up all memory so we can profile for leaks */
-	free(otrans.data);
+	if (otrans.data)
+	  free(otrans.data);
 	free(ntrans.data);
 
 	krb5_free_principal(kdc_realm.realm_context, tgs);
@@ -111,5 +112,5 @@ main(argc,argv)
 	exit(0);
     }
 
-void krb5_klog_syslog() {}
+void krb5_klog_syslog(void) {}
 kdc_realm_t *find_realm_data (char *rname, krb5_ui_4 rsize) { return 0; }

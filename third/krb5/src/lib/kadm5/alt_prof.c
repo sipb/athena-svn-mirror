@@ -30,15 +30,14 @@
  */
 #include "k5-int.h"
 #include <kadm5/admin.h>
+#include "adm_proto.h"
 #include <stdio.h>
 #include <ctype.h>
-
 
 static krb5_key_salt_tuple *copy_key_salt_tuple(ksalt, len)
 krb5_key_salt_tuple *ksalt;
 krb5_int32 len;
 {
-    int i;
     krb5_key_salt_tuple *knew;    
 
     if((knew = (krb5_key_salt_tuple *)
@@ -67,10 +66,10 @@ krb5_aprof_init(fname, envname, acontextp)
     krb5_pointer	*acontextp;
 {
     krb5_error_code	kret;
-    const char		*namelist[2];
+    const_profile_filespec_t 	namelist[2];
     profile_t		profile;
     
-    namelist[1] = (char *) NULL;
+    namelist[1] = (profile_filespec_t) NULL;
     profile = (profile_t) NULL;
     if (envname) {
 	if ((namelist[0] = getenv(envname))) {
@@ -149,7 +148,7 @@ string_to_boolean (const char *string, krb5_boolean *out)
 
 krb5_error_code
 krb5_aprof_get_boolean(krb5_pointer acontext, const char **hierarchy,
-		       int uselast, int *retdata)
+		       int uselast, krb5_boolean *retdata)
 {
     krb5_error_code kret;
     char **values;
@@ -199,20 +198,20 @@ krb5_aprof_get_deltat(acontext, hierarchy, uselast, deltatp)
     krb5_error_code	kret;
     char		**values;
     char		*valp;
-    int			index;
+    int			idx;
 
     if (!(kret = krb5_aprof_getvals(acontext, hierarchy, &values))) {
-	index = 0;
+	idx = 0;
 	if (uselast) {
-	    for (index=0; values[index]; index++);
-	    index--;
+	    for (idx=0; values[idx]; idx++);
+	    idx--;
 	}
-	valp = values[index];
+	valp = values[idx];
 	kret = krb5_string_to_deltat(valp, deltatp);
 
 	/* Free the string storage */
-	for (index=0; values[index]; index++)
-	    krb5_xfree(values[index]);
+	for (idx=0; values[idx]; idx++)
+	    krb5_xfree(values[idx]);
 	krb5_xfree(values);
     }
     return(kret);
@@ -241,20 +240,20 @@ krb5_aprof_get_string(acontext, hierarchy, uselast, stringp)
 {
     krb5_error_code	kret;
     char		**values;
-    int			index, i;
+    int			idx, i;
 
     if (!(kret = krb5_aprof_getvals(acontext, hierarchy, &values))) {
-	index = 0;
+	idx = 0;
 	if (uselast) {
-	    for (index=0; values[index]; index++);
-	    index--;
+	    for (idx=0; values[idx]; idx++);
+	    idx--;
 	}
 
-	*stringp = values[index];
+	*stringp = values[idx];
 
 	/* Free the string storage */
 	for (i=0; values[i]; i++)
-	    if (i != index)
+	    if (i != idx)
 		krb5_xfree(values[i]);
 	krb5_xfree(values);
     }
@@ -285,21 +284,21 @@ krb5_aprof_get_int32(acontext, hierarchy, uselast, intp)
 {
     krb5_error_code	kret;
     char		**values;
-    int			index;
+    int			idx;
 
     if (!(kret = krb5_aprof_getvals(acontext, hierarchy, &values))) {
-	index = 0;
+	idx = 0;
 	if (uselast) {
-	    for (index=0; values[index]; index++);
-	    index--;
+	    for (idx=0; values[idx]; idx++);
+	    idx--;
 	}
 
-	if (sscanf(values[index], "%d", intp) != 1)
+	if (sscanf(values[idx], "%d", intp) != 1)
 	    kret = EINVAL;
 
 	/* Free the string storage */
-	for (index=0; values[index]; index++)
-	    krb5_xfree(values[index]);
+	for (idx=0; values[idx]; idx++)
+	    krb5_xfree(values[idx]);
 	krb5_xfree(values);
     }
     return(kret);
@@ -424,7 +423,8 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
     }
     if (params.mask & KADM5_CONFIG_ADMIN_SERVER) {
 	 char *p;
-	 if (p = strchr(params.admin_server, ':')) {
+	 p = strchr(params.admin_server, ':');
+	 if (p) {
 	      params.kadmind_port = atoi(p+1);
 	      params.mask |= KADM5_CONFIG_KADMIND_PORT;
 	      *p = '\0';
@@ -477,7 +477,7 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
 	       !krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue)) {
 	 params.mask |= KADM5_CONFIG_ADMIN_KEYTAB;
 	 params.admin_keytab = svalue;
-    } else if (params.admin_keytab = (char *) getenv("KRB5_KTNAME")) {
+    } else if ((params.admin_keytab = (char *) getenv("KRB5_KTNAME"))) {
 	 params.admin_keytab = strdup(params.admin_keytab);
 	 if (params.admin_keytab)
 	      params.mask |= KADM5_CONFIG_ADMIN_KEYTAB;
@@ -605,7 +605,7 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
 	 params.max_life = dtvalue;
 	 params.mask |= KADM5_CONFIG_MAX_LIFE;
     } else {
-	 params.max_life = 36000; /* 10 hours */
+	 params.max_life = 24 * 60 * 60; /* 1 day */
 	 params.mask |= KADM5_CONFIG_MAX_LIFE;
     }	 
 	    
@@ -656,14 +656,14 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
 		  (ep = strchr(sp, (int) '\t'))) {
 		   /* Fill in trailing whitespace of sp */
 		   tp = ep - 1;
-		   while (isspace(*tp) && (tp > sp)) {
+		   while (isspace((int) *tp) && (tp > sp)) {
 			*tp = '\0';
 			tp--;
 		   }
 		   *ep = '\0';
 		   ep++;
 		   /* Skip over trailing whitespace of ep */
-		   while (isspace(*ep) && (*ep)) ep++;
+		   while (isspace((int) *ep) && (*ep)) ep++;
 	      }
 	      /* Convert this flag */
 	      if (krb5_string_to_flags(sp,
@@ -702,7 +702,7 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
 	 if (aprofile)
 	      krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue);
 	 if (svalue == NULL)
-	      svalue = strdup("des3-hmac-sha1:normal des-cbc-crc:normal");
+	     svalue = strdup("des3-hmac-sha1:normal des-cbc-crc:normal");
 
 	 params.keysalts = NULL;
 	 params.num_keysalts = 0;
@@ -838,7 +838,10 @@ krb5_read_realm_params(kcontext, realm, kdcprofile, kdcenv, rparamp)
     hierarchy[2] = "kdc_ports";
     if (!krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue))
 	rparams->realm_kdc_ports = svalue;
-	    
+    hierarchy[2] = "kdc_tcp_ports";
+    if (!krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue))
+	rparams->realm_kdc_tcp_ports = svalue;
+
     /* Get the name of the acl file */
     hierarchy[2] = "acl_file";
     if (!krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue))
@@ -911,14 +914,14 @@ krb5_read_realm_params(kcontext, realm, kdcprofile, kdcenv, rparamp)
 		(ep = strchr(sp, (int) '\t'))) {
 		/* Fill in trailing whitespace of sp */
 		tp = ep - 1;
-		while (isspace(*tp) && (tp < sp)) {
+		while (isspace((int) *tp) && (tp < sp)) {
 		    *tp = '\0';
 		    tp--;
 		}
 		*ep = '\0';
 		ep++;
 		/* Skip over trailing whitespace of ep */
-		while (isspace(*ep) && (*ep)) ep++;
+		while (isspace((int) *ep) && (*ep)) ep++;
 	    }
 	    /* Convert this flag */
 	    if (krb5_string_to_flags(sp,
@@ -933,27 +936,8 @@ krb5_read_realm_params(kcontext, realm, kdcprofile, kdcenv, rparamp)
 	krb5_xfree(svalue);
     }
 
-    /* Get the value for the supported enctype/salttype matrix */
-    /* XXX This is so that the kdc will search a different
-       enctype list than kadmind */
-    if (!kret) {
-	hierarchy[2] = "kdc_supported_enctypes";
-	kret = krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue);
-	if (kret) {
-	    hierarchy[2] = "supported_enctypes";
-	    kret = krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue);
-	}
-	if (!kret) {
-	    krb5_string_to_keysalts(svalue,
-				    ", \t",	/* Tuple separators	*/
-				    ":.-",	/* Key/salt separators	*/
-				    0,		/* No duplicates	*/
-				    &rparams->realm_keysalts,
-				    &rparams->realm_num_keysalts);
-	    krb5_xfree(svalue);
-	}
-	kret = 0;
-    }
+    rparams->realm_keysalts = NULL;
+    rparams->realm_num_keysalts = 0;
 
 cleanup:
     if (aprofile)
@@ -990,6 +974,8 @@ krb5_free_realm_params(kcontext, rparams)
 	    krb5_xfree(rparams->realm_keysalts);
 	if (rparams->realm_kdc_ports)
 	    krb5_xfree(rparams->realm_kdc_ports);
+	if (rparams->realm_kdc_tcp_ports)
+	    krb5_xfree(rparams->realm_kdc_tcp_ports);
 	if (rparams->realm_acl_file)
 	    krb5_xfree(rparams->realm_acl_file);
 	krb5_xfree(rparams);

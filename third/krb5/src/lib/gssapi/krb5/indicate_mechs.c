@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: indicate_mechs.c,v 1.1.1.3 1999-10-05 16:12:16 ghudson Exp $
+ * $Id: indicate_mechs.c,v 1.1.1.4 2004-02-27 03:58:25 zacheiss Exp $
  */
 
 #include "gssapiP_krb5.h"
@@ -33,7 +33,7 @@ krb5_gss_indicate_mechs(minor_status, mech_set)
 {
    *minor_status = 0;
 
-   if (! g_copy_OID_set(gss_mech_set_krb5_v1v2, mech_set)) {
+   if (! g_copy_OID_set(gss_mech_set_krb5_both, mech_set)) {
          *mech_set     = GSS_C_NO_OID_SET;
          *minor_status = ENOMEM;
          return(GSS_S_FAILURE);

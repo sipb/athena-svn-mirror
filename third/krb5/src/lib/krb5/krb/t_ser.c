@@ -43,9 +43,7 @@ can't safely dereference.  This test file used to make this mistake, often.";
  * Dump an external representation.
  */
 static void
-print_erep(erep, elen)
-    krb5_octet	*erep;
-    size_t	elen;
+print_erep(krb5_octet *erep, size_t elen)
 {
     int i, j;
 
@@ -77,11 +75,7 @@ print_erep(erep, elen)
  * Do a serialization test.
  */
 static krb5_error_code
-ser_data(verbose, msg, ctx, dtype)
-    int			verbose;
-    char		*msg;
-    krb5_pointer	ctx;
-    krb5_magic		dtype;
+ser_data(int verbose, char *msg, krb5_pointer ctx, krb5_magic dtype)
 {
     krb5_error_code	kret;
     krb5_context	ser_ctx;
@@ -204,15 +198,13 @@ ser_data(verbose, msg, ctx, dtype)
  * Serialize krb5_context.
  */
 static krb5_error_code
-ser_kcontext_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_kcontext_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     profile_t		sprofile;
     char		dbname[128];
 
-    sprintf(dbname, "temp_%d", getpid());
+    sprintf(dbname, "temp_%d", (int) getpid());
     sprofile = kcontext->profile;
     kcontext->profile = (profile_t) NULL;
     if (!(kret = ser_data(verbose, "> Context with no profile",
@@ -252,9 +244,7 @@ ser_kcontext_test(kcontext, verbose)
  * Serialize krb5_auth_context.
  */
 static krb5_error_code
-ser_acontext_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_acontext_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     krb5_auth_context	actx;
@@ -343,7 +333,7 @@ ser_acontext_test(kcontext, verbose)
 		 */
 		memset(&aent, 0, sizeof(aent));
 		aent.magic = KV5M_AUTHENTICATOR;
-		sprintf(clname, "help/me/%d@this.is.a.test", getpid());
+		sprintf(clname, "help/me/%d@this.is.a.test", (int) getpid());
 		actx->authentp = &aent;
 		if (!(kret = krb5_parse_name(kcontext, clname,
 					     &aent.client)) &&
@@ -383,20 +373,17 @@ ser_acontext_test(kcontext, verbose)
  * Serialize krb5_ccache
  */
 static krb5_error_code
-ser_ccache_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_ccache_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     char		ccname[128];
     char		princname[256];
     krb5_ccache		ccache;
     krb5_principal	principal;
-    extern krb5_cc_ops	krb5_scc_ops;
 
-    sprintf(ccname, "temp_cc_%d", getpid());
+    sprintf(ccname, "temp_cc_%d", (int) getpid());
     sprintf(princname, "zowie%d/instance%d@this.is.a.test",
-	    getpid(), getpid());
+	    (int) getpid(), (int) getpid());
     if (!(kret = krb5_cc_resolve(kcontext, ccname, &ccache)) &&
 	!(kret = ser_data(verbose, "> Resolved default ccache",
 			  (krb5_pointer) ccache, KV5M_CCACHE)) &&
@@ -406,9 +393,9 @@ ser_ccache_test(kcontext, verbose)
 			  (krb5_pointer) ccache, KV5M_CCACHE)) &&
 	!(kret = krb5_cc_destroy(kcontext, ccache))) {
 	krb5_free_principal(kcontext, principal);
-	sprintf(ccname, "FILE:temp_cc_%d", getpid());
+	sprintf(ccname, "FILE:temp_cc_%d", (int) getpid());
 	sprintf(princname, "xxx%d/i%d@this.is.a.test",
-		getpid(), getpid());
+		(int) getpid(), (int) getpid());
 	if (!(kret = krb5_cc_resolve(kcontext, ccname, &ccache)) &&
 	    !(kret = ser_data(verbose, "> Resolved FILE ccache",
 			      (krb5_pointer) ccache, KV5M_CCACHE)) &&
@@ -418,24 +405,9 @@ ser_ccache_test(kcontext, verbose)
 			      (krb5_pointer) ccache, KV5M_CCACHE)) &&
 	    !(kret = krb5_cc_destroy(kcontext, ccache))) {
 	    krb5_free_principal(kcontext, principal);
-	    sprintf(ccname, "STDIO:temp_cc_%d", getpid());
-	    sprintf(princname, "xxx%d/i%d@this.is.a.test",
-		    getpid(), getpid());
-	    if ((kret = krb5_cc_resolve(kcontext, ccname, &ccache)))
-		kret = krb5_cc_register(kcontext, &krb5_scc_ops, 1);
-	    if (!kret &&
-		!(kret = krb5_cc_resolve(kcontext, ccname, &ccache)) &&
-		!(kret = ser_data(verbose, "> Resolved STDIO ccache",
-				  (krb5_pointer) ccache, KV5M_CCACHE)) &&
-		!(kret = krb5_parse_name(kcontext, princname, &principal)) &&
-		!(kret = krb5_cc_initialize(kcontext, ccache, principal)) &&
-		!(kret = ser_data(verbose, "> Initialized STDIO ccache",
-				  (krb5_pointer) ccache, KV5M_CCACHE)) &&
-		!(kret = krb5_cc_destroy(kcontext, ccache))) {
-		krb5_free_principal(kcontext, principal);
-		if (verbose)
-		    printf("* ccache test succeeded\n");
-	    }
+
+	    if (verbose)
+		printf("* ccache test succeeded\n");
 	}
     }
     if (kret)
@@ -447,26 +419,24 @@ ser_ccache_test(kcontext, verbose)
  * Serialize krb5_keytab.
  */
 static krb5_error_code
-ser_keytab_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_keytab_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     char		ccname[128];
     krb5_keytab		keytab;
     extern krb5_kt_ops	krb5_ktf_writable_ops;
 
-    sprintf(ccname, "temp_kt_%d", getpid());
+    sprintf(ccname, "temp_kt_%d", (int) getpid());
     if (!(kret = krb5_kt_resolve(kcontext, ccname, &keytab)) &&
 	!(kret = ser_data(verbose, "> Resolved default keytab",
 			  (krb5_pointer) keytab, KV5M_KEYTAB)) &&
 	!(kret = krb5_kt_close(kcontext, keytab))) {
-	sprintf(ccname, "FILE:temp_kt_%d", getpid());
+	sprintf(ccname, "FILE:temp_kt_%d", (int) getpid());
 	if (!(kret = krb5_kt_resolve(kcontext, ccname, &keytab)) &&
 	    !(kret = ser_data(verbose, "> Resolved FILE keytab",
 			      (krb5_pointer) keytab, KV5M_KEYTAB)) &&
 	    !(kret = krb5_kt_close(kcontext, keytab))) {
-	    sprintf(ccname, "WRFILE:temp_kt_%d", getpid());
+	    sprintf(ccname, "WRFILE:temp_kt_%d", (int) getpid());
 	    if ((kret = krb5_kt_resolve(kcontext, ccname, &keytab)))
 		kret = krb5_kt_register(kcontext, &krb5_ktf_writable_ops);
 	    if (!kret &&
@@ -488,15 +458,13 @@ ser_keytab_test(kcontext, verbose)
  * Serialize krb5_rcache.
  */
 static krb5_error_code
-ser_rcache_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_rcache_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     char		rcname[128];
     krb5_rcache		rcache;
 
-    sprintf(rcname, "dfl:temp_rc_%d", getpid());
+    sprintf(rcname, "dfl:temp_rc_%d", (int) getpid());
     if (!(kret = krb5_rc_resolve_full(kcontext, &rcache, rcname)) &&
 	!(kret = ser_data(verbose, "> Resolved FILE rcache",
 			  (krb5_pointer) rcache, KV5M_RCACHE)) &&
@@ -512,6 +480,7 @@ ser_rcache_test(kcontext, verbose)
     return(kret);
 }
 
+#if 0
 /*
  * Serialize krb5_encrypt_block.
  */
@@ -563,20 +532,19 @@ ser_eblock_test(kcontext, verbose)
 	printf("* eblock test failed\n");
     return(kret);
 }
+#endif
 
 /*
  * Serialize krb5_principal
  */
 static krb5_error_code
-ser_princ_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_princ_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     krb5_principal	princ;
     char		pname[1024];
 
-    sprintf(pname, "the/quick/brown/fox/jumped/over/the/lazy/dog/%d@this.is.a.test", getpid());
+    sprintf(pname, "the/quick/brown/fox/jumped/over/the/lazy/dog/%d@this.is.a.test", (int) getpid());
     if (!(kret = krb5_parse_name(kcontext, pname, &princ))) {
 	if (!(kret = ser_data(verbose, "> Principal",
 			      (krb5_pointer) princ, KV5M_PRINCIPAL))) {
@@ -594,9 +562,7 @@ ser_princ_test(kcontext, verbose)
  * Serialize krb5_checksum.
  */
 static krb5_error_code
-ser_cksum_test(kcontext, verbose)
-    krb5_context	kcontext;
-    int			verbose;
+ser_cksum_test(krb5_context kcontext, int verbose)
 {
     krb5_error_code	kret;
     krb5_checksum	checksum;
@@ -625,9 +591,7 @@ ser_cksum_test(kcontext, verbose)
  * Main procedure.
  */
 int
-main(argc, argv)
-    int argc;
-    char *argv[];
+main(int argc, char **argv)
 {
     krb5_error_code	kret;
     krb5_context	kcontext;
@@ -771,5 +735,6 @@ main(argc, argv)
     exit(0);
 fail:
     com_err(argv[0], kret, "--- test %cfailed", ch_err);
+    krb5_free_context(kcontext);
     exit(1);
 }

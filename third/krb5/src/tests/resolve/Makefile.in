@@ -1,7 +1,7 @@
 thisconfigdir=./..
 myfulldir=tests/resolve
 mydir=resolve
-BUILDTOP=$(REL)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..
 RUN_SETUP = @KRB5_RUN_ENV@
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
@@ -21,4 +21,11 @@ install::
 
 clean::
 	$(RM) resolve
+
+# +++ Dependency line eater +++
+# 
+# Makefile dependencies follow.  This must be the last section in
+# the Makefile.in file
+#
+$(OUTPRE)resolve.$(OBJEXT): resolve.c
 

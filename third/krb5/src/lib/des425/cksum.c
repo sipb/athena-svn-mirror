@@ -37,7 +37,7 @@
  *	spm	8/85	MIT project athena
  */
 
-
+#include "des_int.h"
 #include "des.h"
 
 /*
@@ -55,13 +55,14 @@
  * multiple of eight bytes.
  */
 
-void
+unsigned long KRB5_CALLCONV
 des_cbc_cksum(in,out,length,key,iv)
-    krb5_octet  *in;		/* >= length bytes of inputtext */
-    krb5_octet  *out;		/* >= length bytes of outputtext */
-    register long length;	/* in bytes */
-    mit_des_key_schedule key;		/* precomputed key schedule */
-    krb5_octet  *iv;		/* 8 bytes of ivec */
+    const des_cblock  *in;		/* >= length bytes of inputtext */
+    des_cblock  *out;			/* >= length bytes of outputtext */
+    register unsigned long length;	/* in bytes */
+    const mit_des_key_schedule key;	/* precomputed key schedule */
+    const des_cblock  *iv;		/* 8 bytes of ivec */
 {
-	mit_des_cbc_cksum(in, out, length, key, iv);
+    return mit_des_cbc_cksum((const krb5_octet *)in, (krb5_octet *)out,
+			     length, key, (krb5_octet *)iv);
 }

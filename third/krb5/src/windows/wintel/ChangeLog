@@ -1,3 +1,42 @@
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SYSLIBS): Use ws2_32.lib instead of wsock32.lib.
+
+2001-10-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* intern.c (ScreenInsChar): Return BOOL.
+
+	* enc_des.h: Remove undefined encrypt_send_supprt().
+
+
+	* encrypt.h: Fix parameters in declaration for encrypt_init().
+	Remove undefined encrypt_send_supprt().
+
+	* screen.h: HANDLE -> HINSTANCE.  ScreenInsChar() returns BOOL.
+
+	* wt-proto.h: Remove WinMain declaration since that is already in
+	the standard Windows headers.  Update declarations to current
+	Microsoft Platform SDK definitions.  Remove some undefined
+	functions.
+
+	* telnet.c: Update declarations to use definitions in current
+	Microsoft Platform SDK (HANDLE -> HINSTANCE, and others).
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* enc_des.c, enc_des.h, encrypt.c, encrypt.h: Make prototypes
+	unconditional.  Don't define P().
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* font.c, k5stream.c, k5stream.h, screen.c, screen.h, telnet.c,
+	wt-proto.h: Don't declare pointers and functions NEAR or FAR any
+	more.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* encrypt.h: Don't use KRB5_DLLIMP.
+
 2000-05-08  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* auth.c (auth_abort): Don't overflow buffer "strTmp".

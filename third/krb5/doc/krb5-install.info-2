@@ -1,13 +1,733 @@
-This is Info file krb5-install.info, produced by Makeinfo version 1.68
-from the input file install.texinfo.
+This is krb5-install.info, produced by makeinfo version 4.0 from
+install.texinfo.
 
 
-File: krb5-install.info,  Node: Create the Database,  Next: Add Administrators to the Acl File,  Prev: Edit the Configuration Files,  Up: Install the Master KDC
+File: krb5-install.info,  Node: Options to Configure,  Next: osconf.h,  Prev: Testing the Build,  Up: Building Kerberos V5
+
+Options to Configure
+====================
+
+There are a number of options to `configure' which you can use to
+control how the Kerberos distribution is built.  The following table
+lists the most commonly used options to Kerberos V5's `configure'
+program.
+
+`--help'
+     Provides help to configure. This will list the set of commonly used
+     options for building Kerberos.
+
+`--prefix=PREFIX'
+     By default, Kerberos will install the package's files rooted at
+     `/usr/local' as in `/usr/local/bin', `/usr/local/sbin', etc. If you
+     desire a different location, use this option.
+
+`--exec-prefix=EXECPREFIX'
+     This option allows one to separate the architecture independent
+     programs from the configuration files and manual pages.
+
+`--localstatedir=LOCALSTATEDIR'
+     This option sets the directory for locally modifiable
+     single-machine data.  In Kerberos, this mostly is useful for
+     setting a location for the KDC data files, as they will be
+     installed in `LOCALSTATEDIR/krb5kdc', which is by default
+     `PREFIX/var/krb5kdc'.
+
+`CC=COMPILER'
+     Use `COMPILER' as the C compiler.
+
+`CFLAGS=FLAGS'
+     Use `FLAGS' as the default set of C compiler flags.
+
+     Note that if you use the native Ultrix compiler on a DECstation
+     you are likely to lose if you pass no flags to cc; md4.c takes an
+     estimated 3,469 billion years to compile if you provide neither
+     the `-g' flag nor the `-O' flag to `cc'.
+
+`CPPFLAGS=CPPOPTS'
+     Use `CPPOPTS' as the default set of C preprocessor flags.  The most
+     common use of this option is to select certain `#define''s for use
+     with the operating system's include files.
+
+`LD=LINKER'
+     Use `LINKER' as the default loader if it should be different from C
+     compiler as specified above.
+
+`LDFLAGS=LDOPTS'
+     This option allows one to specify optional arguments to be passed
+     to the linker. This might be used to specify optional library
+     paths.
+
+`--with-krb4'
+     This option enables Kerberos V4 backwards compatibility using the
+     builtin Kerberos V4 library.
+
+`--with-krb4=KRB4DIR'
+     This option enables Kerberos V4 backwards compatibility using a
+     pre-existing Kerberos V4 installation.  The directory specified by
+     `KRB4DIR' specifies where the V4 header files should be found
+     (`KRB4DIR/include') as well as where the V4 Kerberos library should
+     be found (`KRB4DIR/lib').
+
+`--without-krb4'
+     Disables Kerberos V4 backwards compatibility. This prevents
+     Kerberos V4 clients from using the V5 services including the KDC.
+     This would be useful if you know you will never install or need to
+     interact with V4 clients.
+
+`--with-netlib[=libs]'
+     Allows for suppression of or replacement of network libraries. By
+     default, Kerberos V5 configuration will look for `-lnsl' and
+     `-lsocket'. If your operating system has a broken resolver library
+     (see *Note Solaris versions 2.0 through 2.3::) or fails to pass
+     the tests in `src/tests/resolv' you will need to use this option.
+
+`--with-tcl=TCLPATH'
+     Some of the unit-tests in the build tree rely upon using a program
+     in Tcl. The directory specified by `TCLPATH' specifies where the
+     Tcl header file (`TCLPATH/include/tcl.h' as well as where the Tcl
+     library should be found (`TCLPATH/lib').
+
+`--enable-shared'
+     This option will turn on the building and use of shared library
+     objects in the Kerberos build. This option is only supported on
+     certain platforms.
+
+`--enable-dns'
+
+`--enable-dns-for-kdc'
+
+`--enable-dns-for-realm'
+     Enable the use of DNS to look up a host's Kerberos realm, or a
+     realm's KDCs, if the information is not provided in krb5.conf. See
+     *Note Hostnames for the Master and Slave KDCs:: for information
+     about using DNS to locate the KDCs, and *Note Mapping Hostnames
+     onto Kerberos Realms:: for information about using DNS to
+     determine the default realm.  By default, DNS lookups are enabled
+     for the former but not for the latter.
+
+`--enable-kdc-replay-cache'
+     Enable a cache in the KDC to detect retransmitted messages, and
+     resend the previous responses to them.  This protects against
+     certain types of attempts to extract information from the KDC
+     through some of the hardware preauthentication systems.
+
+`--with-system-et'
+     Use an installed version of the error-table support software, the
+     `compile_et' program, the `com_err.h' header file and the
+     `com_err' library.  If these are not in the default locations, you
+     may wish to specify `CPPFLAGS=-I/some/dir' and
+     `LDFLAGS=-L/some/other/dir' options at configuration time as well.
+
+     If this option is not given, a version supplied with the Kerberos
+     sources will be built and installed along with the rest of the
+     Kerberos tree, for Kerberos applications to link against.
+
+`--with-system-ss'
+     Use an installed version of the subsystem command-line interface
+     software, the `mk_cmds' program, the `ss/ss.h' header file and the
+     `ss' library.  If these are not in the default locations, you may
+     wish to specify `CPPFLAGS=-I/some/dir' and
+     `LDFLAGS=-L/some/other/dir' options at configuration time as well.
+     See also the `SS_LIB' option.
+
+     If this option is not given, the `ss' library supplied with the
+     Kerberos sources will be compiled and linked into those programs
+     that need it; it will not be installed separately.
+
+`SS_LIB=libs...'
+     If `-lss' is not the correct way to link in your installed `ss'
+     library, for example if additional support libraries are needed,
+     specify the correct link options here.  Some variants of this
+     library are around which allow for Emacs-like line editing, but
+     different versions require different support libraries to be
+     explicitly specified.
+
+     This option is ignored if `--with-system-ss' is not specified.
+
+`--with-system-db'
+     Use an installed version of the Berkeley DB package, which must
+     provide an API compatible with version 1.85.  This option is
+     _unsupported_ and untested.  In particular, we do not know if the
+     database-rename code used in the dumpfile load operation will
+     behave properly.
+
+     If this option is not given, a version supplied with the Kerberos
+     sources will be built and installed.  (We are not updating this
+     version at this time because of licensing issues with newer
+     versions that we haven't investigated sufficiently yet.)
+
+`DB_HEADER=headername.h'
+     If `db.h' is not the correct header file to include to compile
+     against the Berkeley DB 1.85 API, specify the correct header file
+     name with this option.  For example, `DB_HEADER=db3/db_185.h'.
+
+`DB_LIB=libs...'
+     If `-ldb' is not the correct library specification for the
+     Berkeley DB library version to be used, override it with this
+     option.  For example, `DB_LIB=-ldb-3.3'.
+
+For example, in order to configure Kerberos on a Solaris machine using
+the `suncc' compiler with the optimizer turned on, run the configure
+script with the following options:
+
+     % ./configure CC=suncc CFLAGS=-O
+
+For a slightly more complicated example, consider a system where
+several packages to be used by Kerberos are installed in `/usr/foobar',
+including Berkeley DB 3.3, and an `ss' library that needs to link
+against the `curses' library.  The configuration of Kerberos might be
+done thus:
+
+     % ./configure CPPFLAGS=-I/usr/foobar/include LDFLAGS=-L/usr/foobar/lib \
+                   --with-system-et --with-system-ss --with-system-db \
+                   SS_LIB='-lss -lcurses' \
+                   DB_HEADER=db3/db_185.h DB_LIB=-ldb-3.3
+
+In previous releases, `--with-' options were used to specify the
+compiler and linker and their options.
+
+
+File: krb5-install.info,  Node: osconf.h,  Next: Shared Library Support,  Prev: Options to Configure,  Up: Building Kerberos V5
+
+`osconf.h'
+==========
+
+There is one configuration file which you may wish to edit to control
+various compile-time parameters in the Kerberos distribution:
+`include/krb5/stock/osconf.h'. The list that follows is by no means
+complete, just some of the more interesting variables.
+
+Please note: The former configuration file `config.h' no longer exists
+as its functionality has been merged into the auto-configuration
+process. *Note Options to Configure::.
+
+`DEFAULT_PROFILE_PATH'
+     The pathname to the file which contains the profiles for the known
+     realms, their KDCs, etc.  The default value is
+     /etc/krb5.conf.
+
+     The profile file format is no longer the same format as Kerberos
+     V4's `krb.conf' file.
+
+`DEFAULT_KEYTAB_NAME'
+     The type and pathname to the default server keytab file (the
+     equivalent of Kerberos V4's `/etc/srvtab').  The default is
+     /etc/krb5.keytab.
+
+`DEFAULT_KDC_ENCTYPE'
+     The default encryption type for the KDC.  The default value is
+     des3-cbc-sha1.
+
+`KDCRCACHE'
+     The name of the replay cache used by the KDC.  The default value is
+     krb5kdc_rcache.
+
+`RCTMPDIR'
+     The directory which stores replay caches.  The default is to try
+     /var/tmp, /usr/tmp, /var/usr/tmp, and /tmp.
+
+`DEFAULT_KDB_FILE'
+     The location of the default database.  The default value is
+     /usr/local/var/krb5kdc/principal.
+
+
+File: krb5-install.info,  Node: Shared Library Support,  Next: OS Incompatibilities,  Prev: osconf.h,  Up: Building Kerberos V5
+
+Shared Library Support
+======================
+
+Shared library support is provided for a few operating systems. There
+are restrictions as to which compiler to use when using shared
+libraries. In all cases, executables linked with the shared libraries in
+this build process will have built in the location of the libraries,
+therefore obliterating the need for special LD_LIBRARY_PATH, et al
+environment variables when using the programs. Except where noted,
+multiple versions of the libraries may be installed on the same system
+and continue to work.
+
+Currently the supported platforms are Solaris 2.6-2.9 (aka SunOS
+5.6-5.9), Irix 6.5, Redhat Linux, MacOS 8-10, and Microsoft Windows
+(using DLLs).
+
+Shared library support has been tested on the following platforms but
+not exhaustively (they have been built but not necessarily tested in an
+installed state): Tru64 (aka Alpha OSF/1 or Digital Unix) 4.0, and
+HP/UX 10.20.
+
+Platforms for which there is shared library support but not significant
+testing include FreeBSD, OpenBSD, AIX (4.3.3), Linux, NetBSD 1.4.x
+(i386), and SunOS 4.x.
+
+To enable shared libraries on the above platforms, run the configure
+script with the option `--enable-shared'.
+
+
+File: krb5-install.info,  Node: OS Incompatibilities,  Next: Using Autoconf,  Prev: Shared Library Support,  Up: Building Kerberos V5
+
+Operating System Incompatibilities
+==================================
+
+This section details operating system incompatibilities with Kerberos V5
+which have been reported to the developers at MIT.  If you find
+additional incompatibilities, and/or discover work arounds to such
+problems, please send a report via the `krb5-send-pr' program.  Thanks!
+
+* Menu:
+
+* AIX::
+* Alpha OSF/1 V1.3::
+* Alpha OSF/1 (Digital Unix) V2.0++::
+* BSDI::
+* HPUX::
+* Solaris versions 2.0 through 2.3::
+* Solaris 2.X::
+* Solaris 9::
+* SGI Irix 5.X::
+* Ultrix 4.2/3::
+
+
+File: krb5-install.info,  Node: AIX,  Next: Alpha OSF/1 V1.3,  Prev: OS Incompatibilities,  Up: OS Incompatibilities
+
+AIX
+---
+
+The AIX 3.2.5 linker dumps core trying to build a shared `libkrb5.a'
+produced with the GNU C compiler.  The native AIX compiler works fine.
+This problem is fixed using the AIX 4.1 linker.
+
+
+File: krb5-install.info,  Node: Alpha OSF/1 V1.3,  Next: Alpha OSF/1 (Digital Unix) V2.0++,  Prev: AIX,  Up: OS Incompatibilities
+
+Alpha OSF/1 V1.3
+----------------
+
+Using the native compiler, compiling with the `-O' compiler flag causes
+the `asn.1' library to be compiled incorrectly.
+
+Using GCC version 2.6.3 or later instead of the native compiler will
+also work fine, both with or without optimization.
+
+
+File: krb5-install.info,  Node: Alpha OSF/1 (Digital Unix) V2.0++,  Next: BSDI,  Prev: Alpha OSF/1 V1.3,  Up: OS Incompatibilities
+
+Alpha OSF/1 V2.0++
+------------------
+
+There used to be a bug when using the native compiler in compiling
+`md4.c' when compiled without either the `-O' or `-g' compiler options.
+We have changed the code and there is no problem under V2.1, but we do
+not have access to V2.0 to test and see if the problem would exist
+there. (We welcome feedback on this issue). There was never a problem
+in using GCC version 2.6.3.
+
+In version 3.2 and beyond of the operating system, we have not seen any
+problems with the native compiler.
+
+
+File: krb5-install.info,  Node: BSDI,  Next: HPUX,  Prev: Alpha OSF/1 (Digital Unix) V2.0++,  Up: OS Incompatibilities
+
+BSDI
+----
+
+BSDI versions 1.0 and 1.1 reportedly has a bad `sed' which causes it to
+go into an infinite loop during the build.  The work around is to use a
+`sed' from somewhere else, such as GNU.  (This may be true for some
+versions of other systems derived from BSD 4.4, such as NetBSD and
+FreeBSD.)
+
+
+File: krb5-install.info,  Node: HPUX,  Next: Solaris versions 2.0 through 2.3,  Prev: BSDI,  Up: OS Incompatibilities
+
+HPUX
+----
+
+The native (bundled) compiler for HPUX currently will not work, because
+it is not a full ANSI C compiler.  The optional ANSI C compiler should
+work as long as you give it the `-Ae' flag (i.e. `./configure CC='cc
+-Ae'').  This is equivalent to `./configure CC='c89 -D_HPUX_SOURCE'',
+which was the previous recommendation.  This has only been tested
+recently for HPUX 10.20.
+
+
+File: krb5-install.info,  Node: Solaris versions 2.0 through 2.3,  Next: Solaris 2.X,  Prev: HPUX,  Up: OS Incompatibilities
+
+Solaris versions 2.0 through 2.3
+--------------------------------
+
+The `gethostbyname()' routine is broken; it does not return a fully
+qualified domain name, even if you are using the Domain Name Service
+routines.  Since Kerberos V5 uses the fully qualified domain name as the
+second component of a service principal (i.e,
+`host/tsx-11.mit.edu@ATHENA.MIT.EDU'), this causes problems for servers
+who try to figure out their own fully qualified domain name.
+
+Workarounds:
+
+  1.    Supply your own resolver library. (such as bind-4.9.3pl1
+     available from ftp.vix.com)
+
+  2.    Upgrade to Solaris 2.4
+
+  3.    Make sure your /etc/nsswitch.conf has `files' before `dns' like:
+
+          hosts:      files dns
+
+     and then in /etc/hosts, make sure there is a line with your
+     workstation's IP address and hostname, with the fully qualified
+     domain name first.  Example:
+
+          18.172.1.4      dcl.mit.edu dcl
+
+     Note that making this change may cause other programs in your
+     environment to break or behave differently.
+
+
+
+File: krb5-install.info,  Node: Solaris 2.X,  Next: Solaris 9,  Prev: Solaris versions 2.0 through 2.3,  Up: OS Incompatibilities
+
+Solaris 2.X
+-----------
+
+You must compile Kerberos V5 without the UCB compatibility libraries.
+This means that `/usr/ucblib' must not be in the LD_LIBRARY_PATH
+environment variable when you compile it.  Alternatively you can use
+the `-i' option to `cc', by using the specifying `CFLAGS=-i' option to
+`configure'.
+
+If you are compiling for a 64-bit execution environment, you may need
+to configure with the option `CFLAGS="-D_XOPEN_SOURCE=500
+-D__EXTENSIONS__"'.  This is not well tested; at MIT we work primarily
+with the 32-bit execution environment.
+
+
+File: krb5-install.info,  Node: Solaris 9,  Next: SGI Irix 5.X,  Prev: Solaris 2.X,  Up: OS Incompatibilities
+
+Solaris 9
+---------
+
+Solaris 9 has a kernel race condition which causes the final output
+written to the slave side of a pty to be lost upon the final close() of
+the slave device.  This causes the dejagnu-based tests to fail
+intermittently.  A workaround exists, but requires some help from the
+scheduler, and the "make check" must be executed from a shell with
+elevated priority limits.
+
+Run something like
+
+`priocntl -s -c FX -m 30 -p 30 -i pid nnnn'
+
+as root, where `nnnn' is the pid of the shell whose priority limit you
+wish to raise.
+
+
+File: krb5-install.info,  Node: SGI Irix 5.X,  Next: Ultrix 4.2/3,  Prev: Solaris 9,  Up: OS Incompatibilities
+
+SGI Irix 5.X
+------------
+
+If you are building in a tree separate from the source tree, the vendors
+version of make does not work properly with regards to `VPATH'. It also
+has problems with standard inference rules in 5.2 (not tested yet in
+5.3) so one needs to use GNU's make.
+
+Under 5.2, there is a bug in the optional System V `-lsocket' library
+in which the routine `gethostbyname()' is broken. The system supplied
+version in `-lc' appears to work though so one may simply specify
+`--with-netlib' option to `configure'.
+
+In 5.3, `gethostbyname()' is no longer present in `-lsocket' and is no
+longer an issue.
+
+
+File: krb5-install.info,  Node: Ultrix 4.2/3,  Prev: SGI Irix 5.X,  Up: OS Incompatibilities
+
+Ultrix 4.2/3
+------------
+
+The DEC MIPS platform currently will not support the native compiler,
+since the Ultrix compiler is not a full ANSI C compiler.  You should use
+GCC instead.
+
+
+File: krb5-install.info,  Node: Using Autoconf,  Prev: OS Incompatibilities,  Up: Building Kerberos V5
+
+Using `Autoconf'
+================
+
+(If you are not a developer, you can skip this section.)
+
+In most of the Kerberos V5 source directories, there is a `configure'
+script which automatically determines the compilation environment and
+creates the proper Makefiles for a particular platform.  These
+`configure' files are generated using `autoconf', which can be found in
+the `src/util/autoconf' directory in the distribution.
+
+Normal users will not need to worry about running `autoconf'; the
+distribution comes with the `configure' files already prebuilt.
+Developers who wish to modify the `configure.in' files should see *Note
+Overview: (autoconf)Top.
+
+Note that in order to run `autoconf', you must have GNU `m4' in your
+path.  Before you use the `autoconf' in the Kerberos V5 source tree,
+you may also need to run `configure', and then run `make' in the
+`src/util/autoconf' directory in order to properly set up `autoconf'.
+
+One tool which is provided for the convenience of developers can be
+found in `src/util/reconf'.  This program should be run while the
+current directory is the top source directory.  It will automatically
+rebuild any `configure' files which need rebuilding.  If you know that
+you have made a change that will require that all the `configure' files
+need to be rebuilt from scratch, specify the `--force' option:
+
+     % cd /u1/krb5-1.3/src
+     % ./util/reconf --force
+
+The developmental sources are a raw source tree (before it's been
+packaged for public release), without the pre-built `configure' files.
+In order to build from such a source tree, you must do:
+
+     % cd krb5/util/autoconf
+     % ./configure
+     % make
+     % cd ../..
+     % util/reconf
+
+Then follow the instructions for building packaged source trees (above).
+To install the binaries into a binary tree, do:
+
+     % cd /u1/krb5-1.3/src
+     % make all
+     % make install DESTDIR=somewhere-else
+
+
+File: krb5-install.info,  Node: Installing Kerberos V5,  Next: Upgrading Existing Kerberos V5 Installations,  Prev: Building Kerberos V5,  Up: Top
+
+Installing Kerberos V5
+**********************
+
+The sections of this chapter describe procedures for installing
+Kerberos V5 on:
+
+  1. The KDCs
+
+  2. UNIX client machines
+
+  3. UNIX Application Servers
+
+* Menu:
+
+* Installing KDCs::
+* Installing and Configuring UNIX Client Machines::
+* UNIX Application Servers::
+
+
+File: krb5-install.info,  Node: Installing KDCs,  Next: Installing and Configuring UNIX Client Machines,  Prev: Installing Kerberos V5,  Up: Installing Kerberos V5
+
+Installing KDCs
+===============
+
+The Key Distribution Centers (KDCs) issue Kerberos tickets.  Each KDC
+contains a copy of the Kerberos database.  The master KDC contains the
+master copy of the database, which it propagates to the slave KDCs at
+regular intervals.  All database changes (such as password changes) are
+made on the master KDC.
+
+Slave KDCs provide Kerberos ticket-granting services, but not database
+administration.  This allows clients to continue to obtain tickets when
+the master KDC is unavailable.
+
+MIT recommends that you install all of your KDCs to be able to function
+as either the master or one of the slaves.  This will enable you to
+easily switch your master KDC with one of the slaves if necessary.
+(*Note Switching Master and Slave KDCs::.)  This installation procedure
+is based on that recommendation.
+
+* Menu:
+
+* Install the Master KDC::
+* Install the Slave KDCs::
+* Back on the Master KDC::
+* Finish Installing the Slave KDCs::
+* Add Kerberos Principals to the Database::
+* Limit Access to the KDCs::
+* Switching Master and Slave KDCs::
+
+
+File: krb5-install.info,  Node: Install the Master KDC,  Next: Install the Slave KDCs,  Prev: Installing KDCs,  Up: Installing KDCs
+
+Install the Master KDC
+----------------------
+
+This installation procedure will require you to go back and forth a
+couple of times between the master KDC and each of the slave KDCs.  The
+first few steps must be done on the master KDC.
+
+* Menu:
+
+* Edit the Configuration Files::
+* krb5.conf::
+* kdc.conf::
+* Create the Database::
+* Add Administrators to the Acl File::
+* Add Administrators to the Kerberos Database::
+* Create a kadmind Keytab (optional)::
+* Start the Kerberos Daemons::
+
+
+File: krb5-install.info,  Node: Edit the Configuration Files,  Next: krb5.conf,  Prev: Install the Master KDC,  Up: Install the Master KDC
+
+Edit the Configuration Files
+............................
+
+Modify the configuration files, `/etc/krb5.conf' and
+`/usr/local/var/krb5kdc/kdc.conf' to reflect the correct information
+(such as the hostnames and realm name) for your realm.  MIT recommends
+that you keep `krb5.conf' in `/etc'.
+
+Most of the tags in the configuration have default values that will
+work well for most sites.  There are some tags in the `krb5.conf' file
+whose values must be specified, and this section will explain those as
+well as give an overview of all of the sections in both configuration
+files.  For more information on changing defaults with the
+configuration files, see the Kerberos V5 System Administrator's Guide
+sections on configuration files.
+
+
+File: krb5-install.info,  Node: krb5.conf,  Next: kdc.conf,  Prev: Edit the Configuration Files,  Up: Install the Master KDC
+
+krb5.conf
+.........
+
+The `krb5.conf' file contains Kerberos configuration information,
+including the locations of KDCs and admin servers for the Kerberos
+realms of interest, defaults for the current realm and for Kerberos
+applications, and mappings of hostnames onto Kerberos realms.  Normally,
+you should install your `krb5.conf' file in the directory `/etc'.  You
+can override the default location by setting the environment variable
+`KRB5_CONFIG'.
+
+The `krb5.conf' file is set up in the style of a Windows INI file.
+Sections are headed by the section name, in square brackets.  Each
+section may contain zero or more relations, of the form:
+
+     foo = bar
+
+or
+
+     fubar = {
+             foo = bar
+             baz = quux
+     }
+
+Placing a `*' at the end of a line indicates that this is the "final"
+value for the tag.  This means that neither the remainder of this
+configuration file nor any other configuration file will be checked for
+any other values for this tag.
+
+For example, if you have the following lines:
+
+     foo = bar*
+     foo = baz
+
+then the second value of foo (baz) would never be read.
+
+The `krb5.conf' file may contain any or all of the following sections:
+
+libdefaults
+     Contains default values used by the Kerberos V5 library.
+
+login
+     Contains default values used by the Kerberos V5 login program.
+
+appdefaults
+     Contains default values that can be used by Kerberos V5
+     applications.
+
+realms
+     Contains subsections keyed by Kerberos realm names.  Each
+     subsection describes realm-specific information, including where
+     to find the Kerberos servers for that realm.
+
+domain_realm
+     Contains relations which map domain names and subdomains onto
+     Kerberos realm names.  This is used by programs to determine what
+     realm a host should be in, given its fully qualified domain name.
+
+logging
+     Contains relations which determine how Kerberos programs are to
+     perform logging.
+
+capaths
+     Contains the authentication paths used with direct
+     (nonhierarchical) cross-realm authentication.  Entries in this
+     section are used by the client to determine the intermediate
+     realms which may be used in cross-realm authentication.  It is
+     also used by the end-service when checking the transited field for
+     trusted intermediate realms.
+
+If you are not using DNS TXT records, you must specify the
+`default_realm' in the `libdefaults' section.  If you are not using DNS
+SRV records, you must include the `kdc' tag for each realm in the
+`realms' section.  To communicate with the kadmin server in each realm,
+the `admin_server' tag must be set in the `realms' section.  If your
+domain name and realm name are not the same, you must provide a
+translation in `domain_realm'.  It is also higly recommeneded that you
+create a `[logging]' stanza if the computer will be functioning as a
+KDC so that the KDC and kadmind will generate logging output.
+
+An example `krb5.conf' file:
+
+     [libdefaults]
+         default_realm = ATHENA.MIT.EDU
+     
+     [realms]
+         ATHENA.MIT.EDU = {
+         	kdc = kerberos.mit.edu
+         	kdc = kerberos-1.mit.edu
+         	kdc = kerberos-2.mit.edu
+         	admin_server = kerberos.mit.edu
+         {
+     
+     [logging]
+         kdc = FILE:/var/log/krb5kdc.log
+         admin_server = FILE:/var/log/kadmin.log
+         default = FILE:/var/log/krb5lib.log
+
+
+File: krb5-install.info,  Node: kdc.conf,  Next: Create the Database,  Prev: krb5.conf,  Up: Install the Master KDC
+
+kdc.conf
+........
+
+The `kdc.conf' file contains KDC configuration information, including
+defaults used when issuing Kerberos tickets.  Normally, you should
+install your `kdc.conf' file in the directory `/usr/local/var/krb5kdc'.
+You can override the default location by setting the environment
+variable `KRB5_KDC_PROFILE'.
+
+The `kdc.conf' file is set up in the same format as the `krb5.conf'
+file.  (*Note krb5.conf::.)  The `kdc.conf' file may contain any or all
+of the following three sections:
+
+kdcdefaults
+     Contains default values for overall behavior of the KDC.
+
+realms
+     Contains subsections keyed by Kerberos realm names.  Each
+     subsection describes realm-specific information, including where
+     to find the Kerberos servers for that realm.
+
+logging
+     Contains relations which determine how Kerberos programs are to
+     perform logging.
+
+
+File: krb5-install.info,  Node: Create the Database,  Next: Add Administrators to the Acl File,  Prev: kdc.conf,  Up: Install the Master KDC
 
 Create the Database
 ...................
 
-You will use the `kdb5_util' command *on the Master KDC* to create the
+You will use the `kdb5_util' command _on the Master KDC_ to create the
 Kerberos database and the optional stash file.  The "stash file" is a
 local copy of the master key that resides in encrypted form on the
 KDC's local disk.  The stash file is used to authenticate the KDC to
@@ -65,114 +785,161 @@ Add Administrators to the Acl File
 Next, you need create an Access Control List (acl) file, and put the
 Kerberos principal of at least one of the administrators into it.  The
 filename should match the value you have set for "acl_file" in your
-`kdc.conf' file.  The default file name is `kadm5.acl'.  The format of
-the file is:
+`kdc.conf' file.  The default file name is
+`/usr/local/var/krb5kdc/kadm5.acl'.
 
-     Kerberos principal      permissions     optional target principal
+The format of the file is:
+
+     Kerberos_principal      permissions     [target_principal]	[restrictions]
 
 The Kerberos principal (and optional target principal) can include the
 "*" wildcard, so if you want any principal with the instance "admin" to
 have full permissions on the database, you could use the principal
 "`*/admin@REALM'" where "REALM" is your Kerberos realm.
+`target_principal' can also include backreferences to
+`Kerberos_principal', in which "*number" matches the component number
+in the `Kerberos_principal'.
 
 Note:  a common use of an admin instance is so you can grant separate
 permissions (such as administrator access to the Kerberos database) to
 a separate Kerberos principal.  For example, the user `joeadmin' might
 have a principal for his administrative use, called `joeadmin/admin'.
 This way, `joeadmin' would obtain `joeadmin/admin' tickets only when he
-actually needs to use those permissions.  Refer to the Kerberos V5
-Administrator's Guide or the Kerberos V5 User's Guide for more detailed
-explanations of "principals" and "instances".
+actually needs to use those permissions.
 
-The permissions (acls) recognized in the acl file are the following:
+The permissions are represented by single letters; UPPER-CASE letters
+represent negative permissions.  The permissions are:
 
 a
      allows the addition of principals or policies in the database.
 
 A
-     prohibits the addition of principals or policies in the database.
+     disallows the addition of principals or policies in the database.
 
 d
      allows the deletion of principals or policies in the database.
 
 D
-     prohibits the deletion of principals or policies in the database.
+     disallows the deletion of principals or policies in the database.
 
 m
      allows the modification of principals or policies in the database.
 
 M
-     prohibits the modification of principals or policies in the
+     disallows the modification of principals or policies in the
      database.
 
 c
      allows the changing of passwords for principals in the database.
 
 C
-     prohibits the changing of passwords for principals in the database.
+     disallows the changing of passwords for principals in the database.
 
 i
      allows inquiries to the database.
 
 I
-     prohibits inquiries to the database.
+     disallows inquiries to the database.
 
 l
      allows the listing of principals or policies in the database.
 
 L
-     prohibits the listing of principals or policies in the database.
+     disallows the listing of principals or policies in the database.
+
+s
+     allows the explicit setting of the key for a principal
+
+S
+     disallows the explicit setting of the key for a principal
 
 *
-     Short for all privileges (admcil).
+     All privileges (admcil).
 
 x
-     Short for all privileges (admcil); identical to "*".
+     All privileges (admcil); identical to "*".
 
-To give the principal `*/admin@ATHENA.MIT.EDU' permission to change all
-of the database permissions on any principal permissions, you would
-place the following line in the file:
+The restrictions are a string of flags.  Allowed restrictions are:
+
+[+ -]flagname
+     flag is forced to indicated value.  The permissible flags are the
+     same as the `+' and `-' flags for the `kadmin addprinc' and
+     `modprinc' commands.
+
+-clearpolicy
+     policy is forced to clear
+
+-policy pol
+     policy is forced to be pol
+
+expire time
+pwexpire time
+maxlife time
+maxrenewlife time
+     associated value will be forced to MIN(time, requested value)
+
+The above flags act as restrictions on any add or modify operation
+which is allowed due to that ACL line.
+
+Here is an example of a `kadm5.acl' file.  Note that order is
+important; permissions are determined by the first matching entry.
 
      */admin@ATHENA.MIT.EDU  *
+     joeadmin@ATHENA.MIT.EDU  ADMCIL
+     joeadmin/*@ATHENA.MIT.EDU il */root@ATHENA.MIT.EDU
+     *@ATHENA.MIT.EDU cil *1/admin@ATHENA.MIT.EDU
+     */*@ATHENA.MIT.EDU  i
+     */admin@EXAMPLE.COM * -maxlife 9h -postdateable
 
-To give the principal `joeadmin@ATHENA.MIT.EDU' permission to add,
-list, and inquire about any principal that has the instance "root", you
-would add the following line to the acl file:
-
-     joeadmin@ATHENA.MIT.EDU  ali  */root@ATHENA.MIT.EDU
+In the above file, any principal in the ATHENA.MIT.EDU realm with an
+`admin' instance has all administrative privileges.  The user `joeadmin'
+has all permissions with his `admin' instance,
+`joeadmin/admin@ATHENA.MIT.EDU' (matches the first line).  He has no
+permissions at all with his `null' instance, `joeadmin@ATHENA.MIT.EDU'
+(matches the second line).  His root instance has inquire and list
+permissions with any other principal that has the instance `root'.  Any
+principal in ATHENA.MIT.EDU can inquire, list, or change the password of
+their `admin' instance, but not any other `admin' instance.  Any
+principal in the realm `ATHENA.MIT.EDU' (except for
+`joeadmin@ATHENA.MIT.EDU', as mentioned above) has inquire privileges.
+Finally, any principal with an admin instance in EXAMPLE.COM has all
+permissions, but any principal that they create or modify will not be
+able to get postdateable tickets or tickets with a life of longer than
+9 hours.
 
 
-File: krb5-install.info,  Node: Add Administrators to the Kerberos Database,  Next: Create a kadmind Keytab,  Prev: Add Administrators to the Acl File,  Up: Install the Master KDC
+File: krb5-install.info,  Node: Add Administrators to the Kerberos Database,  Next: Create a kadmind Keytab (optional),  Prev: Add Administrators to the Acl File,  Up: Install the Master KDC
 
 Add Administrators to the Kerberos Database
 ...........................................
 
 Next you need to add administrative principals to the Kerberos database.
-(You must add at least one now.)  To do this, use `kadmin.local' *on
-the master KDC*.  The administrative principals you create should be
+(You must add at least one now.)  To do this, use `kadmin.local' _on
+the master KDC_.  The administrative principals you create should be
 the ones you added to the ACL file.  (See *Note Add Administrators to
 the Acl File::.)  In the following example, the administration
 principal `admin/admin' is created:
 
      shell% /usr/local/sbin/kadmin.local
      kadmin.local: addprinc admin/admin@ATHENA.MIT.EDU
-     WARNING: no policy specified for "admin/admin@ATHENA.MIT.EDU";
-     defaulting to no policy.
+     NOTICE: no policy specified for "admin/admin@ATHENA.MIT.EDU";
+     assigning "default".
      Enter password for principal admin/admin@ATHENA.MIT.EDU:  <= Enter a password.
      Re-enter password for principal admin/admin@ATHENA.MIT.EDU:  <= Type it again.
      Principal "admin/admin@ATHENA.MIT.EDU" created.
      kadmin.local:
 
 
-File: krb5-install.info,  Node: Create a kadmind Keytab,  Next: Start the Kerberos Daemons,  Prev: Add Administrators to the Kerberos Database,  Up: Install the Master KDC
+File: krb5-install.info,  Node: Create a kadmind Keytab (optional),  Next: Start the Kerberos Daemons,  Prev: Add Administrators to the Kerberos Database,  Up: Install the Master KDC
 
-Create a kadmind Keytab
-.......................
+Create a kadmind Keytab (optional)
+..................................
 
-The kadmind keytab is the key that kadmind will use to decrypt
-administrators' Kerberos tickets to determine whether or not it should
-give them access to the database.  You need to create the kadmin keytab
-with entries for the principals `kadmin/admin' and `kadmin/changepw'.
+The kadmind keytab is the key that the legacy admininstration daemons
+`kadmind4' and `v5passwdd' will use to decrypt administrators' or
+clients' Kerberos tickets to determine whether or not they should have
+access to the database.  You need to create the kadmin keytab with
+entries for the principals `kadmin/admin' and `kadmin/changepw'.
 (These principals are placed in the Kerberos database automatically
 when you create it.)  To create the kadmin keytab, run `kadmin.local'
 and use the `ktadd' command, as in the following example.  (The line
@@ -181,12 +948,18 @@ beginning with => is a continuation of the previous line.):
      shell% /usr/local/sbin/kadmin.local
      kadmin.local: ktadd -k /usr/local/var/krb5kdc/kadm5.keytab
      => kadmin/admin kadmin/changepw
-     Entry for principal kadmin/admin@ATHENA.MIT.EDU with
-          kvno 3, encryption type DES-CBC-CRC added to keytab
-          WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
-     Entry for principal kadmin/changepw@ATHENA.MIT.EDU with
-          kvno 3, encryption type DES-CBC-CRC added to keytab
-          WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
+      Entry for principal kadmin/admin with kvno 5, encryption
+     	type Triple DES cbc mode with HMAC/sha1 added to keytab
+     	WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
+     Entry for principal kadmin/admin with kvno 5, encryption type DES cbc mode
+     	with CRC-32 added to keytab
+     	WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
+     Entry for principal kadmin/changepw with kvno 5, encryption
+     	type Triple DES cbc mode with HMAC/sha1 added to keytab
+     	WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
+     Entry for principal kadmin/changepw with kvno 5,
+     	encryption type DES cbc mode with CRC-32 added to keytab
+     	WRFILE:/usr/local/var/krb5kdc/kadm5.keytab.
      kadmin.local: quit
      shell%
 
@@ -196,7 +969,7 @@ keytab as
 the one specified in your `kdc.conf' file.
 
 
-File: krb5-install.info,  Node: Start the Kerberos Daemons,  Prev: Create a kadmind Keytab,  Up: Install the Master KDC
+File: krb5-install.info,  Node: Start the Kerberos Daemons,  Prev: Create a kadmind Keytab (optional),  Up: Install the Master KDC
 
 Start the Kerberos Daemons on the Master KDC
 ............................................
@@ -214,7 +987,7 @@ stash file in order to do this.
 
 You can verify that they started properly by checking for their startup
 messages in the logging locations you defined in `/etc/krb5.conf'.
-(See *Note Edit the Configuration Files::.)  For example:
+(*Note Edit the Configuration Files::.)  For example:
 
      shell% tail /var/log/krb5kdc.log
      Dec 02 12:35:47 beeblebrox krb5kdc[3187](info): commencing operation
@@ -256,16 +1029,16 @@ would type the following:
 
      shell% /usr/local/sbin/kadmin
      kadmin: addprinc -randkey host/kerberos.mit.edu
-     WARNING: no policy specified for "host/kerberos.mit.edu@ATHENA.MIT.EDU";
-     defaulting to no policy.
+     NOTICE: no policy specified for "host/kerberos.mit.edu@ATHENA.MIT.EDU";
+     assigning "default"
      Principal "host/kerberos.mit.edu@ATHENA.MIT.EDU" created.
      kadmin: addprinc -randkey host/kerberos-1.mit.edu
-     WARNING: no policy specified for "host/kerberos-1.mit.edu@ATHENA.MIT.EDU";
-     defaulting to no policy.
+     NOTICE: no policy specified for "host/kerberos-1.mit.edu@ATHENA.MIT.EDU";
+     assigning "default"
      Principal "host/kerberos-1.mit.edu@ATHENA.MIT.EDU" created.
      kadmin: addprinc -randkey host/kerberos-2.mit.edu
-     WARNING: no policy specified for "host/kerberos-2.mit.edu@ATHENA.MIT.EDU";
-     defaulting to no policy.
+     NOTICE: no policy specified for "host/kerberos-2.mit.edu@ATHENA.MIT.EDU";
+     assigning "default"
      Principal "host/kerberos-2.mit.edu@ATHENA.MIT.EDU" created.
      kadmin:
 
@@ -499,676 +1272,4 @@ line.):
      krb5_prop stream tcp nowait root /usr/local/sbin/kpropd  kpropd
      eklogin   stream tcp nowait root /usr/local/sbin/klogind
      => klogind -5 -c -e
-
-
-File: krb5-install.info,  Node: Switching Master and Slave KDCs,  Prev: Limit Access to the KDCs,  Up: Installing KDCs
-
-Switching Master and Slave KDCs
--------------------------------
-
-You may occasionally want to use one of your slave KDCs as the master.
-This might happen if you are upgrading the master KDC, or if your master
-KDC has a disk crash.
-
-Assuming you have configured all of your KDCs to be able to function as
-either the master KDC or a slave KDC (as this document recommends), all
-you need to do to make the changeover is:
-
-If the master KDC is still running, do the following on the *old*
-master KDC:
-
-  1. Kill the `kadmind' process.
-
-  2. Disable the cron job that propagates the database.
-
-  3. Run your database propagation script manually, to ensure that the
-     slaves all have the latest copy of the database.  (*Note Propagate
-     the Database to Each Slave KDC::.)  As of the 1.2.2 release, it is
-     no longer necessary to use "kdb5_util dump -ov" in order to
-     preserve per-principal policy information, as the default dump
-     format now supports it.  Note you should update your slaves prior
-     to your master, so that they will understand the new dump format.
-     (This is a good policy anyway.)
-
-On the *new* master KDC:
-
-  1. Create a database keytab.  (*Note Create a kadmind Keytab::.)
-
-  2. Start the `kadmind' daemon.  (*Note Start the Kerberos Daemons::.)
-
-  3. Set up the cron job to propagate the database.  (*Note Propagate
-     the Database to Each Slave KDC::.)
-
-  4. Switch the CNAMEs of the old and new master KDCs.  (If you don't do
-     this, you'll need to change the `krb5.conf' file on every client
-     machine in your Kerberos realm.)
-
-
-
-File: krb5-install.info,  Node: Installing and Configuring UNIX Client Machines,  Next: UNIX Application Servers,  Prev: Installing KDCs,  Up: Installing Kerberos V5
-
-Installing and Configuring UNIX Client Machines
-===============================================
-
-Client machine installation is much more straightforward than
-installation of the KDCs.
-
-* Menu:
-
-* Client Programs::
-* Client Machine Configuration Files::
-
-
-File: krb5-install.info,  Node: Client Programs,  Next: Client Machine Configuration Files,  Prev: Installing and Configuring UNIX Client Machines,  Up: Installing and Configuring UNIX Client Machines
-
-Client Programs
----------------
-
-The Kerberized client programs are `login.krb5', `rlogin', `telnet',
-`ftp', `rcp', `rsh', `kinit', `klist', `kdestroy', `kpasswd', `ksu', and
-`krb524init'.  All of these programs are in the directory
-`/usr/local/bin', except for `login.krb5' which is in `/usr/local/sbin'.
-
-You will probably want to have your users put `/usr/local/bin' ahead of
-`/bin' and `/usr/bin' in their paths, so they will by default get the
-Kerberos V5 versions of `rlogin', `telnet', `ftp', `rcp', and `rsh'.
-
-MIT recommends that you use `login.krb5' in place of `/bin/login' to
-give your users a single-sign-on system.  You will need to make sure
-your users know to use their Kerberos passwords when they log in.
-
-You will also need to educate your users to use the ticket management
-programs `kinit', `klist', `kdestroy', and to use the Kerberos programs
-`ksu', and `kpasswd' in place of their non-Kerberos counterparts `su',
-`passwd', and `rdist'.
-
-
-File: krb5-install.info,  Node: Client Machine Configuration Files,  Prev: Client Programs,  Up: Installing and Configuring UNIX Client Machines
-
-Client Machine Configuration Files
-----------------------------------
-
-Each machine running Kerberos must have a `/etc/krb5.conf' file.
-(*Note krb5.conf::)
-
-Also, for most UNIX systems, you must add the appropriate Kerberos
-services to each client machine's `/etc/services' file.  If you are
-using the default configuration for Kerberos V5, you should be able to
-just insert the following code:
-
-     #
-     # Note --- if you are using Kerberos V4 and you either:
-     #
-     #    (a) haven't converted all your master or slave KDCs to V5, or
-     #
-     #    (b) are worried about inter-realm interoperability with other KDC's
-     #        that are still using V4
-     #
-     # you will need to switch the "kerberos" service to port 750 and create a
-     # "kerberos-sec" service on port 88.
-     #
-     kerberos      88/udp    kdc    # Kerberos V5 KDC
-     kerberos      88/tcp    kdc    # Kerberos V5 KDC
-     klogin        543/tcp          # Kerberos authenticated rlogin
-     kshell        544/tcp   cmd    # and remote shell
-     kerberos-adm  749/tcp          # Kerberos 5 admin/changepw
-     kerberos-adm  749/udp          # Kerberos 5 admin/changepw
-     krb5_prop     754/tcp          # Kerberos slave propagation
-     eklogin       2105/tcp         # Kerberos auth. & encrypted rlogin
-     krb524        4444/tcp         # Kerberos 5 to 4 ticket translator
-
-As described in the comments in the above code, if your master KDC or
-any of your slave KDCs is running Kerberos V4, (or if you will be
-authenticating to any Kerberos V4 KDCs in another realm) you will need
-to switch the port number for `kerberos' to 750 and create a
-`kerberos-sec' service (tcp and udp) on port 88, so the Kerberos V4
-KDC(s) will continue to work properly.
-
-* Menu:
-
-* Mac OS X Configuration::
-
-
-File: krb5-install.info,  Node: Mac OS X Configuration,  Prev: Client Machine Configuration Files,  Up: Client Machine Configuration Files
-
-Mac OS X Configuration
-......................
-
-To install Kerberos V5 on Mac OS X and Mac OS X Server, follow the
-directions for generic Unix-based OS's, except for the `/etc/services'
-updates described above.
-
-Mac OS X and Mac OS X Server use a database called NetInfo to store the
-contents of files normally found in `/etc'.  Instead of modifying
-`/etc/services', you should run the following commands to add the
-Kerberos service entries to NetInfo:
-
-     $ niutil -create . /services/kerberos
-     $ niutil -createprop . /services/kerberos name kerberos kdc
-     $ niutil -createprop . /services/kerberos port 750
-     $ niutil -createprop . /services/kerberos protocol tcp udp
-     $ niutil -create . /services/krbupdate
-     $ niutil -createprop . /services/krbupdate name krbupdate kreg
-     $ niutil -createprop . /services/krbupdate port 760
-     $ niutil -createprop . /services/krbupdate protocol tcp
-     $ niutil -create . /services/kpasswd
-     $ niutil -createprop . /services/kpasswd name kpasswd kpwd
-     $ niutil -createprop . /services/kpasswd port 761
-     $ niutil -createprop . /services/kpasswd protocol tcp
-     $ niutil -create . /services/klogin
-     $ niutil -createprop . /services/klogin port 543
-     $ niutil -createprop . /services/klogin protocol tcp
-     $ niutil -create . /services/eklogin
-     $ niutil -createprop . /services/eklogin port 2105
-     $ niutil -createprop . /services/eklogin protocol tcp
-     $ niutil -create . /services/kshell
-     $ niutil -createprop . /services/kshell name kshell krcmd
-     $ niutil -createprop . /services/kshell port 544
-     $ niutil -createprop . /services/kshell protocol tcp
-
-In addition to adding services to NetInfo, you must also modify the
-resolver configuration in NetInfo so that the machine resolves its own
-hostname as a FQDN (fully qualified domain name).  By default, Mac OS X
-and Mac OS X Server machines query NetInfo to resolve hostnames before
-falling back to DNS.  Because NetInfo has an unqualified name for all
-the machines in the NetInfo database, the machine's own hostname will
-resolve to an unqualified name.  Kerberos needs a FQDN to look up keys
-in the machine's keytab file.
-
-Fortunately, you can change the `lookupd' caching order to query DNS
-first.  Run the following NetInfo commands and reboot the machine:
-
-     $ niutil -create . /locations/lookupd/hosts
-     $ niutil -createprop . /locations/lookupd/hosts LookupOrder CacheAgent DNSAgent
-      NIAgent NILAgent
-
-Once you have rebooted, you can verify that the resolver now behaves
-correctly.  Compile the Kerberos 5 distribution and run:
-
-     $ cd .../src/tests/resolve
-     $ ./resolve
-
-This will tell you whether or not your machine returns FQDNs on name
-lookups.  If the test still fails, you can also try turning off DNS
-caching.  Run the following commands and reboot:
-
-     $ niutil -create . /locations/lookupd/hosts
-     $ niutil -createprop . /locations/lookupd/hosts LookupOrder DNSAgent
-      CacheAgent NIAgent NILAgent
-
-The remainder of the setup of a Mac OS X client machine or application
-server should be the same as for other UNIX-based systems.
-
-
-File: krb5-install.info,  Node: UNIX Application Servers,  Prev: Installing and Configuring UNIX Client Machines,  Up: Installing Kerberos V5
-
-UNIX Application Servers
-========================
-
-An application server is a host that provides one or more services over
-the network.  Application servers can be "secure" or "insecure."  A
-"secure" host is set up to require authentication from every client
-connecting to it.  An "insecure" host will still provide Kerberos
-authentication, but will also allow unauthenticated clients to connect.
-
-If you have Kerberos V5 installed on all of your client machines,
-MIT recommends that you make your hosts secure, to take advantage of
-the security that Kerberos authentication affords.  However, if you
-have some clients that do not have Kerberos V5 installed, you can run
-an insecure server, and still take advantage of Kerberos V5's single
-sign-on on capability.
-
-* Menu:
-
-* Server Programs::
-* Server Configuration Files::
-* The Keytab File::
-* Some Advice about Secure Hosts::
-
-
-File: krb5-install.info,  Node: Server Programs,  Next: Server Configuration Files,  Prev: UNIX Application Servers,  Up: UNIX Application Servers
-
-Server Programs
----------------
-
-Just as Kerberos V5 provided its own Kerberos-enhanced versions of
-client UNIX network programs, Kerberos V5 also provides
-Kerberos-enhanced versions of server UNIX network daemons.  These are
-`ftpd', `klogind', `kshd', and `telnetd'.  These programs are installed
-in the directory `/usr/local/sbin'.  You may want to add this directory
-to root's path.
-
-
-File: krb5-install.info,  Node: Server Configuration Files,  Next: The Keytab File,  Prev: Server Programs,  Up: UNIX Application Servers
-
-Server Configuration Files
---------------------------
-
-For a *secure* server, make the following changes to `/etc/inetd.conf':
-
-Find and comment out any lines for the services `ftp', `telnet',
-`shell', `login', and `exec'.
-
-Add the following lines.  (Note:  each line beginning with => is a
-continuation of the previous line.)
-
-     klogin  stream  tcp  nowait  root  /usr/local/sbin/klogind
-     => klogind -k -c
-     eklogin stream  tcp  nowait  root  /usr/local/sbin/klogind
-     => klogind -k -c -e
-     kshell  stream  tcp  nowait  root  /usr/local/sbin/kshd
-     => kshd -k -c -A
-     ftp     stream  tcp  nowait  root  /usr/local/sbin/ftpd
-     => ftpd -a
-     telnet  stream  tcp  nowait  root  /usr/local/sbin/telnetd
-     => telnetd -a valid
-
-For an *insecure* server, make the following changes instead to
-`/etc/inetd.conf':
-
-Find and comment out any lines for the services `ftp' and `telnet'.
-
-Add the following lines.  (Note:  each line beginning with => is a
-continuation of the previous line.)
-     klogin  stream  tcp  nowait  root  /usr/local/sbin/klogind
-     => klogind -k -c
-     eklogin stream  tcp  nowait  root  /usr/local/sbin/klogind
-     => klogind -k -c -e
-     kshell  stream  tcp  nowait  root  /usr/local/sbin/kshd
-     => kshd -k -c -A
-     ftp     stream  tcp  nowait  root  /usr/local/sbin/ftpd
-     => ftpd
-     telnet  stream  tcp  nowait  root  /usr/local/sbin/telnetd
-     => telnetd -a none
-
-
-File: krb5-install.info,  Node: The Keytab File,  Next: Some Advice about Secure Hosts,  Prev: Server Configuration Files,  Up: UNIX Application Servers
-
-The Keytab File
----------------
-
-All Kerberos server machines need a "keytab" file, called
-`/etc/krb5.keytab', to authenticate to the KDC.  The keytab file is an
-encrypted, local, on-disk copy of the host's key.  The keytab file,
-like the stash file (*Note Create the Database::) is a potential
-point-of-entry for a break-in, and if compromised, would allow
-unrestricted access to its host.  The keytab file should be readable
-only by root, and should exist only on the machine's local disk.  The
-file should not be part of any backup of the machine, unless access to
-the backup data is secured as tightly as access to the machine's root
-password itself.
-
-In order to generate a keytab for a host, the host must have a principal
-in the Kerberos database.  The procedure for adding hosts to the
-database is described fully in the "Adding or Modifying Principals"
-section of the `Kerberos V5 System Administrator's Guide'.  *Note
-Create Host Keys for the Slave KDCs:: for a brief description.)  The
-keytab is generated by running `kadmin' and issuing the `ktadd' command.
-
-For example, to generate a keytab file to allow the host
-trillium.mit.edu to authenticate for the services `host', `ftp', and
-`pop', the administrator `joeadmin' would issue the command (on
-trillium.mit.edu):
-
-     trillium% /usr/local/sbin/kadmin
-     kadmin5: ktadd host/trillium.mit.edu ftp/trillium.mit.edu
-     => pop/trillium.mit.edu
-     kadmin: Entry for principal host/trillium.mit.edu@ATHENA.MIT.EDU with
-     kvno 3, encryption type DES-CBC-CRC added to keytab
-     WRFILE:/etc/krb5.keytab.
-     kadmin: Entry for principal ftp/trillium.mit.edu@ATHENA.MIT.EDU with
-     kvno 3, encryption type DES-CBC-CRC added to keytab
-     WRFILE:/etc/krb5.keytab.
-     kadmin: Entry for principal pop/trillium.mit.edu@ATHENA.MIT.EDU with
-     kvno 3, encryption type DES-CBC-CRC added to keytab
-     WRFILE:/etc/krb5.keytab.
-     kadmin5: quit
-     trillium%
-
-If you generate the keytab file on another host, you need to get a copy
-of the keytab file onto the destination host (`trillium', in the above
-example) without sending it unencrypted over the network.  If you have
-installed the Kerberos V5 client programs, you can use encrypted `rcp'.
-
-
-File: krb5-install.info,  Node: Some Advice about Secure Hosts,  Prev: The Keytab File,  Up: UNIX Application Servers
-
-Some Advice about Secure Hosts
-------------------------------
-
-Kerberos V5 can protect your host from certain types of break-ins, but
-it is possible to install Kerberos V5 and still leave your host
-vulnerable to attack.  Obviously an installation guide is not the place
-to try to include an exhaustive list of countermeasures for every
-possible attack, but it is worth noting some of the larger holes and how
-to close them.
-
-As stated earlier in this section, MIT recommends that on a secure
-host, you disable the standard `ftp', `login', `telnet', `shell', and
-`exec' services in `/etc/inetd.conf'.  We also recommend that secure
-hosts have an empty `/etc/hosts.equiv' file and that there not be a
-`.rhosts' file in `root''s home directory.  You can grant
-Kerberos-authenticated root access to specific Kerberos principals by
-placing those principals in the file `.k5login' in root's home
-directory.
-
-We recommend that backups of secure machines exclude the keytab file
-(`/etc/krb5.keytab').  If this is not possible, the backups should at
-least be done locally, rather than over a network, and the backup tapes
-should be physically secured.
-
-Finally, the keytab file and any programs run by root, including the
-Kerberos V5 binaries, should be kept on local disk.  The keytab file
-should be readable only by root.
-
-
-File: krb5-install.info,  Node: Upgrading Existing Kerberos V5 Installations,  Next: Bug Reports for Kerberos V5,  Prev: Installing Kerberos V5,  Up: Top
-
-Upgrading Existing Kerberos V5 Installations
-********************************************
-
-If you already have an existing Kerberos database that you created with
-a prior release of Kerberos 5, you can upgrade it to work with the
-current release with the `kdb5_util' command.  It is only necessary to
-perform this dump/undump procedure if you were running a krb5-1.0.x KDC
-and are migrating to a krb5-1.1.x or newer KDC.  The process for
-upgrading a Master KDC involves the following steps:
-
-  1. Stop your current KDC and administration server processes, if any.
-
-  2. Dump your existing Kerberos database to an ASCII file with
-     `kdb5_util''s "dump" command:
-
-          shell% cd /usr/local/var/krb5kdc
-          shell% kdb5_util dump old-kdb-dump
-          shell% kdb5_util dump -ov old-kdb-dump.ov
-          shell%
-
-  3. Create a new Master KDC installation (*Note Install the Master
-     KDC::).  If you have a stash file for your current database,
-     choose any new master password but then copy your existing stash
-     file to the location specified by your kdc.conf; if you do not
-     have a stash file for your current database, you must choose the
-     same master password.
-
-  4. Load your old Kerberos database into the new system with
-     `kdb5_util''s "load" command:
-
-          shell% cd /usr/local/var/krb5kdc
-          shell% kdb5_util load old-kdb-dump
-          shell% kdb5_util load -update old-kdb-dump.ov
-          shell%
-
-
-The "dump -ov" and "load -update" commands are necessary in order to
-preserve per-principal policy information, since the dump format in
-releases prior to 1.2.2 filters out that information.  If you omit those
-steps, the loaded database database will lose the policy information for
-each principal that has a policy.
-
-To update a Slave KDC, you must stop the old server processes on the
-Slave KDC, install the new server binaries, reload the most recent slave
-dump file, and re-start the server processes.
-
-* Menu:
-
-* Upgrading to Triple-DES Encryption Keys::
-
-
-File: krb5-install.info,  Node: Upgrading to Triple-DES Encryption Keys,  Prev: Upgrading Existing Kerberos V5 Installations,  Up: Upgrading Existing Kerberos V5 Installations
-
-Upgrading to Triple-DES Encryption Keys
-=======================================
-
-Beginning with the 1.2 release from MIT, Kerberos includes a stronger
-encryption algorithm called "triple DES" - essentially, three
-applications of the basic DES encryption algorithm, greatly increasing
-the resistance to a brute-force search for the key by an attacker.  This
-algorithm is more secure, but encryption is much slower.  We expect to
-add other, faster encryption algorithms at some point in the future.
-
-Release 1.1 had some support for triple-DES service keys, but with
-release 1.2 we have added support for user keys and session keys as
-well.  Release 1.0 had very little support for multiple cryptosystems,
-and some of that software may not function properly in an environment
-using triple-DES as well as plain DES.
-
-Because of the way the MIT Kerberos database is structured, the KDC will
-assume that a service supports only those encryption types for which
-keys are found in the database.  Thus, if a service has only a
-single-DES key in the database, the KDC will not issue tickets for that
-service that use triple-DES session keys; it will instead issue only
-single-DES session keys, even if other services are already capable of
-using triple-DES.  So if you make sure your application server software
-is updated before adding a triple-DES key for the service, clients
-should be able to talk to services at all times during the updating
-process.
-
-Normally, the listed `supported_enctypes' in `kdc.conf' are all used
-when a new key is generated.  You can control this with command-line
-flags to `kadmin' and `kadmin.local'.  You may want to exclude
-triple-DES by default until you have updated a lot of your application
-servers, and then change the default to include triple-DES.  We
-recommend that you always include `des-cbc-crc' in the default list.
-
-
-File: krb5-install.info,  Node: Bug Reports for Kerberos V5,  Next: Files,  Prev: Upgrading Existing Kerberos V5 Installations,  Up: Top
-
-Bug Reports for Kerberos V5
-***************************
-
-In any complex software, there will be bugs.  If you have successfully
-built and installed Kerberos V5, please use the `krb5-send-pr' program
-to fill out a Problem Report.
-
-Bug reports that include proposed fixes are especially welcome.  If you
-do include fixes, please send them using either context diffs or unified
-diffs (using `diff -c' or `diff -u', respectively).  Please be careful
-when using "cut and paste" or other such means to copy a patch into a
-bug report; depending on the system being used, that can result in
-converting TAB characters into spaces, which makes applying the patches
-more difficult.
-
-The `krb5-send-pr' program is installed in the directory
-`/usr/local/sbin'.
-
-The `krb5-send-pr' program enters the problem report into our Problem
-Report Management System (PRMS), which automatically assigns it to the
-engineer best able to help you with problems in the assigned category.
-
-The `krb5-send-pr' program will try to intelligently fill in as many
-fields as it can.  You need to choose the "category", "class",
-"severity", and "priority" of the problem, as well as giving us as much
-information as you can about its exact nature.
-
-The PR category will be one of:
-
-     krb5-admin   krb5-appl    krb5-build   krb5-clients
-     krb5-doc     krb5-kdc     krb5-libs    krb5-misc
-     pty          telnet       test
-
-Choose the category that best describes the area under which your
-problem falls.
-
-The class can be "sw-bug", "doc-bug", "change-request", or "support".
-The first two are exactly as their names imply.  Use change-request
-when the software is behaving according to specifications, but you want
-to request changes in some feature or behavior.  The support class is
-intended for more general questions about building or using Kerberos V5.
-
-The severity of the problem indicates the problem's impact on the
-usability of Kerberos V5.  If a problem is "critical", that means the
-product, component or concept is completely non-operational, or some
-essential functionality is missing, and no workaround is known.  A
-"serious" problem is one in which the product, component or concept is
-not working properly or significant functionality is missing.  Problems
-that would otherwise be considered critical are rated serious when a
-workaround is known.  A "non-critical" problem is one that is indeed a
-problem, but one that is having a minimal effect on your ability to use
-Kerberos V5.  E.g., The product, component or concept is working in
-general, but lacks features, has irritating behavior, does something
-wrong, or doesn't match its documentation.  The default severity is
-serious.
-
-The priority indicates how urgent this particular problem is in
-relation to your work.  Note that low priority does not imply low
-importance.  A priority of "high" means a solution is needed as soon as
-possible.  A priority of "medium" means the problem should be solved no
-later than the next release.  A priority of "low" means the problem
-should be solved in a future release, but it is not important to your
-work how soon this happens.  The default priority is medium.
-
-Note that a given severity does not necessarily imply a given priority.
-For example, a non-critical problem might still have a high priority if
-you are faced with a hard deadline.  Conversely, a serious problem might
-have a low priority if the feature it is disabling is one that you do
-not need.
-
-It is important that you fill in the release field and tell us what
-changes you have made, if any.
-
-Bug reports that include proposed fixes are especially welcome.  If you
-include proposed fixes, please send them using either context diffs
-(`diff -c') or unified diffs (`diff -u').
-
-A sample filled-out form from a company named "Toasters, Inc." might
-look like this:
-
-     To: krb5-bugs@mit.edu
-     Subject: misspelled "Kerberos" in title of installation guide
-     From: jcb
-     Reply-To: jcb
-     Cc:
-     X-send-pr-version: 3.99
-     
-     
-     >Submitter-Id:	mit
-     >Originator:	Jeffrey C. Gilman Bigler
-     >Organization:
-     mit
-     >Confidential:	no
-     >Synopsis:	Misspelled "Kerberos" in title of installation guide
-     >Severity:	non-critical
-     >Priority:	low
-     >Category:	krb5-doc
-     >Class:		doc-bug
-     >Release:	1.0-development
-     >Environment:
-     	<machine, os, target, libraries (multiple lines)>
-     System: ULTRIX imbrium 4.2 0 RISC
-     Machine: mips
-     >Description:
-             Misspelled "Kerberos" in title of "Kerboros V5 Installation Guide"
-     >How-To-Repeat:
-             N/A
-     >Fix:
-             Correct the spelling.
-
-If the `krb5-send-pr' program does not work for you, or if you did not
-get far enough in the process to have an installed and working
-`krb5-send-pr', you can generate your own form, using the above as an
-example.
-
-
-File: krb5-install.info,  Node: Files,  Prev: Bug Reports for Kerberos V5,  Up: Top
-
-Files
-*****
-
-* Menu:
-
-* krb5.conf::
-* kdc.conf::
-
-
-File: krb5-install.info,  Node: krb5.conf,  Next: kdc.conf,  Prev: Files,  Up: Files
-
-krb5.conf
-=========
-
-Here is an example `krb5.conf' file:
-
-     [libdefaults]
-         ticket_lifetime = 600
-         default_realm = ATHENA.MIT.EDU
-         default_tkt_enctypes = des3-hmac-sha1 des-cbc-crc
-         default_tgs_enctypes = des3-hmac-sha1 des-cbc-crc
-     
-     [realms]
-         ATHENA.MIT.EDU = {
-             kdc = kerberos.mit.edu:88
-             kdc = kerberos-1.mit.edu:88
-             kdc = kerberos-2.mit.edu:88
-             admin_server = kerberos.mit.edu:749
-             default_domain = mit.edu
-         }
-     
-     [domain_realm]
-         .mit.edu = ATHENA.MIT.EDU
-         mit.edu = ATHENA.MIT.EDU
-
-For the KDCs, add a section onto the end of the `krb5.conf' file
-telling how logging information should be stored, as in the following
-example:
-
-     [logging]
-         kdc = FILE:/var/log/krb5kdc.log
-         admin_server = FILE:/var/log/kadmin.log
-         default = FILE:/var/log/krb5lib.log
-
-
-File: krb5-install.info,  Node: kdc.conf,  Prev: krb5.conf,  Up: Files
-
-kdc.conf
-========
-
-Here's an example of a kdc.conf file:
-
-     [kdcdefaults]
-         kdc_ports = 88,750
-     
-     [realms]
-         ATHENA.MIT.EDU = {
-             database_name = /usr/local/var/krb5kdc/principal
-             admin_keytab = /usr/local/var/krb5kdc/kadm5.keytab
-             acl_file = /usr/local/var/krb5kdc/kadm5.acl
-             dict_file = /usr/local/var/krb5kdc/kadm5.dict
-             key_stash_file = /usr/local/var/krb5kdc/.k5.ATHENA.MIT.EDU
-             kadmind_port = 749
-             max_life = 10h 0m 0s
-             max_renewable_life = 7d 0h 0m 0s
-             master_key_type = des3-hmac-sha1
-             supported_enctypes = des3-hmac-sha1:normal des-cbc-crc:normal
-         }
-
-To add Kerberos V4 support, add `des-cbc-crc:v4' to the
-`supported_enctypes' line.
-
-* Menu:
-
-* Encryption Types and Salt Types::
-
-
-File: krb5-install.info,  Node: Encryption Types and Salt Types,  Prev: kdc.conf,  Up: kdc.conf
-
-Encryption Types and Salt Types
--------------------------------
-
-Currently, Kerberos V5 supports only DES and triple-DES encryption.
-The encoding types include `des-cbc-crc' and `des3-cbc-sha1'.  The
-"salt" is additional information encoded within the key that tells what
-kind of key it is.  The only salts that you will be likely to encounter
-are:
-
-   * "normal", which MIT recommends using for all of your Kerberos V5
-     keys
-
-   * "v4", which is necessary only for compatibility with a v4 KDC or a
-     v4 version of `kinit', and then only with `des-cbc-crc' encryption
-
-   * "afs", which you will never need to generate, and which you will
-     encounter only if you dump an AFS database into a Kerberos database
-
-Support for additional encryption types is planned in the future.
-
 

@@ -1,174 +1,1070 @@
-2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+2004-02-09  Sam Hartman  <hartmans@mit.edu>
 
-	* toffset.c (krb5_get_time_offsets), an_to_ln.c
-	(krb5_aname_to_localname): Make KRB5_CALLCONV.
+	* changepw.c (krb5_locate_kpasswd): Run htons on the default port
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * init_os_ctx.c: Add CoreServices.h before k5-int.h so we don't get 
-    multiple definitions for FSSpec.  Also removed an unused variable in
-    Mac OS X code and added casts for Mac OS X code so FSSpecs are cast
-    to profile file types (code deals properly on the other side)
-    * timeofday.c: Added casts to remove warnings
+2003-12-22  Jeffrey Altman <jaltman@mit.edu>
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * ccdefname.c, init_os_ctx.c, timeofday.c: Updated Mac OS X headers to new 
-    framework layout and updated Mac OS macros
-    * changepw.c: removed unused variable
-    * gmt_mktime.c: added int to removed warning about type defaulting to int
+    * dnssrv.c:  wrap within #ifdef KRB5_DNS_LOOKUP to prevent references
+      to resolver functions when DNS support is not being compiled 
 
-2002-01-29  Tom Yu  <tlyu@mit.edu>
+2003-12-18  Jeffrey Altman <jaltman@mit.edu>
 
-	* def_realm.c: Add terminal newline.  Fixes [krb5-build/1041].
+    * accessor.c: Add new functions for use by gssapi
 
-2001-12-03	Miro Jurisic <meeroh@mit.edu>
+2003-10-27  Jeffrey Altman <jaltman@mit.edu>
+
+    * sendto_kdc.c: sockets must be closed with closesocket() and 
+      and not close() in order to ensure portability among different
+      operating systems.
+
+2003-08-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* dnssrv.c: New file; split out DNS SRV RR query support...
+	* locate_kdc.c: ...from here.  Always compile in the calls.
+	* Makefile.in (STLIBOBJS, OBJS, SRCS): Add it.
+
+2003-07-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (krb5_locate_kdc): Always pass 0 to locate_server
+	as the get_masters argument.  Instead, if get_masters is set,
+	look up "master_kdc" in the config file instead of "kdc".
+
+2003-07-09  Alexandra Ellwood  <lxs@mit.edu>
+
+        * toffset.c: Export and krb5_set_real_time for Samba.
+
+2003-06-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (struct srv_dns_entry): Moved to k5-int.h.
+	(krb5int_make_srv_query_realm): Renamed from make_srv_query_realm.
+	(krb5int_free_srv_dns_data): New function.
+	(krb5_locate_srv_dns_1): Use it.
+
+	* accessor.c (krb5int_accessor): Fill in make_srv_query_realm and
+	free_srv_dns_data fields.
+
+2003-06-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (make_srv_query_realm): Punt if strdup fails.
+	Always return what data we can, even if memory allocation or other
+	problems prevent us from returning more.
+	(krb5_locate_srv_dns_1): Always return what data we can.  Fix
+	memory leak.  Free up temporary storage as quickly as possible,
+	while building up address list to return.
+
+2003-06-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* accessor.c (krb5int_accessor): Initialize restored locate_server
+	field.
+
+	* locate_kdc.c (struct srv_dns_entry): Move to top level.
+	(make_srv_query_realm): Separate from krb5_locate_srv_dns_1; just
+	do query and return results.
+	(krb5_locate_srv_dns_1): Call it, and build addlist entries.
+	Check for one RR with a target of ".", and return an error.
+	(krb5_locate_srv_dns): Deleted.
+
+	* t_locate_kdc.c (main): Call krb5_locate_srv_dns_1.
+
+	* changepw.c (krb5_locate_kpasswd): Check specifically for certain
+	errors before using fallback heuristics.
+
+2003-06-03  Alexandra Ellwood  <lxs@mit.edu>
+
+        * init_os_ctx.c: Included header to get __KLAllowHomeDirectoryAccess().
+
+2003-05-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* send524.c (krb5int_524_sendto_kdc): Enable support on Windows
+	always.
+
+2003-05-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* send524.c: New file, moved from krb524/sendmsg.c.  Rename
+	function to have krb5int_ prefix.  If KRB5_KRB4_COMPAT not
+	defined, return an error.
+	* accessor.c (krb5int_accessor): Update for deleted and added
+	fields.  If KRB5_KRB4_COMPAT is not defined, just use null
+	pointers for the new fields.
+
+2003-05-06  Alexandra Ellwood  <lxs@mit.edu>
+
+        * init_os_ctx.c: Added support for KLL's __KLAllowHomeDirectoryAccess()
+        function so that krb4, krb5 and gssapi will not access the user's homedir
+        if the application forbids it.
+
+2003-04-28  Sam Hartman  <hartmans@mit.edu>
+
+	* changepw.c (krb5_change_set_password): Locate server in realm of
+	creds.server, not in realm of target principal because target
+	principal is null in the  changepw case.
+
+2003-04-27  Sam Hartman  <hartmans@mit.edu>
+
+	* changepw.c (krb5_change_set_password): Call
+	krb5_setpw_result_code_string not krb5_setpw_result_code_string  
+
+2003-04-24  Sam Hartman  <hartmans@mit.edu>
+
+	* changepw.c (krb5_change_set_password): return error from
+	auth_con_setaddrs not last socket errno if auth_con_setaddrs fails 
+
+2003-04-15  Sam Hartman  <hartmans@mit.edu>
+
+	* changepw.c (krb5_change_set_password): Patches from Paul Nelson
+	to implement Microsoft set password protocol  
+	(krb5_set_password_using_ccache): Use kadmin/changepw in target realm, not local realm and use a two-component principal
+	(krb5_change_set_password): Find the kpasswd server for the realm
+	of the target principal not the client 
+
+2003-04-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* read_pwd.c (krb5_read_password): Always free temporary storage
+	used for verification version of password.
+
+2003-03-06  Alexandra Ellwood <lxs@mit.edu>
+
+    * c_ustime.c: Removed Mac OS 9 code.
+    
+    * ccdefname.c: Conditionalize on USE_CCAPI and not TARGET_OS_MAC
+    so Darwin builds work.
+    
+    * init_os_ctx.c: Modified to use DEFAULT_SECURE_PROFILE_PATH and
+    DEFAULT_PROFILE_PATH for KfM homedir-relative config files.
+    
+    * read_pwd.c: Cast to remove const warnings.
+    
+    * timeofday.c: Do the same thing on the Mac as on Unix.
+
+2003-03-04  Sam Hartman  <hartmans@mit.edu>
+
+	* sendto_kdc.c (service_tcp_fd): Don't call shutdown on end of write because some implementations cannot deal with half-closed TCP sockets.
+
+2003-02-08  Tom Yu  <tlyu@mit.edu>
+
+	* prompter.c (krb5_prompter_posix): Kill echo before printing
+	prompt to avoid possible race conditions in test suite.
+
+2003-02-06  Tom Yu  <tlyu@mit.edu>
+
+	* prompter.c (krb5_prompter_posix, setup_tty, restore_tty): Fix to
+	use the actual file descriptor we dup()'ed to in case tcsetattr()
+	doesn't actually change the underlying device modes and instead
+	only affects the specific file descriptor.
+
+2003-02-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (translate_ai_error): Handle EAI_ADDRFAMILY like
+	EAI_NONAME.
+	(krb5int_add_host_to_list): Translate errors returned from the
+	second getaddrinfo call.
+
+2003-02-04  Tom Yu  <tlyu@mit.edu>
+
+	* prompter.c (krb5_prompter_posix): Rewrite to no longer use
+	longjmp(), as well as to get a non-buffered stdio stream on stdin
+	to avoid passwords staying around in stdio buffers.  This does
+	have the side effect of possibly losing pre-buffered input from an
+	application that reads from stdin using stdio functions prior to
+	calling the prompter, but hopefully those are rare.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (state_strings): Now const.
+
+2002-12-06  Tom Yu  <tlyu@mit.edu>
+
+	* accessor.c (krb5int_accessor): Add add_host_to_list.
+
+	* changepw.c (krb5_locate_kpasswd): Update calls to
+	krb5_locate_kdc().
+
+	* locate_kdc.c (add_host_to_list): Renamed to
+	krb5int_add_host_to_list(), with macro to deal with existing
+	callers in this file.  Now takes an argument to indicate protocol
+	family.  Callers updated accordingly to also take protocol family
+	arguments.
+
+	* os-proto.h: Update prototype of krb5_locate_kdc().
+
+	* sendto_kdc.c (krb5_sendto_kdc): Update calls to
+	krb5_locate_kdc().
+	(krb5int_sendto): UDP reply length is in.pos-in.buf, not
+	in.bufsize.
+
+	* t_locate_kdc.c (main): Update call to krb5_locate_kdc().
+
+	* t_std_conf.c (test_locate_kdc): Update call to krb5_locate_kdc().
+
+2002-11-14  Tom Yu  <tlyu@mit.edu>
+
+	* changepw.c: Remove reference to adm_err.h.
+
+2002-11-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (t_locate_kdc): Use normal CC_LINK rule for linking
+	test program.
+
+2002-10-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c (print_addr) [TEST]: Don't mix size_t and socklen_t,
+	just assume socklen macro will return a socklen_t value.  Cast
+	buffer size to socklen_t in getnameinfo call.
+
+2002-10-22  Ezra Peisach  <epeisach@bu.edu>
+
+	* sendto_kdc.c (service_tcp_fd): If DEBUG defined, ensure that
+	initialization of variable not bypassed by goto.
+
+2002-10-15  Tom Yu  <tlyu@mit.edu>
+
+	* hst_realm.c (krb5_try_realm_txt_rr): Apply patch from Nalin
+	Dahyabhai to bounds-check return value from res_search().
+
+	* locate_kdc.c (krb5_locate_srv_dns_1): Apply patch from Nalin
+	Dahyabhai to bounds-check return value from res_search().
+
+2002-10-11  Tom Yu  <tlyu@mit.edu>
+
+	* read_pwd.c (krb5_read_password): Restore name of size_return.
+	Set *size_return after successful call to krb5_prompter_posix,
+	since some callers were actually checking, e.g. kadm5.
+
+2002-10-10  Sam Hartman  <hartmans@mit.edu>
+
+	* read_pwd.c (krb5_read_password): Reimplement in terms of krb5_prompter_posix for unix
+
+
+2002-09-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (krb5int_cm_call_select): Fix last change.
+
+
+2002-09-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (krb5int_cm_call_select): If timeout value has
+	tv_sec==0, treat it as meaning "no timeout".
+	(krb5int_debug_fprint): Handle null timeval pointer.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c: Include cm.h.
+	(struct select_state, SSF_READ, SSF_WRITE, SSF_EXCEPTION): Moved
+	to cm.h.
+	(DEBUG): Define.
+	(krb5int_debug_sendto_kdc): Initialize to zero.
+	(default_debug_handler, put, putstr): New functions.
+	(krb5int_sendtokdc_debug_handler): New variable.
+	(krb5int_debug_fprint): Don't write to stderr; instead, pass
+	strings to the debug output handlers above.
+	(struct incoming_krb5_message): Broken out from struct
+	conn_state.
+	(krb5int_cm_call_select): Renamed from call_select; callers
+	updated.  Now extern.  Display max fd number in debugging call,
+	not nfds.
+
+2002-09-17  Sam Hartman  <hartmans@mit.edu>
+
+	* genaddrs.c (krb5_auth_con_genaddrs): Return errno if getpeername fails
+
+2002-09-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (service_fds): Fix bug in last change.
+	(krb5int_debug_fprint): Use 'out' consistently, minimize explicit
+	references to stderr.  Flush output before returning.
+	(dperror) [_WIN32]: Shorten message.
+	(start_connection, service_tcp_fd, service_fds, krb5int_sendto):
+	Use dprint instead of dfprintf.
+
+2002-09-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (struct conn_state): Add new function pointer field
+	'service' for the fd service routine.
+	(setup_connection): Initialize it.
+	(service_fd): Deleted.
+	(service_fds): Incorporate debug output from service_fd.  Call
+	service routine indicated in connection info.  Decrement select fd
+	count for each flag set for a file descriptor.  Ensure that the
+	index into the conns array doesn't run off the end.
+	(krb5int_debug_fprint): Fetch correct type for %E.
+
+2002-09-11  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (get_port): Skip service name lookup, just use the
+	supplied numbers.
+	(add_host_to_list): If a second port number is supplied, look up
+	AF_INET addresses only, and only for SOCK_DGRAM type entries.
+	Ignore errors in the second address lookup.
+	(krb5_locate_srv_conf_1) [TEST]: More debugging code.
+
+	* t_locate_kdc.c (main): Add new argument -m for looking up master
+	KDC addresses.
+
+
+2002-09-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* accessor.c, an_to_ln.c, c_ustime.c, ccdefname.c, changepw.c,
+	def_realm.c, free_hstrl.c, free_krbhs.c, full_ipadr.c, gen_port.c,
+	gen_rname.c, genaddrs.c, get_krbhst.c, gmt_mktime.c, hostaddr.c,
+	hst_realm.c, init_os_ctx.c, krbfileio.c, ktdefname.c, kuserok.c,
+	localaddr.c, locate_kdc.c, lock_file.c, mk_faddr.c, net_read.c,
+	net_write.c, port2ip.c, prompter.c, promptusr.c, read_msg.c,
+	read_pwd.c, realm_dom.c, realm_iter.c, sendto_kdc.c, sn2princ.c,
+	t_an_to_ln.c, t_gifconf.c, t_locate_kdc.c, t_realm_iter.c,
+	t_std_conf.c, timeofday.c, toffset.c, unlck_file.c, ustime.c,
+	write_msg.c: Use prototype-style function definitions.
+
+	* c_ustime.c, timeofday.c: Don't declare errno.
+	* hst_realm.c (krb5_try_realm_txt_rr), locate_kdc.c
+	(krb5_locate_srv_dns_1): Avoid variable name "class".
+	* sendto_kdc.c (enum conn_states): Define separately from
+	conn_state 'state' field declaration.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (merge_addrlists): Truncate source address list
+	after copying its data into the destination list.
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (krb5int_grow_addrlist): Renamed from grow_list,
+	now external.
+	(grow_list): New macro.
+	(krb5_locate_kdc): Don't look up kerberos-sec for TCP service.
+
+	* sendto_kdc.c (MAX_PASS, dprint): New macros.
+	(krb5int_debug_fprint, merge_addrlists): New function.
+	(krb5int_debug_sendto_kdc): New variable.
+	(krb5_sendto_kdc): Use dprint.  Call krb5int_locate_kdc in two
+	places, with socket type selection done separately.
+	(debug_log_connect): Function deleted; use dprint instead.
+	(dperror): Use dprint.
+	(print_fdsets): Function deleted; use dprint instead.
+	(struct conn_state): Use struct instead of union so incoming and
+	outgoing buffer pointers can co-exist.  Add INITIALIZING state.
+	(state_strings): Add INITIALIZING.
+	(krb5int_sendto_udp, krb5int_sendto_tcp): Functions integrated
+	into krb5int_sendto.
+	(call_select): Use dprint.
+	(setup_connection): New function, handles data structure
+	initialization.
+	(start_connection): Renamed from start_tcp_connection.  Don't do
+	data structure initialization, just start connection, and transmit
+	UDP datagrams.  Use dprint.
+	(maybe_send): Create socket for "INITIALIZING" connections;
+	transmit datagrams.
+	(kill_conn): New function split out from service_tcp_fd.
+	(SSF_READ, SSF_WRITE, SSF_EXCEPTION): New macros.
+	(service_tcp_fd): Accept a flag word rather than separate int
+	arguments for read, write, exception.  Use dprint.
+	(service_udp_fd): New function.
+	(service_fd): New function, calls one of the above two.
+	(service_fds): Call it.  Use a flag word instead of separate r/w/x
+	values.
+	* accessor.c (krb5int_accessor): Use krb5int_sendto instead of
+	krb5int_sendto_udp.
+
+2002-08-15  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (DEFAULT_UDP_PREF_LIMIT, HARD_UDP_LIMIT): New
+	macros.
+	(debug_log_connect): Look up "udp_preference_limit" in libdefaults
+	part of profile; try TCP before UDP if the packet size is larger
+	than specified.  Don't try UDP at all if the packet is over about
+	32K.
+
+2002-07-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* localaddr.c (get_localaddrs): Add prototype before being used
+	for static function.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* sn2princ.c: Include fake-addrinfo.h.
+	(krb5_sname_to_principal): Use getaddrinfo and getnameinfo instead
+	of gethostbyname and gethostbyaddr.
+
+	* hst_realm.c (krb5_get_host_realm): Return KRB5_ERR_NUMERIC_REALM
+	if the hostname is a numeric-address form.
+
+2002-07-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c (get_localaddrs): Split out main body of
+	krb5_os_localaddr, add an argument to indicate whether addresses
+	listed in the profile should be included.
+	(krb5_os_localaddr): Call it.
+	(krb5int_local_addresses): Call get_localaddrs but skip
+	profile-listed addresses.
+
+	* sendto_kdc.c (krb5int_sendto_udp): Accept new args for optional
+	location to store local address used to contact server.
+	(krb5_sendto_kdc): Update call to pass 0.
+
+2002-07-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c (service_tcp_fd): sockerrlen should have type
+	socklen_t.
+
+2002-07-03  Alexandra Ellwood <lxs@mit.edu>
+
+	* init_os_ctx.c: krb4 needs to get the os config files so it can use
+	the profile too.  Define these functions on Mac OS X now.
+
+	* init_os_ctx.c: Removed use of FSSpecs because these cause serious
+	performance problems on Mac OS X.  We now search paths the same way
+	the rest of the Unix platforms do.
+
+	[pullups from 1-2-2-branch]
+
+2002-06-22  Tom Yu  <tlyu@mit.edu>
+
+	* c_ustime.c: Remove various things missed in 1-2-2-branch MacOS
+	microseconds timer removal.
+
+2001-06-22  Miro Jurisic <meeroh@mit.edu>
 
 	* c_ustime.c: punted the accurate microseconds timing code because it
 	wasn't so accurate after all.
+	[pullup from 1-2-2-branch]
 
-2000-11-27	Alexandra Ellwood <lxs@mit.edu>
+2002-06-22  Alexandra Ellwood <lxs@mit.edu>
+
+	* init_os_ctx.c: Add CoreServices.h before k5-int.h so we don't get 
+	multiple definitions for FSSpec.  Also removed an unused variable in
+	Mac OS X code and added casts for Mac OS X code so FSSpecs are cast
+	to profile file types (code deals properly on the other side)
+
+	* timeofday.c: Added casts to remove warnings
+
+	* ccdefname.c, init_os_ctx.c, timeofday.c: Updated Mac OS X
+	headers to new framework layout and updated Mac OS macros
 
 	* read_pwd.c: Removed #defines for Mac OS X (__MACH__) because we 
-    now export krb5_read_password on Mac OS X
+	now export krb5_read_password on Mac OS X
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* localaddr.c: Fixed typo.
-	* localaddr.c: Added a special krb5_os_localaddr for Mac OS 9
-	which looks up the addresses without querying DNS synchronously
-	* prompter.c, promptusr.c, read_pwd.c: We now export 
-	krb5_prompter_posix and krb5_read_password on Mac OS X
-	* c_us_time.c: Updated Utilities.h #include
-	* c_us_time.c: Fix the sleep queue notification code to
-		only run on machines with power management
-	* ccdefname.c, init_os_ctx.c: Updated Mac OS #defines and #includes 
-	for new header layout and Mac OS X frameworks
+	[pullups from 1-2-2-branch]
+
+2002-06-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_os_ctx.c: Don't include sys/ioctl.h or sys/filio.h.
+	(krb5_os_init_context): Drop /dev/[u]random support, the Yarrow
+	code will deal with that now.
+
+2002-06-18  Danilo Almeida  <dalmeida@mit.edu>
+
+	* toffset.c (krb5_get_time_offsets), an_to_ln.c
+	(krb5_aname_to_localname): Make KRB5_CALLCONV.
+	[pullup from 1-2-2-branch]
+
+2002-06-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* changepw.c (ECONNABORTED, ECONNREFUSED, EHOSTUNREACH,
+	ETIMEDOUT): Don't define here now that they're defined in
+	port-sockets.h.
+	* read_msg.c (ECONNABORTED): Ditto.
+
+	* sendto_kdc.c: Include sys/timeb.h on Windows.
+	(ENABLE_TCP): Macro deleted, always enable code.
+	(krb5_sendto_kdc): Don't try UDP if outgoing message is 1500
+	bytes or larger.  Print info on arguments if DEBUG defined.
+	(bogus_strerror) [_WIN32 && DEBUG]: New function.
+	(dperror, dfprintf): New macros.
+	(krb5int_sendto_udp): Use SOCKET_ERRNO where appropriate.  Log
+	more info if DEBUG defined; use dperror and dfprintf.
+	(struct conn_state): Use new scatter-gather definitions from
+	port-sockets.h.  Don't try to reuse data structures for both
+	input and output.
+	(struct select_state): Add exception fd set.
+	(print_fdsets) [DEBUG]: Print exception fd set; callers changed.
+	(getcurtime): New function.
+	(call_select): Call it.  Pass exception fd set to select.
+	(make_nonblocking, iov_advance): Deleted.
+	(start_tcp_connection): Expand non-blocking setting inline; set
+	linger period to zero.  Use new scatter-gather framework.  Log
+	more info if DEBUG defined.
+	(service_tcp_fd): New argument indicates exception; handle
+	exception fd set.  Print more info if DEBUG.  Use SOCKET_*
+	macros, scatter-gather support, SHUTDOWN_* macros.  Adjust for
+	new conn_state definitions.
+	(krb5int_sendto_tcp): Set up exception fd set.  Adjust for new
+	conn_state definitions.  Use new scatter-gather support.
+
+2002-06-11  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c: Include sys/ioctl.h and sys/filio.h only if
+	ENABLE_TCP is set and _WIN32 is not defined.
+
+2002-06-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* sendto_kdc.c: Include sys/ioctl.h and sys/filio.h if
+	available.  Define ENABLE_TCP as 0 on Windows, 1 otherwise.
+	(debug_log_connect): New function.
+	(dperror, dfprintf): New macros.
+	(krb5int_sendto_udp): Use dperror, dfprintf, and
+	debug_log_connect.
+	(state_strings): New variable.
+	(struct conn_state, struct select_state): New types.
+	(print_fdsets, call_select, make_nonblocking,
+	start_tcp_connection, iov_advance, service_tcp_fd, service_fds,
+	krb5int_sendto_tcp): New functions.
+	(krb5_sendto_kdc): New argument TCP_ONLY.  Try UDP first unless
+	told otherwise, then try TCP.
+
+	* t_std_conf.c: Include fake-addrinfo.h.
+	(test_locate_kdc): Update arg list to locate_kdc.  Print IPv6 as
+	well as IPv4 addresses.
+
+	* t_locate_kdc.c (main): Free storage allocated by library before
+	exiting.
+
+2002-06-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (krb5_locate_srv_conf_1): New argument socktype
+	indicates what type of addrinfo entries to add.
+	(krb5int_locate_server): Change argument is_stream to socktype.
+	Pass the value to krb5_locate_srv_conf_1.
+	(krb5_locate_kdc): New argument socktype.
+	* sendto_kdc.c (krb5int_sendto_udp): New function, containing most
+	of the network code from krb5_sendto_kdc.
+	(krb5_sendto_kdc): Call it.
+	* accessor.c (krb5int_accessor): Set new sendto_udp field.
+	* os-proto.h (krb5_locate_kdc): Update prototype.  Add forward
+	declaration for struct addrlist.
+	* t_locate_kdc.c (main): Update call to krb5_locate_kdc.
+
+	* locate_kdc.c: Include fake-addrinfo.h before k5-int.h.
+	(grow_list, krb5int_free_addrlist)
+	(add_addrinfo_to_list): Incorporate list-updating code from
+	add_sockaddr_to_list.  Store an addrinfo pointer, and set the
+	ai_next field to null.
+	(add_host_to_list): New arg SOCKTYPE.  Write port numbers into
+	buffers and let getaddrinfo fill in the sin*_port fields.  Call
+	getaddrinfo twice, and use two loops to add entries to the
+	addrlist structure.
+	(add_sockaddr_to_list, set_port_num): Deleted.
+	(krb5_locate_srv_conf_1, krb5_locate_srv_dns_1): Pass extra arg
+	to add_host_to_list.
+	(krb5int_locate_server): New value 2 for is_stream arg means
+	accept both UDP and TCP.
+	* changepw.c: Include fake-addrinfo.h.
+	(krb5_locate_passwd, krb5_change_password): Update for addrlist
+	changes.
+	* sendto_kdc.c: Include fake-addrinfo.h.
+	(krb5_sendto_kdc): Update for addrlist changes.  Skip any
+	addresses that are not SOCK_DGRAM.
+	* t_locate_kdc.c (stypename): New function.
+	(print_addrs): Update for addrlist changes.  Print socket type
+	with address and port.
+
+2002-04-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* lock_file.c (krb5_lock_file) [POSIX_FILE_LOCKS]: Make static
+	"zero" variable const.
+
+	* prompter.c (krb5_prompter_posix): Initialize 'i' and make it
+	volatile.
+
+	* locate_kdc.c (add_addrinfo_to_list) [TEST]: Print out socket
+	type before returning.
+	(add_host_to_list): Don't need to initialize err.  Supply
+	getaddrinfo hint to select datagram addresses only.  Delete AIX
+	bug workaround code.
+
+2002-04-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* locate_kdc.c (translate_ai_error), hst_realm.c
+	(krb5int_translate_gai_error): Test some EAI_ error definitions
+	so that we will also build correctly on Win32 (Winsock 2).
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* hostaddr.c (FAI_PREFIX): Delete.
+	* hst_realm.c (FAI_PREFIX): Delete.
+	* localaddr.c [TEST || DEBUG]: Include fake-addrinfo.h, not
+	fake-addrinfo.c.
+	(FAI_PREFIX) [TEST || DEBUG]: Delete.
+	* locate_kdc.c: Include fake-addrinfo.h, not fake-addrinfo.c.
+	(FAI_PREFIX): Delete.
+
+2002-02-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c: Include foreachaddr.c.
+	(printaddr, printifaddr, addr_eq, grow_or_free, get_ifconf,
+	get_lifconf, get_linux_ipv6_addrs, foreach_localaddr): Deleted.
+	* Makefile.in (localaddr.o): Update dependencies.
+
+2002-02-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c (LINUX_IPV6_HACK) [__linux__&& KRB5_USE_INET6]:
+	Define macro.
+	(get_linux_ipv6_addrs) [LINUX_IPV6_HACK]: New function, reads
+	addresses from /proc/net/if_inet6.
+	(foreach_localaddr) [!HAVE_IFADDRS_H && !SIOCGLIFNUM &&
+	LINUX_IPV6_HACK]: Include ipv6 addresses.
+
+2002-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* hst_realm.c (EAFNOSUPPORT): On Windows, translate to
+	WSAEAFNOSUPPORT.
+
+2002-01-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* hst_realm.c (krb5int_get_fq_hostname): New function.  Use
+	getaddrinfo instead of gethostbyname.
+	(krb5int_get_fq_local_hostname): New function.
+	(krb5_get_host_realm): Call it.
+	* def_realm.c (krb5_get_default_realm): Call it.
+
+	* Makefile.in (t_localaddr): Link against $(LIBS).
+
+2001-12-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* sendto_kdc.c (krb5_sendto_kdc): Get rid of unecessary casts.
+
+2001-10-24  Sam Hartman  <hartmans@mit.edu>
+
+	* accessor.c (krb5int_accessor):  Add fields for struct version 4
+
+2001-10-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (add_host_to_list): If sa_len field exists and is
+	zero, try to fill it in.  Another AIX 4.3.3 bug workaround.
+
+	* sendto_kdc.c (krb5_sendto_kdc) [DEBUG]: More fprintf calls for
+	tracing through.
+
+2001-10-10  Ezra Peisach  <epeisach@mit.edu>
+
+	* localaddr.c (krb5_os_localaddr_profile): Cast argument to
+	isspace() to int.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* os-proto.h: Make prototypes unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* an_to_ln.c, c_ustime.c, ccdefname.c, init_os_ctx.c, ktdefname.c,
+	kuserok.c, localaddr.c, lock_file.c, prompter.c, promptusr.c,
+	read_pwd.c: Drop _MSDOS support.
+
+	* ccdefname.c, def_realm.c, free_hstrl.c, hst_realm.c,
+	ktdefname.c, localaddr.c, mk_faddr.c, read_pwd.c, sn2princ.c,
+	timeofday.c, ustime.c: Don't explicitly declare pointers FAR any
+	more.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* accessor.c, ccdefname.c, changepw.c, def_realm.c, free_hstrl.c,
+	genaddrs.c, hst_realm.c, init_os_ctx.c, ktdefname.c, localaddr.c,
+	prompter.c, realm_dom.c, realm_iter.c, sn2princ.c, timeofday.c,
+	ustime.c: Don't use KRB5_DLLIMP.
+
+2001-09-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (add_host_to_list): If address family in sockaddr
+	structure is zero, copy it in from the addrinfo structure.  Bug
+	workaround for AIX 4.3.3.
+
+2001-09-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c: Retrieve IPv6 addresses on Solaris 8.
+	(get_lifconf) [SIOCGLIFCONF]: New function.
+	(foreach_localaddr) [SIOCFLIGNUM]: New section, using new lifconf
+	and lifreq structures and related ioctls.
+	(Tprintf, Tperror): New macros.  Print stuff if TEST is defined,
+	otherwise be silent but cause same evaluations to happen.
+
+	* localaddr.c (TEST || DEBUG): Include fake-addrinfo.c, not
+	fake-addrinfo.h.
+
+2001-08-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* hostaddr.c (krb5_os_hostaddr): Don't use AI_DEFAULT.
+
+	* genaddrs.c (struct addrpair): New type.
+	(cvtaddr): New function.  Fills in krb5_address structures
+	referencing port and address parts of a sockaddr.  Converts
+	IPv4-mapped IPv6 addresses to plain IPv4 addresses.
+	(krb5_auth_con_genaddrs): Use sockaddr_storage for addresses.  Use
+	addrpairs to pass to cvtaddr, then set up pointers to the elements
+	as needed.
+
+2001-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c: Include fake-addrinfo.c instead of
+	fake-addrinfo.h.
+	(FAI_IMPLEMENTATION): Deleted.
+
+2001-08-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c: Include ctype.h.
+	[TEST || DEBUG]: Defined FAI_PREFIX and include fake-addrinfo.h.
+	(foreach_localaddr) [TEST]: Change whitespace in some debug
+	messages.
+	(print_addr) [TEST]: Delete non-getnameinfo version of code.
+	Change some messages.
+	(struct localaddr_data): New field CUR_SIZE.
+	(allocate): Grow existing storage, if already allocated.
+	(krb5_os_localaddr_profile): New function.  Looks up
+	"extra_addresses" in "libdefaults" section, separates on
+	whitespace, looks up addresses, adds them to the list.
+	(krb5_os_localaddr): Call krb5_os_localaddr_profile first; ignore
+	any errors it reports.
+	(krb5_os_localaddr) [DEBUG]: More debugging code.
+
+	* hostaddr.c (krb5_os_hostaddr): Only retry non-numeric lookup
+	after numeric lookup if AI_NUMERICHOST is nonzero.
+
+2001-07-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* genaddrs.c: Use GETPEERNAME_ARG2_TYPE, GETPEERNAME_ARG3_TYPE
+	instead of assuming types. 
+
+	* changepw.c: Use GETSOCKNAME_ARG3_TYPE instead of int in casts.
+
+2001-07-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* gen_port.c (krb5_gen_portaddr): Add const to cast of
+	krb5_const_pointer to maintain const status.
+
+2001-07-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* sn2princ.c: Do not cast away const char * in call to strdup.
+
+2001-07-24  Jeffrey Altman <jaltman@columbia.edu>
+
+        * def_realm.c: 
+            krb5_get_default_realm() required a profile file
+            even when KRB5_DNS_LOOKUP was defined.  
+
+2001-07-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* hostaddr.c: Include fake-addrinfo.h.
+	(FAI_PREFIX): Define macro.
+	(krb5_os_hostaddr): Use getaddrinfo, to get ipv6 support and
+	thread safety.  Support numeric addresses as well.
+
+	* t_locate_kdc.c: New file.
+	* Makefile.in (t_locate_kdc.o, t_locate_kdc): New targets.
+
+	* locate_kdc.c: Include fake-addrinfo.h.
+	(FAI_PREFIX, FAI_IMPLEMENTATION): Define macros.
+	(get_port, add_sockaddr_to_list, add_host_to_list): Drop
+	gethostbyname/getservbyname support, always use getnameinfo, which
+	should be thread-safe.
+	(translate_ai_error, set_port_num): Now always defined.
+	(set_port_num): Only check for AF_INET6 if KRB5_USE_INET6.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* sn2princ.c (krb5_sname_to_principal): Cast tolower argument to int. 
+
+	* hst_realm.c (krb5_get_host_realm): Cast argument to toupper and
+	tolower to int.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_std_conf.c (test_locate_kdc): Get rid of unused variable.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_std_conf.c (test_locate_kdc): Update to new krb5_locate_kdc
+	interface.
+
+2001-06-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (struct addrlist, ADDRLIST_INIT): Moved to
+	k5-int.h.
+	(krb5int_free_addrlist): Renamed from free_list; no longer
+	static.
+	(krb5_locate_srv_conf, krb5_locate_srv_dns, krb5int_locate_server,
+	krb5_locate_kdc): Use addrlist in interface.
+
+	* sendto_kdc.c (krb5_sendto_kdc): Use new struct addrlist
+	interface.
+
+	* changepw.c (krb5_locate_kpasswd): Use addrlist structure in
+	interface and implementation.
+	(krb5_change_password): Likewise.
+
+	* accessor.c (krb5int_accessor): Fill in free_addrlist function
+	pointer field.
+
+	* os-proto.h (krb5_locate_kdc): Update prototype.
+
+2001-06-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* sn2princ.c, hst_realm.c, an_to_ln.c: Cast argument to
+	isupper()/isspace()/islower() to int.
+
+	* t_std_conf.c (test_locate_kdc): krb5_locate_kdc expects a struct
+	sockaddr *** as a third argument instead of sockaddr **.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* ktdefname.c (krb5_kt_default_name): Get rid of a variable that
+	was set in a conditional but never used.
+
+2001-05-08  Danilo Almeida  <dalmeida@mit.edu>
+
+	* locate_kdc.c (add_host_to_list): Initialize stack variable err
+	which would otherwise get returned without being set in certain
+	circumstances.
+
+2001-05-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (add_sockaddr_to_list) [TEST]: If getnameinfo is
+	available, use it instead of inet_ntoa to get the printable
+	address.
+	(add_host_to_list): Share declaration sections as much as
+	possible.  Propagate errors back correctly from gethostbyname
+	path.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* hst_realm.c (T_TXT): Define if not defined by header files.
+
+	* locate_kdc.c (krb5int_locate_server): New function, replaces
+	functionality of krb5_locate_srv_conf and _dns, including checking
+	whether DNS lookup is desired.
+	(krb5_locate_srv_conf, krb5_locate_srv_dns): Define only if macro
+	TEST is defined.  Added another level of indirection in the
+	address pointer argument.
+	(krb5_locate_srv_dns_1, krb5_locate_srv_conf_1,
+	translate_ai_error, get_port, struct addrlist, ADDRLIST_INIT,
+	grow_list, free_list, add_sockaddr_to_list, add_addrinfo_to_list,
+	set_port_num, add_host_to_list): New helper functions.
+	(krb5_locate_kdc): Added another level of indirection in the
+	address pointer argument.  Call krb5int_locate_server.
+	(KPASSWD_PORTNAME): Deleted.
+
+	* os-proto.h (krb5_locate_kdc): Updated prototype.
+
+	* sendto_kdc.c (krb5_sendto_kdc): Updates for change in
+	krb5_locate_kdc interface.
+
+	* changepw.c (krb5_locate_kpasswd): Call krb5int_locate_server.
+	Add another level of indirection in address pointer.  Now gives
+	preference to _kpasswd info from DNS over admin_server info in
+	config file, if kpasswd_server is not set.
+	(krb5_change_password): Use struct sockaddr_storage for all
+	automatic address variables.  Ignore any non-IPv4 addresses
+	returned from krb5_locate_kpasswd; return an error if all
+	addresses are non-IPv4.  Update for new krb5_locate_kpasswd
+	interface.
+
+	* accessor.c (krb5int_accessor): Set krb5_locate_server field.
+
+2001-04-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c (socklen_t, socklen): Deleted; definitions now in
+	k5-int.h instead.
+	(foreach_localaddr): Use SIOCGIFNUM if it's available and
+	SIOCGSIZIFCONF is not (e.g., Solaris 7 and 8).
+	(print_addr) [!HAVE_GETNAMEINFO]: Only declare variable buf if
+	AF_INET6 is defined.
+
+2001-03-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_gifconf.c: New file.
+
+2001-03-10  Ezra Peisach  <epeisach@mit.edu>
+
+	* def_realm.c: Move prototype for krb5_try_realm_txt_rr() to
+	os-proto.h.
+
+	* init_os_ctx.c: Include os-proto.h
+
+	* changepw.c, locate_kdc.c: Do not shadow sin() with local
+	variable name.
+
+	* os-proto.h: Add prototypes for krb5_try_realm_txt_rr() and the
+	obsolete krb5_secure_config_files().
+
+2001-03-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* localaddr.c (krb5_os_localaddr): Don't look for -1 return value
+	from foreach_localaddr.
+	(print_addr): Only process AF_INET6 addresses if AF_INET6 is
+	defined.
+
+	* gmt_mktime.c (gmt_mktime): Handle years earlier than 1970.
+	(main) [TEST_LEAP]: New routine, driver for testing.
+	* Makefile.in (t_mktime): New target.
+
+2001-03-05  Sam Hartman  <hartmans@mit.edu>
+
+	* kuserok.c: Set max_username to 65 not 10.  65 should be enough
+	for a null terminated string from most current Unixes usernames.
+	The previous limit of 10 was too low.  I don't know how the
+	previous limit was chosen nor why this is not a dynamic buffer.
+
+2001-03-05  Tom Yu  <tlyu@mit.edu>
+
+	* init_os_ctx.c: Get sys/ioctl.h for Solaris to get FIONBIO.
+
+2001-03-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_os_ctx.c: If not Mac or Windows, define USE_RANDOM_DEVICE
+	and include sys/ioctl.h.
+	(krb5_os_init_context) [USE_RANDOM_DEVICE]: Read some bytes from
+	/dev/urandom or /dev/random and use them to re-seed the PRNG.
 
 2001-02-05  Tom Yu  <tlyu@mit.edu>
 
 	* prompter.c (krb5_prompter_posix): Fix up terminal modes if we're
-	interrupted. [reported by Booker Bense] [pullup from trunk]
+	interrupted. [reported by Booker Bense]
 
-2001-02-02  Ken Raeburn  <raeburn@mit.edu>
+2000-12-18  Ken Raeburn  <raeburn@mit.edu>
 
-	* localaddr.c (foreach_localaddr): Increase buffer space initially
-	allocated.  Add more slop space at the end that must remain unused
-	before we stop growing the buffer.  Impose a maximum size on the
-	buffer.  Handle possibility of returned ifc_len being larger than
-	the supplied buffer.
+	* Makefile.in (LCLINT, LCLINTOPTS): New variables.
+	(lclint-localaddr): New target.
 
-2001-01-30  Ken Raeburn  <raeburn@mit.edu>
+	* localaddr.c (grow_or_free, get_ifconf, make_addr): Split out
+	from foreach_localaddr and friends for simpler lclint analysis.
+	(socklen): New function.
+	(print_addr): Use getnameinfo if available.
+	(struct localaddr_data, count_addrs, allocate, add_addr,
+	make_addr): Define only if not testing.
+	(foreach_addr): Call new functions.  Annotate for lclint.
 
-	* changepw.c (fixup_ports): New function, uses correct level of
-	indirection for elements of socket address array.
-	(krb5_locate_kpasswd): Call fixup_ports.
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
 
-2001-01-24	Miro Jurisic <meeroh@mit.edu>
+	* changepw.c: Cast length argument to recvfrom/sendto to int.
 
-	* c_us_time.c: Fix the sleep queue notification code to
-		avoid denying sleep requests
+	* os-proto.h: Moved extern definition of krb5_max_dgram_size,
+	krb5_max_skdc_timeout, krb5_skdc_timeout_shift,
+	krb5_skdc_timeout_1 here.
 
-2000-12-19	Miro Jurisic <meeroh@mit.edu>
+	* accessor.c: Definition for krb5_max_dgram_size,
+	krb5_max_skdc_timeout, krb5_skdc_timeout_shift,
+	krb5_skdc_timeout_1 moved to os-proto.h
 
-	* c_us_time.c: Fix the sleep queue notification code to
-		build with Universal Headers 3.3
+	* osconfig.c: Changed definition for krb5_max_dgram_size,
+	krb5_max_skdc_timeout, krb5_skdc_timeout_shift,
+	krb5_skdc_timeout_1 to unsigned int.
 
-2000-11-29	Miro Jurisic <meeroh@mit.edu>
+	* get_krbhst.c, init_os_context.c, locate_kdc.c, prompter.c:
+	Unsigned/signed int cleanup.
 
-	* c_us_time.c: Install a callback in the Mac OS sleep
-	queue to get notification of the machine coming out
-	of sleep, in order to refresh the cached uptime to
-	real time offset
+	* read_pwd.c (krb5_read_password): Change size_return to unsigned
+	int *.
 
-2000-10-28	Miro Jurisic <meeroh@mit.edu>
+	* sendto_kdc.c: Remove definition for krb5_max_dgram_size,
+	krb5_max_skdc_timeout, krb5_skdc_timeout_shift,
+	krb5_skdc_timeout_1. (moved to os-proto.h). Cast arguments to int
+	for send() and recv().
 
-	* c_ustime.c: Fixed epoch calculation under Mac OS 9 Carbon and Mac OS X
+2000-10-09  Ken Raeburn  <raeburn@mit.edu>
 
-2000-10-16	Miro Jurisic <meeroh@mit.edu>
+	Support for getifaddrs() interface added in BSD.
+	* localaddr.c (printaddr, printifaddr) [HAVE_IFADDRS_H && DEBUG]:
+	New functions for debugging new ifaddrs code.
+	(addr_eq) [HAVE_IFADDRS_H]: New function, for comparing addresses
+	found with getifaddrs.
+	(foreach_localaddr) [HAVE_IFADDRS_H]: New implementation, relies
+	on C library function to retrieve data.
+	(foreach_localaddr) [!HAVE_IFADDRS_H && TEST]: Print info about
+	each address and why it might not be used.
+	(print_addr, main) [TEST]: Print out the local addresses.
+	* Makefile.in (t_localaddr): New target.
 
-	* init_os_ctx.c: Use PreferencesLib to discover config files on Mac OS X
+2000-09-26  Ezra Peisach  <epeisach@mit.edu>
 
-2000-10-02	Alexandra Ellwood <lxs@mit.edu>
+	* an_to_ln.c: Unsigned vs signed int fixes.
 
-	* ccdefname.c, init_os_ctx.c, prompter.c, prompterusr.c. read_pwd.c
-        timeofday.c: Added #defines for Mac OS X (__MACH__) to mimic macintosh
-        behavior
+	* t_std_conf.c: Declare local functions static, do not shadow
+	sin() with local variable.
 
-2000-09-28  Miro Jurisic  <meeroh@mit.edu>
+2000-08-31  Jeffrey Altman <jaltman@columbia.edu>
 
-	* c_us_time.c: Fixed Mac code to use the correct epoch
+        * locate_kdc.c: krb5_locate_srv_dns() 
+          Ensure that res_search() is called with a query string
+          that is terminated by a '.' in order to disable the
+          expansion of dns-search lists.
 
-2000-09-23  Miro Jurisic  <meeroh@mit.edu>
+2000-07-22  Tom Yu  <tlyu@mit.edu>
 
-	* c_us_time.c: Added modifications to Mac OS Microseconds timing
-	to work properly under Carbon.
+	* accessor.c: Add NEED_SOCKETS in order to get prototype for
+	krb5_locate_kdc().
 
-2000-06-19  Ken Raeburn  <raeburn@mit.edu>
+2000-07-19  Danilo Almeida  <dalmeida@mit.edu>
 
-	* localaddr.c (foreach_localaddr): Use SIOCGSIZIFCONF ioctl if
-	available to get the buffer size needed for SIOCGIFCONF, and skip
-	the silly heuristics if it returns a reasonable value.
+	* accessor.c (krb5int_accessor): Add krb5int_accessor() to access
+	internal krb5 functions from outside the library (so that we don't
+	have to export them for the krb525 and gssapi libraries).  The
+	goal is to make this function eventually do nothing.
 
-2000-06-14  Miro Jurisic  <meeroh@mit.edu>
+	* Makefile.in: Compile accessor.c.
 
-	* init_os_ctx.c (os_get_default_config_files):  
-	Return ENOENT when file is not found on MacOS (not ENFILE)
+2000-07-18  Ezra Peisach  <epeisach@mit.edu>
 
-2000-06-09  Miro Jurisic  <meeroh@mit.edu>
+	* locate_kdc.c, hst_realm.c, def_realm.c, changepw.c: Include
+	os-proto.h for internal prototypes.
 
-	* init_os_ctx.c (os_get_default_config_files):  
-	Eliminated some dead code
+	* os-proto.h: Prototypes for _krb5_use_dns_realm(),
+	_krb5_use_dns_kdc(), _krb5_conf_boolean().
 
-2000-06-09  Miro Jurisic  <meeroh@mit.edu>
+	* t_std_conf.c: Include k5-int.h for internal function prototypes.
 
-	* init_os_ctx.c (os_get_default_config_files):  Use Kerberos
-	Preferences library to locate the config files on Mac OS
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
 
-2000-05-17  Nalin Dahyabhai  <nalin@redhat.com>
+	* t_an_to_ln.c: Include <stdio.h> for prototypes.
+
+	* locate_kdc.c (krb5_locate_srv_dns): Remove unused variable.
+
+	* changepw.c, sendto_kdc.c, sn2princ.c: Add parentheses around
+	assignment used as truth value.
+
+	* ccdefname.c (get_from_os): Cast return from getuid() to long and
+	indicate use of format in sprintf.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* def_realm.c: Add newline at end of file.
+
+	* gmt_mktime.c: Define days_in_month as type int.
+
+	* locate_kdc.c (krb5_locate_srv_dns): Cleanup unused variables.
+
+2000-06-23  Miro Jurisic  <meeroh@mit.edu>
+
+	* init_os_ctx.c (os_get_default_config_files): Return ENOENT when
+	file is not found on MacOS (not ENFILE).  Use Kerberos Preferences
+	library to locate the config files on Mac OS.  Eliminated some
+	dead code.
+
+2000-06-23  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* an_to_ln.c (do_replacement):  Don't overflow buffers "in" or "out".
 	* hst_realm.c (krb5_try_realm_txt_rr):  Don't overfill "host" when
 	malformed DNS responses are received.
 
-2000-05-15  Jeffrey Altman <jaltman@columbia.edu>
-
-        * hst_realm.c (krb5_get_host_realm)
-          remove the searchlist and defaultrealm _kerberos queries
-
-2000-05-09	Alexandra Ellwood <lxs@mit.edu>
-
-	*localaddr.c: Fixed the local_addr_fallback_kludge so that it actually does something.
-	Before that the error code it was handling was blowing it away in cleanup.
-
-2000-04-28  Nalin Dahyabhai  <nalin@redhat.com>
-
 	* ccdefname.c (get_from_os): Don't overflow buffer "name_buf".
 	* kuserok.c (krb5_kuserok): Don't overflow buffer "pbuf".
 
-2000-04-22  Ken Raeburn  <raeburn@mit.edu>
+2000-06-23  Ken Raeburn  <raeburn@mit.edu>
 
 	* localaddr.c: Include stddef.h.
 	(foreach_localaddr): Check each address against previously used
 	addresses, and skip duplicates, in case multiple interfaces have
 	the same address.  If called functions fail, drop out of loop and
-	return nonzero.
+	return nonzero.  Use SIOCGSIZIFCONF ioctl if available to get the
+	buffer size needed for SIOCGIFCONF, and skip the silly heuristics
+	if it returns a reasonable value.
 	(krb5_os_localaddr): Increment count of addresses to include null
 	pointer terminator.  Delete check for zero count.
-
-2000-04-18  Danilo Almeida  <dalmeida@mit.edu>
-
-	* prompter.c (krb5int_set_prompt_types): Set to actual value
-	intead of 0.
-
-2000-4-13	Alexandra Ellwood <lxs@mit.edu>
-
-	* init_os_ctx.c: Added support to store a krb5_principal in the os_context 
-	along with the default ccache name (if known, this principal is the same 
-	as the last time we looked at the ccache.
-	* ccdefname.c: Added support to store a krb5_principal in the os_context 
-	along with the default ccache name (if known, this principal is the same 
-	as the last time we looked at the ccache.
-
-2000-04-04  Ken Raeburn  <raeburn@mit.edu>
 
 	* locate_kdc.c (maybe_use_dns): Renamed from _krb5_use_dns.  Now
 	takes an arg to indicate a key to look up in krb5.conf, falling
@@ -182,6 +1078,33 @@
 	* changepw.c (krb5_locate_kpasswd): Call _krb5_use_dns_kdc.
 	* def_realm.c (krb5_get_default_realm): Call _krb5_use_dns_realm.
 	* hst_realm.c (krb5_get_host_realm): Call _krb5_use_dns_realm.
+
+2000-06-23	Alexandra Ellwood <lxs@mit.edu>
+
+	* ccdefname.c: Added support to store a krb5_principal in the os_context 
+	along with the default ccache name (if known, this principal is the same 
+	as the last time we looked at the ccache.
+
+2000-05-09	Alexandra Ellwood <lxs@mit.edu>
+
+	*localaddr.c: Fixed the local_addr_fallback_kludge so that it actually does something.
+	Before that the error code it was handling was blowing it away in cleanup.
+
+2000-04-29  Jeffrey Altman <jaltman@columbia.edu>
+
+        * hst_realm.c (krb5_get_host_realm)
+          remove the searchlist and defaultrealm _kerberos queries
+
+2000-04-18  Danilo Almeida  <dalmeida@mit.edu>
+
+	* prompter.c (krb5int_set_prompt_types): Set to actual value
+	intead of 0.
+
+2000-4-13	Alexandra Ellwood <lxs@mit.edu>
+
+	* init_os_ctx.c: Added support to store a krb5_principal in the os_context 
+	along with the default ccache name (if known, this principal is the same 
+	as the last time we looked at the ccache.
 
 2000-03-20  Miro Jurisic  <meeroh@mit.edu>
 
@@ -278,12 +1201,12 @@
 	* localaddr.c (krb5_os_localaddr): Conditionalize INET6 support on
 	new KRB5_USE_INET6 macro.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-10-22  Ken Raeburn  <raeburn@mit.edu>
 

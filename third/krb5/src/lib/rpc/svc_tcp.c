@@ -42,22 +42,25 @@ static char sccsid[] = "@(#)svc_tcp.c 1.21 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include <gssrpc/rpc.h>
 #include <sys/socket.h>
 #include <errno.h>
 #include <stdlib.h>
-/*extern bool_t abort();*.
+/*extern bool_t abort();
 extern errno;
+*/
 
 /*
  * Ops vector for TCP/IP based rpc service handle
  */
-static bool_t		svctcp_recv();
-static enum xprt_stat	svctcp_stat();
-static bool_t		svctcp_getargs();
-static bool_t		svctcp_reply();
-static bool_t		svctcp_freeargs();
-static void		svctcp_destroy();
+static bool_t		svctcp_recv(SVCXPRT *, struct rpc_msg *);
+static enum xprt_stat	svctcp_stat(SVCXPRT *);
+static bool_t		svctcp_getargs(SVCXPRT *, xdrproc_t, void *);
+static bool_t		svctcp_reply(SVCXPRT *, struct rpc_msg *);
+static bool_t		svctcp_freeargs(SVCXPRT *, xdrproc_t, void *);
+static void		svctcp_destroy(SVCXPRT *);
 
 static struct xp_ops svctcp_op = {
 	svctcp_recv,
@@ -71,21 +74,24 @@ static struct xp_ops svctcp_op = {
 /*
  * Ops vector for TCP/IP rendezvous handler
  */
-static bool_t		rendezvous_request();
-static bool_t		abortx();
-static enum xprt_stat	rendezvous_stat();
+static bool_t		rendezvous_request(SVCXPRT *, struct rpc_msg *);
+static bool_t		abortx(void);
+static bool_t		abortx_getargs(SVCXPRT *, xdrproc_t, void *);
+static bool_t		abortx_reply(SVCXPRT *, struct rpc_msg *);
+static bool_t		abortx_freeargs(SVCXPRT *, xdrproc_t, void *);
+static enum xprt_stat	rendezvous_stat(SVCXPRT *);
 
 static struct xp_ops svctcp_rendezvous_op = {
 	rendezvous_request,
 	rendezvous_stat,
-	abortx,
-	abortx,
-	abortx,
+	abortx_getargs,
+	abortx_reply,
+	abortx_freeargs,
 	svctcp_destroy
 };
 
-static int readtcp(), writetcp();
-static SVCXPRT *makefd_xprt();
+static int readtcp(char *, caddr_t, int), writetcp(char *, caddr_t, int);
+static SVCXPRT *makefd_xprt(int, unsigned int, unsigned int);
 
 struct tcp_rendezvous { /* kept in xprt->xp_p1 */
 	unsigned int sendsize;
@@ -231,8 +237,9 @@ makefd_xprt(fd, sendsize, recvsize)
 }
 
 static bool_t
-rendezvous_request(xprt)
+rendezvous_request(xprt, msg)
 	register SVCXPRT *xprt;
+	struct rpc_msg *msg;
 {
 	int sock;
 	struct tcp_rendezvous *r;
@@ -263,7 +270,8 @@ rendezvous_request(xprt)
 }
 
 static enum xprt_stat
-rendezvous_stat()
+rendezvous_stat(xprt)
+	register SVCXPRT *xprt;
 {
 
 	return (XPRT_IDLE);
@@ -300,12 +308,14 @@ static struct timeval wait_per_try = { 35, 0 };
  * (And a read of zero bytes is a half closed stream => error.)
  */
 static int
-readtcp(xprt, buf, len)
-	register SVCXPRT *xprt;
+readtcp(xprtptr, buf, len)
+        char *xprtptr;
 	caddr_t buf;
 	register int len;
 {
+	register SVCXPRT *xprt = (SVCXPRT *)(void *)xprtptr;
 	register int sock = xprt->xp_sock;
+	struct timeval tout;
 #ifdef FD_SETSIZE
 	fd_set mask;
 	fd_set readfds;
@@ -318,8 +328,9 @@ readtcp(xprt, buf, len)
 #endif /* def FD_SETSIZE */
 	do {
 		readfds = mask;
+		tout = wait_per_try;
 		if (select(_gssrpc_rpc_dtablesize(), &readfds, (fd_set*)NULL,
-			   (fd_set*)NULL, &wait_per_try) <= 0) {
+			   (fd_set*)NULL, &tout) <= 0) {
 			if (errno == EINTR) {
 				continue;
 			}
@@ -330,7 +341,7 @@ readtcp(xprt, buf, len)
 #else
 	} while (readfds != mask);
 #endif /* def FD_SETSIZE */
-	if ((len = read(sock, buf, len)) > 0) {
+	if ((len = read(sock, buf, (size_t) len)) > 0) {
 		return (len);
 	}
 fatal_err:
@@ -343,15 +354,16 @@ fatal_err:
  * Any error is fatal and the connection is closed.
  */
 static int
-writetcp(xprt, buf, len)
-	register SVCXPRT *xprt;
+writetcp(xprtptr, buf, len)
+        char *xprtptr;
 	caddr_t buf;
 	int len;
 {
+	register SVCXPRT *xprt = (SVCXPRT *)(void *) xprtptr;
 	register int i, cnt;
 
 	for (cnt = len; cnt > 0; cnt -= i, buf += i) {
-		if ((i = write(xprt->xp_sock, buf, cnt)) < 0) {
+		if ((i = write(xprt->xp_sock, buf, (size_t) cnt)) < 0) {
 			((struct tcp_conn *)(xprt->xp_p1))->strm_stat =
 			    XPRT_DIED;
 			return (-1);
@@ -396,7 +408,7 @@ static bool_t
 svctcp_getargs(xprt, xdr_args, args_ptr)
 	SVCXPRT *xprt;
 	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+	void *args_ptr;
 {
 	if (! SVCAUTH_UNWRAP(xprt->xp_auth,
 			     &(((struct tcp_conn *)(xprt->xp_p1))->xdrs),
@@ -411,7 +423,7 @@ static bool_t
 svctcp_freeargs(xprt, xdr_args, args_ptr)
 	SVCXPRT *xprt;
 	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+	void * args_ptr;
 {
 	register XDR *xdrs =
 	    &(((struct tcp_conn *)(xprt->xp_p1))->xdrs);
@@ -460,5 +472,29 @@ static bool_t abortx()
 {
   abort();
   return 1;
+}
+
+static bool_t abortx_getargs(xprt, proc, info)
+   SVCXPRT *xprt;
+   xdrproc_t proc;
+   void *info;
+{
+    return abortx();
+}
+
+
+static bool_t abortx_reply(xprt, msg)
+    SVCXPRT *xprt;
+    struct rpc_msg *msg;
+{
+    return abortx();
+}
+
+static bool_t abortx_freeargs(xprt, proc, info)
+   SVCXPRT *xprt;
+   xdrproc_t proc;
+   void * info;
+{
+    return abortx();
 }
 

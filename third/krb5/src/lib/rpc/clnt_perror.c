@@ -53,7 +53,7 @@ extern int sys_nerr;
 #undef strerror
 #define strerror(N) (((N) > 0 && (N) < sys_nerr) ? sys_errlist[N] : (char *)0)
 #endif /* HAVE_STRERROR */
-static char *auth_errmsg();
+static char *auth_errmsg(enum auth_stat);
 
 
 
@@ -91,7 +91,7 @@ clnt_sperror(rpch, s)
 	strncat (str, ": ", BUFSIZ - 1 - strlen (bufstart));
 	str += strlen(str);
 	strncat (str, clnt_sperrno(e.re_status), BUFSIZ - 1 - strlen (bufstart));
-	str[BUFSIZ - 1] = '\0';
+	strstart[BUFSIZ - 1] = '\0';
 	str += strlen(str);
 
 	switch (e.re_status) {
@@ -282,6 +282,25 @@ clnt_spcreateerror(s)
 				       rpc_createerr.cf_error.re_errno);
 		}
 		break;
+
+	case RPC_CANTSEND:
+	case RPC_CANTDECODERES:
+	case RPC_CANTENCODEARGS:
+	case RPC_SUCCESS:
+	case RPC_UNKNOWNPROTO:
+	case RPC_PROGNOTREGISTERED:
+	case RPC_FAILED:
+	case RPC_UNKNOWNHOST:
+	case RPC_CANTDECODEARGS:
+	case RPC_PROCUNAVAIL:
+	case RPC_PROGVERSMISMATCH:
+	case RPC_PROGUNAVAIL:
+	case RPC_AUTHERROR:
+	case RPC_VERSMISMATCH:
+	case RPC_TIMEDOUT:
+	case RPC_CANTRECV:
+	default:
+	    break;
 	}
 	(void) strncat(str, "\n", BUFSIZ - 1 - strlen(str));
 	return (str);

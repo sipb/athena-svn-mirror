@@ -41,12 +41,8 @@
  *  returns system errors, encryption errors, replay errors
  */
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_rd_rep(context, auth_context, inbuf, repl)
-    krb5_context 	  context;
-    krb5_auth_context	  auth_context;
-    const krb5_data 	FAR * inbuf;
-    krb5_ap_rep_enc_part FAR * FAR *repl;
+krb5_error_code KRB5_CALLCONV
+krb5_rd_rep(krb5_context context, krb5_auth_context auth_context, const krb5_data *inbuf, krb5_ap_rep_enc_part **repl)
 {
     krb5_error_code 	  retval;
     krb5_ap_rep 	* reply;
@@ -85,8 +81,24 @@ krb5_rd_rep(context, auth_context, inbuf, repl)
 
     /* Set auth subkey */
     if ((*repl)->subkey) {
+	if (auth_context->recv_subkey) {
+	    krb5_free_keyblock(context, auth_context->recv_subkey);
+	    auth_context->recv_subkey = NULL;
+	}
 	retval = krb5_copy_keyblock(context, (*repl)->subkey,
-				    &auth_context->remote_subkey);
+				    &auth_context->recv_subkey);
+	if (retval)
+	    goto clean_scratch;
+	if (auth_context->send_subkey) {
+	    krb5_free_keyblock(context, auth_context->send_subkey);
+	    auth_context->send_subkey = NULL;
+	}
+	retval = krb5_copy_keyblock(context, (*repl)->subkey,
+				    &auth_context->send_subkey);
+	if (retval) {
+	    krb5_free_keyblock(context, auth_context->send_subkey);
+	    auth_context->send_subkey = NULL;
+	}
     }
 
     /* Get remote sequence number */
@@ -94,7 +106,7 @@ krb5_rd_rep(context, auth_context, inbuf, repl)
 
 clean_scratch:
     memset(scratch.data, 0, scratch.length); 
-errout:
+
     krb5_free_ap_rep(context, reply);
     free(scratch.data);
     return retval;

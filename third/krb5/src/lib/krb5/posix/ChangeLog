@@ -1,6 +1,42 @@
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * setenv.c: Updated macros to removed warning about prototype
-    with no function definition
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* syslog.c (vsyslog): Remove declaration of errno
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* syslog.c: Include syslog.h instead of sys/syslog.h.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* syslog.c: Drop _MSDOS support.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* sscanf.c: Don't use KRB5_DLLIMP.
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* setenv.c: Include pos-obsolete.h
+
+	* pos-obsolete.h: Add for obsolete functions until they can be
+	removed from the library. Contains setenv functions.
+
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* setenv.c: Do not provide prototype for static function unless
+	defined.
 
 2000-04-28  Ken Raeburn  <raeburn@mit.edu>
 	    Nalin Dahyabhai  <nalin@redhat.com>
@@ -9,12 +45,12 @@
 	and strcat when adding to buffer "tbuf".  If calling vsprintf,
 	abort if it appears to have overrun the buffer.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:26:38 1999  Danilo Almeida  <dalmeida@mit.edu>
 

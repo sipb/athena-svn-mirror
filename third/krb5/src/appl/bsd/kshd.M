@@ -2,19 +2,24 @@
 .\" All rights reserved.  The Berkeley software License Agreement
 .\" specifies the terms and conditions for redistribution.
 .\"
-.\"	@(#)rshd.8c	6.3 (Berkeley) 5/24/86
+.\"	@(#)rshd.8	6.3 (Berkeley) 5/24/86
 .\"
-.TH KRSHD 8C
+.TH KRSHD 8
 .SH NAME
 kshd \- kerberized remote shell server
 .SH SYNOPSIS
-.B /usr/local/sbin/kshd -kr45ec
+.B /usr/local/sbin/kshd 
+[
+.B \-kr45ec
+]
+[\fB\-D\fP \fIport\fP]
+[\fB\-L\fP \fIvariable\fP]
 .SH DESCRIPTION
 .I Krshd
 is the server for the 
-.IR rcmd (3X)
+.IR rcmd (3)
 routine and, consequently, for the
-.IR rsh (1C)
+.IR rsh (1)
 program.  The server provides remote execution facilities
 with authentication based on privileged port numbers from trusted hosts or 
 the Kerberos authentication system.
@@ -64,6 +69,12 @@ mechanisms.  This is the same as including \fB\-4\fP and \fB\-5\fP.
 Require the client to encrypt the connection.  Only Kerberos5 clients
 support encryption.
 
+.IP \fB\-L\ variable\fP
+Carry through the current value of the specified variable into the
+environment of the child.  This option can be used to preserve up to
+four variables.
+
+
 .IP \fB\-c\fP 
 Require Kerberos5 clients to present a cryptographic
 checksum of initial connection information like the name of the user
@@ -100,7 +111,7 @@ authentication from succeeding in the default mode.
 If the \fB\-r\fP or \fB\-R\fP options are used, the client must
 connect from a privileged port.
 .PP
-\fIKrshd\fP supports four options which may be used for testing:
+\fIKrshd\fP supports six options which may be used for testing:
 
 .IP \fB\-S\ keytab\fP 10
 Set the \fIkeytab\fP file to use.
@@ -114,6 +125,10 @@ Don't allocate a reserved port for the stderr connection.
 .IP \fB\-P\ path\fP
 Use the argument to find the Kerberos binaries.  Normally a compiled
 in argument is used.
+
+.IP \fB\-D\ port \fP
+Run in standalone mode, listening on \fBport\fP.  The daemon will exit
+after one connection and will not background itself.
 
 .TP
 \fB\-w \fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]]
@@ -185,8 +200,8 @@ on the connection associated with the
 .BR stderr ,
 and is not preceded by a flag byte.
 .SH SEE ALSO
-rshd(8C), rsh(1C),
-rcmd(3X)
+rshd(8), rsh(1),
+rcmd(3)
 .SH BUGS
 A facility to allow all data exchanges to be encrypted should be
 present.

@@ -1,3 +1,141 @@
+2004-02-13  Tom Yu  <tlyu@mit.edu>
+
+	* config/unix.exp (PRIOCNTL_HACK): Use "==" instead of "eq", which
+	is not present in tcl-8.3.
+
+2004-02-12  Tom Yu  <tlyu@mit.edu>
+
+	* config/unix.exp (PRIOCNTL_HACK): Wrap "spawn" to do priocntl
+	things to work around Solaris 9 pty-close bug.
+
+	* Makefile.in (unit-test-client-body, unit-test-server-body): Add
+	PRIOCNTL_HACK.
+
+2003-10-16  Tom Yu  <tlyu@mit.edu>
+
+	* api.1/lock.exp: Work around a race condition in the Solaris 9
+	pty implementation: output sent to a pty slave immediately before
+	last close/exit can get lost on the way to the master.  This is
+	Sun bug #4927647.  The workaround consists of changing the tests
+	to always make lock-test wait to read a character prior to
+	exiting, so any output prior to the "wait" directive will not get
+	lost.
+
+2003-06-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (test117): Update lifetime expected for new
+	defaults.
+
+2003-05-21  Tom Yu  <tlyu@mit.edu>
+
+	* api.0/init.exp (test6, test7): Be slightly more lenient about
+	matching password prompt.
+
+	* api.2/init.exp (test6, test7): Be slightly more lenient about
+	matching password prompt.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-12-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (test150, test151, test153): Don't try to set
+	KRB5CCNAME; only the fact that it wasn't being done correctly
+	prevented it from causing test failures.
+
+	* lib/lib.t (kinit): If kinit reports a problem initializing the
+	credentials cache, raise an error.
+
+2002-10-18  Tom Yu  <tlyu@mit.edu>
+
+	* api.2/init-v2.exp (test106): Make regexp more forgiving of
+	variant password prompts.
+
+	* api.0/init.exp (test7, test22, test225): Make regexp more
+	forgiving of variant password prompts.
+
+2002-09-15  Tom Yu  <tlyu@mit.edu>
+
+	* api.0/chpass-principal.exp:
+	* api.0/crte-policy.exp:
+	* api.0/crte-principal.exp:
+	* api.0/destroy.exp:
+	* api.0/dlte-policy.exp:
+	* api.0/dlte-principal.exp:
+	* api.0/get-policy.exp:
+	* api.0/get-principal.exp:
+	* api.0/init.exp:
+	* api.0/mod-policy.exp:
+	* api.0/mod-principal.exp:
+	* api.0/randkey-principal.exp:
+	* api.0/rename-principal.exp:
+	* api.1/lock.exp:
+	* api.2/chpass-principal-v2.exp:
+	* api.2/chpass-principal.exp:
+	* api.2/crte-policy.exp:
+	* api.2/crte-principal.exp:
+	* api.2/destroy.exp:
+	* api.2/dlte-policy.exp:
+	* api.2/dlte-principal.exp:
+	* api.2/get-policy.exp:
+	* api.2/get-principal-v2.exp:
+	* api.2/get-principal.exp:
+	* api.2/init-v2.exp:
+	* api.2/init.exp:
+	* api.2/mod-policy.exp:
+	* api.2/mod-principal-v2.exp:
+	* api.2/mod-principal.exp:
+	* api.2/randkey-principal-v2.exp:
+	* api.2/randkey-principal.exp:
+	* lib/lib.t: s/error/perror.
+
+	* config/unix.exp: Work around tcl 8.4's (incorrect?) output EOL
+	translation.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (test100): Expect MISSING_KRB5_CONF_PARAMS
+	error now.
+
+2001-11-27  Ezra Peisach  <epeisach@mit.edu>
+
+	* api.2/init-v2.exp: For test 101 failure, change port number 1 -
+	which is used by tcpmux under Irix, to 4 - which is unassigned by
+	IANA.
+
+2001-06-20  Mitchell Berger  <mitchb@mit.edu>
+
+	* api.0/init.exp: Silly typo fixed.
+
+	* api.2/init.exp: Same silly typo fixed.
+
+2000-10-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* lock-test.c (main): Cleanup assignments in conditionals. If
+	USE_KADM5_API_VERSION is 1, set to 2. This program uses the V2 api
+	(kadm5_get_config_params).
+	
+	* setkey-test.c: Declare main() as int. Enclose initialization of
+	elements of arrays in '{', '}'. Use krb5_enctype type instead of
+	unsigned int. Break out assignments in conditionals.
+
+	* destroy-test.c, handle-test.c, init-test.c, iter-test.c,
+	randkey-test.c: Declare main() as int.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* iter-test.c (main): Code was using ovsec_kadm_ret_t in place of
+	an int for referencing array.
+
 2000-05-09  Ken Raeburn  <raeburn@mit.edu>
 
 	* api.2/chpass-principal-v2.exp (test200): Expect an additional
@@ -20,12 +158,12 @@
 	* lib/lib.t: Call kinit and kdestroy with -5 flag to accomodate
 	new behavior.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-21  Ken Raeburn  <raeburn@mit.edu>
 

@@ -44,12 +44,17 @@
 #include    <netdb.h>
 #include    <gssrpc/rpc.h>
 #include    <gssapi/gssapi.h>
+#include    "gssapiP_krb5.h" /* for kg_get_context */
 #include    <gssrpc/auth_gssapi.h>
 #include    <kadm5/admin.h>
 #include    <kadm5/kadm_rpc.h>
 #include    <kadm5/server_acl.h>
 #include    <krb5/adm_proto.h>
+#include    "krb5/kdb_kt.h"	/* for krb5_ktkdb_set_context */
 #include    <string.h>
+#include    "kadm5/server_internal.h" /* XXX for kadm5_server_handle_t */
+
+#include    "misc.h"
 
 #ifdef PURIFY
 #include    "purify.h"
@@ -60,6 +65,10 @@ void	request_pure_report(int);
 void	request_pure_clear(int);
 #endif /* PURIFY */
 
+#if defined(NEED_DAEMON_PROTO)
+extern int daemon(int, int);
+#endif
+
 volatile int	signal_request_exit = 0;
 volatile int	signal_request_hup = 0;
 void    setup_signal_handlers(void);
@@ -67,7 +76,7 @@ void	request_exit(int);
 void	request_hup(int);
 void	reset_db(void);
 void	sig_pipe(int);
-void	kadm_svc_run(void);
+void	kadm_svc_run(kadm5_config_params *params);
 
 #ifdef POSIX_SIGNALS
 static struct sigaction s_action;
@@ -87,12 +96,7 @@ void *global_server_handle;
 #define OVSEC_KADM_ADMIN_SERVICE	"ovsec_adm/admin"
 #define OVSEC_KADM_CHANGEPW_SERVICE	"ovsec_adm/changepw"
 
-/*
- * This enables us to set the keytab that gss_acquire_cred uses, but
- * it also restricts us to linking against the Kv5 GSS-API library.
- * Since this is *k*admind, that shouldn't be a problem.
- */
-extern 	char *krb5_overridekeyname;
+extern krb5_keyblock master_keyblock;
 
 char *build_princ_name(char *name, char *realm);
 void log_badauth(OM_uint32 major, OM_uint32 minor,
@@ -108,11 +112,10 @@ void log_badauth_display_status_1(char *m, OM_uint32 code, int type,
 	
 int schpw;
 void do_schpw(int s, kadm5_config_params *params);
-kadm5_config_params params;
-krb5_error_code process_chpw_request(krb5_context context, void *server_handle,
-				     char *realm, int s, krb5_keytab keytab,
-				     struct sockaddr_in *sin,
-				     krb5_data *req, krb5_data *rep);
+
+#ifdef USE_PASSWORD_SERVER
+void kadm5_set_use_password_server (void);
+#endif
 
 /*
  * Function: usage
@@ -125,9 +128,12 @@ krb5_error_code process_chpw_request(krb5_context context, void *server_handle,
  * Modifies:
  */
 
-void usage()
+static void usage()
 {
      fprintf(stderr, "Usage: kadmind [-r realm] [-m] [-nofork] "
+#ifdef USE_PASSWORD_SERVER
+             "[-passwordserver] "
+#endif
 	     "[-port port-number]\n");
      exit(1);
 }
@@ -149,9 +155,9 @@ void usage()
  * displayed on stderr, each preceeded by "GSS-API error <msg>: " and
  * followed by a newline.
  */
-static void display_status_1();
+static void display_status_1(char *, OM_uint32, int);
 
-void display_status(msg, maj_stat, min_stat)
+static void display_status(msg, maj_stat, min_stat)
      char *msg;
      OM_uint32 maj_stat;
      OM_uint32 min_stat;
@@ -187,9 +193,10 @@ static void display_status_1(m, code, type)
 /* XXX yuck.  the signal handlers need this */
 static krb5_context context;
 
+static krb5_context gctx, hctx;
+
 int main(int argc, char *argv[])
 {
-     void	kadm_1(struct svc_req *, SVCXPRT *);
      register	SVCXPRT *transp;
      extern	char *optarg;
      extern	int optind, opterr;
@@ -202,6 +209,7 @@ int main(int argc, char *argv[])
      auth_gssapi_name names[4];
      gss_buffer_desc gssbuf;
      gss_OID nt_krb5_name_oid;
+     kadm5_config_params params;
      
      /* This is OID value the Krb5_Name NameType */
      gssbuf.value = "{1 2 840 113554 1 2 2 1}";
@@ -241,6 +249,10 @@ int main(int argc, char *argv[])
 	       params.mask |= KADM5_CONFIG_MKEY_FROM_KBD;
 	  } else if (strcmp(*argv, "-nofork") == 0) {
 	       nofork = 1;
+#ifdef USE_PASSWORD_SERVER
+          } else if (strcmp(*argv, "-passwordserver") == 0) {
+              kadm5_set_use_password_server ();
+#endif              
 	  } else if(strcmp(*argv, "-port") == 0) {
 	    argc--; argv++;
 	    if(!argc)
@@ -263,6 +275,15 @@ int main(int argc, char *argv[])
 
      krb5_klog_init(context, "admin_server", whoami, 1);
 
+
+     krb5_klog_syslog(LOG_INFO, "Seeding random number generator");
+          ret = krb5_c_random_os_entropy(context, 1, NULL);
+	  if(ret) {
+	    krb5_klog_syslog(LOG_ERR, "Error getting random seed: %s, aborting",
+			     error_message(ret));
+	    exit(1);
+	  }
+	  
      if((ret = kadm5_init("kadmind", NULL,
 			  NULL, &params,
 			  KADM5_STRUCT_VERSION,
@@ -288,15 +309,14 @@ int main(int argc, char *argv[])
 	  exit(1);
      }
 
-#define REQUIRED_PARAMS (KADM5_CONFIG_REALM | KADM5_CONFIG_ACL_FILE | \
-			 KADM5_CONFIG_ADMIN_KEYTAB)
+#define REQUIRED_PARAMS (KADM5_CONFIG_REALM | KADM5_CONFIG_ACL_FILE)
 
      if ((params.mask & REQUIRED_PARAMS) != REQUIRED_PARAMS) {
 	  krb5_klog_syslog(LOG_ERR, "%s: Missing required configuration values "
 			   "while initializing, aborting", whoami,
 			   (params.mask & REQUIRED_PARAMS) ^ REQUIRED_PARAMS);
 	  fprintf(stderr, "%s: Missing required configuration values "
-		  "(%x) while initializing, aborting\n", whoami,
+		  "(%lx) while initializing, aborting\n", whoami,
 		  (params.mask & REQUIRED_PARAMS) ^ REQUIRED_PARAMS);
 	  krb5_klog_close(context);
 	  kadm5_destroy(global_server_handle);
@@ -475,10 +495,49 @@ int main(int argc, char *argv[])
 	  exit(1);
      }
 
-     /* XXX krb5_overridekeyname is an internal library global and should
-        go away.  This is an awful hack. */
-
-     krb5_overridekeyname = params.admin_keytab;
+     /*
+      * Go through some contortions to point gssapi at a kdb keytab.
+      * This prevents kadmind from needing to use an actual file-based
+      * keytab.
+      */
+     ret = kg_get_context(&minor_status, &gctx);
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "Can't get krb5_gss internal context.");
+	  goto kterr;
+     }
+     /* XXX extract kadm5's krb5_context */
+     hctx = ((kadm5_server_handle_t)global_server_handle)->context;
+     /* Set ktkdb's internal krb5_context. */
+     ret = krb5_ktkdb_set_context(hctx);
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "Can't set kdb keytab's internal context.");
+	  goto kterr;
+     }
+     /* XXX master_keyblock is in guts of lib/kadm5/server_kdb.c */
+     ret = krb5_db_set_mkey(hctx, &master_keyblock);
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "Can't set master key for kdb keytab.");
+	  goto kterr;
+     }
+     ret = krb5_kt_register(gctx, &krb5_kt_kdb_ops);
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "Can't register kdb keytab.");
+	  goto kterr;
+     }
+     /* Tell gssapi about the kdb keytab. */
+     ret = krb5_gss_register_acceptor_identity("KDB:");
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "Can't register acceptor keytab.");
+	  goto kterr;
+     }
+kterr:
+     if (ret) {
+	  krb5_klog_syslog(LOG_ERR, "%s", error_message(ret));
+	  fprintf(stderr, "%s: Can't set up keytab for RPC.\n", whoami);
+	  kadm5_destroy(global_server_handle);
+	  krb5_klog_close(context);
+	  exit(1);
+     }
 
      /*
       * Try to acquire creds for the old OV services as well as the
@@ -488,7 +547,7 @@ int main(int argc, char *argv[])
 	  oldnames++;
      if (!oldnames && _svcauth_gssapi_set_names(names, 2) == FALSE) {
 	  krb5_klog_syslog(LOG_ERR,
-			   "Cannot set GSS-API authentication names, "
+			   "Cannot set GSS-API authentication names (keytab not present?), "
 			   "failing.");
 	  fprintf(stderr, "%s: Cannot set GSS-API authentication names.\n",
 		  whoami);
@@ -538,7 +597,7 @@ int main(int argc, char *argv[])
      
      setup_signal_handlers();
      krb5_klog_syslog(LOG_INFO, "starting");
-     kadm_svc_run();
+     kadm_svc_run(&params);
      krb5_klog_syslog(LOG_INFO, "finished, exiting");
 
      /* Clean up memory, etc */
@@ -612,7 +671,8 @@ void setup_signal_handlers(void) {
  * Modifies:
  */
 
-void kadm_svc_run(void)
+void kadm_svc_run(params)
+kadm5_config_params *params;
 {
      fd_set	rfd;
      int	sz = _gssrpc_rpc_dtablesize();
@@ -653,7 +713,7 @@ void kadm_svc_run(void)
 	       break;
 	  default:
 	      if (FD_ISSET(schpw, &rfd))
-		  do_schpw(schpw, &params);
+		  do_schpw(schpw, params);
 	      else
 		  svc_getreqset(&rfd);
 	  }
@@ -1016,7 +1076,7 @@ void do_schpw(int s1, kadm5_config_params *params)
     char req[1500];
     int len;
     struct sockaddr_in from;
-    int fromlen;
+    socklen_t fromlen;
     krb5_keytab kt;
     krb5_data reqdata, repdata;
     int s2;
@@ -1029,7 +1089,7 @@ void do_schpw(int s1, kadm5_config_params *params)
 	return;
     }
 
-    if ((ret = krb5_kt_resolve(context, params->admin_keytab, &kt))) {
+    if ((ret = krb5_kt_resolve(context, "KDB:", &kt))) {
 	krb5_klog_syslog(LOG_ERR, "chpw: Couldn't open admin keytab %s",
 			 error_message(ret));
 	return;
@@ -1085,10 +1145,10 @@ void do_schpw(int s1, kadm5_config_params *params)
         goto cleanup;
     }
 
-    len = sendto(s1, repdata.data, repdata.length, 0,
+    len = sendto(s1, repdata.data, (int) repdata.length, 0,
 		 (struct sockaddr *) &from, sizeof(from));
 
-    if (len < repdata.length) {
+    if (len < (int) repdata.length) {
 	krb5_xfree(repdata.data);
 
 	krb5_klog_syslog(LOG_ERR, "chpw: Error sending reply: %s", 
@@ -1103,11 +1163,4 @@ cleanup:
 
     return;
 }
-
-
-
-
-
-
-
 

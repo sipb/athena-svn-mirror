@@ -1,7 +1,21 @@
-2001-02-21  Tom Yu  <tlyu@mit.edu>
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't look for getipnodebyaddr.
+
+2001-04-03  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Add checks for unsetenv and getenv.  Compile
-	setenv.o if any of setenv, unsetenv, or getenv are missing.
+	setenv.o if any of setenv, unsetenv, or getenv are
+	missing. [pullup from krb5-1-2-2-branch]
 
 2000-03-24  Ken Raeburn  <raeburn@mit.edu>
 

@@ -31,12 +31,15 @@
 #ifndef KRB5_KDB5_KT_H
 #define KRB5_KDB5_KT_H
 
-#if !defined(macintosh) && !defined(_MSDOS)
+#if !defined(macintosh)
 
 #include "kdb.h"
 
-krb5_error_code krb5_ktkdb_resolve
-        KRB5_PROTOTYPE((krb5_context, krb5_keytab *));
+extern struct _krb5_kt_ops krb5_kt_kdb_ops;
 
-#endif /* !defined(macintosh) && !defined(_MSDOS) */
+krb5_error_code krb5_ktkdb_resolve (krb5_context, const char *, krb5_keytab *);
+
+krb5_error_code krb5_ktkdb_set_context(krb5_context);
+
+#endif /* !defined(macintosh) */
 #endif /* KRB5_KDB5_DBM__ */

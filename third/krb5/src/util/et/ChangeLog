@@ -1,44 +1,293 @@
-2001-12-18  Ken Raeburn  <raeburn@mit.edu>
+2003-07-04  Kenneth Raeburn  <raeburn@mit.edu>
 
-	* test_et.c (main): Only use sys_nerr tests if HAVE_SYS_ERRLIST.
+	* test_et.c: Conditionalize sys_nerr declaration on
+	NEED_SYS_ERRLIST, not HAVE_SYS_ERRLIST.
 
-2001-10-31  Miro Jurisic  <meeroh@mit.edu>
+2003-06-12  Alexandra Ellwood  <lxs@mit.edu>
+    * error_table.h, et_c.awk, et_c.pl, et_h.awk, et_c.awk: Removed Mac 
+    OS support because it prevents darwin builds from getting com error 
+    strings via the initialize_*_error_table function
 
-	* et_c.awk, et_c.pl, et_h.awk, et_h.pl: Fixed the incorrect
-		#if defined(unix) ... which was accidentally reintroduced
+2003-04-29  Ken Raeburn  <raeburn@mit.edu>
 
-2001-10-31  Danilo Almeida  <dalmeida@mit.edu>
+	* test_et.c [HAVE_SYS_ERRLIST]: Do declare sys_nerr.
+
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* compile_et.c: Don't declare malloc or errno.  Include stdlib.h
+	and errno.h.
+	* test_et.c: Don't declare errno or sys_nerr.
+
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
+    * com_err.c, com_err.h, error_message.c, et_c.awk, et_h.awk: 
+      Removed Mac OS 9-specific code.
+    * et_h.awk: define compat macro for init_foo_err_table
+      so that it gets defined to nothing on the Mac.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL,
+	AC_PROG_ARCHIVE, AC_PROG_RANLIB.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* et_h.awk: It's "const struct error_table et_" in the c file, so
+	it's now const here too.
+
+2002-10-07  Sam Hartman  <hartmans@mit.edu>
+
+	* Makefile.in (install-headers): build compile_et so it can be used later
+
+2002-09-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.c (default_com_err_proc, com_err_va, set_com_err_hook):
+	Define with prototype syntax.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(COM_ERR_HDR)): Quote target of copy, since it
+	will now contain forward slashes even on Windows.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (install): Don't install mit-sipb-copyright.h, it's
+	never referenced.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* error_message.c: Put # for cpp directives in first column.
+
+2002-07-08  Tom Yu  <tlyu@mit.edu>
+
+	* et_c.awk: Fix up <com_err.h> inclusion for windows and mac.
+
+	* et_c.pl: Regenerate.
+
+2002-07-03  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix rebuild rules et_?.perl -> et_?.pl.  Also,
+	strip the "#!" line.
+
+	* error_table.h: Fix mac conditional, due to _et_list declaration
+	moving from et_c.awk
+
+	* et_c.perl, et_h.perl: Remove.
+
+	* et_c.pl, et_h.pl: Generate.
+
+2002-07-03  Danilo Almeida  <dalmeida@mit.edu>
 
 	* com_err.h: Windows should include <win-mac.h> as opposed
 	to <Kerberos5/win-mac.h>
+	[pullup from 1-2-2-branch]
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* error_message.c: fixed busted parentheses
-	* error_message.c: call through to strerror on Mac OS X
-	* error_message.c: call through to ErrorLib on Mac OS X
-	* et.pbexp: export com_err() on Mac OS X
-	* error_massage.c: #include <KerberosSupport/ErrorLib.h> on Mac OS
-	* com_err.h: #include <Kerberos5/win-mac.h> on Mac OS
-	* et_c.awk, et_c.pl, et_h.awk, et_h.pl: Updated Mac OS #defines 
-	and #includes for new header layout and Mac OS X frameworks
-
-2000-10-08  Miro Jurisic  <meeroh@mit.edu>
+2002-07-03  Miro Jurisic  <meeroh@mit.edu>
 
 	* et_c.perl, et_h.perl: 
         Renamed to et_c.pl and et_h.pl because the extension is used
         as a newline separator heuristic in MacPerl parser
 
-2000-10-08  Miro Jurisic  <meeroh@mit.edu>
-
 	* et_c.perl, et_h.perl: 
         Removed #! from the first line to avoid confusing MacPerl
 
-2000-10-02  Alexandra Ellwood  <lxs@mit.edu>
+	[pullups from 1-2-2-branch]
+
+2002-07-03  Alexandra Ellwood  <lxs@mit.edu>
 
 	* com_err.h, error_message.c, et.pbexp, et_c.awk, et_h.awk: 
         conditionalized com_err so it doesn't need to export et_list 
         on Mac OS X 
+	[pullup from 1-2-2-branch]
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.h (KRB5_EXPORTVAR): Don't define.
+
+	* com_err.c, com_err.h, compile_et.c, error_message.c,
+	error_table.h, et_c.awk, et_c.perl, et_h.awk, et_h.awk, et_h.perl,
+	etN-ame.c, init_et.c, internal.h, vfprintf.c: Drop NEAR/FAR
+	support and _MSDOS support.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.c, com_err.h, error_message.c, init_et.c: Don't use
+	KRB5_DLLIMP.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* error_message.c (error_message): Conditional label on _sgi so
+	gcc does not warn about being defined and not used.
+
+2001-06-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* error_message.c (error_message): Handle some Irix error codes
+	ranging up above sys_nerr, and above 256.
+
+	* test_et.c (main): Test one of the high-numbered Irix system
+	error codes.
+
+2001-03-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* com_err.h: For struct error_table, change the base from an
+	unsigned to signed long (error messages and tables are signed)
+
+2001-03-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* test_et.c (main): Only use sys_nerr tests if HAVE_SYS_ERRLIST.
+
+2001-01-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.h (add_error_table, remove_error_table): Annotate as
+	modifying internal state.
+	(struct et_list, _et_list): Remove.
+
+	* error_table.h (struct et_list, _et_list): Put back here.
+
+	* error_message.c (add_error_table, remove_error_table): Annotate
+	specific modifications.  Disable inconsistent-defifition checks
+	since _et_list isn't describe in the header file but is global and
+	modified.
+
+	* et_c.awk: Make the generated initialization function simply call
+	add_error_table, and drop the static linked-list node.
+
+2001-01-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* error_message.c (add_error_table, remove_error_table): Allow
+	tables to be entered and removed multiple times, keeping the count
+	correct.
+	* t_com_err.c (main): Update to reflect new semantics.
+
+2001-01-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (test1.c, test2.c, et1.c, et2.c, test1.h, test2.h,
+	et1.h, et2.h): All depend on compile_et and awk scripts.
+	(prefix, bindir, datadir, mydatadir): New variables.
+	(install-unix): Install compile_et and awk scripts, and compile_et
+	man page.
+	(compile_et): Pass awk script install dir as extra argument.
+	(et_c.awk, et_h.awk): Delete targets for putting copies in build
+	tree.
+	* config_script: Take install dir as extra argument.
+	* compile_et.sh: Accept "-d DIR" to override awk script
+	directory.  Set "-ex" shell flags before running awk commands.
+
+2000-12-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* et_c.awk: Don't generate macros we won't use.  Assume ANSI C
+	prototypes.  Include com_err.h in output file, rather than
+	duplicating declarations.
+
+	* com_err.c: Assume ANSI C; drop conditional-prototype macros and
+	varargs.h support.
+
+	* com_err.h: Get rid of old 68k-Mac pragmas.
+	(HAVE_STDARG_H, ET_P, ET_STDARG_P, ET_VARARGS): Don't define.
+	(struct et_list, _et_list): Declare, with annotations.
+	* error_table.h (struct et_list, _et_list): Don't declare here.
+
+	* error_message.c (_et_list): Annotate.
+	(error_message, add_error_table, remove_error_table): Check
+	'table' field of et_list for null pointer.
+
+	* t_com_err.c: Include string.h.
+	(try_one): Check strcmp value against zero explicitly.
+	(main): Annotate arguments as unused.  Cast add_error_table and
+	remove_error_table return values to void.
+
+	* Makefile.in (clean-unix): Clean up lclint files too.
+	(clean-lclint): New target.
+	(et1.c, et2.c, et1.h, et2.h, test1.c, test1.h, test2.h, test2.c):
+	Show dependencies on awk scripts.
+	(LCLINTOPTS): Remove +boolint, add +mod-uncon, +modinternalstrict,
+	+mod-filesys, remove expected error.
+	(com_err.lcd): New target; processes library through lclint and
+	generates a dump file.
+	(do-lclint): Now runs lclint on one of the test programs, and
+	depends on (but doesn't currently use) com_err.lcd.
+	(rebuild, rebuild-c, rebuild-h): New targets: Rebuild perl
+	versions of awk scripts.
+	(clean-files): Get more generated files from test cases.
+	* et_c.perl, et_h.perl: Rebuilt.
+
+2000-11-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (check-unix): Depend on, and run, t_com_err and
+	test_et.
+	* test_et.c (main): Return type is int; return 0 at end.  Use %ld
+	format for error code values.
+	(error_table_name): Declare.
+
+2000-11-08  Ken Raeburn  <raeburn@mit.edu>
+
+	Test out lclint and its4 on com_err library, fixing reported
+	problems (including a rewrite of the memory management model).
+	One lclint error left on Solaris, due to deficiencies in lclint.
+	Its4 chokes in parser.
+	* com_err.h (struct error_table): Annotate MSGS as pointing to
+	'shared' data.
+	(error_message): Returned data is 'observer' and 'dependent';
+	modifies internal state.
+	* com_err.c (default_com_err_proc): Cast various return values to
+	void.
+	(reset_com_err_hook): Use NULL, not 0.
+	(com_err_hook): Annotate as 'null'.
+	* error_table.h (_et_list): Annotate as 'null' and 'dependent'.
+	(struct et_list): Annotate NEXT as 'dependent' and 'null', and
+	TABLE as 'dependent'.
+	(struct dynamic_et_list): Duplicate et_list definition, except
+	NEXT is annotated as 'only' instead of 'dependent'.
+	(error_table_name, error_table_name_r): Annotate for lclint.
+	* et_h.awk: Add lclint annotations for initialize_* functions.
+	* error_message.c (_et_list): Can be 'null'.
+	(error_message): Explicitly compare against zero.  Cast strerror
+	argument to int.
+	(et_list_dynamic): New variable, for dynamically allocated list
+	elements; _et_list is now for statically allocated elements only.
+	(add_error_table, remove_error_table): Check both lists.
+	* et_name.c (error_table_name, error_table_name_r): Annotate for
+	lclint.
+	* init_et.c (et_add_error_table): Change "link" to "e" to avoid
+	confusion with C library function in analysis tools.
+	* et1.et, et2.et, t_com_err.c: New files.  Exercise addition and
+	removal of error tables from list, using both interfaces.
+	* Makefile.in (LCLINT, LCLINTOPTS, ITS4, ITS4OPTS): New
+	variables.
+	(do-lclint, do-its4, et1.o, et2.o, t_com_err.o, t_com_err): New
+	targets.  Not automatically invoked at present.
+	(FILES): Updated.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Change AC_CONST to AC_C_CONST, AC_HEADER_EGREP to
+	AC_EGREP_HEADER, AC_HAVE_HEADERS to AC_CHECK_HEADERS. Updates to
+	autoconf 2 namespace.
+
+2000-07-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* et_c.awk: Actually define NOARGS as needed. Add prototype for
+	error table initiialization function.
+
+2000-07-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.h (com_err): Undo previous change; com_err accepts a
+	null pointer in place of the format string, but gcc warns about
+	it.
+
+2000-06-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* com_err.h (com_err): Declare with format attribute if using
+	gcc.
 
 2000-05-07  Miro Jurisic  <meeroh@mit.edu>
 
@@ -60,12 +309,12 @@
 	to get MIT Support Library and Mac OS Toolbox error codes 
 	(similar to the way windows does it).
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-18  Miro Jurisic  <meeroh@mit.edu>
 

@@ -1,3 +1,46 @@
+2004-02-12  Tom Yu  <tlyu@mit.edu>
+
+	* env-setup.shin: Substitute FAKEDEST.  Substitue "$" for "$$".
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-12-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_db (qualname): If "kdb5_util create" fails, exit.
+
+	* env-setup.shin: Set KRB5CCNAME to something under $K5ROOT.
+
+2002-10-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* start_servers_local: If $USER isn't set, use $LOGNAME.  If
+	ovsec_kadm_srv_tcl invocation to do some initialization fails,
+	exit rather than continuing.
+
+2002-10-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* start_servers_local: Set names of replay cache and log files to
+	be per-user, since they're in system-wide shared directories.
+
+2002-10-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* start_servers_local: Telnet to 127.0.0.1, not "localhost", to
+	probe for kadmind, since kadmind does IPv4 only.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2000-06-27  Ezra Peisach  <epeisach@mit.edu>
+
+	* env-setup.shin: Do not override the EXPECT environment variable
+		if set.
+
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* Makefile.in: Set the myfulldir and mydir variables (which are

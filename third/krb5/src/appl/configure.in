@@ -2,7 +2,9 @@ AC_INIT(configure.in)
 CONFIG_RULES
 AC_PROG_INSTALL
 AC_CHECK_HEADERS(unistd.h stdlib.h string.h)
-AC_CONST
+AC_C_CONST
+dnl gss-misc.c needs this:
+AC_CHECK_HEADERS(sys/time.h time.h)
 dnl
 dnl Kludge for simple server --- FIXME is this the best way to do this?
 dnl
@@ -11,15 +13,8 @@ if test "$ac_cv_lib_socket" = "yes" -a "$ac_cv_lib_nsl" = "yes"; then
 fi
 dnl
 dnl
+KRB5_GETSOCKNAME_ARGS
+KRB5_GETPEERNAME_ARGS
 KRB5_BUILD_PROGRAM
 AC_CONFIG_SUBDIRS(bsd gssftp telnet)
-K5_GEN_MAKEFILE(.)
-K5_GEN_MAKEFILE(sample)
-K5_GEN_MAKEFILE(sample/sclient)
-K5_GEN_MAKEFILE(sample/sserver)
-K5_GEN_MAKEFILE(simple)
-K5_GEN_MAKEFILE(simple/client)
-K5_GEN_MAKEFILE(simple/server)
-K5_GEN_MAKEFILE(gss-sample)
-K5_GEN_MAKEFILE(user_user)
-K5_AC_OUTPUT
+V5_AC_OUTPUT_MAKEFILE(. sample sample/sclient sample/sserver simple simple/client simple/server gss-sample user_user)

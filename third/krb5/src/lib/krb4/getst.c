@@ -9,6 +9,11 @@
 
 #include "mit-copyright.h"
 #include "krb.h"
+#include "krb4int.h"
+#include "krb5/autoconf.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 /*
  * getst() takes a file descriptor, a string and a count.  It reads
@@ -20,12 +25,13 @@
  * the null terminator.
  */
 
+int
 getst(fd, s, n)
     int fd;
     register char *s;
     int n;
 {
-    register count = n;
+    register int count = n;
     while (read(fd, s, 1) > 0 && --count)
         if (*s++ == '\0')
             return (n - count);

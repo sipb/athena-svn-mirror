@@ -40,6 +40,8 @@ static char sccsid[] = "@(#)svc_udp.c 1.24 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include <gssrpc/rpc.h>
 #include <sys/socket.h>
 #include <errno.h>
@@ -53,15 +55,15 @@ static char sccsid[] = "@(#)svc_udp.c 1.24 87/08/11 Copyr 1984 Sun Micro";
 #define MAX(a, b)     ((a > b) ? a : b)
 #endif
 
-static bool_t		svcudp_recv();
-static bool_t		svcudp_reply();
-static enum xprt_stat	svcudp_stat();
-static bool_t		svcudp_getargs();
-static bool_t		svcudp_freeargs();
-static void		svcudp_destroy();
+static bool_t		svcudp_recv(SVCXPRT *, struct rpc_msg *);
+static bool_t		svcudp_reply(SVCXPRT *, struct rpc_msg *);
+static enum xprt_stat	svcudp_stat(SVCXPRT *);
+static bool_t		svcudp_getargs(SVCXPRT *, xdrproc_t, void *);
+static bool_t		svcudp_freeargs(SVCXPRT *, xdrproc_t, void *);
+static void		svcudp_destroy(SVCXPRT *);
 
-static void cache_set();
-static int cache_get();
+static void cache_set(SVCXPRT *, rpc_u_int32);
+static int cache_get(SVCXPRT *, struct rpc_msg *, char **, rpc_u_int32 *);
 
 static struct xp_ops svcudp_op = {
 	svcudp_recv,
@@ -72,7 +74,6 @@ static struct xp_ops svcudp_op = {
 	svcudp_destroy
 };
 
-extern int errno;
 
 /*
  * kept in xprt->xp_p2
@@ -82,7 +83,7 @@ struct svcudp_data {
 	rpc_u_int32	su_xid;		/* transaction id */
 	XDR	su_xdrs;	/* XDR handle */
 	char	su_verfbody[MAX_AUTH_BYTES];	/* verifier body */
-	char * 	su_cache;	/* cached data, NULL if no cache */
+	void * 	su_cache;	/* cached data, NULL if no cache */
 };
 #define	su_data(xprt)	((struct svcudp_data *)(xprt->xp_p2))
 
@@ -270,7 +271,7 @@ static bool_t
 svcudp_getargs(xprt, xdr_args, args_ptr)
 	SVCXPRT *xprt;
 	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+	void * args_ptr;
 {
 	if (! SVCAUTH_UNWRAP(xprt->xp_auth, &(su_data(xprt)->su_xdrs),
 			     xdr_args, args_ptr)) {
@@ -284,7 +285,7 @@ static bool_t
 svcudp_freeargs(xprt, xdr_args, args_ptr)
 	SVCXPRT *xprt;
 	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+	void * args_ptr;
 {
 	register XDR *xdrs = &(su_data(xprt)->su_xdrs);
 
@@ -378,6 +379,7 @@ struct udp_cache {
  * Enable use of the cache. 
  * Note: there is no disable.
  */
+int
 gssrpc_svcudp_enablecache(transp, size)
 	SVCXPRT *transp;
 	rpc_u_int32 size;

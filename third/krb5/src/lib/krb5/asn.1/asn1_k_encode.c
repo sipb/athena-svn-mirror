@@ -27,6 +27,7 @@
 #include "asn1_k_encode.h"
 #include "asn1_make.h"
 #include "asn1_encode.h"
+#include <assert.h>
 
 /**** asn1 macros ****/
 #if 0
@@ -74,7 +75,7 @@
      sum: cumulative length of the entire encoding */
 #define asn1_setup()\
   asn1_error_code retval;\
-  int length, sum=0
+  unsigned int length, sum=0
   
 /* asn1_addfield -- add a field, or component, to the encoding */
 #define asn1_addfield(value,tag,encoder)\
@@ -123,19 +124,13 @@
   *retlen = sum;\
   return 0
 
-asn1_error_code asn1_encode_ui_4(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_ui_4 val;
-     int *retlen;
+asn1_error_code asn1_encode_ui_4(asn1buf *buf, const krb5_ui_4 val, unsigned int *retlen)
 {
   return asn1_encode_unsigned_integer(buf,val,retlen);
 }
 
 
-asn1_error_code asn1_encode_realm(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_principal val;
-     int * retlen;
+asn1_error_code asn1_encode_realm(asn1buf *buf, const krb5_principal val, unsigned int *retlen)
 {
   if (val == NULL ||
       (val->realm.length && val->realm.data == NULL))
@@ -144,10 +139,7 @@ asn1_error_code asn1_encode_realm(buf, val, retlen)
 				   retlen);
 }
 
-asn1_error_code asn1_encode_principal_name(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_principal val;
-     int * retlen;
+asn1_error_code asn1_encode_principal_name(asn1buf *buf, const krb5_principal val, unsigned int *retlen)
 {
   asn1_setup();
   int n;
@@ -177,19 +169,12 @@ asn1_error_code asn1_encode_principal_name(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_kerberos_time(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_timestamp val;
-     int * retlen;
-     
+asn1_error_code asn1_encode_kerberos_time(asn1buf *buf, const krb5_timestamp val, unsigned int *retlen)
 {
   return asn1_encode_generaltime(buf,val,retlen);
 }
 
-asn1_error_code asn1_encode_host_address(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_address * val;
-     int * retlen;
+asn1_error_code asn1_encode_host_address(asn1buf *buf, const krb5_address *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -202,10 +187,7 @@ asn1_error_code asn1_encode_host_address(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_host_addresses(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_address ** val;
-     int * retlen;
+asn1_error_code asn1_encode_host_addresses(asn1buf *buf, const krb5_address **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -223,10 +205,7 @@ asn1_error_code asn1_encode_host_addresses(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_encrypted_data(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_enc_data * val;
-     int * retlen;
+asn1_error_code asn1_encode_encrypted_data(asn1buf *buf, const krb5_enc_data *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -235,8 +214,9 @@ asn1_error_code asn1_encode_encrypted_data(buf, val, retlen)
 	  return ASN1_MISSING_FIELD;
 
   asn1_addlenfield(val->ciphertext.length,val->ciphertext.data,2,asn1_encode_charstring);
+  /* krb5_kvno should be int */
   if(val->kvno)
-    asn1_addfield(val->kvno,1,asn1_encode_integer);
+    asn1_addfield((int) val->kvno,1,asn1_encode_integer);
   asn1_addfield(val->enctype,0,asn1_encode_integer);
 
   asn1_makeseq();
@@ -244,10 +224,7 @@ asn1_error_code asn1_encode_encrypted_data(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_krb5_flags(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_flags val;
-     int * retlen;
+asn1_error_code asn1_encode_krb5_flags(asn1buf *buf, const krb5_flags val, unsigned int *retlen)
 {
   asn1_setup();
   krb5_flags valcopy = val;
@@ -271,34 +248,22 @@ asn1_error_code asn1_encode_krb5_flags(buf, val, retlen)
   return 0;
 }
 
-asn1_error_code asn1_encode_ap_options(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_flags val;
-     int * retlen;
+asn1_error_code asn1_encode_ap_options(asn1buf *buf, const krb5_flags val, unsigned int *retlen)
 {
   return asn1_encode_krb5_flags(buf,val,retlen);
 }
 
-asn1_error_code asn1_encode_ticket_flags(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_flags val;
-     int * retlen;
+asn1_error_code asn1_encode_ticket_flags(asn1buf *buf, const krb5_flags val, unsigned int *retlen)
 {
   return asn1_encode_krb5_flags(buf,val,retlen);
 }
 
-asn1_error_code asn1_encode_kdc_options(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_flags val;
-     int * retlen;
+asn1_error_code asn1_encode_kdc_options(asn1buf *buf, const krb5_flags val, unsigned int *retlen)
 {
   return asn1_encode_krb5_flags(buf,val,retlen);
 }
 
-asn1_error_code asn1_encode_authorization_data(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_authdata ** val;
-     int * retlen;
+asn1_error_code asn1_encode_authorization_data(asn1buf *buf, const krb5_authdata **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -316,10 +281,7 @@ asn1_error_code asn1_encode_authorization_data(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_krb5_authdata_elt(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_authdata * val;
-     int * retlen;
+asn1_error_code asn1_encode_krb5_authdata_elt(asn1buf *buf, const krb5_authdata *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -337,11 +299,7 @@ asn1_error_code asn1_encode_krb5_authdata_elt(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_kdc_rep(msg_type, buf, val, retlen)
-     int msg_type;
-     asn1buf * buf;
-     const krb5_kdc_rep * val;
-     int * retlen;
+asn1_error_code asn1_encode_kdc_rep(int msg_type, asn1buf *buf, const krb5_kdc_rep *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -362,10 +320,7 @@ asn1_error_code asn1_encode_kdc_rep(msg_type, buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_enc_kdc_rep_part(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_enc_kdc_rep_part * val;
-     int * retlen;
+asn1_error_code asn1_encode_enc_kdc_rep_part(asn1buf *buf, const krb5_enc_kdc_rep_part *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -417,10 +372,25 @@ asn1_error_code asn1_encode_enc_kdc_rep_part(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_kdc_req_body(buf, rep, retlen)
-     asn1buf * buf;
-     const krb5_kdc_req * rep;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_checksum(asn1buf *buf, const krb5_checksum ** val, unsigned int *retlen)
+{
+  asn1_setup();
+  int i;
+
+  if(val == NULL) return ASN1_MISSING_FIELD;
+
+  for (i=0; val[i] != NULL; i++);
+  for (i--; i>=0; i--){
+    retval = asn1_encode_checksum(buf,val[i],&length);
+    if(retval) return retval;
+    sum += length;
+  }
+  asn1_makeseq();
+
+  asn1_cleanup();
+}
+
+asn1_error_code asn1_encode_kdc_req_body(asn1buf *buf, const krb5_kdc_req *rep, unsigned int *retlen)
 {
   asn1_setup();
   
@@ -486,10 +456,7 @@ asn1_error_code asn1_encode_kdc_req_body(buf, rep, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_encryption_key(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_keyblock * val;
-     int * retlen;
+asn1_error_code asn1_encode_encryption_key(asn1buf *buf, const krb5_keyblock *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -504,10 +471,7 @@ asn1_error_code asn1_encode_encryption_key(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_checksum(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_checksum * val;
-     int * retlen;
+asn1_error_code asn1_encode_checksum(asn1buf *buf, const krb5_checksum *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -522,10 +486,7 @@ asn1_error_code asn1_encode_checksum(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_transited_encoding(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_transited * val;
-     int * retlen;
+asn1_error_code asn1_encode_transited_encoding(asn1buf *buf, const krb5_transited *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -541,10 +502,7 @@ asn1_error_code asn1_encode_transited_encoding(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_last_req(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_last_req_entry ** val;
-     int * retlen;
+asn1_error_code asn1_encode_last_req(asn1buf *buf, const krb5_last_req_entry **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -562,10 +520,7 @@ asn1_error_code asn1_encode_last_req(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_last_req_entry(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_last_req_entry * val;
-     int * retlen;
+asn1_error_code asn1_encode_last_req_entry(asn1buf *buf, const krb5_last_req_entry *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -578,10 +533,7 @@ asn1_error_code asn1_encode_last_req_entry(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sequence_of_pa_data(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_pa_data ** val;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_pa_data(asn1buf *buf, const krb5_pa_data **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -599,10 +551,7 @@ asn1_error_code asn1_encode_sequence_of_pa_data(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_pa_data(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_pa_data * val;
-     int * retlen;
+asn1_error_code asn1_encode_pa_data(asn1buf *buf, const krb5_pa_data *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -616,10 +565,7 @@ asn1_error_code asn1_encode_pa_data(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sequence_of_ticket(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_ticket ** val;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_ticket(asn1buf *buf, const krb5_ticket **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -637,10 +583,7 @@ asn1_error_code asn1_encode_sequence_of_ticket(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_ticket(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_ticket * val;
-     int * retlen;
+asn1_error_code asn1_encode_ticket(asn1buf *buf, const krb5_ticket *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -656,11 +599,7 @@ asn1_error_code asn1_encode_ticket(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sequence_of_enctype(buf, len, val, retlen)
-     asn1buf * buf;
-     const int len;
-     const krb5_enctype * val;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_enctype(asn1buf *buf, const int len, const krb5_enctype *val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -677,11 +616,7 @@ asn1_error_code asn1_encode_sequence_of_enctype(buf, len, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_kdc_req(msg_type, buf, val, retlen)
-     int msg_type;
-     asn1buf * buf;
-     const krb5_kdc_req * val;
-     int * retlen;
+asn1_error_code asn1_encode_kdc_req(int msg_type, asn1buf *buf, const krb5_kdc_req *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -699,10 +634,7 @@ asn1_error_code asn1_encode_kdc_req(msg_type, buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_krb_safe_body(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_safe * val;
-     int * retlen;
+asn1_error_code asn1_encode_krb_safe_body(asn1buf *buf, const krb5_safe *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -712,7 +644,7 @@ asn1_error_code asn1_encode_krb_safe_body(buf, val, retlen)
     asn1_addfield(val->r_address,5,asn1_encode_host_address);
   asn1_addfield(val->s_address,4,asn1_encode_host_address);
   if(val->seq_number)
-    asn1_addfield(val->seq_number,3,asn1_encode_integer);
+    asn1_addfield(val->seq_number,3,asn1_encode_unsigned_integer);
   if(val->timestamp){
     asn1_addfield(val->usec,2,asn1_encode_integer);
     asn1_addfield(val->timestamp,1,asn1_encode_kerberos_time);
@@ -726,10 +658,7 @@ asn1_error_code asn1_encode_krb_safe_body(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sequence_of_krb_cred_info(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_cred_info ** val;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_krb_cred_info(asn1buf *buf, const krb5_cred_info **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -747,10 +676,7 @@ asn1_error_code asn1_encode_sequence_of_krb_cred_info(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_krb_cred_info(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_cred_info * val;
-     int * retlen;
+asn1_error_code asn1_encode_krb_cred_info(asn1buf *buf, const krb5_cred_info *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -783,29 +709,33 @@ asn1_error_code asn1_encode_krb_cred_info(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_etype_info_entry(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_etype_info_entry * val;
-     int * retlen;
+asn1_error_code asn1_encode_etype_info_entry(asn1buf *buf, const krb5_etype_info_entry *val,
+					     unsigned int *retlen, int etype_info2)
 {
   asn1_setup();
 
-  if(val == NULL || (val->length > 0 && val->salt == NULL))
+  assert(val->s2kparams.data == NULL || etype_info2);
+  if(val == NULL || (val->length > 0 && val->length != KRB5_ETYPE_NO_SALT &&
+		     val->salt == NULL))
      return ASN1_MISSING_FIELD;
-
-  if (val->length >= 0)
-	  asn1_addlenfield((int) val->length,val->salt,1,
-			   asn1_encode_octetstring);
-  asn1_addfield(val->etype,0,asn1_encode_integer);
+  if(val->s2kparams.data != NULL)
+      asn1_addlenfield(val->s2kparams.length, val->s2kparams.data, 2,
+		       asn1_encode_octetstring);
+  if (val->length >= 0 && val->length != KRB5_ETYPE_NO_SALT){
+      if (etype_info2)
+	  asn1_addlenfield(val->length,val->salt,1,
+			   asn1_encode_generalstring)
+      else 	  asn1_addlenfield(val->length,val->salt,1,
+				   asn1_encode_octetstring);
+  }
+asn1_addfield(val->etype,0,asn1_encode_integer);
   asn1_makeseq();
 
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_etype_info(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_etype_info_entry ** val;
-     int * retlen;
+asn1_error_code asn1_encode_etype_info(asn1buf *buf, const krb5_etype_info_entry **val,
+				       unsigned int *retlen, int etype_info2)
 {
     asn1_setup();
     int i;
@@ -814,7 +744,7 @@ asn1_error_code asn1_encode_etype_info(buf, val, retlen)
   
     for(i=0; val[i] != NULL; i++); /* get to the end of the array */
     for(i--; i>=0; i--){
-	retval = asn1_encode_etype_info_entry(buf,val[i],&length);
+	retval = asn1_encode_etype_info_entry(buf,val[i],&length, etype_info2);
 	if(retval) return retval;
 	sum += length;
     }
@@ -822,10 +752,7 @@ asn1_error_code asn1_encode_etype_info(buf, val, retlen)
     asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sequence_of_passwdsequence(buf, val, retlen)
-     asn1buf * buf;
-     const passwd_phrase_element ** val;
-     int * retlen;
+asn1_error_code asn1_encode_sequence_of_passwdsequence(asn1buf *buf, const passwd_phrase_element **val, unsigned int *retlen)
 {
   asn1_setup();
   int i;
@@ -842,10 +769,7 @@ asn1_error_code asn1_encode_sequence_of_passwdsequence(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_passwdsequence(buf, val, retlen)
-     asn1buf * buf;
-     const passwd_phrase_element * val;
-     int * retlen;
+asn1_error_code asn1_encode_passwdsequence(asn1buf *buf, const passwd_phrase_element *val, unsigned int *retlen)
 {
   asn1_setup();
   asn1_addlenfield(val->phrase->length,val->phrase->data,1,asn1_encode_charstring);
@@ -854,21 +778,15 @@ asn1_error_code asn1_encode_passwdsequence(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sam_flags(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_flags val;
-     int * retlen;
+asn1_error_code asn1_encode_sam_flags(asn1buf *buf, const krb5_flags val, unsigned int *retlen)
 {
   return asn1_encode_krb5_flags(buf,val,retlen);
 }
 
 #define add_optstring(val,n,fn) \
-     if ((val).length >= 0) {asn1_addlenfield((val).length,(val).data,n,fn);}
+     if ((val).length > 0) {asn1_addlenfield((val).length,(val).data,n,fn);}
 
-asn1_error_code asn1_encode_sam_challenge(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_sam_challenge * val;
-     int * retlen;
+asn1_error_code asn1_encode_sam_challenge(asn1buf *buf, const krb5_sam_challenge *val, unsigned int *retlen)
 {
   asn1_setup();
   /* possibly wrong */
@@ -892,10 +810,53 @@ asn1_error_code asn1_encode_sam_challenge(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sam_key(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_sam_key * val;
-     int * retlen;
+asn1_error_code asn1_encode_sam_challenge_2(asn1buf *buf, const krb5_sam_challenge_2 *val, unsigned int *retlen)
+{
+  asn1_setup();
+  if ( (!val) || (!val->sam_cksum) || (!val->sam_cksum[0]))
+      return ASN1_MISSING_FIELD;
+
+  asn1_addfield((const krb5_checksum **) val->sam_cksum, 1, asn1_encode_sequence_of_checksum);
+  retval = asn1buf_insert_octetstring(buf, val->sam_challenge_2_body.length,
+				      (unsigned char *)val->sam_challenge_2_body.data);
+  if(retval){
+	  asn1buf_destroy(&buf);
+	  return retval; 
+  }
+  sum += val->sam_challenge_2_body.length;
+  retval = asn1_make_etag(buf, CONTEXT_SPECIFIC, 0,
+			  val->sam_challenge_2_body.length, &length);
+  if(retval) {
+	  asn1buf_destroy(&buf);
+	  return retval;
+  }
+  sum += length;
+  
+  asn1_makeseq();
+  asn1_cleanup();
+}
+
+asn1_error_code asn1_encode_sam_challenge_2_body(asn1buf *buf, const krb5_sam_challenge_2_body *val, unsigned int *retlen)
+{
+  asn1_setup();
+
+  asn1_addfield(val->sam_etype, 9, asn1_encode_integer);
+  asn1_addfield(val->sam_nonce,8,asn1_encode_integer);
+  add_optstring(val->sam_pk_for_sad,7,asn1_encode_charstring);
+  add_optstring(val->sam_response_prompt,6,asn1_encode_charstring);
+  add_optstring(val->sam_challenge,5,asn1_encode_charstring);
+  add_optstring(val->sam_challenge_label,4,asn1_encode_charstring);
+  add_optstring(val->sam_track_id,3,asn1_encode_charstring);
+  add_optstring(val->sam_type_name,2,asn1_encode_charstring);
+
+  asn1_addfield(val->sam_flags,1,asn1_encode_sam_flags);
+  asn1_addfield(val->sam_type,0,asn1_encode_integer);
+
+  asn1_makeseq();
+  asn1_cleanup();
+}
+
+asn1_error_code asn1_encode_sam_key(asn1buf *buf, const krb5_sam_key *val, unsigned int *retlen)
 {
   asn1_setup();
   asn1_addfield(&(val->sam_key),0,asn1_encode_encryption_key);
@@ -906,10 +867,7 @@ asn1_error_code asn1_encode_sam_key(buf, val, retlen)
 }
 
 
-asn1_error_code asn1_encode_enc_sam_response_enc(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_enc_sam_response_enc * val;
-     int * retlen;
+asn1_error_code asn1_encode_enc_sam_response_enc(asn1buf *buf, const krb5_enc_sam_response_enc *val, unsigned int *retlen)
 {
   asn1_setup();
   add_optstring(val->sam_sad,3,asn1_encode_charstring);
@@ -922,10 +880,18 @@ asn1_error_code asn1_encode_enc_sam_response_enc(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_sam_response(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_sam_response * val;
-     int * retlen;
+asn1_error_code asn1_encode_enc_sam_response_enc_2(asn1buf *buf, const krb5_enc_sam_response_enc_2 *val, unsigned int *retlen)
+{
+  asn1_setup();
+  add_optstring(val->sam_sad,1,asn1_encode_charstring);
+  asn1_addfield(val->sam_nonce,0,asn1_encode_integer);
+
+  asn1_makeseq();
+
+  asn1_cleanup();
+}
+
+asn1_error_code asn1_encode_sam_response(asn1buf *buf, const krb5_sam_response *val, unsigned int *retlen)
 {
   asn1_setup();
 
@@ -945,14 +911,26 @@ asn1_error_code asn1_encode_sam_response(buf, val, retlen)
   asn1_cleanup();
 }
 
-asn1_error_code asn1_encode_predicted_sam_response(buf, val, retlen)
-     asn1buf * buf;
-     const krb5_predicted_sam_response * val;
-     int * retlen;
+asn1_error_code asn1_encode_sam_response_2(asn1buf *buf, const krb5_sam_response_2 *val, unsigned int *retlen)
 {
   asn1_setup();
 
-  add_optstring(val->msd,6,asn1_encode_octetstring);
+  asn1_addfield(val->sam_nonce,4,asn1_encode_integer);
+  asn1_addfield(&(val->sam_enc_nonce_or_sad),3,asn1_encode_encrypted_data);
+  add_optstring(val->sam_track_id,2,asn1_encode_charstring);
+  asn1_addfield(val->sam_flags,1,asn1_encode_sam_flags);
+  asn1_addfield(val->sam_type,0,asn1_encode_integer);
+
+  asn1_makeseq();
+
+  asn1_cleanup();
+}
+
+asn1_error_code asn1_encode_predicted_sam_response(asn1buf *buf, const krb5_predicted_sam_response *val, unsigned int *retlen)
+{
+  asn1_setup();
+
+  add_optstring(val->msd,6,asn1_encode_charstring);
   asn1_addfield(val->client,5,asn1_encode_principal_name);
   asn1_addfield(val->client,4,asn1_encode_realm);
   asn1_addfield(val->susec,3,asn1_encode_integer);
@@ -963,4 +941,21 @@ asn1_error_code asn1_encode_predicted_sam_response(buf, val, retlen)
   asn1_makeseq();
 
   asn1_cleanup();
+}
+
+/*
+ * Do some ugliness to insert a raw pre-encoded KRB-SAFE-BODY.
+ */
+asn1_error_code asn1_encode_krb_saved_safe_body(asn1buf *buf, const krb5_data *body, unsigned int *retlen)
+{
+  asn1_error_code retval;
+
+  retval = asn1buf_insert_octetstring(buf, body->length,
+				      (krb5_octet *)body->data);
+  if (retval){
+    asn1buf_destroy(&buf);
+    return retval; 
+  }
+  *retlen = body->length;
+  return 0;
 }

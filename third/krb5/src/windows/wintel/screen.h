@@ -1,4 +1,4 @@
-extern long FAR PASCAL ScreenWndProc(HWND,UINT,WPARAM,LPARAM);
+extern long PASCAL ScreenWndProc(HWND,UINT,WPARAM,LPARAM);
 
 /*
 *          Definition of attribute bits in the Virtual Screen
@@ -146,7 +146,7 @@ Prototypes
 		HWND hWnd);
 
 	void ScreenInit(
-		HANDLE hInstance);
+		HINSTANCE hInstance);
 
 	void SetScreenInstance(
 		HINSTANCE hInstance);
@@ -243,7 +243,7 @@ intern.c
 		SCREEN *pScr,
 		int toggle);
 	
-	int ScreenInsChar(
+	BOOL ScreenInsChar(
 		SCREEN *pScr,
 		int x);
 

@@ -15,7 +15,7 @@ proc test100 {} {
 		[config_params {KADM5_CONFIG_PROFILE} /does-not-exist] \
 		$KADM5_STRUCT_VERSION $KADM5_API_VERSION_2 \
 		server_handle
-    } "MISSING_CONF_PARAMS"
+    } "MISSING_KRB5_CONF_PARAMS"
 }
 if {$RPC} test100
 
@@ -75,7 +75,7 @@ proc test101 {} {
     }
     one_line_fail_test {
 	kadm5_init admin admin $KADM5_ADMIN_SERVICE \
-		[config_params {KADM5_CONFIG_ADMIN_SERVER KADM5_CONFIG_KADMIND_PORT} [list $hostname 1]] \
+		[config_params {KADM5_CONFIG_ADMIN_SERVER KADM5_CONFIG_KADMIND_PORT} [list $hostname 4]] \
 		$KADM5_STRUCT_VERSION $KADM5_API_VERSION_2 \
 		server_handle
     } "RPC_ERROR"
@@ -112,7 +112,8 @@ if {! $RPC} test103
 test "init 106"
 proc test106 {} {
     global test prompt
-    
+
+    set prompting 0
     send [string trim {
 	kadm5_init admin admin $KADM5_ADMIN_SERVICE \
 		[config_params {KADM5_CONFIG_MKEY_FROM_KBD} 1] \
@@ -121,7 +122,7 @@ proc test106 {} {
     }]
     send "\n"
     expect {
-	-re ":$" { set prompting 1}
+	-re "\n\[^\n\]+:\[^\n\]*$" { set prompting 1}
 	-re "\nOK .*$prompt$" { fail "$test: premature success" }
 	-re "\nERROR .*$prompt$" { fail "$test: premature failure" }
 	timeout { fail "$test: timeout" }
@@ -274,7 +275,7 @@ proc test109 {} {
 	}
     }
     if { ! [cmd {kadm5_destroy $server_handle}]} {
-	error "$test: unexpected failure in destroy"
+	perror "$test: unexpected failure in destroy"
 	return
     }
     if {$max_life == 10} {
@@ -510,7 +511,7 @@ proc test117 {} {
 	kadm5_create_principal $server_handle [simple_principal "%s/a"] \
 		{KADM5_PRINCIPAL} "%s/a"
     } $test $test]]} {
-	error "$test: unexpected failure creating principal"
+	perror "$test: unexpected failure creating principal"
     }
     if {! [cmd [format {
 	kadm5_get_principal $server_handle "%s/a" principal KADM5_MAX_LIFE
@@ -531,10 +532,10 @@ proc test117 {} {
 	}
     }
     
-    if {$max_life == 36000} {
+    if {$max_life == 86400} {
 	pass "$test"
     } else {
-	fail "$test: max_life $max_life should be 36000"
+	fail "$test: max_life $max_life should be 86400"
     }
 
     if {! [cmd {kadm5_destroy $server_handle}]} {
@@ -569,7 +570,6 @@ test "init 150"
 proc test150 {} {
     global test KADM5_ADMIN_SERVICE
 
-    set env(KRB5CCNAME) /tmp/krb5cc_kadm5_init_v2
     kdestroy
     kinit testuser notathena "-S $KADM5_ADMIN_SERVICE"
     one_line_succeed_test {
@@ -585,7 +585,6 @@ test "init 151"
 proc test151 {} {
     global test KADM5_CHANGEPW_SERVICE
 
-    set env(KRB5CCNAME) /tmp/krb5cc_kadm5_init_v2
     kdestroy
     kinit testuser notathena "-S $KADM5_CHANGEPW_SERVICE"
     one_line_succeed_test {
@@ -614,7 +613,6 @@ test "init 153"
 proc test153 {} {
     global test KADM5_ADMIN_SERVICE
 
-    set env(KRB5CCNAME) /tmp/krb5cc_kadm5_init_v2
     kinit testuser notathena
     one_line_fail_test {
 	kadm5_init_with_creds testuser null $KADM5_ADMIN_SERVICE \

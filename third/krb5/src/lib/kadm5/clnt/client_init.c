@@ -1,7 +1,5 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
- *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
  */
 
 /*
@@ -30,13 +28,11 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $";
-#endif
-
 #include <stdio.h>
 #include <netdb.h>
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 #include <string.h>
 #include <com_err.h>
 #include <sys/types.h>
@@ -135,6 +131,7 @@ static int preauth_search_list[] = {
 
 static krb5_enctype enctypes[] = {
     ENCTYPE_DES3_CBC_SHA1,
+    ENCTYPE_ARCFOUR_HMAC,
     ENCTYPE_DES_CBC_MD5,
     ENCTYPE_DES_CBC_CRC,
     0,
@@ -152,11 +149,11 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 {
      struct sockaddr_in addr;
      struct hostent *hp;
-     struct servent *srv;
      int fd;
      int i;
 
-     char full_service_name[BUFSIZ], host[MAXHOSTNAMELEN], *ccname_orig;
+     char full_service_name[BUFSIZ], *ccname_orig;
+     const char *c_ccname_orig; 
      char *realm;
      krb5_creds	creds;
      krb5_ccache ccache = NULL;
@@ -164,7 +161,10 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      
      OM_uint32 gssstat, minor_stat;
      gss_buffer_desc input_name;
-     gss_name_t gss_target, gss_client;
+     gss_name_t gss_client;
+#ifndef INIT_TEST
+     gss_name_t gss_target;
+#endif
      gss_cred_id_t gss_client_creds = GSS_C_NO_CREDENTIAL;
 
      kadm5_server_handle_t handle;
@@ -270,7 +270,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      if ((handle->params.mask & REQUIRED_PARAMS) != REQUIRED_PARAMS) {
 	  krb5_free_context(handle->context);
 	  free(handle);
-	  return KADM5_MISSING_CONF_PARAMS;
+	  return KADM5_MISSING_KRB5_CONF_PARAMS;
      }
      
      /*
@@ -322,6 +322,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 		  krb5_cc_get_type(handle->context, ccache),
 		  krb5_cc_get_name(handle->context, ccache));
      } else {
+#if 0
 	  handle->cache_name =
 	       (char *) malloc(strlen(ADM_CCACHE)+strlen("FILE:")+1);
 	  if (handle->cache_name == NULL) {
@@ -330,6 +331,14 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 	  }
 	  sprintf(handle->cache_name, "FILE:%s", ADM_CCACHE);
 	  mktemp(handle->cache_name + strlen("FILE:"));
+#else
+	  {
+	      static int counter = 0;
+	      handle->cache_name = malloc(sizeof("MEMORY:kadm5_")
+					  + 3*sizeof(counter));
+	      sprintf(handle->cache_name, "MEMORY:kadm5_%u", counter++);
+	  }
+#endif
      
 	  if ((code = krb5_cc_resolve(handle->context, handle->cache_name,
 				      &ccache))) 
@@ -433,7 +442,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      handle->lhandle->clnt = handle->clnt;
 
      /* now that handle->clnt is set, we can check the handle */
-     if (code = _kadm5_check_handle((void *) handle))
+     if ((code = _kadm5_check_handle((void *) handle)))
 	  goto error;
 
      /*
@@ -443,19 +452,22 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 
      /* use the kadm5 cache */
      gssstat = gss_krb5_ccache_name(&minor_stat, handle->cache_name,
-				    &ccname_orig);
+				    &c_ccname_orig);
      if (gssstat != GSS_S_COMPLETE) {
 	 code = KADM5_GSS_ERROR;
 	 goto error;
      }
-     if (ccname_orig)
-	  ccname_orig = strdup(ccname_orig);
+     if (c_ccname_orig)
+	  ccname_orig = strdup(c_ccname_orig);
+     else
+       ccname_orig = 0;
+
 
 #ifndef INIT_TEST
      input_name.value = full_service_name;
      input_name.length = strlen((char *)input_name.value) + 1;
      gssstat = gss_import_name(&minor_stat, &input_name,
-			       gss_nt_krb5_name, &gss_target);
+			       (gss_OID) gss_nt_krb5_name, &gss_target);
      if (gssstat != GSS_S_COMPLETE) {
 	  code = KADM5_GSS_ERROR;
 	  goto error;
@@ -465,7 +477,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      input_name.value = client_name;
      input_name.length = strlen((char *)input_name.value) + 1;
      gssstat = gss_import_name(&minor_stat, &input_name,
-			       gss_nt_krb5_name, &gss_client);
+			       (gss_OID) gss_nt_krb5_name, &gss_client);
      if (gssstat != GSS_S_COMPLETE) {
 	  code = KADM5_GSS_ERROR;
 	  goto error;
@@ -486,7 +498,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 						&minor_stat,
 						gss_client_creds,
 						gss_target,
-						gss_mech_krb5,
+						(gss_OID) gss_mech_krb5,
 						GSS_C_MUTUAL_FLAG
 						| GSS_C_REPLAY_FLAG,
 						0,
@@ -592,6 +604,17 @@ kadm5_destroy(void *server_handle)
      free(handle);
 
      return code;
+}
+/* not supported on client */
+kadm5_ret_t kadm5_lock(void *server_handle)
+{
+    return EINVAL;
+}
+
+/* not supported on client */
+kadm5_ret_t kadm5_unlock(void *server_handle)
+{
+    return EINVAL;
 }
 
 kadm5_ret_t kadm5_flush(void *server_handle)

@@ -1,145 +1,249 @@
-/* krb5/autoconf.h.in.  Generated automatically from configure.in by autoheader.  */
+/* krb5/autoconf.h.in.  Generated from configure.in by autoheader.  */
 
-/* Define to empty if the keyword does not work.  */
-#undef const
-
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef gid_t
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
-
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef uid_t
-
+/* Define if ANSI stdio is present (in particular "b" option to fopen) */
 #undef ANSI_STDIO
-#undef HAS_VOID_TYPE
-#undef KRB5_NO_PROTOTYPES
-#undef KRB5_PROVIDE_PROTOTYPES
-#undef KRB5_NO_NESTED_PROTOTYPES
 
-#undef NO_YYLINENO
-#undef POSIX_FILE_LOCKS
-#undef POSIX_SIGTYPE
-#undef POSIX_TERMIOS
-#undef USE_DIRENT_H
-#undef WAIT_USES_INT
-#undef krb5_sigtype
+/* Define if OS has bind 9 */
+#undef BIND_8_COMPAT
 
+/* Define if gethostbyname_r returns int rather than struct hostent * */
+#undef GETHOSTBYNAME_R_RETURNS_INT
+
+/* Define if getservbyname_r returns int rather than struct servent * */
+#undef GETSERVBYNAME_R_RETURNS_INT
+
+/* Define to 1 if you have the `bcopy' function. */
+#undef HAVE_BCOPY
+
+/* Define if bt_rseq is available, for recursive btree traversal. */
+#undef HAVE_BT_RSEQ
+
+/* Define if you have the getaddrinfo function */
+#undef HAVE_GETADDRINFO
+
+/* Define if gethostbyname_r exists and its return type is known */
+#undef HAVE_GETHOSTBYNAME_R
+
+/* Define to 1 if you have the `getnameinfo' function. */
+#undef HAVE_GETNAMEINFO
+
+/* Define if getservbyname_r exists and its return type is known */
+#undef HAVE_GETSERVBYNAME_R
+
+/* Define to 1 if you have the `inet_aton' function. */
+#undef HAVE_INET_ATON
+
+/* Define to 1 if you have the `inet_ntoa' function. */
+#undef HAVE_INET_NTOA
+
+/* Define to 1 if you have the `inet_ntop' function. */
+#undef HAVE_INET_NTOP
+
+/* Define to 1 if you have the `inet_pton' function. */
+#undef HAVE_INET_PTON
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `labs' function. */
+#undef HAVE_LABS
+
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define to 1 if you have the <macsock.h> header file. */
+#undef HAVE_MACSOCK_H
+
+/* Define to 1 if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <netdb.h> header file. */
+#undef HAVE_NETDB_H
+
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#undef HAVE_NETINET_IN_H
+
+/* Define if struct sockaddr contains sa_len */
+#undef HAVE_SA_LEN
+
+/* Define to 1 if you have the `setegid' function. */
+#undef HAVE_SETEGID
+
+/* Define to 1 if you have the `seteuid' function. */
+#undef HAVE_SETEUID
+
+/* Define to 1 if you have the `setregid' function. */
+#undef HAVE_SETREGID
+
+/* Define to 1 if you have the `setresgid' function. */
+#undef HAVE_SETRESGID
+
+/* Define to 1 if you have the `setresuid' function. */
+#undef HAVE_SETRESUID
+
+/* Define to 1 if you have the `setreuid' function. */
+#undef HAVE_SETREUID
+
+/* Define to 1 if you have the `setvbuf' function. */
+#undef HAVE_SETVBUF
+
+/* Define if there is a socklen_t type. If not, probably use size_t */
+#undef HAVE_SOCKLEN_T
+
+/* Define if stdarg available and compiles */
 #undef HAVE_STDARG_H
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#undef HAVE_STDDEF_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strdup' function. */
+#undef HAVE_STRDUP
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define if "struct sockaddr_storage" is available. */
+#undef HAVE_STRUCT_SOCKADDR_STORAGE
+
+/* Define to 1 if you have the <sys/file.h> header file. */
+#undef HAVE_SYS_FILE_H
+
+/* Define to 1 if you have the <sys/filio.h> header file. */
+#undef HAVE_SYS_FILIO_H
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/select.h> header file. */
+#undef HAVE_SYS_SELECT_H
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/uio.h> header file. */
+#undef HAVE_SYS_UIO_H
+
+/* Define to 1 if you have the <time.h> header file. */
+#undef HAVE_TIME_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if varargs available and compiles */
 #undef HAVE_VARARGS_H
+
+/* Define to 1 if you have the <xom.h> header file. */
+#undef HAVE_XOM_H
 
 /* Define if MIT Project Athena default configuration should be used */
 #undef KRB5_ATHENA_COMPAT
 
+/* Define only if building in-tree */
+#undef KRB5_DEPRECATED
+
+/* Define for DNS support of locating realms and KDCs */
+#undef KRB5_DNS_LOOKUP
+
+/* Define to enable DNS lookups of Kerberos KDCs */
+#undef KRB5_DNS_LOOKUP_KDC
+
+/* Define to enable DNS lookups of Kerberos realm names */
+#undef KRB5_DNS_LOOKUP_REALM
+
 /* Define if Kerberos V4 backwards compatibility should be supported */
 #undef KRB5_KRB4_COMPAT
 
-/* Define if DNS support for finding realms and KDC locations should
-   be compiled in.  */
-#undef KRB5_DNS_LOOKUP
-#undef KRB5_DNS_LOOKUP_KDC
-#undef KRB5_DNS_LOOKUP_REALM
+/* Define only if building in-tree */
+#undef KRB5_PRIVATE
 
-/* Define to `long' if <sys/types.h> doesn't define. */
-#undef time_t
-
-/* Define if we should compile in IPv6 support (even if we may find we
-   can't use it at run time).  */
+/* Define if we should compile in IPv6 support (even if we can't use it at run
+   time) */
 #undef KRB5_USE_INET6
 
-/* The number of bytes in a int.  */
+/* Define if in6addr_any is not defined in libc */
+#undef NEED_INSIXADDR_ANY
+
+/* Define if lex produes code with yylineno */
+#undef NO_YYLINENO
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define if POSIX signal handlers are used */
+#undef POSIX_SIGTYPE
+
+/* Define if termios.h exists and tcsetattr exists */
+#undef POSIX_TERMIOS
+
+/* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The number of bytes in a long.  */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The number of bytes in a short.  */
+/* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* Define if you have the bcopy function.  */
-#undef HAVE_BCOPY
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
 
-/* Define if you have the getaddrinfo function.  */
-#undef HAVE_GETADDRINFO
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
 
-/* Define if you have the getipnodebyaddr function.  */
-#undef HAVE_GETIPNODEBYADDR
+/* Define if you have dirent.h functionality */
+#undef USE_DIRENT_H
 
-/* Define if you have the getipnodebyname function.  */
-#undef HAVE_GETIPNODEBYNAME
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#undef YYTEXT_POINTER
 
-/* Define if you have the getnameinfo function.  */
-#undef HAVE_GETNAMEINFO
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
 
-/* Define if you have the inet_aton function.  */
-#undef HAVE_INET_ATON
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef gid_t
 
-/* Define if you have the inet_ntoa function.  */
-#undef HAVE_INET_NTOA
+/* Define krb5_sigtype to type of signal handler */
+#undef krb5_sigtype
 
-/* Define if you have the inet_ntop function.  */
-#undef HAVE_INET_NTOP
+/* Define to `long' if <sys/types.h> does not define. */
+#undef time_t
 
-/* Define if you have the inet_pton function.  */
-#undef HAVE_INET_PTON
-
-/* Define if you have the labs function.  */
-#undef HAVE_LABS
-
-/* Define if you have the memmove function.  */
-#undef HAVE_MEMMOVE
-
-/* Define if you have the setvbuf function.  */
-#undef HAVE_SETVBUF
-
-/* Define if you have the strdup function.  */
-#undef HAVE_STRDUP
-
-/* Define if you have the <macsock.h> header file.  */
-#undef HAVE_MACSOCK_H
-
-/* Define if you have the <netinet/in.h> header file.  */
-#undef HAVE_NETINET_IN_H
-
-/* Define if you have the <stddef.h> header file.  */
-#undef HAVE_STDDEF_H
-
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
-
-/* Define if you have the <string.h> header file.  */
-#undef HAVE_STRING_H
-
-/* Define if you have the <sys/file.h> header file.  */
-#undef HAVE_SYS_FILE_H
-
-/* Define if you have the <sys/param.h> header file.  */
-#undef HAVE_SYS_PARAM_H
-
-/* Define if you have the <sys/socket.h> header file.  */
-#undef HAVE_SYS_SOCKET_H
-
-/* Define if you have the <sys/stat.h> header file.  */
-#undef HAVE_SYS_STAT_H
-
-/* Define if you have the <sys/time.h> header file.  */
-#undef HAVE_SYS_TIME_H
-
-/* Define if you have the <sys/types.h> header file.  */
-#undef HAVE_SYS_TYPES_H
-
-/* Define if you have the <unistd.h> header file.  */
-#undef HAVE_UNISTD_H
-
-/* Define if you have the <xom.h> header file.  */
-#undef HAVE_XOM_H
-
-/* Define if you have the nsl library (-lnsl).  */
-#undef HAVE_LIBNSL
-
-/* Define if you have the socket library (-lsocket).  */
-#undef HAVE_LIBSOCKET
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef uid_t

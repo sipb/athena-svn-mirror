@@ -30,6 +30,7 @@
 
 #ifdef KRB4
 #include <kerberosIV/krb_err.h>
+#include <kerberosIV/kadm_err.h>
 #endif
 #ifdef KRB5
 #include "krb5_err.h"
@@ -37,7 +38,6 @@
 #include "asn1_err.h"
 #include "kdb5_err.h"
 #include "profile.h"
-#include "adm_err.h"
 extern void krb5_stdcc_shutdown();
 #endif
 #ifdef GSSAPI
@@ -101,7 +101,7 @@ void GetCallingAppVerInfo( char *AppTitle, char *AppVer, char *AppIni,
 			  BOOL *VSflag)
 {
 	char CallerFilename[_MAX_PATH];
-	LONG FAR *lpLangInfo;
+	LONG *lpLangInfo;
 	DWORD hVersionInfoID, size;
 	GLOBALHANDLE hVersionInfo;
 	LPSTR lpVersionInfo;
@@ -158,7 +158,7 @@ void GetCallingAppVerInfo( char *AppTitle, char *AppVer, char *AppIni,
 				    lpVersionInfo);
 
 	retval = VerQueryValue(lpVersionInfo, "\\VarFileInfo\\Translation",
-			       (LPSTR FAR *)&lpLangInfo, &dumint);
+			       (LPSTR *)&lpLangInfo, &dumint);
 	wsprintf(szVerQ,
 		 "\\StringFileInfo\\%04x%04x\\",
 		 LOWORD(*lpLangInfo), HIWORD(*lpLangInfo));
@@ -221,10 +221,10 @@ void GetCallingAppVerInfo( char *AppTitle, char *AppVer, char *AppIni,
  * We're going to test track as well
  */
 static int CallVersionServer(app_title, app_version, app_ini, code_cover)
-	char FAR *app_title;
-	char FAR *app_version;
-	char FAR *app_ini;
-	char FAR *code_cover;
+	char *app_title;
+	char *app_version;
+	char *app_ini;
+	char *code_cover;
 {
 	VS_Request vrequest;
 	VS_Status  vstatus;
@@ -366,7 +366,7 @@ HINSTANCE get_lib_instance()
 static int
 control(int mode)
 {
-    void ((KRB5_CALLCONV *et_func)(struct error_table FAR *));
+    void ((KRB5_CALLCONV *et_func)(struct error_table *));
 #ifdef NEED_WINSOCK
     WORD wVersionRequested;
     WSADATA wsaData;
@@ -405,6 +405,7 @@ control(int mode)
 
 #ifdef KRB4
     (*et_func)(&et_krb_error_table);
+    (*et_func)(&et_kadm_error_table);
 #endif
 #ifdef KRB5
     (*et_func)(&et_krb5_error_table);
@@ -412,7 +413,6 @@ control(int mode)
     (*et_func)(&et_kdb5_error_table);
     (*et_func)(&et_asn1_error_table);
     (*et_func)(&et_prof_error_table);
-    (*et_func)(&et_kadm_error_table);
 #endif
 #ifdef GSSAPI
     (*et_func)(&et_k5g_error_table);

@@ -58,6 +58,7 @@
 
 #ifdef	ENCRYPTION
 
+#include <stdio.h>
 #define	ENCRYPT_NAMES
 #include <arpa/telnet.h>
 
@@ -77,8 +78,8 @@
  * These functions pointers point to the current routines
  * for encrypting and decrypting data.
  */
-void	(*encrypt_output) P((unsigned char *, int));
-int	(*decrypt_input) P((int));
+void	(*encrypt_output) (unsigned char *, int);
+int	(*decrypt_input) (int);
 
 int encrypt_debug_mode = 0;
 static int decrypt_mode = 0;
@@ -213,7 +214,7 @@ encrypt_init(name, server)
 	str_send[str_suplen++] = SE;
 }
 
-	void
+static	void
 encrypt_list_types()
 {
 	Encryptions *ep = encryptions;
@@ -249,7 +250,7 @@ EncryptDisable(type, mode)
 	if (isprefix(type, "help") || isprefix(type, "?")) {
 		printf("Usage: encrypt disable <type> [input|output]\n");
 		encrypt_list_types();
-	} else if ((ep = (Encryptions *)genget(type, encryptions,
+	} else if ((ep = (Encryptions *)genget(type, (char **) encryptions,
 						sizeof(Encryptions))) == 0) {
 		printf("%s: invalid encryption type\n", type);
 	} else if (Ambiguous(ep)) {
@@ -284,7 +285,7 @@ EncryptType(type, mode)
 	if (isprefix(type, "help") || isprefix(type, "?")) {
 		printf("Usage: encrypt type <type> [input|output]\n");
 		encrypt_list_types();
-	} else if ((ep = (Encryptions *)genget(type, encryptions,
+	} else if ((ep = (Encryptions *)genget(type, (char **) encryptions,
 						sizeof(Encryptions))) == 0) {
 		printf("%s: invalid encryption type\n", type);
 	} else if (Ambiguous(ep)) {
@@ -562,7 +563,8 @@ encrypt_is(data, cnt)
 	} else {
 		ret = (*ep->is)(data, cnt);
 		if (encrypt_debug_mode)
-			printf("(*ep->is)(%x, %d) returned %s(%d)\n", data, cnt,
+			printf("(*ep->is)(%lx, %d) returned %s(%d)\n", 
+			        (unsigned long) data, cnt,
 				(ret < 0) ? "FAIL " :
 				(ret == 0) ? "SUCCESS " : "MORE_TO_DO ", ret);
 	}
@@ -606,8 +608,8 @@ encrypt_reply(data, cnt)
 	} else {
 		ret = (*ep->reply)(data, cnt);
 		if (encrypt_debug_mode)
-			printf("(*ep->reply)(%x, %d) returned %s(%d)\n",
-				data, cnt,
+			printf("(*ep->reply)(%lx, %d) returned %s(%d)\n",
+				(unsigned long) data, cnt,
 				(ret < 0) ? "FAIL " :
 				(ret == 0) ? "SUCCESS " : "MORE_TO_DO ", ret);
 	}
@@ -644,7 +646,7 @@ encrypt_start(data, cnt)
 		return;
 	}
 
-	if (ep = finddecryption(decrypt_mode)) {
+	if ((ep = finddecryption(decrypt_mode))) {
 		decrypt_input = ep->input;
 		if (encrypt_verbose)
 			printf("[ Input is now decrypted with type %s ]\r\n",
@@ -728,26 +730,26 @@ encrypt_request_start(data, cnt)
 
 static unsigned char str_keyid[(MAXKEYLEN*2)+5] = { IAC, SB, TELOPT_ENCRYPT };
 
-void encrypt_keyid();
+static void encrypt_keyid (struct key_info *kp, unsigned char *, unsigned int);
 		
 void encrypt_enc_keyid(keyid, len)
 	unsigned char *keyid;
 	int len;
 {
-	encrypt_keyid(&ki[1], keyid, len);
+	encrypt_keyid(&ki[1], keyid, (unsigned) len);
 }
 
 void encrypt_dec_keyid(keyid, len)
 	unsigned char *keyid;
 	int len;
 {
-	encrypt_keyid(&ki[0], keyid, len);
+	encrypt_keyid(&ki[0], keyid, (unsigned) len);
 }
 
-void encrypt_keyid(kp, keyid, len)
+static void encrypt_keyid(kp, keyid, len)
 	struct key_info *kp;
 	unsigned char *keyid;
-	int len;
+	unsigned int len;
 {
 	Encryptions *ep;
 	int dir = kp->dir;
@@ -767,7 +769,8 @@ void encrypt_keyid(kp, keyid, len)
 		if (ep->keyid)
 			(void)(*ep->keyid)(dir, kp->keyid, &kp->keylen);
 
-	} else if ((len != kp->keylen) || (memcmp(keyid, kp->keyid, len) != 0)) {
+	} else if ((len != kp->keylen) || 
+		   (memcmp(keyid, kp->keyid, len) != 0)) {
 		/*
 		 * Length or contents are different
 		 */
@@ -783,14 +786,14 @@ void encrypt_keyid(kp, keyid, len)
 		return;
 	}
 
-	encrypt_send_keyid(dir, kp->keyid, kp->keylen, 0);
+	encrypt_send_keyid(dir, kp->keyid, (unsigned) kp->keylen, 0);
 }
 
 	void
 encrypt_send_keyid(dir, keyid, keylen, saveit)
 	int dir;
 	unsigned char *keyid;
-	int keylen;
+	unsigned int keylen;
 	int saveit;
 {
 	unsigned char *strp;

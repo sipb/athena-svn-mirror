@@ -21,10 +21,12 @@
  */
 
 #include "gssapiP_generic.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 
 /*
- * $Id: util_token.c,v 1.1.1.2 1999-10-05 16:12:10 ghudson Exp $
+ * $Id: util_token.c,v 1.1.1.3 2004-02-27 04:05:54 zacheiss Exp $
  */
 
 /* XXXX this code currently makes the assumption that a mech oid will
@@ -44,6 +46,11 @@
 					bytes 0,1 are the token type
 					bytes 2,n are the token data
 
+Note that the token type field is a feature of RFC 1964 mechanisms and
+is not used by other GSSAPI mechanisms.  As such, a token type of -1
+is interpreted to mean that no token type should be expected or
+generated. 
+
 For the purposes of this abstraction, the token "header" consists of
 the sequence tag and length octets, the mech OID DER encoding, and the
 first two inner bytes, which indicate the token type.  The token
@@ -51,7 +58,7 @@ first two inner bytes, which indicate the token type.  The token
 
 */
 
-static int der_length_size(length)
+static unsigned int der_length_size(length)
      int length;
 {
    if (length < (1<<7))
@@ -124,7 +131,7 @@ static int der_read_length(buf, bufsize)
 
 /* returns the length of a token, given the mech oid and the body size */
 
-int g_token_size(mech, body_size)
+unsigned int g_token_size(mech, body_size)
      gss_OID mech;
      unsigned int body_size;
 {
@@ -138,17 +145,19 @@ int g_token_size(mech, body_size)
 
 void g_make_token_header(mech, body_size, buf, tok_type)
      gss_OID mech;
-     int body_size;
+     unsigned int body_size;
      unsigned char **buf;
      int tok_type;
 {
    *(*buf)++ = 0x60;
-   der_write_length(buf, 4 + mech->length + body_size);
+   der_write_length(buf, (tok_type == -1) ?2:4 + mech->length + body_size);
    *(*buf)++ = 0x06;
    *(*buf)++ = (unsigned char) mech->length;
-   TWRITE_STR(*buf, mech->elements, ((int) mech->length));
-   *(*buf)++ = (unsigned char) ((tok_type>>8)&0xff);
-   *(*buf)++ = (unsigned char) (tok_type&0xff);
+   TWRITE_STR(*buf, mech->elements, mech->length);
+   if (tok_type != -1) {
+       *(*buf)++ = (unsigned char) ((tok_type>>8)&0xff);
+       *(*buf)++ = (unsigned char) (tok_type&0xff);
+   }
 }
 
 /*
@@ -159,22 +168,30 @@ void g_make_token_header(mech, body_size, buf, tok_type)
  * mechanism in the token does not match the mech argument.  buf and
  * *body_size are left unmodified on error.
  */
-gss_int32 g_verify_token_header(mech, body_size, buf_in, tok_type, toksize)
+
+gss_int32 g_verify_token_header(mech, body_size, buf_in, tok_type, toksize_in,
+				wrapper_required)
      gss_OID mech;
-     int *body_size;
+     unsigned int *body_size;
      unsigned char **buf_in;
      int tok_type;
-     int toksize;
+     unsigned int toksize_in;
+     int wrapper_required;
 {
    unsigned char *buf = *buf_in;
    int seqsize;
    gss_OID_desc toid;
-   int ret = 0;
+   int toksize = toksize_in;
 
    if ((toksize-=1) < 0)
       return(G_BAD_TOK_HEADER);
-   if (*buf++ != 0x60)
-      return(G_BAD_TOK_HEADER);
+   if (*buf++ != 0x60) {
+       if (wrapper_required)
+	   return(G_BAD_TOK_HEADER);
+       buf--;
+       toksize++;
+       goto skip_wrapper;
+   }
 
    if ((seqsize = der_read_length(&buf, &toksize)) < 0)
       return(G_BAD_TOK_HEADER);
@@ -197,25 +214,18 @@ gss_int32 g_verify_token_header(mech, body_size, buf_in, tok_type, toksize)
    buf+=toid.length;
 
    if (! g_OID_equal(&toid, mech)) 
-      ret = G_WRONG_MECH;
- 
-   /* G_WRONG_MECH is not returned immediately because it's more important
-      to return G_BAD_TOK_HEADER if the token header is in fact bad */
+       return  G_WRONG_MECH;
+skip_wrapper:
+   if (tok_type != -1) {
+       if ((toksize-=2) < 0)
+	   return(G_BAD_TOK_HEADER);
 
-   if ((toksize-=2) < 0)
-      return(G_BAD_TOK_HEADER);
-
-   if (ret)
-       return(ret);
-
-   if ((*buf++ != ((tok_type>>8)&0xff)) ||
-       (*buf++ != (tok_type&0xff))) 
-      return(G_WRONG_TOKID);
-
-   if (!ret) {
-	*buf_in = buf;
-	*body_size = toksize;
+       if ((*buf++ != ((tok_type>>8)&0xff)) ||
+	   (*buf++ != (tok_type&0xff)))
+	   return(G_WRONG_TOKID);
    }
+   *buf_in = buf;
+   *body_size = toksize;
 
-   return(ret);
+   return 0;
 }

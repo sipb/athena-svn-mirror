@@ -27,126 +27,92 @@
 #include "asn1_get.h"
 
 asn1_error_code
-asn1_get_tag_indef(buf, class, construction, tagnum, retlen, indef)
-     asn1buf * buf;
-     asn1_class * class;
-     asn1_construction * construction;
-     asn1_tagnum * tagnum;
-     int * retlen;
-     int * indef;
+asn1_get_tag_2(asn1buf *buf, taginfo *t)
 {
-  asn1_error_code retval;
-  
-  if (buf == NULL || buf->base == NULL ||
-      buf->bound - buf->next + 1 <= 0) {
-      *tagnum = ASN1_TAGNUM_CEILING;
-      return 0;
-  }
-  retval = asn1_get_id(buf,class,construction,tagnum);
-  if(retval) return retval;
-  retval = asn1_get_length(buf,retlen,indef);
-  if(retval) return retval;
-  return 0;
-}
+    asn1_error_code retval;
 
-asn1_error_code
-asn1_get_tag(buf, class, construction, tagnum, retlen)
-     asn1buf *buf;
-     asn1_class *class;
-     asn1_construction *construction;
-     asn1_tagnum *tagnum;
-     int *retlen;
-{
-  int indef;
-
-  return asn1_get_tag_indef(buf, class, construction, tagnum, retlen, &indef);
-}
-
-asn1_error_code asn1_get_sequence(buf, retlen, indef)
-     asn1buf * buf;
-     int * retlen;
-     int * indef;
-{
-  asn1_error_code retval;
-  asn1_class class;
-  asn1_construction construction;
-  asn1_tagnum tagnum;
-
-  retval = asn1_get_tag_indef(buf,&class,&construction,&tagnum,retlen,indef);
-  if(retval) return retval;
-  if(retval) return (krb5_error_code)retval;
-  if(class != UNIVERSAL || construction != CONSTRUCTED ||
-     tagnum != ASN1_SEQUENCE) return ASN1_BAD_ID;
-  return 0;
-}
-
-/****************************************************************/
-/* Private Procedures */
-
-asn1_error_code asn1_get_id(buf, class, construction, tagnum)
-     asn1buf * buf;
-     asn1_class * class;
-     asn1_construction * construction;
-     asn1_tagnum * tagnum;
-{
-  asn1_error_code retval;
-  asn1_tagnum tn=0;
-  asn1_octet o;
+    if (buf == NULL || buf->base == NULL ||
+	buf->bound - buf->next + 1 <= 0) {
+	t->tagnum = ASN1_TAGNUM_CEILING; /* emphatically not an EOC tag */
+	t->asn1class = UNIVERSAL;
+	t->construction = PRIMITIVE;
+	t->length = 0;
+	t->indef = 0;
+	return 0;
+    }
+    {
+	/* asn1_get_id(buf, t) */
+	asn1_tagnum tn=0;
+	asn1_octet o;
 
 #define ASN1_CLASS_MASK 0xC0
 #define ASN1_CONSTRUCTION_MASK 0x20
 #define ASN1_TAG_NUMBER_MASK 0x1F
 
-  retval = asn1buf_remove_octet(buf,&o);
-  if(retval) return retval;
+	retval = asn1buf_remove_octet(buf,&o);
+	if (retval)
+	    return retval;
 
-  if(class != NULL)
-    *class = (asn1_class)(o&ASN1_CLASS_MASK);
-  if(construction != NULL)
-    *construction = (asn1_construction)(o&ASN1_CONSTRUCTION_MASK);
-  if((o&ASN1_TAG_NUMBER_MASK) != ASN1_TAG_NUMBER_MASK){
-    /* low-tag-number form */
-    if(tagnum != NULL) *tagnum = (asn1_tagnum)(o&ASN1_TAG_NUMBER_MASK);
-  }else{
-    /* high-tag-number form */
-    do{
-      retval = asn1buf_remove_octet(buf,&o);
-      if(retval) return retval;
-      tn = (tn<<7) + (asn1_tagnum)(o&0x7F);
-    }while(tn&0x80);
-    if(tagnum != NULL) *tagnum = tn;
-  }
-  return 0;
+	t->asn1class = (asn1_class)(o&ASN1_CLASS_MASK);
+	t->construction = (asn1_construction)(o&ASN1_CONSTRUCTION_MASK);
+	if ((o&ASN1_TAG_NUMBER_MASK) != ASN1_TAG_NUMBER_MASK){
+	    /* low-tag-number form */
+	    t->tagnum = (asn1_tagnum)(o&ASN1_TAG_NUMBER_MASK);
+	} else {
+	    /* high-tag-number form */
+	    do {
+		retval = asn1buf_remove_octet(buf,&o);
+		if (retval) return retval;
+		tn = (tn<<7) + (asn1_tagnum)(o&0x7F);
+	    }while(tn&0x80);
+	    t->tagnum = tn;
+	}
+    }
+
+    {
+	/* asn1_get_length(buf, t) */
+	asn1_octet o;
+
+	t->indef = 0;
+	retval = asn1buf_remove_octet(buf,&o);
+	if (retval) return retval;
+	if ((o&0x80) == 0) {
+	    t->length = (int)(o&0x7F);
+	} else {
+	    int num;
+	    int len=0;
+    
+	    for (num = (int)(o&0x7F); num>0; num--) {
+		retval = asn1buf_remove_octet(buf,&o);
+		if(retval) return retval;
+		len = (len<<8) + (int)o;
+	    }
+	    if (len < 0)
+		return ASN1_OVERRUN;
+	    if (!len)
+		t->indef = 1;
+	    t->length = len;
+	}
+    }
+    if (t->indef && t->construction != CONSTRUCTED)
+	return ASN1_MISMATCH_INDEF;
+    return 0;
 }
 
-asn1_error_code asn1_get_length(buf, retlen, indef)
-     asn1buf * buf;
-     int * retlen;
-     int * indef;
+asn1_error_code asn1_get_sequence(asn1buf *buf, unsigned int *retlen, int *indef)
 {
-  asn1_error_code retval;
-  asn1_octet o;
+    taginfo t;
+    asn1_error_code retval;
 
-  if (indef != NULL)
-    *indef = 0;
-  retval = asn1buf_remove_octet(buf,&o);
-  if(retval) return retval;
-  if((o&0x80) == 0){
-    if(retlen != NULL) *retlen = (int)(o&0x7F);
-  }else{
-    int num;
-    int len=0;
-    
-    for(num = (int)(o&0x7F); num>0; num--){
-      retval = asn1buf_remove_octet(buf,&o);
-      if(retval) return retval;
-      len = (len<<8) + (int)o;
-    }
-    if (len < 0)
-      return ASN1_OVERRUN;
-    if (indef != NULL && !len)
-      *indef = 1;
-    if(retlen != NULL) *retlen = len;
-  }
-  return 0;
+    retval = asn1_get_tag_2(buf, &t);
+    if (retval)
+	return retval;
+    if (t.asn1class != UNIVERSAL || t.construction != CONSTRUCTED ||
+	t.tagnum != ASN1_SEQUENCE)
+	return ASN1_BAD_ID;
+    if (retlen)
+	*retlen = t.length;
+    if (indef)
+	*indef = t.indef;
+    return 0;
 }

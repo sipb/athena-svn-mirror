@@ -21,12 +21,14 @@ TOPLIBD=@RBUILD@/lib
 PROG_LIBPATH=-L@RBUILD@/lib
 # XXX kludge!
 PROG_RPATH=@RBUILD@/lib
+# XXX more kludge!
+FAKEDEST=@RBUILD@/util/fakedest
 # This converts $(TOPLIBD) to $TOPLIBD
 cat > /tmp/env_setup$$ <<\EOF
 @KRB5_RUN_ENV@
 EOF
 
-foo=`sed -e 's/(//g' -e 's/)//g' /tmp/env_setup$$`
+foo=`sed -e 's/(//g' -e 's/)//g' -e 's/\\\$\\\$/\$/g' /tmp/env_setup$$`
 eval $foo
 
 # This will get put in setup.csh for convenience
@@ -54,7 +56,9 @@ export VERBOSE
 
 REALM=SECURE-TEST.OV.COM; export REALM
 
-EXPECT=@EXPECT@; export EXPECT
+if test x$EXPECT = x; then
+    EXPECT=@EXPECT@; export EXPECT
+fi
 
 COMPARE_DUMP=$TESTDIR/scripts/compare_dump.pl; export COMPARE_DUMP
 FIX_CONF_FILES=$TESTDIR/scripts/fixup-conf-files.pl
@@ -75,7 +79,7 @@ SRVTCL=$TESTDIR/util/ovsec_kadm_srv_tcl; export SRVTCL
 KRB5_CONFIG=$K5ROOT/krb5.conf; export KRB5_CONFIG
 KRB5_KDC_PROFILE=$K5ROOT/kdc.conf; export KRB5_KDC_PROFILE
 KRB5_KTNAME=$K5ROOT/ovsec_adm.srvtab; export KRB5_KTNAME
-KRB5CCNAME=/tmp/krb5cc_unit-test; export KRB5CCNAME
+KRB5CCNAME=$K5ROOT/krb5cc_unit-test; export KRB5CCNAME
 
 if [ "$TEST_SERVER" != "" ]; then
 	MAKE_KEYTAB="$MAKE_KEYTAB -server $TEST_SERVER"

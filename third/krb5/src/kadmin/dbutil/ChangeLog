@@ -1,11 +1,195 @@
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_destroy.c, kdb5_stash.c: Don't declare errno.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* dumpv4.c (v4init):
+	* loadv4.c (dumpfile;): Remove trailing colon, as new implementation
+	of des_read_password() appends it.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-23  Tom Yu  <tlyu@mit.edu>
+
+	* dump.c (dump_db): Update usage comment.  Add "-rev" and
+	"-recurse" flags to permit reverse and recursive dumping of the
+	database, respectively.  Check for dump filename beginning with
+	"-" to avoid accidental dumps to such filenames.
+
+	* kdb5_util.c (usage): Update to match reality, primarily by
+	updating the "dump" usage, but also showing global options before
+	the command, which is how they were being interpreted anyway.
+
+	* kdb5_util.M: Update to match reality.  Document "-mkey_convert",
+	"-new_mkey_file", "-rev", and "-recurse" options to "dump".
+	Document "dump to stdout" behavior.  Show global options before
+	the command.  Make some formatting fixes.  s/binary tree/btree/
+	since the btree back end is actually an n-ary tree.
+
+2002-08-14  Jen Selby <jenselby@mit.edu>
+
+	* dump.c: added -mkey_convert and -new_mkey_file to the usage
+	comment
+
+2002-07-31  Tom Yu  <tlyu@mit.edu>
+
+	* dump.c (master_key_convert): Iterate over freeing
+	key_data->key_data_contents[j] rather than attempting to free
+	key_data->key_data_contents.
+
+2002-07-29  Jen Selby  <jenselby@mit.edu>
+
+	* kdb5_util.M: added documentation for some options.
+
+2002-07-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* dump.c (dump_ov_princ): Remove variable set but unused.
+
+2002-04-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_stash.c (kdb5_stash): Call krb5_c_valid_enctype instead of
+	valid_enctype.
+	* kdb5_util.c (main, open_db_and_mkey): Likewise.
+	* loadv4.c (load_v4db): Likewise.
+
+2002-01-08  Sam Hartman  <hartmans@mit.edu>
+
+	* kdb5_create.c (kdb5_create): Load strong random data
+
+2001-10-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* dump.c (dump_db): Pass krb5_boolean instead of char * as
+	argument to kb5_db_fetch_mkey().
+
 2001-10-23  Tom Yu  <tlyu@mit.edu>
 
 	* loadv4.c (fixup_database): Don't set SUPPORT_DESMD5 anymore.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* dump.c, kdb5_create.c, kdb5_util.h, loadv4.c, tcl_wrapper.c:
+	Make prototypes unconditional.
+
+2001-07-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* string_table.c (str_INITING_KCONTEXT): Variable deleted.
+	* string_table.h (str_INITING_KCONTEXT): Declaration deleted.
+	* kadm5_create.c (kadm5_create, kadm5_create_magic_princs): Don't
+	use str_INITING_KCONTEXT, instead provide (different!) messages
+	more appropriate to the actual code.
+
+2001-06-29  Ezra Peisach  <epeisach@mit.edu>
+
+	* nstrtok.h: New file with prototype for nstrtok.
+
+	* ovload.c: Include nstrtok.h
+
+	* strtok.c: Include nstrtok.h for prototype. Declare delim as
+	const char * argument. Delete rcsid. 
+
+	* string_table.c: Delete rcsid.
+
+	* kadm5_create.c (build_name_with_realm): Declare static.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_util.c (main): Change optarg to koptarg to prevent
+	shadowing of getopt function.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_create.c: Include <krb5/adm_proto.h> for
+	krb5_keysalt_iterate() prototype.
+
+2001-06-20  Mitchell Berger  <mitchb@mit.edu>
+
+	* kdb5_create.c (kdb5_create): Fixed typo in com_err message.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* dump.c (name_matches): Cleanup warning of assignments in
+	conditionals.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* dump.c: Include regex.h if exists and if HAVE_REGCOMP
+	defined. Preior to this, regex.h was never included.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* dumpv4.c: Pass C_Block * to des_read_password() as per prototype.
+
+	* loadv4.c: Include k5-int.h before des.h for des_read_password
+	prototype. Pass C_Block * to des_read_password() as per prototype.
+
+	* kdb5_util.h: Add prototype for usage.
+
+	* kdb5_create.c, kdb5_destroy.c, kdb5_stash.c: Include kdb5_util.h
+	for usage() prototype.
+
+2001-06-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm5_create.c: Add prototype for static
+	add_admin_princs(). Cleanup calling of add_admin_princs() to be
+	consistant with prototype.
+
+	* kdb5_create.c, kdb5_stash.c, kdb5_destroy.c: Cleanup assignments
+	in conditionals.
+
+Mon Feb 26 15:01:27 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* loadv4.c, ovload.c, kdb5_util.h, kdb5_util.c, kadm5_create.c,
+ 	dumpv4.c, dump.c: Compiler warning cleanup including prototypes,
+ 	assignments in conditionals, unused variables, varaibles shadowing
+ 	one-another.
+
+2001-02-08  Tom Yu  <tlyu@mit.edu>
+
+	* loadv4.c: Remove references to KRB_NEVERDATE.
 
 2001-02-05  Tom Yu  <tlyu@mit.edu>
 
 	* kdb5_util.M: Fix some formatting nits and document new flags
 	controlling dump formats.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_create.c (kdb5_create): Argument to krb5_read_password
+	changed to unsigned int.
+
+2000-10-16  Tom Yu  <tlyu@mit.edu>
+
+	* kdb5_util.M: Update manpage.
+
+	* kdb5_util.c (usage): Update usage message.
+
+	* dumpv4.c (dump_v4_iterator): Add logic to deal with long
+	lifetimes, as well as optionally using short lifetimes.
+
+	* loadv4.c (load_v4db): Add logic to deal with long lifetimes, as
+	well as optionally using short lifetimes.
+
+	* kadm5_create.c (kadm5_create_magic_princs): Add calls to
+	krb5_klog_init() and krb5_klog_close() to avoid coredumping if
+	kadm5_init() calls krb5_klog_syslog().
+
+2000-07-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* dump.c: Various message char arrays turned into macros, to
+	permit gcc to verify format strings and arguments match.  
+	(k5beta6_dump_header, k5beta7_dump_header): Deleted.
+	(dump_ov_princ): Use %lx for aux_attributes.
 
 2000-06-30  Tom Yu  <tlyu@mit.edu>
 
@@ -14,12 +198,17 @@
 	kadm5 data to be dumped.  This is an interim measure until we
 	redesign the dump format somewhat.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* ovload.c: Check for existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
+
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-07-06  Ken Raeburn  <raeburn@mit.edu>
 

@@ -1,7 +1,7 @@
 thisconfigdir=./..
 myfulldir=lib/krb5/posix
 mydir=posix
-BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..$(S)..
 
 ##DOS##BUILDTOP = ..\..\..
 ##DOS##PREFIXDIR=posix
@@ -18,3 +18,4 @@ clean-unix:: clean-libobjs
 
 ##WIN16##LIBOBJS = syslog.obj sscanf.obj
 ##WIN32##LIBOBJS = $(OUTPRE)syslog.obj
+# @libobj_frag@

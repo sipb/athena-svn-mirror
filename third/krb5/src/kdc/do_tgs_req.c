@@ -27,6 +27,7 @@
  * KDC Routines to deal with TGS_REQ's
  */
 
+#define NEED_SOCKETS
 #include "k5-int.h"
 #include "com_err.h"
 
@@ -45,24 +46,17 @@
 #include "adm_proto.h"
 
 
-static void find_alternate_tgs PROTOTYPE((krb5_kdc_req *,
-					  krb5_db_entry *,
-					  krb5_boolean *,
-					  int *));
+static void find_alternate_tgs (krb5_kdc_req *, krb5_db_entry *,
+				krb5_boolean *, int *);
 
-static krb5_error_code prepare_error_tgs PROTOTYPE((krb5_kdc_req *,
-						    krb5_ticket *,
-						    int,
-						    const char *,
-						    krb5_data **));
+static krb5_error_code prepare_error_tgs (krb5_kdc_req *, krb5_ticket *,
+					  int, const char *, krb5_data **,
+					  const char *);
 
 /*ARGSUSED*/
 krb5_error_code
-process_tgs_req(pkt, from, portnum, response)
-    krb5_data *pkt;
-    const krb5_fulladdr *from;	/* who sent it ? */
-    int	portnum;
-    krb5_data **response;	/* filled in with a response packet */
+process_tgs_req(krb5_data *pkt, const krb5_fulladdr *from,
+		krb5_data **response)
 {
     krb5_keyblock * subkey;
     krb5_kdc_req *request = 0;
@@ -82,7 +76,8 @@ process_tgs_req(pkt, from, portnum, response)
     krb5_timestamp until, rtime;
     krb5_keyblock encrypting_key;
     krb5_key_data  *server_key;
-    char *cname = 0, *sname = 0, *tmp = 0, *fromstring = 0;
+    char *cname = 0, *sname = 0, *tmp = 0;
+    const char *fromstring = 0;
     krb5_last_req_entry *nolrarray[2], nolrentry;
 /*    krb5_address *noaddrarray[1]; */
     krb5_enctype useenctype;
@@ -92,6 +87,7 @@ process_tgs_req(pkt, from, portnum, response)
     const char	*status = 0;
     char ktypestr[128];
     char rep_etypestr[128];
+    char fromstringbuf[70];
 
     session_key.contents = 0;
     
@@ -107,11 +103,9 @@ process_tgs_req(pkt, from, portnum, response)
     if ((retval = setup_server_realm(request->server)))
 	return retval;
 
-#ifdef HAVE_NETINET_IN_H
-    if (from->address->addrtype == ADDRTYPE_INET)
-	fromstring =
-	    (char *) inet_ntoa(*(struct in_addr *)from->address->contents);
-#endif
+    fromstring = inet_ntop(ADDRTYPE2FAMILY(from->address->addrtype),
+			   from->address->contents,
+			   fromstringbuf, sizeof(fromstringbuf));
     if (!fromstring)
 	fromstring = "<unknown>";
 
@@ -180,7 +174,7 @@ tgt_again:
 		krb5_data *tgs_1 =
 		    krb5_princ_component(kdc_context, tgs_server, 1);
 
-		if (server_1->length != tgs_1->length ||
+		if (!tgs_1 || server_1->length != tgs_1->length ||
 		    memcmp(server_1->data, tgs_1->data, tgs_1->length)) {
 		    krb5_db_free_principal(kdc_context, &server, nprincs);
 		    find_alternate_tgs(request, &server, &more, &nprincs);
@@ -243,7 +237,7 @@ tgt_again:
 	}
 	
 	etype = request->second_ticket[st_idx]->enc_part2->session->enctype;
-	if (!valid_enctype(etype)) {
+	if (!krb5_c_valid_enctype(etype)) {
 	    status = "BAD_ETYPE_IN_2ND_TKT";
 	    errcode = KRB5KDC_ERR_ETYPE_NOSUPP;
 	    goto cleanup;
@@ -545,9 +539,9 @@ tgt_again:
 		if ((errcode = krb5_unparse_name(kdc_context, client2, &tmp)))
 			tmp = 0;
 		krb5_klog_syslog(LOG_INFO,
-				 "TGS_REQ %s(%d): 2ND_TKT_MISMATCH: "
+				 "TGS_REQ %s: 2ND_TKT_MISMATCH: "
 				 "authtime %d, %s for %s, 2nd tkt client %s",
-				 fromstring, portnum, authtime,
+				 fromstring, authtime,
 				 cname ? cname : "<unknown client>",
 				 sname ? sname : "<unknown server>",
 				 tmp ? tmp : "<unknown>");
@@ -653,10 +647,10 @@ cleanup:
 	if (!errcode)
 	    rep_etypes2str(rep_etypestr, sizeof(rep_etypestr), &reply);
         krb5_klog_syslog(LOG_INFO,
-			 "TGS_REQ (%s) %s(%d): %s: authtime %d, "
+			 "TGS_REQ (%s) %s: %s: authtime %d, "
 			 "%s%s %s for %s%s%s",
 			 ktypestr,
-			 fromstring, portnum, status, authtime,
+			 fromstring, status, authtime,
 			 !errcode ? rep_etypestr : "",
 			 !errcode ? "," : "",
 			 cname ? cname : "<unknown client>",
@@ -666,12 +660,14 @@ cleanup:
     }
     
     if (errcode) {
+	if (status == 0)
+	    status = error_message (errcode);
 	errcode -= ERROR_TABLE_BASE_krb5;
 	if (errcode < 0 || errcode > 128)
 	    errcode = KRB_ERR_GENERIC;
 	    
 	retval = prepare_error_tgs(request, header_ticket, errcode,
-				   fromstring, response);
+				   fromstring, response, status);
     }
     
     if (header_ticket)
@@ -693,12 +689,8 @@ cleanup:
 }
 
 static krb5_error_code
-prepare_error_tgs (request, ticket, error, ident, response)
-register krb5_kdc_req *request;
-krb5_ticket *ticket;
-int error;
-const char *ident;
-krb5_data **response;
+prepare_error_tgs (krb5_kdc_req *request, krb5_ticket *ticket, int error,
+		   const char *ident, krb5_data **response, const char *status)
 {
     krb5_error errpkt;
     krb5_error_code retval;
@@ -716,10 +708,10 @@ krb5_data **response;
 	errpkt.client = ticket->enc_part2->client;
     else
 	errpkt.client = 0;
-    errpkt.text.length = strlen(error_message(error+KRB5KDC_ERR_NONE))+1;
+    errpkt.text.length = strlen(status) + 1;
     if (!(errpkt.text.data = malloc(errpkt.text.length)))
 	return ENOMEM;
-    (void) strcpy(errpkt.text.data, error_message(error+KRB5KDC_ERR_NONE));
+    (void) strcpy(errpkt.text.data, status);
 
     if (!(scratch = (krb5_data *)malloc(sizeof(*scratch)))) {
 	free(errpkt.text.data);
@@ -740,11 +732,8 @@ krb5_data **response;
  * some intermediate realm.
  */
 static void
-find_alternate_tgs(request, server, more, nprincs)
-krb5_kdc_req *request;
-krb5_db_entry *server;
-krb5_boolean *more;
-int *nprincs;
+find_alternate_tgs(krb5_kdc_req *request, krb5_db_entry *server,
+		   krb5_boolean *more, int *nprincs)
 {
     krb5_error_code retval;
     krb5_principal *plist, *pl2;
@@ -822,4 +811,3 @@ int *nprincs;
     krb5_free_realm_tree(kdc_context, plist);
     return;
 }
-

@@ -41,19 +41,15 @@ struct skey_keyproc_arg {
  * from system area.
  */
 static krb5_error_code skey_keyproc
-    PROTOTYPE((krb5_context,
+    (krb5_context,
                const krb5_enctype,
                krb5_data *,
                krb5_const_pointer,
-               krb5_keyblock **));
+               krb5_keyblock **);
 
 static krb5_error_code
-skey_keyproc(context, type, salt, keyseed, key)
-    krb5_context context;
-    const krb5_enctype type;
-    krb5_data * salt;
-    krb5_const_pointer keyseed;
-    krb5_keyblock ** key;
+skey_keyproc(krb5_context context, krb5_enctype type, krb5_data *salt,
+	     krb5_const_pointer keyseed, krb5_keyblock **key)
 {
     krb5_keyblock *realkey;
     krb5_error_code retval;
@@ -61,7 +57,7 @@ skey_keyproc(context, type, salt, keyseed, key)
 
     keyblock = (const krb5_keyblock *)keyseed;
 
-    if (!valid_enctype(type))
+    if (!krb5_c_valid_enctype(type))
 	return KRB5_PROG_ETYPE_NOSUPP;
 
     if ((retval = krb5_copy_keyblock(context, keyblock, &realkey)))
@@ -97,23 +93,16 @@ skey_keyproc(context, type, salt, keyseed, key)
  returns system errors, encryption errors
 
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_get_in_tkt_with_skey(context, options, addrs, ktypes, pre_auth_types, 
-			  key, ccache, creds, ret_as_reply)
-    krb5_context context;
-    const krb5_flags options;
-    krb5_address FAR * const FAR * addrs;
-    krb5_enctype FAR * ktypes;
-    krb5_preauthtype FAR * pre_auth_types;
-    const krb5_keyblock FAR * key;
-    krb5_ccache ccache;
-    krb5_creds FAR * creds;
-    krb5_kdc_rep FAR * FAR * ret_as_reply;
-
+krb5_error_code KRB5_CALLCONV
+krb5_get_in_tkt_with_skey(krb5_context context, krb5_flags options,
+			  krb5_address *const *addrs, krb5_enctype *ktypes,
+			  krb5_preauthtype *pre_auth_types,
+			  const krb5_keyblock *key, krb5_ccache ccache,
+			  krb5_creds *creds, krb5_kdc_rep **ret_as_reply)
 {
     if (key) 
     	return krb5_get_in_tkt(context, options, addrs, ktypes, pre_auth_types, 
-			       skey_keyproc, (krb5_pointer)key,
+			       skey_keyproc, (krb5_const_pointer)key,
 			       krb5_kdc_rep_decrypt_proc, 0, creds,
 			       ccache, ret_as_reply);
     else 

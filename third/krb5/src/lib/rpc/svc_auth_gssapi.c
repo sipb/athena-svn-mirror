@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: svc_auth_gssapi.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $
+ * $Id: svc_auth_gssapi.c,v 1.1.1.6 2004-02-27 04:01:36 zacheiss Exp $
  *
  */
 
@@ -12,6 +12,7 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #include <gssrpc/rpc.h>
 #include <sys/stat.h>
@@ -73,18 +74,17 @@ typedef struct _svc_auth_gssapi_data {
 #define SVCAUTH_PRIVATE(auth) \
      ((svc_auth_gssapi_data *)(auth)->svc_ah_private)
 
-static bool_t	svc_auth_gssapi_wrap();
-static bool_t	svc_auth_gssapi_unwrap();
-static svc_auth_gssapi_data *create_client();
+static bool_t	svc_auth_gssapi_wrap(SVCAUTH *, XDR *, xdrproc_t, caddr_t);
+static bool_t	svc_auth_gssapi_unwrap(SVCAUTH *, XDR *, xdrproc_t, caddr_t);
+static svc_auth_gssapi_data *create_client(void);
 static svc_auth_gssapi_data *get_client
-PROTOTYPE((gss_buffer_t client_handle));
+       (gss_buffer_t client_handle);
 static void destroy_client
-PROTOTYPE((svc_auth_gssapi_data *client_data));
-static void clean_client(), cleanup();
+       (svc_auth_gssapi_data *client_data);
+static void clean_client(void), cleanup(void);
 static void client_expire
-PROTOTYPE((svc_auth_gssapi_data *client_data, rpc_u_int32 exp));
-static void dump_db
-PROTOTYPE((char *msg));
+       (svc_auth_gssapi_data *client_data, rpc_u_int32 exp);
+static void dump_db (char *msg);
 
 struct svc_auth_ops svc_auth_gssapi_ops = {
      svc_auth_gssapi_wrap,
@@ -115,9 +115,8 @@ typedef struct _client_list {
 
 static client_list *clients = NULL;
 
-extern int errno;
 
-enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
+enum auth_stat _gssrpc_svcauth_gssapi(rqst, msg, no_dispatch)
    register struct svc_req *rqst;
    register struct rpc_msg *msg;
    bool_t *no_dispatch;     
@@ -132,7 +131,9 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
      OM_uint32 gssstat, minor_stat, time_rec;
      struct opaque_auth *cred, *verf;
      svc_auth_gssapi_data *client_data;
-     int ret_flags, ret, i;
+     int i;
+     enum auth_stat ret;
+     OM_uint32 ret_flags;
      rpc_u_int32 seq_num;
 
      PRINTF(("svcauth_gssapi: starting\n"));
@@ -169,7 +170,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
      XDR_DESTROY(&xdrs);
 
      PRINTF(("svcauth_gssapi: got credentials, version %d, client_handle len %d\n",
-	     creds.version, creds.client_handle.length));
+	     creds.version, (int) creds.client_handle.length));
 
      if (creds.version != 2) {
  	  PRINTF(("svcauth_gssapi: bad credential version\n"));
@@ -222,7 +223,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 	  
 	  PRINTF(("svcauth_gssapi: incoming client_handle %d, len %d\n", 
 		  *((rpc_u_int32 *) creds.client_handle.value),
-		  creds.client_handle.length));
+		  (int) creds.client_handle.length));
 
 	  client_data = get_client(&creds.client_handle);
 	  if (client_data == NULL) {
@@ -600,7 +601,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 
      if (creds.client_handle.length != 0) {
 	  PRINTF(("svcauth_gssapi: freeing client_handle len %d\n",
-		  creds.client_handle.length));
+		  (int) creds.client_handle.length));
 	  gssrpc_xdr_free(xdr_authgssapi_creds, &creds);
      }
      
@@ -610,7 +611,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 error:
      if (creds.client_handle.length != 0) {
 	  PRINTF(("svcauth_gssapi: freeing client_handle len %d\n",
-		  creds.client_handle.length));
+		  (int) creds.client_handle.length));
 	  gssrpc_xdr_free(xdr_authgssapi_creds, &creds);
      }
      
@@ -661,7 +662,8 @@ static svc_auth_gssapi_data *create_client()
      if (client_data == NULL)
 	  return NULL;
      memset((char *) client_data, 0, sizeof(*client_data));
-     L_PRINTF(2, ("create_client: new client_data = %p\n", client_data));
+     L_PRINTF(2, ("create_client: new client_data = %p\n", 
+		  (void *) client_data));
      
      /* set up client data structure */
      client_data->established = 0;
@@ -781,7 +783,7 @@ static void destroy_client(client_data)
      client_list *c, *c2;
 
      PRINTF(("destroy_client: destroying client_data\n"));
-     L_PRINTF(2, ("destroy_client: client_data = %p\n", client_data));
+     L_PRINTF(2, ("destroy_client: client_data = %p\n", (void *) client_data));
 
 #ifdef DEBUG_GSSAPI
      if (svc_debug_gssapi >= 3)
@@ -848,7 +850,7 @@ static void dump_db(msg)
      while (c) {
 	  client_data = c->client;
 	  L_PRINTF(3, ("\tclient_data = %p, exp = %d\n",
-		       client_data, client_data->expiration));
+		       (void *) client_data, client_data->expiration));
 	  c = c->next;
      }
 
@@ -867,7 +869,7 @@ static void clean_client()
 	  client_data = c->client;
 	  
 	  L_PRINTF(2, ("clean_client: client_data = %p\n",
-		       client_data));
+		       (void *) client_data));
 	  
 	  if (client_data->expiration < time(0)) {
 	       PRINTF(("clean_client: client %d expired\n",
@@ -966,6 +968,8 @@ void _svcauth_gssapi_unset_names()
 	       if (server_creds_list[i])
 		    gss_release_cred(&minor_stat, &server_creds_list[i]);
 	  free(server_creds_list);
+	  server_creds_list = NULL;
+	  server_creds_count = 0;
      }
 
      if (server_name_list) {
@@ -973,6 +977,8 @@ void _svcauth_gssapi_unset_names()
 	       if (server_name_list[i])
 		    gss_release_name(&minor_stat, &server_name_list[i]);
 	  free(server_name_list);
+	  server_name_list = NULL;
+	  server_creds_count = 0;
      }
 }
 
@@ -1066,7 +1072,7 @@ static bool_t svc_auth_gssapi_unwrap(auth, in_xdrs, xdr_func, xdr_ptr)
 
      if (! client_data->established) {
 	  PRINTF(("svc_gssapi_unwrap: not established, noop\n"));
-	  return (*xdr_func)(in_xdrs, (auth_gssapi_init_arg *) xdr_ptr);
+	  return (*xdr_func)(in_xdrs, (auth_gssapi_init_arg *)(void *) xdr_ptr);
      } else if (! auth_gssapi_unwrap_data(&gssstat, &minor_stat,
 					  client_data->context,
 					  client_data->seq_num-1,

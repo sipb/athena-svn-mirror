@@ -45,12 +45,13 @@ static char sccsid[] = "@(#)svc.c 1.41 87/10/13 Copyr 1984 Sun Micro";
 #include <gssrpc/rpc.h>
 #include <gssrpc/pmap_clnt.h>
 #include <stdio.h>
-
-extern int errno;
+#include <string.h>
+#include <errno.h>
 
 #ifdef FD_SETSIZE
 static SVCXPRT **xports;
 static int max_xport = 0;
+extern int gssrpc_svc_fdset_init;
 #else
 #define NOFILE 32
 
@@ -73,7 +74,8 @@ static struct svc_callout {
 	void		    (*sc_dispatch)();
 } *svc_head;
 
-static struct svc_callout *svc_find();
+static struct svc_callout *svc_find(rpc_u_int32, rpc_u_int32, 
+				    struct svc_callout **);
 
 /* ***************  SVCXPRT related stuff **************** */
 
@@ -87,6 +89,10 @@ xprt_register(xprt)
 	register int sock = xprt->xp_sock;
 
 #ifdef FD_SETSIZE
+	if (gssrpc_svc_fdset_init == 0) {
+	    FD_ZERO(&svc_fdset);
+	    gssrpc_svc_fdset_init++;
+	}
 	if (xports == NULL) {
 		xports = (SVCXPRT **)
 			mem_alloc(FD_SETSIZE * sizeof(SVCXPRT *));
@@ -461,7 +467,7 @@ svc_getreqset(readfds)
 					
 				/* now match message with a registered service*/
 				prog_found = FALSE;
-				low_vers = 0 - 1;
+				low_vers = (rpc_u_int32) -1L;
 				high_vers = 0;
 				for (s = svc_head; s != NULL_SVC; s = s->sc_next) {
 					if (s->sc_prog == r.rq_prog) {

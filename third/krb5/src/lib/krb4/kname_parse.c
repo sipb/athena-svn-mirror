@@ -1,19 +1,43 @@
 /*
- * kname_parse.c
+ * lib/krb4/kname_parse.c
  *
- * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+ * Copyright 1987, 1988, 2001 by the Massachusetts Institute of
+ * Technology.  All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
-
-#include "mit-copyright.h"
 
 #include <stdio.h>
 #include "krb.h"
 #include <string.h>
 
-/* max size of full name */
+static int k_isname_unparsed(const char *s);
+static int k_isinst_unparsed(const char *s);
+static int k_isrealm_unparsed(const char *s);
+
+/*
+ * max size of full name
+ *
+ * XXX This does not account for backslach quoting, and besides we
+ * might want to use MAX_K_NAME_SZ.
+ */
 #define FULL_SZ (ANAME_SZ + INST_SZ + REALM_SZ)
 
 #define NAME    0		/* which field are we in? */
@@ -51,12 +75,12 @@
  * of name, instance, and realm.  FIXME-gnu:  Does anyone use it this way?
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 kname_parse(np, ip, rp, fullname)
-    char FAR *np;
-    char FAR *ip;
-    char FAR *rp;
-    char FAR *fullname;
+    char *np;
+    char *ip;
+    char *rp;
+    char *fullname;
 {
     char buf[FULL_SZ];
     char *rnext, *wnext;	/* next char to read, write */
@@ -73,7 +97,7 @@ kname_parse(np, ip, rp, fullname)
         return KNAME_FMT;
     (void) strcpy(buf, fullname);
 
-    while (c = *rnext++) {
+    while ((c = *rnext++)) {
         if (backslash) {
             *wnext++ = c;
             backslash = 0;
@@ -123,12 +147,29 @@ kname_parse(np, ip, rp, fullname)
         default:
             *wnext++ = c;
         }
+	/*
+	 * Paranoia: check length each time through to ensure that we
+	 * don't overwrite things.
+	 */
+	switch (field) {
+	case NAME:
+	    if (wnext - np >= ANAME_SZ)
+		return KNAME_FMT;
+	    break;
+	case INST:
+	    if (wnext - ip >= INST_SZ)
+		return KNAME_FMT;
+	    break;
+	case REALM:
+	    if (wnext - rp >= REALM_SZ)
+		return KNAME_FMT;
+	    break;
+	default:
+	    DEB (("unknown field value\n"));
+	    return KNAME_FMT;
+	}
     }
     *wnext = '\0';
-    if ((strlen(np) > ANAME_SZ - 1) ||
-        (strlen(ip) > INST_SZ  - 1) ||
-        (strlen(rp) > REALM_SZ - 1))
-        return KNAME_FMT;
     return KSUCCESS;
 }
 
@@ -137,6 +178,7 @@ kname_parse(np, ip, rp, fullname)
  * Kerberos name; returns 0 if it's not.
  */
 
+int KRB5_CALLCONV
 k_isname(s)
     char *s;
 {
@@ -147,7 +189,7 @@ k_isname(s)
         return 0;
     if (strlen(s) > ANAME_SZ - 1)
         return 0;
-    while(c = *s++) {
+    while((c = *s++)) {
         if (backslash) {
             backslash = 0;
             continue;
@@ -175,6 +217,7 @@ k_isname(s)
  * We now allow periods in instance names -- they are unambiguous.
  */
 
+int KRB5_CALLCONV
 k_isinst(s)
     char *s;
 {
@@ -183,7 +226,7 @@ k_isinst(s)
 
     if (strlen(s) > INST_SZ - 1)
         return 0;
-    while(c = *s++) {
+    while((c = *s++)) {
         if (backslash) {
             backslash = 0;
             continue;
@@ -205,6 +248,7 @@ k_isinst(s)
  * Kerberos realm; returns 0 if it's not.
  */
 
+int KRB5_CALLCONV
 k_isrealm(s)
     char *s;
 {
@@ -215,7 +259,7 @@ k_isrealm(s)
         return 0;
     if (strlen(s) > REALM_SZ - 1)
         return 0;
-    while(c = *s++) {
+    while((c = *s++)) {
         if (backslash) {
             backslash = 0;
             continue;
@@ -229,5 +273,139 @@ k_isrealm(s)
             /* break; */
         }
     }
+    return 1;
+}
+
+int KRB5_CALLCONV
+kname_unparse(
+    char	*outFullName,
+    const char	*inName,
+    const char	*inInstance,
+    const char	*inRealm)
+{
+    const char	*read;
+    char	*write = outFullName;
+
+    if (inName == NULL)
+	return KFAILURE;
+
+    if (outFullName == NULL)
+        return KFAILURE;
+
+    if (!k_isname_unparsed(inName) ||
+	((inInstance != NULL) && !k_isinst_unparsed(inInstance)) ||
+	((inRealm != NULL) && !k_isrealm_unparsed(inRealm))) {
+
+	return KFAILURE;
+    }
+
+    for (read = inName; *read != '\0'; read++, write++) {
+	if ((*read == '.') || (*read == '@')) {
+	    *write = '\\';
+	    write++;
+	}
+	*write = *read;
+    }
+
+    if ((inInstance != NULL) && (inInstance[0] != '\0')) {
+	*write = '.';
+	write++;
+	for (read = inInstance; *read != '\0'; read++, write++) {
+	    if (*read == '@') {
+		*write = '\\';
+		write++;
+	    }
+	    *write = *read;
+	}
+    }
+
+    if ((inRealm != NULL) && (inRealm[0] != '\0')) {
+	*write = '@';
+	write++;
+	for (read = inRealm; *read != '\0'; read++, write++) {
+	    if (*read == '@') {
+		*write = '\\';
+		write++;
+	    }
+	    *write = *read;
+	}
+    }
+
+    *write = '\0';
+    return KSUCCESS;
+}
+
+/*
+ * k_isname, k_isrealm, k_isinst expect an unparsed realm -- i.e., one where all
+ * components have special characters escaped with \. However,
+ * for kname_unparse, we need to be able to sanity-check components without \.
+ * That's what k_is*_unparsed are for.
+ */
+
+static int
+k_isname_unparsed(const char *s)
+{
+    int len = strlen(s);
+    const char* c;
+    /* Has to be non-empty and has to fit in ANAME_SZ when escaped with \ */
+
+    if (!*s)
+        return 0;
+
+    for (c = s; *c != '\0'; c++) {
+    	switch (*c) {
+	case '.':
+	case '@':
+	    len++;
+	    break;
+    	}
+    }
+
+    if (len > ANAME_SZ - 1)
+        return 0;
+    return 1;
+}
+
+static int
+k_isinst_unparsed(const char *s)
+{
+    int len = strlen(s);
+    const char* c;
+    /* Has to fit in INST_SZ when escaped with \ */
+
+    for (c = s; *c != '\0'; c++) {
+    	switch (*c) {
+	case '.':
+	case '@':
+	    len++;
+	    break;
+    	}
+    }
+
+    if (len > INST_SZ - 1)
+        return 0;
+    return 1;
+}
+
+static int
+k_isrealm_unparsed(const char *s)
+{
+    int len = strlen(s);
+    const char* c;
+    /* Has to be non-empty and has to fit in REALM_SZ when escaped with \ */
+
+    if (!*s)
+        return 0;
+
+    for (c = s; *c != '\0'; c++) {
+    	switch (*c) {
+	case '@':
+	    len++;
+	    break;
+    	}
+    }
+
+    if (len > REALM_SZ - 1)
+        return 0;
     return 1;
 }

@@ -1,8 +1,49 @@
-2001-01-30  Ken Raeburn  <raeburn@mit.edu>
+2003-06-27  Jen Selby <jenselby@mit.edu>
+
+	* kdc.conf.M: replaced the @LOCALSTATEDIR typos with
+	/usr/local/var
+
+2003-06-20  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.conf.M: Sync with doc/krb5conf.texinfo.
+
+2003-05-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdc.conf: Delete supported and master key type specs.
+
+	* krb5.conf: Delete Athena KDC specifications.  Delete Cygnus
+	realm info.  Replace CLUB.CC.CMU.EDU info with ANDREW.CMU.EDU,
+	which has SRV records and thus doesn't need KDC specs.  Provide a
+	commented-out example of a [logging] spec.  Delete commented-out
+	enctype specs.
+
+	* krb5.conf.M: Remove "kdc =" lines from "realms" section example,
+	and recommend not using it unless DNS info isn't available.
+
+2003-05-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdc.conf.M (FILES): Refer to correct location for kdc.conf in
+	the default installation path.
+
+2002-09-24  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.conf: Update enctypes and add club.cc.cmu.edu
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-22  Jen Selby <jenselby@mit.edu>
+	
+	* kdc.conf.M: added descriptions of some tags
+	* krb5.conf.M: added a description of the [login] section and some
+	tags.
+
+2001-04-04  Tom Yu  <tlyu@mit.edu>
 
 	* krb5.conf.M: Update description of safe_checksum_type for recent
-	changes.
-
+	changes. [pullup from krb5-1-2-2-branch]
+	
 2000-05-31  Ken Raeburn  <raeburn@mit.edu>
 
 	* krb5.conf.M: Added description of v4_realm from Booker

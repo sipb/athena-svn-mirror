@@ -1,14 +1,197 @@
-2002-03-14 Alexandra Ellwood <lxs@mit.edu>
-    * afsstring2key.c: made static data const to improve load time 
-    on Mach-O
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * afsstring2key.c: fixed warnings about types defaulting to int
-    and two-dimensional array declaration without second-level braces
+    * des_int.h: Added prototype for mit_afs_crypt which is used by
+    the deprecated KfM des_crypt function. 
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* des_int.h (krb5_raw_des_cst_entry, krb5_des_crc_cst_entry,
+	krb5_des_md5_cst_entry, krb5_des3_sha_cst_entry,
+	krb5_des3_raw_cst_entry, krb5_des_cbc_cksumtable_entry): Delete
+	unused declarations.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-12-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* t_verify.c: Signed vs. unsigned cleanups. Remove unsused variables.
+
+2002-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* string2key.c (mit_des_string_to_key_int): If PRINT_TEST_VECTORS
+	is defined, print some of the intermediate results.
+
+2002-09-26  Tom Yu  <tlyu@mit.edu>
+
+	* afsstring2key.c (krb5_afs_crypt): Leak this function out as as
+	mit_afs_crypt to allow for des_crypt and des_fcrypt
+	implementations for the KfM merge.
+
+	* des_int.h: Change DES_INT32 strategy to include kerberosIV/des.h
+	with a magic macro defined for skipping krb4-specific stuff.  Make
+	renaming of make_key_sched explicit, to avoid conflict with
+	kerberosIV/des.h.
+
+	* f_sched.c, key_sched.c, d3_kysched.c: Make renaming of
+	make_key_sched explicit.
+
+	* f_cksum.c (mit_des_cbc_cksum): Return only the rightmost 32
+	bits; this should optimize out on any platform where longs are
+	exactly 32 bits wide.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-16  Tom Yu  <tlyu@mit.edu>
+
+	* string2key.c: Work around possible bug with AFS salts;
+	[krb5-clients/1146] from <Wolfgang.Friebel@cern.ch>.
+
+2002-06-07  Miro Jurisic  <meeroh@mit.edu>
+
 	* des_int.h: use "" includes for k5-int.h
+	[pullup from 1-2-2-branch]
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* afsstring2key.c, d3_cbc.c, des_int.h, f_cbc.c, f_cksum.c,
+	string2key.c: Don't explicitly declare pointers FAR any more.
+
+2001-06-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* string2key.c (mit_des_string_to_key_int): Undo last change.
+
+2001-06-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* destest.c (value): Now signed int, since some entries are
+	negative.
+	(convert): Do bounds checking on character values used as indices
+	into value array.
+
+	* string2key.c (mit_des_string_to_key_int): Now static.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_verify.c: Get rid of global variables i,j.
+
+2001-06-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* string2key.c (mit_des_string_to_key_int): Construct a krb5_data
+	object with proper length for the AFS case (indicated by a -1 salt
+	length on input).
+
+2001-06-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* destest.c: main returns int instead of void.  Add "const" to
+	casts in calls to mit_des_cbc_encrypt().
+
+	* t_verify.c (main): Add parenthesis aroud assignment in conditional. 
+
+2001-05-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* f_cbc.c (mit_des_cbc_encrypt): Do not use a variable named "encrypt".
+	* d3_cbc.c (mit_des3_cbc_encrypt): Likewise.
+
+	* des_int.h (mit_des_cbc_encrypt, mit_des3_ecb_encrypt,
+	mit_des3_cbc_encrypt): Don't use "encrypt" as argument name.
+
+2001-04-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* f_tables.h: Do not define const to nothing on platforms that
+	fail to define __STDC__ - let autoconf do this if necessary.
+
+2001-04-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_afss2k.c (do_it): Add cast to keep compiler quiet.
+
+	* f_cksum.c (mit_des_cbc_cksum): Use const for input, key
+	schedule, and initial vector.  Get rid of casts when possible.
+	* f_cbc.c (mit_des_cbc_encrypt): Likewise.
+	* f_sched.c (make_key_sched): Likewise.
+	* d3_cbc.c (mit_des3_cbc_encrypt): Likewise.
+	* d3_kysched.c (mit_des3_key_sched): Don't create new variables to
+	point to components of key and schedule, just index into the
+	argument variables.
+	* des_int.h (mit_des_cbc_cksum, mit_des_cbc_encrypt,
+	mit_des3_cbc_encrypt): Update decls.
+	(mit_des_string_to_key_int): New decl.
+
+	* weak_key.c (mit_des_is_weak_key): Get rid of some unneeded
+	casts.
+
+	* des_int.h (make_key_sched): Define a macro to rename with
+	mit_des_ prefix.
+
+	* des_int.h (des_cblock, des_key_schedule): Duplicate definitions
+	here and in kerberosIV/des.h, using macro
+	KRB5INT_DES_TYPES_DEFINED to avoid duplication.
+	(mit_des_cblock, mit_des_key_schedule): Define in terms of the
+	other types for now.
+	(PROTOTYPE): Don't define.
+
+	* afsstring2key.c, des_int.h, destest.c: Don't use PROTOTYPE macro.
+
+2001-01-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_afss2k.c: Extend test cases to cover situation where krb5_data
+	refers to strings that are not nul-terminated.  Reorder functions
+	to avoid inlining, to keep debugging easier.
+	* afsstring2key.c (mit_afs_string_to_key): Don't depend on
+	nul-termination of input strings.
+
+2001-01-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* afsstring2key.c (mit_afs_string_to_key): Allocate and pass
+	buffer for afs_crypt.  Don't use static storage for key schedule.
+	(IP, FP, PC1_C, PC1_D, shifts, PC2_C, PC2_D, E, e, P, S): Now
+	const.
+	(C, D, KS, L, R, tempL, f, preS): Static variables deleted.
+	(afs_crypt): Allocate them here, and pass pointers to other
+	routines.
+	(krb5_afs_crypt_setkey, krb5_afs_encrypt): Add extra arguments or
+	local variables for additional state, instead of static
+	variables.
+
+	* t_afss2k.c: New file.
+	* Makefile.in (t_afss2k): New target.
+	(TAFSS2KOBJS): New variable.
+	(check-unix): Run t_afss2k.
+	(clean): Get rid of t_afss2k binaries.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* des_int.h: Change prototypes for mit_des_cbc_encrypt(),
+	mit_des_cbc_cksum(), and mit_des3_cbc_encrypt() to take unsigned
+	long lengths.
+
+	* d3_cbc.c (mit_des3_cbc_encrypt): Length argument now takes an
+	unsigned long.
+
+	* f_cbc.c (mit_des_cbc_encrypt): Length argument now takes an
+	unsigned long.
+
+	* f_cksum.c (mit_des_cbc_cksum): Length argument now takes an
+	unsigned long.
+
+	* string2key.c: Unsigned/signed int cleanup. Test for a
+	salt-length of SALT_TYPE_AFS_LENGTH or -1 (for backwards
+	compatibilty) for use of mit_afs_string_to_key().
+
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* afsstring2key.c: Initialization of S[8][64] - each 64 elements 
+	enclosed in brackets. 
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* afsstring2key.c: "register x" -> "register int x".
 
 2000-02-25  Ezra Peisach  <epeisach@mit.edu>
 
@@ -25,12 +208,12 @@
 	* weak_key.c (weak): Now const.
 	(mit_des_is_weak_key): Adjust pointer type accordingly.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:16:18 1999  Danilo Almeida  <dalmeida@mit.edu>
 

@@ -1,8 +1,62 @@
-2001-12-18  Ken Raeburn  <raeburn@mit.edu>
+2003-06-16  Ken Raeburn  <raeburn@mit.edu>
 
-	* cmds.c (strerror): Only define if not HAVE_STRERROR.
-	* ftp.c (strerror): Likewise.
-	* secure.c (secure_putbuf, secure_getbyte): Use strerror.
+	* ftp.c (recvrequest): Add new argument indicating whether "-" and
+	"|..." special treatment should be disabled.
+	* ftp_var.h (recvrequest): Update declaration.
+	* cmds.c (remglob, ls, mls): Pass 0 as the extra argument.
+	(mget): Pass 1.
+	(getit): Pass 1 iff only one filename was supplied.
+
+2003-06-05  Sam Hartman  <hartmans@mit.edu>
+
+	* pclose.c (mypopen): use fork not vfork
+
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* ftp.c (hookup, initconn, dataconn): Use socklen_t when passing
+	address to socket functions.
+
+2002-11-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* main.c (makeargv): Report an error if parsed arguments won't fit
+	in margv array.
+	* ftp_var.h (line, argbuf): Extend to 500 bytes.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(OUTPRE)ftp.exe): Use ws2_32.lib instead of
+	wsock32.lib.
+
+2002-04-11  Sam Hartman  <hartmans@mit.edu>
+
+	* radix.c : Initialize c and D to suppress warning; code was already correct
+
+2002-04-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* ftp.c: Include Winsock 2 instead of Winsock.
+	* ftp_var.h: Include Winsock 2 headers.
+	* secure.c: Include port-sockets.h on Win32.
+	* main.c: Include mswsock.h (MS Winsock extensions) so that we get
+	some socket options we need to convert sockets to "file
+	descriptors" used in posix-like routines.  We now need to pull
+	this in explictly now that we are using Winsock 2.
+
+2002-04-04  Sam Hartman  <hartmans@mit.edu>
+
+	* radix.c (decode;):  Patch from Mark Eichin for one char buffer overflow [635]
+	
+
+2002-03-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* cmds.c (unix): Define if BSD is defined.
 
 2001-11-30  Tom Yu  <tlyu@mit.edu>
 
@@ -10,23 +64,131 @@
 	uninitialized memory past the end of the pattern string.  Don't
 	increment pointer beyond string end.
 
-2001-11-02  Tom Yu  <tlyu@mit.edu>
+2001-10-10  Danilo Almeida  <dalmeida@mit.edu>
 
-	* cmds.c (setpeer): Kludge to #define unix on BSD for now.
+	* ftp.c: Conditionalize declarations of some "unused variables" to
+	eliminate warnings.  ANSI-fy definitions.
 
-2001-10-29  Ezra Peisach  <epeisach@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* cmds.c, ftp.c, ftp_var.h, glob.c, main.c, ruserpass.c, secure.c,
+	secure.h: Make prototypes unconditional.  Don't define PROTOTYPE
+	macro.
+
+2001-08-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* glob.c (amatch, case '*'): Treat multiple asterisks the same as
+	one.
+
+2001-07-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* ftp.c: Declare mech_type in struct gss_trials gss_OID to be
+	compatible with GSS_C_NO_OID type. (was gss_OID *).
+
+2001-07-27  Danilo Almeida  <dalmeida@mit.edu>
+
+	* ftp.c: Remove local Win32-specific definition of gss_mech_krb5.
+	Use GSS_C_NO_OID instead of gss_mech_krb5 for mech_type to use an
+	implementation specific default.
+
+2001-07-24  Tom Yu  <tlyu@mit.edu>
+
+	* getpass.c: Remove duplicate definitions of sig_t, my_sig_t;
+	they're already declared in ftp_var.h.
+
+	* ftp_var.h (FDOPEN_SOCKET): Fix second arg.
+
+2001-07-23  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in, cmds.c, ftp.c, ftp_var.h, getpass.c, glob.c,
+	main.c, ruserpass.c, secure.c, secure.h: Quick and dirty Win32
+	port.  Changes include using sockets more portably; changing the
+	method of getting username, home directory, and temporary
+	filenames; adding password reading code for Win32; directory
+	enumeration via FindNextFile() rather than readdir(); removing OUT
+	labels (which appear to cause problems with MSVC++ 6.0).  Since
+	ANSI C, assume we have stdarg.h.
+
+2001-07-03  Ezra Peisach  <epeisach@mit.edu>
 
 	* secure.c: Instead of hard wiring the FUDGE_FACTOR, new variables
 	to keep track of the total buffer length desired and the actual
 	maximum that can be fitted. Add secure_determine_constants() to
 	determine the mechanism dependent overhead. This has a hard limit
 	for krb4 - for gssapi use gss_wrap_size_limit.
-	[pullup from trunk]
 
-2001-10-26  Ken Raeburn  <raeburn@mit.edu>
+2001-06-15  Ezra Peisach  <epeisach@mit.edu>
 
-	* cmds.c (setpeer): Use unsigned short for port number.  Patch
-	from Garry Zacheiss.
+	* cmds.c, domacro.c: Cast arguments to isspace() and isdigit()
+	from char to int.
+
+	* ftp.c: krb5_mk_priv(), krb5_mk_safe() expect C_Block *.
+
+2001-05-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* cmds.c (setpeer): Port number should be unsigned short.  (Patch
+	from Garry Zacheiss.)  Add upper-bound check in case short is not
+	exactly 16 bits.  Don't truncate the port number before checking.
+
+2001-04-27  Ezra Peisach  <epeisach@mit.edu>
+
+	* ftp_var.h: Prototype for recvrequest() needs volatile
+ 	declaration to match code. Native Dec Alpha compiler errors on the
+ 	inconsistancy.
+
+	* secure.h (PROTOTYPE): Only define if not defined already.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* ftp_var.h (PROTOTYPE): Always define to use supplied prototype.
+	* secure.h (PROTOTYPE): Likewise.
+
+2001-03-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* cmds.c (strerror): Only define if not HAVE_STRERROR.
+	* ftp.c (strerror): Likewise.
+	* secure.c (secure_putbuf, secure_getbyte): Use strerror.
+
+2000-11-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* cmds.c (globulize): Use correct address of globbed results when
+	freeing storage.  Patch from Nalin Dahyabhai <nalin@redhat.com>.
+
+2000-10-23  Tom Yu  <tlyu@mit.edu>
+
+	* secure.h: Change SESSION to refer to &cred.session instead, so
+	as to have the correct pointer type when passed to
+	{mk,rd}_{safe,priv}() functions.
+
+Tue Oct 10 05:01:21 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* ftp.c (do_auth): Remove debugging printf which I inadvertantly
+ 	introduced.
+
+2000-08-29  Alexandra Ellwood  <lxs@mit.edu>
+
+        * cmds.c, cmdtab.c, ftp_var.h: renamed getmode() and setmode()
+	to get_mode() and set_mode() to avoid a collision with Mac OS X
+	file permission bits manipulation functions of the same name
+	which get included through unistd.h.
+
+Tue Aug 22 17:10:39 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* secure.h (myaddr): For secure data stream, pass the port number
+ 	of the data stream and not the control stream to krb_mk_priv.
+
+2000-08-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* domacro.c: Compiler warning cleanups and fix the overflow fix to
+	index the proper array.
+
+	* cmds.c, cmdtab.c, ftp.c, ftp_var.h, getpass.c, glob.c, main.c,
+	radix.c, ruserpass.c, secure.c, secure.h: Compiler warning
+	cleanups including providing prototypes, cleanup of assignments in
+	conditionals, including unistd.h and stdlib.h (if present),
+	declaring local functions as static.
+
+	* Makefile.in: Do not compile pclose.c - the code is not used. 
 
 2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
 
@@ -53,12 +215,12 @@
 	* main.c (main): Ditto.
 	* pclose.c (mypopen): Ditto.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-21  Ken Raeburn  <raeburn@mit.edu>
 

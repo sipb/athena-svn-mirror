@@ -80,7 +80,7 @@ proc test6 {} {
     send "kadm5_init admin null \$KADM5_ADMIN_SERVICE null \$KADM5_STRUCT_VERSION \$KADM5_API_VERSION_2 server_handle\n"
 
     expect {
-	{Enter password:} { }
+	-re "assword\[^\r\n\]*:" { }
 	eof {
 		fail "$test: eof instead of password prompt"
 		api_exit
@@ -106,7 +106,7 @@ proc test7 {} {
     send "kadm5_init admin \"\" \$KADM5_ADMIN_SERVICE null \$KADM5_STRUCT_VERSION \$KADM5_API_VERSION_2 server_handle\n"
 
     expect {
-	{Enter password:} { }
+	-re "assword\[^\r\n\]*:" { }
 	-re "key:$" { }
 	eof {
 		fail "$test: eof instead of password prompt"
@@ -534,7 +534,7 @@ proc test30 {} {
 		    $KADM5_STRUCT_VERSION $KADM5_API_VERSION_2 \
 		    server_handle
 	}]} {
-		error_and_restart "$test: unexpected succsess"
+		error_and_restart "$test: unexpected success"
 		return
 	}
 	one_line_succeed_test {
@@ -691,7 +691,7 @@ proc test45_46 {service} {
     expect {
 	-re "Principal .* deleted." {}
 	default {
-	    error "kadmin.local delprinc failed\n";
+	    perror "kadmin.local delprinc failed\n";
 	}
     }
     expect eof

@@ -10,11 +10,12 @@
 
 #include "mit-copyright.h"
 
-#define	DEFINE_SOCKADDR		/* Ask for sockets declarations from krb.h. */
 #include "krb.h"
+#include "krb4int.h"
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include "port-sockets.h"
 
 #define	KRB_SENDAUTH_VERS "AUTHV0.1" /* MUST be KRB_SENDAUTH_VLEN chars */
 /*
@@ -124,7 +125,7 @@ int
 krb_net_rd_sendauth (fd, reply, raw_len)
      int fd;			/* file descriptor to write onto */
      KTEXT reply;		/* Where we put the reply message */
-     char *raw_len;		/* Where to read the length field info */
+     KRB4_32 *raw_len;		/* Where to read the length field info */
 {
     KRB4_32 tkt_len;
     int got;
@@ -134,7 +135,7 @@ krb_net_rd_sendauth (fd, reply, raw_len)
 
     /* get the length of the reply */
   reread:
-    got = krb_net_read(fd, raw_len, sizeof(KRB4_32));
+    got = krb_net_read(fd, (char *)raw_len, sizeof(KRB4_32));
     if (got != sizeof(KRB4_32))
 	return KFAILURE;
 
@@ -144,8 +145,7 @@ krb_net_rd_sendauth (fd, reply, raw_len)
        when it starts up.  We just ignore any such message and keep
        going.  This doesn't affect security: we just require the
        ticket to follow the warning message.  */
-    if ((*(unsigned long *)raw_len
-	 == (('l' << 24) | ('d' << 16) | ('.' << 8) | 's'))) {
+    if (!memcmp("ld.s", raw_len, 4)) {
     	char c;
 
 	while (krb_net_read(fd, &c, 1) == 1 && c != '\n')
@@ -153,7 +153,7 @@ krb_net_rd_sendauth (fd, reply, raw_len)
 	goto reread;
     }
 
-    tkt_len = ntohl(*(unsigned long *)raw_len);
+    tkt_len = ntohl(*raw_len);
 
     /* if the length is negative, the server failed to recognize us. */
     if ((tkt_len < 0) || (tkt_len > sizeof(reply->dat)))
@@ -178,14 +178,16 @@ krb_net_rd_sendauth (fd, reply, raw_len)
  * end-user application server, sucks a response out of the socket, 
  * and decodes it to verify mutual authentication.
  */
-int
+int KRB5_CALLCONV
 krb_sendauth(options, fd, ticket, service, inst, realm, checksum,
 	     msg_data, cred, schedule, laddr, faddr, version)
      long options;		/* bit-pattern of options */
      int fd;			/* file descriptor to write onto */
      KTEXT ticket;		/* where to put ticket (return); or
 				   supplied in case of KOPT_DONT_MK_REQ */
-     char *service, *inst, *realm; /* service name, instance, realm */
+     char *service;         /* service name */
+     char *inst;            /* service instance */
+     char *realm;           /* service realm */
      unsigned KRB4_32 checksum; /* checksum to include in request */
      MSG_DAT *msg_data;		/* mutual auth MSG_DAT (return) */
      CREDENTIALS *cred;		/* credentials (return) */
@@ -233,11 +235,12 @@ krb_sendauth(options, fd, ticket, service, inst, realm, checksum,
     if (options & KOPT_DO_MUTUAL) {
 	/* get credentials so we have service session
 	   key for decryption below */
-	if (cc = krb_get_cred(service, srv_inst, realm, cred))
+	cc = krb_get_cred(service, srv_inst, realm, cred);
+	if (cc)
 	    return(cc);
 
 	/* Get the reply out of the socket.  */
-	cc = krb_net_rd_sendauth (fd, packet, (char *)&raw_tkt_len);
+	cc = krb_net_rd_sendauth (fd, packet, &raw_tkt_len);
 	if (cc != KSUCCESS)
 	    return cc;
 

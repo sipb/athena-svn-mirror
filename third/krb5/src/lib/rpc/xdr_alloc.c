@@ -38,22 +38,23 @@ static char sccsid[] = "@(#)xdr_mem.c 1.19 87/08/11 Copyr 1984 Sun Micro";
 
 #include <gssrpc/types.h>
 #include <gssrpc/xdr.h>
-#include <dyn.h>
+#include "dyn.h"
 
-static bool_t	xdralloc_putlong();
-static bool_t	xdralloc_putbytes();
-static unsigned int	xdralloc_getpos();
-static rpc_int32 *	xdralloc_inline();
-static void	xdralloc_destroy();
-static bool_t	xdralloc_notsup();
-
+static bool_t	xdralloc_putlong(XDR *, long *);
+static bool_t	xdralloc_putbytes(XDR *, caddr_t, unsigned int);
+static unsigned int	xdralloc_getpos(XDR *);
+static rpc_int32 *	xdralloc_inline(XDR *, int);
+static void	xdralloc_destroy(XDR *);
+static bool_t	xdralloc_notsup_getlong(XDR *, long *);
+static bool_t	xdralloc_notsup_getbytes(XDR *, caddr_t, unsigned int);
+static bool_t	xdralloc_notsup_setpos(XDR *, unsigned int);
 static struct	xdr_ops xdralloc_ops = {
-     xdralloc_notsup,
+     xdralloc_notsup_getlong,
      xdralloc_putlong,
-     xdralloc_notsup,
+     xdralloc_notsup_getbytes,
      xdralloc_putbytes,
      xdralloc_getpos,
-     xdralloc_notsup,
+     xdralloc_notsup_setpos,
      xdralloc_inline,
      xdralloc_destroy,
 };
@@ -90,23 +91,36 @@ static void xdralloc_destroy(xdrs)
      DynDestroy((DynObject) xdrs->x_private);
 }
 
-static bool_t xdralloc_notsup()
+static bool_t xdralloc_notsup_getlong(xdrs, lp)
+   register XDR *xdrs;
+   long *lp;
 {
      return FALSE;
 }
 
 static bool_t xdralloc_putlong(xdrs, lp)
    register XDR *xdrs;
-   rpc_int32 *lp;
+   long *lp;
 {
-     int l = htonl((rpc_u_int32) *(int *)lp);
-     
+     int l = htonl((rpc_u_int32) *lp); /* XXX need bounds checking */
+
+     /* XXX assumes sizeof(int)==4 */
      if (DynInsert((DynObject) xdrs->x_private,
 		   DynSize((DynObject) xdrs->x_private), &l,
 		   sizeof(int)) != DYN_OK)
 	  return FALSE;
      return (TRUE);
 }
+
+
+static bool_t xdralloc_notsup_getbytes(xdrs, addr, len)
+   register XDR *xdrs;
+   caddr_t addr;
+   register unsigned int len;
+{
+     return FALSE;
+}
+
 
 static bool_t xdralloc_putbytes(xdrs, addr, len)
    register XDR *xdrs;
@@ -115,7 +129,7 @@ static bool_t xdralloc_putbytes(xdrs, addr, len)
 {
      if (DynInsert((DynObject) xdrs->x_private,
 		   DynSize((DynObject) xdrs->x_private),
-		   addr, len) != DYN_OK)
+		   addr, (int) len) != DYN_OK)
 	  return FALSE;
      return TRUE;
 }
@@ -125,6 +139,14 @@ static unsigned int xdralloc_getpos(xdrs)
 {
      return DynSize((DynObject) xdrs->x_private);
 }
+
+static bool_t xdralloc_notsup_setpos(xdrs, lp)
+   register XDR *xdrs;
+   unsigned int lp;
+{
+     return FALSE;
+}
+
 
 
 static rpc_int32 *xdralloc_inline(xdrs, len)

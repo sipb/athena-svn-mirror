@@ -1,16 +1,122 @@
-2001-01-31  Tom Yu  <tlyu@mit.edu>
+2003-05-18  Tom Yu  <tlyu@mit.edu>
+
+	* krb5_decode_test.c (main): Add new test cases for sequence
+	number compatibility.
+
+	* utility.c (krb5_data_hex_parse): Rewrite to be more lenient
+	about whitespace.
+
+2003-05-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5_decode_test.c: Modify decode_run macro to take a cleanup
+	handler to free allocated memory. Add static handlers to free
+	krb5_alt_method, passwd_phrase_element and krb5_enc_data as the
+	krb5 library does not handle at this time.
+
+	* krb5_encode_test.c: Free krb5_context at end. Utilize the many
+	ktest_empty and detroy functions to cleanup memory.
+
+	* ktest.h, ktest.c: Add many ktest free and empty functions to
+	cleanup allocated structures in tests.
+
+	* utility.c (krb5_data_hex_parse): Free temporary data.
+	
+
+2003-05-06  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_encode_test.c (main): Add etype_info2 support
+
+	* ktest.c (ktest_make_sample_etype_info): Initialize s2kparams to be null.
+	(ktest_make_sample_etype_info2): New function
+
+2002-11-07  Ezra Peisach  <epeisach@bu.edu>
+
+	* krb5_decode_test.c: Test for sam_challenege without empty
+	optional strings.
+
+	* trval_reference.out, reference_encode.out: Update to reflect
+	that optional fields in sam_challenge are not being output.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* ktest.h, ktest_equal.h, utility.c, utility.h: Make prototypes
+	unconditional.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* trval.c: Include string.h for strcmp prototype.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* trval.c (decode_len, do_prim, do_cons, do_prim_bitstring,
+	do_prim_int, do_prim_string, print_tag_type, trval, trval2):
+	Always use prototype declarations.
+
+Sun Feb 18 15:33:50 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* trval.c: Add prototypes for trval() and trval2().
+
+2000-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* krb5_decode_test.c (main): Add new test cases for indefinite
 	length ticket and as_rep.  Fix up calls to decode_run() to have
 	the modifier be in the description parameter.
-	(decode_run): If the ASN1 decoder returns an error, add one to the
-	error count so there will be a non-zero exit. Sometimes, the
-	decoded structure is complete enoght to pass the test, even with
-	an ASN.1 error - which can easilly get missed in the output run.
-	[pullup from trunk]
 
-	* utility.c (asn1_krb5_data_unparse): signed char
-	paranoia. [pullup from trunk]
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* ktest.c (ktest_make_sample_etype_info): Use KRB5_ETYPE_NO_SALT
+	instead of -1.
+
+	* ktest_equal.c (ktest_equal_krb5_etype_info_entry): Test for
+	KRB5_ETYPE_NO_SALT. ktest_equal_array_of_octet() and
+	ktest_equal_array_of_char take unsigned int lengths.
+
+	* ktest_equal.h: Add len_unsigned_array macro for a prototype of a
+	function taking an unsigned int
+	count. ktest_equal_array_of_octet() is one of
+	these. ktest_equal_array_of_char() takes an unsigned int as
+	length.
+
+	* trval.c (trval): Unsigned/signed int fix. 
+
+	* utility.c (asn1_krb5_data_unparse): Better test for krb5_data
+	length being less than zero.
+
+2000-09-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5_decode_test.c (decode_run): If the ASN1 decoder returns an
+	error, add one to the error count so there will be a non-zero
+	exit. Sometimes, the decoded structure is complete enoght to pass
+	the test, even with an ASN.1 error - which can easilly get missed
+	in the output run.
+
+2000-08-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* reference_encode.out, trval_reference.out: Test encoding of
+	negative lr_type field.
+
+	* krb5_decode_test.c: Fix enc_kdc_rep_part tests to trully handle
+	a negative lr_type in a krb5_last_req_entry structure. If
+	KRB5_GENEROUS_LR_TYPE is defined, do a backwards compatibility
+	test as well.
+
+2000-07-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* utility.c: Add casts on types being sent to internal functions.
+
+	* krb5_encode_test.c: Declare internal functions as static.
+
+	* ktest.c: Remove unused functions. Clean up compiler warnings.
+
+	* trval.c: Add proper prototype for declared functions.
 
 1999-11-01  Tom Yu  <tlyu@mit.edu>
 
@@ -22,12 +128,12 @@
 	* trval.c (print_tag_type): Use fputs when there's no formatting
 	to do.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Sat Jul 10 10:32:31 1999  Tom Yu  <chaoself@mit.edu>
 

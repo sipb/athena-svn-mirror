@@ -29,20 +29,22 @@
 
 #include "k5-int.h"
 
-static int et_init = 0;
-
 void
-krb5_init_ets (context)
-     krb5_context context;
+krb5_init_ets (krb5_context context)
 {
-    initialize_krb5_error_table();
-    initialize_kv5m_error_table();
-    initialize_kdb5_error_table();
-    initialize_asn1_error_table();
+    static int inited = 0;
+
+    if (inited == 0) {
+	    initialize_krb5_error_table();
+	    initialize_kv5m_error_table();
+	    initialize_kdb5_error_table();
+	    initialize_asn1_error_table();
+	    initialize_k524_error_table();
+	    inited++;
+    }
 }
 
 void
-krb5_free_ets (context)
-    krb5_context context;
+krb5_free_ets (krb5_context context)
 {
 }

@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: util_set.c,v 1.1.1.1 1996-09-12 04:44:07 ghudson Exp $
+ * $Id: util_set.c,v 1.1.1.2 2004-02-27 03:58:29 zacheiss Exp $
  */
 
 #include "gssapiP_generic.h"
@@ -39,6 +39,7 @@ int g_set_init(g_set *s)
    return(0);
 }
 
+#if 0
 int g_set_destroy(g_set *s)
 {
    g_set next;
@@ -51,6 +52,7 @@ int g_set_destroy(g_set *s)
 
    return(0);
 }
+#endif
 
 int g_set_entry_add(g_set *s, void *key, void *value)
 {

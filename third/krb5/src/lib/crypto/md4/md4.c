@@ -38,18 +38,8 @@
 #include "k5-int.h"
 #include "rsa-md4.h"
 
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)
-#define UL(x) x##UL
-#else
-#define UL(x) ((krb5_ui_4) x)
-#endif    
-
 /* forward declaration */
-#if (defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)) && !defined(KRB5_NO_PROTOTYPES)
-static void Transform (krb5_ui_4 FAR *, krb5_ui_4 FAR *);
-#else
-static void Transform ();
-#endif
+static void Transform (krb5_ui_4 *, krb5_ui_4 *);
 
 static const unsigned char PADDING[64] = {
   0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -77,32 +67,32 @@ static const unsigned char PADDING[64] = {
    (a) &= 0xffffffff; \
    (a) = ROTATE_LEFT ((a), (s));}
 #define GG(a, b, c, d, x, s) \
-  {(a) += G ((b), (c), (d)) + (x) + UL(013240474631); \
+  {(a) += G ((b), (c), (d)) + (x) + 013240474631UL; \
    (a) &= 0xffffffff; \
    (a) = ROTATE_LEFT ((a), (s));}
 #define HH(a, b, c, d, x, s) \
-  {(a) += H ((b), (c), (d)) + (x) + UL(015666365641); \
+  {(a) += H ((b), (c), (d)) + (x) + 015666365641UL; \
    (a) &= 0xffffffff; \
    (a) = ROTATE_LEFT ((a), (s));}
 
 void
 krb5_MD4Init (mdContext)
-krb5_MD4_CTX FAR *mdContext;
+krb5_MD4_CTX *mdContext;
 {
   mdContext->i[0] = mdContext->i[1] = (krb5_ui_4)0;
 
   /* Load magic initialization constants.
    */
-  mdContext->buf[0] = UL(0x67452301);
-  mdContext->buf[1] = UL(0xefcdab89);
-  mdContext->buf[2] = UL(0x98badcfe);
-  mdContext->buf[3] = UL(0x10325476);
+  mdContext->buf[0] = 0x67452301UL;
+  mdContext->buf[1] = 0xefcdab89UL;
+  mdContext->buf[2] = 0x98badcfeUL;
+  mdContext->buf[3] = 0x10325476UL;
 }
 
 void
 krb5_MD4Update (mdContext, inBuf, inLen)
-krb5_MD4_CTX FAR *mdContext;
-const unsigned char FAR *inBuf;
+krb5_MD4_CTX *mdContext;
+const unsigned char *inBuf;
 unsigned int inLen;
 {
   krb5_ui_4 in[16];
@@ -137,7 +127,7 @@ unsigned int inLen;
 
 void
 krb5_MD4Final (mdContext)
-krb5_MD4_CTX FAR *mdContext;
+krb5_MD4_CTX *mdContext;
 {
   krb5_ui_4 in[16];
   int mdi;
@@ -179,8 +169,8 @@ krb5_MD4_CTX FAR *mdContext;
 /* Basic MD4 step. Transform buf based on in.
  */
 static void Transform (buf, in)
-krb5_ui_4 FAR *buf;
-krb5_ui_4 FAR *in;
+krb5_ui_4 *buf;
+krb5_ui_4 *in;
 {
   register krb5_ui_4 a = buf[0], b = buf[1], c = buf[2], d = buf[3];
 

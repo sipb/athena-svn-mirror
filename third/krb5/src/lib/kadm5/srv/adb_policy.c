@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.4 2004-02-27 04:00:51 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.4 2004-02-27 04:00:51 zacheiss Exp $";
 #endif
 
 #include	<sys/file.h>
@@ -13,25 +13,25 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include	"adb.h"
 #include	<stdlib.h>
 #include	<string.h>
+#include <errno.h>
 
-extern	int errno;
 
 #define OPENLOCK(db, mode) \
 { \
-       int ret; \
+       int olret; \
 	    if (db == NULL) \
 		 return EINVAL; \
 	    else if (db->magic != OSA_ADB_POLICY_DB_MAGIC) \
 		 return OSA_ADB_DBINIT; \
-	    else if ((ret = osa_adb_open_and_lock(db, mode)) != OSA_ADB_OK) \
-		 return ret; \
+	    else if ((olret = osa_adb_open_and_lock(db, mode)) != OSA_ADB_OK) \
+		 return olret; \
 	    }
 
 #define CLOSELOCK(db) \
 { \
-     int ret; \
-     if ((ret = osa_adb_close_and_unlock(db)) != OSA_ADB_OK) \
-	  return ret; \
+     int cl_ret; \
+     if ((cl_ret = osa_adb_close_and_unlock(db)) != OSA_ADB_OK) \
+	  return cl_ret; \
 }
 
 osa_adb_ret_t osa_adb_create_policy_db(kadm5_config_params *params)
@@ -78,7 +78,7 @@ osa_adb_ret_t osa_adb_close_policy(osa_adb_princ_t db)
  *
  * Arguments:
  *	entry		(input) pointer to the entry to be added
- * 	<return value>	OSA_ADB_OK on sucsess, else error code.
+ * 	<return value>	OSA_ADB_OK on success, else error code.
  *
  * Requires:
  *	entry have a valid name.
@@ -153,7 +153,7 @@ error:
  * Arguments:
  *	db		(input) database handle
  *	name		(input) name of policy
- * 	<return value>	OSA_ADB_OK on sucsess, or error code.
+ * 	<return value>	OSA_ADB_OK on success, or error code.
  *
  * Requires:
  *	db being valid.
@@ -211,7 +211,7 @@ error:
  *	db		(input) db handle
  *	name		(input) name of policy
  *	entry		(output) policy entry
- * 	<return value>	0 on sucsess, error code on failure.
+ * 	<return value>	0 on success, error code on failure.
  *
  * Requires:
  * Effects:
@@ -277,7 +277,7 @@ error:
  * Arguments:
  *	db		(input) db handle
  *	entry		(input) policy entry
- * 	<return value>	0 on sucsess error code on failure.
+ * 	<return value>	0 on success error code on failure.
  *
  * Requires:
  *	[requires]
@@ -350,7 +350,7 @@ error:
  *	db		(input) db handle
  *	func		(input) fucntion pointer to call
  *	data		opaque data type
- * 	<return value>	0 on sucsess error code on failure
+ * 	<return value>	0 on success error code on failure
  *
  * Requires:
  * Effects:

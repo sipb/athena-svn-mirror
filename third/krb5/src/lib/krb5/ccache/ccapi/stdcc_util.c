@@ -7,8 +7,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
-#if defined(_MSDOS) || defined(_WIN32)
+#if defined(_WIN32)
 #include <malloc.h>
 #endif
 

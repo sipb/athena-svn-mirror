@@ -1,14 +1,191 @@
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* quad_cksum.c, t_pcbc.c, t_quad.c, verify.c: Don't declare errno
+	or errmsg.
+
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
+
+    * mac_des_glue.c, des.c, enc_dec.c, key_sched.c, str_to_key.c: 
+    Move KfM des functions into their own file.  They are all 
+    deprecated on KfM and shouldn't even get built on stock krb5 builds.
+    
+    * read_passwd.c:  Added warning comment that des_read_pw_string 
+    is an exported function on KfM, so we should not change its ABI.
+
+2003-02-10  Tom Yu  <tlyu@mit.edu>
+
+	* str_to_key.c (afs_string_to_key): Move out from under
+	TARGET_OS_MAC conditional.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL, or check
+	for #pragma weak.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2002-10-10  Sam Hartman  <hartmans@mit.edu>
+
+	* read_passwd.c : Implement in terms of krb5_prompter_posix
+
+2002-09-26  Tom Yu  <tlyu@mit.edu>
+
+	* cksum.c (des_cbc_cksum): Update API for KfM merge.
+
+	* des.c (des_ecb_encrypt): Update API for KfM merge.
+	(des_3ecb_encrypt): New (emulated) function from KfM.
+
+	* enc_dec.c (des_cbc_encrypt): Update API for KfM merge.
+	(des_3cbc_encrypt): New (emulated) function from KfM.
+
+	* key_sched.c (make_key_sched): New (emulated) function for KfM.
+
+	* new_rnd_key.c (des_generate_random_block) 
+	(des_set_random_generator_seed, des_set_sequence_number):
+	New (emulated) functions from KfM.
+
+	* read_passwd.c (des_rd_pwstr_2prompt): Renamed from
+	des_read_pw_string; also now only returns -1, errno, or 0.
+	(des_read_pw_string): New (emulated) function from KfM.
+	(des_read_password): Update API for KfM merge.
+
+	* str_to_key.c (des_string_to_key): Update call to des_cbc_cksum.
+	(afs_string_to_key): New (emulated) function from KfM.
+	(des_crypt, des_fcrypt, des_set_key): New (emulated) functions
+	from KfM, presumed to be internal but exported by KfM anyway.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* read_passwd.c, unix_time.c: Drop _MSDOS support.
+
+	* quad_cksum.c: Don't explicitly declare pointers FAR any more.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* des.c, key_sched.c, new_rnd_key.c, des_pcbc_encrypt.c,
+	quad_cksum.c, str_to_key.c: Don't use KRB5_DLLIMP.
+
+2001-07-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* read_passwd.c: Create local variable that takes the "int"
+	bufsize and makes it unsigned for use in malloc, strcmp, etc.
+
+2001-07-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* des.c (des_ecb_encrypt): Put "static" before "const" for local
+	variable "iv".
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* verify.c (do_decrypt, do_encrypt): Cast argument to
+ 	des_ecb_encrypt to unsigned long *.
+
+2001-05-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* des.c (des_ecb_encrypt): Do not use a variable named "encrypt".
+	* enc_dec.c (des_cbc_encrypt): Likewise.
+	* pcbc_encrypt.c (des_pcbc_encrypt): Likewise.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't use HAS_ANSI_VOLATILE.
+
+2001-04-12  Danilo Almeida  <dalmeida@mit.edu>
+
+	* cksum.c (des_cbc_cksum): Gee, a consistent calling convntion.
+	What a concept!
+
+2001-04-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* cksum.c (des_cbc_cksum): Arguments IN, KEY, and IV now const.
+	* des.c (des_ecb_encrypt): Change type of arg "schedule" to
+	const des_key_schedule and drop register decl.  Make local
+	variable "iv" const.
+	* enc_dec.c (des_cbc_encrypt): Arguments KEY and IV now const.
+	* pcbc_encrypt.c (des_pcbc_encrypt): Argument SCHEDULE now const.
+	Drop some unnecessary casts.
+	* quad_cksum.c (vaxtohl, vaxtohs): Cast to pointer to const.
+	(des_quad_cksum): Argument IN now points to const.
+	* str_to_key.c (des_string_to_key): String argument now const.
+	Delete local declaration of des_cbc_cksum.  Delete or fix some
+	casts.
+	* t_pcbc.c (main): Pass address of ivec to des_pcbc_encrypt.
+	* util.c (des_cblock_print_file): Delete unnecessary cast.
+
+	* Makefile.in (STLIBOBJS, OBJS, SRCS): Delete references to
+	k4_glue.c etc.
+	(clean): Remove t_quad and t_pcbc object files and test programs.
+	* k4_glue.c: Deleted.
+
+2001-04-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_pcbc.c: New file.
+	* Makefile.in (t_pcbc): New target.
+	(check-unix): Depend on and run t_pcbc.
+
+	* pcbc_encrypt.c (des_pcbc_encrypt): Initialize plainl and plainr
+	to keep compiler happy.
+
+	* des.h: Deleted to avoid confusion with the other des.h in the
+	tree.  All files changed to include des_int.h and
+	(the other) des.h instead.
+	* new_rnd_key.c (des_init_random_number_generator): Cast seed data
+	pointer to keep compiler happy.
+	* read_passwd.c (intr_routine, des_read_pw_string): Add
+	prototypes.
+	(des_read_password): Fix call sequence for des_string_to_key.
+	* str_to_key.c (des_string_to_key): Remove static storage in favor
+	of automatic storage.  Fix call sequence to des_key_sched.  Delete
+	no-op while loop.
+	* t_quad.c (main): Fix call sequence for des_quad_cksum.
+	* verify.c (des_string_to_key, des_key_sched, des_ecb_encrypt,
+	des_cbc_encrypt): Removed declarations.
+	(do_encrypt, do_decrypt): Prototype.  Make args point to unsigned
+	char, and return types void.
+	(main): Declare return type.  Make automatic var in_length be
+	unsigned long; discard some casts, but cast it when passing to
+	memcmp.  Remove extra arg passed to des_cbc_cksum.
+	(flip): Delete unused function.
+
+	* quad_cksum.c (des_quad_cksum): Add comments.  Force 32-bit
+	arithmetic just to be careful.
+
+2001-04-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_quad.c: New file.
+	* Makefile.in (t_quad): New target.
+	(check-unix): Depend on and run t_quad.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* cksum.c (des_cbc_cksum): Length is unsigned long.
+
+	* enc_dec.c (des_cbc_encrypt): Length is unsigned long. 
+
+Thu Jun 29 17:11:17 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* random_key.c (des_random_key): Add parentheses around assignment
+ 	used as truth value.
+
 2000-03-14  Ken Raeburn  <raeburn@mit.edu>
 
 	* read_passwd.c (des_read_pw_string): Make ointrfunc volatile.
 	Fix volatile decl for readin_string.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:21:30 1999  Danilo Almeida  <dalmeida@mit.edu>
 

@@ -15,43 +15,50 @@
  * des_pcbc_encrypt.c - encrypt a string of characters in error propagation mode
  */
 
+#include "des_int.h"
 #include "des.h"
 #include <f_tables.h>
 
 /*
  * des_pcbc_encrypt - {en,de}crypt a stream in PCBC mode
  */
-KRB5_DLLIMP int KRB5_CALLCONV
-des_pcbc_encrypt(in, out, length, schedule, ivec, encrypt)
+int KRB5_CALLCONV
+des_pcbc_encrypt(in, out, length, schedule, ivec, enc)
 	des_cblock *in;
 	des_cblock *out;
 	long length;
-	des_key_schedule schedule;
+	const des_key_schedule schedule;
 	des_cblock *ivec;
-	int encrypt;
+	int enc;
 {
 	register unsigned DES_INT32 left, right;
 	register unsigned DES_INT32 temp;
-	register unsigned DES_INT32 *kp;
-	register unsigned char *ip, *op;
+	const unsigned DES_INT32 *kp;
+	const unsigned char *ip;
+	unsigned char *op;
 
 	/*
 	 * Copy the key pointer, just once
 	 */
-	kp = (unsigned DES_INT32 *)schedule;
+	kp = (const unsigned DES_INT32 *)schedule;
 
 	/*
 	 * Deal with encryption and decryption separately.
 	 */
-	if (encrypt) {
-		register unsigned DES_INT32 plainl;
-		register unsigned DES_INT32 plainr;
+	if (enc) {
+		/* Initialization isn't really needed here, but gcc
+		   complains because it doesn't understand that the
+		   only case where these can be used uninitialized is
+		   to compute values that'll in turn be ignored
+		   because we won't go around the loop again.  */
+		register unsigned DES_INT32 plainl = 42;
+		register unsigned DES_INT32 plainr = 17;
 
 		/*
 		 * Initialize left and right with the contents of the initial
 		 * vector.
 		 */
-		ip = (unsigned char *)ivec;
+		ip = *ivec;
 		GET_HALF_BLOCK(left, ip);
 		GET_HALF_BLOCK(right, ip);
 
@@ -59,8 +66,8 @@ des_pcbc_encrypt(in, out, length, schedule, ivec, encrypt)
 		 * Suitably initialized, now work the length down 8 bytes
 		 * at a time.
 		 */
-		ip = (unsigned char *)in;
-		op = (unsigned char *)out;
+		ip = *in;
+		op = *out;
 		while (length > 0) {
 			/*
 			 * Get block of input.  If the length is
@@ -136,15 +143,15 @@ des_pcbc_encrypt(in, out, length, schedule, ivec, encrypt)
 		/*
 		 * Prime the old cipher with ivec.
 		 */
-		ip = (unsigned char *)ivec;
+		ip = *ivec;
 		GET_HALF_BLOCK(ocipherl, ip);
 		GET_HALF_BLOCK(ocipherr, ip);
 
 		/*
 		 * Now do this in earnest until we run out of length.
 		 */
-		ip = (unsigned char *)in;
-		op = (unsigned char *)out;
+		ip = *in;
+		op = *out;
 		for (;;) {		/* check done inside loop */
 			/*
 			 * Read a block from the input into left and

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.5 2001-12-05 20:48:08 rbasch Exp $ 
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.6 2004-02-27 03:59:46 zacheiss Exp $ 
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.5 2001-12-05 20:48:08 rbasch Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.6 2004-02-27 03:59:46 zacheiss Exp $";
 #endif
 
 #include	<sys/file.h>
@@ -72,23 +72,23 @@ osa_adb_ret_t osa_adb_rename_db(char *filefrom, char *lockfrom,
 	 ret != EEXIST)
 	  return ret;
 
-     if (ret = osa_adb_init_db(&fromdb, filefrom, lockfrom, magic))
+     if ((ret = osa_adb_init_db(&fromdb, filefrom, lockfrom, magic)))
 	  return ret;
-     if (ret = osa_adb_init_db(&todb, fileto, lockto, magic)) {
+     if ((ret = osa_adb_init_db(&todb, fileto, lockto, magic))) {
 	  (void) osa_adb_fini_db(fromdb, magic);
 	  return ret;
      }
-     if (ret = osa_adb_get_lock(fromdb, OSA_ADB_PERMANENT)) {
-	  (void) osa_adb_fini_db(fromdb, magic);
-	  (void) osa_adb_fini_db(todb, magic);
-	  return ret;
-     }
-     if (ret = osa_adb_get_lock(todb, OSA_ADB_PERMANENT)) {
+     if ((ret = osa_adb_get_lock(fromdb, OSA_ADB_PERMANENT))) {
 	  (void) osa_adb_fini_db(fromdb, magic);
 	  (void) osa_adb_fini_db(todb, magic);
 	  return ret;
      }
-     if (rename(filefrom, fileto) < 0) {
+     if ((ret = osa_adb_get_lock(todb, OSA_ADB_PERMANENT))) {
+	  (void) osa_adb_fini_db(fromdb, magic);
+	  (void) osa_adb_fini_db(todb, magic);
+	  return ret;
+     }
+     if ((rename(filefrom, fileto) < 0)) {
 	  (void) osa_adb_fini_db(fromdb, magic);
 	  (void) osa_adb_fini_db(todb, magic);
 	  return errno;
@@ -97,7 +97,7 @@ osa_adb_ret_t osa_adb_rename_db(char *filefrom, char *lockfrom,
       * Do not release the lock on fromdb because it is being renamed
       * out of existence; no one can ever use it again.
       */
-     if (ret = osa_adb_release_lock(todb)) {
+     if ((ret = osa_adb_release_lock(todb))) {
 	  (void) osa_adb_fini_db(fromdb, magic);
 	  (void) osa_adb_fini_db(todb, magic);
 	  return ret;
@@ -186,7 +186,7 @@ osa_adb_ret_t osa_adb_init_db(osa_adb_db_t *dbp, char *filename,
 
      /* now initialize lockp->lockinfo if necessary */
      if (lockp->lockinfo.lockfile == NULL) {
-	  if (code = krb5_init_context(&lockp->lockinfo.context)) {
+	  if ((code = krb5_init_context(&lockp->lockinfo.context))) {
 	       free(db);
 	       return((osa_adb_ret_t) code);
 	  }
@@ -214,6 +214,7 @@ osa_adb_ret_t osa_adb_init_db(osa_adb_db_t *dbp, char *filename,
      db->lock = &lockp->lockinfo;
      db->lock->refcnt++;
 
+     db->opencnt = 0;
      db->filename = strdup(filename);
      db->magic = magic;
 
@@ -315,8 +316,6 @@ osa_adb_ret_t osa_adb_get_lock(osa_adb_db_t db, int mode)
      
      if (perm) {
 	  if (unlink(db->lock->filename) < 0) {
-	       int ret;
-
 	       /* somehow we can't delete the file, but we already */
 	       /* have the lock, so release it and return */
 
@@ -354,9 +353,9 @@ osa_adb_ret_t osa_adb_release_lock(osa_adb_db_t db)
                                    0600);
 	       if ((db->lock->lockfile = fdopen(fd, "w+")) == NULL)
 		    return OSA_ADB_NOLOCKFILE;
-	  } else if (ret = krb5_lock_file(db->lock->context,
+	  } else if ((ret = krb5_lock_file(db->lock->context,
 					  fileno(db->lock->lockfile),
-					  KRB5_LOCKMODE_UNLOCK))
+					  KRB5_LOCKMODE_UNLOCK)))
 	       return ret;
 	  
 	  db->lock->lockmode = 0;
@@ -371,10 +370,12 @@ osa_adb_ret_t osa_adb_open_and_lock(osa_adb_princ_t db, int locktype)
      ret = osa_adb_get_lock(db, locktype);
      if (ret != OSA_ADB_OK)
 	  return ret;
-     
+     if (db->opencnt)
+	  goto open_ok;
+
      db->db = dbopen(db->filename, O_RDWR, 0600, DB_BTREE, &db->btinfo);
      if (db->db != NULL)
-	  return OSA_ADB_OK;
+	 goto open_ok;
      switch (errno) {
 #ifdef EFTYPE
      case EFTYPE:
@@ -382,20 +383,23 @@ osa_adb_ret_t osa_adb_open_and_lock(osa_adb_princ_t db, int locktype)
      case EINVAL:
 	  db->db = dbopen(db->filename, O_RDWR, 0600, DB_HASH, &db->info);
 	  if (db->db != NULL)
-	       return OSA_ADB_OK;
+	       goto open_ok;
      default:
 	  (void) osa_adb_release_lock(db);
 	  if (errno == EINVAL)
 	       return OSA_ADB_BAD_DB;
 	  return errno;
      }
+open_ok:
+     db->opencnt++;
+     return OSA_ADB_OK;
 }
 
 osa_adb_ret_t osa_adb_close_and_unlock(osa_adb_princ_t db)
 {
-     int ret;
-
-     if(db->db->close(db->db) == -1) {
+     if (--db->opencnt)
+	  return osa_adb_release_lock(db);
+     if(db->db != NULL && db->db->close(db->db) == -1) {
 	  (void) osa_adb_release_lock(db);
 	  return OSA_ADB_FAILURE;
      }
@@ -404,4 +408,3 @@ osa_adb_ret_t osa_adb_close_and_unlock(osa_adb_princ_t db)
 
      return(osa_adb_release_lock(db));
 }
-

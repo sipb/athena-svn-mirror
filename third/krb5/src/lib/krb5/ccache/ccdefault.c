@@ -27,16 +27,20 @@
  * Find default credential cache
  */
 
-#ifdef USE_LOGIN_LIBRARY
-#include <Kerberos/KerberosLoginPrivate.h>
-#endif
-
 #include "k5-int.h"
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_cc_default(context, ccache)
-   krb5_context context;
-   krb5_ccache FAR *ccache;
+#ifdef USE_LOGIN_LIBRARY
+#include "KerberosLoginPrivate.h"
+#else
+#ifdef USE_LEASH
+static void (*pLeash_AcquireInitialTicketsIfNeeded)(krb5_context,krb5_principal) = NULL;
+static HANDLE hLeashDLL = INVALID_HANDLE_VALUE;
+#endif
+#endif
+
+
+krb5_error_code KRB5_CALLCONV
+krb5_cc_default(krb5_context context, krb5_ccache *ccache)
 {
     krb5_error_code retval;
 	krb5_os_context	os_ctx;
@@ -62,10 +66,8 @@ krb5_cc_default(context, ccache)
    All krb5 and GSS functions which need to open a cache to get a tgt to obtain service tickets
    should call this function, not krb5_cc_default() */
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5int_cc_default(context, ccache)
-	krb5_context context;
-	krb5_ccache FAR *ccache;
+krb5_error_code KRB5_CALLCONV
+krb5int_cc_default(krb5_context context, krb5_ccache *ccache)
 {
 #ifdef USE_LOGIN_LIBRARY
 	{
@@ -114,6 +116,29 @@ krb5int_cc_default(context, ccache)
 		if (desiredPrincipal != nil)
 			KLDisposePrincipal (desiredPrincipal);
 	}
+#else
+#ifdef USE_LEASH
+
+    if ( hLeashDLL == INVALID_HANDLE_VALUE ) {
+        hLeashDLL = LoadLibrary("leashw32.dll");
+        if ( hLeashDLL != INVALID_HANDLE_VALUE ) {
+            (FARPROC) pLeash_AcquireInitialTicketsIfNeeded =
+                GetProcAddress(hLeashDLL, "not_an_API_Leash_AcquireInitialTicketsIfNeeded");
+        }
+    }
+
+    if ( pLeash_AcquireInitialTicketsIfNeeded )
+    {
+              krb5_os_context         os_ctx;
+
+        if (!context || context->magic != KV5M_CONTEXT)
+            return KV5M_CONTEXT;
+
+              os_ctx = context->os_context;
+
+        pLeash_AcquireInitialTicketsIfNeeded(context,os_ctx->default_ccprincipal);
+    }
+#endif
 #endif
 
     return krb5_cc_default (context, ccache);

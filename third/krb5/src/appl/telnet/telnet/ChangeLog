@@ -1,3 +1,197 @@
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* externs.h: Don't declare errno.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.orig: Deleted.
+
+2002-11-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* sys_bsd.c: Moved declaration for susp() to type of file and
+	provide prototype.
+
+	* commands.c, externs.h, telnet.c, network.c: Add prototype
+	declaration for command handler table dispatch functions. Make
+	functions called consistant with prototype. Misc unsigned/signed
+	cleanups.
+
+	* authenc.c, main.c, utilities.c: Signed vs. unsigned cleanup.
+
+2002-10-22  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Autoconf 2.55 will not simply use cpp to test for
+	header file existance - the header file must be compilable. This
+	will mean that if one header depends on another, it must be
+	included. Test for term.h using the optional fourth argument to
+	AC_CHECK_HEADERS to specify include files to test.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-04-12  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Sepcial-case solaris+gcc to always find curses.h,
+	since it fails to find it otherwise due to some macro redefinition
+	warnings.
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* commands.c: Include fake-addrinfo.h, not fake-addrinfo.c.
+	(FAI_PREFIX): Delete.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* commands.c, externs.h, ring.h, telnet.c: Make prototypes
+	unconditional.
+
+2001-09-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* commands.c (tn): Don't crash printing null hostname in case
+	where supplied destination is a numeric address that doesn't map
+	to a hostname.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): Use $(srcdir).
+
+2001-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* commands.c: Include netdb.h and fake-addrinfo.c.
+	(FAI_PREFIX): Define.
+	(hostaddr): Deleted.
+	(hostaddrstring): New static variable.
+	(status): Use hostaddrstring instead of hostaddr.
+	(tn): Use get{addr,name}info instead of gethostby{name,addr}, and
+	attempt to connect to both IPv6 and IPv4 sockets.  Add workarounds
+	for GNU libc bugs.  Fill in hostaddrstring with printable form of
+	each net address.  Source routing is still IPv4-only.
+
+	* configure.in: Run KRB5_AC_INET6.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* telnet.c (setupterm): Now static.
+	(suboption): Rename local variable "ospeed" to "o_speed" to avoid
+	conflict with global.
+	(env_opt_add): Cast opt_welldefined argument to char * to silence
+	warning.
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add AC_HEADER_STDARG.
+
+	* commands.c (call): Rewrite to use varargs/stdarg interface.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Check if prototype needed for herror().
+
+	* commands.c (ayt_status): Add explict return type (void or int)
+	depending on signal handler definition. Add prototype for herror
+	if system does not provide one.
+
+2001-07-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* commands.c: Remove prototypes for EncryptAutoEnc(),
+	EncryptAuthDec(), EcnryptDebug(), EncryptVerbose() as they exists
+	in enc-proto.h in libtelnet.
+
+
+2001-07-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* commands.c: Declare sourceroute() static.
+
+2001-07-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* commands.c: Declare local functions static.
+
+	* main.c: Declare usage() static.
+
+	* ring.h: Provide full prototypes for ring_mark() and
+	ring_clear_mark(). 
+
+	* sys_bsd.c: Declare signal handler and NetNonblockingIO static.
+
+	* telnet.c: Declear gettermname() and mklist() static. Change
+	local variable timeout to tmie_out to avoid shadowing curses
+	header file. 
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* commands.c (tn): Change sin to sin4 to not shadow global.
+
+	* authenc.c (telnet_gets): Change local variable prompt to tprompt
+	to not shadow global variable.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Test for parsetos() prototype and presence of
+	curses.h and term.h header files.
+
+	* telnet.c: Include term.h and curses.h if present for setupterm()
+	prototype.
+
+	* main.c: Declare prototype for parsetos() if needed.
+
+2001-06-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* telnet.c (telrcv): Ensure variable set before use.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* commands.c: Cast argument to isspace() to int.
+
+	* telnet.c (mklist): Cast argument to islower()/toupper() to int.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* main.c: Include unistd.h (if present) for getopt() prototype.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* authenc.c (telnet_gets): Cleanup assignment in conditional.
+
+	* commands.c: Include sys/wait.h, libtelent/auth.h,
+	libtelnet/encrypt.h for prototypes. Explicity declare functions as
+	returning int. Assignments in conditionals cleanup.
+
+	* externs.h: Add numerous prototypes.
+
+	* ring.c (ring_init): Explicitly declare as returning int.
+
+	* ring.h: Add prototype for ring_at_mark().
+
+	* telnet.c: Include unistd.h, libtelnet/auth.h,
+	libtelnet/encrypt.h for prototypes. Delcare is_unique()
+	static. Fix up format string for sprintf() to expect
+	longs. Assignments in conditionals cleaned up.
+
+	* main.c, terminal.c: Include libtelnet/encrypt.h for prototype. 
+
+	* utilities.c: Include sys/socket.h, libtelent/auth.h,
+	libtelnet/encrypt.h for prototypes.
+
+2001-05-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* telnet.c (telnet): Fix grammar in some error messages.  Based on
+	a patch from Garry Zacheiss.
+
+2000-12-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* commands.c (tn): Local var "user" should be volatile.
+	* main.c (main): Local var "argp" should be volatile.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Use AC_CHECK_HEADER and AC_FUNC_VFORK instead of
+	AC_HEADER_CHECK and AC_VFORK.
+
 2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* commands.c (makeargv): Don't overflow buffer "saveline".
@@ -23,12 +217,12 @@
 	* commands.c: Move include of libtelnet/auth.h earlier to provide
 	prototype for auth_cmd.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-07-26  Tom Yu  <tlyu@mit.edu>
 

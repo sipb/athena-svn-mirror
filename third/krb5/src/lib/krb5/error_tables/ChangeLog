@@ -1,7 +1,88 @@
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* krb5_err.et: Changed Credentials Cache file to Credentials Cache 
-	because on Mac and Windows, the credentials cache is in memory.
+2004-01-06  Jeffrey Altman <jaltman@mit.edu>
+
+    * krb5_err.et (KRB5_CC_NOSUPP) new ccache error code
+
+2003-12-12  Jeffrey Altman <jaltman@mit.edu>
+
+    * krb5_err.et (KRB5_CC_READONLY) new ccache error code
+
+2003-07-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* init_ets.c (krb5_init_ets): Only initialize error tables once -
+	so that init_conext/free_context loops do not result in memory
+	leaks.
+
+2003-06-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et (KRB5_ERR_NO_SERVICE): New error code.
+
+2003-05-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb524_err.et: New file, moved from ../../../krb524.  Add new
+	error code KRB524_KRB4_DISABLED.
+	* Makefile.in (STLIBOBJS, HDRS, OBJS, ETSRCS, SRCS, awk-windows):
+	Add it.
+	($(OUTPRE)krb524_err.$(OBJEXT)): List dependence on .c file.
+	* init_ets.c (krb5_init_ets): Call initialize_k524_error_table.
+
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et (KRB5_ERR_BAD_S2K_PARAMS): New error code.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-11-14  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove references to adm_err.et.  It's not used,
+	and conflicts with the krb4 kadm error table.
+
+2002-10-24  Ken Hornstein  <kenh@cmf.nrl.navy.mil
+
+	* kv5m_err.et: Add magic numbers for new hardware preauth structures.
+
+	* krb5_err.et (KRB5_SAM_INVALID_ETYPE, KRB5_SAM_NO_CHECKSUM,
+	KRB5_SAM_BAD_CHECKSUM): New error codes for the new hardware
+	preauthentication code.
+
+2002-09-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_ets.c (krb5_init_ets, krb5_free_ets): Use prototype style
+	function definitions.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (awk-windows): Put quotes around $(EHDRDIR) since it
+	contains forward slashes now.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et (KRB5_ERR_NUMERIC_REALM): New error code.
+
+2002-06-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et (KRB5KRB_AP_PATH_NOT_ACCEPTED,
+	KRB5KRB_ERR_RESPONSE_TOO_BIG): New error codes.
+
+2002-03-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et: Change several "credentials cache file" messages to
+	just say "credentials cache", so as to be applicable in the ccapi
+	case too.  (Miro's change from 1.2.x branch.)
+
+2002-01-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_err.et (KRB5_EAI_FAIL, KRB5_EAI_NODATA, KRB5_EAI_NONAME,
+	KRB5_EAI_SERVICE): New error codes for getaddrinfo failures.
 
 2001-10-24  Tom Yu  <tlyu@mit.edu>
 
@@ -9,10 +90,20 @@
 	KRB5_KDB_NO_MATCHING_KEY for libkdb so we can return something
 	other than ENOENT (which was Just Wrong).
 
-2001-01-31  Tom Yu  <tlyu@mit.edu>
+2001-04-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (includes): New target.  Copy headers into proper
+	include directory.
+	(unixmac): Target deleted.
+	(THDRDIR): New variable.
+
+2000-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* asn1_err.et: Add error codes MISMATCH_INDEF and MISSING_EOC.
-	[pullup from trunk]
+
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* init_ets.c: Remove unused variable.
 
 1999-12-01  Ken Raeburn  <raeburn@mit.edu>
 
@@ -22,12 +113,12 @@
 
 	* krb5_err.et (KRB5_CONFIG_ETYPE_NOSUPP): New error code.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-23  Ken Raeburn  <raeburn@mit.edu>
 

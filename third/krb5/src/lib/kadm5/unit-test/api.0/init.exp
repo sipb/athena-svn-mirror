@@ -77,7 +77,7 @@ proc test6 {} {
     send "ovsec_kadm_init admin null \$OVSEC_KADM_ADMIN_SERVICE null \$OVSEC_KADM_STRUCT_VERSION \$OVSEC_KADM_API_VERSION_1 server_handle\n"
 
     expect {
-	{Enter password:} { }
+	-re "assword\[^\r\n\]*: *" { }
 	eof {
 		fail "$test: eof instead of password prompt"
 		api_exit
@@ -103,8 +103,8 @@ proc test7 {} {
     send "ovsec_kadm_init admin \"\" \$OVSEC_KADM_ADMIN_SERVICE null \$OVSEC_KADM_STRUCT_VERSION \$OVSEC_KADM_API_VERSION_1 server_handle\n"
 
     expect {
-	{Enter password:} { }
-	-re "key:$" { }
+	-re "assword\[^\r\n\]*: *" { }
+	-re "\n\[^\n\]+key:\[^\n\]*$" { }
 	eof {
 		fail "$test: eof instead of password prompt"
 		api_exit
@@ -338,7 +338,7 @@ proc test22 {} {
 	}]
 	send "\n"
 	expect {
-	    -re ":$" { set prompting 1}
+	    -re "\n\[^\n\]+:\[^\n\]*$" { set prompting 1}
 	    -re "\nOK .*$prompt$" { fail "$test: premature success" }
 	    -re "\nERROR .*$prompt$" { fail "$test: premature failure" }
 		timeout { fail "$test: timeout" }
@@ -363,7 +363,7 @@ proc test225 {} {
 	}]
 	send "\n"
 	expect {
-	    -re ":$" { set prompting 1}
+	    -re "\n\[^\n\]+:\[^\n\]*$" { set prompting 1}
 	    -re "\nOK .*$prompt$" { fail "$test: premature success" }
 	    -re "\nERROR .*$prompt$" { fail "$test: premature failure" }
 		timeout { fail "$test: timeout" }
@@ -530,7 +530,7 @@ proc test30 {} {
 		    $OVSEC_KADM_STRUCT_VERSION $OVSEC_KADM_API_VERSION_1 \
 		    server_handle
 	}]} {
-		error_and_restart "$test: unexpected succsess"
+		error_and_restart "$test: unexpected success"
 		return
 	}
 	one_line_succeed_test {
@@ -687,7 +687,7 @@ proc test45_46 {service} {
     expect {
 	-re "Principal .* deleted." {}
 	default {
-	    error "kadmin.local delprinc failed\n";
+	    perror "kadmin.local delprinc failed\n";
 	}
     }
     expect eof

@@ -21,31 +21,19 @@
  */
 
 #include "krb5.h"
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/signal.h>
-#include <netinet/in.h>
-#if TARGET_OS_MAC
-#include <Kerberos/krb.h>
-#include <Kerberos/krb524.h>
-#else
 #include <krb.h>
-#include "krb524.h"
-#endif
 
 int krb524_convert_princs(context, client, server, pname, pinst, prealm, 
-			  sname, sinst)
+			  sname, sinst, srealm)
      krb5_context context;
      krb5_principal client, server;
-     char *pname, *pinst, *prealm, *sname, *sinst;
+     char *pname, *pinst, *prealm, *sname, *sinst, *srealm;
 {
-     char dummy[REALM_SZ];
      int ret;
      
      if ((ret = krb5_524_conv_principal(context, client, pname, pinst, 
 					prealm)))
 	  return ret;
      
-     return krb5_524_conv_principal(context, server, sname, sinst, dummy);
+     return krb5_524_conv_principal(context, server, sname, sinst, srealm);
 }

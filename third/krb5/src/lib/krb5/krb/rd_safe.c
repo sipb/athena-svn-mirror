@@ -47,18 +47,11 @@
  returns system errors, integrity errors
  */
 static krb5_error_code
-krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr, 
-	     	   replaydata, outbuf)
-    krb5_context          context;
-    const krb5_data     * inbuf;
-    const krb5_keyblock * keyblock;
-    const krb5_address  * recv_addr;
-    const krb5_address  * sender_addr;
-    krb5_replay_data    * replaydata; 
-    krb5_data           * outbuf;
+krb5_rd_safe_basic(krb5_context context, const krb5_data *inbuf, const krb5_keyblock *keyblock, const krb5_address *recv_addr, const krb5_address *sender_addr, krb5_replay_data *replaydata, krb5_data *outbuf)
 {
     krb5_error_code 	  retval;
     krb5_safe 		* message;
+    krb5_data safe_body;
     krb5_checksum our_cksum, *his_cksum;
     krb5_octet zero_octet = 0;
     krb5_data *scratch;
@@ -67,15 +60,15 @@ krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr,
     if (!krb5_is_krb_safe(inbuf))
 	return KRB5KRB_AP_ERR_MSG_TYPE;
 
-    if ((retval = decode_krb5_safe(inbuf, &message)))
+    if ((retval = decode_krb5_safe_with_body(inbuf, &message, &safe_body)))
 	return retval;
 
-    if (!valid_cksumtype(message->checksum->checksum_type)) {
+    if (!krb5_c_valid_cksumtype(message->checksum->checksum_type)) {
 	retval = KRB5_PROG_SUMTYPE_NOSUPP;
 	goto cleanup;
     }
-    if (!is_coll_proof_cksum(message->checksum->checksum_type) ||
-	!is_keyed_cksum(message->checksum->checksum_type)) {
+    if (!krb5_c_is_coll_proof_cksum(message->checksum->checksum_type) ||
+	!krb5_c_is_keyed_cksum(message->checksum->checksum_type)) {
 	retval = KRB5KRB_AP_ERR_INAPP_CKSUM;
 	goto cleanup;
     }
@@ -121,7 +114,7 @@ krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr,
 
     message->checksum = &our_cksum;
 
-    if ((retval = encode_krb5_safe(message, &scratch)))
+    if ((retval = encode_krb5_safe_with_body(message, &safe_body, &scratch)))
 	goto cleanup;
 
     message->checksum = his_cksum;
@@ -134,8 +127,17 @@ krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr,
     krb5_free_data(context, scratch);
     
     if (!valid) {
-	retval = KRB5KRB_AP_ERR_MODIFIED;
-	goto cleanup;
+	/*
+	 * Checksum over only the KRB-SAFE-BODY, like RFC 1510 says, in
+	 * case someone actually implements it correctly.
+	 */
+	retval = krb5_c_verify_checksum(context, keyblock,
+					KRB5_KEYUSAGE_KRB_SAFE_CKSUM,
+					&safe_body, his_cksum, &valid);
+	if (!valid) {
+	    retval = KRB5KRB_AP_ERR_MODIFIED;
+	    goto cleanup;
+	}
     }
 
     replaydata->timestamp = message->timestamp;
@@ -151,13 +153,8 @@ cleanup:
     return retval;
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_rd_safe(context, auth_context, inbuf, outbuf, outdata)
-    krb5_context 	  context;
-    krb5_auth_context 	  auth_context;
-    const krb5_data   	FAR * inbuf;
-    krb5_data 	      	FAR * outbuf;
-    krb5_replay_data  	FAR * outdata;
+krb5_error_code KRB5_CALLCONV
+krb5_rd_safe(krb5_context context, krb5_auth_context auth_context, const krb5_data *inbuf, krb5_data *outbuf, krb5_replay_data *outdata)
 {
     krb5_error_code 	  retval;
     krb5_keyblock	* keyblock;
@@ -174,9 +171,8 @@ krb5_rd_safe(context, auth_context, inbuf, outbuf, outdata)
 	return KRB5_RC_REQUIRED;
 
     /* Get keyblock */
-    if ((keyblock = auth_context->remote_subkey) == NULL)
-	if ((keyblock = auth_context->local_subkey) == NULL)
-            keyblock = auth_context->keyblock;
+    if ((keyblock = auth_context->recv_subkey) == NULL)
+	keyblock = auth_context->keyblock;
 
 {
     krb5_address * premote_fulladdr = NULL;
@@ -253,7 +249,8 @@ krb5_rd_safe(context, auth_context, inbuf, outbuf, outdata)
     }
 
     if (auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_DO_SEQUENCE) {
-	if (auth_context->remote_seq_number != replaydata.seq) {
+	if (!krb5int_auth_con_chkseqnum(context, auth_context,
+					replaydata.seq)) {
 	    retval =  KRB5KRB_AP_ERR_BADORDER;
 	    goto error;
 	}

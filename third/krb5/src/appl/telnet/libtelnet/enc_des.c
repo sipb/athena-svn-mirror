@@ -78,7 +78,7 @@
 #include "key-proto.h"
 #include "misc-proto.h"
 
-extern encrypt_debug_mode;
+extern int encrypt_debug_mode;
 
 extern krb5_context telnet_context;
 
@@ -141,14 +141,16 @@ struct keyidlist {
 #define	FB64_IV_BAD	3
 
 
-void fb64_stream_iv P((Block, struct stinfo *));
-void fb64_init P((struct fb *));
-static int fb64_start P((struct fb *, int, int));
-int fb64_is P((unsigned char *, int, struct fb *));
-int fb64_reply P((unsigned char *, int, struct fb *));
-static void fb64_session P((Session_Key *, int, struct fb *));
-void fb64_stream_key P((Block, struct stinfo *));
-int fb64_keyid P((int, unsigned char *, int *, struct fb *));
+void fb64_stream_iv (Block, struct stinfo *);
+void fb64_init (struct fb *);
+static int fb64_start (struct fb *, int, int);
+int fb64_is (unsigned char *, int, struct fb *);
+int fb64_reply (unsigned char *, int, struct fb *);
+static void fb64_session (Session_Key *, int, struct fb *);
+void fb64_stream_key (Block, struct stinfo *);
+int fb64_keyid (int, unsigned char *, int *, struct fb *);
+void fb64_printsub (unsigned char *, int, unsigned char *, int, 
+		     unsigned char *);
 
 static void ecb_encrypt(stp, in, out)
      struct stinfo *stp;
@@ -234,7 +236,6 @@ fb64_start(fbp, dir, server)
 	int dir;
 	int server;
 {
-	Block b;
 	int x;
 	unsigned char *p;
 	register int state;
@@ -271,13 +272,11 @@ fb64_start(fbp, dir, server)
 		 */
 		{
 			krb5_data d;
-			krb5_error_code code;
 
 			d.data = fbp->temp_feed;
 			d.length = sizeof(fbp->temp_feed);
 
-			if (code = krb5_c_random_make_octets(telnet_context,
-							     &d))
+			if (krb5_c_random_make_octets(telnet_context, &d))
 				return(FAILED);
 		}
 
@@ -327,9 +326,7 @@ fb64_is(data, cnt, fbp)
 	int cnt;
 	struct fb *fbp;
 {
-	int x;
 	unsigned char *p;
-	Block b;
 	register int state = fbp->state[DIR_DECRYPT-1];
 
 	if (cnt-- < 1)
@@ -419,9 +416,6 @@ fb64_reply(data, cnt, fbp)
 	int cnt;
 	struct fb *fbp;
 {
-	int x;
-	unsigned char *p;
-	Block b;
 	register int state = fbp->state[DIR_ENCRYPT-1];
 
 	if (cnt-- < 1)
@@ -590,7 +584,7 @@ cfb64_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
 	int cnt, buflen;
 {
-	fb64_printsub(data, cnt, buf, buflen, "CFB64");
+	fb64_printsub(data, cnt, buf, buflen, (unsigned char *) "CFB64");
 }
 
 	void
@@ -598,7 +592,7 @@ ofb64_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
 	int cnt, buflen;
 {
-	fb64_printsub(data, cnt, buf, buflen, "OFB64");
+	fb64_printsub(data, cnt, buf, buflen, (unsigned char *) "OFB64");
 }
 
 	void
@@ -658,23 +652,23 @@ cfb64_encrypt(s, c)
 	int c;
 {
 	register struct stinfo *stp = &fb[CFB].streams[DIR_ENCRYPT-1];
-	register int index;
+	register int idx;
 
-	index = stp->str_index;
+	idx = stp->str_index;
 	while (c-- > 0) {
-		if (index == sizeof(Block)) {
+		if (idx == sizeof(Block)) {
 			Block b;
 			ecb_encrypt(stp, stp->str_output, b);
 			memcpy((void *)stp->str_feed,(void *)b,sizeof(Block));
-			index = 0;
+			idx = 0;
 		}
 
 		/* On encryption, we store (feed ^ data) which is cypher */
-		*s = stp->str_output[index] = (stp->str_feed[index] ^ *s);
+		*s = stp->str_output[idx] = (stp->str_feed[idx] ^ *s);
 		s++;
-		index++;
+		idx++;
 	}
-	stp->str_index = index;
+	stp->str_index = idx;
 }
 
 	int
@@ -682,7 +676,7 @@ cfb64_decrypt(data)
 	int data;
 {
 	register struct stinfo *stp = &fb[CFB].streams[DIR_DECRYPT-1];
-	int index;
+	int idx;
 
 	if (data == -1) {
 		/*
@@ -695,18 +689,18 @@ cfb64_decrypt(data)
 		return(0);
 	}
 
-	index = stp->str_index++;
-	if (index == sizeof(Block)) {
+	idx = stp->str_index++;
+	if (idx == sizeof(Block)) {
 		Block b;
 		ecb_encrypt(stp, stp->str_output, b);
 		memcpy((void *)stp->str_feed, (void *)b, sizeof(Block));
 		stp->str_index = 1;	/* Next time will be 1 */
-		index = 0;		/* But now use 0 */ 
+		idx = 0;		/* But now use 0 */ 
 	}
 
 	/* On decryption we store (data) which is cypher. */
-	stp->str_output[index] = data;
-	return(data ^ stp->str_feed[index]);
+	stp->str_output[idx] = data;
+	return(data ^ stp->str_feed[idx]);
 }
 
 /*
@@ -734,20 +728,20 @@ ofb64_encrypt(s, c)
 	int c;
 {
 	register struct stinfo *stp = &fb[OFB].streams[DIR_ENCRYPT-1];
-	register int index;
+	register int idx;
 
-	index = stp->str_index;
+	idx = stp->str_index;
 	while (c-- > 0) {
-		if (index == sizeof(Block)) {
+		if (idx == sizeof(Block)) {
 			Block b;
 			ecb_encrypt(stp, stp->str_feed, b);
 			memcpy((void *)stp->str_feed,(void *)b,sizeof(Block));
-			index = 0;
+			idx = 0;
 		}
-		*s++ ^= stp->str_feed[index];
-		index++;
+		*s++ ^= stp->str_feed[idx];
+		idx++;
 	}
-	stp->str_index = index;
+	stp->str_index = idx;
 }
 
 	int
@@ -755,7 +749,7 @@ ofb64_decrypt(data)
 	int data;
 {
 	register struct stinfo *stp = &fb[OFB].streams[DIR_DECRYPT-1];
-	int index;
+	int idx;
 
 	if (data == -1) {
 		/*
@@ -768,16 +762,16 @@ ofb64_decrypt(data)
 		return(0);
 	}
 
-	index = stp->str_index++;
-	if (index == sizeof(Block)) {
+	idx = stp->str_index++;
+	if (idx == sizeof(Block)) {
 		Block b;
 		ecb_encrypt(stp, stp->str_feed, b);
 		memcpy((void *)stp->str_feed, (void *)b, sizeof(Block));
 		stp->str_index = 1;	/* Next time will be 1 */
-		index = 0;		/* But now use 0 */ 
+		idx = 0;		/* But now use 0 */ 
 	}
 
-	return(data ^ stp->str_feed[index]);
+	return(data ^ stp->str_feed[idx]);
 }
 #  endif /* DES_ENCRYPTION */
 # endif	/* AUTHENTICATION */

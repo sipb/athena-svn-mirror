@@ -1,5 +1,5 @@
-This is Info file krb425.info, produced by Makeinfo version 1.68 from
-the input file krb425.texinfo.
+This is krb425.info, produced by makeinfo version 4.0 from
+krb425.texinfo.
 
 
 File: krb425.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
@@ -22,7 +22,7 @@ File: krb425.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: Top
 Copyright
 *********
 
-Copyright (C) 1985-2001 by the Massachusetts Institute of Technology.
+Copyright (C) 1985-2002 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -79,6 +79,61 @@ kadmin/passwd, kadmin/server, lib/kadm5, and portions of lib/rpc:
      for the valuable work which has been performed by MIT and the
      Kerberos community.
 
+The implementation of the Yarrow pseudo-random number generator in
+src/lib/crypto/yarrow has the following copyright:
+
+     Copyright 2000 by Zero-Knowledge Systems, Inc.
+
+     Permission to use, copy, modify, distribute, and sell this software
+     and its documentation for any purpose is hereby granted without
+     fee, provided that the above copyright notice appear in all copies
+     and that both that copyright notice and this permission notice
+     appear in supporting documentation, and that the name of
+     Zero-Knowledge Systems, Inc. not be used in advertising or
+     publicity pertaining to distribution of the software without
+     specific, written prior permission.  Zero-Knowledge Systems, Inc.
+     makes no representations about the suitability of this software
+     for any purpose.  It is provided "as is" without express or
+     implied warranty.
+
+     ZERO-KNOWLEDGE SYSTEMS, INC. DISCLAIMS ALL WARRANTIES WITH REGARD
+     TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL ZERO-KNOWLEDGE
+     SYSTEMS, INC. BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
+     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+     OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+     TORTUOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+     PERFORMANCE OF THIS SOFTWARE.
+
+
+The implementation of the AES encryption algorithm in
+src/lib/crypto/aes has the following copyright:
+
+     Copyright (c) 2001, Dr Brian Gladman <brg@gladman.uk.net>,
+     Worcester, UK.  All rights reserved.
+
+     LICENSE TERMS
+
+     The free distribution and use of this software in both source and
+     binary form is allowed (with or without changes) provided that:
+
+       1. distributions of this source code include the above copyright
+          notice, this list of conditions and the following disclaimer;
+
+       2. distributions in binary form include the above copyright
+          notice, this list of conditions and the following disclaimer
+          in the documentation and/or other associated materials;
+
+       3. the copyright holder's name is not used to endorse products
+          built using this software without specific written permission.
+
+     DISCLAIMER
+
+     This software is provided 'as is' with no explcit or implied
+     warranties in respect of any properties, including, but not
+     limited to, correctness and fitness for purpose.
+
+
 Kerberos V5 includes documentation and software developed at the
 University of California at Berkeley, which includes this copyright
 notice:
@@ -130,7 +185,7 @@ daemons can interoperate with Kerberos V4 clients, but most of the
 Kerberos V4 daemons can not interoperate with Kerberos V5 clients.  This
 suggests the following strategy for performing the upgrade:
 
-  1. *Upgrade your KDCs.*  This is must be done first, so that
+  1. *Upgrade your KDCs.*  This must be done first, so that
      interactions with the Kerberos database, whether by Kerberos V5
      clients or by Kerberos V4 clients, will succeed.
 
@@ -171,6 +226,7 @@ installations.
 
 * libdefaults::
 * realms (krb5.conf)::
+* AFS and the Appdefaults Section::
 
 
 File: krb425.info,  Node: libdefaults,  Next: realms (krb5.conf),  Prev: krb5.conf,  Up: krb5.conf
@@ -182,18 +238,18 @@ In the [libdefaults] section, the following additional tags may be used:
 
 krb4_srvtab
      Specifies the location of the Kerberos V4 srvtab file.  Default is
-     `/etc/srvtab'.
+     /etc/srvtab.
 
 krb4_config
      Specifies the location of the Kerberos V4 configuration file.
-     Default is `/etc/krb.conf'.
+     Default is /etc/krb.conf.
 
 krb4_realms
      Specifies the location of the Kerberos V4 domain/realm translation
-     file.  Default is `/etc/krb.realms'.
+     file.  Default is /etc/krb.realms.
 
 
-File: krb425.info,  Node: realms (krb5.conf),  Prev: libdefaults,  Up: krb5.conf
+File: krb425.info,  Node: realms (krb5.conf),  Next: AFS and the Appdefaults Section,  Prev: libdefaults,  Up: krb5.conf
 
 [realms]
 --------
@@ -217,6 +273,22 @@ v4_realm
      This should only be used when running separate V4 and V5 realms,
      with some external means of password sychronization between the
      realms.
+
+
+File: krb425.info,  Node: AFS and the Appdefaults Section,  Prev: realms (krb5.conf),  Up: krb5.conf
+
+AFS and the Appdefaults Section
+-------------------------------
+
+Many Kerberos 4 sites also run the Andrew File System (AFS).
+
+Modern AFS servers (OpenAFS > 1.2.8) support the AFS 2b token format.
+This allows AFS to use Kerberos 5 tickets rather than version 4
+tickets, enabling cross-realm authentication.  By default, the
+`krb524d' service will issue the new AFS 2b tokens.  If you are using
+old AFS servers, you will need to disable these new tokens.  Please see
+the documentation of the `appdefaults' section of `krb5.conf' in the
+Kerberos Administration guide.
 
 
 File: krb425.info,  Node: kdc.conf,  Prev: krb5.conf,  Up: Configuration Files
@@ -267,9 +339,11 @@ To convert your KDCs from Kerberos V4 to Kerberos V5, do the following:
      in the Kerberos V5 Installation Guide.  When you get to the section
      that tells you to start the `krb5kdc' and `kadmind' daemons, first
      find and kill the Kerberos V4 `kerberos' daemon on each of the
-     KDCs.  Then start the `krb5kdc' and `kadmind' daemons as directed.
-     Finally, start the Kerberos V5 to V4 ticket translator daemon,
-     `krb524d', by issuing the command:
+     KDCs.  Then start the `krb5kdc' and `kadmind' daemons as You will
+     need to specify an argument to the `-4' command line option to
+     enable Kerberos 4 compatibility.  See the `krb5kdc' man page for
+     details.  directed.  Finally, start the Kerberos V5 to V4 ticket
+     translator daemon, `krb524d', by issuing the command:
 
           % /usr/local/sbin/krb524d -m > /dev/null &
 
@@ -299,40 +373,6 @@ exceptions:
 
           kerberos-sec  88/udp    kdc    # Kerberos V5 KDC
           kerberos-sec  88/tcp    kdc    # Kerberos V5 KDC
-
-   * In the file `/etc/inetd.conf', for a *secure* server, instead of
-     making the changes described in the Kerberos V5 Installation
-     Guide, do the following:
-
-     Find and comment out any lines for the services `ftp', `telnet',
-     `shell', `login', and `exec'.
-
-     Add the following lines.  (Note:  each line beginning with => is a
-     continuation of the previous line.)
-
-          klogin  stream  tcp  nowait  root
-          =>    /usr/local/sbin/klogind  klogind -k -c
-          eklogin stream  tcp  nowait  root
-          n=>   /usr/local/sbin/klogind  klogind -k -c -e
-          kshell  stream  tcp  nowait  root
-          =>    /usr/local/sbin/kshd  kshd -k -c -A
-          ftp     stream  tcp  nowait  root
-          =>    /usr/local/sbin/ftpd  ftpd -a
-          telnet  stream  tcp  nowait  root
-          =>    /usr/local/sbin/telnetd  telnetd -a valid
-
-     *N.B.*: As noted in the Kerberos V5 Installation Guide, if you
-     have some clients running older versions of Kerberos V5 (beta 6 or
-     earlier), checksums were done differently in those versions, which
-     will cause authentication to fail.  To get around this problem,
-     have the `klogind' and `kshd' daemons ignore checksums, by
-     replacing each `-c' flag above with `-i'.
-
-     For an *insecure* server, make the changes described in the
-     Kerberos V5 Installation Guide.
-
-     When you make changes to `inetd.conf', remember to `kill -HUP' the
-     `inetd' process to cause the changes to take effect.
 
    * Convert your Kerberos V4 srvtab file to Kerberos V5 keytab file as
      follows:
@@ -379,17 +419,18 @@ KDCs.
 
 
 Tag Table:
-Node: Top102
-Node: Copyright428
-Node: Introduction5465
-Node: Configuration Files6486
-Node: krb5.conf6785
-Node: libdefaults7192
-Node: realms (krb5.conf)7742
-Node: kdc.conf8784
-Node: Upgrading KDCs9164
-Node: Upgrading Application Servers10884
-Node: Upgrading Client machines13376
-Node: Firewall Considerations14259
+Node: Top76
+Node: Copyright402
+Node: Introduction7902
+Node: Configuration Files8920
+Node: krb5.conf9219
+Node: libdefaults9662
+Node: realms (krb5.conf)10206
+Node: AFS and the Appdefaults Section11288
+Node: kdc.conf11959
+Node: Upgrading KDCs12339
+Node: Upgrading Application Servers14217
+Node: Upgrading Client machines15205
+Node: Firewall Considerations16088
 
 End Tag Table

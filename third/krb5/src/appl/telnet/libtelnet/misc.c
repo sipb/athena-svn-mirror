@@ -33,8 +33,11 @@
 
 /* based on @(#)misc.c	8.1 (Berkeley) 6/4/93 */
 
-#include "misc.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include "misc.h"
+#include "auth.h"
+#include "encrypt.h"
 
 char *RemoteHostName;
 char *LocalHostName;
@@ -64,7 +67,7 @@ auth_encrypt_init(local, remote, name, server)
 
 	void
 auth_encrypt_user(name)
-	char *name;
+	const char *name;
 {
 	extern char *strdup();
 
@@ -81,7 +84,7 @@ auth_encrypt_connect(cnt)
 
 	void
 printd(data, cnt)
-	unsigned char *data;
+	const unsigned char *data;
 	int cnt;
 {
 	if (cnt > 16)

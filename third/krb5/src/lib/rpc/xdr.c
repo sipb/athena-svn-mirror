@@ -66,7 +66,7 @@ static char xdr_zero[BYTES_PER_XDR_UNIT] = { 0, 0, 0, 0 };
 void
 gssrpc_xdr_free(proc, objp)
 	xdrproc_t proc;
-	char *objp;
+	void *objp;
 {
 	XDR x;
 	
@@ -78,9 +78,9 @@ gssrpc_xdr_free(proc, objp)
  * XDR nothing
  */
 bool_t
-xdr_void(/* xdrs, addr */)
-	/* XDR *xdrs; */
-	/* caddr_t addr; */
+xdr_void(xdrs, addr )
+	XDR *xdrs;
+	void *addr;
 {
 
 	return (TRUE);
@@ -119,6 +119,8 @@ xdr_int(xdrs, ip)
 	} else {
 		return (xdr_short(xdrs, (short *)ip));
 	}
+	/*NOTREACHED*/
+	return(FALSE);
 #endif
 }
 
@@ -154,6 +156,8 @@ xdr_u_int(xdrs, up)
 	} else {
 		return (xdr_short(xdrs, (short *)up));
 	}
+	/*NOTREACHED*/
+	return(FALSE);
 #endif
 }
 
@@ -210,7 +214,7 @@ xdr_u_long(xdrs, ulp)
 	return (FALSE);
       }
     }
-    return (XDR_PUTLONG(xdrs, ulp));
+    return (XDR_PUTLONG(xdrs, (long *)ulp));
   }
   if (xdrs->x_op == XDR_DECODE) {
     return (XDR_GETLONG(xdrs, (long *)ulp));
@@ -263,10 +267,10 @@ xdr_u_short(xdrs, usp)
 
 	case XDR_ENCODE:
 		l = (unsigned long) *usp;
-		return (XDR_PUTLONG(xdrs, &l));
+		return (XDR_PUTLONG(xdrs, (long *) &l));
 
 	case XDR_DECODE:
-		if (!XDR_GETLONG(xdrs, &l)) {
+		if (!XDR_GETLONG(xdrs, (long *) &l)) {
 			return (FALSE);
 		}
 		*usp = (unsigned short) l;
@@ -303,7 +307,7 @@ xdr_char(xdrs, cp)
 bool_t
 xdr_u_char(xdrs, cp)
 	XDR *xdrs;
-	char *cp;
+	unsigned char *cp;
 {
 	unsigned int u;
 
@@ -383,7 +387,7 @@ xdr_opaque(xdrs, cp, cnt)
 	register unsigned int cnt;
 {
 	register unsigned int rndup;
-	static crud[BYTES_PER_XDR_UNIT];
+	static int crud[BYTES_PER_XDR_UNIT];
 
 	/*
 	 * if no data we are done
@@ -404,7 +408,7 @@ xdr_opaque(xdrs, cp, cnt)
 		}
 		if (rndup == 0)
 			return (TRUE);
-		return (XDR_GETBYTES(xdrs, crud, rndup));
+		return (XDR_GETBYTES(xdrs, (caddr_t) (void *)crud, rndup));
 	}
 
 	if (xdrs->x_op == XDR_ENCODE) {
@@ -513,8 +517,10 @@ xdr_int32(xdrs, ip)
   case XDR_FREE:
     return (TRUE);    
   }
+  return(FALSE);
 }
 
+bool_t
 xdr_u_int32(xdrs, up)
 	XDR *xdrs;
 	rpc_u_int32 *up;
@@ -535,6 +541,7 @@ xdr_u_int32(xdrs, up)
   case XDR_FREE:
     return (TRUE);    
   }
+  return(FALSE);
 }
 
 /*
@@ -619,11 +626,13 @@ xdr_string(xdrs, cpp, maxsize)
 	case XDR_ENCODE:
 		size = strlen(sp);
 		break;
+	case XDR_DECODE:
+		break;
 	}
 	if (! xdr_u_int(xdrs, &size)) {
 		return (FALSE);
 	}
-	if (size > maxsize) {
+	if (size >= maxsize) {
 		return (FALSE);
 	}
 	nodesize = size + 1;

@@ -1,3 +1,37 @@
+2003-01-12  Ezra Peisach  <epeisach@bu.edu>
+
+	* kdc5_hammer.c (verify_cs_pair): Use krb5_free_creds() instead of
+	krb5_free_cred_contents() to cleanup memory leak.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-04-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdc5_hammer.c (main): Delete '-k' option which didn't do
+	anything.
+	(usage): Don't display '-k' option.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_hammer.c: Make prototypes unconditional.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdc5_hammer.c (main): Initialize enctype at entry; eliminate
+	enctypedone variable.
+
+2000-07-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdc5_hammer.c: Move global (to file) enctype into main to prevent
+	being shadowed in other routines. Remove unused krb5_parse_lifetime().
+
+
 2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* kdc5_hammer.c (main): Make sure buffer 'prefix' is null-terminated.
@@ -7,12 +41,12 @@
 
 	* kdc5_hammer.c (main): Don't overflow buffers "ctmp" or "stmp".
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

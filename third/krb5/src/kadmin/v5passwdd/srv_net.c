@@ -84,31 +84,36 @@ typedef struct _net_slave_info {
 /*
  * Error messages.
  */
-static const char *net_waiterr_msg = "\004child wait failed - cannot reap children";
-static const char *net_def_realm_fmt = "%s: cannot get default realm (%s).\n";
-static const char *net_no_mem_fmt = "%s: cannot get memory.\n";
-static const char *net_parse_srv_fmt = "%s: cannot parse server name %s (%s).\n";
-static const char *net_no_hostname_fmt = "%s: cannot get our host name (%s).\n";
-static const char *net_no_hostent_fmt = "%s: cannot get our host entry (%s).\n";
-static const char *net_no_servent_fmt = "%s: cannot get service entry for %s (%s).\n";
-static const char *net_sockerr_fmt = "%s: cannot open network socket (%s).\n";
-static const char *net_soerr_fmt = "%s: cannot set socket options (%s).\n";
-static const char *net_binderr_fmt = "%s: cannot bind to network address (%s).\n";
+#define net_waiterr_msg		"\004child wait failed - cannot reap children"
+#if 0
+#define net_def_realm_fmt	"%s: cannot get default realm (%s).\n"
+#endif
+#define net_no_mem_fmt		"%s: cannot get memory.\n"
+#define net_parse_srv_fmt	"%s: cannot parse server name %s (%s).\n"
+#define net_no_hostname_fmt	"%s: cannot get our host name (%s).\n"
+#define net_no_hostent_fmt	"%s: cannot get our host entry (%s).\n"
+#define net_no_servent_fmt	"%s: cannot get service entry for %s (%s).\n"
+#define net_sockerr_fmt		"%s: cannot open network socket (%s).\n"
+#define net_soerr_fmt		"%s: cannot set socket options (%s).\n"
+#define net_binderr_fmt		"%s: cannot bind to network address (%s).\n"
 
-static const char *net_select_fmt = "\004select failed";
-static const char *net_cl_disp_fmt = "\004client dispatch failed";
-static const char *net_not_ready_fmt = "\004select error - no socket to read";
-static const char *net_dispatch_msg = "network dispatch";
+#define net_select_fmt		"\004select failed"
+#define net_cl_disp_fmt		"\004client dispatch failed"
+#define net_not_ready_fmt	"\004select error - no socket to read"
+#define net_dispatch_msg	"network dispatch"
 
+#ifdef DEBUG
 static int net_debug_level = 0;
+#endif
 
 static char		*net_service_name = (char *) NULL;
 static int		net_service_princ_init = 0;
 static krb5_principal	net_service_principal = (krb5_principal) NULL;
+#if 0
 static int		net_server_addr_init = 0;
+#endif
 static struct sockaddr_in	net_server_addr;
 static int		net_listen_socket = -1;
-static int		net_slaves_active = 0;
 static int		net_max_slaves = 0;
 static net_slave_info	*net_slave_table = (net_slave_info *) NULL;
 
@@ -152,7 +157,7 @@ static net_slave_info *
 net_find_slave(id)
     net_slave_type	id;
 {
-    int i, found;
+    int i, found = 0;
 
     for (i=0; i<net_max_slaves; i++) {
 	if (net_slave_table[i].sl_inuse &&
@@ -451,7 +456,9 @@ net_init(kcontext, realm, debug_level, port)
     struct hostent	*our_hostent;
     struct servent	*our_servent;
 
+#ifdef DEBUG
     net_debug_level = debug_level;
+#endif
     DPRINT(DEBUG_CALLS, net_debug_level, ("* net_init(port=%d)\n", port));
 
     /* Allocate the slave table */
@@ -475,9 +482,8 @@ net_init(kcontext, realm, debug_level, port)
 	   ("- name of service is %s\n", net_service_name));
 
     /* Now formulate the principal name */
-    if (kret = krb5_parse_name(kcontext,
-			       net_service_name,
-			       &net_service_principal)) {
+    kret = krb5_parse_name(kcontext, net_service_name, &net_service_principal);
+    if (kret) {
 	fprintf(stderr, net_parse_srv_fmt, programname, net_service_name,
 		error_message(kret));
 	goto done;
@@ -625,7 +631,9 @@ net_init(kcontext, realm, debug_level, port)
 		    ntohs(our_servent->s_port)));
 	}
     }
+#if 0
     net_server_addr_init = 1;
+#endif
 
     /* Now open the listen socket */
     net_listen_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -707,7 +715,7 @@ net_dispatch(kcontext, detached)
     krb5_context	kcontext;
     int			detached;
 {
-    krb5_error_code	kret;
+    volatile krb5_error_code	kret;
     fd_set		mask, readfds;
     int			nready;
 #if	POSIX_SIGNALS

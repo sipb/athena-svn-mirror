@@ -37,8 +37,8 @@ get_all_princ_from_file - retrieves all principal names
 			from file pointed to by fp.
 
 *******************************************************************/
-static void close_time PROTOTYPE((int, FILE *, int, FILE *));
-static krb5_boolean find_str_in_list PROTOTYPE((char **, char *));
+static void close_time (int, FILE *, int, FILE *);
+static krb5_boolean find_str_in_list (char **, char *);
 
 krb5_error_code get_all_princ_from_file (fp, plist)
     FILE *fp;
@@ -52,7 +52,8 @@ krb5_error_code get_all_princ_from_file (fp, plist)
     if (!(temp_list = (char **) malloc( CHUNK * sizeof(char *))))
 	return errno;
 
-    if (retval = get_line(fp, &line ))
+    retval = get_line(fp, &line);
+    if (retval)
 	return retval;	
 
     while (line){
@@ -73,7 +74,9 @@ krb5_error_code get_all_princ_from_file (fp, plist)
 
 
 	free (line);
-	if (retval = get_line(fp, &line )){ return retval;}
+	retval = get_line(fp, &line);
+	if (retval)
+	    return retval;
     }
 
     temp_list[count] = NULL;
@@ -94,7 +97,7 @@ krb5_error_code list_union(list1, list2, combined_list)
     char ***combined_list;
 {
 
-    int c1 =0, c2 = 0, i=0, j=0;
+    unsigned int c1 =0, c2 = 0, i=0, j=0;
     char ** tlist;
 
     if (! list1){   	
@@ -147,7 +150,7 @@ filter(fp, cmd, k5users_list, k5users_filt_list)
     krb5_error_code retval =0;
     krb5_boolean found = FALSE;
     char * out_cmd = NULL;
-    int i=0, j=0, found_count = 0, k=0;	
+    unsigned int i=0, j=0, found_count = 0, k=0;	
     char ** temp_filt_list;
 
     *k5users_filt_list = NULL;
@@ -158,7 +161,8 @@ filter(fp, cmd, k5users_list, k5users_filt_list)
 
     while(k5users_list[i]){	
 
-	if (retval= k5users_lookup(fp, k5users_list[i], cmd, &found, &out_cmd))
+	retval= k5users_lookup(fp, k5users_list[i], cmd, &found, &out_cmd);
+	if (retval)
 	    return retval;
 
 	if (found == FALSE){ 		
@@ -199,7 +203,7 @@ get_authorized_princ_names(luser, cmd, princ_list)
     struct passwd *pwd;
     int k5login_flag =0;
     int k5users_flag =0;
-    FILE * login_fp, * users_fp;
+    FILE * login_fp = NULL , * users_fp = NULL;
     char **  k5login_list = NULL, ** k5users_list = NULL;
     char ** k5users_filt_list = NULL;
     char ** combined_list = NULL;
@@ -220,7 +224,8 @@ get_authorized_princ_names(luser, cmd, princ_list)
         if ((login_fp = fopen(k5login_path, "r")) == NULL)
 	    return 0;
         if ( fowner(login_fp, pwd->pw_uid) == FALSE){
-	    close_time(k5users_flag,users_fp, k5login_flag,login_fp);
+	    close_time(1 /*k5users_flag*/, (FILE *) 0 /*users_fp*/, 
+		       k5login_flag,login_fp);
 	    return 0;
         }
     }
@@ -233,21 +238,24 @@ get_authorized_princ_names(luser, cmd, princ_list)
 	    return 0;
         }
 
-   	if(retval = get_all_princ_from_file (users_fp, &k5users_list)){
+	retval = get_all_princ_from_file (users_fp, &k5users_list);
+   	if(retval) {
 	    close_time(k5users_flag,users_fp, k5login_flag,login_fp);
 	    return retval;
    	}
 
 	rewind(users_fp);	
 	
-	if(retval = filter(users_fp,cmd, k5users_list, &k5users_filt_list)){
+	retval = filter(users_fp,cmd, k5users_list, &k5users_filt_list);
+	if(retval) {
 	    close_time(k5users_flag,users_fp, k5login_flag, login_fp);
 	    return retval;
 	}
     }
  	
     if (!k5login_flag){
-   	if(retval = get_all_princ_from_file (login_fp, &k5login_list)){
+	retval = get_all_princ_from_file (login_fp, &k5login_list);
+   	if(retval) {
 	    close_time(k5users_flag,users_fp, k5login_flag,login_fp);
 	    return retval;
    	}
@@ -256,13 +264,13 @@ get_authorized_princ_names(luser, cmd, princ_list)
     close_time(k5users_flag,users_fp, k5login_flag, login_fp);
 
     if (cmd) {
-	if (retval = list_union(k5login_list,
-			       k5users_filt_list, &combined_list)){
-	    close_time(k5users_flag,users_fp, k5login_flag,login_fp);
-	    return retval;
-	}
-	*princ_list = combined_list;
-	return 0;
+      retval = list_union(k5login_list, k5users_filt_list, &combined_list);
+      if (retval){
+	  close_time(k5users_flag,users_fp, k5login_flag,login_fp);
+	  return retval;
+      }
+      *princ_list = combined_list;
+      return 0;
     } else {
 	if (k5users_filt_list != NULL)
 	    free(k5users_filt_list);
@@ -332,30 +340,31 @@ krb5_error_code get_closest_principal(context, plist, client, found)
 
     while(plist[i]){
 
-	if (retval = krb5_parse_name(context, plist[i], &temp_client))
+	retval = krb5_parse_name(context, plist[i], &temp_client);
+	if (retval)
 	    return retval;
-
+	
 	pnelem = krb5_princ_size(context, temp_client);
-
+	
 	if ( cnelem > pnelem){	
 	    i++;
 	    continue;
 	}
-
+	
 	if (krb5_princ_realm(context, *client)->length ==
 	    krb5_princ_realm(context, temp_client)->length
 	    && (!memcmp (krb5_princ_realm(context, *client)->data,
 			 krb5_princ_realm(context, temp_client)->data,
 			 krb5_princ_realm(context, temp_client)->length))){
-
+	    
 	    got_one = TRUE;
 	    for(j =0; j < cnelem; j ++){
 		krb5_data *p1 =
 		    krb5_princ_component(context, *client, j);
 		krb5_data *p2 =
 		    krb5_princ_component(context, temp_client, j);
-
-		if ((p1->length != p2->length) ||
+		
+		if (!p1 || !p2 || (p1->length != p2->length) ||
 		    memcmp(p1->data,p2->data,p1->length)){
 		    got_one = FALSE;
 		    break;
@@ -373,7 +382,7 @@ krb5_error_code get_closest_principal(context, plist, client, found)
 	}
 	i++;
     }
-
+    
     if (best_client) {
 	*found = TRUE;
 	*client = best_client;
@@ -398,25 +407,27 @@ krb5_error_code find_either_ticket (context, cc, client, end_server, found)
     krb5_principal kdc_server;
     krb5_error_code retval;
     krb5_boolean temp_found = FALSE;
-    char * cc_source_name;
+    const char * cc_source_name;
     struct stat st_temp;
 
     cc_source_name = krb5_cc_get_name(context, cc);
 
     if ( ! stat(cc_source_name, &st_temp)){
 
-	if (retval = find_ticket(context, cc, client, end_server, &temp_found))
+	retval = find_ticket(context, cc, client, end_server, &temp_found);
+	if (retval)
 	    return retval;
  	
 	if (temp_found == FALSE){
-	    if (retval = krb5_tgtname(context,
-				      krb5_princ_realm(context, client),
-				      krb5_princ_realm(context, client),
-				      &kdc_server)){
-		return retval ;
-	    }
+	    retval = ksu_tgtname(context,
+				  krb5_princ_realm(context, client),
+				  krb5_princ_realm(context, client),
+				  &kdc_server);
+	    if (retval)
+		return retval;
 
-	    if(retval = find_ticket(context, cc,client, kdc_server, &temp_found))
+	    retval = find_ticket(context, cc,client, kdc_server, &temp_found);
+	    if(retval)
 		return retval;
 	}
 	else if (auth_debug)
@@ -445,10 +456,12 @@ krb5_error_code find_ticket (context, cc, client, server, found)
     memset((char *) &tgtq, 0, sizeof(tgtq));
     memset((char *) &tgt, 0, sizeof(tgt));
 
-    if (retval= krb5_copy_principal(context,  client, &tgtq.client))
+    retval= krb5_copy_principal(context,  client, &tgtq.client);
+    if (retval)
 	return retval; 	
 
-    if (retval= krb5_copy_principal(context,  server, &tgtq.server))
+    retval= krb5_copy_principal(context,  server, &tgtq.server);
+    if (retval)
 	return retval ; 	
 
     retval = krb5_cc_retrieve_cred(context, cc, KRB5_TC_MATCH_SRV_NAMEONLY | KRB5_TC_SUPPORTED_KTYPES,
@@ -489,7 +502,8 @@ krb5_error_code find_princ_in_list (context, princ, plist, found)
 
     if (!plist) return 0;
 
-    if (retval = krb5_unparse_name(context, princ, &princname))
+    retval = krb5_unparse_name(context, princ, &princname);
+    if (retval)
 	return retval;
 
     while (plist[i] ){
@@ -522,8 +536,8 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 					  cc_source, options, cmd,
 					  hostname, client, path_out)
     krb5_context context;
-    int source_uid;
-    int target_uid;
+    uid_t source_uid;
+    uid_t target_uid;
     char *source_user;
     char *target_user;
     krb5_ccache cc_source;
@@ -535,7 +549,7 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 {
 
     princ_info princ_trials[10];
-    char * cc_source_name;
+    const char * cc_source_name;
     krb5_principal cc_def_princ = NULL;
     krb5_principal temp_client;
     krb5_principal target_client;
@@ -558,14 +572,18 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
     cc_source_name = krb5_cc_get_name(context, cc_source);
 
 	
-    if (! stat(cc_source_name, &st_temp))
-	if (retval = krb5_cc_get_principal(context, cc_source, &cc_def_princ))
+    if (! stat(cc_source_name, &st_temp)) {
+	retval = krb5_cc_get_principal(context, cc_source, &cc_def_princ);
+	if (retval)
 	    return retval;
+    }
 
-	
-    if (retval=krb5_parse_name(context, target_user, &target_client))
+    retval=krb5_parse_name(context, target_user, &target_client);
+    if (retval)
 	return retval;
-    if (retval=krb5_parse_name(context, source_user, &source_client))
+
+    retval=krb5_parse_name(context, source_user, &source_client);
+    if (retval)
 	return retval;
 
     if (source_uid == 0){
@@ -614,7 +632,8 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 
 	return 0;	
     }else{
-	if (retval = get_authorized_princ_names(target_user, cmd, &aplist))
+	retval = get_authorized_princ_names(target_user, cmd, &aplist);
+	if (retval)
 	    return retval;
 
 	/* .k5users or .k5login exist, but no authorization */
@@ -626,8 +645,9 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 	}
     }
 
-    if (retval = krb5_sname_to_principal(context, hostname, NULL,
-					 KRB5_NT_SRV_HST, &end_server))
+    retval = krb5_sname_to_principal(context, hostname, NULL,
+				     KRB5_NT_SRV_HST, &end_server);
+    if (retval)
 	return retval;
 
 
@@ -649,15 +669,18 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 
     for (i= 0; i < count; i ++){
 	if(princ_trials[i].p) {	
-	    if (retval= find_princ_in_list(context, princ_trials[i].p, aplist, &found))
+	    retval= find_princ_in_list(context, princ_trials[i].p, aplist, 
+				       &found);
+	    if (retval)
 		return retval;	
 	
 	    if (found == TRUE){
 		princ_trials[i].found = TRUE;
 
- 		if (retval = find_either_ticket (context, cc_source,
-						 princ_trials[i].p,
-						 end_server, &found))
+		retval = find_either_ticket (context, cc_source, 
+					     princ_trials[i].p,
+					     end_server, &found);
+ 		if (retval)
 		    return retval;
 		if (found == TRUE){
 		    *client = princ_trials[i].p;
@@ -674,12 +697,13 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 
     i=0;
     while (aplist[i]){
-
- 	if (retval = krb5_parse_name(context, aplist[i], &temp_client))
+	retval = krb5_parse_name(context, aplist[i], &temp_client);
+ 	if (retval)
 	    return retval;
 
-	if (retval = find_either_ticket (context, cc_source, temp_client,
-					 end_server, &found))
+	retval = find_either_ticket (context, cc_source, temp_client,
+				     end_server, &found);
+	if (retval)
 	    return retval;
 
 	if (found == TRUE){
@@ -711,14 +735,17 @@ krb5_error_code get_best_princ_for_target(context, source_uid, target_uid,
 #ifdef PRINC_LOOK_AHEAD
     for (i=0; i < count; i ++){
 	if (princ_trials[i].p){
-	    if(retval=krb5_copy_principal(context, princ_trials[i].p,
-					  &temp_client))
+	    retval=krb5_copy_principal(context, princ_trials[i].p,
+				       &temp_client);
+	    if(retval)
 		return retval; 	
 
 	    /* get the client name that is the closest
 	       to the three princ in trials */
 
-	    if(retval=get_closest_principal(context, aplist, &temp_client, & found))
+	    retval=get_closest_principal(context, aplist, &temp_client, 
+					 &found);
+	    if(retval)
 		return retval; 	
 
 	    if (found == TRUE){

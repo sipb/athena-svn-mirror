@@ -17,6 +17,8 @@
  */
 
 
+#include "prof_int.h"
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -24,8 +26,6 @@
 #endif
 #include <errno.h>
 #include <ctype.h>
-
-#include "prof_int.h"
 
 struct profile_node {
 	errcode_t	magic;
@@ -67,6 +67,19 @@ void profile_free_node(node)
 	free(node);
 }
 
+#ifndef HAVE_STRDUP
+#undef strdup
+#define strdup MYstrdup
+static char *MYstrdup (const char *s)
+{
+    size_t sz = strlen(s) + 1;
+    char *p = malloc(sz);
+    if (p != 0)
+	memcpy(p, s, sz);
+    return p;
+}
+#endif
+
 /*
  * Create a node
  */
@@ -80,19 +93,17 @@ errcode_t profile_create_node(name, value, ret_node)
 	if (!new)
 		return ENOMEM;
 	memset(new, 0, sizeof(struct profile_node));
-	new->name = malloc(strlen(name)+1);
+	new->name = strdup(name);
 	if (new->name == 0) {
-		profile_free_node(new);
-		return ENOMEM;
+	    profile_free_node(new);
+	    return ENOMEM;
 	}
-	strcpy(new->name, name);
 	if (value) {
-		new->value = malloc(strlen(value)+1);
+		new->value = strdup(value);
 		if (new->value == 0) {
-			profile_free_node(new);
-			return ENOMEM;
+		    profile_free_node(new);
+		    return ENOMEM;
 		}
-		strcpy(new->value, value);
 	}
 	new->magic = PROF_MAGIC_NODE;
 
@@ -387,7 +398,7 @@ struct profile_iterator {
 	prf_magic_t		magic;
 	profile_t		profile;
 	int			flags;
-	const char 		**names;
+	const char 		*const *names;
 	const char		*name;
 	prf_file_t		file;
 	int			file_serial;
@@ -398,7 +409,7 @@ struct profile_iterator {
 
 errcode_t profile_node_iterator_create(profile, names, flags, ret_iter)
 	profile_t	profile;
-	const char	**names;
+	const char	*const *names;
 	int		flags;
 	void		**ret_iter;
 {
@@ -460,7 +471,7 @@ errcode_t profile_node_iterator(iter_p, ret_node, ret_name, ret_value)
 {
 	struct profile_iterator 	*iter = *iter_p;
 	struct profile_node 		*section, *p;
-	const char			**cpp;
+	const char			*const *cpp;
 	errcode_t			retval;
 	int				skip_num = 0;
 
@@ -470,7 +481,7 @@ errcode_t profile_node_iterator(iter_p, ret_node, ret_name, ret_value)
 	 * If the file has changed, then the node pointer is invalid,
 	 * so we'll have search the file again looking for it.
 	 */
-	if (iter->node && (iter->file->upd_serial != iter->file_serial)) {
+	if (iter->node && (iter->file->data->upd_serial != iter->file_serial)) {
 		iter->flags &= ~PROFILE_ITER_FINAL_SEEN;
 		skip_num = iter->num;
 		iter->node = 0;
@@ -489,15 +500,23 @@ get_new_file:
 			return 0;
 		}
 		if ((retval = profile_update_file(iter->file))) {
-			profile_node_iterator_free(iter_p);
-			return retval;
+            if (retval == ENOENT || retval == EACCES) {
+		/* XXX memory leak? */
+                iter->file = iter->file->next;
+                skip_num = 0;
+                retval = 0;
+                goto get_new_file;
+            } else {
+                profile_node_iterator_free(iter_p);
+                return retval;
+            }
 		}
-		iter->file_serial = iter->file->upd_serial;
+		iter->file_serial = iter->file->data->upd_serial;
 		/*
 		 * Find the section to list if we are a LIST_SECTION,
 		 * or find the containing section if not.
 		 */
-		section = iter->file->root;
+		section = iter->file->data->root;
 		for (cpp = iter->names; cpp[iter->done_idx]; cpp++) {
 			for (p=section->first_child; p; p = p->next)
 				if (!strcmp(p->name, *cpp) && !p->value)

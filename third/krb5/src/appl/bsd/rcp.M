@@ -22,7 +22,7 @@
 rcp \- remote file copy
 .SH SYNOPSIS
 .B rcp
-[\fB\-p\fP] [\fB\-x\fP] [\fB\-k\fP \fIrealm\fP ] [\fB\-D\fP \fIport\fP]
+[\fB\-p\fP] [\fB\-x\fP] [\fB\-k\fP \fIrealm\fP ] [\fB-c\fP \fIccachefile\fP] [\fB-C\fP \fIconfigfile\fP] [\fB\-D\fP \fIport\fP]
 [\fB\-N\fP]
 [\fB\-PN | \-PO\fP]
 .I file1 file2
@@ -32,6 +32,10 @@ rcp \- remote file copy
 \fIport\fP] [\fB\-N\fP]
 [\fB\-PN | \-PO\fP]
 .I file ... directory
+.sp
+.B rcp
+[\fB\-f | \-t\fP]
+.I ...
 .SH DESCRIPTION
 .B Rcp
 copies files between machines.  Each
@@ -91,6 +95,14 @@ obtain tickets for the remote host in
 instead of the remote host's realm as determined by
 .IR krb_realmofhost (3).
 .TP
+\fB\-c\fP \fIccachefile\fP
+change the default credentials cache file to 
+.I ccachefile
+.TP
+\fB\-C\fP \fIconfigfile\fP
+change the default configuation file to
+.I configfile
+.TP
 .B \-r
 if any of the source files are directories, copy each subtree rooted at
 that name; in this case the destination must be a directory.
@@ -113,6 +125,13 @@ on the remote machine.
 .B \-N
 use a network connection, even when copying files on the local machine
 (used for testing purposes).
+.TP
+.B \-f \-t
+These options are for internal use only.  They tell the
+remotely-running rcp process (started via the Kerberos remote shell
+daemon) which direction files are being sent.  These options should
+not be used by the user.  In particular, \fB-f\fP does \fBnot\fP mean
+that the user's Kerberos ticket should be forwarded!
 .PP
 .B Rcp
 handles third party copies, where neither source nor target files are on
@@ -126,7 +145,7 @@ rather than the current user name on the remote host.
 (on remote host) - file containing Kerberos principals that are allowed
 access.
 .SH SEE ALSO
-cp(1), ftp(1), rsh(1), rlogin(1), kerberos(3), krb_getrealm(3), rcp(1)
+cp(1), ftp(1), rsh(1), rlogin(1), kerberos(3), krb_getrealm(3), kshd(8), rcp(1) 
 [UCB version]
 .SH BUGS
 .B Rcp

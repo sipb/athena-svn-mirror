@@ -1,7 +1,31 @@
-2002-04-16  Danilo Almeida  <dalmeida@mit.edu>
+2004-01-30  Jeffrey Altman <jaltman@mit.edu>
+
+    * options.c, cnsres5.rc, cns.h, cns_reg.c cns_reg.h, cns.c:
+      Add checkbox for requesting "no addresses" if it is not
+      specified in the krb5.ini file.
+
+2003-02-25  Tom Yu  <tlyu@mit.edu>
+
+	* kpasswd.c (k5_change_password): Don't pass a NULL pointer to
+	sprintf().
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* cns.h: Don't define DEFINE_SOCKADDR.
+
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SYSLIBS): Use ws2_32.lib instead of wsock32.lib.
+
+2002-06-11  Danilo Almeida  <dalmeida@mit.edu>
 
 	* cns.c: Do not use krb_get_notification_message() or
 	krb5_get_notification_message().
+	[pullup from 1-2-2-branch]
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* cns.c: Don't declare pointers or functions FAR any more.
 
 2000-05-08  Ken Raeburn  <raeburn@mit.edu>
 	    Nalin Dahyabhai  <nalin@redhat.com>

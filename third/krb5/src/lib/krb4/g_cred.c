@@ -22,12 +22,12 @@
  * On failure it returns a Kerberos error code.
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_cred(service,instance,realm,c)
-    char FAR *service;		/* Service name */
-    char FAR *instance;		/* Instance */
-    char FAR *realm;		/* Auth domain */
-    CREDENTIALS FAR *c;		/* Credentials struct */
+    char *service;		/* Service name */
+    char *instance;		/* Instance */
+    char *realm;		/* Auth domain */
+    CREDENTIALS *c;		/* Credentials struct */
 {
     int tf_status;              /* return value of tf function calls */
 

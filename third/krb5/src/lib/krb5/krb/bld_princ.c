@@ -27,23 +27,12 @@
  * Build a principal from a list of strings
  */
 
-/* Need <krb5/k5-config.h> for HAVE_STDARG_H */
-#include "k5-int.h"
-
-#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
+#include "k5-int.h"
 
 krb5_error_code
 KRB5_CALLCONV
-krb5_build_principal_va(context, princ, rlen, realm, ap)
-    krb5_context context;
-    krb5_principal princ;
-    int rlen;
-    krb5_const char *realm;
-    va_list ap;
+krb5_build_principal_va(krb5_context context, krb5_principal princ, unsigned int rlen, const char *realm, va_list ap)
 {
     register int i, count = 0;
     register char *next;
@@ -100,18 +89,10 @@ krb5_build_principal_va(context, princ, rlen, realm, ap)
     return 0;
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV_C
-#ifdef HAVE_STDARG_H
-krb5_build_principal(krb5_context context,  krb5_principal * princ, int rlen,
-    krb5_const char FAR * realm, ...)
-#else
-krb5_build_principal(context, princ, rlen, realm, va_alist)
-    krb5_context context;
-    krb5_principal *princ;
-    int rlen;
-    krb5_const char FAR *realm;
-    va_dcl
-#endif
+krb5_error_code KRB5_CALLCONV_C
+krb5_build_principal(krb5_context context,  krb5_principal * princ, 
+		     unsigned int rlen,
+		     const char * realm, ...)
 {
     va_list ap;
     krb5_error_code retval;
@@ -120,11 +101,7 @@ krb5_build_principal(context, princ, rlen, realm, va_alist)
     if (!pr_ret)
 	return ENOMEM;
 
-#ifdef HAVE_STDARG_H
     va_start(ap, realm);
-#else
-    va_start(ap);
-#endif
     retval = krb5_build_principal_va(context, pr_ret, rlen, realm, ap);
     va_end(ap);
     if (retval == 0)

@@ -1,3 +1,5 @@
+#include "prof_int.h"
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -5,8 +7,6 @@
 #endif
 #include <errno.h>
 #include <ctype.h>
-
-#include "prof_int.h"
 
 #define SECTION_SEP_CHAR '/'
 
@@ -24,7 +24,7 @@ struct parse_state {
 static char *skip_over_blanks(cp)
 	char	*cp;
 {
-	while (*cp && isspace(*cp))
+	while (*cp && isspace((int) (*cp)))
 		cp++;
 	return cp;
 }
@@ -32,15 +32,9 @@ static char *skip_over_blanks(cp)
 static void strip_line(line)
 	char	*line;
 {
-	char	*p;
-
-	while (*line) {
-		p = line + strlen(line) - 1;
-		if ((*p == '\n') || (*p == '\r'))
-			*p = 0;
-		else
-			break;
-	}
+	char *p = line + strlen(line);
+	while (p > line && (p[-1] == '\n' || p[-1] == '\r'))
+	    *p-- = 0;
 }
 
 static void parse_quoted_string(char *str)
@@ -177,7 +171,7 @@ static errcode_t parse_std_line(line, state)
 		do_subsection++;
 	else {
 		cp = value + strlen(value) - 1;
-		while ((cp > value) && isspace(*cp))
+		while ((cp > value) && isspace((int) (*cp)))
 			*cp-- = 0;
 	}
 	if (do_subsection) {
@@ -245,11 +239,61 @@ errcode_t profile_parse_file(f, root)
 	while (!feof(f)) {
 		if (fgets(bptr, BUF_SIZE, f) == NULL)
 			break;
+#ifndef PROFILE_SUPPORTS_FOREIGN_NEWLINES
 		retval = parse_line(bptr, &state);
 		if (retval) {
 			free (bptr);
 			return retval;
 		}
+#else
+		{
+		    char *p, *end;
+
+		    if (strlen(bptr) >= BUF_SIZE - 1) {
+			/* The string may have foreign newlines and
+			   gotten chopped off on a non-newline
+			   boundary.  Seek backwards to the last known
+			   newline.  */
+			long offset;
+			char *c = bptr + strlen (bptr);
+			for (offset = 0; offset > -BUF_SIZE; offset--) {
+			    if (*c == '\r' || *c == '\n') {
+				*c = '\0';
+				fseek (f, offset, SEEK_CUR);
+				break;
+			    }
+			    c--;
+			}
+		    }
+
+		    /* First change all newlines to \n */
+		    for (p = bptr; *p != '\0'; p++) {
+			if (*p == '\r')
+                            *p = '\n';
+		    }
+		    /* Then parse all lines */
+		    p = bptr;
+		    end = bptr + strlen (bptr);
+		    while (p < end) {
+			char* newline;
+			char* newp;
+
+			newline = strchr (p, '\n');
+			if (newline != NULL)
+			    *newline = '\0';
+
+			/* parse_line modifies contents of p */
+			newp = p + strlen (p) + 1;
+			retval = parse_line (p, &state);
+			if (retval) {
+			    free (bptr);
+			    return retval;
+			}
+
+			p = newp;
+		    }
+		}
+#endif
 	}
 	*root = state.root_section;
 
@@ -265,7 +309,7 @@ static int need_double_quotes(str)
 {
 	if (!str || !*str)
 		return 0;
-	if (isspace(*str) ||isspace(*(str + strlen(str) - 1)))
+	if (isspace((int) (*str)) ||isspace((int) (*(str + strlen(str) - 1))))
 		return 1;
 	if (strchr(str, '\n') || strchr(str, '\t') || strchr(str, '\b'))
 		return 1;
@@ -311,7 +355,7 @@ static void output_quoted_string(str, f)
 
 
 
-#if defined(_MSDOS) || defined(_WIN32)
+#if defined(_WIN32)
 #define EOL "\r\n"
 #endif
 

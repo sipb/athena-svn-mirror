@@ -1,4 +1,4 @@
-#if defined(_MSDOS) || defined(_WIN32)
+#if defined(_WIN32)
 /*
  * winccld.c --- routine for dynamically loading the ccache DLL if
  * it's present.
@@ -10,7 +10,7 @@
 #include "k5-int.h"
 
 /* from fcc-proto.h */
-KRB5_DLLIMP extern krb5_cc_ops krb5_fcc_ops;
+extern const krb5_cc_ops krb5_fcc_ops;
 
 #define KRB5_WINCCLD_C_
 #include "winccld.h"

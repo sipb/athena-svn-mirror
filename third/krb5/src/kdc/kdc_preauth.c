@@ -1,7 +1,7 @@
 /*
  * kdc/kdc_preauth.c
  *
- * Copyright 1995 by the Massachusetts Institute of Technology.
+ * Copyright 1995, 2003 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -56,25 +56,37 @@
 #include "kdc_util.h"
 #include "extern.h"
 #include <stdio.h>
+#include "adm_proto.h"
 #include <syslog.h>
 
+#include <assert.h>
+
+/* XXX This is ugly and should be in a header file somewhere */
+#ifndef KRB5INT_DES_TYPES_DEFINED
+#define KRB5INT_DES_TYPES_DEFINED
+typedef unsigned char des_cblock[8];	/* crypto-block size */
+#endif
+typedef des_cblock mit_des_cblock;
+extern void mit_des_fixup_key_parity (mit_des_cblock );
+extern int mit_des_is_weak_key (mit_des_cblock );
+
 typedef krb5_error_code (*verify_proc)
-    KRB5_PROTOTYPE((krb5_context, krb5_db_entry *client,
+    (krb5_context, krb5_db_entry *client,
 		    krb5_kdc_req *request,
-		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data));
+		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data);
 
 typedef krb5_error_code (*edata_proc)
-    KRB5_PROTOTYPE((krb5_context, krb5_kdc_req *request,
+    (krb5_context, krb5_kdc_req *request,
 		    krb5_db_entry *client, krb5_db_entry *server,
-		    krb5_pa_data *data));
+		    krb5_pa_data *data);
 
 typedef krb5_error_code (*return_proc)
-    KRB5_PROTOTYPE((krb5_context, krb5_pa_data * padata, 
+    (krb5_context, krb5_pa_data * padata, 
 		    krb5_db_entry *client,
 		    krb5_kdc_req *request, krb5_kdc_rep *reply,
 		    krb5_key_data *client_key,
 		    krb5_keyblock *encrypting_key,
-		    krb5_pa_data **send_pa));
+		    krb5_pa_data **send_pa);
 
 typedef struct _krb5_preauth_systems {
     char *	name;
@@ -86,39 +98,51 @@ typedef struct _krb5_preauth_systems {
 } krb5_preauth_systems;
 
 static krb5_error_code verify_enc_timestamp
-    KRB5_PROTOTYPE((krb5_context, krb5_db_entry *client,
+    (krb5_context, krb5_db_entry *client,
 		    krb5_kdc_req *request,
-		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data));
+		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data);
 
 static krb5_error_code get_etype_info
-    KRB5_PROTOTYPE((krb5_context, krb5_kdc_req *request,
+    (krb5_context, krb5_kdc_req *request,
 		    krb5_db_entry *client, krb5_db_entry *server,
-		    krb5_pa_data *data));
+		    krb5_pa_data *data);
+static krb5_error_code
+get_etype_info2(krb5_context context, krb5_kdc_req *request,
+	       krb5_db_entry *client, krb5_db_entry *server,
+		  krb5_pa_data *pa_data);
+static krb5_error_code
+return_etype_info2(krb5_context, krb5_pa_data * padata, 
+		   krb5_db_entry *client,
+		   krb5_kdc_req *request, krb5_kdc_rep *reply,
+		   krb5_key_data *client_key,
+		   krb5_keyblock *encrypting_key,
+		   krb5_pa_data **send_pa);
+
 static krb5_error_code return_pw_salt
-    KRB5_PROTOTYPE((krb5_context, krb5_pa_data * padata, 
+    (krb5_context, krb5_pa_data * padata, 
 		    krb5_db_entry *client,
 		    krb5_kdc_req *request, krb5_kdc_rep *reply,
 		    krb5_key_data *client_key,
 		    krb5_keyblock *encrypting_key,
-		    krb5_pa_data **send_pa));
+		    krb5_pa_data **send_pa);
 
 /* SAM preauth support */
 static krb5_error_code verify_sam_response
-    KRB5_PROTOTYPE((krb5_context, krb5_db_entry *client,
+    (krb5_context, krb5_db_entry *client,
 		    krb5_kdc_req *request,
-		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data));
+		    krb5_enc_tkt_part * enc_tkt_reply, krb5_pa_data *data);
 
 static krb5_error_code get_sam_edata
-    KRB5_PROTOTYPE((krb5_context, krb5_kdc_req *request,
+    (krb5_context, krb5_kdc_req *request,
 		    krb5_db_entry *client, krb5_db_entry *server,
-		    krb5_pa_data *data));
+		    krb5_pa_data *data);
 static krb5_error_code return_sam_data
-    KRB5_PROTOTYPE((krb5_context, krb5_pa_data * padata, 
+    (krb5_context, krb5_pa_data * padata, 
 		    krb5_db_entry *client,
 		    krb5_kdc_req *request, krb5_kdc_rep *reply,
 		    krb5_key_data *client_key,
 		    krb5_keyblock *encrypting_key,
-		    krb5_pa_data **send_pa));
+		    krb5_pa_data **send_pa);
 /*
  * Preauth property flags
  */
@@ -144,6 +168,14 @@ static krb5_preauth_systems preauth_systems[] = {
 	get_etype_info,
 	0,
 	0
+    },
+    {
+	"etype-info2",
+	KRB5_PADATA_ETYPE_INFO2,
+	0,
+	get_etype_info2,
+	0,
+	return_etype_info2
     },
     {
 	"pw-salt",
@@ -175,9 +207,7 @@ static krb5_preauth_systems preauth_systems[] = {
 #define MAX_PREAUTH_SYSTEMS (sizeof(preauth_systems)/sizeof(preauth_systems[0]))
 
 static krb5_error_code
-find_pa_system(type, preauth)
-    int			type;
-    krb5_preauth_systems	**preauth;
+find_pa_system(int type, krb5_preauth_systems **preauth)
 {
     krb5_preauth_systems 	*ap = preauth_systems;
     
@@ -189,9 +219,9 @@ find_pa_system(type, preauth)
     return 0;
 } 
 
-const char *missing_required_preauth(client, server, enc_tkt_reply)
-    krb5_db_entry *client, *server;
-    krb5_enc_tkt_part *enc_tkt_reply;
+const char *missing_required_preauth(krb5_db_entry *client,
+				     krb5_db_entry *server,
+				     krb5_enc_tkt_part *enc_tkt_reply)
 {
 #if 0
     /*
@@ -226,10 +256,8 @@ const char *missing_required_preauth(client, server, enc_tkt_reply)
     return 0;
 }
 
-void get_preauth_hint_list(request, client, server, e_data)
-    krb5_kdc_req *request;
-    krb5_db_entry *client, *server;
-    krb5_data *e_data;
+void get_preauth_hint_list(krb5_kdc_req *request, krb5_db_entry *client,
+			   krb5_db_entry *server, krb5_data *e_data)
 {
     int hw_only;
     krb5_preauth_systems *ap;
@@ -296,11 +324,8 @@ errout:
  */
 
 krb5_error_code
-check_padata (context, client, request, enc_tkt_reply)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_enc_tkt_part * enc_tkt_reply;
+check_padata (krb5_context context, krb5_db_entry *client,
+	      krb5_kdc_req *request, krb5_enc_tkt_part *enc_tkt_reply)
 {
     krb5_error_code retval = 0;
     krb5_pa_data **padata;
@@ -355,7 +380,16 @@ check_padata (context, client, request, enc_tkt_reply)
     if (!pa_found)
 	krb5_klog_syslog (LOG_INFO, "no valid preauth type found: %s",
 			  error_message (retval));
-    return KRB5KDC_ERR_PREAUTH_FAILED;
+/* The following switch statement allows us
+ * to return some preauth system errors back to the client.
+ */
+        switch(retval) {
+	case KRB5KRB_AP_ERR_BAD_INTEGRITY:
+    case KRB5KRB_AP_ERR_SKEW:
+	return retval;
+    default:
+	return KRB5KDC_ERR_PREAUTH_FAILED;
+    }
 }
 
 /*
@@ -363,14 +397,9 @@ check_padata (context, client, request, enc_tkt_reply)
  * structures which should be returned by the KDC to the client
  */
 krb5_error_code
-return_padata(context, client, request, reply,
-	      client_key, encrypting_key)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_kdc_rep *	reply;
-    krb5_key_data *	client_key;
-    krb5_keyblock *	encrypting_key;
+return_padata(krb5_context context, krb5_db_entry *client,
+	      krb5_kdc_req *request, krb5_kdc_rep *reply,
+	      krb5_key_data *client_key, krb5_keyblock *encrypting_key)
 {
     krb5_error_code		retval;
     krb5_pa_data **		padata;
@@ -425,13 +454,42 @@ cleanup:
     return (retval);
 }
 
+static krb5_boolean
+enctype_requires_etype_info_2(krb5_enctype enctype)
+{
+    switch(enctype) {
+    case ENCTYPE_DES_CBC_CRC:
+    case ENCTYPE_DES_CBC_MD4:
+    case ENCTYPE_DES_CBC_MD5:
+    case ENCTYPE_DES3_CBC_SHA1:
+    case ENCTYPE_DES3_CBC_RAW:
+    case ENCTYPE_ARCFOUR_HMAC:
+    case ENCTYPE_ARCFOUR_HMAC_EXP :
+    case ENCTYPE_LOCAL_DES3_HMAC_SHA1:
+	return 0;
+    default:
+	if (krb5_c_valid_enctype(enctype))
+	    return 1;
+	else return 0;
+    }
+}
+
+static krb5_boolean
+request_contains_enctype (krb5_context context,  const krb5_kdc_req *request,
+			  krb5_enctype enctype)
+{
+    int i;
+    for (i =0; i < request->nktypes; i++)
+	if (request->ktype[i] == enctype)
+	    return 1;
+    return 0;
+}
+
+
 static krb5_error_code
-verify_enc_timestamp(context, client, request, enc_tkt_reply, pa)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_enc_tkt_part * enc_tkt_reply;
-    krb5_pa_data *	pa;
+verify_enc_timestamp(krb5_context context, krb5_db_entry *client,
+		     krb5_kdc_req *request, krb5_enc_tkt_part *enc_tkt_reply,
+		     krb5_pa_data *pa)
 {
     krb5_pa_enc_ts *		pa_enc = 0;
     krb5_error_code		retval;
@@ -442,7 +500,8 @@ verify_enc_timestamp(context, client, request, enc_tkt_reply, pa)
     krb5_key_data *		client_key;
     krb5_int32			start;
     krb5_timestamp		timenow;
-    
+    krb5_error_code		decrypt_err;
+
     scratch.data = pa->contents;
     scratch.length = pa->length;
 
@@ -456,6 +515,7 @@ verify_enc_timestamp(context, client, request, enc_tkt_reply, pa)
 	goto cleanup;
 
     start = 0;
+    decrypt_err = 0;
     while (1) {
 	if ((retval = krb5_dbe_search_enctype(context, client,
 					      &start, enc_data->enctype,
@@ -473,6 +533,8 @@ verify_enc_timestamp(context, client, request, enc_tkt_reply, pa)
 	krb5_free_keyblock_contents(context, &key);
 	if (retval == 0)
 	    break;
+	else
+	    decrypt_err = retval;
     }
 
     if ((retval = decode_krb5_pa_enc_ts(&enc_ts_data, &pa_enc)) != 0)
@@ -498,32 +560,98 @@ cleanup:
     krb5_free_data_contents(context, &enc_ts_data);
     if (pa_enc)
 	free(pa_enc);
+    /*
+     * If we get NO_MATCHING_KEY and decryption previously failed, and
+     * we failed to find any other keys of the correct enctype after
+     * that failed decryption, it probably means that the password was
+     * incorrect.
+     */
+    if (retval == KRB5_KDB_NO_MATCHING_KEY && decrypt_err != 0)
+	retval = decrypt_err;
     return retval;
 }
 
+static krb5_error_code
+_make_etype_info_entry(krb5_context context,
+		       krb5_kdc_req *request, krb5_key_data *client_key,
+		       krb5_enctype etype, krb5_etype_info_entry **entry,
+		       int etype_info2)
+{
+    krb5_data			salt;
+    krb5_etype_info_entry *	tmp_entry; 
+    krb5_error_code		retval;
+
+    if ((tmp_entry = malloc(sizeof(krb5_etype_info_entry))) == NULL)
+       return ENOMEM;
+
+    salt.data = 0;
+
+    tmp_entry->magic = KV5M_ETYPE_INFO_ENTRY;
+    tmp_entry->etype = etype;
+    tmp_entry->length = KRB5_ETYPE_NO_SALT;
+    tmp_entry->salt = 0;
+    tmp_entry->s2kparams.data = NULL;
+    tmp_entry->s2kparams.length = 0;
+    retval = get_salt_from_key(context, request->client,
+			       client_key, &salt);
+    if (retval)
+	goto fail;
+    if (etype_info2 && client_key->key_data_ver > 1 &&
+	client_key->key_data_type[1] == KRB5_KDB_SALTTYPE_AFS3) {
+	switch (etype) {
+	case ENCTYPE_DES_CBC_CRC:
+	case ENCTYPE_DES_CBC_MD4:
+	case ENCTYPE_DES_CBC_MD5:
+	    tmp_entry->s2kparams.data = malloc(1);
+	    if (tmp_entry->s2kparams.data == NULL) {
+		retval = ENOMEM;
+		goto fail;
+	    }
+	    tmp_entry->s2kparams.length = 1;
+	    tmp_entry->s2kparams.data[0] = 1;
+	    break;
+	default:
+	    break;
+	}
+    }
+
+    if (salt.length >= 0) {
+	tmp_entry->length = salt.length;
+	tmp_entry->salt = (unsigned char *) salt.data;
+	salt.data = 0;
+    }
+    *entry = tmp_entry;
+    return 0;
+
+fail:
+    if (tmp_entry) {
+	if (tmp_entry->s2kparams.data)
+	    free(tmp_entry->s2kparams.data);
+	free(tmp_entry);
+    }
+    if (salt.data)
+	free(salt.data);
+    return retval;
+}
 /*
  * This function returns the etype information for a particular
  * client, to be passed back in the preauth list in the KRB_ERROR
- * message.
+ * message.  It supports generating both etype_info  and etype_info2
+ *  as most of the work is the same.   
  */
 static krb5_error_code
-get_etype_info(context, request, client, server, pa_data)
-    krb5_context 	context;
-    krb5_kdc_req *	request;
-    krb5_db_entry *	client;
-    krb5_db_entry *	server;
-    krb5_pa_data *	pa_data;
+etype_info_helper(krb5_context context, krb5_kdc_req *request,
+	       krb5_db_entry *client, krb5_db_entry *server,
+	       krb5_pa_data *pa_data, int etype_info2)
 {
     krb5_etype_info_entry **	entry = 0;
     krb5_key_data		*client_key;
     krb5_error_code		retval;
-    krb5_data			salt;
     krb5_data *			scratch;
     krb5_enctype		db_etype;
     int 			i = 0;
     int 			start = 0;
-
-    salt.data = 0;
+    int				seen_des = 0;
 
     entry = malloc((client->n_key_data * 2 + 1) * sizeof(krb5_etype_info_entry *));
     if (entry == NULL)
@@ -533,49 +661,60 @@ get_etype_info(context, request, client, server, pa_data)
     while (1) {
 	retval = krb5_dbe_search_enctype(context, client, &start, -1,
 					 -1, 0, &client_key);
-	if (retval == ENOENT)
+	if (retval == KRB5_KDB_NO_MATCHING_KEY)
 	    break;
 	if (retval)
 	    goto cleanup;
 	db_etype = client_key->key_data_type[0];
-	if (db_etype == ENCTYPE_DES_CBC_MD4 || db_etype == ENCTYPE_DES_CBC_MD5)
-	    db_etype = ENCTYPE_DES_CBC_CRC;
+	if (db_etype == ENCTYPE_DES_CBC_MD4)
+	    db_etype = ENCTYPE_DES_CBC_MD5;
 	
-	while (1) {
-	    if ((entry[i] = malloc(sizeof(krb5_etype_info_entry))) == NULL) {
-		retval = ENOMEM;
+	if (request_contains_enctype(context, request, db_etype)) {
+	    assert(etype_info2 ||
+		   !enctype_requires_etype_info_2(db_etype));
+	    if ((retval = _make_etype_info_entry(context, request, client_key,
+			    db_etype, &entry[i], etype_info2)) != 0) {
 		goto cleanup;
 	    }
 	    entry[i+1] = 0;
-	    entry[i]->magic = KV5M_ETYPE_INFO_ENTRY;
-	    entry[i]->etype = db_etype;
-	    entry[i]->length = -1;
-	    entry[i]->salt = 0;
-	    retval = get_salt_from_key(context, request->client,
-				       client_key, &salt);
-	    if (retval)
-		goto cleanup;
-	    if (salt.length >= 0) {
-		entry[i]->length = salt.length;
-		entry[i]->salt = salt.data;
-		salt.data = 0;
-	    }
 	    i++;
-	    /*
-	     * If we have a DES_CRC key, it can also be used as a
-	     * DES_MD5 key.
-	     */
-	    if (db_etype == ENCTYPE_DES_CBC_CRC)
-		db_etype = ENCTYPE_DES_CBC_MD5;
-	    else
+	}
+
+	/* 
+	 * If there is a des key in the kdb, try the "similar" enctypes,
+	 * avoid duplicate entries. 
+	 */
+	if (!seen_des) {
+	    switch (db_etype) {
+	    case ENCTYPE_DES_CBC_MD5:
+		db_etype = ENCTYPE_DES_CBC_CRC;
 		break;
+	    case ENCTYPE_DES_CBC_CRC:
+		db_etype = ENCTYPE_DES_CBC_MD5;
+		break;
+	    default:
+		continue;
+
+	    }
+	    if (request_contains_enctype(context, request, db_etype)) {
+		if ((retval = _make_etype_info_entry(context, request,
+				client_key, db_etype, &entry[i], etype_info2)) != 0) {
+		    goto cleanup;
+		}
+		entry[i+1] = 0;
+		i++;
+	    }
+	    seen_des++;
 	}
     }
-    retval = encode_krb5_etype_info((const krb5_etype_info_entry **) entry,
+    if (etype_info2)
+	retval = encode_krb5_etype_info2((const krb5_etype_info_entry **) entry,
+				    &scratch);
+    else 	retval = encode_krb5_etype_info((const krb5_etype_info_entry **) entry,
 				    &scratch);
     if (retval)
 	goto cleanup;
-    pa_data->contents = scratch->data;
+    pa_data->contents = (unsigned char *)scratch->data;
     pa_data->length = scratch->length;
     free(scratch);
 
@@ -584,28 +723,100 @@ get_etype_info(context, request, client, server, pa_data)
 cleanup:
     if (entry)
 	krb5_free_etype_info(context, entry);
-    if (salt.data)
-	free(salt.data);
     return retval;
 }
 
 static krb5_error_code
-return_pw_salt(context, in_padata, client, request, reply, client_key,
-	       encrypting_key, send_pa)
-    krb5_context	context;
-    krb5_pa_data *	in_padata;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_kdc_rep *	reply;
-    krb5_key_data *	client_key;
-    krb5_keyblock *	encrypting_key;
-    krb5_pa_data **	send_pa;
+get_etype_info(krb5_context context, krb5_kdc_req *request,
+	       krb5_db_entry *client, krb5_db_entry *server,
+	       krb5_pa_data *pa_data)
+{
+  int i;
+    for (i=0;  i < request->nktypes; i++) {
+	if (enctype_requires_etype_info_2(request->ktype[i])) 
+	    return KRB5KDC_ERR_PADATA_TYPE_NOSUPP ;;;; /*Caller will
+							* skip this
+							* type*/
+    }
+    return etype_info_helper(context, request, client, server, pa_data, 0);
+}
+
+static krb5_error_code
+get_etype_info2(krb5_context context, krb5_kdc_req *request,
+	       krb5_db_entry *client, krb5_db_entry *server,
+	       krb5_pa_data *pa_data)
+{
+    return etype_info_helper( context, request, client, server, pa_data, 1);
+}
+
+static krb5_error_code
+return_etype_info2(krb5_context context, krb5_pa_data * padata, 
+		   krb5_db_entry *client,
+		   krb5_kdc_req *request, krb5_kdc_rep *reply,
+		   krb5_key_data *client_key,
+		   krb5_keyblock *encrypting_key,
+		   krb5_pa_data **send_pa)
+{
+    krb5_error_code retval;
+    krb5_pa_data *tmp_padata;
+    krb5_etype_info_entry **entry = NULL;
+    krb5_data *scratch = NULL;
+    tmp_padata = malloc( sizeof(krb5_pa_data));
+    if (tmp_padata == NULL)
+	return ENOMEM;
+    tmp_padata->pa_type = KRB5_PADATA_ETYPE_INFO2;
+    entry = malloc(2 * sizeof(krb5_etype_info_entry *));
+    if (entry == NULL) {
+	retval = ENOMEM;
+	goto cleanup;
+    }
+    entry[0] = NULL;
+    entry[1] = NULL;
+    retval = _make_etype_info_entry(context, request, client_key, client_key->key_data_type[0],
+				    entry, 1);
+    if (retval)
+	goto cleanup;
+    retval = encode_krb5_etype_info2((const krb5_etype_info_entry **) entry, &scratch);
+    if (retval)
+	goto cleanup;
+    tmp_padata->contents = scratch->data;
+    tmp_padata->length = scratch->length;
+    *send_pa = tmp_padata;
+
+    /* For cleanup - we no longer own the contents of the krb5_data 
+     * only to pointer to the krb5_data
+     */
+    scratch->data = 0;
+
+ cleanup:
+    if (entry)
+	krb5_free_etype_info(context, entry);
+    if (retval) {
+	if (tmp_padata)
+	    free(tmp_padata);
+    }
+    if (scratch)
+	    krb5_free_data(context, scratch);
+    return retval;
+}
+
+
+static krb5_error_code
+return_pw_salt(krb5_context context, krb5_pa_data *in_padata,
+	       krb5_db_entry *client, krb5_kdc_req *request,
+	       krb5_kdc_rep *reply, krb5_key_data *client_key,
+	       krb5_keyblock *encrypting_key, krb5_pa_data **send_pa)
 {
     krb5_error_code	retval;
     krb5_pa_data *	padata;
     krb5_data *		scratch;
     krb5_data		salt_data;
+    int i;
     
+    for (i = 0; i < request->nktypes; i++) {
+	if (enctype_requires_etype_info_2(request->ktype[i]))
+	    return 0;
+    }
     if (client_key->key_data_ver == 1 ||
 	client_key->key_data_type[1] == KRB5_KDB_SALTTYPE_NORMAL)
 	return 0;
@@ -678,16 +889,10 @@ cleanup:
 }
 
 static krb5_error_code
-return_sam_data(context, in_padata, client, request, reply, client_key,
-	        encrypting_key, send_pa)
-    krb5_context	context;
-    krb5_pa_data *	in_padata;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_kdc_rep *	reply;
-    krb5_key_data *	client_key;
-    krb5_keyblock *	encrypting_key;
-    krb5_pa_data **	send_pa;
+return_sam_data(krb5_context context, krb5_pa_data *in_padata,
+		krb5_db_entry *client, krb5_kdc_req *request,
+		krb5_kdc_rep *reply, krb5_key_data *client_key,
+		krb5_keyblock *encrypting_key, krb5_pa_data **send_pa)
 {
     krb5_error_code	retval;
     krb5_data		scratch;
@@ -824,12 +1029,9 @@ static struct {
 };
 
 static krb5_error_code
-get_sam_edata(context, request, client, server, pa_data)
-    krb5_context 	context;
-    krb5_kdc_req *	request;
-    krb5_db_entry *	client;
-    krb5_db_entry *	server;
-    krb5_pa_data *	pa_data;
+get_sam_edata(krb5_context context, krb5_kdc_req *request,
+	      krb5_db_entry *client, krb5_db_entry *server,
+	      krb5_pa_data *pa_data)
 {
     krb5_error_code		retval;
     krb5_sam_challenge		sc;
@@ -1199,12 +1401,9 @@ cleanup:
 }
 
 static krb5_error_code
-verify_sam_response(context, client, request, enc_tkt_reply, pa)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_kdc_req *	request;
-    krb5_enc_tkt_part * enc_tkt_reply;
-    krb5_pa_data *	pa;
+verify_sam_response(krb5_context context, krb5_db_entry *client,
+		    krb5_kdc_req *request, krb5_enc_tkt_part *enc_tkt_reply,
+		    krb5_pa_data *pa)
 {
     krb5_error_code		retval;
     krb5_data			scratch;
@@ -1284,7 +1483,8 @@ verify_sam_response(context, client, request, enc_tkt_reply, pa)
 	rep.server = "SAM/rc";  /* Should not match any principal name. */
 	rep.ctime = psr->stime;
 	rep.cusec = psr->susec;
-	if (retval = krb5_rc_store(kdc_context, kdc_rcache, &rep)) {
+	retval = krb5_rc_store(kdc_context, kdc_rcache, &rep);
+	if (retval) {
 	    com_err("krb5kdc", retval, "SAM psr replay attack!");
 	    goto cleanup;
 	}

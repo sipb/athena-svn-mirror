@@ -11,6 +11,8 @@
  *
  */
 
+#include "prof_int.h"
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -18,13 +20,11 @@
 #endif
 #include <errno.h>
 
-#include "prof_int.h"
-
 static errcode_t rw_setup(profile)
 	profile_t	profile;
 {
    	prf_file_t	file;
-	errcode_t	retval;
+	errcode_t	retval = 0;
 
 	if (!profile)
 		return PROF_NO_PROFILE;
@@ -33,13 +33,45 @@ static errcode_t rw_setup(profile)
 		return PROF_MAGIC_PROFILE;
 
 	file = profile->first_file;
-	if (!(file->flags & PROFILE_FILE_RW))
+	if (!(file->data->flags & PROFILE_FILE_RW))
 		return PROF_READ_ONLY;
 
 	/* Don't update the file if we've already made modifications */
-	if (file->flags & PROFILE_FILE_DIRTY)
+	if (file->data->flags & PROFILE_FILE_DIRTY)
 		return 0;
-			
+
+#ifdef SHARE_TREE_DATA
+	if ((file->data->flags & PROFILE_FILE_SHARED) != 0) {
+	    prf_data_t new_data;
+	    new_data = malloc(sizeof(struct _prf_data_t));
+	    if (new_data == NULL) {
+		retval = ENOMEM;
+	    } else {
+		*new_data = *file->data;
+		/* We can blow away the information because update
+		   will be called further down */
+		new_data->comment = NULL;
+		new_data->root = NULL;
+		new_data->flags &= ~PROFILE_FILE_SHARED;
+		new_data->timestamp = 0;
+		/* copy the file spec */
+		new_data->filespec = malloc(strlen(file->data->filespec) + 1);
+		if (new_data->filespec == NULL) {
+		    retval = ENOMEM;
+		} else {
+		    strcpy (new_data->filespec, file->data->filespec);
+		}
+	    }
+
+	    if (retval != 0) {
+		free(new_data);
+		return retval;
+	    }
+	    profile_dereference_data(file->data);
+	    file->data = new_data;
+	}
+#endif /* SHARE_TREE_DATA */
+
 	retval = profile_update_file(file);
 	
 	return retval;
@@ -51,7 +83,7 @@ static errcode_t rw_setup(profile)
  * 
  * ADL - 2/23/99, rewritten TYT 2/25/99
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_update_relation(profile, names, old_value, new_value)
 	profile_t	profile;
 	const char	**names;
@@ -73,7 +105,7 @@ profile_update_relation(profile, names, old_value, new_value)
 	if (!old_value || !*old_value)
 		return PROF_EINVAL;
 
-	section = profile->first_file->root;
+	section = profile->first_file->data->root;
 	for (cpp = names; cpp[1]; cpp++) {
 		state = 0;
 		retval = profile_find_node(section, *cpp, 0, 1,
@@ -94,7 +126,7 @@ profile_update_relation(profile, names, old_value, new_value)
 	if (retval)
 		return retval;
 
-	profile->first_file->flags |= PROFILE_FILE_DIRTY;
+	profile->first_file->data->flags |= PROFILE_FILE_DIRTY;
 	
 	return 0;
 }
@@ -104,7 +136,7 @@ profile_update_relation(profile, names, old_value, new_value)
  * 
  * TYT - 2/25/99
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_clear_relation(profile, names)
 	profile_t	profile;
 	const char	**names;
@@ -121,7 +153,7 @@ profile_clear_relation(profile, names)
 	if (names == 0 || names[0] == 0 || names[1] == 0)
 		return PROF_BAD_NAMESET;
 
-	section = profile->first_file->root;
+	section = profile->first_file->data->root;
 	for (cpp = names; cpp[1]; cpp++) {
 		state = 0;
 		retval = profile_find_node(section, *cpp, 0, 1,
@@ -140,7 +172,7 @@ profile_clear_relation(profile, names)
 			return retval;
 	} while (state);
 
-	profile->first_file->flags |= PROFILE_FILE_DIRTY;
+	profile->first_file->data->flags |= PROFILE_FILE_DIRTY;
 	
 	return 0;
 }
@@ -151,7 +183,7 @@ profile_clear_relation(profile, names)
  * 
  * ADL - 2/23/99, rewritten TYT 2/25/99
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_rename_section(profile, names, new_name)
 	profile_t	profile;
 	const char	**names;
@@ -169,7 +201,7 @@ profile_rename_section(profile, names, new_name)
 	if (names == 0 || names[0] == 0 || names[1] == 0)
 		return PROF_BAD_NAMESET;
 
-	section = profile->first_file->root;
+	section = profile->first_file->data->root;
 	for (cpp = names; cpp[1]; cpp++) {
 		state = 0;
 		retval = profile_find_node(section, *cpp, 0, 1,
@@ -190,7 +222,7 @@ profile_rename_section(profile, names, new_name)
 	if (retval)
 		return retval;
 
-	profile->first_file->flags |= PROFILE_FILE_DIRTY;
+	profile->first_file->data->flags |= PROFILE_FILE_DIRTY;
 	
 	return 0;
 }
@@ -204,7 +236,7 @@ profile_rename_section(profile, names, new_name)
  *
  * ADL - 2/23/99, rewritten TYT 2/25/99
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_add_relation(profile, names, new_value)
 	profile_t	profile;
 	const char  	**names;
@@ -222,7 +254,7 @@ profile_add_relation(profile, names, new_value)
 	if (names == 0 || names[0] == 0 || names[1] == 0)
 		return PROF_BAD_NAMESET;
 
-	section = profile->first_file->root;
+	section = profile->first_file->data->root;
 	for (cpp = names; cpp[1]; cpp++) {
 		state = 0;
 		retval = profile_find_node(section, *cpp, 0, 1,
@@ -245,7 +277,7 @@ profile_add_relation(profile, names, new_value)
 	if (retval)
 		return retval;
 
-	profile->first_file->flags |= PROFILE_FILE_DIRTY;
+	profile->first_file->data->flags |= PROFILE_FILE_DIRTY;
 	
 	return 0;
 }

@@ -22,10 +22,11 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include "krb.h"
+#include "kadm_server.h"
 
 #ifndef KRB_REALM
 #define KRB_REALM	"ATHENA.MIT.EDU"
@@ -50,7 +51,6 @@
 
 #define COR(a,b) ((a!=NULL)?(a):(b))
 
-extern int errno;
 
 #ifndef HAVE_STDLIB_H
 extern char *malloc(), *calloc();
@@ -58,7 +58,7 @@ extern char *malloc(), *calloc();
 
 extern time_t time();
 
-static int acl_abort();
+static int acl_abort(char *, FILE *);
 
 /* Canonicalize a principal name */
 /* If instance is missing, it becomes "" */
@@ -141,8 +141,15 @@ char *canon;
 	    return;
 	}
     } else if(krb_get_lrealm(realm, 1) != KSUCCESS) {
-        if(canon + strlen(realm) < canon_save + MAX_PRINCIPAL_SIZE) {
+        if(canon + strlen(KRB_REALM) < canon_save + MAX_PRINCIPAL_SIZE) {
 	    strcpy(canon, KRB_REALM);
+	} else {
+	    strcpy(canon, "");
+	    return;
+	}
+    } else {
+	if (canon + strlen(realm) < canon_save + MAX_PRINCIPAL_SIZE) {
+	    strcpy(canon, realm);
 	} else {
 	    strcpy(canon, "");
 	    return;
@@ -274,13 +281,13 @@ int perm;
 
 /* Eliminate all whitespace character in buf */
 /* Modifies its argument */
-static nuke_whitespace(buf)
+static void nuke_whitespace(buf)
 char *buf;
 {
     register char *pin, *pout;
 
     for(pin = pout = buf; *pin != '\0'; pin++)
-	if(!isspace(*pin)) *pout++ = *pin;
+	if(!isspace((int) *pin)) *pout++ = *pin;
     *pout = '\0';		/* Terminate the string */
 }
 
@@ -307,7 +314,7 @@ int size;
 }
 
 /* Destroy a hash table */
-static destroy_hash(h)
+static void destroy_hash(h)
 struct hashtbl *h;
 {
     int i;
@@ -332,7 +339,7 @@ register char *s;
 }
 
 /* Add an element to a hash table */
-static add_hash(h, el)
+static void add_hash(h, el)
 struct hashtbl *h;
 char *el;
 {
@@ -365,7 +372,7 @@ char *el;
 }
 
 /* Returns nonzero if el is in h */
-static check_hash(h, el)
+static int check_hash(h, el)
 struct hashtbl *h;
 char *el;
 {
@@ -468,6 +475,7 @@ char *name;
 
 /* Returns nonzero if it can be determined that acl contains principal */
 /* Principal is not canonicalized, and no wildcarding is done */
+int
 acl_exact_match(acl, principal)
 char *acl;
 char *principal;
@@ -481,6 +489,7 @@ char *principal;
 /* Returns nonzero if it can be determined that acl contains principal */
 /* Recognizes wildcards in acl of the form
    name.*@realm, *.*@realm, and *.*@* */
+int
 acl_check(acl, principal)
 char *acl;
 char *principal;
@@ -513,6 +522,7 @@ char *principal;
 
 /* Adds principal to acl */
 /* Wildcards are interpreted literally */
+int
 acl_add(acl, principal)
 char *acl;
 char *principal;
@@ -550,6 +560,7 @@ char *principal;
 
 /* Removes principal from acl */
 /* Wildcards are interpreted literally */
+int
 acl_delete(acl, principal)
 char *acl;
 char *principal;
@@ -580,4 +591,3 @@ char *principal;
     }
     return(acl_commit(acl, new));
 }
-

@@ -1,3 +1,31 @@
+2003-05-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* osconf.h (DEFAULT_KDC_ENCTYPE): Default to des3 now.
+
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
+
+    * osconf.h: Added DEFAULT_SECURE_PROFILE_PATH so that KfM will only
+    search paths that start with ~/ (homedir-based) when getting an
+    insecure context.  This is the same as DEFAULT_PROFILE_PATH on all
+    other platforms, which allows us to avoid more references to 
+    TARGET_OS_MAC in krb5 sources.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* osconf.h (DEFAULT_KDC_UDP_PORTLIST): Renamed from
+	DEFAULT_KDC_PORTLIST.
+	(DEFAULT_KDC_TCP_PORTLIST): New macro.
+
+2002-07-03  Alexandra Ellwood <lxs@mit.edu>
+
+	* osconf.h (DEFAULT_PROFILE_PATH): Conditionalized for Mac OS X
+	to look in Mac OS X Preferences file locations.
+	[pullup from 1-2-2-branch]
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* osconf.h: Drop _MSDOS support.
+
 1999-09-20  Ken Raeburn  <raeburn@mit.edu>
 
 	* osconf.h (KPASSWD_PORTNAME): Define.

@@ -32,11 +32,15 @@
 #include "kdc_util.h"
 #include "extern.h"
 #include "kdc5_err.h"
+#include "adm_proto.h"
 #include <sys/ioctl.h>
 #include <syslog.h>
 
 #include <stddef.h>
 #include <ctype.h>
+#include "port-sockets.h"
+#include "socket-utils.h"
+
 #ifdef HAVE_NETINET_IN_H
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -51,386 +55,592 @@
 #endif
 #include <arpa/inet.h>
 
-#ifndef ARPHRD_ETHER		/* protect on OpenBSD */
+#ifndef ARPHRD_ETHER /* OpenBSD breaks on multiple inclusions */
 #include <net/if.h>
 #endif
 
-extern int errno;
+#ifdef HAVE_SYS_FILIO_H
+#include <sys/filio.h>		/* FIONBIO */
+#endif
 
-static int *udp_port_fds = (int *) NULL;
-static u_short *udp_port_nums = (u_short *) NULL;
-static int n_udp_ports = 0;
-static int n_sockets = 0;
-static int max_udp_ports = 0, max_udp_sockets = 0;
-static fd_set select_fds;
-static int select_nfds;
+#include "fake-addrinfo.h"
 
-#define safe_realloc(p,n) ((p)?(realloc(p,n)):(malloc(n)))
+/* Misc utility routines.  */
+static void
+set_sa_port(struct sockaddr *addr, int port)
+{
+    switch (addr->sa_family) {
+    case AF_INET:
+	sa2sin(addr)->sin_port = port;
+	break;
+#ifdef KRB5_USE_INET6
+    case AF_INET6:
+	sa2sin6(addr)->sin6_port = port;
+	break;
+#endif
+    default:
+	break;
+    }
+}
 
-static krb5_error_code add_port(port)
-     u_short port;
+static int ipv6_enabled()
+{
+#ifdef KRB5_USE_INET6
+    static int result = -1;
+    if (result == -1) {
+	int s;
+	s = socket(AF_INET6, SOCK_STREAM, 0);
+	if (s >= 0) {
+	    result = 1;
+	    close(s);
+	} else
+	    result = 0;
+    }
+    return result;
+#else
+    return 0;
+#endif
+}
+
+static int
+setreuseaddr(int sock, int value)
+{
+    return setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(value));
+}
+
+#if defined(KRB5_USE_INET6) && defined(IPV6_V6ONLY)
+static int
+setv6only(int sock, int value)
+{
+    return setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &value, sizeof(value));
+}
+#endif
+
+
+static const char *paddr (struct sockaddr *sa)
+{
+    static char buf[100];
+    char portbuf[10];
+    if (getnameinfo(sa, socklen(sa),
+		    buf, sizeof(buf), portbuf, sizeof(portbuf),
+		    NI_NUMERICHOST|NI_NUMERICSERV))
+	strcpy(buf, "<unprintable>");
+    else {
+	int len = sizeof(buf) - strlen(buf);
+	char *p = buf + strlen(buf);
+	if (len > 2+strlen(portbuf)) {
+	    *p++ = '.';
+	    len--;
+	    strncpy(p, portbuf, len);
+	}
+    }
+    return buf;
+}
+
+/* KDC data.  */
+
+/* Per-connection info.  */
+struct connection {
+    int fd;
+    enum { CONN_UDP, CONN_TCP_LISTENER, CONN_TCP } type;
+    void (*service)(struct connection *, const char *, int);
+    union {
+	/* Type-specific information.  */
+	struct {
+	    int x;
+	} udp;
+	struct {
+	    int x;
+	} tcp_listener;
+	struct {
+	    /* connection */
+	    struct sockaddr_storage addr_s;
+	    socklen_t addrlen;
+	    char addrbuf[56];
+	    krb5_fulladdr faddr;
+	    krb5_address kaddr;
+	    /* incoming */
+	    size_t bufsiz;
+	    size_t offset;
+	    char *buffer;
+	    size_t msglen;
+	    /* outgoing */
+	    krb5_data *response;
+	    unsigned char lenbuf[4];
+	    sg_buf sgbuf[2];
+	    sg_buf *sgp;
+	    int sgnum;
+	    /* crude denial-of-service avoidance support */
+	    time_t start_time;
+	} tcp;
+    } u;
+};
+
+
+#define SET(TYPE) struct { TYPE *data; int n, max; }
+
+/* Start at the top and work down -- this should allow for deletions
+   without disrupting the iteration, since we delete by overwriting
+   the element to be removed with the last element.  */
+#define FOREACH_ELT(set,idx,vvar) \
+  for (idx = set.n-1; idx >= 0 && (vvar = set.data[idx], 1); idx--)
+
+#define GROW_SET(set, incr, tmpptr) \
+  (((int)(set.max + incr) < set.max					\
+    || (((size_t)((int)(set.max + incr) * sizeof(set.data[0]))		\
+	 / sizeof(set.data[0]))						\
+	!= (set.max + incr)))						\
+   ? 0				/* overflow */				\
+   : ((tmpptr = realloc(set.data,					\
+			(int)(set.max + incr) * sizeof(set.data[0])))	\
+      ? (set.data = tmpptr, set.max += incr, 1)				\
+      : 0))
+
+/* 1 = success, 0 = failure */
+#define ADD(set, val, tmpptr) \
+  ((set.n < set.max || GROW_SET(set, 10, tmpptr))			\
+   ? (set.data[set.n++] = val, 1)					\
+   : 0)
+
+#define DEL(set, idx) \
+  (set.data[idx] = set.data[--set.n], 0)
+
+#define FREE_SET_DATA(set) if(set.data) free(set.data);                 \
+   (set.data = 0, set.max = 0)
+
+
+/* Set<struct connection *> connections; */
+static SET(struct connection *) connections;
+#define n_sockets	connections.n
+#define conns		connections.data
+
+/* Set<u_short> udp_port_data, tcp_port_data; */
+static SET(u_short) udp_port_data, tcp_port_data;
+
+#include "cm.h"
+
+static struct select_state sstate;
+
+static krb5_error_code add_udp_port(int port)
 {
     int	i;
-    u_short *new_ports;
-    int new_max;
+    void *tmp;
+    u_short val;
+    u_short s_port = port;
 
-    for (i=0; i < n_udp_ports; i++) {
-	if (udp_port_nums[i] == port)
+    if (s_port != port)
+	return EINVAL;
+
+    FOREACH_ELT (udp_port_data, i, val)
+	if (s_port == val)
 	    return 0;
-    }
-    
-    if (n_udp_ports >= max_udp_ports) {
-	new_max = max_udp_ports + 10;
-	new_ports = safe_realloc(udp_port_nums, new_max * sizeof(u_short));
-	if (new_ports == 0)
-	    return ENOMEM;
-	udp_port_nums = new_ports;
-
-	max_udp_ports = new_max;
-    }
-	
-    udp_port_nums[n_udp_ports++] = port;
+    if (!ADD(udp_port_data, s_port, tmp))
+	return ENOMEM;
     return 0;
 }
 
-/* Keep in sync with lib/krb5/os/localaddr.c version.  */
+static krb5_error_code add_tcp_port(int port)
+{
+    int	i;
+    void *tmp;
+    u_short val;
+    u_short s_port = port;
 
-/*
- * BSD 4.4 defines the size of an ifreq to be
- * max(sizeof(ifreq), sizeof(ifreq.ifr_name)+ifreq.ifr_addr.sa_len
- * However, under earlier systems, sa_len isn't present, so the size is 
- * just sizeof(struct ifreq)
- */
+    if (s_port != port)
+	return EINVAL;
+
+    FOREACH_ELT (tcp_port_data, i, val)
+	if (s_port == val)
+	    return 0;
+    if (!ADD(tcp_port_data, s_port, tmp))
+	return ENOMEM;
+    return 0;
+}
+
+
 #define USE_AF AF_INET
 #define USE_TYPE SOCK_DGRAM
 #define USE_PROTO 0
 #define SOCKET_ERRNO errno
-
-#ifdef HAVE_SA_LEN
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-#define ifreq_size(i) max(sizeof(struct ifreq),\
-     sizeof((i).ifr_name)+(i).ifr_addr.sa_len)
-#else
-#define ifreq_size(i) sizeof(struct ifreq)
-#endif /* HAVE_SA_LEN*/
-
-static int
-foreach_localaddr (data, pass1fn, betweenfn, pass2fn)
-    void *data;
-    int (*pass1fn) (void *, struct sockaddr *);
-    int (*betweenfn) (void *);
-    int (*pass2fn) (void *, struct sockaddr *);
-{
-    struct ifreq *ifr, ifreq, *ifr2;
-    struct ifconf ifc;
-    int s, code, n, i, j;
-    int est_if_count = 8, est_ifreq_size;
-    char *buf = 0;
-    size_t current_buf_size = 0;
-    int fail = 0;
-#ifdef SIOCGSIZIFCONF
-    int ifconfsize = -1;
-#endif
-
-    s = socket (USE_AF, USE_TYPE, USE_PROTO);
-    if (s < 0)
-	return SOCKET_ERRNO;
-
-    /* At least on NetBSD, an ifreq can hold an IPv4 address, but
-       isn't big enough for an IPv6 or ethernet address.  So add a
-       little more space.  */
-    est_ifreq_size = sizeof (struct ifreq) + 16;
-#ifdef SIOCGSIZIFCONF
-    code = ioctl (s, SIOCGSIZIFCONF, &ifconfsize);
-    if (!code) {
-	current_buf_size = ifconfsize;
-	est_if_count = ifconfsize / est_ifreq_size;
-    }
-#endif
-    if (current_buf_size == 0) {
-	current_buf_size = est_ifreq_size * est_if_count;
-    }
-    buf = malloc (current_buf_size);
-
- ask_again:
-    memset(buf, 0, current_buf_size);
-    ifc.ifc_len = current_buf_size;
-    ifc.ifc_buf = buf;
-
-    code = ioctl (s, SIOCGIFCONF, (char *)&ifc);
-    if (code < 0) {
-	int retval = errno;
-	closesocket (s);
-	return retval;
-    }
-    /* BSD 4.4 and similar systems truncate the address list if the
-       supplied buffer isn't big enough.
-
-       Test that the buffer was big enough that another ifreq could've
-       fit easily, if the OS wanted to provide one.  That seems to be
-       the only indication we get, complicated by the fact that the
-       associated address may make the required storage a little
-       bigger than the size of an ifreq.  */
-#define SLOP (sizeof (struct ifreq) + 128)
-    if ((current_buf_size - ifc.ifc_len < sizeof (struct ifreq) + SLOP
-	/* On AIX 4.3.3, ifc.ifc_len may be set to a larger size than
-	   provided under some circumstances.  On my test system, a
-	   supplied value of 32..112 gets me 112, but with no data
-	   filled in even at 112.  But larger input ifc_len values get
-	   me larger output values, so it's not necessarily the full
-	   desired output buffer size.  And as near as I can tell, the
-	   ifc_len output has little to do with the offset of the last
-	   byte in the buffer actually modified, except that both
-	   input and output ifc_len values are higher (i.e., no buffer
-	   overrun takes place in my testing).  */
-	 || current_buf_size < ifc.ifc_len)
-	/* But let's let SIOCGSIZIFCONF dominate, unless we discover
-	   it's broken somewhere.  */
-#ifdef SIOCGSIZIFCONF
-	&& ifconfsize <= 0
-#endif
-	/* And we need *some* sort of bounds.  */
-	&& current_buf_size <= 100000
-	) {
-	int new_size;
-	char *newbuf;
-
-	est_if_count *= 2;
-	new_size = est_ifreq_size * est_if_count;
-	newbuf = realloc (buf, new_size);
-	if (newbuf == 0) {
-	    krb5_error_code e = errno;
-	    free (buf);
-	    return e;
-	}
-	current_buf_size = new_size;
-	buf = newbuf;
-	goto ask_again;
-    }
-
-    n = ifc.ifc_len;
-    if (n > current_buf_size)
-	n = current_buf_size;
-
-    /* Note: Apparently some systems put the size (used or wanted?)
-       into the start of the buffer, just none that I'm actually
-       using.  Fix this when there's such a test system available.
-       The Samba mailing list archives mention that NTP looks for the
-       size on these systems: *-fujitsu-uxp* *-ncr-sysv4*
-       *-univel-sysv*.  [raeburn:20010201T2226-05]  */
-    for (i = 0; i < n; i+= ifreq_size(*ifr) ) {
-	ifr = (struct ifreq *)((caddr_t) ifc.ifc_buf+i);
-
-	strncpy(ifreq.ifr_name, ifr->ifr_name, sizeof (ifreq.ifr_name));
-	if (ioctl (s, SIOCGIFFLAGS, (char *)&ifreq) < 0) {
-	skip:
-	    /* mark for next pass */
-	    ifr->ifr_name[0] = 0;
-
-	    continue;
-	}
-
-#ifdef IFF_LOOPBACK
-	    /* None of the current callers want loopback addresses.  */
-	if (ifreq.ifr_flags & IFF_LOOPBACK)
-	    goto skip;
-#endif
-	/* Ignore interfaces that are down.  */
-	if (!(ifreq.ifr_flags & IFF_UP))
-	    goto skip;
-
-	/* Make sure we didn't process this address already.  */
-	for (j = 0; j < i; j += ifreq_size(*ifr2)) {
-	    ifr2 = (struct ifreq *)((caddr_t) ifc.ifc_buf+j);
-	    if (ifr2->ifr_name[0] == 0)
-		continue;
-	    if (ifr2->ifr_addr.sa_family == ifr->ifr_addr.sa_family
-		&& ifreq_size (*ifr) == ifreq_size (*ifr2)
-		/* Compare address info.  If this isn't good enough --
-		   i.e., if random padding bytes turn out to differ
-		   when the addresses are the same -- then we'll have
-		   to do it on a per address family basis.  */
-		&& !memcmp (&ifr2->ifr_addr.sa_data, &ifr->ifr_addr.sa_data,
-			    (ifreq_size (*ifr)
-			     - offsetof (struct ifreq, ifr_addr.sa_data))))
-		goto skip;
-	}
-
-	if ((*pass1fn) (data, &ifr->ifr_addr)) {
-	    fail = 1;
-	    goto punt;
-	}
-    }
-
-    if (betweenfn && (*betweenfn)(data)) {
-	fail = 1;
-	goto punt;
-    }
-
-    if (pass2fn)
-	for (i = 0; i < n; i+= ifreq_size(*ifr) ) {
-	    ifr = (struct ifreq *)((caddr_t) ifc.ifc_buf+i);
-
-	    if (ifr->ifr_name[0] == 0)
-		/* Marked in first pass to be ignored.  */
-		continue;
-
-	    if ((*pass2fn) (data, &ifr->ifr_addr)) {
-		fail = 1;
-		goto punt;
-	    }
-	}
- punt:
-    closesocket(s);
-    free (buf);
-
-    return fail;
-}
+#include "foreachaddr.c"
 
 struct socksetup {
     const char *prog;
     krb5_error_code retval;
 };
 
-static int
-add_fd (struct socksetup *data, int sock)
+static struct connection *
+add_fd (struct socksetup *data, int sock, int conntype,
+	void (*service)(struct connection *, const char *, int))
 {
-    if (n_sockets == max_udp_sockets) {
-	int *new_fds;
-	int new_max = max_udp_sockets + n_udp_ports;
-	new_fds = safe_realloc(udp_port_fds, new_max * sizeof(int));
-	if (new_fds == 0) {
-	    data->retval = errno;
-	    com_err(data->prog, data->retval, "cannot save socket info");
-	    return 1;
-	}
-	udp_port_fds = new_fds;
-	max_udp_sockets = new_max;
+    struct connection *newconn;
+    void *tmp;
+
+    newconn = malloc(sizeof(*newconn));
+    if (newconn == 0) {
+	data->retval = errno;
+	com_err(data->prog, errno,
+		"cannot allocate storage for connection info");
+	return 0;
     }
-    udp_port_fds[n_sockets++] = sock;
+    if (!ADD(connections, newconn, tmp)) {
+	data->retval = errno;
+	com_err(data->prog, data->retval, "cannot save socket info");
+	free(newconn);
+	return 0;
+    }
+
+    memset(newconn, 0, sizeof(*newconn));
+    newconn->type = conntype;
+    newconn->fd = sock;
+    newconn->service = service;
+    return newconn;
+}
+
+static void process_packet(struct connection *, const char *, int);
+static void accept_tcp_connection(struct connection *, const char *, int);
+static void process_tcp_connection(struct connection *, const char *, int);
+
+static struct connection *
+add_udp_fd (struct socksetup *data, int sock)
+{
+    return add_fd(data, sock, CONN_UDP, process_packet);
+}
+
+static struct connection *
+add_tcp_listener_fd (struct socksetup *data, int sock)
+{
+    return add_fd(data, sock, CONN_TCP_LISTENER, accept_tcp_connection);
+}
+
+static struct connection *
+add_tcp_data_fd (struct socksetup *data, int sock)
+{
+    return add_fd(data, sock, CONN_TCP, process_tcp_connection);
+}
+
+static void
+delete_fd (struct connection *xconn)
+{
+    struct connection *conn;
+    int i;
+
+    FOREACH_ELT(connections, i, conn)
+	if (conn == xconn) {
+	    DEL(connections, i);
+	    return;
+	}
+}
+
+static int
+setnbio(int sock)
+{
+    static const int one = 1;
+    return ioctlsocket(sock, FIONBIO, (const void *)&one);
+}
+
+static int
+setnolinger(int s)
+{
+    static const struct linger ling = { 0, 0 };
+    return setsockopt(s, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
+}
+
+/* Returns -1 or socket fd.  */
+static int
+setup_a_tcp_listener(struct socksetup *data, struct sockaddr *addr)
+{
+    int sock;
+
+    sock = socket(addr->sa_family, SOCK_STREAM, 0);
+    if (sock == -1) {
+	com_err(data->prog, errno, "Cannot create TCP server socket on %s",
+		paddr(addr));
+	return -1;
+    }
+    if (bind(sock, addr, socklen(addr)) == -1) {
+	com_err(data->prog, errno,
+		"Cannot bind TCP server socket on %s", paddr(addr));
+	close(sock);
+	return -1;
+    }
+    if (listen(sock, 5) < 0) {
+	com_err(data->prog, errno, "Cannot listen on TCP server socket on %s",
+		paddr(addr));
+	close(sock);
+	return -1;
+    }
+    if (setnbio(sock)) {
+	com_err(data->prog, errno,
+		"cannot set listening tcp socket on %s non-blocking",
+		paddr(addr));
+	close(sock);
+	return -1;
+    }
+    if (setnolinger(sock)) {
+	com_err(data->prog, errno, "disabling SO_LINGER on TCP socket on %s",
+		paddr(addr));
+	close(sock);
+	return -1;
+    }
+    return sock;
+}
+
+static int
+setup_tcp_listener_ports(struct socksetup *data)
+{
+    struct sockaddr_in sin4;
+#ifdef KRB5_USE_INET6
+    struct sockaddr_in6 sin6;
+#endif
+    int i, port;
+
+    memset(&sin4, 0, sizeof(sin4));
+    sin4.sin_family = AF_INET;
+#ifdef HAVE_SA_LEN
+    sin4.sin_len = sizeof(sin4);
+#endif
+    sin4.sin_addr.s_addr = INADDR_ANY;
+
+#ifdef KRB5_USE_INET6
+    memset(&sin6, 0, sizeof(sin6));
+    sin6.sin6_family = AF_INET6;
+#ifdef SIN6_LEN
+    sin6.sin6_len = sizeof(sin6);
+#endif
+    sin6.sin6_addr = in6addr_any;
+#endif
+
+    FOREACH_ELT (tcp_port_data, i, port) {
+	int s4, s6;
+
+	set_sa_port((struct sockaddr *)&sin4, htons(port));
+	if (!ipv6_enabled()) {
+	    s4 = setup_a_tcp_listener(data, (struct sockaddr *)&sin4);
+	    if (s4 < 0)
+		return -1;
+	    s6 = -1;
+	} else {
+#ifndef KRB5_USE_INET6
+	    abort();
+#else
+	    s4 = s6 = -1;
+
+	    set_sa_port((struct sockaddr *)&sin6, htons(port));
+
+	    s6 = setup_a_tcp_listener(data, (struct sockaddr *)&sin6);
+	    if (s6 < 0)
+		return -1;
+#ifdef IPV6_V6ONLY
+	    if (setv6only(s6, 0))
+		com_err(data->prog, errno, "setsockopt(IPV6_V6ONLY,0) failed");
+#endif
+
+	    if (setreuseaddr(s6, 0) < 0) {
+		com_err(data->prog, errno,
+			"disabling SO_REUSEADDR on IPv6 TCP socket for port %d",
+			port);
+		close(s6);
+		return -1;
+	    }
+
+	    s4 = setup_a_tcp_listener(data, (struct sockaddr *)&sin4);
+#endif /* KRB5_USE_INET6 */
+	}
+
+	/* Sockets are created, prepare to listen on them.  */
+	if (s4 >= 0) {
+	    FD_SET(s4, &sstate.rfds);
+	    if (s4 >= sstate.max)
+		sstate.max = s4 + 1;
+	    if (add_tcp_listener_fd(data, s4) == 0)
+		close(s4);
+	    else
+		krb5_klog_syslog(LOG_INFO, "listening on fd %d: tcp %s",
+				 s4, paddr((struct sockaddr *)&sin4));
+	}
+#ifdef KRB5_USE_INET6
+	if (s6 >= 0) {
+	    FD_SET(s6, &sstate.rfds);
+	    if (s6 >= sstate.max)
+		sstate.max = s6 + 1;
+	    if (add_tcp_listener_fd(data, s6) == 0) {
+		close(s6);
+		s6 = -1;
+	    } else
+		krb5_klog_syslog(LOG_INFO, "listening on fd %d: tcp %s",
+				 s6, paddr((struct sockaddr *)&sin6));
+	    if (s4 < 0)
+		krb5_klog_syslog(LOG_INFO,
+				 "assuming IPv6 socket accepts IPv4");
+	}
+#endif
+    }
     return 0;
 }
 
 static int
-setup_port(void *P_data, struct sockaddr *addr)
+setup_udp_port(void *P_data, struct sockaddr *addr)
 {
     struct socksetup *data = P_data;
     int sock = -1, i;
+    char haddrbuf[NI_MAXHOST];
+    int err;
+    u_short port;
+
+    err = getnameinfo(addr, socklen(addr), haddrbuf, sizeof(haddrbuf),
+		      0, 0, NI_NUMERICHOST);
+    if (err)
+	strcpy(haddrbuf, "<unprintable>");
 
     switch (addr->sa_family) {
     case AF_INET:
-    {
-	struct sockaddr_in *sin = (struct sockaddr_in *) addr, psin;
-	for (i = 0; i < n_udp_ports; i++) {
-	    sock = socket (PF_INET, SOCK_DGRAM, 0);
-	    if (sock == -1) {
-		data->retval = errno;
-		com_err(data->prog, data->retval,
-			"Cannot create server socket for port %d address %s",
-			udp_port_nums[i], inet_ntoa (sin->sin_addr));
-		return 1;
-	    }
-	    psin = *sin;
-	    psin.sin_port = htons (udp_port_nums[i]);
-	    if (bind (sock, (struct sockaddr *)&psin, sizeof (psin)) == -1) {
-		data->retval = errno;
-		com_err(data->prog, data->retval,
-			"Cannot bind server socket to port %d address %s",
-			udp_port_nums[i], inet_ntoa (sin->sin_addr));
-		return 1;
-	    }
-	    FD_SET (sock, &select_fds);
-	    if (sock > select_nfds)
-		select_nfds = sock;
-	    krb5_klog_syslog (LOG_INFO, "listening on fd %d: %s port %d", sock,
-			     inet_ntoa (sin->sin_addr), udp_port_nums[i]);
-	    if (add_fd (data, sock))
-		return 1;
-	}
-    }
-    break;
+	break;
 #ifdef AF_INET6
     case AF_INET6:
-#ifdef KRB5_USE_INET6x /* Not ready yet -- fix process_packet and callees.  */
-	/* XXX We really should be using a single AF_INET6 socket and
-	   specify/receive local address info through sendmsg/recvmsg
-	   control data.  */
-    {
-	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) addr, psin6;
-	for (i = 0; i < n_udp_ports; i++) {
-	    char addr_str[46] = { 0 };
-	    if (0 == inet_ntop (sin6->sin6_family, &sin6->sin6_addr, addr_str,
-				sizeof (addr_str)))
-		strcpy (addr_str, "?");
-	    sock = socket (PF_INET6, SOCK_DGRAM, 0);
-	    if (sock == -1) {
-		data->retval = errno;
-		com_err(data->prog, data->retval,
-			"Cannot create server socket for port %d address %s",
-			udp_port_nums[i], addr_str);
-		return 1;
-	    }
-	    psin6 = *sin6;
-	    psin6.sin6_port = htons (udp_port_nums[i]);
-	    if (bind (sock, (struct sockaddr *)&psin6, sizeof (psin6)) == -1) {
-		data->retval = errno;
-		com_err(data->prog, data->retval,
-			"Cannot bind server socket to port %d address %s",
-			udp_port_nums[i], addr_str);
-		return 1;
-	    }
-	    FD_SET (sock, &select_fds);
-	    if (sock > select_nfds)
-		select_nfds = sock;
-	    krb5_klog_syslog (LOG_INFO, "listening on fd %d: %s port %d", sock,
-			      addr_str, udp_port_nums[i]);
-	    if (add_fd (data, sock))
-		return 1;
-	}
-    }
-#else
-    {
-	static int first = 1;
-	if (!first) {
-	    krb5_klog_syslog (LOG_INFO, "skipping local ipv6 addresses");
-	    first = 0;
-	}
-    }
-#endif /* use inet6 */
-#endif /* AF_INET6 */
-    break;
-    default:
+#ifdef KRB5_USE_INET6
 	break;
+#else
+	{
+	    static int first = 1;
+	    if (first) {
+		krb5_klog_syslog (LOG_INFO, "skipping local ipv6 addresses");
+		first = 0;
+	    }
+	    return 0;
+	}
+#endif
+#endif
+#ifdef AF_LINK /* some BSD systems, AIX */
+    case AF_LINK:
+	return 0;
+#endif
+    default:
+	krb5_klog_syslog (LOG_INFO,
+			  "skipping unrecognized local address family %d",
+			  addr->sa_family);
+	return 0;
+    }
+
+    FOREACH_ELT (udp_port_data, i, port) {
+	sock = socket (addr->sa_family, SOCK_DGRAM, 0);
+	if (sock == -1) {
+	    data->retval = errno;
+	    com_err(data->prog, data->retval,
+		    "Cannot create server socket for port %d address %s",
+		    port, haddrbuf);
+	    return 1;
+	}
+	set_sa_port(addr, htons(port));
+	if (bind (sock, (struct sockaddr *)addr, socklen (addr)) == -1) {
+	    data->retval = errno;
+	    com_err(data->prog, data->retval,
+		    "Cannot bind server socket to port %d address %s",
+		    port, haddrbuf);
+	    return 1;
+	}
+	FD_SET (sock, &sstate.rfds);
+	if (sock >= sstate.max)
+	    sstate.max = sock + 1;
+	krb5_klog_syslog (LOG_INFO, "listening on fd %d: udp %s", sock,
+			  paddr((struct sockaddr *)addr));
+	if (add_udp_fd (data, sock) == 0)
+	    return 1;
     }
     return 0;
 }
 
+#if 1
+static void klog_handler(const void *data, size_t len)
+{
+    static char buf[BUFSIZ];
+    static int bufoffset;
+    void *p;
+
+#define flush_buf() \
+  (bufoffset						\
+   ? (((buf[0] == 0 || buf[0] == '\n')			\
+       ? (fork()==0?abort():(void)0)			\
+       : (void)0),					\
+      krb5_klog_syslog(LOG_INFO, "%s", buf),		\
+      memset(buf, 0, sizeof(buf)),			\
+      bufoffset = 0)					\
+   : 0)
+
+    p = memchr(data, 0, len);
+    if (p)
+	len = (const char *)p - (const char *)data;
+scan_for_newlines:
+    if (len == 0)
+	return;
+    p = memchr(data, '\n', len);
+    if (p) {
+	if (p != data)
+	    klog_handler(data, (size_t)((const char *)p - (const char *)data));
+	flush_buf();
+	len -= ((const char *)p - (const char *)data) + 1;
+	data = 1 + (const char *)p;
+	goto scan_for_newlines;
+    } else if (len > sizeof(buf) - 1 || len + bufoffset > sizeof(buf) - 1) {
+	size_t x = sizeof(buf) - len - 1;
+	klog_handler(data, x);
+	flush_buf();
+	len -= x;
+	data = (const char *)data + x;
+	goto scan_for_newlines;
+    } else {
+	memcpy(buf + bufoffset, data, len);
+	bufoffset += len;
+    }
+}
+#endif
+
+/* XXX */
+extern int krb5int_debug_sendto_kdc;
+extern void (*krb5int_sendtokdc_debug_handler)(const void*, size_t);
+
 krb5_error_code
-setup_network(prog)
-    const char *prog;
+setup_network(const char *prog)
 {
     struct socksetup setup_data;
     krb5_error_code retval;
     char *cp;
     int i, port;
 
-    FD_ZERO(&select_fds);
-    select_nfds = 0;
+    FD_ZERO(&sstate.rfds);
+    FD_ZERO(&sstate.wfds);
+    FD_ZERO(&sstate.xfds);
+    sstate.max = 0;
+
+/*    krb5int_debug_sendto_kdc = 1; */
+    krb5int_sendtokdc_debug_handler = klog_handler;
 
     /* Handle each realm's ports */
     for (i=0; i<kdc_numrealms; i++) {
 	cp = kdc_realmlist[i]->realm_ports;
 	while (cp && *cp) {
-	    if (*cp == ',' || isspace(*cp)) {
+	    if (*cp == ',' || isspace((int) *cp)) {
 		cp++;
 		continue;
 	    }
 	    port = strtol(cp, &cp, 10);
 	    if (cp == 0)
 		break;
-	    retval = add_port(port);
+	    retval = add_udp_port(port);
+	    if (retval)
+		return retval;
+	}
+
+	cp = kdc_realmlist[i]->realm_tcp_ports;
+	while (cp && *cp) {
+	    if (*cp == ',' || isspace((int) *cp)) {
+		cp++;
+		continue;
+	    }
+	    port = strtol(cp, &cp, 10);
+	    if (cp == 0)
+		break;
+	    retval = add_tcp_port(port);
 	    if (retval)
 		return retval;
 	}
@@ -439,9 +649,14 @@ setup_network(prog)
     setup_data.prog = prog;
     setup_data.retval = 0;
     krb5_klog_syslog (LOG_INFO, "setting up network...");
-    if (foreach_localaddr (&setup_data, setup_port, 0, 0)) {
+    /* To do: Use RFC 2292 interface (or follow-on) and IPV6_PKTINFO,
+       so we might need only one UDP socket; fall back to binding
+       sockets on each address only if IPV6_PKTINFO isn't
+       supported.  */
+    if (foreach_localaddr (&setup_data, setup_udp_port, 0, 0)) {
 	return setup_data.retval;
     }
+    setup_tcp_listener_ports(&setup_data);
     krb5_klog_syslog (LOG_INFO, "set up %d sockets", n_sockets);
     if (n_sockets == 0) {
 	com_err(prog, 0, "no sockets set up?");
@@ -451,23 +666,52 @@ setup_network(prog)
     return 0;
 }
 
-void process_packet(port_fd, prog, portnum)
-    int	port_fd;
-    const char	*prog;
-    int		portnum;
+static void init_addr(krb5_fulladdr *faddr, struct sockaddr *sa)
 {
-    int cc, saddr_len;
+    switch (sa->sa_family) {
+    case AF_INET:
+	faddr->address->addrtype = ADDRTYPE_INET;
+	faddr->address->length = 4;
+	faddr->address->contents = (krb5_octet *) &sa2sin(sa)->sin_addr;
+	faddr->port = ntohs(sa2sin(sa)->sin_port);
+	break;
+#ifdef KRB5_USE_INET6
+    case AF_INET6:
+	if (IN6_IS_ADDR_V4MAPPED(&sa2sin6(sa)->sin6_addr)) {
+	    faddr->address->addrtype = ADDRTYPE_INET;
+	    faddr->address->length = 4;
+	    faddr->address->contents = 12 + (krb5_octet *) &sa2sin6(sa)->sin6_addr;
+	} else {
+	    faddr->address->addrtype = ADDRTYPE_INET6;
+	    faddr->address->length = 16;
+	    faddr->address->contents = (krb5_octet *) &sa2sin6(sa)->sin6_addr;
+	}
+	faddr->port = ntohs(sa2sin6(sa)->sin6_port);
+	break;
+#endif
+    default:
+	faddr->address->addrtype = -1;
+	faddr->address->length = 0;
+	faddr->address->contents = 0;
+	faddr->port = 0;
+	break;
+    }
+}
+
+static void process_packet(struct connection *conn, const char *prog,
+			   int selflags)
+{
+    int cc;
+    socklen_t saddr_len;
     krb5_fulladdr faddr;
     krb5_error_code retval;
-    struct sockaddr_in saddr;
+    struct sockaddr_storage saddr;
     krb5_address addr;
     krb5_data request;
     krb5_data *response;
     char pktbuf[MAX_DGRAM_SIZE];
+    int port_fd = conn->fd;
 
-    if (port_fd < 0)
-	return;
-    
     saddr_len = sizeof(saddr);
     cc = recvfrom(port_fd, pktbuf, sizeof(pktbuf), 0,
 		  (struct sockaddr *)&saddr, &saddr_len);
@@ -487,42 +731,23 @@ void process_packet(port_fd, prog, portnum)
     request.length = cc;
     request.data = pktbuf;
     faddr.address = &addr;
-    switch (((struct sockaddr *)&saddr)->sa_family) {
-    case AF_INET:
-	addr.addrtype = ADDRTYPE_INET;
-	addr.length = 4;
-	addr.contents = (krb5_octet *) &((struct sockaddr_in *)&saddr)->sin_addr;
-	faddr.port = ntohs(((struct sockaddr_in *)&saddr)->sin_port);
-	break;
-#ifdef KRB5_USE_INET6x
-    case AF_INET6:
-	addr.addrtype = ADDRTYPE_INET6;
-	addr.length = 16;
-	addr.contents = (krb5_octet *) &((struct sockaddr_in6 *)&saddr)->sin6_addr;
-	faddr.port = ntohs(((struct sockaddr_in6 *)&saddr)->sin6_port);
-	break;
-#endif
-    default:
-	addr.addrtype = -1;
-	addr.length = 0;
-	addr.contents = 0;
-	break;
-    }
+    init_addr(&faddr, ss2sa(&saddr));
     /* this address is in net order */
-    if ((retval = dispatch(&request, &faddr, portnum, &response))) {
-	com_err(prog, retval, "while dispatching");
+    if ((retval = dispatch(&request, &faddr, &response))) {
+	com_err(prog, retval, "while dispatching (udp)");
 	return;
     }
-    cc = sendto(port_fd, response->data, response->length, 0,
+    cc = sendto(port_fd, response->data, (socklen_t) response->length, 0,
 		(struct sockaddr *)&saddr, saddr_len);
     if (cc == -1) {
 	char addrbuf[46];
-	int portno;
         krb5_free_data(kdc_context, response);
-	sockaddr2p ((struct sockaddr *) &saddr, addrbuf, sizeof (addrbuf),
-		    &portno);
+	if (inet_ntop(((struct sockaddr *)&saddr)->sa_family,
+		      addr.contents, addrbuf, sizeof(addrbuf)) == 0) {
+	    strcpy(addrbuf, "?");
+	}
 	com_err(prog, errno, "while sending reply to %s/%d",
-		addrbuf, ntohs(portno));
+		addrbuf, faddr.port);
 	return;
     }
     if (cc != response->length) {
@@ -535,57 +760,306 @@ void process_packet(port_fd, prog, portnum)
     return;
 }
 
+static int tcp_data_counter;
+static int max_tcp_data_connections = 30;
+
+static void kill_tcp_connection(struct connection *);
+
+static void accept_tcp_connection(struct connection *conn, const char *prog,
+				  int selflags)
+{
+    int s;
+    struct sockaddr_storage addr_s;
+    struct sockaddr *addr = (struct sockaddr *)&addr_s;
+    socklen_t addrlen = sizeof(addr_s);
+    struct socksetup sockdata;
+    struct connection *newconn;
+    char tmpbuf[10];
+
+    s = accept(conn->fd, addr, &addrlen);
+    if (s < 0)
+	return;
+    setnbio(s), setnolinger(s);
+
+    sockdata.prog = prog;
+    sockdata.retval = 0;
+
+    newconn = add_tcp_data_fd(&sockdata, s);
+    if (newconn == 0)
+	return;
+
+    if (getnameinfo((struct sockaddr *)&addr_s, addrlen,
+		    newconn->u.tcp.addrbuf, sizeof(newconn->u.tcp.addrbuf),
+		    tmpbuf, sizeof(tmpbuf),
+		    NI_NUMERICHOST | NI_NUMERICSERV))
+	strcpy(newconn->u.tcp.addrbuf, "???");
+    else {
+	char *p, *end;
+	p = newconn->u.tcp.addrbuf;
+	end = p + sizeof(newconn->u.tcp.addrbuf);
+	p += strlen(p);
+	if (end - p > 2 + strlen(tmpbuf)) {
+	    *p++ = '.';
+	    strcpy(p, tmpbuf);
+	}
+    }
+
+    newconn->u.tcp.addr_s = addr_s;
+    newconn->u.tcp.addrlen = addrlen;
+    newconn->u.tcp.bufsiz = 1024 * 1024;
+    newconn->u.tcp.buffer = malloc(newconn->u.tcp.bufsiz);
+    newconn->u.tcp.start_time = time(0);
+
+    if (++tcp_data_counter > max_tcp_data_connections) {
+	struct connection *oldest_tcp = NULL;
+	struct connection *c;
+	int i;
+
+	krb5_klog_syslog(LOG_INFO, "too many connections");
+
+	FOREACH_ELT (connections, i, c) {
+	    if (c->type != CONN_TCP)
+		continue;
+	    if (c == newconn)
+		continue;
+#if 0
+	    krb5_klog_syslog(LOG_INFO, "fd %d started at %ld", c->fd,
+			     c->u.tcp.start_time);
+#endif
+	    if (oldest_tcp == NULL
+		|| oldest_tcp->u.tcp.start_time > c->u.tcp.start_time)
+		oldest_tcp = c;
+	}
+	if (oldest_tcp != NULL) {
+	    krb5_klog_syslog(LOG_INFO, "dropping tcp fd %d from %s",
+			     oldest_tcp->fd, oldest_tcp->u.tcp.addrbuf);
+	    kill_tcp_connection(oldest_tcp);
+	}
+    }
+    if (newconn->u.tcp.buffer == 0) {
+	com_err(prog, errno, "allocating buffer for new TCP session from %s",
+		newconn->u.tcp.addrbuf);
+	delete_fd(newconn);
+	close(s);
+	return;
+    }
+    newconn->u.tcp.offset = 0;
+    newconn->u.tcp.faddr.address = &newconn->u.tcp.kaddr;
+    init_addr(&newconn->u.tcp.faddr, ss2sa(&newconn->u.tcp.addr_s));
+    SG_SET(&newconn->u.tcp.sgbuf[0], newconn->u.tcp.lenbuf, 4);
+    SG_SET(&newconn->u.tcp.sgbuf[1], 0, 0);
+
+    FD_SET(s, &sstate.rfds);
+    if (sstate.max <= s)
+	sstate.max = s + 1;
+}
+
+static void
+kill_tcp_connection(struct connection *conn)
+{
+    delete_fd(conn);
+    if (conn->u.tcp.response)
+	krb5_free_data(kdc_context, conn->u.tcp.response);
+    if (conn->u.tcp.buffer)
+	free(conn->u.tcp.buffer);
+    FD_CLR(conn->fd, &sstate.rfds);
+    FD_CLR(conn->fd, &sstate.wfds);
+    if (sstate.max == conn->fd + 1)
+	while (sstate.max > 0
+	       && ! FD_ISSET(sstate.max-1, &sstate.rfds)
+	       && ! FD_ISSET(sstate.max-1, &sstate.wfds)
+	       /* && ! FD_ISSET(sstate.max-1, &sstate.xfds) */
+	    )
+	    sstate.max--;
+    close(conn->fd);
+    conn->fd = -1;
+    tcp_data_counter--;
+}
+
+static void
+process_tcp_connection(struct connection *conn, const char *prog, int selflags)
+{
+    if (selflags & SSF_WRITE) {
+	ssize_t nwrote;
+	SOCKET_WRITEV_TEMP tmp;
+	krb5_error_code e;
+
+	nwrote = SOCKET_WRITEV(conn->fd, conn->u.tcp.sgp, conn->u.tcp.sgnum,
+			       tmp);
+	if (nwrote < 0) {
+	    e = SOCKET_ERRNO;
+	    goto kill_tcp_connection;
+	}
+	if (nwrote == 0)
+	    /* eof */
+	    goto kill_tcp_connection;
+	while (nwrote) {
+	    sg_buf *sgp = conn->u.tcp.sgp;
+	    if (nwrote < SG_LEN(sgp)) {
+		SG_ADVANCE(sgp, nwrote);
+		nwrote = 0;
+	    } else {
+		nwrote -= SG_LEN(sgp);
+		conn->u.tcp.sgp++;
+		conn->u.tcp.sgnum--;
+		if (conn->u.tcp.sgnum == 0 && nwrote != 0)
+		    abort();
+	    }
+	}
+	if (conn->u.tcp.sgnum == 0) {
+	    /* finished sending */
+	    /* should go back to reading */
+	    goto kill_tcp_connection;
+	}
+    } else if (selflags & SSF_READ) {
+	/* Read message length and data into one big buffer, already
+	   allocated at connect time.  If we have a complete message,
+	   we stop reading, so we should only be here if there is no
+	   data in the buffer, or only an incomplete message.  */
+	size_t len;
+	ssize_t nread;
+	if (conn->u.tcp.offset < 4) {
+	    /* msglen has not been computed */
+	    /* XXX Doing at least two reads here, letting the kernel
+	       worry about buffering.  It'll be faster when we add
+	       code to manage the buffer here.  */
+	    len = 4 - conn->u.tcp.offset;
+	    nread = SOCKET_READ(conn->fd,
+				conn->u.tcp.buffer + conn->u.tcp.offset, len);
+	    if (nread < 0)
+		/* error */
+		goto kill_tcp_connection;
+	    if (nread == 0)
+		/* eof */
+		goto kill_tcp_connection;
+	    conn->u.tcp.offset += nread;
+	    if (conn->u.tcp.offset == 4) {
+		unsigned char *p = (unsigned char *)conn->u.tcp.buffer;
+		conn->u.tcp.msglen = ((p[0] << 24)
+				      | (p[1] << 16)
+				      | (p[2] <<  8)
+				      | p[3]);
+		if (conn->u.tcp.msglen > conn->u.tcp.bufsiz - 4) {
+		    /* message too big */
+		    krb5_klog_syslog(LOG_ERR, "TCP client %s wants %lu bytes, cap is %lu",
+				     conn->u.tcp.addrbuf, (unsigned long) conn->u.tcp.msglen,
+				     (unsigned long) conn->u.tcp.bufsiz - 4);
+		    /* XXX Should return an error.  */
+		    goto kill_tcp_connection;
+		}
+	    }
+	} else {
+	    /* msglen known */
+	    krb5_data request;
+	    krb5_error_code err;
+
+	    len = conn->u.tcp.msglen - (conn->u.tcp.offset - 4);
+	    nread = SOCKET_READ(conn->fd,
+				conn->u.tcp.buffer + conn->u.tcp.offset, len);
+	    if (nread < 0)
+		/* error */
+		goto kill_tcp_connection;
+	    if (nread == 0)
+		/* eof */
+		goto kill_tcp_connection;
+	    conn->u.tcp.offset += nread;
+	    if (conn->u.tcp.offset < conn->u.tcp.msglen + 4)
+		return;
+	    /* have a complete message, and exactly one message */
+	    request.length = conn->u.tcp.msglen;
+	    request.data = conn->u.tcp.buffer + 4;
+	    err = dispatch(&request, &conn->u.tcp.faddr,
+			   &conn->u.tcp.response);
+	    if (err) {
+		com_err(prog, err, "while dispatching (tcp)");
+		goto kill_tcp_connection;
+	    }
+	    conn->u.tcp.lenbuf[0] = 0xff & (conn->u.tcp.response->length >> 24);
+	    conn->u.tcp.lenbuf[1] = 0xff & (conn->u.tcp.response->length >> 16);
+	    conn->u.tcp.lenbuf[2] = 0xff & (conn->u.tcp.response->length >> 8);
+	    conn->u.tcp.lenbuf[3] = 0xff & (conn->u.tcp.response->length >> 0);
+	    SG_SET(&conn->u.tcp.sgbuf[1], conn->u.tcp.response->data,
+		   conn->u.tcp.response->length);
+	    conn->u.tcp.sgp = conn->u.tcp.sgbuf;
+	    conn->u.tcp.sgnum = 2;
+	    FD_CLR(conn->fd, &sstate.rfds);
+	    FD_SET(conn->fd, &sstate.wfds);
+	}
+    } else
+	abort();
+
+    return;
+
+kill_tcp_connection:
+    kill_tcp_connection(conn);
+}
+
+static void service_conn(struct connection *conn, const char *prog,
+			 int selflags)
+{
+    conn->service(conn, prog, selflags);
+}
+
 krb5_error_code
-listen_and_process(prog)
-const char *prog;
+listen_and_process(const char *prog)
 {
     int			nfound;
-    fd_set		readfds;
-    int			i;
+    struct select_state sout;
+    int			i, sret;
+    krb5_error_code	err;
 
-    if (udp_port_fds == (int *) NULL)
+    if (conns == (struct connection **) NULL)
 	return KDC5_NONET;
     
     while (!signal_requests_exit) {
 	if (signal_requests_hup) {
-	    krb5_klog_reopen();
+	    krb5_klog_reopen(kdc_context);
 	    signal_requests_hup = 0;
 	}
-	readfds = select_fds;
-	nfound = select(select_nfds + 1, &readfds, 0, 0, 0);
-	if (nfound == -1) {
-	    if (errno == EINTR)
-		continue;
-	    com_err(prog, errno, "while selecting for network input");
+	sstate.end_time.tv_sec = sstate.end_time.tv_usec = 0;
+	err = krb5int_cm_call_select(&sstate, &sout, &sret);
+	if (err) {
+	    com_err(prog, err, "while selecting for network input(1)");
 	    continue;
 	}
-	for (i=0; i<n_sockets; i++) {
-	    if (FD_ISSET(udp_port_fds[i], &readfds)) {
-		process_packet(udp_port_fds[i], prog, udp_port_nums[i]);
-		nfound--;
-		if (nfound == 0)
-		    break;
-	    }
+	if (sret == -1) {
+	    if (errno != EINTR)
+		com_err(prog, errno, "while selecting for network input(2)");
+	    continue;
+	}
+	nfound = sret;
+	for (i=0; i<n_sockets && nfound > 0; i++) {
+	    int sflags = 0;
+	    if (conns[i]->fd < 0)
+		abort();
+	    if (FD_ISSET(conns[i]->fd, &sout.rfds))
+		sflags |= SSF_READ, nfound--;
+	    if (FD_ISSET(conns[i]->fd, &sout.wfds))
+		sflags |= SSF_WRITE, nfound--;
+	    if (sflags)
+		service_conn(conns[i], prog, sflags);
 	}
     }
     return 0;
 }
 
 krb5_error_code
-closedown_network(prog)
-const char *prog;
+closedown_network(const char *prog)
 {
     int i;
+    struct connection *conn;
 
-    if (udp_port_fds == (int *) NULL)
+    if (conns == (struct connection **) NULL)
 	return KDC5_NONET;
 
-    for (i=0; i<n_udp_ports; i++) {
-	if (udp_port_fds[i] >= 0)
-	    (void) close(udp_port_fds[i]);
+    FOREACH_ELT (connections, i, conn) {
+	if (conn->fd >= 0)
+	    (void) close(conn->fd);
+	DEL (connections, i);
     }
-    free(udp_port_fds);
-    free(udp_port_nums);
+    FREE_SET_DATA(connections);
+    FREE_SET_DATA(udp_port_data);
+    FREE_SET_DATA(tcp_port_data);
 
     return 0;
 }

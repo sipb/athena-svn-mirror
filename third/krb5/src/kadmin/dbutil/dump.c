@@ -1,7 +1,7 @@
 /*
- * admin/edit/dump.c
+ * kadmin/dbutil/dump.c
  *
- * Copyright 1990,1991 by the Massachusetts Institute of Technology.
+ * Copyright 1990,1991,2001 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -33,19 +33,18 @@
 #include <kadm5/adb.h>
 #include <com_err.h>
 #include "kdb5_util.h"
-#if	HAVE_REGEX_H
+#if defined(HAVE_REGEX_H) && defined(HAVE_REGCOMP)
 #include <regex.h>
 #endif	/* HAVE_REGEX_H */
 
 /*
  * Needed for master key conversion.
  */
-extern krb5_keyblock master_keyblock;
-extern krb5_principal master_princ;
-extern int valid_master_key;
-extern void usage();
 static int			mkey_convert;
 static krb5_keyblock		new_master_keyblock;
+
+static int	backwards;
+static int	recursive;
 
 /*
  * Use compile(3) if no regcomp present.
@@ -70,37 +69,37 @@ struct dump_args {
     int			verbose;
 };
 
-static krb5_error_code dump_k5beta_iterator PROTOTYPE((krb5_pointer,
-						       krb5_db_entry *));
-static krb5_error_code dump_k5beta6_iterator PROTOTYPE((krb5_pointer,
-							krb5_db_entry *));
-static krb5_error_code dump_k5beta6_iterator_ext PROTOTYPE((krb5_pointer,
-							    krb5_db_entry *,
-							    int));
-static krb5_error_code dump_k5beta7_princ PROTOTYPE((krb5_pointer,
-						     krb5_db_entry *));
-static krb5_error_code dump_k5beta7_princ_ext PROTOTYPE((krb5_pointer,
-							 krb5_db_entry *,
-							 int));
+static krb5_error_code dump_k5beta_iterator (krb5_pointer,
+					     krb5_db_entry *);
+static krb5_error_code dump_k5beta6_iterator (krb5_pointer,
+					      krb5_db_entry *);
+static krb5_error_code dump_k5beta6_iterator_ext (krb5_pointer,
+						  krb5_db_entry *,
+						  int);
+static krb5_error_code dump_k5beta7_princ (krb5_pointer,
+					   krb5_db_entry *);
+static krb5_error_code dump_k5beta7_princ_ext (krb5_pointer,
+					       krb5_db_entry *,
+					       int);
 static krb5_error_code dump_k5beta7_princ_withpolicy
-			PROTOTYPE((krb5_pointer, krb5_db_entry *));
-static krb5_error_code dump_ov_princ PROTOTYPE((krb5_pointer,
-						krb5_db_entry *));
-static void dump_k5beta7_policy PROTOTYPE((void *, osa_policy_ent_t));
+			(krb5_pointer, krb5_db_entry *);
+static krb5_error_code dump_ov_princ (krb5_pointer,
+				      krb5_db_entry *);
+static void dump_k5beta7_policy (void *, osa_policy_ent_t);
 
-typedef krb5_error_code (*dump_func)PROTOTYPE((krb5_pointer,
-					       krb5_db_entry *));
+typedef krb5_error_code (*dump_func)(krb5_pointer,
+				     krb5_db_entry *);
 
-static int process_k5beta_record PROTOTYPE((char *, krb5_context,
-					    FILE *, int, int *, void *));
-static int process_k5beta6_record PROTOTYPE((char *, krb5_context,
-					     FILE *, int, int *, void *));
-static int process_k5beta7_record PROTOTYPE((char *, krb5_context,
-					     FILE *, int, int *, void *));
-static int process_ov_record PROTOTYPE((char *, krb5_context,
-					FILE *, int, int *, void *));
-typedef krb5_error_code (*load_func)PROTOTYPE((char *, krb5_context,
-					       FILE *, int, int *, void *));
+static int process_k5beta_record (char *, krb5_context,
+				  FILE *, int, int *, void *);
+static int process_k5beta6_record (char *, krb5_context,
+				   FILE *, int, int *, void *);
+static int process_k5beta7_record (char *, krb5_context,
+				   FILE *, int, int *, void *);
+static int process_ov_record (char *, krb5_context,
+			      FILE *, int, int *, void *);
+typedef krb5_error_code (*load_func)(char *, krb5_context,
+				     FILE *, int, int *, void *);
 
 typedef struct _dump_version {
      char *name;
@@ -168,73 +167,71 @@ extern kadm5_config_params global_params;
 
 /* Strings */
 
-static const char k5beta_dump_header[] = "kdb5_edit load_dump version 2.0\n";
-static const char k5beta6_dump_header[] = "kdb5_edit load_dump version 3.0\n";
-static const char k5beta7_dump_header[] = "kdb5_edit load_dump version 4\n";
+#define k5beta_dump_header	"kdb5_edit load_dump version 2.0\n"
 
 static const char null_mprinc_name[] = "kdb5_dump@MISSING";
 
 /* Message strings */
-static const char regex_err[] = "%s: regular expression error - %s\n";
-static const char regex_merr[] = "%s: regular expression match error - %s\n";
-static const char pname_unp_err[] = "%s: cannot unparse principal name (%s)\n";
-static const char mname_unp_err[] = "%s: cannot unparse modifier name (%s)\n";
-static const char nokeys_err[] = "%s: cannot find any standard key for %s\n";
-static const char sdump_tl_inc_err[] = "%s: tagged data list inconsistency for %s (counted %d, stored %d)\n";
-static const char stand_fmt_name[] = "Kerberos version 5";
-static const char old_fmt_name[] = "Kerberos version 5 old format";
-static const char b6_fmt_name[] = "Kerberos version 5 beta 6 format";
-static const char ofopen_error[] = "%s: cannot open %s for writing (%s)\n";
-static const char oflock_error[] = "%s: cannot lock %s (%s)\n";
-static const char dumprec_err[] = "%s: error performing %s dump (%s)\n";
-static const char dumphdr_err[] = "%s: error dumping %s header (%s)\n";
-static const char trash_end_fmt[] = "%s(%d): ignoring trash at end of line: ";
-static const char read_name_string[] = "name string";
-static const char read_key_type[] = "key type";
-static const char read_key_data[] = "key data";
-static const char read_pr_data1[] = "first set of principal attributes";
-static const char read_mod_name[] = "modifier name";
-static const char read_pr_data2[] = "second set of principal attributes";
-static const char read_salt_data[] = "salt data";
-static const char read_akey_type[] = "alternate key type";
-static const char read_akey_data[] = "alternate key data";
-static const char read_asalt_type[] = "alternate salt type";
-static const char read_asalt_data[] = "alternate salt data";
-static const char read_exp_data[] = "expansion data";
-static const char store_err_fmt[] = "%s(%d): cannot store %s(%s)\n";
-static const char add_princ_fmt[] = "%s\n";
-static const char parse_err_fmt[] = "%s(%d): cannot parse %s (%s)\n";
-static const char read_err_fmt[] = "%s(%d): cannot read %s\n";
-static const char no_mem_fmt[] = "%s(%d): no memory for buffers\n";
-static const char rhead_err_fmt[] = "%s(%d): cannot match size tokens\n";
-static const char err_line_fmt[] = "%s: error processing line %d of %s\n";
-static const char head_bad_fmt[] = "%s: dump header bad in %s\n";
-static const char read_bytecnt[] = "record byte count";
-static const char read_encdata[] = "encoded data";
-static const char n_name_unp_fmt[] = "%s(%s): cannot unparse name\n";
-static const char n_dec_cont_fmt[] = "%s(%s): cannot decode contents\n";
-static const char read_nint_data[] = "principal static attributes";
-static const char read_tcontents[] = "tagged data contents";
-static const char read_ttypelen[] = "tagged data type and length";
-static const char read_kcontents[] = "key data contents";
-static const char read_ktypelen[] = "key data type and length";
-static const char read_econtents[] = "extra data contents";
-static const char k5beta_fmt_name[] = "Kerberos version 5 old format";
-static const char standard_fmt_name[] = "Kerberos version 5 format";
-static const char no_name_mem_fmt[] = "%s: cannot get memory for temporary name\n";
-static const char ctx_err_fmt[] = "%s: cannot initialize Kerberos context\n";
-static const char stdin_name[] = "standard input";
-static const char remaster_err_fmt[] = "while re-encoding keys for principal %s with new master key";
-static const char restfail_fmt[] = "%s: %s restore failed\n";
-static const char close_err_fmt[] = "%s: cannot close database (%s)\n";
-static const char dbinit_err_fmt[] = "%s: cannot initialize database (%s)\n";
-static const char dblock_err_fmt[] = "%s: cannot initialize database lock (%s)\n";
-static const char dbname_err_fmt[] = "%s: cannot set database name to %s (%s)\n";
-static const char dbdelerr_fmt[] = "%s: cannot delete bad database %s (%s)\n";
-static const char dbunlockerr_fmt[] = "%s: cannot unlock database %s (%s)\n";
-static const char dbrenerr_fmt[] = "%s: cannot rename database %s to %s (%s)\n";
-static const char dbcreaterr_fmt[] = "%s: cannot create database %s (%s)\n";
-static const char dfile_err_fmt[] = "%s: cannot open %s (%s)\n";
+#define regex_err		"%s: regular expression error - %s\n"
+#define regex_merr		"%s: regular expression match error - %s\n"
+#define pname_unp_err		"%s: cannot unparse principal name (%s)\n"
+#define mname_unp_err		"%s: cannot unparse modifier name (%s)\n"
+#define nokeys_err		"%s: cannot find any standard key for %s\n"
+#define sdump_tl_inc_err	"%s: tagged data list inconsistency for %s (counted %d, stored %d)\n"
+#define stand_fmt_name		"Kerberos version 5"
+#define old_fmt_name		"Kerberos version 5 old format"
+#define b6_fmt_name		"Kerberos version 5 beta 6 format"
+#define ofopen_error		"%s: cannot open %s for writing (%s)\n"
+#define oflock_error		"%s: cannot lock %s (%s)\n"
+#define dumprec_err		"%s: error performing %s dump (%s)\n"
+#define dumphdr_err		"%s: error dumping %s header (%s)\n"
+#define trash_end_fmt		"%s(%d): ignoring trash at end of line: "
+#define read_name_string	"name string"
+#define read_key_type		"key type"
+#define read_key_data		"key data"
+#define read_pr_data1		"first set of principal attributes"
+#define read_mod_name		"modifier name"
+#define read_pr_data2		"second set of principal attributes"
+#define read_salt_data		"salt data"
+#define read_akey_type		"alternate key type"
+#define read_akey_data		"alternate key data"
+#define read_asalt_type		"alternate salt type"
+#define read_asalt_data		"alternate salt data"
+#define read_exp_data		"expansion data"
+#define store_err_fmt		"%s(%d): cannot store %s(%s)\n"
+#define add_princ_fmt		"%s\n"
+#define parse_err_fmt		"%s(%d): cannot parse %s (%s)\n"
+#define read_err_fmt		"%s(%d): cannot read %s\n"
+#define no_mem_fmt		"%s(%d): no memory for buffers\n"
+#define rhead_err_fmt		"%s(%d): cannot match size tokens\n"
+#define err_line_fmt		"%s: error processing line %d of %s\n"
+#define head_bad_fmt		"%s: dump header bad in %s\n"
+#define read_bytecnt		"record byte count"
+#define read_encdata		"encoded data"
+#define n_name_unp_fmt		"%s(%s): cannot unparse name\n"
+#define n_dec_cont_fmt		"%s(%s): cannot decode contents\n"
+#define read_nint_data		"principal static attributes"
+#define read_tcontents		"tagged data contents"
+#define read_ttypelen		"tagged data type and length"
+#define read_kcontents		"key data contents"
+#define read_ktypelen		"key data type and length"
+#define read_econtents		"extra data contents"
+#define k5beta_fmt_name		"Kerberos version 5 old format"
+#define standard_fmt_name	"Kerberos version 5 format"
+#define no_name_mem_fmt		"%s: cannot get memory for temporary name\n"
+#define ctx_err_fmt		"%s: cannot initialize Kerberos context\n"
+#define stdin_name		"standard input"
+#define remaster_err_fmt	"while re-encoding keys for principal %s with new master key"
+#define restfail_fmt		"%s: %s restore failed\n"
+#define close_err_fmt		"%s: cannot close database (%s)\n"
+#define dbinit_err_fmt		"%s: cannot initialize database (%s)\n"
+#define dblock_err_fmt		"%s: cannot initialize database lock (%s)\n"
+#define dbname_err_fmt		"%s: cannot set database name to %s (%s)\n"
+#define dbdelerr_fmt		"%s: cannot delete bad database %s (%s)\n"
+#define dbunlockerr_fmt		"%s: cannot unlock database %s (%s)\n"
+#define dbrenerr_fmt		"%s: cannot rename database %s to %s (%s)\n"
+#define dbcreaterr_fmt		"%s: cannot create database %s (%s)\n"
+#define dfile_err_fmt		"%s: cannot open %s (%s)\n"
 
 static const char oldoption[] = "-old";
 static const char b6option[] = "-b6";
@@ -248,14 +245,14 @@ static const char dump_tmptrail[] = "~";
 /*
  * Re-encrypt the key_data with the new master key...
  */
-krb5_error_code master_key_convert(context, db_entry)
+static krb5_error_code master_key_convert(context, db_entry)
     krb5_context	  context;
     krb5_db_entry	* db_entry;
 {
     krb5_error_code	retval;
     krb5_keyblock 	v5plainkey, *key_ptr;
     krb5_keysalt 	keysalt;
-    int	      i;
+    int	      i, j;
     krb5_key_data	new_key_data, *key_data;
     krb5_boolean	is_mkey;
 
@@ -284,7 +281,11 @@ krb5_error_code master_key_convert(context, db_entry)
 	if (retval)
 		return retval;
 	krb5_free_keyblock_contents(context, &v5plainkey);
-	free(key_data->key_data_contents);
+	for (j = 0; j < key_data->key_data_ver; j++) {
+	    if (key_data->key_data_length[j]) {
+		free(key_data->key_data_contents[j]);
+	    }
+	}
 	*key_data = new_key_data;
     }
     return 0;
@@ -362,9 +363,8 @@ name_matches(name, arglist)
 	/*
 	 * Compile the regular expression.
 	 */
-	if (match_error = regcomp(&match_exp,
-				  arglist->names[i],
-				  REG_EXTENDED)) {
+	match_error = regcomp(&match_exp, arglist->names[i], REG_EXTENDED);
+	if (match_error) {
 	    errmsg_size = regerror(match_error,
 				   &match_exp,
 				   match_errmsg,
@@ -375,7 +375,8 @@ name_matches(name, arglist)
 	/*
 	 * See if we have a match.
 	 */
-	if (match_error = regexec(&match_exp, name, 1, &match_match, 0)) {
+	match_error = regexec(&match_exp, name, 1, &match_match, 0);
+	if (match_error) {
 	    if (match_error != REG_NOMATCH) {
 		errmsg_size = regerror(match_error,
 				       &match_exp,
@@ -460,6 +461,7 @@ find_enctype(dbentp, enctype, salttype, kentp)
     return(ENOENT);    
 }
 
+#if 0
 /*
  * dump_k5beta_header()	- Make a dump header that is recognizable by Kerberos
  *			  Version 5 Beta 5 and previous releases.
@@ -472,6 +474,7 @@ dump_k5beta_header(arglist)
     fprintf(arglist->ofile, k5beta_dump_header);
     return(0);
 }
+#endif
 
 /*
  * dump_k5beta_iterator()	- Dump an entry in a format that is usable
@@ -716,7 +719,7 @@ dump_k5beta6_iterator_ext(ptr, entry, kadm)
 	 *	n_key_data*[ver kvno ver*(type length <contents>)]
 	 *	<e_data>
 	 * Fields which are not encapsulated by angle-brackets are to appear
-	 * verbatim.  Bracketed fields absence is indicated by a -1 in its
+	 * verbatim.  A bracketed field's absence is indicated by a -1 in its
 	 * place
 	 */
 
@@ -893,7 +896,7 @@ void dump_k5beta7_policy(void *data, osa_policy_ent_t entry)
 	     entry->policy_refcnt);
 }
 
-void print_key_data(FILE *f, krb5_key_data *key_data)
+static void print_key_data(FILE *f, krb5_key_data *key_data)
 {
      int c;
      
@@ -930,7 +933,7 @@ void print_key_data(FILE *f, krb5_key_data *key_data)
 static krb5_error_code dump_ov_princ(krb5_pointer ptr, krb5_db_entry *kdb)
 {
     char *princstr;
-    int	x, y, foundcrc, ret;
+    int	x, y, foundcrc;
     struct dump_args *arg;
     krb5_tl_data tl_data;
     osa_princ_ent_rec adb;
@@ -948,7 +951,7 @@ static krb5_error_code dump_ov_princ(krb5_pointer ptr, krb5_db_entry *kdb)
      * comment in server_kdb.c to help decide.
      */
     tl_data.tl_data_type = KRB5_TL_KADM_DATA;
-    if ((ret = krb5_dbe_lookup_tl_data(arg->kcontext, kdb, &tl_data))
+    if (krb5_dbe_lookup_tl_data(arg->kcontext, kdb, &tl_data)
 	|| (tl_data.tl_data_length == 0))
 	 return 0;
 
@@ -967,7 +970,7 @@ static krb5_error_code dump_ov_princ(krb5_pointer ptr, krb5_db_entry *kdb)
 	fputc('\t', arg->ofile);
     else
 	fprintf(arg->ofile, "%s\t", adb.policy);
-    fprintf(arg->ofile, "%x\t%d\t%d\t%d", adb.aux_attributes,
+    fprintf(arg->ofile, "%lx\t%d\t%d\t%d", adb.aux_attributes,
 	    adb.old_key_len,adb.old_key_next, adb.admin_history_kvno);
 
     for (x = 0; x < adb.old_key_len; x++) {
@@ -1001,7 +1004,9 @@ static krb5_error_code dump_ov_princ(krb5_pointer ptr, krb5_db_entry *kdb)
 
 /*
  * usage is:
- *	dump_db [-old] [-b6] [-b7] [-ov] [-verbose] [filename [principals...]]
+ *	dump_db [-old] [-b6] [-b7] [-ov] [-verbose] [-mkey_convert]
+ *		[-new_mkey_file mkey_file] [-rev] [-recurse]
+ *		[filename [principals...]]
  */
 void
 dump_db(argc, argv)
@@ -1010,7 +1015,6 @@ dump_db(argc, argv)
 {
     FILE		*f;
     struct dump_args	arglist;
-    int			error;
     char		*programname;
     char		*ofile;
     krb5_error_code	kret, retval;
@@ -1027,11 +1031,12 @@ dump_db(argc, argv)
     if (strrchr(programname, (int) '/'))
 	programname = strrchr(argv[0], (int) '/') + 1;
     ofile = (char *) NULL;
-    error = 0;
     dump = &r1_3_version;
     arglist.verbose = 0;
     new_mkey_file = 0;
     mkey_convert = 0;
+    backwards = 0;
+    recursive = 0;
 
     /*
      * Parse the qualifiers.
@@ -1052,7 +1057,11 @@ dump_db(argc, argv)
 	else if (!strcmp(argv[aindex], "-new_mkey_file")) {
 	    new_mkey_file = argv[++aindex];
 	    mkey_convert = 1;
-        } else
+        } else if (!strcmp(argv[aindex], "-rev"))
+	    backwards = 1;
+	else if (!strcmp(argv[aindex], "-recurse"))
+	    recursive = 1;
+	else
 	    break;
     }
 
@@ -1110,7 +1119,9 @@ dump_db(argc, argv)
 		    printf("Please enter new master key....\n");
 	    if ((retval = krb5_db_fetch_mkey(util_context, master_princ, 
 					     new_master_keyblock.enctype,
-					     !new_mkey_file, TRUE, 
+					     (new_mkey_file == 0) ? 
+					        (krb5_boolean) 1 : 0, 
+					     TRUE, 
 					     new_mkey_file, 0,
 					     &new_master_keyblock))) { 
 		    com_err(argv[0], retval, "while reading new master key");
@@ -1121,6 +1132,11 @@ dump_db(argc, argv)
     kret = 0;
     locked = 0;
     if (ofile && strcmp(ofile, "-")) {
+	/*
+	 * Discourage accidental dumping to filenames beginning with '-'.
+	 */
+	if (ofile[0] == '-')
+	    usage();
 	/*
 	 * Make sure that we don't open and truncate on the fopen,
 	 * since that may hose an on-going kprop process.
@@ -1158,9 +1174,10 @@ dump_db(argc, argv)
 	if (dump->header[strlen(dump->header)-1] != '\n')
 	     fputc('\n', arglist.ofile);
 	
-	if ((kret = krb5_db_iterate(util_context,
-				    dump->dump_princ,
-				    (krb5_pointer) &arglist))) {
+	if ((kret = krb5_db_iterate_ext(util_context,
+					dump->dump_princ,
+					(krb5_pointer) &arglist,
+					backwards, recursive))) {
 	     fprintf(stderr, dumprec_err,
 		     programname, dump->name, error_message(kret));
 	     exit_status++;
@@ -1750,7 +1767,7 @@ process_k5beta6_record(fname, kcontext, filep, verbose, linenop, pol_db)
 		 * and were not supported in the previous version.
 		 * But it's a pain to implement that here, and doing
 		 * it at dump time has almost as good an effect, so
-		 * that's what I did.  [krb5-admin/89/
+		 * that's what I did.  [krb5-admin/89]
 		 */
 		if (!error && dbentry.n_tl_data) {
 		    for (tl = dbentry.tl_data; tl; tl = tl->tl_data_next) {
@@ -1903,7 +1920,8 @@ process_k5beta6_record(fname, kcontext, filep, verbose, linenop, pol_db)
     return(retval);
 }
 
-int process_k5beta7_policy(fname, kcontext, filep, verbose, linenop, pol_db)
+static int 
+process_k5beta7_policy(fname, kcontext, filep, verbose, linenop, pol_db)
     char		*fname;
     krb5_context	kcontext;
     FILE		*filep;
@@ -1945,7 +1963,7 @@ int process_k5beta7_policy(fname, kcontext, filep, verbose, linenop, pol_db)
 }
 
 /*
- * process_k5beta7_record()	- Handle a dump record in krb5b6 format.
+ * process_k5beta7_record()	- Handle a dump record in krb5b7 format.
  *
  * Returns -1 for end of file, 0 for success and 1 for failure.
  */

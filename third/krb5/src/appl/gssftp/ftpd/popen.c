@@ -46,9 +46,7 @@ static char sccsid[] = "@(#)popen.c	5.9 (Berkeley) 2/25/91";
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef HAVE_VFORK_H
-#include <vfork.h>
-#endif
+#include "ftpd_var.h"
 
 /*
  * Special version of popen which avoids call to shell.  This insures noone
@@ -70,8 +68,9 @@ ftpd_popen(program, type)
 	int argc, gargc, pdes[2], pid;
 	char **pop, *argv[MAX_ARGV], *gargv[MAX_GARGV], *vv[2];
 	extern char **ftpglob(), **copyblk();
+	extern void blkfree(char **);
 
-	if (*type != 'r' && *type != 'w' || type[1])
+	if ((*type != 'r' && *type != 'w') || type[1])
 		return(NULL);
 
 	if (!pids) {
@@ -107,7 +106,7 @@ ftpd_popen(program, type)
 	gargv[gargc] = NULL;
 
 	iop = NULL;
-	switch(pid = vfork()) {
+	switch(pid = fork()) {
 	case -1:			/* error */
 		(void)close(pdes[0]);
 		(void)close(pdes[1]);
@@ -148,6 +147,7 @@ pfree:	for (argc = 1; argv[argc] != NULL; argc++) {
 	return(iop);
 }
 
+int
 ftpd_pclose(iop)
 	FILE *iop;
 {

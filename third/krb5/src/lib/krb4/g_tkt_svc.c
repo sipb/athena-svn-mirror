@@ -5,8 +5,8 @@
  */
 
 #include <string.h>
-#define	DEFINE_SOCKADDR
 #include "krb.h"
+#include "port-sockets.h"
 
 /* FIXME -- this should probably be calling mk_auth nowadays.  */
 #define	KRB_SENDAUTH_VERS "AUTHV0.1" 	/* MUST be KRB_SENDAUTH_VLEN chars */
@@ -27,7 +27,7 @@ ParseFullName(name, instance, realm, fname)
 	if (err) return err;
 	if (!*name) return KNAME_FMT;					/* null names are not OK */
 	if (!*realm) { 
-		if (err = krb_get_lrealm (realm, 1))
+		if ((err = krb_get_lrealm (realm, 1)))
 			return err;
 		if (!*realm) return KNAME_FMT;		/* FIXME -- should give better error */
 	}
@@ -71,17 +71,18 @@ static int
 CredIsExpired( cr )
      CREDENTIALS *cr;
 {
-	KRB4_32 time;
+    KRB4_32 now;
 
-	/* This routine is for use with clients only in order to determine if a credential
-	   is still good
-	   Note: twice CLOCK_SKEW was added to age of ticket so that we could 
-	   be more sure that the ticket was good. 
-	   FIXME:  I think this is a bug -- should use the same algorithm
-	   everywhere to determine ticket expiration.   */
+    /* This routine is for use with clients only in order to determine
+       if a credential is still good.
+       Note: twice CLOCK_SKEW was added to age of ticket so that we could 
+       be more sure that the ticket was good. 
+       FIXME:  I think this is a bug -- should use the same algorithm
+       everywhere to determine ticket expiration.   */
 
-   time = TIME_GMT_UNIXSEC;	
-   return ( (time - cr->issue_date + (2*CLOCK_SKEW)) > (5 * 60 * cr->lifetime) );
+    now = TIME_GMT_UNIXSEC;	
+    return now + 2 * CLOCK_SKEW > krb_life_to_time(cr->issue_date,
+						   cr->lifetime);
 }
 
 
@@ -102,16 +103,16 @@ CredIsExpired( cr )
  * to get a new TGT.
  */ 
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_ticket_for_service (serviceName, buf, buflen, checksum, sessionKey,
 		schedule, version, includeVersion)
-	char FAR *serviceName;
-	char FAR *buf;
-	unsigned KRB4_32 FAR *buflen;
+	char *serviceName;
+	char *buf;
+	unsigned KRB4_32 *buflen;
 	int checksum;
 	des_cblock sessionKey;
 	Key_schedule schedule;
-	char FAR *version;
+	char *version;
 	int includeVersion;
 {
 	char service[SNAME_SZ];
@@ -141,7 +142,7 @@ krb_get_ticket_for_service (serviceName, buf, buflen, checksum, sessionKey,
  	   FIXME gnu - I think this is a bug.  We should allow direct
  	   authentication to the desired realm, regardless of what the "local"
  	   realm is.   I fixed it.   FIXME -- not quite right.   */
- 	err = krb_get_cred ("krbtgt", realm, lrealm, &cr);
+ 	err = krb_get_cred (KRB_TICKET_GRANTING_TICKET, realm, lrealm, &cr);
  	if (err) 
  		return err;
 

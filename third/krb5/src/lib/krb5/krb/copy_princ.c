@@ -32,11 +32,8 @@
 /*
  * Copy a principal structure, with fresh allocation.
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_copy_principal(context, inprinc, outprinc)
-    krb5_context context;
-    krb5_const_principal inprinc;
-    krb5_principal FAR *outprinc;
+krb5_error_code KRB5_CALLCONV
+krb5_copy_principal(krb5_context context, krb5_const_principal inprinc, krb5_principal *outprinc)
 {
     register krb5_principal tempprinc;
     register int i, nelems;
@@ -61,7 +58,7 @@ krb5_copy_principal(context, inprinc, outprinc)
     }
 
     for (i = 0; i < nelems; i++) {
-	int len = krb5_princ_component(context, inprinc, i)->length;
+	unsigned int len = krb5_princ_component(context, inprinc, i)->length;
 	krb5_princ_component(context, tempprinc, i)->length = len;
 	if (((krb5_princ_component(context, tempprinc, i)->data =
 	      malloc(len)) == 0) && len) {
