@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.5 1986-01-23 20:33:32 treese Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.6 1986-01-25 15:07:54 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -40,6 +40,7 @@ main(argc, argv)
   init_globals();
   parse_args(argc, argv);
   set_current_dir(Current_Dir);
+  make_abbrev_table();
   init_display();
   make_display();
   command_loop();
@@ -133,7 +134,8 @@ parse_args(argc, argv)
 	  }
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
-	check_cref_dir(Current_Dir);
+	if (check_cref_dir(Current_Dir) != TRUE)
+	  err_exit("Invalid CREF directory:\n", Current_Dir);
 	break;
       case 's':
 	strcpy(filename, optarg);
@@ -154,7 +156,8 @@ parse_args(argc, argv)
 	strcpy(Current_Dir, Root_Dir);
 	strcat(Current_Dir, "/");
 	strcat(Current_Dir, filename);
-	check_cref_dir(Current_Dir);
+	if (check_cref_dir(Current_Dir) != TRUE)
+	  err_exit("Invalid CREF directory:\n", Current_Dir);
 	break;
       case 'a':
 	strcpy(filename, optarg);
@@ -163,7 +166,7 @@ parse_args(argc, argv)
 	    fprintf(stderr, "Invalid abbreviation filename %s\n", filename);
 	    exit(ERROR);
 	  }
-	set_abbrev_name(filename);
+	strcpy(Abbrev_File, filename);
 	break;
       case '?':
       default:
@@ -183,33 +186,4 @@ usage()
 {
   fprintf(stderr, "Usage: cref [-r rootdir] [-s savefile] [-f file_offset] ");
   fprintf(stderr, "[-a abbrev_file]");
-}
-
-/* Function:	check_cref_dir() checks to ensure that a directory is a
- *			valid CREF directory.  If not, it exits the program.
- * Arguments:	dir:	Directory to be checked.
- * Returns:	Nothing.
- * Notes:
- */
-
-check_cref_dir(dir)
-char *dir;
-{
-  char contents[FILENAME_SIZE];		/* Pathname of contents file. */
-  int fd;				/* File descriptor. */
-
-  strcpy(contents, dir);
-  strcat(contents, "/");
-  strcat(contents, CONTENTS);
-
-  if ( (fd = open(contents, O_RDONLY, 0)) < 0)
-    {
-      fprintf(stderr, "%s not a CREF directory.\n", dir);
-      exit(ERROR);
-    }
-  else
-    {
-      close(fd);
-      return;
-    }
 }

@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v $
  *	$Author: treese $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.2 1986-01-22 18:04:08 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.3 1986-01-25 15:08:49 treese Exp $
  */
 
 
@@ -18,19 +18,22 @@ typedef int ERRCODE;				/* An error code. */
 
 /* Size variables. */
 
-#define TITLE_SIZE	128			/* Size of a section title. */
-#define	FILENAME_SIZE	120			/* Size of a filename. */
-#define	MAX_ENTRIES	100			/* Maximum number of entries.*/
-#define LINE_LENGTH	80			/* Length of a line of text. */
-#define	ERRSIZE		200			/* Size of an error message. */
-#define MAX_INDEX_LINES	(LINES - 12)		/* Number of index lines. */
+#define TITLE_SIZE	128		/* Size of a section title. */
+#define	FILENAME_SIZE	120		/* Size of a filename. */
+#define	MAX_ENTRIES	100		/* Maximum number of entries.*/
+#define	MAX_ABBREVS	100		/* Maximum number of abbreviations. */
+#define LINE_LENGTH	200		/* Length of a line of text. */
+#define	ERRSIZE		200		/* Size of an error message. */
+#define MAX_INDEX_LINES	(LINES - 12)	/* Number of index lines. */
 
 /* Structure describing a CREF entry. */
 
 typedef struct tENTRY {
-	int type;				/* Type of entry. */
-	char title[TITLE_SIZE];			/* Title of entry. */
-	char filename[FILENAME_SIZE];		/* Filename for entry. */
+	int type;			/* Type of entry. */
+	char title[TITLE_SIZE];		/* Title of entry. */
+	char filename[FILENAME_SIZE];	/* Filename for entry. */
+	char formatter[LINE_LENGTH];	/* Text formatter to use. */
+	char spare[FILENAME_SIZE];	/* Extra space. */
 	} ENTRY;
 
 /* Structure describing a CREF command. */
@@ -41,11 +44,19 @@ typedef struct tCOMMAND {
 	char *help_string;			/* Command help string. */
 	} COMMAND;
 
+/* Structure describing a CREF abbreviation. */
+
+typedef struct tABBREV {
+	char label[LINE_LENGTH];	/* Label for a particular place. */
+	char filename[FILENAME_SIZE];	/* Filename belonging to label. */
+	} ABBREV;
+
 /* Where things are. */
 
 #define	CREF_ROOT	"/mit/c/r/cref/Ref"
 #define	CONTENTS	"Contents.index"
-#define MANUAL_DIR	"Crm"
+#define GLOBAL_ABBREV	"cref_abbrevs"
+#define USER_ABBREV	".crefrc"
 
 /* Other important definitions. */
 
@@ -59,7 +70,7 @@ typedef struct tCOMMAND {
 #define	COMMENT_CHAR	'#'		/* Comment char in contents. */
 #define CONTENTS_DELIM	':'		/* Delimiter in contents. */
 
-#define	CONSULT_GROUP	"consult"		/* Consultants group. */
+#define	CONSULT_GROUP	"consult"	/* Consultants group. */
 
 /* Error Codes. */
 

@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.4 1986-01-23 18:07:46 treese Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.5 1986-01-25 15:07:35 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -236,3 +236,51 @@ quit()
   endwin();
   exit(SUCCESS);
 }
+
+/* Function:	goto_entry() jumps to an entry with a specified label.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+goto_entry()
+{
+  char inbuf[LINE_LENGTH];		/* Input buffer. */
+  char new_dir[FILENAME_SIZE];		/* New directory name. */
+  char error[ERRSIZE];			/* Error message. */
+  int i;				/* Index variable. */
+
+  inbuf[0] = (char) NULL;
+  message(1, "Go to? ");
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
+ 
+  i = 0;
+
+  while ( Abbrev_Table[i].label[i] != (char) NULL)
+    {
+      if ( ! strcmp(inbuf, Abbrev_Table[i].label) )
+	{
+	  make_path(Root_Dir, Abbrev_Table[i].filename, new_dir);
+	  if (check_cref_dir(new_dir) == TRUE)
+	    {
+	      set_current_dir(new_dir);
+	      make_display();
+	      return;
+	    }
+	  else
+	    {
+	      sprintf(error, "%s is an invalid CREF path.",
+		      Abbrev_Table[i].filename);
+	      message(1, error);
+	      return;
+	    }
+	}
+      i++;
+    }
+  sprintf(error, "Label %s is not defined.", inbuf);
+  message(1, error);
+}
+
+

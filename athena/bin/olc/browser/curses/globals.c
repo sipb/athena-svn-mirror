@@ -13,12 +13,13 @@
  */
 
 #ifndef lint
-static char *rcsid_globals_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 1.1 1986-01-22 18:03:12 treese Exp $";
+static char *rcsid_globals_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 1.2 1986-01-25 15:08:29 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
+#include <pwd.h>			/* Password file entry defs. */
 
 #include "cref.h"			/* CREF definitions. */
 
@@ -33,11 +34,13 @@ extern ERRCODE	save_to_file();
 extern ERRCODE	next_page();
 extern ERRCODE	prev_page();
 extern ERRCODE	quit();
+extern ERRCODE	goto_entry();
 
 /* Command table. */
 
 COMMAND Command_Table[] = {
 	'?',	print_help,	"Print help information.",
+	'g',	goto_entry,	"Go to a specified entry.",
 	'h',	print_help,	"Print help information.",
 	'n',	next_entry,	"Go to the next entry.",
 	'p',	prev_entry,	"Go to the previous entry.",
@@ -61,6 +64,8 @@ int Index_Start;			/* Current top of index. */
 int Is_Consultant;			/* Is user a consultant? */
 int Command_Count;			/* Number of CREF commands. */
 char Save_File[FILENAME_SIZE];		/* Default save file. */
+char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
+ABBREV Abbrev_Table[MAX_ABBREVS];	/* Abbreviation table. */
 
 /* Function:	init_globals() initializes the global state variables.
  * Arguments:	None.
@@ -73,14 +78,20 @@ char Save_File[FILENAME_SIZE];		/* Default save file. */
 
 init_globals(argc, argv)
 {
-  char *ptr;				/* Useful pointer. */
+  struct passwd *user_info;		/* User password entry. */
 
   Command_Count = sizeof(Command_Table)/sizeof(COMMAND);
   strcpy(Root_Dir, CREF_ROOT);
   set_current_dir(Root_Dir);
-  Current_Index = 1;
-  Previous_Index = 1;
+  Current_Index = 0;
+  Previous_Index = 0;
   Index_Start = 0;
   Is_Consultant = FALSE;
   strcpy(Save_File, "cref_info");
+
+  user_info = getpwuid(getuid());
+  strcpy(Abbrev_File, user_info->pw_dir);
+  strcat(Abbrev_File, "/");
+  strcat(Abbrev_File, USER_ABBREV);
 }
+
