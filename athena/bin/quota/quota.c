@@ -2,8 +2,11 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.11 1991-01-14 13:45:43 epeisach Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.12 1991-03-01 14:25:31 epeisach Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.11  91/01/14  13:45:43  epeisach
+ * Changes to work in conjunction with Ultrix's local quota system.
+ * 
  * Revision 1.10  90/08/07  19:39:32  probe
  * Changes to prevent the super-user from accesing a user's quota on a server
  * running the old RPC daemon, fix formatting problems for long-named
@@ -52,6 +55,9 @@
 #define mntent fs_data
 struct fs_data mountbuffer[NMOUNT];
 #endif
+#ifdef _I386
+#include <stat.h>
+#endif
 #include <ctype.h>
 #include <pwd.h>
 #include <grp.h>
@@ -59,12 +65,12 @@ struct fs_data mountbuffer[NMOUNT];
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/time.h>
-#ifdef ultrix
+#if defined(ultrix) || defined(_I386)
 #include <sys/quota.h>
 #else
 #include <ufs/quota.h>
 #endif
-#ifndef ultrix
+#if !defined(ultrix) && !defined(_I386)
 #include <qoent.h>
 #endif
 
@@ -74,11 +80,12 @@ struct fs_data mountbuffer[NMOUNT];
 #include <netdb.h>
 #include <rpcsvc/rquota.h>
 #include <rpcsvc/rcquota.h>
+#include <errno.h>
 
 static char *warningstring = NULL;
 
 static int	vflag=0, uflag=0, gflag=0;
-#ifdef ultrix
+#if defined(ultrix) || defined(_I386)
 int	qflag=0, done=0;
 #endif
 
@@ -264,11 +271,16 @@ showquotas(id,name)
 #define MNTOPT_QUOTA MOUNT_QUOTA
 #define Q_GETQUOTA Q_GETDLIM
 #endif
+#ifdef _I386
+#define MNTTYPE_42 MNTTYPE_UFS
+#endif
   FILE *mtab;
   int myuid, ngroups, gidset[NGROUPS];
   struct getcquota_rslt qvalues;
 #ifdef ultrix
   int loc=0, ret;
+#endif
+#if defined(ultrix) || defined(_I386)
   int ultlocalquotas=0;
 #endif
 
@@ -322,13 +334,18 @@ showquotas(id,name)
 #ifndef ultrix
     if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0 &&
 	hasmntopt(mntp, MNTOPT_QUOTA)){
-      if (getlocalquota(mntp,id,&qvalues)) continue;
+#ifdef _I386
+	ultlocalquotas++;
 #else
+      if (getlocalquota(mntp,id,&qvalues)) continue;
+#endif /* _I386 */
+#else /* ultrix */
     if (mntp->mnt_type == MNTTYPE_42 &&
         (mntp->fd_flags & M_QUOTA)) {
 	ultlocalquotas++;
       continue;
-#endif
+#endif /* ultrix */
+
       }
 #ifndef ultrix
     else if (strcmp(mntp->mnt_type, MNTTYPE_NFS) == 0){
@@ -350,13 +367,13 @@ showquotas(id,name)
     free(warningstring);
     warningstring = NULL;
   }
-#ifdef ultrix
+#if defined(ultrix) || defined(_I386)
   if(ultlocalquotas) 
       ultprintquotas(id,name);
 #endif
 }
 
-#ifndef ultrix
+#if !defined(ultrix) && !defined(_I386)
 getlocalquota(mntp, uid, qvp)
      struct mntent *mntp;
      int uid;
@@ -917,7 +934,7 @@ usage()
 alldigits(s)
 	register char *s;
 {
-	register c;
+	register int c;
 
 	c = *s++;
 	do {
@@ -927,7 +944,7 @@ alldigits(s)
 	return (1);
 }
 
-#ifndef ultrix
+#if !defined(ultrix) && !defined(_I386)
 dqblk2rcquota(dqblkp, rcquotap, uid)
      struct dqblk *dqblkp;
      struct rcquota *rcquotap;
@@ -970,7 +987,7 @@ getusername(id,buffer)
 putwarning(string)
      char *string;
 {
-  static warningmaxsize = 0;
+  static int warningmaxsize = 0;
   
   if (warningstring == 0){
     warningstring = (char*)malloc(10);
@@ -1057,6 +1074,7 @@ verify_filesystems()
   }
 }
 
+#if defined(_I386) || defined(ultrix)
 #ifdef ultrix
 #undef mnt_dir
 #undef mnt_type
@@ -1064,6 +1082,7 @@ verify_filesystems()
 #undef dqb_fhardlimit 
 #undef dqb_fsoftlimit 
 #undef dqb_curfiles 
+#endif /* ultrix */
 ultprintquotas(uid, name)
 	int uid;
 	char *name;
@@ -1071,6 +1090,10 @@ ultprintquotas(uid, name)
 	register char c, *p;
 	register struct fstab *fs;
 	int myuid;
+#ifdef _I386
+	FILE	*fptr;
+	struct	mntent 	*buf;
+#endif
 
 	myuid = getuid();
 	if (uid != myuid && myuid != 0) {
@@ -1078,22 +1101,45 @@ ultprintquotas(uid, name)
 		return;
 	}
 	done = 0;
+#ifdef ultrix
 	setfsent();
 	while (fs = getfsent()) {
+#else
+	/* Deal with FSTAB */
+	fptr = setmntent("/etc/mtab","r");
+	while((buf = getmntent(fptr)) != NULL) {
+		dev_t 		qf_gfs;
+#endif
 		register char *msgi = (char *)0, *msgb = (char *)0;
-		register enab = 1;
+		register int enab = 1;
 		dev_t	fsdev;
 		struct	stat statb;
 		struct	dqblk dqblk;
 		char qfilename[MAXPATHLEN + 1], iwarn[8], dwarn[8];
+		char		*vol;
 
+#ifdef _I386
+		if (hasmntopt(buf, MNTOPT_QUOTA) == NULL)
+		    continue;
+		vol = buf->mnt_dir;
+		(void) sprintf(qfilename, "%s/%s", buf->mnt_dir, QFNAME);
+		if (stat(qfilename, &statb) < 0) 
+		         continue; 
+		qf_gfs = buf->mnt_gfs;
+		if (quota(Q_SYNC, 0, (gfs_t) qf_gfs, (caddr_t) 0) < 0 &&				 errno == EINVAL)
+			continue;
+		sync();
+		if (quota(Q_GETDLIM, uid, qf_gfs, (caddr_t) &dqblk) != 0) {
+#else
 		if (stat(fs->fs_spec, &statb) < 0)
 			continue;
 		fsdev = statb.st_rdev;
+		vol = fs->fs_file;
 		(void) sprintf(qfilename, "%s/%s", fs->fs_file, QFNAME);
 		if (stat(qfilename, &statb) < 0 || statb.st_dev != fsdev)
 			continue;
 		if (quota(Q_GETDLIM, uid, fsdev, &dqblk) != 0) {
+#endif
 			register fd = open(qfilename, O_RDONLY);
 
 			if (fd < 0)
@@ -1137,15 +1183,15 @@ ultprintquotas(uid, name)
 			if (msgi != (char *)0 || msgb != (char *)0)
 				ultheading(uid, name);
 			if (msgi != (char *)0)
-				xprintf(msgi, fs->fs_file);
+				xprintf(msgi, vol);
 			if (msgb != (char *)0)
-				xprintf(msgb, fs->fs_file);
+				xprintf(msgb, vol);
 			continue;
 		}
 		if (vflag || dqblk.dqb_curblocks || dqblk.dqb_curinodes) {
 			ultheading(uid, name);
 			printf("%10s%8d%c%7d%8d%8s%8d%c%7d%8d%8s\n"
-				, fs->fs_file
+				, vol
 				, (dqblk.dqb_curblocks / btodb(1024)) 
 				, (msgb == (char *)0) ? ' ' : '*'
 				, (dqblk.dqb_bsoftlimit / btodb(1024)) 
@@ -1159,7 +1205,11 @@ ultprintquotas(uid, name)
 			);
 		}
 	}
+#ifdef _I386
+	endmntent(fptr);
+#else
 	endfsent();
+#endif
 	if (!done && !qflag) {
 		if (idind)
 			putchar('\n');
@@ -1225,4 +1275,4 @@ xprintf(fmt, arg1, arg2, arg3, arg4, arg5, arg6)
 	printf("%s", buf);
 	column += strlen(buf);
 }
-#endif
+#endif /* _I386 || ultrix */
