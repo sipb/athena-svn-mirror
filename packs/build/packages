@@ -1,4 +1,4 @@
-# $Id: packages,v 1.302 2005-02-28 23:26:49 ghudson Exp $
+# $Id: packages,v 1.303 2005-03-07 19:44:15 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -285,6 +285,7 @@ third/pine			requires krb5,hesiod,openssl
 third/popt			except linux requires gettext,libiconv
 third/python
 third/rcs			on solaris
+third/read-edid			on linux
 third/readline			except linux
 third/redhat-fonts		on solaris
 third/rep-gtk			requires librep,glib2,gtk2,libgnome,libgnomeui,libgnomecanvas,libglade2
