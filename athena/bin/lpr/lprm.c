@@ -35,9 +35,6 @@ static char sccsid[] = "@(#)lprm.c	5.2 (Berkeley) 11/17/85";
  */
 
 #include "lp.h"
-#ifdef OPERATOR
-#include <syslog.h>
-#endif
 
 #ifdef KERBEROS && !(SERVER)
 int use_kerberos;
@@ -65,7 +62,11 @@ main(argc, argv)
 	struct hostent *hp;
 
 #ifdef OPERATOR
+#ifdef LOG_AUTH
 	openlog("lpc", 0, LOG_AUTH);
+#else
+	openlog("lpc", 0);
+#endif
 #endif
 
 	name = argv[0];
@@ -73,7 +74,12 @@ main(argc, argv)
 	hp = gethostbyname(host);
 	if (hp) strcpy(host, hp -> h_name);
 
+#ifdef LOG_LPR
 	openlog("lpd", 0, LOG_LPR);
+#else
+	openlog("lpd", 0);
+#endif
+
 	if ((p = getpwuid(GETUID())) == NULL)
 		fatal("Who are you?");
 	if (strlen(p->pw_name) >= sizeof(luser))
