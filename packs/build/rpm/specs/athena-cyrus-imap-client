@@ -1,0 +1,13 @@
+Name: athena-cyrus-imap-client
+Summary: The Cyrus IMAP client utilities and libraries, for Athena.
+License: CMU/Freely Distributable
+Group: System Environment/Libraries
+
+Requires: athena-cyrus-sasl athena-perl
+
+%description
+The Cyrus IMAP (Internet Message Access Protocol) client utilities
+and libraries are part of the Cyrus IMAP server distribution, from
+Carnegie Mellon University.  Cyrus IMAP software provides access to
+personal mail and system-wide bulletin boards through the IMAP
+protocol.
