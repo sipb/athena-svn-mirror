@@ -31,6 +31,12 @@
 #define ISCOFF(x) (((x) == U802WRMAGIC) || ((x) == U802ROMAGIC) || ((x) == U802TOCMAGIC))
 #endif
 
+#if defined(_AUX_SOURCE) 
+#define LP_COFF_DEFINES
+#define ISCOFF(x) (((x) == M68TVMAGIC) || ((x) == M68MAGIC) || \
+	((x) == MC68TVMAGIC) || ((x) == MC68MAGIC) || ((x) == M68NSMAGIC))
+#endif
+
 #if defined(ultrix) && defined(mips)
 #define LP_COFF_DEFINES
 #endif
