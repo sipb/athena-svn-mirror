@@ -1,0 +1,42 @@
+# $Id: Makefile.in,v 1.1 1997-03-14 21:19:49 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+mandir=@mandir@
+sysconfdir=@sysconfdir@
+lsbindir=@lsbindir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
+
+all: desync
+
+desync: desync.o
+	${CC} ${LDFLAGS} -o desync desync.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL_PROGRAM} -m 555 desync ${DESTDIR}${lsbindir}/rep
+	${INSTALL} -m 444 ${srcdir}/desync.8 ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f desync.o desync
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
