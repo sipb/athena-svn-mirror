@@ -1,4 +1,4 @@
-X		/etc/athena/xwrapper -nobitscale -c -pseudomap 4sight -solidroot sgilightblue -cursorFG red -cursorBG white
+X		/etc/athena/xwrapper -nobitscale -c -pseudomap 4sight
 console		/etc/athena/console -f /etc/athena/login/Console -display :0.0
 login		/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/andrew/X11fonts/,/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/intlfonts/
 ttylogin	/sbin/getty tport co_9600
