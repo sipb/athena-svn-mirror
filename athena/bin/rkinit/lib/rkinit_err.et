@@ -1,5 +1,5 @@
 # 
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rkinit_err.et,v 1.1 1989-11-12 19:31:39 qjb Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rkinit_err.et,v 1.2 1990-07-03 14:58:27 qjb Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rkinit_err.et,v $
 # $Author: qjb $
 #
@@ -10,7 +10,7 @@
 
 et rkin
 
-ec RKINIT_RCSID,	"$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rkinit_err.et,v 1.1 1989-11-12 19:31:39 qjb Exp $"
+ec RKINIT_RCSID,	"$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rkinit_err.et,v 1.2 1990-07-03 14:58:27 qjb Exp $"
 ec RKINIT_VERSION,	"Version mismatch"
 ec RKINIT_HOST,		"Failure getting host information"
 ec RKINIT_SERV,		"Failure getting service information (/etc/services)"
@@ -26,6 +26,7 @@ ec RKINIT_GETPEER,	"Failure in getpeername"
 ec RKINIT_GETSOCK,	"Failure in getsockname"
 ec RKINIT_MEMORY,	"Out of memory"
 ec RKINIT_TIMEOUT,	"Timed out"
+ec RKINIT_DROPPED,	"Connection dropped"
 
 ec RKINIT_LAST,		"Last error message"
 end
