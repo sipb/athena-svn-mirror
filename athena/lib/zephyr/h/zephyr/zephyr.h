@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.5 1987-06-10 12:36:18 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.6 1987-06-12 17:07:43 rfrench Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -54,7 +54,7 @@ typedef struct _ZNotice_t {
 	char		*z_opcode;
 	char		*z_sender;
 	char		*z_recipient;
-	caddr_t		*z_message;
+	caddr_t		z_message;
 	int		z_message_len;
 } ZNotice_t;
 
@@ -73,6 +73,9 @@ extern int __Zephyr_port;
 	/* Maximum packet length */
 #define Z_MAXPKTLEN		576
 
+	/* Maximum queue length */
+#define Z_MAXQLEN		30
+	
 	/* External UNIX errors */
 extern int errno;
 
@@ -96,7 +99,10 @@ extern int errno;
 #define ZERR_VERS		1006	/* Bad version # in packet */
 #define ZERR_NOPORT		1007	/* No port opened */
 #define ZERR_NONOTICE		1008	/* No notices selected */
+#define ZERR_QLEN		1009	/* Queue too long */
 
+#define ZERR_LAST		1009
+	
 #define	ZERR_S_FIRST		2000	/* internal server error codes */
 #define	ZERR_S_LAST		3000
 
