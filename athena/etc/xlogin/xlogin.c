@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.13 2000-12-30 11:58:53 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.14 2001-04-04 21:23:01 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -81,8 +81,7 @@ int xdmfd;
 #define OWL_SLEEPING 3
 #define OWL_WAKING 4
 
-#define ACTIVATED 1
-#define REACTIVATING 2
+static char *reactivate_file = "/var/athena/reactivate.pid";
 
 gid_t def_grplist[] = { 101 };		/* default group list */
 
@@ -92,7 +91,6 @@ gid_t def_grplist[] = { 101 };		/* default group list */
 static void move_instructions(XtPointer data, XtIntervalId *timerid);
 static void screensave(XtPointer data, XtIntervalId *timerid);
 static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool);
-static void start_reactivate(XtPointer data, XtIntervalId *timerid);
 static void blinkOwl(XtPointer data, XtIntervalId *intervalid);
 static void blinkIs(XtPointer data, XtIntervalId *intervalid);
 static void initOwl(Widget search);
@@ -128,6 +126,8 @@ static void do_motd(void);
 
 static void ensure_process_capabilities(void);
 
+static int is_reactivating(void);
+static int wait_for_reactivate(void);
 
 /* Definition of the Application resources structure. */
 
@@ -135,12 +135,9 @@ typedef struct _XLoginResources {
   int save_timeout;
   int move_timeout;
   int blink_timeout;
-  int reactivate_timeout;
   int activate_timeout;
   int restart_timeout;
   int randomize;
-  int detach_interval;
-  String activate_prog;
   String reactivate_prog;
   String tty;
   String session;
@@ -165,8 +162,6 @@ static XrmOptionDescRec options[] = {
   {"-blink",	"*blinkTimeout",	XrmoptionSepArg,	NULL},
   {"-reactivate","*reactivateProg",	XrmoptionSepArg,	NULL},
   {"-randomize","*randomize",		XrmoptionSepArg,	NULL},
-  {"-detach",	"*detachInterval",	XrmoptionSepArg,	NULL},
-  {"-idle",	"*reactivateTimeout",	XrmoptionSepArg,	NULL},
   {"-wait",	"*activateTimeout",	XrmoptionSepArg,	NULL},
   {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
   {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
@@ -198,14 +193,10 @@ static XtResource my_resources[] = {
      Offset(reactivate_prog), XtRImmediate, "/etc/athena/reactivate"},
   {"randomize", XtCInterval, XtRInt, sizeof(int),
      Offset(randomize), XtRImmediate, (caddr_t) 60},
-  {"detachInterval", XtCInterval, XtRInt, sizeof(int),
-     Offset(detach_interval), XtRImmediate, (caddr_t) 12},
   {"activateTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(activate_timeout), XtRImmediate, (caddr_t) 30},
   {"restartTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(restart_timeout), XtRImmediate, (caddr_t) (60 * 60 * 12)},
-  {"reactivateTimeout", XtCInterval, XtRInt, sizeof(int),
-     Offset(reactivate_timeout), XtRImmediate, (caddr_t) 300},
   {"loginTty", XtCFile, XtRString, sizeof(String),
      Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
   {"sessionScript", XtCFile, XtRString, sizeof(String),
@@ -267,8 +258,7 @@ XtActionsRec actions[] = {
 
 /* Globals. */
 
-XtIntervalId curr_timerid = 0, blink_timerid = 0, is_timerid = 0,
-  react_timerid = 0;
+XtIntervalId curr_timerid = 0, blink_timerid = 0, is_timerid = 0;
 Widget appShell;
 Widget saver, ins;
 Widget savershell[10];
@@ -282,8 +272,8 @@ int owlNumBitmaps, isNumBitmaps;
 int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
 Pixmap owlBitmaps[20], isBitmaps[20];
 struct timeval starttime;
-pid_t activation_pid, attach_pid, attachhelp_pid, quota_pid;
-int activation_state, activate_count = 0, attach_state, attachhelp_state;
+pid_t attach_pid, attachhelp_pid, quota_pid;
+int attach_state, attachhelp_state;
 int exiting = FALSE;
 extern char *defaultpath;
 char loginname[128], passwd[128];
@@ -523,7 +513,6 @@ int main(int argc, char **argv)
   while (*c)
     acc = (acc << 1) ^ *c++;
   srand48(acc);
-  resources.reactivate_timeout += lrand48() % resources.randomize;
   saver = WcFullNameToWidget(appShell, "*savershell");
   ins = WcFullNameToWidget(appShell, "*instructions");
   hitanykey = WcFullNameToWidget(appShell, "*hitanykey");
@@ -537,10 +526,6 @@ int main(int argc, char **argv)
   is_timerid = XtAddTimeOut(1000, blinkIs, NULL);
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
-  if (access(resources.srvdcheck, F_OK) != 0)
-    start_reactivate(NULL, NULL);
-  else
-    activation_state = ACTIVATED;
 
   psetenv("PATH", defaultpath, 1);
 #ifdef HOSTTYPE
@@ -643,7 +628,7 @@ static void move_instructions(XtPointer data, XtIntervalId *timerid)
   y = lrand48() % y_max;
   XtMoveWidget(ins, x, y);
 
-  if (activation_state != REACTIVATING)
+  if (is_reactivating() == 0)
     {
       XRaiseWindow(XtDisplay(ins), XtWindow(ins));
       wins[0] = XtWindow(ins);
@@ -653,79 +638,6 @@ static void move_instructions(XtPointer data, XtIntervalId *timerid)
 
   curr_timerid = XtAddTimeOut(resources.move_timeout * 1000,
 			      move_instructions, NULL);
-}
-
-static void start_reactivate(XtPointer data, XtIntervalId *timerid)
-{
-  int in_use = 0;
-  int file;
-  struct utmp utmp;
-  struct timeval now;
-
-#ifndef NANNY /* Not our problem on the SGI. */
-  gettimeofday(&now, NULL);
-  if (now.tv_sec - starttime.tv_sec > resources.restart_timeout)
-    {
-      fprintf(stderr, "Restarting X Server\n");
-      exit(0);
-    }
-#endif /* sgi */
-
-  do_motd();
-
-  file = open(UTMP_FILE, O_RDONLY, 0);
-  if (file >= 0)
-    {
-      while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
-	{
-	  if (utmp.ut_name[0] != 0
-#ifdef USER_PROCESS
-	      && utmp.ut_type == USER_PROCESS
-#ifdef __linux__
-	      && kill(utmp.ut_pid, 0) == 0	/* check for stale entry */
-#endif
-#endif
-	      )
-	    {
-	      in_use = 1;
-	      break;
-	    }
-	}
-      close(file);
-    }
-
-  if (in_use || activation_state == REACTIVATING)
-    {
-      react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
-				   start_reactivate, NULL);
-      return;
-    }
-
-  /* Clear the console window. */
-  sigconsCB(NULL, "clear", NULL);
-
-  activation_state = REACTIVATING;
-  switch(fork_and_store(&activation_pid))
-    {
-    case 0:
-      if (activate_count % resources.detach_interval == 0)
-	execl(resources.reactivate_prog, resources.reactivate_prog,
-	      "-detach", 0);
-      else
-	execl(resources.reactivate_prog, resources.reactivate_prog, 0);
-      fprintf(stderr, "XLogin: unable to exec reactivate program \"%s\"\n",
-	      resources.reactivate_prog);
-      _exit(1);
-    case -1:
-      fprintf(stderr, "XLogin: unable to fork for reactivatation\n");
-      activation_state = ACTIVATED;
-      break;
-    default:
-      break;
-    }
-  activate_count++;
-  react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
-			       start_reactivate, NULL);
 }
 
 static void idleReset(void)
@@ -744,16 +656,6 @@ static void idleResetACT(Widget w, XEvent *event, String *p, Cardinal *n)
 static void idleResetCB(Widget w, XtPointer s, XtPointer unused)
 {
   idleReset();
-}
-
-static void stop_activate(XtPointer data, XtIntervalId *timerid)
-{
-  if (activation_state == ACTIVATED)
-    return;
-
-  kill(activation_pid, SIGKILL);
-  fprintf(stderr, "Workstation activation failed to finish normally.\n");
-  activation_state = ACTIVATED;
 }
 
 static void unfocus(void)
@@ -814,8 +716,6 @@ static void screensave(XtPointer data, XtIntervalId *timerid)
   XSetScreenSaver(dpy, 0, -1, DefaultBlanking, DefaultExposures);
   curr_timerid = XtAddTimeOut(resources.move_timeout * 1000,
 			      move_instructions, NULL);
-  react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
-			       start_reactivate, NULL);
 }
 
 /* Check the motd file and update the contents of the widget if necessary. */
@@ -937,11 +837,6 @@ static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool)
 			       blinkOwl, NULL);
   is_timerid = XtAddTimeOut(lrand48() % (10 * 1000),
 			    blinkIs, NULL);
-  if (react_timerid != 0)
-    XtRemoveTimeOut(react_timerid);
-  if (activation_state == REACTIVATING)
-    react_timerid = XtAddTimeOut(resources.activate_timeout * 1000,
-				 stop_activate, NULL);
 }
 
 static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
@@ -994,19 +889,11 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
    * because we are not waiting within the XtMainloop for it to handle
    * the timers.
    */
-  if (activation_state != ACTIVATED)
+  if (is_reactivating())
     {
       fprintf(stderr, "Waiting for workstation to finish activating...");
       fflush(stderr);
-      sigemptyset(&sigact.sa_mask);
-      sigact.sa_flags = 0;
-      sigact.sa_handler = stop_activate;
-      sigaction(SIGALRM, &sigact, &osigact);
-      alarm(resources.activate_timeout); 
-      while (activation_state != ACTIVATED)
-	sigsuspend(&sig_zero);
-      alarm(0);
-      sigaction(SIGALRM, &osigact, NULL);
+      wait_for_reactivate();
       fprintf(stderr, "done.\n");
     }
 
@@ -1144,10 +1031,11 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
   argv[i+2] = NULL;
 
   /* Wait for activation to finish. */
-  if (activation_state != ACTIVATED)
-    fprintf(stderr, "Waiting for workstation to finish activating...\n");
-  while (activation_state != ACTIVATED)
-    sigsuspend(&sig_zero);
+  if (is_reactivating())
+    {
+      fprintf(stderr, "Waiting for workstation to finish activating...\n");
+      wait_for_reactivate();
+    }
   if (access(resources.srvdcheck, F_OK) != 0)
     {
       fprintf(stderr, "Workstation failed to activate successfully.\n"
@@ -1883,19 +1771,6 @@ static void catch_child(void)
       pid = waitpid(-1, &status, WNOHANG);
       if ((pid == -1 && errno == ECHILD) || (pid == 0))
 	break;
-      if (pid == activation_pid)
-	{
-	  switch(activation_state)
-	    {
-	    case REACTIVATING:
-	      if (pid == activation_pid)
-		activation_state = ACTIVATED;
-	      break;
-	    case ACTIVATED:
-	    default:
-	      fprintf(stderr, "XLogin: child %d exited\n", pid);
-	    }
-	}
       else if (pid == attach_pid)
 	{
 	  attach_state = WEXITSTATUS(status);
@@ -2130,4 +2005,26 @@ int exec_script(const char *file, char **env)
     return -1;
 
   return WEXITSTATUS(status);
+}
+
+/* Wait for reactivate to finish. */
+static int wait_for_reactivate()
+{
+  int i;
+  
+  for (i = 0; i++ <= resources.activate_timeout; sleep(1))
+    {
+      if (is_reactivating() == 0)
+	return 0;
+    }
+  fprintf(stderr, "Workstation activation failed to finish normally.\n");
+  return -1;
+}
+
+/* Check if reactivate is running. */
+static int is_reactivating()
+{
+  struct stat sb;
+
+  return (stat(reactivate_file, &sb) == 0);
 }
