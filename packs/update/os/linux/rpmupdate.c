@@ -18,10 +18,12 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.5.2.1 2000-07-17 18:12:31 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.5.2.2 2000-08-23 19:52:59 ghudson Exp $";
 
+#define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/utsname.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -76,6 +78,7 @@ static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
 static void display_action(struct package *pkg, enum act action);
 static void update_lilo(struct package *pkg);
+static char *fudge_arch_in_filename(char *filename);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
@@ -84,11 +87,13 @@ static void parse_line(const char *path, char **pkgname, int *epoch,
 		       char **version, char **release, char **filename);
 struct package *get_package(struct package **table, const char *pkgname);
 static unsigned int hash(const char *str);
-const char *find_back(const char *start, const char *end, char c);
+static const char *find_back(const char *start, const char *end, char c);
+static const char *skip_to_value(const char *p, const char *varname);
 static void *emalloc(size_t size);
 static void *erealloc(void *ptr, size_t size);
 static char *estrdup(const char *s);
-char *estrndup(const char *s, size_t n);
+static char *estrndup(const char *s, size_t n);
+static int easprintf(char **ptr, const char *fmt, ...);
 static int read_line(FILE *fp, char **buf, int *bufsize);
 static void die(const char *fmt, ...);
 static void usage(void);
@@ -300,7 +305,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   /* Walk through the database and add transactions to erase packages
    * which we've flagged for erasure.  We do erasures this way
    * (instead of remembering the offset in read_installed_versions())
-   * because the database offsets might have change since we read the
+   * because the database offsets might have changed since we read the
    * versions and because this way if a package we want to erase is
    * installed at two different versions on the system, we will remove
    * both packages.
@@ -313,7 +318,17 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->erase)
-	rpmtransRemovePackage(rpmdep, offset);
+	{
+	  /* What we'd really like to do is display hashmarks while
+	   * we're actually removing the package.  But librpm doesn't
+	   * issue callbacks for erased RPMs, so we can't do that
+	   * currently.  Instead, tell people what packages we're
+	   * going to erase.
+	   */
+	  if (hashmarks)
+	    printf("Scheduling removal of package %s\n", pkgname); 
+	  rpmtransRemovePackage(rpmdep, offset);
+	}
       headerFree(h);
     }
 
@@ -379,9 +394,9 @@ static void *notify(const Header h, const rpmCallbackType what,
 	  n = (amount == total) ? 50 : 50.0 * amount / total;
 	  for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
 	    putchar('#');
-	  fflush(stdout);
 	  if (amount == total)
 	    putchar('\n');
+	  fflush(stdout);
 	}
       return NULL;
 
@@ -436,6 +451,7 @@ static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep)
   FD_t fd;
 
   assert(pkg->filename != NULL);
+  pkg->filename = fudge_arch_in_filename(pkg->filename);
   fd = fdOpen(pkg->filename, O_RDONLY, 0);
   if (fd == NULL)
     die("Can't read package file %s", pkg->filename);
@@ -482,7 +498,8 @@ static void update_lilo(struct package *pkg)
 {
   const char *name = "/etc/lilo.conf", *savename = "/etc/lilo.conf.rpmsave";
   FILE *in, *out;
-  char *buf = NULL, *oldkname, *newkname, *p;
+  char *buf = NULL, *oldkname, *newkname, *newiname, *initrdcmd;
+  const char *p;
   int bufsize = 0, status, replaced;
   struct stat statbuf;
 
@@ -492,16 +509,15 @@ static void update_lilo(struct package *pkg)
     return;
 
   /* Figure out kernel names. */
-  oldkname = emalloc(strlen("/boot/vmlinuz-")
-		     + strlen(pkg->instrev.version) + strlen("-")
-		     + strlen(pkg->instrev.release) + 1);
-  sprintf(oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
-	  pkg->instrev.release);
-  newkname = emalloc(strlen("/boot/vmlinuz-")
-		     + strlen(pkg->newlistrev.version) + strlen("-")
-		     + strlen(pkg->newlistrev.release) + 1);
-  sprintf(newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
-	  pkg->newlistrev.release);
+  easprintf(&oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
+	    pkg->instrev.release);
+  easprintf(&newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
+	    pkg->newlistrev.release);
+  easprintf(&newiname, "/boot/initrd-%s-%s.img", pkg->newlistrev.version,
+	    pkg->newlistrev.release);
+  easprintf(&initrdcmd, "/sbin/mkinitrd -f /boot/initrd-%s-%s.img %s-%s",
+	    pkg->newlistrev.version, pkg->newlistrev.release,
+	    pkg->newlistrev.version, pkg->newlistrev.release);
 
   if (stat(name, &statbuf) == -1)
     die("Can't stat lilo.conf for rewrite.");
@@ -519,8 +535,8 @@ static void update_lilo(struct package *pkg)
   fchmod(fileno(out), statbuf.st_mode & 0777);
 
   /* Rewrite lilo.conf, changing the old kernel name to the new kernel
-   * name in "image" lines.  Remove "initrd" lines following images we
-   * replace, since we don't currently use a ramdisk.
+   * name in "image" lines.  Update "initrd" following images we
+   * replace, if it exists, for the benefit of machines that need it.
    */
   replaced = 0;
   while ((status = read_line(in, &buf, &bufsize)) == 0)
@@ -542,7 +558,16 @@ static void update_lilo(struct package *pkg)
 	    replaced = 0;
 	}
       else if (replaced && strncmp(p, "initrd", 6) == 0 && !isalpha(p[6]))
-	continue;
+        {
+	  p = skip_to_value(p, "initrd");
+	  if (p != NULL)
+	    {
+	      fprintf(out, "%.*s%s\n", p - buf, buf, newiname);
+	      if (system(initrdcmd) != 0)
+		fprintf(stderr, "Error running %s", initrdcmd);
+	      continue;
+	    }
+	}
       fprintf(out, "%s\n", buf);
     }
   fclose(in);
@@ -552,7 +577,64 @@ static void update_lilo(struct package *pkg)
       die("Error rewriting lilo.conf: %s", strerror(errno));
     }
 
+  free(oldkname);
+  free(newkname);
+  free(newiname);
+  free(initrdcmd);
   system("/sbin/lilo");
+}
+
+/* If filename has an arch string which is too high for this machine's
+ * architecture, replace it with a new filename containing this
+ * machine's architecture.  filename must be an allocated string which
+ * can be freed and replaced.
+ */
+static char *fudge_arch_in_filename(char *filename)
+{
+  static const char *arches[] = { "i386", "i486", "i586", "i686", NULL };
+  const char *p;
+  int i, j, len;
+  struct utsname buf;
+  char *newfile;
+
+  /* Find the beginning of the arch string in filename. */
+  p = find_back(filename, filename + strlen(filename), '.');
+  assert(p != NULL);
+  p = find_back(filename, p, '.');
+  assert(p != NULL);
+  p++;
+
+  /* Locate this architecture in the array.  If it's not one we recognize,
+   * or if it's the least common denominator, leave well enough alone.
+   */
+  for (i = 0; arches[i] != NULL; i++)
+    {
+      len = strlen(arches[i]);
+      if (strncmp(p, arches[i], len) == 0 && *(p + len) == '.')
+	break;
+    }
+  if (i == 0 || arches[i] == NULL)
+    return filename;
+
+  /* Locate this machine's architecture in the array.  If we don't
+   * recognize it, or if it's at least as high as the filename's
+   * architecture, don't touch anything. */
+  assert(uname(&buf) == 0);
+  for (j = 0; arches[j] != NULL; j++)
+    {
+      if (strcmp(buf.machine, arches[j]) == 0)
+	break;
+    }
+  if (j >= i)
+    return filename;
+
+  /* We have to downgrade the architecture of the filename.  Make a
+   * new string and free the old one.
+   */
+  easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[j],
+	    p + strlen(arches[i]));
+  free(filename);
+  return newfile;
 }
 
 static void printrev(struct rev *rev)
@@ -710,7 +792,7 @@ static unsigned int hash(const char *str)
 }
 
 /* Find c in the range start..end-1, or return NULL if it isn't there. */
-const char *find_back(const char *start, const char *end, char c)
+static const char *find_back(const char *start, const char *end, char c)
 {
   const char *p;
 
@@ -720,6 +802,22 @@ const char *find_back(const char *start, const char *end, char c)
 	return p;
     }
   return NULL;
+}
+
+/* Assuming p points to a string beginning with varname, return a
+ * pointer to the value part.
+ */
+static const char *skip_to_value(const char *p, const char *varname)
+{
+  p += strlen(varname);
+  while (isspace(*p))
+    p++;
+  if (*p != '=')
+    return NULL;
+  p++;
+  while (isspace(*p))
+    p++;
+  return p;
 }
 
 static void *emalloc(size_t size)
@@ -749,7 +847,7 @@ static char *estrdup(const char *s)
   return new_s;
 }
 
-char *estrndup(const char *s, size_t n)
+static char *estrndup(const char *s, size_t n)
 {
   char *new_s;
 
@@ -757,6 +855,19 @@ char *estrndup(const char *s, size_t n)
   memcpy(new_s, s, n);
   new_s[n] = 0;
   return new_s;
+}
+
+static int easprintf(char **ptr, const char *fmt, ...)
+{
+  va_list ap;
+  int ret;
+
+  va_start(ap, fmt);
+  ret = vasprintf(ptr, fmt, ap);
+  va_end(ap);
+  if (ret == -1)
+    die("asprintf malloc failed for format string %s", fmt);
+  return ret;
 }
 
 /* Read a line from a file into a dynamically allocated buffer,
