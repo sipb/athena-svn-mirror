@@ -8,6 +8,18 @@ Requires: athena-desync, athena-base, athena-sendmail, athena-gettime, athena-xn
 Various maintenanance and configuration files required for any
 Athena workstation.
 
+%build
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+exit 1
+fi
+
+cc -g -I/usr/include/rpm rpmupdate.c -o rpmupdate -lrpm
+
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
   cat 1>&2 << MESSAGE
@@ -28,6 +40,7 @@ cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
+cp rpmupdate $RPM_BUILD_ROOT/etc/athena/rpmupdate
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
