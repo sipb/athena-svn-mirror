@@ -1,4 +1,4 @@
-# $Id: packages,v 1.184 2002-12-10 16:38:36 ghudson Exp $
+# $Id: packages,v 1.185 2002-12-11 18:54:12 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -91,7 +91,7 @@ athena/bin/xcluster		requires Xj,hesiod
 athena/bin/xdsc			requires discuss
 
 athena/etc/athinfod
-athena/etc/athlsync
+athena/etc/athlsync		requires afsbin,openafs
 athena/etc/athstatusd		on linux
 athena/etc/busyd		requires larv
 athena/etc/cleanup		requires al,locker
