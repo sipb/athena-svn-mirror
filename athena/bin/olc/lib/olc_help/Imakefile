@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.2 1990-08-30 14:19:14 lwvanels Exp $
+# $Id: Imakefile,v 1.3 1991-01-02 14:04:27 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olc_help/Imakefile,v $
 #
 
@@ -8,12 +8,12 @@
 SRCS=	?.nroff answers.nroff ask.nroff cancel.nroff \
 	done.nroff help.nroff motd.nroff olc.nroff quit.nroff \
 	replay.nroff send.nroff show.nroff status.nroff topic.nroff \
-	who.nroff
+	who.nroff hours.nroff
 
 OBJS=	?.help answers.help ask.help cancel.help \
 	done.help help.help motd.help olc.help quit.help \
 	replay.help send.help show.help status.help topic.help \
-	who.help
+	who.help hours.help
 
 install::
 	-if [ ! -d $(DESTDIR)/usr/athena/lib/olc ]; \
