@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.49 1994-04-30 13:21:51 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.50 1994-04-30 13:22:51 vrt Exp $
  */
 
 #include <stdio.h>
@@ -185,7 +185,7 @@ char *display;
 
 
     /* 4.2 vs 4.3 style syslog */
-#ifdef ultrix
+#ifndef  LOG_ODELAY
     openlog("login", LOG_NOTICE);
 #else
     openlog("login", LOG_ODELAY, LOG_AUTH);
