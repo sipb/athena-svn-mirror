@@ -1,5 +1,5 @@
 ;;; po-mode.el -- for helping GNU gettext lovers to edit PO files.
-;;; Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+;;; Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
 ;;; François Pinard <pinard@iro.umontreal.ca>, 1995.
 ;;; Helped by Greg McGary <gkm@magilla.cichlid.com>.
 
@@ -27,11 +27,12 @@
 ;;; To install, merely put this file somewhere GNU Emacs will find it,
 ;;; then add the following lines to your .emacs file:
 ;;;
-;;;   (autoload 'po-mode "po-mode")
+;;;   (autoload 'po-mode "po-mode"
+;;;             "Major mode for translators to edit PO files" t)
 ;;;   (setq auto-mode-alist (cons '("\\.po[tx]?\\'\\|\\.po\\." . po-mode)
 ;;;				  auto-mode-alist))
 ;;;
-;;; To automatically use proper fonts under Emacs 20, also add:
+;;; To automatically use the right coding system under Emacs 20, also add:
 ;;;
 ;;;   (autoload 'po-find-file-coding-system "po-mode")
 ;;;   (modify-coding-system-alist 'file "\\.po[tx]?\\'\\|\\.po\\."
@@ -308,7 +309,7 @@ msgstr \"\"
 \"Language-Team: LANGUAGE <LL@li.org>\\n\"
 \"MIME-Version: 1.0\\n\"
 \"Content-Type: text/plain; charset=CHARSET\\n\"
-\"Content-Transfer-Encoding: ENCODING\\n\"
+\"Content-Transfer-Encoding: 8bit\\n\"
 "
   "*Default PO file header."
   :type 'string
@@ -431,7 +432,7 @@ or remove the -m if you are not using the GNU version of `uuencode'."
 (defun po-mode-version ()
   "Show Emacs PO mode version."
   (interactive)
-  (message (_"Emacs PO mode, version %s") (substring "$Revision: 1.1.1.1 $" 11 -2)))
+  (message (_"Emacs PO mode, version %s") (substring "$Revision: 1.1.1.2 $" 11 -2)))
 
 (defconst po-help-display-string
   (_"\
@@ -521,10 +522,10 @@ M-S  Ignore path          M-A  Ignore PO file      *M-L  Ignore lexicon
      ["Select, save" po-select-and-save-entry nil]
      "---"
      "Auxiliary files"
-     ["Cycle file" po-cycle-auxiliary nil]
-     ["Select file" po-select-auxiliary nil]
-     ["Consider file" po-consider-as-auxiliary nil]
-     ["Ignore file" po-ignore-as-auxiliary nil]
+     ["Cycle file" po-cycle-auxiliary t]
+     ["Select file" po-select-auxiliary t]
+     ["Consider file" po-consider-as-auxiliary t]
+     ["Ignore file" po-ignore-as-auxiliary t]
      "---"
      "Lexicography"
      ["Lookup translation" po-lookup-lexicons nil]
@@ -549,13 +550,72 @@ M-S  Ignore path          M-A  Ignore PO file      *M-L  Ignore lexicon
     ["Soft quit" po-confirm-and-quit t])
   "Menu layout for PO mode.")
 
+;; FIXME: subedit mode should also have its own layout.
+
 (defconst po-subedit-message
   (_"Type `C-c C-c' once done, or `C-c C-k' to abort edit")
   "Message to post in the minibuffer when an edit buffer is displayed.")
 
 (defconst po-content-type-charset-alist
-  '((euc . japanese-iso-8bit))
-  "How to convert Content-Type into a Mule coding system.")
+  '(; Note: Emacs 20 doesn't support all encodings, thus the missing entries.
+    (ASCII . undecided)
+    (ANSI_X3.4-1968 . undecided)
+    (US-ASCII . undecided)
+    (ISO-8859-1 . iso-8859-1)
+    (ISO_8859-1 . iso-8859-1)
+    (ISO-8859-2 . iso-8859-2)
+    (ISO_8859-2 . iso-8859-2)
+    (ISO-8859-3 . iso-8859-3)
+    (ISO_8859-3 . iso-8859-3)
+    (ISO-8859-4 . iso-8859-4)
+    (ISO_8859-4 . iso-8859-4)
+    (ISO-8859-5 . iso-8859-5)
+    (ISO_8859-5 . iso-8859-5)
+    ;(ISO-8859-6 . ??)
+    ;(ISO_8859-6 . ??)
+    (ISO-8859-7 . iso-8859-7)
+    (ISO_8859-7 . iso-8859-7)
+    (ISO-8859-8 . iso-8859-8)
+    (ISO_8859-8 . iso-8859-8)
+    (ISO-8859-9 . iso-8859-9)
+    (ISO_8859-9 . iso-8859-9)
+    ;(ISO-8859-13 . ??)
+    ;(ISO_8859-13 . ??)
+    (ISO-8859-15 . iso-8859-15) ; requires Emacs 21
+    (ISO_8859-15 . iso-8859-15) ; requires Emacs 21
+    (KOI8-R . koi8-r)
+    ;(KOI8-U . ??)
+    ;(CP850 . ??)
+    ;(CP866 . ??)
+    ;(CP874 . ??)
+    ;(CP932 . ??)
+    ;(CP949 . ??)
+    ;(CP950 . ??)
+    ;(CP1250 . ??)
+    ;(CP1251 . ??)
+    ;(CP1252 . ??)
+    ;(CP1253 . ??)
+    ;(CP1254 . ??)
+    ;(CP1255 . ??)
+    ;(CP1256 . ??)
+    ;(CP1257 . ??)
+    (GB2312 . cn-gb-2312)  ; also named 'gb2312' in XEmacs 21 or Emacs 21
+                           ; also named 'euc-cn' in Emacs 20 or Emacs 21
+    (EUC-JP . euc-jp)
+    (EUC-KR . euc-kr)
+    ;(EUC-TW . ??)
+    (BIG5 . big5)
+    ;(BIG5-HKSCS . ??)
+    ;(GBK . ??)
+    ;(GB18030 . ??)
+    (SHIFT_JIS . shift_jis)
+    ;(JOHAB . ??)
+    (TIS-620 . tis-620)    ; requires Emacs 20 or Emacs 21
+    (VISCII . viscii)      ; requires Emacs 20 or Emacs 21
+    (UTF-8 . utf-8)        ; requires Mule-UCS in Emacs 20, or Emacs 21
+    )
+  "How to convert a GNU libc/libiconv canonical charset name as seen in
+Content-Type into a Mule coding system.")
 
 (defvar po-auxiliary-list nil
   "List of auxiliary PO files, in completing read format.")
@@ -593,8 +653,13 @@ M-S  Ignore path          M-A  Ignore PO file      *M-L  Ignore lexicon
   "Regexp matching a whole msgid field, whether obsolete or not.")
 
 (defvar po-any-msgstr-regexp
-  "^\\(#~?[ \t]*\\)?msgstr.*\n\\(\\(#~?[ \t]*\\)?\".*\n\\)*"
-  "Regexp matching a whole msgstr field, whether obsolete or not.")
+  ;; "^\\(#~?[ \t]*\\)?msgstr.*\n\\(\\(#~?[ \t]*\\)?\".*\n\\)*"
+  "^\\(#~?[ \t]*\\)?msgstr\\(\\[[0-9]\\]\\)?.*\n\\(\\(#~?[ \t]*\\)?\".*\n\\)*"
+  "Regexp matching a whole msgstr or msgstr[] field, whether obsolete or not.")
+
+(defvar po-msgstr-idx-keyword-regexp
+  "^\\(#~?[ \t]*\\)?msgstr\\[[0-9]\\]"
+  "Regexp matching an indexed msgstr keyword, whether obsolete or not.")
 
 (defvar po-msgfmt-program "msgfmt"
   "Path to msgfmt program from GNU gettext package.")
@@ -602,8 +667,12 @@ M-S  Ignore path          M-A  Ignore PO file      *M-L  Ignore lexicon
 ;; Font lock based highlighting code.
 (defconst po-font-lock-keywords
   '(
-    ("^\\(msgid \\|msgstr \\)?\"\\|\"$" . font-lock-keyword-face)
-    ("\\\\.\\|%[-.0-9ul]*[a-zA-Z]" . font-lock-variable-name-face)
+    ;; ("^\\(msgid \\|msgstr \\)?\"\\|\"$" . font-lock-keyword-face)
+    ;; (regexp-opt
+    ;;  '("msgid " "msgid_plural " "msgstr " "msgstr[0] " "msgstr[1] "))
+    ("^\\(\\(msg\\(id\\(_plural\\)?\\|str\\(\\[[0-9]\\]\\)?\\)?\\) \\)?\"\\|\"$"
+     . font-lock-keyword-face)
+    ("\\\\.\\|%\\*?[-.0-9ul]*[a-zA-Z]" . font-lock-variable-name-face)
     ("^# .*\\|^#[:,]?" . font-lock-comment-face)
     ("^#:\\(.*\\)" 1 font-lock-reference-face)
     ;; The following line does not work, and I wonder why.
@@ -629,31 +698,42 @@ M-S  Ignore path          M-A  Ignore PO file      *M-L  Ignore lexicon
 ;;; Mode activation.
 
 (eval-and-compile
-  (if po-EMACS20
-
-      (defun po-find-file-coding-system (arg-list)
+  (if (or po-EMACS20 po-XEMACS)
+      (defun po-find-file-coding-system-guts (operation filename)
 	"Return a Mule (DECODING . ENCODING) pair, according to PO file charset.
 Called through file-coding-system-alist, before the file is visited for real."
-	(and (eq (car arg-list) 'insert-file-contents)
+	(and (eq operation 'insert-file-contents)
 	     (with-temp-buffer
 	       (let ((coding-system-for-read 'no-conversion))
-		 ;; Is 4096 enough?  FIXME: See archives to decide!  Some
-		 ;; translators insert looong comments for the header entry.
-		 (insert-file-contents (nth 1 arg-list) nil 0 4096)
+		 ;; Is 4096 enough?  FIXME: Retry as needed!
+		 (insert-file-contents filename nil 0 4096)
 		 (if (re-search-forward
 		      "^\"Content-Type: text/plain;[ \t]*charset=\\([^\\]+\\)"
 		      nil t)
-		     (let* ((charset (intern (downcase (buffer-substring
-							(match-beginning 1)
-							(match-end 1)))))
-			    (slot (assq charset
-					po-content-type-charset-alist)))
-		       (list (cond (slot (cdr slot))
-				   ((memq charset (coding-system-list)) charset)
-				   (t 'no-conversion))))
-		   '(no-conversion))))))
+		     (let* ((charset (buffer-substring
+				       (match-beginning 1) (match-end 1)))
+			    (charset-upper (intern (upcase charset)))
+			    (charset-lower (intern (downcase charset))))
+		       (list (or (cdr (assq charset-upper
+					    po-content-type-charset-alist))
+				 (if (memq charset-lower (coding-system-list))
+				     charset-lower
+				   'no-conversion))))
+		   '(no-conversion)))))))
 
-    ))
+  (if po-EMACS20
+      (defun po-find-file-coding-system (arg-list)
+	"Return a Mule (DECODING . ENCODING) pair, according to PO file charset.
+Called through file-coding-system-alist, before the file is visited for real."
+	(po-find-file-coding-system-guts (car arg-list) (car (cdr arg-list)))))
+
+  (if po-XEMACS
+      (defun po-find-file-coding-system (operation filename)
+	"Return a Mule (DECODING . ENCODING) pair, according to PO file charset.
+Called through file-coding-system-alist, before the file is visited for real."
+	(po-find-file-coding-system-guts operation filename)))
+
+ )
 
 (defvar po-mode-map nil
   "Keymap for PO mode.")
@@ -733,7 +813,9 @@ all reachable through `M-x customize', in group `Emacs.Editing.I18n.Po'."
 	mode-name "PO")
   (use-local-map po-mode-map)
   (if (fboundp 'easy-menu-define)
-      (easy-menu-define po-mode-menu po-mode-map "" po-mode-menu-layout))
+      (progn
+       (easy-menu-define po-mode-menu po-mode-map "" po-mode-menu-layout)
+       (and po-XEMACS (easy-menu-add po-mode-menu))))
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(po-font-lock-keywords t))
 
@@ -949,7 +1031,7 @@ Position %d/%d; %d translated, %d fuzzy, %d untranslated, %d obsolete")
 		       (time (current-time))
 		       (seconds (or (car (current-time-zone time)) 0))
 		       (minutes (/ (abs seconds) 60))
-		       (zone (format "%c%02d:%02d"
+		       (zone (format "%c%02d%02d"
 				     (if (< seconds 0) ?- ?+)
 				     (/ minutes 60)
 				     (% minutes 60))))
@@ -1487,16 +1569,21 @@ described by FORM is merely identical to the msgid already in place."
 	     t)))))
 
 (defun po-set-msgstr (form)
-  "Replace the current msgstr, using FORM to get a string.
+  "Replace the current msgstr or msgstr[], using FORM to get a string.
 Evaluating FORM should insert the wanted string in the current buffer.  If
 FORM is itself a string, then this string is used for insertion.  The string
 is properly requoted before the replacement occurs.
 
 Returns `nil' if the buffer has not been modified, for if the new msgstr
 described by FORM is merely identical to the msgstr already in place."
-  (let ((string (po-eval-requoted form "msgstr" (eq po-entry-type 'obsolete))))
+  (let ((string (po-eval-requoted form "msgstr" (eq po-entry-type 'obsolete)))
+        (msgstr-idx nil))
     (save-excursion
       (goto-char po-start-of-entry)
+      (save-excursion                   ; check for an indexed msgstr
+        (when (re-search-forward po-msgstr-idx-keyword-regexp po-end-of-entry t)
+          (setq msgstr-idx (buffer-substring-no-properties
+                     (match-beginning 0) (match-end 0)))))
       (re-search-forward po-any-msgstr-regexp po-end-of-entry)
       (and (not (string-equal (po-buffer-substring (match-beginning 0)
 						   (match-end 0))
@@ -1504,6 +1591,12 @@ described by FORM is merely identical to the msgstr already in place."
 	   (let ((buffer-read-only po-read-only))
 	     (po-decrease-type-counter)
 	     (replace-match string t t)
+             (goto-char (match-beginning 0))
+             (unless (eq msgstr-idx nil) ; hack: replace msgstr with msgstr[d]
+               (progn
+                 (insert msgstr-idx)
+                 (looking-at "\\(#~?[ \t]*\\)?msgstr")
+                 (replace-match "")))
 	     (goto-char po-start-of-msgid)
 	     (po-find-span-of-entry)
 	     (po-increase-type-counter)
@@ -1670,11 +1763,6 @@ The string is properly recommented before the replacement occurs."
 
 (defun po-clean-out-killed-edits ()
   "From EDITED-FIELDS, clean out any edit having a killed edit buffer."
-  (while (and po-edited-fields
-	      (null (buffer-name (nth 1 (car po-edited-fields)))))
-    (let ((overlay (nth 2 (car po-edited-fields))))
-      (and overlay (po-dehighlight overlay)))
-    (setq po-edited-fields (cdr po-edited-fields)))
   (let ((cursor po-edited-fields))
     (while cursor
       (let ((slot (car cursor)))
@@ -1755,6 +1843,7 @@ The string is properly recommented before the replacement occurs."
   (skip-chars-backward " \t\n")
   (if (eq (preceding-char) ?<)
       (delete-region (1- (point)) (point-max)))
+  (run-hooks 'po-subedit-exit-hook)
   (let ((string (buffer-string)))
     (po-subedit-abort)
     (po-find-span-of-entry)
@@ -1951,7 +2040,7 @@ Otherwise, move nothing, and just return `nil'."
 		    (goto-char (match-beginning 0))
 		    (re-search-forward "msgstr +" nil t)
 		    ;; FIXME:
-		    (po-highlight (point) end))))
+		    (po-highlight (po-create-overlay) (point) end))))
 	    (goto-char po-start-of-msgid))
 	(goto-char start)
 	(po-find-span-of-entry)
@@ -2141,10 +2230,15 @@ If the command is repeated many times in a row, cycle through contexts."
 Returns (START . END) for the found string, or (nil . nil) if none found."
   (let (start end)
     (while (and (not start)
-		(re-search-forward "\\([\"']\\|/\\*\\)" nil t))
+		(re-search-forward "\\([\"']\\|/\\*\\|//\\)" nil t))
       (cond ((= (preceding-char) ?*)
 	     ;; Disregard comments.
 	     (search-forward "*/"))
+
+	    ((= (preceding-char) ?/)
+	     ;; Disregard C++ comments.
+	     (end-of-line)
+	     (forward-char 1))
 
 	    ((= (preceding-char) ?\')
 	     ;; Disregard character constants.
@@ -2294,7 +2388,7 @@ With prefix argument, restart search at first file."
 	(set-buffer buffer)
 	(goto-char (or end (point-min)))
 
-	(cond ((string-equal mode-name "C")
+	(cond ((member mode-name '("C" "C++"))
 	       (let ((pair (po-find-c-string keywords)))
 		 (setq start (car pair)
 		       end (cdr pair))))
@@ -2368,7 +2462,7 @@ With prefix argument, restart search at first file."
     (save-excursion
       (set-buffer buffer)
       (setq line (count-lines (point-min) start)
-	    end (cond ((string-equal mode-name "C")
+	    end (cond ((member mode-name '("C" "C++"))
 		       (po-mark-c-string start end keyword))
 		      ((string-equal mode-name "Emacs-Lisp")
 		       (po-mark-emacs-lisp-string start end keyword))

@@ -1,20 +1,20 @@
 /* tcl_gettext - Module implementing gettext interface for Tcl.
-   Copyright (C) 1995 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1998 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, December 1995.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -68,7 +68,7 @@ tcl_gettext (client_data, interp, argc, argv)
   const char *msgid;
 
   /* The pointer which is assigned in the following statement might
-     reference an illegal part of the address space.  But we don't use
+     reference an invalid part of the address space.  But we don't use
      this value before we know the pointer is correct.  */
   msgid = argv[1];
 
@@ -106,7 +106,7 @@ tcl_gettext (client_data, interp, argc, argv)
 		else
 #endif
 		  {
-		    interp->result = gettext ("illegal third argument");
+		    interp->result = gettext ("invalid third argument");
 		    return TCL_ERROR;
 		  }
       /* FALLTHROUGH */

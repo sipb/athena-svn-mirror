@@ -1,3 +1,186 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Don't copy intl/COPYING*; these files may confuse
+	the user of the enclosing package.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-07-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-default-file-header): Replace 8-bit with 8bit.
+
+2001-07-01  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-content-type-charset-alist): Add entries for
+	ISO-8859-15, GB2312, EUC-JP, EUC-KR, BIG5, SHIFT_JIS, TIS-620, VISCII.
+
+2001-06-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-find-file-coding-system): Make it work in XEmacs 20
+	as well. Based on a patch by Enrico Scholz
+	<enrico.scholz@informatik.tu-chemnitz.de>.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-05-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Copy plural.c and touch it afterwards.
+
+2001-05-21  Alexandre Duret-Lutz  <duret_g@epita.fr>
+
+	* gettextize.in: Check for configure.ac in addition to configure.in.
+
+2001-05-12  Paul Eggert  <eggert@twinsun.com>
+
+	* gettextize.in: Replace "test -e" with "test -f", since the 'test'
+	builtin of Solaris 8 /bin/sh doesn't grok "test -e".
+
+2001-05-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Tell the user about glibc21.m4.
+
+2001-05-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-replace-revision-date): For the timezone, use RFC 822
+	format [+/-]HHMM, not [+/-]HH:MM. Reported by Jan D.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* combine-sh: Remove file.
+	* Makefile.am (EXTRA_DIST): Remove it.
+
+2001-03-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-default-file-header): Replace ENCODING with 8-bit.
+
+2001-03-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Mention where to get config.guess and config.sub.
+
+2001-03-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Verbosity: describe each action being done. Make the
+	po/ChangeLog entry more intelligent.
+
+2001-03-10  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-font-lock-keywords): Respect entry types
+	'msgid_plural' and 'msgstr[]'.
+	'%*s' is a valid sformat, too.
+	(po-font-lock-keywords): Fix regexp; '[]' part is optional.
+	(po-any-msgstr-regexp): Also match msgstr[] fields.
+	(po-msgstr-idx-keyword-regexp): New variable.
+	(po-set-msgstr): Respect indexed msgstr entries; use
+	`po-msgstr-idx-keyword-regexp'.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Update copyright year. Add code to update
+	po/ChangeLog and tell the user about the m4 macros. Don't attempt to
+	run config.status, because aclocal.m4 is not ready.
+
+2001-03-03  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-exit): Run po-subedit-exit-hook before
+	leaving the edit buffer.
+
+2001-02-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Bail out if $gettext_dir doesn't exist.
+
+2001-02-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Fix bug in 2000-12-08 patch.
+
+2001-01-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el: Call autoload with 4 arguments.
+	(po-content-type-charset-alist): Change cars to uppercase.
+	(po-find-file-coding-system): Uppercase charset for lookup in
+	po-content-type-charset-alist.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* magic.add: Remove file. Has been integrated into the 'file' package.
+	* Makefile.am (EXTRA_DIST): Remove it.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* locale.alias: Move to ../intl.
+	* Makefile.am (EXTRA_DIST): Remove locale.alias.
+	(localedir, locale_DATA): Remove variables.
+
+2000-12-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Preserve RCS and CVS subdirs in intl/.
+	Reported by Santiago Vila <sanvila@unex.es>.
+
+	* gettextize.in: Test for ABOUT-NLS, not NLS.
+
+2000-10-26  GOTO Masanori  <gotom@debian.or.jp>
+
+	* locale.alias: Add ja_JP.ujis alias.
+
+2000-08-31  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale.alias: Add aliases for bokmal and nynorsk.
+
+2000-08-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale.alias: Add aliases for Korean.
+
+2000-08-01  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale.alias: Update japanese aliases.
+
+2000-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* gettextize.in: Remove code to test for version of the m4 files.
+
+	* po-mode.el: A few more changes by Fran^Áçois Pinard.
+
+1998-05-03  Fran^Áçois Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-create-overlay) [po-XEMACS]: No argument.
+	Reported by Ulrich Drepper.
+
+1997-10-18  Fran^Áçois Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-tags-search, po-mark-found-string): C++ as C.
+	(po-find-c-string): Skip C++ comments as well.
+
+1998-05-10  Fran^Áçois Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-mode) [po-XEMACS]: Explicitely add menus.
+	Reported by Hrvoje Niksic.
+
+	* po-mode.el (po-mode-menu-layout): Give real access to auxiliary
+	files through the menu, instead of leaving menu entries inactive.
+
+1998-05-15  Ulrich Drepper  <drepper@cygnus.com>
+
+	* tcl_gettext.c (tcl_gettext): Replace illegal with invalid.
+
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1998-03-30  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-tags-search, po-mark-translatable,

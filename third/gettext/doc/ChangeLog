@@ -1,3 +1,248 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-09-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Discussions): Rewrote the paragraph about GPL.
+	* nls.texi (Using gettext in own code): Adapt for libintl license
+	change.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-06-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* nls.texi (Using gettext in own code): Clarify copyright wording.
+
+2001-06-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am: (installdirs): New dependency. Yet another automake bug.
+
+2001-05-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Plural forms): Remove remark about continuation lines.
+	Add information about Croatian, Portuguese, Latvian, Korean.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-05-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Creating): Change "8-bit" to "8bit".
+
+2001-05-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* matrix.texi: Update.
+	* nls.texi (STATUS): Likewise.
+
+2001-05-15  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (install-dvi, gettext.ps, install-ps, install-pdf,
+	gettext.html, gettext_toc.html, install-html-monolithic): Don't use $<.
+	Reported by Paul Eggert.
+
+2001-05-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (aclocal): Add glibc21.m4 to the list of needed files.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (DVIPS): Use @DVIPS@. If dvips is missing, the
+	gettext.ps target will fail.
+	(TEXI2PDF): Use @TEXI2PDF@. If texi2pdf is missing, the gettext.pdf
+	target will fail.
+	(TEXI2HTML): Use @TEXI2HTML@. If texi2html is missing, the gettext.html
+	target will fail.
+	(gettext_toc.html): Rewrite so it will do nothing but not fail, if
+	texi2html is missing.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (install-html-split): Install into correct directory.
+	Don't use $<.
+	(RM): New variable.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* ISO_3166: New file.
+	* iso-3166.sed: New file.
+	* iso-639.sed: Renamed from iso-apdx.sed.
+	* Makefile.am (gettext_TEXINFOS): Remove iso-apdx.sed, add iso-639.sed
+	and iso-3166.sed.
+	(EXTRA_DIST): Likewise. Add ISO_3166.
+	(iso-639.texi): Renamed rule from iso-apdx.texi.
+	(iso-3166.texi): New rule.
+	* nls.texi (Using This Package): Recommend to set LANG to 'll_CC'.
+	glibc doesn't have locales named 'll'.
+	* gettext.texi (End Users): Likewise.
+	(Country Codes): New node.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi: Many tweaks by Philipp Thomas <pthomas@suse.de>.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Plural forms): Add section about Lithuanian, reported
+	by Ricardas Cepas <rch@richard.eu.org>. Fix formula for Slovenian,
+	reported by Roman Maurer <roman.maurer@amis.net>. Ukrainian is like
+	Russian, reported by Andy Rysin <arysin@yahoo.com>.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (config.guess): New node.
+	(aclocal): Update list of macros to include.
+	(acconfig): Update: not needed any more.
+	(Makefile): Add reminder to put intl in front of other directories.
+	(src/Makefile): Add reminder to define LOCALEDIR.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* ISO_639: Add Avestan, Bosnian, Chechen, Chamorro, Church Slavic,
+	Chuvash, Manx, Hiri Motu, Herero, Kikuyu, Kuanyama, Komi, Cornish,
+	Letzeburgesch, Marshall, Norwegian Bokmal, Ndebele, Ndonga, Norwegian
+	Nynorsk, Navajo, Nyanja, Pali, Sardinian, Northern Sami, Tahitian.
+	Remove Serbo-Croatian.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (docdir, dvidir, psdir, pdfdir, htmldir): New variables.
+	(EXTRA_DIST): Add EXTRA_DIST_html.
+	(all-local, install-data-local, installdirs-local, uninstall-local):
+	New targets.
+	(html, install-html, uninstall-html): New targets.
+	(EXTRA_DIST_html, CLEANFILES, MAINTAINERCLEANFILES): New variables.
+	(install-dvi, installdirs-dvi, uninstall-dvi): New targets.
+	(DVIPS): New variable.
+	(ps, gettext.ps, install-ps, installdirs-ps, uninstall-ps): New
+	targets.
+	(TEXI2PDF, SUFFIXES): New variables.
+	(.texi.pdf): New rule.
+	(pdf, install-pdf, installdirs-pdf, uninstall-pdf): New targets.
+	(TEXI2HTML): New variable.
+	(html-monolithic, html-split, gettext.html, gettext_toc.html,
+	install-html-monolithic, install-html-split, installdirs-html,
+	uninstall-html-monolithic, uninstall-html-split): New targets.
+
+2001-04-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Plural forms): Add Estonian. Fix the formula for
+	Russian and add Czech and Slovak to this case.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Aspects): For full locale services, refer to glibc.
+	(Files): Explain why gettext doesn't interface with system tools.
+	(Template): Renamed chapter from "Initial".
+	Move the sections "C Sources Context" and "Compendium" away.
+	(Creating): New chapter.
+	(Updating): Move the sections "C Sources Context" and "Compendium" to
+	here.
+	(Using libintl.a): Only HP-UX 10.01 lacks alloca. Newer versions have
+	it.
+	(Flat and Non-Flat): Don't mention combine-sh. Recommend the usual
+	approach instead.
+
+2001-03-15  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Plural forms): Clarify the syntax of the plural form
+	information in the header entry. Always terminate it with a semicolon.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (MAKEINFO): Add 'env', to avoid shell syntax error in
+	texi2dvi.
+
+	* gettext.texi (Overview): Including libintl.h is not enough. Talk
+	about libintl.so as well.
+	(Comparison): gettext_noop is never defined in libintl.h.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* nls.texi (Using This Package): Rewrite paragraph about LANGUAGE.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Triggering): Mention that gettext() now needs the
+	LC_CTYPE locale. Explain the possible solutions.
+
+2001-02-17  Karl Eichwalder  <keichwa@gmx.net>
+
+	* gettext.texi: ISO 639 specifies language codes, not country codes.
+
+2001-01-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Installation): Call autoload with 4 arguments.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.texi (Magic for Installers): Remove references to catgets
+	based emulation of gettext.
+	(Being a `gettext' grok): Likewise. LANGUAGE now always works.
+	(acconfig.h): Don't mention HAVE_CATGETS.
+	* nls.texi: Remove references to catgets. Describe new working of
+	autoconf macro.
+
+2001-01-01  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (MAKEINFO): New macro. Unset LANG and LANGUAGE while
+	running makeinfo.
+
+2001-01-01  Bruno Haible  <haible@clisp.cons.org>
+
+	Implement plural form handling.
+	* gettext.texi: Fix menus.
+	(PO Files): Document entries for plural forms.
+	(xgettext Invocation): Extended --keyword argument syntax. More
+	default keywords.
+	(MO Files): Document format of entries for plural forms.
+	(Charset conversion): New node, mostly from glibc-2.2 manual.
+	(Plural forms): Likewise.
+	(GUI program problems): Likewise, without the GCC function macro.
+	(Optimized gettext): Remove section about dcgettext macro. All
+	caching is now done inside the *gettext functions.
+	(Comparison): Move the example about Polish to node "Plural forms".
+	Remove the print_month_info example.
+
+2000-11-12  Bruno Haible  <haible@clisp.cons.org>
+
+	* matrix.texi: Update.
+	* nls.texi: Refer to the Free Translation Project's matrix page.
+
+2000-11-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* nls.texi: In section "Translating Teams", refer to the Free
+	Translation Project's homepage. It is more up to date than the
+	previously included list.
+
+2000-07-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* nls.texi: Rename section "One advise in advance" to "Quick
+	configuration advice".
+
+2000-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* nls.texi: Add section about "Using gettext in own code".
+
+1999-10-11  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext.texi: Fix use of @xref.
+
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1997-09-06 02:13  Ulrich Drepper  <drepper@cygnus.com>
 
 	* gettext.texi: Fix names of autoconf macros now that they are in

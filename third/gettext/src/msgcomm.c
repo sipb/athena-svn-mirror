@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1997-1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -25,18 +25,13 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <sys/types.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
+#include <stdlib.h>
 
 #ifdef HAVE_LIMITS_H
 # include <limits.h>
 #endif
 
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <locale.h>
 
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
@@ -47,6 +42,7 @@
 #include "getline.h"
 #include "libgettext.h"
 #include "message.h"
+#include "write-po.h"
 #include "po.h"
 #include "system.h"
 
@@ -118,7 +114,9 @@ static void extract_constructor PARAMS ((po_ty *__that));
 static void extract_directive_domain PARAMS ((po_ty *__that, char *__name));
 static void extract_directive_message PARAMS ((po_ty *__that, char *__msgid,
 					       lex_pos_ty *__msgid_pos,
+					       char *__msgid_plural,
 					       char *__msgstr,
+					       size_t __msgstr_len,
 					       lex_pos_ty *__msgstr_pos));
 static void extract_parse_brief PARAMS ((po_ty *__that));
 static void extract_comment PARAMS ((po_ty *__that, const char *__s));
@@ -162,11 +160,10 @@ main (argc, argv)
   textdomain (PACKAGE);
 
   /* Set initial value of variables.  */
-  line_comment = -1;
   default_domain = MESSAGE_DOMAIN_DEFAULT;
 
   while ((optchar = getopt_long (argc, argv,
-				 "<>ac::Cd:D:eEf:Fhijk::l:L:m::M::no:p:sTuVw:x:",
+				 "<:>:ac::Cd:D:eEf:Fhijk::l:L:m::M::no:p:sTuVw:x:",
 				 long_options, NULL)) != EOF)
     switch (optchar)
       {
@@ -265,10 +262,7 @@ main (argc, argv)
 	/* NOTREACHED */
       }
 
-  /* Normalize selected options.  */
-  if (omit_header != 0 && line_comment < 0)
-    line_comment = 0;
-
+  /* Verify selected options.  */
   if (!line_comment && sort_by_file)
     error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
 	   "--no-location", "--sort-by-file");
@@ -286,7 +280,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995, 1996, 1997, 1998");
+	      "1995-1998, 2000, 2001");
       printf (_("Written by %s.\n"), "Peter Miller");
       exit (EXIT_SUCCESS);
     }
@@ -299,32 +293,20 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   if (output_dir == NULL)
     output_dir = ".";
 
-  /* Construct the name of the ouput file.  If the default domain has
+  /* Construct the name of the output file.  If the default domain has
      the special name "-" we write to stdout.  */
   if (output_file)
-  {
-    if (output_file[0] == '/' ||
-      strcmp(output_dir, ".") == 0 ||
-      strcmp(output_file, "-") == 0
-    )
-      file_name = xstrdup (output_file);
-    else
     {
-      /* Please do NOT add a .po suffix! */
-      file_name = xmalloc (strlen (output_dir) + strlen (default_domain) + 2);
-      strcat (strcat (strcpy(file_name, output_dir), "/"), output_file);
+      if (IS_ABSOLUTE_PATH (output_file) || strcmp (output_file, "-") == 0)
+	file_name = xstrdup (output_file);
+      else
+	/* Please do NOT add a .po suffix! */
+	file_name = concatenated_pathname (output_dir, output_file, NULL);
     }
-  }
   else if (strcmp (default_domain, "-") == 0)
     file_name = "-";
   else
-    {
-      file_name = (char *) xmalloc (strlen (output_dir)
-				    + strlen (default_domain)
-				    + sizeof (".po") + 2);
-      stpcpy (stpcpy (stpcpy (stpcpy (file_name, output_dir), "/"),
-	default_domain), ".po");
-    }
+    file_name = concatenated_pathname (output_dir, default_domain, ".po");
 
   /* Determine list of files we have to process.  */
   if (files_from != NULL)
@@ -342,6 +324,16 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       usage (EXIT_FAILURE);
     }
 
+  /* Default the message selection criteria, and check them for sanity.  */
+  if (more_than < 0)
+    more_than = (less_than < 0 ? 1 : 0);
+  if (less_than < 0)
+    less_than = INT_MAX;
+  if (more_than >= less_than || less_than < 2)
+    error (EXIT_FAILURE, 0,
+           _("impossible selection criteria specified (%d < n < %d)"),
+           more_than, less_than);
+
   /* Allocate a message list to remember all the messages.  */
   mlp = message_list_alloc ();
 
@@ -349,16 +341,6 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   for (cnt = 0; cnt < file_list->nitems; ++cnt)
     read_po_file (file_list->item[cnt], mlp);
   string_list_free (file_list);
-
-  /* Default the message selection criteria, and check them for sanity.  */
-  if (more_than < 0)
-    more_than = (less_than < 0 ? 1 : 0);
-  if (less_than < 0)
-    less_than = INT_MAX;
-  if (more_than >= less_than || less_than < 2 || more_than >= mlp->nitems)
-    error (EXIT_FAILURE, 0,
-           _("impossible selection criteria specified (%d < n < %d)"),
-           more_than, less_than);
 
   /* Remove messages which do not fit the criteria.  */
   j = 0;
@@ -370,7 +352,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       if (mp->used > more_than && mp->used < less_than)
         ++j;
       else
-        message_list_delete_nth(mlp, j);
+        message_list_delete_nth (mlp, j);
     }
 
   /* Sorting the list of messages.  */
@@ -524,8 +506,8 @@ struct extract_class_ty
   string_list_ty *comment_dot;
 
   int is_fuzzy;
-  int is_c_format;
-  int do_wrap;
+  enum is_c_format is_c_format;
+  enum is_wrap do_wrap;
 
   int filepos_count;
   lex_pos_ty *filepos;
@@ -559,11 +541,14 @@ extract_directive_domain (that, name)
 
 
 static void
-extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
+extract_directive_message (that, msgid, msgid_pos, msgid_plural,
+			   msgstr, msgstr_len, msgstr_pos)
      po_ty *that;
      char *msgid;
      lex_pos_ty *msgid_pos;
+     char *msgid_plural;
      char *msgstr;
+     size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
 {
   extract_class_ty *this = (extract_class_ty *)that;
@@ -599,7 +584,7 @@ extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, msgid_plural);
       message_list_append (this->mlp, mp);
     }
 
@@ -656,7 +641,8 @@ extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
   if (mvp != NULL)
     free (msgstr);
   else
-    message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_pos);
+    message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_len,
+			    msgstr_pos);
 }
 
 

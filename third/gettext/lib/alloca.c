@@ -21,27 +21,27 @@
    allocating any.  It is a good idea to use alloca(0) in
    your main control loop, etc. to force garbage collection.  */
 
+/* Synched up with: FSF 19.30. */
+
+/* Authorsip:
+
+   FSF: A long time ago.
+   Very few changes for XEmacs.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-
-#ifdef emacs
-#include "blockinput.h"
-#endif
-
-/* If compiling with GCC 2, this file's not needed.  */
-#if !defined (__GNUC__) || __GNUC__ < 2
-
+/* XEmacs: If compiling with GCC 2, this file is theoretically not needed.
+   However, alloca() is broken under GCC 2 on many machines: you
+   cannot put a call to alloca() as part of an argument to a function.
+ */
 /* If someone has defined alloca as a macro,
    there must be some other way alloca is supposed to work.  */
-#ifndef alloca
+/* XEmacs sometimes uses the C alloca even when a builtin alloca is available,
+   because it's safer. */
+#if defined (EMACS_WANTS_C_ALLOCA) || (!defined (alloca) && (!defined (__GNUC__) || __GNUC__ < 2))
 
 #ifdef emacs
 #ifdef static
@@ -67,13 +67,26 @@ long i00afunc ();
 #define ADDRESS_FUNCTION(arg) &(arg)
 #endif
 
-#if __STDC__
+#ifdef __STDC__ /* XEmacs change */
 typedef void *pointer;
 #else
 typedef char *pointer;
 #endif
 
-#ifndef NULL
+/* XEmacs: With ERROR_CHECK_MALLOC defined, there is no xfree -- it's
+   a macro that does some stuff to try and trap invalid frees,
+   and then calls xfree_1 to actually do the work. */
+
+#ifdef emacs
+# ifdef ERROR_CHECK_MALLOC
+void xfree_1 (pointer);
+#  define xfree xfree_1
+# else
+void xfree (pointer);
+# endif
+#endif
+
+#ifndef WINDOWSNT
 #define	NULL	0
 #endif
 
@@ -83,14 +96,18 @@ typedef char *pointer;
    hand, the utilities in lib-src need alloca to call malloc; some of
    them are very simple, and don't have an xmalloc routine.
 
-   Non-Emacs programs expect this to call xmalloc.
+   Non-Emacs programs expect this to call use xmalloc.
 
    Callers below should use malloc.  */
 
 #ifndef emacs
 #define malloc xmalloc
 #endif
+#ifndef WINDOWSNT
 extern pointer malloc ();
+#else
+extern void *malloc();
+#endif
 
 /* Define STACK_DIRECTION if you know the direction of stack
    growth for your system; otherwise it will be automatically
@@ -168,7 +185,11 @@ static header *last_alloca_header = NULL;	/* -> last alloca header.  */
    implementations of C, for example under Gould's UTX/32.  */
 
 pointer
+#ifdef EMACS_WANTS_C_ALLOCA
+c_alloca (size)
+#else
 alloca (size)
+#endif
      unsigned size;
 {
   auto char probe;		/* Probes stack depth: */
@@ -180,14 +201,10 @@ alloca (size)
 #endif
 
   /* Reclaim garbage, defined as all alloca'd storage that
-     was allocated from deeper in the stack than currently.  */
+     was allocated from deeper in the stack than currently. */
 
   {
     register header *hp;	/* Traverses linked list.  */
-
-#ifdef emacs
-    BLOCK_INPUT;
-#endif
 
     for (hp = last_alloca_header; hp != NULL;)
       if ((STACK_DIR > 0 && hp->h.deep > depth)
@@ -203,10 +220,6 @@ alloca (size)
 	break;			/* Rest are not deeper.  */
 
     last_alloca_header = hp;	/* -> last valid storage.  */
-
-#ifdef emacs
-    UNBLOCK_INPUT;
-#endif
   }
 
   if (size == 0)
@@ -217,9 +230,6 @@ alloca (size)
   {
     register pointer new = malloc (sizeof (header) + size);
     /* Address of header.  */
-
-    if (new == 0)
-      abort();
 
     ((header *) new)->h.next = last_alloca_header;
     ((header *) new)->h.deep = depth;
@@ -350,7 +360,7 @@ struct stk_trailer
 
 #ifdef CRAY2
 /* Determine a "stack measure" for an arbitrary ADDRESS.
-   I doubt that "lint" will like this much.  */
+   I doubt that "lint" will like this much. */
 
 static long
 i00afunc (long *address)
@@ -500,5 +510,4 @@ i00afunc (long address)
 #endif /* not CRAY2 */
 #endif /* CRAY */
 
-#endif /* no alloca */
-#endif /* not GCC version 2 */
+#endif /* complicated expression at top of file */

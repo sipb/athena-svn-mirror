@@ -1,3 +1,588 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* write-po.c (wrap): Avoid broken EUC-KR conversion in glibc-2.1.
+
+2001-05-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (construct_header): Replace 8-bit with 8bit.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-04-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* po.c (po_callback_message): Don't call iconv_open when the
+	OLD_PO_FILE_INPUT environment variable is set.
+	* write-po.c (wrap): Don't call iconv_open when the OLD_PO_FILE_OUTPUT
+	environment variable is set.
+
+2001-04-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* po.c: Include mbswidth.h.
+	(program_name): New declaration.
+	(multiline_warning): New function.
+	(po_callback_message): Change messages again. Call multiline_warning
+	instead of error.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.c (program_name): Change type to 'const char *'.
+	* ngettext.c (program_name): Likewise.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* write-po.c (wrap): Prohibit line breaks inside backslash escape
+	sequences.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-27  Bruno Haible  <haible@clisp.cons.org>
+
+	* po.c (po_callback_message): Change message again.
+
+2001-03-26  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (test_whether_c_format): Recognize '%%' as valid.
+	* msgfmt.c (check_pair): In error message, count format
+	specifications starting from 1, not 0.
+
+2001-03-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (warn_id_len): Remove unused variable.
+	(main): Don't set it. 'l' option becomes a nop.
+	(usage): Remove mention of --string-limits/-l.
+
+2001-03-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcomm.c (main): Don't give an error message if there are "too few"
+	messages in the input files. Do sanity checking before reading the
+	input files. Make --add-location the default, even if --omit-header
+	is specified.
+
+2001-03-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (construct_header): Replace ENCODING with 8-bit.
+
+2001-03-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* po.c (po_callback_message): Change message, refer to GNU libiconv.
+
+2001-03-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.c [TESTS]: When testing, set HAVE_SETLOCALE.
+	(main): Expand escape sequences also if no domain is given. Don't need
+	to call bindtextdomain if there are no string arguments.
+	* ngettext.c: New file.
+	* Makefile.am (bin_PROGRAMS): Add ngettext.
+	(ngettext_SOURCES): New variable.
+
+2001-03-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (extension_to_language): Recognize "*.cpp" and "*.hpp" as
+	being C++.
+	Patch by Dennis Bjorklund <db@zigo.dhs.org>.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.c: Force inclusion of libgnuintl.h. On Solaris, <locale.h>
+	has already included libintl.h.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+            Karl Eichwalder  <ke@suse.de>
+
+	* po.c (po_callback_message): Add comments to support translators.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-lex.c (lex_close): Use ngettext and plural-form message.
+	* msgcmp.c (compare): Likewise.
+	* msgfmt.c (main): Likewise.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* po.c (po_callback_message): Cast %*s argument from size_t to int.
+	* msgfmt.c (format_debrief): Likewise.
+	(check_pair): Cast format string argument from size_t to long.
+	* msgmerge.c (merge): Likewise.
+
+	* gettext.c (main): Update copyright year.
+	* msgcmp.c (main): Likewise.
+	* msgcomm.c (main): Likewise.
+	* msgfmt.c (main): Likewise.
+	* msgmerge.c (main): Likewise.
+	* msgunfmt.c (main): Likewise.
+	* xgettext.c (main): Likewise.
+
+	* po.c (po_callback_message): Also warn if no iconv is present and
+	the charset is a CJK encoding requiring iconv. Also avoid broken
+	EUC-KR conversion in glibc-2.1.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	Fix output of strings in CJK encodings.
+	* write-po.c: Include iconv.h.
+	(wrap): While preparing a line, use iconv to avoid treating the second
+	byte of a multi-byte character as an ASCII character.
+
+2001-03-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcomm.c (main): Use IS_ABSOLUTE_PATH and concatenated_pathname.
+	Fixes an incorrectly computed memory allocation.
+	* xgettext.c (main): Likewise.
+	* open-po.c (open_po_file): Use IS_ABSOLUTE_PATH and
+	concatenated_pathname.
+	* xget-lex.c (xgettext_lex_open): Likewise.
+	* msgfmt.c (main): Use SET_BINARY instead of setmode.
+	* msgunfmt.c (read_mo_file): Likewise.
+
+2001-03-04  Bruno Haible  <haible@clisp.cons.org>
+
+	Check syntax of obsolete entries of PO files, not only in msgmerge.
+	* po-lex.h (pass_obsolete_entries): New declaration.
+	(msgstr_def): Remove pos field.
+	* po-lex.c (po_lex_obsolete): New variable.
+	(pass_obsolete_entries): Make non-static.
+	(lex_open): Initialize po_lex_obsolete.
+	(lex_close): Reset po_lex_obsolete.
+	(po_gram_lex): Don't look at pass_obsolete_entries. Instead, set
+	po_lex_obsolete to 1 when "#~" is seen. Reset po_lex_obsolete when
+	a newline is seen. Before returning, fill the 'pos' and 'obsolete'
+	fields of any token.
+	* po-gram.gen.y (check_obsolete): New macro.
+	(union): Add a 'pos' and 'obsolete' field for any symbol type.
+	(NAME): Assign to type <string>.
+	(DOMAIN, MSGID, MSGID_PLURAL, MSGSTR, '[', ']'): Assign to type <pos>.
+	(msgid, msgstr): Remove.
+	(message, msgid_pluralform, pluralform_list, pluralform, string_list):
+	Signal an error if the 'obsolete' field is not the same across the
+	entire token sequence of the rule.
+	(message): Deal with pass_obsolete_entries here.
+	(msgid_pluralform, pluralform_list, pluralform, string_list): Fill the
+	'pos' and 'obsolete' fields of $$.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	Fix parsing of strings in CJK encodings.
+	* po.h (PO_BASE_TY): New field next_is_fuzzy.
+	* po-lex.h: Include iconv.h.
+	(po_lex_charset, po_lex_iconv): New declarations.
+	* po.c (SIZEOF): New macro.
+	(po_alloc): Initialize next_is_fuzzy.
+	(po_callback_message): Add check of charset in header entry.
+	Set po_lex_charset and po_lex_iconv.
+	After calling po_directive_message, reset next_is_fuzzy.
+	(po_callback_comment): Set next_is_fuzzy.
+	* msgfmt.c (format_directive_message): Remove check of charset in
+	header entry, now done in po.c.
+	* po-lex.c (po_lex_charset, po_lex_iconv): New variables.
+	(lex_open): Initialize them.
+	(lex_close): Reset them.
+	(po_gram_lex): While parsing a string, use 'po_lex_iconv' to avoid
+	treating the second byte of a multi-byte character as an ASCII
+	character.
+	* Makefile.am (msgcmp_LDADD, msgfmt_LDADD): New variables.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* write-po.h: New file, pieces of message.h.
+	* message.h (message_page_width_set, message_print_style_indent,
+	message_print_style_uniforum, message_print_style_escape,
+	message_list_print, message_list_sort_by_msgid,
+	message_list_sort_by_filepos): Move to write-po.h.
+	* write-po.c: New file, pieces of message.c.
+	(wrap): Add charset argument. Rewritten to use mbs_width_linebreaks().
+	Use c_isprint() instead of isprint().
+	(message_print): Add charset argument. Insert a space after '#' even
+	if the comment line's first character is a tab.
+	(message_print_obsolete): Likewise.
+	(message_list_print): Don't change locales. Extract the charset name
+	from the header entry.
+	(msgid_cmp, filepos_cmp): Always use strcmp, never use strcoll.
+	(message_list_sort_by_msgid, message_list_sort_by_filepos): Don't
+	change locales.
+	* message.c (indent, uniforum, escape, page_width,
+	make_c_format_description_string, significant_c_format_p,
+	make_c_width_description_string, message_print_style_indent,
+	message_print_style_uniforum, message_print_style_escape, wrap,
+	print_blank_line, message_print, message_print_obsolete,
+	message_list_print, msgid_cmp, message_list_sort_by_msgid,
+	filepos_cmp, message_list_sort_by_filepos, message_page_width_set):
+	Move to write-po.c.
+	* msgmerge.c: Include write-po.h.
+	* msgunfmt.c: Likewise.
+	* xgettext.c: Likewise.
+	* msgcomm.c: Likewise.
+	* Makefile.am (noinst_HEADERS): Add write-po.h.
+	(msgmerge_SOURCES): Add write-po.c.
+	(msgunfmt_SOURCES): Likewise.
+	(xgettext_SOURCES): Likewise.
+	(msgcomm_SOURCES): Likewise.
+	(msgmerge_LDADD, msgunfmt_LDADD, xgettext_LDADD, msgcomm_LDADD): New
+	variables.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcmp.c (compare): Internationalize error message.
+
+2001-02-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgunfmt.c (main): Accept -e and -E options.
+
+2001-02-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt.c (main): Open the output file in binary mode.
+	* msgunfmt.c (read_mo_file): Open the input file in binary mode.
+
+2001-01-21  Bruno Haible  <haible@clisp.cons.org>
+
+	Use libtool.
+	* Makefile.am (LDADD): Remove ../intl/libintl.$la, not needed any more.
+	(l): Remove macro.
+
+2001-01-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcomm.c (main): Options '-<' and '->' want an argument.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.c: Renamed from gettextp.c. Use included libintl if TESTS
+	is defined.
+	* setlocale.c: Move to ../tests.
+	* Makefile.am (EXTRA_PROGRAMS, all-local, CLEANFILES): Remove.
+	(tstgettext_SOURCES): Remove.
+	(gettext_SOURCES): Update.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcmp.c: Include libgettext.h instead of libintl.h, so that the
+	configure argument --disable-nls gets respected.
+	* msgfmt.c: Likewise.
+	* msgmerge.c: Likewise.
+	* msgunfmt.c: Likewise.
+	* open-po.c: Likewise.
+	* po-gram-gen.y: Likewise.
+	* po-lex.c: Likewise.
+	* xgettext.c: Likewise. Don't include gettext.h.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	Assume <stddef.h>, <stdlib.h>, <string.h>, <locale.h> exist.
+	* dir-list.c: Likewise.
+	* gettextp.c: Likewise.
+	* message.c: Likewise.
+	* msgcmp.c: Likewise.
+	* msgcomm.c: Likewise.
+	* msgfmt.c: Likewise.
+	* msgmerge.c: Likewise.
+	* msgunfmt.c: Likewise.
+	* open-po.c: Likewise.
+	* po.c: Likewise.
+	* setlocale.c: Likewise.
+	* str-list.h: Likewise.
+	* xget-lex.c: Likewise.
+	* xgettext.c: Likewise.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (datadir): Assume DATADIRNAME = share.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* setlocale.c: New file.
+	* Makefile.am (EXTRA_PROGRAMS): New variable.
+	(all-local): New target.
+	(CLEANFILES): New variable.
+	(tstgettext_SOURCES): New variable.
+
+2001-01-05  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (po-gram-gen.h): Don't use $^, not supported by the
+	SUSV2 "make" specification.
+	(LDADD): Add @INTLLIBS@. Needed on Solaris without
+	--with-included-gettext.
+	* po-lex.c (gram_max_allowed_errors): Change type to
+	'unsigned int'.
+
+2001-01-01  Bruno Haible  <haible@clisp.cons.org>
+
+	Implement plural form handling.
+	* message.h (struct message_variant_ty): Add msgstr_len field.
+	(struct message_ty): Add msgid_plural field.
+	(message_alloc): Take additional msgid_plural argument.
+	(message_variant_append): Take additional msgstr_len argument.
+	* message.c (message_alloc): Take additional msgid_plural argument.
+	(message_free): Free msgid_plural field.
+	(message_variant_append): Take additional msgstr_len argument.
+	(message_copy): Copy msgid_plural as well. Pass msgstr_len.
+	(message_merge): Likewise.
+	(message_print): Print plural entries using a different format.
+	(message_print_obsolete): Likewise.
+	* msgunfmt.c (string32): Return the string's size as well. Verify
+	the string is NUL terminated.
+	(read_mo_file): Split the original string into msgid and msgid_plural.
+	Pass msgstr_len.
+	* po-lex.h (msgstr_def): New definition, taken from msgfmt.c.
+	* po-lex.c (keyword_p): Recognize the msgid_plural keyword.
+	(po_gram_lex): Accept brackets as single-character tokens.
+	* po.h (struct po_method_ty): Method 'directive_message' takes
+	additional arguments 'msgid_plural', 'msgstr_len'.
+	(po_callback_message): Additional arguments 'msgid_plural',
+	'msgstr_len'.
+	* po-hash-gen.y (yyerror): Effectively rename to po_hash_error.
+	* po-gram-gen.y (yyerror): Effectively rename to po_gram_error,
+	thus enabling reporting of syntax errors.
+	(plural_counter): New variable.
+	(%token): Add MSGID_PLURAL, '[', ']' as new tokens.
+	(%union): Add new alternative of type 'struct msgstr_def'.
+	(msgid_pluralform, pluralform, pluralform_list): New productions.
+	(message): Add plural rules.
+	* po.c (po_directive_message): Additional arguments 'msgid_plural',
+	'msgstr_len'.
+	(po_callback_message): Likewise.
+	* msgfmt.c (SIZEOF): New macro.
+	(struct id_str_pair): Add id_len, id_plural, id_plural_len, str_len
+	fields.
+	(struct hashtable_entry): Renamed from struct msgstr_def. Add
+	'msgid_plural', 'msgstr_len' fields.
+	(format_directive_message): Additional arguments 'msgid_plural',
+	'msgstr_len'. Verify the validity of the charset field in the header.
+	Compare msgstr using memcmp, not strcmp.
+	(check_pair): Additional arguments 'msgid_plural', 'msgstr_len'.
+	Apply the tests to msgid_plural and each msgstr[i] string.
+	(format_debrief): Change error message.
+	(write_table): Store msgid_plural and msgstr_len in msg_arr[], then
+	output the strings including embedded NULs.
+	* msgcmp.c (compare_directive_message): Additional arguments
+	'msgid_plural', 'msgstr_len'.
+	* msgcomm.c (extract_directive_message): Additional arguments
+	'msgid_plural', 'msgstr_len'.
+	* msgmerge.c (merge_directive_message): Additional arguments
+	'msgid_plural', 'msgstr_len'.
+	* xget-lex.h (struct xgettext_token_ty): Replace argnum field with
+	argnum1, argnum2.
+	* xget-lex.c (xgettext_lex): Add to default keywords: "ngettext:1,2",
+	"dngettext:2,3", "dcngettext:2,3".
+	(xgettext_lex_keyword): Accept new syntax "id:argnum1,argnum2".
+	* xgettext.c (exclude_directive_message): Additional arguments
+	'msgid_plural', 'msgstr_len'.
+	(remember_a_message): Return the new message.
+	(remember_a_message_plural): New function.
+	(scan_c_file): Extend state machine to allow remembering msgid1 and
+	msgid2 later.
+	(extract_directive_message): Additional arguments 'msgid_plural',
+	'msgstr_len'. Compare msgstr using memcmp, not strcmp.
+	(construct_header): Update.
+
+2000-12-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt.c (format_directive_message): Pass to insert_entry and
+	find_entry the length including the terminating NUL.
+	* xget-lex.c (xgettext_lex, xgettext_lex_keyword): Likewise.
+
+2000-12-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgunfmt.c (read_mo_file): Recognize "/dev/stdin", not "/dev/stdout".
+
+2000-12-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* str-list.h: Fix typo. Add comments.
+	* str-list.c: Add comments.
+
+	* dir-list.h: Add comments.
+	* dir-list.c: Likewise.
+
+	* domain.h: Remove file.
+	* msgfmt.c: Incorporate it here. Don't include "domain.h".
+	* msgunfmt.c: Don't include "domain.h".
+	* xgettext.c: Likewise.
+	* Makefile.am (noinst_HEADERS): Remove domain.h.
+
+	* open-po.h: New file.
+	* open-po.c: Include it.
+	* po-lex.c: Likewise.
+	* Makefile.am (noinst_HEADERS): Add open-po.h.
+
+	* open-po.c (open_po_file): Merge duplicated code.
+
+	* po-lex.h: Add comments.
+	(gram_max_allowed_errors): Change type to 'unsigned int'.
+	(po_gram_error_at_line): Renamed from gram_error_at_line.
+	(po_gram_error, po_gram_error_at_line): Use ISO C 99 macro vararg
+	syntax if possible.
+	* po-lex.c: Add comments. Don't include "po-gram.h".
+	(po_gram_error_at_line): Renamed from gram_error_at_line.
+	* msgmerge.c (main): Initialize gram_max_allowed_errors to UINT_MAX.
+
+	* message.h: Add comments.
+	(enum is_wrap): New type.
+	(parse_c_width_description_string): Change return type.
+	(message_ty): Change type of do_wrap field.
+	* message.c (wrap): Change type of do_wrap argument.
+	* msgfmt.c (msgfmt_class_ty): Change type of do_wrap field.
+	* msgmerge.c (merge_class_ty): Change type of do_wrap field.
+	* msgcomm.c (extract_class_ty): Change types of is_c_format, do_wrap
+	fields.
+	* xgettext.c (extract_class_ty): Likewise.
+	(remember_a_message): Change type of do_wrap.
+
+	* pos.h: New file.
+	* po-lex.h: Include it.
+	(struct lex_pos_ty): Remove type, now in pos.h.
+	* message,h: Include pos.h instead of po-lex.h.
+	* Makefile.am (noinst_HEADERS): Add pos.h.
+
+	* po.h: Add comments.
+
+	* gettextp.c (main): Use bindtextdomain instead of bindtextdomain__,
+	and dgettext instead of dgettext__. There is no need to use the
+	included libintl when GNU gettext or an X/Open gettext or a catgets
+	has been found in the system's C library.
+
+	* ylwrap: Update from automake-1.4.
+
+	* FILES: New file.
+	* Makefile.am (EXTRA_DIST): New variable.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* xgettext.c (scanner_c, scanner_cxx): Remove declarations.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt.c (write_table): Pass additional argument &id_len to
+	iterate_table.
+
+2000-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	Look into #define bodies.
+	* xget-lex.c (phaseX_get): Simplify.
+	(phase6_get): Stop the loop when recognizing a #define directive.
+	Based on a patch by Martin v. Löwis.
+
+	Accept ISO C 99 comment syntax.
+	* xget-lex.c (cplusplus_comments: Remove variable.
+	(phase4_getc): Always recognize // comments.
+	(xgettext_lex_cplusplus): Remove function.
+	* xget-lex.h (xgettext_lex_cplusplus): Remove declaration.
+	* xgettext.c (scan_c_file): Remove is_cpp_file argument.
+	(scanner_c, scanner_cxx): Remove functions.
+	(language_to_scanner): Call scan_c_file directly.
+
+2000-08-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-lex.c (ALERT_CHAR): New constant macro.
+	(control_sequence): Accept \a. Don't accept \X.
+
+2000-08-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* po-lex.c (control_sequence): Unget character which ended \x..
+	sequence.
+
+2000-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* xget-lex.h (enum xgettext_token_type_ty): Rename
+	xgettext_token_type_lp/rp to xgettext_token_type_lparen/rparen.
+	* xget-lex.c (enum token_type_ty): Rename token_type_lp/rp to
+	token_type_lparen/rparen.
+	(xgettext_any_keywords): `keywords' is now a hash table.
+	* xgettext.c (construct_header): Change two printf directives %02d
+	to %02ld.
+
+1998-07-17  Paul Eggert  <eggert@twinsun.com>
+
+	Add support for user-specified argument numbers for keywords.
+	Extract all strings from a keyword arg, not just the first one.
+	Handle parenthesized commas inside keyword args correctly.
+	Warn about nested keywords.
+
+	* xgettext.c (scan_c_file):
+	Warn about nested keywords, e.g. _(_("xxx")).
+	Warn also about not-yet-implemented but allowed nesting, e.g.
+	dcgettext(..._("xxx")..., "yyy").
+	Get all strings in a keyword arg, not just the first one.
+	Handle parenthesized commas inside keyword args correctly.
+
+	* xget-lex.h (enum xgettext_token_type_ty):
+	Replace xgettext_token_type_keyword1 and
+	xgettext_token_type_keyword2 with just plain
+	xgettext_token_type_keyword; it now has argnum value.
+	Add xgettext_token_type_rp.
+	(struct xgettext_token_ty): Add argnum member.
+	line_number and file_name are now also set for
+	xgettext_token_type_keyword.
+	(xgettext_lex_keyword): Arg is const char *.
+
+	* xget-lex.c: Include "hash.h".
+	(enum token_type_ty): Add token_type_rp.
+	(keywords): Now a hash table.
+	(phase5_get): Return token_type_rp for ')'.
+	(xgettext_lex, xgettext_lex_keyword): Add support for keyword argnums.
+	(xgettext_lex): Return xgettext_token_type_rp for ')'.
+	Report keyword argnum, line number, and file name back to caller.
+
+2000-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* Makefile.am (EXTRA_DIST): Replace po-gram.gen.h and po-hash.gen.h
+	with po-gram-gen.h and po-hash-gen.h.
+	(YACC): Define as @YACC@ -d.
+	(YFLAGS): Removed.
+	(msgcmp_SOURCES): Replace dependencies on po-gram.gen.c and
+	po-hash.gen.c with po-gram-gen.y and po-hash-gen.y.
+	(msgmerge_SOURCES): Likewise.
+	(xgettext_SOURCES): Likewise.
+	(msgcomm_SOURCES): Likewise.
+	Add rule to built po-gram-gen2.h and make po-lex.o depend on it.
+	Remove rules to generate po-gram.gen.c and po-hash.gen.c.
+	Patches by Jim Meyering.
+
+	* po-lex.c: Include "po-gram-gen2.h" instead of "po-gram.gen.h".
+
+	* message.c (message_list_search_fuzzy_inner): Define static.  Take
+	extra parameter with best weight so far.
+	(message_list_search_fuzzy): New function.
+	(message_list_list_alloc): New function.
+	(message_list_list_append): New function.
+	(message_list_list_append_list): New function.
+	(message_list_list_search): New function.
+	(message_list_list_search_fuzzy): New function.
+	(message_list_list_free): New function.
+	* message.h (message_list_list_ty): Define type.
+	(message_list_list_alloc): Add prototype.
+	(message_list_list_free): Likewise.
+	(message_list_list_append): Likewise.
+	(message_list_list_append_list): Likewise.
+	(message_list_list_search): Likewise.
+	(message_list_list_search_fuzzy): Likewise.
+	* msgmerge.c: Implement --compendium/-C option.
+	* xget-lex.c (xgettext_any_keywords): New function.
+	* xget-lex.h (xgettext_any_keywords): Add prototype.
+	* xgettext.c: Use xgettext_any_keywords to see whether keywords are
+	defined.
+	Patches by Peter Miller.
+
+1998-05-15  Ulrich Drepper  <drepper@cygnus.com>
+
+	* po-lex.c (control_sequence): Replace illegal with invalid.
+
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1998-04-30  Ulrich Drepper  <drepper@cygnus.com>
 
 	* dir-list.c: Update Peter Miller's mail address.

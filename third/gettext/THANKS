@@ -12,7 +12,7 @@ Special thanks to François Pinard <pinard@iro.umontreal.ca>, who did a
 major part of the testing and provided the Emacs PO mode, wrote major
 parts of the manual, and contributed the Perl interface gettext.perl.
 
-Peter Miller <miller@canb.auug.org.au> invested a lot of his time in making
+Peter Miller <millerp@canb.auug.org.au> invested a lot of his time in making
 gettext usable in other but GNU projects and wrote the msgmerge, msgcmp,
 and msgunfmt programs.
 
@@ -35,9 +35,9 @@ Jakub Jelinek		jj@sunsite.ms.mff.cuni.cz
 Jim Meyering		meyering@na-net.ornl.gov
 Joshua R. Poulson	jrp@plaza.ds.adp.com
 Karl Berry		kb@cs.umb.edu
-Karl Eichwalder		ke@ke.central.de
+Karl Eichwalder		ke@suse.de
 Kaveh R. Ghazi		ghazi@caip.rutgers.edu
-Kenichi Handa		<handa@etl.go.jp>
+Kenichi Handa		handa@etl.go.jp
 Larry Schwimmer		rosebud@cyclone.stanford.edu
 Marcus Daniels		marcus@sysc.pdx.edu
 Max de Mendizabal	max@acer.com.mx

@@ -1,3 +1,260 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Bump version number to 0.10.40.
+	(RELEASE_DATE): Bump.
+
+	* config.guess, config.sub: Update to GNU version 2001-09-13.
+
+2001-07-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Bump to 1.4. Use option 'gnu', not
+	'gnits', to avoid distributing README-alpha.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-06-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* ltmain.sh: Upgrade to libtool-1.4.
+	* ltconfig: Remove file.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Bump version number to 0.10.38.
+	(RELEASE_DATE): Bump.
+
+	* INSTALL (Optional Features): Document --with-libiconv-prefix.
+	(Particular Systems): Generalize section about /usr/local to "most
+	systems".
+	* config.guess, config.sub: Update to GNU version 2001-05-11.
+
+2001-05-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (SUBDIRS): Add man.
+	* configure.in (AC_OUTPUT): Add man/Makefile.
+
+2001-05-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add cs, gl, id, it, ru. zh.
+
+2001-04-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add et.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Check for dvips, texi2pdf, texi2html.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Bump version number to 0.10.37.
+	(RELEASE_DATE): Bump.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Call jm_PREREQ_MBSWIDTH.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (ps, pdf, html): New targets.
+
+2001-04-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add pt_BR.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* config.guess, config.sub: Update to GNU version 2001-03-19.
+
+2001-03-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* acconfig.h (WARN_ID_LEN): Remove macro.
+
+2001-03-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* INSTALL (Particular Systems): Add recommendations for AIX 3.
+
+2001-03-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (MAINTAINERCLEANFILES): Remove variable.
+	(EXTRA_DIST): Incorporate its contents.
+
+2001-03-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Postprocess tests/Makefile to work around an
+	inconsistency in automake-1.4: EXTRA_PROGRAMS is not treated like
+	bin_PROGRAMS.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Add AC_REPLACE_FUNCS(strcasecmp). Needed for EMX.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Use AM_FUNC_GETLINE instead of
+	AC_REPLACE_FUNCS(getline). Needed for HP-UX 10.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Pass 'need-ngettext' to AM_GNU_GETTEXT.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add en@quot and en@boldquot.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* INSTALL: New section "Particular Systems".
+
+	* configure.in: Postprocess Makefile to work around another
+	automake-1.4 bug: on FreeBSD, shell commands are run with "set -e".
+
+	* configure.in: Postprocess misc/Makefile to work around another
+	automake-1.4 bug: if @EMACS@ = no, $(lispdir) is empty.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* os2/*: EMX support.
+	From Jun Sawataishi <jsawa@attglobal.net>.
+	* Makefile.am (EXTRA_DIST): Add these files.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* config.guess, config.sub: Update to GNU version 2001-03-06.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* djgpp/*: DJGPP support.
+	From Juan Manuel Guerrero <st001906@hrz1.hrz.tu-darmstadt.de>.
+	* Makefile.am (EXTRA_DIST): Add these files.
+	(MAINTAINERCLEANFILES): New variable.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (RELEASE_DATE): New variable.
+	Create intl/ChangeLog.inst.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* ltconfig:
+	sed -e 's/reload object files/produce relocatable object files/'.
+
+	Better support for DOS/Windows platforms.
+	* configure.in: Call AC_OBJEXT and AC_EXEEXT.
+
+2001-03-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Call bh_C_SIGNED.
+
+2001-02-27  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Replace no@nynorsk with nn.
+
+2001-02-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add ja.
+
+2001-02-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (SUBDIRS): Move intl before lib, because lib needs
+	libintl.h if the included libintl is used.
+
+2001-01-21  Bruno Haible  <haible@clisp.cons.org>
+
+	Use libtool.
+	* configure.in: Add argument 'use-libtool' to AM_GNU_GETTEXT call.
+
+2001-01-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Add a third argument to AC_DEFINE.
+	Require autoconf-2.13.
+	* acconfig.h (_GNU_SOURCE): Remove, now done in configure.in.
+	(HAVE_PARSE_PRINTF_FORMAT): Likewise.
+	(ENABLE_NLS): Remove, now done in m4/gettext.m4.
+	(HAVE_GETTEXT): Likewise.
+	(HAVE_STPCPY): Likewise.
+	(HAVE_LC_MESSAGES): Remove, now done in m4/lcmessage.m4.
+	(HAVE_PTRDIFF_T): Remove, now done in automake-1.4's ptrdiff.m4.
+	(HAVE_OBSTACK): Remove, not set by configure.
+	(HAVE_CATGETS): Likewise.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (DISTCLEANFILES): Remove. Now done in intl/Makefile.in.
+	* configure.in: Stop creating intl/intlh.inst from intl/intlh.inst.in.
+	Now done through a simple file copy.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Use AC_CHECK_HEADERS instead of AC_HAVE_HEADERS.
+	Call gt_SETLOCALE.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* ltconfig, ltmain.sh: Update from libtool-1.3.5.
+	* config.guess, config.sub: Update to GNU version 2000-11-10.
+	* missing: Update from gmp-3.1.1.
+	* install-sh: Update from fileutils-4.0.32.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Call jm_AC_TYPE_UNSIGNED_LONG_LONG and
+	jm_AC_TYPE_UINTMAX_T.
+
+2000-11-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (ALL_LINGUAS): Add tr.
+
+2000-08-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Invoke AC_C_BACKSLASH_A.
+
+2000-07-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (EXTRA_DIST): Add aclocal.sh.
+
+2000-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in: Postprocess misc/Makefile to workaround an automake
+	bug.
+
+2000-06-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am: Put back the ACLOCAL_AMFLAGS definition, but define
+	ACLOCAL as a wrapper around aclocal.
+	* aclocal.sh: New file.
+
+	* config.guess, config.sub: Update to GNU version 2000-06-13.
+	* misc/locale.alias: Update to glibc CVS version 2000-06-13.
+
+2000-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* Makefile.am: Comment out ACLOCAL_AMFLAGS definition.  The files
+	come with automake and therefore the -I will cause redefinitions.
+
+	* acconfig.h: Define HAVE_BASENAME if glibc is used.
+			
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1998-04-30 23:20  Ulrich Drepper  <drepper@cygnus.com>
 
 	* configure.in: Remove commands in AC_OUTPUT.  Moved into

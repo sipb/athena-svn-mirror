@@ -1,3 +1,158 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt-3: Use two grep invocations instead of a complex regexp that
+	only GNU grep understands.
+	* msgmerge-5: Likewise.
+	* xgettext-3: Likewise.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-2: Change formula and result for sl. Add test for lt.
+
+2001-04-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt-3: Update regexp to filter out specific warnings.
+	* msgmerge-5: Likewise.
+	* xgettext-3: Likewise.
+
+2001-04-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-2: Change formula and result for ru.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt-3: Set LC_MESSAGES=C, to filter out specific warnings.
+	* msgmerge-5: Likewise.
+	* xgettext-3: Likewise.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-2: Use cat, not echo, to create ll.po.
+
+2001-03-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* tstngettext.c: New file.
+	* plural-2: New file.
+	* Makefile.am (TESTS): Add plural-2.
+	(TESTS_ENVIRONMENT): Define NGETTEXT environment variable.
+	(EXTRA_PROGRAMS): Add tstngettext.
+	(tstngettext_SOURCES, tstngettext_LDADD): New variables.
+	* xg-test1.ok.po: Regenerated.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-1-prg.c: Force inclusion of libgnuintl.h. On Solaris,
+	<locale.h> has already included libintl.h.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgcmp-2: Expect a singular error message.
+	* msgmerge-2: Likewise.
+	* xg-test1.ok.po: Regenerated.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (LDADD): Define depending on @USE_INCLUDED_LIBINTL@.
+	(LDADD_yes, LDADD_no): New variables. When @USE_INCLUDED_LIBINTL@ = no,
+	use both ../intl/libgnuintl.a and @INTLLIBS@ instead of
+	../intl/libintl.la. Needed on systems which have gettext() in
+	libintl.so, because: 1. getopt.c needs -lintl, 2. tstgettext.c needs
+	../intl/libintl, 3. it is impossible to link with two different shared
+	libraries that have the same soname.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* msgfmt-3: Filter out charset related warning from msgfmt.
+	* msgmerge-5: Filter out charset related warning from msgmerge.
+	* xgettext-3: Filter out charset related warning from xgettext.
+	* xg-test1.ok.po: Regenerated.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* test.mo: Change msgid so that it passes the newest msgfmt
+	verifications.
+	* gettext-1: Update.
+
+2001-01-21  Bruno Haible  <haible@clisp.cons.org>
+
+	Use libtool.
+	* Makefile.am (LDADD): Use libintl.la instead of libintl.a.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* setlocale.c: New file, moved here from ../src.
+	* tstgettext.c: New file.
+	* Makefile.am (TESTS_ENVIRONMENT): Add "." to the PATH.
+	(xg-test1.ok.po): Use src/gettext.c instead of src/gettextp.c.
+	(INCLUDES): Add more dirs.
+	(DEFS): Add defines needed for gettext.c.
+	(LDADD): New variable.
+	(EXTRA_PROGRAMS, all-local, CLEANFILES): Add tstgettext.
+	(tstgettext_SOURCES, tstgettext_LDADD): New variable.
+	(cake_SOURCES): Update.
+	* xgettext-1: Use src/gettext.c instead of src/gettextp.c.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-1-prg.c: Include libgnuintl.h instead of libgettext.h.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-1-prg.c: Assume <locale.h> exists.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	Translations are now disabled in C locale.
+	* Makefile.am (TESTS_ENVIRONMENT): Use tstgettext for $GETTEXT.
+	(cake_LDADD): Add ../src/setlocale.o.
+	* gettext-1: Set LC_ALL to a nonempty value.
+	* gettext-2: Likewise.
+	* msgfmt-1: Likewise.
+	* msgfmt-2: Likewise.
+	* plural-1: Set LC_ALL, not LANGUAGE, to "fr".
+	* plural-1-prg.c: Include locale.h or declare setlocale.
+	(main): Call setlocale.
+
+2001-01-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-1-prg.c: Include config.h. Needed for C compilers lacking
+	"const", like SunOS4 cc.
+
+2001-01-01  Bruno Haible  <haible@clisp.cons.org>
+
+	Implement plural form handling.
+	* plural-1: New file.
+	* plural-1-prg.c: New file.
+	* Makefile.am (TESTS): Add plural-1.
+	(INCLUDES, EXTRA_PROGRAMS, cake_SOURCES, cake_LDADD, CLEANFILES): New
+	macros.
+	(all-local): New target.
+	* xg-test1.ok.po: Regenerated.
+
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1997-08-01 15:46  Ulrich Drepper  <drepper@cygnus.com>
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Require version 1.2.

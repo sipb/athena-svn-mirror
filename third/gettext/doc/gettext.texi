@@ -20,7 +20,7 @@
 This file provides documentation for GNU @code{gettext} utilities.
 It also serves as a reference for the free Translation Project.
 
-Copyright (C) 1995, 1996, 1997 Free Software Foundation, Inc.
+Copyright (C) 1995, 1996, 1997, 1998, 2001 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -54,7 +54,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1995, 1996, 1997 Free Software Foundation, Inc.
+Copyright @copyright{} 1995, 1996, 1997, 1998, 2001 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -79,7 +79,8 @@ by the Foundation.
 * Introduction::                Introduction
 * Basics::                      PO Files and PO Mode Basics
 * Sources::                     Preparing Program Sources
-* Initial::                     Making the Initial PO File
+* Template::                    Making the PO Template File
+* Creating::                    Creating a New PO File
 * Updating::                    Updating Existing PO Files
 * Binaries::                    Producing Binary MO Files
 * Users::                       The User's View
@@ -88,8 +89,10 @@ by the Foundation.
 * Maintainers::                 The Maintainer's View
 * Conclusion::                  Concluding Remarks
 
-* Country Codes::               ISO 639 country codes
+* Language Codes::              ISO 639 language codes
+* Country Codes::               ISO 3166 country codes
 
+@detailmenu
  --- The Detailed Node Listing ---
 
 Introduction
@@ -111,27 +114,28 @@ PO Files and PO Mode Basics
 Preparing Program Sources
 
 * Triggering::                  Triggering @code{gettext} Operations
-* Mark Keywords::               How Marks Appears in Sources
+* Mark Keywords::               How Marks Appear in Sources
 * Marking::                     Marking Translatable Strings
 * c-format::                    Telling something about the following string
 * Special cases::               Special Cases of Translatable Strings
 
-Making the Initial PO File
+Making the PO Template File
 
 * xgettext Invocation::         Invoking the @code{xgettext} Program
-* C Sources Context::           C Sources Context
-* Compendium::                  Using Translation Compendiums
 
 Updating Existing PO Files
 
 * msgmerge Invocation::         Invoking the @code{msgmerge} Program
-* Translated Entries::
-* Fuzzy Entries::               Fuzzy translated Entries
+* Translated Entries::          Translated Entries
+* Fuzzy Entries::               Fuzzy Entries
 * Untranslated Entries::        Untranslated Entries
 * Obsolete Entries::            Obsolete Entries
 * Modifying Translations::      Modifying Translations
 * Modifying Comments::          Modifying Comments
+* Subedit::                     Mode for Editing Translations
+* C Sources Context::           C Sources Context
 * Auxiliary::                   Consulting Auxiliary PO Files
+* Compendium::                  Using Translation Compendiums
 
 Producing Binary MO Files
 
@@ -163,6 +167,9 @@ About @code{gettext}
 * Interface to gettext::        The interface
 * Ambiguities::                 Solving ambiguities
 * Locating Catalogs::           Locating message catalog files
+* Charset conversion::          How to request conversion to Unicode
+* Plural forms::                Additional functions for handling plurals
+* GUI program problems::        Another technique for solving ambiguities
 * Optimized gettext::           Optimization of the *gettext functions
 
 Temporary Notes for the Programmers Chapter
@@ -202,6 +209,7 @@ Files You Must Create or Alter
 
 * po/POTFILES.in::              @file{POTFILES.in} in @file{po/}
 * configure.in::                @file{configure.in} at top level
+* config.guess::                @file{config.guess}, @file{config.sub} at top level
 * aclocal::                     @file{aclocal.m4} at top level
 * acconfig::                    @file{acconfig.h} at top level
 * Makefile::                    @file{Makefile.in} at top level
@@ -211,6 +219,8 @@ Concluding Remarks
 
 * History::                     History of GNU @code{gettext}
 * References::                  Related Readings
+
+@end detailmenu
 @end menu
 
 @end ifinfo
@@ -249,7 +259,7 @@ Please send suggestions and corrections to:
 @example
 @group
 @r{Internet address:}
-    bug-gnu-utils@@prep.ai.mit.edu
+    bug-gnu-utils@@gnu.org
 @end group
 @end example
 
@@ -292,13 +302,30 @@ offers to programmers, translators and even users, a well integrated
 set of tools and documentation.  Specifically, the GNU @code{gettext}
 utilities are a set of tools that provides a framework within which
 other free packages may produce multi-lingual messages.  These tools
-include a set of conventions about how programs should be written to
-support message catalogs, a directory and file naming organization for the
-message catalogs themselves, a runtime library supporting the retrieval of
-translated messages, and a few stand-alone programs to massage in various
-ways the sets of translatable strings, or already translated strings.
-A special mode for GNU Emacs also helps ease interested parties into
-preparing these sets, or bringing them up to date.
+include
+
+@itemize @bullet
+@item
+A set of conventions about how programs should be written to support
+message catalogs.
+
+@item
+A directory and file naming organization for the message catalogs
+themselves.
+
+@item
+A runtime library supporting the retrieval of translated messages.
+
+@item
+A few stand-alone programs to massage in various ways the sets of
+translatable strings, or already translated strings.
+
+@item
+A special mode for Emacs@footnote{In this manual, all mentions of Emacs
+refers to either GNU Emacs or to XEmacs, which people sometimes call FSF
+Emacs and Lucid Emacs, respectively.} which helps preparing these sets
+and bringing them up to date.
+@end itemize
 
 GNU @code{gettext} is designed to minimize the impact of
 internationalization on program sources, keeping this impact as small
@@ -306,9 +333,9 @@ and hardly noticeable as possible.  Internationalization has better
 chances of succeeding if it is very light weighted, or at least,
 appear to be so, when looking at program sources.
 
-The Translation Project also uses the GNU @code{gettext}
-distribution as a vehicle for documenting its structure and methods.
-This goes beyond the strict technicalities of documenting the GNU @code{gettext}
+The Translation Project also uses the GNU @code{gettext} distribution
+as a vehicle for documenting its structure and methods.  This goes
+beyond the strict technicalities of documenting the GNU @code{gettext}
 proper.  By so doing, translators will find in a single place, as
 far as possible, all they need to know for properly doing their
 translating work.  Also, this supplemental documentation might also
@@ -403,7 +430,7 @@ fairly orthogonal.
 A few programs include textual tables which might need translation
 themselves, independently of the strings contained in the program
 itself.  For example, @w{RFC 1345} gives an English description for each
-character which GNU @code{recode} is able to reconstruct at execution.
+character which the @code{recode} program is able to reconstruct at execution.
 Since these descriptions are extracted from the RFC by mechanical means,
 translating them properly would require a prior translation of the RFC
 itself.
@@ -433,8 +460,8 @@ undertaking in itself, generally.
 @end itemize
 
 As we already stressed, translation is only one aspect of locales.
-Other internationalization aspects are not currently handled by GNU
-@code{gettext}, but perhaps may be handled in future versions.  There
+Other internationalization aspects are system services and are handled
+in GNU @code{libc}.  There
 are many attributes that are needed to define a country's cultural
 conventions.  These attributes include beside the country's native
 language, the formatting of the date and time, the representation of
@@ -445,8 +472,7 @@ needed to support the country's native attributes.
 There are a few major areas which may vary between countries and
 hence, define what a locale must describe.  The following list helps
 putting multi-lingual messages into the proper context of other tasks
-related to locales, and also presents some other areas which GNU
-@code{gettext} might eventually tackle, maybe, one of these days.
+related to locales.  See the GNU @code{libc} manual for details.
 
 @table @emph
 
@@ -504,13 +530,10 @@ the user.
 
 @end table
 
-In the near future we see no chance that components of locale outside of
-message handling will be made available for use in other
-packages.  The reason for this is that most modern systems provide
-a more or less reasonable support for at least some of the missing
-components.  Another point is that the GNU @code{libc} and Linux will get
-a new and complete implementation of the whole locale functionality
-which could be adopted by system lacking a reasonable locale support.
+Components of locale outside of message handling are standardized in
+the ISO C standard and the SUSV2 specification.  GNU @code{libc}
+fully implements this, and most other modern systems provide a more
+or less reasonable support for at least some of the missing components.
 
 @node Files, Overview, Aspects, Introduction
 @section Files Conveying Translations
@@ -541,15 +564,11 @@ MO files are meant to be read by programs, and are binary in nature.
 A few systems already offer tools for creating and handling MO files
 as part of the Native Language Support coming with the system, but the
 format of these MO files is often different from system to system,
-and non-portable.  They do not necessary use @file{.mo} for file
-extensions, but since system libraries are also used for accessing
-these files, it works as long as the system is self-consistent about
-it.  If GNU @code{gettext} is able to interface with the tools already
-provided with systems, it will consequently let these provided tools
-take care of generating the MO files.  Or else, if such tools are not
-found or do not seem usable, GNU @code{gettext} will use its own ways
-and its own format for MO files.  Files ending with @file{.gmo} are
-really MO files, when it is known that these files use the GNU format.
+and non-portable.  The tools already provided with these systems don't
+support all the features of GNU @code{gettext}.  Therefore GNU
+@code{gettext} uses its own format for MO files.  Files ending with
+@file{.gmo} are really MO files, when it is known that these files use
+the GNU format.
 
 @node Overview,  , Files, Introduction
 @section Overview of GNU @code{gettext}
@@ -589,7 +608,7 @@ Original C Sources ---> PO mode ---> Marked C Sources ---.
 The indication @samp{PO mode} appears in two places in this picture,
 and you may safely read it as merely meaning ``hand editing'', using
 any editor of your choice, really.  However, for those of you being
-the lucky users of GNU Emacs, PO mode has been specifically created
+the lucky users of Emacs, PO mode has been specifically created
 for providing a cozy environment for editing or modifying PO files.
 While editing a PO file, PO mode allows for the easy browsing of
 auxiliary and compendium PO files, as well as for following references into
@@ -608,7 +627,7 @@ properly initialize the translation library.  @xref{Sources}, for
 more information about all this.
 
 For newly written software the strings of course can and should be
-marked while writing the it.  The @code{gettext} approach makes this
+marked while writing it.  The @code{gettext} approach makes this
 very easy.  Simply put the following lines at the beginning of each file
 or in a central header file:
 
@@ -624,12 +643,25 @@ or in a central header file:
 @noindent
 Doing this allows you to prepare the sources for internationalization.
 Later when you feel ready for the step to use the @code{gettext} library
-simply remove these definitions, include @file{libintl.h} and link
-against @file{libintl.a}.  That is all you have to change.
+simply replace these definitions by the following:
+
+@example
+@group
+#include <libintl.h>
+#define _(String) gettext (String)
+#define gettext_noop(String) (String)
+#define N_(String) gettext_noop (String)
+@end group
+@end example
+
+and link against @file{libintl.a} or @file{libintl.so}.  Note that on
+GNU systems, you don't need to link with @code{libintl} because the
+@code{gettext} library functions are already contained in GNU libc.
+That is all you have to change.
 
 Once the C sources have been modified, the @code{xgettext} program
-is used to find and extract all translatable strings, and create an
-initial PO file out of all these.  This @file{@var{package}.pot} file
+is used to find and extract all translatable strings, and create a
+PO template file out of all these.  This @file{@var{package}.pot} file
 contains all original program strings.  It has sets of pointers to
 exactly where in C sources each string is used.  All translations
 are set to empty.  The letter @kbd{t} in @file{.pot} marks this as
@@ -656,11 +688,11 @@ for sharing your translating concerns with others who target the same
 native language.
 
 While adding the translated messages into the @file{@var{lang}.pox}
-PO file, if you do not have GNU Emacs handy, you are on your own
+PO file, if you do not have Emacs handy, you are on your own
 for ensuring that your efforts fully respect the PO file format, and quoting
 conventions (@pxref{PO Files}).  This is surely not an impossible task,
 as this is the way many people have handled PO files already for Uniforum or
-Solaris.  On the other hand, by using PO mode in GNU Emacs, most details
+Solaris.  On the other hand, by using PO mode in Emacs, most details
 of PO file format are taken care of for you, but you have to acquire
 some familiarity with PO mode itself.  Besides main PO mode commands
 (@pxref{Main PO Commands}), you should know how to move between entries
@@ -777,16 +809,16 @@ Once you have received, unpacked, configured and compiled the GNU
 place the programs @code{xgettext}, @code{msgfmt}, @code{gettext}, and
 @code{msgmerge}, as well as their available message catalogs.  To
 top off a comfortable installation, you might also want to make the
-PO mode available to your GNU Emacs users.
+PO mode available to your Emacs users.
 
-During the installation of the PO mode, you might want modify your
+During the installation of the PO mode, you might want to modify your
 file @file{.emacs}, once and for all, so it contains a few lines looking
 like:
 
 @example
 (setq auto-mode-alist
       (cons '("\\.po[tx]?\\'\\|\\.po\\." . po-mode) auto-mode-alist))
-(autoload 'po-mode "po-mode")
+(autoload 'po-mode "po-mode" "Major mode for translators to edit PO files" t)
 @end example
 
 Later, whenever you edit some @file{.po}, @file{.pot} or @file{.pox}
@@ -797,20 +829,23 @@ The string @emph{PO} appears in the mode line for any buffer for
 which PO mode is active.  Many PO files may be active at once in a
 single Emacs session.
 
-If you are using Emacs version 20 or better, and have already installed
-the appropriate international fonts on your system, you may also manage
-for the these fonts to be automatically loaded and used for displaying
-the translations on your Emacs screen, whenever necessary.  For this to
-happen, you might want to add the lines:
+If you are using Emacs version 20 or newer, and have already installed
+the appropriate international fonts on your system, you may also tell
+Emacs how to determine automatically the coding system of every PO file.
+This will often (but not always) cause the necessary fonts to be loaded
+and used for displaying the translations on your Emacs screen.  For this
+to happen, add the lines:
 
 @example
-(autoload 'po-find-file-coding-system "po-mode")
 (modify-coding-system-alist 'file "\\.po[tx]?\\'\\|\\.po\\."
                             'po-find-file-coding-system)
+(autoload 'po-find-file-coding-system "po-mode")
 @end example
 
 @noindent
-to your @file{.emacs} file.
+to your @file{.emacs} file.  If, with this, you still see boxes instead
+of international characters, try a different font set (via Shift Mouse
+button 1).
 
 @node PO Files, Main PO Commands, Installation, Basics
 @section The Format of PO Files
@@ -846,7 +881,7 @@ have some non-white character just after the @kbd{#}, which comments
 are created and maintained automatically by GNU @code{gettext} tools.
 All comments, of either kind, are optional.
 
-After white space and comments, entries show two strings, giving
+After white space and comments, entries show two strings, namely
 first the untranslated string as it appears in the original program
 sources, and then, the translation of this string.  The original
 string is introduced by the keyword @code{msgid}, and the translation,
@@ -854,7 +889,7 @@ by @code{msgstr}.  The two strings, untranslated and translated,
 are quoted in various ways in the PO file, using @kbd{"}
 delimiters and @kbd{\} escapes, but the translator does not really
 have to pay attention to the precise quoting format, as PO mode fully
-intend to take care of quoting for her.
+takes care of quoting for her.
 
 The @code{msgid} strings, as well as automatic comments, are produced
 and managed by other GNU @code{gettext} tools, and PO mode does not
@@ -867,7 +902,7 @@ the full control she needs.
 The comment lines beginning with @kbd{#,} are special because they are
 not completely ignored by the programs as comments generally are.  The
 comma separated list of @var{flag}s is used by the @code{msgfmt}
-program to give the user some better disgnostic messages.  Currently
+program to give the user some better diagnostic messages.  Currently
 there are two forms of flags defined:
 
 @table @kbd
@@ -877,7 +912,7 @@ inserted by the translator herself.  It shows that the @code{msgstr}
 string might not be a correct translation (anymore).  Only the translator
 can judge if the translation requires further modification, or is
 acceptable as is.  Once satisfied with the translation, she then removes
-this @kbd{fuzzy} attribute.  The @code{msgmerge} programs inserts this
+this @kbd{fuzzy} attribute.  The @code{msgmerge} program inserts this
 when it combined the @code{msgid} and @code{msgstr} entries after fuzzy
 search only.  @xref{Fuzzy Entries}.
 
@@ -894,6 +929,22 @@ does some more tests to check to validity of the translation.
 
 @end table
 
+A different kind of entries is used for translations which involve
+plural forms.
+
+@example
+@var{white-space}
+#  @var{translator-comments}
+#. @var{automatic-comments}
+#: @var{reference}@dots{}
+#, @var{flag}@dots{}
+msgid @var{untranslated-string-singular}
+msgid_plural @var{untranslated-string-plural}
+msgstr[0] @var{translated-string-case-0}
+...
+msgstr[N] @var{translated-string-case-n}
+@end example
+
 It happens that some lines, usually whitespace or comments, follow the
 very last entry of a PO file.  Such lines are not part of any entry,
 and PO mode is unable to take action on those lines.  By using the
@@ -903,7 +954,7 @@ rid of those spurious lines.  @xref{Normalizing}.
 The remainder of this section may be safely skipped by those using
 PO mode, yet it may be interesting for everybody to have a better
 idea of the precise format of a PO file.  On the other hand, those
-not having GNU Emacs handy should carefully continue reading on.
+not having Emacs handy should carefully continue reading on.
 
 Each of @var{untranslated-string} and @var{translated-string} respects
 the C syntax for a character string, including the surrounding quotes
@@ -931,8 +982,8 @@ line, while keeping the multi-line presentation left-justified, as
 we find this to be a cleaner disposition.  The empty string could have
 been omitted, but only if the string starting with @samp{Here} was
 promoted on the first line, right after @code{msgid}.@footnote{This
-limitation is not imposed by GNU @code{gettext}, but comes from the
-@code{msgfmt} implementation on Solaris.} It was not really necessary
+limitation is not imposed by GNU @code{gettext}, but is for compatibility
+with the @code{msgfmt} implementation on Solaris.} It was not really necessary
 either to switch between the two last quoted strings immediately after
 the newline @samp{\n}, the switch could have occurred after @emph{any}
 other character, we just did it this way because it is neater.
@@ -1002,7 +1053,7 @@ Batch validate the format of the whole PO file.
 
 @end table
 
-The command @kbd{U} (@code{po-undo}) interfaces to the GNU Emacs
+The command @kbd{U} (@code{po-undo}) interfaces to the Emacs
 @emph{undo} facility.  @xref{Undo, , Undoing Changes, emacs, The Emacs
 Editor}.  Each time @kbd{U} is typed, modifications which the translator
 did to the PO file are undone a little more.  For the purpose of
@@ -1052,8 +1103,8 @@ as well as all individual entries.
 
 The program @code{msgfmt} runs asynchronously with Emacs, so the
 translator regains control immediately while her PO file is being studied.
-Error output is collected in the GNU Emacs @samp{*compilation*} buffer,
-displayed in another window.  The regular GNU Emacs command @kbd{C-x`}
+Error output is collected in the Emacs @samp{*compilation*} buffer,
+displayed in another window.  The regular Emacs command @kbd{C-x`}
 (@code{next-error}), as well as other usual compile commands, allow the
 translator to reposition quickly to the offending parts of the PO file.
 Once the cursor is on the line in error, the translator may decide on
@@ -1104,11 +1155,11 @@ Exchange the current entry location with the previously saved one.
 
 @end table
 
-Any GNU Emacs command able to reposition the cursor may be used
+Any Emacs command able to reposition the cursor may be used
 to select the current entry in PO mode, including commands which
 move by characters, lines, paragraphs, screens or pages, and search
 commands.  However, there is a kind of standard way to display the
-current entry in PO mode, which usual GNU Emacs commands moving
+current entry in PO mode, which usual Emacs commands moving
 the cursor do not especially try to enforce.  The command @kbd{.}
 (@code{po-current-entry}) has the sole purpose of redisplaying the
 current entry properly, after the current entry has been changed by
@@ -1118,7 +1169,7 @@ It is yet to be decided if PO mode helps the translator, or otherwise
 irritates her, by forcing a rigid window disposition while she
 is doing her work.  We originally had quite precise ideas about
 how windows should behave, but on the other hand, anyone used to
-GNU Emacs is often happy to keep full control.  Maybe a fixed window
+Emacs is often happy to keep full control.  Maybe a fixed window
 disposition might be offered as a PO mode option that the translator
 might activate or deactivate at will, so it could be offered on an
 experimental basis.  If nobody feels a real need for using it, or
@@ -1157,7 +1208,7 @@ onto a special stack.  The command @kbd{m} (@code{po-push-location})
 merely adds the location of current entry to the stack, pushing
 the already saved locations under the new one.  The command
 @kbd{r} (@code{po-pop-location}) consumes the top stack element and
-reposition the cursor to the entry associated with that top element.
+repositions the cursor to the entry associated with that top element.
 This position is then lost, for the next @kbd{r} will move the cursor
 to the previously saved location, and so on until no locations remain
 on the stack.
@@ -1168,8 +1219,8 @@ element, then go elsewhere with the intent of getting back later, she
 ought to use @kbd{m} immediately after @kbd{r}.
 
 The command @kbd{x} (@code{po-exchange-location}) simultaneously
-reposition the cursor to the entry associated with the top element of
-the stack of saved locations, and replace that top element with the
+repositions the cursor to the entry associated with the top element of
+the stack of saved locations, and replaces that top element with the
 location of the current entry before the move.  Consequently, repeating
 the @kbd{x} command toggles alternatively between two entries.
 For achieving this, the translator will position the cursor on the
@@ -1209,7 +1260,7 @@ Tidy the whole PO file by making entries more uniform.
 
 @end table
 
-The special command @kbd{M-x po-normalize}, which has no associate
+The special command @kbd{M-x po-normalize}, which has no associated
 keys, revises all entries, ensuring that strings of both original
 and translated entries use uniform internal quoting in the PO file.
 It also removes any crumb after the last entry.  This command may be
@@ -1238,7 +1289,7 @@ It is easy to make suggested adjustments at a later time, as the
 normalizing command and eventually, other GNU @code{gettext} tools
 should greatly automate conformance.  A description of the canonical
 string format is given below, for the particular benefit of those not
-having GNU Emacs handy, and who would nevertheless want to handcraft
+having Emacs handy, and who would nevertheless want to handcraft
 their PO files in nice ways.
 
 Right now, in PO mode, strings are single line or multi-line.  A string
@@ -1279,7 +1330,7 @@ msgstr "\n\n"
 There are a few yet undecided little points about string normalization,
 to be documented in this manual, once these questions settle.
 
-@node Sources, Initial, Basics, Top
+@node Sources, Template, Basics, Top
 @chapter Preparing Program Sources
 
 @c FIXME: Rewrite (the whole chapter).
@@ -1306,7 +1357,7 @@ sections of this chapter.
 
 @menu
 * Triggering::                  Triggering @code{gettext} Operations
-* Mark Keywords::               How Marks Appears in Sources
+* Mark Keywords::               How Marks Appear in Sources
 * Marking::                     Marking Translatable Strings
 * c-format::                    Telling something about the following string
 * Special cases::               Special Cases of Translatable Strings
@@ -1347,7 +1398,7 @@ kind of input language, be wrong.  For example this would mean that a
 source code using the @,{c} (c-cedilla character) is runnable in
 France but not in the U.S.
 
-Some systems also have problems with parsing number using the
+Some systems also have problems with parsing numbers using the
 @code{scanf} functions if an other but the @code{LC_ALL} locale is used.
 The standards say that additional formats but the one known in the
 @code{"C"} locale might be recognized.  But some systems seem to reject
@@ -1366,7 +1417,7 @@ code above by a sequence of @code{setlocale} lines
 @group
 @{
   @dots{}
-  setlocale (LC_TIME, "");
+  setlocale (LC_CTYPE, "");
   setlocale (LC_MESSAGES, "");
   @dots{}
 @}
@@ -1374,15 +1425,28 @@ code above by a sequence of @code{setlocale} lines
 @end example
 
 @noindent
-or to switch for and back to the character class in question.  On all
-POSIX conformant systems the locale categories @code{LC_CTYPE},
+On all POSIX conformant systems the locale categories @code{LC_CTYPE},
 @code{LC_COLLATE}, @code{LC_MONETARY}, @code{LC_NUMERIC}, and
 @code{LC_TIME} are available.  On some modern systems there is also a
 locale @code{LC_MESSAGES} which is called on some old, XPG2 compliant
 systems @code{LC_RESPONSES}.
 
+Note that changing the @code{LC_CTYPE} also affects the functions
+declared in the @code{<ctype.h>} standard header.  If this is not
+desirable in your application (for example in a compiler's parser),
+you can use a set of substitute functions which hardwire the C locale,
+such as found in the @code{<c-ctype.h>} and @code{<c-ctype.c>} files
+in the gettext source distribution.
+
+It is also possible to switch the locale forth and back between the
+environment dependent locale and the C locale, but this approach is
+normally avoided because a @code{setlocale} call is expensive,
+because it is tedious to determine the places where a locale switch
+is needed in a large program's source, and because switching a locale
+is not multithread-safe.
+
 @node Mark Keywords, Marking, Triggering, Sources
-@section How Marks Appears in Sources
+@section How Marks Appear in Sources
 
 All strings requiring translation should be marked in the C sources.  Marking
 is done in such a way that each translatable string appears to be
@@ -1481,7 +1545,7 @@ directory, somewhat summarizing the contents using a special file
 format Emacs can understand.
 
 For packages following the GNU coding standards, there is
-a make goal @code{tags} or @code{TAGS} which construct the tag files in
+a make goal @code{tags} or @code{TAGS} which constructs the tag files in
 all directories and for all files containing source code.
 
 Once your @file{TAGS} file is ready, the following commands assist
@@ -1507,7 +1571,7 @@ keywords.
 
 @end table
 
-The @kbd{,} (@code{po-tags-search}) command search for the next
+The @kbd{,} (@code{po-tags-search}) command searches for the next
 occurrence of a string which looks like a possible candidate for
 translation, and displays the program source in another Emacs window,
 positioned in such a way that the string is near the top of this other
@@ -1560,7 +1624,7 @@ that the modifications made to the program source by @kbd{M-,} or
 @kbd{M-.} render some source line longer than 80 columns, forcing you
 to break and re-indent this line differently.  You may use the @kbd{O}
 command from PO mode, or any other window changing command from
-GNU Emacs, to break out into the program source window, and do any
+Emacs, to break out into the program source window, and do any
 needed adjustments.  You will have to use some regular Emacs command
 to return the cursor to the PO file window, if you want command
 @kbd{,} for the next string, say.
@@ -1671,16 +1735,16 @@ happens if the translation introduces a valid format specifier?  The
 exists because the original code does not refer to any parameter.
 
 @code{xgettext} of course could make a wrong decision the other way
-round.  A string marked as a format string is not really a format
+round, i.e. a string marked as a format string actually is not a format
 string.  In this case the @code{msgfmt} might give too many warnings and
 would prevent translating the @file{.po} file.  The method to prevent
 this wrong decision is similar to the one used above, only the comment
 to use must contain the string @kbd{xgettext:no-c-format}.
 
 If a string is marked with @kbd{c-format} and this is not correct the
-user can find out who is responsible for the decision.  @xref{xgettext
-Invocation} to see how the @kbd{--debug} option can be used for solving
-this problem.
+user can find out who is responsible for the decision.  See
+@ref{xgettext Invocation} to see how the @kbd{--debug} option can be
+used for solving this problem.
 
 @node Special cases,  , c-format, Sources
 @section Special Cases of Translatable Strings
@@ -1777,18 +1841,19 @@ sure the output is really translated in any case.  But this analysis is
 generally not very difficult.  If it should be in any situation you can
 use this second method in this situation.
 
-@node Initial, Updating, Sources, Top
-@chapter Making the Initial PO File
+@node Template, Creating, Sources, Top
+@chapter Making the PO Template File
+
+After preparing the sources, the programmer creates a PO template file.
+This section explains how to use @code{xgettext} for this purpose.
 
 @c FIXME: Rewrite.
 
 @menu
 * xgettext Invocation::         Invoking the @code{xgettext} Program
-* C Sources Context::           C Sources Context
-* Compendium::                  Using Translation Compendiums
 @end menu
 
-@node xgettext Invocation, C Sources Context, Initial, Initial
+@node xgettext Invocation,  , Template, Template
 @section Invoking the @code{xgettext} Program
 
 @c FIXME: Rewrite.
@@ -1813,7 +1878,7 @@ Recognize C++ style comments.
 
 @itemx --debug
 Use the flags @kbd{c-format} and @kbd{possible-c-format} to show who was
-responsible for marking a message as a format string.  The later form is
+responsible for marking a message as a format string.  The latter form is
 used if the @code{xgettext} program decided, the format form is used if
 the programmer prescribed it.
 
@@ -1839,7 +1904,7 @@ Read the names of the input files from @var{file} instead of getting
 them from the command line.
 
 @itemx --force
-Always write output file even if no message is defined.
+Always write an output file even if no message is defined.
 
 @item -h
 @itemx --help
@@ -1854,13 +1919,24 @@ List of directories searched for input files.
 Join messages with existing file.
 
 @item -k @var{word}
-@itemx --keyword[=@var{word}]
-Additonal keyword to be looked for (without @var{word} means not to
+@itemx --keyword[=@var{keywordspec}]
+Additional keyword to be looked for (without @var{keywordspec} means not to
 use default keywords).
 
-The default keywords, which are always looked for if not explicitly
-disabled, are @code{gettext}, @code{dgettext}, @code{dcgettext} and
-@code{gettext_noop}.
+If @var{keywordspec} is a C identifer @var{id}, @code{xgettext} looks
+for strings in the first argument of each call to the function or macro
+@var{id}.  If @var{keywordspec} is of the form
+@samp{@var{id}:@var{argnum}}, @code{xgettext} looks for strings in the
+@var{argnum}th argument of the call.  If @var{keywordspec} is of the form
+@samp{@var{id}:@var{argnum1},@var{argnum2}}, @code{xgettext} looks for
+strings in the @var{argnum1}st argument and in the @var{argnum2}nd argument
+of the call, and treats them as singular/plural variants for a message
+with plural handling.
+
+The default keyword specifications, which are always looked for if not
+explicitly disabled, are @code{gettext}, @code{dgettext:2},
+@code{dcgettext:2}, @code{ngettext:1,2}, @code{dngettext:2,3},
+@code{dcngettext:2,3}, and @code{gettext_noop}.
 
 @item -m [@var{string}]
 @itemx --msgstr-prefix[=@var{string}]
@@ -1894,7 +1970,7 @@ Output files will be placed in directory @var{dir}.
 Generate sorted output and remove duplicates.
 
 @item --strict
-Write out strict Uniforum conforming PO file.
+Write out a strict Uniforum conforming PO file.
 
 @item -v
 @itemx --version
@@ -1915,7 +1991,716 @@ This implementation of @code{xgettext} is able to process a few awkward
 cases, like strings in preprocessor macros, ANSI concatenation of
 adjacent strings, and escaped end of lines for continued strings.
 
-@node C Sources Context, Compendium, xgettext Invocation, Initial
+@node Creating, Updating, Template, Top
+@chapter Creating a New PO File
+
+When starting a new translation, the translator copies the
+@file{@var{package}.pot} template file to a file called
+@file{@var{LANG}.po}.  Then she modifies the initial comments and
+the header entry of this file.
+
+The initial comments "SOME DESCRIPTIVE TITLE", "YEAR" and
+"FIRST AUTHOR <EMAIL@@ADDRESS>, YEAR" ought to be replaced by sensible
+information.  This can be done in any text editor; if Emacs is used
+and it switched to PO mode automatically (because it has recognized
+the file's suffix), you can disable it by typing @kbd{M-x fundamental-mode}.
+
+Modifying the header entry can already be done using PO mode: in Emacs,
+type @kbd{M-x po-mode RET} and then @kbd{RET} again to start editing the
+entry.  You should fill in the following fields.
+
+@table @asis
+@item Project-Id-Version
+This is the name and version of the package.
+
+@item POT-Creation-Date
+This has already been filled in by @code{xgettext}.
+
+@item PO-Revision-Date
+You don't need to fill this in. It will be filled by the Emacs PO mode
+when you save the file.
+
+@item Last-Translator
+Fill in your name and email address (without double quotes).
+
+@item Language-Team
+Fill in the English name of the language, and the email address of the
+language team you are part of.
+
+Before starting a translation, it is a good idea to get in touch with
+your translation team, not only to make sure you don't do duplicated work,
+but also to coordinate difficult linguistic issues.
+
+In the Free Translation Project, each translation team has its own mailing
+list.  The up-to-date list of teams can be found at the Free Translation
+Project's homepage, @file{http://www.iro.umontreal.ca/contrib/po/HTML/},
+in the "National teams" area.
+
+@item Content-Type
+Replace @samp{CHARSET} with the character encoding used for your language,
+in your locale, or UTF-8.  This field is needed for correct operation of the
+@code{msgmerge} and @code{msgfmt} programs, as well as for users whose
+locale's character encoding differs from yours (see @ref{Charset conversion}).
+
+You get the character encoding of your locale by running the shell command
+@samp{locale charmap}.  If the result is @samp{C} or @samp{ANSI_X3.4-1968},
+which is equivalent to @samp{ASCII} (= @samp{US-ASCII}), it means that your
+locale is not correctly configured.  In this case, ask your translation
+team which charset to use.  @samp{ASCII} is not usable for any language
+except Latin.
+
+Because the PO files must be portable to operating systems with less advanced
+internationalization facilities, the character encodings that can be used
+are limited to those supported by both GNU @code{libc} and GNU
+@code{libiconv}. These are:
+@code{ASCII}, @code{ISO-8859-1}, @code{ISO-8859-2}, @code{ISO-8859-3},
+@code{ISO-8859-4}, @code{ISO-8859-5}, @code{ISO-8859-6}, @code{ISO-8859-7},
+@code{ISO-8859-8}, @code{ISO-8859-9}, @code{ISO-8859-13}, @code{ISO-8859-15},
+@code{KOI8-R}, @code{KOI8-U}, @code{CP850}, @code{CP866}, @code{CP874},
+@code{CP932}, @code{CP949}, @code{CP950}, @code{CP1250}, @code{CP1251},
+@code{CP1252}, @code{CP1253}, @code{CP1254}, @code{CP1255}, @code{CP1256},
+@code{CP1257}, @code{GB2312}, @code{EUC-JP}, @code{EUC-KR}, @code{EUC-TW},
+@code{BIG5}, @code{BIG5-HKSCS}, @code{GBK}, @code{GB18030}, @code{SHIFT_JIS},
+@code{JOHAB}, @code{TIS-620}, @code{VISCII}, @code{UTF-8}.
+
+@c This data is taken from glibc/localedata/SUPPORTED.
+In the GNU system, the following encodings are frequently used for the
+corresponding languages.
+
+@itemize
+@item @code{ISO-8859-1} for
+ Afrikaans, Albanian, Basque, Catalan, Dutch, English, Estonian, Faroese,
+ Finnish, French, Galician, German, Greenlandic, Icelandic, Indonesian,
+ Irish, Italian, Malay, Norwegian, Portuguese, Spanish, Swedish,
+@item @code{ISO-8859-2} for
+ Croatian, Czech, Hungarian, Polish, Romanian, Serbian, Slovak, Slovenian,
+@item @code{ISO-8859-3} for Maltese,
+@item @code{ISO-8859-5} for Macedonian, Serbian,
+@item @code{ISO-8859-6} for Arabic,
+@item @code{ISO-8859-7} for Greek,
+@item @code{ISO-8859-8} for Hebrew,
+@item @code{ISO-8859-9} for Turkish,
+@item @code{ISO-8859-13} for Latvian, Lithuanian,
+@item @code{ISO-8859-15} for
+ Basque, Catalan, Dutch, English, Finnish, French, Galician, German, Irish,
+ Italian, Portuguese, Spanish, Swedish,
+@item @code{KOI8-R} for Russian,
+@item @code{KOI8-U} for Ukrainian,
+@item @code{CP1251} for Bulgarian, Byelorussian,
+@item @code{GB2312}, @code{GBK}, @code{GB18030}
+ for simplified writing of Chinese,
+@item @code{BIG5}, @code{BIG5-HKSCS}
+ for traditional writing of Chinese,
+@item @code{EUC-JP} for Japanese,
+@item @code{EUC-KR} for Korean,
+@item @code{TIS-620} for Thai,
+@item @code{UTF-8} for any language, including those listed above.
+@end itemize
+
+When single quote characters or double quote characters are used in
+translations for your language, and your locale's encoding is one of the
+ISO-8859-* charsets, it is best if you create your PO files in UTF-8
+encoding, instead of your locale's encoding.  This is because in UTF-8
+the real quote characters can be represented (single quote characters:
+U+2018, U+2019, double quote characters: U+201C, U+201D), whereas none of
+ISO-8859-* charsets has them all.  Users in UTF-8 locales will see the
+real quote characters, whereas users in ISO-8859-* locales will see the
+vertical apostrophe and the vertical double quote instead (because that's
+what the character set conversion will transliterate them to).
+
+To enter such quote characters under X11, you can change your keyboard
+mapping using the @code{xmodmap} program.  The X11 names of the quote
+characters are "leftsinglequotemark", "rightsinglequotemark",
+"leftdoublequotemark", "rightdoublequotemark", "singlelowquotemark",
+"doublelowquotemark".
+
+Note that only recent versions of GNU Emacs support the UTF-8 encoding:
+Emacs 20 with Mule-UCS, and Emacs 21.  As of January 2001, XEmacs doesn't
+support the UTF-8 encoding.
+
+The character encoding name can be written in either upper or lower case.
+Usually upper case is preferred.
+
+@item Content-Transfer-Encoding
+Set this to @code{8bit}.
+
+@item Plural-Forms
+This field is optional.  It is only needed if the PO file has plural forms.
+You can find them by searching for the @samp{msgid_plural} keyword.  The
+format of the plural forms field is described in @ref{Plural forms}.
+@end table
+
+@node Updating, Binaries, Creating, Top
+@chapter Updating Existing PO Files
+
+@c FIXME: Rewrite.
+
+@menu
+* msgmerge Invocation::         Invoking the @code{msgmerge} Program
+* Translated Entries::          Translated Entries
+* Fuzzy Entries::               Fuzzy Entries
+* Untranslated Entries::        Untranslated Entries
+* Obsolete Entries::            Obsolete Entries
+* Modifying Translations::      Modifying Translations
+* Modifying Comments::          Modifying Comments
+* Subedit::                     Mode for Editing Translations
+* C Sources Context::           C Sources Context
+* Auxiliary::                   Consulting Auxiliary PO Files
+* Compendium::                  Using Translation Compendiums
+@end menu
+
+@node msgmerge Invocation, Translated Entries, Updating, Updating
+@section Invoking the @code{msgmerge} Program
+
+@c FIXME: Rewrite.
+
+@c @example
+@c tupdate --help
+@c tupdate --version
+@c tupdate @var{new} @var{old}
+@c @end example
+
+@c File @var{new} is the last created PO file (generally by
+@c @code{xgettext}).  It need not contain any translations.  File
+@c @var{old} is the PO file including the old translations which will
+@c be taken over to the newly created file as long as they still match.
+
+@c When English messages change in the programs, this is reflected in
+@c the PO file as extracted by @code{xgettext}.  In large messages, that
+@c can be hard to detect, and will obviously result in an incomplete
+@c translation.  One of the virtues of @code{tupdate} is that it detects
+@c such changes, saving the previous translation into a PO file comment,
+@c so marking the entry as obsolete, and giving the modified string with
+@c an empty translation, that is, marking the entry as untranslated.
+
+@node Translated Entries, Fuzzy Entries, msgmerge Invocation, Updating
+@section Translated Entries
+
+Each PO file entry for which the @code{msgstr} field has been filled with
+a translation, and which is not marked as fuzzy (@pxref{Fuzzy Entries}),
+is a said to be a @dfn{translated} entry.  Only translated entries will
+later be compiled by GNU @code{msgfmt} and become usable in programs.
+Other entry types will be excluded; translation will not occur for them.
+
+Some commands are more specifically related to translated entry processing.
+
+@table @kbd
+@item t
+Find the next translated entry.
+
+@item M-t
+Find the previous translated entry.
+
+@end table
+
+The commands @kbd{t} (@code{po-next-translated-entry}) and @kbd{M-t}
+(@code{po-previous-transted-entry}) move forwards or backwards, chasing
+for an translated entry.  If none is found, the search is extended and
+wraps around in the PO file buffer.
+
+Translated entries usually result from the translator having edited in
+a translation for them, @ref{Modifying Translations}.  However, if the
+variable @code{po-auto-fuzzy-on-edit} is not @code{nil}, the entry having
+received a new translation first becomes a fuzzy entry, which ought to
+be later unfuzzied before becoming an official, genuine translated entry.
+@xref{Fuzzy Entries}.
+
+@node Fuzzy Entries, Untranslated Entries, Translated Entries, Updating
+@section Fuzzy Entries
+
+Each PO file entry may have a set of @dfn{attributes}, which are
+qualities given a name and explicitely associated with the translation,
+using a special system comment.  One of these attributes
+has the name @code{fuzzy}, and entries having this attribute are said
+to have a fuzzy translation.  They are called fuzzy entries, for short.
+
+Fuzzy entries, even if they account for translated entries for
+most other purposes, usually call for revision by the translator.
+Those may be produced by applying the program @code{msgmerge} to
+update an older translated PO files according to a new PO template
+file, when this tool hypothesises that some new @code{msgid} has
+been modified only slightly out of an older one, and chooses to pair
+what it thinks to be the old translation for the new modified entry.
+The slight alteration in the original string (the @code{msgid} string)
+should often be reflected in the translated string, and this requires
+the intervention of the translator.  For this reason, @code{msgmerge}
+might mark some entries as being fuzzy.
+
+Also, the translator may decide herself to mark an entry as fuzzy
+for her own convenience, when she wants to remember that the entry
+has to be later revisited.  So, some commands are more specifically
+related to fuzzy entry processing.
+
+@table @kbd
+@item f
+Find the next fuzzy entry.
+
+@item M-f
+Find the previous fuzzy entry.
+
+@item @key{TAB}
+Remove the fuzzy attribute of the current entry.
+
+@end table
+
+The commands @kbd{f} (@code{po-next-fuzzy}) and @kbd{M-f}
+(@code{po-previous-fuzzy}) move forwards or backwards, chasing for
+a fuzzy entry.  If none is found, the search is extended and wraps
+around in the PO file buffer.
+
+The command @kbd{@key{TAB}} (@code{po-unfuzzy}) removes the fuzzy
+attribute associated with an entry, usually leaving it translated.
+Further, if the variable @code{po-auto-select-on-unfuzzy} has not
+the @code{nil} value, the @kbd{@key{TAB}} command will automatically chase
+for another interesting entry to work on.  The initial value of
+@code{po-auto-select-on-unfuzzy} is @code{nil}.
+
+The initial value of @code{po-auto-fuzzy-on-edit} is @code{nil}.  However,
+if the variable @code{po-auto-fuzzy-on-edit} is set to @code{t}, any entry
+edited through the @kbd{@key{RET}} command is marked fuzzy, as a way to
+ensure some kind of double check, later.  In this case, the usual paradigm
+is that an entry becomes fuzzy (if not already) whenever the translator
+modifies it.  If she is satisfied with the translation, she then uses
+@kbd{@key{TAB}} to pick another entry to work on, clearing the fuzzy attribute
+on the same blow.  If she is not satisfied yet, she merely uses @kbd{@key{SPC}}
+to chase another entry, leaving the entry fuzzy.
+
+The translator may also use the @kbd{@key{DEL}} command
+(@code{po-fade-out-entry}) over any translated entry to mark it as being
+fuzzy, when she wants to easily leave a trace she wants to later return
+working at this entry.
+
+Also, when time comes to quit working on a PO file buffer with the @kbd{q}
+command, the translator is asked for confirmation, if fuzzy string
+still exists.
+
+@node Untranslated Entries, Obsolete Entries, Fuzzy Entries, Updating
+@section Untranslated Entries
+
+When @code{xgettext} originally creates a PO file, unless told
+otherwise, it initializes the @code{msgid} field with the untranslated
+string, and leaves the @code{msgstr} string to be empty.  Such entries,
+having an empty translation, are said to be @dfn{untranslated} entries.
+Later, when the programmer slightly modifies some string right in
+the program, this change is later reflected in the PO file
+by the appearance of a new untranslated entry for the modified string.
+
+The usual commands moving from entry to entry consider untranslated
+entries on the same level as active entries.  Untranslated entries
+are easily recognizable by the fact they end with @w{@samp{msgstr ""}}.
+
+The work of the translator might be (quite naively) seen as the process
+of seeking for an untranslated entry, editing a translation for
+it, and repeating these actions until no untranslated entries remain.
+Some commands are more specifically related to untranslated entry
+processing.
+
+@table @kbd
+@item u
+Find the next untranslated entry.
+
+@item M-u
+Find the previous untranslated entry.
+
+@item k
+Turn the current entry into an untranslated one.
+
+@end table
+
+The commands @kbd{u} (@code{po-next-untranslated-entry}) and @kbd{M-u}
+(@code{po-previous-untransted-entry}) move forwards or backwards,
+chasing for an untranslated entry.  If none is found, the search is
+extended and wraps around in the PO file buffer.
+
+An entry can be turned back into an untranslated entry by
+merely emptying its translation, using the command @kbd{k}
+(@code{po-kill-msgstr}).  @xref{Modifying Translations}.
+
+Also, when time comes to quit working on a PO file buffer
+with the @kbd{q} command, the translator is asked for confirmation,
+if some untranslated string still exists.
+
+@node Obsolete Entries, Modifying Translations, Untranslated Entries, Updating
+@section Obsolete Entries
+
+By @dfn{obsolete} PO file entries, we mean those entries which are
+commented out, usually by @code{msgmerge} when it found that the
+translation is not needed anymore by the package being localized.
+
+The usual commands moving from entry to entry consider obsolete
+entries on the same level as active entries.  Obsolete entries are
+easily recognizable by the fact that all their lines start with
+@kbd{#}, even those lines containing @code{msgid} or @code{msgstr}.
+
+Commands exist for emptying the translation or reinitializing it
+to the original untranslated string.  Commands interfacing with the
+kill ring may force some previously saved text into the translation.
+The user may interactively edit the translation.  All these commands
+may apply to obsolete entries, carefully leaving the entry obsolete
+after the fact.
+
+Moreover, some commands are more specifically related to obsolete
+entry processing.
+
+@table @kbd
+@item o
+Find the next obsolete entry.
+
+@item M-o
+Find the previous obsolete entry.
+
+@item @key{DEL}
+Make an active entry obsolete, or zap out an obsolete entry.
+
+@end table
+
+The commands @kbd{o} (@code{po-next-obsolete-entry}) and @kbd{M-o}
+(@code{po-previous-obsolete-entry}) move forwards or backwards,
+chasing for an obsolete entry.  If none is found, the search is
+extended and wraps around in the PO file buffer.
+
+PO mode does not provide ways for un-commenting an obsolete entry
+and making it active, because this would reintroduce an original
+untranslated string which does not correspond to any marked string
+in the program sources.  This goes with the philosophy of never
+introducing useless @code{msgid} values.
+
+However, it is possible to comment out an active entry, so making
+it obsolete.  GNU @code{gettext} utilities will later react to the
+disappearance of a translation by using the untranslated string.
+The command @kbd{@key{DEL}} (@code{po-fade-out-entry}) pushes the current entry
+a little further towards annihilation.  If the entry is active (it is a
+translated entry), then it is first made fuzzy.  If it is already fuzzy,
+then the entry is merely commented out, with confirmation.  If the entry
+is already obsolete, then it is completely deleted from the PO file.
+It is easy to recycle the translation so deleted into some other PO file
+entry, usually one which is untranslated.  @xref{Modifying Translations}.
+
+Here is a quite interesting problem to solve for later development of
+PO mode, for those nights you are not sleepy.  The idea would be that
+PO mode might become bright enough, one of these days, to make good
+guesses at retrieving the most probable candidate, among all obsolete
+entries, for initializing the translation of a newly appeared string.
+I think it might be a quite hard problem to do this algorithmically, as
+we have to develop good and efficient measures of string similarity.
+Right now, PO mode completely lets the decision to the translator,
+when the time comes to find the adequate obsolete translation, it
+merely tries to provide handy tools for helping her to do so.
+
+@node Modifying Translations, Modifying Comments, Obsolete Entries, Updating
+@section Modifying Translations
+
+PO mode prevents direct edition of the PO file, by the usual
+means Emacs give for altering a buffer's contents.  By doing so,
+it pretends helping the translator to avoid little clerical errors
+about the overall file format, or the proper quoting of strings,
+as those errors would be easily made.  Other kinds of errors are
+still possible, but some may be caught and diagnosed by the batch
+validation process, which the translator may always trigger by the
+@kbd{V} command.  For all other errors, the translator has to rely on
+her own judgment, and also on the linguistic reports submitted to her
+by the users of the translated package, having the same mother tongue.
+
+When the time comes to create a translation, correct an error diagnosed
+mechanically or reported by a user, the translators have to resort to
+using the following commands for modifying the translations.
+
+@table @kbd
+@item @key{RET}
+Interactively edit the translation.
+
+@item @key{LFD}
+Reinitialize the translation with the original, untranslated string.
+
+@item k
+Save the translation on the kill ring, and delete it.
+
+@item w
+Save the translation on the kill ring, without deleting it.
+
+@item y
+Replace the translation, taking the new from the kill ring.
+
+@end table
+
+The command @kbd{@key{RET}} (@code{po-edit-msgstr}) opens a new Emacs
+window meant to edit in a new translation, or to modify an already existing
+translation.  The new window contains a copy of the translation taken from
+the current PO file entry, all ready for edition, expunged of all quoting
+marks, fully modifiable and with the complete extent of Emacs modifying
+commands.  When the translator is done with her modifications, she may use
+@w{@kbd{C-c C-c}} to close the subedit window with the automatically requoted
+results, or @w{@kbd{C-c C-k}} to abort her modifications.  @xref{Subedit},
+for more information.
+
+The command @kbd{@key{LFD}} (@code{po-msgid-to-msgstr}) initializes, or
+reinitializes the translation with the original string.  This command is
+normally used when the translator wants to redo a fresh translation of
+the original string, disregarding any previous work.
+
+It is possible to arrange so, whenever editing an untranslated
+entry, the @kbd{@key{LFD}} command be automatically executed.  If you set
+@code{po-auto-edit-with-msgid} to @code{t}, the translation gets
+initialised with the original string, in case none exists already.
+The default value for @code{po-auto-edit-with-msgid} is @code{nil}.
+
+In fact, whether it is best to start a translation with an empty
+string, or rather with a copy of the original string, is a matter of
+taste or habit.  Sometimes, the source language and the
+target language are so different that is simply best to start writing
+on an empty page.  At other times, the source and target languages
+are so close that it would be a waste to retype a number of words
+already being written in the original string.  A translator may also
+like having the original string right under her eyes, as she will
+progressively overwrite the original text with the translation, even
+if this requires some extra editing work to get rid of the original.
+
+The command @kbd{k} (@code{po-kill-msgstr}) merely empties the
+translation string, so turning the entry into an untranslated
+one.  But while doing so, its previous contents is put apart in
+a special place, known as the kill ring.  The command @kbd{w}
+(@code{po-kill-ring-save-msgstr}) has also the effect of taking a
+copy of the translation onto the kill ring, but it otherwise leaves
+the entry alone, and does @emph{not} remove the translation from the
+entry.  Both commands use exactly the Emacs kill ring, which is shared
+between buffers, and which is well known already to Emacs lovers.
+
+The translator may use @kbd{k} or @kbd{w} many times in the course
+of her work, as the kill ring may hold several saved translations.
+From the kill ring, strings may later be reinserted in various
+Emacs buffers.  In particular, the kill ring may be used for moving
+translation strings between different entries of a single PO file
+buffer, or if the translator is handling many such buffers at once,
+even between PO files.
+
+To facilitate exchanges with buffers which are not in PO mode, the
+translation string put on the kill ring by the @kbd{k} command is fully
+unquoted before being saved: external quotes are removed, multi-line
+strings are concatenated, and backslash escaped sequences are turned
+into their corresponding characters.  In the special case of obsolete
+entries, the translation is also uncommented prior to saving.
+
+The command @kbd{y} (@code{po-yank-msgstr}) completely replaces the
+translation of the current entry by a string taken from the kill ring.
+Following Emacs terminology, we then say that the replacement
+string is @dfn{yanked} into the PO file buffer.
+@xref{Yanking, , , emacs, The Emacs Editor}.
+The first time @kbd{y} is used, the translation receives the value of
+the most recent addition to the kill ring.  If @kbd{y} is typed once
+again, immediately, without intervening keystrokes, the translation
+just inserted is taken away and replaced by the second most recent
+addition to the kill ring.  By repeating @kbd{y} many times in a row,
+the translator may travel along the kill ring for saved strings,
+until she finds the string she really wanted.
+
+When a string is yanked into a PO file entry, it is fully and
+automatically requoted for complying with the format PO files should
+have.  Further, if the entry is obsolete, PO mode then appropriately
+push the inserted string inside comments.  Once again, translators
+should not burden themselves with quoting considerations besides, of
+course, the necessity of the translated string itself respective to
+the program using it.
+
+Note that @kbd{k} or @kbd{w} are not the only commands pushing strings
+on the kill ring, as almost any PO mode command replacing translation
+strings (or the translator comments) automatically saves the old string
+on the kill ring.  The main exceptions to this general rule are the
+yanking commands themselves.
+
+To better illustrate the operation of killing and yanking, let's
+use an actual example, taken from a common situation.  When the
+programmer slightly modifies some string right in the program, his
+change is later reflected in the PO file by the appearance
+of a new untranslated entry for the modified string, and the fact
+that the entry translating the original or unmodified string becomes
+obsolete.  In many cases, the translator might spare herself some work
+by retrieving the unmodified translation from the obsolete entry,
+then initializing the untranslated entry @code{msgstr} field with
+this retrieved translation.  Once this done, the obsolete entry is
+not wanted anymore, and may be safely deleted.
+
+When the translator finds an untranslated entry and suspects that a
+slight variant of the translation exists, she immediately uses @kbd{m}
+to mark the current entry location, then starts chasing obsolete
+entries with @kbd{o}, hoping to find some translation corresponding
+to the unmodified string.  Once found, she uses the @kbd{@key{DEL}} command
+for deleting the obsolete entry, knowing that @kbd{@key{DEL}} also @emph{kills}
+the translation, that is, pushes the translation on the kill ring.
+Then, @kbd{r} returns to the initial untranslated entry, and @kbd{y}
+then @emph{yanks} the saved translation right into the @code{msgstr}
+field.  The translator is then free to use @kbd{@key{RET}} for fine
+tuning the translation contents, and maybe to later use @kbd{u},
+then @kbd{m} again, for going on with the next untranslated string.
+
+When some sequence of keys has to be typed over and over again, the
+translator may find it useful to become better acquainted with the Emacs
+capability of learning these sequences and playing them back under request.
+@xref{Keyboard Macros, , , emacs, The Emacs Editor}.
+
+@node Modifying Comments, Subedit, Modifying Translations, Updating
+@section Modifying Comments
+
+Any translation work done seriously will raise many linguistic
+difficulties, for which decisions have to be made, and the choices
+further documented.  These documents may be saved within the
+PO file in form of translator comments, which the translator
+is free to create, delete, or modify at will.  These comments may
+be useful to herself when she returns to this PO file after a while.
+
+Comments not having whitespace after the initial @samp{#}, for example,
+those beginning with @samp{#.} or @samp{#:}, are @emph{not} translator
+comments, they are exclusively created by other @code{gettext} tools.
+So, the commands below will never alter such system added comments,
+they are not meant for the translator to modify.  @xref{PO Files}.
+
+The following commands are somewhat similar to those modifying translations,
+so the general indications given for those apply here.  @xref{Modifying
+Translations}.
+
+@table @kbd
+
+@item #
+Interactively edit the translator comments.
+
+@item K
+Save the translator comments on the kill ring, and delete it.
+
+@item W
+Save the translator comments on the kill ring, without deleting it.
+
+@item Y
+Replace the translator comments, taking the new from the kill ring.
+
+@end table
+
+These commands parallel PO mode commands for modifying the translation
+strings, and behave much the same way as they do, except that they handle
+this part of PO file comments meant for translator usage, rather
+than the translation strings.  So, if the descriptions given below are
+slightly succinct, it is because the full details have already been given.
+@xref{Modifying Translations}.
+
+The command @kbd{#} (@code{po-edit-comment}) opens a new Emacs window
+containing a copy of the translator comments on the current PO file entry.
+If there are no such comments, PO mode understands that the translator wants
+to add a comment to the entry, and she is presented with an empty screen.
+Comment marks (@kbd{#}) and the space following them are automatically
+removed before edition, and reinstated after.  For translator comments
+pertaining to obsolete entries, the uncommenting and recommenting operations
+are done twice.  Once in the editing window, the keys @w{@kbd{C-c C-c}}
+allow the translator to tell she is finished with editing the comment.
+@xref{Subedit}, for further details.
+
+Functions found on @code{po-subedit-mode-hook}, if any, are executed after
+the string has been inserted in the edit buffer.
+
+The command @kbd{K} (@code{po-kill-comment}) gets rid of all
+translator comments, while saving those comments on the kill ring.
+The command @kbd{W} (@code{po-kill-ring-save-comment}) takes
+a copy of the translator comments on the kill ring, but leaves
+them undisturbed in the current entry.  The command @kbd{Y}
+(@code{po-yank-comment}) completely replaces the translator comments
+by a string taken at the front of the kill ring.  When this command
+is immediately repeated, the comments just inserted are withdrawn,
+and replaced by other strings taken along the kill ring.
+
+On the kill ring, all strings have the same nature.  There is no
+distinction between @emph{translation} strings and @emph{translator
+comments} strings.  So, for example, let's presume the translator
+has just finished editing a translation, and wants to create a new
+translator comment to document why the previous translation was
+not good, just to remember what was the problem.  Foreseeing that she
+will do that in her documentation, the translator may want to quote
+the previous translation in her translator comments.  To do so, she
+may initialize the translator comments with the previous translation,
+still at the head of the kill ring.  Because editing already pushed the
+previous translation on the kill ring, she merely has to type @kbd{M-w}
+prior to @kbd{#}, and the previous translation will be right there,
+all ready for being introduced by some explanatory text.
+
+On the other hand, presume there are some translator comments already
+and that the translator wants to add to those comments, instead
+of wholly replacing them.  Then, she should edit the comment right
+away with @kbd{#}.  Once inside the editing window, she can use the
+regular Emacs commands @kbd{C-y} (@code{yank}) and @kbd{M-y}
+(@code{yank-pop}) to get the previous translation where she likes.
+
+@node Subedit, C Sources Context, Modifying Comments, Updating
+@section Details of Sub Edition
+
+The PO subedit minor mode has a few peculiarities worth being described
+in fuller detail.  It installs a few commands over the usual editing set
+of Emacs, which are described below.
+
+@table @kbd
+@item C-c C-c
+Complete edition.
+
+@item C-c C-k
+Abort edition.
+
+@item C-c C-a
+Consult auxiliary PO files.
+
+@end table
+
+The window's contents represents a translation for a given message,
+or a translator comment.  The translator may modify this window to
+her heart's content.  Once this done, the command @w{@kbd{C-c C-c}}
+(@code{po-subedit-exit}) may be used to return the edited translation into
+the PO file, replacing the original translation, even if it moved out of
+sight or if buffers were switched.
+
+If the translator becomes unsatisfied with her translation or comment,
+to the extent she prefers keeping what was existent prior to the
+@kbd{@key{RET}} or @kbd{#} command, she may use the command @w{@kbd{C-c C-k}}
+(@code{po-subedit-abort}) to merely get rid of edition, while preserving
+the original translation or comment.  Another way would be for her to exit
+normally with @w{@kbd{C-c C-c}}, then type @code{U} once for undoing the
+whole effect of last edition.
+
+The command @w{@kbd{C-c C-a}} allows for glancing through translations
+already achieved in other languages, directly while editing the current
+translation.  This may be quite convenient when the translator is fluent
+at many languages, but of course, only makes sense when such completed
+auxiliary PO files are already available to her (@pxref{Auxiliary}).
+
+Functions found on @code{po-subedit-mode-hook}, if any, are executed after
+the string has been inserted in the edit buffer.
+
+While editing her translation, the translator should pay attention to not
+inserting unwanted @kbd{@key{RET}} (newline) characters at the end of
+the translated string if those are not meant to be there, or to removing
+such characters when they are required.  Since these characters are not
+visible in the editing buffer, they are easily introduced by mistake.
+To help her, @kbd{@key{RET}} automatically puts the character @kbd{<}
+at the end of the string being edited, but this @kbd{<} is not really
+part of the string.  On exiting the editing window with @w{@kbd{C-c C-c}},
+PO mode automatically removes such @kbd{<} and all whitespace added after
+it.  If the translator adds characters after the terminating @kbd{<}, it
+looses its delimiting property and integrally becomes part of the string.
+If she removes the delimiting @kbd{<}, then the edited string is taken
+@emph{as is}, with all trailing newlines, even if invisible.  Also, if
+the translated string ought to end itself with a genuine @kbd{<}, then
+the delimiting @kbd{<} may not be removed; so the string should appear,
+in the editing window, as ending with two @kbd{<} in a row.
+
+When a translation (or a comment) is being edited, the translator may move
+the cursor back into the PO file buffer and freely move to other entries,
+browsing at will.  If, with an edition pending, the translator wanders in the
+PO file buffer, she may decide to start modifying another entry.  Each entry
+being edited has its own subedit buffer.  It is possible to simultaneously
+edit the translation @emph{and} the comment of a single entry, or to
+edit entries in different PO files, all at once.  Typing @kbd{@key{RET}}
+on a field already being edited merely resumes that particular edit.  Yet,
+the translator should better be comfortable at handling many Emacs windows!
+
+Pending subedits may be completed or aborted in any order, regardless
+of how or when they were started.  When many subedits are pending and the
+translator asks for quitting the PO file (with the @kbd{q} command), subedits
+are automatically resumed one at a time, so she may decide for each of them.
+
+@node C Sources Context, Auxiliary, Subedit, Updating
 @section C Sources Context
 
 PO mode is particularily powerful when used with PO files
@@ -1991,9 +2776,9 @@ the next available contexts for this particular entry, getting back
 to the first context once the last has been shown.
 
 The command @kbd{M-s} behaves differently.  Instead of cycling through
-references, it lets the translator choose of particular reference among
+references, it lets the translator choose a particular reference among
 many, and displays that reference.  It is best used with completion,
-if the translator types @kbd{TAB} immediately after @kbd{M-s}, in
+if the translator types @kbd{@key{TAB}} immediately after @kbd{M-s}, in
 response to the question, she will be offered a menu of all possible
 references, as a reminder of which are the acceptable answers.
 This command is useful only where there are really many contexts
@@ -2013,564 +2798,7 @@ enter a new directory at the front of the search path, and the command
 @kbd{M-S} (@code{po-ignore-source-path}) is used to select, with completion,
 one of the directories she does not want anymore on the search path.
 
-@node Compendium,  , C Sources Context, Initial
-@section Using Translation Compendiums
-
-@c FIXME: Rewrite.
-
-Compendiums are yet to be implemented.
-
-An incoming PO mode feature will let the translator maintain a
-compendium of already achieved translations.  A @dfn{compendium}
-is a special PO file containing a set of translations recurring in
-many different packages.  The translator will be given commands for
-adding entries to her compendium, and later initializing untranslated
-entries, or updating already translated entries, from translations
-kept in the compendium.  For this to work, however, the compendium
-would have to be normalized.  @xref{Normalizing}.
-
-@c It is not useful that I modify the @file{lib/} routines if not done in
-@c the true sources.  How do you/I/they proceed for getting this job done?
-@c I presume that @file{lib/} routines will all use @code{gettext} for
-@c the time being.
-
-@node Updating, Binaries, Initial, Top
-@chapter Updating Existing PO Files
-
-@c FIXME: Rewrite.
-
-@menu
-* msgmerge Invocation::         Invoking the @code{msgmerge} Program
-* Translated Entries::
-* Fuzzy Entries::
-* Untranslated Entries::        Untranslated Entries
-* Obsolete Entries::            Obsolete Entries
-* Modifying Translations::      Modifying Translations
-* Modifying Comments::          Modifying Comments
-* Auxiliary::                   Consulting Auxiliary PO Files
-@end menu
-
-@node msgmerge Invocation, Translated Entries, Updating, Updating
-@section Invoking the @code{msgmerge} Program
-
-@c FIXME: Rewrite.
-
-@c @example
-@c tupdate --help
-@c tupdate --version
-@c tupdate @var{new} @var{old}
-@c @end example
-
-@c File @var{new} is the last created PO file (generally by
-@c @code{xgettext}).  It need not contain any translations.  File
-@c @var{old} is the PO file including the old translations which will
-@c be taken over to the newly created file as long as they still match.
-
-@c When English messages change in the programs, this is reflected in
-@c the PO file as extracted by @code{xgettext}.  In large messages, that
-@c can be hard to detect, and will obviously result in an incomplete
-@c translation.  One of the virtues of @code{tupdate} is that it detects
-@c such changes, saving the previous translation into a PO file comment,
-@c so marking the entry as obsolete, and giving the modified string with
-@c an empty translation, that is, marking the entry as untranslated.
-
-@node Translated Entries
-@section Translated Entries
-
-Each PO file entry for which the @code{msgstr} field has been filled with
-a translation, and which is not marked as fuzzy (@pxref{Fuzzy Entries}),
-is a said to be a @dfn{translated} entry.  Only translated entries will
-later be compiled by GNU @code{msgfmt} and become usable in programs.
-Other entry types will be excluded; translation will not occur for them.
-
-Some commands are more specifically related to translated entry processing.
-
-@table @kbd
-@item t
-Find the next translated entry.
-
-@item M-t
-Find the previous translated entry.
-
-@end table
-
-The commands @kbd{t} (@code{po-next-translated-entry}) and @kbd{M-t}
-(@code{po-previous-transted-entry}) move forwards or backwards, chasing
-for an translated entry.  If none is found, the search is extended and
-wraps around in the PO file buffer.
-
-Translated entries usually result from the translator having edited in
-a translation for them, @ref{Modifying Translations}.  However, if the
-variable @code{po-auto-fuzzy-on-edit} is not @code{nil}, the entry having
-received a new translation first becomes a fuzzy entry, which ought to
-be later unfuzzied before becoming an official, genuine translated entry.
-@xref{Fuzzy Entries}.
-
-@node Fuzzy Entries, Untranslated Entries, Translated Entries, Updating
-@section Fuzzy Entries
-
-Each PO file entry may have a set of @dfn{attributes}, which are
-qualities given an name and explicitely associated with the entry
-translation, using a special system comment.  One of these attributes
-has the name @code{fuzzy}, and entries having this attribute are said
-to have a fuzzy translation.  They are called fuzzy entries, for short.
-
-Fuzzy entries, even if they account for translated entries for
-most other purposes, usually call for revision by the translator.
-Those may be produced by applying the program @code{msgmerge} to
-update an older translated PO files according to a new PO template
-file, when this tool hypothesises that some new @code{msgid} has
-been modified only slightly out of an older one, and chooses to pair
-what it thinks to be the old translation for the new modified entry.
-The slight alteration in the original string (the @code{msgid} string)
-should often be reflected in the translated string, and this requires
-the intervention of the translator.  For this reason, @code{msgmerge}
-might mark some entries as being fuzzy.
-
-Also, the translator may decide herself to mark an entry as fuzzy
-for her own convenience, when she wants to remember that the entry
-has to be later revisited.  So, some commands are more specifically
-related to fuzzy entry processing.
-
-@table @kbd
-@item f
-Find the next fuzzy entry.
-
-@item M-f
-Find the previous fuzzy entry.
-
-@item TAB
-Remove the fuzzy attribute of the current entry.
-
-@end table
-
-The commands @kbd{f} (@code{po-next-fuzzy}) and @kbd{M-f}
-(@code{po-previous-fuzzy}) move forwards or backwards, chasing for
-a fuzzy entry.  If none is found, the search is extended and wraps
-around in the PO file buffer.
-
-The command @kbd{TAB} (@code{po-unfuzzy}) removes the fuzzy
-attribute associated with an entry, usually leaving it translated.
-Further, if the variable @code{po-auto-select-on-unfuzzy} has not
-the @code{nil} value, the @kbd{TAB} command will automatically chase
-for another interesting entry to work on.  The initial value of
-@code{po-auto-select-on-unfuzzy} is @code{nil}.
-
-The initial value of @code{po-auto-fuzzy-on-edit} is @code{nil}.  However,
-if the variable @code{po-auto-fuzzy-on-edit} is set to @code{t}, any entry
-edited through the @kbd{RET} command is marked fuzzy, as a way to ensure
-some kind of double check, later.  In this case, the usual paradigm is
-that an entry becomes fuzzy (if not already) whenever the translator
-modifies it.  If she is satisfied with the translation, she then uses
-@kbd{TAB} to pick another entry to work on, clearing the fuzzy attribute
-on the same blow.  If she is not satisfied yet, she merely uses @kbd{SPC}
-to chase another entry, leaving the entry fuzzy.
-
-The translator may also use the @kbd{DEL} command
-(@code{po-fade-out-entry}) over any translated entry to mark it as being
-fuzzy, when she wants to easily leave a trace she wants to later return
-working at this entry.
-
-Also, when time comes to quit working on a PO file buffer with the @kbd{q}
-command, the translator is asked for confirmation, if fuzzy string
-still exists.
-
-@node Untranslated Entries, Obsolete Entries, Fuzzy Entries, Updating
-@section Untranslated Entries
-
-When @code{xgettext} originally creates a PO file, unless told
-otherwise, it initializes the @code{msgid} field with the untranslated
-string, and leaves the @code{msgstr} string to be empty.  Such entries,
-having an empty translation, are said to be @dfn{untranslated} entries.
-Later, when the programmer slightly modifies some string right in
-the program, this change is later reflected in the PO file
-by the appearance of a new untranslated entry for the modified string.
-
-The usual commands moving from entry to entry consider untranslated
-entries on the same level as active entries.  Untranslated entries
-are easily recognizable by the fact they end with @w{@samp{msgstr ""}}.
-
-The work of the translator might be (quite naively) seen as the process
-of seeking after an untranslated entry, editing a translation for
-it, and repeating these actions until no untranslated entries remain.
-Some commands are more specifically related to untranslated entry
-processing.
-
-@table @kbd
-@item u
-Find the next untranslated entry.
-
-@item M-u
-Find the previous untranslated entry.
-
-@item k
-Turn the current entry into an untranslated one.
-
-@end table
-
-The commands @kbd{u} (@code{po-next-untranslated-entry}) and @kbd{M-u}
-(@code{po-previous-untransted-entry}) move forwards or backwards,
-chasing for an untranslated entry.  If none is found, the search is
-extended and wraps around in the PO file buffer.
-
-An entry can be turned back into an untranslated entry by
-merely emptying its translation, using the command @kbd{k}
-(@code{po-kill-msgstr}).  @xref{Modifying Translations}.
-
-Also, when time comes to quit working on a PO file buffer
-with the @kbd{q} command, the translator is asked for confirmation,
-if some untranslated string still exists.
-
-@node Obsolete Entries, Modifying Translations, Untranslated Entries, Updating
-@section Obsolete Entries
-
-By @dfn{obsolete} PO file entries, we mean those entries which are
-commented out, usually by @code{msgmerge} when it found that the
-translation is not needed anymore by the package being localized.
-
-The usual commands moving from entry to entry consider obsolete
-entries on the same level as active entries.  Obsolete entries are
-easily recognizable by the fact that all their lines start with
-@kbd{#}, even those lines containing @code{msgid} or @code{msgstr}.
-
-Commands exist for emptying the translation or reinitializing it
-to the original untranslated string.  Commands interfacing with the
-kill ring may force some previously saved text into the translation.
-The user may interactively edit the translation.  All these commands
-may apply to obsolete entries, carefully leaving the entry obsolete
-after the fact.
-
-Moreover, some commands are more specifically related to obsolete
-entry processing.
-
-@table @kbd
-@item o
-Find the next obsolete entry.
-
-@item M-o
-Find the previous obsolete entry.
-
-@item DEL
-Make an active entry obsolete, or zap out an obsolete entry.
-
-@end table
-
-The commands @kbd{o} (@code{po-next-obsolete-entry}) and @kbd{M-o}
-(@code{po-previous-obsolete-entry}) move forwards or backwards,
-chasing for an obsolete entry.  If none is found, the search is
-extended and wraps around in the PO file buffer.
-
-PO mode does not provide ways for un-commenting an obsolete entry
-and making it active, because this would reintroduce an original
-untranslated string which does not correspond to any marked string
-in the program sources.  This goes with the philosophy of never
-introducing useless @code{msgid} values.
-
-However, it is possible to comment out an active entry, so making
-it obsolete.  GNU @code{gettext} utilities will later react to the
-disappearance of a translation by using the untranslated string.
-The command @kbd{DEL} (@code{po-fade-out-entry}) pushes the current entry
-a little further towards annihilation.  If the entry is active (it is a
-translated entry), then it is first made fuzzy.  If it is already fuzzy,
-then the entry is merely commented out, with confirmation.  If the entry
-is already obsolete, then it is completely deleted from the PO file.
-It is easy to recycle the translation so deleted into some other PO file
-entry, usually one which is untranslated.  @xref{Modifying Translations}.
-
-Here is a quite interesting problem to solve for later development of
-PO mode, for those nights you are not sleepy.  The idea would be that
-PO mode might become bright enough, one of these days, to make good
-guesses at retrieving the most probable candidate, among all obsolete
-entries, for initializing the translation of a newly appeared string.
-I think it might be a quite hard problem to do this algorithmically, as
-we have to develop good and efficient measures of string similarity.
-Right now, PO mode completely lets the decision to the translator,
-when the time comes to find the adequate obsolete translation, it
-merely tries to provide handy tools for helping her to do so.
-
-@node Modifying Translations, Modifying Comments, Obsolete Entries, Updating
-@section Modifying Translations
-
-PO mode prevents direct edition of the PO file, by the usual
-means Emacs give for altering a buffer's contents.  By doing so,
-it pretends helping the translator to avoid little clerical errors
-about the overall file format, or the proper quoting of strings,
-as those errors would be easily made.  Other kinds of errors are
-still possible, but some may be caught and diagnosed by the batch
-validation process, which the translator may always trigger by the
-@kbd{V} command.  For all other errors, the translator has to rely on
-her own judgment, and also on the linguistic reports submitted to her
-by the users of the translated package, having the same mother tongue.
-
-When the time comes to create a translation, correct an error diagnosed
-mechanically or reported by a user, the translators have to resort to
-using the following commands for modifying the translations.
-
-@table @kbd
-
-@item RET
-Interactively edit the translation.
-
-@item LFD
-Reinitialize the translation with the original, untranslated string.
-
-@item k
-Save the translation on the kill ring, and delete it.
-
-@item w
-Save the translation on the kill ring, without deleting it.
-
-@item y
-Replace the translation, taking the new from the kill ring.
-
-@end table
-
-The command @kbd{RET} (@code{po-edit-msgstr}) opens a new Emacs window
-containing a copy of the translation taken from the current PO file entry,
-all ready for edition, fully modifiable and with the complete extent of
-GNU Emacs modifying commands.  The string is presented to the translator
-expunged of all quoting marks, and she will modify the @emph{unquoted}
-string in this window to heart's content.  Once done, the regular Emacs
-command @kbd{M-C-c} (@code{exit-recursive-edit}) may be used to return the
-edited translation into the PO file, replacing the original translation.
-The keys @w{@kbd{C-c C-c}} are bound so they have the same effect as
-@kbd{M-C-c}.
-
-If the translator becomes unsatisfied with her translation to the extent
-she prefers keeping the translation which was existent prior to the
-@kbd{RET} command, she may use the standard Emacs command @kbd{C-]}
-(@code{abort-recursive-edit}) to merely get rid of edition, while
-preserving the original translation.  The keys @w{@kbd{C-c C-k}} are
-bound so they have the same effect as @kbd{C-]}.  Another way would
-be for her to exit normally with @w{@kbd{C-c C-c}}, then type @code{U}
-once for undoing the whole effect of last edition.
-
-Functions found on @code{po-subedit-mode-hook}, if any, are executed after
-the string has been inserted in the edit buffer and before recursive edit
-is entered.
-
-While editing her translation, the translator should pay attention to
-not inserting unwanted @kbd{@key{RET}} (carriage returns) characters at
-the end of the translated string if those are not meant to be there,
-or to removing such characters when they are required.  Since these
-characters are not visible in the editing buffer, they are easily
-introduced by mistake.  To help her, @kbd{@key{RET}} automatically puts
-the character @kbd{<} at the end of the string being edited, but this
-@kbd{<} is not really part of the string.  On exiting the editing
-window with @w{@kbd{C-c C-c}}, PO mode automatically removes such
-@kbd{<} and all whitespace added after it.  If the translator adds
-characters after the terminating @kbd{<}, it looses its delimiting
-property and integrally becomes part of the string.  If she removes
-the delimiting @kbd{<}, then the edited string is taken @emph{as
-is}, with all trailing newlines, even if invisible.  Also, if the
-translated string ought to end itself with a genuine @kbd{<}, then the
-delimiting @kbd{<} may not be removed; so the string should appear,
-in the editing window, as ending with two @kbd{<} in a row.
-
-When a translation (or a comment) is being edited, the translator
-may move the cursor back into the PO file buffer and freely
-move to other entries, browsing at will.  The edited entry will
-be recovered as soon as the edit ceases, because it is this entry
-only which is being modified.  If, with an edition still opened, the
-translator wanders in the PO file buffer, she cannot modify
-any other entry.  If she tries to, PO mode will react by suggesting
-that she abort the current edit, or else, by inviting her to finish
-the current edit prior to any other modification.
-
-The command @kbd{LFD} (@code{po-msgid-to-msgstr}) initializes, or
-reinitializes the translation with the original string.  This command
-is normally used when the translator wants to redo a fresh translation
-of the original string, disregarding any previous work.
-
-It is possible to arrange so, whenever editing an untranslated
-entry, the @kbd{LFD} command be automatically executed.  If you set
-@code{po-auto-edit-with-msgid} to @code{t}, the translation gets
-initialised with the original string, in case none exist already.
-The default value for @code{po-auto-edit-with-msgid} is @code{nil}.
-
-In fact, whether it is best to start a translation with an empty
-string, or rather with a copy of the original string, is a matter of
-taste or habit.  Sometimes, the source language and the
-target language are so different that is simply best to start writing
-on an empty page.  At other times, the source and target languages
-are so close that it would be a waste to retype a number of words
-already being written in the original string.  A translator may also
-like having the original string right under her eyes, as she will
-progressively overwrite the original text with the translation, even
-if this requires some extra editing work to get rid of the original.
-
-The command @kbd{k} (@code{po-kill-msgstr}) merely empties the
-translation string, so turning the entry into an untranslated
-one.  But while doing so, its previous contents is put apart in
-a special place, known as the kill ring.  The command @kbd{w}
-(@code{po-kill-ring-save-msgstr}) has also the effect of taking a
-copy of the translation onto the kill ring, but it otherwise leaves
-the entry alone, and does @emph{not} remove the translation from the
-entry.  Both commands use exactly the Emacs kill ring, which is shared
-between buffers, and which is well known already to GNU Emacs lovers.
-
-The translator may use @kbd{k} or @kbd{w} many times in the course
-of her work, as the kill ring may hold several saved translations.
-From the kill ring, strings may later be reinserted in various
-Emacs buffers.  In particular, the kill ring may be used for moving
-translation strings between different entries of a single PO file
-buffer, or if the translator is handling many such buffers at once,
-even between PO files.
-
-To facilitate exchanges with buffers which are not in PO mode, the
-translation string put on the kill ring by the @kbd{k} command is fully
-unquoted before being saved: external quotes are removed, multi-lines
-strings are concatenated, and backslashed escaped sequences are turned
-into their corresponding characters.  In the special case of obsolete
-entries, the translation is also uncommented prior to saving.
-
-The command @kbd{y} (@code{po-yank-msgstr}) completely replaces the
-translation of the current entry by a string taken from the kill ring.
-Following GNU Emacs terminology, we then say that the replacement
-string is @dfn{yanked} into the PO file buffer.
-@xref{Yanking, , , emacs, The Emacs Editor}.
-The first time @kbd{y} is used, the translation receives the value of
-the most recent addition to the kill ring.  If @kbd{y} is typed once
-again, immediately, without intervening keystrokes, the translation
-just inserted is taken away and replaced by the second most recent
-addition to the kill ring.  By repeating @kbd{y} many times in a row,
-the translator may travel along the kill ring for saved strings,
-until she finds the string she really wanted.
-
-When a string is yanked into a PO file entry, it is fully and
-automatically requoted for complying with the format PO files should
-have.  Further, if the entry is obsolete, PO mode then appropriately
-push the inserted string inside comments.  Once again, translators
-should not burden themselves with quoting considerations besides, of
-course, the necessity of the translated string itself respective to
-the program using it.
-
-Note that @kbd{k} or @kbd{w} are not the only commands pushing strings
-on the kill ring, as almost any PO mode command replacing translation
-strings (or the translator comments) automatically save the old string
-on the kill ring.  The main exceptions to this general rule are the
-yanking commands themselves.
-
-To better illustrate the operation of killing and yanking, let's
-use an actual example, taken from a common situation.  When the
-programmer slightly modifies some string right in the program, his
-change is later reflected in the PO file by the appearance
-of a new untranslated entry for the modified string, and the fact
-that the entry translating the original or unmodified string becomes
-obsolete.  In many cases, the translator might spare herself some work
-by retrieving the unmodified translation from the obsolete entry,
-then initializing the untranslated entry @code{msgstr} field with
-this retrieved translation.  Once this done, the obsolete entry is
-not wanted anymore, and may be safely deleted.
-
-When the translator finds an untranslated entry and suspects that a
-slight variant of the translation exists, she immediately uses @kbd{m}
-to mark the current entry location, then starts chasing obsolete
-entries with @kbd{o}, hoping to find some translation corresponding
-to the unmodified string.  Once found, she uses the @kbd{DEL} command
-for deleting the obsolete entry, knowing that @kbd{DEL} also @emph{kills}
-the translation, that is, pushes the translation on the kill ring.
-Then, @kbd{r} returns to the initial untranslated entry, @kbd{y}
-then @emph{yanks} the saved translation right into the @code{msgstr}
-field.  The translator is then free to use @kbd{@key{RET}} for fine
-tuning the translation contents, and maybe to later use @kbd{u},
-then @kbd{m} again, for going on with the next untranslated string.
-
-When some sequence of keys has to be typed over and over again, the
-translator may find it useful to become better acquainted with the GNU
-Emacs capability of learning these sequences and playing them back under
-request.  @xref{Keyboard Macros, , , emacs, The Emacs Editor}.
-
-@node Modifying Comments, Auxiliary, Modifying Translations, Updating
-@section Modifying Comments
-
-Any translation work done seriously will raise many linguistic
-difficulties, for which decisions have to be made, and the choices
-further documented.  These documents may be saved within the
-PO file in form of translator comments, which the translator
-is free to create, delete, or modify at will.  These comments may
-be useful to herself when she returns to this PO file after a while.
-
-Comments not having whitespace after the initial @samp{#}, for example,
-those beginning with @samp{#.} or @samp{#:}, are @emph{not} translator
-comments, they are exclusively created by other @code{gettext} tools.
-So, the commands below will never alter such system added comments,
-they are not meant for the translator to modify.  @xref{PO Files}.
-
-The following commands are somewhat similar to those modifying translations,
-so the general indications given for those apply here.  @xref{Modifying
-Translations}.
-
-@table @kbd
-
-@item #
-Interactively edit the translator comments.
-
-@item K
-Save the translator comments on the kill ring, and delete it.
-
-@item W
-Save the translator comments on the kill ring, without deleting it.
-
-@item Y
-Replace the translator comments, taking the new from the kill ring.
-
-@end table
-
-These commands parallel PO mode commands for modifying the translation
-strings, and behave much the same way as they do, except that they handle
-this part of PO file comments meant for translator usage, rather
-than the translation strings.  So, if the descriptions given below are
-slightly succinct, it is because the full details have already been given.
-@xref{Modifying Translations}.
-
-The command @kbd{#} (@code{po-edit-comment}) opens a new Emacs
-window containing a copy of the translator comments on the current
-PO file entry.  If there are no such comments, PO mode
-understands that the translator wants to add a comment to the entry,
-and she is presented with an empty screen.  Comment marks (@kbd{#}) and
-the space following them are automatically removed before edition,
-and reinstated after.  For translator comments pertaining to obsolete
-entries, the uncommenting and recommenting operations are done twice.
-Once in the editing window, the keys @w{@kbd{C-c C-c}} allow the
-translator to tell she is finished with editing the comment.
-
-Functions found on @code{po-subedit-mode-hook}, if any, are executed after
-the string has been inserted in the edit buffer and before recursive edit
-is entered.
-
-The command @kbd{K} (@code{po-kill-comment}) get rid of all
-translator comments, while saving those comments on the kill ring.
-The command @kbd{W} (@code{po-kill-ring-save-comment}) takes
-a copy of the translator comments on the kill ring, but leaves
-them undisturbed in the current entry.  The command @kbd{Y}
-(@code{po-yank-comment}) completely replaces the translator comments
-by a string taken at the front of the kill ring.  When this command
-is immediately repeated, the comments just inserted are withdrawn,
-and replaced by other strings taken along the kill ring.
-
-On the kill ring, all strings have the same nature.  There is no
-distinction between @emph{translation} strings and @emph{translator
-comments} strings.  So, for example, let's presume the translator
-has just finished editing a translation, and wants to create a new
-translator comment to document why the previous translation was
-not good, just to remember what was the problem.  Foreseeing that she
-will do that in her documentation, the translator may want to quote
-the previous translation in her translator comments.  To do so, she
-may initialize the translator comments with the previous translation,
-still at the head of the kill ring.  Because editing already pushed the
-previous translation on the kill ring, she merely has to type @kbd{M-w}
-prior to @kbd{#}, and the previous translation will be right there,
-all ready for being introduced by some explanatory text.
-
-On the other hand, presume there are some translator comments already
-and that the translator wants to add to those comments, instead
-of wholly replacing them.  Then, she should edit the comment right
-away with @kbd{#}.  Once inside the editing window, she can use the
-regular GNU Emacs commands @kbd{C-y} (@code{yank}) and @kbd{M-y}
-(@code{yank-pop}) to get the previous translation where she likes.
-
-@node Auxiliary,  , Modifying Comments, Updating
+@node Auxiliary, Compendium, C Sources Context, Updating
 @section Consulting Auxiliary PO Files
 
 PO mode is able to help the knowledgeable translator, being fluent in
@@ -2636,6 +2864,27 @@ files resulting of the the @samp{M-x normalize} command.  Until these
 discrepancies between PO mode and other GNU @code{gettext} tools get
 fully resolved, the translator should stay aware of normalisation issues.
 
+@node Compendium,  , Auxiliary, Updating
+@section Using Translation Compendiums
+
+@c FIXME: Rewrite.
+
+Compendiums are yet to be implemented.
+
+An incoming PO mode feature will let the translator maintain a
+compendium of already achieved translations.  A @dfn{compendium}
+is a special PO file containing a set of translations recurring in
+many different packages.  The translator will be given commands for
+adding entries to her compendium, and later initializing untranslated
+entries, or updating already translated entries, from translations
+kept in the compendium.  For this to work, however, the compendium
+would have to be normalized.  @xref{Normalizing}.
+
+@c It is not useful that I modify the @file{lib/} routines if not done in
+@c the true sources.  How do you/I/they proceed for getting this job done?
+@c I presume that @file{lib/} routines will all use @code{gettext} for
+@c the time being.
+
 @node Binaries, Users, Updating, Top
 @chapter Producing Binary MO Files
 
@@ -2677,7 +2926,7 @@ Specify output file name as @var{file}.
 Direct the program to work strictly following the Uniforum/Sun
 implementation.  Currently this only affects the naming of the output
 file.  If this option is not given the name of the output file is the
-same as the domain name.  If the strict Uniforum mode is enable the
+same as the domain name.  If the strict Uniforum mode is enabled the
 suffix @file{.mo} is added to the file name if it is not already
 present.
 
@@ -2691,7 +2940,7 @@ translation errors.  The @code{msgid} and @code{msgstr} strings are
 studied and compared.  It is considered abnormal that one string
 starts or ends with a newline while the other does not.
 
-Also, if the string represents a format sring used in a
+Also, if the string represents a format string used in a
 @code{printf}-like function both strings should have the same number of
 @samp{%} format specifiers, with matching types.  If the flag
 @code{c-format} or @code{possible-c-format} appears in the special
@@ -2783,13 +3032,25 @@ With this option, each string is separately aligned so it starts at
 an offset which is a multiple of the alignment value.  On some RISC
 machines, a correct alignment will speed things up.
 
+Plural forms are stored by letting the plural of the original string
+follow the singular of the original string, separated through a
+@key{NUL} byte.  The length which appears in the string descriptor
+includes both.  However, only the singular of the original string
+takes part in the hash table lookup.  The plural variants of the
+translation are all stored consecutively, separated through a
+@key{NUL} byte.  Here also, the length in the string descriptor
+includes all of them.
+
 Nothing prevents a MO file from having embedded @key{NUL}s in strings.
 However, the program interface currently used already presumes
 that strings are @key{NUL} terminated, so embedded @key{NUL}s are
-somewhat useless.  But MO file format is general enough so other
+somewhat useless.  But the MO file format is general enough so other
 interfaces would be later possible, if for example, we ever want to
 implement wide characters right in MO files, where @key{NUL} bytes may
-accidently appear.
+accidently appear.  (No, we don't want to have wide characters in MO
+files.  They would make the file unnecessarily large, and the
+@samp{wchar_t} type being platform dependent, MO files would be
+platform dependent as well.)
 
 This particular issue has been strongly debated in the GNU
 @code{gettext} development forum, and it is expectable that MO file
@@ -2854,7 +3115,7 @@ T + ((N-1)*8)| length & offset (N-1)th translation      |  | | | |
 @node Users, Programmers, Binaries, Top
 @chapter The User's View
 
-When GNU @code{gettext} will truly have reached is goal, average users
+When GNU @code{gettext} will truly have reached its goal, average users
 should feel some kind of astonished pleasure, seeing the effect of
 that strange kind of magic that just makes their own native language
 appear everywhere on their screens.  As for naive users, they would
@@ -2869,7 +3130,7 @@ way that the magic becomes possible.  This is a long and progressive
 undertaking, and information is available about the progress of the
 Translation Project.
 
-When a package is distributed, there are two kind of users:
+When a package is distributed, there are two kinds of users:
 @dfn{installers} who fetch the distribution, unpack it, configure
 it, compile it and install it for themselves or others to use; and
 @dfn{end users} that call programs of the package, once these have
@@ -2896,7 +3157,7 @@ for @var{ll}.
 
 More generally, a matrix is available for showing the current state
 of the Translation Project, listing which packages are prepared for
-multi-lingual messages, and which languages is supported by each.
+multi-lingual messages, and which languages are supported by each.
 Because this information changes often, this matrix is not kept within
 this GNU @code{gettext} manual.  This information is often found in
 file @file{ABOUT-NLS} from various distributions, but is also as old as
@@ -2910,14 +3171,15 @@ Translation Project sites, and also on most GNU archive sites.
 By default, packages fully using GNU @code{gettext}, internally,
 are installed in such a way that they to allow translation of
 messages.  At @emph{configuration} time, those packages should
-automatically detect whether the underlying host system provides usable
-@code{catgets} or @code{gettext} functions.  If neither is present,
+automatically detect whether the underlying host system already provides
+the GNU @code{gettext} functions.  If not,
 the GNU @code{gettext} library should be automatically prepared
 and used.  Installers may use special options at configuration
 time for changing this behavior.  The command @samp{./configure
---with-included-gettext} bypasses system @code{catgets} or @code{gettext} to
-use GNU @code{gettext} instead, while @samp{./configure --disable-nls}
-produces program totally unable to translate messages.
+--with-included-gettext} bypasses system @code{gettext} to
+use the included GNU @code{gettext} instead,
+while @samp{./configure --disable-nls}
+produces programs totally unable to translate messages.
 
 Internationalized packages have usually many @file{@var{ll}.po}
 files.  Unless
@@ -2933,12 +3195,12 @@ codes, stating which languages are allowed.
 We consider here those packages using GNU @code{gettext} internally,
 and for which the installers did not disable translation at
 @emph{configure} time.  Then, users only have to set the @code{LANG}
-environment variable to the appropriate @samp{@var{ll}} prior to
-using the programs in the package.  @xref{Matrix}.  For example,
-let's presume a German site.  At the shell prompt, users merely have to
-execute @w{@samp{setenv LANG de}} (in @code{csh}) or @w{@samp{export
-LANG; LANG=de}} (in @code{sh}).  They could even do this from their
-@file{.login} or @file{.profile} file.
+environment variable to the appropriate @samp{@var{ll}_@var{CC}}
+combination prior to using the programs in the package.  @xref{Matrix}.
+For example, let's presume a German site.  At the shell prompt, users
+merely have to execute @w{@samp{setenv LANG de_DE}} (in @code{csh}) or
+@w{@samp{export LANG; LANG=de_DE}} (in @code{sh}).  They could even do
+this from their @file{.login} or @file{.profile} file.
 
 @node Programmers, Translators, Users, Top
 @chapter The Programmer's View
@@ -2948,12 +3210,12 @@ LANG; LANG=de}} (in @code{sh}).  They could even do this from their
 One aim of the current message catalog implementation provided by
 GNU @code{gettext} was to use the systems message catalog handling, if the
 installer wishes to do so.  So we perhaps should first take a look at
-the solutions we know about.  The people in the POSIX committee does not
+the solutions we know about.  The people in the POSIX committee did not
 manage to agree on one of the semi-official standards which we'll
-describe below.  In fact they couldn't agree on anything, so nothing
-decide only to include an example of an interface.  The major Unix vendors
-are split in the usage of the two most important specifications: X/Opens
-catgets vs. Uniforums gettext interface.  We'll describe them both and
+describe below.  In fact they couldn't agree on anything, so they decided
+only to include an example of an interface.  The major Unix vendors
+are split in the usage of the two most important specifications: X/Open's
+catgets vs. Uniforum's gettext interface.  We'll describe them both and
 later explain our solution of this dilemma.
 
 @menu
@@ -2984,7 +3246,7 @@ some others do@dots{})
 
 But we must not forget one point: after all the trouble with transfering
 the rights on Unix(tm) they at last came to X/Open, the very same who
-published this specifications.  This leads me to making the prediction
+published this specification.  This leads me to making the prediction
 that this interface will be in future Unix standards (e.g. Spec1170) and
 therefore part of all Unix implementation (implementations, which are
 @emph{allowed} to wear this name).
@@ -3039,7 +3301,7 @@ The fourth argument is not used to address the translation.  It is given
 as a default value in case when one of the addressing stages fail.  One
 important thing to remember is that although the return type of catgets
 is @code{char *} the resulting string @emph{must not} be changed.  It
-should better @code{const char *}, but the standard is published in
+should better be @code{const char *}, but the standard is published in
 1988, one year before ANSI C.
 
 @noindent
@@ -3054,17 +3316,17 @@ After this no @code{catgets} call using the descriptor is legal anymore.
 @node Problems with catgets,  , Interface to catgets, catgets
 @subsection Problems with the @code{catgets} Interface?!
 
-Now that this descriptions seemed to be really easy where are the
-problem we speak of.  In fact the interface could be used in a
+Now that this description seemed to be really easy --- where are the
+problem we speak of?  In fact the interface could be used in a
 reasonable way, but constructing the message catalogs is a pain.  The
 reason for this lies in the third argument of @code{catgets}: the unique
 message ID.  This has to be a numeric value for all messages in a single
-set.  Perhaps you could imagine the problems keeping such list while
+set.  Perhaps you could imagine the problems keeping such a list while
 changing the source code.  Add a new message here, remove one there.  Of
 course there have been developed a lot of tools helping to organize this
 chaos but one as the other fails in one aspect or the other.  We don't
 want to say that the other approach has no problems but they are far
-more easily to manage.
+more easy to manage.
 
 @node gettext, Comparison, catgets, Programmers
 @section About @code{gettext}
@@ -3077,9 +3339,9 @@ standard, though.
 The main points about this solution is that it does not follow the
 method of normal file handling (open-use-close) and that it does not
 burden the programmer so many task, especially the unique key handling.
-Of course here is also a unique key needed, but this key is the
-message itself (how long or short it is).  @xref{Comparison} for a
-more detailed comparison of the two methods.
+Of course here is also a unique key needed, but this key is the message
+itself (how long or short it is).  See @ref{Comparison} for a more
+detailed comparison of the two methods.
 
 The following section contains a rather detailed description of the
 interface.  We make it that detailed because this is the interface
@@ -3090,6 +3352,9 @@ in using this library will be interested in this description.
 * Interface to gettext::        The interface
 * Ambiguities::                 Solving ambiguities
 * Locating Catalogs::           Locating message catalog files
+* Charset conversion::          How to request conversion to Unicode
+* Plural forms::                Additional functions for handling plurals
+* GUI program problems::        Another technique for solving ambiguities
 * Optimized gettext::           Optimization of the *gettext functions
 @end menu
 
@@ -3102,7 +3367,7 @@ not reasonable because its construction and maintenance is difficult,
 perhaps impossible) and b) to access a string in a selected domain.
 
 This is principally the description of the @code{gettext} interface.  It
-has an global domain which unqualified usages reference.  Of course this
+has a global domain which unqualified usages reference.  Of course this
 domain is selectable by the user.
 
 @example
@@ -3148,14 +3413,17 @@ your language.
 @node Ambiguities, Locating Catalogs, Interface to gettext, gettext
 @subsection Solving Ambiguities
 
-While this single name domain work good for most applications there
+While this single name domain works well for most applications there
 might be the need to get translations from more than one domain.  Of
 course one could switch between different domains with calls to
 @code{textdomain}, but this is really not convenient nor is it fast.  A
-possible situation could be one case discussing while this writing:  all
+possible situation could be one case subject to discussion during this
+writing:  all
 error messages of functions in the set of common used functions should
 go into a separate domain @code{error}.  By this mean we would only need
 to translate them once.
+Another case are messages from a library, as these @emph{have} to be
+independent of the current domain set by the application.
 
 @noindent
 For this reasons there are two more functions to retrieve strings:
@@ -3201,7 +3469,7 @@ achieved when the program executes a @code{chdir} command.  Relative
 paths should always be avoided to avoid dependencies and
 unreliabilities.
 
-@node Locating Catalogs, Optimized gettext, Ambiguities, gettext
+@node Locating Catalogs, Charset conversion, Ambiguities, gettext
 @subsection Locating Message Catalog Files
 
 Because many different languages for many different packages have to be
@@ -3225,14 +3493,514 @@ library, and for packages adhering to its conventions, it's:
 @noindent
 @var{locale} is the value of the locale whose name is this
 @code{LC_@var{category}}.  For @code{gettext} and @code{dgettext} this
-locale is always @code{LC_MESSAGES}.  @code{dcgettext} specifies the
-locale by the third argument.@footnote{Some
+@code{LC_@var{category}} is always @code{LC_MESSAGES}.@footnote{Some
 system, eg Ultrix, don't have @code{LC_MESSAGES}.  Here we use a more or
-less arbitrary value for it.} @footnote{When the system does not support
-@code{setlocale} its behavior in setting the locale values is simulated
-by looking at the environment variables.}
+less arbitrary value for it, namely 1729, the smallest positive integer
+which can be represented in two different ways as the sum of two cubes.}
+The value of the locale is determined through
+@code{setlocale (LC_@var{category}, NULL)}.
+@footnote{When the system does not support @code{setlocale} its behavior
+in setting the locale values is simulated by looking at the environment
+variables.}
+@code{dcgettext} specifies the locale category by the third argument.
 
-@node Optimized gettext,  , Locating Catalogs, gettext
+@node Charset conversion, Plural forms, Locating Catalogs, gettext
+@subsection How to specify the output character set @code{gettext} uses
+
+@code{gettext} not only looks up a translation in a message catalog.  It
+also converts the translation on the fly to the desired output character
+set.  This is useful if the user is working in a different character set
+than the translator who created the message catalog, because it avoids
+distributing variants of message catalogs which differ only in the
+character set.
+
+The output character set is, by default, the value of @code{nl_langinfo
+(CODESET)}, which depends on the @code{LC_CTYPE} part of the current
+locale.  But programs which store strings in a locale independent way
+(e.g. UTF-8) can request that @code{gettext} and related functions
+return the translations in that encoding, by use of the
+@code{bind_textdomain_codeset} function.
+
+Note that the @var{msgid} argument to @code{gettext} is not subject to
+character set conversion.  Also, when @code{gettext} does not find a
+translation for @var{msgid}, it returns @var{msgid} unchanged --
+independently of the current output character set.  It is therefore
+recommended that all @var{msgid}s be US-ASCII strings.
+
+@deftypefun {char *} bind_textdomain_codeset (const char *@var{domainname}, const char *@var{codeset})
+The @code{bind_textdomain_codeset} function can be used to specify the
+output character set for message catalogs for domain @var{domainname}.
+The @var{codeset} argument must be a valid codeset name which can be used
+for the @code{iconv_open} function, or a null pointer.
+
+If the @var{codeset} parameter is the null pointer,
+@code{bind_textdomain_codeset} returns the currently selected codeset
+for the domain with the name @var{domainname}. It returns @code{NULL} if
+no codeset has yet been selected.
+
+The @code{bind_textdomain_codeset} function can be used several times. 
+If used multiple times with the same @var{domainname} argument, the
+later call overrides the settings made by the earlier one.
+
+The @code{bind_textdomain_codeset} function returns a pointer to a
+string containing the name of the selected codeset.  The string is
+allocated internally in the function and must not be changed by the
+user.  If the system went out of core during the execution of
+@code{bind_textdomain_codeset}, the return value is @code{NULL} and the
+global variable @var{errno} is set accordingly.
+@end deftypefun
+
+@node Plural forms, GUI program problems, Charset conversion, gettext
+@subsection Additional functions for plural forms
+
+The functions of the @code{gettext} family described so far (and all the
+@code{catgets} functions as well) have one problem in the real world
+which have been neglected completely in all existing approaches.  What
+is meant here is the handling of plural forms.
+
+Looking through Unix source code before the time anybody thought about
+internationalization (and, sadly, even afterwards) one can often find
+code similar to the following:
+
+@smallexample
+   printf ("%d file%s deleted", n, n == 1 ? "" : "s");
+@end smallexample
+
+@noindent
+After the first complaints from people internationalizing the code people
+either completely avoided formulations like this or used strings like
+@code{"file(s)"}.  Both look unnatural and should be avoided.  First
+tries to solve the problem correctly looked like this:
+
+@smallexample
+   if (n == 1)
+     printf ("%d file deleted", n);
+   else
+     printf ("%d files deleted", n);
+@end smallexample
+
+But this does not solve the problem.  It helps languages where the
+plural form of a noun is not simply constructed by adding an `s' but
+that is all.  Once again people fell into the trap of believing the
+rules their language is using are universal.  But the handling of plural
+forms differs widely between the language families.  For example,
+Rafal Maszkowski @code{<rzm@@mat.uni.torun.pl>} reports:
+
+@quotation
+In Polish we use e.g. plik (file) this way:
+@example
+1 plik
+2,3,4 pliki
+5-21 pliko'w
+22-24 pliki
+25-31 pliko'w
+@end example
+and so on (o' means 8859-2 oacute which should be rather okreska,
+similar to aogonek).
+@end quotation
+
+There are two things which can differ between languages (and even inside
+language families);
+
+@itemize @bullet
+@item
+The form how plural forms are build differs.  This is a problem with
+languages which have many irregularities.  German, for instance, is a
+drastic case.  Though English and German are part of the same language
+family (Germanic), the almost regular forming of plural noun forms
+(appending an `s') is hardly found in German.
+
+@item
+The number of plural forms differ.  This is somewhat surprising for
+those who only have experiences with Romanic and Germanic languages
+since here the number is the same (there are two).
+
+But other language families have only one form or many forms.  More
+information on this in an extra section.
+@end itemize
+
+The consequence of this is that application writers should not try to
+solve the problem in their code.  This would be localization since it is
+only usable for certain, hardcoded language environments.  Instead the
+extended @code{gettext} interface should be used.
+
+These extra functions are taking instead of the one key string two
+strings and a numerical argument.  The idea behind this is that using
+the numerical argument and the first string as a key, the implementation
+can select using rules specified by the translator the right plural
+form.  The two string arguments then will be used to provide a return
+value in case no message catalog is found (similar to the normal
+@code{gettext} behavior).  In this case the rules for Germanic language
+is used and it is assumed that the first string argument is the singular
+form, the second the plural form.
+
+This has the consequence that programs without language catalogs can
+display the correct strings only if the program itself is written using
+a Germanic language.  This is a limitation but since the GNU C library
+(as well as the GNU @code{gettext} package) are written as part of the
+GNU package and the coding standards for the GNU project require program
+being written in English, this solution nevertheless fulfills its
+purpose.
+
+@deftypefun {char *} ngettext (const char *@var{msgid1}, const char *@var{msgid2}, unsigned long int @var{n})
+The @code{ngettext} function is similar to the @code{gettext} function
+as it finds the message catalogs in the same way.  But it takes two
+extra arguments.  The @var{msgid1} parameter must contain the singular
+form of the string to be converted.  It is also used as the key for the
+search in the catalog.  The @var{msgid2} parameter is the plural form.
+The parameter @var{n} is used to determine the plural form.  If no
+message catalog is found @var{msgid1} is returned if @code{n == 1},
+otherwise @code{msgid2}.
+
+An example for the use of this function is:
+
+@smallexample
+printf (ngettext ("%d file removed", "%d files removed", n), n);
+@end smallexample
+
+Please note that the numeric value @var{n} has to be passed to the
+@code{printf} function as well.  It is not sufficient to pass it only to
+@code{ngettext}.
+@end deftypefun
+
+@deftypefun {char *} dngettext (const char *@var{domain}, const char *@var{msgid1}, const char *@var{msgid2}, unsigned long int @var{n})
+The @code{dngettext} is similar to the @code{dgettext} function in the
+way the message catalog is selected.  The difference is that it takes
+two extra parameter to provide the correct plural form.  These two
+parameters are handled in the same way @code{ngettext} handles them.
+@end deftypefun
+
+@deftypefun {char *} dcngettext (const char *@var{domain}, const char *@var{msgid1}, const char *@var{msgid2}, unsigned long int @var{n}, int @var{category})
+The @code{dcngettext} is similar to the @code{dcgettext} function in the
+way the message catalog is selected.  The difference is that it takes
+two extra parameter to provide the correct plural form.  These two
+parameters are handled in the same way @code{ngettext} handles them.
+@end deftypefun
+
+Now, how do these functions solve the problem of the plural forms?
+Without the input of linguists (which was not available) it was not
+possible to determine whether there are only a few different forms in
+which plural forms are formed or whether the number can increase with
+every new supported language.
+
+Therefore the solution implemented is to allow the translator to specify
+the rules of how to select the plural form.  Since the formula varies
+with every language this is the only viable solution except for
+hardcoding the information in the code (which still would require the
+possibility of extensions to not prevent the use of new languages).
+
+The information about the plural form selection has to be stored in the
+header entry of the PO file (the one with the empty @code{msgid} string).
+The plural form information looks like this:
+
+@smallexample
+Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;
+@end smallexample
+
+The @code{nplurals} value must be a decimal number which specifies how
+many different plural forms exist for this language.  The string
+following @code{plural} is an expression which is using the C language
+syntax.  Exceptions are that no negative numbers are allowed, numbers
+must be decimal, and the only variable allowed is @code{n}.  This
+expression will be evaluated whenever one of the functions
+@code{ngettext}, @code{dngettext}, or @code{dcngettext} is called.  The
+numeric value passed to these functions is then substituted for all uses
+of the variable @code{n} in the expression.  The resulting value then
+must be greater or equal to zero and smaller than the value given as the
+value of @code{nplurals}.
+
+@noindent
+The following rules are known at this point.  The language with families
+are listed.  But this does not necessarily mean the information can be
+generalized for the whole family (as can be easily seen in the table
+below).@footnote{Additions are welcome.  Send appropriate information to
+@email{bug-glibc-manual@@gnu.org}.}
+
+@table @asis
+@item Only one form:
+Some languages only require one single form.  There is no distinction
+between the singular and plural form.  An appropriate header entry
+would look like this:
+
+@smallexample
+Plural-Forms: nplurals=1; plural=0;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Finno-Ugric family
+Hungarian
+@item Asian family
+Japanese, Korean
+@item Turkic/Altaic family
+Turkish
+@end table
+
+@item Two forms, singular used for one only
+This is the form used in most existing programs since it is what English
+is using.  A header entry would look like this:
+
+@smallexample
+Plural-Forms: nplurals=2; plural=n != 1;
+@end smallexample
+
+(Note: this uses the feature of C expressions that boolean expressions
+have to value zero or one.)
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Germanic family
+Danish, Dutch, English, German, Norwegian, Swedish
+@item Finno-Ugric family
+Estonian, Finnish
+@item Latin/Greek family
+Greek
+@item Semitic family
+Hebrew
+@item Romanic family
+Italian, Portuguese, Spanish
+@item Artificial
+Esperanto
+@end table
+
+@item Two forms, singular used for zero and one
+Exceptional case in the language family.  The header entry would be:
+
+@smallexample
+Plural-Forms: nplurals=2; plural=n>1;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Romanic family
+French, Brazilian Portuguese
+@end table
+
+@item Three forms, special case for zero
+The header entry would be:
+
+@smallexample
+Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Baltic family
+Latvian
+@end table
+
+@item Three forms, special cases for one and two
+The header entry would be:
+
+@smallexample
+Plural-Forms: nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Celtic
+Gaeilge
+@end table
+
+@item Three forms, special case for numbers ending in 1[2-9]
+The header entry would look like this:
+
+@smallexample
+Plural-Forms: nplurals=3; \
+    plural=n%10==1 && n%100!=11 ? 0 : \
+           n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Baltic family
+Lithuanian
+@end table
+
+@item Three forms, special cases for numbers ending in 1 and 2, 3, 4, except those ending in 1[1-4]
+The header entry would look like this:
+
+@smallexample
+Plural-Forms: nplurals=3; \
+    plural=n%10==1 && n%100!=11 ? 0 : \
+           n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Slavic family
+Croatian, Czech, Russian, Slovak, Ukrainian
+@end table
+
+@item Three forms, special case for one and some numbers ending in 2, 3, or 4
+The header entry would look like this:
+
+@smallexample
+Plural-Forms: nplurals=3; \
+    plural=n==1 ? 0 : \
+           n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Slavic family
+Polish
+@end table
+
+@item Four forms, special case for one and all numbers ending in 02, 03, or 04
+The header entry would look like this:
+
+@smallexample
+Plural-Forms: nplurals=4; \
+    plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;
+@end smallexample
+
+@noindent
+Languages with this property include:
+
+@table @asis
+@item Slavic family
+Slovenian
+@end table
+@end table
+
+@node GUI program problems, Optimized gettext, Plural forms, gettext
+@subsection How to use @code{gettext} in GUI programs
+
+One place where the @code{gettext} functions, if used normally, have big
+problems is within programs with graphical user interfaces (GUIs).  The
+problem is that many of the strings which have to be translated are very
+short.  They have to appear in pull-down menus which restricts the
+length.  But strings which are not containing entire sentences or at
+least large fragments of a sentence may appear in more than one
+situation in the program but might have different translations.  This is
+especially true for the one-word strings which are frequently used in
+GUI programs.
+
+As a consequence many people say that the @code{gettext} approach is
+wrong and instead @code{catgets} should be used which indeed does not
+have this problem.  But there is a very simple and powerful method to
+handle these kind of problems with the @code{gettext} functions.
+
+@noindent
+As as example consider the following fictional situation.  A GUI program
+has a menu bar with the following entries:
+
+@smallexample
++------------+------------+--------------------------------------+
+| File       | Printer    |                                      |
++------------+------------+--------------------------------------+
+| Open     | | Select   |
+| New      | | Open     |
++----------+ | Connect  |
+             +----------+
+@end smallexample
+
+To have the strings @code{File}, @code{Printer}, @code{Open},
+@code{New}, @code{Select}, and @code{Connect} translated there has to be
+at some point in the code a call to a function of the @code{gettext}
+family.  But in two places the string passed into the function would be
+@code{Open}.  The translations might not be the same and therefore we
+are in the dilemma described above.
+
+One solution to this problem is to artificially enlengthen the strings
+to make them unambiguous.  But what would the program do if no
+translation is available?  The enlengthened string is not what should be
+printed.  So we should use a little bit modified version of the functions.
+
+To enlengthen the strings a uniform method should be used.  E.g., in the
+example above the strings could be chosen as
+
+@smallexample
+Menu|File
+Menu|Printer
+Menu|File|Open
+Menu|File|New
+Menu|Printer|Select
+Menu|Printer|Open
+Menu|Printer|Connect
+@end smallexample
+
+Now all the strings are different and if now instead of @code{gettext}
+the following little wrapper function is used, everything works just
+fine:
+
+@cindex sgettext
+@smallexample
+  char *
+  sgettext (const char *msgid)
+  @{
+    char *msgval = gettext (msgid);
+    if (msgval == msgid)
+      msgval = strrchr (msgid, '|') + 1;
+    return msgval;
+  @}
+@end smallexample
+
+What this little function does is to recognize the case when no
+translation is available.  This can be done very efficiently by a
+pointer comparison since the return value is the input value.  If there
+is no translation we know that the input string is in the format we used
+for the Menu entries and therefore contains a @code{|} character.  We
+simply search for the last occurrence of this character and return a
+pointer to the character following it.  That's it!
+
+If one now consistently uses the enlengthened string form and replaces
+the @code{gettext} calls with calls to @code{sgettext} (this is normally
+limited to very few places in the GUI implementation) then it is
+possible to produce a program which can be internationalized.
+
+The other @code{gettext} functions (@code{dgettext}, @code{dcgettext}
+and the @code{ngettext} equivalents) can and should have corresponding
+functions as well which look almost identical, except for the parameters
+and the call to the underlying function.
+
+Now there is of course the question why such functions do not exist in
+the GNU gettext package?  There are two parts of the answer to this question.
+
+@itemize @bullet
+@item
+They are easy to write and therefore can be provided by the project they
+are used in.  This is not an answer by itself and must be seen together
+with the second part which is:
+
+@item
+There is no way the gettext package can contain a version which can work
+everywhere.  The problem is the selection of the character to separate
+the prefix from the actual string in the enlenghtened string.  The
+examples above used @code{|} which is a quite good choice because it
+resembles a notation frequently used in this context and it also is a
+character not often used in message strings.
+
+But what if the character is used in message strings?  Or if the chose
+character is not available in the character set on the machine one
+compiles (e.g., @code{|} is not required to exist for @w{ISO C}; this is
+why the @file{iso646.h} file exists in @w{ISO C} programming environments).
+@end itemize
+
+There is only one more comment to be said.  The wrapper function above
+requires that the translations strings are not enlengthened themselves.
+This is only logical.  There is no need to disambiguate the strings
+(since they are never used as keys for a search) and one also saves
+quite some memory and disk space by doing this.
+
+@node Optimized gettext,  , GUI program problems, gettext
 @subsection Optimization of the *gettext functions
 
 At this point of the discussion we should talk about an advantage of the
@@ -3272,55 +4040,12 @@ string is always the same.  One way to use this is:
 
 @noindent
 But this solution is not usable in all situation (e.g. when the locale
-selection changes) nor is it good readable.
+selection changes) nor does it lead to legible code.
 
-The GNU C compiler, version 2.7 and above, provide another solution for
-this.  To describe this we show here some lines of the
-@file{intl/libgettext.h} file.  For an explanation of the expression
-command block see @ref{Statement Exprs, , Statements and Declarations in
-Expressions, gcc, The GNU CC Manual}.
-
-@example
-@group
-#  if defined __GNUC__ && __GNUC__ == 2 && __GNUC_MINOR__ >= 7
-extern int _nl_msg_cat_cntr;
-#   define	dcgettext(domainname, msgid, category)           \
-  (__extension__                                                 \
-   (@{                                                            \
-     char *result;                                               \
-     if (__builtin_constant_p (msgid))                           \
-       @{                                                         \
-         static char *__translation__;                           \
-         static int __catalog_counter__;                         \
-         if (! __translation__                                   \
-             || __catalog_counter__ != _nl_msg_cat_cntr)         \
-           @{                                                     \
-             __translation__ =                                   \
-               dcgettext__ ((domainname), (msgid), (category));  \
-             __catalog_counter__ = _nl_msg_cat_cntr;             \
-           @}                                                     \
-         result = __translation__;                               \
-       @}                                                         \
-     else                                                        \
-       result = dcgettext__ ((domainname), (msgid), (category)); \
-     result;                                                     \
-    @}))
-#  endif
-@end group
-@end example
-
-The interesting thing here is the @code{__builtin_constant_p} predicate.
-This is evaluated at compile time and so optimization can take place
-immediately.  Here two cases are distinguished: the argument to
-@code{gettext} is not a constant value in which case simply the function
-@code{dcgettext__} is called, the real implementation of the
-@code{dcgettext} function.
-
-If the string argument @emph{is} constant we can reuse the once gained
-translation when the locale selection has not changed.  This is exactly
-what is done here.  The @code{_nl_msg_cat_cntr} variable is defined in
-the @file{loadmsgcat.c} which is available in @file{libintl.a} and is
-changed whenever a new message catalog is loaded.
+For this reason, GNU @code{gettext} caches previous translation results.
+When the same translation is requested twice, with no new message
+catalogs being loaded in between, @code{gettext} will, the second time,
+find the result through a single cache lookup.
 
 @node Comparison, Using libintl.a, gettext, Programmers
 @section Comparing the Two Interfaces
@@ -3374,21 +4099,16 @@ program which does not depend on translations to be available, but which
 can use any that becomes available.
 
 The same procedure can be done for the @code{gettext_noop} invocations
-(@pxref{Special cases}).  First you can define @code{gettext_noop} to a
-no-op macro and later use the definition from @file{libintl.h}.  Because
-this name is not used in Suns implementation of @file{libintl.h},
-you should consider the following code for your project:
+(@pxref{Special cases}).  One usually defines @code{gettext_noop} as a
+no-op macro.  So you should consider the following code for your project:
 
 @example
-#ifdef gettext_noop
-# define N_(String) gettext_noop (String)
-#else
-# define N_(String) (String)
-#endif
+#define gettext_noop(String) (String)
+#define N_(String) gettext_noop (String)
 @end example
 
 @code{N_} is a short form similar to @code{_}.  The @file{Makefile} in
-the @file{po/} directory of GNU gettext knows by default both of the
+the @file{po/} directory of GNU @code{gettext} knows by default both of the
 mentioned short forms so you are invited to follow this proposal for
 your own ease.
 
@@ -3437,53 +4157,9 @@ We believe that we can solve all conflicts with this method.  If it is
 difficult one can also consider changing one of the conflicting string a
 little bit.  But it is not impossible to overcome.
 
-@c Should this be here?
-Translator note: It is perhaps appropriate here to tell those English
-speaking programmers that the plural form of a noun cannot be formed by
-appending a single `s'.  Most other languages use different methods.
-Even the above form is not general enough to cope with all languages.
-Rafal Maszkowski <rzm@@mat.uni.torun.pl> reports:
-
-@quotation
-In Polish we use e.g. plik (file) this way:
-@example
-1 plik
-2,3,4 pliki
-5-21 pliko'w
-22-24 pliki
-25-31 pliko'w
-@end example
-and so on (o' means 8859-2 oacute which should be rather okreska,
-similar to aogonek).
-@end quotation
-
-A workable approach might be to consider methods like the one used for
-@code{LC_TIME} in the POSIX.2 standard.  The value of the
-@code{alt_digits} field can be up to 100 strings which represent the
-numbers 1 to 100.  Using this in a situation of an internationalized
-program means that an array of translatable strings should be indexed by
-the number which should represent.  A small example:
-
-@example
-@group
-void
-print_month_info (int month)
-@{
-  const char *month_pos[12] =
-  @{ N_("first"), N_("second"), N_("third"),    N_("fourth"),
-    N_("fifth"), N_("sixth"),  N_("seventh"),  N_("eighth"),
-    N_("ninth"), N_("tenth"),  N_("eleventh"), N_("twelfth") @};
-  printf (_("%s is the %s month\n"), nl_langinfo (MON_1 + month),
-          _(month_pos[month]));
-@}
-@end group
-@end example
-
-@noindent
-It should be obvious that this method is only reasonable for small
-ranges of numbers.
-
-@c catgets allows same original entry to have different translations
+@code{catgets} allows same original entry to have different translations,
+but @code{gettext} has another, scalable approach for solving ambiguities
+of this kind: @xref{Ambiguities}.
 
 @node Using libintl.a, gettext grok, Comparison, Programmers
 @section Using libintl.a in own programs
@@ -3493,9 +4169,9 @@ self-contained.  I.e., you can use it in your own programs without
 providing additional functions.  The @file{Makefile} will put the header
 and the library in directories selected using the @code{$(prefix)}.
 
-One exception of the above is found on HP-UX systems.  Here the C library
-does not contain the @code{alloca} function (and the HP compiler does
-not generate it inlined).  But it is not intended to rewrite the whole
+One exception of the above is found on HP-UX 10.01 systems.  Here the C
+library does not contain the @code{alloca} function (and the HP compiler
+does not generate it inlined).  But it is not intended to rewrite the whole
 library just because of this dumb system.  Instead include the
 @code{alloca} function in all package you use the @code{libintl.a} in.
 
@@ -3514,10 +4190,7 @@ For interactive programs it might be useful to offer a selection of the
 used language at runtime.  To understand how to do this one need to know
 how the used language is determined while executing the @code{gettext}
 function.  The method which is presented here only works correctly
-with the GNU implementation of the @code{gettext} functions.  It is not
-possible with underlying @code{catgets} functions or @code{gettext}
-functions from the systems C library.  The exception is of course the
-GNU C Library which uses the GNU @code{gettext} Library for message handling.
+with the GNU implementation of the @code{gettext} functions.
 
 In the function @code{dcgettext} at every call the current setting of
 the highest priority environment variable is determined and used.
@@ -3652,44 +4325,25 @@ Supposing another catalog access system is implemented.  Which do
 we recommend?  At least for Linux, we need to attract as many
 software developers as possible.  Hence we need to make it as easy
 for them to port their software as possible.  Which means supporting
-@code{catgets}.  We will be implementing the @code{glocale} code
+@code{catgets}.  We will be implementing the @code{libintl} code
 within our @code{libc}, but does this mean we also have to incorporate
 another message catalog access scheme within our @code{libc} as well?
-And what about people who are going to be using the @code{glocale}
+And what about people who are going to be using the @code{libintl}
 + non-@code{catgets} routines.  When they port their software to
 other platforms, they're now going to have to include the front-end
-(@code{glocale}) code plus the back-end code (the non-@code{catgets}
+(@code{libintl}) code plus the back-end code (the non-@code{catgets}
 access routines) with their software instead of just including the
-@code{glocale} code with their software.
+@code{libintl} code with their software.
 
 Message catalog support is however only the tip of the iceberg.
 What about the data for the other locale categories.  They also have
 a number of deficiencies.  Are we going to abandon them as well and
-develop another duplicate set of routines (should @code{glocale}
+develop another duplicate set of routines (should @code{libintl}
 expand beyond message catalog support)?
 
 Like many parts of Unix that can be improved upon, we're stuck with balancing
 compatibility with the past with useful improvements and innovations for
 the future.
-
-@c @node Temp DLS, Temp Notes, Temp WSI, Temp Programmers
-@c @subsection Temporary - Double layer solution
-
-@c GNU locale implements a @code{gettext}-style interface on top of a
-@c @code{catgets}-style interface.
-
-@c This is not needless complexity.  It is absolutely vital, because
-@c it enables @code{gettext} to run on top of @code{catgets}, which
-@c enables Linux International to recommend users use it @emph{today}.
-
-@c Rewriting @code{gettext} so that it could use @emph{either}
-@c @code{catgets} @emph{or} some simpler mechanism would not break
-@c anything, but would not reduce complexity either.  It might be
-@c worth doing, but it isn't urgent.
-
-@c In general, simplicity is not enough of a reason to rewrite a
-@c program that works.  Simplicity is just one desirable thing.
-@c It is not overridingly important.
 
 @node Temp Notes,  , Temp WSI, Temp Programmers
 @subsection Temporary - Notes
@@ -3718,9 +4372,9 @@ Solaris is not the only system having @code{gettext}.
 @node Trans Intro 0, Trans Intro 1, Translators, Translators
 @section Introduction 0
 
-GNU is going international!  The Translation Project is a way
-to get maintainers, translators and users all together, so GNU will
-gradually become able to speak many native languages.
+Free software is going international!  The Translation Project is a way
+to get maintainers, translators and users all together, so free software
+will gradually become able to speak many native languages.
 
 The GNU @code{gettext} tool set contains @emph{everything} maintainers
 need for internationalizing their packages for messages.  It also
@@ -3764,8 +4418,8 @@ subscribe
 Keep in mind that team members should be interested in @emph{working}
 at translations, or at solving translational difficulties, rather than
 merely lurking around.  If your team does not exist yet and you want to
-start one, please write to @w{@file{gnu-translation@@prep.ai.mit.edu}};
-you will then reach the GNU coordinator for all translator teams.
+start one, please write to @w{@file{translation@@iro.umontreal.ca}};
+you will then reach the coordinator for all translator teams.
 
 A handful of GNU packages have already been adapted and provided
 with message translations for several languages.  Translation
@@ -3773,7 +4427,7 @@ teams have begun to organize, using these packages as a starting
 point.  But there are many more packages and many languages for
 which we have no volunteer translators.  If you would like to
 volunteer to work at translating messages, please send mail to
-@file{gnu-translation@@prep.ai.mit.edu} indicating what language(s)
+@file{translation@@iro.umontreal.ca} indicating what language(s)
 you can work on.
 
 @node Trans Intro 1, Discussions, Trans Intro 0, Translators
@@ -3789,29 +4443,29 @@ teams have begun to organize, using these packages as a starting
 point.  But there are many more packages and many languages
 for which we have no volunteer translators.  If you'd like to
 volunteer to work at translating messages, please send mail to
-@samp{gnu-translation@@prep.ai.mit.edu} indicating what language(s)
+@samp{translation@@iro.umontreal.ca} indicating what language(s)
 you can work on.
 @end quotation
 
-This document should answer many questions for those who are curious
-about the process or would like to contribute.  Please at least skim
-over it, hoping to cut down a little of the high volume of e-mail
-generated by this collective effort towards GNU internationalization.
+This document should answer many questions for those who are curious about
+the process or would like to contribute.  Please at least skim over it,
+hoping to cut down a little of the high volume of e-mail generated by this
+collective effort towards internationalization of free software.
 
 Most free programming which is widely shared is done in English, and
 currently, English is used as the main communicating language between
-national communities collaborating to the GNU project.  This very document
+national communities collaborating to free software.  This very document
 is written in English.  This will not change in the foreseeable future.
 
 However, there is a strong appetite from national communities for
 having more software able to write using national language and habits,
-and there is an on-going effort to modify GNU software in such a way
+and there is an on-going effort to modify free software in such a way
 that it becomes able to do so.  The experiments driven so far raised
-an enthusiastic response from pretesters, so we believe that GNU
-internationalization is dedicated to succeed.
+an enthusiastic response from pretesters, so we believe that
+internationalization of free software is dedicated to succeed.
 
 For suggestion clarifications, additions or corrections to this
-document, please e-mail to @file{gnu-translation@@prep.ai.mit.edu}.
+document, please e-mail to @file{translation@@iro.umontreal.ca}.
 
 @node Discussions, Organization, Trans Intro 1, Translators
 @section Discussions
@@ -3860,21 +4514,29 @@ many people liking their mother tongue.  This is why translations are
 better achieved by people knowing and loving their own language, and
 ready to work together at improving the results they obtain.
 
-@item Dependencies over the GPL
+@item Dependencies over the GPL or LGPL
 
-Some people wonder if using GNU @code{gettext} necessarily brings their package
-under the protective wing of the GNU General Public License, when they
-do not want to make their program free, or want other kinds of freedom.
-The simplest answer is yes.
+Some people wonder if using GNU @code{gettext} necessarily brings their
+package under the protective wing of the GNU General Public License or
+the GNU Library General Public License, when they do not want to make
+their program free, or want other kinds of freedom.  The simplest
+answer is ``normally not''.
+
+The GNU @code{gettext} library, i.e. the contents of @code{libintl},
+is covered by the GNU Library General Public License.  The rest of
+the GNU @code{gettext} package is covered by the GNU General Public
+License.
 
 The mere marking of localizable strings in a package, or conditional
 inclusion of a few lines for initialization, is not really including
-GPL'ed code.  However, the localization routines themselves are under
-the GPL and would bring the remainder of the package under the GPL
-if they were distributed with it.  So, I presume that, for those
-for which this is a problem, it could be circumvented by letting to
-the end installers the burden of assembling a package prepared for
-localization, but not providing the localization routines themselves.
+GPL'ed or LGPL'ed code.  However, since the localization routines in
+@code{libintl} are under the LGPL, the LGPL needs to be considered.
+It gives the right to distribute the complete unmodified source of
+@code{libintl} even with non-free programs.  It also gives the right
+to use @code{libintl} as a shared library, even for non-free programs.
+But it gives the right to use @code{libintl} as a static library or
+to incorporate @code{libintl} into another library only to free
+software.
 
 @end itemize
 
@@ -4162,24 +4824,19 @@ replace or complement C libraries, and a subdirectory @file{src/} for
 holding the proper sources for the package.  These other distributions
 are said to be @dfn{non-flat}.
 
-For now, we cannot say much about flat distributions.  A flat
+We cannot say much about flat distributions.  A flat
 directory structure has the disadvantage of increasing the difficulty
 of updating to a new version of GNU @code{gettext}.  Also, if you have
 many PO files, this could somewhat pollute your single directory.
-In the GNU @code{gettext} distribution, the @file{misc/} directory
-contains a shell script named @file{combine-sh}.  That script may
-be used for combining all the C files of the @file{intl/} directory
-into a pair of C files (one @file{.c} and one @file{.h}).  Those two
-generated files would fit more easily in a flat directory structure,
-and you will then have to add these two files to your project.
+Also, GNU @code{gettext}'s libintl sources consist of C sources, shell
+scripts, @code{sed} scripts and complicated Makefile rules, which don't
+fit well into an existing flat structure.  For these reasons, we
+recommend to use non-flat approach in this case as well.
 
 Maybe because GNU @code{gettext} itself has a non-flat structure,
 we have more experience with this approach, and this is what will be
 described in the remaining of this chapter.  Some maintainers might
 use this as an opportunity to unflatten their package structure.
-Only later, once gained more experience adapting GNU @code{gettext}
-to flat distributions, we might add some notes about how to proceed
-in flat situations.
 
 @node Prerequisites, gettextize Invocation, Flat and Non-Flat, Maintainers
 @section Prerequisite Works
@@ -4191,7 +4848,8 @@ of this chapter.  So, we describe them here.
 
 @itemize @bullet
 @item
-Before attempting to use you should install some other packages first.
+Before attempting to use @code{gettextize} you should install some
+other packages first.
 Ensure that recent versions of GNU @code{m4}, GNU Autoconf and GNU
 @code{gettext} are already installed at your site, and if not, proceed
 to do this first.  If you got to install these things, beware that
@@ -4373,6 +5031,7 @@ its own functionality.
 @menu
 * po/POTFILES.in::              @file{POTFILES.in} in @file{po/}
 * configure.in::                @file{configure.in} at top level
+* config.guess::                @file{config.guess}, @file{config.sub} at top level
 * aclocal::                     @file{aclocal.m4} at top level
 * acconfig::                    @file{acconfig.h} at top level
 * Makefile::                    @file{Makefile.in} at top level
@@ -4398,20 +5057,20 @@ lib/getopt.c
 lib/xmalloc.c
 
 # Package source files
-src/gettextp.c
+src/gettext.c
 src/msgfmt.c
 src/xgettext.c
 @end group
 @end example
 
 @noindent
-Dashed comments and white lines are ignored.  All other lines
+Hash-marked comments and white lines are ignored.  All other lines
 list those source files containing strings marked for translation
 (@pxref{Mark Keywords}), in a notation relative to the top level
 of your whole distribution, rather than the location of the
 @file{POTFILES.in} file itself.
 
-@node configure.in, aclocal, po/POTFILES.in, Adjusting Files
+@node configure.in, config.guess, po/POTFILES.in, Adjusting Files
 @subsection @file{configure.in} at top level
 
 @enumerate
@@ -4481,20 +5140,45 @@ the distributed file is really @file{po/Makefile.in.in}.
 
 @end enumerate
 
-@node aclocal, acconfig, configure.in, Adjusting Files
+@node config.guess, aclocal, configure.in, Adjusting Files
+@subsection @file{config.guess}, @file{config.sub} at top level
+
+You need to add the GNU @file{config.guess} and @file{config.sub} files
+to your distribution.  They are needed because the @file{intl/} directory
+has platform dependent support for determining the locale's character
+encoding and therefore needs to identify the platform.
+
+You can obtain the newest version of @file{config.guess} and
+@file{config.sub} from @file{ftp://ftp.gnu.org/pub/gnu/config/}.
+Less recent versions are also contained in the GNU @code{automake} and
+GNU @code{libtool} packages.
+
+Normally, @file{config.guess} and @file{config.sub} are put at the
+top level of a distribution.  But it is also possible to put them in a
+subdirectory, altogether with other configuration support files like
+@file{install-sh}, @file{ltconfig}, @file{ltmain.sh},
+@file{mkinstalldirs} or @file{missing}.  All you need to do, other than
+moving the files, is to add the following line to your
+@file{configure.in}.
+
+@example
+AC_CONFIG_AUX_DIR([@var{subdir}])
+@end example
+
+@node aclocal, acconfig, config.guess, Adjusting Files
 @subsection @file{aclocal.m4} at top level
 
 If you do not have an @file{aclocal.m4} file in your distribution,
-the simplest is taking a copy of @file{aclocal.m4} from
-GNU @code{gettext}.  But to be precise, you only need macros
-@code{AM_LC_MESSAGES}, @code{AM_WITH_NLS} and @code{AM_GNU_GETTEXT},
-and @code{AM_PATH_PROG_WITH_TEST}, which is called by @code{AM_WITH_NLS},
-so you may use an editor and remove macros you do not need.
+the simplest is to concatenate the files @file{codeset.m4},
+@file{gettext.m4}, @file{glibc21.m4}, @file{iconv.m4}, @file{isc-posix.m4},
+@file{lcmessage.m4}, @file{progtest.m4} from GNU @code{gettext}'s
+@file{m4/} directory into a single file.
 
 If you already have an @file{aclocal.m4} file, then you will have
-to merge the said macros into your @file{aclocal.m4}.  Note that if
+to merge the said macro files into your @file{aclocal.m4}.  Note that if
 you are upgrading from a previous release of GNU @code{gettext}, you
-should most probably @emph{replace} the said macros, as they usually
+should most probably @emph{replace} the macros (@code{AM_GNU_GETTEXT},
+@code{AM_WITH_NLS}, etc.), as they usually
 change a little from one release of GNU @code{gettext} to the next.
 Their contents may vary as we get more experience with strange systems
 out there.
@@ -4508,14 +5192,12 @@ piece of @code{m4} code will be the same for all projects using GNU
 @node acconfig, Makefile, aclocal, Adjusting Files
 @subsection @file{acconfig.h} at top level
 
-If you do not have an @file{acconfig.h} file in your distribution, the
-simplest is use take a copy of @file{acconfig.h} from GNU
-@code{gettext}.  But to be precise, you only need the lines and comments
-for @code{ENABLE_NLS}, @code{HAVE_CATGETS}, @code{HAVE_GETTEXT} and
-@code{HAVE_LC_MESSAGES}, @code{HAVE_STPCPY}, @code{PACKAGE} and
-@code{VERSION}, so you may use an editor and remove everything else.  If
-you already have an @file{acconfig.h} file, then you should merge the
-said definitions into your @file{acconfig.h}.
+Earlier GNU @code{gettext} releases required to put definitions for
+@code{ENABLE_NLS}, @code{HAVE_GETTEXT} and @code{HAVE_LC_MESSAGES},
+@code{HAVE_STPCPY}, @code{PACKAGE} and @code{VERSION} into an
+@file{acconfig.h} file.  This is not needed any more; you can remove
+them from your @file{acconfig.h} file unless your package uses them
+independently from the @file{intl/} directory.
 
 @node Makefile, src/Makefile, acconfig, Adjusting Files
 @subsection @file{Makefile.in} at top level
@@ -4553,8 +5235,13 @@ example, we also define @code{SUBDIRS} in @code{Makefile.in} for it
 to be further used in the @samp{dist:} goal.
 
 @example
-SUBDIRS = doc lib @@INTLSUB@@ src @@POSUB@@
+SUBDIRS = doc intl lib src @@POSUB@@
 @end example
+
+Note that you must arrange for @samp{make} to descend into the
+@code{intl} directory before descending into other directories containing
+code which make use of the @code{libintl.h} header file.  For this
+reason, here we mention @code{intl} before @code{lib} and @code{src}.
 
 @noindent
 that you will have to adapt to your own package.
@@ -4623,6 +5310,26 @@ subdir = src
 @end example
 
 @item
+The @code{main} function of your program will normally call
+@code{bindtextdomain} (see @pxref{Triggering}), like this:
+
+@example
+bindtextdomain (@var{PACKAGE}, LOCALEDIR);
+@end example
+
+To make LOCALEDIR known to the program, add the following lines to
+Makefile.in:
+
+@example
+datadir = @@datadir@@
+localedir = $(datadir)/locale
+DEFS = -DLOCALEDIR=\"$(localedir)\" @@DEFS@@
+@end example
+
+Note that @code{@@datadir@@} defaults to @samp{$(prefix)/share}, thus
+@code{$(localedir)} defaults to @samp{$(prefix)/share/locale}.
+
+@item
 You should ensure that the final linking will use @code{@@INTLLIBS@@} as
 a library.  An easy way to achieve this is to manage that it gets into
 @code{LIBS}, like this:
@@ -4664,7 +5371,7 @@ dist: Makefile $(DISTFILES)
 
 @end enumerate
 
-@node Conclusion, Country Codes, Maintainers, Top
+@node Conclusion, Language Codes, Maintainers, Top
 @chapter Concluding Remarks
 
 We would like to conclude this GNU @code{gettext} manual by presenting
@@ -4783,15 +5490,26 @@ ftp://ftp.ibp.fr/pub/linux/french/docs/
 @noindent
 together with French translations of many Linux-related documents.
 
-@node Country Codes,  , Conclusion, Top
+@node Language Codes, Country Codes, Conclusion, Top
+@appendix Language Codes
+
+The @w{ISO 639} standard defines two character codes for many languages.
+All abbreviations for languages used in the Translation Project should
+come from this standard.
+
+@table @samp
+@include iso-639.texi
+@end table
+
+@node Country Codes,  , Language Codes, Top
 @appendix Country Codes
 
-The @w{ISO 639} standard defines two character codes for many countries.
-All abreviations for countries or languages used in the Translation
+The @w{ISO 3166} standard defines two character codes for many countries
+and territories.  All abbreviations for countries used in the Translation
 Project should come from this standard.
 
 @table @samp
-@include iso-apdx.texi
+@include iso-3166.texi
 @end table
 
 @contents

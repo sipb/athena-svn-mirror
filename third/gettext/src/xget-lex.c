@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -24,15 +24,13 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
+#include <stdlib.h>
 
 #include "dir-list.h"
 #include "error.h"
 #include "system.h"
 #include "libgettext.h"
+#include "hash.h"
 #include "str-list.h"
 #include "xget-lex.h"
 
@@ -82,7 +80,8 @@ enum token_type_ty
   token_type_eof,
   token_type_eoln,
   token_type_hash,
-  token_type_lp,
+  token_type_lparen,
+  token_type_rparen,
   token_type_comma,
   token_type_name,
   token_type_number,
@@ -107,9 +106,8 @@ static char *logical_file_name;
 static int line_number;
 static FILE *fp;
 static int trigraphs;
-static int cplusplus_comments;
 static string_list_ty *comment;
-static string_list_ty *keywords;
+static hash_table keywords;
 static int default_keywords = 1;
 
 /* These are for tracking whether comments count as immediately before
@@ -151,7 +149,7 @@ xgettext_lex_open (fn)
       logical_file_name = xstrdup (new_name);
       fp = stdin;
     }
-  else if (*fn == '/')
+  else if (IS_ABSOLUTE_PATH (fn))
     {
       new_name = xstrdup (fn);
       fp = fopen (fn, "r");
@@ -162,26 +160,17 @@ error while opening \"%s\" for reading"), fn);
     }
   else
     {
-      size_t len1, len2;
       int j;
-      const char *dir;
 
-      len2 = strlen (fn);
       for (j = 0; ; ++j)
 	{
-	  dir = dir_list_nth (j);
+	  const char *dir = dir_list_nth (j);
+
 	  if (dir == NULL)
 	    error (EXIT_FAILURE, ENOENT, _("\
 error while opening \"%s\" for reading"), fn);
 
-	  if (dir[0] =='.' && dir[1] == '\0')
-	    new_name = xstrdup (fn);
-	  else
-	    {
-	      len1 = strlen (dir);
-	      new_name = xmalloc (len1 + len2 + 2);
-	      stpcpy (stpcpy (stpcpy (new_name, dir), "/"), fn);
-	    }
+	  new_name = concatenated_pathname (dir, fn, NULL);
 
 	  fp = fopen (new_name, "r");
 	  if (fp != NULL)
@@ -305,7 +294,7 @@ phase1_ungetc (c)
 
 /* 2. Convert trigraphs to their single character equivalents.  Most
    sane human beings vomit copiously at the mention of trigraphs, which
-   is why they are on option.  */
+   is why they are an option.  */
 
 /* Maximum used guaranteed to be < 4.  */
 static unsigned char phase2_pushback[4];
@@ -490,12 +479,7 @@ phase4_getc ()
       return ' ';
 
     case '/':
-      /* C++ comment.  */
-      if (!cplusplus_comments)
-	{
-	  phase3_ungetc ('/');
-	  return '/';
-	}
+      /* C++ or ISO C 99 comment.  */
       buflen = 0;
       while (1)
 	{
@@ -643,7 +627,7 @@ phase7_getc ()
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	      n = n * 16 + c - '0';
-	      break;;
+	      break;
 
 	    case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
 	      n = n * 16 + 10 + c - 'A';
@@ -938,7 +922,11 @@ phase5_get (tp)
       return;
 
     case '(':
-      tp->type = token_type_lp;
+      tp->type = token_type_lparen;
+      return;
+
+    case ')':
+      tp->type = token_type_rparen;
       return;
 
     case ',':
@@ -976,55 +964,36 @@ static void
 phaseX_get (tp)
      token_ty *tp;
 {
-  static int middle;
-  token_ty tmp;
+  static int middle;	/* 0 at the beginning of a line, 1 otherwise.  */
 
   phase5_get (tp);
-  if (middle)
-    {
-      switch (tp->type)
-	{
-	case token_type_eoln:
-	case token_type_eof:
-	  middle = 0;
-	  break;
 
-	case token_type_hash:
-	  tp->type = token_type_symbol;
-	  break;
-
-	default:
-	  break;
-	}
-    }
+  if (tp->type == token_type_eoln || tp->type == token_type_eof)
+    middle = 0;
   else
     {
-      switch (tp->type)
+      if (middle)
 	{
-	case token_type_eoln:
-	case token_type_eof:
-	  break;
-
-	case token_type_white_space:
-	  tmp = *tp;
-	  phase5_get (tp);
-	  if (tp->type != token_type_hash)
-	    {
-	      phase5_unget (tp);
-	      *tp = tmp;
-	      middle = 1;
-	      return;
-	    }
-
-	  /* Discard the leading white space token, the hash is all
+	  /* Turn hash in the middle of a line into a plain symbol token.  */
+	  if (tp->type == token_type_hash)
+	    tp->type = token_type_symbol;
+	}
+      else
+	{
+	  /* When we see leading whitespace followed by a hash sign,
+	     discard the leading white space token.  The hash is all
 	     phase 6 is interested in.  */
-	  if (tp->type != token_type_eof && tp->type != token_type_eoln)
-	    middle = 1;
-	  break;
+	  if (tp->type == token_type_white_space)
+	    {
+	      token_ty next;
 
-	default:
+	      phase5_get (&next);
+	      if (next.type == token_type_hash)
+		*tp = next;
+	      else
+		phase5_unget (&next);
+	    }
 	  middle = 1;
-	  break;
 	}
     }
 }
@@ -1032,8 +1001,8 @@ phaseX_get (tp)
 
 /* 6. Recognize and carry out directives (it also expands macros on
    non-directive lines, which we do not do here).  The only directive
-   we care about is the #line directive.  We throw all the others
-   away.  */
+   we care about are the #line and #define directive.  We throw all the
+   others away.  */
 
 /* Maximum used guaranteed to be < 4.  */
 static token_ty phase6_pushback[4];
@@ -1057,13 +1026,13 @@ phase6_get (tp)
   while (1)
     {
       /* Get the next token.  If it is not a '#' at the beginning of a
-	 line, return immediately.  Be careful of white space.  */
+	 line (ignoring whitespace), return immediately.  */
       phaseX_get (tp);
       if (tp->type != token_type_hash)
 	return;
 
-      /* Accumulate the rest of the directive in a buffer.  Work out
-	 what it is later.  */
+      /* Accumulate the rest of the directive in a buffer, until the
+	 "define" keyword is seen or until end of line.  */
       bufpos = 0;
       while (1)
 	{
@@ -1071,19 +1040,26 @@ phase6_get (tp)
 	  if (tp->type == token_type_eoln || tp->type == token_type_eof)
 	    break;
 
-	  /* White space would be important in the directive, if we
-	     were interested in the #define directive.  But we are
-	     going to ignore the #define directive, so just throw
-	     white space away.  */
-	  if (tp->type == token_type_white_space)
-	    continue;
-
-	  if (bufpos >= bufmax)
+	  /* Before the "define" keyword and inside other directives
+	     white space is irrelevant.  So just throw it away.  */
+	  if (tp->type != token_type_white_space)
 	    {
-	      bufmax += 100;
-	      buf = xrealloc (buf, bufmax * sizeof (buf[0]));
+	      /* If it is a #define directive, return immediately,
+		 thus treating the body of the #define directive like
+		 normal input.  */
+	      if (bufpos == 0
+		  && tp->type == token_type_name
+		  && strcmp (tp->string, "define") == 0)
+		return;
+
+	      /* Accumulate.  */
+	      if (bufpos >= bufmax)
+		{
+		  bufmax += 100;
+		  buf = xrealloc (buf, bufmax * sizeof (buf[0]));
+		}
+	      buf[bufpos++] = *tp;
 	    }
-	  buf[bufpos++] = *tp;
 	}
 
       /* If it is a #line directive, with no macros to expand, act on
@@ -1179,6 +1155,7 @@ xgettext_lex (tp)
   while (1)
     {
       token_ty token;
+      void *keyword_value;
 
       phase8_get (&token);
       switch (token.type)
@@ -1213,27 +1190,40 @@ xgettext_lex (tp)
 	  if (default_keywords)
 	    {
 	      xgettext_lex_keyword ("gettext");
-	      xgettext_lex_keyword ("dgettext");
-	      xgettext_lex_keyword ("dcgettext");
+	      xgettext_lex_keyword ("dgettext:2");
+	      xgettext_lex_keyword ("dcgettext:2");
+	      xgettext_lex_keyword ("ngettext:1,2");
+	      xgettext_lex_keyword ("dngettext:2,3");
+	      xgettext_lex_keyword ("dcngettext:2,3");
 	      xgettext_lex_keyword ("gettext_noop");
 	      default_keywords = 0;
 	    }
 
-	  if (string_list_member (keywords, token.string))
+	  if (find_entry (&keywords, token.string, strlen (token.string) + 1,
+			  &keyword_value)
+	      == 0)
 	    {
-	      tp->type = (strcmp (token.string, "dgettext") == 0
-			  || strcmp (token.string, "dcgettext") == 0)
-		? xgettext_token_type_keyword2 : xgettext_token_type_keyword1;
+	      tp->type = xgettext_token_type_keyword;
+	      tp->argnum1 = (int) (long) keyword_value & ((1 << 10) - 1);
+	      tp->argnum2 = (int) (long) keyword_value >> 10;
+	      tp->line_number = token.line_number;
+	      tp->file_name = logical_file_name;
 	    }
 	  else
 	    tp->type = xgettext_token_type_symbol;
 	  free (token.string);
 	  return;
 
-	case token_type_lp:
+	case token_type_lparen:
 	  last_non_comment_line = newline_count;
 
-	  tp->type = xgettext_token_type_lp;
+	  tp->type = xgettext_token_type_lparen;
+	  return;
+
+	case token_type_rparen:
+	  last_non_comment_line = newline_count;
+
+	  tp->type = xgettext_token_type_rparen;
 	  return;
 
 	case token_type_comma:
@@ -1263,17 +1253,61 @@ xgettext_lex (tp)
 
 void
 xgettext_lex_keyword (name)
-     char *name;
+     const char *name;
 {
   if (name == NULL)
     default_keywords = 0;
   else
     {
-      if (keywords == NULL)
-	keywords = string_list_alloc ();
+      int argnum1;
+      int argnum2;
+      size_t len;
+      char *sp;
 
-      string_list_append_unique (keywords, name);
+      if (keywords.table == NULL)
+	init_hash (&keywords, 100);
+
+      sp = strchr (name, ':');
+      if (sp)
+	{
+	  /* Make a temporary copy of 'name' up to 'sp', because
+	     insert_entry() expects a NUL terminated string.  */
+	  char *name_copy;
+
+	  len = sp - name;
+	  name_copy = (char *) alloca (len + 1);
+	  memcpy (name_copy, name, len);
+	  name_copy[len] = '\0';
+	  name = name_copy;
+
+	  sp++;
+	  argnum1 = strtol (sp, &sp, 10);
+	  if (*sp == ',')
+	    {
+	      sp++;
+	      argnum2 = strtol (sp, &sp, 10);
+	    }
+	  else
+	    argnum2 = 0;
+	}
+      else
+	{
+	  len = strlen (name);
+
+	  argnum1 = 1;
+	  argnum2 = 0;
+	}
+
+      insert_entry (&keywords, name, len + 1,
+		    (void *) (long) (argnum1 + (argnum2 << 10)));
     }
+}
+
+
+int
+xgettext_any_keywords ()
+{
+  return (keywords.filled > 0) || default_keywords;
 }
 
 
@@ -1295,13 +1329,6 @@ xgettext_lex_comment_reset ()
       string_list_free (comment);
       comment = NULL;
     }
-}
-
-
-void
-xgettext_lex_cplusplus ()
-{
-  cplusplus_comments = 1;
 }
 
 

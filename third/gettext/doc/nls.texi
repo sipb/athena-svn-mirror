@@ -1,7 +1,7 @@
 @node Translation Intro
 @chapter Notes on the Free Translation Project
 
-@set STATUS December 1997
+@set STATUS September 2001
 
 Free software is going international!  The Free Translation Project is
 a way to get maintainers of free software, translators, and users all
@@ -25,15 +25,16 @@ of @code{gettext} which is used.  The information can be found in
 the @file{intl/VERSION} file, in internationalized packages.
 
 @menu
-* One advise::
+* Configuration advice::
 * INSTALL Matters::
 * Using This Package::
 * Translating Teams::
 * Available Packages::
+* Using gettext in own code::
 @end menu
 
-@node One advise
-@section One advise in advance
+@node Configuration advice
+@section Quick configuration advice
 
 If you want to exploit the full power of internationalization, you
 should configure it using
@@ -47,15 +48,16 @@ to force usage of internationalizing routines provided within this
 package, despite the existence of internationalizing capabilities in the
 operating system where this package is being installed.  So far, only
 the @code{gettext} implementation in the GNU C library version 2
-provides as many features (such as locale alias or message inheritance)
+provides as many features (such as locale alias, message inheritance,
+automatic charset conversion or plural form handling)
 as the implementation here.  It is also not possible to offer this
 additional functionality on top of a @code{catgets} implementation.
 Future versions of GNU @code{gettext} will very likely convey even more
 functionality.  So it might be a good idea to change to GNU
 @code{gettext} as soon as possible.
 
-So you need not provide this option if you are using GNU libc 2 or you
-have installed a recent copy of the GNU gettext package with the
+So you need @emph{not} provide this option if you are using GNU libc 2 or
+you have installed a recent copy of the GNU gettext package with the
 included @file{libintl}.
 
 
@@ -68,9 +70,8 @@ Most such packages use GNU @code{gettext}.  Other packages have their
 own ways to internationalization, predating GNU @code{gettext}.
 
 By default, this package will be installed to allow translation of
-messages.  It will automatically detect whether the system provides
-usable @code{catgets} (if using this is selected by the installer) or
-@code{gettext} functions.  If neither is available, the GNU
+messages.  It will automatically detect whether the system already
+provides the GNU @code{gettext} functions.  If not, the GNU
 @code{gettext} own library will be used.  This library is wholly
 contained within this package, usually in the @file{intl/} subdirectory,
 so prior installation of the GNU @code{gettext} package is @emph{not}
@@ -79,16 +80,13 @@ changing the default behaviour.  The commands:
 
 @example
 ./configure --with-included-gettext
-./configure --with-catgets
 ./configure --disable-nls
 @end example
 
 @noindent
-will respectively bypass any pre-existing @code{catgets} or
-@code{gettext} to use the internationalizing routines provided within
-this package, enable the use of the @code{catgets} functions (if found
-on the locale system), or else, @emph{totally} disable translation of
-messages.
+will respectively bypass any pre-existing @code{gettext} to use the
+internationalizing routines provided within this package, or else,
+@emph{totally} disable translation of messages.
 
 When you already have GNU @code{gettext} installed on your system and
 run configure without an option for your new package, @code{configure}
@@ -105,22 +103,10 @@ which comes with this package is more recent, you should use
 @noindent
 to prevent auto-detection.
 
-By default the configuration process will not test for the
-@code{catgets} function and therefore they will not be used.  The
-reasons are already given above: the emulation on top of @code{catgets}
-cannot provide all the extensions provided by the GNU @code{gettext}
-library.  If you nevertheless want to use the @code{catgets} functions
-use
-
-@example
-./configure --with-catgets
-@end example
-
-@noindent
-to enable the test for @code{catgets} (this causes no harm if
-@code{catgets} is not available on your system).  If you really select
-this option we would like to hear about the reasons because we cannot
-think of any good one ourself.
+The configuration process will not test for the @code{catgets} function
+and therefore it will not be used.  The reason is that even an
+emulation of @code{gettext} on top of @code{catgets} could not provide
+all the extensions of the GNU @code{gettext} library.
 
 Internationalized packages have usually many @file{po/@var{ll}.po}
 files, where @var{ll} gives an @w{ISO 639} two-letter code
@@ -136,32 +122,49 @@ which languages are allowed.
 @section Using This Package
 
 @c --
-@c FIXME: rewrite to document LANGUAGE, the long names, and aliases.
+@c FIXME: rewrite to document the aliases.
 @c --
 As a user, if your language has been installed for this package, you
 only have to set the @code{LANG} environment variable to the appropriate
-@w{ISO 639} @samp{@var{ll}} two-letter code prior to using the programs
-in the package.  For example, let's suppose that you speak German.  At
-the shell prompt, merely execute @w{@samp{setenv LANG de}} (in
-@code{csh}), @w{@samp{export LANG; LANG=de}} (in @code{sh}) or
-@w{@samp{export LANG=de}} (in @code{bash}).  This can be done from your
+@samp{@var{ll}_@var{CC}} combination.  Here @samp{@var{ll}} is an
+@w{ISO 639} two-letter language code, and @samp{@var{CC}} is an
+@w{ISO 3166} two-letter country code.  For example, let's suppose that you
+speak German and live in Germany.  At the shell prompt, merely execute
+@w{@samp{setenv LANG de_DE}} (in @code{csh}),
+@w{@samp{export LANG; LANG=de_DE}} (in @code{sh}) or
+@w{@samp{export LANG=de_DE}} (in @code{bash}).  This can be done from your
 @file{.login} or @file{.profile} file, once and for all.
-@c Packages which are not internationalized will merely ignore the
-@c setting of this variable.
-@c FIXME: This last sentence is not true!! --drepper
 
-An operating system might already offer message localization for many of
-its programs, while other programs have been
-installed locally with the full capabilities of GNU @code{gettext}.
-Just using @code{gettext} extended syntax for @code{LANG} would break
-proper localization of already available operating system programs.  In
-this case, users should set both @code{LANGUAGE} and @code{LANG}
-variables in their environment, as programs using GNU @code{gettext}
-give preference to @code{LANGUAGE}.  For example, some Swedish users
-would rather read translations in German than English for when Swedish
-is not available.  This is easily accomplished by setting
-@code{LANGUAGE} to @samp{sv:de} while leaving @code{LANG} to @samp{sv}.
+You might think that the country code specification is redundant.  But in
+fact, some languages have dialects in different countries.  For example,
+@samp{de_AT} is used for Austria, and @samp{pt_BR} for Brazil.  The country
+code serves to distinguish the dialects.
 
+Not all programs have translations for all languages.  By default, an
+English message is shown in place of a nonexistent translation.  If you
+understand other languages, you can set up a priority list of languages.
+This is done through a different environment variable, called
+@code{LANGUAGE}.  GNU @code{gettext} gives preference to @code{LANGUAGE}
+over @code{LANG} for the purpose of message handling, but you still
+need to have @code{LANG} set to the primary language; this is required
+by other parts of the system libraries.
+For example, some Swedish users who would rather read translations in
+German than English for when Swedish is not available, set @code{LANGUAGE}
+to @samp{sv:de} while leaving @code{LANG} to @samp{sv_SE}.
+
+In the @code{LANGUAGE} environment variable, but not in the @code{LANG}
+environment variable, @samp{@var{ll}_@var{CC}} combinations can be
+abbreviated as @samp{@var{ll}} to denote the language's main dialect.
+For example, @samp{de} is equivalent to @samp{de_DE} (German as spoken in
+Germany), and @samp{pt} to @samp{pt_PT} (Portuguese as spoken in Portugal)
+in this context.
+
+@c An operating system might already offer message localization for many of
+@c its programs, while other programs have been
+@c installed locally with the full capabilities of GNU @code{gettext}.
+@c Just using @code{gettext} extended syntax for @code{LANG} would break
+@c proper localization of already available operating system programs.
+@c FIXME: The user doesn't care about design justifications. --bruno
 
 @node Translating Teams
 @section Translating Teams
@@ -169,26 +172,10 @@ is not available.  This is easily accomplished by setting
 For the Free Translation Project to be a success, we need interested
 people who like their own language and write it well, and who are also
 able to synergize with other translators speaking the same language.
-Each translation team has its own mailing list, courtesy of Linux
-International.  You may reach your translation team at the address
-@file{@var{ll}@@li.org}, replacing @var{ll} by the two-letter @w{ISO
-639} code for your language.  Language codes are @emph{not} the same as
-the country codes given in @w{ISO 3166}.  The following translation
-teams exist, as of @value{STATUS}:
-
-@quotation
-Chinese @code{zh}, Czech @code{cs}, Danish @code{da}, Dutch @code{nl},
-English @code{en}, Esperanto @code{eo}, Finnish @code{fi}, French
-@code{fr}, German @code{de}, Hungarian @code{hu}, Irish @code{ga},
-Italian @code{it}, Indonesian @code{id}, Japanese @code{ja}, Korean
-@code{ko}, Latin @code{la}, Norwegian @code{no}, Persian @code{fa},
-Polish @code{pl}, Portuguese @code{pt}, Russian @code{ru}, Slovenian
-@code{sl}, Spanish @code{es}, Swedish @code{sv}, and Turkish @code{tr}.
-@end quotation
-
-@noindent
-For example, you may reach the Chinese translation team by writing to
-@file{zh@@li.org}.
+Each translation team has its own mailing list.  The up-to-date list
+of teams can be found at the Free Translation Project's homepage,
+@file{http://www.iro.umontreal.ca/contrib/po/HTML/}, in the
+"National teams" area.
 
 If you'd like to volunteer to @emph{work} at translating messages, you
 should become a member of the translating team for your own language.
@@ -218,7 +205,8 @@ more than programming skill, here.
 Languages are not equally supported in all packages.  The following
 matrix shows the current state of internationalization, as of
 @value{STATUS}.  The matrix shows, in regard of each package, for which
-languages PO files have been submitted to translation coordination.
+languages PO files have been submitted to translation coordination,
+with a translation percentage of at least 50%.
 
 @include matrix.texi
 
@@ -232,4 +220,26 @@ such by its maintainer.  There might be an observable lag between the
 mere existence a PO file and its wide availability in a distribution.
 
 If @value{STATUS} seems to be old, you may fetch a more recent copy
-of this @file{ABOUT-NLS} file on most GNU archive sites.
+of this @file{ABOUT-NLS} file on most GNU archive sites.  The most
+up-to-date matrix with full percentage details can be found at
+@file{http://www.iro.umontreal.ca/contrib/po/HTML/matrix.html}.
+
+
+@node Using gettext in own code
+@section Using @code{gettext} in new packages
+
+If you are writing a freely available program and want to internationalize
+it you are welcome to use GNU @file{gettext} in your package.  Of course
+you have to respect the GNU Library General Public License which covers
+the use of the GNU @file{gettext} library.  This means in particular that
+even non-free programs can use @code{libintl} as a shared library, whereas
+only free software can use @code{libintl} as a static library or use
+modified versions of @code{libintl}.
+
+Once the sources are changed appropriately and the setup can handle to
+use of @code{gettext} the only thing missing are the translations.  The
+Free Translation Project is also available for packages which are not
+developed inside the GNU project.  Therefore the information given above
+applies also for every other Free Software Project.  Contact
+@w{@file{translation@@iro.umontreal.ca}} to make the @file{.pot} files
+available to the translation teams.

@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -21,73 +21,66 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include <config.h>
 #endif
 
-#include <errno.h>
-#include <ctype.h>
-#include <stdio.h>
-
-#ifdef HAVE_LIMITS_H
-# include <limits.h>
-#endif
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
+#include <stdlib.h>
+#include <string.h>
 
 #include "fstrcmp.h"
 #include "message.h"
 #include "system.h"
-#include "error.h"
-#include "libgettext.h"
-
-
-/* Our regular abbreviation.  */
-#define _(str) gettext (str)
-
-
-/* These two variables control the output style of the message_print
-   function.  Interface functions for them are to be used.  */
-static int indent;
-static int uniforum;
-static int escape;
-
-/* This variable controls the page width when printing messages.
-   Defaults to PAGE_WIDTH if not set.  Zero (0) given to message_page_-
-   width_set will result in no wrapping being performed.  */
-static size_t page_width = PAGE_WIDTH;
 
 
 /* Prototypes for local functions.  */
-static void wrap PARAMS ((FILE *__fp, const char *__line_prefix,
-			  const char *__name, const char *__value,
-			  int do_wrap));
-static void print_blank_line PARAMS ((FILE *__fp));
-static void message_print PARAMS ((const message_ty *__mp, FILE *__fp,
-				   const char *__domain, int blank_line,
-				   int __debug));
-static void message_print_obsolete PARAMS ((const message_ty *__mp, FILE *__fp,
-					    const char *__domain,
-					    int blank_line));
-static int msgid_cmp PARAMS ((const void *__va, const void *__vb));
-static int filepos_cmp PARAMS ((const void *__va, const void *__vb));
-static const char *make_c_format_description_string PARAMS ((enum is_c_format,
-							     int debug));
-static const char *make_c_width_description_string PARAMS ((enum is_c_format));
-static int significant_c_format_p PARAMS ((enum is_c_format __is_c_format));
+static message_ty *message_list_search_fuzzy_inner PARAMS ((
+       message_list_ty *__mlp, const char *__msgid, double *__best_weight_p));
 
+
+
+enum is_c_format
+parse_c_format_description_string (s)
+     const char *s;
+{
+  if (strstr (s, "no-c-format") != NULL)
+    return no;
+  else if (strstr (s, "impossible-c-format") != NULL)
+    return impossible;
+  else if (strstr (s, "possible-c-format") != NULL)
+    return possible;
+  else if (strstr (s, "c-format") != NULL)
+    return yes;
+  return undecided;
+}
+
+
+int
+possible_c_format_p (is_c_format)
+     enum is_c_format is_c_format;
+{
+  return is_c_format == possible || is_c_format == yes;
+}
+
+
+enum is_c_format
+parse_c_width_description_string (s)
+     const char *s;
+{
+  if (strstr (s, "no-wrap") != NULL)
+    return no;
+  else if (strstr (s, "wrap") != NULL)
+    return yes;
+  return undecided;
+}
 
 
 message_ty *
-message_alloc (msgid)
+message_alloc (msgid, msgid_plural)
      char *msgid;
+     const char *msgid_plural;
 {
   message_ty *mp;
 
   mp = xmalloc (sizeof (message_ty));
   mp->msgid = msgid;
+  mp->msgid_plural = (msgid_plural != NULL ? xstrdup (msgid_plural) : NULL);
   mp->comment = NULL;
   mp->comment_dot = NULL;
   mp->filepos_count = 0;
@@ -114,6 +107,8 @@ message_free (mp)
   if (mp->comment_dot != NULL)
     string_list_free (mp->comment_dot);
   free ((char *) mp->msgid);
+  if (mp->msgid_plural != NULL)
+    free ((char *) mp->msgid_plural);
   for (j = 0; j < mp->variant_count; ++j)
     free ((char *) mp->variant[j].msgstr);
   if (mp->variant != NULL)
@@ -145,10 +140,11 @@ message_variant_search (mp, domain)
 
 
 void
-message_variant_append (mp, domain, msgstr, pp)
+message_variant_append (mp, domain, msgstr, msgstr_len, pp)
      message_ty *mp;
      const char *domain;
      const char *msgstr;
+     size_t msgstr_len;
      const lex_pos_ty *pp;
 {
   size_t nbytes;
@@ -159,6 +155,7 @@ message_variant_append (mp, domain, msgstr, pp)
   mvp = &mp->variant[mp->variant_count++];
   mvp->domain = domain;
   mvp->msgstr = msgstr;
+  mvp->msgstr_len = msgstr_len;
   mvp->pos = *pp;
 }
 
@@ -192,12 +189,13 @@ message_copy (mp)
   message_ty *result;
   size_t j;
 
-  result = message_alloc (xstrdup (mp->msgid));
+  result = message_alloc (xstrdup (mp->msgid), mp->msgid_plural);
 
   for (j = 0; j < mp->variant_count; ++j)
     {
       message_variant_ty *mvp = &mp->variant[j];
-      message_variant_append (result, mvp->domain, mvp->msgstr, &mvp->pos);
+      message_variant_append (result, mvp->domain, mvp->msgstr, mvp->msgstr_len,
+			      &mvp->pos);
     }
   if (mp->comment)
     {
@@ -234,7 +232,7 @@ message_merge (def, ref)
   /* Take the msgid from the reference.  When fuzzy matches are made,
      the definition will not be unique, but the reference will be -
      usually because it has a typo.  */
-  result = message_alloc (xstrdup (ref->msgid));
+  result = message_alloc (xstrdup (ref->msgid), ref->msgid_plural);
 
   /* If msgid is the header entry (i.e., "") we find the
      POT-Creation-Date line in the reference.  */
@@ -398,10 +396,12 @@ message_merge (def, ref)
 	  if (header_fields[UNKNOWN].string != NULL)
 	    stpcpy (newp, header_fields[UNKNOWN].string);
 
-	  message_variant_append (result, mvp->domain, cp, &mvp->pos);
+	  message_variant_append (result, mvp->domain, cp, strlen (cp) + 1,
+				  &mvp->pos);
 	}
       else
-	message_variant_append (result, mvp->domain, mvp->msgstr, &mvp->pos);
+	message_variant_append (result, mvp->domain, mvp->msgstr,
+				mvp->msgstr_len, &mvp->pos);
     }
 
   /* Take the comments from the definition file.  There will be none at
@@ -490,28 +490,6 @@ message_comment_filepos (mp, name, line)
 }
 
 
-void
-message_print_style_indent ()
-{
-  indent = 1;
-}
-
-
-void
-message_print_style_uniforum ()
-{
-  uniforum = 1;
-}
-
-
-void
-message_print_style_escape (flag)
-     int flag;
-{
-  escape = (flag != 0);
-}
-
-
 message_list_ty *
 message_list_alloc ()
 {
@@ -577,16 +555,15 @@ message_list_search (mlp, msgid)
 }
 
 
-message_ty *
-message_list_search_fuzzy (mlp, msgid)
+static message_ty *
+message_list_search_fuzzy_inner (mlp, msgid, best_weight_p)
      message_list_ty *mlp;
      const char *msgid;
+     double *best_weight_p;
 {
   size_t j;
-  double best_weight;
   message_ty *best_mp;
 
-  best_weight = 0.6;
   best_mp = NULL;
   for (j = 0; j < mlp->nitems; ++j)
     {
@@ -603,13 +580,25 @@ message_list_search_fuzzy (mlp, msgid)
 	continue;
 
       weight = fstrcmp (msgid, mp->msgid);
-      if (weight > best_weight)
+      if (weight > *best_weight_p)
 	{
-	  best_weight = weight;
+	  *best_weight_p = weight;
 	  best_mp = mp;
 	}
     }
   return best_mp;
+}
+
+
+message_ty *
+message_list_search_fuzzy (mlp, msgid)
+     message_list_ty *mlp;
+     const char *msgid;
+{
+  double best_weight;
+
+  best_weight = 0.6;
+  return message_list_search_fuzzy_inner (mlp, msgid, &best_weight);
 }
 
 
@@ -627,778 +616,103 @@ message_list_free (mlp)
 }
 
 
-/* Local functions.  */
-
-static void
-wrap (fp, line_prefix, name, value, do_wrap)
-     FILE *fp;
-     const char *line_prefix;
-     const char *name;
-     const char *value;
-     int do_wrap;
+message_list_list_ty *
+message_list_list_alloc ()
 {
-  const char *s;
-  int first_line;
-  /* The \a and \v escapes were added by the ANSI C Standard.  Prior
-     to the Standard, most compilers did not have them.  Because we
-     need the same program on all platforms we don't provide support
-     for them here.  */
-  static const char escapes[] = "\b\f\n\r\t";
-  static const char escape_names[] = "bfnrt";
+  message_list_list_ty *mllp;
 
-  /* The empty string is a special case.  */
-  if (*value == '\0')
-    {
-      if (line_prefix != NULL)
-	fputs (line_prefix, fp);
-      fputs (name, fp);
-      putc (indent ? '\t' : ' ', fp);
-      fputs ("\"\"\n", fp);
-      return;
-    }
-
-  s = value;
-  first_line = 1;
-  while (*s)
-    {
-      const char *ep;
-      int ocol;
-
-      /* The line starts with different things depending on whether it
-         is the first line, and if we are using the indented style.  */
-      if (first_line)
-	{
-	  ocol = strlen (name) + (line_prefix ? strlen (line_prefix) : 0);
-	  if (indent && ocol < 8)
-	    ocol = 8;
-	  else
-	    ++ocol;
-	}
-      else
-	ocol = (indent ? 8 : 0);
-
-      /* Allow room for the opening quote character. */
-      ++ocol;
-
-      /* Work out how many characters from the string will fit on a
-         line.  Natural breaks occur at embedded newline characters.  */
-      for (ep = s; *ep; ++ep)
-	{
-	  const char *esc;
-	  int cw;
-	  int c;
-
-	  c = (unsigned char) *ep;
-	  /* FIXME This is the wrong locale.  While message_list_print
-	     set the "C" locale for LC_CTYPE, the need is to use the
-	     correct locale for the file's contents.  */
-	  esc = strchr (escapes, c);
-	  if (esc == NULL && (!escape || isprint (c)))
-	    cw = 1 + (c == '\\' || c == '"');
-	  else
-	    cw = esc != NULL ? 2 : 4;
-	  /* Allow 1 character for the closing quote.  */
-	  if (ocol + cw >= (do_wrap == no ? INT_MAX : page_width))
-	    break;
-	  ocol += cw;
-	  if (c == '\n')
-	    {
-	      ++ep;
-	      break;
-	    }
-	}
-
-      /* The above loop detects if a line is too long.  If it is too
-	 long, see if there is a better place to break the line.  */
-      if (*ep)
-	{
-	  const char *bp;
-
-	  for (bp = ep; bp > s; --bp)
-	    if (bp[-1] == ' ' || bp[-1] == '\n')
-	      {
-		ep = bp;
-		break;
-	      }
-	}
-
-      /* If this is the first line, and we are not using the indented
-         style, and the line would wrap, then use an empty first line
-         and restart.  */
-      if (first_line && !indent && *ep != '\0')
-	{
-	  fprintf (fp, "%s%s \"\"\n", line_prefix ? line_prefix : "", name);
-	  s = value;
-	  first_line = 0;
-	  continue;
-	}
-
-      /* Print the beginning of the line.  This will depend on whether
-	 this is the first line, and if the indented style is being
-	 used.  */
-      if (first_line)
-	{
-	  first_line = 0;
-	  if (line_prefix != NULL)
-	    fputs (line_prefix, fp);
-	  fputs (name, fp);
-	  putc (indent ? '\t' : ' ', fp);
-	}
-      else
-	{
-	  if (line_prefix != NULL)
-	    fputs (line_prefix, fp);
-	  if (indent)
-	    putc ('\t', fp);
-	}
-
-      /* Print the body of the line.  C escapes are used for
-	 unprintable characters.  */
-      putc ('"', fp);
-      while (s < ep)
-	{
-	  const char *esc;
-	  int c;
-
-	  c = (unsigned char) *s++;
-	  /* FIXME This is the wrong locale.  While message_list_print
-	     set the "C" locale for LC_CTYPE, the need is to use the
-	     correct locale for the file's contents.  */
-	  esc = strchr (escapes, c);
-	  if (esc == NULL && (!escape || isprint (c)))
-	    {
-	      if (c == '\\' || c == '"')
-		putc ('\\', fp);
-	      putc (c, fp);
-	    }
-	  else if (esc != NULL)
-	    {
-	      c = escape_names[esc - escapes];
-
-	      putc ('\\', fp);
-	      putc (c, fp);
-
-	      /* We warn about any use of escape sequences beside
-		 '\n' and '\t'.  */
-	      if (c != 'n' && c != 't')
-		error (0, 0, _("\
-internationalized messages should not contain the `\\%c' escape sequence"),
-		       c);
-	    }
-	  else
-	    fprintf (fp, "\\%3.3o", c);
-	}
-      fputs ("\"\n", fp);
-    }
-}
-
-
-static void
-print_blank_line (fp)
-     FILE *fp;
-{
-  if (uniforum)
-    fputs ("#\n", fp);
-  else
-    putc ('\n', fp);
-}
-
-
-static void
-message_print (mp, fp, domain, blank_line, debug)
-     const message_ty *mp;
-     FILE *fp;
-     const char *domain;
-     int blank_line;
-     int debug;
-{
-  message_variant_ty *mvp;
-  int first;
-  size_t j;
-
-  /* Find the relevant message variant.  If there isn't one, remember
-     this using a NULL pointer.  */
-  mvp = NULL;
-  first = 0;
-
-  for (j = 0; j < mp->variant_count; ++j)
-    {
-      if (strcmp (domain, mp->variant[j].domain) == 0)
-	{
-	  mvp = &mp->variant[j];
-	  first = (j == 0);
-	  break;
-	}
-    }
-
-  /* Separate messages with a blank line.  Uniforum doesn't like blank
-     lines, so use an empty comment (unless there already is one).  */
-  if (blank_line && (!uniforum
-		     || mp->comment == NULL
-		     || mp->comment->nitems == 0
-		     || mp->comment->item[0][0] != '\0'))
-    print_blank_line (fp);
-
-  /* The first variant of a message will have the comments attached to
-     it.  We can't attach them to all variants in case we are read in
-     again, multiplying the number of comment lines.  Usually there is
-     only one variant.  */
-  if (first)
-    {
-      if (mp->comment != NULL)
-	for (j = 0; j < mp->comment->nitems; ++j)
-	  {
-	    const unsigned char *s = mp->comment->item[j];
-	    do
-	      {
-		const unsigned char *e;
-		putc ('#', fp);
-	       /* FIXME This is the wrong locale.  While
-		  message_list_print set the "C" locale for LC_CTYPE,
-		  the need to use the correct locale for the file's
-		  contents.  */
-		if (*s != '\0' && !isspace (*s))
-		  putc (' ', fp);
-		e = strchr (s, '\n');
-		if (e == NULL)
-		  {
-		    fputs (s, fp);
-		    s = NULL;
-		  }
-		else
-		  {
-		    fwrite (s, 1, e - s, fp);
-		    s = e + 1;
-		  }
-		putc ('\n', fp);
-	      }
-	    while (s != NULL);
-	  }
-
-      if (mp->comment_dot != NULL)
-	for (j = 0; j < mp->comment_dot->nitems; ++j)
-	  {
-	    const unsigned char *s = mp->comment_dot->item[j];
-	    putc ('#', fp);
-	    putc ('.', fp);
-	    /* FIXME This is the wrong locale.  While
-	       message_list_print set the "C" locale for LC_CTYPE, the
-	       need to use the correct locale for the file's contents.  */
-	    if (*s && !isspace (*s))
-	      putc (' ', fp);
-	    fputs (s, fp);
-	    putc ('\n', fp);
-	  }
-    }
-
-  /* Print the file position comments for every domain.  This will
-     help a human who is trying to navigate the sources.  There is no
-     problem of getting repeat positions, because duplicates are
-     checked for.  */
-  if (mp->filepos_count != 0)
-    {
-      if (uniforum)
-	for (j = 0; j < mp->filepos_count; ++j)
-	  {
-	    lex_pos_ty *pp = &mp->filepos[j];
-	    char *cp = pp->file_name;
-	    while (cp[0] == '.' && cp[1] == '/')
-	      cp += 2;
-	    /* There are two Sun formats to choose from: SunOS and
-	       Solaris.  Use the Solaris form here.  */
-	    fprintf (fp, "# File: %s, line: %ld\n",
-		     cp, (long) pp->line_number);
-	  }
-      else
-	{
-	  size_t column;
-
-	  fputs ("#:", fp);
-	  column = 2;
-	  for (j = 0; j < mp->filepos_count; ++j)
-	    {
-	      lex_pos_ty *pp;
-	      char buffer[20];
-	      char *cp;
-	      size_t len;
-
-	      pp = &mp->filepos[j];
-	      cp = pp->file_name;
-	      while (cp[0] == '.' && cp[1] == '/')
-		cp += 2;
-	      sprintf (buffer, "%ld", (long) pp->line_number);
-	      len = strlen (cp) + strlen (buffer) + 2;
-	      if (column > 2 && column + len >= page_width)
-		{
-		  fputs ("\n#:", fp);
-		  column = 2;
-		}
-	      fprintf (fp, " %s:%s", cp, buffer);
-	      column += len;
-	    }
-	  putc ('\n', fp);
-	}
-    }
-
-  /* Print flag information in special comment.  */
-  if (first && ((mp->is_fuzzy && mvp != NULL && mvp->msgstr[0] != '\0')
-		|| significant_c_format_p (mp->is_c_format)
-		|| mp->do_wrap == no))
-    {
-      int first_flag = 1;
-
-      putc ('#', fp);
-      putc (',', fp);
-
-      /* We don't print the fuzzy flag if the msgstr is empty.  This
-	 might be introduced by the user but we want to normalize the
-	 output.  */
-      if (mp->is_fuzzy && mvp != NULL && mvp->msgstr[0] != '\0')
-	{
-	  fputs (" fuzzy", fp);
-	  first_flag = 0;
-	}
-
-      if (significant_c_format_p (mp->is_c_format))
-	{
-	  if (!first_flag)
-	    putc (',', fp);
-
-	  fputs (make_c_format_description_string (mp->is_c_format, debug),
-		 fp);
-	  first_flag = 0;
-	}
-
-      if (mp->do_wrap == no)
-	{
-	  if (!first_flag)
-	    putc (',', fp);
-
-	  fputs (make_c_width_description_string (mp->do_wrap), fp);
-	  first_flag = 0;
-	}
-
-      putc ('\n', fp);
-    }
-
-  /* Print each of the message components.  Wrap them nicely so they
-     are as readable as possible.  If there is no recorded msgstr for
-     this domain, emit an empty string.  */
-  wrap (fp, NULL, "msgid", mp->msgid, mp->do_wrap);
-  wrap (fp, NULL, "msgstr", mvp ? mvp->msgstr : "", mp->do_wrap);
-}
-
-
-static void
-message_print_obsolete (mp, fp, domain, blank_line)
-     const message_ty *mp;
-     FILE *fp;
-     const char *domain;
-     int blank_line;
-{
-  message_variant_ty *mvp;
-  size_t j;
-
-  /* Find the relevant message variant.  If there isn't one, remember
-     this using a NULL pointer.  */
-  mvp = NULL;
-
-  for (j = 0; j < mp->variant_count; ++j)
-    {
-      if (strcmp (domain, mp->variant[j].domain) == 0)
-	{
-	  mvp = &mp->variant[j];
-	  break;
-	}
-    }
-
-  /* If no msgstr is found or it is the empty string we print nothing.  */
-  if (mvp == NULL || mvp->msgstr[0] == '\0')
-    return;
-
-  /* Separate messages with a blank line.  Uniforum doesn't like blank
-     lines, so use an empty comment (unless there already is one).  */
-  if (blank_line)
-    print_blank_line (fp);
-
-  /* Print translator comment if available.  */
-  if (mp->comment)
-    for (j = 0; j < mp->comment->nitems; ++j)
-      {
-	const unsigned char *s = mp->comment->item[j];
-	do
-	  {
-	    const unsigned char *e;
-	    putc ('#', fp);
-	    /* FIXME This is the wrong locale.  While
-	       message_list_print set the "C" locale for LC_CTYPE, the
-	       need to use the correct locale for the file's contents.  */
-	    if (*s != '\0' && !isspace (*s))
-	      putc (' ', fp);
-	    e = strchr (s, '\n');
-	    if (e == NULL)
-	      {
-		fputs (s, fp);
-		s = NULL;
-	      }
-	    else
-	      {
-		fwrite (s, 1, e - s, fp);
-		s = e + 1;
-	      }
-	    putc ('\n', fp);
-	  }
-	while (s != NULL);
-      }
-
-  /* Print flag information in special comment.  */
-  if (mp->is_fuzzy)
-    {
-      int first = 1;
-
-      putc ('#', fp);
-      putc (',', fp);
-
-      if (mp->is_fuzzy)
-	{
-	  fputs (" fuzzy", fp);
-	  first = 0;
-	}
-
-      putc ('\n', fp);
-    }
-
-  /* Print each of the message components.  Wrap them nicely so they
-     are as readable as possible.  */
-  wrap (fp, "#~ ", "msgid", mp->msgid, mp->do_wrap);
-  wrap (fp, "#~ ", "msgstr", mvp->msgstr, mp->do_wrap);
+  mllp = xmalloc (sizeof (message_list_list_ty));
+  mllp->nitems = 0;
+  mllp->nitems_max = 0;
+  mllp->item = 0;
+  return mllp;
 }
 
 
 void
-message_list_print (mlp, filename, force, debug)
-     message_list_ty *mlp;
-     const char *filename;
-     int force;
-     int debug;
-{
-  FILE *fp;
-  size_t j, k;
-  string_list_ty *dl;
-  int blank_line;
-#ifdef HAVE_SETLOCALE
-  char *old_locale;
-#endif
-
-  /* We will not write anything if we have no message or only the
-     header entry.  */
-  if (force == 0
-      && (mlp->nitems == 0
-	  || (mlp->nitems == 1 && *mlp->item[0]->msgid == '\0')))
-    return;
-
-  /* Build the list of domains.  */
-  dl = string_list_alloc ();
-  for (j = 0; j < mlp->nitems; ++j)
-    {
-      message_ty *mp = mlp->item[j];
-      for (k = 0; k < mp->variant_count; ++k)
-	string_list_append_unique (dl, mp->variant[k].domain);
-    }
-
-  /* Open the output file.  */
-  if (filename != NULL && strcmp (filename, "-") != 0
-      && strcmp (filename, "/dev/stdout") != 0)
-    {
-      fp = fopen (filename, "w");
-      if (fp == NULL)
-	error (EXIT_FAILURE, errno, _("cannot create output file \"%s\""),
-	       filename);
-    }
-  else
-    {
-      fp = stdout;
-      /* xgettext:no-c-format */
-      filename = _("standard output");
-    }
-
-#ifdef HAVE_SETLOCALE
-  /* FIXME This is the wrong locale.  The program is currently set for
-     the user's native language locale, for the error messages.  This
-     code sets it to the "C" locale, but that isn't right either.  The
-     need is to use the correct locale for the file's contents.  */
-  old_locale = setlocale (LC_CTYPE, "C");
-  if (old_locale)
-    old_locale = xstrdup (old_locale);
-#endif
-
-  /* Write out the messages for each domain.  */
-  blank_line = 0;
-  for (k = 0; k < dl->nitems; ++k)
-    {
-      /* If there is only one domain, and that domain is the default,
-	 don't bother emitting the domain name, because it is the
-	 default.  */
-      if (dl->nitems != 1 || strcmp (dl->item[0], MESSAGE_DOMAIN_DEFAULT) != 0)
-	{
-	  if (blank_line)
-	    print_blank_line (fp);
-	  fprintf (fp, "domain \"%s\"\n", dl->item[k]);
-	  blank_line = 1;
-	}
-
-      /* Write out each of the messages for this domain.  */
-      for (j = 0; j < mlp->nitems; ++j)
-	if (mlp->item[j]->obsolete == 0)
-	  {
-	    message_print (mlp->item[j], fp, dl->item[k], blank_line, debug);
-	    blank_line = 1;
-	  }
-
-      /* Write out each of the obsolete messages for this domain.  */
-      for (j = 0; j < mlp->nitems; ++j)
-	if (mlp->item[j]->obsolete != 0)
-	  {
-	    message_print_obsolete (mlp->item[j], fp, dl->item[k], blank_line);
-	    blank_line = 1;
-	  }
-    }
-  string_list_free (dl);
-
-  /* Restore the old locale.  Do this before emitting error messages,
-     so that the correct locale is used for the error.  (Ideally,
-     error should ensure this before calling gettext for the format
-     string.)  */
-#ifdef HAVE_SETLOCALE
-  if (old_locale)
-    {
-      setlocale (LC_CTYPE, old_locale);
-      free (old_locale);
-    }
-#endif
-
-  /* Make sure nothing went wrong.  */
-  if (fflush (fp))
-    error (EXIT_FAILURE, errno, _("error while writing \"%s\" file"),
-	   filename);
-  fclose (fp);
-}
-
-
-static int
-msgid_cmp (va, vb)
-     const void *va;
-     const void *vb;
-{
-  const message_ty *a = *(const message_ty **) va;
-  const message_ty *b = *(const message_ty **) vb;
-#ifdef HAVE_STRCOLL
-  return strcoll (a->msgid, b->msgid);
-#else
-  return strcmp (a->msgid, b->msgid);
-#endif
-}
-
-
-void
-message_list_sort_by_msgid (mlp)
+message_list_list_append (mllp, mlp)
+     message_list_list_ty *mllp;
      message_list_ty *mlp;
 {
-  /* FIXME This is the wrong locale.  The program is currently set for
-     the user's native language locale, for the error messages.  This
-     code sets it to the "C" locale, but that isn't right either.  The
-     need is to use the correct locale for the file's contents.  */
-#ifdef HAVE_SETLOCALE
-  char *tmp = setlocale (LC_COLLATE, "C");
-  if (tmp)
-    tmp = xstrdup (tmp);
-#endif
-  qsort (mlp->item, mlp->nitems, sizeof (mlp->item[0]), msgid_cmp);
-#ifdef HAVE_SETLOCALE
-  if (tmp)
+  if (mllp->nitems >= mllp->nitems_max)
     {
-      setlocale (LC_COLLATE, tmp);
-      free (tmp);
+      size_t nbytes;
+
+      mllp->nitems_max = mllp->nitems_max * 2 + 4;
+      nbytes = mllp->nitems_max * sizeof (message_list_ty *);
+      mllp->item = xrealloc (mllp->item, nbytes);
     }
-#endif
-}
-
-
-static int
-filepos_cmp (va, vb)
-     const void *va;
-     const void *vb;
-{
-  const message_ty *a = *(const message_ty **) va;
-  const message_ty *b = *(const message_ty **) vb;
-  int cmp;
-
-  /* No filepos is smaller than any other filepos.  */
-  if (a->filepos_count == 0)
-  {
-    if (b->filepos_count != 0)
-      return -1;
-  }
-  if (b->filepos_count == 0)
-    return 1;
-
-  /* Compare on the file names...  */
-  cmp = strcmp (a->filepos[0].file_name, b->filepos[0].file_name);
-  if (cmp != 0)
-  	return cmp;
-
-  /* If they are equal, compare on the line numbers...  */
-  cmp = a->filepos[0].line_number - b->filepos[0].line_number;
-  if (cmp != 0)
-	return cmp;
-
-  /* If they are equal, compare on the msgid strings.  */
-#ifdef HAVE_STRCOLL
-  return strcoll (a->msgid, b->msgid);
-#else
-  return strcmp (a->msgid, b->msgid);
-#endif
+  mllp->item[mllp->nitems++] = mlp;
 }
 
 
 void
-message_list_sort_by_filepos (mlp)
-    message_list_ty *mlp;
+message_list_list_append_list (mllp, mllp2)
+     message_list_list_ty *mllp;
+     message_list_list_ty *mllp2;
 {
-  /* FIXME This is the wrong locale.  The program is currently set for
-     the user's native language locale, for the error messages.  This
-     code sets it to the "C" locale, but that isn't right either.  The
-     need is to use the correct locale for the file's contents.  */
-#ifdef HAVE_SETLOCALE
-  char *tmp = setlocale (LC_COLLATE, "C");
-  if (tmp)
-    tmp = xstrdup (tmp);
-#endif
-  qsort (mlp->item, mlp->nitems, sizeof (mlp->item[0]), filepos_cmp);
-#ifdef HAVE_SETLOCALE
-  if (tmp)
+  size_t j;
+
+  for (j = 0; j < mllp2->nitems; ++j)
+    message_list_list_append (mllp, mllp2->item[j]);
+}
+
+
+message_ty *
+message_list_list_search (mllp, msgid)
+     message_list_list_ty *mllp;
+     const char *msgid;
+{
+  size_t j;
+
+  for (j = 0; j < mllp->nitems; ++j)
     {
-      setlocale (LC_COLLATE, tmp);
-      free (tmp);
+      message_list_ty *mlp;
+      message_ty *mp;
+
+      mlp = mllp->item[j];
+      mp = message_list_search (mlp, msgid);
+      if (mp)
+        return mp;
     }
-#endif
+  return 0;
 }
 
 
-enum is_c_format
-parse_c_format_description_string (s)
-     const char *s;
+message_ty *
+message_list_list_search_fuzzy (mllp, msgid)
+     message_list_list_ty *mllp;
+     const char *msgid;
 {
-  if (strstr (s, "no-c-format") != NULL)
-    return no;
-  else if (strstr (s, "impossible-c-format") != NULL)
-    return impossible;
-  else if (strstr (s, "possible-c-format") != NULL)
-    return possible;
-  else if (strstr (s, "c-format") != NULL)
-    return yes;
-  return undecided;
-}
+  size_t j;
+  double best_weight;
+  message_ty *best_mp;
 
-
-enum is_c_format
-parse_c_width_description_string (s)
-     const char *s;
-{
-  if (strstr (s, "no-wrap") != NULL)
-    return no;
-  else if (strstr (s, "wrap") != NULL)
-    return yes;
-  return undecided;
-}
-
-
-static const char *
-make_c_format_description_string (is_c_format, debug)
-     enum is_c_format is_c_format;
-     int debug;
-{
-  const char *result = NULL;
-
-  switch (is_c_format)
+  best_weight = 0.6;
+  best_mp = NULL;
+  for (j = 0; j < mllp->nitems; ++j)
     {
-    case possible:
-      if (debug)
-	{
-	  result = " possible-c-format";
-	  break;
-	}
-      /* FALLTHROUGH */
-    case yes:
-      result = " c-format";
-      break;
-    case impossible:
-      result = " impossible-c-format";
-      break;
-    case no:
-      result = " no-c-format";
-      break;
-    case undecided:
-      result = " undecided";
-      break;
-    default:
-      abort ();
+      message_list_ty *mlp;
+      message_ty *mp;
+
+      mlp = mllp->item[j];
+      mp = message_list_search_fuzzy_inner (mlp, msgid, &best_weight);
+      if (mp)
+	best_mp = mp;
     }
-
-  return result;
-}
-
-
-static const char *
-make_c_width_description_string (do_wrap)
-     enum is_c_format do_wrap;
-{
-  const char *result = NULL;
-
-  switch (do_wrap)
-    {
-    case yes:
-      result = " wrap";
-      break;
-    case no:
-      result = " no-wrap";
-      break;
-    default:
-      abort ();
-    }
-
-  return result;
-}
-
-
-int
-possible_c_format_p (is_c_format)
-     enum is_c_format is_c_format;
-{
-  return is_c_format == possible || is_c_format == yes;
-}
-
-
-static int
-significant_c_format_p (is_c_format)
-     enum is_c_format is_c_format;
-{
-  return is_c_format != undecided && is_c_format != impossible;
+  return best_mp;
 }
 
 
 void
-message_page_width_set (n)
-     size_t n;
+message_list_list_free (mllp)
+     message_list_list_ty *mllp;
 {
-  if (n == 0)
-    {
-      page_width = INT_MAX;
-      return;
-    }
+  size_t j;
 
-  if (n < 20)
-    n = 20;
-
-  page_width = n;
+  for (j = 0; j < mllp->nitems; ++j)
+    message_list_free (mllp->item[j]);
+  if (mllp->item)
+    free (mllp->item);
+  free (mllp);
 }

@@ -1,6 +1,6 @@
 /* Like vsprintf but provides a pointer to malloc'd storage, which must
    be freed by the caller.
-   Copyright (C) 1994 Free Software Foundation, Inc.
+   Copyright (C) 1994, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #if __STDC__
 # include <stdarg.h>
@@ -29,12 +30,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include <varargs.h>
 #endif
 
+#include <math.h>
+
 #ifdef TEST
 int global_total_width;
 #endif
-
-unsigned long strtoul ();
-char *malloc ();
 
 static int
 int_vasprintf (result, format, args)
@@ -62,7 +62,7 @@ int_vasprintf (result, format, args)
 	      total_width += abs (va_arg (ap, int));
 	    }
 	  else
-	    total_width += strtoul (p, &p, 10);
+	    total_width += strtoul (p, (char **) &p, 10);
 	  if (*p == '.')
 	    {
 	      ++p;
@@ -72,11 +72,12 @@ int_vasprintf (result, format, args)
 		  total_width += abs (va_arg (ap, int));
 		}
 	      else
-		total_width += strtoul (p, &p, 10);
+		total_width += strtoul (p, (char **) &p, 10);
 	    }
-	  while (strchr ("hlL", *p))
+	  while (strchr ("hlLjtz", *p))
 	    ++p;
-	  /* Should be big enough for any format specifier except %s.  */
+	  /* Should be big enough for any format specifier except %s
+	     and floats.  */
 	  total_width += 30;
 	  switch (*p)
 	    {
@@ -90,6 +91,14 @@ int_vasprintf (result, format, args)
 	      (void) va_arg (ap, int);
 	      break;
 	    case 'f':
+	      {
+		double arg = va_arg (ap, double);
+		if (arg >= 1.0 || arg <= -1.0)
+		  /* Since an ieee double can have an exponent of 307, we'll
+		     make the buffer wide enough to cover the gross case. */
+		  total_width += 307;
+	      }
+	      break;
 	    case 'e':
 	    case 'E':
 	    case 'g':
@@ -104,6 +113,7 @@ int_vasprintf (result, format, args)
 	      (void) va_arg (ap, char *);
 	      break;
 	    }
+	  p++;
 	}
     }
 #ifdef TEST
@@ -151,7 +161,12 @@ asprintf
   return done;
 } 
 
+/* ========================= test program ========================= */
+
 #ifdef TEST
+
+#include <float.h>
+
 void
 checkit
 #if __STDC__
@@ -189,5 +204,13 @@ main ()
   checkit ("%s", "jjjjjjjjjiiiiiiiiiiiiiiioooooooooooooooooppppppppppppaa\n\
 777777777777777777333333333333366666666666622222222222777777777777733333");
   checkit ("%f%s%d%s", 1.0, "foo", 77, "asdjffffffffffffffiiiiiiiiiiixxxxx");
+  checkit ("%e", DBL_MIN);
+  checkit ("%e", DBL_MAX);
+  checkit ("%.400f", DBL_MIN);
+  checkit ("%f", DBL_MAX);
+  checkit ("%g", DBL_MIN);
+  checkit ("%g", DBL_MAX);
+  return 0;
 }
+
 #endif /* TEST */

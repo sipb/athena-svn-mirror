@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1999, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include <libintl.h>
+#include "libgettext.h"
 #define _(str) gettext(str)
 
 #if HAVE_VPRINTF || HAVE_DOPRNT
@@ -44,26 +44,38 @@
 #endif
 
 #include "po-lex.h"
-#include "po-gram.h"
 #include "system.h"
 #include "error.h"
-#include "po-gram.gen.h"
+#include "open-po.h"
+#include "po-gram-gen2.h"
+
+#if HAVE_C_BACKSLASH_A
+# define ALERT_CHAR '\a'
+#else
+# define ALERT_CHAR '\7'
+#endif
 
 
 static FILE *fp;
 lex_pos_ty gram_pos;
-size_t gram_max_allowed_errors = 20;
+unsigned int gram_max_allowed_errors = 20;
+static int po_lex_obsolete;
+const char *po_lex_charset;
+#if HAVE_ICONV
+iconv_t po_lex_iconv;
+#endif
 static int pass_comments = 0;
-static int pass_obsolete_entries = 0;
+int pass_obsolete_entries = 0;
 
 
 /* Prototypes for local functions.  */
 static int lex_getc PARAMS ((void));
 static void lex_ungetc PARAMS ((int __ch));
-static int keyword_p PARAMS ((char *__s));
+static int keyword_p PARAMS ((const char *__s));
 static int control_sequence PARAMS ((void));
 
 
+/* Open the PO file FNAME and prepare its lexical analysis.  */
 void
 lex_open (fname)
      const char *fname;
@@ -74,14 +86,23 @@ lex_open (fname)
 	   _("error while opening \"%s\" for reading"), fname);
 
   gram_pos.line_number = 1;
+  po_lex_obsolete = 0;
+  po_lex_charset = NULL;
+#if HAVE_ICONV
+  po_lex_iconv = (iconv_t)(-1);
+#endif
 }
 
 
+/* Terminate lexical analysis and close the current PO file.  */
 void
 lex_close ()
 {
   if (error_message_count > 0)
-    error (EXIT_FAILURE, 0, _("found %d fatal errors"), error_message_count);
+    error (EXIT_FAILURE, 0,
+	   ngettext ("found %d fatal error", "found %d fatal errors",
+		     error_message_count),
+	   error_message_count);
 
   if (fp != stdin)
     fclose (fp);
@@ -89,11 +110,20 @@ lex_close ()
   gram_pos.file_name = 0;
   gram_pos.line_number = 0;
   error_message_count = 0;
+  po_lex_obsolete = 0;
+  po_lex_charset = NULL;
+#if HAVE_ICONV
+  if (po_lex_iconv != (iconv_t)(-1))
+    {
+      iconv_close (po_lex_iconv);
+      po_lex_iconv = (iconv_t)(-1);
+    }
+#endif
 }
 
 
 /* CAUTION: If you change this function, you must also make identical
-   changes to the macro of the same name in src/po-lex.h  */
+   changes to the macros of the same name in src/po-lex.h  */
 
 #if !__STDC__ || !defined __GNUC__ || __GNUC__ == 1
 /* VARARGS1 */
@@ -136,9 +166,9 @@ po_gram_error (fmt, va_alist)
 /* VARARGS2 */
 void
 # if defined VA_START && __STDC__
-gram_error_at_line (const lex_pos_ty *pp, const char *fmt, ...)
+po_gram_error_at_line (const lex_pos_ty *pp, const char *fmt, ...)
 # else
-gram_error_at_line (pp, fmt, va_alist)
+po_gram_error_at_line (pp, fmt, va_alist)
      const lex_pos_ty *pp;
      const char *fmt;
      va_dcl
@@ -170,6 +200,7 @@ gram_error_at_line (pp, fmt, va_alist)
 #endif
 
 
+/* Read a single character, dealing with backslash-newline.  */
 static int
 lex_getc ()
 {
@@ -230,12 +261,14 @@ lex_ungetc (c)
 
 static int
 keyword_p (s)
-     char *s;
+     const char *s;
 {
   if (!strcmp (s, "domain"))
     return DOMAIN;
   if (!strcmp (s, "msgid"))
     return MSGID;
+  if (!strcmp (s, "msgid_plural"))
+    return MSGID_PLURAL;
   if (!strcmp (s, "msgstr"))
     return MSGSTR;
   po_gram_error (_("keyword \"%s\" unknown"), s);
@@ -268,6 +301,12 @@ control_sequence ()
     case 'f':
       return '\f';
 
+    case 'v':
+      return '\v';
+
+    case 'a':
+      return ALERT_CHAR;
+
     case '\\':
     case '"':
       return c;
@@ -275,10 +314,13 @@ control_sequence ()
     case '0': case '1': case '2': case '3':
     case '4': case '5': case '6': case '7':
       val = 0;
-      for (max = 0; max < 3; ++max)
+      max = 0;
+      for (;;)
 	{
 	  /* Warning: not portable, can't depend on '0'..'7' ordering.  */
-	  val = val * 8 + c - '0';
+	  val = val * 8 + (c - '0');
+	  if (++max == 3)
+	    break;
 	  c = lex_getc ();
 	  switch (c)
 	    {
@@ -289,12 +331,12 @@ control_sequence ()
 	    default:
 	      break;
 	    }
+	  lex_ungetc (c);
 	  break;
 	}
-      lex_ungetc (c);
       return val;
 
-    case 'x': case 'X':
+    case 'x':
       c = lex_getc ();
       if (c == EOF || !isxdigit (c))
 	break;
@@ -325,15 +367,20 @@ control_sequence ()
 	    default:
 	      break;
 	    }
+	  lex_ungetc (c);
 	  break;
 	}
       return val;
+
+    /* FIXME: \u and \U are not handled.  */
     }
-  po_gram_error (_("illegal control sequence"));
+  po_gram_error (_("invalid control sequence"));
   return ' ';
 }
 
 
+/* Return the next token in the PO file.  The return codes are defined
+   in "po-gram-gen2.h".  Associated data is put in 'po_gram_lval'.  */
 int
 po_gram_lex ()
 {
@@ -351,26 +398,32 @@ po_gram_lex ()
 	  /* Yacc want this for end of file.  */
 	  return 0;
 
+	case '\n':
+	  po_lex_obsolete = 0;
+	  break;
+
 	case ' ':
 	case '\t':
-	case '\n':
 	case '\r':
 	case '\f':
+	case '\v':
 	  break;
 
 	case '#':
+	  c = lex_getc ();
+	  if (c == '~')
+	    /* A pseudo-comment beginning with #~ is found.  This is
+	       not a comment.  It is the format for obsolete entries.
+	       We simply discard the "#~" prefix.  The following
+	       characters are expected to be well formed.  */
+	    {
+	      po_lex_obsolete = 1;
+	      break;
+	    }
+
 	  /* Accumulate comments into a buffer.  If we have been asked
  	     to pass comments, generate a COMMENT token, otherwise
  	     discard it.  */
-	  c = lex_getc ();
-	  if (c == '~' && pass_obsolete_entries)
-	    /* A special comment beginning with #~ is found.  This
-	       is the format for obsolete entries and if we are
-	       asked to return them is entries not as comments be
-	       simply stop processing the comment here.  The
-	       following characters are expected to be well formed.  */
-	    break;
-
 	  if (pass_comments)
 	    {
 	      bufpos = 0;
@@ -389,49 +442,105 @@ po_gram_lex ()
 		}
 	      buf[bufpos] = 0;
 
-	      po_gram_lval.string = buf;
+	      po_gram_lval.string.string = buf;
+	      po_gram_lval.string.pos = gram_pos;
+	      po_gram_lval.string.obsolete = po_lex_obsolete;
+	      po_lex_obsolete = 0;
 	      return COMMENT;
 	    }
 	  else
-	    /* We do this in separate loop because collecting large
-	       comments while they get not passed to the upper layers
-	       is not very effective.  */
-	    while (c != EOF && c != '\n')
-	      c = lex_getc ();
+	    {
+	      /* We do this in separate loop because collecting large
+		 comments while they get not passed to the upper layers
+		 is not very effective.  */
+	      while (c != EOF && c != '\n')
+		c = lex_getc ();
+	      po_lex_obsolete = 0;
+	    }
 	  break;
 
 	case '"':
-	  bufpos = 0;
-	  while (1)
-	    {
-	      if (bufpos >= bufmax)
-		{
-		  bufmax += 100;
-		  buf = xrealloc (buf, bufmax);
-		}
-	      c = lex_getc ();
-	      if (c == '\n')
-		{
-		  po_gram_error (_("end-of-line within string"));
-		  break;
-		}
-	      if (c == EOF)
-		{
-		  po_gram_error (_("end-of-file within string"));
-		  break;
-		}
-	      if (c == '"')
-		break;
+	  /* Accumulate a string.  */
+	  {
+#if HAVE_ICONV
+	    size_t bufmbpos = 0;
+#endif
 
-	      if (c == '\\')
-		c = control_sequence ();
+	    bufpos = 0;
+	    while (1)
+	      {
+		if (bufpos >= bufmax)
+		  {
+		    bufmax += 100;
+		    buf = xrealloc (buf, bufmax);
+		  }
+		c = lex_getc ();
+		if (c == EOF)
+		  {
+		    po_gram_error (_("end-of-file within string"));
+		    break;
+		  }
+		if (c == '\n')
+		  {
+		    po_gram_error (_("end-of-line within string"));
+		    break;
+		  }
+#if HAVE_ICONV
+		/* Interpret c only if it is the first byte of a multi-byte
+		   character.  Don't interpret it as ASCII when it is the
+		   second byte.  This is needed for the BIG5, BIG5HKSCS, GBK,
+		   GB18030, SJIS, JOHAB encodings.  */
+		if (po_lex_iconv == (iconv_t)(-1) || bufmbpos == bufpos)
+#endif
+		  {
+		    if (c == '"')
+		      break;
 
-	      buf[bufpos++] = c;
-	    }
-	  buf[bufpos] = 0;
+		    if (c == '\\')
+		      {
+			buf[bufpos++] = control_sequence ();
+#if HAVE_ICONV
+			bufmbpos++;
+#endif
+			continue;
+		      }
+		  }
 
-	  po_gram_lval.string = xstrdup (buf);
-	  return STRING;
+		/* Add c to the accumulator.  */
+		buf[bufpos++] = c;
+#if HAVE_ICONV
+		if (po_lex_iconv != (iconv_t)(-1))
+		  {
+		    /* If c terminates a multibyte character, set
+		       bufmbpos = bufpos.  Otherwise keep bufmbpos
+		       pointing at the start of the multibyte character.  */
+		    char scratchbuf[64];
+		    const char *inptr = &buf[bufmbpos];
+		    size_t insize = bufpos - bufmbpos;
+		    char *outptr = &scratchbuf[0];
+		    size_t outsize = sizeof (scratchbuf);
+		    if (iconv (po_lex_iconv,
+			       (ICONV_CONST char **) &inptr, &insize,
+			       &outptr, &outsize)
+			== (size_t)(-1)
+			&& errno == EILSEQ)
+		      {
+			po_gram_error (_("invalid multibyte sequence"));
+			bufmbpos = bufpos;
+		      }
+		    else
+		      bufmbpos = inptr - buf;
+		  }
+#endif
+	      }
+	    buf[bufpos] = 0;
+
+	    /* FIXME: Treatment of embedded \000 chars is incorrect.  */
+	    po_gram_lval.string.string = xstrdup (buf);
+	    po_gram_lval.string.pos = gram_pos;
+	    po_gram_lval.string.obsolete = po_lex_obsolete;
+	    return STRING;
+	  }
 
 	case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
 	case 'g': case 'h': case 'i': case 'j': case 'k': case 'l':
@@ -486,12 +595,20 @@ po_gram_lex ()
 
 	  c = keyword_p (buf);
 	  if (c == NAME)
-	    po_gram_lval.string = xstrdup (buf);
+	    {
+	      po_gram_lval.string.string = xstrdup (buf);
+	      po_gram_lval.string.pos = gram_pos;
+	      po_gram_lval.string.obsolete = po_lex_obsolete;
+	    }
+	  else
+	    {
+	      po_gram_lval.pos.pos = gram_pos;
+	      po_gram_lval.pos.obsolete = po_lex_obsolete;
+	    }
 	  return c;
 
 	case '0': case '1': case '2': case '3': case '4':
 	case '5': case '6': case '7': case '8': case '9':
-	  /* I know, we don't need numbers, yet.  */
 	  bufpos = 0;
 	  for (;;)
 	    {
@@ -518,8 +635,20 @@ po_gram_lex ()
 
 	  buf[bufpos] = 0;
 
-	  po_gram_lval.number = atol (buf);
+	  po_gram_lval.number.number = atol (buf);
+	  po_gram_lval.number.pos = gram_pos;
+	  po_gram_lval.number.obsolete = po_lex_obsolete;
 	  return NUMBER;
+
+	case '[':
+	  po_gram_lval.pos.pos = gram_pos;
+	  po_gram_lval.pos.obsolete = po_lex_obsolete;
+	  return '[';
+
+	case ']':
+	  po_gram_lval.pos.pos = gram_pos;
+	  po_gram_lval.pos.obsolete = po_lex_obsolete;
+	  return ']';
 
 	default:
 	  /* This will cause a syntax error.  */
@@ -529,6 +658,7 @@ po_gram_lex ()
 }
 
 
+/* po_gram_lex() can return comments as COMMENT.  Switch this on or off.  */
 void
 po_lex_pass_comments (flag)
      int flag;
@@ -537,6 +667,8 @@ po_lex_pass_comments (flag)
 }
 
 
+/* po_gram_lex() can return obsolete entries as if they were normal entries.
+   Switch this on or off.  */
 void
 po_lex_pass_obsolete_entries (flag)
      int flag;
