@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/bill_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -17,6 +17,7 @@
 #define STUFF "SU1"
 #define ATHCODE "385"
 #define TITLE "Printing: "
+#define TITLE1 "Printing Charges"
 #define ACC "24745"
 #define OBJ "480"
 
@@ -60,6 +61,10 @@ char *argv[];
   year = time_str->tm_year;
   month = time_str->tm_mon + 1;
 
+  if(argc != 3) {
+      fprintf(stderr, "bill_db user_file quota_db\n");
+      exit(1);
+  }
 /* ask user for semester */
   printf("Please enter the semester.\n");
   printf("    1 = Fall\n");
@@ -71,7 +76,7 @@ char *argv[];
   kresult = krb_get_lrealm(realm, 1);
   if (kresult != KSUCCESS)
     fprintf(stderr, "bill_db: error in obtaining realm\n");
-  else if ((int)(name_list = read_name_list(argv[1])) == -1)
+  else if (!(name_list = read_name_list(argv[1])))
     fprintf(stderr, "error in reading name list file %s\n", argv[1]);
   else if (quota_db_set_name(argv[2]))
     fprintf(stderr, "error in setting db name %s\n", argv[2]);
@@ -110,7 +115,7 @@ char *argv[];
 
 /*
  * Read_name_list function: Will read a name list file consisting of
- * "username:social_security:flag" into memeory as a linked list.
+ * "username:social_security:flag:real_name" into memeory as a linked list.
  */
 
 struct person *read_name_list(argv)
@@ -123,7 +128,7 @@ char* argv;
 
   current = new = name_list = (struct person *)NULL;
 
-  fp = fopen(argv, "r");
+  if(!(fp = fopen(argv, "r"))) return NULL;
   while (fscanf(fp, "%[^:]:%d:%c:%[^\n]\n", user_name, &number, 
 		&flag, real_name) != EOF) {
     if (trip == 1) 
@@ -228,6 +233,9 @@ char semester;
 	  qrec.lastBilling = (quota_time)time(0);
 	  qrec.lastCharge = billing_amount;
 	  qrec.yearToDateCharge += billing_amount;
+	  /* The following is to cause the quotaLimit 
+	     to reflect total allowed per managers request */
+	  qrec.quotaLimit += billing_amount;
 	  if (quota_db_put_principal(&qrec, (unsigned int)1) <= 0)
 	    printf("database locked\n");
 	}
@@ -265,11 +273,10 @@ char semester;
     fprintf(fp2, "%3s", STUFF);             /* trans code */
     fprintf(fp2, "%09d", user->number);  /* ID number */
     fprintf(fp2, "%3s", ATHCODE);           /* Athena code */
-    fprintf(fp2, "%2d%c", year, semester);  /* semester */
-    fprintf(fp2, "%02d-%02d-%2d", month, day, year); /* billing date */
+    fprintf(fp2, "%2d%c", year+(semester == '1' ? 1 : 0), semester);  /* semester */
+    fprintf(fp2, "%02d%02d%2d", month, day, year); /* billing date */
     fprintf(fp2, "%08d", billing_amount);   /* amount */
-    fprintf(fp2, "%10s", TITLE);            /* title */
-    fprintf(fp2, "%-20.20s", user->real_name);  /* real name */
+    fprintf(fp2, "%-30.30s", TITLE1);            /* title */
     fprintf(fp2, "%5s", ACC);               /* account # */
     fprintf(fp2, "%3s", OBJ);               /* obj code */
     fprintf(fp2, "      ");                 /* space for Bursar code */
@@ -285,7 +292,7 @@ char semester;
     fprintf(fp3, "%10s", TITLE);            /* title */
     fprintf(fp3, "%8s:", user->username);   /* username */
     fprintf(fp3, "%-23.23s", user->real_name);  /* real name */
-    fprintf(fp3, "%02d-%02d-%2d", month, day, year); /* billing date */
+    fprintf(fp3, "%02d%02d%2d", month, day, year); /* billing date */
     fprintf(fp3, "%011d", billing_amount);  /* amount */
     fprintf(fp3, "J\n");                    /* weird char */
   }
