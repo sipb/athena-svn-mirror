@@ -89,26 +89,22 @@ patch: $(OBJS)
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
 
 install:: all installdirs
-	$(INSTALL_PROGRAM) patch $(bindir)/$(patch_name)
-	-$(INSTALL_DATA) $(srcdir)/patch.man $(man1dir)/$(patch_name)$(man1ext)
+	$(INSTALL_PROGRAM) patch $(DESTDIR)$(bindir)/$(patch_name)
+	-$(INSTALL_DATA) $(srcdir)/patch.man $(DESTDIR)$(man1dir)/$(patch_name)$(man1ext)
 
 installdirs::
-	$(SHELL) $(srcdir)/mkinstalldirs $(bindir) $(man1dir)
+	$(SHELL) $(srcdir)/mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
 
 install-strip::
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 
 uninstall::
-	rm -f $(bindir)/$(patch_name) $(man1dir)/$(patch_name)$(man1ext)
+	rm -f $(DESTDIR)$(bindir)/$(patch_name) $(DESTDIR)$(man1dir)/$(patch_name)$(man1ext)
 
 Makefile: Makefile.in $(CONFIG_STATUS)
 	$(SHELL) $(CONFIG_STATUS)
 config.status: configure
 	$(SHELL) $(CONFIG_STATUS) --recheck
-configure: configure.in
-	cd $(srcdir) && autoconf
-config.hin: configure.in acconfig.h
-	cd $(srcdir) && rm -f config.hin && autoheader
 
 patchlevel.h: Makefile
 	echo '#define PATCH_VERSION "$(VERSION)"' >patchlevel.h
