@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.3 1999-01-16 21:34:52 rbasch Exp $
+# $Id: Makefile.athena,v 1.4 2000-03-29 20:54:07 ghudson Exp $
 
 SHELL=/bin/sh
+
+dist:
 
 prepare:
 
