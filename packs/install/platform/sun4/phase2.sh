@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.24 1997-10-17 02:18:20 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.25 1997-10-21 03:12:43 jweiss Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -130,9 +130,10 @@ echo $DISK
 
 case $CUSTOM in
 Y)
-   echo "Partitioning the disk yourself? (will default after 60 seconds) [n]"
-   case x`/util/to 60` in
-   xtimeout|xn|xN|x)
+   echo "Partitioning the disk yourself? [n]"
+   read partition
+   case "x$partition" in
+   xn|xN|x)
      PARTITION=N; echo "Doing standard partitions"; export PARTITION
      ;;
    *)
