@@ -59,21 +59,32 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+HAVE_LIB = @HAVE_LIB@
+LIB = @LIB@
 LIBSN_CFLAGS = @LIBSN_CFLAGS@
 LIBSN_LIBS = @LIBSN_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -88,6 +99,8 @@ libsninclude_HEADERS =  	sn.h						sn-common.h					sn-launchee.h					sn-launcher
 
 libstartup_notification_1_la_SOURCES =  	sn-common.c					sn-internals.c					sn-internals.h					sn-launchee.c					sn-launcher.c					sn-list.c					sn-list.h					sn-monitor.c					sn-util.c					sn-xmessages.c					sn-xmessages.h					sn-xutils.c					sn-xutils.h
 
+
+libstartup_notification_1_la_LDFLAGS = -no-undefined
 
 libstartup_notification_1_la_LIBADD = $(LIBSN_LIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -104,7 +117,6 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-libstartup_notification_1_la_LDFLAGS = 
 libstartup_notification_1_la_DEPENDENCIES = 
 libstartup_notification_1_la_OBJECTS =  sn-common.lo sn-internals.lo \
 sn-launchee.lo sn-launcher.lo sn-list.lo sn-monitor.lo sn-util.lo \
