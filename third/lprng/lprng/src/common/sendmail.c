@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.9.2.1 2000-11-08 22:01:02 ghudson Exp $";
+"$Id: sendmail.c,v 1.9.2.2 2001-01-02 16:19:29 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -73,6 +73,12 @@ void Sendmail_to_user( int retval, struct job *job )
 		char *p;
 
 		mailname += 7;
+
+		/* If mailname is an empty string, we'll end up sending
+		 * a zephyr to <message,personal,*>. 
+		 */
+		if (!*mailname)
+		  return;
 
 		/* Make sure printer and user names are sane */
 		for( p = Printer_DYN; *p; p++ ){
