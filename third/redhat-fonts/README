@@ -24,7 +24,9 @@ two.  Now prepare the tarfile like so:
   tar czf redhat-fonts-9.tar.gz redhat-fonts-9
 
 Replace the Red Hat version and the directory list as appropriate, and
-be on the alert for new types of font files as well.
+be on the alert for new types of font files as well.  Note that
+currently we are not including True Type ("*.ttf") font files, due
+to licensing issues with some of them.
 
 Then use the import script to import the tarfile as documented in
 /mit/source/doc/procedures.  The command will look something like:
