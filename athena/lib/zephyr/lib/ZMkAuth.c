@@ -4,19 +4,22 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v $
- *	$Author: root $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.5 1988-09-09 14:08:54 root Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.6 1989-05-25 16:02:00 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.5 1988-09-09 14:08:54 root Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.6 1989-05-25 16:02:00 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
+#ifdef KERBEROS
+#include "krb_err.h"
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
