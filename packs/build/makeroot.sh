@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.23 2004-05-08 01:44:52 ghudson Exp $
+# $Id: makeroot.sh,v 1.24 2004-05-16 21:19:01 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -117,6 +117,11 @@ cp /bin/athena/tcsh "$root/bin/athena/tcsh"
 grep -v '^smmsp' $root/etc/passwd > $root/etc/passwd.new
 mv $root/etc/passwd.new $root/etc/passwd
 chmod 644 $root/etc/passwd
+
+# Likewise for the group file.
+grep -v '^smmsp' $root/etc/group > $root/etc/group.new
+mv $root/etc/group.new $root/etc/group
+chmod 644 $root/etc/group
 
 # The discuss build needs the discuss user to be in the passwd file.
 grep '^discuss' /etc/passwd >> $root/etc/passwd
