@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.4 1990-06-26 13:44:11 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.5 1990-07-03 12:56:27 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.4 1990-06-26 13:44:11 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.5 1990-07-03 12:56:27 epeisach Exp $";
 #endif lint
 
 /*
@@ -129,7 +129,9 @@ short	SC;			/* suppress multiple copies */
 
 #endif SERVER
 char	*getenv();
+#ifndef _AUX_SOURCE
 char	*rindex();
+#endif
 char	*linked();
 int	cleanup();
 
@@ -678,7 +680,7 @@ cleanup()
 test(file)
 	char *file;
 {
-#ifndef mips
+#if !defined(mips) && !(defined_AUX_SOURCE)
 	struct exec execb;
 #endif
 	register int fd;
@@ -706,7 +708,7 @@ test(file)
 		printf("%s: cannot open %s\n", name, file);
 		return(-1);
 	}
-#ifndef mips
+#if !defined(mips) && !defined(_AUX_SOURCE)
 	if (read(fd, &execb, sizeof(execb)) == sizeof(execb))
 		switch((int) execb.a_magic) {
 		case A_MAGIC1:
