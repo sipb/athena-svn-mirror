@@ -3,7 +3,7 @@ Summary: The Athena ss library
 Copyright: MIT
 Group: System Environment/Libraries
 
-Requires: athena-readline athena-libet
+Requires: athena-libet
 
 %description
 The Athena ss library; handles command dispatching and paging.
