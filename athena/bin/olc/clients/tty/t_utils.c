@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.34 1992-01-28 20:38:52 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.35 1992-02-06 16:29:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.34 1992-01-28 20:38:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.35 1992-02-06 16:29:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -289,23 +289,25 @@ handle_response(response, req)
   switch(response)
     {
     case UNKNOWN_REQUEST:
-      fprintf(stderr,"This function cannot be performed by the OLC server.\n");
+      fprintf(stderr,"This function cannot be performed by the %s server.\n",
+	      OLC_SERVICE_NAME); 
       fprintf(stderr, "What you want is down the hall to the left.\n");
       return(NO_ACTION);   
 
     case SIGNED_OFF:
       if(isme(req))
-	printf("You have signed off of OLC.\n");
+	printf("You have signed off of %s.\n", OLC_SERVICE_NAME);
       else
-	printf("%s is singed off of OLC.\n",req->target.username);
+	printf("%s is singed off of %s.\n",req->target.username,
+	       OLC_SERVICE_NAME);
       return(SUCCESS);
 
     case NOT_SIGNED_ON:
       if(isme(req))
-	fprintf(stderr, "You are not signed on to OLC.\n");
+	fprintf(stderr, "You are not signed on to %s.\n", OLC_SERVICE_NAME);
       else
-	fprintf(stderr, "%s [%d] is not signed on to OLC.\n",
-		req->target.username,req->target.instance);
+	fprintf(stderr, "%s [%d] is not signed on to %s.\n",
+		req->target.username,req->target.instance, OLC_SERVICE_NAME);
       return(NO_ACTION);   
 
     case NO_QUESTION:
@@ -314,7 +316,8 @@ handle_response(response, req)
 	  fprintf(stderr,"You do not have a question in OLC.\n");
 	  if(OLC)
 	    {
-	      printf("If you wish to ask another question, use 'olc' again.\n");
+	      printf("If you wish to ask another question, use %s again.\n",
+		     OLC_SERVICE_NAME);
 	      exit(1);
 	    }
 	}
@@ -436,8 +439,11 @@ handle_response(response, req)
     case RD_AP_TIME:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Kerberos authentication failed: workstation clock is ");
-      printf("incorrect.\nPlease contact Athena operations and move to ");
+      printf("incorrect.\n");
+#ifdef ATHENA
+      printf("Please contact Athena operations and move to ");
       printf("another workstation.\n");
+#endif
       if(OLC) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
