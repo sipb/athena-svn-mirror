@@ -18,13 +18,16 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
+ *	$Id: x_utils.c,v 1.3 1991-03-24 14:36:03 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.2 1991-03-06 15:43:31 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.3 1991-03-24 14:36:03 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include "xolc.h"
 
@@ -36,38 +39,47 @@ handle_response(response, req)
   int status;
   char message[BUF_SIZE];
 #ifdef KERBEROS
-  char *kmessage = "\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `kinit'.\n\nIf you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n\nOnce you have gotten new kerberos tickets, you may try to continue with OLC.\nIf you wish to continue, click on the `Try again' button below.\nIf you wish to exit OLC now, click on the `Quit' button.";
+  char kmessage[BUF_SIZE];
+
+  strcpy(kmessage,"\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `kinit'.\n\n");
+
+#ifdef ATHENA
+  strcat(kmessage, "If you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n");
+#else
+  strcat(kmessage, "If you continue to have difficulty, contact a user consultant.\n");
+#endif
+  strcat(kmessage, "\nOnce you have gotten new kerberos tickets, you may try to continue with OLC.\nIf you wish to continue, click on the `Try again' button below.\nIf you wish to exit OLC now, click on the `Quit' button.");
 #endif
 
   switch(response)
     {
     case UNKNOWN_REQUEST:
-      popup_error("This function cannot be performed by the OLC server.\nWhat you want is down the hall to the left.");
+      MuError("This function cannot be performed by the OLC server.");
       return(NO_ACTION);
 
     case SIGNED_OFF:
       if(isme(req))
-        popup_error("You have signed off of OLC.");
+        MuError("You have signed off of OLC.");
       else {
 	sprintf(message, "%s is singed off of OLC.",req->target.username);
-	popup_error(message);
+	MuError(message);
       }
       return(SUCCESS);
 
     case NOT_SIGNED_ON:
       if(isme(req))
-	popup_error("You are not signed on to OLC.");
+	MuError("You are not signed on to OLC.");
       else {
 	sprintf(message, "%s (%d) is not signed on to OLC.",
                 req->target.username,req->target.instance);
-        popup_error(message);
+        MuError(message);
       }
       return(NO_ACTION);
 
     case NO_QUESTION:
       if(isme(req)) {
 	if(OLC) {
-	  popup_error("You do not have a question in OLC.\n\nIf you wish to ask another question, use 'olc' again.");
+	  MuError("You do not have a question in OLC.\n\nIf you wish to ask another question, use 'olc' again.");
 
 /* 
  * Something intelligent should be done here...  ask them if they want to
@@ -76,23 +88,23 @@ handle_response(response, req)
  */
 	}
 	else {
-	  popup_error("You do not have a question in OLC.");
+	  MuError("You do not have a question in OLC.");
 	}
       }
       else {
 	sprintf(message,"%s (%d) does not have a question.",
 		req->target.username, req->target.instance);
-	popup_error(message);
+	MuError(message);
       }
       return(NOT_CONNECTED);
 
     case HAS_QUESTION:
       if(isme(req))
-        popup_error("You have a question.");
+        MuError("You have a question.");
       else {
         sprintf(message, "%s (%d) does not have a question.",
                 req->target.username,req->target.instance);
-	popup_error(message);
+	MuError(message);
       }
       return(ERROR);
 
@@ -100,53 +112,52 @@ handle_response(response, req)
       if(isme(req)) {
 	sprintf(message, "You are not connected to a %s.",
                 OLC?"consultant":"user");
-	popup_error(message);
+	MuError(message);
       }
       else {
         sprintf(message,"%s (%d) is not connected nor is asking a question.",
                 req->target.username,req->target.instance);
-	popup_error(message);
+	MuError(message);
       }
       return(NO_ACTION);
 
     case PERMISSION_DENIED:
-      popup_error("You are not allowed to do that.");
+      MuError("You are not allowed to do that.");
       return(NO_ACTION);
 
     case TARGET_NOT_FOUND:
       sprintf(message, "Target user %s (%d) not found.",
 	      req->target.username, req->target.instance);
-      popup_error(message);
+      MuError(message);
       return(ERROR);
 
     case REQUESTER_NOT_FOUND:
       sprintf(message, "You [%s (%d)] are unknown.  There is a problem.",
               req->requester.username,
               req->requester.instance);
-      popup_error(message);
+      MuError(message);
       return(ERROR);
 
     case INSTANCE_NOT_FOUND:
-      popup_error("Incorrect instance specified.");
+      MuError("Incorrect instance specified.");
       return(ERROR);
 
     case ERROR:
-      popup_error("Error response from daemon.");
+      MuError("Error response from daemon.");
       return(ERROR);
 
     case USER_NOT_FOUND:
       sprintf(message, "User \"%s\" not found.",req->target.username);
-      popup_error(message);
+      MuError(message);
       return(ERROR);
 
     case NAME_NOT_UNIQUE:
       sprintf(message, "The string %s is not unique.",req->target.username);
-      popup_error(message);
+      MuError(message);
       return(ERROR);
 
 #ifdef KERBEROS     /* these error codes are < 100 */
     case MK_AP_TGTEXP:
-
     case RD_AP_EXP:
       strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        kinit"); 
       if(OLC)
@@ -169,28 +180,25 @@ handle_response(response, req)
       return(status);
 
     case RD_AP_TIME:
+#ifdef ATHENA
       strcpy(message, "Kerberos authentication failed: workstation clock is incorrect.\nPlease contact Athena operations and move to another workstation.");
+#else
+      strcpy(message, "Kerberos authentication failed; the clock on this workstation is incorrect.\nPlease contact the maintainer of this workstation to update it.");
+#endif
       if(OLC)
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
-
 #endif
 
     case SUCCESS:
       return(SUCCESS);
 
     default:
-      sprintf(message, "Unknown response %d (fascinating).", response);
+      sprintf(message, "Unknown response %d.", response);
       MuErrorSync(message);
       return(ERROR);
     }
-}
-
-popup_error(message)
-     char *message;
-{
-  MuError(message);
 }
 
 int
@@ -203,28 +211,4 @@ popup_option(message)
     return(FAILURE);
   else
     return(ERROR);
-}
-
-char *
-happy_message()
-{
-  if(random()%3 == 1)
-    {
-      switch(random()%12)
-        {
-        case 1: return("Have a nice day");
-        case 2: return("Have a happy");
-        case 3: return("Good day");
-        case 4: return("Cheers");
-        case 5: return("Enjoy");
-        case 6: return("Pleasant dreams");
-        case 7: return("Have a nice day");
-        case 8: return("Have a happy");
-        case 9: return("Drive safely");
-        case 10: return("Do come again soon");
-        case 11: return("Have a good one");
-        default: return("Don't take any wooden nickels");
-        }
-    }
-  return("Have a nice day");
 }
