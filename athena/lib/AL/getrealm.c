@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: qjb $
+ * $Author: jtkohl $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.5 1989-12-30 19:48:23 qjb Exp $";
+"$Id: getrealm.c,v 4.6 1990-01-02 13:35:56 jtkohl Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
