@@ -11,4 +11,7 @@ RSAIX)
 	chque -qbsh -a"up = FALSE"
 	;;
 SUN*)
+	echo "NEWUNIX=true"		>> ${CONFVARS}
+	echo "NEWBOOT=true"		>> ${CONFVARS}
+	echo "NEWDEV=true"		>> ${CONFVARS}
 esac
