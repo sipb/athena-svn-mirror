@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
  *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.7 1990-12-21 17:38:39 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.8 1990-12-21 17:40:40 raeburn Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -63,6 +63,7 @@ typedef int gid_t;
 #define FD_ZERO(p)  ((p)->fds_bits[0] = 0)
 #define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
 #define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
+#define	FD_CLR(n, p)	((p)->fds_bits[0] &= ~(1 << (n)))
 #endif
 
 #ifndef KERBEROS
