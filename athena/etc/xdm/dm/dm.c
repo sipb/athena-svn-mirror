@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.17 1991-07-19 16:15:14 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.18 1991-07-30 16:56:30 epeisach Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -24,10 +24,13 @@
 #include <usersec.h>
 #include <sys/select.h>
 #endif /* _IBMR2 */
-
+#if defined(ultrix) && defined(mips)
+#include <sys/proc.h>
+#include <sys/sysinfo.h>
+#endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.17 1991-07-19 16:15:14 epeisach Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.18 1991-07-30 16:56:30 epeisach Exp $";
 #endif
 
 #ifndef NULL
@@ -119,6 +122,9 @@ char **argv;
     int pgrp, file, tries, console = TRUE, mask;
 #ifdef ultrix
     int login_tty;
+#endif
+#if defined(ultrix) && defined(mips)
+    int uacbuf[2];
 #endif
 #ifdef _IBMR2
     fd_set rdlist;
@@ -227,6 +233,12 @@ char **argv;
 #endif
 	    if(fcntl(2, F_SETFD, 1) == -1)
 	      close(2);
+#if defined(ultrix) && defined(mips)
+	    uacbuf[0] = SSIN_UACPROC;
+	    uacbuf[1] = UAC_MSGOFF;
+	    setsysinfo((unsigned)SSI_NVPAIRS, (char *)uacbuf, (unsigned) 1,
+		       (unsigned)0, (unsigned)0);
+#endif
 	    sigsetmask(0);
 	    /* ignoring SIGUSR1 will cause the server to send us a SIGUSR1
 	     * when it is ready to accept connections
