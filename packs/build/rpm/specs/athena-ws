@@ -8,6 +8,14 @@ Requires: athena-desync, athena-base, athena-sendmail, athena-gettime, athena-xn
 Various maintenanance and configuration files required for any
 Athena workstation.
 
+%define esh1 /afs/sipb/project/tcsh/tcsh
+%define esh2 /afs/sipb/project/tcsh/t
+%define esh3 /afs/sipb/project/tcsh/betatcsh
+%define esh4 /afs/sipb/project/tcsh/b
+%define esh5 /afs/athena/project/gnu/bin/bash
+%define esh6 /afs/sipb/project/bash/bash
+%define extrashells %esh1 %esh2 %esh3 %esh4 %esh5 %esh6
+
 %build
 
 if [ X$RPM_BUILD_ROOT = X ]; then
@@ -95,8 +103,10 @@ EOF
 fi
 
 # Turn on DontZap in the X configuration.
-sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
-mv /etc/X11/XF86Config.new /etc/X11/XF86Config
+if [ -f /etc/X11/XF86Config ]; then
+  sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
+  mv /etc/X11/XF86Config.new /etc/X11/XF86Config
+fi
 
 if grep -q HOST /etc/athena/rc.conf ; then true ; else
   HOST=`hostname`  
@@ -156,5 +166,20 @@ EOF
 
 grep -q MAILRELAY /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
+EOF
 
+if [ ! -f /etc/shells ]; then
+  touch /etc/shells
+fi
+for s in %{extrashells}; do
+  if ! grep -q "^$s\$" /etc/shells; then
+    echo "$s" >> /etc/shells
+  fi
+done
 
+%postun
+[ $1 = 0 ] || exit 0
+for s in %{extrashells}; do
+  grep -v "^$s\$" < /etc/shells > /etc/shells.rpm
+  mv /etc/shells.rpm /etc/shells
+done
