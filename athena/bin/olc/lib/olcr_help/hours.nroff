@@ -1,0 +1,19 @@
+.TH HOURS OLCR
+.UC
+.SH COMMAND 
+hours \- Print hours OLC is staffed
+.SH USAGE
+.B hours  [\-file <filename>] [-change] [-editor <editor>]
+.br
+.SH DESCRIPTION
+When no arguments are given to this command, it simply displays the
+hours OLC is staffed.
+.PP
+If you wish to save the message permanently into a file, specify a file name
+after the 
+.I \-file
+argument. 
+.PP
+If you have administrative access, you may change the message by giving the
+.I -change
+option and specifying an editor, if desired.

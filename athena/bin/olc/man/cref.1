@@ -1,0 +1,184 @@
+.\"	Manual page for cref
+.\"
+.\"	Jeff Jimenez,Win Treese
+.\"	MIT Project Athena
+.\"
+.\"	Copyright (c) 1986 by the Massachusetts Insitute of Technology
+.\"
+.\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/cref.1,v $
+.\"	$Author: lwvanels $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/cref.1,v 1.1 1991-04-08 21:34:51 lwvanels Exp $
+.\"
+.TH CREF 1 "Revision 3.0 -- March 15,1986"
+.FM mit
+.SH NAME
+cref \- Documentation finder
+.SH SYNOPSIS
+.B cref
+[-c
+.I new_root
+]
+[-r
+.I root_dir
+]
+[-f
+.I start_dir
+]
+[-s
+.I save_file
+]
+[-a
+.I abbrev_file
+]
+.SH DESCRIPTION
+.I cref
+is a program for finding information in a directory hierarchy.
+.PP
+.I cref
+is used to find information in a directory hierarchy.  This hierarchy
+is generally organized by topic, but need not be.  Invoked with no
+arguments,
+.I cref
+displays a menu of available topics in the default top-level directory.
+There are several commands for moving about the hierarchy and displaying
+files.  These are listed below.  In addition, a list of commands with 
+brief descriptions is available on-line by typing '?' or 'h' at the
+.I cref
+prompt.
+.PP
+.I cref
+has the following command-line options:
+.TP 6
+.B  \-c
+The next argument is taken to be the name of a new root directory for a
+.I cref
+hierarchy.  The directory is created and initialized with an empty contents
+file.  The directory name be be a full pathname;
+.I cref
+does not accept relative names.
+.TP 6
+.B  \-r
+The next argument is taken to be the name of the root directory for the
+current session.  The directory name be be a complete pathname.
+.TP 6
+.B \-f
+The next argument is used as a filename offset in the root directory.  This
+allows one to specify the place in the hierarchy to begin the current
+session.  It should be a pathname relative to the
+.I cref
+root directory.
+.TP 6
+.B \-s
+The next argument is used as the default filename for saving a
+.I cref
+entry.  The standard default is
+.I cref_info.
+.TP 6
+.B \-a
+The next argument is taken to be the name of an abbreviations file to
+use instead of the default, which is
+.I $HOME/.crefrc.
+.PP
+At the "cref>" prompt, the following commands are available:
+.TP 6
+.B ?
+Prints a list of
+.I cref
+commands and brief descriptions of their functions.
+.TP 6
+.B a
+Adds a new abbreviation.  An abbreviation is a name for a particular
+directory in the
+.I cref
+hierarchy.  This commands prompts for the name and entry number on the
+current menu for the desired abbreviation.  The abbreviation is stored
+in the user's personal abbreviation file.
+.TP 6
+.B g
+Prompts for an abbreviation, then goes to the corresponding entry.
+.TP 6
+.B h
+Prints help information.  Same as '?.'
+.TP 6
+.B i
+Inserts an entry into the current directory.  It prompt for the necessary
+information.  The user must have permission to write in the
+.I cref
+directory.
+.TP 6
+.B l
+Lists all abbreviations, both the user's personal ones and the default
+ones that belong to the hierarchy.
+.TP 6
+.B f
+Displays the contents file of the
+.I cref
+directory being displayed on the screen.
+.TP 6
+.B c
+Lists the contents of the directory being displayed on the screen.
+.TP 6
+.B n
+Displays the next entry.
+.TP 6
+.B p
+Displays the previous entry.
+.TP 6
+.B q
+Quits
+.I cref.
+.TP 6
+.B d
+Deletes an entry from the hierarchy.  The user must have write permission
+in the current entry.
+.TP 6
+.B s
+Saves an entry to a file.  It prompts for a filename, with the default
+.I cref_info.
+.TP 6
+.B t
+Moves to the top level of the
+.I cref
+hierarchy.
+.TP 6
+.B u
+Moves up one level.
+.TP 6
+.B +
+Displays the next page of the index.
+.B -
+Displays the previous page of the index.
+.TP 6
+.I <number>
+Display the specified entry.
+.TP 6
+.I <space>
+Displays the next page of the index.
+.TP 6
+.I r
+Redisplay the cref menu
+.PP
+When an entry is selected, a menu is displayed if it is another directory;
+otherwise the file is printed on the terminal using
+.I more(1).
+.SH FILES
+.TP 20
+\\.index
+Contents files in each
+.I cref
+directory.
+.TP 20
+$HOME/.crefrc
+Default user abbreviation file.
+.TP 20
+cref_abbrevs
+Global abbreviations file in the root directory.
+.TP 20
+/mit/cref/Ref
+Default root directory.
+.SH DIAGNOSTICS
+Mostly self-explanatory.
+.SH BUGS
+Many, some even unknown.
+.SH AUTHOR
+Chris VanHaren, Jeff Jimenez, Win Treese, MIT Project Athena
