@@ -66,6 +66,7 @@ static char sccsid[] = "@(#)ftpcmd.y	5.24 (Berkeley) 2/25/91";
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 extern	char *auth_type;
 
@@ -824,9 +825,19 @@ pathname:	pathstring
 		 * This is a valid reply in some cases but not in others.
 		 */
 		if (logged_in && $1 && strncmp((char *) $1, "~", 1) == 0) {
-			*(char **)&($$) = *ftpglob((char *) $1);
+			char **globlist;
+
+			globlist = ftpglob((char *) $1);
 			if (globerr != NULL) {
 				reply(550, globerr);
+				$$ = NULL;
+			}
+			else if (globlist && *globlist) {
+				*(char **)&($$) = *ftpglob((char *) $1);
+			}
+			else {
+				errno = ENOENT;
+				perror_reply(550, $1);
 				$$ = NULL;
 			}
 			free((char *) $1);
