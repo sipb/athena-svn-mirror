@@ -1,8 +1,9 @@
-;; $Id: site-init.jl,v 1.5 2001-03-30 20:57:55 ghudson Exp $
+;; $Id: site-init.jl,v 1.6 2001-03-31 05:41:21 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
-(setq default-font "-adobe-helvetica-bold-r-normal-*-*-140-*-*-p-*-iso8859-1")
+(setq default-font
+      (get-font "-adobe-helvetica-bold-r-normal-*-*-140-*-*-p-*-iso8859-1"))
 
 ;; Set the default theme.
 (setq default-frame-style 'Crux-athena)
