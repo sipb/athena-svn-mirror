@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1999-09-16 00:01:55 danw Exp $
+# $Id: Makefile.in,v 1.3 1999-09-18 20:59:54 danw Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -37,7 +37,6 @@ cxref: cxref.o
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
 
-cscan.o docxref.o cxrfilt.o fmtxref.o: basename.c
 cxrfilt.o: constdefs.h
 
 check:
