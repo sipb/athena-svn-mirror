@@ -1,0 +1,7 @@
+Name: athena-gnome-icon-theme
+Summary: Base GNOME icons, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+Contains the base icons needed by the Gnome desktop environment.
