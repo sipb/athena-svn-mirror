@@ -1,0 +1,15 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/sun.cf,v 1.1 1994-04-07 13:16:36 vrt Exp $ */
+/* Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h". */
+
+#define HaveGcc         0
+#define HasSaberC       0
+#define HasPutenv	1
+#define HaveDefErrno	0
+#define HaveNoProto     1
+#define SystemV               1
+#define ArCmd ar cq
+#define ExtraLoadFlags /usr/athena/lib/libresolv.a -lsocket -lnsl -ldl -lc /usr/ucblib/libucb.a -lelf
+#define HaveTermIO    1
+#define CppCmd          /usr/ccs/lib/cpp
+
