@@ -123,7 +123,7 @@ typedef	char		Bool3;		/* Yes/No/Maybe */
 
 #ifndef	VOLATILE
 #if	__STDC__ || (defined(__stdc__) && defined(__convex__))
-#define	VOLATILE	__volatile__
+#define	VOLATILE	volatile
 #else
 #define	VOLATILE	/* nothing */
 #endif
