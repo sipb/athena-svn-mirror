@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendreq.c,v 1.1.1.1 1999-05-04 18:06:58 danw Exp $";
+"$Id: sendreq.c,v 1.2 1999-09-10 17:52:11 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -89,12 +89,22 @@ int Send_request(
 
 	if( Remote_support_DYN ){
 		if( strchr( Remote_support_DYN, class ) == 0 ){
-			errormsg = _("no network support for request");
+			DEBUG1("Send_request: no remote support for '%c' operation", class );
+			if( !Is_server ){
+				errormsg = _("no network support for request");
+			} else {
+				status = 0;
+			}
 			goto error;
 		}
-		if( format == REQ_VERBOSE
-			&& strpbrk( "vV", Remote_support_DYN ) == 0 ){
-			errormsg = _("no network support for verbose status");
+		if( format == REQ_VERBOSE 
+		    && strpbrk( "vV", Remote_support_DYN ) == 0 ){
+			DEBUG1("Send_request: no support for verbose status" );
+			if( !Is_server ){
+				errormsg = _("no network support for verbose status");
+			} else {
+				status = 0;
+			}
 			goto error;
 		}
 	}
