@@ -358,7 +358,7 @@ long pc_wait(pc_message **mm, pc_state *s)
   r = s->readfds;
   w = s->writefds;
 
-  m = malloc(sizeof(pc_message));
+  m = calloc(1, sizeof(pc_message));
   if (m == NULL)
     return PCerrNoMem;
 
