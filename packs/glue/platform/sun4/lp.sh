@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1.2.2 1998-09-24 14:52:26 ghudson Exp $
+# $Id: lp.sh,v 1.1.2.3 1998-09-29 17:21:01 ghudson Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -137,7 +137,7 @@ esac
 
 shift `expr $OPTIND - 1`
 
-if [-n "$filter" ]; then
+if [ -n "$filter" ]; then
 	# This option may not work with all lpr options.
 	for file in "${@:--}"; do
 		$filter $file | lpr -J "${title:-$file}" $opts
