@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.8 1994-02-14 09:56:02 probe Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.9 1994-11-12 18:10:36 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -36,6 +36,7 @@ static char rcsid_port_c[] = "$Id: port.c,v 1.8 1994-02-14 09:56:02 probe Exp $"
  * <<<>>>
  */
 
+#if defined(SUNOS) || defined(vax)
 extern int errno, sys_nerr;
 extern char *sys_errlist[];
 
@@ -48,6 +49,15 @@ string perror_to_string(errno)
     /* <<<>>> */
     return("illegal error number returned in errno!");
 }
+#else
+#include <errno.h>
+
+string perror_to_string(errno)
+     int errno;
+{
+     return(strerror(errno));
+}
+#endif
 
 /****************************************************************************/
 /*                                                                          */
