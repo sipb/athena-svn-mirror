@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.6 1998-04-08 02:28:43 ghudson Exp $
+# $Id: Makefile.in,v 1.7 1998-04-16 22:31:56 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.6  1998/04/08 02:28:43  ghudson
+# Don't create .old files in the install directory.
+#
 # Revision 1.5  1998/01/24 01:47:20  danw
 # merge in changes for 1.2.22
 #
@@ -534,7 +537,8 @@ install: $(PROGRAMS) make-dirs
 	      $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; fi; \
 	done
 	-for p in $(SBIN_PROGRAMS); do \
-	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(sbindir)/$$p; \
+	  $(INSTALL_PROGRAM) -s -m 0755 $$p $(install_prefix)$(sbindir)/$$p; \
+	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(sbindir)/$$p.unstripped; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(sbindir)/`echo $$p | sed '$(transform)'`;\
 	    $(LN_S) $$p \
