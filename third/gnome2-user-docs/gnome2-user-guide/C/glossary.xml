@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <glossary id="glossary-1">
   <title>Glossary</title>
   <glossentry id="glossary-6">
@@ -10,13 +9,25 @@ applet has a simple user interface that you can operate with the mouse or
 keyboard. </para>
     </glossdef>
   </glossentry>
-  <glossentry id="glossary-9">
-    <glossterm>desktop background object</glossterm>
+  <glossentry id="glossary-40">
+    <glossterm>desktop</glossterm>
     <glossdef>
-      <para>An icon on your desktop background that you can use to open
-your files, folders, and applications. You can use desktop background objects
-to provide convenient access to files, folders, and applications that you
-use frequently.</para>
+      <para>The part of the GNOME Desktop where there are no interface
+graphical items, such as panels and windows.</para>
+    </glossdef>
+  </glossentry>
+  <glossentry id="glossary-31">
+    <glossterm>desktop background</glossterm>
+    <glossdef>
+      <para>The image or color that is applied to your desktop. </para>
+    </glossdef>
+  </glossentry>
+  <glossentry id="glossary-9">
+    <glossterm>desktop object</glossterm>
+    <glossdef>
+      <para>An icon on your desktop that you can use to open your files,
+folders, and applications. You can use desktop objects to provide convenient
+access to files, folders, and applications that you use frequently.</para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-20">
@@ -44,13 +55,8 @@ on the media. </para>
     <glossterm>GNOME-compliant application</glossterm>
     <glossdef>
       <para>An application that uses the standard GNOME programming libraries
-is called a GNOME-compliant application. For example, <application>Nautilus</application> and <application>gedit</application> are GNOME-compliant applications.</para>
-    </glossdef>
-  </glossentry>
-  <glossentry id="glossary-26">
-    <glossterm>hot key</glossterm>
-    <glossdef>
-      <para>Hot keys are keyboard shortcuts that start applications. </para>
+is called a GNOME-compliant application. For example, <application>Nautilus</application> file manager and <application>gedit</application> text editor
+are GNOME-compliant applications.</para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-21">
@@ -80,12 +86,22 @@ or opens a file. A launcher can reside in a panel or in a menu.</para>
 contains the menus for the application. </para>
     </glossdef>
   </glossentry>
+  <glossentry id="glossary-27">
+    <glossterm>MIME type</glossterm>
+    <glossdef>
+      <para>A Multipurpose Internet Mail Extension (MIME) type identifies
+the format of a file. The MIME type enables applications to read the file.
+For example, an email application can use the <literal>image/png</literal>
+MIME type to detect that a Portable Networks Graphic (PNG) file is attached
+to an email.</para>
+    </glossdef>
+  </glossentry>
   <glossentry id="glossary-24">
     <glossterm>mount</glossterm>
     <glossdef>
-      <para>To <firstterm>mount</firstterm> is to make a file system available
-for access. When you mount a file system, the file system is attached as a
-subdirectory to your file system. </para>
+      <para>To mount is to make a file system available for access. When
+you mount a file system, the file system is attached as a subdirectory to
+your file system. </para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-4">
@@ -98,7 +114,7 @@ subdirectory to your file system. </para>
     <glossterm>preference tool</glossterm>
     <glossdef>
       <para>A dedicated software tool that controls a particular part
-of the behavior of the desktop.</para>
+of the behavior of the GNOME Desktop.</para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-5">
@@ -122,11 +138,27 @@ on top of each other on your screen. </para>
 information about the current state of what you are viewing in the window. </para>
     </glossdef>
   </glossentry>
+  <glossentry id="glossary-28">
+    <glossterm>symbolic link</glossterm>
+    <glossdef>
+      <para>A special type of file that points to another file or folder.
+When you perform an action on a symbolic link, the action is performed on
+the file or folder to which the symbolic link points. </para>
+    </glossdef>
+  </glossentry>
   <glossentry id="glossary-12">
     <glossterm>toolbar</glossterm>
     <glossdef>
       <para>A toolbar is a bar that contains buttons for the most commonly-used
 commands in an application. Typically, a toolbar appears under a menubar.</para>
+    </glossdef>
+  </glossentry>
+  <glossentry id="glossary-29">
+    <glossterm>Uniform Resource Identifier</glossterm>
+    <glossdef>
+      <para>A Uniform Resource Identifier (URI) is a string that identifies
+a particular location in a file system or on the Web. For example, the address
+of a web page is a URI.</para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-19">
@@ -150,15 +182,15 @@ list view which enables you to display the contents of a folder as a list. </par
     <glossdef>
       <para>A <application>Nautilus</application> component that enables
 you to display a particular type of file in the view pane. A viewer component
-might add menu items that are relevant to the file type to the Nautilus menus.
-A viewer component might also enable you to use the <application>Nautilus</application> zoom buttons to change the size of the item in the view pane.</para>
+might add menu items that are relevant to the file type to the file manager
+menus. A viewer component might also enable you to use the <application>Nautilus</application> zoom buttons to change the size of the item in the view pane.</para>
     </glossdef>
   </glossentry>
   <glossentry id="glossary-7">
     <glossterm>workspace</glossterm>
     <glossdef>
-      <para>A workspace is a discrete area on the desktop in which you
-can work. </para>
+      <para>A workspace is a discrete area in the GNOME Desktop in which
+you can work. </para>
     </glossdef>
   </glossentry>
 </glossary>

@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <chapter id="goseditmainmenu-1">
   <title>Working With Menus</title>
   <highlights>
-    <para>This chapter describes how to use menus in the desktop.</para>
+    <para>This chapter describes how to use menus in the GNOME Desktop.</para>
   </highlights>
   <sect1 id="goseditmainmenu-2">
     <title>Introduction to Menus</title>
@@ -10,31 +9,38 @@
       <primary>menus</primary>
       <secondary>introduction</secondary>
     </indexterm>
-    <para>You can access all desktop functions through menus. The Menu Panel contains
-menus, so you can use a combination of menus and panels to perform your tasks.
-You can perform various actions on your menus, such as copy menu items to
-panels.</para>
-    <para>You can access the following menus from the desktop:</para>
+    <para>You can access all GNOME Desktop functions through menus. The panels
+contains menus, so you can use a combination of menus and panels to perform
+your tasks. You can perform various actions on your menus, such as copy menu
+items to panels.</para>
+    <para>You can access the following menus in the GNOME Desktop:</para>
     <itemizedlist>
       <listitem>
-        <para><guimenu>Applications</guimenu> menu: You can access many
-of your applications, commands, and configuration options from the <guimenu>Applications</guimenu> menu. You can also access the desktop preference tools
-from the <guimenu>Applications</guimenu> menu.</para>
+        <para><guimenu>Main Menu</guimenu>: You can access the items in
+the <guimenu>Applications</guimenu> menu from the <guimenu>Main Menu</guimenu>.
+You can have many <guimenu>Main Menu</guimenu> buttons in your panels. You
+can also access the items in the <guimenu>Actions</guimenu> menu from the <guimenu>Main Menu</guimenu>. The items in the <guimenu>Actions</guimenu> menu are
+at the top level of the <guimenu>Main Menu</guimenu>.</para>
       </listitem>
       <listitem>
-        <para><guimenu>Actions</guimenu> menu: You can access various commands
-that enable you to perform desktop tasks from the <guimenu>Actions</guimenu>
-menu. For example, you can start the <application>Search Tool</application>
-application, or log out of the desktop. </para>
-      </listitem>
-      <listitem>
-        <para><guimenu>GNOME Menu</guimenu>: You can also access the items
+        <para><application>Menu Bar</application>: You can access the items
 in the <guimenu>Applications</guimenu> and <guimenu>Actions</guimenu> menus
-from the <guimenu>GNOME Menu</guimenu>. You can have many <guimenu>GNOME Menu</guimenu> buttons in your panels. </para>
+from <application>Menu Bar</application>. You can have many <application>Menu Bar</application> applets in your panels. </para>
+      </listitem>
+      <listitem>
+        <para><guimenu>Applications</guimenu> menu: You can access many
+of your applications, commands, and configuration options from the <guimenu>Applications</guimenu> menu. You can also access the
+GNOME Desktop preference tools from the <guimenu>Applications</guimenu> menu.</para>
+      </listitem>
+      <listitem>
+        <para><guimenu>Actions</guimenu> menu: You can access commands that
+enable you to perform various tasks from the <guimenu>Actions</guimenu> menu.
+For example, you can start the <application>Search Tool</application> application,
+or log out of the GNOME Desktop. </para>
       </listitem>
     </itemizedlist>
-    <para>You can also right-click on the desktop background to open the <guimenu>Desktop Background</guimenu> menu. The <guimenu>Desktop Background</guimenu>
-menu enables you to perform desktop background-related tasks. </para>
+    <para>You can also right-click on the desktop to open the <guimenu>Desktop</guimenu> menu. The <guimenu>Desktop</guimenu> menu enables you to perform
+desktop-related tasks. </para>
     <para>All of these menus provide you with multiple ways to perform your tasks,
 and enable you to work in the way that you prefer.</para>
   </sect1>
@@ -55,13 +61,14 @@ and enable you to work in the way that you prefer.</para>
     </itemizedlist>
     <para>An arrow to the right of an item in a menu indicates that the item is
 a submenu. When you point to the submenu, the submenu opens. You can choose
-items from the submenu. </para>
+items from the submenu.</para>
     <para>When you choose a launcher, the launcher starts an application or runs
 a command. You can also right-click on a launcher to open a popup menu. The
 popup menu enables you to add the item to a panel, and perform other tasks.
-For more information on the popup menu, see the next section. </para>
+For more information on the popup menu, see the next section.</para>
     <para>You can change the theme for your session to change how all your menus
-look. To change the theme, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>.</para>
+look. To change the theme, use the <application>Theme</application> preference
+tool.</para>
     <sect2 id="goseditmainmenu-11">
       <title>Menu Item Popup Menu</title>
       <indexterm>
@@ -85,8 +92,8 @@ menu also contains a submenu that allows you to perform menu-related tasks. </pa
           <para>Remove items from menus.</para>
         </listitem>
         <listitem>
-          <para>Open the <guilabel>Run Program</guilabel> dialog with the
-menu item command in the dialog.</para>
+          <para>Open the <guilabel>Run Application</guilabel> dialog with
+the menu item command in the dialog.</para>
         </listitem>
         <listitem>
           <para>Add menus to panels. You can add a menu as a menu object or
@@ -99,25 +106,7 @@ as a drawer object. </para>
           <para>Change the properties of submenus and menu items.</para>
         </listitem>
       </itemizedlist>
-      <para><xref linkend="goseditmainmenu-FIG-39"/> shows the popup menu.</para>
-      <indexterm>
-        <primary>menu item popup menu</primary>
-        <secondary>illustration</secondary>
-      </indexterm>
-      <figure id="goseditmainmenu-FIG-39">
-        <title>Menu Item Popup Menu</title>
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figures/launcher_popup.png" format="PNG"/>
-            </imageobject>
-            <textobject>
-              <phrase>Menu item popup menu. The context describes the graphic.</phrase>
-            </textobject>
-          </mediaobject>
-        </screenshot>
-      </figure>
-      <para><xref linkend="goseditmainmenu-TBL-30"/> describes menu item popup menus. <indexterm><primary>launchers</primary><secondary>adding to panel</secondary></indexterm></para>
+      <para><xref linkend="goseditmainmenu-TBL-30"/> describes menu item popup menus. <indexterm><primary>launchers</primary><secondary>adding to panel</secondary></indexterm><indexterm><primary>menus</primary><secondary>adding to panel</secondary></indexterm></para>
       <table frame="topbot" id="goseditmainmenu-TBL-30">
         <title>Menu Item Popup Menus</title>
         <tgroup cols="2" colsep="0" rowsep="0">
@@ -125,10 +114,10 @@ as a drawer object. </para>
           <colspec colname="colspec1" colwidth="57.29*"/>
           <thead>
             <row rowsep="1">
-              <entry valign="top">
+              <entry>
                 <para>Item</para>
               </entry>
-              <entry valign="top">
+              <entry>
                 <para>Description</para>
               </entry>
             </row>
@@ -162,19 +151,10 @@ the menu.</para>
                 </para>
               </entry>
               <entry valign="top">
-                <para>Displays the <guilabel>Run Program</guilabel> dialog
-with  the command from the <guilabel>Command</guilabel> field of the launcher
-in  the command field on the <guilabel>Run Program</guilabel> dialog. </para>
-              </entry>
-            </row>
-            <row>
-              <entry colname="colspec0">
-                <para>
-                  <guimenuitem>Help on <replaceable>application_name</replaceable></guimenuitem>
-                </para>
-              </entry>
-              <entry colname="colspec1">
-                <para>Opens the online help for the application.</para>
+                <para>Displays the <guilabel>Run Application</guilabel>
+dialog with  the command from the <guilabel>Command</guilabel> field of the
+launcher in  the command field on the <guilabel>Run Application</guilabel>
+dialog. </para>
               </entry>
             </row>
             <row>
@@ -246,10 +226,6 @@ the properties of the submenu.</para>
           </tbody>
         </tgroup>
       </table>
-      <indexterm>
-        <primary>menus</primary>
-        <secondary>adding to panel</secondary>
-      </indexterm>
     </sect2>
   </sect1>
   <sect1 id="goseditmainmenu-8">
@@ -260,19 +236,25 @@ the properties of the submenu.</para>
     </indexterm>
     <para>The <guimenu>Applications</guimenu> menu contains a hierarchy
 of submenus, from which you can start the standard GNOME applications and
-preference tools. The <guimenu>Applications</guimenu> menu contains the <guimenu>Desktop Preferences</guimenu> menu. You can use the <guimenu>Desktop Preferences</guimenu> menu to start the desktop preference tools. The <guimenu>Applications</guimenu> menu also includes the file manager and the help browser.</para>
+preference tools. The <guimenu>Applications</guimenu>
+menu contains the <guimenu>Desktop Preferences</guimenu> menu. You can use
+the <guimenu>Desktop Preferences</guimenu> menu to start the GNOME Desktop
+preference tools. The <guimenu>Applications</guimenu> menu also includes the
+file manager and the help browser.</para>
     <para>The <guimenu>Applications</guimenu> menu resides in the following places: </para>
     <itemizedlist>
       <listitem>
-        <para>Menu Panel</para>
-      </listitem>
-      <listitem>
-        <para><guilabel>Start Here</guilabel> location in <application>Nautilus</application></para>
+        <para>
+          <guimenu>Main Menu</guimenu>
+        </para>
       </listitem>
       <listitem>
         <para>
-          <guimenu>GNOME Menu</guimenu>
+          <application>Menu Bar</application>
         </para>
+      </listitem>
+      <listitem>
+        <para><guilabel>Start Here</guilabel> location in the file manager</para>
       </listitem>
     </itemizedlist>
   </sect1>
@@ -282,9 +264,8 @@ preference tools. The <guimenu>Applications</guimenu> menu contains the <guimenu
       <primary>menus</primary>
       <secondary>Actions menu</secondary>
     </indexterm>
-    <para>The <guimenu>Actions</guimenu> menu contains various commands that enable
-you to perform desktop tasks. <xref linkend="goseditmainmenu-TBL-52"/> describes
-the commands in the <guimenu>Actions</guimenu> menu.</para>
+    <para>The <guimenu>Actions</guimenu> menu contains commands that enable you
+to perform various tasks in the GNOME Desktop. <xref linkend="goseditmainmenu-TBL-52"/> describes the commands in the <guimenu>Actions</guimenu> menu. </para>
     <table frame="topbot" id="goseditmainmenu-TBL-52">
       <title>Actions Menu Commands</title>
       <tgroup cols="2" colsep="0" rowsep="0">
@@ -292,10 +273,10 @@ the commands in the <guimenu>Actions</guimenu> menu.</para>
         <colspec colname="colspec1" colwidth="61.52*"/>
         <thead>
           <row rowsep="1">
-            <entry valign="top">
+            <entry>
               <para>Menu Item</para>
             </entry>
-            <entry valign="top">
+            <entry>
               <para>Function</para>
             </entry>
           </row>
@@ -304,12 +285,12 @@ the commands in the <guimenu>Actions</guimenu> menu.</para>
           <row>
             <entry valign="top">
               <para>
-                <guimenuitem>Run Program</guimenuitem>
+                <guimenuitem>Run Application</guimenuitem>
               </para>
             </entry>
             <entry valign="top">
-              <para>Opens the <guilabel>Run Program</guilabel> dialog.
-Use the <guilabel>Run Program</guilabel> dialog to run commands. For more
+              <para>Opens the <guilabel>Run Application</guilabel> dialog.
+Use the <guilabel>Run Application</guilabel> dialog to run commands. For more
 information, see <xref linkend="gospanel-23"/>.</para>
             </entry>
           </row>
@@ -328,7 +309,7 @@ manual.</para>
           <row>
             <entry colname="colspec0">
               <para>
-                <guimenuitem>Open Recent</guimenuitem>
+                <guimenuitem> Recent Documents</guimenuitem>
               </para>
             </entry>
             <entry colname="colspec1">
@@ -339,85 +320,86 @@ you saved.</para>
           <row>
             <entry valign="top">
               <para>
-                <guimenuitem>Screenshot</guimenuitem>
+                <guimenuitem>Take Screenshot</guimenuitem>
               </para>
             </entry>
             <entry valign="top">
-              <para>Takes a screenshot of the desktop, and opens the <guilabel>Screenshot</guilabel> dialog. Use the <guilabel>Screenshot</guilabel> dialog
-to save the screenshot.</para>
+              <para>Takes a screenshot of the screen, and opens the <guilabel>Save Screenshot</guilabel> dialog. Use the <guilabel>Save Screenshot</guilabel>
+dialog to save the screenshot.</para>
             </entry>
           </row>
           <row>
-            <entry valign="top">
+            <entry colname="colspec0">
               <para>
                 <guimenuitem>Lock Screen</guimenuitem>
               </para>
             </entry>
-            <entry valign="top">
-              <para>Locks your screen. </para>
+            <entry colname="colspec1">
+              <para>Lock Screen locks your screen.</para>
             </entry>
           </row>
           <row>
             <entry valign="top">
               <para>
                 <guimenuitem>Log Out</guimenuitem>
+                <emphasis>username</emphasis>
               </para>
             </entry>
             <entry valign="top">
-              <para>Logs you out of the current session. </para>
+              <para>Logs you out of
+the current session. </para>
             </entry>
           </row>
         </tbody>
       </tgroup>
     </table>
-    <para>The <guimenu>Actions</guimenu> menu resides in the following places: </para>
+    <para>The <guimenu>Actions</guimenu> menu resides in the following
+places: </para>
     <itemizedlist>
       <listitem>
-        <para>Menu Panel. </para>
+        <para><guimenu>Main Menu</guimenu>. The items in the <guimenu>Actions</guimenu> menu are at the top level of the <guimenu>Main Menu</guimenu>.</para>
       </listitem>
       <listitem>
-        <para><guimenu>GNOME Menu</guimenu>. The items in the <guimenu>Actions</guimenu> menu are at the top level of the <guimenu>GNOME Menu</guimenu>.</para>
+        <para><application>Menu Bar</application>. </para>
       </listitem>
     </itemizedlist>
     <sect2 id="gospanel-23">
-      <title>Using the Run Program Dialog</title>
+      <title>Using the Run Application Dialog</title>
       <indexterm>
-        <primary>Run Program dialog, using</primary>
+        <primary>Run Application dialog, using</primary>
       </indexterm>
-      <para>The <guilabel>Run Program</guilabel> dialog gives you access to the command
-line. When you run a command in the <guilabel>Run Program</guilabel> dialog,
+      <para>The <guilabel>Run Application</guilabel> dialog gives you access to the command
+line. When you run a command in the <guilabel>Run Application</guilabel> dialog,
 you cannot receive output from the command.</para>
-      <para>To run a command from the command line perform the following steps: </para>
+      <para>To run a command from the command line perform the following steps:</para>
       <orderedlist>
         <listitem>
-          <para>Display the <guilabel>Run Program</guilabel> dialog. You can
-display the <guilabel>Run Program</guilabel> dialog in any of the following
-ways:<itemizedlist><listitem><para>From the Menu Panel</para><para>Choose <menuchoice><guimenu>Actions</guimenu><guimenuitem>Run
-Program</guimenuitem></menuchoice>.</para></listitem><listitem><para>From the <guimenu>GNOME Menu</guimenu></para><para>Open the <guimenu>GNOME Menu</guimenu>, then choose <guimenuitem>Run
-Program</guimenuitem>.</para></listitem><listitem><para>Use shortcut keys</para><para>The default shortcut keys to display the <guilabel>Run Program</guilabel>
-dialog are <keycombo><keycap>Alt</keycap><keycap>F2</keycap></keycombo>. You can change the
-shortcut keys that display the <guilabel>Run Program</guilabel> dialog in
-the <application>Keyboard Shortcuts</application> preference tool. To change
-the shortcut keys, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Keyboard
-Shortcuts</guimenuitem></menuchoice>.</para></listitem><listitem><para>From a menu item popup menu</para><para>Right-click on an item in a menu, then choose <guilabel>Put into run
-dialog</guilabel> from the popup menu. The <guilabel>Run Program</guilabel>
+          <para>Display the <guilabel>Run Application</guilabel> dialog. You
+can display the <guilabel>Run Application</guilabel> dialog in any of the
+following ways:<itemizedlist><listitem><para>From any panel</para><para>Add the <guibutton>Run</guibutton> button to a panel. Right-click on
+the panel, then choose <menuchoice><guimenu>Add to Panel</guimenu><guisubmenu>Actions</guisubmenu><guimenuitem>Run</guimenuitem></menuchoice>.
+Click on the <guibutton>Run</guibutton> button.</para></listitem><listitem><para>From the <guimenu>Main Menu</guimenu></para><para>Open the <guimenu>Main Menu</guimenu>, then choose <guimenuitem>Run
+Application</guimenuitem>.</para></listitem><listitem><para>From the <application>Menu Bar</application></para><para>Choose <menuchoice><guimenu>Actions</guimenu><guimenuitem>Run
+Application</guimenuitem></menuchoice>.</para></listitem><listitem><para>Use shortcut keys</para><para>The default shortcut keys to display the <guilabel>Run Application</guilabel> dialog are <keycombo><keycap>Alt</keycap><keycap>F2</keycap></keycombo>. You can change
+the shortcut keys that display the <guilabel>Run Application</guilabel> dialog
+in the <application>Keyboard Shortcuts</application> preference tool.</para></listitem><listitem><para>From a menu item popup menu</para><para>Right-click on an item in a menu, then choose <guilabel>Put into run
+dialog</guilabel> from the popup menu. The <guilabel>Run Application</guilabel>
 dialog opens with the command from the menu in the command field.</para></listitem></itemizedlist></para>
-          <para>The <guilabel>Run Program</guilabel> dialog is displayed.</para>
+          <para>The <guilabel>Run Application</guilabel> dialog is displayed.</para>
         </listitem>
         <listitem>
-          <para>Enter the command that you want to run in the blank field.
-Alternatively, to choose  a command that you ran previously, click the down
-arrow button beside the command field, then choose the command to run.</para>
-          <para>Alternatively, click on the <guibutton>Known Applications</guibutton>
-button to display a list of available applications.</para>
-          <para>You can also use the <guibutton>Append File</guibutton> button to choose
-a file to append to the command line. For example, you can enter <application>emacs</application> as the command, then choose a file to edit.</para>
+          <para>Enter the command that you want to run in the blank field. </para>
+          <para>Alternatively, to choose  a command that you ran previously, click the
+down arrow button beside the command field, then choose the command to run.</para>
+          <para>Alternatively, select the <guilabel>Show list of known applications</guilabel> option to display a list of available applications.</para>
+          <para>You can also use the <guibutton>Run with file</guibutton> button to
+choose a file to append to the command line. For example, you can enter <application>emacs</application> as the command, then choose a file to edit.</para>
           <para>Select the <guilabel>Run in terminal</guilabel> option to run the application
 or command in a terminal window. Choose this option for an application or
 command that does not create a window in which to run.</para>
         </listitem>
         <listitem>
-          <para>Click on the <guibutton>Run</guibutton> button on the <guilabel>Run Program</guilabel> dialog. </para>
+          <para>Click on the <guibutton>Run</guibutton> button on the <guilabel>Run Application</guilabel> dialog. </para>
         </listitem>
       </orderedlist>
     </sect2>
@@ -430,16 +412,11 @@ command that does not create a window in which to run.</para>
 take a screenshot in any of the following ways:</para>
       <itemizedlist>
         <listitem>
-          <para>Use the <guimenu>Actions</guimenu> menu</para>
-          <para>To take a screenshot of the entire screen, choose <menuchoice><guimenu>Actions</guimenu><guimenuitem>Screenshot</guimenuitem></menuchoice>.
-A <guilabel>Screenshot</guilabel> dialog is displayed. To save the screenshot,
-select the <guilabel>Save screenshot to file</guilabel> option. Enter the
-path and filename for the screenshot in the drop-down combination box. Alternatively,
-to save the screenshot to another directory, click <guibutton>Browse</guibutton>.
-When you select a directory, click <guibutton>OK</guibutton>. </para>
-          <para>You can also save the screenshot to the desktop background. To save
-the screenshot to the desktop background, select the <guilabel>Save screenshot
-to desktop</guilabel> option. </para>
+          <para>From any panel</para>
+          <para>Add the <guibutton>Screenshot</guibutton> button to a panel. Right-click
+on the panel, then choose <menuchoice><guimenu>Add to Panel</guimenu><guisubmenu>Actions</guisubmenu><guimenuitem>Screenshot</guimenuitem></menuchoice>. Click on the <guibutton>Screenshot</guibutton> button to take
+a screenshot of the entire screen. Use the <guilabel>Save Screenshot</guilabel>
+dialog to save the screenshot.</para>
         </listitem>
         <listitem>
           <para>Use shortcut keys</para>
@@ -450,40 +427,34 @@ to desktop</guilabel> option. </para>
               <colspec colname="colspec1" colwidth="64.33*"/>
               <thead>
                 <row rowsep="1">
-                  <entry valign="top">
+                  <entry>
                     <para>Default Shortcut Keys</para>
                   </entry>
-                  <entry valign="top">
+                  <entry>
                     <para>Function</para>
                   </entry>
                 </row>
               </thead>
               <tbody>
                 <row>
-                  <entry colname="colspec0">
+                  <entry colname="colspec0" valign="top">
                     <para>
                       <keycap>Print Screen</keycap>
                     </para>
                   </entry>
-                  <entry colname="colspec1">
-                    <para>Takes a screenshot of the entire screen, and
-displays the <guilabel>Screenshot</guilabel> dialog. Use the <guilabel>Screenshot</guilabel> dialog to save the screenshot.</para>
+                  <entry colname="colspec1" valign="top">
+                    <para>Takes a screenshot of the entire
+screen, and displays the <guilabel>Save Screenshot</guilabel> dialog. Use
+the <guilabel>Save Screenshot</guilabel> dialog to save the screenshot.</para>
                   </entry>
                 </row>
                 <row>
-                  <entry colname="colspec0">
-                    <para>
-                      <keycombo>
-                        <keycap>Alt</keycap>
-                        <keycap>Print
-Screen</keycap>
-                      </keycombo>
-                    </para>
+                  <entry colname="colspec0" valign="top">
+                    <para><keycombo><keycap>Alt</keycap><keycap>Print Screen</keycap></keycombo></para>
                   </entry>
-                  <entry colname="colspec1">
-                    <para>Takes a screenshot
-of the window that has focus, and displays the <guilabel>Screenshot</guilabel>
-dialog. Use the <guilabel>Screenshot</guilabel> dialog to save the screenshot.</para>
+                  <entry colname="colspec1" valign="top">
+                    <para>Takes a screenshot of the window to which the mouse points, and displays the <guilabel>Save Screenshot</guilabel> dialog. Use the <guilabel>Save Screenshot</guilabel>
+dialog to save the screenshot.</para>
                   </entry>
                 </row>
               </tbody>
@@ -493,11 +464,26 @@ dialog. Use the <guilabel>Screenshot</guilabel> dialog to save the screenshot.</
 tool to modify the default shortcut keys.</para>
         </listitem>
         <listitem>
+          <para>From <application>Menu Bar</application></para>
+          <para>To take a screenshot of the entire screen, choose <menuchoice><guimenu>Actions</guimenu><guimenuitem>Take Screenshot</guimenuitem></menuchoice>.
+A <guilabel>Save Screenshot</guilabel> dialog is displayed. To save the screenshot,
+select the <guilabel>Save screenshot to file</guilabel> option. Enter the
+path and filename for the screenshot in the drop-down combination box. Alternatively,
+to save the screenshot to another directory, click <guibutton>Browse</guibutton>.
+When you select a directory, click <guibutton>OK</guibutton>. </para>
+          <para>You can also save the screenshot to the desktop. To save the screenshot
+to the desktop, select the <guilabel>Save screenshot to desktop</guilabel>
+option. </para>
+          <para>You can also save the screenshot to a web page. To save the screenshot
+to a web page, select the <guilabel>Save screenshot to web page</guilabel>
+option. </para>
+        </listitem>
+        <listitem>
           <para>Use a command</para>
           <para>You can use the <command>gnome-panel-screenshot</command> command to
 take a screenshot. The <command>gnome-panel-screenshot</command> command takes
-a screenshot of the entire screen, and displays the <guilabel>Screenshot</guilabel>
-dialog. Use the <guilabel>Screenshot</guilabel> dialog to save the screenshot.</para>
+a screenshot of the entire screen, and displays the <guilabel>Save Screenshot</guilabel> dialog. Use the <guilabel>Save Screenshot</guilabel> dialog to
+save the screenshot.</para>
           <para>You can also use options on the <command>gnome-panel-screenshot</command>
 command as follows: </para>
           <informaltable frame="topbot">
@@ -506,46 +492,47 @@ command as follows: </para>
               <colspec colname="colspec1" colwidth="64.33*"/>
               <thead>
                 <row rowsep="1">
-                  <entry valign="top">
+                  <entry>
                     <para>Option</para>
                   </entry>
-                  <entry valign="top">
+                  <entry>
                     <para>Function</para>
                   </entry>
                 </row>
               </thead>
               <tbody>
                 <row>
-                  <entry colname="colspec0">
+                  <entry colname="colspec0" valign="top">
                     <para>
                       <command>--window</command>
                     </para>
                   </entry>
-                  <entry colname="colspec1">
-                    <para>Takes a screenshot of the window that has
-focus, and displays the <guilabel>Screenshot</guilabel> dialog. Use the <guilabel>Screenshot</guilabel> dialog to save the screenshot.</para>
+                  <entry colname="colspec1" valign="top">
+                    <para>Takes a screenshot of the window
+that has focus, and displays the <guilabel>Save Screenshot</guilabel> dialog.
+Use the <guilabel>Save Screenshot</guilabel> dialog to save the screenshot.</para>
                   </entry>
                 </row>
                 <row>
-                  <entry colname="colspec0">
+                  <entry colname="colspec0" valign="top">
                     <para>
                       <command>--delay=<replaceable>seconds</replaceable></command>
                     </para>
                   </entry>
-                  <entry colname="colspec1">
-                    <para>Takes
-a screenshot after the specified number of seconds, and displays the <guilabel>Screenshot</guilabel> dialog. Use the <guilabel>Screenshot</guilabel> dialog
-to save the screenshot.</para>
+                  <entry colname="colspec1" valign="top">
+                    <para>Takes a screenshot after the specified number of seconds, and displays the <guilabel>Save Screenshot</guilabel> dialog. Use the <guilabel>Save Screenshot</guilabel>
+dialog to save the screenshot.</para>
                   </entry>
                 </row>
                 <row>
-                  <entry colname="colspec0">
+                  <entry colname="colspec0" valign="top">
                     <para>
                       <command>--help</command>
                     </para>
                   </entry>
-                  <entry colname="colspec1">
-                    <para>Displays the options for the command.</para>
+                  <entry colname="colspec1" valign="top">
+                    <para>Displays the options for the
+command.</para>
                   </entry>
                 </row>
               </tbody>
@@ -556,86 +543,67 @@ to save the screenshot.</para>
     </sect2>
   </sect1>
   <sect1 id="goseditmainmenu-7">
-    <title>GNOME Menu</title>
+    <title>Main Menu</title>
     <indexterm>
       <primary>menus</primary>
-      <secondary>GNOME Menu</secondary>
-      <see>GNOME Menu</see>
+      <secondary>Main Menu</secondary>
+      <see>Main
+Menu</see>
     </indexterm>
     <indexterm>
-      <primary>GNOME Menu</primary>
+      <primary>Main Menu</primary>
+      <secondary>introduction</secondary>
+    </indexterm>
+    <para>The <guimenu>Main Menu</guimenu> provides access to
+the <guimenu>Applications</guimenu> menu and many of the items in the <guimenu>Actions</guimenu> menu. You can access almost all of the standard applications,
+commands, and configuration options from the <guimenu>Main Menu</guimenu>. </para>
+    <para>You can add <guimenu>Main Menu</guimenu> buttons to your panels. Click
+on the <guimenu>Main Menu</guimenu> button to open the <guimenu>Main Menu</guimenu>.</para>
+    <sect2 id="goseditmainmenu-29">
+      <title>To Add a Main Menu to a Panel</title>
+      <indexterm>
+        <primary>Main Menu</primary>
+        <secondary>adding to panel</secondary>
+      </indexterm>
+      <para>You can add as many <guimenu>Main Menu</guimenu> buttons
+as you want to your panels. To add a <guimenu>Main Menu</guimenu> to a panel,
+right-click on any vacant space on the panel. Choose <menuchoice><guimenu>Add to Panel</guimenu><guimenuitem>Main Menu</guimenuitem></menuchoice>.</para>
+    </sect2>
+  </sect1>
+  <sect1 id="goseditmainmenu-65">
+    <title>Menu Bar</title>
+    <indexterm>
+      <primary>menus</primary>
+      <secondary>Menu Bar</secondary>
+      <see>Menu
+Bar</see>
+    </indexterm>
+    <indexterm>
+      <primary>Menu Bar</primary>
       <secondary>introduction</secondary>
     </indexterm>
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="figures/open_main_menu.png" format="PNG"/>
+          <imagedata fileref="figures/menu_bar_applet.png" format="PNG"/>
         </imageobject>
         <textobject>
-          <phrase>Open GNOME Menu. Menu items: Applications, CDE Menu, Run Program, Search for Files, Screenshot, Lock Screen, Log Out.</phrase>
+          <phrase>Menu Bar applet. Menus: Applications, Actions.</phrase>
         </textobject>
       </mediaobject>
     </screenshot>
-    <para>You can access almost all of the standard applications, commands, and
-configuration options from the <guimenu>GNOME Menu</guimenu>. </para>
-    <para>The <guimenu>GNOME Menu</guimenu> provides the following top-level menus
-and special menu items: </para>
-    <itemizedlist>
-      <listitem>
-        <para><guimenu>Applications</guimenu>: Contains all applications
-and preference tools. This menu also includes the file manager and the help
-browser.</para>
-      </listitem>
-      <listitem>
-        <para><guimenu>Actions</guimenu>: Contains commands that enable
-you to perform desktop tasks, for example the <guimenuitem>Lock Screen</guimenuitem>
-and <guimenuitem>Log Out</guimenuitem> commands. The items in the <guimenu>Actions</guimenu> menu are at the top level of the <guimenu>GNOME Menu</guimenu>. </para>
-      </listitem>
-    </itemizedlist>
-    <para>You can add <guimenu>GNOME Menu</guimenu> buttons to your panels. By
-default, the <guimenu>GNOME Menu</guimenu> is represented on panels by a stylized
-footprint icon, as follows:</para>
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="figures/footprint_icon.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-          <phrase>GNOME Menu icon.</phrase>
-        </textobject>
-      </mediaobject>
-    </screenshot>
-    <sect2 id="goseditmainmenu-15">
-      <title>To Open the GNOME Menu</title>
+    <para>The <application>Menu Bar</application> provides access to the <guimenu>Applications</guimenu> and <guimenu>Actions</guimenu> menus. You can access
+almost all of the standard applications, commands, and configuration options
+from the <application>Menu Bar</application>. </para>
+    <sect2 id="goseditmainmenu-66">
+      <title>To Add a Menu Bar to a Panel</title>
       <indexterm>
-        <primary>GNOME Menu</primary>
-        <secondary>opening</secondary>
-      </indexterm>
-      <para>You can open the <guimenu>GNOME Menu</guimenu> in the following ways: </para>
-      <itemizedlist>
-        <listitem>
-          <para>From a panel with a <guimenu>GNOME Menu</guimenu></para>
-          <para>Click on the <guimenu>GNOME Menu</guimenu>. </para>
-        </listitem>
-        <listitem>
-          <para>Use shortcut keys</para>
-          <para>You can use shortcut keys to open the <guimenu>GNOME Menu</guimenu>.
-When you use shortcut keys to open the <guimenu>GNOME Menu</guimenu>, the <guimenu>GNOME Menu</guimenu> appears at the mouse pointer. </para>
-          <para>The default shortcut keys to open the <guimenu>GNOME Menu</guimenu>
-are <keycombo><keycap>Alt</keycap><keycap>F1</keycap></keycombo>. To change the shortcut keys
-that open the <guimenu>GNOME Menu</guimenu>, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Keyboard Shortcuts</guimenuitem></menuchoice>.</para>
-        </listitem>
-      </itemizedlist>
-    </sect2>
-    <sect2 id="goseditmainmenu-29">
-      <title>To Add a GNOME Menu to a Panel</title>
-      <indexterm>
-        <primary>GNOME Menu</primary>
+        <primary>Menu Bar</primary>
         <secondary>adding to panel</secondary>
       </indexterm>
-      <para>You can add as many <guimenu>GNOME Menu</guimenu> buttons
-as you want to your panels. To add a <guimenu>GNOME Menu</guimenu> to a panel,
-right-click on any vacant space on the panel. Choose <menuchoice><guimenu>Add to Panel</guimenu><guimenuitem>GNOME Menu</guimenuitem></menuchoice>.</para>
+      <para>You can add as many <application>Menu Bar</application>
+applets as you want to your panels. To add a <application>Menu Bar</application>
+to a panel, right-click on any vacant space on the panel. Choose <menuchoice><guimenu>Add to Panel</guimenu><guimenuitem>Menu Bar</guimenuitem></menuchoice>.</para>
     </sect2>
   </sect1>
   <sect1 id="goseditmainmenu-54">
@@ -653,7 +621,7 @@ right-click on any vacant space on the panel. Choose <menuchoice><guimenu>Add to
         <para><guimenu>Desktop Preferences</guimenu> menu</para>
       </listitem>
     </itemizedlist>
-    <para>You use the following desktop components to customize menus:</para>
+    <para>You use the following GNOME Desktop components to customize menus:</para>
     <itemizedlist>
       <listitem>
         <para>Menus on panels</para>
@@ -664,13 +632,52 @@ right-click on any vacant space on the panel. Choose <menuchoice><guimenu>Add to
     </itemizedlist>
     <para>When you use panels to customize your menus, you use the menu item popup
 menu. For more information, see <xref linkend="goseditmainmenu-11"/>.</para>
-    <para>When you use <application>Nautilus</application> to customize your menus,
-you must access the <guimenu>Applications</guimenu> menu or the <guimenu>Desktop Preferences</guimenu> menu from within <application>Nautilus</application>.
-To access the <guimenu>Applications</guimenu> menu or the <guimenu>Desktop
-Preferences</guimenu> menu, open a <application>Nautilus</application> window.
-Choose <menuchoice><guimenu>Go</guimenu><guimenuitem>Start Here</guimenuitem></menuchoice>. Double-click on the <guilabel>Applications</guilabel> object
-or on the <guilabel>Desktop Preferences</guilabel> object. For more information
-on <application>Nautilus</application>, see <emphasis>Nautilus File Manager</emphasis>.</para>
+    <para>When you use the file manager to customize your menus, you must access the <guimenu>Applications</guimenu> menu or the <guimenu>Desktop Preferences</guimenu>
+menu from within the file manager. To access the <guimenu>Applications</guimenu>
+menu or the <guimenu>Desktop Preferences</guimenu> menu, open a file manager
+window. </para>
+    <para>To access menus
+in the file manager, access one of the following URIs in the file manager:</para>
+    <informaltable frame="topbot">
+      <tgroup cols="2" colsep="0" rowsep="0">
+        <colspec colwidth="50*"/>
+        <colspec colwidth="50*"/>
+        <thead>
+          <row rowsep="1">
+            <entry>
+              <para>Menu</para>
+            </entry>
+            <entry>
+              <para>Enter this URI</para>
+            </entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry valign="top">
+              <para><guimenu>Applications</guimenu> menu</para>
+            </entry>
+            <entry valign="top">
+              <para>
+                <command>applications:///</command>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry valign="top">
+              <para><guimenu>Desktop Preferences</guimenu> menu</para>
+            </entry>
+            <entry valign="top">
+              <para>
+                <command>preferences:///</command>
+              </para>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+    <para>For more information on the file manager, see <citetitle>Nautilus File
+Manager</citetitle>.</para>
     <sect2 id="goseditmainmenu-61">
       <title>To Add a Menu</title>
       <indexterm>
@@ -680,12 +687,12 @@ on <application>Nautilus</application>, see <emphasis>Nautilus File Manager</emp
       <para>To add a menu, perform the following steps:</para>
       <orderedlist>
         <listitem>
-          <para>In a <application>Nautilus</application> window, access the
-location where you want to add the menu. For example, to add a menu to the <guimenu>Applications</guimenu> menu, choose <menuchoice><guimenu>Go</guimenu><guimenuitem>Start Here</guimenuitem></menuchoice>, then double-click on the <guilabel>Applications</guilabel> object.</para>
+          <para>In a file manager window, access the location where you want
+to add the menu. For example, if you want to add a menu to the <guimenu>Applications</guimenu> menu, enter <command>applications:///</command> URI.</para>
         </listitem>
         <listitem>
-          <para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>New Folder</guimenuitem></menuchoice>. An untitled folder is added to the
-view pane. The name of the folder is selected.</para>
+          <para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Create Folder</guimenuitem></menuchoice>. An untitled folder
+is added to the menu. The name of the folder is selected.</para>
         </listitem>
         <listitem>
           <para>Type a name for the folder, then press <keycap>Return</keycap>. </para>
@@ -717,33 +724,27 @@ Launcher</guilabel> dialog. For more information on the elements in the <guilabe
           <para>Click <guibutton>OK</guibutton>.</para>
         </listitem>
       </orderedlist>
-      <sect3 id="goseditmainmenu-63">
-        <title>To Add a Launcher to an Empty Menu</title>
-        <para>To add a launcher to an empty menu, perform the following steps:</para>
-        <orderedlist>
-          <listitem>
-            <para>Open a <application>Nautilus</application> window, then choose <menuchoice><guimenu>Go</guimenu><guimenuitem>Start Here</guimenuitem></menuchoice>.
-Alternatively, double-click on the <guilabel>Start Here</guilabel> object
-on the desktop background. The <guilabel>Start Here</guilabel> location is
-displayed. </para>
-          </listitem>
-          <listitem>
-            <para>In the <application>Nautilus</application> window, double-click
-on the object that represents the menu to which you want to add the launcher. </para>
-          </listitem>
-          <listitem>
-            <para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>New Launcher</guimenuitem></menuchoice>. A <guilabel>Create Launcher</guilabel>
-dialog is displayed.</para>
-          </listitem>
-          <listitem>
-            <para>Enter the properties of the launcher in the <guilabel>Create
+    </sect2>
+    <sect2 id="goseditmainmenu-63">
+      <title>To Add a Launcher to an Empty Menu</title>
+      <para>To add a launcher to an empty menu, perform the following steps:</para>
+      <orderedlist>
+        <listitem>
+          <para>In a file manager window, access the menu where you want to
+add the launcher. </para>
+        </listitem>
+        <listitem>
+          <para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Create Launcher</guimenuitem></menuchoice>. A <guilabel>Create
+Launcher</guilabel> dialog is displayed.</para>
+        </listitem>
+        <listitem>
+          <para>Enter the properties of the launcher in the <guilabel>Create
 Launcher</guilabel> dialog. For more information on the elements in the <guilabel>Create Launcher</guilabel> dialog, see <emphasis>Working With Panels</emphasis>.</para>
-          </listitem>
-          <listitem>
-            <para>Click <guibutton>OK</guibutton>.</para>
-          </listitem>
-        </orderedlist>
-      </sect3>
+        </listitem>
+        <listitem>
+          <para>Click <guibutton>OK</guibutton>.</para>
+        </listitem>
+      </orderedlist>
     </sect2>
     <sect2 id="goseditmainmenu-56">
       <title>To Copy a Launcher to a Menu</title>
@@ -755,17 +756,16 @@ Launcher</guilabel> dialog. For more information on the elements in the <guilabe
 steps:</para>
       <orderedlist>
         <listitem>
-          <para>In a <application>Nautilus</application> window, access the
-location from which you want to copy the launcher. For example, to copy a
-launcher from the <guimenu>Applications</guimenu> menu, choose <menuchoice><guimenu>Go</guimenu><guimenuitem>Start Here</guimenuitem></menuchoice>,
-then double-click on the <guilabel>Applications</guilabel> object.</para>
+          <para>In a file manager window, access the location from which you
+want to copy the launcher.  For example, if you want to copy a launcher from
+the <guimenu>Applications</guimenu> menu, enter <command>applications:///</command> URI.</para>
         </listitem>
         <listitem>
           <para>Select the launcher that you want to copy, then choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Copy File</guimenuitem></menuchoice>.</para>
         </listitem>
         <listitem>
-          <para>In a <application>Nautilus</application> window, access the
-location to which you want to copy the launcher.</para>
+          <para>In a file manager  window, access the location to which you
+want to copy the launcher.</para>
         </listitem>
         <listitem>
           <para>Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Paste Files</guimenuitem></menuchoice>. The launcher is added to the new location.</para>

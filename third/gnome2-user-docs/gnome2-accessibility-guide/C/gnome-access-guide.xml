@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY gnomeversion "2.8">
+  <!ENTITY manrevision "2.8.0">
+  <!ENTITY date "September 2004">
+  <!ENTITY LEGAL SYSTEM "legal.xml">
+  <!ENTITY dtconfig SYSTEM "dtconfig.xml">
+  <!ENTITY keynav SYSTEM "keynav.xml">  
+  <!ENTITY themes SYSTEM "themes.xml">  
+  <!ENTITY preface SYSTEM "preface.xml">
+  <!ENTITY accessintro SYSTEM "accessintro.xml">
+  <!ENTITY troubleshooting SYSTEM "troubleshooting.xml">
+  <!ENTITY author1 "Sun">
+  <!ENTITY author2 "Java Desktop System Documentation Team">
+]>
+<book id="index"> 
+  <title>GNOME &gnomeversion; Desktop Accessibility Guide</title> 
+  <bookinfo> 
+	 <copyright> 
+		<year>2004</year>
+		<year>2003</year>
+		<year>2002</year>
+		<holder>Sun Microsystems, Inc.</holder> 
+	 </copyright>
+
+<!--  translators: uncomment this:
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+-->
+	 <publisher> 
+		<publishername>GNOME Documentation Project</publishername> 
+	 </publisher> &LEGAL; 
+
+	 <authorgroup> 
+		<author> 
+		  <firstname>&author1;</firstname> 
+		  <surname>&author2;</surname> 
+		  <affiliation> 
+			 <orgname>Sun Microsystems, Inc.</orgname>  
+		  </affiliation> 
+		</author> 
+	 </authorgroup>
+
+	 <revhistory>
+	   <revision> 
+		  <revnumber>GNOME &gnomeversion; Desktop Accessibility Guide V&manrevision;</revnumber> 
+		  <date>&date;</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems, Inc.</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+	   <revision> 
+		  <revnumber>GNOME 2.6 Desktop Accessibility Guide V2.6.0</revnumber> 
+		  <date>March 2004</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+	   <revision> 
+		  <revnumber>GNOME 2.4 Desktop Accessibility Guide V2.4.0</revnumber> 
+		  <date>October 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+	   <revision> 
+		  <revnumber>GNOME 2.2 Desktop Accessibility Guide V2.2.0</revnumber> 
+		  <date>February 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>GNOME 2.0 Desktop for the Solaris Operating Environment Accessibility Guide V2.1</revnumber> 
+		  <date>January 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>GNOME 2.0 Desktop for the Solaris Operating Environment Accessibility Guide V2.0</revnumber> 
+		  <date>December 2002</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>  
+	 </revhistory> 
+	 <releaseinfo> This manual describes version &gnomeversion; of the GNOME Desktop.
+		</releaseinfo> 
+	 <legalnotice> 
+		<title>Feedback</title> 
+		<para> To report a bug or make a suggestion regarding the GNOME Desktop or this
+		  manual, follow the directions in the <ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. </para>
+	 </legalnotice> 
+  </bookinfo>
+&preface;
+&accessintro;
+&dtconfig;
+&keynav;
+&themes;
+&troubleshooting;</book> 
