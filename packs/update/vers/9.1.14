@@ -13,5 +13,6 @@ sun4)
   ;;
 
 sgi)
+  echo "OSCHANGES=true"					>> $CONFVARS
   ;;
 esac
