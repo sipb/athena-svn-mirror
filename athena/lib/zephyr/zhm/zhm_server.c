@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.7 1988-06-23 14:39:23 jtkohl Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.8 1989-03-23 09:26:59 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -134,6 +134,16 @@ char *sugg_serv;
 			 if (rebootflag)
 			      die_gracefully();
 			 cur_serv_list = serv_list;
+			 if (!cur_serv_list[1]) {
+			     /* server list has only one entry, use it */
+			     if ((hp = gethostbyname(*cur_serv_list))
+				 != NULL) {
+				 DPR2 ("Server = %s\n", *cur_serv_list);
+				 (void)strcpy(cur_serv, *cur_serv_list);
+				 done = 1;
+			     } else
+				 sleep(1);
+			 }
 		    }
 		    if (strcmp(*cur_serv_list, cur_serv)) {
 			 if ((hp = gethostbyname(*cur_serv_list)) != NULL){
