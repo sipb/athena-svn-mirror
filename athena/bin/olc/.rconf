@@ -14,6 +14,7 @@ ignore *~
 ignore *.orig
 ignore *.bak
 ignore *.rej
+ignore TAGS*
 
 ; link lib
 ; link man
