@@ -17,7 +17,7 @@
  * various types of lockers.
  */
 
-static const char rcsid[] = "$Id: quota.c,v 1.24 1999-03-29 19:14:20 danw Exp $";
+static const char rcsid[] = "$Id: quota.c,v 1.25 1999-09-17 15:10:03 danw Exp $";
 
 #include <ctype.h>
 #include <pwd.h>
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	  break;
 
 	default:
-	  fprintf(stderr, "quota: %s: unknown option\n", argv[optind]);
+	  fprintf(stderr, "quota: %s: unknown option\n", argv[optind - 1]);
 	  usage();
 	  exit(1);
 	}
