@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.16 1992-03-16 15:26:35 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.17 1992-04-23 21:34:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -73,7 +73,9 @@ main(argc, argv)
 {  
   Arg args[10];
   int n = 0;
+#ifdef PUTENV
   char buf[BUFSIZ];
+#endif
 
   program = rindex(*argv,'/');
   if(program == (char *) NULL)
@@ -114,6 +116,7 @@ main(argc, argv)
  *  interface, etc.
  */
   xolc = XtInitialize("xolc" , "Xolc", NULL, 0, &argc, argv);
+  add_converter();
 
   ++argv, --argc;
   while (argc > 0 && argv[0][0] == '-') {
@@ -155,6 +158,7 @@ main(argc, argv)
   MuInitialize(xolc);
 
   MakeInterface();
+  MakeNewqForm();
   MakeContqForm();
   MakeMotdForm();
   MakeDialogs();
@@ -163,8 +167,10 @@ main(argc, argv)
  * 
  */
   XtRealizeWidget(xolc);
-
   olc_init();
+  XtUnmapWidget(w_newq_form);
+  XtUnmapWidget(w_contq_form);
+  XtManageChild(main_form);
 
 #ifdef LOG_USAGE
   log_startup("xolc");
@@ -229,10 +235,10 @@ olc_init()
   switch(response)
     {
     case USER_NOT_FOUND:
+      XtManageChild(w_newq_btn);
       XtSetArg(arg, XmNleftWidget, (Widget) w_newq_btn);
       XtSetValues(w_stock_btn, &arg, 1);
-      if (! XtIsManaged(w_newq_btn) )
-	XtManageChild(w_newq_btn);
+      XtManageChild(w_stock_btn);
       break;
 
     case CONNECTED:
@@ -240,8 +246,10 @@ olc_init()
       read_int_from_fd(fd, &n);
       t_set_default_instance(&Request);
       has_question = TRUE;
-      if (! XtIsManaged(w_contq_btn) )
-	XtManageChild(w_contq_btn);
+      XtManageChild(w_contq_btn);
+      XtSetArg(arg, XmNleftWidget, (Widget) w_contq_btn);
+      XtSetValues(w_stock_btn, &arg, 1);
+      XtManageChild(w_stock_btn);
       break;
 
     case PERMISSION_DENIED:
