@@ -1,6 +1,21 @@
-/* $Id: pushback.c,v 1.1.1.1 2002-01-31 16:01:41 ghudson Exp $
+/* $Id: pushback.c,v 1.1.1.2 2003-01-22 21:15:44 ghudson Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.3  2002/01/03 04:57:56  rodrigc
+   2001-01-02  Craig Rodrigues  <rodrigc@gcc.gnu.org>
+
+           PR bootstrap/5117
+           * configure.in (AC_CHECK_HEADERS): Check for stdlib.h.
+           * Makefile.am: Move grepjar to bin_PROGRAMS.
+           * config.h.in: Regenerated.
+           * Makefile.in: Regenerated.
+           * aclocal.m4: Regenerated.
+           * jargrep.c: Eliminate some signed/unsigned and default
+           uninitialized warnings. Use HAVE_STDLIB_H instead of
+           STDC_HEADERS macro.
+           * jartool.c: Likewise.
+           * compress.c: Likewise.
+
    Revision 1.2  2000/12/14 18:45:35  ghazi
    Warning fixes:
 
@@ -91,7 +106,7 @@ int pb_push(pb_file *pbf, void *buff, int amt){
 #endif
 
   /* determine how much we can take */
-  if((RDSZ - pbf->buff_amt) < amt)
+  if((int)(RDSZ - pbf->buff_amt) < amt)
     in_amt = RDSZ - pbf->buff_amt;
   else
     in_amt = amt;
@@ -138,7 +153,7 @@ int pb_read(pb_file *pbf, void *buff, int amt){
 #endif
       
       /* calculate how much we can actually give the caller */
-      if( (amt - out_amt) < pbf->buff_amt )
+      if( (amt - out_amt) < (int)pbf->buff_amt )
         tmp = (amt - out_amt);
       else
         tmp = pbf->buff_amt;

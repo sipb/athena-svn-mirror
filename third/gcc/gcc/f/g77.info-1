@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -43,7 +43,7 @@ Introduction
 
    This manual documents how to run, install and port `g77', as well as
 its new features and incompatibilities, and how to report bugs.  It
-corresponds to the GCC-3.0 version of `g77'.
+corresponds to the GCC-3.2 version of `g77'.
 
 * Menu:
 
@@ -66,7 +66,6 @@ corresponds to the GCC-3.0 version of `g77'.
 * Other Dialects::  Dialects of Fortran supported by `g77'.
 * Other Compilers:: Fortran compilers other than `g77'.
 * Other Languages:: Languages other than Fortran.
-* Installation::    How to configure, compile and install GNU Fortran.
 * Debugging and Interfacing::  How `g77' generates code.
 * Collected Fortran Wisdom::  How to avoid Trouble.
 * Trouble::         If you have trouble with GNU Fortran.
@@ -89,7 +88,6 @@ GNU GENERAL PUBLIC LICENSE
 **************************
 
                          Version 2, June 1991
-
      Copyright (C) 1989, 1991 Free Software Foundation, Inc.
      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
      
@@ -148,7 +146,6 @@ patent must be licensed for everyone's free use or not licensed at all.
 modification follow.
 
     TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
   0. This License applies to any program or other work which contains a
      notice placed by the copyright holder saying it may be distributed
      under the terms of this General Public License.  The "Program",
@@ -452,7 +449,6 @@ GNU Free Documentation License
 ******************************
 
                         Version 1.1, March 2000
-
      Copyright (C) 2000 Free Software Foundation, Inc.
      59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
      
@@ -841,7 +837,7 @@ Contributors to GNU Fortran
 people have helped create and improve GNU Fortran.
 
    * The packaging and compiler portions of GNU Fortran are based
-     largely on the GNU CC compiler.  *Note Contributors to GNU CC:
+     largely on the GNU CC compiler.  *Note Contributors to GCC:
      (gcc)Contributors, for more information.
 
    * The run-time library used by GNU Fortran is a repackaged version
@@ -890,11 +886,13 @@ people have helped create and improve GNU Fortran.
 
           Ian Watson
 
+   * Dave Love (<d.love@dl.ac.uk>) wrote the libU77 part of the
+     run-time library.
+
    * Scott Snyder (<snyder@d0sgif.fnal.gov>) provided the patch to add
      rudimentary support for `INTEGER*1', `INTEGER*2', and `LOGICAL*1'.
      This inspired Craig to add further support, even though the
-     resulting support would still be incomplete, because version 0.6
-     is still a ways off.
+     resulting support would still be incomplete.
 
    * David Ronis (<ronis@onsager.chem.mcgill.ca>) inspired and
      encouraged Craig to rewrite the documentation in texinfo format by
@@ -979,8 +977,8 @@ File: g77.info,  Node: Funding GNU Fortran,  Next: Getting Started,  Prev: Fundi
 Funding GNU Fortran
 *******************
 
-   James Craig Burley (<craig@jcb-sc.com>), the original author of g77,
-stopped working on it in September 1999 (He has a web page at
+   James Craig Burley (<craig@jcb-sc.com>), the original author of
+`g77', stopped working on it in September 1999 (He has a web page at
 `http://world.std.com/%7Eburley'.)
 
    GNU Fortran is currently maintained by Toon Moene
@@ -996,10 +994,14 @@ the "GNUS Bulletin".  Email <gnu@gnu.org> for information on funding
 the FSF.
 
    Another important way to support work on GNU Fortran is to volunteer
-to help out.  Work is needed on documentation, testing, porting to
-various machines, and in some cases, coding (although major changes
-planned for version 0.6 make it difficult to add manpower to this area).
-Email <gcc@gcc.gnu.org> to volunteer for this work.
+to help out.
+
+   Email <gcc@gcc.gnu.org> to volunteer for this work.
+
+   However, we strongly expect that there will never be a version 0.6
+of `g77'.  Work on this compiler has stopped as of the release of GCC
+3.1, except for bug fixing.  `g77' will be succeeded by `g95' - see
+`http://g95.sourceforge.net'.
 
    *Note Funding Free Software: Funding, for more information.
 

@@ -1,6 +1,6 @@
 // 1999-04-12 bkoz
 
-// Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+// Copyright (C) 1999, 2000, 2002 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -387,7 +387,7 @@ bool test09()
 }
 
 bool test10() {
-  std::string str_01("0 00 000 +0 +  0 -   0");
+  std::string str_01("0 00 000 +0 +0 -0");
   std::stringbuf isbuf_01(str_01);
   std::istream is_01(&isbuf_01);
 
@@ -447,7 +447,7 @@ bool test10() {
   VERIFY( n == 33 );
   VERIFY( is_03.rdstate() == std::ios_base::eofbit );
 
-  std::string str_04("3. 4.5E+  2a5E-3 .6E1");
+  std::string str_04("3. 4.5E+2a5E-3 .6E1");
   std::stringbuf isbuf_04(str_04);
   std::istream is_04(&isbuf_04);
 
@@ -500,7 +500,7 @@ bool test11()
 
   // sanity check via 'C' library call
   char* err;
-  long l = strtol(cstrlit, &err, 0);
+  long l = std::strtol(cstrlit, &err, 0);
 
   std::istringstream iss(cstrlit);
   iss.setf(std::ios::fmtflags(0), std::ios::basefield);
@@ -519,15 +519,15 @@ template<typename T>
 bool test12_aux(bool integer_type)
 {
   bool test = true;
-
+  
   int digits_overflow;
   if (integer_type)
     // This many digits will overflow integer types in base 10.
-    digits_overflow = std::numeric_limits<T>::digits10 + 1;
+    digits_overflow = std::numeric_limits<T>::digits10 + 2;
   else
     // This might do it, unsure.
     digits_overflow = std::numeric_limits<T>::max_exponent10 + 1;
-
+  
   std::string st;
   std::string part = "1234567890123456789012345678901234567890";
   for (int i = 0; i < digits_overflow / part.size() + 1; ++i)
@@ -562,19 +562,18 @@ void test13()
                    "  "
                    "1246.9";
 
-  // 1
+  // 1 
   // used to core.
   double d;
   istringstream iss1(l2);
   iss1 >> d;
-  // XXX doesn't work on 3.0 branch
-  // iss1 >> d;
-  // VERIFY (d > 1246 && d < 1247);
+  iss1 >> d;
+  VERIFY (d > 1246 && d < 1247);
 
   // 2
   // quick test for failbit on maximum length extraction.
   int i;
-  int max_digits = numeric_limits<int>::digits10;
+  int max_digits = numeric_limits<int>::digits10 + 1;
   string digits;
   for (int j = 0; j < max_digits; ++j)
     digits += '1';
@@ -586,7 +585,7 @@ void test13()
   i = 0;
   iss2.str(digits);
   iss2.clear();
-  iss2 >> i;
+  iss2 >> i; 
   VERIFY( i == 0 );
   VERIFY( iss2.fail() );
 }

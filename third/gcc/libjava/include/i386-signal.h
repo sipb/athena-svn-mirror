@@ -1,16 +1,13 @@
-// i386-signal.h - Catch runtime signals and turn them into exceptions.
+// i386-signal.h - Catch runtime signals and turn them into exceptions
+// on an i386 based Linux system.
 
-/* Copyright (C) 1998, 1999, 2001  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2001, 2002  Free Software Foundation
 
    This file is part of libgcj.
 
 This software is copyrighted work licensed under the terms of the
 Libgcj License.  Please consult the file "LIBGCJ_LICENSE" for
 details.  */
-
-/* This technique should work for all i386 based Unices which conform
- * to iBCS2.  This includes all versions of Linux more recent than 1.3 
- */
 
 
 #ifndef JAVA_SIGNAL_H
@@ -45,7 +42,6 @@ do									\
   void **_p = (void **)&_dummy;						\
   struct sigcontext_struct *_regs = (struct sigcontext_struct *)++_p;	\
 									\
-  register unsigned long *_ebp = (unsigned long *)_regs->ebp;		\
   register unsigned char *_eip = (unsigned char *)_regs->eip;		\
 									\
   /* According to the JVM spec, "if the dividend is the negative	\
@@ -88,21 +84,6 @@ do									\
 	  _regs->eip = (unsigned long)_eip;				\
 	  return;							\
 	}								\
-      else if (((_modrm >> 3) & 7) == 6) /* Unsigned divide */		\
-	{								\
-	  /* We assume that unsigned divisions are in library code, so	\
-	   * we throw one level down the stack, which was hopefully	\
-	   * the place that called the library routine.  This will	\
-	   * break if the library is ever compiled with			\
-	   * -fomit-frame-pointer, but at least this way we've got a	\
-	   * good chance of finding the exception handler. */		\
-									\
-	  _eip = (unsigned char *)_ebp[1];				\
-	  _ebp = (unsigned long *)_ebp[0];				\
-									\
-	  asm volatile ("mov %0, (%%ebp); mov %1, 4(%%ebp)"		\
-			: : "r"(_ebp), "r"(_eip));			\
-	}								\
       else								\
 	{								\
 	  /* Advance the program counter so that it is after the start	\
@@ -115,15 +96,27 @@ do									\
 }									\
 while (0)
 
+/* We use old_kernel_sigaction here because we're calling the kernel
+   directly rather than via glibc.  The sigaction structure that the
+   syscall uses is a different shape from the one in userland and not
+   visible to us in a header file so we define it here.  */
+
+struct old_i386_kernel_sigaction {
+	void (*k_sa_handler) (int);
+	unsigned long k_sa_mask;
+	unsigned long k_sa_flags;
+	void (*sa_restorer) (void);
+};
+
 #define INIT_SEGV						\
 do								\
   {								\
     nullp = new java::lang::NullPointerException ();    	\
-    struct sigaction act;					\
-    act.sa_handler = catch_segv;				\
-    sigemptyset (&act.sa_mask);					\
-    act.sa_flags = 0;						\
-    syscall (SYS_sigaction, SIGSEGV, &act, NULL);		\
+    struct old_i386_kernel_sigaction kact;		\
+    kact.k_sa_handler = catch_segv;			\
+    kact.k_sa_mask = 0;					\
+    kact.k_sa_flags = 0;				\
+    syscall (SYS_sigaction, SIGSEGV, &kact, NULL);	\
   }								\
 while (0)  
 
@@ -132,26 +125,32 @@ do								\
   { 								\
     arithexception = new java::lang::ArithmeticException 	\
       (JvNewStringLatin1 ("/ by zero"));			\
-    struct sigaction act;					\
-    act.sa_handler = catch_fpe;					\
-    sigemptyset (&act.sa_mask);					\
-    act.sa_flags = 0;						\
-    syscall (SYS_sigaction, SIGFPE, &act, NULL);		\
+    struct old_i386_kernel_sigaction kact;			\
+    kact.k_sa_handler = catch_fpe;				\
+    kact.k_sa_mask = 0;						\
+    kact.k_sa_flags = 0;					\
+    syscall (SYS_sigaction, SIGFPE, &kact, NULL);		\
   }								\
 while (0)  
 
-/* You might wonder why we use syscall(SYS_sigaction) in INIT_SEGV and
- * INIT_FPE instead of the standard sigaction().  This is necessary
- * because of the shenanigans above where we increment the PC saved in
- * the context and then return.  This trick will only work when we are
+/* You might wonder why we use syscall(SYS_sigaction) in INIT_FPE
+ * instead of the standard sigaction().  This is necessary because of
+ * the shenanigans above where we increment the PC saved in the
+ * context and then return.  This trick will only work when we are
  * called _directly_ by the kernel, because linuxthreads wraps signal
- * handlers and its wrappers do not copy the sigcontext struct back when
- * returning from a signal handler.  If we return from our divide handler
- * to a linuxthreads wrapper, we will lose the PC adjustment we made and
- * return to the faulting instruction again.  Using syscall(SYS_sigaction)
- * causes our handler to be called directly by the kernel, bypassing
- * any wrappers.  This is a kludge, and a future version of this handler
- * will do something better.  */
+ * handlers and its wrappers do not copy the sigcontext struct back
+ * when returning from a signal handler.  If we return from our divide
+ * handler to a linuxthreads wrapper, we will lose the PC adjustment
+ * we made and return to the faulting instruction again.  Using
+ * syscall(SYS_sigaction) causes our handler to be called directly
+ * by the kernel, bypassing any wrappers.
+
+ * Also, there is at the present time no unwind info in the
+ * linuxthreads library's signal handlers and so we can't unwind
+ * through them anyway.  
+
+ * Finally, the code that glibc uses to return from a signal handler
+ * is subject to change.  */
 
 #endif /* JAVA_SIGNAL_H */
   

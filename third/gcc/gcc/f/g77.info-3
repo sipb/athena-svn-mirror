@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -42,28 +42,44 @@ Options for Debugging Your Program or GNU Fortran
 =================================================
 
    GNU Fortran has various special options that are used for debugging
-either your program or `g77'.
+either your program or `g77'
 
 `-g'
      Produce debugging information in the operating system's native
      format (stabs, COFF, XCOFF, or DWARF).  GDB can work with this
      debugging information.
 
-     Support for this option in Fortran programs was incomplete up till
-     version 0.5.26 of `g77'.  In particular, names of variables and
-     arrays in common blocks or that are storage-associated via
-     `EQUIVALENCE' were unavailable to the debugger.
+     A sample debugging session looks like this (note the use of the
+     breakpoint):
+          $ cat gdb.f
+                PROGRAM PROG
+                DIMENSION A(10)
+                DATA A /1.,2.,3.,4.,5.,6.,7.,8.,9.,10./
+                A(5) = 4.
+                PRINT*,A
+                END
+          $ g77 -g -O gdb.f
+          $ gdb a.out
+          ...
+          (gdb) break MAIN__
+          Breakpoint 1 at 0x8048e96: file gdb.f, line 4.
+          (gdb) run
+          Starting program: /home/toon/g77-bugs/./a.out
+          Breakpoint 1, MAIN__ () at gdb.f:4
+          4             A(5) = 4.
+          Current language:  auto; currently fortran
+          (gdb) print a(5)
+          $1 = 5
+          (gdb) step
+          5             PRINT*,A
+          (gdb) print a(5)
+          $2 = 4
+          ...
+     One could also add the setting of the breakpoint and the first run
+     command to the file `.gdbinit' in the current directory, to
+     simplify the debugging session.
 
-     However, version 0.5.19 of `g77' does provide this information in
-     a rudimentary way, as controlled by the `-fdebug-kludge' option.
-
-     Because version 0.5.26 of `g77' enables full debug information of
-     COMMON BLOCK and EQUIVALENCE items, this option has been disabled.
-
-     *Note Options for Code Generation Conventions: Code Gen Options,
-     for more information.
-
-   *Note Options for Debugging Your Program or GNU CC: (gcc)Debugging
+   *Note Options for Debugging Your Program or GCC: (gcc)Debugging
 Options, for more information on debugging options.
 
 
@@ -98,7 +114,7 @@ Fortran programs:
 
      _Note:_ The warning in the `gcc' documentation about this option
      does not apply, generally speaking, to Fortran code compiled by
-     `g77'.
+     `g77'
 
      *Note Aligned Data::, for more information on alignment issues.
 
@@ -139,7 +155,18 @@ Fortran programs:
 
 `-ffast-math'
      Might allow some programs designed to not be too dependent on IEEE
-     behavior for floating-point to run faster, or die trying.
+     behavior for floating-point to run faster, or die trying.  Sets
+     `-funsafe-math-optimizations', and `-fno-trapping-math'.
+
+`-funsafe-math-optimizations'
+     Allow optimizations that may be give incorrect results for certain
+     IEEE inputs.
+
+`-fno-trapping-math'
+     Allow the compiler to assume that floating-point arithmetic will
+     not generate traps on any inputs.  This is useful, for example,
+     when running a program using IEEE "non-stop" floating-point
+     arithmetic.
 
 `-fstrength-reduce'
      Might make some loops run faster.
@@ -307,7 +334,7 @@ the other form by either removing `no-' or adding it.
 
 `-fno-f2c'
      Do not generate code designed to be compatible with code generated
-     by `f2c'; use the GNU calling conventions instead.
+     by `f2c' use the GNU calling conventions instead.
 
      The `f2c' calling conventions require functions that return type
      `REAL(KIND=1)' to actually return the C type `double', and
@@ -331,8 +358,8 @@ the other form by either removing `no-' or adding it.
      For example, `INTRINSIC ABS;CALL FOO(ABS)' is rejected when
      `-fno-f2c' is in force.  (Future versions of the `g77' run-time
      library might offer routines that provide GNU-callable versions of
-     the routines that implement the `f2c'-callable intrinsics that may
-     be passed as actual arguments, so that valid programs need not be
+     the routines that implement the `f2c' intrinsics that may be
+     passed as actual arguments, so that valid programs need not be
      rejected when `-fno-f2c' is used.)
 
      *Caution:* If `-fno-f2c' is used when compiling any source file
@@ -341,7 +368,7 @@ the other form by either removing `no-' or adding it.
 
 `-ff2c-library'
      Specify that use of `libg2c' (or the original `libf2c') is
-     required.  This is the default for the current version of `g77'.
+     required.  This is the default for the current version of `g77'
 
      Currently it is not valid to specify `-fno-f2c-library'.  This
      option is provided so users can specify it in shell scripts that
@@ -361,7 +388,7 @@ the other form by either removing `no-' or adding it.
      the second underscore in all cases.)
 
      This is done to ensure compatibility with code produced by many
-     UNIX Fortran compilers, including `f2c', which perform the same
+     UNIX Fortran compilers, including `f2c' which perform the same
      transformations.
 
      Use of `-fno-underscoring' is not recommended unless you are
@@ -385,8 +412,8 @@ the other form by either removing `no-' or adding it.
           i = j() + max_count(&my_var, &lvar);
 
      Use of `-fno-underscoring' allows direct specification of
-     user-defined names while debugging and when interfacing
-     `g77'-compiled code with other languages.
+     user-defined names while debugging and when interfacing `g77' code
+     with other languages.
 
      Note that just because the names match does _not_ mean that the
      interface implemented by `g77' for an external name matches the
@@ -405,7 +432,7 @@ the other form by either removing `no-' or adding it.
      difficult in some cases--they might occur at program run time, and
      show up only as buggy behavior at run time.
 
-     In future versions of `g77', we hope to improve naming and linking
+     In future versions of `g77' we hope to improve naming and linking
      issues so that debugging always involves using the names as they
      appear in the source, even if the names as seen by the linker are
      mangled to prevent accidental linking between procedures with
@@ -446,77 +473,6 @@ the other form by either removing `no-' or adding it.
      non-standard programs; standard-conforming programs should not be
      affected.
 
-`-fdebug-kludge'
-     Emit information on `COMMON' and `EQUIVALENCE' members that might
-     help users of debuggers work around lack of proper debugging
-     information on such members.
-
-     As of version 0.5.19, `g77' offers this option to emit information
-     on members of aggregate areas to help users while debugging.  This
-     information consists of establishing the type and contents of each
-     such member so that, when a debugger is asked to print the
-     contents, the printed information provides rudimentary debugging
-     information.  This information identifies the name of the
-     aggregate area (either the `COMMON' block name, or the
-     `g77'-assigned name for the `EQUIVALENCE' name) and the offset, in
-     bytes, of the member from the beginning of the area.
-
-     Using `gdb', this information is not coherently displayed in the
-     Fortran language mode, so temporarily switching to the C language
-     mode to display the information is suggested.  Use `set language
-     c' and `set language fortran' to accomplish this.
-
-     As of version 0.5.26 of `g77' this option has been disabled, as the
-     compiler is now able to emit correct and complete debug information
-     for COMMON BLOCK and EQUIVALENCE items.
-
-     For example:
-
-                COMMON /X/A,B
-                EQUIVALENCE (C,D)
-                CHARACTER XX*50
-                EQUIVALENCE (I,XX(20:20))
-                END
-          
-          GDB is free software and you are welcome to distribute copies of it
-           under certain conditions; type "show copying" to see the conditions.
-          There is absolutely no warranty for GDB; type "show warranty" for details.
-          GDB 4.16 (lm-gnits-dwim), Copyright 1996 Free Software Foundation, Inc...
-          (gdb) b MAIN__
-          Breakpoint 1 at 0t1200000201120112: file cd.f, line 5.
-          (gdb) r
-          Starting program: /home/user/a.out
-          
-          Breakpoint 1, MAIN__ () at cd.f:5
-          Current language:  auto; currently fortran
-          (gdb) set language c
-          Warning: the current language does not match this frame.
-          (gdb) p a
-          $2 = "At (COMMON) `x_' plus 0 bytes"
-          (gdb) p b
-          $3 = "At (COMMON) `x_' plus 4 bytes"
-          (gdb) p c
-          $4 = "At (EQUIVALENCE) `__g77_equiv_c' plus 0 bytes"
-          (gdb) p d
-          $5 = "At (EQUIVALENCE) `__g77_equiv_c' plus 0 bytes"
-          (gdb) p i
-          $6 = "At (EQUIVALENCE) `__g77_equiv_xx' plus 20 bytes"
-          (gdb) p xx
-          $7 = "At (EQUIVALENCE) `__g77_equiv_xx' plus 1 bytes"
-          (gdb) set language fortran
-          (gdb)
-
-     Use `-fdebug-kludge' to generate this information, which might
-     make some programs noticeably larger.
-
-     _Caution:_ Future versions of `g77' might disregard this option
-     (and its negative form).  Current plans call for this to happen
-     when published versions of `g77' and `gdb' exist that provide
-     proper access to debugging information on `COMMON' and
-     `EQUIVALENCE' members.  This is believed to have happened as of
-     version 0.5.26 of `g77', so that this option has been disabled
-     starting with this release.
-
 `-femulate-complex'
      Implement `COMPLEX' arithmetic via emulation, instead of using the
      facilities of the `gcc' back end that provide direct support of
@@ -537,7 +493,9 @@ the other form by either removing `no-' or adding it.
 
      Use of this option should not affect how Fortran code compiled by
      `g77' works in terms of its interfaces to other code, e.g. that
-     compiled by `f2c'.
+     compiled by `f2c'
+
+     As of GCC version 3.0, this option is not necessary anymore.
 
      _Caution:_ Future versions of `g77' might ignore both forms of
      this option.
@@ -661,7 +619,7 @@ the other form by either removing `no-' or adding it.
 
    *Note Options for Code Generation Conventions: (gcc)Code Gen
 Options, for information on more options offered by the GBE shared by
-`g77', `gcc', and other GNU compilers.
+`g77' `gcc' and other GNU compilers.
 
    Some of these do _not_ work when compiling programs written in
 Fortran:
@@ -695,6 +653,6 @@ Environment Variables Affecting GNU Fortran
 to control its operation above and beyond those that affect the
 operation of `gcc'.
 
-   *Note Environment Variables Affecting GNU CC: (gcc)Environment
+   *Note Environment Variables Affecting GCC: (gcc)Environment
 Variables, for information on environment variables.
 

@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -75,14 +75,108 @@ clarify how they differ from other versions, though this can make
 getting a complete picture of what a particular `egcs' version contains
 somewhat more difficult.
 
-   For information on bugs in the GCC-3.0 version of `g77', see *Note
+   For information on bugs in the GCC-3.2 version of `g77', see *Note
 Known Bugs In GNU Fortran: Known Bugs.
 
    An online, "live" version of this document (derived directly from
 the mainline, development version of `g77' within `gcc') is available at
-`http://www.gnu.org/software/gcc/onlinedocs/g77_news.html'.
+`http://www.gnu.org/software/gcc/onlinedocs/g77/News.html'.
 
-   The following information was last updated on 2001-06-03:
+   The following information was last updated on 2002-10-28:
+
+In `GCC' 3.2 versus `GCC' 3.1:
+==============================
+
+   * Problem Reports fixed (in chronological order of submission):
+    `8308'
+          gcc-3.x does not compile files with suffix .r (RATFOR) [Fixed
+          in 3.2.1]
+
+In `GCC' 3.1 (formerly known as g77-0.5.27) versus `GCC' 3.0:
+=============================================================
+
+   * Problem Reports fixed (in chronological order of submission):
+    `947'
+          Data statement initialization with subscript of kind INTEGER*2
+
+    `3743'
+          Reference to intrinsic `ISHFT' invalid
+
+    `3807'
+          Function BESJN(integer,double) problems
+
+    `3957'
+          g77 -pipe -xf77-cpp-input sends output to stdout
+
+    `4279'
+          g77 -h" gives bogus output
+
+    `4730'
+          ICE on valid input using CALL EXIT(%VAL(...))
+
+    `4752'
+          g77 -v -c -xf77-version /dev/null -xnone causes ice
+
+    `4885'
+          BACKSPACE example that doesn't work as of gcc/g77-3.0.x
+
+    `5122'
+          g77 rejects accepted use of INTEGER*2 as type of DATA
+          statement loop index
+
+    `5397'
+          ICE on compiling source with 540 000 000 REAL array
+
+    `5473'
+          ICE on BESJN(integer*8,real)
+
+    `5837'
+          bug in loop unrolling
+
+   * `g77' now has its man page generated from the texinfo
+     documentation, to guarantee that it remains up to date.
+
+   * `g77' used to reject the following program on 32-bit targets:
+          PROGRAM PROG
+          DIMENSION A(140 000 000)
+          END
+     with the message:
+          prog.f: In program `prog':
+          prog.f:2:
+                   DIMENSION A(140 000 000)
+                             ^
+          Array `a' at (^) is too large to handle
+     because 140 000 000 REALs is larger than the largest bit-extent
+     that can be expressed in 32 bits.  However, bit-sizes never play a
+     role after offsets have been converted to byte addresses.
+     Therefore this check has been removed, and the limit is now 2
+     Gbyte of memory (around 530 000 000 REALs).  Note: On GNU/Linux
+     systems one has to compile programs that occupy more than 1 Gbyte
+     statically, i.e. `g77 -static ...'.
+
+   * Based on work done by Juergen Pfeifer (<juergen.pfeifer@gmx.net>)
+     libf2c is now a shared library.  One can still link in all objects
+     with the program by specifying the `-static' option.
+
+   * Robert Anderson (<rwa@alumni.princeton.edu>) thought up a two line
+     change that enables g77 to compile such code as:
+          SUBROUTINE SUB(A, N)
+          DIMENSION N(2)
+          DIMENSION A(N(1),N(2))
+          A(1,1) = 1.
+          END
+     Note the use of array elements in the bounds of the adjustable
+     array A.
+
+   * George Helffrich (<george@geo.titech.ac.jp>) implemented a change
+     in substring index checking (when specifying `-fbounds-check')
+     that permits the use of zero length substrings of the form
+     `string(1:0)'.
+
+   * Based on code developed by Pedro Vazquez
+     (<vazquez@penelope.iqm.unicamp.br>), the `libf2c' library is now
+     able to read and write files larger than 2 Gbyte on 32-bit target
+     machines, if the operating system supports this.
 
 In 0.5.26, `GCC' 3.0 versus `GCC' 2.95:
 =======================================
@@ -346,26 +440,26 @@ In `EGCS' 1.1 versus `EGCS' 1.0.3:
      shared library.
 
    * `g77' no longer installs the `f77' command and `f77.1' man page in
-     the `/usr' or `/usr/local' heirarchy, even if the `f77-install-ok'
+     the `/usr' or `/usr/local' hierarchy, even if the `f77-install-ok'
      file exists in the source or build directory.  See the
      installation documentation for more information.
 
    * `g77' no longer installs the `libf2c.a' library and `f2c.h'
-     include file in the `/usr' or `/usr/local' heirarchy, even if the
+     include file in the `/usr' or `/usr/local' hierarchy, even if the
      `f2c-install-ok' or `f2c-exists-ok' files exist in the source or
      build directory.  See the installation documentation for more
      information.
 
    * The `libf2c.a' library produced by `g77' has been renamed to
      `libg2c.a'.  It is installed only in the `gcc' "private" directory
-     heirarchy, `gcc-lib'.  This allows system administrators and users
+     hierarchy, `gcc-lib'.  This allows system administrators and users
      to choose which version of the `libf2c' library from `netlib' they
      wish to use on a case-by-case basis.  See the installation
      documentation for more information.
 
    * The `f2c.h' include (header) file produced by `g77' has been
      renamed to `g2c.h'.  It is installed only in the `gcc' "private"
-     directory heirarchy, `gcc-lib'.  This allows system administrators
+     directory hierarchy, `gcc-lib'.  This allows system administrators
      and users to choose which version of the include file from
      `netlib' they wish to use on a case-by-case basis.  See the
      installation documentation for more information.
@@ -521,26 +615,26 @@ In 0.5.23 versus 0.5.22:
      with a different type no longer crash `g77'.
 
    * `g77' no longer installs the `f77' command and `f77.1' man page in
-     the `/usr' or `/usr/local' heirarchy, even if the `f77-install-ok'
+     the `/usr' or `/usr/local' hierarchy, even if the `f77-install-ok'
      file exists in the source or build directory.  See the
      installation documentation for more information.
 
    * `g77' no longer installs the `libf2c.a' library and `f2c.h'
-     include file in the `/usr' or `/usr/local' heirarchy, even if the
+     include file in the `/usr' or `/usr/local' hierarchy, even if the
      `f2c-install-ok' or `f2c-exists-ok' files exist in the source or
      build directory.  See the installation documentation for more
      information.
 
    * The `libf2c.a' library produced by `g77' has been renamed to
      `libg2c.a'.  It is installed only in the `gcc' "private" directory
-     heirarchy, `gcc-lib'.  This allows system administrators and users
+     hierarchy, `gcc-lib'.  This allows system administrators and users
      to choose which version of the `libf2c' library from `netlib' they
      wish to use on a case-by-case basis.  See the installation
      documentation for more information.
 
    * The `f2c.h' include (header) file produced by `g77' has been
      renamed to `g2c.h'.  It is installed only in the `gcc' "private"
-     directory heirarchy, `gcc-lib'.  This allows system administrators
+     directory hierarchy, `gcc-lib'.  This allows system administrators
      and users to choose which version of the include file from
      `netlib' they wish to use on a case-by-case basis.  See the
      installation documentation for more information.
@@ -788,7 +882,7 @@ In 0.5.21:
      executable statement (or is treated as an executable-context
      statement as a result of using the `-fpedantic' option).
 
-   * Fix a compiler crash that occured when an integer division by a
+   * Fix a compiler crash that occurred when an integer division by a
      constant zero is detected.  Instead, when the `-W' option is
      specified, the `gcc' back end issues a warning about such a case.
      This bug afflicted all code compiled by version 2.7.2.2.f.2 of

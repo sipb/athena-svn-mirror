@@ -1,8 +1,6 @@
 /* -----------------------------------------------------------------------
    ffitest.c - Copyright (c) 1996, 1997, 1998  Cygnus Solutions
 
-   $Id: ffitest.c,v 1.1.1.1 2002-01-31 16:09:02 ghudson Exp $
-
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
    ``Software''), to deal in the Software without restriction, including
@@ -224,11 +222,7 @@ int main(/*@unused@*/ int argc, /*@unused@*/ char *argv[])
   signed int si1;
   signed int si2;
 
-#if defined(ALPHA) || defined(IA64) || defined(SPARC64) || (defined(MIPS) && (_MIPS_SIM == _ABIN32))
-  long long rint;
-#else
-  int rint;
-#endif
+  ffi_arg rint;
   long long rlonglong;
 
   ffi_type ts1_type;

@@ -18,6 +18,7 @@ details.  */
 #include <java/lang/UnknownError.h>
 #include <java/lang/UnsatisfiedLinkError.h>
 #include <gnu/gcj/runtime/FileDeleter.h>
+#include <gnu/gcj/runtime/FinalizerThread.h>
 
 #include <jni.h>
 
@@ -69,6 +70,14 @@ _Jv_FindSymbolInExecutable (const char *symname)
 	return r;
     }
 
+  return NULL;
+}
+
+#else
+
+void *
+_Jv_FindSymbolInExecutable (const char *symname)
+{
   return NULL;
 }
 
@@ -129,14 +138,21 @@ java::lang::Runtime::_load (jstring path, jboolean do_search)
 #endif
   jsize total = JvGetStringUTFRegion (path, 0, path->length(), &buf[offset]);
   buf[offset + total] = '\0';
+  lt_dlhandle h;
   // FIXME: make sure path is absolute.
-  lt_dlhandle h = do_search ? lt_dlopenext (buf) : lt_dlopen (buf);
+  {
+    // Synchronize on java.lang.Class. This is to protect the class chain from
+    // concurrent modification by class registration calls which may be run
+    // during the dlopen().
+    JvSynchronize sync (&java::lang::Class::class$);
+    h = do_search ? lt_dlopenext (buf) : lt_dlopen (buf);
+  }
   if (h == NULL)
     {
       const char *msg = lt_dlerror ();
       jstring str = path->concat (JvNewStringLatin1 (": "));
       str = str->concat (JvNewStringLatin1 (msg));
-      _Jv_Throw (new UnsatisfiedLinkError (str));
+      throw new UnsatisfiedLinkError (str);
     }
 
   add_library (h);
@@ -154,14 +170,14 @@ java::lang::Runtime::_load (jstring path, jboolean do_search)
       if (vers != JNI_VERSION_1_1 && vers != JNI_VERSION_1_2)
 	{
 	  // FIXME: unload the library.
-	  _Jv_Throw (new UnsatisfiedLinkError (JvNewStringLatin1 ("unrecognized version from JNI_OnLoad")));
+	  throw new UnsatisfiedLinkError (JvNewStringLatin1 ("unrecognized version from JNI_OnLoad"));
 	}
     }
 #else
-  _Jv_Throw (new UnknownError
-	     (JvNewStringLatin1 (do_search
-				 ? "Runtime.loadLibrary not implemented"
-				 : "Runtime.load not implemented")));
+  throw new UnknownError
+    (JvNewStringLatin1 (do_search
+			? "Runtime.loadLibrary not implemented"
+			: "Runtime.load not implemented"));
 #endif /* USE_LTDL */
 }
 
@@ -200,7 +216,7 @@ java::lang::Runtime::init (void)
 void
 java::lang::Runtime::runFinalization (void)
 {
-  _Jv_RunFinalizers ();
+  gnu::gcj::runtime::FinalizerThread::finalizerReady ();
 }
 
 jlong

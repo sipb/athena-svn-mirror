@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,121 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Lines,  Next: Continuation Line,  Prev: Character Set,  Up: Characters Lines Sequence
+
+Lines
+-----
+
+   (Corresponds to Section 3.2 of ANSI X3.9-1978 FORTRAN 77.)
+
+   The way a Fortran compiler views source files depends entirely on the
+implementation choices made for the compiler, since those choices are
+explicitly left to the implementation by the published Fortran
+standards.
+
+   The GNU Fortran language mandates a view applicable to UNIX-like
+text files--files that are made up of an arbitrary number of lines,
+each with an arbitrary number of characters (sometimes called
+stream-based files).
+
+   This view does not apply to types of files that are specified as
+having a particular number of characters on every single line (sometimes
+referred to as record-based files).
+
+   Because a "line in a program unit is a sequence of 72 characters",
+to quote X3.9-1978, the GNU Fortran language specifies that a
+stream-based text file is translated to GNU Fortran lines as follows:
+
+   * A newline in the file is the character that represents the end of
+     a line of text to the underlying system.  For example, on
+     ASCII-based systems, a newline is the <NL> character, which has
+     ASCII value 10 (decimal).
+
+   * Each newline in the file serves to end the line of text that
+     precedes it (and that does not contain a newline).
+
+   * The end-of-file marker (`EOF') also serves to end the line of text
+     that precedes it (and that does not contain a newline).
+
+   * Any line of text that is shorter than 72 characters is padded to
+     that length with spaces (called "blanks" in the standard).
+
+   * Any line of text that is longer than 72 characters is truncated to
+     that length, but the truncated remainder must consist entirely of
+     spaces.
+
+   * Characters other than newline and the GNU Fortran character set
+     are invalid.
+
+   For the purposes of the remainder of this description of the GNU
+Fortran language, the translation described above has already taken
+place, unless otherwise specified.
+
+   The result of the above translation is that the source file appears,
+in terms of the remainder of this description of the GNU Fortran
+language, as if it had an arbitrary number of 72-character lines, each
+character being among the GNU Fortran character set.
+
+   For example, if the source file itself has two newlines in a row,
+the second newline becomes, after the above translation, a single line
+containing 72 spaces.
+
+
+File: g77.info,  Node: Continuation Line,  Next: Statements,  Prev: Lines,  Up: Characters Lines Sequence
+
+Continuation Line
+-----------------
+
+   (Corresponds to Section 3.2.3 of ANSI X3.9-1978 FORTRAN 77.)
+
+   A continuation line is any line that both
+
+   * Contains a continuation character, and
+
+   * Contains only spaces in columns 1 through 5
+
+   A continuation character is any character of the GNU Fortran
+character set other than space (<SPC>) or zero (`0') in column 6, or a
+digit (`0' through `9') in column 7 through 72 of a line that has only
+spaces to the left of that digit.
+
+   The continuation character is ignored as far as the content of the
+statement is concerned.
+
+   The GNU Fortran language places no limit on the number of
+continuation lines in a statement.  In practice, the limit depends on a
+variety of factors, such as available memory, statement content, and so
+on, but no GNU Fortran system may impose an arbitrary limit.
+
+
+File: g77.info,  Node: Statements,  Next: Statement Labels,  Prev: Continuation Line,  Up: Characters Lines Sequence
+
+Statements
+----------
+
+   (Corresponds to Section 3.3 of ANSI X3.9-1978 FORTRAN 77.)
+
+   Statements may be written using an arbitrary number of continuation
+lines.
+
+   Statements may be separated using the semicolon (`;'), except that
+the logical `IF' and non-construct `WHERE' statements may not be
+separated from subsequent statements using only a semicolon as
+statement separator.
+
+   The `END PROGRAM', `END SUBROUTINE', `END FUNCTION', and `END BLOCK
+DATA' statements are alternatives to the `END' statement.  These
+alternatives may be written as normal statements--they are not subject
+to the restrictions of the `END' statement.
+
+   However, no statement other than `END' may have an initial line that
+appears to be an `END' statement--even `END PROGRAM', for example, must
+not be written as:
+
+           END
+          &PROGRAM
 
 
 File: g77.info,  Node: Statement Labels,  Next: Order,  Prev: Statements,  Up: Characters Lines Sequence
@@ -1085,243 +1200,4 @@ similar to the method used for Fortran `CHARACTER' arguments.
    *Note Procedures (SUBROUTINE and FUNCTION): Procedures, for detailed
 information on how this particular version of `g77' passes arguments to
 procedures.
-
-
-File: g77.info,  Node: Generics and Specifics,  Next: REAL() and AIMAG() of Complex,  Prev: %DESCR(),  Up: Functions and Subroutines
-
-Generics and Specifics
-----------------------
-
-   The ANSI FORTRAN 77 language defines generic and specific intrinsics.
-In short, the distinctions are:
-
-   * _Specific_ intrinsics have specific types for their arguments and
-     a specific return type.
-
-   * _Generic_ intrinsics are treated, on a case-by-case basis in the
-     program's source code, as one of several possible specific
-     intrinsics.
-
-     Typically, a generic intrinsic has a return type that is
-     determined by the type of one or more of its arguments.
-
-   The GNU Fortran language generalizes these concepts somewhat,
-especially by providing intrinsic subroutines and generic intrinsics
-that are treated as either a specific intrinsic subroutine or a
-specific intrinsic function (e.g. `SECOND').
-
-   However, GNU Fortran avoids generalizing this concept to the point
-where existing code would be accepted as meaning something possibly
-different than what was intended.
-
-   For example, `ABS' is a generic intrinsic, so all working code
-written using `ABS' of an `INTEGER' argument expects an `INTEGER'
-return value.  Similarly, all such code expects that `ABS' of an
-`INTEGER*2' argument returns an `INTEGER*2' return value.
-
-   Yet, `IABS' is a _specific_ intrinsic that accepts only an
-`INTEGER(KIND=1)' argument.  Code that passes something other than an
-`INTEGER(KIND=1)' argument to `IABS' is not valid GNU Fortran code,
-because it is not clear what the author intended.
-
-   For example, if `J' is `INTEGER(KIND=6)', `IABS(J)' is not defined
-by the GNU Fortran language, because the programmer might have used
-that construct to mean any of the following, subtly different, things:
-
-   * Convert `J' to `INTEGER(KIND=1)' first (as if `IABS(INT(J))' had
-     been written).
-
-   * Convert the result of the intrinsic to `INTEGER(KIND=1)' (as if
-     `INT(ABS(J))' had been written).
-
-   * No conversion (as if `ABS(J)' had been written).
-
-   The distinctions matter especially when types and values wider than
-`INTEGER(KIND=1)' (such as `INTEGER(KIND=2)'), or when operations
-performing more "arithmetic" than absolute-value, are involved.
-
-   The following sample program is not a valid GNU Fortran program, but
-might be accepted by other compilers.  If so, the output is likely to
-be revealing in terms of how a given compiler treats intrinsics (that
-normally are specific) when they are given arguments that do not
-conform to their stated requirements:
-
-           PROGRAM JCB002
-     C Version 1:
-     C Modified 1999-02-15 (Burley) to delete my email address.
-     C Modified 1997-05-21 (Burley) to accommodate compilers that implement
-     C INT(I1-I2) as INT(I1)-INT(I2) given INTEGER*2 I1,I2.
-     C
-     C Version 0:
-     C Written by James Craig Burley 1997-02-20.
-     C
-     C Purpose:
-     C Determine how compilers handle non-standard IDIM
-     C on INTEGER*2 operands, which presumably can be
-     C extrapolated into understanding how the compiler
-     C generally treats specific intrinsics that are passed
-     C arguments not of the correct types.
-     C
-     C If your compiler implements INTEGER*2 and INTEGER
-     C as the same type, change all INTEGER*2 below to
-     C INTEGER*1.
-     C
-           INTEGER*2 I0, I4
-           INTEGER I1, I2, I3
-           INTEGER*2 ISMALL, ILARGE
-           INTEGER*2 ITOOLG, ITWO
-           INTEGER*2 ITMP
-           LOGICAL L2, L3, L4
-     C
-     C Find smallest INTEGER*2 number.
-     C
-           ISMALL=0
-      10   I0 = ISMALL-1
-           IF ((I0 .GE. ISMALL) .OR. (I0+1 .NE. ISMALL)) GOTO 20
-           ISMALL = I0
-           GOTO 10
-      20   CONTINUE
-     C
-     C Find largest INTEGER*2 number.
-     C
-           ILARGE=0
-      30   I0 = ILARGE+1
-           IF ((I0 .LE. ILARGE) .OR. (I0-1 .NE. ILARGE)) GOTO 40
-           ILARGE = I0
-           GOTO 30
-      40   CONTINUE
-     C
-     C Multiplying by two adds stress to the situation.
-     C
-           ITWO = 2
-     C
-     C Need a number that, added to -2, is too wide to fit in I*2.
-     C
-           ITOOLG = ISMALL
-     C
-     C Use IDIM the straightforward way.
-     C
-           I1 = IDIM (ILARGE, ISMALL) * ITWO + ITOOLG
-     C
-     C Calculate result for first interpretation.
-     C
-           I2 = (INT (ILARGE) - INT (ISMALL)) * ITWO + ITOOLG
-     C
-     C Calculate result for second interpretation.
-     C
-           ITMP = ILARGE - ISMALL
-           I3 = (INT (ITMP)) * ITWO + ITOOLG
-     C
-     C Calculate result for third interpretation.
-     C
-           I4 = (ILARGE - ISMALL) * ITWO + ITOOLG
-     C
-     C Print results.
-     C
-           PRINT *, 'ILARGE=', ILARGE
-           PRINT *, 'ITWO=', ITWO
-           PRINT *, 'ITOOLG=', ITOOLG
-           PRINT *, 'ISMALL=', ISMALL
-           PRINT *, 'I1=', I1
-           PRINT *, 'I2=', I2
-           PRINT *, 'I3=', I3
-           PRINT *, 'I4=', I4
-           PRINT *
-           L2 = (I1 .EQ. I2)
-           L3 = (I1 .EQ. I3)
-           L4 = (I1 .EQ. I4)
-           IF (L2 .AND. .NOT.L3 .AND. .NOT.L4) THEN
-              PRINT *, 'Interp 1: IDIM(I*2,I*2) => IDIM(INT(I*2),INT(I*2))'
-              STOP
-           END IF
-           IF (L3 .AND. .NOT.L2 .AND. .NOT.L4) THEN
-              PRINT *, 'Interp 2: IDIM(I*2,I*2) => INT(DIM(I*2,I*2))'
-              STOP
-           END IF
-           IF (L4 .AND. .NOT.L2 .AND. .NOT.L3) THEN
-              PRINT *, 'Interp 3: IDIM(I*2,I*2) => DIM(I*2,I*2)'
-              STOP
-           END IF
-           PRINT *, 'Results need careful analysis.'
-           END
-
-   No future version of the GNU Fortran language will likely permit
-specific intrinsic invocations with wrong-typed arguments (such as
-`IDIM' in the above example), since it has been determined that
-disagreements exist among many production compilers on the
-interpretation of such invocations.  These disagreements strongly
-suggest that Fortran programmers, and certainly existing Fortran
-programs, disagree about the meaning of such invocations.
-
-   The first version of `JCB002' didn't accommodate some compilers'
-treatment of `INT(I1-I2)' where `I1' and `I2' are `INTEGER*2'.  In such
-a case, these compilers apparently convert both operands to `INTEGER*4'
-and then do an `INTEGER*4' subtraction, instead of doing an `INTEGER*2'
-subtraction on the original values in `I1' and `I2'.
-
-   However, the results of the careful analyses done on the outputs of
-programs compiled by these various compilers show that they all
-implement either `Interp 1' or `Interp 2' above.
-
-   Specifically, it is believed that the new version of `JCB002' above
-will confirm that:
-
-   * Digital Semiconductor ("DEC") Alpha OSF/1, HP-UX 10.0.1, AIX 3.2.5
-     `f77' compilers all implement `Interp 1'.
-
-   * IRIX 5.3 `f77' compiler implements `Interp 2'.
-
-   * Solaris 2.5, SunOS 4.1.3, DECstation ULTRIX 4.3, and IRIX 6.1
-     `f77' compilers all implement `Interp 3'.
-
-   If you get different results than the above for the stated
-compilers, or have results for other compilers that might be worth
-adding to the above list, please let us know the details (compiler
-product, version, machine, results, and so on).
-
-
-File: g77.info,  Node: REAL() and AIMAG() of Complex,  Next: CMPLX() of DOUBLE PRECISION,  Prev: Generics and Specifics,  Up: Functions and Subroutines
-
-`REAL()' and `AIMAG()' of Complex
----------------------------------
-
-   The GNU Fortran language disallows `REAL(EXPR)' and `AIMAG(EXPR)',
-where EXPR is any `COMPLEX' type other than `COMPLEX(KIND=1)', except
-when they are used in the following way:
-
-     REAL(REAL(EXPR))
-     REAL(AIMAG(EXPR))
-
-The above forms explicitly specify that the desired effect is to
-convert the real or imaginary part of EXPR, which might be some `REAL'
-type other than `REAL(KIND=1)', to type `REAL(KIND=1)', and have that
-serve as the value of the expression.
-
-   The GNU Fortran language offers clearly named intrinsics to extract
-the real and imaginary parts of a complex entity without any conversion:
-
-     REALPART(EXPR)
-     IMAGPART(EXPR)
-
-   To express the above using typical extended FORTRAN 77, use the
-following constructs (when EXPR is `COMPLEX(KIND=2)'):
-
-     DBLE(EXPR)
-     DIMAG(EXPR)
-
-   The FORTRAN 77 language offers no way to explicitly specify the real
-and imaginary parts of a complex expression of arbitrary type,
-apparently as a result of requiring support for only one `COMPLEX' type
-(`COMPLEX(KIND=1)').  The concepts of converting an expression to type
-`REAL(KIND=1)' and of extracting the real part of a complex expression
-were thus "smooshed" by FORTRAN 77 into a single intrinsic, since they
-happened to have the exact same effect in that language (due to having
-only one `COMPLEX' type).
-
-   _Note:_ When `-ff90' is in effect, `g77' treats `REAL(EXPR)', where
-EXPR is of type `COMPLEX', as `REALPART(EXPR)', whereas with
-`-fugly-complex -fno-f90' in effect, it is treated as
-`REAL(REALPART(EXPR))'.
-
-   *Note Ugly Complex Part Extraction::, for more information.
 

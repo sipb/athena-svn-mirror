@@ -28,6 +28,7 @@ Boston, MA 02111-1307, USA.  */
 #include "tree.h"
 #include "rtl.h"
 #include "expr.h"
+#include "libfuncs.h"
 #include "cp-tree.h"
 #include "flags.h"
 #include "obstack.h"
@@ -62,16 +63,13 @@ init_exception_processing ()
 {
   tree tmp;
 
-  if (flag_honor_std)
-    push_namespace (std_identifier);
-
   /* void std::terminate (); */
+  push_namespace (std_identifier);
   tmp = build_function_type (void_type_node, void_list_node);
   terminate_node = build_cp_library_fn_ptr ("terminate", tmp);
   TREE_THIS_VOLATILE (terminate_node) = 1;
   TREE_NOTHROW (terminate_node) = 1;
-  if (flag_honor_std)
-    pop_namespace ();
+  pop_namespace ();
 
   /* void __cxa_call_unexpected(void *); */
   tmp = tree_cons (NULL_TREE, ptr_type_node, void_list_node);
@@ -88,7 +86,7 @@ init_exception_processing ()
 }
 
 /* Returns an expression to be executed if an unhandled exception is
-   propogated out of a cleanup region.  */
+   propagated out of a cleanup region.  */
 
 static tree
 cp_protect_cleanup_actions ()
@@ -244,7 +242,7 @@ decl_is_java_type (decl, err)
 	  && TYPE_FOR_JAVA (TREE_TYPE (decl)))
 	{
 	  /* Can't throw a reference.  */
-	  cp_error ("type `%T' is disallowed in Java `throw' or `catch'",
+	  error ("type `%T' is disallowed in Java `throw' or `catch'",
 		    decl);
 	}
 
@@ -262,7 +260,7 @@ decl_is_java_type (decl, err)
 	  if (! DERIVED_FROM_P (jthrow_node, TREE_TYPE (decl)))
 	    {
 	      /* Thrown object must be a Throwable.  */
-	      cp_error ("type `%T' is not derived from `java::lang::Throwable'",
+	      error ("type `%T' is not derived from `java::lang::Throwable'",
 			TREE_TYPE (decl));
 	    }
 	}
@@ -391,8 +389,6 @@ tree
 expand_start_catch_block (decl)
      tree decl;
 {
-  tree compound_stmt_1;
-  tree compound_stmt_2;
   tree exp = NULL_TREE;
   tree type;
   bool is_java;
@@ -404,16 +400,10 @@ expand_start_catch_block (decl)
   if (decl && !complete_ptr_ref_or_void_ptr_p (TREE_TYPE (decl), NULL_TREE))
     decl = NULL_TREE;
 
-  /* Create a binding level for the eh_info and the exception object
-     cleanup.  */
-  compound_stmt_1 = begin_compound_stmt (/*has_no_scope=*/0);
-  note_level_for_catch ();
-
   if (decl)
     type = prepare_eh_type (TREE_TYPE (decl));
   else
     type = NULL_TREE;
-  begin_catch_block (type);
 
   is_java = false;
   if (decl)
@@ -452,13 +442,10 @@ expand_start_catch_block (decl)
   if (! is_java)
     push_eh_cleanup (type);
 
-  /* Create a binding level for the parm.  */
-  compound_stmt_2 = begin_compound_stmt (/*has_no_scope=*/0);
-
   if (decl)
     initialize_handler_parm (decl, exp);
 
-  return build_tree_list (compound_stmt_1, compound_stmt_2);
+  return type;
 }
 
 
@@ -467,12 +454,8 @@ expand_start_catch_block (decl)
    the label to jump to if this catch block didn't match.  */
 
 void
-expand_end_catch_block (blocks)
-     tree blocks;
+expand_end_catch_block ()
 {
-  tree compound_stmt_1 = blocks ? TREE_PURPOSE (blocks): NULL_TREE;
-  tree compound_stmt_2 = blocks ? TREE_VALUE (blocks): NULL_TREE;
-
   if (! doing_eh (1))
     return;
 
@@ -482,11 +465,6 @@ expand_end_catch_block (blocks)
       && (DECL_CONSTRUCTOR_P (current_function_decl)
 	  || DECL_DESTRUCTOR_P (current_function_decl)))
     finish_expr_stmt (build_throw (NULL_TREE));
-
-  /* Cleanup the EH parameter.  */
-  finish_compound_stmt (/*has_no_scope=*/0, compound_stmt_2);
-  /* Cleanup the EH object.  */
-  finish_compound_stmt (/*has_no_scope=*/0, compound_stmt_1);
 }
 
 tree
@@ -577,7 +555,7 @@ build_throw (exp)
     return build_min (THROW_EXPR, void_type_node, exp);
 
   if (exp == null_node)
-    cp_warning ("throwing NULL, which has integral, not pointer type");
+    warning ("throwing NULL, which has integral, not pointer type");
   
   if (exp != NULL_TREE)
     {
@@ -794,7 +772,7 @@ is_admissible_throw_operand (expr)
             conversion.  */
   else if (CLASS_TYPE_P (type) && CLASSTYPE_PURE_VIRTUALS (type))
     {
-      cp_error ("Expression '%E' of abstract class type '%T' cannot be used in throw-expression", expr, type);
+      error ("expression '%E' of abstract class type '%T' cannot be used in throw-expression", expr, type);
       return false;
     }
 
@@ -882,10 +860,10 @@ check_handlers_1 (master, handlers)
 	&& can_convert_eh (type, TREE_TYPE (handler)))
       {
 	lineno = STMT_LINENO (handler);
-	cp_warning ("exception of type `%T' will be caught",
+	warning ("exception of type `%T' will be caught",
 		    TREE_TYPE (handler));
 	lineno = STMT_LINENO (master);
-	cp_warning ("   by earlier handler for `%T'", type);
+	warning ("   by earlier handler for `%T'", type);
 	break;
       }
 }
@@ -905,7 +883,7 @@ check_handlers (handlers)
       else if (TREE_TYPE (handler) == NULL_TREE)
 	{
 	  lineno = STMT_LINENO (handler);
-	  cp_pedwarn
+	  pedwarn
 	    ("`...' handler must be the last handler for its try block");
 	}
       else

@@ -1,6 +1,6 @@
 // resolve.cc - Code for linking and resolving classes and pool entries.
 
-/* Copyright (C) 1999, 2000, 2001  Free Software Foundation
+/* Copyright (C) 1999, 2000, 2001 , 2002 Free Software Foundation
 
    This file is part of libgcj.
 
@@ -31,6 +31,8 @@ details.  */
 #include <java/lang/ClassNotFoundException.h>
 #include <java/lang/IncompatibleClassChangeError.h>
 #include <java/lang/reflect/Modifier.h>
+
+using namespace gcj;
 
 void
 _Jv_ResolveField (_Jv_Field *field, java::lang::ClassLoader *loader)
@@ -65,12 +67,9 @@ _Jv_BuildResolvedMethod (_Jv_Method*,
 			 jint);
 
 
-// We need to know the name of a constructor.
-static _Jv_Utf8Const *init_name = _Jv_makeUtf8Const ("<init>", 6);
-
 static void throw_incompatible_class_change_error (jstring msg)
 {
-  JvThrow (new java::lang::IncompatibleClassChangeError (msg));
+  throw new java::lang::IncompatibleClassChangeError (msg);
 }
 
 _Jv_word
@@ -98,7 +97,7 @@ _Jv_ResolvePoolEntry (jclass klass, int index)
       if (! found)
 	{
 	  jstring str = _Jv_NewStringUTF (name->data);
-	  JvThrow (new java::lang::ClassNotFoundException (str));
+	  throw new java::lang::ClassNotFoundException (str);
 	}
 
       if ((found->accflags & Modifier::PUBLIC) == Modifier::PUBLIC
@@ -110,7 +109,7 @@ _Jv_ResolvePoolEntry (jclass klass, int index)
 	}
       else
 	{
-	  JvThrow (new java::lang::IllegalAccessError (found->getName()));
+	  throw new java::lang::IllegalAccessError (found->getName());
 	}
     }
     break;
@@ -185,17 +184,16 @@ _Jv_ResolvePoolEntry (jclass klass, int index)
 		    _Jv_ResolveField (field, cls->loader);
 
 		  if (field_type != 0 && field->type != field_type)
-		    JvThrow
-		      (new java::lang::LinkageError
-		       (JvNewStringLatin1 
-			("field type mismatch with different loaders")));
+		    throw new java::lang::LinkageError
+		      (JvNewStringLatin1 
+		       ("field type mismatch with different loaders"));
 
 		  the_field = field;
 		  goto end_of_field_search;
 		}
 	      else
 		{
-		  JvThrow (new java::lang::IllegalAccessError);
+		  throw new java::lang::IllegalAccessError;
 		}
 	    }
 	}
@@ -319,7 +317,7 @@ _Jv_ResolvePoolEntry (jclass klass, int index)
 	  msg = msg->concat (JvNewStringLatin1("."));
 	  msg = msg->concat (_Jv_NewStringUTF (method_name->data));
 	  msg = msg->concat (JvNewStringLatin1(" was not found."));
-	  JvThrow(new java::lang::NoSuchMethodError (msg));
+	  throw new java::lang::NoSuchMethodError (msg);
 	}
       
       pool->data[index].rmethod = 
@@ -366,7 +364,7 @@ _Jv_SearchMethodInClass (jclass cls, jclass klass,
 	}
       else
 	{
-	  JvThrow (new java::lang::IllegalAccessError);
+	  throw new java::lang::IllegalAccessError;
 	}
     }
   return 0;
@@ -486,7 +484,7 @@ _Jv_DetermineVTableIndex (jclass klass,
 static void
 _Jv_abstractMethodError ()
 {
-  JvThrow (new java::lang::AbstractMethodError);
+  throw new java::lang::AbstractMethodError;
 }
 
 void 
@@ -580,11 +578,11 @@ _Jv_PrepareClass(jclass klass)
 
   // set the instance size for the class
   clz->size_in_bytes = instance_size;
-    
+
   // allocate static memory
   if (static_size != 0)
     {
-      char *static_data = (char*)_Jv_AllocBytesChecked (static_size);
+      char *static_data = (char*)_Jv_AllocBytes (static_size);
 
       memset (static_data, 0, static_size);
 
@@ -630,6 +628,7 @@ _Jv_PrepareClass(jclass klass)
       else if (imeth != 0)		// it could be abstract
 	{
 	  _Jv_InterpMethod *im = reinterpret_cast<_Jv_InterpMethod *> (imeth);
+	  _Jv_VerifyMethod (im);
 	  clz->methods[i].ncode = im->ncode ();
 	}
     }
@@ -684,8 +683,7 @@ _Jv_PrepareClass(jclass klass)
 	{
 	  clz->state = JV_STATE_ERROR;
 	  clz->notifyAll ();
-	  JvThrow (new java::lang::IncompatibleClassChangeError 
-		           (clz->getName ()));
+	  throw new java::lang::IncompatibleClassChangeError (clz->getName ());
 	}
 
       /* FIXME: At this point, if (loader != super_class->loader), we
@@ -961,9 +959,9 @@ get_ffi_type_from_signature (unsigned char* ptr)
  * function is non-static, then one is added to the number of elements
  * found in the signature */
 
-static int 
-count_arguments (_Jv_Utf8Const *signature,
-		 jboolean staticp)
+int 
+_Jv_count_arguments (_Jv_Utf8Const *signature,
+		     jboolean staticp)
 {
   unsigned char *ptr = (unsigned char*) signature->data;
   int arg_count = staticp ? 0 : 1;
@@ -1051,7 +1049,7 @@ init_cif (_Jv_Utf8Const* signature,
 #endif
 
 /* we put this one here, and not in interpret.cc because it
- * calls the utility routines count_arguments 
+ * calls the utility routines _Jv_count_arguments 
  * which are static to this module.  The following struct defines the
  * layout we use for the stubs, it's only used in the ncode method. */
 
@@ -1072,10 +1070,10 @@ _Jv_InterpMethod::ncode ()
     return self->ncode;
 
   jboolean staticp = (self->accflags & Modifier::STATIC) != 0;
-  int arg_count = count_arguments (self->signature, staticp);
+  int arg_count = _Jv_count_arguments (self->signature, staticp);
 
   ncode_closure *closure =
-    (ncode_closure*)_Jv_AllocBytesChecked (sizeof (ncode_closure)
+    (ncode_closure*)_Jv_AllocBytes (sizeof (ncode_closure)
 					+ arg_count * sizeof (ffi_type*));
 
   init_cif (self->signature,
@@ -1122,11 +1120,11 @@ _Jv_JNIMethod::ncode ()
     return self->ncode;
 
   jboolean staticp = (self->accflags & Modifier::STATIC) != 0;
-  int arg_count = count_arguments (self->signature, staticp);
+  int arg_count = _Jv_count_arguments (self->signature, staticp);
 
   ncode_closure *closure =
-    (ncode_closure*)_Jv_AllocBytesChecked (sizeof (ncode_closure)
-					+ arg_count * sizeof (ffi_type*));
+    (ncode_closure*)_Jv_AllocBytes (sizeof (ncode_closure)
+				    + arg_count * sizeof (ffi_type*));
 
   ffi_type *rtype;
   init_cif (self->signature,
@@ -1183,11 +1181,11 @@ _Jv_BuildResolvedMethod (_Jv_Method* method,
 			 jboolean staticp,
 			 jint vtable_index)
 {
-  int arg_count = count_arguments (method->signature, staticp);
+  int arg_count = _Jv_count_arguments (method->signature, staticp);
 
   _Jv_ResolvedMethod* result = (_Jv_ResolvedMethod*)
-    _Jv_AllocBytesChecked (sizeof (_Jv_ResolvedMethod)
-			   + arg_count*sizeof (ffi_type*));
+    _Jv_AllocBytes (sizeof (_Jv_ResolvedMethod)
+		    + arg_count*sizeof (ffi_type*));
 
   result->stack_item_count
     = init_cif (method->signature,
@@ -1208,10 +1206,9 @@ _Jv_BuildResolvedMethod (_Jv_Method* method,
 static void
 throw_class_format_error (jstring msg)
 {
-  if (msg == 0)
-    JvThrow (new java::lang::ClassFormatError);
-  else
-    JvThrow (new java::lang::ClassFormatError (msg));
+  throw (msg
+	 ? new java::lang::ClassFormatError (msg)
+	 : new java::lang::ClassFormatError);
 }
 
 static void
@@ -1223,8 +1220,7 @@ throw_class_format_error (char *msg)
 static void
 throw_internal_error (char *msg)
 {
-  JvThrow 
-    (new java::lang::InternalError (JvNewStringLatin1 (msg)));
+  throw new java::lang::InternalError (JvNewStringLatin1 (msg));
 }
 
 

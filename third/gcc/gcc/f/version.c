@@ -1,1 +1,4 @@
-const char *ffe_version_string = "0.5.26 20011220 (release)";
+#include "ansidecl.h"
+#include "f/version.h"
+
+const char *const ffe_version_string = "3.2.1 20021119 (release)";

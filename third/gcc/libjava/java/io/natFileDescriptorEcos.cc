@@ -1,6 +1,6 @@
 // natFileDescriptor.cc - Native part of FileDescriptor class.
 
-/* Copyright (C) 1998, 1999  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2001  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -41,6 +41,14 @@ diag_write (char *data, int len)
 
 #define NO_FSYNC_MESSAGE "sync unsupported"
 
+void
+java::io::FileDescriptor::init(void)
+{
+  in = new java::io::FileDescriptor(0);
+  out = new java::io::FileDescriptor(1);
+  err = new java::io::FileDescriptor(2);
+}
+
 jboolean
 java::io::FileDescriptor::valid (void)
 {
@@ -54,7 +62,7 @@ java::io::FileDescriptor::sync (void)
   // as errors.
 #ifdef HAVE_FSYNC
 #else
-  JvThrow (new SyncFailedException (JvNewStringLatin1 (NO_FSYNC_MESSAGE)));
+  throw new SyncFailedException (JvNewStringLatin1 (NO_FSYNC_MESSAGE));
 #endif
 }
 
@@ -75,9 +83,9 @@ void
 java::io::FileDescriptor::write (jbyteArray b, jint offset, jint len)
 {
   if (! b)
-    JvThrow (new java::lang::NullPointerException);
+    throw new java::lang::NullPointerException;
   if (offset < 0 || len < 0 || offset + len > JvGetArrayLength (b))
-    JvThrow (new java::lang::ArrayIndexOutOfBoundsException);
+    throw new java::lang::ArrayIndexOutOfBoundsException;
   char *bytes = (char *)elements (b) + offset;
   ::diag_write (bytes, len);
 }
@@ -88,16 +96,9 @@ java::io::FileDescriptor::close (void)
 }
 
 jint
-java::io::FileDescriptor::seek (jlong pos, jint whence)
+java::io::FileDescriptor::seek (jlong pos, jint whence, jboolean)
 {
   JvAssert (whence == SET || whence == CUR);
-
-  jlong len = length ();
-  jlong here = getFilePointer ();
-
-  if ((whence == SET && pos > len) || (whence == CUR && here + pos > len))
-    JvThrow (new EOFException);
-
   return 0;
 }
 

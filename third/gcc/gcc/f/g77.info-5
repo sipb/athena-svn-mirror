@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -59,10 +59,104 @@ clarify how they differ from other versions, though this can make
 getting a complete picture of what a particular `egcs' version contains
 somewhat more difficult.
 
-   For information on bugs in the GCC-3.0 version of `g77', see *Note
+   For information on bugs in the GCC-3.2 version of `g77', see *Note
 Known Bugs In GNU Fortran: Known Bugs.
 
-   The following information was last updated on 2001-06-03:
+   The following information was last updated on 2002-10-28:
+
+In `GCC' 3.2 versus `GCC' 3.1:
+==============================
+
+   * Problem Reports fixed (in chronological order of submission):
+    `8308'
+          gcc-3.x does not compile files with suffix .r (RATFOR) [Fixed
+          in 3.2.1]
+
+In `GCC' 3.1 (formerly known as g77-0.5.27) versus `GCC' 3.0:
+=============================================================
+
+   * Problem Reports fixed (in chronological order of submission):
+    `947'
+          Data statement initialization with subscript of kind INTEGER*2
+
+    `3743'
+          Reference to intrinsic `ISHFT' invalid
+
+    `3807'
+          Function BESJN(integer,double) problems
+
+    `3957'
+          g77 -pipe -xf77-cpp-input sends output to stdout
+
+    `4279'
+          g77 -h" gives bogus output
+
+    `4730'
+          ICE on valid input using CALL EXIT(%VAL(...))
+
+    `4752'
+          g77 -v -c -xf77-version /dev/null -xnone causes ice
+
+    `4885'
+          BACKSPACE example that doesn't work as of gcc/g77-3.0.x
+
+    `5122'
+          g77 rejects accepted use of INTEGER*2 as type of DATA
+          statement loop index
+
+    `5397'
+          ICE on compiling source with 540 000 000 REAL array
+
+    `5473'
+          ICE on BESJN(integer*8,real)
+
+    `5837'
+          bug in loop unrolling
+
+   * `g77' now has its man page generated from the texinfo
+     documentation, to guarantee that it remains up to date.
+
+   * `g77' used to reject the following program on 32-bit targets:
+          PROGRAM PROG
+          DIMENSION A(140 000 000)
+          END
+     with the message:
+          prog.f: In program `prog':
+          prog.f:2:
+                   DIMENSION A(140 000 000)
+                             ^
+          Array `a' at (^) is too large to handle
+     because 140 000 000 REALs is larger than the largest bit-extent
+     that can be expressed in 32 bits.  However, bit-sizes never play a
+     role after offsets have been converted to byte addresses.
+     Therefore this check has been removed, and the limit is now 2
+     Gbyte of memory (around 530 000 000 REALs).  Note: On GNU/Linux
+     systems one has to compile programs that occupy more than 1 Gbyte
+     statically, i.e. `g77 -static ...'.
+
+   * Based on work done by Juergen Pfeifer (<juergen.pfeifer@gmx.net>)
+     libf2c is now a shared library.  One can still link in all objects
+     with the program by specifying the `-static' option.
+
+   * Robert Anderson (<rwa@alumni.princeton.edu>) thought up a two line
+     change that enables g77 to compile such code as:
+          SUBROUTINE SUB(A, N)
+          DIMENSION N(2)
+          DIMENSION A(N(1),N(2))
+          A(1,1) = 1.
+          END
+     Note the use of array elements in the bounds of the adjustable
+     array A.
+
+   * George Helffrich (<george@geo.titech.ac.jp>) implemented a change
+     in substring index checking (when specifying `-fbounds-check')
+     that permits the use of zero length substrings of the form
+     `string(1:0)'.
+
+   * Based on code developed by Pedro Vazquez
+     (<vazquez@penelope.iqm.unicamp.br>), the `libf2c' library is now
+     able to read and write files larger than 2 Gbyte on 32-bit target
+     machines, if the operating system supports this.
 
 In 0.5.26, `GCC' 3.0 versus `GCC' 2.95:
 =======================================
@@ -1159,119 +1253,4 @@ though in character and Hollerith constants, they are distinct.
 
    Note that this document refers to <SPC> as "space", while X3.9-1978
 FORTRAN 77 refers to it as "blank".
-
-
-File: g77.info,  Node: Lines,  Next: Continuation Line,  Prev: Character Set,  Up: Characters Lines Sequence
-
-Lines
------
-
-   (Corresponds to Section 3.2 of ANSI X3.9-1978 FORTRAN 77.)
-
-   The way a Fortran compiler views source files depends entirely on the
-implementation choices made for the compiler, since those choices are
-explicitly left to the implementation by the published Fortran
-standards.
-
-   The GNU Fortran language mandates a view applicable to UNIX-like
-text files--files that are made up of an arbitrary number of lines,
-each with an arbitrary number of characters (sometimes called
-stream-based files).
-
-   This view does not apply to types of files that are specified as
-having a particular number of characters on every single line (sometimes
-referred to as record-based files).
-
-   Because a "line in a program unit is a sequence of 72 characters",
-to quote X3.9-1978, the GNU Fortran language specifies that a
-stream-based text file is translated to GNU Fortran lines as follows:
-
-   * A newline in the file is the character that represents the end of
-     a line of text to the underlying system.  For example, on
-     ASCII-based systems, a newline is the <NL> character, which has
-     ASCII value 10 (decimal).
-
-   * Each newline in the file serves to end the line of text that
-     precedes it (and that does not contain a newline).
-
-   * The end-of-file marker (`EOF') also serves to end the line of text
-     that precedes it (and that does not contain a newline).
-
-   * Any line of text that is shorter than 72 characters is padded to
-     that length with spaces (called "blanks" in the standard).
-
-   * Any line of text that is longer than 72 characters is truncated to
-     that length, but the truncated remainder must consist entirely of
-     spaces.
-
-   * Characters other than newline and the GNU Fortran character set
-     are invalid.
-
-   For the purposes of the remainder of this description of the GNU
-Fortran language, the translation described above has already taken
-place, unless otherwise specified.
-
-   The result of the above translation is that the source file appears,
-in terms of the remainder of this description of the GNU Fortran
-language, as if it had an arbitrary number of 72-character lines, each
-character being among the GNU Fortran character set.
-
-   For example, if the source file itself has two newlines in a row,
-the second newline becomes, after the above translation, a single line
-containing 72 spaces.
-
-
-File: g77.info,  Node: Continuation Line,  Next: Statements,  Prev: Lines,  Up: Characters Lines Sequence
-
-Continuation Line
------------------
-
-   (Corresponds to Section 3.2.3 of ANSI X3.9-1978 FORTRAN 77.)
-
-   A continuation line is any line that both
-
-   * Contains a continuation character, and
-
-   * Contains only spaces in columns 1 through 5
-
-   A continuation character is any character of the GNU Fortran
-character set other than space (<SPC>) or zero (`0') in column 6, or a
-digit (`0' through `9') in column 7 through 72 of a line that has only
-spaces to the left of that digit.
-
-   The continuation character is ignored as far as the content of the
-statement is concerned.
-
-   The GNU Fortran language places no limit on the number of
-continuation lines in a statement.  In practice, the limit depends on a
-variety of factors, such as available memory, statement content, and so
-on, but no GNU Fortran system may impose an arbitrary limit.
-
-
-File: g77.info,  Node: Statements,  Next: Statement Labels,  Prev: Continuation Line,  Up: Characters Lines Sequence
-
-Statements
-----------
-
-   (Corresponds to Section 3.3 of ANSI X3.9-1978 FORTRAN 77.)
-
-   Statements may be written using an arbitrary number of continuation
-lines.
-
-   Statements may be separated using the semicolon (`;'), except that
-the logical `IF' and non-construct `WHERE' statements may not be
-separated from subsequent statements using only a semicolon as
-statement separator.
-
-   The `END PROGRAM', `END SUBROUTINE', `END FUNCTION', and `END BLOCK
-DATA' statements are alternatives to the `END' statement.  These
-alternatives may be written as normal statements--they are not subject
-to the restrictions of the `END' statement.
-
-   However, no statement other than `END' may have an initial line that
-appears to be an `END' statement--even `END PROGRAM', for example, must
-not be written as:
-
-           END
-          &PROGRAM
 

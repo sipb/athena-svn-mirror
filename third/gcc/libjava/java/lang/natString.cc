@@ -121,8 +121,7 @@ java::lang::String::rehash()
   if (strhash == NULL)
     {
       strhash_size = 1024;
-      strhash = (jstring *) _Jv_AllocBytesChecked (strhash_size
-						   * sizeof (jstring));
+      strhash = (jstring *) _Jv_AllocBytes (strhash_size * sizeof (jstring));
       memset (strhash, 0, strhash_size * sizeof (jstring));
     }
   else
@@ -130,8 +129,7 @@ java::lang::String::rehash()
       int i = strhash_size;
       jstring* ptr = strhash + i;
       int nsize = strhash_size * 2;
-      jstring *next = (jstring *) _Jv_AllocBytesChecked (nsize
-							 * sizeof (jstring));
+      jstring *next = (jstring *) _Jv_AllocBytes (nsize * sizeof (jstring));
       memset (next, 0, nsize * sizeof (jstring));
 
       while (--i >= 0)
@@ -341,13 +339,69 @@ _Jv_GetStringUTFRegion (jstring str, jsize start, jsize len, char *buf)
   return dptr - buf;
 }
 
+/* Put printed (decimal) representation of NUM in a buffer.
+   BUFEND marks the end of the buffer, which must be at least 11 jchars long.
+   Returns the COUNT of jchars written.  The result is in
+   (BUFEND - COUNT) (inclusive) upto (BUFEND) (exclusive). */
+
+jint
+_Jv_FormatInt (jchar* bufend, jint num)
+{
+  register jchar* ptr = bufend;
+  jboolean isNeg;
+  if (num < 0)
+    {
+      isNeg = true;
+      num = -(num);
+      if (num < 0)
+	{
+	  // Must be MIN_VALUE, so handle this special case.
+	  // FIXME use 'unsigned jint' for num.
+	  *--ptr = '8';
+	  num = 214748364;
+	}
+      }
+    else
+      isNeg = false;
+
+    do
+      {
+        *--ptr = (jchar) ((int) '0' + (num % 10));
+        num /= 10;
+      }
+    while (num > 0);
+
+    if (isNeg)
+      *--ptr = '-';
+    return bufend - ptr;
+}
+
+jstring
+java::lang::String::valueOf (jint num)
+{
+  // Use an array large enough for "-2147483648"; i.e. 11 chars.
+  jchar buffer[11];
+  int i = _Jv_FormatInt (buffer+11, num);
+  return _Jv_NewString (buffer+11-i, i);
+}
+
 jstring
 _Jv_AllocString(jsize len)
 {
   jsize sz = sizeof(java::lang::String) + len * sizeof(jchar);
 
-  jstring obj = (jstring) JvAllocObject(&StringClass, sz);
-
+  // We assert that for strings allocated this way, the data field
+  // will always point to the object itself.  Thus there is no reason
+  // for the garbage collector to scan any of it.
+  // Furthermore, we're about to overwrite the string data, so
+  // initialization of the object is not an issue.
+#ifdef ENABLE_JVMPI
+  jstring obj = (jstring) _Jv_AllocPtrFreeObject(&StringClass, sz);
+#else
+  // Class needs no initialization, and there is no finalizer, so
+  // we can go directly to the collector's allocator interface.
+  jstring obj = (jstring) _Jv_AllocPtrFreeObj(sz, &StringClass);
+#endif
   obj->data = obj;
   obj->boffset = sizeof(java::lang::String);
   obj->count = len;
@@ -387,11 +441,11 @@ java::lang::String::init(jcharArray chars, jint offset, jint count,
 			 jboolean dont_copy)
 {
   if (! chars)
-    JvThrow (new NullPointerException);
+    throw new NullPointerException;
   jsize data_size = JvGetArrayLength (chars);
   if (offset < 0 || count < 0 || offset + count < 0
       || offset + count > data_size)
-    JvThrow (new StringIndexOutOfBoundsException());
+    throw new ArrayIndexOutOfBoundsException;
   jcharArray array;
   jchar *pdst;
   if (! dont_copy)
@@ -417,11 +471,11 @@ java::lang::String::init(jbyteArray ascii, jint hibyte, jint offset,
 			 jint count)
 {
   if (! ascii)
-    JvThrow (new NullPointerException);
+    throw new NullPointerException;
   jsize data_size = JvGetArrayLength (ascii);
   if (offset < 0 || count < 0 || offset + count < 0
       || offset + count > data_size)
-    JvThrow (new java::lang::StringIndexOutOfBoundsException());
+    throw new ArrayIndexOutOfBoundsException;
   jcharArray array = JvNewCharArray(count);
   jbyte *psrc = elements (ascii) + offset;
   jchar *pdst = elements (array);
@@ -440,11 +494,11 @@ java::lang::String::init (jbyteArray bytes, jint offset, jint count,
 			  jstring encoding)
 {
   if (! bytes)
-    JvThrow (new NullPointerException);
+    throw new NullPointerException;
   jsize data_size = JvGetArrayLength (bytes);
   if (offset < 0 || count < 0 || offset + count < 0
       || offset + count > data_size)
-    JvThrow (new StringIndexOutOfBoundsException);
+    throw new ArrayIndexOutOfBoundsException;
   jcharArray array = JvNewCharArray (count);
   gnu::gcj::convert::BytesToUnicode *converter
     = gnu::gcj::convert::BytesToUnicode::getDecoder(encoding);
@@ -469,6 +523,7 @@ java::lang::String::init (jbyteArray bytes, jint offset, jint count,
 	  avail -= done;
 	}
     }
+  converter->done ();
   this->data = array;
   this->boffset = (char *) elements (array) - (char *) array;
   this->count = outpos;
@@ -502,7 +557,7 @@ jchar
 java::lang::String::charAt(jint i)
 {
   if (i < 0 || i >= count)
-    JvThrow (new java::lang::StringIndexOutOfBoundsException());
+    throw new java::lang::StringIndexOutOfBoundsException;
   return JvGetStringChars(this)[i];
 }
 
@@ -511,9 +566,10 @@ java::lang::String::getChars(jint srcBegin, jint srcEnd,
 			     jcharArray dst, jint dstBegin)
 {
   jint dst_length = JvGetArrayLength (dst);
-  if (srcBegin < 0 || srcBegin > srcEnd || srcEnd > count
-      || dstBegin < 0 || dstBegin + (srcEnd-srcBegin) > dst_length)
-    JvThrow (new java::lang::StringIndexOutOfBoundsException());
+  if (srcBegin < 0 || srcBegin > srcEnd || srcEnd > count)
+    throw new java::lang::StringIndexOutOfBoundsException;
+  if (dstBegin < 0 || dstBegin + (srcEnd-srcBegin) > dst_length)
+    throw new ArrayIndexOutOfBoundsException;
   jchar *dPtr = elements (dst) + dstBegin;
   jchar *sPtr = JvGetStringChars (this) + srcBegin;
   jint i = srcEnd-srcBegin;
@@ -549,6 +605,7 @@ java::lang::String::getBytes (jstring enc)
 	  todo -= converted;
 	}
     }
+  converter->done ();
   if (bufpos == buflen)
     return buffer;
   jbyteArray result = JvNewByteArray(bufpos);
@@ -561,9 +618,10 @@ java::lang::String::getBytes(jint srcBegin, jint srcEnd,
 			     jbyteArray dst, jint dstBegin)
 {
   jint dst_length = JvGetArrayLength (dst);
-  if (srcBegin < 0 || srcBegin > srcEnd || srcEnd > count
-      || dstBegin < 0 || dstBegin + (srcEnd-srcBegin) > dst_length)
-    JvThrow (new java::lang::StringIndexOutOfBoundsException());
+  if (srcBegin < 0 || srcBegin > srcEnd || srcEnd > count)
+    throw new java::lang::StringIndexOutOfBoundsException;
+  if (dstBegin < 0 || dstBegin + (srcEnd-srcBegin) > dst_length)
+    throw new ArrayIndexOutOfBoundsException;
   jbyte *dPtr = elements (dst) + dstBegin;
   jchar *sPtr = JvGetStringChars (this) + srcBegin;
   jint i = srcEnd-srcBegin;
@@ -754,7 +812,7 @@ jstring
 java::lang::String::substring (jint beginIndex, jint endIndex)
 {
   if (beginIndex < 0 || endIndex > count || beginIndex > endIndex)
-    JvThrow (new StringIndexOutOfBoundsException());
+    throw new StringIndexOutOfBoundsException;
   if (beginIndex == 0 && endIndex == count)
     return this;
   jint newCount = endIndex - beginIndex;
@@ -953,7 +1011,7 @@ java::lang::String::valueOf(jcharArray data, jint offset, jint count)
 {
   jint data_length = JvGetArrayLength (data);
   if (offset < 0 || count < 0 || offset+count > data_length)
-    JvThrow (new java::lang::IndexOutOfBoundsException());
+    throw new ArrayIndexOutOfBoundsException;
   jstring result = JvAllocString(count);
   jchar *sPtr = elements (data) + offset;
   jchar *dPtr = JvGetStringChars(result);

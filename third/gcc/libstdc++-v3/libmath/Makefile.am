@@ -1,6 +1,7 @@
 ## Makefile for the math subdirectory of the GNU C++ Standard library.
 ##
-## Copyright (C) 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+## Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002 
+## Free Software Foundation, Inc.
 ##
 ## This file is part of the libstdc++ version 3 distribution.
 ## Process this file with automake to produce Makefile.in.
@@ -27,19 +28,11 @@ mkinstalldirs = $(SHELL) $(toplevel_srcdir)/mkinstalldirs
 
 noinst_LTLIBRARIES = libmath.la
 
-EXTRA_LONG_DOUBLE_yes = signbitl.c
-
-EXTRA_DIST = $(EXTRA_LONG_DOUBLE_yes) 
-
-libmath_la_LIBADD = \
-	@LIBMATHOBJS@ \
-	$(EXTRA_LONG_DOUBLE_$(USE_COMPLEX_LONG_DOUBLE)) 
+libmath_la_LIBADD = @LIBMATHOBJS@ 
 
 libmath_la_DEPENDENCIES = $(libmath_la_LIBADD)
 
-libmath_la_SOURCES = signbit.c signbitf.c stubs.c
-
-LINK = $(LIBTOOL) --mode=link "$(CCLD)" $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+libmath_la_SOURCES = stubs.c
 
 # Use common includes from acinclude.m4/GLIBCPP_EXPORT_INCLUDES
 TOPLEVEL_INCLUDES = @TOPLEVEL_INCLUDES@
@@ -47,3 +40,5 @@ TOPLEVEL_INCLUDES = @TOPLEVEL_INCLUDES@
 INCLUDES = \
 	$(TOPLEVEL_INCLUDES) 
 
+# Only compiling "C" sources in this directory.
+LIBTOOL = @LIBTOOL@ --tag CC

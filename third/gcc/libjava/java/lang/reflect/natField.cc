@@ -16,6 +16,7 @@ details.  */
 #include <java/lang/reflect/Field.h>
 #include <java/lang/reflect/Modifier.h>
 #include <java/lang/IllegalArgumentException.h>
+#include <java/lang/IllegalAccessException.h>
 #include <java/lang/NullPointerException.h>
 #include <java/lang/Byte.h>
 #include <java/lang/Short.h>
@@ -79,9 +80,9 @@ getAddr (java::lang::reflect::Field* field, jclass caller, jobject obj)
   else
     {
       if (obj == NULL)
-	_Jv_Throw (new java::lang::NullPointerException ());
+	throw new java::lang::NullPointerException;
       if (! _Jv_IsInstanceOf (obj, field->getDeclaringClass()))
-	JvThrow (new java::lang::IllegalArgumentException ());
+	throw new java::lang::IllegalArgumentException;
       return (void*) ((char*) obj + fld->getOffset ());
     }
 }
@@ -91,7 +92,7 @@ getBoolean (jclass cls, void* addr)
 {
   if (cls == JvPrimClass (boolean))
     return * (jboolean *) addr;
-  _Jv_Throw (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
 }
 
 static jchar
@@ -99,7 +100,7 @@ getChar (jclass cls, void* addr)
 {
   if (cls == JvPrimClass (char))
     return * (jchar *) addr;
-  _Jv_Throw (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
 }
 
 static jbyte
@@ -107,7 +108,7 @@ getByte (jclass cls, void* addr)
 {
   if (cls == JvPrimClass (byte))
     return * (jbyte *) addr;
-  _Jv_Throw (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
 }
 
 static jshort
@@ -117,7 +118,7 @@ getShort (jclass cls, void* addr)
     return * (jshort *) addr;
   if (cls == JvPrimClass (byte))
     return * (jbyte *) addr;
-  _Jv_Throw (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
 }
 
 static jint
@@ -131,7 +132,7 @@ getInt (jclass cls, void* addr)
     return * (jchar *) addr;
   if (cls == JvPrimClass (byte))
     return * (jbyte *) addr;
-  _Jv_Throw (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
 }
 
 static jlong
@@ -249,7 +250,16 @@ java::lang::reflect::Field::get (jclass caller, jobject obj)
       else
 	return java::lang::Boolean::FALSE;
     }
-  JvThrow (new java::lang::IllegalArgumentException());
+  throw new java::lang::IllegalArgumentException;
+}
+
+static void*
+setAddr (java::lang::reflect::Field* field, jclass caller, jobject obj)
+{
+  void *addr = getAddr(field, caller, obj);
+  if  (field->getModifiers() & java::lang::reflect::Modifier::FINAL)
+    throw new java::lang::IllegalAccessException();
+  return addr;
 }
 
 static void
@@ -258,7 +268,7 @@ setBoolean (jclass type, void *addr, jboolean value)
   if (type == JvPrimClass (boolean))
     * (jboolean *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -275,7 +285,7 @@ setChar (jclass type, void *addr, jchar value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -294,7 +304,7 @@ setByte (jclass type, void *addr, jbyte value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -311,7 +321,7 @@ setShort (jclass type, void *addr, jshort value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -326,7 +336,7 @@ setInt (jclass type, void *addr, jint value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -339,7 +349,7 @@ setLong (jclass type, void *addr, jlong value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -350,7 +360,7 @@ setFloat (jclass type, void *addr, jfloat value)
   else if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 static void
@@ -359,69 +369,70 @@ setDouble (jclass type, void *addr, jdouble value)
   if (type == JvPrimClass (double))
     * (jdouble *) addr = value;
   else
-    JvThrow (new java::lang::IllegalArgumentException());
+    throw new java::lang::IllegalArgumentException;
 }
 
 void
 java::lang::reflect::Field::setBoolean (jclass caller, jobject obj, jboolean b)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setBoolean (fld->type, getAddr (this, caller, obj), b);
+  ::setBoolean (fld->type, setAddr (this, caller, obj), b);
 }
 
 void
 java::lang::reflect::Field::setChar (jclass caller, jobject obj, jchar c)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setChar (fld->type, getAddr (this, caller, obj), c);
+  ::setChar (fld->type, setAddr (this, caller, obj), c);
 }
 
 void
 java::lang::reflect::Field::setByte (jclass caller, jobject obj, jbyte b)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setByte (fld->type, getAddr (this, caller, obj), b);
+  ::setByte (fld->type, setAddr (this, caller, obj), b);
 }
 
 void
 java::lang::reflect::Field::setShort (jclass caller, jobject obj, jshort s)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setShort (fld->type, getAddr (this, caller, obj), s);
+  ::setShort (fld->type, setAddr (this, caller, obj), s);
 }
 
 void
 java::lang::reflect::Field::setInt (jclass caller, jobject obj, jint i)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setInt (fld->type, getAddr (this, caller, obj), i);
+  ::setInt (fld->type, setAddr (this, caller, obj), i);
 }
 
 void
 java::lang::reflect::Field::setLong (jclass caller, jobject obj, jlong l)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setLong (fld->type, getAddr (this, caller, obj), l);
+  ::setLong (fld->type, setAddr (this, caller, obj), l);
 }
 void
 java::lang::reflect::Field::setFloat (jclass caller, jobject obj, jfloat f)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setFloat (fld->type, getAddr (this, caller, obj), f);
+  ::setFloat (fld->type, setAddr (this, caller, obj), f);
 }
 
 void
 java::lang::reflect::Field::setDouble (jclass caller, jobject obj, jdouble d)
 {
   jfieldID fld = _Jv_FromReflectedField (this);
-  ::setDouble (fld->type, getAddr (this, caller, obj), d);
+  ::setDouble (fld->type, setAddr (this, caller, obj), d);
 }
 
 void
-java::lang::reflect::Field::set (jclass caller, jobject object, jobject value, jclass type)
+java::lang::reflect::Field::set (jclass caller, jobject object, jobject value,
+				 jclass type)
 {
-  if (! _Jv_IsInstanceOf (value, type))
-    JvThrow (new java::lang::IllegalArgumentException ());
-  void* addr = getAddr (this, caller, object);
+  void* addr = setAddr (this, caller, object);
+  if (value != NULL && ! _Jv_IsInstanceOf (value, type))
+    throw new java::lang::IllegalArgumentException;
   * (jobject*) addr = value;
 }

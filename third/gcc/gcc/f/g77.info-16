@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -36,14 +36,297 @@ a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
 
 
+File: g77.info,  Node: Known Bugs,  Next: Missing Features,  Prev: But-bugs,  Up: Trouble
+
+Known Bugs In GNU Fortran
+=========================
+
+   This section identifies bugs that `g77' _users_ might run into in
+the GCC-3.2 version of `g77'.  This includes bugs that are actually in
+the `gcc' back end (GBE) or in `libf2c', because those sets of code are
+at least somewhat under the control of (and necessarily intertwined
+with) `g77', so it isn't worth separating them out.
+
+   For information on bugs in _other_ versions of `g77', see *Note News
+About GNU Fortran: News.  There, lists of bugs fixed in various
+versions of `g77' can help determine what bugs existed in prior
+versions.
+
+   An online, "live" version of this document (derived directly from
+the mainline, development version of `g77' within `gcc') is available
+via `http://www.gnu.org/software/gcc/onlinedocs/g77/Trouble.html'.
+Follow the "Known Bugs" link.
+
+   The following information was last updated on 2002-02-01:
+
+   * `g77' fails to warn about use of a "live" iterative-DO variable as
+     an implied-DO variable in a `WRITE' or `PRINT' statement (although
+     it does warn about this in a `READ' statement).
+
+   * Something about `g77''s straightforward handling of label
+     references and definitions sometimes prevents the GBE from
+     unrolling loops.  Until this is solved, try inserting or removing
+     `CONTINUE' statements as the terminal statement, using the `END DO'
+     form instead, and so on.
+
+   * Some confusion in diagnostics concerning failing `INCLUDE'
+     statements from within `INCLUDE''d or `#include''d files.
+
+   * `g77' assumes that `INTEGER(KIND=1)' constants range from `-2**31'
+     to `2**31-1' (the range for two's-complement 32-bit values),
+     instead of determining their range from the actual range of the
+     type for the configuration (and, someday, for the constant).
+
+     Further, it generally doesn't implement the handling of constants
+     very well in that it makes assumptions about the configuration
+     that it no longer makes regarding variables (types).
+
+     Included with this item is the fact that `g77' doesn't recognize
+     that, on IEEE-754/854-compliant systems, `0./0.' should produce a
+     NaN and no warning instead of the value `0.' and a warning.
+
+   * `g77' uses way too much memory and CPU time to process large
+     aggregate areas having any initialized elements.
+
+     For example, `REAL A(1000000)' followed by `DATA A(1)/1/' takes up
+     way too much time and space, including the size of the generated
+     assembler file.
+
+     Version 0.5.18 improves cases like this--specifically, cases of
+     _sparse_ initialization that leave large, contiguous areas
+     uninitialized--significantly.  However, even with the
+     improvements, these cases still require too much memory and CPU
+     time.
+
+     (Version 0.5.18 also improves cases where the initial values are
+     zero to a much greater degree, so if the above example ends with
+     `DATA A(1)/0/', the compile-time performance will be about as good
+     as it will ever get, aside from unrelated improvements to the
+     compiler.)
+
+     Note that `g77' does display a warning message to notify the user
+     before the compiler appears to hang.  A warning message is issued
+     when `g77' sees code that provides initial values (e.g. via
+     `DATA') to an aggregate area (`COMMON' or `EQUIVALENCE', or even a
+     large enough array or `CHARACTER' variable) that is large enough
+     to increase `g77''s compile time by roughly a factor of 10.
+
+     This size currently is quite small, since `g77' currently has a
+     known bug requiring too much memory and time to handle such cases.
+     In `gcc/gcc/f/data.c', the macro `FFEDATA_sizeTOO_BIG_INIT_' is
+     defined to the minimum size for the warning to appear.  The size
+     is specified in storage units, which can be bytes, words, or
+     whatever, on a case-by-case basis.
+
+     After changing this macro definition, you must (of course) rebuild
+     and reinstall `g77' for the change to take effect.
+
+     Note that, as of version 0.5.18, improvements have reduced the
+     scope of the problem for _sparse_ initialization of large arrays,
+     especially those with large, contiguous uninitialized areas.
+     However, the warning is issued at a point prior to when `g77'
+     knows whether the initialization is sparse, and delaying the
+     warning could mean it is produced too late to be helpful.
+
+     Therefore, the macro definition should not be adjusted to reflect
+     sparse cases.  Instead, adjust it to generate the warning when
+     densely initialized arrays begin to cause responses noticeably
+     slower than linear performance would suggest.
+
+   * When debugging, after starting up the debugger but before being
+     able to see the source code for the main program unit, the user
+     must currently set a breakpoint at `MAIN__' (or `MAIN___' or
+     `MAIN_' if `MAIN__' doesn't exist) and run the program until it
+     hits the breakpoint.  At that point, the main program unit is
+     activated and about to execute its first executable statement, but
+     that's the state in which the debugger should start up, as is the
+     case for languages like C.
+
+   * Debugging `g77'-compiled code using debuggers other than `gdb' is
+     likely not to work.
+
+     Getting `g77' and `gdb' to work together is a known
+     problem--getting `g77' to work properly with other debuggers, for
+     which source code often is unavailable to `g77' developers, seems
+     like a much larger, unknown problem, and is a lower priority than
+     making `g77' and `gdb' work together properly.
+
+     On the other hand, information about problems other debuggers have
+     with `g77' output might make it easier to properly fix `g77', and
+     perhaps even improve `gdb', so it is definitely welcome.  Such
+     information might even lead to all relevant products working
+     together properly sooner.
+
+   * `g77' doesn't work perfectly on 64-bit configurations such as the
+     Digital Semiconductor ("DEC") Alpha.
+
+     This problem is largely resolved as of version 0.5.23.
+
+   * `g77' currently inserts needless padding for things like `COMMON
+     A,IPAD' where `A' is `CHARACTER*1' and `IPAD' is `INTEGER(KIND=1)'
+     on machines like x86, because the back end insists that `IPAD' be
+     aligned to a 4-byte boundary, but the processor has no such
+     requirement (though it is usually good for performance).
+
+     The `gcc' back end needs to provide a wider array of
+     specifications of alignment requirements and preferences for
+     targets, and front ends like `g77' should take advantage of this
+     when it becomes available.
+
+   * The `libf2c' routines that perform some run-time arithmetic on
+     `COMPLEX' operands were modified circa version 0.5.20 of `g77' to
+     work properly even in the presence of aliased operands.
+
+     While the `g77' and `netlib' versions of `libf2c' differ on how
+     this is accomplished, the main differences are that we believe the
+     `g77' version works properly even in the presence of _partially_
+     aliased operands.
+
+     However, these modifications have reduced performance on targets
+     such as x86, due to the extra copies of operands involved.
+
+
+File: g77.info,  Node: Missing Features,  Next: Disappointments,  Prev: Known Bugs,  Up: Trouble
+
+Missing Features
+================
+
+   This section lists features we know are missing from `g77', and
+which we want to add someday.  (There is no priority implied in the
+ordering below.)
+
+* Menu:
+
+GNU Fortran language:
+* Better Source Model::
+* Fortran 90 Support::
+* Intrinsics in PARAMETER Statements::
+* Arbitrary Concatenation::
+* SELECT CASE on CHARACTER Type::
+* RECURSIVE Keyword::
+* Popular Non-standard Types::
+* Full Support for Compiler Types::
+* Array Bounds Expressions::
+* POINTER Statements::
+* Sensible Non-standard Constructs::
+* READONLY Keyword::
+* FLUSH Statement::
+* Expressions in FORMAT Statements::
+* Explicit Assembler Code::
+* Q Edit Descriptor::
+
+GNU Fortran dialects:
+* Old-style PARAMETER Statements::
+* TYPE and ACCEPT I/O Statements::
+* STRUCTURE UNION RECORD MAP::
+* OPEN CLOSE and INQUIRE Keywords::
+* ENCODE and DECODE::
+* AUTOMATIC Statement::
+* Suppressing Space Padding::
+* Fortran Preprocessor::
+* Bit Operations on Floating-point Data::
+* Really Ugly Character Assignments::
+
+New facilities:
+* POSIX Standard::
+* Floating-point Exception Handling::
+* Nonportable Conversions::
+* Large Automatic Arrays::
+* Support for Threads::
+* Increasing Precision/Range::
+* Enabling Debug Lines::
+
+Better diagnostics:
+* Better Warnings::
+* Gracefully Handle Sensible Bad Code::
+* Non-standard Conversions::
+* Non-standard Intrinsics::
+* Modifying DO Variable::
+* Better Pedantic Compilation::
+* Warn About Implicit Conversions::
+* Invalid Use of Hollerith Constant::
+* Dummy Array Without Dimensioning Dummy::
+* Invalid FORMAT Specifiers::
+* Ambiguous Dialects::
+* Unused Labels::
+* Informational Messages::
+
+Run-time facilities:
+* Uninitialized Variables at Run Time::
+* Portable Unformatted Files::
+* Better List-directed I/O::
+* Default to Console I/O::
+
+Debugging:
+* Labels Visible to Debugger::
+
+
+File: g77.info,  Node: Better Source Model,  Next: Fortran 90 Support,  Up: Missing Features
+
+Better Source Model
+-------------------
+
+   `g77' needs to provide, as the default source-line model, a "pure
+visual" mode, where the interpretation of a source program in this mode
+can be accurately determined by a user looking at a traditionally
+displayed rendition of the program (assuming the user knows whether the
+program is fixed or free form).
+
+   The design should assume the user cannot tell tabs from spaces and
+cannot see trailing spaces on lines, but has canonical tab stops and,
+for fixed-form source, has the ability to always know exactly where
+column 72 is (since the Fortran standard itself requires this for
+fixed-form source).
+
+   This would change the default treatment of fixed-form source to not
+treat lines with tabs as if they were infinitely long--instead, they
+would end at column 72 just as if the tabs were replaced by spaces in
+the canonical way.
+
+   As part of this, provide common alternate models (Digital, `f2c',
+and so on) via command-line options.  This includes allowing
+arbitrarily long lines for free-form source as well as fixed-form
+source and providing various limits and diagnostics as appropriate.
+
+   Also, `g77' should offer, perhaps even default to, warnings when
+characters beyond the last valid column are anything other than spaces.
+This would mean code with "sequence numbers" in columns 73 through 80
+would be rejected, and there's a lot of that kind of code around, but
+one of the most frequent bugs encountered by new users is accidentally
+writing fixed-form source code into and beyond column 73.  So, maybe
+the users of old code would be able to more easily handle having to
+specify, say, a `-Wno-col73to80' option.
+
+
+File: g77.info,  Node: Fortran 90 Support,  Next: Intrinsics in PARAMETER Statements,  Prev: Better Source Model,  Up: Missing Features
+
+Fortran 90 Support
+------------------
+
+   `g77' does not support many of the features that distinguish Fortran
+90 (and, now, Fortran 95) from ANSI FORTRAN 77.
+
+   Some Fortran 90 features are supported, because they make sense to
+offer even to die-hard users of F77.  For example, many of them codify
+various ways F77 has been extended to meet users' needs during its
+tenure, so `g77' might as well offer them as the primary way to meet
+those same needs, even if it offers compatibility with one or more of
+the ways those needs were met by other F77 compilers in the industry.
+
+   Still, many important F90 features are not supported, because no
+attempt has been made to research each and every feature and assess its
+viability in `g77'.  In the meantime, users who need those features must
+use Fortran 90 compilers anyway, and the best approach to adding some
+F90 features to GNU Fortran might well be to fund a comprehensive
+project to create GNU Fortran 95.
+
+
 File: g77.info,  Node: Intrinsics in PARAMETER Statements,  Next: Arbitrary Concatenation,  Prev: Fortran 90 Support,  Up: Missing Features
 
 Intrinsics in `PARAMETER' Statements
 ------------------------------------
 
-   `g77' doesn't allow intrinsics in `PARAMETER' statements.  This
-feature is considered to be absolutely vital, even though it is not
-standard-conforming, and is scheduled for version 0.6.
+   `g77' doesn't allow intrinsics in `PARAMETER' statements.
 
    Related to this, `g77' doesn't allow non-integral exponentiation in
 `PARAMETER' statements, such as `PARAMETER (R=2**.25)'.  It is unlikely
@@ -129,9 +412,7 @@ Popular Non-standard Types
 --------------------------
 
    `g77' doesn't fully support `INTEGER*2', `LOGICAL*1', and similar.
-Version 0.6 will provide full support for this very popular set of
-features.  In the meantime, version 0.5.18 provides rudimentary support
-for them.
+In the meantime, version 0.5.18 provides rudimentary support for them.
 
 
 File: g77.info,  Node: Full Support for Compiler Types,  Next: Array Bounds Expressions,  Prev: Popular Non-standard Types,  Up: Missing Features
@@ -145,7 +426,7 @@ for _all_ applicable back-end-supported types (`char', `short int',
 providing intrinsic support, and maybe constant support (using F90
 syntax) as well, and, for most machines will result in automatic
 support of `INTEGER*1', `INTEGER*2', `INTEGER*8', maybe even `REAL*16',
-and so on.  This is scheduled for version 0.6.
+and so on.
 
 
 File: g77.info,  Node: Array Bounds Expressions,  Next: POINTER Statements,  Prev: Full Support for Compiler Types,  Up: Missing Features
@@ -662,8 +943,7 @@ would!)
      modified (a la `const' in C).
 
      Probably the best solution for now, but not quite trivial to
-     implement in the general case.  Worth considering after `g77' 0.6
-     is considered pretty solid.
+     implement in the general case.
 
 
 File: g77.info,  Node: Gracefully Handle Sensible Bad Code,  Next: Non-standard Conversions,  Prev: Better Warnings,  Up: Missing Features
@@ -1000,237 +1280,4 @@ library, among other things).
 fully controls, such as the Hurd, and provide defaults and options for
 compatibility with existing systems and interoperability with popular
 existing compilers.
-
-
-File: g77.info,  Node: Multiple Definitions of External Names,  Next: Limitation on Implicit Declarations,  Prev: Mangling of Names,  Up: Disappointments
-
-Multiple Definitions of External Names
---------------------------------------
-
-   `g77' doesn't allow a common block and an external procedure or
-`BLOCK DATA' to have the same name.  Some systems allow this, but `g77'
-does not, to be compatible with `f2c'.
-
-   `g77' could special-case the way it handles `BLOCK DATA', since it
-is not compatible with `f2c' in this particular area (necessarily,
-since `g77' offers an important feature here), but it is likely that
-such special-casing would be very annoying to people with programs that
-use `EXTERNAL FOO', with no other mention of `FOO' in the same program
-unit, to refer to external procedures, since the result would be that
-`g77' would treat these references as requests to force-load BLOCK DATA
-program units.
-
-   In that case, if `g77' modified names of `BLOCK DATA' so they could
-have the same names as `COMMON', users would find that their programs
-wouldn't link because the `FOO' procedure didn't have its name
-translated the same way.
-
-   (Strictly speaking, `g77' could emit a
-null-but-externally-satisfying definition of `FOO' with its name
-transformed as if it had been a `BLOCK DATA', but that probably invites
-more trouble than it's worth.)
-
-
-File: g77.info,  Node: Limitation on Implicit Declarations,  Prev: Multiple Definitions of External Names,  Up: Disappointments
-
-Limitation on Implicit Declarations
------------------------------------
-
-   `g77' disallows `IMPLICIT CHARACTER*(*)'.  This is not
-standard-conforming.
-
-
-File: g77.info,  Node: Non-bugs,  Next: Warnings and Errors,  Prev: Disappointments,  Up: Trouble
-
-Certain Changes We Don't Want to Make
-=====================================
-
-   This section lists changes that people frequently request, but which
-we do not make because we think GNU Fortran is better without them.
-
-* Menu:
-
-* Backslash in Constants::           Why `'\\'' is a constant that
-                                       is one, not two, characters long.
-* Initializing Before Specifying::   Why `DATA VAR/1/' can't precede
-                                       `COMMON VAR'.
-* Context-Sensitive Intrinsicness::  Why `CALL SQRT' won't work.
-* Context-Sensitive Constants::      Why `9.435784839284958' is a
-                                       single-precision constant,
-                                       and might be interpreted as
-                                       `9.435785' or similar.
-* Equivalence Versus Equality::      Why `.TRUE. .EQ. .TRUE.' won't work.
-* Order of Side Effects::            Why `J = IFUNC() - IFUNC()' might
-                                       not behave as expected.
-
-
-File: g77.info,  Node: Backslash in Constants,  Next: Initializing Before Specifying,  Up: Non-bugs
-
-Backslash in Constants
-----------------------
-
-   In the opinion of many experienced Fortran users, `-fno-backslash'
-should be the default, not `-fbackslash', as currently set by `g77'.
-
-   First of all, you can always specify `-fno-backslash' to turn off
-this processing.
-
-   Despite not being within the spirit (though apparently within the
-letter) of the ANSI FORTRAN 77 standard, `g77' defaults to
-`-fbackslash' because that is what most UNIX `f77' commands default to,
-and apparently lots of code depends on this feature.
-
-   This is a particularly troubling issue.  The use of a C construct in
-the midst of Fortran code is bad enough, worse when it makes existing
-Fortran programs stop working (as happens when programs written for
-non-UNIX systems are ported to UNIX systems with compilers that provide
-the `-fbackslash' feature as the default--sometimes with no option to
-turn it off).
-
-   The author of GNU Fortran wished, for reasons of linguistic purity,
-to make `-fno-backslash' the default for GNU Fortran and thus require
-users of UNIX `f77' and `f2c' to specify `-fbackslash' to get the UNIX
-behavior.
-
-   However, the realization that `g77' is intended as a replacement for
-_UNIX_ `f77', caused the author to choose to make `g77' as compatible
-with `f77' as feasible, which meant making `-fbackslash' the default.
-
-   The primary focus on compatibility is at the source-code level, and
-the question became "What will users expect a replacement for `f77' to
-do, by default?"  Although at least one UNIX `f77' does not provide
-`-fbackslash' as a default, it appears that the majority of them do,
-which suggests that the majority of code that is compiled by UNIX `f77'
-compilers expects `-fbackslash' to be the default.
-
-   It is probably the case that more code exists that would _not_ work
-with `-fbackslash' in force than code that requires it be in force.
-
-   However, most of _that_ code is not being compiled with `f77', and
-when it is, new build procedures (shell scripts, makefiles, and so on)
-must be set up anyway so that they work under UNIX.  That makes a much
-more natural and safe opportunity for non-UNIX users to adapt their
-build procedures for `g77''s default of `-fbackslash' than would exist
-for the majority of UNIX `f77' users who would have to modify existing,
-working build procedures to explicitly specify `-fbackslash' if that was
-not the default.
-
-   One suggestion has been to configure the default for `-fbackslash'
-(and perhaps other options as well) based on the configuration of `g77'.
-
-   This is technically quite straightforward, but will be avoided even
-in cases where not configuring defaults to be dependent on a particular
-configuration greatly inconveniences some users of legacy code.
-
-   Many users appreciate the GNU compilers because they provide an
-environment that is uniform across machines.  These users would be
-inconvenienced if the compiler treated things like the format of the
-source code differently on certain machines.
-
-   Occasionally users write programs intended only for a particular
-machine type.  On these occasions, the users would benefit if the GNU
-Fortran compiler were to support by default the same dialect as the
-other compilers on that machine.  But such applications are rare.  And
-users writing a program to run on more than one type of machine cannot
-possibly benefit from this kind of compatibility.  (This is consistent
-with the design goals for `gcc'.  To change them for `g77', you must
-first change them for `gcc'.  Do not ask the maintainers of `g77' to do
-this for you, or to disassociate `g77' from the widely understood, if
-not widely agreed-upon, goals for GNU compilers in general.)
-
-   This is why GNU Fortran does and will treat backslashes in the same
-fashion on all types of machines (by default).  *Note Direction of
-Language Development::, for more information on this overall philosophy
-guiding the development of the GNU Fortran language.
-
-   Of course, users strongly concerned about portability should indicate
-explicitly in their build procedures which options are expected by
-their source code, or write source code that has as few such
-expectations as possible.
-
-   For example, avoid writing code that depends on backslash (`\')
-being interpreted either way in particular, such as by starting a
-program unit with:
-
-     CHARACTER BACKSL
-     PARAMETER (BACKSL = '\\')
-
-Then, use concatenation of `BACKSL' anyplace a backslash is desired.
-In this way, users can write programs which have the same meaning in
-many Fortran dialects.
-
-   (However, this technique does not work for Hollerith constants--which
-is just as well, since the only generally portable uses for Hollerith
-constants are in places where character constants can and should be
-used instead, for readability.)
-
-
-File: g77.info,  Node: Initializing Before Specifying,  Next: Context-Sensitive Intrinsicness,  Prev: Backslash in Constants,  Up: Non-bugs
-
-Initializing Before Specifying
-------------------------------
-
-   `g77' does not allow `DATA VAR/1/' to appear in the source code
-before `COMMON VAR', `DIMENSION VAR(10)', `INTEGER VAR', and so on.  In
-general, `g77' requires initialization of a variable or array to be
-specified _after_ all other specifications of attributes (type, size,
-placement, and so on) of that variable or array are specified (though
-_confirmation_ of data type is permitted).
-
-   It is _possible_ `g77' will someday allow all of this, even though
-it is not allowed by the FORTRAN 77 standard.
-
-   Then again, maybe it is better to have `g77' always require
-placement of `DATA' so that it can possibly immediately write constants
-to the output file, thus saving time and space.
-
-   That is, `DATA A/1000000*1/' should perhaps always be immediately
-writable to canonical assembler, unless it's already known to be in a
-`COMMON' area following as-yet-uninitialized stuff, and to do this it
-cannot be followed by `COMMON A'.
-
-
-File: g77.info,  Node: Context-Sensitive Intrinsicness,  Next: Context-Sensitive Constants,  Prev: Initializing Before Specifying,  Up: Non-bugs
-
-Context-Sensitive Intrinsicness
--------------------------------
-
-   `g77' treats procedure references to _possible_ intrinsic names as
-always enabling their intrinsic nature, regardless of whether the
-_form_ of the reference is valid for that intrinsic.
-
-   For example, `CALL SQRT' is interpreted by `g77' as an invalid
-reference to the `SQRT' intrinsic function, because the reference is a
-subroutine invocation.
-
-   First, `g77' recognizes the statement `CALL SQRT' as a reference to
-a _procedure_ named `SQRT', not to a _variable_ with that name (as it
-would for a statement such as `V = SQRT').
-
-   Next, `g77' establishes that, in the program unit being compiled,
-`SQRT' is an intrinsic--not a subroutine that happens to have the same
-name as an intrinsic (as would be the case if, for example, `EXTERNAL
-SQRT' was present).
-
-   Finally, `g77' recognizes that the _form_ of the reference is
-invalid for that particular intrinsic.  That is, it recognizes that it
-is invalid for an intrinsic _function_, such as `SQRT', to be invoked as
-a _subroutine_.
-
-   At that point, `g77' issues a diagnostic.
-
-   Some users claim that it is "obvious" that `CALL SQRT' references an
-external subroutine of their own, not an intrinsic function.
-
-   However, `g77' knows about intrinsic subroutines, not just
-functions, and is able to support both having the same names, for
-example.
-
-   As a result of this, `g77' rejects calls to intrinsics that are not
-subroutines, and function invocations of intrinsics that are not
-functions, just as it (and most compilers) rejects invocations of
-intrinsics with the wrong number (or types) of arguments.
-
-   So, use the `EXTERNAL SQRT' statement in a program unit that calls a
-user-written subroutine named `SQRT'.
 

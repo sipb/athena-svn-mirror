@@ -14,7 +14,14 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AllPermission;
+import java.security.CodeSource;
+import java.security.Permission;
+import java.security.Permissions;
+import java.security.Policy;
+import java.security.ProtectionDomain;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -27,8 +34,8 @@ import java.util.Stack;
 
 public abstract class ClassLoader
 {
-  static private ClassLoader system;
   private ClassLoader parent;
+  private HashMap definedPackages = new HashMap();
 
   public final ClassLoader getParent ()
   {
@@ -38,9 +45,7 @@ public abstract class ClassLoader
 
   public static ClassLoader getSystemClassLoader ()
   {
-    if (system == null)
-      system = gnu.gcj.runtime.VMClassLoader.instance;
-    return system;
+    return gnu.gcj.runtime.VMClassLoader.instance;
   }
 
   /**
@@ -112,7 +117,7 @@ public abstract class ClassLoader
 	  if (parent != null)
 	    return parent.loadClass (name, link);
 	  else
-	    c = system.findClass (name);
+	    c = gnu.gcj.runtime.VMClassLoader.instance.findClass (name);
 	} catch (ClassNotFoundException ex) {
 	  /* ignore, we'll try findClass */;
 	}
@@ -144,6 +149,28 @@ public abstract class ClassLoader
     throw new ClassNotFoundException (name);
   }
 
+  // Protection Domain definitions 
+  // FIXME: should there be a special protection domain used for native code?
+  
+  // The permission required to check what a classes protection domain is.
+  static final Permission protectionDomainPermission
+    = new RuntimePermission("getProtectionDomain");
+  // The protection domain returned if we cannot determine it. 
+  static ProtectionDomain unknownProtectionDomain;
+  // Protection domain to use when a class is defined without one specified.
+  static ProtectionDomain defaultProtectionDomain;
+
+  static
+  {
+    Permissions permissions = new Permissions();
+    permissions.add(new AllPermission());
+    unknownProtectionDomain = new ProtectionDomain(null, permissions);  
+
+    CodeSource cs = new CodeSource(null, null);
+    defaultProtectionDomain =
+      new ProtectionDomain(cs, Policy.getPolicy().getPermissions(cs));
+  }
+
   /** 
    * Defines a class, given the class-data.  According to the JVM, this
    * method should not be used; instead use the variant of this method
@@ -165,9 +192,15 @@ public abstract class ClassLoader
   protected final Class defineClass(byte[] data, int off, int len) 
     throws ClassFormatError
   {
-    return defineClass (null, data, off, len);
+    return defineClass (null, data, off, len, defaultProtectionDomain);
   }
 
+  protected final Class defineClass(String name, byte[] data, int off, int len)
+    throws ClassFormatError
+  {
+    return defineClass (name, data, off, len, defaultProtectionDomain);
+  }
+  
   /** 
    * Defines a class, given the class-data.  This is preferable
    * over <code>defineClass(byte[],off,len)</code> since it is more
@@ -189,6 +222,7 @@ public abstract class ClassLoader
    * @param     data    bytes in class file format.
    * @param     off     offset to start interpreting data.
    * @param     len     length of data in class file.
+   * @param     protectionDomain security protection domain for the class.
    * @return    the class defined.
    * @exception java.lang.ClassNotFoundException 
    * @exception java.lang.LinkageError
@@ -196,7 +230,8 @@ public abstract class ClassLoader
   protected final synchronized Class defineClass(String name,
 						 byte[] data,
 						 int off,
-						 int len)
+						 int len,
+						 ProtectionDomain protectionDomain)
     throws ClassFormatError
   {
     if (data==null || data.length < off+len || off<0 || len<0)
@@ -209,14 +244,17 @@ public abstract class ClassLoader
 					+ name 
 					+ " already loaded");
     
+    if (protectionDomain == null)
+      protectionDomain = defaultProtectionDomain;
+
     try {
       // Since we're calling into native code here, 
       // we better make sure that any generated
       // exception is to spec!
 
-      return defineClass0 (name, data, off, len);
+      return defineClass0 (name, data, off, len, protectionDomain);
 
-    } catch (ClassFormatError x) {
+    } catch (LinkageError x) {
       throw x;		// rethrow
 
     } catch (java.lang.VirtualMachineError x) {
@@ -236,7 +274,8 @@ public abstract class ClassLoader
   private native Class defineClass0 (String name,
 				     byte[] data,
 				     int off,
-				     int len)
+				     int len,
+				     ProtectionDomain protectionDomain)
     throws ClassFormatError;
 
   /** 
@@ -299,6 +338,117 @@ public abstract class ClassLoader
    * be called when the caller has the lock on the class object.  */
   private static native void markClassErrorState0(Class clazz);
 
+  /**
+   * Defines a new package and creates a Package object.
+   * The package should be defined before any class in the package is
+   * defined with <code>defineClass()</code>. The package should not yet
+   * be defined before in this classloader or in one of its parents (which
+   * means that <code>getPackage()</code> should return <code>null</code>).
+   * All parameters except the <code>name</code> of the package may be
+   * <code>null</code>.
+   * <p>
+   * Subclasses should call this method from their <code>findClass()</code>
+   * implementation before calling <code>defineClass()</code> on a Class
+   * in a not yet defined Package (which can be checked by calling
+   * <code>getPackage()</code>).
+   *
+   * @param name The name of the Package
+   * @param specTitle The name of the specification
+   * @param specVendor The name of the specification designer
+   * @param specVersion The version of this specification
+   * @param implTitle The name of the implementation
+   * @param implVendor The vendor that wrote this implementation
+   * @param implVersion The version of this implementation
+   * @param sealed If sealed the origin of the package classes
+   * @return the Package object for the specified package
+   *
+   * @exception IllegalArgumentException if the package name is null or if
+   * it was already defined by this classloader or one of its parents.
+   *
+   * @see Package
+   * @since 1.2
+   */
+  protected Package definePackage(String name,
+				  String specTitle, String specVendor,
+				  String specVersion, String implTitle,
+				  String implVendor, String implVersion,
+				  URL sealed)
+  {
+    if (getPackage(name) != null)
+      throw new IllegalArgumentException("Package " + name
+					 + " already defined");
+    Package p = new Package(name,
+			    specTitle, specVendor, specVersion,
+			    implTitle, implVendor, implVersion,
+			    sealed);
+    synchronized (definedPackages)
+    {
+      definedPackages.put(name, p);
+    }
+    return p;
+  }
+
+  /**
+   * Returns the Package object for the requested package name. It returns
+   * null when the package is not defined by this classloader or one of its
+   * parents.
+   *
+   * @since 1.2
+   */
+  protected Package getPackage(String name)
+  {
+    Package p;
+    if (parent == null)
+      // XXX - Should we use the bootstrap classloader?
+      p = null;
+    else
+      p = parent.getPackage(name);
+
+    if (p == null)
+      {
+        synchronized (definedPackages)
+	{
+	  p = (Package) definedPackages.get(name);
+	}
+      }
+
+    return p;
+  }
+
+  /**
+   * Returns all Package objects defined by this classloader and its parents.
+   *
+   * @since 1.2
+   */
+  protected Package[] getPackages()
+  {
+    Package[] allPackages;
+
+    // Get all our packages.
+    Package[] packages;
+    synchronized(definedPackages)
+    {
+      packages = new Package[definedPackages.size()];
+      definedPackages.values().toArray(packages);
+    }
+
+    // If we have a parent get all packages defined by our parents.
+    if (parent != null)
+      {
+	Package[] parentPackages = parent.getPackages();
+	allPackages = new Package[parentPackages.length + packages.length];
+	System.arraycopy(parentPackages, 0, allPackages, 0,
+			 parentPackages.length);
+	System.arraycopy(packages, 0, allPackages, parentPackages.length,
+			 packages.length);
+      }
+    else
+      // XXX - Should we use the bootstrap classloader?
+      allPackages = packages;
+
+    return allPackages;
+  }
+
   /** 
    * Returns a class found in a system-specific way, typically
    * via the <code>java.class.path</code> system property.  Loads the 
@@ -312,7 +462,7 @@ public abstract class ClassLoader
   protected final Class findSystemClass(String name) 
     throws java.lang.ClassNotFoundException
   {
-    return getSystemClassLoader ().loadClass (name);
+    return gnu.gcj.runtime.VMClassLoader.instance.loadClass (name);
   }
 
   /*

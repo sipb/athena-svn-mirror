@@ -1,6 +1,7 @@
 // Stream buffer classes -*- C++ -*-
 
-// Copyright (C) 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+// Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002
+// Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -34,7 +35,13 @@
 #ifndef _CPP_BITS_STREAMBUF_TCC
 #define _CPP_BITS_STREAMBUF_TCC 1
 
-namespace std {
+#pragma GCC system_header
+
+namespace std 
+{
+  template<typename _CharT, typename _Traits>
+    const size_t
+    basic_streambuf<_CharT, _Traits>::_S_pback_size;
 
   template<typename _CharT, typename _Traits>
     typename basic_streambuf<_CharT, _Traits>::int_type
@@ -44,7 +51,7 @@ namespace std {
       int_type __ret;
       if (_M_in_cur && _M_in_cur < _M_in_end)
 	{
-	  char_type __c = *gptr();
+	  char_type __c = *(this->gptr());
 	  _M_in_cur_move(1);
 	  __ret = traits_type::to_int_type(__c);
 	}
@@ -131,7 +138,7 @@ namespace std {
 	  if (__ret < __n)
 	    {
 	      int_type __c = this->uflow();  
-	      if (__c != traits_type::eof())
+	      if (!traits_type::eq_int_type(__c, traits_type::eof()))
 		{
 		  traits_type::assign(*__s++, traits_type::to_char_type(__c));
 		  ++__ret;
@@ -170,7 +177,7 @@ namespace std {
 	  if (__ret < __n)
 	    {
 	      int_type __c = this->overflow(traits_type::to_int_type(*__s));
-	      if (__c != traits_type::eof())
+	      if (!traits_type::eq_int_type(__c, traits_type::eof()))
 		{
 		  ++__ret;
 		  ++__s;
@@ -198,33 +205,57 @@ namespace std {
       streamsize __bufsize = __sbin->in_avail();
       streamsize __xtrct;
       bool __testput = __sbout->_M_mode & ios_base::out;
-      try {
-	while (__testput && __bufsize != -1)
-	  {
-	    __xtrct = __sbout->sputn(__sbin->gptr(), __bufsize);
-	    __ret += __xtrct;
-	    __sbin->_M_in_cur_move(__xtrct);
-	    if (__xtrct == __bufsize)
-	      {
-		int_type __c = __sbin->sgetc();
-		if (__c == _Traits::eof())
-		  {
-		    __ios.setstate(ios_base::eofbit);
+      try 
+	{
+	  while (__testput && __bufsize != -1)
+  	    {
+ 	      if (__bufsize != 0 && __sbin->gptr() != NULL) 
+		{
+		  __xtrct = __sbout->sputn(__sbin->gptr(), __bufsize);
+		  __ret += __xtrct;
+		  __sbin->_M_in_cur_move(__xtrct);
+		  if (__xtrct != __bufsize)
 		    break;
-		  }
-		__bufsize = __sbin->in_avail();
-	      }
-	    else
-	      break;
-	  }
-      }
-      catch(exception& __fail) {
-	if ((__ios.exceptions() & ios_base::failbit) != 0)
-	  __throw_exception_again;
-      }
+		}
+ 	      else 
+		{
+		  _CharT __buf[256];
+		  streamsize __charsread = __sbin->sgetn(__buf, sizeof(__buf));
+		  __xtrct = __sbout->sputn(__buf, __charsread);
+		  __ret += __xtrct;
+		  if (__xtrct != __charsread)
+		    break;
+		}
+ 	      if (_Traits::eq_int_type(__sbin->sgetc(), _Traits::eof()))
+  		break;
+ 	      __bufsize = __sbin->in_avail();
+  	    }
+	}
+      catch(exception& __fail) 
+	{
+	  __ios.setstate(ios_base::failbit);
+	  if ((__ios.exceptions() & ios_base::failbit) != 0)
+	    __throw_exception_again;
+	}
       return __ret;
     }
+
+  // Inhibit implicit instantiations for required instantiations,
+  // which are defined via explicit instantiations elsewhere.  
+  // NB:  This syntax is a GNU extension.
+  extern template class basic_streambuf<char>;
+  extern template
+    streamsize
+    __copy_streambufs(basic_ios<char>&, basic_streambuf<char>*,
+		      basic_streambuf<char>*); 
+
+#ifdef _GLIBCPP_USE_WCHAR_T
+  extern template class basic_streambuf<wchar_t>;
+  extern template
+    streamsize
+    __copy_streambufs(basic_ios<wchar_t>&, basic_streambuf<wchar_t>*,
+		      basic_streambuf<wchar_t>*); 
+#endif
 } // namespace std
 
-#endif // _CPP_BITS_STREAMBUF_TCC
-
+#endif 

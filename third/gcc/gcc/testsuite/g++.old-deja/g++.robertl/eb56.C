@@ -2,7 +2,8 @@
 // Build don't link:
 
 class foo {
-        typedef int sometype;
+  public:
+  typedef int sometype;
 };
 
 struct die : public foo::sometype { // ERROR - invalid base type

@@ -1,6 +1,6 @@
 // javaprims.h - Main external header file for libgcj.  -*- c++ -*-
 
-/* Copyright (C) 1998, 1999, 2000  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2000, 2001, 2002  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -13,6 +13,8 @@ details.  */
 
 // Force C++ compiler to use Java-style exceptions.
 #pragma GCC java_exceptions
+
+#include <gcj/libgcj-config.h>
 
 // FIXME: this is a hack until we get a proper gcjh.
 // It is needed to work around system header files that define TRUE
@@ -132,6 +134,7 @@ extern "Java"
       class Boolean;
       class Byte;
       class CPlusPlusDemangler;
+      class CharSequence;
       class Character;
       class Character$Subset;
       class Character$UnicodeBlock;
@@ -159,6 +162,7 @@ extern "Java"
       class IllegalThreadStateException;
       class IncompatibleClassChangeError;
       class IndexOutOfBoundsException;
+      class InheritableThreadLocal;
       class InstantiationError;
       class InstantiationException;
       class Integer;
@@ -178,26 +182,35 @@ extern "Java"
       class NumberFormatException;
       class Object;
       class OutOfMemoryError;
+      class Package;
       class Process;
       class Runnable;
       class Runtime;
       class RuntimeException;
       class RuntimePermission;
+      class SecurityContext;
       class SecurityException;
       class SecurityManager;
       class Short;
       class StackOverflowError;
+      class StrictMath;
       class String;
+      class String$CaseInsensitiveComparator;
       class StringBuffer;
       class StringIndexOutOfBoundsException;
       class System;
       class Thread;
       class ThreadDeath;
       class ThreadGroup;
+      class ThreadLocal;
+      class ThreadLocal$Value;
       class Throwable;
       class UnknownError;
       class UnsatisfiedLinkError;
+      class UnsupportedClassVersionError;
       class UnsupportedOperationException;
+      class VMClassLoader;
+      class VMSecurityManager;
       class VerifyError;
       class VirtualMachineError;
       class Void;
@@ -267,14 +280,18 @@ extern "Java"
       class EventObject;
       class GregorianCalendar;
       class HashMap;
-      class HashMap$Entry;
+      class HashMap$HashEntry;
       class HashMap$HashIterator;
       class HashSet;
       class Hashtable;
-      class Hashtable$Entry;
       class Hashtable$Enumerator;
+      class Hashtable$HashEntry;
       class Hashtable$HashIterator;
+      class IdentityHashMap;
+      class IdentityHashMap$IdentityIterator;
       class Iterator;
+      class LinkedHashMap;
+      class LinkedHashMap$LinkedHashEntry;
       class LinkedList;
       class LinkedList$Entry;
       class LinkedList$LinkedListItr;
@@ -284,6 +301,7 @@ extern "Java"
       class Locale;
       class Map;
       class Map$Entry;
+      class Map$Map;
       class MissingResourceException;
       class NoSuchElementException;
       class Observable;
@@ -292,6 +310,7 @@ extern "Java"
       class PropertyPermission;
       class PropertyResourceBundle;
       class Random;
+      class RandomAccess;
       class ResourceBundle;
       class Set;
       class SimpleTimeZone;
@@ -366,22 +385,47 @@ typedef struct _Jv_Field *jfieldID;
 typedef struct _Jv_Method *jmethodID;
 
 extern "C" jobject _Jv_AllocObject (jclass, jint) __attribute__((__malloc__));
+extern "C" jobject _Jv_AllocObjectNoFinalizer (jclass, jint) __attribute__((__malloc__));
+extern "C" jobject _Jv_AllocObjectNoInitNoFinalizer (jclass, jint) __attribute__((__malloc__));
+#ifdef JV_HASH_SYNCHRONIZATION
+  extern "C" jobject _Jv_AllocPtrFreeObject (jclass, jint)
+  			    __attribute__((__malloc__));
+#else
+  // Collector still needs to scan sync_info
+  static inline jobject _Jv_AllocPtrFreeObject (jclass klass, jint sz)
+  {
+    return _Jv_AllocObject(klass, sz);
+  }
+#endif
 extern "C" jboolean _Jv_IsInstanceOf(jobject, jclass);
 extern "C" jstring _Jv_AllocString(jsize) __attribute__((__malloc__));
 extern "C" jstring _Jv_NewString (const jchar*, jsize)
   __attribute__((__malloc__));
+extern jint _Jv_FormatInt (jchar* bufend, jint num);
 extern "C" jchar* _Jv_GetStringChars (jstring str);
-extern "C" jint _Jv_MonitorEnter (jobject);
-extern "C" jint _Jv_MonitorExit (jobject);
+extern "C" void _Jv_MonitorEnter (jobject);
+extern "C" void _Jv_MonitorExit (jobject);
 extern "C" jstring _Jv_NewStringLatin1(const char*, jsize)
   __attribute__((__malloc__));
 extern "C" jsize _Jv_GetStringUTFLength (jstring);
 extern "C" jsize _Jv_GetStringUTFRegion (jstring, jsize, jsize, char *);
 
+extern jint _Jv_CreateJavaVM (void* /*vm_args*/);
+
+void
+_Jv_ThreadRun (java::lang::Thread* thread);
+jint
+_Jv_AttachCurrentThread(java::lang::Thread* thread);
+extern "C" java::lang::Thread*
+_Jv_AttachCurrentThread(jstring name, java::lang::ThreadGroup* group);
+extern "C" jint _Jv_DetachCurrentThread (void);
+
 extern "C" void _Jv_Throw (jthrowable) __attribute__ ((__noreturn__));
 extern "C" void* _Jv_Malloc (jsize) __attribute__((__malloc__));
 extern "C" void* _Jv_Realloc (void *, jsize);
 extern "C" void _Jv_Free (void*);
+extern void (*_Jv_RegisterClassHook) (jclass cl);
+extern "C" void _Jv_RegisterClassHookDefault (jclass);
 
 typedef unsigned short _Jv_ushort __attribute__((__mode__(__HI__)));
 typedef unsigned int _Jv_uint __attribute__((__mode__(__SI__)));
@@ -392,5 +436,6 @@ struct _Jv_Utf8Const
   _Jv_ushort length;	/* In bytes, of data portion, without final '\0'. */
   char data[1];		/* In Utf8 format, with final '\0'. */
 };
+
 
 #endif /* __JAVAPRIMS_H__ */

@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,239 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Multiple Definitions of External Names,  Next: Limitation on Implicit Declarations,  Prev: Mangling of Names,  Up: Disappointments
+
+Multiple Definitions of External Names
+--------------------------------------
+
+   `g77' doesn't allow a common block and an external procedure or
+`BLOCK DATA' to have the same name.  Some systems allow this, but `g77'
+does not, to be compatible with `f2c'.
+
+   `g77' could special-case the way it handles `BLOCK DATA', since it
+is not compatible with `f2c' in this particular area (necessarily,
+since `g77' offers an important feature here), but it is likely that
+such special-casing would be very annoying to people with programs that
+use `EXTERNAL FOO', with no other mention of `FOO' in the same program
+unit, to refer to external procedures, since the result would be that
+`g77' would treat these references as requests to force-load BLOCK DATA
+program units.
+
+   In that case, if `g77' modified names of `BLOCK DATA' so they could
+have the same names as `COMMON', users would find that their programs
+wouldn't link because the `FOO' procedure didn't have its name
+translated the same way.
+
+   (Strictly speaking, `g77' could emit a
+null-but-externally-satisfying definition of `FOO' with its name
+transformed as if it had been a `BLOCK DATA', but that probably invites
+more trouble than it's worth.)
+
+
+File: g77.info,  Node: Limitation on Implicit Declarations,  Prev: Multiple Definitions of External Names,  Up: Disappointments
+
+Limitation on Implicit Declarations
+-----------------------------------
+
+   `g77' disallows `IMPLICIT CHARACTER*(*)'.  This is not
+standard-conforming.
+
+
+File: g77.info,  Node: Non-bugs,  Next: Warnings and Errors,  Prev: Disappointments,  Up: Trouble
+
+Certain Changes We Don't Want to Make
+=====================================
+
+   This section lists changes that people frequently request, but which
+we do not make because we think GNU Fortran is better without them.
+
+* Menu:
+
+* Backslash in Constants::           Why `'\\'' is a constant that
+                                       is one, not two, characters long.
+* Initializing Before Specifying::   Why `DATA VAR/1/' can't precede
+                                       `COMMON VAR'.
+* Context-Sensitive Intrinsicness::  Why `CALL SQRT' won't work.
+* Context-Sensitive Constants::      Why `9.435784839284958' is a
+                                       single-precision constant,
+                                       and might be interpreted as
+                                       `9.435785' or similar.
+* Equivalence Versus Equality::      Why `.TRUE. .EQ. .TRUE.' won't work.
+* Order of Side Effects::            Why `J = IFUNC() - IFUNC()' might
+                                       not behave as expected.
+
+
+File: g77.info,  Node: Backslash in Constants,  Next: Initializing Before Specifying,  Up: Non-bugs
+
+Backslash in Constants
+----------------------
+
+   In the opinion of many experienced Fortran users, `-fno-backslash'
+should be the default, not `-fbackslash', as currently set by `g77'.
+
+   First of all, you can always specify `-fno-backslash' to turn off
+this processing.
+
+   Despite not being within the spirit (though apparently within the
+letter) of the ANSI FORTRAN 77 standard, `g77' defaults to
+`-fbackslash' because that is what most UNIX `f77' commands default to,
+and apparently lots of code depends on this feature.
+
+   This is a particularly troubling issue.  The use of a C construct in
+the midst of Fortran code is bad enough, worse when it makes existing
+Fortran programs stop working (as happens when programs written for
+non-UNIX systems are ported to UNIX systems with compilers that provide
+the `-fbackslash' feature as the default--sometimes with no option to
+turn it off).
+
+   The author of GNU Fortran wished, for reasons of linguistic purity,
+to make `-fno-backslash' the default for GNU Fortran and thus require
+users of UNIX `f77' and `f2c' to specify `-fbackslash' to get the UNIX
+behavior.
+
+   However, the realization that `g77' is intended as a replacement for
+_UNIX_ `f77', caused the author to choose to make `g77' as compatible
+with `f77' as feasible, which meant making `-fbackslash' the default.
+
+   The primary focus on compatibility is at the source-code level, and
+the question became "What will users expect a replacement for `f77' to
+do, by default?"  Although at least one UNIX `f77' does not provide
+`-fbackslash' as a default, it appears that the majority of them do,
+which suggests that the majority of code that is compiled by UNIX `f77'
+compilers expects `-fbackslash' to be the default.
+
+   It is probably the case that more code exists that would _not_ work
+with `-fbackslash' in force than code that requires it be in force.
+
+   However, most of _that_ code is not being compiled with `f77', and
+when it is, new build procedures (shell scripts, makefiles, and so on)
+must be set up anyway so that they work under UNIX.  That makes a much
+more natural and safe opportunity for non-UNIX users to adapt their
+build procedures for `g77''s default of `-fbackslash' than would exist
+for the majority of UNIX `f77' users who would have to modify existing,
+working build procedures to explicitly specify `-fbackslash' if that was
+not the default.
+
+   One suggestion has been to configure the default for `-fbackslash'
+(and perhaps other options as well) based on the configuration of `g77'.
+
+   This is technically quite straightforward, but will be avoided even
+in cases where not configuring defaults to be dependent on a particular
+configuration greatly inconveniences some users of legacy code.
+
+   Many users appreciate the GNU compilers because they provide an
+environment that is uniform across machines.  These users would be
+inconvenienced if the compiler treated things like the format of the
+source code differently on certain machines.
+
+   Occasionally users write programs intended only for a particular
+machine type.  On these occasions, the users would benefit if the GNU
+Fortran compiler were to support by default the same dialect as the
+other compilers on that machine.  But such applications are rare.  And
+users writing a program to run on more than one type of machine cannot
+possibly benefit from this kind of compatibility.  (This is consistent
+with the design goals for `gcc'.  To change them for `g77', you must
+first change them for `gcc'.  Do not ask the maintainers of `g77' to do
+this for you, or to disassociate `g77' from the widely understood, if
+not widely agreed-upon, goals for GNU compilers in general.)
+
+   This is why GNU Fortran does and will treat backslashes in the same
+fashion on all types of machines (by default).  *Note Direction of
+Language Development::, for more information on this overall philosophy
+guiding the development of the GNU Fortran language.
+
+   Of course, users strongly concerned about portability should indicate
+explicitly in their build procedures which options are expected by
+their source code, or write source code that has as few such
+expectations as possible.
+
+   For example, avoid writing code that depends on backslash (`\')
+being interpreted either way in particular, such as by starting a
+program unit with:
+
+     CHARACTER BACKSL
+     PARAMETER (BACKSL = '\\')
+
+Then, use concatenation of `BACKSL' anyplace a backslash is desired.
+In this way, users can write programs which have the same meaning in
+many Fortran dialects.
+
+   (However, this technique does not work for Hollerith constants--which
+is just as well, since the only generally portable uses for Hollerith
+constants are in places where character constants can and should be
+used instead, for readability.)
+
+
+File: g77.info,  Node: Initializing Before Specifying,  Next: Context-Sensitive Intrinsicness,  Prev: Backslash in Constants,  Up: Non-bugs
+
+Initializing Before Specifying
+------------------------------
+
+   `g77' does not allow `DATA VAR/1/' to appear in the source code
+before `COMMON VAR', `DIMENSION VAR(10)', `INTEGER VAR', and so on.  In
+general, `g77' requires initialization of a variable or array to be
+specified _after_ all other specifications of attributes (type, size,
+placement, and so on) of that variable or array are specified (though
+_confirmation_ of data type is permitted).
+
+   It is _possible_ `g77' will someday allow all of this, even though
+it is not allowed by the FORTRAN 77 standard.
+
+   Then again, maybe it is better to have `g77' always require
+placement of `DATA' so that it can possibly immediately write constants
+to the output file, thus saving time and space.
+
+   That is, `DATA A/1000000*1/' should perhaps always be immediately
+writable to canonical assembler, unless it's already known to be in a
+`COMMON' area following as-yet-uninitialized stuff, and to do this it
+cannot be followed by `COMMON A'.
+
+
+File: g77.info,  Node: Context-Sensitive Intrinsicness,  Next: Context-Sensitive Constants,  Prev: Initializing Before Specifying,  Up: Non-bugs
+
+Context-Sensitive Intrinsicness
+-------------------------------
+
+   `g77' treats procedure references to _possible_ intrinsic names as
+always enabling their intrinsic nature, regardless of whether the
+_form_ of the reference is valid for that intrinsic.
+
+   For example, `CALL SQRT' is interpreted by `g77' as an invalid
+reference to the `SQRT' intrinsic function, because the reference is a
+subroutine invocation.
+
+   First, `g77' recognizes the statement `CALL SQRT' as a reference to
+a _procedure_ named `SQRT', not to a _variable_ with that name (as it
+would for a statement such as `V = SQRT').
+
+   Next, `g77' establishes that, in the program unit being compiled,
+`SQRT' is an intrinsic--not a subroutine that happens to have the same
+name as an intrinsic (as would be the case if, for example, `EXTERNAL
+SQRT' was present).
+
+   Finally, `g77' recognizes that the _form_ of the reference is
+invalid for that particular intrinsic.  That is, it recognizes that it
+is invalid for an intrinsic _function_, such as `SQRT', to be invoked as
+a _subroutine_.
+
+   At that point, `g77' issues a diagnostic.
+
+   Some users claim that it is "obvious" that `CALL SQRT' references an
+external subroutine of their own, not an intrinsic function.
+
+   However, `g77' knows about intrinsic subroutines, not just
+functions, and is able to support both having the same names, for
+example.
+
+   As a result of this, `g77' rejects calls to intrinsics that are not
+subroutines, and function invocations of intrinsics that are not
+functions, just as it (and most compilers) rejects invocations of
+intrinsics with the wrong number (or types) of arguments.
+
+   So, use the `EXTERNAL SQRT' statement in a program unit that calls a
+user-written subroutine named `SQRT'.
 
 
 File: g77.info,  Node: Context-Sensitive Constants,  Next: Equivalence Versus Equality,  Prev: Context-Sensitive Intrinsicness,  Up: Non-bugs
@@ -241,11 +474,7 @@ Many warnings are issued only if you ask for them, with one of the `-W'
 options (for instance, `-Wall' requests a variety of useful warnings).
 
    _Note:_ Currently, the text of the line and a pointer to the column
-is printed in most `g77' diagnostics.  Probably, as of version 0.6,
-`g77' will no longer print the text of the source line, instead printing
-the column number following the file name and line number in a form
-that GNU Emacs recognizes.  This change is expected to speed up and
-reduce the memory usage of the `g77' compiler.
+is printed in most `g77' diagnostics.
 
    *Note Options to Request or Suppress Warnings: Warning Options, for
 more detail on these and related command-line options.
@@ -891,234 +1120,4 @@ might be available from `ftp://alpha.gnu.org/gnu/g77/projects/'.
 * Internals Documentation::  Make maintenance easier.
 * Internals Improvements::   Make internals more robust.
 * Better Diagnostics::       Make using `g77' on new code easier.
-
-
-File: g77.info,  Node: Efficiency,  Next: Better Optimization,  Up: Projects
-
-Improve Efficiency
-==================
-
-   Don't bother doing any performance analysis until most of the
-following items are taken care of, because there's no question they
-represent serious space/time problems, although some of them show up
-only given certain kinds of (popular) input.
-
-   * Improve `malloc' package and its uses to specify more info about
-     memory pools and, where feasible, use obstacks to implement them.
-
-   * Skip over uninitialized portions of aggregate areas (arrays,
-     `COMMON' areas, `EQUIVALENCE' areas) so zeros need not be output.
-     This would reduce memory usage for large initialized aggregate
-     areas, even ones with only one initialized element.
-
-     As of version 0.5.18, a portion of this item has already been
-     accomplished.
-
-   * Prescan the statement (in `sta.c') so that the nature of the
-     statement is determined as much as possible by looking entirely at
-     its form, and not looking at any context (previous statements,
-     including types of symbols).  This would allow ripping out of the
-     statement-confirmation, symbol retraction/confirmation, and
-     diagnostic inhibition mechanisms.  Plus, it would result in
-     much-improved diagnostics.  For example, `CALL
-     some-intrinsic(...)', where the intrinsic is not a subroutine
-     intrinsic, would result actual error instead of the
-     unimplemented-statement catch-all.
-
-   * Throughout `g77', don't pass line/column pairs where a simple
-     `ffewhere' type, which points to the error as much as is desired
-     by the configuration, will do, and don't pass `ffelexToken' types
-     where a simple `ffewhere' type will do.  Then, allow new default
-     configuration of `ffewhere' such that the source line text is not
-     preserved, and leave it to things like Emacs' next-error function
-     to point to them (now that `next-error' supports column, or,
-     perhaps, character-offset, numbers).  The change in calling
-     sequences should improve performance somewhat, as should not
-     having to save source lines.  (Whether this whole item will
-     improve performance is questionable, but it should improve
-     maintainability.)
-
-   * Handle `DATA (A(I),I=1,1000000)/1000000*2/' more efficiently,
-     especially as regards the assembly output.  Some of this might
-     require improving the back end, but lots of improvement in
-     space/time required in `g77' itself can be fairly easily obtained
-     without touching the back end.  Maybe type-conversion, where
-     necessary, can be speeded up as well in cases like the one shown
-     (converting the `2' into `2.').
-
-   * If analysis shows it to be worthwhile, optimize `lex.c'.
-
-   * Consider redesigning `lex.c' to not need any feedback during
-     tokenization, by keeping track of enough parse state on its own.
-
-
-File: g77.info,  Node: Better Optimization,  Next: Simplify Porting,  Prev: Efficiency,  Up: Projects
-
-Better Optimization
-===================
-
-   Much of this work should be put off until after `g77' has all the
-features necessary for its widespread acceptance as a useful F77
-compiler.  However, perhaps this work can be done in parallel during
-the feature-adding work.
-
-   * Do the equivalent of the trick of putting `extern inline' in front
-     of every function definition in `libg2c' and #include'ing the
-     resulting file in `f2c'+`gcc'--that is, inline all
-     run-time-library functions that are at all worth inlining.  (Some
-     of this has already been done, such as for integral
-     exponentiation.)
-
-   * When doing `CHAR_VAR = CHAR_FUNC(...)', and it's clear that types
-     line up and `CHAR_VAR' is addressable or not a `VAR_DECL', make
-     `CHAR_VAR', not a temporary, be the receiver for `CHAR_FUNC'.
-     (This is now done for `COMPLEX' variables.)
-
-   * Design and implement Fortran-specific optimizations that don't
-     really belong in the back end, or where the front end needs to
-     give the back end more info than it currently does.
-
-   * Design and implement a new run-time library interface, with the
-     code going into `libgcc' so no special linking is required to link
-     Fortran programs using standard language features.  This library
-     would speed up lots of things, from I/O (using precompiled formats,
-     doing just one, or, at most, very few, calls for arrays or array
-     sections, and so on) to general computing (array/section
-     implementations of various intrinsics, implementation of commonly
-     performed loops that aren't likely to be optimally compiled
-     otherwise, etc.).
-
-     Among the important things the library would do are:
-
-        * Be a one-stop-shop-type library, hence shareable and usable
-          by all, in that what are now library-build-time options in
-          `libg2c' would be moved at least to the `g77' compile phase,
-          if not to finer grains (such as choosing how list-directed
-          I/O formatting is done by default at `OPEN' time, for
-          preconnected units via options or even statements in the main
-          program unit, maybe even on a per-I/O basis with appropriate
-          pragma-like devices).
-
-   * Probably requiring the new library design, change interface to
-     normally have `COMPLEX' functions return their values in the way
-     `gcc' would if they were declared `__complex__ float', rather than
-     using the mechanism currently used by `CHARACTER' functions
-     (whereby the functions are compiled as returning void and their
-     first arg is a pointer to where to store the result).  (Don't
-     append underscores to external names for `COMPLEX' functions in
-     some cases once `g77' uses `gcc' rather than `f2c' calling
-     conventions.)
-
-   * Do something useful with `doiter' references where possible.  For
-     example, `CALL FOO(I)' cannot modify `I' if within a `DO' loop
-     that uses `I' as the iteration variable, and the back end might
-     find that info useful in determining whether it needs to read `I'
-     back into a register after the call.  (It normally has to do that,
-     unless it knows `FOO' never modifies its passed-by-reference
-     argument, which is rarely the case for Fortran-77 code.)
-
-
-File: g77.info,  Node: Simplify Porting,  Next: More Extensions,  Prev: Better Optimization,  Up: Projects
-
-Simplify Porting
-================
-
-   Making `g77' easier to configure, port, build, and install, either
-as a single-system compiler or as a cross-compiler, would be very
-useful.
-
-   * A new library (replacing `libg2c') should improve portability as
-     well as produce more optimal code.  Further, `g77' and the new
-     library should conspire to simplify naming of externals, such as
-     by removing unnecessarily added underscores, and to
-     reduce/eliminate the possibility of naming conflicts, while making
-     debugger more straightforward.
-
-     Also, it should make multi-language applications more feasible,
-     such as by providing Fortran intrinsics that get Fortran unit
-     numbers given C `FILE *' descriptors.
-
-   * Possibly related to a new library, `g77' should produce the
-     equivalent of a `gcc' `main(argc, argv)' function when it compiles
-     a main program unit, instead of compiling something that must be
-     called by a library implementation of `main()'.
-
-     This would do many useful things such as provide more flexibility
-     in terms of setting up exception handling, not requiring
-     programmers to start their debugging sessions with `breakpoint
-     MAIN__' followed by `run', and so on.
-
-   * The GBE needs to understand the difference between alignment
-     requirements and desires.  For example, on Intel x86 machines,
-     `g77' currently imposes overly strict alignment requirements, due
-     to the back end, but it would be useful for Fortran and C
-     programmers to be able to override these _recommendations_ as long
-     as they don't violate the actual processor _requirements_.
-
-
-File: g77.info,  Node: More Extensions,  Next: Machine Model,  Prev: Simplify Porting,  Up: Projects
-
-More Extensions
-===============
-
-   These extensions are not the sort of things users ask for "by name",
-but they might improve the usability of `g77', and Fortran in general,
-in the long run.  Some of these items really pertain to improving `g77'
-internals so that some popular extensions can be more easily supported.
-
-   * Look through all the documentation on the GNU Fortran language,
-     dialects, compiler, missing features, bugs, and so on.  Many
-     mentions of incomplete or missing features are sprinkled
-     throughout.  It is not worth repeating them here.
-
-   * Consider adding a `NUMERIC' type to designate typeless numeric
-     constants, named and unnamed.  The idea is to provide a
-     forward-looking, effective replacement for things like the
-     old-style `PARAMETER' statement when people really need
-     typelessness in a maintainable, portable, clearly documented way.
-     Maybe `TYPELESS' would include `CHARACTER', `POINTER', and
-     whatever else might come along.  (This is not really a call for
-     polymorphism per se, just an ability to express limited, syntactic
-     polymorphism.)
-
-   * Support `OPEN(...,KEY=(...),...)'.
-
-   * Support arbitrary file unit numbers, instead of limiting them to 0
-     through `MXUNIT-1'.  (This is a `libg2c' issue.)
-
-   * `OPEN(NOSPANBLOCKS,...)' is treated as
-     `OPEN(UNIT=NOSPANBLOCKS,...)', so a later `UNIT=' in the first
-     example is invalid.  Make sure this is what users of this feature
-     would expect.
-
-   * Currently `g77' disallows `READ(1'10)' since it is an obnoxious
-     syntax, but supporting it might be pretty easy if needed.  More
-     details are needed, such as whether general expressions separated
-     by an apostrophe are supported, or maybe the record number can be
-     a general expression, and so on.
-
-   * Support `STRUCTURE', `UNION', `MAP', and `RECORD' fully.
-     Currently there is no support at all for `%FILL' in `STRUCTURE'
-     and related syntax, whereas the rest of the stuff has at least
-     some parsing support.  This requires either major changes to
-     `libg2c' or its replacement.
-
-   * F90 and `g77' probably disagree about label scoping relative to
-     `INTERFACE' and `END INTERFACE', and their contained procedure
-     interface bodies (blocks?).
-
-   * `ENTRY' doesn't support F90 `RESULT()' yet, since that was added
-     after S8.112.
-
-   * Empty-statement handling (10 ;;CONTINUE;;) probably isn't
-     consistent with the final form of the standard (it was vague at
-     S8.112).
-
-   * It seems to be an "open" question whether a file, immediately
-     after being `OPEN'ed,is positioned at the beginning, the end, or
-     wherever--it might be nice to offer an option of opening to
-     "undefined" status, requiring an explicit absolute-positioning
-     operation to be performed before any other (besides `CLOSE') to
-     assist in making applications port to systems (some IBM?) that
-     `OPEN' to the end of a file or some such thing.
 

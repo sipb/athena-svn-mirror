@@ -1,7 +1,7 @@
 ;; -*- Mode: Scheme -*-
 ;;   Machine description for GNU compiler,
 ;;   for ATMEL AVR micro controllers.
-;;   Copyright (C) 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+;;   Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 ;;   Contributed by Denis Chertykov (denisc@overta.ru)
 
 ;; This file is part of GNU CC.
@@ -68,7 +68,7 @@
                                           (le (minus (pc) (match_dup 0))
                                               (const_int 2045)))
                                      (const_int 2)
-                                     (const_int 2)))
+                                     (const_int 3)))
          (eq_attr "type" "branch1")
          (if_then_else (and (ge (minus (pc) (match_dup 0))
                                 (const_int -62))
@@ -80,7 +80,7 @@
                                           (le (minus (pc) (match_dup 0))
                                               (const_int 2043)))
                                      (const_int 3)
-                                     (const_int 3)))]
+                                     (const_int 4)))]
         (const_int 2)))
 
 (define_insn "*pop1"
@@ -224,7 +224,7 @@
 {
    /* One of the ops has to be in a register */
   if (!register_operand(operand0, HImode)
-      && !(register_operand(operand1, HImode)  || const0_rtx == operands[1]))
+      && !(register_operand(operand1, HImode) || const0_rtx == operands[1]))
     {
       operands[1] = copy_to_mode_reg(HImode, operand1);
     }
@@ -605,6 +605,19 @@
   [(set_attr "length" "4,3,3,4,5,5")
    (set_attr "cc" "set_n,set_n,set_czn,set_czn,set_n,set_n")])
 
+(define_insn "*addsi3_zero_extend"
+  [(set (match_operand:SI 0 "register_operand" "=r")
+	(plus:SI (zero_extend:SI
+		  (match_operand:QI 1 "register_operand" "r"))
+		 (match_operand:SI 2 "register_operand" "0")))]
+  ""
+  "add %A0,%1
+	adc %B0,__zero_reg__
+	adc %C0,__zero_reg__
+	adc %D0,__zero_reg__"
+  [(set_attr "length" "4")
+   (set_attr "cc" "set_n")])
+
 ;-----------------------------------------------------------------------------
 ; sub bytes
 (define_insn "subqi3"
@@ -629,6 +642,17 @@
   [(set_attr "length" "2,2")
    (set_attr "cc" "set_czn,set_czn")])
 
+(define_insn "*subhi3_zero_extend1"
+  [(set (match_operand:HI 0 "register_operand" "=r")
+	(minus:HI (match_operand:HI 1 "register_operand" "0")
+		  (zero_extend:HI
+		   (match_operand:QI 2 "register_operand" "r"))))]
+  ""
+  "sub %A0,%2
+	sbc %B0,__zero_reg__"
+  [(set_attr "length" "2")
+   (set_attr "cc" "set_n")])
+
 (define_insn "subsi3"
   [(set (match_operand:SI 0 "register_operand" "=r,d")
         (minus:SI (match_operand:SI 1 "register_operand" "0,0")
@@ -639,6 +663,19 @@
 	subi %A0,lo8(%2)\;sbci %B0,hi8(%2)\;sbci %C0,hlo8(%2)\;sbci %D0,hhi8(%2)"
   [(set_attr "length" "4,4")
    (set_attr "cc" "set_czn,set_czn")])
+
+(define_insn "*subsi3_zero_extend"
+  [(set (match_operand:SI 0 "register_operand" "=r")
+	(minus:SI (match_operand:SI 1 "register_operand" "0")
+		  (zero_extend:SI
+		   (match_operand:QI 2 "register_operand" "r"))))]
+  ""
+  "sub %A0,%2
+	sbc %B0,__zero_reg__
+	sbc %C0,__zero_reg__
+	sbc %D0,__zero_reg__"
+  [(set_attr "length" "4")
+   (set_attr "cc" "set_n")])
 
 ;******************************************************************************
 ; mul
@@ -996,9 +1033,9 @@
 	    output_asm_insn (AS2 (andi,%A0,lo8(%2)), operands);
 	  if ((mask & 0xff00) != 0xff00)
 	    output_asm_insn (AS2 (andi,%B0,hi8(%2)), operands);
-	  if ((mask & 0xff0000UL) != 0xff0000UL)
+	  if ((mask & 0xff0000L) != 0xff0000L)
 	    output_asm_insn (AS2 (andi,%C0,hlo8(%2)), operands);
-	  if ((mask & 0xff000000UL) != 0xff000000UL)
+	  if ((mask & 0xff000000L) != 0xff000000L)
 	    output_asm_insn (AS2 (andi,%D0,hhi8(%2)), operands);
 	  return \"\";
         }
@@ -1080,9 +1117,9 @@
 	  output_asm_insn (AS2 (ori,%A0,lo8(%2)), operands);
 	if (mask & 0xff00)
 	  output_asm_insn (AS2 (ori,%B0,hi8(%2)), operands);
-	if (mask & 0xff0000UL)
+	if (mask & 0xff0000L)
 	  output_asm_insn (AS2 (ori,%C0,hlo8(%2)), operands);
-	if (mask & 0xff000000UL)
+	if (mask & 0xff000000L)
 	  output_asm_insn (AS2 (ori,%D0,hhi8(%2)), operands);
 	return \"\";
       }
@@ -2213,6 +2250,7 @@
     && test_hard_reg_class (LD_REGS, operands[1]))"
   "*
 {
+  CC_STATUS_INIT;
   if (test_hard_reg_class (ADDW_REGS, operands[0]))
     output_asm_insn (AS2 (sbiw,%0,1) CR_TAB
 		     AS2 (sbc,%C0,__zero_reg__) CR_TAB
@@ -2251,6 +2289,7 @@
     && test_hard_reg_class (LD_REGS, operands[1]))"
   "*
 {
+  CC_STATUS_INIT;
   if (test_hard_reg_class (ADDW_REGS, operands[0]))
     output_asm_insn (AS2 (sbiw,%0,1), operands);
   else
@@ -2282,6 +2321,9 @@
   "test_hard_reg_class (LD_REGS, operands[0])"
   "*
 {
+  CC_STATUS_INIT;
+  cc_status.value1 = operands[0];
+  cc_status.flags |= CC_OVERFLOW_UNUSABLE;
   output_asm_insn (AS2 (subi,%A0,1), operands);
   switch (avr_jump_mode (operands[1],insn))
   {

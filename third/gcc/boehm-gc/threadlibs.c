@@ -1,24 +1,22 @@
-# include "gcconfig.h"
+# include "private/gcconfig.h"
 # include <stdio.h>
 
 int main()
 {
-#   if defined(LINUX_THREADS)
-#     ifdef USE_LD_WRAP
+#   if defined(GC_USE_LD_WRAP)
 	printf("-Wl,--wrap -Wl,read -Wl,--wrap -Wl,dlopen "
 	       "-Wl,--wrap -Wl,pthread_create -Wl,--wrap -Wl,pthread_join "
-	       "-Wl,--wrap -Wl,pthread_sigmask -lpthread -ldl\n");
-#     else
-	printf("-lpthread -ldl\n");
-#     endif
+	       "-Wl,--wrap -Wl,pthread_detach "
+	       "-Wl,--wrap -Wl,pthread_sigmask -Wl,--wrap -Wl,sleep\n");
 #   endif
-#   if defined(IRIX_THREADS)
-	printf("-lpthread\n");
+#   if defined(GC_LINUX_THREADS) || defined(GC_IRIX_THREADS) \
+	|| defined(GC_FREEBSD_THREADS) || defined(GC_SOLARIS_PTHREADS)
+        printf("-lpthread\n");
 #   endif
-#   if defined(HPUX_THREADS)
+#   if defined(GC_HPUX_THREADS) || defined(GC_OSF1_THREADS)
 	printf("-lpthread -lrt\n");
 #   endif
-#   ifdef SOLARIS_THREADS
+#   if defined(GC_SOLARIS_THREADS) && !defined(GC_SOLARIS_PTHREADS)
         printf("-lthread -ldl\n");
 #   endif
     return 0;

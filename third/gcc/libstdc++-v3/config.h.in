@@ -15,14 +15,28 @@
 // Define if C99 features such as lldiv_t, llabs, lldiv should be exposed.
 #undef _GLIBCPP_USE_C99
 
-// Include support for shadow headers, ie --enable-cshadow-headers.
-#undef _GLIBCPP_USE_SHADOW_HEADERS
-
 // Define if code specialized for wchar_t should be used.
 #undef _GLIBCPP_USE_WCHAR_T
 
 // Define if using setrlimit to limit memory usage during 'make check'.
 #undef _GLIBCPP_MEM_LIMITS
+
+// Define to use concept checking code from the boost libraries.
+#undef _GLIBCPP_CONCEPT_CHECKS
+
+// Define to use symbol versioning in the shared library.
+#undef _GLIBCPP_SYMVER
+
+// Define symbol versioning in assember directives. If symbol
+// versioning is beigng used, and the assembler supports this kind of
+// thing, then use it.
+// NB: _GLIBCPP_AT_AT is a hack to work around quoting issues in m4.
+#if _GLIBCPP_SYMVER
+  #define _GLIBCPP_ASM_SYMVER(cur, old, version) \
+   asm (".symver " #cur "," #old _GLIBCPP_AT_AT #version);
+#else
+  #define _GLIBCPP_ASM_SYMVER(cur, old, version)
+#endif
 
 // Define if mbstate_t exists in wchar.h.
 #undef HAVE_MBSTATE_T
@@ -32,6 +46,18 @@
 
 // Define if you have the modfl function.
 #undef HAVE_MODFL
+
+// Define if you have the expf function.
+#undef HAVE_EXPF
+
+// Define if you have the expl function.
+#undef HAVE_EXPL
+
+// Define if you have the hypotf function.
+#undef HAVE_HYPOTF
+
+// Define if you have the hypotl function.
+#undef HAVE_HYPOTL
 
 // Define if the compiler/host combination has __builtin_abs
 #undef HAVE___BUILTIN_ABS
@@ -66,8 +92,8 @@
 // Define if the compiler/host combination has __builtin_sinl
 #undef HAVE___BUILTIN_SINL
 
-// Define if the compiler/host combination has __builtin_fsqrt
-#undef HAVE___BUILTIN_FSQRT
+// Define if the compiler/host combination has __builtin_sqrt
+#undef HAVE___BUILTIN_SQRT
 
 // Define if the compiler/host combination has __builtin_sqrtf
 #undef HAVE___BUILTIN_SQRTF
@@ -77,6 +103,15 @@
 
 // Define if LC_MESSAGES is available in <locale.h>.
 #undef HAVE_LC_MESSAGES
+
+/* Define if you have the __signbit function.  */
+#undef HAVE___SIGNBIT
+
+/* Define if you have the __signbitf function.  */
+#undef HAVE___SIGNBITF
+
+/* Define if you have the __signbitl function.  */
+#undef HAVE___SIGNBITL
 
 /* Define if you have the _acosf function.  */
 #undef HAVE__ACOSF
@@ -125,6 +160,9 @@
 
 /* Define if you have the _cosl function.  */
 #undef HAVE__COSL
+
+/* Define if you have the _expf function.  */
+#undef HAVE__EXPF
 
 /* Define if you have the _expl function.  */
 #undef HAVE__EXPL
@@ -321,6 +359,9 @@
 /* Define if you have the drand48 function.  */
 #undef HAVE_DRAND48
 
+/* Define if you have the expf function.  */
+#undef HAVE_EXPF
+
 /* Define if you have the expl function.  */
 #undef HAVE_EXPL
 
@@ -483,8 +524,8 @@
 /* Define if you have the qfpclass function.  */
 #undef HAVE_QFPCLASS
 
-/* Define if you have the signbitl function.  */
-#undef HAVE_SIGNBITL
+/* Define if you have the setenv function.  */
+#undef HAVE_SETENV
 
 /* Define if you have the sincos function.  */
 #undef HAVE_SINCOS
@@ -512,6 +553,9 @@
 
 /* Define if you have the sqrtl function.  */
 #undef HAVE_SQRTL
+
+/* Define if you have the strtof function.  */
+#undef HAVE_STRTOF
 
 /* Define if you have the strtold function.  */
 #undef HAVE_STRTOLD
@@ -678,6 +722,12 @@
 /* Define if you have the <nan.h> header file.  */
 #undef HAVE_NAN_H
 
+/* Define if you have the <stdlib.h> header file.  */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
 /* Define if you have the <sys/isa_defs.h> header file.  */
 #undef HAVE_SYS_ISA_DEFS_H
 
@@ -687,11 +737,20 @@
 /* Define if you have the <sys/resource.h> header file.  */
 #undef HAVE_SYS_RESOURCE_H
 
+/* Define if you have the <sys/stat.h> header file.  */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/types.h> header file.  */
+#undef HAVE_SYS_TYPES_H
+
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
 /* Define if you have the <wchar.h> header file.  */
 #undef HAVE_WCHAR_H
+
+/* Define if you have the <wctype.h> header file.  */
+#undef HAVE_WCTYPE_H
 
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM

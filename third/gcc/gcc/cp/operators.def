@@ -5,7 +5,7 @@
    non-overloadable operators (like the `?:' ternary operator).  
    Writtey by Mark Mitchell <mark@codesourcery.com>
 
-   Copyright (C) 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of GNU CC.
 
@@ -29,7 +29,7 @@ Boston, MA 02111-1307, USA.  */
    NAME
 
      The name of the operator, as a C string, but without the
-     preceeding `operator'.  This is the name that would be given in
+     preceding `operator'.  This is the name that would be given in
      the source program.  For `operator +', for example, this would be
      `+'.
    
@@ -46,10 +46,6 @@ Boston, MA 02111-1307, USA.  */
      mangled under the new ABI.  For `operator +', for example, this
      would be "pl".
 
-   OLD_MANGLING
-
-     Analagous, but for the old ABI.
-
    ARITY
    
      The arity of the operator, or -1 if any arity is allowed.  (As
@@ -65,7 +61,7 @@ Boston, MA 02111-1307, USA.  */
 
    There is code (such as in grok_op_properties) that depends on the
    order the operators are presented in this file.  In particular,
-   unary operators must preceed binary operators.  */
+   unary operators must precede binary operators.  */
  
 /* Use DEF_SIMPLE_OPERATOR to define a non-assignment operator.  Its
    arguments are as for DEF_OPERATOR, but there is no need to provide

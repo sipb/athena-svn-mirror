@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,351 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Case Sensitivity,  Next: VXT Fortran,  Prev: Dollar Signs,  Up: Other Dialects
+
+Case Sensitivity
+================
+
+   GNU Fortran offers the programmer way too much flexibility in
+deciding how source files are to be treated vis-a-vis uppercase and
+lowercase characters.  There are 66 useful settings that affect case
+sensitivity, plus 10 settings that are nearly useless, with the
+remaining 116 settings being either redundant or useless.
+
+   None of these settings have any effect on the contents of comments
+(the text after a `c' or `C' in Column 1, for example) or of character
+or Hollerith constants.  Note that things like the `E' in the statement
+`CALL FOO(3.2E10)' and the `TO' in `ASSIGN 10 TO LAB' are considered
+built-in keywords, and so are affected by these settings.
+
+   Low-level switches are identified in this section as follows:
+
+     A Source Case Conversion:
+
+          0 Preserve (see Note 1)
+
+          1 Convert to Upper Case
+
+          2 Convert to Lower Case
+
+     B Built-in Keyword Matching:
+
+          0 Match Any Case (per-character basis)
+
+          1 Match Upper Case Only
+
+          2 Match Lower Case Only
+
+          3 Match InitialCaps Only (see tables for spellings)
+
+     C Built-in Intrinsic Matching:
+
+          0 Match Any Case (per-character basis)
+
+          1 Match Upper Case Only
+
+          2 Match Lower Case Only
+
+          3 Match InitialCaps Only (see tables for spellings)
+
+     D User-defined Symbol Possibilities (warnings only):
+
+          0 Allow Any Case (per-character basis)
+
+          1 Allow Upper Case Only
+
+          2 Allow Lower Case Only
+
+          3 Allow InitialCaps Only (see Note 2)
+
+   Note 1: `g77' eventually will support `NAMELIST' in a manner that is
+consistent with these source switches--in the sense that input will be
+expected to meet the same requirements as source code in terms of
+matching symbol names and keywords (for the exponent letters).
+
+   Currently, however, `NAMELIST' is supported by `libg2c', which
+uppercases `NAMELIST' input and symbol names for matching.  This means
+not only that `NAMELIST' output currently shows symbol (and keyword)
+names in uppercase even if lower-case source conversion (option A2) is
+selected, but that `NAMELIST' cannot be adequately supported when
+source case preservation (option A0) is selected.
+
+   If A0 is selected, a warning message will be output for each
+`NAMELIST' statement to this effect.  The behavior of the program is
+undefined at run time if two or more symbol names appear in a given
+`NAMELIST' such that the names are identical when converted to upper
+case (e.g. `NAMELIST /X/ VAR, Var, var').  For complete and total
+elegance, perhaps there should be a warning when option A2 is selected,
+since the output of NAMELIST is currently in uppercase but will someday
+be lowercase (when a `libg77' is written), but that seems to be
+overkill for a product in beta test.
+
+   Note 2: Rules for InitialCaps names are:
+
+   - Must be a single uppercase letter, *or*
+
+   - Must start with an uppercase letter and contain at least one
+     lowercase letter.
+
+   So `A', `Ab', `ABc', `AbC', and `Abc' are valid InitialCaps names,
+but `AB', `A2', and `ABC' are not.  Note that most, but not all,
+built-in names meet these requirements--the exceptions are some of the
+two-letter format specifiers, such as `BN' and `BZ'.
+
+   Here are the names of the corresponding command-line options:
+
+     A0: -fsource-case-preserve
+     A1: -fsource-case-upper
+     A2: -fsource-case-lower
+     
+     B0: -fmatch-case-any
+     B1: -fmatch-case-upper
+     B2: -fmatch-case-lower
+     B3: -fmatch-case-initcap
+     
+     C0: -fintrin-case-any
+     C1: -fintrin-case-upper
+     C2: -fintrin-case-lower
+     C3: -fintrin-case-initcap
+     
+     D0: -fsymbol-case-any
+     D1: -fsymbol-case-upper
+     D2: -fsymbol-case-lower
+     D3: -fsymbol-case-initcap
+
+   Useful combinations of the above settings, along with abbreviated
+option names that set some of these combinations all at once:
+
+      1: A0--  B0---  C0---  D0---    -fcase-preserve
+      2: A0--  B0---  C0---  D-1--
+      3: A0--  B0---  C0---  D--2-
+      4: A0--  B0---  C0---  D---3
+      5: A0--  B0---  C-1--  D0---
+      6: A0--  B0---  C-1--  D-1--
+      7: A0--  B0---  C-1--  D--2-
+      8: A0--  B0---  C-1--  D---3
+      9: A0--  B0---  C--2-  D0---
+     10: A0--  B0---  C--2-  D-1--
+     11: A0--  B0---  C--2-  D--2-
+     12: A0--  B0---  C--2-  D---3
+     13: A0--  B0---  C---3  D0---
+     14: A0--  B0---  C---3  D-1--
+     15: A0--  B0---  C---3  D--2-
+     16: A0--  B0---  C---3  D---3
+     17: A0--  B-1--  C0---  D0---
+     18: A0--  B-1--  C0---  D-1--
+     19: A0--  B-1--  C0---  D--2-
+     20: A0--  B-1--  C0---  D---3
+     21: A0--  B-1--  C-1--  D0---
+     22: A0--  B-1--  C-1--  D-1--    -fcase-strict-upper
+     23: A0--  B-1--  C-1--  D--2-
+     24: A0--  B-1--  C-1--  D---3
+     25: A0--  B-1--  C--2-  D0---
+     26: A0--  B-1--  C--2-  D-1--
+     27: A0--  B-1--  C--2-  D--2-
+     28: A0--  B-1--  C--2-  D---3
+     29: A0--  B-1--  C---3  D0---
+     30: A0--  B-1--  C---3  D-1--
+     31: A0--  B-1--  C---3  D--2-
+     32: A0--  B-1--  C---3  D---3
+     33: A0--  B--2-  C0---  D0---
+     34: A0--  B--2-  C0---  D-1--
+     35: A0--  B--2-  C0---  D--2-
+     36: A0--  B--2-  C0---  D---3
+     37: A0--  B--2-  C-1--  D0---
+     38: A0--  B--2-  C-1--  D-1--
+     39: A0--  B--2-  C-1--  D--2-
+     40: A0--  B--2-  C-1--  D---3
+     41: A0--  B--2-  C--2-  D0---
+     42: A0--  B--2-  C--2-  D-1--
+     43: A0--  B--2-  C--2-  D--2-    -fcase-strict-lower
+     44: A0--  B--2-  C--2-  D---3
+     45: A0--  B--2-  C---3  D0---
+     46: A0--  B--2-  C---3  D-1--
+     47: A0--  B--2-  C---3  D--2-
+     48: A0--  B--2-  C---3  D---3
+     49: A0--  B---3  C0---  D0---
+     50: A0--  B---3  C0---  D-1--
+     51: A0--  B---3  C0---  D--2-
+     52: A0--  B---3  C0---  D---3
+     53: A0--  B---3  C-1--  D0---
+     54: A0--  B---3  C-1--  D-1--
+     55: A0--  B---3  C-1--  D--2-
+     56: A0--  B---3  C-1--  D---3
+     57: A0--  B---3  C--2-  D0---
+     58: A0--  B---3  C--2-  D-1--
+     59: A0--  B---3  C--2-  D--2-
+     60: A0--  B---3  C--2-  D---3
+     61: A0--  B---3  C---3  D0---
+     62: A0--  B---3  C---3  D-1--
+     63: A0--  B---3  C---3  D--2-
+     64: A0--  B---3  C---3  D---3    -fcase-initcap
+     65: A-1-  B01--  C01--  D01--    -fcase-upper
+     66: A--2  B0-2-  C0-2-  D0-2-    -fcase-lower
+
+   Number 22 is the "strict" ANSI FORTRAN 77 model wherein all input
+(except comments, character constants, and Hollerith strings) must be
+entered in uppercase.  Use `-fcase-strict-upper' to specify this
+combination.
+
+   Number 43 is like Number 22 except all input must be lowercase.  Use
+`-fcase-strict-lower' to specify this combination.
+
+   Number 65 is the "classic" ANSI FORTRAN 77 model as implemented on
+many non-UNIX machines whereby all the source is translated to
+uppercase.  Use `-fcase-upper' to specify this combination.
+
+   Number 66 is the "canonical" UNIX model whereby all the source is
+translated to lowercase.  Use `-fcase-lower' to specify this
+combination.
+
+   There are a few nearly useless combinations:
+
+     67: A-1-  B01--  C01--  D--2-
+     68: A-1-  B01--  C01--  D---3
+     69: A-1-  B01--  C--23  D01--
+     70: A-1-  B01--  C--23  D--2-
+     71: A-1-  B01--  C--23  D---3
+     72: A--2  B01--  C0-2-  D-1--
+     73: A--2  B01--  C0-2-  D---3
+     74: A--2  B01--  C-1-3  D0-2-
+     75: A--2  B01--  C-1-3  D-1--
+     76: A--2  B01--  C-1-3  D---3
+
+   The above allow some programs to be compiled but with restrictions
+that make most useful programs impossible: Numbers 67 and 72 warn about
+_any_ user-defined symbol names (such as `SUBROUTINE FOO'); Numbers 68
+and 73 warn about any user-defined symbol names longer than one
+character that don't have at least one non-alphabetic character after
+the first; Numbers 69 and 74 disallow any references to intrinsics; and
+Numbers 70, 71, 75, and 76 are combinations of the restrictions in
+67+69, 68+69, 72+74, and 73+74, respectively.
+
+   All redundant combinations are shown in the above tables anyplace
+where more than one setting is shown for a low-level switch.  For
+example, `B0-2-' means either setting 0 or 2 is valid for switch B.
+The "proper" setting in such a case is the one that copies the setting
+of switch A--any other setting might slightly reduce the speed of the
+compiler, though possibly to an unmeasurable extent.
+
+   All remaining combinations are useless in that they prevent
+successful compilation of non-null source files (source files with
+something other than comments).
+
+
+File: g77.info,  Node: VXT Fortran,  Next: Fortran 90,  Prev: Case Sensitivity,  Up: Other Dialects
+
+VXT Fortran
+===========
+
+   `g77' supports certain constructs that have different meanings in
+VXT Fortran than they do in the GNU Fortran language.
+
+   Generally, this manual uses the invented term VXT Fortran to refer
+VAX FORTRAN (circa v4).  That compiler offered many popular features,
+though not necessarily those that are specific to the VAX processor
+architecture, the VMS operating system, or Digital Equipment
+Corporation's Fortran product line.  (VAX and VMS probably are
+trademarks of Digital Equipment Corporation.)
+
+   An extension offered by a Digital Fortran product that also is
+offered by several other Fortran products for different kinds of
+systems is probably going to be considered for inclusion in `g77'
+someday, and is considered a VXT Fortran feature.
+
+   The `-fvxt' option generally specifies that, where the meaning of a
+construct is ambiguous (means one thing in GNU Fortran and another in
+VXT Fortran), the VXT Fortran meaning is to be assumed.
+
+* Menu:
+
+* Double Quote Meaning::  `"2000' as octal constant.
+* Exclamation Point::     `!' in column 6.
+
+
+File: g77.info,  Node: Double Quote Meaning,  Next: Exclamation Point,  Up: VXT Fortran
+
+Meaning of Double Quote
+-----------------------
+
+   `g77' treats double-quote (`"') as beginning an octal constant of
+`INTEGER(KIND=1)' type when the `-fvxt' option is specified.  The form
+of this octal constant is
+
+     "OCTAL-DIGITS
+
+where OCTAL-DIGITS is a nonempty string of characters in the set
+`01234567'.
+
+   For example, the `-fvxt' option permits this:
+
+     PRINT *, "20
+     END
+
+The above program would print the value `16'.
+
+   *Note Integer Type::, for information on the preferred construct for
+integer constants specified using GNU Fortran's octal notation.
+
+   (In the GNU Fortran language, the double-quote character (`"')
+delimits a character constant just as does apostrophe (`'').  There is
+no way to allow both constructs in the general case, since statements
+like `PRINT *,"2000 !comment?"' would be ambiguous.)
+
+
+File: g77.info,  Node: Exclamation Point,  Prev: Double Quote Meaning,  Up: VXT Fortran
+
+Meaning of Exclamation Point in Column 6
+----------------------------------------
+
+   `g77' treats an exclamation point (`!') in column 6 of a fixed-form
+source file as a continuation character rather than as the beginning of
+a comment (as it does in any other column) when the `-fvxt' option is
+specified.
+
+   The following program, when run, prints a message indicating whether
+it is interpreted according to GNU Fortran (and Fortran 90) rules or
+VXT Fortran rules:
+
+     C234567  (This line begins in column 1.)
+           I = 0
+          !1
+           IF (I.EQ.0) PRINT *, ' I am a VXT Fortran program'
+           IF (I.EQ.1) PRINT *, ' I am a Fortran 90 program'
+           IF (I.LT.0 .OR. I.GT.1) PRINT *, ' I am a HAL 9000 computer'
+           END
+
+   (In the GNU Fortran and Fortran 90 languages, exclamation point is a
+valid character and, unlike space (<SPC>) or zero (`0'), marks a line
+as a continuation line when it appears in column 6.)
+
+
+File: g77.info,  Node: Fortran 90,  Next: Pedantic Compilation,  Prev: VXT Fortran,  Up: Other Dialects
+
+Fortran 90
+==========
+
+   The GNU Fortran language includes a number of features that are part
+of Fortran 90, even when the `-ff90' option is not specified.  The
+features enabled by `-ff90' are intended to be those that, when `-ff90'
+is not specified, would have another meaning to `g77'--usually meaning
+something invalid in the GNU Fortran language.
+
+   So, the purpose of `-ff90' is not to specify whether `g77' is to
+gratuitously reject Fortran 90 constructs.  The `-pedantic' option
+specified with `-fno-f90' is intended to do that, although its
+implementation is certainly incomplete at this point.
+
+   When `-ff90' is specified:
+
+   * The type of `REAL(EXPR)' and `AIMAG(EXPR)', where EXPR is
+     `COMPLEX' type, is the same type as the real part of EXPR.
+
+     For example, assuming `Z' is type `COMPLEX(KIND=2)', `REAL(Z)'
+     would return a value of type `REAL(KIND=2)', not of type
+     `REAL(KIND=1)', since `-ff90' is specified.
 
 
 File: g77.info,  Node: Pedantic Compilation,  Next: Distensions,  Prev: Fortran 90,  Up: Other Dialects
@@ -969,419 +1314,4 @@ enabled, and so on.
 
 `vxt'
      VAX/VMS FORTRAN (current as of v4) intrinsics.
-
-
-File: g77.info,  Node: Other Intrinsics,  Prev: Intrinsic Groups,  Up: Compiler Intrinsics
-
-Other Intrinsics
-----------------
-
-   `g77' supports intrinsics other than those in the GNU Fortran
-language proper.  This set of intrinsics is described below.
-
-   (Note that the empty lines appearing in the menu below are not
-intentional--they result from a bug in the `makeinfo' program.)
-
-* Menu:
-
-
-* ACosD Intrinsic::     (Reserved for future use.)
-
-* AIMax0 Intrinsic::    (Reserved for future use.)
-* AIMin0 Intrinsic::    (Reserved for future use.)
-
-* AJMax0 Intrinsic::    (Reserved for future use.)
-* AJMin0 Intrinsic::    (Reserved for future use.)
-
-* ASinD Intrinsic::     (Reserved for future use.)
-
-* ATan2D Intrinsic::    (Reserved for future use.)
-* ATanD Intrinsic::     (Reserved for future use.)
-
-* BITest Intrinsic::    (Reserved for future use.)
-
-* BJTest Intrinsic::    (Reserved for future use.)
-
-* CDAbs Intrinsic::     Absolute value (archaic).
-* CDCos Intrinsic::     Cosine (archaic).
-* CDExp Intrinsic::     Exponential (archaic).
-* CDLog Intrinsic::     Natural logarithm (archaic).
-* CDSin Intrinsic::     Sine (archaic).
-* CDSqRt Intrinsic::    Square root (archaic).
-
-* ChDir Intrinsic (function):: Change directory.
-
-* ChMod Intrinsic (function):: Change file modes.
-
-* CosD Intrinsic::      (Reserved for future use.)
-
-* DACosD Intrinsic::    (Reserved for future use.)
-
-* DASinD Intrinsic::    (Reserved for future use.)
-
-* DATan2D Intrinsic::   (Reserved for future use.)
-* DATanD Intrinsic::    (Reserved for future use.)
-* Date Intrinsic::      Get current date as dd-Mon-yy.
-
-* DbleQ Intrinsic::     (Reserved for future use.)
-
-* DCmplx Intrinsic::    Construct `COMPLEX(KIND=2)' value.
-* DConjg Intrinsic::    Complex conjugate (archaic).
-
-* DCosD Intrinsic::     (Reserved for future use.)
-
-* DFloat Intrinsic::    Conversion (archaic).
-
-* DFlotI Intrinsic::    (Reserved for future use.)
-* DFlotJ Intrinsic::    (Reserved for future use.)
-
-* DImag Intrinsic::     Convert/extract imaginary part of complex (archaic).
-
-* DReal Intrinsic::     Convert value to type `REAL(KIND=2)'.
-
-* DSinD Intrinsic::     (Reserved for future use.)
-
-* DTanD Intrinsic::     (Reserved for future use.)
-
-* DTime Intrinsic (function):: Get elapsed time since last time.
-
-* FGet Intrinsic (function):: Read a character from unit 5 stream-wise.
-
-* FGetC Intrinsic (function):: Read a character stream-wise.
-
-* FloatI Intrinsic::    (Reserved for future use.)
-* FloatJ Intrinsic::    (Reserved for future use.)
-
-* FPut Intrinsic (function):: Write a character to unit 6 stream-wise.
-
-* FPutC Intrinsic (function):: Write a character stream-wise.
-
-* IDate Intrinsic (VXT):: Get local time info (VAX/VMS).
-
-* IIAbs Intrinsic::     (Reserved for future use.)
-* IIAnd Intrinsic::     (Reserved for future use.)
-* IIBClr Intrinsic::    (Reserved for future use.)
-* IIBits Intrinsic::    (Reserved for future use.)
-* IIBSet Intrinsic::    (Reserved for future use.)
-* IIDiM Intrinsic::     (Reserved for future use.)
-* IIDInt Intrinsic::    (Reserved for future use.)
-* IIDNnt Intrinsic::    (Reserved for future use.)
-* IIEOr Intrinsic::     (Reserved for future use.)
-* IIFix Intrinsic::     (Reserved for future use.)
-* IInt Intrinsic::      (Reserved for future use.)
-* IIOr Intrinsic::      (Reserved for future use.)
-* IIQint Intrinsic::    (Reserved for future use.)
-* IIQNnt Intrinsic::    (Reserved for future use.)
-* IIShftC Intrinsic::   (Reserved for future use.)
-* IISign Intrinsic::    (Reserved for future use.)
-
-* IMax0 Intrinsic::     (Reserved for future use.)
-* IMax1 Intrinsic::     (Reserved for future use.)
-* IMin0 Intrinsic::     (Reserved for future use.)
-* IMin1 Intrinsic::     (Reserved for future use.)
-* IMod Intrinsic::      (Reserved for future use.)
-
-* INInt Intrinsic::     (Reserved for future use.)
-* INot Intrinsic::      (Reserved for future use.)
-
-* IZExt Intrinsic::     (Reserved for future use.)
-* JIAbs Intrinsic::     (Reserved for future use.)
-* JIAnd Intrinsic::     (Reserved for future use.)
-* JIBClr Intrinsic::    (Reserved for future use.)
-* JIBits Intrinsic::    (Reserved for future use.)
-* JIBSet Intrinsic::    (Reserved for future use.)
-* JIDiM Intrinsic::     (Reserved for future use.)
-* JIDInt Intrinsic::    (Reserved for future use.)
-* JIDNnt Intrinsic::    (Reserved for future use.)
-* JIEOr Intrinsic::     (Reserved for future use.)
-* JIFix Intrinsic::     (Reserved for future use.)
-* JInt Intrinsic::      (Reserved for future use.)
-* JIOr Intrinsic::      (Reserved for future use.)
-* JIQint Intrinsic::    (Reserved for future use.)
-* JIQNnt Intrinsic::    (Reserved for future use.)
-* JIShft Intrinsic::    (Reserved for future use.)
-* JIShftC Intrinsic::   (Reserved for future use.)
-* JISign Intrinsic::    (Reserved for future use.)
-* JMax0 Intrinsic::     (Reserved for future use.)
-* JMax1 Intrinsic::     (Reserved for future use.)
-* JMin0 Intrinsic::     (Reserved for future use.)
-* JMin1 Intrinsic::     (Reserved for future use.)
-* JMod Intrinsic::      (Reserved for future use.)
-* JNInt Intrinsic::     (Reserved for future use.)
-* JNot Intrinsic::      (Reserved for future use.)
-* JZExt Intrinsic::     (Reserved for future use.)
-
-* Kill Intrinsic (function):: Signal a process.
-
-* Link Intrinsic (function):: Make hard link in file system.
-
-* QAbs Intrinsic::      (Reserved for future use.)
-* QACos Intrinsic::     (Reserved for future use.)
-* QACosD Intrinsic::    (Reserved for future use.)
-* QASin Intrinsic::     (Reserved for future use.)
-* QASinD Intrinsic::    (Reserved for future use.)
-* QATan Intrinsic::     (Reserved for future use.)
-* QATan2 Intrinsic::    (Reserved for future use.)
-* QATan2D Intrinsic::   (Reserved for future use.)
-* QATanD Intrinsic::    (Reserved for future use.)
-* QCos Intrinsic::      (Reserved for future use.)
-* QCosD Intrinsic::     (Reserved for future use.)
-* QCosH Intrinsic::     (Reserved for future use.)
-* QDiM Intrinsic::      (Reserved for future use.)
-* QExp Intrinsic::      (Reserved for future use.)
-* QExt Intrinsic::      (Reserved for future use.)
-* QExtD Intrinsic::     (Reserved for future use.)
-* QFloat Intrinsic::    (Reserved for future use.)
-* QInt Intrinsic::      (Reserved for future use.)
-* QLog Intrinsic::      (Reserved for future use.)
-* QLog10 Intrinsic::    (Reserved for future use.)
-* QMax1 Intrinsic::     (Reserved for future use.)
-* QMin1 Intrinsic::     (Reserved for future use.)
-* QMod Intrinsic::      (Reserved for future use.)
-* QNInt Intrinsic::     (Reserved for future use.)
-* QSin Intrinsic::      (Reserved for future use.)
-* QSinD Intrinsic::     (Reserved for future use.)
-* QSinH Intrinsic::     (Reserved for future use.)
-* QSqRt Intrinsic::     (Reserved for future use.)
-* QTan Intrinsic::      (Reserved for future use.)
-* QTanD Intrinsic::     (Reserved for future use.)
-* QTanH Intrinsic::     (Reserved for future use.)
-
-* Rename Intrinsic (function):: Rename file.
-
-* Secnds Intrinsic::    Get local time offset since midnight.
-
-* Signal Intrinsic (function):: Muck with signal handling.
-
-* SinD Intrinsic::      (Reserved for future use.)
-
-* SnglQ Intrinsic::     (Reserved for future use.)
-
-* SymLnk Intrinsic (function):: Make symbolic link in file system.
-
-* System Intrinsic (function):: Invoke shell (system) command.
-
-* TanD Intrinsic::      (Reserved for future use.)
-
-* Time Intrinsic (VXT):: Get the time as a character value.
-
-* UMask Intrinsic (function):: Set file creation permissions mask.
-
-* Unlink Intrinsic (function):: Unlink file.
-
-* ZExt Intrinsic::      (Reserved for future use.)
-
-
-File: g77.info,  Node: ACosD Intrinsic,  Next: AIMax0 Intrinsic,  Up: Other Intrinsics
-
-ACosD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL ACosD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: AIMax0 Intrinsic,  Next: AIMin0 Intrinsic,  Prev: ACosD Intrinsic,  Up: Other Intrinsics
-
-AIMax0 Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL AIMax0' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: AIMin0 Intrinsic,  Next: AJMax0 Intrinsic,  Prev: AIMax0 Intrinsic,  Up: Other Intrinsics
-
-AIMin0 Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL AIMin0' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: AJMax0 Intrinsic,  Next: AJMin0 Intrinsic,  Prev: AIMin0 Intrinsic,  Up: Other Intrinsics
-
-AJMax0 Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL AJMax0' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: AJMin0 Intrinsic,  Next: ASinD Intrinsic,  Prev: AJMax0 Intrinsic,  Up: Other Intrinsics
-
-AJMin0 Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL AJMin0' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: ASinD Intrinsic,  Next: ATan2D Intrinsic,  Prev: AJMin0 Intrinsic,  Up: Other Intrinsics
-
-ASinD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL ASinD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: ATan2D Intrinsic,  Next: ATanD Intrinsic,  Prev: ASinD Intrinsic,  Up: Other Intrinsics
-
-ATan2D Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL ATan2D' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: ATanD Intrinsic,  Next: BITest Intrinsic,  Prev: ATan2D Intrinsic,  Up: Other Intrinsics
-
-ATanD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL ATanD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: BITest Intrinsic,  Next: BJTest Intrinsic,  Prev: ATanD Intrinsic,  Up: Other Intrinsics
-
-BITest Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL BITest' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: BJTest Intrinsic,  Next: CDAbs Intrinsic,  Prev: BITest Intrinsic,  Up: Other Intrinsics
-
-BJTest Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL BJTest' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: CDAbs Intrinsic,  Next: CDCos Intrinsic,  Prev: BJTest Intrinsic,  Up: Other Intrinsics
-
-CDAbs Intrinsic
-...............
-
-     CDAbs(A)
-
-CDAbs: `REAL(KIND=2)' function.
-
-A: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `ABS()' that is specific to one type for A.  *Note
-Abs Intrinsic::.
-
-
-File: g77.info,  Node: CDCos Intrinsic,  Next: CDExp Intrinsic,  Prev: CDAbs Intrinsic,  Up: Other Intrinsics
-
-CDCos Intrinsic
-...............
-
-     CDCos(X)
-
-CDCos: `COMPLEX(KIND=2)' function.
-
-X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `COS()' that is specific to one type for X.  *Note
-Cos Intrinsic::.
-
-
-File: g77.info,  Node: CDExp Intrinsic,  Next: CDLog Intrinsic,  Prev: CDCos Intrinsic,  Up: Other Intrinsics
-
-CDExp Intrinsic
-...............
-
-     CDExp(X)
-
-CDExp: `COMPLEX(KIND=2)' function.
-
-X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `EXP()' that is specific to one type for X.  *Note
-Exp Intrinsic::.
-
-
-File: g77.info,  Node: CDLog Intrinsic,  Next: CDSin Intrinsic,  Prev: CDExp Intrinsic,  Up: Other Intrinsics
-
-CDLog Intrinsic
-...............
-
-     CDLog(X)
-
-CDLog: `COMPLEX(KIND=2)' function.
-
-X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `LOG()' that is specific to one type for X.  *Note
-Log Intrinsic::.
-
-
-File: g77.info,  Node: CDSin Intrinsic,  Next: CDSqRt Intrinsic,  Prev: CDLog Intrinsic,  Up: Other Intrinsics
-
-CDSin Intrinsic
-...............
-
-     CDSin(X)
-
-CDSin: `COMPLEX(KIND=2)' function.
-
-X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `SIN()' that is specific to one type for X.  *Note
-Sin Intrinsic::.
-
-
-File: g77.info,  Node: CDSqRt Intrinsic,  Next: ChDir Intrinsic (function),  Prev: CDSin Intrinsic,  Up: Other Intrinsics
-
-CDSqRt Intrinsic
-................
-
-     CDSqRt(X)
-
-CDSqRt: `COMPLEX(KIND=2)' function.
-
-X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c', `vxt'.
-
-Description:
-
-   Archaic form of `SQRT()' that is specific to one type for X.  *Note
-SqRt Intrinsic::.
 

@@ -1,18 +1,111 @@
-2001-12-20  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.3 Released.
+	* GCC 3.2.1 Released.
 
-2001-10-23  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.2 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-11-18  Release Manager
 
-	* GCC 3.0.1 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-10-07  Kaveh R. Ghazi  <ghazi@caip.rutgers.edu>
 
-	* GCC 3.0.1 Released.
+	* Makefile.in (all): Fix multilib parallel build.
+
+2002-08-14  Release Manager
+
+	* GCC 3.2 Released.
+
+2002-07-25  Release Manager
+
+	* GCC 3.1.1 Released.
+
+2002-06-25  DJ Delorie  <dj@redhat.com>
+
+	* aclocal.m4 (GLIBCPP_CONFIGURE): Split out
+	GLIBCPP_TOPREL_CONFIGURE.
+	* configure.in: Call it before AC_CANONICAL_SYSTEM.
+	* configure: Regenerate.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-05-08  Alexandre Oliva  <aoliva@redhat.com>
+
+	* configure.in (ORIGINAL_LD_FOR_MULTILIBS): Preserve LD at
+	script entry, and set LD to it when configuring multilibs.
+	* configure: Rebuilt.
+
+2002-04-19  David O'Brien  <obrien@FreeBSD.org>
+
+	* encoding.c (MAX, MIN, ROUNDING): #undef before defining.
+
+2002-04-09  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	PR objc/6107
+	* objc/objc-api.h (struct objc_protocol_list): Change type of
+	member count from int to size_t.
+
+2002-02-11  Franz Sirl  <Franz.Sirl-kernel@lauterbach.com>
+
+	PR libobjc/4039
+	* aclocal.m4: Replace with version copied from libstdc++-v3.
+	* configure.in: Update for changes to aclocal and Makefile.
+	* configure: Regenerate.
+	* Makefile.in: Correct install of multilibs and shared libs, use
+	INSTALL_DATA for include files.
+
+Mon Dec 17 17:02:12 2001  Nicola Pero  <nicola@brainstorm.co.uk>
+
+	* init.c (__objc_exec_class): Fixed bug in the loop on unclaimed
+	categories - when an unclaimed category was found, the loop was
+	doing two steps forward instead of one, so that in certain cases
+	it was failing to properly load all the categories.  (Reported
+	with fix by Alexander Malmberg <alexander@malmberg.org>).
+
+2001-11-14  Aldy Hernandez  <aldyh@redhat.com>
+
+        * encoding.c: Add target_flags.
+
+2001-11-07  Aldy Hernandez  <aldyh@redhat.com>
+
+	 * objc/objc-api.h (_C_VECTOR): New.
+
+	 * encoding.c (VECTOR_TYPE): New.
+
+Mon Oct 29 21:29:21 2001  Nicola Pero  <n.pero@mi.flashnet.it>
+
+	* class.c: Rewritten the class table to use optimized, lock-free
+        lookup.  This more than doubles the speed of class method
+        invocations.  (class_table_setup), (class_table_insert),
+        (class_table_replace), (class_table_get_safe),
+        (class_table_next), (class_table_print),
+        (class_table_print_histogram): New functions.
+        (__objc_init_class_tables): Use class_table_setup.
+        (__objc_add_class_to_hash): Use class_table_get_safe and
+        class_table_insert.  (objc_lookup_class), (objc_get_class): Do not
+        assert the existence of the table; do not lock the runtime; use
+        class_table_get_safe.  (objc_next_class): Use class_table_next.
+        (__objc_resolve_class_links): Use class_table_next.
+        (class_pose_as): Use class_table_replace.
+
+2001-09-10  Ovidiu Predescu  <ovidiu@cup.hp.com>
+
+	* gc.c: Removed the DEBUG declaration.
+
+Wed Jul 18 12:48:56 2001  Nicola Pero  <n.pero@mi.flashnet.it>
+
+	* thr.c (objc_mutex_lock): Invoke __objc_thread_id directly,
+	rather than through objc_thread_id, to save a function call.
+	(objc_mutex_trylock, objc_mutex_unlock, objc_condition_wait):
+	Ditto.
 
 Mon Jul 16 12:15:00 2001  Nicola Pero  <n.pero@mi.flashnet.it>
 
@@ -21,9 +114,12 @@ Mon Jul 16 12:15:00 2001  Nicola Pero  <n.pero@mi.flashnet.it>
 	by using CLS_ISMETA on the class pointer instead.
 	(object_is_meta_class): Similar fix.
 
-20010617 Release Manager
+2001-06-09  Alexandre Oliva  <aoliva@redhat.com>, Stephen L Moshier  <moshier@mediaone.net>
 
-        * GCC 3.0 Released.
+	* configure.in (AC_EXEEXT): Work around in case it expands to
+	nothing, as in autoconf 2.50.
+	* acinclude.m4: Likewise.
+	* configure: Rebuilt.
 
 2001-06-08  Nicola Pero  <n.pero@mi.flashnet.it>
 
@@ -45,10 +141,6 @@ Mon Jul 16 12:15:00 2001  Nicola Pero  <n.pero@mi.flashnet.it>
 	in __objc_load_methods use the method name as key, not the method
 	IMP (reported by Richard Frith-Macdonald <richard@brainstorm.co.uk>).
 
-2001-05-22  Rainer Orth  <ro@TechFak.Uni-Bielefeld.DE>
-
-	* sendmsg.c (__objc_forward): Delete strlen() declaration.
-
 2001-05-09  Joseph S. Myers  <jsm28@cam.ac.uk>
 
 	* objc-features.texi: Move to ../gcc/objc.texi.
@@ -66,6 +158,10 @@ Mon Jul 16 12:15:00 2001  Nicola Pero  <n.pero@mi.flashnet.it>
 
 	* objc-features.texi: Use the GFDL.
 
+Wed Mar 21 04:44:58 EST 2001  John Wehle  (john@feith.com)
+
+	* encoding.c (REAL_TYPE): Define.
+
 2001-03-19  David Edelsohn  <edelsohn@gnu.org>
 
 	* encoding.c (TYPE_MODE): Define.
@@ -76,6 +172,15 @@ Mon Jul 16 12:15:00 2001  Nicola Pero  <n.pero@mi.flashnet.it>
 	(objc_thread_remove): Ditto.
 	* objc/thr.h: Declare them.
 	* libobjc.def: Mention them.
+
+2001-02-28  Ovidiu Predescu  <ovidiu@cup.hp.com>
+
+	* objc-features.texi: Document the @compatibility_alias compiler
+	directive (description from Nicola Pero <n.pero@mi.flashnet.it>).
+
+Fri Feb 23 18:12:00 2001  Rainer Orth  <ro@TechFak.Uni-Bielefeld.DE>
+
+	* sendmsg.c (__objc_forward): Delete strlen() declaration.
 
 2001-02-08  Geoffrey Keating  <geoffk@redhat.com>
 

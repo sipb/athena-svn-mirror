@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -66,9 +66,6 @@ see *Note Changes::.
    If you intend to write or otherwise compile code that is not already
 strictly conforming ANSI FORTRAN 77--and this is probably everyone--you
 should see *Note Language::.
-
-   If you don't already have `g77' installed on your system, you must
-see *Note Installation::.
 
    If you run into trouble getting Fortran code to compile, link, run,
 or work properly, you might find answers if you see *Note Debugging and
@@ -301,9 +298,9 @@ files and accepts Fortran-specific command-line options, plus some
 command-line options that are designed to cater to Fortran users but
 apply to other languages as well.
 
-   *Note Compile C; C++; or Objective-C: (gcc)G++ and GCC, for
-information on the way different languages are handled by the GNU CC
-compiler (`gcc').
+   *Note Compile C; C++; Objective-C; Ada; Fortran; or Java: (gcc)G++
+and GCC, for information on the way different languages are handled by
+the GNU CC compiler (`gcc').
 
    Also provided as part of GNU Fortran is the `g77' command.  The
 `g77' command is designed to make compiling and linking Fortran
@@ -321,14 +318,14 @@ GNU Fortran Command Options
 ***************************
 
    The `g77' command supports all the options supported by the `gcc'
-command.  *Note GNU CC Command Options: (gcc)Invoking GCC, for
-information on the non-Fortran-specific aspects of the `gcc' command
-(and, therefore, the `g77' command).
+command.  *Note GCC Command Options: (gcc)Invoking GCC, for information
+on the non-Fortran-specific aspects of the `gcc' command (and,
+therefore, the `g77' command).
 
    All `gcc' and `g77' options are accepted both by `g77' and by `gcc'
 (as well as any other drivers built at the same time, such as `g++'),
 since adding `g77' to the `gcc' distribution enables acceptance of
-`g77'-specific options by all of the relevant drivers.
+`g77' options by all of the relevant drivers.
 
    In some cases, options have positive and negative forms; the
 negative form of `-ffoo' would be `-fno-foo'.  This manual documents
@@ -374,42 +371,42 @@ _Shorthand Options_
 
 _Fortran Language Options_
      *Note Options Controlling Fortran Dialect: Fortran Dialect Options.
-          -ffree-form  -fno-fixed-form  -ff90
-          -fvxt  -fdollar-ok  -fno-backslash
-          -fno-ugly-args  -fno-ugly-assign  -fno-ugly-assumed
-          -fugly-comma  -fugly-complex  -fugly-init  -fugly-logint
-          -fonetrip  -ftypeless-boz
-          -fintrin-case-initcap  -fintrin-case-upper
-          -fintrin-case-lower  -fintrin-case-any
-          -fmatch-case-initcap  -fmatch-case-upper
-          -fmatch-case-lower  -fmatch-case-any
-          -fsource-case-upper  -fsource-case-lower
-          -fsource-case-preserve
-          -fsymbol-case-initcap  -fsymbol-case-upper
-          -fsymbol-case-lower  -fsymbol-case-any
-          -fcase-strict-upper  -fcase-strict-lower
-          -fcase-initcap  -fcase-upper  -fcase-lower  -fcase-preserve
-          -ff2c-intrinsics-delete  -ff2c-intrinsics-hide
-          -ff2c-intrinsics-disable  -ff2c-intrinsics-enable
-          -fbadu77-intrinsics-delete  -fbadu77-intrinsics-hide
-          -fbadu77-intrinsics-disable  -fbadu77-intrinsics-enable
-          -ff90-intrinsics-delete  -ff90-intrinsics-hide
-          -ff90-intrinsics-disable  -ff90-intrinsics-enable
-          -fgnu-intrinsics-delete  -fgnu-intrinsics-hide
-          -fgnu-intrinsics-disable  -fgnu-intrinsics-enable
-          -fmil-intrinsics-delete  -fmil-intrinsics-hide
-          -fmil-intrinsics-disable  -fmil-intrinsics-enable
-          -funix-intrinsics-delete  -funix-intrinsics-hide
-          -funix-intrinsics-disable  -funix-intrinsics-enable
-          -fvxt-intrinsics-delete  -fvxt-intrinsics-hide
-          -fvxt-intrinsics-disable  -fvxt-intrinsics-enable
+          -ffree-form  -fno-fixed-form  -ff90 
+          -fvxt  -fdollar-ok  -fno-backslash 
+          -fno-ugly-args  -fno-ugly-assign  -fno-ugly-assumed 
+          -fugly-comma  -fugly-complex  -fugly-init  -fugly-logint 
+          -fonetrip  -ftypeless-boz 
+          -fintrin-case-initcap  -fintrin-case-upper 
+          -fintrin-case-lower  -fintrin-case-any 
+          -fmatch-case-initcap  -fmatch-case-upper 
+          -fmatch-case-lower  -fmatch-case-any 
+          -fsource-case-upper  -fsource-case-lower 
+          -fsource-case-preserve 
+          -fsymbol-case-initcap  -fsymbol-case-upper 
+          -fsymbol-case-lower  -fsymbol-case-any 
+          -fcase-strict-upper  -fcase-strict-lower 
+          -fcase-initcap  -fcase-upper  -fcase-lower  -fcase-preserve 
+          -ff2c-intrinsics-delete  -ff2c-intrinsics-hide 
+          -ff2c-intrinsics-disable  -ff2c-intrinsics-enable 
+          -fbadu77-intrinsics-delete  -fbadu77-intrinsics-hide 
+          -fbadu77-intrinsics-disable  -fbadu77-intrinsics-enable 
+          -ff90-intrinsics-delete  -ff90-intrinsics-hide 
+          -ff90-intrinsics-disable  -ff90-intrinsics-enable 
+          -fgnu-intrinsics-delete  -fgnu-intrinsics-hide 
+          -fgnu-intrinsics-disable  -fgnu-intrinsics-enable 
+          -fmil-intrinsics-delete  -fmil-intrinsics-hide 
+          -fmil-intrinsics-disable  -fmil-intrinsics-enable 
+          -funix-intrinsics-delete  -funix-intrinsics-hide 
+          -funix-intrinsics-disable  -funix-intrinsics-enable 
+          -fvxt-intrinsics-delete  -fvxt-intrinsics-hide 
+          -fvxt-intrinsics-disable  -fvxt-intrinsics-enable 
           -ffixed-line-length-N  -ffixed-line-length-none
 
 _Warning Options_
      *Note Options to Request or Suppress Warnings: Warning Options.
-          -fsyntax-only  -pedantic  -pedantic-errors  -fpedantic
-          -w  -Wno-globals  -Wimplicit  -Wunused  -Wuninitialized
-          -Wall  -Wsurprising
+          -fsyntax-only  -pedantic  -pedantic-errors  -fpedantic 
+          -w  -Wno-globals  -Wimplicit  -Wunused  -Wuninitialized 
+          -Wall  -Wsurprising 
           -Werror  -W
 
 _Debugging Options_
@@ -418,13 +415,14 @@ _Debugging Options_
 
 _Optimization Options_
      *Note Options that Control Optimization: Optimize Options.
-          -malign-double
-          -ffloat-store  -fforce-mem  -fforce-addr  -fno-inline
-          -ffast-math  -fstrength-reduce  -frerun-cse-after-loop
-          -fexpensive-optimizations  -fdelayed-branch
-          -fschedule-insns  -fschedule-insn2  -fcaller-saves
-          -funroll-loops  -funroll-all-loops
-          -fno-move-all-movables  -fno-reduce-all-givs
+          -malign-double 
+          -ffloat-store  -fforce-mem  -fforce-addr  -fno-inline 
+          -ffast-math  -fstrength-reduce  -frerun-cse-after-loop 
+          -funsafe-math-optimizations -fno-trapping-math 
+          -fexpensive-optimizations  -fdelayed-branch 
+          -fschedule-insns  -fschedule-insn2  -fcaller-saves 
+          -funroll-loops  -funroll-all-loops 
+          -fno-move-all-movables  -fno-reduce-all-givs 
           -fno-rerun-loop-opt
 
 _Directory Options_
@@ -433,15 +431,15 @@ _Directory Options_
 
 _Code Generation Options_
      *Note Options for Code Generation Conventions: Code Gen Options.
-          -fno-automatic  -finit-local-zero  -fno-f2c
-          -ff2c-library  -fno-underscoring  -fno-ident
-          -fpcc-struct-return  -freg-struct-return
-          -fshort-double  -fno-common  -fpack-struct
-          -fzeros  -fno-second-underscore
-          -fdebug-kludge  -femulate-complex
-          -falias-check  -fargument-alias
-          -fargument-noalias  -fno-argument-noalias-global
-          -fno-globals  -fflatten-arrays
+          -fno-automatic  -finit-local-zero  -fno-f2c 
+          -ff2c-library  -fno-underscoring  -fno-ident 
+          -fpcc-struct-return  -freg-struct-return 
+          -fshort-double  -fno-common  -fpack-struct 
+          -fzeros  -fno-second-underscore 
+          -femulate-complex 
+          -falias-check  -fargument-alias 
+          -fargument-noalias  -fno-argument-noalias-global 
+          -fno-globals  -fflatten-arrays 
           -fbounds-check  -ffortran-bounds-check
 
 * Menu:
@@ -478,9 +476,9 @@ those specified as input) into an executable file.
    For any given input file, the file name suffix determines what kind
 of program is contained in the file--that is, the language in which the
 program is written is generally indicated by the suffix.  Suffixes
-specific to GNU Fortran are listed below.  *Note gcc: (Using and
-Porting GNU CC)Overall Options, for information on suffixes recognized
-by GNU CC.
+specific to GNU Fortran are listed below.  *Note Options Controlling
+the Kind of Output: (gcc)Overall Options, for information on suffixes
+recognized by GNU CC.
 
 `FILE.f'
 
@@ -511,9 +509,9 @@ by GNU CC.
      Ratfor source code, which must be preprocessed by the `ratfor'
      command, which is available separately (as it is not yet part of
      the GNU Fortran distribution).  One version in Fortran, adapted
-     for use with `g77', is at `ftp://members.aol.com/n8tm/rat7.uue'
-     (of uncertain copyright status).  Another, public domain version
-     in C is at `http://sepwww.stanford.edu/sep/prof/ratfor.shar.2'.
+     for use with `g77' is at `ftp://members.aol.com/n8tm/rat7.uue' (of
+     uncertain copyright status).  Another, public domain version in C
+     is at `http://sepwww.stanford.edu/sep/prof/ratfor.shar.2'.
 
    UNIX users typically use the `FILE.f' and `FILE.F' nomenclature.
 Users of other operating systems, especially those that cannot
@@ -564,13 +562,16 @@ anything that `cpp' sees as an unterminated C comment, such as:
 by the `g77' and `gcc' commands in a GNU Fortran installation:
 
 `-fversion'
-     Ensure that the `g77'-specific version of the compiler phase is
-     reported, if run, and, starting in `egcs' version 1.1, that
-     internal consistency checks in the `f771' program are run.
+     Ensure that the `g77' version of the compiler phase is reported,
+     if run, and, starting in `egcs' version 1.1, that internal
+     consistency checks in the `f771' program are run.
 
      This option is supplied automatically when `-v' or `--verbose' is
      specified as a command-line option for `g77' or `gcc' and when the
      resulting commands compile Fortran source files.
+
+     In GCC 3.1, this is changed back to the behaviour `gcc' displays
+     for `.c' files.
 
 `-fset-g77-defaults'
      _Version info:_ This option was obsolete as of `egcs' version 1.1.
@@ -588,7 +589,7 @@ by the `g77' and `gcc' commands in a GNU Fortran installation:
 
      Also, developers who run `f771' directly might want to specify it
      by hand to get the same defaults as they would running `f771' via
-     `g77' or `gcc'.  However, such developers should, after linking a
+     `g77' or `gcc' However, such developers should, after linking a
      new `f771' executable, invoke it without this option once, e.g.
      via `./f771 -quiet < /dev/null', to ensure that they have not
      introduced any internal inconsistencies (such as in the table of
@@ -598,7 +599,7 @@ by the `g77' and `gcc' commands in a GNU Fortran installation:
 `-fno-silent'
      Print (to `stderr') the names of the program units as they are
      compiled, in a form similar to that used by popular UNIX `f77'
-     implementations and `f2c'.
+     implementations and `f2c'
 
    *Note Options Controlling the Kind of Output: (gcc)Overall Options,
 for information on more options that control the overall operation of
@@ -661,7 +662,7 @@ accepted by the compiler:
 `-fno-f77'
      The `-fno-f77' option is _not_ the inverse of `-ff77'.  It
      specifies that the program is not written in idiomatic UNIX
-     FORTRAN 77 or `f2c', but in a more widely portable dialect.
+     FORTRAN 77 or `f2c' but in a more widely portable dialect.
      `-fno-f77' is the same as `-fno-backslash'.
 
      The meaning of this option is likely to be refined as future
@@ -720,7 +721,7 @@ compiler accepts:
      Note that `g77' implements a fairly general form of backslash
      processing that is incompatible with the narrower forms supported
      by some other compilers.  For example, `'A\003B'' is a
-     three-character string in `g77', whereas other compilers that
+     three-character string in `g77' whereas other compilers that
      support backslash might not support the three-octal-digit form,
      and thus treat that string as longer than three characters.
 
@@ -1119,7 +1120,7 @@ GNU Fortran:
      The `-Wunused' and `-Wuninitialized' options combined.  These are
      all the options which pertain to usage that we recommend avoiding
      and that we believe is easy to avoid.  (As more warnings are added
-     to `g77', some might be added to the list enabled by `-Wall'.)
+     to `g77' some might be added to the list enabled by `-Wall'.)
 
    The remaining `-W...' options are not implied by `-Wall' because
 they warn about constructions that we consider reasonable to use, on
@@ -1135,7 +1136,7 @@ occasion, in clean programs.
         * Expressions having two arithmetic operators in a row, such as
           `X*-Y'.  Such a construct is nonstandard, and can produce
           unexpected results in more complicated situations such as
-          `X**-Y*Z'.  `g77', along with many other compilers, interprets
+          `X**-Y*Z'.  `g77' along with many other compilers, interprets
           this example differently than many programmers, and a few
           other compilers.  Specifically, `g77' interprets `X**-Y*Z' as
           `(X**(-Y))*Z', while others might think it should be
@@ -1189,7 +1190,7 @@ occasion, in clean programs.
 `-W'
      Turns on "extra warnings" and, if optimization is specified via
      `-O', the `-Wuninitialized' option.  (This might change in future
-     versions of `g77'.)
+     versions of `g77'
 
      "Extra warnings" are issued for:
 
@@ -1200,8 +1201,8 @@ occasion, in clean programs.
           for certain configurations).
 
    *Note Options to Request or Suppress Warnings: (gcc)Warning Options,
-for information on more options offered by the GBE shared by `g77',
-`gcc', and other GNU compilers.
+for information on more options offered by the GBE shared by `g77'
+`gcc' and other GNU compilers.
 
    Some of these have no effect when compiling programs written in
 Fortran:

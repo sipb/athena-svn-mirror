@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,419 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: HostNm Intrinsic (function),  Next: Huge Intrinsic,  Prev: HostNm Intrinsic (subroutine),  Up: Table of Intrinsic Functions
+
+HostNm Intrinsic (function)
+...........................
+
+     HostNm(NAME)
+
+HostNm: `INTEGER(KIND=1)' function.
+
+NAME: `CHARACTER'; scalar; INTENT(OUT).
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Fills NAME with the system's host name returned by `gethostname(2)',
+returning 0 on success or a non-zero error code (`ENOSYS' if the system
+does not provide `gethostname(2)').
+
+   On some systems (specifically SCO) it might be necessary to link the
+"socket" library if you call this routine.  Typically this means adding
+`-lg2c -lsocket -lm' to the `g77' command line when linking the program.
+
+   For information on other intrinsics with the same name: *Note HostNm
+Intrinsic (subroutine)::.
+
+
+File: g77.info,  Node: Huge Intrinsic,  Next: IAbs Intrinsic,  Prev: HostNm Intrinsic (function),  Up: Table of Intrinsic Functions
+
+Huge Intrinsic
+..............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Huge' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: IAbs Intrinsic,  Next: IAChar Intrinsic,  Prev: Huge Intrinsic,  Up: Table of Intrinsic Functions
+
+IAbs Intrinsic
+..............
+
+     IAbs(A)
+
+IAbs: `INTEGER(KIND=1)' function.
+
+A: `INTEGER(KIND=1)'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Archaic form of `ABS()' that is specific to one type for A.  *Note
+Abs Intrinsic::.
+
+
+File: g77.info,  Node: IAChar Intrinsic,  Next: IAnd Intrinsic,  Prev: IAbs Intrinsic,  Up: Table of Intrinsic Functions
+
+IAChar Intrinsic
+................
+
+     IAChar(C)
+
+IAChar: `INTEGER(KIND=1)' function.
+
+C: `CHARACTER'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `f90'.
+
+Description:
+
+   Returns the code for the ASCII character in the first character
+position of C.
+
+   *Note AChar Intrinsic::, for the inverse of this function.
+
+   *Note IChar Intrinsic::, for the function corresponding to the
+system's native character set.
+
+
+File: g77.info,  Node: IAnd Intrinsic,  Next: IArgC Intrinsic,  Prev: IAChar Intrinsic,  Up: Table of Intrinsic Functions
+
+IAnd Intrinsic
+..............
+
+     IAnd(I, J)
+
+IAnd: `INTEGER' function, the exact type being the result of
+cross-promoting the types of all the arguments.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+J: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `mil', `f90', `vxt'.
+
+Description:
+
+   Returns value resulting from boolean AND of pair of bits in each of
+I and J.
+
+
+File: g77.info,  Node: IArgC Intrinsic,  Next: IBClr Intrinsic,  Prev: IAnd Intrinsic,  Up: Table of Intrinsic Functions
+
+IArgC Intrinsic
+...............
+
+     IArgC()
+
+IArgC: `INTEGER(KIND=1)' function.
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Returns the number of command-line arguments.
+
+   This count does not include the specification of the program name
+itself.
+
+
+File: g77.info,  Node: IBClr Intrinsic,  Next: IBits Intrinsic,  Prev: IArgC Intrinsic,  Up: Table of Intrinsic Functions
+
+IBClr Intrinsic
+...............
+
+     IBClr(I, POS)
+
+IBClr: `INTEGER' function, the `KIND=' value of the type being that of
+argument I.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+POS: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `mil', `f90', `vxt'.
+
+Description:
+
+   Returns the value of I with bit POS cleared (set to zero).  *Note
+BTest Intrinsic::, for information on bit positions.
+
+
+File: g77.info,  Node: IBits Intrinsic,  Next: IBSet Intrinsic,  Prev: IBClr Intrinsic,  Up: Table of Intrinsic Functions
+
+IBits Intrinsic
+...............
+
+     IBits(I, POS, LEN)
+
+IBits: `INTEGER' function, the `KIND=' value of the type being that of
+argument I.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+POS: `INTEGER'; scalar; INTENT(IN).
+
+LEN: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `mil', `f90', `vxt'.
+
+Description:
+
+   Extracts a subfield of length LEN from I, starting from bit position
+POS and extending left for LEN bits.  The result is right-justified and
+the remaining bits are zeroed.  The value of `POS+LEN' must be less
+than or equal to the value `BIT_SIZE(I)'.  *Note Bit_Size Intrinsic::.
+
+
+File: g77.info,  Node: IBSet Intrinsic,  Next: IChar Intrinsic,  Prev: IBits Intrinsic,  Up: Table of Intrinsic Functions
+
+IBSet Intrinsic
+...............
+
+     IBSet(I, POS)
+
+IBSet: `INTEGER' function, the `KIND=' value of the type being that of
+argument I.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+POS: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `mil', `f90', `vxt'.
+
+Description:
+
+   Returns the value of I with bit POS set (to one).  *Note BTest
+Intrinsic::, for information on bit positions.
+
+
+File: g77.info,  Node: IChar Intrinsic,  Next: IDate Intrinsic (UNIX),  Prev: IBSet Intrinsic,  Up: Table of Intrinsic Functions
+
+IChar Intrinsic
+...............
+
+     IChar(C)
+
+IChar: `INTEGER(KIND=1)' function.
+
+C: `CHARACTER'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Returns the code for the character in the first character position
+of C.
+
+   Because the system's native character set is used, the
+correspondence between character and their codes is not necessarily the
+same between GNU Fortran implementations.
+
+   Note that no intrinsic exists to convert a printable character
+string to a numerical value.  For example, there is no intrinsic that,
+given the `CHARACTER' value `'154'', returns an `INTEGER' or `REAL'
+value with the value `154'.
+
+   Instead, you can use internal-file I/O to do this kind of conversion.
+For example:
+
+     INTEGER VALUE
+     CHARACTER*10 STRING
+     STRING = '154'
+     READ (STRING, '(I10)'), VALUE
+     PRINT *, VALUE
+     END
+
+   The above program, when run, prints:
+
+      154
+
+   *Note Char Intrinsic::, for the inverse of the `ICHAR' function.
+
+   *Note IAChar Intrinsic::, for the function corresponding to the
+ASCII character set.
+
+
+File: g77.info,  Node: IDate Intrinsic (UNIX),  Next: IDiM Intrinsic,  Prev: IChar Intrinsic,  Up: Table of Intrinsic Functions
+
+IDate Intrinsic (UNIX)
+......................
+
+     CALL IDate(TARRAY)
+
+TARRAY: `INTEGER(KIND=1)'; DIMENSION(3); INTENT(OUT).
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Fills TARRAY with the numerical values at the current local time of
+day, month (in the range 1-12), and year in elements 1, 2, and 3,
+respectively.  The year has four significant digits.
+
+   Programs making use of this intrinsic might not be Year 10000 (Y10K)
+compliant.  For example, the date might appear, to such programs, to
+wrap around (change from a larger value to a smaller one) as of the
+Year 10000.
+
+   For information on other intrinsics with the same name: *Note IDate
+Intrinsic (VXT)::.
+
+
+File: g77.info,  Node: IDiM Intrinsic,  Next: IDInt Intrinsic,  Prev: IDate Intrinsic (UNIX),  Up: Table of Intrinsic Functions
+
+IDiM Intrinsic
+..............
+
+     IDiM(X, Y)
+
+IDiM: `INTEGER(KIND=1)' function.
+
+X: `INTEGER(KIND=1)'; scalar; INTENT(IN).
+
+Y: `INTEGER(KIND=1)'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Archaic form of `DIM()' that is specific to one type for X and Y.
+*Note DiM Intrinsic::.
+
+
+File: g77.info,  Node: IDInt Intrinsic,  Next: IDNInt Intrinsic,  Prev: IDiM Intrinsic,  Up: Table of Intrinsic Functions
+
+IDInt Intrinsic
+...............
+
+     IDInt(A)
+
+IDInt: `INTEGER(KIND=1)' function.
+
+A: `REAL(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Archaic form of `INT()' that is specific to one type for A.  *Note
+Int Intrinsic::.
+
+
+File: g77.info,  Node: IDNInt Intrinsic,  Next: IEOr Intrinsic,  Prev: IDInt Intrinsic,  Up: Table of Intrinsic Functions
+
+IDNInt Intrinsic
+................
+
+     IDNInt(A)
+
+IDNInt: `INTEGER(KIND=1)' function.
+
+A: `REAL(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Archaic form of `NINT()' that is specific to one type for A.  *Note
+NInt Intrinsic::.
+
+
+File: g77.info,  Node: IEOr Intrinsic,  Next: IErrNo Intrinsic,  Prev: IDNInt Intrinsic,  Up: Table of Intrinsic Functions
+
+IEOr Intrinsic
+..............
+
+     IEOr(I, J)
+
+IEOr: `INTEGER' function, the exact type being the result of
+cross-promoting the types of all the arguments.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+J: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `mil', `f90', `vxt'.
+
+Description:
+
+   Returns value resulting from boolean exclusive-OR of pair of bits in
+each of I and J.
+
+
+File: g77.info,  Node: IErrNo Intrinsic,  Next: IFix Intrinsic,  Prev: IEOr Intrinsic,  Up: Table of Intrinsic Functions
+
+IErrNo Intrinsic
+................
+
+     IErrNo()
+
+IErrNo: `INTEGER(KIND=1)' function.
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Returns the last system error number (corresponding to the C
+`errno').
+
+
+File: g77.info,  Node: IFix Intrinsic,  Next: Imag Intrinsic,  Prev: IErrNo Intrinsic,  Up: Table of Intrinsic Functions
+
+IFix Intrinsic
+..............
+
+     IFix(A)
+
+IFix: `INTEGER(KIND=1)' function.
+
+A: `REAL(KIND=1)'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Archaic form of `INT()' that is specific to one type for A.  *Note
+Int Intrinsic::.
+
+
+File: g77.info,  Node: Imag Intrinsic,  Next: ImagPart Intrinsic,  Prev: IFix Intrinsic,  Up: Table of Intrinsic Functions
+
+Imag Intrinsic
+..............
+
+     Imag(Z)
+
+Imag: `REAL' function, the `KIND=' value of the type being that of
+argument Z.
+
+Z: `COMPLEX'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c'.
+
+Description:
+
+   The imaginary part of Z is returned, without conversion.
+
+   _Note:_ The way to do this in standard Fortran 90 is `AIMAG(Z)'.
+However, when, for example, Z is `DOUBLE COMPLEX', `AIMAG(Z)' means
+something different for some compilers that are not true Fortran 90
+compilers but offer some extensions standardized by Fortran 90 (such as
+the `DOUBLE COMPLEX' type, also known as `COMPLEX(KIND=2)').
+
+   The advantage of `IMAG()' is that, while not necessarily more or
+less portable than `AIMAG()', it is more likely to cause a compiler
+that doesn't support it to produce a diagnostic than generate incorrect
+code.
+
+   *Note REAL() and AIMAG() of Complex::, for more information.
 
 
 File: g77.info,  Node: ImagPart Intrinsic,  Next: Index Intrinsic,  Prev: Imag Intrinsic,  Up: Table of Intrinsic Functions
@@ -1467,332 +1880,4 @@ Range Intrinsic
    This intrinsic is not yet implemented.  The name is, however,
 reserved as an intrinsic.  Use `EXTERNAL Range' to use this name for an
 external procedure.
-
-
-File: g77.info,  Node: Real Intrinsic,  Next: RealPart Intrinsic,  Prev: Range Intrinsic,  Up: Table of Intrinsic Functions
-
-Real Intrinsic
-..............
-
-     Real(A)
-
-Real: `REAL' function.  The exact type is `REAL(KIND=1)' when argument
-A is any type other than `COMPLEX', or when it is `COMPLEX(KIND=1)'.
-When A is any `COMPLEX' type other than `COMPLEX(KIND=1)', this
-intrinsic is valid only when used as the argument to `REAL()', as
-explained below.
-
-A: `INTEGER', `REAL', or `COMPLEX'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Converts A to `REAL(KIND=1)'.
-
-   Use of `REAL()' with a `COMPLEX' argument (other than
-`COMPLEX(KIND=1)') is restricted to the following case:
-
-     REAL(REAL(A))
-
-This expression converts the real part of A to `REAL(KIND=1)'.
-
-   *Note RealPart Intrinsic::, for information on a GNU Fortran
-intrinsic that extracts the real part of an arbitrary `COMPLEX' value.
-
-   *Note REAL() and AIMAG() of Complex::, for more information.
-
-
-File: g77.info,  Node: RealPart Intrinsic,  Next: Rename Intrinsic (subroutine),  Prev: Real Intrinsic,  Up: Table of Intrinsic Functions
-
-RealPart Intrinsic
-..................
-
-     RealPart(Z)
-
-RealPart: `REAL' function, the `KIND=' value of the type being that of
-argument Z.
-
-Z: `COMPLEX'; scalar; INTENT(IN).
-
-Intrinsic groups: `gnu'.
-
-Description:
-
-   The real part of Z is returned, without conversion.
-
-   _Note:_ The way to do this in standard Fortran 90 is `REAL(Z)'.
-However, when, for example, Z is `COMPLEX(KIND=2)', `REAL(Z)' means
-something different for some compilers that are not true Fortran 90
-compilers but offer some extensions standardized by Fortran 90 (such as
-the `DOUBLE COMPLEX' type, also known as `COMPLEX(KIND=2)').
-
-   The advantage of `REALPART()' is that, while not necessarily more or
-less portable than `REAL()', it is more likely to cause a compiler that
-doesn't support it to produce a diagnostic than generate incorrect code.
-
-   *Note REAL() and AIMAG() of Complex::, for more information.
-
-
-File: g77.info,  Node: Rename Intrinsic (subroutine),  Next: Repeat Intrinsic,  Prev: RealPart Intrinsic,  Up: Table of Intrinsic Functions
-
-Rename Intrinsic (subroutine)
-.............................
-
-     CALL Rename(PATH1, PATH2, STATUS)
-
-PATH1: `CHARACTER'; scalar; INTENT(IN).
-
-PATH2: `CHARACTER'; scalar; INTENT(IN).
-
-STATUS: `INTEGER(KIND=1)'; OPTIONAL; scalar; INTENT(OUT).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Renames the file PATH1 to PATH2.  A null character (`CHAR(0)') marks
-the end of the names in PATH1 and PATH2--otherwise, trailing blanks in
-PATH1 and PATH2 are ignored.  See `rename(2)'.  If the STATUS argument
-is supplied, it contains 0 on success or a non-zero error code upon
-return.
-
-   Some non-GNU implementations of Fortran provide this intrinsic as
-only a function, not as a subroutine, or do not support the (optional)
-STATUS argument.
-
-   For information on other intrinsics with the same name: *Note Rename
-Intrinsic (function)::.
-
-
-File: g77.info,  Node: Repeat Intrinsic,  Next: Reshape Intrinsic,  Prev: Rename Intrinsic (subroutine),  Up: Table of Intrinsic Functions
-
-Repeat Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Repeat' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: Reshape Intrinsic,  Next: RRSpacing Intrinsic,  Prev: Repeat Intrinsic,  Up: Table of Intrinsic Functions
-
-Reshape Intrinsic
-.................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Reshape' to use this name for
-an external procedure.
-
-
-File: g77.info,  Node: RRSpacing Intrinsic,  Next: RShift Intrinsic,  Prev: Reshape Intrinsic,  Up: Table of Intrinsic Functions
-
-RRSpacing Intrinsic
-...................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL RRSpacing' to use this name
-for an external procedure.
-
-
-File: g77.info,  Node: RShift Intrinsic,  Next: Scale Intrinsic,  Prev: RRSpacing Intrinsic,  Up: Table of Intrinsic Functions
-
-RShift Intrinsic
-................
-
-     RShift(I, SHIFT)
-
-RShift: `INTEGER' function, the `KIND=' value of the type being that of
-argument I.
-
-I: `INTEGER'; scalar; INTENT(IN).
-
-SHIFT: `INTEGER'; scalar; INTENT(IN).
-
-Intrinsic groups: `f2c'.
-
-Description:
-
-   Returns I shifted to the right SHIFT bits.
-
-   Although similar to the expression `I/(2**SHIFT)', there are
-important differences.  For example, the sign of the result is
-undefined.
-
-   Currently this intrinsic is defined assuming the underlying
-representation of I is as a two's-complement integer.  It is unclear at
-this point whether that definition will apply when a different
-representation is involved.
-
-   *Note RShift Intrinsic::, for the inverse of this function.
-
-   *Note IShft Intrinsic::, for information on a more widely available
-right-shifting intrinsic that is also more precisely defined.
-
-
-File: g77.info,  Node: Scale Intrinsic,  Next: Scan Intrinsic,  Prev: RShift Intrinsic,  Up: Table of Intrinsic Functions
-
-Scale Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Scale' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: Scan Intrinsic,  Next: Second Intrinsic (function),  Prev: Scale Intrinsic,  Up: Table of Intrinsic Functions
-
-Scan Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Scan' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: Second Intrinsic (function),  Next: Second Intrinsic (subroutine),  Prev: Scan Intrinsic,  Up: Table of Intrinsic Functions
-
-Second Intrinsic (function)
-...........................
-
-     Second()
-
-Second: `REAL(KIND=1)' function.
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Returns the process's runtime in seconds--the same value as the UNIX
-function `etime' returns.
-
-   On some systems, the underlying timings are represented using types
-with sufficiently small limits that overflows (wraparounds) are
-possible, such as 32-bit types.  Therefore, the values returned by this
-intrinsic might be, or become, negative, or numerically less than
-previous values, during a single run of the compiled program.
-
-   For information on other intrinsics with the same name: *Note Second
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: Second Intrinsic (subroutine),  Next: Selected_Int_Kind Intrinsic,  Prev: Second Intrinsic (function),  Up: Table of Intrinsic Functions
-
-Second Intrinsic (subroutine)
-.............................
-
-     CALL Second(SECONDS)
-
-SECONDS: `REAL'; scalar; INTENT(OUT).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Returns the process's runtime in seconds in SECONDS--the same value
-as the UNIX function `etime' returns.
-
-   On some systems, the underlying timings are represented using types
-with sufficiently small limits that overflows (wraparounds) are
-possible, such as 32-bit types.  Therefore, the values returned by this
-intrinsic might be, or become, negative, or numerically less than
-previous values, during a single run of the compiled program.
-
-   This routine is known from Cray Fortran.  *Note CPU_Time Intrinsic::,
-for a standard equivalent.
-
-   For information on other intrinsics with the same name: *Note Second
-Intrinsic (function)::.
-
-
-File: g77.info,  Node: Selected_Int_Kind Intrinsic,  Next: Selected_Real_Kind Intrinsic,  Prev: Second Intrinsic (subroutine),  Up: Table of Intrinsic Functions
-
-Selected_Int_Kind Intrinsic
-...........................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Selected_Int_Kind' to use this
-name for an external procedure.
-
-
-File: g77.info,  Node: Selected_Real_Kind Intrinsic,  Next: Set_Exponent Intrinsic,  Prev: Selected_Int_Kind Intrinsic,  Up: Table of Intrinsic Functions
-
-Selected_Real_Kind Intrinsic
-............................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Selected_Real_Kind' to use
-this name for an external procedure.
-
-
-File: g77.info,  Node: Set_Exponent Intrinsic,  Next: Shape Intrinsic,  Prev: Selected_Real_Kind Intrinsic,  Up: Table of Intrinsic Functions
-
-Set_Exponent Intrinsic
-......................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Set_Exponent' to use this name
-for an external procedure.
-
-
-File: g77.info,  Node: Shape Intrinsic,  Next: Short Intrinsic,  Prev: Set_Exponent Intrinsic,  Up: Table of Intrinsic Functions
-
-Shape Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Shape' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: Short Intrinsic,  Next: Sign Intrinsic,  Prev: Shape Intrinsic,  Up: Table of Intrinsic Functions
-
-Short Intrinsic
-...............
-
-     Short(A)
-
-Short: `INTEGER(KIND=6)' function.
-
-A: `INTEGER'; scalar; INTENT(IN).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Returns A with the fractional portion of its magnitude truncated and
-its sign preserved, converted to type `INTEGER(KIND=6)'.
-
-   If A is type `COMPLEX', its real part is truncated and converted,
-and its imaginary part is disgregarded.
-
-   *Note Int Intrinsic::.
-
-   The precise meaning of this intrinsic might change in a future
-version of the GNU Fortran language, as more is learned about how it is
-used.
-
-
-File: g77.info,  Node: Sign Intrinsic,  Next: Signal Intrinsic (subroutine),  Prev: Short Intrinsic,  Up: Table of Intrinsic Functions
-
-Sign Intrinsic
-..............
-
-     Sign(A, B)
-
-Sign: `INTEGER' or `REAL' function, the exact type being the result of
-cross-promoting the types of all the arguments.
-
-A: `INTEGER' or `REAL'; scalar; INTENT(IN).
-
-B: `INTEGER' or `REAL'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Returns `ABS(A)*S', where S is +1 if `B.GE.0', -1 otherwise.
-
-   *Note Abs Intrinsic::, for the function that returns the magnitude
-of a value.
 

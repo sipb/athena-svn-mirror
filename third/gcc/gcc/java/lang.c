@@ -34,30 +34,36 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #include "java-tree.h"
 #include "jcf.h"
 #include "toplev.h"
+#include "langhooks.h"
+#include "langhooks-def.h"
 #include "flags.h"
 #include "xref.h"
 #include "ggc.h"
+#include "diagnostic.h"
 
 struct string_option
 {
-  const char *string;
-  int *variable;
-  int on_value;
+  const char *const string;
+  int *const variable;
+  const int on_value;
 };
 
-static void java_init PARAMS ((void));
+static const char *java_init PARAMS ((const char *));
+static void java_finish PARAMS ((void));
 static void java_init_options PARAMS ((void));
+static void java_post_options PARAMS ((void));
+
 static int java_decode_option PARAMS ((int, char **));
 static void put_decl_string PARAMS ((const char *, int));
 static void put_decl_node PARAMS ((tree));
-static void java_dummy_print PARAMS ((const char *));
-static void lang_print_error PARAMS ((const char *));
-static int process_option_with_no PARAMS ((char *,
-					   struct string_option *,
+static void java_dummy_print PARAMS ((diagnostic_context *, const char *));
+static void lang_print_error PARAMS ((diagnostic_context *, const char *));
+static int process_option_with_no PARAMS ((const char *,
+					   const struct string_option *,
 					   int));
 
-#ifndef OBJECT_SUFFIX
-# define OBJECT_SUFFIX ".o"
+#ifndef TARGET_OBJECT_SUFFIX
+# define TARGET_OBJECT_SUFFIX ".o"
 #endif
 
 /* Table indexed by tree code giving a string containing a character
@@ -66,7 +72,7 @@ static int process_option_with_no PARAMS ((char *,
 
 #define DEFTREECODE(SYM, NAME, TYPE, LENGTH) TYPE,
 
-char java_tree_code_type[] = {
+static const char java_tree_code_type[] = {
   'x',
 #include "java-tree.def"
 };
@@ -78,7 +84,7 @@ char java_tree_code_type[] = {
 
 #define DEFTREECODE(SYM, NAME, TYPE, LENGTH) LENGTH,
 
-int java_tree_code_length[] = {
+static const int java_tree_code_length[] = {
   0,
 #include "java-tree.def"
 };
@@ -88,7 +94,7 @@ int java_tree_code_length[] = {
    Used for printing out the tree and error messages.  */
 #define DEFTREECODE(SYM, NAME, TYPE, LEN) NAME,
 
-const char *java_tree_code_name[] = {
+static const char *const java_tree_code_name[] = {
   "@@dummy",
 #include "java-tree.def"
 };
@@ -96,12 +102,7 @@ const char *java_tree_code_name[] = {
 
 int compiling_from_source;
 
-const char * const language_string = "GNU Java";
-
-/* Nonzero if we should make is_compiled_class always return 1 for
-   appropriate classes that we're referencing.  */
-
-int flag_assume_compiled = 1;
+char * resource_name;
 
 int flag_emit_class_files = 0;
 
@@ -138,6 +139,9 @@ int flag_jni = 0;
    file.  */
 int flag_newer = 1;
 
+/* When non zero, generate checks for references to NULL.  */
+int flag_check_references = 0;
+
 /* The encoding of the source file.  */
 const char *current_encoding = NULL;
 
@@ -147,13 +151,31 @@ int flag_extraneous_semicolon;
 /* When non zero, always check for a non gcj generated classes archive.  */
 int flag_force_classes_archive_check;
 
+/* When zero, don't optimize static class initialization. This flag shouldn't
+   be tested alone, use STATIC_CLASS_INITIALIZATION_OPTIMIZATION_P instead.  */
+int flag_optimize_sci = 1;
+
+/* When non zero, use offset tables for virtual method calls
+   in order to improve binary compatibility. */
+int flag_indirect_dispatch = 0;
+
+/* When zero, don't generate runtime array store checks. */
+int flag_store_check = 1;
+
+/* When non zero, print extra version information.  */
+static int version_flag = 0;
+
+/* Set non-zero if the user specified -finline-functions on the command 
+   line.  */
+int flag_really_inline = 0;
+
 /* Table of language-dependent -f options.
    STRING is the option name.  VARIABLE is the address of the variable.
    ON_VALUE is the value to store in VARIABLE
     if `-fSTRING' is seen as an option.
    (If `-fno-STRING' is seen as an option, the opposite value is stored.)  */
 
-static struct string_option
+static const struct string_option
 lang_f_options[] =
 {
   {"emit-class-file", &flag_emit_class_files, 1},
@@ -163,10 +185,14 @@ lang_f_options[] =
   {"use-boehm-gc", &flag_use_boehm_gc, 1},
   {"hash-synchronization", &flag_hash_synchronization, 1},
   {"jni", &flag_jni, 1},
-  {"force-classes-archive-check", &flag_force_classes_archive_check, 1}
+  {"check-references", &flag_check_references, 1},
+  {"force-classes-archive-check", &flag_force_classes_archive_check, 1},
+  {"optimize-static-class-initialization", &flag_optimize_sci, 1 },
+  {"indirect-dispatch", &flag_indirect_dispatch, 1},
+  {"store-check", &flag_store_check, 1}
 };
 
-static struct string_option
+static const struct string_option
 lang_W_options[] =
 {
   { "redundant-modifiers", &flag_redundant, 1 },
@@ -177,7 +203,7 @@ lang_W_options[] =
 JCF *current_jcf;
 
 /* Variable controlling how dependency tracking is enabled in
-   init_parse.  */
+   java_init.  */
 static int dependency_tracking = 0;
 
 /* Flag values for DEPENDENCY_TRACKING.  */
@@ -186,19 +212,30 @@ static int dependency_tracking = 0;
 #define DEPEND_TARGET_SET 4
 #define DEPEND_FILE_ALREADY_SET 8
 
+#undef LANG_HOOKS_NAME
+#define LANG_HOOKS_NAME "GNU Java"
+#undef LANG_HOOKS_INIT
+#define LANG_HOOKS_INIT java_init
+#undef LANG_HOOKS_FINISH
+#define LANG_HOOKS_FINISH java_finish
+#undef LANG_HOOKS_INIT_OPTIONS
+#define LANG_HOOKS_INIT_OPTIONS java_init_options
+#undef LANG_HOOKS_DECODE_OPTION
+#define LANG_HOOKS_DECODE_OPTION java_decode_option
+#undef LANG_HOOKS_POST_OPTIONS
+#define LANG_HOOKS_POST_OPTIONS java_post_options
+#undef LANG_HOOKS_SET_YYDEBUG
+#define LANG_HOOKS_SET_YYDEBUG java_set_yydebug
+
 /* Each front end provides its own.  */
-struct lang_hooks lang_hooks = {java_init,
-				NULL, /* java_finish */
-				java_init_options,
-				java_decode_option,
-				NULL /* post_options */};
+const struct lang_hooks lang_hooks = LANG_HOOKS_INITIALIZER;
 
 /* Process an option that can accept a `no-' form.
    Return 1 if option found, 0 otherwise.  */
 static int
 process_option_with_no (p, table, table_size)
-     char *p;
-     struct string_option *table;
+     const char *p;
+     const struct string_option *table;
      int table_size;
 {
   int j;
@@ -232,6 +269,22 @@ java_decode_option (argc, argv)
 {
   char *p = argv[0];
 
+  jcf_path_init ();
+
+  if (strcmp (p, "-version") == 0)
+    {
+      version_flag = 1;
+      /* We return 0 so that the caller can process this.  */
+      return 0;
+    }
+
+#define CLARG "-fcompile-resource="
+  if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
+    {
+      resource_name = p + sizeof (CLARG) - 1;
+      return 1;
+    }
+#undef CLARG
 #define CLARG "-fassume-compiled="
   if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
     {
@@ -260,6 +313,13 @@ java_decode_option (argc, argv)
       return 1;
     }
 #undef CLARG
+#define CLARG "-fCLASSPATH="
+  if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
+    {
+      jcf_path_classpath_arg (p + sizeof (CLARG) - 1);
+      return 1;
+    }
+#undef CLARG
 #define CLARG "-fclasspath="
   if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
     {
@@ -267,10 +327,17 @@ java_decode_option (argc, argv)
       return 1;
     }
 #undef CLARG
-#define CLARG "-fCLASSPATH="
+#define CLARG "-fbootclasspath="
   if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
     {
-      jcf_path_CLASSPATH_arg (p + sizeof (CLARG) - 1);
+      jcf_path_bootclasspath_arg (p + sizeof (CLARG) - 1);
+      return 1;
+    }
+#undef CLARG
+#define CLARG "-fextdirs="
+  if (strncmp (p, CLARG, sizeof (CLARG) - 1) == 0)
+    {
+      jcf_path_extdirs_arg (p + sizeof (CLARG) - 1);
       return 1;
     }
 #undef CLARG
@@ -294,6 +361,14 @@ java_decode_option (argc, argv)
       return 1;
     }
 #undef ARG
+#define ARG "-finline-functions"
+  if (strncmp (p, ARG, sizeof (ARG) - 1) == 0)
+    {
+      flag_inline_functions = 1;
+      flag_really_inline = 1;
+      return 1;
+    }
+#undef ARG
 
   if (p[0] == '-' && p[1] == 'f')
     {
@@ -301,8 +376,10 @@ java_decode_option (argc, argv)
 	 P's value is the option sans `-f'.
 	 Search for it in the table of options.  */
       p += 2;
-      return process_option_with_no (p, lang_f_options,
-				     ARRAY_SIZE (lang_f_options));
+      if (process_option_with_no (p, lang_f_options,
+				  ARRAY_SIZE (lang_f_options)))
+	return 1;
+      return dump_switch_p (p);
     }
 
   if (strcmp (p, "-Wall") == 0)
@@ -372,10 +449,22 @@ java_decode_option (argc, argv)
 /* Global open file.  */
 FILE *finput;
 
-const char *
-init_parse (filename)
+static const char *
+java_init (filename)
      const char *filename;
 {
+#if 0
+  extern int flag_minimal_debug;
+  flag_minimal_debug = 0;
+#endif
+
+  /* Force minimum function alignment if g++ uses the least significant
+     bit of function pointers to store the virtual bit. This is required
+     to keep vtables compatible.  */
+  if (TARGET_PTRMEMFUNC_VBIT_LOCATION == ptrmemfunc_vbit_in_pfn
+      && force_align_functions_log < 1)
+    force_align_functions_log = 1;
+
   /* Open input file.  */
 
   if (filename == 0 || !strcmp (filename, "-"))
@@ -404,7 +493,7 @@ init_parse (filename)
 	      else
 		{
 		  char *buf = (char *) xmalloc (dot - filename +
-						3 + sizeof (OBJECT_SUFFIX));
+						3 + sizeof (TARGET_OBJECT_SUFFIX));
 		  strncpy (buf, filename, dot - filename);
 
 		  /* If emitting class files, we might have multiple
@@ -417,7 +506,7 @@ init_parse (filename)
 		    jcf_dependency_set_target (NULL);
 		  else
 		    {
-		      strcpy (buf + (dot - filename), OBJECT_SUFFIX);
+		      strcpy (buf + (dot - filename), TARGET_OBJECT_SUFFIX);
 		      jcf_dependency_set_target (buf);
 		    }
 
@@ -437,13 +526,35 @@ init_parse (filename)
 	}
     }
 
-  init_lex ();
+  jcf_path_init ();
+  jcf_path_seal (version_flag);
+
+  decl_printable_name = lang_printable_name;
+  print_error_function = lang_print_error;
+  lang_expand_expr = java_lang_expand_expr;
+
+  /* Append to Gcc tree node definition arrays */
+
+  memcpy (tree_code_type + (int) LAST_AND_UNUSED_TREE_CODE,
+	  java_tree_code_type,
+	  (int)LAST_JAVA_TREE_CODE - (int)LAST_AND_UNUSED_TREE_CODE);
+  memcpy (tree_code_length + (int) LAST_AND_UNUSED_TREE_CODE,
+	  java_tree_code_length,
+	  (LAST_JAVA_TREE_CODE - 
+	   (int)LAST_AND_UNUSED_TREE_CODE) * sizeof (int));
+  memcpy (tree_code_name + (int) LAST_AND_UNUSED_TREE_CODE,
+	  java_tree_code_name,
+	  (LAST_JAVA_TREE_CODE - 
+	   (int)LAST_AND_UNUSED_TREE_CODE) * sizeof (char *));
+  java_init_decl_processing ();
+
+  using_eh_for_cleanups ();
 
   return filename;
 }
 
-void
-finish_parse ()
+static void
+java_finish ()
 {
   jcf_dependency_write ();
 }
@@ -499,32 +610,36 @@ put_decl_node (node)
   if (TREE_CODE_CLASS (TREE_CODE (node)) == 'd'
       && DECL_NAME (node) != NULL_TREE)
     {
-      /* We want to print the type the DECL belongs to. We don't do
-	 that when we handle constructors. */
-      if (TREE_CODE (node) == FUNCTION_DECL
-	  && ! DECL_CONSTRUCTOR_P (node)
-	  && ! DECL_ARTIFICIAL (node) && DECL_CONTEXT (node))
+      if (TREE_CODE (node) == FUNCTION_DECL)
 	{
-	  put_decl_node (TYPE_NAME (DECL_CONTEXT (node)));
-	  put_decl_string (".", 1);
-	}
-      if (! DECL_CONSTRUCTOR_P (node))
-	put_decl_node (DECL_NAME (node));
-      if (TREE_CODE (node) == FUNCTION_DECL && TREE_TYPE (node) != NULL_TREE)
-	{
-	  int i = 0;
-	  tree args = TYPE_ARG_TYPES (TREE_TYPE (node));
-	  if (TREE_CODE (TREE_TYPE (node)) == METHOD_TYPE)
-	    args = TREE_CHAIN (args);
-	  put_decl_string ("(", 1);
-	  for ( ; args != end_params_node;  args = TREE_CHAIN (args), i++)
+	  /* We want to print the type the DECL belongs to. We don't do
+	     that when we handle constructors. */
+	  if (! DECL_CONSTRUCTOR_P (node)
+	      && ! DECL_ARTIFICIAL (node) && DECL_CONTEXT (node))
 	    {
-	      if (i > 0)
-		put_decl_string (",", 1);
-	      put_decl_node (TREE_VALUE (args));
+	      put_decl_node (TYPE_NAME (DECL_CONTEXT (node)));
+	      put_decl_string (".", 1);
 	    }
-	  put_decl_string (")", 1);
+	  if (! DECL_CONSTRUCTOR_P (node))
+	    put_decl_node (DECL_NAME (node));
+	  if (TREE_TYPE (node) != NULL_TREE)
+	    {
+	      int i = 0;
+	      tree args = TYPE_ARG_TYPES (TREE_TYPE (node));
+	      if (TREE_CODE (TREE_TYPE (node)) == METHOD_TYPE)
+		args = TREE_CHAIN (args);
+	      put_decl_string ("(", 1);
+	      for ( ; args != end_params_node;  args = TREE_CHAIN (args), i++)
+		{
+		  if (i > 0)
+		    put_decl_string (",", 1);
+		  put_decl_node (TREE_VALUE (args));
+		}
+	      put_decl_string (")", 1);
+	    }
 	}
+      else
+	put_decl_node (DECL_NAME (node));
     }
   else if (TREE_CODE_CLASS (TREE_CODE (node)) == 't'
       && TYPE_NAME (node) != NULL_TREE)
@@ -588,7 +703,8 @@ lang_printable_name_wls (decl, v)
    is the value of the hook print_error_function, called from toplev.c. */
 
 static void
-lang_print_error (file)
+lang_print_error (context, file)
+     diagnostic_context *context __attribute__((__unused__));
      const char *file;
 {
   static tree last_error_function_context = NULL_TREE;
@@ -624,7 +740,10 @@ lang_print_error (file)
       else
 	{
 	  const char *name = lang_printable_name (current_function_decl, 2);
-	  fprintf (stderr, "In method `%s':\n", name);
+	  fprintf (stderr, "In %s `%s':\n",
+		   (DECL_CONSTRUCTOR_P (current_function_decl) ? "constructor" 
+		    : "method"),
+		   name);
 	}
 
       last_error_function = current_function_decl;
@@ -632,44 +751,13 @@ lang_print_error (file)
 
 }
 
-static void
-java_init ()
-{
-#if 0
-  extern int flag_minimal_debug;
-  flag_minimal_debug = 0;
-#endif
-
-  jcf_path_init ();
-  jcf_path_seal ();
-
-  decl_printable_name = lang_printable_name;
-  print_error_function = lang_print_error;
-  lang_expand_expr = java_lang_expand_expr;
-
-  /* Append to Gcc tree node definition arrays */
-
-  memcpy (tree_code_type + (int) LAST_AND_UNUSED_TREE_CODE,
-	  java_tree_code_type,
-	  (int)LAST_JAVA_TREE_CODE - (int)LAST_AND_UNUSED_TREE_CODE);
-  memcpy (tree_code_length + (int) LAST_AND_UNUSED_TREE_CODE,
-	  java_tree_code_length,
-	  (LAST_JAVA_TREE_CODE - 
-	   (int)LAST_AND_UNUSED_TREE_CODE) * sizeof (int));
-  memcpy (tree_code_name + (int) LAST_AND_UNUSED_TREE_CODE,
-	  java_tree_code_name,
-	  (LAST_JAVA_TREE_CODE - 
-	   (int)LAST_AND_UNUSED_TREE_CODE) * sizeof (char *));
-
-  using_eh_for_cleanups ();
-}
-
 /* This doesn't do anything on purpose. It's used to satisfy the
    print_error_function hook we don't print error messages with bogus
    function prototypes.  */
 
 static void
-java_dummy_print (s)
+java_dummy_print (c, s)
+     diagnostic_context *c __attribute__ ((__unused__));
      const char *s __attribute__ ((__unused__));
 {
 }
@@ -698,59 +786,14 @@ java_init_options ()
   flag_non_call_exceptions = 1;
 }
 
-const char *
-lang_identify ()
+/* Post-switch processing.  */
+static void
+java_post_options ()
 {
-  return "Java";
-}
-
-/* Hooks for print_node.  */
-
-void
-print_lang_decl (file, node, indent)
-     FILE *file __attribute ((__unused__));
-     tree node __attribute ((__unused__));
-     int indent __attribute ((__unused__));
-{
-}
-
-void
-print_lang_type (file, node, indent)
-     FILE *file __attribute ((__unused__));
-     tree node __attribute ((__unused__));
-     int indent __attribute ((__unused__));
-{
-}
-
-void
-print_lang_identifier (file, node, indent)
-     FILE *file __attribute ((__unused__));
-     tree node __attribute ((__unused__));
-     int indent __attribute ((__unused__));
-{
-}
-
-void
-print_lang_statistics ()
-{
-}
-
-/* used by print-tree.c */
-
-void
-lang_print_xnode (file, node, indent)
-     FILE *file __attribute ((__unused__));
-     tree node __attribute ((__unused__));
-     int indent __attribute ((__unused__));
-{
-}
-
-/* Return the typed-based alias set for T, which may be an expression
-   or a type.  Return -1 if we don't do anything special.  */
-
-HOST_WIDE_INT
-lang_get_alias_set (t)
-     tree t ATTRIBUTE_UNUSED;
-{
-  return -1;
+  /* Turn off RTL inliner unless -finline-functions was really specified.  */
+  if (flag_really_inline == 0)
+    {
+      flag_no_inline = 1;
+      flag_inline_functions = 0;
+    }
 }

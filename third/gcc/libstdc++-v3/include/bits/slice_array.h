@@ -1,6 +1,6 @@
 // The template and inlines for the -*- C++ -*- slice_array class.
 
-// Copyright (C) 1997-1999, 2000, 2001 Free Software Foundation, Inc.
+// Copyright (C) 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -29,6 +29,11 @@
 
 // Written by Gabriel Dos Reis <Gabriel.Dos-Reis@DPTMaths.ENS-Cachan.Fr>
 
+/** @file slice_array.h
+ *  This is an internal header file, included by other library headers.
+ *  You should not attempt to use it directly.
+ */
+
 #ifndef _CPP_BITS_SLICE_ARRAY_H
 #define _CPP_BITS_SLICE_ARRAY_H 1
 
@@ -42,7 +47,13 @@ namespace std
     {
     public:
         typedef _Tp value_type;
-        
+
+      // This constructor is implemented since we need to return a value.
+      slice_array (const slice_array&);
+
+      // This operator must be public.  See DR-253.
+      slice_array& operator= (const slice_array&);
+
         void operator=   (const valarray<_Tp>&) const;
         void operator*=  (const valarray<_Tp>&) const;
         void operator/=  (const valarray<_Tp>&) const;
@@ -87,13 +98,9 @@ namespace std
         const size_t     _M_sz;
         const size_t     _M_stride;
         const _Array<_Tp> _M_array;
-        
-        // this constructor is implemented since we need to return a value.
-        slice_array (const slice_array&);
 
         // not implemented
         slice_array ();
-        slice_array& operator= (const slice_array&);
     };
 
     template<typename _Tp>
@@ -108,6 +115,15 @@ namespace std
     
     //    template<typename _Tp>
     //    inline slice_array<_Tp>::~slice_array () {}
+
+  template<typename _Tp>
+  inline slice_array<_Tp>&
+  slice_array<_Tp>::operator=(const slice_array<_Tp>& __a)
+  {
+    __valarray_copy(_M_array, _M_sz, _M_stride, __a._M_array, __a._M_stride);
+    return *this;
+  }
+
 
     template<typename _Tp>
     inline void

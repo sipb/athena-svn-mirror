@@ -1,6 +1,7 @@
 ## Makefile for the toplevel directory of the GNU C++ Standard library.
 ##
-## Copyright (C) 1997,1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+## Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002
+## Free Software Foundation, Inc.
 ##
 ## This file is part of the libstdc++ version 3 distribution.
 ## Process this file with automake to produce Makefile.in.
@@ -24,7 +25,7 @@
 AUTOMAKE_OPTIONS = 1.3 cygnus
 MAINT_CHARSET = latin1
 
-SUBDIRS = include libio libmath libsupc++ src testsuite
+SUBDIRS = include libio libmath libsupc++ src po testsuite 
 
 mkinstalldirs = $(SHELL) $(toplevel_srcdir)/mkinstalldirs
 
@@ -43,19 +44,46 @@ check-script-install: $(top_builddir)/mkcheck
 	  cd testsuite; \
 	  @glibcpp_builddir@/mkcheck 1)
 
-# These two rules might seem messy, but are hella worth it.
+# Use 'new-abi-baseline' to create an initial symbol file.  Then run
+# 'check-abi' to test for changes against that file.
+baseline_file = @baseline_file@
+check-abi: $(top_builddir)/testsuite/abi_check
+	-@(cd testsuite; \
+	  @glibcpp_srcdir@/config/abi/extract_symvers \
+	     ../src/.libs/libstdc++.so \
+	     ./current_symbols.txt; \
+	  ./abi_check --check ./current_symbols.txt ${baseline_file})
+
+new-abi-baseline:
+	-@(output=${baseline_file}; \
+	  if test -f $${output}; then \
+	    output=$${output}.new; \
+	    t=`echo $${output} | sed 's=.*config/abi/=='`; \
+	    echo "Baseline file already exists, writing to $${t} instead."; \
+	  fi; \
+	  @glibcpp_srcdir@/config/abi/extract_symvers \
+	     src/.libs/libstdc++.so $${output})
+
+# These rules are messy, but are hella worth it.
 doxygen:
 	-(srcdir=`cd ${top_srcdir}; pwd`; \
-	  outdir=`pwd`; \
+	  builddir=`pwd`; \
 	  /bin/sh ${srcdir}/docs/doxygen/run_doxygen \
-	            --mode=user $${srcdir} $${outdir})
+	            --mode=user $${srcdir} $${builddir})
 
 doxygen-maint:
 	-(srcdir=`cd ${top_srcdir}; pwd`; \
-	  outdir=`pwd`; \
-	  ${srcdir}/docs/doxygen/run_doxygen --mode=maint $${srcdir} $${outdir})
+	  builddir=`pwd`; \
+	  /bin/sh ${srcdir}/docs/doxygen/run_doxygen \
+	            --mode=maint $${srcdir} $${builddir})
 
-.PHONY: doxygen doxygen-maint
+doxygen-man:
+	-(srcdir=`cd ${top_srcdir}; pwd`; \
+	  builddir=`pwd`; \
+	  /bin/sh ${srcdir}/docs/doxygen/run_doxygen \
+	            --mode=man $${srcdir} $${builddir})
+
+.PHONY: doxygen doxygen-maint doxygen-man
 
 # Multilib support.
 MAKEOVERRIDES=
@@ -80,7 +108,7 @@ distclean-am: distclean-multi
 maintainer-clean-am: maintainer-clean-multi
 
 all-multi:
-	$(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
 install-multi:
 	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
 mostlyclean-multi:
@@ -137,5 +165,3 @@ AM_MAKEFLAGS = \
 	"NM_FOR_TARGET=$(NM_FOR_TARGET)" \
 	"DESTDIR=$(DESTDIR)" \
 	"WERROR=$(WERROR)" 
-
-
