@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: probe $
+ *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.16 1992-11-09 01:28:11 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.16 1992-11-09 01:28:11 probe Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $";
 #endif
 
 /*
@@ -266,13 +266,17 @@ main(argc, argv)
 
 reapchild()
 {
-#if !defined(_IBMR2)
+#if !defined(POSIX)
 	union wait status;
 #else
 	int status;
 #endif
 
+#ifdef POSIX
+	while (waitpid(-1,&status,WNOHANG) >0)
+#else
 	while (wait3(&status, WNOHANG, 0) > 0)
+#endif
 		;
 }
 

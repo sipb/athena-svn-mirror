@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: probe $
+ *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.8 1992-11-09 00:48:24 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.9 1993-05-10 13:36:28 vrt Exp $
  */
 
 /*
@@ -17,10 +17,14 @@
  * Global definitions for the line printer system.
  */
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #ifdef POSIX
 #include <dirent.h>
 #else
@@ -35,11 +39,25 @@
 #include <syslog.h>
 #include <signal.h>
 #include <sys/wait.h>
+#ifdef POSIX
+#include <termios.h>
+#else
 #include <sgtty.h>
+#endif
 #include <ctype.h>
 #include <errno.h>
 #include <strings.h>
 #include "lp.local.h"
+
+#ifdef SOLARIS
+/*
+ * flock operations.
+ */
+#define LOCK_SH               1       /* shared lock */
+#define LOCK_EX               2       /* exclusive lock */
+#define LOCK_NB               4       /* don't block when locking */
+#define LOCK_UN               8       /* unlock */
+#endif
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -119,7 +137,11 @@ extern char     krealm[];
 /*
  * Structure used for building a sorted list of control files.
  */
+#ifdef SOLARIS
+struct queue_ {
+#else
 struct queue {
+#endif
 	time_t	q_time;			/* modification time */
 	char	q_name[MAXNAMLEN+1];	/* control file name */
 };

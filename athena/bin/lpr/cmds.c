@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: probe $
+ *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.6 1992-09-29 11:17:27 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.7 1993-05-10 13:36:13 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.6 1992-09-29 11:17:27 probe Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.7 1993-05-10 13:36:13 vrt Exp $";
 #endif lint
 
 /*
@@ -906,7 +906,11 @@ stoppr()
 		printf("\tcannot stat lock file\n");
 }
 
+#ifdef SOLARIS
+struct	queue_ **queue;
+#else
 struct	queue **queue;
+#endif
 int	nitems;
 time_t	mtime;
 
@@ -956,7 +960,11 @@ topq(argc, argv)
 		printf("\tcannot chdir to %s\n", SD);
 		return;
 	}
+#ifdef SOLARIS
+	nitems = getq_(&queue);
+#else
 	nitems = getq(&queue);
+#endif
 	if (nitems == 0)
 		return;
 	changed = 0;
@@ -988,7 +996,11 @@ topq(argc, argv)
  * the control file.
  */
 touch(q)
+#ifdef SOLARIS
+	struct queue_ *q;
+#else
 	struct queue *q;
+#endif
 {
 	struct timeval tvp[2];
 
@@ -1004,7 +1016,11 @@ touch(q)
 doarg(job)
 	char *job;
 {
+#ifdef SOLARIS
+	register struct queue_ **qq;
+#else
 	register struct queue **qq;
+#endif
 	register int jobnum, n;
 	register char *cp, *machine;
 	char *jobtmp;
@@ -1209,7 +1225,11 @@ lookatpr ()
  * Remove all spool files and temporaries from the spooling area.  What
  * clean used to do.
  */
+#ifdef SOLARIS
+flushq_(argc, argv)
+#else
 flushq(argc, argv)
+#endif
 	char *argv[];
 {
 	register int c, status;

@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
- *	$Author: epeisach $
+ *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.9 1992-04-19 21:26:04 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.10 1993-05-10 13:36:43 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.9 1992-04-19 21:26:04 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.10 1993-05-10 13:36:43 vrt Exp $";
 #endif lint
 
 /*
@@ -32,7 +32,11 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
 
 #if (!defined(AIX) || !defined(i386)) && (!defined(_IBMR2))
 #ifdef VFS
+#ifdef SOLARIS
+#include <sys/fs/ufs_fs.h>
+#else
 #include <ufs/fs.h>
+#endif
 #else
 #include <sys/fs.h>
 #endif VFS
@@ -179,7 +183,11 @@ find_dev(dev, type)
 		}
 	}
 	closedir(dfd);
+#ifdef SOLARIS
+	frecverr("cannot find device %d, %d", __major(dev), __minor(dev));
+#else
 	frecverr("cannot find device %d, %d", major(dev), minor(dev));
+#endif
 	/*NOTREACHED*/
 }
 

@@ -15,7 +15,11 @@
  *   printing objects files.
  */
 
+#ifndef SOLARIS
 #include <a.out.h>
+#else
+#include <sys/exechdr.h>
+#endif
 #include <ar.h>
 
 #if defined(AIX) && defined(_I386) && !defined(OMAGIC)

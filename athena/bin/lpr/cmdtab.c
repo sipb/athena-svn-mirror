@@ -14,7 +14,11 @@ static char sccsid[] = "@(#)cmdtab.c	5.1 (Berkeley) 6/6/85";
 
 #include "lpc.h"
 
+#ifdef SOLARIS
+int	abort(), clean(), enable(), disable(), down(), flushq_(), help();
+#else
 int	abort(), clean(), enable(), disable(), down(), flushq(), help();
+#endif
 int	quit(), restart(), start(), status(), stop(), topq(), up(), lookat();
 
 char	aborthelp[] =	"terminate a spooling daemon immediately and disable printing";
@@ -39,7 +43,11 @@ struct cmd cmdtab[] = {
 	{ "exit",	quithelp,	quit,		0 },
 	{ "disable",	disablehelp,	disable,	1 },
 	{ "down",	downhelp,	down,		1 },
+#ifdef SOLARIS
+	{ "flush",      flushhelp,      flushq_,         1 },
+#else
 	{ "flush",      flushhelp,      flushq,         1 },
+#endif
 	{ "help",	helphelp,	help,		0 },
         { "lookat",     lookathelp,     lookat,         0 },
 	{ "quit",	quithelp,	quit,		0 },
