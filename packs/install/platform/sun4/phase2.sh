@@ -2,26 +2,17 @@
 
 ### This is the second script file in the Athena workstation
 ### installation program.  It is called by the first script,
-### 'install.sh', which resides on the installation media.  This
-### script is a continuation of 'install.sh' but resides on the
-### installation  pack instead.  It is executed as soon as
-### 'install.sh' has  mounted the installation srvd pack
-### This division of the installation program exists to make
-### modification easier.  If something in this script needs to be
-### modified, every installation floppy and tape need not be
-### rewritten.
+### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.2 1993-12-29 17:35:08 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.3 1994-01-05 12:15:03 miki Exp $
 ### $Locker:  $
+
 
 echo "Set some variables"
 PATH=/srvd/bin:/srvd/bin/athena:/srvd/etc:/srvd/usr/sbin:/bin:/etc:/sbin:/usr/sbin
 export PATH
 umask 2
 
-# Set time correctly (for a consistent filesystem)
-echo "Set the time"
-/srvd/etc/athena/gettime -s kerberos.mit.edu
 
 # Define the partitions
 echo "Define the partitions"
@@ -39,14 +30,9 @@ rvardrive=/dev/rdsk/c0t3d0s6
 
 
 
-echo "Formatting the disks"
-if [ ${MACH}X = 4cX ]
-then
-echo "formatting for 4c "
-cat /srvd/install/format.input.ip | /srvd/usr/sbin/format >/dev/null 2>&1
-else
-cat /srvd/install/format.input | /srvd/usr/sbin/format >/dev/null 2>&1
-fi
+echo "formatting  "
+cat /util/format.input | /usr/sbin/format >/dev/null 2>&1
+
 echo "Making the filesystems..."
 echo ""
 echo "Making the root file system"
@@ -62,10 +48,32 @@ echo "Making the var filesystem"
 echo "y" | /usr/sbin/newfs -v $rvardrive
 
 
+echo "Adding AFS filesystem"
+echo "Making an AFS cache available"
+mkdir /var/usr
+mkdir /var/usr/vice;
+mount $cachedrive  /var/usr/vice
+cd /var/usr/vice
+mkdir etc; mkdir cache;
+chmod 0700 cache
+for i in cacheinfo CellServDB SuidCells ThisCell
+        do cp -p /afsin/$i etc/ ; done
+cd etc
+mv CellServDB CellServDB.public
+ln -s CellServDB.public CellServDB
+cp -p SuidCells SuidCells.public
+
+echo "Making an /afs repository"
+mkdir /tmp/afs
+echo "Loading afs in the kernel"
+modload /kernel/fs/afs
+echo "Starting afsd "
+/etc/afsd -nosettime -daemons 4
 
 echo "Mounting hard disk's root partition..."
 /etc/mount  $rootdrive /root
 
+cd /
 echo "Making dirs on root"
 mkdir /root/var
 mkdir /root/usr
@@ -79,7 +87,7 @@ echo "Mount var, usr , var/usr/vice..."
 chmod 1777 /root/tmp
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
-/sbin/mount  $cachedrive /root/var/usr/vice
+
 
 echo "Copying file system from installation srvd to new filesys..."
 echo "Running 'track'..."
@@ -108,7 +116,7 @@ else
     echo "copying 4m kernel"
     mkdir /root/kernel;
     (cd /srvd/kernel; tar cf - . ) | (cd /root/kernel; tar xf - . )
-    echo "gettinge usr/kvm.4m"
+    echo "getting usr/kvm.4m"
     mkdir /root/usr/kvm
     (cd /srvd/usr/kvm; tar cf - . ) | (cd /root/usr/kvm; tar xf - . )
     cp -r /srvd/usr/kernel /root/usr/kernel
@@ -116,7 +124,7 @@ fi
 
 cd /root
 echo "Creating other files/directories on the pack's root..."
-mkdir afs mit mnt 
+mkdir afs mit mnt
 ln -s /var/usr/vice usr/vice
 ln -s /var/adm usr/adm
 ln -s /var/spool usr/spool
@@ -143,9 +151,8 @@ echo $hostname >etc/nodename
 echo $hostname >etc/hostname.le0
 echo $gateway >etc/defaultrouter
 cp -p /srvd/etc/inet/hosts etc/inet/hosts
-echo "$netaddr	$hostname" >>etc/inet/hosts
+echo "$netaddr  $hostname" >>etc/inet/hosts
 cd /root/etc
-#ln -s inet/hosts hosts
 cd /root
 cp -p /srvd/etc/passwd.std etc/passwd
 cp -p /srvd/etc/shadow.std etc/shadow
@@ -159,9 +166,9 @@ cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
 echo "Editing rc.conf and version"
-sed -e 	"s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
-	s/^ADDR=MITADDR/ADDR=$netaddr/" \
-	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
+sed -e  "s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
+        s/^ADDR=MITADDR/ADDR=$netaddr/" \
+        < /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
 echo installed on `date` > /root/etc/athena/version
 sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
@@ -178,16 +185,8 @@ cpio -idm </srvd/install/var.cpio
 ln -s /srvd/var/sadm sadm
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
-cd /root/var/usr/vice
-mkdir cache
-mkdir etc
-chmod 0700 /root/var/usr/vice/cache
-for i in cacheinfo CellServDB SuidCells ThisCell
-	do cp -p /srvd/var/usr/vice/etc/$i etc/ ; done
-cd etc
-mv CellServDB CellServDB.public
-ln -s CellServDB.public CellServDB
-cp -p SuidCells SuidCells.public
+
+
 echo "Initializing var/adm and spool files "
 cp /dev/null /root/var/adm/lastlog
 cp /dev/null /root/var/adm/utmp
@@ -200,10 +199,11 @@ echo "Installing bootblocks on root "
 cp -p /ufsboot /root
 /usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
 cd /root
-ln -s usr/tmp/core.root core
+#ln -s usr/tmp/core.root core
 echo "Unmounting filesystems and checking them"
 cd /
-umount /root/var/usr/vice > /dev/null 2>&1
+
+umount /var/usr/vice > /dev/null 2>&1
 fsck -F ufs $rcachedrive
 umount /root/var > /dev/null 2>&1
 fsck -F ufs $rvardrive
