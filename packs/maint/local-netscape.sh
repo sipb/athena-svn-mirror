@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-netscape.sh,v 1.1 2000-06-08 18:48:18 ghudson Exp $
+# $Id: local-netscape.sh,v 1.2 2000-06-14 20:06:36 ghudson Exp $
 
 # local-netscape: A cron job to copy part of the infoagents locker onto
 # local disk so that netscape can be started more quickly.
@@ -34,9 +34,10 @@ if [ -n "$bin" ]; then
 fi
 
 version=1
-if [ -r "$locker/.syncversion" -a \
-     `cat "$locker/.syncversion` -gt $version ]; then
-  exit
+if [ -r "$locker/.syncversion" ]; then
+  if [ `cat "$locker/.syncversion"` -gt $version ]; then
+    exit
+  fi
 fi
 
 # Write out the rconf file.
@@ -54,9 +55,8 @@ copy share/app-defaults -f
 copy share/app-defaults/* -f
 copy arch -f
 copy arch/share -f
-chase arch/share/netscape
-copy arch/share/netscape -f
-copy arch/share/netscape/* -f
+copy arch/share/bin -f
+copy arch/share/bin/* -f
 chase $arch
 copy $arch -f
 copy $arch/* -f
