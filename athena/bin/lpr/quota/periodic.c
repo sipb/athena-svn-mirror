@@ -1,5 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.4 1990-11-14 17:25:32 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.5 1991-01-23 15:10:09 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.4 1990-11-14 17:25:32 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.5 1991-01-23 15:10:09 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -25,6 +25,7 @@ static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/ath
 #include <sys/param.h>
 #include <sys/stat.h>
 void get_new_data();
+long time();
 /* This routine is the "Heart" of the communication between quota server and 
    journal server.
 */
@@ -189,7 +190,7 @@ char *name;
     }
 
 
-    if(logger_journal_add_entry(&out, upt, pos)) {
+    if(logger_journal_add_entry(&out, upt, (Pointer) pos)) {
 	syslog(LOG_INFO, "Error in updating journal file");
 	(void) fclose(acct);
 	return;
