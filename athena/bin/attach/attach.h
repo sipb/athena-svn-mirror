@@ -18,7 +18,11 @@
 #include <sys/time.h>
 #ifdef NFS
 #include <rpc/rpc.h>
+#ifndef AIX
 #include <nfs/nfs.h>
+#else
+#include <rpc/nfs.h>
+#endif
 #ifdef NeXT
 #include <nfs/nfs_mount.h>	/* Newer versions of NFS (?) */
 #endif /* NeXT */
@@ -38,6 +42,10 @@
 #undef KERNEL
 #endif /* ultrix */
 #include <sys/mount.h>
+#ifdef AIX
+#include <sys/vmount.h>
+#define	M_RDONLY	MNT_READONLY
+#endif
 
 #define MAXOWNERS 64
 
@@ -141,7 +149,9 @@ struct mntopts {
 	int	nfs_port;	/* Valid only for NFS, port for rpc.mountd */
 #endif
 	union tsa {
+#ifdef UFS
 		struct ufs_args	ufs;
+#endif
 #ifdef NFS
 		struct nfs_args nfs;
 #endif
@@ -226,6 +236,7 @@ struct cache_ent {
 
 #define ERR_NFSIDNOTATTACHED 20	/* Filesystem with -f not attached */
 #define ERR_NFSIDBADHOST 21	/* Can't resolve hostname */
+#define	ERR_NFSIDPERM	22	/* unauthorized nfsid -p */
 
 #define ERR_ATTACHBADFILSYS 20	/* Bad filesystem name */
 #define ERR_ATTACHINUSE	21	/* Filesystem in use by another proc */
@@ -295,8 +306,21 @@ extern char *fsck_fn;
 
 extern char *ownerlist();
 extern void add_an_owner();
-extern int is_an_owner(),euid;
+extern int is_an_owner(), real_uid, effective_uid, owner_uid;
 
-char exp_hesline[BUFSIZ];	/* Place to store explicit */
-char *exp_hesptr[2];		/* ``hesiod'' entry */
-char *abort_msg;
+extern char internal_getopt();
+extern void mark_in_use(), add_options(), check_root_privs();
+
+extern char exp_hesline[BUFSIZ];	/* Place to store explicit */
+extern char *exp_hesptr[2];		/* ``hesiod'' entry */
+extern char *abort_msg;
+
+/* High C 2.1 can optimize small bcopys such as are used to copy 4
+   byte IP addrs */
+#ifdef __HIGHC__
+#define bcopy(src, dest, cnt)	memcpy(dest, src, cnt)
+#endif
+#ifdef __STDC__
+extern int nfsid(char *, struct in_addr, int, int, char *, int, int);
+extern AUTH *spoofunix_create_default(char *, int);
+#endif
