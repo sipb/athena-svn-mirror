@@ -165,4 +165,12 @@ Mwm*icon*fontList:		fixed
 	*intl._SGI_MMX_mwm_nogood_cmap:	Couldn't get a matching colormap
 	*intl._SGI_MMX_mwm_nogood_dble:	Couldn't get a matching drawable
 	*intl._SGI_MMX_mwm_visual5:	Setting visual resources to default values.
+/* Athena additions (aside from icon margin change) */
+
+	*Console.clientDecoration:      resizeh
+	*Console.clientFunctions:       -close
+	*XLogout.clientDecoration:      border
+	*XLogout.clientFunctions:       -close
+	*Zwgc.clientDecoration:         none
+
 /* End of app-defaults file */
