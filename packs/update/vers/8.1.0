@@ -64,6 +64,7 @@ esac
 echo "/etc/krb.conf.v5"				>> "$DEADFILES"
 echo "/etc/named.mit"				>> "$DEADFILES"
 
+echo "/etc/athena/inetd.conf"			>> "$CONFCHG"
 echo "/etc/athena/attach.conf"			>> "$CONFCHG"
 
 # Move cached clusterinfo files to /var/athena.
