@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.3 1997-02-27 06:47:55 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.4 1998-03-09 05:05:53 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1997/02/27 06:47:55  ghudson
+ * BSD -> ANSI memory functions
+ *
  * Revision 1.2  1990/05/26 13:41:29  tom
  * athena release 7.0e
  *
@@ -30,7 +33,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.3 1997-02-27 06:47:55 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.4 1998-03-09 05:05:53 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -41,6 +44,8 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 #include "include.h"
+
+#ifndef SOLARIS
 
 int
 find_currestabs()
@@ -460,3 +465,4 @@ lu_tcprtos(varnode, repl, instptr, reqflg)
 	}
 }
 
+#endif /* SOLARIS */
