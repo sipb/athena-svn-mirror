@@ -3,6 +3,10 @@
 # This script is intended to replace the following "finds" which were
 #	intended to clean up /tmp, /usr/tmp and some other areas.
 #
+#	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
+#	$Author: treese $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.3 1987-12-05 18:23:31 treese Exp $
+#
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
 # 15 1 * * *	root	find /usr/tmp -atime +2 -exec rm -f {} \;
@@ -25,8 +29,8 @@ set j = 1
 foreach i ($dirs)
 	if ( -d $i ) then
 		cd $i
-		find . $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
-		find . ! -name . -type d -mtime +1 -exec rmdir {} \; -print
+		find . -xdev $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
+		find . -xdev ! -name . -type d -mtime +1 -exec rmdir {} \; -print
 	endif
 @ j++
 end	
