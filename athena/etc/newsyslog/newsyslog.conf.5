@@ -128,14 +128,24 @@ filter (for example, ``.Z'').  If the field is present, it must start
 with a ``.''  and contain no whitespace.  If a filter doesn't change
 the filename, this option should be omitted.
 .PP
+.\" *** The following lines are relevant if USE_EXECVP is defined.
 The
 .I program
-field should be a full path to the executable to be run.  No path
-search will be performed.
+field should be the name of the executable to be run.  If the name is
+not a pathname (ie. if it does not contain a slash), the path
+specified by the environment variable PATH is searched for an
+occurrence of
+.IR program .
+.\" *** The following lines are relevant if USE_EXECVP is not defined.
+.\" The
+.\" .I program
+.\" field should be a full path to the executable to be run.  No path
+.\" search will be performed.
+.\" ***
 .PP
 .I Command line arguments
 will be passed to the filtering program.  The name of the logfile will
-be passed as the last arguments, after all the arguments specified in
+be passed as the last argument, after all the arguments specified in
 the definition.  For instance, if the definition is
 .RB `` filter
 .B Z .Z /usr/ucb/compress
