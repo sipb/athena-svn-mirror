@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: dnsquery.c,v 1.1.1.2 1999-03-16 19:44:41 danw Exp $";
+static char rcsid[] = "$Id: dnsquery.c,v 1.1.1.2.2.1 1999-06-30 21:48:18 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -41,8 +41,6 @@ extern int errno;
 extern int h_errno;
 extern char *h_errlist[];
 
-struct __res_state res;
-
 int
 main(int argc, char *argv[]) {
 	char name[MAXDNAME];
@@ -73,10 +71,10 @@ main(int argc, char *argv[]) {
 	while ((c = getopt(argc, argv, "c:dh:n:p:r:st:u:v")) != EOF) {
 		switch (c) {
 
-		case 'r' :	res.retry = atoi(optarg);
+		case 'r' :	_res.retry = atoi(optarg);
 				break;
 
-		case 'p' :	res.retrans = atoi(optarg);
+		case 'p' :	_res.retrans = atoi(optarg);
 				break;
 
 		case 'h' :	strcpy(name, optarg);
@@ -125,11 +123,10 @@ main(int argc, char *argv[]) {
 				 *  So, we must init the resolver before any 
 				 *  of this.
 				 */
-				if (!(res.options & RES_INIT))
-					if (res_ninit(&res) == -1) {
+				if (!(_res.options & RES_INIT))
+					if (res_init() == -1) {
 						fprintf(stderr,
-							"res_ninit() failed\n"
-							);
+							"res_init() failed\n");
 						exit(-1);
 				}
 				if (nameservers >= MAXNS) break;
@@ -166,24 +163,24 @@ main(int argc, char *argv[]) {
 	 * gethostbyname above
 	*/
 	if (debug || stream) {
-		if (!(res.options & RES_INIT))
-			if (res_ninit(&res) == -1) {
-				fprintf(stderr, "res_ninit() failed\n");
+		if (!(_res.options & RES_INIT))
+			if (res_init() == -1) {
+				fprintf(stderr, "res_init() failed\n");
 				exit(-1);
 			}
 		if (debug) 
-			res.options |= RES_DEBUG;
+			_res.options |= RES_DEBUG;
 		if (stream)
-		 	res.options |= RES_USEVC;
+		 	_res.options |= RES_USEVC;
 	}
 
 	/* if the -n flag was used, add them to the resolver's list */
 	if (nameservers != 0) {
-		res.nscount = nameservers;
+		_res.nscount = nameservers;
 		for (i = nameservers - 1; i >= 0; i--) {
-			res.nsaddr_list[i].sin_addr.s_addr = q_nsaddr[i].s_addr;
-			res.nsaddr_list[i].sin_family = AF_INET;
-			res.nsaddr_list[i].sin_port = htons(NAMESERVER_PORT);
+			_res.nsaddr_list[i].sin_addr.s_addr = q_nsaddr[i].s_addr;
+			_res.nsaddr_list[i].sin_family = AF_INET;
+			_res.nsaddr_list[i].sin_port = htons(NAMESERVER_PORT);
 		}
 	}
 
@@ -193,18 +190,17 @@ main(int argc, char *argv[]) {
 	 * which will strip the trailing dot
 	 */
 	if (name[strlen(name) - 1] == '.') {
-		n = res_nquery(&res, name, class, type, answer, len);
+		n = res_query(name, class, type, answer, len);
 		if (n < 0) {
 			fprintf(stderr, "Query failed (h_errno = %d) : %s\n", 
 				h_errno, h_errlist[h_errno]);
 			exit(-1);
 		}
-	} else if ((n = res_nsearch(&res, name, class, type,
-				    answer, len)) < 0) {
+	} else if ((n = res_search(name, class, type, answer, len)) < 0) {
 		fprintf(stderr, "Query failed (h_errno = %d) : %s\n", 
 			h_errno, h_errlist[h_errno]);
 		exit(-1);
 	}
-	res_pquery(&res, answer, n, stdout);
+	fp_nquery(answer, n, stdout);
 	exit(0);
 }

@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $";
+static char rcsid[] = "$Id: dig.c,v 1.1.1.3.2.1 1999-06-30 21:48:14 ghudson Exp $";
 #endif
 
 /*
@@ -56,7 +56,7 @@ static char rcsid[] = "$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $";
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium
+ * Copyright (c) 1996 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -159,7 +159,6 @@ static char rcsid[] = "$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $";
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <sys/wait.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -180,10 +179,12 @@ static char rcsid[] = "$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $";
 
 #include "../nslookup/res.h"
 
+extern char *_res_resultcodes[];	/* res_debug.c */
+
 /* Global. */
 
-#define VERSION 82
-#define VSTRING "8.2"
+#define VERSION 81
+#define VSTRING "8.1"
 
 #define PRF_DEF		0x2ff9
 #define PRF_MIN		0xA930
@@ -193,21 +194,20 @@ static char rcsid[] = "$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $";
 #define MAXHOSTNAMELEN 256
 #endif
 
+int eecode = 0;
+
+FILE *qfp;
+int sockFD;
+
 #define SAVEENV "DiG.env"
 #define DIG_MAXARGS 30
 
-static int		eecode = 0;
-static FILE *		qfp;
-static int		sockFD;
 static char		*defsrv, *srvmsg;
 static char		defbuf[40] = "default -- ";
 static char		srvbuf[60];
 static char		myhostname[MAXHOSTNAMELEN];
-static struct sockaddr_in myaddress;
-static u_int32_t	ixfr_serial;
 
 /* stuff for nslookup modules */
-struct __res_state  res;
 FILE		*filePtr;
 jmp_buf		env;
 HostInfo	*defaultPtr = NULL;
@@ -228,8 +228,7 @@ static void		Usage(void);
 static int		SetOption(const char *);
 static void		res_re_init(void);
 static int		xstrtonum(char *);
-static int		printZone(ns_type, const char *,
-				  const struct sockaddr_in *);
+static int		printZone(const char *, const struct sockaddr_in *);
 static int		print_axfr(FILE *output, const u_char *msg,
 				   size_t msglen);
 static struct timeval	difftv(struct timeval, struct timeval);
@@ -247,17 +246,15 @@ main(int argc, char **argv) {
 		HEADER header_;
 		u_char packet_[PACKETSZ];
 	} packet_;
-#define header (packet_.header_)
-#define	packet (packet_.packet_)
-	u_char answer[64*1024];
+#define	packet  (packet_.packet_)
+	u_char answer[8*1024];
 	int n;
 	char doping[90];
 	char pingstr[50];
 	char *afile;
 	char *addrc, *addrend, *addrbegin;
 
-	time_t exectime;
-	struct timeval tv1, tv2, start_time, end_time, query_time;
+	struct timeval exectime, tv1, tv2, start_time, end_time, query_time;
 
 	char *srv;
 	int anyflag = 0;
@@ -265,7 +262,7 @@ main(int argc, char **argv) {
 	int tmp; 
 	int qtypeSet;
 	int addrflag = 0;
-	ns_type xfr = ns_t_invalid;
+	int zone = 0;
         int bytes_out, bytes_in;
 
 	char cmd[256];
@@ -282,19 +279,13 @@ main(int argc, char **argv) {
 	struct __res_state res_x, res_t;
 	char *pp;
 
-	res_ninit(&res);
-	res.pfcode = PRF_DEF;
+	res_init();
+	_res.pfcode = PRF_DEF;
 	qtypeSet = 0;
 	memset(domain, 0, sizeof domain);
 	gethostname(myhostname, (sizeof myhostname));
-#ifdef HAVE_SA_LEN
-	myaddress.sin_len = sizeof(struct sockaddr_in);
-#endif
-	myaddress.sin_family = AF_INET;
-	myaddress.sin_addr.s_addr = INADDR_ANY;
-	myaddress.sin_port = 0; /*INPORT_ANY*/;
-	defsrv = strcat(defbuf, inet_ntoa(res.nsaddr.sin_addr));
-	res_x = res;
+	defsrv = strcat(defbuf, inet_ntoa(_res.nsaddr.sin_addr));
+	res_x = _res;
 
 /*
  * If LOCALDEF in environment, should point to file
@@ -307,7 +298,7 @@ main(int argc, char **argv) {
 	    ((fp = open(SAVEENV, O_RDONLY)) > 0)) {
 		read(fp, (char *)&res_x, (sizeof res_x));
 		close(fp);
-		res = res_x;
+		_res = res_x;
 	}
 /*
  * Check for batch-mode DiG; also pre-scan for 'help'.
@@ -341,7 +332,7 @@ main(int argc, char **argv) {
 		vtmp++;
 	}
 
-	res.id = 1;
+	_res.id = 1;
 	gettimeofday(&tv1, NULL);
 
 /*
@@ -361,7 +352,7 @@ main(int argc, char **argv) {
  */
 		if (sticky) {
 			printf(";; (using sticky settings)\n");
-			res = res_x;
+			_res = res_x;
 		}
 
 /*
@@ -372,7 +363,7 @@ main(int argc, char **argv) {
 		/* defaults */
 		queryType = ns_t_ns;
 		queryClass = ns_c_in;
-		xfr = ns_t_invalid;
+		zone = 0;
 		*pingstr = 0;
 		srv = NULL;
 
@@ -396,10 +387,7 @@ main(int argc, char **argv) {
 				SetOption(*argv+1);
 				continue;
 			}
-			if (**argv == '=') {
-				ixfr_serial = strtoul(*argv+1, NULL, 0);
-				continue;
-			}
+	 
 			if (strncmp(*argv, "-nost", 5) == 0) {
 				sticky = 0;
 				continue;
@@ -472,42 +460,16 @@ main(int argc, char **argv) {
 					strcat(domain, addrc);
 					strcat(domain, ".in-addr.arpa.");
 					break;
-				case 'p':
-					if (argv[0][2] != '\0')
-						port = ntohs(atoi(argv[0]+2));
-					else
-						port = htons(atoi(*++argv));
-					break;
+				case 'p': port = htons(atoi(*++argv)); break;
 				case 'P':
 					if (argv[0][2] != '\0')
-						strcpy(pingstr, argv[0]+2);
+						strcpy(pingstr,&argv[0][2]);
 					else
-						strcpy(pingstr, "ping -s");
+						strcpy(pingstr,"ping -s");
 					break;
 				case 'n':
-					if (argv[0][2] != '\0')
-						res.ndots = atoi(argv[0]+2);
-					else
-						res.ndots = atoi(*++argv);
+					_res.ndots = atoi(&argv[0][2]);
 					break;
-				case 'b': {
-					char *a, *p;
-
-					if (argv[0][2] != '\0')
-						a = argv[0]+2;
-					else
-						a = *++argv;
-					if ((p = strchr(a, ':')) != NULL) {
-						*p++ = '\0';
-						myaddress.sin_port =
-							ntohs(atoi(p));
-					}
-					if (!inet_aton(a,&myaddress.sin_addr)){
-						fprintf(stderr,
-							";; bad -b addr\n");
-						exit(1);
-					}
-				    }
 				} /* switch - */
 				continue;
 			} /* if '-'   */
@@ -517,12 +479,9 @@ main(int argc, char **argv) {
 					queryClass = C_ANY; 	
 					continue; 
 				}
-				if (ns_t_xfr_p(tmp) &&
-				    (tmp == ns_t_axfr ||
-				     (res.options & RES_USEVC) != 0)
-				     ) {
-					res.pfcode = PRF_ZONE;
-					xfr = tmp;
+				if (T_AXFR == tmp) {
+					_res.pfcode = PRF_ZONE;
+					zone++;
 				} else {
 					queryType = tmp; 
 					qtypeSet++;
@@ -536,16 +495,16 @@ main(int argc, char **argv) {
 			}
 		} /* while argv remains */
 
-		if (res.pfcode & 0x80000)
+		if (_res.pfcode & 0x80000)
 			printf("; pfcode: %08lx, options: %08lx\n",
-			       res.pfcode, res.options);
+			       _res.pfcode, _res.options);
 	  
 /*
  * Current env. (after this parse) is to become the
  * new "working" environmnet. Used in conj. with sticky.
  */
 		if (envset) {
-			res_x = res;
+			res_x = _res;
 			envset = 0;
 		}
 
@@ -564,13 +523,13 @@ main(int argc, char **argv) {
 			    ((fp = open(SAVEENV,
 					O_WRONLY|O_CREAT|O_TRUNC,
 					S_IREAD|S_IWRITE)) > 0)) {
-				write(fp, (char *)&res, (sizeof res));
+				write(fp, (char *)&_res, (sizeof _res));
 				close(fp);
 			}
 			envsave = 0;
 		}
 
-		if (res.pfcode & RES_PRF_CMD)
+		if (_res.pfcode & RES_PRF_CMD)
 			printf("%s\n", cmd);
 
 		addrflag = anyflag = 0;
@@ -590,16 +549,16 @@ main(int argc, char **argv) {
 			struct in_addr addr;
 
 			if (inet_aton(srv, &addr)) {
-				res.nscount = 1;
-				res.nsaddr.sin_addr = addr;
+				_res.nscount = 1;
+				_res.nsaddr.sin_addr = addr;
 				srvmsg = strcat(srvbuf, srv);
 			} else {
-				res_t = res;
-				res_ninit(&res);
-				res.pfcode = 0;
-				res.options = RES_DEFAULT;
+				res_t = _res;
+				_res.pfcode = 0;
+				_res.options = RES_DEFAULT;
+				res_init();
 				hp = gethostbyname(srv);
-				res = res_t;
+				_res = res_t;
 				if (hp == NULL
 				    || hp->h_addr_list == NULL
 				    || *hp->h_addr_list == NULL) {
@@ -613,50 +572,54 @@ main(int argc, char **argv) {
 				} else {
 					u_int32_t **addr;
 
-					res.nscount = 0;
+					_res.nscount = 0;
 					for (addr = (u_int32_t**)hp->h_addr_list;
-					     *addr && (res.nscount < MAXNS);
+					     *addr && (_res.nscount < MAXNS);
 					     addr++) {
-						res.nsaddr_list[
-							res.nscount++
+						_res.nsaddr_list[
+							_res.nscount++
 						].sin_addr.s_addr = **addr;
 					}
 
 					srvmsg = strcat(srvbuf,srv);
 					strcat(srvbuf, "  ");
 					strcat(srvmsg,
-					       inet_ntoa(res.nsaddr.sin_addr)
+					       inet_ntoa(_res.nsaddr.sin_addr)
 					       );
 				}
 			}
 			printf("; (%d server%s found)\n",
-			       res.nscount, (res.nscount==1)?"":"s");
-			res.id += res.retry;
+			       _res.nscount, (_res.nscount==1)?"":"s");
+			_res.id += _res.retry;
 		}
 
 		{
 			int i;
 
-			for (i = 0;  i < res.nscount;  i++) {
-				res.nsaddr_list[i].sin_family = AF_INET;
-				res.nsaddr_list[i].sin_port = port;
+			for (i = 0;  i < _res.nscount;  i++) {
+				_res.nsaddr_list[i].sin_family = AF_INET;
+				_res.nsaddr_list[i].sin_port = port;
 			}
-			res.id += res.retry;
+			_res.id += _res.retry;
 		}
 
-		if (ns_t_xfr_p(xfr)) {
+		if (zone) {
 			int i;
 
-			for (i = 0; i < res.nscount; i++) {
-				int x = printZone(xfr, domain,
-						  &res.nsaddr_list[i]);
-				if (res.pfcode & RES_PRF_STATS) {
-					exectime = time(NULL);
+			for (i = 0;  i < _res.nscount;  i++) {
+				int x = printZone(domain,
+						  &_res.nsaddr_list[i]);
+				if (_res.pfcode & RES_PRF_STATS) {
+					struct timeval exectime;
+					time_t t;
+
 					printf(";; FROM: %s to SERVER: %s\n",
 					       myhostname,
-					       inet_ntoa(res.nsaddr_list[i]
+					       inet_ntoa(_res.nsaddr_list[i]
 							 .sin_addr));
-					printf(";; WHEN: %s", ctime(&exectime));
+					gettimeofday(&exectime, NULL);
+					t = (time_t)exectime.tv_sec;
+					printf(";; WHEN: %s", ctime(&t));
 				}
 				if (!x)
 					break;	/* success */
@@ -670,48 +633,25 @@ main(int argc, char **argv) {
 			qtypeSet++;
 		}
 		
-		bytes_out = n = res_nmkquery(&res, QUERY, domain,
-					     queryClass, queryType,
-					     NULL, 0, NULL,
-					     packet, sizeof packet);
+		bytes_out = n = res_mkquery(QUERY, domain,
+					    queryClass, queryType,
+					    NULL, 0, NULL,
+					    packet, sizeof packet);
 		if (n < 0) {
 			fflush(stderr);
-			printf(";; res_nmkquery: buffer too small\n\n");
+			printf(";; res_mkquery: buffer too small\n\n");
 			continue;
 		}
-		if (queryType == T_IXFR) {
-			HEADER *hp = (HEADER *) packet;
-			u_char *cpp = packet + bytes_out;
-
-			hp->nscount = htons(1+ntohs(hp->nscount));
-			n = dn_comp(domain, cpp,
-				    (sizeof packet) - (cpp - packet),
-				    NULL, NULL);
-			cpp += n;
-			PUTSHORT(T_SOA, cpp); /* type */
-			PUTSHORT(C_IN, cpp);  /* class */
-			PUTLONG(0, cpp);      /* ttl */
-			PUTSHORT(22, cpp);    /* dlen */
-			*cpp++ = 0;           /* mname */
-			*cpp++ = 0;           /* rname */
-			PUTLONG(ixfr_serial, cpp);
-			PUTLONG(0xDEAD, cpp); /* Refresh */
-			PUTLONG(0xBEEF, cpp); /* Retry */
-			PUTLONG(0xABCD, cpp); /* Expire */
-			PUTLONG(0x1776, cpp); /* Min TTL */
-			bytes_out = n = cpp - packet;
-		};	
-
 		eecode = 0;
-		if (res.pfcode & RES_PRF_HEAD1)
-			fp_resstat(&res, stdout);
+		if (_res.pfcode & RES_PRF_HEAD1)
+			__fp_resstat(NULL, stdout);
 		(void) gettimeofday(&start_time, NULL);
-		if ((bytes_in = n = res_nsend(&res, packet, n,
-					      answer, sizeof answer)) < 0) {
+		if ((bytes_in = n = res_send(packet, n,
+					     answer, sizeof answer)) < 0) {
 			fflush(stdout);
 			n = 0 - n;
 			msg[0]=0;
-			strcat(msg,";; res_nsend to server ");
+			strcat(msg,";; res_send to server ");
 			strcat(msg,srvmsg);
 			perror(msg);
 			fflush(stderr);
@@ -725,17 +665,18 @@ main(int argc, char **argv) {
 		}
 		(void) gettimeofday(&end_time, NULL);
 
-		if (res.pfcode & RES_PRF_STATS) {
+		if (_res.pfcode & RES_PRF_STATS) {
 			time_t t;
 
 			query_time = difftv(start_time, end_time);
 			printf(";; Total query time: ");
 			prnttime(query_time);
 			putchar('\n');
-			exectime = time(NULL);
 			printf(";; FROM: %s to SERVER: %s\n",
 			       myhostname, srvmsg);
-			printf(";; WHEN: %s", ctime(&exectime));
+			gettimeofday(&exectime,NULL);
+			t = (time_t)exectime.tv_sec;
+			printf(";; WHEN: %s", ctime(&t));
 			printf(";; MSG SIZE  sent: %d  rcvd: %d\n",
 			       bytes_out, bytes_in);
 		}
@@ -782,8 +723,7 @@ where:	server,\n\
 		-f file			(batch mode input file name)\n\
 		-T time			(batch mode time delay, per query)\n\
 		-p port			(nameserver is on this port) [53]\n\
-		-b addr[:port]		(bind to this tcp address) [*]\n\
-		-P[ping-string]		(see man page)\n\
+		-Pping-string		(see man page)\n\
 		-t query-type		(synonym for q-type)\n\
 		-c query-class		(synonym for q-class)\n\
 		-envsav,-envset		(see man page)\n\
@@ -799,8 +739,6 @@ where:	server,\n\
 ", stderr);
 	fputs("\
 notes:	defname and search don't work; use fully-qualified names.\n\
-	this is DiG version " VSTRING "\n\
-	$Id: dig.c,v 1.1.1.3 1999-03-16 19:44:34 danw Exp $\n\
 ", stderr);
 }
 
@@ -809,139 +747,128 @@ SetOption(const char *string) {
 	char option[NAME_LEN], type[NAME_LEN], *ptr;
 	int i;
 
-	i = pickString(string, option, sizeof option);
-	if (i == 0) {
-		fprintf(stderr, ";*** Invalid option: %s\n",  string);
-
-		/* this is ugly, but fixing the caller to behave
-		   properly with an error return value would require a major
-		   cleanup. */
-		exit(9);
+	i = sscanf(string, " %s", option);
+	if (i != 1) {
+		fprintf(stderr, ";*** Invalid option: %s\n",  option);
+		return (ERROR);
 	} 
    
 	if (strncmp(option, "aa", 2) == 0) {	/* aaonly */
-		res.options |= RES_AAONLY;
+		_res.options |= RES_AAONLY;
 	} else if (strncmp(option, "noaa", 4) == 0) {
-		res.options &= ~RES_AAONLY;
+		_res.options &= ~RES_AAONLY;
 	} else if (strncmp(option, "deb", 3) == 0) {	/* debug */
-		res.options |= RES_DEBUG;
+		_res.options |= RES_DEBUG;
 	} else if (strncmp(option, "nodeb", 5) == 0) {
-		res.options &= ~(RES_DEBUG | RES_DEBUG2);
+		_res.options &= ~(RES_DEBUG | RES_DEBUG2);
 	} else if (strncmp(option, "ko", 2) == 0) {	/* keepopen */
-		res.options |= (RES_STAYOPEN | RES_USEVC);
+		_res.options |= (RES_STAYOPEN | RES_USEVC);
 	} else if (strncmp(option, "noko", 4) == 0) {
-		res.options &= ~RES_STAYOPEN;
+		_res.options &= ~RES_STAYOPEN;
 	} else if (strncmp(option, "d2", 2) == 0) {	/* d2 (more debug) */
-		res.options |= (RES_DEBUG | RES_DEBUG2);
+		_res.options |= (RES_DEBUG | RES_DEBUG2);
 	} else if (strncmp(option, "nod2", 4) == 0) {
-		res.options &= ~RES_DEBUG2;
+		_res.options &= ~RES_DEBUG2;
 	} else if (strncmp(option, "def", 3) == 0) {	/* defname */
-		res.options |= RES_DEFNAMES;
+		_res.options |= RES_DEFNAMES;
 	} else if (strncmp(option, "nodef", 5) == 0) {
-		res.options &= ~RES_DEFNAMES;
+		_res.options &= ~RES_DEFNAMES;
 	} else if (strncmp(option, "sea", 3) == 0) {	/* search list */
-		res.options |= RES_DNSRCH;
+		_res.options |= RES_DNSRCH;
 	} else if (strncmp(option, "nosea", 5) == 0) {
-		res.options &= ~RES_DNSRCH;
+		_res.options &= ~RES_DNSRCH;
 	} else if (strncmp(option, "do", 2) == 0) {	/* domain */
 		ptr = strchr(option, '=');
-		if (ptr != NULL) {
-			i = pickString(++ptr, res.defdname, sizeof res.defdname);
-			if (i == 0) { /* value's too long or non-existant. This actually
-					 shouldn't happen due to pickString()
-					 above */
-				fprintf(stderr, "*** Invalid domain: %s\n", ptr) ;
-				exit(9); /* see comment at previous call to exit()*/
-			}
-		}
+		if (ptr != NULL)
+			sscanf(++ptr, "%s", _res.defdname);
 	} else if (strncmp(option, "ti", 2) == 0) {      /* timeout */
 		ptr = strchr(option, '=');
 		if (ptr != NULL)
-			sscanf(++ptr, "%d", &res.retrans);
+			sscanf(++ptr, "%d", &_res.retrans);
 	} else if (strncmp(option, "ret", 3) == 0) {    /* retry */
 		ptr = strchr(option, '=');
 		if (ptr != NULL)
-			sscanf(++ptr, "%d", &res.retry);
+			sscanf(++ptr, "%d", &_res.retry);
 	} else if (strncmp(option, "i", 1) == 0) {	/* ignore */
-		res.options |= RES_IGNTC;
+		_res.options |= RES_IGNTC;
 	} else if (strncmp(option, "noi", 3) == 0) {
-		res.options &= ~RES_IGNTC;
+		_res.options &= ~RES_IGNTC;
 	} else if (strncmp(option, "pr", 2) == 0) {	/* primary */
-		res.options |= RES_PRIMARY;
+		_res.options |= RES_PRIMARY;
 	} else if (strncmp(option, "nop", 3) == 0) {
-		res.options &= ~RES_PRIMARY;
+		_res.options &= ~RES_PRIMARY;
 	} else if (strncmp(option, "rec", 3) == 0) {	/* recurse */
-		res.options |= RES_RECURSE;
+		_res.options |= RES_RECURSE;
 	} else if (strncmp(option, "norec", 5) == 0) {
-		res.options &= ~RES_RECURSE;
+		_res.options &= ~RES_RECURSE;
 	} else if (strncmp(option, "v", 1) == 0) {	/* vc */
-		res.options |= RES_USEVC;
+		_res.options |= RES_USEVC;
 	} else if (strncmp(option, "nov", 3) == 0) {
-		res.options &= ~RES_USEVC;
+		_res.options &= ~RES_USEVC;
 	} else if (strncmp(option, "pfset", 5) == 0) {
 		ptr = strchr(option, '=');
 		if (ptr != NULL)
-			res.pfcode = xstrtonum(++ptr);
+			_res.pfcode = xstrtonum(++ptr);
 	} else if (strncmp(option, "pfand", 5) == 0) {
 		ptr = strchr(option, '=');
 		if (ptr != NULL)
-			res.pfcode = res.pfcode & xstrtonum(++ptr);
+			_res.pfcode = _res.pfcode & xstrtonum(++ptr);
 	} else if (strncmp(option, "pfor", 4) == 0) {
 		ptr = strchr(option, '=');
 		if (ptr != NULL)
-			res.pfcode |= xstrtonum(++ptr);
+			_res.pfcode |= xstrtonum(++ptr);
 	} else if (strncmp(option, "pfmin", 5) == 0) {
-		res.pfcode = PRF_MIN;
+		_res.pfcode = PRF_MIN;
 	} else if (strncmp(option, "pfdef", 5) == 0) {
-		res.pfcode = PRF_DEF;
+		_res.pfcode = PRF_DEF;
 	} else if (strncmp(option, "an", 2) == 0) {  /* answer section */
-		res.pfcode |= RES_PRF_ANS;
+		_res.pfcode |= RES_PRF_ANS;
 	} else if (strncmp(option, "noan", 4) == 0) {
-		res.pfcode &= ~RES_PRF_ANS;
+		_res.pfcode &= ~RES_PRF_ANS;
 	} else if (strncmp(option, "qu", 2) == 0) {  /* question section */
-		res.pfcode |= RES_PRF_QUES;
+		_res.pfcode |= RES_PRF_QUES;
 	} else if (strncmp(option, "noqu", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_QUES;
+		_res.pfcode &= ~RES_PRF_QUES;
 	} else if (strncmp(option, "au", 2) == 0) {  /* authority section */
-		res.pfcode |= RES_PRF_AUTH;
+		_res.pfcode |= RES_PRF_AUTH;
 	} else if (strncmp(option, "noau", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_AUTH;
+		_res.pfcode &= ~RES_PRF_AUTH;
 	} else if (strncmp(option, "ad", 2) == 0) {  /* addition section */
-		res.pfcode |= RES_PRF_ADD;
+		_res.pfcode |= RES_PRF_ADD;
 	} else if (strncmp(option, "noad", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_ADD;
+		_res.pfcode &= ~RES_PRF_ADD;
 	} else if (strncmp(option, "tt", 2) == 0) {  /* TTL & ID */
-		res.pfcode |= RES_PRF_TTLID;
+		_res.pfcode |= RES_PRF_TTLID;
 	} else if (strncmp(option, "nott", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_TTLID;
+		_res.pfcode &= ~RES_PRF_TTLID;
 	} else if (strncmp(option, "he", 2) == 0) {  /* head flags stats */
-		res.pfcode |= RES_PRF_HEAD2;
+		_res.pfcode |= RES_PRF_HEAD2;
 	} else if (strncmp(option, "nohe", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_HEAD2;
+		_res.pfcode &= ~RES_PRF_HEAD2;
 	} else if (strncmp(option, "H", 1) == 0) {  /* header all */
-		res.pfcode |= RES_PRF_HEADX;
+		_res.pfcode |= RES_PRF_HEADX;
 	} else if (strncmp(option, "noH", 3) == 0) {  
-		res.pfcode &= ~(RES_PRF_HEADX);
+		_res.pfcode &= ~(RES_PRF_HEADX);
 	} else if (strncmp(option, "qr", 2) == 0) {  /* query */
-		res.pfcode |= RES_PRF_QUERY;
+		_res.pfcode |= RES_PRF_QUERY;
 	} else if (strncmp(option, "noqr", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_QUERY;
+		_res.pfcode &= ~RES_PRF_QUERY;
 	} else if (strncmp(option, "rep", 3) == 0) {  /* reply */
-		res.pfcode |= RES_PRF_REPLY;
+		_res.pfcode |= RES_PRF_REPLY;
 	} else if (strncmp(option, "norep", 5) == 0) {  
-		res.pfcode &= ~RES_PRF_REPLY;
+		_res.pfcode &= ~RES_PRF_REPLY;
 	} else if (strncmp(option, "cm", 2) == 0) {  /* command line */
-		res.pfcode |= RES_PRF_CMD;
+		_res.pfcode |= RES_PRF_CMD;
 	} else if (strncmp(option, "nocm", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_CMD;
+		_res.pfcode &= ~RES_PRF_CMD;
 	} else if (strncmp(option, "cl", 2) == 0) {  /* class mnemonic */
-		res.pfcode |= RES_PRF_CLASS;
+		_res.pfcode |= RES_PRF_CLASS;
 	} else if (strncmp(option, "nocl", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_CLASS;
+		_res.pfcode &= ~RES_PRF_CLASS;
 	} else if (strncmp(option, "st", 2) == 0) {  /* stats*/
-		res.pfcode |= RES_PRF_STATS;
+		_res.pfcode |= RES_PRF_STATS;
 	} else if (strncmp(option, "nost", 4) == 0) {  
-		res.pfcode &= ~RES_PRF_STATS;
+		_res.pfcode &= ~RES_PRF_STATS;
 	} else {
 		fprintf(stderr, "; *** Invalid option: %s\n",  option);
 		return (ERROR);
@@ -954,22 +881,22 @@ SetOption(const char *string) {
  * Force a reinitialization when the domain is changed.
  */
 static void
-res_re_init() {
+res_re_init()
+{
 	static char localdomain[] = "LOCALDOMAIN";
-	u_long pfcode = res.pfcode, options = res.options;
-	unsigned ndots = res.ndots;
+	long pfcode = _res.pfcode;
+	long ndots = _res.ndots;
 	char *buf;
 
 	/*
 	 * This is ugly but putenv() is more portable than setenv().
 	 */
-	buf = malloc((sizeof localdomain) + strlen(res.defdname) +10/*fuzz*/);
-	sprintf(buf, "%s=%s", localdomain, res.defdname);
+	buf = malloc((sizeof localdomain) + strlen(_res.defdname) +10/*fuzz*/);
+	sprintf(buf, "%s=%s", localdomain, _res.defdname);
 	putenv(buf);	/* keeps the argument, so we won't free it */
-	res_ninit(&res);
-	res.pfcode = pfcode;
-	res.options = options;
-	res.ndots = ndots;
+	res_init();
+	_res.pfcode = pfcode;
+	_res.ndots = ndots;
 }
 
 /*
@@ -1020,7 +947,7 @@ typedef union {
 } querybuf;
 
 static int
-printZone(ns_type xfr, const char *zone, const struct sockaddr_in *sin) {
+printZone(const char *zone, const struct sockaddr_in *sin) {
 	static u_char *answer = NULL;
 	static int answerLen = 0;
 
@@ -1033,27 +960,15 @@ printZone(ns_type xfr, const char *zone, const struct sockaddr_in *sin) {
 	char dname[2][NS_MAXDNAME], file[NAME_LEN];
 	enum { NO_ERRORS, ERR_READING_LEN, ERR_READING_MSG, ERR_PRINTING }
 		error = NO_ERRORS;
-	pid_t zpid;
-
-	switch (xfr) {
-	case ns_t_axfr:
-	case ns_t_zxfr:
-		break;
-	default:
-		fprintf(stderr, ";; %s - transfer type not supported\n",
-			p_type(xfr));
-		return (ERROR);
-	}
 
 	/*
 	 *  Create a query packet for the requested zone name.
 	 */
-	msglen = res_nmkquery(&res, ns_o_query, zone,
-			      queryClass, ns_t_axfr, NULL,
-			      0, 0, buf.qb2, sizeof buf);
+	msglen = res_mkquery(ns_o_query, zone, queryClass, ns_t_axfr, NULL,
+			     0, 0, buf.qb2, sizeof buf);
 	if (msglen < 0) {
-		if (res.options & RES_DEBUG)
-			fprintf(stderr, ";; res_nmkquery failed\n");
+		if (_res.options & RES_DEBUG)
+			fprintf(stderr, ";; res_mkquery failed\n");
 		return (ERROR);
 	}
 
@@ -1066,24 +981,13 @@ printZone(ns_type xfr, const char *zone, const struct sockaddr_in *sin) {
 		perror(";; socket");
 		return (e);
 	}
-	if (bind(sockFD, (struct sockaddr *)&myaddress, sizeof myaddress) < 0){
-		int e = errno;
-
-		fprintf(stderr, ";; bind(%s:%u): %s\n",
-			inet_ntoa(myaddress.sin_addr),
-			ntohs(myaddress.sin_port),
-			strerror(e));
-		(void) close(sockFD);
-		sockFD = -1;
-		return (e);
-	}
 	if (connect(sockFD, (struct sockaddr *)sin, sizeof *sin) < 0) {
 		int e = errno;
 
 		perror(";; connect");
 		(void) close(sockFD);
 		sockFD = -1;
-		return (e);
+		return e;
 	}
 
 	/*
@@ -1098,46 +1002,6 @@ printZone(ns_type xfr, const char *zone, const struct sockaddr_in *sin) {
 		(void) close(sockFD);
 		sockFD = -1;
 		return (e);
-	}
-
-	/*
-	 * If we're compressing, push a gzip into the pipeline.
-	 */
-	if (xfr == ns_t_zxfr) {
-		enum { rd = 0, wr = 1 };
-		int z[2];
-
-		if (pipe(z) < 0) {
-			int e = errno;
-
-			perror(";; pipe");
-			(void) close(sockFD);
-			sockFD = -1;
-			return (e);
-		}
-		zpid = vfork();
-		if (zpid < 0) {
-			int e = errno;
-
-			perror(";; fork");
-			(void) close(sockFD);
-			sockFD = -1;
-			return (e);
-		} else if (zpid == 0) {
-			/* Child. */
-			(void) close(z[rd]);
-			(void) dup2(sockFD, STDIN_FILENO);
-			(void) close(sockFD);
-			(void) dup2(z[wr], STDOUT_FILENO);
-			(void) close(z[wr]);
-			execlp("gzip", "gzip", "-d", "-v", NULL);
-			perror(";; child: execlp(gunzip)");
-			_exit(1);
-		}
-		/* Parent. */
-		(void) close(z[wr]);
-		(void) dup2(z[rd], sockFD);
-		(void) close(z[rd]);
 	}
 
 	dname[0][0] = '\0';
@@ -1257,31 +1121,6 @@ printZone(ns_type xfr, const char *zone, const struct sockaddr_in *sin) {
 
 	(void) close(sockFD);
 	sockFD = -1;
-
-	/*
-	 * If we were uncompressing, reap the uncompressor.
-	 */
-	if (xfr == ns_t_zxfr) {
-		pid_t pid;
-		int status;
-
-		pid = wait(&status);
-		if (pid < 0) {
-			int e = errno;
-
-			perror(";; wait");
-			return (e);
-		}
-		if (pid != zpid) {
-			fprintf(stderr, ";; wrong pid (%lu != %lu)\n",
-				(u_long)pid, (u_long)zpid);
-			return (ERROR);
-		}
-		printf(";; pid %lu: exit %d, signal %d, core %c\n",
-		       WEXITSTATUS(status),
-		       WIFSIGNALED(status) ? WTERMSIG(status) : 0,
-		       WCOREDUMP(status) ? 't' : 'f');
-	}
 
 	switch (error) {
 	case NO_ERRORS:

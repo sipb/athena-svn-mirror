@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: ns_parse.c,v 1.1.1.3 1999-03-16 19:46:42 danw Exp $";
+static char rcsid[] = "$Id: ns_parse.c,v 1.1.1.3.2.1 1999-06-30 21:51:31 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -52,8 +52,8 @@ struct _ns_flagdata _ns_flagdata[16] = {
 	{ 0x0000, 0 },		/* expansion (6/6). */
 };
 
-int
-ns_skiprr(const u_char *ptr, const u_char *eom, ns_sect section, int count) {
+static int
+skiprr(const u_char *ptr, const u_char *eom, ns_sect section, int count) {
 	const u_char *optr = ptr;
 
 	for ((void)NULL; count > 0; count--) {
@@ -104,8 +104,8 @@ ns_initparse(const u_char *msg, int msglen, ns_msg *handle) {
 		if (handle->_counts[i] == 0)
 			handle->_sections[i] = NULL;
 		else {
-			int b = ns_skiprr(msg, eom, (ns_sect)i,
-					  handle->_counts[i]);
+			int b = skiprr(msg, eom, (ns_sect)i,
+				       handle->_counts[i]);
 
 			if (b < 0)
 				return (-1);
@@ -146,8 +146,8 @@ ns_parserr(ns_msg *handle, ns_sect section, int rrnum, ns_rr *rr) {
 		handle->_ptr = handle->_sections[(int)section];
 	}
 	
-	b = ns_skiprr(handle->_msg, handle->_eom, section,
-		      rrnum - handle->_rrnum);
+	b = skiprr(handle->_msg, handle->_eom, section,
+		   rrnum - handle->_rrnum);
 	if (b < 0)
 		return (-1);
 	handle->_ptr += b;

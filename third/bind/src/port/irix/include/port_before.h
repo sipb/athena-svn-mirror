@@ -4,8 +4,4 @@
 #undef WANT_IRS_GR
 #define SIG_FN void
 
-#if defined(HAS_PTHREADS) && defined(_REENTRANT)
-#define DO_PTHREADS
-#endif
-
 #include <limits.h>	/* _POSIX_PATH_MAX */

@@ -32,7 +32,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: lcl_pr.c,v 1.1.1.3 1999-03-16 19:45:54 danw Exp $";
+static const char rcsid[] = "$Id: lcl_pr.c,v 1.1.1.3.2.1 1999-06-30 21:51:04 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* extern */
@@ -57,9 +57,6 @@ static const char rcsid[] = "$Id: lcl_pr.c,v 1.1.1.3 1999-03-16 19:45:54 danw Ex
 #include "port_before.h"
 
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -68,7 +65,6 @@ static const char rcsid[] = "$Id: lcl_pr.c,v 1.1.1.3 1999-03-16 19:45:54 danw Ex
 #include <stdlib.h>
 
 #include <irs.h>
-#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -83,10 +79,10 @@ static const char rcsid[] = "$Id: lcl_pr.c,v 1.1.1.3 1999-03-16 19:45:54 danw Ex
 /* Types */
 
 struct pvt {
-	FILE *		fp;
-	char		line[BUFSIZ+1];
-	struct protoent	proto;
-	char *		proto_aliases[MAXALIASES];
+	FILE *fp;
+	char line[BUFSIZ+1];
+	struct protoent proto;
+	char *proto_aliases[MAXALIASES];
 };
 
 /* Forward */
@@ -111,12 +107,12 @@ irs_lcl_pr(struct irs_acc *this) {
 	struct irs_pr *pr;
 	struct pvt *pvt;
 	
-	if (!(pr = memget(sizeof *pr))) {
+	if (!(pr = (struct irs_pr *)malloc(sizeof *pr))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
-	if (!(pvt = memget(sizeof *pvt))) {
-		memput(pr, sizeof *this);
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
+		free(pr);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -128,8 +124,6 @@ irs_lcl_pr(struct irs_acc *this) {
 	pr->next = pr_next;
 	pr->rewind = pr_rewind;
 	pr->minimize = pr_minimize;
-	pr->res_get = NULL;
-	pr->res_set = NULL;
 	return (pr);
 }
 
@@ -141,8 +135,8 @@ pr_close(struct irs_pr *this) {
 
 	if (pvt->fp)
 		(void) fclose(pvt->fp);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct protoent *
@@ -195,51 +189,20 @@ static struct protoent *
 pr_next(struct irs_pr *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 	char *p, *cp, **q;
-	char *bufp, *ndbuf, *dbuf = NULL;
-	int c, bufsiz, offset = 0;
 
 	if (!pvt->fp)
 		pr_rewind(this);
 	if (!pvt->fp)
 		return (NULL);
  again:
-	if ((p = fgets(pvt->line, BUFSIZ, pvt->fp)) == NULL) {
-		if (dbuf)
-			free(dbuf);
+	if ((p = fgets(pvt->line, BUFSIZ, pvt->fp)) == NULL)
 		return (NULL);
-	}
-	if (!strchr(p, '\n') && !feof(pvt->fp)) {
-#define GROWBUF 1024
-		/* allocate space for longer line */
-		if (dbuf == NULL)
-			if ((ndbuf = malloc(bufsiz + GROWBUF)) != NULL)
-				strcpy(ndbuf, bufp);
-		else
-			ndbuf = realloc(dbuf, bufsiz + GROWBUF);
-		if (ndbuf) {
-			dbuf = ndbuf;
-			bufp = dbuf;
-			bufsiz += GROWBUF;
-			offset = strlen(dbuf);
-		} else {
-			/* allocation failed; skip this long line */
-			while ((c = getc(pvt->fp)) != EOF)
-				if (c == '\n')
-					break;
-			if (c != EOF)
-				ungetc(c, pvt->fp);
-		}
-		goto again;
-	}
-
-	p -= offset;
-	offset = 0;
-
 	if (*p == '#')
 		goto again;
 	cp = strpbrk(p, "#\n");
-	if (cp != NULL)
-		*cp = '\0';
+	if (cp == NULL)
+		goto again;
+	*cp = '\0';
 	pvt->proto.p_name = p;
 	cp = strpbrk(p, " \t");
 	if (cp == NULL)

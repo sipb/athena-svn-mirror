@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -41,7 +41,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: base64.c,v 1.1.1.3 1999-03-16 19:46:01 danw Exp $";
+static char rcsid[] = "$Id: base64.c,v 1.1.1.3.2.1 1999-06-30 21:51:17 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"

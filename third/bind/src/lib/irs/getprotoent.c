@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,22 +16,16 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: getprotoent.c,v 1.1.1.3 1999-03-16 19:45:27 danw Exp $";
+static char rcsid[] = "$Id: getprotoent.c,v 1.1.1.3.2.1 1999-06-30 21:50:56 ghudson Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
 
-#if !defined(__BIND_NOSTATIC)
-
 #include <sys/types.h>
 
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-
 #include <errno.h>
-#include <resolv.h>
 #include <stdio.h>
 
 #include <irs.h>
@@ -42,132 +36,85 @@ static char rcsid[] = "$Id: getprotoent.c,v 1.1.1.3 1999-03-16 19:45:27 danw Exp
 
 /* Forward */
 
-static struct net_data *init(void);
+static struct irs_pr *	init(void);
 
 /* Public */
 
 struct protoent *
 getprotoent() {
-	struct net_data *net_data = init();
-
-	return (getprotoent_p(net_data));
+	struct irs_pr *pr = init();
+	
+	if (!pr)
+		return (NULL);
+	net_data.pr_last = (*pr->next)(pr);
+	return (net_data.pr_last);
 }
 
 struct protoent *
 getprotobyname(const char *name) {
-	struct net_data *net_data = init();
+	struct irs_pr *pr = init();
+	char **pap;
 
-	return (getprotobyname_p(name, net_data));
+	if (!pr)
+		return (NULL);
+	if (net_data.pr_stayopen && net_data.pr_last) {
+		if (!strcmp(net_data.pr_last->p_name, name))
+			return (net_data.pr_last);
+		for (pap = net_data.pr_last->p_aliases; pap && *pap; pap++)
+			if (!strcmp(name, *pap))
+				return (net_data.pr_last);
+	}
+	net_data.pr_last = (*pr->byname)(pr, name);
+	if (!net_data.pr_stayopen)
+		endprotoent();
+	return (net_data.pr_last);
 }
 
 struct protoent *
 getprotobynumber(int proto) {
-	struct net_data *net_data = init();
+	struct irs_pr *pr = init();
 
-	return (getprotobynumber_p(proto, net_data));
+	if (!pr)
+		return (NULL);
+	if (net_data.pr_stayopen && net_data.pr_last)
+		if (net_data.pr_last->p_proto == proto)
+			return (net_data.pr_last);
+	net_data.pr_last = (*pr->bynumber)(pr, proto);
+	if (!net_data.pr_stayopen)
+		endprotoent();
+	return (net_data.pr_last);
 }
 
 void
 setprotoent(int stayopen) {
-	struct net_data *net_data = init();
+	struct irs_pr *pr = init();
 
-	setprotoent_p(stayopen, net_data);
+	if (!pr)
+		return;
+	(*pr->rewind)(pr);
+	net_data.pr_stayopen = (stayopen != 0);
 }
 
 void
 endprotoent() {
-	struct net_data *net_data = init();
+	struct irs_pr *pr = init();
 
-	endprotoent_p(net_data);
-}
-
-/* Shared private. */
-
-struct protoent *
-getprotoent_p(struct net_data *net_data) {
-	struct irs_pr *pr;
-
-	if (!net_data || !(pr = net_data->pr))
-		return (NULL);
-	net_data->pr_last = (*pr->next)(pr);
-	return (net_data->pr_last);
-}
-
-struct protoent *
-getprotobyname_p(const char *name, struct net_data *net_data) {
-	struct irs_pr *pr;
-	char **pap;
-
-	if (!net_data || !(pr = net_data->pr))
-		return (NULL);
-	if (net_data->pr_stayopen && net_data->pr_last) {
-		if (!strcmp(net_data->pr_last->p_name, name))
-			return (net_data->pr_last);
-		for (pap = net_data->pr_last->p_aliases; pap && *pap; pap++)
-			if (!strcmp(name, *pap))
-				return (net_data->pr_last);
-	}
-	net_data->pr_last = (*pr->byname)(pr, name);
-	if (!net_data->pr_stayopen)
-		endprotoent();
-	return (net_data->pr_last);
-}
-
-struct protoent *
-getprotobynumber_p(int proto, struct net_data *net_data) {
-	struct irs_pr *pr;
-
-	if (!net_data || !(pr = net_data->pr))
-		return (NULL);
-	if (net_data->pr_stayopen && net_data->pr_last)
-		if (net_data->pr_last->p_proto == proto)
-			return (net_data->pr_last);
-	net_data->pr_last = (*pr->bynumber)(pr, proto);
-	if (!net_data->pr_stayopen)
-		endprotoent();
-	return (net_data->pr_last);
-}
-
-void
-setprotoent_p(int stayopen, struct net_data *net_data) {
-	struct irs_pr *pr;
-
-	if (!net_data || !(pr = net_data->pr))
-		return;
-	(*pr->rewind)(pr);
-	net_data->pr_stayopen = (stayopen != 0);
-	if (stayopen == 0)
-		net_data_minimize(net_data);
-}
-
-void
-endprotoent_p(struct net_data *net_data) {
-	struct irs_pr *pr;
-
-	if ((net_data != NULL) && ((pr = net_data->pr) != NULL))
+	if (pr != NULL)
 		(*pr->minimize)(pr);
 }
 
 /* Private */
 
-static struct net_data *
+static struct irs_pr *
 init() {
-	struct net_data *net_data;
-
-	if (!(net_data = net_data_init(NULL)))
+	if (!net_data_init())
 		goto error;
-	if (!net_data->pr) {
-		net_data->pr = (*net_data->irs->pr_map)(net_data->irs);
-
-		if (!net_data->pr || !net_data->res) {
+	if (!net_data.pr)
+		net_data.pr = (*net_data.irs->pr_map)(net_data.irs);
+	if (!net_data.pr) {
  error:		
-			errno = EIO;
-			return (NULL);
-		}
-		(*net_data->pr->res_set)(net_data->pr, net_data->res, NULL);
+		errno = EIO;
+		return (NULL);
 	}
-	
-	return (net_data);
+	return (net_data.pr);
 }
-
-#endif /*__BIND_NOSTATIC*/

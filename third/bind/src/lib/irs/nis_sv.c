@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis_sv.c,v 1.1.1.3 1999-03-16 19:45:50 danw Exp $";
+static const char rcsid[] = "$Id: nis_sv.c,v 1.1.1.3.2.1 1999-06-30 21:51:07 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports */
@@ -28,9 +28,6 @@ static int __bind_irs_nis_unneeded;
 #else
 
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
 #include <sys/socket.h>
 #include <rpc/rpc.h>
 #include <rpc/xdr.h>
@@ -43,7 +40,6 @@ static int __bind_irs_nis_unneeded;
 #include <stdlib.h>
 #include <string.h>
 
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -89,13 +85,13 @@ irs_nis_sv(struct irs_acc *this) {
 	struct irs_sv *sv;
 	struct pvt *pvt;
 	
-	if (!(sv = memget(sizeof *sv))) {
+	if (!(sv = (struct irs_sv *)malloc(sizeof *sv))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(sv, 0x5e, sizeof *sv);
-	if (!(pvt = memget(sizeof *pvt))) {
-		memput(sv, sizeof *sv);
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
+		free(sv);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -109,8 +105,6 @@ irs_nis_sv(struct irs_acc *this) {
 	sv->byport = sv_byport;
 	sv->rewind = sv_rewind;
 	sv->minimize = sv_minimize;
-	sv->res_get = NULL;
-	sv->res_set = NULL;
 	return (sv);
 }
 
@@ -125,8 +119,8 @@ sv_close(struct irs_sv *this) {
 		free(pvt->serv.s_aliases);
 	if (pvt->svbuf)
 		free(pvt->svbuf);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct servent *
@@ -227,7 +221,7 @@ makeservent(struct irs_sv *this) {
 		pvt->serv.s_aliases = NULL;
 	}
 
-	if ((p = strpbrk(pvt->svbuf, "#\n")))
+	if ((p = strchr(pvt->svbuf, '#')))
 		*p = '\0';
 
 	p = pvt->svbuf;

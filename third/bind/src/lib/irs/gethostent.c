@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996,1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,14 +16,12 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: gethostent.c,v 1.1.1.3 1999-03-16 19:45:29 danw Exp $";
+static char rcsid[] = "$Id: gethostent.c,v 1.1.1.3.2.1 1999-06-30 21:50:54 ghudson Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
-
-#if !defined(__BIND_NOSTATIC)
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -59,222 +57,156 @@ struct pvt {
 
 /* Forward */
 
-static struct net_data *init(void);
-static void		freepvt(struct net_data *);
-static struct hostent  *fakeaddr(const char *, int, struct net_data *);
-
+static struct irs_ho *	init(void);
+static void		freepvt(void);
+static struct hostent *	fakeaddr(const char *, int);
 
 /* Public */
 
 struct hostent *
 gethostbyname(const char *name) {
-	struct net_data *net_data = init();
+	struct hostent *hp;
 
-	return (gethostbyname_p(name, net_data));
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
+		return (NULL);
+	if (_res.options & RES_USE_INET6) {
+		hp = gethostbyname2(name, AF_INET6);
+		if (hp)
+			return (hp);
+	}
+	return (gethostbyname2(name, AF_INET));
 }
 
 struct hostent *
 gethostbyname2(const char *name, int af) {
-	struct net_data *net_data = init();
-
-	return (gethostbyname2_p(name, af, net_data));
-}
-
-struct hostent *
-gethostbyaddr(const char *addr, int len, int af) {
-	struct net_data *net_data = init();
-
-	return (gethostbyaddr_p(addr, len, af, net_data));
-}
-
-struct hostent *
-gethostent() {
-	struct net_data *net_data = init();
-
-	return (gethostent_p(net_data));
-}
-
-void
-sethostent(int stayopen) {
-	struct net_data *net_data = init();
-	sethostent_p(stayopen, net_data);
-}
-
-
-void
-endhostent() {
-	struct net_data *net_data = init();
-	endhostent_p(net_data);
-}
-
-/* Shared private. */
-
-struct hostent *
-gethostbyname_p(const char *name, struct net_data *net_data) {
-	struct hostent *hp;
-
-	if (!net_data)
-		return (NULL);
-
-	if (net_data->res->options & RES_USE_INET6) {
-		hp = gethostbyname2_p(name, AF_INET6, net_data);
-		if (hp)
-			return (hp);
-	}
-	return (gethostbyname2_p(name, AF_INET, net_data));
-}
-
-struct hostent *
-gethostbyname2_p(const char *name, int af, struct net_data *net_data) {
-	struct irs_ho *ho;
-	char tmp[NS_MAXDNAME];
+	struct irs_ho *ho = init();
 	struct hostent *hp;
 	const char *cp;
 	char **hap;
 
-	if (!net_data || !(ho = net_data->ho))
+	if (!ho)
 		return (NULL);
-	if (net_data->ho_stayopen && net_data->ho_last) {
-		if (!strcasecmp(name, net_data->ho_last->h_name))
-			return (net_data->ho_last);
-		for (hap = net_data->ho_last->h_aliases; hap && *hap; hap++)
+	if (net_data.ho_stayopen && net_data.ho_last) {
+		if (!strcasecmp(name, net_data.ho_last->h_name))
+			return (net_data.ho_last);
+		for (hap = net_data.ho_last->h_aliases; hap && *hap; hap++)
 			if (!strcasecmp(name, *hap))
-				return (net_data->ho_last);
+				return (net_data.ho_last);
 	}
-	if (!strchr(name, '.') && (cp = res_hostalias(net_data->res, name,
-						      tmp, sizeof tmp)))
+	if (!strchr(name, '.') && (cp = hostalias(name)))
 		name = cp;
-	if ((hp = fakeaddr(name, af, net_data)) != NULL)
+	if ((hp = fakeaddr(name, af)) != NULL)
 		return (hp);
-	net_data->ho_last = (*ho->byname2)(ho, name, af);
-	if (!net_data->ho_stayopen)
+	net_data.ho_last = (*ho->byname2)(ho, name, af);
+	if (!net_data.ho_stayopen)
 		endhostent();
-	return (net_data->ho_last);
+	return (net_data.ho_last);
 }
 
 struct hostent *
-gethostbyaddr_p(const char *addr, int len, int af, struct net_data *net_data) {
-	struct irs_ho *ho;
+gethostbyaddr(const char *addr, int len, int af) {
+	struct irs_ho *ho = init();
 	char **hap;
 
-	if (!net_data || !(ho = net_data->ho))
+	if (!ho)
 		return (NULL);
-	if (net_data->ho_stayopen && net_data->ho_last &&
-	    net_data->ho_last->h_length == len)
-		for (hap = net_data->ho_last->h_addr_list;
+	if (net_data.ho_stayopen && net_data.ho_last &&
+	    net_data.ho_last->h_length == len)
+		for (hap = net_data.ho_last->h_addr_list;
 		     hap && *hap;
 		     hap++)
 			if (!memcmp(addr, *hap, len))
-				return (net_data->ho_last);
-	net_data->ho_last = (*ho->byaddr)(ho, addr, len, af);
-	if (!net_data->ho_stayopen)
+				return (net_data.ho_last);
+	net_data.ho_last = (*ho->byaddr)(ho, addr, len, af);
+	if (!net_data.ho_stayopen)
 		endhostent();
-	return (net_data->ho_last);
+	return (net_data.ho_last);
 }
-
 
 struct hostent *
-gethostent_p(struct net_data *net_data) {
-	struct irs_ho *ho;
-	struct hostent *hp;
+gethostent() {
+	struct irs_ho *ho = init();
 
-	if (!net_data || !(ho = net_data->ho))
+	if (!ho)
 		return (NULL);
-	while ((hp = (*ho->next)(ho)) != NULL &&
-	       hp->h_addrtype == AF_INET6 &&
-	       (net_data->res->options & RES_USE_INET6) == 0)
-		continue;
-	net_data->ho_last = hp;
-	return (net_data->ho_last);
+	net_data.ho_last = (*ho->next)(ho);
+	return (net_data.ho_last);
 }
 
-
 void
-sethostent_p(int stayopen, struct net_data *net_data) {
-	struct irs_ho *ho;
+sethostent(int stayopen) {
+	struct irs_ho *ho = init();
 
-	if (!net_data || !(ho = net_data->ho))
+	if (!ho)
 		return;
-	freepvt(net_data);
+	freepvt();
 	(*ho->rewind)(ho);
-	net_data->ho_stayopen = (stayopen != 0);
-	if (stayopen == 0)
-		net_data_minimize(net_data);
+	net_data.ho_stayopen = (stayopen != 0);
 }
 
 void
-endhostent_p(struct net_data *net_data) {
-	struct irs_ho *ho;
+endhostent() {
+	struct irs_ho *ho = init();
 
-	if ((net_data != NULL) && ((ho = net_data->ho) != NULL))
+	if (ho != NULL)
 		(*ho->minimize)(ho);
 }
 
 /* Private */
 
-static struct net_data *
+static struct irs_ho *
 init() {
-	struct net_data *net_data;
-
-	if (!(net_data = net_data_init(NULL)))
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
+		return (NULL);
+	if (!net_data_init())
 		goto error;
-	if (!net_data->ho) {
-		net_data->ho = (*net_data->irs->ho_map)(net_data->irs);
-		if (!net_data->ho || !net_data->res) {
-  error:
-			errno = EIO;
-			if (net_data && net_data->res)
-				RES_SET_H_ERRNO(net_data->res, NETDB_INTERNAL);
-			return (NULL);
-		}
-	
-		(*net_data->ho->res_set)(net_data->ho, net_data->res, NULL);
+	if (!net_data.ho)
+		net_data.ho = (*net_data.irs->ho_map)(net_data.irs);
+	if (!net_data.ho) {
+ error:		errno = EIO;
+		h_errno = NETDB_INTERNAL;
+		return (NULL);
 	}
-	
-	return (net_data);
+	return (net_data.ho);
 }
 
 static void
-freepvt(struct net_data *net_data) {
-	if (net_data->ho_data) {
-		free(net_data->ho_data);
-		net_data->ho_data = NULL;
+freepvt() {
+	if (net_data.ho_data) {
+		free(net_data.ho_data);
+		net_data.ho_data = NULL;
 	}
 }
 
 static struct hostent *
-fakeaddr(const char *name, int af, struct net_data *net_data) {
+fakeaddr(const char *name, int af) {
 	struct pvt *pvt;
 	const char *cp;
 
-	freepvt(net_data);
-	net_data->ho_data = malloc(sizeof (struct pvt));
-	if (!net_data->ho_data) {
+	freepvt();
+	net_data.ho_data = malloc(sizeof(struct pvt));
+	if (!net_data.ho_data) {
 		errno = ENOMEM;
-		RES_SET_H_ERRNO(net_data->res, NETDB_INTERNAL);
+		h_errno = NETDB_INTERNAL;
 		return (NULL);
 	}
-	pvt = net_data->ho_data;
+	pvt = net_data.ho_data;
 	/*
-	 * Unlike its forebear(inet_aton), our friendly inet_pton() is strict
+	 * Unlike its forebear (inet_aton), our friendly inet_pton() is strict
 	 * in its interpretation of its input, and it will only return "1" if
-	 * the input string is a formally valid(and thus unambiguous with
+	 * the input string is a formally valid (and thus unambiguous with
 	 * respect to host names) internet address specification for this AF.
 	 *
 	 * This means "telnet 0xdeadbeef" and "telnet 127.1" are dead now.
 	 */
 	if (inet_pton(af, name, pvt->addr) != 1) {
-		RES_SET_H_ERRNO(net_data->res, HOST_NOT_FOUND);
+		h_errno = HOST_NOT_FOUND;
 		return (NULL);
 	}
 	strncpy(pvt->name, name, NS_MAXDNAME);
 	pvt->name[NS_MAXDNAME] = '\0';
-	if (af == AF_INET && (net_data->res->options & RES_USE_INET6) != 0) {
-		map_v4v6_address(pvt->addr, pvt->addr);
-		af = AF_INET6;
-	}
 	pvt->host.h_addrtype = af;
-	switch(af) {
+	switch (af) {
 	case AF_INET:
 		pvt->host.h_length = NS_INADDRSZ;
 		break;
@@ -283,7 +215,7 @@ fakeaddr(const char *name, int af, struct net_data *net_data) {
 		break;
 	default:
 		errno = EAFNOSUPPORT;
-		RES_SET_H_ERRNO(net_data->res, NETDB_INTERNAL);
+		h_errno = NETDB_INTERNAL;
 		return (NULL);
 	}
 	pvt->host.h_name = pvt->name;
@@ -292,7 +224,9 @@ fakeaddr(const char *name, int af, struct net_data *net_data) {
 	pvt->addrs[0] = (char *)pvt->addr;
 	pvt->addrs[1] = NULL;
 	pvt->host.h_addr_list = pvt->addrs;
-	RES_SET_H_ERRNO(net_data->res, NETDB_SUCCESS);
+	if (af == AF_INET && (_res.options & RES_USE_INET6))
+		map_v4v6_address(pvt->addr, pvt->addr);
+	h_errno = NETDB_SUCCESS;
 	return (&pvt->host);
 }
 
@@ -309,23 +243,21 @@ fakeaddr(const char *name, int af, struct net_data *net_data) {
 	     */
 	    strncpy(hname2, hp->h_name, MAXDNAME);
 	    hname2[MAXDNAME] = '\0';
-	    old_options = net_data->res->options;
-	    net_data->res->options &= ~RES_DNSRCH;
-	    net_data->res->options |= RES_DEFNAMES;
+	    old_options = _res.options;
+	    _res.options &= ~RES_DNSRCH;
+	    _res.options |= RES_DEFNAMES;
 	    if (!(rhp = gethostbyname(hname2))) {
-		net_data->res->options = old_options;
-		RES_SET_H_ERRNO(net_data->res, HOST_NOT_FOUND);
+		_res.options = old_options;
+		h_errno = HOST_NOT_FOUND;
 		return (NULL);
 	    }
-	    net_data->res->options = old_options;
+	    _res.options = old_options;
 	    for (haddr = rhp->h_addr_list; *haddr; haddr++)
 		if (!memcmp(*haddr, addr, INADDRSZ))
 			break;
 	    if (!*haddr) {
-		RES_SET_H_ERRNO(net_data->res, HOST_NOT_FOUND);
+		h_errno = HOST_NOT_FOUND;
 		return (NULL);
 	    }
 	}
 #endif /* grot */
-
-#endif /*__BIND_NOSTATIC*/

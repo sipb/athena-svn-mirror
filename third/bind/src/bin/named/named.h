@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: named.h,v 1.1.1.3 1999-03-16 19:45:06 danw Exp $
+ * $Id: named.h,v 1.1.1.3.2.1 1999-06-30 21:48:36 ghudson Exp $
  */
 
 /* Options. Leave these on. */
@@ -44,7 +44,6 @@
 #undef RSAREF
 #undef BSAFE
 #define ALLOW_LONG_TXT_RDATA
-#define STRICT_RFC2308
 
 #if 0
 #define	strdup	PLEASE_USE_SAVESTR
@@ -56,7 +55,6 @@
 
 #include <isc/assertions.h>
 #include <isc/list.h>
-#include <isc/ctl.h>
 
 #include "pathnames.h"
 

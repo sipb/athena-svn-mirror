@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_udp.c,v 1.1.1.2 1999-03-16 19:44:52 danw Exp $";
+static char rcsid[] = "$Id: ns_udp.c,v 1.1.1.2.2.1 1999-06-30 21:48:46 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,7 +26,6 @@ static char rcsid[] = "$Id: ns_udp.c,v 1.1.1.2 1999-03-16 19:44:52 danw Exp $";
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/file.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>

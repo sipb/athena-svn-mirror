@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)list.c	5.23 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: list.c,v 1.1.1.3 1999-03-16 19:45:18 danw Exp $";
+static char rcsid[] = "$Id: list.c,v 1.1.1.3.2.1 1999-06-30 21:49:09 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -151,28 +151,14 @@ int ListSubr();
 void
 ListHostsByType(char *string, int putToFile) {
 	char *namePtr, name[NAME_LEN], option[NAME_LEN];
-	int i, j, qtype, result;
+	int i, qtype, result;
 
 	/*
 	 * Parse the command line. It maybe of the form "ls -t domain"
 	 * or "ls -t type domain".
 	 */
 
-	/* simulate sscanf(string, " ls -t %s %s", option, name) */
-	i = matchString(" ls -t ", string);
-	if (i > 0) {
-		j = pickString(string + i, option, sizeof option);
-		if (j > 0) {
-			j = pickString(string + i + j, name, sizeof name);
-			if (j > 0)
-				i = 2;
-			else
-				i = 1;
-		} else {
-			i = 0;
-		}
-	}
-			
+	i = sscanf(string, " ls -t %s %s", option, name);
 	if (putToFile && i == 2 && name[0] == '>')
 		i--;
 	if (i == 2) {
@@ -196,28 +182,13 @@ ListHostsByType(char *string, int putToFile) {
 void
 ListHosts(char *string, int putToFile) {
 	char *namePtr, name[NAME_LEN], option[NAME_LEN];
-	int i, j, qtype, result;
+	int i, qtype, result;
 
 	/*
 	 *  Parse the command line. It maybe of the form "ls domain",
 	 *  "ls -X domain".
 	 */
-
-	/* simulate i = sscanf(string, " ls %s %s", option, name) */
-	i = matchString(" ls ", string);
-	if (i > 0) {
-		j = pickString(string + i, option, sizeof option);
-		if (j > 0) {
-			j = pickString(string + i + j, name, sizeof name);
-			if (j > 0)
-				i = 2;
-			else
-				i = 1;
-		} else {
-			i = 0;
-		}
-	}
-	
+	i = sscanf(string, " ls %s %s", option, name);
 	if (putToFile && i == 2 && name[0] == '>')
 		i--;
 	if (i == 2) {
@@ -265,18 +236,18 @@ ListSubr(int qtype, char *domain, char *cmd) {
 	int numAnswers = 0;
 	int numRecords = 0;
 	u_char tmp[INT16SZ], *cp;
-	char soaname[2][NAME_LEN], file[PATH_MAX];
+	char soaname[2][NAME_LEN], file[NAME_LEN];
 	enum { NO_ERRORS, ERR_READING_LEN, ERR_READING_MSG, ERR_PRINTING }
 		error = NO_ERRORS;
 
 	/*
 	 * Create a query packet for the requested domain name.
 	 */
-	msglen = res_nmkquery(&res, QUERY, domain, queryClass, T_AXFR,
-			      NULL, 0, 0, buf.qb2, sizeof buf);
+	msglen = res_mkquery(QUERY, domain, queryClass, T_AXFR,
+			     NULL, 0, 0, buf.qb2, sizeof buf);
 	if (msglen < 0) {
 		if (_res.options & RES_DEBUG)
-			fprintf(stderr, "*** ls: res_nmkquery failed\n");
+			fprintf(stderr, "*** ls: res_mkquery failed\n");
 		return (ERROR);
 	}
 
@@ -337,7 +308,7 @@ ListSubr(int qtype, char *domain, char *cmd) {
 	if (cmd == NULL) {
 		filePtr = stdout;
 	} else {
-		filePtr = OpenFile(cmd, file, sizeof file);
+		filePtr = OpenFile(cmd, file);
 		if (filePtr == NULL) {
 			fprintf(stderr, "*** Can't open %s for writing\n",
 				file);
@@ -510,18 +481,8 @@ ViewList(string)
 {
     char file[PATH_MAX];
     char command[PATH_MAX];
-    int i, j;
 
-    /* sscanf(string, " view %s", file); */
-    i = matchString(string, " view ");
-    if (i > 0) {
-	    j = pickString(string + i, file, sizeof file);
-	    if (j == 0) {
-		fprintf(stderr, "*** invalid file name: %s\n", string + i);
-		return ;
-	    }
-    }
-    
+    sscanf(string, " view %s", file);
     (void)sprintf(command, "grep \"^ \" %s | sort | %s", file, pager);
     system(command);
 }
@@ -554,8 +515,7 @@ Finger(string, putToFile)
 	int		c;
 	int		lastc;
 	char			name[NAME_LEN];
-	char			file[PATH_MAX];
-	int		i;
+	char			file[NAME_LEN];
 
 	/*
 	 *  We need a valid current host info to get an inet address.
@@ -565,20 +525,7 @@ Finger(string, putToFile)
 	    return (ERROR);
 	}
 
-	/* simulate: sscanf("finger %s") ; */
-
-	i = matchString(string, " finger ");
-	if (i > 0) {
-		i = pickString(string + i, name, sizeof name);
-		if (i > 0) {
-			i = 1 ;
-		}
-		/* note that if the argument to the finger command is
-		   bigger than sizeof name it will be treated as if there
-		   was no argument. */
-	}
-	
-	if (i == 1) {
+	if (sscanf(string, " finger %s", name) == 1) {
 	    if (putToFile && (name[0] == '>')) {
 		name[0] = '\0';
 	    }
@@ -619,7 +566,7 @@ Finger(string, putToFile)
 	if (!putToFile) {
 	    filePtr = stdout;
 	} else {
-	    filePtr = OpenFile(string, file, sizeof file);
+	    filePtr = OpenFile(string, file);
 	    if (filePtr == NULL) {
 		fprintf(stderr, "*** Can't open %s for writing\n", file);
 		close(sockFD);

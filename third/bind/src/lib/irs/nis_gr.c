@@ -32,7 +32,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996, 1997, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis_gr.c,v 1.1.1.3 1999-03-16 19:45:41 danw Exp $";
+static const char rcsid[] = "$Id: nis_gr.c,v 1.1.1.3.2.1 1999-06-30 21:51:05 ghudson Exp $";
 /* from getgrent.c 8.2 (Berkeley) 3/21/94"; */
 /* from BSDI Id: getgrent.c,v 2.8 1996/05/28 18:15:14 bostic Exp $	*/
 #endif /* LIBC_SCCS and not lint */
@@ -64,10 +64,6 @@ static int __bind_irs_gr_unneeded;
 
 #include <sys/param.h>
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
-#include <isc/memcluster.h>
 
 #include <rpc/rpc.h>
 #include <rpc/xdr.h>
@@ -80,8 +76,6 @@ static int __bind_irs_gr_unneeded;
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <isc/memcluster.h>
 
 #include <irs.h>
 
@@ -136,13 +130,13 @@ irs_nis_gr(struct irs_acc *this) {
 	struct irs_gr *gr;
 	struct pvt *pvt;
 
-	if (!(gr = memget(sizeof *gr))) {
+	if (!(gr = malloc(sizeof *gr))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(gr, 0x5e, sizeof *gr);
-	if (!(pvt = memget(sizeof *pvt))) {
-		memput(gr, sizeof *gr);
+	if (!(pvt = malloc(sizeof *pvt))) {
+		free(gr);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -157,8 +151,6 @@ irs_nis_gr(struct irs_acc *this) {
 	gr->rewind = gr_rewind;
 	gr->list = make_group_list;
 	gr->minimize = gr_minimize;
-	gr->res_get = NULL;
-	gr->res_set = NULL;
 	return (gr);
 }
 
@@ -172,8 +164,8 @@ gr_close(struct irs_gr *this) {
 		free(pvt->group.gr_mem);
 	if (pvt->membuf)
 		free(pvt->membuf);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct group *
@@ -293,9 +285,6 @@ makegroupent(struct irs_gr *this) {
 	if (!(cp = strchr(cp, ':')))
 		goto cleanup;
 	cp++;
-
-        if (*cp && cp[strlen(cp)-1] == '\n')
-          cp[strlen(cp)-1] = '\0';
 
 	/*
 	 * Parse the members out.

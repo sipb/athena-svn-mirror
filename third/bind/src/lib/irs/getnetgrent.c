@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,22 +16,14 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.3 1999-03-16 19:45:31 danw Exp $";
+static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.3.2.1 1999-06-30 21:50:55 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports */
 
 #include "port_before.h"
 
-#if !defined(__BIND_NOSTATIC)
-
-#include <sys/types.h>
-
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-
 #include <errno.h>
-#include <resolv.h>
 #include <stdio.h>
 
 #include <irs.h>
@@ -42,101 +34,60 @@ static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.3 1999-03-16 19:45:31 da
 
 /* Forward */
 
-static struct net_data *init(void);
-
+static struct irs_ng *	init(void);
 
 /* Public */
 
 void
 setnetgrent(const char *netgroup) {
-	struct net_data *net_data = init();
-
-	setnetgrent_p(netgroup, net_data);
+	struct irs_ng *ng = init();
+	
+	if (ng != NULL)
+		(*ng->rewind)(ng, netgroup);
 }
 
-void
+void 
 endnetgrent(void) {
-	struct net_data *net_data = init();
-
-	endnetgrent_p(net_data);
+	struct irs_ng *ng = init();
+	
+	if (ng)
+		(*ng->close)(ng);
+	net_data.ng = NULL;
 }
 
 int
 innetgr(const char *netgroup, const char *host,
 	const char *user, const char *domain) {
-	struct net_data *net_data = init();
-
-	return (innetgr_p(netgroup, host, user, domain, net_data));
-}
-
-int
-getnetgrent(char **host, char **user, char **domain) {
-	struct net_data *net_data = init();
-
-	return (getnetgrent_p(host, user, domain, net_data));
-}
-
-/* Shared private. */
-
-void
-setnetgrent_p(const char *netgroup, struct net_data *net_data) {
-	struct irs_ng *ng;
-
-	if ((net_data != NULL) && ((ng = net_data->ng) != NULL))
-		(*ng->rewind)(ng, netgroup);
-}
-
-void
-endnetgrent_p(struct net_data *net_data) {
-	struct irs_ng *ng;
-
-	if (!net_data)
-		return;
-	if ((ng = net_data->ng) != NULL)
-		(*ng->close)(ng);
-	net_data->ng = NULL;
-}
-
-int
-innetgr_p(const char *netgroup, const char *host,
-	  const char *user, const char *domain,
-	  struct net_data *net_data) {
-	struct irs_ng *ng;
-
-	if (!net_data || !(ng = net_data->ng))
+	struct irs_ng *ng = init();
+	
+	if (!ng)
 		return (0);
 	return ((*ng->test)(ng, netgroup, host, user, domain));
 }
 
 int
-getnetgrent_p(char **host, char **user, char **domain,
-	      struct net_data *net_data ) {
-	struct irs_ng *ng;
+getnetgrent(char **host, char **user, char **domain) {
+	struct irs_ng *ng = init();
 	struct netgrp *ngent;
-
-	if (!net_data || !(ng = net_data->ng))
+	
+	if (!ng)
 		return (0);
 	return ((*ng->next)(ng, host, user, domain));
 }
 
 /* Private */
 
-static struct net_data *
+static struct irs_ng *
 init(void) {
-	struct net_data *net_data;
-
-	if (!(net_data = net_data_init(NULL)))
-		goto error;
-	if (!net_data->ng) {
-		net_data->ng = (*net_data->irs->ng_map)(net_data->irs);
-		if (!net_data->ng) {
-  error:
-			errno = EIO;
-			return (NULL);
-		}
-	}
 	
-	return (net_data);
+	if (!net_data_init())
+		goto error;
+	if (!net_data.ng)
+		net_data.ng = (*net_data.irs->ng_map)(net_data.irs);
+	if (!net_data.ng) {
+error:
+		errno = EIO;
+		return (NULL);
+	}
+	return (net_data.ng);
 }
-
-#endif /*__BIND_NOSTATIC*/

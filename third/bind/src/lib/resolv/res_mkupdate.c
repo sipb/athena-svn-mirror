@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.3 1999-03-16 19:46:30 danw Exp $";
+static char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.3.2.1 1999-06-30 21:51:38 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
@@ -47,11 +47,9 @@ static char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.3 1999-03-16 19:46:30 danw Ex
 
 /* Options.  Leave them on. */
 #define DEBUG
-#define MAXPORT 1024
 
 static int getnum_str(u_char **, u_char *);
 static int getword_str(char *, int, u_char **, u_char *);
-static int getstr_str(char *, int, u_char **, u_char *);
 
 #define ShrinkBuffer(x)  if ((buflen -= x) < 0) return (-2);
 
@@ -68,7 +66,7 @@ static int getstr_str(char *, int, u_char **, u_char *);
  *		-5 unknown operation or no records
  */
 int
-res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
+res_mkupdate(ns_updrec *rrecp_in, u_char *buf, int buflen) {
 	ns_updrec *rrecp_start = rrecp_in;
 	HEADER *hp;
 	u_char c, *cp, *cp1, *sp1, *sp2, *startp, *endp;
@@ -81,6 +79,11 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 	u_int32_t n1, rttl;
 	u_char *dnptrs[20], **dpp, **lastdnptr;
 
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1) {
+		h_errno = NETDB_INTERNAL;
+		return (-1);
+	}
+
 	/*
 	 * Initialize header fields.
 	 */
@@ -88,7 +91,7 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 		return (-1);
 	memset(buf, 0, HFIXEDSZ);
 	hp = (HEADER *) buf;
-	hp->id = htons(++statp->id);
+	hp->id = htons(++_res.id);
 	hp->opcode = ns_o_update;
 	hp->rcode = NOERROR;
 	sp1 = buf + 2*INT16SZ;  /* save pointer to zocount */
@@ -261,8 +264,8 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 			n = getnum_str(&startp, endp);
 			if (n < 0)
 				return (-1);
-			ShrinkBuffer(INT16SZ);
 			PUTSHORT(n, cp);
+			ShrinkBuffer(INT16SZ);
 			if (!getword_str(buf2, sizeof buf2, &startp, endp))
 				return (-1);
 			n = dn_comp(buf2, cp, buflen, dnptrs, lastdnptr);
@@ -289,123 +292,17 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 				ShrinkBuffer(n);
 			}
 			break;
-		case T_WKS: {
-			char bm[MAXPORT/8];
-			int maxbm = 0;
-
-			if (!getword_str(buf2, sizeof buf2, &startp, endp))
-				return (-1);
-			if (!inet_aton(buf2, &ina))
-				return (-1);
-			n1 = ntohl(ina.s_addr);
-			ShrinkBuffer(INT32SZ);
-			PUTLONG(n1, cp);
-
-			if (!getword_str(buf2, sizeof buf2, &startp, endp))
-				return (-1);
-			if ((n1 =  res_protocolnumber(buf2)) < 0)
-				return (-1);
-			ShrinkBuffer(1);
-			*cp++ = n1&0xff;
-			 
-			for (i = 0; i < MAXPORT/8 ; i++)
-				bm[i] = 0;
-
-			while (getword_str(buf2, sizeof buf2, &startp, endp)) {
-				if ((n1 = res_servicenumber(buf2)) <= 0)
-					return (-1);
-
-				if (n1 < MAXPORT) {
-					bm[n1/8] |= (0x80>>(n1%8));
-					if (n1 > maxbm)
-						maxbm = n1;
-				} else
-					return (-1);
-			}
-			maxbm = maxbm/8 + 1;
-			ShrinkBuffer(maxbm);
-			memcpy(cp, bm, maxbm);
-			cp += maxbm;
-			break;
-		}
+		case T_WKS:
 		case T_HINFO:
-			for (i = 0; i < 2; i++) {
-				if ((n = getstr_str(buf2, sizeof buf2,
-						&startp, endp)) < 0)
-					return (-1);
-				if (n > 255)
-					return (-1);
-				ShrinkBuffer(n+1);
-				*cp++ = n;
-				memcpy(cp, buf2, n);
-				cp += n;
-			}
-			break;
 		case T_TXT:
-			while (1) {
-				if ((n = getstr_str(buf2, sizeof buf2,
-						&startp, endp)) < 0) {
-					if (cp != (sp2 + INT16SZ))
-						break;
-					return (-1);
-				}
-				if (n > 255)
-					return (-1);
-				ShrinkBuffer(n+1);
-				*cp++ = n;
-				memcpy(cp, buf2, n);
-				cp += n;
-			}
-			break;
 		case T_X25:
-			/* RFC 1183 */
-			if ((n = getstr_str(buf2, sizeof buf2, &startp,
-					 endp)) < 0)
-				return (-1);
-			if (n > 255)
-				return (-1);
-			ShrinkBuffer(n+1);
-			*cp++ = n;
-			memcpy(cp, buf2, n);
-			cp += n;
-			break;
 		case T_ISDN:
-			/* RFC 1183 */
-			if ((n = getstr_str(buf2, sizeof buf2, &startp,
-					 endp)) < 0)
-				return (-1);
-			if ((n > 255) || (n == 0))
-				return (-1);
-			ShrinkBuffer(n+1);
-			*cp++ = n;
-			memcpy(cp, buf2, n);
-			cp += n;
-			if ((n = getstr_str(buf2, sizeof buf2, &startp,
-					 endp)) < 0)
-				n = 0;
-			if (n > 255)
-				return (-1);
-			ShrinkBuffer(n+1);
-			*cp++ = n;
-			memcpy(cp, buf2, n);
-			cp += n;
-			break;
 		case T_NSAP:
-			if (n = inet_nsap_addr((char *)startp, (u_char *)buf2, sizeof(buf2))) {
-				ShrinkBuffer(n);
-				memcpy(cp, buf2, n);
-				cp += n;
-			} else {
-				return (-1);
-			}
-			break;
 		case T_LOC:
-			if (n = loc_aton((char *)startp, (u_char *)buf2)) {
-				ShrinkBuffer(n);
-				memcpy(cp, buf2, n);
-				cp += n;
-			} else
-				return (-1);
+			/* XXX - more fine tuning needed here */
+			ShrinkBuffer(rrecp->r_size);
+			memcpy(cp, rrecp->r_data, rrecp->r_size);
+			cp += rrecp->r_size;
 			break;
 		default:
 			return (-1);
@@ -450,85 +347,6 @@ getword_str(char *buf, int size, u_char **startpp, u_char *endp) {
         return (cp != buf);
 }
 
-/*
- * get a white spae delimited string from memory.  Process quoted strings
- * and \DDD escapes.  Return length or -1 on error.  Returned string may
- * contain nulls.
- */
-static char digits[] = "0123456789";
-static int
-getstr_str(char *buf, int size, u_char **startpp, u_char *endp) {
-        char *cp;
-        int c, c1;
-	int inquote = 0;
-	int seen_quote = 0;
-	int escape = 0;
-	int dig;
- 
-	for (cp = buf; *startpp <= endp; ) {
-                if ((c = **startpp) == '\0')
-			break;
-		/* leading white space */
-		if ((cp == buf) && !seen_quote && isspace(c)) {
-			(*startpp)++;
-			continue;
-		}
-
-		switch (c) {
-		case '\\':
-			if (!escape)  {
-				escape = 1;
-				dig = 0;
-				c1 = 0;
-				(*startpp)++;
-				continue;
-			} 
-			goto do_escape;
-		case '"':
-			if (!escape) {
-				inquote = !inquote;
-				seen_quote = 1;
-				(*startpp)++;
-				continue;
-			}
-			/* fall through */
-		default:
-		do_escape:
-			if (escape) {
-				switch (c) {
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-					c1 = c1 * 10 + 
-						(strchr(digits, c) - digits);
-
-					if (++dig == 3) {
-						c = c1 &0xff;
-						break;
-					}
-					(*startpp)++;
-					continue;
-				}
-				escape = 0;
-			} else if (!inquote && isspace(c))
-				goto done;
-			if (cp >= buf+size-1)
-				goto done;
-			*cp++ = (u_char)c;
-			(*startpp)++;
-		}
-	}
- done:
-	*cp = '\0';
-	return ((cp == buf)?  (seen_quote? 0: -1): (cp - buf));
-}
 /*
  * Get a whitespace delimited number from a string (not file) into buf
  * update the start pointer to point after the number in the string.
@@ -580,11 +398,8 @@ res_mkupdrec(int section, const char *dname,
 	     u_int class, u_int type, u_long ttl) {
 	ns_updrec *rrecp = (ns_updrec *)calloc(1, sizeof(ns_updrec));
 
-	if (!rrecp || !(rrecp->r_dname = strdup(dname))) {
-		if (rrecp)
-			free((char *)rrecp);
+	if (!rrecp || !(rrecp->r_dname = strdup(dname)))
 		return (NULL);
-	}
  	rrecp->r_class = class;
 	rrecp->r_type = type;
 	rrecp->r_ttl = ttl;
@@ -601,222 +416,4 @@ res_freeupdrec(ns_updrec *rrecp) {
 	if (rrecp->r_dname != NULL)
 		free(rrecp->r_dname);
 	free(rrecp);
-}
-
-struct valuelist {
-	struct valuelist *	next;
-	struct valuelist *	prev;
-	char *			name;
-	char *			proto;
-	int			port;
-};
-static struct valuelist *servicelist, *protolist;
-
-void
-res_buildservicelist() {
-	struct servent *sp;
-	struct valuelist *slp;
-
-#ifdef MAYBE_HESIOD
-	setservent(0);
-#else
-	setservent(1);
-#endif
-	while ((sp = getservent()) != NULL) {
-		slp = (struct valuelist *)malloc(sizeof(struct valuelist));
-		if (!slp)
-			break;
-		slp->name = strdup(sp->s_name);
-		slp->proto = strdup(sp->s_proto);
-		if ((slp->name == NULL) || (slp->proto == NULL)) {
-			if (slp->name) free(slp->name);
-			if (slp->proto) free(slp->proto);
-			free(slp);
-			break;
-		}
-		slp->port = ntohs((u_int16_t)sp->s_port);  /* host byt order */
-		slp->next = servicelist;
-		slp->prev = NULL;
-		if (servicelist)
-			servicelist->prev = slp;
-		servicelist = slp;
-	}
-	endservent();
-}
-
-void
-res_destroyservicelist() {
-	struct valuelist *slp, *slp_next;
-
-	for (slp = servicelist; slp != NULL; slp = slp_next) {
-		slp_next = slp->next;
-		free(slp->name);
-		free(slp->proto);
-		free(slp);
-	}
-	servicelist = (struct valuelist *)0;
-}
-
-void
-res_buildprotolist() {
-	struct protoent *pp;
-	struct valuelist *slp;
-
-#ifdef MAYBE_HESIOD
-	setprotoent(0);
-#else
-	setprotoent(1);
-#endif
-	while ((pp = getprotoent()) != NULL) {
-		slp = (struct valuelist *)malloc(sizeof(struct valuelist));
-		if (!slp)
-			break;
-		slp->name = strdup(pp->p_name);
-		if (slp->name == NULL) {
-			free(slp);
-			break;
-		}
-		slp->port = pp->p_proto;	/* host byte order */
-		slp->next = protolist;
-		slp->prev = NULL;
-		if (protolist)
-			protolist->prev = slp;
-		protolist = slp;
-	}
-	endprotoent();
-}
-
-void
-res_destroyprotolist() {
-	struct valuelist *plp, *plp_next;
-
-	for (plp = protolist; plp != NULL; plp = plp_next) {
-		plp_next = plp->next;
-		free(plp->name);
-		free(plp);
-	}
-	protolist = (struct valuelist *)0;
-}
-
-static int
-findservice(const char *s, struct valuelist **list) {
-	struct valuelist *lp = *list;
-	int n;
-
-	for (; lp != NULL; lp = lp->next)
-		if (strcasecmp(lp->name, s) == 0) {
-			if (lp != *list) {
-				lp->prev->next = lp->next;
-				if (lp->next)
-					lp->next->prev = lp->prev;
-				(*list)->prev = lp;
-				lp->next = *list;
-				*list = lp;
-			}
-			return (lp->port);	/* host byte order */
-		}
-	if (sscanf(s, "%d", &n) != 1 || n <= 0)
-		n = -1;
-	return (n);
-}
-
-/*
- * Convert service name or (ascii) number to int.
- */
-int
-res_servicenumber(const char *p) {
-	if (servicelist == (struct valuelist *)0)
-		res_buildservicelist();
-	return (findservice(p, &servicelist));
-}
-
-/*
- * Convert protocol name or (ascii) number to int.
- */
-int
-res_protocolnumber(const char *p) {
-	if (protolist == (struct valuelist *)0)
-		res_buildprotolist();
-	return (findservice(p, &protolist));
-}
-
-static struct servent *
-cgetservbyport(u_int16_t port, const char *proto) {	/* Host byte order. */
-	struct valuelist **list = &servicelist;
-	struct valuelist *lp = *list;
-	static struct servent serv;
-
-	port = ntohs(port);
-	for (; lp != NULL; lp = lp->next) {
-		if (port != (u_int16_t)lp->port)	/* Host byte order. */
-			continue;
-		if (strcasecmp(lp->proto, proto) == 0) {
-			if (lp != *list) {
-				lp->prev->next = lp->next;
-				if (lp->next)
-					lp->next->prev = lp->prev;
-				(*list)->prev = lp;
-				lp->next = *list;
-				*list = lp;
-			}
-			serv.s_name = lp->name;
-			serv.s_port = htons((u_int16_t)lp->port);
-			serv.s_proto = lp->proto;
-			return (&serv);
-		}
-	}
-	return (0);
-}
-
-static struct protoent *
-cgetprotobynumber(int proto) {				/* Host byte order. */
-	struct valuelist **list = &protolist;
-	struct valuelist *lp = *list;
-	static struct protoent prot;
-
-	for (; lp != NULL; lp = lp->next)
-		if (lp->port == proto) {		/* Host byte order. */
-			if (lp != *list) {
-				lp->prev->next = lp->next;
-				if (lp->next)
-					lp->next->prev = lp->prev;
-				(*list)->prev = lp;
-				lp->next = *list;
-				*list = lp;
-			}
-			prot.p_name = lp->name;
-			prot.p_proto = lp->port;	/* Host byte order. */
-			return (&prot);
-		}
-	return (0);
-}
-
-const char *
-res_protocolname(int num) {
-	static char number[8];
-	struct protoent *pp;
-
-	if (protolist == (struct valuelist *)0)
-		res_buildprotolist();
-	pp = cgetprotobynumber(num);
-	if (pp == 0)  {
-		(void) sprintf(number, "%d", num);
-		return (number);
-	}
-	return (pp->p_name);
-}
-
-const char *
-res_servicename(u_int16_t port, const char *proto) {	/* Host byte order. */
-	static char number[8];
-	struct servent *ss;
-
-	if (servicelist == (struct valuelist *)0)
-		res_buildservicelist();
-	ss = cgetservbyport(htons(port), proto);
-	if (ss == 0)  {
-		(void) sprintf(number, "%d", port);
-		return (number);
-	}
-	return (ss->s_name);
 }

@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+/* Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +15,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$Id: inet_pton.c,v 1.1.1.2 1999-03-16 19:46:10 danw Exp $";
+static char rcsid[] = "$Id: inet_pton.c,v 1.1.1.2.2.1 1999-06-30 21:50:43 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -172,8 +171,6 @@ inet_pton6(src, dst)
 					return (0);
 				colonp = tp;
 				continue;
-			} else if (*src == '\0') {
-				return (0);
 			}
 			if (tp + NS_INT16SZ > endp)
 				return (0);
@@ -205,8 +202,6 @@ inet_pton6(src, dst)
 		const int n = tp - colonp;
 		int i;
 
-		if (tp == endp)
-			return (0);
 		for (i = 1; i <= n; i++) {
 			endp[- i] = colonp[n - i];
 			colonp[n - i] = 0;

@@ -55,7 +55,7 @@
 
 /*
  *	@(#)res.h	5.10 (Berkeley) 6/1/90
- *	$Id: res.h,v 1.1.1.2 1999-03-16 19:45:15 danw Exp $
+ *	$Id: res.h,v 1.1.1.2.2.1 1999-06-30 21:49:10 ghudson Exp $
  */
 
 /*
@@ -154,11 +154,6 @@ extern FILE *filePtr;
  * TCP/UDP port of server.
  */
 extern unsigned short nsport;
-
-/*
- * Our resolver context.
- */
-extern struct __res_state res;
 
 /*
  *  External routines:

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,7 +18,7 @@
 This is the Information Retrieval Service (IRS).
 Designed by Paul Vixie (ISC) and Ted T'so (MIT), 1995.
 Written by Paul Vixie, Ted T'so and Sam Stoller, 1996.
-$Id: README,v 1.1.1.2 1999-03-16 19:45:32 danw Exp $
+$Id: README,v 1.1.1.2.2.1 1999-06-30 21:50:46 ghudson Exp $
 
 Introduction:
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$Id: nis_ho.c,v 1.1.1.3 1999-03-16 19:45:48 danw Exp $";
+static char rcsid[] = "$Id: nis_ho.c,v 1.1.1.3.2.1 1999-06-30 21:51:05 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports */
@@ -46,13 +46,14 @@ static int __bind_irs_nis_unneeded;
 #include <stdio.h>
 #include <string.h>
 
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
 
 #include "irs_p.h"
 #include "nis_p.h"
+
+extern int h_errno;
 
 /* Definitions */
 
@@ -77,8 +78,6 @@ struct pvt {
 	char *		host_aliases[MAXALIASES + 1];
 	char		hostbuf[8*1024];
 	u_char		host_addr[16];	/* IPv4 or IPv6 */
-	struct __res_state  *res;
-	void		(*free_res)(void *);
 };
 
 enum do_what { do_none = 0x0, do_key = 0x1, do_val = 0x2, do_all = 0x3 };
@@ -99,14 +98,9 @@ static struct hostent *	ho_byaddr(struct irs_ho *this, const void *addr,
 static struct hostent *	ho_next(struct irs_ho *this);
 static void		ho_rewind(struct irs_ho *this);
 static void		ho_minimize(struct irs_ho *this);
-static struct __res_state * ho_res_get(struct irs_ho *this);
-static void		ho_res_set(struct irs_ho *this,
-				   struct __res_state *res,
-				   void (*free_res)(void *));
 
 static struct hostent *	makehostent(struct irs_ho *this);
 static void		nisfree(struct pvt *, enum do_what);
-static int		init(struct irs_ho *this);
 
 /* Public */
 
@@ -115,17 +109,17 @@ irs_nis_ho(struct irs_acc *this) {
 	struct irs_ho *ho;
 	struct pvt *pvt;
 
-	if (!(pvt = memget(sizeof *pvt))) {
-		errno = ENOMEM;
-		return (NULL);
-	}
-	memset(pvt, 0, sizeof *pvt);
-	if (!(ho = memget(sizeof *ho))) {
-		memput(pvt, sizeof *pvt);
+	if (!(ho = malloc(sizeof *ho))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(ho, 0x5e, sizeof *ho);
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
+		free(ho);
+		errno = ENOMEM;
+		return (NULL);
+	}
+	memset(pvt, 0, sizeof *pvt);
 	pvt->needrewind = 1;
 	pvt->nis_domain = ((struct nis_p *)this->private)->domain;
 	ho->private = pvt;
@@ -136,8 +130,6 @@ irs_nis_ho(struct irs_acc *this) {
 	ho->next = ho_next;
 	ho->rewind = ho_rewind;
 	ho->minimize = ho_minimize;
-	ho->res_set = ho_res_set;
-	ho->res_get = ho_res_get;
 	return (ho);
 }
 
@@ -147,23 +139,18 @@ static void
 ho_close(struct irs_ho *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 
-	ho_minimize(this);
 	nisfree(pvt, do_all);
-	if (pvt->res && pvt->free_res)
-		(*pvt->free_res)(pvt->res);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct hostent *
 ho_byname(struct irs_ho *this, const char *name) {
-	struct pvt *pvt = (struct pvt *)this->private;
 	struct hostent *hp;
 
-	if (init(this) == -1)
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
 		return (NULL);
-
-	if (pvt->res->options & RES_USE_INET6) {
+	if (_res.options & RES_USE_INET6) {
 		hp = ho_byname2(this, name, AF_INET6);
 		if (hp)
 			return (hp);
@@ -176,14 +163,11 @@ ho_byname2(struct irs_ho *this, const char *name, int af) {
 	struct pvt *pvt = (struct pvt *)this->private;
 	int r;
 	
-	if (init(this) == -1)
-		return (NULL);
-
 	nisfree(pvt, do_val);
 	r = yp_match(pvt->nis_domain, hosts_byname, (char *)name, strlen(name),
 		     &pvt->curval_data, &pvt->curval_len);
 	if (r != 0) {
-		RES_SET_H_ERRNO(pvt->res, HOST_NOT_FOUND);
+		h_errno = HOST_NOT_FOUND;
 		return (NULL);
 	}
 	return (makehostent(this));
@@ -196,9 +180,6 @@ ho_byaddr(struct irs_ho *this, const void *addr, int len, int af) {
 	const u_char *uaddr = addr;
 	int r;
 	
-	if (init(this) == -1)
-		return (NULL);
-
 	if (af == AF_INET6 && len == IN6ADDRSZ &&
 	    (!memcmp(uaddr, mapped, sizeof mapped) ||
 	     !memcmp(uaddr, tunnelled, sizeof tunnelled))) {
@@ -209,14 +190,14 @@ ho_byaddr(struct irs_ho *this, const void *addr, int len, int af) {
 		len = INADDRSZ;
 	}
 	if (inet_ntop(af, uaddr, tmp, sizeof tmp) == NULL) {
-		RES_SET_H_ERRNO(pvt->res, NETDB_INTERNAL);
+		h_errno = NETDB_INTERNAL;
 		return (NULL);
 	}
 	nisfree(pvt, do_val);
 	r = yp_match(pvt->nis_domain, hosts_byaddr, tmp, strlen(tmp),
 		     &pvt->curval_data, &pvt->curval_len);
 	if (r != 0) {
-		RES_SET_H_ERRNO(pvt->res, HOST_NOT_FOUND);
+		h_errno = HOST_NOT_FOUND;
 		return (NULL);
 	}
 	return (makehostent(this));
@@ -227,9 +208,6 @@ ho_next(struct irs_ho *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 	struct hostent *rval;
 	int r;
-
-	if (init(this) == -1)
-		return (NULL);
 
 	do {
 		if (pvt->needrewind) {
@@ -252,7 +230,7 @@ ho_next(struct irs_ho *this) {
 			pvt->curkey_len = newkey_len;
 		}
 		if (r != 0) {
-			RES_SET_H_ERRNO(pvt->res, HOST_NOT_FOUND);
+			h_errno = HOST_NOT_FOUND;
 			return (NULL);
 		}
 		rval = makehostent(this);
@@ -269,42 +247,7 @@ ho_rewind(struct irs_ho *this) {
 
 static void
 ho_minimize(struct irs_ho *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (pvt->res)
-		res_nclose(pvt->res);
-}
-
-static struct __res_state *
-ho_res_get(struct irs_ho *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (!pvt->res) {
-		struct __res_state *res;
-		res = (struct __res_state *)malloc(sizeof *res);
-		if (!res) {
-			errno = ENOMEM;
-			return (NULL);
-		}
-		memset(res, 0, sizeof *res);
-		ho_res_set(this, res, free);
-	}
-
-	return (pvt->res);
-}
-
-static void
-ho_res_set(struct irs_ho *this, struct __res_state *res,
-		void (*free_res)(void *)) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (pvt->res && pvt->free_res) {
-		res_nclose(pvt->res);
-		(*pvt->free_res)(pvt->res);
-	}
-
-	pvt->res = res;
-	pvt->free_res = free_res;
+	/* NOOP */
 }
 
 /* Private */
@@ -317,17 +260,17 @@ makehostent(struct irs_ho *this) {
 	int af, len;
 
 	p = pvt->curval_data;
-	if ((cp = strpbrk(p, "#\n")) != NULL)
+	if ((cp = strchr(p, '#')) != NULL)
 		*cp = '\0';
 	if (!(cp = strpbrk(p, spaces)))
 		return (NULL);
 	*cp++ = '\0';
-	if ((pvt->res->options & RES_USE_INET6) &&
+	if ((_res.options & RES_USE_INET6) &&
 	    inet_pton(AF_INET6, p, pvt->host_addr) > 0) {
 		af = AF_INET6;
 		len = IN6ADDRSZ;
 	} else if (inet_pton(AF_INET, p, pvt->host_addr) > 0) {
-		if (pvt->res->options & RES_USE_INET6) {
+		if (_res.options & RES_USE_INET6) {
 			map_v4v6_address((char*)pvt->host_addr,
 					 (char*)pvt->host_addr);
 			af = AF_INET6;
@@ -360,7 +303,7 @@ makehostent(struct irs_ho *this) {
 			*cp++ = '\0';
 	}
 	*q = NULL;
-	RES_SET_H_ERRNO(pvt->res, NETDB_SUCCESS);
+	h_errno = NETDB_SUCCESS;
 	return (&pvt->host);
 }
 
@@ -376,15 +319,4 @@ nisfree(struct pvt *pvt, enum do_what do_what) {
 	}
 }
 
-static int
-init(struct irs_ho *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-	
-	if (!pvt->res && !ho_res_get(this))
-		return (-1);
-	if (((pvt->res->options & RES_INIT) == 0) &&
-	    res_ninit(pvt->res) == -1)
-		return (-1);
-	return (0);
-}
 #endif /*WANT_IRS_NIS*/

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997,1999 by Internet Software Consortium.
+ * Copyright (c) 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,15 +15,8 @@
  * SOFTWARE.
  */
 
-
-/* When this symbol is defined allocations via memget are made slightly 
-   bigger and some debugging info stuck before and after the region given 
-   back to the caller. */
-/* #define DEBUGGING_MEMCLUSTER */
-
-
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: memcluster.c,v 1.1.1.2 1999-03-16 19:46:06 danw Exp $";
+static char rcsid[] = "$Id: memcluster.c,v 1.1.1.2.2.1 1999-06-30 21:51:22 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
@@ -53,16 +46,10 @@ static char rcsid[] = "$Id: memcluster.c,v 1.1.1.2 1999-03-16 19:46:06 danw Exp 
 
 typedef struct {
 	void *			next;
-#if defined(DEBUGGING_MEMCLUSTER)
-	int			size;
-	int			fencepost;
-#endif
 } memcluster_element;
 
 #define SMALL_SIZE_LIMIT sizeof(memcluster_element)
 #define P_SIZE sizeof(void *)
-#define FRONT_FENCEPOST 0xfeba
-#define BACK_FENCEPOST 0xabef
 
 #ifndef MEMCLUSTER_LITTLE_MALLOC
 #define MEMCLUSTER_BIG_MALLOC 1
@@ -130,8 +117,6 @@ meminit(size_t init_max_size, size_t target_size) {
 void *
 __memget(size_t size) {
 	size_t new_size = quantize(size);
-	memcluster_element *e;
-	char *p;
 	void *ret;
 
 	if (freelists == NULL)
@@ -145,17 +130,7 @@ __memget(size_t size) {
 		/* memget() was called on something beyond our upper limit. */
 		stats[max_size].gets++;
 		stats[max_size].totalgets++;
-#if defined(DEBUGGING_MEMCLUSTER)
-		e = malloc(new_size);
-		e->next = NULL;
-		e->size = new_size;
-		e->fencepost = FRONT_FENCEPOST;
-		p = (char *)e + sizeof *e + size;
-		*((int*)p) = BACK_FENCEPOST;
-		return ((char *)e + sizeof *e);
-#else
 		return (malloc(size));
-#endif
 	}
 
 	/* 
@@ -220,20 +195,9 @@ __memget(size_t size) {
 		freelists[new_size] = new;
 	}
 
-	/* The free list uses the "rounded-up" size "new_size". */
-#if defined (DEBUGGING_MEMCLUSTER)
-	e = freelists[new_size];
-#else
+	/* The free list uses the "rounded-up" size "new_size": */
 	ret = freelists[new_size];
-#endif
 	freelists[new_size] = freelists[new_size]->next;
-#if defined(DEBUGGING_MEMCLUSTER)
-	e->next = NULL;
-	e->size = new_size;
-	e->fencepost = FRONT_FENCEPOST;
-	p = (char *)e + sizeof *e + size;
-	*((int*)p) = BACK_FENCEPOST;
-#endif
 
 	/* 
 	 * The stats[] uses the _actual_ "size" requested by the
@@ -244,11 +208,7 @@ __memget(size_t size) {
 	stats[size].gets++;
 	stats[size].totalgets++;
 	stats[new_size].freefrags--;
-#if defined(DEBUGGING_MEMCLUSTER)
-	return ((char *)e + sizeof *e);
-#else
 	return (ret);
-#endif
 }
 
 /* 
@@ -258,8 +218,6 @@ __memget(size_t size) {
 void
 __memput(void *mem, size_t size) {
 	size_t new_size = quantize(size);
-	memcluster_element *e;
-	char *p;
 
 	REQUIRE(freelists != NULL);
 
@@ -267,36 +225,17 @@ __memput(void *mem, size_t size) {
 		errno = EINVAL;
 		return;
 	}
-
-#if defined (DEBUGGING_MEMCLUSTER)
-	e = (memcluster_element *) ((char *)mem - sizeof *e);
-	INSIST(e->fencepost == FRONT_FENCEPOST);
-	INSIST(e->size == new_size);
-	p = (char *)e + sizeof *e + size;
-	INSIST(*((int *)p) == BACK_FENCEPOST);
-#endif
-
 	if (size == max_size || new_size >= max_size) {
 		/* memput() called on something beyond our upper limit */
-#if defined(DEBUGGING_MEMCLUSTER)
-		free(e);
-#else
 		free(mem);
-#endif
-
 		INSIST(stats[max_size].gets != 0);
 		stats[max_size].gets--;
 		return;
 	}
 
 	/* The free list uses the "rounded-up" size "new_size": */
-#if defined(DEBUGGING_MEMCLUSTER)
-	e->next = freelists[new_size];
-	freelists[new_size] = (void *)e;
-#else
 	((memcluster_element *)mem)->next = freelists[new_size];
 	freelists[new_size] = (memcluster_element *)mem;
-#endif
 
 	/* 
 	 * The stats[] uses the _actual_ "size" requested by the
@@ -356,7 +295,7 @@ memstats(FILE *out) {
  * block is at least sizeof void *, and that we won't violate alignment
  * restrictions, both of which are needed to make lists of blocks.
  */
-static size_t
+static size_t 
 quantize(size_t size) {
 	int remainder;
 	/*
@@ -370,11 +309,7 @@ quantize(size_t size) {
 	 */
 	remainder = size % P_SIZE;
 	if (remainder != 0)
-		size += P_SIZE - remainder;
-#if defined(DEBUGGING_MEMCLUSTER)
-	return (size + SMALL_SIZE_LIMIT + sizeof (int));
-#else
+        	size += P_SIZE - remainder;
 	return (size);
-#endif
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-1999 by Internet Software Consortium
+ * Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,7 +20,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.3 1999-03-16 19:46:01 danw Exp $";
+static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.3.2.1 1999-06-30 21:51:20 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -31,7 +31,6 @@ static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.3 1999-03-16 19:46:01 danw 
 #include <sys/stat.h>
 
 #include <errno.h>
-#include <signal.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -45,9 +44,7 @@ static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.3 1999-03-16 19:46:01 danw 
 /* Forward. */
 
 #ifdef NEED_PSELECT
-static int		pselect(int, void *, void *, void *,
-				struct timespec *,
-				const sigset_t *);
+static int		pselect(int, void *, void *, void *, struct timespec*);
 #endif
 
 /* Public. */
@@ -302,7 +299,7 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 			/* XXX should predict system's earliness and adjust. */
 			x = pselect(ctx->fdMax+1,
 				    &ctx->rdLast, &ctx->wrLast, &ctx->exLast,
-				    tp, NULL);
+				    tp);
 			pselect_errno = errno;
 
 			evPrintf(ctx, 4, "select() returns %d (err: %s)\n",
@@ -641,14 +638,9 @@ evPrintf(const evContext_p *ctx, int level, const char *fmt, ...) {
 }
 
 #ifdef NEED_PSELECT
-/* XXX needs to move to the porting library. */
 static int
-pselect(int nfds, void *rfds, void *wfds, void *efds,
-	struct timespec *tsp,
-	const sigset_t *sigmask)
-{
+pselect(int nfds, void *rfds, void *wfds, void *efds, struct timespec *tsp) {
 	struct timeval tv, *tvp;
-	sigset_t sigs;
 	int n;
 
 	if (tsp) {
@@ -656,11 +648,7 @@ pselect(int nfds, void *rfds, void *wfds, void *efds,
 		tv = evTimeVal(*tsp);
 	} else
 		tvp = NULL;
-	if (sigmask)
-		sigprocmask(SIG_SETMASK, sigmask, &sigs);
 	n = select(nfds, rfds, wfds, efds, tvp);
-	if (sigmask)
-		sigprocmask(SIG_SETMASK, &sigs, NULL);
 	if (tsp)
 		*tsp = evTimeSpec(tv);
 	return (n);

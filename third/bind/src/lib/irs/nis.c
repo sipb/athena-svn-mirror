@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis.c,v 1.1.1.3 1999-03-16 19:45:40 danw Exp $";
+static const char rcsid[] = "$Id: nis.c,v 1.1.1.3.2.1 1999-06-30 21:51:05 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -34,12 +34,6 @@ static const char rcsid[] = "$Id: nis.c,v 1.1.1.3 1999-03-16 19:45:40 danw Exp $
 #include <string.h>
 #include <errno.h>
 
-#include <sys/types.h>
-#include <netinet/in.h> 
-#include <arpa/nameser.h>
-#include <resolv.h>
-
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -51,9 +45,6 @@ static const char rcsid[] = "$Id: nis.c,v 1.1.1.3 1999-03-16 19:45:40 danw Exp $
 /* Forward */
 
 static void		nis_close(struct irs_acc *);
-static struct __res_state * nis_res_get(struct irs_acc *);
-static void		nis_res_set(struct irs_acc *, struct __res_state *,
-				void (*)(void *));
 
 /* Public */
 
@@ -65,13 +56,13 @@ irs_nis_acc(const char *options) {
 
 	if (yp_get_default_domain(&domain) != 0)
 		return (NULL);
-	if (!(nis = memget(sizeof *nis))) {
+	if (!(nis = malloc(sizeof *nis))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(nis, 0, sizeof *nis);
-	if (!(acc = memget(sizeof *acc))) {
-		memput(nis, sizeof *nis);
+	if (!(acc = malloc(sizeof *acc))) {
+		free(nis);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -93,57 +84,19 @@ irs_nis_acc(const char *options) {
 	acc->ho_map = irs_nis_ho;
 	acc->nw_map = irs_nis_nw;
 	acc->ng_map = irs_nis_ng;
-	acc->res_get = nis_res_get;
-	acc->res_set = nis_res_set;
 	acc->close = nis_close;
 	return (acc);
 }
 
 /* Methods */
 
-static struct __res_state *
-nis_res_get(struct irs_acc *this) {
-	struct nis_p *nis = (struct nis_p *)this->private;
-
-	if (nis->res == NULL) {
-		struct __res_state *res;
-		res = (struct __res_state *)malloc(sizeof *res);
-		if (res == NULL)
-			return (NULL);
-		memset(res, 0, sizeof *res);
-		nis_res_set(this, res, free);
-	}
-
-	if ((nis->res->options | RES_INIT) == 0 &&
-	    res_ninit(nis->res) < 0)
-		return (NULL);
-
-	return (nis->res);
-}
-
-static void
-nis_res_set(struct irs_acc *this, struct __res_state *res,
-		void (*free_res)(void *)) {
-	struct nis_p *nis = (struct nis_p *)this->private;
-
-	if (nis->res && nis->free_res) {
-		res_nclose(nis->res);
-		(*nis->free_res)(nis->res);
-	}
-
-	nis->res = res;
-	nis->free_res = free_res;
-}
-
 static void
 nis_close(struct irs_acc *this) {
 	struct nis_p *nis = (struct nis_p *)this->private;
 
-	if (nis->res && nis->free_res)
-		(*nis->free_res)(nis->res);
 	free(nis->domain);
-	memput(nis, sizeof *nis);
-	memput(this, sizeof *this);
+	free(nis);
+	free(this);
 }
 
 #endif /*WANT_IRS_NIS*/

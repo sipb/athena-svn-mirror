@@ -1,4 +1,6 @@
 /*
+ * ++Copyright++ 1983, 1990, 1993
+ * -
  * Copyright (c) 1983, 1990, 1993
  *    The Regents of the University of California.  All rights reserved.
  * 
@@ -29,9 +31,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- */
-
-/*
+ * -
  * Portions Copyright (c) 1993 by Digital Equipment Corporation.
  * 
  * Permission to use, copy, modify, and distribute this software for any
@@ -49,48 +49,33 @@
  * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
- */
-
-/*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
- *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * -
+ * --Copyright--
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)inet_addr.c	8.1 (Berkeley) 6/17/93";
-static char rcsid[] = "$Id: inet_addr.c,v 1.1.1.2 1999-03-16 19:46:11 danw Exp $";
+static char rcsid[] = "$Id: inet_addr.c,v 1.1.1.2.2.1 1999-06-30 21:50:40 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
-
 #include <sys/types.h>
 #include <sys/param.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
 #include <ctype.h>
-
 #include "port_after.h"
+
+/* these are compatibility routines, not needed on recent BSD releases */
 
 /*
  * Ascii internet address interpretation routine.
  * The value returned is in network order.
  */
 u_long
-inet_addr(const char *cp) {
+inet_addr(cp)
+	register const char *cp;
+{
 	struct in_addr val;
 
 	if (inet_aton(cp, &val))
@@ -106,13 +91,15 @@ inet_addr(const char *cp) {
  * cannot distinguish between failure and a local broadcast address.
  */
 int
-inet_aton(const char *cp, struct in_addr *addr) {
-	u_long val;
-	int base, n;
-	char c;
-	u_int8_t parts[4];
-	u_int8_t *pp = parts;
-	int digit;
+inet_aton(cp, addr)
+	register const char *cp;
+	struct in_addr *addr;
+{
+	register u_long val;
+	register int base, n;
+	register char c;
+	u_int parts[4];
+	register u_int *pp = parts;
 
 	c = *cp;
 	for (;;) {
@@ -123,28 +110,22 @@ inet_aton(const char *cp, struct in_addr *addr) {
 		 */
 		if (!isdigit(c))
 			return (0);
-		val = 0; base = 10; digit = 0;
+		val = 0; base = 10;
 		if (c == '0') {
 			c = *++cp;
 			if (c == 'x' || c == 'X')
 				base = 16, c = *++cp;
-			else {
+			else
 				base = 8;
-				digit = 1 ;
-			}
 		}
 		for (;;) {
 			if (isascii(c) && isdigit(c)) {
-				if (base == 8 && (c == '8' || c == '9'))
-					return (0);
 				val = (val * base) + (c - '0');
 				c = *++cp;
-				digit = 1;
 			} else if (base == 16 && isascii(c) && isxdigit(c)) {
 				val = (val << 4) |
 					(c + 10 - (islower(c) ? 'a' : 'A'));
 				c = *++cp;
-				digit = 1;
 			} else
 				break;
 		}
@@ -155,7 +136,7 @@ inet_aton(const char *cp, struct in_addr *addr) {
 			 *	a.b.c	(with c treated as 16 bits)
 			 *	a.b	(with b treated as 24 bits)
 			 */
-			if (pp >= parts + 3 || val > 0xff)
+			if (pp >= parts + 3)
 				return (0);
 			*pp++ = val;
 			c = *++cp;
@@ -168,16 +149,15 @@ inet_aton(const char *cp, struct in_addr *addr) {
 	if (c != '\0' && (!isascii(c) || !isspace(c)))
 		return (0);
 	/*
-	 * Did we get a valid digit?
-	 */
-	if (!digit)
-		return (0);
-	/*
 	 * Concoct the address according to
 	 * the number of parts specified.
 	 */
 	n = pp - parts + 1;
 	switch (n) {
+
+	case 0:
+		return (0);		/* initial nondigit */
+
 	case 1:				/* a -- 32 bits */
 		break;
 
@@ -199,7 +179,7 @@ inet_aton(const char *cp, struct in_addr *addr) {
 		val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
 		break;
 	}
-	if (addr != NULL)
+	if (addr)
 		addr->s_addr = htonl(val);
 	return (1);
 }
