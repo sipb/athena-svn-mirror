@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.7 1987-08-28 14:09:32 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.8 1987-08-30 22:15:03 treese Exp $
 
 # First, source the standard login script.  If it can't be found, notify
 # the user and execute some backup commands.
@@ -27,7 +27,7 @@ setenv RS1HOME ~/rs1home		# Default RS/1 directory
 # Set parameters for login shell only
 
 set ignoreeof			# ^D won't logout
-umask 66			# Files are not readable or writable by anyone
+umask 077			# Files are not readable or writable by anyone
 				# except owner (per privacy committee).
 
 # Miscellaneous startup commands
