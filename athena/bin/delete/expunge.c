@@ -11,13 +11,18 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.19 1991-03-11 18:43:51 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.20 1991-06-04 22:07:43 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#ifdef POSIX
+#include <dirent.h>
+#define direct dirent
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/param.h>
 #ifdef SYSV
 #include <string.h>

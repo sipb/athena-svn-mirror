@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.22 1991-02-28 18:44:11 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.23 1991-06-04 22:06:34 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,7 +20,12 @@
 #ifdef SYSV /* SYSV doesn't define uid_t */
 typedef unsigned short uid_t;
 #endif
+#ifdef POSIX
+#include <dirent.h>
+#define direct dirent
+#else
 #include <sys/dir.h>
+#endif
 #ifdef SYSV
 #include <string.h>
 #define index strchr
