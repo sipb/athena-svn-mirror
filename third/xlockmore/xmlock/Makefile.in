@@ -114,14 +114,15 @@ install_xmlock : install-program install-man install-ad
 	@ $(ECHO) ""
 
 install-program : xmlock
-	$(top_srcdir)/mkinstalldirs $(bindir)
-	$(INSTALL_PROGRAM) xmlock $(bindir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) xmlock $(DESTDIR)$(bindir)
 
 install-man :
 
 install-ad :
-	$(top_srcdir)/mkinstalldirs $(xapploaddir)
-	$(INSTALL_DATA) $(top_srcdir)/xmlock/XmLock.ad $(xapploaddir)/XmLock
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(xapploaddir)
+	$(INSTALL_DATA) $(top_srcdir)/xmlock/XmLock.ad \
+	  $(DESTDIR)$(xapploaddir)/XmLock
 
 uninstall : @UNINSTALL_XMLOCK@
 

@@ -167,42 +167,30 @@ install-strip:
 		install
 
 install-program: $(EXES)
-	@if [ ! -d $(bindir) ]; then $(INSTALL_DIRS) $(bindir) ; fi
+	$(INSTALL_DIRS) $(DESTDIR)$(bindir)
 	@inst="$(INSTALL_PROGRAM)" ;					\
 	if [ @NEED_SETUID@ = yes ]; then				\
-	   me="`whoami`" ;						\
-	   if [ "$$me" = root ]; then					\
-	     inst="$(INSTALL_SETUID)" ;					\
-	   else								\
-	    e=echo ;							\
- $$e ""									     ;\
- $$e "  Warning: xscreensaver has been compiled with support for shadow"     ;\
- $$e "           passwords.  If your system actually uses shadow passwords," ;\
- $$e "           then xscreensaver must be installed as a setuid root"	     ;\
- $$e "           program in order for locking to work.  To do this, you"     ;\
- $$e "           must run 'make install' as 'root', not as '$$me'."	     ;\
- $$e ""									     ;\
- $$e "           For now, xscreensaver will be installed non-setuid, which"  ;\
- $$e "           means that locking might not work.  (Try it and see.)"	     ;\
- $$e ""									     ;\
-	   fi ; 							\
+	   inst="$(INSTALL_SETUID)" ;					\
 	fi ;								\
-	echo $$inst xscreensaver $(bindir)/xscreensaver ;		\
-	$$inst xscreensaver $(bindir)/xscreensaver
-	$(INSTALL_PROGRAM) xscreensaver-command $(bindir)/xscreensaver-command
-	$(INSTALL_PROGRAM) xscreensaver-demo $(bindir)/xscreensaver-demo
+	echo $$inst xscreensaver $(DESTDIR)$(bindir)/xscreensaver ;	\
+	$$inst xscreensaver $(DESTDIR)$(bindir)/xscreensaver
+	$(INSTALL_PROGRAM) xscreensaver-command \
+	   $(DESTDIR)$(bindir)/xscreensaver-command
+	$(INSTALL_PROGRAM) xscreensaver-demo \
+	   $(DESTDIR)$(bindir)/xscreensaver-demo
 
 install-ad: XScreenSaver.ad
-	@if [ ! -d $(AD_DIR) ]; then $(INSTALL_DIRS) $(AD_DIR) ; fi
-	$(INSTALL_DATA) XScreenSaver.ad $(AD_DIR)/XScreenSaver
+	$(INSTALL_DIRS) $(DESTDIR)$(AD_DIR)
+	$(INSTALL_DATA) XScreenSaver.ad $(DESTDIR)$(AD_DIR)/XScreenSaver
 
 install-man: $(MEN)
 	@men="$(MEN)" ;							\
-	if [ ! -d $(man1dir) ]; then $(INSTALL_DIRS) $(man1dir) ; fi ;	\
+	$(INSTALL_DIRS) $(DESTDIR)$(man1dir)
 	for man in $$men; do						\
 	  instname=`echo $$man | sed 's/\.man$$/\.$(mansuffix)/'` ;	\
-	  echo $(INSTALL_DATA) $(srcdir)/$$man $(man1dir)/$$instname ;	\
-	  $(INSTALL_DATA) $(srcdir)/$$man $(man1dir)/$$instname ;	\
+	  echo $(INSTALL_DATA) \
+	    $(srcdir)/$$man $(DESTDIR)$(man1dir)/$$instname;	\
+	  $(INSTALL_DATA) $(srcdir)/$$man $(DESTDIR)$(man1dir)/$$instname ; \
 	done
 
 uninstall-program:

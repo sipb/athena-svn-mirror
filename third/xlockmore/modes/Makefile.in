@@ -373,16 +373,17 @@ install : install-program install-man install-ad
 	@ $(ECHO) ""
 
 install-program : xlock
-	$(top_srcdir)/mkinstalldirs $(bindir)
-	$(INSTALL_PROGRAM) $(INSTPGMFLAGS) $(UTILOBJDIR)xlock $(bindir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) $(INSTPGMFLAGS) $(UTILOBJDIR)xlock \
+	  $(DESTDIR)$(bindir)
 
 install-man :
-	$(top_srcdir)/mkinstalldirs $(mandir)
-	$(INSTALL_DATA) $(UTILDIR)xlock.man $(mandir)/xlock.1
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(mandir)
+	$(INSTALL_DATA) $(UTILDIR)xlock.man $(DESTDIR)$(mandir)/xlock.1
 
 install-ad :
-	$(top_srcdir)/mkinstalldirs $(xapploaddir)
-	$(INSTALL_DATA) $(UTILDIR)XLock.ad $(xapploaddir)/XLock
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(xapploaddir)
+	$(INSTALL_DATA) $(UTILDIR)XLock.ad $(DESTDIR)$(xapploaddir)/XLock
 
 uninstall : uninstall-program uninstall-man uninstall-ad
 
