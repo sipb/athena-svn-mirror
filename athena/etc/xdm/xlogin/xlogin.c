@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.14 1991-07-19 15:41:23 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.15 1991-07-22 11:33:10 epeisach Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -21,6 +21,7 @@
 
 #ifdef ultrix
 #define BROKEN_AUTO_REP
+#define DISABLE_AUTO_REP
 #endif
 
 #define OWL_AWAKE 0
@@ -741,6 +742,8 @@ Cardinal *n;
     XFlush(dpy);
     XtCloseDisplay(dpy);
 
+    unsetenv("XAPPLRESDIR");
+    unsetenv("XENVIRONMENT");
     setenv("PATH", defaultpath, 1);
     setenv("USER", "daemon", 1);
     setenv("SHELL", "/bin/sh", 1);
@@ -1236,16 +1239,21 @@ static void setAutoRepeat(mode)
 int mode;
 {
     XKeyboardControl cntrl;
-
+#ifdef DISABLE_AUTO_REP
     cntrl.auto_repeat_mode = mode;
     XChangeKeyboardControl(dpy,KBAutoRepeatMode,&cntrl);
+#endif
 }
 
 #ifndef BROKEN_AUTO_REP
 static int getAutoRepeat()
 {
     XKeyboardState st;
+#ifdef DISABLE_AUTO_REP
     XGetKeyboardControl(dpy, &st);
     return st.global_auto_repeat;
+#else
+    return 0;
+#endif
 }
 #endif 
