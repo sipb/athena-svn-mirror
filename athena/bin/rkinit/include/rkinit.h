@@ -1,16 +1,26 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.2 1989-11-13 14:45:27 qjb Exp $
+ * $Id: rkinit.h,v 1.3 1990-07-16 14:14:29 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v $
  * $Author: qjb $
  *
+ * Main header file for rkinit library users
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_h = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.2 1989-11-13 14:45:27 qjb Exp $";
-#endif lint || SABER
+#ifndef __RKINIT_H__
+#define __RKINIT_H__
+
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid_rkinit_h = "$Id: rkinit.h,v 1.3 1990-07-16 14:14:29 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <krb.h>
 #include <sys/param.h>
+
+#ifdef __STDC__
+#define RK_PROTO(x) x
+#else
+#define RK_PROTO(x) ()
+#endif /* __STDC__ */
 
 typedef struct {
     char aname[ANAME_SZ + 1];
@@ -25,6 +35,8 @@ typedef struct {
 
 #define RKINIT_SUCCESS 0
 
-/* Declaration of routines */
-extern int rkinit();
-extern char *rkinit_errmsg();
+/* Function declarations */
+extern int rkinit RK_PROTO((char *, char *, rkinit_info *, int));
+extern char *rkinit_errmsg RK_PROTO((char *));
+
+#endif /* __RKINIT_H__ */
