@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.20 2001-03-21 19:32:45 jweiss Exp $
+# $Id: update_ws.sh,v 1.21 2001-08-14 16:36:58 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -24,28 +24,28 @@
 PATH=/usr/athena/bin:/bin/athena:/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
 
 errorout() {
-	echo "$@" >&2
-	echo -n "Please contact Athena Cluster Services at x3-1410.  " >&2
-	echo "-Athena Operations" >&2
-	exit 1
+  echo "$@" >&2
+  echo -n "Please contact Athena Cluster Services at x3-1410.  " >&2
+  echo "-Athena Operations" >&2
+  exit 1
 }
 
 # Process options.
 auto=
 dryrun=false
 while getopts a:n opt; do
-	case $opt in
-	a)
-		auto=$OPTARG
-		;;
-	n)
-		dryrun=true
-		;;
-	\?)
-		echo "$0 [-n] [-a reactivate|rc] [version]" >&2
-		exit 1
-		;;
-	esac
+  case $opt in
+  a)
+    auto=$OPTARG
+    ;;
+  n)
+    dryrun=true
+    ;;
+  \?)
+    echo "$0 [-n] [-a reactivate|rc] [version]" >&2
+    exit 1
+    ;;
+  esac
 done
 shift `expr $OPTIND - 1`
 
@@ -56,9 +56,9 @@ shift `expr $OPTIND - 1`
 versarg=$1
 case $versarg in
 *.*.*)
-	pversarg=$versarg
-	versarg=`expr $pversarg : '\([0-9]*\.[0-9]*\)'`
-	;;
+  pversarg=$versarg
+  versarg=`expr $pversarg : '\([0-9]*\.[0-9]*\)'`
+  ;;
 esac
 
 . /etc/athena/rc.conf
@@ -69,20 +69,20 @@ hosttype=`/bin/athena/machtype`
 oldvers=`awk '$0 != "" { a = $5; } END { print a; }' /etc/athena/version`
 case "$oldvers" in
 [0-9]*)
-	# Looks okay.
-	;;
+  # Looks okay.
+  ;;
 Layered)
-	errorout "You cannot take an update on a Layered machine."
-	;;
+  errorout "You cannot take an update on a Layered machine."
+  ;;
 *)
-	# Doesn't look okay.  Complain and exit.
-	if [ ! -f /var/athena/update.check ]; then
-		logger -t $HOST -p user.notice at revision $oldvers
-		touch /var/athena/update.check
-	fi
+  # Doesn't look okay.  Complain and exit.
+  if [ ! -f /var/athena/update.check ]; then
+    logger -t $HOST -p user.notice at revision $oldvers
+    touch /var/athena/update.check
+  fi
 
-	errorout "This system is in the middle of an update."
-	;;
+  errorout "This system is in the middle of an update."
+  ;;
 esac
 
 # Define a function to set cluster variables for this host for a given
@@ -91,28 +91,28 @@ esac
 # new version.  This is a hack; ideally getcluster would always behave
 # this way.
 getclust() {
-	unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
-	eval `AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local \
-		"$HOST" "$1"`
+  unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
+  eval `AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local \
+    "$HOST" "$1"`
 }
 
 # Fetch the SYSPREFIX and SYSCONTROL cluster variables.
 if [ -n "$auto" ]; then
-	# Fetch variables for the current production release.
-	getclust "$oldvers"
-	if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
-		getclust "$NEW_PRODUCTION_RELEASE"
-	fi
+  # Fetch variables for the current production release.
+  getclust "$oldvers"
+  if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
+    getclust "$NEW_PRODUCTION_RELEASE"
+  fi
 else
-	# For manual updates, fetch variables for the release
-	# specified on the command line or for the current release if
-	# no version was given.
-	getclust "${versarg:-$oldvers}"
+  # For manual updates, fetch variables for the release
+  # specified on the command line or for the current release if
+  # no version was given.
+  getclust "${versarg:-$oldvers}"
 fi
 if [ -z "$SYSPREFIX" -o -z "$SYSCONTROL" ]; then
-	# Default to the release data a fresh install would use.
-	SYSPREFIX=/afs/athena.mit.edu/system/rhlinux
-	SYSCONTROL=control/control-current
+  # Default to the release data a fresh install would use.
+  SYSPREFIX=/afs/athena.mit.edu/system/rhlinux
+  SYSCONTROL=control/control-current
 fi
 
 # Change to the system area.
@@ -120,162 +120,161 @@ cd "$SYSPREFIX" || errorout "Can't change to system area $SYSPREFIX."
 
 # Decide what the new version and new list file are for this update.
 if [ -n "$pversarg" ]; then
-	# Find the specified patch version in the control file.
-	exec 3< "$SYSCONTROL" || errorout "Can't read `pwd`/$SYSCONTROL."
-	unset newlist
-	while read version filename throw_away_the_rest <&3; do
-		if [ "x$version" = "x$pversarg" ]; then
-			newlist=$filename
-			break
-		fi
-	done
-	exec 3<&-
-	if [ -z "$newlist" ]; then
-		echo "Can't find $pversarg in `pwd`/$SYSCONTROL." >&2
-		exit 1
-	fi
-	newvers=$pversarg
+  # Find the specified patch version in the control file.
+  exec 3< "$SYSCONTROL" || errorout "Can't read `pwd`/$SYSCONTROL."
+  unset newlist
+  while read version filename throw_away_the_rest <&3; do
+    if [ "x$version" = "x$pversarg" ]; then
+      newlist=$filename
+      break
+    fi
+  done
+  exec 3<&-
+  if [ -z "$newlist" ]; then
+    echo "Can't find $pversarg in `pwd`/$SYSCONTROL." >&2
+    exit 1
+  fi
+  newvers=$pversarg
 else
-	# Get the latest version from the control file.
-	set -- `tail -1 "$SYSCONTROL"`
-	newvers=$1
-	newlist=$2
+  # Get the latest version from the control file.
+  set -- `tail -1 "$SYSCONTROL"`
+  newvers=$1
+  newlist=$2
 fi
 
 # Define a function to output a message pointing out a new testing release.
 new_testing_release_msg() {
-	echo "A new Athena release ($NEW_TESTING_RELEASE) is now in testing."
-	echo "You are theoretically interested in this phase of testing, but"
-	echo "because there may be bugs which would inconvenience your work,"
-	echo "you must update to this release manually.  Please contact Athena"
-	echo "Cluster Services (x3-1410) if you have not received instructions"
-	echo "on how to update."
+  echo "A new Athena release ($NEW_TESTING_RELEASE) is now in testing."
+  echo "You are theoretically interested in this phase of testing, but"
+  echo "because there may be bugs which would inconvenience your work,"
+  echo "you must update to this release manually.  Please contact Athena"
+  echo "Cluster Services (x3-1410) if you have not received instructions"
+  echo "on how to update."
 }
 
 if [ "x$newvers" = "x$oldvers" ]; then
-	# There's no new version available.  Print something
-	# appropriate and exit.
-	if [ -n "$auto" ]; then
-		if [ -n "$NEW_TESTING_RELEASE" ]; then
-			new_testing_release_msg
-		fi
-	elif [ -n "$pversarg" ]; then
-		echo "You are already at version $pversarg."
-	elif [ -n "$NEW_PRODUCTION_RELEASE" -o \
-	       -n "$NEW_TESTING_RELEASE" ]; then
-		echo "Your workstation is already up to date for this full"
-		echo "release.  You must manually specify a newer full release"
-		echo "to update beyond this point."
-	else
-		echo "No new version is available."
-	fi
-	exit
+  # There's no new version available.  Print something
+  # appropriate and exit.
+  if [ -n "$auto" ]; then
+    if [ -n "$NEW_TESTING_RELEASE" ]; then
+      new_testing_release_msg
+    fi
+  elif [ -n "$pversarg" ]; then
+    echo "You are already at version $pversarg."
+  elif [ -n "$NEW_PRODUCTION_RELEASE" -o -n "$NEW_TESTING_RELEASE" ]; then
+    echo "Your workstation is already up to date for this full"
+    echo "release.  You must manually specify a newer full release"
+    echo "to update beyond this point."
+  else
+    echo "No new version is available."
+  fi
+  exit
 fi
 
 if [ -n "$auto" -a true != "$AUTOUPDATE" ]; then
-	# There's a new version available, but we can't take it yet.
-	echo "A new version of Athena software is now available."
-	echo "Please contact Athena Cluster Services (x3-1410) to"
-	echo "get more information on how to update your workstation"
-	echo "yourself, or to schedule us to do it for you."
-	echo "    Thank you.  -Athena Operations"
-	exit
+  # There's a new version available, but we can't take it yet.
+  echo "A new version of Athena software is now available."
+  echo "Please contact Athena Cluster Services (x3-1410) to"
+  echo "get more information on how to update your workstation"
+  echo "yourself, or to schedule us to do it for you."
+  echo "    Thank you.  -Athena Operations"
+  exit
 fi
 
 if [ -n "$auto" ]; then
-	# Desynchronize automatic updates by the value of the desync
-	# cluster variable or four hours if it isn't set.
-	desync -t /var/athena/update.desync ${DESYNC-14400}
-	if [ $? -ne 0 ]; then
-		exit 0
-	fi
+  # Desynchronize automatic updates by the value of the desync
+  # cluster variable or four hours if it isn't set.
+  desync -t /var/athena/update.desync ${DESYNC-14400}
+  if [ $? -ne 0 ]; then
+    exit 0
+  fi
 fi
 
 # Translate public status into command-line flag and old list filename.
 # rpmupdate does not use the information from the old list for public
 # updates.
 if [ true = "$PUBLIC" ]; then
-	publicflag=-p
+  publicflag=-p
 else
-	publicflag=
+  publicflag=
 fi
 
 oldlist=/var/athena/release-rpms
 if [ ! -r "$oldlist" ]; then
-	logger -t "$HOST" -p user.notice \
-		Cannot read $oldlist, unable to take update
-	errorout "Cannot read old release list $oldlist."
+  logger -t "$HOST" -p user.notice \
+    Cannot read $oldlist, unable to take update
+  errorout "Cannot read old release list $oldlist."
 fi
 
 if [ true = "$PUBLIC" -a -d /var/server ]; then
-	rm -rf /var/server
+  rm -rf /var/server
 fi
 if [ -d /var/server ]; then
-	MACH=$MACHINE VERS=$newvers mkserv updatetest
-	if [ $? -ne 0 ]; then
-		logger -t "$HOST" -p user.notice \
-			missing mkserv services, unable to take update
-		errorout "Not all mkserv services available for $newvers."
-	fi
+  MACH=$MACHINE VERS=$newvers mkserv updatetest
+  if [ $? -ne 0 ]; then
+    logger -t "$HOST" -p user.notice \
+      missing mkserv services, unable to take update
+    errorout "Not all mkserv services available for $newvers."
+  fi
 fi
 
 # If we're doing a dry run, here's where we get off the train.
 if [ true = "$dryrun" ]; then
-	echo "Package changes for update from $oldvers to $newvers:"
-	rpmupdate -n $publicflag "$oldlist" "$newlist" | sort
-	exit 0
+  echo "Package changes for update from $oldvers to $newvers:"
+  rpmupdate -n $publicflag "$oldlist" "$newlist" | sort
+  exit 0
 fi
 
 if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
-	# Tell dm to shut down everything and sleep forever during the update.
-	kill -FPE `cat /var/athena/dm.pid`
+  # Tell dm to shut down everything and sleep forever during the update.
+  kill -FPE `cat /var/athena/dm.pid`
 fi
 
 # Define how to clean up if the update fails.
 failupdate() {
-	logger -t $HOST -p user.notice "Update ($oldvers -> $newvers) failed"
-	echo "Athena Workstation ($hosttype) Version $oldvers `date`" >> \
-		/etc/athena/version
-	if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
-		kill `cat /var/athena/dm.pid`
-	fi
-	errorout "*** The update has failed ***"
+  logger -t $HOST -p user.notice "Update ($oldvers -> $newvers) failed"
+  echo "Athena Workstation ($hosttype) Version $oldvers `date`" >> \
+    /etc/athena/version
+  if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
+    kill `cat /var/athena/dm.pid`
+  fi
+  errorout "*** The update has failed ***"
 }
 
 # Do the update.
 {
-	echo "Beginning update from $oldvers to $newvers at `date`."
-	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
-		/etc/athena/version
+  echo "Beginning update from $oldvers to $newvers at `date`."
+  echo "Athena Workstation ($hosttype) Version Update `date`" >> \
+    /etc/athena/version
 
-	# If there is a staging version of rpmupdate for the current
-	# release, freshen to it, since it might be necessary to get
-	# to a future release.  Even if it's not needed, it won't
-	# hurt to have it.
-	oldfull=`echo "$oldvers" | sed -e 's/\.[^\.*]*$//'`
-	staging=control/rpmupdate-$oldfull.staging
-	if [ -r "$staging" ]; then
-		echo -n "Freshening rpmupdate: "
-		rpm -Fv "$staging"
-	fi
+  # If there is a staging version of rpmupdate for the current
+  # release, freshen to it, since it might be necessary to get
+  # to a future release.  Even if it's not needed, it won't
+  # hurt to have it.
+  oldfull=`echo "$oldvers" | sed -e 's/\.[^\.*]*$//'`
+  staging=control/rpmupdate-$oldfull.staging
+  if [ -r "$staging" ]; then
+    echo -n "Freshening rpmupdate: "
+    rpm -Fv "$staging"
+  fi
 
-	rpmupdate -h $publicflag "$oldlist" "$newlist" || failupdate
-	cp "$newlist" "$oldlist" || failupdate
-	kudzu -q
-	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
-		/etc/athena/version
-	if [ -d /var/server ]; then
-		mkserv -v update < /dev/null
-	fi
-	rm -f /var/athena/rc.conf.sync
-	echo "Ending update from $oldvers to $newvers at `date`."
+  rpmupdate -h $publicflag "$oldlist" "$newlist" || failupdate
+  cp "$newlist" "$oldlist" || failupdate
+  kudzu -q
+  echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
+    /etc/athena/version
+  if [ -d /var/server ]; then
+    mkserv -v update < /dev/null
+  fi
+  rm -f /var/athena/rc.conf.sync
+  echo "Ending update from $oldvers to $newvers at `date`."
 } 2>&1 | tee /var/athena/update.log
 
 if [ -n "$auto" ]; then
-	echo "Automatic update done; system will reboot in 15 seconds."
-	sync
-	sleep 15
-	exec reboot
+  echo "Automatic update done; system will reboot in 15 seconds."
+  sync
+  sleep 15
+  exec reboot
 else
-	echo "Update complete; please reboot for changes to take effect."
+  echo "Update complete; please reboot for changes to take effect."
 fi
