@@ -1,13 +1,19 @@
 /*
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.3 1988-01-12 21:20:09 steiner Exp $
+ * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
+ * $Author: steiner $
+ *
+ * Copyright 1988 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
  */
 
 #ifndef lint
 static char *rcsid_phost_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.3 1988-01-12 21:20:09 steiner Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.4 1988-02-24 18:12:12 steiner Exp $";
 #endif /* lint */
 
+#include <mit-copyright.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <netdb.h>
