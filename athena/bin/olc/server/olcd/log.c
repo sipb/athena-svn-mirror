@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.42 1991-10-31 15:02:07 lwvanels Exp $
+ *	$Id: log.c,v 1.43 1992-01-13 18:59:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.42 1991-10-31 15:02:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.43 1992-01-13 18:59:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -234,7 +234,7 @@ log_description(owner,sender,message)
 		 sender->user->machine, sender->instance, time);
 
   sprintf(msgbuf, "%s\n", message);
-  (void) log_log(owner,msgbuf,header,0);
+  (void) log_log(owner,msgbuf,header,1);
 }
 
 
