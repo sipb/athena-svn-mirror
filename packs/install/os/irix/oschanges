@@ -184,4 +184,12 @@ case "${AIS_GRAPHICS}" in
 	;;
 esac
 
+# We have installed the syslogd binary from IRIX 6.5.15, and the nsd
+# and libmdbm.so binaries from SGI patch 4236, in the OS volume, in
+# order to deal with security vulnerabilities in those programs in
+# IRIX 6.5.7.  Make sure that these are installed locally.
+verify /usr/etc/syslogd
+verify /usr/etc/nsd
+verify /usr/lib32/libmdbm.so
+
 exit 0
