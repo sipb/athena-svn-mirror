@@ -28,9 +28,10 @@ Makefiles::
 	@echo DASH_FALLBACK = ${DASH_FALLBACK} >> LDEF
 
 install::
+	$(RM) $(DESTDIR)$(DASH_MENUS)
+	$(RM) $(DESTDIR)$(DASH_MENUS).cmp
+	-. $(ATHVERS); \
+		$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor $(DESTDIR)$(DASH_FALLBACK);
 	. $(ATHVERS); \
-	$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)$(DASH_FALLBACK); \
-	$(RM) $(DESTDIR)$(DASH_MENUS); \
-	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)$(DASH_MENUS); \
-	$(RM) $(DESTDIR)$(DASH_MENUS).cmp; \
-	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV.cmp $(DESTDIR)$(DASH_MENUS).cmp
+		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor $(DESTDIR)$(DASH_MENUS); \
+		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor.cmp $(DESTDIR)$(DASH_MENUS).cmp
