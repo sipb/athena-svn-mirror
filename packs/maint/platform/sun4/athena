@@ -309,7 +309,7 @@ else
 fi
 
 if [ "${NOREMOTE}" = "true" ]; then
-        echo  "" >> /etc/noremote
+        touch /etc/noremote
 else
         rm -f /etc/noremote
 fi
