@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.10 1990-12-21 15:54:02 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.11 1991-03-04 14:32:09 mar Exp $
  */
 
 #include <stdio.h>
@@ -78,8 +78,7 @@ char *display;
     long salt;
     char saltc[2], c;
     char encrypt[PASSWORD_LEN+1];
-    char **environment, **glist, *cp;
-    int gids[NGROUPS];
+    char **environment, **glist;
     int i;
 
     /* state variables: */
@@ -105,6 +104,17 @@ char *display;
 	      return("Incorrect root password");
 	} else
 	  local_ok = TRUE;
+    } else {
+ 	pwd = hes_getpwnam(user);
+ 	if ((pwd == NULL) || pwd->pw_dir[0] == 0) {
+	    bzero(passwd, strlen(passwd));
+	    cleanup(NULL);
+	    if (hes_error() == HES_ER_NOTFOUND) {
+		sprintf(errbuf, "User \"%s\" does not have an active account (no hesiod information)", user);
+		return(errbuf);
+	    } else
+	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
+ 	}
     }
 
     if (nocreate && !local_passwd) {
@@ -115,7 +125,11 @@ char *display;
     sprintf(tkt_file, "/tmp/tkt_%s", tty);
     setenv("KRBTKFILE", tkt_file, 1);
 
-    if ((msg = get_tickets(user, passwd)) != NULL && (pwd ? pwd->pw_uid : 1)) {
+    /* set real uid/gid for kerberos library */
+    setruid(pwd->pw_uid);
+    setrgid(pwd->pw_gid);
+
+    if ((msg = get_tickets(user, passwd)) != NULL && pwd->pw_uid) {
 	if (!local_ok) {
 	    cleanup(NULL);
 	    return(msg);
@@ -141,25 +155,8 @@ char *display;
     /* don't need the password anymore */
     bzero(passwd, strlen(passwd));
 
-    if (!local_passwd) {
-	pwd = hes_getpwnam(user);
-	if ((pwd == NULL) || pwd->pw_dir[0] == 0) {
-	    cleanup(NULL);
-	    if (hes_error() == HES_ER_NOTFOUND) {
-		sprintf(errbuf, "User \"%s\" does not have an active account (no hesiod information)", user);
-		return(errbuf);
-	    } else
-	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
-	}
-	pwd->pw_passwd = encrypt;
-    }
-
-    if ((chown(tkt_file, pwd->pw_uid, pwd->pw_gid) != 0) &&
-	errno != ENOENT) {
-	cleanup(NULL);
-	sprintf(errbuf, "Could not change ownership of Kerberos ticket file \"%s\".", tkt_file);
-	return(errbuf);
-    }
+    if (!local_passwd)
+      pwd->pw_passwd = encrypt;
 
     /* if NOLOGINs and we're not root, display the contents of the
      * nologin file */
@@ -285,6 +282,9 @@ char *display;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
 
+    if (setgid(pwd->pw_gid))
+      return(lose("Unable to set your primary GID.\n"));
+
     if (initgroups(user, pwd->pw_gid) < 0)
       prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
@@ -406,6 +406,13 @@ struct passwd *pwd;
     }
     if (pwd && added_to_passwd)
       remove_from_passwd(pwd);
+
+    /* Set real uid to zero.  If this is impossible, exit.  The
+       current implementation of lose() will not print a message
+       so xlogin will just exit silently.  This call "can't fail",
+       so this is not a serious problem. */
+    if (setuid(0) == -1)
+      lose ("Unable to reset real uid to root");
 }
 
 
@@ -533,13 +540,9 @@ struct passwd *pwd;
     case -1:
 	return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
     case 0:
-	if (setuid(pwd->pw_uid) != 0) {
-	    fprintf(stderr, "Could not execute attach command as user %s,\n",
-		    pwd->pw_name);
-	    fprintf(stderr, "Filesystem mappings may be incorrect.\n");
-	}
 	/* don't do zephyr here since user doesn't have zwgc started anyway */
-	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", pwd->pw_name, NULL);
+	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", "-user", pwd->pw_name,
+	      pwd->pw_name, NULL);
 	_exit(-1);
     default:
 	break;
@@ -560,7 +563,7 @@ struct passwd *pwd;
 
 	i = lstat(buf, &stb);
 	if (i == 0) {
-	    if (stb.st_mode & S_IFDIR) {
+	    if ((stb.st_mode & S_IFMT) == S_IFDIR) {
 		fprintf(stderr, "Warning - The temporary directory already exists.\n");
 		return(NULL);
 	    } else unlink(buf);
@@ -677,21 +680,36 @@ char *display;
 {
     struct utmp ut_entry;
     int f;
+#ifndef _AIX
     int slot = ttyslot();
+#endif
 
-    /* if the controlling terminal of the session is different from the
-     * xlogin's, it happens when you run xlogin from an xterm, then 
-     * ttyslot returns wrong value for sessionPtr->ttydev
-     */
+    bzero(&ut_entry, sizeof(ut_entry));
     strncpy(ut_entry.ut_line, tty, 8);
     strncpy(ut_entry.ut_name, user, 8);
     /* leave space for \0 */
     strncpy(ut_entry.ut_host, display, 15);
     ut_entry.ut_host[15] = 0;
     time(&(ut_entry.ut_time));
+#ifdef _AIX
+    strncpy(ut_entry.ut_id, "", 6);
+    ut_entry.ut_pid = getppid();
+    ut_entry.ut_type = USER_PROCESS;
+#endif /* _AIX */
 
+#ifndef _AIX
     if ((f = open( UTMP, O_WRONLY )) >= 0) {
 	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
+#else /* _AIX */
+    if ((f = open(UTMP, O_RDWR )) >= 0) {
+	struct utmp ut_tmp;
+	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
+	  if (ut_tmp.ut_pid == getppid())
+	    break;
+	if (ut_tmp.ut_pid == getppid())
+	  lseek(f, -(long) sizeof(ut_tmp), 1);
+	strncpy(ut_entry.ut_id, ut_tmp.ud_id, 6);
+#endif /* _AIX */
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
