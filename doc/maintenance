@@ -140,6 +140,10 @@ To set up a build machine, follow these instructions after installing:
   * Run "/mit/source/packs/build/makeroot.sh /rel/wash".
   * Make a symlink from /rel/.srvd to the AFS srvd volume, if you're
     at that stage.
+  * On Solaris, ensure that procfs is mounted on /rel/proc and
+    /rel/wash/proc.  (A host of system tools fail if procfs is not
+    mounted in the chroot environment.)  Add lines to /etc/vfstab to
+    make this happen at boot.
   * On Solaris, install the Sun compiler locally.  Run:
       pkgadd -R /rel -d /afs/dev.mit.edu/reference/sunpro8/packages \
         -a /usr/athena/lib/update/noask `cat ../installed-packages`
