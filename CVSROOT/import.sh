@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.2 2003-02-12 22:58:28 ghudson Exp $
+# $Id: import.sh,v 1.3 2003-02-13 00:07:51 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -65,12 +65,14 @@ oldver=$2
 # We handle either gzipped or bzip2-ed tarfiles; check which we got.
 case $tarfile in
 *.tar.gz)
-  taropts=xzf
   dcmd='gzip -cd'
   dirname=`basename "$tarfile" .tar.gz`
   ;;
+*.tgz)
+  dcmd='gzip -cd'
+  dirname=`basename "$tarfile" .tgz`
+  ;;
 *.tar.bz2)
-  taropts=xjf
   dcmd='bzip2 -cd'
   dirname=`basename "$tarfile" .tar.bz2`
   ;;
@@ -85,7 +87,9 @@ esac
 : ${pkgver=`expr "$dirname" : '.*-\([0-9\.]*\)$'`}
 : ${repdir=third/$pkgname}
 tag=${pkgname}-`echo "$pkgver" | sed -e 's/\./_/g'`
-oldtag=${pkgname}-`echo "$oldver" | sed -e 's/\./_/g'`
+if [ -n "$oldver" ]; then
+  oldtag=${pkgname}-`echo "$oldver" | sed -e 's/\./_/g'`
+fi
 
 # Confirm parameters.
 echo "Package name:         $pkgname"
