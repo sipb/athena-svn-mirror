@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.22 2001-07-09 13:07:59 ghudson Exp $
+# $Id: xsession,v 1.23 2002-01-24 21:50:10 mwhitson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -228,6 +228,13 @@ if (! $?skip_x_startup) then
 	(olc who &) >& /dev/null	# Ping the OLC server
 	if (! $?skip_xss) then
 		(xss -no-splash &)
+	endif
+	# Note: authwatch uses the present value of $KRB5CCNAME, which
+	# may be modified by ~/.environment.  However, if bash users
+	# make a similar change in ~/.bash_environment, that change
+	# will NOT be seen by this invocation of authwatch.
+	if (! $?skip_authwatch) then
+		(authwatch &)
 	endif
 endif
 
