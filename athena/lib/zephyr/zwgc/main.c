@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.27 1994-08-18 18:33:24 probe Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.28 1994-08-18 20:00:09 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -399,11 +399,16 @@ static void setup_signals(dofork)
     sigaction(SIGTERM, &sa, (struct sigaction *)0);
     sigaction(SIGHUP, &sa, (struct sigaction *)0);
 
-    sa.sa_handler = signal_child;
-    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
-
     sa.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &sa, (struct sigaction *)0);
+
+#ifdef SOLARIS
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = SA_NOCLDSTOP;
+#else
+    sa.sa_handler = signal_child;
+#endif
+    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
 #else
     if (dofork) {
 	/* Ignore keyboard signals if forking.  Bad things will happen. */
