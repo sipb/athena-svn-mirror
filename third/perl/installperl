@@ -134,41 +134,6 @@ foreach $file (@corefiles) {
 		   "$installarchlib/CORE/$file");
 }
 
-# Offer to install perl in a "standard" location
-
-$mainperl_is_instperl = 0;
-
-if (!$versiononly && !$nonono && -t STDIN && -t STDERR
-	&& -w $mainperldir && ! samepath($mainperldir, $installbin)) {
-    local($usrbinperl)	= "$mainperldir/perl$exe_ext";
-    local($instperl)	= "$installbin/perl$exe_ext";
-    local($expinstperl)	= "$binexp/perl$exe_ext";
-
-    # First make sure $usrbinperl is not already the same as the perl we
-    # just installed.
-    if (-x $usrbinperl) {
-	# Try to be clever about mainperl being a symbolic link
-	# to binexp/perl if binexp and installbin are different.
-	$mainperl_is_instperl =
-	    samepath($usrbinperl, $instperl) ||
-	    samepath($usrbinperl, $expinstperl) ||
-	     (($binexp ne $installbin) &&
-	      (-l $usrbinperl) &&
-	      ((readlink $usrbinperl) eq $expinstperl));
-    }
-    if ((! $mainperl_is_instperl) &&
-	(yn("Many scripts expect perl to be installed as $usrbinperl.\n" . 
-	     "Do you wish to have $usrbinperl be the same as\n" .
-	     "$expinstperl? [y] ")))
-    {	
-	unlink($usrbinperl);
-	eval { CORE::link $instperl, $usrbinperl } ||
-	    eval { symlink $expinstperl, $usrbinperl } ||
-		copy($instperl, $usrbinperl);
-	$mainperl_is_instperl = 1;
-    }
-}
-
 # Make links to ordinary names if installbin directory isn't current directory.
 
 if (! $versiononly && ! samepath($installbin, '.')) {
