@@ -28,16 +28,8 @@ VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
 #endif
 
-#if (defined(AIX) && defined(_I386)) || defined(_IBMR2)
-OPTLIBS=-lbsd
-#endif
-
 #ifdef SOLARIS
-OPTLIBS=/usr/ucblib/libucb.a
-
-
-SpecialObject(ln01filter.o,ln01filter.c,-I/usr/ucbinclude)
-SpecialObject(ln01raw.o,ln01raw.c,-I/usr/ucbinclude)
+OPTLIBS=-lbsd
 #endif
 
 printer: ${PRINTER}
