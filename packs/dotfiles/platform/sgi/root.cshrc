@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.3 1998-04-30 20:04:44 ghudson Exp $
+# $Id: root.cshrc,v 1.4 1998-05-19 17:15:58 ghudson Exp $
 
 # For interactive shells, set the prompt to show the host name.
 if ( (! $?ENVONLY) && $?prompt ) then
@@ -10,7 +10,7 @@ set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena /usr/sbin \
 	  /usr/bin/X11)
 
 set add_flags="-a -h -n"
-alias add 'eval "`/bin/athena/attach -Padd $add_flags \!:*`"'
+alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'
 
 # source user's .cshrc if WHO variable is set
 if ($?WHO) then

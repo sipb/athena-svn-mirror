@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.7 1998-04-30 20:04:36 ghudson Exp $
+# $Id: root.cshrc,v 1.8 1998-05-19 17:15:59 ghudson Exp $
 
 set path=( /srvd/patch /usr/athena/bin /etc/athena /usr/sbin /sbin \
 	   /bin/athena /usr/bin /usr/ccs/bin /usr/athena/etc /usr/ucb \
@@ -8,7 +8,7 @@ if ($?prompt) then
 endif
 
 set add_flags="-a -h -n"
-alias add 'eval "`/bin/athena/attach -Padd $add_flags \!:*`"'
+alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'
 
 # source user's .cshrc if WHO variable is set
 if ($?WHO) then
