@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.20 1992-04-28 17:15:58 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.21 1992-04-30 12:39:59 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -27,6 +27,14 @@
 #include <sys/id.h>
 #endif
 
+#define SETPAG
+#ifdef SETPAG
+/* Allow for primary gid and PAG identifier */
+#define MAX_GROUPS (NGROUPS-3)
+#else
+/* Allow for primary gid */
+#define MAX_GROUPS (NGROUPS-1)
+#endif
 
 #ifndef TRUE
 #define FALSE 0
@@ -52,9 +60,6 @@
 #endif
 #ifndef NOATTACH
 #define NOATTACH "/etc/noattach"
-#endif
-#ifndef NOWLOCAL
-#define NOWLOCAL "/etc/nowarnlocal"
 #endif
 #define MOTD "/etc/motd"
 #define UTMP "/etc/utmp"
@@ -163,8 +168,8 @@ char *display;
 
     /* set real uid/gid for kerberos library */
 #ifdef _IBMR2
-    setruid_rios(pwd->pw_uid);
-    setrgid_rios(pwd->pw_gid);
+    setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
+    setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
 #else
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
@@ -253,13 +258,17 @@ char *display;
 	}
     }
 
+#ifdef SETPAG
+    setpag();
+#endif
+
     if (msg = attachhomedir(pwd)) {
 	cleanup(pwd);
 	return(msg);
     }
 
     /* put in password file if necessary */
-    if (!local_passwd && add_to_passwd(pwd)) {
+    if (add_to_passwd(pwd, local_passwd)) {
 	cleanup(pwd);
 	return("An unexpected error occured while entering you in the local password file.");
     }
@@ -547,77 +556,68 @@ struct passwd *pwd;
 }
 
 
-add_to_passwd(p)
+add_to_passwd(p, exists)
 struct passwd *p;
+int exists;
 {
-    int i, fd = -1;
-    FILE *etc_passwd;
-
 #ifdef _IBMR2
     struct userpw pw_stuff;
-    int id;
+    int i;
 
-    /* Do real locking of the user database */
-    for (i = 0; i < 10; i++)
-      if (setuserdb(S_WRITE) == 0) {
-	fd = 1;
-	break;
-      }
-      else
-	sleep(1);
-
-    if (fd != 1)
-      return(errno);
-
-/* Need to have these to create empty stanzas, in the */
-/* /etc/security/{environ, limits, user} files so that they pick up */
-/* the default values */
-    putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_NEW);
-    putuserattr(p->pw_name,S_ID,(void *)(p->pw_uid),SEC_INT);
-    putuserattr(p->pw_name,S_PWD,(void *)"!",SEC_CHAR);
-    putuserattr(p->pw_name,S_PGRP,(void *)"mit",SEC_CHAR);
-    putuserattr(p->pw_name,S_HOME,(void *)(p->pw_dir),SEC_CHAR);
-    putuserattr(p->pw_name,S_SHELL,(void *)(p->pw_shell),SEC_CHAR);
-    putuserattr(p->pw_name,S_GECOS,(void *)(p->pw_gecos),SEC_CHAR);
-    putuserattr(p->pw_name,S_LOGINCHK,(void *)1,SEC_BOOL);
-    putuserattr(p->pw_name,S_SUCHK,(void *)1,SEC_BOOL);
-    putuserattr(p->pw_name,S_RLOGINCHK,(void *)1,SEC_BOOL);
-    putuserattr(p->pw_name,S_ADMIN,(void *)0,SEC_BOOL);
-    putuserattr(p->pw_name,"athena_temp",(void *)1,SEC_INT);
-    putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_COMMIT);
+    setuserdb(S_READ|S_WRITE);
+    if (exists) {
+	/* Increment reference count on temporary users */
+	if (getuserattr(p->pw_name, "athena_temp", (void *)&i, SEC_INT) == 0) {
+	    putuserattr(p->pw_name, "athena_temp", (void *)++i, SEC_INT);
+	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
+	}
+    } else {
+	/* Create temporary user */
+	putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_NEW);
+	putuserattr(p->pw_name,S_ID,(void *)(p->pw_uid),SEC_INT);
+	putuserattr(p->pw_name,S_PWD,(void *)"!",SEC_CHAR);
+	putuserattr(p->pw_name,S_PGRP,(void *)"mit",SEC_CHAR);
+	putuserattr(p->pw_name,S_HOME,(void *)(p->pw_dir),SEC_CHAR);
+	putuserattr(p->pw_name,S_SHELL,(void *)(p->pw_shell),SEC_CHAR);
+	putuserattr(p->pw_name,S_GECOS,(void *)(p->pw_gecos),SEC_CHAR);
+	putuserattr(p->pw_name,S_LOGINCHK,(void *)1,SEC_BOOL);
+	putuserattr(p->pw_name,S_SUCHK,(void *)1,SEC_BOOL);
+	putuserattr(p->pw_name,S_RLOGINCHK,(void *)1,SEC_BOOL);
+	putuserattr(p->pw_name,S_ADMIN,(void *)0,SEC_BOOL);
+	putuserattr(p->pw_name,"athena_temp",(void *)1,SEC_INT);
+	putuserattr(p->pw_name,(char *)0,((void *) 0),SEC_COMMIT);
+    }
     enduserdb();
 
-/* Now, lock the shadow password file */
-    fd = -1;
-    for (i = 0; i < 10; i++)
-      if (setpwdb(S_WRITE) == 0) {
-	fd = 1;
-	break;
-      }
-      else
-	sleep(1);
+    if (!exists) {
+	/* Set temporary user's UNIX password */
+	setpwdb(S_READ|S_WRITE);
+	strncpy(pw_stuff.upw_name,p->pw_name,PW_NAMELEN);
+	pw_stuff.upw_passwd = p->pw_passwd;
+	pw_stuff.upw_flags = 0;
+	pw_stuff.upw_lastupdate = 0;
+	putuserpw(&pw_stuff);
+	endpwdb();
+    }
 
-    if (fd != 1)
-      return(errno);
+#else /* !RIOS */
+    int i, fd;
+    FILE *etc_passwd;
 
-    strncpy(pw_stuff.upw_name,p->pw_name,PW_NAMELEN);
-    pw_stuff.upw_passwd = p->pw_passwd;
-    pw_stuff.upw_flags = 0;
-    pw_stuff.upw_lastupdate = 0;
-    putuserpw(&pw_stuff);
-    endpwdb();
-#else	/* RIOS */
+    if (exists)
+	return 0;
+    
     for (i = 0; i < 10; i++)
-      if ((fd = open("/etc/ptmp", O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
-	  errno == EEXIST)
-	sleep(1);
-      else
-	break;
+	if ((fd = open("/etc/ptmp", O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
+	    errno == EEXIST)
+	    sleep(1);
+	else
+	    break;
     if (fd == -1) {
 	if (i < 10)
-	  return(errno);
+	    return(errno);
 	else
-	  (void) unlink("/etc/ptmp");
+	    (void) unlink("/etc/ptmp");
     }
 
     etc_passwd = fopen("/etc/passwd", "a");
@@ -637,7 +637,7 @@ struct passwd *p;
     (void) fclose(etc_passwd);
     (void) close(fd);
     (void) unlink("/etc/ptmp");
-#endif	/* RIOS */
+#endif						/* RIOS */
 
     /* This tells the display manager to cleanup the password file for
      * us after we exit
@@ -650,32 +650,62 @@ struct passwd *p;
 }
 
 
-#if defined(_AIX) && defined(_IBMR2)
 remove_from_passwd(p)
 struct passwd *p;
 {
-    char buf[1024];
+#ifdef _IBMR2
+    static char *empty = "\0";
+    char *grp, *usr;
+    int i;
+    
+    setuserdb(S_READ|S_WRITE);
 
-    switch (quota_pid = fork()) {
-    case -1:
-	fprintf(stderr, "Unable to fork to edit password file.\n");
-	break;
-    case 0:
-	execl("/bin/rmuser", "rmuser", "-p", p->pw_name, NULL);
-	fprintf(stderr, "Unable to exec rmuser to edit passwd file.\n");
-	_exit(-1);
+    /* Decrement reference count on user's temporary groups */
+    if (getuserattr(p->pw_name, S_GROUPS, (void *)&grp, SEC_LIST) == 0) {
+	while (*grp) {
+	    if (getgroupattr(grp, "athena_temp", (void *)&i, SEC_INT) == 0) {
+		if (--i > 0) {
+		    putgroupattr(grp, "athena_temp", (void *)i, SEC_INT);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		} else {
+		    putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		    rmufile(grp, 0, GROUP_TABLE);
+		}
+	    }
+	    while(*grp) grp++;
+	    grp++;
+	}
     }
 
-    /* Wait for rmuser to complete */
-    while (quota_pid > 0)
-	sigpause(0);
+    /* Decrement reference count on temporary users */
+    if (getuserattr(p->pw_name, "athena_temp", (void *)&i, SEC_INT) == 0) {
+	if (--i > 0) {
+	    putuserattr(p->pw_name, "athena_temp", (void *)i, SEC_INT);
+	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
+	} else {
+	    putuserattr(p->pw_name, S_GROUPS, (void *)empty, SEC_LIST);
+	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
+	    rmufile(p->pw_name, 1, USER_TABLE);
+	}
+    }
 
-    return(0);
-}
-#else /* RIOS */
-remove_from_passwd(p)
-struct passwd *p;
-{
+    /* Remove any empty temporary groups */
+    grp = nextgroup(S_LOCAL, 0);
+    while (grp) {
+	if (getgroupattr(grp, "athena_temp", (void *)&i, SEC_INT) == 0) {
+	    if ((getgroupattr(grp, S_USERS, (void *)&usr, SEC_LIST) == -1) ||
+		*usr == 0)
+	    {
+		rmufile(grp, 0, GROUP_TABLE);
+	    }
+	}
+	grp = nextgroup(0, 0);
+    }
+	    
+    enduserdb();
+    return 0;
+#else
     int fd, len, i;
     char buf[512];
     FILE *old, *new;
@@ -709,8 +739,8 @@ struct passwd *p;
     (void) fclose(new);
     (void) rename("/etc/ptmp", "/etc/passwd");
     return(0);
+#endif
 }
-#endif /* RIOS */
 
 
 abort_verify()
@@ -801,7 +831,7 @@ struct passwd *pwd;
 
 	prompt_user("Your home directory is still unavailable.  A temporary directory will be created for you.  However, it will be DELETED when you logout.  Any mail that you incorporate during this session WILL BE LOST when you logout.  Continue with this session anyway?", abort_verify);
 	sprintf(buf, "/tmp/%s", pwd->pw_name);
-	pwd->pw_dir = malloc(strlen(buf)+1);
+	pwd->pw_dir = (char *)malloc(strlen(buf)+1);
 	strcpy(pwd->pw_dir, buf);
 
 	i = lstat(buf, &stb);
@@ -941,7 +971,7 @@ char *display;
 {
     struct utmp ut_entry;
     int f;
-#if !(defined(_AIX) && defined(i386)) /* not PS/2 */
+#ifndef _AIX
     int slot = ttyslot();
 #endif
 
@@ -953,24 +983,23 @@ char *display;
     ut_entry.ut_host[15] = 0;
     time(&(ut_entry.ut_time));
 #ifdef _AIX
-    strncpy(ut_entry.ut_id, "", 6);
+    strncpy(ut_entry.ut_id, tty, sizeof(ut_entry.ut_id));
     ut_entry.ut_pid = getppid();
     ut_entry.ut_type = USER_PROCESS;
-#endif /* _AIX */
+#endif						/* _AIX */
 
-#if !(defined(_AIX) && defined(i386)) /* not PS/2 */
-    if ((f = open( UTMP, O_WRONLY )) >= 0) {
-	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
-#else /* _AIX */
     if ((f = open(UTMP, O_RDWR )) >= 0) {
+#ifndef _AIX
+	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
+#else						/* _AIX */
 	struct utmp ut_tmp;
 	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
-	  if (ut_tmp.ut_pid == getppid())
-	    break;
-	if (ut_tmp.ut_pid == getppid())
-	  lseek(f, -(long) sizeof(ut_tmp), 1);
-	strncpy(ut_entry.ut_id, ut_tmp.ut_id, 6);
-#endif /* _AIX */
+	    if (ut_tmp.ut_pid == ut_entry.ut_pid) {
+		strncpy(ut_entry.ut_id, ut_tmp.ut_id, sizeof(ut_tmp.ut_id));
+		lseek(f, -(long) sizeof(ut_tmp), 1);
+		break;
+	    }
+#endif
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
@@ -981,143 +1010,135 @@ char *display;
     }
 }
 
-
-#define MAXGNAMELENGTH	32
-
 #ifdef _IBMR2
-char *add_to_group(name, glist)
-char *name;
-char *glist;
+#define GRP_LEN 8
+#define S_A_TEMP "athena_temp"
+char *add_to_group(user, grplist)
+    char *user, *grplist;
 {
-  char *cp,*p;			/* temporary */
-  char *gname, *new_list;
-  char *fix_gname();
-  int gid;
-  int len,namelen;
-  int i, fd = -1, ngroups,found;
-  static char data[BUFSIZ];
-  char *members;
-  
-  for (i = 0; i < 10; i++)
-    if (setuserdb(S_WRITE) == -1)
-      sleep(1);
-    else {
-      fd = 1;
-      break;
+    char *cp;
+    char gname[GRP_LEN+1];
+    int ngroups, i, bad;
+    gid_t gid, gids[MAX_GROUPS];
+    int admin_flag;
+    int toomany;
+    char *gmem, *gmem_new;
+
+    setuserdb(S_READ|S_WRITE);
+    
+    /* Get user's local groups */
+    ngroups = 0;
+    toomany = 0;
+    getuserattr(user, S_GROUPS, (void *)&cp, SEC_LIST);
+    while (*cp) {
+	if (ngroups < MAX_GROUPS)
+	    grouptoID(cp, &gids[ngroups++]);
+	else
+	    toomany++;
+	while (*cp) cp++;
+	cp++;
     }
 
-  if (fd == -1) {
-    sprintf(data, "Locking of user db failed: errno %d", errno);
-    enduserdb();
-    return(data);
-  }
-  
-  /* count groups (there are 2 ':'s in the group list per group, except
-     the first group only has one) */
-  cp = glist;
-  ngroups = 1;
-  while (cp = index(cp, ':')) {
-    ngroups++;
-    cp++;
-  }
-  ngroups /= 2;
-  if (ngroups > NGROUPS) {
-    fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
-  }
-
-  cp = glist;
-  for (i = 0; i < ngroups; i++) {
-    gname = cp;
-    cp = index(cp, ':');
-    *cp++ = '\0';
-    gid = atoi(cp);
-    if (cp = index(cp, ':'))
-      *cp++ = '\0';
-    
-    /* AIX restricts group names to 8 alphanumeric characters; the first */
-    /* must be alpha.  Many existing groups do not meet this criteria, and */
-    /* must be mapped into a group named "G###" where ### is the gid */
-    /* Not a perfect solution- */
-    gname = fix_gname(gname,gid);
-    /* Make sure the group exists */
-    if (getgroupattr(gname,S_USERS,(void *)&members,SEC_LIST) == -1) {
-      if (errno == ENOENT) {
-	/* Create group */
-	if (putgroupattr(gname,(char *)NULL,((void *) 0),SEC_NEW) != 0) {
-	  fprintf(stderr,"Error creating group %s (%d)\n",gname,gid);
-	  continue;
+    cp = grplist;
+    while(*cp) {
+	/* Get group name */
+	i = 0; bad=0;
+	while (i < GRP_LEN && *cp != ':' && isalnum(*cp))
+	    gname[i++] = *cp++;
+	if (*cp != ':') {
+	    gname[0] = 'G';
+	    bad=1;
+	    while (*cp != ':') cp++;
+	} else
+	    gname[i] = 0;
+	
+	/* Get gid (fix gname, if necessary) */
+	cp++;		/* skip : */
+	gid = 0;
+	while (isdigit(*cp)) {
+	    if (bad)
+		gname[bad++] = *cp;
+	    gid = 10*gid + *cp++ - '0';
 	}
-	putgroupattr(gname,S_ID,(void *)gid,SEC_INT);
-	putgroupattr(gname,S_ADMIN,(void *)0,SEC_BOOL);
-	putgroupattr(gname,"athena_temp",(void *)1,SEC_BOOL);
-	putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT);
-      }
-    }
-    /* Add user to group */
+	if (bad) gname[bad]=0;
 
-    p = members;
-    found = 0;
-    while (1) {
-      if (strcmp(p,name) == 0) {
-	found = 1;
-	break;
-      }
-      p = index(p,'\0')+1;
-      if (*p == '\0')
-	break;
-    }
-  
-    if (found)
-      continue;
-    
-    /* Add user to group */
-    len = p - members + 1;
-    namelen = strlen(name);
-    new_list = (char *)malloc(len+namelen+1);
-    bcopy(name,new_list,namelen+1);
-    bcopy(members,(char *)(new_list+namelen+1),len);
-    if (putgroupattr(gname,S_USERS,new_list,SEC_LIST) == -1) {
-      sprintf(data,"Update of group %s failed; errno %d", gname, errno);
-      return(data);
-    }
-    
-    if (putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT) == -1) {
-      sprintf(data,"Commit of group %s failed; errno %d", gname, errno);
-      return(data);
-    }
-  }
-  enduserdb();
-  return(NULL);
-}
+	if (*cp) cp++;	/* skip : */
 
-char *
-fix_gname(gname,gid)
-     char *gname;
-     int gid;
-{
-  int valid=1;
-  static char mname[8];
-  char *p;
+	/* We now have gname/gid; validate it (security); add user */
+	if (getgroupattr(gname, S_ADMIN, (void *)&admin_flag, SEC_BOOL)) {
+	    /* Security check */
+	    if (IDtogroup(gid))
+		continue;
 
-  if ((strlen(gname) > 8) || (!isalpha(gname[0])))
-    valid = 0;
-  else {
-    for(p=gname;(*p)!='\0';p++)
-      if (!isalnum(*p)) {
-	valid = 0;
-	break;
-      }
-  }
+	    /* Do we have space */
+	    if (ngroups >= MAX_GROUPS) {
+		toomany++;
+		continue;
+	    }
 
-  if (valid)
-    return(gname);
-  else {
-    sprintf(mname,"G%d",gid);
-    return(mname);
-  }
+	    /* Create group */
+	    putgroupattr(gname, (char *)0, (void *)0, SEC_NEW);
+	    putgroupattr(gname, S_ID, (void *)gid, SEC_INT);
+	    putgroupattr(gname, S_ADMIN, (void *)0, SEC_BOOL);
+	    putgroupattr(gname, S_A_TEMP, (void *)1, SEC_INT);
+
+	    /* Add user to group */
+	    gmem_new = (char *)malloc(strlen(user)+2);
+	    strcpy(gmem_new, user);
+	    gmem_new[strlen(user)+1] = 0;
+	} else {
+	    /* Security check */
+	    if (admin_flag)
+		continue;
+
+	    /* Increment reference count */
+	    if (getgroupattr(gname, S_A_TEMP, (void *)&i, SEC_INT) == 0)
+		putgroupattr(gname, S_A_TEMP, (void *)++i, SEC_INT);
+
+	    /* Check to see if we are already in this group */
+	    for (i=0; i<ngroups; i++)
+		if (gid == gids[i])
+		    break;
+	    if (i < ngroups) {
+		putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
+		continue;
+	    }
+	    if  (ngroups >= MAX_GROUPS) {
+		putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
+		toomany++;
+		continue;
+	    }
+
+	    /* Add user to group */
+	    getgroupattr(gname, S_USERS, (void *)&gmem, SEC_LIST);
+	    i = 0;
+	    while (gmem[i]) {
+		while (gmem[i]) i++;
+		i++;
+	    }
+	    gmem_new = (char *)malloc(gmem_new, i + strlen(user) + 2);
+	    strcpy(gmem_new, user);
+	    memcpy(gmem_new + strlen(user)+1, gmem, i+1);
+	}
+	/* Commit membership changes */
+	putgroupattr(gname, S_USERS, (void *)gmem_new, SEC_LIST);
+	putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
+	free(gmem_new);
+	gids[ngroups++] = gid;
+    }
+
+    enduserdb();
+
+    if (toomany)
+	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
+
+    return 0;
 }
 
 #else /* _IBMR2 */
+
+#define MAXGNAMELENGTH	32
+
 char *add_to_group(name, glist)
 char *name;
 char *glist;
@@ -1159,8 +1180,9 @@ char *glist;
 	cp++;
     }
     ngroups /= 2;
-    if (ngroups > NGROUPS) {
+    if (ngroups > MAX_GROUPS) {
 	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
+	ngroups = MAX_GROUPS;
     }
 
     if ((gnames = (char **)malloc(ngroups * sizeof(char *))) == NULL ||
@@ -1259,159 +1281,3 @@ char *glist;
     return("Failed to update your access control groups");
 }
 #endif /* _IBMR2 */
-
-
-#if defined(_AIX) && defined(_IBMR2)
-
-/*
- * AIX 3.1 has bizzarre ideas about changing uids and gids around.  They are
- * such that the sete{u,g}id and setr{u,g}id calls here fail.  For this reason
- * we are replacing the sete{u,g}id and setr{u,g}id calls.
- * 
- * The bizzarre ideas are as follows:
- *
- * The effective ID may be changed only to the current real or
- * saved IDs.
- *
- * The saved uid may be set only if the real and effective
- * uids are being set to the same value.
- *
- * The real uid may be set only if the effective
- * uid is being set to the same value.
- *
- * Yes, POSIX rears its head..
- */
-
-#ifdef __STDC__
-static int setruid_rios(uid_t ruid)
-#else
-static int setruid_rios(ruid)
-  uid_t ruid;
-#endif /* __STDC__ */
-{
-    uid_t euid;
-
-    if (ruid == -1)
-        return (0);
-
-    euid = geteuid();
-
-    if (setuidx(ID_REAL | ID_EFFECTIVE, ruid) == -1)
-        return (-1);
-    
-    return (setuidx(ID_EFFECTIVE, euid));
-}
-
-
-#ifdef __STDC__
-static int seteuid_rios(uid_t euid)
-#else
-static int seteuid_rios(euid)
-  uid_t euid;
-#endif /* __STDC__ */
-{
-    uid_t ruid;
-
-    if (euid == -1)
-        return (0);
-
-    ruid = getuid();
-
-    if (setuidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, euid) == -1)
-        return (-1);
-    
-    return (setruid_rios(ruid));
-}
-
-
-#ifdef __STDC__
-static int setreuid_rios(uid_t ruid, uid_t euid)
-#else
-static int setreuid_rios(ruid, euid)
-  uid_t ruid;
-  uid_t euid;
-#endif /* __STDC__ */
-{
-    if (seteuid_rios(euid) == -1)
-        return (-1);
-
-    return (setruid_rios(ruid));
-}
-
-#ifdef __STDC__
-static int setuid_rios(uid_t uid)
-#else
-static int setuid_rios(uid)
-  uid_t uid;
-#endif /* __STDC__ */
-{
-    return (setreuid_rios(uid, uid));
-}
-
-#ifdef __STDC__
-static int setrgid_rios(gid_t rgid)
-#else
-static int setrgid_rios(rgid)
-  gid_t rgid;
-#endif /* __STDC__ */
-{
-    gid_t egid;
-
-    if (rgid == -1)
-        return (0);
-
-    egid = getegid();
-
-    if (setgidx(ID_REAL | ID_EFFECTIVE, rgid) == -1)
-        return (-1);
-    
-    return (setgidx(ID_EFFECTIVE, egid));
-}
-
-
-#ifdef __STDC__
-static int setegid_rios(gid_t egid)
-#else
-static int setegid_rios(egid)
-  gid_t egid;
-#endif /* __STDC__ */
-{
-    gid_t rgid;
-
-    if (egid == -1)
-        return (0);
-
-    rgid = getgid();
-
-    if (setgidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, egid) == -1)
-        return (-1);
-    
-    return (setrgid_rios(rgid));
-}
-
-
-#ifdef __STDC__
-static int setregid_rios(gid_t rgid, gid_t egid)
-#else
-static int setregid_rios(rgid, egid)
-  gid_t rgid;
-  gid_t egid;
-#endif /* __STDC__ */
-{
-    if (setegid_rios(egid) == -1)
-        return (-1);
-
-    return (setrgid_rios(rgid));
-}
-
-#ifdef __STDC__
-static int setgid_rios(gid_t gid)
-#else
-static int setgid_rios(gid)
-  gid_t gid;
-#endif /* __STDC__ */
-{
-    return (setregid_rios(gid, gid));
-}
-
-#endif /* RIOS */
