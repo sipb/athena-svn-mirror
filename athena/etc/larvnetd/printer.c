@@ -17,7 +17,7 @@
  * functions for querying the printers for queue status information.
  */
 
-static const char rcsid[] = "$Id: printer.c,v 1.6 2000-01-05 16:29:15 ghudson Exp $";
+static const char rcsid[] = "$Id: printer.c,v 1.7 2000-01-05 22:01:35 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -81,7 +81,7 @@ static void printer_poll(void *arg)
 	 printer->name, hesname);
   ares_query(state->channel, hesname, C_IN, T_TXT, printer_hes_callback,
 	     pargs);
-  hesiod_free_string(hesname);
+  hesiod_free_string(state->hescontext, hesname);
 }
 
 static void printer_hes_callback(void *arg, int status, unsigned char *abuf,
