@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Makefile,v 1.1 1990-11-16 17:26:50 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Makefile,v 1.2 1990-11-23 08:15:19 probe Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -33,12 +33,12 @@ install: xlogin timeout
 	-mkdir $(DESTDIR)/etc/athena/login
 	install -c check $(DESTDIR)/etc/athena/login/check
 	install -c owl $(DESTDIR)/etc/athena/login/owl
-	install -c owleyes0 $(DESTDIR)/etc/athena/login/owleyes0
-	install -c owleyes1 $(DESTDIR)/etc/athena/login/owleyes1
-	install -c owleyes2 $(DESTDIR)/etc/athena/login/owleyes2
-	install -c owleyes3 $(DESTDIR)/etc/athena/login/owleyes3
-	install -c owleyes4 $(DESTDIR)/etc/athena/login/owleyes4
-	install -c owleyes5 $(DESTDIR)/etc/athena/login/owleyes5
+	install -c owleyes0.xbm $(DESTDIR)/etc/athena/login/owleyes0.xbm
+	install -c owleyes1.xbm $(DESTDIR)/etc/athena/login/owleyes1.xbm
+	install -c owleyes2.xbm $(DESTDIR)/etc/athena/login/owleyes2.xbm
+	install -c owleyes3.xbm $(DESTDIR)/etc/athena/login/owleyes3.xbm
+	install -c owleyes4.xbm $(DESTDIR)/etc/athena/login/owleyes4.xbm
+	install -c owleyes5.xbm $(DESTDIR)/etc/athena/login/owleyes5.xbm
 	install -c question $(DESTDIR)/etc/athena/login/question
 	install -c warning $(DESTDIR)/etc/athena/login/warning
 	install -c white $(DESTDIR)/etc/athena/login/white
