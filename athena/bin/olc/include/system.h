@@ -1,3 +1,19 @@
+/*
+ * This file is part of the OLC On-Line Consulting system.
+ * It contains definitions for operating-system routines that don't
+ * appear to be defined elsewhere, at least in BSD.
+ *
+ * Copyright (C) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/system.h,v $
+ *	$Id: system.h,v 1.3 1991-04-08 21:03:01 lwvanels Exp $
+ *	$Author: lwvanels $
+ */
+
+#include <mit-copyright.h>
+
+#ifndef HAS_ANSI_INCLUDES
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -13,14 +29,6 @@ int krb_mk_req P((KTEXT authent, char *service, char *instance, char *realm,
 		  u_long checksum)); 
 
 #endif /* KERBEROS */
-
-#ifndef i386
-/* system */
-#ifdef aix
-void perror P((char *s));
-#else
-int perror P((char *s));
-#endif
 
 char **hes_resolve P((char *name, char *HesiodNameType));
 void *calloc P((unsigned nelem, unsigned elsize));
@@ -55,6 +63,6 @@ int strcmp P((char *s1, char *s2));
 int strlen P((char *s));
 void syslog P((int priority, char *message, ...));
 int write P((int d, void *buf, int nbytes));
-#endif
 
 #undef P
+#endif
