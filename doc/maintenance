@@ -285,7 +285,6 @@ following guidelines should help the release go smoothly:
 
 		# Get tickets as builder and ssh to the wash machine
 		rm -rf /.srvd/* /.srvd/.??* /build/* /build/.??*
-		synctree -s /mit/source -d /build
 		sh /build/packs/build/build.sh -l &
 
 	  (It can be useful to run the ssh to the build machine inside
