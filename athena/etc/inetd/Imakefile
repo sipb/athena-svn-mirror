@@ -3,6 +3,10 @@ SYSLOG=-lnsyslog
 DEFINES=-UPOSIX
 #endif
 
+#ifdef ultrix
+SimpleProgram(inetd,inetd.o,${SYSLOG},/etc/)
+#else
 SimpleProgram(inetd,inetd.o,${SYSLOG},${ATHRETCDIR})
+#endif
 install_man(inetd.conf.5,inetd.conf.5)
 install_man(inetd.8,inetd.8)
