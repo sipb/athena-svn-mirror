@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.1 1992-04-27 13:23:21 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.2 1992-04-27 13:24:17 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.1 1992-04-27 13:23:21 epeisach Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.2 1992-04-27 13:24:17 epeisach Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -68,7 +68,7 @@ init_res *init_1(params, rqstp)
       if (curconn->index)
 	db_close(curconn->index);
       curconn->inited = 0;
-      
+
       /*
        * Now try to open the index file.
        */
@@ -439,7 +439,7 @@ long *delete_course_1(coursename, rqstp)
      char **coursename;
      struct svc_req *rqstp;
 {
-  char rmbuf[1024], buf2[1024], inbuf[1024];
+  char rmbuf[1024], buf2[1024], inbuf[1024], dbfilename[MAXPATHLEN];
   FILE *fpin, *fpout;
 #ifdef MULTI
   int i;
@@ -475,6 +475,7 @@ long *delete_course_1(coursename, rqstp)
   
   system(rmbuf);
 
+  /* remove name from course index */
   /* XXX */
   sprintf(rmbuf, "%s/%s", root_dir, COURSE_INDEX);
   fpin = fopen(rmbuf, "r");
@@ -488,6 +489,11 @@ long *delete_course_1(coursename, rqstp)
   fclose(fpin);
   fclose(fpout);
   rename(buf2, rmbuf);
+
+  /* flush course database from cache */
+  sprintf(dbfilename, "%s/%s/%s%s", root_dir,
+	  *coursename, INDEX_FILE, UPDATING_EXTENSION);
+  db_flush(dbfilename);
 
 #ifdef MULTI
   if (!curconn->server_num) {
