@@ -1,10 +1,10 @@
 General Information
 ===================
 
-This is version 2.2.0.1 of gedit. gedit is a small and lightweight UTF-8 text 
+This is version 2.8.0 of gedit. gedit is a small and lightweight UTF-8 text 
 editor for the GNOME environment.
 
-Designed for the X Window System, it uses the GTK+ 2.0 and GNOME 2.0 libraries. 
+Designed for the X Window System, it uses the GTK+ 2.4 and GNOME 2.6 libraries. 
 Complete GNOME integration is featured, with support for Drag and Drop (DnD) 
 between Nautilus (the GNOME file manager) and the use of the GNOME help system,
 the GNOME Virtual File System and the GNOME print framework.
@@ -26,19 +26,22 @@ features:
     * Search and Replace
     * A complete preferences interface
     * Configurable Plugins system
-    * Accepts input from command line pipes ( i.e. "ls | gedit" )
     * Printing and Print Previewing Support
     * Configurable levels of Undo/Redo
+    * Syntax highlighting
 
 Some of the plugins, packaged and installed with gedit include, among others:
 
-    * ASCII table
-    * Compare files
     * Word count
+    * Spell checker
+    * Change case of selected text
+    * Sort
     * Tag list
     * Insert Date/Time
     * Shell output
-    * Spell checker
+
+Other external plugins are also available.
+
 
 gedit is released under the GNU General Public License (GPL) version 2, see
 the file 'COPYING' for more information.
@@ -46,7 +49,7 @@ the file 'COPYING' for more information.
 
 The official web site is:
 
-    http://gedit.sourceforge.net
+    http://www.gnome.org/projects/gedit
 
 You can dowload the latest gedit tarball from the gnome ftp server:
 
@@ -60,16 +63,16 @@ Information about gedit mailing lists can be found at
 Installation
 ============
 
-gedit requires GTK+-2.2.x and the GNOME 2.2.x libraries.
+gedit requires GTK+-2.4.x, GtkSourceView 1.0.0 and GNOME 2.6.x libraries.
 
 Simple install procedure:
 
-  % gzip -cd gedit-2.2.0.1.tar.gz | tar xvf -    # unpack the sources
-  % cd gedit-2.2.0.1			   # change to the toplevel directory
-  % ./configure				   # run the `configure' script
-  % make				   # build gedit
+  % gzip -cd gedit-2.8.0.tar.gz | tar xvf - 	# unpack the sources
+  % cd gedit-2.8.0				# change to the toplevel directory
+  % ./configure					# run the `configure' script
+  % make					# build gedit
   [ Become root if necessary ]
-  % make install			   # install gedit
+  % make install				# install gedit
 
 See the file 'INSTALL' for more detailed information.
 
@@ -97,7 +100,7 @@ In the bug report please include:
 * How to reproduce the bug. 
 
 * If the bug was a crash, the exact text that was printed out when the
-  crash occured.
+  crash occurred.
 
 * Further information such as stack traces may be useful, but is not
   necessary. If you do send a stack trace, and the error is an X error,

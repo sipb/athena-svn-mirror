@@ -41,11 +41,11 @@
 #include "gedit-taglist-plugin.h"
 #include "gedit-taglist-plugin-window.h"
 
-#include <gedit-debug.h>
-#include <gedit2.h>
-#include <gedit-document.h>
-#include <gedit-utils.h>
-#include <gedit-menus.h>
+#include <gedit/gedit-debug.h>
+#include <gedit/gedit2.h>
+#include <gedit/gedit-document.h>
+#include <gedit/gedit-utils.h>
+#include <gedit/gedit-menus.h>
 
 enum
 {
@@ -132,6 +132,9 @@ void taglist_window_show ()
 	tag_list_window = g_new0 (TagListWindow, 1);
 	
 	tag_list_window->window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+
+	gtk_window_set_type_hint (GTK_WINDOW (tag_list_window->window),
+				  GDK_WINDOW_TYPE_HINT_UTILITY);
 	gtk_window_set_title (GTK_WINDOW (tag_list_window->window), 
 			      _("Tag list plugin"));
 	
@@ -173,9 +176,9 @@ void taglist_window_show ()
 	tag_list_window->tags_list = gtk_tree_view_new ();
 
 	gedit_utils_set_atk_name_description (tag_list_window->tag_groups_combo, 
-							_("Tag Groups Combo"), NULL);
+							_("Available Tag Lists"), NULL);
 	gedit_utils_set_atk_name_description (tag_list_window->tags_list, 
-							_("Tags Name List"), NULL);
+							_("Tags"), NULL);
 	gedit_utils_set_atk_relation (tag_list_window->tag_groups_combo, tag_list_window->tags_list, 
 							ATK_RELATION_CONTROLLER_FOR);
 	gedit_utils_set_atk_relation (tag_list_window->tags_list, tag_list_window->tag_groups_combo, 
@@ -435,7 +438,10 @@ insert_tag (Tag *tag, gboolean focus_to_document)
 {
 	GeditView *view;
 	GeditDocument *doc;
-	gint cursor;
+	gint cursor = 0;
+	gint start;
+	gint end;
+	gboolean sel;
 	
 	gedit_debug (DEBUG_PLUGINS, "");
 	
@@ -449,18 +455,42 @@ insert_tag (Tag *tag, gboolean focus_to_document)
 	doc = gedit_view_get_document (view);
 	g_return_if_fail (doc != NULL);
 	
+	sel = gedit_document_get_selection (doc, &start, &end);
+	
 	gedit_document_begin_user_action (doc);
 	
 	if (tag->begin != NULL)
-		gedit_document_insert_text_at_cursor (doc, tag->begin, -1);
-	
-	cursor = gedit_document_get_cursor (doc);
+	{
+		if (sel)
+		{	
+			gedit_document_insert_text (doc, start, tag->begin, -1);
+
+			start += g_utf8_strlen (tag->begin, -1);
+			end += g_utf8_strlen (tag->begin, -1);
+		}
+		else
+		{
+			gedit_document_insert_text_at_cursor (doc, tag->begin, -1);
+			cursor = gedit_document_get_cursor (doc);
+		}
+	}
 	
 	if (tag->end != NULL)
-		gedit_document_insert_text_at_cursor (doc, tag->end, -1);
+	{
+		if (sel)
+		{
+			gedit_document_insert_text (doc, end, tag->end, -1);
+		}
+		else
+		{
+			gedit_document_insert_text_at_cursor (doc, tag->end, -1);
+			gedit_document_set_cursor (doc, cursor);
+		}
+	}
+
+	if (sel)
+		gedit_document_set_selection (doc, start, end);
 	
-	gedit_document_set_cursor (doc, cursor);
-	 
 	gedit_document_end_user_action (doc);
 
 	if (focus_to_document)
@@ -474,6 +504,12 @@ static gboolean
 tag_list_window_key_press_event_cb (GtkTreeView *tag_list, GdkEventKey *event)
 {
 	if ((event->keyval == 'w') && (event->state & GDK_CONTROL_MASK))
+	{
+		taglist_window_close ();
+		return TRUE;
+	}
+
+	if ((event->keyval == GDK_F8) && (event->state & GDK_SHIFT_MASK))
 	{
 		taglist_window_close ();
 		return TRUE;

@@ -36,9 +36,9 @@
 #include <glib/gutils.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <gedit-menus.h>
-#include <gedit-plugin.h>
-#include <gedit-debug.h>
+#include <gedit/gedit-menus.h>
+#include <gedit/gedit-plugin.h>
+#include <gedit/gedit-debug.h>
 
 #include <libgnomeui/gnome-stock-icons.h>
 
@@ -479,6 +479,7 @@ change_all_cb (GeditSpellCheckerDialog *dlg, const gchar *word, const gchar *cha
 
 	gchar *last_searched_text;
 	gchar *last_replaced_text;
+	gint flags = 0;
 	
 	gedit_debug (DEBUG_PLUGINS, "");
 	
@@ -503,7 +504,10 @@ change_all_cb (GeditSpellCheckerDialog *dlg, const gchar *word, const gchar *cha
 	last_searched_text = gedit_document_get_last_searched_text (doc);
 	last_replaced_text = gedit_document_get_last_replace_text (doc);
        	
-	gedit_document_replace_all (doc, word, change, TRUE, TRUE);
+	GEDIT_SEARCH_SET_CASE_SENSITIVE (flags, TRUE);
+	GEDIT_SEARCH_SET_ENTIRE_WORD (flags, TRUE);
+       	
+	gedit_document_replace_all (doc, word, change, flags);
 
 	update_current (doc, range->mw_start + g_utf8_strlen (change, -1));
 
@@ -703,16 +707,20 @@ update_ui (GeditPlugin *plugin, BonoboWindow *window)
 	BonoboUIComponent *uic;
 	GeditDocument *doc;
 	GeditAutomaticSpellChecker *autospell;
-
+	GeditMDI *mdi;
+	
 	gedit_debug (DEBUG_PLUGINS, "");
 	
+	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
+
+	mdi = gedit_get_mdi ();
 	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
 
 	uic = gedit_get_ui_component_from_window (window);
 
 	doc = gedit_get_active_document ();
 
-	if ((doc == NULL) || gedit_document_is_readonly (doc))
+	if ((doc == NULL) || gedit_document_is_readonly (doc) || (gedit_mdi_get_state (mdi) != GEDIT_STATE_NORMAL))
 	{
 		gedit_menus_set_verb_sensitive (uic, "/commands/" MENU_ITEM_NAME, FALSE);
 		gedit_menus_set_verb_sensitive (uic, "/commands/" MENU_ITEM_NAME_AUTO, FALSE);

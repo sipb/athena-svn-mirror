@@ -14,11 +14,12 @@
 #include <string.h>
 #include <glade/glade-xml.h>
 
-#include <gedit-menus.h>
-#include <gedit-document.h>
-#include <gedit-debug.h>
-#include <gedit-view.h>
-#include <gedit-plugin.h>
+#include <gedit/gedit-menus.h>
+#include <gedit/gedit-document.h>
+#include <gedit/gedit-debug.h>
+#include <gedit/gedit-utils.h>
+#include <gedit/gedit-view.h>
+#include <gedit/gedit-plugin.h>
 
 /* Key in case the plugin ever needs any settings */
 #define SORT_BASE_KEY "/apps/gedit-2/plugins/sort"
@@ -104,7 +105,6 @@ dialog_response_handler (GtkDialog * dlg, gint res_id, SortDialog * dialog)
 	}
 }
 
-
 static SortDialog *
 get_dialog ()
 {
@@ -117,7 +117,8 @@ get_dialog ()
 
 	window = GTK_WINDOW (gedit_get_active_window ());
 
-	if (dialog != NULL) {
+	if (dialog != NULL)
+	{
 		gtk_widget_grab_focus (dialog->dialog);
 
 		gtk_window_set_transient_for (GTK_WINDOW (dialog->dialog),
@@ -130,16 +131,16 @@ get_dialog ()
 
 	gui = glade_xml_new (GEDIT_GLADEDIR "sort.glade2",
 			     "sort_dialog", NULL);
-
-	if (!gui) {
-		g_warning
-		    ("Could not find sort.glade2, reinstall gedit.\n");
+	if (!gui)
+	{
+		gedit_warning (window,
+			       MISSING_FILE,
+		    	       GEDIT_GLADEDIR "sort.glade2");
 		return NULL;
 	}
 
 	dialog = g_new0 (SortDialog, 1);
 
-	/* Save some references to the main dialog widgets */
 	dialog->dialog = glade_xml_get_widget (gui, "sort_dialog");
 	dialog->reverse_order_checkbutton =
 	    glade_xml_get_widget (gui, "reverse_order_checkbutton");
@@ -150,11 +151,17 @@ get_dialog ()
 	dialog->remove_dups_checkbutton =
 	    glade_xml_get_widget (gui, "remove_dups_checkbutton");
 
-	g_return_val_if_fail (dialog->dialog, NULL);
-	g_return_val_if_fail (dialog->reverse_order_checkbutton, NULL);
-	g_return_val_if_fail (dialog->col_num_spinbutton, NULL);
-	g_return_val_if_fail (dialog->ignore_case_checkbutton, NULL);
-	g_return_val_if_fail (dialog->remove_dups_checkbutton, NULL);
+	if (!dialog->dialog ||
+	    !dialog->reverse_order_checkbutton ||
+	    !dialog->col_num_spinbutton        ||
+	    !dialog->ignore_case_checkbutton   ||
+	    !dialog->remove_dups_checkbutton)
+	{
+		gedit_warning (window,
+			       MISSING_WIDGETS,
+			       GEDIT_GLADEDIR "sort.glade2");
+		return NULL;
+	}
 
 	g_signal_connect (G_OBJECT (dialog->dialog), "destroy",
 			  G_CALLBACK (dialog_destroyed), &dialog);
@@ -175,20 +182,16 @@ get_dialog ()
 	return dialog;
 }
 
-
 static void
-sort_cb (BonoboUIComponent * uic, gpointer user_data,
-	 const gchar * verbname)
+sort_cb (BonoboUIComponent * uic, gpointer user_data, const gchar *verbname)
 {
 	SortDialog *dialog = NULL;
 
 	gedit_debug (DEBUG_PLUGINS, "");
 
 	dialog = get_dialog ();
-
-	if (dialog == NULL)
-		g_warning ("Could not create the Word Count dialog");
-
+	if (!dialog)
+		return;
 }
 
 /*
@@ -284,7 +287,6 @@ my_compare (const void *s1, const void *s2, gpointer data)
 }
 
 /* The function that actually does the work */
-
 static void
 sort_document (SortDialog * dlg)
 {
@@ -406,9 +408,7 @@ sort_document (SortDialog * dlg)
 	gedit_document_end_not_undoable_action (doc);
 
 	g_free (lines);
-
 	g_free (buffer);
-
 	g_free (sort_info);
 
 	gedit_debug (DEBUG_PLUGINS, "Done.");
@@ -460,16 +460,20 @@ update_ui (GeditPlugin * plugin, BonoboWindow * window)
 {
 	BonoboUIComponent *uic;
 	GeditDocument *doc;
+	GeditMDI *mdi;
 
 	gedit_debug (DEBUG_PLUGINS, "");
 
+	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
+
+	mdi = gedit_get_mdi ();
 	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
 
 	uic = gedit_get_ui_component_from_window (window);
 
 	doc = gedit_get_active_document ();
 
-	if ((doc == NULL) || (gedit_document_is_readonly (doc)))
+	if ((doc == NULL) || (gedit_document_is_readonly (doc)) || (gedit_mdi_get_state (mdi) != GEDIT_STATE_NORMAL))
 		gedit_menus_set_verb_sensitive (uic,
 						"/commands/"
 						MENU_ITEM_NAME, FALSE);
@@ -480,8 +484,6 @@ update_ui (GeditPlugin * plugin, BonoboWindow * window)
 
 	return PLUGIN_OK;
 }
-
-
 
 /*
  * Initialise basic plugin information
@@ -496,3 +498,4 @@ init (GeditPlugin * pd)
 
 	return PLUGIN_OK;
 }
+

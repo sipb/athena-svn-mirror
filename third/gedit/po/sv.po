@@ -1,28 +1,46 @@
 # Swedish messages for gEdit. 
-# Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+# Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Martin Wahlen <mva@sslug.dk>, 1998.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 1999, 2000.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.3 2003-02-12 06:55:36 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2004-10-04 04:37:27 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit\n"
-"POT-Creation-Date: 2003-02-04 12:35+0100\n"
-"PO-Revision-Date: 2003-01-26 03:25+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-11 12:12+0200\n"
+"PO-Revision-Date: 2004-08-23 23:52+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: data/GNOME_Gedit.server.in.h:1
+#: data/GNOME_Gedit.server.in.in.h:1
+msgid "Gedit View"
+msgstr "Gedit-vy"
+
+#: data/GNOME_Gedit.server.in.in.h:2
+msgid "Gedit View."
+msgstr "Gedit-vy."
+
+#: data/GNOME_Gedit.server.in.in.h:3 viewer/gedit-factory.c:53
+msgid "Gedit viewer factory"
+msgstr "Gedit-visarfabrik"
+
+#: data/GNOME_Gedit.server.in.in.h:4
+msgid "Source"
+msgstr "Källa"
+
+#: data/GNOME_Gedit.server.in.in.h:5
 msgid "gedit application"
 msgstr "gedit-program"
 
-#: data/GNOME_Gedit.server.in.h:2
+#: data/GNOME_Gedit.server.in.in.h:6
 msgid "gedit automation factory"
 msgstr "gedit-automatikfabrik"
 
@@ -30,7 +48,7 @@ msgstr "gedit-automatikfabrik"
 msgid "Edit text files"
 msgstr "Redigera textfiler"
 
-#: data/gedit.desktop.in.h:2 src/gedit2.c:342
+#: data/gedit.desktop.in.h:2 gedit/gedit2.c:336
 msgid "Text Editor"
 msgstr "Textredigerare"
 
@@ -43,22 +61,26 @@ msgstr ""
 "att ha effekt om alternativet \"Använd standardtypsnitt\" är frånslaget."
 
 #: data/gedit.schemas.in.h:2
+msgid "Auto Detected Encodings"
+msgstr "Automatiskt detekterade kodningar"
+
+#: data/gedit.schemas.in.h:3
 msgid "Auto Save"
 msgstr "Spara automatiskt"
 
-#: data/gedit.schemas.in.h:3
+#: data/gedit.schemas.in.h:4
 msgid "Auto Save Interval"
 msgstr "Intervall för automatiskt sparande"
 
-#: data/gedit.schemas.in.h:4
+#: data/gedit.schemas.in.h:5
 msgid "Auto indent"
 msgstr "Automatiskt indrag"
 
-#: data/gedit.schemas.in.h:5
+#: data/gedit.schemas.in.h:6
 msgid "Background Color"
 msgstr "Bakgrundsfärg"
 
-#: data/gedit.schemas.in.h:6
+#: data/gedit.schemas.in.h:7
 msgid ""
 "Background color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
@@ -66,7 +88,7 @@ msgstr ""
 "Bakgrundsfärg för markerad text i redigeringsytan. Detta kommer endast att "
 "ha effekt om alternativet \"Använd standardfärger\" är frånslaget."
 
-#: data/gedit.schemas.in.h:7
+#: data/gedit.schemas.in.h:8
 msgid ""
 "Background color for unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
@@ -74,37 +96,39 @@ msgstr ""
 "Bakgrundsfärg för omarkerad text i redigeringsytan. Detta kommer endast att "
 "ha effekt om alternativet \"Använd standardfärger\" är frånslaget."
 
-#: data/gedit.schemas.in.h:8
+#: data/gedit.schemas.in.h:9
 msgid "Backup Copy Extension"
 msgstr "Ändelse på säkerhetskopior"
 
-#: data/gedit.schemas.in.h:9
+#: data/gedit.schemas.in.h:10
 msgid "Body Font for Printing"
 msgstr "Texttypsnitt för utskrift"
 
-#: data/gedit.schemas.in.h:10
+#: data/gedit.schemas.in.h:11
 msgid "Create Backup Copies"
 msgstr "Skapa säkerhetskopior"
 
-#: data/gedit.schemas.in.h:11
+#: data/gedit.schemas.in.h:12
 msgid "Display Line Numbers"
 msgstr "Visa radnummer"
 
-#: data/gedit.schemas.in.h:12
+#: data/gedit.schemas.in.h:13
+msgid "Display Right Margin"
+msgstr "Visa högermarginal"
+
+#: data/gedit.schemas.in.h:14
 msgid "Editor Font"
 msgstr "Redigerartypsnitt"
 
-#: data/gedit.schemas.in.h:13
-msgid "Encoding for Saving"
-msgstr "Kodning vid sparande"
-
-#: data/gedit.schemas.in.h:14 src/dialogs/gedit-preferences-dialog.c:2296
-#: src/dialogs/gedit-encodings-dialog.c:261
-#: src/dialogs/gedit-encodings-dialog.glade2.h:2
-msgid "Encodings"
-msgstr "Kodningar"
-
 #: data/gedit.schemas.in.h:15
+msgid "Enable Syntax Highlighting"
+msgstr "Aktivera syntaxmarkering"
+
+#: data/gedit.schemas.in.h:16
+msgid "Encodings shown in menu"
+msgstr "Kodningar som visas i menyn"
+
+#: data/gedit.schemas.in.h:17
 msgid ""
 "Extension or suffix to use for backup file names. This will only take effect "
 "if the \"Create Backup Copies\" option is turned on."
@@ -112,7 +136,7 @@ msgstr ""
 "Ändelse eller suffix att använda i filnamnen på säkerhetskopior. Detta har "
 "endast effekt om alternativet \"Skapa säkerhetskopior\" är påslaget."
 
-#: data/gedit.schemas.in.h:16
+#: data/gedit.schemas.in.h:18
 msgid ""
 "Foreground color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
@@ -120,7 +144,7 @@ msgstr ""
 "Förgrundsfärg för markerad text i redigeringsytan. Detta har endast effekt "
 "om alternativet \"Använd standardfärger\" är frånslaget."
 
-#: data/gedit.schemas.in.h:17
+#: data/gedit.schemas.in.h:19
 msgid ""
 "Foreground color for the unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
@@ -128,11 +152,11 @@ msgstr ""
 "Förgrundsfärg för den omarkerade texten i redigeringsytan. Detta har endast "
 "effekt om alternativet \"Använd standardfärger\" är frånslaget."
 
-#: data/gedit.schemas.in.h:18
+#: data/gedit.schemas.in.h:20
 msgid "Header Font for Printing"
 msgstr "Sidhuvudstypsnitt för utskrift"
 
-#: data/gedit.schemas.in.h:19
+#: data/gedit.schemas.in.h:21
 msgid ""
 "If this value is 0, then no line numbers will be inserted when printing a "
 "document. Otherwise, gedit will print line numbers every such number of "
@@ -141,35 +165,43 @@ msgstr ""
 "Om detta värde är 0 kommer inga radnummer att infogas vid utskrift av ett "
 "dokument. Annars kommer gedit att skriva ut radnummer med detta radintervall."
 
-#: data/gedit.schemas.in.h:20
+#: data/gedit.schemas.in.h:22
 msgid "Insert spaces"
 msgstr "Infoga blanksteg"
 
-#: data/gedit.schemas.in.h:21
+#: data/gedit.schemas.in.h:23
 msgid "Line Number Font for Printing"
 msgstr "Radnummerstypsnitt för utskrift"
 
-#: data/gedit.schemas.in.h:22
+#: data/gedit.schemas.in.h:24
 msgid "Line Wrapping Mode"
 msgstr "Radbrytningsläge"
 
-#: data/gedit.schemas.in.h:23
+#: data/gedit.schemas.in.h:25
 msgid ""
-"List of encodings used by gedit for reading files not encoded in UTF-8 or in "
-"the current locale encoding."
+"List of encodings shown in Character Coding menu in open/save file selector. "
+"Only recognized encodings are used."
 msgstr ""
-"Lista med kodningar som används av gedit för att läsa filer som inte är "
-"kodade i UTF-8 eller kodningen för den aktuella lokalen."
+"Lista med kodningar som visas i teckenkodningsmenyn i filväljaren för "
+"öppnande/sparande av filer. Endast kända kodningar används."
 
-#: data/gedit.schemas.in.h:24
+#: data/gedit.schemas.in.h:26
 msgid "Maximum Recent Files"
 msgstr "Maximalt antal senaste filer"
 
-#: data/gedit.schemas.in.h:25
+#: data/gedit.schemas.in.h:27
 msgid "Maximum number of actions that gedit will be able to undo or redo."
 msgstr "Maximalt antal åtgärder som gedit kan ångra eller göra om."
 
-#: data/gedit.schemas.in.h:26
+#: data/gedit.schemas.in.h:28
+msgid "Monospace 12"
+msgstr "Monospace 12"
+
+#: data/gedit.schemas.in.h:29
+msgid "Monospace Regular 9"
+msgstr "Monospace Regular 9"
+
+#: data/gedit.schemas.in.h:30
 msgid ""
 "Number of minutes after which gedit will automatically save modified files. "
 "This will only take effect if the \"Auto Save\" option is turned on."
@@ -177,35 +209,53 @@ msgstr ""
 "Antal minuter efter vilket gedit kommer att automatiskt spara ändrade filer. "
 "Detta har endast effekt då alternativet \"Spara automatiskt\" är påslaget."
 
-#: data/gedit.schemas.in.h:27
+#: data/gedit.schemas.in.h:31
 msgid "Print Header"
 msgstr "Skriv ut sidhuvud"
 
-#: data/gedit.schemas.in.h:28
+#: data/gedit.schemas.in.h:32
 msgid "Print Line Numbers"
 msgstr "Skriv ut radnummer"
 
-#: data/gedit.schemas.in.h:29
+#: data/gedit.schemas.in.h:33
+msgid "Print Syntax Highlighting"
+msgstr "Skriv ut syntaxmarkering"
+
+#: data/gedit.schemas.in.h:34
 msgid "Printing Line Wrapping Mode"
 msgstr "Radbrytningsläge för utskrift"
 
-#: data/gedit.schemas.in.h:30
+#: data/gedit.schemas.in.h:35
+msgid "Right Margin Position"
+msgstr "Position för högermarginalen"
+
+#: data/gedit.schemas.in.h:36
+msgid "Sans Regular 11"
+msgstr "Sans Regular 11"
+
+#: data/gedit.schemas.in.h:37
+msgid "Sans Regular 8"
+msgstr "Sans Regular 8"
+
+#: data/gedit.schemas.in.h:38
 msgid "Selected Text Color"
 msgstr "Färg på markerad text"
 
-#: data/gedit.schemas.in.h:31
+#: data/gedit.schemas.in.h:39
 msgid "Selection Color"
 msgstr "Markeringsfärg"
 
-#: data/gedit.schemas.in.h:32
-msgid "Show Cursor Position"
-msgstr "Visa markörposition"
+#: data/gedit.schemas.in.h:40
+msgid ""
+"Sorted list of encodings used by gedit for auto-detecting the encoding of a "
+"file. \"CURRENT\" is the current locale encoding. Only recognized encodings "
+"are used."
+msgstr ""
+"Sorterad lista med kodningar som används av gedit för automatisk detektering "
+"av kodningen för en fil. \"CURRENT\" är kodningen för den aktuella lokalen. "
+"Endast kända kodningar används."
 
-#: data/gedit.schemas.in.h:33
-msgid "Show Overwrite Mode"
-msgstr "Visa överskrivningsläge"
-
-#: data/gedit.schemas.in.h:34
+#: data/gedit.schemas.in.h:41
 msgid ""
 "Specifies how to wrap long lines for printing. Use \"GTK_WRAP_NONE\" for no "
 "wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -219,7 +269,7 @@ msgstr ""
 "det görs skillnad på versaler och gemener i värdena, så försäkra dig om att "
 "de visas exakt som de visas här."
 
-#: data/gedit.schemas.in.h:35
+#: data/gedit.schemas.in.h:42
 msgid ""
 "Specifies how to wrap long lines in the editing area. Use \"GTK_WRAP_NONE\" "
 "for no wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -233,14 +283,14 @@ msgstr ""
 "att det görs skillnad på versaler och gemener i värdena, så försäkra dig om "
 "att de visas exakt som de visas här."
 
-#: data/gedit.schemas.in.h:36
+#: data/gedit.schemas.in.h:43
 msgid ""
 "Specifies the font to use for a document's body when printing documents."
 msgstr ""
 "Anger det typsnitt som ska användas för dokumentets text vid utskrift av "
 "dokument."
 
-#: data/gedit.schemas.in.h:37
+#: data/gedit.schemas.in.h:44
 msgid ""
 "Specifies the font to use for line numbers when printing. This will only "
 "take effect if the \"Print Line Numbers\" option is non-zero."
@@ -248,7 +298,7 @@ msgstr ""
 "Anger det typsnitt som ska användas för radnummer vid utskrift. Detta kommer "
 "endast att ha effekt om alternativet \"Skriv ut radnummer\" inte är noll."
 
-#: data/gedit.schemas.in.h:38
+#: data/gedit.schemas.in.h:45
 msgid ""
 "Specifies the font to use for page headers when printing a document. This "
 "will only take effect if the \"Print Header\" option is turned on."
@@ -257,7 +307,7 @@ msgstr ""
 "dokument. Detta kommer endast att ha effekt om alternativet \"Skriv ut huvud"
 "\" är påslaget."
 
-#: data/gedit.schemas.in.h:39
+#: data/gedit.schemas.in.h:46
 msgid ""
 "Specifies the maximum number of recently opened files that will be displayed "
 "in the \"Recent Files\" submenu."
@@ -265,17 +315,21 @@ msgstr ""
 "Anger det maximala antalet senast öppnade filer som kommer att visas i "
 "undermenyn \"Senaste filer\"."
 
-#: data/gedit.schemas.in.h:40
+#: data/gedit.schemas.in.h:47
 msgid ""
 "Specifies the number of spaces that should be displayed instead of Tab "
 "characters."
 msgstr "Anger antalet blanksteg som ska visas istället för tabulatortecken."
 
-#: data/gedit.schemas.in.h:41
+#: data/gedit.schemas.in.h:48
+msgid "Specifies the position of the right margin."
+msgstr "Anger positionen för högermarginalen."
+
+#: data/gedit.schemas.in.h:49
 msgid "Status Bar is Visible"
 msgstr "Statusrad är synlig"
 
-#: data/gedit.schemas.in.h:42
+#: data/gedit.schemas.in.h:50
 msgid ""
 "Style for the toolbar buttons. Possible values are \"GEDIT_TOOLBAR_SYSTEM\" "
 "to use the system's default style, \"GEDIT_TOOLBAR_ICONS\" to display icons "
@@ -292,61 +346,35 @@ msgstr ""
 "och gemener i värdena, så försäkra dig om att de visas exakt som de visas "
 "här."
 
-#: data/gedit.schemas.in.h:43
+#: data/gedit.schemas.in.h:51
 msgid "Tab Size"
 msgstr "Tabulatorstorlek"
 
-#: data/gedit.schemas.in.h:44
+#: data/gedit.schemas.in.h:52
 msgid "Text Color"
 msgstr "Textfärg"
 
-#: data/gedit.schemas.in.h:45
-msgid ""
-"The encoding method to use for saving files. Possible values are "
-"\"GEDIT_SAVE_ALWAYS_UTF8\" for mandatory UTF-8 saving, "
-"\"GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE\" if you want gedit to try to "
-"convert the document it is saving to your current locale's encoding, "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" if you want gedit to try "
-"to use the original file encoding (new files in UTF8) and "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" if you want gedit to "
-"try to use the original file encoding (new files in current locale's "
-"encoding). If the conversion is successful, it will be used. Otherwise, UTF-"
-"8 will be used. Note that the values are case-sensitive, so make sure they "
-"appear exactly as mentioned here."
-msgstr ""
-"Kodningsmetoden som används för sparande av filer. Möjliga värden är "
-"\"GEDIT_SAVE_ALWAYS_UTF8\" för obligatoriskt UTF-8-sparande, och "
-"\"GEDIT_SAVE_CURRENT_LOCALE_WHEN_POSSIBLE\" om du vill att gedit ska försöka "
-"att konvertera dokumentet som det sparar till kodningen för din aktuella "
-"lokal, \"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" om du vill försöka "
-"använda originalfilens kodning (nya filer i UTF-8) och "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" om du vill försöka "
-"använda originalfilens kodning (nya filer i aktuella lokalens kodning). Om "
-"konverteringen lyckas kommer den att användas. Annars kommer UTF-8 att "
-"användas. Observera att det görs skillnad på versaler och gemener i värdena, "
-"så försäkra dig om att de visas exakt så som de visas här."
-
-#: data/gedit.schemas.in.h:46
+#: data/gedit.schemas.in.h:53
 msgid "Toolbar Buttons Style"
 msgstr "Stil på verktygsradsknappar"
 
-#: data/gedit.schemas.in.h:47
+#: data/gedit.schemas.in.h:54
 msgid "Toolbar is Visible"
 msgstr "Verktygsraden är synlig"
 
-#: data/gedit.schemas.in.h:48
+#: data/gedit.schemas.in.h:55
 msgid "Undo Actions Limit"
 msgstr "Gräns för ångraåtgärder"
 
-#: data/gedit.schemas.in.h:49
+#: data/gedit.schemas.in.h:56
 msgid "Use Default Colors"
 msgstr "Använd standardfärger"
 
-#: data/gedit.schemas.in.h:50
+#: data/gedit.schemas.in.h:57
 msgid "Use Default Font"
 msgstr "Använd standardtypsnitt"
 
-#: data/gedit.schemas.in.h:51
+#: data/gedit.schemas.in.h:58
 msgid ""
 "Whether gedit should automatically save modified files after a time "
 "interval. You can set the time interval with the \"Auto Save Interval\" "
@@ -356,7 +384,7 @@ msgstr ""
 "Du kan ange tidsintervallet med alternativet \"Intervall för automatiskt "
 "sparande\"."
 
-#: data/gedit.schemas.in.h:52
+#: data/gedit.schemas.in.h:59
 msgid ""
 "Whether gedit should create backup copies for the files it saves. You can "
 "set the backup file extension with the \"Backup Copy Extension\" option."
@@ -365,54 +393,46 @@ msgstr ""
 "ange filändelsen för säkerhetskopior med alternativet \"Ändelse på "
 "säkerhetskopior\"."
 
-#: data/gedit.schemas.in.h:53
+#: data/gedit.schemas.in.h:60
 msgid "Whether gedit should display line numbers in the editing area."
 msgstr "Huruvida gedit ska visa radnummer i redigeringsytan."
 
-#: data/gedit.schemas.in.h:54
+#: data/gedit.schemas.in.h:61
+msgid "Whether gedit should display the right margin in the editing area."
+msgstr "Huruvida gedit ska visa högermarginalen i redigeringsytan."
+
+#: data/gedit.schemas.in.h:62
 msgid "Whether gedit should enable auto indentation."
 msgstr "Huruvida gedit ska aktivera automatiskt indrag."
 
-#: data/gedit.schemas.in.h:55
+#: data/gedit.schemas.in.h:63
+msgid "Whether gedit should enable syntax highlighting."
+msgstr "Huruvida gedit ska aktivera syntaxmarkering."
+
+#: data/gedit.schemas.in.h:64
 msgid "Whether gedit should include a document header when printing documents."
 msgstr ""
 "Huruvida gedit ska inkludera ett dokumenthuvud vid utskrift av dokument."
 
-#: data/gedit.schemas.in.h:56
+#: data/gedit.schemas.in.h:65
 msgid "Whether gedit should insert spaces instead of tabs."
 msgstr "Huruvida gedit ska infoga blanksteg istället för tabulatortecken."
 
-#: data/gedit.schemas.in.h:57
+#: data/gedit.schemas.in.h:66
+msgid "Whether gedit should print syntax highlighting when printing documents."
+msgstr "Huruvida gedit ska skriva ut syntaxmarkering vid utskrift av dokument."
+
+#: data/gedit.schemas.in.h:67
 msgid ""
 "Whether the status bar at the bottom of editing windows should be visible."
 msgstr ""
 "Huruvida statusraden i nederkanten på redigeringsfönster ska vara synlig."
 
-#: data/gedit.schemas.in.h:58
-msgid ""
-"Whether the status bar should show the cursor position in editing windows. "
-"Make sure you turn on the \"Status Bar is Visible\" option for this to take "
-"effect."
-msgstr ""
-"Huruvida statusraden ska visa markörpositionen i redigeringsfönster. "
-"Försäkra dig om att du slår på alternativet \"Statusrad är synlig\" för att "
-"detta ska ha effekt."
-
-#: data/gedit.schemas.in.h:59
-msgid ""
-"Whether the status bar should show the insert/overwrite mode in editing "
-"windows. Make sure you turn on the \"Status Bar is Visible\" option for this "
-"to take effect."
-msgstr ""
-"Huruvida statusraden ska visa infognings-/överskrivningsläget i "
-"redigeringsfönster. Försäkra dig om att alternativet \"Statusraden är synlig"
-"\" är påslaget för att detta ska ha effekt."
-
-#: data/gedit.schemas.in.h:60
+#: data/gedit.schemas.in.h:68
 msgid "Whether the toolbar should be visible in editing windows."
 msgstr "Huruvida verktygsraden ska vara synlig i redigeringsfönster."
 
-#: data/gedit.schemas.in.h:61
+#: data/gedit.schemas.in.h:69
 msgid ""
 "Whether to use the system's default colors for the editing area. If this "
 "option is turned off, then the colors of the editing area will be those "
@@ -424,7 +444,7 @@ msgstr ""
 "är angivna i alternativen \"Bakgrundsfärg\", \"Textfärg\", \"Färg på "
 "markerad text\" och \"Markeringsfärg\"."
 
-#: data/gedit.schemas.in.h:62
+#: data/gedit.schemas.in.h:70
 msgid ""
 "Whether to use the system's default font for editing text instead of a font "
 "specific to gedit. If this option is turned off, then the font named in the "
@@ -435,262 +455,2236 @@ msgstr ""
 "frånslaget kommer typsnittet som är angivet i alternativet "
 "\"Redigerartypsnitt\" att användas istället för systemtypsnittet."
 
-#: plugins/ASCII/ascii.c:43
-msgid "_ASCII Table"
-msgstr "_ASCII-tabell"
+# Att ha med UTF-8 här också skadar nog inte.
+#: data/gedit.schemas.in.h:71
+msgid "[ISO-8859-15]"
+msgstr "[UTF-8,ISO-8859-15]"
 
-#: plugins/ASCII/ascii.c:46
-msgid "Pop-up a dialog containing an ASCII Table"
-msgstr "Visa ett dialogfönster som innehåller en ASCII-tabell"
+#: data/gedit.schemas.in.h:72
+msgid "[UTF-8,CURRENT,ISO-8859-15]"
+msgstr "[UTF-8,CURRENT,ISO-8859-15]"
 
-#: plugins/ASCII/ascii.c:303
-msgid "Char"
-msgstr "Tecken"
+#: gedit/bonobo-mdi.c:564 gedit/bonobo-mdi.c:2060
+#, c-format
+msgid "Activate %s"
+msgstr "Aktivera %s"
 
-#: plugins/ASCII/ascii.c:310
-msgid "Dec#"
-msgstr "Dec"
-
-#: plugins/ASCII/ascii.c:317
-msgid "Hex#"
-msgstr "Hex"
-
-#: plugins/ASCII/ascii.c:324
-msgid "Name"
-msgstr "Namn"
-
-#: plugins/ASCII/ascii.c:369
-msgid "ASCII Table"
-msgstr "ASCII-tabell"
-
-#: plugins/ASCII/ascii.c:382 plugins/ASCII/asciitable.glade2.h:2
-msgid "_Insert char"
-msgstr "_Infoga tecken"
-
-#: plugins/ASCII/asciitable.glade2.h:1
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:1
-msgid "ASCII table"
-msgstr "ASCII-tabell"
-
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:2
-msgid "This plugin displays a pop-up dialog which contains an ASCII Table."
-msgstr ""
-"Denna insticksmodul visar ett popupfönster som innehåller en ASCII-tabell."
-
-#. AFAIK, all cvs commit messages start with this
-#: plugins/cvschangelog/cvschangelog.c:49
-msgid "Open CVS Chan_geLogs"
-msgstr "Öppna CVS Chan_geLog-filer"
-
-#: plugins/cvschangelog/cvschangelog.c:52
-msgid "Searches for ChangeLogs in the current document and opens them"
-msgstr "Söker efter ChangeLog-filer i det aktuella dokumentet och öppnar dem"
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:1
-msgid "A plugin that opens ChangeLogs found in CVS commit messages."
-msgstr ""
-"En insticksmodul som öppnar ChangeLog-filer som hittas i CVS commit-"
-"meddelanden."
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:2
-msgid "CVS ChangeLog"
-msgstr "CVS-ChangeLog"
-
-#: plugins/diff/diff.c:65
-msgid "Co_mpare Files..."
-msgstr "_Jämför filer..."
-
-#: plugins/diff/diff.c:68
-msgid "Makes a diff file from two documents or files"
-msgstr "Gör en diff-fil från två dokument eller filer"
-
-#. Create the dialog
-#: plugins/diff/diff.c:271 plugins/diff/diff.gedit-plugin.desktop.in.h:1
-msgid "Compare Files"
-msgstr "Jämför filer"
-
-#: plugins/diff/diff.c:285
-msgid "C_ompare"
-msgstr "J_ämför"
-
-#: plugins/diff/diff.c:513
-msgid "Executed command"
-msgstr "Kört kommando"
-
-#: plugins/diff/diff.c:654
-msgid "The two documents you selected are the same."
-msgstr "De två dokument du markerade är samma."
-
-#: plugins/diff/diff.c:662
+#: gedit/dialogs/close_all_dialog.glade2.h:1
 msgid ""
-"The \"first\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
+"<span weight=\"bold\" size=\"larger\">You have X documents with unsaved "
+"changes. </span>"
 msgstr ""
-"Den \"första\" filen du valde finns inte.\n"
-"\n"
-"Var vänlig och ange en giltig fil."
+"<span weight=\"bold\" size=\"larger\">Du har X dokument med osparade "
+"ändringar. </span>"
 
-#: plugins/diff/diff.c:671
+#: gedit/dialogs/close_all_dialog.glade2.h:2
+msgid "If you don't save your documents, all your changes will be lost."
+msgstr ""
+"Om du inte sparar dina dokument kommer dina ändringar att gå förlorade."
+
+#: gedit/dialogs/close_all_dialog.glade2.h:3
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:660
+msgid "S_elect the documents you want to save:"
+msgstr "_Välj de dokument som du vill spara:"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:4
+msgid "Save _None"
+msgstr "Spara _ingen"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:5
+msgid "_Save Selected"
+msgstr "_Spara valda"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:142
+msgid "Do_n't save"
+msgstr "Spara i_nte"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:152
+#: gedit/gedit-file-selector-util.c:140 gedit/gedit-file.c:702
+msgid "Question"
+msgstr "Fråga"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:364
+#, c-format
 msgid ""
-"The \"second\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
-msgstr ""
-"Den \"andra\" filen du valde finns inte.\n"
-"\n"
-"Var vänlig och ange en giltig fil."
+"If you don't save, changes from the last %ld second will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste sekunden att "
+"vara borta för alltid."
+msgstr[1] ""
+"Om du inte sparar kommer ändringar gjorda under de senaste %ld sekunderna "
+"att vara borta för alltid."
 
-#: plugins/diff/diff.c:679
-msgid "The two files you selected are the same."
-msgstr "De två filerna du valde är samma."
-
-#: plugins/diff/diff.c:696
-msgid "The \"first\" document contains no text."
-msgstr "Det \"första\" dokumentet innehåller ingen text."
-
-#: plugins/diff/diff.c:730
-msgid "The \"second\" document contains no text."
-msgstr "Det \"andra\" dokumentet innehåller ingen text."
-
-#. FIXME: do better error reporting ... . Chema
-#: plugins/diff/diff.c:756
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:373
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"gedit could not create a temporary file."
+"If you don't save, changes from the last minute will be permanently lost."
 msgstr ""
-"Kan inte jämföra de valda dokumenten.\n"
-"\n"
-"gedit kunde inte skapa en temporär fil."
+"Om du inte sparar kommer ändringar gjorda under den senaste minuten att vara "
+"borta för alltid."
 
-#: plugins/diff/diff.c:780 plugins/diff/diff.c:793
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:379
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"Error executing the diff command."
-msgstr ""
-"Kan inte jämföra de valda dokumenten.\n"
-"\n"
-"Fel vid körning av diff-kommandot."
+"If you don't save, changes from the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste minuten och "
+"sekunden att vara borta för alltid."
+msgstr[1] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste minuten och %ld "
+"sekunderna att vara borta för alltid."
 
-#: plugins/diff/diff.c:815
-msgid "No differences were found between the selected documents."
-msgstr "Inga skillnader hittades mellan de valda dokumenten."
-
-#: plugins/diff/diff.c:856
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:389
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"The result contains invalid UTF-8 data."
-msgstr ""
-"Kan inte jämföra de valda dokumenten.\n"
-"\n"
-"Resultatet innehåller ogiltig UTF-8-data."
+"If you don't save, changes from the last %ld minute will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld minutes will be permanently "
+"lost."
+msgstr[0] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste minuten att vara "
+"borta för alltid."
+msgstr[1] ""
+"Om du inte sparar kommer ändringar gjorda under de senaste %ld minuterna att "
+"vara borta för alltid."
 
-#: plugins/diff/diff.glade2.h:1 plugins/shell_output/shell_output.glade2.h:1
-#: plugins/time/time.glade2.h:2 plugins/spell/spell-checker.glade2.h:1
-#: src/dialogs/replace.glade2.h:1 src/dialogs/uri.glade2.h:1
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:404
+msgid "If you don't save, changes from the last hour will be permanently lost."
+msgstr ""
+"Om du inte sparar kommer ändringar gjorda under den senaste timmen att vara "
+"borta för alltid."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:410
+#, c-format
+msgid ""
+"If you don't save, changes from the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste timmen och "
+"minuten att vara borta för alltid."
+msgstr[1] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste timmen och %d "
+"minuterna att vara borta för alltid."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:425
+#, c-format
+msgid ""
+"If you don't save, changes from the last %d hour will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %d hours will be permanently lost."
+msgstr[0] ""
+"Om du inte sparar kommer ändringar gjorda under den senaste timmen att vara "
+"borta för alltid."
+msgstr[1] ""
+"Om du inte sparar kommer ändringar gjorda under de senaste %d timmarna att "
+"vara borta för alltid."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:469
+#, c-format
+msgid "Save the changes to document \"%s\" before closing?"
+msgstr "Spara ändringarna i dokumentet \"%s\" innan avslutande?"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:643
+#, c-format
+msgid "There is %d document with unsaved changes. Save changes before closing?"
+msgid_plural ""
+"There are %d documents with unsaved changes. Save changes before closing?"
+msgstr[0] ""
+"Det finns ett dokument med osparade ändringar. Spara ändringar innan "
+"avslutande?"
+msgstr[1] ""
+"Det finns %d dokument med osparade ändringar. Spara ändringar innan "
+"avslutande?"
+
+#. Secondary label
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:677
+msgid "If you don't save, all your changes will be permanently lost."
+msgstr ""
+"Om du inte sparar kommer alla dina ändringar att vara borta för alltid."
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:160
+msgid "Go to Line"
+msgstr "Gå till rad"
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:173
+msgid "_Go to Line"
+msgstr "_Gå till rad"
+
+#: gedit/dialogs/gedit-dialog-replace.c:136
+#: gedit/dialogs/gedit-dialog-replace.c:1125 gedit/gedit-commands.c:392
+#, c-format
+msgid "The text \"%s\" was not found."
+msgstr "Texten \"%s\" hittades inte."
+
+#: gedit/dialogs/gedit-dialog-replace.c:269 gedit/dialogs/replace.glade2.h:4
+#: gedit/gedit-ui.xml.h:46
+msgid "Replace"
+msgstr "Ersätt"
+
+#: gedit/dialogs/gedit-dialog-replace.c:282
+msgid "Replace _All"
+msgstr "Ersätt _alla"
+
+#: gedit/dialogs/gedit-dialog-replace.c:285
+#: gedit/gedit-file-selector-util.c:134
+msgid "_Replace"
+msgstr "_Ersätt"
+
+#: gedit/dialogs/gedit-dialog-replace.c:402 gedit/gedit-ui.xml.h:17
+msgid "Find"
+msgstr "Sök"
+
+#: gedit/dialogs/gedit-dialog-replace.c:1134
+#, c-format
+msgid "Found and replaced %d occurrence."
+msgid_plural "Found and replaced %d occurrences."
+msgstr[0] "Hittade och ersatte %d förekomst."
+msgstr[1] "Hittade och ersatte %d förekomster."
+
+#: gedit/dialogs/gedit-dialog-uri.c:91
+msgid "Open Location"
+msgstr "Öppna plats"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:76
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Ett fel inträffade vid visning av hjälp: %s"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:381
+#: gedit/dialogs/gedit-encodings-dialog.c:449
+msgid "_Description"
+msgstr "_Beskrivning"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:390
+#: gedit/dialogs/gedit-encodings-dialog.c:458
+msgid "_Encoding"
+msgstr "_Kodning"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:1
+msgid "A_vailable encodings:"
+msgstr "Till_gängliga kodningar:"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:2
+msgid "Character codings"
+msgstr "Teckenkodningar"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:3
+msgid "E_ncodings shown in menu:"
+msgstr "Kod_ningar som visas i menyn:"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:496
+msgid "Body font picker"
+msgstr "Väljare för texttypsnitt"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:497
+msgid ""
+"Push this button to select the font to be used to print the body of the "
+"document"
+msgstr ""
+"Tryck på denna knapp för att välja det typsnitt som ska användas för "
+"utskrift av brödtexten i dokumentet"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:498
+msgid "Page headers font picker"
+msgstr "Väljare för sidhuvudstypsnitt"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:499
+msgid ""
+"Push this button to select the font to be used to print the page headers"
+msgstr ""
+"Tryck på denna knapp för att välja det typsnitt som används för utskrift av "
+"sidhuvudena"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:500
+msgid "Line numbers font picker"
+msgstr "Väljare för radnummerstypsnitt"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:501
+msgid "Push this button to select the font to be used to print line numbers"
+msgstr ""
+"Tryck på denna knapp för att välja det typsnitt som används för att skriva "
+"ut radnummer"
+
+#: gedit/dialogs/gedit-plugin-manager.c:53
+msgid "Plugin"
+msgstr "Insticksmodul"
+
+#: gedit/dialogs/gedit-plugin-manager.c:54
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: gedit/dialogs/gedit-plugin-manager.c:499
+msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
+msgstr "Kunde inte hitta plugin-manager.glade2. Installera om gedit.\n"
+
+#: gedit/dialogs/gedit-plugin-manager.c:517
+msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
+msgstr ""
+"Ogiltig glade-fil för insticksmodulhanterare -- alla widgetar hittades "
+"inte.\n"
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:86
+#: gedit/dialogs/program-location-dialog.glade2.h:2
+msgid "Set program location..."
+msgstr "Ställ in programplats..."
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:116
+#, c-format
+msgid ""
+"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
+"task.\n"
+"\n"
+"Please, specify the location of the <tt>%s</tt> program."
+msgstr ""
+"Insticksmodulen %s använder ett externt program, kallat <tt>%s</tt>, för att "
+"utföra dess uppgift.\n"
+"\n"
+"Ange sökvägen till programmet <tt>%s</tt>."
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:169
+msgid "The selected file is not executable."
+msgstr "Den valda filen är inte körbar."
+
+#: gedit/dialogs/gedit-preferences-dialog.c:673
+msgid "Push this button to select the font to be used by the editor"
+msgstr ""
+"Tryck på denna knapp för att välja det typsnitt som används av redigeraren"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:675
+msgid "Push this button to configure text color"
+msgstr "Tryck på denna knapp för att konfigurera textfärg"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:677
+msgid "Push this button to configure background color"
+msgstr "Tryck på denna knapp för att konfigurera bakgrundsfärg"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:679
+msgid ""
+"Push this button to configure the color in which the selected text should "
+"appear"
+msgstr ""
+"Tryck på denna knapp för att konfigurera den färg som markerad text ska "
+"visas med"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:682
+msgid ""
+"Push this button to configure the color in which the selected text should be "
+"marked"
+msgstr ""
+"Tryck på denna knapp för att konfigurera den färg som markerad text ska vara "
+"markerad med"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:1132
+msgid "Elements"
+msgstr "Element"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:1
+#: gedit/dialogs/page-setup-dialog.glade2.h:1
+#: plugins/docinfo/docinfo.glade2.h:1 plugins/time/time.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:2
+msgid "<b>Auto Indentation</b>"
+msgstr "<b>Automatiskt indrag</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:3
+msgid "<b>Elements</b>"
+msgstr "<b>Element</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:4
+msgid "<b>File Saving</b>"
+msgstr "<b>Filsparande</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:5
+msgid "<b>Font</b>"
+msgstr "<b>Typsnitt</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:6
+#: gedit/dialogs/page-setup-dialog.glade2.h:2
+msgid "<b>Line Numbers</b>"
+msgstr "<b>Radnummer</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:7
+msgid "<b>Right Margin</b>"
+msgstr "<b>Högermarginal</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:8
+msgid "<b>Tabs</b>"
+msgstr "<b>Tabulatortecken</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:9
+#: gedit/dialogs/page-setup-dialog.glade2.h:3
+msgid "<b>Text Wrapping</b>"
+msgstr "<b>Textradbrytning</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:10
+msgid "<b>Undo</b>"
+msgstr "<b>Ångra</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:11
+msgid "<span weight=\"bold\">Colors</span>"
+msgstr "<span weight=\"bold\">Färger</span>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:12
+msgid "Bold"
+msgstr "Fet"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:13
+msgid "Create a _backup copy of files before saving"
+msgstr "Skapa en s_äkerhetskopia av filen innan den sparas"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:14
+msgid "D_isplay right margin"
+msgstr "V_isa högermarginal"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:15
+#: gedit/dialogs/page-setup-dialog.glade2.h:4
+msgid "Do not _split words over two lines"
+msgstr "_Dela inte ord över två rader"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:16
+msgid "Editor"
+msgstr "Redigerare"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:17
+msgid "Editor _font: "
+msgstr "Redigerar_typsnitt: "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:18
+#: gedit/dialogs/page-setup-dialog.glade2.h:5
+msgid "Enable text _wrapping"
+msgstr "Aktivera text_radbrytning"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:19
+msgid "Font & Colors"
+msgstr "Typsnitt och färger"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:20
+msgid "Highlight _mode:"
+msgstr "Färgmarkerings_läge:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:21
+msgid "Insert _spaces instead of tabs"
+msgstr "Infoga _blanksteg istället för tabulatortecken"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:22
+msgid "Italic"
+msgstr "Kursiv"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:23
+msgid "Normal _text color:"
+msgstr "Normal _textfärg:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:24
+msgid "Pick a color"
+msgstr "Välj en färg"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:25
+msgid "Pick the background color"
+msgstr "Välj bakgrundsfärg"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:26
+msgid "Pick the editor font"
+msgstr "Välj redigerartypsnittet"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:27
+msgid "Pick the normal text color"
+msgstr "Välj färgen på normal text"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:28
+msgid "Pick the selected text color"
+msgstr "Välj färgen på markerad text"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:29
+msgid "Pick the selection color"
+msgstr "Välj markeringsfärgen"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:30
+msgid "Plugins"
+msgstr "Insticksmoduler"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:31
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:32
+msgid "Se_lection color:"
+msgstr "Ma_rkeringsfärg:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:33
+msgid "Selecte_d text color:"
+msgstr "Färg på markera_d text:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:34
+msgid "Strikethrough"
+msgstr "Genomstrykning"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:35
+msgid "Syntax Highlighting"
+msgstr "Syntaxmarkering"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:36
+msgid "U_se default theme colors"
+msgstr "Anv_änd standardtemafärger"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:37
+msgid "Underline"
+msgstr "Understrykning"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:38
+msgid "View"
+msgstr "Visa"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:39
+msgid "_Autosave files every"
+msgstr "Spara filer _automatiskt var"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:40
+msgid "_Background color:"
+msgstr "_Bakgrundsfärg:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:41
+msgid "_Background:"
+msgstr "_Bakgrund:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:42
+msgid "_Display line numbers"
+msgstr "_Visa radnummer"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:43
+msgid "_Enable auto indentation"
+msgstr "_Aktivera automatiskt indrag"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:44
+msgid "_Enable syntax highlighting"
+msgstr "_Aktivera syntaxmarkering"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:45
+msgid "_Foreground:"
+msgstr "_Förgrund:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:46
+msgid "_Limit to"
+msgstr "_Begränsa till"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:47
+msgid "_Reset to Default "
+msgstr "_Återställ till standard"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:48
+msgid "_Right margin at column:"
+msgstr "_Högermarginal vid kolumn:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:49
+msgid "_Tabs width:"
+msgstr "Ta_bbredd:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:50
+msgid "_Unlimited undo"
+msgstr "_Obegränsad ångrafunktion"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:51
+msgid "_Use default theme font"
+msgstr "_Använd standardtypsnitt i tema"
+
+# Antar att detta är i "... var [ ] minut", alltså inte plural på svenska
+#: gedit/dialogs/gedit-preferences.glade2.h:52
+msgid "_minutes"
+msgstr "_minut"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:53
+msgid "act_ions"
+msgstr "_åtgärder"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:111
+msgid "_Insert a new preview phrase."
+msgstr "_Infoga en ny förhandsgranskningsfras."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:117
+msgid "Modify preview phrase..."
+msgstr "Ändra förhandsgranskningsfras..."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:171
+msgid "Preview"
+msgstr "Förhandsgranskning"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:184
+msgid "_Modify preview phrase..."
+msgstr "_Ändra förhandsgranskningsfras..."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:245
+msgid "Font Selection"
+msgstr "Typsnittsval"
+
+#: gedit/dialogs/gnome-print-font-picker.c:92
+msgid "Sans Regular 12"
+msgstr "Sans Regular 12"
+
+#: gedit/dialogs/gnome-print-font-picker.c:93
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZzÅåÄäÖö"
+
+#: gedit/dialogs/gnome-print-font-picker.c:94
+msgid "Pick a Font"
+msgstr "Välj ett typsnitt"
+
+#: gedit/dialogs/gnome-print-font-picker.c:179
+msgid "Title"
+msgstr "Titel"
+
+#: gedit/dialogs/gnome-print-font-picker.c:180
+msgid "The title of the selection dialog box"
+msgstr "Titeln på väljardialogfönstret"
+
+#: gedit/dialogs/gnome-print-font-picker.c:200
+msgid "Font name"
+msgstr "Typnsnittsnamn"
+
+#: gedit/dialogs/gnome-print-font-picker.c:201
+msgid "Name of the selected font"
+msgstr "Namn på det valda typsnittet"
+
+#: gedit/dialogs/gnome-print-font-picker.c:209
+msgid "Preview text"
+msgstr "Förhandsgranskningstext"
+
+#: gedit/dialogs/gnome-print-font-picker.c:210
+msgid "Preview text shown in the dialog"
+msgstr "Förhandsgranskningstext som visas i dialogen"
+
+#: gedit/dialogs/gnome-print-font-picker.c:218
+msgid "Use font in label"
+msgstr "Använd typsnitt i etikett"
+
+#: gedit/dialogs/gnome-print-font-picker.c:219
+msgid "Use font in the label in font info mode"
+msgstr "Använd typsnitt i etiketten i typsnittsinformationsläge"
+
+#: gedit/dialogs/gnome-print-font-picker.c:227
+msgid "Font size for label"
+msgstr "Typsnittstorlek för etikett"
+
+#: gedit/dialogs/gnome-print-font-picker.c:228
+msgid "Font size for label in font info mode"
+msgstr "Typsnittsstorlek för etikett i typsnittsinformationsläge"
+
+#: gedit/dialogs/gnome-print-font-picker.c:238
+msgid "Show size"
+msgstr "Visa storlek"
+
+#: gedit/dialogs/gnome-print-font-picker.c:239
+msgid "Show size in font info mode"
+msgstr "Visa storlek i typsnittsinformationsläge"
+
+#: gedit/dialogs/gnome-print-font-picker.c:1018
+msgid "Font"
+msgstr "Typsnitt"
+
+#. gnome_print_font_picker_update_font_info
+#: gedit/dialogs/goto-line.glade2.h:1
+msgid "Goto Line"
+msgstr "Gå till rad"
+
+#: gedit/dialogs/goto-line.glade2.h:2
+msgid "_Line number:"
+msgstr "_Radnummer:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:6
+msgid "Fonts"
+msgstr "Typsnitt"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:7
+msgid "General"
+msgstr "Allmänt"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:8
+msgid "He_aders and footers:"
+msgstr "Sidh_uvuden och sidfötter:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:9
+msgid "Page Setup"
+msgstr "Sidkonfiguration"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:10
+msgid "Print _line numbers"
+msgstr "Skriv ut _radnummer"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:11
+msgid "Print s_yntax highlighting"
+msgstr "Skriv ut s_yntaxmarkering"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:12
+msgid "_Body:"
+msgstr "_Kropp:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:13
+msgid "_Line numbers:"
+msgstr "_Radnummer:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:14
+msgid "_Number every"
+msgstr "_Tal var"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:15
+msgid "_Print page headers"
+msgstr "Skriv _ut sidhuvud"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:16
+msgid "_Restore Default Fonts"
+msgstr "_Återställ standardtypsnitt"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:17
+msgid "lines"
+msgstr "rad"
+
+#: gedit/dialogs/plugin-manager.glade2.h:1
+msgid "C_onfigure Plugin"
+msgstr "K_onfigurera insticksmodul"
+
+#: gedit/dialogs/plugin-manager.glade2.h:2
+msgid "_About Plugin"
+msgstr "_Om insticksmodul"
+
+#: gedit/dialogs/plugin-manager.glade2.h:3
+msgid "button1"
+msgstr "knapp1"
+
+#: gedit/dialogs/plugin-manager.glade2.h:4
+msgid "dialog1"
+msgstr "dialog1"
+
+#: gedit/dialogs/program-location-dialog.glade2.h:1
+msgid "Browse for program location..."
+msgstr "Bläddra efter programplats..."
+
+#: gedit/dialogs/program-location-dialog.glade2.h:3
+msgid "_Location to search for:"
+msgstr "_Plats att leta i:"
+
+#: gedit/dialogs/program-location-dialog.glade2.h:4
+msgid "label"
+msgstr "etikett"
+
+#: gedit/dialogs/replace.glade2.h:1 gedit/dialogs/uri.glade2.h:1
+#: plugins/shell_output/shell_output.glade2.h:1
+#: plugins/spell/spell-checker.glade2.h:1 plugins/time/time.glade2.h:2
 msgid "*"
 msgstr "*"
 
-#: plugins/diff/diff.glade2.h:2
-msgid "Choose the files to compare."
-msgstr "Välj filerna som ska jämföras."
+#: gedit/dialogs/replace.glade2.h:2 gedit/gedit-ui.xml.h:19
+msgid "Find Next"
+msgstr "Sök nästa"
 
-#: plugins/diff/diff.glade2.h:3
-msgid "Compare files..."
-msgstr "Jämför filer..."
+#: gedit/dialogs/replace.glade2.h:3
+msgid "Match _entire word only"
+msgstr "Sök endast _hela ord"
 
-#: plugins/diff/diff.glade2.h:4
-msgid "F_rom document"
-msgstr "F_rån dokument"
+#: gedit/dialogs/replace.glade2.h:5
+msgid "Replace All"
+msgstr "Ersätt alla"
 
-#: plugins/diff/diff.glade2.h:5
-msgid "First"
-msgstr "Första"
+#: gedit/dialogs/replace.glade2.h:6
+msgid "Replace _with: "
+msgstr "Ersätt _med: "
 
-#: plugins/diff/diff.glade2.h:6
-msgid "First file from disk"
-msgstr "Första fil från disk"
+#: gedit/dialogs/replace.glade2.h:7
+msgid "Search _backwards"
+msgstr "Sök _baklänges"
 
-#: plugins/diff/diff.glade2.h:7
-msgid "First file from open document"
-msgstr "Första fil från öppet dokument"
+#: gedit/dialogs/replace.glade2.h:8
+msgid "_Match case"
+msgstr "_Gör skillnad på gemener/VERSALER"
 
-#: plugins/diff/diff.glade2.h:8
-msgid "From _document"
-msgstr "Från _dokument"
+#: gedit/dialogs/replace.glade2.h:9
+msgid "_Search for: "
+msgstr "_Sök efter: "
 
-#: plugins/diff/diff.glade2.h:9
-msgid "From a _file on disk"
-msgstr "Från en _fil på disk"
+#: gedit/dialogs/replace.glade2.h:10
+msgid "_Wrap around"
+msgstr "_Börja om från början"
 
-#: plugins/diff/diff.glade2.h:10
-msgid "From a file o_n disk"
-msgstr "Från en fil _på disk"
+#: gedit/dialogs/uri.glade2.h:2
+msgid "Ch_aracter coding:"
+msgstr "T_eckenkodning:"
 
-#: plugins/diff/diff.glade2.h:11
-msgid "Ignore _blanks (-b option)"
-msgstr "Ignorera _blanksteg (flaggan -b)"
+#: gedit/dialogs/uri.glade2.h:3
+msgid "Enter the _location (URI) of the file you would like to open:"
+msgstr "Ange _platsen (URI:n) för den fil som du vill öppna:"
 
-#: plugins/diff/diff.glade2.h:12
-msgid "Note that this option is only supported by GNU diff"
-msgstr "Observera att denna flagga endast stöds av GNU diff"
+#: gedit/dialogs/uri.glade2.h:4
+msgid "Open from URI"
+msgstr "Öppna från URI"
 
-#: plugins/diff/diff.glade2.h:13
-msgid "Second"
-msgstr "Andra"
-
-#: plugins/diff/diff.glade2.h:14
-msgid "Second file from disk"
-msgstr "Andra fil från disk"
-
-#: plugins/diff/diff.glade2.h:15
-msgid "Second file from open document"
-msgstr "Andra fil från öppet dokument"
-
-#: plugins/diff/diff.glade2.h:16
-msgid "Select the \"first\" file..."
-msgstr "Välj den \"första\" filen..."
-
-#: plugins/diff/diff.glade2.h:17
-msgid "Select the \"second\" file..."
-msgstr "Välj den \"andra\" filen..."
-
-#: plugins/diff/diff.glade2.h:18
-msgid "Select the first file to compare"
-msgstr "Välj första filen att jämföra"
-
-#: plugins/diff/diff.glade2.h:19
-msgid "Select the first open document to compare"
-msgstr "Välj första öppna dokumentet att jämföra"
-
-#: plugins/diff/diff.glade2.h:20
-msgid "Select the second file to compare"
-msgstr "Välj den andra filen att jämföra"
-
-#: plugins/diff/diff.glade2.h:21
-msgid "Select the second open document to compare"
-msgstr "Välj det andra öppna dokumentet att jämföra"
-
-#: plugins/diff/diff.glade2.h:22
-msgid "Use the _unified output format (-u option)"
-msgstr "Använd det _universella utdataformatet (flaggan -u)"
-
-#: plugins/diff/diff.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Compare Files plugin uses the <tt>diff</tt> program to compare two "
-"documents or files on disk.\n"
-"\n"
-"For more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell "
-"prompt."
+#: gedit/gedit-commands.c:544
+msgid "translator_credits"
 msgstr ""
-"Insticksmodulen \"Jämför filer\" använder programmet <tt>diff</tt> för att "
-"jämföra två dokument eller filer på disken.\n"
+"Christian Rose\n"
+"Andreas Hydén\n"
+"Martin Norbäck\n"
+"Martin Wahlén\n"
+"Skicka synpunkter på översättningen till sv@li.org"
+
+#: gedit/gedit-commands.c:557
+msgid "gedit"
+msgstr "gedit"
+
+#: gedit/gedit-commands.c:561
+msgid "gedit is a small and lightweight text editor for the GNOME Desktop"
+msgstr "gedit är en liten och enkel textredigerare för GNOME-skrivbordet"
+
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
+
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+msgid "Untitled"
+msgstr "Namnlös"
+
+#: gedit/gedit-document.c:640 gedit/gedit-document.c:687
+msgid "Invalid file name"
+msgstr "Ogiltigt filnamn"
+
+#: gedit/gedit-document.c:838 gedit/gedit-document.c:1314
+#: viewer/gedit-persist-stream.c:120
+msgid "Invalid UTF-8 data"
+msgstr "Ogiltig UTF-8-data"
+
+#: gedit/gedit-document.c:1640
+#, c-format
+msgid "Could not read symbolic link information for %s"
+msgstr "Kunde inte läsa information om symbolisk länken %s"
+
+#: gedit/gedit-document.c:1686
+msgid "The file has too many symbolic links."
+msgstr "Filen har för många symboliska länkar."
+
+#: gedit/gedit-document.c:1742
+#, c-format
+msgid "gedit cannot handle %s: locations in write mode."
+msgstr "gedit kan inte hantera %s:-platser i skrivläge."
+
+#: gedit/gedit-document.c:1749
+msgid "gedit cannot handle this kind of location in write mode."
+msgstr "gedit kan inte hantera denna typ av plats i skrivlägre."
+
+#: gedit/gedit-document.c:1762
+msgid "Invalid filename."
+msgstr "Ogiltigt filnamn."
+
+#: gedit/gedit-document.c:1874
+msgid ""
+"There is not enough disk space to save the file.\n"
+"Please free some disk space and try again."
+msgstr ""
+"Det finns inte tillräckligt med diskutrymme för att spara filen.\n"
+"Frigör en del utrymme på disken och försök igen."
+
+#: gedit/gedit-document.c:1879
+msgid ""
+"The disk where you are trying to save the file has a limitation on file "
+"sizes.  Please try saving a smaller file or saving it to a disk that does "
+"not have this limitation."
+msgstr ""
+"Disken där du försöker spara filen har en begränsning på filstorlekar. "
+"Försök att spara en mindre fil eller spara den på en disk som inte har denna "
+"begränsning."
+
+#: gedit/gedit-document.c:1923
+msgid "Could not create a backup file."
+msgstr "Kunde inte skapa en säkerhetskopia."
+
+#: gedit/gedit-encodings-option-menu.c:207
+msgid "Auto Detected"
+msgstr "Automatiskt detekterad"
+
+#: gedit/gedit-encodings-option-menu.c:227
+#: gedit/gedit-encodings-option-menu.c:249
+#, c-format
+msgid "Current Locale (%s)"
+msgstr "Aktuell lokal (%s)"
+
+#: gedit/gedit-encodings-option-menu.c:310
+msgid "Add or _Remove..."
+msgstr "Lägg till eller _ta bort..."
+
+#: gedit/gedit-encodings.c:132 gedit/gedit-encodings.c:176
+#: gedit/gedit-encodings.c:178 gedit/gedit-encodings.c:180
+#: gedit/gedit-encodings.c:182
+msgid "Unicode"
+msgstr "Unicode"
+
+#: gedit/gedit-encodings.c:145 gedit/gedit-encodings.c:171
+#: gedit/gedit-encodings.c:212 gedit/gedit-encodings.c:255
+msgid "Western"
+msgstr "Västerländsk"
+
+#: gedit/gedit-encodings.c:147 gedit/gedit-encodings.c:214
+#: gedit/gedit-encodings.c:251
+msgid "Central European"
+msgstr "Centraleuropeisk"
+
+#: gedit/gedit-encodings.c:149
+msgid "South European"
+msgstr "Sydeuropeisk"
+
+#: gedit/gedit-encodings.c:151 gedit/gedit-encodings.c:167
+#: gedit/gedit-encodings.c:265
+msgid "Baltic"
+msgstr "Baltisk"
+
+#: gedit/gedit-encodings.c:153 gedit/gedit-encodings.c:216
+#: gedit/gedit-encodings.c:229 gedit/gedit-encodings.c:233
+#: gedit/gedit-encodings.c:235 gedit/gedit-encodings.c:253
+msgid "Cyrillic"
+msgstr "Kyrillisk"
+
+#: gedit/gedit-encodings.c:155 gedit/gedit-encodings.c:222
+#: gedit/gedit-encodings.c:263
+msgid "Arabic"
+msgstr "Arabisk"
+
+#: gedit/gedit-encodings.c:157 gedit/gedit-encodings.c:257
+#: plugins/spell/gedit-spell-checker.c:89
+msgid "Greek"
+msgstr "Grekisk"
+
+#: gedit/gedit-encodings.c:159
+msgid "Hebrew Visual"
+msgstr "Synlig hebreisk"
+
+#: gedit/gedit-encodings.c:161 gedit/gedit-encodings.c:220
+#: gedit/gedit-encodings.c:261
+msgid "Hebrew"
+msgstr "Hebreisk"
+
+#: gedit/gedit-encodings.c:163 gedit/gedit-encodings.c:218
+#: gedit/gedit-encodings.c:259
+msgid "Turkish"
+msgstr "Turkisk"
+
+#: gedit/gedit-encodings.c:165
+msgid "Nordic"
+msgstr "Nordisk"
+
+#: gedit/gedit-encodings.c:169
+msgid "Celtic"
+msgstr "Keltisk"
+
+#: gedit/gedit-encodings.c:173
+msgid "Romanian"
+msgstr "Rumänsk"
+
+#: gedit/gedit-encodings.c:185
+msgid "Armenian"
+msgstr "Armensk"
+
+#: gedit/gedit-encodings.c:187 gedit/gedit-encodings.c:189
+#: gedit/gedit-encodings.c:198
+msgid "Chinese Traditional"
+msgstr "Traditionell kinesisk"
+
+#: gedit/gedit-encodings.c:191
+msgid "Cyrillic/Russian"
+msgstr "Kyrillisk/Rysk"
+
+#: gedit/gedit-encodings.c:194 gedit/gedit-encodings.c:225
+#: gedit/gedit-encodings.c:240
+msgid "Japanese"
+msgstr "Japansk"
+
+#: gedit/gedit-encodings.c:196 gedit/gedit-encodings.c:227
+#: gedit/gedit-encodings.c:231 gedit/gedit-encodings.c:246
+msgid "Korean"
+msgstr "Koreansk"
+
+#: gedit/gedit-encodings.c:201 gedit/gedit-encodings.c:203
+#: gedit/gedit-encodings.c:205 gedit/gedit-encodings.c:209
+msgid "Chinese Simplified"
+msgstr "Förenklad kinesisk"
+
+#: gedit/gedit-encodings.c:207
+msgid "Georgian"
+msgstr "Georgisk"
+
+#: gedit/gedit-encodings.c:237
+msgid "Cyrillic/Ukrainian"
+msgstr "Kyrillisk/Ukrainsk"
+
+#: gedit/gedit-encodings.c:242 gedit/gedit-encodings.c:248
+#: gedit/gedit-encodings.c:267
+msgid "Vietnamese"
+msgstr "Vietnamesisk"
+
+#: gedit/gedit-encodings.c:244
+msgid "Thai"
+msgstr "Thai"
+
+#: gedit/gedit-file-selector-util.c:153
+#, c-format
+msgid "A file named \"%s\" already exists.\n"
+msgstr "En fil med namnet \"%s\" finns redan.\n"
+
+#: gedit/gedit-file-selector-util.c:154
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "Vill du ersätta den med den fil som du vill spara?"
+
+#: gedit/gedit-file-selector-util.c:163
+#, c-format
+msgid "The file \"%s\" is read-only.\n"
+msgstr "Filen \"%s\" är skrivskyddad.\n"
+
+#: gedit/gedit-file-selector-util.c:164
+msgid "Do you want to try to replace it with the one you are saving?"
+msgstr "Vill du försöka ersätta den med den fil som du vill spara?"
+
+#: gedit/gedit-file-selector-util.c:362
+msgid "All Files"
+msgstr "Alla filer"
+
+#: gedit/gedit-file-selector-util.c:370
+msgid "All Text Files"
+msgstr "Alla textfiler"
+
+#: gedit/gedit-file-selector-util.c:388
+msgid "Ch_aracter Coding:"
+msgstr "T_eckenkodning:"
+
+#: gedit/gedit-file-selector-util.c:534
+msgid "Select a file to open"
+msgstr "Välj en fil att öppna"
+
+#: gedit/gedit-file-selector-util.c:560
+msgid "Select files to open"
+msgstr "Välj filer att öppna"
+
+#: gedit/gedit-file-selector-util.c:592
+msgid "Select a filename to save"
+msgstr "Välj ett filnamn att spara"
+
+#: gedit/gedit-file.c:213
+msgid "Open File..."
+msgstr "Öppna fil..."
+
+#: gedit/gedit-file.c:269 gedit/gedit-file.c:422
+#, c-format
+msgid "Saving document \"%s\"..."
+msgstr "Sparar dokumentet \"%s\"..."
+
+#: gedit/gedit-file.c:297 gedit/gedit-file.c:443
+#, c-format
+msgid "The document \"%s\" has not been saved."
+msgstr "Dokumentet \"%s\" har inte sparats."
+
+#: gedit/gedit-file.c:311 gedit/gedit-file.c:435
+#, c-format
+msgid "The document \"%s\" has been saved."
+msgstr "Dokumentet \"%s\" har sparats."
+
+#: gedit/gedit-file.c:402
+msgid "Save as..."
+msgstr "Spara som..."
+
+#: gedit/gedit-file.c:603
+#, c-format
+msgid "Revert unsaved changes to document \"%s\"?"
+msgstr "Återställ osparade ändringar i dokumentet \"%s\"?"
+
+#: gedit/gedit-file.c:612
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld second will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+"Ändringar i dokumentet gjorda under den senaste sekunden kommer att vara "
+"borta för alltid."
+msgstr[1] ""
+"Ändringar i dokumentet gjorda under de senaste %ld sekunderna kommer att "
+"vara borta för alltid."
+
+#: gedit/gedit-file.c:621
+msgid ""
+"Changes made to the document in the last minute will be permanently lost."
+msgstr ""
+"Ändringar i dokumentet gjorda under den senaste minuten kommer att vara "
+"borta för alltid."
+
+#: gedit/gedit-file.c:627
+#, c-format
+msgid ""
+"Changes made to the document in the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+"Ändringar i dokumentet gjorda under den senaste minuten och sekunden kommer "
+"att vara borta för alltid."
+msgstr[1] ""
+"Ändringar i dokumentet gjorda under den senaste minuten och %ld sekunderna "
+"kommer att vara borta för alltid."
+
+#: gedit/gedit-file.c:637
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld minute will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld minutes will be permanently "
+"lost."
+msgstr[0] ""
+"Ändringar i dokumentet gjorda under den senaste minuten kommer att vara "
+"borta för alltid."
+msgstr[1] ""
+"Ändringar i dokumentet gjorda under de senaste %ld minuterna kommer att vara "
+"borta för alltid."
+
+#: gedit/gedit-file.c:652
+msgid "Changes made to the document in the last hour will be permanently lost."
+msgstr ""
+"Ändringar i dokumentet gjorda under den senaste timmen kommer att vara borta "
+"för alltid."
+
+#: gedit/gedit-file.c:658
+#, c-format
+msgid ""
+"Changes made to the document in the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+"Ändringar i dokumentet gjorda under den senaste timmen och minuten kommer "
+"att vara borta för alltid."
+msgstr[1] ""
+"Ändringar i dokumentet gjorda under den senaste timmen och %d minuterna "
+"kommer att vara borta för alltid."
+
+#: gedit/gedit-file.c:673
+#, c-format
+msgid ""
+"Changes made to the document in the last %d hour will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %d hours will be permanently lost."
+msgstr[0] ""
+"Ändringar i dokumentet gjorda under den senaste timmen kommer att vara borta "
+"för alltid."
+msgstr[1] ""
+"Ändringar i dokumentet gjorda under de senaste %d timmarna kommer att vara "
+"borta för alltid."
+
+#: gedit/gedit-file.c:696 gedit/gedit-ui.xml.h:94
+msgid "_Revert"
+msgstr "_Återställ"
+
+#: gedit/gedit-file.c:745
+#, c-format
+msgid "Error reverting the document \"%s\"."
+msgstr "Fel vid återställning av dokumentet \"%s\"."
+
+#: gedit/gedit-file.c:752
+#, c-format
+msgid "The document \"%s\" has not been reverted."
+msgstr "Dokumentet \"%s\" har inte återställts."
+
+#: gedit/gedit-file.c:756
+#, c-format
+msgid "The document \"%s\" has been reverted."
+msgstr "Dokumentet \"%s\" har återställts."
+
+#: gedit/gedit-file.c:784
+#, c-format
+msgid "Reverting the document \"%s\"..."
+msgstr "Återställer dokumentet \"%s\"..."
+
+#: gedit/gedit-file.c:911
+msgid "Could not read data from stdin."
+msgstr "Kunde inte läsa data från standard in."
+
+#: gedit/gedit-file.c:1059
+msgid "Reverting file:"
+msgstr "Återställer fil:"
+
+#: gedit/gedit-file.c:1063
+msgid "Loading file:"
+msgstr "Läser in fil:"
+
+#: gedit/gedit-file.c:1231 gedit/gedit-file.c:1390
+#, c-format
+msgid "Error loading file \"%s\""
+msgstr "Fel vid inläsning av filen \"%s\""
+
+#: gedit/gedit-file.c:1252
+#, c-format
+msgid "Loaded file \"%s\""
+msgstr "Läste in filen \"%s\""
+
+#: gedit/gedit-file.c:1329
+#, c-format
+msgid "Loaded %d file"
+msgid_plural "Loaded %d files"
+msgstr[0] "Läste in %d fil"
+msgstr[1] "Läste in %d filer"
+
+#: gedit/gedit-file.c:1363
+#, c-format
+msgid "Loading file \"%s\"..."
+msgstr "Läser in filen \"%s\"..."
+
+#: gedit/gedit-file.c:1510
+#, c-format
+msgid "Loading %d file..."
+msgid_plural "Loading %d files..."
+msgstr[0] "Läser in %d fil..."
+msgstr[1] "Läser in %d filer..."
+
+#. Read only
+#: gedit/gedit-mdi-child.c:248
+msgid "RO"
+msgstr "SKRIVSK"
+
+#. Add the detach tab button
+#: gedit/gedit-mdi-child.c:636 gedit/gedit-ui.xml.h:85
+msgid "_Move to New Window"
+msgstr "_Flytta till nytt fönster"
+
+#: gedit/gedit-mdi-child.c:755
+msgid "Unknown"
+msgstr "Okänd"
+
+#: gedit/gedit-mdi-child.c:766
+msgid "Unicode (UTF-8)"
+msgstr "Unicode (UTF-8)"
+
+#: gedit/gedit-mdi-child.c:773
+msgid "Name:"
+msgstr "Namn:"
+
+#: gedit/gedit-mdi-child.c:774
+msgid "MIME Type:"
+msgstr "MIME-typ:"
+
+#: gedit/gedit-mdi-child.c:775
+msgid "Encoding:"
+msgstr "Kodning:"
+
+#. Translators: %s is a URI
+#: gedit/gedit-mdi.c:284 gedit/gedit-mdi.c:444
+#, c-format
+msgid "Open '%s'"
+msgstr "Öppna \"%s\""
+
+#: gedit/gedit-mdi.c:519
+msgid "Open a recently used file"
+msgstr "Öppna en nyligen använd fil"
+
+#: gedit/gedit-mdi.c:1278
+msgid "(modified)"
+msgstr "(ändrad)"
+
+#: gedit/gedit-mdi.c:1284
+msgid "(readonly)"
+msgstr "(skrivskyddad)"
+
+#: gedit/gedit-mdi.c:1912
+msgid "Normal"
+msgstr "Normal"
+
+#: gedit/gedit-mdi.c:1913
+msgid "Use Normal highlight mode"
+msgstr "Använd normalt färgmarkeringsläge"
+
+#: gedit/gedit-mdi.c:1989
+#, c-format
+msgid "Use %s highlight mode"
+msgstr "Använd färgmarkeringsläge för %s"
+
+#: gedit/gedit-output-window.c:333
+msgid "Close the output window"
+msgstr "Stäng utdatafönstret"
+
+#: gedit/gedit-output-window.c:371
+msgid "Copy selected lines"
+msgstr "Kopiera markerade rader"
+
+#: gedit/gedit-output-window.c:391
+msgid "Clear the output window"
+msgstr "Töm utdatafönstret"
+
+#: gedit/gedit-output-window.c:431
+msgid "Output Lines"
+msgstr "Utdatarader"
+
+#: gedit/gedit-plugins-engine.c:363
+#, c-format
+msgid "Error, unable to open module file '%s'\n"
+msgstr "Fel, kan inte öppna modulfilen \"%s\"\n"
+
+#: gedit/gedit-plugins-engine.c:373
+#, c-format
+msgid "Error, plugin '%s' does not contain init function."
+msgstr "Fel, insticksmodulen \"%s\" innehåller inte initieringsfunktion."
+
+#: gedit/gedit-plugins-engine.c:383
+#, c-format
+msgid "Error, plugin '%s' does not contain activate function."
+msgstr "Fel, insticksmodulen \"%s\" innehåller inte aktiveringsfunktion."
+
+#: gedit/gedit-plugins-engine.c:393
+#, c-format
+msgid "Error, plugin '%s' does not contain deactivate function."
+msgstr "Fel, insticksmodulen \"%s\" innehåller inte inaktiveringsfunktion."
+
+#: gedit/gedit-plugins-engine.c:418
+#, c-format
+msgid "Error, impossible to initialize plugin '%s'"
+msgstr "Fel, omöjligt att initiera insticksmodulen \"%s\""
+
+#: gedit/gedit-plugins-engine.c:469
+#, c-format
+msgid "Error, impossible to destroy plugin '%s'"
+msgstr "Fel, omöjligt att förstöra insticksmodulen \"%s\""
+
+#: gedit/gedit-plugins-engine.c:552 gedit/gedit-plugins-engine.c:640
+#: gedit/gedit-plugins-engine.c:765
+#, c-format
+msgid "Error, impossible to activate plugin '%s'"
+msgstr "Fel, omöjligt att aktivera insticksmodulen \"%s\""
+
+#: gedit/gedit-plugins-engine.c:591 gedit/gedit-plugins-engine.c:783
+#, c-format
+msgid "Error, impossible to deactivate plugin '%s'"
+msgstr "Fel, omöjligt att inaktivera insticksmodulen \"%s\""
+
+#: gedit/gedit-plugins-engine.c:684
+#, c-format
+msgid "Error, impossible to update ui of the plugin '%s'"
+msgstr ""
+"Fel, omöjligt att aktivera användargränssnitt för insticksmodulen \"%s\""
+
+#: gedit/gedit-prefs-manager.c:177
+msgid "Cannot initialize preferences manager."
+msgstr "Kan inte initiera inställningshanteraren."
+
+#: gedit/gedit-prefs-manager.c:1151
+#, c-format
+msgid "Expected `%s' got `%s' for key %s"
+msgstr "\"%s\" förväntades men \"%s\" mottogs för nyckeln %s"
+
+#: gedit/gedit-print.c:217 gedit/gedit-ui.xml.h:37
+msgid "Print"
+msgstr "Skriv ut"
+
+#: gedit/gedit-print.c:226 plugins/docinfo/docinfo.glade2.h:7
+msgid "Lines"
+msgstr "Rader"
+
+#: gedit/gedit-print.c:330
+msgid "Preparing pages..."
+msgstr "Förbereder sidor..."
+
+#: gedit/gedit-print.c:357
+#, c-format
+msgid "Rendering page %d of %d..."
+msgstr "Renderar sida %d av %d..."
+
+#: gedit/gedit-print.c:359
+#, c-format
+msgid "Printing page %d of %d..."
+msgstr "Skriver ut sida %d av %d..."
+
+#: gedit/gedit-print.c:381 gedit/gedit-ui.xml.h:40
+msgid "Print preview"
+msgstr "Förhandsgranskning"
+
+#: gedit/gedit-print.c:547
+#, c-format
+msgid "File: %s"
+msgstr "Fil: %s"
+
+#: gedit/gedit-print.c:553
+msgid "Page %N of %Q"
+msgstr "Sida %N av %Q"
+
+#: gedit/gedit-ui.xml.h:1
+msgid "About this application"
+msgstr "Om detta program"
+
+#: gedit/gedit-ui.xml.h:2
+msgid "Change the visibility of the output window in the current window"
+msgstr "Ändra synligheten på utdatafönstret i det aktuella fönstret"
+
+#: gedit/gedit-ui.xml.h:3
+msgid "Change the visibility of the statusbar in the current window"
+msgstr "Ändra synligheten på statusraden i det aktuella fönstret"
+
+#: gedit/gedit-ui.xml.h:4
+msgid "Change the visibility of the toolbar in the current window"
+msgstr "Ändra synligheten på verktygsraden i det aktuella fönstret"
+
+#: gedit/gedit-ui.xml.h:5
+msgid "Close"
+msgstr "Stäng"
+
+#: gedit/gedit-ui.xml.h:6
+msgid "Close all open files"
+msgstr "Stäng alla öppna filer"
+
+#: gedit/gedit-ui.xml.h:7
+msgid "Close the current file"
+msgstr "Stäng den aktiva filen"
+
+#: gedit/gedit-ui.xml.h:8
+msgid "Configure the application"
+msgstr "Konfigurera programmet"
+
+#: gedit/gedit-ui.xml.h:9
+msgid "Copy"
+msgstr "Kopiera"
+
+#: gedit/gedit-ui.xml.h:10
+msgid "Copy the selection"
+msgstr "Kopiera markeringen"
+
+#: gedit/gedit-ui.xml.h:11
+msgid "Create a new document"
+msgstr "Skapa nytt dokument"
+
+#: gedit/gedit-ui.xml.h:12
+msgid "Cu_t"
+msgstr "Klipp _ut"
+
+#: gedit/gedit-ui.xml.h:13
+msgid "Cut"
+msgstr "Klipp ut"
+
+#: gedit/gedit-ui.xml.h:14
+msgid "Cut the selection"
+msgstr "Klipp ut markeringen"
+
+#: gedit/gedit-ui.xml.h:15
+msgid "Delete"
+msgstr "Ta bort"
+
+#: gedit/gedit-ui.xml.h:16
+msgid "Delete the selected text"
+msgstr "Ta bort den markerade texten"
+
+#: gedit/gedit-ui.xml.h:18
+msgid "Find Ne_xt"
+msgstr "Sök n_ästa"
+
+#: gedit/gedit-ui.xml.h:20
+msgid "Find Pre_vious"
+msgstr "Sök före_gående"
+
+#: gedit/gedit-ui.xml.h:21
+msgid "Find Previous"
+msgstr "Sök föregående"
+
+#: gedit/gedit-ui.xml.h:22
+msgid "Go to _Line..."
+msgstr "Gå till _rad..."
+
+#: gedit/gedit-ui.xml.h:23
+msgid "Go to a specific line"
+msgstr "Gå till en specifik rad"
+
+#: gedit/gedit-ui.xml.h:24
+msgid "Main toolbar"
+msgstr "Huvudverktygsrad"
+
+#: gedit/gedit-ui.xml.h:25
+msgid "Move the current document to a new window"
+msgstr "Flytta det aktuella dokument till ett nytt fönster"
+
+#: gedit/gedit-ui.xml.h:26
+msgid "New"
+msgstr "Nytt"
+
+#: gedit/gedit-ui.xml.h:27
+msgid "Open"
+msgstr "Öppna"
+
+#: gedit/gedit-ui.xml.h:28
+msgid "Open Location..."
+msgstr "Öppna plats..."
+
+#: gedit/gedit-ui.xml.h:29
+msgid "Open _Location..."
+msgstr "Öppna _fil..."
+
+#: gedit/gedit-ui.xml.h:30
+msgid "Open a file"
+msgstr "Öppna en fil"
+
+#: gedit/gedit-ui.xml.h:31
+msgid "Open a file from a specified location"
+msgstr "Öppna en fil från en angiven plats"
+
+#: gedit/gedit-ui.xml.h:32
+msgid "Open the gedit manual"
+msgstr "Öppna gedit-manualen"
+
+#: gedit/gedit-ui.xml.h:33
+msgid "Page Set_up"
+msgstr "Sid_konfiguration"
+
+#: gedit/gedit-ui.xml.h:34
+msgid "Paste"
+msgstr "Klistra in"
+
+#: gedit/gedit-ui.xml.h:35
+msgid "Paste the clipboard"
+msgstr "Klistra in från urklipp"
+
+#: gedit/gedit-ui.xml.h:36
+msgid "Pr_eferences"
+msgstr "_Inställningar"
+
+#: gedit/gedit-ui.xml.h:38
+msgid "Print Previe_w..."
+msgstr "Förhands_granska..."
+
+#: gedit/gedit-ui.xml.h:39
+msgid "Print Preview"
+msgstr "Förhandsgranska"
+
+#: gedit/gedit-ui.xml.h:41
+msgid "Print the current file"
+msgstr "Skriv ut aktiv fil"
+
+#: gedit/gedit-ui.xml.h:42
+msgid "Quit"
+msgstr "Avsluta"
+
+#: gedit/gedit-ui.xml.h:43
+msgid "Quit the program"
+msgstr "Avsluta programmet"
+
+#: gedit/gedit-ui.xml.h:44
+msgid "Redo"
+msgstr "Gör om"
+
+#: gedit/gedit-ui.xml.h:45
+msgid "Redo the undone action"
+msgstr "Gör om den senast ångrade åtgärden"
+
+#: gedit/gedit-ui.xml.h:47
+msgid "Revert"
+msgstr "Återgå"
+
+#: gedit/gedit-ui.xml.h:48
+msgid "Revert to a saved version of the file"
+msgstr "Återgå till en sparad version av filen"
+
+#: gedit/gedit-ui.xml.h:49
+msgid "Save"
+msgstr "Spara"
+
+#: gedit/gedit-ui.xml.h:50
+msgid "Save As"
+msgstr "Spara som"
+
+#: gedit/gedit-ui.xml.h:51
+msgid "Save _As..."
+msgstr "Spara so_m..."
+
+#: gedit/gedit-ui.xml.h:52
+msgid "Save all open files"
+msgstr "Spara alla öppna filer"
+
+#: gedit/gedit-ui.xml.h:53
+msgid "Save the current file"
+msgstr "Spara den aktiva filen"
+
+#: gedit/gedit-ui.xml.h:54
+msgid "Save the current file with a different name"
+msgstr "Spara den aktuella filen med ett annat namn"
+
+#: gedit/gedit-ui.xml.h:55
+msgid "Search backwards for the same text"
+msgstr "Sök baklänges efter samma text"
+
+#: gedit/gedit-ui.xml.h:56
+msgid "Search for and replace text"
+msgstr "Sök efter och ersätt text"
+
+#: gedit/gedit-ui.xml.h:57
+msgid "Search for text"
+msgstr "Sök efter text"
+
+#: gedit/gedit-ui.xml.h:58
+msgid "Search forwards for the same text"
+msgstr "Sök framlänges efter samma text"
+
+#: gedit/gedit-ui.xml.h:59
+msgid "Select All"
+msgstr "Markera allt"
+
+#: gedit/gedit-ui.xml.h:60
+msgid "Select _All"
+msgstr "Markera _allt"
+
+#: gedit/gedit-ui.xml.h:61
+msgid "Select the entire document"
+msgstr "Markera hela dokumentet"
+
+#: gedit/gedit-ui.xml.h:62
+msgid ""
+"Set toolbar button style according to desktop Menu and Toolbar Preferences"
+msgstr ""
+"Ställ in stilen på verktygsradsknappar enligt skrivbordsinställningarna för "
+"menyer och verktygsrader"
+
+#: gedit/gedit-ui.xml.h:63
+msgid "Setup the page settings"
+msgstr "Konfigurera sidinställningarna"
+
+#: gedit/gedit-ui.xml.h:64
+msgid "Show only icons in the toolbar"
+msgstr "Visa endast ikoner i verktygsraden"
+
+#: gedit/gedit-ui.xml.h:65
+msgid "Show text below every icon in the toolbar"
+msgstr "Visa text under varje ikon i verktygsraden"
+
+#: gedit/gedit-ui.xml.h:66
+msgid "Show text only beside important icons in the toolbar"
+msgstr "Visa text endast bredvid viktiga ikoner i verktygsraden"
+
+#: gedit/gedit-ui.xml.h:67
+msgid "T_ext for Important Icons"
+msgstr "Te_xt för viktiga ikoner"
+
+#: gedit/gedit-ui.xml.h:68
+msgid "Undo"
+msgstr "Ångra"
+
+#: gedit/gedit-ui.xml.h:69
+msgid "Undo the last action"
+msgstr "Ångra den senaste åtgärden"
+
+#: gedit/gedit-ui.xml.h:70
+msgid "_About"
+msgstr "_Om"
+
+#: gedit/gedit-ui.xml.h:71
+msgid "_Close"
+msgstr "S_täng"
+
+#: gedit/gedit-ui.xml.h:72
+msgid "_Close All"
+msgstr "S_täng alla"
+
+#: gedit/gedit-ui.xml.h:73
+msgid "_Contents"
+msgstr "_Innehåll"
+
+#: gedit/gedit-ui.xml.h:74
+msgid "_Copy"
+msgstr "_Kopiera"
+
+#: gedit/gedit-ui.xml.h:75
+msgid "_Customize Toolbar"
+msgstr "_Anpassa verktygsrad"
+
+#: gedit/gedit-ui.xml.h:76
+msgid "_Delete"
+msgstr "_Ta bort"
+
+#: gedit/gedit-ui.xml.h:77
+msgid "_Desktop Default"
+msgstr "_Systemstandard"
+
+#: gedit/gedit-ui.xml.h:78
+msgid "_Documents"
+msgstr "_Dokument"
+
+#: gedit/gedit-ui.xml.h:79
+msgid "_Edit"
+msgstr "_Redigera"
+
+#: gedit/gedit-ui.xml.h:80
+msgid "_File"
+msgstr "_Arkiv"
+
+#: gedit/gedit-ui.xml.h:81
+msgid "_Find..."
+msgstr "_Sök..."
+
+#: gedit/gedit-ui.xml.h:82
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: gedit/gedit-ui.xml.h:83
+msgid "_Highlight Mode"
+msgstr "_Färgmarkeringsläge"
+
+#: gedit/gedit-ui.xml.h:84
+msgid "_Icons Only"
+msgstr "Endast _ikoner"
+
+#: gedit/gedit-ui.xml.h:86
+msgid "_New"
+msgstr "_Ny"
+
+#: gedit/gedit-ui.xml.h:87
+msgid "_Open..."
+msgstr "_Öppna..."
+
+#: gedit/gedit-ui.xml.h:88
+msgid "_Output Window"
+msgstr "_Utdatafönster"
+
+#: gedit/gedit-ui.xml.h:89
+msgid "_Paste"
+msgstr "Klistra _in"
+
+#: gedit/gedit-ui.xml.h:90
+msgid "_Print..."
+msgstr "Skriv _ut..."
+
+#: gedit/gedit-ui.xml.h:91
+msgid "_Quit"
+msgstr "_Avsluta"
+
+#: gedit/gedit-ui.xml.h:92
+msgid "_Redo"
+msgstr "_Gör om"
+
+#: gedit/gedit-ui.xml.h:93
+msgid "_Replace..."
+msgstr "_Ersätt..."
+
+#: gedit/gedit-ui.xml.h:95
+msgid "_Save"
+msgstr "_Spara"
+
+#: gedit/gedit-ui.xml.h:96
+msgid "_Save All"
+msgstr "_Spara alla"
+
+#: gedit/gedit-ui.xml.h:97
+msgid "_Search"
+msgstr "_Sök"
+
+#: gedit/gedit-ui.xml.h:98
+msgid "_Statusbar"
+msgstr "_Statusrad"
+
+#: gedit/gedit-ui.xml.h:99
+msgid "_Text for All Icons"
+msgstr "_Text för alla ikoner"
+
+#: gedit/gedit-ui.xml.h:100
+msgid "_Toolbar"
+msgstr "_Verktygsrad"
+
+#: gedit/gedit-ui.xml.h:101
+msgid "_Tools"
+msgstr "Verkty_g"
+
+#: gedit/gedit-ui.xml.h:102
+msgid "_Undo"
+msgstr "_Ångra"
+
+#: gedit/gedit-ui.xml.h:103
+msgid "_View"
+msgstr "_Visa"
+
+#: gedit/gedit-utils.c:428
+#, c-format
+msgid ""
+"Could not find the file \"%s\".\n"
 "\n"
-"För mer information om programmet <tt>diff</tt> skriver du <tt>man diff</"
-"tt>  i en skalprompt."
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"Kunde inte hitta filen \"%s\".\n"
+"\n"
+"Kontrollera att du har angivit platsen korrekt och försök igen."
+
+#: gedit/gedit-utils.c:436
+#, c-format
+msgid "Could not open the file \"%s\" because it contains corrupted data."
+msgstr "Kunde inte öppna filen \"%s\" eftersom den innehåller trasig data."
+
+#: gedit/gedit-utils.c:447
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit cannot handle %s: locations."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom gedit inte kan hantera %s:-platser."
+
+#: gedit/gedit-utils.c:453
+#, c-format
+msgid "Could not open the file \"%s\""
+msgstr "Kunde inte öppna filen \"%s\""
+
+#: gedit/gedit-utils.c:463
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains data in an invalid format."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom den innehåller data i ett ogiltigt "
+"format."
+
+#: gedit/gedit-utils.c:470
+#, c-format
+msgid "Could not open the file \"%s\" because it is too big."
+msgstr "Kunde inte öppna filen \"%s\" eftersom den är för stor."
+
+#: gedit/gedit-utils.c:477
+#, c-format
+msgid ""
+"\"%s\" is not a valid location.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\" är ingen giltig plats.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt och försök igen."
+
+#: gedit/gedit-utils.c:485
+#, c-format
+msgid "Could not open the file \"%s\" because access was denied."
+msgstr "Kunde inte öppna filen \"%s\" eftersom åtkomst nekades."
+
+#: gedit/gedit-utils.c:492
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom det finns för många öppna filer.\n"
+"\n"
+"Stäng några öppna filer och försök igen."
+
+#: gedit/gedit-utils.c:500
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\" är en katalog.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt och försök igen."
+
+#: gedit/gedit-utils.c:508
+#, c-format
+msgid ""
+"Not enough available memory to open the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+"Det finns inte tillräckligt med minne för att öppna filen \"%s\". Stäng "
+"några körande program och försök igen."
+
+#: gedit/gedit-utils.c:534
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that you typed the location correctly and that your proxy "
+"settings are correct and then try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom värden \"%s\" inte kunde hittas.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt och att dina "
+"proxyserverinställningar stämmer och försök igen."
+
+#: gedit/gedit-utils.c:549
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was invalid.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom värdnamnet var ogiltigt.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt och försök igen."
+
+#: gedit/gedit-utils.c:558
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom värdnamnet var tomt.\n"
+"\n"
+"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
+
+#: gedit/gedit-utils.c:567
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the attempt to log in failed.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom försöket att logga in misslyckades.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt och försök igen."
+
+#: gedit/gedit-utils.c:576 gedit/gedit-utils.c:649
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains invalid data.\n"
+"\n"
+"Probably, you are trying to open a binary file."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom den innehåller ogiltig data.\n"
+"\n"
+"Du försöker troligtvis öppna en binär fil."
+
+#: gedit/gedit-utils.c:585 gedit/gedit-utils.c:683
+#, c-format
+msgid "Could not open the file \"%s\"."
+msgstr "Kunde inte öppna filen \"%s\"."
+
+#: gedit/gedit-utils.c:625
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit has not been able to "
+"automatically detect the character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and try again "
+"selecting a character coding in the 'Open File...' (or 'Open Location') "
+"dialog."
+msgstr ""
+"Kunde inte öppna filen \"%s\" eftersom gedit inte har kunnat automatiskt "
+"detektera teckenkodningen.\n"
+"\n"
+"Kontrollera att du inte försöker öppna en binär fil och försök att välja en "
+"teckenkodning igen i dialogen \"Öppna fil...\" (eller \"Öppna plats\").igen."
+
+#: gedit/gedit-utils.c:637 gedit/gedit-utils.c:667
+#, c-format
+msgid ""
+"Could not open the file \"%s\" using the %s character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and that you "
+"selected the right character coding in the 'Open File...' (or 'Open "
+"Location') dialog and try again."
+msgstr ""
+"Kunde inte öppna filen \"%s\" med användning av teckenkodningen %s.\n"
+"\n"
+"Kontrollera att du inte försöker öppna en binär fil och att du valde rätt "
+"teckenkodning i dialogen \"Öppna fil...\" (eller \"Öppna plats\") och försök "
+"igen."
+
+#: gedit/gedit-utils.c:687
+#, c-format
+msgid ""
+"Could not open the file \"%s\".\n"
+"\n"
+"%s."
+msgstr ""
+"Kunde inte öppna filen \"%s\".\n"
+"\n"
+"%s."
+
+#: gedit/gedit-utils.c:739
+#, c-format
+msgid "Could not save the file \"%s\"."
+msgstr "Kunde inte spara filen \"%s\"."
+
+#: gedit/gedit-utils.c:743
+#, c-format
+msgid ""
+"Could not save the file \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+"Kunde inte spara filen \"%s\".\n"
+"\n"
+"%s"
+
+#: gedit/gedit-utils.c:796
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot find it.\n"
+"\n"
+"Perhaps, it has recently been deleted."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom gedit inte kan hitta den.\n"
+"\n"
+"Den kanske har tagits bort nyligen."
+
+#: gedit/gedit-utils.c:803
+#, c-format
+msgid "Could not revert the file \"%s\" because it contains corrupted data."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom den innehåller trasig data."
+
+#: gedit/gedit-utils.c:814
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom gedit inte kan hantera %s:-"
+"platser."
+
+#: gedit/gedit-utils.c:820 gedit/gedit-utils.c:960
+#, c-format
+msgid "Could not revert the file \"%s\"."
+msgstr "Kunde inte återställa filen \"%s\"."
+
+#: gedit/gedit-utils.c:830
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains data in an invalid "
+"format."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom den innehåller data i ett "
+"ogiltigt format."
+
+#: gedit/gedit-utils.c:837
+#, c-format
+msgid "Could not revert the file \"%s\" because it is too big."
+msgstr "Kunde inte återställa filen \"%s\" eftersom den är för stor."
+
+#: gedit/gedit-utils.c:844
+#, c-format
+msgid "Could not revert the file \"%s\" because access was denied."
+msgstr "Kunde inte återställa filen \"%s\" eftersom åtkomst nekades."
+
+#: gedit/gedit-utils.c:851
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom det finns för många öppnade "
+"filer.\n"
+"\n"
+"Stäng några öppna filer och försök igen."
+
+#: gedit/gedit-utils.c:859
+#, c-format
+msgid ""
+"Not enough available memory to revert the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+"Inte tillräckligt med minne för att återställa filen \"%s\". Stäng några "
+"körande program och försök igen."
+
+#: gedit/gedit-utils.c:885
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom värden \"%s\" inte kunde "
+"hittas.\n"
+"\n"
+"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
+
+#: gedit/gedit-utils.c:899
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom värden var tom.\n"
+"\n"
+"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
+
+#: gedit/gedit-utils.c:906
+#, c-format
+msgid "Could not revert the file \"%s\" because the attempt to log in failed."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom försöket att logga in "
+"misslyckades."
+
+#: gedit/gedit-utils.c:913
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
+"\n"
+"Probably, you are trying to revert a binary file."
+msgstr ""
+"Kunde inte återställa filen \"%s\" eftersom den innehåller ogiltig UTF-8-"
+"data.\n"
+"\n"
+"Du försöker troligtvis återställa en binär fil."
+
+#: gedit/gedit-utils.c:922
+msgid "It is not possible to revert an Untitled document."
+msgstr "Det går inte att återställa ett namnlöst dokument."
+
+#: gedit/gedit-utils.c:1011
+#, c-format
+msgid "The file \"%s\" already exists."
+msgstr "Filen \"%s\" finns redan."
+
+#: gedit/gedit-utils.c:1017
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly."
+msgstr ""
+"\"%s\" är en katalog.\n"
+"\n"
+"Kontrollera att du angav platsen korrekt."
+
+#: gedit/gedit-utils.c:1026
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"Make sure you have the appropriate write permissions."
+msgstr ""
+"Kan inte skapa filen \"%s\".\n"
+"\n"
+"Se till att du har de rätta skrivrättigheterna."
+
+#: gedit/gedit-utils.c:1033
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"The file name is too long."
+msgstr ""
+"Kan inte skapa filen \"%s\".\n"
+"\n"
+"Filnamnet är för långt."
+
+#: gedit/gedit-utils.c:1040
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"A directory component in the file name does not exist or is a dangling "
+"symbolic link."
+msgstr ""
+"Kan inte skapa filen \"%s\".\n"
+"\n"
+"En katalogkomponent i filnamnet finns inte eller är en lös symbolisk länk."
+
+#: gedit/gedit-utils.c:1049
+#, c-format
+msgid ""
+"There is not enough disk space to create the file \"%s\".\n"
+"\n"
+"Please free some disk space and try again."
+msgstr ""
+"Det finns inte tillräckligt med diskutrymme för att spara filen \"%s\".\n"
+"\n"
+"Frigör en del utrymme på disken och försök igen."
+
+#: gedit/gedit-utils.c:1055
+#, c-format
+msgid "Could not create the file \"%s\"."
+msgstr "Kunde inte skapa filen \"%s\"."
+
+#.
+#. if (col == chars)
+#. msg = g_strdup_printf (_("  Ln %d, Col %d"), row + 1, col + 1);
+#. else
+#. msg = g_strdup_printf (_("  Ln %d, Col %d-%d"), row + 1, chars + 1, col + 1);
+#.
+#: gedit/gedit-view.c:665
+#, c-format
+msgid "  Ln %d, Col %d"
+msgstr "  Rad %d, kolumn %d"
+
+#: gedit/gedit-view.c:703
+msgid "  OVR"
+msgstr "  ÖVR"
+
+#: gedit/gedit-view.c:705
+msgid "  INS"
+msgstr "  INF"
+
+#: gedit/gedit2.c:86
+msgid ""
+"Set the character encoding to be used to open the files listed on the "
+"command line"
+msgstr ""
+"Ställ in den teckenkodning som ska användas för att öppna filerna som anges "
+"på kommandoraden"
+
+#: gedit/gedit2.c:89
+msgid "Quit an existing instance of gedit"
+msgstr "Avsluta en befintlig instans av gedit"
+
+#: gedit/gedit2.c:92
+msgid "Create a new toplevel window in an existing instance of gedit"
+msgstr "Skapa ett nytt topplagersfönster i en befintlig instans av gedit"
+
+#: gedit/gedit2.c:95
+msgid "Create a new document in an existing instance of gedit"
+msgstr "Skapa ett nytt dokument i en befintlig instans av gedit"
+
+#: gedit/gedit2.c:182
+#, c-format
+msgid "The specified encoding \"%s\" is not valid\n"
+msgstr "Den angivna kodningen \"%s\" är inte giltig\n"
+
+#: plugins/changecase/changecase.c:43
+msgid "C_hange Case"
+msgstr "Ä_ndra skiftläge"
+
+#: plugins/changecase/changecase.c:49
+msgid "All _Upper Case"
+msgstr "Gör allt till _versaler"
+
+#: plugins/changecase/changecase.c:50
+msgid "All _Lower Case"
+msgstr "Gör allt till _gemener"
+
+#: plugins/changecase/changecase.c:51
+msgid "_Invert Case"
+msgstr "_Invertera skiftläge"
+
+# Title Case Har Ingen Motsvarighet i Svenskan Vad Jag Vet, och Inte Heller
+# Något Svenskt Namn Antar Jag.
+# Från susning.nu (http://susning.nu/Versalisering) kom inspirationen till
+# uttrycket "Engelsk rubriksversalisering".
+#: plugins/changecase/changecase.c:52
+msgid "_Title Case"
+msgstr "_Engelsk rubriksversalisering"
+
+#: plugins/changecase/changecase.c:54
+msgid "Change selected text to upper case"
+msgstr "Ändra den markerade texten till versaler"
+
+#: plugins/changecase/changecase.c:55
+msgid "Change selected text to lower case"
+msgstr "Ändra den markerade texten till gemener"
+
+#: plugins/changecase/changecase.c:56
+msgid "Invert the case of selected text"
+msgstr "Invertera skiftläget på den markerade texten"
+
+#: plugins/changecase/changecase.c:57
+msgid "Capitalize the first letter of each selected word"
+msgstr "Gör den första bokstaven i varje markerat ord versal"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:1
+msgid "Change Case"
+msgstr "Ändra skiftläge"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:2
+msgid "Changes the case of selected text."
+msgstr "Ändrar skiftläget på den markerade texten."
 
 #: plugins/docinfo/docinfo.c:46
 msgid "_Document Statistics"
@@ -700,60 +2694,78 @@ msgstr "_Dokumentstatistik"
 msgid "Get statistic info on current document"
 msgstr "Få statistikinformation om det aktuella dokumentet"
 
-#: plugins/docinfo/docinfo.c:142
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+#: plugins/docinfo/docinfo.c:140
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
 msgid "Document Statistics"
 msgstr "Dokumentstatistik"
 
-#: plugins/docinfo/docinfo.c:153
+#: plugins/docinfo/docinfo.c:154
 msgid "_Update"
 msgstr "_Uppdatera"
 
-#: plugins/docinfo/docinfo.glade2.h:1
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+msgid ""
+"Analyzes the current document and reports the number of words, lines, "
+"characters and non-space characters in it."
+msgstr ""
+"Analyserar det aktuella dokumentet och rapporterar antalet ord, rader, "
+"tecken och icke-blanka tecken i det."
+
+#: plugins/docinfo/docinfo.glade2.h:2
 msgid "0"
 msgstr "0"
 
-#: plugins/docinfo/docinfo.glade2.h:2
+#: plugins/docinfo/docinfo.glade2.h:3
+msgid "<span weight=\"bold\">File Name</span>"
+msgstr "<span weight=\"bold\">Filnamn</span>"
+
+#: plugins/docinfo/docinfo.glade2.h:4
 msgid "Bytes"
 msgstr "Byte"
 
-#: plugins/docinfo/docinfo.glade2.h:3
+#: plugins/docinfo/docinfo.glade2.h:5
 msgid "Characters (no spaces)"
 msgstr "Tecken (utan blanksteg)"
 
-#: plugins/docinfo/docinfo.glade2.h:4
+#: plugins/docinfo/docinfo.glade2.h:6
 msgid "Characters (with spaces)"
 msgstr "Tecken (inklusive blanksteg)"
 
-#: plugins/docinfo/docinfo.glade2.h:5
-msgid "File Name"
-msgstr "Filnamn"
-
-#: plugins/docinfo/docinfo.glade2.h:6 src/gedit-print.c:373
-msgid "Lines"
-msgstr "Rader"
-
-#: plugins/docinfo/docinfo.glade2.h:7
+#: plugins/docinfo/docinfo.glade2.h:8
 msgid "Update"
 msgstr "Uppdatera"
 
-#: plugins/docinfo/docinfo.glade2.h:8
+#: plugins/docinfo/docinfo.glade2.h:9
 msgid "Words"
 msgstr "Ord"
 
-#: plugins/docinfo/docinfo.glade2.h:9
+#: plugins/docinfo/docinfo.glade2.h:10
 msgid "gedit: Document Info plugin"
 msgstr "gedit: Insticksmodul för dokumentinformation"
 
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Document Statistics plugin analyzes the current document and determines "
-"the number of words, lines, characters and non-space characters in it and "
-"displays the result."
-msgstr ""
-"Insticksmodulen för dokumentstatistik analyserar det aktuella dokumentet och "
-"avgör antalet ord, rader, tecken och icke-blanka tecken i det och visar "
-"resultatet."
+#: plugins/indent/indent.c:45
+msgid "_Indent"
+msgstr "_Gör indrag"
+
+#: plugins/indent/indent.c:47
+msgid "Indent selected lines"
+msgstr "Dra in de markerade raderna"
+
+#: plugins/indent/indent.c:49
+msgid "U_nindent"
+msgstr "Dra _ut"
+
+#: plugins/indent/indent.c:51
+msgid "Unindent selected lines"
+msgstr "Dra ut de markerade raderna"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
+msgid "Indent lines"
+msgstr "Dra in rader"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
+msgid "Indents or un-indents selected lines."
+msgstr "Drar in eller ut de markerade raderna."
 
 #: plugins/sample/sample.c:43
 msgid "Insert User Na_me"
@@ -780,31 +2792,27 @@ msgid "Run a command"
 msgstr "Kör ett kommando"
 
 #: plugins/shell_output/shell_output.c:161
-#: plugins/shell_output/shell_output.c:516
+#: plugins/shell_output/shell_output.c:502
 msgid "Stopped"
 msgstr "Stoppad"
 
-#: plugins/shell_output/shell_output.c:246
-msgid "An error occurs while running the selected command."
-msgstr "Ett fel uppstår vid körning av det valda kommandot."
-
-#: plugins/shell_output/shell_output.c:302
+#: plugins/shell_output/shell_output.c:282
 msgid "Run Command"
 msgstr "Kör kommando"
 
-#: plugins/shell_output/shell_output.c:318
+#: plugins/shell_output/shell_output.c:301
 msgid "_Run"
 msgstr "_Kör"
 
-#: plugins/shell_output/shell_output.c:522
+#: plugins/shell_output/shell_output.c:508
 msgid "Done"
 msgstr "Klar"
 
-#: plugins/shell_output/shell_output.c:524
+#: plugins/shell_output/shell_output.c:510
 msgid "Failed"
 msgstr "Misslyckades"
 
-#: plugins/shell_output/shell_output.c:696
+#: plugins/shell_output/shell_output.c:676
 msgid ""
 "The shell command entry is empty.\n"
 "\n"
@@ -814,7 +2822,7 @@ msgstr ""
 "\n"
 "Var vänlig och ange ett giltigt skalkommando."
 
-#: plugins/shell_output/shell_output.c:729
+#: plugins/shell_output/shell_output.c:695
 msgid ""
 "Error parsing the shell command.\n"
 "\n"
@@ -824,9 +2832,25 @@ msgstr ""
 "\n"
 "Ange ett giltigt skalkommando."
 
-#: plugins/shell_output/shell_output.c:815
+#: plugins/shell_output/shell_output.c:773
 msgid "Executing command"
 msgstr "Kör kommando"
+
+#: plugins/shell_output/shell_output.c:841
+msgid "An error occurred while running the selected command."
+msgstr "Ett fel uppstod vid körning av det valda kommandot."
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
+msgid ""
+"Executes an external program and, if required, displays its output in the "
+"output window."
+msgstr ""
+"Kör ett externt program och, om så krävs, infogar dess utdata i "
+"utdatafönstret."
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
+msgid "Shell command"
+msgstr "Skalkommando"
 
 #: plugins/shell_output/shell_output.glade2.h:2
 msgid "Co_mmand:"
@@ -848,146 +2872,21 @@ msgstr "_Arbetskatalog:"
 msgid "gedit: Shell Output plugin"
 msgstr "gedit: Insticksmodul för skalutdata"
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
-msgid ""
-"Execute an external program and eventually grabs its output in the output "
-"window."
-msgstr "Kör ett externt program och infoga dess utdata i utdatafönstret."
+#: plugins/sort/sort.c:27
+msgid "S_ort..."
+msgstr "S_ortera..."
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
-msgid "Shell command"
-msgstr "Skalkommando"
+#: plugins/sort/sort.c:30
+msgid "Sort the current document or selection."
+msgstr "Sortera det aktuella dokument eller markeringen."
 
-#: plugins/taglist/gedit-taglist-plugin-window.c:136
-msgid "Tag list plugin"
-msgstr "Insticksmodul för tagglistor"
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:1 plugins/sort/sort.glade2.h:3
+msgid "Sort"
+msgstr "Sortera"
 
-#: plugins/taglist/gedit-taglist-plugin-window.c:154
-msgid "Select the group of tags you want to use"
-msgstr "Välj den grupp med taggar som du vill använda"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:176
-msgid "Tag Groups Combo"
-msgstr "Taggruppskombo"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:178
-msgid "Tags Name List"
-msgstr "Taggnamnslista"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:188
-msgid "Double-click on a tag to insert it in the current document"
-msgstr "Dubbelklicka på en tagg för att infoga det i det aktuella dokumentet"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:199
-msgid "Tags"
-msgstr "Taggar"
-
-#: plugins/taglist/gedit-taglist-plugin.c:46
-msgid "Tag _List"
-msgstr "Tagg_lista"
-
-#.
-#. #define MENU_ITEM_NAME		"TagList"
-#.
-#: plugins/taglist/gedit-taglist-plugin.c:51
-msgid "Show the tag list window"
-msgstr "Visa tagglistefönstret"
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
-msgid "Tag list"
-msgstr "Tagglista"
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
-msgid ""
-"The tag list plugin provides a method to easily insert into a document "
-"commonly used tags/strings without having to type them."
-msgstr ""
-"Tagglisteinsticksmodulen tillhandahåller en metod för att enkelt infoga "
-"vanligt använda taggar/strängar i dokument utan att behöva skriva dem."
-
-#: plugins/time/time.c:48
-msgid "In_sert Date and Time..."
-msgstr "In_foga datum och tid..."
-
-#: plugins/time/time.c:51
-msgid "Insert current date and time at the cursor position"
-msgstr "Infoga aktuellt datum och tid vid markörpositionen"
-
-#: plugins/time/time.c:448
-msgid "Available formats"
-msgstr "Tillgängliga format"
-
-#: plugins/time/time.c:552
-msgid "Configure insert date/time plugin..."
-msgstr "Konfigurera insticksmodulen för infogande av datum/tid..."
-
-#: plugins/time/time.glade2.h:1 src/dialogs/gedit-preferences.glade2.h:1
-msgid "    "
-msgstr "    "
-
-#: plugins/time/time.glade2.h:3
-msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
-msgstr "<span size=\"small\">2002-11-01 17.52.00</span>"
-
-#: plugins/time/time.glade2.h:4
-msgid "<span weight=\"bold\"> When inserting date/time...</span>"
-msgstr "<span weight=\"bold\"> Vid infogande av datum/tid...</span>"
-
-#: plugins/time/time.glade2.h:5
-msgid "Configure date/time plugin"
-msgstr "Konfigurera insticksmodulen för infogande av datum/tid"
-
-#: plugins/time/time.glade2.h:6
-msgid "Insert Date and Time"
-msgstr "Infoga datum och tid"
-
-#: plugins/time/time.glade2.h:7
-msgid "Use the _selected format"
-msgstr "Använd det _valda formatet"
-
-#: plugins/time/time.glade2.h:8
-msgid "_Insert"
-msgstr "_Infoga"
-
-#: plugins/time/time.glade2.h:9
-msgid "_Prompt for a format"
-msgstr "_Fråga efter ett format"
-
-#: plugins/time/time.glade2.h:10
-msgid "_Use custom format"
-msgstr "_Använd anpassat format"
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:1
-msgid "Insert Date/Time"
-msgstr "Infoga datum/tid"
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:2
-msgid "Inserts current date and time at the cursor position."
-msgstr "Infogar aktuellt datum och tid vid markörpositionen."
-
-#: plugins/indent/indent.c:45
-msgid "_Indent"
-msgstr "_Gör indrag"
-
-#: plugins/indent/indent.c:47
-msgid "Indent selected lines"
-msgstr "Dra in de markerade raderna"
-
-#: plugins/indent/indent.c:49
-msgid "U_nindent"
-msgstr "Dra _ut"
-
-#: plugins/indent/indent.c:51
-msgid "Unindent selected lines"
-msgstr "Dra ut de markerade raderna"
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
-msgid "Indent lines"
-msgstr "Dra in rader"
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
-msgid "Indent or un-indent selected lines."
-msgstr "Dra in eller dra ut de markerade raderna."
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
+msgid "Sorts a document or selected text."
+msgstr "Sorterar ett dokument eller markerad text."
 
 #: plugins/sort/sort.glade2.h:1
 msgid "R_emove duplicates"
@@ -996,10 +2895,6 @@ msgstr "_Ta bort dubletter"
 #: plugins/sort/sort.glade2.h:2
 msgid "S_tart at column:"
 msgstr "_Börja vid kolumn:"
-
-#: plugins/sort/sort.glade2.h:3 plugins/sort/sort.gedit-plugin.desktop.in.h:1
-msgid "Sort"
-msgstr "Sortera"
 
 #: plugins/sort/sort.glade2.h:4
 msgid "You cannot undo a sort operation"
@@ -1017,160 +2912,181 @@ msgstr "_Baklänges"
 msgid "_Sort"
 msgstr "_Sortera"
 
-#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
-msgid "Sorts a document or selected text."
-msgstr "Sorterar ett dokument eller markerad text."
-
-#: plugins/spell/gedit-automatic-spell-checker.c:322
-#: plugins/spell/gedit-spell-checker-dialog.c:504
+#: plugins/spell/gedit-automatic-spell-checker.c:350
+#: plugins/spell/gedit-spell-checker-dialog.c:511
 msgid "(no suggested words)"
 msgstr "(inga föreslagna ord)"
 
-#: plugins/spell/gedit-automatic-spell-checker.c:346
+#: plugins/spell/gedit-automatic-spell-checker.c:374
 msgid "_More..."
 msgstr "_Mer..."
 
 #. Ignore all
-#: plugins/spell/gedit-automatic-spell-checker.c:399
+#: plugins/spell/gedit-automatic-spell-checker.c:427
 msgid "_Ignore All"
 msgstr "_Ignorera alla"
 
 #. + Add to Dictionary
-#: plugins/spell/gedit-automatic-spell-checker.c:412
+#: plugins/spell/gedit-automatic-spell-checker.c:440
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: plugins/spell/gedit-automatic-spell-checker.c:449
+#: plugins/spell/gedit-automatic-spell-checker.c:477
 msgid "_Spelling Suggestions..."
 msgstr "_Stavningsförslag..."
 
-#: plugins/spell/gedit-spell-checker-dialog.c:285
+#: plugins/spell/gedit-spell-checker-dialog.c:289
 msgid "Check Spelling"
 msgstr "Kontrollera stavning"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:296
+#: plugins/spell/gedit-spell-checker-dialog.c:300
 msgid "Suggestions"
 msgstr "Förslag"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:608
+#: plugins/spell/gedit-spell-checker-dialog.c:615
 msgid "(correct spelling)"
 msgstr "(korrigera stavning)"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:785
+#: plugins/spell/gedit-spell-checker-dialog.c:800
 msgid "Completed spell checking"
 msgstr "Stavningskontrollen färdig"
 
-#: plugins/spell/gedit-spell-checker.c:73
+#: plugins/spell/gedit-spell-checker.c:80
+msgid "Bulgarian"
+msgstr "Bulgariska"
+
+#: plugins/spell/gedit-spell-checker.c:81
+msgid "Bengali"
+msgstr "Bengali"
+
+#: plugins/spell/gedit-spell-checker.c:82
 msgid "Breton"
 msgstr "Bretonska"
 
-#: plugins/spell/gedit-spell-checker.c:74
+#: plugins/spell/gedit-spell-checker.c:83
 msgid "Catalan"
 msgstr "Katalanska"
 
-#: plugins/spell/gedit-spell-checker.c:75
+#: plugins/spell/gedit-spell-checker.c:84
 msgid "Czech"
 msgstr "Tjeckiska"
 
-#: plugins/spell/gedit-spell-checker.c:76
+#: plugins/spell/gedit-spell-checker.c:85
+msgid "Welsh"
+msgstr "Kymriska"
+
+#: plugins/spell/gedit-spell-checker.c:86
 msgid "Danish"
 msgstr "Danska"
 
-#: plugins/spell/gedit-spell-checker.c:77
+#: plugins/spell/gedit-spell-checker.c:87
 msgid "German (Germany)"
 msgstr "Tyska (Tyskland)"
 
-#: plugins/spell/gedit-spell-checker.c:78
+#: plugins/spell/gedit-spell-checker.c:88
 msgid "German (Swiss)"
 msgstr "Tyska (Schweiz)"
 
-#: plugins/spell/gedit-spell-checker.c:79
+#: plugins/spell/gedit-spell-checker.c:90
 msgid "English (American)"
 msgstr "Engelska (amerikansk)"
 
-#: plugins/spell/gedit-spell-checker.c:80
+#: plugins/spell/gedit-spell-checker.c:91
 msgid "English (British)"
 msgstr "Engelska (brittisk)"
 
-#: plugins/spell/gedit-spell-checker.c:81
+#: plugins/spell/gedit-spell-checker.c:92
 msgid "English (Canadian)"
 msgstr "Engelska (kanadensisk)"
 
-#: plugins/spell/gedit-spell-checker.c:82
+#: plugins/spell/gedit-spell-checker.c:93
 msgid "Esperanto"
 msgstr "Esperanto"
 
-#: plugins/spell/gedit-spell-checker.c:83
+#: plugins/spell/gedit-spell-checker.c:94
 msgid "Spanish"
 msgstr "Spanska"
 
-#: plugins/spell/gedit-spell-checker.c:84
+#: plugins/spell/gedit-spell-checker.c:95
+msgid "Finnish"
+msgstr "Finska"
+
+#: plugins/spell/gedit-spell-checker.c:96
 msgid "Faroese"
 msgstr "Färöiska"
 
-#: plugins/spell/gedit-spell-checker.c:85
+#: plugins/spell/gedit-spell-checker.c:97
 msgid "French (France)"
 msgstr "Franska (Frankrike)"
 
-#: plugins/spell/gedit-spell-checker.c:86
+#: plugins/spell/gedit-spell-checker.c:98
 msgid "French (Swiss)"
 msgstr "Franska (Schweiz)"
 
-#: plugins/spell/gedit-spell-checker.c:87
+#: plugins/spell/gedit-spell-checker.c:99
+msgid "Irish (Gaeilge)"
+msgstr "Iriska (Gaeilge)"
+
+#: plugins/spell/gedit-spell-checker.c:100
+msgid "Icelandic"
+msgstr "Isländska"
+
+#: plugins/spell/gedit-spell-checker.c:101
 msgid "Italian"
 msgstr "Italienska"
 
-#: plugins/spell/gedit-spell-checker.c:88
+#: plugins/spell/gedit-spell-checker.c:102
 msgid "Dutch"
 msgstr "Holländska"
 
-#: plugins/spell/gedit-spell-checker.c:89
+#: plugins/spell/gedit-spell-checker.c:103
 msgid "Norwegian"
 msgstr "Norska"
 
-#: plugins/spell/gedit-spell-checker.c:90
+#: plugins/spell/gedit-spell-checker.c:104
 msgid "Polish"
 msgstr "Polska"
 
-#: plugins/spell/gedit-spell-checker.c:91
+#: plugins/spell/gedit-spell-checker.c:105
 msgid "Portuguese (Portugal)"
 msgstr "Portugisiska (Portugal)"
 
-#: plugins/spell/gedit-spell-checker.c:92
+#: plugins/spell/gedit-spell-checker.c:106
 msgid "Portuguese (Brazilian)"
 msgstr "Portugisiska (brasiliansk)"
 
-#: plugins/spell/gedit-spell-checker.c:93
+#: plugins/spell/gedit-spell-checker.c:107
 msgid "Russian"
 msgstr "Ryska"
 
-#: plugins/spell/gedit-spell-checker.c:94
+#: plugins/spell/gedit-spell-checker.c:108
+msgid "Slovak"
+msgstr "Slovakiska"
+
+#: plugins/spell/gedit-spell-checker.c:109
+msgid "Slovenian"
+msgstr "Slovenska"
+
+#: plugins/spell/gedit-spell-checker.c:110
 msgid "Swedish"
 msgstr "Svenska"
 
-#: plugins/spell/gedit-spell-checker.c:653
+#: plugins/spell/gedit-spell-checker.c:111
+msgid "Ukrainian"
+msgstr "Ukrainska"
+
+#: plugins/spell/gedit-spell-checker.c:744
 msgid "Default"
 msgstr "Standard"
 
-#: plugins/spell/gedit-spell-language-dialog.c:233
-#: src/dialogs/gedit-dialog-goto-line.c:169
-#: src/dialogs/gedit-plugin-program-location-dialog.c:100
-#: src/dialogs/gedit-encodings-dialog.c:242
+#: plugins/spell/gedit-spell-language-dialog.c:241
 #, c-format
 msgid "Could not find the required widgets inside %s."
 msgstr "Kunde inte hitta de nödvändiga widgetarna i %s."
 
-#: plugins/spell/gedit-spell-language-dialog.c:253
+#: plugins/spell/gedit-spell-language-dialog.c:261
 msgid "Languages"
 msgstr "Språk"
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
-msgid "Checks the spelling of the current document."
-msgstr "Kontrollerar stavningen i det aktuella dokumentet."
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
-msgid "Spell checker"
-msgstr "Stavningskontroll"
 
 #: plugins/spell/languages-dialog.glade2.h:1
 msgid "Select the _language of the current document."
@@ -1236,15 +3152,6 @@ msgstr "_Ignorera"
 msgid "_Suggestions:"
 msgstr "_Förslag:"
 
-#. Key in case the plugin ever needs any settings
-#: plugins/sort/sort.c:26
-msgid "S_ort..."
-msgstr "S_ortera..."
-
-#: plugins/sort/sort.c:29
-msgid "Sort the current document or selection."
-msgstr "Sortera det aktuella dokument eller markeringen."
-
 #: plugins/spell/spell.c:51
 msgid "_Check Spelling"
 msgstr "_Kontrollera stavning"
@@ -1269,1939 +3176,929 @@ msgstr "Ställ in _språk"
 msgid "Set the language of the current document"
 msgstr "Ställ in språket på det aktuella dokumentet"
 
-#: plugins/spell/spell.c:549
+#: plugins/spell/spell.c:553
 msgid "The document is empty."
 msgstr "Dokumentet är tomt."
 
-#: plugins/spell/spell.c:567
+#: plugins/spell/spell.c:571
 msgid "The selected text does not contain mispelled words."
 msgstr "Den markerade texten innehåller inga felstavade ord."
 
-#: plugins/spell/spell.c:568
+#: plugins/spell/spell.c:572
 msgid "The document does not contain mispelled words."
 msgstr "Dokumentet innehåller inga felstavade ord."
 
-#: src/bonobo-mdi.c:549 src/bonobo-mdi.c:1962
-#, c-format
-msgid "Activate %s"
-msgstr "Aktivera %s"
-
-#: src/dialogs/gedit-dialog-goto-line.c:143
-msgid "Go to Line"
-msgstr "Gå till rad"
-
-#. Add Goto Line button
-#: src/dialogs/gedit-dialog-goto-line.c:153
-msgid "_Go to Line"
-msgstr "_Gå till rad"
-
-#: src/dialogs/gedit-dialog-replace.c:132
-#: src/dialogs/gedit-dialog-replace.c:1025 src/gedit-commands.c:363
-#, c-format
-msgid "The text \"%s\" was not found."
-msgstr "Texten \"%s\" hittades inte."
-
-#: src/dialogs/gedit-dialog-replace.c:240 src/dialogs/replace.glade2.h:4
-#: src/gedit-ui.xml.h:51
-msgid "Replace"
-msgstr "Ersätt"
-
-#: src/dialogs/gedit-dialog-replace.c:251
-msgid "Replace _All"
-msgstr "Ersätt _alla"
-
-#. Add Replace button
-#: src/dialogs/gedit-dialog-replace.c:254 src/gedit-file-selector-util.c:129
-msgid "_Replace"
-msgstr "_Ersätt"
-
-#: src/dialogs/gedit-dialog-replace.c:376 src/gedit-ui.xml.h:22
-msgid "Find"
-msgstr "Sök"
-
-#: src/dialogs/gedit-dialog-replace.c:1034
-#, c-format
-msgid "Found and replaced %d occurences."
-msgstr "Hittade och ersatte %d förekomster."
-
-#: src/dialogs/gedit-dialog-uri.c:83
-msgid "Open Location"
-msgstr "Öppna plats"
-
-#: src/dialogs/gedit-plugin-manager.c:53
-msgid "Plugin"
-msgstr "Insticksmodul"
-
-#: src/dialogs/gedit-plugin-manager.c:54
-msgid "Load"
-msgstr "Läs in"
-
-#: src/dialogs/gedit-plugin-manager.c:320
-msgid "Module file name"
-msgstr "Modulfilnamn"
-
-#: src/dialogs/gedit-plugin-manager.c:321
-msgid "Author(s)"
-msgstr "Författare"
-
-#: src/dialogs/gedit-plugin-manager.c:488
-msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
-msgstr "Kunde inte hitta plugin-manager.glade2. Installera om gedit.\n"
-
-#: src/dialogs/gedit-plugin-manager.c:511
-msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
-msgstr ""
-"Ogiltig glade-fil för insticksmodulhanterare -- alla widgetar hittades "
-"inte.\n"
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:78
-#: src/dialogs/program-location-dialog.glade2.h:1
-msgid "Set program location..."
-msgstr "Ställ in programplats..."
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:106
-#, c-format
-msgid ""
-"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
-"task.\n"
-"\n"
-"Please, specify the location of the <tt>%s</tt> program."
-msgstr ""
-"Insticksmodulen %s använder ett externt program, kallat <tt>%s</tt>, för att "
-"utföra dess uppgift.\n"
-"\n"
-"Ange sökvägen till programmet <tt>%s</tt>."
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:152
-msgid "The selected file is not executable."
-msgstr "Den valda filen är inte körbar."
-
-#: src/dialogs/gedit-preferences-dialog.c:233
-msgid "Font & Colors"
-msgstr "Typsnitt och färger"
-
-#: src/dialogs/gedit-preferences-dialog.c:235
-#: src/dialogs/gedit-preferences.glade2.h:47
-msgid "Tabs"
-msgstr "Flikar"
-
-#: src/dialogs/gedit-preferences-dialog.c:236
-msgid "Wrap Mode"
-msgstr "Radbrytningsläge"
-
-#: src/dialogs/gedit-preferences-dialog.c:237
-msgid "Auto Indent"
-msgstr "Automatiskt indrag"
-
-#: src/dialogs/gedit-preferences-dialog.c:238
-msgid "Line Numbers"
-msgstr "Radnummer"
-
-#: src/dialogs/gedit-preferences-dialog.c:240 src/gedit-ui.xml.h:32
-msgid "Open"
-msgstr "Öppna"
-
-#: src/dialogs/gedit-preferences-dialog.c:241
-#: src/dialogs/gedit-preferences.glade2.h:42 src/gedit-ui.xml.h:55
-msgid "Save"
-msgstr "Spara"
-
-#: src/dialogs/gedit-preferences-dialog.c:242
-#: src/dialogs/gedit-preferences.glade2.h:50 src/gedit-ui.xml.h:72
-msgid "Undo"
-msgstr "Ångra"
-
-#: src/dialogs/gedit-preferences-dialog.c:250
-msgid "Page"
-msgstr "Sida"
-
-#: src/dialogs/gedit-preferences-dialog.c:252
-msgid "Fonts"
-msgstr "Typsnitt"
-
-#: src/dialogs/gedit-preferences-dialog.c:259
-msgid "Manager"
-msgstr "Hanterare"
-
-#: src/dialogs/gedit-preferences-dialog.c:267
-msgid "Editor"
-msgstr "Redigerare"
-
-#: src/dialogs/gedit-preferences-dialog.c:268
-#: src/dialogs/gedit-preferences.glade2.h:38 src/gedit-print.c:364
-#: src/gedit-ui.xml.h:41
-msgid "Print"
-msgstr "Skriv ut"
-
-#: src/dialogs/gedit-preferences-dialog.c:269
-msgid "Plugins"
-msgstr "Insticksmoduler"
-
-#: src/dialogs/gedit-preferences-dialog.c:341
-msgid "Cat_egories:"
-msgstr "Kat_egorier:"
-
-#: src/dialogs/gedit-preferences-dialog.c:363
-msgid "Preferences"
-msgstr "Inställningar"
-
-#: src/dialogs/gedit-preferences-dialog.c:603
-msgid "Categories"
-msgstr "Kategorier"
-
-#: src/dialogs/gedit-preferences-dialog.c:836
-msgid "Push this button to select the font to be used by the editor"
-msgstr ""
-"Tryck på denna knapp för att välja det typsnitt som används av redigeraren"
-
-#: src/dialogs/gedit-preferences-dialog.c:839
-msgid "Push this button to configure text color"
-msgstr "Tryck på denna knapp för att konfigurera textfärg"
-
-#: src/dialogs/gedit-preferences-dialog.c:841
-msgid "Push this button to configure background color"
-msgstr "Tryck på denna knapp för att konfigurera bakgrundsfärg"
-
-#: src/dialogs/gedit-preferences-dialog.c:843
-msgid ""
-"Push this button to configure the color in which the selected text should "
-"appear"
-msgstr ""
-"Tryck på denna knapp för att konfigurera den färg som markerad text ska "
-"visas med"
-
-#: src/dialogs/gedit-preferences-dialog.c:846
-msgid ""
-"Push this button to configure the color in which the selected text should be "
-"marked"
-msgstr ""
-"Tryck på denna knapp för att konfigurera den färg som markerad text ska vara "
-"markerad med"
-
-#: src/dialogs/gedit-preferences-dialog.c:1851
-msgid "Push this button to select the font to be used to print the body"
-msgstr ""
-"Tryck på denna knapp för att välja det typsnitt som ska användas för "
-"utskrift av kroppen."
-
-#: src/dialogs/gedit-preferences-dialog.c:1853
-msgid "Push this button to select the font to be used to print the headers"
-msgstr ""
-"Tryck på denna knapp för att välja det typsnitt som används för utskrift av "
-"huvudena"
-
-#: src/dialogs/gedit-preferences-dialog.c:1855
-msgid "Push this button to select the font to be used to print line numbers"
-msgstr ""
-"Tryck på denna knapp för att välja det typsnitt som används för att skriva "
-"ut radnummer"
-
-#: src/dialogs/gedit-preferences.glade2.h:2
-msgid "<b>Font</b>"
-msgstr "<b>Typsnitt</b>"
-
-#: src/dialogs/gedit-preferences.glade2.h:3
-msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Automatiskt indrag</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:4
-msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Typsnitt och färger</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:5
-msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Typsnitt</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:6
-msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Radnummer</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:7
-msgid "<span weight=\"bold\" size=\"x-large\">Manager</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Hanterare</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:8
-msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Öppna</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:9
-msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Sida</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:10
-msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Spara</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:11
-msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Flikar</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:12
-msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Ångra</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:13
-msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Radbrytningsläge</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:14
-msgid "<span weight=\"bold\">Colors</span>"
-msgstr "<span weight=\"bold\">Färger</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:15
-msgid "<span weight=\"bold\">When saving a new file...</span>"
-msgstr "<span weight=\"bold\">Vid sparande av ny fil...</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:16
-msgid "<span weight=\"bold\">When saving an existing file...</span>"
-msgstr "<span weight=\"bold\">Vid sparande av befintlig fil...</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:17
-msgid "Add new encodings"
-msgstr "Lägg till nya kodningar"
-
-#: src/dialogs/gedit-preferences.glade2.h:18
-msgid "Always use U_TF-8 encoding (faster)"
-msgstr "Använd alltid U_TF-8-kodning (snabbare)"
-
-#: src/dialogs/gedit-preferences.glade2.h:19
-msgid "Always use _UTF-8 encoding (faster)"
-msgstr "Använd alltid _UTF-8-kodning (snabbare)"
-
-#: src/dialogs/gedit-preferences.glade2.h:20
-msgid "Create a _backup copy of files before saving"
-msgstr "Skapa en s_äkerhetskopia av filen innan den sparas"
-
-#: src/dialogs/gedit-preferences.glade2.h:21
-msgid "Do not _split words over two lines"
-msgstr "_Dela inte ord över två rader"
-
-#: src/dialogs/gedit-preferences.glade2.h:22
-msgid "Editor _font: "
-msgstr "Redigerar_typsnitt: "
-
-#: src/dialogs/gedit-preferences.glade2.h:23
-msgid "Enable _auto indentation"
-msgstr "Aktivera _automatiskt indrag"
-
-#: src/dialogs/gedit-preferences.glade2.h:24
-msgid "Enable text _wrapping"
-msgstr "Aktivera text_radbrytning"
-
-#: src/dialogs/gedit-preferences.glade2.h:25
-msgid "Fonts & Colors"
-msgstr "Typsnitt och färger"
-
-#: src/dialogs/gedit-preferences.glade2.h:26
-msgid "Insert _spaces instead of tabs"
-msgstr "Infoga _blanksteg istället för tabulatortecken"
-
-#: src/dialogs/gedit-preferences.glade2.h:27
-msgid "LOGO"
-msgstr "LOGOTYP"
-
-#: src/dialogs/gedit-preferences.glade2.h:28
-msgid "Line _numbers:"
-msgstr "Rad_nummer:"
-
-#: src/dialogs/gedit-preferences.glade2.h:29
-msgid "Line numbers"
-msgstr "Radnummer"
-
-#: src/dialogs/gedit-preferences.glade2.h:30
-msgid "Move down"
-msgstr "Flytta ned"
-
-#: src/dialogs/gedit-preferences.glade2.h:31
-msgid "Move up"
-msgstr "Flytta upp"
-
-#: src/dialogs/gedit-preferences.glade2.h:32
-msgid "Page he_aders:"
-msgstr "Sidh_uvud:"
-
-#: src/dialogs/gedit-preferences.glade2.h:33
-msgid "Pick the background color"
-msgstr "Välj bakgrundsfärg"
-
-#: src/dialogs/gedit-preferences.glade2.h:34
-msgid "Pick the selected text color"
-msgstr "Välj färgen på markerad text"
-
-#: src/dialogs/gedit-preferences.glade2.h:35
-msgid "Pick the selection color"
-msgstr "Välj markeringsfärgen"
-
-#: src/dialogs/gedit-preferences.glade2.h:36
-msgid "Pick the text color"
-msgstr "Välj textfärgen"
-
-#: src/dialogs/gedit-preferences.glade2.h:37
-msgid "Plugin manager"
-msgstr "Insticksmodulhanterare"
-
-#: src/dialogs/gedit-preferences.glade2.h:39
-msgid "Print _line numbers every"
-msgstr "Skriv ut _radnummer var"
-
-#: src/dialogs/gedit-preferences.glade2.h:40
-msgid "Print fonts"
-msgstr "Utskriftstypsnitt"
-
-#: src/dialogs/gedit-preferences.glade2.h:41
-msgid "Remove an encoding"
-msgstr "Ta bort en kodning"
-
-#: src/dialogs/gedit-preferences.glade2.h:43
-msgid "Se_lection color:"
-msgstr "Ma_rkeringsfärg:"
-
-#: src/dialogs/gedit-preferences.glade2.h:44
-msgid "Selecte_d text color:"
-msgstr "Färg på markera_d text:"
-
-#: src/dialogs/gedit-preferences.glade2.h:45
-msgid "Set _tabs width equivalent to"
-msgstr "Ställ in _tabulatorbredd lika med"
-
-#: src/dialogs/gedit-preferences.glade2.h:46
-msgid "Set limit on _undo actions to"
-msgstr "Sätt gräns på antalet _ångra-åtgärder till"
-
-#: src/dialogs/gedit-preferences.glade2.h:48
-msgid "U_se default theme colors"
-msgstr "Anv_änd standardtemafärger"
-
-#: src/dialogs/gedit-preferences.glade2.h:49
-msgid "U_se original file encoding if possible"
-msgstr "A_nvänd om möjligt originalfilens kodning"
-
-#: src/dialogs/gedit-preferences.glade2.h:51
-msgid "Use cu_rrent locale's encoding if possible"
-msgstr "Använd om möjligt a_ktuell lokals kodning"
-
-#: src/dialogs/gedit-preferences.glade2.h:52
-msgid "Use current _locale's encoding if possible"
-msgstr "Använd om möjligt aktuell _lokals kodning"
-
-#: src/dialogs/gedit-preferences.glade2.h:53
-msgid "Wrap mode"
-msgstr "Radbrytningsläge"
-
-#: src/dialogs/gedit-preferences.glade2.h:54
-msgid "_Autosave current file every"
-msgstr "Spara aktuell fil _automatiskt var"
-
-#: src/dialogs/gedit-preferences.glade2.h:55
-msgid "_Background color:"
-msgstr "_Bakgrundsfärg:"
-
-#: src/dialogs/gedit-preferences.glade2.h:56
-msgid "_Body:"
-msgstr "_Kropp:"
-
-#: src/dialogs/gedit-preferences.glade2.h:57
-msgid "_Display line numbers"
-msgstr "_Visa radnummer"
-
-#: src/dialogs/gedit-preferences.glade2.h:58
-msgid "_Print page headers"
-msgstr "Skriv _ut sidhuvud"
-
-#: src/dialogs/gedit-preferences.glade2.h:59
-msgid "_Restore Default Fonts"
-msgstr "_Återställ standardtypsnitt"
-
-#: src/dialogs/gedit-preferences.glade2.h:60
-msgid "_Supported encodings:"
-msgstr "_Kodningar som stöds:"
-
-#: src/dialogs/gedit-preferences.glade2.h:61
-msgid "_Text color:"
-msgstr "_Textfärg:"
-
-#: src/dialogs/gedit-preferences.glade2.h:62
-msgid "_Use default theme font"
-msgstr "_Använd standardtypsnitt i tema"
-
-#: src/dialogs/gedit-preferences.glade2.h:63
-msgid "_action(s)"
-msgstr "_åtgärd(er)"
-
-# Antar att detta är i "... var [ ] minut", alltså inte plural på svenska
-#: src/dialogs/gedit-preferences.glade2.h:64
-msgid "_minutes"
-msgstr "_minut"
-
-#: src/dialogs/gedit-preferences.glade2.h:65
-msgid "character(s)"
-msgstr "tecken"
-
-#: src/dialogs/gedit-preferences.glade2.h:66
-msgid "li_ne(s)"
-msgstr "ra_d(er)"
-
-#: src/dialogs/gnome-print-font-dialog.c:111
-msgid "_Insert a new preview phrase."
-msgstr "_Infoga en ny förhandsgranskningsfras."
-
-#: src/dialogs/gnome-print-font-dialog.c:117
-msgid "Modify preview phrase..."
-msgstr "Ändra förhandsgranskningsfras..."
-
-#: src/dialogs/gnome-print-font-dialog.c:171
-msgid "Preview"
-msgstr "Förhandsgranskning"
-
-#: src/dialogs/gnome-print-font-dialog.c:184
-msgid "_Modify preview phrase..."
-msgstr "_Ändra förhandsgranskningsfras..."
-
-#: src/dialogs/gnome-print-font-dialog.c:247
-msgid "Font Selection"
-msgstr "Typsnittsval"
-
-#: src/dialogs/gnome-print-font-picker.c:92
-msgid "Sans Regular 12"
-msgstr "Sans Regular 12"
-
-#: src/dialogs/gnome-print-font-picker.c:93
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZzÅåÄäÖö"
-
-#: src/dialogs/gnome-print-font-picker.c:94
-msgid "Pick a Font"
-msgstr "Välj ett typsnitt"
-
-#: src/dialogs/gnome-print-font-picker.c:179
-msgid "Title"
-msgstr "Titel"
-
-#: src/dialogs/gnome-print-font-picker.c:180
-msgid "The title of the selection dialog box"
-msgstr "Titeln på väljardialogfönstret"
-
-#: src/dialogs/gnome-print-font-picker.c:200
-msgid "Font name"
-msgstr "Typnsnittsnamn"
-
-#: src/dialogs/gnome-print-font-picker.c:201
-msgid "Name of the selected font"
-msgstr "Namn på det valda typsnittet"
-
-#: src/dialogs/gnome-print-font-picker.c:209
-msgid "Preview text"
-msgstr "Förhandsgranskningstext"
-
-#: src/dialogs/gnome-print-font-picker.c:210
-msgid "Preview text shown in the dialog"
-msgstr "Förhandsgranskningstext som visas i dialogen"
-
-#: src/dialogs/gnome-print-font-picker.c:218
-msgid "Use font in label"
-msgstr "Använd typsnitt i etikett"
-
-#: src/dialogs/gnome-print-font-picker.c:219
-msgid "Use font in the label in font info mode"
-msgstr "Använd typsnitt i etiketten i typsnittsinformationsläge"
-
-#: src/dialogs/gnome-print-font-picker.c:227
-msgid "Font size for label"
-msgstr "Typsnittstorlek för etikett"
-
-#: src/dialogs/gnome-print-font-picker.c:228
-msgid "Font size for label in font info mode"
-msgstr "Typsnittsstorlek för etikett i typsnittsinformationsläge"
-
-#: src/dialogs/gnome-print-font-picker.c:238
-msgid "Show size"
-msgstr "Visa storlek"
-
-#: src/dialogs/gnome-print-font-picker.c:239
-msgid "Show size in font info mode"
-msgstr "Visa storlek i typsnittsinformationsläge"
-
-#: src/dialogs/gnome-print-font-picker.c:1018
-msgid "Font"
-msgstr "Typsnitt"
-
-#. gnome_print_font_picker_update_font_info
-#: src/dialogs/goto-line.glade2.h:1
-msgid "Goto Line"
-msgstr "Gå till rad"
-
-#: src/dialogs/goto-line.glade2.h:2
-msgid "_Line number:"
-msgstr "_Radnummer:"
-
-#: src/dialogs/plugin-manager.glade2.h:1
-msgid "C_onfigure plugin"
-msgstr "K_onfigurera insticksmodul"
-
-#: src/dialogs/plugin-manager.glade2.h:2
-msgid "Configure the selected plugin"
-msgstr "Konfigurera den valda insticksmodulen"
-
-#: src/dialogs/plugin-manager.glade2.h:3
-msgid "De_tails"
-msgstr "De_taljer"
-
-#: src/dialogs/plugin-manager.glade2.h:4
-msgid "_Description"
-msgstr "_Beskrivning"
-
-#: src/dialogs/plugin-manager.glade2.h:5
-msgid "dialog1"
-msgstr "dialog1"
-
-#: src/dialogs/program-location-dialog.glade2.h:2
-msgid "_Location to search for:"
-msgstr "_Plats att leta i:"
-
-#: src/dialogs/program-location-dialog.glade2.h:3
-msgid "label"
-msgstr "etikett"
-
-#: src/dialogs/replace.glade2.h:2
-msgid "Find Next"
-msgstr "Sök nästa"
-
-#: src/dialogs/replace.glade2.h:3
-msgid "Match _entire word only"
-msgstr "Sök endast _hela ord"
-
-#: src/dialogs/replace.glade2.h:5
-msgid "Replace All"
-msgstr "Ersätt alla"
-
-#: src/dialogs/replace.glade2.h:6
-msgid "Replace _with: "
-msgstr "Ersätt _med: "
-
-#: src/dialogs/replace.glade2.h:7
-msgid "_Match case"
-msgstr "_Gör skillnad på gemener/VERSALER"
-
-#: src/dialogs/replace.glade2.h:8
-msgid "_Search for: "
-msgstr "_Sök efter: "
-
-#: src/dialogs/replace.glade2.h:9
-msgid "_Wrap around"
-msgstr "_Börja om från början"
-
-#: src/dialogs/uri.glade2.h:2
-msgid "Enter the _location (URI) of the file you would like to open:"
-msgstr "Ange _platsen (URI:n) för den fil som du vill öppna:"
-
-#: src/dialogs/uri.glade2.h:3
-msgid "Open from URI"
-msgstr "Öppna från URI"
-
-#: src/gedit-commands.c:472
-msgid "translator_credits"
-msgstr ""
-"Christian Rose\n"
-"Andreas Hydén\n"
-"Martin Norbäck\n"
-"Martin Wahlén\n"
-"Skicka synpunkter på översättningen till sv@li.org"
-
-#: src/gedit-commands.c:497
-msgid "gedit"
-msgstr "gedit"
-
-#: src/gedit-commands.c:501
-msgid "gedit is a small and lightweight text editor for Gnome"
-msgstr "gedit är en liten och enkel textredigerare för Gnome"
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-#, c-format
-msgid "%s %d"
-msgstr "%s %d"
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-msgid "Untitled"
-msgstr "Namnlös"
-
-#: src/gedit-document.c:543 src/gedit-document.c:590
-msgid "Invalid file name"
-msgstr "Ogiltigt filnamn"
-
-#: src/gedit-document.c:702 src/gedit-document.c:786
-msgid "Invalid UTF-8 data"
-msgstr "Ogiltig UTF-8-data"
-
-#: src/gedit-document.c:1016
-#, c-format
-msgid "Could not read symbolic link information for %s"
-msgstr "Kunde inte läsa information om symbolisk länken %s"
-
-#: src/gedit-document.c:1062
-msgid "The file has too many symbolic links."
-msgstr "Filen har för många symboliska länkar."
-
-#: src/gedit-document.c:1118
-#, c-format
-msgid "gedit cannot handle %s: locations in write mode."
-msgstr "gedit kan inte hantera %s:-platser i skrivläge."
-
-#: src/gedit-document.c:1125
-msgid "gedit cannot handle this kind of location in write mode."
-msgstr "gedit kan inte hantera denna typ av plats i skrivlägre."
-
-#: src/gedit-document.c:1138
-msgid "Invalid filename."
-msgstr "Ogiltigt filnamn."
-
-#: src/gedit-document.c:1278
-msgid ""
-"There is not enough disk space to save the file.\n"
-"Please free some disk space and try again."
-msgstr ""
-"Det finns inte tillräckligt med diskutrymme för att spara filen.\n"
-"Frigör en del utrymme på disken och försök igen."
-
-#: src/gedit-document.c:1283
-msgid ""
-"The disk where you are trying to save the file has a limitation on file "
-"sizes.  Please try saving a smaller file or saving it to a disk that does "
-"not have this limitation."
-msgstr ""
-"Disken där du försöker spara filen har en begränsning på filstorlekar. "
-"Försök att spara en mindre fil eller spara den på en disk som inte har denna "
-"begränsning."
-
-#: src/gedit-document.c:1327
-msgid "Could not create a backup file."
-msgstr "Kunde inte skapa en säkerhetskopia."
-
-#: src/gedit-document.c:1447
-msgid "It is not possible to revert an Untitled document"
-msgstr "Det går inte att återställa ett namnlöst dokument"
-
-#: src/gedit-file-selector-util.c:147
-#, c-format
-msgid ""
-"A file named \"%s\" already exists.\n"
-"Do you want to replace it with the one you are saving?"
-msgstr ""
-"En fil med namnet \"%s\" finns redan.\n"
-"Vill du ersätta den med den fil som du vill spara?"
-
-#: src/gedit-file-selector-util.c:158
-#, c-format
-msgid ""
-"The file \"%s\" is read-only.\n"
-"Do you want to try to replace it with the one you are saving?"
-msgstr ""
-"Filen \"%s\" är skrivskyddad.\n"
-"Vill du försöka ersätta den med den fil som du vill spara?"
-
-#: src/gedit-file-selector-util.c:544
-msgid "Select a filename to save"
-msgstr "Välj ett filnamn att spara"
-
-#: src/gedit-file.c:151
-msgid "Open File..."
-msgstr "Öppna fil..."
-
-#: src/gedit-file.c:177 src/gedit-file.c:887
-#, c-format
-msgid "Loaded file '%s'"
-msgstr "Läste in filen \"%s\""
-
-#: src/gedit-file.c:309 src/gedit-file.c:455
-#, c-format
-msgid "Saving file '%s'..."
-msgstr "Sparar filen \"%s\"..."
-
-#: src/gedit-file.c:337 src/gedit-file.c:470
-msgid "The document has not been saved."
-msgstr "Dokumentet har inte sparats."
-
-#: src/gedit-file.c:351 src/gedit-file.c:467
-#, c-format
-msgid "File '%s' saved."
-msgstr "Filen \"%s\" sparades."
-
-#: src/gedit-file.c:434
-msgid "Save as..."
-msgstr "Spara som..."
-
-#: src/gedit-file.c:628
-#, c-format
-msgid ""
-"Do you want to revert to saved the document '%s'?\n"
-"\n"
-"You will not be able to undo this operation."
-msgstr ""
-"Vill du återgå till det sparade dokumentet \"%s\"?\n"
-"\n"
-"Du kommer inte att kunna ångra denna åtgärd."
-
-#: src/gedit-file.c:638 src/gedit-ui.xml.h:99
-msgid "_Revert"
-msgstr "_Återgå"
-
-#: src/gedit-file.c:672
-#, c-format
-msgid "Reverting file '%s'..."
-msgstr "Återställer filen \"%s\"..."
-
-#: src/gedit-file.c:685
-msgid "The document has not been reverted."
-msgstr "Dokumentet har inte återställts."
-
-#: src/gedit-file.c:695
-#, c-format
-msgid "File '%s' reverted."
-msgstr "Filen \"%s\" återställdes."
-
-#: src/gedit-file.c:721
-#, c-format
-msgid "Loading %d files..."
-msgstr "Läser in %d filer..."
-
-#: src/gedit-file.c:757
-#, c-format
-msgid "The file \"%s\" does not exist. Would you like to create it?"
-msgstr "Filen \"%s\" finns inte. Vill du skapa den?"
-
-#: src/gedit-file.c:812
-#, c-format
-msgid "Loaded %i files"
-msgstr "Läste in %i filer"
-
-#: src/gedit-file.c:945
-msgid "Could not read data from stdin."
-msgstr "Kunde inte läsa data från standard in."
-
-#. Read only
-#: src/gedit-mdi-child.c:219
-msgid "RO"
-msgstr "SKRIVSK"
-
-#. Add the detach tab button
-#: src/gedit-mdi-child.c:543 src/gedit-ui.xml.h:89
-msgid "_Move to New Window"
-msgstr "_Flytta till nytt fönster"
-
-#: src/gedit-mdi.c:446
-msgid "Open a file."
-msgstr "Öppna en fil."
-
-#: src/gedit-mdi.c:1032
-#, c-format
-msgid ""
-"Do you want to save the changes you made to the document \"%s\"? \n"
-"\n"
-"Your changes will be lost if you don't save them."
-msgstr ""
-"Vill du spara ändringarna du gjorde i dokumentet \"%s\"?\n"
-"\n"
-"Dina ändringar kommer att gå förlorade om du inte sparar dem."
-
-#: src/gedit-mdi.c:1037
-msgid "Do_n't save"
-msgstr "Spara i_nte"
-
-#: src/gedit-mdi.c:1056
-msgid "_Don't quit"
-msgstr "Avsluta in_te"
-
-#: src/gedit-mdi.c:1060
-msgid "_Don't close"
-msgstr "St_äng inte"
-
-#: src/gedit-mdi.c:1150
-msgid "(modified)"
-msgstr "(ändrad)"
-
-#: src/gedit-mdi.c:1156
-msgid "(readonly)"
-msgstr "(skrivskyddad)"
-
-#: src/gedit-plugins-engine.c:362
-#, c-format
-msgid "Error, unable to open module file '%s'\n"
-msgstr "Fel, kan inte öppna modulfilen \"%s\"\n"
-
-#: src/gedit-plugins-engine.c:372
-#, c-format
-msgid "Error, plugin '%s' does not contain init function."
-msgstr "Fel, insticksmodulen \"%s\" innehåller inte initieringsfunktion."
-
-#: src/gedit-plugins-engine.c:382
-#, c-format
-msgid "Error, plugin '%s' does not contain activate function."
-msgstr "Fel, insticksmodulen \"%s\" innehåller inte aktiveringsfunktion."
-
-#: src/gedit-plugins-engine.c:392
-#, c-format
-msgid "Error, plugin '%s' does not contain deactivate function."
-msgstr "Fel, insticksmodulen \"%s\" innehåller inte inaktiveringsfunktion."
-
-#: src/gedit-plugins-engine.c:417
-#, c-format
-msgid "Error, impossible to initialize plugin '%s'"
-msgstr "Fel, omöjligt att initiera insticksmodulen \"%s\""
-
-#: src/gedit-plugins-engine.c:468
-#, c-format
-msgid "Error, impossible to destroy plugin '%s'"
-msgstr "Fel, omöjligt att förstöra insticksmodulen \"%s\""
-
-#: src/gedit-plugins-engine.c:551 src/gedit-plugins-engine.c:639
-#: src/gedit-plugins-engine.c:764
-#, c-format
-msgid "Error, impossible to activate plugin '%s'"
-msgstr "Fel, omöjligt att aktivera insticksmodulen \"%s\""
-
-#: src/gedit-plugins-engine.c:590 src/gedit-plugins-engine.c:782
-#, c-format
-msgid "Error, impossible to deactivate plugin '%s'"
-msgstr "Fel, omöjligt att inaktivera insticksmodulen \"%s\""
-
-#: src/gedit-plugins-engine.c:683
-#, c-format
-msgid "Error, impossible to update ui of the plugin '%s'"
-msgstr ""
-"Fel, omöjligt att aktivera användargränssnitt för insticksmodulen \"%s\""
-
-#: src/gedit-prefs-manager.c:339
-msgid "Cannot initialize preferences manager."
-msgstr "Kan inte initiera inställningshanteraren."
-
-#: src/gedit-prefs-manager.c:1761
-#, c-format
-msgid "Expected `%s' got `%s' for key %s"
-msgstr "\"%s\" förväntades men \"%s\" mottogs för nyckeln %s"
-
-#: src/gedit-print.c:254
-msgid ""
-"gedit is unable to print since it cannot find\n"
-"one of the required fonts."
-msgstr ""
-"gedit kan inte skriva ut eftersom det inte kan\n"
-"hitta en av de nödvändiga typsnitten."
-
-#: src/gedit-print.c:432
-#, c-format
-msgid "File: %s"
-msgstr "Fil: %s"
-
-#. Print right text
-#: src/gedit-print.c:439
-#, c-format
-msgid "Page: %d"
-msgstr "Sida: %d"
-
-#: src/gedit-print.c:580
-msgid "gedit - Print Preview"
-msgstr "gedit - Förhandsgranskning"
-
-#: src/gedit-print.c:658
-#, c-format
-msgid ""
-"An error occurred while printing.\n"
-"\n"
-"%s,"
-msgstr ""
-"Ett fel uppstod vid utskrift.\n"
-"\n"
-"%s,"
-
-#: src/gedit-ui.xml.h:1
-msgid "About this application"
-msgstr "Om detta program"
-
-#: src/gedit-ui.xml.h:2
-msgid "C_ustomize Statusbar"
-msgstr "An_passa statusrad"
-
-#: src/gedit-ui.xml.h:3
-msgid "Change the visibility of the output window in the current window"
-msgstr "Ändra synligheten på utdatafönstret i det aktuella fönstret"
-
-#: src/gedit-ui.xml.h:4
-msgid "Change the visibility of the statusbar in the current window"
-msgstr "Ändra synligheten på statusraden i det aktuella fönstret"
-
-#: src/gedit-ui.xml.h:5
-msgid "Change the visibility of the toolbar in the current window"
-msgstr "Ändra synligheten på verktygsraden i det aktuella fönstret"
-
-#: src/gedit-ui.xml.h:6
-msgid "Close"
-msgstr "Stäng"
-
-#: src/gedit-ui.xml.h:7
-msgid "Close all open files"
-msgstr "Stäng alla öppna filer"
-
-#: src/gedit-ui.xml.h:8
-msgid "Close the current file"
-msgstr "Stäng den aktiva filen"
-
-#: src/gedit-ui.xml.h:9
-msgid "Configure the application"
-msgstr "Konfigurera programmet"
-
-#: src/gedit-ui.xml.h:10
-msgid "Copy"
-msgstr "Kopiera"
-
-#: src/gedit-ui.xml.h:11
-msgid "Copy the selection"
-msgstr "Kopiera markeringen"
-
-#: src/gedit-ui.xml.h:12
-msgid "Create a new document"
-msgstr "Skapa nytt dokument"
-
-#: src/gedit-ui.xml.h:13
-msgid "Cu_t"
-msgstr "Klipp _ut"
-
-#: src/gedit-ui.xml.h:14
-msgid "Customize"
-msgstr "Anpassa"
-
-#: src/gedit-ui.xml.h:15
-msgid "Customize toolbars"
-msgstr "Anpassa verktygsrader"
-
-#: src/gedit-ui.xml.h:16
-msgid "Cut"
-msgstr "Klipp ut"
-
-#: src/gedit-ui.xml.h:17
-msgid "Cut the selection"
-msgstr "Klipp ut markeringen"
-
-#: src/gedit-ui.xml.h:18
-msgid "Delete"
-msgstr "Ta bort"
-
-#: src/gedit-ui.xml.h:19
-msgid "Delete the selected text"
-msgstr "Ta bort den markerade texten"
-
-#: src/gedit-ui.xml.h:20
-msgid "Dump XML"
-msgstr "Dumpa XML"
-
-#: src/gedit-ui.xml.h:21
-msgid "Dump the UI Xml description"
-msgstr "Dumpa Xml-användargränssnittsbeskrivningen"
-
-#: src/gedit-ui.xml.h:23
-msgid "Find Again"
-msgstr "Sök igen"
-
-#: src/gedit-ui.xml.h:24
-msgid "Find Ne_xt"
-msgstr "Sök n_ästa"
-
-#: src/gedit-ui.xml.h:25
-msgid "Go to _Line..."
-msgstr "Gå till _rad..."
-
-#: src/gedit-ui.xml.h:26
-msgid "Go to a specific line number"
-msgstr "Gå till en specifik rad"
-
-#: src/gedit-ui.xml.h:27
-msgid "Icon and _Text"
-msgstr "Ikon och _text"
-
-#: src/gedit-ui.xml.h:28
-msgid "Main toolbar"
-msgstr "Huvudverktygsrad"
-
-#: src/gedit-ui.xml.h:29
-msgid "Move the current document to a new window"
-msgstr "Flytta det aktuella dokument till ett nytt fönster"
-
-#: src/gedit-ui.xml.h:30
-msgid "New"
-msgstr "Nytt"
-
-#: src/gedit-ui.xml.h:31
-msgid "Only show icons in the toolbar"
-msgstr "Visa endast ikoner i verktygsraden"
-
-#: src/gedit-ui.xml.h:33
-msgid "Open Location..."
-msgstr "Öppna plats..."
-
-#: src/gedit-ui.xml.h:34
-msgid "Open _Location..."
-msgstr "Öppna _fil..."
-
-#: src/gedit-ui.xml.h:35
-msgid "Open a file"
-msgstr "Öppna en fil"
-
-#: src/gedit-ui.xml.h:36
-msgid "Open a file from a specified location"
-msgstr "Öppna en fil från en angiven plats"
-
-#: src/gedit-ui.xml.h:37
-msgid "Open the gedit manual"
-msgstr "Öppna gedit-manualen"
-
-#: src/gedit-ui.xml.h:38
-msgid "Paste"
-msgstr "Klistra in"
-
-#: src/gedit-ui.xml.h:39
-msgid "Paste the clipboard"
-msgstr "Klistra in från urklipp"
-
-#: src/gedit-ui.xml.h:40
-msgid "Pr_eferences"
-msgstr "_Inställningar"
-
-#: src/gedit-ui.xml.h:42
-msgid "Print Previe_w..."
-msgstr "Förhands_granska..."
-
-#: src/gedit-ui.xml.h:43
-msgid "Print Preview"
-msgstr "Förhandsgranska"
-
-#: src/gedit-ui.xml.h:44
-msgid "Print Setup"
-msgstr "Skrivarkonfiguration"
-
-#: src/gedit-ui.xml.h:45
-msgid "Print preview"
-msgstr "Förhandsgranskning"
-
-#: src/gedit-ui.xml.h:46
-msgid "Print the current file"
-msgstr "Skriv ut aktiv fil"
-
-#: src/gedit-ui.xml.h:47
-msgid "Quit"
-msgstr "Avsluta"
-
-#: src/gedit-ui.xml.h:48
-msgid "Quit the program"
-msgstr "Avsluta programmet"
-
-#: src/gedit-ui.xml.h:49
-msgid "Redo"
-msgstr "Gör om"
-
-#: src/gedit-ui.xml.h:50
-msgid "Redo the undone action"
-msgstr "Gör om den senast ångrade åtgärden"
-
-#: src/gedit-ui.xml.h:52
-msgid "Replace a string"
-msgstr "Ersätt en sträng"
-
-#: src/gedit-ui.xml.h:53
-msgid "Revert"
-msgstr "Återgå"
-
-#: src/gedit-ui.xml.h:54
-msgid "Revert to a saved version of the file"
-msgstr "Återgå till en sparad version av filen"
-
-#: src/gedit-ui.xml.h:56
-msgid "Save As"
-msgstr "Spara som"
-
-#: src/gedit-ui.xml.h:57
-msgid "Save _As..."
-msgstr "Spara so_m..."
-
-#: src/gedit-ui.xml.h:58
-msgid "Save all open files"
-msgstr "Spara alla öppna filer"
-
-#: src/gedit-ui.xml.h:59
-msgid "Save the current file"
-msgstr "Spara den aktiva filen"
-
-#: src/gedit-ui.xml.h:60
-msgid "Save the current file with a different name"
-msgstr "Spara den aktuella filen med ett annat namn"
-
-#: src/gedit-ui.xml.h:61
-msgid "Search again for the same string"
-msgstr "Sök igen efter samma sträng"
-
-#: src/gedit-ui.xml.h:62
-msgid "Search for a string"
-msgstr "Sök efter en sträng"
-
-#: src/gedit-ui.xml.h:63
-msgid "Select All"
-msgstr "Markera allt"
-
-#: src/gedit-ui.xml.h:64
-msgid "Select _All"
-msgstr "Markera _allt"
-
-#: src/gedit-ui.xml.h:65
-msgid "Select the entire document"
-msgstr "Markera hela dokumentet"
-
-#: src/gedit-ui.xml.h:66
-msgid "Set toolbar button style according to desktop default"
-msgstr "Ställ in stilen på verktygsradsknappar enligt systeminställningarna"
-
-#: src/gedit-ui.xml.h:67
-msgid "Setup the page settings for your current printer"
-msgstr "Konfigurera sidinställningarna för din aktuella skrivare"
-
-#: src/gedit-ui.xml.h:68
-msgid "Show _Cursor Position"
-msgstr "Visa _markörposition"
-
-#: src/gedit-ui.xml.h:69
-msgid "Show _Overwrite Mode"
-msgstr "Visa _överskrivningsläge"
-
-#: src/gedit-ui.xml.h:70
-msgid "Show cursor position in the statusbar"
-msgstr "Visa markörposition i statusraden"
-
-#: src/gedit-ui.xml.h:71
-msgid "Show overwrite mode in the statusbar"
-msgstr "Visa översrivningsläge i statusraden"
-
-#: src/gedit-ui.xml.h:73
-msgid "Undo the last action"
-msgstr "Ångra den senaste åtgärden"
-
-#: src/gedit-ui.xml.h:74
-msgid "_About"
-msgstr "_Om"
-
-#: src/gedit-ui.xml.h:75
-msgid "_Close"
-msgstr "S_täng"
-
-#: src/gedit-ui.xml.h:76
-msgid "_Close All"
-msgstr "S_täng alla"
-
-#: src/gedit-ui.xml.h:77
-msgid "_Contents"
-msgstr "_Innehåll"
-
-#: src/gedit-ui.xml.h:78
-msgid "_Copy"
-msgstr "_Kopiera"
-
-#: src/gedit-ui.xml.h:79
-msgid "_Customize Toolbar"
-msgstr "_Anpassa verktygsrad"
-
-#: src/gedit-ui.xml.h:80
-msgid "_Debug"
-msgstr "_Felsök"
-
-#: src/gedit-ui.xml.h:81
-msgid "_Delete"
-msgstr "_Ta bort"
-
-#: src/gedit-ui.xml.h:82
-msgid "_Desktop Default"
-msgstr "_Systemstandard"
-
-#: src/gedit-ui.xml.h:83
-msgid "_Documents"
-msgstr "_Dokument"
-
-#: src/gedit-ui.xml.h:84
-msgid "_Edit"
-msgstr "_Redigera"
-
-#: src/gedit-ui.xml.h:85
-msgid "_File"
-msgstr "_Arkiv"
-
-#: src/gedit-ui.xml.h:86
-msgid "_Find..."
-msgstr "_Sök..."
-
-#: src/gedit-ui.xml.h:87
-msgid "_Help"
-msgstr "_Hjälp"
-
-#: src/gedit-ui.xml.h:88
-msgid "_Icon"
-msgstr "_Ikon"
-
-#: src/gedit-ui.xml.h:90
-msgid "_New"
-msgstr "_Ny"
-
-#: src/gedit-ui.xml.h:91
-msgid "_Open..."
-msgstr "_Öppna..."
-
-#: src/gedit-ui.xml.h:92
-msgid "_Output Window"
-msgstr "_Utdatafönster"
-
-#: src/gedit-ui.xml.h:93
-msgid "_Paste"
-msgstr "Klistra _in"
-
-#: src/gedit-ui.xml.h:94
-msgid "_Print..."
-msgstr "Skriv _ut..."
-
-#: src/gedit-ui.xml.h:95
-msgid "_Priority Text beside Icons"
-msgstr "_Prioritetstext bredvid ikoner"
-
-#: src/gedit-ui.xml.h:96
-msgid "_Quit"
-msgstr "_Avsluta"
-
-#: src/gedit-ui.xml.h:97
-msgid "_Redo"
-msgstr "_Gör om"
-
-#: src/gedit-ui.xml.h:98
-msgid "_Replace..."
-msgstr "_Ersätt..."
-
-#: src/gedit-ui.xml.h:100
-msgid "_Save"
-msgstr "_Spara"
-
-#: src/gedit-ui.xml.h:101
-msgid "_Save All"
-msgstr "_Spara alla"
-
-#: src/gedit-ui.xml.h:102
-msgid "_Search"
-msgstr "_Sök"
-
-#: src/gedit-ui.xml.h:103
-msgid "_Statusbar"
-msgstr "_Statusrad"
-
-#: src/gedit-ui.xml.h:104
-msgid "_Toolbar"
-msgstr "_Verktygsrad"
-
-#: src/gedit-ui.xml.h:105
-msgid "_Tools"
-msgstr "Verkty_g"
-
-#: src/gedit-ui.xml.h:106
-msgid "_Undo"
-msgstr "_Ångra"
-
-#: src/gedit-ui.xml.h:107
-msgid "_View"
-msgstr "_Visa"
-
-#: src/gedit-utils.c:799
-#, c-format
-msgid ""
-"Could not find the file \"%s\".\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"Kunde inte hitta filen \"%s\".\n"
-"\n"
-"Kontrollera att du har angivit platsen korrekt och försök igen."
-
-#: src/gedit-utils.c:806
-#, c-format
-msgid "Could not open the file \"%s\" because it contains corrupted data."
-msgstr "Kunde inte öppna filen \"%s\" eftersom den innehåller trasig data."
-
-#: src/gedit-utils.c:817
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom gedit inte kan hantera %s:-platser."
-
-#: src/gedit-utils.c:823
-#, c-format
-msgid "Could not open the file \"%s\""
-msgstr "Kunde inte öppna filen \"%s\""
-
-#: src/gedit-utils.c:833
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains data in an invalid format."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom den innehåller data i ett ogiltigt "
-"format."
-
-#: src/gedit-utils.c:840
-#, c-format
-msgid "Could not open the file \"%s\" because it is too big."
-msgstr "Kunde inte öppna filen \"%s\" eftersom den är för stor."
-
-#: src/gedit-utils.c:847
-#, c-format
-msgid ""
-"\"%s\" is not a valid location.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\" är ingen giltig plats.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt och försök igen."
-
-#: src/gedit-utils.c:854
-#, c-format
-msgid "Could not open the file \"%s\" because access was denied."
-msgstr "Kunde inte öppna filen \"%s\" eftersom åtkomst nekades."
-
-#: src/gedit-utils.c:861
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom det finns för många öppna filer.\n"
-"\n"
-"Stäng några öppna filer och försök igen."
-
-#: src/gedit-utils.c:869
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\" är en katalog.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt och försök igen."
-
-#: src/gedit-utils.c:876
-#, c-format
-msgid ""
-"Not enough available memory to open the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-"Det finns inte tillräckligt med minne för att öppna filen \"%s\". Stäng "
-"några körande program och försök igen."
-
-#: src/gedit-utils.c:902
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that you typed the location correctly and that your proxy "
-"settings are correct and then try again."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom värden \"%s\" inte kunde hittas.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt och att dina "
-"proxyserverinställningar stämmer och försök igen."
-
-#: src/gedit-utils.c:917
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was invalid.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom värdnamnet var ogiltigt.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt och försök igen."
-
-#: src/gedit-utils.c:924
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom värdnamnet var tomt.\n"
-"\n"
-"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
-
-#: src/gedit-utils.c:931
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the attempt to log in failed.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom försöket att logga in misslyckades.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt och försök igen."
-
-#: src/gedit-utils.c:939
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to open a binary file."
-msgstr ""
-"Kunde inte öppna filen \"%s\" eftersom den innehåller ogiltig UTF-8-data.\n"
-"\n"
-"Du försöker troligtvis öppna en binär fil."
-
-#: src/gedit-utils.c:977
-#, c-format
-msgid "Could not open the file \"%s\"."
-msgstr "Kunde inte öppna filen \"%s\"."
-
-#: src/gedit-utils.c:1028
-#, c-format
-msgid "Could not save the file \"%s\"."
-msgstr "Kunde inte spara filen \"%s\"."
-
-#: src/gedit-utils.c:1032
-#, c-format
-msgid ""
-"Could not save the file \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Kunde inte spara filen \"%s\".\n"
-"\n"
-"%s"
-
-#: src/gedit-utils.c:1085
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot find it.\n"
-"\n"
-"Perhaps, it has recently been deleted."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom gedit inte kan hitta den.\n"
-"\n"
-"Den kanske har tagits bort nyligen."
-
-#: src/gedit-utils.c:1092
-#, c-format
-msgid "Could not revert the file \"%s\" because it contains corrupted data."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom den innehåller trasig data."
-
-#: src/gedit-utils.c:1103
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom gedit inte kan hantera %s:-"
-"platser."
-
-#: src/gedit-utils.c:1109 src/gedit-utils.c:1249
-#, c-format
-msgid "Could not revert the file \"%s\"."
-msgstr "Kunde inte återställa filen \"%s\"."
-
-#: src/gedit-utils.c:1119
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains data in an invalid "
-"format."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom den innehåller data i ett "
-"ogiltigt format."
-
-#: src/gedit-utils.c:1126
-#, c-format
-msgid "Could not revert the file \"%s\" because it is too big."
-msgstr "Kunde inte återställa filen \"%s\" eftersom den är för stor."
-
-#: src/gedit-utils.c:1133
-#, c-format
-msgid "Could not revert the file \"%s\" because access was denied."
-msgstr "Kunde inte återställa filen \"%s\" eftersom åtkomst nekades."
-
-#: src/gedit-utils.c:1140
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom det finns för många öppnade "
-"filer.\n"
-"\n"
-"Stäng några öppna filer och försök igen."
-
-#: src/gedit-utils.c:1148
-#, c-format
-msgid ""
-"Not enough available memory to revert the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-"Inte tillräckligt med minne för att återställa filen \"%s\". Stäng några "
-"körande program och försök igen."
-
-#: src/gedit-utils.c:1174
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom värden \"%s\" inte kunde "
-"hittas.\n"
-"\n"
-"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
-
-#: src/gedit-utils.c:1188
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom värden var tom.\n"
-"\n"
-"Kontrollera att dina proxyserverinställningar stämmer och försök igen."
-
-#: src/gedit-utils.c:1195
-#, c-format
-msgid "Could not revert the file \"%s\" because the attempt to log in failed."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom försöket att logga in "
-"misslyckades."
-
-#: src/gedit-utils.c:1202
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to revert a binary file."
-msgstr ""
-"Kunde inte återställa filen \"%s\" eftersom den innehåller ogiltig UTF-8-"
-"data.\n"
-"\n"
-"Du försöker troligtvis återställa en binär fil."
-
-#: src/gedit-utils.c:1211
-msgid "It is not possible to revert an Untitled document."
-msgstr "Det går inte att återställa ett namnlöst dokument."
-
-#: src/gedit-utils.c:1300
-#, c-format
-msgid "The file \"%s\" already exists."
-msgstr "Filen \"%s\" finns redan."
-
-#: src/gedit-utils.c:1306
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly."
-msgstr ""
-"\"%s\" är en katalog.\n"
-"\n"
-"Kontrollera att du angav platsen korrekt."
-
-#: src/gedit-utils.c:1315
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"Make sure you have the appropriate write permissions."
-msgstr ""
-"Kan inte skapa filen \"%s\".\n"
-"\n"
-"Se till att du har de rätta skrivrättigheterna."
-
-#: src/gedit-utils.c:1322
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"The file name is too long."
-msgstr ""
-"Kan inte skapa filen \"%s\".\n"
-"\n"
-"Filnamnet är för långt."
-
-#: src/gedit-utils.c:1329
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"A directory component in the file name does not exist or is a dangling "
-"symbolic link."
-msgstr ""
-"Kan inte skapa filen \"%s\".\n"
-"\n"
-"En katalogkomponent i filnamnet finns inte eller är en lös symbolisk länk."
-
-#: src/gedit-utils.c:1338
-#, c-format
-msgid ""
-"There is not enough disk space to create the file \"%s\".\n"
-"\n"
-"Please free some disk space and try again."
-msgstr ""
-"Det finns inte tillräckligt med diskutrymme för att spara filen \"%s\".\n"
-"\n"
-"Frigör en del utrymme på disken och försök igen."
-
-#: src/gedit-utils.c:1344
-#, c-format
-msgid "Could not create the file \"%s\"."
-msgstr "Kunde inte skapa filen \"%s\"."
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
+msgid "Checks the spelling of the current document."
+msgstr "Kontrollerar stavningen i det aktuella dokumentet."
+
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
+msgid "Spell checker"
+msgstr "Stavningskontroll"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:139
+msgid "Tag list plugin"
+msgstr "Insticksmodul för tagglistor"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:157
+msgid "Select the group of tags you want to use"
+msgstr "Välj den grupp med taggar som du vill använda"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:179
+msgid "Available Tag Lists"
+msgstr "Tillgängliga tagglistor"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:181
+#: plugins/taglist/gedit-taglist-plugin-window.c:202
+msgid "Tags"
+msgstr "Taggar"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:191
+msgid "Double-click on a tag to insert it in the current document"
+msgstr "Dubbelklicka på en tagg för att infoga det i det aktuella dokumentet"
+
+#: plugins/taglist/gedit-taglist-plugin.c:46
+msgid "Tag _List"
+msgstr "Tagg_lista"
 
 #.
-#. if (col == chars)
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
-#. else
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d-%d"), row + 1, chars + 1, col + 1);
+#. #define MENU_ITEM_NAME		"TagList"
 #.
-#: src/gedit-view.c:1076
-#, c-format
-msgid "  Ln %d, Col. %d"
-msgstr "  Rad %d, kolumn %d"
+#: plugins/taglist/gedit-taglist-plugin.c:51
+msgid "Show the tag list window"
+msgstr "Visa tagglistefönstret"
 
-#: src/gedit-view.c:1114
-msgid "  OVR"
-msgstr "  ÖVR"
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
+msgid ""
+"Provides a method to easily insert into a document commonly used tags/"
+"strings without having to type them."
+msgstr ""
+"Tillhandahåller en metod för att enkelt infoga vanligt använda taggar/"
+"strängar i ett dokument utan att behöva skriva dem."
 
-#: src/gedit-view.c:1116
-msgid "  INS"
-msgstr "  INF"
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
+msgid "Tag list"
+msgstr "Tagglista"
 
-#: src/gedit2.c:79
-msgid "Show utility debugging messages."
-msgstr "Visa felsökningsmeddelanden för verktyg."
+#: plugins/time/time.c:50
+msgid "In_sert Date and Time..."
+msgstr "In_foga datum och tid..."
 
-#: src/gedit2.c:82
-msgid "Show mdi debugging messages."
-msgstr "Visa felsökningsmeddelanden för mdi."
+#: plugins/time/time.c:53
+msgid "Insert current date and time at the cursor position"
+msgstr "Infoga aktuellt datum och tid vid markörpositionen"
 
-#: src/gedit2.c:85
-msgid "Show commands debugging messages."
-msgstr "Visa felsökningsmeddelanden för kommandon."
+#: plugins/time/time.c:449
+msgid "Available formats"
+msgstr "Tillgängliga format"
 
-#: src/gedit2.c:88
-msgid "Show document debugging messages."
-msgstr "Visa felsökningsmeddelanden för dokument."
+#: plugins/time/time.c:554
+msgid "Configure insert date/time plugin..."
+msgstr "Konfigurera insticksmodulen för infogande av datum/tid..."
 
-#: src/gedit2.c:91
-msgid "Show file debugging messages."
-msgstr "Visa felsökningsmeddelanden för filer."
+#: plugins/time/time.gedit-plugin.desktop.in.h:1
+msgid "Insert Date/Time"
+msgstr "Infoga datum/tid"
 
-#: src/gedit2.c:94
-msgid "Show plugin debugging messages."
-msgstr "Visa felsökningsmeddelanden för insticksmoduler."
+#: plugins/time/time.gedit-plugin.desktop.in.h:2
+msgid "Inserts current date and time at the cursor position."
+msgstr "Infogar aktuellt datum och tid vid markörpositionen."
 
-#: src/gedit2.c:97
-msgid "Show prefs debugging messages."
-msgstr "Visa felsökningsmeddelanden för inställningar."
+#: plugins/time/time.glade2.h:3
+msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
+msgstr "<span size=\"small\">2002-11-01 17.52.00</span>"
 
-#: src/gedit2.c:100
-msgid "Show printing debugging messages."
-msgstr "Visa felsökningsmeddelanden för utskrifter."
+#: plugins/time/time.glade2.h:4
+msgid "<span weight=\"bold\"> When inserting date/time...</span>"
+msgstr "<span weight=\"bold\"> Vid infogande av datum/tid...</span>"
 
-#: src/gedit2.c:103
-msgid "Show search debugging messages."
-msgstr "Visa felsökningsmeddelanden för sökning."
+#: plugins/time/time.glade2.h:5
+msgid "Configure date/time plugin"
+msgstr "Konfigurera insticksmodulen för infogande av datum/tid"
 
-#: src/gedit2.c:106
-msgid "Show undo debugging messages."
-msgstr "Visa felsökningsmeddelanden för ångrande."
+#: plugins/time/time.glade2.h:6
+msgid "Insert Date and Time"
+msgstr "Infoga datum och tid"
 
-#: src/gedit2.c:109
-msgid "Show view debugging messages."
-msgstr "Visa felsökningsmeddelanden för vyer."
+#: plugins/time/time.glade2.h:7
+msgid "Use the _selected format"
+msgstr "Använd det _valda formatet"
 
-#: src/gedit2.c:112
-msgid "Show recent debugging messages."
-msgstr "Visa de senaste felsökningsmeddelandena."
+#: plugins/time/time.glade2.h:8
+msgid "_Insert"
+msgstr "_Infoga"
 
-#: src/gedit2.c:115
-msgid "Show session management debugging messages."
-msgstr "Visa felsökningsmeddelanden för sessionshantering."
+#: plugins/time/time.glade2.h:9
+msgid "_Prompt for a format"
+msgstr "_Fråga efter ett format"
 
-#: src/gedit2.c:118
-msgid "Turn on all debugging messages."
-msgstr "Aktivera alla felsökningsmeddelanden."
+#: plugins/time/time.glade2.h:10
+msgid "_Use custom format"
+msgstr "_Använd anpassat format"
 
-#: src/gedit2.c:121
-msgid "Quit an existing instance of gedit"
-msgstr "Avsluta en befintlig instans av gedit"
+#: viewer/gedit-persist-stream.c:44
+msgid "Save method not implemented for gedit viewer"
+msgstr "Sparandemetod inte implementerad för gedit-visare"
 
-#: src/gedit2.c:124
-msgid "Create a new toplevel window in an existing instance of gedit"
-msgstr "Skapa ett nytt topplagersfönster i en befintlig instans av gedit"
+#: viewer/gedit-viewer-ui.xml.h:1
+msgid "Copy the selected text to the clipboard"
+msgstr "Kopiera den markerade texten till urklipp"
 
-#: src/gedit2.c:127
-msgid "Create a new document in an existing instance of gedit"
-msgstr "Skapa ett nytt dokument i en befintlig instans av gedit"
+#: viewer/gedit-viewer-ui.xml.h:2
+msgid "_Copy Text"
+msgstr "_Kopiera text"
 
-#: src/gedit-output-window.c:333
-msgid "Close the output window"
-msgstr "Stäng utdatafönstret"
+#~ msgid ""
+#~ "If you don't save, changes from the last second will be permanently lost."
+#~ msgid_plural ""
+#~ "If you don't save, changes from the last %ld seconds will be permanently "
+#~ "lost."
+#~ msgstr[0] ""
+#~ "Om du inte sparar kommer ändringar gjorda under den senaste sekunden att "
+#~ "vara borta för alltid."
+#~ msgstr[1] ""
+#~ "Om du inte sparar kommer ändringar gjorda under de senaste %ld sekunderna "
+#~ "att vara borta för alltid."
 
-#: src/gedit-output-window.c:371
-msgid "Copy selected lines"
-msgstr "Kopiera markerade rader"
+#~ msgid ""
+#~ "If you don't save, changes from the last minute and second will be "
+#~ "permanently lost."
+#~ msgid_plural ""
+#~ "If you don't save, changes from the last minute and %ld seconds will be "
+#~ "permanently lost."
+#~ msgstr[0] ""
+#~ "Om du inte sparar kommer ändringar gjorda under den senaste minuten och "
+#~ "sekunden att vara borta för alltid."
+#~ msgstr[1] ""
+#~ "Om du inte sparar kommer ändringar gjorda under den senaste minuten och %"
+#~ "ld sekunderna att vara borta för alltid."
 
-#: src/gedit-output-window.c:391
-msgid "Clear the output window"
-msgstr "Töm utdatafönstret"
+#~ msgid ""
+#~ "If you don't save, changes from the last hour and minute will be "
+#~ "permanently lost."
+#~ msgid_plural ""
+#~ "If you don't save, changes from the last hour and %d minutes will be "
+#~ "permanently lost."
+#~ msgstr[0] ""
+#~ "Om du inte sparar kommer ändringar gjorda under den senaste timmen och "
+#~ "minuten att vara borta för alltid."
+#~ msgstr[1] ""
+#~ "Om du inte sparar kommer ändringar gjorda under den senaste timmen och %d "
+#~ "minuterna att vara borta för alltid."
 
-#: src/gedit-output-window.c:431
-msgid "Output Lines"
-msgstr "Utdatarader"
+#~ msgid "The specified encoding \"%s\" is not valid"
+#~ msgstr "Den angivna kodningen \"%s\" är inte giltig"
 
-#: src/dialogs/gedit-encodings-dialog.glade2.h:1
-msgid "Choose one or more e_ncodings:"
-msgstr "Välj en eller flera _kodningar:"
+#~ msgid "Irish"
+#~ msgstr "Iriska"
 
-#: src/gedit-encodings.c:147 src/gedit-encodings.c:173
-#: src/gedit-encodings.c:214 src/gedit-encodings.c:264
-#: src/gedit-encodings.c:289
-msgid "Western"
-msgstr "Västerländsk"
+#~ msgid "The file \"%s\" does not exist. Would you like to create it?"
+#~ msgstr "Filen \"%s\" finns inte. Vill du skapa den?"
 
-#: src/gedit-encodings.c:149 src/gedit-encodings.c:216
-#: src/gedit-encodings.c:244 src/gedit-encodings.c:285
-msgid "Central European"
-msgstr "Centraleuropeisk"
+#~ msgid "[UTF-8,ISO-8859-15]"
+#~ msgstr "[UTF-8,ISO-8859-15]"
 
-#: src/gedit-encodings.c:151
-msgid "South European"
-msgstr "Sydeuropeisk"
+#~ msgid "Questions"
+#~ msgstr "Frågor"
 
-#: src/gedit-encodings.c:153 src/gedit-encodings.c:169
-#: src/gedit-encodings.c:299
-msgid "Baltic"
-msgstr "Baltisk"
+#~ msgid "Indent or un-indent the selected lines."
+#~ msgstr "Dra in eller ut de markerade raderna."
 
-#: src/gedit-encodings.c:155 src/gedit-encodings.c:218
-#: src/gedit-encodings.c:231 src/gedit-encodings.c:235
-#: src/gedit-encodings.c:248 src/gedit-encodings.c:287
-msgid "Cyrillic"
-msgstr "Kyrillisk"
+#~ msgid "Show utility debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för verktyg."
 
-#: src/gedit-encodings.c:157 src/gedit-encodings.c:224
-#: src/gedit-encodings.c:242 src/gedit-encodings.c:297
-msgid "Arabic"
-msgstr "Arabisk"
+#~ msgid "Show metadata debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för metadata."
 
-#: src/gedit-encodings.c:159 src/gedit-encodings.c:254
-#: src/gedit-encodings.c:291
-msgid "Greek"
-msgstr "Grekisk"
+#~ msgid "Show mdi debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för mdi."
 
-#: src/gedit-encodings.c:161
-msgid "Hebrew Visual"
-msgstr "Synlig hebreisk"
+#~ msgid "Show commands debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för kommandon."
 
-#: src/gedit-encodings.c:163 src/gedit-encodings.c:222
-#: src/gedit-encodings.c:260 src/gedit-encodings.c:295
-msgid "Hebrew"
-msgstr "Hebreisk"
+#~ msgid "Show document debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för dokument."
 
-#: src/gedit-encodings.c:165 src/gedit-encodings.c:220
-#: src/gedit-encodings.c:268 src/gedit-encodings.c:293
-msgid "Turkish"
-msgstr "Turkisk"
+#~ msgid "Show file debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för filer."
 
-#: src/gedit-encodings.c:167
-msgid "Nordic"
-msgstr "Nordisk"
+#~ msgid "Show plugin debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för insticksmoduler."
 
-#: src/gedit-encodings.c:171
-msgid "Celtic"
-msgstr "Keltisk"
+#~ msgid "Show prefs debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för inställningar."
 
-#: src/gedit-encodings.c:175 src/gedit-encodings.c:266
-msgid "Romanian"
-msgstr "Rumänsk"
+#~ msgid "Show printing debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för utskrifter."
 
-#: src/gedit-encodings.c:178 src/gedit-encodings.c:180
-#: src/gedit-encodings.c:182 src/gedit-encodings.c:184
-msgid "Unicode"
-msgstr "Unicode"
+#~ msgid "Show search debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för sökning."
 
-#: src/gedit-encodings.c:187
-msgid "Armenian"
-msgstr "Armensk"
+#~ msgid "Show undo debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för ångrande."
 
-#: src/gedit-encodings.c:189 src/gedit-encodings.c:191
-#: src/gedit-encodings.c:200
-msgid "Chinese Traditional"
-msgstr "Traditionell kinesisk"
+#~ msgid "Show view debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för vyer."
 
-#: src/gedit-encodings.c:193
-msgid "Cyrillic/Russian"
-msgstr "Kyrillisk/Rysk"
+#~ msgid "Show recent debugging messages."
+#~ msgstr "Visa de senaste felsökningsmeddelandena."
 
-#: src/gedit-encodings.c:196 src/gedit-encodings.c:227
-#: src/gedit-encodings.c:274
-msgid "Japanese"
-msgstr "Japansk"
+#~ msgid "Show session management debugging messages."
+#~ msgstr "Visa felsökningsmeddelanden för sessionshantering."
 
-#: src/gedit-encodings.c:198 src/gedit-encodings.c:229
-#: src/gedit-encodings.c:233 src/gedit-encodings.c:280
-msgid "Korean"
-msgstr "Koreansk"
+#~ msgid "Turn on all debugging messages."
+#~ msgstr "Aktivera alla felsökningsmeddelanden."
 
-#: src/gedit-encodings.c:203 src/gedit-encodings.c:205
-#: src/gedit-encodings.c:207 src/gedit-encodings.c:211
-msgid "Chinese Simplified"
-msgstr "Förenklad kinesisk"
+#~ msgid " (invalid Unicode)"
+#~ msgstr " (ogiltig Unicode)"
 
-#: src/gedit-encodings.c:209
-msgid "Georgian"
-msgstr "Georgisk"
+#~ msgid "You have X documents with unsaved changes."
+#~ msgstr "Du har X dokument med osparade ändringar."
 
-#: src/gedit-encodings.c:237 src/gedit-encodings.c:270
-msgid "Cyrillic/Ukrainian"
-msgstr "Kyrillisk/Ukrainsk"
+#~ msgid "Element"
+#~ msgstr "Element"
 
-#: src/gedit-encodings.c:246
-msgid "Croatian"
-msgstr "Kroatisk"
+#~ msgid "Auto Indentation"
+#~ msgstr "Automatiskt indrag"
 
-#: src/gedit-encodings.c:250
-msgid "Hindi"
-msgstr "Hindi"
+#~ msgid "File Saving"
+#~ msgstr "Filsparande"
 
-#: src/gedit-encodings.c:252
-msgid "Farsi"
-msgstr "Farsi"
+#~ msgid "Right Margin"
+#~ msgstr "Högermarginal"
 
-#: src/gedit-encodings.c:256
-msgid "Gujarati"
-msgstr "Gujarati"
+#~ msgid "_Reset to Default"
+#~ msgstr "_Återställ till standard"
 
-#: src/gedit-encodings.c:258
-msgid "Gurmukhi"
-msgstr "Gurmukhi"
+#~ msgid "A file named \"%s\" already exists."
+#~ msgstr "En fil med namnet \"%s\" finns redan."
 
-#: src/gedit-encodings.c:262
-msgid "Icelandic"
-msgstr "Isländsk"
+#~ msgid "The file \"%s\" is read-only."
+#~ msgstr "Filen \"%s\" är skrivskyddad."
 
-#: src/gedit-encodings.c:276 src/gedit-encodings.c:282
-#: src/gedit-encodings.c:301
-msgid "Vietnamese"
-msgstr "Vietnamesisk"
+#~ msgid "Name"
+#~ msgstr "Namn"
 
-#: src/gedit-encodings.c:278
-msgid "Thai"
-msgstr "Thai"
+#~ msgid "Encoding"
+#~ msgstr "Kodning"
 
-#: src/recent-files/egg-recent-vfs-utils.c:90
-msgid " (invalid Unicode)"
-msgstr " (ogiltig Unicode)"
+#~ msgid "Encoding for Saving"
+#~ msgstr "Kodning vid sparande"
+
+#~ msgid ""
+#~ "The encoding method to use for saving files. Possible values are "
+#~ "\"GEDIT_SAVE_ALWAYS_UTF8\" for mandatory UTF-8 saving, "
+#~ "\"GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE\" if you want gedit to try to "
+#~ "convert the document it is saving to your current locale's encoding, "
+#~ "\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" if you want gedit to "
+#~ "try to use the original file encoding (new files in UTF8) and "
+#~ "\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" if you want gedit "
+#~ "to try to use the original file encoding (new files in current locale's "
+#~ "encoding). If the conversion is successful, it will be used. Otherwise, "
+#~ "UTF-8 will be used. Note that the values are case-sensitive, so make sure "
+#~ "they appear exactly as mentioned here."
+#~ msgstr ""
+#~ "Kodningsmetoden som används för sparande av filer. Möjliga värden är "
+#~ "\"GEDIT_SAVE_ALWAYS_UTF8\" för obligatoriskt UTF-8-sparande, och "
+#~ "\"GEDIT_SAVE_CURRENT_LOCALE_WHEN_POSSIBLE\" om du vill att gedit ska "
+#~ "försöka att konvertera dokumentet som det sparar till kodningen för din "
+#~ "aktuella lokal, \"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" om du "
+#~ "vill försöka använda originalfilens kodning (nya filer i UTF-8) och "
+#~ "\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" om du vill försöka "
+#~ "använda originalfilens kodning (nya filer i aktuella lokalens kodning). "
+#~ "Om konverteringen lyckas kommer den att användas. Annars kommer UTF-8 att "
+#~ "användas. Observera att det görs skillnad på versaler och gemener i "
+#~ "värdena, så försäkra dig om att de visas exakt så som de visas här."
+
+#~ msgid "_Debug"
+#~ msgstr "_Felsök"
+
+#~ msgid "Could not find '"
+#~ msgstr "Kunde inte hitta \""
+
+#~ msgid ""
+#~ "page-setup-dialog.glade2'.\n"
+#~ "\n"
+#~ "Reinstall gedit."
+#~ msgstr ""
+#~ "page-setup-dialog.glade2\".\n"
+#~ "\n"
+#~ "Installera om gedit."
+
+#~ msgid "Could not find the required widgets inside '"
+#~ msgstr "Kunde inte hitta de nödvändiga widgetarna i \""
+
+# Detta meddelande i inställningarna handlar om tabulatortecken och inte
+# flikar!
+#~ msgid "Tabs"
+#~ msgstr "Tabulatortecken"
+
+#~ msgid "Wrap Mode"
+#~ msgstr "Radbrytningsläge"
+
+#~ msgid "Line Numbers"
+#~ msgstr "Radnummer"
+
+#~ msgid "Manager"
+#~ msgstr "Hanterare"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "Kat_egorier:"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorier"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Automatiskt indrag</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Typsnitt och färger</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Radnummer</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Spara</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Flikar</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Ångra</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Radbrytningsläge</span>"
+
+#~ msgid "Fonts & Colors"
+#~ msgstr "Typsnitt och färger"
+
+#~ msgid "LOGO"
+#~ msgstr "LOGOTYP"
+
+#~ msgid "Line numbers"
+#~ msgstr "Radnummer"
+
+#~ msgid "Plugin manager"
+#~ msgstr "Insticksmodulhanterare"
+
+#~ msgid "Set _tabs width equivalent to"
+#~ msgstr "Ställ in _tabulatorbredd lika med"
+
+#~ msgid "Set limit on _undo actions to"
+#~ msgstr "Sätt gräns på antalet _ångra-åtgärder till"
+
+#~ msgid "Wrap mode"
+#~ msgstr "Radbrytningsläge"
+
+#~ msgid "_action(s)"
+#~ msgstr "_åtgärd(er)"
+
+#~ msgid "character(s)"
+#~ msgstr "tecken"
+
+#~ msgid "About selected plugin"
+#~ msgstr "Om den valda insticksmodulen"
+
+#~ msgid "Configure the selected plugin"
+#~ msgstr "Konfigurera den valda insticksmodulen"
+
+#~ msgid "It is not possible to revert an Untitled document"
+#~ msgstr "Det går inte att återställa ett namnlöst dokument"
+
+#~ msgid "Loaded file '%s'"
+#~ msgstr "Läste in filen \"%s\""
+
+#~ msgid "File '%s' saved."
+#~ msgstr "Filen \"%s\" sparades."
+
+#~ msgid ""
+#~ "Do you want to revert to saved the document '%s'?\n"
+#~ "\n"
+#~ "You will not be able to undo this operation."
+#~ msgstr ""
+#~ "Vill du återgå till det sparade dokumentet \"%s\"?\n"
+#~ "\n"
+#~ "Du kommer inte att kunna ångra denna åtgärd."
+
+#~ msgid "File '%s' reverted."
+#~ msgstr "Filen \"%s\" återställdes."
+
+#~ msgid ""
+#~ "Do you want to save the changes you made to the document \"%s\"? \n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "Vill du spara ändringarna du gjorde i dokumentet \"%s\"?\n"
+#~ "\n"
+#~ "Dina ändringar kommer att gå förlorade om du inte sparar dem."
+
+#~ msgid "_Don't quit"
+#~ msgstr "Avsluta in_te"
+
+#~ msgid "_Don't close"
+#~ msgstr "St_äng inte"
+
+#~ msgid "Replace a string"
+#~ msgstr "Ersätt en sträng"
+
+#~ msgid "Search again for the same string"
+#~ msgstr "Sök igen efter samma sträng"
+
+#~ msgid "An error occurs while running the selected command."
+#~ msgstr "Ett fel uppstår vid körning av det valda kommandot."
+
+#~ msgid "Tag Groups Combo"
+#~ msgstr "Taggruppskombo"
+
+#~ msgid "Tags Name List"
+#~ msgstr "Taggnamnslista"
+
+#~ msgid "Page"
+#~ msgstr "Sida"
+
+#~ msgid "Push this button to select the font to be used to print the body"
+#~ msgstr ""
+#~ "Tryck på denna knapp för att välja det typsnitt som ska användas för "
+#~ "utskrift av brödtexten"
+
+#~ msgid "Push this button to select the font to be used to print the headers"
+#~ msgstr ""
+#~ "Tryck på denna knapp för att välja det typsnitt som används för utskrift "
+#~ "av huvudena"
+
+#~ msgid "Encodings"
+#~ msgstr "Kodningar"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Typsnitt</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Öppna</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">Sida</span>"
+
+#~ msgid "<span weight=\"bold\">When saving a new file...</span>"
+#~ msgstr "<span weight=\"bold\">Vid sparande av ny fil...</span>"
+
+#~ msgid "<span weight=\"bold\">When saving an existing file...</span>"
+#~ msgstr "<span weight=\"bold\">Vid sparande av befintlig fil...</span>"
+
+#~ msgid "Add new encodings"
+#~ msgstr "Lägg till nya kodningar"
+
+#~ msgid "Always use U_TF-8 encoding (faster)"
+#~ msgstr "Använd alltid U_TF-8-kodning (snabbare)"
+
+#~ msgid "Always use _UTF-8 encoding (faster)"
+#~ msgstr "Använd alltid _UTF-8-kodning (snabbare)"
+
+#~ msgid "Line _numbers:"
+#~ msgstr "Rad_nummer:"
+
+#~ msgid "Move down"
+#~ msgstr "Flytta ned"
+
+#~ msgid "Move up"
+#~ msgstr "Flytta upp"
+
+#~ msgid "Page he_aders:"
+#~ msgstr "Sidh_uvud:"
+
+#~ msgid "Print _line numbers every"
+#~ msgstr "Skriv ut _radnummer var"
+
+#~ msgid "Print fonts"
+#~ msgstr "Utskriftstypsnitt"
+
+#~ msgid "Remove an encoding"
+#~ msgstr "Ta bort en kodning"
+
+#~ msgid "U_se original file encoding if possible"
+#~ msgstr "A_nvänd om möjligt originalfilens kodning"
+
+#~ msgid "Use cu_rrent locale's encoding if possible"
+#~ msgstr "Använd om möjligt a_ktuell lokals kodning"
+
+#~ msgid "Use current _locale's encoding if possible"
+#~ msgstr "Använd om möjligt aktuell _lokals kodning"
+
+#~ msgid "_Supported encodings:"
+#~ msgstr "_Kodningar som stöds:"
+
+#~ msgid "li_ne(s)"
+#~ msgstr "ra_d(er)"
+
+#~ msgid ""
+#~ "Could not find the required widgets inside '%s'.\n"
+#~ "\n"
+#~ "Reinstall gedit."
+#~ msgstr ""
+#~ "Kunde inte hitta de nödvändiga widgetarna i \"%s\".\n"
+#~ "\n"
+#~ "Installera om gedit."
+
+#~ msgid ""
+#~ "Could not find '%s'.\n"
+#~ "\n"
+#~ "Reinstall gedit."
+#~ msgstr ""
+#~ "Kunde inte hitta \"%s\".\n"
+#~ "\n"
+#~ "Installera om gedit."
+
+#~ msgid "Could not find the required widgets inside '%s'."
+#~ msgstr "Kunde inte hitta de nödvändiga widgetarna i %s."
+
+#~ msgid "Text Wrapping"
+#~ msgstr "Textradbrytning"
+
+#~ msgid "Print line numbers"
+#~ msgstr "Skriv ut radnummer"
+
+#~ msgid ""
+#~ "gedit is unable to print since it cannot find\n"
+#~ "one of the required fonts."
+#~ msgstr ""
+#~ "gedit kan inte skriva ut eftersom det inte kan\n"
+#~ "hitta en av de nödvändiga typsnitten."
+
+#~ msgid "Page: %d"
+#~ msgstr "Sida: %d"
+
+#~ msgid "gedit - Print Preview"
+#~ msgstr "gedit - Förhandsgranskning"
+
+#~ msgid ""
+#~ "An error occurred while printing.\n"
+#~ "\n"
+#~ "%s,"
+#~ msgstr ""
+#~ "Ett fel uppstod vid utskrift.\n"
+#~ "\n"
+#~ "%s,"
+
+#~ msgid "Find Again"
+#~ msgstr "Sök igen"
+
+#~ msgid "Enable"
+#~ msgstr "Aktivera"
+
+#~ msgid "Disabled"
+#~ msgstr "Inaktiverad"
+
+#~ msgid "Disable"
+#~ msgstr "Inaktivera"
+
+#~ msgid "Load"
+#~ msgstr "Läs in"
+
+#~ msgid "Module file name"
+#~ msgstr "Modulfilnamn"
+
+#~ msgid "Author(s)"
+#~ msgstr "Författare"
+
+#~ msgid "Description"
+#~ msgstr "Beskrivning"
+
+#~ msgid "Details"
+#~ msgstr "Detaljer"
+
+#~ msgid "File Name"
+#~ msgstr "Filnamn"
+
+#~ msgid "Current Locale"
+#~ msgstr "Aktuell lokal"
+
+#~ msgid "Add or Remove..."
+#~ msgstr "Lägg till eller ta bort..."
+
+#~ msgid "  Unicode (UTF-8)"
+#~ msgstr "  Unicode (UTF-8)"
+
+#~ msgid "  %s"
+#~ msgstr "  %s"
+
+#~ msgid "Character Coding:"
+#~ msgstr "Teckenkodning:"
+
+#~ msgid "Character Coding"
+#~ msgstr "Teckenkodning"
+
+#~ msgid "Character Encoding:"
+#~ msgstr "Teckenkodning:"
+
+#~ msgid "Character Encoding"
+#~ msgstr "Teckenkodning"
+
+#~ msgid "_Encodings"
+#~ msgstr "_Kodningar"
+
+#~ msgid "A_vailable encodings"
+#~ msgstr "Till_gängliga kodningar"
+
+#~ msgid "Available encodings:"
+#~ msgstr "Tillgängliga kodningar:"
+
+#~ msgid "Available encodings"
+#~ msgstr "Tillgängliga kodningar"
+
+#~ msgid "Character encodings"
+#~ msgstr "Teckenkodningar"
+
+#~ msgid "Character encoding"
+#~ msgstr "Teckenkodning"
+
+#~ msgid "E_ncodings shown in menu"
+#~ msgstr "Kod_ningar som visas i menyn"
+
+#~ msgid "Encodings shown in menu:"
+#~ msgstr "Kodningar som visas i menyn:"
+
+#~ msgid "Choose one or more e_ncodings:"
+#~ msgstr "Välj en eller flera _kodningar:"
+
+#~ msgid "Customize"
+#~ msgstr "Anpassa"
+
+#~ msgid "Customize toolbars"
+#~ msgstr "Anpassa verktygsrader"
+
+#~ msgid "_Icon"
+#~ msgstr "_Ikon"
+
+#~ msgid "_Icons"
+#~ msgstr "_Ikoner"
+
+#~ msgid "Show Cursor Position"
+#~ msgstr "Visa markörposition"
+
+#~ msgid "Show Overwrite Mode"
+#~ msgstr "Visa överskrivningsläge"
+
+#~ msgid ""
+#~ "Whether the status bar should show the cursor position in editing "
+#~ "windows. Make sure you turn on the \"Status Bar is Visible\" option for "
+#~ "this to take effect."
+#~ msgstr ""
+#~ "Huruvida statusraden ska visa markörpositionen i redigeringsfönster. "
+#~ "Försäkra dig om att du slår på alternativet \"Statusrad är synlig\" för "
+#~ "att detta ska ha effekt."
+
+#~ msgid ""
+#~ "Whether the status bar should show the insert/overwrite mode in editing "
+#~ "windows. Make sure you turn on the \"Status Bar is Visible\" option for "
+#~ "this to take effect."
+#~ msgstr ""
+#~ "Huruvida statusraden ska visa infognings-/överskrivningsläget i "
+#~ "redigeringsfönster. Försäkra dig om att alternativet \"Statusraden är "
+#~ "synlig\" är påslaget för att detta ska ha effekt."
+
+#~ msgid "C_ustomize Statusbar"
+#~ msgstr "An_passa statusrad"
+
+#~ msgid "Icon and _Text"
+#~ msgstr "Ikon och _text"
+
+#~ msgid "Only show icons in the toolbar"
+#~ msgstr "Visa endast ikoner i verktygsraden"
+
+#~ msgid "Show _Cursor Position"
+#~ msgstr "Visa _markörposition"
+
+#~ msgid "Show _Overwrite Mode"
+#~ msgstr "Visa _överskrivningsläge"
+
+#~ msgid "Show cursor position in the statusbar"
+#~ msgstr "Visa markörposition i statusraden"
+
+#~ msgid "Show overwrite mode in the statusbar"
+#~ msgstr "Visa översrivningsläge i statusraden"
+
+#~ msgid "_Priority Text beside Icons"
+#~ msgstr "_Prioritetstext bredvid ikoner"
+
+#~ msgid "  Ln %d, Col %d-%d"
+#~ msgstr "  Rad %d, kolumn %d-%d"
+
+#~ msgid "De_tails"
+#~ msgstr "De_taljer"
+
+#~ msgid "_ASCII Table"
+#~ msgstr "_ASCII-tabell"
+
+#~ msgid "Pop-up a dialog containing an ASCII Table"
+#~ msgstr "Visa ett dialogfönster som innehåller en ASCII-tabell"
+
+#~ msgid "Char"
+#~ msgstr "Tecken"
+
+#~ msgid "Dec#"
+#~ msgstr "Dec"
+
+#~ msgid "Hex#"
+#~ msgstr "Hex"
+
+#~ msgid "ASCII Table"
+#~ msgstr "ASCII-tabell"
+
+#~ msgid "ASCII table"
+#~ msgstr "ASCII-tabell"
+
+#~ msgid "This plugin displays a pop-up dialog which contains an ASCII Table."
+#~ msgstr ""
+#~ "Denna insticksmodul visar ett popupfönster som innehåller en ASCII-tabell."
+
+#~ msgid "Open CVS Chan_geLogs"
+#~ msgstr "Öppna CVS Chan_geLog-filer"
+
+#~ msgid "Searches for ChangeLogs in the current document and opens them"
+#~ msgstr ""
+#~ "Söker efter ChangeLog-filer i det aktuella dokumentet och öppnar dem"
+
+#~ msgid "A plugin that opens ChangeLogs found in CVS commit messages."
+#~ msgstr ""
+#~ "En insticksmodul som öppnar ChangeLog-filer som hittas i CVS commit-"
+#~ "meddelanden."
+
+#~ msgid "CVS ChangeLog"
+#~ msgstr "CVS-ChangeLog"
+
+#~ msgid "Co_mpare Files..."
+#~ msgstr "_Jämför filer..."
+
+#~ msgid "Makes a diff file from two documents or files"
+#~ msgstr "Gör en diff-fil från två dokument eller filer"
+
+#~ msgid "Compare Files"
+#~ msgstr "Jämför filer"
+
+#~ msgid "C_ompare"
+#~ msgstr "J_ämför"
+
+#~ msgid "Executed command"
+#~ msgstr "Kört kommando"
+
+#~ msgid "The two documents you selected are the same."
+#~ msgstr "De två dokument du markerade är samma."
+
+#~ msgid ""
+#~ "The \"first\" file you selected does not exist.\n"
+#~ "\n"
+#~ "Please provide a valid file."
+#~ msgstr ""
+#~ "Den \"första\" filen du valde finns inte.\n"
+#~ "\n"
+#~ "Var vänlig och ange en giltig fil."
+
+#~ msgid ""
+#~ "The \"second\" file you selected does not exist.\n"
+#~ "\n"
+#~ "Please provide a valid file."
+#~ msgstr ""
+#~ "Den \"andra\" filen du valde finns inte.\n"
+#~ "\n"
+#~ "Var vänlig och ange en giltig fil."
+
+#~ msgid "The two files you selected are the same."
+#~ msgstr "De två filerna du valde är samma."
+
+#~ msgid "The \"first\" document contains no text."
+#~ msgstr "Det \"första\" dokumentet innehåller ingen text."
+
+#~ msgid "The \"second\" document contains no text."
+#~ msgstr "Det \"andra\" dokumentet innehåller ingen text."
+
+#~ msgid ""
+#~ "Impossible to compare the selected documents.\n"
+#~ "\n"
+#~ "gedit could not create a temporary file."
+#~ msgstr ""
+#~ "Kan inte jämföra de valda dokumenten.\n"
+#~ "\n"
+#~ "gedit kunde inte skapa en temporär fil."
+
+#~ msgid ""
+#~ "Impossible to compare the selected documents.\n"
+#~ "\n"
+#~ "Error executing the diff command."
+#~ msgstr ""
+#~ "Kan inte jämföra de valda dokumenten.\n"
+#~ "\n"
+#~ "Fel vid körning av diff-kommandot."
+
+#~ msgid "No differences were found between the selected documents."
+#~ msgstr "Inga skillnader hittades mellan de valda dokumenten."
+
+#~ msgid ""
+#~ "Impossible to compare the selected documents.\n"
+#~ "\n"
+#~ "The result contains invalid UTF-8 data."
+#~ msgstr ""
+#~ "Kan inte jämföra de valda dokumenten.\n"
+#~ "\n"
+#~ "Resultatet innehåller ogiltig UTF-8-data."
+
+#~ msgid "Choose the files to compare."
+#~ msgstr "Välj filerna som ska jämföras."
+
+#~ msgid "Compare files..."
+#~ msgstr "Jämför filer..."
+
+#~ msgid "F_rom document"
+#~ msgstr "F_rån dokument"
+
+#~ msgid "First"
+#~ msgstr "Första"
+
+#~ msgid "First file from disk"
+#~ msgstr "Första fil från disk"
+
+#~ msgid "First file from open document"
+#~ msgstr "Första fil från öppet dokument"
+
+#~ msgid "From _document"
+#~ msgstr "Från _dokument"
+
+#~ msgid "From a _file on disk"
+#~ msgstr "Från en _fil på disk"
+
+#~ msgid "From a file o_n disk"
+#~ msgstr "Från en fil _på disk"
+
+#~ msgid "Ignore _blanks (-b option)"
+#~ msgstr "Ignorera _blanksteg (flaggan -b)"
+
+#~ msgid "Note that this option is only supported by GNU diff"
+#~ msgstr "Observera att denna flagga endast stöds av GNU diff"
+
+#~ msgid "Second"
+#~ msgstr "Andra"
+
+#~ msgid "Second file from disk"
+#~ msgstr "Andra fil från disk"
+
+#~ msgid "Second file from open document"
+#~ msgstr "Andra fil från öppet dokument"
+
+#~ msgid "Select the \"first\" file..."
+#~ msgstr "Välj den \"första\" filen..."
+
+#~ msgid "Select the \"second\" file..."
+#~ msgstr "Välj den \"andra\" filen..."
+
+#~ msgid "Select the first file to compare"
+#~ msgstr "Välj första filen att jämföra"
+
+#~ msgid "Select the first open document to compare"
+#~ msgstr "Välj första öppna dokumentet att jämföra"
+
+#~ msgid "Select the second file to compare"
+#~ msgstr "Välj den andra filen att jämföra"
+
+#~ msgid "Select the second open document to compare"
+#~ msgstr "Välj det andra öppna dokumentet att jämföra"
+
+#~ msgid "Use the _unified output format (-u option)"
+#~ msgstr "Använd det _universella utdataformatet (flaggan -u)"
+
+#~ msgid ""
+#~ "The Compare Files plugin uses the <tt>diff</tt> program to compare two "
+#~ "documents or files on disk.\n"
+#~ "\n"
+#~ "For more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell "
+#~ "prompt."
+#~ msgstr ""
+#~ "Insticksmodulen \"Jämför filer\" använder programmet <tt>diff</tt> för "
+#~ "att jämföra två dokument eller filer på disken.\n"
+#~ "\n"
+#~ "För mer information om programmet <tt>diff</tt> skriver du <tt>man diff</"
+#~ "tt>  i en skalprompt."
+
+#~ msgid "Open a file."
+#~ msgstr "Öppna en fil."
+
+#~ msgid "Dump XML"
+#~ msgstr "Dumpa XML"
+
+#~ msgid "Dump the UI Xml description"
+#~ msgstr "Dumpa Xml-användargränssnittsbeskrivningen"
+
+#~ msgid "Croatian"
+#~ msgstr "Kroatisk"
+
+#~ msgid "Hindi"
+#~ msgstr "Hindi"
+
+#~ msgid "Farsi"
+#~ msgstr "Farsi"
+
+#~ msgid "Gujarati"
+#~ msgstr "Gujarati"
+
+#~ msgid "Gurmukhi"
+#~ msgstr "Gurmukhi"
 
 #~ msgid "  Line %d, Column %d"
 #~ msgstr "  Rad %d, kolumn %d"
@@ -3279,14 +4176,8 @@ msgstr " (ogiltig Unicode)"
 #~ "© 1998-2000 Evan Lawrence och Alex Robert\n"
 #~ "© 2000-2002 Chema Celorio och Paolo Maggi"
 
-#~ msgid "action(s)"
-#~ msgstr "åtgärd(er)"
-
 #~ msgid "minutes"
 #~ msgstr "minut"
-
-#~ msgid "line(s)"
-#~ msgstr "rad(er)"
 
 #~ msgid "Compare two files..."
 #~ msgstr "Jämför två filer..."
@@ -3374,9 +4265,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Goto _Line"
 #~ msgstr "Gå till _rad"
-
-#~ msgid "Pr_eferences..."
-#~ msgstr "_Inställningar..."
 
 #~ msgid ""
 #~ "Could not find the required widgets inside gedit-encodings-dialog."
@@ -3595,9 +4483,6 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "Sa_ve All"
 #~ msgstr "Spa_ra alla"
 
-#~ msgid "Open %s"
-#~ msgstr "Öppna %s"
-
 #~ msgid "Always use UTF-8 encoding (faster) when creating a new file"
 #~ msgstr "Använd alltid UTF-8-kodning (snabbare) vid skapande av en ny fil"
 
@@ -3609,9 +4494,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Use current locale's encoding if possible when saving"
 #~ msgstr "Använd om möjligt aktuell lokals kodning vid sparande"
-
-#~ msgid "Loading %d file..."
-#~ msgstr "Läser in %d fil..."
 
 #~ msgid "U_se current locale only if the file already uses it"
 #~ msgstr "Anv_änd aktuell lokal endast om filen redan använder den"
@@ -3756,9 +4638,6 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "Show _Tooltips"
 #~ msgstr "Visa _verktygstips"
 
-#~ msgid "Show tooltips in the toolbar"
-#~ msgstr "Visa verktygstips i verktygsraden"
-
 #~ msgid "_Plugin Manager"
 #~ msgstr "_Insticksmodulhanterare"
 
@@ -3785,9 +4664,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Could not revert the file \"%s\""
 #~ msgstr "Kunde inte återställa filen \"%s\""
-
-#~ msgid "Loaded file %s"
-#~ msgstr "Läste in filen %s"
 
 #~ msgid "Unable to open recent file: %s"
 #~ msgstr "Kunde inte öppna nyligen använda filen: %s"
@@ -3819,9 +4695,6 @@ msgstr " (ogiltig Unicode)"
 #~ "\n"
 #~ "%s."
 
-#~ msgid "Unknown error"
-#~ msgstr "Okänt fel"
-
 #~ msgid "_Show tag list"
 #~ msgstr "_Visa tagglista"
 
@@ -3842,9 +4715,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Open from _URI..."
 #~ msgstr "Öppna från _URI..."
-
-#~ msgid "Print Pre_view"
-#~ msgstr "Förhands_granska"
 
 #~ msgid "Revert to saved"
 #~ msgstr "Återgå till sparad"
@@ -3872,9 +4742,6 @@ msgstr " (ogiltig Unicode)"
 #~ "En fil med namnet \"%s\" finns redan på denna plats. Vill du ersätta den "
 #~ "med den fil som du vill spara?"
 
-#~ msgid "An error occured while running the selected command."
-#~ msgstr "Ett fel uppstod vid körning av det valda kommandot."
-
 #~ msgid "Error, plugin '%s' does not contain destroy function."
 #~ msgstr "Fel, insticksmodulen \"%s\" innehåller inte förstörelsefunktion."
 
@@ -3883,9 +4750,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Web browse plugin"
 #~ msgstr "Webbläsarinsticksmodul"
-
-#~ msgid "Number Converter"
-#~ msgstr "Talkonverterare"
 
 #~ msgid "diff"
 #~ msgstr "diff"
@@ -3968,9 +4832,6 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "Current column"
 #~ msgstr "Aktuell kolumn"
 
-#~ msgid "Current line"
-#~ msgstr "Aktuell rad"
-
 #~ msgid "Paragraphs"
 #~ msgstr "Stycken"
 
@@ -4035,9 +4896,6 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "Editor Behavior"
 #~ msgstr "Redigerarbeteende"
 
-#~ msgid "General"
-#~ msgstr "Allmänt"
-
 #~ msgid "MDI (Multiple Document Interface)"
 #~ msgstr "MDI (Multiple Document Interface)"
 
@@ -4056,20 +4914,11 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "Set toolbar to icons with _text"
 #~ msgstr "Visa ikoner och _text i verktygsraden"
 
-#~ msgid "Tab _width: "
-#~ msgstr "Ta_bbredd: "
-
-#~ msgid "_Foreground: "
-#~ msgstr "_Förgrund: "
-
 #~ msgid "_Landscape"
 #~ msgstr "_Liggande"
 
 #~ msgid "_Portrait"
 #~ msgstr "_Stående"
-
-#~ msgid "gedit: Browse for program location..."
-#~ msgstr "gedit: Bläddra efter programplats..."
 
 #~ msgid "RO - "
 #~ msgstr "SKRIVSK - "
@@ -4159,9 +5008,6 @@ msgstr " (ogiltig Unicode)"
 #~ msgid "``%s'' is about to be overwritten. Do you want to continue ?"
 #~ msgstr "\"%s\" kommer att skrivas över. Vill du fortsätta?"
 
-#~ msgid "Error saving file!"
-#~ msgstr "Fel vid sparande av fil!"
-
 #~ msgid ""
 #~ "Are you sure you want to revert all changes?\n"
 #~ "(%s)"
@@ -4242,9 +5088,6 @@ msgstr " (ogiltig Unicode)"
 
 #~ msgid "Printing .."
 #~ msgstr "Skriver ut.."
-
-#~ msgid "Printing ..."
-#~ msgstr "Skriver ut..."
 
 #~ msgid "_File/"
 #~ msgstr "_Arkiv/"

@@ -7,19 +7,37 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit 2.0\n"
-"POT-Creation-Date: 2003-02-04 12:35+0100\n"
-"PO-Revision-Date: 2003-01-14 11:02+EDT\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-11 12:12+0200\n"
+"PO-Revision-Date: 2003-02-03 10:16+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/GNOME_Gedit.server.in.h:1
+#: data/GNOME_Gedit.server.in.in.h:1
+msgid "Gedit View"
+msgstr ""
+
+#: data/GNOME_Gedit.server.in.in.h:2
+msgid "Gedit View."
+msgstr ""
+
+#: data/GNOME_Gedit.server.in.in.h:3 viewer/gedit-factory.c:53
+msgid "Gedit viewer factory"
+msgstr ""
+
+#: data/GNOME_Gedit.server.in.in.h:4
+#, fuzzy
+msgid "Source"
+msgstr "ቅደም ተከተል"
+
+#: data/GNOME_Gedit.server.in.in.h:5
 msgid "gedit application"
 msgstr "የgedit ፕሮግራም"
 
-#: data/GNOME_Gedit.server.in.h:2
+#: data/GNOME_Gedit.server.in.in.h:6
 msgid "gedit automation factory"
 msgstr ""
 
@@ -27,7 +45,7 @@ msgstr ""
 msgid "Edit text files"
 msgstr "የጽሑፍ ፋይሎች ያስተካክሉ"
 
-#: data/gedit.desktop.in.h:2 src/gedit2.c:342
+#: data/gedit.desktop.in.h:2 gedit/gedit2.c:336
 msgid "Text Editor"
 msgstr "የጽሑፍ ማቀናጃ"
 
@@ -38,154 +56,184 @@ msgid ""
 msgstr ""
 
 #: data/gedit.schemas.in.h:2
+#, fuzzy
+msgid "Auto Detected Encodings"
+msgstr "አዲስ የሆሄያት ኮዶችን ጨምር"
+
+#: data/gedit.schemas.in.h:3
 msgid "Auto Save"
 msgstr "በራሱ አስቀማጭ"
 
-#: data/gedit.schemas.in.h:3
+#: data/gedit.schemas.in.h:4
 msgid "Auto Save Interval"
 msgstr ""
 
-#: data/gedit.schemas.in.h:4
+#: data/gedit.schemas.in.h:5
 msgid "Auto indent"
 msgstr "በራሱ አንቀጽ"
 
-#: data/gedit.schemas.in.h:5
+#: data/gedit.schemas.in.h:6
 msgid "Background Color"
 msgstr "የመደቡ ቀለም"
 
-#: data/gedit.schemas.in.h:6
+#: data/gedit.schemas.in.h:7
 msgid ""
 "Background color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
 
-#: data/gedit.schemas.in.h:7
+#: data/gedit.schemas.in.h:8
 msgid ""
 "Background color for unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
 
-#: data/gedit.schemas.in.h:8
+#: data/gedit.schemas.in.h:9
 msgid "Backup Copy Extension"
 msgstr ""
 
-#: data/gedit.schemas.in.h:9
+#: data/gedit.schemas.in.h:10
 msgid "Body Font for Printing"
 msgstr ""
 
-#: data/gedit.schemas.in.h:10
+#: data/gedit.schemas.in.h:11
 msgid "Create Backup Copies"
 msgstr ""
 
-#: data/gedit.schemas.in.h:11
+#: data/gedit.schemas.in.h:12
 msgid "Display Line Numbers"
 msgstr "የመስመር ቍጥሮች አሳይ"
 
-#: data/gedit.schemas.in.h:12
+#: data/gedit.schemas.in.h:13
+msgid "Display Right Margin"
+msgstr ""
+
+#: data/gedit.schemas.in.h:14
 msgid "Editor Font"
 msgstr "የማቀናጃ ፊደል ቅርጽ"
 
-#: data/gedit.schemas.in.h:13
-msgid "Encoding for Saving"
+#: data/gedit.schemas.in.h:15
+msgid "Enable Syntax Highlighting"
 msgstr ""
 
-#: data/gedit.schemas.in.h:14 src/dialogs/gedit-preferences-dialog.c:2296
-#: src/dialogs/gedit-encodings-dialog.c:261
-#: src/dialogs/gedit-encodings-dialog.glade2.h:2
-msgid "Encodings"
-msgstr "የሆሄያት ኮዶች"
+#: data/gedit.schemas.in.h:16
+msgid "Encodings shown in menu"
+msgstr ""
 
-#: data/gedit.schemas.in.h:15
+#: data/gedit.schemas.in.h:17
 msgid ""
 "Extension or suffix to use for backup file names. This will only take effect "
 "if the \"Create Backup Copies\" option is turned on."
 msgstr ""
 
-#: data/gedit.schemas.in.h:16
+#: data/gedit.schemas.in.h:18
 msgid ""
 "Foreground color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
 
-#: data/gedit.schemas.in.h:17
+#: data/gedit.schemas.in.h:19
 msgid ""
 "Foreground color for the unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
 
-#: data/gedit.schemas.in.h:18
+#: data/gedit.schemas.in.h:20
 msgid "Header Font for Printing"
 msgstr ""
 
-#: data/gedit.schemas.in.h:19
+#: data/gedit.schemas.in.h:21
 msgid ""
 "If this value is 0, then no line numbers will be inserted when printing a "
 "document. Otherwise, gedit will print line numbers every such number of "
 "lines."
 msgstr ""
 
-#: data/gedit.schemas.in.h:20
+#: data/gedit.schemas.in.h:22
 msgid "Insert spaces"
 msgstr "ክፍተቶችን አስገባ"
 
-#: data/gedit.schemas.in.h:21
+#: data/gedit.schemas.in.h:23
 msgid "Line Number Font for Printing"
 msgstr ""
 
-#: data/gedit.schemas.in.h:22
+#: data/gedit.schemas.in.h:24
 msgid "Line Wrapping Mode"
 msgstr ""
 
-#: data/gedit.schemas.in.h:23
-msgid ""
-"List of encodings used by gedit for reading files not encoded in UTF-8 or in "
-"the current locale encoding."
-msgstr ""
-
-#: data/gedit.schemas.in.h:24
-msgid "Maximum Recent Files"
-msgstr ""
-
 #: data/gedit.schemas.in.h:25
-msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgid ""
+"List of encodings shown in Character Coding menu in open/save file selector. "
+"Only recognized encodings are used."
 msgstr ""
 
 #: data/gedit.schemas.in.h:26
+msgid "Maximum Recent Files"
+msgstr ""
+
+#: data/gedit.schemas.in.h:27
+msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgstr ""
+
+#: data/gedit.schemas.in.h:28
+msgid "Monospace 12"
+msgstr ""
+
+#: data/gedit.schemas.in.h:29
+msgid "Monospace Regular 9"
+msgstr ""
+
+#: data/gedit.schemas.in.h:30
 msgid ""
 "Number of minutes after which gedit will automatically save modified files. "
 "This will only take effect if the \"Auto Save\" option is turned on."
 msgstr ""
 
-#: data/gedit.schemas.in.h:27
+#: data/gedit.schemas.in.h:31
 msgid "Print Header"
 msgstr ""
 
 #
-#: data/gedit.schemas.in.h:28
+#: data/gedit.schemas.in.h:32
 msgid "Print Line Numbers"
 msgstr "የመስመር ቍጥሮች አትም"
 
-#: data/gedit.schemas.in.h:29
-msgid "Printing Line Wrapping Mode"
-msgstr ""
-
-#: data/gedit.schemas.in.h:30
-msgid "Selected Text Color"
-msgstr "የተመረጠው ጽሑፍ ቀለም"
-
-#: data/gedit.schemas.in.h:31
-msgid "Selection Color"
-msgstr "የምርጫው ቀለም"
-
-#: data/gedit.schemas.in.h:32
-msgid "Show Cursor Position"
-msgstr ""
-
 #: data/gedit.schemas.in.h:33
-msgid "Show Overwrite Mode"
+msgid "Print Syntax Highlighting"
 msgstr ""
 
 #: data/gedit.schemas.in.h:34
+msgid "Printing Line Wrapping Mode"
+msgstr ""
+
+#: data/gedit.schemas.in.h:35
+msgid "Right Margin Position"
+msgstr ""
+
+#: data/gedit.schemas.in.h:36
+msgid "Sans Regular 11"
+msgstr ""
+
+#: data/gedit.schemas.in.h:37
+msgid "Sans Regular 8"
+msgstr ""
+
+#: data/gedit.schemas.in.h:38
+msgid "Selected Text Color"
+msgstr "የተመረጠው ጽሑፍ ቀለም"
+
+#: data/gedit.schemas.in.h:39
+msgid "Selection Color"
+msgstr "የምርጫው ቀለም"
+
+#: data/gedit.schemas.in.h:40
+msgid ""
+"Sorted list of encodings used by gedit for auto-detecting the encoding of a "
+"file. \"CURRENT\" is the current locale encoding. Only recognized encodings "
+"are used."
+msgstr ""
+
+#: data/gedit.schemas.in.h:41
 msgid ""
 "Specifies how to wrap long lines for printing. Use \"GTK_WRAP_NONE\" for no "
 "wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -194,7 +242,7 @@ msgid ""
 "here."
 msgstr ""
 
-#: data/gedit.schemas.in.h:35
+#: data/gedit.schemas.in.h:42
 msgid ""
 "Specifies how to wrap long lines in the editing area. Use \"GTK_WRAP_NONE\" "
 "for no wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -203,40 +251,44 @@ msgid ""
 "here."
 msgstr ""
 
-#: data/gedit.schemas.in.h:36
+#: data/gedit.schemas.in.h:43
 msgid ""
 "Specifies the font to use for a document's body when printing documents."
 msgstr ""
 
-#: data/gedit.schemas.in.h:37
+#: data/gedit.schemas.in.h:44
 msgid ""
 "Specifies the font to use for line numbers when printing. This will only "
 "take effect if the \"Print Line Numbers\" option is non-zero."
 msgstr ""
 
-#: data/gedit.schemas.in.h:38
+#: data/gedit.schemas.in.h:45
 msgid ""
 "Specifies the font to use for page headers when printing a document. This "
 "will only take effect if the \"Print Header\" option is turned on."
 msgstr ""
 
-#: data/gedit.schemas.in.h:39
+#: data/gedit.schemas.in.h:46
 msgid ""
 "Specifies the maximum number of recently opened files that will be displayed "
 "in the \"Recent Files\" submenu."
 msgstr ""
 
-#: data/gedit.schemas.in.h:40
+#: data/gedit.schemas.in.h:47
 msgid ""
 "Specifies the number of spaces that should be displayed instead of Tab "
 "characters."
 msgstr ""
 
-#: data/gedit.schemas.in.h:41
+#: data/gedit.schemas.in.h:48
+msgid "Specifies the position of the right margin."
+msgstr ""
+
+#: data/gedit.schemas.in.h:49
 msgid "Status Bar is Visible"
 msgstr ""
 
-#: data/gedit.schemas.in.h:42
+#: data/gedit.schemas.in.h:50
 msgid ""
 "Style for the toolbar buttons. Possible values are \"GEDIT_TOOLBAR_SYSTEM\" "
 "to use the system's default style, \"GEDIT_TOOLBAR_ICONS\" to display icons "
@@ -246,102 +298,85 @@ msgid ""
 "mentioned here."
 msgstr ""
 
-#: data/gedit.schemas.in.h:43
+#: data/gedit.schemas.in.h:51
 msgid "Tab Size"
 msgstr "የመክፈቻ መጠን"
 
-#: data/gedit.schemas.in.h:44
+#: data/gedit.schemas.in.h:52
 msgid "Text Color"
 msgstr "የጽሑፍ ቀለም"
 
-#: data/gedit.schemas.in.h:45
-msgid ""
-"The encoding method to use for saving files. Possible values are "
-"\"GEDIT_SAVE_ALWAYS_UTF8\" for mandatory UTF-8 saving, "
-"\"GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE\" if you want gedit to try to "
-"convert the document it is saving to your current locale's encoding, "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" if you want gedit to try "
-"to use the original file encoding (new files in UTF8) and "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" if you want gedit to "
-"try to use the original file encoding (new files in current locale's "
-"encoding). If the conversion is successful, it will be used. Otherwise, UTF-"
-"8 will be used. Note that the values are case-sensitive, so make sure they "
-"appear exactly as mentioned here."
-msgstr ""
-
-#: data/gedit.schemas.in.h:46
+#: data/gedit.schemas.in.h:53
 msgid "Toolbar Buttons Style"
 msgstr ""
 
-#: data/gedit.schemas.in.h:47
+#: data/gedit.schemas.in.h:54
 msgid "Toolbar is Visible"
 msgstr ""
 
-#: data/gedit.schemas.in.h:48
+#: data/gedit.schemas.in.h:55
 msgid "Undo Actions Limit"
 msgstr ""
 
-#: data/gedit.schemas.in.h:49
+#: data/gedit.schemas.in.h:56
 msgid "Use Default Colors"
 msgstr "የነበረው ቀለሞችን ተጠቀም"
 
-#: data/gedit.schemas.in.h:50
+#: data/gedit.schemas.in.h:57
 msgid "Use Default Font"
 msgstr "የነበረው ፊደል ቅርጽን ተጠቀም"
 
-#: data/gedit.schemas.in.h:51
+#: data/gedit.schemas.in.h:58
 msgid ""
 "Whether gedit should automatically save modified files after a time "
 "interval. You can set the time interval with the \"Auto Save Interval\" "
 "option."
 msgstr ""
 
-#: data/gedit.schemas.in.h:52
+#: data/gedit.schemas.in.h:59
 msgid ""
 "Whether gedit should create backup copies for the files it saves. You can "
 "set the backup file extension with the \"Backup Copy Extension\" option."
 msgstr ""
 
-#: data/gedit.schemas.in.h:53
+#: data/gedit.schemas.in.h:60
 msgid "Whether gedit should display line numbers in the editing area."
 msgstr ""
 
-#: data/gedit.schemas.in.h:54
+#: data/gedit.schemas.in.h:61
+msgid "Whether gedit should display the right margin in the editing area."
+msgstr ""
+
+#: data/gedit.schemas.in.h:62
 msgid "Whether gedit should enable auto indentation."
 msgstr ""
 
-#: data/gedit.schemas.in.h:55
+#: data/gedit.schemas.in.h:63
+msgid "Whether gedit should enable syntax highlighting."
+msgstr ""
+
+#: data/gedit.schemas.in.h:64
 msgid "Whether gedit should include a document header when printing documents."
 msgstr ""
 
-#: data/gedit.schemas.in.h:56
+#: data/gedit.schemas.in.h:65
 msgid "Whether gedit should insert spaces instead of tabs."
 msgstr ""
 
-#: data/gedit.schemas.in.h:57
+#: data/gedit.schemas.in.h:66
+msgid "Whether gedit should print syntax highlighting when printing documents."
+msgstr ""
+
+#: data/gedit.schemas.in.h:67
 msgid ""
 "Whether the status bar at the bottom of editing windows should be visible."
 msgstr ""
 
-#: data/gedit.schemas.in.h:58
-msgid ""
-"Whether the status bar should show the cursor position in editing windows. "
-"Make sure you turn on the \"Status Bar is Visible\" option for this to take "
-"effect."
-msgstr ""
-
-#: data/gedit.schemas.in.h:59
-msgid ""
-"Whether the status bar should show the insert/overwrite mode in editing "
-"windows. Make sure you turn on the \"Status Bar is Visible\" option for this "
-"to take effect."
-msgstr ""
-
-#: data/gedit.schemas.in.h:60
+#: data/gedit.schemas.in.h:68
 msgid "Whether the toolbar should be visible in editing windows."
 msgstr ""
 
-#: data/gedit.schemas.in.h:61
+#: data/gedit.schemas.in.h:69
 msgid ""
 "Whether to use the system's default colors for the editing area. If this "
 "option is turned off, then the colors of the editing area will be those "
@@ -349,246 +384,2124 @@ msgid ""
 "\", and \"Selection Color\" options."
 msgstr ""
 
-#: data/gedit.schemas.in.h:62
+#: data/gedit.schemas.in.h:70
 msgid ""
 "Whether to use the system's default font for editing text instead of a font "
 "specific to gedit. If this option is turned off, then the font named in the "
 "\"Editor Font\" option will be used instead of the system font."
 msgstr ""
 
-#: plugins/ASCII/ascii.c:43
-msgid "_ASCII Table"
-msgstr "የ_ASCII ሠንጠረዥ"
-
-#: plugins/ASCII/ascii.c:46
-msgid "Pop-up a dialog containing an ASCII Table"
+#: data/gedit.schemas.in.h:71
+msgid "[ISO-8859-15]"
 msgstr ""
 
-#: plugins/ASCII/ascii.c:303
-msgid "Char"
-msgstr "ፊደል"
-
-#: plugins/ASCII/ascii.c:310
-msgid "Dec#"
-msgstr "Dec#"
-
-#: plugins/ASCII/ascii.c:317
-msgid "Hex#"
-msgstr "Hex#"
-
-#: plugins/ASCII/ascii.c:324
-msgid "Name"
-msgstr "ስም"
-
-#: plugins/ASCII/ascii.c:369
-msgid "ASCII Table"
-msgstr "የASCII ሠንጠረዥ"
-
-#: plugins/ASCII/ascii.c:382 plugins/ASCII/asciitable.glade2.h:2
-msgid "_Insert char"
-msgstr "ፊደል አስገባ"
-
-#: plugins/ASCII/asciitable.glade2.h:1
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:1
-msgid "ASCII table"
-msgstr "የASCII ሠንጠረዥ"
-
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:2
-msgid "This plugin displays a pop-up dialog which contains an ASCII Table."
+#: data/gedit.schemas.in.h:72
+msgid "[UTF-8,CURRENT,ISO-8859-15]"
 msgstr ""
 
-#. AFAIK, all cvs commit messages start with this
-#: plugins/cvschangelog/cvschangelog.c:49
-msgid "Open CVS Chan_geLogs"
-msgstr "የCVS Chan_geLogsን ክፈት"
+#: gedit/bonobo-mdi.c:564 gedit/bonobo-mdi.c:2060
+#, c-format
+msgid "Activate %s"
+msgstr "%s አስጀምርs"
 
-#: plugins/cvschangelog/cvschangelog.c:52
-msgid "Searches for ChangeLogs in the current document and opens them"
-msgstr "አሁን ባለው ሰነድ ውስጥ changelogsን ፈልጐ ይከፍታቸዋል"
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:1
-msgid "A plugin that opens ChangeLogs found in CVS commit messages."
-msgstr "ChangeLogsን የሚከፍተው ተጨማሪው ፕሮግራም መልእክቶችን በሚያቀርበው በ CVS ውስጥ ተገኝቷል።"
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:2
-msgid "CVS ChangeLog"
-msgstr "የCVS ChangeLog"
-
-#: plugins/diff/diff.c:65
-msgid "Co_mpare Files..."
-msgstr ""
-
-#: plugins/diff/diff.c:68
-msgid "Makes a diff file from two documents or files"
-msgstr ""
-
-#. Create the dialog
-#: plugins/diff/diff.c:271 plugins/diff/diff.gedit-plugin.desktop.in.h:1
-msgid "Compare Files"
-msgstr ""
-
-#: plugins/diff/diff.c:285
-msgid "C_ompare"
-msgstr ""
-
-#: plugins/diff/diff.c:513
-msgid "Executed command"
-msgstr ""
-
-#: plugins/diff/diff.c:654
-msgid "The two documents you selected are the same."
-msgstr ""
-
-#: plugins/diff/diff.c:662
+#: gedit/dialogs/close_all_dialog.glade2.h:1
+#, fuzzy
 msgid ""
-"The \"first\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
+"<span weight=\"bold\" size=\"larger\">You have X documents with unsaved "
+"changes. </span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">መቆጣጠሪያ</span>"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:2
+msgid "If you don't save your documents, all your changes will be lost."
 msgstr ""
 
-#: plugins/diff/diff.c:671
+#: gedit/dialogs/close_all_dialog.glade2.h:3
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:660
+msgid "S_elect the documents you want to save:"
+msgstr ""
+
+#: gedit/dialogs/close_all_dialog.glade2.h:4
+msgid "Save _None"
+msgstr ""
+
+#: gedit/dialogs/close_all_dialog.glade2.h:5
+#, fuzzy
+msgid "_Save Selected"
+msgstr "ሁሉንም _አስቀምጥ"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:142
+msgid "Do_n't save"
+msgstr "አ_ታስቀምጥ"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:152
+#: gedit/gedit-file-selector-util.c:140 gedit/gedit-file.c:702
+#, fuzzy
+msgid "Question"
+msgstr "አስተያየቶች"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:364
+#, c-format
 msgid ""
-"The \"second\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
-msgstr ""
+"If you don't save, changes from the last %ld second will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+msgstr[1] ""
 
-#: plugins/diff/diff.c:679
-msgid "The two files you selected are the same."
-msgstr ""
-
-#: plugins/diff/diff.c:696
-msgid "The \"first\" document contains no text."
-msgstr ""
-
-#: plugins/diff/diff.c:730
-msgid "The \"second\" document contains no text."
-msgstr ""
-
-#. FIXME: do better error reporting ... . Chema
-#: plugins/diff/diff.c:756
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:373
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"gedit could not create a temporary file."
+"If you don't save, changes from the last minute will be permanently lost."
 msgstr ""
 
-#: plugins/diff/diff.c:780 plugins/diff/diff.c:793
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:379
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"Error executing the diff command."
-msgstr ""
+"If you don't save, changes from the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+msgstr[1] ""
 
-#: plugins/diff/diff.c:815
-msgid "No differences were found between the selected documents."
-msgstr ""
-
-#: plugins/diff/diff.c:856
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:389
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"The result contains invalid UTF-8 data."
+"If you don't save, changes from the last %ld minute will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld minutes will be permanently "
+"lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:404
+msgid "If you don't save, changes from the last hour will be permanently lost."
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:1 plugins/shell_output/shell_output.glade2.h:1
-#: plugins/time/time.glade2.h:2 plugins/spell/spell-checker.glade2.h:1
-#: src/dialogs/replace.glade2.h:1 src/dialogs/uri.glade2.h:1
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:410
+#, c-format
+msgid ""
+"If you don't save, changes from the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:425
+#, c-format
+msgid ""
+"If you don't save, changes from the last %d hour will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %d hours will be permanently lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:469
+#, c-format
+msgid "Save the changes to document \"%s\" before closing?"
+msgstr ""
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:643
+#, c-format
+msgid "There is %d document with unsaved changes. Save changes before closing?"
+msgid_plural ""
+"There are %d documents with unsaved changes. Save changes before closing?"
+msgstr[0] ""
+msgstr[1] ""
+
+#. Secondary label
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:677
+msgid "If you don't save, all your changes will be permanently lost."
+msgstr ""
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:160
+msgid "Go to Line"
+msgstr "ወደ መስመር ሂድ"
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:173
+msgid "_Go to Line"
+msgstr "ወደ መስመር _ሂድ"
+
+#: gedit/dialogs/gedit-dialog-replace.c:136
+#: gedit/dialogs/gedit-dialog-replace.c:1125 gedit/gedit-commands.c:392
+#, c-format
+msgid "The text \"%s\" was not found."
+msgstr "ጽሑፉ \"%s\"ን አልተገኘም"
+
+#: gedit/dialogs/gedit-dialog-replace.c:269 gedit/dialogs/replace.glade2.h:4
+#: gedit/gedit-ui.xml.h:46
+msgid "Replace"
+msgstr "ተካ"
+
+#: gedit/dialogs/gedit-dialog-replace.c:282
+msgid "Replace _All"
+msgstr "_ሁሉንም ተካ"
+
+#: gedit/dialogs/gedit-dialog-replace.c:285
+#: gedit/gedit-file-selector-util.c:134
+msgid "_Replace"
+msgstr "_ተካ"
+
+#: gedit/dialogs/gedit-dialog-replace.c:402 gedit/gedit-ui.xml.h:17
+msgid "Find"
+msgstr "ፈልግ"
+
+#: gedit/dialogs/gedit-dialog-replace.c:1134
+#, fuzzy, c-format
+msgid "Found and replaced %d occurrence."
+msgid_plural "Found and replaced %d occurrences."
+msgstr[0] "የ%d  የተደጋገመ ድርጊት ተገኝቶ ተተክቷል።"
+msgstr[1] "የ%d  የተደጋገመ ድርጊት ተገኝቶ ተተክቷል።"
+
+#: gedit/dialogs/gedit-dialog-uri.c:91
+msgid "Open Location"
+msgstr "ቦታ ክፈት"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:76
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+
+#: gedit/dialogs/gedit-encodings-dialog.c:381
+#: gedit/dialogs/gedit-encodings-dialog.c:449
+msgid "_Description"
+msgstr "_መግለጫ"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:390
+#: gedit/dialogs/gedit-encodings-dialog.c:458
+#, fuzzy
+msgid "_Encoding"
+msgstr "የሆሄያት ኮዶች"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:1
+#, fuzzy
+msgid "A_vailable encodings:"
+msgstr "አዲስ የሆሄያት ኮዶችን ጨምር"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:2
+#, fuzzy
+msgid "Character codings"
+msgstr "ፊደል(ሎች)"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:3
+msgid "E_ncodings shown in menu:"
+msgstr ""
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:496
+msgid "Body font picker"
+msgstr ""
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:497
+msgid ""
+"Push this button to select the font to be used to print the body of the "
+"document"
+msgstr ""
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:498
+msgid "Page headers font picker"
+msgstr ""
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:499
+msgid ""
+"Push this button to select the font to be used to print the page headers"
+msgstr ""
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:500
+#, fuzzy
+msgid "Line numbers font picker"
+msgstr "የመስመር ቍጥሮች"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:501
+msgid "Push this button to select the font to be used to print line numbers"
+msgstr ""
+
+#: gedit/dialogs/gedit-plugin-manager.c:53
+msgid "Plugin"
+msgstr "ተጨማሪ ፕሮግራም (ፕላግኢን)"
+
+#: gedit/dialogs/gedit-plugin-manager.c:54
+msgid "Enabled"
+msgstr ""
+
+#: gedit/dialogs/gedit-plugin-manager.c:499
+msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
+msgstr "geditን እንደገና ለመጨመር የplugin manager glade2, ሊገኝ አልቻለም\n"
+
+#: gedit/dialogs/gedit-plugin-manager.c:517
+msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
+msgstr "የማይሰራ የግሌድ ፋይል ለፕላግኢን ማናጀር ሁሉም ዊድጌትስ አልተገኙም\n"
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:86
+#: gedit/dialogs/program-location-dialog.glade2.h:2
+msgid "Set program location..."
+msgstr ""
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:116
+#, c-format
+msgid ""
+"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
+"task.\n"
+"\n"
+"Please, specify the location of the <tt>%s</tt> program."
+msgstr ""
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:169
+msgid "The selected file is not executable."
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:673
+msgid "Push this button to select the font to be used by the editor"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:675
+msgid "Push this button to configure text color"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:677
+msgid "Push this button to configure background color"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:679
+msgid ""
+"Push this button to configure the color in which the selected text should "
+"appear"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:682
+msgid ""
+"Push this button to configure the color in which the selected text should be "
+"marked"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences-dialog.c:1132
+msgid "Elements"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:1
+#: gedit/dialogs/page-setup-dialog.glade2.h:1
+#: plugins/docinfo/docinfo.glade2.h:1 plugins/time/time.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:2
+#, fuzzy
+msgid "<b>Auto Indentation</b>"
+msgstr "በራሱ አንቀጽ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:3
+#, fuzzy
+msgid "<b>Elements</b>"
+msgstr "<b>የፊደል ቅርጽ</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:4
+#, fuzzy
+msgid "<b>File Saving</b>"
+msgstr "<b>የፊደል ቅርጽ</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:5
+msgid "<b>Font</b>"
+msgstr "<b>የፊደል ቅርጽ</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:6
+#: gedit/dialogs/page-setup-dialog.glade2.h:2
+#, fuzzy
+msgid "<b>Line Numbers</b>"
+msgstr "የመስመር ቍጥሮች"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:7
+msgid "<b>Right Margin</b>"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:8
+#, fuzzy
+msgid "<b>Tabs</b>"
+msgstr "<b>ቃል</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:9
+#: gedit/dialogs/page-setup-dialog.glade2.h:3
+msgid "<b>Text Wrapping</b>"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:10
+#, fuzzy
+msgid "<b>Undo</b>"
+msgstr "<b>የፊደል ቅርጽ</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:11
+msgid "<span weight=\"bold\">Colors</span>"
+msgstr "<span weight=\"bold\">ቀለሞች</span>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:12
+msgid "Bold"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:13
+msgid "Create a _backup copy of files before saving"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:14
+msgid "D_isplay right margin"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:15
+#: gedit/dialogs/page-setup-dialog.glade2.h:4
+msgid "Do not _split words over two lines"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:16
+msgid "Editor"
+msgstr "ማቀናጃ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:17
+msgid "Editor _font: "
+msgstr "የማቀናጃ ፊደል _ቅርጽ፦ "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:18
+#: gedit/dialogs/page-setup-dialog.glade2.h:5
+msgid "Enable text _wrapping"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:19
+msgid "Font & Colors"
+msgstr "የፊደል ቅርጾች እና ቀለሞች"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:20
+msgid "Highlight _mode:"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:21
+msgid "Insert _spaces instead of tabs"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:22
+#, fuzzy
+msgid "Italic"
+msgstr "ጣሊያንኛ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:23
+#, fuzzy
+msgid "Normal _text color:"
+msgstr "የ_ጽሑፍ ቀለም፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:24
+#, fuzzy
+msgid "Pick a color"
+msgstr "የጽሑፉ ቀለም ምረጡ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:25
+msgid "Pick the background color"
+msgstr "የመደቡ ቀለም ምረጡ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:26
+#, fuzzy
+msgid "Pick the editor font"
+msgstr "የጽሑፉ ቀለም ምረጡ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:27
+#, fuzzy
+msgid "Pick the normal text color"
+msgstr "የጽሑፉ ቀለም ምረጡ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:28
+msgid "Pick the selected text color"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:29
+msgid "Pick the selection color"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:30
+msgid "Plugins"
+msgstr "ተጨማሪ ፕሮግራሞች (Plugins)"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:31
+msgid "Preferences"
+msgstr "ምርጫዎች"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:32
+msgid "Se_lection color:"
+msgstr "የ_ምርጫው ቀለም፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:33
+msgid "Selecte_d text color:"
+msgstr "የተመረጠው ጽሑፍ ቀለም፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:34
+msgid "Strikethrough"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:35
+msgid "Syntax Highlighting"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:36
+msgid "U_se default theme colors"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:37
+#, fuzzy
+msgid "Underline"
+msgstr "መስመሮችን አንቀጽ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:38
+#, fuzzy
+msgid "View"
+msgstr "_ተመልከት"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:39
+msgid "_Autosave files every"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:40
+msgid "_Background color:"
+msgstr "የ_መደቡ ቀለም፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:41
+#, fuzzy
+msgid "_Background:"
+msgstr "የ_መደቡ ቀለም፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:42
+msgid "_Display line numbers"
+msgstr " የ_መስመር ቍጥሮች አሳይ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:43
+msgid "_Enable auto indentation"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:44
+msgid "_Enable syntax highlighting"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:45
+msgid "_Foreground:"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:46
+msgid "_Limit to"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:47
+#, fuzzy
+msgid "_Reset to Default "
+msgstr "የነበረው _ሠሌዳ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:48
+#, fuzzy
+msgid "_Right margin at column:"
+msgstr "በዐምድ _ጀምር፦"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:49
+msgid "_Tabs width:"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:50
+msgid "_Unlimited undo"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:51
+msgid "_Use default theme font"
+msgstr ""
+
+#: gedit/dialogs/gedit-preferences.glade2.h:52
+msgid "_minutes"
+msgstr "_ደቂቃዎች"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:53
+#, fuzzy
+msgid "act_ions"
+msgstr "_ትግባር(ኦች)"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:111
+msgid "_Insert a new preview phrase."
+msgstr ""
+
+#: gedit/dialogs/gnome-print-font-dialog.c:117
+msgid "Modify preview phrase..."
+msgstr ""
+
+#: gedit/dialogs/gnome-print-font-dialog.c:171
+msgid "Preview"
+msgstr "ቅድመ ዕይታ"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:184
+msgid "_Modify preview phrase..."
+msgstr ""
+
+#: gedit/dialogs/gnome-print-font-dialog.c:245
+msgid "Font Selection"
+msgstr "የፊደል ቅርጽ ምርጫ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:92
+msgid "Sans Regular 12"
+msgstr ""
+
+#: gedit/dialogs/gnome-print-font-picker.c:93
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+
+#: gedit/dialogs/gnome-print-font-picker.c:94
+msgid "Pick a Font"
+msgstr "የፊደል ቅርጽ ምረጡ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:179
+msgid "Title"
+msgstr "አርእስት"
+
+#: gedit/dialogs/gnome-print-font-picker.c:180
+msgid "The title of the selection dialog box"
+msgstr "የምርጫው መምረጫ ሳጥን አርዕስት"
+
+#: gedit/dialogs/gnome-print-font-picker.c:200
+msgid "Font name"
+msgstr "የፊደሉ ቅርጽ ስም"
+
+#: gedit/dialogs/gnome-print-font-picker.c:201
+msgid "Name of the selected font"
+msgstr "የተመረጠው የፊደል ቅርጽ ስም"
+
+#: gedit/dialogs/gnome-print-font-picker.c:209
+msgid "Preview text"
+msgstr "የጽሑፉ ቅድመ ዕይታ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:210
+msgid "Preview text shown in the dialog"
+msgstr "በመምረጭው ውስጥ የጽሑፉ ቅድመ ዕይታው ይታያል"
+
+#: gedit/dialogs/gnome-print-font-picker.c:218
+msgid "Use font in label"
+msgstr "በመለያው ውስጥ የፊደል ቅርጹን ተጠቀሙ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:219
+msgid "Use font in the label in font info mode"
+msgstr "በምልክቱ ውስጥ ያለውን የፊደል ቅርጽ በፊደል ቅርጽ መረጃ የአሠራር ዘዴ ተጠቀም"
+
+#: gedit/dialogs/gnome-print-font-picker.c:227
+msgid "Font size for label"
+msgstr "ለመለያ የፊደል ቅርጽ መጠን"
+
+#: gedit/dialogs/gnome-print-font-picker.c:228
+msgid "Font size for label in font info mode"
+msgstr "ለምልክት የሚሆን የፊደል ቅርጽ መረጃ የአሠራር ዘዴ ውስጥ የፊደል ቅርጽ መጠን"
+
+#: gedit/dialogs/gnome-print-font-picker.c:238
+msgid "Show size"
+msgstr "መጠኑን አሳይ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:239
+msgid "Show size in font info mode"
+msgstr "በመረጃው የፊደል ቅርጽ መተላለፊያ ውስጥ መጠንም አሳይ"
+
+#: gedit/dialogs/gnome-print-font-picker.c:1018
+msgid "Font"
+msgstr "የፊደል ቅርጽ"
+
+#. gnome_print_font_picker_update_font_info
+#: gedit/dialogs/goto-line.glade2.h:1
+msgid "Goto Line"
+msgstr "ወደ መስመር ሂድ"
+
+#: gedit/dialogs/goto-line.glade2.h:2
+msgid "_Line number:"
+msgstr "የ_መስመር ቍጥር፦"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:6
+msgid "Fonts"
+msgstr "የፊደል ቅርጾች"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:7
+msgid "General"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:8
+msgid "He_aders and footers:"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:9
+#, fuzzy
+msgid "Page Setup"
+msgstr "የህትመት ቅንጅት"
+
+#
+#: gedit/dialogs/page-setup-dialog.glade2.h:10
+#, fuzzy
+msgid "Print _line numbers"
+msgstr "የመስመር ቍጥሮች አትም"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:11
+msgid "Print s_yntax highlighting"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:12
+msgid "_Body:"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:13
+#, fuzzy
+msgid "_Line numbers:"
+msgstr "የ_መስመር ቍጥር፦"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:14
+msgid "_Number every"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:15
+msgid "_Print page headers"
+msgstr ""
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:16
+msgid "_Restore Default Fonts"
+msgstr "የነበረው የፊደል ቅርጾች ወደ መጀመሪያው _መልስ"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:17
+#, fuzzy
+msgid "lines"
+msgstr "መስመሮች"
+
+#: gedit/dialogs/plugin-manager.glade2.h:1
+#, fuzzy
+msgid "C_onfigure Plugin"
+msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ለወጡ"
+
+#: gedit/dialogs/plugin-manager.glade2.h:2
+#, fuzzy
+msgid "_About Plugin"
+msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ለወጡ"
+
+#: gedit/dialogs/plugin-manager.glade2.h:3
+msgid "button1"
+msgstr ""
+
+#: gedit/dialogs/plugin-manager.glade2.h:4
+msgid "dialog1"
+msgstr ""
+
+#: gedit/dialogs/program-location-dialog.glade2.h:1
+msgid "Browse for program location..."
+msgstr ""
+
+#: gedit/dialogs/program-location-dialog.glade2.h:3
+msgid "_Location to search for:"
+msgstr ""
+
+#: gedit/dialogs/program-location-dialog.glade2.h:4
+msgid "label"
+msgstr "መለያ"
+
+#: gedit/dialogs/replace.glade2.h:1 gedit/dialogs/uri.glade2.h:1
+#: plugins/shell_output/shell_output.glade2.h:1
+#: plugins/spell/spell-checker.glade2.h:1 plugins/time/time.glade2.h:2
 msgid "*"
 msgstr "*"
 
-#: plugins/diff/diff.glade2.h:2
-msgid "Choose the files to compare."
+#: gedit/dialogs/replace.glade2.h:2 gedit/gedit-ui.xml.h:19
+msgid "Find Next"
+msgstr "የሚቀጥለዉን ፈልግ"
+
+#: gedit/dialogs/replace.glade2.h:3
+msgid "Match _entire word only"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:3
-msgid "Compare files..."
+#: gedit/dialogs/replace.glade2.h:5
+msgid "Replace All"
+msgstr "ሁሉንም ተካ"
+
+#: gedit/dialogs/replace.glade2.h:6
+msgid "Replace _with: "
+msgstr "በ... _ተካ፦ "
+
+#: gedit/dialogs/replace.glade2.h:7
+msgid "Search _backwards"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:4
-msgid "F_rom document"
-msgstr "ከ_ሰንዱ"
+#: gedit/dialogs/replace.glade2.h:8
+msgid "_Match case"
+msgstr "የፊደሎቱን መጠን _አመሳስል"
 
-#: plugins/diff/diff.glade2.h:5
-msgid "First"
-msgstr "መጀመሪያ"
+#: gedit/dialogs/replace.glade2.h:9
+msgid "_Search for: "
+msgstr "_ፈልግ፦"
 
-#: plugins/diff/diff.glade2.h:6
-msgid "First file from disk"
+#: gedit/dialogs/replace.glade2.h:10
+msgid "_Wrap around"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:7
-msgid "First file from open document"
+#: gedit/dialogs/uri.glade2.h:2
+msgid "Ch_aracter coding:"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:8
-msgid "From _document"
-msgstr "ከ_ሰንዱ"
-
-#: plugins/diff/diff.glade2.h:9
-msgid "From a _file on disk"
+#: gedit/dialogs/uri.glade2.h:3
+msgid "Enter the _location (URI) of the file you would like to open:"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:10
-msgid "From a file o_n disk"
+#: gedit/dialogs/uri.glade2.h:4
+msgid "Open from URI"
+msgstr "ከURI ክፈት"
+
+#: gedit/gedit-commands.c:544
+msgid "translator_credits"
+msgstr "ዘግዕዝ Frontier Foundation"
+
+#: gedit/gedit-commands.c:557
+msgid "gedit"
+msgstr "gedit"
+
+#: gedit/gedit-commands.c:561
+#, fuzzy
+msgid "gedit is a small and lightweight text editor for the GNOME Desktop"
+msgstr "gedit ለኖም ትንሽ እና ቀለል ያለ የጽሑፍ ማቀናጃ ነው"
+
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
+
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+msgid "Untitled"
+msgstr "ያልተሰየመ"
+
+#: gedit/gedit-document.c:640 gedit/gedit-document.c:687
+msgid "Invalid file name"
+msgstr "የማይሰራ የፋይል ስም"
+
+#: gedit/gedit-document.c:838 gedit/gedit-document.c:1314
+#: viewer/gedit-persist-stream.c:120
+msgid "Invalid UTF-8 data"
+msgstr "የማይሰራ የUTF-8 ዳታ"
+
+#: gedit/gedit-document.c:1640
+#, c-format
+msgid "Could not read symbolic link information for %s"
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:11
-msgid "Ignore _blanks (-b option)"
+#: gedit/gedit-document.c:1686
+msgid "The file has too many symbolic links."
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:12
-msgid "Note that this option is only supported by GNU diff"
+#: gedit/gedit-document.c:1742
+#, c-format
+msgid "gedit cannot handle %s: locations in write mode."
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:13
-msgid "Second"
-msgstr "ሁለተኛ"
-
-#: plugins/diff/diff.glade2.h:14
-msgid "Second file from disk"
+#: gedit/gedit-document.c:1749
+msgid "gedit cannot handle this kind of location in write mode."
 msgstr ""
 
-#: plugins/diff/diff.glade2.h:15
-msgid "Second file from open document"
-msgstr ""
+#: gedit/gedit-document.c:1762
+msgid "Invalid filename."
+msgstr "የማይሰራ የፋይል ስም።"
 
-#: plugins/diff/diff.glade2.h:16
-msgid "Select the \"first\" file..."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:17
-msgid "Select the \"second\" file..."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:18
-msgid "Select the first file to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:19
-msgid "Select the first open document to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:20
-msgid "Select the second file to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:21
-msgid "Select the second open document to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:22
-msgid "Use the _unified output format (-u option)"
-msgstr ""
-
-#: plugins/diff/diff.gedit-plugin.desktop.in.h:2
+#: gedit/gedit-document.c:1874
 msgid ""
-"The Compare Files plugin uses the <tt>diff</tt> program to compare two "
-"documents or files on disk.\n"
-"\n"
-"For more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell "
-"prompt."
+"There is not enough disk space to save the file.\n"
+"Please free some disk space and try again."
 msgstr ""
+
+#: gedit/gedit-document.c:1879
+msgid ""
+"The disk where you are trying to save the file has a limitation on file "
+"sizes.  Please try saving a smaller file or saving it to a disk that does "
+"not have this limitation."
+msgstr ""
+
+#: gedit/gedit-document.c:1923
+msgid "Could not create a backup file."
+msgstr ""
+
+#: gedit/gedit-encodings-option-menu.c:207
+msgid "Auto Detected"
+msgstr ""
+
+#: gedit/gedit-encodings-option-menu.c:227
+#: gedit/gedit-encodings-option-menu.c:249
+#, c-format
+msgid "Current Locale (%s)"
+msgstr ""
+
+#: gedit/gedit-encodings-option-menu.c:310
+msgid "Add or _Remove..."
+msgstr ""
+
+#: gedit/gedit-encodings.c:132 gedit/gedit-encodings.c:176
+#: gedit/gedit-encodings.c:178 gedit/gedit-encodings.c:180
+#: gedit/gedit-encodings.c:182
+msgid "Unicode"
+msgstr "ዩኒኮድ"
+
+#: gedit/gedit-encodings.c:145 gedit/gedit-encodings.c:171
+#: gedit/gedit-encodings.c:212 gedit/gedit-encodings.c:255
+msgid "Western"
+msgstr "ምዕራብ"
+
+#: gedit/gedit-encodings.c:147 gedit/gedit-encodings.c:214
+#: gedit/gedit-encodings.c:251
+msgid "Central European"
+msgstr "መካከለኛ አውሮፓውያን"
+
+#: gedit/gedit-encodings.c:149
+msgid "South European"
+msgstr "ደቡባዊ አውሮፓውያን"
+
+#: gedit/gedit-encodings.c:151 gedit/gedit-encodings.c:167
+#: gedit/gedit-encodings.c:265
+msgid "Baltic"
+msgstr "ባቲክ"
+
+#: gedit/gedit-encodings.c:153 gedit/gedit-encodings.c:216
+#: gedit/gedit-encodings.c:229 gedit/gedit-encodings.c:233
+#: gedit/gedit-encodings.c:235 gedit/gedit-encodings.c:253
+msgid "Cyrillic"
+msgstr "ቄርሎሳዊ ጽሑፍ"
+
+#: gedit/gedit-encodings.c:155 gedit/gedit-encodings.c:222
+#: gedit/gedit-encodings.c:263
+msgid "Arabic"
+msgstr "ዐርቢኛ"
+
+#: gedit/gedit-encodings.c:157 gedit/gedit-encodings.c:257
+#: plugins/spell/gedit-spell-checker.c:89
+msgid "Greek"
+msgstr "ግሪክኛ"
+
+#: gedit/gedit-encodings.c:159
+msgid "Hebrew Visual"
+msgstr ""
+
+#: gedit/gedit-encodings.c:161 gedit/gedit-encodings.c:220
+#: gedit/gedit-encodings.c:261
+msgid "Hebrew"
+msgstr "ዕብራስጥ"
+
+#: gedit/gedit-encodings.c:163 gedit/gedit-encodings.c:218
+#: gedit/gedit-encodings.c:259
+msgid "Turkish"
+msgstr "ቱርክኛ"
+
+#: gedit/gedit-encodings.c:165
+msgid "Nordic"
+msgstr ""
+
+#: gedit/gedit-encodings.c:169
+msgid "Celtic"
+msgstr ""
+
+#: gedit/gedit-encodings.c:173
+msgid "Romanian"
+msgstr "ሮማኒያን"
+
+#: gedit/gedit-encodings.c:185
+msgid "Armenian"
+msgstr "አርመናዊ"
+
+#: gedit/gedit-encodings.c:187 gedit/gedit-encodings.c:189
+#: gedit/gedit-encodings.c:198
+msgid "Chinese Traditional"
+msgstr "የባሕላዊው ቻይንኛ"
+
+#: gedit/gedit-encodings.c:191
+msgid "Cyrillic/Russian"
+msgstr "ቄርሎሳዊ ጽሑፍ/ራሽኛ"
+
+#: gedit/gedit-encodings.c:194 gedit/gedit-encodings.c:225
+#: gedit/gedit-encodings.c:240
+msgid "Japanese"
+msgstr "ጃፓንኛ"
+
+#: gedit/gedit-encodings.c:196 gedit/gedit-encodings.c:227
+#: gedit/gedit-encodings.c:231 gedit/gedit-encodings.c:246
+msgid "Korean"
+msgstr "ኮሪያኛ"
+
+#: gedit/gedit-encodings.c:201 gedit/gedit-encodings.c:203
+#: gedit/gedit-encodings.c:205 gedit/gedit-encodings.c:209
+msgid "Chinese Simplified"
+msgstr "የቀላል ቻይንኛ"
+
+#: gedit/gedit-encodings.c:207
+msgid "Georgian"
+msgstr "ጊዮርጊያን"
+
+#: gedit/gedit-encodings.c:237
+msgid "Cyrillic/Ukrainian"
+msgstr "ቄርሎሳዊ ጽሑፍ/ዩክረኒኛ"
+
+#: gedit/gedit-encodings.c:242 gedit/gedit-encodings.c:248
+#: gedit/gedit-encodings.c:267
+msgid "Vietnamese"
+msgstr "ቪትናምኛ"
+
+#: gedit/gedit-encodings.c:244
+msgid "Thai"
+msgstr "ታይኛ"
+
+#: gedit/gedit-file-selector-util.c:153
+#, fuzzy, c-format
+msgid "A file named \"%s\" already exists.\n"
+msgstr "ፋይሉ \"%s\"ን አሁንም አለ።"
+
+#: gedit/gedit-file-selector-util.c:154
+#, fuzzy
+msgid "Do you want to replace it with the one you are saving?"
+msgstr ""
+"\"%s\" የተባለው ፋይል አሁን ይገኛል አሁን።\n"
+"በሚያስቀምጡት ፋይል መተካት ይፈልጋሉ?"
+
+#: gedit/gedit-file-selector-util.c:163
+#, fuzzy, c-format
+msgid "The file \"%s\" is read-only.\n"
+msgstr "ፋይሉ \"%s\"ን አሁንም አለ።"
+
+#: gedit/gedit-file-selector-util.c:164
+#, fuzzy
+msgid "Do you want to try to replace it with the one you are saving?"
+msgstr ""
+"\"%s\" የተባለው ፋይል አሁን ይገኛል አሁን።\n"
+"በሚያስቀምጡት ፋይል መተካት ይፈልጋሉ?"
+
+#: gedit/gedit-file-selector-util.c:362
+msgid "All Files"
+msgstr ""
+
+#: gedit/gedit-file-selector-util.c:370
+#, fuzzy
+msgid "All Text Files"
+msgstr "የጽሑፍ ፋይሎች ያስተካክሉ"
+
+#: gedit/gedit-file-selector-util.c:388
+msgid "Ch_aracter Coding:"
+msgstr ""
+
+#: gedit/gedit-file-selector-util.c:534
+#, fuzzy
+msgid "Select a file to open"
+msgstr "ለማስቀመጥ የፋይል ስም ምረጡ"
+
+#: gedit/gedit-file-selector-util.c:560
+#, fuzzy
+msgid "Select files to open"
+msgstr "ለማስቀመጥ የፋይል ስም ምረጡ"
+
+#: gedit/gedit-file-selector-util.c:592
+msgid "Select a filename to save"
+msgstr "ለማስቀመጥ የፋይል ስም ምረጡ"
+
+#: gedit/gedit-file.c:213
+msgid "Open File..."
+msgstr "ፋይል ክፈት ..."
+
+#: gedit/gedit-file.c:269 gedit/gedit-file.c:422
+#, fuzzy, c-format
+msgid "Saving document \"%s\"..."
+msgstr "ፋይል '%s'ን በማስቀመጥ ላይ..."
+
+#: gedit/gedit-file.c:297 gedit/gedit-file.c:443
+#, fuzzy, c-format
+msgid "The document \"%s\" has not been saved."
+msgstr "ሰነዱ አልተቀመጠም።"
+
+#: gedit/gedit-file.c:311 gedit/gedit-file.c:435
+#, fuzzy, c-format
+msgid "The document \"%s\" has been saved."
+msgstr "ሰነዱ አልተቀመጠም።"
+
+#: gedit/gedit-file.c:402
+msgid "Save as..."
+msgstr "በሌላ ስም አስቀምጥ ..."
+
+#: gedit/gedit-file.c:603
+#, c-format
+msgid "Revert unsaved changes to document \"%s\"?"
+msgstr ""
+
+#: gedit/gedit-file.c:612
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld second will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/gedit-file.c:621
+msgid ""
+"Changes made to the document in the last minute will be permanently lost."
+msgstr ""
+
+#: gedit/gedit-file.c:627
+#, c-format
+msgid ""
+"Changes made to the document in the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/gedit-file.c:637
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld minute will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld minutes will be permanently "
+"lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/gedit-file.c:652
+msgid "Changes made to the document in the last hour will be permanently lost."
+msgstr ""
+
+#: gedit/gedit-file.c:658
+#, c-format
+msgid ""
+"Changes made to the document in the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/gedit-file.c:673
+#, c-format
+msgid ""
+"Changes made to the document in the last %d hour will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %d hours will be permanently lost."
+msgstr[0] ""
+msgstr[1] ""
+
+#: gedit/gedit-file.c:696 gedit/gedit-ui.xml.h:94
+msgid "_Revert"
+msgstr "_ወደ ነበረበት መልስ"
+
+#: gedit/gedit-file.c:745
+#, c-format
+msgid "Error reverting the document \"%s\"."
+msgstr ""
+
+#: gedit/gedit-file.c:752
+#, fuzzy, c-format
+msgid "The document \"%s\" has not been reverted."
+msgstr "ሰነዱ አልተመለሰም።"
+
+#: gedit/gedit-file.c:756
+#, fuzzy, c-format
+msgid "The document \"%s\" has been reverted."
+msgstr "ሰነዱ አልተመለሰም።"
+
+#: gedit/gedit-file.c:784
+#, fuzzy, c-format
+msgid "Reverting the document \"%s\"..."
+msgstr "ፋይል '%s'ን በመመለስ ላይ..."
+
+#: gedit/gedit-file.c:911
+msgid "Could not read data from stdin."
+msgstr ""
+
+#: gedit/gedit-file.c:1059
+#, fuzzy
+msgid "Reverting file:"
+msgstr "ፋይል '%s'ን በመመለስ ላይ..."
+
+#: gedit/gedit-file.c:1063
+#, fuzzy
+msgid "Loading file:"
+msgstr "ፋይል %dን በመጫን ላይ..."
+
+#: gedit/gedit-file.c:1231 gedit/gedit-file.c:1390
+#, c-format
+msgid "Error loading file \"%s\""
+msgstr ""
+
+#: gedit/gedit-file.c:1252
+#, fuzzy, c-format
+msgid "Loaded file \"%s\""
+msgstr "ፋይል '%s' ተጭኗል"
+
+#: gedit/gedit-file.c:1329
+#, fuzzy, c-format
+msgid "Loaded %d file"
+msgid_plural "Loaded %d files"
+msgstr[0] "ፋይል %i ተጭኗል"
+msgstr[1] "ፋይል %i ተጭኗል"
+
+#: gedit/gedit-file.c:1363
+#, fuzzy, c-format
+msgid "Loading file \"%s\"..."
+msgstr "ፋይል %dን በመጫን ላይ..."
+
+#: gedit/gedit-file.c:1510
+#, fuzzy, c-format
+msgid "Loading %d file..."
+msgid_plural "Loading %d files..."
+msgstr[0] "ፋይል %dን በመጫን ላይ..."
+msgstr[1] "ፋይል %dን በመጫን ላይ..."
+
+#. Read only
+#: gedit/gedit-mdi-child.c:248
+msgid "RO"
+msgstr "RO"
+
+#. Add the detach tab button
+#: gedit/gedit-mdi-child.c:636 gedit/gedit-ui.xml.h:85
+msgid "_Move to New Window"
+msgstr ""
+
+#: gedit/gedit-mdi-child.c:755
+msgid "Unknown"
+msgstr ""
+
+#: gedit/gedit-mdi-child.c:766
+#, fuzzy
+msgid "Unicode (UTF-8)"
+msgstr "ዩኒኮድ"
+
+#: gedit/gedit-mdi-child.c:773
+#, fuzzy
+msgid "Name:"
+msgstr "ስም"
+
+#: gedit/gedit-mdi-child.c:774
+msgid "MIME Type:"
+msgstr ""
+
+#: gedit/gedit-mdi-child.c:775
+#, fuzzy
+msgid "Encoding:"
+msgstr "የሆሄያት ኮዶች"
+
+#. Translators: %s is a URI
+#: gedit/gedit-mdi.c:284 gedit/gedit-mdi.c:444
+#, fuzzy, c-format
+msgid "Open '%s'"
+msgstr "ክፈት %s"
+
+#: gedit/gedit-mdi.c:519
+#, fuzzy
+msgid "Open a recently used file"
+msgstr "ፋይል ክፈት"
+
+#: gedit/gedit-mdi.c:1278
+msgid "(modified)"
+msgstr "(የተሻሻለ)"
+
+#: gedit/gedit-mdi.c:1284
+msgid "(readonly)"
+msgstr "(ለንባብ ብቻ)"
+
+#: gedit/gedit-mdi.c:1912
+msgid "Normal"
+msgstr ""
+
+#: gedit/gedit-mdi.c:1913
+msgid "Use Normal highlight mode"
+msgstr ""
+
+#: gedit/gedit-mdi.c:1989
+#, c-format
+msgid "Use %s highlight mode"
+msgstr ""
+
+#: gedit/gedit-output-window.c:333
+msgid "Close the output window"
+msgstr "የውጤት መስኮትን ዝጋ"
+
+#: gedit/gedit-output-window.c:371
+msgid "Copy selected lines"
+msgstr "የተመረጠው መስመሮች ቅጂ"
+
+#: gedit/gedit-output-window.c:391
+msgid "Clear the output window"
+msgstr "የውጤት መስኮትን ባዶ አድርጉ"
+
+#: gedit/gedit-output-window.c:431
+msgid "Output Lines"
+msgstr "የውጤት መስመሮች"
+
+#: gedit/gedit-plugins-engine.c:363
+#, c-format
+msgid "Error, unable to open module file '%s'\n"
+msgstr "ስህተት፦ የታቀደው ፋይል '%s'ን መክፈት አልተቻለም\n"
+
+#: gedit/gedit-plugins-engine.c:373
+#, c-format
+msgid "Error, plugin '%s' does not contain init function."
+msgstr ""
+
+#: gedit/gedit-plugins-engine.c:383
+#, c-format
+msgid "Error, plugin '%s' does not contain activate function."
+msgstr "ስህተት፦ ተጨማሪ የተደረገው ፕሮግራም '%s' ተግባሩን ማስጀመሪያውንአላካተተም።"
+
+#: gedit/gedit-plugins-engine.c:393
+#, c-format
+msgid "Error, plugin '%s' does not contain deactivate function."
+msgstr "ስህተት፦ የ '%s'  ተጨማሪ ፕሮግራም ሥራውን የሚያዘገየውን አላካተተም።"
+
+#: gedit/gedit-plugins-engine.c:418
+#, c-format
+msgid "Error, impossible to initialize plugin '%s'"
+msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን ማስጀመር አልተቻለም"
+
+#: gedit/gedit-plugins-engine.c:469
+#, c-format
+msgid "Error, impossible to destroy plugin '%s'"
+msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን አውድም አልተቻለም"
+
+#: gedit/gedit-plugins-engine.c:552 gedit/gedit-plugins-engine.c:640
+#: gedit/gedit-plugins-engine.c:765
+#, c-format
+msgid "Error, impossible to activate plugin '%s'"
+msgstr "ስህተት፦ ተጨማሪውን ፕሮግራም  '%s'ን ማስጀመር አልተቻለም"
+
+#: gedit/gedit-plugins-engine.c:591 gedit/gedit-plugins-engine.c:783
+#, c-format
+msgid "Error, impossible to deactivate plugin '%s'"
+msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን ማዘግየት አልተቻለም"
+
+#: gedit/gedit-plugins-engine.c:684
+#, c-format
+msgid "Error, impossible to update ui of the plugin '%s'"
+msgstr "ስህተት፦ የተጨማሪው ፕሮግራሙ የ'%s'ን ቋሻይን ማሻሻል አልተቻለም"
+
+#: gedit/gedit-prefs-manager.c:177
+msgid "Cannot initialize preferences manager."
+msgstr ""
+
+#: gedit/gedit-prefs-manager.c:1151
+#, c-format
+msgid "Expected `%s' got `%s' for key %s"
+msgstr ""
+
+#: gedit/gedit-print.c:217 gedit/gedit-ui.xml.h:37
+msgid "Print"
+msgstr "አትም"
+
+#: gedit/gedit-print.c:226 plugins/docinfo/docinfo.glade2.h:7
+msgid "Lines"
+msgstr "መስመሮች"
+
+#: gedit/gedit-print.c:330
+#, fuzzy
+msgid "Preparing pages..."
+msgstr "ምርጫዎች... (_e)"
+
+#: gedit/gedit-print.c:357
+#, c-format
+msgid "Rendering page %d of %d..."
+msgstr ""
+
+#: gedit/gedit-print.c:359
+#, c-format
+msgid "Printing page %d of %d..."
+msgstr ""
+
+#: gedit/gedit-print.c:381 gedit/gedit-ui.xml.h:40
+msgid "Print preview"
+msgstr "የቅድመ ህትመት ዕይታ"
+
+#: gedit/gedit-print.c:547
+#, c-format
+msgid "File: %s"
+msgstr "ፋይል፦ %s"
+
+#: gedit/gedit-print.c:553
+msgid "Page %N of %Q"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:1
+msgid "About this application"
+msgstr "ስለዚህ ፕሮግራም"
+
+#: gedit/gedit-ui.xml.h:2
+msgid "Change the visibility of the output window in the current window"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:3
+msgid "Change the visibility of the statusbar in the current window"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:4
+msgid "Change the visibility of the toolbar in the current window"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:5
+msgid "Close"
+msgstr "ዝጋ"
+
+#: gedit/gedit-ui.xml.h:6
+msgid "Close all open files"
+msgstr "የተከፈቱትን ሁሉንም ፋይሎች ዝጋ"
+
+#: gedit/gedit-ui.xml.h:7
+msgid "Close the current file"
+msgstr "የአሁኑን ፋይል ዝጋ"
+
+#: gedit/gedit-ui.xml.h:8
+msgid "Configure the application"
+msgstr "ፕሮግራሙን ልወጡ"
+
+#: gedit/gedit-ui.xml.h:9
+msgid "Copy"
+msgstr "ቅጂ"
+
+#: gedit/gedit-ui.xml.h:10
+msgid "Copy the selection"
+msgstr "የተመረጠውን ቅጂ"
+
+#: gedit/gedit-ui.xml.h:11
+msgid "Create a new document"
+msgstr "አዲስ ሰነድ ፍጠር"
+
+#: gedit/gedit-ui.xml.h:12
+msgid "Cu_t"
+msgstr "ቁረጥ (_t)"
+
+#: gedit/gedit-ui.xml.h:13
+msgid "Cut"
+msgstr "ቁረጥ"
+
+#: gedit/gedit-ui.xml.h:14
+msgid "Cut the selection"
+msgstr "የተመረጠውን ቁረጥ"
+
+#: gedit/gedit-ui.xml.h:15
+msgid "Delete"
+msgstr "አጥፉ"
+
+#: gedit/gedit-ui.xml.h:16
+msgid "Delete the selected text"
+msgstr "የተመረጠው ጽሑፍ አጥፉ"
+
+#: gedit/gedit-ui.xml.h:18
+msgid "Find Ne_xt"
+msgstr "_የሚቀጥለዉን ፈልግ"
+
+#: gedit/gedit-ui.xml.h:20
+msgid "Find Pre_vious"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:21
+#, fuzzy
+msgid "Find Previous"
+msgstr "የቅድመ ህትመት ዕይታ"
+
+#: gedit/gedit-ui.xml.h:22
+msgid "Go to _Line..."
+msgstr "ወደ _መስመር ሂድ..."
+
+#: gedit/gedit-ui.xml.h:23
+#, fuzzy
+msgid "Go to a specific line"
+msgstr "የተጠቀሰው የመስመር ቍጥር ጋር ሂድ"
+
+#: gedit/gedit-ui.xml.h:24
+msgid "Main toolbar"
+msgstr "ዋናው ቱልባር"
+
+#: gedit/gedit-ui.xml.h:25
+msgid "Move the current document to a new window"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:26
+msgid "New"
+msgstr "አዲስ"
+
+#: gedit/gedit-ui.xml.h:27
+msgid "Open"
+msgstr "ክፈት"
+
+#: gedit/gedit-ui.xml.h:28
+msgid "Open Location..."
+msgstr "ቦታ ክፈት..."
+
+#: gedit/gedit-ui.xml.h:29
+msgid "Open _Location..."
+msgstr "ቦታ ክፈት... (_L)"
+
+#: gedit/gedit-ui.xml.h:30
+msgid "Open a file"
+msgstr "ፋይል ክፈት"
+
+#: gedit/gedit-ui.xml.h:31
+msgid "Open a file from a specified location"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:32
+msgid "Open the gedit manual"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:33
+#, fuzzy
+msgid "Page Set_up"
+msgstr "የህትመት ቅንጅት"
+
+#: gedit/gedit-ui.xml.h:34
+msgid "Paste"
+msgstr "ለጥፍ"
+
+#: gedit/gedit-ui.xml.h:35
+msgid "Paste the clipboard"
+msgstr "ክሊፕቦርዱን ለጥፍ"
+
+#: gedit/gedit-ui.xml.h:36
+msgid "Pr_eferences"
+msgstr "_ምርጫዎች"
+
+#: gedit/gedit-ui.xml.h:38
+msgid "Print Previe_w..."
+msgstr "የ_ቅድመ ህትመት ዕይታ..."
+
+#: gedit/gedit-ui.xml.h:39
+msgid "Print Preview"
+msgstr "የቅድመ ህትመት ዕይታ"
+
+#: gedit/gedit-ui.xml.h:41
+msgid "Print the current file"
+msgstr "የአሁኑን ፋይል አትም"
+
+#: gedit/gedit-ui.xml.h:42
+msgid "Quit"
+msgstr "ውጣ"
+
+#: gedit/gedit-ui.xml.h:43
+msgid "Quit the program"
+msgstr "ከፕሮግራሙ ውጣ"
+
+#: gedit/gedit-ui.xml.h:44
+msgid "Redo"
+msgstr "እንደገና አድርግ"
+
+#: gedit/gedit-ui.xml.h:45
+msgid "Redo the undone action"
+msgstr "የተተወውን ድርጊት እንደገና አድርግ"
+
+#: gedit/gedit-ui.xml.h:47
+msgid "Revert"
+msgstr "ወደ ነበረበት መልስ"
+
+#: gedit/gedit-ui.xml.h:48
+msgid "Revert to a saved version of the file"
+msgstr "መጀመሪያ ተቀምጦ ወደ ነበረው የፋይሉ ቅጂ መልስ"
+
+#: gedit/gedit-ui.xml.h:49
+msgid "Save"
+msgstr "አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:50
+msgid "Save As"
+msgstr "በሌላ ስም አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:51
+msgid "Save _As..."
+msgstr "_በሌላ ስም አስቀምጥ... (_A)"
+
+#: gedit/gedit-ui.xml.h:52
+msgid "Save all open files"
+msgstr "የተከፈቱትን ሁሉንም ፋይሎች አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:53
+msgid "Save the current file"
+msgstr "የአሁኑን ፋይል አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:54
+msgid "Save the current file with a different name"
+msgstr "የአሁኑን ፋይል በተለየ ስም አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:55
+#, fuzzy
+msgid "Search backwards for the same text"
+msgstr "ያንኑ ሐረግ እንደገና አስስ"
+
+#: gedit/gedit-ui.xml.h:56
+#, fuzzy
+msgid "Search for and replace text"
+msgstr "ሐረጉን አስስ"
+
+#: gedit/gedit-ui.xml.h:57
+#, fuzzy
+msgid "Search for text"
+msgstr "_ፈልግ፦"
+
+#: gedit/gedit-ui.xml.h:58
+#, fuzzy
+msgid "Search forwards for the same text"
+msgstr "ያንኑ ሐረግ እንደገና አስስ"
+
+#: gedit/gedit-ui.xml.h:59
+msgid "Select All"
+msgstr "ሁሉንም ምረጡ"
+
+#: gedit/gedit-ui.xml.h:60
+msgid "Select _All"
+msgstr "ሁሉንም ምረጡ (_A)"
+
+#: gedit/gedit-ui.xml.h:61
+msgid "Select the entire document"
+msgstr "ሰነዱን እንዳለ ምረጡ"
+
+#: gedit/gedit-ui.xml.h:62
+msgid ""
+"Set toolbar button style according to desktop Menu and Toolbar Preferences"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:63
+#, fuzzy
+msgid "Setup the page settings"
+msgstr "የገጹን አቀማመጥ አሁን ላለው ማተሚያ አስተካክሉ"
+
+#: gedit/gedit-ui.xml.h:64
+msgid "Show only icons in the toolbar"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:65
+msgid "Show text below every icon in the toolbar"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:66
+msgid "Show text only beside important icons in the toolbar"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:67
+msgid "T_ext for Important Icons"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:68
+msgid "Undo"
+msgstr "ወደ ነበረበት መልስ"
+
+#: gedit/gedit-ui.xml.h:69
+msgid "Undo the last action"
+msgstr "የመጨረሻውን ትግባር ተወው"
+
+#: gedit/gedit-ui.xml.h:70
+msgid "_About"
+msgstr "_ስለ"
+
+#: gedit/gedit-ui.xml.h:71
+msgid "_Close"
+msgstr "_ዝጋ"
+
+#: gedit/gedit-ui.xml.h:72
+msgid "_Close All"
+msgstr "ሁሉንም _ዝጋ"
+
+#: gedit/gedit-ui.xml.h:73
+msgid "_Contents"
+msgstr "_ይዞታዎች"
+
+#: gedit/gedit-ui.xml.h:74
+msgid "_Copy"
+msgstr "_ቅጂ"
+
+#: gedit/gedit-ui.xml.h:75
+msgid "_Customize Toolbar"
+msgstr "_ቱልባር አስተካክል"
+
+#: gedit/gedit-ui.xml.h:76
+msgid "_Delete"
+msgstr "_አጥፉ"
+
+#: gedit/gedit-ui.xml.h:77
+msgid "_Desktop Default"
+msgstr "የነበረው _ሠሌዳ"
+
+#: gedit/gedit-ui.xml.h:78
+msgid "_Documents"
+msgstr "_ሰነዶች"
+
+#: gedit/gedit-ui.xml.h:79
+msgid "_Edit"
+msgstr "_አስተካክል"
+
+#: gedit/gedit-ui.xml.h:80
+msgid "_File"
+msgstr "_ፋይል"
+
+#: gedit/gedit-ui.xml.h:81
+msgid "_Find..."
+msgstr "_ፈልግ..."
+
+#: gedit/gedit-ui.xml.h:82
+msgid "_Help"
+msgstr "_መረጃ"
+
+#: gedit/gedit-ui.xml.h:83
+msgid "_Highlight Mode"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:84
+#, fuzzy
+msgid "_Icons Only"
+msgstr "_ምልክት"
+
+#: gedit/gedit-ui.xml.h:86
+msgid "_New"
+msgstr "_አዲስ"
+
+#: gedit/gedit-ui.xml.h:87
+msgid "_Open..."
+msgstr "_ክፈት..."
+
+#: gedit/gedit-ui.xml.h:88
+msgid "_Output Window"
+msgstr "የ_ውጤት መስኮት"
+
+#: gedit/gedit-ui.xml.h:89
+msgid "_Paste"
+msgstr "_ለጥፍ"
+
+#: gedit/gedit-ui.xml.h:90
+msgid "_Print..."
+msgstr "_አትም..."
+
+#: gedit/gedit-ui.xml.h:91
+msgid "_Quit"
+msgstr "_ውጣ"
+
+#: gedit/gedit-ui.xml.h:92
+msgid "_Redo"
+msgstr "_እንደገና አድርግ"
+
+#: gedit/gedit-ui.xml.h:93
+msgid "_Replace..."
+msgstr "_ተካ..."
+
+#: gedit/gedit-ui.xml.h:95
+msgid "_Save"
+msgstr "_አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:96
+msgid "_Save All"
+msgstr "ሁሉንም _አስቀምጥ"
+
+#: gedit/gedit-ui.xml.h:97
+msgid "_Search"
+msgstr "_ፈልግ"
+
+#: gedit/gedit-ui.xml.h:98
+msgid "_Statusbar"
+msgstr "_ስታተስባር"
+
+#: gedit/gedit-ui.xml.h:99
+msgid "_Text for All Icons"
+msgstr ""
+
+#: gedit/gedit-ui.xml.h:100
+msgid "_Toolbar"
+msgstr "_ቱልባር"
+
+#: gedit/gedit-ui.xml.h:101
+msgid "_Tools"
+msgstr "_መሣሪያዎች"
+
+#: gedit/gedit-ui.xml.h:102
+msgid "_Undo"
+msgstr "_ወደ ነበረበት መልስ"
+
+#: gedit/gedit-ui.xml.h:103
+msgid "_View"
+msgstr "_ተመልከት"
+
+#: gedit/gedit-utils.c:428
+#, c-format
+msgid ""
+"Could not find the file \"%s\".\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:436
+#, c-format
+msgid "Could not open the file \"%s\" because it contains corrupted data."
+msgstr ""
+
+#: gedit/gedit-utils.c:447
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit cannot handle %s: locations."
+msgstr ""
+
+#: gedit/gedit-utils.c:453
+#, c-format
+msgid "Could not open the file \"%s\""
+msgstr "ፋይሉ \"%s\"ን መክፈት አልተቻለም"
+
+#: gedit/gedit-utils.c:463
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains data in an invalid format."
+msgstr ""
+
+#: gedit/gedit-utils.c:470
+#, c-format
+msgid "Could not open the file \"%s\" because it is too big."
+msgstr ""
+
+#: gedit/gedit-utils.c:477
+#, c-format
+msgid ""
+"\"%s\" is not a valid location.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:485
+#, c-format
+msgid "Could not open the file \"%s\" because access was denied."
+msgstr ""
+
+#: gedit/gedit-utils.c:492
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:500
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:508
+#, c-format
+msgid ""
+"Not enough available memory to open the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:534
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that you typed the location correctly and that your proxy "
+"settings are correct and then try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:549
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was invalid.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:558
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:567
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the attempt to log in failed.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:576 gedit/gedit-utils.c:649
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains invalid data.\n"
+"\n"
+"Probably, you are trying to open a binary file."
+msgstr ""
+
+#: gedit/gedit-utils.c:585 gedit/gedit-utils.c:683
+#, c-format
+msgid "Could not open the file \"%s\"."
+msgstr " ፋይሉ \"%s\"ን መክፈት አልተቻለም።"
+
+#: gedit/gedit-utils.c:625
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit has not been able to "
+"automatically detect the character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and try again "
+"selecting a character coding in the 'Open File...' (or 'Open Location') "
+"dialog."
+msgstr ""
+
+#: gedit/gedit-utils.c:637 gedit/gedit-utils.c:667
+#, c-format
+msgid ""
+"Could not open the file \"%s\" using the %s character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and that you "
+"selected the right character coding in the 'Open File...' (or 'Open "
+"Location') dialog and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:687
+#, fuzzy, c-format
+msgid ""
+"Could not open the file \"%s\".\n"
+"\n"
+"%s."
+msgstr " ፋይሉ \"%s\"ን መክፈት አልተቻለም።"
+
+#: gedit/gedit-utils.c:739
+#, c-format
+msgid "Could not save the file \"%s\"."
+msgstr "ፋይሉ \"%s\"ን ማስቀመጥ አልተቻለም።"
+
+#: gedit/gedit-utils.c:743
+#, c-format
+msgid ""
+"Could not save the file \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+"ፋይሉ \"%s\"ን ማስቀመጥ አልተቻለም።\n"
+"%s"
+
+#: gedit/gedit-utils.c:796
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot find it.\n"
+"\n"
+"Perhaps, it has recently been deleted."
+msgstr ""
+
+#: gedit/gedit-utils.c:803
+#, c-format
+msgid "Could not revert the file \"%s\" because it contains corrupted data."
+msgstr ""
+
+#: gedit/gedit-utils.c:814
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
+msgstr ""
+
+#: gedit/gedit-utils.c:820 gedit/gedit-utils.c:960
+#, c-format
+msgid "Could not revert the file \"%s\"."
+msgstr ""
+
+#: gedit/gedit-utils.c:830
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains data in an invalid "
+"format."
+msgstr ""
+
+#: gedit/gedit-utils.c:837
+#, c-format
+msgid "Could not revert the file \"%s\" because it is too big."
+msgstr ""
+
+#: gedit/gedit-utils.c:844
+#, c-format
+msgid "Could not revert the file \"%s\" because access was denied."
+msgstr ""
+
+#: gedit/gedit-utils.c:851
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:859
+#, c-format
+msgid ""
+"Not enough available memory to revert the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:885
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:899
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:906
+#, c-format
+msgid "Could not revert the file \"%s\" because the attempt to log in failed."
+msgstr ""
+
+#: gedit/gedit-utils.c:913
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
+"\n"
+"Probably, you are trying to revert a binary file."
+msgstr ""
+
+#: gedit/gedit-utils.c:922
+msgid "It is not possible to revert an Untitled document."
+msgstr "ስያሜ ያልተሰጠውን ሰነድ ለመመለስ አይቻልም"
+
+#: gedit/gedit-utils.c:1011
+#, c-format
+msgid "The file \"%s\" already exists."
+msgstr "ፋይሉ \"%s\"ን አሁንም አለ።"
+
+#: gedit/gedit-utils.c:1017
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly."
+msgstr ""
+
+#: gedit/gedit-utils.c:1026
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"Make sure you have the appropriate write permissions."
+msgstr ""
+
+#: gedit/gedit-utils.c:1033
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"The file name is too long."
+msgstr ""
+
+#: gedit/gedit-utils.c:1040
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"A directory component in the file name does not exist or is a dangling "
+"symbolic link."
+msgstr ""
+
+#: gedit/gedit-utils.c:1049
+#, c-format
+msgid ""
+"There is not enough disk space to create the file \"%s\".\n"
+"\n"
+"Please free some disk space and try again."
+msgstr ""
+
+#: gedit/gedit-utils.c:1055
+#, c-format
+msgid "Could not create the file \"%s\"."
+msgstr "ፋይሉ \"%s\"ን ማስፈጠር አልተቻለም።"
+
+#.
+#. if (col == chars)
+#. msg = g_strdup_printf (_("  Ln %d, Col %d"), row + 1, col + 1);
+#. else
+#. msg = g_strdup_printf (_("  Ln %d, Col %d-%d"), row + 1, chars + 1, col + 1);
+#.
+#: gedit/gedit-view.c:665
+#, fuzzy, c-format
+msgid "  Ln %d, Col %d"
+msgstr " መስመር %d፣ ዐምድ %d"
+
+#: gedit/gedit-view.c:703
+msgid "  OVR"
+msgstr "  በላዩ ላይ ፃፍ"
+
+#: gedit/gedit-view.c:705
+msgid "  INS"
+msgstr "  አስገባ"
+
+#: gedit/gedit2.c:86
+msgid ""
+"Set the character encoding to be used to open the files listed on the "
+"command line"
+msgstr ""
+
+#: gedit/gedit2.c:89
+msgid "Quit an existing instance of gedit"
+msgstr ""
+
+#: gedit/gedit2.c:92
+msgid "Create a new toplevel window in an existing instance of gedit"
+msgstr ""
+
+#: gedit/gedit2.c:95
+msgid "Create a new document in an existing instance of gedit"
+msgstr ""
+
+#: gedit/gedit2.c:182
+#, c-format
+msgid "The specified encoding \"%s\" is not valid\n"
+msgstr ""
+
+#: plugins/changecase/changecase.c:43
+#, fuzzy
+msgid "C_hange Case"
+msgstr "_ለውጥ"
+
+#: plugins/changecase/changecase.c:49
+msgid "All _Upper Case"
+msgstr ""
+
+#: plugins/changecase/changecase.c:50
+msgid "All _Lower Case"
+msgstr ""
+
+#: plugins/changecase/changecase.c:51
+#, fuzzy
+msgid "_Invert Case"
+msgstr "ፊደል አስገባ"
+
+#: plugins/changecase/changecase.c:52
+#, fuzzy
+msgid "_Title Case"
+msgstr "አርእስት"
+
+#: plugins/changecase/changecase.c:54
+msgid "Change selected text to upper case"
+msgstr ""
+
+#: plugins/changecase/changecase.c:55
+#, fuzzy
+msgid "Change selected text to lower case"
+msgstr "የተመረጠው ጽሑፍ ቀለም፦"
+
+#: plugins/changecase/changecase.c:56
+#, fuzzy
+msgid "Invert the case of selected text"
+msgstr "የተመረጠው ጽሑፍ አጥፉ"
+
+#: plugins/changecase/changecase.c:57
+msgid "Capitalize the first letter of each selected word"
+msgstr ""
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:1
+#, fuzzy
+msgid "Change Case"
+msgstr "_ለውጥ"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:2
+#, fuzzy
+msgid "Changes the case of selected text."
+msgstr "የተመረጠው ጽሑፍ አጥፉ"
 
 #: plugins/docinfo/docinfo.c:46
 msgid "_Document Statistics"
@@ -598,57 +2511,78 @@ msgstr "_የሰነዶች ቍጥር መረጃ ጥናት"
 msgid "Get statistic info on current document"
 msgstr ""
 
-#: plugins/docinfo/docinfo.c:142
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+#: plugins/docinfo/docinfo.c:140
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
 msgid "Document Statistics"
 msgstr "የሰነዶች ቍጥር መረጃ ጥናት"
 
-#: plugins/docinfo/docinfo.c:153
+#: plugins/docinfo/docinfo.c:154
 msgid "_Update"
 msgstr "_አሻሽል"
 
-#: plugins/docinfo/docinfo.glade2.h:1
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+msgid ""
+"Analyzes the current document and reports the number of words, lines, "
+"characters and non-space characters in it."
+msgstr ""
+
+#: plugins/docinfo/docinfo.glade2.h:2
 msgid "0"
 msgstr "0"
 
-#: plugins/docinfo/docinfo.glade2.h:2
+#: plugins/docinfo/docinfo.glade2.h:3
+#, fuzzy
+msgid "<span weight=\"bold\">File Name</span>"
+msgstr "<span weight=\"bold\">ቀለሞች</span>"
+
+#: plugins/docinfo/docinfo.glade2.h:4
 msgid "Bytes"
 msgstr "ባይቶች"
 
-#: plugins/docinfo/docinfo.glade2.h:3
+#: plugins/docinfo/docinfo.glade2.h:5
 msgid "Characters (no spaces)"
 msgstr "አኃዞች (ክፍተት የለም)"
 
-#: plugins/docinfo/docinfo.glade2.h:4
+#: plugins/docinfo/docinfo.glade2.h:6
 msgid "Characters (with spaces)"
 msgstr "አኃዞች (ከክፍተት ጋር)"
 
-#: plugins/docinfo/docinfo.glade2.h:5
-msgid "File Name"
-msgstr "የፋይል ስም"
-
-#: plugins/docinfo/docinfo.glade2.h:6 src/gedit-print.c:373
-msgid "Lines"
-msgstr "መስመሮች"
-
-#: plugins/docinfo/docinfo.glade2.h:7
+#: plugins/docinfo/docinfo.glade2.h:8
 msgid "Update"
 msgstr "አሻሽል"
 
-#: plugins/docinfo/docinfo.glade2.h:8
+#: plugins/docinfo/docinfo.glade2.h:9
 msgid "Words"
 msgstr "ቃላት"
 
-#: plugins/docinfo/docinfo.glade2.h:9
+#: plugins/docinfo/docinfo.glade2.h:10
 msgid "gedit: Document Info plugin"
 msgstr ""
 
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Document Statistics plugin analyzes the current document and determines "
-"the number of words, lines, characters and non-space characters in it and "
-"displays the result."
+#: plugins/indent/indent.c:45
+msgid "_Indent"
+msgstr "_አዲስ አንቀጽ"
+
+#: plugins/indent/indent.c:47
+msgid "Indent selected lines"
+msgstr "የተመረጠውን መስመሮች አንቀጽ"
+
+#: plugins/indent/indent.c:49
+msgid "U_nindent"
+msgstr "አንቀጽ _የሌለው"
+
+#: plugins/indent/indent.c:51
+msgid "Unindent selected lines"
 msgstr ""
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
+msgid "Indent lines"
+msgstr "መስመሮችን አንቀጽ"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
+#, fuzzy
+msgid "Indents or un-indents selected lines."
+msgstr "የተመረጠውን መስመሮች አንቀጽ"
 
 #: plugins/sample/sample.c:43
 msgid "Insert User Na_me"
@@ -675,31 +2609,27 @@ msgid "Run a command"
 msgstr ""
 
 #: plugins/shell_output/shell_output.c:161
-#: plugins/shell_output/shell_output.c:516
+#: plugins/shell_output/shell_output.c:502
 msgid "Stopped"
 msgstr ""
 
-#: plugins/shell_output/shell_output.c:246
-msgid "An error occurs while running the selected command."
-msgstr "የተጠቀሰውን ትእዛዝ በሚያስጀምርበት ጊዜ ስህተት ተከስቷል።"
-
-#: plugins/shell_output/shell_output.c:302
+#: plugins/shell_output/shell_output.c:282
 msgid "Run Command"
 msgstr ""
 
-#: plugins/shell_output/shell_output.c:318
+#: plugins/shell_output/shell_output.c:301
 msgid "_Run"
 msgstr "_አስኪድ"
 
-#: plugins/shell_output/shell_output.c:522
+#: plugins/shell_output/shell_output.c:508
 msgid "Done"
 msgstr "ጨርሷል"
 
-#: plugins/shell_output/shell_output.c:524
+#: plugins/shell_output/shell_output.c:510
 msgid "Failed"
 msgstr ""
 
-#: plugins/shell_output/shell_output.c:696
+#: plugins/shell_output/shell_output.c:676
 msgid ""
 "The shell command entry is empty.\n"
 "\n"
@@ -709,7 +2639,7 @@ msgstr ""
 "\n"
 "የሼሉ ትእዛዝ መስጫ ባዶ ነው እባክዎ ትክክለኛውን የሼሉን ትእዛዝ ያስገቡ።"
 
-#: plugins/shell_output/shell_output.c:729
+#: plugins/shell_output/shell_output.c:695
 msgid ""
 "Error parsing the shell command.\n"
 "\n"
@@ -719,9 +2649,24 @@ msgstr ""
 "\n"
 "እባክዎ ትክክለኛውን የሼሉን ትእዛዝ ያስገቡ።"
 
-#: plugins/shell_output/shell_output.c:815
+#: plugins/shell_output/shell_output.c:773
 msgid "Executing command"
 msgstr ""
+
+#: plugins/shell_output/shell_output.c:841
+#, fuzzy
+msgid "An error occurred while running the selected command."
+msgstr "የተጠቀሰውን ትእዛዝ በሚያስጀምርበት ጊዜ ስህተት ተከስቷል።"
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
+msgid ""
+"Executes an external program and, if required, displays its output in the "
+"output window."
+msgstr ""
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
+msgid "Shell command"
+msgstr "የሼል ትእዛዝ"
 
 #: plugins/shell_output/shell_output.glade2.h:2
 msgid "Co_mmand:"
@@ -743,143 +2688,20 @@ msgstr ""
 msgid "gedit: Shell Output plugin"
 msgstr ""
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
-msgid ""
-"Execute an external program and eventually grabs its output in the output "
-"window."
+#: plugins/sort/sort.c:27
+msgid "S_ort..."
+msgstr "_ቅደም ተከተል..."
+
+#: plugins/sort/sort.c:30
+msgid "Sort the current document or selection."
 msgstr ""
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
-msgid "Shell command"
-msgstr "የሼል ትእዛዝ"
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:1 plugins/sort/sort.glade2.h:3
+msgid "Sort"
+msgstr "ቅደም ተከተል"
 
-#: plugins/taglist/gedit-taglist-plugin-window.c:136
-msgid "Tag list plugin"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:154
-msgid "Select the group of tags you want to use"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:176
-msgid "Tag Groups Combo"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:178
-msgid "Tags Name List"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:188
-msgid "Double-click on a tag to insert it in the current document"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:199
-msgid "Tags"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin.c:46
-msgid "Tag _List"
-msgstr ""
-
-#.
-#. #define MENU_ITEM_NAME		"TagList"
-#.
-#: plugins/taglist/gedit-taglist-plugin.c:51
-msgid "Show the tag list window"
-msgstr ""
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
-msgid "Tag list"
-msgstr ""
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
-msgid ""
-"The tag list plugin provides a method to easily insert into a document "
-"commonly used tags/strings without having to type them."
-msgstr ""
-
-#: plugins/time/time.c:48
-msgid "In_sert Date and Time..."
-msgstr "ቀን እና ሰዓት _አስገባ..."
-
-#: plugins/time/time.c:51
-msgid "Insert current date and time at the cursor position"
-msgstr "ጠቋሚው ባለበት ቦታ ላይ የዕለቱ ቀንና ሰዓት አስገባ"
-
-#: plugins/time/time.c:448
-msgid "Available formats"
-msgstr "የሚገኙ ፎርማቶች"
-
-#: plugins/time/time.c:552
-msgid "Configure insert date/time plugin..."
-msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ተስተካክሎ ይግባ..."
-
-#: plugins/time/time.glade2.h:1 src/dialogs/gedit-preferences.glade2.h:1
-msgid "    "
-msgstr "    "
-
-#: plugins/time/time.glade2.h:3
-msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
-msgstr "<span size=\"small\">01/11/2002 17:52:00</span>"
-
-#: plugins/time/time.glade2.h:4
-msgid "<span weight=\"bold\"> When inserting date/time...</span>"
-msgstr ""
-
-#: plugins/time/time.glade2.h:5
-msgid "Configure date/time plugin"
-msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ለወጡ"
-
-#: plugins/time/time.glade2.h:6
-msgid "Insert Date and Time"
-msgstr "ቀን እና ሰዓት አስገባ"
-
-#: plugins/time/time.glade2.h:7
-msgid "Use the _selected format"
-msgstr ""
-
-#: plugins/time/time.glade2.h:8
-msgid "_Insert"
-msgstr "_አስገባ"
-
-#: plugins/time/time.glade2.h:9
-msgid "_Prompt for a format"
-msgstr ""
-
-#: plugins/time/time.glade2.h:10
-msgid "_Use custom format"
-msgstr ""
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:1
-msgid "Insert Date/Time"
-msgstr "ቀን/ሰዓት አስገባ"
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:2
-msgid "Inserts current date and time at the cursor position."
-msgstr ""
-
-#: plugins/indent/indent.c:45
-msgid "_Indent"
-msgstr "_አዲስ አንቀጽ"
-
-#: plugins/indent/indent.c:47
-msgid "Indent selected lines"
-msgstr "የተመረጠውን መስመሮች አንቀጽ"
-
-#: plugins/indent/indent.c:49
-msgid "U_nindent"
-msgstr "አንቀጽ _የሌለው"
-
-#: plugins/indent/indent.c:51
-msgid "Unindent selected lines"
-msgstr ""
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
-msgid "Indent lines"
-msgstr "መስመሮችን አንቀጽ"
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
-msgid "Indent or un-indent selected lines."
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
+msgid "Sorts a document or selected text."
 msgstr ""
 
 #: plugins/sort/sort.glade2.h:1
@@ -889,10 +2711,6 @@ msgstr "የአባዛዎች _አስወግድ"
 #: plugins/sort/sort.glade2.h:2
 msgid "S_tart at column:"
 msgstr "በዐምድ _ጀምር፦"
-
-#: plugins/sort/sort.glade2.h:3 plugins/sort/sort.gedit-plugin.desktop.in.h:1
-msgid "Sort"
-msgstr "ቅደም ተከተል"
 
 #: plugins/sort/sort.glade2.h:4
 msgid "You cannot undo a sort operation"
@@ -910,160 +2728,184 @@ msgstr "የ_ተቀያየረ ቅደም ተከተል"
 msgid "_Sort"
 msgstr "_ቅደም ተከተል"
 
-#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
-msgid "Sorts a document or selected text."
-msgstr ""
-
-#: plugins/spell/gedit-automatic-spell-checker.c:322
-#: plugins/spell/gedit-spell-checker-dialog.c:504
+#: plugins/spell/gedit-automatic-spell-checker.c:350
+#: plugins/spell/gedit-spell-checker-dialog.c:511
 msgid "(no suggested words)"
 msgstr ""
 
-#: plugins/spell/gedit-automatic-spell-checker.c:346
+#: plugins/spell/gedit-automatic-spell-checker.c:374
 msgid "_More..."
 msgstr "_ተጨማሪ..."
 
 #. Ignore all
-#: plugins/spell/gedit-automatic-spell-checker.c:399
+#: plugins/spell/gedit-automatic-spell-checker.c:427
 msgid "_Ignore All"
 msgstr "_ሁሉንም ተዉት"
 
 #. + Add to Dictionary
-#: plugins/spell/gedit-automatic-spell-checker.c:412
+#: plugins/spell/gedit-automatic-spell-checker.c:440
 msgid "_Add"
 msgstr "_ጨምር"
 
-#: plugins/spell/gedit-automatic-spell-checker.c:449
+#: plugins/spell/gedit-automatic-spell-checker.c:477
 msgid "_Spelling Suggestions..."
 msgstr ""
 
-#: plugins/spell/gedit-spell-checker-dialog.c:285
+#: plugins/spell/gedit-spell-checker-dialog.c:289
 msgid "Check Spelling"
 msgstr "የቃላት አጻጻፉን አጣራ"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:296
+#: plugins/spell/gedit-spell-checker-dialog.c:300
 msgid "Suggestions"
 msgstr "አስተያየቶች"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:608
+#: plugins/spell/gedit-spell-checker-dialog.c:615
 msgid "(correct spelling)"
 msgstr ""
 
-#: plugins/spell/gedit-spell-checker-dialog.c:785
+#: plugins/spell/gedit-spell-checker-dialog.c:800
 msgid "Completed spell checking"
 msgstr ""
 
-#: plugins/spell/gedit-spell-checker.c:73
+#: plugins/spell/gedit-spell-checker.c:80
+msgid "Bulgarian"
+msgstr ""
+
+#: plugins/spell/gedit-spell-checker.c:81
+#, fuzzy
+msgid "Bengali"
+msgstr "ባቲክ"
+
+#: plugins/spell/gedit-spell-checker.c:82
 msgid "Breton"
 msgstr "ብሬቶንኛ"
 
-#: plugins/spell/gedit-spell-checker.c:74
+#: plugins/spell/gedit-spell-checker.c:83
 msgid "Catalan"
 msgstr "ካታላን"
 
-#: plugins/spell/gedit-spell-checker.c:75
+#: plugins/spell/gedit-spell-checker.c:84
 msgid "Czech"
 msgstr "ቼክኛ"
 
-#: plugins/spell/gedit-spell-checker.c:76
+#: plugins/spell/gedit-spell-checker.c:85
+msgid "Welsh"
+msgstr ""
+
+#: plugins/spell/gedit-spell-checker.c:86
 msgid "Danish"
 msgstr "ዴኒሽ"
 
-#: plugins/spell/gedit-spell-checker.c:77
+#: plugins/spell/gedit-spell-checker.c:87
 msgid "German (Germany)"
 msgstr "ጀርመን (የጀርመን)"
 
-#: plugins/spell/gedit-spell-checker.c:78
+#: plugins/spell/gedit-spell-checker.c:88
 msgid "German (Swiss)"
 msgstr "ጀርመን (የዊስ)"
 
-#: plugins/spell/gedit-spell-checker.c:79
+#: plugins/spell/gedit-spell-checker.c:90
 msgid "English (American)"
 msgstr "ኢንግልዝኛ (የአሜሪካ)"
 
-#: plugins/spell/gedit-spell-checker.c:80
+#: plugins/spell/gedit-spell-checker.c:91
 msgid "English (British)"
 msgstr "ኢንግልዝኛ (የብሪታን)"
 
-#: plugins/spell/gedit-spell-checker.c:81
+#: plugins/spell/gedit-spell-checker.c:92
 msgid "English (Canadian)"
 msgstr "ኢንግልዝኛ (የካናዳ)"
 
-#: plugins/spell/gedit-spell-checker.c:82
+#: plugins/spell/gedit-spell-checker.c:93
 msgid "Esperanto"
 msgstr "ኤስፐራንቶ"
 
-#: plugins/spell/gedit-spell-checker.c:83
+#: plugins/spell/gedit-spell-checker.c:94
 msgid "Spanish"
 msgstr "ስፓኒሽ"
 
-#: plugins/spell/gedit-spell-checker.c:84
+#: plugins/spell/gedit-spell-checker.c:95
+#, fuzzy
+msgid "Finnish"
+msgstr "ዴኒሽ"
+
+#: plugins/spell/gedit-spell-checker.c:96
 msgid "Faroese"
 msgstr "ፋሮኛ"
 
-#: plugins/spell/gedit-spell-checker.c:85
+#: plugins/spell/gedit-spell-checker.c:97
 msgid "French (France)"
 msgstr "ፈረንሳይኛ (የፈረንሳይ)"
 
-#: plugins/spell/gedit-spell-checker.c:86
+#: plugins/spell/gedit-spell-checker.c:98
 msgid "French (Swiss)"
 msgstr "ፈረንሳይኛ (የዊስ)"
 
-#: plugins/spell/gedit-spell-checker.c:87
+#: plugins/spell/gedit-spell-checker.c:99
+msgid "Irish (Gaeilge)"
+msgstr ""
+
+#: plugins/spell/gedit-spell-checker.c:100
+msgid "Icelandic"
+msgstr "አይስላንድኛ"
+
+#: plugins/spell/gedit-spell-checker.c:101
 msgid "Italian"
 msgstr "ጣሊያንኛ"
 
-#: plugins/spell/gedit-spell-checker.c:88
+#: plugins/spell/gedit-spell-checker.c:102
 msgid "Dutch"
 msgstr "ደች"
 
-#: plugins/spell/gedit-spell-checker.c:89
+#: plugins/spell/gedit-spell-checker.c:103
 msgid "Norwegian"
 msgstr "ኖርዌጂያን"
 
-#: plugins/spell/gedit-spell-checker.c:90
+#: plugins/spell/gedit-spell-checker.c:104
 msgid "Polish"
 msgstr "ፖሊሽ"
 
-#: plugins/spell/gedit-spell-checker.c:91
+#: plugins/spell/gedit-spell-checker.c:105
 msgid "Portuguese (Portugal)"
 msgstr "ፖርቱጋልኛ (የፖርቱጋል)"
 
-#: plugins/spell/gedit-spell-checker.c:92
+#: plugins/spell/gedit-spell-checker.c:106
 msgid "Portuguese (Brazilian)"
 msgstr "ፖርቱጋልኛ (የብራዚል)"
 
-#: plugins/spell/gedit-spell-checker.c:93
+#: plugins/spell/gedit-spell-checker.c:107
 msgid "Russian"
 msgstr "ራሽኛ"
 
-#: plugins/spell/gedit-spell-checker.c:94
+#: plugins/spell/gedit-spell-checker.c:108
+msgid "Slovak"
+msgstr ""
+
+#: plugins/spell/gedit-spell-checker.c:109
+msgid "Slovenian"
+msgstr ""
+
+#: plugins/spell/gedit-spell-checker.c:110
 msgid "Swedish"
 msgstr "ስዊድንኛ"
 
-#: plugins/spell/gedit-spell-checker.c:653
+#: plugins/spell/gedit-spell-checker.c:111
+#, fuzzy
+msgid "Ukrainian"
+msgstr "ቄርሎሳዊ ጽሑፍ/ዩክረኒኛ"
+
+#: plugins/spell/gedit-spell-checker.c:744
 msgid "Default"
 msgstr "የነበረው"
 
-#: plugins/spell/gedit-spell-language-dialog.c:233
-#: src/dialogs/gedit-dialog-goto-line.c:169
-#: src/dialogs/gedit-plugin-program-location-dialog.c:100
-#: src/dialogs/gedit-encodings-dialog.c:242
+#: plugins/spell/gedit-spell-language-dialog.c:241
 #, c-format
 msgid "Could not find the required widgets inside %s."
 msgstr "ተፈላጊውን ዊድጌቶች %s የሚለው ውስጥ ሊገኝ አልተቻለም።"
 
-#: plugins/spell/gedit-spell-language-dialog.c:253
+#: plugins/spell/gedit-spell-language-dialog.c:261
 msgid "Languages"
 msgstr "ቋንቋዎች"
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
-msgid "Checks the spelling of the current document."
-msgstr ""
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
-msgid "Spell checker"
-msgstr ""
 
 #: plugins/spell/languages-dialog.glade2.h:1
 msgid "Select the _language of the current document."
@@ -1129,15 +2971,6 @@ msgstr "_ተዉት"
 msgid "_Suggestions:"
 msgstr "_አስተያየቶች፦"
 
-#. Key in case the plugin ever needs any settings
-#: plugins/sort/sort.c:26
-msgid "S_ort..."
-msgstr "_ቅደም ተከተል..."
-
-#: plugins/sort/sort.c:29
-msgid "Sort the current document or selection."
-msgstr ""
-
 #: plugins/spell/spell.c:51
 msgid "_Check Spelling"
 msgstr "የቃላት አጻጻፉን _አጣራ"
@@ -1162,1829 +2995,299 @@ msgstr "ቋንቋን _ይምረጡ"
 msgid "Set the language of the current document"
 msgstr ""
 
-#: plugins/spell/spell.c:549
+#: plugins/spell/spell.c:553
 msgid "The document is empty."
 msgstr "ሰንዱን ባዶ ነው።"
 
-#: plugins/spell/spell.c:567
+#: plugins/spell/spell.c:571
 msgid "The selected text does not contain mispelled words."
 msgstr ""
 
-#: plugins/spell/spell.c:568
+#: plugins/spell/spell.c:572
 msgid "The document does not contain mispelled words."
 msgstr ""
 
-#: src/bonobo-mdi.c:549 src/bonobo-mdi.c:1962
-#, c-format
-msgid "Activate %s"
-msgstr "%s አስጀምርs"
-
-#: src/dialogs/gedit-dialog-goto-line.c:143
-msgid "Go to Line"
-msgstr "ወደ መስመር ሂድ"
-
-#. Add Goto Line button
-#: src/dialogs/gedit-dialog-goto-line.c:153
-msgid "_Go to Line"
-msgstr "ወደ መስመር _ሂድ"
-
-#: src/dialogs/gedit-dialog-replace.c:132
-#: src/dialogs/gedit-dialog-replace.c:1025 src/gedit-commands.c:363
-#, c-format
-msgid "The text \"%s\" was not found."
-msgstr "ጽሑፉ \"%s\"ን አልተገኘም"
-
-#: src/dialogs/gedit-dialog-replace.c:240 src/dialogs/replace.glade2.h:4
-#: src/gedit-ui.xml.h:51
-msgid "Replace"
-msgstr "ተካ"
-
-#: src/dialogs/gedit-dialog-replace.c:251
-msgid "Replace _All"
-msgstr "_ሁሉንም ተካ"
-
-#. Add Replace button
-#: src/dialogs/gedit-dialog-replace.c:254 src/gedit-file-selector-util.c:129
-msgid "_Replace"
-msgstr "_ተካ"
-
-#: src/dialogs/gedit-dialog-replace.c:376 src/gedit-ui.xml.h:22
-msgid "Find"
-msgstr "ፈልግ"
-
-#: src/dialogs/gedit-dialog-replace.c:1034
-#, c-format
-msgid "Found and replaced %d occurences."
-msgstr "የ%d  የተደጋገመ ድርጊት ተገኝቶ ተተክቷል።"
-
-#: src/dialogs/gedit-dialog-uri.c:83
-msgid "Open Location"
-msgstr "ቦታ ክፈት"
-
-#: src/dialogs/gedit-plugin-manager.c:53
-msgid "Plugin"
-msgstr "ተጨማሪ ፕሮግራም (ፕላግኢን)"
-
-#: src/dialogs/gedit-plugin-manager.c:54
-msgid "Load"
-msgstr "ጫን"
-
-#: src/dialogs/gedit-plugin-manager.c:320
-msgid "Module file name"
-msgstr "የፋይል ስም አቅድ"
-
-#: src/dialogs/gedit-plugin-manager.c:321
-msgid "Author(s)"
-msgstr "ደራሲ(ዎች)"
-
-#: src/dialogs/gedit-plugin-manager.c:488
-msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
-msgstr "geditን እንደገና ለመጨመር የplugin manager glade2, ሊገኝ አልቻለም\n"
-
-#: src/dialogs/gedit-plugin-manager.c:511
-msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
-msgstr "የማይሰራ የግሌድ ፋይል ለፕላግኢን ማናጀር ሁሉም ዊድጌትስ አልተገኙም\n"
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:78
-#: src/dialogs/program-location-dialog.glade2.h:1
-msgid "Set program location..."
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
+msgid "Checks the spelling of the current document."
 msgstr ""
 
-#: src/dialogs/gedit-plugin-program-location-dialog.c:106
-#, c-format
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
+msgid "Spell checker"
+msgstr ""
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:139
+msgid "Tag list plugin"
+msgstr ""
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:157
+msgid "Select the group of tags you want to use"
+msgstr ""
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:179
+#, fuzzy
+msgid "Available Tag Lists"
+msgstr "የሚገኙ ፎርማቶች"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:181
+#: plugins/taglist/gedit-taglist-plugin-window.c:202
+msgid "Tags"
+msgstr ""
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:191
+msgid "Double-click on a tag to insert it in the current document"
+msgstr ""
+
+#: plugins/taglist/gedit-taglist-plugin.c:46
+msgid "Tag _List"
+msgstr ""
+
+#.
+#. #define MENU_ITEM_NAME		"TagList"
+#.
+#: plugins/taglist/gedit-taglist-plugin.c:51
+msgid "Show the tag list window"
+msgstr ""
+
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
 msgid ""
-"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
-"task.\n"
-"\n"
-"Please, specify the location of the <tt>%s</tt> program."
+"Provides a method to easily insert into a document commonly used tags/"
+"strings without having to type them."
 msgstr ""
 
-#: src/dialogs/gedit-plugin-program-location-dialog.c:152
-msgid "The selected file is not executable."
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
+msgid "Tag list"
 msgstr ""
 
-#: src/dialogs/gedit-preferences-dialog.c:233
-msgid "Font & Colors"
-msgstr "የፊደል ቅርጾች እና ቀለሞች"
+#: plugins/time/time.c:50
+msgid "In_sert Date and Time..."
+msgstr "ቀን እና ሰዓት _አስገባ..."
 
-#: src/dialogs/gedit-preferences-dialog.c:235
-#: src/dialogs/gedit-preferences.glade2.h:47
-msgid "Tabs"
-msgstr "መክፈቻዎች"
+#: plugins/time/time.c:53
+msgid "Insert current date and time at the cursor position"
+msgstr "ጠቋሚው ባለበት ቦታ ላይ የዕለቱ ቀንና ሰዓት አስገባ"
 
-#: src/dialogs/gedit-preferences-dialog.c:236
-msgid "Wrap Mode"
-msgstr "የመሸፈኛ ዘዴ"
+#: plugins/time/time.c:449
+msgid "Available formats"
+msgstr "የሚገኙ ፎርማቶች"
 
-#: src/dialogs/gedit-preferences-dialog.c:237
-msgid "Auto Indent"
-msgstr "በራሱ አንቀጽ"
+#: plugins/time/time.c:554
+msgid "Configure insert date/time plugin..."
+msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ተስተካክሎ ይግባ..."
 
-#: src/dialogs/gedit-preferences-dialog.c:238
-msgid "Line Numbers"
-msgstr "የመስመር ቍጥሮች"
+#: plugins/time/time.gedit-plugin.desktop.in.h:1
+msgid "Insert Date/Time"
+msgstr "ቀን/ሰዓት አስገባ"
 
-#: src/dialogs/gedit-preferences-dialog.c:240 src/gedit-ui.xml.h:32
-msgid "Open"
-msgstr "ክፈት"
-
-#: src/dialogs/gedit-preferences-dialog.c:241
-#: src/dialogs/gedit-preferences.glade2.h:42 src/gedit-ui.xml.h:55
-msgid "Save"
-msgstr "አስቀምጥ"
-
-#: src/dialogs/gedit-preferences-dialog.c:242
-#: src/dialogs/gedit-preferences.glade2.h:50 src/gedit-ui.xml.h:72
-msgid "Undo"
-msgstr "ወደ ነበረበት መልስ"
-
-#: src/dialogs/gedit-preferences-dialog.c:250
-msgid "Page"
-msgstr "ገጽ"
-
-#: src/dialogs/gedit-preferences-dialog.c:252
-msgid "Fonts"
-msgstr "የፊደል ቅርጾች"
-
-#: src/dialogs/gedit-preferences-dialog.c:259
-msgid "Manager"
-msgstr "መቆጣጠሪያ"
-
-#: src/dialogs/gedit-preferences-dialog.c:267
-msgid "Editor"
-msgstr "ማቀናጃ"
-
-#: src/dialogs/gedit-preferences-dialog.c:268
-#: src/dialogs/gedit-preferences.glade2.h:38 src/gedit-print.c:364
-#: src/gedit-ui.xml.h:41
-msgid "Print"
-msgstr "አትም"
-
-#: src/dialogs/gedit-preferences-dialog.c:269
-msgid "Plugins"
-msgstr "ተጨማሪ ፕሮግራሞች (Plugins)"
-
-#: src/dialogs/gedit-preferences-dialog.c:341
-msgid "Cat_egories:"
-msgstr "_ምድብ"
-
-#: src/dialogs/gedit-preferences-dialog.c:363
-msgid "Preferences"
-msgstr "ምርጫዎች"
-
-#: src/dialogs/gedit-preferences-dialog.c:603
-msgid "Categories"
-msgstr "ምድብ"
-
-#: src/dialogs/gedit-preferences-dialog.c:836
-msgid "Push this button to select the font to be used by the editor"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:839
-msgid "Push this button to configure text color"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:841
-msgid "Push this button to configure background color"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:843
-msgid ""
-"Push this button to configure the color in which the selected text should "
-"appear"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:846
-msgid ""
-"Push this button to configure the color in which the selected text should be "
-"marked"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:1851
-msgid "Push this button to select the font to be used to print the body"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:1853
-msgid "Push this button to select the font to be used to print the headers"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:1855
-msgid "Push this button to select the font to be used to print line numbers"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:2
-msgid "<b>Font</b>"
-msgstr "<b>የፊደል ቅርጽ</b>"
-
-#: src/dialogs/gedit-preferences.glade2.h:3
-msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">በራሱ አንቀጽ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:4
-msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">የፊደል ቅርጽ እና ቀለሞች</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:5
-msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">የፊደል ቅርጾች</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:6
-msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">የመስመር ቍጥሮች</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:7
-msgid "<span weight=\"bold\" size=\"x-large\">Manager</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">መቆጣጠሪያ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:8
-msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">ክፈት</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:9
-msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">ገጽ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:10
-msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">አስቀምጥ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:11
-msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">ማስረጊያዎች</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:12
-msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">ወደ ነበረበት መልስ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:13
-msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">የመሸፈኛ ዘዴ</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:14
-msgid "<span weight=\"bold\">Colors</span>"
-msgstr "<span weight=\"bold\">ቀለሞች</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:15
-msgid "<span weight=\"bold\">When saving a new file...</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:16
-msgid "<span weight=\"bold\">When saving an existing file...</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:17
-msgid "Add new encodings"
-msgstr "አዲስ የሆሄያት ኮዶችን ጨምር"
-
-#: src/dialogs/gedit-preferences.glade2.h:18
-msgid "Always use U_TF-8 encoding (faster)"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:19
-msgid "Always use _UTF-8 encoding (faster)"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:20
-msgid "Create a _backup copy of files before saving"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:21
-msgid "Do not _split words over two lines"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:22
-msgid "Editor _font: "
-msgstr "የማቀናጃ ፊደል _ቅርጽ፦ "
-
-#: src/dialogs/gedit-preferences.glade2.h:23
-msgid "Enable _auto indentation"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:24
-msgid "Enable text _wrapping"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:25
-msgid "Fonts & Colors"
-msgstr "የፊደል ቅርጾችና ቀለሞች"
-
-#: src/dialogs/gedit-preferences.glade2.h:26
-msgid "Insert _spaces instead of tabs"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:27
-msgid "LOGO"
-msgstr "አርማ"
-
-#: src/dialogs/gedit-preferences.glade2.h:28
-msgid "Line _numbers:"
-msgstr "የመስመር _ቍጥሮች፦"
-
-#: src/dialogs/gedit-preferences.glade2.h:29
-msgid "Line numbers"
-msgstr "የመስመር ቍጥሮች"
-
-#: src/dialogs/gedit-preferences.glade2.h:30
-msgid "Move down"
-msgstr "ወደታች አንቀሳቅስ"
-
-#: src/dialogs/gedit-preferences.glade2.h:31
-msgid "Move up"
-msgstr "ወደላይ አንቀሳቅስ"
-
-#: src/dialogs/gedit-preferences.glade2.h:32
-msgid "Page he_aders:"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:33
-msgid "Pick the background color"
-msgstr "የመደቡ ቀለም ምረጡ"
-
-#: src/dialogs/gedit-preferences.glade2.h:34
-msgid "Pick the selected text color"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:35
-msgid "Pick the selection color"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:36
-msgid "Pick the text color"
-msgstr "የጽሑፉ ቀለም ምረጡ"
-
-#: src/dialogs/gedit-preferences.glade2.h:37
-msgid "Plugin manager"
-msgstr "የተጨማሪ ፕሮግራም መቆጣጠሪያ"
-
-#: src/dialogs/gedit-preferences.glade2.h:39
-msgid "Print _line numbers every"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:40
-msgid "Print fonts"
-msgstr "የፊደል ቅርጾችን አትም"
-
-#: src/dialogs/gedit-preferences.glade2.h:41
-msgid "Remove an encoding"
-msgstr "የሆሄያት ኮዶችን አስወግድ"
-
-#: src/dialogs/gedit-preferences.glade2.h:43
-msgid "Se_lection color:"
-msgstr "የ_ምርጫው ቀለም፦"
-
-#: src/dialogs/gedit-preferences.glade2.h:44
-msgid "Selecte_d text color:"
-msgstr "የተመረጠው ጽሑፍ ቀለም፦"
-
-#: src/dialogs/gedit-preferences.glade2.h:45
-msgid "Set _tabs width equivalent to"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:46
-msgid "Set limit on _undo actions to"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:48
-msgid "U_se default theme colors"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:49
-msgid "U_se original file encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:51
-msgid "Use cu_rrent locale's encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:52
-msgid "Use current _locale's encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:53
-msgid "Wrap mode"
-msgstr "የመሸፈኛ ዘዴ"
-
-#: src/dialogs/gedit-preferences.glade2.h:54
-msgid "_Autosave current file every"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:55
-msgid "_Background color:"
-msgstr "የ_መደቡ ቀለም፦"
-
-#: src/dialogs/gedit-preferences.glade2.h:56
-msgid "_Body:"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:57
-msgid "_Display line numbers"
-msgstr " የ_መስመር ቍጥሮች አሳይ"
-
-#: src/dialogs/gedit-preferences.glade2.h:58
-msgid "_Print page headers"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:59
-msgid "_Restore Default Fonts"
-msgstr "የነበረው የፊደል ቅርጾች ወደ መጀመሪያው _መልስ"
-
-#: src/dialogs/gedit-preferences.glade2.h:60
-msgid "_Supported encodings:"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:61
-msgid "_Text color:"
-msgstr "የ_ጽሑፍ ቀለም፦"
-
-#: src/dialogs/gedit-preferences.glade2.h:62
-msgid "_Use default theme font"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:63
-msgid "_action(s)"
-msgstr "_ትግባር(ኦች)"
-
-#: src/dialogs/gedit-preferences.glade2.h:64
-msgid "_minutes"
-msgstr "_ደቂቃዎች"
-
-#: src/dialogs/gedit-preferences.glade2.h:65
-msgid "character(s)"
-msgstr "ፊደል(ሎች)"
-
-#: src/dialogs/gedit-preferences.glade2.h:66
-msgid "li_ne(s)"
-msgstr "_መስመር(ሮች)"
-
-#: src/dialogs/gnome-print-font-dialog.c:111
-msgid "_Insert a new preview phrase."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:117
-msgid "Modify preview phrase..."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:171
-msgid "Preview"
-msgstr "ቅድመ ዕይታ"
-
-#: src/dialogs/gnome-print-font-dialog.c:184
-msgid "_Modify preview phrase..."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:247
-msgid "Font Selection"
-msgstr "የፊደል ቅርጽ ምርጫ"
-
-#: src/dialogs/gnome-print-font-picker.c:92
-msgid "Sans Regular 12"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:93
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-
-#: src/dialogs/gnome-print-font-picker.c:94
-msgid "Pick a Font"
-msgstr "የፊደል ቅርጽ ምረጡ"
-
-#: src/dialogs/gnome-print-font-picker.c:179
-msgid "Title"
-msgstr "አርእስት"
-
-#: src/dialogs/gnome-print-font-picker.c:180
-msgid "The title of the selection dialog box"
-msgstr "የምርጫው መምረጫ ሳጥን አርዕስት"
-
-#: src/dialogs/gnome-print-font-picker.c:200
-msgid "Font name"
-msgstr "የፊደሉ ቅርጽ ስም"
-
-#: src/dialogs/gnome-print-font-picker.c:201
-msgid "Name of the selected font"
-msgstr "የተመረጠው የፊደል ቅርጽ ስም"
-
-#: src/dialogs/gnome-print-font-picker.c:209
-msgid "Preview text"
-msgstr "የጽሑፉ ቅድመ ዕይታ"
-
-#: src/dialogs/gnome-print-font-picker.c:210
-msgid "Preview text shown in the dialog"
-msgstr "በመምረጭው ውስጥ የጽሑፉ ቅድመ ዕይታው ይታያል"
-
-#: src/dialogs/gnome-print-font-picker.c:218
-msgid "Use font in label"
-msgstr "በመለያው ውስጥ የፊደል ቅርጹን ተጠቀሙ"
-
-#: src/dialogs/gnome-print-font-picker.c:219
-msgid "Use font in the label in font info mode"
-msgstr "በምልክቱ ውስጥ ያለውን የፊደል ቅርጽ በፊደል ቅርጽ መረጃ የአሠራር ዘዴ ተጠቀም"
-
-#: src/dialogs/gnome-print-font-picker.c:227
-msgid "Font size for label"
-msgstr "ለመለያ የፊደል ቅርጽ መጠን"
-
-#: src/dialogs/gnome-print-font-picker.c:228
-msgid "Font size for label in font info mode"
-msgstr "ለምልክት የሚሆን የፊደል ቅርጽ መረጃ የአሠራር ዘዴ ውስጥ የፊደል ቅርጽ መጠን"
-
-#: src/dialogs/gnome-print-font-picker.c:238
-msgid "Show size"
-msgstr "መጠኑን አሳይ"
-
-#: src/dialogs/gnome-print-font-picker.c:239
-msgid "Show size in font info mode"
-msgstr "በመረጃው የፊደል ቅርጽ መተላለፊያ ውስጥ መጠንም አሳይ"
-
-#: src/dialogs/gnome-print-font-picker.c:1018
-msgid "Font"
-msgstr "የፊደል ቅርጽ"
-
-#. gnome_print_font_picker_update_font_info
-#: src/dialogs/goto-line.glade2.h:1
-msgid "Goto Line"
-msgstr "ወደ መስመር ሂድ"
-
-#: src/dialogs/goto-line.glade2.h:2
-msgid "_Line number:"
-msgstr "የ_መስመር ቍጥር፦"
-
-#: src/dialogs/plugin-manager.glade2.h:1
-msgid "C_onfigure plugin"
-msgstr ""
-
-#: src/dialogs/plugin-manager.glade2.h:2
-msgid "Configure the selected plugin"
-msgstr ""
-
-#: src/dialogs/plugin-manager.glade2.h:3
-msgid "De_tails"
-msgstr "_ዝርዝሮች"
-
-#: src/dialogs/plugin-manager.glade2.h:4
-msgid "_Description"
-msgstr "_መግለጫ"
-
-#: src/dialogs/plugin-manager.glade2.h:5
-msgid "dialog1"
-msgstr ""
-
-#: src/dialogs/program-location-dialog.glade2.h:2
-msgid "_Location to search for:"
-msgstr ""
-
-#: src/dialogs/program-location-dialog.glade2.h:3
-msgid "label"
-msgstr "መለያ"
-
-#: src/dialogs/replace.glade2.h:2
-msgid "Find Next"
-msgstr "የሚቀጥለዉን ፈልግ"
-
-#: src/dialogs/replace.glade2.h:3
-msgid "Match _entire word only"
-msgstr ""
-
-#: src/dialogs/replace.glade2.h:5
-msgid "Replace All"
-msgstr "ሁሉንም ተካ"
-
-#: src/dialogs/replace.glade2.h:6
-msgid "Replace _with: "
-msgstr "በ... _ተካ፦ "
-
-#: src/dialogs/replace.glade2.h:7
-msgid "_Match case"
-msgstr "የፊደሎቱን መጠን _አመሳስል"
-
-#: src/dialogs/replace.glade2.h:8
-msgid "_Search for: "
-msgstr "_ፈልግ፦"
-
-#: src/dialogs/replace.glade2.h:9
-msgid "_Wrap around"
-msgstr ""
-
-#: src/dialogs/uri.glade2.h:2
-msgid "Enter the _location (URI) of the file you would like to open:"
-msgstr ""
-
-#: src/dialogs/uri.glade2.h:3
-msgid "Open from URI"
-msgstr "ከURI ክፈት"
-
-#: src/gedit-commands.c:472
-msgid "translator_credits"
-msgstr "ዘግዕዝ Frontier Foundation"
-
-#: src/gedit-commands.c:497
-msgid "gedit"
-msgstr "gedit"
-
-#: src/gedit-commands.c:501
-msgid "gedit is a small and lightweight text editor for Gnome"
-msgstr "gedit ለኖም ትንሽ እና ቀለል ያለ የጽሑፍ ማቀናጃ ነው"
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-#, c-format
-msgid "%s %d"
-msgstr "%s %d"
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-msgid "Untitled"
-msgstr "ያልተሰየመ"
-
-#: src/gedit-document.c:543 src/gedit-document.c:590
-msgid "Invalid file name"
-msgstr "የማይሰራ የፋይል ስም"
-
-#: src/gedit-document.c:702 src/gedit-document.c:786
-msgid "Invalid UTF-8 data"
-msgstr "የማይሰራ የUTF-8 ዳታ"
-
-#: src/gedit-document.c:1016
-#, c-format
-msgid "Could not read symbolic link information for %s"
-msgstr ""
-
-#: src/gedit-document.c:1062
-msgid "The file has too many symbolic links."
-msgstr ""
-
-#: src/gedit-document.c:1118
-#, c-format
-msgid "gedit cannot handle %s: locations in write mode."
-msgstr ""
-
-#: src/gedit-document.c:1125
-msgid "gedit cannot handle this kind of location in write mode."
-msgstr ""
-
-#: src/gedit-document.c:1138
-msgid "Invalid filename."
-msgstr "የማይሰራ የፋይል ስም።"
-
-#: src/gedit-document.c:1278
-msgid ""
-"There is not enough disk space to save the file.\n"
-"Please free some disk space and try again."
-msgstr ""
-
-#: src/gedit-document.c:1283
-msgid ""
-"The disk where you are trying to save the file has a limitation on file "
-"sizes.  Please try saving a smaller file or saving it to a disk that does "
-"not have this limitation."
-msgstr ""
-
-#: src/gedit-document.c:1327
-msgid "Could not create a backup file."
-msgstr ""
-
-#: src/gedit-document.c:1447
-msgid "It is not possible to revert an Untitled document"
-msgstr "ስያሜ ያልተሰጠውን ሰነድ ለመመለስ አይቻልም"
-
-#: src/gedit-file-selector-util.c:147
-#, c-format
-msgid ""
-"A file named \"%s\" already exists.\n"
-"Do you want to replace it with the one you are saving?"
-msgstr ""
-"\"%s\" የተባለው ፋይል አሁን ይገኛል አሁን።\n"
-"በሚያስቀምጡት ፋይል መተካት ይፈልጋሉ?"
-
-#: src/gedit-file-selector-util.c:158
-#, c-format
-msgid ""
-"The file \"%s\" is read-only.\n"
-"Do you want to try to replace it with the one you are saving?"
-msgstr ""
-
-#: src/gedit-file-selector-util.c:544
-msgid "Select a filename to save"
-msgstr "ለማስቀመጥ የፋይል ስም ምረጡ"
-
-#: src/gedit-file.c:151
-msgid "Open File..."
-msgstr "ፋይል ክፈት ..."
-
-#: src/gedit-file.c:177 src/gedit-file.c:887
-#, c-format
-msgid "Loaded file '%s'"
-msgstr "ፋይል '%s' ተጭኗል"
-
-#: src/gedit-file.c:309 src/gedit-file.c:455
-#, c-format
-msgid "Saving file '%s'..."
-msgstr "ፋይል '%s'ን በማስቀመጥ ላይ..."
-
-#: src/gedit-file.c:337 src/gedit-file.c:470
-msgid "The document has not been saved."
-msgstr "ሰነዱ አልተቀመጠም።"
-
-#: src/gedit-file.c:351 src/gedit-file.c:467
-#, c-format
-msgid "File '%s' saved."
-msgstr "ፋይል '%s' ተቀምጧል።"
-
-#: src/gedit-file.c:434
-msgid "Save as..."
-msgstr "በሌላ ስም አስቀምጥ ..."
-
-#: src/gedit-file.c:628
-#, c-format
-msgid ""
-"Do you want to revert to saved the document '%s'?\n"
-"\n"
-"You will not be able to undo this operation."
-msgstr ""
-
-#: src/gedit-file.c:638 src/gedit-ui.xml.h:99
-msgid "_Revert"
-msgstr "_ወደ ነበረበት መልስ"
-
-#: src/gedit-file.c:672
-#, c-format
-msgid "Reverting file '%s'..."
-msgstr "ፋይል '%s'ን በመመለስ ላይ..."
-
-#: src/gedit-file.c:685
-msgid "The document has not been reverted."
-msgstr "ሰነዱ አልተመለሰም።"
-
-#: src/gedit-file.c:695
-#, c-format
-msgid "File '%s' reverted."
-msgstr "ፋይል '%s' ተመልሷል።"
-
-#: src/gedit-file.c:721
-#, c-format
-msgid "Loading %d files..."
-msgstr "ፋይል %dን በመጫን ላይ..."
-
-#: src/gedit-file.c:757
-#, c-format
-msgid "The file \"%s\" does not exist. Would you like to create it?"
-msgstr ""
-
-#: src/gedit-file.c:812
-#, c-format
-msgid "Loaded %i files"
-msgstr "ፋይል %i ተጭኗል"
-
-#: src/gedit-file.c:945
-msgid "Could not read data from stdin."
-msgstr ""
-
-#. Read only
-#: src/gedit-mdi-child.c:219
-msgid "RO"
-msgstr "RO"
-
-#. Add the detach tab button
-#: src/gedit-mdi-child.c:543 src/gedit-ui.xml.h:89
-msgid "_Move to New Window"
-msgstr ""
-
-#: src/gedit-mdi.c:446
-msgid "Open a file."
-msgstr "ፋይል ክፈት።"
-
-#: src/gedit-mdi.c:1032
-#, c-format
-msgid ""
-"Do you want to save the changes you made to the document \"%s\"? \n"
-"\n"
-"Your changes will be lost if you don't save them."
-msgstr ""
-"በሰነድ ``%s'' ላይ ያደረጉትን ለውጥ ማስቀመጥ ይፈልጋሉ?\n"
-"\n"
-"ካላስቀመጧቸው ለውጥ የተደረገበትን አያገኙትም"
-
-#: src/gedit-mdi.c:1037
-msgid "Do_n't save"
-msgstr "አ_ታስቀምጥ"
-
-#: src/gedit-mdi.c:1056
-msgid "_Don't quit"
-msgstr "_አትውጣ"
-
-#: src/gedit-mdi.c:1060
-msgid "_Don't close"
-msgstr "_አትዝጋ"
-
-#: src/gedit-mdi.c:1150
-msgid "(modified)"
-msgstr "(የተሻሻለ)"
-
-#: src/gedit-mdi.c:1156
-msgid "(readonly)"
-msgstr "(ለንባብ ብቻ)"
-
-#: src/gedit-plugins-engine.c:362
-#, c-format
-msgid "Error, unable to open module file '%s'\n"
-msgstr "ስህተት፦ የታቀደው ፋይል '%s'ን መክፈት አልተቻለም\n"
-
-#: src/gedit-plugins-engine.c:372
-#, c-format
-msgid "Error, plugin '%s' does not contain init function."
-msgstr ""
-
-#: src/gedit-plugins-engine.c:382
-#, c-format
-msgid "Error, plugin '%s' does not contain activate function."
-msgstr "ስህተት፦ ተጨማሪ የተደረገው ፕሮግራም '%s' ተግባሩን ማስጀመሪያውንአላካተተም።"
-
-#: src/gedit-plugins-engine.c:392
-#, c-format
-msgid "Error, plugin '%s' does not contain deactivate function."
-msgstr "ስህተት፦ የ '%s'  ተጨማሪ ፕሮግራም ሥራውን የሚያዘገየውን አላካተተም።"
-
-#: src/gedit-plugins-engine.c:417
-#, c-format
-msgid "Error, impossible to initialize plugin '%s'"
-msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን ማስጀመር አልተቻለም"
-
-#: src/gedit-plugins-engine.c:468
-#, c-format
-msgid "Error, impossible to destroy plugin '%s'"
-msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን አውድም አልተቻለም"
-
-#: src/gedit-plugins-engine.c:551 src/gedit-plugins-engine.c:639
-#: src/gedit-plugins-engine.c:764
-#, c-format
-msgid "Error, impossible to activate plugin '%s'"
-msgstr "ስህተት፦ ተጨማሪውን ፕሮግራም  '%s'ን ማስጀመር አልተቻለም"
-
-#: src/gedit-plugins-engine.c:590 src/gedit-plugins-engine.c:782
-#, c-format
-msgid "Error, impossible to deactivate plugin '%s'"
-msgstr "ስህተት፦ ተጨማሪው ፕሮግራም '%s'ን ማዘግየት አልተቻለም"
-
-#: src/gedit-plugins-engine.c:683
-#, c-format
-msgid "Error, impossible to update ui of the plugin '%s'"
-msgstr "ስህተት፦ የተጨማሪው ፕሮግራሙ የ'%s'ን ቋሻይን ማሻሻል አልተቻለም"
-
-#: src/gedit-prefs-manager.c:339
-msgid "Cannot initialize preferences manager."
-msgstr ""
-
-#: src/gedit-prefs-manager.c:1761
-#, c-format
-msgid "Expected `%s' got `%s' for key %s"
-msgstr ""
-
-#: src/gedit-print.c:254
-msgid ""
-"gedit is unable to print since it cannot find\n"
-"one of the required fonts."
-msgstr ""
-"geditን እስካላገኘ ድረስ ማተም አይችልም\n"
-"ከአስፈላጊዎቹ የፊደል ቅርጾች አንዱ።"
-
-#: src/gedit-print.c:432
-#, c-format
-msgid "File: %s"
-msgstr "ፋይል፦ %s"
-
-#. Print right text
-#: src/gedit-print.c:439
-#, c-format
-msgid "Page: %d"
-msgstr "ገጽ፦ %d"
-
-#: src/gedit-print.c:580
-msgid "gedit - Print Preview"
-msgstr "gedit - የቅድመ ህትመት ዕይታ"
-
-#: src/gedit-print.c:658
-#, c-format
-msgid ""
-"An error occurred while printing.\n"
-"\n"
-"%s,"
-msgstr ""
-"በሚያትምበት ጊዜ ስህተት ተከስቷል።\n"
-"\n"
-"%s"
-
-#: src/gedit-ui.xml.h:1
-msgid "About this application"
-msgstr "ስለዚህ ፕሮግራም"
-
-#: src/gedit-ui.xml.h:2
-msgid "C_ustomize Statusbar"
-msgstr ""
-
-#: src/gedit-ui.xml.h:3
-msgid "Change the visibility of the output window in the current window"
-msgstr ""
-
-#: src/gedit-ui.xml.h:4
-msgid "Change the visibility of the statusbar in the current window"
-msgstr ""
-
-#: src/gedit-ui.xml.h:5
-msgid "Change the visibility of the toolbar in the current window"
-msgstr ""
-
-#: src/gedit-ui.xml.h:6
-msgid "Close"
-msgstr "ዝጋ"
-
-#: src/gedit-ui.xml.h:7
-msgid "Close all open files"
-msgstr "የተከፈቱትን ሁሉንም ፋይሎች ዝጋ"
-
-#: src/gedit-ui.xml.h:8
-msgid "Close the current file"
-msgstr "የአሁኑን ፋይል ዝጋ"
-
-#: src/gedit-ui.xml.h:9
-msgid "Configure the application"
-msgstr "ፕሮግራሙን ልወጡ"
-
-#: src/gedit-ui.xml.h:10
-msgid "Copy"
-msgstr "ቅጂ"
-
-#: src/gedit-ui.xml.h:11
-msgid "Copy the selection"
-msgstr "የተመረጠውን ቅጂ"
-
-#: src/gedit-ui.xml.h:12
-msgid "Create a new document"
-msgstr "አዲስ ሰነድ ፍጠር"
-
-#: src/gedit-ui.xml.h:13
-msgid "Cu_t"
-msgstr "ቁረጥ (_t)"
-
-#: src/gedit-ui.xml.h:14
-msgid "Customize"
-msgstr "አስተካክል"
-
-#: src/gedit-ui.xml.h:15
-msgid "Customize toolbars"
-msgstr "ቱል ባሮቹን አስተካክል"
-
-#: src/gedit-ui.xml.h:16
-msgid "Cut"
-msgstr "ቁረጥ"
-
-#: src/gedit-ui.xml.h:17
-msgid "Cut the selection"
-msgstr "የተመረጠውን ቁረጥ"
-
-#: src/gedit-ui.xml.h:18
-msgid "Delete"
-msgstr "አጥፉ"
-
-#: src/gedit-ui.xml.h:19
-msgid "Delete the selected text"
-msgstr "የተመረጠው ጽሑፍ አጥፉ"
-
-#: src/gedit-ui.xml.h:20
-msgid "Dump XML"
-msgstr "XML አስወጣ"
-
-#: src/gedit-ui.xml.h:21
-msgid "Dump the UI Xml description"
-msgstr "የUI XML ገለጻ አውጣ"
-
-#: src/gedit-ui.xml.h:23
-msgid "Find Again"
-msgstr "እንደገና ፈልግ"
-
-#: src/gedit-ui.xml.h:24
-msgid "Find Ne_xt"
-msgstr "_የሚቀጥለዉን ፈልግ"
-
-#: src/gedit-ui.xml.h:25
-msgid "Go to _Line..."
-msgstr "ወደ _መስመር ሂድ..."
-
-#: src/gedit-ui.xml.h:26
-msgid "Go to a specific line number"
-msgstr "የተጠቀሰው የመስመር ቍጥር ጋር ሂድ"
-
-#: src/gedit-ui.xml.h:27
-msgid "Icon and _Text"
-msgstr "ምልክት እና ጽሑፍ (_T)"
-
-#: src/gedit-ui.xml.h:28
-msgid "Main toolbar"
-msgstr "ዋናው ቱልባር"
-
-#: src/gedit-ui.xml.h:29
-msgid "Move the current document to a new window"
+#: plugins/time/time.gedit-plugin.desktop.in.h:2
+msgid "Inserts current date and time at the cursor position."
 msgstr ""
 
-#: src/gedit-ui.xml.h:30
-msgid "New"
-msgstr "አዲስ"
+#: plugins/time/time.glade2.h:3
+msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
+msgstr "<span size=\"small\">01/11/2002 17:52:00</span>"
 
-#: src/gedit-ui.xml.h:31
-msgid "Only show icons in the toolbar"
+#: plugins/time/time.glade2.h:4
+msgid "<span weight=\"bold\"> When inserting date/time...</span>"
 msgstr ""
-
-#: src/gedit-ui.xml.h:33
-msgid "Open Location..."
-msgstr "ቦታ ክፈት..."
 
-#: src/gedit-ui.xml.h:34
-msgid "Open _Location..."
-msgstr "ቦታ ክፈት... (_L)"
+#: plugins/time/time.glade2.h:5
+msgid "Configure date/time plugin"
+msgstr "የቀን/ሰዓት ተጨማሪ ፕሮግራም ለወጡ"
 
-#: src/gedit-ui.xml.h:35
-msgid "Open a file"
-msgstr "ፋይል ክፈት"
+#: plugins/time/time.glade2.h:6
+msgid "Insert Date and Time"
+msgstr "ቀን እና ሰዓት አስገባ"
 
-#: src/gedit-ui.xml.h:36
-msgid "Open a file from a specified location"
+#: plugins/time/time.glade2.h:7
+msgid "Use the _selected format"
 msgstr ""
-
-#: src/gedit-ui.xml.h:37
-msgid "Open the gedit manual"
-msgstr ""
-
-#: src/gedit-ui.xml.h:38
-msgid "Paste"
-msgstr "ለጥፍ"
-
-#: src/gedit-ui.xml.h:39
-msgid "Paste the clipboard"
-msgstr "ክሊፕቦርዱን ለጥፍ"
-
-#: src/gedit-ui.xml.h:40
-msgid "Pr_eferences"
-msgstr "_ምርጫዎች"
-
-#: src/gedit-ui.xml.h:42
-msgid "Print Previe_w..."
-msgstr "የ_ቅድመ ህትመት ዕይታ..."
-
-#: src/gedit-ui.xml.h:43
-msgid "Print Preview"
-msgstr "የቅድመ ህትመት ዕይታ"
-
-#: src/gedit-ui.xml.h:44
-msgid "Print Setup"
-msgstr "የህትመት ቅንጅት"
-
-#: src/gedit-ui.xml.h:45
-msgid "Print preview"
-msgstr "የቅድመ ህትመት ዕይታ"
-
-#: src/gedit-ui.xml.h:46
-msgid "Print the current file"
-msgstr "የአሁኑን ፋይል አትም"
-
-#: src/gedit-ui.xml.h:47
-msgid "Quit"
-msgstr "ውጣ"
-
-#: src/gedit-ui.xml.h:48
-msgid "Quit the program"
-msgstr "ከፕሮግራሙ ውጣ"
-
-#: src/gedit-ui.xml.h:49
-msgid "Redo"
-msgstr "እንደገና አድርግ"
 
-#: src/gedit-ui.xml.h:50
-msgid "Redo the undone action"
-msgstr "የተተወውን ድርጊት እንደገና አድርግ"
+#: plugins/time/time.glade2.h:8
+msgid "_Insert"
+msgstr "_አስገባ"
 
-#: src/gedit-ui.xml.h:52
-msgid "Replace a string"
-msgstr "ሐረጉን ተካ"
-
-#: src/gedit-ui.xml.h:53
-msgid "Revert"
-msgstr "ወደ ነበረበት መልስ"
-
-#: src/gedit-ui.xml.h:54
-msgid "Revert to a saved version of the file"
-msgstr "መጀመሪያ ተቀምጦ ወደ ነበረው የፋይሉ ቅጂ መልስ"
-
-#: src/gedit-ui.xml.h:56
-msgid "Save As"
-msgstr "በሌላ ስም አስቀምጥ"
-
-#: src/gedit-ui.xml.h:57
-msgid "Save _As..."
-msgstr "_በሌላ ስም አስቀምጥ... (_A)"
-
-#: src/gedit-ui.xml.h:58
-msgid "Save all open files"
-msgstr "የተከፈቱትን ሁሉንም ፋይሎች አስቀምጥ"
-
-#: src/gedit-ui.xml.h:59
-msgid "Save the current file"
-msgstr "የአሁኑን ፋይል አስቀምጥ"
-
-#: src/gedit-ui.xml.h:60
-msgid "Save the current file with a different name"
-msgstr "የአሁኑን ፋይል በተለየ ስም አስቀምጥ"
-
-#: src/gedit-ui.xml.h:61
-msgid "Search again for the same string"
-msgstr "ያንኑ ሐረግ እንደገና አስስ"
-
-#: src/gedit-ui.xml.h:62
-msgid "Search for a string"
-msgstr "ሐረጉን አስስ"
-
-#: src/gedit-ui.xml.h:63
-msgid "Select All"
-msgstr "ሁሉንም ምረጡ"
-
-#: src/gedit-ui.xml.h:64
-msgid "Select _All"
-msgstr "ሁሉንም ምረጡ (_A)"
-
-#: src/gedit-ui.xml.h:65
-msgid "Select the entire document"
-msgstr "ሰነዱን እንዳለ ምረጡ"
-
-#: src/gedit-ui.xml.h:66
-msgid "Set toolbar button style according to desktop default"
+#: plugins/time/time.glade2.h:9
+msgid "_Prompt for a format"
 msgstr ""
-
-#: src/gedit-ui.xml.h:67
-msgid "Setup the page settings for your current printer"
-msgstr "የገጹን አቀማመጥ አሁን ላለው ማተሚያ አስተካክሉ"
-
-#: src/gedit-ui.xml.h:68
-msgid "Show _Cursor Position"
-msgstr "_ጠቋሚው ባለበት ቦታ አሳይ"
 
-#: src/gedit-ui.xml.h:69
-msgid "Show _Overwrite Mode"
+#: plugins/time/time.glade2.h:10
+msgid "_Use custom format"
 msgstr ""
 
-#: src/gedit-ui.xml.h:70
-msgid "Show cursor position in the statusbar"
+#: viewer/gedit-persist-stream.c:44
+msgid "Save method not implemented for gedit viewer"
 msgstr ""
 
-#: src/gedit-ui.xml.h:71
-msgid "Show overwrite mode in the statusbar"
+#: viewer/gedit-viewer-ui.xml.h:1
+msgid "Copy the selected text to the clipboard"
 msgstr ""
-
-#: src/gedit-ui.xml.h:73
-msgid "Undo the last action"
-msgstr "የመጨረሻውን ትግባር ተወው"
-
-#: src/gedit-ui.xml.h:74
-msgid "_About"
-msgstr "_ስለ"
-
-#: src/gedit-ui.xml.h:75
-msgid "_Close"
-msgstr "_ዝጋ"
-
-#: src/gedit-ui.xml.h:76
-msgid "_Close All"
-msgstr "ሁሉንም _ዝጋ"
-
-#: src/gedit-ui.xml.h:77
-msgid "_Contents"
-msgstr "_ይዞታዎች"
 
-#: src/gedit-ui.xml.h:78
-msgid "_Copy"
+#: viewer/gedit-viewer-ui.xml.h:2
+#, fuzzy
+msgid "_Copy Text"
 msgstr "_ቅጂ"
 
-#: src/gedit-ui.xml.h:79
-msgid "_Customize Toolbar"
-msgstr "_ቱልባር አስተካክል"
-
-#: src/gedit-ui.xml.h:80
-msgid "_Debug"
-msgstr "_አስተካክል"
-
-#: src/gedit-ui.xml.h:81
-msgid "_Delete"
-msgstr "_አጥፉ"
-
-#: src/gedit-ui.xml.h:82
-msgid "_Desktop Default"
-msgstr "የነበረው _ሠሌዳ"
-
-#: src/gedit-ui.xml.h:83
-msgid "_Documents"
-msgstr "_ሰነዶች"
-
-#: src/gedit-ui.xml.h:84
-msgid "_Edit"
-msgstr "_አስተካክል"
-
-#: src/gedit-ui.xml.h:85
-msgid "_File"
-msgstr "_ፋይል"
-
-#: src/gedit-ui.xml.h:86
-msgid "_Find..."
-msgstr "_ፈልግ..."
-
-#: src/gedit-ui.xml.h:87
-msgid "_Help"
-msgstr "_መረጃ"
-
-#: src/gedit-ui.xml.h:88
-msgid "_Icon"
-msgstr "_ምልክት"
-
-#: src/gedit-ui.xml.h:90
-msgid "_New"
-msgstr "_አዲስ"
-
-#: src/gedit-ui.xml.h:91
-msgid "_Open..."
-msgstr "_ክፈት..."
-
-#: src/gedit-ui.xml.h:92
-msgid "_Output Window"
-msgstr "የ_ውጤት መስኮት"
-
-#: src/gedit-ui.xml.h:93
-msgid "_Paste"
-msgstr "_ለጥፍ"
-
-#: src/gedit-ui.xml.h:94
-msgid "_Print..."
-msgstr "_አትም..."
-
-#: src/gedit-ui.xml.h:95
-msgid "_Priority Text beside Icons"
-msgstr "ከምልክቶቹ ጐን ቀዳሚ _ጽሑፍ"
-
-#: src/gedit-ui.xml.h:96
-msgid "_Quit"
-msgstr "_ውጣ"
-
-#: src/gedit-ui.xml.h:97
-msgid "_Redo"
-msgstr "_እንደገና አድርግ"
-
-#: src/gedit-ui.xml.h:98
-msgid "_Replace..."
-msgstr "_ተካ..."
-
-#: src/gedit-ui.xml.h:100
-msgid "_Save"
-msgstr "_አስቀምጥ"
-
-#: src/gedit-ui.xml.h:101
-msgid "_Save All"
-msgstr "ሁሉንም _አስቀምጥ"
-
-#: src/gedit-ui.xml.h:102
-msgid "_Search"
-msgstr "_ፈልግ"
-
-#: src/gedit-ui.xml.h:103
-msgid "_Statusbar"
-msgstr "_ስታተስባር"
-
-#: src/gedit-ui.xml.h:104
-msgid "_Toolbar"
-msgstr "_ቱልባር"
-
-#: src/gedit-ui.xml.h:105
-msgid "_Tools"
-msgstr "_መሣሪያዎች"
-
-#: src/gedit-ui.xml.h:106
-msgid "_Undo"
-msgstr "_ወደ ነበረበት መልስ"
-
-#: src/gedit-ui.xml.h:107
-msgid "_View"
-msgstr "_ተመልከት"
-
-#: src/gedit-utils.c:799
-#, c-format
-msgid ""
-"Could not find the file \"%s\".\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-
-#: src/gedit-utils.c:806
-#, c-format
-msgid "Could not open the file \"%s\" because it contains corrupted data."
-msgstr ""
-
-#: src/gedit-utils.c:817
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
-
-#: src/gedit-utils.c:823
-#, c-format
-msgid "Could not open the file \"%s\""
-msgstr "ፋይሉ \"%s\"ን መክፈት አልተቻለም"
-
-#: src/gedit-utils.c:833
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains data in an invalid format."
-msgstr ""
-
-#: src/gedit-utils.c:840
-#, c-format
-msgid "Could not open the file \"%s\" because it is too big."
-msgstr ""
-
-#: src/gedit-utils.c:847
-#, c-format
-msgid ""
-"\"%s\" is not a valid location.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-
-#: src/gedit-utils.c:854
-#, c-format
-msgid "Could not open the file \"%s\" because access was denied."
-msgstr ""
-
-#: src/gedit-utils.c:861
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-
-#: src/gedit-utils.c:869
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-
-#: src/gedit-utils.c:876
-#, c-format
-msgid ""
-"Not enough available memory to open the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-
-#: src/gedit-utils.c:902
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that you typed the location correctly and that your proxy "
-"settings are correct and then try again."
-msgstr ""
-
-#: src/gedit-utils.c:917
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was invalid.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-
-#: src/gedit-utils.c:924
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-
-#: src/gedit-utils.c:931
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the attempt to log in failed.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-
-#: src/gedit-utils.c:939
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to open a binary file."
-msgstr ""
-
-#: src/gedit-utils.c:977
-#, c-format
-msgid "Could not open the file \"%s\"."
-msgstr " ፋይሉ \"%s\"ን መክፈት አልተቻለም።"
-
-#: src/gedit-utils.c:1028
-#, c-format
-msgid "Could not save the file \"%s\"."
-msgstr "ፋይሉ \"%s\"ን ማስቀመጥ አልተቻለም።"
-
-#: src/gedit-utils.c:1032
-#, c-format
-msgid ""
-"Could not save the file \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"ፋይሉ \"%s\"ን ማስቀመጥ አልተቻለም።\n"
-"%s"
-
-#: src/gedit-utils.c:1085
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot find it.\n"
-"\n"
-"Perhaps, it has recently been deleted."
-msgstr ""
-
-#: src/gedit-utils.c:1092
-#, c-format
-msgid "Could not revert the file \"%s\" because it contains corrupted data."
-msgstr ""
-
-#: src/gedit-utils.c:1103
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
-
-#: src/gedit-utils.c:1109 src/gedit-utils.c:1249
-#, c-format
-msgid "Could not revert the file \"%s\"."
-msgstr ""
-
-#: src/gedit-utils.c:1119
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains data in an invalid "
-"format."
-msgstr ""
-
-#: src/gedit-utils.c:1126
-#, c-format
-msgid "Could not revert the file \"%s\" because it is too big."
-msgstr ""
-
-#: src/gedit-utils.c:1133
-#, c-format
-msgid "Could not revert the file \"%s\" because access was denied."
-msgstr ""
-
-#: src/gedit-utils.c:1140
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-
-#: src/gedit-utils.c:1148
-#, c-format
-msgid ""
-"Not enough available memory to revert the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-
-#: src/gedit-utils.c:1174
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-
-#: src/gedit-utils.c:1188
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-
-#: src/gedit-utils.c:1195
-#, c-format
-msgid "Could not revert the file \"%s\" because the attempt to log in failed."
-msgstr ""
-
-#: src/gedit-utils.c:1202
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to revert a binary file."
-msgstr ""
-
-#: src/gedit-utils.c:1211
-msgid "It is not possible to revert an Untitled document."
-msgstr "ስያሜ ያልተሰጠውን ሰነድ ለመመለስ አይቻልም"
-
-#: src/gedit-utils.c:1300
-#, c-format
-msgid "The file \"%s\" already exists."
-msgstr "ፋይሉ \"%s\"ን አሁንም አለ።"
-
-#: src/gedit-utils.c:1306
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly."
-msgstr ""
-
-#: src/gedit-utils.c:1315
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"Make sure you have the appropriate write permissions."
-msgstr ""
-
-#: src/gedit-utils.c:1322
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"The file name is too long."
-msgstr ""
-
-#: src/gedit-utils.c:1329
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"A directory component in the file name does not exist or is a dangling "
-"symbolic link."
-msgstr ""
-
-#: src/gedit-utils.c:1338
-#, c-format
-msgid ""
-"There is not enough disk space to create the file \"%s\".\n"
-"\n"
-"Please free some disk space and try again."
-msgstr ""
-
-#: src/gedit-utils.c:1344
-#, c-format
-msgid "Could not create the file \"%s\"."
-msgstr "ፋይሉ \"%s\"ን ማስፈጠር አልተቻለም።"
-
-#.
-#. if (col == chars)
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
-#. else
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d-%d"), row + 1, chars + 1, col + 1);
-#.
-#: src/gedit-view.c:1076
-#, c-format
-msgid "  Ln %d, Col. %d"
-msgstr " መስመር %d፣ ዐምድ %d"
-
-#: src/gedit-view.c:1114
-msgid "  OVR"
-msgstr "  በላዩ ላይ ፃፍ"
-
-#: src/gedit-view.c:1116
-msgid "  INS"
-msgstr "  አስገባ"
-
-#: src/gedit2.c:79
-msgid "Show utility debugging messages."
-msgstr "የተስተካከሉ የመልዕክቶች መገልገያን አሳይ።"
-
-#: src/gedit2.c:82
-msgid "Show mdi debugging messages."
-msgstr "የተስተካከሉ የmdi መልዕክቶችን አሳይ።"
-
-#: src/gedit2.c:85
-msgid "Show commands debugging messages."
-msgstr "ትእዛዞቹ መልእክቶቹን ሲያስተካክሉአቸው አሳይ።"
-
-#: src/gedit2.c:88
-msgid "Show document debugging messages."
-msgstr "የተስተካከሉ መልዕክቶችን ሰነድ አሳይ።"
-
-#: src/gedit2.c:91
-msgid "Show file debugging messages."
-msgstr "የተስተካከሉ የመልዕክቶች ፋይልን አሳይ።"
-
-#: src/gedit2.c:94
-msgid "Show plugin debugging messages."
-msgstr "የረዳት ፕሮግራሙ የተስተካከሉ መልዕክቶች አሳይ።"
-
-#: src/gedit2.c:97
-msgid "Show prefs debugging messages."
-msgstr "የተስተካከሉ መልእክቶችን ምርጫዎች አሳይ።"
-
-#: src/gedit2.c:100
-msgid "Show printing debugging messages."
-msgstr "የተስተካከሉት መልዕክቶች ሲታተሙ አሳይ።"
-
-#: src/gedit2.c:103
-msgid "Show search debugging messages."
-msgstr "የተስተካከሉትን መልዕክቶች ሲፈልግ አሳይ።"
-
-#: src/gedit2.c:106
-msgid "Show undo debugging messages."
-msgstr "ተስተካክለው የተተውትን መልዕክቶች አሳይ።"
-
-#: src/gedit2.c:109
-msgid "Show view debugging messages."
-msgstr "የተስተካከሉ መልዕክቶችን ማሳያ አሳይ።"
-
-#: src/gedit2.c:112
-msgid "Show recent debugging messages."
-msgstr "በቅርቡ የተስተካከሉትን መልዕክቶች አሳይ።"
-
-#: src/gedit2.c:115
-msgid "Show session management debugging messages."
-msgstr ""
-
-#: src/gedit2.c:118
-msgid "Turn on all debugging messages."
-msgstr "ሁሉንም የተስተካከሉ መልዕክቶችን ክፈት።"
-
-#: src/gedit2.c:121
-msgid "Quit an existing instance of gedit"
-msgstr ""
-
-#: src/gedit2.c:124
-msgid "Create a new toplevel window in an existing instance of gedit"
-msgstr ""
-
-#: src/gedit2.c:127
-msgid "Create a new document in an existing instance of gedit"
-msgstr ""
-
-#: src/gedit-output-window.c:333
-msgid "Close the output window"
-msgstr "የውጤት መስኮትን ዝጋ"
-
-#: src/gedit-output-window.c:371
-msgid "Copy selected lines"
-msgstr "የተመረጠው መስመሮች ቅጂ"
-
-#: src/gedit-output-window.c:391
-msgid "Clear the output window"
-msgstr "የውጤት መስኮትን ባዶ አድርጉ"
-
-#: src/gedit-output-window.c:431
-msgid "Output Lines"
-msgstr "የውጤት መስመሮች"
-
-#: src/dialogs/gedit-encodings-dialog.glade2.h:1
-msgid "Choose one or more e_ncodings:"
-msgstr ""
-
-#: src/gedit-encodings.c:147 src/gedit-encodings.c:173
-#: src/gedit-encodings.c:214 src/gedit-encodings.c:264
-#: src/gedit-encodings.c:289
-msgid "Western"
-msgstr "ምዕራብ"
-
-#: src/gedit-encodings.c:149 src/gedit-encodings.c:216
-#: src/gedit-encodings.c:244 src/gedit-encodings.c:285
-msgid "Central European"
-msgstr "መካከለኛ አውሮፓውያን"
-
-#: src/gedit-encodings.c:151
-msgid "South European"
-msgstr "ደቡባዊ አውሮፓውያን"
-
-#: src/gedit-encodings.c:153 src/gedit-encodings.c:169
-#: src/gedit-encodings.c:299
-msgid "Baltic"
-msgstr "ባቲክ"
-
-#: src/gedit-encodings.c:155 src/gedit-encodings.c:218
-#: src/gedit-encodings.c:231 src/gedit-encodings.c:235
-#: src/gedit-encodings.c:248 src/gedit-encodings.c:287
-msgid "Cyrillic"
-msgstr "ቄርሎሳዊ ጽሑፍ"
-
-#: src/gedit-encodings.c:157 src/gedit-encodings.c:224
-#: src/gedit-encodings.c:242 src/gedit-encodings.c:297
-msgid "Arabic"
-msgstr "ዐርቢኛ"
-
-#: src/gedit-encodings.c:159 src/gedit-encodings.c:254
-#: src/gedit-encodings.c:291
-msgid "Greek"
-msgstr "ግሪክኛ"
-
-#: src/gedit-encodings.c:161
-msgid "Hebrew Visual"
-msgstr ""
-
-#: src/gedit-encodings.c:163 src/gedit-encodings.c:222
-#: src/gedit-encodings.c:260 src/gedit-encodings.c:295
-msgid "Hebrew"
-msgstr "ዕብራስጥ"
-
-#: src/gedit-encodings.c:165 src/gedit-encodings.c:220
-#: src/gedit-encodings.c:268 src/gedit-encodings.c:293
-msgid "Turkish"
-msgstr "ቱርክኛ"
-
-#: src/gedit-encodings.c:167
-msgid "Nordic"
-msgstr ""
-
-#: src/gedit-encodings.c:171
-msgid "Celtic"
-msgstr ""
-
-#: src/gedit-encodings.c:175 src/gedit-encodings.c:266
-msgid "Romanian"
-msgstr "ሮማኒያን"
-
-#: src/gedit-encodings.c:178 src/gedit-encodings.c:180
-#: src/gedit-encodings.c:182 src/gedit-encodings.c:184
-msgid "Unicode"
-msgstr "ዩኒኮድ"
-
-#: src/gedit-encodings.c:187
-msgid "Armenian"
-msgstr "አርመናዊ"
-
-#: src/gedit-encodings.c:189 src/gedit-encodings.c:191
-#: src/gedit-encodings.c:200
-msgid "Chinese Traditional"
-msgstr "የባሕላዊው ቻይንኛ"
-
-#: src/gedit-encodings.c:193
-msgid "Cyrillic/Russian"
-msgstr "ቄርሎሳዊ ጽሑፍ/ራሽኛ"
-
-#: src/gedit-encodings.c:196 src/gedit-encodings.c:227
-#: src/gedit-encodings.c:274
-msgid "Japanese"
-msgstr "ጃፓንኛ"
-
-#: src/gedit-encodings.c:198 src/gedit-encodings.c:229
-#: src/gedit-encodings.c:233 src/gedit-encodings.c:280
-msgid "Korean"
-msgstr "ኮሪያኛ"
-
-#: src/gedit-encodings.c:203 src/gedit-encodings.c:205
-#: src/gedit-encodings.c:207 src/gedit-encodings.c:211
-msgid "Chinese Simplified"
-msgstr "የቀላል ቻይንኛ"
-
-#: src/gedit-encodings.c:209
-msgid "Georgian"
-msgstr "ጊዮርጊያን"
-
-#: src/gedit-encodings.c:237 src/gedit-encodings.c:270
-msgid "Cyrillic/Ukrainian"
-msgstr "ቄርሎሳዊ ጽሑፍ/ዩክረኒኛ"
-
-#: src/gedit-encodings.c:246
-msgid "Croatian"
-msgstr "ክሮሽያንኛ"
-
-#: src/gedit-encodings.c:250
-msgid "Hindi"
-msgstr "ሐንድኛ"
-
-#: src/gedit-encodings.c:252
-msgid "Farsi"
-msgstr "ፋርሲ"
-
-#: src/gedit-encodings.c:256
-msgid "Gujarati"
-msgstr ""
-
-#: src/gedit-encodings.c:258
-msgid "Gurmukhi"
-msgstr ""
-
-#: src/gedit-encodings.c:262
-msgid "Icelandic"
-msgstr "አይስላንድኛ"
-
-#: src/gedit-encodings.c:276 src/gedit-encodings.c:282
-#: src/gedit-encodings.c:301
-msgid "Vietnamese"
-msgstr "ቪትናምኛ"
-
-#: src/gedit-encodings.c:278
-msgid "Thai"
-msgstr "ታይኛ"
-
-#: src/recent-files/egg-recent-vfs-utils.c:90
-msgid " (invalid Unicode)"
-msgstr " (ዩኒኮድ ተቀብሏል)"
+#~ msgid "Show utility debugging messages."
+#~ msgstr "የተስተካከሉ የመልዕክቶች መገልገያን አሳይ።"
+
+#, fuzzy
+#~ msgid "Show metadata debugging messages."
+#~ msgstr "የተስተካከሉ የmdi መልዕክቶችን አሳይ።"
+
+#~ msgid "Show mdi debugging messages."
+#~ msgstr "የተስተካከሉ የmdi መልዕክቶችን አሳይ።"
+
+#~ msgid "Show commands debugging messages."
+#~ msgstr "ትእዛዞቹ መልእክቶቹን ሲያስተካክሉአቸው አሳይ።"
+
+#~ msgid "Show document debugging messages."
+#~ msgstr "የተስተካከሉ መልዕክቶችን ሰነድ አሳይ።"
+
+#~ msgid "Show file debugging messages."
+#~ msgstr "የተስተካከሉ የመልዕክቶች ፋይልን አሳይ።"
+
+#~ msgid "Show plugin debugging messages."
+#~ msgstr "የረዳት ፕሮግራሙ የተስተካከሉ መልዕክቶች አሳይ።"
+
+#~ msgid "Show prefs debugging messages."
+#~ msgstr "የተስተካከሉ መልእክቶችን ምርጫዎች አሳይ።"
+
+#~ msgid "Show printing debugging messages."
+#~ msgstr "የተስተካከሉት መልዕክቶች ሲታተሙ አሳይ።"
+
+#~ msgid "Show search debugging messages."
+#~ msgstr "የተስተካከሉትን መልዕክቶች ሲፈልግ አሳይ።"
+
+#~ msgid "Show undo debugging messages."
+#~ msgstr "ተስተካክለው የተተውትን መልዕክቶች አሳይ።"
+
+#~ msgid "Show view debugging messages."
+#~ msgstr "የተስተካከሉ መልዕክቶችን ማሳያ አሳይ።"
+
+#~ msgid "Show recent debugging messages."
+#~ msgstr "በቅርቡ የተስተካከሉትን መልዕክቶች አሳይ።"
+
+#~ msgid "Turn on all debugging messages."
+#~ msgstr "ሁሉንም የተስተካከሉ መልዕክቶችን ክፈት።"
+
+#~ msgid " (invalid Unicode)"
+#~ msgstr " (ዩኒኮድ ተቀብሏል)"
+
+#~ msgid "_Debug"
+#~ msgstr "_አስተካክል"
+
+#, fuzzy
+#~ msgid "Could not find the required widgets inside '"
+#~ msgstr "ተፈላጊውን ዊድጌቶች %s የሚለው ውስጥ ሊገኝ አልተቻለም።"
+
+#~ msgid "Tabs"
+#~ msgstr "መክፈቻዎች"
+
+#~ msgid "Wrap Mode"
+#~ msgstr "የመሸፈኛ ዘዴ"
+
+#~ msgid "Line Numbers"
+#~ msgstr "የመስመር ቍጥሮች"
+
+#~ msgid "Manager"
+#~ msgstr "መቆጣጠሪያ"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "_ምድብ፦"
+
+#~ msgid "Categories"
+#~ msgstr "ምድብ"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">በራሱ አንቀጽ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">የፊደል ቅርጽ እና ቀለሞች</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">የመስመር ቍጥሮች</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">አስቀምጥ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">ማስረጊያዎች</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">ወደ ነበረበት መልስ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">የመሸፈኛ ዘዴ</span>"
+
+#~ msgid "Fonts & Colors"
+#~ msgstr "የፊደል ቅርጾችና ቀለሞች"
+
+#~ msgid "LOGO"
+#~ msgstr "አርማ"
+
+#~ msgid "Line numbers"
+#~ msgstr "የመስመር ቍጥሮች"
+
+#~ msgid "Plugin manager"
+#~ msgstr "የተጨማሪ ፕሮግራም መቆጣጠሪያ"
+
+#~ msgid "Wrap mode"
+#~ msgstr "የመሸፈኛ ዘዴ"
+
+#~ msgid "character(s)"
+#~ msgstr "ፊደል(ሎች)"
+
+#, fuzzy
+#~ msgid "About selected plugin"
+#~ msgstr "የተመረጠው መስመሮች ቅጂ"
+
+#~ msgid "It is not possible to revert an Untitled document"
+#~ msgstr "ስያሜ ያልተሰጠውን ሰነድ ለመመለስ አይቻልም"
+
+#~ msgid "File '%s' saved."
+#~ msgstr "ፋይል '%s' ተቀምጧል።"
+
+#~ msgid "File '%s' reverted."
+#~ msgstr "ፋይል '%s' ተመልሷል።"
+
+#~ msgid ""
+#~ "Do you want to save the changes you made to the document \"%s\"? \n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "በሰነድ ``%s'' ላይ ያደረጉትን ለውጥ ማስቀመጥ ይፈልጋሉ?\n"
+#~ "\n"
+#~ "ካላስቀመጧቸው ለውጥ የተደረገበትን አያገኙትም"
+
+#~ msgid "_Don't quit"
+#~ msgstr "_አትውጣ"
+
+#~ msgid "_Don't close"
+#~ msgstr "_አትዝጋ"
+
+#~ msgid "Replace a string"
+#~ msgstr "ሐረጉን ተካ"
+
+#~ msgid "Search again for the same string"
+#~ msgstr "ያንኑ ሐረግ እንደገና አስስ"
+
+#~ msgid "_ASCII Table"
+#~ msgstr "የ_ASCII ሠንጠረዥ"
+
+#~ msgid "Char"
+#~ msgstr "ፊደል"
+
+#~ msgid "Dec#"
+#~ msgstr "Dec#"
+
+#~ msgid "Hex#"
+#~ msgstr "Hex#"
+
+#~ msgid "ASCII Table"
+#~ msgstr "የASCII ሠንጠረዥ"
+
+#~ msgid "ASCII table"
+#~ msgstr "የASCII ሠንጠረዥ"
 
 #~ msgid "Copyright (C) 2001-2002 Paolo Maggi"
 #~ msgstr "የቅጂ መብት (ም) 2002 - Paolo Maggi"
@@ -2992,11 +3295,35 @@ msgstr " (ዩኒኮድ ተቀብሏል)"
 #~ msgid "Paolo Maggi <maggi@athena.polito.it>"
 #~ msgstr "Paolo Maggi <maggi@athena.polito.it>"
 
+#~ msgid "Open CVS Chan_geLogs"
+#~ msgstr "የCVS Chan_geLogsን ክፈት"
+
+#~ msgid "Searches for ChangeLogs in the current document and opens them"
+#~ msgstr "አሁን ባለው ሰነድ ውስጥ changelogsን ፈልጐ ይከፍታቸዋል"
+
+#~ msgid "A plugin that opens ChangeLogs found in CVS commit messages."
+#~ msgstr "ChangeLogsን የሚከፍተው ተጨማሪው ፕሮግራም መልእክቶችን በሚያቀርበው በ CVS ውስጥ ተገኝቷል።"
+
+#~ msgid "CVS ChangeLog"
+#~ msgstr "የCVS ChangeLog"
+
 #~ msgid "Copyright (C) 2002 James Willcox"
 #~ msgstr "የቅጂው መብት (ም) 2002 James Willcox"
 
 #~ msgid "James Willcox <jwillcox@cs.indiana.edu>"
 #~ msgstr "James Willcox <jwillcox@cs.indiana.edu>"
+
+#~ msgid "F_rom document"
+#~ msgstr "ከ_ሰንዱ"
+
+#~ msgid "First"
+#~ msgstr "መጀመሪያ"
+
+#~ msgid "From _document"
+#~ msgstr "ከ_ሰንዱ"
+
+#~ msgid "Second"
+#~ msgstr "ሁለተኛ"
 
 #~ msgid ""
 #~ "Copyright (C) 2000 - 2001 Chema Celorio\n"
@@ -3004,6 +3331,9 @@ msgstr " (ዩኒኮድ ተቀብሏል)"
 #~ msgstr ""
 #~ "የቅጂው መብት (ም) 2000 2001 Chema Celorio\n"
 #~ "የቅጂው መብት (ም) 2002 Paolo Maggi"
+
+#~ msgid "File Name"
+#~ msgstr "የፋይል ስም"
 
 #~ msgid "Copyright (C) 2002 Paolo Maggi"
 #~ msgstr "የቅጂ መብት (ም) 2002 Paolo Maggi"
@@ -3024,6 +3354,106 @@ msgstr " (ዩኒኮድ ተቀብሏል)"
 #~ msgstr ""
 #~ "የቅጂው መብት (ም) 2001 Carlo Borreo\n"
 #~ "የቅጂው መብት (ም) 2002 Lee Mallabone and Paolo Maggi"
+
+#~ msgid "Load"
+#~ msgstr "ጫን"
+
+#~ msgid "Module file name"
+#~ msgstr "የፋይል ስም አቅድ"
+
+#~ msgid "Author(s)"
+#~ msgstr "ደራሲ(ዎች)"
+
+#~ msgid "Page"
+#~ msgstr "ገጽ"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">የፊደል ቅርጾች</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">ክፈት</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">ገጽ</span>"
+
+#~ msgid "Line _numbers:"
+#~ msgstr "የመስመር _ቍጥሮች፦"
+
+#~ msgid "Move down"
+#~ msgstr "ወደታች አንቀሳቅስ"
+
+#~ msgid "Move up"
+#~ msgstr "ወደላይ አንቀሳቅስ"
+
+#~ msgid "Print fonts"
+#~ msgstr "የፊደል ቅርጾችን አትም"
+
+#~ msgid "Remove an encoding"
+#~ msgstr "የሆሄያት ኮዶችን አስወግድ"
+
+#~ msgid "li_ne(s)"
+#~ msgstr "_መስመር(ሮች)"
+
+#~ msgid "De_tails"
+#~ msgstr "_ዝርዝሮች"
+
+#~ msgid "Open a file."
+#~ msgstr "ፋይል ክፈት።"
+
+#~ msgid ""
+#~ "gedit is unable to print since it cannot find\n"
+#~ "one of the required fonts."
+#~ msgstr ""
+#~ "geditን እስካላገኘ ድረስ ማተም አይችልም\n"
+#~ "ከአስፈላጊዎቹ የፊደል ቅርጾች አንዱ።"
+
+#~ msgid "Page: %d"
+#~ msgstr "ገጽ፦ %d"
+
+#~ msgid "gedit - Print Preview"
+#~ msgstr "gedit - የቅድመ ህትመት ዕይታ"
+
+#~ msgid ""
+#~ "An error occurred while printing.\n"
+#~ "\n"
+#~ "%s,"
+#~ msgstr ""
+#~ "በሚያትምበት ጊዜ ስህተት ተከስቷል።\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Customize"
+#~ msgstr "አስተካክል"
+
+#~ msgid "Customize toolbars"
+#~ msgstr "ቱል ባሮቹን አስተካክል"
+
+#~ msgid "Dump XML"
+#~ msgstr "XML አስወጣ"
+
+#~ msgid "Dump the UI Xml description"
+#~ msgstr "የUI XML ገለጻ አውጣ"
+
+#~ msgid "Find Again"
+#~ msgstr "እንደገና ፈልግ"
+
+#~ msgid "Icon and _Text"
+#~ msgstr "ምልክት እና ጽሑፍ (_T)"
+
+#~ msgid "Show _Cursor Position"
+#~ msgstr "_ጠቋሚው ባለበት ቦታ አሳይ"
+
+#~ msgid "_Priority Text beside Icons"
+#~ msgstr "ከምልክቶቹ ጐን ቀዳሚ _ጽሑፍ"
+
+#~ msgid "Croatian"
+#~ msgstr "ክሮሽያንኛ"
+
+#~ msgid "Hindi"
+#~ msgstr "ሐንድኛ"
+
+#~ msgid "Farsi"
+#~ msgstr "ፋርሲ"
 
 #~ msgid "Insert char"
 #~ msgstr "ፊደል አስገባ"
@@ -3092,11 +3522,5 @@ msgstr " (ዩኒኮድ ተቀብሏል)"
 #~ msgid "Goto _Line"
 #~ msgstr "ወደ መስመር ሂድ (_L)"
 
-#~ msgid "Pr_eferences..."
-#~ msgstr "ምርጫዎች... (_e)"
-
 #~ msgid "Recent _Files"
 #~ msgstr "የቅርብ ጊዜ ፋይሎች (_F)"
-
-#~ msgid "Open %s"
-#~ msgstr "ክፈት %s"

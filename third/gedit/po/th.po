@@ -1,189 +1,252 @@
-# Thai translations for PACKAGE package.
-# Copyright (C) 2002 The Free Software Foundation.
-# This file is distributed under the same license as the PACKAGE package.
-# AUTHOR'S NAME <AUTHOR'S E-MAIL>, 2002.
+# Thai translation of gedit.
+# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER.
+# This file is distributed under the same license as the gedit package.
+#
+# Supakorn Siddhichai <supakorn.siddhichai@nectec.or.th>, 2003, 2004.
+# Supranee Thirawatthanasuk <supranee@opentle.org>, 2004.
+# Chanchai Junlouchai <taz@opentle.org>, 2004.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: glib\n"
-"POT-Creation-Date: 2003-02-04 12:35+0100\n"
-"PO-Revision-Date: 2002-12-30 10:20-0700\n"
-"Last-Translator: not yet assigned\n"
-"Language-Team: Thai <gnome-th-devel@lists.sourceforge.net>\n"
+"Project-Id-Version: gedit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-11 12:12+0200\n"
+"PO-Revision-Date: 2004-09-06 16:29+0700\n"
+"Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
+"Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=( n != 1 );\n"
 
-#: data/GNOME_Gedit.server.in.h:1
+#: data/GNOME_Gedit.server.in.in.h:1
+msgid "Gedit View"
+msgstr "มุมมอง Gedit"
+
+#: data/GNOME_Gedit.server.in.in.h:2
+msgid "Gedit View."
+msgstr "มุมมอง Gedit"
+
+#: data/GNOME_Gedit.server.in.in.h:3 viewer/gedit-factory.c:53
+msgid "Gedit viewer factory"
+msgstr "โปรแกรม Gedit viewer"
+
+#: data/GNOME_Gedit.server.in.in.h:4
+msgid "Source"
+msgstr "ที่มา"
+
+#: data/GNOME_Gedit.server.in.in.h:5
 msgid "gedit application"
-msgstr ""
+msgstr "แอพพลิเคชัน gedit "
 
-#: data/GNOME_Gedit.server.in.h:2
+#: data/GNOME_Gedit.server.in.in.h:6
 msgid "gedit automation factory"
 msgstr ""
 
 #: data/gedit.desktop.in.h:1
 msgid "Edit text files"
-msgstr ""
+msgstr "แก้ไขแฟ้มข้อความ"
 
-#: data/gedit.desktop.in.h:2 src/gedit2.c:342
+#: data/gedit.desktop.in.h:2 gedit/gedit2.c:336
 msgid "Text Editor"
-msgstr ""
+msgstr "เครื่องมือแก้ไขข้อความ"
 
 #: data/gedit.schemas.in.h:1
 msgid ""
 "A custom font that will be used for the editing area. This will only take "
 "effect if the \"Use Default Font\" option is turned off."
 msgstr ""
+"แบบอักษรที่กำหนดเองจะถูกใช้ในพื้นที่การแก้ไขข้อความ ซึ่งจะมีผลใช้ก็ต่อเมื่อไม่ใช้ตัวเลือก "
+"\"ใช้แบบอักษรปริยาย\""
 
 #: data/gedit.schemas.in.h:2
-msgid "Auto Save"
-msgstr ""
+msgid "Auto Detected Encodings"
+msgstr "การเข้ารหัสโดยอัตโนมัติ"
 
 #: data/gedit.schemas.in.h:3
-msgid "Auto Save Interval"
-msgstr ""
+msgid "Auto Save"
+msgstr "บันทึกข้อมูลอัตโนมัติ"
 
 #: data/gedit.schemas.in.h:4
-msgid "Auto indent"
-msgstr ""
+msgid "Auto Save Interval"
+msgstr "ช่วงเวลาการบันทึกข้อมูลอัตโนมัติ"
 
 #: data/gedit.schemas.in.h:5
-msgid "Background Color"
-msgstr ""
+msgid "Auto indent"
+msgstr "ย่อหน้าอัตโนมัติ"
 
 #: data/gedit.schemas.in.h:6
+msgid "Background Color"
+msgstr "สีของพื้นหลัง"
+
+#: data/gedit.schemas.in.h:7
 msgid ""
 "Background color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
+"สีของพื้นหลังสำหรับอักษรตัวเน้นที่ใช้ในส่วนของการแก้ไข มีผลใช้ต่อเมื่อไม่ใช้ตัวเลือก \"ใช้สีปริยาย\""
 
-#: data/gedit.schemas.in.h:7
+#: data/gedit.schemas.in.h:8
 msgid ""
 "Background color for unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
-
-#: data/gedit.schemas.in.h:8
-msgid "Backup Copy Extension"
-msgstr ""
+"สีของพื้นหลังสำหรับอักษรที่ไม่ใช่ตัวเน้นในส่วนของการแก้ไข มีผลใช้ต่อเมื่อไม่ใช้ตัวเลือก \"ใช้สีปริยาย\""
 
 #: data/gedit.schemas.in.h:9
-msgid "Body Font for Printing"
-msgstr ""
+msgid "Backup Copy Extension"
+msgstr "นามสกุลของแฟ้มสำรอง"
 
 #: data/gedit.schemas.in.h:10
-msgid "Create Backup Copies"
-msgstr ""
+msgid "Body Font for Printing"
+msgstr "แบบของอักษรเวลาพิมพ์"
 
 #: data/gedit.schemas.in.h:11
-msgid "Display Line Numbers"
-msgstr ""
+msgid "Create Backup Copies"
+msgstr "สร้างสำเนาแฟ้มสำรอง"
 
 #: data/gedit.schemas.in.h:12
-msgid "Editor Font"
-msgstr ""
+msgid "Display Line Numbers"
+msgstr "แสดงเลขบรรทัด"
 
 #: data/gedit.schemas.in.h:13
-msgid "Encoding for Saving"
-msgstr ""
+msgid "Display Right Margin"
+msgstr "แสดงกั้นหน้าขวา"
 
-#: data/gedit.schemas.in.h:14 src/dialogs/gedit-preferences-dialog.c:2296
-#: src/dialogs/gedit-encodings-dialog.c:261
-#: src/dialogs/gedit-encodings-dialog.glade2.h:2
-msgid "Encodings"
-msgstr ""
+#: data/gedit.schemas.in.h:14
+msgid "Editor Font"
+msgstr "แ_บบอักษรของเครื่องมือแก้ไข"
 
 #: data/gedit.schemas.in.h:15
+msgid "Enable Syntax Highlighting"
+msgstr "เปิดการใช้งานตัวเน้น Syntax"
+
+#: data/gedit.schemas.in.h:16
+msgid "Encodings shown in menu"
+msgstr "การเข้ารหัสที่แสดงบนเมนู"
+
+#: data/gedit.schemas.in.h:17
 msgid ""
 "Extension or suffix to use for backup file names. This will only take effect "
 "if the \"Create Backup Copies\" option is turned on."
-msgstr ""
+msgstr "นามสกุลของแฟ้มสำรอง มีผลใช้ต่อเมื่อใช้ตัวเลือก \"สร้างสำเนาแฟ้มสำรอง\""
 
-#: data/gedit.schemas.in.h:16
+#: data/gedit.schemas.in.h:18
 msgid ""
 "Foreground color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
+"สีของพื้นหน้าสำหรับอักษรที่เป็นตัวเน้นในส่วนของการแก้ไข มีผลใช้ต่อเมื่อไม่ใช้ตัวเลือก \"ใช้สีปริยาย\""
 
-#: data/gedit.schemas.in.h:17
+#: data/gedit.schemas.in.h:19
 msgid ""
 "Foreground color for the unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
+"สีของพื้นหน้าสำหรับอักษรที่ไม่ใช่ตัวเน้นในส่วนของการแก้ไข มีผลใช้ต่อเมื่อไม่ใช้ตัวเลือก \"ใช้สีปริยาย\""
 
-#: data/gedit.schemas.in.h:18
+#: data/gedit.schemas.in.h:20
 msgid "Header Font for Printing"
-msgstr ""
+msgstr "แบบอักษรของหัวกระดาษในการพิมพ์"
 
-#: data/gedit.schemas.in.h:19
+#: data/gedit.schemas.in.h:21
 msgid ""
 "If this value is 0, then no line numbers will be inserted when printing a "
 "document. Otherwise, gedit will print line numbers every such number of "
 "lines."
 msgstr ""
-
-#: data/gedit.schemas.in.h:20
-msgid "Insert spaces"
-msgstr ""
-
-#: data/gedit.schemas.in.h:21
-msgid "Line Number Font for Printing"
-msgstr ""
+"ไม่แสดงเลขบรรทัดตอนพิมพ์หากตั้งค่านี้เท่ากับ 0 ถ้าเป็นค่าอื่น Gedit จะพิมพ์เลขบรรทัดทุกๆ "
+"บรรทัดที่เป็นผลคูณของค่าที่ตั้ง"
 
 #: data/gedit.schemas.in.h:22
-msgid "Line Wrapping Mode"
-msgstr ""
+msgid "Insert spaces"
+msgstr "แทรกช่องว่าง"
 
 #: data/gedit.schemas.in.h:23
-msgid ""
-"List of encodings used by gedit for reading files not encoded in UTF-8 or in "
-"the current locale encoding."
-msgstr ""
+msgid "Line Number Font for Printing"
+msgstr "แบบอักษรของเลขเส้นบรรทัดในการพิมพ์"
 
 #: data/gedit.schemas.in.h:24
-msgid "Maximum Recent Files"
-msgstr ""
+msgid "Line Wrapping Mode"
+msgstr "โหมดการตัดบรรทัด"
 
 #: data/gedit.schemas.in.h:25
-msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgid ""
+"List of encodings shown in Character Coding menu in open/save file selector. "
+"Only recognized encodings are used."
 msgstr ""
+"รายการรหัสอักขระที่จะแสดงในเมนูรหัสอักขระของกล่องเปิด/บันทึกแฟ้ม gedit "
+"จะแสดงเฉพาะรหัสที่รู้จักเท่านั้น"
 
 #: data/gedit.schemas.in.h:26
-msgid ""
-"Number of minutes after which gedit will automatically save modified files. "
-"This will only take effect if the \"Auto Save\" option is turned on."
-msgstr ""
+msgid "Maximum Recent Files"
+msgstr "จำนวนสูงสุดของแฟ้มล่าสุด"
 
 #: data/gedit.schemas.in.h:27
-msgid "Print Header"
-msgstr ""
+msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgstr "จำนวนครั้งสูงสุดของการปฏิบัติการที่ gedit จะสามารถเรียกคืนการทำหรือทำซ้ำได้"
 
 #: data/gedit.schemas.in.h:28
-msgid "Print Line Numbers"
+msgid "Monospace 12"
 msgstr ""
 
 #: data/gedit.schemas.in.h:29
-msgid "Printing Line Wrapping Mode"
+msgid "Monospace Regular 9"
 msgstr ""
 
 #: data/gedit.schemas.in.h:30
-msgid "Selected Text Color"
-msgstr ""
+msgid ""
+"Number of minutes after which gedit will automatically save modified files. "
+"This will only take effect if the \"Auto Save\" option is turned on."
+msgstr "ระยะเวลาเป็นนาทีที่ Gedit จะบันทึกแฟ้ม มีผลใช้ต่อเมื่อใช้ตัวเลือก \"บันทึกข้อมูลอัตโนมัติ\""
 
 #: data/gedit.schemas.in.h:31
-msgid "Selection Color"
-msgstr ""
+msgid "Print Header"
+msgstr "แบบของหัวกระดาษสำหรับพิมพ์"
 
 #: data/gedit.schemas.in.h:32
-msgid "Show Cursor Position"
-msgstr ""
+msgid "Print Line Numbers"
+msgstr "พิมพ์เลขเส้นบรรทัด"
 
 #: data/gedit.schemas.in.h:33
-msgid "Show Overwrite Mode"
-msgstr ""
+msgid "Print Syntax Highlighting"
+msgstr "พิมพ์เป็นตัวเน้นสำหรับชื่อไวยากรณ์"
 
 #: data/gedit.schemas.in.h:34
+msgid "Printing Line Wrapping Mode"
+msgstr "พิมพ์โดยใช้โหมดตัดบรรทัด"
+
+#: data/gedit.schemas.in.h:35
+msgid "Right Margin Position"
+msgstr "ตำแหน่งกั้นหน้าขวา"
+
+#: data/gedit.schemas.in.h:36
+msgid "Sans Regular 11"
+msgstr ""
+
+#: data/gedit.schemas.in.h:37
+msgid "Sans Regular 8"
+msgstr ""
+
+#: data/gedit.schemas.in.h:38
+msgid "Selected Text Color"
+msgstr "สีข้อความที่เลือก"
+
+#: data/gedit.schemas.in.h:39
+msgid "Selection Color"
+msgstr "สีของส่วนที่ถูกเลือก"
+
+#: data/gedit.schemas.in.h:40
+msgid ""
+"Sorted list of encodings used by gedit for auto-detecting the encoding of a "
+"file. \"CURRENT\" is the current locale encoding. Only recognized encodings "
+"are used."
+msgstr ""
+"ลำดับของรหัสอักขระที่ gedit ใช้ตรวจสอบรหัสอักขระของแฟ้มโดยอัตโนมัติ ค่า \"CURRENT\" "
+"หมายถึงรหัสตามข้อกำหนดท้องถิ่นในขณะนั้น gedit จะใช้เฉพาะรหัสที่รู้จักเท่านั้น"
+
+#: data/gedit.schemas.in.h:41
 msgid ""
 "Specifies how to wrap long lines for printing. Use \"GTK_WRAP_NONE\" for no "
 "wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -191,8 +254,11 @@ msgid ""
 "the values are case-sensitive, so make sure they appear exactly as mentioned "
 "here."
 msgstr ""
+"กรุณาเลือกว่าจะตัดบรรทัดอย่างไรเวลาพิมพ์ หากไม่ตัดบรรทัดเลือก \"GTK_WRAP_NONE\" "
+"หรือตัดบรรทัดเมื่อจบคำเลือก \"GTK_WRAP_WORD\" หรือตัดบรรทัดที่ระดับตัวอักษรเลือก "
+"\"GTK_WRAP_CHAR\" หมายเหตุ ตัวพิมพ์เล็ก-ใหญ่มีความหมายต่างกัน"
 
-#: data/gedit.schemas.in.h:35
+#: data/gedit.schemas.in.h:42
 msgid ""
 "Specifies how to wrap long lines in the editing area. Use \"GTK_WRAP_NONE\" "
 "for no wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -200,41 +266,50 @@ msgid ""
 "the values are case-sensitive, so make sure they appear exactly as mentioned "
 "here."
 msgstr ""
+"กรุณาเลือกว่าจะตัดบรรทัดอย่างไรเวลาแก้ไข หากไม่ตัดบรรทัดเลือก \"GTK_WRAP_NONE\" "
+"หรือตัดบรรทัดเมื่อจบคำเลือก \"GTK_WRAP_WORD\" หรือตัดบรรทัดที่ระดับตัวอักษรเลือก "
+"\"GTK_WRAP_CHAR\" หมายเหตุ ตัวพิมพ์เล็ก-ใหญ่มีความหมายต่างกัน"
 
-#: data/gedit.schemas.in.h:36
+#: data/gedit.schemas.in.h:43
 msgid ""
 "Specifies the font to use for a document's body when printing documents."
-msgstr ""
+msgstr "กำหนดแบบอักษรที่จะใช้สำหรับเวลาพิมพ์"
 
-#: data/gedit.schemas.in.h:37
+#: data/gedit.schemas.in.h:44
 msgid ""
 "Specifies the font to use for line numbers when printing. This will only "
 "take effect if the \"Print Line Numbers\" option is non-zero."
 msgstr ""
+"เลือกแบบอักษรสำหรับส่วนของเลขบรรทัดที่จะใช้สำหรับเวลาพิมพ์ มีผลใช้เมื่อ \"พิมพ์เลขบรรทัด\" "
+"ไม่มีค่าเป็นศูนย์"
 
-#: data/gedit.schemas.in.h:38
+#: data/gedit.schemas.in.h:45
 msgid ""
 "Specifies the font to use for page headers when printing a document. This "
 "will only take effect if the \"Print Header\" option is turned on."
-msgstr ""
+msgstr "เลือกแบบอักษรสำหรับส่วนหัวกระดาษตอนพิมพ์ มีผลเมื่อเลือกใช้ \"พิมพ์หัวกระดาษ\""
 
-#: data/gedit.schemas.in.h:39
+#: data/gedit.schemas.in.h:46
 msgid ""
 "Specifies the maximum number of recently opened files that will be displayed "
 "in the \"Recent Files\" submenu."
-msgstr ""
+msgstr "กำหนดจำนวนชื่อแฟ้มที่เคยแก้ไขและแสดงในเมนูย่อย \"แฟ้มล่าสุด\""
 
-#: data/gedit.schemas.in.h:40
+#: data/gedit.schemas.in.h:47
 msgid ""
 "Specifies the number of spaces that should be displayed instead of Tab "
 "characters."
-msgstr ""
+msgstr "กำหนดจำนวนช่องว่างเพื่อแสดงแทนอักษรแท็บ"
 
-#: data/gedit.schemas.in.h:41
+#: data/gedit.schemas.in.h:48
+msgid "Specifies the position of the right margin."
+msgstr "กำหนดตำแหน่งของกั้นหน้าขวา"
+
+#: data/gedit.schemas.in.h:49
 msgid "Status Bar is Visible"
-msgstr ""
+msgstr "มองเห็นแถบบอกสถานะการทำงาน"
 
-#: data/gedit.schemas.in.h:42
+#: data/gedit.schemas.in.h:50
 msgid ""
 "Style for the toolbar buttons. Possible values are \"GEDIT_TOOLBAR_SYSTEM\" "
 "to use the system's default style, \"GEDIT_TOOLBAR_ICONS\" to display icons "
@@ -243,1006 +318,357 @@ msgid ""
 "Note that the values are case-sensitive, so make sure they appear exactly as "
 "mentioned here."
 msgstr ""
-
-#: data/gedit.schemas.in.h:43
-msgid "Tab Size"
-msgstr ""
-
-#: data/gedit.schemas.in.h:44
-msgid "Text Color"
-msgstr ""
-
-#: data/gedit.schemas.in.h:45
-msgid ""
-"The encoding method to use for saving files. Possible values are "
-"\"GEDIT_SAVE_ALWAYS_UTF8\" for mandatory UTF-8 saving, "
-"\"GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE\" if you want gedit to try to "
-"convert the document it is saving to your current locale's encoding, "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" if you want gedit to try "
-"to use the original file encoding (new files in UTF8) and "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" if you want gedit to "
-"try to use the original file encoding (new files in current locale's "
-"encoding). If the conversion is successful, it will be used. Otherwise, UTF-"
-"8 will be used. Note that the values are case-sensitive, so make sure they "
-"appear exactly as mentioned here."
-msgstr ""
-
-#: data/gedit.schemas.in.h:46
-msgid "Toolbar Buttons Style"
-msgstr ""
-
-#: data/gedit.schemas.in.h:47
-msgid "Toolbar is Visible"
-msgstr ""
-
-#: data/gedit.schemas.in.h:48
-msgid "Undo Actions Limit"
-msgstr ""
-
-#: data/gedit.schemas.in.h:49
-msgid "Use Default Colors"
-msgstr ""
-
-#: data/gedit.schemas.in.h:50
-msgid "Use Default Font"
-msgstr ""
+"รูปแบบของปุ่มแถบเครื่องมือ เลือก \"GEDIT_TOOLBAR_SYSTEM\" เพื่อใช้ค่าปริยายหรือ "
+"\"GEDIT_TOOLBAR_ICONS\" สำหรับแสดงเฉพาะไอคอน หรือ "
+"\"GEDIT_TOOLBAR_ICONS_AND_TEXT\" เพื่อแสดงทั้งไอคอนและข้อความ หรือ "
+"\"GEDIT_TOOLBAR_ICONS_BOTH_HORIZ\" เพื่อแสดงข้อความเฉพาะบางไอคอน "
+"ค่าทั้งหมดจะต้องเป็นอักษรตัวใหญ่ดังแสดงที่นี่"
 
 #: data/gedit.schemas.in.h:51
+msgid "Tab Size"
+msgstr "ขนาดของแท็บ"
+
+#: data/gedit.schemas.in.h:52
+msgid "Text Color"
+msgstr "สีของข้อความ"
+
+#: data/gedit.schemas.in.h:53
+msgid "Toolbar Buttons Style"
+msgstr "รูปแบบของปุ่มแถบเครื่องมือ"
+
+#: data/gedit.schemas.in.h:54
+msgid "Toolbar is Visible"
+msgstr "มองเห็นแถบเครื่องมือ"
+
+#: data/gedit.schemas.in.h:55
+msgid "Undo Actions Limit"
+msgstr "จำนวนจำกัดของการเรียกคืนการทำ"
+
+#: data/gedit.schemas.in.h:56
+msgid "Use Default Colors"
+msgstr "ใช้สีปริยาย"
+
+#: data/gedit.schemas.in.h:57
+msgid "Use Default Font"
+msgstr "ใช้แบบอักษรปริยาย"
+
+#: data/gedit.schemas.in.h:58
 msgid ""
 "Whether gedit should automatically save modified files after a time "
 "interval. You can set the time interval with the \"Auto Save Interval\" "
 "option."
 msgstr ""
+"ให้ gedit บันทึกการแก้ไขโดยอัตโนมัติเป็นช่วงๆ หรือไม่ "
+"คุณสามารถกำหนดช่วงเวลาการบันทึกได้โดยตั้งค่าตัวเลือก \"ช่วงเวลาการบันทึกข้อมูลอัตโนมัติ\""
 
-#: data/gedit.schemas.in.h:52
+#: data/gedit.schemas.in.h:59
 msgid ""
 "Whether gedit should create backup copies for the files it saves. You can "
 "set the backup file extension with the \"Backup Copy Extension\" option."
 msgstr ""
-
-#: data/gedit.schemas.in.h:53
-msgid "Whether gedit should display line numbers in the editing area."
-msgstr ""
-
-#: data/gedit.schemas.in.h:54
-msgid "Whether gedit should enable auto indentation."
-msgstr ""
-
-#: data/gedit.schemas.in.h:55
-msgid "Whether gedit should include a document header when printing documents."
-msgstr ""
-
-#: data/gedit.schemas.in.h:56
-msgid "Whether gedit should insert spaces instead of tabs."
-msgstr ""
-
-#: data/gedit.schemas.in.h:57
-msgid ""
-"Whether the status bar at the bottom of editing windows should be visible."
-msgstr ""
-
-#: data/gedit.schemas.in.h:58
-msgid ""
-"Whether the status bar should show the cursor position in editing windows. "
-"Make sure you turn on the \"Status Bar is Visible\" option for this to take "
-"effect."
-msgstr ""
-
-#: data/gedit.schemas.in.h:59
-msgid ""
-"Whether the status bar should show the insert/overwrite mode in editing "
-"windows. Make sure you turn on the \"Status Bar is Visible\" option for this "
-"to take effect."
-msgstr ""
+"ให้ gedit สร้างสำเนาชุดสำรองของแฟ้มที่บันทึกหรือไม่ "
+"คุณสามารถกำหนดนามสกุลแฟ้มได้โดยตั้งค่าตัวเลือก \"นามสกุลของแฟ้มสำรอง\""
 
 #: data/gedit.schemas.in.h:60
-msgid "Whether the toolbar should be visible in editing windows."
-msgstr ""
+msgid "Whether gedit should display line numbers in the editing area."
+msgstr "ให้ gedit แสดงเลขบรรทัดในพื้นที่แก้ไข"
 
 #: data/gedit.schemas.in.h:61
+msgid "Whether gedit should display the right margin in the editing area."
+msgstr "ให้ gedit แสดงกั้นหน้าขวาในพื้นที่แก้ไข"
+
+#: data/gedit.schemas.in.h:62
+msgid "Whether gedit should enable auto indentation."
+msgstr "ให้ gedit ย่อหน้าให้โดยอัตโนมัติ"
+
+#: data/gedit.schemas.in.h:63
+msgid "Whether gedit should enable syntax highlighting."
+msgstr "ให้ gedit เน้นข้อความตามไวยากรณ์ของเนื้อหา"
+
+#: data/gedit.schemas.in.h:64
+msgid "Whether gedit should include a document header when printing documents."
+msgstr "ให้ gedit พิมพ์หัวกระดาษด้วย"
+
+#: data/gedit.schemas.in.h:65
+msgid "Whether gedit should insert spaces instead of tabs."
+msgstr "ให้ gedit ใส่ช่องว่างแทนแท็บ"
+
+#: data/gedit.schemas.in.h:66
+msgid "Whether gedit should print syntax highlighting when printing documents."
+msgstr "gedit ควรพิมพ์ไวยากรณ์เป็นตัวเน้นหรือไม่"
+
+#: data/gedit.schemas.in.h:67
+msgid ""
+"Whether the status bar at the bottom of editing windows should be visible."
+msgstr "ให้แสดงแถบบอกสถานะการทำงานตรงส่วนล่างของหน้าต่าง"
+
+#: data/gedit.schemas.in.h:68
+msgid "Whether the toolbar should be visible in editing windows."
+msgstr "ให้มองเห็นแถบเครื่องมือในหน้าต่างที่ใช้แก้ไขแฟ้ม"
+
+#: data/gedit.schemas.in.h:69
 msgid ""
 "Whether to use the system's default colors for the editing area. If this "
 "option is turned off, then the colors of the editing area will be those "
 "specified in the \"Background Color\", \"Text Color\", \"Selected Text Color"
 "\", and \"Selection Color\" options."
 msgstr ""
+"ใช้ค่าสีปริยายสำหรับพื้นที่แก้ไขหรือไม่ ถ้าไม่ใช้ตัวเลือกนี้สีสำหรับพื้นที่แก้ไขจะเป็นไปตามค่าที่ตั้งไว้ใน "
+"\"สีของพื้นหลัง\", \"สีของข้อความ\", \"สีของข้อความที่เลือก\" และ \"สีของการเลือก\""
 
-#: data/gedit.schemas.in.h:62
+#: data/gedit.schemas.in.h:70
 msgid ""
 "Whether to use the system's default font for editing text instead of a font "
 "specific to gedit. If this option is turned off, then the font named in the "
 "\"Editor Font\" option will be used instead of the system font."
 msgstr ""
+"ใช้ตัวอักษรปริยายสำหรับพื้นที่แก้ไขหรือไม่ ถ้าไม่ใช้ตัวเลือกนี้แบบอักษรที่ใช้จะเป็นไปตามตัวเลือก "
+"\"แบบอักษรของเครื่องมือแก้ไข\" แทนแบบอักษรของระบบ "
 
-#: plugins/ASCII/ascii.c:43
-msgid "_ASCII Table"
-msgstr ""
+#: data/gedit.schemas.in.h:71
+msgid "[ISO-8859-15]"
+msgstr "[TIS-620]"
 
-#: plugins/ASCII/ascii.c:46
-msgid "Pop-up a dialog containing an ASCII Table"
-msgstr ""
+#: data/gedit.schemas.in.h:72
+msgid "[UTF-8,CURRENT,ISO-8859-15]"
+msgstr "[UTF-8,CURRENT,TIS-620]"
 
-#: plugins/ASCII/ascii.c:303
-msgid "Char"
-msgstr ""
-
-#: plugins/ASCII/ascii.c:310
-msgid "Dec#"
-msgstr ""
-
-#: plugins/ASCII/ascii.c:317
-msgid "Hex#"
-msgstr ""
-
-#: plugins/ASCII/ascii.c:324
-msgid "Name"
-msgstr ""
-
-#: plugins/ASCII/ascii.c:369
-msgid "ASCII Table"
-msgstr ""
-
-#: plugins/ASCII/ascii.c:382 plugins/ASCII/asciitable.glade2.h:2
-msgid "_Insert char"
-msgstr ""
-
-#: plugins/ASCII/asciitable.glade2.h:1
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:1
-msgid "ASCII table"
-msgstr ""
-
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:2
-msgid "This plugin displays a pop-up dialog which contains an ASCII Table."
-msgstr ""
-
-#. AFAIK, all cvs commit messages start with this
-#: plugins/cvschangelog/cvschangelog.c:49
-msgid "Open CVS Chan_geLogs"
-msgstr ""
-
-#: plugins/cvschangelog/cvschangelog.c:52
-msgid "Searches for ChangeLogs in the current document and opens them"
-msgstr ""
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:1
-msgid "A plugin that opens ChangeLogs found in CVS commit messages."
-msgstr ""
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:2
-msgid "CVS ChangeLog"
-msgstr ""
-
-#: plugins/diff/diff.c:65
-msgid "Co_mpare Files..."
-msgstr ""
-
-#: plugins/diff/diff.c:68
-msgid "Makes a diff file from two documents or files"
-msgstr ""
-
-#. Create the dialog
-#: plugins/diff/diff.c:271 plugins/diff/diff.gedit-plugin.desktop.in.h:1
-msgid "Compare Files"
-msgstr ""
-
-#: plugins/diff/diff.c:285
-msgid "C_ompare"
-msgstr ""
-
-#: plugins/diff/diff.c:513
-msgid "Executed command"
-msgstr ""
-
-#: plugins/diff/diff.c:654
-msgid "The two documents you selected are the same."
-msgstr ""
-
-#: plugins/diff/diff.c:662
-msgid ""
-"The \"first\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
-msgstr ""
-
-#: plugins/diff/diff.c:671
-msgid ""
-"The \"second\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
-msgstr ""
-
-#: plugins/diff/diff.c:679
-msgid "The two files you selected are the same."
-msgstr ""
-
-#: plugins/diff/diff.c:696
-msgid "The \"first\" document contains no text."
-msgstr ""
-
-#: plugins/diff/diff.c:730
-msgid "The \"second\" document contains no text."
-msgstr ""
-
-#. FIXME: do better error reporting ... . Chema
-#: plugins/diff/diff.c:756
-msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"gedit could not create a temporary file."
-msgstr ""
-
-#: plugins/diff/diff.c:780 plugins/diff/diff.c:793
-msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"Error executing the diff command."
-msgstr ""
-
-#: plugins/diff/diff.c:815
-msgid "No differences were found between the selected documents."
-msgstr ""
-
-#: plugins/diff/diff.c:856
-msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"The result contains invalid UTF-8 data."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:1 plugins/shell_output/shell_output.glade2.h:1
-#: plugins/time/time.glade2.h:2 plugins/spell/spell-checker.glade2.h:1
-#: src/dialogs/replace.glade2.h:1 src/dialogs/uri.glade2.h:1
-msgid "*"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:2
-msgid "Choose the files to compare."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:3
-msgid "Compare files..."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:4
-msgid "F_rom document"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:5
-msgid "First"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:6
-msgid "First file from disk"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:7
-msgid "First file from open document"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:8
-msgid "From _document"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:9
-msgid "From a _file on disk"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:10
-msgid "From a file o_n disk"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:11
-msgid "Ignore _blanks (-b option)"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:12
-msgid "Note that this option is only supported by GNU diff"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:13
-msgid "Second"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:14
-msgid "Second file from disk"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:15
-msgid "Second file from open document"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:16
-msgid "Select the \"first\" file..."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:17
-msgid "Select the \"second\" file..."
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:18
-msgid "Select the first file to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:19
-msgid "Select the first open document to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:20
-msgid "Select the second file to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:21
-msgid "Select the second open document to compare"
-msgstr ""
-
-#: plugins/diff/diff.glade2.h:22
-msgid "Use the _unified output format (-u option)"
-msgstr ""
-
-#: plugins/diff/diff.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Compare Files plugin uses the <tt>diff</tt> program to compare two "
-"documents or files on disk.\n"
-"\n"
-"For more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell "
-"prompt."
-msgstr ""
-
-#: plugins/docinfo/docinfo.c:46
-msgid "_Document Statistics"
-msgstr ""
-
-#: plugins/docinfo/docinfo.c:49
-msgid "Get statistic info on current document"
-msgstr ""
-
-#: plugins/docinfo/docinfo.c:142
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
-msgid "Document Statistics"
-msgstr ""
-
-#: plugins/docinfo/docinfo.c:153
-msgid "_Update"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:1
-msgid "0"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:2
-msgid "Bytes"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:3
-msgid "Characters (no spaces)"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:4
-msgid "Characters (with spaces)"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:5
-msgid "File Name"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:6 src/gedit-print.c:373
-msgid "Lines"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:7
-msgid "Update"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:8
-msgid "Words"
-msgstr ""
-
-#: plugins/docinfo/docinfo.glade2.h:9
-msgid "gedit: Document Info plugin"
-msgstr ""
-
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Document Statistics plugin analyzes the current document and determines "
-"the number of words, lines, characters and non-space characters in it and "
-"displays the result."
-msgstr ""
-
-#: plugins/sample/sample.c:43
-msgid "Insert User Na_me"
-msgstr ""
-
-#: plugins/sample/sample.c:46
-msgid "Insert the user name at the cursor position"
-msgstr ""
-
-#: plugins/sample/sample.gedit-plugin.desktop.in.h:1
-msgid "Inserts the user name at the cursor position."
-msgstr ""
-
-#: plugins/sample/sample.gedit-plugin.desktop.in.h:2
-msgid "User name"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:56
-msgid "_Run Command..."
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:59
-msgid "Run a command"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:161
-#: plugins/shell_output/shell_output.c:516
-msgid "Stopped"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:246
-msgid "An error occurs while running the selected command."
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:302
-msgid "Run Command"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:318
-msgid "_Run"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:522
-msgid "Done"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:524
-msgid "Failed"
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:696
-msgid ""
-"The shell command entry is empty.\n"
-"\n"
-"Please, insert a valid shell command."
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:729
-msgid ""
-"Error parsing the shell command.\n"
-"\n"
-"Please, insert a valid shell command."
-msgstr ""
-
-#: plugins/shell_output/shell_output.c:815
-msgid "Executing command"
-msgstr ""
-
-#: plugins/shell_output/shell_output.glade2.h:2
-msgid "Co_mmand:"
-msgstr ""
-
-#: plugins/shell_output/shell_output.glade2.h:3
-msgid "Select the working directory..."
-msgstr ""
-
-#: plugins/shell_output/shell_output.glade2.h:4
-msgid "_Show results in Output Window"
-msgstr ""
-
-#: plugins/shell_output/shell_output.glade2.h:5
-msgid "_Working directory:"
-msgstr ""
-
-#: plugins/shell_output/shell_output.glade2.h:6
-msgid "gedit: Shell Output plugin"
-msgstr ""
-
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
-msgid ""
-"Execute an external program and eventually grabs its output in the output "
-"window."
-msgstr ""
-
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
-msgid "Shell command"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:136
-msgid "Tag list plugin"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:154
-msgid "Select the group of tags you want to use"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:176
-msgid "Tag Groups Combo"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:178
-msgid "Tags Name List"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:188
-msgid "Double-click on a tag to insert it in the current document"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:199
-msgid "Tags"
-msgstr ""
-
-#: plugins/taglist/gedit-taglist-plugin.c:46
-msgid "Tag _List"
-msgstr ""
-
-#.
-#. #define MENU_ITEM_NAME		"TagList"
-#.
-#: plugins/taglist/gedit-taglist-plugin.c:51
-msgid "Show the tag list window"
-msgstr ""
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
-msgid "Tag list"
-msgstr ""
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
-msgid ""
-"The tag list plugin provides a method to easily insert into a document "
-"commonly used tags/strings without having to type them."
-msgstr ""
-
-#: plugins/time/time.c:48
-msgid "In_sert Date and Time..."
-msgstr ""
-
-#: plugins/time/time.c:51
-msgid "Insert current date and time at the cursor position"
-msgstr ""
-
-#: plugins/time/time.c:448
-msgid "Available formats"
-msgstr ""
-
-#: plugins/time/time.c:552
-msgid "Configure insert date/time plugin..."
-msgstr ""
-
-#: plugins/time/time.glade2.h:1 src/dialogs/gedit-preferences.glade2.h:1
-msgid "    "
-msgstr ""
-
-#: plugins/time/time.glade2.h:3
-msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
-msgstr ""
-
-#: plugins/time/time.glade2.h:4
-msgid "<span weight=\"bold\"> When inserting date/time...</span>"
-msgstr ""
-
-#: plugins/time/time.glade2.h:5
-msgid "Configure date/time plugin"
-msgstr ""
-
-#: plugins/time/time.glade2.h:6
-msgid "Insert Date and Time"
-msgstr ""
-
-#: plugins/time/time.glade2.h:7
-msgid "Use the _selected format"
-msgstr ""
-
-#: plugins/time/time.glade2.h:8
-msgid "_Insert"
-msgstr ""
-
-#: plugins/time/time.glade2.h:9
-msgid "_Prompt for a format"
-msgstr ""
-
-#: plugins/time/time.glade2.h:10
-msgid "_Use custom format"
-msgstr ""
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:1
-msgid "Insert Date/Time"
-msgstr ""
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:2
-msgid "Inserts current date and time at the cursor position."
-msgstr ""
-
-#: plugins/indent/indent.c:45
-msgid "_Indent"
-msgstr ""
-
-#: plugins/indent/indent.c:47
-msgid "Indent selected lines"
-msgstr ""
-
-#: plugins/indent/indent.c:49
-msgid "U_nindent"
-msgstr ""
-
-#: plugins/indent/indent.c:51
-msgid "Unindent selected lines"
-msgstr ""
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
-msgid "Indent lines"
-msgstr ""
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
-msgid "Indent or un-indent selected lines."
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:1
-msgid "R_emove duplicates"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:2
-msgid "S_tart at column:"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:3 plugins/sort/sort.gedit-plugin.desktop.in.h:1
-msgid "Sort"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:4
-msgid "You cannot undo a sort operation"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:5
-msgid "_Ignore case"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:6
-msgid "_Reverse order"
-msgstr ""
-
-#: plugins/sort/sort.glade2.h:7
-msgid "_Sort"
-msgstr ""
-
-#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
-msgid "Sorts a document or selected text."
-msgstr ""
-
-#: plugins/spell/gedit-automatic-spell-checker.c:322
-#: plugins/spell/gedit-spell-checker-dialog.c:504
-msgid "(no suggested words)"
-msgstr ""
-
-#: plugins/spell/gedit-automatic-spell-checker.c:346
-msgid "_More..."
-msgstr ""
-
-#. Ignore all
-#: plugins/spell/gedit-automatic-spell-checker.c:399
-msgid "_Ignore All"
-msgstr ""
-
-#. + Add to Dictionary
-#: plugins/spell/gedit-automatic-spell-checker.c:412
-msgid "_Add"
-msgstr ""
-
-#: plugins/spell/gedit-automatic-spell-checker.c:449
-msgid "_Spelling Suggestions..."
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker-dialog.c:285
-msgid "Check Spelling"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker-dialog.c:296
-msgid "Suggestions"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker-dialog.c:608
-msgid "(correct spelling)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker-dialog.c:785
-msgid "Completed spell checking"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:73
-msgid "Breton"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:74
-msgid "Catalan"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:75
-msgid "Czech"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:76
-msgid "Danish"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:77
-msgid "German (Germany)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:78
-msgid "German (Swiss)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:79
-msgid "English (American)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:80
-msgid "English (British)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:81
-msgid "English (Canadian)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:82
-msgid "Esperanto"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:83
-msgid "Spanish"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:84
-msgid "Faroese"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:85
-msgid "French (France)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:86
-msgid "French (Swiss)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:87
-msgid "Italian"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:88
-msgid "Dutch"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:89
-msgid "Norwegian"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:90
-msgid "Polish"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:91
-msgid "Portuguese (Portugal)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:92
-msgid "Portuguese (Brazilian)"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:93
-msgid "Russian"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:94
-msgid "Swedish"
-msgstr ""
-
-#: plugins/spell/gedit-spell-checker.c:653
-msgid "Default"
-msgstr ""
-
-#: plugins/spell/gedit-spell-language-dialog.c:233
-#: src/dialogs/gedit-dialog-goto-line.c:169
-#: src/dialogs/gedit-plugin-program-location-dialog.c:100
-#: src/dialogs/gedit-encodings-dialog.c:242
-#, c-format
-msgid "Could not find the required widgets inside %s."
-msgstr ""
-
-#: plugins/spell/gedit-spell-language-dialog.c:253
-msgid "Languages"
-msgstr ""
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
-msgid "Checks the spelling of the current document."
-msgstr ""
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
-msgid "Spell checker"
-msgstr ""
-
-#: plugins/spell/languages-dialog.glade2.h:1
-msgid "Select the _language of the current document."
-msgstr ""
-
-#: plugins/spell/languages-dialog.glade2.h:2
-msgid "Set language"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:2
-msgid "<b>Language</b>"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:3
-msgid "<b>word</b>"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:4
-msgid "Add w_ord"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:5
-msgid "Cha_nge"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:6
-msgid "Change A_ll"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:7
-msgid "Change _to:"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:8
-msgid "Check _Word"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:9
-msgid "Check spelling"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:10
-msgid "Ignore _All"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:11
-msgid "Language:"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:12
-msgid "Mispelled word:"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:13
-msgid "User dictionary:"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:14
-msgid "_Ignore"
-msgstr ""
-
-#: plugins/spell/spell-checker.glade2.h:15
-msgid "_Suggestions:"
-msgstr ""
-
-#. Key in case the plugin ever needs any settings
-#: plugins/sort/sort.c:26
-msgid "S_ort..."
-msgstr ""
-
-#: plugins/sort/sort.c:29
-msgid "Sort the current document or selection."
-msgstr ""
-
-#: plugins/spell/spell.c:51
-msgid "_Check Spelling"
-msgstr ""
-
-#: plugins/spell/spell.c:54
-msgid "Check the current document for incorrect spelling"
-msgstr ""
-
-#: plugins/spell/spell.c:56
-msgid "_Autocheck Spelling"
-msgstr ""
-
-#: plugins/spell/spell.c:59
-msgid "Automatically spell-check the current document"
-msgstr ""
-
-#: plugins/spell/spell.c:61
-msgid "Set _Language"
-msgstr ""
-
-#: plugins/spell/spell.c:64
-msgid "Set the language of the current document"
-msgstr ""
-
-#: plugins/spell/spell.c:549
-msgid "The document is empty."
-msgstr ""
-
-#: plugins/spell/spell.c:567
-msgid "The selected text does not contain mispelled words."
-msgstr ""
-
-#: plugins/spell/spell.c:568
-msgid "The document does not contain mispelled words."
-msgstr ""
-
-#: src/bonobo-mdi.c:549 src/bonobo-mdi.c:1962
+#: gedit/bonobo-mdi.c:564 gedit/bonobo-mdi.c:2060
 #, c-format
 msgid "Activate %s"
-msgstr ""
+msgstr "เริ่มใช้ %s"
 
-#: src/dialogs/gedit-dialog-goto-line.c:143
+#: gedit/dialogs/close_all_dialog.glade2.h:1
+msgid ""
+"<span weight=\"bold\" size=\"larger\">You have X documents with unsaved "
+"changes. </span>"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">คุณมีเอกสารที่เปลี่ยนแปลแต่ยังไม่ได้บันทึก. </span>"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:2
+msgid "If you don't save your documents, all your changes will be lost."
+msgstr "ถ้าคุณไม่บันทึกเอกสารของคุณ การแก้ไขที่ผ่านมาจะสูญหายหมด"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:3
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:660
+msgid "S_elect the documents you want to save:"
+msgstr "เ_ลือกเอกสารที่คุณต้องการจะบันทึก"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:4
+msgid "Save _None"
+msgstr "ไ_ม่บันทึก"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:5
+msgid "_Save Selected"
+msgstr "_บันทึกที่เลือก"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:142
+msgid "Do_n't save"
+msgstr "ไ_ม่บันทึก"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:152
+#: gedit/gedit-file-selector-util.c:140 gedit/gedit-file.c:702
+#, fuzzy
+msgid "Question"
+msgstr "คำถาม"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:364
+#, c-format
+msgid ""
+"If you don't save, changes from the last %ld second will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld seconds will be permanently "
+"lost."
+msgstr[0] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:373
+msgid ""
+"If you don't save, changes from the last minute will be permanently lost."
+msgstr "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงนาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:379
+#, c-format
+msgid ""
+"If you don't save, changes from the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงนาทีกับอีก %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงนาทีกับอีก %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:389
+#, c-format
+msgid ""
+"If you don't save, changes from the last %ld minute will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld minutes will be permanently "
+"lost."
+msgstr[0] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %ld นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %ld นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:404
+msgid "If you don't save, changes from the last hour will be permanently lost."
+msgstr "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:410
+#, c-format
+msgid ""
+"If you don't save, changes from the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงชั่วโมงกับอีก %d นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วงชั่วโมงกับอีก %d นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:425
+#, c-format
+msgid ""
+"If you don't save, changes from the last %d hour will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %d hours will be permanently lost."
+msgstr[0] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %d ชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "ถ้าคุณไม่บันทึก การแก้ไขทั้งหมดในช่วง %d ชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:469
+#, c-format
+msgid "Save the changes to document \"%s\" before closing?"
+msgstr "บันทึกการเปลี่ยนแปลงในเอกสาร \"%s\" ก่อนปิดหรือไม่?"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:643
+#, c-format
+msgid "There is %d document with unsaved changes. Save changes before closing?"
+msgid_plural ""
+"There are %d documents with unsaved changes. Save changes before closing?"
+msgstr[0] "มีเอกสารทั้งหมด %d ฉบับถูกแก้ไขโดยยังไม่บันทึก คุณต้องการบันทึกก่อนปิดหรือไม่?"
+msgstr[1] "มีเอกสารทั้งหมด %d ฉบับถูกแก้ไขโดยยังไม่บันทึก คุณต้องการบันทึกก่อนปิดหรือไม่?"
+
+#. Secondary label
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:677
+msgid "If you don't save, all your changes will be permanently lost."
+msgstr "ถ้าคุณไม่บันทึก การแก้ไขที่ผ่านมาจะสูญหายหมด"
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:160
 msgid "Go to Line"
-msgstr ""
+msgstr "ไปที่บรรทัด"
 
-#. Add Goto Line button
-#: src/dialogs/gedit-dialog-goto-line.c:153
+#: gedit/dialogs/gedit-dialog-goto-line.c:173
 msgid "_Go to Line"
-msgstr ""
+msgstr "ไ_ปที่บรรทัด"
 
-#: src/dialogs/gedit-dialog-replace.c:132
-#: src/dialogs/gedit-dialog-replace.c:1025 src/gedit-commands.c:363
+#: gedit/dialogs/gedit-dialog-replace.c:136
+#: gedit/dialogs/gedit-dialog-replace.c:1125 gedit/gedit-commands.c:392
 #, c-format
 msgid "The text \"%s\" was not found."
-msgstr ""
+msgstr "ค้นหาข้อความ \"%s\" ไม่เจอ"
 
-#: src/dialogs/gedit-dialog-replace.c:240 src/dialogs/replace.glade2.h:4
-#: src/gedit-ui.xml.h:51
+#: gedit/dialogs/gedit-dialog-replace.c:269 gedit/dialogs/replace.glade2.h:4
+#: gedit/gedit-ui.xml.h:46
 msgid "Replace"
-msgstr ""
+msgstr "แทนที่"
 
-#: src/dialogs/gedit-dialog-replace.c:251
+#: gedit/dialogs/gedit-dialog-replace.c:282
 msgid "Replace _All"
-msgstr ""
+msgstr "แทนที่ทั้งห_มด"
 
-#. Add Replace button
-#: src/dialogs/gedit-dialog-replace.c:254 src/gedit-file-selector-util.c:129
+#: gedit/dialogs/gedit-dialog-replace.c:285
+#: gedit/gedit-file-selector-util.c:134
 msgid "_Replace"
-msgstr ""
+msgstr "แ_ทนที่"
 
-#: src/dialogs/gedit-dialog-replace.c:376 src/gedit-ui.xml.h:22
+#: gedit/dialogs/gedit-dialog-replace.c:402 gedit/gedit-ui.xml.h:17
 msgid "Find"
-msgstr ""
+msgstr "ค้นหา"
 
-#: src/dialogs/gedit-dialog-replace.c:1034
+#: gedit/dialogs/gedit-dialog-replace.c:1134
 #, c-format
-msgid "Found and replaced %d occurences."
-msgstr ""
+msgid "Found and replaced %d occurrence."
+msgid_plural "Found and replaced %d occurrences."
+msgstr[0] "ค้นพบและแทนที่ไปทั้งหมด %d แห่ง"
+msgstr[1] "ค้นพบและแทนที่ไปทั้งหมด %d แห่ง"
 
-#: src/dialogs/gedit-dialog-uri.c:83
+#: gedit/dialogs/gedit-dialog-uri.c:91
 msgid "Open Location"
-msgstr ""
+msgstr "เปิดตำแหน่งแฟ้ม"
 
-#: src/dialogs/gedit-plugin-manager.c:53
+#: gedit/dialogs/gedit-encodings-dialog.c:76
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "เกิดข้อผิดพลาดในการแสดงคำแนะนำ: %s"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:381
+#: gedit/dialogs/gedit-encodings-dialog.c:449
+msgid "_Description"
+msgstr "คำ_บรรยาย"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:390
+#: gedit/dialogs/gedit-encodings-dialog.c:458
+msgid "_Encoding"
+msgstr "_รหัสอักขระ"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:1
+msgid "A_vailable encodings:"
+msgstr "รหัสอักขระที่_มีอยู่:"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:2
+msgid "Character codings"
+msgstr "รหัสอักขระ"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:3
+msgid "E_ncodings shown in menu:"
+msgstr "รหัสอักขระที่แ_สดงในเมนู"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:496
+msgid "Body font picker"
+msgstr "ตัวเลือกแบบอักษรของเอกสาร"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:497
+msgid ""
+"Push this button to select the font to be used to print the body of the "
+"document"
+msgstr "กดปุ่มนี้เพื่อเลือกแบบอักษรที่ใช้ในการพิมพ์เอกสาร"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:498
+msgid "Page headers font picker"
+msgstr "ตัวเลือกแบบอักษรของหัวกระดาษ"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:499
+msgid ""
+"Push this button to select the font to be used to print the page headers"
+msgstr "กดปุ่มนี้เพื่อเลือกแบบอักษรที่ใช้ในการพิมพ์หัวกระดาษ"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:500
+msgid "Line numbers font picker"
+msgstr "ตัวเลือกแบบอักษรของเส้นบรรทัด"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:501
+msgid "Push this button to select the font to be used to print line numbers"
+msgstr "กดปุ่มนี้เพื่อเลือกแบบอักษรที่ใช้ในการพิมพ์เส้นบรรทัด"
+
+#: gedit/dialogs/gedit-plugin-manager.c:53
 msgid "Plugin"
-msgstr ""
+msgstr "ปลั๊กอิน"
 
-#: src/dialogs/gedit-plugin-manager.c:54
-msgid "Load"
-msgstr ""
+#: gedit/dialogs/gedit-plugin-manager.c:54
+msgid "Enabled"
+msgstr "เปิดใช้งาน"
 
-#: src/dialogs/gedit-plugin-manager.c:320
-msgid "Module file name"
-msgstr ""
-
-#: src/dialogs/gedit-plugin-manager.c:321
-msgid "Author(s)"
-msgstr ""
-
-#: src/dialogs/gedit-plugin-manager.c:488
+#: gedit/dialogs/gedit-plugin-manager.c:499
 msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
-msgstr ""
+msgstr "หา plugin-manager.glade2 ไม่พบ กรุณาติดตั้ง gedit ใหม่ \n"
 
-#: src/dialogs/gedit-plugin-manager.c:511
+#: gedit/dialogs/gedit-plugin-manager.c:517
 msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
-msgstr ""
+msgstr "แฟ้ม glade นี้ใช้กับตัวจัดการปลั๊กอินไม่ได้ - ไม่พบ widget ทั้งหมด\n"
 
-#: src/dialogs/gedit-plugin-program-location-dialog.c:78
-#: src/dialogs/program-location-dialog.glade2.h:1
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:86
+#: gedit/dialogs/program-location-dialog.glade2.h:2
 msgid "Set program location..."
-msgstr ""
+msgstr "ตั้งค่าตำแหน่งของโปรแกรม..."
 
-#: src/dialogs/gedit-plugin-program-location-dialog.c:106
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:116
 #, c-format
 msgid ""
 "The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
@@ -1250,1277 +676,1512 @@ msgid ""
 "\n"
 "Please, specify the location of the <tt>%s</tt> program."
 msgstr ""
+"ปลั๊กอิน %s ใช้โปรแกรมชื่อ <tt>%s</tt> ในการทำงาน\n"
+"\n"
+"กรุณาตั้งค่าตำแหน่งของโปรแกรม <tt>%s</tt>"
 
-#: src/dialogs/gedit-plugin-program-location-dialog.c:152
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:169
 msgid "The selected file is not executable."
-msgstr ""
+msgstr "แฟ้มที่เลือกไม่สามารถปฏิบัติการได้"
 
-#: src/dialogs/gedit-preferences-dialog.c:233
-msgid "Font & Colors"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:235
-#: src/dialogs/gedit-preferences.glade2.h:47
-msgid "Tabs"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:236
-msgid "Wrap Mode"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:237
-msgid "Auto Indent"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:238
-msgid "Line Numbers"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:240 src/gedit-ui.xml.h:32
-msgid "Open"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:241
-#: src/dialogs/gedit-preferences.glade2.h:42 src/gedit-ui.xml.h:55
-msgid "Save"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:242
-#: src/dialogs/gedit-preferences.glade2.h:50 src/gedit-ui.xml.h:72
-msgid "Undo"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:250
-msgid "Page"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:252
-msgid "Fonts"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:259
-msgid "Manager"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:267
-msgid "Editor"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:268
-#: src/dialogs/gedit-preferences.glade2.h:38 src/gedit-print.c:364
-#: src/gedit-ui.xml.h:41
-msgid "Print"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:269
-msgid "Plugins"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:341
-msgid "Cat_egories:"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:363
-msgid "Preferences"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:603
-msgid "Categories"
-msgstr ""
-
-#: src/dialogs/gedit-preferences-dialog.c:836
+#: gedit/dialogs/gedit-preferences-dialog.c:673
 msgid "Push this button to select the font to be used by the editor"
-msgstr ""
+msgstr "กดปุ่มนี้เพื่อเลือกแบบอักษรที่จะใช้ใน gedit"
 
-#: src/dialogs/gedit-preferences-dialog.c:839
+#: gedit/dialogs/gedit-preferences-dialog.c:675
 msgid "Push this button to configure text color"
-msgstr ""
+msgstr "กดปุ่มนี้เพื่อกำหนดค่าสีตัวอักษร"
 
-#: src/dialogs/gedit-preferences-dialog.c:841
+#: gedit/dialogs/gedit-preferences-dialog.c:677
 msgid "Push this button to configure background color"
-msgstr ""
+msgstr "กดปุ่มนี้เพื่อกำหนดค่าสีของพื้นหลัง"
 
-#: src/dialogs/gedit-preferences-dialog.c:843
+#: gedit/dialogs/gedit-preferences-dialog.c:679
 msgid ""
 "Push this button to configure the color in which the selected text should "
 "appear"
-msgstr ""
+msgstr "กดปุ่มนี้เพื่อกำหนดค่าสีของอักษรที่ถูกเน้น"
 
-#: src/dialogs/gedit-preferences-dialog.c:846
+#: gedit/dialogs/gedit-preferences-dialog.c:682
 msgid ""
 "Push this button to configure the color in which the selected text should be "
 "marked"
-msgstr ""
+msgstr "กดปุ่มนี้เพื่อกำหนดค่าสีที่ใช้เน้นตัวอักษรที่ถูกเลือก"
 
-#: src/dialogs/gedit-preferences-dialog.c:1851
-msgid "Push this button to select the font to be used to print the body"
-msgstr ""
+#: gedit/dialogs/gedit-preferences-dialog.c:1132
+msgid "Elements"
+msgstr "องค์ประกอบ"
 
-#: src/dialogs/gedit-preferences-dialog.c:1853
-msgid "Push this button to select the font to be used to print the headers"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:1
+#: gedit/dialogs/page-setup-dialog.glade2.h:1
+#: plugins/docinfo/docinfo.glade2.h:1 plugins/time/time.glade2.h:1
+msgid "    "
+msgstr "    "
 
-#: src/dialogs/gedit-preferences-dialog.c:1855
-msgid "Push this button to select the font to be used to print line numbers"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:2
+msgid "<b>Auto Indentation</b>"
+msgstr "<b>ย่อหน้าโดยอัตโนมัติ</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:2
+#: gedit/dialogs/gedit-preferences.glade2.h:3
+msgid "<b>Elements</b>"
+msgstr "<b>องค์ประกอบ</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:4
+msgid "<b>File Saving</b>"
+msgstr "<b>การบันทึกข้อมูลลงแฟ้ม</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:5
 msgid "<b>Font</b>"
-msgstr ""
+msgstr "<b>อักษร</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:3
-msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:6
+#: gedit/dialogs/page-setup-dialog.glade2.h:2
+msgid "<b>Line Numbers</b>"
+msgstr "<b>เลขบรรทัด</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:4
-msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:7
+msgid "<b>Right Margin</b>"
+msgstr "<b>กั้นขวา</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:5
-msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:8
+msgid "<b>Tabs</b>"
+msgstr "<b>แท็บ</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:6
-msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:9
+#: gedit/dialogs/page-setup-dialog.glade2.h:3
+msgid "<b>Text Wrapping</b>"
+msgstr "<b>การตัดบรรทัด</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:7
-msgid "<span weight=\"bold\" size=\"x-large\">Manager</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:10
+msgid "<b>Undo</b>"
+msgstr "<b>เรียกคืน</b>"
 
-#: src/dialogs/gedit-preferences.glade2.h:8
-msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:9
-msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:10
-msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:11
-msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:12
-msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:13
-msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:14
+#: gedit/dialogs/gedit-preferences.glade2.h:11
 msgid "<span weight=\"bold\">Colors</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">สี</span>"
 
-#: src/dialogs/gedit-preferences.glade2.h:15
-msgid "<span weight=\"bold\">When saving a new file...</span>"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:12
+msgid "Bold"
+msgstr "ตัวหนา"
 
-#: src/dialogs/gedit-preferences.glade2.h:16
-msgid "<span weight=\"bold\">When saving an existing file...</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:17
-msgid "Add new encodings"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:18
-msgid "Always use U_TF-8 encoding (faster)"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:19
-msgid "Always use _UTF-8 encoding (faster)"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:20
+#: gedit/dialogs/gedit-preferences.glade2.h:13
 msgid "Create a _backup copy of files before saving"
-msgstr ""
+msgstr "สร้างสำเนาแฟ้ม_สำรองก่อนที่จะบันทึกข้อมูล"
 
-#: src/dialogs/gedit-preferences.glade2.h:21
+#: gedit/dialogs/gedit-preferences.glade2.h:14
+msgid "D_isplay right margin"
+msgstr "แ_สดงกั้นขวา"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:15
+#: gedit/dialogs/page-setup-dialog.glade2.h:4
 msgid "Do not _split words over two lines"
-msgstr ""
+msgstr "ไ_ม่แยกคำคำเดียวเป็นสองบรรทัด"
 
-#: src/dialogs/gedit-preferences.glade2.h:22
+#: gedit/dialogs/gedit-preferences.glade2.h:16
+msgid "Editor"
+msgstr "เครื่องมือแก้ไข"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:17
 msgid "Editor _font: "
-msgstr ""
+msgstr "แ_บบอักษรของเครื่องมือแก้ไข:"
 
-#: src/dialogs/gedit-preferences.glade2.h:23
-msgid "Enable _auto indentation"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:24
+#: gedit/dialogs/gedit-preferences.glade2.h:18
+#: gedit/dialogs/page-setup-dialog.glade2.h:5
 msgid "Enable text _wrapping"
-msgstr ""
+msgstr "ให้_ตัดบรรทัด"
 
-#: src/dialogs/gedit-preferences.glade2.h:25
-msgid "Fonts & Colors"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:19
+msgid "Font & Colors"
+msgstr "แบบอักษรและสี"
 
-#: src/dialogs/gedit-preferences.glade2.h:26
+#: gedit/dialogs/gedit-preferences.glade2.h:20
+msgid "Highlight _mode:"
+msgstr "โห_มดเน้น"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:21
 msgid "Insert _spaces instead of tabs"
-msgstr ""
+msgstr "แทนที่แท็บด้วย_ช่องว่าง"
 
-#: src/dialogs/gedit-preferences.glade2.h:27
-msgid "LOGO"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:22
+msgid "Italic"
+msgstr "ตัวเอียง"
 
-#: src/dialogs/gedit-preferences.glade2.h:28
-msgid "Line _numbers:"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:23
+msgid "Normal _text color:"
+msgstr "สีของ_ตัวอักษรปกติ"
 
-#: src/dialogs/gedit-preferences.glade2.h:29
-msgid "Line numbers"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:24
+msgid "Pick a color"
+msgstr "เลือกสีของตัวอักษร"
 
-#: src/dialogs/gedit-preferences.glade2.h:30
-msgid "Move down"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:31
-msgid "Move up"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:32
-msgid "Page he_aders:"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:33
+#: gedit/dialogs/gedit-preferences.glade2.h:25
 msgid "Pick the background color"
-msgstr ""
+msgstr "เลือกสีของพื้นหลัง"
 
-#: src/dialogs/gedit-preferences.glade2.h:34
+#: gedit/dialogs/gedit-preferences.glade2.h:26
+msgid "Pick the editor font"
+msgstr "เลือกฟอนต์สำหรับพื้นที่แก้ไข"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:27
+msgid "Pick the normal text color"
+msgstr "เลือกสีของตัวอักษรปกติ"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:28
 msgid "Pick the selected text color"
-msgstr ""
+msgstr "เลือกสีสำหรับอักษรที่ถูกเน้น"
 
-#: src/dialogs/gedit-preferences.glade2.h:35
+#: gedit/dialogs/gedit-preferences.glade2.h:29
 msgid "Pick the selection color"
-msgstr ""
+msgstr "เลือกสีของการเลือก"
 
-#: src/dialogs/gedit-preferences.glade2.h:36
-msgid "Pick the text color"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:30
+msgid "Plugins"
+msgstr "ปลั๊กอิน"
 
-#: src/dialogs/gedit-preferences.glade2.h:37
-msgid "Plugin manager"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:31
+msgid "Preferences"
+msgstr "การปรับแต่ง"
 
-#: src/dialogs/gedit-preferences.glade2.h:39
-msgid "Print _line numbers every"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:40
-msgid "Print fonts"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:41
-msgid "Remove an encoding"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:43
+#: gedit/dialogs/gedit-preferences.glade2.h:32
 msgid "Se_lection color:"
-msgstr ""
+msgstr "สีของการเลือ_ก"
 
-#: src/dialogs/gedit-preferences.glade2.h:44
+#: gedit/dialogs/gedit-preferences.glade2.h:33
 msgid "Selecte_d text color:"
-msgstr ""
+msgstr "สีของอักษรที่ถูกเ_ลือก"
 
-#: src/dialogs/gedit-preferences.glade2.h:45
-msgid "Set _tabs width equivalent to"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:34
+msgid "Strikethrough"
+msgstr "ขีดฆ่า"
 
-#: src/dialogs/gedit-preferences.glade2.h:46
-msgid "Set limit on _undo actions to"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:35
+msgid "Syntax Highlighting"
+msgstr "การเน้นข้อความตามไวยากรณ์เนื้อหา"
 
-#: src/dialogs/gedit-preferences.glade2.h:48
+#: gedit/dialogs/gedit-preferences.glade2.h:36
 msgid "U_se default theme colors"
-msgstr ""
+msgstr "ใช้_สีปริยายของชุดตกแต่ง"
 
-#: src/dialogs/gedit-preferences.glade2.h:49
-msgid "U_se original file encoding if possible"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:37
+msgid "Underline"
+msgstr "ขีดเส้นใต้"
 
-#: src/dialogs/gedit-preferences.glade2.h:51
-msgid "Use cu_rrent locale's encoding if possible"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:38
+msgid "View"
+msgstr "มุมมอง"
 
-#: src/dialogs/gedit-preferences.glade2.h:52
-msgid "Use current _locale's encoding if possible"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:39
+msgid "_Autosave files every"
+msgstr "_บันทึกแฟ้มปัจจุบันโดยอัตโนมัติทุกๆ"
 
-#: src/dialogs/gedit-preferences.glade2.h:53
-msgid "Wrap mode"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:54
-msgid "_Autosave current file every"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:55
+#: gedit/dialogs/gedit-preferences.glade2.h:40
 msgid "_Background color:"
-msgstr ""
+msgstr "สีของ_พื้นหลัง"
 
-#: src/dialogs/gedit-preferences.glade2.h:56
-msgid "_Body:"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:41
+msgid "_Background:"
+msgstr "_พื้นหลัง"
 
-#: src/dialogs/gedit-preferences.glade2.h:57
+#: gedit/dialogs/gedit-preferences.glade2.h:42
 msgid "_Display line numbers"
-msgstr ""
+msgstr "แสดงเ_ลขบรรทัด"
 
-#: src/dialogs/gedit-preferences.glade2.h:58
-msgid "_Print page headers"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:43
+msgid "_Enable auto indentation"
+msgstr "ให้_ย่อหน้าโดยอัตโนมัติ"
 
-#: src/dialogs/gedit-preferences.glade2.h:59
-msgid "_Restore Default Fonts"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:44
+msgid "_Enable syntax highlighting"
+msgstr "_เปิดการใช้งานการเน้นข้อความตามไวยากรณ์เนื้อหา"
 
-#: src/dialogs/gedit-preferences.glade2.h:60
-msgid "_Supported encodings:"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:45
+msgid "_Foreground:"
+msgstr "_ตัวอักษร:"
 
-#: src/dialogs/gedit-preferences.glade2.h:61
-msgid "_Text color:"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:46
+msgid "_Limit to"
+msgstr "_จำกัดไว้ที่"
 
-#: src/dialogs/gedit-preferences.glade2.h:62
+#: gedit/dialogs/gedit-preferences.glade2.h:47
+msgid "_Reset to Default "
+msgstr "ค่า_ปริยาย"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:48
+msgid "_Right margin at column:"
+msgstr "กั้นขวาเริ่มจาก_คอลัมน์ที่:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:49
+msgid "_Tabs width:"
+msgstr "ความกว้างแ_ท็บ:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:50
+msgid "_Unlimited undo"
+msgstr "เรียกคืนไ_ม่จำกัด"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:51
 msgid "_Use default theme font"
-msgstr ""
+msgstr "ใช้แบบอักษรของชุดตกแต่ง_ปริยาย"
 
-#: src/dialogs/gedit-preferences.glade2.h:63
-msgid "_action(s)"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:64
+#: gedit/dialogs/gedit-preferences.glade2.h:52
 msgid "_minutes"
-msgstr ""
+msgstr "_นาที"
 
-#: src/dialogs/gedit-preferences.glade2.h:65
-msgid "character(s)"
-msgstr ""
+#: gedit/dialogs/gedit-preferences.glade2.h:53
+msgid "act_ions"
+msgstr "_คำสั่ง"
 
-#: src/dialogs/gedit-preferences.glade2.h:66
-msgid "li_ne(s)"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:111
+#: gedit/dialogs/gnome-print-font-dialog.c:111
 msgid "_Insert a new preview phrase."
 msgstr ""
 
-#: src/dialogs/gnome-print-font-dialog.c:117
+#: gedit/dialogs/gnome-print-font-dialog.c:117
 msgid "Modify preview phrase..."
 msgstr ""
 
-#: src/dialogs/gnome-print-font-dialog.c:171
+#: gedit/dialogs/gnome-print-font-dialog.c:171
 msgid "Preview"
-msgstr ""
+msgstr "ดูตัวอย่าง"
 
-#: src/dialogs/gnome-print-font-dialog.c:184
+#: gedit/dialogs/gnome-print-font-dialog.c:184
 msgid "_Modify preview phrase..."
 msgstr ""
 
-#: src/dialogs/gnome-print-font-dialog.c:247
+#: gedit/dialogs/gnome-print-font-dialog.c:245
 msgid "Font Selection"
-msgstr ""
+msgstr "อักษรแบบต่างๆ"
 
-#: src/dialogs/gnome-print-font-picker.c:92
+#: gedit/dialogs/gnome-print-font-picker.c:92
 msgid "Sans Regular 12"
 msgstr ""
 
-#: src/dialogs/gnome-print-font-picker.c:93
+#: gedit/dialogs/gnome-print-font-picker.c:93
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 
-#: src/dialogs/gnome-print-font-picker.c:94
+#: gedit/dialogs/gnome-print-font-picker.c:94
 msgid "Pick a Font"
-msgstr ""
+msgstr "เลือกแบบอักษร"
 
-#: src/dialogs/gnome-print-font-picker.c:179
+#: gedit/dialogs/gnome-print-font-picker.c:179
 msgid "Title"
-msgstr ""
+msgstr "ชื่อเรื่อง"
 
-#: src/dialogs/gnome-print-font-picker.c:180
+#: gedit/dialogs/gnome-print-font-picker.c:180
 msgid "The title of the selection dialog box"
-msgstr ""
+msgstr "คำนำหน้ากล่องไดอะล็อกแสดงการเลือก"
 
-#: src/dialogs/gnome-print-font-picker.c:200
+#: gedit/dialogs/gnome-print-font-picker.c:200
 msgid "Font name"
-msgstr ""
+msgstr "ชื่อของแบบอักษร"
 
-#: src/dialogs/gnome-print-font-picker.c:201
+#: gedit/dialogs/gnome-print-font-picker.c:201
 msgid "Name of the selected font"
-msgstr ""
+msgstr "ชื่อของแบบอักษรที่เลือก"
 
-#: src/dialogs/gnome-print-font-picker.c:209
+#: gedit/dialogs/gnome-print-font-picker.c:209
 msgid "Preview text"
-msgstr ""
+msgstr "แสดงตัวอย่างข้อความ"
 
-#: src/dialogs/gnome-print-font-picker.c:210
+#: gedit/dialogs/gnome-print-font-picker.c:210
 msgid "Preview text shown in the dialog"
-msgstr ""
+msgstr "ตัวอย่างข้อความที่แสดงในไดอะล็อก"
 
-#: src/dialogs/gnome-print-font-picker.c:218
+#: gedit/dialogs/gnome-print-font-picker.c:218
 msgid "Use font in label"
-msgstr ""
+msgstr "ใช้แบบอักษรนี้กับแถบข้อความ"
 
-#: src/dialogs/gnome-print-font-picker.c:219
+#: gedit/dialogs/gnome-print-font-picker.c:219
 msgid "Use font in the label in font info mode"
-msgstr ""
+msgstr "ใช้แบบอักษรนี้กับแถบข้อความในโหมด font info"
 
-#: src/dialogs/gnome-print-font-picker.c:227
+#: gedit/dialogs/gnome-print-font-picker.c:227
 msgid "Font size for label"
-msgstr ""
+msgstr "ขนาดของอักษรสำหรับแถบข้อความ"
 
-#: src/dialogs/gnome-print-font-picker.c:228
+#: gedit/dialogs/gnome-print-font-picker.c:228
 msgid "Font size for label in font info mode"
-msgstr ""
+msgstr "ขนาดของอักษรสำหรับแถบข้อความในโหมด font info"
 
-#: src/dialogs/gnome-print-font-picker.c:238
+#: gedit/dialogs/gnome-print-font-picker.c:238
 msgid "Show size"
-msgstr ""
+msgstr "แสดงขนาดตัวอักษร"
 
-#: src/dialogs/gnome-print-font-picker.c:239
+#: gedit/dialogs/gnome-print-font-picker.c:239
 msgid "Show size in font info mode"
-msgstr ""
+msgstr "แสดงขนาดอักษรในโหมดข้อมูลแบบอักษร"
 
-#: src/dialogs/gnome-print-font-picker.c:1018
+#: gedit/dialogs/gnome-print-font-picker.c:1018
 msgid "Font"
-msgstr ""
+msgstr "แบบอักษร"
 
 #. gnome_print_font_picker_update_font_info
-#: src/dialogs/goto-line.glade2.h:1
+#: gedit/dialogs/goto-line.glade2.h:1
 msgid "Goto Line"
-msgstr ""
+msgstr "ไปที่บรรทัด"
 
-#: src/dialogs/goto-line.glade2.h:2
+#: gedit/dialogs/goto-line.glade2.h:2
 msgid "_Line number:"
-msgstr ""
+msgstr "หมายเ_ลขบรรทัด:"
 
-#: src/dialogs/plugin-manager.glade2.h:1
-msgid "C_onfigure plugin"
-msgstr ""
+#: gedit/dialogs/page-setup-dialog.glade2.h:6
+msgid "Fonts"
+msgstr "แบบอักษร"
 
-#: src/dialogs/plugin-manager.glade2.h:2
-msgid "Configure the selected plugin"
-msgstr ""
+#: gedit/dialogs/page-setup-dialog.glade2.h:7
+msgid "General"
+msgstr "ทั่วไป"
 
-#: src/dialogs/plugin-manager.glade2.h:3
-msgid "De_tails"
-msgstr ""
+#: gedit/dialogs/page-setup-dialog.glade2.h:8
+msgid "He_aders and footers:"
+msgstr "_หัวกระดาษและท้ายกระดาษ:"
 
-#: src/dialogs/plugin-manager.glade2.h:4
-msgid "_Description"
-msgstr ""
+#: gedit/dialogs/page-setup-dialog.glade2.h:9
+msgid "Page Setup"
+msgstr "การตั้งค่าหน้ากระดาษ"
 
-#: src/dialogs/plugin-manager.glade2.h:5
+#: gedit/dialogs/page-setup-dialog.glade2.h:10
+msgid "Print _line numbers"
+msgstr "พิมพ์เ_ลขบรรทัด"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:11
+msgid "Print s_yntax highlighting"
+msgstr "พิมพ์โดยเน้นข้อความตามไ_วยากรณ์เนื้อหา"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:12
+msgid "_Body:"
+msgstr "_ตัวข้อความ:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:13
+msgid "_Line numbers:"
+msgstr "เ_ลขบรรทัด:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:14
+msgid "_Number every"
+msgstr "แสดงเลขบรรทัด_ทุกๆ"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:15
+msgid "_Print page headers"
+msgstr "พิมพ์_หัวกระดาษ"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:16
+msgid "_Restore Default Fonts"
+msgstr "คืนค่าแบบอักษร_ปริยาย"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:17
+msgid "lines"
+msgstr "บรรทัด"
+
+#: gedit/dialogs/plugin-manager.glade2.h:1
+msgid "C_onfigure Plugin"
+msgstr "กำหนด_ค่าปลั๊กอิน"
+
+#: gedit/dialogs/plugin-manager.glade2.h:2
+msgid "_About Plugin"
+msgstr "เ_กี่ยวกับปลั๊กอิน"
+
+#: gedit/dialogs/plugin-manager.glade2.h:3
+msgid "button1"
+msgstr "ปุ่มที่ 1"
+
+#: gedit/dialogs/plugin-manager.glade2.h:4
 msgid "dialog1"
-msgstr ""
+msgstr "กล่องข้อความ 1"
 
-#: src/dialogs/program-location-dialog.glade2.h:2
+#: gedit/dialogs/program-location-dialog.glade2.h:1
+msgid "Browse for program location..."
+msgstr "การค้นหาตำแหน่งของโปรแกรม"
+
+#: gedit/dialogs/program-location-dialog.glade2.h:3
 msgid "_Location to search for:"
-msgstr ""
+msgstr "_ตำแหน่งที่จะใช้ค้นหา:"
 
-#: src/dialogs/program-location-dialog.glade2.h:3
+#: gedit/dialogs/program-location-dialog.glade2.h:4
 msgid "label"
-msgstr ""
+msgstr "แถบข้อความ"
 
-#: src/dialogs/replace.glade2.h:2
+#: gedit/dialogs/replace.glade2.h:1 gedit/dialogs/uri.glade2.h:1
+#: plugins/shell_output/shell_output.glade2.h:1
+#: plugins/spell/spell-checker.glade2.h:1 plugins/time/time.glade2.h:2
+msgid "*"
+msgstr "*"
+
+#: gedit/dialogs/replace.glade2.h:2 gedit/gedit-ui.xml.h:19
 msgid "Find Next"
-msgstr ""
+msgstr "ค้นหาถัดไป"
 
-#: src/dialogs/replace.glade2.h:3
+#: gedit/dialogs/replace.glade2.h:3
 msgid "Match _entire word only"
-msgstr ""
+msgstr "ค้นหาทั้_งคำ"
 
-#: src/dialogs/replace.glade2.h:5
+#: gedit/dialogs/replace.glade2.h:5
 msgid "Replace All"
-msgstr ""
+msgstr "แทนที่ทั้งหมด"
 
-#: src/dialogs/replace.glade2.h:6
+#: gedit/dialogs/replace.glade2.h:6
 msgid "Replace _with: "
-msgstr ""
+msgstr "แท_นที่ด้วย:"
 
-#: src/dialogs/replace.glade2.h:7
+#: gedit/dialogs/replace.glade2.h:7
+msgid "Search _backwards"
+msgstr "ค้นหา_ย้อนกลับ"
+
+#: gedit/dialogs/replace.glade2.h:8
 msgid "_Match case"
-msgstr ""
+msgstr "ตัวอักษรเ_ล็กใหญ่ตรงกัน"
 
-#: src/dialogs/replace.glade2.h:8
+#: gedit/dialogs/replace.glade2.h:9
 msgid "_Search for: "
-msgstr ""
+msgstr "_ค้นหา: "
 
-#: src/dialogs/replace.glade2.h:9
+#: gedit/dialogs/replace.glade2.h:10
 msgid "_Wrap around"
-msgstr ""
+msgstr "ตัด_บรรทัด"
 
-#: src/dialogs/uri.glade2.h:2
+#: gedit/dialogs/uri.glade2.h:2
+msgid "Ch_aracter coding:"
+msgstr "_รหัสอักขระ:"
+
+#: gedit/dialogs/uri.glade2.h:3
 msgid "Enter the _location (URI) of the file you would like to open:"
-msgstr ""
+msgstr "ระบุ_ตำแหน่ง URI ของแฟ้มที่คุณต้องการเปิด:"
 
-#: src/dialogs/uri.glade2.h:3
+#: gedit/dialogs/uri.glade2.h:4
 msgid "Open from URI"
-msgstr ""
+msgstr "เปิดจาก URI"
 
-#: src/gedit-commands.c:472
+#: gedit/gedit-commands.c:544
 msgid "translator_credits"
 msgstr ""
+"ศุภกร สิทธิชัย\n"
+"สุปราณี ธีระวัฒนสุข\n"
+"ชาญชัย จันฤๅชัย\n"
+"เทพพิทักษ์ การุญบุญญานันท์"
 
-#: src/gedit-commands.c:497
+#: gedit/gedit-commands.c:557
 msgid "gedit"
-msgstr ""
+msgstr "gedit"
 
-#: src/gedit-commands.c:501
-msgid "gedit is a small and lightweight text editor for Gnome"
-msgstr ""
+#: gedit/gedit-commands.c:561
+msgid "gedit is a small and lightweight text editor for the GNOME Desktop"
+msgstr "gedit เป็นเครื่องมือแก้ไขข้อความขนาดเล็กและใช้งานง่ายสำหรับ Gnome"
 
-#: src/gedit-document.c:537 src/gedit-document.c:555
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
 #, c-format
 msgid "%s %d"
-msgstr ""
+msgstr "%s %d"
 
-#: src/gedit-document.c:537 src/gedit-document.c:555
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
 msgid "Untitled"
-msgstr ""
+msgstr "ไม่มีชื่อ"
 
-#: src/gedit-document.c:543 src/gedit-document.c:590
+#: gedit/gedit-document.c:640 gedit/gedit-document.c:687
 msgid "Invalid file name"
-msgstr ""
+msgstr "ชื่อแฟ้มไม่ถูกต้อง"
 
-#: src/gedit-document.c:702 src/gedit-document.c:786
+#: gedit/gedit-document.c:838 gedit/gedit-document.c:1314
+#: viewer/gedit-persist-stream.c:120
 msgid "Invalid UTF-8 data"
-msgstr ""
+msgstr "ข้อมูล UTF-8 ไม่ถูกต้อง"
 
-#: src/gedit-document.c:1016
+#: gedit/gedit-document.c:1640
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr ""
+msgstr "อ่านข้อมูล symbolic link สำหรับ %s ไม่ได้"
 
-#: src/gedit-document.c:1062
+#: gedit/gedit-document.c:1686
 msgid "The file has too many symbolic links."
-msgstr ""
+msgstr "แฟ้มนี้มี symbolic link มากเกินไป"
 
-#: src/gedit-document.c:1118
+#: gedit/gedit-document.c:1742
 #, c-format
 msgid "gedit cannot handle %s: locations in write mode."
-msgstr ""
+msgstr "gedit ไม่สามารถทำงาน %s: ที่พร้อมกันใน write mode ได้"
 
-#: src/gedit-document.c:1125
+#: gedit/gedit-document.c:1749
 msgid "gedit cannot handle this kind of location in write mode."
-msgstr ""
+msgstr "gedit ไม่สามารถทำงานที่ตำแหน่งนี้ใน write mode ได้"
 
-#: src/gedit-document.c:1138
+#: gedit/gedit-document.c:1762
 msgid "Invalid filename."
-msgstr ""
+msgstr "ชื่อแฟ้มไม่ถูกต้อง"
 
-#: src/gedit-document.c:1278
+#: gedit/gedit-document.c:1874
 msgid ""
 "There is not enough disk space to save the file.\n"
 "Please free some disk space and try again."
 msgstr ""
+"พื้นที่บนดิสก์เต็ม บันทึกข้อมูลไม่ได้\n"
+"กรุณาลบข้อมูลที่ไม่จำเป็นออกและทำการบันทึกอีกครั้ง"
 
-#: src/gedit-document.c:1283
+#: gedit/gedit-document.c:1879
 msgid ""
 "The disk where you are trying to save the file has a limitation on file "
 "sizes.  Please try saving a smaller file or saving it to a disk that does "
 "not have this limitation."
 msgstr ""
+"ดิสก์ที่คุณกำลังบันทึกแฟ้มมีข้อจำกัดด้านขนาดของแฟ้ม ลองบันทึกแฟ้มขนาดเล็กลงหรือบันทึกลงดิสก์อื่น"
 
-#: src/gedit-document.c:1327
+#: gedit/gedit-document.c:1923
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "สร้างแฟ้มสำรองไม่ได้"
 
-#: src/gedit-document.c:1447
-msgid "It is not possible to revert an Untitled document"
-msgstr ""
+#: gedit/gedit-encodings-option-menu.c:207
+msgid "Auto Detected"
+msgstr "ตรวจหาโดยอัตโนมัติ"
 
-#: src/gedit-file-selector-util.c:147
+#: gedit/gedit-encodings-option-menu.c:227
+#: gedit/gedit-encodings-option-menu.c:249
 #, c-format
-msgid ""
-"A file named \"%s\" already exists.\n"
-"Do you want to replace it with the one you are saving?"
-msgstr ""
+msgid "Current Locale (%s)"
+msgstr "รหัสท้องถิ่นปัจจุบัน (%s)"
 
-#: src/gedit-file-selector-util.c:158
+#: gedit/gedit-encodings-option-menu.c:310
+msgid "Add or _Remove..."
+msgstr "เพิ่มหรือ_ลบออก..."
+
+#: gedit/gedit-encodings.c:132 gedit/gedit-encodings.c:176
+#: gedit/gedit-encodings.c:178 gedit/gedit-encodings.c:180
+#: gedit/gedit-encodings.c:182
+msgid "Unicode"
+msgstr "ยูนิโค้ด"
+
+#: gedit/gedit-encodings.c:145 gedit/gedit-encodings.c:171
+#: gedit/gedit-encodings.c:212 gedit/gedit-encodings.c:255
+msgid "Western"
+msgstr "ตะวันตก"
+
+#: gedit/gedit-encodings.c:147 gedit/gedit-encodings.c:214
+#: gedit/gedit-encodings.c:251
+msgid "Central European"
+msgstr "ยุโรปตอนกลาง"
+
+#: gedit/gedit-encodings.c:149
+msgid "South European"
+msgstr "ยุโรปตอนใต้"
+
+#: gedit/gedit-encodings.c:151 gedit/gedit-encodings.c:167
+#: gedit/gedit-encodings.c:265
+msgid "Baltic"
+msgstr "ภาษาบอลติก"
+
+#: gedit/gedit-encodings.c:153 gedit/gedit-encodings.c:216
+#: gedit/gedit-encodings.c:229 gedit/gedit-encodings.c:233
+#: gedit/gedit-encodings.c:235 gedit/gedit-encodings.c:253
+msgid "Cyrillic"
+msgstr "ภาษาไซริลลิก"
+
+#: gedit/gedit-encodings.c:155 gedit/gedit-encodings.c:222
+#: gedit/gedit-encodings.c:263
+msgid "Arabic"
+msgstr "ภาษาอารบิก"
+
+#: gedit/gedit-encodings.c:157 gedit/gedit-encodings.c:257
+#: plugins/spell/gedit-spell-checker.c:89
+msgid "Greek"
+msgstr "ภาษากรีก"
+
+#: gedit/gedit-encodings.c:159
+msgid "Hebrew Visual"
+msgstr "ภาษาฮิบรูวิชวล"
+
+#: gedit/gedit-encodings.c:161 gedit/gedit-encodings.c:220
+#: gedit/gedit-encodings.c:261
+msgid "Hebrew"
+msgstr "ภาษาฮิบรู"
+
+#: gedit/gedit-encodings.c:163 gedit/gedit-encodings.c:218
+#: gedit/gedit-encodings.c:259
+msgid "Turkish"
+msgstr "ภาษาตุรกี"
+
+#: gedit/gedit-encodings.c:165
+msgid "Nordic"
+msgstr "ภาษานอร์ดิก"
+
+#: gedit/gedit-encodings.c:169
+msgid "Celtic"
+msgstr "ภาษาเซลติก"
+
+#: gedit/gedit-encodings.c:173
+msgid "Romanian"
+msgstr "ภาษาโรมาเนีย"
+
+#: gedit/gedit-encodings.c:185
+msgid "Armenian"
+msgstr "ภาษาอาร์เมเนียน"
+
+#: gedit/gedit-encodings.c:187 gedit/gedit-encodings.c:189
+#: gedit/gedit-encodings.c:198
+msgid "Chinese Traditional"
+msgstr "ภาษาจีนดั้งเดิม"
+
+#: gedit/gedit-encodings.c:191
+msgid "Cyrillic/Russian"
+msgstr "ภาษาไซริลลิก/รัสเซีย"
+
+#: gedit/gedit-encodings.c:194 gedit/gedit-encodings.c:225
+#: gedit/gedit-encodings.c:240
+msgid "Japanese"
+msgstr "ภาษาญี่ปุ่น"
+
+#: gedit/gedit-encodings.c:196 gedit/gedit-encodings.c:227
+#: gedit/gedit-encodings.c:231 gedit/gedit-encodings.c:246
+msgid "Korean"
+msgstr "ภาษาเกาหลี"
+
+#: gedit/gedit-encodings.c:201 gedit/gedit-encodings.c:203
+#: gedit/gedit-encodings.c:205 gedit/gedit-encodings.c:209
+msgid "Chinese Simplified"
+msgstr "ภาษาจีนประยุกต์"
+
+#: gedit/gedit-encodings.c:207
+msgid "Georgian"
+msgstr "ภาษาจอร์เจีย"
+
+#: gedit/gedit-encodings.c:237
+msgid "Cyrillic/Ukrainian"
+msgstr "ภาษาไซริลลิก/ยูเครน"
+
+#: gedit/gedit-encodings.c:242 gedit/gedit-encodings.c:248
+#: gedit/gedit-encodings.c:267
+msgid "Vietnamese"
+msgstr "ภาษาเวียดนาม"
+
+#: gedit/gedit-encodings.c:244
+msgid "Thai"
+msgstr "ภาษาไทย"
+
+#: gedit/gedit-file-selector-util.c:153
 #, c-format
-msgid ""
-"The file \"%s\" is read-only.\n"
-"Do you want to try to replace it with the one you are saving?"
-msgstr ""
+msgid "A file named \"%s\" already exists.\n"
+msgstr "มีแฟ้มชื่อ \"%s\" อยู่ก่อนแล้ว\n"
 
-#: src/gedit-file-selector-util.c:544
+#: gedit/gedit-file-selector-util.c:154
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "คุณต้องการที่จะทับมันด้วยข้อมูลที่คุณจะบันทึกหรือไม่?"
+
+#: gedit/gedit-file-selector-util.c:163
+#, c-format
+msgid "The file \"%s\" is read-only.\n"
+msgstr "แฟ้ม \"%s\" อ่านได้อย่างเดียว.\n"
+
+#: gedit/gedit-file-selector-util.c:164
+msgid "Do you want to try to replace it with the one you are saving?"
+msgstr "คุณต้องการที่จะพยายามแทนที่มันด้วยข้อมูลที่คุณต้องการจะบันทึกหรือไม่?"
+
+#: gedit/gedit-file-selector-util.c:362
+msgid "All Files"
+msgstr "ทุกแฟ้ม"
+
+#: gedit/gedit-file-selector-util.c:370
+msgid "All Text Files"
+msgstr "แฟ้มข้อความทั้งหมด"
+
+#: gedit/gedit-file-selector-util.c:388
+msgid "Ch_aracter Coding:"
+msgstr "_รหัสอักขระ:"
+
+#: gedit/gedit-file-selector-util.c:534
+msgid "Select a file to open"
+msgstr "เลือกแฟ้มที่จะเปิด"
+
+#: gedit/gedit-file-selector-util.c:560
+msgid "Select files to open"
+msgstr "เลือกแฟ้มที่จะเปิด"
+
+#: gedit/gedit-file-selector-util.c:592
 msgid "Select a filename to save"
-msgstr ""
+msgstr "เลือกชื่อแฟ้มที่จะบันทึก"
 
-#: src/gedit-file.c:151
+#: gedit/gedit-file.c:213
 msgid "Open File..."
-msgstr ""
+msgstr "เปิดแฟ้ม..."
 
-#: src/gedit-file.c:177 src/gedit-file.c:887
+#: gedit/gedit-file.c:269 gedit/gedit-file.c:422
 #, c-format
-msgid "Loaded file '%s'"
-msgstr ""
+msgid "Saving document \"%s\"..."
+msgstr "กำลังบันทึกแฟ้ม \"%s\"..."
 
-#: src/gedit-file.c:309 src/gedit-file.c:455
+#: gedit/gedit-file.c:297 gedit/gedit-file.c:443
 #, c-format
-msgid "Saving file '%s'..."
-msgstr ""
+msgid "The document \"%s\" has not been saved."
+msgstr "เอกสาร \"%s\" ไม่ถูกบันทึก"
 
-#: src/gedit-file.c:337 src/gedit-file.c:470
-msgid "The document has not been saved."
-msgstr ""
-
-#: src/gedit-file.c:351 src/gedit-file.c:467
+#: gedit/gedit-file.c:311 gedit/gedit-file.c:435
 #, c-format
-msgid "File '%s' saved."
-msgstr ""
+msgid "The document \"%s\" has been saved."
+msgstr "เอกสาร \"%s\" ถูกบันทึก"
 
-#: src/gedit-file.c:434
+#: gedit/gedit-file.c:402
 msgid "Save as..."
-msgstr ""
+msgstr "บันทึกเป็น..."
 
-#: src/gedit-file.c:628
+#: gedit/gedit-file.c:603
+#, c-format
+msgid "Revert unsaved changes to document \"%s\"?"
+msgstr "ยกเลิกการแก้ไขเอกสาร \"%s\" เพื่อย้อนกลับสู่สภาพเดิมหรือไม่?"
+
+#: gedit/gedit-file.c:612
 #, c-format
 msgid ""
-"Do you want to revert to saved the document '%s'?\n"
-"\n"
-"You will not be able to undo this operation."
-msgstr ""
+"Changes made to the document in the last %ld second will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld seconds will be permanently "
+"lost."
+msgstr[0] "การแก้ไขทั้งหมดในเอกสารในช่วง %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "การแก้ไขทั้งหมดในเอกสารในช่วง %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
 
-#: src/gedit-file.c:638 src/gedit-ui.xml.h:99
+#: gedit/gedit-file.c:621
+msgid ""
+"Changes made to the document in the last minute will be permanently lost."
+msgstr "การแก้ไขทั้งหมดในเอกสารในช่วงนาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:627
+#, c-format
+msgid ""
+"Changes made to the document in the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] "การแก้ไขทั้งหมดในเอกสารในช่วงนาทีกับอีก %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "การแก้ไขทั้งหมดในเอกสารในช่วงนาทีกับอีก %ld วินาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:637
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld minute will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld minutes will be permanently "
+"lost."
+msgstr[0] "การแก้ไขทั้งหมดในเอกสารในช่วง %ld นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "การแก้ไขทั้งหมดในเอกสารในช่วง %ld นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:652
+msgid "Changes made to the document in the last hour will be permanently lost."
+msgstr "การแก้ไขทั้งหมดในเอกสารในช่วงชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:658
+#, c-format
+msgid ""
+"Changes made to the document in the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] "การแก้ไขทั้งหมดในเอกสารในช่วงชั่วโมงกับอีก %d นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "การแก้ไขทั้งหมดในเอกสารในช่วงชั่วโมงกับอีก %d นาทีที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:673
+#, c-format
+msgid ""
+"Changes made to the document in the last %d hour will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %d hours will be permanently lost."
+msgstr[0] "การแก้ไขทั้งหมดในเอกสารในช่วง %d ชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+msgstr[1] "การแก้ไขทั้งหมดในเอกสารในช่วง %d ชั่วโมงที่ผ่านมาจะสูญหายอย่างถาวร"
+
+#: gedit/gedit-file.c:696 gedit/gedit-ui.xml.h:94
 msgid "_Revert"
-msgstr ""
+msgstr "คืน_กลับ"
 
-#: src/gedit-file.c:672
+#: gedit/gedit-file.c:745
 #, c-format
-msgid "Reverting file '%s'..."
-msgstr ""
+msgid "Error reverting the document \"%s\"."
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้"
 
-#: src/gedit-file.c:685
-msgid "The document has not been reverted."
-msgstr ""
-
-#: src/gedit-file.c:695
+#: gedit/gedit-file.c:752
 #, c-format
-msgid "File '%s' reverted."
-msgstr ""
+msgid "The document \"%s\" has not been reverted."
+msgstr "เอกสาร\"%s\"ไม่ได้แปลงกลับ"
 
-#: src/gedit-file.c:721
+#: gedit/gedit-file.c:756
 #, c-format
-msgid "Loading %d files..."
-msgstr ""
+msgid "The document \"%s\" has been reverted."
+msgstr "เอกสาร\"%s\"ได้แปลงกลับ"
 
-#: src/gedit-file.c:757
+#: gedit/gedit-file.c:784
 #, c-format
-msgid "The file \"%s\" does not exist. Would you like to create it?"
-msgstr ""
+msgid "Reverting the document \"%s\"..."
+msgstr "กำลังแปลงแฟ้ม \"%s\" กลับ.."
 
-#: src/gedit-file.c:812
-#, c-format
-msgid "Loaded %i files"
-msgstr ""
-
-#: src/gedit-file.c:945
+#: gedit/gedit-file.c:911
 msgid "Could not read data from stdin."
-msgstr ""
+msgstr "อ่านข้อมูลจาก stdin ไม่ได้"
+
+#: gedit/gedit-file.c:1059
+msgid "Reverting file:"
+msgstr "กำลังแปลงแฟ้มกลับ.."
+
+#: gedit/gedit-file.c:1063
+msgid "Loading file:"
+msgstr "กำลังอ่านแฟ้ม..."
+
+#: gedit/gedit-file.c:1231 gedit/gedit-file.c:1390
+#, c-format
+msgid "Error loading file \"%s\""
+msgstr "เกิดข้อผิดพลาดขณะอ่านแฟ้ม \"%s\""
+
+#: gedit/gedit-file.c:1252
+#, c-format
+msgid "Loaded file \"%s\""
+msgstr "อ่านแฟ้ม \"%s\""
+
+#: gedit/gedit-file.c:1329
+#, c-format
+msgid "Loaded %d file"
+msgid_plural "Loaded %d files"
+msgstr[0] "อ่านทั้งหมด %d แฟ้ม"
+msgstr[1] "อ่านทั้งหมด %d แฟ้ม"
+
+#: gedit/gedit-file.c:1363
+#, c-format
+msgid "Loading file \"%s\"..."
+msgstr "กำลังอ่านแฟ้ม \"%s\"..."
+
+#: gedit/gedit-file.c:1510
+#, c-format
+msgid "Loading %d file..."
+msgid_plural "Loading %d files..."
+msgstr[0] "กำลังอ่าน %d แฟ้ม..."
+msgstr[1] "กำลังอ่าน %d แฟ้ม..."
 
 #. Read only
-#: src/gedit-mdi-child.c:219
+#: gedit/gedit-mdi-child.c:248
 msgid "RO"
 msgstr ""
 
 #. Add the detach tab button
-#: src/gedit-mdi-child.c:543 src/gedit-ui.xml.h:89
+#: gedit/gedit-mdi-child.c:636 gedit/gedit-ui.xml.h:85
 msgid "_Move to New Window"
-msgstr ""
+msgstr "_ย้ายไปหน้าต่างใหม่"
 
-#: src/gedit-mdi.c:446
-msgid "Open a file."
-msgstr ""
+#: gedit/gedit-mdi-child.c:755
+msgid "Unknown"
+msgstr "ไม่รู้จัก"
 
-#: src/gedit-mdi.c:1032
+#: gedit/gedit-mdi-child.c:766
+msgid "Unicode (UTF-8)"
+msgstr "ยูนิโค้ด (UTF-8)"
+
+#: gedit/gedit-mdi-child.c:773
+msgid "Name:"
+msgstr "ชื่อ:"
+
+#: gedit/gedit-mdi-child.c:774
+msgid "MIME Type:"
+msgstr "ชนิด MIME:"
+
+#: gedit/gedit-mdi-child.c:775
+msgid "Encoding:"
+msgstr "รหัสอักขระ:"
+
+#. Translators: %s is a URI
+#: gedit/gedit-mdi.c:284 gedit/gedit-mdi.c:444
 #, c-format
-msgid ""
-"Do you want to save the changes you made to the document \"%s\"? \n"
-"\n"
-"Your changes will be lost if you don't save them."
-msgstr ""
+msgid "Open '%s'"
+msgstr "เปิดเอกสาร '%s'"
 
-#: src/gedit-mdi.c:1037
-msgid "Do_n't save"
-msgstr ""
+#: gedit/gedit-mdi.c:519
+msgid "Open a recently used file"
+msgstr "เปิดแฟ้มที่เพิ่งถูกเปิด"
 
-#: src/gedit-mdi.c:1056
-msgid "_Don't quit"
-msgstr ""
-
-#: src/gedit-mdi.c:1060
-msgid "_Don't close"
-msgstr ""
-
-#: src/gedit-mdi.c:1150
+#: gedit/gedit-mdi.c:1278
 msgid "(modified)"
-msgstr ""
+msgstr "(แก้ไขแล้ว)"
 
-#: src/gedit-mdi.c:1156
+#: gedit/gedit-mdi.c:1284
 msgid "(readonly)"
-msgstr ""
+msgstr "(อ่านอย่างเดียว)"
 
-#: src/gedit-plugins-engine.c:362
+#: gedit/gedit-mdi.c:1912
+msgid "Normal"
+msgstr "ปกติ"
+
+#: gedit/gedit-mdi.c:1913
+msgid "Use Normal highlight mode"
+msgstr "ใช้โหมดเน้นแบบปกติ"
+
+#: gedit/gedit-mdi.c:1989
+#, c-format
+msgid "Use %s highlight mode"
+msgstr "ใช้โหมดเน้นแบบ %s"
+
+#: gedit/gedit-output-window.c:333
+msgid "Close the output window"
+msgstr "ปิดหน้าต่างแสดงผล"
+
+#: gedit/gedit-output-window.c:371
+msgid "Copy selected lines"
+msgstr "คัดลอกเฉพาะบรรทัดที่เลือก"
+
+#: gedit/gedit-output-window.c:391
+msgid "Clear the output window"
+msgstr "ลบหน้าต่างแสดงผล"
+
+#: gedit/gedit-output-window.c:431
+msgid "Output Lines"
+msgstr "บรรทัดที่แสดงผล"
+
+#: gedit/gedit-plugins-engine.c:363
 #, c-format
 msgid "Error, unable to open module file '%s'\n"
-msgstr ""
+msgstr "ผิดพลาด เปิดไฟล์มอดูล '%s' ไม่ได้\n"
 
-#: src/gedit-plugins-engine.c:372
+#: gedit/gedit-plugins-engine.c:373
 #, c-format
 msgid "Error, plugin '%s' does not contain init function."
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ปลั๊กอิน '%s' ไม่มีฟังก์ชันสำหรับกำหนดค่าเริ่มต้น"
 
-#: src/gedit-plugins-engine.c:382
+#: gedit/gedit-plugins-engine.c:383
 #, c-format
 msgid "Error, plugin '%s' does not contain activate function."
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ปลั๊กอิน '%s' ไม่มีฟังก์ชันสำหรับกระตุ้นการทำงาน"
 
-#: src/gedit-plugins-engine.c:392
+#: gedit/gedit-plugins-engine.c:393
 #, c-format
 msgid "Error, plugin '%s' does not contain deactivate function."
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ปลั๊กอิน '%s' ไม่มีฟังก์ชันสำหรับหยุดการทำงาน"
 
-#: src/gedit-plugins-engine.c:417
+#: gedit/gedit-plugins-engine.c:418
 #, c-format
 msgid "Error, impossible to initialize plugin '%s'"
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ไม่สามารถกำหนดค่าเริ่มต้นของปลั๊กอิน '%s' ได้"
 
-#: src/gedit-plugins-engine.c:468
+#: gedit/gedit-plugins-engine.c:469
 #, c-format
 msgid "Error, impossible to destroy plugin '%s'"
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ไม่สามารถทำลายปลั๊กอิน '%s' ได้"
 
-#: src/gedit-plugins-engine.c:551 src/gedit-plugins-engine.c:639
-#: src/gedit-plugins-engine.c:764
+#: gedit/gedit-plugins-engine.c:552 gedit/gedit-plugins-engine.c:640
+#: gedit/gedit-plugins-engine.c:765
 #, c-format
 msgid "Error, impossible to activate plugin '%s'"
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ไม่สามารถกระตุ้นการทำงานของปลั๊กอิน '%s' ได้"
 
-#: src/gedit-plugins-engine.c:590 src/gedit-plugins-engine.c:782
+#: gedit/gedit-plugins-engine.c:591 gedit/gedit-plugins-engine.c:783
 #, c-format
 msgid "Error, impossible to deactivate plugin '%s'"
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ไม่สามารถหยุดการทำงานของปลั๊กอิน '%s' ได้"
 
-#: src/gedit-plugins-engine.c:683
+#: gedit/gedit-plugins-engine.c:684
 #, c-format
 msgid "Error, impossible to update ui of the plugin '%s'"
-msgstr ""
+msgstr "เกิดข้อผิดพลาด ไม่สามารถอัพเดตอินเทอร์เฟซของปลั๊กอิน '%s' ได้"
 
-#: src/gedit-prefs-manager.c:339
+#: gedit/gedit-prefs-manager.c:177
 msgid "Cannot initialize preferences manager."
-msgstr ""
+msgstr "ไม่สามารถกำหนดค่าเริ่มต้นของตัวจัดการการปรับแต่ง"
 
-#: src/gedit-prefs-manager.c:1761
+#: gedit/gedit-prefs-manager.c:1151
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
-msgstr ""
+msgstr "คาดหวัง `%s' แต่ได้ `%s' สำหรับกุญแจ %s"
 
-#: src/gedit-print.c:254
-msgid ""
-"gedit is unable to print since it cannot find\n"
-"one of the required fonts."
-msgstr ""
+#: gedit/gedit-print.c:217 gedit/gedit-ui.xml.h:37
+msgid "Print"
+msgstr "พิมพ์"
 
-#: src/gedit-print.c:432
+#: gedit/gedit-print.c:226 plugins/docinfo/docinfo.glade2.h:7
+msgid "Lines"
+msgstr "บรรทัด"
+
+#: gedit/gedit-print.c:330
+msgid "Preparing pages..."
+msgstr "กำลังเตรียมหน้ากระดาษ..."
+
+#: gedit/gedit-print.c:357
+#, c-format
+msgid "Rendering page %d of %d..."
+msgstr "กำลังให้แสงและเงาหน้า %d จาก %d..."
+
+#: gedit/gedit-print.c:359
+#, c-format
+msgid "Printing page %d of %d..."
+msgstr "กำลังพิมพ์หน้า %d จาก %d..."
+
+#: gedit/gedit-print.c:381 gedit/gedit-ui.xml.h:40
+msgid "Print preview"
+msgstr "แสดงตัวอย่างก่อนพิมพ์"
+
+#: gedit/gedit-print.c:547
 #, c-format
 msgid "File: %s"
-msgstr ""
+msgstr "แฟ้ม: %s"
 
-#. Print right text
-#: src/gedit-print.c:439
-#, c-format
-msgid "Page: %d"
-msgstr ""
+#: gedit/gedit-print.c:553
+msgid "Page %N of %Q"
+msgstr "หน้า %N จาก %Q หน้า"
 
-#: src/gedit-print.c:580
-msgid "gedit - Print Preview"
-msgstr ""
-
-#: src/gedit-print.c:658
-#, c-format
-msgid ""
-"An error occurred while printing.\n"
-"\n"
-"%s,"
-msgstr ""
-
-#: src/gedit-ui.xml.h:1
+#: gedit/gedit-ui.xml.h:1
 msgid "About this application"
-msgstr ""
+msgstr "เกี่ยวกับ gedit"
 
-#: src/gedit-ui.xml.h:2
-msgid "C_ustomize Statusbar"
-msgstr ""
-
-#: src/gedit-ui.xml.h:3
+#: gedit/gedit-ui.xml.h:2
 msgid "Change the visibility of the output window in the current window"
-msgstr ""
+msgstr "ปรับความสามารถที่จะมองเห็นได้ของหน้าต่างแสดงผลในหน้าต่างปัจจุบัน"
 
-#: src/gedit-ui.xml.h:4
+#: gedit/gedit-ui.xml.h:3
 msgid "Change the visibility of the statusbar in the current window"
-msgstr ""
+msgstr "ปรับความสามารถที่จะมองเห็นได้ของแถบบอกสถานะการทำงานในหน้าต่างปัจจุบัน"
 
-#: src/gedit-ui.xml.h:5
+#: gedit/gedit-ui.xml.h:4
 msgid "Change the visibility of the toolbar in the current window"
-msgstr ""
+msgstr "ปรับความสามารถที่จะมองเห็นได้ของแถบเครื่องมือในหน้าต่างปัจจุบัน"
 
-#: src/gedit-ui.xml.h:6
+#: gedit/gedit-ui.xml.h:5
 msgid "Close"
-msgstr ""
+msgstr "ปิด"
 
-#: src/gedit-ui.xml.h:7
+#: gedit/gedit-ui.xml.h:6
 msgid "Close all open files"
-msgstr ""
+msgstr "ปิดแฟ้มทั้งหมด"
 
-#: src/gedit-ui.xml.h:8
+#: gedit/gedit-ui.xml.h:7
 msgid "Close the current file"
-msgstr ""
+msgstr "ปิดแฟ้มปัจจุบัน"
 
-#: src/gedit-ui.xml.h:9
+#: gedit/gedit-ui.xml.h:8
 msgid "Configure the application"
-msgstr ""
+msgstr "กำหนดค่าโปรแกรม"
 
-#: src/gedit-ui.xml.h:10
+#: gedit/gedit-ui.xml.h:9
 msgid "Copy"
-msgstr ""
+msgstr "คัดลอก"
 
-#: src/gedit-ui.xml.h:11
+#: gedit/gedit-ui.xml.h:10
 msgid "Copy the selection"
-msgstr ""
+msgstr "คัดลอกส่วนที่เลือก"
 
-#: src/gedit-ui.xml.h:12
+#: gedit/gedit-ui.xml.h:11
 msgid "Create a new document"
-msgstr ""
+msgstr "สร้างเอกสารใหม่"
 
-#: src/gedit-ui.xml.h:13
+#: gedit/gedit-ui.xml.h:12
 msgid "Cu_t"
-msgstr ""
+msgstr "_ตัด"
 
-#: src/gedit-ui.xml.h:14
-msgid "Customize"
-msgstr ""
-
-#: src/gedit-ui.xml.h:15
-msgid "Customize toolbars"
-msgstr ""
-
-#: src/gedit-ui.xml.h:16
+#: gedit/gedit-ui.xml.h:13
 msgid "Cut"
-msgstr ""
+msgstr "ตัด"
 
-#: src/gedit-ui.xml.h:17
+#: gedit/gedit-ui.xml.h:14
 msgid "Cut the selection"
-msgstr ""
+msgstr "ตัดส่วนที่เลือก"
 
-#: src/gedit-ui.xml.h:18
+#: gedit/gedit-ui.xml.h:15
 msgid "Delete"
-msgstr ""
+msgstr "ลบ"
 
-#: src/gedit-ui.xml.h:19
+#: gedit/gedit-ui.xml.h:16
 msgid "Delete the selected text"
-msgstr ""
+msgstr "ลบข้อความที่เลือก"
 
-#: src/gedit-ui.xml.h:20
-msgid "Dump XML"
-msgstr ""
-
-#: src/gedit-ui.xml.h:21
-msgid "Dump the UI Xml description"
-msgstr ""
-
-#: src/gedit-ui.xml.h:23
-msgid "Find Again"
-msgstr ""
-
-#: src/gedit-ui.xml.h:24
+#: gedit/gedit-ui.xml.h:18
 msgid "Find Ne_xt"
-msgstr ""
+msgstr "หา_ต่อ"
 
-#: src/gedit-ui.xml.h:25
+#: gedit/gedit-ui.xml.h:20
+msgid "Find Pre_vious"
+msgstr "หา_ก่อนหน้า"
+
+#: gedit/gedit-ui.xml.h:21
+msgid "Find Previous"
+msgstr "ค้นหาก่อนหน้า"
+
+#: gedit/gedit-ui.xml.h:22
 msgid "Go to _Line..."
-msgstr ""
+msgstr "ไป_บรรทัดที่..."
 
-#: src/gedit-ui.xml.h:26
-msgid "Go to a specific line number"
-msgstr ""
+#: gedit/gedit-ui.xml.h:23
+msgid "Go to a specific line"
+msgstr "ไปเลขบรรทัดที่กำหนด"
 
-#: src/gedit-ui.xml.h:27
-msgid "Icon and _Text"
-msgstr ""
-
-#: src/gedit-ui.xml.h:28
+#: gedit/gedit-ui.xml.h:24
 msgid "Main toolbar"
-msgstr ""
+msgstr "แถบเครื่องมือหลัก"
 
-#: src/gedit-ui.xml.h:29
+#: gedit/gedit-ui.xml.h:25
 msgid "Move the current document to a new window"
-msgstr ""
+msgstr "ย้ายเอกสารนี้ไปยังหน้าต่างใหม่"
 
-#: src/gedit-ui.xml.h:30
+#: gedit/gedit-ui.xml.h:26
 msgid "New"
-msgstr ""
+msgstr "สร้างเอกสารใหม่"
 
-#: src/gedit-ui.xml.h:31
-msgid "Only show icons in the toolbar"
-msgstr ""
+#: gedit/gedit-ui.xml.h:27
+msgid "Open"
+msgstr "เปิดเอกสาร"
 
-#: src/gedit-ui.xml.h:33
+#: gedit/gedit-ui.xml.h:28
 msgid "Open Location..."
-msgstr ""
+msgstr "เปิดตำแหน่งแฟ้ม..."
 
-#: src/gedit-ui.xml.h:34
+#: gedit/gedit-ui.xml.h:29
 msgid "Open _Location..."
-msgstr ""
+msgstr "เปิด_ตำแหน่งแฟ้ม..."
 
-#: src/gedit-ui.xml.h:35
+#: gedit/gedit-ui.xml.h:30
 msgid "Open a file"
-msgstr ""
+msgstr "เปิดแฟ้ม"
 
-#: src/gedit-ui.xml.h:36
+#: gedit/gedit-ui.xml.h:31
 msgid "Open a file from a specified location"
-msgstr ""
+msgstr "เปิดแฟ้มจากตำแหน่งที่ระบุ"
 
-#: src/gedit-ui.xml.h:37
+#: gedit/gedit-ui.xml.h:32
 msgid "Open the gedit manual"
-msgstr ""
+msgstr "เปิดคู่มือ gedit"
 
-#: src/gedit-ui.xml.h:38
+#: gedit/gedit-ui.xml.h:33
+msgid "Page Set_up"
+msgstr "ตั้งหน้าก_ระดาษ"
+
+#: gedit/gedit-ui.xml.h:34
 msgid "Paste"
-msgstr ""
+msgstr "แปะ"
 
-#: src/gedit-ui.xml.h:39
+#: gedit/gedit-ui.xml.h:35
 msgid "Paste the clipboard"
-msgstr ""
+msgstr "แปะจากคลิปบอร์ด"
 
-#: src/gedit-ui.xml.h:40
+#: gedit/gedit-ui.xml.h:36
 msgid "Pr_eferences"
-msgstr ""
+msgstr "_ปรับแต่ง"
 
-#: src/gedit-ui.xml.h:42
+#: gedit/gedit-ui.xml.h:38
 msgid "Print Previe_w..."
-msgstr ""
+msgstr "แสดงตัว_อย่างก่อนพิมพ์..."
 
-#: src/gedit-ui.xml.h:43
+#: gedit/gedit-ui.xml.h:39
 msgid "Print Preview"
-msgstr ""
+msgstr "แสดงตัวอย่างก่อนพิมพ์"
 
-#: src/gedit-ui.xml.h:44
-msgid "Print Setup"
-msgstr ""
-
-#: src/gedit-ui.xml.h:45
-msgid "Print preview"
-msgstr ""
-
-#: src/gedit-ui.xml.h:46
+#: gedit/gedit-ui.xml.h:41
 msgid "Print the current file"
-msgstr ""
+msgstr "พิมพ์แฟ้มปัจจุบัน"
 
-#: src/gedit-ui.xml.h:47
+#: gedit/gedit-ui.xml.h:42
 msgid "Quit"
-msgstr ""
+msgstr "ออกจากโปรแกรม"
 
-#: src/gedit-ui.xml.h:48
+#: gedit/gedit-ui.xml.h:43
 msgid "Quit the program"
-msgstr ""
+msgstr "ออกจากโปรแกรม"
 
-#: src/gedit-ui.xml.h:49
+#: gedit/gedit-ui.xml.h:44
 msgid "Redo"
-msgstr ""
+msgstr "ทำซ้ำ"
 
-#: src/gedit-ui.xml.h:50
+#: gedit/gedit-ui.xml.h:45
 msgid "Redo the undone action"
-msgstr ""
+msgstr "ทำซ้ำการปฏิบัติการที่ยังไม่ทำ"
 
-#: src/gedit-ui.xml.h:52
-msgid "Replace a string"
-msgstr ""
-
-#: src/gedit-ui.xml.h:53
+#: gedit/gedit-ui.xml.h:47
 msgid "Revert"
-msgstr ""
+msgstr "แปลงกลับ"
 
-#: src/gedit-ui.xml.h:54
+#: gedit/gedit-ui.xml.h:48
 msgid "Revert to a saved version of the file"
-msgstr ""
+msgstr "แปลงกลับเป็นรุ่นที่บันทึกไว้แล้ว"
 
-#: src/gedit-ui.xml.h:56
+#: gedit/gedit-ui.xml.h:49
+msgid "Save"
+msgstr "บันทึก"
+
+#: gedit/gedit-ui.xml.h:50
 msgid "Save As"
-msgstr ""
+msgstr "บันทึกเป็น"
 
-#: src/gedit-ui.xml.h:57
+#: gedit/gedit-ui.xml.h:51
 msgid "Save _As..."
-msgstr ""
+msgstr "บันทึกเป็_น..."
 
-#: src/gedit-ui.xml.h:58
+#: gedit/gedit-ui.xml.h:52
 msgid "Save all open files"
-msgstr ""
+msgstr "บันทึกทุกแฟ้มที่เปิด"
 
-#: src/gedit-ui.xml.h:59
+#: gedit/gedit-ui.xml.h:53
 msgid "Save the current file"
-msgstr ""
+msgstr "บันทึกแฟ้มปัจจุบัน"
 
-#: src/gedit-ui.xml.h:60
+#: gedit/gedit-ui.xml.h:54
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "บันทึกแฟ้มปัจจุบันเป็นชื่อใหม่"
 
-#: src/gedit-ui.xml.h:61
-msgid "Search again for the same string"
-msgstr ""
+#: gedit/gedit-ui.xml.h:55
+msgid "Search backwards for the same text"
+msgstr "ค้นหาคำเดิมแบบถอยหลังอีกครั้ง"
 
-#: src/gedit-ui.xml.h:62
-msgid "Search for a string"
-msgstr ""
+#: gedit/gedit-ui.xml.h:56
+msgid "Search for and replace text"
+msgstr "ค้นหาและแทนที่คำ"
 
-#: src/gedit-ui.xml.h:63
+#: gedit/gedit-ui.xml.h:57
+msgid "Search for text"
+msgstr "ค้นหา"
+
+#: gedit/gedit-ui.xml.h:58
+msgid "Search forwards for the same text"
+msgstr "ค้นหาต่อไป"
+
+#: gedit/gedit-ui.xml.h:59
 msgid "Select All"
-msgstr ""
+msgstr "เลือกทั้งหมด"
 
-#: src/gedit-ui.xml.h:64
+#: gedit/gedit-ui.xml.h:60
 msgid "Select _All"
-msgstr ""
+msgstr "เลือกทั้ง_หมด"
 
-#: src/gedit-ui.xml.h:65
+#: gedit/gedit-ui.xml.h:61
 msgid "Select the entire document"
-msgstr ""
+msgstr "เลือกทั้งเอกสาร"
 
-#: src/gedit-ui.xml.h:66
-msgid "Set toolbar button style according to desktop default"
-msgstr ""
+#: gedit/gedit-ui.xml.h:62
+msgid ""
+"Set toolbar button style according to desktop Menu and Toolbar Preferences"
+msgstr "กำหนดรูปแบบของปุ่มบนแถบเครื่องมือตามเมนูเดสก์ทอปและการปรับแต่งแถบเครื่องมือ"
 
-#: src/gedit-ui.xml.h:67
-msgid "Setup the page settings for your current printer"
-msgstr ""
+#: gedit/gedit-ui.xml.h:63
+msgid "Setup the page settings"
+msgstr "ตั้งค่าการจัดหน้ากระดาษ"
 
-#: src/gedit-ui.xml.h:68
-msgid "Show _Cursor Position"
-msgstr ""
+#: gedit/gedit-ui.xml.h:64
+msgid "Show only icons in the toolbar"
+msgstr "แสดงเฉพาะไอคอนบนแถบเครื่องมือ"
 
-#: src/gedit-ui.xml.h:69
-msgid "Show _Overwrite Mode"
-msgstr ""
+#: gedit/gedit-ui.xml.h:65
+msgid "Show text below every icon in the toolbar"
+msgstr "แสดงข้อความใต้ทุกไอคอนบนแถบเครื่องมือ"
 
-#: src/gedit-ui.xml.h:70
-msgid "Show cursor position in the statusbar"
-msgstr ""
+#: gedit/gedit-ui.xml.h:66
+msgid "Show text only beside important icons in the toolbar"
+msgstr "แสดงข้อความข้างไอคอนบนแถบเครื่องมือเฉพาะไอคอนที่สำคัญ"
 
-#: src/gedit-ui.xml.h:71
-msgid "Show overwrite mode in the statusbar"
-msgstr ""
+#: gedit/gedit-ui.xml.h:67
+msgid "T_ext for Important Icons"
+msgstr "ข้อความสำหรับไอคอนที่_สำคัญ"
 
-#: src/gedit-ui.xml.h:73
+#: gedit/gedit-ui.xml.h:68
+msgid "Undo"
+msgstr "เรียกคืนการทำ"
+
+#: gedit/gedit-ui.xml.h:69
 msgid "Undo the last action"
-msgstr ""
+msgstr "เรียกคืนการทำคำสั่งสุดท้าย"
 
-#: src/gedit-ui.xml.h:74
+#: gedit/gedit-ui.xml.h:70
 msgid "_About"
-msgstr ""
+msgstr "เ_กี่ยวกับ"
 
-#: src/gedit-ui.xml.h:75
+#: gedit/gedit-ui.xml.h:71
 msgid "_Close"
-msgstr ""
+msgstr "ปิ_ด"
 
-#: src/gedit-ui.xml.h:76
+#: gedit/gedit-ui.xml.h:72
 msgid "_Close All"
-msgstr ""
+msgstr "ปิ_ดทั้งหมด"
 
-#: src/gedit-ui.xml.h:77
+#: gedit/gedit-ui.xml.h:73
 msgid "_Contents"
-msgstr ""
+msgstr "เนื้อ_หา"
 
-#: src/gedit-ui.xml.h:78
+#: gedit/gedit-ui.xml.h:74
 msgid "_Copy"
-msgstr ""
+msgstr "_คัดลอก"
 
-#: src/gedit-ui.xml.h:79
+#: gedit/gedit-ui.xml.h:75
 msgid "_Customize Toolbar"
-msgstr ""
+msgstr "กำหนดแ_บบแถบเครื่องมือ"
 
-#: src/gedit-ui.xml.h:80
-msgid "_Debug"
-msgstr ""
-
-#: src/gedit-ui.xml.h:81
+#: gedit/gedit-ui.xml.h:76
 msgid "_Delete"
-msgstr ""
+msgstr "_ลบ"
 
-#: src/gedit-ui.xml.h:82
+#: gedit/gedit-ui.xml.h:77
 msgid "_Desktop Default"
-msgstr ""
+msgstr "ค่าปริยายของเ_ดสก์ทอป"
 
-#: src/gedit-ui.xml.h:83
+#: gedit/gedit-ui.xml.h:78
 msgid "_Documents"
-msgstr ""
+msgstr "เ_อกสาร"
 
-#: src/gedit-ui.xml.h:84
+#: gedit/gedit-ui.xml.h:79
 msgid "_Edit"
-msgstr ""
+msgstr "แ_ก้ไข"
 
-#: src/gedit-ui.xml.h:85
+#: gedit/gedit-ui.xml.h:80
 msgid "_File"
-msgstr ""
+msgstr "แ_ฟ้ม"
 
-#: src/gedit-ui.xml.h:86
+#: gedit/gedit-ui.xml.h:81
 msgid "_Find..."
-msgstr ""
+msgstr "_หา..."
 
-#: src/gedit-ui.xml.h:87
+#: gedit/gedit-ui.xml.h:82
 msgid "_Help"
-msgstr ""
+msgstr "_วิธีใช้"
 
-#: src/gedit-ui.xml.h:88
-msgid "_Icon"
-msgstr ""
+#: gedit/gedit-ui.xml.h:83
+msgid "_Highlight Mode"
+msgstr "โห_มดเน้น"
 
-#: src/gedit-ui.xml.h:90
+#: gedit/gedit-ui.xml.h:84
+msgid "_Icons Only"
+msgstr "เฉพาะไ_อคอน"
+
+#: gedit/gedit-ui.xml.h:86
 msgid "_New"
-msgstr ""
+msgstr "ใ_หม่"
 
-#: src/gedit-ui.xml.h:91
+#: gedit/gedit-ui.xml.h:87
 msgid "_Open..."
-msgstr ""
+msgstr "_เปิด"
 
-#: src/gedit-ui.xml.h:92
+#: gedit/gedit-ui.xml.h:88
 msgid "_Output Window"
-msgstr ""
+msgstr "หน้าต่างแสดง_ผล"
 
-#: src/gedit-ui.xml.h:93
+#: gedit/gedit-ui.xml.h:89
 msgid "_Paste"
-msgstr ""
+msgstr "_แปะ"
 
-#: src/gedit-ui.xml.h:94
+#: gedit/gedit-ui.xml.h:90
 msgid "_Print..."
-msgstr ""
+msgstr "_พิมพ์..."
 
-#: src/gedit-ui.xml.h:95
-msgid "_Priority Text beside Icons"
-msgstr ""
-
-#: src/gedit-ui.xml.h:96
+#: gedit/gedit-ui.xml.h:91
 msgid "_Quit"
-msgstr ""
+msgstr "_ออก"
 
-#: src/gedit-ui.xml.h:97
+#: gedit/gedit-ui.xml.h:92
 msgid "_Redo"
-msgstr ""
+msgstr "_ทำซ้ำ"
 
-#: src/gedit-ui.xml.h:98
+#: gedit/gedit-ui.xml.h:93
 msgid "_Replace..."
-msgstr ""
+msgstr "แ_ทนที่..."
 
-#: src/gedit-ui.xml.h:100
+#: gedit/gedit-ui.xml.h:95
 msgid "_Save"
-msgstr ""
+msgstr "_บันทึก"
 
-#: src/gedit-ui.xml.h:101
+#: gedit/gedit-ui.xml.h:96
 msgid "_Save All"
-msgstr ""
+msgstr "_บันทึกทุกเอกสาร"
 
-#: src/gedit-ui.xml.h:102
+#: gedit/gedit-ui.xml.h:97
 msgid "_Search"
-msgstr ""
+msgstr "_ค้นหา"
 
-#: src/gedit-ui.xml.h:103
+#: gedit/gedit-ui.xml.h:98
 msgid "_Statusbar"
-msgstr ""
+msgstr "แถบบอก_สถานะการทำงาน"
 
-#: src/gedit-ui.xml.h:104
+#: gedit/gedit-ui.xml.h:99
+msgid "_Text for All Icons"
+msgstr "ข้อความสำหรับ_ทุกไอคอน"
+
+#: gedit/gedit-ui.xml.h:100
 msgid "_Toolbar"
-msgstr ""
+msgstr "แถบเ_ครื่องมือ"
 
-#: src/gedit-ui.xml.h:105
+#: gedit/gedit-ui.xml.h:101
 msgid "_Tools"
-msgstr ""
+msgstr "เครื่อ_งมือ"
 
-#: src/gedit-ui.xml.h:106
+#: gedit/gedit-ui.xml.h:102
 msgid "_Undo"
-msgstr ""
+msgstr "เรี_ยกคืน"
 
-#: src/gedit-ui.xml.h:107
+#: gedit/gedit-ui.xml.h:103
 msgid "_View"
-msgstr ""
+msgstr "_มุมมอง"
 
-#: src/gedit-utils.c:799
+#: gedit/gedit-utils.c:428
 #, c-format
 msgid ""
 "Could not find the file \"%s\".\n"
 "\n"
 "Please, check that you typed the location correctly and try again."
 msgstr ""
+"หาแฟ้ม \"%s\" ไม่พบ\n"
+"\n"
+"กรุณาตรวจสอบว่าพิมพ์ชื่อถูกต้องและลองใหม่อีกครั้ง"
 
-#: src/gedit-utils.c:806
+#: gedit/gedit-utils.c:436
 #, c-format
 msgid "Could not open the file \"%s\" because it contains corrupted data."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะมีข้อมูลที่ได้รับความเสียหาย"
 
-#: src/gedit-utils.c:817
+#: gedit/gedit-utils.c:447
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะ gedit ไม่สามารถจัดการตำแหน่ง %s:"
 
-#: src/gedit-utils.c:823
+#: gedit/gedit-utils.c:453
 #, c-format
 msgid "Could not open the file \"%s\""
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้"
 
-#: src/gedit-utils.c:833
+#: gedit/gedit-utils.c:463
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because it contains data in an invalid format."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะมีข้อมูลในรูปแบบไม่ถูกต้อง"
 
-#: src/gedit-utils.c:840
+#: gedit/gedit-utils.c:470
 #, c-format
 msgid "Could not open the file \"%s\" because it is too big."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะมีขนาดใหญ่เกินไป"
 
-#: src/gedit-utils.c:847
+#: gedit/gedit-utils.c:477
 #, c-format
 msgid ""
 "\"%s\" is not a valid location.\n"
 "\n"
 "Please, check that you typed the location correctly and try again."
 msgstr ""
+"\"%s\" เป็นตำแหน่งที่ไม่ถูกต้อง\n"
+"\n"
+"กรุณาตรวจสอบว่าพิมพ์ชื่อถูกต้องและลองใหม่อีกครั้ง"
 
-#: src/gedit-utils.c:854
+#: gedit/gedit-utils.c:485
 #, c-format
 msgid "Could not open the file \"%s\" because access was denied."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะถูกปฏิเสธการเข้าถึง"
 
-#: src/gedit-utils.c:861
+#: gedit/gedit-utils.c:492
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because there are too many open files.\n"
 "\n"
 "Please, close some open file and try again."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะมีแฟ้มอื่นๆ เปิดอยู่มากไป\n"
+"\n"
+"กรุณาปิดบางแฟ้มและลองใหม่อีกครั้ง"
 
-#: src/gedit-utils.c:869
+#: gedit/gedit-utils.c:500
 #, c-format
 msgid ""
 "\"%s\" is a directory.\n"
 "\n"
 "Please, check that you typed the location correctly and try again."
 msgstr ""
+"\"%s\" เป็นไดเรกทอรี\n"
+"\n"
+"กรุณาตรวจสอบว่าพิมพ์ชื่อถูกต้องและลองใหม่อีกครั้ง"
 
-#: src/gedit-utils.c:876
+#: gedit/gedit-utils.c:508
 #, c-format
 msgid ""
 "Not enough available memory to open the file \"%s\". Please, close some "
 "running application and try again."
-msgstr ""
+msgstr "มีหน่วยความจำไม่เพียงพอที่จะเปิดแฟ้ม \"%s\" กรุณาปิดโปรแกรมอื่นๆ และลองอีกครั้ง"
 
-#: src/gedit-utils.c:902
+#: gedit/gedit-utils.c:534
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because no host \"%s\" could be found.\n"
@@ -2528,176 +2189,260 @@ msgid ""
 "Please, check that you typed the location correctly and that your proxy "
 "settings are correct and then try again."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะไม่พบโฮสต์ชื่อ \"%s\"\n"
+"\n"
+"กรุณาตรวจสอบชื่อโฮสต์และค่าพร็อกซีให้ถูกต้องและลองอีกครั้้ง"
 
-#: src/gedit-utils.c:917
+#: gedit/gedit-utils.c:549
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because the host name was invalid.\n"
 "\n"
 "Please, check that you typed the location correctly and try again."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะชื่อโฮสต์ไม่ถูกต้อง\n"
+"\n"
+"กรุณาตรวจสอบชื่อโฮต์ให้ถูกต้องและลองอีกครั้ง"
 
-#: src/gedit-utils.c:924
+#: gedit/gedit-utils.c:558
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because the host name was empty.\n"
 "\n"
 "Please, check that your proxy settings are correct and try again."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะไม่มีชื่อโฮสต์\n"
+"\n"
+"กรุณาตรวจสอบค่าพร็อกซีให้ถูกต้องและลองอีกครั้ง"
 
-#: src/gedit-utils.c:931
+#: gedit/gedit-utils.c:567
 #, c-format
 msgid ""
 "Could not open the file \"%s\" because the attempt to log in failed.\n"
 "\n"
 "Please, check that you typed the location correctly and try again."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะล็อกอินไม่สำเร็จ\n"
+"\n"
+"กรุณาตรวจสอบการพิมพ์ที่อยู่แฟ้มให้ถูกต้องและลองอีกครั้ง"
 
-#: src/gedit-utils.c:939
+#: gedit/gedit-utils.c:576 gedit/gedit-utils.c:649
 #, c-format
 msgid ""
-"Could not open the file \"%s\" because it contains invalid UTF-8 data.\n"
+"Could not open the file \"%s\" because it contains invalid data.\n"
 "\n"
 "Probably, you are trying to open a binary file."
 msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะแฟ้มมีข้อมูลที่ไม่ถูกต้อง\n"
+"\n"
+"เป็นไปได้ว่าคุณอาจจะกำลังพยายามเปิดแฟ้มไบนารี"
 
-#: src/gedit-utils.c:977
+#: gedit/gedit-utils.c:585 gedit/gedit-utils.c:683
 #, c-format
 msgid "Could not open the file \"%s\"."
-msgstr ""
+msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้"
 
-#: src/gedit-utils.c:1028
+#: gedit/gedit-utils.c:625
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit has not been able to "
+"automatically detect the character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and try again "
+"selecting a character coding in the 'Open File...' (or 'Open Location') "
+"dialog."
+msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้เพราะ gedit ไม่สามารถตรวจหารหัสอักขระของแฟ้มโดยอัตโนมัติได้\n"
+"กรุณาตรวจสอบว่าแฟ้มนี้ไม่ใช่แฟ้มไบนารี และลองอีกครั้งโดยเลือกรหัสอักขระในไดอะล็อก "
+"เปิดแฟ้ม...' (หรือ 'เปิดตำแหน่งแฟ้ม')"
+
+#: gedit/gedit-utils.c:637 gedit/gedit-utils.c:667
+#, c-format
+msgid ""
+"Could not open the file \"%s\" using the %s character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and that you "
+"selected the right character coding in the 'Open File...' (or 'Open "
+"Location') dialog and try again."
+msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" โดยใช้รหัสอักขระ %s ได้\n"
+"\n"
+"กรุณาตรวจว่าแฟ้มที่คุณพยายามเปิดนั้นไม่ใช่แฟ้มไบนารี และคุณได้เลือกรหัสที่ถูกต้องจากไดอะล็อก "
+"'เปิดแฟ้ม...' (หรือ 'เปิดตำแหน่งแฟ้ม')"
+
+#: gedit/gedit-utils.c:687
+#, c-format
+msgid ""
+"Could not open the file \"%s\".\n"
+"\n"
+"%s."
+msgstr ""
+"ไม่สามารถเปิดแฟ้ม \"%s\" ได้\n"
+"\n"
+"%s"
+
+#: gedit/gedit-utils.c:739
 #, c-format
 msgid "Could not save the file \"%s\"."
-msgstr ""
+msgstr "ไม่สามารถบันทึกแฟ้ม \"%s\" ได้"
 
-#: src/gedit-utils.c:1032
+#: gedit/gedit-utils.c:743
 #, c-format
 msgid ""
 "Could not save the file \"%s\".\n"
 "\n"
 "%s"
 msgstr ""
+"ไม่สามารถบันทึกแฟ้ม \"%s\" ได้\n"
+"\n"
+"%s"
 
-#: src/gedit-utils.c:1085
+#: gedit/gedit-utils.c:796
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because gedit cannot find it.\n"
 "\n"
 "Perhaps, it has recently been deleted."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับ เพราะ gedit หาไม่พบ\n"
+"\n"
+"เป็นไปได้ว่าแฟ้มอาจเพิ่งถูกลบไป"
 
-#: src/gedit-utils.c:1092
+#: gedit/gedit-utils.c:803
 #, c-format
 msgid "Could not revert the file \"%s\" because it contains corrupted data."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับ เพราะมีข้อมูลบางส่วนเสียหาย"
 
-#: src/gedit-utils.c:1103
+#: gedit/gedit-utils.c:814
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับ เพราะ gedit หาตำแหน่ง %s: ไม่พบ"
 
-#: src/gedit-utils.c:1109 src/gedit-utils.c:1249
+#: gedit/gedit-utils.c:820 gedit/gedit-utils.c:960
 #, c-format
 msgid "Could not revert the file \"%s\"."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้"
 
-#: src/gedit-utils.c:1119
+#: gedit/gedit-utils.c:830
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because it contains data in an invalid "
 "format."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะมีข้อมูลในรูปแบบไม่ถูกต้อง"
 
-#: src/gedit-utils.c:1126
+#: gedit/gedit-utils.c:837
 #, c-format
 msgid "Could not revert the file \"%s\" because it is too big."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะแฟ้มมีขนาดใหญ่เกินไป"
 
-#: src/gedit-utils.c:1133
+#: gedit/gedit-utils.c:844
 #, c-format
 msgid "Could not revert the file \"%s\" because access was denied."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะถูกปฏิเสธการเข้าถึง"
 
-#: src/gedit-utils.c:1140
+#: gedit/gedit-utils.c:851
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because there are too many open files.\n"
 "\n"
 "Please, close some open file and try again."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะมีแฟ้มอื่นๆ เปิดอยู่มากเกินไป\n"
+"\n"
+"กรุณาปิดแฟ้มบางแฟ้มและลองอีกครั้ง"
 
-#: src/gedit-utils.c:1148
+#: gedit/gedit-utils.c:859
 #, c-format
 msgid ""
 "Not enough available memory to revert the file \"%s\". Please, close some "
 "running application and try again."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะหน่วยความจำไม่เพียงพอ\n"
+"\n"
+"กรุณาปิดบางโปรแกรม และลองอีกครั้ง"
 
-#: src/gedit-utils.c:1174
+#: gedit/gedit-utils.c:885
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
 "\n"
 "Please, check that your proxy settings are correct and try again."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะไม่มีโฮสต์ชื่อ \"%s\"\n"
+"\n"
+"กรุณาตรวจสอบการตั้งค่าพร็อกซีให้ถูกต้องและลองอีกครั้ง"
 
-#: src/gedit-utils.c:1188
+#: gedit/gedit-utils.c:899
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because the host name was empty.\n"
 "\n"
 "Please, check that your proxy settings are correct and try again."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะไม่มีชื่อโฮสต์\n"
+"\n"
+"กรุณาตรวจสอบการตั้งค่าพร็อกซีให้ถูกต้องและลองอีกครั้ง"
 
-#: src/gedit-utils.c:1195
+#: gedit/gedit-utils.c:906
 #, c-format
 msgid "Could not revert the file \"%s\" because the attempt to log in failed."
-msgstr ""
+msgstr "ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะล็อกอินไม่สำเร็จ"
 
-#: src/gedit-utils.c:1202
+#: gedit/gedit-utils.c:913
 #, c-format
 msgid ""
 "Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
 "\n"
 "Probably, you are trying to revert a binary file."
 msgstr ""
+"ไม่สามารถแปลงแฟ้มชื่อ \"%s\" กลับได้เพราะว่ามีข้อมูล UTF-8 ที่ไม่ถูกต้อง\n"
+"\n"
+"บางทีคุณอาจจะกำลังแปลงแฟ้มไบนารีกลับก็เป็นได้"
 
-#: src/gedit-utils.c:1211
+#: gedit/gedit-utils.c:922
 msgid "It is not possible to revert an Untitled document."
-msgstr ""
+msgstr "เป็นไปไม่ได้ที่จะแปลงกลับเอกสารที่ไม่มีชื่อ"
 
-#: src/gedit-utils.c:1300
+#: gedit/gedit-utils.c:1011
 #, c-format
 msgid "The file \"%s\" already exists."
-msgstr ""
+msgstr "มีแฟ้มชื่อ \"%s\" อยู่ก่อนแล้ว"
 
-#: src/gedit-utils.c:1306
+#: gedit/gedit-utils.c:1017
 #, c-format
 msgid ""
 "\"%s\" is a directory.\n"
 "\n"
 "Please, check that you typed the location correctly."
 msgstr ""
+"\"%s\" เป็นไดเรกทอรี\n"
+"\n"
+"กรุณาตรวจสอบว่าคุณพิมพ์ตำแหน่งแฟ้มถูกต้องหรือไม่"
 
-#: src/gedit-utils.c:1315
+#: gedit/gedit-utils.c:1026
 #, c-format
 msgid ""
 "Cannot create the file \"%s\".\n"
 "\n"
 "Make sure you have the appropriate write permissions."
 msgstr ""
+"ไม่สามารถสร้างแฟ้ม \"%s\" ได้\n"
+"\n"
+"ตรวจสอบว่าคุณมี write permissions"
 
-#: src/gedit-utils.c:1322
+#: gedit/gedit-utils.c:1033
 #, c-format
 msgid ""
 "Cannot create the file \"%s\".\n"
 "\n"
 "The file name is too long."
 msgstr ""
+"ไม่สามารถสร้างแฟ้ม \"%s\" ได้\n"
+"\n"
+"ชื่อแฟ้มยาวเกินไป"
 
-#: src/gedit-utils.c:1329
+#: gedit/gedit-utils.c:1040
 #, c-format
 msgid ""
 "Cannot create the file \"%s\".\n"
@@ -2705,263 +2450,908 @@ msgid ""
 "A directory component in the file name does not exist or is a dangling "
 "symbolic link."
 msgstr ""
+"ไม่สามารถสร้างแฟ้ม \"%s\" ได้\n"
+"\n"
+"ไม่มีองค์ประกอบของไดเรกทอรีในชื่อแฟ้ม หรือเป็น symbolic link ที่ว่างเปล่า"
 
-#: src/gedit-utils.c:1338
+#: gedit/gedit-utils.c:1049
 #, c-format
 msgid ""
 "There is not enough disk space to create the file \"%s\".\n"
 "\n"
 "Please free some disk space and try again."
 msgstr ""
+"มีพื้นที่ไม่เพียงพอที่จะสร้างแฟ้ม \"%s\" ได้\n"
+"\n"
+"กรุณาเคลียร์พื้นที่ดิสก์ แล้วลองอีกครั้ง"
 
-#: src/gedit-utils.c:1344
+#: gedit/gedit-utils.c:1055
 #, c-format
 msgid "Could not create the file \"%s\"."
-msgstr ""
+msgstr "ไม่สามารถสร้างแฟ้ม \"%s\" ได้"
 
 #.
 #. if (col == chars)
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
+#. msg = g_strdup_printf (_("  Ln %d, Col %d"), row + 1, col + 1);
 #. else
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d-%d"), row + 1, chars + 1, col + 1);
+#. msg = g_strdup_printf (_("  Ln %d, Col %d-%d"), row + 1, chars + 1, col + 1);
 #.
-#: src/gedit-view.c:1076
+#: gedit/gedit-view.c:665
 #, c-format
-msgid "  Ln %d, Col. %d"
-msgstr ""
+msgid "  Ln %d, Col %d"
+msgstr "  บรรทัด %d, คอลัมน์ %d"
 
-#: src/gedit-view.c:1114
+#: gedit/gedit-view.c:703
 msgid "  OVR"
-msgstr ""
+msgstr "  ทับ"
 
-#: src/gedit-view.c:1116
+#: gedit/gedit-view.c:705
 msgid "  INS"
+msgstr "  แทรก"
+
+#: gedit/gedit2.c:86
+msgid ""
+"Set the character encoding to be used to open the files listed on the "
+"command line"
 msgstr ""
 
-#: src/gedit2.c:79
-msgid "Show utility debugging messages."
-msgstr ""
-
-#: src/gedit2.c:82
-msgid "Show mdi debugging messages."
-msgstr ""
-
-#: src/gedit2.c:85
-msgid "Show commands debugging messages."
-msgstr ""
-
-#: src/gedit2.c:88
-msgid "Show document debugging messages."
-msgstr ""
-
-#: src/gedit2.c:91
-msgid "Show file debugging messages."
-msgstr ""
-
-#: src/gedit2.c:94
-msgid "Show plugin debugging messages."
-msgstr ""
-
-#: src/gedit2.c:97
-msgid "Show prefs debugging messages."
-msgstr ""
-
-#: src/gedit2.c:100
-msgid "Show printing debugging messages."
-msgstr ""
-
-#: src/gedit2.c:103
-msgid "Show search debugging messages."
-msgstr ""
-
-#: src/gedit2.c:106
-msgid "Show undo debugging messages."
-msgstr ""
-
-#: src/gedit2.c:109
-msgid "Show view debugging messages."
-msgstr ""
-
-#: src/gedit2.c:112
-msgid "Show recent debugging messages."
-msgstr ""
-
-#: src/gedit2.c:115
-msgid "Show session management debugging messages."
-msgstr ""
-
-#: src/gedit2.c:118
-msgid "Turn on all debugging messages."
-msgstr ""
-
-#: src/gedit2.c:121
+#: gedit/gedit2.c:89
 msgid "Quit an existing instance of gedit"
 msgstr ""
 
-#: src/gedit2.c:124
+#: gedit/gedit2.c:92
 msgid "Create a new toplevel window in an existing instance of gedit"
 msgstr ""
 
-#: src/gedit2.c:127
+#: gedit/gedit2.c:95
 msgid "Create a new document in an existing instance of gedit"
+msgstr "สร้างเอกสารใหม่ในหน้าต่าง gedit ที่ใช้งานอยู่"
+
+#: gedit/gedit2.c:182
+#, c-format
+msgid "The specified encoding \"%s\" is not valid\n"
 msgstr ""
 
-#: src/gedit-output-window.c:333
-msgid "Close the output window"
+#: plugins/changecase/changecase.c:43
+msgid "C_hange Case"
+msgstr "เปลี่_ยนตัวพิมพ์ใหญ่-เล็ก"
+
+#: plugins/changecase/changecase.c:49
+msgid "All _Upper Case"
+msgstr "ตัวพิมพ์ใ_หญ่ทั้งหมด"
+
+#: plugins/changecase/changecase.c:50
+msgid "All _Lower Case"
+msgstr "ตัวพิมพ์เ_ล็กทั้งหมด"
+
+#: plugins/changecase/changecase.c:51
+msgid "_Invert Case"
+msgstr "_กลับตัวพิมพ์ใหญ่-เล็ก"
+
+#: plugins/changecase/changecase.c:52
+msgid "_Title Case"
+msgstr "ตัวพิมพ์ใหญ่-เล็กสำหรับหัวเ_รื่อง"
+
+#: plugins/changecase/changecase.c:54
+msgid "Change selected text to upper case"
+msgstr "เปลี่ยนข้อความที่เลือกเป็นตัวพิมพ์ใหญ่ทั้งหมด"
+
+#: plugins/changecase/changecase.c:55
+msgid "Change selected text to lower case"
+msgstr "เปลี่ยนข้อความที่เลือกเป็นตัวพิมพ์เล็กทั้งหมด"
+
+#: plugins/changecase/changecase.c:56
+msgid "Invert the case of selected text"
+msgstr "กลับตัวพิมพ์ใหญ่-เล็กของข้อความที่เลือก"
+
+#: plugins/changecase/changecase.c:57
+msgid "Capitalize the first letter of each selected word"
+msgstr "เปลี่ยนอักษรตัวแรกของทุกคำที่เลือกให้เป็นตัวพิมพ์ใหญ่"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:1
+msgid "Change Case"
+msgstr "เปลี่ยนตัวพิมพ์ใหญ่-เล็ก"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:2
+msgid "Changes the case of selected text."
+msgstr "เปลี่ยนตัวพิมพ์ใหญ่-เล็กของข้อความที่เลือก"
+
+#: plugins/docinfo/docinfo.c:46
+msgid "_Document Statistics"
+msgstr "ส_ถิติของเอกสาร"
+
+#: plugins/docinfo/docinfo.c:49
+msgid "Get statistic info on current document"
+msgstr "ดูค่าสถิติต่างๆ ของเอกสารปัจจุบัน"
+
+#: plugins/docinfo/docinfo.c:140
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
+msgid "Document Statistics"
+msgstr "สถิติต่างๆ ของเอกสาร"
+
+#: plugins/docinfo/docinfo.c:154
+msgid "_Update"
+msgstr "_อัพเดต"
+
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+msgid ""
+"Analyzes the current document and reports the number of words, lines, "
+"characters and non-space characters in it."
+msgstr ""
+"วิเคราะห์เอกสารปัจจุบันและรายงานจำนวนคำ จำนวนบรรทัดจำนวนอักขระทั้งรวมและไม่รวมช่องว่าง"
+
+#: plugins/docinfo/docinfo.glade2.h:2
+msgid "0"
+msgstr "0"
+
+#: plugins/docinfo/docinfo.glade2.h:3
+msgid "<span weight=\"bold\">File Name</span>"
+msgstr "<span weight=\"bold\">ชื่อแฟ้ม</span>"
+
+#: plugins/docinfo/docinfo.glade2.h:4
+msgid "Bytes"
+msgstr "ไบต์"
+
+#: plugins/docinfo/docinfo.glade2.h:5
+msgid "Characters (no spaces)"
+msgstr "อักขระ (ไม่รวมช่องว่าง)"
+
+#: plugins/docinfo/docinfo.glade2.h:6
+msgid "Characters (with spaces)"
+msgstr "อักขระ (รวมช่องว่าง)"
+
+#: plugins/docinfo/docinfo.glade2.h:8
+msgid "Update"
+msgstr "อัพเดต"
+
+#: plugins/docinfo/docinfo.glade2.h:9
+msgid "Words"
+msgstr "คำ"
+
+#: plugins/docinfo/docinfo.glade2.h:10
+msgid "gedit: Document Info plugin"
+msgstr "gedit: ปลั๊กอินสำหรับข้อมูลเอกสาร"
+
+#: plugins/indent/indent.c:45
+msgid "_Indent"
+msgstr "_ย่อหน้า"
+
+#: plugins/indent/indent.c:47
+msgid "Indent selected lines"
+msgstr "ย่อหน้าบรรทัดที่เลือก"
+
+#: plugins/indent/indent.c:49
+msgid "U_nindent"
+msgstr "ยกเลิ_กย่อหน้า"
+
+#: plugins/indent/indent.c:51
+msgid "Unindent selected lines"
+msgstr "ยกเลิกย่อหน้าบรรทัดที่เลือก"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
+msgid "Indent lines"
+msgstr "ย่อหน้าบรรทัด"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
+msgid "Indents or un-indents selected lines."
+msgstr "ย่อหน้าหรือยกเลิกย่อหน้าบรรทัดที่เลือก"
+
+#: plugins/sample/sample.c:43
+msgid "Insert User Na_me"
+msgstr "แทรก_ชื่อผู้ใช้"
+
+#: plugins/sample/sample.c:46
+msgid "Insert the user name at the cursor position"
+msgstr "แทรกชื่อผู้ใช้ที่ตำแหน่งเคอร์เซอร์"
+
+#: plugins/sample/sample.gedit-plugin.desktop.in.h:1
+msgid "Inserts the user name at the cursor position."
+msgstr "แทรกชื่อผู้ใช้ที่ตำแหน่งเคอร์เซอร์"
+
+#: plugins/sample/sample.gedit-plugin.desktop.in.h:2
+msgid "User name"
+msgstr "ชื่อผู้ใช้"
+
+#: plugins/shell_output/shell_output.c:56
+msgid "_Run Command..."
+msgstr "เรียก_คำสั่ง..."
+
+#: plugins/shell_output/shell_output.c:59
+msgid "Run a command"
+msgstr "เรียกใช้งานตามคำสั่ง"
+
+#: plugins/shell_output/shell_output.c:161
+#: plugins/shell_output/shell_output.c:502
+msgid "Stopped"
+msgstr "หยุด"
+
+#: plugins/shell_output/shell_output.c:282
+msgid "Run Command"
+msgstr "เรียกใช้งานตามคำสั่ง"
+
+#: plugins/shell_output/shell_output.c:301
+msgid "_Run"
+msgstr "เรีย_ก"
+
+#: plugins/shell_output/shell_output.c:508
+msgid "Done"
+msgstr "เรียบร้อย"
+
+#: plugins/shell_output/shell_output.c:510
+msgid "Failed"
+msgstr "ล้มเหลว"
+
+#: plugins/shell_output/shell_output.c:676
+msgid ""
+"The shell command entry is empty.\n"
+"\n"
+"Please, insert a valid shell command."
+msgstr ""
+"รายการคำสั่งเชลล์ว่างเปล่า\n"
+"\n"
+"กรุณาใส่คำสั่งเชลล์ที่ถูกต้อง"
+
+#: plugins/shell_output/shell_output.c:695
+msgid ""
+"Error parsing the shell command.\n"
+"\n"
+"Please, insert a valid shell command."
+msgstr ""
+"เกิดข้อผิดพลาดขณะตีความคำสั่งเชลล์\n"
+"\n"
+"กรุณาป้อนคำสั่งเชลล์ให้ถูกต้อง"
+
+#: plugins/shell_output/shell_output.c:773
+msgid "Executing command"
+msgstr "กำลังเรียกคำสั่งทำงาน"
+
+#: plugins/shell_output/shell_output.c:841
+msgid "An error occurred while running the selected command."
+msgstr "เกิดข้อผิดพลาดขณะเรียกคำสั่งที่กำหนด"
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
+msgid ""
+"Executes an external program and, if required, displays its output in the "
+"output window."
+msgstr "เรียกโปรแกรมภายนอก และแสดงผลในหน้าต่างแสดงผลได้ด้วยถ้าต้องการ"
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
+msgid "Shell command"
+msgstr "คำสั่งเชลล์"
+
+#: plugins/shell_output/shell_output.glade2.h:2
+msgid "Co_mmand:"
+msgstr "_คำสั่ง:"
+
+#: plugins/shell_output/shell_output.glade2.h:3
+msgid "Select the working directory..."
+msgstr "เลือกไดเรกทอรีทำงาน..."
+
+#: plugins/shell_output/shell_output.glade2.h:4
+msgid "_Show results in Output Window"
+msgstr "แสดง_ผลในหน้าต่างแสดงผล"
+
+#: plugins/shell_output/shell_output.glade2.h:5
+msgid "_Working directory:"
+msgstr "ไ_ดเรกทอรีทำงาน:"
+
+#: plugins/shell_output/shell_output.glade2.h:6
+msgid "gedit: Shell Output plugin"
+msgstr "gedit: เรียกคำสั่งเชลล์"
+
+#: plugins/sort/sort.c:27
+msgid "S_ort..."
+msgstr "เ_รียงลำดับ..."
+
+#: plugins/sort/sort.c:30
+msgid "Sort the current document or selection."
+msgstr "เรียงลำดับในเอกสารปัจจุบันหรือส่วนที่เลือก"
+
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:1 plugins/sort/sort.glade2.h:3
+msgid "Sort"
+msgstr "เรียงลำดับ"
+
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
+msgid "Sorts a document or selected text."
+msgstr "เรียงลำดับเอกสารหรือข้อความที่เลือก"
+
+#: plugins/sort/sort.glade2.h:1
+msgid "R_emove duplicates"
+msgstr "_ลบบรรทัดซ้ำ"
+
+#: plugins/sort/sort.glade2.h:2
+msgid "S_tart at column:"
+msgstr "เริ่มจาก_คอลัมน์ที่:"
+
+#: plugins/sort/sort.glade2.h:4
+msgid "You cannot undo a sort operation"
+msgstr "ไม่สามารถเรียกคืนค่าเดิมก่อนการเรียงลำดับ"
+
+#: plugins/sort/sort.glade2.h:5
+msgid "_Ignore case"
+msgstr "ไ_ม่สนใจอักษรตัวใหญ่-เล็ก"
+
+#: plugins/sort/sort.glade2.h:6
+msgid "_Reverse order"
+msgstr "เรียงย้อ_นลำดับ"
+
+#: plugins/sort/sort.glade2.h:7
+msgid "_Sort"
+msgstr "เ_รียงลำดับ"
+
+#: plugins/spell/gedit-automatic-spell-checker.c:350
+#: plugins/spell/gedit-spell-checker-dialog.c:511
+msgid "(no suggested words)"
+msgstr "(ไม่มีคำแนะ)"
+
+#: plugins/spell/gedit-automatic-spell-checker.c:374
+msgid "_More..."
+msgstr "เ_พิ่มเติม..."
+
+#. Ignore all
+#: plugins/spell/gedit-automatic-spell-checker.c:427
+msgid "_Ignore All"
+msgstr "ไ_ม่แก้ไขทั้งหมด"
+
+#. + Add to Dictionary
+#: plugins/spell/gedit-automatic-spell-checker.c:440
+msgid "_Add"
+msgstr "เ_พิ่ม"
+
+#: plugins/spell/gedit-automatic-spell-checker.c:477
+msgid "_Spelling Suggestions..."
+msgstr "แนะนำตัว_สะกด..."
+
+#: plugins/spell/gedit-spell-checker-dialog.c:289
+msgid "Check Spelling"
+msgstr "ตรวจตัวสะกด"
+
+#: plugins/spell/gedit-spell-checker-dialog.c:300
+msgid "Suggestions"
+msgstr "การแนะนำ"
+
+#: plugins/spell/gedit-spell-checker-dialog.c:615
+msgid "(correct spelling)"
+msgstr "(คำสะกดที่ถูกต้อง)"
+
+#: plugins/spell/gedit-spell-checker-dialog.c:800
+msgid "Completed spell checking"
+msgstr "ตรวจตัวสะกดเสร็จสมบูรณ์"
+
+#: plugins/spell/gedit-spell-checker.c:80
+msgid "Bulgarian"
+msgstr "ภาษาบัลแกเรีย"
+
+#: plugins/spell/gedit-spell-checker.c:81
+msgid "Bengali"
+msgstr "ภาษาเบ็งกาลี"
+
+#: plugins/spell/gedit-spell-checker.c:82
+msgid "Breton"
 msgstr ""
 
-#: src/gedit-output-window.c:371
-msgid "Copy selected lines"
+#: plugins/spell/gedit-spell-checker.c:83
+msgid "Catalan"
+msgstr "ภาษาคาตะลาน"
+
+#: plugins/spell/gedit-spell-checker.c:84
+msgid "Czech"
+msgstr "ภาษาเช็คช์"
+
+#: plugins/spell/gedit-spell-checker.c:85
+msgid "Welsh"
 msgstr ""
 
-#: src/gedit-output-window.c:391
-msgid "Clear the output window"
+#: plugins/spell/gedit-spell-checker.c:86
+msgid "Danish"
+msgstr "ภาษาเดนมาร์ก"
+
+#: plugins/spell/gedit-spell-checker.c:87
+msgid "German (Germany)"
+msgstr "ภาษาเยอรมัน (เยอรมนี)"
+
+#: plugins/spell/gedit-spell-checker.c:88
+msgid "German (Swiss)"
+msgstr "ภาษาเยอรมัน (สวิส)"
+
+#: plugins/spell/gedit-spell-checker.c:90
+msgid "English (American)"
+msgstr "ภาษาอังกฤษ (อเมริกา)"
+
+#: plugins/spell/gedit-spell-checker.c:91
+msgid "English (British)"
+msgstr "ภาษาอังกฤษ (อังกฤษ)"
+
+#: plugins/spell/gedit-spell-checker.c:92
+msgid "English (Canadian)"
+msgstr "ภาษาอังกฤษ (แคนาดา)"
+
+#: plugins/spell/gedit-spell-checker.c:93
+msgid "Esperanto"
 msgstr ""
 
-#: src/gedit-output-window.c:431
-msgid "Output Lines"
+#: plugins/spell/gedit-spell-checker.c:94
+msgid "Spanish"
+msgstr "ภาษาสเปน"
+
+#: plugins/spell/gedit-spell-checker.c:95
+msgid "Finnish"
+msgstr "ภาษาฟินนิช"
+
+#: plugins/spell/gedit-spell-checker.c:96
+msgid "Faroese"
+msgstr "ภาษาฟาโร"
+
+#: plugins/spell/gedit-spell-checker.c:97
+msgid "French (France)"
+msgstr "ภาษาฝรั่งเศส (ฝรั่งเศส)"
+
+#: plugins/spell/gedit-spell-checker.c:98
+msgid "French (Swiss)"
+msgstr "ภาษาฝรั่งเศส (สวิส)"
+
+#: plugins/spell/gedit-spell-checker.c:99
+msgid "Irish (Gaeilge)"
 msgstr ""
 
-#: src/dialogs/gedit-encodings-dialog.glade2.h:1
-msgid "Choose one or more e_ncodings:"
-msgstr ""
-
-#: src/gedit-encodings.c:147 src/gedit-encodings.c:173
-#: src/gedit-encodings.c:214 src/gedit-encodings.c:264
-#: src/gedit-encodings.c:289
-msgid "Western"
-msgstr ""
-
-#: src/gedit-encodings.c:149 src/gedit-encodings.c:216
-#: src/gedit-encodings.c:244 src/gedit-encodings.c:285
-msgid "Central European"
-msgstr ""
-
-#: src/gedit-encodings.c:151
-msgid "South European"
-msgstr ""
-
-#: src/gedit-encodings.c:153 src/gedit-encodings.c:169
-#: src/gedit-encodings.c:299
-msgid "Baltic"
-msgstr ""
-
-#: src/gedit-encodings.c:155 src/gedit-encodings.c:218
-#: src/gedit-encodings.c:231 src/gedit-encodings.c:235
-#: src/gedit-encodings.c:248 src/gedit-encodings.c:287
-msgid "Cyrillic"
-msgstr ""
-
-#: src/gedit-encodings.c:157 src/gedit-encodings.c:224
-#: src/gedit-encodings.c:242 src/gedit-encodings.c:297
-msgid "Arabic"
-msgstr ""
-
-#: src/gedit-encodings.c:159 src/gedit-encodings.c:254
-#: src/gedit-encodings.c:291
-msgid "Greek"
-msgstr ""
-
-#: src/gedit-encodings.c:161
-msgid "Hebrew Visual"
-msgstr ""
-
-#: src/gedit-encodings.c:163 src/gedit-encodings.c:222
-#: src/gedit-encodings.c:260 src/gedit-encodings.c:295
-msgid "Hebrew"
-msgstr ""
-
-#: src/gedit-encodings.c:165 src/gedit-encodings.c:220
-#: src/gedit-encodings.c:268 src/gedit-encodings.c:293
-msgid "Turkish"
-msgstr ""
-
-#: src/gedit-encodings.c:167
-msgid "Nordic"
-msgstr ""
-
-#: src/gedit-encodings.c:171
-msgid "Celtic"
-msgstr ""
-
-#: src/gedit-encodings.c:175 src/gedit-encodings.c:266
-msgid "Romanian"
-msgstr ""
-
-#: src/gedit-encodings.c:178 src/gedit-encodings.c:180
-#: src/gedit-encodings.c:182 src/gedit-encodings.c:184
-msgid "Unicode"
-msgstr ""
-
-#: src/gedit-encodings.c:187
-msgid "Armenian"
-msgstr ""
-
-#: src/gedit-encodings.c:189 src/gedit-encodings.c:191
-#: src/gedit-encodings.c:200
-msgid "Chinese Traditional"
-msgstr ""
-
-#: src/gedit-encodings.c:193
-msgid "Cyrillic/Russian"
-msgstr ""
-
-#: src/gedit-encodings.c:196 src/gedit-encodings.c:227
-#: src/gedit-encodings.c:274
-msgid "Japanese"
-msgstr ""
-
-#: src/gedit-encodings.c:198 src/gedit-encodings.c:229
-#: src/gedit-encodings.c:233 src/gedit-encodings.c:280
-msgid "Korean"
-msgstr ""
-
-#: src/gedit-encodings.c:203 src/gedit-encodings.c:205
-#: src/gedit-encodings.c:207 src/gedit-encodings.c:211
-msgid "Chinese Simplified"
-msgstr ""
-
-#: src/gedit-encodings.c:209
-msgid "Georgian"
-msgstr ""
-
-#: src/gedit-encodings.c:237 src/gedit-encodings.c:270
-msgid "Cyrillic/Ukrainian"
-msgstr ""
-
-#: src/gedit-encodings.c:246
-msgid "Croatian"
-msgstr ""
-
-#: src/gedit-encodings.c:250
-msgid "Hindi"
-msgstr ""
-
-#: src/gedit-encodings.c:252
-msgid "Farsi"
-msgstr ""
-
-#: src/gedit-encodings.c:256
-msgid "Gujarati"
-msgstr ""
-
-#: src/gedit-encodings.c:258
-msgid "Gurmukhi"
-msgstr ""
-
-#: src/gedit-encodings.c:262
+#: plugins/spell/gedit-spell-checker.c:100
 msgid "Icelandic"
+msgstr "ภาษาไอซ์แลนด์"
+
+#: plugins/spell/gedit-spell-checker.c:101
+msgid "Italian"
+msgstr "ภาษาอิตาลี"
+
+#: plugins/spell/gedit-spell-checker.c:102
+msgid "Dutch"
+msgstr "ภาษาดัทช์"
+
+#: plugins/spell/gedit-spell-checker.c:103
+msgid "Norwegian"
+msgstr "ภาษานอร์วีเจียน"
+
+#: plugins/spell/gedit-spell-checker.c:104
+msgid "Polish"
+msgstr "ภาษาโปแลนด์"
+
+#: plugins/spell/gedit-spell-checker.c:105
+msgid "Portuguese (Portugal)"
+msgstr "ภาษาโปรตุเกส (โปรตุเกส)"
+
+#: plugins/spell/gedit-spell-checker.c:106
+msgid "Portuguese (Brazilian)"
+msgstr "ภาษาโปรตุเกส (บราซิล)"
+
+#: plugins/spell/gedit-spell-checker.c:107
+msgid "Russian"
+msgstr "ภาษารัสเซีย"
+
+#: plugins/spell/gedit-spell-checker.c:108
+msgid "Slovak"
+msgstr "ภาษาสโลวัก"
+
+#: plugins/spell/gedit-spell-checker.c:109
+msgid "Slovenian"
+msgstr "ภาษาสโลเวเนีย"
+
+#: plugins/spell/gedit-spell-checker.c:110
+msgid "Swedish"
+msgstr "ภาษาสวีเดน"
+
+#: plugins/spell/gedit-spell-checker.c:111
+msgid "Ukrainian"
+msgstr "ภาษายูเครน"
+
+#: plugins/spell/gedit-spell-checker.c:744
+msgid "Default"
+msgstr "ค่าปริยาย"
+
+#: plugins/spell/gedit-spell-language-dialog.c:241
+#, c-format
+msgid "Could not find the required widgets inside %s."
+msgstr "หา widget ใน %s ไม่พบ"
+
+#: plugins/spell/gedit-spell-language-dialog.c:261
+msgid "Languages"
+msgstr "ภาษา"
+
+#: plugins/spell/languages-dialog.glade2.h:1
+msgid "Select the _language of the current document."
+msgstr "เลือก_ภาษาของเอกสารปัจจุบัน"
+
+#: plugins/spell/languages-dialog.glade2.h:2
+msgid "Set language"
+msgstr "ตั้งค่าภาษา"
+
+#: plugins/spell/spell-checker.glade2.h:2
+msgid "<b>Language</b>"
+msgstr "<b>ภาษา</b>"
+
+#: plugins/spell/spell-checker.glade2.h:3
+msgid "<b>word</b>"
+msgstr "<b>คำ</b>"
+
+#: plugins/spell/spell-checker.glade2.h:4
+msgid "Add w_ord"
+msgstr "เ_พิ่มคำ"
+
+#: plugins/spell/spell-checker.glade2.h:5
+msgid "Cha_nge"
+msgstr "เปลี่_ยน"
+
+#: plugins/spell/spell-checker.glade2.h:6
+msgid "Change A_ll"
+msgstr "เปลี่ยนทั้ง_หมด"
+
+#: plugins/spell/spell-checker.glade2.h:7
+msgid "Change _to:"
+msgstr "เ_ปลี่ยนเป็น:"
+
+#: plugins/spell/spell-checker.glade2.h:8
+msgid "Check _Word"
+msgstr "ตรวจ_คำ"
+
+#: plugins/spell/spell-checker.glade2.h:9
+msgid "Check spelling"
+msgstr "ตรวจตัวสะกด"
+
+#: plugins/spell/spell-checker.glade2.h:10
+msgid "Ignore _All"
+msgstr "ไม่แก้ไข_ทั้งหมด"
+
+#: plugins/spell/spell-checker.glade2.h:11
+msgid "Language:"
+msgstr "ภาษา:"
+
+#: plugins/spell/spell-checker.glade2.h:12
+msgid "Mispelled word:"
+msgstr "คำที่สะกดผิด"
+
+#: plugins/spell/spell-checker.glade2.h:13
+msgid "User dictionary:"
+msgstr "พจนานุกรมของผู้ใช้:"
+
+#: plugins/spell/spell-checker.glade2.h:14
+msgid "_Ignore"
+msgstr "ไ_ม่แก้ไข"
+
+#: plugins/spell/spell-checker.glade2.h:15
+msgid "_Suggestions:"
+msgstr "คำที่แ_นะนำ:"
+
+#: plugins/spell/spell.c:51
+msgid "_Check Spelling"
+msgstr "ตรวจตัว_สะกด"
+
+#: plugins/spell/spell.c:54
+msgid "Check the current document for incorrect spelling"
+msgstr "ตรวจตัวสะกดในเอกสารปัจจุบัน"
+
+#: plugins/spell/spell.c:56
+msgid "_Autocheck Spelling"
+msgstr "ตรวจตัวสะกด_อัตโนมัติ"
+
+#: plugins/spell/spell.c:59
+msgid "Automatically spell-check the current document"
+msgstr "ตรวจตัวสะกดในเอกสารปัจจุบันโดยอัตโนมัติ"
+
+#: plugins/spell/spell.c:61
+msgid "Set _Language"
+msgstr "กำหนด_ภาษา"
+
+#: plugins/spell/spell.c:64
+msgid "Set the language of the current document"
+msgstr "ตั้งค่าภาษาของเอกสารปัจจุบัน"
+
+#: plugins/spell/spell.c:553
+msgid "The document is empty."
+msgstr "เอกสารว่างเปล่า"
+
+#: plugins/spell/spell.c:571
+msgid "The selected text does not contain mispelled words."
+msgstr "คำที่เลือกสะกดถูกต้องแล้ว"
+
+#: plugins/spell/spell.c:572
+msgid "The document does not contain mispelled words."
+msgstr "เอกสารนี้ไม่มีคำผิด"
+
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
+msgid "Checks the spelling of the current document."
+msgstr "ตรวจตัวสะกดในเอกสารนี้"
+
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
+msgid "Spell checker"
+msgstr "ตรวจตัวสะกด"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:139
+msgid "Tag list plugin"
+msgstr "ปลั๊กอินของรายการแท็ก"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:157
+msgid "Select the group of tags you want to use"
+msgstr "เลือกกลุ่มแท็กที่ต้องการใช้"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:179
+msgid "Available Tag Lists"
+msgstr "รายการแท็กที่มี"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:181
+#: plugins/taglist/gedit-taglist-plugin-window.c:202
+msgid "Tags"
+msgstr "แท็ก"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:191
+msgid "Double-click on a tag to insert it in the current document"
+msgstr "ดับเบิลคลิ้กตรงแท็กที่ต้องการจะใส่เข้าไปในเอกสารปัจจุบัน"
+
+#: plugins/taglist/gedit-taglist-plugin.c:46
+msgid "Tag _List"
+msgstr "รายชื่อแ_ท็ก"
+
+#.
+#. #define MENU_ITEM_NAME		"TagList"
+#.
+#: plugins/taglist/gedit-taglist-plugin.c:51
+msgid "Show the tag list window"
+msgstr "แสดงหน้าต่างรายชื่อแท็ก"
+
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
+msgid ""
+"Provides a method to easily insert into a document commonly used tags/"
+"strings without having to type them."
+msgstr "ช่วยแทรกแท็กหรือข้อความที่ใช้บ่อยลงในเอกสารอย่างรวดเร็วโดยไม่ต้องพิมพ์"
+
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
+msgid "Tag list"
+msgstr "รายชื่อแท็ก"
+
+#: plugins/time/time.c:50
+msgid "In_sert Date and Time..."
+msgstr "แทรก_วันที่และเวลา..."
+
+#: plugins/time/time.c:53
+msgid "Insert current date and time at the cursor position"
+msgstr "แทรกวันที่และเวลาปัจจุบันที่ตำแหน่งเคอร์เซอร์"
+
+#: plugins/time/time.c:449
+msgid "Available formats"
+msgstr "รูปแบบที่มีให้เลือก"
+
+#: plugins/time/time.c:554
+msgid "Configure insert date/time plugin..."
+msgstr "กำหนดค่าปลั๊กอินสำหรับวันที่และเวลา..."
+
+#: plugins/time/time.gedit-plugin.desktop.in.h:1
+msgid "Insert Date/Time"
+msgstr "แทรกค่าวันที่และเวลา"
+
+#: plugins/time/time.gedit-plugin.desktop.in.h:2
+msgid "Inserts current date and time at the cursor position."
+msgstr "แทรกค่าวันที่และเวลาปัจจุบันที่ตำแหน่งเคอร์เซอร์"
+
+#: plugins/time/time.glade2.h:3
+msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
+msgstr "<span size=\"small\">01/11/2002 17:52:00</span>"
+
+#: plugins/time/time.glade2.h:4
+msgid "<span weight=\"bold\"> When inserting date/time...</span>"
+msgstr "<span weight=\"bold\"> เวลาเมื่อกำลังแทรกค่าวันที่และเวลา...</span>"
+
+#: plugins/time/time.glade2.h:5
+msgid "Configure date/time plugin"
+msgstr "กำหนดค่าปลั๊กอินสำหรับวันที่และเวลา"
+
+#: plugins/time/time.glade2.h:6
+msgid "Insert Date and Time"
+msgstr "แทรกค่าวันที่และเวลา"
+
+#: plugins/time/time.glade2.h:7
+msgid "Use the _selected format"
+msgstr "ใช้รูปแบบที่เ_ลือก"
+
+#: plugins/time/time.glade2.h:8
+msgid "_Insert"
+msgstr "แ_ทรก"
+
+#: plugins/time/time.glade2.h:9
+msgid "_Prompt for a format"
+msgstr "_ถามรูปแบบ"
+
+#: plugins/time/time.glade2.h:10
+msgid "_Use custom format"
+msgstr "ใช้รูปแบบ_กำหนดเอง"
+
+#: viewer/gedit-persist-stream.c:44
+msgid "Save method not implemented for gedit viewer"
 msgstr ""
 
-#: src/gedit-encodings.c:276 src/gedit-encodings.c:282
-#: src/gedit-encodings.c:301
-msgid "Vietnamese"
-msgstr ""
+#: viewer/gedit-viewer-ui.xml.h:1
+msgid "Copy the selected text to the clipboard"
+msgstr "คัดลอกข้อความที่เลือกไปยังคลิปบอร์ด"
 
-#: src/gedit-encodings.c:278
-msgid "Thai"
-msgstr ""
+#: viewer/gedit-viewer-ui.xml.h:2
+msgid "_Copy Text"
+msgstr "_คัดลอกข้อความ"
 
-#: src/recent-files/egg-recent-vfs-utils.c:90
-msgid " (invalid Unicode)"
-msgstr ""
+#~ msgid "The file \"%s\" does not exist. Would you like to create it?"
+#~ msgstr "ไม่มีแฟ้ม \"%s\" คุณต้องการสร้างแฟ้มนี้หรือไม่?"
+
+#~ msgid "Show utility debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กอรรถประโยชน์"
+
+#~ msgid "Show metadata debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊ก metadata"
+
+#~ msgid "Show mdi debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊ก mdi"
+
+#~ msgid "Show commands debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กคำสั่ง"
+
+#~ msgid "Show document debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กเอกสาร"
+
+#~ msgid "Show file debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กแฟ้ม"
+
+#~ msgid "Show plugin debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กปลั๊กอิน"
+
+#~ msgid "Show prefs debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กการปรับแต่ง"
+
+#~ msgid "Show printing debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กการพิมพ์"
+
+#~ msgid "Show search debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กการค้นหา"
+
+#~ msgid "Show undo debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กการเรียกคืนการทำ"
+
+#~ msgid "Show view debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กมุมมอง"
+
+#~ msgid "Show recent debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กล่าสุด"
+
+#~ msgid "Show session management debugging messages."
+#~ msgstr "แสดงข้อความการดีบั๊กการจัดการเซสชัน"
+
+#~ msgid "Turn on all debugging messages."
+#~ msgstr "เปิดข้อความการดีบั๊กทั้งหมด"
+
+#~ msgid " (invalid Unicode)"
+#~ msgstr " (ยูนิโค้ดที่ไม่ถูกต้อง)"
+
+#~ msgid "Encoding for Saving"
+#~ msgstr "รหัสอักขระสำหรับการบันทึก"
+
+#~ msgid "Could not find '"
+#~ msgstr "ค้นหาไม่เจอ '"
+
+#~ msgid ""
+#~ "page-setup-dialog.glade2'.\n"
+#~ "\n"
+#~ "Reinstall gedit."
+#~ msgstr ""
+#~ "page-setup-dialog.glade2'\n"
+#~ "\n"
+#~ "กรุณาติดตั้ง gedit ใหม่"
+
+#~ msgid "Could not find the required widgets inside '"
+#~ msgstr "ไม่พบ widget ที่ต้องการในนี้ '"
+
+#~ msgid "Tabs"
+#~ msgstr "แท็บ"
+
+#~ msgid "Wrap Mode"
+#~ msgstr "โหมดตัดบรรทัด"
+
+#~ msgid "Line Numbers"
+#~ msgstr "เลขเส้นบรรทัด"
+
+#~ msgid "Manager"
+#~ msgstr "ตัวจัดการ"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "ประเภท (_e):"
+
+#~ msgid "Categories"
+#~ msgstr "ประเภท"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">ย่อหน้าโดยอัตโนมัติ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">แบบอักษร &amp; สี</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">เลขเส้นบรรทัด</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">บันทึก</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">แท็บ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">เรียกคืนการทำ</span>"
+
+#~ msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
+#~ msgstr "<span weight=\"bold\" size=\"x-large\">โหมดตัดเส้นบรรทัด</span>"
+
+#~ msgid "Fonts & Colors"
+#~ msgstr "แบบอักษรและสี"
+
+#~ msgid "LOGO"
+#~ msgstr "โลโก้"
+
+#~ msgid "Line numbers"
+#~ msgstr "เลขบรรทัด"
+
+#~ msgid "Plugin manager"
+#~ msgstr "ตัวจัดการปลั๊กอิน"
+
+#~ msgid "Set _tabs width equivalent to"
+#~ msgstr "ตั้งค่าความกว้างของแท็บเท่ากับ"
+
+#~ msgid "Set limit on _undo actions to"
+#~ msgstr "ตั้งจำนวนจำกัดของการเรียกคืนการทำ (_u)"
+
+#~ msgid "Wrap mode"
+#~ msgstr "โหมดตัดเส้นบรรทัด"
+
+#~ msgid "character(s)"
+#~ msgstr "อักขระ"
+
+#~ msgid "About selected plugin"
+#~ msgstr "เกี่ยวกับปลั๊กอินที่เลือก"
+
+#~ msgid "Configure the selected plugin"
+#~ msgstr "กำหนดค่าปลั๊กอินที่เลือก"
+
+#~ msgid "It is not possible to revert an Untitled document"
+#~ msgstr "ไม่สามารถแปลงกลับแฟ้มที่ไม่มีชื่อได้"
+
+#~ msgid "File '%s' saved."
+#~ msgstr "บันทึกแฟ้ม '%s' เรียบร้อย"
+
+#~ msgid ""
+#~ "Do you want to revert to saved the document '%s'?\n"
+#~ "\n"
+#~ "You will not be able to undo this operation."
+#~ msgstr ""
+#~ "คุณต้องการแปลงกลับไปเป็นแฟ้ม '%s' หรือไม่?\n"
+#~ "\n"
+#~ "ถ้าคุณตกลงคุณจะเรียกคืนการทำไม่ได้อีก"
+
+#~ msgid "File '%s' reverted."
+#~ msgstr "แปลงแฟ้ม '%s' กลับเรียบร้อย"
+
+#~ msgid ""
+#~ "Do you want to save the changes you made to the document \"%s\"? \n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "คุณต้องการบันทึกข้อมูลที่แก้ไขลงในแฟ้ม \"%s\" หรือไม่? \n"
+#~ "\n"
+#~ "หากคุณไม่บันทึก การเปลี่ยนแปลงที่ทำไว้จะสูญหาย"
+
+#~ msgid "_Don't quit"
+#~ msgstr "ไม่ออกจากโปรแกรม (_D)"
+
+#~ msgid "_Don't close"
+#~ msgstr "ไม่ปิดหน้าต่างนี้ (_D)"
+
+#~ msgid "Replace a string"
+#~ msgstr "แทนที่ด้วยชุดตัวอักษร"
+
+#~ msgid "Search again for the same string"
+#~ msgstr "ค้นหาคำเดิมอีกครั้ง"
+
+#~ msgid "_Debug"
+#~ msgstr "ดีบั๊ก (_D)"
+
+#~ msgid "Tags Name List"
+#~ msgstr "รายชื่อแท็ก"

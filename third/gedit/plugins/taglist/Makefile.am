@@ -7,17 +7,14 @@ taglist_DATA = \
 	Latex.tags	\
 	XSLT.tags
 
-INCLUDES = \
-	-I$(top_srcdir)/src 				\
-	$(GEDIT_CFLAGS) 				\
-	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
+INCLUDES = 							\
+	-I$(top_srcdir) 					\
+	$(GEDIT_CFLAGS) 					\
+	$(WARN_CFLAGS)						\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
+	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 		\
 	-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"	\
-	-DGEDIT_TAGLIST_DIR=\""$(taglistdir)/"\"	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED			\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			
+	-DGEDIT_TAGLIST_DIR=\""$(taglistdir)/"\"
 
 plugin_LTLIBRARIES = libtaglist.la
 
@@ -37,4 +34,7 @@ plugin_in_files = taglist.gedit-plugin.desktop.in
 
 plugin_DATA = $(plugin_in_files:.gedit-plugin.desktop.in=.gedit-plugin)
 
-EXTRA_DIST = $(taglist_DATA) $(plugin_DATA)
+EXTRA_DIST = $(taglist_DATA) $(plugin_in_files)
+
+CLEANFILES = $(plugin_DATA)
+

@@ -1,3 +1,266 @@
+2004-08-30  Paolo Borelli  <pborelli@katamail.com>
+
+	* spell/gedit-automatic-spell-checker.c: fix suggestions list
+	in popup menu when using the Shift+F10 shortcut (#149475).
+
+2004-08-30  Paolo Borelli  <pborelli@katamail.com>
+
+	* spell/gedit-spell-checker-dialog.c:
+	* spell/gedit-spell-language-dialog.c: handle double clicks
+	on list items (bugs #149400 and #149761).
+
+2004-08-16  Paolo Borelli  <pborelli@katamail.com>
+
+	* spell/gedit-spell-checker.c: patch from J.H.M. Dassen that
+	adds some new languages (bug #149983).
+
+2004-08-07  Paolo Borelli  <pborelli@katamail.com>
+
+	* shell_output/shell_output.c: fix typo, s/occured/occurred.
+
+2004-07-19  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* changecase/.cvsignore: added
+
+2004-04-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* all plugins: use the same style in plugins descriptions.
+	* all plugins: do not distribute generated desktop file.
+
+2004-04-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* changecase/* : add a change case plugin.
+
+2004-03-27  Paolo Borelli  <pborelli@katamail.com>
+
+	* indent/indent.c (indent_cb): do not indent empty lines.
+
+2004-03-27  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* taglist/gedit-taglist-plugin-window.c (taglist_window_show):
+	sets the window type to UTILITY (patch by Rob Adams
+	<readams@hmc.edu>)
+
+2004-03-09  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* docinfo/Makefile.am:
+	* indent/Makefile.am:
+	* sample/Makefile.am:
+	* shell_output/Makefile.am:
+	* sort/Makefile.am:
+	* spell/Makefile.am:
+	* taglist/Makefile.am:
+	* time/Makefile.am: added $(plugin_DATA) to CLEANFILES
+
+2004-03-05  Paolo Maggi  <paolo.maggi@polito.it>
+
+	Fixes bug #104950 (Right-click unselects text if you click 
+	outside the selection)
+
+	* spell/gedit-automatic-spell-checker.c (check_range)
+	(get_word_extents_from_mark) (add_to_dictionary) (ignore_all)
+	(replace_word) (populate_popup) (button_press_event)
+	(gedit_automatic_spell_checker_new)
+	(gedit_automatic_spell_checker_attach_view): Change behavior on a 
+	right click so that cutting/copying with the mouse works again.
+	Patch by Nathan Fredrickson <nathan@silverorange.com> backported 
+	from gtkspell 2.5.0
+
+2004-03-05  Albert Chin-A-Young  <china@thewrittenword.com>
+
+	* time/Makefile.am:
+	* spell/Makefile.am:
+	* taglist/Makefile.am:
+	* sort/Makefile.am:
+	* docinfo/Makefile.am:
+	* indent/Makefile.am: 
+	* sample/Makefile.am:
+	* shell_output/Makefile.am:
+        Forgot to add some files from po/POTFILES.in into distribution
+
+2004-03-03 Thomas Voß	<tommy_vossy@web.de>
+
+	* spell/gedit-automatic-spell-checker.c(tag_highlight): Use 
+	PANGO_UNDERLINE_ERROR, remove red color from highlighted text.
+
+2004-02-24  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	[ gedit 2.5.90 released ]
+
+2004-02-24  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* indent/indent.c(update_ui):
+	* sample/sample.c (update_ui):
+	* sort/sort.c (update_ui):
+	* spell/spell.c (update_ui):
+	* time/time.c (update_ui): disable the menu items when
+	the gedit state is not NORMAL.
+
+2004-02-21  Paolo Borelli  <pborelli@katamail.com>
+
+	* shell_output/shell_output.glade2: use_filechooser=true.
+
+2004-02-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* docinfo/Makefile.am,
+	  indent/Makefile.am,
+	  sample/Makefile.am,
+	  shell_output/Makefile.am,
+	  sort/Makefile.am,
+	  spell/Makefile.am,
+	  taglist/Makefile.am,
+	  time/Makefile.am: use $(WARN_CFLAGS) and $(DISABLE_DEPRECATED_CFLAGS)
+
+2004-01-15  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	[ gedit 2.5.3 released ]
+
+2003-11-23  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* */Makefile.am: Disable deprecates only in maintainer mode
+
+2003-10-21  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	* spell/Makefile.am: don't distribute generated files (fixes
+	bug #103846)
+
+2003-10-21  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* shell_output/shell_output.c (display_error_dialog): s/occurs/occured
+	(fixes bug #117360 and bug #115633, patch by Dafydd Harries 
+	<daf@parnassus.ath.cx>)
+
+	* taglist/gedit-taglist-plugin-window.c (taglist_window_show):
+	s/Tag Groups Combo/Available Tag Lists and s/Tags Name List/Tags
+
+2003-10-20  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* shell_output/Makefile.am (INCLUDES): remove -DGTK_DISABLE_DEPRECATED
+	and -DGNOME_DISABLE_DEPRECATED
+
+	* taglist/Makefile.am (INCLUDES): remove -DGTK_DISABLE_DEPRECATED
+
+2003-10-16  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* shell_output/shell_output.c (handle_command_output): 
+	on some systems EOF is indicating by G_IO_IN and a 
+	zero-length read, and not by G_IO_HUP (fixes bug #121377,
+	thanks to Laurent Vivier <Laurent.Vivier@bull.net>)
+
+	* shell_output/shell_output.c (handle_command_output): 
+	handle the 'pos' return value from g_io_channel_read_line() 
+	correctly (fixes bug #124052, patch by 
+	Owen Taylor <otaylor@redhat.com>)
+
+2003-09-30  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* spell/gedit-spell-checker.c: the spell plugin now 
+	supports Ukranian. Fixes bug #122611, patch by 
+        Maxim Dzumanenko <mvd@mylinux.com.ua>
+
+2003-09-23  Leena Gunda  <leena.gunda@wipro.com>
+ 
+        * time/time.c (help_button_pressed):
+        Pass correct section-id for displaying help.
+        Fixes bug #123007.
+
+2003-09-09  Paolo Maggi  <paolo.maggi@polito.it>
+
+	[ gedit 2.4.0 released ]
+
+2003-06-30  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* indent/Makefile.am:
+	* indent/indent.c:
+	* shell_output/Makefile.am:
+	* shell_output/shell_output.c:
+	* sort/Makefile.am:
+	* sort/sort.c:
+	* taglist/Makefile.am:
+	* taglist/gedit-taglist-plugin-parser.c:
+	* taglist/gedit-taglist-plugin-window.c:
+	* taglist/gedit-taglist-plugin.c: Make it pass "make distcheck"
+
+2003-06-09  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* taglist/gedit-taglist-plugin-window.c (insert_tag): Apply tags to 
+	selected text (bug #105113)
+
+2003-06-06  Eric Ritezel <eisenwulf@inductiveart.net>
+
+	* indent/indent.c (indent_cb/unindent_cb): address indentation issues
+	involving block selection (#113341)
+
+2003-06-05  Eric Ritezel <eisenwulf@inductiveart.net>
+
+	* spell/spell.c (change_all_cb): modified for bitfield options solution to
+	#99730 (search backwards option) suggestion 5: "need extensible signature"
+
+2003-06-04  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* docinfo/docinfo.c:
+	* docinfo/docinfo.glade2: removed the frame (bug #101276)
+
+2003-05-23  Eric Ritezel <eisenwulf@inductiveart.net>
+
+	* indent/indent.c (indent_cb): fixed #113350
+	(indent ignores tabs/spaces preference)
+
+2003-04-17  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* taglist/gedit-taglist-plugin-window.c (tag_list_window_key_press_event_cb): 
+	fixed bug #108703 (Shift+F8 does not close Taglist if focus is 
+	on Taglist window)
+
+2003-04-18  Paolo Maggi  <paolo.maggi@polito.it>
+
+	Fixed bug #108708 - Automatic spell checker highlights unknown words already 
+	ignored in manual spell check
+
+	* spell/gedit-automatic-spell-checker.c (add_to_dictionary)
+	(ignore_all): do not call remove_tag_to_word (new GeditSPellChecker signals are
+	used to get the same result)
+	(add_word_signal_cb)(set_language_cb)(clear_session_cb): new callbacks
+	(gedit_automatic_spell_checker_new): connect the new GeditSpellChecker signals
+	(gedit_automatic_spell_checker_free_inter): disconnect new signals
+
+	* spell/gedit-spell-checker-dialog-marshal.list: added VOID:STRIN,INT, VOID:POINTER 
+	and VOID:VOID
+
+	* spell/gedit-spell-checker.[ch]: added add_word_to_session, add_word_to_personal,
+	set_language and clear_session signals
+	(get_lang_code): removed
+	(get_language_from_abrev): new static function
+	(lazy_init): set current language from aspell config information when possible
+	( gedit_spell_checker_set_language):
+	(gedit_spell_checker_add_word_to_personal):
+	(gedit_spell_checker_add_word_to_session):
+	(gedit_spell_checker_clear_session): emit the appropriate signal
+	(gedit_spell_checker_get_language): call lazy_init
+
+
+2003-04-16  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* spell/Makefile.am: don't compile preload.[ch]
+
+2003-04-16  James Willcox  <jwillcox@gnome.org>
+
+	* browse/*:
+	* diff/*:
+	* email/*:
+	* indent/*:
+	* reverse/*:
+	* shell_output/*:
+	* sort/*:
+	* taglist/*:
+
+	Removed.  These were moved to gedit-plugins a long time ago.
+
+2003-04-16  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* spell/gedit-automatic-spell-checker.c: removed unused commented code
+	(gedit_automatic_spell_checker_new): set the priority of tag_highlight
+
 2003-01-21  Paolo Maggi  <paolo.maggi@polito.it>
 
 	* diff/diff.c (diff_execute): use g_shell_quote, 

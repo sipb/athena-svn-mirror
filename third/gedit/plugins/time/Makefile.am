@@ -1,16 +1,13 @@
 # Sample plugin
 plugindir = $(libdir)/gedit-2/plugins
 
-INCLUDES = \
-	-I$(top_srcdir)/src 				\
-	$(GEDIT_CFLAGS) 				\
-	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
-	-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED			\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			
+INCLUDES = 							\
+	-I$(top_srcdir) 					\
+	$(GEDIT_CFLAGS) 					\
+	$(WARN_CFLAGS)						\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
+	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 		\
+	-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"
 
 plugin_LTLIBRARIES = libtime.la
 
@@ -26,4 +23,7 @@ plugin_in_files = time.gedit-plugin.desktop.in
 
 plugin_DATA = $(plugin_in_files:.gedit-plugin.desktop.in=.gedit-plugin)
 
-EXTRA_DIST = $(glade_DATA) $(plugin_DATA)
+EXTRA_DIST = $(glade_DATA) $(plugin_in_files)
+
+CLEANFILES = $(plugin_DATA)
+

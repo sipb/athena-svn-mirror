@@ -1,32 +1,56 @@
 # Turkish translations of gedit.
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002-2003, 2004 Free Software Foundation, Inc.
 # Nilgün Belma Bugüner <nilgun@fide.org>, 2001, 2002.
 # Fatih Demir <kabalak@gtranslator.org>, 2000.
+# Erkan <erkaN@linux-sevenler.de>, 2003.
+# RIDVAN CAN <ridvan@geleceklinux.org>, 2003.
+# Enver ALTIN <enver.altin@frontsite.com.tr>, 2004.
+# Baris Cicek <baris@teamforce.name.tr>, 2004.
+# Rıdvan CAN <ridvan@gamebox.net>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit\n"
-"POT-Creation-Date: 2003-02-04 12:35+0100\n"
-"PO-Revision-Date: 2003-01-22 22:25+0200\n"
-"Last-Translator: Barbaros Ulutaş <tebarul@yahoo.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-11 12:12+0200\n"
+"PO-Revision-Date: 2004-09-09 16:51+0300\n"
+"Last-Translator: Rıdvan CAN <ridvan@gamebox.net>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.3.1\n"
 
-#: data/GNOME_Gedit.server.in.h:1
+#: data/GNOME_Gedit.server.in.in.h:1
+msgid "Gedit View"
+msgstr "Gedit Görünümü"
+
+#: data/GNOME_Gedit.server.in.in.h:2
+msgid "Gedit View."
+msgstr "Gedit Görünümü."
+
+#: data/GNOME_Gedit.server.in.in.h:3 viewer/gedit-factory.c:53
+msgid "Gedit viewer factory"
+msgstr "Gedit görüntüleyici üreticisi"
+
+#: data/GNOME_Gedit.server.in.in.h:4
+msgid "Source"
+msgstr "Kaynak"
+
+#: data/GNOME_Gedit.server.in.in.h:5
 msgid "gedit application"
 msgstr "gedit uygulaması"
 
-#: data/GNOME_Gedit.server.in.h:2
+#: data/GNOME_Gedit.server.in.in.h:6
 msgid "gedit automation factory"
-msgstr "gedit özdevinim fabrikası"
+msgstr "gedit otomasyon üreticisi"
 
 #: data/gedit.desktop.in.h:1
 msgid "Edit text files"
 msgstr "Metin dosyalarını düzenle"
 
-#: data/gedit.desktop.in.h:2 src/gedit2.c:342
+#: data/gedit.desktop.in.h:2 gedit/gedit2.c:336
 msgid "Text Editor"
 msgstr "Metin Düzenleyici"
 
@@ -35,100 +59,106 @@ msgid ""
 "A custom font that will be used for the editing area. This will only take "
 "effect if the \"Use Default Font\" option is turned off."
 msgstr ""
-"Düzenleme bölgesi için kullanılacak özel bir yazıtipi. Bu, sadece \"Geçerli "
-"Fontu Kullan\" seçeneği kapalı ise etki gösterir."
+"Düzenleme bölgesi için kullanılacak özel bir yazıtipi. Bu, sadece \"Use "
+"Default Font\" seçeneği kapalı ise etki gösterir."
 
 #: data/gedit.schemas.in.h:2
-msgid "Auto Save"
-msgstr "Kendiliğinden Kaydet"
+msgid "Auto Detected Encodings"
+msgstr "Otomatik Algılanan Kodlamalar"
 
 #: data/gedit.schemas.in.h:3
-msgid "Auto Save Interval"
-msgstr "Kendiliğinden Kaydetme Aralığı"
+msgid "Auto Save"
+msgstr "Otomatik Kaydet"
 
 #: data/gedit.schemas.in.h:4
-msgid "Auto indent"
-msgstr "Kendiliğinden girintile"
+msgid "Auto Save Interval"
+msgstr "Otomatik Kaydetme Sıklığı"
 
 #: data/gedit.schemas.in.h:5
+msgid "Auto indent"
+msgstr "Otomatik girintile"
+
+#: data/gedit.schemas.in.h:6
 msgid "Background Color"
 msgstr "Arkaplan rengi"
 
-#: data/gedit.schemas.in.h:6
+#: data/gedit.schemas.in.h:7
 msgid ""
 "Background color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
-"Düzenleme bölgesindeki seçili metin için arkaplan rengi. Bu, sadece "
-"\"Geçerli Rengi Kullan\" seçeneği kapalı ise etki gösterir."
+"Düzenleme bölgesindeki seçili metin için arkaplan rengi. Bu, sadece \"Use "
+"Default Colors\" seçeneği kapalı ise etki gösterir."
 
-#: data/gedit.schemas.in.h:7
+#: data/gedit.schemas.in.h:8
 msgid ""
 "Background color for unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
 "Düzenleme bölgesindeki seçili olmayan metin için arkaplan rengi. Bu, sadece "
-"\"Geçerli Rengi Kullan\" seçeneği kapalı ise etki gösterir."
+"\"Use Default Colors\" seçeneği kapalı ise etki gösterir."
 
-#: data/gedit.schemas.in.h:8
+#: data/gedit.schemas.in.h:9
 msgid "Backup Copy Extension"
 msgstr "Yedekleme Kopyası Uzantısı"
 
-#: data/gedit.schemas.in.h:9
+#: data/gedit.schemas.in.h:10
 msgid "Body Font for Printing"
 msgstr "Yazdırma için Gövde Yazıtipi"
 
-#: data/gedit.schemas.in.h:10
-msgid "Create Backup Copies"
-msgstr "Yedekleme Kopyaları oluştur"
-
 #: data/gedit.schemas.in.h:11
+msgid "Create Backup Copies"
+msgstr "Yedekleme Kopyaları Oluştur"
+
+#: data/gedit.schemas.in.h:12
 msgid "Display Line Numbers"
 msgstr "Satır Sayılarını Göster"
 
-#: data/gedit.schemas.in.h:12
+#: data/gedit.schemas.in.h:13
+msgid "Display Right Margin"
+msgstr "Sağ Kenar Boşluğunu Göster"
+
+#: data/gedit.schemas.in.h:14
 msgid "Editor Font"
 msgstr "Düzenleyici Yazıtipi"
 
-#: data/gedit.schemas.in.h:13
-msgid "Encoding for Saving"
-msgstr "Kayıt için Şifreleme"
-
-#: data/gedit.schemas.in.h:14 src/dialogs/gedit-preferences-dialog.c:2296
-#: src/dialogs/gedit-encodings-dialog.c:261
-#: src/dialogs/gedit-encodings-dialog.glade2.h:2
-msgid "Encodings"
-msgstr "Şifremeler"
-
 #: data/gedit.schemas.in.h:15
+msgid "Enable Syntax Highlighting"
+msgstr "Sözdizimi Vurgulamayı Etkinleştir"
+
+#: data/gedit.schemas.in.h:16
+msgid "Encodings shown in menu"
+msgstr "Menüde gösterilen kodlamalar"
+
+#: data/gedit.schemas.in.h:17
 msgid ""
 "Extension or suffix to use for backup file names. This will only take effect "
 "if the \"Create Backup Copies\" option is turned on."
 msgstr ""
-"Yedekleme dosya adları için uzantı ya da sonekler.  Bu, sadece \"Yedekleme "
-"Kopyaları oluştur\" seçeneği kapalı ise etki gösterir."
+"Yedekleme dosya adları için uzantı ya da sonekler.  Bu, sadece \"Create "
+"Backup Copies\" seçeneği kapalı ise etki gösterir."
 
-#: data/gedit.schemas.in.h:16
+#: data/gedit.schemas.in.h:18
 msgid ""
 "Foreground color for selected text in the editing area. This will only take "
 "effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
-"Düzenleme bölgesindeki seçili metin için önplan rengi. Bu, sadece \"Geçerli "
-"Rengi Kullan\" seçeneği kapalı ise etki gösterir."
+"Düzenleme bölgesindeki seçili metin için önalan rengi. Bu, sadece \"Use "
+"Default Colors\" seçeneği kapalı ise etki gösterir."
 
-#: data/gedit.schemas.in.h:17
+#: data/gedit.schemas.in.h:19
 msgid ""
 "Foreground color for the unselected text in the editing area. This will only "
 "take effect if the \"Use Default Colors\" option is turned off."
 msgstr ""
-"Düzenleme bölgesindeki seçili olmayan metin için önplan rengi. Bu, sadece "
-"\"Geçerli Rengi Kullan\" seçeneği kapalı ise etki gösterir."
+"Düzenleme bölgesindeki seçili olmayan metin için önalan rengi. Bu, sadece "
+"\"Use Default Colors\" seçeneği kapalı ise etki gösterir."
 
-#: data/gedit.schemas.in.h:18
+#: data/gedit.schemas.in.h:20
 msgid "Header Font for Printing"
 msgstr "Yazdırma İçin Sayfa Başlığı Yazıtipi"
 
-#: data/gedit.schemas.in.h:19
+#: data/gedit.schemas.in.h:21
 msgid ""
 "If this value is 0, then no line numbers will be inserted when printing a "
 "document. Otherwise, gedit will print line numbers every such number of "
@@ -137,75 +167,98 @@ msgstr ""
 "Bu değer \"0\" ise, belge yazdırılırken satır sayıları eklenmez. Aksi halde, "
 "gedit her satır için satır sayılarını yazdırır."
 
-#: data/gedit.schemas.in.h:20
+#: data/gedit.schemas.in.h:22
 msgid "Insert spaces"
 msgstr "Boşlukları araya ekle"
 
-#: data/gedit.schemas.in.h:21
-msgid "Line Number Font for Printing"
-msgstr "Yazdırma için Satır Sayısı Yazıtipi."
-
-#: data/gedit.schemas.in.h:22
-msgid "Line Wrapping Mode"
-msgstr "Satır Kaydırma Kipi"
-
 #: data/gedit.schemas.in.h:23
-msgid ""
-"List of encodings used by gedit for reading files not encoded in UTF-8 or in "
-"the current locale encoding."
-msgstr ""
-"Gedit'in UTF-8 ya da geçerli yerel ayarlara göre kodlanmamış dosyaları "
-"okumak için kullandığı kodlamaların listesi."
+msgid "Line Number Font for Printing"
+msgstr "Yazdırma için Satır Sayısı Yazıtipi"
 
 #: data/gedit.schemas.in.h:24
-#, fuzzy
-msgid "Maximum Recent Files"
-msgstr "Son Dosyalar"
+msgid "Line Wrapping Mode"
+msgstr "Satır Bölme Kipi"
 
 #: data/gedit.schemas.in.h:25
-msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgid ""
+"List of encodings shown in Character Coding menu in open/save file selector. "
+"Only recognized encodings are used."
 msgstr ""
-"Gedit'in geri alabileceği ya da tekrarlayabileceği eylemlerin en yükek "
-"sayısı."
+"Karakter kodu menüsündeki açma/kaydetme dosya seçicideki gösterilen "
+"kodlamaların listesi. Sadece tanımlanmış kodlamaları kullanılır."
 
 #: data/gedit.schemas.in.h:26
+msgid "Maximum Recent Files"
+msgstr "Azami Son Kullanılan Dosyalar"
+
+#: data/gedit.schemas.in.h:27
+msgid "Maximum number of actions that gedit will be able to undo or redo."
+msgstr ""
+"Gedit'in geri alabileceği ya da tekrarlayabileceği eylemlerin azami miktarı."
+
+#: data/gedit.schemas.in.h:28
+msgid "Monospace 12"
+msgstr "Monospace 12"
+
+#: data/gedit.schemas.in.h:29
+msgid "Monospace Regular 9"
+msgstr "Monospace Regular 9"
+
+#: data/gedit.schemas.in.h:30
 msgid ""
 "Number of minutes after which gedit will automatically save modified files. "
 "This will only take effect if the \"Auto Save\" option is turned on."
 msgstr ""
 "Gedit'in değiştirilmiş dosyaları kaç dakika sonra kendiliğinden kaydedeceği. "
-"Bu, sadece \"Kendiliğinden Kaydet\" seçeneği açık ise etki gösterir."
+"Bu, sadece \"Auto Save\" seçeneği açık ise etki gösterir."
 
-#: data/gedit.schemas.in.h:27
-#, fuzzy
+#: data/gedit.schemas.in.h:31
 msgid "Print Header"
-msgstr "_Sayfa başlıklarını yazdır"
+msgstr "Sayfa Başlıklarını Yazdır"
 
-#: data/gedit.schemas.in.h:28
+#: data/gedit.schemas.in.h:32
 msgid "Print Line Numbers"
 msgstr "Satır Sayılarını Yazdır"
 
-#: data/gedit.schemas.in.h:29
-msgid "Printing Line Wrapping Mode"
-msgstr "Yazdırma Satır Sarmalama Kipi"
-
-#: data/gedit.schemas.in.h:30
-msgid "Selected Text Color"
-msgstr "_Seçili metin rengi:"
-
-#: data/gedit.schemas.in.h:31
-msgid "Selection Color"
-msgstr "Seçim _rengi:"
-
-#: data/gedit.schemas.in.h:32
-msgid "Show Cursor Position"
-msgstr "İmleç _Konumunu Göster"
-
 #: data/gedit.schemas.in.h:33
-msgid "Show Overwrite Mode"
-msgstr "Üstüne Yazma Kipini Göster"
+msgid "Print Syntax Highlighting"
+msgstr "Vurgulanan Sözdizimlerini Yazdır"
 
 #: data/gedit.schemas.in.h:34
+msgid "Printing Line Wrapping Mode"
+msgstr "Yazdırma Satır Bölme Kipi"
+
+#: data/gedit.schemas.in.h:35
+msgid "Right Margin Position"
+msgstr "Sağ Kenar Boşluğu Pozisyonu"
+
+#: data/gedit.schemas.in.h:36
+msgid "Sans Regular 11"
+msgstr "Sans Regular 11"
+
+#: data/gedit.schemas.in.h:37
+msgid "Sans Regular 8"
+msgstr "Sans Regular 8"
+
+#: data/gedit.schemas.in.h:38
+msgid "Selected Text Color"
+msgstr "Seçili Metin Rengi"
+
+#: data/gedit.schemas.in.h:39
+msgid "Selection Color"
+msgstr "Seçim Rengi"
+
+#: data/gedit.schemas.in.h:40
+msgid ""
+"Sorted list of encodings used by gedit for auto-detecting the encoding of a "
+"file. \"CURRENT\" is the current locale encoding. Only recognized encodings "
+"are used."
+msgstr ""
+"Dosya kodlamalarını otomatık algılarken kullanılacak kodlamaların sıralı "
+"listesi. \"CURRENT\" mevcut yerelleştirme kodlamasıdır. Sadece desteklenen "
+"kodlamalar kullanılır."
+
+#: data/gedit.schemas.in.h:41
 msgid ""
 "Specifies how to wrap long lines for printing. Use \"GTK_WRAP_NONE\" for no "
 "wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -213,13 +266,13 @@ msgid ""
 "the values are case-sensitive, so make sure they appear exactly as mentioned "
 "here."
 msgstr ""
-"Yazdırma işlemi için uzun satırların nasıl kaydırılacağını belirtir. "
-"Kaydırmamak için \"GTK_WRAP_WORD\", sözcük sınırlarında kaydırmak için "
-"\"GTK_WRAP_WORD\", bağımsız karakter sınırlarında kaydırmak için  "
-"\"GTK_WRAP_WORD\" kullanınız. Değerler BÜYÜK/küçük harf duyarlıdır, tam "
-"olarak burada yer aldığı gibi yazmaya özen gösteriniz."
+"Yazdırma işlemi için uzun satırların nasıl bölüneceğini belirtir. "
+"\"GTK_WRAP_NONE\" bölme olmaması için, \"GTK_WRAP_WORD\", sözcük "
+"sınırlarında bölme için,\"GTK_WRAP_CHAR\", bağımsız karakter sınırlarında "
+"bölme için kullanınız. Değerler büyük/küçük harf duyarlıdır, tam olarak "
+"burada yer aldığı gibi kullanınız."
 
-#: data/gedit.schemas.in.h:35
+#: data/gedit.schemas.in.h:42
 msgid ""
 "Specifies how to wrap long lines in the editing area. Use \"GTK_WRAP_NONE\" "
 "for no wrapping, \"GTK_WRAP_WORD\" for wrapping at word boundaries, and "
@@ -227,54 +280,59 @@ msgid ""
 "the values are case-sensitive, so make sure they appear exactly as mentioned "
 "here."
 msgstr ""
-"Düzenleme bölgesinde uzun satırların nasıl kaydırılacağını belirtir. "
-"Kaydırmamak için \"GTK_WRAP_WORD\", sözcük sınırlarında kaydırmak için "
-"\"GTK_WRAP_WORD\", bağımsız karakter sınırlarında kaydırmak için  "
-"\"GTK_WRAP_WORD\" kullanınız. Değerler BÜYÜK/küçük harf duyarlıdır, tam "
-"olarak burada yer aldığı gibi yazmaya özen gösteriniz."
+"Düzenleme alanı için uzun satırların nasıl bölüneceğini belirtir. "
+"\"GTK_WRAP_NONE\" bölme olmaması için, \"GTK_WRAP_WORD\", sözcük "
+"sınırlarında bölme için,\"GTK_WRAP_CHAR\", bağımsız karakter sınırlarında "
+"bölme için kullanınız. Değerler büyük/küçük harf duyarlıdır, tam olarak "
+"burada yer aldığı gibi kullanınız."
 
-#: data/gedit.schemas.in.h:36
+#: data/gedit.schemas.in.h:43
 msgid ""
 "Specifies the font to use for a document's body when printing documents."
 msgstr ""
 "Belge yazdırırken belge gövdesi için hangi yazıtipinin kullanılacağını "
 "belirtir."
 
-#: data/gedit.schemas.in.h:37
+#: data/gedit.schemas.in.h:44
 msgid ""
 "Specifies the font to use for line numbers when printing. This will only "
 "take effect if the \"Print Line Numbers\" option is non-zero."
 msgstr ""
 "Yazdırma işleminde satır sayıları için kullanılacak yazıtipini belirtir. Bu, "
-"sadece \"Satır Sayılarını Yazdır\" seçeneği \"0\" değilse etki gösterir."
+"sadece \"Print Line Numbers\" seçeneği sıfırdan başka bir şey ise etki "
+"gösterir."
 
-#: data/gedit.schemas.in.h:38
+#: data/gedit.schemas.in.h:45
 msgid ""
 "Specifies the font to use for page headers when printing a document. This "
 "will only take effect if the \"Print Header\" option is turned on."
 msgstr ""
 "Yazdırma işleminde satır sayıları için kullanılacak yazıtipini belirtir. Bu, "
-"sadece \"Satır Sayılarını Yazdır\" seçeneği \"0\" değilse etki gösterir."
+"sadece \"Print Header\" açık ise etki gösterir."
 
-#: data/gedit.schemas.in.h:39
+#: data/gedit.schemas.in.h:46
 msgid ""
 "Specifies the maximum number of recently opened files that will be displayed "
 "in the \"Recent Files\" submenu."
 msgstr ""
-"\"Son Dosyalar \" altmenüsünde görüntülenecek olan son dönemde açılmış "
-"dosyaların en yüksek sayısını belirtir."
+"\"Son Dosyalar \" altmenüsünde görüntülenecek olan en son açılmış dosyaların "
+"en yüksek sayısını belirtir."
 
-#: data/gedit.schemas.in.h:40
+#: data/gedit.schemas.in.h:47
 msgid ""
 "Specifies the number of spaces that should be displayed instead of Tab "
 "characters."
 msgstr "Sekme karakteri yerine görüntülenecek boşluk sayısını belirtir."
 
-#: data/gedit.schemas.in.h:41
-msgid "Status Bar is Visible"
-msgstr "_Durum Çubuğu Görünür Durumda"
+#: data/gedit.schemas.in.h:48
+msgid "Specifies the position of the right margin."
+msgstr "Sağ kenar boşluğunun konumunu belirtir."
 
-#: data/gedit.schemas.in.h:42
+#: data/gedit.schemas.in.h:49
+msgid "Status Bar is Visible"
+msgstr "Durum Çubuğu Görünür"
+
+#: data/gedit.schemas.in.h:50
 msgid ""
 "Style for the toolbar buttons. Possible values are \"GEDIT_TOOLBAR_SYSTEM\" "
 "to use the system's default style, \"GEDIT_TOOLBAR_ICONS\" to display icons "
@@ -283,399 +341,2290 @@ msgid ""
 "Note that the values are case-sensitive, so make sure they appear exactly as "
 "mentioned here."
 msgstr ""
-"Araç çubuğu düğmeleri biçemi. Olası değerler, sistemin geçerli biçemi için "
+"Araç çubuğu düğmeleri biçem. Geçerli değerler, sistemin geçerli biçemi için "
 "\"GEDIT_TOOLBAR_SYSTEM\", sadece simgeleri görüntülemek için "
 "\"GEDIT_TOOLBAR_ICONS\", hem simge hem metin görüntülemek için "
 "\"GEDIT_TOOLBAR_ICONS_AND_TEXT\", hem simge hem de metni yanyana "
 "görüntülemek için \"GEDIT_TOOLBAR_ICONS_BOTH_HORIZ\" olabilir. Değerler "
-"BÜYÜK/küçük harf duyarlıdır, tam olarak burada yer aldığı gibi yazmaya özen "
-"gösteriniz."
+"büyük/küçük harf duyarlıdır, tam olarak burada yer aldığı gibi kullanınız."
 
-#: data/gedit.schemas.in.h:43
+#: data/gedit.schemas.in.h:51
 msgid "Tab Size"
 msgstr "Sekme Boyutu"
 
-#: data/gedit.schemas.in.h:44
+#: data/gedit.schemas.in.h:52
 msgid "Text Color"
-msgstr "_Metin rengi:"
+msgstr "Metin Rengi"
 
-#: data/gedit.schemas.in.h:45
-msgid ""
-"The encoding method to use for saving files. Possible values are "
-"\"GEDIT_SAVE_ALWAYS_UTF8\" for mandatory UTF-8 saving, "
-"\"GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE\" if you want gedit to try to "
-"convert the document it is saving to your current locale's encoding, "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE\" if you want gedit to try "
-"to use the original file encoding (new files in UTF8) and "
-"\"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL\" if you want gedit to "
-"try to use the original file encoding (new files in current locale's "
-"encoding). If the conversion is successful, it will be used. Otherwise, UTF-"
-"8 will be used. Note that the values are case-sensitive, so make sure they "
-"appear exactly as mentioned here."
-msgstr ""
-
-#: data/gedit.schemas.in.h:46
+#: data/gedit.schemas.in.h:53
 msgid "Toolbar Buttons Style"
-msgstr "Araç çubuğu düğme stili"
+msgstr "Araç Çubuğu Düğmeleri Biçemi"
 
-#: data/gedit.schemas.in.h:47
+#: data/gedit.schemas.in.h:54
 msgid "Toolbar is Visible"
-msgstr "Araç Çubukları Görünür Durumda"
+msgstr "Araç Çubuğü Görünür"
 
-#: data/gedit.schemas.in.h:48
+#: data/gedit.schemas.in.h:55
 msgid "Undo Actions Limit"
 msgstr "Eylemleri Geri Alma Sınırı"
 
-#: data/gedit.schemas.in.h:49
+#: data/gedit.schemas.in.h:56
 msgid "Use Default Colors"
-msgstr "Ö_ntanımlı renkleri kullan"
+msgstr "Öntanımlı Renkleri Kullan"
 
-#: data/gedit.schemas.in.h:50
+#: data/gedit.schemas.in.h:57
 msgid "Use Default Font"
-msgstr "Ö_ntanımlı yazıtipini kullan"
+msgstr "Öntanımlı Yazıtipini Kullan"
 
-#: data/gedit.schemas.in.h:51
+#: data/gedit.schemas.in.h:58
 msgid ""
 "Whether gedit should automatically save modified files after a time "
 "interval. You can set the time interval with the \"Auto Save Interval\" "
 "option."
 msgstr ""
-"Gedit, değiştirilen dosyaları belli bir zaman aralığının ardından "
-"kendiliğinden kaydeder. Zaman arlığını \"Kendiliğinden Kaydetme Aralığı\" "
-"seçeneğinden ayarlayabilirsiniz."
+"Gedit, değiştirilen dosyaları belli bir zaman aralığından sonra "
+"kendiliğinden kaydeder. Zaman arlığını \"Auto Save Interval\" seçeneğinden "
+"ayarlayabilirsiniz."
 
-#: data/gedit.schemas.in.h:52
+#: data/gedit.schemas.in.h:59
 msgid ""
 "Whether gedit should create backup copies for the files it saves. You can "
 "set the backup file extension with the \"Backup Copy Extension\" option."
 msgstr ""
-"Gedit kaydettiği dosyalar için yedek kopyalar oluşturur. Yedek dosya "
-"uzantısını, \"Yedek Kopya Uzantısı\" seçeneğiyle ayarlayabilirsiniz."
+"Gedit, kaydettiği dosyalar için yedek kopyalar oluşturur. Yedek dosya "
+"uzantısını, \"Backup Copy Extension\" seçeneğiyle ayarlayabilirsiniz."
 
-#: data/gedit.schemas.in.h:53
+#: data/gedit.schemas.in.h:60
 msgid "Whether gedit should display line numbers in the editing area."
-msgstr "Gedit düzenleme alanında satır sayılarını gösterir."
+msgstr "Gedit'in düzenleme alanında satır sayılarını göstermesi."
 
-#: data/gedit.schemas.in.h:54
+#: data/gedit.schemas.in.h:61
+msgid "Whether gedit should display the right margin in the editing area."
+msgstr "Gedit'in düzenleme alanında sağ kenar boşluğunu göstermesi."
+
+#: data/gedit.schemas.in.h:62
 msgid "Whether gedit should enable auto indentation."
-msgstr "Gedit kendiliğinden girintilemeyi etkinleştirir."
+msgstr "Gedit'in kendiliğinden girintilemeyi etkinleştirmesi."
 
-#: data/gedit.schemas.in.h:55
+#: data/gedit.schemas.in.h:63
+msgid "Whether gedit should enable syntax highlighting."
+msgstr "Gedit'in sözdizimi renklendirmeyi etkinleştirmesi."
+
+#: data/gedit.schemas.in.h:64
 msgid "Whether gedit should include a document header when printing documents."
-msgstr "Gedit belgeleri yazdırırken bir belge başlığı ekler."
+msgstr "Gedit'in belgeleri yazdırırken bir belge başlığı eklemesi."
 
-#: data/gedit.schemas.in.h:56
+#: data/gedit.schemas.in.h:65
 msgid "Whether gedit should insert spaces instead of tabs."
-msgstr "Gedit sekmelerin yerine boşluk ekler."
+msgstr "Gedit'in sekmelerin yerine boşluk eklemesi."
 
-#: data/gedit.schemas.in.h:57
+#: data/gedit.schemas.in.h:66
+msgid "Whether gedit should print syntax highlighting when printing documents."
+msgstr "Gedit'in belgeleri yazdırırken bir belge başlığı eklemesi."
+
+#: data/gedit.schemas.in.h:67
 msgid ""
 "Whether the status bar at the bottom of editing windows should be visible."
 msgstr ""
-"Düzenleme penceresinin altında bulunan durum çubuğu görünür hale gelir."
+"Düzenleme penceresinin altında bulunan durum çubuğunun görünür hale gelmesi."
 
-#: data/gedit.schemas.in.h:58
-msgid ""
-"Whether the status bar should show the cursor position in editing windows. "
-"Make sure you turn on the \"Status Bar is Visible\" option for this to take "
-"effect."
-msgstr ""
-"Durum çubuğu, düzenleme penceresindeki imleç konumunu gösterir. Bu seçeneğin "
-"kullanılabilmesi için \"Durum Çubuğu Görünür\" seçeneğini "
-"etkinleştirdiğinizden emin olun."
-
-#: data/gedit.schemas.in.h:59
-msgid ""
-"Whether the status bar should show the insert/overwrite mode in editing "
-"windows. Make sure you turn on the \"Status Bar is Visible\" option for this "
-"to take effect."
-msgstr ""
-"Durum çubuğu, üzerine yazaraya ekle kipini gösterir. Bu seçeneğin "
-"kullanılabilmesi için \"Durum Çubuğu Görünür\" seçeneğini "
-"etkinleştirdiğinizden emin olun."
-
-#: data/gedit.schemas.in.h:60
+#: data/gedit.schemas.in.h:68
 msgid "Whether the toolbar should be visible in editing windows."
-msgstr "Düzenleme penceresindeki araç çubuğu görünür hale gelir."
+msgstr "Düzenleme penceresindeki araç çubuğunun görünür hale gelmesi."
 
-#: data/gedit.schemas.in.h:61
+#: data/gedit.schemas.in.h:69
 msgid ""
 "Whether to use the system's default colors for the editing area. If this "
 "option is turned off, then the colors of the editing area will be those "
 "specified in the \"Background Color\", \"Text Color\", \"Selected Text Color"
 "\", and \"Selection Color\" options."
 msgstr ""
-"Uygulama alanı için sistemin öntanımlı renkleri kullanılır. Bu seçenek "
-"kapalı ise, uygulama alanının renkleri \"Arkaplan Rengi\", \"Metin Rengi\", "
-"\"Seçilmiş Metin Rengi\" ve \"Seçim Rengi\" seçeneklerinde belirlenmiş olan "
-"renkler olur. "
+"Uygulama alanı için sistemin öntanımlı renkleri kullanması. Bu seçenek "
+"kapalı ise, uygulama alanının renkleri \"Background Color\", \"Text Color\", "
+"\"Selected Text Color\", ve \"Selection Color\" seçeneklerinde belirlenmiş "
+"olan renkler olur."
 
-#: data/gedit.schemas.in.h:62
+#: data/gedit.schemas.in.h:70
 msgid ""
 "Whether to use the system's default font for editing text instead of a font "
 "specific to gedit. If this option is turned off, then the font named in the "
 "\"Editor Font\" option will be used instead of the system font."
 msgstr ""
-"Metin düzenleme için sistemin öntanımlı yazıtipi yerine geditin özel "
-"yazıtipleri kullanılır. Bu seçenek kapalı ise, sistem yazıtipi yerine "
-"\"Düzenleyici Yazıtipi \" seçeneğinde belirlenmiş olan yazıtipi kullanılır."
+"Metin düzenleme için sistemin öntanımlı yazıtipi yerine Gedit'in özel "
+"yazıtipleri kullanması. Bu seçenek kapalı ise, sistem yazıtipi yerine "
+"\"Editor Font\" seçeneğinde belirlenmiş olan yazıtipi kullanılır."
 
-#: plugins/ASCII/ascii.c:43
-msgid "_ASCII Table"
-msgstr "_ASCII Tablosu"
+#: data/gedit.schemas.in.h:71
+msgid "[ISO-8859-15]"
+msgstr "[ISO-8859-15]"
 
-#: plugins/ASCII/ascii.c:46
-msgid "Pop-up a dialog containing an ASCII Table"
-msgstr "ASCII tablosunu içeren bir pencere oluştur"
+#: data/gedit.schemas.in.h:72
+msgid "[UTF-8,CURRENT,ISO-8859-15]"
+msgstr "[UTF-8,CURRENT,ISO-8859-15]"
 
-#: plugins/ASCII/ascii.c:303
-msgid "Char"
-msgstr "Karakter"
+#: gedit/bonobo-mdi.c:564 gedit/bonobo-mdi.c:2060
+#, c-format
+msgid "Activate %s"
+msgstr "%s etkinleşsin"
 
-#: plugins/ASCII/ascii.c:310
-msgid "Dec#"
-msgstr "Onluk#"
-
-#: plugins/ASCII/ascii.c:317
-msgid "Hex#"
-msgstr "Onaltılık#"
-
-#: plugins/ASCII/ascii.c:324
-msgid "Name"
-msgstr "İsim"
-
-#: plugins/ASCII/ascii.c:369
-#, fuzzy
-msgid "ASCII Table"
-msgstr "_ASCII Tablosu"
-
-#: plugins/ASCII/ascii.c:382 plugins/ASCII/asciitable.glade2.h:2
-msgid "_Insert char"
-msgstr "_Karakter ekle"
-
-#: plugins/ASCII/asciitable.glade2.h:1
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:1
-msgid "ASCII table"
-msgstr "ASCII tablosu"
-
-#: plugins/ASCII/ascii.gedit-plugin.desktop.in.h:2
-msgid "This plugin displays a pop-up dialog which contains an ASCII Table."
-msgstr "Bu eklenti, ASCII tablosunu gösteren bir pop-up penceresi gösterir."
-
-#. AFAIK, all cvs commit messages start with this
-#: plugins/cvschangelog/cvschangelog.c:49
-msgid "Open CVS Chan_geLogs"
-msgstr "_CVS Değişiklik Günlüğünü Aç"
-
-#: plugins/cvschangelog/cvschangelog.c:52
-#, fuzzy
-msgid "Searches for ChangeLogs in the current document and opens them"
-msgstr "Mevcut belgedeki değişiklik günlüğü iletilerini araştırır ve açar."
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:1
-msgid "A plugin that opens ChangeLogs found in CVS commit messages."
-msgstr ""
-"CVS commit iletilerinindeki değişiklik bilgileri günlüğünü açan bir eklenti."
-
-#: plugins/cvschangelog/cvschangelog.gedit-plugin.desktop.in.h:2
-msgid "CVS ChangeLog"
-msgstr "CVS Değişiklik Günlüğü"
-
-#: plugins/diff/diff.c:65
-msgid "Co_mpare Files..."
-msgstr "Dosyaları Karşılaştır..."
-
-#: plugins/diff/diff.c:68
-msgid "Makes a diff file from two documents or files"
-msgstr "İki belgeyi karşılaştırarak diff dosyası hazırlar"
-
-#. Create the dialog
-#: plugins/diff/diff.c:271 plugins/diff/diff.gedit-plugin.desktop.in.h:1
-msgid "Compare Files"
-msgstr "Dosyaları karşılaştır"
-
-#: plugins/diff/diff.c:285
-msgid "C_ompare"
-msgstr "_Karşılaştır"
-
-#: plugins/diff/diff.c:513
-msgid "Executed command"
-msgstr "Komut çalıştırıldı"
-
-#: plugins/diff/diff.c:654
-msgid "The two documents you selected are the same."
-msgstr "Seçtiğiniz iki dosya da birbirinin aynısı."
-
-#: plugins/diff/diff.c:662
+#: gedit/dialogs/close_all_dialog.glade2.h:1
 msgid ""
-"The \"first\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
+"<span weight=\"bold\" size=\"larger\">You have X documents with unsaved "
+"changes. </span>"
 msgstr ""
-"Seçtiğiniz \"ilk\" dosya bulunamadı. \n"
-"\n"
-"Lütfen geçerli bir dosya seçiniz."
+"<span weight=\"bold\" size=\"larger\">Kaydedilmemiş değişiklikler bulunan X "
+"dosyanız var. </span>"
 
-#: plugins/diff/diff.c:671
+#: gedit/dialogs/close_all_dialog.glade2.h:2
+msgid "If you don't save your documents, all your changes will be lost."
+msgstr ""
+"Belgelerinizi kaydetmediğiniz takdirde yaptığınız tüm değişiklikler "
+"kaybolacak."
+
+#: gedit/dialogs/close_all_dialog.glade2.h:3
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:660
+msgid "S_elect the documents you want to save:"
+msgstr "Kaydetmek istediğiniz _belgeleri seçin:"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:4
+msgid "Save _None"
+msgstr "Hiçbiri_ni Kaydetme"
+
+#: gedit/dialogs/close_all_dialog.glade2.h:5
+msgid "_Save Selected"
+msgstr "Seçilenleri _Kaydet"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:142
+msgid "Do_n't save"
+msgstr "Kaydet_me"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:152
+#: gedit/gedit-file-selector-util.c:140 gedit/gedit-file.c:702
+msgid "Question"
+msgstr "Soru"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:364
+#, c-format
 msgid ""
-"The \"second\" file you selected does not exist.\n"
-"\n"
-"Please provide a valid file."
-msgstr ""
-"Seçtiğiniz \"ikinci\" dosya bulunamadı. \n"
-"\n"
-"Lütfen geçerli bir dosya seçiniz."
+"If you don't save, changes from the last %ld second will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+"Kaydetmediğiniz takdirde, son %ld saniyede yaptığınız değişiklikler "
+"kaybolacak."
 
-#: plugins/diff/diff.c:679
-msgid "The two files you selected are the same."
-msgstr "İki dosya birbirinin aynısı."
-
-#: plugins/diff/diff.c:696
-msgid "The \"first\" document contains no text."
-msgstr "Seçilen ilk dosya boş."
-
-#: plugins/diff/diff.c:730
-msgid "The \"second\" document contains no text."
-msgstr "Seçilen ikinci dosya boş."
-
-#. FIXME: do better error reporting ... . Chema
-#: plugins/diff/diff.c:756
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:373
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"gedit could not create a temporary file."
+"If you don't save, changes from the last minute will be permanently lost."
 msgstr ""
-"Seçili belgelerin karşılaştırılması olanaksız. \n"
-"\n"
-"gedit geçici dosya oluşturamadı."
+"Kaydetmediğiniz takdirde, son bir dakika içerisinde yaptığınız değişiklikler "
+"kaybolacak."
 
-#: plugins/diff/diff.c:780 plugins/diff/diff.c:793
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:379
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"Error executing the diff command."
-msgstr ""
-"Seçili belgelerin karşılaştırılması olanaksız. \n"
-"\n"
-"Diff komutu çalıştırılırken hata oluştu."
+"If you don't save, changes from the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+"Kaydetmediğiniz takdirde, son bir dakika ve %ld saniye içerisinde yaptığınız "
+"değişiklikler kaybolacak."
 
-#: plugins/diff/diff.c:815
-msgid "No differences were found between the selected documents."
-msgstr "Seçilen dosyalar arasında fark bulunamadı."
-
-#: plugins/diff/diff.c:856
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:389
+#, c-format
 msgid ""
-"Impossible to compare the selected documents.\n"
-"\n"
-"The result contains invalid UTF-8 data."
-msgstr ""
-"Seçili belgelerin karşılaştırılması olanaksız. \n"
-"\n"
-"Sonuç geçersiz UTF-8 verisi içeriyor."
+"If you don't save, changes from the last %ld minute will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %ld minutes will be permanently "
+"lost."
+msgstr[0] ""
+"Kaydetmediğiniz takdirde, son %ld dakika içerisinde yaptığınız değişiklikler "
+"kaybolacak."
 
-#: plugins/diff/diff.glade2.h:1 plugins/shell_output/shell_output.glade2.h:1
-#: plugins/time/time.glade2.h:2 plugins/spell/spell-checker.glade2.h:1
-#: src/dialogs/replace.glade2.h:1 src/dialogs/uri.glade2.h:1
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:404
+msgid "If you don't save, changes from the last hour will be permanently lost."
+msgstr ""
+"Kaydetmediğiniz takdirde, son bir saatte yaptığınız değişiklikler kaybolacak."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:410
+#, c-format
+msgid ""
+"If you don't save, changes from the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+"Kaydetmediğiniz takdirde, son bir saat ve %d dakika içerisinde yaptığınız "
+"değişiklikler kaybolacak."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:425
+#, c-format
+msgid ""
+"If you don't save, changes from the last %d hour will be permanently lost."
+msgid_plural ""
+"If you don't save, changes from the last %d hours will be permanently lost."
+msgstr[0] ""
+"Kaydetmediğiniz takdirde, son %d saatte yaptığınız değişiklikler kaybolacak."
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:469
+#, c-format
+msgid "Save the changes to document \"%s\" before closing?"
+msgstr ""
+"Kapatmadan önce \"%s\" belgesinde yaptığınız değişiklikleri kaydetmek ister "
+"misiniz?"
+
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:643
+#, c-format
+msgid "There is %d document with unsaved changes. Save changes before closing?"
+msgid_plural ""
+"There are %d documents with unsaved changes. Save changes before closing?"
+msgstr[0] ""
+"Kaydedilmemiş değişikliklerin bulunduğu %d belge var. Kapatmadan önce "
+"kaydetmek ister misiniz?"
+
+#. Secondary label
+#: gedit/dialogs/gedit-close-confirmation-dialog.c:677
+msgid "If you don't save, all your changes will be permanently lost."
+msgstr "Kaydetmediğiniz takdirde, yaptığınız tüm değişiklikler kaybolacak."
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:160
+msgid "Go to Line"
+msgstr "Satıra Git"
+
+#: gedit/dialogs/gedit-dialog-goto-line.c:173
+msgid "_Go to Line"
+msgstr "_Satıra Git"
+
+#: gedit/dialogs/gedit-dialog-replace.c:136
+#: gedit/dialogs/gedit-dialog-replace.c:1125 gedit/gedit-commands.c:392
+#, c-format
+msgid "The text \"%s\" was not found."
+msgstr "\"%s\" metni bulunamadı."
+
+#: gedit/dialogs/gedit-dialog-replace.c:269 gedit/dialogs/replace.glade2.h:4
+#: gedit/gedit-ui.xml.h:46
+msgid "Replace"
+msgstr "Değiştir"
+
+#: gedit/dialogs/gedit-dialog-replace.c:282
+msgid "Replace _All"
+msgstr "_Hepsini Değiştir"
+
+#: gedit/dialogs/gedit-dialog-replace.c:285
+#: gedit/gedit-file-selector-util.c:134
+msgid "_Replace"
+msgstr "_Değiştir"
+
+#: gedit/dialogs/gedit-dialog-replace.c:402 gedit/gedit-ui.xml.h:17
+msgid "Find"
+msgstr "Bul"
+
+#: gedit/dialogs/gedit-dialog-replace.c:1134
+#, c-format
+msgid "Found and replaced %d occurrence."
+msgid_plural "Found and replaced %d occurrences."
+msgstr[0] "%d eşleşme bulundu ve değiştirildi."
+msgstr[1] "%d eşleşme bulundu ve değiştirildi."
+
+#: gedit/dialogs/gedit-dialog-uri.c:91
+msgid "Open Location"
+msgstr "Konum Aç"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:76
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Yardım gösteriminde hata oluştu: %s"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:381
+#: gedit/dialogs/gedit-encodings-dialog.c:449
+msgid "_Description"
+msgstr "_Açıklama"
+
+#: gedit/dialogs/gedit-encodings-dialog.c:390
+#: gedit/dialogs/gedit-encodings-dialog.c:458
+msgid "_Encoding"
+msgstr "_Kodlama"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:1
+msgid "A_vailable encodings:"
+msgstr "K_ullanılabilir kodlamalar:"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:2
+msgid "Character codings"
+msgstr "Karakter kodları"
+
+#: gedit/dialogs/gedit-encodings-dialog.glade2.h:3
+msgid "E_ncodings shown in menu:"
+msgstr "Menüde gösterilen _kodlamalar:"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:496
+msgid "Body font picker"
+msgstr "Gövde yazıtipi seçici"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:497
+msgid ""
+"Push this button to select the font to be used to print the body of the "
+"document"
+msgstr ""
+"Gövde yazdırılırken kullanılacak olan yazıtipini seçmek için bu düğmeyi "
+"tıklayınız"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:498
+msgid "Page headers font picker"
+msgstr "Sayfa başlıkları yazıtipi seçici"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:499
+msgid ""
+"Push this button to select the font to be used to print the page headers"
+msgstr ""
+"Sayfa başlıkları yazdırılırken kullanılacak olan yazıtipini seçmek için bu "
+"düğmeyi tıklayınız"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:500
+msgid "Line numbers font picker"
+msgstr "Satır numaraları yazıtipi seçici"
+
+#: gedit/dialogs/gedit-page-setup-dialog.c:501
+msgid "Push this button to select the font to be used to print line numbers"
+msgstr ""
+"Satır sayıları yazdırılırken kullanılacak olan yazıtipini seçmek için bu "
+"düğmeyi tıklayınız"
+
+#: gedit/dialogs/gedit-plugin-manager.c:53
+msgid "Plugin"
+msgstr "Eklenti"
+
+#: gedit/dialogs/gedit-plugin-manager.c:54
+msgid "Enabled"
+msgstr "Etkin"
+
+#: gedit/dialogs/gedit-plugin-manager.c:499
+msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
+msgstr "plugin-manager.glade2 bulunamadı, gedit'i yeniden kurun.\n"
+
+#: gedit/dialogs/gedit-plugin-manager.c:517
+msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
+msgstr ""
+"Eklenti yöneticisinin glade dosyası geçersiz -- parçaların tamamı yok.\n"
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:86
+#: gedit/dialogs/program-location-dialog.glade2.h:2
+msgid "Set program location..."
+msgstr "Program konumunu belirt..."
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:116
+#, c-format
+msgid ""
+"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
+"task.\n"
+"\n"
+"Please, specify the location of the <tt>%s</tt> program."
+msgstr ""
+"%s eklentisi, işlemi tamamlamak için <tt>%s</tt> adında bir başka programı "
+"kullanıyor.\n"
+"\n"
+"Lütfen <tt>%s</tt> programının konumunu belirtiniz."
+
+#: gedit/dialogs/gedit-plugin-program-location-dialog.c:169
+msgid "The selected file is not executable."
+msgstr "Seçilen dosya çalıştırılabilir bir dosya değil."
+
+#: gedit/dialogs/gedit-preferences-dialog.c:673
+msgid "Push this button to select the font to be used by the editor"
+msgstr ""
+"Düzenleyici tarafından kullanılacak olan yazıtipini seçmek için bu düğmeyi "
+"basınız"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:675
+msgid "Push this button to configure text color"
+msgstr "Metin rengini ayarlamak için bu düğmeyi basınız"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:677
+msgid "Push this button to configure background color"
+msgstr "Arkaplan rengini düzenlemek için bu düğmeyi basınız"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:679
+msgid ""
+"Push this button to configure the color in which the selected text should "
+"appear"
+msgstr ""
+"Seçili metnin hangi renkte görüntüleneceğini ayarlamak için bu düğmeyi "
+"basınız"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:682
+msgid ""
+"Push this button to configure the color in which the selected text should be "
+"marked"
+msgstr ""
+"Seçili metnin hangi renkte işaretleneceğini ayarlamak için bu düğmeyi basınız"
+
+#: gedit/dialogs/gedit-preferences-dialog.c:1132
+msgid "Elements"
+msgstr "Öğeler"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:1
+#: gedit/dialogs/page-setup-dialog.glade2.h:1
+#: plugins/docinfo/docinfo.glade2.h:1 plugins/time/time.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:2
+msgid "<b>Auto Indentation</b>"
+msgstr "<b>Otomatik Girintileme</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:3
+msgid "<b>Elements</b>"
+msgstr "<b>Öğeler</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:4
+msgid "<b>File Saving</b>"
+msgstr "<b>Dosya Kaydetme</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:5
+msgid "<b>Font</b>"
+msgstr "<b>Yazıtipi</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:6
+#: gedit/dialogs/page-setup-dialog.glade2.h:2
+msgid "<b>Line Numbers</b>"
+msgstr "<b>Satır Numaraları</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:7
+msgid "<b>Right Margin</b>"
+msgstr "<b>Sağ Kenar Boşluğu</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:8
+msgid "<b>Tabs</b>"
+msgstr "<b>Sekmeler</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:9
+#: gedit/dialogs/page-setup-dialog.glade2.h:3
+msgid "<b>Text Wrapping</b>"
+msgstr "<b>Metin Bölmesi</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:10
+msgid "<b>Undo</b>"
+msgstr "<b>Geri al</b>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:11
+msgid "<span weight=\"bold\">Colors</span>"
+msgstr "<span weight=\"bold\">Renkler</span>"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:12
+msgid "Bold"
+msgstr "Kalın"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:13
+msgid "Create a _backup copy of files before saving"
+msgstr "Dosyaları kaydetmeden önce _yedekleme kopyası oluştur"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:14
+msgid "D_isplay right margin"
+msgstr "Sağ kenar boşluğunu _görüntüle"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:15
+#: gedit/dialogs/page-setup-dialog.glade2.h:4
+msgid "Do not _split words over two lines"
+msgstr "Ke_limeleri iki ayrı satıra bölme"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:16
+msgid "Editor"
+msgstr "Düzenleyici"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:17
+msgid "Editor _font: "
+msgstr "_Düzenleyici yazıtipi: "
+
+#: gedit/dialogs/gedit-preferences.glade2.h:18
+#: gedit/dialogs/page-setup-dialog.glade2.h:5
+msgid "Enable text _wrapping"
+msgstr "Metin _bölmeyi etkinleştir"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:19
+msgid "Font & Colors"
+msgstr "Yazıtipleri ve Renkler"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:20
+msgid "Highlight _mode:"
+msgstr "_Vurgu kipi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:21
+msgid "Insert _spaces instead of tabs"
+msgstr "Sekme yerine _boşluk ekle"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:22
+msgid "Italic"
+msgstr "Eğik"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:23
+msgid "Normal _text color:"
+msgstr "Normal _metin rengi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:24
+msgid "Pick a color"
+msgstr "Bir renk seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:25
+msgid "Pick the background color"
+msgstr "Arkaplan rengini seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:26
+msgid "Pick the editor font"
+msgstr "Düzenleyici yazıtipi seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:27
+msgid "Pick the normal text color"
+msgstr "Normal metin rengi seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:28
+msgid "Pick the selected text color"
+msgstr "Seçilen metin rengini seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:29
+msgid "Pick the selection color"
+msgstr "Seçim rengini seç"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:30
+msgid "Plugins"
+msgstr "Eklentiler"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:31
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:32
+msgid "Se_lection color:"
+msgstr "Seçim _rengi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:33
+msgid "Selecte_d text color:"
+msgstr "_Seçili metin rengi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:34
+msgid "Strikethrough"
+msgstr "Üstü çizili"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:35
+msgid "Syntax Highlighting"
+msgstr "Sözdizimi Vurgulama"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:36
+msgid "U_se default theme colors"
+msgstr "Ö_ntanımlı tema renklerini kullan"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:37
+msgid "Underline"
+msgstr "Altını çiz"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:38
+msgid "View"
+msgstr "Görünüm"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:39
+msgid "_Autosave files every"
+msgstr "Dosyaları _otomatik kaydetme sıklığı"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:40
+msgid "_Background color:"
+msgstr "Arkaplan _rengi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:41
+msgid "_Background:"
+msgstr "_Arkaplan:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:42
+msgid "_Display line numbers"
+msgstr "Satır sayılarını _göster"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:43
+msgid "_Enable auto indentation"
+msgstr "Otomatik _girintilemeyi etkinleştir"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:44
+msgid "_Enable syntax highlighting"
+msgstr "Sözdizimi vurgulamayı _etkinleştir"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:45
+msgid "_Foreground:"
+msgstr "Ö_nplan rengi:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:46
+msgid "_Limit to"
+msgstr "Sınır_la"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:47
+msgid "_Reset to Default "
+msgstr "Öntanımlılara _Sıfırla"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:48
+msgid "_Right margin at column:"
+msgstr "Sütunlardaki sağ _kenar boşluğu:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:49
+msgid "_Tabs width:"
+msgstr "Sekme _genişliği:"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:50
+msgid "_Unlimited undo"
+msgstr "_Sınırsız geri alma"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:51
+msgid "_Use default theme font"
+msgstr "Ö_ntanımlı tema yazıtipini kullan"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:52
+msgid "_minutes"
+msgstr "_dakika"
+
+#: gedit/dialogs/gedit-preferences.glade2.h:53
+msgid "act_ions"
+msgstr "e_ylemler"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:111
+msgid "_Insert a new preview phrase."
+msgstr "_Yeni bir önizleme biçimi ekle."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:117
+msgid "Modify preview phrase..."
+msgstr "Önizleme biçimini değiştir..."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:171
+msgid "Preview"
+msgstr "Önizleme"
+
+#: gedit/dialogs/gnome-print-font-dialog.c:184
+msgid "_Modify preview phrase..."
+msgstr "Önizleme _biçimini değiştir..."
+
+#: gedit/dialogs/gnome-print-font-dialog.c:245
+msgid "Font Selection"
+msgstr "Yazıtipi Seçimi"
+
+#: gedit/dialogs/gnome-print-font-picker.c:92
+msgid "Sans Regular 12"
+msgstr "Sans Regular 12"
+
+#: gedit/dialogs/gnome-print-font-picker.c:93
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpRrSsŞşTtUuUüVvYyZz"
+
+#: gedit/dialogs/gnome-print-font-picker.c:94
+msgid "Pick a Font"
+msgstr "Bir Yazıtipi Seç"
+
+#: gedit/dialogs/gnome-print-font-picker.c:179
+msgid "Title"
+msgstr "Başlık"
+
+#: gedit/dialogs/gnome-print-font-picker.c:180
+msgid "The title of the selection dialog box"
+msgstr "Seçim penceresi başlığı"
+
+#: gedit/dialogs/gnome-print-font-picker.c:200
+msgid "Font name"
+msgstr "Yazıtipi adı"
+
+#: gedit/dialogs/gnome-print-font-picker.c:201
+msgid "Name of the selected font"
+msgstr "Seçili yazıtipinin adı"
+
+#: gedit/dialogs/gnome-print-font-picker.c:209
+msgid "Preview text"
+msgstr "Metin önizleme"
+
+#: gedit/dialogs/gnome-print-font-picker.c:210
+msgid "Preview text shown in the dialog"
+msgstr "Pencerede görüntülenen metin önizleme"
+
+#: gedit/dialogs/gnome-print-font-picker.c:218
+msgid "Use font in label"
+msgstr "Etikette yazıtipi kullan"
+
+#: gedit/dialogs/gnome-print-font-picker.c:219
+msgid "Use font in the label in font info mode"
+msgstr "Yazıtipi bilgi kipinde yazıtipini etikette kullan"
+
+#: gedit/dialogs/gnome-print-font-picker.c:227
+msgid "Font size for label"
+msgstr "Etiket için yazıtipi boyutu"
+
+#: gedit/dialogs/gnome-print-font-picker.c:228
+msgid "Font size for label in font info mode"
+msgstr "Yazıtipi bilgi kipi için yazıtipi büyüklüğü"
+
+#: gedit/dialogs/gnome-print-font-picker.c:238
+msgid "Show size"
+msgstr "Boyutu göster"
+
+#: gedit/dialogs/gnome-print-font-picker.c:239
+msgid "Show size in font info mode"
+msgstr "Yazıtipi bilgi kipinde büyüklüğü göster"
+
+#: gedit/dialogs/gnome-print-font-picker.c:1018
+msgid "Font"
+msgstr "Yazıtipi"
+
+#. gnome_print_font_picker_update_font_info
+#: gedit/dialogs/goto-line.glade2.h:1
+msgid "Goto Line"
+msgstr "Satıra Git"
+
+#: gedit/dialogs/goto-line.glade2.h:2
+msgid "_Line number:"
+msgstr "_Satır numarası:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:6
+msgid "Fonts"
+msgstr "Yazıtipleri"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:7
+msgid "General"
+msgstr "Genel"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:8
+msgid "He_aders and footers:"
+msgstr "B_aşlıklar ve dipnotlar:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:9
+msgid "Page Setup"
+msgstr "Sayfa Düzeni"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:10
+msgid "Print _line numbers"
+msgstr "_Satır numalarını yazdır"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:11
+msgid "Print s_yntax highlighting"
+msgstr "Vurgulanan sözdizimini _yazdır"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:12
+msgid "_Body:"
+msgstr "_Gövde:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:13
+msgid "_Line numbers:"
+msgstr "_Satır numarası:"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:14
+msgid "_Number every"
+msgstr "_Numara artışı için"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:15
+msgid "_Print page headers"
+msgstr "_Sayfa başlıklarını yazdır"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:16
+msgid "_Restore Default Fonts"
+msgstr "Ö_ntanımlı Yazıtipine Dön"
+
+#: gedit/dialogs/page-setup-dialog.glade2.h:17
+msgid "lines"
+msgstr "satır"
+
+#: gedit/dialogs/plugin-manager.glade2.h:1
+msgid "C_onfigure Plugin"
+msgstr "E_klentiyi Yapılandır"
+
+#: gedit/dialogs/plugin-manager.glade2.h:2
+msgid "_About Plugin"
+msgstr "Eklenti _Hakkında"
+
+#: gedit/dialogs/plugin-manager.glade2.h:3
+msgid "button1"
+msgstr "düğme1"
+
+#: gedit/dialogs/plugin-manager.glade2.h:4
+msgid "dialog1"
+msgstr "iletişim1"
+
+#: gedit/dialogs/program-location-dialog.glade2.h:1
+msgid "Browse for program location..."
+msgstr "Program konumuna gözat..."
+
+#: gedit/dialogs/program-location-dialog.glade2.h:3
+msgid "_Location to search for:"
+msgstr "Arama yapılacak _konum:"
+
+#: gedit/dialogs/program-location-dialog.glade2.h:4
+msgid "label"
+msgstr "etiket"
+
+#: gedit/dialogs/replace.glade2.h:1 gedit/dialogs/uri.glade2.h:1
+#: plugins/shell_output/shell_output.glade2.h:1
+#: plugins/spell/spell-checker.glade2.h:1 plugins/time/time.glade2.h:2
 msgid "*"
 msgstr "*"
 
-#: plugins/diff/diff.glade2.h:2
-msgid "Choose the files to compare."
-msgstr "Karşılaştırılacak dosyaları seçin."
+#: gedit/dialogs/replace.glade2.h:2 gedit/gedit-ui.xml.h:19
+msgid "Find Next"
+msgstr "Sonrakini Bul"
 
-#: plugins/diff/diff.glade2.h:3
-msgid "Compare files..."
-msgstr "Dosyaları karşılaştır..."
+#: gedit/dialogs/replace.glade2.h:3
+msgid "Match _entire word only"
+msgstr "Sadece tüm _kelimeyi eşleştir"
 
-#: plugins/diff/diff.glade2.h:4
-msgid "F_rom document"
-msgstr "_Belgeden"
+#: gedit/dialogs/replace.glade2.h:5
+msgid "Replace All"
+msgstr "Tümünü Değiştir"
 
-#: plugins/diff/diff.glade2.h:5
-msgid "First"
-msgstr "Birinci"
+#: gedit/dialogs/replace.glade2.h:6
+msgid "Replace _with: "
+msgstr "Bununla _değiştir: "
 
-#: plugins/diff/diff.glade2.h:6
-msgid "First file from disk"
-msgstr "D_isk üzerindeki ilk dosya"
+#: gedit/dialogs/replace.glade2.h:7
+msgid "Search _backwards"
+msgstr "_Geriye doğru ara"
 
-#: plugins/diff/diff.glade2.h:7
-msgid "First file from open document"
-msgstr "Açık belgeden ilk dosya"
+#: gedit/dialogs/replace.glade2.h:8
+msgid "_Match case"
+msgstr "Büyük/küçük _harf eşleştir"
 
-#: plugins/diff/diff.glade2.h:8
-msgid "From _document"
-msgstr "_Belgeden"
+#: gedit/dialogs/replace.glade2.h:9
+msgid "_Search for: "
+msgstr "_Ara: "
 
-#: plugins/diff/diff.glade2.h:9
-msgid "From a _file on disk"
-msgstr "_Disk üzerindeki bir dosyadan"
+#: gedit/dialogs/replace.glade2.h:10
+msgid "_Wrap around"
+msgstr "_Böl"
 
-#: plugins/diff/diff.glade2.h:10
-msgid "From a file o_n disk"
-msgstr "D_isk üzerindeki bir dosyadan"
+#: gedit/dialogs/uri.glade2.h:2
+msgid "Ch_aracter coding:"
+msgstr "Karakter _kodlaması:"
 
-#: plugins/diff/diff.glade2.h:11
-msgid "Ignore _blanks (-b option)"
-msgstr "Boşluk karakterlerini yoksay (-b seçeneği)"
+#: gedit/dialogs/uri.glade2.h:3
+msgid "Enter the _location (URI) of the file you would like to open:"
+msgstr "Açmak istediğiniz _dosyanın yerini (URL) girin:"
 
-#: plugins/diff/diff.glade2.h:12
-msgid "Note that this option is only supported by GNU diff"
-msgstr "Bu seçenek yalnızca GNU diff tarafından desteklenir."
+#: gedit/dialogs/uri.glade2.h:4
+msgid "Open from URI"
+msgstr "URI'den aç"
 
-#: plugins/diff/diff.glade2.h:13
-msgid "Second"
-msgstr "İkinci"
+#: gedit/gedit-commands.c:544
+msgid "translator_credits"
+msgstr "Barış Çiçek <baris@teamforce.name.tr>"
 
-#: plugins/diff/diff.glade2.h:14
-msgid "Second file from disk"
-msgstr "_Disk üzerindeki ikinci dosya"
+#: gedit/gedit-commands.c:557
+msgid "gedit"
+msgstr "gedit"
 
-#: plugins/diff/diff.glade2.h:15
-msgid "Second file from open document"
-msgstr "Açık belgeden ikinci dosya"
+#: gedit/gedit-commands.c:561
+msgid "gedit is a small and lightweight text editor for the GNOME Desktop"
+msgstr "gedit GNOME Masaüstü için küçük ve sade bir metin düzenleyicisidir"
 
-#: plugins/diff/diff.glade2.h:16
-msgid "Select the \"first\" file..."
-msgstr "\"İlk\" dosyayı seç..."
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
 
-#: plugins/diff/diff.glade2.h:17
-msgid "Select the \"second\" file..."
-msgstr "\"İkinci\" dosyayı seç..."
+#: gedit/gedit-document.c:634 gedit/gedit-document.c:652
+msgid "Untitled"
+msgstr "İsimsiz"
 
-#: plugins/diff/diff.glade2.h:18
-msgid "Select the first file to compare"
-msgstr "Karşılaştırılacak ilk dosyayı seç"
+#: gedit/gedit-document.c:640 gedit/gedit-document.c:687
+msgid "Invalid file name"
+msgstr "Geçersiz dosya adı"
 
-#: plugins/diff/diff.glade2.h:19
-msgid "Select the first open document to compare"
-msgstr "Karşılaştırılacak ilk açık belgeyi seç"
+#: gedit/gedit-document.c:838 gedit/gedit-document.c:1314
+#: viewer/gedit-persist-stream.c:120
+msgid "Invalid UTF-8 data"
+msgstr "Geçersiz UTF8 verisi"
 
-#: plugins/diff/diff.glade2.h:20
-msgid "Select the second file to compare"
-msgstr "Karşılaştırılacak ikinci dosyayı seç"
+#: gedit/gedit-document.c:1640
+#, c-format
+msgid "Could not read symbolic link information for %s"
+msgstr "%s için sembolik bağlantı bilgisi okunamadı"
 
-#: plugins/diff/diff.glade2.h:21
-msgid "Select the second open document to compare"
-msgstr "Karşılaştırılacak ikinci açık belgeyi seç"
+#: gedit/gedit-document.c:1686
+msgid "The file has too many symbolic links."
+msgstr "Dosyada çok fazla sembolik bağlantı var."
 
-#: plugins/diff/diff.glade2.h:22
-msgid "Use the _unified output format (-u option)"
-msgstr ""
+#: gedit/gedit-document.c:1742
+#, c-format
+msgid "gedit cannot handle %s: locations in write mode."
+msgstr "%s: konumları yazma kipindeyken gedit tarafından işlenemiyor."
 
-#: plugins/diff/diff.gedit-plugin.desktop.in.h:2
+#: gedit/gedit-document.c:1749
+msgid "gedit cannot handle this kind of location in write mode."
+msgstr "Gedit yazma kipindeyken bu tip yeri işleyemiyor."
+
+#: gedit/gedit-document.c:1762
+msgid "Invalid filename."
+msgstr "Geçersiz dosya adı."
+
+#: gedit/gedit-document.c:1874
 msgid ""
-"The Compare Files plugin uses the <tt>diff</tt> program to compare two "
-"documents or files on disk.\n"
-"\n"
-"For more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell "
-"prompt."
+"There is not enough disk space to save the file.\n"
+"Please free some disk space and try again."
 msgstr ""
-"Dosya Karşılaştırma eklentisi  disk üzerindeki iki dosya ya da belgeyi "
-"karşılaştırmak için <tt>diff</tt> programını kullanır.\n"
+"Dosyayı kaydetmek için yeterli disk alanı yok.\n"
+"Lütfen diskinizde yer açıp tekrar deneyin."
+
+#: gedit/gedit-document.c:1879
+msgid ""
+"The disk where you are trying to save the file has a limitation on file "
+"sizes.  Please try saving a smaller file or saving it to a disk that does "
+"not have this limitation."
+msgstr ""
+"Dosyayı kaydetmeye çalıştığınız diskte dosya boyutu sınırı var.  Lütfen daha "
+"küçük bir dosyayı kaydetmeye çalışın ya da sınırlaması olmayan bir disk "
+"kullanın."
+
+#: gedit/gedit-document.c:1923
+msgid "Could not create a backup file."
+msgstr "Yedekleme kopyası oluşturulamadı."
+
+#: gedit/gedit-encodings-option-menu.c:207
+msgid "Auto Detected"
+msgstr "Otomatik Algıla"
+
+#: gedit/gedit-encodings-option-menu.c:227
+#: gedit/gedit-encodings-option-menu.c:249
+#, c-format
+msgid "Current Locale (%s)"
+msgstr "Geçerli Yerelleştirme (%s)"
+
+#: gedit/gedit-encodings-option-menu.c:310
+msgid "Add or _Remove..."
+msgstr "Ekle ya da Çıka_r..."
+
+#: gedit/gedit-encodings.c:132 gedit/gedit-encodings.c:176
+#: gedit/gedit-encodings.c:178 gedit/gedit-encodings.c:180
+#: gedit/gedit-encodings.c:182
+msgid "Unicode"
+msgstr "Unikod"
+
+#: gedit/gedit-encodings.c:145 gedit/gedit-encodings.c:171
+#: gedit/gedit-encodings.c:212 gedit/gedit-encodings.c:255
+msgid "Western"
+msgstr "Batı"
+
+#: gedit/gedit-encodings.c:147 gedit/gedit-encodings.c:214
+#: gedit/gedit-encodings.c:251
+msgid "Central European"
+msgstr "Orta Avrupa"
+
+#: gedit/gedit-encodings.c:149
+msgid "South European"
+msgstr "Güney Avrupa"
+
+#: gedit/gedit-encodings.c:151 gedit/gedit-encodings.c:167
+#: gedit/gedit-encodings.c:265
+msgid "Baltic"
+msgstr "Baltık"
+
+#: gedit/gedit-encodings.c:153 gedit/gedit-encodings.c:216
+#: gedit/gedit-encodings.c:229 gedit/gedit-encodings.c:233
+#: gedit/gedit-encodings.c:235 gedit/gedit-encodings.c:253
+msgid "Cyrillic"
+msgstr "Kiril"
+
+#: gedit/gedit-encodings.c:155 gedit/gedit-encodings.c:222
+#: gedit/gedit-encodings.c:263
+msgid "Arabic"
+msgstr "Arapça"
+
+#: gedit/gedit-encodings.c:157 gedit/gedit-encodings.c:257
+#: plugins/spell/gedit-spell-checker.c:89
+msgid "Greek"
+msgstr "Yunanca"
+
+#: gedit/gedit-encodings.c:159
+msgid "Hebrew Visual"
+msgstr "İbranice Görünümsel"
+
+#: gedit/gedit-encodings.c:161 gedit/gedit-encodings.c:220
+#: gedit/gedit-encodings.c:261
+msgid "Hebrew"
+msgstr "İbranice"
+
+#: gedit/gedit-encodings.c:163 gedit/gedit-encodings.c:218
+#: gedit/gedit-encodings.c:259
+msgid "Turkish"
+msgstr "Türkçe"
+
+#: gedit/gedit-encodings.c:165
+msgid "Nordic"
+msgstr "İskandinav"
+
+#: gedit/gedit-encodings.c:169
+msgid "Celtic"
+msgstr "Kelt"
+
+#: gedit/gedit-encodings.c:173
+msgid "Romanian"
+msgstr "Romence"
+
+#: gedit/gedit-encodings.c:185
+msgid "Armenian"
+msgstr "Ermenice"
+
+#: gedit/gedit-encodings.c:187 gedit/gedit-encodings.c:189
+#: gedit/gedit-encodings.c:198
+msgid "Chinese Traditional"
+msgstr "Geleneksel Çince"
+
+#: gedit/gedit-encodings.c:191
+msgid "Cyrillic/Russian"
+msgstr "Kiril/Rusça"
+
+#: gedit/gedit-encodings.c:194 gedit/gedit-encodings.c:225
+#: gedit/gedit-encodings.c:240
+msgid "Japanese"
+msgstr "Japonca"
+
+#: gedit/gedit-encodings.c:196 gedit/gedit-encodings.c:227
+#: gedit/gedit-encodings.c:231 gedit/gedit-encodings.c:246
+msgid "Korean"
+msgstr "Kore Dili"
+
+#: gedit/gedit-encodings.c:201 gedit/gedit-encodings.c:203
+#: gedit/gedit-encodings.c:205 gedit/gedit-encodings.c:209
+msgid "Chinese Simplified"
+msgstr "Basitleştirilmiş Çince"
+
+#: gedit/gedit-encodings.c:207
+msgid "Georgian"
+msgstr "Gürcüce"
+
+#: gedit/gedit-encodings.c:237
+msgid "Cyrillic/Ukrainian"
+msgstr "Kiril/Ukrayna Dili"
+
+#: gedit/gedit-encodings.c:242 gedit/gedit-encodings.c:248
+#: gedit/gedit-encodings.c:267
+msgid "Vietnamese"
+msgstr "Vietnamca"
+
+#: gedit/gedit-encodings.c:244
+msgid "Thai"
+msgstr "Tayland Dili"
+
+#: gedit/gedit-file-selector-util.c:153
+#, c-format
+msgid "A file named \"%s\" already exists.\n"
+msgstr "\"%s\" adında bir dosya zaten var.\n"
+
+#: gedit/gedit-file-selector-util.c:154
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "Onu kaydettiğiniz ile değiştirmek ister misiniz?"
+
+#: gedit/gedit-file-selector-util.c:163
+#, c-format
+msgid "The file \"%s\" is read-only.\n"
+msgstr "\"%s\" dosyası salt-okunur.\n"
+
+#: gedit/gedit-file-selector-util.c:164
+msgid "Do you want to try to replace it with the one you are saving?"
+msgstr "Onu kaydettiğiniz ile değiştirmeyi denemek ister misiniz?"
+
+#: gedit/gedit-file-selector-util.c:362
+msgid "All Files"
+msgstr "Tüm Dosyalar"
+
+#: gedit/gedit-file-selector-util.c:370
+msgid "All Text Files"
+msgstr "Tüm Metin Dosyaları"
+
+#: gedit/gedit-file-selector-util.c:388
+msgid "Ch_aracter Coding:"
+msgstr "Karakter _Kodlaması:"
+
+#: gedit/gedit-file-selector-util.c:534
+msgid "Select a file to open"
+msgstr "Açılacak dosyayı seçin"
+
+#: gedit/gedit-file-selector-util.c:560
+msgid "Select files to open"
+msgstr "Açılacak dosyaları seçin"
+
+#: gedit/gedit-file-selector-util.c:592
+msgid "Select a filename to save"
+msgstr "Kaydetmek için bir dosya adı seçin"
+
+#: gedit/gedit-file.c:213
+msgid "Open File..."
+msgstr "Dosya Aç..."
+
+#: gedit/gedit-file.c:269 gedit/gedit-file.c:422
+#, c-format
+msgid "Saving document \"%s\"..."
+msgstr "\"%s\" belgesi kaydediliyor..."
+
+#: gedit/gedit-file.c:297 gedit/gedit-file.c:443
+#, c-format
+msgid "The document \"%s\" has not been saved."
+msgstr "\"%s\" belgesi kaydedilmedi."
+
+#: gedit/gedit-file.c:311 gedit/gedit-file.c:435
+#, c-format
+msgid "The document \"%s\" has been saved."
+msgstr "\"%s\" belgesi kaydedildi."
+
+#: gedit/gedit-file.c:402
+msgid "Save as..."
+msgstr "Farklı kaydet..."
+
+#: gedit/gedit-file.c:603
+#, c-format
+msgid "Revert unsaved changes to document \"%s\"?"
+msgstr ""
+"\"%s\" belgesi içerisinde yapılan değişiklikler eski haline getirilsin mi?"
+
+#: gedit/gedit-file.c:612
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld second will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld seconds will be permanently "
+"lost."
+msgstr[0] ""
+"Belge içerisinde son %ld saniye içerisinde yapılan değişiklikler kaybolacak."
+
+#: gedit/gedit-file.c:621
+msgid ""
+"Changes made to the document in the last minute will be permanently lost."
+msgstr "Belge içerisinde son bir dakikada yapılan değişiklikler kaybolacak."
+
+#: gedit/gedit-file.c:627
+#, c-format
+msgid ""
+"Changes made to the document in the last minute and %ld second will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last minute and %ld seconds will be "
+"permanently lost."
+msgstr[0] ""
+"Belge içerisinde son bir dakika ve %ld saniyede yapılan değişiklikler "
+"kaybolacak."
+
+#: gedit/gedit-file.c:637
+#, c-format
+msgid ""
+"Changes made to the document in the last %ld minute will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %ld minutes will be permanently "
+"lost."
+msgstr[0] "Belge içerisinde son %ld dakikada yapılan değişiklikler kaybolacak."
+
+#: gedit/gedit-file.c:652
+msgid "Changes made to the document in the last hour will be permanently lost."
+msgstr ""
+"Belge içerisinde son bir saat içerisinde yapılan değişiklikler kaybolacak."
+
+#: gedit/gedit-file.c:658
+#, c-format
+msgid ""
+"Changes made to the document in the last hour and %d minute will be "
+"permanently lost."
+msgid_plural ""
+"Changes made to the document in the last hour and %d minutes will be "
+"permanently lost."
+msgstr[0] ""
+"Belge içerisinde son bir saat ve %d dakikada yapılan değişiklikler "
+"kaybolacak."
+
+#: gedit/gedit-file.c:673
+#, c-format
+msgid ""
+"Changes made to the document in the last %d hour will be permanently lost."
+msgid_plural ""
+"Changes made to the document in the last %d hours will be permanently lost."
+msgstr[0] ""
+"Belge içerisinde son %d saat içerisinde yapılan değişiklikler kaybolacak."
+
+#: gedit/gedit-file.c:696 gedit/gedit-ui.xml.h:94
+msgid "_Revert"
+msgstr "_Eski Durumuna Getir"
+
+#: gedit/gedit-file.c:745
+#, c-format
+msgid "Error reverting the document \"%s\"."
+msgstr "\"%s\" belgesi ilk haline getirilirken hata."
+
+#: gedit/gedit-file.c:752
+#, c-format
+msgid "The document \"%s\" has not been reverted."
+msgstr "\"%s\" belgesi ilk haline getirilmedi."
+
+#: gedit/gedit-file.c:756
+#, c-format
+msgid "The document \"%s\" has been reverted."
+msgstr "\"%s\" belgesi ilk haline getirildi."
+
+#: gedit/gedit-file.c:784
+#, c-format
+msgid "Reverting the document \"%s\"..."
+msgstr "\"%s\" belgesi ilk haline getiriliyor..."
+
+#: gedit/gedit-file.c:911
+msgid "Could not read data from stdin."
+msgstr "stdin'den veri okunamadı."
+
+#: gedit/gedit-file.c:1059
+msgid "Reverting file:"
+msgstr "İlk haline getiriliyor:"
+
+#: gedit/gedit-file.c:1063
+msgid "Loading file:"
+msgstr "Dosya yükleniyor:"
+
+#: gedit/gedit-file.c:1231 gedit/gedit-file.c:1390
+#, c-format
+msgid "Error loading file \"%s\""
+msgstr "\"%s\" dosyasını yüklerken hata oluştu"
+
+#: gedit/gedit-file.c:1252
+#, c-format
+msgid "Loaded file \"%s\""
+msgstr "\"%s\" dosyası yüklendi"
+
+#: gedit/gedit-file.c:1329
+#, c-format
+msgid "Loaded %d file"
+msgid_plural "Loaded %d files"
+msgstr[0] "%d dosya yüklendi"
+msgstr[1] "%d dosya yüklendi"
+
+#: gedit/gedit-file.c:1363
+#, c-format
+msgid "Loading file \"%s\"..."
+msgstr "\"%s\" dosyası yükleniyor..."
+
+#: gedit/gedit-file.c:1510
+#, c-format
+msgid "Loading %d file..."
+msgid_plural "Loading %d files..."
+msgstr[0] "%d dosya yükleniyor..."
+msgstr[1] "%d dosya yükleniyor..."
+
+#. Read only
+#: gedit/gedit-mdi-child.c:248
+msgid "RO"
+msgstr "SO"
+
+#. Add the detach tab button
+#: gedit/gedit-mdi-child.c:636 gedit/gedit-ui.xml.h:85
+msgid "_Move to New Window"
+msgstr "Yeni bir _pencereye taşı"
+
+#: gedit/gedit-mdi-child.c:755
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: gedit/gedit-mdi-child.c:766
+msgid "Unicode (UTF-8)"
+msgstr "Unikod (UTF-8)"
+
+#: gedit/gedit-mdi-child.c:773
+msgid "Name:"
+msgstr "İsim:"
+
+#: gedit/gedit-mdi-child.c:774
+msgid "MIME Type:"
+msgstr "MIME Türü:"
+
+#: gedit/gedit-mdi-child.c:775
+msgid "Encoding:"
+msgstr "Kodlama:"
+
+#. Translators: %s is a URI
+#: gedit/gedit-mdi.c:284 gedit/gedit-mdi.c:444
+#, c-format
+msgid "Open '%s'"
+msgstr "'%s' adresini aç"
+
+#: gedit/gedit-mdi.c:519
+msgid "Open a recently used file"
+msgstr "En son kullanılan dosyayı aç"
+
+#: gedit/gedit-mdi.c:1278
+msgid "(modified)"
+msgstr "(değiştirildi)"
+
+#: gedit/gedit-mdi.c:1284
+msgid "(readonly)"
+msgstr "(salt okunur)"
+
+#: gedit/gedit-mdi.c:1912
+msgid "Normal"
+msgstr "Normal"
+
+#: gedit/gedit-mdi.c:1913
+msgid "Use Normal highlight mode"
+msgstr "Normal vurgu kipini kullan"
+
+#: gedit/gedit-mdi.c:1989
+#, c-format
+msgid "Use %s highlight mode"
+msgstr "%s vurgu kipini kullan"
+
+#: gedit/gedit-output-window.c:333
+msgid "Close the output window"
+msgstr "Çıktı penceresini kapat"
+
+#: gedit/gedit-output-window.c:371
+msgid "Copy selected lines"
+msgstr "Seçili satırları kopyala"
+
+#: gedit/gedit-output-window.c:391
+msgid "Clear the output window"
+msgstr "Çıktı penceresini temizle"
+
+#: gedit/gedit-output-window.c:431
+msgid "Output Lines"
+msgstr "Çıktı Satırları"
+
+#: gedit/gedit-plugins-engine.c:363
+#, c-format
+msgid "Error, unable to open module file '%s'\n"
+msgstr "Hata, modül dosyası '%s' açılamadı\n"
+
+#: gedit/gedit-plugins-engine.c:373
+#, c-format
+msgid "Error, plugin '%s' does not contain init function."
+msgstr "Hata, eklenti '%s' init işlevini içermiyor."
+
+#: gedit/gedit-plugins-engine.c:383
+#, c-format
+msgid "Error, plugin '%s' does not contain activate function."
+msgstr "Hata, eklenti '%s' etkinleştirme işlevini içermiyor."
+
+#: gedit/gedit-plugins-engine.c:393
+#, c-format
+msgid "Error, plugin '%s' does not contain deactivate function."
+msgstr "Hata, eklenti '%s' etkisizleştirme işlevini içermiyor."
+
+#: gedit/gedit-plugins-engine.c:418
+#, c-format
+msgid "Error, impossible to initialize plugin '%s'"
+msgstr "Hata, '%s' eklentisini başlatmak olanaksız"
+
+#: gedit/gedit-plugins-engine.c:469
+#, c-format
+msgid "Error, impossible to destroy plugin '%s'"
+msgstr "Hata, '%s' eklentisini yoketmek olanaksız"
+
+#: gedit/gedit-plugins-engine.c:552 gedit/gedit-plugins-engine.c:640
+#: gedit/gedit-plugins-engine.c:765
+#, c-format
+msgid "Error, impossible to activate plugin '%s'"
+msgstr "Hata, '%s' eklentisini etkinleştirmek olanaksız"
+
+#: gedit/gedit-plugins-engine.c:591 gedit/gedit-plugins-engine.c:783
+#, c-format
+msgid "Error, impossible to deactivate plugin '%s'"
+msgstr "Hata, '%s' eklentisini etkisizleştirmek olanaksız"
+
+#: gedit/gedit-plugins-engine.c:684
+#, c-format
+msgid "Error, impossible to update ui of the plugin '%s'"
+msgstr "Hata, '%s' eklentisinin arayüzünü güncellemek olanaksız"
+
+#: gedit/gedit-prefs-manager.c:177
+msgid "Cannot initialize preferences manager."
+msgstr "Tercihler yöneticisi başlatılamıyor."
+
+#: gedit/gedit-prefs-manager.c:1151
+#, c-format
+msgid "Expected `%s' got `%s' for key %s"
+msgstr "%3$s anahtarı için `%1$s' bekleniyordu, `%2$s' alındı"
+
+#: gedit/gedit-print.c:217 gedit/gedit-ui.xml.h:37
+msgid "Print"
+msgstr "Yazdır"
+
+#: gedit/gedit-print.c:226 plugins/docinfo/docinfo.glade2.h:7
+msgid "Lines"
+msgstr "Satırlar"
+
+#: gedit/gedit-print.c:330
+msgid "Preparing pages..."
+msgstr "Sayfalar hazırlanıyor..."
+
+#: gedit/gedit-print.c:357
+#, c-format
+msgid "Rendering page %d of %d..."
+msgstr "Sayfalar taranıyor %d / %d..."
+
+#: gedit/gedit-print.c:359
+#, c-format
+msgid "Printing page %d of %d..."
+msgstr "Sayfalar yazdırılıyor %d / %d..."
+
+#: gedit/gedit-print.c:381 gedit/gedit-ui.xml.h:40
+msgid "Print preview"
+msgstr "Yazdırma önizlemesi"
+
+#: gedit/gedit-print.c:547
+#, c-format
+msgid "File: %s"
+msgstr "Dosya: %s"
+
+#: gedit/gedit-print.c:553
+msgid "Page %N of %Q"
+msgstr "Sayfa %N / %Q"
+
+#: gedit/gedit-ui.xml.h:1
+msgid "About this application"
+msgstr "Bu uygulama hakkında"
+
+#: gedit/gedit-ui.xml.h:2
+msgid "Change the visibility of the output window in the current window"
+msgstr "Çıktı penceresinin geçerli penceredeki görünümünü değiştir"
+
+#: gedit/gedit-ui.xml.h:3
+msgid "Change the visibility of the statusbar in the current window"
+msgstr "Geçerli penceredeki durum çubuğunun görünürlüğünü değiştir"
+
+#: gedit/gedit-ui.xml.h:4
+msgid "Change the visibility of the toolbar in the current window"
+msgstr "Geçerli penceredeki araç çubuğunun görünürlüğünü değiştir"
+
+#: gedit/gedit-ui.xml.h:5
+msgid "Close"
+msgstr "Kapat"
+
+#: gedit/gedit-ui.xml.h:6
+msgid "Close all open files"
+msgstr "Açık tüm dosyaları kapat"
+
+#: gedit/gedit-ui.xml.h:7
+msgid "Close the current file"
+msgstr "Çalışılan dosyayı kapat"
+
+#: gedit/gedit-ui.xml.h:8
+msgid "Configure the application"
+msgstr "Uygulamayı yapılandır"
+
+#: gedit/gedit-ui.xml.h:9
+msgid "Copy"
+msgstr "Kopyala"
+
+#: gedit/gedit-ui.xml.h:10
+msgid "Copy the selection"
+msgstr "Seçimi panoya kopyala"
+
+#: gedit/gedit-ui.xml.h:11
+msgid "Create a new document"
+msgstr "Yeni bir belge oluştur"
+
+#: gedit/gedit-ui.xml.h:12
+msgid "Cu_t"
+msgstr "_Kes"
+
+#: gedit/gedit-ui.xml.h:13
+msgid "Cut"
+msgstr "Kes"
+
+#: gedit/gedit-ui.xml.h:14
+msgid "Cut the selection"
+msgstr "Seçimi kes"
+
+#: gedit/gedit-ui.xml.h:15
+msgid "Delete"
+msgstr "Sil"
+
+#: gedit/gedit-ui.xml.h:16
+msgid "Delete the selected text"
+msgstr "Seçili metni sil"
+
+#: gedit/gedit-ui.xml.h:18
+msgid "Find Ne_xt"
+msgstr "Sonrakini B_ul"
+
+#: gedit/gedit-ui.xml.h:20
+msgid "Find Pre_vious"
+msgstr "Ö_ncekini Bul"
+
+#: gedit/gedit-ui.xml.h:21
+msgid "Find Previous"
+msgstr "Öncekini Bul"
+
+#: gedit/gedit-ui.xml.h:22
+msgid "Go to _Line..."
+msgstr "Satıra _Git..."
+
+#: gedit/gedit-ui.xml.h:23
+msgid "Go to a specific line"
+msgstr "Belirtilen satıra git"
+
+#: gedit/gedit-ui.xml.h:24
+msgid "Main toolbar"
+msgstr "Ana araç çubuğu"
+
+#: gedit/gedit-ui.xml.h:25
+msgid "Move the current document to a new window"
+msgstr "Geçerli belgeyi yeni bir pencereye taşı"
+
+#: gedit/gedit-ui.xml.h:26
+msgid "New"
+msgstr "Yeni"
+
+#: gedit/gedit-ui.xml.h:27
+msgid "Open"
+msgstr "Aç"
+
+#: gedit/gedit-ui.xml.h:28
+msgid "Open Location..."
+msgstr "Konum Aç..."
+
+#: gedit/gedit-ui.xml.h:29
+msgid "Open _Location..."
+msgstr "_Konum Aç..."
+
+#: gedit/gedit-ui.xml.h:30
+msgid "Open a file"
+msgstr "Bir dosya aç"
+
+#: gedit/gedit-ui.xml.h:31
+msgid "Open a file from a specified location"
+msgstr "Belirtilen konumdan bir dosya aç"
+
+#: gedit/gedit-ui.xml.h:32
+msgid "Open the gedit manual"
+msgstr "Gedit kılavuzunu aç"
+
+#: gedit/gedit-ui.xml.h:33
+msgid "Page Set_up"
+msgstr "_Sayfa Düzeni"
+
+#: gedit/gedit-ui.xml.h:34
+msgid "Paste"
+msgstr "Yapıştır"
+
+#: gedit/gedit-ui.xml.h:35
+msgid "Paste the clipboard"
+msgstr "Panodan yapıştır"
+
+#: gedit/gedit-ui.xml.h:36
+msgid "Pr_eferences"
+msgstr "Ter_cihler"
+
+#: gedit/gedit-ui.xml.h:38
+msgid "Print Previe_w..."
+msgstr "Y_azdırma Önizleme..."
+
+#: gedit/gedit-ui.xml.h:39
+msgid "Print Preview"
+msgstr "Yazdırma Önizleme"
+
+#: gedit/gedit-ui.xml.h:41
+msgid "Print the current file"
+msgstr "Çalışılan dosyayı yazdır"
+
+#: gedit/gedit-ui.xml.h:42
+msgid "Quit"
+msgstr "Çık"
+
+#: gedit/gedit-ui.xml.h:43
+msgid "Quit the program"
+msgstr "Programdan çık"
+
+#: gedit/gedit-ui.xml.h:44
+msgid "Redo"
+msgstr "Tekrar Yap"
+
+#: gedit/gedit-ui.xml.h:45
+msgid "Redo the undone action"
+msgstr "Geri alınan işlemi tekrar yap"
+
+#: gedit/gedit-ui.xml.h:47
+msgid "Revert"
+msgstr "Eski Durumuna Getir"
+
+#: gedit/gedit-ui.xml.h:48
+msgid "Revert to a saved version of the file"
+msgstr "Dosyayı kaydedilmiş haline dönüştürür"
+
+#: gedit/gedit-ui.xml.h:49
+msgid "Save"
+msgstr "Kaydet"
+
+#: gedit/gedit-ui.xml.h:50
+msgid "Save As"
+msgstr "Farklı Kaydet"
+
+#: gedit/gedit-ui.xml.h:51
+msgid "Save _As..."
+msgstr "_Farklı Kaydet..."
+
+#: gedit/gedit-ui.xml.h:52
+msgid "Save all open files"
+msgstr "Tüm açık dosyaları kaydet"
+
+#: gedit/gedit-ui.xml.h:53
+msgid "Save the current file"
+msgstr "Çalışılan dosyayı kaydet"
+
+#: gedit/gedit-ui.xml.h:54
+msgid "Save the current file with a different name"
+msgstr "Çalışılan dosyayı başka bir dosya adıyla kaydet"
+
+#: gedit/gedit-ui.xml.h:55
+msgid "Search backwards for the same text"
+msgstr "Aynı metin için geriye doğru ara"
+
+#: gedit/gedit-ui.xml.h:56
+msgid "Search for and replace text"
+msgstr "Metin ara ve değiştir"
+
+#: gedit/gedit-ui.xml.h:57
+msgid "Search for text"
+msgstr "Metin ara"
+
+#: gedit/gedit-ui.xml.h:58
+msgid "Search forwards for the same text"
+msgstr "Aynı metni ileriye doğru ara"
+
+#: gedit/gedit-ui.xml.h:59
+msgid "Select All"
+msgstr "Tümünü Seç"
+
+#: gedit/gedit-ui.xml.h:60
+msgid "Select _All"
+msgstr "_Tümünü Seç"
+
+#: gedit/gedit-ui.xml.h:61
+msgid "Select the entire document"
+msgstr "Belgenin tamamını seçili duruma getir"
+
+#: gedit/gedit-ui.xml.h:62
+msgid ""
+"Set toolbar button style according to desktop Menu and Toolbar Preferences"
+msgstr ""
+"Menü ve Araç çubuğu seçeneklerini araç çubuğu düğme biçemine göre ayarla"
+
+#: gedit/gedit-ui.xml.h:63
+msgid "Setup the page settings"
+msgstr "Sayfa düzeni ayarları"
+
+#: gedit/gedit-ui.xml.h:64
+msgid "Show only icons in the toolbar"
+msgstr "Araç çubuğunda sadece simgeleri göster"
+
+#: gedit/gedit-ui.xml.h:65
+msgid "Show text below every icon in the toolbar"
+msgstr "Araç çubuğunda her simgenin altınde metinleri göster"
+
+#: gedit/gedit-ui.xml.h:66
+msgid "Show text only beside important icons in the toolbar"
+msgstr "Araç çubuğunda sadece önemli simgelerin yanında metinleri göster"
+
+#: gedit/gedit-ui.xml.h:67
+msgid "T_ext for Important Icons"
+msgstr "Ön_emli Simgeler İçin Metin"
+
+#: gedit/gedit-ui.xml.h:68
+msgid "Undo"
+msgstr "Geri Al"
+
+#: gedit/gedit-ui.xml.h:69
+msgid "Undo the last action"
+msgstr "Son işlemi geri al"
+
+#: gedit/gedit-ui.xml.h:70
+msgid "_About"
+msgstr "_Hakkında"
+
+#: gedit/gedit-ui.xml.h:71
+msgid "_Close"
+msgstr "Kapa_t"
+
+#: gedit/gedit-ui.xml.h:72
+msgid "_Close All"
+msgstr "_Hepsini Kapat"
+
+#: gedit/gedit-ui.xml.h:73
+msgid "_Contents"
+msgstr "_İçindekiler"
+
+#: gedit/gedit-ui.xml.h:74
+msgid "_Copy"
+msgstr "K_opyala"
+
+#: gedit/gedit-ui.xml.h:75
+msgid "_Customize Toolbar"
+msgstr "_Araç Çubuğunu Özelleştir"
+
+#: gedit/gedit-ui.xml.h:76
+msgid "_Delete"
+msgstr "_Sil"
+
+#: gedit/gedit-ui.xml.h:77
+msgid "_Desktop Default"
+msgstr "Masaüstü _Öntanımlısı"
+
+#: gedit/gedit-ui.xml.h:78
+msgid "_Documents"
+msgstr "_Belgeler"
+
+#: gedit/gedit-ui.xml.h:79
+msgid "_Edit"
+msgstr "_Düzenle"
+
+#: gedit/gedit-ui.xml.h:80
+msgid "_File"
+msgstr "_Dosya"
+
+#: gedit/gedit-ui.xml.h:81
+msgid "_Find..."
+msgstr "_Bul..."
+
+#: gedit/gedit-ui.xml.h:82
+msgid "_Help"
+msgstr "_Yardım"
+
+#: gedit/gedit-ui.xml.h:83
+msgid "_Highlight Mode"
+msgstr "_Vurgu Kipi"
+
+#: gedit/gedit-ui.xml.h:84
+msgid "_Icons Only"
+msgstr "Sadece S_imge"
+
+#: gedit/gedit-ui.xml.h:86
+msgid "_New"
+msgstr "_Yeni"
+
+#: gedit/gedit-ui.xml.h:87
+msgid "_Open..."
+msgstr "_Aç..."
+
+#: gedit/gedit-ui.xml.h:88
+msgid "_Output Window"
+msgstr "_Çıktı Penceresi"
+
+#: gedit/gedit-ui.xml.h:89
+msgid "_Paste"
+msgstr "_Yapıştır"
+
+#: gedit/gedit-ui.xml.h:90
+msgid "_Print..."
+msgstr "_Yazdır..."
+
+#: gedit/gedit-ui.xml.h:91
+msgid "_Quit"
+msgstr "Çı_k"
+
+#: gedit/gedit-ui.xml.h:92
+msgid "_Redo"
+msgstr "_Tekrar Yap"
+
+#: gedit/gedit-ui.xml.h:93
+msgid "_Replace..."
+msgstr "_Değiştir..."
+
+#: gedit/gedit-ui.xml.h:95
+msgid "_Save"
+msgstr "_Kaydet"
+
+#: gedit/gedit-ui.xml.h:96
+msgid "_Save All"
+msgstr "Hepsini _Kaydet"
+
+#: gedit/gedit-ui.xml.h:97
+msgid "_Search"
+msgstr "_Ara"
+
+#: gedit/gedit-ui.xml.h:98
+msgid "_Statusbar"
+msgstr "_Durum çubuğu"
+
+#: gedit/gedit-ui.xml.h:99
+msgid "_Text for All Icons"
+msgstr "Bütün Simgeler için Me_tin"
+
+#: gedit/gedit-ui.xml.h:100
+msgid "_Toolbar"
+msgstr "_Araç Çubuğu"
+
+#: gedit/gedit-ui.xml.h:101
+msgid "_Tools"
+msgstr "_Araçlar"
+
+#: gedit/gedit-ui.xml.h:102
+msgid "_Undo"
+msgstr "_Geri Al"
+
+#: gedit/gedit-ui.xml.h:103
+msgid "_View"
+msgstr "_Görünüm"
+
+#: gedit/gedit-utils.c:428
+#, c-format
+msgid ""
+"Could not find the file \"%s\".\n"
 "\n"
-" <tt>diff</tt> programı hakkında daha fazla bilgi için komut penceresinde  "
-"<tt>man diff</tt> yazınız."
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\" dosyası bulunamadı.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:436
+#, c-format
+msgid "Could not open the file \"%s\" because it contains corrupted data."
+msgstr "\"%s\" dosyası açılamadı çünkü zarar görmüş veri içeriyor."
+
+#: gedit/gedit-utils.c:447
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit cannot handle %s: locations."
+msgstr "\"%s\" dosyası açılamadı çünkü gedit %s: konumlarını tanımlayamıyor."
+
+#: gedit/gedit-utils.c:453
+#, c-format
+msgid "Could not open the file \"%s\""
+msgstr "\"%s\" dosyası açılamadı"
+
+#: gedit/gedit-utils.c:463
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains data in an invalid format."
+msgstr "\"%s\" dosyası açılamadı çünkü geçersiz biçimli veri içeriyor."
+
+#: gedit/gedit-utils.c:470
+#, c-format
+msgid "Could not open the file \"%s\" because it is too big."
+msgstr "\"%s\" dosyası açılamadı çünkü boyutu çok büyük."
+
+#: gedit/gedit-utils.c:477
+#, c-format
+msgid ""
+"\"%s\" is not a valid location.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\" geçerli bir konum değil.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:485
+#, c-format
+msgid "Could not open the file \"%s\" because access was denied."
+msgstr "\"%s\" dosyası açılamadı çünkü erişim engellendi."
+
+#: gedit/gedit-utils.c:492
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+"\"%s\" dosyası açılamadı çünkü çok fazla açık dosya var.\n"
+"\n"
+"Lütfen bazı açık dosyaları kapatın ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:500
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\" bir dizin.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:508
+#, c-format
+msgid ""
+"Not enough available memory to open the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+"\"%s\" dosyasını açmak için yeterli bellek yok. Lütfen çalışmakta olan bazı "
+"uygulamaları kapatıp tekrar deneyin."
+
+#: gedit/gedit-utils.c:534
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that you typed the location correctly and that your proxy "
+"settings are correct and then try again."
+msgstr ""
+"\"%s\"dosyası açılamadı çünkü \"%s\" makinesi bulunamadı.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza ve vekil sunucu ayarlarınızın doğru olduğuna "
+"emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:549
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was invalid.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\"dosyası açılamadı çünkü makine adı geçersiz.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:558
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"\"%s\"dosyası açılamadı çünkü makine adı boş.\n"
+"\n"
+"Lütfen vekil sunucu ayarlarınızın doğru olduğuna emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:567
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because the attempt to log in failed.\n"
+"\n"
+"Please, check that you typed the location correctly and try again."
+msgstr ""
+"\"%s\"dosyası açılamadı çünkü oturum açma girişimi başarısız oldu.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:576 gedit/gedit-utils.c:649
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because it contains invalid data.\n"
+"\n"
+"Probably, you are trying to open a binary file."
+msgstr ""
+"\"%s\"dosyası açılamadı çünkü geçersiz veri içeriyor.\n"
+"\n"
+"Bir ikili dosya açmaya çalışıyor olabilirsiniz."
+
+#: gedit/gedit-utils.c:585 gedit/gedit-utils.c:683
+#, c-format
+msgid "Could not open the file \"%s\"."
+msgstr "\"%s\" dosyası açılamadı."
+
+#: gedit/gedit-utils.c:625
+#, c-format
+msgid ""
+"Could not open the file \"%s\" because gedit has not been able to "
+"automatically detect the character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and try again "
+"selecting a character coding in the 'Open File...' (or 'Open Location') "
+"dialog."
+msgstr ""
+"\"%s\" dosyası açılamadı çünkü otomatik olarak algılanan karakter kodlaması "
+"gedit tarafından tanımlanamıyor.\n"
+"\n"
+"Lütfen, ikili dosya açmadığınızı kontrol edin ve karakter kodlamasını "
+"seçerek 'Dosya Aç...' (yada 'Konum Aç') penceresini kullanarak tekrar açmayı "
+"deneyin."
+
+#: gedit/gedit-utils.c:637 gedit/gedit-utils.c:667
+#, c-format
+msgid ""
+"Could not open the file \"%s\" using the %s character coding.\n"
+"\n"
+"Please, check that you are not trying to open a binary file and that you "
+"selected the right character coding in the 'Open File...' (or 'Open "
+"Location') dialog and try again."
+msgstr ""
+"%1$s karakter kodlaması kullanan \"%2$s\"dosyası açılamadı.\n"
+"\n"
+"Lütfen, ikili dosya açmadığınızı kontrol edin ve karakter kodlamasını "
+"seçerek 'Dosya Aç...' (yada 'Konum Aç') penceresini kullanarak tekrar açmayı "
+"deneyin."
+
+#: gedit/gedit-utils.c:687
+#, c-format
+msgid ""
+"Could not open the file \"%s\".\n"
+"\n"
+"%s."
+msgstr ""
+"\"%s\" dosyası açılamadı.\n"
+"\n"
+"%s."
+
+#: gedit/gedit-utils.c:739
+#, c-format
+msgid "Could not save the file \"%s\"."
+msgstr "\"%s\"dosyası kaydedilemedi."
+
+#: gedit/gedit-utils.c:743
+#, c-format
+msgid ""
+"Could not save the file \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+"\"%s\" dosyası kaydedilemedi.\n"
+"\n"
+"%s"
+
+#: gedit/gedit-utils.c:796
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot find it.\n"
+"\n"
+"Perhaps, it has recently been deleted."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü gedit bu dosyayı bulamıyor.\n"
+"\n"
+"Dosya silinmiş olabilir."
+
+#: gedit/gedit-utils.c:803
+#, c-format
+msgid "Could not revert the file \"%s\" because it contains corrupted data."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü zarar görmüş veri içeriyor."
+
+#: gedit/gedit-utils.c:814
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü gedit %s: konumlarını "
+"işleyemiyor."
+
+#: gedit/gedit-utils.c:820 gedit/gedit-utils.c:960
+#, c-format
+msgid "Could not revert the file \"%s\"."
+msgstr "\"%s\" dosyası eski haline getirilemiyor."
+
+#: gedit/gedit-utils.c:830
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains data in an invalid "
+"format."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü geçersiz biçimli veri içeriyor."
+
+#: gedit/gedit-utils.c:837
+#, c-format
+msgid "Could not revert the file \"%s\" because it is too big."
+msgstr "\"%s\" dosyası eski haline getirilemedi çünkü dosya çok büyük."
+
+#: gedit/gedit-utils.c:844
+#, c-format
+msgid "Could not revert the file \"%s\" because access was denied."
+msgstr "\"%s\" dosyası eski haline getirilemedi çünkü erişim engellendi."
+
+#: gedit/gedit-utils.c:851
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because there are too many open files.\n"
+"\n"
+"Please, close some open file and try again."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü çok fazla açık dosya var. \n"
+"\n"
+"Lütfen bazı dosyaları kapatıp tekrar deneyin."
+
+#: gedit/gedit-utils.c:859
+#, c-format
+msgid ""
+"Not enough available memory to revert the file \"%s\". Please, close some "
+"running application and try again."
+msgstr ""
+"\"%s\" dosyasının eski haline getirilmesi için yeterli bellek yok. Lütfen "
+"çalışan bazı uygulamaları kapatıp tekrar deneyin."
+
+#: gedit/gedit-utils.c:885
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü \"%s\" makinesi bulunamadı.\n"
+"\n"
+"Lütfen vekil sunucu ayarlarınızın doğru olduğundan emin olun ve tekrar "
+"deneyin."
+
+#: gedit/gedit-utils.c:899
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because the host name was empty.\n"
+"\n"
+"Please, check that your proxy settings are correct and try again."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü makine adı boş.\n"
+"\n"
+"Lütfen vekil sunucu ayarlarınızın doğru olduğuna emin olun ve tekrar deneyin."
+
+#: gedit/gedit-utils.c:906
+#, c-format
+msgid "Could not revert the file \"%s\" because the attempt to log in failed."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü giriş denemesi başarısız oldu."
+
+#: gedit/gedit-utils.c:913
+#, c-format
+msgid ""
+"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
+"\n"
+"Probably, you are trying to revert a binary file."
+msgstr ""
+"\"%s\" dosyası eski haline getirilemedi çünkü geçersiz UTF-8 bilgisi "
+"içeriyor.\n"
+"\n"
+"Bir ikili dosyayı eski haline getirmeye çalışıyor olabilirsiniz."
+
+#: gedit/gedit-utils.c:922
+msgid "It is not possible to revert an Untitled document."
+msgstr "İsimsiz bir belge eski haline getirilemez."
+
+#: gedit/gedit-utils.c:1011
+#, c-format
+msgid "The file \"%s\" already exists."
+msgstr "\"%s\" dosyası zaten var."
+
+#: gedit/gedit-utils.c:1017
+#, c-format
+msgid ""
+"\"%s\" is a directory.\n"
+"\n"
+"Please, check that you typed the location correctly."
+msgstr ""
+"\"%s\" bir dizin.\n"
+"\n"
+"Lütfen konumu doğru yazdığınıza emin olun."
+
+#: gedit/gedit-utils.c:1026
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"Make sure you have the appropriate write permissions."
+msgstr ""
+"\"%s\" dosyası oluşturulamıyor.\n"
+"\n"
+"Geçerli yazma iznine sahip olduğunuzdan emin olun."
+
+#: gedit/gedit-utils.c:1033
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"The file name is too long."
+msgstr ""
+"\"%s\" dosyası oluşturulamıyor.\n"
+"\n"
+"Dosya adı çok uzun."
+
+#: gedit/gedit-utils.c:1040
+#, c-format
+msgid ""
+"Cannot create the file \"%s\".\n"
+"\n"
+"A directory component in the file name does not exist or is a dangling "
+"symbolic link."
+msgstr ""
+"\"%s\" dosyası oluşturulamıyor.\n"
+"\n"
+"Dosya adında bulunan bir dizin bileşeni yok, ya da artık geçerli olmayan bir "
+"sembolik bağ."
+
+#: gedit/gedit-utils.c:1049
+#, c-format
+msgid ""
+"There is not enough disk space to create the file \"%s\".\n"
+"\n"
+"Please free some disk space and try again."
+msgstr ""
+"\"%s\" dosyasını oluşturmak için yeterli disk alanı yok.\n"
+"\n"
+"Lütfen disk alanı boşaltıp tekrar deneyiniz."
+
+#: gedit/gedit-utils.c:1055
+#, c-format
+msgid "Could not create the file \"%s\"."
+msgstr "\"%s\" dosyası oluşturulamıyor."
+
+#.
+#. if (col == chars)
+#. msg = g_strdup_printf (_("  Ln %d, Col %d"), row + 1, col + 1);
+#. else
+#. msg = g_strdup_printf (_("  Ln %d, Col %d-%d"), row + 1, chars + 1, col + 1);
+#.
+#: gedit/gedit-view.c:665
+#, c-format
+msgid "  Ln %d, Col %d"
+msgstr "  Sat %d, Süt %d"
+
+#: gedit/gedit-view.c:703
+msgid "  OVR"
+msgstr "  ÜZR"
+
+#: gedit/gedit-view.c:705
+msgid "  INS"
+msgstr "  ARY"
+
+#: gedit/gedit2.c:86
+msgid ""
+"Set the character encoding to be used to open the files listed on the "
+"command line"
+msgstr "Komut satırında dosya açmada kodlanmış karakter kümesi kullan"
+
+#: gedit/gedit2.c:89
+msgid "Quit an existing instance of gedit"
+msgstr "Gedit'in mevcut durumundan çık"
+
+#: gedit/gedit2.c:92
+msgid "Create a new toplevel window in an existing instance of gedit"
+msgstr "Gedit'in mevcut durumunda yeni bir en üst düzey pencere yarat"
+
+#: gedit/gedit2.c:95
+msgid "Create a new document in an existing instance of gedit"
+msgstr "Gedit'in mevcut durumuna yeni bir belge yarat"
+
+#: gedit/gedit2.c:182
+#, c-format
+msgid "The specified encoding \"%s\" is not valid\n"
+msgstr "\"%s\" geçerli bir kodlama değil\n"
+
+#: plugins/changecase/changecase.c:43
+msgid "C_hange Case"
+msgstr "Büyük/Küçük Harf _Değiştir"
+
+#: plugins/changecase/changecase.c:49
+msgid "All _Upper Case"
+msgstr "Hepsi _Büyük Harf"
+
+#: plugins/changecase/changecase.c:50
+msgid "All _Lower Case"
+msgstr "Hepsi _Küçük Harf"
+
+#: plugins/changecase/changecase.c:51
+msgid "_Invert Case"
+msgstr "Büyük/küçük _Harfleri Tersine Çevir"
+
+#: plugins/changecase/changecase.c:52
+msgid "_Title Case"
+msgstr "_Başlık Büyük/Küçük Durumu"
+
+#: plugins/changecase/changecase.c:54
+msgid "Change selected text to upper case"
+msgstr "Seçili metni büyük harfe çevir"
+
+#: plugins/changecase/changecase.c:55
+msgid "Change selected text to lower case"
+msgstr "Seçili metni küçük harfe çevir"
+
+#: plugins/changecase/changecase.c:56
+msgid "Invert the case of selected text"
+msgstr "Seçili metinde büyük/küçük harfi tersine çevir"
+
+#: plugins/changecase/changecase.c:57
+msgid "Capitalize the first letter of each selected word"
+msgstr "Seçilmiş kelimenin ilk harfini büyük yap"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:1
+msgid "Change Case"
+msgstr "Büyük/Küçük Harf Değiştir"
+
+#: plugins/changecase/changecase.gedit-plugin.desktop.in.h:2
+msgid "Changes the case of selected text."
+msgstr "Seçili metinde büyük/küçük harfleri değiştir."
 
 #: plugins/docinfo/docinfo.c:46
 msgid "_Document Statistics"
@@ -685,67 +2634,86 @@ msgstr "_Belge İstatistikleri"
 msgid "Get statistic info on current document"
 msgstr "Geçerli belgenin istatistik bilgilerini göster"
 
-#: plugins/docinfo/docinfo.c:142
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+#: plugins/docinfo/docinfo.c:140
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
 msgid "Document Statistics"
 msgstr "Belge İstatistikleri"
 
-#: plugins/docinfo/docinfo.c:153
+#: plugins/docinfo/docinfo.c:154
 msgid "_Update"
 msgstr "_Güncelle"
 
-#: plugins/docinfo/docinfo.glade2.h:1
+#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:1
+msgid ""
+"Analyzes the current document and reports the number of words, lines, "
+"characters and non-space characters in it."
+msgstr ""
+"Belge istatistik eklentisi, belgenizi analiz ederek, sözcükleri, satırları "
+"ve boşluklar dışındaki karakterleri sayar ve sonuçları size gösterir."
+
+#: plugins/docinfo/docinfo.glade2.h:2
 msgid "0"
 msgstr "0"
 
-#: plugins/docinfo/docinfo.glade2.h:2
+#: plugins/docinfo/docinfo.glade2.h:3
+msgid "<span weight=\"bold\">File Name</span>"
+msgstr "<span weight=\"bold\">Dosya Adı</span>"
+
+#: plugins/docinfo/docinfo.glade2.h:4
 msgid "Bytes"
 msgstr "Bayt"
 
-#: plugins/docinfo/docinfo.glade2.h:3
-msgid "Characters (no spaces)"
-msgstr "Karakter (boşluksuz)"
-
-#: plugins/docinfo/docinfo.glade2.h:4
-msgid "Characters (with spaces)"
-msgstr "Karakter (boşluklarla birlikte)"
-
 #: plugins/docinfo/docinfo.glade2.h:5
-msgid "File Name"
-msgstr "Dosya Adı"
+msgid "Characters (no spaces)"
+msgstr "Karakterler (boşluksuz)"
 
-#: plugins/docinfo/docinfo.glade2.h:6 src/gedit-print.c:373
-msgid "Lines"
-msgstr "Satırlar"
+#: plugins/docinfo/docinfo.glade2.h:6
+msgid "Characters (with spaces)"
+msgstr "Karakterler (boşluklu)"
 
-#: plugins/docinfo/docinfo.glade2.h:7
+#: plugins/docinfo/docinfo.glade2.h:8
 msgid "Update"
 msgstr "Güncelle"
 
-#: plugins/docinfo/docinfo.glade2.h:8
-msgid "Words"
-msgstr "Kelime"
-
 #: plugins/docinfo/docinfo.glade2.h:9
+msgid "Words"
+msgstr "Kelimeler"
+
+#: plugins/docinfo/docinfo.glade2.h:10
 msgid "gedit: Document Info plugin"
 msgstr "gedit: Belge Bilgi eklentisi"
 
-#: plugins/docinfo/docinfo.gedit-plugin.desktop.in.h:2
-msgid ""
-"The Document Statistics plugin analyzes the current document and determines "
-"the number of words, lines, characters and non-space characters in it and "
-"displays the result."
-msgstr ""
-"Belge İstatistik eklentisi, belgenizi analiz ederek, sözcükleri, satırları "
-"ve boşluklar dışındaki karakterleri sayar ve sonuçları size gösterir."
+#: plugins/indent/indent.c:45
+msgid "_Indent"
+msgstr "_Girinti"
+
+#: plugins/indent/indent.c:47
+msgid "Indent selected lines"
+msgstr "Seçili satırları girintile"
+
+#: plugins/indent/indent.c:49
+msgid "U_nindent"
+msgstr "Girintiyi _kaldır"
+
+#: plugins/indent/indent.c:51
+msgid "Unindent selected lines"
+msgstr "Seçili satırlardan girintiyi kaldır"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
+msgid "Indent lines"
+msgstr "Satırları girintile"
+
+#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
+msgid "Indents or un-indents selected lines."
+msgstr "Seçili satırları girintile ya da girintiyi aldır."
 
 #: plugins/sample/sample.c:43
 msgid "Insert User Na_me"
-msgstr "Kullanıcı _Adı Gir"
+msgstr "Kullanıcı _Adı Ekle"
 
 #: plugins/sample/sample.c:46
 msgid "Insert the user name at the cursor position"
-msgstr "İmlecin bulunduğu yere kullanıcı adını ekler."
+msgstr "İmlecin bulunduğu yere kullanıcı adını ekler"
 
 #: plugins/sample/sample.gedit-plugin.desktop.in.h:1
 msgid "Inserts the user name at the cursor position."
@@ -764,31 +2732,27 @@ msgid "Run a command"
 msgstr "Bir komut çalıştır"
 
 #: plugins/shell_output/shell_output.c:161
-#: plugins/shell_output/shell_output.c:516
+#: plugins/shell_output/shell_output.c:502
 msgid "Stopped"
-msgstr "Durdu"
+msgstr "Durduruldu"
 
-#: plugins/shell_output/shell_output.c:246
-msgid "An error occurs while running the selected command."
-msgstr "Seçilen komut çalıştırılırken bir hata oluştu."
-
-#: plugins/shell_output/shell_output.c:302
+#: plugins/shell_output/shell_output.c:282
 msgid "Run Command"
-msgstr "Komut çalıştır"
+msgstr "Komut Çalıştır"
 
-#: plugins/shell_output/shell_output.c:318
+#: plugins/shell_output/shell_output.c:301
 msgid "_Run"
 msgstr "Çalış_tır"
 
-#: plugins/shell_output/shell_output.c:522
+#: plugins/shell_output/shell_output.c:508
 msgid "Done"
-msgstr "Yapıldı"
+msgstr "Bitti"
 
-#: plugins/shell_output/shell_output.c:524
+#: plugins/shell_output/shell_output.c:510
 msgid "Failed"
-msgstr "Hata"
+msgstr "Başarısız"
 
-#: plugins/shell_output/shell_output.c:696
+#: plugins/shell_output/shell_output.c:676
 msgid ""
 "The shell command entry is empty.\n"
 "\n"
@@ -798,19 +2762,35 @@ msgstr ""
 "\n"
 "Lütfen geçerli bir komut girin."
 
-#: plugins/shell_output/shell_output.c:729
+#: plugins/shell_output/shell_output.c:695
 msgid ""
 "Error parsing the shell command.\n"
 "\n"
 "Please, insert a valid shell command."
 msgstr ""
-"Kabuk komutu çözümlenirken hata.\n"
+"Kabuk komutu ayrıştırırken hata.\n"
 "\n"
 "Lütfen geçerli bir komut girin."
 
-#: plugins/shell_output/shell_output.c:815
+#: plugins/shell_output/shell_output.c:773
 msgid "Executing command"
 msgstr "Komut çalıştırılıyor"
+
+#: plugins/shell_output/shell_output.c:841
+msgid "An error occurred while running the selected command."
+msgstr "Seçili komut çalıştırılırken bir hata oluştu."
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
+msgid ""
+"Executes an external program and, if required, displays its output in the "
+"output window."
+msgstr ""
+"Harici bir program çalıştır ve, eğer gerkliyse, çıktısını bir pencerede "
+"göster."
+
+#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
+msgid "Shell command"
+msgstr "Kabuk komutu"
 
 #: plugins/shell_output/shell_output.glade2.h:2
 msgid "Co_mmand:"
@@ -818,7 +2798,7 @@ msgstr "Ko_mut:"
 
 #: plugins/shell_output/shell_output.glade2.h:3
 msgid "Select the working directory..."
-msgstr "_Çalışma dizinini seç:"
+msgstr "Çalışma dizinini seç..."
 
 #: plugins/shell_output/shell_output.glade2.h:4
 msgid "_Show results in Output Window"
@@ -830,168 +2810,31 @@ msgstr "_Çalışma dizini:"
 
 #: plugins/shell_output/shell_output.glade2.h:6
 msgid "gedit: Shell Output plugin"
-msgstr "gedit: Kabuk Çıktı Eklentisi"
+msgstr "gedit: Kabuk Çıktı eklentisi"
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:1
-msgid ""
-"Execute an external program and eventually grabs its output in the output "
-"window."
-msgstr ""
+#: plugins/sort/sort.c:27
+msgid "S_ort..."
+msgstr "_Sırala..."
 
-#: plugins/shell_output/shell_output.gedit-plugin.desktop.in.h:2
-#, fuzzy
-msgid "Shell command"
-msgstr "_Kabuk komutu:"
+#: plugins/sort/sort.c:30
+msgid "Sort the current document or selection."
+msgstr "Geçerli belgeyi ya da seçili bölgeyi sırala."
 
-#: plugins/taglist/gedit-taglist-plugin-window.c:136
-msgid "Tag list plugin"
-msgstr "Etiket listesi eklentisi"
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:1 plugins/sort/sort.glade2.h:3
+msgid "Sort"
+msgstr "Sırala"
 
-#: plugins/taglist/gedit-taglist-plugin-window.c:154
-msgid "Select the group of tags you want to use"
-msgstr "Kullanacağınız etiket grubunu seçiniz."
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:176
-msgid "Tag Groups Combo"
-msgstr "Etiket Grupları Kutusu"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:178
-msgid "Tags Name List"
-msgstr "Etiket Adları listesi"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:188
-msgid "Double-click on a tag to insert it in the current document"
-msgstr "Herhangi bir etiketi belgeye eklemek için çift tıklatın"
-
-#: plugins/taglist/gedit-taglist-plugin-window.c:199
-msgid "Tags"
-msgstr "Etiketler"
-
-#: plugins/taglist/gedit-taglist-plugin.c:46
-msgid "Tag _List"
-msgstr "Etiket _Listesi"
-
-#.
-#. #define MENU_ITEM_NAME		"TagList"
-#.
-#: plugins/taglist/gedit-taglist-plugin.c:51
-msgid "Show the tag list window"
-msgstr "Etiket listesi penceresini göster."
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
-msgid "Tag list"
-msgstr "Etiket listesi"
-
-#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
-msgid ""
-"The tag list plugin provides a method to easily insert into a document "
-"commonly used tags/strings without having to type them."
-msgstr ""
-"Etiket listesi eklentisi, sıklıkla kullandığınız etiketlerin/dizgelerin "
-"tekrar yazılmaksızın belgeye kolaylıkla eklenmesi için bir yöntem sağlar."
-
-#: plugins/time/time.c:48
-msgid "In_sert Date and Time..."
-msgstr "Tari_h/Zaman Ekle..."
-
-#: plugins/time/time.c:51
-msgid "Insert current date and time at the cursor position"
-msgstr "İmlecin bulunduğu yere şimdiki tarihi ve saati ekler."
-
-#: plugins/time/time.c:448
-msgid "Available formats"
-msgstr "Kullanılabilir biçemler"
-
-#: plugins/time/time.c:552
-msgid "Configure insert date/time plugin..."
-msgstr "Tarih/Zaman Ekleme eklentisini yapılandır..."
-
-#: plugins/time/time.glade2.h:1 src/dialogs/gedit-preferences.glade2.h:1
-msgid "    "
-msgstr ""
-
-#: plugins/time/time.glade2.h:3
-msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
-msgstr ""
-
-#: plugins/time/time.glade2.h:4
-msgid "<span weight=\"bold\"> When inserting date/time...</span>"
-msgstr ""
-
-#: plugins/time/time.glade2.h:5
-msgid "Configure date/time plugin"
-msgstr "Tarih/Zaman Ekleme eklentisini yapılandır..."
-
-#: plugins/time/time.glade2.h:6
-msgid "Insert Date and Time"
-msgstr "Tarih ve Zaman Ekle"
-
-#: plugins/time/time.glade2.h:7
-#, fuzzy
-msgid "Use the _selected format"
-msgstr "Seçili metni sil"
-
-#: plugins/time/time.glade2.h:8
-#, fuzzy
-msgid "_Insert"
-msgstr "_Karakter ekle"
-
-#: plugins/time/time.glade2.h:9
-msgid "_Prompt for a format"
-msgstr ""
-
-#: plugins/time/time.glade2.h:10
-msgid "_Use custom format"
-msgstr ""
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:1
-msgid "Insert Date/Time"
-msgstr "Tarih/Zaman Ekle"
-
-#: plugins/time/time.gedit-plugin.desktop.in.h:2
-#, fuzzy
-msgid "Inserts current date and time at the cursor position."
-msgstr "Kürsörün bulunduğu yere şimdiki tarihi ve saati ekler."
-
-#: plugins/indent/indent.c:45
-#, fuzzy
-msgid "_Indent"
-msgstr "_İçerik"
-
-#: plugins/indent/indent.c:47
-#, fuzzy
-msgid "Indent selected lines"
-msgstr "Seçilen eklentiyi yapılandır"
-
-#: plugins/indent/indent.c:49
-msgid "U_nindent"
-msgstr ""
-
-#: plugins/indent/indent.c:51
-#, fuzzy
-msgid "Unindent selected lines"
-msgstr "Seçilen eklentiyi yapılandır"
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:1
-msgid "Indent lines"
-msgstr "Satırları içeriye al"
-
-#: plugins/indent/indent.gedit-plugin.desktop.in.h:2
-msgid "Indent or un-indent selected lines."
-msgstr "Seçili satırları "
+#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
+msgid "Sorts a document or selected text."
+msgstr "Bir belge veya seçili metni sıraya dizer."
 
 #: plugins/sort/sort.glade2.h:1
-#, fuzzy
 msgid "R_emove duplicates"
-msgstr "Eklentileri Ekle/Kaldır"
+msgstr "Çiftleri _sil"
 
 #: plugins/sort/sort.glade2.h:2
 msgid "S_tart at column:"
-msgstr "Sü_tunda başla:"
-
-#: plugins/sort/sort.glade2.h:3 plugins/sort/sort.gedit-plugin.desktop.in.h:1
-msgid "Sort"
-msgstr "Sırala"
+msgstr "Sü_tundan başla:"
 
 #: plugins/sort/sort.glade2.h:4
 msgid "You cannot undo a sort operation"
@@ -999,176 +2842,195 @@ msgstr "Bir sıralama işlemini geri alamazsınız"
 
 #: plugins/sort/sort.glade2.h:5
 msgid "_Ignore case"
-msgstr "BÜYÜK/küçük harf duyarlılığını _gözardı et"
+msgstr "Büyük/küçük harf önemli _değil"
 
 #: plugins/sort/sort.glade2.h:6
 msgid "_Reverse order"
-msgstr ""
+msgstr "_Ters sırada"
 
 #: plugins/sort/sort.glade2.h:7
 msgid "_Sort"
-msgstr ""
+msgstr "_Sırala"
 
-#: plugins/sort/sort.gedit-plugin.desktop.in.h:2
-#, fuzzy
-msgid "Sorts a document or selected text."
-msgstr "Seçtiğiniz iki dosya da birbirinin aynısı."
-
-#: plugins/spell/gedit-automatic-spell-checker.c:322
-#: plugins/spell/gedit-spell-checker-dialog.c:504
+#: plugins/spell/gedit-automatic-spell-checker.c:350
+#: plugins/spell/gedit-spell-checker-dialog.c:511
 msgid "(no suggested words)"
 msgstr "(kelime önerisi yok)"
 
-#: plugins/spell/gedit-automatic-spell-checker.c:346
-#, fuzzy
+#: plugins/spell/gedit-automatic-spell-checker.c:374
 msgid "_More..."
-msgstr "_Aç..."
+msgstr "_Daha fazla..."
 
 #. Ignore all
-#: plugins/spell/gedit-automatic-spell-checker.c:399
+#: plugins/spell/gedit-automatic-spell-checker.c:427
 msgid "_Ignore All"
-msgstr "Hepsini _Gözardı Et"
+msgstr "Hepsini _Yoksay"
 
 #. + Add to Dictionary
-#: plugins/spell/gedit-automatic-spell-checker.c:412
+#: plugins/spell/gedit-automatic-spell-checker.c:440
 msgid "_Add"
 msgstr "_Ekle"
 
-#: plugins/spell/gedit-automatic-spell-checker.c:449
+#: plugins/spell/gedit-automatic-spell-checker.c:477
 msgid "_Spelling Suggestions..."
-msgstr "_Yazım Önerileri"
+msgstr "_Yazım Önerileri..."
 
-#: plugins/spell/gedit-spell-checker-dialog.c:285
+#: plugins/spell/gedit-spell-checker-dialog.c:289
 msgid "Check Spelling"
-msgstr "Dilbilgisi denetimi"
+msgstr "Yazım Denetimi"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:296
+#: plugins/spell/gedit-spell-checker-dialog.c:300
 msgid "Suggestions"
 msgstr "Öneriler"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:608
+#: plugins/spell/gedit-spell-checker-dialog.c:615
 msgid "(correct spelling)"
-msgstr ""
+msgstr "(imla hatalarını düzelt)"
 
-#: plugins/spell/gedit-spell-checker-dialog.c:785
+#: plugins/spell/gedit-spell-checker-dialog.c:800
 msgid "Completed spell checking"
-msgstr "Dilbilgisi denetimi tamamlandı"
+msgstr "Yazım denetimi tamamlandı"
 
-#: plugins/spell/gedit-spell-checker.c:73
+#: plugins/spell/gedit-spell-checker.c:80
+msgid "Bulgarian"
+msgstr "Bulgarca"
+
+#: plugins/spell/gedit-spell-checker.c:81
+msgid "Bengali"
+msgstr "Bengali"
+
+#: plugins/spell/gedit-spell-checker.c:82
 msgid "Breton"
 msgstr "Breton"
 
-#: plugins/spell/gedit-spell-checker.c:74
+#: plugins/spell/gedit-spell-checker.c:83
 msgid "Catalan"
 msgstr "Katalan"
 
-#: plugins/spell/gedit-spell-checker.c:75
+#: plugins/spell/gedit-spell-checker.c:84
 msgid "Czech"
 msgstr "Çekçe"
 
-#: plugins/spell/gedit-spell-checker.c:76
+#: plugins/spell/gedit-spell-checker.c:85
+msgid "Welsh"
+msgstr "Galce"
+
+#: plugins/spell/gedit-spell-checker.c:86
 msgid "Danish"
 msgstr "Danimarkaca"
 
-#: plugins/spell/gedit-spell-checker.c:77
+#: plugins/spell/gedit-spell-checker.c:87
 msgid "German (Germany)"
 msgstr "Almanca (Almanya)"
 
-#: plugins/spell/gedit-spell-checker.c:78
+#: plugins/spell/gedit-spell-checker.c:88
 msgid "German (Swiss)"
 msgstr "Almanca (İsviçre)"
 
-#: plugins/spell/gedit-spell-checker.c:79
+#: plugins/spell/gedit-spell-checker.c:90
 msgid "English (American)"
 msgstr "İngilizce (Amerika)"
 
-#: plugins/spell/gedit-spell-checker.c:80
+#: plugins/spell/gedit-spell-checker.c:91
 msgid "English (British)"
 msgstr "İngilizce (Britanya)"
 
-#: plugins/spell/gedit-spell-checker.c:81
+#: plugins/spell/gedit-spell-checker.c:92
 msgid "English (Canadian)"
 msgstr "İngilizce (Kanada)"
 
-#: plugins/spell/gedit-spell-checker.c:82
+#: plugins/spell/gedit-spell-checker.c:93
 msgid "Esperanto"
 msgstr "Esperanto"
 
-#: plugins/spell/gedit-spell-checker.c:83
+#: plugins/spell/gedit-spell-checker.c:94
 msgid "Spanish"
 msgstr "İspanyolca"
 
-#: plugins/spell/gedit-spell-checker.c:84
+#: plugins/spell/gedit-spell-checker.c:95
+msgid "Finnish"
+msgstr "Fince"
+
+#: plugins/spell/gedit-spell-checker.c:96
 msgid "Faroese"
 msgstr "Faroese"
 
-#: plugins/spell/gedit-spell-checker.c:85
+#: plugins/spell/gedit-spell-checker.c:97
 msgid "French (France)"
 msgstr "Fransızca (Fransa)"
 
-#: plugins/spell/gedit-spell-checker.c:86
+#: plugins/spell/gedit-spell-checker.c:98
 msgid "French (Swiss)"
 msgstr "Fransızca (İsviçre)"
 
-#: plugins/spell/gedit-spell-checker.c:87
+#: plugins/spell/gedit-spell-checker.c:99
+msgid "Irish (Gaeilge)"
+msgstr "İrlandaca (Gaeilge)"
+
+#: plugins/spell/gedit-spell-checker.c:100
+msgid "Icelandic"
+msgstr "İzlandaca"
+
+#: plugins/spell/gedit-spell-checker.c:101
 msgid "Italian"
 msgstr "İtalyanca"
 
-#: plugins/spell/gedit-spell-checker.c:88
+#: plugins/spell/gedit-spell-checker.c:102
 msgid "Dutch"
-msgstr "Hollandaca"
+msgstr "Flamenkçe"
 
-#: plugins/spell/gedit-spell-checker.c:89
+#: plugins/spell/gedit-spell-checker.c:103
 msgid "Norwegian"
-msgstr "Norveççe"
+msgstr "Norveç dili"
 
-#: plugins/spell/gedit-spell-checker.c:90
+#: plugins/spell/gedit-spell-checker.c:104
 msgid "Polish"
-msgstr "Polonezce"
+msgstr "Lehçe"
 
-#: plugins/spell/gedit-spell-checker.c:91
+#: plugins/spell/gedit-spell-checker.c:105
 msgid "Portuguese (Portugal)"
 msgstr "Portekizce (Portekiz)"
 
-#: plugins/spell/gedit-spell-checker.c:92
+#: plugins/spell/gedit-spell-checker.c:106
 msgid "Portuguese (Brazilian)"
 msgstr "Portekizce (Brezilya)"
 
-#: plugins/spell/gedit-spell-checker.c:93
+#: plugins/spell/gedit-spell-checker.c:107
 msgid "Russian"
 msgstr "Rusça"
 
-#: plugins/spell/gedit-spell-checker.c:94
+#: plugins/spell/gedit-spell-checker.c:108
+msgid "Slovak"
+msgstr "Slovakça"
+
+#: plugins/spell/gedit-spell-checker.c:109
+msgid "Slovenian"
+msgstr "Slovence"
+
+#: plugins/spell/gedit-spell-checker.c:110
 msgid "Swedish"
 msgstr "İsveççe"
 
-#: plugins/spell/gedit-spell-checker.c:653
+#: plugins/spell/gedit-spell-checker.c:111
+msgid "Ukrainian"
+msgstr "Ukrayna Dili"
+
+#: plugins/spell/gedit-spell-checker.c:744
 msgid "Default"
-msgstr "Geçerli"
+msgstr "Öntanımlı"
 
-#: plugins/spell/gedit-spell-language-dialog.c:233
-#: src/dialogs/gedit-dialog-goto-line.c:169
-#: src/dialogs/gedit-plugin-program-location-dialog.c:100
-#: src/dialogs/gedit-encodings-dialog.c:242
-#, fuzzy, c-format
+#: plugins/spell/gedit-spell-language-dialog.c:241
+#, c-format
 msgid "Could not find the required widgets inside %s."
-msgstr "goto-line.glade2 içinde gerekli parçalar bulunamadı.\n"
+msgstr "%s içindeki gereken parçacıklar bulunamadı."
 
-#: plugins/spell/gedit-spell-language-dialog.c:253
+#: plugins/spell/gedit-spell-language-dialog.c:261
 msgid "Languages"
 msgstr "Diller"
 
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
-msgid "Checks the spelling of the current document."
-msgstr "Geçerli belgede dilbilgisi denetimi yapar."
-
-#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
-msgid "Spell checker"
-msgstr "Yazım denetimcisi"
-
 #: plugins/spell/languages-dialog.glade2.h:1
 msgid "Select the _language of the current document."
-msgstr "Geçerli belgenin _dilini seçer."
+msgstr "Geçerli belgenin _dilini seç."
 
 #: plugins/spell/languages-dialog.glade2.h:2
 msgid "Set language"
@@ -1208,7 +3070,7 @@ msgstr "Yazım denetimi"
 
 #: plugins/spell/spell-checker.glade2.h:10
 msgid "Ignore _All"
-msgstr "Tü_münü Gözardı Et"
+msgstr "Tü_münü Yoksay"
 
 #: plugins/spell/spell-checker.glade2.h:11
 msgid "Language:"
@@ -1224,20 +3086,11 @@ msgstr "Kullanıcı sözlüğü:"
 
 #: plugins/spell/spell-checker.glade2.h:14
 msgid "_Ignore"
-msgstr "_Gözardı et"
+msgstr "_Yoksay"
 
 #: plugins/spell/spell-checker.glade2.h:15
 msgid "_Suggestions:"
 msgstr "_Öneriler:"
-
-#. Key in case the plugin ever needs any settings
-#: plugins/sort/sort.c:26
-msgid "S_ort..."
-msgstr "_Sırala..."
-
-#: plugins/sort/sort.c:29
-msgid "Sort the current document or selection."
-msgstr "Geçerli belgeyi ya da seçili bölgeyi sırala"
 
 #: plugins/spell/spell.c:51
 msgid "_Check Spelling"
@@ -1253,7 +3106,7 @@ msgstr "_Kendiliğinden Yazım Denetimi"
 
 #: plugins/spell/spell.c:59
 msgid "Automatically spell-check the current document"
-msgstr "Geçerli belgede dilbilgisi denetimini kendiliğinden yap"
+msgstr "Geçerli belgede yazım denetimini kendiliğinden yap"
 
 #: plugins/spell/spell.c:61
 msgid "Set _Language"
@@ -1261,1945 +3114,136 @@ msgstr "_Dili Ayarla"
 
 #: plugins/spell/spell.c:64
 msgid "Set the language of the current document"
-msgstr "Geçerli belgenin _dilini ayarla."
+msgstr "Geçerli belgenin dilini ayarla"
 
-#: plugins/spell/spell.c:549
+#: plugins/spell/spell.c:553
 msgid "The document is empty."
 msgstr "Belge boş."
 
-#: plugins/spell/spell.c:567
+#: plugins/spell/spell.c:571
 msgid "The selected text does not contain mispelled words."
-msgstr "Seçili metin, hatalı yazılmış sözcük içermiyor."
+msgstr "Seçili metin hatalı yazılmış sözcük içermiyor."
 
-#: plugins/spell/spell.c:568
+#: plugins/spell/spell.c:572
 msgid "The document does not contain mispelled words."
 msgstr "Belgede hatalı yazılmış sözcük yok."
 
-#: src/bonobo-mdi.c:549 src/bonobo-mdi.c:1962
-#, c-format
-msgid "Activate %s"
-msgstr "%s'i etkinleştir"
-
-#: src/dialogs/gedit-dialog-goto-line.c:143
-#, fuzzy
-msgid "Go to Line"
-msgstr "Satıra Git"
-
-#. Add Goto Line button
-#: src/dialogs/gedit-dialog-goto-line.c:153
-msgid "_Go to Line"
-msgstr "_Satıra Git"
-
-#: src/dialogs/gedit-dialog-replace.c:132
-#: src/dialogs/gedit-dialog-replace.c:1025 src/gedit-commands.c:363
-#, c-format
-msgid "The text \"%s\" was not found."
-msgstr "\"%s\" metni bulunamadı."
-
-#: src/dialogs/gedit-dialog-replace.c:240 src/dialogs/replace.glade2.h:4
-#: src/gedit-ui.xml.h:51
-msgid "Replace"
-msgstr "Değiştir"
-
-#: src/dialogs/gedit-dialog-replace.c:251
-msgid "Replace _All"
-msgstr "_Hepsini Değiştir"
-
-#. Add Replace button
-#: src/dialogs/gedit-dialog-replace.c:254 src/gedit-file-selector-util.c:129
-msgid "_Replace"
-msgstr "_Değiştir"
-
-#: src/dialogs/gedit-dialog-replace.c:376 src/gedit-ui.xml.h:22
-msgid "Find"
-msgstr "Bul"
-
-#: src/dialogs/gedit-dialog-replace.c:1034
-#, c-format
-msgid "Found and replaced %d occurences."
-msgstr "%d eşleşme bulundu ve değiştirildi."
-
-#: src/dialogs/gedit-dialog-uri.c:83
-#, fuzzy
-msgid "Open Location"
-msgstr "Konum Aç..."
-
-#: src/dialogs/gedit-plugin-manager.c:53
-msgid "Plugin"
-msgstr "Eklenti"
-
-#: src/dialogs/gedit-plugin-manager.c:54
-msgid "Load"
-msgstr "Yükle"
-
-#: src/dialogs/gedit-plugin-manager.c:320
-msgid "Module file name"
-msgstr "Birim dosya ismi"
-
-#: src/dialogs/gedit-plugin-manager.c:321
-msgid "Author(s)"
-msgstr "Yazar(lar)"
-
-#: src/dialogs/gedit-plugin-manager.c:488
-msgid "Could not find plugin-manager.glade2, reinstall gedit.\n"
-msgstr "plugin-manager.glade2 bulunamadı, gedit yeniden kurulmalı.\n"
-
-#: src/dialogs/gedit-plugin-manager.c:511
-msgid "Invalid glade file for plugin manager -- not all widgets found.\n"
-msgstr ""
-"Eklenti yöneticisinin glade dosyası geçersiz -- parçaların tamamı yok.\n"
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:78
-#: src/dialogs/program-location-dialog.glade2.h:1
-msgid "Set program location..."
-msgstr "Program konumunu belirt..."
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:106
-#, c-format
-msgid ""
-"The %s plugin uses an external program, called <tt>%s</tt>, to perform its "
-"task.\n"
-"\n"
-"Please, specify the location of the <tt>%s</tt> program."
-msgstr ""
-"%s eklentisi, işlemi tamamlamak için <tt>%s</tt> adında bir başka programı "
-"kullanıyor.\n"
-"\n"
-"Lütfen <tt>%s</tt> programının konumunu belirtiniz."
-
-#: src/dialogs/gedit-plugin-program-location-dialog.c:152
-msgid "The selected file is not executable."
-msgstr "Seçili dosya çalıştırılamaz."
-
-#: src/dialogs/gedit-preferences-dialog.c:233
-msgid "Font & Colors"
-msgstr "Yazı tipleri ve Renkler"
-
-#: src/dialogs/gedit-preferences-dialog.c:235
-#: src/dialogs/gedit-preferences.glade2.h:47
-msgid "Tabs"
-msgstr "Sekmeler"
-
-#: src/dialogs/gedit-preferences-dialog.c:236
-msgid "Wrap Mode"
-msgstr "Kaydırma kipi"
-
-#: src/dialogs/gedit-preferences-dialog.c:237
-msgid "Auto Indent"
-msgstr "Kendiliğinden girintile"
-
-#: src/dialogs/gedit-preferences-dialog.c:238
-msgid "Line Numbers"
-msgstr "Satır Sayıları"
-
-#: src/dialogs/gedit-preferences-dialog.c:240 src/gedit-ui.xml.h:32
-msgid "Open"
-msgstr "Aç"
-
-#: src/dialogs/gedit-preferences-dialog.c:241
-#: src/dialogs/gedit-preferences.glade2.h:42 src/gedit-ui.xml.h:55
-msgid "Save"
-msgstr "Kaydet"
-
-#: src/dialogs/gedit-preferences-dialog.c:242
-#: src/dialogs/gedit-preferences.glade2.h:50 src/gedit-ui.xml.h:72
-msgid "Undo"
-msgstr "Geri Al"
-
-#: src/dialogs/gedit-preferences-dialog.c:250
-msgid "Page"
-msgstr "Sayfa"
-
-#: src/dialogs/gedit-preferences-dialog.c:252
-msgid "Fonts"
-msgstr "Yazıtipi"
-
-#: src/dialogs/gedit-preferences-dialog.c:259
-msgid "Manager"
-msgstr "Yönetici"
-
-#: src/dialogs/gedit-preferences-dialog.c:267
-msgid "Editor"
-msgstr "Düzenleyici"
-
-#: src/dialogs/gedit-preferences-dialog.c:268
-#: src/dialogs/gedit-preferences.glade2.h:38 src/gedit-print.c:364
-#: src/gedit-ui.xml.h:41
-msgid "Print"
-msgstr "Yazdır"
-
-#: src/dialogs/gedit-preferences-dialog.c:269
-msgid "Plugins"
-msgstr "Eklentiler"
-
-#: src/dialogs/gedit-preferences-dialog.c:341
-msgid "Cat_egories:"
-msgstr "_Kategoriler:"
-
-#: src/dialogs/gedit-preferences-dialog.c:363
-msgid "Preferences"
-msgstr "Tercihler"
-
-#: src/dialogs/gedit-preferences-dialog.c:603
-msgid "Categories"
-msgstr "Kategoriler"
-
-#: src/dialogs/gedit-preferences-dialog.c:836
-msgid "Push this button to select the font to be used by the editor"
-msgstr ""
-"Düzenleyici tarafından kullanılacak olan yazıtipini seçmek için bu düğmeyi "
-"tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:839
-msgid "Push this button to configure text color"
-msgstr "Metin rengini ayarlamak için bu düğmeyi tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:841
-msgid "Push this button to configure background color"
-msgstr "Arkaplan rengini düzenlemek için bu düğmeyi tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:843
-msgid ""
-"Push this button to configure the color in which the selected text should "
-"appear"
-msgstr ""
-"Seçili metnin hangi renkte görüntüleneceğini ayarlamak için bu düğmeyi "
-"tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:846
-msgid ""
-"Push this button to configure the color in which the selected text should be "
-"marked"
-msgstr ""
-"Seçili metnin hangi renkte işaretleneceğini ayarlamak için bu düğmeyi "
-"tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:1851
-msgid "Push this button to select the font to be used to print the body"
-msgstr ""
-"Gövde yazdırılırken kullanılacak olan yazıtipini seçmek için bu düğmeyi "
-"tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:1853
-msgid "Push this button to select the font to be used to print the headers"
-msgstr ""
-"Sayfa başlıkları yazdırılırken kullanılacak olan yazıtipini seçmek için bu "
-"düğmeyi tıklayınız."
-
-#: src/dialogs/gedit-preferences-dialog.c:1855
-msgid "Push this button to select the font to be used to print line numbers"
-msgstr ""
-"Satır sayıları yazdırılırken kullanılacak olan yazıtipini seçmek için bu "
-"düğmeyi tıklayınız."
-
-#: src/dialogs/gedit-preferences.glade2.h:2
-msgid "<b>Font</b>"
-msgstr "<b>Yazıtipi</b>"
-
-#: src/dialogs/gedit-preferences.glade2.h:3
-msgid "<span weight=\"bold\" size=\"x-large\">Auto Indent</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:4
-msgid "<span weight=\"bold\" size=\"x-large\">Font &amp; Colors</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Yazıtipi &amp; Renkler</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:5
-msgid "<span weight=\"bold\" size=\"x-large\">Fonts</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Yazıtipleri</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:6
-msgid "<span weight=\"bold\" size=\"x-large\">Line Numbers</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Satır Sayıları/span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:7
-msgid "<span weight=\"bold\" size=\"x-large\">Manager</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Yönetici</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:8
-msgid "<span weight=\"bold\" size=\"x-large\">Open</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Aç</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:9
-msgid "<span weight=\"bold\" size=\"x-large\">Page</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Sayfa</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:10
-msgid "<span weight=\"bold\" size=\"x-large\">Save</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Kaydet</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:11
-msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Sekmeler</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:12
-msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Geri Al</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:13
-msgid "<span weight=\"bold\" size=\"x-large\">Wrap Mode</span>"
-msgstr "<span weight=\"bold\" size=\"x-large\">Kaydırma Kipi</span>"
-
-#: src/dialogs/gedit-preferences.glade2.h:14
-msgid "<span weight=\"bold\">Colors</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:15
-msgid "<span weight=\"bold\">When saving a new file...</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:16
-msgid "<span weight=\"bold\">When saving an existing file...</span>"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:17
-msgid "Add new encodings"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:18
-msgid "Always use U_TF-8 encoding (faster)"
-msgstr "_Her zaman UTF-8 kodlama kullan (daha hızlı)"
-
-#: src/dialogs/gedit-preferences.glade2.h:19
-msgid "Always use _UTF-8 encoding (faster)"
-msgstr "_Her zaman UTF8 kodlama kullan (daha hızlı)"
-
-#: src/dialogs/gedit-preferences.glade2.h:20
-msgid "Create a _backup copy of files before saving"
-msgstr "Dosyaları kaydetmeden önce _yedekleme kopyası oluştur."
-
-#: src/dialogs/gedit-preferences.glade2.h:21
-msgid "Do not _split words over two lines"
-msgstr "Ke_limeleri iki ayrı satıra bölme"
-
-#: src/dialogs/gedit-preferences.glade2.h:22
-msgid "Editor _font: "
-msgstr "Düzenleyici yazıtipi"
-
-#: src/dialogs/gedit-preferences.glade2.h:23
-msgid "Enable _auto indentation"
-msgstr "Kendiliğinden _girintilemeyi etkinleştir"
-
-#: src/dialogs/gedit-preferences.glade2.h:24
-msgid "Enable text _wrapping"
-msgstr "Metin _kaydırmayı etkinleştir"
-
-#: src/dialogs/gedit-preferences.glade2.h:25
-msgid "Fonts & Colors"
-msgstr "Yazı Tipleri ve Renkler"
-
-#: src/dialogs/gedit-preferences.glade2.h:26
-msgid "Insert _spaces instead of tabs"
-msgstr "Sekme yerine _boşluk ekle"
-
-#: src/dialogs/gedit-preferences.glade2.h:27
-msgid "LOGO"
-msgstr "LOGO"
-
-#: src/dialogs/gedit-preferences.glade2.h:28
-msgid "Line _numbers:"
-msgstr "Satır _sayıları"
-
-#: src/dialogs/gedit-preferences.glade2.h:29
-msgid "Line numbers"
-msgstr "Satır numaraları"
-
-#: src/dialogs/gedit-preferences.glade2.h:30
-msgid "Move down"
-msgstr "Aşağı taşı"
-
-#: src/dialogs/gedit-preferences.glade2.h:31
-msgid "Move up"
-msgstr "Yukarı taşı"
-
-#: src/dialogs/gedit-preferences.glade2.h:32
-msgid "Page he_aders:"
-msgstr "_Sayfa başlıkları"
-
-#: src/dialogs/gedit-preferences.glade2.h:33
-msgid "Pick the background color"
-msgstr "Arkaplan rengini al"
-
-#: src/dialogs/gedit-preferences.glade2.h:34
-msgid "Pick the selected text color"
-msgstr "Seçilen metin rengini al"
-
-#: src/dialogs/gedit-preferences.glade2.h:35
-msgid "Pick the selection color"
-msgstr "Seçili rengi al"
-
-#: src/dialogs/gedit-preferences.glade2.h:36
-msgid "Pick the text color"
-msgstr "Metin rengini al"
-
-#: src/dialogs/gedit-preferences.glade2.h:37
-#, fuzzy
-msgid "Plugin manager"
-msgstr "Eklenti Yöneticisi"
-
-#: src/dialogs/gedit-preferences.glade2.h:39
-msgid "Print _line numbers every"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:40
-msgid "Print fonts"
-msgstr "Yazıtiplerini yazdır"
-
-#: src/dialogs/gedit-preferences.glade2.h:41
-msgid "Remove an encoding"
-msgstr "Şifrelemeleyi kaldır"
-
-#: src/dialogs/gedit-preferences.glade2.h:43
-msgid "Se_lection color:"
-msgstr "Seçim _rengi:"
-
-#: src/dialogs/gedit-preferences.glade2.h:44
-msgid "Selecte_d text color:"
-msgstr "_Seçili metin rengi:"
-
-#: src/dialogs/gedit-preferences.glade2.h:45
-msgid "Set _tabs width equivalent to"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:46
-msgid "Set limit on _undo actions to"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:48
-msgid "U_se default theme colors"
-msgstr "Ö_ntanımlı tema renklerini kullan"
-
-#: src/dialogs/gedit-preferences.glade2.h:49
-msgid "U_se original file encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:51
-msgid "Use cu_rrent locale's encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:52
-msgid "Use current _locale's encoding if possible"
-msgstr ""
-
-#: src/dialogs/gedit-preferences.glade2.h:53
-msgid "Wrap mode"
-msgstr "Kaydırma kipi"
-
-#: src/dialogs/gedit-preferences.glade2.h:54
-msgid "_Autosave current file every"
-msgstr "Geçerli belgeyi şu kadar süre sonra kaydet: "
-
-#: src/dialogs/gedit-preferences.glade2.h:55
-msgid "_Background color:"
-msgstr "Arkaplan _rengi:"
-
-#: src/dialogs/gedit-preferences.glade2.h:56
-msgid "_Body:"
-msgstr "_Gövde:"
-
-#: src/dialogs/gedit-preferences.glade2.h:57
-msgid "_Display line numbers"
-msgstr "Satır sayılarını  _göster"
-
-#: src/dialogs/gedit-preferences.glade2.h:58
-#, fuzzy
-msgid "_Print page headers"
-msgstr "_Sayfa başlıklarını yazdır"
-
-#: src/dialogs/gedit-preferences.glade2.h:59
-msgid "_Restore Default Fonts"
-msgstr "Ö_ntanımlı Yazıtipine Dön"
-
-#: src/dialogs/gedit-preferences.glade2.h:60
-msgid "_Supported encodings:"
-msgstr "Desteklenen _Kodlamalar:"
-
-#: src/dialogs/gedit-preferences.glade2.h:61
-msgid "_Text color:"
-msgstr "_Metin rengi:"
-
-#: src/dialogs/gedit-preferences.glade2.h:62
-msgid "_Use default theme font"
-msgstr "Ö_ntanımlı tema yazıtipini kullan"
-
-#: src/dialogs/gedit-preferences.glade2.h:63
-msgid "_action(s)"
-msgstr "e_ylem(ler)"
-
-#: src/dialogs/gedit-preferences.glade2.h:64
-#, fuzzy
-msgid "_minutes"
-msgstr "dakika"
-
-#: src/dialogs/gedit-preferences.glade2.h:65
-msgid "character(s)"
-msgstr " karakter(ler)"
-
-#: src/dialogs/gedit-preferences.glade2.h:66
-msgid "li_ne(s)"
-msgstr "sa_tır(lar)"
-
-#: src/dialogs/gnome-print-font-dialog.c:111
-msgid "_Insert a new preview phrase."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:117
-msgid "Modify preview phrase..."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:171
-msgid "Preview"
-msgstr "Önizleme"
-
-#: src/dialogs/gnome-print-font-dialog.c:184
-msgid "_Modify preview phrase..."
-msgstr ""
-
-#: src/dialogs/gnome-print-font-dialog.c:247
-msgid "Font Selection"
-msgstr "Yazıtipi seçimi"
-
-#: src/dialogs/gnome-print-font-picker.c:92
-msgid "Sans Regular 12"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:93
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:94
-msgid "Pick a Font"
-msgstr "Bir Yazıtipi Al"
-
-#: src/dialogs/gnome-print-font-picker.c:179
-msgid "Title"
-msgstr "Başlık"
-
-#: src/dialogs/gnome-print-font-picker.c:180
-msgid "The title of the selection dialog box"
-msgstr "Seçim dialog kutusu başlığı"
-
-#: src/dialogs/gnome-print-font-picker.c:200
-msgid "Font name"
-msgstr "Yazıtipi adı"
-
-#: src/dialogs/gnome-print-font-picker.c:201
-msgid "Name of the selected font"
-msgstr "Seçili yazıtipinin adı"
-
-#: src/dialogs/gnome-print-font-picker.c:209
-msgid "Preview text"
-msgstr "Metin önizleme"
-
-#: src/dialogs/gnome-print-font-picker.c:210
-msgid "Preview text shown in the dialog"
-msgstr "Dialogda görüntülenen metin önizleme"
-
-#: src/dialogs/gnome-print-font-picker.c:218
-msgid "Use font in label"
-msgstr "Etikette yazıtipi kullan"
-
-#: src/dialogs/gnome-print-font-picker.c:219
-msgid "Use font in the label in font info mode"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:227
-msgid "Font size for label"
-msgstr "Etiket için yazıtipi boyutu"
-
-#: src/dialogs/gnome-print-font-picker.c:228
-msgid "Font size for label in font info mode"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:238
-msgid "Show size"
-msgstr "Boyutu göster"
-
-#: src/dialogs/gnome-print-font-picker.c:239
-msgid "Show size in font info mode"
-msgstr ""
-
-#: src/dialogs/gnome-print-font-picker.c:1018
-msgid "Font"
-msgstr "Yazıtipi"
-
-#. gnome_print_font_picker_update_font_info
-#: src/dialogs/goto-line.glade2.h:1
-msgid "Goto Line"
-msgstr "Satıra Git"
-
-#: src/dialogs/goto-line.glade2.h:2
-msgid "_Line number:"
-msgstr "Satır numarası:"
-
-#: src/dialogs/plugin-manager.glade2.h:1
-msgid "C_onfigure plugin"
-msgstr "E_klentiyi yapılandır"
-
-#: src/dialogs/plugin-manager.glade2.h:2
-msgid "Configure the selected plugin"
-msgstr "Seçili eklentiyi yapılandır"
-
-#: src/dialogs/plugin-manager.glade2.h:3
-#, fuzzy
-msgid "De_tails"
-msgstr "_Ayrıntılar"
-
-#: src/dialogs/plugin-manager.glade2.h:4
-msgid "_Description"
-msgstr "_Açıklama"
-
-#: src/dialogs/plugin-manager.glade2.h:5
-msgid "dialog1"
-msgstr "dialog1"
-
-#: src/dialogs/program-location-dialog.glade2.h:2
-msgid "_Location to search for:"
-msgstr ""
-
-#: src/dialogs/program-location-dialog.glade2.h:3
-msgid "label"
-msgstr "etiket"
-
-#: src/dialogs/replace.glade2.h:2
-msgid "Find Next"
-msgstr "Sonrakini Bul"
-
-#: src/dialogs/replace.glade2.h:3
-msgid "Match _entire word only"
-msgstr ""
-
-#: src/dialogs/replace.glade2.h:5
-msgid "Replace All"
-msgstr "Tümünü Değiştir"
-
-#: src/dialogs/replace.glade2.h:6
-msgid "Replace _with: "
-msgstr "Şun_la değiştir:"
-
-#: src/dialogs/replace.glade2.h:7
-msgid "_Match case"
-msgstr ""
-
-#: src/dialogs/replace.glade2.h:8
-msgid "_Search for: "
-msgstr "_Ara: "
-
-#: src/dialogs/replace.glade2.h:9
-msgid "_Wrap around"
-msgstr "_Kaydır"
-
-#: src/dialogs/uri.glade2.h:2
-msgid "Enter the _location (URI) of the file you would like to open:"
-msgstr ""
-
-#: src/dialogs/uri.glade2.h:3
-msgid "Open from URI"
-msgstr "URI'den aç"
-
-#: src/gedit-commands.c:472
-msgid "translator_credits"
-msgstr ""
-
-#: src/gedit-commands.c:497
-msgid "gedit"
-msgstr "gedit"
-
-#: src/gedit-commands.c:501
-msgid "gedit is a small and lightweight text editor for Gnome"
-msgstr ""
-"gedit Gnome için ufak ve kolay kullanılabilen bir metin düzenleyicidir."
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-#, c-format
-msgid "%s %d"
-msgstr "%s %d"
-
-#: src/gedit-document.c:537 src/gedit-document.c:555
-msgid "Untitled"
-msgstr "İsimsiz"
-
-#: src/gedit-document.c:543 src/gedit-document.c:590
-msgid "Invalid file name"
-msgstr "Geçersiz dosya adı"
-
-#: src/gedit-document.c:702 src/gedit-document.c:786
-msgid "Invalid UTF-8 data"
-msgstr "Geçersiz UTF8 verisi"
-
-#: src/gedit-document.c:1016
-#, c-format
-msgid "Could not read symbolic link information for %s"
-msgstr "%s için sembolik bağlantı bilgisi okunamadı."
-
-#: src/gedit-document.c:1062
-msgid "The file has too many symbolic links."
-msgstr "Dosyada çok fazla sembolik bağlantı var."
-
-#: src/gedit-document.c:1118
-#, c-format
-msgid "gedit cannot handle %s: locations in write mode."
-msgstr ""
-
-#: src/gedit-document.c:1125
-msgid "gedit cannot handle this kind of location in write mode."
-msgstr ""
-
-#: src/gedit-document.c:1138
-msgid "Invalid filename."
-msgstr "Geçersiz dosya adı."
-
-#: src/gedit-document.c:1278
-msgid ""
-"There is not enough disk space to save the file.\n"
-"Please free some disk space and try again."
-msgstr ""
-"Dosyayı kaydetmek için yeterli disk alanı yok. \n"
-"Lütfen diskinizde yer açıp tekrar deneyin."
-
-#: src/gedit-document.c:1283
-msgid ""
-"The disk where you are trying to save the file has a limitation on file "
-"sizes.  Please try saving a smaller file or saving it to a disk that does "
-"not have this limitation."
-msgstr ""
-"Dosyayı kaydetmeye çalıştığınız diskte dosya boyutu sınırı var. Lütfen daha "
-"küçük bir dosyayı kaydetmeye çalışın ya da sınırlaması olmayan bir disk "
-"kullanın."
-
-#: src/gedit-document.c:1327
-msgid "Could not create a backup file."
-msgstr "Yedekleme kopyası oluşturulamadı."
-
-#: src/gedit-document.c:1447
-msgid "It is not possible to revert an Untitled document"
-msgstr "İsimsiz bir belge eski haline getirilemez"
-
-#: src/gedit-file-selector-util.c:147
-#, c-format
-msgid ""
-"A file named \"%s\" already exists.\n"
-"Do you want to replace it with the one you are saving?"
-msgstr ""
-"''%s'' isimli bir dosya zaten var.\n"
-"Üzerine yazılmasını ister misiniz?"
-
-#: src/gedit-file-selector-util.c:158
-#, c-format
-msgid ""
-"The file \"%s\" is read-only.\n"
-"Do you want to try to replace it with the one you are saving?"
-msgstr ""
-"''%s'' isimli dosya salt okunur.\n"
-"Üzerine yazılmasını ister misiniz?"
-
-#: src/gedit-file-selector-util.c:544
-msgid "Select a filename to save"
-msgstr "Kaydetmek için bir dosya adı seçin"
-
-#: src/gedit-file.c:151
-#, fuzzy
-msgid "Open File..."
-msgstr "Dosya Aç..."
-
-#: src/gedit-file.c:177 src/gedit-file.c:887
-#, c-format
-msgid "Loaded file '%s'"
-msgstr "'%s' dosyası yüklendi"
-
-#: src/gedit-file.c:309 src/gedit-file.c:455
-#, c-format
-msgid "Saving file '%s'..."
-msgstr "'%s' dosyası kaydediliyor ..."
-
-#: src/gedit-file.c:337 src/gedit-file.c:470
-msgid "The document has not been saved."
-msgstr "Belge kaydedilmedi."
-
-#: src/gedit-file.c:351 src/gedit-file.c:467
-#, c-format
-msgid "File '%s' saved."
-msgstr "'%s' dosyası kaydedildi."
-
-#: src/gedit-file.c:434
-#, fuzzy
-msgid "Save as..."
-msgstr "Farklı Kaydet ..."
-
-#: src/gedit-file.c:628
-#, c-format
-msgid ""
-"Do you want to revert to saved the document '%s'?\n"
-"\n"
-"You will not be able to undo this operation."
-msgstr ""
-"``%s'' belgesini kaydedilmiş en son haline döndürmek ister misiniz?\n"
-"\n"
-"Bu işlem geri alınamaz."
-
-#: src/gedit-file.c:638 src/gedit-ui.xml.h:99
-msgid "_Revert"
-msgstr "_Eski Durumuna Getir"
-
-#: src/gedit-file.c:672
-#, c-format
-msgid "Reverting file '%s'..."
-msgstr "'%s' dosyası eski haline getiriliyor ..."
-
-#: src/gedit-file.c:685
-msgid "The document has not been reverted."
-msgstr "Belge eski haline dönüştürülmedi."
-
-#: src/gedit-file.c:695
-#, c-format
-msgid "File '%s' reverted."
-msgstr "'%s' eski haline getirildi."
-
-#: src/gedit-file.c:721
-#, c-format
-msgid "Loading %d files..."
-msgstr "%d dosyaları yükleniyor.."
-
-#: src/gedit-file.c:757
-#, c-format
-msgid "The file \"%s\" does not exist. Would you like to create it?"
-msgstr " \"%s\" dosyası yok. Bu dosyayı oluşturmak ister misiniz?"
-
-#: src/gedit-file.c:812
-#, c-format
-msgid "Loaded %i files"
-msgstr "%i dosyaları yüklendi"
-
-#: src/gedit-file.c:945
-#, fuzzy
-msgid "Could not read data from stdin."
-msgstr ""
-"StdG okunurken bir hata oluştu.\n"
-"\n"
-"%s."
-
-#. Read only
-#: src/gedit-mdi-child.c:219
-msgid "RO"
-msgstr ""
-
-#. Add the detach tab button
-#: src/gedit-mdi-child.c:543 src/gedit-ui.xml.h:89
-msgid "_Move to New Window"
-msgstr ""
-
-#: src/gedit-mdi.c:446
-msgid "Open a file."
-msgstr "Bir dosya aç."
-
-#: src/gedit-mdi.c:1032
-#, c-format
-msgid ""
-"Do you want to save the changes you made to the document \"%s\"? \n"
-"\n"
-"Your changes will be lost if you don't save them."
-msgstr ""
-"``%s'' belgesine yaptığınız değişiklikleri kaydetmek ister misiniz?\n"
-"\n"
-"Kaydetmezseniz, çalışmanız boşa gidecek."
-
-#: src/gedit-mdi.c:1037
-msgid "Do_n't save"
-msgstr "Kaydet_me"
-
-#: src/gedit-mdi.c:1056
-msgid "_Don't quit"
-msgstr "Çık_ma"
-
-#: src/gedit-mdi.c:1060
-msgid "_Don't close"
-msgstr "Kapat_ma"
-
-#: src/gedit-mdi.c:1150
-msgid "(modified)"
-msgstr "(değiştirilen)"
-
-#: src/gedit-mdi.c:1156
-msgid "(readonly)"
-msgstr "(salt okunur)"
-
-#: src/gedit-plugins-engine.c:362
-#, c-format
-msgid "Error, unable to open module file '%s'\n"
-msgstr "Hata, birim dosyası '%s' açılamadı\n"
-
-#: src/gedit-plugins-engine.c:372
-#, c-format
-msgid "Error, plugin '%s' does not contain init function."
-msgstr "Hata, eklenti '%s' init işlevini içermiyor."
-
-#: src/gedit-plugins-engine.c:382
-#, c-format
-msgid "Error, plugin '%s' does not contain activate function."
-msgstr "Hata, eklenti '%s' etkinleştirme işlevini içermiyor."
-
-#: src/gedit-plugins-engine.c:392
-#, c-format
-msgid "Error, plugin '%s' does not contain deactivate function."
-msgstr "Hata, eklenti '%s' etkisizleştirme işlevini içermiyor."
-
-#: src/gedit-plugins-engine.c:417
-#, c-format
-msgid "Error, impossible to initialize plugin '%s'"
-msgstr "Hata, '%s' eklentisini başlatmak olanaksız"
-
-#: src/gedit-plugins-engine.c:468
-#, c-format
-msgid "Error, impossible to destroy plugin '%s'"
-msgstr "Hata, '%s' eklentisini etkisizleştirmek olanaksız"
-
-#: src/gedit-plugins-engine.c:551 src/gedit-plugins-engine.c:639
-#: src/gedit-plugins-engine.c:764
-#, c-format
-msgid "Error, impossible to activate plugin '%s'"
-msgstr "Hata, '%s' eklentisini etkinleştirmek olanaksız"
-
-#: src/gedit-plugins-engine.c:590 src/gedit-plugins-engine.c:782
-#, c-format
-msgid "Error, impossible to deactivate plugin '%s'"
-msgstr "Hata, '%s' eklentisini etkisizleştirmek olanaksız"
-
-#: src/gedit-plugins-engine.c:683
-#, c-format
-msgid "Error, impossible to update ui of the plugin '%s'"
-msgstr "Hata, '%s' eklentisinin arayüzünü güncellemek olanaksız"
-
-#: src/gedit-prefs-manager.c:339
-msgid "Cannot initialize preferences manager."
-msgstr "Tercihler yöneticisi başlatılamıyor."
-
-#: src/gedit-prefs-manager.c:1761
-#, c-format
-msgid "Expected `%s' got `%s' for key %s"
-msgstr ""
-
-#: src/gedit-print.c:254
-msgid ""
-"gedit is unable to print since it cannot find\n"
-"one of the required fonts."
-msgstr ""
-"Gerekli yazı tiplerinden biri\n"
-"bulunamadığından gedit yazdıramıyor"
-
-#: src/gedit-print.c:432
-#, c-format
-msgid "File: %s"
-msgstr "Dosya: %s"
-
-#. Print right text
-#: src/gedit-print.c:439
-#, c-format
-msgid "Page: %d"
-msgstr "Sayfa: %d"
-
-#: src/gedit-print.c:580
-msgid "gedit - Print Preview"
-msgstr "gedit - Yazdırma Önizleme"
-
-#: src/gedit-print.c:658
-#, c-format
-msgid ""
-"An error occurred while printing.\n"
-"\n"
-"%s,"
-msgstr ""
-"Yazdırma sırasında bir hata oluştu.\n"
-"\n"
-"%s,"
-
-#: src/gedit-ui.xml.h:1
-msgid "About this application"
-msgstr "Bu uygulama hakkında"
-
-#: src/gedit-ui.xml.h:2
-msgid "C_ustomize Statusbar"
-msgstr "_Durum Çubuğunu Kişiselleştir"
-
-#: src/gedit-ui.xml.h:3
-msgid "Change the visibility of the output window in the current window"
-msgstr "Çıktı penceresinin geçerli penceredeki görünümünü değiştir."
-
-#: src/gedit-ui.xml.h:4
-msgid "Change the visibility of the statusbar in the current window"
-msgstr "Geçerli penceredeki durum çubuğunun görünürlüğünü değiştir. "
-
-#: src/gedit-ui.xml.h:5
-msgid "Change the visibility of the toolbar in the current window"
-msgstr "Geçerli penceredeki araç çubuğunun görünürlüğünü değiştir. "
-
-#: src/gedit-ui.xml.h:6
-msgid "Close"
-msgstr "Kapat"
-
-#: src/gedit-ui.xml.h:7
-msgid "Close all open files"
-msgstr "Açık tüm dosyaları kapat"
-
-#: src/gedit-ui.xml.h:8
-msgid "Close the current file"
-msgstr "Çalışılan dosyayı kapat"
-
-#: src/gedit-ui.xml.h:9
-msgid "Configure the application"
-msgstr "Uygulamayı yapılandır"
-
-#: src/gedit-ui.xml.h:10
-msgid "Copy"
-msgstr "Kopyala"
-
-#: src/gedit-ui.xml.h:11
-msgid "Copy the selection"
-msgstr "Seçimi panoya kopyala"
-
-#: src/gedit-ui.xml.h:12
-msgid "Create a new document"
-msgstr "Yeni bir belge oluştur"
-
-#: src/gedit-ui.xml.h:13
-msgid "Cu_t"
-msgstr "_Kes"
-
-#: src/gedit-ui.xml.h:14
-msgid "Customize"
-msgstr "Kişiselleştir"
-
-#: src/gedit-ui.xml.h:15
-msgid "Customize toolbars"
-msgstr "Araç çubuklarını kişiselleştir"
-
-#: src/gedit-ui.xml.h:16
-msgid "Cut"
-msgstr "Kes"
-
-#: src/gedit-ui.xml.h:17
-msgid "Cut the selection"
-msgstr "Seçimi taşınmak üzere panoya kopyalar"
-
-#: src/gedit-ui.xml.h:18
-msgid "Delete"
-msgstr "Sil"
-
-#: src/gedit-ui.xml.h:19
-msgid "Delete the selected text"
-msgstr "Seçili metni sil"
-
-#: src/gedit-ui.xml.h:20
-msgid "Dump XML"
-msgstr "XML Dökümle"
-
-#: src/gedit-ui.xml.h:21
-msgid "Dump the UI Xml description"
-msgstr "UI Xml tanımını dökümler"
-
-#: src/gedit-ui.xml.h:23
-msgid "Find Again"
-msgstr "Tekrar Bul"
-
-#: src/gedit-ui.xml.h:24
-msgid "Find Ne_xt"
-msgstr "Sonrakini B_ul"
-
-#: src/gedit-ui.xml.h:25
-msgid "Go to _Line..."
-msgstr "Satıra _git..."
-
-#: src/gedit-ui.xml.h:26
-msgid "Go to a specific line number"
-msgstr "Belirtilen satıra git"
-
-#: src/gedit-ui.xml.h:27
-msgid "Icon and _Text"
-msgstr "Simge ve _Metin"
-
-#: src/gedit-ui.xml.h:28
-msgid "Main toolbar"
-msgstr "Ana araç çubuğu"
-
-#: src/gedit-ui.xml.h:29
-msgid "Move the current document to a new window"
-msgstr "Geçerli belgeyi yeni bir pencereye taşı"
-
-#: src/gedit-ui.xml.h:30
-msgid "New"
-msgstr "Yeni"
-
-#: src/gedit-ui.xml.h:31
-msgid "Only show icons in the toolbar"
-msgstr "Araç çubuğunda sadece simge göster"
-
-#: src/gedit-ui.xml.h:33
-msgid "Open Location..."
-msgstr "Konum Aç..."
-
-#: src/gedit-ui.xml.h:34
-msgid "Open _Location..."
-msgstr "_Konum Aç..."
-
-#: src/gedit-ui.xml.h:35
-msgid "Open a file"
-msgstr "Bir dosya aç"
-
-#: src/gedit-ui.xml.h:36
-msgid "Open a file from a specified location"
-msgstr "Belirtilen konumdan bir dosya aç"
-
-#: src/gedit-ui.xml.h:37
-msgid "Open the gedit manual"
-msgstr "Gedit kılavuzunu aç"
-
-#: src/gedit-ui.xml.h:38
-msgid "Paste"
-msgstr "Yapıştır"
-
-#: src/gedit-ui.xml.h:39
-msgid "Paste the clipboard"
-msgstr "Panodan yapıştırır"
-
-#: src/gedit-ui.xml.h:40
-#, fuzzy
-msgid "Pr_eferences"
-msgstr "Tercihler"
-
-#: src/gedit-ui.xml.h:42
-#, fuzzy
-msgid "Print Previe_w..."
-msgstr "Y_azdırma Önizleme"
-
-#: src/gedit-ui.xml.h:43
-msgid "Print Preview"
-msgstr "Yazdırma Önizleme"
-
-#: src/gedit-ui.xml.h:44
-msgid "Print Setup"
-msgstr "Yazdırma Ayarları"
-
-#: src/gedit-ui.xml.h:45
-msgid "Print preview"
-msgstr "Yazdırma önizlemesi"
-
-#: src/gedit-ui.xml.h:46
-msgid "Print the current file"
-msgstr "Çalışılan dosyayı yazdır"
-
-#: src/gedit-ui.xml.h:47
-msgid "Quit"
-msgstr "Çık"
-
-#: src/gedit-ui.xml.h:48
-msgid "Quit the program"
-msgstr "Uygulamadan çık"
-
-#: src/gedit-ui.xml.h:49
-msgid "Redo"
-msgstr "Tekrar Yap"
-
-#: src/gedit-ui.xml.h:50
-msgid "Redo the undone action"
-msgstr "Geri alınan işlemi tekrar yap"
-
-#: src/gedit-ui.xml.h:52
-msgid "Replace a string"
-msgstr "Bir dizgeyi değiştir"
-
-#: src/gedit-ui.xml.h:53
-msgid "Revert"
-msgstr "Eski Durumuna Getir"
-
-#: src/gedit-ui.xml.h:54
-msgid "Revert to a saved version of the file"
-msgstr "Dosyayı kaydedilmiş haline dönüştürür"
-
-#: src/gedit-ui.xml.h:56
-msgid "Save As"
-msgstr "Farklı Kaydet"
-
-#: src/gedit-ui.xml.h:57
-msgid "Save _As..."
-msgstr "_Farklı Kaydet... "
-
-#: src/gedit-ui.xml.h:58
-msgid "Save all open files"
-msgstr "Tüm açık dosyaları kaydet"
-
-#: src/gedit-ui.xml.h:59
-msgid "Save the current file"
-msgstr "Çalışılan dosyayı kaydeder"
-
-#: src/gedit-ui.xml.h:60
-msgid "Save the current file with a different name"
-msgstr "Çalışılan dosyayı başka bir dosya adıyla kaydet"
-
-#: src/gedit-ui.xml.h:61
-msgid "Search again for the same string"
-msgstr "Aynı dizgeyi tekrar ara"
-
-#: src/gedit-ui.xml.h:62
-msgid "Search for a string"
-msgstr "Bir dizgeyi ara"
-
-#: src/gedit-ui.xml.h:63
-msgid "Select All"
-msgstr "Tümünü Seç"
-
-#: src/gedit-ui.xml.h:64
-msgid "Select _All"
-msgstr "_Tümünü Seç"
-
-#: src/gedit-ui.xml.h:65
-msgid "Select the entire document"
-msgstr "Belgenin tamamını seçili duruma getirir"
-
-#: src/gedit-ui.xml.h:66
-msgid "Set toolbar button style according to desktop default"
-msgstr "Araç çubuğu düğme stilini geçerli masaüstüne göre ayarla"
-
-#: src/gedit-ui.xml.h:67
-msgid "Setup the page settings for your current printer"
-msgstr "Geçerli yazıcınızın sayfa ayarları"
-
-#: src/gedit-ui.xml.h:68
-msgid "Show _Cursor Position"
-msgstr "İmleç _Konumunu Göster"
-
-#: src/gedit-ui.xml.h:69
-msgid "Show _Overwrite Mode"
-msgstr "_Üzerine Yazma Kipini Göster"
-
-#: src/gedit-ui.xml.h:70
-msgid "Show cursor position in the statusbar"
-msgstr "Durum çubuğunda imleç konumunu göster"
-
-#: src/gedit-ui.xml.h:71
-msgid "Show overwrite mode in the statusbar"
-msgstr "Durum çubuğunda üzerine yazma kipini göster"
-
-#: src/gedit-ui.xml.h:73
-msgid "Undo the last action"
-msgstr "Son işlemi geri al"
-
-#: src/gedit-ui.xml.h:74
-#, fuzzy
-msgid "_About"
-msgstr "_Hakkında..."
-
-#: src/gedit-ui.xml.h:75
-msgid "_Close"
-msgstr "Kapa_t"
-
-#: src/gedit-ui.xml.h:76
-msgid "_Close All"
-msgstr "_Hepsini Kapat..."
-
-#: src/gedit-ui.xml.h:77
-msgid "_Contents"
-msgstr "_İçerik"
-
-#: src/gedit-ui.xml.h:78
-msgid "_Copy"
-msgstr "K_opyala"
-
-#: src/gedit-ui.xml.h:79
-msgid "_Customize Toolbar"
-msgstr "_Araç Çubuklarını Kişiselleştir"
-
-#: src/gedit-ui.xml.h:80
-msgid "_Debug"
-msgstr "_Hata Ayıklama"
-
-#: src/gedit-ui.xml.h:81
-msgid "_Delete"
-msgstr "_Sil"
-
-#: src/gedit-ui.xml.h:82
-msgid "_Desktop Default"
-msgstr "Masaüstü _Öntanımlısı"
-
-#: src/gedit-ui.xml.h:83
-msgid "_Documents"
-msgstr "_Belgeler"
-
-#: src/gedit-ui.xml.h:84
-msgid "_Edit"
-msgstr "_Düzenle"
-
-#: src/gedit-ui.xml.h:85
-msgid "_File"
-msgstr "_Dosya"
-
-#: src/gedit-ui.xml.h:86
-msgid "_Find..."
-msgstr "_Bul..."
-
-#: src/gedit-ui.xml.h:87
-msgid "_Help"
-msgstr "_Yardım"
-
-#: src/gedit-ui.xml.h:88
-msgid "_Icon"
-msgstr "_Simge"
-
-#: src/gedit-ui.xml.h:90
-msgid "_New"
-msgstr "_Yeni"
-
-#: src/gedit-ui.xml.h:91
-msgid "_Open..."
-msgstr "_Aç..."
-
-#: src/gedit-ui.xml.h:92
-msgid "_Output Window"
-msgstr "_Çıktı Penceresi"
-
-#: src/gedit-ui.xml.h:93
-msgid "_Paste"
-msgstr "_Yapıştır"
-
-#: src/gedit-ui.xml.h:94
-msgid "_Print..."
-msgstr "_Yazdır..."
-
-#: src/gedit-ui.xml.h:95
-msgid "_Priority Text beside Icons"
-msgstr ""
-
-#: src/gedit-ui.xml.h:96
-msgid "_Quit"
-msgstr "Çı_k"
-
-#: src/gedit-ui.xml.h:97
-msgid "_Redo"
-msgstr "_Tekrar Yap"
-
-#: src/gedit-ui.xml.h:98
-msgid "_Replace..."
-msgstr "_Değiştir..."
-
-#: src/gedit-ui.xml.h:100
-msgid "_Save"
-msgstr "_Kaydet"
-
-#: src/gedit-ui.xml.h:101
-#, fuzzy
-msgid "_Save All"
-msgstr "Hepsini _Kaydet"
-
-#: src/gedit-ui.xml.h:102
-#, fuzzy
-msgid "_Search"
-msgstr "_Ara"
-
-#: src/gedit-ui.xml.h:103
-msgid "_Statusbar"
-msgstr "_Durum çubuğu"
-
-#: src/gedit-ui.xml.h:104
-msgid "_Toolbar"
-msgstr "_Araç Çubuğu"
-
-#: src/gedit-ui.xml.h:105
-msgid "_Tools"
-msgstr "_Araçlar"
-
-#: src/gedit-ui.xml.h:106
-msgid "_Undo"
-msgstr "_Geri Al"
-
-#: src/gedit-ui.xml.h:107
-msgid "_View"
-msgstr "_Görüntüle"
-
-#: src/gedit-utils.c:799
-#, c-format
-msgid ""
-"Could not find the file \"%s\".\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\" dosyası bulunamıyor.\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:806
-#, c-format
-msgid "Could not open the file \"%s\" because it contains corrupted data."
-msgstr "\"%s\" dosyası açılamıyor çünkü zarar görmüş veri içeriyor."
-
-#: src/gedit-utils.c:817
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because gedit cannot handle %s: locations."
-msgstr "\"%s\" dosyası açılamıyor çünkü gedit %s: konumlarını tanımlayamıyor."
-
-#: src/gedit-utils.c:823
-#, c-format
-msgid "Could not open the file \"%s\""
-msgstr "%s dosyası açılamadı."
-
-#: src/gedit-utils.c:833
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains data in an invalid format."
-msgstr "\"%s\" dosyası açılamıyor çünkü geçersiz biçimli veri içeriyor."
-
-#: src/gedit-utils.c:840
-#, c-format
-msgid "Could not open the file \"%s\" because it is too big."
-msgstr "\"%s\" dosyası açılamıyor çünkü boyutu çok yüksek."
-
-#: src/gedit-utils.c:847
-#, c-format
-msgid ""
-"\"%s\" is not a valid location.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\" geçerli bir konum değil\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:854
-#, c-format
-msgid "Could not open the file \"%s\" because access was denied."
-msgstr "\"%s\" dosyası açılamıyor çünkü erişim engellendi."
-
-#: src/gedit-utils.c:861
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-"\"%s\" dosyası açılamıyor çünkü çok fazla açık dosya var.\n"
-"\n"
-"Lütfen bazı açık dosyaları kapatın ve tekrar deneyin."
-
-#: src/gedit-utils.c:869
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\" bir dizin.\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:876
-#, c-format
-msgid ""
-"Not enough available memory to open the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-" \"%s\" dosyasını açmak için yeterli bellek yok. Lütfen çalışmakta olan bazı "
-"uygulamaları kapatıp tekrar deneyin."
-
-#: src/gedit-utils.c:902
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that you typed the location correctly and that your proxy "
-"settings are correct and then try again."
-msgstr ""
-"\"%s\"dosyası açılamadı çünkü ana bilgisayar \"%s\" bulunamadı.\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza ve vekil sunucu ayarlarınızın doğru olduğuna "
-"emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:917
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was invalid.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\"dosyası açılamadı çünkü ana bilgisayar adı geçersiz.\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:924
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"\"%s\"dosyası açılamadı çünkü ana bilgisayar adı boş..\n"
-"\n"
-"Lütfen vekil sunucu ayarlarınızın doğru olduğuna emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:931
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because the attempt to log in failed.\n"
-"\n"
-"Please, check that you typed the location correctly and try again."
-msgstr ""
-"\"%s\"dosyası açılamadı çünkü oturum açma girişimi başarısız oldu.\n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:939
-#, c-format
-msgid ""
-"Could not open the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to open a binary file."
-msgstr ""
-"\"%s\"dosyası açılamadı çünkü geçersiz UTF-8 bilgisi içeriyor.\n"
-"\n"
-"Bir kütük dosyası açmaya çalışıyor olabilirsiniz."
-
-#: src/gedit-utils.c:977
-#, c-format
-msgid "Could not open the file \"%s\"."
-msgstr "Dosya açılamadı: %s"
-
-#: src/gedit-utils.c:1028
-#, c-format
-msgid "Could not save the file \"%s\"."
-msgstr "\"%s\"dosyası kaydedilemedi."
-
-#: src/gedit-utils.c:1032
-#, c-format
-msgid ""
-"Could not save the file \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"\"%s\"kaydedilemedi.\n"
-"\n"
-"%s."
-
-#: src/gedit-utils.c:1085
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot find it.\n"
-"\n"
-"Perhaps, it has recently been deleted."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü gedit bu dosyayı bulamıyor.\n"
-"\n"
-"Dosya silinmiş olabilir."
-
-#: src/gedit-utils.c:1092
-#, c-format
-msgid "Could not revert the file \"%s\" because it contains corrupted data."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü zarar görmüş veri içeriyor."
-
-#: src/gedit-utils.c:1103
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because gedit cannot handle %s: locations."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü gedit %s: konumlarını "
-"tanımlayamıyor."
-
-#: src/gedit-utils.c:1109 src/gedit-utils.c:1249
-#, c-format
-msgid "Could not revert the file \"%s\"."
-msgstr " \"%s\" dosyası eski haline getirilemiyor."
-
-#: src/gedit-utils.c:1119
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains data in an invalid "
-"format."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü geçersiz biçimli veri içeriyor."
-
-#: src/gedit-utils.c:1126
-#, c-format
-msgid "Could not revert the file \"%s\" because it is too big."
-msgstr "\"%s\"dosyası eski haline getirilemedi çünkü dosya çok büyük."
-
-#: src/gedit-utils.c:1133
-#, c-format
-msgid "Could not revert the file \"%s\" because access was denied."
-msgstr "\"%s\"dosyası eski haline getirilemedi çünkü erişim engellendi."
-
-#: src/gedit-utils.c:1140
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because there are too many open files.\n"
-"\n"
-"Please, close some open file and try again."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü çok fazla açık dosya var. \n"
-"\n"
-"Lütfen bazı dosyaları kapatıp tekrar deneyin."
-
-#: src/gedit-utils.c:1148
-#, c-format
-msgid ""
-"Not enough available memory to revert the file \"%s\". Please, close some "
-"running application and try again."
-msgstr ""
-"\"%s\"dosyasının eski haline getirilmesi için yeterli bellek yok. Lütfen "
-"çalışan bazı uygulamaları kapatıp tekrar deneyin."
-
-#: src/gedit-utils.c:1174
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because no host \"%s\" could be found.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü ana bilgisayar \"%s\" "
-"bulunamadı.\n"
-"\n"
-"Lütfenvekil sunucu ayarlarınızın doğru olduğuna emin olun ve tekrar deneyin."
-
-#: src/gedit-utils.c:1188
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because the host name was empty.\n"
-"\n"
-"Please, check that your proxy settings are correct and try again."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü ana bilgisayar adı boş..\n"
-"\n"
-"Lütfen vekil sunucu ayarlarınızın doğru olduğuna emin olun "
-
-#: src/gedit-utils.c:1195
-#, c-format
-msgid "Could not revert the file \"%s\" because the attempt to log in failed."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü oturum açma girişimi başarısız "
-"oldu."
-
-#: src/gedit-utils.c:1202
-#, c-format
-msgid ""
-"Could not revert the file \"%s\" because it contains invalid UTF-8 data.\n"
-"\n"
-"Probably, you are trying to revert a binary file."
-msgstr ""
-"\"%s\"dosyası eski haline getirilemedi çünkü geçersiz UTF-8 bilgisi "
-"içeriyor.\n"
-"\n"
-"Bir kütük dosyası açmaya çalışıyor olabilirsiniz."
-
-#: src/gedit-utils.c:1211
-msgid "It is not possible to revert an Untitled document."
-msgstr "İsimsiz bir belge eski haline getirilemez."
-
-#: src/gedit-utils.c:1300
-#, c-format
-msgid "The file \"%s\" already exists."
-msgstr "\"%s\"dosyası zaten var."
-
-#: src/gedit-utils.c:1306
-#, c-format
-msgid ""
-"\"%s\" is a directory.\n"
-"\n"
-"Please, check that you typed the location correctly."
-msgstr ""
-"\"%s\"bir dizin. \n"
-"\n"
-"Lütfen konumu doğru yazdığınıza emin olun."
-
-#: src/gedit-utils.c:1315
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"Make sure you have the appropriate write permissions."
-msgstr ""
-" \"%s\"dosyarı oluşturulamıyor.\n"
-"\n"
-"Geçerli yazma iznine sahip olduğunuzdan emin olun."
-
-#: src/gedit-utils.c:1322
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"The file name is too long."
-msgstr ""
-" \"%s\"dosyarı oluşturulamıyor.\n"
-"\n"
-"Dosya adı çok uzun."
-
-#: src/gedit-utils.c:1329
-#, c-format
-msgid ""
-"Cannot create the file \"%s\".\n"
-"\n"
-"A directory component in the file name does not exist or is a dangling "
-"symbolic link."
-msgstr ""
-" \"%s\"dosyarı oluşturulamıyor.\n"
-"\n"
-"Dosya adında bulunan bir dizin bileşeni yok, ya da artık geçerli olmayan bir "
-"sembolink bağlantı."
-
-#: src/gedit-utils.c:1338
-#, c-format
-msgid ""
-"There is not enough disk space to create the file \"%s\".\n"
-"\n"
-"Please free some disk space and try again."
-msgstr ""
-"\"%s\"dosyasını oluşturmak için yeterli disk alanı yok..\n"
-"\n"
-"Lütfen disk alanı boşaltıp tekrar deneyiniz."
-
-#: src/gedit-utils.c:1344
-#, c-format
-msgid "Could not create the file \"%s\"."
-msgstr " \"%s\" dosyası oluşturulamıyor."
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:1
+msgid "Checks the spelling of the current document."
+msgstr "Geçerli belgede yazım denetimi yapar."
+
+#: plugins/spell/spell.gedit-plugin.desktop.in.h:2
+msgid "Spell checker"
+msgstr "Yazım denetimcisi"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:139
+msgid "Tag list plugin"
+msgstr "Etiket listesi eklentisi"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:157
+msgid "Select the group of tags you want to use"
+msgstr "Kullanacağınız etiket grubunu seçiniz"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:179
+msgid "Available Tag Lists"
+msgstr "Kullanılabilir Etiket Listeleri"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:181
+#: plugins/taglist/gedit-taglist-plugin-window.c:202
+msgid "Tags"
+msgstr "Etiketler"
+
+#: plugins/taglist/gedit-taglist-plugin-window.c:191
+msgid "Double-click on a tag to insert it in the current document"
+msgstr "Herhangi bir etiketi belgeye eklemek için çift tıklayın"
+
+#: plugins/taglist/gedit-taglist-plugin.c:46
+msgid "Tag _List"
+msgstr "Etiket _Listesi"
 
 #.
-#. if (col == chars)
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
-#. else
-#. msg = g_strdup_printf (_("  Ln %d, Col. %d-%d"), row + 1, chars + 1, col + 1);
+#. #define MENU_ITEM_NAME		"TagList"
 #.
-#: src/gedit-view.c:1076
-#, c-format
-msgid "  Ln %d, Col. %d"
-msgstr " Sat %d, Süt. %d"
+#: plugins/taglist/gedit-taglist-plugin.c:51
+msgid "Show the tag list window"
+msgstr "Etiket listesi penceresini göster"
 
-#: src/gedit-view.c:1114
-msgid "  OVR"
-msgstr "  ÜZR"
-
-#: src/gedit-view.c:1116
-msgid "  INS"
-msgstr "  ÜYZ"
-
-#: src/gedit2.c:79
-msgid "Show utility debugging messages."
-msgstr "Yazılım hata ayıklama iletilerini gösterir."
-
-#: src/gedit2.c:82
-msgid "Show mdi debugging messages."
-msgstr "Görünüm hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:85
-msgid "Show commands debugging messages."
-msgstr "Komut hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:88
-msgid "Show document debugging messages."
-msgstr "Belge hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:91
-msgid "Show file debugging messages."
-msgstr "Dosya hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:94
-msgid "Show plugin debugging messages."
-msgstr "Eklenti hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:97
-msgid "Show prefs debugging messages."
-msgstr "Tercihler hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:100
-msgid "Show printing debugging messages."
-msgstr "Yazdırma hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:103
-msgid "Show search debugging messages."
-msgstr "Arama hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:106
-msgid "Show undo debugging messages."
-msgstr "Geri alma hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:109
-msgid "Show view debugging messages."
-msgstr "Görünüm hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:112
-msgid "Show recent debugging messages."
-msgstr "En son hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:115
-msgid "Show session management debugging messages."
-msgstr "Oturum yöntetimi hata ayıklama iletilerini göster."
-
-#: src/gedit2.c:118
-msgid "Turn on all debugging messages."
-msgstr "Tüm hata ayıklama iletilerini aç."
-
-#: src/gedit2.c:121
-msgid "Quit an existing instance of gedit"
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:1
+msgid ""
+"Provides a method to easily insert into a document commonly used tags/"
+"strings without having to type them."
 msgstr ""
+"Etiket listesi eklentisi, sıklıkla kullandığınız etiketlerin/dizgelerin "
+"tekrar yazılmaksızın belgeye kolaylıkla eklenmesi için bir yöntem sağlar."
 
-#: src/gedit2.c:124
-msgid "Create a new toplevel window in an existing instance of gedit"
-msgstr ""
+#: plugins/taglist/taglist.gedit-plugin.desktop.in.h:2
+msgid "Tag list"
+msgstr "Etiket listesi"
 
-#: src/gedit2.c:127
-msgid "Create a new document in an existing instance of gedit"
-msgstr ""
+#: plugins/time/time.c:50
+msgid "In_sert Date and Time..."
+msgstr "Tari_h ve Zaman Ekle..."
 
-#: src/gedit-output-window.c:333
-msgid "Close the output window"
-msgstr "Çıktı penceresini kapat"
+#: plugins/time/time.c:53
+msgid "Insert current date and time at the cursor position"
+msgstr "İmlecin bulunduğu yere şimdiki tarihi ve zamanı ekler"
 
-#: src/gedit-output-window.c:371
-msgid "Copy selected lines"
-msgstr "Seçili satırları kopyala"
+#: plugins/time/time.c:449
+msgid "Available formats"
+msgstr "Kullanılabilir biçimler"
 
-#: src/gedit-output-window.c:391
-msgid "Clear the output window"
-msgstr "Çıktı penceresini temizle"
+#: plugins/time/time.c:554
+msgid "Configure insert date/time plugin..."
+msgstr "Tarih/zaman ekleme eklentisini yapılandır..."
 
-#: src/gedit-output-window.c:431
-msgid "Output Lines"
-msgstr "Çıktı satırları"
+#: plugins/time/time.gedit-plugin.desktop.in.h:1
+msgid "Insert Date/Time"
+msgstr "Tarih/Zaman Ekle"
 
-#: src/dialogs/gedit-encodings-dialog.glade2.h:1
-msgid "Choose one or more e_ncodings:"
-msgstr ""
+#: plugins/time/time.gedit-plugin.desktop.in.h:2
+msgid "Inserts current date and time at the cursor position."
+msgstr "İmlecin bulunduğu yere şimdiki tarihi ve zamanı ekler."
 
-#: src/gedit-encodings.c:147 src/gedit-encodings.c:173
-#: src/gedit-encodings.c:214 src/gedit-encodings.c:264
-#: src/gedit-encodings.c:289
-msgid "Western"
-msgstr "Batı"
+#: plugins/time/time.glade2.h:3
+msgid "<span size=\"small\">01/11/2002 17:52:00</span>"
+msgstr "<span size=\"small\">01/11/2002 17:52:00</span>"
 
-#: src/gedit-encodings.c:149 src/gedit-encodings.c:216
-#: src/gedit-encodings.c:244 src/gedit-encodings.c:285
-msgid "Central European"
-msgstr "Orta Avrupa"
+#: plugins/time/time.glade2.h:4
+msgid "<span weight=\"bold\"> When inserting date/time...</span>"
+msgstr "<span weight=\"bold\"> Tarih/zamanı eklerken...</span>"
 
-#: src/gedit-encodings.c:151
-msgid "South European"
-msgstr "Güney Avrupa"
+#: plugins/time/time.glade2.h:5
+msgid "Configure date/time plugin"
+msgstr "Tarih/Zaman eklentisini yapılandır"
 
-#: src/gedit-encodings.c:153 src/gedit-encodings.c:169
-#: src/gedit-encodings.c:299
-msgid "Baltic"
-msgstr "Baltık"
+#: plugins/time/time.glade2.h:6
+msgid "Insert Date and Time"
+msgstr "Tarih ve Zaman Ekle"
 
-#: src/gedit-encodings.c:155 src/gedit-encodings.c:218
-#: src/gedit-encodings.c:231 src/gedit-encodings.c:235
-#: src/gedit-encodings.c:248 src/gedit-encodings.c:287
-msgid "Cyrillic"
-msgstr "Kiril"
+#: plugins/time/time.glade2.h:7
+msgid "Use the _selected format"
+msgstr "_Seçili biçimi kullan"
 
-#: src/gedit-encodings.c:157 src/gedit-encodings.c:224
-#: src/gedit-encodings.c:242 src/gedit-encodings.c:297
-msgid "Arabic"
-msgstr "Arapça"
+#: plugins/time/time.glade2.h:8
+msgid "_Insert"
+msgstr "_Ekle"
 
-#: src/gedit-encodings.c:159 src/gedit-encodings.c:254
-#: src/gedit-encodings.c:291
-msgid "Greek"
-msgstr "Yunanca"
+#: plugins/time/time.glade2.h:9
+msgid "_Prompt for a format"
+msgstr "_Bir biçim için sor"
 
-#: src/gedit-encodings.c:161
-msgid "Hebrew Visual"
-msgstr "İbranice-Görünümsel"
+#: plugins/time/time.glade2.h:10
+msgid "_Use custom format"
+msgstr "_Özel bir biçim kullan"
 
-#: src/gedit-encodings.c:163 src/gedit-encodings.c:222
-#: src/gedit-encodings.c:260 src/gedit-encodings.c:295
-msgid "Hebrew"
-msgstr "İbranice"
+#: viewer/gedit-persist-stream.c:44
+msgid "Save method not implemented for gedit viewer"
+msgstr "Gedit görüntüleyici için kaydetme metodu henüz tamamlanmadı"
 
-#: src/gedit-encodings.c:165 src/gedit-encodings.c:220
-#: src/gedit-encodings.c:268 src/gedit-encodings.c:293
-msgid "Turkish"
-msgstr "Türkçe"
+#: viewer/gedit-viewer-ui.xml.h:1
+msgid "Copy the selected text to the clipboard"
+msgstr "Seçilen metni panoya kopyala"
 
-#: src/gedit-encodings.c:167
-msgid "Nordic"
-msgstr "İskandinav"
-
-#: src/gedit-encodings.c:171
-msgid "Celtic"
-msgstr "Kelt"
-
-#: src/gedit-encodings.c:175 src/gedit-encodings.c:266
-msgid "Romanian"
-msgstr "Romence"
-
-#: src/gedit-encodings.c:178 src/gedit-encodings.c:180
-#: src/gedit-encodings.c:182 src/gedit-encodings.c:184
-msgid "Unicode"
-msgstr ""
-
-#: src/gedit-encodings.c:187
-msgid "Armenian"
-msgstr "Ermenice"
-
-#: src/gedit-encodings.c:189 src/gedit-encodings.c:191
-#: src/gedit-encodings.c:200
-msgid "Chinese Traditional"
-msgstr "Geleneksel Çince"
-
-#: src/gedit-encodings.c:193
-msgid "Cyrillic/Russian"
-msgstr "Kiril/Rusça"
-
-#: src/gedit-encodings.c:196 src/gedit-encodings.c:227
-#: src/gedit-encodings.c:274
-msgid "Japanese"
-msgstr "Japonca"
-
-#: src/gedit-encodings.c:198 src/gedit-encodings.c:229
-#: src/gedit-encodings.c:233 src/gedit-encodings.c:280
-msgid "Korean"
-msgstr "Kore Dili"
-
-#: src/gedit-encodings.c:203 src/gedit-encodings.c:205
-#: src/gedit-encodings.c:207 src/gedit-encodings.c:211
-msgid "Chinese Simplified"
-msgstr "Basitleştirilmiş Çince"
-
-#: src/gedit-encodings.c:209
-msgid "Georgian"
-msgstr "Gürcüce"
-
-#: src/gedit-encodings.c:237 src/gedit-encodings.c:270
-msgid "Cyrillic/Ukrainian"
-msgstr "Kiril/Ukrayna Dili"
-
-#: src/gedit-encodings.c:246
-msgid "Croatian"
-msgstr "Hırvatça"
-
-#: src/gedit-encodings.c:250
-msgid "Hindi"
-msgstr "Hintçe"
-
-#: src/gedit-encodings.c:252
-msgid "Farsi"
-msgstr "Farsça"
-
-#: src/gedit-encodings.c:256
-msgid "Gujarati"
-msgstr "Gujarati"
-
-#: src/gedit-encodings.c:258
-msgid "Gurmukhi"
-msgstr "Gurmukhi"
-
-#: src/gedit-encodings.c:262
-msgid "Icelandic"
-msgstr "İzlandaca"
-
-#: src/gedit-encodings.c:276 src/gedit-encodings.c:282
-#: src/gedit-encodings.c:301
-msgid "Vietnamese"
-msgstr "Vietnamca"
-
-#: src/gedit-encodings.c:278
-msgid "Thai"
-msgstr "Tay Dili"
-
-#: src/recent-files/egg-recent-vfs-utils.c:90
-msgid " (invalid Unicode)"
-msgstr ""
+#: viewer/gedit-viewer-ui.xml.h:2
+msgid "_Copy Text"
+msgstr "Metni _Kopyala"
