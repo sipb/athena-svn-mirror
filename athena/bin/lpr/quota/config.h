@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v 1.2 1990-11-08 09:50:35 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v 1.3 1991-01-23 13:29:39 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v $ */
 /* $Author: epeisach $ */
 
@@ -14,7 +14,7 @@
 #define __CONFIG_H__
 
 /* Define NDBM if your system uses NDBM */
-#if (!defined(ultrix) && (defined(vax) || defined(ibm032))) || defined(Ultrix40)
+#if (!defined(ultrix) && (defined(vax) || defined(ibm032))) || defined(Ultrix40) || defined(_IBMR2)
 #define NDBM 
 #endif
 
