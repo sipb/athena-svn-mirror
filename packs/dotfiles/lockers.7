@@ -175,16 +175,33 @@ support this variable.
 The \fIlockers\fR locker contains tools to aid in the maintenance of
 lockers. "add lockers; man lockertools" for more information.
 
-.SH SUGGESTIONS ON VOLUME MANAGEMENT
+.SH SUGGESTIONS ON CONFIGURING SOFTWARE
 
-The three levels of arch/@sys/bin provide various possibilities for
-AFS volume management. This is mainly of concern only for large
-(>100M) lockers. First, you can separate all of the architecture
-dependent information (bins, libs, etc.) from the rest of the locker
-(src, man, etc.) Second, you can separate the architecture dependent
-information into different volumes on a platform-by-platform basis.
+Many software packages use autoconf-generated configure scripts.
+These packages can generally be configured for a locker with a command
+like "./configure --prefix=/mit/lockername
+--exec-prefix=/mit/lockername/arch/$ATHENA_SYS".  This command will
+configure the program to install its shared data files directly under
+/mit/lockername, and to install architecture-dependent materials under
+the appropriate arch directory.
+
+Alternatively, one could configure with simply "./configure
+--prefix=/mit/lockername/arch/$ATHENA_SYS" to install all materials
+under the appropriate arch directory.  This option may waste space,
+but may also be more resistant to flaws in the package (e.g. the
+package might install architecture-dependent materials under the
+prefix instead of the exec-prefix, or an installation of a newer
+version of the package might break an older installation for an older
+platform by overwriting the shared data area).
+
+Some software in lockers is configured to use the full AFS path as a
+prefix instead of /mit/lockername.  This practice is not recommended
+because it is incompatible with the local-lockers framework.  It is
+also not recommended to use arch/@sys (instead of arch/$ATHENA_SYS) in
+the prefix, since that can fail when the software is used via
+\fIATHENA_SYS_COMPAT\fR.
 
 .SH SEE ALSO
 
 add(1), athdir(1), machtype(1), athena-ws discuss meeting, txns
-1932-1961 more or less
+1932-1961 more or less, /etc/athena/local-lockers.conf
