@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_link.c,v 1.2 2002-08-02 09:16:15 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_link.c,v 1.3 2002-12-13 22:06:46 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -34,7 +34,7 @@ extern afs_rwlock_t afs_xcbhash;
 afs_link(avc, ndp)
     struct vcache *avc;
     struct nameidata *ndp; {
-    struct vcache *adp = (struct vcache *)ndp->ni_dvp;
+    struct vcache *adp = VTOAFS(ndp->ni_dvp);
     char *aname = ndp->ni_dent.d_name;
     struct ucred *acred = ndp->ni_cred;
 #else	/* AFS_OSF_ENV */
@@ -64,7 +64,8 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
     afs_Trace3(afs_iclSetp, CM_TRACE_LINK, ICL_TYPE_POINTER, adp,
 	       ICL_TYPE_POINTER, avc, ICL_TYPE_STRING, aname);
     /* create a hard link; new entry is aname in dir adp */
-    if (code = afs_InitReq(&treq, acred)) return code;
+    if (code = afs_InitReq(&treq, acred)) 
+	goto done2;
 
     afs_InitFakeStat(&vfakestate);
     afs_InitFakeStat(&dfakestate);
@@ -75,6 +76,10 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
 
     if (avc->fid.Cell != adp->fid.Cell || avc->fid.Fid.Volume != adp->fid.Fid.Volume) {
 	code = EXDEV;
+	goto done;
+    }
+    if (strlen(aname) > AFSNAMEMAX) {
+	code = ENAMETOOLONG;
 	goto done;
     }
     code = afs_VerifyVCache(adp, &treq);
@@ -153,11 +158,13 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
     ReleaseWriteLock(&avc->lock);
     code = 0;
 done:
+    code = afs_CheckCode(code, &treq, 24);
     afs_PutFakeStat(&vfakestate);
     afs_PutFakeStat(&dfakestate);
+done2:
 #ifdef	AFS_OSF_ENV
     afs_PutVCache(adp, WRITE_LOCK);
 #endif	/* AFS_OSF_ENV */
-    return afs_CheckCode(code, &treq);
+    return code;
 }
 

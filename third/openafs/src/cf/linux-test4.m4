@@ -1,3 +1,19 @@
+AC_DEFUN(LINUX_EXPORTS_TASKLIST_LOCK, [
+AC_MSG_CHECKING(for exported tasklist_lock)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_exports_tasklist_lock,
+[
+AC_TRY_COMPILE(
+[#include <linux/modversions.h>],
+[#ifndef __ver_tasklist_lock
+#error tasklist_lock not exported
+#endif],
+ac_cv_linux_exports_tasklist_lock=yes,
+ac_cv_linux_exports_tasklist_lock=no)])
+AC_MSG_RESULT($ac_cv_linux_exports_tasklist_lock)
+CPPFLAGS="$save_CPPFLAGS"])
+
 AC_DEFUN(LINUX_EXPORTS_SYS_CALL_TABLE, [
 AC_MSG_CHECKING(for exported sys_call_table)
 save_CPPFLAGS="$CPPFLAGS"
@@ -60,6 +76,25 @@ AC_TRY_COMPILE(
 ac_cv_linux_exports_kallsyms_address=yes,
 ac_cv_linux_exports_kallsyms_address=no)])
 AC_MSG_RESULT($ac_cv_linux_exports_kallsyms_address)
+CPPFLAGS="$save_CPPFLAGS"])
+
+AC_DEFUN(LINUX_COMPLETION_H_EXISTS, [
+AC_MSG_CHECKING(for linux/completion.h existance)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_completion_h_exists,
+[
+AC_TRY_COMPILE(
+[#include <linux/completion.h>
+#include <linux/version.h>],
+[struct completion _c;
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,4,8)
+lose
+#endif
+],
+ac_cv_linux_completion_h_exists=yes,
+ac_cv_linux_completion_h_exists=no)])
+AC_MSG_RESULT($ac_cv_linux_completion_h_exists)
 CPPFLAGS="$save_CPPFLAGS"])
 
 AC_DEFUN(LINUX_FS_STRUCT_INODE_HAS_I_MMAP_SHARED, [

@@ -20,7 +20,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_write.c,v 1.2 2002-07-20 19:33:40 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_write.c,v 1.3 2002-12-13 22:06:46 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -59,7 +59,7 @@ register struct vrequest *treq;
 	 * top level code.  */
 	avc->opens--;
 	avc->execsOrWriters--;
-	AFS_RELE((struct vnode *)avc); /* VN_HOLD at set CCore(afs_FakeClose)*/
+	AFS_RELE(AFSTOV(avc)); /* VN_HOLD at set CCore(afs_FakeClose)*/
 	crfree((struct AFS_UCRED *)avc->linkData);	/* "crheld" in afs_FakeClose */
 	avc->linkData =	(char *)0;
     }
@@ -256,9 +256,12 @@ afs_MemWrite(avc, auio, aio, acred, noLock)
 
 	code = afs_MemWriteUIO(tdc->f.inode, &tuio);
 	if (code) {
+	    void *mep; /* XXX in prototype world is struct memCacheEntry * */
 	    error = code;
 	    ZapDCE(tdc);		/* bad data */
-	    afs_MemCacheTruncate(tdc->f.inode, 0);
+	    mep = afs_MemCacheOpen(tdc->f.inode);
+	    afs_MemCacheTruncate(mep, 0);
+	    afs_MemCacheClose(mep);
 	    afs_stats_cmperf.cacheCurrDirtyChunks--;
 	    afs_indexFlags[tdc->index] &= ~IFDataMod;    /* so it does disappear */
 	    afs_PutDCache(tdc);
@@ -280,7 +283,7 @@ afs_MemWrite(avc, auio, aio, acred, noLock)
 	if (filePos > avc->m.Length)
 	    avc->m.Length = filePos;
 #endif
-#ifndef AFS_VM_RDWR_ENV
+#if !defined(AFS_VM_RDWR_ENV)
 	/*
 	 * If write is implemented via VM, afs_DoPartialWrite() is called from
 	 * the high-level write op.
@@ -533,15 +536,23 @@ afs_UFSWrite(avc, auio, aio, acred, noLock)
 	code = osi_file_uio_rdwr(tfile, &tuio, UIO_WRITE);
 	AFS_GLOCK();
 #else
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
         AFS_GUNLOCK();
         VOP_LOCK(tfile->vnode, LK_EXCLUSIVE, current_proc());
         code = VOP_WRITE(tfile->vnode, &tuio, 0, &afs_osi_cred);
         VOP_UNLOCK(tfile->vnode, 0, current_proc());
         AFS_GLOCK();
 #else
+#if defined(AFS_FBSD_ENV)
+        AFS_GUNLOCK();
+        VOP_LOCK(tfile->vnode, LK_EXCLUSIVE, curproc);
+        code = VOP_WRITE(tfile->vnode, &tuio, 0, &afs_osi_cred);
+        VOP_UNLOCK(tfile->vnode, 0, curproc);
+        AFS_GLOCK();
+#else
 	code = VOP_RDWR(tfile->vnode, &tuio, UIO_WRITE, 0, &afs_osi_cred);
-#endif /* AFS_DARWIN_ENV || AFS_FBSD_ENV */
+#endif /* AFS_FBSD_ENV */
+#endif /* AFS_DARWIN_ENV */
 #endif /* AFS_LINUX20_ENV */
 #endif /* AFS_HPUX100_ENV */
 #endif /* AFS_OSF_ENV */
@@ -577,7 +588,7 @@ afs_UFSWrite(avc, auio, aio, acred, noLock)
 	}
 #endif
 	osi_UFSClose(tfile);
-#ifndef	AFS_VM_RDWR_ENV
+#if !defined(AFS_VM_RDWR_ENV)
 	/*
 	 * If write is implemented via VM, afs_DoPartialWrite() is called from
 	 * the high-level write op.
@@ -678,7 +689,7 @@ struct vrequest *areq; {
 afs_closex(afd)
     register struct file *afd; {
     struct vrequest treq;
-    register struct vcache *tvc;
+    struct vcache *tvc;
     afs_int32 flags;
     int closeDone;
     afs_int32 code = 0;
@@ -694,14 +705,14 @@ afs_closex(afd)
      * close the file and release the lock when done.  Otherwise, just
      * let the regular close code work.      */
     if (afd->f_type == DTYPE_VNODE) {
-	tvc = (struct vcache *) afd->f_data;
-	if (IsAfsVnode((struct vnode *)tvc)) {
+	tvc = VTOAFS(afd->f_data);
+	if (IsAfsVnode(AFSTOV(tvc))) {
 	    code = afs_EvalFakeStat(&tvc, &fakestat, &treq);
-	    if (code) { 
+	    if (code) {
 	      afs_PutFakeStat(&fakestat);
 	      return code;
 	    }
-	    VN_HOLD((struct vnode *) tvc);
+	    VN_HOLD(AFSTOV(tvc));
 	    flags = afd->f_flag & (FSHLOCK | FEXLOCK);
 	    afd->f_flag &= ~(FSHLOCK | FEXLOCK);
 	    code = vno_close(afd);
@@ -715,7 +726,7 @@ afs_closex(afd)
 #ifdef	AFS_DEC_ENV
 	    grele((struct gnode *) tvc);
 #else
-	    AFS_RELE((struct vnode *) tvc);
+	    AFS_RELE(AFSTOV(tvc));
 #endif
 	    closeDone = 1;
 	}

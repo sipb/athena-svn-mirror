@@ -1,6 +1,6 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4-p5
+dnl aclocal.m4 generated automatically by aclocal 1.4
 
-dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -59,6 +59,9 @@ AC_ARG_ENABLE(transarc-paths,
 AC_ARG_ENABLE(tivoli-tsm,
 [  --enable-tivoli-tsm              	Enable use of the Tivoli TSM API libraries for butc support],, enable_tivoli_tsm="no"
 )
+AC_ARG_ENABLE(debug-kernel,
+[  --enable-debug-kernel		enable compilation of the kernel module with debugging information (defaults to disabled)],, enable_debug_kernel="no"
+)
 
 dnl weird ass systems
 AC_AIX
@@ -66,9 +69,6 @@ AC_ISC_POSIX
 AC_MINIX
 
 dnl Various compiler setup.
-AC_C_INLINE
-AC_C_CONST
-AC_PROG_CC
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
@@ -82,13 +82,18 @@ AM_PROG_LEX
 
 OPENAFS_CHECK_BIGENDIAN
 
+KERN_DEBUG_OPT=
+if test "x$enable_debug_kernel" = "xyes"; then
+  KERN_DEBUG_OPT=-g
+fi
+
 AC_MSG_CHECKING(your OS)
 system=$host
 case $system in
         *-linux*)
 		MKAFS_OSTYPE=LINUX
 		if test "x$enable_redhat_buildsys" = "xyes"; then
-		 AC_DEFINE(ENABLE_REDHAT_BUILDSYS)
+		 AC_DEFINE(ENABLE_REDHAT_BUILDSYS, 1, [define if you have redhat buildsystem])
 		fi
 		if test "x$enable_kernel_module" = "xyes"; then
 		 if test "x$with_linux_kernel_headers" != "x"; then
@@ -132,18 +137,32 @@ case $system in
 		fi
 		AC_MSG_RESULT(linux)
 		if test "x$enable_kernel_module" = "xyes"; then
+		 OMIT_FRAME_POINTER=
+		 if test "x$enable_debug_kernel" = "xno"; then
+			OMIT_FRAME_POINTER=-fomit-frame-pointer
+		 fi
+		 AC_SUBST(OMIT_FRAME_POINTER)
+		 OPENAFS_GCC_SUPPORTS_MARCH
+		 AC_SUBST(P5PLUS_KOPTS)
+		 OPENAFS_GCC_NEEDS_NO_STRENGTH_REDUCE
+		 OPENAFS_GCC_NEEDS_NO_STRICT_ALIASING
+		 OPENAFS_GCC_SUPPORTS_NO_COMMON
+		 AC_SUBST(LINUX_GCC_KOPTS)
 	         ifdef([OPENAFS_CONFIGURE_LIBAFS],
 	           [LINUX_BUILD_VNODE_FROM_INODE(config,afs)],
 	           [LINUX_BUILD_VNODE_FROM_INODE(src/config,src/afs/LINUX)]
 	         )
 	         LINUX_FS_STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK
+	         LINUX_FS_STRUCT_ADDRESS_SPACE_HAS_GFP_MASK
 		 LINUX_FS_STRUCT_INODE_HAS_I_TRUNCATE_SEM
 		 LINUX_FS_STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS
 		 LINUX_FS_STRUCT_INODE_HAS_I_DEVICES
 	  	 LINUX_INODE_SETATTR_RETURN_TYPE
+		 LINUX_COMPLETION_H_EXISTS
+		 LINUX_EXPORTS_TASKLIST_LOCK
 		 LINUX_NEED_RHCONFIG
 		 LINUX_WHICH_MODULES
-                 if test "$ac_cv_linux_config_modversions" = "xno"; then
+                 if test "x$ac_cv_linux_config_modversions" = "xno"; then
                    AC_MSG_WARN([Cannot determine sys_call_table status. assuming it's exported])
                    ac_cv_linux_exports_sys_call_table=yes
                  else
@@ -163,10 +182,13 @@ case $system in
                             linux_syscall_method=kallsyms_symbol
                          fi
                          if test "x$linux_syscall_method" = "xnone"; then
-                      AC_MSG_ERROR([no available sys_call_table access method])
+                        AC_MSG_ERROR([no available sys_call_table access method])
                          fi
                    fi
                  fi
+		 if test "x$ac_cv_linux_exports_tasklist_lock" = "xyes" ; then
+		  AC_DEFINE(EXPORTED_TASKLIST_LOCK, 1, [define if your linux kernel exports tasklist_lock])
+		 fi
                  if test "x$ac_cv_linux_exports_sys_call_table" = "xyes"; then
                   AC_DEFINE(EXPORTED_SYS_CALL_TABLE)
                  fi
@@ -176,20 +198,26 @@ case $system in
                  if test "x$ac_cv_linux_exports_kallsyms_address" = "xyes"; then
                   AC_DEFINE(EXPORTED_KALLSYMS_ADDRESS)
                  fi
+		 if test "x$ac_cv_linux_completion_h_exists" = "xyes" ; then
+		  AC_DEFINE(COMPLETION_H_EXISTS, 1, [define if your h_exists exists])
+		 fi
 		 if test "x$ac_cv_linux_func_inode_setattr_returns_int" = "xyes" ; then
-		  AC_DEFINE(INODE_SETATTR_NOT_VOID)
+		  AC_DEFINE(INODE_SETATTR_NOT_VOID, 1, [define if your setattr return return non-void])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_address_space_has_page_lock" = "xyes"; then 
-		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK)
+		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK, 1, [define if your struct address_space has page_lock])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_address_space_has_gfp_mask" = "xyes"; then 
+		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_GFP_MASK, 1, [define if your struct address_space has gfp_mask])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_truncate_sem" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_TRUNCATE_SEM)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_TRUNCATE_SEM, 1, [define if your struct inode has truncate_sem])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_devices" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_DEVICES)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_DEVICES, 1, [define if you struct inode has i_devices])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS, 1, [define if you struct inode has data_buffers])
 		 fi
                 :
 		fi
@@ -198,6 +226,12 @@ case $system in
 		MKAFS_OSTYPE=SOLARIS
                 AC_MSG_RESULT(sun4)
 		SOLARIS_UFSVFS_HAS_DQRWLOCK
+		SOLARIS_PROC_HAS_P_COREFILE
+                ;;
+        *-sunos*)
+		MKAFS_OSTYPE=SUNOS
+		enable_kernel_module=no
+                AC_MSG_RESULT(sun4)
                 ;;
         *-hpux*)
 		MKAFS_OSTYPE=HPUX
@@ -245,6 +279,7 @@ case $system in
                 AC_MSG_RESULT($system)
                 ;;
 esac
+AC_SUBST(KERN_DEBUG_OPT)
 
 if test "x$with_afs_sysname" != "x"; then
         AFS_SYSNAME="$with_afs_sysname"
@@ -253,6 +288,18 @@ else
 	case $host in
 		i?86-*-freebsd4.2*)
 			AFS_SYSNAME="i386_fbsd_42"
+			;;
+		i?86-*-freebsd4.3*)
+			AFS_SYSNAME="i386_fbsd_43"
+			;;
+		i?86-*-freebsd4.4*)
+			AFS_SYSNAME="i386_fbsd_44"
+			;;
+		i?86-*-freebsd4.5*)
+			AFS_SYSNAME="i386_fbsd_45"
+			;;
+		i?86-*-freebsd4.6*)
+			AFS_SYSNAME="i386_fbsd_46"
 			;;
 		hppa*-hp-hpux11*)
 			AFS_SYSNAME="hp_ux110"
@@ -275,6 +322,24 @@ else
 		powerpc-apple-darwin5.2*)
 			AFS_SYSNAME="ppc_darwin_14"
 			;;
+		powerpc-apple-darwin5.3*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin5.4*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin5.5*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin6.0*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
+		powerpc-apple-darwin6.1*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
+		powerpc-apple-darwin6.2*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
 		sparc-sun-solaris2.5*)
 			AFS_SYSNAME="sun4x_55"
 			;;
@@ -289,6 +354,18 @@ else
 			;;
 		sparc-sun-solaris2.9)
 			AFS_SYSNAME="sun4x_59"
+			;;
+		sparc-sun-sunos4*)
+			AFS_SYSNAME="sun4_413"
+			;;
+		i386-pc-solaris2.7)
+			AFS_SYSNAME="sunx86_57"
+			;;
+		i386-pc-solaris2.8)
+			AFS_SYSNAME="sunx86_58"
+			;;
+		i386-pc-solaris2.9)
+			AFS_SYSNAME="sunx86_59"
 			;;
 		alpha*-dec-osf4.0*)
 			AFS_SYSNAME="alpha_dux40"
@@ -353,7 +430,17 @@ case $AFS_SYSNAME in
 		DARWIN_INFOFILE=afs.${AFS_SYSNAME}.plist
 		;;
 esac
-
+AC_CACHE_VAL(ac_cv_sockaddr_len,
+[
+AC_MSG_CHECKING([if struct sockaddr has sa_len field])
+AC_TRY_COMPILE( [#include <sys/types.h>
+#include <sys/socket.h>],
+[struct sockaddr *a;
+a->sa_len=0;], ac_cv_sockaddr_len=yes, ac_cv_sockaddr_len=no)
+AC_MSG_RESULT($ac_cv_sockaddr_len)])
+if test "$ac_cv_sockaddr_len" = "yes"; then
+   AC_DEFINE(STRUCT_SOCKADDR_HAS_SA_LEN, 1, [define if you struct sockaddr sa_len])
+fi
 if test "x${MKAFS_OSTYPE}" = "xIRIX"; then
         echo Skipping library tests because they confuse Irix.
 else
@@ -362,7 +449,7 @@ else
   if test "$ac_cv_func_socket" = no; then
     for lib in socket inet; do
         if test "$HAVE_SOCKET" != 1; then
-                AC_CHECK_LIB(${lib}, socket,LIBS="$LIBS -l$lib";HAVE_SOCKET=1;AC_DEFINE(HAVE_SOCKET))
+                AC_CHECK_LIB(${lib}, socket,LIBS="$LIBS -l$lib";HAVE_SOCKET=1;AC_DEFINE(HAVE_SOCKET, 1, [define if you have socket]))
         fi
     done
   fi
@@ -372,7 +459,7 @@ else
   if test "$ac_cv_func_connect" = no; then
     for lib in nsl; do
         if test "$HAVE_CONNECT" != 1; then
-                AC_CHECK_LIB(${lib}, connect,LIBS="$LIBS -l$lib";HAVE_CONNECT=1;AC_DEFINE(HAVE_CONNECT))
+                AC_CHECK_LIB(${lib}, connect,LIBS="$LIBS -l$lib";HAVE_CONNECT=1;AC_DEFINE(HAVE_CONNECT, 1, [define if you have connect]))
         fi
     done
   fi
@@ -381,7 +468,7 @@ else
   if test "$ac_cv_func_gethostbyname" = no; then
         for lib in dns nsl resolv; do
           if test "$HAVE_GETHOSTBYNAME" != 1; then
-            AC_CHECK_LIB(${lib}, gethostbyname, LIBS="$LIBS -l$lib";HAVE_GETHOSTBYNAME=1;AC_DEFINE(HAVE_GETHOSTBYNAME))
+            AC_CHECK_LIB(${lib}, gethostbyname, LIBS="$LIBS -l$lib";HAVE_GETHOSTBYNAME=1;AC_DEFINE(HAVE_GETHOSTBYNAME, 1, [define if you have gethostbyname]))
           fi
         done    
   fi    
@@ -390,7 +477,7 @@ else
   if test "$ac_cv_func_res_search" = no; then
         for lib in dns nsl resolv; do
           if test "$HAVE_RES_SEARCH" != 1; then
-            AC_CHECK_LIB(${lib}, res_search, LIBS="$LIBS -l$lib";HAVE_RES_SEARCH=1;AC_DEFINE(HAVE_RES_SEARCH))
+            AC_CHECK_LIB(${lib}, res_search, LIBS="$LIBS -l$lib";HAVE_RES_SEARCH=1;AC_DEFINE(HAVE_RES_SEARCH, 1, [define if you have res_search]))
           fi
         done    
 	if test "$HAVE_RES_SEARCH" = 1; then
@@ -430,28 +517,28 @@ fi
 
 # Fast restart
 if test "$enable_fast_restart" = "yes"; then
-	AC_DEFINE(FAST_RESTART)
+	AC_DEFINE(FAST_RESTART, 1, [define if you want to have fast restart])
 fi
 
 if test "$enable_bitmap_later" = "yes"; then
-	AC_DEFINE(BITMAP_LATER)
+	AC_DEFINE(BITMAP_LATER, 1, [define if you want to salvager to check bitmasks later])
 fi
 
 if test "$enable_full_vos_listvol_switch" = "yes"; then
-	AC_DEFINE(FULL_LISTVOL_SWITCH)
+	AC_DEFINE(FULL_LISTVOL_SWITCH, 1, [define if you want to want listvol switch])
 fi
 
 if test "$enable_bos_restricted_mode" = "yes"; then
-	AC_DEFINE(BOS_RESTRICTED_MODE)
+	AC_DEFINE(BOS_RESTRICTED_MODE, 1, [define if you want to want bos restricted mode])
 fi
 
 if test "$enable_namei_fileserver" = "yes"; then
-	AC_DEFINE(AFS_NAMEI_ENV)
+	AC_DEFINE(AFS_NAMEI_ENV, 1, [define if you want to want namei fileserver])
 fi
 
 if test "$enable_afsdb" = "yes"; then
 	LIB_AFSDB="$LIB_res_search"
-	AC_DEFINE(AFS_AFSDB_ENV)
+	AC_DEFINE(AFS_AFSDB_ENV, 1, [define if you want to want search afsdb rr])
 fi
 
 dnl check for tivoli
@@ -484,9 +571,13 @@ AC_CHECK_HEADERS(netinet/in.h netdb.h sys/fcntl.h sys/mnttab.h sys/mntent.h)
 AC_CHECK_HEADERS(mntent.h sys/vfs.h sys/param.h sys/fs_types.h)
 AC_CHECK_HEADERS(sys/mount.h strings.h termios.h signal.h)
 AC_CHECK_HEADERS(windows.h malloc.h winsock2.h direct.h io.h)
-AC_CHECK_HEADERS(security/pam_modules.h siad.h usersec.h)
+AC_CHECK_HEADERS(security/pam_modules.h siad.h usersec.h ucontext.h)
 
 AC_CHECK_FUNCS(utimes random srandom getdtablesize snprintf re_comp re_exec)
+AC_CHECK_FUNCS(setprogname getprogname sigaction)
+AC_CHECK_TYPE(ssize_t, int)
+
+AC_CHECK_FUNCS(timegm)
 
 dnl Directory PATH handling
 if test "x$enable_transarc_paths" = "xyes"  ; then 
@@ -547,42 +638,17 @@ AC_SUBST(IRIX_BUILD_IP35)
 
 ])
 
-# isc-posix.m4 serial 1 (gettext-0.10.40)
-dnl Copyright (C) 1995-2002 Free Software Foundation, Inc.
-dnl This file is free software, distributed under the terms of the GNU
-dnl General Public License.  As a special exception to the GNU General
-dnl Public License, this file may be distributed as part of a program
-dnl that contains a configuration script generated by Autoconf, under
-dnl the same distribution terms as the rest of that program.
-
-# This test replaces the one in autoconf.
-# Currently this macro should have the same name as the autoconf macro
-# because gettext's gettext.m4 (distributed in the automake package)
-# still uses it.  Otherwise, the use in gettext.m4 makes autoheader
-# give these diagnostics:
-#   configure.in:556: AC_TRY_COMPILE was called before AC_ISC_POSIX
-#   configure.in:556: AC_TRY_RUN was called before AC_ISC_POSIX
-
-undefine([AC_ISC_POSIX])
-
-AC_DEFUN([AC_ISC_POSIX],
-  [
-    dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
-    AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
-  ]
-)
-
 
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
-AC_DEFUN([AM_PROG_LEX],
+AC_DEFUN(AM_PROG_LEX,
 [missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
 AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
 AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.2 2002-10-21 20:42:20 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.3 2002-12-13 22:06:41 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -634,6 +700,93 @@ if test "$openafs_cv_c_bigendian_compile" = "yes"; then
   AC_DEFINE(ENDIANESS_IN_SYS_PARAM_H, 1, [define if sys/param.h defines the endiness])dnl
 fi
 ])
+
+
+AC_DEFUN(OPENAFS_GCC_SUPPORTS_MARCH, [
+AC_MSG_CHECKING(if $CC accepts -march=pentium)
+save_CFLAGS="$CFLAGS"
+CFLAGS="-MARCH=pentium"
+AC_CACHE_VAL(openafs_gcc_supports_march,[
+AC_TRY_COMPILE(
+[],
+[int x;],
+openafs_gcc_supports_march=yes,
+openafs_gcc_supports_march=no)])
+AC_MSG_RESULT($openafs_gcc_supports_march)
+if test x$openafs_gcc_supports_march = xyes; then
+  P5PLUS_KOPTS="-march=pentium"
+else
+  P5PLUS_KOPTS="-m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2"
+fi
+CFLAGS="$save_CFLAGS"
+])
+
+AC_DEFUN(OPENAFS_GCC_NEEDS_NO_STRICT_ALIASING, [
+AC_MSG_CHECKING(if $CC needs -fno-strict-aliasing)
+save_CFLAGS="$CFLAGS"
+CFLAGS="-fno-strict-aliasing"
+AC_CACHE_VAL(openafs_gcc_needs_no_strict_aliasing,[
+AC_TRY_COMPILE(
+[],
+[int x;],
+openafs_gcc_needs_no_strict_aliasing=yes,
+openafs_gcc_needs_no_strict_aliasing=no)])
+AC_MSG_RESULT($openafs_gcc_needs_no_strict_aliasing)
+if test x$openafs_gcc_needs_no_strict_aliasing = xyes; then
+  LINUX_GCC_KOPTS="$LINUX_GCC_KOPTS -fno-strict-aliasing"
+fi
+CFLAGS="$save_CFLAGS"
+])
+
+AC_DEFUN(OPENAFS_GCC_NEEDS_NO_STRENGTH_REDUCE, [
+AC_MSG_CHECKING(if $CC needs -fno-strength-reduce)
+save_CFLAGS="$CFLAGS"
+CFLAGS="-fno-strength-reduce"
+AC_CACHE_VAL(openafs_gcc_needs_no_strength_reduce,[
+AC_TRY_COMPILE(
+[],
+[int x;],
+openafs_gcc_needs_no_strength_reduce=yes,
+openafs_gcc_needs_no_strength_reduce=no)])
+AC_MSG_RESULT($openafs_gcc_needs_no_strength_reduce)
+if test x$openafs_gcc_needs_no_strength_reduce = xyes; then
+  LINUX_GCC_KOPTS="$LINUX_GCC_KOPTS -fno-strength-reduce"
+fi
+CFLAGS="$save_CFLAGS"
+])
+
+AC_DEFUN(OPENAFS_GCC_SUPPORTS_NO_COMMON, [
+AC_MSG_CHECKING(if $CC supports -fno-common)
+save_CFLAGS="$CFLAGS"
+CFLAGS="-fno-common"
+AC_CACHE_VAL(openafs_gcc_supports_no_common,[
+AC_TRY_COMPILE(
+[],
+[int x;],
+openafs_gcc_supports_no_common=yes,
+openafs_gcc_supports_no_common=no)])
+AC_MSG_RESULT($openafs_gcc_supports_no_common)
+if test x$openafs_gcc_supports_no_common = xyes; then
+  LINUX_GCC_KOPTS="$LINUX_GCC_KOPTS -fno-common"
+fi
+CFLAGS="$save_CFLAGS"
+])
+
+
+AC_DEFUN(LINUX_FS_STRUCT_ADDRESS_SPACE_HAS_GFP_MASK, [
+AC_MSG_CHECKING(for gfp_mask in struct address_space)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_fs_struct_address_space_has_gfp_mask, 
+[
+AC_TRY_COMPILE(
+[#include <linux/fs.h>],
+[struct address_space _a;
+printf("%d\n", _a.gfp_mask);], 
+ac_cv_linux_fs_struct_address_space_has_gfp_mask=yes,
+ac_cv_linux_fs_struct_address_space_has_gfp_mask=no)])
+AC_MSG_RESULT($ac_cv_linux_fs_struct_address_space_has_gfp_mask)
+CPPFLAGS="$save_CPPFLAGS"])
 
 AC_DEFUN(LINUX_FS_STRUCT_INODE_HAS_I_BYTES, [
 AC_MSG_CHECKING(for i_bytes in struct inode)
@@ -691,6 +844,22 @@ outputdir=ifelse([$2], ,src/afs/LINUX,$2)
 chmod +x $configdir/make_vnode.pl
 $configdir/make_vnode.pl -i $LINUX_KERNEL_PATH -o $outputdir
 ])
+
+AC_DEFUN(LINUX_EXPORTS_TASKLIST_LOCK, [
+AC_MSG_CHECKING(for exported tasklist_lock)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_exports_tasklist_lock,
+[
+AC_TRY_COMPILE(
+[#include <linux/modversions.h>],
+[#ifndef __ver_tasklist_lock
+#error tasklist_lock not exported
+#endif],
+ac_cv_linux_exports_tasklist_lock=yes,
+ac_cv_linux_exports_tasklist_lock=no)])
+AC_MSG_RESULT($ac_cv_linux_exports_tasklist_lock)
+CPPFLAGS="$save_CPPFLAGS"])
 
 AC_DEFUN(LINUX_EXPORTS_SYS_CALL_TABLE, [
 AC_MSG_CHECKING(for exported sys_call_table)
@@ -754,6 +923,25 @@ AC_TRY_COMPILE(
 ac_cv_linux_exports_kallsyms_address=yes,
 ac_cv_linux_exports_kallsyms_address=no)])
 AC_MSG_RESULT($ac_cv_linux_exports_kallsyms_address)
+CPPFLAGS="$save_CPPFLAGS"])
+
+AC_DEFUN(LINUX_COMPLETION_H_EXISTS, [
+AC_MSG_CHECKING(for linux/completion.h existance)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_completion_h_exists,
+[
+AC_TRY_COMPILE(
+[#include <linux/completion.h>
+#include <linux/version.h>],
+[struct completion _c;
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,4,8)
+lose
+#endif
+],
+ac_cv_linux_completion_h_exists=yes,
+ac_cv_linux_completion_h_exists=no)])
+AC_MSG_RESULT($ac_cv_linux_completion_h_exists)
 CPPFLAGS="$save_CPPFLAGS"])
 
 AC_DEFUN(LINUX_FS_STRUCT_INODE_HAS_I_MMAP_SHARED, [
@@ -937,6 +1125,24 @@ fi
 ])
 
 
+AC_DEFUN(SOLARIS_PROC_HAS_P_COREFILE, [
+AC_MSG_CHECKING(for p_corefile in struct proc)
+AC_CACHE_VAL(ac_cv_solaris_proc_has_p_corefile,
+[
+AC_TRY_COMPILE(
+[#define _KERNEL
+#include <sys/proc.h>],
+[struct proc _proc;
+(void) _proc.p_corefile;], 
+ac_cv_solaris_proc_has_p_corefile=yes,
+ac_cv_solaris_proc_has_p_corefile=no)])
+AC_MSG_RESULT($ac_cv_solaris_proc_has_p_corefile)
+if test "$ac_cv_solaris_proc_has_p_corefile" = "yes"; then
+  AC_DEFINE(HAVE_P_COREFILE, 1, [define if struct proc has p_corefile])
+fi
+])
+
+
 # Do all the work for Automake.  This macro actually does too much --
 # some checks are only needed if your package does certain things.
 # But this isn't really a big deal.
@@ -946,7 +1152,7 @@ fi
 dnl Usage:
 dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
-AC_DEFUN([AM_INIT_AUTOMAKE],
+AC_DEFUN(AM_INIT_AUTOMAKE,
 [AC_REQUIRE([AC_PROG_INSTALL])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
@@ -974,7 +1180,7 @@ AC_REQUIRE([AC_PROG_MAKE_SET])])
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN([AM_SANITY_CHECK],
+AC_DEFUN(AM_SANITY_CHECK,
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -1015,7 +1221,7 @@ AC_MSG_RESULT(yes)])
 
 dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
 dnl The program must properly implement --version.
-AC_DEFUN([AM_MISSING_PROG],
+AC_DEFUN(AM_MISSING_PROG,
 [AC_MSG_CHECKING(for working $2)
 # Run test in a subshell; some versions of sh will print an error if
 # an executable is not found, even if stderr is redirected.

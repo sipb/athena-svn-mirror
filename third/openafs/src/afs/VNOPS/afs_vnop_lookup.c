@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.5 2002-08-17 20:12:53 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.6 2002-12-13 22:06:46 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -54,7 +54,7 @@ extern struct inode_operations afs_symlink_iops, afs_dir_iops;
 
 afs_int32 afs_bulkStatsDone;
 static int bulkStatCounter = 0;	/* counter for bulk stat seq. numbers */
-int afs_fakestat_enable = 0;
+int afs_fakestat_enable = 0;	/* 1: fakestat-all, 2: fakestat-crosscell */
 
 
 /* this would be faster if it did comparison as int32word, but would be 
@@ -110,7 +110,7 @@ EvalMountPoint(avc, advc, avolpp, areq)
     struct VenusFid tfid;
     struct cell *tcell;
     char   *cpos, *volnamep;
-    char   type, buf[128];
+    char   type, *buf;
     afs_int32  prefetchRO;          /* 1=>No  2=>Yes */
     afs_int32  mtptCell, assocCell, hac=0;
     afs_int32  samecell, roname, len;
@@ -179,15 +179,18 @@ EvalMountPoint(avc, advc, avolpp, areq)
      * Don't know why we do this. Would have still found it in above call - jpm.
      */
     if (!tvp && (prefetchRO == 2)) {
-       strcpy(buf, volnamep);
-       afs_strcat(buf, ".readonly");
+	buf = (char *)osi_AllocSmallSpace(strlen(volnamep)+10);
 
-       tvp = afs_GetVolumeByName(buf, mtptCell, 1, areq, WRITE_LOCK);
+	strcpy(buf, volnamep);
+	afs_strcat(buf, ".readonly");
 
-       /* Try the associated linked cell if failed */
-       if (!tvp && hac && areq->volumeError) {
-	  tvp = afs_GetVolumeByName(buf, assocCell, 1, areq, WRITE_LOCK);
-       }
+	tvp = afs_GetVolumeByName(buf, mtptCell, 1, areq, WRITE_LOCK);
+       
+	/* Try the associated linked cell if failed */
+	if (!tvp && hac && areq->volumeError) {
+	    tvp = afs_GetVolumeByName(buf, assocCell, 1, areq, WRITE_LOCK);
+	}
+	osi_FreeSmallSpace(buf);
     }
   
     if (!tvp) return ENODEV;       /* Couldn't find the volume */
@@ -265,12 +268,8 @@ afs_InitFakeStat(state)
  *
  * Only issues RPCs if canblock is non-zero.
  */
-static int
-afs_EvalFakeStat_int(avcp, state, areq, canblock)
-    struct vcache **avcp;
-    struct afs_fakestat_state *state;
-    struct vrequest *areq;
-    int canblock;
+int afs_EvalFakeStat_int(struct vcache **avcp, struct afs_fakestat_state *state,
+	struct vrequest *areq, int canblock)
 {
     struct vcache *tvc, *root_vp;
     struct volume *tvolp = NULL;
@@ -1088,6 +1087,7 @@ afs_lookup(adp, aname, avcp, acred)
     struct sysname_info sysState;   /* used only for @sys checking */
     int dynrootRetry = 1;
     struct afs_fakestat_state fakestate;
+    int tryEvalOnly = 0;
 
     AFS_STATCNT(afs_lookup);
     afs_InitFakeStat(&fakestate);
@@ -1095,14 +1095,32 @@ afs_lookup(adp, aname, avcp, acred)
     if (code = afs_InitReq(&treq, acred))
 	goto done;
 
-    code = afs_EvalFakeStat(&adp, &fakestate, &treq);
-    if (code)
-	goto done;
 #ifdef	AFS_OSF_ENV
-    ndp->ni_dvp = (struct vnode *)adp;
+    ndp->ni_dvp = AFSTOV(adp);
     memcpy(aname, ndp->ni_ptr, ndp->ni_namelen);
     aname[ndp->ni_namelen] = '\0';
 #endif	/* AFS_OSF_ENV */
+
+#if defined(AFS_DARWIN_ENV)
+    /* Workaround for MacOSX Finder, which tries to look for
+     * .DS_Store and Contents under every directory.
+     */
+    if (afs_fakestat_enable && adp->mvstat == 1) {
+	if (strcmp(aname, ".DS_Store") == 0)
+	    tryEvalOnly = 1;
+	if (strcmp(aname, "Contents") == 0)
+	    tryEvalOnly = 1;
+    }
+#endif
+
+    if (tryEvalOnly)
+	code = afs_TryEvalFakeStat(&adp, &fakestate, &treq);
+    else
+	code = afs_EvalFakeStat(&adp, &fakestate, &treq);
+    if (tryEvalOnly && adp->mvstat == 1)
+	code = ENOENT;
+    if (code)
+	goto done;
 
     *avcp = (struct vcache *) 0;   /* Since some callers don't initialize it */
 
@@ -1127,7 +1145,7 @@ afs_lookup(adp, aname, avcp, acred)
 #ifdef	AFS_OSF_ENV
 	    extern struct vcache *afs_globalVp;
 	    if (adp == afs_globalVp) {
-		struct vnode *rvp = (struct vnode *)adp;
+		struct vnode *rvp = AFSTOV(adp);
 /*
 		ndp->ni_vp = rvp->v_vfsp->vfs_vnodecovered;
 		ndp->ni_dvp = ndp->ni_vp;
@@ -1378,17 +1396,34 @@ afs_lookup(adp, aname, avcp, acred)
     } /* sub-block just to reduce stack usage */
 
     if (tvc) {
-       if (adp->states & CForeign)
+	int force_eval = afs_fakestat_enable ? 0 : 1;
+
+	if (adp->states & CForeign)
 	   tvc->states |= CForeign;
 	tvc->parentVnode = adp->fid.Fid.Vnode;
 	tvc->parentUnique = adp->fid.Fid.Unique;
 	tvc->states &= ~CBulkStat;
 
+	if (afs_fakestat_enable == 2 && tvc->mvstat == 1) {
+	    ObtainSharedLock(&tvc->lock, 680);
+	    if (!tvc->linkData) {
+		UpgradeSToWLock(&tvc->lock, 681);
+		code = afs_HandleLink(tvc, &treq);
+		ConvertWToRLock(&tvc->lock);
+	    } else {
+		ConvertSToRLock(&tvc->lock);
+		code = 0;
+	    }
+	    if (!code && !afs_strchr(tvc->linkData, ':'))
+		force_eval = 1;
+	    ReleaseReadLock(&tvc->lock);
+	}
+
 #if defined(UKERNEL) && defined(AFS_WEB_ENHANCEMENTS)
         if (!(flags & AFS_LOOKUP_NOEVAL))
           /* don't eval mount points */
 #endif /* UKERNEL && AFS_WEB_ENHANCEMENTS */
-	if (!afs_fakestat_enable && tvc->mvstat == 1) {
+	if (tvc->mvstat == 1 && force_eval) {
 	    /* a mt point, possibly unevaluated */
 	    struct volume *tvolp;
 
