@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2000-04-25 14:07:01 tb Exp $
+# $Id: Makefile,v 1.5 2000-06-30 19:30:51 tb Exp $
 
 SHELL=/bin/sh
 
@@ -20,6 +20,7 @@ install:
 	install -c -m 0755 athena-ws.rc ${DESTDIR}${RCINITDIR}/athena-ws
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
+	install -c -m 0755 verify.sh ${DESTDIR}${ATHRETCDIR}/verify
 
 clean:
 
