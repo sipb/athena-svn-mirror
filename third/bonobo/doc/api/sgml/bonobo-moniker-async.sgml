@@ -1,0 +1,231 @@
+<refentry id="bonobo-bonobo-moniker-async" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>bonobo-moniker-async</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-moniker-async</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+void        (<link linkend="BonoboMonikerCallback">*BonoboMonikerCallback</link>)        (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+struct      <link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link>;
+void        <link linkend="bonobo-moniker-async-handle-release">bonobo_moniker_async_handle_release</link>
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);
+void        <link linkend="bonobo-moniker-resolve-async">bonobo_moniker_resolve_async</link>    (<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> moniker,
+                                             <link linkend="Bonobo-ResolveOptions">Bonobo_ResolveOptions</link> *options,
+                                             const char *interface_name,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="BonoboMonikerCallback">BonoboMonikerCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="CORBA-Environment">CORBA_Environment</link>* <link linkend="bonobo-moniker-async-handle-get-environment">bonobo_moniker_async_handle_get_environment</link>
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);
+<link linkend="Bonobo-Unknown">Bonobo_Unknown</link> <link linkend="bonobo-moniker-async-handle-get-object">bonobo_moniker_async_handle_get_object</link>
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);
+<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> <link linkend="bonobo-moniker-async-handle-get-moniker">bonobo_moniker_async_handle_get_moniker</link>
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);
+void        <link linkend="bonobo-moniker-resolve-async-default">bonobo_moniker_resolve_async_default</link>
+                                            (<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> moniker,
+                                             const char *interface_name,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="BonoboMonikerCallback">BonoboMonikerCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboMonikerCallback">BonoboMonikerCallback ()</title>
+<programlisting>void        (*BonoboMonikerCallback)        (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboMonikerASyncHandle">struct BonoboMonikerASyncHandle</title>
+<programlisting>struct BonoboMonikerASyncHandle;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-async-handle-release">bonobo_moniker_async_handle_release ()</title>
+<programlisting>void        bonobo_moniker_async_handle_release
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-resolve-async">bonobo_moniker_resolve_async ()</title>
+<programlisting>void        bonobo_moniker_resolve_async    (<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> moniker,
+                                             <link linkend="Bonobo-ResolveOptions">Bonobo_ResolveOptions</link> *options,
+                                             const char *interface_name,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="BonoboMonikerCallback">BonoboMonikerCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>moniker</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>options</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>interface_name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-async-handle-get-environment">bonobo_moniker_async_handle_get_environment ()</title>
+<programlisting><link linkend="CORBA-Environment">CORBA_Environment</link>* bonobo_moniker_async_handle_get_environment
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-async-handle-get-object">bonobo_moniker_async_handle_get_object ()</title>
+<programlisting><link linkend="Bonobo-Unknown">Bonobo_Unknown</link> bonobo_moniker_async_handle_get_object
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-async-handle-get-moniker">bonobo_moniker_async_handle_get_moniker ()</title>
+<programlisting><link linkend="Bonobo-Moniker">Bonobo_Moniker</link> bonobo_moniker_async_handle_get_moniker
+                                            (<link linkend="BonoboMonikerASyncHandle">BonoboMonikerASyncHandle</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-resolve-async-default">bonobo_moniker_resolve_async_default ()</title>
+<programlisting>void        bonobo_moniker_resolve_async_default
+                                            (<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> moniker,
+                                             const char *interface_name,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="BonoboMonikerCallback">BonoboMonikerCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>moniker</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>interface_name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

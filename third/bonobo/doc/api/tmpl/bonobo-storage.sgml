@@ -1,0 +1,147 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-storage
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_STORAGE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_STORAGE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_STORAGE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_STORAGE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_STORAGE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboStorage ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboStorageClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_storage_construct ##### -->
+<para>
+
+</para>
+
+@storage: 
+@corba_storage: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_storage_open ##### -->
+<para>
+
+</para>
+
+@driver: 
+@path: 
+@flags: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_storage_open_full ##### -->
+<para>
+
+</para>
+
+@driver: 
+@path: 
+@flags: 
+@mode: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_storage_copy_to ##### -->
+<para>
+
+</para>
+
+@src: 
+@dest: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_storage_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_storage_write_class_id ##### -->
+<para>
+
+</para>
+
+@storage: 
+@class_id: 
+
+
+<!-- ##### FUNCTION bonobo_stream_write_class_id ##### -->
+<para>
+
+</para>
+
+@stream: 
+@class_id: 
+
+
+<!-- ##### FUNCTION bonobo_storage_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

@@ -1,0 +1,146 @@
+<!-- ##### SECTION Title ##### -->
+BonoboPersistStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_PERSIST_STREAM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PERSIST_STREAM ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_PERSIST_STREAM_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_PERSIST_STREAM ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_PERSIST_STREAM_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### STRUCT BonoboPersistStream ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION BonoboPersistStreamIOFn ##### -->
+<para>
+
+</para>
+
+@ps: 
+@stream: 
+@type: 
+@closure: 
+@ev: 
+
+
+<!-- ##### USER_FUNCTION BonoboPersistStreamMaxFn ##### -->
+<para>
+
+</para>
+
+@ps: 
+@closure: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION BonoboPersistStreamTypesFn ##### -->
+<para>
+
+</para>
+
+@ps: 
+@closure: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF BonoboPersistStreamClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_persist_stream_set_dirty ##### -->
+<para>
+
+</para>
+
+@ps: 
+@dirty: 
+
+
+<!-- ##### FUNCTION bonobo_persist_stream_new ##### -->
+<para>
+
+</para>
+
+@load_fn: 
+@save_fn: 
+@max_fn: 
+@types_fn: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_persist_stream_construct ##### -->
+<para>
+
+</para>
+
+@ps: 
+@corba_ps: 
+@load_fn: 
+@save_fn: 
+@max_fn: 
+@types_fn: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_persist_stream_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

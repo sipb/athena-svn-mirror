@@ -1,0 +1,52 @@
+/*
+ * The Bonobo Document Model
+ *
+ * Author: 
+ *     Miguel de Icaza (miguel@gnu.org)
+ *
+ */
+#ifndef _BONOBO_IDL_INCLUDED_
+#define _BONOBO_IDL_INCLUDED_
+
+#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
+%{
+#pragma include_defs bonobo/Bonobo.h
+%}
+#pragma inhibit push
+#endif
+
+#include <bonobo-unknown.idl>
+#include <bonobo-moniker.idl>
+#include <bonobo-context.idl>
+
+/* Storage stuff. */
+#include <bonobo-storage.idl>
+#include <bonobo-persist.idl>
+#include <bonobo-progressive.idl>
+
+#include <bonobo-advise.idl>
+
+/* Control stuff. */
+#include <bonobo-listener.idl>
+#include <bonobo-ui.idl>
+#include <bonobo-property.idl>
+#include <bonobo-control.idl>
+#include <bonobo-zoomable.idl>
+
+/* Subdocument stuff. */
+#include <bonobo-item-container.idl>
+#include <bonobo-client-site.idl>
+#include <bonobo-canvas.idl>
+#include <bonobo-embeddable.idl>
+
+/* Printing stuff */
+#include <bonobo-print.idl>
+
+/* Misc. stuff. */
+#include <bonobo-desktop.idl>
+
+#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
+#pragma inhibit pop
+#endif
+
+#endif /* _BONOBO_IDL_INCLUDED_ */

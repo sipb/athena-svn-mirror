@@ -1,0 +1,214 @@
+<refentry id="bonobo-bonobo-exception" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>bonobo-exception</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-exception</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-EX-CAPS">BONOBO_EX</link>                       (ev)
+#define     <link linkend="BONOBO-USER-EX-CAPS">BONOBO_USER_EX</link>                  (ev,id)
+#define     <link linkend="BONOBO-RET-EX-CAPS">BONOBO_RET_EX</link>                   (ev)
+#define     <link linkend="BONOBO-RET-VAL-EX-CAPS">BONOBO_RET_VAL_EX</link>               (ev,v)
+char*       (<link linkend="BonoboExceptionFn">*BonoboExceptionFn</link>)            (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+char*       <link linkend="bonobo-exception-get-text">bonobo_exception_get_text</link>       (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+void        <link linkend="bonobo-exception-add-handler-str">bonobo_exception_add_handler_str</link>
+                                            (const char *repo_id,
+                                             const char *str);
+void        <link linkend="bonobo-exception-add-handler-fn">bonobo_exception_add_handler_fn</link> (const char *repo_id,
+                                             <link linkend="BonoboExceptionFn">BonoboExceptionFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-EX-CAPS">BONOBO_EX()</title>
+<programlisting>#define BONOBO_EX(ev)         ((ev) &amp;&amp; (ev)-&gt;_major != CORBA_NO_EXCEPTION)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-USER-EX-CAPS">BONOBO_USER_EX()</title>
+<programlisting>#define     BONOBO_USER_EX(ev,id)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-RET-EX-CAPS">BONOBO_RET_EX()</title>
+<programlisting>#define     BONOBO_RET_EX(ev)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-RET-VAL-EX-CAPS">BONOBO_RET_VAL_EX()</title>
+<programlisting>#define     BONOBO_RET_VAL_EX(ev,v)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>v</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboExceptionFn">BonoboExceptionFn ()</title>
+<programlisting>char*       (*BonoboExceptionFn)            (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-exception-get-text">bonobo_exception_get_text ()</title>
+<programlisting>char*       bonobo_exception_get_text       (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-exception-add-handler-str">bonobo_exception_add_handler_str ()</title>
+<programlisting>void        bonobo_exception_add_handler_str
+                                            (const char *repo_id,
+                                             const char *str);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>repo_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>str</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-exception-add-handler-fn">bonobo_exception_add_handler_fn ()</title>
+<programlisting>void        bonobo_exception_add_handler_fn (const char *repo_id,
+                                             <link linkend="BonoboExceptionFn">BonoboExceptionFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>repo_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>destroy_fn</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

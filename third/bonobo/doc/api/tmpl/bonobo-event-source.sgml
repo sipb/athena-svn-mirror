@@ -1,0 +1,113 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-event-source
+
+<!-- ##### SECTION Short_Description ##### -->
+An Event Source where clients can connect to listen to events.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+  #BonoboListener
+</para>
+
+<!-- ##### FUNCTION bonobo_event_source_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO BONOBO_EVENT_SOURCE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_EVENT_SOURCE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_EVENT_SOURCE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_EVENT_SOURCE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_EVENT_SOURCE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF BonoboEventSource ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboEventSourceClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_event_source_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_event_source_construct ##### -->
+<para>
+
+</para>
+
+@event_source: 
+@corba_event_source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_event_source_notify_listeners ##### -->
+<para>
+
+</para>
+
+@event_source: 
+@event_name: 
+@value: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_event_source_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+

@@ -1,0 +1,91 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-moniker-async
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### USER_FUNCTION BonoboMonikerCallback ##### -->
+<para>
+
+</para>
+
+@handle: 
+@user_data: 
+
+
+<!-- ##### STRUCT BonoboMonikerASyncHandle ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_moniker_async_handle_release ##### -->
+<para>
+
+</para>
+
+@handle: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_resolve_async ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@options: 
+@interface_name: 
+@ev: 
+@cb: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_async_handle_get_environment ##### -->
+<para>
+
+</para>
+
+@handle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_async_handle_get_object ##### -->
+<para>
+
+</para>
+
+@handle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_async_handle_get_moniker ##### -->
+<para>
+
+</para>
+
+@handle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_resolve_async_default ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@interface_name: 
+@ev: 
+@cb: 
+@user_data: 
+
+

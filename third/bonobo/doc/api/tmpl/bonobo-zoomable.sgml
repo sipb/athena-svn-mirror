@@ -1,0 +1,222 @@
+<!-- ##### SECTION Title ##### -->
+BonoboZoomable
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_ZOOMABLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ZOOMABLE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_ZOOMABLE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_ZOOMABLE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_ZOOMABLE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboZoomable ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboZoomableClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_zoomable_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_construct ##### -->
+<para>
+
+</para>
+
+@zoomable: 
+@corba_zoomable: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_set_parameters ##### -->
+<para>
+
+</para>
+
+@zoomable: 
+@zoom_level: 
+@min_zoom_level: 
+@max_zoom_level: 
+@has_min_zoom_level: 
+@has_max_zoom_level: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_set_parameters_full ##### -->
+<para>
+
+</para>
+
+@zoomable: 
+@zoom_level: 
+@min_zoom_level: 
+@max_zoom_level: 
+@has_min_zoom_level: 
+@has_max_zoom_level: 
+@is_continuous: 
+@preferred_zoom_levels: 
+@preferred_zoom_level_names: 
+@num_preferred_zoom_levels: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_report_zoom_level_changed ##### -->
+<para>
+
+</para>
+
+@zoomable: 
+@new_zoom_level: 
+
+
+<!-- ##### FUNCTION bonobo_zoomable_report_zoom_parameters_changed ##### -->
+<para>
+
+</para>
+
+@zoomable: 
+
+
+<!-- ##### SIGNAL BonoboZoomable::set-frame ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboZoomable::set-zoom-level ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL BonoboZoomable::zoom-in ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboZoomable::zoom-out ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboZoomable::zoom-to-fit ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboZoomable::zoom-to-default ##### -->
+<para>
+
+</para>
+
+@bonobozoomable: the object which received the signal.
+
+<!-- ##### ARG BonoboZoomable:zoom_level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG BonoboZoomable:min_zoom_level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG BonoboZoomable:max_zoom_level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG BonoboZoomable:has_min_zoom_level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG BonoboZoomable:has_max_zoom_level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG BonoboZoomable:is_continuous ##### -->
+<para>
+
+</para>
+

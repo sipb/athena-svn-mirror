@@ -1,0 +1,66 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-object-io
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GnomeIOStatus ##### -->
+<para>
+
+</para>
+
+@GNOME_IO_OK: 
+@GNOME_IOERR_GENERAL: 
+@GNOME_IOERR_PERSIST_NOT_SUPPORTED: 
+
+<!-- ##### FUNCTION bonobo_persist_stream_save_object_iid ##### -->
+<para>
+
+</para>
+
+@target: 
+@object_iid: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_persist_stream_load_object_iid ##### -->
+<para>
+
+</para>
+
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_persiststream_save_to_stream ##### -->
+<para>
+
+</para>
+
+@pstream: 
+@target: 
+@object_iid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_object_save_to_stream ##### -->
+<para>
+
+</para>
+
+@object: 
+@stream: 
+@object_iid: 
+@Returns: 
+
+

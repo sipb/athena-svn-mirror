@@ -1,0 +1,87 @@
+<!-- ##### SECTION Title ##### -->
+BonoboPlug
+
+<!-- ##### SECTION Short_Description ##### -->
+Toplevel for embedding into other processes.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+   This is an internal support routine of the X code in Bonobo.
+</para>
+
+<para>
+Together with #BonoboSocket, #BonoboPlug provides the ability
+to embed widgets from one process into another process
+in a fashion that is transparent to the user. One
+process creates a #BonoboSocket widget and, passes the
+XID of that widgets window to the other process, 
+which then creates a #BonoboPlug window with that XID.
+Any widgets contained in the #BonoboPlug then will appear
+inside the first applications window.
+</para>
+
+<para>
+  This code is a copy of #GtkPlug, and it is here, as debugging and
+  special handlers had to be setup of Bonobo.  FIXME: include a full
+  description. 
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+   #BonoboSocket.
+</para>
+
+<!-- ##### MACRO BONOBO_PLUG ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_PLUG_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO BONOBO_IS_PLUG ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### TYPEDEF BonoboPlug ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboPlugClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_plug_construct ##### -->
+<para>
+
+</para>
+
+@plug: 
+@socket_id: 
+
+
+<!-- ##### FUNCTION bonobo_plug_new ##### -->
+<para>
+
+</para>
+
+@socket_id: 
+@Returns: 
+
+

@@ -1,0 +1,5521 @@
+<HTML
+><HEAD
+><TITLE
+>BonoboUIComponent</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
+REL="HOME"
+TITLE="Bonobo API Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Bonobo UI"
+HREF="bonobo-ui.html"><LINK
+REL="PREVIOUS"
+TITLE="bonobo-ui-util"
+HREF="bonobo-bonobo-ui-util.html"><LINK
+REL="NEXT"
+TITLE="BonoboUIContainer"
+HREF="bonobo-bonobo-ui-container.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>Bonobo API Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="bonobo-bonobo-ui-util.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="bonobo-ui.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="bonobo-bonobo-ui-container.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="BONOBO-BONOBO-UI-COMPONENT"
+>BonoboUIComponent</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN14726"
+></A
+><H2
+>Name</H2
+>BonoboUIComponent&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN14729"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-TYPE-CAPS"
+>BONOBO_UI_COMPONENT_TYPE</A
+>
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-CAPS"
+>BONOBO_UI_COMPONENT</A
+>             (o)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-CLASS-CAPS"
+>BONOBO_UI_COMPONENT_CLASS</A
+>       (k)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-IS-UI-COMPONENT-CAPS"
+>BONOBO_IS_UI_COMPONENT</A
+>          (o)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-IS-UI-COMPONENT-CLASS-CAPS"
+>BONOBO_IS_UI_COMPONENT_CLASS</A
+>    (k)
+struct      <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUICOMPONENT-STRUCT"
+>BonoboUIComponent</A
+>;
+void        (<A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>*BonoboUIListenerFn</A
+>)           (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICOMPONENT-EVENTTYPE"
+>Bonobo_UIComponent_EventType</GTKDOCLINK
+> type,
+                                             const char *state,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);
+void        (<A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>*BonoboUIVerbFn</A
+>)               (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             const char *cname);
+typedef     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUICOMPONENTCLASS"
+>BonoboUIComponentClass</A
+>;
+<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-CONSTRUCT"
+>bonobo_ui_component_construct</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICOMPONENT"
+>Bonobo_UIComponent</GTKDOCLINK
+> corba_ui,
+                                             const char *name);
+<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-NEW"
+>bonobo_ui_component_new</A
+>  (const char *name);
+<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-NEW-DEFAULT"
+>bonobo_ui_component_new_default</A
+>
+                                            (void);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-NAME"
+>bonobo_ui_component_set_name</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *name);
+const char* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET-NAME"
+>bonobo_ui_component_get_name</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-CONTAINER"
+>bonobo_ui_component_set_container</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICONTAINER"
+>Bonobo_UIContainer</GTKDOCLINK
+> container);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-UNSET-CONTAINER"
+>bonobo_ui_component_unset_container</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);
+<GTKDOCLINK
+HREF="BONOBO-UICONTAINER"
+>Bonobo_UIContainer</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET-CONTAINER"
+>bonobo_ui_component_get_container</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-VERB"
+>bonobo_ui_component_add_verb</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-VERB-FULL"
+>bonobo_ui_component_add_verb_full</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             <GTKDOCLINK
+HREF="GDESTROYNOTIFY"
+>GDestroyNotify</GTKDOCLINK
+> destroy_fn);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-VERB"
+>bonobo_ui_component_remove_verb</A
+> (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-VERB-BY-FUNC"
+>bonobo_ui_component_remove_verb_by_func</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-VERB-BY-DATA"
+>bonobo_ui_component_remove_verb_by_data</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-LISTENER"
+>bonobo_ui_component_add_listener</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *id,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-LISTENER-FULL"
+>bonobo_ui_component_add_listener_full</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *id,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             <GTKDOCLINK
+HREF="GDESTROYNOTIFY"
+>GDestroyNotify</GTKDOCLINK
+> destroy_fn);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-LISTENER"
+>bonobo_ui_component_remove_listener</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-LISTENER-BY-FUNC"
+>bonobo_ui_component_remove_listener_by_func</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-REMOVE-LISTENER-BY-DATA"
+>bonobo_ui_component_remove_listener_by_data</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET"
+>bonobo_ui_component_set</A
+>         (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-TRANSLATE"
+>bonobo_ui_component_set_translate</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-TREE"
+>bonobo_ui_component_set_tree</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <A
+HREF="bonobo-bonobo-ui-node.html#BONOBOUINODE"
+>BonoboUINode</A
+> *node,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-RM"
+>bonobo_ui_component_rm</A
+>          (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+<GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+>    <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-PATH-EXISTS"
+>bonobo_ui_component_path_exists</A
+> (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+<GTKDOCLINK
+HREF="CORBA-CHAR"
+>CORBA_char</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET"
+>bonobo_ui_component_get</A
+>         (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> recurse,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+<A
+HREF="bonobo-bonobo-ui-node.html#BONOBOUINODE"
+>BonoboUINode</A
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET-TREE"
+>bonobo_ui_component_get_tree</A
+>  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> recurse,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-OBJECT-SET"
+>bonobo_ui_component_object_set</A
+>  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> control,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-OBJECT-GET"
+>bonobo_ui_component_object_get</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-FREEZE"
+>bonobo_ui_component_freeze</A
+>      (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-THAW"
+>bonobo_ui_component_thaw</A
+>        (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-PROP"
+>bonobo_ui_component_set_prop</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             const char *value,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+<GTKDOCLINK
+HREF="GCHAR"
+>gchar</GTKDOCLINK
+>*      <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET-PROP"
+>bonobo_ui_component_get_prop</A
+>    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-SET-STATUS"
+>bonobo_ui_component_set_status</A
+>  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *text,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);
+<GTKDOCLINK
+HREF="POA-BONOBO-UICOMPONENT--EPV"
+>POA_Bonobo_UIComponent__epv</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-GET-EPV"
+>bonobo_ui_component_get_epv</A
+>
+                                            (void);
+<GTKDOCLINK
+HREF="BONOBO-UICOMPONENT"
+>Bonobo_UIComponent</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-CORBA-OBJECT-CREATE"
+>bonobo_ui_component_corba_object_create</A
+>
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+typedef     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERB"
+>BonoboUIVerb</A
+>;
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-VERB-CAPS"
+>BONOBO_UI_VERB</A
+>                  (name,cb)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-VERB-DATA-CAPS"
+>BONOBO_UI_VERB_DATA</A
+>             (name,cb,data)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB-CAPS"
+>BONOBO_UI_UNSAFE_VERB</A
+>           (name,cb)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB-DATA-CAPS"
+>BONOBO_UI_UNSAFE_VERB_DATA</A
+>      (name,cb,data)
+#define     <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-VERB-END-CAPS"
+>BONOBO_UI_VERB_END</A
+>
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-VERB-LIST"
+>bonobo_ui_component_add_verb_list</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERB"
+>BonoboUIVerb</A
+> *list);
+void        <A
+HREF="bonobo-bonobo-ui-component.html#BONOBO-UI-COMPONENT-ADD-VERB-LIST-WITH-DATA"
+>bonobo_ui_component_add_verb_list_with_data</A
+>
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERB"
+>BonoboUIVerb</A
+> *list,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN14869"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN14872"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14874"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-TYPE-CAPS"
+></A
+>BONOBO_UI_COMPONENT_TYPE</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_COMPONENT_TYPE        (bonobo_ui_component_get_type ())</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14879"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-CAPS"
+></A
+>BONOBO_UI_COMPONENT()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_COMPONENT(o)          (GTK_CHECK_CAST ((o), BONOBO_UI_COMPONENT_TYPE, BonoboUIComponent))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14893"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-CLASS-CAPS"
+></A
+>BONOBO_UI_COMPONENT_CLASS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_COMPONENT_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_UI_COMPONENT_TYPE, BonoboUIComponentClass))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14907"
+></A
+><H3
+><A
+NAME="BONOBO-IS-UI-COMPONENT-CAPS"
+></A
+>BONOBO_IS_UI_COMPONENT()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_IS_UI_COMPONENT(o)       (GTK_CHECK_TYPE ((o), BONOBO_UI_COMPONENT_TYPE))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14921"
+></A
+><H3
+><A
+NAME="BONOBO-IS-UI-COMPONENT-CLASS-CAPS"
+></A
+>BONOBO_IS_UI_COMPONENT_CLASS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_IS_UI_COMPONENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_UI_COMPONENT_TYPE))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14935"
+></A
+><H3
+><A
+NAME="BONOBOUICOMPONENT-STRUCT"
+></A
+>struct BonoboUIComponent</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct BonoboUIComponent;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14940"
+></A
+><H3
+><A
+NAME="BONOBOUILISTENERFN"
+></A
+>BonoboUIListenerFn ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*BonoboUIListenerFn)           (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICOMPONENT-EVENTTYPE"
+>Bonobo_UIComponent_EventType</GTKDOCLINK
+> type,
+                                             const char *state,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14973"
+></A
+><H3
+><A
+NAME="BONOBOUIVERBFN"
+></A
+>BonoboUIVerbFn ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*BonoboUIVerbFn)               (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             const char *cname);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14997"
+></A
+><H3
+><A
+NAME="BONOBOUICOMPONENTCLASS"
+></A
+>BonoboUIComponentClass</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	BonoboObjectClass parent_class;
+
+	/*
+	 * Signals
+	 */
+	void (*exec_verb) (BonoboUIComponent *comp,
+			   const char        *cname);
+
+	void (*ui_event)  (BonoboUIComponent *comp,
+			   const char        *path,
+			   Bonobo_UIComponent_EventType type,
+			   const char        *state);
+	/*
+	 * Virtual XML Methods
+	 */
+	void (*freeze)    (BonoboUIComponent *component,
+			   CORBA_Environment *opt_ev);
+
+	void (*thaw)      (BonoboUIComponent *component,
+			   CORBA_Environment *opt_ev);
+
+	void (*xml_set)   (BonoboUIComponent *component,
+			   const char        *path,
+			   const char        *xml,
+			   CORBA_Environment *ev);
+
+	CORBA_char *(*xml_get) (BonoboUIComponent *component,
+				const char        *path,
+				gboolean           recurse,
+				CORBA_Environment *ev);
+
+	void (*xml_rm)    (BonoboUIComponent *component,
+			   const char        *path,
+			   CORBA_Environment *ev);
+
+	void (*set_prop)  (BonoboUIComponent *component,
+			   const char        *path,
+			   const char        *prop,
+			   const char        *value,
+			   CORBA_Environment *opt_ev);
+	
+	gchar *(*get_prop) (BonoboUIComponent *component,
+			    const char        *path,
+			    const char        *prop,
+			    CORBA_Environment *opt_ev);
+
+	gboolean (*exists) (BonoboUIComponent *component,
+			    const char        *path,
+			    CORBA_Environment *ev);
+	
+
+	gpointer            dummy;
+} BonoboUIComponentClass;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15002"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-CONSTRUCT"
+></A
+>bonobo_ui_component_construct ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* bonobo_ui_component_construct
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICOMPONENT"
+>Bonobo_UIComponent</GTKDOCLINK
+> corba_ui,
+                                             const char *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>corba_ui</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15031"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-NEW"
+></A
+>bonobo_ui_component_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* bonobo_ui_component_new  (const char *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15050"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-NEW-DEFAULT"
+></A
+>bonobo_ui_component_new_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+>* bonobo_ui_component_new_default
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15065"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-NAME"
+></A
+>bonobo_ui_component_set_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_name    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15084"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET-NAME"
+></A
+>bonobo_ui_component_get_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* bonobo_ui_component_get_name    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15103"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-CONTAINER"
+></A
+>bonobo_ui_component_set_container ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_container
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="BONOBO-UICONTAINER"
+>Bonobo_UIContainer</GTKDOCLINK
+> container);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>container</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15123"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-UNSET-CONTAINER"
+></A
+>bonobo_ui_component_unset_container ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_unset_container
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15138"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET-CONTAINER"
+></A
+>bonobo_ui_component_get_container ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UICONTAINER"
+>Bonobo_UIContainer</GTKDOCLINK
+> bonobo_ui_component_get_container
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15158"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-VERB"
+></A
+>bonobo_ui_component_add_verb ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_verb    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15187"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-VERB-FULL"
+></A
+>bonobo_ui_component_add_verb_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_verb_full
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             <GTKDOCLINK
+HREF="GDESTROYNOTIFY"
+>GDestroyNotify</GTKDOCLINK
+> destroy_fn);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15221"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-VERB"
+></A
+>bonobo_ui_component_remove_verb ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_verb (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15240"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-VERB-BY-FUNC"
+></A
+>bonobo_ui_component_remove_verb_by_func ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_verb_by_func
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERBFN"
+>BonoboUIVerbFn</A
+> fn);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15260"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-VERB-BY-DATA"
+></A
+>bonobo_ui_component_remove_verb_by_data ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_verb_by_data
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15280"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-LISTENER"
+></A
+>bonobo_ui_component_add_listener ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_listener
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *id,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15309"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-LISTENER-FULL"
+></A
+>bonobo_ui_component_add_listener_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_listener_full
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *id,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data,
+                                             <GTKDOCLINK
+HREF="GDESTROYNOTIFY"
+>GDestroyNotify</GTKDOCLINK
+> destroy_fn);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15343"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-LISTENER"
+></A
+>bonobo_ui_component_remove_listener ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_listener
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *cname);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15362"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-LISTENER-BY-FUNC"
+></A
+>bonobo_ui_component_remove_listener_by_func ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_listener_by_func
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUILISTENERFN"
+>BonoboUIListenerFn</A
+> fn);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15382"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-REMOVE-LISTENER-BY-DATA"
+></A
+>bonobo_ui_component_remove_listener_by_data ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_remove_listener_by_data
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15402"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET"
+></A
+>bonobo_ui_component_set ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set         (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>xml</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15430"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-TRANSLATE"
+></A
+>bonobo_ui_component_set_translate ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_translate
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>xml</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15458"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-TREE"
+></A
+>bonobo_ui_component_set_tree ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_tree    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <A
+HREF="bonobo-bonobo-ui-node.html#BONOBOUINODE"
+>BonoboUINode</A
+> *node,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15487"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-RM"
+></A
+>bonobo_ui_component_rm ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_rm          (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15511"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-PATH-EXISTS"
+></A
+>bonobo_ui_component_path_exists ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+>    bonobo_ui_component_path_exists (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15540"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET"
+></A
+>bonobo_ui_component_get ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="CORBA-CHAR"
+>CORBA_char</GTKDOCLINK
+>* bonobo_ui_component_get         (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> recurse,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recurse</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15574"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET-TREE"
+></A
+>bonobo_ui_component_get_tree ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="bonobo-bonobo-ui-node.html#BONOBOUINODE"
+>BonoboUINode</A
+>* bonobo_ui_component_get_tree  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> recurse,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recurse</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15608"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-OBJECT-SET"
+></A
+>bonobo_ui_component_object_set ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_object_set  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> control,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>control</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15637"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-OBJECT-GET"
+></A
+>bonobo_ui_component_object_get ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> bonobo_ui_component_object_get
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15666"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-FREEZE"
+></A
+>bonobo_ui_component_freeze ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_freeze      (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15686"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-THAW"
+></A
+>bonobo_ui_component_thaw ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_thaw        (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15706"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-PROP"
+></A
+>bonobo_ui_component_set_prop ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_prop    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             const char *value,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>prop</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15738"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET-PROP"
+></A
+>bonobo_ui_component_get_prop ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="GCHAR"
+>gchar</GTKDOCLINK
+>*      bonobo_ui_component_get_prop    (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>prop</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15771"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-SET-STATUS"
+></A
+>bonobo_ui_component_set_status ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_set_status  (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             const char *text,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *opt_ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>opt_ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15795"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-GET-EPV"
+></A
+>bonobo_ui_component_get_epv ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="POA-BONOBO-UICOMPONENT--EPV"
+>POA_Bonobo_UIComponent__epv</GTKDOCLINK
+>* bonobo_ui_component_get_epv
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15810"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-CORBA-OBJECT-CREATE"
+></A
+>bonobo_ui_component_corba_object_create ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UICOMPONENT"
+>Bonobo_UIComponent</GTKDOCLINK
+> bonobo_ui_component_corba_object_create
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15830"
+></A
+><H3
+><A
+NAME="BONOBOUIVERB"
+></A
+>BonoboUIVerb</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	char          *cname;
+	BonoboUIVerbFn cb;
+	gpointer       user_data;
+	gpointer       dummy;
+} BonoboUIVerb;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15835"
+></A
+><H3
+><A
+NAME="BONOBO-UI-VERB-CAPS"
+></A
+>BONOBO_UI_VERB()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_VERB(name,cb)                  { (name), (cb), NULL   }</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cb</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15853"
+></A
+><H3
+><A
+NAME="BONOBO-UI-VERB-DATA-CAPS"
+></A
+>BONOBO_UI_VERB_DATA()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_VERB_DATA(name,cb,data)        { (name), (cb), (data) }</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cb</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15875"
+></A
+><H3
+><A
+NAME="BONOBO-UI-UNSAFE-VERB-CAPS"
+></A
+>BONOBO_UI_UNSAFE_VERB()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_UNSAFE_VERB(name,cb)           { (name), ((BonoboUIVerbFn)(cb)), NULL   }</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cb</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15893"
+></A
+><H3
+><A
+NAME="BONOBO-UI-UNSAFE-VERB-DATA-CAPS"
+></A
+>BONOBO_UI_UNSAFE_VERB_DATA()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_UNSAFE_VERB_DATA(name,cb,data) { (name), ((BonoboUIVerbFn)(cb)), (data) }</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cb</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15915"
+></A
+><H3
+><A
+NAME="BONOBO-UI-VERB-END-CAPS"
+></A
+>BONOBO_UI_VERB_END</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_UI_VERB_END                       { NULL, NULL, NULL }</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15920"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-VERB-LIST"
+></A
+>bonobo_ui_component_add_verb_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_verb_list
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERB"
+>BonoboUIVerb</A
+> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15940"
+></A
+><H3
+><A
+NAME="BONOBO-UI-COMPONENT-ADD-VERB-LIST-WITH-DATA"
+></A
+>bonobo_ui_component_add_verb_list_with_data ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_ui_component_add_verb_list_with_data
+                                            (<GTKDOCLINK
+HREF="BONOBOUICOMPONENT"
+>BonoboUIComponent</GTKDOCLINK
+> *component,
+                                             <A
+HREF="bonobo-bonobo-ui-component.html#BONOBOUIVERB"
+>BonoboUIVerb</A
+> *list,
+                                             <GTKDOCLINK
+HREF="GPOINTER"
+>gpointer</GTKDOCLINK
+> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="bonobo-bonobo-ui-util.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="bonobo-ui.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="bonobo-bonobo-ui-container.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>bonobo-ui-util</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>BonoboUIContainer</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

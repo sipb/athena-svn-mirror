@@ -1,0 +1,283 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-arg
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF BonoboArg ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboArgType ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO BONOBO_ARG_NULL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_BOOLEAN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_INT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_LONG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_STRING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_FLOAT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_DOUBLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_GENERAL ##### -->
+<para>
+
+</para>
+
+@a: 
+@c: 
+@t: 
+@e: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_BOOLEAN ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_INT ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_LONG ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_STRING ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_FLOAT ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_GET_DOUBLE ##### -->
+<para>
+
+</para>
+
+@a: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_GENERAL ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+@c: 
+@t: 
+@e: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_BOOLEAN ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_INT ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_LONG ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_STRING ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_FLOAT ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### MACRO BONOBO_ARG_SET_DOUBLE ##### -->
+<para>
+
+</para>
+
+@a: 
+@v: 
+
+
+<!-- ##### FUNCTION bonobo_arg_new ##### -->
+<para>
+
+</para>
+
+@t: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_arg_type_to_gtk ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_arg_type_from_gtk ##### -->
+<para>
+
+</para>
+
+@t: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_arg_to_gtk ##### -->
+<para>
+
+</para>
+
+@a: 
+@arg: 
+
+
+<!-- ##### FUNCTION bonobo_arg_from_gtk ##### -->
+<para>
+
+</para>
+
+@a: 
+@arg: 
+
+
+<!-- ##### FUNCTION bonobo_arg_init_default ##### -->
+<para>
+
+</para>
+
+@arg: 
+
+
+<!-- ##### FUNCTION bonobo_arg_type_is_equal ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_arg_copy ##### -->
+<para>
+
+</para>
+
+@arg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_arg_release ##### -->
+<para>
+
+</para>
+
+@arg: 
+
+

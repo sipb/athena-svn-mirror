@@ -1,0 +1,145 @@
+<!-- ##### SECTION Title ##### -->
+BonoboProgressiveDataSink
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_PROGRESSIVE_DATA_SINK ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_PROGRESSIVE_DATA_SINK_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### STRUCT BonoboProgressiveDataSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION BonoboProgressiveDataSinkStartFn ##### -->
+<para>
+
+</para>
+
+@psink: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION BonoboProgressiveDataSinkEndFn ##### -->
+<para>
+
+</para>
+
+@psink: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION BonoboProgressiveDataSinkAddDataFn ##### -->
+<para>
+
+</para>
+
+@psink: 
+@buffer: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION BonoboProgressiveDataSinkSetSizeFn ##### -->
+<para>
+
+</para>
+
+@psink: 
+@count: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF BonoboProgressiveDataSinkClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_progressive_data_sink_new ##### -->
+<para>
+
+</para>
+
+@start_fn: 
+@end_fn: 
+@add_data_fn: 
+@set_size_fn: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_progressive_data_sink_construct ##### -->
+<para>
+
+</para>
+
+@psink: 
+@corba_psink: 
+@start_fn: 
+@end_fn: 
+@add_data_fn: 
+@set_size_fn: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_progressive_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

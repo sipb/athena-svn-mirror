@@ -1,0 +1,128 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-property-control
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+  #BonoboProperty, #BonoboPropertyBag
+</para>
+
+<!-- ##### MACRO BONOBO_PROPERTY_CONTROL ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_PROPERTY_CONTROL ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_CONTROL_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_PROPERTY_CONTROL_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_CONTROL_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT BonoboPropertyControl ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboPropertyControlClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION BonoboPropertyControlGetControlFn ##### -->
+<para>
+
+</para>
+
+@control: 
+@page_number: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_control_new ##### -->
+<para>
+
+</para>
+
+@get_fn: 
+@num_pages: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_control_construct ##### -->
+<para>
+
+</para>
+
+@property_control: 
+@corba_control: 
+@get_fn: 
+@num_pages: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_control_changed ##### -->
+<para>
+
+</para>
+
+@property_control: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_property_control_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_control_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+

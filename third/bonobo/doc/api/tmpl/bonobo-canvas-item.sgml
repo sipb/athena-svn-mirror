@@ -1,0 +1,88 @@
+<!-- ##### SECTION Title ##### -->
+BonoboCanvasItem
+
+<!-- ##### SECTION Short_Description ##### -->
+A GNOME Canvas Item that can be used to embbed remote Bonobo GNOME
+Canvas Items.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+   The Bonobo Canvas Item is a Canvas item that will allow you to
+   embbed an arbitrary Canvas Item that lives in in a remote
+   Embeddable.  On the remote end, the #BonoboCanvasComponent class is
+   used to wrap an arbitrary #GnomeCanvasItem and export it. 
+</para>
+
+<para>
+   This allows arbitrarly shaped components to be inserted into an
+   application.  Both Xlib and AA canvas items are supported.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+   #BonoboCanvasComponent, #BonoboEmbeddable, #BonoboObjectClient.
+</para>
+
+<!-- ##### MACRO BONOBO_CANVAS_ITEM ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_CANVAS_ITEM_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_CANVAS_ITEM ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### TYPEDEF BonoboCanvasItem ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboCanvasItemClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_canvas_item_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@embeddable: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_canvas_item_set_bounds ##### -->
+<para>
+
+</para>
+
+@item: 
+@x1: 
+@y1: 
+@x2: 
+@y2: 
+
+
+<!-- ##### ARG BonoboCanvasItem:corba_canvas_item ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-property-bag-xml
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION bonobo_property_bag_xml_encode_any ##### -->
+<para>
+
+</para>
+
+@opt_parent: 
+@any: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_bag_xml_decode_any ##### -->
+<para>
+
+</para>
+
+@node: 
+@ev: 
+@Returns: 
+
+

@@ -1,0 +1,232 @@
+<!-- ##### SECTION Title ##### -->
+BonoboView
+
+<!-- ##### SECTION Short_Description ##### -->
+View object for exporting a view of a GnomeEmbeddable component
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+   #GnomeView objects are typically created on the view factory
+   callback of a #GnomeEmbeddable object.  Bonobo components should be
+   able to provide as many view objects as requested by the
+   #GnomeEmbeddable object on demand.
+</para>
+
+<para>
+   It is the programmer responsability to keep the contents of all the
+   views displaying the same information (modulo per-view state, like
+   the zoom factor).
+</para>
+
+<para>
+   If your component provides menus, then you use the
+   gnome_view_set_ui_handler() on your view to provide it with a set
+   of menus and toolbars.   You can also retrieve the container's UI
+   handler using gnome_view_get_ui_handler().
+</para>
+
+<para>
+   You can register verbs in the View by using the
+   gnome_view_register_verb().  When you want to stop supporting a
+   verb, you can use the gnome_view_unregister_verb().  Alternatively,
+   you can hook up to the "do_verb" signal and catch the verb requests
+   on the signal handler.
+</para>
+
+<para>
+   #GnomeView objects get a chance to tell their containers their
+   desired size by responding to the "size_query" signal.  They will
+   get their size assigned later.  The size assignment happens on the
+   GtkWidget using the normal Gtk+ size allocation procedure.
+</para>
+
+<para>
+   If your component supports zooming, connect to the
+   "set_zoom_factor" signal.  This signal takes a floating point value
+   that indicates the desired zoom factor requested by your container.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+   #GnomeViewFrame,  #GnomeEmbeddable, #BonoboWidget, bonobo_widget_new()
+</para>
+
+<!-- ##### MACRO BONOBO_VIEW_TYPE ##### -->
+<para>
+   Returns the GtkType associated with the #GnomeView object.
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_VIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_VIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### STRUCT BonoboView ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboViewClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO BONOBO_VIEW_VERB_FUNC ##### -->
+<para>
+
+</para>
+
+@fn: 
+
+
+<!-- ##### USER_FUNCTION BonoboViewVerbFunc ##### -->
+<para>
+
+</para>
+
+@view: 
+@verb_name: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_view_construct ##### -->
+<para>
+
+</para>
+
+@view: 
+@corba_view: 
+@widget: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_new ##### -->
+<para>
+
+</para>
+
+@widget: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_set_embeddable ##### -->
+<para>
+
+</para>
+
+@view: 
+@embeddable: 
+
+
+<!-- ##### FUNCTION bonobo_view_get_embeddable ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_set_view_frame ##### -->
+<para>
+
+</para>
+
+@view: 
+@view_frame: 
+
+
+<!-- ##### FUNCTION bonobo_view_get_view_frame ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_get_remote_ui_container ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_get_ui_component ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_view_activate_notify ##### -->
+<para>
+
+</para>
+
+@view: 
+@activated: 
+
+
+<!-- ##### FUNCTION bonobo_view_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### SIGNAL BonoboView::set-zoom-factor ##### -->
+<para>
+   This signal is emitted when the container requests the view to
+   set its zoom factor to @arg1.  The view should respond by setting
+   its zoom factor to the specified value.
+</para>
+
+@bonoboview: the object which received the signal.
+@arg1: 
+

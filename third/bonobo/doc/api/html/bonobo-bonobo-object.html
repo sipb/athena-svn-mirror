@@ -1,0 +1,2872 @@
+<HTML
+><HEAD
+><TITLE
+>BonoboObject</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
+REL="HOME"
+TITLE="Bonobo API Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Core Bonobo Object"
+HREF="bonobo-core.html#BONOBO-CORE-OBJECT"><LINK
+REL="PREVIOUS"
+TITLE="Core Bonobo."
+HREF="bonobo-core.html"><LINK
+REL="NEXT"
+TITLE="bonobo-main"
+HREF="bonobo-bonobo-main.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>Bonobo API Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="bonobo-core.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="bonobo-core.html#BONOBO-CORE-OBJECT"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="bonobo-bonobo-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="BONOBO-BONOBO-OBJECT"
+>BonoboObject</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN13"
+></A
+><H2
+>Name</H2
+>BonoboObject&nbsp;--&nbsp;Base object for wrapping Bonobo::Unknown derived objects.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN16"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-TYPE-CAPS"
+>BONOBO_OBJECT_TYPE</A
+>
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CAPS"
+>BONOBO_OBJECT</A
+>                   (o)
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CLASS-CAPS"
+>BONOBO_OBJECT_CLASS</A
+>             (k)
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-IS-OBJECT-CAPS"
+>BONOBO_IS_OBJECT</A
+>                (o)
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-IS-OBJECT-CLASS-CAPS"
+>BONOBO_IS_OBJECT_CLASS</A
+>          (k)
+typedef     <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECTSERVANT"
+>BonoboObjectServant</A
+>;
+typedef     <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>;
+typedef     <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECTCLASS"
+>BonoboObjectClass</A
+>;
+<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CONSTRUCT"
+>bonobo_object_construct</A
+>       (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <GTKDOCLINK
+HREF="CORBA-OBJECT"
+>CORBA_Object</GTKDOCLINK
+> corba_object);
+<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-NEW-FROM-SERVANT"
+>bonobo_object_new_from_servant</A
+>
+                                            (void *servant);
+<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-FROM-SERVANT"
+>bonobo_object_from_servant</A
+>    (<GTKDOCLINK
+HREF="PORTABLESERVER-SERVANT"
+>PortableServer_Servant</GTKDOCLINK
+> servant);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-BIND-TO-SERVANT"
+>bonobo_object_bind_to_servant</A
+>   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             void *servant);
+<GTKDOCLINK
+HREF="PORTABLESERVER-SERVANT"
+>PortableServer_Servant</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-GET-SERVANT"
+>bonobo_object_get_servant</A
+>
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-ACTIVATE-SERVANT"
+>bonobo_object_activate_servant</A
+>
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             void *servant);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-ADD-INTERFACE"
+>bonobo_object_add_interface</A
+>     (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *newobj);
+<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-QUERY-LOCAL-INTERFACE"
+>bonobo_object_query_local_interface</A
+>
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *repo_id);
+<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-QUERY-INTERFACE"
+>bonobo_object_query_interface</A
+>
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *repo_id);
+<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CORBA-OBJREF"
+>bonobo_object_corba_objref</A
+>   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-DUP-REF"
+>bonobo_object_dup_ref</A
+>        (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-RELEASE-UNREF"
+>bonobo_object_release_unref</A
+>     (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-REF"
+>bonobo_object_ref</A
+>               (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-UNREF"
+>bonobo_object_unref</A
+>             (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+<GTKDOCLINK
+HREF="POA-BONOBO-UNKNOWN--EPV"
+>POA_Bonobo_Unknown__epv</GTKDOCLINK
+>* <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-GET-EPV"
+>bonobo_object_get_epv</A
+>
+                                            (void);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-INIT"
+>bonobo_object_init</A
+>              (void);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-TRACE-REFS"
+>bonobo_object_trace_refs</A
+>        (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *fn,
+                                             int line,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> ref);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-DUMP-INTERFACES"
+>bonobo_object_dump_interfaces</A
+>   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);
+void        <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CHECK-ENV"
+>bonobo_object_check_env</A
+>         (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <GTKDOCLINK
+HREF="CORBA-OBJECT"
+>CORBA_Object</GTKDOCLINK
+> corba_object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);
+#define     <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-CHECK-CAPS"
+>BONOBO_OBJECT_CHECK</A
+>             (o,c,e)
+<GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+>    <A
+HREF="bonobo-bonobo-object.html#GNOME-UNKNOWN-PING"
+>gnome_unknown_ping</A
+>              (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN83"
+></A
+><H2
+>Description</H2
+><P
+>  BonoboObject is the base object in Bonobo for wrapping CORBA servers
+  as Gtk+ objects.  </P
+><P
+>  The <TT
+CLASS="CLASSNAME"
+>Bonobo::Unknown</TT
+> interface (wrapped by
+  BonoboObject) is the foundation for the component system: it provides
+  life cycle management for objects as well as service discovery.</P
+><P
+>  The Bonobo interfaces are all based on the
+  <TT
+CLASS="CLASSNAME"
+>Bonobo::Unknown</TT
+> interface.  This
+  interface is very simple and provides two basic services:
+  object lifetime management and object
+  functionality-discovery.   This interface only contains three
+  methods, here it is:
+
+  <TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  module Bonobo {
+      interface Unknown {
+          void void <GTKDOCLINK
+HREF="REF"
+>ref</GTKDOCLINK
+>();
+          void void <GTKDOCLINK
+HREF="UNREF"
+>unref</GTKDOCLINK
+>();
+          Object query_interface (in string repoid);
+      };
+  };
+  </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>  The <TT
+CLASS="FUNCTION"
+><GTKDOCLINK
+HREF="REF"
+>ref</GTKDOCLINK
+>()</TT
+> and <TT
+CLASS="FUNCTION"
+><GTKDOCLINK
+HREF="UNREF"
+>unref</GTKDOCLINK
+>()</TT
+>
+  methods are used to control the lifetime of an object.  The
+  <TT
+CLASS="FUNCTION"
+>query_interface</TT
+> method is used to discover
+  optional functionality provided by the object implementation.</P
+><P
+>  The lifetime management is based on reference counting: when a
+  component is initially launched, it starts life with a reference
+  count of one.  This reference is held by the component invoker.
+  Each time a reference is kept to this object (say, you store a
+  copy of the object in an array), the reference count is
+  incremented.  Every time a reference goes out of scope, the
+  reference count needs to be decremented.  When the reference
+  count reaches zero, the component knows that there are no
+  outstanding references to it, and it is safe to shutdown.  At
+  this point, the component shuts down.</P
+><P
+>  It is possible to ask an object which implements the
+  <TT
+CLASS="CLASSNAME"
+>Bonobo::Unknown</TT
+> interface if it supports
+  other CORBA interfaces.  For example, it would be possible to
+  ask an object whether it supports the
+  "IDL:Bonobo/EmbeddablePrint:1.0" interface to find out if it is
+  possible to print its contents.  If the return value from
+  invoking the <TT
+CLASS="FUNCTION"
+>query_interface</TT
+> method on the
+  interface is CORBA_OBJECT_NIL, then we know that the requested interface
+  is not supported.  Otherwise, we can invoke
+  IDL:Bonobo/EmbeddablePrint:1.0 methods on the returned CORBA
+  Object.</P
+><P
+>  Clients of the <TT
+CLASS="FUNCTION"
+>query_interface</TT
+> method use
+  it to discover dynamically if a component supports a given
+  interface.  Sometimes the client code would require a specific
+  interface to exist, but many times it is possible to operate in
+  a "downgraded" mode.  You should design your code to be able to
+  cope with the lack of interfaces in objects.  This will allow
+  your program to deal with more components, and this also allows
+  components to work in more situations.</P
+><P
+>  For example, a help browser can load an HTML renderer component and
+  ask this component which sort of features are supported by it:
+  <TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>_animations (BrowserHTML html)
+
+  BrowserControl control
+
+  control = html-&#62;query_interface ("IDL:Browser/Control:1.0");
+  if (control)
+          control-&#62;<GTKDOCLINK
+HREF="STOP-ANIMATIONS"
+>stop_animations</GTKDOCLINK
+>();
+
+  </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>  The return value of the query_interface invocation contains a
+  reference to a CORBA object that is derived from the
+  <TT
+CLASS="CLASSNAME"
+>Bonobo::Unknown</TT
+> interface or
+  CORBA_OBJECT_NIL if the interface is not supported by the
+  object.  And this interface would have been already
+  <TT
+CLASS="FUNCTION"
+><GTKDOCLINK
+HREF="REF"
+>ref</GTKDOCLINK
+>()</TT
+>ed before it was returned.  It is up
+  to the caller to call <TT
+CLASS="FUNCTION"
+><GTKDOCLINK
+HREF="UNREF"
+>unref</GTKDOCLINK
+>()</TT
+> when they are
+  done using the interface.</P
+><P
+>  BonoboObject implements the Bonobo::Unknown interface and exports the
+  implementations of the methods in this class to simplify creating
+  new objects that inherit from Bonobo::Unknown.  This base object
+  provides default implementations for the ref, unref and
+  query_interface methods.</P
+><P
+>  Other implementations reuse this implementation by listing on their
+  VEPV tables the gnome_object_epv entry point vector.</P
+><P
+>  The <TT
+CLASS="CLASSNAME"
+>Bonobo::Unknown</TT
+> interface is inspired
+  by the Microsoft COM <TT
+CLASS="CLASSNAME"
+>IUnknown</TT
+> interface
+  but it has been translated into the CORBA world.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN119"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN121"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-TYPE-CAPS"
+></A
+>BONOBO_OBJECT_TYPE</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_OBJECT_TYPE        (bonobo_object_get_type ())</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the <GTKDOCLINK
+HREF="GTKTYPE"
+>GtkType</GTKDOCLINK
+> for the BonoboObject object.</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN127"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CAPS"
+></A
+>BONOBO_OBJECT()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_OBJECT(o)          (GTK_CHECK_CAST ((o), BONOBO_OBJECT_TYPE, BonoboObject))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN141"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CLASS-CAPS"
+></A
+>BONOBO_OBJECT_CLASS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_OBJECT_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_OBJECT_TYPE, BonoboObjectClass))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN155"
+></A
+><H3
+><A
+NAME="BONOBO-IS-OBJECT-CAPS"
+></A
+>BONOBO_IS_OBJECT()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_IS_OBJECT(o)       (GTK_CHECK_TYPE ((o), BONOBO_OBJECT_TYPE))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN169"
+></A
+><H3
+><A
+NAME="BONOBO-IS-OBJECT-CLASS-CAPS"
+></A
+>BONOBO_IS_OBJECT_CLASS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define BONOBO_IS_OBJECT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_OBJECT_TYPE))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN183"
+></A
+><H3
+><A
+NAME="BONOBOOBJECTSERVANT"
+></A
+>BonoboObjectServant</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	POA_Bonobo_Unknown servant_placeholder;
+	gpointer           bonobo_object;
+} BonoboObjectServant;</PRE
+></TD
+></TR
+></TABLE
+><P
+>  This structure defines the type for BonoboObject-based CORBA servants.</P
+><P
+>  <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> provides a mapping from the servant to the <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>
+  by using the gnome_object field in the structure.  Typically in the
+  C CORBA binding, per-servant information is piggy-backed to the POA
+  servant.  With the BonoboObject setup per-servant information is
+  typically attached to the BonoboObject (by using the regular
+  inheritance mechanism of Gtk+).  Going from a
+  <GTKDOCLINK
+HREF="PORTABLESERVER-SERVANT"
+>PortableServer_Servant</GTKDOCLINK
+> to the actual <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> is accomplished 
+  using the <GTKDOCLINK
+HREF="GNOME-OBJECT-FROM-SERVANT"
+>gnome_object_from_servant</GTKDOCLINK
+>() routine.  </P
+><P
+>  If you decide not to use this scheme for fetching your per-servant
+  information, but still want to inherit from a <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> object,
+  just make sure that the second field of your servant is a gpointer.</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN196"
+></A
+><H3
+><A
+NAME="BONOBOOBJECT"
+></A
+>BonoboObject</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	GtkObject            base;
+
+	Bonobo_Unknown       corba_objref;
+	gpointer             servant;
+	BonoboObjectPrivate *priv;
+} BonoboObject;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN201"
+></A
+><H3
+><A
+NAME="BONOBOOBJECTCLASS"
+></A
+>BonoboObjectClass</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	GtkObjectClass parent_class;
+
+	/*
+	 * signals.  
+	 */
+	void  (*query_interface) (BonoboObject *object, const char *repo_id,  CORBA_Object      *retval);
+	void  (*system_exception)(BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
+	void  (*object_gone)     (BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
+} BonoboObjectClass;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN206"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CONSTRUCT"
+></A
+>bonobo_object_construct ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* bonobo_object_construct       (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <GTKDOCLINK
+HREF="CORBA-OBJECT"
+>CORBA_Object</GTKDOCLINK
+> corba_object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>corba_object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN231"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-NEW-FROM-SERVANT"
+></A
+>bonobo_object_new_from_servant ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* bonobo_object_new_from_servant
+                                            (void *servant);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>servant</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN250"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-FROM-SERVANT"
+></A
+>bonobo_object_from_servant ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* bonobo_object_from_servant    (<GTKDOCLINK
+HREF="PORTABLESERVER-SERVANT"
+>PortableServer_Servant</GTKDOCLINK
+> servant);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>servant</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN270"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-BIND-TO-SERVANT"
+></A
+>bonobo_object_bind_to_servant ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_bind_to_servant   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             void *servant);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>servant</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN289"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-GET-SERVANT"
+></A
+>bonobo_object_get_servant ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="PORTABLESERVER-SERVANT"
+>PortableServer_Servant</GTKDOCLINK
+> bonobo_object_get_servant
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN309"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-ACTIVATE-SERVANT"
+></A
+>bonobo_object_activate_servant ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> bonobo_object_activate_servant
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             void *servant);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>servant</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN333"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-ADD-INTERFACE"
+></A
+>bonobo_object_add_interface ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_add_interface     (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *newobj);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>newobj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN353"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-QUERY-LOCAL-INTERFACE"
+></A
+>bonobo_object_query_local_interface ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+>* bonobo_object_query_local_interface
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *repo_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>repo_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN377"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-QUERY-INTERFACE"
+></A
+>bonobo_object_query_interface ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> bonobo_object_query_interface
+                                            (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *repo_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>repo_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN401"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CORBA-OBJREF"
+></A
+>bonobo_object_corba_objref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> bonobo_object_corba_objref   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN421"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-DUP-REF"
+></A
+>bonobo_object_dup_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> bonobo_object_dup_ref        (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN446"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-RELEASE-UNREF"
+></A
+>bonobo_object_release_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_release_unref     (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN466"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-REF"
+></A
+>bonobo_object_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_ref               (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN481"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-UNREF"
+></A
+>bonobo_object_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_unref             (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN496"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-GET-EPV"
+></A
+>bonobo_object_get_epv ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="POA-BONOBO-UNKNOWN--EPV"
+>POA_Bonobo_Unknown__epv</GTKDOCLINK
+>* bonobo_object_get_epv
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN511"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-INIT"
+></A
+>bonobo_object_init ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_init              (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN516"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-TRACE-REFS"
+></A
+>bonobo_object_trace_refs ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_trace_refs        (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             const char *fn,
+                                             int line,
+                                             <GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+> ref);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>line</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ref</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN544"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-DUMP-INTERFACES"
+></A
+>bonobo_object_dump_interfaces ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_dump_interfaces   (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN559"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CHECK-ENV"
+></A
+>bonobo_object_check_env ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        bonobo_object_check_env         (<A
+HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
+>BonoboObject</A
+> *object,
+                                             <GTKDOCLINK
+HREF="CORBA-OBJECT"
+>CORBA_Object</GTKDOCLINK
+> corba_object,
+                                             <GTKDOCLINK
+HREF="CORBA-ENVIRONMENT"
+>CORBA_Environment</GTKDOCLINK
+> *ev);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>corba_object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ev</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN584"
+></A
+><H3
+><A
+NAME="BONOBO-OBJECT-CHECK-CAPS"
+></A
+>BONOBO_OBJECT_CHECK()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     BONOBO_OBJECT_CHECK(o,c,e)</PRE
+></TD
+></TR
+></TABLE
+><P
+>   Checks if the exception in <TT
+CLASS="PARAMETER"
+><I
+>e</I
+></TT
+> needs to be signaled.  If so, then
+   the proper exception signal is generated on the BonoboObject object
+   <TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+> for the CORBA reference <TT
+CLASS="PARAMETER"
+><I
+>c</I
+></TT
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>c</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>e</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN609"
+></A
+><H3
+><A
+NAME="GNOME-UNKNOWN-PING"
+></A
+>gnome_unknown_ping ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="GBOOLEAN"
+>gboolean</GTKDOCLINK
+>    gnome_unknown_ping              (<GTKDOCLINK
+HREF="BONOBO-UNKNOWN"
+>Bonobo_Unknown</GTKDOCLINK
+> object);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>object</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN629"
+></A
+><H2
+>See Also</H2
+><P
+><GTKDOCLINK
+HREF="GTKOBJECT"
+>GtkObject</GTKDOCLINK
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="bonobo-core.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="bonobo-core.html#BONOBO-CORE-OBJECT"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="bonobo-bonobo-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Core Bonobo.</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>bonobo-main</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

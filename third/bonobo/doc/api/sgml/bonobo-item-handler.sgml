@@ -1,0 +1,231 @@
+<refentry id="bonobo-bonobo-item-handler" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>bonobo-item-handler</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-item-handler</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-ITEM-HANDLER-CAPS">BONOBO_ITEM_HANDLER</link>             (o)
+#define     <link linkend="BONOBO-IS-ITEM-HANDLER-CAPS">BONOBO_IS_ITEM_HANDLER</link>          (o)
+#define     <link linkend="BONOBO-ITEM-HANDLER-CLASS-CAPS">BONOBO_ITEM_HANDLER_CLASS</link>       (k)
+#define     <link linkend="BONOBO-IS-ITEM-HANDLER-CLASS-CAPS">BONOBO_IS_ITEM_HANDLER_CLASS</link>    (k)
+#define     <link linkend="BONOBO-ITEM-HANDLER-TYPE-CAPS">BONOBO_ITEM_HANDLER_TYPE</link>
+struct      <link linkend="BonoboItemHandler-struct">BonoboItemHandler</link>;
+typedef     <link linkend="BonoboItemHandlerClass">BonoboItemHandlerClass</link>;
+<link linkend="BonoboItemHandler">BonoboItemHandler</link>* <link linkend="bonobo-item-handler-new">bonobo_item_handler_new</link>  (<link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="BonoboItemHandler">BonoboItemHandler</link>* <link linkend="bonobo-item-handler-construct">bonobo_item_handler_construct</link>
+                                            (<link linkend="BonoboItemHandler">BonoboItemHandler</link> *handler,
+                                             <link linkend="Bonobo-ItemContainer">Bonobo_ItemContainer</link> corba_handler,
+                                             <link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="POA-Bonobo-ItemContainer--epv">POA_Bonobo_ItemContainer__epv</link>* <link linkend="bonobo-item-handler-get-epv">bonobo_item_handler_get_epv</link>
+                                            (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-ITEM-HANDLER-CAPS">BONOBO_ITEM_HANDLER()</title>
+<programlisting>#define BONOBO_ITEM_HANDLER(o)          (GTK_CHECK_CAST ((o), BONOBO_ITEM_HANDLER_TYPE, BonoboItemHandler))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-ITEM-HANDLER-CAPS">BONOBO_IS_ITEM_HANDLER()</title>
+<programlisting>#define BONOBO_IS_ITEM_HANDLER(o)       (GTK_CHECK_TYPE ((o), BONOBO_ITEM_HANDLER_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-ITEM-HANDLER-CLASS-CAPS">BONOBO_ITEM_HANDLER_CLASS()</title>
+<programlisting>#define BONOBO_ITEM_HANDLER_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_ITEM_HANDLER_TYPE, BonoboItemHandlerClass))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-ITEM-HANDLER-CLASS-CAPS">BONOBO_IS_ITEM_HANDLER_CLASS()</title>
+<programlisting>#define BONOBO_IS_ITEM_HANDLER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_ITEM_HANDLER_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-ITEM-HANDLER-TYPE-CAPS">BONOBO_ITEM_HANDLER_TYPE</title>
+<programlisting>#define BONOBO_ITEM_HANDLER_TYPE        (bonobo_item_handler_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemHandler-struct">struct BonoboItemHandler</title>
+<programlisting>struct BonoboItemHandler;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemHandlerClass">BonoboItemHandlerClass</title>
+<programlisting>typedef struct {
+	BonoboObjectClass parent_class;
+} BonoboItemHandlerClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-new">bonobo_item_handler_new ()</title>
+<programlisting><link linkend="BonoboItemHandler">BonoboItemHandler</link>* bonobo_item_handler_new  (<link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>enum_objects</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>get_object</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-construct">bonobo_item_handler_construct ()</title>
+<programlisting><link linkend="BonoboItemHandler">BonoboItemHandler</link>* bonobo_item_handler_construct
+                                            (<link linkend="BonoboItemHandler">BonoboItemHandler</link> *handler,
+                                             <link linkend="Bonobo-ItemContainer">Bonobo_ItemContainer</link> corba_handler,
+                                             <link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handler</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>corba_handler</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>enum_objects</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>get_object</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-get-epv">bonobo_item_handler_get_epv ()</title>
+<programlisting><link linkend="POA-Bonobo-ItemContainer--epv">POA_Bonobo_ItemContainer__epv</link>* bonobo_item_handler_get_epv
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+   A simplistic implementation exists in <link linkend="BonoboItemContainer">BonoboItemContainer</link>.
+</para>
+</refsect1>
+
+</refentry>

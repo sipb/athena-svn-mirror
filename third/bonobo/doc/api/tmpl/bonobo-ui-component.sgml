@@ -1,0 +1,518 @@
+<!-- ##### SECTION Title ##### -->
+BonoboUIComponent
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_UI_COMPONENT_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_UI_COMPONENT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_UI_COMPONENT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_COMPONENT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_COMPONENT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### STRUCT BonoboUIComponent ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION BonoboUIListenerFn ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@type: 
+@state: 
+@user_data: 
+
+
+<!-- ##### USER_FUNCTION BonoboUIVerbFn ##### -->
+<para>
+
+</para>
+
+@component: 
+@user_data: 
+@cname: 
+
+
+<!-- ##### TYPEDEF BonoboUIComponentClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_ui_component_construct ##### -->
+<para>
+
+</para>
+
+@component: 
+@corba_ui: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_new_default ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_name ##### -->
+<para>
+
+</para>
+
+@component: 
+@name: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get_name ##### -->
+<para>
+
+</para>
+
+@component: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_container ##### -->
+<para>
+
+</para>
+
+@component: 
+@container: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_unset_container ##### -->
+<para>
+
+</para>
+
+@component: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get_container ##### -->
+<para>
+
+</para>
+
+@component: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_verb ##### -->
+<para>
+
+</para>
+
+@component: 
+@cname: 
+@fn: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_verb_full ##### -->
+<para>
+
+</para>
+
+@component: 
+@cname: 
+@fn: 
+@user_data: 
+@destroy_fn: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_verb ##### -->
+<para>
+
+</para>
+
+@component: 
+@cname: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_verb_by_func ##### -->
+<para>
+
+</para>
+
+@component: 
+@fn: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_verb_by_data ##### -->
+<para>
+
+</para>
+
+@component: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_listener ##### -->
+<para>
+
+</para>
+
+@component: 
+@id: 
+@fn: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_listener_full ##### -->
+<para>
+
+</para>
+
+@component: 
+@id: 
+@fn: 
+@user_data: 
+@destroy_fn: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_listener ##### -->
+<para>
+
+</para>
+
+@component: 
+@cname: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_listener_by_func ##### -->
+<para>
+
+</para>
+
+@component: 
+@fn: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_remove_listener_by_data ##### -->
+<para>
+
+</para>
+
+@component: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@xml: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_translate ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@xml: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_tree ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@node: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_rm ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_path_exists ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@recurse: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get_tree ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@recurse: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_object_set ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@control: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_object_get ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_freeze ##### -->
+<para>
+
+</para>
+
+@component: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_thaw ##### -->
+<para>
+
+</para>
+
+@component: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_prop ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@prop: 
+@value: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get_prop ##### -->
+<para>
+
+</para>
+
+@component: 
+@path: 
+@prop: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_set_status ##### -->
+<para>
+
+</para>
+
+@component: 
+@text: 
+@opt_ev: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF BonoboUIVerb ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO BONOBO_UI_VERB ##### -->
+<para>
+
+</para>
+
+@name: 
+@cb: 
+
+
+<!-- ##### MACRO BONOBO_UI_VERB_DATA ##### -->
+<para>
+
+</para>
+
+@name: 
+@cb: 
+@data: 
+
+
+<!-- ##### MACRO BONOBO_UI_UNSAFE_VERB ##### -->
+<para>
+
+</para>
+
+@name: 
+@cb: 
+
+
+<!-- ##### MACRO BONOBO_UI_UNSAFE_VERB_DATA ##### -->
+<para>
+
+</para>
+
+@name: 
+@cb: 
+@data: 
+
+
+<!-- ##### MACRO BONOBO_UI_VERB_END ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_verb_list ##### -->
+<para>
+
+</para>
+
+@component: 
+@list: 
+
+
+<!-- ##### FUNCTION bonobo_ui_component_add_verb_list_with_data ##### -->
+<para>
+
+</para>
+
+@component: 
+@list: 
+@user_data: 
+
+
+<!-- ##### SIGNAL BonoboUIComponent::exec-verb ##### -->
+<para>
+
+</para>
+
+@bonobouicomponent: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL BonoboUIComponent::ui-event ##### -->
+<para>
+
+</para>
+
+@bonobouicomponent: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+

@@ -1,0 +1,181 @@
+<refentry id="bonobo-bonobo-plug" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>BonoboPlug</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPlug</refname><refpurpose>Toplevel for embedding into other processes.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-PLUG-CAPS">BONOBO_PLUG</link>                     (obj)
+#define     <link linkend="BONOBO-PLUG-CLASS-CAPS">BONOBO_PLUG_CLASS</link>               (klass)
+#define     <link linkend="BONOBO-IS-PLUG-CAPS">BONOBO_IS_PLUG</link>                  (obj)
+typedef     <link linkend="BonoboPlug">BonoboPlug</link>;
+typedef     <link linkend="BonoboPlugClass">BonoboPlugClass</link>;
+void        <link linkend="bonobo-plug-construct">bonobo_plug_construct</link>           (<link linkend="BonoboPlug">BonoboPlug</link> *plug,
+                                             <link linkend="guint32">guint32</link> socket_id);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-plug-new">bonobo_plug_new</link>                 (<link linkend="guint32">guint32</link> socket_id);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+   This is an internal support routine of the X code in Bonobo.
+</para>
+
+<para>
+Together with <link linkend="BonoboSocket">BonoboSocket</link>, <link linkend="BonoboPlug">BonoboPlug</link> provides the ability
+to embed widgets from one process into another process
+in a fashion that is transparent to the user. One
+process creates a <link linkend="BonoboSocket">BonoboSocket</link> widget and, passes the
+XID of that widgets window to the other process, 
+which then creates a <link linkend="BonoboPlug">BonoboPlug</link> window with that XID.
+Any widgets contained in the <link linkend="BonoboPlug">BonoboPlug</link> then will appear
+inside the first applications window.
+</para>
+
+<para>
+  This code is a copy of <link linkend="GtkPlug">GtkPlug</link>, and it is here, as debugging and
+  special handlers had to be setup of Bonobo.  FIXME: include a full
+  description. 
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-PLUG-CAPS">BONOBO_PLUG()</title>
+<programlisting>#define BONOBO_PLUG(obj)          GTK_CHECK_CAST (obj, bonobo_plug_get_type (), BonoboPlug)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PLUG-CLASS-CAPS">BONOBO_PLUG_CLASS()</title>
+<programlisting>#define BONOBO_PLUG_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, bonobo_plug_get_type (), BonoboPlugClass)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>klass</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-PLUG-CAPS">BONOBO_IS_PLUG()</title>
+<programlisting>#define BONOBO_IS_PLUG(obj)       GTK_CHECK_TYPE (obj, bonobo_plug_get_type ())
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboPlug">BonoboPlug</title>
+<programlisting>typedef struct {
+	GtkWindow window;
+
+	GdkWindow *socket_window;
+	gint same_app;
+} BonoboPlug;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPlugClass">BonoboPlugClass</title>
+<programlisting>typedef struct {
+	GtkWindowClass parent_class;
+} BonoboPlugClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-plug-construct">bonobo_plug_construct ()</title>
+<programlisting>void        bonobo_plug_construct           (<link linkend="BonoboPlug">BonoboPlug</link> *plug,
+                                             <link linkend="guint32">guint32</link> socket_id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>plug</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>socket_id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-plug-new">bonobo_plug_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_plug_new                 (<link linkend="guint32">guint32</link> socket_id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>socket_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+   <link linkend="BonoboSocket">BonoboSocket</link>.
+</para>
+</refsect1>
+
+</refentry>
