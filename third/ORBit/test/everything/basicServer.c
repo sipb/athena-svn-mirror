@@ -103,6 +103,7 @@ BasicServer_opException(PortableServer_Servant servant,
   ex->aseq._buffer = CORBA_sequence_CORBA_long_allocbuf(1);
   ex->aseq._length = 1;
   ex->aseq._buffer[0] = constants_LONG_IN;
+  CORBA_sequence_set_release(&ex->aseq, CORBA_TRUE);
   ex->factory = getFactoryInstance(ev);
 
   CORBA_exception_set(ev,CORBA_USER_EXCEPTION,ex_test_TestException,ex);

@@ -12,6 +12,7 @@
 /* We don't speak GIOP 1.0, sosumi */
 #define GIOP_1_1
 
+#undef GIOP_INTERNAL_DEBUG
 
 void giop_init(const char *argv0);
 

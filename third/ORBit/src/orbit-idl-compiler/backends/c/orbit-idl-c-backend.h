@@ -15,10 +15,10 @@ typedef struct {
 typedef struct {
   OIDL_C_Info *ci;
   gchar *orb_name;
-  guint8 last_tail_align;
-  guint8 alloc_on_stack : 1; /* TRUE for demarshalling in skeletons, etc. */
-  guint8 endian_swap_pass : 1; /* Demarshalling, again */
-  guint8 in_skels : 1;
+  int last_tail_align;
+  int alloc_on_stack : 1; /* TRUE for demarshalling in skeletons, etc. */
+  int endian_swap_pass : 1; /* Demarshalling, again */
+  int in_skels : 1;
 } OIDL_C_Marshal_Info;
 
 void orbit_idl_output_c(OIDL_Output_Tree *tree, OIDL_Run_Info *rinfo);

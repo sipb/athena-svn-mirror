@@ -150,8 +150,8 @@ dynany_invalidate (DynAny *d,
 			g_assert (!d->any->_release);
 		}
 
-		CORBA_Object_release ((CORBA_Object) d->any->_type, ev);
-		CORBA_free (d->any);
+		if (d->any->_release) 
+			CORBA_free (d->any);
 		d->any = NULL;
 	}
 
@@ -425,6 +425,7 @@ dynany_sequence_realloc_to (CORBA_sequence_octet *s,
 {
 	CORBA_TypeCode tc = sequence_tc->subtypes [0];
 	gpointer buf, old_buf, a, b;
+	CORBA_unsigned_long old_len;
 
 	buf = ORBit_demarshal_allocate_mem (tc, len);
 
@@ -432,6 +433,7 @@ dynany_sequence_realloc_to (CORBA_sequence_octet *s,
 		return FALSE;
 
 	old_buf = s->_buffer;
+	old_len = s->_length;
 	s->_buffer = buf;
 	s->_length = len;
 
@@ -441,7 +443,7 @@ dynany_sequence_realloc_to (CORBA_sequence_octet *s,
 		a = old_buf;
 		b = buf;
 		
-		for (i = 0; i < len; i++)
+		for (i = 0; i < old_len; i++)
 			_ORBit_copy_value (&a, &b, tc);
 		
 		ORBit_free (old_buf, TRUE);
@@ -1613,11 +1615,14 @@ DynamicAny_DynSequence_get_elements (DynamicAny_DynSequence obj,
 	retval = CORBA_sequence_DynamicAny_DynAny_AnySeq__alloc ();
 	retval->_buffer = CORBA_sequence_DynamicAny_DynAny_AnySeq_allocbuf (
 		s->_length);
+	retval->_length = s->_length;
 	subtc = dynany->any->_type->subtypes [0];
 
 	for (i = 0; i < s->_length; i++) {
 		CORBA_any *any = CORBA_any__alloc ();
 		gpointer   to;
+
+		retval->_buffer [i] = any;
 
 		any->_type = (CORBA_TypeCode) CORBA_Object_duplicate (
 			(CORBA_Object) subtc, ev);
@@ -1782,7 +1787,7 @@ DynamicAny_DynAny_AnySeq_subtypes_array [] = {
 	TC_any
 };
 
-static const struct CORBA_TypeCode_struct
+const struct CORBA_TypeCode_struct
 TC_CORBA_sequence_DynamicAny_DynAny_AnySeq_struct = {
 	{{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
 	 ORBIT_PSEUDO_TYPECODE},
@@ -1829,7 +1834,7 @@ DynamicAny_DynAny_DynAnySeq_subtypes_array [] = {
 	TC_Object
 };
 
-static const struct CORBA_TypeCode_struct
+const struct CORBA_TypeCode_struct
 TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq_struct = {
 	{{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
 	 ORBIT_PSEUDO_TYPECODE},

@@ -30,7 +30,7 @@
   syslog(LOG_ERR,"ERROR: %s thrown.\n", ex_##name );
 
 #define RETHROW(ev, val ) if ((ev)->_major != CORBA_NO_EXCEPTION ) return val;
-#define RETHROW_VOID(ev) RETHROW(ev,)
+#define RETHROW_VOID(ev) if ((ev)->_major != CORBA_NO_EXCEPTION ) return;
 
 #define THROW_NotFound(reason, name, ev)				\
   G_STMT_START {							\

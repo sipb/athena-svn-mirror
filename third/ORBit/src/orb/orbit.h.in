@@ -102,9 +102,9 @@ extern CORBA_any *CORBA_any_alloc(
 	void);
 
 extern gpointer CORBA_any__free(gpointer mem, gpointer func_data,
-				CORBA_boolean free_strings);
+				CORBA_boolean ignore);
 extern gpointer CORBA_TypeCode__free(gpointer mem, gpointer func_data,
-				     CORBA_boolean free_strings);
+				     CORBA_boolean ignore);
 
 extern CORBA_boolean ORBit_any_equivalent (CORBA_any *obj,
 					   CORBA_any *any,
@@ -112,9 +112,9 @@ extern CORBA_boolean ORBit_any_equivalent (CORBA_any *obj,
 
 extern CORBA_char *CORBA_string_dup(const CORBA_char *string);
 extern CORBA_char *CORBA_string_alloc(CORBA_unsigned_long len);
-extern gpointer CORBA_string__free(gpointer str, gpointer dat, CORBA_boolean free_strings);
+extern gpointer CORBA_string__free(gpointer str, gpointer dat, CORBA_boolean ignore);
 
-gpointer CORBA_Object__free(gpointer str, gpointer dat, CORBA_boolean free_strings);
+gpointer CORBA_Object__free(gpointer str, gpointer dat, CORBA_boolean ignore);
 
 extern CORBA_wchar *CORBA_wstring_alloc(CORBA_unsigned_long len);
 #define CORBA_wstring_free CORBA_string_free

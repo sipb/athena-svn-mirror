@@ -1,4 +1,4 @@
-libORBitservicesincludedir = $(includedir)/ORBitservices
+libORBitservicesincludedir = $(includedir)/orbit-1.0/ORBitservices
 
 libORBitservicesinclude_HEADERS =  					\
 	CosEventComm.idl						\

@@ -178,16 +178,22 @@ ORBit_marshal_value(GIOPSendBuffer *buf,
 	   find out which value we want to use */
 	{
 	    CORBA_TypeCode utc;
+	    guint max_size = 0;
+	    gpointer newval;
 
-	    *val = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_STRUCT);
+	    *val = newval = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_STRUCT);
 
-	    utc = ORBit_get_union_tag(tc, val, TRUE);
-
-	    *val = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_STRUCT);
+	    utc = ORBit_get_union_tag(tc, val, FALSE);
 
 	    ORBit_marshal_value(buf, val, tc->discriminator, mi);
+/*	    *val = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_UNION); */
+
 	    *val = ALIGN_ADDRESS(*val, ORBit_find_alignment(tc));
+	    max_size = ORBit_gather_alloc_info(tc) - (*val - newval);
+
+	    newval = ((char *)*val) + max_size;
 	    ORBit_marshal_value(buf, val, utc, mi);
+	    *val = newval;
 	}
 	break;
     case CORBA_tk_wstring:
@@ -700,7 +706,6 @@ ORBit_demarshal_any(GIOPRecvBuffer *buf, CORBA_any *retval,
     CORBA_any_set_release(retval, CORBA_TRUE);
 
     ORBit_decode_CORBA_TypeCode(&retval->_type, buf);
-    CORBA_Object_duplicate((CORBA_Object)retval->_type, NULL);
 
     val = retval->_value = ORBit_demarshal_allocate_mem(retval->_type, 1);
     ORBit_demarshal_value(buf, &val, retval->_type, dup_strings, orb);

@@ -29,6 +29,8 @@
  *
  */
 
+#undef PROFILE_DEBUG
+
 #include <string.h>
 #include "config.h"
 #include "../IIOP/iiop-endianP.h"
@@ -141,7 +143,9 @@ static void ORBit_free_profile(gpointer item, gpointer data)
 	} else if(info->profile_type == IOP_TAG_ORBIT_SPECIFIC) {
 		g_free(info->tag.orbitinfo.unix_sock_path);
 	} else {
+#ifdef PROFILE_DEBUG
 		g_warning("ORBit_free_profile asked to free type %d", info->profile_type);
+#endif
 	}
 
 	g_free(info);	/* Check its safe to free the item within a foreach func */
@@ -293,13 +297,16 @@ ORBit_demarshal_profile(GIOPRecvBuffer *recv_buffer, IOP_ProfileId profile_id)
 		return(object_info);
 		break;
 
-	case IOP_TAG_MULTIPLE_COMPONENTS:
 	default:
+		g_warning("Unknown IOP profile");
+
+	case IOP_TAG_GENERIC_IOP:
+	case IOP_TAG_MULTIPLE_COMPONENTS:
+		/* FIXME: IOP_TAG_MULTIPLE_COMPONENTS needs implementing */
 		GET_ATOM(subpart_len);
-		g_warning("IOP_TAG_MULTIPLE_COMPONENTS decoding needs finishing");
-		object_info->profile_type = IOP_TAG_MULTIPLE_COMPONENTS;
 		recv_buffer->cur = ((guchar *)recv_buffer->cur) + subpart_len;
-		return(object_info);
+		g_free (object_info);
+		return NULL;
 		break;
 
 	case IOP_TAG_ORBIT_SPECIFIC:
@@ -372,11 +379,8 @@ GSList *ORBit_demarshal_IOR(GIOPRecvBuffer *recv_buffer)
 		ALIGNFOR(CORBA_unsigned_long);
 		GET_ATOM(profile_id);
 		object_info=ORBit_demarshal_profile(recv_buffer, profile_id);
-		if(object_info==NULL) {
-			goto error_exit;
-		} else {
+		if (object_info)
 			profiles=g_slist_append(profiles, object_info);
-		}
 	}
 
 	return(profiles);
@@ -453,7 +457,7 @@ static void ORBit_marshal_profile(gpointer item, gpointer data)
 	g_assert(info);
 	g_assert(send_buffer);
 
-	if(info->profile_type == IOP_TAG_INTERNET_IOP) {
+	if (info->profile_type == IOP_TAG_INTERNET_IOP) {
 		giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(send_buffer),
 					       &ioptag, sizeof(ioptag));
 
@@ -476,7 +480,7 @@ static void ORBit_marshal_profile(gpointer item, gpointer data)
 						       &len, sizeof(len));
 		giop_send_buffer_append_mem_indirect(send_buffer,
 						     codec->buffer, codec->wptr);
-	} else if(info->profile_type==IOP_TAG_ORBIT_SPECIFIC) {
+	} else if (info->profile_type==IOP_TAG_ORBIT_SPECIFIC) {
 		giop_message_buffer_append_mem_a(GIOP_MESSAGE_BUFFER(send_buffer),
 						 &orbittag, sizeof(orbittag));
 		CDR_codec_init_static(codec);
@@ -498,7 +502,9 @@ static void ORBit_marshal_profile(gpointer item, gpointer data)
 		giop_send_buffer_append_mem_indirect(send_buffer,
 						     codec->buffer, codec->wptr);
 	} else {
+#ifdef PROFILE_DEBUG
 		g_warning("ORBit_marshal_profile ask to marshal type %d\n", info->profile_type);
+#endif
 	}
 }
 

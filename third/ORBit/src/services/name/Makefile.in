@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -63,6 +63,8 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -81,6 +83,7 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -89,11 +92,12 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
 
-libORBitservicesincludedir = $(includedir)/ORBitservices
+libORBitservicesincludedir = $(includedir)/orbit-1.0/ORBitservices
 
 lib_LTLIBRARIES = libORBitCosNaming.la
 
@@ -160,18 +164,22 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libname_server_a_LIBADD = 
-libname_server_a_OBJECTS =  new-name-server.o CosNaming-skels.o
+libname_server_a_OBJECTS =  new-name-server.$(OBJEXT) \
+CosNaming-skels.$(OBJEXT)
 AR = ar
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 libORBitCosNaming_la_LIBADD = 
 libORBitCosNaming_la_OBJECTS =  CosNaming-common.lo CosNaming-stubs.lo \
 LName.lo
+bin_PROGRAMS =  name-client$(EXEEXT) orbit-name-server$(EXEEXT) \
+old-name-server$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
-name_client_OBJECTS =  name-client.o
-orbit_name_server_OBJECTS =  boot.o
-old_name_server_OBJECTS =  orbit-name-server.o CosNaming-skels.o
+name_client_OBJECTS =  name-client.$(OBJEXT)
+orbit_name_server_OBJECTS =  boot.$(OBJEXT)
+old_name_server_OBJECTS =  orbit-name-server.$(OBJEXT) \
+CosNaming-skels.$(OBJEXT)
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -191,7 +199,7 @@ OBJECTS = $(libname_server_a_OBJECTS) $(libORBitCosNaming_la_OBJECTS) $(name_cli
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/services/name/Makefile
 
@@ -235,6 +243,11 @@ uninstall-libLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -243,6 +256,7 @@ uninstall-libLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -328,16 +342,16 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
-name-client: $(name_client_OBJECTS) $(name_client_DEPENDENCIES)
-	@rm -f name-client
+name-client$(EXEEXT): $(name_client_OBJECTS) $(name_client_DEPENDENCIES)
+	@rm -f name-client$(EXEEXT)
 	$(LINK) $(name_client_LDFLAGS) $(name_client_OBJECTS) $(name_client_LDADD) $(LIBS)
 
-orbit-name-server: $(orbit_name_server_OBJECTS) $(orbit_name_server_DEPENDENCIES)
-	@rm -f orbit-name-server
+orbit-name-server$(EXEEXT): $(orbit_name_server_OBJECTS) $(orbit_name_server_DEPENDENCIES)
+	@rm -f orbit-name-server$(EXEEXT)
 	$(LINK) $(orbit_name_server_LDFLAGS) $(orbit_name_server_OBJECTS) $(orbit_name_server_LDADD) $(LIBS)
 
-old-name-server: $(old_name_server_OBJECTS) $(old_name_server_DEPENDENCIES)
-	@rm -f old-name-server
+old-name-server$(EXEEXT): $(old_name_server_OBJECTS) $(old_name_server_DEPENDENCIES)
+	@rm -f old-name-server$(EXEEXT)
 	$(LINK) $(old_name_server_LDFLAGS) $(old_name_server_OBJECTS) $(old_name_server_LDADD) $(LIBS)
 
 install-libORBitservicesincludeHEADERS: $(libORBitservicesinclude_HEADERS)

@@ -96,6 +96,7 @@ module test {
 	typedef sequence<long,2> BoundedLongSeq;
 	typedef sequence<long> LongSeq;
 	typedef sequence<StrSeq> StrSeqSeq;
+	typedef sequence<any> AnySeq;
 
 	struct StructWithSequenceInIt {
 		StrSeqSeq theSeq;
@@ -201,6 +202,7 @@ module test {
 	};
 
 	interface AnyServer {
+		any opAnyStrSeq();
 		any opAnyLong(in any inArg, inout any inoutArg, out any outArg);
 		any opAnyString(in any inArg, inout any inoutArg, out any outArg);
 		any opAnyStruct(in any inArg, inout any inoutArg, out any outArg);

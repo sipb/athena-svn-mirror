@@ -31,6 +31,32 @@ static CORBA_long opAnyLong_retn = constants_LONG_RETN;
 
 static
 CORBA_any *
+AnyServer_opAnyStrSeq (PortableServer_Servant _servant,
+		       CORBA_Environment * ev)
+{
+	CORBA_any   *retn;
+	test_StrSeq *seq;
+	int          i;
+	
+	seq = test_StrSeq__alloc();
+	seq->_length = 16;
+	seq->_buffer = CORBA_sequence_CORBA_string_allocbuf (seq->_length);
+	seq->_release = TRUE;
+
+	for (i = 0; i < seq->_length; i++)
+		seq->_buffer [i] = CORBA_string_dup ("Foo");
+
+	retn = CORBA_any_alloc ();
+	retn->_type = (CORBA_TypeCode) CORBA_Object_duplicate (
+		(CORBA_Object) TC_test_StrSeq, ev);
+	retn->_value = seq;
+	retn->_release = TRUE;
+
+	return retn;
+}
+
+static
+CORBA_any *
 AnyServer_opAnyLong(PortableServer_Servant _servant,
 					const CORBA_any * inArg,
 					CORBA_any * inoutArg,
@@ -46,6 +72,7 @@ AnyServer_opAnyLong(PortableServer_Servant _servant,
 
   if(CORBA_any_get_release(inoutArg)){
 	CORBA_free(inoutArg->_value);
+	CORBA_Object_release((CORBA_Object)inoutArg->_type, ev);
   }
 
 
@@ -84,6 +111,7 @@ AnyServer_opAnyString(PortableServer_Servant _servant,
 
   if(CORBA_any_get_release(inoutArg)){
 	CORBA_free(inoutArg->_value);
+	CORBA_Object_release((CORBA_Object)inoutArg->_type, ev);
   }
 
   inoutArg->_type = (CORBA_TypeCode)TC_string;
@@ -125,6 +153,7 @@ AnyServer_opAnyStruct(PortableServer_Servant _servant,
 
   if(CORBA_any_get_release(inoutArg)){
 	CORBA_free(inoutArg->_value);
+	CORBA_Object_release((CORBA_Object)inoutArg->_type, ev);
   }
 
   inoutArg->_type = (CORBA_TypeCode)TC_test_VariableLengthStruct;
@@ -157,8 +186,6 @@ AnyServer_opTypeCode(PortableServer_Servant _servant,
 					 CORBA_TypeCode * inoutArg,
 					 CORBA_TypeCode * outArg,
 					 CORBA_Environment * ev){
-  CORBA_TypeCode retn;  
-
   g_assert(CORBA_TypeCode_equal(inArg,TC_test_ArrayUnion,ev) );
   g_assert(CORBA_TypeCode_equal(*inoutArg,TC_test_AnyServer,ev) );
   
@@ -172,11 +199,12 @@ AnyServer_opTypeCode(PortableServer_Servant _servant,
 PortableServer_ServantBase__epv AnyServer_base_epv = {NULL,NULL,NULL};
 
 POA_test_AnyServer__epv AnyServer_epv = {
-  NULL,
-  AnyServer_opAnyLong,
-  AnyServer_opAnyString,
-  AnyServer_opAnyStruct,
-  AnyServer_opTypeCode,
+	NULL,
+	AnyServer_opAnyStrSeq,
+	AnyServer_opAnyLong,
+	AnyServer_opAnyString,
+	AnyServer_opAnyStruct,
+	AnyServer_opTypeCode,
 };
 
 POA_test_AnyServer__vepv AnyServer_vepv = {&AnyServer_base_epv,&AnyServer_epv};

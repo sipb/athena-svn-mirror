@@ -4,7 +4,7 @@
 
 #include <orb/orbit.h>
 
-#define CHECK_OK(ev)           (g_assert ((ev)->_major == CORBA_NO_EXCEPTION))
+#define CHECK_OK(ev)           g_assert ((ev)->_major == CORBA_NO_EXCEPTION)
 #define CHECK_TYPE_MISMATCH(ev) \
 	do { \
 		g_assert ((ev)->_major == CORBA_USER_EXCEPTION && \

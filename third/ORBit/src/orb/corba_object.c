@@ -35,6 +35,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 /* Section 4.2.1 */
 CORBA_InterfaceDef CORBA_Object_get_interface(CORBA_Object obj, CORBA_Environment *ev)
@@ -252,6 +253,7 @@ static void do_exit(int signum) {
 CORBA_boolean CORBA_Object_non_existent(CORBA_Object obj, CORBA_Environment *ev)
 {
   int childpid, exitstatus, itmp;
+  sigset_t mask, omask;
 
   ev->_major = CORBA_NO_EXCEPTION;
 
@@ -263,6 +265,11 @@ CORBA_boolean CORBA_Object_non_existent(CORBA_Object obj, CORBA_Environment *ev)
 
   if(obj->connection && obj->connection->is_valid)
 	  return FALSE;
+
+  /* Block SIGCHLD so no one else can wait() on the child before we do. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
 
   childpid = fork();
 
@@ -281,7 +288,9 @@ CORBA_boolean CORBA_Object_non_existent(CORBA_Object obj, CORBA_Environment *ev)
 	  _exit((cnx == NULL)?1:0);
   }
 
-  itmp = waitpid(childpid, &exitstatus, 0);
+  while ((itmp = waitpid(childpid, &exitstatus, 0)) == -1 && errno == EINTR)
+	  ;
+  sigprocmask (SIG_SETMASK, &omask, NULL);
 
   if(itmp < 0) return TRUE;
   return WEXITSTATUS(exitstatus) && TRUE;

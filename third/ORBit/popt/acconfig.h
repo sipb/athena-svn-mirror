@@ -16,7 +16,7 @@
    a given entry is in the file.
 
    Leave the following blank line there!!  Autoheader needs it.  */
-^L
+
 
 /* Define to the name of the distribution.  */
 #undef PACKAGE
@@ -42,7 +42,7 @@
 /* Define to 1 if you have the stpcpy function.  */
 #undef HAVE_STPCPY
 
-^L
+
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:
    The entries are in sort -df order: alphabetical, case insensitive,

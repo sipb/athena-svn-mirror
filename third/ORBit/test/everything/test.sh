@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # This is a generic script for firing up a server, waiting for it to write
 # its stringified IOR to a file, then firing up a server

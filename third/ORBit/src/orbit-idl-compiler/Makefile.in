@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -29,6 +29,7 @@ localstatedir = @localstatedir@
 libdir = @libdir@
 infodir = @infodir@
 mandir = @mandir@
+includedir = @includedir@
 oldincludedir = /usr/include
 
 DESTDIR =
@@ -62,6 +63,8 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -80,6 +83,7 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -88,6 +92,7 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
@@ -95,7 +100,7 @@ pkglibdir = @pkglibdir@
 SUBDIRS = backends
 bin_PROGRAMS = orbit-idl
 
-includedir = $(prefix)/include
+orbitidlincludedir = $(includedir)/orbit-1.0
 orbitlibdir = $(libdir)/orbit-idl
 
 INCLUDES = -I$(top_builddir) -I$(top_builddir)/src 	 -I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/popt 	@GLIB_CFLAGS@ @GMODULE_CFLAGS@ 	-DORBITLIBDIR="\"$(orbitlibdir)\"" 	-DDEBUG
@@ -109,10 +114,11 @@ orbit_idl_LDADD =  	backends/c/liborbit-c-backend.a 	$(top_builddir)/libIDL/libI
 
 orbit_idl_SOURCES = orbit-idl-main.c 		   orbit-idl-driver.c 		   orbit-idl-backends.c 		   orbit-idl-passes.c 		   orbit-idl-genmarshal.c 		   orbit-idl-utils.c 		   orbit-idl2.h
 
-include_DATA = orbit-idl2.h
+orbitidlinclude_HEADERS = orbit-idl2.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  orbit-idl$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -120,15 +126,15 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-orbit_idl_OBJECTS =  orbit-idl-main.o orbit-idl-driver.o \
-orbit-idl-backends.o orbit-idl-passes.o orbit-idl-genmarshal.o \
-orbit-idl-utils.o
+orbit_idl_OBJECTS =  orbit-idl-main.$(OBJEXT) orbit-idl-driver.$(OBJEXT) \
+orbit-idl-backends.$(OBJEXT) orbit-idl-passes.$(OBJEXT) \
+orbit-idl-genmarshal.$(OBJEXT) orbit-idl-utils.$(OBJEXT)
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(include_DATA)
+HEADERS =  $(orbitidlinclude_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -142,7 +148,7 @@ OBJECTS = $(orbit_idl_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/orbit-idl-compiler/Makefile
 
@@ -179,6 +185,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -187,6 +198,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -214,27 +226,23 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-orbit-idl: $(orbit_idl_OBJECTS) $(orbit_idl_DEPENDENCIES)
-	@rm -f orbit-idl
+orbit-idl$(EXEEXT): $(orbit_idl_OBJECTS) $(orbit_idl_DEPENDENCIES)
+	@rm -f orbit-idl$(EXEEXT)
 	$(LINK) $(orbit_idl_LDFLAGS) $(orbit_idl_OBJECTS) $(orbit_idl_LDADD) $(LIBS)
 
-install-includeDATA: $(include_DATA)
+install-orbitidlincludeHEADERS: $(orbitidlinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(includedir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(includedir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(includedir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(includedir)/$$p; \
-	  fi; fi; \
+	$(mkinstalldirs) $(DESTDIR)$(orbitidlincludedir)
+	@list='$(orbitidlinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(orbitidlincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(orbitidlincludedir)/$$p; \
 	done
 
-uninstall-includeDATA:
+uninstall-orbitidlincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	list='$(include_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	list='$(orbitidlinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(orbitidlincludedir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -381,21 +389,21 @@ installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-includeDATA
+install-data-am: install-orbitidlincludeHEADERS
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binPROGRAMS uninstall-includeDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-orbitidlincludeHEADERS
 uninstall: uninstall-recursive
-all-am: Makefile $(PROGRAMS) $(DATA)
+all-am: Makefile $(PROGRAMS) $(HEADERS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(orbitidlincludedir)
 
 
 mostlyclean-generic:
@@ -437,12 +445,12 @@ maintainer-clean: maintainer-clean-recursive
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-includeDATA \
-install-includeDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+clean-libtool maintainer-clean-libtool uninstall-orbitidlincludeHEADERS \
+install-orbitidlincludeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

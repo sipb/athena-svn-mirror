@@ -1,2 +1,59 @@
-Do not touch this file. Run 'rcs2log' or use bonsai
-(http://cvs.gnome.org/)
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.5.12
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/allocators.c (ORBit_free): fix hideous flow
+	control and, release the typecode once here.
+	(ORBit_free_via_TypeCode): don't release the typecode
+	here - we might be in a sequence or somesuch. Remove
+	slow bloat of continualy re-referencing types. Make the
+	code look pleasant.
+
+	* test/everything/client.c (testAnyStrSeq): impl.
+	(main): hook it up.
+
+	* test/everything/anyServer.c (AnyServer_opAnyStrSeq): impl.
+
+	* src/orb/orbit_typecode.c (ORBit_TypeCode_release):
+	zap the memory so we can detect badness more easily.
+
+2001-10-24  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.5.11
+
+2001-10-23  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orbit_poa.c (ORBit_POA_handle_request): if
+	oid == NULL don't segv, return ex_CORBA_OBJECT_NOT_EXIST.
+
+2001-10-03  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.5.10
+
+2001-10-03  Michael Meeks  <michael@ximian.com>
+
+	* src/IIOP/giop-msg-buffer.c (giop_dump_recv, dump): add
+	improved debugging infastructure.
+	(giop_recv_message_buffer_use): add debugging.
+	(giop_recv_reply_decode_message): re-hash debugging,
+	add > 128 error msgs.
+
+	* src/orb/orbit_object.c (ORBit_demarshal_profile): accept
+	IOP_TAG_MULTIPLE_COMPONENTS silently, ditto for TAG_GENERIC_IOP,
+	and return NULL not a duff struct.
+	(ORBit_free_profile, ORBit_marshal_profile): silence.
+	(ORBit_demarshal_IOR): tolerate / silently ignore unknown
+	profiles without whacking them on the profile list, as done by
+	ORBit_demarshal_object.
+	(ORBit_demarshal_profile): 
+
+	* src/orb/orb.c (ORBit_emit_profile): silence.
+
+	* src/orb/iop.h (IOP_TAG_GENERIC_IOP): add.
+
+2001-05-30  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/dynany.c (dynany_sequence_realloc_to): fix
+	bug overrunning sequence.

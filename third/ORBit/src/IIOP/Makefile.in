@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -63,6 +63,8 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -79,6 +81,7 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -87,6 +90,7 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
@@ -98,11 +102,11 @@ LIB_WRAP = @LIB_WRAP@
 @HAVE_HOSTS_ACCESS_TRUE@libwrap_deps = 
 @HAVE_HOSTS_ACCESS_FALSE@libwrap_deps = $(LIB_WRAP)
 
-libIIOPincludedir = $(includedir)/IIOP
-
 INCLUDES = -I.. -I$(top_srcdir)/src @GLIB_CFLAGS@ -I$(top_builddir)/src/ORBitutil
 
 lib_LTLIBRARIES = libIIOP.la
+
+libIIOPincludedir = $(includedir)/orbit-1.0/IIOP
 
 libIIOP_la_SOURCES =  	connection.c 	encoders.c 	giop-msg-buffer.c 	iiop-endian.c 	IIOP-config.h 	IIOP-types.h 	giop-msg-buffer.h 	iiop-encoders.h 	iiop-endian.h 	iiop-endianP.h 	IIOP.h 	IIOP-private.h
 
@@ -154,7 +158,7 @@ OBJECTS = $(libIIOP_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/IIOP/Makefile
 
@@ -191,6 +195,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -199,6 +208,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -289,37 +299,30 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 connection.lo connection.o : connection.c ../../config.h iiop-endianP.h \
-	IIOP.h ../../src/ORBitutil/util.h \
-	../../src/ORBitutil/thread-safety.h ../../src/ORBitutil/trace.h \
-	../../src/ORBitutil/compat.h ../../src/ORBitutil/os-specifics.h \
-	../ORBitutil/orbit-os-config.h \
-	../../src/ORBitutil/os-feature-alloca.h IIOP-config.h \
-	IIOP-types.h ../../src/ORBitutil/basic_types.h \
-	giop-msg-buffer.h ../../src/orb/iop.h \
-	../../src/orb/corba_basic_sequences_type.h \
-	../../src/orb/corba_sequences.h iiop-encoders.h iiop-endian.h \
-	IIOP-private.h
+	IIOP.h ../ORBitutil/util.h ../ORBitutil/thread-safety.h \
+	../ORBitutil/trace.h ../ORBitutil/compat.h \
+	../ORBitutil/os-specifics.h ../ORBitutil/orbit-os-config.h \
+	../ORBitutil/os-feature-alloca.h IIOP-config.h IIOP-types.h \
+	../ORBitutil/basic_types.h giop-msg-buffer.h ../orb/iop.h \
+	../orb/corba_basic_sequences_type.h ../orb/corba_sequences.h \
+	iiop-encoders.h iiop-endian.h IIOP-private.h
 encoders.lo encoders.o : encoders.c ../../config.h IIOP.h \
-	../../src/ORBitutil/util.h ../../src/ORBitutil/thread-safety.h \
-	../../src/ORBitutil/trace.h ../../src/ORBitutil/compat.h \
-	../../src/ORBitutil/os-specifics.h \
-	../ORBitutil/orbit-os-config.h \
-	../../src/ORBitutil/os-feature-alloca.h IIOP-config.h \
-	IIOP-types.h ../../src/ORBitutil/basic_types.h \
-	giop-msg-buffer.h ../../src/orb/iop.h \
-	../../src/orb/corba_basic_sequences_type.h \
-	../../src/orb/corba_sequences.h iiop-encoders.h iiop-endian.h
+	../ORBitutil/util.h ../ORBitutil/thread-safety.h \
+	../ORBitutil/trace.h ../ORBitutil/compat.h \
+	../ORBitutil/os-specifics.h ../ORBitutil/orbit-os-config.h \
+	../ORBitutil/os-feature-alloca.h IIOP-config.h IIOP-types.h \
+	../ORBitutil/basic_types.h giop-msg-buffer.h ../orb/iop.h \
+	../orb/corba_basic_sequences_type.h ../orb/corba_sequences.h \
+	iiop-encoders.h iiop-endian.h
 giop-msg-buffer.lo giop-msg-buffer.o : giop-msg-buffer.c ../../config.h \
-	iiop-endianP.h IIOP.h ../../src/ORBitutil/util.h \
-	../../src/ORBitutil/thread-safety.h ../../src/ORBitutil/trace.h \
-	../../src/ORBitutil/compat.h ../../src/ORBitutil/os-specifics.h \
-	../ORBitutil/orbit-os-config.h \
-	../../src/ORBitutil/os-feature-alloca.h IIOP-config.h \
-	IIOP-types.h ../../src/ORBitutil/basic_types.h \
-	giop-msg-buffer.h ../../src/orb/iop.h \
-	../../src/orb/corba_basic_sequences_type.h \
-	../../src/orb/corba_sequences.h iiop-encoders.h iiop-endian.h \
-	IIOP-private.h
+	iiop-endianP.h IIOP.h ../ORBitutil/util.h \
+	../ORBitutil/thread-safety.h ../ORBitutil/trace.h \
+	../ORBitutil/compat.h ../ORBitutil/os-specifics.h \
+	../ORBitutil/orbit-os-config.h ../ORBitutil/os-feature-alloca.h \
+	IIOP-config.h IIOP-types.h ../ORBitutil/basic_types.h \
+	giop-msg-buffer.h ../orb/iop.h \
+	../orb/corba_basic_sequences_type.h ../orb/corba_sequences.h \
+	iiop-encoders.h iiop-endian.h IIOP-private.h
 iiop-endian.lo iiop-endian.o : iiop-endian.c iiop-endian.h
 
 info-am:

@@ -1,7 +1,7 @@
 SUBDIRS=backends
 bin_PROGRAMS=orbit-idl
 
-includedir=$(prefix)/include
+orbitidlincludedir=$(includedir)/orbit-1.0
 orbitlibdir=$(libdir)/orbit-idl
 
 INCLUDES=-I$(top_builddir) -I$(top_builddir)/src \
@@ -28,7 +28,7 @@ orbit_idl_SOURCES=orbit-idl-main.c \
 		   orbit-idl-genmarshal.c \
 		   orbit-idl-utils.c \
 		   orbit-idl2.h
-include_DATA=orbit-idl2.h
+orbitidlinclude_HEADERS=orbit-idl2.h
 
 $(top_builddir)/libIDL/libIDL.la:
 	$(MAKE) -C $(top_builddir)/libIDL libIDL.la

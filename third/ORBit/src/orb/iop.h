@@ -39,6 +39,7 @@ typedef CORBA_unsigned_long IOP_ProfileId;
 
 #define IOP_TAG_INTERNET_IOP 0
 #define IOP_TAG_MULTIPLE_COMPONENTS 1
+#define IOP_TAG_GENERIC_IOP    0x4f425400
 #define IOP_TAG_ORBIT_SPECIFIC 0xbadfaecal
 
 typedef struct IOP_TaggedProfile {
