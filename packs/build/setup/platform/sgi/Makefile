@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1996-10-02 07:10:54 ghudson Exp $
+# $Id: Makefile,v 1.4 1998-01-31 23:37:13 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -9,7 +9,7 @@ check:
 install:
 	-mkdir -p ${DESTDIR}/usr/bin
 	rm -f ${DESTDIR}/core
-	ln -s var/tmp/core.root ${DESTDIR}/core
+	ln -s var/athena/core.root ${DESTDIR}/core
 	rm -f ${DESTDIR}/bin
 	ln -s usr/bin ${DESTDIR}/bin
 
