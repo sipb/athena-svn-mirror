@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+	echo "/etc/.login"				>> $CONFCHG
+	echo "/etc/profile"				>> $CONFCHG
+	;;
+
+sgi)
+	echo "/etc/cshrc"				>> $CONFCHG
+	echo "/etc/profile"				>> $CONFCHG
+	echo "/etc/sendmail.fc"				>> $DEADFILES
+	;;
+esac
