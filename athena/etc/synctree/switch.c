@@ -61,6 +61,8 @@
 			(chown(targname, -1, srcgid) ||
 			 chown(targname, srcuid, -1)))
 			update_error("chown failed");
+		    if (chmod(targname, srcmode))
+			update_error("chmod() failed");
 		    break;
 		}
 		switch(status = filecheck3()) {
@@ -102,12 +104,12 @@
 		    if ((verbosef || nflag) && (status == FIXMODE))
 			printf("Fixing modes of %s .\n", targname);
 
-		    if (!nflag && chmod(targname, srcmode))
-			update_error("chmod() failed");
 		    if (!nflag && pflag && (status != FIXMODE) &&
 			(chown(targname, -1, srcgid) ||
 			 chown(targname, srcuid, -1)))
 			update_error("chown failed");
+		    if (!nflag && chmod(targname, srcmode))
+			update_error("chmod() failed");
 		    break;		    
 		default:
 		    noupdate("of an internal error: filecheck3() returned an unknown value.");
