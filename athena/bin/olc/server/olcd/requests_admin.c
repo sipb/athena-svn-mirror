@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.14 1990-12-12 15:21:05 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.15 1991-01-03 15:47:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.14 1990-12-12 15:21:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.15 1991-01-03 15:47:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,11 +36,11 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 ERRCODE
-  olc_load_user(fd,request)
-int fd;
-REQUEST *request;
+olc_load_user(fd,request)
+     int fd;
+     REQUEST *request;
 {
-  KNUCKLE *requester;
+  KNUCKLE *requester,*target;
   USER *user;
   int status;
 
@@ -48,13 +48,13 @@ REQUEST *request;
   if(status)
     return(send_response(fd,status));
 
-  if(!isme(request))
-    {
-      status = get_user(&(request->target),&user);	
-      if(status)
-	return(send_response(fd,status));
-    }
-  else
+  if(!isme(request)) {
+    status = find_knuckle(&(request->target), &target);
+    if(status)
+      return(send_response(fd,status));
+    user = target->user;
+  }
+  else 
     user = requester->user;
 
   if (!is_allowed(requester->user,ADMIN_ACL)
@@ -62,16 +62,16 @@ REQUEST *request;
     return(send_response(fd,PERMISSION_DENIED));
 
   load_user(user);
-
+  
   send_response(fd,SUCCESS);
   return(SUCCESS);
 }
 
 
 ERRCODE
-  olc_dump(fd,request)
-int fd;
-REQUEST *request;
+olc_dump(fd,request)
+     int fd;
+     REQUEST *request;
 {
   KNUCKLE *requester;
   int status;
@@ -94,9 +94,9 @@ REQUEST *request;
 
 
 ERRCODE
-  olc_dump_req_stats(fd,request)
-int fd;
-REQUEST *request;
+olc_dump_req_stats(fd,request)
+     int fd;
+     REQUEST *request;
 {
   KNUCKLE *requester;
   int status;
@@ -119,9 +119,9 @@ REQUEST *request;
 
 
 ERRCODE
-  olc_dump_ques_stats(fd,request)
-int fd;
-REQUEST *request;
+olc_dump_ques_stats(fd,request)
+     int fd;
+     REQUEST *request;
 {
   KNUCKLE *requester;
   int status;
@@ -144,9 +144,9 @@ REQUEST *request;
 
 
 ERRCODE
-  olc_change_motd(fd,request)
-int fd;
-REQUEST *request;
+olc_change_motd(fd,request)
+     int fd;
+     REQUEST *request;
 {
   KNUCKLE *requester;
   int status;
@@ -164,6 +164,30 @@ REQUEST *request;
 
   status = send_response(fd,read_text_into_file(fd,MOTD_FILE));
   set_motd_timeout(requester);
+  return(status);
+}
+
+
+ERRCODE
+olc_change_hours(fd,request)
+     int fd;
+     REQUEST *request;
+{
+  KNUCKLE *requester;
+  int status;
+
+  status = find_knuckle(&(request->requester), &requester);	
+  if(status)
+    return(send_response(fd,status));
+   
+  if(!is_allowed(requester->user, ADMIN_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+
+  send_response(fd,SUCCESS);
+  if(is_option(request->options, VERIFY))
+    return(status);
+
+  status = send_response(fd,read_text_into_file(fd,HOURS_FILE));
   return(status);
 }
 
@@ -338,8 +362,8 @@ olc_get_dbinfo(fd,request)
      int fd;
      REQUEST *request;
 {
-  KNUCKLE *requester;
-  USER *user, u;
+  KNUCKLE *requester,*target;
+  USER *user;
   DBINFO dbinfo;
   int status;
 
@@ -351,18 +375,13 @@ olc_get_dbinfo(fd,request)
      !isme(request))
      return(send_response(fd,PERMISSION_DENIED));
 
-  if(!isme(request))
-    {
-      status = get_user(&(request->target), &user);
-      if(status)
-	{
-	  strcpy(u.username, request->target.username);
-	  strcpy(u.realm, request->target.realm);
-	  user = &u;    /* local init for now */
-	  init_dbinfo(user);
-	}
-    }
-  else
+  if(!isme(request)) {
+    status = find_knuckle(&(request->target), &target);
+    if(status)
+      return(send_response(fd,status));
+    user = target->user;
+  }
+  else 
     user = requester->user;
 
   send_response(fd,SUCCESS);
@@ -420,4 +439,12 @@ olc_change_dbinfo(fd,request)
       status = save_user_info(user);
     }
   return(send_response(fd,status));
+}
+
+ERRCODE
+olc_set_user_status(fd,request)
+     int fd;
+     REQUEST *request;
+{
+  return(SUCCESS);
 }
