@@ -19,20 +19,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.18 1991-02-24 11:39:42 lwvanels Exp $
+ *	$Id: t_list.c,v 1.19 1991-04-08 20:45:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.18 1991-02-24 11:39:42 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.19 1991-04-08 20:45:31 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
-#ifdef m68k
+#ifdef _AUX_SOURCE
 #include <time.h>
 #endif
 
@@ -167,15 +167,9 @@ t_display_list(list,comments,file)
 	return(ERROR);
     }
 
-#if 0				/* some headers should cover two columns */
-    fprintf (fp, listing_format,
-	     "User", "", "Status", "Consultant", "", "Status", "", "Topic");
-    fprintf (fp, "\n");
-#else
     fprintf (fp,
   "User                     Status   Consultant   Stat ## Topic         Time\n"
 	     );
-#endif
     output_status_header (fp, (const char *)NULL);
     for(l=list; l->ustatus != END_OF_LIST; ++l) {
 	buf[0] = '\0';
@@ -233,11 +227,6 @@ t_display_list(list,comments,file)
 	    sprintf(cinstbuf,"[%d]",l->user.instance);
 	    fprintf (fp, listing_format,
 		     "", "", "", cbuf, cinstbuf, chstatusbuf, "", "", "");
-#if 0
-	    fprintf(fp,
-		    "                                            %-8.8s %-4.4s %-5.5s\n",
-		    cbuf, cinstbuf, chstatusbuf);
-#endif
 	}
 	else {
 	    fprintf(fp,"**unknown list entry***");
