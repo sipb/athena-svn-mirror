@@ -1,18 +1,17 @@
 /* 
- * $Id: aklog_param.c,v 1.6 1991-07-16 06:25:25 probe Exp $
+ * $Id: aklog_param.c,v 1.7 1994-04-13 14:55:57 probe Exp $
  * 
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.6 1991-07-16 06:25:25 probe Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.7 1994-04-13 14:55:57 probe Exp $";
 #endif /* lint || SABER */
 
 #include "aklog.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <krb.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -21,10 +20,6 @@ static char *rcsid = "$Id: aklog_param.c,v 1.6 1991-07-16 06:25:25 probe Exp $";
 #ifndef FALSE
 #define FALSE 0
 #endif
-
-extern int readlink ARGS((char *, char *, int));
-extern int lstat ARGS((char *, struct stat *));
-extern char *getwd ARGS((char *));
 
 
 #ifdef __STDC__
