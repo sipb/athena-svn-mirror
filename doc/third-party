@@ -237,35 +237,6 @@ LEIM (Library of Emacs Input Methods) is built as part of Emacs, but
 distributed separately.  Untar both emacs and leim (leim will untar
 into emacs-xx.yy/leim) and import them both with one command.
 
-Imports of new versions
------------------------
-
-CVS (at least as of version 1.9) has the irritating weakness that
-import operations never delete files; you have to delete the removed
-files in a new version of a package by hand.  If the import command
-was "cvs import module vendor-branch release-tag", then to delete
-files you do:
-
-	cvs co -r vendor-branch module
-	cd module
-	cvs -n update -r release-tag |& \
-		awk '/no longer/ { print $3; }' > /tmp/files
-	xargs cvs rm < /tmp/files
-	cvs ci
-	awk '{print "module" $0; }' /tmp/files > /tmp/files2
-	xargs cvs rtag -r vendor-branch release-tag < /tmp/files2
-
-Yuck.  But it works.  For each deleted file, a dead revision will be
-checked in on the vendor branch and tagged with release-tag.  (The
-tagging part may be unnecessary, but should not be undesirable.)
-
-If, after an import, there are files which have been modified on the
-mainline but do not need to be locally modified any more, you can run
-"cvs admin -bvendor-branch" on the files to make them revert to the
-vendor branch.  But first, check in an unmodified copy of the vendor
-branch file onto the mainline, so that the version history of the file
-is clear.
-
 Third-party build systems
 -------------------------
 
