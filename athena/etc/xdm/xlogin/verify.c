@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.27 1992-05-26 16:56:38 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.28 1992-05-26 17:33:46 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -1001,7 +1001,7 @@ char *s;
  * rather than finding controlling tty (which is often undefined in xlogin).
  */
 
-int ttyslot(tty)
+int myttyslot(tty)
 char *tty;
 {
     int s = 0;
@@ -1029,7 +1029,7 @@ char *display;
     struct utmp ut_entry;
     int f;
 #ifndef _AIX
-    int slot = ttyslot(tty);
+    int slot = myttyslot(tty);
 #endif
 
     bzero(&ut_entry, sizeof(ut_entry));
