@@ -2127,7 +2127,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  EXTRALIBS="$EXTRALIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"
+  EXTRALIBS="$EXTRALIBS -L/usr/ccs/lib -L/usr/ucblib -R/usr/ucblib -lc -lucb"
 else
   echo "$ac_t""no" 1>&6
 :
