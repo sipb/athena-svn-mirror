@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sgi.presed,v 1.4.2.1 1997-06-02 17:42:00 ghudson Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sgi.presed,v 1.4.2.2 1997-06-30 06:16:39 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -421,7 +421,9 @@ xlogin.Geometry: 		580x325+350+180
 			WcSetValueCB(*selection.label: Special login session selected), \
 			WcPopupGrabCB(*getSessionShell), \
 			setfocusCB(*getsession*value)
-*lmenuEntry6.callback:	resetCB()
+*lmenuEntry6.callback:	WcSetValueCB(*pword_input.borderColor: white), \
+			WcSetValueCB(*name_input.borderColor: black), \
+			resetCB()
 
 *omenu*rightMargin:		77
 *omenu.wcClassName:		SimpleMenu
