@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1998-07-09 20:37:20 danw Exp $
+# $Id: Makefile.athena,v 1.2 1998-08-17 19:44:07 danw Exp $
 
 SHELL=/bin/sh
 
@@ -17,19 +17,19 @@ all:
 check:
 
 install:
-	mkdir -p $(DESTDIR)/usr/athena/etc
-	mkdir -p $(DESTDIR)/usr/athena/include
-	mkdir -p $(DESTDIR)/usr/athena/lib
-	mkdir -p $(DESTDIR)/usr/athena/man
-	mkdir -p $(DESTDIR)/usr/athena/man/man3
-	mkdir -p $(DESTDIR)/usr/athena/man/man5
-	mkdir -p $(DESTDIR)/usr/athena/man/man8
-	install tcpdchk $(DESTDIR)/usr/athena/etc
-	install tcpdmatch $(DESTDIR)/usr/athena/etc
-	install -m 644 libwrap.a $(DESTDIR)/usr/athena/lib
-	install -m 644 tcpd.h $(DESTDIR)/usr/athena/include
-	install -m 644 hosts_access.3 $(DESTDIR)/usr/athena/man/man3
-	install -m 644 hosts_access.5 $(DESTDIR)/usr/athena/man/man5
-	install -m 644 hosts_options.5 $(DESTDIR)/usr/athena/man/man5
-	install -m 644 tcpdchk.8 $(DESTDIR)/usr/athena/man/man8
-	install -m 644 tcpdmatch.8 $(DESTDIR)/usr/athena/man/man8
+	mkdir -p "$$SRVD/usr/athena/etc"
+	mkdir -p "$$SRVD/usr/athena/include"
+	mkdir -p "$$SRVD/usr/athena/lib"
+	mkdir -p "$$SRVD/usr/athena/man"
+	mkdir -p "$$SRVD/usr/athena/man/man3"
+	mkdir -p "$$SRVD/usr/athena/man/man5"
+	mkdir -p "$$SRVD/usr/athena/man/man8"
+	install tcpdchk "$$SRVD/usr/athena/etc"
+	install tcpdmatch "$$SRVD/usr/athena/etc"
+	install -m 644 libwrap.a "$$SRVD/usr/athena/lib"
+	install -m 644 tcpd.h "$$SRVD/usr/athena/include"
+	install -m 644 hosts_access.3 "$$SRVD/usr/athena/man/man3"
+	install -m 644 hosts_access.5 "$$SRVD/usr/athena/man/man5"
+	install -m 644 hosts_options.5 "$$SRVD/usr/athena/man/man5"
+	install -m 644 tcpdchk.8 "$$SRVD/usr/athena/man/man8"
+	install -m 644 tcpdmatch.8 "$$SRVD/usr/athena/man/man8"
