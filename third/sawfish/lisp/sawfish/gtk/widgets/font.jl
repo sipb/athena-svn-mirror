@@ -1,6 +1,6 @@
 #| nokogiri-widgets/font.jl -- font selection widget
 
-   $Id: font.jl,v 1.1.1.1 2000-11-12 06:26:47 ghudson Exp $
+   $Id: font.jl,v 1.1.1.2 2001-01-13 14:58:00 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -33,7 +33,7 @@
     (let* ((box (gtk-hbox-new nil box-spacing))
 	   (entry (gtk-entry-new))
 	   (button (gtk-button-new-with-label (_ "Browse..."))))
-      (gtk-box-pack-start box entry)
+      (gtk-box-pack-start box entry t t)
       (gtk-box-pack-start box button)
       (when changed-callback
 	(gtk-signal-connect

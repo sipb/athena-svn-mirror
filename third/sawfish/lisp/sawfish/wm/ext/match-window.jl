@@ -1,5 +1,5 @@
 ;; match-window.jl -- match windows to properties
-;; $Id: match-window.jl,v 1.1.1.1 2000-11-12 06:28:04 ghudson Exp $
+;; $Id: match-window.jl,v 1.1.1.2 2001-01-13 14:58:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -82,13 +82,13 @@
        (workspace (number 1))
        (viewport (pair (number 1) (number 1)))
        (depth (number -16 16))
-       (placement-weight number))
+       (placement-weight number)
+       (maximized (choice all vertical horizontal)))
       (focus ,(_ "Focus")
        (raise-on-focus boolean)
        (focus-when-mapped boolean)
        (never-focus boolean)
        (focus-click-through boolean)
-       (ignore-window-input-hint boolean)
        (focus-mode ,(lambda () `(choice ,@focus-modes))))
       (appearance ,(_ "Appearance")
        (frame-type ,(lambda () `(choice ,@(mapcar car match-window-types))))
@@ -108,7 +108,6 @@
        (unique-name boolean)
        (auto-gravity boolean)
        (shade-hover boolean)
-       (ignore-when-cycling boolean)
        (transients-above (choice all parents none)))))
 
   ;; alist of (PROPERTY . FEATURE) mapping properties to the lisp
@@ -336,12 +335,14 @@
 
   (define-match-window-setter 'workspace
    (lambda (w prop value)
+     (declare (unused prop))
      (unless (or (window-get w 'placed) (window-workspaces w))
        ;; translate from 1.. to 0..
        (set-window-workspaces w (list (1- value))))))
 
   (define-match-window-setter 'position
    (lambda (w prop value)
+     (declare (unused prop))
      (let ((x (car value))
 	   (y (cdr value)))
        (when (< x 0)
@@ -354,28 +355,42 @@
 
   (define-match-window-setter 'dimensions
    (lambda (w prop value)
+     (declare (unused prop))
      (resize-window-with-hints w (car value) (cdr value))))
 
   (define-match-window-setter 'viewport
    (lambda (w prop value)
+     (declare (unused prop))
      (unless (window-get w 'placed)
        (set-screen-viewport (1- (car value)) (1- (cdr value)))
        (set-window-viewport w (1- (car value)) (1- (cdr value))))))
 
   (define-match-window-setter 'frame-type
    (lambda (w prop value)
+     (declare (unused prop))
      (set-window-type w (or (cdr (assq value match-window-types)) value))))
 
   (define-match-window-setter 'ungrouped
    (lambda (w prop value)
+     (declare (unused prop))
      (when value
        (add-window-to-new-group w))))
 
   (define-match-window-setter 'unique-name
     (lambda (w prop value)
+     (declare (unused prop))
       (when value
 	(uniquify-window-name w))))
 
   (define-match-window-setter 'focus-mode
    (lambda (w prop value)
-     (set-focus-mode w value))))
+     (declare (unused prop))
+     (set-focus-mode w value)))
+
+  (define-match-window-setter 'maximized
+   (lambda (w prop value)
+     (declare (unused prop))
+     (when (memq value '(all vertical))
+       (window-put w 'queued-vertical-maximize t))
+     (when (memq value '(all horizontal))
+       (window-put w 'queued-horizontal-maximize t)))))

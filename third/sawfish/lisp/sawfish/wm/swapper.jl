@@ -1,6 +1,6 @@
 #| workspace-swapper.jl -- swapping window attributes per-workspace
 
-   $Id: swapper.jl,v 1.1.1.1 2000-11-12 06:28:05 ghudson Exp $
+   $Id: swapper.jl,v 1.1.1.2 2001-01-13 14:58:58 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -34,6 +34,7 @@
 ;;; default swappers
 
   (define (workspace-swap-out w space)
+    (declare (unused space))
     (let ((props (mapcar (lambda (prop)
 			   (cons prop (window-get w prop)))
 			 workspace-local-properties)))
@@ -46,6 +47,7 @@
 	(list (cons 'properties props)))))
 
   (define (workspace-swap-in w space alist)
+    (declare (unused space))
     (let ((position (cdr (assq 'position alist)))
 	  (viewport (cdr (assq 'viewport alist)))
 	  (dimensions (cdr (assq 'dimensions alist)))
@@ -66,7 +68,8 @@
 	(window-put w 'current-frame-style (or (window-get w 'frame-style)
 					       default-frame-style))
 	(unless (eq (window-get w 'current-frame-style) old-frame-style)
-	  (reframe-window w)))))
+	  (reframe-window w))))
+    (call-hook 'after-workspace-swap-in-hook (list w space)))
 
   (add-hook 'workspace-swap-in-hook workspace-swap-in)
   (add-hook 'workspace-swap-out-hook workspace-swap-out))

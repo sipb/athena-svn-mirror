@@ -1,6 +1,6 @@
 #| gaol.jl -- protected environment for themes
 
-   $Id: gaol.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: gaol.jl,v 1.1.1.2 2001-01-13 14:58:26 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -45,6 +45,7 @@
   (define safe-functions
     '(get-color-rgb get-color color-name color-rgb colorp get-cursor
       cursorp get-font font-name fontp text-width font-height
+      font-ascent font-descent
       screen-width screen-height get-x-property get-x-text-property
       list-x-properties x-atom x-atom-name make-image
       make-image-from-x-drawable copy-image

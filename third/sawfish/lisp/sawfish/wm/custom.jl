@@ -1,5 +1,5 @@
 ;; custom.jl -- Emacs-like ``customizing'' (but more simple)
-;; $Id: custom.jl,v 1.1.1.1 2000-11-12 06:28:15 ghudson Exp $
+;; $Id: custom.jl,v 1.1.1.2 2001-01-13 14:57:49 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -68,11 +68,13 @@
   (defvar custom-user-file "~/.sawfish/custom"
     "File used to store user's configuration settings.")
 
-  (defvar custom-default-file "sawfish/wm/custom-defaults"
+  (defvar custom-default-file (expand-file-name "sawfish/wm/custom-defaults.jl"
+						sawfish-lisp-lib-directory)
     "Lisp library storing default customization settings.")
 
   (define custom-quoted-keys
-    '(:group :require :type :options :range :depends :user-level :layout)
+    '(:group :require :type :options :range :depends :user-level
+      :layout :widget-flags)
     "defcustom keys whose values are quoted by the macro expansion.")
 
   (define custom-option-alist '((:group . custom-group)
@@ -87,7 +89,8 @@
 				(:widget . custom-widget)
 				(:after-set . custom-after-set)
 				(:before-set . custom-before-set)
-				(:range . custom-range)))
+				(:range . custom-range)
+				(:widget-flags . custom-widget-flags)))
 
   (define custom-group-option-alist '((:layout . custom-group-layout)
 				      (:require . custom-group-require)))
@@ -217,14 +220,14 @@ Note that the value of the `:group' key is not evaluated."
 
 ;;; general management
 
-  ;; XXX this is lame -- it should build a dedicated environment
-  ;; XXX containing only the custom-set-foo functions (and quote), then
-  ;; XXX run in that.
+  (define custom-setter-table (make-table symbol-hash eq))
+
   (define (define-custom-setter name def)
-    (structure-define (current-structure) name def))
+    (table-set custom-setter-table name def))
+
   (define (custom-setter name)
-    (and (structure-bound-p (current-structure) name)
-	 (%structure-ref (current-structure) name)))
+    (or (table-ref custom-setter-table name)
+	(error "No such custom setter: %s" name)))
       
   (defmacro custom-set-property (sym prop value)
     "Set the custom key PROP for defcustom'd symbol SYM to value."
@@ -312,6 +315,19 @@ of choices."
     (put symbol 'custom-user-value t)
     (when (get symbol 'custom-after-set)
       ((get symbol 'custom-after-set) symbol)))
+
+  (define (custom-set-symbol setter symbol)
+    (let* ((was-bound (boundp symbol))
+	   (old-value (and was-bound (symbol-value symbol))))
+      (call-with-exception-handler
+       (lambda ()
+	 (custom-set setter symbol))
+       (lambda (ex)
+	 ;; error while setting SYMBOL; revert to its old state
+	 (if was-bound
+	     (set symbol old-value)
+	   (makunbound symbol))
+	 (raise-exception ex)))))
  
   (define (custom-set-variable symbol value #!optional req)
     ;; XXX kludge for old custom files..
@@ -319,19 +335,19 @@ of choices."
     (when (and req value)
       ;; load in the user module in case it's a file of bare code
       (user-require req))
-    (custom-set (lambda ()
-		  (make-variable-special symbol)
-		  (set symbol value)) symbol))
+    (custom-set-symbol (lambda ()
+			 (make-variable-special symbol)
+			 (set symbol value)) symbol))
 
   (define (custom-set-typed-variable symbol value type #!optional req)
     ;; XXX kludge for old custom files..
     (when (eq value 'nil) (setq value nil))
     (when (and req value)
       (user-require req))
-    (custom-set (lambda ()
-		  (make-variable-special symbol)
-		  (set symbol (custom-deserialize value type)))
-		symbol))
+    (custom-set-symbol (lambda ()
+			 (make-variable-special symbol)
+			 (set symbol (custom-deserialize value type)))
+		       symbol))
 
   (define (variable-customized-p symbol)
     "Returns `t' if the variable named SYMBOL has been customized by the user."
@@ -349,7 +365,13 @@ of choices."
         ,@(and (get symbol 'custom-require)
 	       (list (list 'quote (get symbol 'custom-require)))))))
 
-  (define (custom-eval form) (eval form))
+  (define (custom-eval form)
+    (apply (custom-setter (car form))
+	   (mapcar (lambda (x)
+		     (if (eq (car x) 'quote)
+			 (cadr x)
+		       ;; XXX alternatives to user-eval
+		       (user-eval x))) (cdr form))))
 
 
 ;;; serializing unreadable types
@@ -454,19 +476,33 @@ of choices."
 
 ;;; loading user's customisations
 
+  (define (custom-load filename)
+    (let ((file (open-file filename 'read)))
+      (unwind-protect
+	  (condition-case nil
+	      (while t
+		(let ((form (read file)))
+		  (call-with-error-handler
+		   (lambda () (custom-eval form)))))
+	    (end-of-stream))
+	(close-file file))))
+
   (define (custom-load-user-file)
     "Load the user's customization file, or the custom-default-file."
     (cond ((file-exists-p custom-user-file)
-	   (load custom-user-file t t t))
+	   (custom-load custom-user-file))
 	  (custom-default-file
-	   (load custom-default-file t))))
+	   (custom-load custom-default-file))))
 
 
-;;; gaol init
+;;; init
 
   (let ((tem (get-command-line-option "--custom-file" t)))
     (when tem
       (setq custom-user-file tem)))
+
+  (define-custom-setter 'custom-set-variable custom-set-variable)
+  (define-custom-setter 'custom-set-typed-variable custom-set-typed-variable)
 
   (gaol-add defcustom defgroup custom-declare-variable custom-declare-group
 	    custom-quote-keys custom-set-property custom-set-group-property

@@ -1,3 +1,530 @@
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* version 0.35
+
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/shading.jl (shading-add-window): don't need
+	to call shade-window, just set hide-client property when
+	necessary
+
+2001-01-04  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/workspace.jl: don't include hide-client in the
+	call to add-swapped-properties
+
+	* sawfish/wm/state/shading.jl (shading-after-swap-in): added to
+	the after-workspace-swap-in-hook, updates the hide-client
+	property to match the shaded property and reframes the window
+	if necessary
+
+	* sawfish/wm/swapper.jl (workspace-swap-in): before exiting,
+	run after-workspace-swap-in-hook with two args (W SPACE)
+
+	[ Last three changes fix bug 5179 (shaded state is fixed for
+	all workspaces) ]
+
+	* sawfish/wm/state/transient.jl (focus-windows-when-mapped):
+	defaults to t; changed doc string to reflect the earlier change
+	in semantics
+
+	* sawfish/wm/placement.jl (place-window-mode): set to
+	`top-left' by default now
+
+	* sawfish/wm/placement/top-left.jl (windows-around): ignore
+	windows that have yet to be placed
+
+	* sawfish/wm/focus.jl (focus-click): before exiting, reinstall
+	the click-to-focus-map if the window isn't actually focused
+
+2001-01-03  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/transient.jl (transient-map-window): altered
+	semantics of focus-windows-when-mapped option to only apply to
+	non-transient windows (or transient windows whose parent is the
+	root window)
+
+	* sawfish/wm/user.jl: load sawfish.wm.state.wm-spec by default
+	(instead of only if KDE2 is being used)
+
+2000-12-31  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/windows.jl (window-supports-wm-protocol-p): new
+	function, saves consing up a list just to call memq on it
+	(delete-window-safely): use the new function
+
+	* sawfish/wm/util/ping.jl (window-supports-ping-p): use
+	window-supports-wm-protocol-p
+
+	* sawfish/wm/util/stacking.jl (maybe-raise-window,
+	maybe-lower-window): new functions. These introduce two new
+	WM_PROTOCOLS: _SAWFISH_WM_RAISE_WINDOW and
+	_SAWFISH_WM_LOWER_WINDOW.
+
+	These are similar to WM_TAKE_FOCUS, in that if the window
+	supports the protocol, it's up to it whether or not it raises
+	(or lowers) the window in question. These functions should only
+	be used where the user hasn't explicitly requested the
+	restacking
+
+	An example usage is an application that doesn't want its window
+	to be raised due to a button-press event that initiates a drag
+	operation
+
+	* sawfish/wm/ext/auto-raise.jl, sawfish/wm/util/stacking.jl:
+	use the maybe-raise-window function instead of raise-window*
+
+2000-12-30  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/placement/off-center.jl: another new placement
+	mode. This one places windows in the centre of the screen.
+	However if doing so would fully cover another window, then try
+	another position roughly in the centre
+
+2000-12-22  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/placement/smart.jl (sp-cost-components): removed
+	the pointer and focus locality components by default
+
+	* sawfish/wm/placement/top-left.jl: new placement mode,
+	staggers from top-left, filling along the diagonal. Supports
+	resizing windows to fit, but this is currently disabled
+
+	* sawfish/wm/menus.jl (menus-include-shortcuts): this option
+	defaults to nil
+
+	* sawfish/wm/commands/grow-pack.jl (gp-avoid-windows): ignore
+	iconified windows
+
+2000-12-20  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/transient.jl (transient-of-p,
+	indirect-transient-of-p): added keyword arg ALLOW-ROOT which
+	enables the (= transient-for ROOT) checking code
+
+	(transient-map-window): pass `#:allow-root t' to transient-of-p
+
+	* sawfish/wm/placement.jl (place-window-centered-on-parent): if
+	no single known parent, check if the currently focused window
+	is in the same group as the window being placed. If so, take it
+	as the implicit parent while placing
+
+	* sawfish/wm/state/transient.jl (transient-of-p): disabled the
+	code that checks if (= transient-for ROOT), it causes havoc in
+	too many places
+
+2000-12-19  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/iconify.jl (iconify-window,
+	uniconify-window): support `group' and `transients'
+	[un]iconification modes better. Don't use a recursive method,
+	instead identify all the windows to be changed, then do
+	everything in one go. For `transients' mode, only change state
+	of shared transients if they [will] have no visible parents
+	left
+
+	* sawfish/wm/commands/groups.jl (iconify-group,
+	uniconify-group, iconify-transient-group,
+	uniconify-transient-group): use [un]iconify-window to implement
+	these (by temporarily binding the necessary special variables)
+
+	[ Last two changes fix #5252 ]
+
+	* sawfish/wm/util/keymap.jl (where-is,
+	make-memoizing-where-is): use substitute-wm-modifier to avoid
+	showing W- in results
+
+	* sawfish/wm/util/decode-events.jl (substitute-wm-modifier):
+	new function, given an event, replaces the W- bit by whatever
+	it's actually assigned to
+
+	* sawfish/wm/state/gnome.jl (gnome-client-message-handler):
+	handle a _WIN_HINTS client message type, format is similar to
+	_WIN_STATE message
+
+	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks): removed
+	the hardcoding of the `avoid' property for the panel. (George
+	Lebl asked me to)
+
+2000-12-18  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/menus.jl (menus-include-shortcuts): new option,
+	when set, include `shortcut' attributes in created menu
+	descriptions. Adapted from Unai Uribarri <unaiur@telecable.es>
+
+	* sawfish/wm/util/keymap.jl (make-memoizing-where-is): new
+	function, when called repeatedly has better time complexity
+	than multiple calls to where-is (since it builds a temporary
+	hash table)
+
+2000-12-10  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/stacking.jl (raise-window*, lower-window*,
+	raise-lower-window*): added doc strings
+
+	* sawfish/wm/gaol.jl (safe-functions): added font-ascent and
+	font-descent
+
+2000-12-09  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/display-wininfo.jl (event-handler): removed
+	the code to fade iconified windows
+
+	* sawfish/wm/commands/x-cycle.jl (cycle-warp-pointer): this is
+	no longer in the `expert' user-level
+
+2000-12-08  John Harper  <jsh@eazel.com>
+
+	Random work to support KDE2 better:
+
+	* sawfish/wm/user.jl: if there's a property on the root window
+	matching `^_KDE_', load sawfish.wm.state.wm-spec module
+
+	* sawfish/wm/state/wm-spec.jl: bug-fixes and hacks to make KDE2
+	support a lot better
+
+	* sawfish/wm/state/transient.jl (indirect-transient-of-p): test
+	for windows that set WM_TRANSIENT_FOR to themselves! (broken
+	KDE apps)
+
+2000-12-06  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/user.jl: use safe-load when loading site-init and
+	rep-defaults files
+
+	* sawfish/wm/commands/viewport-extras.jl: new module, includes
+	some viewport navigation commands sent to the mailing list by
+	Dams Nadé <anvil@amin.unice.fr>
+
+	* sawfish/wm/util/groups.jl (persistent-group-ids): use `nil'
+	instead of `""' to denote a null doc string
+	* sawfish/wm/workspace.jl (workspace-names): ditto
+
+	* sawfish/wm/state/iconify.jl (window-iconifiable-p): new
+	function, the old logic plus it checks for `never-iconify'
+	property
+
+	* sawfish/wm/state/maximize.jl (window-maximizable-p): check
+	for `never-maximize' property
+
+	* sawfish/wm/state/wm-spec.jl, sawfish/wm/state/gnome.jl: set
+	never-iconify and never-maximize properties of panel/gmc-icon
+	windows
+
+	* sawfish/wm/menus.jl (window-ops-menu): set `insensitive'
+	properties of iconify and maximize menus when appropriate
+
+2000-12-04  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/frames.jl (frame-style-directory): check if the
+	directory exists before returning the result. Fixes #4902
+
+	* version 0.34
+
+	* sawfish/wm/keymaps.jl (wm-modifier-value): moved to the
+	`novice' user-level
+
+2000-11-28  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/custom-defaults.jl: changed some bindings to use
+	`W-' modifier
+
+	* sawfish/wm/util/decode-events.jl (decode-modifier,
+	encode-modifier): new functions
+	(should-grab-button-event-p): groks the `W-' modifier
+
+	* sawfish/wm/ext/match-window.jl (match-window-properties):
+	removed ignore-when-cycling property (didn't I already do
+	this?)
+
+	* sawfish/wm/keymaps.jl: changed default bindings to use the
+	new `W-' modifier, the customizable `WM' modifier
+
+	* sawfish/wm/keymaps.jl (wm-modifier-value): new option. Has
+	type `modifier-list'. Added [de]serialization for this type
+
+	* sawfish/wm/customize.jl (customize-read-user-file): fixed for
+	new format of custom-default-file
+
+	* sawfish/wm/util/ping.jl (ping-window): fixed bug whereby
+	CALLBACK would get called twice if the ping is ponged before
+	the timer fires
+
+	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks): broke
+	out the WM_CLASS based hacks for parts of the GNOME desktop.
+	Also made panel windows and gmc icons unplacable (otherwise, if
+	the ignore-program-position option is set the windows get
+	placed by the wm, even though they really shouldn't be)
+
+	* sawfish/wm/state/wm-spec.jl: added the unplacable panel hack
+	here also
+
+2000-11-27  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/wm-spec.jl: removed the evil hardcoded list
+	of properties in update-client-state by a `get' method in each
+	state function. Also added a PSEUDO keyword arg to
+	define-wm-spec-window-state for properties that should not be
+	set in the _NET_WM_STATE property
+
+	* sawfish/wm/ext/window-history.jl: save and restore
+	`maximized' state of windows. Fixes #4790
+
+	* sawfish/wm/ext/window-history.jl (window-history-apply): when
+	setting properties, check for `window-history-setter'
+	properties - a function to call to set the property
+
+	* sawfish/wm/ext/match-window.jl: added `maximized' pseudo
+	property. Fixes #4808
+
+	* sawfish/wm/util/display-wininfo.jl: new module, exports a
+	single function to display a message with some user-relevant
+	details of the window (currently icon and name)
+
+	* sawfish/wm/commands/x-cycle.jl (cycle-show-window-icons): new
+	option
+	(cycle-display-message): if cycle-show-window-icons is set,
+	use display-wininfo function
+	(remove-message): new function
+
+	The above two changes from a patch by Unai Uribarri
+	<unaiur@telecable.es>, with minor changes. Fixes #4265
+
+	* sawfish/wm/frames.jl, sawfish/wm/workspace.jl,
+	sawfish/wm/ext/audio-events.jl, sawfish/wm/util/groups.jl:
+	changed flags of some widgets
+
+	* sawfish/wm/swapper.jl, sawfish/wm/stacking.jl,
+	sawfish/wm/menus.jl, sawfish/wm/commands/x-cycle.jl,
+	sawfish/wm/ext/tooltips.jl, sawfish/wm/ext/match-window.jl,
+	sawfish/wm/ext/edge-flip.jl, sawfish/wm/gnome/match-window.jl, 
+	sawfish/wm/placement/smart.jl, sawfish/wm/state/maximize.jl,
+	sawfish/wm/theming/make-theme.jl, sawfish/wm/util/gtkrc.jl:
+	Added some `(unused ...)' declarations to turn off some
+	meaningless warnings (needs a recent cvs librep for this to
+	actually work)
+
+2000-11-26  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/ping.jl: new module, implements the
+	_NET_WM_PING protocol of the new window manager spec. Exports
+	functions `window-supports-ping-p' and `ping-window'. (This
+	code is totally untested)
+
+	* sawfish/wm/state/wm-spec.jl: added code to monitor
+	_NET_WM_ICON_GEOMETRY; when present the `icon-position' window
+	property is set from its value. Fixes #4245
+
+2000-11-21  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/focus.jl: now that unfocusable windows don't
+	contain the click-to-focus keymap, use the state-change-hook to
+	be notified when the never-focus state changes
+
+	* sawfish/wm/workspace.jl, sawfish/wm/ext/audio-events.jl,
+	sawfish/wm/util/groups.jl: put titles of some list widgets into
+	the actual title of the list, not above the list widget
+
+	* sawfish/wm/ext/audio-events.jl (audio-events-alist): now in
+	`intermediate' user-level
+
+2000-11-20  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/stacking.jl (raise-window, lower-window,
+	stack-window-above, stack-window-below, restack-window,
+	window-on-top-p): use stacking-order instead of
+	stacked-mapping-order. Otherwise strange things can happen when
+	unmapped windows are present (e.g. fixes #4824 where raising a
+	nautilus window with (eq user-raise-type 'groups) also raises
+	the desktop window..)
+
+	* sawfish/wm/viewport.jl (move-window-to-current-viewport,
+	set-window-viewport): don't move sticky-viewport windows
+
+	* sawfish/wm/animation/outline.jl (make-outline-animator): new
+	exported function. Fixes #4816
+
+	* sawfish/wm/focus.jl: removed all code to support the
+	focus-click-through option on non-client windows (mfleming
+	convinced me it was a bad idea, and it fixes a hard bug)
+
+	* sawfish/wm/focus.jl (focus-within-click-event): new fluid,
+	set to t when calling a command from within the click-to-focus
+	event
+
+	* sawfish/wm/commands/raise-commands.jl (replay-pointer):
+	function to do the replaying, dependent on whether or not we're
+	in the click-to-focus event or not
+
+	* sawfish/wm/state/wm-spec.jl: support SKIP_PAGER state (linked
+	to the `window-list-skip' property)
+
+	(honour-client-state): set `no-history' property of panels
+
+	(honour-client-state): fixed typo of _NET_WM_WINDOW_STATE
+	instead of _NET_WM_STATE
+
+	(update-workspace-hints): for sticky windows, set
+	_NET_WM_DESKTOP to #xffffffff instead of deleting it
+
+	(define-wm-spec-window-state): records the names of all
+	registered states in `supported-states' variable
+	(supported-state-p): new function
+
+	(client-message-handler): deleted _NET_INSERT_DESKTOP and
+	_NET_DELETE_DESKTOP messages, they're not in the spec anymore?
+	Fixed paren bug in _NET_ACTIVE_WINDOW message handler
+
+2000-11-16  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/gnome.jl (gnome-honour-client-state): set
+	the `no-history' property of panel windows
+
+	* sawfish/wm/custom.jl: new defcustom option `:widget-flags'
+
+	* sawfish/wm/util/nokogiri.jl (nokogiri-report-slot): pass
+	widget-flags across
+
+	* sawfish/wm/workspace.jl, sawfish/wm/frames.jl,
+	sawfish/wm/ext/audio-events.jl, sawfish/wm/util/groups.jl:
+	marked some list options with `(expand framed)' flags
+
+	* sawfish/wm/state/mwm.jl (mwm-add-window): support the
+	min/max/close options of the mwm function hints
+
+	* sawfish/wm/state/iconify.jl: don't add minimize to the
+	toggles menu
+
+	* sawfish/wm/menus.jl: simplified the window-ops-menu, just
+	have minimize/maximize/close at the top of the menu, with other
+	stuff below
+
+	* sawfish/wm/menus.jl (menu-preprocessor): labels can now be
+	functions, they will be called (with any menu-args) to get the
+	actual string
+
+	* sawfish/wm/frames.jl (after-setting-default-frame): used as
+	:after-set function of default-frame-style. Checks that the new
+	frame style is available, signals an error otherwise
+
+	* sawfish/wm/custom.jl (define-custom-setter, custom-setter):
+	store these in a dedicated hash table
+
+	(custom-set-symbol): function to catch exceptions while
+	committing custom changes, then revert back to the old value if
+	necessary (resignalling the exception)
+
+	(custom-set-variable, custom-set-typed-variable): use
+	custom-set-symbol instead of custom-set directly
+
+	(custom-load): new function, parses and executes a custom file
+	by hand
+	(custom-eval): don't just call eval, deref the function and
+	apply it to the arguments
+
+	(custom-load-user-file): use custom-load instead of load
+
+	* sawfish/wm.jl: use sawfish-locale-directory when calling
+	bindtextdomain
+
+	* sawfish/wm/misc.jl (call-with-error-handler): new function
+
+	* sawfish/wm/windows.jl: fix typo in name of
+	uniquify-window-name command
+
+2000-11-15  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/menus.jl (window-ops-menu): renamed the `Delete'
+	item as `Close'
+
+	* sawfish/wm/menus.jl (window-ops-menu): deleted `Destroy' item
+
+	* sawfish/wm/ext/window-history.jl (window-history-clear): new
+	function and command
+
+	* sawfish/wm/ext/window-history.jl
+	(window-history-ignore-transients): new option, disables auto
+	history saving for transient windows (t by default)
+
+	* sawfish/wm/placement/smart.jl (sp-cost:overlap): changed the
+	function calculating this to (exp (- (/ overlap (*
+	(screen-width) (screen-height))))). Patch from Unai Uribarri
+	<unaiur@telecable.es>
+
+	* sawfish/wm/keymaps.jl (window-keymap): deleted C-M-Left and
+	C-M-Right bindings (send window to previous/next workspace).
+	They can be confusing when hit by mistake
+
+	* sawfish/wm/ext/error-handler.jl: expanded this to stash all
+	errors in a ring buffer. Functions `retrieve-errors' and
+	`display-errors' to access this buffer. Also added an option
+	error-destination controlling where error messages are
+	displayed (stderr, screen, /dev/null)
+
+	* sawfish/wm/defaults.jl: require sawfish.wm.ext.error-handler
+
+	* sawfish/wm/util/window-order.jl (on-viewport-change): don't
+	call window-order-focus-most-recent if using the `enter-exit'
+	focus mode
+
+2000-11-14  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/maximize.jl (unmaximize-window-1): added an
+	optional arg BEFORE, a thunk to call immediately before doing
+	the resize
+	(unmaximize-window): use the new BEFORE param to ensure that
+	the window's properties get updated before it's resized. This
+	way the theme will get the correct values of window-maximized-p
+	when it rebuilds the frame
+
+	* sawfish/wm/util/window-order.jl (on-viewport-change):
+	reinstated this function; this time it removes ordering
+	information from all viewport-sticky windows in the current
+	workspace/viewport pair
+
+	* sawfish/wm/commands/grow-pack.jl (gp-avoid-windows): ignore
+	unmapped windows
+
+2000-11-13  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/match-window.jl (match-window-properties):
+	deleted obsolete ignore-when-cycling property
+
+	* version 0.33.1
+
+	* sawfish/wm/state/gnome.jl (gnome-honour-client-state): go
+	back to setting `avoid' manually for panel windows
+
+2000-11-13  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/edge-flip.jl: import rep.io.timers
+
+	* sawfish/wm/state/transient.jl (transient-map-window): fix
+	stupid typo in `cond' statement breaking focus-on-map option
+	(#4698). Patch from Unai Uribarri Rodríguez
+	<unaiur@telecable.es>
+
+2000-11-12  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/beos-window-menu.jl: fixed the code that was
+	supposed to add `unused' windows. It now also includes
+	iconified windows (even if they wouldn't normally be in the
+	menu)
+
+	* sawfish/wm/ext/beos-window-menu.jl (make-label): abbreviate
+	menu items the default amount (so that they match the parent
+	items if they get moved up a level)
+
+2000-11-10  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/focus.jl (focus-push-map, focus-pop-map): set the
+	ignore-fp-keymap property of windows to t while they have the
+	click-to-focus keymap. Fixes #4233
+
+	* sawfish/wm/focus.jl: add a function to the
+	after-initialization-hook to call focus-add-window on all
+	windows (map-notify-hook doesn't get called for these windows)
+
 2000-11-08  John Harper  <jsh@eazel.com>
 
 	* version 0.33

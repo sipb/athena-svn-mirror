@@ -1,5 +1,5 @@
 ;; make-theme.jl -- support for theme builder
-;; $Id: make-theme.jl,v 1.1.1.1 2000-11-12 06:27:05 ghudson Exp $
+;; $Id: make-theme.jl,v 1.1.1.2 2001-01-13 14:58:05 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -94,6 +94,7 @@
   (define (make-theme patterns-alist frame-alist mapping-alist)
     (let ((real-frames (make-frames patterns-alist frame-alist)))
       (lambda (w type)
+	(declare (unused w))
 	(let ((frame-name (or (cdr (assq type mapping-alist)))))
 	  (and frame-name (cdr (assoc frame-name real-frames)))))))
 

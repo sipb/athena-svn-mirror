@@ -1,5 +1,5 @@
 /* sawmill_subrs.h -- prototypes
-   $Id: sawmill_subrs.h,v 1.1.1.1 2000-11-12 06:27:16 ghudson Exp $
+   $Id: sawmill_subrs.h,v 1.1.1.2 2001-01-13 14:57:34 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -307,6 +307,8 @@ extern Lisp_Window *add_window (Window id);
 extern void remove_window (Lisp_Window *win, repv destroyed, repv from_error);
 extern void emit_pending_destroys (void);
 extern repv Fwindow_get (repv win, repv prop);
+extern void register_property_monitor (repv prop, void (*callback)
+				       (Lisp_Window *, repv, repv, repv));
 extern repv Fwindow_put (repv win, repv prop, repv value);
 extern repv Fwindow_name (repv win);
 extern repv Fwindow_full_name (repv win);

@@ -1,6 +1,6 @@
 #| windows.jl -- miscellaneous window mgmt functions
 
-   $Id: windows.jl,v 1.1.1.1 2000-11-12 06:27:46 ghudson Exp $
+   $Id: windows.jl,v 1.1.1.2 2001-01-13 14:58:50 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,6 +39,7 @@
 	     window-gravity
 	     adjust-position-for-gravity
 	     get-window-wm-protocols
+	     window-supports-wm-protocol-p
 	     delete-window
 	     delete-window-safely
 	     uniquify-name
@@ -148,6 +149,17 @@ supported by client window W."
 	     (out '() (cons (aref data i) out)))
 	    ((= i (length data))
 	     (nreverse out))))))
+
+  (define (window-supports-wm-protocol-p w atom)
+    "Return true if winow W includes ATOM in its `WM_PROTOCOLS' property."
+    (let* ((prop (get-x-property w 'WM_PROTOCOLS))
+	   (data (and prop (eq (car prop) 'ATOM) (nth 2 prop))))
+      (when data
+	(let loop ((i 0))
+	  (cond ((= i (length data)) nil)
+		((eq (aref data i) atom) t)
+		(t (loop (1+ i))))))))
+
 
 ;;; warping
 
@@ -262,7 +274,7 @@ If HINTS is non-nil, then it is the size hints structure to use. Otherwise
   (define (delete-window w #!optional safely)
     "Delete the window."
     (cond
-     ((memq 'WM_DELETE_WINDOW (get-window-wm-protocols w))
+     ((window-supports-wm-protocol-p w 'WM_DELETE_WINDOW)
       (send-client-message w 'WM_PROTOCOLS (vector (x-atom 'WM_DELETE_WINDOW)
 						   (x-server-timestamp)) 32))
      (safely (beep))
@@ -298,7 +310,7 @@ string `uniquify-name-format' to generate unique names."
      (vector (uniquify-name (window-name w)
 			    (mapcar window-name (delq w (managed-windows)))))))
 
-  (define-command 'uniquuify-window-name uniquify-window-name #:spec "%W")
+  (define-command 'uniquify-window-name uniquify-window-name #:spec "%W")
 
 
 ;; selecting a single window

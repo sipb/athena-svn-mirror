@@ -1,5 +1,5 @@
 ;; group-funs.jl -- ever-present window-group support
-;; $Id: groups.jl,v 1.1.1.1 2000-11-12 06:28:06 ghudson Exp $
+;; $Id: groups.jl,v 1.1.1.2 2001-01-13 14:58:22 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -67,8 +67,9 @@
     :group misc)
 
   (defcustom persistent-group-ids nil
-    "Persistent group ids: \\w"
-    :type (list symbol)
+    nil
+    :type* `(list symbol ,(_ "Persistent group ids"))
+    :widget-flags (expand-vertically framed)
     :user-level expert
     :group misc)
 

@@ -1,5 +1,5 @@
 ;; edge-flip.jl -- move viewports by pushing pointer against screen edges
-;; $Id: edge-flip.jl,v 1.1.1.1 2000-11-12 06:28:24 ghudson Exp $
+;; $Id: edge-flip.jl,v 1.1.1.2 2001-01-13 14:58:04 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -27,6 +27,7 @@
 
     (open rep
 	  rep.system
+	  rep.io.timers
 	  sawfish.wm.custom
 	  sawfish.wm.windows
 	  sawfish.wm.misc
@@ -39,7 +40,6 @@
 
   ;; for the compiler's benefit
   (eval-when-compile (require 'sawfish.wm.util.flippers))
-  (eval-when-compile (require 'rep.io.timers))
 
   (defgroup edge-flip "Edge Flipping"
     :group workspace
@@ -92,7 +92,6 @@
     (if (and edge-flip-enabled (not edge-flip-only-when-moving))
 	(progn
 	  (require 'sawfish.wm.util.flippers)
-	  (require 'rep.io.timers)
 	  (enable-flippers))
       (when (featurep 'sawfish.wm.util.flippers)
 	(disable-flippers))))
@@ -110,6 +109,7 @@
 				   (mod edge-flip-delay 1000))))))
 
   (define (edge-flip-leave edge)
+    (declare (unused edge))
     (setq ef-current-edge nil)
     (when ef-timer
       (delete-timer ef-timer)
@@ -192,6 +192,7 @@
 	  (move-window-to-workspace w original-space current-workspace t)))))
 
   (define (edge-flip-while-moving w)
+    (declare (unused w))
     (when edge-flip-enabled
       (edge-flip-synthesize)))
 

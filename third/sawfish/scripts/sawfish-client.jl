@@ -4,7 +4,7 @@ exec rep "$0" "$@"
 
 #| sawfish-client.jl -- window manager remote client
 
-   $Id: sawfish-client.jl,v 1.1.1.1 2000-11-12 06:26:57 ghudson Exp $
+   $Id: sawfish-client.jl,v 1.1.1.2 2001-01-13 14:58:28 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -66,7 +66,7 @@ where OPTIONS are any of:
 	(write standard-output (sawfish-client-eval form t))
 	(write standard-output #\newline)))
 	
-    (let loop ((args command-line-args))
+    (let loop ((args (or command-line-args '("-"))))
       (cond ((null args))
 
 	    ((string= (car args) "-q")

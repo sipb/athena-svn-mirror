@@ -1,5 +1,5 @@
 ;; frames.jl -- handle window framing
-;; $Id: frames.jl,v 1.1.1.1 2000-11-12 06:28:32 ghudson Exp $
+;; $Id: frames.jl,v 1.1.1.2 2001-01-13 14:58:20 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -151,11 +151,12 @@ that overrides settings set elsewhere.")
     "Frame definition used for unframed windows.")
 
   (defcustom default-frame-style nil
-    "Default frame style (theme)."
+    "Default frame style:"
     :type frame-style
+    :widget-flags (expand-vertically)
     :user-level novice
     :group appearance
-    :after-set (lambda () (after-setting-frame-option)))
+    :after-set (lambda () (after-setting-default-frame)))
 
   (defcustom reload-themes-when-changed t
     "Automatically reload themes when they are updated."
@@ -171,13 +172,14 @@ that overrides settings set elsewhere.")
       (shaded-transient . shaped-transient)
       (icon . shaped-transient)
       (dock . icon))
-    "Frame type fallbacks."
+    "Frame type fallbacks:"
     :tooltip "Associate frame types with type to try if the theme doesn't \
 implement the requested type."
     :type (alist ((symbol default shaped transient
 			  shaped-transient icon doc) "From")
 		 ((symbol default shaped transient
 			  shaped-transient icon doc) "To"))
+    :widget-flags (expand-vertically framed)
     :group appearance
     :user-level expert
     :after-set (lambda () (after-setting-frame-option)))
@@ -233,6 +235,7 @@ deciding which frame type to ask a theme to generate.")
     "Default font: \\w"
     :group appearance
     :type font
+    :widget-flags (expand-horizontally)
     :user-level novice
     :after-set (lambda () (after-setting-frame-option)))
 
@@ -336,6 +339,10 @@ deciding which frame type to ask a theme to generate.")
 
   (define after-setting-frame-option reframe-all-windows)
 
+  (define (after-setting-default-frame)
+    (check-frame-availability default-frame-style)
+    (after-setting-frame-option))
+
   (define (rebuild-frames-with-style style)
     (map-windows (lambda (w)
 		   (when (eq (window-get w 'current-frame-style) style)
@@ -433,9 +440,11 @@ deciding which frame type to ask a theme to generate.")
       (catch 'out
 	(mapc (lambda (cell)
 		(when (string-match (car cell) dir)
-		  (throw 'out (expand-last-match (if get-name
-						     (nth 2 cell)
-						   (nth 1 cell))))))
+		  (let ((full (expand-last-match (nth 1 cell))))
+		    (when (file-directory-p full)
+		      (throw 'out (if get-name
+				      (expand-last-match (nth 2 cell))
+				    full))))))
 	      theme-suffix-regexps)
 	nil)))
 

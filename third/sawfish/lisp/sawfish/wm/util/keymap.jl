@@ -1,5 +1,5 @@
 ;; keymap.jl -- some keymap utilities, mostly copied from jade
-;; $Id: keymap.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: keymap.jl,v 1.1.1.2 2001-01-13 14:58:40 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,12 +26,14 @@
 	    substitute-keymap-event
 	    lazy-bind-keys
 	    where-is
+	    make-memoizing-where-is
 	    describe-key
 	    read-event
 	    quote-event)
 
     (open rep
 	  rep.system
+	  rep.data.symbol-table
 	  sawfish.wm.events
 	  sawfish.wm.commands
 	  sawfish.wm.misc
@@ -106,13 +108,30 @@ for the bindings to be installed if and when it is."
 ;;; Search for a named command in the current keymap configuration
 
   (define (where-is command #!optional keymap)
+    (require 'sawfish.wm.util.decode-events)
     (let ((where-is-results '()))
       (map-keymap (lambda (k)
 		    (when (eq (car k) command)
-		      (setq where-is-results
-			    (cons (event-name (cdr k)) where-is-results))))
+		      (setq where-is-results (cons (event-name (substitute-wm-modifier (cdr k))) where-is-results))))
 		  (or keymap global-keymap))
       where-is-results))
+
+  ;; XXX make this handle prefix keymaps
+  (define (make-memoizing-where-is keymaps)
+    "Return a function which when called with a command name as its single
+argument, will return either false or a string naming the event to which
+the command is found in the list of keymaps KEYMAPS."
+    (require 'sawfish.wm.util.decode-events)
+    (let ((cache (make-symbol-table)))
+      (mapc (lambda (keymap)
+	      (map-keymap (lambda (k)
+			    (when (symbolp (car k))
+			      (symbol-table-set cache (car k) (cdr k))))
+			  keymap))
+	    keymaps)
+      (lambda (command)
+	(let ((key (symbol-table-ref cache command)))
+	  (and key (event-name (substitute-wm-modifier key)))))))
 
   (define (describe-key #!optional map)
     "Prompt for a key sequence, then print its binding."

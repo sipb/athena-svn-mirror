@@ -1,5 +1,5 @@
 ;; iconify.jl -- handling window state
-;; $Id: iconify.jl,v 1.1.1.1 2000-11-12 06:27:05 ghudson Exp $
+;; $Id: iconify.jl,v 1.1.1.2 2001-01-13 14:58:41 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -22,6 +22,7 @@
 (define-structure sawfish.wm.state.iconify
 
     (export window-iconified-p
+	    window-iconifiable-p
 	    iconify-window
 	    uniconify-window
 	    toggle-window-iconified
@@ -44,6 +45,7 @@
 	  sawfish.wm.viewport
 	  sawfish.wm.util.groups
 	  sawfish.wm.commands.groups
+	  sawfish.wm.state.transient
 	  sawfish.wm.menus)
   
   ;; Commentary:
@@ -87,21 +89,21 @@
 
   (define (window-iconified-p w) (window-get w 'iconified))
 
-  (define (iconify-window w)
-    "Iconify the window."
-    (when (and (not (window-get w 'iconified))
-	       (or iconify-ignored (not (window-get w 'ignored))))
+  (define (window-iconifiable-p w)
+    (and (not (window-get w 'never-iconify))
+	 (not (window-get w 'iconified))
+	 (not (desktop-window-p w))
+	 (or iconify-ignored (not (window-get w 'ignored)))))
+
+  (define (iconify-window-1 w)
+    (when (window-iconifiable-p w)
       (window-put w 'iconified t)
       (when (window-visible-p w)
 	(hide-window w))
       (call-window-hook 'iconify-window-hook w)
-      (call-window-hook 'window-state-change-hook w (list '(iconified)))
-      (case iconify-group-mode
-	((transients) (iconify-transient-group w))
-	((group) (iconify-group w)))))
+      (call-window-hook 'window-state-change-hook w (list '(iconified)))))
 
-  (define (uniconify-window w)
-    "Return the window from its iconified state."
+  (define (uniconify-window-1 w)
     (when (window-get w 'iconified)
       (window-put w 'iconified nil)
       (cond ((window-get w 'sticky)
@@ -116,10 +118,30 @@
       (when (and focus-windows-on-uniconify (window-really-wants-input-p w))
 	(set-input-focus w))
       (call-window-hook 'uniconify-window-hook w)
-      (call-window-hook 'window-state-change-hook w (list '(iconified)))
-      (case uniconify-group-mode
-	((transients) (uniconify-transient-group w))
-	((group) (uniconify-group w)))))
+      (call-window-hook 'window-state-change-hook w (list '(iconified)))))
+
+  (define (windows-to-change w type)
+    (case type
+      ((transients)
+       (filter (lambda (x)
+		 (or (eq x w)
+		     ;; Only include transients which would have
+		     ;; no parents
+		     (let ((parents
+			    (delete-if window-iconified-p
+				       (delq w (transient-parents x)))))
+		       (null parents))))
+	       (transient-group w)))
+      ((group) (windows-in-group w))
+      (t (list w))))
+
+  (define (iconify-window w)
+    "Iconify the window."
+    (mapc iconify-window-1 (windows-to-change w iconify-group-mode)))
+
+  (define (uniconify-window w)
+    "Return the window from its iconified state."
+    (mapc uniconify-window-1 (windows-to-change w uniconify-group-mode)))
 
   (define (toggle-window-iconified w)
     "Toggle the iconification of window W."
@@ -222,6 +244,4 @@ all workspaces."
   (add-hook 'map-notify-hook ws-set-client-state t)
   (call-after-state-changed '(iconified) ws-set-client-state)
 
-  (add-window-menu-toggle (_ "_Sticky") 'toggle-window-sticky window-sticky-p)
-  (add-window-menu-toggle (_ "_Minimized") 'toggle-window-iconified
-			  window-iconified-p))
+  (add-window-menu-toggle (_ "_Sticky") 'toggle-window-sticky window-sticky-p))

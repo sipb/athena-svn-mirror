@@ -1,6 +1,6 @@
 dnl  Process this file with autoconf to produce a configure script.
 dnl  Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-dnl  $Id: configure.in,v 1.1.1.1 2000-11-12 06:28:43 ghudson Exp $
+dnl  $Id: configure.in,v 1.1.1.2 2001-01-13 14:59:02 ghudson Exp $
 dnl
 dnl  This file is part of sawmill.
 dnl
@@ -18,14 +18,14 @@ dnl  You should have received a copy of the GNU General Public License
 dnl  along with sawmill; see the file COPYING.  If not, write to
 dnl  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.1.1.1 $)
+AC_REVISION($Revision: 1.1.1.2 $)
 
 AC_INIT(src/sawmill.h)
 AC_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR(etc)
 
 dnl Release versioning info
-version="0.33"
+version="0.35"
 
 output_files="src/Makefile lisp/Makefile scripts/Makefile themes/Makefile\
  lisp/sawfish/ui/Makefile lisp/sawfish/gtk/Makefile sounds/Makefile\
@@ -56,7 +56,7 @@ esac
 
 sawfishdir='${datadir}/sawfish'
 lispdir='${sawfishdir}/${version}/lisp'
-localedir='${sawfishdir}/${version}/locale'
+localedir='${datadir}/locale'
 sawfishexecdir='${libexecdir}/sawfish/${version}/${host_type}'
 
 dnl Checks for programs.
@@ -299,6 +299,7 @@ AC_SUBST(GNOMEDIR)
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
+AC_C_BIGENDIAN
 AC_TYPE_SIZE_T
 
 dnl Checks for library functions.

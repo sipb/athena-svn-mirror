@@ -1,5 +1,5 @@
 ;; smart-placement.jl -- ``intelligent'' window placement
-;; $Id: smart.jl,v 1.1.1.1 2000-11-12 06:28:17 ghudson Exp $
+;; $Id: smart.jl,v 1.1.1.2 2001-01-13 14:58:46 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -111,6 +111,7 @@
 	     (let ((cutoff (* (max 0 (- total maximum)) 100)))
 	       (setq total (* total 100))
 	       (delete-if (lambda (unused)
+			    (declare (unused unused))
 			    (< (random total) cutoff)) points)))
 	    ((< total maximum)
 	     ;; add points
@@ -210,7 +211,8 @@
 
   (define (sp-cost:grid-lines point dims grid rects)
     "Smart placement cost function. Cost is proportional to the number of grid
-     lines that the proposed placement crosses."
+lines that the proposed placement crosses."
+    (declare (unused rects))
     (let ((win-left (car point))
 	  (win-top (cdr point))
 	  (win-right (+ (car point) (car dims)))
@@ -236,7 +238,8 @@
 
   (define (sp-cost:aligned-edges point dims grid rects)
     "Smart placement cost function. Cost is proportional to the length of the
-     edges that the proposed placement abuts."
+edges that the proposed placement abuts."
+    (declare (unused grid))
     (let ((win-left (car point))
 	  (win-top (cdr point))
 	  (win-right (+ (car point) (car dims)))
@@ -278,12 +281,14 @@
 
   (define (sp-cost:pointer-locality point dims grid rects)
     "Smart placement cost function. Cost is proportional to the distance
-     from the proposed placement to the current pointer position."
+from the proposed placement to the current pointer position."
+    (declare (unused grid rects))
     (sp-cost-from-distance (rectangle-center* point dims) (query-pointer)))
 
   (define (sp-cost:focus-locality point dims grid rects)
     "Smart placement cost function. Cost is proportional to the distance from
-     the proposed placement to the position of the currently focused window."
+the proposed placement to the position of the currently focused window."
+    (declare (unused grid rects))
     (let ((focus (input-focus)))
       (if focus
 	  (sp-cost-from-distance (rectangle-center* point dims)
@@ -293,17 +298,17 @@
 
   (define (sp-cost:center-locality point dims grid rects)
     "Smart placement cost function. Cost is proportional to the distance from
-     the proposed placement to the center of the screen."
+the proposed placement to the center of the screen."
+    (declare (unused grid rects))
     (sp-cost-from-distance (rectangle-center* point dims)
 			   (cons (/ (screen-width) 2) (/ (screen-height) 2))))
 
   (define (sp-cost:overlap point dims grid rects overlap)
-    (- 1 (min 1 (/ overlap
-		   (* (screen-width) (screen-height))))))
+    (declare (unused point dims grid rects))
+    (exp (- (/ overlap (* (screen-width) (screen-height))))))
 
-  (defvar sp-cost-components (list (cons sp-cost:overlap 3/4)
-				   (cons sp-cost:focus-locality 1/8)
-				   (cons sp-cost:pointer-locality 1/8))
+  (defvar sp-cost-components (list (cons sp-cost:overlap 7/8)
+				   (cons sp-cost:center-locality 1/8))
     "Alist defining smart placement cost functions and their associated weights
 (multipliers).")
 

@@ -1,6 +1,6 @@
 #| nokogiri-widgets/alist.jl -- alist widget
 
-   $Id: alist.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: alist.jl,v 1.1.1.2 2001-01-13 14:57:47 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,8 +39,8 @@
 
       (define (type op)
 	(case op
-	  ((print) (lambda (x) (list (prin1-to-string (car x))
-				     (prin1-to-string (cdr x)))))
+	  ((print) (lambda (x) (list (format nil "%s" (car x))
+				     (format nil "%s" (cdr x)))))
 	  ((dialog) (lambda (title callback #!key value for)
 		      (widget-dialog title spec callback value for)))
 	  ((validp) ((make-widget spec) 'validp))))

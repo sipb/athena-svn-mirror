@@ -1,5 +1,5 @@
 ;; workspace.jl -- similar to virtual desktops
-;; $Id: workspace.jl,v 1.1.1.1 2000-11-12 06:28:08 ghudson Exp $
+;; $Id: workspace.jl,v 1.1.1.2 2001-01-13 14:58:58 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -158,8 +158,9 @@
     :group workspace)
 
   (defcustom workspace-names nil
-    "Workspace names: \\w"
-    :type* `(list string ,(_ "Name"))
+    nil
+    :type* `(list string ,(_ "Workspace names"))
+    :widget-flags (expand-vertically)
     :group workspace)
 
   ;; Currently active workspace, an integer
@@ -942,7 +943,7 @@ last instance remaining, then delete the actual window."
   (sm-add-saved-properties 'sticky 'iconified 'fixed-position)
 
   ;; some of these should really be added by other files
-  (add-swapped-properties 'frame-style 'type 'hide-client 'iconified)
+  (add-swapped-properties 'frame-style 'type 'iconified)
 
   (add-hook 'add-window-hook ws-add-window)
   (add-hook 'map-notify-hook ws-window-mapped)

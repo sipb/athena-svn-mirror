@@ -1,5 +1,5 @@
 ;; sawmill-default.jl -- default user startup
-;; $Id: defaults.jl,v 1.1.1.1 2000-11-12 06:26:46 ghudson Exp $
+;; $Id: defaults.jl,v 1.1.1.2 2001-01-13 14:57:37 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -40,3 +40,6 @@
 
 ;; this is probably good for novice users?
 (require 'sawfish.wm.ext.window-history)
+
+;; save errors to aid debugging
+(require 'sawfish.wm.ext.error-handler)

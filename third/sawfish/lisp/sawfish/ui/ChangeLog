@@ -1,3 +1,67 @@
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* version 0.35
+
+2000-12-18  John Harper  <jsh@eazel.com>
+
+	* widgets/modifier-list.jl (validp): don't allow () as a valid
+	modifier list
+
+2000-12-04  John Harper  <jsh@eazel.com>
+
+	* version 0.34
+
+2000-11-28  John Harper  <jsh@eazel.com>
+
+	* widgets/modifier-list.jl: new widget, manages a list of
+	modifier key names
+
+	* layouts/keymaps.jl: only put slots whose names end in
+	`-keymap' into the popup menu, just stack any others in the
+	vbox
+
+	* shell.jl (display-flattened): if the layout widget is a
+	container, give it a non-zero border-width
+
+2000-11-27  John Harper  <jsh@eazel.com>
+
+	* widgets/frame-style.jl (make-frame-style-item): reversed
+	order of combo box and label; don't set usize of text box
+
+	* layout.jl: renamed `expand' flag as `expand-vertically';
+	added an `expand-horizontally' flag; changed `framed' flag to
+	use a vbox instead of a frame widget
+
+2000-11-21  John Harper  <jsh@eazel.com>
+
+	* layout.jl (layout-box): don't set the border of the box
+	(document-slot): when checking whether a doc string is given or
+	not, also check if the value is the null string
+
+	* widgets/command.jl (update-params): when ref'ing commands
+	without arguments, remember to use command-name to remove any
+	keywords in the command definition. Fixes #4827
+
+2000-11-17  John Harper  <jsh@eazel.com>
+
+	* main.jl.in: don't initialize backtrace-on-error
+
+2000-11-16  John Harper  <jsh@eazel.com>
+
+	* slot.jl: added a `flags' field to the slot structure, used to
+	store flags for when displaying widgets
+
+	* layout.jl: check slot-flags, handle `expand' and `framed'
+
+	* wm.jl (wm-locale-dir): dereference sawfish-locale-directory
+	on the remote side, instead of using bindtextdomain
+
+2000-11-14  John Harper  <jsh@eazel.com>
+
+	* widgets/workspace-geometry.jl (monitor-pixbuf-file): search
+	load-path for the `../monitor.png' file, instead of just
+	assuming that it's relative to the first item of the list
+
 2000-11-08  John Harper  <jsh@eazel.com>
 
 	* version 0.33

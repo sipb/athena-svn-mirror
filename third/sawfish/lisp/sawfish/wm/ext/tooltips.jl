@@ -1,5 +1,5 @@
 ;; tooltips.jl -- display frame-part keymap descriptions
-;; $Id: tooltips.jl,v 1.1.1.1 2000-11-12 06:27:09 ghudson Exp $
+;; $Id: tooltips.jl,v 1.1.1.2 2001-01-13 14:58:04 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -215,6 +215,7 @@
       (display-tooltip (tooltips-format (nreverse items)))))
 
   (define (tooltips-fp-enter win fp)
+    (declare (unused win))
     (when tooltips-enabled
       (call-after-delay (lambda ()
 			  (unless (clicked-frame-part)

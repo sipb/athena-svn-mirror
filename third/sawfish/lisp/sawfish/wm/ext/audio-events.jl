@@ -1,5 +1,5 @@
 ;; audio-events.jl -- map wm actions to audio samples
-;; $Id: audio-events.jl,v 1.1.1.1 2000-11-12 06:27:05 ghudson Exp $
+;; $Id: audio-events.jl,v 1.1.1.2 2001-01-13 14:58:06 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -69,7 +69,7 @@
 				  ;(focused . "clicked.wav")
 				  (switch-workspace . "toggled.wav")
 				  (move-viewport . "toggled.wav"))
-    "Map window events to sound files."
+    ""
     :type* `(alist ((symbol iconified uniconified
 			    shaded unshaded
 			    maximized unmaximized
@@ -77,8 +77,8 @@
 			    mapped-transient unmapped-transient
 			    switch-workspace move-viewport
 			    focused unfocused) ,(_ "Event"))
-		   (file ,(_ "Sample")))
-    :user-level expert
+		   (file ,(_ "Audio file")))
+    :widget-flags (expand-vertically)
     :depends audio-events-enabled
     :group audio)
 

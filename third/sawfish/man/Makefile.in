@@ -1,6 +1,6 @@
 # Makefile.in for sawmill's Texinfo manual
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.1 2000-11-12 06:26:21 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2001-01-13 14:57:33 ghudson Exp $
 #
 # This file is part of sawmill.
 #
@@ -65,7 +65,7 @@ installdirs : mkinstalldirs
 
 uninstall :
 	rm -f $(DESTDIR)$(infodir)/sawfish.info*
-	-install-info --delete librep.info $(DESTDIR)$(infodir)/dir
+	-install-info --delete sawfish.info $(DESTDIR)$(infodir)/dir
 
 clean :
 	rm -f *~ sawfish.info* sawfish.?? sawfish.???

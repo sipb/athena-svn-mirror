@@ -1,5 +1,5 @@
 ;; auto-raise.jl -- auto-raise on focus
-;; $Id: auto-raise.jl,v 1.1.1.1 2000-11-12 06:28:31 ghudson Exp $
+;; $Id: auto-raise.jl,v 1.1.1.2 2001-01-13 14:58:51 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -65,7 +65,7 @@
 				      (if disable-auto-raise
 					  (set-timer timer)
 					(setq rw-timer nil)
-					(raise-window* rw-window))))
+					(maybe-raise-window rw-window))))
 		    (delay (max 1 raise-window-timeout)))
 		(setq rw-timer (make-timer timer-callback
 					   (quotient delay 1000)

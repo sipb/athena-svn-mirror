@@ -1,3 +1,142 @@
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* version 0.35
+
+2001-01-04  John Harper  <jsh@eazel.com>
+
+	* events.c (map_request): be sure to map the frame (if
+	appropriate) _before_ calling the map-notify-hook. Otherwise X
+	errors can result from code thinking the frame is visible when
+	it isn't yet. Fixes bug 5243 (shaded windows die on restart)
+
+2001-01-02  John Harper  <jsh@eazel.com>
+
+	* images.c (Fcomposite_images): fixed bugs in both gdk-pixbuf
+	and Imlib versions
+
+2000-12-30  John Harper  <jsh@eazel.com>
+
+	* gtk-style.c (states): reordered this array so that it matches
+	the actual GtkStateType enum. Patch from <michaelj@maine.rr.com>
+
+2000-12-22  John Harper  <jsh@eazel.com>
+
+	* images.c (Fmake_image_from_x_drawable): special cased (=
+	depth 1) case for gdk-pixbuf substrate
+
+2000-12-18  John Harper  <jsh@eazel.com>
+
+	* keys.c (direct_modifiers): only substitute physical for
+	virtual modifiers if the physical modifiers actually exist.
+	Otherwise just preserve the virtual bits
+
+	(translate_event_to_x_button, translate_event_to_x_key): if
+	after translating modifiers, any virtual modifiers still exist,
+	don't accept the event
+
+	* keys.h (EV_VIRT_MOD_MASK): new definition, the bits
+	representing virtual (non X-native) modifiers
+
+2000-12-05  John Harper  <jsh@eazel.com>
+
+	* keys.c (lookup_event): reject events if they're button events
+	but don't have at least one button modifier (or the `Any'
+	modifier) set. Fixes #4983
+
+2000-12-04  John Harper  <jsh@eazel.com>
+
+	* keys.c: support Button6 and Button7
+	* keys.h: define Button6 and Button7 values to their logical
+	values (known to work on XFree86 version 4)
+
+	[ adapted from a patch by Steve Haslam <araqnid@debian.org> ]
+
+	* images.c (Fimage_modifier, Fset_image_modifier): fixed bug of
+	not accepting () to stand for all three color components
+
+	* version 0.34
+
+2000-11-28  John Harper  <jsh@eazel.com>
+
+	* keys.c (wm_mods, Fwm_modifier, Fset_wm_modifier): a new
+	modifier, `W-', that's user-settable
+	(Fevent_match): new function for comparing events
+
+	* keys.h (EV_MOD_WM): new bit
+
+2000-11-27  John Harper  <jsh@eazel.com>
+
+	* x.c (x_window_event_handler): ignore any expose events which
+	don't have a zero `count' field
+
+2000-11-26  John Harper  <jsh@eazel.com>
+
+	* events.c, functions.c (client_message, Fget_x_property): when
+	converting from 32-bit data use rep_make_long_uint () instead
+	of rep_MAKE_INT () (which will fail on large values)
+
+2000-11-20  John Harper  <jsh@eazel.com>
+
+	* events.c (focus_out): if unable to find a window, check for a
+	deleted window, and nullify focus_window variable if one is
+	found
+
+	* windows.c (remove_window): don't nullify focus_window if
+	removing the focused window
+	(window_mark_type): mark focus_window variable
+
+	* events.c, functions.c, windows.c (Fquery_pointer,
+	Fquery_pointer_window, Flist_x_properties, Fget_x_property,
+	Fstacking_order): don't call emit_pending_destroys () after
+	round trip requests, let them be delivered synchronously
+
+	* events.c: removed all the ignore-fp-keymap stuff
+
+2000-11-18  John Harper  <jsh@eazel.com>
+
+	* x.c (x_window_event_handler): pass the window as the second
+	argument to event handlers (event type is the first). Patch
+	from Unai Uribarri Rodríguez <unaiur@telecable.es>
+
+2000-11-16  John Harper  <jsh@eazel.com>
+
+	* main.c (sawfish_symbols): defvar `sawfish-locale-directory'
+	to the value of the SAWFISH_LOCALEDIR macro
+
+2000-11-14  John Harper  <jsh@eazel.com>
+
+	* windows.c (register_property_monitor, Fwindow_put): a general
+	interface for getting notification when the value of a window
+	property is changed
+
+	* keys.c (keymap_prop_change): property change handler for
+	Qkeymap (used to be embedded into Fwindow_put)
+
+	* events.c (ignore_fp_prop_change): called when the
+	ignore-fp-keymap property is changed, if a context map is
+	cached, recompute it (really fixes #4708)
+
+	* events.c (current_context_map): cache the context map across
+	calls
+	(flush_current_context_map): new function
+
+	(button_press, motion_notify): new semantics for context maps
+	in motion events, the map is the map that was active when the
+	button-press event was received. This fixes the
+	fast-window-drag bug #4708
+
+2000-11-13  John Harper  <jsh@eazel.com>
+
+	* version 0.33.1
+
+2000-11-10  John Harper  <jsh@eazel.com>
+
+	* events.c (current_context_map): new function, replaces the
+	variable of the same name (the context map may now change
+	depending on the environment, so it's not cachable). If the
+	window's ignore-fp-keymap property is set, give a null context
+	keymap
+
 2000-11-08  John Harper  <jsh@eazel.com>
 
 	* version 0.33

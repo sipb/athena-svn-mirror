@@ -1,6 +1,6 @@
 #| sawfish.wm.misc bootstrap
 
-   $Id: misc.jl,v 1.1.1.1 2000-11-12 06:28:00 ghudson Exp $
+   $Id: misc.jl,v 1.1.1.2 2001-01-13 14:57:43 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -67,6 +67,12 @@ to grab the keyboard then THUNK won't be called."
 	  (thunk))
       (when (zerop (setq grab-counter (1- grab-counter)))
 	(ungrab-keyboard)))))
+
+(define (call-with-error-handler thunk)
+  (condition-case data
+      (thunk)
+    (error
+     (error-handler-function (car data) (cdr data)))))
 
 (define (make-directory-recursively dir)
   "Try to create dir and all nonexistent parent dirs (like mkdir -p)."
@@ -163,7 +169,7 @@ the label of a menu item."
 ;; exports
 
 (export-bindings '(with-server-grabbed call-with-server-ungrabbed
-		   call-with-keyboard-grabbed
+		   call-with-keyboard-grabbed call-with-error-handler
 		   make-directory-recursively locate-file
 		   clamp clamp* uniquify-list screen-dimensions
 		   pointer-head current-head current-head-dimensions

@@ -1,5 +1,5 @@
 ;; transient.jl -- support transient windows
-;; $Id: transient.jl,v 1.1.1.1 2000-11-12 06:28:41 ghudson Exp $
+;; $Id: transient.jl,v 1.1.1.2 2001-01-13 14:58:59 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -44,8 +44,8 @@
 	  sawfish.wm.util.groups
 	  sawfish.wm.frames)
 
-  (defcustom focus-windows-when-mapped nil
-    "Focus windows when they are first displayed."
+  (defcustom focus-windows-when-mapped t
+    "Focus on application windows when they first appear."
     :type boolean
     :group focus)
 
@@ -63,7 +63,7 @@
 
 ;;; functions
 
-  (define (transient-of-p x y)
+  (define (transient-of-p x y #!key allow-root)
     "Return t if window X is directly a transient for window Y."
     (let ((x-for (window-transient-p x)))
       (and x-for
@@ -71,20 +71,25 @@
 	       ;; windows that set WM_TRANSIENT_FOR to the root window are
 	       ;; transients for their entire group (de facto standard).
 	       ;; This only makes sense for non-transient windows
-	       (and (eql x-for (root-window-id))
+	       ;; (disable this code by default, it causes too much weirdness)
+	       (and allow-root
+		    (eql x-for (root-window-id))
 		    (window-group-id x)
 		    (not (window-transient-p y))
 		    (eql (window-group-id x) (window-group-id y)))))))
 
-  (define (indirect-transient-of-p x y)
+  (define (indirect-transient-of-p x y #!key allow-root)
     "Return t if window X is (directly, or indirectly) a transient for window Y."
-    (or (transient-of-p x y)
-	(let ((x-for (window-transient-p x)))
-	  (and x-for
-	       (let ((x-for-w (get-window-by-id x-for)))
-		 (if x-for-w
-		     (indirect-transient-of-p x-for-w y)
-		   nil))))))
+    (let loop ((x x))
+      (or (transient-of-p x y #:allow-root allow-root)
+	  (let ((x-for (window-transient-p x)))
+	    (and x-for
+		 ;; Some KDE windows set WM_TRANSIENT_FOR to their own id!
+		 (not (eql x-for (window-id x)))
+		 (let ((x-for-w (get-window-by-id x-for)))
+		   (if x-for-w
+		       (loop x-for-w)
+		     nil)))))))
 
   (define (transient-parents w #!optional indirectly)
     "Return the list of windows that window W is a transient for."
@@ -167,14 +172,16 @@ the level of any transient windows it has."
 		(window-really-wants-input-p w)
 		(window-visible-p w)
 		(input-focus)
-		(transient-of-p w (input-focus)))
+		(transient-of-p w (input-focus) #:allow-root t))
 	   (set-input-focus w))
-	  (and (or (and focus-windows-when-mapped
-			(not (window-get w 'never-focus)))
-		   (window-get w 'focus-when-mapped))
-	       (window-really-wants-input-p w)
-	       (window-visible-p w))
-	  (set-input-focus w)))
+	  ((and (or (and focus-windows-when-mapped
+			 (not (window-get w 'never-focus)))
+		    (window-get w 'focus-when-mapped))
+		(or (not (window-transient-p w))
+		    (eql (window-transient-p w) (root-window-id)))
+		(window-really-wants-input-p w)
+		(window-visible-p w))
+	   (set-input-focus w))))
 
   ;; If a transient window gets unmapped that currently has the input
   ;; focus, pass it (the focus) to its parent. Otherwise, pass the focus

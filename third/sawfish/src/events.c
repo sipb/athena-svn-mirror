@@ -1,5 +1,5 @@
 /* events.c -- Event handling
-   $Id: events.c,v 1.1.1.1 2000-11-12 06:28:30 ghudson Exp $
+   $Id: events.c,v 1.1.1.2 2001-01-13 14:59:01 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -51,10 +51,10 @@ XEvent *current_x_event;
 static bool current_event_updated_mouse;
 static repv current_event_window;
 
+static repv saved_current_context_map;
+
 /* We need a ButtonRelease on this fp. */
 struct frame_part *clicked_frame_part;
-
-static repv current_context_map;
 
 static XID event_handler_context;
 
@@ -323,11 +323,47 @@ synthesize_button_release (void)
     button_press_window = 0;
 }
 
+static repv
+current_context_map (void)
+{
+    if (saved_current_context_map == rep_NULL)
+    {
+	repv map = Qnil;
+
+	/* Only use the context map if the frame part is currently clicked,
+	   and it's window is visible (i.e. not iconified) */
+	if (clicked_frame_part
+	    && clicked_frame_part->clicked
+	    && clicked_frame_part->win != 0
+	    && clicked_frame_part->win->visible)
+	{
+	    map = get_keymap_for_frame_part (clicked_frame_part);
+	}
+
+	saved_current_context_map = map;
+    }
+
+    return saved_current_context_map;
+}
+
+static void
+flush_current_context_map (void)
+{
+    saved_current_context_map = rep_NULL;
+}
+
 static void
 button_press (XEvent *ev)
 {
     struct frame_part *fp;
     Lisp_Window *w = 0;
+
+    /* This works for both press and release events. The desired outcome
+       is that press and motion events get the context map active when
+       the button was initially pressed, while release events get
+       the context map active when the button was released (in case the
+       pointer left the frame part) */
+    flush_current_context_map ();
 
     record_mouse_position (ev->xbutton.x_root, ev->xbutton.y_root,
 			   ev->type, ev->xany.window);
@@ -338,19 +374,10 @@ button_press (XEvent *ev)
 	w = fp->win;
 
 	if (ev->type == ButtonPress)
-	{
 	    handle_fp_click (fp, ev);
-	    current_context_map = get_keymap_for_frame_part (fp);
-	}
     }
 
-    /* Only use the context map if the frame part is currently clicked,
-       and it's window is visible (i.e. not iconified) */
-    eval_input_event ((clicked_frame_part
-		       && clicked_frame_part->clicked
-		       && clicked_frame_part->win != 0
-		       && clicked_frame_part->win->visible)
-		      ? current_context_map : Qnil);
+    eval_input_event (current_context_map ());
 
     if (fp != 0 && w->id != 0 && ev->type == ButtonRelease)
     {
@@ -369,7 +396,6 @@ button_press (XEvent *ev)
     {
 	button_press_mouse_x = button_press_mouse_y = -1;
 	button_press_window = 0;
-	current_context_map = Qnil;
 	/* The pointer is _always_ ungrabbed after a button-release */
 	XUngrabPointer (dpy, last_event_time);
     }
@@ -398,9 +424,14 @@ motion_notify (XEvent *ev)
     }
 
     if (pointer_in_motion)
-	eval_input_event (current_context_map);
+	eval_input_event (current_context_map ());
 
     XAllowEvents (dpy, SyncPointer, last_event_time);
+
+    /* Don't call flush_current_context_map (), since we want to
+       fix it for all motion events (in case the motion threshold
+       kicks in, and the pointer leaves the original fp before
+       a motion event is actually evaluated) */
 }
 
 static void
@@ -572,7 +603,7 @@ client_message (XEvent *ev)
     case 32:
 	data = Fmake_vector (rep_MAKE_INT(5), Qnil);
 	for (i = 0; i < 5; i++)
-	    rep_VECTI(data,i) = rep_MAKE_INT (ev->xclient.data.l[i]);
+	    rep_VECTI(data,i) = rep_make_long_uint (ev->xclient.data.l[i]);
 	break;
 
     default:
@@ -644,12 +675,14 @@ map_request (XEvent *ev)
 
     if (!w->client_unmapped)
 	XMapWindow (dpy, w->id);
-    else
-	/* wouldn't happen otherwise */
-	Fcall_window_hook (Qmap_notify_hook, rep_VAL(w), Qnil, Qnil);
 
     if (w->visible)
 	XMapWindow (dpy, w->frame);
+
+    if (w->client_unmapped)
+	/* wouldn't happen otherwise */
+	Fcall_window_hook (Qmap_notify_hook, rep_VAL(w), Qnil, Qnil);
+
 }
 
 static void
@@ -888,6 +921,13 @@ focus_out (XEvent *ev)
 				   Qnil);
 	    }
 	}
+    }
+    else if ((w = x_find_window_by_id (ev->xunmap.window)) != 0
+	     && w->id == 0 && ev->xunmap.window == w->saved_id)
+    {
+	/* focus-out event from a deleted window */
+	if (focus_window == w)
+	    focus_window = 0;
     }
 }
 
@@ -1265,7 +1305,6 @@ the server, otherwise it's taken from the current event (if possible).
 	{
 	    record_mouse_position (x, y, -1, 0);
 	}
-	emit_pending_destroys ();
     }
     return Fcons (rep_MAKE_INT(current_mouse_x),
 		  rep_MAKE_INT(current_mouse_y));
@@ -1326,7 +1365,6 @@ is in the root window.
 
     XQueryPointer (dpy, root_window, &root, &child,
 		   &current_mouse_x, &current_mouse_y, &win_x, &win_y, &state);
-    emit_pending_destroys ();
     if (child != 0)
     {
 	Lisp_Window *w = find_window_by_id (child);
@@ -1577,8 +1615,7 @@ events_init (void)
     rep_INTERN(ungrab);
 
     rep_mark_static (&current_event_window);
-    current_context_map = Qnil;
-    rep_mark_static (&current_context_map);
+    rep_mark_static (&saved_current_context_map);
 
     event_handler_context = XUniqueContext ();
 

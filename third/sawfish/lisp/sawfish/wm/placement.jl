@@ -1,5 +1,5 @@
 ;; place-window.jl -- decide where to initially place a window
-;; $Id: placement.jl,v 1.1.1.1 2000-11-12 06:28:03 ghudson Exp $
+;; $Id: placement.jl,v 1.1.1.2 2001-01-13 14:58:58 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -34,12 +34,13 @@
 	  sawfish.wm.misc
 	  sawfish.wm.events
 	  sawfish.wm.windows
+	  sawfish.wm.util.groups
 	  sawfish.wm.custom)
 
   (defvar placement-modes nil
     "List containing all symbols naming window placement modes.")
 
-  (defcustom place-window-mode 'best-fit
+  (defcustom place-window-mode 'top-left
     "Method of placing windows: \\w"
     :type symbol
     :group placement)
@@ -169,8 +170,14 @@ this mode. The single argument is the window to be placed."
 			      (cdr dims) (nth 1 screen) (nth 3 screen)))))
 
   (define (place-window-centered-on-parent w)
-    (let ((parent (window-transient-p w)))
-      (if (or (not parent) (not (setq parent (get-window-by-id parent))))
+    (let ((parent (let ((id (window-transient-p w)))
+		    (and id (get-window-by-id id)))))
+      ;; if no known parent, look if the focused window is in the
+      ;; same group as W, if so use it
+      (when (and (not parent) (not (eq (input-focus) w))
+		 (memq (input-focus) (windows-in-group w)))
+	(setq parent (input-focus)))
+      (if (not parent)
 	  (place-window-centered w)
 	(let ((dims (window-frame-dimensions w))
 	      (pdims (window-frame-dimensions parent))

@@ -1,5 +1,5 @@
 ;; autoload.jl -- Initialise auto-load functions
-;; $Id: autoload.jl,v 1.1.1.1 2000-11-12 06:28:18 ghudson Exp $
+;; $Id: autoload.jl,v 1.1.1.2 2001-01-13 14:58:50 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -187,4 +187,10 @@
 (autoload-command (quote describe-key) (quote sawfish.wm.util.keymap))
 (autoload-command (quote describe-key-to-screen) (quote sawfish.wm.util.keymap))
 (autoload-command (quote quote-event) (quote sawfish.wm.util.keymap))
+(autoload-command (quote move-viewport-next) (quote sawfish.wm.commands.viewport-extras))
+(autoload-command (quote move-viewport-previous) (quote sawfish.wm.commands.viewport-extras))
+(autoload-command (quote move-window-previous) (quote sawfish.wm.commands.viewport-extras))
+(autoload-command (quote move-window-next) (quote sawfish.wm.commands.viewport-extras))
+(autoload-placement-mode 'top-left 'sawfish.wm.placement.top-left)
+(autoload-placement-mode 'off-center 'sawfish.wm.placement.off-center)
 ;;; ::autoload-end::

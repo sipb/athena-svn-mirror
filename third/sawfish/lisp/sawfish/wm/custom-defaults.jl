@@ -1,5 +1,5 @@
 ;; custom-defaults.jl -- customize settings loaded if no user customization
-;; $Id: custom-defaults.jl,v 1.1.1.1 2000-11-12 06:28:15 ghudson Exp $
+;; $Id: custom-defaults.jl,v 1.1.1.2 2001-01-13 14:58:12 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,5 +24,5 @@
 (custom-set-typed-variable (quote warp-to-selected-windows) (quote ()) (quote boolean))
 (custom-set-typed-variable (quote cycle-warp-pointer) (quote ()) (quote boolean))
 (custom-set-typed-variable (quote focus-mode) (quote click) (quote symbol))
-(custom-set-keymap (quote window-keymap) (quote (keymap (move-window-interactively . "M-Button1-Move") (popup-window-menu . "M-Button2-Click1") (raise-lower-window . "M-Button3-Click1") (quote-event . "M-C-q") (send-to-next-workspace . "M-C-Right") (send-to-previous-workspace . "M-C-Left") (lower-window . "M-C-Down") (raise-window . "M-C-Up") (raise-and-pass-through-click . "Button1-Click1"))))
+(custom-set-keymap (quote window-keymap) (quote (keymap (move-window-interactively . "W-Button1-Move") (popup-window-menu . "W-Button2-Click1") (raise-lower-window . "W-Button3-Click1") (lower-window . "W-Down") (raise-window . "W-Up") (raise-and-pass-through-click . "Button1-Click1"))))
 (custom-set-variable (quote tooltips-enabled) t (quote tooltips))

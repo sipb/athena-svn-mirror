@@ -1,6 +1,6 @@
 #| nokogiri-shell.jl -- shell displaying custom groups
 
-   $Id: shell.jl,v 1.1.1.1 2000-11-12 06:28:36 ghudson Exp $
+   $Id: shell.jl,v 1.1.1.2 2001-01-13 14:58:09 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -207,7 +207,9 @@
 	(let ((layout (layout-slots (group-layout group) slots)))
 	  (setq active-slots (nconc active-slots slots))
 	  (gtk-notebook-append-page
-	   book layout (gtk-label-new (group-real-name group)))))
+	   book layout (gtk-label-new (group-real-name group)))
+	  (when (gtk-container-p layout)
+	    (gtk-container-border-width layout box-border))))
       (mapc (lambda (sub)
 	      (fetch-group sub)
 	      (let ((slots (get-slots sub)))

@@ -1,5 +1,5 @@
 ;; menus.jl -- popup menus
-;; $Id: menus.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: menus.jl,v 1.1.1.2 2001-01-13 14:58:45 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -42,12 +42,20 @@
 	  sawfish.wm.frames
 	  sawfish.wm.commands
 	  sawfish.wm.util.groups
-	  sawfish.wm.workspace)
+	  sawfish.wm.workspace
+	  sawfish.wm.state.maximize
+	  sawfish.wm.state.iconify)
 
   (define-structure-alias menus sawfish.wm.menus)
 
   ;; Suppress annoying compiler warnings
   (eval-when-compile (require 'rep.io.timers))
+
+  (defcustom menus-include-shortcuts nil
+    "Display key-binding information in menu items."
+    :type boolean
+    :group misc
+    :user-level expert)
 
   (defvar menu-program (expand-file-name "sawfish-menu" sawfish-exec-directory)
     "Location of the program implementing sawfish's menu interface.")
@@ -78,18 +86,19 @@ unused before killing it.")
   (define menu-timer nil)
 
   (defvar window-ops-menu
-    `((,(_ "_Delete") delete-window)
-      (,(_ "Destroy") destroy-window)
+    `((,(_ "Minimize") iconify-window
+       (insensitive . ,(lambda (w)
+			 (not (window-iconifiable-p w)))))
+      (,(lambda (w)
+	  (if (window-maximized-p w)
+	      (_ "Unmaximize")
+	    (_ "Maximize"))) maximize-window-toggle
+       (insensitive . ,(lambda (w)
+			 (not (or (window-maximized-p w)
+				  (window-maximizable-p w))))))
+      (,(_ "_Close") delete-window)
+      ()
       (,(_ "_Toggle") . window-ops-toggle-menu)
-      (,(_ "_Maximize")
-       (,(_ "_Vertically") maximize-window-vertically)
-       (,(_ "_Horizontally") maximize-window-horizontally)
-       (,(_ "_Both") maximize-window)
-       ()
-       (,(_ "Fill vertically") maximize-fill-window-vertically)
-       (,(_ "Fill horizontally") maximize-fill-window-horizontally)
-       (,(_ "Fill both") maximize-fill-window))
-       (,(_ "_Un-maximize") unmaximize-window)
       (,(_ "In _group") . window-group-menu)
       (,(_ "_Send window to")
        (,(_ "_Previous workspace") send-to-previous-workspace)
@@ -101,7 +110,7 @@ unused before killing it.")
        (,(_ "_Right") move-window-right)
        (,(_ "_Up") move-window-up)
        (,(_ "_Down") move-window-down))
-      (,(_ "Depth")
+      (,(_ "Stacking")
        (,(_ "Raise") raise-window)
        (,(_ "Lower") lower-window)
        (,(_ "Upper layer") raise-window-depth)
@@ -144,7 +153,7 @@ unused before killing it.")
     (unless (and menu-process (process-in-use-p menu-process))
       (when menu-process
 	(kill-process menu-process))
-      (let ((menu-sentinel (lambda (process)
+      (let ((menu-sentinel (lambda ()
 			     (when (and menu-process
 					(not (process-in-use-p menu-process)))
 			       (setq menu-process nil))
@@ -195,35 +204,50 @@ unused before killing it.")
   (define (nickname-ref nick) (table-ref nickname-table nick))
 
   (define menu-args (make-fluid '()))
+  (define where-is-fun (make-fluid '()))
 
   (define (menu-preprocessor cell)
-    (when cell
-      (let ((label (car cell)))
-	(cond ((functionp (cdr cell))
-	       (setq cell (apply (cdr cell) (fluid menu-args))))
-	      ((and (symbolp (cdr cell)) (not (null (cdr cell))))
-	       (setq cell (symbol-value (cdr cell)))
-	       (when (functionp cell)
-		 (setq cell (apply cell (fluid menu-args)))))
-	      (t (setq cell (cdr cell))))
-	(when cell
-	  (if (and (consp (car cell)) (stringp (car (car cell))))
-	      ;; recurse through sub-menu
-	      (setq cell (mapcar menu-preprocessor cell))
-	    (let ((action (car cell))
-		  (options (cdr cell)))
-	      (when (not (symbolp action))
-		;; a non-symbol result, replace by a nickname
-		(setq action (make-nickname (car cell))))
-	      ;; scan the alist of options
-	      (setq options (mapcar
-			     (lambda (cell)
-			       (if (functionp (cdr cell))
-				   (cons (car cell)
-					 (apply (cdr cell) (fluid menu-args)))
-				 cell)) options))
-	      (setq cell (cons action options)))))
-	(cons label cell))))
+    (define (inner cell)
+      (when cell
+	(let ((label (car cell)))
+	  (when (functionp label)
+	    (setq label (apply label (fluid menu-args))))
+	  (cond ((functionp (cdr cell))
+		 (setq cell (apply (cdr cell) (fluid menu-args))))
+		((and (symbolp (cdr cell)) (not (null (cdr cell))))
+		 (setq cell (symbol-value (cdr cell)))
+		 (when (functionp cell)
+		   (setq cell (apply cell (fluid menu-args)))))
+		(t (setq cell (cdr cell))))
+	  (when cell
+	    (if (and (consp (car cell)) (stringp (car (car cell))))
+		;; recurse through sub-menu
+		(setq cell (mapcar inner cell))
+	      (let* ((action (car cell))
+		     (options (cdr cell))
+		     (shortcut (and (fluid where-is-fun)
+				    (symbolp action)
+				    ((fluid where-is-fun) action))))
+		(when (not (symbolp action))
+		  ;; a non-symbol result, replace by a nickname
+		  (setq action (make-nickname (car cell))))
+		;; scan the alist of options
+		(setq options (mapcar
+			       (lambda (cell)
+				 (if (functionp (cdr cell))
+				     (cons (car cell)
+					   (apply (cdr cell)
+						  (fluid menu-args)))
+				   cell)) options))
+		(when shortcut
+		  (setq options (cons (cons 'shortcut shortcut) options)))
+		(setq cell (cons action options)))))
+	  (cons label cell))))
+    (let-fluids ((where-is-fun (and menus-include-shortcuts
+				    (require 'sawfish.wm.util.keymap)
+				    (make-memoizing-where-is
+				     (list global-keymap window-keymap)))))
+      (inner cell)))
 
   (define (menu-dispatch result)
     (let ((orig-win menu-active))

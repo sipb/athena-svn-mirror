@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.1.1.1 2000-11-12 06:28:16 ghudson Exp $
+   $Id: windows.c,v 1.1.1.2 2001-01-13 14:57:54 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -76,6 +76,14 @@ DEFSYM(south, "south");
 DEFSYM(south_east, "south-east");
 
 static repv gravity_map[StaticGravity+1];
+
+struct prop_handler {
+    struct prop_handler *next;
+    repv prop;
+    void (*callback) (Lisp_Window *w, repv prop, repv old, repv new);
+};
+
+static struct prop_handler *prop_handlers;
 
 
 /* utilities */
@@ -433,9 +441,6 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
     DB(("remove_window (%s, %s)\n",
 	rep_STR(w->name), destroyed == Qnil ? "nil" : "t"));
 
-    if (focus_window == w)
-	focus_window = 0;
-
     if (w->id != 0)
     {
 	if (destroyed == Qnil && from_error == Qnil)
@@ -448,12 +453,7 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
 	}
 
 	if (from_error == Qnil)
-	{
 	    destroy_window_frame (w, FALSE);
-
-	    if (focus_window == w)
-		focus_on_window (0);
-	}
 
 	w->id = 0;
 	pending_destroys++;
@@ -569,6 +569,17 @@ object WINDOW.
     return ret;
 }
 
+void
+register_property_monitor (repv prop,
+			   void (*callback) (Lisp_Window *, repv, repv, repv))
+{
+    struct prop_handler *ph = rep_alloc (sizeof (struct prop_handler));
+    ph->next = prop_handlers;
+    prop_handlers = ph;
+    ph->prop = prop;
+    ph->callback = callback;
+}    
+
 DEFUN("window-put", Fwindow_put, Swindow_put,
       (repv win, repv prop, repv val), rep_Subr3) /*
 ::doc:sawfish.wm.windows.subrs#window-put::
@@ -588,12 +599,12 @@ Note that these are Lisp properties not X properties.
 	    || (!rep_SYMBOLP(prop)
 		&& rep_value_cmp (rep_CAR(plist), prop) == 0))
 	{
-	    if (prop == Qkeymap && VWIN(win)->id != 0)
+	    struct prop_handler *ph;
+	    for (ph = prop_handlers; ph != 0; ph = ph->next)
 	    {
-		/* A bit of a hack */
-		grab_keymap_events (VWIN(win)->id,
-				    rep_CAR(rep_CDR(plist)), FALSE);
-		grab_keymap_events (VWIN(win)->id, val, TRUE);
+		repv old = rep_CADR (plist);
+		if (ph->prop == prop && old != val)
+		    ph->callback (VWIN (win), prop, old, val);
 	    }
 	    rep_CAR(rep_CDR(plist)) = val;
 	    return val;
@@ -871,7 +882,6 @@ client windows.
     {
 	int i;
 	repv ret = Qnil;
-	rep_GC_root gc_ret;
 	for (i = 0; i < nchildren; i++)
 	{
 	    Lisp_Window *w = find_window_by_id (children[i]);
@@ -880,9 +890,6 @@ client windows.
 	}
 	if (children != 0)
 	    XFree (children);
-	rep_PUSHGC(gc_ret, ret);
-	emit_pending_destroys ();
-	rep_POPGC;
 	return ret;
     }
     else
@@ -1333,13 +1340,16 @@ window_mark (repv win)
 static void
 window_mark_type (void)
 {
-    Lisp_Window *w = window_list;
-    while (w != 0)
+    Lisp_Window *w;
+    struct prop_handler *ph;
+    for (w = window_list; w != 0; w = w->next)
     {
 	if (w->id != 0 || !w->destroyed)
 	    rep_MARKVAL(rep_VAL(w));
-	w = w->next;
     }
+    for (ph = prop_handlers; ph != 0; ph = ph->next)
+	rep_MARKVAL (ph->prop);
+    rep_MARKVAL (rep_VAL (focus_window));
 }
 
 static void

@@ -1,6 +1,6 @@
 #| nokogiri-sawfish.jl -- code to load into window manager
 
-   $Id: nokogiri.jl,v 1.1.1.1 2000-11-12 06:28:10 ghudson Exp $
+   $Id: nokogiri.jl,v 1.1.1.2 2001-01-13 14:57:50 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -71,7 +71,8 @@
 	   (value (if (get symbol 'custom-get)
 		      ((get symbol 'custom-get) symbol)
 		    (custom-serialize (symbol-value symbol) type)))
-	   (user-level (get symbol 'custom-user-level)))
+	   (user-level (get symbol 'custom-user-level))
+	   (widget-flags (get symbol 'custom-widget-flags)))
       (when (stringp doc)
 	(setq doc (_ doc))
 	(when customize-show-symbols
@@ -98,7 +99,8 @@
 		   #:value value)
 	     (and dep (list #:depends dep))
 	     (and doc (list #:doc doc))
-	     (and user-level (list #:user-level user-level)))))
+	     (and user-level (list #:user-level user-level))
+	     (and widget-flags (list #:widget-flags widget-flags)))))
 
   (define (nokogiri-report-slots names)
     (mapcar nokogiri-report-slot names))

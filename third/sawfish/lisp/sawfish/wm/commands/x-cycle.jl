@@ -1,5 +1,5 @@
 ;; x-cycle.jl -- stack-based window cycling
-;; $Id: x-cycle.jl,v 1.1.1.1 2000-11-12 06:27:59 ghudson Exp $
+;; $Id: x-cycle.jl,v 1.1.1.2 2001-01-13 14:58:27 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -102,6 +102,13 @@
     :group (focus cycle)
     :type boolean)
 
+  (defcustom cycle-show-window-icons t
+    "Display window icons while cycling through windows."
+    :group (focus cycle)
+    :user-level expert
+    :depends cycle-show-window-names
+    :type boolean)
+
   (defcustom cycle-include-iconified t
     "Include iconified windows when cycling."
     :group (focus cycle)
@@ -126,7 +133,6 @@
   (defcustom cycle-warp-pointer t
     "Warp the mouse pointer to windows as they're temporarily selected."
     :group (focus cycle)
-    :user-level expert
     :type boolean)
 
   (defcustom cycle-focus-windows t
@@ -178,10 +184,21 @@
 
   (define (cycle-display-message)
     (let ((win (fluid x-cycle-current)))
-      (display-message (concat (and (window-get win 'iconified) ?[)
-				    (window-name win)
-				    (and (window-get win 'iconified) ?]))
-		       (list (cons 'head (current-head win))))))
+      (if cycle-show-window-icons
+	  (progn
+	    (require 'sawfish.wm.util.display-wininfo)
+	    (display-wininfo win))
+	(display-message (concat (and (window-get win 'iconified) ?[)
+				 (window-name win)
+				 (and (window-get win 'iconified) ?]))
+			 (list (cons 'head (current-head win)))))))
+
+  (define (remove-message)
+    (if cycle-show-window-icons
+	(progn
+	  (require 'sawfish.wm.util.display-wininfo)
+	  (display-wininfo nil))
+      (display-message nil)))
 
   (define (cycle-next windows count)
     (fluid-set x-cycle-windows windows)
@@ -248,6 +265,7 @@
 	    (allow-events 'sync-keyboard)))
 
 	(define (enter-fun space)
+	  (declare (unused space))
 	  (when grab-win
 	    (setq grab-win nil)
 	    (or (grab-keyboard nil nil t)
@@ -307,7 +325,7 @@
 		    (recursive-edit))
 		  (when (fluid x-cycle-current)
 		    (display-window (fluid x-cycle-current))))
-	      (display-message nil)
+	      (remove-message)
 	      (ungrab-keyboard)))))
 
       (when tail-command

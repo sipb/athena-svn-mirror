@@ -1,5 +1,5 @@
 # Makefile.in
-# $Id: Makefile.in,v 1.1.1.1 2000-11-12 06:27:01 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2001-01-13 14:57:42 ghudson Exp $
 #
 # Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 #
@@ -32,6 +32,7 @@ LISP_OBJS := $(LISP_SRCS:.jl=.jlc)
 REP_ENVIRON := $(REP_ENVIRON) REP_LOAD_PATH=$(top_srcdir)/lisp
 
 SUBSTS := -e "s|__lispdir__|$(lispdir)|" \
+	  -e "s|__localedir__|$(localedir)|" \
 	  -e "s|__version__|$(version)|"
 
 G_PIXMAP_DIR = $(GNOMEDIR)/share/pixmaps

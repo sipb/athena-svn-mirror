@@ -1,5 +1,5 @@
 ;; gtkrc.jl -- code to read current gtkrc settings
-;; $Id: gtkrc.jl,v 1.1.1.1 2000-11-12 06:27:08 ghudson Exp $
+;; $Id: gtkrc.jl,v 1.1.1.2 2001-01-13 14:58:05 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -176,6 +176,7 @@
 
   ;; recognize when the GTK theme has been switched
   (define (gtkrc-handle-client-msg w type data)
+    (declare (unused data))
     (when (and (eq w gtkrc-dummy-window) (eq type '_GTK_READ_RCFILES))
       (gtkrc-reload-style)
       ;; XXX make conditional
