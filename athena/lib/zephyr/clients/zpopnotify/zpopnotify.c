@@ -20,7 +20,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.9 1993-09-24 21:28:52 probe Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.10 1993-11-19 15:34:39 probe Exp $";
 #endif /* lint */
 
 #define MAIL_CLASS "MAIL"
@@ -70,7 +70,7 @@ main(argc,argv)
 	(void) strcat(mysender,ZGetRealm());
 
 	for (i = 1; i < argc; i++) {
-	    (void) _BZERO((char *)&notice, sizeof(notice));
+	    (void) memset((char *)&notice, 0, sizeof(notice));
 	    notice.z_kind = UNSAFE;
 	    notice.z_class = MAIL_CLASS;
 	    notice.z_class_inst = MAIL_INSTANCE;
@@ -79,7 +79,7 @@ main(argc,argv)
 	    notice.z_default_format = "From Post Office $1:\n$2";
 
 	    /* in case it's a mailbox name (pathname), strip to username */
-	    notice.z_recipient = (char *)rindex(argv[i],'/');
+	    notice.z_recipient = (char *)strrchr(argv[i],'/');
 	    if (notice.z_recipient)
 		notice.z_recipient++;
 	    else
