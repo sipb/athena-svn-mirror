@@ -7,8 +7,8 @@ COMMOBJS=	snmpsend.o snmprecv.o termcomm.o
 UTLOBJS=	auth.o commtbl.o varcvt.o error.o valprint.o oidutil.o
 SERVOBJS=	snmpservsend.o snmpdecipher.o
 
-SimpleLibrary(snmp,$(BUILDOBJS) $(PARSEOBJS) $(COMMOBJS) $(UTLOBJS)\
-	 $(SERVOBJS),$(ATHLIBDIR))
+build_library(snmp,$(BUILDOBJS) $(PARSEOBJS) $(COMMOBJS) $(UTLOBJS)\
+	 $(SERVOBJS))
 
 clean::
 	$(RM) $(BUILDOBJS) $(PARSEOBJS) $(COMMOBJS) $(UTLOBJS) $(SRVOBJS)
