@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.4 1987-07-02 09:24:39 jtkohl Exp $";
+static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.5 1987-07-07 17:12:53 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -26,6 +26,8 @@ static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 extern char *malloc();
 
 /* common routines for the server */
+
+/* copy the string into newly allocated area */
 
 char *
 strsave(sp)
@@ -40,5 +42,3 @@ char *sp;
     (void) strcpy(ret,sp);
     return(ret);
 }
-
-/* some sort of syslog interface */
