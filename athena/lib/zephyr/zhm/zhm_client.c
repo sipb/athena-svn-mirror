@@ -4,18 +4,18 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v $
- *      $Author: rfrench $
+ *      $Author: opus $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h". 
  */
 
-#include "hm.h"
+#include "zhm.h"
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.3 1987-10-31 19:34:42 rfrench Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.4 1988-02-25 19:58:58 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -30,7 +30,7 @@ transmission_tower(notice, packet, pak_len)
       ZNotice_t gack;
       Code_t ret;
       struct sockaddr_in gsin;
-      int tleft;
+      unsigned int tleft;
 
       nclt++;
       if (notice->z_kind == HMCTL) {
@@ -39,7 +39,7 @@ transmission_tower(notice, packet, pak_len)
 		  deactivated = 1;
 	  }
 	    else if (!strcmp(notice->z_opcode, CLIENT_NEW_SERVER))
-		    new_server(NULL);
+		    new_server((char *)NULL);
 	    else
 		    syslog (LOG_INFO, "Bad control notice from client.");
 	    return;
