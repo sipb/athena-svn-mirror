@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.41 1992-08-18 19:27:45 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: data_utils.c,v 1.42 1993-08-05 19:03:55 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.41 1992-08-18 19:27:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.42 1993-08-05 19:03:55 vanharen Exp $";
 #endif
 #endif
 
@@ -301,8 +301,7 @@ insert_knuckle(knuckle)
       /* Should deal with this better in the future; hash table for knucle */
       /* list, and also allow it to grow w/o bound. */
 
-      sprintf(mesg,"Unable to insert knuckle in list; out of space");
-      log_error(mesg);
+      log_error("Unable to insert knuckle in list; out of space");
       return(ERROR);
     }
 }
@@ -1292,7 +1291,7 @@ new_message(target, sender, message)
   msg_file = fopen(target->nm_file,"a");
 
   if (msg_file == NULL) {
-    sprintf(foo,"new_message: open: %%m %s",target->nm_file);
+    sprintf(foo,"new_message: can't open %s: %%m", target->nm_file);
     log_error(foo);
     return;
   }
