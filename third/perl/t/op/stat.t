@@ -1,39 +1,58 @@
 #!./perl
 
-# $RCSfile: stat.t,v $$Revision: 1.2 $$Date: 1998-01-14 17:08:46 $
+# $RCSfile: stat.t,v $$Revision: 1.3 $$Date: 2000-04-07 21:27:09 $
 
 BEGIN {
     chdir 't' if -d 't';
-    @INC = '../lib';
+    unshift @INC, '../lib';
 }
 
 use Config;
 
-print "1..56\n";
+print "1..58\n";
 
 $Is_MSWin32 = $^O eq 'MSWin32';
+$Is_Dos = $^O eq 'dos';
+$Is_Dosish = $Is_Dos || $^O eq 'os2' || $Is_MSWin32;
+$Is_Cygwin = $^O eq 'cygwin';
 chop($cwd = ($Is_MSWin32 ? `cd` : `pwd`));
 
-$DEV = `ls -l /dev` unless $Is_MSWin32;
+$DEV = `ls -l /dev` unless $Is_Dosish or $Is_Cygwin;
 
 unlink "Op.stat.tmp";
-open(FOO, ">Op.stat.tmp");
+if (open(FOO, ">Op.stat.tmp")) {
+  # hack to make Apollo update link count:
+  $junk = `ls Op.stat.tmp` unless ($Is_MSWin32 || $Is_Dos);
 
-# hack to make Apollo update link count:
-$junk = `ls Op.stat.tmp` unless $Is_MSWin32;
+  ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,
+   $blksize,$blocks) = stat(FOO);
+  if ($nlink == 1) {
+    print "ok 1\n";
+  }
+  else {
+    print "# res=$res, nlink=$nlink.\nnot ok 1\n";
+  }
+  if ($Is_MSWin32 or $Is_Cygwin || ($mtime && $mtime == $ctime)) {
+    print "ok 2\n";
+  }
+  else {
+    print "# |$mtime| vs |$ctime|\nnot ok 2\n";
+  }
 
-($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,
-    $blksize,$blocks) = stat(FOO);
-if ($nlink == 1) {print "ok 1\n";} else {print "not ok 1\n";}
-if ($Is_MSWin32 || ($mtime && $mtime == $ctime)) {print "ok 2\n";}
-else {print "# |$mtime| vs |$ctime|\nnot ok 2\n";}
+  my $funky_FAT_timestamps = $Is_Cygwin;
 
-print FOO "Now is the time for all good men to come to.\n";
-close(FOO);
+  sleep 3 if $funky_FAT_timestamps;
 
-sleep 2;
+  print FOO "Now is the time for all good men to come to.\n";
+  close(FOO);
 
-if ($Is_MSWin32) { unlink "Op.stat.tmp2" }
+  sleep 2 unless $funky_FAT_timestamps;
+
+} else {
+  print "# open failed: $!\nnot ok 1\nnot ok 2\n";
+}
+
+if ($Is_Dosish) { unlink "Op.stat.tmp2"}
 else {
     `rm -f Op.stat.tmp2;ln Op.stat.tmp Op.stat.tmp2; chmod 644 Op.stat.tmp`;
 }
@@ -41,10 +60,20 @@ else {
 ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,
     $blksize,$blocks) = stat('Op.stat.tmp');
 
-if ($Is_MSWin32 || $Config{dont_use_nlink} || $nlink == 2)
-    {print "ok 3\n";} else {print "# \$nlink is |$nlink|\nnot ok 3\n";}
+if ($Is_Dosish || $Config{dont_use_nlink})
+    {print "ok 3 # skipped: no link count\n";} 
+elsif ($nlink == 2)
+    {print "ok 3\n";} 
+else {print "# \$nlink is |$nlink|\nnot ok 3\n";}
 
-if ($Is_MSWin32 || ($mtime && $mtime != $ctime) || $cwd =~ m#/afs/# || $^O eq 'amigaos') {
+if (   $Is_Dosish
+        # Solaris tmpfs bug
+	|| ($cwd =~ m#^/tmp# and $mtime && $mtime==$ctime && $^O eq 'solaris')
+	|| $cwd =~ m#/afs/#
+	|| $^O eq 'amigaos') {
+    print "ok 4 # skipped: different semantic of mtime/ctime\n";
+}
+elsif (   ($mtime && $mtime != $ctime)  ) {
     print "ok 4\n";
 }
 else {
@@ -52,9 +81,9 @@ else {
     print "#4 If test op/stat.t fails test 4, check if you are on a tmpfs\n";
     print "#4 of some sort.  Building in /tmp sometimes has this problem.\n";
 }
-print "#4	:$mtime: != :$ctime:\n";
+print "#4	:$mtime: should != :$ctime:\n";
 
-unlink "Op.stat.tmp";
+unlink "Op.stat.tmp" or print "# unlink failed: $!\n";
 if ($Is_MSWin32) {  open F, '>Op.stat.tmp' and close F }
 else             { `touch Op.stat.tmp` }
 
@@ -65,12 +94,12 @@ $Is_MSWin32 ? `cmd /c echo hi > Op.stat.tmp` : `echo hi >Op.stat.tmp`;
 if (! -z 'Op.stat.tmp') {print "ok 7\n";} else {print "not ok 7\n";}
 if (-s 'Op.stat.tmp') {print "ok 8\n";} else {print "not ok 8\n";}
 
-unlink 'Op.stat.tmp';
+unlink 'Op.stat.tmp' or print "# unlink failed: $!\n";
 $olduid = $>;		# can't test -r if uid == 0
 $Is_MSWin32 ? `cmd /c echo hi > Op.stat.tmp` : `echo hi >Op.stat.tmp`;
 chmod 0,'Op.stat.tmp';
 eval '$> = 1;';		# so switch uid (may not be implemented)
-if (!$> || ! -r 'Op.stat.tmp') {print "ok 9\n";} else {print "not ok 9\n";}
+if (!$> || $Is_Dos || ! -r 'Op.stat.tmp') {print "ok 9\n";} else {print "not ok 9\n";}
 if (!$> || ! -w 'Op.stat.tmp') {print "ok 10\n";} else {print "not ok 10\n";}
 eval '$> = $olduid;';		# switch uid back (may not be implemented)
 print "# olduid=$olduid, newuid=$>\n" unless ($> == $olduid);
@@ -82,10 +111,15 @@ foreach ((12,13,14,15,16,17)) {
     print "ok $_\n";		#deleted tests
 }
 
+# in ms windows, Op.stat.tmp inherits owner uid from directory
+# not sure about os/2, but chown is harmless anyway
+eval { chown $>,'Op.stat.tmp'; 1 } or print "# $@" ;
 chmod 0700,'Op.stat.tmp';
 if (-r 'Op.stat.tmp') {print "ok 18\n";} else {print "not ok 18\n";}
 if (-w 'Op.stat.tmp') {print "ok 19\n";} else {print "not ok 19\n";}
-if ($Is_MSWin32 or -x 'Op.stat.tmp') {print "ok 20\n";} else {print "not ok 20\n";}
+if ($Is_Dosish) {print "ok 20 # skipped: -x by extension\n";} 
+elsif (-x 'Op.stat.tmp') {print "ok 20\n";} 
+else {print "not ok 20\n";}
 
 if (-f 'Op.stat.tmp') {print "ok 21\n";} else {print "not ok 21\n";}
 if (! -d 'Op.stat.tmp') {print "ok 22\n";} else {print "not ok 22\n";}
@@ -93,7 +127,7 @@ if (! -d 'Op.stat.tmp') {print "ok 22\n";} else {print "not ok 22\n";}
 if (-d '.') {print "ok 23\n";} else {print "not ok 23\n";}
 if (! -f '.') {print "ok 24\n";} else {print "not ok 24\n";}
 
-if (!$Is_MSWin32 and `ls -l perl` =~ /^l.*->/) {
+if (!$Is_Dosish and `ls -l perl` =~ /^l.*->/) {
     if (-l 'perl') {print "ok 25\n";} else {print "not ok 25\n";}
 }
 else {
@@ -103,10 +137,10 @@ else {
 print "ok 26\n";
 
 if (-e 'Op.stat.tmp') {print "ok 27\n";} else {print "not ok 27\n";}
-unlink 'Op.stat.tmp', 'Op.stat.tmp2';
-if (! -e 'Op.stat.tmp') {print "ok 28\n";} else {print "not ok 28\n";}
+unlink 'Op.stat.tmp2';
+if (! -e 'Op.stat.tmp2') {print "ok 28\n";} else {print "not ok 28\n";}
 
-if ($Is_MSWin32)
+if ($Is_MSWin32 || $Is_Dos)
     {print "ok 29\n";}
 elsif ($DEV !~ /\nc.* (\S+)\n/)
     {print "ok 29\n";}
@@ -116,7 +150,7 @@ else
     {print "not ok 29\n";}
 if (! -c '.') {print "ok 30\n";} else {print "not ok 30\n";}
 
-if ($Is_MSWin32)
+if ($Is_MSWin32 || $Is_Dos)
     {print "ok 31\n";}
 elsif ($DEV !~ /\ns.* (\S+)\n/)
     {print "ok 31\n";}
@@ -126,7 +160,7 @@ else
     {print "not ok 31\n";}
 if (! -S '.') {print "ok 32\n";} else {print "not ok 32\n";}
 
-if ($Is_MSWin32)
+if ($Is_MSWin32 || $Is_Dos)
     {print "ok 33\n";}
 elsif ($DEV !~ /\nb.* (\S+)\n/)
     {print "ok 33\n";}
@@ -136,7 +170,9 @@ else
     {print "not ok 33\n";}
 if (! -b '.') {print "ok 34\n";} else {print "not ok 34\n";}
 
-if ($^O eq 'amigaos' or $Is_MSWin32) {print "ok 35\n"; goto tty_test;}
+if ($^O eq 'mpeix' or $^O eq 'amigaos' or $Is_Dosish or $Is_Cygwin) {
+  print "ok 35 # skipped: no -u\n"; goto tty_test;
+}
 
 $cnt = $uid = 0;
 
@@ -169,14 +205,23 @@ unless($ENV{PERL_SKIP_TTY_TEST}) {
 	print "ok 37\n";
     }
     else {
-	unless (open(tty,"/dev/tty")) {
-	    print STDERR "Can't open /dev/tty--run t/TEST outside of make.\n";
+	my $TTY = "/dev/tty";
+
+	$TTY = "/dev/ttyp0" if $^O eq 'rhapsody';
+
+	if (defined $TTY) {
+	    unless (open(TTY, $TTY)) {
+		print STDERR "Can't open $TTY--run t/TEST outside of make.\n";
+	    }
+	    if (-t TTY) {print "ok 36\n";} else {print "not ok 36\n";}
+	    if (-c TTY) {print "ok 37\n";} else {print "not ok 37\n";}
+	    close(TTY);
+	} else { # if some platform completely undefines $TTY
+	    print "ok 36 # skipped\n";
+	    print "ok 37 # skipped\n";
 	}
-	if (-t tty) {print "ok 36\n";} else {print "not ok 36\n";}
-	if (-c tty) {print "ok 37\n";} else {print "not ok 37\n";}
-	close(tty);
     }
-    if (! -t tty) {print "ok 38\n";} else {print "not ok 38\n";}
+    if (! -t TTY) {print "ok 38\n";} else {print "not ok 38\n";}
     if (-t)       {print "ok 39\n";} else {print "not ok 39\n";}
 }
 else {
@@ -228,3 +273,10 @@ close(FOO);
 
 if (-T '/dev/null') {print "ok 55\n";} else {print "not ok 55\n";}
 if (-B '/dev/null') {print "ok 56\n";} else {print "not ok 56\n";}
+
+# and now, a few parsing tests:
+$_ = 'Op.stat.tmp';
+if (-f) {print "ok 57\n";} else {print "not ok 57\n";}
+if (-f()) {print "ok 58\n";} else {print "not ok 58\n";}
+
+unlink 'Op.stat.tmp' or print "# unlink failed: $!\n";
