@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.10 1988-06-25 17:25:02 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.11 1988-06-27 14:13:08 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.10 1988-06-25 17:25:02 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.11 1988-06-27 14:13:08 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -526,9 +526,20 @@ Code_t Z_FormatRawHeader(notice, buffer, buffer_len, len, sumend_ptr)
     char *ptr, *end;
     int i;
 
-    if (!notice->z_class || !notice->z_class_inst || !notice->z_opcode ||
-	!notice->z_recipient || !notice->z_default_format)
-	return (ZERR_ILLVAL);
+    if (!notice->z_class)
+	    notice->z_class = "";
+
+    if (!notice->z_class_inst)
+	    notice->z_class_inst = "";
+
+    if (!notice->z_opcode)
+	    notice->z_opcode = "";
+
+    if (!notice->z_recipient)
+	    notice->z_recipient = "";
+
+    if (!notice->z_default_format)
+	    notice->z_default_format = "";
 
     ptr = buffer;
     end = buffer+buffer_len;
