@@ -1,5 +1,0 @@
-/*
- * $Id: Imakefile,v 1.4 1992-04-28 16:56:53 lwvanels Exp $
- */
-
-#define ISUBDIRS wcl dm xdm xlogin console conf 
