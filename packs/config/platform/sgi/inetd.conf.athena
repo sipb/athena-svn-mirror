@@ -3,7 +3,7 @@
 # MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.3 1997-02-18 06:26:43 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.4 1997-03-20 23:02:43 ghudson Exp $
 #
 
 # Services moved from SGI's inetd.conf to be switched.
@@ -12,8 +12,14 @@ ftp	stream	tcp	nowait	switched	root	/usr/etc/ftpd	ftpd -l
 shell	stream	tcp	nowait	switched	root	/usr/etc/rshd	rshd
 login	stream	tcp	nowait	switched	root	/usr/etc/rlogind	rlogind
 
+# Services moved from SGI's inted.conf here because IRIX 5.3's inetd is stupid
+# and logs errors when a service is run as a user other than root.
+
+finger	stream	tcp	nowait	unswitched	guest	/usr/etc/fingerd	fingerd
+
 # Athena services.
 
+ntalk	dgram	udp	wait	unswitched	root	/usr/athena/etc/ntalkd	ntalkd
 telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a off
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
 klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
