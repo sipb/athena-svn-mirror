@@ -228,6 +228,7 @@ desk_DATA = gnome-panel-properties.desktop
 athenadir = $(datadir)/gnome/athena/
 athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
 athena_SCRIPTS = mail-script browser-script terminal-script editor-script
+AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -867,6 +868,9 @@ install-data-local:
 	ln -s ../../pixmaps/gnome-term.png $(DESTDIR)$(athenadir)/terminal-icon
 	rm -f $(DESTDIR)$(athenadir)/editor-icon
 	ln -s ../../pixmaps/gnome-word.png $(DESTDIR)$(athenadir)/editor-icon
+	rm -f $(DESTDIR)$(athenadir)/menus
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
+		$(DESTDIR)$(athenadir)/menus
 
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
 

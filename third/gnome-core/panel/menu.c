@@ -94,7 +94,7 @@ init_menus(void)
 	if(menu)
 		fr_read_dir(NULL, menu, NULL, NULL, 2);
 	g_free(menu);
-	menu = gnome_util_home_file("apps");
+	menu = gnome_util_home_file("athena/menus");
 	if(menu)
 		fr_read_dir(NULL, menu, NULL, NULL, 2);
 	g_free(menu);
