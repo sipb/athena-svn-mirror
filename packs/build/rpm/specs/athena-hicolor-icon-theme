@@ -1,0 +1,11 @@
+Name: athena-hicolor-icon-theme
+Summary: Default fallback icon theme, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+The default fallback theme used by implementations of the icon theme
+specification.
+
+The specification is availible at:
+http://www.freedesktop.org/standards/icon-theme-spec/
