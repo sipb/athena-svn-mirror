@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v $
- * $Author: jweiss $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.10 1996-12-23 23:17:56 jweiss Exp $";
+static const char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.11 1998-11-30 15:25:16 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -18,32 +18,29 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #endif /* GMS_SERVER_MESSAGE */
 
 #include <sys/types.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <syslog.h>
 
 /*
  * This version of the daemon is run out of inetd, with a conf line of:
  * globalmessage dgram udp wait unswitched nobody /usr/athena/etc/messaged messaged
  */
-#ifndef ultrix
-#include <syslog.h>
-#else
-#include <nsyslog.h>
-#endif
 
 char *error_message();
 
 #define saddr_list(sin) (unsigned)sin[0],(unsigned)sin[1],(unsigned)sin[2],(unsigned)sin[3]
-main(argc,argv)
+int main(argc,argv)
      int argc;
      char **argv;
 {
   char buf[BFSZ];
-  int readstat, errstat, readlen, msgfile;
+  int readstat, readlen, msgfile;
   struct sockaddr from;
   /* these strange casts are so that I can print out the address of
    * the incoming packet.
@@ -59,11 +56,7 @@ main(argc,argv)
    * not listed as ``message the same, repeated 6 times'' but that
    * shouldn't be a problem.
    */
-#ifdef LOG_DAEMON
   openlog(argv[0], LOG_PID, LOG_DAEMON);
-#else
-  openlog(argv[0], LOG_PID);
-#endif
   
   /* gms is just return values; the other com_err tables used will
    * init themselves.
@@ -164,6 +157,8 @@ main(argc,argv)
     /* protect the fencepost... */
     buf[BFSZ-1] = '\0';
     close(msgfile);
+  } else {
+    readlen = 0;
   }
   /* send the packet back where it came from */
   if(-1 == sendto(0, buf, readlen+headerlen, 0, &from, sizeof(from))) {

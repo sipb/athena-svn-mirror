@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_read_to_memory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/read_to_memory.c,v 1.2 1996-09-19 22:39:20 ghudson Exp $";
+static const char rcsid_read_to_memory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/read_to_memory.c,v 1.3 1998-11-30 15:25:17 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -18,7 +18,7 @@ Code_t read_to_memory(ret_block, ret_size, filedesc)
      char **ret_block;
      int *ret_size, filedesc;
 {
-  char buf[BFSZ], *message_data;
+  char buf[BFSZ], *message_data = NULL;
   int message_size = 0;
   int stat;
   
@@ -27,19 +27,13 @@ Code_t read_to_memory(ret_block, ret_size, filedesc)
     stat = read(filedesc, buf, BFSZ);
     if(stat == -1) {
       /* handle read failed error */
-      if(message_size) {
-	free(message_data);
-      }
+      free(message_data);
       return(errno);
     }
 
     /* allocate a memory area for copying */
-    /* the +1 are for trailing NUL's */
-    if(message_size) {
-      message_data=realloc(message_data, message_size + stat +1);
-    } else {
-      message_data = malloc(message_size + stat +1);
-    }
+    /* the +1 are for trailing NULs */
+    message_data = realloc(message_data, message_size + stat + 1);
     if(!message_data) {
       return(GMS_MALLOC_ERR);
     }

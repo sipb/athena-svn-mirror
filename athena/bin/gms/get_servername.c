@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_servername.c,v $
- * $Author: probe $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_servername_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_servername.c,v 1.2 1990-07-11 14:50:12 probe Exp $";
+static const char rcsid_get_servername_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_servername.c,v 1.3 1998-11-30 15:25:13 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"

@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_view_message_by_tty_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_tty.c,v 1.2 1996-09-19 22:39:20 ghudson Exp $";
+static const char rcsid_view_message_by_tty_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_tty.c,v 1.3 1998-11-30 15:25:17 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"

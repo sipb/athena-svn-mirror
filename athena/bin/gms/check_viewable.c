@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.5 1996-09-19 22:39:16 ghudson Exp $";
+static const char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.6 1998-11-30 15:25:11 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -48,7 +48,6 @@ Code_t check_viewable(message, checktime, updateuser)
       userdir = pw->pw_dir;
     } else {
       /* couldn't check user's file, probably better send it. */
-      free(usertfilename);
       return(0);
     }
 

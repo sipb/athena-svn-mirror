@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.5 1997-04-22 00:37:54 ghudson Exp $";
+static const char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.6 1998-11-30 15:25:12 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -17,15 +17,11 @@ void Usage();
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifndef ultrix
 #include <syslog.h>
-#else
-#include <nsyslog.h>
-#endif
 char *error_message();
 
 
-main (argc, argv)
+int main (argc, argv)
      int argc;
      char *argv[];
 {
@@ -35,11 +31,7 @@ main (argc, argv)
   char *message;
   int zephyr_p = 0, new_p = 0, login_p = 0;
   
-#ifdef LOG_USER
   openlog(argv[0], LOG_PID, LOG_USER);
-#else
-  openlog(argv[0], LOG_PID);
-#endif
   syslog(LOG_INFO, "GMS client started...");
 
   init_gms_err_tbl();

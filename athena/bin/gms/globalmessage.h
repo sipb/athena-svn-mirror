@@ -11,10 +11,11 @@
 #ifndef __GLOBALMESSAGE_H__
 #define __GLOBALMESSAGE_H__
 
+#include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-extern int errno;
 #include "globalmessage_err.h"
 	/* Function return code */
 typedef int Code_t;
@@ -42,5 +43,20 @@ typedef int Code_t;
 #define GMS_TIMESTAMP_LEN 12
 
 #define BFSZ 1024
+
+void view_message_by_zephyr(char *message);
+void view_message_by_tty(char *message);
+Code_t get_servername(char ***ret_name);
+Code_t get_message_from_server(char **ret_message, int *ret_message_size,
+			       char *server);
+Code_t get_a_message(char **buf);
+Code_t check_viewable(char *message, int checktime, int updateuser);
+Code_t gethost_error(void);
+Code_t hesiod_error(void);
+Code_t read_to_memory(char **ret_block, int *ret_size, int filedesc);
+Code_t put_fallback_file(char *message_data, int message_size,
+			 char *message_filename);
+Code_t get_fallback_file(char **ret_data, int *ret_size,
+			 char *message_filename);
 
 #endif /* __GLOBALMESSAGE_H__ */

@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/hesiod_errors.c,v $
- * $Author: eichin $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_hes_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/hesiod_errors.c,v 1.2 1988-09-26 15:31:17 eichin Exp $";
+static const char rcsid_hes_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/hesiod_errors.c,v 1.3 1998-11-30 15:25:14 ghudson Exp $";
 #endif lint
 
 #include "hesiod_err.h"

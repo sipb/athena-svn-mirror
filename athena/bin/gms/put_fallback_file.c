@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  *
- * $Id: put_fallback_file.c,v 1.6 1991-06-19 15:40:49 probe Exp $
+ * $Id: put_fallback_file.c,v 1.7 1998-11-30 15:25:16 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,12 +9,12 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.6 1991-06-19 15:40:49 probe Exp $";
+static const char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.7 1998-11-30 15:25:16 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
 #include <sys/types.h>
-#include <sys/file.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 
 Code_t put_fallback_file(message_data, message_size, message_filename)

@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.4 1996-09-19 22:39:17 ghudson Exp $";
+static const char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.5 1998-11-30 15:25:13 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -28,7 +28,6 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
   struct sockaddr_in server_insocket;
   int sck, stat;
   char *message_data;
-  int message_size;
   
   /* guard against NULL arguments */
   if ((!ret_message)||(!server)) {
@@ -76,7 +75,8 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
 
   /* Actually make the connection */
   {
-    stat = connect(sck, &server_insocket, sizeof(server_insocket));
+    stat = connect(sck, (struct sockaddr *) &server_insocket,
+		   sizeof(server_insocket));
     if(stat == -1) {
       /* handle connect error */
       return(errno);

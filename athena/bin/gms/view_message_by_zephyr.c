@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.6 1996-10-04 04:01:08 ghudson Exp $";
+static const char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.7 1998-11-30 15:25:17 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -17,6 +17,7 @@ static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <com_err.h>
 
 void view_message_by_zephyr(message)
      char *message;
