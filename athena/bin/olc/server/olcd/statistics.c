@@ -9,11 +9,11 @@
  *      Copyright (c) 1990 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.3 1990-02-13 17:17:00 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.4 1990-02-27 14:33:25 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -40,32 +40,30 @@ dump_request_stats(file)
      char *file;
 #endif
 {
-  FILE *fp;
-  int i, j, k;
-  long current_time;
-  struct tm *time_info;
+    FILE *fp;
+    int i;
+    long current_time;
 
-  fp = fopen(file,"a");
+    fp = fopen(file,"a");
+    if (!fp)
+	return;
 
-  time(&current_time);
-  fprintf(fp, "Daemon started at:  %s,\n",
-	  format_time(localtime(&start_time)));
-  fprintf(fp, "  stats dumped at:  %s.\n",
-	  format_time(localtime(&current_time)));
-  fprintf(fp, "%d requests, processed in %d seconds.\n",
-	  request_count, current_time - start_time);
+    time(&current_time);
+    fprintf(fp, "Daemon started at:  %s,\n",
+	    format_time(localtime(&start_time)));
+    fprintf(fp, "  stats dumped at:  %s.\n",
+	    format_time(localtime(&current_time)));
+    fprintf(fp, "%d requests, processed in %d seconds.\n",
+	    request_count, current_time - start_time);
 
-  for (i = 0; Proc_List[i].proc_code != UNKNOWN_REQUEST; i++)
-    {
-      fprintf(fp, "%s:", Proc_List[i].description);
-      j = 25 - strlen(Proc_List[i].description);
-      for (k = 0; k < j; k++)
-	fprintf(fp, " ");
-      fprintf(fp, "%d\n", request_counts[i]);
+    for (i = 0; Proc_List[i].proc_code != UNKNOWN_REQUEST; i++) {
+	char *desc = Proc_List[i].description;
+	fprintf (fp, "%s:%*s %d", desc, 24 - strlen (desc), "",
+		 request_counts[i]);
     }
 
-  fprintf(fp, "---------------------------\n");
-  fclose(fp);
+    fprintf(fp, "---------------------------\n");
+    fclose(fp);
 }
 
 
@@ -86,14 +84,15 @@ dump_question_stats(file)
      char *file;
 #endif
 {
-  FILE *fp;
-  int i, j, k;
+    FILE *fp;
 
-  fp = fopen(file,"a");
-  
-  fprintf(fp, "Daemon has been up for %d seconds.\n",
-	  time(0) - start_time);
-  fprintf(fp, "No other statistics generated yet.\n");
-  fprintf(fp, "-------------------------\n");
-  fclose(fp);
+    fp = fopen(file,"a");
+    if (!fp)
+	return;
+
+    fprintf(fp, "Daemon has been up for %d seconds.\n",
+	    time(0) - start_time);
+    fprintf(fp, "No other statistics generated yet.\n");
+    fprintf(fp, "-------------------------\n");
+    fclose(fp);
 }
