@@ -1,6 +1,6 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.11 1991-09-22 12:15:24 lwvanels Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.12 1991-10-31 15:08:43 lwvanels Exp $
 
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
@@ -622,31 +622,15 @@ Makefile: Imakefile $(ICONFIGFILES)					@@\
 BuildMakefileTarget(Imakefile,/**/)
 #endif /* MakefileTarget */
 
-
-#ifndef OutputRebuildReason
-#define OutputRebuildReason(target,modules)				@@\
-	@echo "#* Generating" target because of modules
-#endif
-
 /*
  * NormalLibraryObjectRule - generate make rules to build "normal" objects.
  */
 #ifndef NormalLibraryObjectRule
 #define	NormalLibraryObjectRule()					@@\
 .c.o:									@@\
-	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@							@@\
 	$(CC) -c $(CFLAGS) $*.c
 #endif /* NormalLibraryObjectRule */
-
-#ifndef NormalFortranObjectRule
-#define NormalFortranObjectRule()					@@\
-.f.o:									@@\
-	OutputRebuildReason($@,$?)					@@\
-	$(RM) $@							@@\
-	$(FC) -c $(FCFLAGS) $*.f
-#endif
-
 
 /*
  * ProfiledLibraryObjectRule - generate make rules to build both profiled
@@ -658,7 +642,6 @@ all::									@@\
 	@if [ ! -d profiled ]; then mkdir profiled; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
-	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ profiled/$@						@@\
 	$(CC) -pg -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o profiled/$*.o					@@\
@@ -681,7 +664,6 @@ all::									@@\
 	@if [ ! -d debugger ]; then mkdir debugger; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
-	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ debugger/$@						@@\
 	$(CC) -g -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o debugger/$*.o					@@\
@@ -705,7 +687,6 @@ all::									@@\
 	@if [ ! -d debugger ]; then mkdir debugger; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
-	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ profiled/$@ debugger/$@				@@\
 	$(CC) -pg -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o profiled/$*.o					@@\
