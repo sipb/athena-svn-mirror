@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.34 2004-11-05 22:19:10 zacheiss Exp $
+# $Id: bashrc,v 1.35 2004-11-10 15:37:17 rbasch Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -193,7 +193,6 @@ if [ "${PS1+set}" = set ]; then
 		PS1="athena\$ "
 		;;
 	esac
-	HISTSIZE=20
 	CDPATH=.:~
 fi
 
