@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data_utils.c,v 1.47 1999-06-28 22:52:39 ghudson Exp $
+ *	$Id: data_utils.c,v 1.47.4.1 2001-09-16 17:54:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: data_utils.c,v 1.47 1999-06-28 22:52:39 ghudson Exp $";
+static char rcsid[] ="$Id: data_utils.c,v 1.47.4.1 2001-09-16 17:54:48 ghudson Exp $";
 #endif
 #endif
 
@@ -666,11 +666,15 @@ get_user(person,user)
     }
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_eq((*k_ptr)->user->username,person->username))
-      {
-	*user = (*k_ptr)->user;
-	return(SUCCESS);
-      }
+    {
+      if (!(*k_ptr)->user)
+	continue;
+      if(string_eq((*k_ptr)->user->username,person->username))
+	{
+	  *user = (*k_ptr)->user;
+	  return(SUCCESS);
+	}
+    }
 
   return(USER_NOT_FOUND);
 }
@@ -705,20 +709,24 @@ get_knuckle(name,instance,knuckle,active)
     }
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_eq((*k_ptr)->user->username,name))
-      {
-	if(active && (!is_active((*k_ptr))))
-	  continue;
-
-	if(((*k_ptr)->instance == instance) && !(!is_active((*k_ptr)) &&
-						 (*k_ptr)->instance > 0))
-	  {
-	    *knuckle = *k_ptr;
-	    return(SUCCESS);
-	  }
-
-	status=1;
-      }
+    {
+      if (!(*k_ptr)->user)
+	continue;
+      if(string_eq((*k_ptr)->user->username,name))
+	{
+	  if(active && (!is_active((*k_ptr))))
+	    continue;
+	  
+	  if(((*k_ptr)->instance == instance) && !(!is_active((*k_ptr)) &&
+						   (*k_ptr)->instance > 0))
+	    {
+	      *knuckle = *k_ptr;
+	      return(SUCCESS);
+	    }
+	  
+	  status=1;
+	}
+    }
 
   if(status) 
     return(INSTANCE_NOT_FOUND);
