@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailscan.pl,v 1.4 2004-09-10 16:35:44 rbasch Exp $
+# $Id: mitmailscan.pl,v 1.5 2004-10-26 20:56:30 rbasch Exp $
 
 # Scan messages in an IMAP folder.
 
@@ -308,9 +308,11 @@ sub fetch_callback(@) {
     print "In FETCH callback: msgno $cb{-msgno} text $cb{-text}\n"
 	if $opt_debug;
     $number = $cb{-msgno};
-    foreach (split /\r\n/, $cb{-text}) {
-	$uid = $1 if /UID\s+(\d+)/io;
-	$flags = $1 if /FLAGS\s+\(([^\)]*)\)/io;
+    my @response_lines = split /\r\n/, $cb{-text};
+    $_ = shift @response_lines;
+    $uid = $1 if /\bUID\s+(\d+)/io;
+    $flags = $1 if /\bFLAGS\s+\(([^\)]*)\)/io;
+    foreach (@response_lines) {
 	$from = $_ if s/^From:\s*//io;
 	$to = $_ if s/^To:\s*//io;
 	$subject = $_ if s/^Subject:\s*//io;
