@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.5 1999-03-16 20:34:22 danw Exp $
+# $Id: Makefile,v 1.6 1999-03-18 22:32:20 danw Exp $
 
 DESTDIR=
 CC= cc
@@ -77,6 +77,11 @@ all: ${PROG}${EXE} pathnames${EXE}
 ${PROG}${EXE}: pathnames.h ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
 	${CC} ${CDEBUG} ${LDFLAGS} ${BOUNDS} -o ${PROG}${EXE} ${OBJS} \
 		tmp_version.${O} ${LIBBIND} ${SYSLIBS}
+
+ns_parser.c ns_parser.h: ns_parser.y
+	${YACC} ns_parser.y
+	mv y.tab.c ns_parser.c
+	mv y.tab.h ns_parser.h
 
 tmp_version.${O}: tmp_version.c
 
