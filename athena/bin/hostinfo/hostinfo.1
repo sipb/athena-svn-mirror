@@ -20,20 +20,18 @@
 .if t .ds ga \(ga
 .if t .tr *\(**
 .SH NAME
-hostinfo \- ask internet nameserver for a host's real name and network address
+hostinfo \- ask internet nameserver for a host information
 .SH SYNOPSIS
 .HP 5
 .B hostinfo
-[
-.I \-h
-] [
-.I \-a
+[options] [
+.I \-ns <name server>
 ]
 <
-.I hostname
+.I hostnames
 >
-<
-.I address
+ <
+.I addresses
 >
 .PP
 .SH DESCRIPTION
@@ -42,7 +40,7 @@ By default,
 this command displays
 the
 .I internet
-name and all network addresses for the
+name, all network addresses, host info and MX records for each
 host specified by
 .I hostname
 or
@@ -53,13 +51,21 @@ The command accepts the following options:
 The command displays only the hostname.
 .IP \fB\-a\fP 5
 The command displays only the address.
-.IP \fB\-n\fP 5
-The command suppresses hostinfo record lookup.
+.IP \fB\-i\fP 5
+The command displays only the host info record.
+.IP \fB\-m\fP 5
+The command displays only the MX records.
+.IP \fB\-q\fP 5
+The command suppresses hostinfo and MX record lookup which require separate
+queries.
 .PP
-This 
-.I hostinfo 
-will also print all available aliases and ip
-addresses, as well as the HINFO record, if available.
+Options are parsed left to right, with new options overriding previous ones 
+and taking effect only for hostnames which appear afterward. 
+.PP
+You may also query a specific name server by specifying the server name or
+address after the
+.I \-ns
+option.
 .PP
 .SH "SEE ALSO"
 hesinfo(1), named(8), resolver(3), resolver(5)

@@ -75,10 +75,11 @@ int h_errno;
 extern errno;
 
 static struct hostent *
-getanswer(answer, anslen, iquery)
+getanswer(answer, anslen, iquery, info)
 	querybuf *answer;
 	int anslen;
 	int iquery;
+        char **info;
 {
 	register HEADER *hp;
 	register u_char *cp;
@@ -159,6 +160,27 @@ getanswer(answer, anslen, iquery)
 			host.h_name = bp;
 			return(&host);
 		}
+		if (type == T_HINFO) {
+		        *info = (char *) cp;
+			cp += n;
+			*cp = '\0';
+			buflen -= n;
+			haveanswer++;
+			continue;
+		}
+		if (type == T_MX) {
+		        if ((n = dn_expand((char *)answer->buf, eom,
+				     cp+2, bp, buflen)) < 0) 
+			  {
+			    cp += n;
+			    continue;
+			  }
+			*info = (char *) bp;
+			cp += n;
+			buflen -= n;
+			haveanswer++;
+			continue;
+		}
 		if (iquery || type != T_A)  {
 #ifdef DEBUG
 			if (_res.options & RES_DEBUG)
@@ -216,80 +238,6 @@ getanswer(answer, anslen, iquery)
 }
 
 
-char *
-get_hinfo(answer, anslen, iquery)
-     querybuf *answer;
-     int anslen;
-     int iquery;
-{
-        register HEADER *hp;
-        register u_char *cp;
-        register int n;
-        u_char *eom;
-        char *bp, **ap;
-        int type, class, buflen, ancount, qdcount;
-        int haveanswer, getclass = C_ANY;
-        char **hap;
-	char *dat;
-
-        eom = answer->buf + anslen;
-        /*
-         * find first satisfactory answer
-         */
-        hp = &answer->hdr;
-        ancount = ntohs(hp->ancount);
-        qdcount = ntohs(hp->qdcount);
-        bp = hostbuf;
-        buflen = sizeof(hostbuf);
-        cp = answer->buf + sizeof(HEADER);
-        if (qdcount) {
-                if (iquery) {
-                        if ((n = dn_expand((char *)answer->buf, eom,
-                             cp, bp, buflen)) < 0) {
-                                h_errno = NO_RECOVERY;
-                                return ((char *) NULL);
-                        }
-                        cp += n + QFIXEDSZ;
-                        n = strlen(bp) + 1;
-                        bp += n;
-                        buflen -= n;
-                } else
-                        cp += dn_skipname(cp, eom) + QFIXEDSZ;
-                while (--qdcount > 0)
-                        cp += dn_skipname(cp, eom) + QFIXEDSZ;
-        } else if (iquery) {
-                if (hp->aa)
-                        h_errno = HOST_NOT_FOUND;
-                else
-                        h_errno = TRY_AGAIN;
-                return ((char *) NULL);
-        }
-
-        haveanswer = 0;
-        while (--ancount >= 0 && cp < eom) {
-                if ((n = dn_expand((char *)answer->buf, eom, cp, bp, buflen)) <
-0)
-                        break;
-                cp += n;
-		type = _getshort(cp);
-		cp += sizeof(u_short);
-		class = _getshort(cp);
-                cp += sizeof(u_short) + sizeof(u_long);
-                n = _getshort(cp);
-                cp += sizeof(u_short);
-                if (type == T_HINFO) {  
-		    cp[n] = '\0';		    
-		    return((char *) cp);
-                }
-		else
-		  break;
-		/* as you can see I have no idea what I am doing */
-       } 
-       return((char *) NULL); 	
-}
-  
-  
-
 struct hostent *
 gethostbyname(name)
 	char *name;
@@ -326,7 +274,7 @@ gethostbyname(name)
 		else
 			return ((struct hostent *) NULL);
 	}
-	return (getanswer(&buf, n, 0));
+	return (getanswer(&buf, n, 0, 0));
 }
 
 
@@ -358,7 +306,7 @@ gethostbyaddr(addr, len, type)
 			return (_gethtbyaddr(addr, len, type));
 		return ((struct hostent *) NULL);
 	}
-	hp = getanswer(&buf, n, 1);
+	hp = getanswer(&buf, n, 1, 0);
 	if (hp == NULL)
 		return ((struct hostent *) NULL);
 	hp->h_addrtype = type;
@@ -380,6 +328,7 @@ gethinfobyname(name)
 	register char *cp;
 	int n;
 	extern struct hostent *_gethtbyname();
+	char *info;
 
 	/*
 	 * disallow names consisting only of digits/dots, unless
@@ -407,31 +356,40 @@ gethinfobyname(name)
 			return (_gethtbyaddr(addr, len, type));*/
 		return ((char *) NULL);
 	}
-	return((char *) get_hinfo(&buf, n, 0));
+	if(getanswer(&buf, n, 0, &info))
+	  return(info);
+	else
+	  return(NULL);
 }
 
 
-
-
 char *
-gethinfobyaddr(addr, len, type)
-	char *addr;
-	int len, type;
+getmxbyname(name)
+	char *name;
 {
-	int n;
 	querybuf buf;
-	register struct hostent *hp;
-	char qbuf[MAXDNAME];
-	extern struct hostent *_gethtbyaddr();
-	
-	if (type != AF_INET)
-		return ((char *) NULL);
-	(void)sprintf(qbuf, "%u.%u.%u.%u.in-addr.arpa",
-		((unsigned)addr[3] & 0xff),
-		((unsigned)addr[2] & 0xff),
-		((unsigned)addr[1] & 0xff),
-		((unsigned)addr[0] & 0xff));
-	n = res_query(qbuf, C_IN, T_HINFO, (char *)&buf, sizeof(buf));
+	register char *cp;
+	int n;
+	extern struct hostent *_gethtbyname();
+	char *info;
+
+	/*
+	 * disallow names consisting only of digits/dots, unless
+	 * they end in a dot.
+	 */
+	if (isdigit(name[0]))
+		for (cp = name;; ++cp) {
+			if (!*cp) {
+				if (*--cp == '.')
+					break;
+				h_errno = HOST_NOT_FOUND;
+				return ((char  *) NULL);
+			}
+			if (!isdigit(*cp) && *cp != '.') 
+				break;
+		}
+
+	n = res_search(name, C_IN, T_MX, buf.buf, sizeof(buf));
 	if (n < 0) {
 #ifdef DEBUG
 		if (_res.options & RES_DEBUG)
@@ -441,11 +399,11 @@ gethinfobyaddr(addr, len, type)
 			return (_gethtbyaddr(addr, len, type));*/
 		return ((char *) NULL);
 	}
-	return((char *) get_hinfo(&buf, n, 0));
+	if(getanswer(&buf, n, 0, &info))
+	  return(info);
+	else
+	  return(NULL);
 }
-
-
-
 
 
 _sethtent(f)
