@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lprm.c,v 1.2 1999-05-25 18:40:04 danw Exp $";
+"$Id: lprm.c,v 1.3 1999-07-19 19:04:02 danw Exp $";
 
 
 /***************************************************************************
@@ -197,6 +197,10 @@ void Do_removal(char **argv)
 	Get_printer();
 	Fix_Rm_Rp_info();
 	/* fix up authentication */
+	if( Auth_JOB ){
+		/* Fix_auth will update Auth_DYN later */
+		Set_str_value( &PC_entry_line_list, "auth", Auth_JOB );
+	}
 	if( Check_for_rg_group( Logname_DYN ) ){
 		fprintf( stderr,
 			"cannot use printer - not in privileged group\n" );
@@ -281,7 +285,7 @@ void setmessage (va_alist) va_dcl
 extern char *next_opt;
 void usage(void);
 char LPRM_optstr[]   /* LPRM options */
- = "aD:P:V" ;
+ = "A:aD:P:V" ;
 char CLEAN_optstr[]   /* CLEAN options */
  = "D:" ;
 
@@ -322,6 +326,7 @@ void Get_parms(int argc, char *argv[] )
 	} else {
 		while ((option = Getopt (argc, argv, LPRM_optstr )) != EOF)
 		switch (option) {
+		case 'A': Auth_JOB = safestrdup(Optarg,__FILE__,__LINE__); break;
 		case 'a': All_printers = 1; Set_DYN(&Printer_DYN,"all"); break;
 		case 'D': Parse_debug(Optarg, 1); break;
 		case 'V': ++Verbose; break;
@@ -336,8 +341,7 @@ void Get_parms(int argc, char *argv[] )
 }
 
 char *clean_msg = N_("\
-usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
-  -A           - use authentication\n\
+usage: %s [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   -Ddebuglevel - debug level\n\
   user           removes user jobs\n\
   all            removes all jobs\n\
@@ -350,9 +354,9 @@ usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   Note: lprm removes only jobs for which you have removal permission\n");
 
 char *lprm_msg = N_("\
-usage: %s [-A] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
+usage: %s [-A type] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
   -a           - all printers\n\
-  -A           - use authentication\n\
+  -A type      - use specified type of authentication\n\
   -Pprinter    - printer (default PRINTER environment variable)\n\
   -Ddebuglevel - debug level\n\
   -V           - show version information\n\
