@@ -32,6 +32,7 @@
 #include "k5-int.h"
  
 extern char *line;		/* see sys_term.c */
+extern char *UserNameRequested;
 extern int k5_haveauth;
 
 /* Decode, decrypt and store the forwarded creds in the local ccache. */
@@ -52,7 +53,7 @@ rd_and_store_for_creds(context, auth_context, inbuf, ticket, lusername)
 
     k5_haveauth = 0;
 
-    if (!(pwd = (struct passwd *) getpwnam(lusername))) 
+    if (!UserNameRequested)
 	return -1;
 
     if (retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL)) 
