@@ -1,3 +1,42 @@
+Tue Sep 04 16:28:11 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, Makefile.am, esound.pc.in: add a pkg-config file
+
+2001-07-13  Alex Larsson  <alexl@redhat.com>
+
+	* esdlib.c:
+	* esd.c:
+	Fix esd launch race condition. USR1 could arrive before pause()
+	leading to a 10 second pause.
+
+2001-07-07  Drazen Kacar  <dave@arsdigita.com>
+
+	* configure.in: Check whether the C compiler supports inline.
+
+	* audio_solaris.c: Recognize SUNW,audiots as supported device.
+	Make explicit checks for all devices we know we don't support.
+	If we encounter unknown device, print out the warning, but
+	attempt to use it. Added EINTR wrappers all around the place.
+	Added checks for more esd devices (ports in Solaris terminology).
+	Added flush function.
+
+2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Added esd-config.in to EXTRA_DIST.
+	
+2001-03-26  Darin Adler  <darin@eazel.com>
+
+	* docs/.cvsignore: Ignore Makefile.
+
+2001-03-11  Timur Bakeyev <mc@bat.ru>
+
+	* Makefile.am: Changed the order of libraries in LDADD. Some old
+	linkers really depend from it...
+	
+2001-01-23  Gregory Leblanc  <gleblanc@cu-portland.edu>
+
+	* docs/esound.sgml: updated/tested for use with nautilus
+
 2000-11-29  Stanislav Brabec  <utx@penguin.cz>
 
 	* esd.m4: New check AM_ESD_SUPPORTS_MULTIPLE_RECORD.

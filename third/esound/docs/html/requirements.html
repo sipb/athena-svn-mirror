@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Downloading, Compiling, and Installing</TITLE
+>Requirements</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.64
@@ -10,14 +10,17 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 REL="HOME"
 TITLE="EsounD"
 HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction"
+HREF="introduction.html"><LINK
 REL="PREVIOUS"
-TITLE="Requirements"
-HREF="requirements.html"><LINK
+TITLE="Introduction"
+HREF="introduction.html"><LINK
 REL="NEXT"
-TITLE="Compiling"
-HREF="compiling.html"></HEAD
+TITLE="Downloading, Compiling, and Installing"
+HREF="downloading-compiling-installing.html"></HEAD
 ><BODY
-CLASS="CHAPTER"
+CLASS="SECT1"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -42,20 +45,20 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="requirements.html"
+HREF="introduction.html"
 >&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
-></TD
+>Introduction</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="compiling.html"
+HREF="downloading-compiling-installing.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -64,55 +67,31 @@ HREF="compiling.html"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
-CLASS="CHAPTER"
-><H1
-><A
-NAME="DOWNLOADING-COMPILING-INSTALLING"
->Downloading, Compiling, and Installing</A
-></H1
-><DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="DOWNLOADING"
->Downloading</A
+NAME="REQUIREMENTS"
+>Requirements</A
 ></H1
 ><P
->	The Enlightened Sound Daemon is available for download from
-
-	<P
-></P
-><UL
-><LI
-><P
-><A
-HREF="ftp://ftp.enlightenment.org/pub/ricware/esound-0.2.4.tar.gz"
-TARGET="_top"
->		Enlightenment.org public ftp site</A
-></P
-></LI
-><LI
-><P
-><A
-HREF="http://winblowz.com/~e/files/TAR/esound-0.2.4.tar.gz"
-TARGET="_top"
->		Winblowz.com Enlightenment Mirror Site</A
-></P
-></LI
-><LI
-><P
-><A
-HREF="http://www.netcom.com/~ericmit/esound_0_2_4.tgz"
-TARGET="_top"
->		The EsounD Web Site</A
-></P
-></LI
-></UL
->
-
+>	The Enlightened Sound Daemon requires the following:
       </P
-></DIV
+><P
+>	Linux, version 2.??? or higher.  I run 2.0.34-RH5.1, but I don't think
+	the sound API has significantly changed recently.  If you find it to
+	be incompatible with different kernel/OSS revs, let me know.
+      </P
+><P
+>And of course, a sound device.
+      </P
+><P
+>	Currently, this only runs under Linux.  Everything except recording
+	seems to work ok on SGI/Irix soon.  Reports indicate it works ok on
+	Solaris.  Ports to other platforms are requested.  Basic drivers for
+	other platforms are in the distribution, but may need work from what's
+	in the driver_platform.c files.
+      </P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -129,7 +108,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="requirements.html"
+HREF="introduction.html"
 >&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
@@ -145,7 +124,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="compiling.html"
+HREF="downloading-compiling-installing.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -154,17 +133,20 @@ HREF="compiling.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Requirements</TD
+>Introduction</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="introduction.html"
+>Up</A
+></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Compiling</TD
+>Downloading, Compiling, and Installing</TD
 ></TR
 ></TABLE
 ></DIV

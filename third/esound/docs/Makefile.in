@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -199,13 +199,12 @@ doc: $(DOCS)
 
 esound/index.html: esound.sgml
 	@DB2HTML@ $(srcdir)/esound.sgml
-	cp esound/book1.html esound/index.html
 
 esound.ps: esound.sgml
 	cd $(srcdir) && @DB2PS@ esound.sgml
 
 distclean: clean
-	rm -rf ./esound
+	rm -rf $(srcdir)/esound $(srcdir)/esound.junk
 	rm -f $(srcdir)/esound.dvi $(srcdir)/esound.ps $(srcdir)/esound.tex $(srcdir)/esound.aux $(srcdir)/esound.log
 
 clean:

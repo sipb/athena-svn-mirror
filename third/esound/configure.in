@@ -4,7 +4,7 @@ AC_INIT(esd.h)
 
 ESD_MAJOR_VERSION=0
 ESD_MINOR_VERSION=2
-ESD_MICRO_VERSION=22
+ESD_MICRO_VERSION=23
 ESD_VERSION=$ESD_MAJOR_VERSION.$ESD_MINOR_VERSION.$ESD_MICRO_VERSION
 
 dnl set version info for libesd.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
@@ -39,6 +39,7 @@ dnl Check for compiler environment
 
 AC_C_CONST
 AC_C_BIGENDIAN
+AC_C_INLINE
 
 dnl Check for system libs needed
 
@@ -346,6 +347,7 @@ AC_OUTPUT([
 Makefile
 esd-config
 esound.spec
+esound.pc
 esddsp
 docs/Makefile
 ])
