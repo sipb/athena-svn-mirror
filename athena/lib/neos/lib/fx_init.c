@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.3 1996-09-20 04:36:12 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.4 1997-11-14 22:23:22 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.3 1996-09-20 04:36:12 ghudson Exp $";
+static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.4 1997-11-14 22:23:22 ghudson Exp $";
 #endif /* lint */
 
 #include <netdb.h>
@@ -22,11 +22,6 @@ static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/ath
 #include <krb.h>
 #include <des.h>
 #include "fxcl.h"
-
-/* Hack!  Ensure we are using the RIGHT version of the RPC
- * Library. */
-
-extern int link_with_libfxrpc;
 
 /*
  * fx_init -- establish client connection for FX *
@@ -47,10 +42,6 @@ fx_init(fxp, resp)
 #ifndef KERBEROS
   struct passwd *pw;
 #endif /* KERBEROS */
-
-  /* The following line forces us to confirm at link time
-    that we have the right version of the rpc lib linked. */
-  link_with_libfxrpc = 1;
 
   /* establish RPC client connection */
   fxp->cl = clnt_create(fxp->host, FXSERVER, FXVERS, "tcp");
