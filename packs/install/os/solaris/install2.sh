@@ -41,8 +41,9 @@ chmod 1777 /root/var/rtmp
 echo "installing the os packages"
 case `uname -m` in
 sun4u)
-    for i in `cat /cdrom/.order.install`
-      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i ; done 2>/dev/null
+    for i in `cat /cdrom/.order.install`; do 
+        echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i
+    done 2>/root/var/athena/install.pkgerr
 	;;
 *)
     echo "unsupported architecture - contact Athena administration"
@@ -74,7 +75,7 @@ cp -p -r /srvd/kernel/fs/* /root/kernel/fs/
 cp -p -r /srvd/kernel/fs/sparcv9/afs /root/kernel/fs/sparcv9/
 echo "Create devices and dev"
 cd /root
-/usr/sbin/devfsadm -r /root -t /root/etc/devlink.tab -p /root/etc/path-to_inst
+/usr/sbin/devfsadm -r /root -t /root/etc/devlink.tab -p /root/etc/path_to_inst
 
 chmod 755 /root/dev
 chmod 755 /root/devices
