@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Makefile,v 1.1 1990-11-18 18:29:50 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Makefile,v 1.2 1990-11-18 21:56:59 probe Exp $
 
 all:
 
@@ -19,5 +19,4 @@ install:
 	install -c register /usr/athena/lib/login/register
 	install -c xcluster /usr/athena/lib/login/xcluster
 	install -c xinfo /usr/athena/lib/login/xinfo
-	install -c xsession /usr/athena/lib/init/xsession
 
