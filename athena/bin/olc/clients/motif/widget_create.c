@@ -1,79 +1,104 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains the create procedures for the widgets used in the
+ * X-based interface.
+ *
+ *      Chris VanHaren
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/widget_create.c,v $
+ *      $Author: vanharen $
+ */
+
+#ifndef lint
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/widget_create.c,v 1.2 1989-07-31 15:07:38 vanharen Exp $";
+#endif
+
 #include "xolc.h"
 
-Widget			/* Widget ID's */
-  widget_askbox,
-  widget_motdbox,
-  widget_motdframe,
-  widget_motdlabel,
-  widget_helpbox,
-  widget_box_button[4],
-  widget_errorbox,
-  widget_replaybox,
-  toplevel,
-  main_form;
-
-  
 void widget_create (w, tag, callback_data)
      Widget w;
      int *tag;
      XmAnyCallbackStruct *callback_data;
 {
   Arg arg;
-    static char *motd =
-"Welcome to OLC, Project Athena's On-Line Consulting system.\nCopyright (c) 1989 by the Massachusetts Institute of Technology.\n";
-  static char string[1024];
-    
+
   switch (*tag) {
-  case ASKBOX:
-    printf ("ask created\n");
-    widget_askbox = w;
+  case NEWQ_BTN:
+    w_newq_btn = w;
     break;
-  case REPLAYBOX:
-    widget_replaybox = w;
-    fscanf(popen("olc replay", "r"), "%1023c", string);
-    XmTextSetString(widget_replaybox, string);
-    printf ("replay initialized\n");
+  case CONTQ_BTN:
+    w_contq_btn = w;
     break;
-  case HELPBOX:
-    widget_helpbox = w;
-    widget_box_button[0] =
-      (Widget)(XmMessageBoxGetChild(widget_helpbox,
-				    XmDIALOG_CANCEL_BUTTON));
-    widget_box_button[1] =
-      (Widget)(XmMessageBoxGetChild(widget_helpbox,
-				    XmDIALOG_HELP_BUTTON));
-    XtDestroyWidget(widget_box_button[0]);
-    XtDestroyWidget(widget_box_button[1]);
+  case STOCK_BTN:
+    w_stock_btn = w;
+    break;
+  case QUIT_BTN:
+    w_quit_btn = w;
+    break;
+  case HELP_BTN:
+    w_help_btn = w;
+    break;
+  case CONTQ_FORM:
+    w_contq_form = w;
+    break;
+  case CONNECT_LBL:
+    w_connect_lbl = w;
+    break;
+  case TOPIC_LBL:
+    w_topic_lbl = w;
+    break;
+  case REPLAY_SCRL:
+    w_replay_scrl = w;
+    break;
+  case SEND_BTN:
+    w_send_btn = w;
+    break;
+  case DONE_BTN:
+    w_done_btn = w;
+    break;
+  case CANCEL_BTN:
+    w_cancel_btn = w;
+    break;
+  case SAVELOG_BTN:
+    w_savelog_btn = w;
+    break;
+  case MOTD_BTN:
+    w_motd_btn = w;
+    break;
+  case UPDATE_BTN:
+    w_update_btn = w;
+    break;
+  case MOTD_DLG:
+    w_motd_dlg = w;
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
+    break;
+  case HELP_DLG:
+    w_help_dlg = w;
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
+    break;
+  case QUIT_DLG:
+    w_quit_dlg = w;
     XtSetArg(arg, XmNmessageString,
-	     XmStringLtoRCreate(
-"This is the X version of the On-Line Consulting program.\n\nChoose a topic for your question and enter your question when\nprompted.  You will be connected automatically to the next available\nconsultant.  If you wish to send a message to the consultant, click on the\n'send' button.  When you are satisfied that your question has been answered\ncompletely, click on the 'done' button.  If, after entering a question, you\ndecide you no longer want to continue the question, or if you discover the\nanswer on your own, you can remove your question with the 'cancel' button.\n\nThe 'save log' button will allow you to keep a copy of this conversation in\na file, and the 'motd' button will show you the 'message of the day'.",
-""));
-    XtSetValues(widget_helpbox, &arg, 1);
+	     XmStringLtoRCreate("`Quit' means that you simply want to get out of this program.\nTo continue this question, just type `xolc' again.  Remember, your question\nis still active until you use the `done' or `cancel' button.  It will remain\nactive until a consultant can answer it.  If you logout, a consultant will\nsend you mail.",
+				""));
+    XtSetValues(w_quit_dlg, &arg, 1);
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
     break;
-  case ERRORBOX:
-    widget_errorbox = w;
-    widget_box_button[2] =
-      (Widget)(XmMessageBoxGetChild(widget_errorbox,
-				    XmDIALOG_HELP_BUTTON));
-    widget_box_button[3] =
-      (Widget)(XmMessageBoxGetChild(widget_errorbox,
-				    XmDIALOG_CANCEL_BUTTON));
-    XtDestroyWidget(widget_box_button[2]);
-    XtDestroyWidget(widget_box_button[3]);
+  case ERROR_DLG:
+    w_error_dlg = w;
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
+    XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
     break;
-  case MOTDBOX:
-    widget_motdbox = w;
-    XtSetArg(arg, XmNmessageString, XmStringLtoRCreate(motd,""));
-    XtSetValues(widget_motdbox, &arg, 1);
-    printf ("motdbox initialized\n");
+  case MOTD_FORM:
+    w_motd_form = w;
     break;
-  case MOTDFRAME:
-    widget_motdframe = w;
-    printf ("motd frame creation\n");
-    break;
-  case MOTD:
-    widget_motdlabel = w;
-    printf ("motd label creation\n");
+  case MOTD_SCRL:
+    w_motd_scrl = w;
     break;
   }
 }
