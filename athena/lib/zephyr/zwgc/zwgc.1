@@ -1,4 +1,4 @@
-.\"	$Id: zwgc.1,v 1.25 2002-09-10 00:32:16 ghudson Exp $
+.\"	$Id: zwgc.1,v 1.26 2003-07-17 21:14:30 ghudson Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -810,6 +810,14 @@ entirely.
 .TP
 Transient
 Secondary transient determining value [default False]
+.TP
+scrollDelete 
+(logical) If true, scrolling over a zgram will cause it
+to be deleted
+.TP
+ScrollDelete
+Secondary value to enable deletion of a zgram by scrolling over it
+[default False]
 .TP
 enableDelete
 (logical) If true, zwgc creates a WM_PROTOCOLS property on all zgrams, with
