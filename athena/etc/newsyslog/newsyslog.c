@@ -3,21 +3,23 @@
  * 		keeping the a specified number of backup files around.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v $
- * 	$Author: bert $    $Revision: 1.5 $
+ * 	$Author: bert $    $Revision: 1.6 $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.5 1996-01-29 03:40:46 bert Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.6 1996-04-30 01:00:44 bert Exp $";
 #endif  /* lint */
+
+#include "config.h"
 
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#ifndef VAX
+#ifdef HAVE_STRING_H
 #include <string.h>
 #else
-#include <strings.h>  /* only VAXen don't have string.h */
+#include <strings.h>  /* only VAXen don't have string.h --bert 15mar96 */
 #endif
 #include <ctype.h>
 #include <signal.h>
@@ -38,19 +40,11 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/new
 #define CONF "/etc/athena/newsyslog.conf"	/* Configuration file */
 #define SYSLOG_PID "/etc/syslog.pid"		/* Pidfile for syslogd */
 
-#ifdef SOLARIS
-#define COMPRESS "/usr/bin/compress"		/* File compression program */
-#else
-#ifdef sgi
-#define COMPRESS "/usr/bsd/compress"		/* File compression program */
-#else
-#define COMPRESS "/usr/ucb/compress"		/* File compression program */
-#endif /* sgi */
-#endif /* SOLARIS */
+/* COMPRESS is now defined in config.h */
 
 #ifndef SLEEP_DELAY
-#define SLEEP_DELAY 1		/* Delay used after restarting each daemon, */
-#endif				/* to give it time to clean up (in seconds) */
+#define SLEEP_DELAY 1	 /* Default delay used after restarting each daemon, */
+#endif			         /* to give it time to clean up (in seconds) */
 
 #define kbytes(size)  (((size) + 1023) >> 10)
 #ifdef _IBMR2
@@ -169,7 +163,7 @@ int isnumber(char *string)
     return(1);
 }
 
-#ifndef SYSV
+#ifndef HAVE_STRDUP
 /* Duplicate a string using malloc */
 char *strdup (register char *strp)
 {
@@ -919,7 +913,7 @@ int age_old_log (char *file)
 	return(-1);
     free(last);
 
-#ifdef MINUTES    /* this is for debugging */
+#ifdef MINUTES    /* this is for debugging: times in minutes instead of hrs */
     return( (int) (timenow - sb.st_mtime + 30) / 60);
 #else
     return( (int) (timenow - sb.st_mtime + 1800) / 3600);
@@ -959,7 +953,12 @@ void compress_log(char *log, struct flag_entry *flag)
 	    exit(1);
 	} else if (!pid) {
 	    flag->args[flag->nargs] = log;
+#ifdef USE_EXECVP
+	    /* execvp() looks for the program in PATH (unless path is given) */
+	    (void) execvp(flag->args[0], flag->args);
+#else
 	    (void) execv(flag->args[0], flag->args);
+#endif
 	    fprintf(stderr,"%s: ",progname);
 	    perror(flag->args[0]);
 	    exit(1);
@@ -1226,8 +1225,10 @@ int main(int argc, char **argv)
 	}
 
     for (p = q; p; p = p->next) {
-	if (verbose>1) printf("Processing %s\n", p->log);
-	do_compress(p);
+        if (p->flags & CE_ACTIVE) {
+	    if (verbose>1) printf("Processing %s\n", p->log);
+	    do_compress(p);
+	}
     }
 
     exit(0);
