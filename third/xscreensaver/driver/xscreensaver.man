@@ -22,6 +22,8 @@ xss - graphics hack and screen locker, launched when the user is idle
 [\-lock\-mode] \
 [\-no\-lock\-mode] \
 [\-lock\-timeout \fIint\fP] \
+[\-start\-locked] \
+[\-no\-start\-locked] \
 [\-visual \fIvisual\fP] \
 [\-install] \
 [\-no\-install] \
@@ -73,12 +75,13 @@ screensaver settings and graphics modes.
 .B Note:
 unlike
 .BR xlock (1),
-xss has a client-server model: the \fIxss\fP program is a
+xss normally has a client-server model: the \fIxss\fP program is a
 daemon that runs in the background; it is controlled by the foreground
 .BR xss-demo (1)
 and
 .BR xss-command (1)
-programs.
+programs. However, The \fI\-start\-locked\fP command-line option (or
+the \fI.startLocked\fP resource) makes it behave like \fBxlock\fP.
 .SH CONFIGURATION
 Options to \fIxss\fP are specified in one of two places: in 
 a \fI.xscreensaver\fP file in your home directory; or in the X resource
@@ -148,6 +151,10 @@ at 15 minutes or later (that is, \fI\-lock\-timeout\fP minutes after
 activation) then a password would be required.  The default is 0, meaning
 that if locking is enabled, then a password will be required as soon as the 
 screen blanks.
+.TP 8
+.B startLocked\fP (class \fBBoolean\fP)
+Tells xss to start up locked and exit immediately after the screen is
+unlocked.
 .TP 8
 .B passwdTimeout\fP (class \fBTime\fP)
 If the screen is locked, then this is how many seconds the password dialog box
@@ -502,6 +509,12 @@ Same as setting the \fIlock\fP resource to \fIfalse\fP.
 .TP 8
 .B \-lock\-timeout \fIminutes\fP
 Same as the \fIlockTimeout\fP resource.
+.TP 8
+.B \-start\-locked
+Same as setting the \fstartLocked\fP resource to \fItrue\fP.
+.TP 8
+.B \-no\-start\-locked
+Same as setting the \fstartLocked\fP resource to \fIfalse\fP.
 .TP 8
 .B \-visual \fIvisual\fP
 Same as the \fIvisualID\fP resource.

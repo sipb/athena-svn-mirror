@@ -174,6 +174,8 @@ static XrmOptionDescRec options [] = {
   { "-no-lock",		   ".lock",		XrmoptionNoArg, "off" },
   { "-lock-timeout",	   ".lockTimeout",	XrmoptionSepArg, 0 },
   { "-lock-vts",	   ".lockVTs",		XrmoptionNoArg, "on" },
+  { "-start-locked",	   ".startLocked",	XrmoptionNoArg, "on" },
+  { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
   { "-no-lock-vts",	   ".lockVTs",		XrmoptionNoArg, "off" },
   { "-visual",		   ".visualID",		XrmoptionSepArg, 0 },
   { "-install",		   ".installColormap",	XrmoptionNoArg, "on" },
@@ -874,7 +876,8 @@ main_loop (saver_info *si)
 
   while (1)
     {
-      sleep_until_idle (si, True);
+      if (!p->start_locked_p)
+	sleep_until_idle (si, True);
 
       if (p->verbose_p)
 	{
@@ -900,10 +903,11 @@ main_loop (saver_info *si)
 
 
 #ifndef NO_LOCKING
-      if (!si->demoing_p &&		/* if not going into demo mode */
-	  p->lock_p &&			/* and locking is enabled */
-	  !si->locking_disabled_p &&	/* and locking is possible */
-	  p->lock_timeout == 0)		/* and locking is not timer-deferred */
+      if ((!si->demoing_p &&		/* if not going into demo mode */
+	   p->lock_p &&			/* and locking is enabled */
+	   !si->locking_disabled_p &&	/* and locking is possible */
+	   p->lock_timeout == 0) ||	/* and locking is not timer-deferred */
+	  (p->start_locked_p))		/* OR we're starting locked */
 	si->locked_p = True;		/* then lock right now. */
 
       /* locked_p might be true already because of the above, or because of
@@ -969,6 +973,9 @@ main_loop (saver_info *si)
 	  XtRemoveTimeOut (si->lock_id);
 	  si->lock_id = 0;
 	}
+
+      if (p->start_locked_p)
+	break;
 
       if (p->verbose_p)
 	fprintf (stderr, "%s: awaiting idleness.\n", blurb());

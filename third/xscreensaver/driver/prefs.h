@@ -35,6 +35,8 @@ struct saver_preferences {
 
   Bool lock_p;			/* whether to lock as well as save */
   Bool lock_vt_p;		/* whether to lock VTs too, if possible */
+  Bool start_locked_p;		/* whether to start locked, and exit
+				   on unlock */
 
   Bool fade_p;			/* whether to fade to black, if possible */
   Bool unfade_p;		/* whether to fade from black, if possible */
