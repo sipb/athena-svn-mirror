@@ -1,0 +1,50 @@
+<!-- ##### SECTION Title ##### -->
+ETableConfig
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF ETableConfig ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_TABLE_CONFIG_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION e_table_config_new ##### -->
+<para>
+
+</para>
+
+@spec: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_config_construct ##### -->
+<para>
+
+</para>
+
+@etco: 
+@spec: 
+@state: 
+@Returns: 
+
+

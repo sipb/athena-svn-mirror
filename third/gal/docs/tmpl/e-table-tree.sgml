@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+e-table-tree
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF u ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_group_new ##### -->
+<para>
+
+</para>
+
+@title: 
+@table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_new_leaf ##### -->
+<para>
+
+</para>
+
+@title: 
+@Returns: 
+
+

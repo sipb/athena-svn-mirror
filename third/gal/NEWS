@@ -1,0 +1,19 @@
+0.8
+    Almer	Simplify the colour combo/palette/group relationship.
+    Jody	Add instance code to colour groups.
+
+New stuff in gal-0.4.1 (since gal-0.2)
+
+  - Lots of bug fixes.
+
+  - Tooltips in ETable behave more nicely.
+
+  - Stronger font handling.
+
+  - Lots more translations.
+
+  - ETree is much faster now.
+
+  - ETable headers are much prettier now.
+
+  - Sorting in ETree works much better now.

@@ -1,0 +1,47 @@
+<refentry id="gal-e-table-col-dnd" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-table-col-dnd</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-table-col-dnd</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="TARGET-ETABLE-COL-TYPE-CAPS">TARGET_ETABLE_COL_TYPE</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="TARGET-ETABLE-COL-TYPE-CAPS">TARGET_ETABLE_COL_TYPE</title>
+<programlisting>#define TARGET_ETABLE_COL_TYPE "application/x-etable-column-header"
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

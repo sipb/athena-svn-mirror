@@ -1,0 +1,83 @@
+<refentry id="ETextEventProcessorEmacsLike" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETextEventProcessorEmacsLike</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETextEventProcessorEmacsLike</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TEXT-EVENT-PROCESSOR-EMACS-LIKE-TYPE-CAPS">E_TEXT_EVENT_PROCESSOR_EMACS_LIKE_TYPE</link>
+struct      <link linkend="ETextEventProcessorEmacsLike-struct">ETextEventProcessorEmacsLike</link>;
+<link linkend="ETextEventProcessor">ETextEventProcessor</link>* <link linkend="e-text-event-processor-emacs-like-new">e_text_event_processor_emacs_like_new</link>
+                                            (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="ETextEventProcessor">ETextEventProcessor</link>
+         +----ETextEventProcessorEmacsLike
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TEXT-EVENT-PROCESSOR-EMACS-LIKE-TYPE-CAPS">E_TEXT_EVENT_PROCESSOR_EMACS_LIKE_TYPE</title>
+<programlisting>#define E_TEXT_EVENT_PROCESSOR_EMACS_LIKE_TYPE			(e_text_event_processor_emacs_like_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorEmacsLike-struct">struct ETextEventProcessorEmacsLike</title>
+<programlisting>struct ETextEventProcessorEmacsLike;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-text-event-processor-emacs-like-new">e_text_event_processor_emacs_like_new ()</title>
+<programlisting><link linkend="ETextEventProcessor">ETextEventProcessor</link>* e_text_event_processor_emacs_like_new
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

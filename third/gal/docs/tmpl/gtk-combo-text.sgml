@@ -1,0 +1,69 @@
+<!-- ##### SECTION Title ##### -->
+GtkComboText
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GtkComboText ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gtk_combo_text_new ##### -->
+<para>
+
+</para>
+
+@is_scrolled: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_combo_text_set_case_sensitive ##### -->
+<para>
+
+</para>
+
+@combo_text: 
+@val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_combo_text_select_item ##### -->
+<para>
+
+</para>
+
+@combo_text: 
+@elem: 
+
+
+<!-- ##### FUNCTION gtk_combo_text_set_text ##### -->
+<para>
+
+</para>
+
+@combo_text: 
+@text: 
+
+
+<!-- ##### FUNCTION gtk_combo_text_add_item ##### -->
+<para>
+
+</para>
+
+@combo_text: 
+@item: 
+@value: 
+
+

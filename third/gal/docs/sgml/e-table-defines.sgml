@@ -1,0 +1,113 @@
+<refentry id="gal-e-table-defines" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-table-defines</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-table-defines</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BUTTON-HEIGHT-CAPS">BUTTON_HEIGHT</link>
+#define     <link linkend="BUTTON-PADDING-CAPS">BUTTON_PADDING</link>
+#define     <link linkend="GROUP-INDENT-CAPS">GROUP_INDENT</link>
+#define     <link linkend="HEADER-PADDING-CAPS">HEADER_PADDING</link>
+#define     <link linkend="MIN-ARROW-SIZE-CAPS">MIN_ARROW_SIZE</link>
+void        (<link linkend="ETableForeachFunc">*ETableForeachFunc</link>)            (int model_row,
+                                             <link linkend="gpointer">gpointer</link> closure);
+enum        <link linkend="ETableCursorMode">ETableCursorMode</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BUTTON-HEIGHT-CAPS">BUTTON_HEIGHT</title>
+<programlisting>#define BUTTON_HEIGHT        10
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BUTTON-PADDING-CAPS">BUTTON_PADDING</title>
+<programlisting>#define BUTTON_PADDING       2
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GROUP-INDENT-CAPS">GROUP_INDENT</title>
+<programlisting>#define GROUP_INDENT         (BUTTON_HEIGHT + (BUTTON_PADDING * 2))
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HEADER-PADDING-CAPS">HEADER_PADDING</title>
+<programlisting>#define HEADER_PADDING 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MIN-ARROW-SIZE-CAPS">MIN_ARROW_SIZE</title>
+<programlisting>#define MIN_ARROW_SIZE 10
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableForeachFunc">ETableForeachFunc ()</title>
+<programlisting>void        (*ETableForeachFunc)            (int model_row,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>model_row</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ETableCursorMode">enum ETableCursorMode</title>
+<programlisting>typedef enum
+{
+	E_TABLE_CURSOR_LINE,
+	E_TABLE_CURSOR_SIMPLE,
+} ETableCursorMode;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

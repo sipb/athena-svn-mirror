@@ -1,0 +1,148 @@
+<!-- ##### SECTION Title ##### -->
+ETableSelectionModel
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_SELECTION_MODEL_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSelectionModel ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_selection_model_is_row_selected ##### -->
+<para>
+
+</para>
+
+@selection: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_foreach ##### -->
+<para>
+
+</para>
+
+@selection: 
+@callback: 
+@closure: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_do_something ##### -->
+<para>
+
+</para>
+
+@selection: 
+@row: 
+@col: 
+@state: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_maybe_do_something ##### -->
+<para>
+
+</para>
+
+@selection: 
+@row: 
+@col: 
+@state: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_clear ##### -->
+<para>
+
+</para>
+
+@selection: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_selected_count ##### -->
+<para>
+
+</para>
+
+@selection: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_select_all ##### -->
+<para>
+
+</para>
+
+@selection: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_invert_selection ##### -->
+<para>
+
+</para>
+
+@selection: 
+
+
+<!-- ##### FUNCTION e_table_selection_model_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### SIGNAL ETableSelectionModel::cursor-changed ##### -->
+<para>
+
+</para>
+
+@etableselectionmodel: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ETableSelectionModel::selection-changed ##### -->
+<para>
+
+</para>
+
+@etableselectionmodel: the object which received the signal.
+
+<!-- ##### ARG ETableSelectionModel:model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableSelectionModel:sorter ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableSelectionModel:cursor_row ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableSelectionModel:cursor_col ##### -->
+<para>
+
+</para>
+

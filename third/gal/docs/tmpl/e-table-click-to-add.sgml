@@ -1,0 +1,71 @@
+<!-- ##### SECTION Title ##### -->
+ETableClickToAdd
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_CLICK_TO_ADD_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableClickToAdd ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_click_to_add_commit ##### -->
+<para>
+
+</para>
+
+@etcta: 
+
+
+<!-- ##### SIGNAL ETableClickToAdd::cursor-change ##### -->
+<para>
+
+</para>
+
+@etableclicktoadd: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG ETableClickToAdd:header ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableClickToAdd:model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableClickToAdd:message ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableClickToAdd:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableClickToAdd:height ##### -->
+<para>
+
+</para>
+
