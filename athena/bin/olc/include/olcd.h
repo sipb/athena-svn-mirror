@@ -18,7 +18,7 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olcd.h,v 1.50 1999-06-28 22:52:28 ghudson Exp $
+ *	$Id: olcd.h,v 1.51 1999-06-29 21:31:06 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -31,6 +31,7 @@
 #include <common.h>
 #include <server_defines.h>
 #include <server_structs.h>
+#include <sys/param.h>
 
 #ifdef STDC_HEADERS
 #include <stdarg.h>
