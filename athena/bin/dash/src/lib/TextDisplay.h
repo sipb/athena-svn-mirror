@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.h,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -36,6 +36,7 @@ typedef struct {
   int topLine, numLines, visLines;
   int charWidth;
   int charHeight;
+  int displayWidth, displayHeight;
   int columns;
   char **lineStarts;
   int lineStartsSize;
@@ -87,5 +88,9 @@ typedef struct _TextDisplayClassRec *TextDisplayJetClass;
 #define XjNscrollDelay2 "scrollDelay2"
 #define XjNhighlightForeground "highlightForeground"
 #define XjNhighlightBackground "highlightBackground"
+#define XjNdisplayWidth "displayWidth"
+#define XjNdisplayHeight "displayHeight"
+#define XjCDisplayWidth "DisplayWidth"
+#define XjCDisplayHeight "DisplayHeight"
 
 #endif /* _Xj_TextDisplay_h */
