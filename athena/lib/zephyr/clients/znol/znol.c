@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: znol.c,v 1.16 1999-10-15 04:59:55 ghudson Exp $
+ *	$Id: znol.c,v 1.17 2000-05-08 15:59:05 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static const char rcsid_znol_c[] = "$Id: znol.c,v 1.16 1999-10-15 04:59:55 ghudson Exp $";
+static const char rcsid_znol_c[] = "$Id: znol.c,v 1.17 2000-05-08 15:59:05 ghudson Exp $";
 #endif 
 
 #define SUBSATONCE 7
@@ -194,7 +194,8 @@ main(argc,argv)
 		if (ind == SUBSATONCE) {
 			if (!justlist)
 				if ((retval = (onoff==ON)?
-				     ZSubscribeTo(subs,ind,(u_short)wgport):
+				     ZSubscribeToSansDefaults(subs,ind,
+							      (u_short)wgport):
 				     ZUnsubscribeTo(subs,ind,(u_short)wgport)) !=
 				    ZERR_NONE) {
 					com_err(argv[0],retval,(onoff==ON)?
@@ -210,7 +211,7 @@ main(argc,argv)
 
 	if (ind && !justlist)
 		if ((retval = (onoff==ON)?
-		     ZSubscribeTo(subs,ind,(u_short)wgport):
+		     ZSubscribeToSansDefaults(subs,ind,(u_short)wgport):
 		     ZUnsubscribeTo(subs,ind,(u_short)wgport)) !=
 		    ZERR_NONE) {
 			com_err(argv[0],retval,(onoff==ON)?
