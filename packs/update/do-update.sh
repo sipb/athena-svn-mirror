@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.44 2004-03-31 00:38:13 rbasch Exp $
+# $Id: do-update.sh,v 1.45 2004-04-05 16:26:27 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -159,20 +159,6 @@ if [ -s "$CONFCHG" ]; then
 	undup `cat "$CONFCHG"`
 	conf=$out
 	if [ "$PUBLIC" != true ]; then
-		echo "The following configuration files have changed and will"
-		echo "be replaced.  The old versions will be renamed to the"
-		echo "same name, but with a .old extension.  For example,"
-		echo "/etc/shells would be renamed to /etc/shells.old and a"
-		echo "new version would take its place."
-		echo ""
-		for i in $conf; do
-			if [ -f $i ]; then
-				echo "        $i"
-			fi
-		done
-		echo ""
-		echo "Press return to continue"
-		read foo
 		for i in $conf; do
 			if [ -f $i ]; then
 				mv -f $i $i.old
@@ -199,6 +185,7 @@ if [ "$PUBLIC" = true ]; then
 		-e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
 		-e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
 		-e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
+		-e "s#^PUBLIC=[^;]*#PUBLIC=$PUBLIC#" \
 		-e p "/srvd$CONFDIR/rc.conf" > "$CONFDIR/rc.conf"
 else
 	# Add any new variables to rc.conf.
