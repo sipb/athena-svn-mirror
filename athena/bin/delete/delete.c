@@ -11,14 +11,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.26 1991-06-04 22:06:55 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.27 1991-06-25 16:13:37 jik Exp $";
 #endif
 
 #include <sys/types.h>
 #include <stdio.h>
 #ifdef POSIX
 #include <dirent.h>
-#define direct dirent
 #else
 #include <sys/dir.h>
 #endif
@@ -319,7 +318,11 @@ empty_directory(filename)
 char *filename;
 {
      DIR *dirp;
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
 
      dirp = Opendir(filename);
      if (! dirp) {
@@ -350,7 +353,11 @@ struct stat stat_buf;
 int recursed;
 {
      DIR *dirp;
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
      int status = 0;
      char newfile[MAXPATHLEN];
      int retval = 0;
@@ -508,7 +515,11 @@ char *filename;
      char buf[MAXPATHLEN];
      struct stat stat_buf;
      DIR *dirp;
+#ifdef POSIX
+     struct dirent *dp;
+#else
      struct direct *dp;
+#endif
      int status = 0;
      int retval;
      
