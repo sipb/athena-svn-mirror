@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.5 1988-06-23 12:25:28 jtkohl Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.6 1988-06-28 16:22:29 jtkohl Exp $";
 #endif lint
 
 /*
@@ -84,9 +84,6 @@ char **argv;
 			fprintf(stderr,"Will write directly to terminal.\n");
 			use_zephyr = 0;
 		}
-	}
-	
-	if (use_zephyr) {
 		sub.class = MESSAGE_CLASS;
 		sub.classinst = INSTANCE;
 		sub.recipient = ZGetSender();
@@ -268,13 +265,14 @@ char *msg;
       delay(slp);
 
       if (use_zephyr) {
+	    (void) bzero((char *)&notice, sizeof(notice));
 	    notice.z_kind = UNACKED;
 	    notice.z_port = 0;
 	    notice.z_class = MESSAGE_CLASS;
 	    notice.z_class_inst = INSTANCE;
 	    notice.z_recipient = ZGetSender();
 	    notice.z_opcode = "";
-	    notice.z_sender = 0;
+	    notice.z_sender = (char *) 0;
 	    notice.z_default_format = "\n$1";
 	    notice.z_message = msg;
 	    notice.z_message_len = strlen(msg);
