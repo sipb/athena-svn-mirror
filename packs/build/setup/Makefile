@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 1999-03-29 22:16:01 ghudson Exp $
+# $Id: Makefile,v 1.13 1999-05-11 18:37:14 mwhitson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -49,6 +49,8 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	mkdir -p -m 700 ${DESTDIR}${ATHVARDIR}/sessions
+	mkdir -p ${DESTDIR}${ATHVARDIR}/daemon
+	chown daemon ${DESTDIR}${ATHVARDIR}/daemon
 	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab
 	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/locker
 	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/mountpoint
