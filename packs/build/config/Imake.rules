@@ -82,7 +82,7 @@ install:: name.so							@@\
 #define ProfiledObjectRule()						@@\
 .c.o:									@@\
 	$(RM) $@ profiled/$@						@@\
-	$(CC) -pg -c $(CFLAGS) $*.c					@@\
+	$(CC) ProfCcFlags -c $(CFLAGS) $*.c				@@\
 	mv $*.o profiled/$*.o						@@\
 	$(CC) -c $(CFLAGS) $*.c						@@\
 all:: profiled all_profiled						@@\
