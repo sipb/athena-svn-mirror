@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.13 2002-11-11 18:27:08 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.14 2003-10-08 12:15:27 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -919,8 +919,7 @@ static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
   krb5_principal me = 0, server = 0;
   krb5_ccache ccache = NULL;
   krb5_creds my_creds;
-  krb5_timestamp now;
-  krb5_flags options = KDC_OPT_FORWARDABLE | KDC_OPT_PROXIABLE;
+  krb5_get_init_creds_opt options;
 
   const char *cache_name;
 
@@ -928,6 +927,7 @@ static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
   if (ret_cache_name)
     *ret_cache_name = 0;
   memset(&my_creds, 0, sizeof(my_creds));
+  krb5_get_init_creds_opt_init(&options);
 
   retval = krb5_init_context(&context);
   if (retval)
@@ -972,25 +972,24 @@ static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
       goto cleanup;
     }
 
-  retval = krb5_timeofday(context, &now);
+  my_creds.client = me;
+  my_creds.server = server;
+
+  krb5_get_init_creds_opt_set_tkt_life(&options, lifetime * 5 * 60);
+  krb5_get_init_creds_opt_set_forwardable(&options, 1);
+  krb5_get_init_creds_opt_set_proxiable(&options, 1);
+  retval = krb5_get_init_creds_password(context, &my_creds, me, password,
+					NULL, NULL, 0, NULL, &options);
   if (retval)
     {
-      *etext = "while getting time of day";
+      *etext = "while calling krb5_get_init_creds_password";
       goto cleanup;
     }
 
-  my_creds.client = me;
-  my_creds.server = server;
-  my_creds.times.starttime = 0;
-  my_creds.times.endtime = now + lifetime * 5 * 60;
-  my_creds.times.renew_till = 0;
-
-  retval = krb5_get_in_tkt_with_password(context, options, NULL, NULL,
-					 NULL, password, ccache,
-					 &my_creds, NULL);
+  retval = krb5_cc_store_cred(context, ccache, &my_creds);
   if (retval)
     {
-      *etext = "while calling krb5_get_in_tkt_with_password";
+      *etext = "while calling krb5_cc_store_cred";
       goto cleanup;
     }
 
