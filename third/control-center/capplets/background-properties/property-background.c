@@ -920,7 +920,7 @@ background_read ( BGState *state )
 	state->bgColor2.pixel = gdk_imlib_best_color_match(&r, &g, &b);
   
 	state->enabled = gnome_config_get_bool
-		("/Background/Default/Enabled=True");
+		("/Background/Default/Enabled=False");
 	state->bgType = (strcasecmp
 		  (gnome_config_get_string
 		   ("/Background/Default/type=simple"),
