@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/widget_create.c,v 1.2 1989-07-31 15:07:38 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/widget_create.c,v 1.3 1989-09-13 03:18:31 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -84,7 +84,7 @@ void widget_create (w, tag, callback_data)
   case QUIT_DLG:
     w_quit_dlg = w;
     XtSetArg(arg, XmNmessageString,
-	     XmStringLtoRCreate("`Quit' means that you simply want to get out of this program.\nTo continue this question, just type `xolc' again.  Remember, your question\nis still active until you use the `done' or `cancel' button.  It will remain\nactive until a consultant can answer it.  If you logout, a consultant will\nsend you mail.",
+	     XmStringLtoRCreate("`Quit' means that you simply want to get out of this program.\nTo continue this question, just type `xolc' again.\n\nRemember, your question is still active until you mark it\n`done' or `cancel' it.  Otherwise, it will remain active until a\nconsultant can answer it.\n\nIf you logout, a consultant will send you mail.\n\nDo you wish to quit OLC at this time?",
 				""));
     XtSetValues(w_quit_dlg, &arg, 1);
     XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
@@ -100,6 +100,7 @@ void widget_create (w, tag, callback_data)
   case MOTD_SCRL:
     w_motd_scrl = w;
     break;
+  default:
+    break;
   }
 }
-
