@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 1999-11-13 22:54:20 kcr Exp $
+# $Id: Makefile.in,v 1.5 1999-11-17 00:01:26 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -13,6 +13,8 @@ lsbindir=@lsbindir@
 mandir=@mandir@
 sysconfdir=@sysconfdir@
 AFSDIR=@AFS_DIR@
+logindir=${sysconfdir}/login
+bitmapdir=${logindir}/bitmaps
 
 HOSTTYPE=@HOSTTYPE@
 ATHENA_MAJOR_VERSION=@ATHENA_MAJOR_VERSION@
@@ -51,68 +53,52 @@ Xlogin: $(PRESOURCES)
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${sysconfdir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${sysconfdir}/login
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${sysconfdir}/login/bitmaps
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${logindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bitmapdir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL_PROGRAM} xlogin ${DESTDIR}${lsbindir}
 	${INSTALL_PROGRAM} timeout ${DESTDIR}${bindir}
-	${INSTALL} -m 444 ${srcdir}/timeout.1 ${mandir}/man1
-	${INSTALL} -m 444 ${srcdir}/xlogin.8 ${mandir}/man8
-	${INSTALL} -m 444 ${srcdir}/Xlogin ${sysconfdir}/login
-	${INSTALL} -m 755 ${srcdir}/machine ${sysconfdir}/login/machine
-	${INSTALL} -m 444 ${srcdir}/bitmaps/check ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/question \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/warning ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/white ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owl ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes0.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes1.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes2.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes3.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes4.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes5.xbm \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is0.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is1.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is2.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is3.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is4.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is5.xbm ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/menu16 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Ctrl-P ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F1 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F2 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F3 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F4 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F5 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/F6 ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Prev ${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F1 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F2 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F3 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F4 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F5 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F6 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F7 \
-		${sysconfdir}/login/bitmaps
-	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F8 \
-		${sysconfdir}/login/bitmaps
+	${INSTALL} -m 444 ${srcdir}/timeout.${DESTDIR}1 ${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/xlogin.8 ${DESTDIR}${mandir}/man8
+	${INSTALL} -m 444 ${srcdir}/Xlogin ${DESTDIR}${logindir}
+	${INSTALL} -m 755 ${srcdir}/machine ${DESTDIR}${logindir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/check ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/question ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/warning ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/white ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owl ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes0.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes1.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes2.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes3.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes4.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes5.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is0.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is1.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is2.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is3.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is4.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/is5.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/menu16 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Ctrl-P ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F1 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F2 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F3 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F4 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F5 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F6 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Prev ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F1 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F2 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F3 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F4 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F5 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F6 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F7 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F8 ${DESTDIR}${bitmapdir}
 
 clean:
 	rm -f ${OBJS} timeout.o xlogin timeout Xlogin
