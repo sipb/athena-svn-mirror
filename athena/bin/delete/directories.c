@@ -273,6 +273,9 @@ filerec *first_specified_in_directory(leaf)
 filerec *leaf;
 {
      leaf = first_in_directory(leaf);
+
+     if (! leaf)
+	  return((filerec *) NULL);
      
      if (leaf->specified)
 	  return(leaf);
