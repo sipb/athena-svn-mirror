@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: do.sh,v 1.56 2000-05-18 16:09:31 ghudson Exp $
+# $Id: do.sh,v 1.56.2.1 2000-06-22 17:26:34 ghudson Exp $
 
-source=/mit/source
+source=/mit/source-8.4
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
 athtoolroot=$ATHTOOLROOT
 contained=false
