@@ -2,7 +2,7 @@
 /*
  * mf.c -- mail filter subroutines
  *
- * $Id: mf.c,v 1.1.1.1 1999-02-07 18:14:11 danw Exp $
+ * $Id: mf.c,v 1.2 1999-11-04 20:00:22 tb Exp $
  */
 
 #include <mf.h>
@@ -31,7 +31,11 @@ getcpy (char *s)
     register char *p;
 
     if (!s) {
+#ifdef __linux__
+      fcloseall ();
+#else
 	_cleanup();
+#endif
 	abort();
 	for(;;)
 	    pause();
