@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.4 1993-07-02 01:27:19 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.5 1993-07-02 03:18:36 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -431,10 +431,10 @@ static char *get_label(me)
 	  f[i] = (caddr_t) ((tp->tm_hour) > 11 ? "pm" : "am");
 	  break;
 	case 'z':
-#if defined (_AIX) || defined(_AUX_SOURCE)
+#if defined (AIXArchitecture) || defined(MacIIArchitecture)
  	  f[i] = (caddr_t) tzname[tp->tm_isdst];
 #else
-#ifdef ultrix
+#if defined (UltrixArchitecture)
 	  f[i] = (caddr_t) timezone(tz.tz_minuteswest, tp->tm_isdst);
 #else
 	  f[i] = (caddr_t) tp->tm_zone;
