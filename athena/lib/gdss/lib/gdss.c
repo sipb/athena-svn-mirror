@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.6 1992-05-13 22:51:11 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.7 1992-05-15 00:13:20 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -17,6 +17,7 @@
 
 static RSAKeyStorage gdss_pubkey;
 static int gdss_have_key;
+static int pfetchkey();
 
 #ifdef notdef
 /* This function is obsolete */
