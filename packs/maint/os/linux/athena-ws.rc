@@ -69,7 +69,7 @@ case "$1" in
 #		Should also check rpm integrity here
 
 		rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist \
-			&& rm -rf /usr/local \
+			&& rm -rf /etc/ssh_host_key* \
 			&& rm -f {/etc,/etc/athena,/etc/athena/login}/*.local \
 			&& chmod 600 /etc/shadow \
 			&& cp /dev/null /etc/X0.hosts \
