@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.88 1997-12-31 22:49:14 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.89 1998-03-30 02:20:06 cfields Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -139,12 +139,10 @@ char *dologin(user, passwd, option, script, tty, session, display)
   /* state variables: */
   int local_passwd = FALSE;	/* user is in local passwd file */
   int local_ok = FALSE;		/* verified from local password file */
-#ifdef sgi
-  int f;
-#endif
   char *altext = NULL, *alerrmem;
   int status, *warnings, *warning;
   int tmp_homedir = 0;
+  int pid;
 
   /* 4.2 vs 4.3 style syslog */
 #ifndef  LOG_ODELAY
@@ -326,7 +324,14 @@ char *dologin(user, passwd, option, script, tty, session, display)
   setpag();
 #endif
 
-  status = al_acct_create(user, encrypt, getpid(), !msg, 1, &warnings);
+#ifdef sgi
+  if (nanny_getNannyPid(&pid))
+    return lose("failed to get pid from nanny");
+#else
+  pid = getpid();
+#endif
+
+  status = al_acct_create(user, encrypt, pid, !msg, 1, &warnings);
   if (status != AL_SUCCESS)
     {
       switch(status)
@@ -584,7 +589,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   newargv[0] = errbuf;
   newargv[1] = script;
   newargv[2] = NULL;
-  if (nanny_setupUser(pwd->pw_name, !local_passwd, environment, newargv))
+  if (nanny_setupUser(pwd->pw_name, environment, newargv))
     return lose("failed to setup for login");
 
   exit(0);
