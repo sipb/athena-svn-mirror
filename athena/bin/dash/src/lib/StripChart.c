@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StripChart.c,v 1.1 1991-09-03 11:09:33 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StripChart.c,v 1.2 1991-09-04 10:13:51 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -104,7 +104,8 @@ static void realize(me)
   values.function = GXcopy;
   values.foreground = me->stripChart.reverseVideo ?
     me->stripChart.background : me->stripChart.foreground;
-  valuemask = GCForeground | GCFunction;
+  values.graphics_exposures = False;
+  valuemask = GCForeground | GCFunction | GCGraphicsExposures;
 
   me->stripChart.gc = XCreateGC(me->core.display,
 				me->core.window,

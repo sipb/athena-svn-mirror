@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Button.c,v 1.1 1991-09-02 21:35:26 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Button.c,v 1.2 1991-09-04 10:11:18 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -103,7 +103,9 @@ static void realize(me)
   values.foreground = me->button.foreground;
   values.background = me->button.background;
   values.line_width = me->button.borderThickness;
-  valuemask = GCForeground | GCBackground | GCLineWidth | GCFunction;
+  values.graphics_exposures = False;
+  valuemask = ( GCForeground | GCBackground | GCLineWidth
+	       | GCFunction | GCGraphicsExposures );
 
   me->button.foreground_gc = XCreateGC(me->core.display,
 				       me->core.window,

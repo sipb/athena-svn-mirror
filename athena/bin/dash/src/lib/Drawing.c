@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.1 1991-09-03 11:06:09 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.2 1991-09-04 10:11:41 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -103,7 +103,9 @@ static void realize(me)
   values.background = me->drawing.background;
   values.line_width = me->drawing.lineWidth;
   values.font = me->drawing.font->fid;
-  valuemask = GCForeground | GCBackground | GCLineWidth | GCFunction | GCFont;
+  values.graphics_exposures = False;
+  valuemask = ( GCForeground | GCBackground | GCLineWidth | GCFunction
+	       | GCFont | GCGraphicsExposures );
 
   me->drawing.foreground_gc = XCreateGC(me->core.display,
 				       me->core.window,

@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.1 1991-09-02 21:34:28 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.2 1991-09-04 10:09:55 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -199,7 +199,9 @@ static void realize(me)
       me->aClock.background = temp;
     }
 
-  valuemask = GCForeground | GCBackground | GCFunction;
+  valuemask = ( GCForeground | GCBackground
+	       | GCFunction | GCGraphicsExposures );
+  values.graphics_exposures = False;
   values.function = GXcopy;
   values.background = me->aClock.background;
 

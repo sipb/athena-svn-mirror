@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.1 1991-09-02 21:36:05 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.2 1991-09-04 10:11:27 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -156,7 +156,9 @@ static void realize(me)
   values.foreground = me->dClock.foreground;
   values.background = me->dClock.background;
   values.font = me->dClock.font->fid;
-  valuemask = GCForeground | GCBackground | GCFont;
+  values.graphics_exposures = False;
+  valuemask = ( GCForeground | GCBackground | GCFont
+	       | GCGraphicsExposures );
 
   me->dClock.gc = XCreateGC(me->core.display,
 			    me->core.window,
@@ -168,7 +170,8 @@ static void realize(me)
 
   values.foreground = me->dClock.background;
   values.function = GXcopy;
-  valuemask = GCForeground | GCFunction;
+  values.graphics_exposures = False;
+  valuemask = GCForeground | GCFunction | GCGraphicsExposures;
 
   me->dClock.gc_bkgnd = XCreateGC(me->core.display,
 				  me->core.window,

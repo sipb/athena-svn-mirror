@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.1 1991-09-03 11:10:32 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.2 1991-09-04 10:14:13 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -362,7 +362,9 @@ static void realize(me)
       values.function = GXcopy;
       values.foreground = me->window.foreground;
       values.background = me->window.background;
-      valuemask = GCForeground | GCBackground | GCFunction;
+      values.graphics_exposures = False;
+      valuemask = ( GCForeground | GCBackground | GCFunction
+		   | GCGraphicsExposures );
 
       gc = XCreateGC(me->core.display,
 		     me->core.window,

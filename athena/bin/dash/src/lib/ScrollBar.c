@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/ScrollBar.c,v 1.1 1991-09-03 11:09:13 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/ScrollBar.c,v 1.2 1991-09-04 10:13:41 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -266,13 +266,15 @@ static void realize(me)
     }
 
   values.function = GXcopy;
+  values.graphics_exposures = False;
 
   if (me->scrollBar.borderThickness != 0)
     {
       values.foreground = (me->scrollBar.borderColor == -1) ?
 	me->scrollBar.foreground : me->scrollBar.borderColor;
       values.line_width = me->scrollBar.borderThickness;
-      valuemask = GCForeground | GCLineWidth | GCFunction;
+      valuemask = ( GCForeground | GCLineWidth | GCFunction
+		   | GCGraphicsExposures );
 
       me->scrollBar.line_gc = XCreateGC(me->core.display,
 					me->core.window,
@@ -284,7 +286,8 @@ static void realize(me)
     me->scrollBar.foreground : me->scrollBar.borderColor;
   values.background = me->scrollBar.foreground;
   values.line_width = 0;
-  valuemask = GCForeground | GCBackground | GCLineWidth | GCFunction;
+  valuemask = ( GCForeground | GCBackground | GCLineWidth
+	       | GCFunction | GCGraphicsExposures );
 
   me->scrollBar.bg_gc = XCreateGC(me->core.display,
 				  me->core.window,
@@ -298,7 +301,8 @@ static void realize(me)
 				  valuemask,
 				  &values);
 
-  valuemask = GCForeground | GCBackground | GCFunction;
+  valuemask = ( GCForeground | GCBackground | GCFunction
+	       | GCGraphicsExposures );
 
   me->scrollBar.thumb_gc = XCreateGC(me->core.display,
 				     me->core.window,

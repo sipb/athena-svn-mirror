@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.1 1991-09-03 11:08:50 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.2 1991-09-04 10:13:21 vanharen Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -1485,7 +1485,9 @@ static void realize(me)
   values.foreground = me->menu.foreground;
   values.background = me->menu.background;
   values.font = me->menu.font->fid;
-  valuemask = GCForeground | GCBackground | GCFunction | GCFont | GCLineWidth;
+  values.graphics_exposures = False;
+  valuemask = ( GCForeground | GCBackground | GCFunction | GCFont
+	       | GCLineWidth | GCGraphicsExposures );
 
   me->menu.gc = XCreateGC(me->core.display,
 			     me->core.window,
@@ -1549,7 +1551,8 @@ static void realize(me)
 
   values.line_width = 0;
   values.foreground = me->menu.background;
-  valuemask = GCForeground | GCBackground | GCFunction | GCFont | GCLineWidth;
+  valuemask = ( GCForeground | GCBackground | GCFunction | GCFont
+	       | GCLineWidth | GCGraphicsExposures );
   me->menu.background_gc = XCreateGC(me->core.display,
 					me->core.window,
 					valuemask,
