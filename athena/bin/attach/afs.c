@@ -3,7 +3,7 @@
  *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.6 1991-07-01 09:45:50 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.7 1992-01-06 15:50:10 probe Exp $";
 
 #include "attach.h"
 
@@ -176,8 +176,12 @@ static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 	struct in_addr hostlist[];
 	int	flags;
 {
-	int	error_ret;
+#ifdef POSIX
+	int	waitb;
+#else
 	union wait	waitb;
+#endif
+	int	error_ret;
 	int	fds[2];
 	FILE	*f;
 	char	buff[512];
@@ -263,8 +267,13 @@ static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 			return(FAILURE);
 		}
 	}
-	
-	if (error_ret = waitb.w_retcode) {
+
+#ifdef POSIX
+	error_ret = waitb;
+#else
+	error_ret = waitb.w_retcode;
+#endif
+	if (error_ret) {
 		error_status = ERR_AUTHFAIL;
 		return (FAILURE);
 	}
