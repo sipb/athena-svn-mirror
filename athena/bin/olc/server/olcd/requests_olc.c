@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.3 1989-12-18 10:25:48 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.4 1989-12-22 16:27:47 vanharen Exp $";
 #endif
 
 
@@ -1384,7 +1384,7 @@ olc_describe(fd, request, auth)
 	{
 	  strncpy(target->question->note,mesg,NOTE_SIZE);
           target->question->note[NOTE_SIZE] = '\0';
-	  log_comment(target,requester, target->question->note);
+	  log_description(target,requester, target->question->note);
 	}
       else
 	target->question->note[0] = '\0';
@@ -1398,7 +1398,7 @@ olc_describe(fd, request, auth)
 	{
 	  strncpy(target->question->comment,mesg,COMMENT_SIZE);
           target->question->comment[COMMENT_SIZE] = '\0';
-	  log_comment(target,requester, target->question->comment);
+	  log_description(target,requester, target->question->comment);
 	}
       else
 	target->question->comment[0] = '\0';
