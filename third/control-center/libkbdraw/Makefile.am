@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1.1.1 2004-10-04 03:55:50 ghudson Exp $
+## $Id: Makefile.am,v 1.2 2005-02-01 20:20:40 ghudson Exp $
 ##
 ## Copyright (c) 2003  Noah Levitt
 ##
@@ -17,7 +17,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 ##
 
-AM_CFLAGS = $(GTK_CFLAGS) -Wall -Werror
+AM_CFLAGS = $(GTK_CFLAGS) -Wall
 
 noinst_LIBRARIES = libkbdraw.a
 libkbdraw_a_SOURCES = keyboard-marshal.c keyboard-marshal.h \

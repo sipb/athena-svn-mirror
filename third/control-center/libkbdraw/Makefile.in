@@ -197,7 +197,7 @@ VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
 
-AM_CFLAGS = $(GTK_CFLAGS) -Wall -Werror
+AM_CFLAGS = $(GTK_CFLAGS) -Wall
 
 noinst_LIBRARIES = libkbdraw.a
 libkbdraw_a_SOURCES = keyboard-marshal.c keyboard-marshal.h \
