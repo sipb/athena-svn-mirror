@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-lockers.sh,v 1.1 2002-11-11 18:29:33 ghudson Exp $
+# $Id: local-lockers.sh,v 1.2 2002-11-12 22:55:51 ghudson Exp $
 
 # local-lockers - Bring lockers local using athlsync
 
@@ -26,7 +26,7 @@ for l in `awk '/^[^#]/ { print; }' $conf`; do
     il=`dirname $l`
     sym=`basename $l`
     path=`hesinfo "$il" filsys | sort -nk 5 | awk '/^AFS/ { print $2; exit; }'`
-    if [ ! -n "$path" ] || [ ! -d "$path" ]; then
+    if [ ! -n "$path" ] || [ ! -d "$path" ] || [ ! -h "$path/$sym" ]; then
       continue
     fi
     l=`ls -l "$path/$sym" | sed -e 's/.* -> //'`
