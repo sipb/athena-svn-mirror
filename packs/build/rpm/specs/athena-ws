@@ -29,7 +29,6 @@ mkdir -p $RPM_BUILD_ROOT/{usr/athena/man,etc/athena}
 mkdir -p $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp local-lockers.conf $RPM_BUILD_ROOT/etc/athena/local-lockers.conf
-cp man.config $RPM_BUILD_ROOT/etc/man.config.athena
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp system.mwmrc $RPM_BUILD_ROOT/usr/X11R6/lib/X11/system.mwmrc.athena
@@ -43,6 +42,8 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 %ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/cron.d
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
+cp man.config $RPM_BUILD_ROOT/etc/man.config.athena
+cp dhclient-enter-hooks $RPM_BUILD_ROOT/etc
 %else
 mkdir -p $RPM_BUILD_ROOT/var/spool/cron/crontabs
 cp crontab.root $RPM_BUILD_ROOT/var/spool/cron/crontabs/root
@@ -55,7 +56,8 @@ find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/local-lockers.conf$|%config(noreplace) \0|" \
       -e "s|^/etc/syslog.conf.athena$|%config \0|" \
-      -e "s|^/usr/X11R6/lib/X11/system.mwmrc.athena$|%config \0|" |
+      -e "s|^/usr/X11R6/lib/X11/system.mwmrc.athena$|%config \0|" \
+      -e "s|^/etc/dhclient-enter-hooks$|%config \0|" |
   sort > rpm.filelist
 
 %triggerin -- man
