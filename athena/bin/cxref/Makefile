@@ -29,7 +29,8 @@ CFLAGS= -O
 ### system dependant definitions, change when you install cxref
 
 # for my use during development, put in my bin, but see next few lines.
-DESTDIR= /usr/athena/
+DESTDIR=
+CONFDIR=/usr/athena
 LIB= /usr/athena/lib/cxref
 
 # where to put the man page, use 1 instead of l if you don't have a manl.
@@ -75,15 +76,17 @@ print2: $(PRINTS)
 	touch print2
 
 install: $(PROGS)
-	rm -fr $(LIB)
-	rm -f $(DESTDIR)/cxref
-	mkdir $(LIB)
-	install -s -m 755 -o $(OWNER) -g $(GROUP) $(CXREF) $(DESTDIR)/$(CXREF)
+	rm -fr $(DESTDIR)$(LIB)
+	rm -f $(DESTDIR)$(CONFDIR)/cxref
+	mkdir $(DESTDIR)$(LIB)
+	install -s -m 755 -o $(OWNER) -g $(GROUP) $(CXREF) \
+		$(DESTDIR)$(CONFDIR)/$(CXREF)
 	for i in docxref fmtxref cxrfilt; do \
-		install -s -m 755 -o $(OWNER) -g $(GROUP) $$i $(LIB)/$$i; \
+		install -s -m 755 -o $(OWNER) -g $(GROUP) $$i \
+		$(DESTDIR)$(LIB)/$$i; \
 	done
 
-	install -m 644 cxref.1 /usr/man/man$(MANSEC)/cxref.$(MANSEC)
+	install -m 644 cxref.1 $(DESTDIR)/usr/man/man$(MANSEC)/cxref.$(MANSEC)
 
 clean:
 	rm -f $(SCANOBJS)
