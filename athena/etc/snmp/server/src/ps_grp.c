@@ -1,26 +1,58 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the BSD process stats portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ps_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
  *
  */
 
-#include "include.h"
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ps_grp.c,v 1.2 1990-04-26 17:46:22 tom Exp $";
+#endif
 
-#ifdef ATHENA
+
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
+
+/*
+ * This gets set again
+ */
+
 #ifdef BSD
 #undef BSD
 #endif BSD
+
 #include <sys/param.h>
 #include <sys/dir.h>
+
 #define KERNEL
 #include <sys/file.h>
 #undef  KERNEL
+
 #include <sys/proc.h>
 #include <sys/text.h>
+
 #ifdef VFS
 #include <sys/vnode.h>
 #include <ufs/inode.h>
 #else  VFS
 #include <sys/inode.h>
 #endif VFS
+
 #include <sys/map.h>
 #include <sys/ioctl.h>
 #include <sys/tty.h>
@@ -32,6 +64,36 @@
 
 int dmmax; /* for up */
 int dmmin;
+
+static int psswap();
+static int psfile();
+static int pstext();
+static int psinode();
+static int psproc();
+static int up();
+static int vusize();
+
+
+/*
+ * Function:    lu_nfscl()
+ * Description: Top level callback for NFS. Supports the following:
+ *                    N_PSTOTAL: (INT) total swap space configured
+ *                    N_PSUSED:  (INT) swap used
+ *                    N_PSTUEED: (INT) swap ued for text
+ *                    N_PSFREE:  (INT) free swap
+ *                    N_PSWASTED:(INT) wasted swap
+ *                    N_MISSING: (INT) missing swap
+ *                    N_PFTOTAL: (INT) max files
+ *                    N_PFUSED:  (INT) files used
+ *                    N_PITOTAL: (INT) max inodes
+ *                    N_PIUSED:  (INT) used inodes
+ *                    N_PPTOTAL: (INT) max procs
+ *                    N_PPUSED:  (INT) used procs
+ *                    N_PTTOTAL: (INT) total texts
+ *                    N_PTUSED:  (INT) texts used
+ *                    N_PTACTIVE:(INT) active texts
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
 lu_pstat(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
@@ -90,6 +152,13 @@ lu_pstat(varnode, repl, instptr, reqflg)
 
 
 
+/*
+ * Function:    psinode
+ * Description: collect inode information
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int
 psinode(offset, value)
      int offset;
      int *value;
@@ -170,7 +239,13 @@ psinode(offset, value)
 
 
 
+/*
+ * Function:    pstext
+ * Description: collect text information
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
+static int
 pstext(offset, value)
      int offset;
      int *value;
@@ -259,7 +334,13 @@ pstext(offset, value)
 
 
 
+/*
+ * Function:    psproc
+ * Description: collect proc information
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
+static int
 psproc(offset, value)
      int offset;
      int *value;
@@ -336,8 +417,13 @@ psproc(offset, value)
   
 
 
+/*
+ * Function:    psfile
+ * Description: collect file information
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
-
+static int
 psfile(offset, value)
      int offset;
      int *value;
@@ -415,8 +501,13 @@ psfile(offset, value)
 
 
 
+/*
+ * Function:    psswap
+ * Description: collect swap information
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
-
+static int
 psswap(offset, value)
      int offset;
      int *value;
@@ -758,6 +849,7 @@ psswap(offset, value)
 }
 
 	
+static int
 up(size)
      register int size;
 {
@@ -776,11 +868,13 @@ up(size)
 
 
 /*
- * Compute number of pages to be allocated to the u. area
- * and data and stack area page tables, which are stored on the
- * disk immediately after the u. area.
+ * Function:    vusize()
+ * Description: Compute number of pages to be allocated to the u. area
+ *              and data and stack area page tables, which are stored on the
+ *              disk immediately after the u. area.
  */
 
+static int
 vusize(p)
      register struct proc *p;
 {
@@ -795,4 +889,4 @@ vusize(p)
 }
 
 
-#endif ATHENA
+#endif MIT
