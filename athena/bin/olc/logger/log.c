@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.8 1991-06-30 12:24:16 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.9 1991-09-10 11:07:13 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.8 1991-06-30 12:24:16 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.9 1991-09-10 11:07:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -22,7 +22,10 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#ifdef _AUX_SOURCE
+#if defined(_AIX) && defined(_IBMR2)
+#include <sys/select.h>
+#endif
+#if defined(_AUX_SOURCE) || defined(_ALL_SOURCE)
 #include <time.h>
 #endif
 #include <netinet/in.h>
@@ -58,7 +61,6 @@ log_startup(type)
   char log_host[MAXHOSTNAMELEN];
   char *t,*p;
   struct hostent *hp, *gethostbyname();
-  struct servent *service;
   time_t now;
   fd_set readfds;
   int nfound,len;
