@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.5 2002-05-06 14:45:52 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.6 2002-05-08 15:40:20 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -75,7 +75,6 @@ int main(int argc, char **argv)
 
 	case 'S':
 	  session_leader = 1;
-	  argv++;
 	  break;
 
 	default:
@@ -158,7 +157,7 @@ static void sessionbust(char **argv)
   pid_t pid;
 
   pid = atoi(getenv("ATHENA_LOGIN_SESSION"));
-  if (pid == 0)
+  if (pid <= 1)
     {
       fprintf(stderr, "%s: error: invalid ATHENA_LOGIN_SESSION value %s\n",
 	      progname, getenv("ATHENA_LOGIN_SESSION"));
