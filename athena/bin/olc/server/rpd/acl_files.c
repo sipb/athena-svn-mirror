@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.3 1991-03-28 13:32:20 lwvanels Exp $";
+  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.4 1991-04-11 09:40:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -207,7 +207,7 @@ char *el;
   
   hv = hashval(el) % h->size;
   while(h->tbl[hv] != NULL && strcmp(h->tbl[hv], el)) hv = (hv+1) % h->size;
-  s = malloc(strlen(el)+1);
+  s = (char *) malloc(strlen(el)+1);
   strcpy(s, el);
   h->tbl[hv] = s;
   h->entries++;
