@@ -66,7 +66,7 @@
 #define	DEFDEVLP	"/dev/lp"
 #define DEFRLPR		"/usr/lib/rlpr"
 #define DEFBINDIR	"/usr/ucb"
-#define	DEFMX		1000
+#define	DEFMX		0
 #define DEFMAXCOPIES	0
 #define DEFFF		"\f"
 #define DEFWIDTH	132
