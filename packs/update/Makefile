@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2000-02-07 22:28:43 ghudson Exp $
+# $Id: Makefile,v 1.10 2000-02-18 15:08:25 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -26,6 +26,8 @@ install:
 				${DESTDIR}${UPDATE}/update-environment
 	install -c -m 0555 update_ws.sh ${DESTDIR}/update_ws
 	install -c -m 0555 upvers ${DESTDIR}${UPDATE}
+	rm -f ${DESTDIR}/auto_update
+	ln -s update_ws ${DESTDIR}/auto_update
 	rm -f ${DESTDIR}${ATHRETCDIR}/update_ws
 	ln -s /srvd/update_ws ${DESTDIR}${ATHRETCDIR}/update_ws
 	cd os/${OS} && ${MAKE} $@

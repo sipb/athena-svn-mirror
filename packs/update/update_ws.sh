@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.41 2000-02-07 22:28:46 ghudson Exp $
+# $Id: update_ws.sh,v 1.42 2000-02-18 15:08:27 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -39,11 +39,19 @@ LIBDIR=/srvd/usr/athena/lib/update
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/sbin:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 
+case "$0" in
+*auto_update)
+	method=Auto
+	;;
+*)
+	method=Manual
+	;;
+esac
+
 # The -a option specifies that the update is automatic (run by the
 # boot script or reactivate).  The -r option specifies that the update
 # is remote and that we shouldn't give the user a shell after the
 # reboot.
-method=Manual
 while getopts ar opt; do
 	case "$opt" in
 	a)
