@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.1 1990-04-19 12:13:50 jfc Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.2 1990-04-19 12:15:30 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -29,7 +29,7 @@ rvd_attach(at, mopt, errorout)
 {
     char buf[BUFSIZ];
     union wait waitb;
-    int vddrive;
+    int vddrive, pid;
     char *passwd;
     
     if (avail_drive(at->hostaddr, at->hostdir, &vddrive) == FAILURE) {
@@ -70,11 +70,14 @@ rvd_attach(at, mopt, errorout)
 	return (FAILURE);
     }
 
-    if (!vfork()) {
+    if((pid = vfork()) == 0) {
 	execl(RVDGETM_FULLNAME, RVDGETM_SHORTNAME, at->host, 0);
-	exit(0);
+	_exit(0);
+    } else if(pid == -1) {
+	perror("vfork");
+    } else {
+	(void) wait(&waitb);
     }
-    (void) (wait(&waitb) < 0);
     
     if (at->mode == 'w' && rvderrno != RVDEIDA &&
 	rvderrno != EBUSY && !skip_fsck) {
