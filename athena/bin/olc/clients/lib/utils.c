@@ -19,19 +19,21 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.14 1991-03-05 14:47:31 lwvanels Exp $
+ *	$Id: utils.c,v 1.15 1991-03-28 13:18:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.14 1991-03-05 14:47:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.15 1991-03-28 13:18:05 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
+#ifdef ZEPHYR
 #include <zephyr/zephyr.h>
+#endif
 #include <signal.h>
 #include <ctype.h>
 #include <sys/stat.h>
@@ -248,6 +250,7 @@ call_program(program, argument)
  *              Snarfed from kerberos document
  */
 
+#ifdef KERBEROS
 void
 expand_hostname(hostname, instance, realm)
      char *hostname;
@@ -263,11 +266,7 @@ expand_hostname(hostname, instance, realm)
   if(p == NULL)
     {
       (void) strcpy(instance, hostname);
-
-#ifdef KERBEROS
       krb_get_lrealm(realm,1);
-#endif /* KERBEROS */
-
     }
   else
     {
@@ -293,10 +292,9 @@ expand_hostname(hostname, instance, realm)
   for(i=0; strlen(LOCAL_REALMS[i]) !=0; i++)
     if(strcmp(realm, LOCAL_REALMS[i]) == 0)
       (void) strcpy(realm, LOCAL_REALM);
-  
   return;
 }
-
+#endif /* KERBEROS */
 
 /*
  * Function:	sendmail() forks a sendmail process to send mail to someone.
