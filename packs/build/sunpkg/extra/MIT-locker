@@ -1,0 +1,12 @@
+#!/bin/sh
+
+athretcdir=/etc/athena
+attachtab=/var/athena/attachtab
+
+mkdir -p $2$athretcdir
+mkdir -p $2$attachtab/directory
+mkdir -p $2$attachtab/locker
+mkdir -p $2$attachtab/mountpoint
+
+cp $1/packs/config/os/$OS/attach.conf $2$athretcdir
+chmod 644 $2$athretcdir/attach.conf

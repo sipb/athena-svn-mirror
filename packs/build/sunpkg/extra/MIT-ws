@@ -1,0 +1,99 @@
+#!/bin/sh
+
+etcdir=/etc
+athretcdir=/etc/athena
+athx11lib=/usr/athena/lib/X11
+keymaps=$athx11lib/keymaps
+appdefs=$athx11lib/app-defaults
+athmandir=/usr/athena/man
+crontabs=/var/spool/cron/crontabs
+keytables=/usr/openwin/share/etc/keytables
+default=/etc/default
+inet=/etc/inet
+terminfo=/usr/share/lib/terminfo
+
+mkdir -p $2$etcdir
+mkdir -p $2$athretcdir
+mkdir -p $2$athx11lib
+mkdir -p $2$appdefs
+mkdir -p $2$athmandir
+mkdir -p $2$crontabs
+mkdir -p $2$keytables
+mkdir -p $2$keymaps
+mkdir -p $2$default
+mkdir -p $2$inet
+mkdir -p $2$terminfo
+
+cp $1/packs/config/local-lockers.conf $2$athretcdir
+chmod 644 $2$athretcdir/local-lockers.conf
+cp $1/packs/config/masks $2$athretcdir
+chmod 444 $2$athretcdir/masks
+cp $1/packs/config/system.mwmrc $2$athx11lib
+chmod 644 $2$athx11lib/system.mwmrc
+
+cp $1/packs/config/os/$OS/Athena4.kt $2$keytables
+chmod 644 $2$keytables/Athena4.kt
+cp $1/packs/config/os/$OS/Athena5.kt $2$keytables
+chmod 644 $2$keytables/Athena5.kt
+cp $1/packs/config/os/$OS/AthenaModifiers $2$keymaps
+chmod 644 $2$keymaps/AthenaModifiers
+cp $1/packs/config/os/$OS/AthenaMods $2$keymaps
+chmod 644 $2$keymaps/AthenaMods
+cp $1/packs/config/os/$OS/AthenaType5Keypad $2$keymaps
+chmod 644 $2$keymaps/AthenaType5Keypad
+cp $1/packs/config/os/$OS/Mwm $2$appdefs
+chmod 644 $2$appdefs/Mwm
+cp $1/packs/config/os/$OS/SunModifiers $2$keymaps
+chmod 644 $2$keymaps/SunModifiers
+cp $1/packs/config/os/$OS/SunType5Keypad $2$keymaps
+chmod 644 $2$keymaps/SunType5Keypad
+cp $1/packs/config/os/$OS/XTerm.ad $2$appdefs/XTerm
+chmod 644 $2$appdefs/XTerm
+cp $1/packs/config/os/$OS/cron $2$default
+chmod 644 $2$default/cron
+cp $1/packs/config/os/$OS/crontab.root $2$crontabs/root
+chmod 644 $2$crontabs/root
+cp $1/packs/config/os/$OS/inetd.conf $2$inet
+chmod 644 $2$inet/inetd.conf
+cp $1/packs/config/os/$OS/init $2$default
+chmod 644 $2$default/init
+cp $1/packs/config/os/$OS/inittab $2$etcdir
+chmod 644 $2$etcdir/inittab
+cp $1/packs/config/os/$OS/keytable.map $2$keytables
+chmod 644 $2$keytables/keytable.map
+cp $1/packs/config/os/$OS/logindevperm $2$etcdir
+chmod 644 $2$etcdir/logindevperm
+cp $1/packs/config/os/$OS/name_to_sysnum $2$etcdir
+chmod 644 $2$etcdir/name_to_sysnum
+cp $1/packs/config/os/$OS/netspy $2$etcdir
+chmod 644 $2$etcdir/netspy
+cp $1/packs/config/os/$OS/newsyslog.conf $2$athretcdir
+chmod 644 $2$athretcdir/newsyslog.conf
+cp $1/packs/config/os/$OS/nsswitch.conf $2$etcdir
+chmod 644 $2$etcdir/nsswitch.conf
+cp $1/packs/config/os/$OS/passwd.fallback $2$etcdir
+chmod 644 $2$etcdir/passwd.fallback
+cp $1/packs/config/os/$OS/services $2$inet
+chmod 644 $2$inet/services
+cp $1/packs/config/os/$OS/shadow.fallback $2$etcdir
+chmod 644 $2$etcdir/shadow.fallback
+cp $1/packs/config/os/$OS/su $2$default
+chmod 644 $2$default/su
+cp $1/packs/config/os/$OS/sulogin $2$default
+chmod 644 $2$default/sulogin
+cp $1/packs/config/os/$OS/syslog.conf $2$etcdir
+chmod 644 $2$etcdir/syslog.conf
+cp $1/packs/config/os/$OS/syslogd $2$default
+chmod 644 $2$default/syslogd
+cp $1/packs/config/os/$OS/system $2$etcdir
+chmod 644 $2$etcdir/system
+cp $1/packs/config/os/$OS/vfstab.std $2$etcdir
+chmod 644 $2$etcdir/vfstab.std
+
+TERMINFO=$2$terminfo tic $1/packs/config/os/$OS/xterm-color
+
+rm -f $2$athretcdir/update_ws
+ln -s /srvd/update_ws $2$athretcdir/update_ws
+
+# This file actually goes in the MIT-openafs package.
+rm -f $2$athretcdir/config_afs

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+etcdir=/etc
+initd=/etc/init.d
+rc2=/etc/rc2.d
+rc0=/etc/rc0.d
+
+mkdir -p $2$initd
+mkdir -p $2$rc2
+mkdir -p $2$rc0
+
+# It will need this to run.
+mkdir -p $2/var/athena
+
+cp $1/packs/config/ntp.conf $2$etcdir
+chmod 644 $2$etcdir/ntp.conf
+cp $1/packs/maint/os/$OS/athena-ntp.rc $2$initd/athena-ntp
+chmod 755 $2$initd/athena-ntp
+rm -f $2$rc2/S91athena-ntp
+ln -s ../init.d/athena-ntp $2$rc2/S91athena-ntp
+rm -f $2$rc0/K91athena-ntp
+ln -s ../init.d/athena-ntp $2$rc0/K91athena-ntp

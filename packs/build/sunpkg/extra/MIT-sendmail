@@ -1,0 +1,41 @@
+#!/bin/sh
+
+etcdir=/etc
+maildir=/etc/mail
+athretcdir=/etc/athena
+usrlibdir=/usr/lib
+initd=/etc/init.d
+rc2=/etc/rc2.d
+rc0=/etc/rc0.d
+mquedir=/var/spool/mqueue
+
+mkdir -p $2$etcdir
+mkdir -p $2$maildir
+mkdir -p $2$athretcdir
+mkdir -p $2$usrlibdir
+mkdir -p $2$initd
+mkdir -p $2$rc2
+mkdir -p $2$rc0
+mkdir -p $2$mquedir
+
+cp $1/packs/config/aliases $2$maildir
+chmod 644 $2$maildir/aliases
+cp $1/packs/config/authinfo $2$maildir
+chmod 644 $2$maildir/authinfo
+cp $1/packs/config/os/$OS/sendmail.cf $2$maildir
+chmod 644 $2$maildir/sendmail.cf
+rm -f $2$etcdir/sendmail.cf
+ln -s mail/sendmail.cf $2$etcdir/sendmail.cf
+cp $1/packs/maint/sendmail-relay-select $2$athretcdir
+chmod 555 $2$athretcdir/sendmail-relay-select
+# Remove the sendmail binary installed by the build, which may have the
+# wrong group ownership.
+rm -f $2$usrlibdir/sendmail
+cp $1/packs/maint/os/$OS/sendmail.sh $2$usrlibdir/sendmail
+chmod 555 $2$usrlibdir/sendmail
+cp $1/packs/maint/os/$OS/athena-sendmail.rc $2$initd/athena-sendmail
+chmod 755 $2$initd/athena-sendmail
+rm -f $2$rc2/S91athena-sendmail
+ln -s ../init.d/athena-sendmail $2$rc2/S91athena-sendmail
+rm -f $2$rc0/K91athena-sendmail
+ln -s ../init.d/athena-sendmail $2$rc0/K91athena-sendmail

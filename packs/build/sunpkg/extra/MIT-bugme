@@ -1,0 +1,14 @@
+#!/bin/sh
+
+athx11lib=/usr/athena/lib/X11
+appdefs=$athx11lib/app-defaults
+athsharedir=/usr/athena/share
+config=/afs/athena.mit.edu/system/config
+
+mkdir -p $2$appdefs
+mkdir -p $2$athsharedir
+
+cp $1/packs/config/os/$OS/Bugme $2$appdefs
+chmod 644 $2$appdefs/Bugme
+rm -f $2$athsharedir/quickstations
+ln -s $config/quick/quickstations $2$athsharedir/quickstations

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+initd=/etc/init.d
+rc0=/etc/rc0.d
+rc2=/etc/rc2.d
+
+mkdir -p $2$initd
+mkdir -p $2$rc0
+mkdir -p $2$rc2
+
+cp $1/packs/maint/os/$OS/athena-update_server.rc $2$initd/athena-update_server
+chmod 755 $2$initd/athena-update_server
+rm -f $2$rc0/K91athena-update_server
+ln -s ../init.d/athena-update_server $2$rc0/K91athena-update_server
+rm -f $2$rc2/S91athena-update_server
+ln -s ../init.d/athena-update_server $2$rc2/S91athena-update_server

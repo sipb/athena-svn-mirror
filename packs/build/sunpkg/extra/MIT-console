@@ -1,0 +1,8 @@
+#!/bin/sh
+
+athlogindir=/etc/athena/login
+
+mkdir -p $2$athlogindir
+
+cp $1/packs/config/os/$OS/Console $2$athlogindir
+chmod 644 $2$athlogindir/Console

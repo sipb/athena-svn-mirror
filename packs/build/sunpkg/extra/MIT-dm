@@ -1,0 +1,12 @@
+#!/bin/sh
+
+athretcdir=/etc/athena
+athlogindir=$athretcdir/login
+
+mkdir -p $2$athlogindir
+mkdir -p $2$athretcdir
+
+cp $1/packs/config/os/$OS/config $2$athlogindir
+chmod 644 $2$athlogindir/config
+cp $1/packs/maint/os/$OS/xwrapper.sh $2$athretcdir/xwrapper
+chmod 755 $2$athretcdir/xwrapper

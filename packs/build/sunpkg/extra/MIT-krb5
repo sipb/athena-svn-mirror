@@ -1,0 +1,23 @@
+#!/bin/sh
+
+etcdir=/etc
+athretcdir=/etc/athena
+sessdir=/var/athena/sessions
+
+mkdir -p $2$etcdir
+mkdir -p $2$athretcdir
+mkdir -p -m 700 $2$sessdir
+
+cp $1/packs/config/ftpusers $2$etcdir
+chmod 644 $2$etcdir/ftpusers
+cp $1/packs/config/krb.conf $2$athretcdir
+chmod 644 $2$athretcdir/krb.conf
+cp $1/packs/config/krb.realms $2$athretcdir
+chmod 644 $2$athretcdir/krb.realms
+cp $1/packs/config/krb5.conf $2$etcdir
+chmod 644 $2$etcdir/krb5.conf
+
+rm -f $2$etcdir/krb.conf
+ln -s athena/krb.conf $2$etcdir/krb.conf
+rm -f $2$etcdir/krb.realms
+ln -s athena/krb.realms $2$etcdir/krb.realms

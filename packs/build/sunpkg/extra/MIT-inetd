@@ -1,0 +1,19 @@
+#!/bin/sh
+
+athretcdir=/etc/athena
+initd=/etc/init.d
+rc2=/etc/rc2.d
+rc0=/etc/rc0.d
+
+mkdir -p $2$athretcdir
+mkdir -p $2$initd
+mkdir -p $2$rc2
+mkdir -p $2$rc0
+
+cp $1/packs/config/os/$OS/inetd.conf.athena $2$athretcdir/inetd.conf
+chmod 644 $2$athretcdir/inetd.conf
+cp $1/packs/maint/os/$OS/athena-inetd.rc $2$initd/athena-inetd
+chmod 755 $2$initd/athena-inetd
+
+ln -s ../init.d/athena-inetd $2$rc2/S91athena-inetd
+ln -s ../init.d/athena-inetd $2$rc0/K91athena-inetd

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+athretcdir=/etc/athena
+
+mkdir -p $2$athretcdir
+
+cp $1/packs/config/athinfo.access $2$athretcdir
+chmod 644 $2$athretcdir/athinfo.access
+cp $1/packs/config/os/$OS/athinfo.defs $2$athretcdir
+chmod 644 $2$athretcdir/athinfo.defs

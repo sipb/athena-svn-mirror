@@ -1,0 +1,8 @@
+#!/bin/sh
+
+etcdir=/etc
+
+mkdir -p $2$etcdir
+
+cp $1/packs/config/ifhp.conf $2$etcdir
+chmod 644 $2$etcdir/ifhp.conf

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+athretcdir=/etc/athena
+initd=/etc/init.d
+rc2=/etc/rc2.d
+rc0=/etc/rc0.d
+
+mkdir -p $2$athretcdir
+mkdir -p $2$initd
+mkdir -p $2$rc2
+mkdir -p $2$rc0
+
+cp $1/packs/config/zephyr.vars $2$athretcdir
+chmod 644 $2$athretcdir/zephyr.vars
+cp $1/packs/maint/os/$OS/zhm.rc $2$initd/zhm
+chmod 755 $2$initd/zhm
+cp $1/packs/maint/os/$OS/zephyrd.rc $2$initd/zephyrd
+chmod 755 $2$initd/zephyrd
+rm -f $2$rc2/S91zhm
+ln -s ../init.d/zhm $2$rc2/S91zhm
+rm -f $2$rc0/K91zhm
+ln -s ../init.d/zhm $2$rc0/K91zhm
+rm -f $2$rc2/S91zephyrd
+ln -s ../init.d/zephyrd $2$rc2/S91zephyrd
+rm -f $2$rc0/K91zephyrd
+ln -s ../init.d/zephyrd $2$rc0/K91zephyrd
