@@ -31,11 +31,13 @@ echo $path
 
 set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 "
 
+set tools="athena/etc/synctree"
+
 set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/suppored/tex third/unsupported/top third/unsupported/sysinfo  third/unsupported/perl"
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
 
-set etcs="athena/etc/track athena/etc/rvd athena/etc/nfsc athena/etc/newsyslog athena/etc/cleanup athena/etc/synctree athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
+set etcs="athena/etc/track athena/etc/rvd athena/etc/nfsc athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
 
 set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/viewscribe athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/ls athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell"
 
@@ -58,16 +60,16 @@ echo on a $machine >> $outfile
 # need to add in motif. Once that is done I can proceed onto the bin directory
 
 if ($machine == "sun4") then
-foreach package ( setup $machine $libs1 $third $libs2 $etcs $bins)
+foreach package ( setup $machine $libs1 $tools $third $libs2 $etcs $bins)
 
 else if ($machine == "rsaix" ) then
 
-foreach package ( setup $libs1 $third $libs2 $etcs $bins )
+foreach package ( setup $libs1 $tools $third $libs2 $etcs $bins )
 else
 
 # if ($machine == "decmips")...
 
-foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $third $libs2 $etcs $bins $machine )
+foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine )
 # at the moment, lib/resolv gets built twice...
 
 endif
@@ -152,6 +154,7 @@ switch ($package)
 	breaksw
 
 	case decmips
+	case third/supported/tex
 # This is gross. Same as complex, no depend. The Imakefile in
 # decmips/sys is, um, kind of impressive, and can't do a make
 # depend before a make all.
