@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.10 1996-09-19 22:39:53 ghudson Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.11 1996-11-15 04:21:02 ghudson Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -143,7 +143,8 @@ main(argc, argv)
 	  host_address = inet_addr(hostname);
 	  if (host_address)
 	    {
-	      host_entry = gethostbyaddr((char *) &host_address, 4, AF_INET);
+	      host_entry = hostinfo_gethostbyaddr((char *) &host_address, 4,
+						  AF_INET);
 	      if(host_entry)
 		if(set_server)		  
 		  memcpy(&server_addr, host_entry->h_addr,
@@ -159,7 +160,7 @@ main(argc, argv)
       if(host_entry == (struct hostent *)0)
 #endif
 	{
-	  host_entry = gethostbyname(hostname);
+	  host_entry = hostinfo_gethostbyname(hostname);
 	  if(host_entry)
 	    {
 	      if(set_server)

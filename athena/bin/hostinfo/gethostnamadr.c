@@ -244,7 +244,7 @@ getanswer(answer, anslen, iquery, info)
 
 
 struct hostent *
-gethostbyname(name)
+hostinfo_gethostbyname(name)
 	char *name;
 {
 	static querybuf buf;
@@ -283,7 +283,7 @@ gethostbyname(name)
 
 
 struct hostent *
-gethostbyaddr(addr, len, type)
+hostinfo_gethostbyaddr(addr, len, type)
 	char *addr;
 	int len, type;
 {
