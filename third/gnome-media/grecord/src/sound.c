@@ -91,11 +91,13 @@ set_min_sec_time (gint sec, gboolean set_topic)
 	gtk_label_set_text (GTK_LABEL (grecord_widgets.timemin_label), temp_string);
 
 	if (sec != 0 && set_topic) {
-		gchar* temp_string2;
-		temp_string2 = g_strdup (strrchr (active_file, '/'));
-		temp_string2[0] = ' ';
-		show_mess = g_strconcat (_(maintopic), temp_string2, " - ", temp_string, NULL);
-		g_free (temp_string2);
+		char* p;
+		p = strrchr (active_file, '/');
+		if (p != NULL)
+			p++;
+		else
+			p = active_file;
+		show_mess = g_strconcat (_(maintopic), " ", p, " - ", temp_string, NULL);
 	}
 	else if (sec == 0 && set_topic) {
 		show_mess = g_strconcat (_(maintopic), _(" untitled.wav"),  " - ", "00", NULL);

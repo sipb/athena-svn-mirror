@@ -1,7 +1,7 @@
 >athena.mit.edu		  #MIT/Athena cell
 18.7.1.66			#paris.mit.edu.
-18.70.0.6			#prill.mit.edu.
 18.145.0.25			#agamemnon.mit.edu.
+18.158.0.37			#prill.mit.edu.
 >dev.mit.edu              #MIT/IS Development cell
 18.7.1.70                       #wham.mit.edu.
 18.7.15.93			#hum.mit.edu.
@@ -11,21 +11,18 @@
 18.7.14.108			#heartbreak.mit.edu.
 18.7.14.109			#despair.mit.edu.
 >net.mit.edu		  #MIT/Network Group cell
-18.72.1.38			#gracie.mit.edu.
-18.72.0.26			#cetus.mit.edu.
-18.7.21.93			#baby-shamu.mit.edu.
+18.7.7.73			#gracie.mit.edu
+18.7.21.95			#george.mit.edu
 >sipb.mit.edu		  #MIT/SIPB cell
 18.181.0.19			#reynelda.mit.edu.
 18.181.0.23			#ronald-ann.mit.edu.
 18.181.0.22			#rosebud.mit.edu.
 >lees.mit.edu		  #MIT/private Lab for Electromagnetic and Electronic Systems
-18.90.1.184			#power.mit.edu.
+18.90.0.123			#sangeet.mit.edu.
 >zone.mit.edu		  #MIT/private Watchmaker Zone cell
 18.18.0.229			#casio.mit.edu.
 18.18.0.231			#timex.mit.edu.
 18.18.0.232			#seiko.mit.edu.
->threede.mit.edu          #MIT/private 3DES AFS testing cell
-18.18.1.37			#twode.mit.edu.
 >acpub.duke.edu           #Duke/private OIT public clusters
 152.3.233.4                     #clarke.acpub.duke.edu.
 152.3.233.5                     #delany.acpub.duke.edu.
@@ -39,7 +36,7 @@
 130.237.232.112                 #anna.pdc.kth.se.
 130.237.232.114                 #hokkigai.pdc.kth.se.
 >1ts.org		 #KCR/private Karl Ramm, Cambridge, MA
-4.17.166.75			#minas-tirith.1ts.org.
+4.36.43.102			#dol-guldur.1ts.org
 >ies.auc.dk     	# Aalborg Univ., Inst. of Electronic Systems, Denmark
 130.225.51.28   		#idefix.kom.auc.dk.
 >umbc.edu                       #University of Maryland, Baltimore Co.
@@ -84,7 +81,6 @@
 >transarc.ibm.com              # Transarc Corporation
 192.54.226.60                   #xafs1.transarc.ibm.com.
 192.54.226.61                   #xafs2.transarc.ibm.com.
-192.54.226.62                   #xafs3.transarc.ibm.com.
 >desy.de                   # Deutsches Elektronen-Synchrotron
 131.169.30.50                   #rikki.desy.de.
 131.169.55.19                   #shiva.desy.de.
@@ -572,10 +568,10 @@
 205.245.53.21			#perseus.zepa.net.
 205.245.53.48			#neptune.zepa.net.
 >dementia.org		   #Dementia.org cell/private
-128.2.35.149			#alycia.dementia.org
+128.2.12.45			#alycia.dementia.org
 128.2.120.216			#meredith.dementia.org
 >mekinok.com		   #Mekinok.com/private
-4.17.166.66			#loggerhead.mekinok.com
+4.36.43.98			#loggerhead.mekinok.com
 >raeburn.org		   #Raeburn/private Ken Raeburn, Sommerville, MA
 18.101.0.230			#kal-el.raeburn.org
 >openafs.org		   #OpenAFS project/private
@@ -586,3 +582,8 @@
 >nimlabs.org		#Nimlabs, Ink./private
 18.238.1.103			#olfin.nimlabs.org
 18.238.1.105			#caerbanog.nimlabs.org
+>tonguecraft.com	   #Tonguecraft/private
+4.36.43.103			#prehensile.tonguecraft.com.
+>thok.org		   #The Herd Of Kittens/private
+4.36.43.79			#kitten-that-lurks-above.thok.org.
+4.36.43.84			#swat.thok.org.

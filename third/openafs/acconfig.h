@@ -33,6 +33,9 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #undef STRUCT_INODE_HAS_I_TRUNCATE_SEM
 #undef STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS
 #undef STRUCT_INODE_HAS_I_DEVICES
+#undef EXPORTED_SYS_CALL_TABLE
+#undef EXPORTED_KALLSYMS_SYMBOL
+#undef EXPORTED_KALLSYMS_ADDRESS
 
 /* glue for RedHat kernel bug */
 #undef ENABLE_REDHAT_BUILDSYS
