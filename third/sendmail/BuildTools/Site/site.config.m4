@@ -19,3 +19,6 @@ define(`confMAN8SRC', 8)
 dnl Install random binaries in /usr/athena to save local disk space
 define(`athEBINDIR', `/usr/athena/libexec')
 define(`athSBINDIR', `/usr/athena/etc')
+
+dnl Use Athena install; the BuildTools one can't handle non-writable files.
+define(`confINSTALL', `install')
