@@ -25,13 +25,17 @@ Set CVSROOT to "/afs/dev.mit.edu/source/repository" before trying to
 check out a working directory.
 
 The entire source tree is very large.  You can check it out with "cvs
-co all", but in almost all cases this would be a big waste of space.
+co -P all", but in almost all cases this would be a big waste of space.
 Simply check out a subdirectory of the source tree with a command like
-"cvs co athena/bin/olc".
+"cvs co -P athena/bin/olc".
 
 CVS knows nothing about AFS permissions, so all directories created
 will have the same permissions as their parent.  It is generally
 safest to do your checkouts in a private area of the filesystem.
+
+You should use the -P option for checkout because the source tree
+contains some historical directories (now empty) which will conflict
+with builds.
 
 Preparing changes for review
 ----------------------------
