@@ -10,14 +10,6 @@ Provides: krb5-server = 1.2.5
 The Kerberos secure net authentication system.
 
 %build
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-exit 1
-fi
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
 
@@ -25,15 +17,6 @@ cp athena-version src/appl/athena-version
 (cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT all)
 
 %install
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
@@ -47,6 +30,10 @@ cp krb.realms $RPM_BUILD_ROOT/etc/athena/krb.realms
 cp krb5.conf $RPM_BUILD_ROOT/etc
 cp ftpusers $RPM_BUILD_ROOT/etc
 mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
+
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/user
+cp user-kerberos.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
 
 # Don't install /bin/login on Linux.
 rm $RPM_BUILD_ROOT/bin/login
