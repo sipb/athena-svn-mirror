@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_rcvjob.c,v 1.3 2001-03-07 01:19:33 ghudson Exp $";
+"$Id: lpd_rcvjob.c,v 1.4 2001-03-07 21:23:10 ghudson Exp $";
 
 
 #include "lp.h"
@@ -307,6 +307,7 @@ int Receive_job( int *sock, char *input )
 			Set_str_value(&job.info,OPENNAME,tempfile);
 			Set_str_value(&job.info,ERROR,0);
 			if( Do_perm_check( &job, error, errlen ) == P_REJECT ){
+			        Sendmail_to_user( P_REJECT, &job );
 				goto error;
 			}
 		} else {
@@ -655,6 +656,7 @@ int Scan_block_file( int fd, char *error, int errlen )
 			Set_str_value(&job.info,OPENNAME,tempfile);
 			Set_str_value(&job.info,ERROR,0);
 			if( Do_perm_check( &job, error, errlen ) == P_REJECT ){
+			        Sendmail_to_user( P_REJECT, &job );
 				goto error;
 			}
 		} else {

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linelist.c,v 1.3 2001-03-07 01:19:25 ghudson Exp $";
+"$Id: linelist.c,v 1.4 2001-03-07 21:23:05 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -627,10 +627,10 @@ int Find_first_key( struct line_list *l, const char *key, const char *sep, int *
 const char *Find_value( struct line_list *l, const char *key, const char *sep )
 {
 	const char *s = "0";
-	int mid, cmp;
+	int mid, cmp = -1;
 
 	DEBUG5("Find_value: key '%s', sep '%s'", key, sep );
-	cmp = Find_first_key( l, key, sep, &mid );
+	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
 	DEBUG5("Find_value: key '%s', cmp %d, mid %d", key, cmp, mid );
 	if( cmp==0 ){
 		if( sep ){
@@ -652,7 +652,7 @@ char *Find_first_letter( struct line_list *l, const char letter, int *mid )
 {
 	char *s = 0;
 	int i;
-	for( i = 0; i < l->count; ++i ){
+	if(l)for( i = 0; i < l->count; ++i ){
 		if( (s = l->list[i])[0] == letter ){
 			if( mid ) *mid = i;
 			DEBUG4( "Find_first_letter: letter '%c', at [%d]=value '%s'", letter, i, s );
@@ -676,9 +676,9 @@ char *Find_first_letter( struct line_list *l, const char letter, int *mid )
 const char *Find_exists_value( struct line_list *l, const char *key, const char *sep )
 {
 	const char *s = 0;
-	int mid, cmp = -2;
+	int mid, cmp = -1;
 
-	cmp = Find_first_key( l, key, sep, &mid );
+	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
 	if( cmp==0 ){
 		if( sep ){
 			s = Fix_val( strpbrk(l->list[mid], sep ) );
@@ -704,9 +704,9 @@ const char *Find_exists_value( struct line_list *l, const char *key, const char 
 char *Find_str_value( struct line_list *l, const char *key, const char *sep )
 {
 	char *s = 0;
-	int mid, cmp;
+	int mid, cmp = -1;
 
-	cmp = Find_first_key( l, key, sep, &mid );
+	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
 	if( cmp==0 ){
 		/*
 		 *  value: NULL, "", "@", "=xx", "#xx".
@@ -876,7 +876,7 @@ int Find_flag_value( struct line_list *l, const char *key, const char *sep )
 	char *e;
 	int n = 0;
 
-	if( (s = Find_value( l, key, sep )) ){
+	if( l && (s = Find_value( l, key, sep )) ){
 		e = 0;
 		n = strtol(s,&e,0);
 		if( !e || *e ) n = 0;
@@ -902,7 +902,7 @@ int Find_decimal_value( struct line_list *l, const char *key, const char *sep )
 	char *e;
 	int n = 0;
 
-	if( (s = Find_value( l, key, sep )) ){
+	if( l && (s = Find_value( l, key, sep )) ){
 		e = 0;
 		n = strtol(s,&e,10);
 		if( !e || *e ){

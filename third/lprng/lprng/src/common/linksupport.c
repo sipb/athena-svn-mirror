@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linksupport.c,v 1.5 2001-03-07 01:19:28 ghudson Exp $";
+"$Id: linksupport.c,v 1.6 2001-03-07 21:23:08 ghudson Exp $";
 
 
 /***************************************************************************
@@ -494,7 +494,7 @@ int getconnection ( char *hostname, char *dest_port,
 		++connect_count;
 		if( connect_count < range
 			&& ((Retry_ECONNREFUSED_DYN && err == ECONNREFUSED)
-			|| err == EADDRINUSE) ){
+			|| err == EADDRINUSE || err == EADDRNOTAVAIL) ){
 			goto again;
 		}
 		/* try next address in list */
