@@ -235,3 +235,7 @@ void snmp_timeout();
 
 
 extern int snmp_dump_packet;
+#ifdef SOLARIS
+#define random lrand48
+#define srandom srand48
+#endif
