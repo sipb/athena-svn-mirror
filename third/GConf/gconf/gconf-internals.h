@@ -211,6 +211,8 @@ gboolean gconf_g_utf8_validate (const gchar  *str,
                                 gssize        max_len,    
                                 const gchar **end);
 
+int gconf_mkdir_private (const char *path);
+
 #ifdef ENABLE_NLS
 #    include <libintl.h>
 #    include <config.h>
