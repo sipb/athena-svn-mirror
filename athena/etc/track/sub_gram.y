@@ -2,141 +2,157 @@
 # include "track.h"
 extern FILE *yyin, *yyout;
 char linebuf[1024];
-char wordbuf[256][256];
+char wordbuf[256];
+char *wordp;
 int wordcnt = 0;
+Entry* e = &entries[ 0];
 %}
-%token WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
+%token ARROW WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
 %%
 sublist	: opt_space header entrylist
+	{
+	    entnum = 0;	/* signifies to printmsg() that parse is complete. */
+	}
 	;
 header	:
-		{
-			clear_ent();
-			entrycnt = 1;
-			clear_ent();
-		}
+	{
+	    clear_ent();
+	    entrycnt = 1;
+	    e = clear_ent();
+	}
 	| GEXCEPT opt_space COLON except COLON opt_space
-		{
-			savestr( &entries[ entrycnt].fromfile,
-				"GLOBAL_EXCEPTIONS");
-			entrycnt++;
-			clear_ent();
-		}
+	{
+	    savestr( &e->fromfile, "GLOBAL_EXCEPTIONS");
+
+	    /* cram compiled-in default exceptions onto lists:
+	     */
+	    while ( wordp = next_def_except()) {
+		if ( file_pat( wordp))
+		     add_list_elt( re_conv( wordp), DONT_TRACK, &e->patterns);
+		else add_list_elt( wordp,	 DONT_TRACK, LIST( e->names));
+	    }
+	    if ( e->names.table) { /* lie, to make extra-roomy global table */
+		 e->names.shift *= 8;
+		 list2hashtable( &e->names);
+	    }
+	    entrycnt++;
+	    e = clear_ent();
+	}
         ;
 entrylist :
 	  |	entrylist entry opt_space
-	  ;
+	;
 entry: linkmark fromname COLON toname COLON cmpname COLON except COLON shellcmd
-		{
-			entrycnt++;
-			clear_ent();
-		}
+	{
+	    if ( e->names.table) list2hashtable( &e->names);
+	    entrycnt++;
+	    e = clear_ent();
+	}
 	;
 linkmark  :
 	  | BANG opt_space
-		{
-			entries[entrycnt].followlink = 1;
-		}
-	  ;
+	{
+	    sprintf( errmsg, "followlink isn't supported.\n");
+	    do_gripe();
+	    /* e->followlink = 1; */
+	}
+	;
 fromname: WORD opt_space
-		{
-			char *r = wordbuf[0];
-			while ( '/' == *r) r++;
-			savestr(&entries[entrycnt].fromfile,r);
-			KEYCPY( entries[ entrycnt].sortkey, r);
-			entries[ entrycnt].keylen = strlen( r);
-			doreset();
-		}
+	{
+	    char *r = wordbuf;
+	    while ( '/' == *r) r++;
+	    savestr(&e->fromfile,r);
+	    KEYCPY( e->sortkey, r);
+	    e->keylen = strlen( r);
+	    doreset();
+	}
 	;
 toname  : opt_space
-		{
-			char *defname;
+	{
+	    char *defname;
 
-			defname = entries[ entrycnt].followlink ?
-			 resolve( entries[ entrycnt].fromfile) :
-				  entries[ entrycnt].fromfile;
+	    defname = e->followlink ?
+	     resolve( e->fromfile, fromroot) :
+		      e->fromfile;
 
-			savestr( &entries[ entrycnt].tofile, defname);
-			doreset();
-		}
+	    savestr( &e->tofile, defname);
+	    doreset();
+	}
 	| opt_word
-		{
-			char *r = wordbuf[0];
-			while ( '/' == *r) r++;
-			if ( ! entries[ entrycnt].followlink)
-				savestr(&entries[entrycnt].tofile,r);
-			else	savestr(&entries[entrycnt].tofile,
-					 resolve( r));
-			doreset();
-		}
+	{
+	    char *r = wordbuf;
+	    while ( '/' == *r) r++;
+	    if ( ! e->followlink)
+		    savestr(&e->tofile,r);
+	    else	savestr(&e->tofile,
+			     resolve( r, toroot));
+	    doreset();
+	}
 	;
 cmpname : opt_space
-		{
-			char * defname;
+	{
+	    char *defname, *root;
 
-			defname = writeflag ?
-				entries[ entrycnt].fromfile :
-				entries[ entrycnt].tofile;
+	    if ( writeflag) {
+		    defname = e->fromfile;
+		    root = fromroot;
+	    }
+	    else {
+		    defname = e->tofile;
+		    root = toroot;
+	    }
 
-			if ( entries[entrycnt].followlink)
-				defname = resolve( defname);
+	    if ( e->followlink)
+		    defname = resolve( defname, root);
 
-			savestr( &entries[ entrycnt].cmpfile, defname);
+	    savestr( &e->cmpfile, defname);
 
-			doreset();
-		}
+	    doreset();
+	}
 	| opt_word
-		{
-			char *r = wordbuf[0];
-			while ( '/' == *r) r++;
-			if ( ! entries[ entrycnt].followlink)
-				savestr(&entries[entrycnt].cmpfile,r);
-			else	savestr(&entries[entrycnt].cmpfile,
-					 resolve( r));
-			doreset();
-		}
+	{
+	    char *r = wordbuf;
+	    while ( '/' == *r) r++;
+	    if ( ! e->followlink)
+		    savestr(&e->cmpfile,r);
+	    else	savestr(&e->cmpfile,
+			     resolve( r, writeflag	? fromroot
+						    : toroot));
+	    doreset();
+	}
 	;
 except  : opt_space
-		{
-			doreset();
-		}
-	| opt_space wordlist opt_space
-		{
-			int i,j;
-			char * r;
-			for(i=0;entries[entrycnt].exceptions[i]!=(char*)0;i++)
-			{
-			}
-			for (j=0;j<wordcnt;j++)
-			{
-				r = wordbuf[ j];
-				while ( '/' == *r && r[1]) r++;
-				if ( file_pat( r))
-					r = re_conv( r);
-				if ( duplicate( r, entrycnt)) continue;
-				if ( i >= WORDMAX) {
-					sprintf( errmsg,
-						"exception-list overflow\n");
-					do_panic();
-				}
-				savestr(&entries[entrycnt].exceptions[i++], r);
-			}
-			doreset();
-		}
+	| opt_space exlist opt_space
+	{
+	    doreset();
+	}
 	;
-wordlist: WORD
-	| wordlist opt_space WORD
+exlist: exceptword
+	| exlist opt_space exceptword
+	;
+exceptword:   WORD
+	{
+	    if ( file_pat( wordbuf))
+		 add_list_elt( re_conv( wordbuf), DONT_TRACK, &e->patterns);
+	    else add_list_elt( wordbuf,		  DONT_TRACK, LIST( e->names));
+	}
+	| ARROW opt_space WORD
+	{
+	    /* set force_links bit, add to e->names.
+	     */
+	    add_list_elt( wordbuf, FORCE_LINK, LIST( e->names));
+	}
 	;
 shellcmd: nullcmd NEWLINE
-		{
-			savestr(&entries[entrycnt].cmdbuf,"");
-			doreset();
-		}
+	{
+	    savestr(&e->cmdbuf,"");
+	    doreset();
+	}
 	| nullcmd shline NEWLINE
-		{
-			savestr(&entries[entrycnt].cmdbuf,linebuf);
-			doreset();
-		}
+	{
+	    savestr(&e->cmdbuf,linebuf);
+	    doreset();
+	}
 	;
 nullcmd:
 	| nullcmd WHITESPACE
@@ -164,6 +180,9 @@ opt_ele : NEWLINE | WHITESPACE
 yyerror(s)
 char *s;
 {
-	fprintf(stderr,"parser error -- %s\n",s);
+	if ( parseflag) justshow();
+	sprintf(errmsg,"parser error -- '%s'.\n   bad element was near: %s\n",
+		s, wordbuf);
+	do_panic();
 }
 #include "lex.yy.c"

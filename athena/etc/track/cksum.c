@@ -1,4 +1,7 @@
-#include "track.h"
+#include <sys/file.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <netinet/in.h>
 
 /*			I N _ C K S U M
  *
@@ -6,7 +9,7 @@
  * NOTE: this code is taken from ping, and modified to read a file.
  *
  */
-u_short
+unsigned
 in_cksum( filename, statp) char *filename; struct stat *statp;
 {
 	int fd;
@@ -43,9 +46,10 @@ in_cksum( filename, statp) char *filename; struct stat *statp;
 		}
 
 		/* mop up an odd byte, if necessary */
-		if( nleft == 1 )
-			sum += *(u_char *)w;
-	
+		if( nleft == 1 ) {
+			((u_char *)w)[ 1] = '\0';
+			sum += *w;
+		}
 		carry += sum >> 16;
 		sum &= 0xffff;
 	}
@@ -57,7 +61,7 @@ in_cksum( filename, statp) char *filename; struct stat *statp;
 	 */
 	sum = sum + (carry >> 16) + (carry & 0xffff);
 	sum += (sum >> 16);			/* add resulting carry */
-	return(( u_short) ~sum);		/* discard last carry. */
+	return( htons( 0xffff & ~sum));		/* discard last carry. */
 	/* the ~ (one's complement) isn't really necessary here;
 	 * it makes a nonzero checksum for a file of zeroes,
 	 * which is useful for network applications of this algorithm.

@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 3.0 1988-03-09 13:18:05 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.0 1988-04-14 16:43:19 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 3.0  88/03/09  13:18:05  don
+ * this version is incompatible with prior versions. it offers:
+ * 1) checksum-handling for regular files, to detect filesystem corruption.
+ * 2) more concise & readable "updating" messages & error messages.
+ * 3) better update-simulation when nopullflag is set.
+ * 4) more support for non-default comparison-files.
+ * finally, the "currentness" data-structure has replaced the statbufs
+ * used before, so that the notion of currency is more readily extensible.
+ * note: the statfile format has been changed.
+ * 
  * Revision 2.9  88/02/19  19:07:16  don
  * bug from punctuation error, causing unbounded growth of source pathname.
  * 
@@ -76,7 +86,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 3.0 1988-03-09 13:18:05 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.0 1988-04-14 16:43:19 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -93,6 +103,8 @@ char fromroot[LINELEN] = DEF_FROMROOT;	/* Root directory for source */
 char toroot[LINELEN] = DEF_TOROOT;	/* Root directory for destination */
 
 char lockpath[LINELEN];			/* starting lock filename */
+char logfilepath[LINELEN] = DEF_LOG;	/* default log file */
+FILE *logfile = NULL;			/* the logfile */
 char subfilename[LINELEN] = DEF_SUB;	/* default subscription file */
 char subfilepath[LINELEN] = "";		/* alternate subscription file */
 char statfilepath[LINELEN];		/* pathname to statfile */
@@ -114,7 +126,6 @@ int parseflag = 0;	/* if set, just parse the subscription list */
 int forceflag = 0;	/* if set, will over-ride lock files */
 int verboseflag = 0;	/* if set, files listed on stdout as they're updated */
 int cksumflag = 0;	/* if set, compare file checksums when updating */
-int dirflag = 0;	/* if set, create directories when necessary */
 int nopullflag = 0;	/* if set, find out the differences,
 			 *	   but don't pull anything */
 int quietflag = 0;	/* if set, don't print non-fatal error messages */
@@ -148,6 +159,8 @@ char **argv;
 	umask(022);	/* set default umask for daemons */
 
 	signal( SIGINT, cleanup);
+	signal( SIGHUP, cleanup);
+	signal( SIGPIPE, cleanup);
 
 	for(i=1;i<argc;i++) {
 		if (argv[i][0] != '-') {
@@ -155,13 +168,6 @@ char **argv;
 			continue;
 		}
 		switch (argv[i][1]) {
-		/* -D
-		 *    Create directories as necessary during updating.
-		 */
-		case 'D':
-			dirflag = 1;
-			verboseflag = 1;
-			break;
 		/* -F dirname
 		 *    Specify source "root" directory.
 		 */
@@ -337,7 +343,7 @@ char **argv;
 	*/
 	parseinit( opensubfile( subfilepath));
 	if (yyparse()) {
-		strcpy(errmsg,"parser error");
+		strcpy(errmsg,"parse aborted.\n");
 		do_panic();
 	}
 	if (debug)
@@ -367,7 +373,7 @@ char **argv;
 #define pathtail( p) p[1+*(int*)p[CNT]]
 
 readstat() {
-	struct currentness rem_currency, *cmp_currency, *entry_currency;
+	struct currentness rem_currency, *cmp_currency;
 	char statline[ LINELEN], *remname;
 	char **from, **to, **cmp;
 	char *tail = NULL;
@@ -396,9 +402,25 @@ readstat() {
 		 */
 		if ( 0 >= ( entnum = get_next_match( remname))) continue;
 
+		/* do a breadth-first search of the tree of entries,
+		 * to find the entry corresponding to remname:
+		 * for example, if /usr & /usr/bin are both entries,
+		 * they appear in that order in the entries[] array.
+		 * if remname is /usr/bin/foo, we want gettail() to
+		 * use /usr/bin's exception-list, not /usr's exception-list.
+		 * thus, /usr/bin is the "last match" for /usr/bin/foo.
+		 */
 		entnum = last_match( remname, entnum);
 
-		if ( ! ( tail = goodname( remname, entnum))) continue;
+		tail = remname;
+		switch ( gettail( &tail, TYPE( rem_currency.sbuf), entnum)) {
+		case NORMALCASE: break;
+		case DONT_TRACK: continue;
+		case FORCE_LINK: fake_link( fromroot, remname, &rem_currency);
+				 break;
+		default:	 sprintf(errmsg,"bad value from gettail\n");
+				 do_panic();
+		}
 
 		/* loosely, tail == remname - fromfile, as
 		 * long as tail isn't in the exception-list.
@@ -532,6 +554,7 @@ struct currentness *currency;
 {
 	DIR *dirp;
 	struct direct *dp;
+	char *tail;
 
 	dirp = opendir( f[ ROOT]);
 	if (!dirp) {
@@ -548,14 +571,25 @@ struct currentness *currency;
 		pushpath( f, dp->d_name);
 		pushpath( c, dp->d_name);
 
-		if ( ! goodname( f[ NAME], entnum));
-			/* skip to poppath() */
-
-		else if ( c && get_currentness( c, currency))
-			/* give up, goto poppath() calls */
+		tail = f[ NAME];
+		switch ( gettail( &tail, 0, entnum)) {
+		case NORMALCASE: break;
+		case FORCE_LINK: fake_link( "", f[ NAME], currency);
+				 write_statline( f, currency);
+				 /* fall through to poppath() calls */
+		case DONT_TRACK: poppath( f);
+				 poppath( c);
+				 continue;
+		default:	 sprintf(errmsg,"bad value from gettail\n");
+				 do_panic();
+		}
+		/* normal case: tail isn't an exception or a forced link.
+		 */
+		if ( c && get_currentness( c, currency)) {
 			sprintf(errmsg,"can't %s comparison-file %s.\n",
 				statn, c[ ROOT]);
-
+			do_panic();
+		}
 		/* write_statline returns fromfile's type:
 		 */
 		else if ( S_IFDIR == write_statline( f, currency))
@@ -586,6 +620,7 @@ int *ptr;
 
 /*
  * Log a message to the logfile.
+   UNUSED
 
 log(ptr)
 char *ptr;
@@ -657,23 +692,57 @@ char *cmds,*local;
 
 justshow()
 {
-	int i,j;
+	int i,j, size;
+	Entry *e;
+	List_element *p;
 
-	for (i = 0; i < entrycnt;i++) {
+	fprintf( stderr, "subscription-list as parsed:\n\n");
+
+	for (i = 0; i <= entrycnt; i++) {
+		e = &entries[ i];
+		if ( ! e->fromfile) break;
 		fprintf(stderr,
-			"entry %d:\n\tfollow -- %d\n\tfromfile--|%s|\n",
+			"entry %d:%s\n\tfromfile-- %s\n",
 			i,
-			entries[i].followlink,
-			entries[i].fromfile);
+			e->followlink ? " ( follow links)" : "",
+			e->fromfile);
 		fprintf(stderr,
-			"\tcmpfile--|%s|\n\ttofile--|%s|\n\texceptions--\n",
-			entries[i].cmpfile,
-			entries[i].tofile);
-		for(j=0;entries[i].exceptions[j] != (char*)0;j++)
-			fprintf(stderr,"\t\t|%s|\n", entries[i].exceptions[j]);
-		fprintf(stderr,"\tcommand--|%s|\n",entries[i].cmdbuf);
+			"\tcmpfile-- %s\n\ttofile-- %s\n\tpatterns--\n",
+			e->cmpfile,
+			e->tofile);
+		for( p = e->patterns; p ; p = NEXT( p))
+		    fprintf(stderr,"\t\t%s\n", TEXT( p));
+		fprintf( stderr, "\texceptions--\n");
+		switch( SIGN( e->names.shift)) {
+		case -1:
+		    for( p = ( List_element *) e->names.table; p ; p = NEXT( p))
+			fprintf(stderr,"\t\t%s%s\n",
+				FLAG( p) == FORCE_LINK ? "-> " : "",
+			 	TEXT( p));
+		    fprintf(stderr,
+			"track didn't fully parse the exception-list.\n");
+		    fprintf(stderr,
+			"the most-recently parsed exception was:\n%s%s\n",
+			FLAG( e->names.table) == FORCE_LINK ? "-> " : "",
+			TEXT( e->names.table));
+		    continue;
+		case 0: break;
+		case 1:
+		    size = (unsigned) 0x80000000 >> e->names.shift - 1;
+		    for( j = 0; j < size; j++)
+		    {
+			if ( ! e->names.table[j]) continue;
+			fprintf( stderr,"\t\t");
+			for ( p = e->names.table[j]; p; p = NEXT( p))
+			    fprintf(stderr,"%s%s, ",
+				    FLAG( p) == FORCE_LINK ? "-> " : "",
+				    TEXT( p));
+			fprintf( stderr,"\n");
+		    }
+		    break;
+		}
+		fprintf(stderr,"\tcommand-- %s\n",e->cmdbuf);
 	}
-
 }
 
 /*

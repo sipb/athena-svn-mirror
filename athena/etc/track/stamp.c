@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 3.0 1988-03-09 13:17:47 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.0 1988-04-14 16:43:00 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 3.0  88/03/09  13:17:47  don
+ * this version is incompatible with prior versions. it offers:
+ * 1) checksum-handling for regular files, to detect filesystem corruption.
+ * 2) more concise & readable "updating" messages & error messages.
+ * 3) better update-simulation when nopullflag is set.
+ * 4) more support for non-default comparison-files.
+ * finally, the "currentness" data-structure has replaced the statbufs
+ * used before, so that the notion of currency is more readily extensible.
+ * note: the statfile format has been changed.
+ * 
  * Revision 2.5  88/02/23  19:21:36  don
  * fixed pushpath() & poppath() so that pushing "" onto a path-stack
  * doesn't push  a '/' as well. for example, pushpath( "/bin", "") should
@@ -39,7 +49,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 3.0 1988-03-09 13:17:47 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.0 1988-04-14 16:43:00 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -69,10 +79,10 @@ static char *write_formats[] = {
 
 static char *read_formats[] = {
 	"",
-	"%c%d(%d.%d.%o)\n",	/* S_IFCHR */
-	"%c%d(%d.%d.%o)\n",	/* S_IFDIR */
-	"%c%d(%d.%d.%o)\n",	/* S_IFBLK */
-	"%c%x(%d.%d.%o)%ld\n",	/* S_IFREG */
+	"%d(%d.%d.%o)\n",	/* S_IFCHR */
+	"%d(%d.%d.%o)\n",	/* S_IFDIR */
+	"%d(%d.%d.%o)\n",	/* S_IFBLK */
+	"%x(%d.%d.%o)%ld\n",	/* S_IFREG */
 	"",			/* S_IFLNK */
 	"",			/* S_IFSOCK */
 	""			/* S_IFMT */
@@ -89,7 +99,8 @@ char type_char[] = " cdbfls*89ABCDEF";
 write_statline( path, c)
 char **path; struct currentness *c;
 {
-	char  *format, *linebuf, *name, same_name;
+	char  *format, *linebuf, *name;
+	int same_name;
 	unsigned int type;
 	struct stat fromstat, *s;
 	unsigned size, curr1 = 0, extra = 0;
@@ -153,14 +164,14 @@ char **path; struct currentness *c;
 	/* if this entry's fromfile != cmpfile,
 	 * the subscribing machine needs to know:
 	 */
-	same_name = strcmp( path[ NAME], c->name) ? '~' : '=' ;
+	same_name = ! strcmp( path[ NAME], c->name);
 
 	/* to choose printing format, convert type-bits to array-index:
 	 * the formats specify 3-7 arguments, according to type:
 	 */
 	format = write_formats[ type >> 13];
 
-	sprintf( linebuf, format, name, same_name, curr1,
+	sprintf( linebuf, format, name, same_name ? '=' : '~' , curr1,
 		 UID( *s), GID( *s), MODE( *s), extra);
 
 	cur_line++;
@@ -168,12 +179,37 @@ char **path; struct currentness *c;
 	if ( verboseflag)
 		fputs( linebuf, stderr);
 
-	if ((*statf)( path[ ROOT], &fromstat)) {
+	if ( same_name);
+	else if ( ! (*statf)( path[ ROOT], &fromstat))
+		type = TYPE( fromstat);
+	else {
 		sprintf( errmsg, "(write_statline) can't %s %s\n",
 			 statn, path[ ROOT]);
 		do_panic();
 	}
-	return( TYPE( fromstat));
+	return( type);
+}
+
+fake_link( root, name, c) char *root, *name; struct currentness *c; {
+
+	/* it is difficult to fool write_statline(),
+	 * update_file(), and curr_diff() all at once.
+	 * write_statline() can't take a normal currency in this case,
+	 * because it can't know the subscriber's fromroot.
+	 * curr_diff() needs to see a normal link's currency,
+	 * or else unneccessary link-updates will occur.
+	 * update_file() can use a normal currency to make a link.
+	 */
+	if ( name != c->name)		/* speed hack for dec_statfile() */
+		strcpy( c->name, name);
+
+	if ( *root)
+		sprintf( c->link, "%s/%s", root, name);
+	else	*c->link = '\0';	/* special case for write_statline() */
+
+	c->cksum = 0;
+	clear_stat( &c->sbuf);
+	c->sbuf.st_mode = S_IFLNK;
 }
 
 sort_stat() {
@@ -190,15 +226,14 @@ sort_stat() {
 	}
 }
 
-/* for sort_entries' use:
- */
-exceptcmp( p, q) char **p, **q; {
-        return( strcmp( *p, *q));
-}
-
 sort_entries() {
-	char **e, *key, *tail;
-	int i, j, k;
+	char *tail;
+	Table list;
+	Entry *A, *C;
+	int i, j;
+
+	list.table = NULL;
+	list.shift = 0;
 
 	/* NOTE: we assume that each entry begins with a sortkey string.
          * don't include entries[ 0] in the sort:
@@ -208,34 +243,37 @@ sort_entries() {
 
 	/* for each entry's fromfile (call it A),
 	 * look for A's children amongst the subsequent entries,
-	 * and add any that you find to A's exception-list.
+	 * and add any that you find to A's exception-table.
+	 * note that this may overfill the hash-table; in this event,
+	 * we accept the performance-hit, and don't try to rehash.
 	 */
-	for ( i = 1; i < entrycnt; i++) {
-	     for ( j = i + 1; j < entrycnt; j++) {
-		  key = entries[ j].sortkey;
-		  switch( keyncmp( key, i)) {
-		  case -1:
-		       break; /* get next i */
-		  case 0:
-		       tail = entries[j].fromfile + entries[i].keylen;
-		       while( '/' == *tail) tail++;
-		       for ( k=0; k < WORDMAX; k++) {
-			    e = &entries[ i].exceptions[ k];
-			    if ( ! strcmp( tail, *e));	/* j already here */
-			    else if ( *e) continue;	/* keep looking */
-			    else savestr( e, tail);	/* j not here */
-			    break;	/* leave exceptions loop, goto case 1 */
-		       }
-		  case 1:
-		       continue;
+	for (     A = &entries[ i = 1  ]; i < entrycnt; A = &entries[ ++i]) {
+	    for ( C = &entries[ j = i+1]; j < entrycnt; C = &entries[ ++j]) {
+		  switch(  keyncmp( C->sortkey, i)) {
+		  case -1: break;			/* get next A */
+		  case 0:  tail = C->fromfile + A->keylen;
+		  	   while( '/' == *tail) tail++;
+			   if ( A->names.table)
+			       store( add_list_elt( tail, DONT_TRACK, NULL),
+				      &A->names);
+			   else add_list_elt( tail, DONT_TRACK, LIST( list));
+			   /* fall through to case 1 */
+		  case 1:  continue;	/* unlikely */
 		  }
-		  break; /* leave j loop, get next i */
+		  if ( ! list.table);
+		  else if ( ! A->names.table) {
+			   A->names.table = list.table;
+			   A->names.shift = list.shift;
+			   list.table = NULL;
+			   list.shift = 0;
+			   list2hashtable( &A->names);
+		  }
+		  else {
+			   sprintf(errmsg, "sort_entries: internal error\n");
+			   do_panic();
+		  }
+		  break; /* leave C loop, get next A */
 	     }
-	     for ( k = 0;    entries[ i].exceptions[ k]; k++);
-
-	     qsort( (char *)&entries[ i].exceptions[ 0], k,
-		     sizeof( entries[ 1].exceptions[ 0]),
-		     exceptcmp);
 	}
 }
 
@@ -249,9 +287,9 @@ dec_statfile( line, c)
 char *line; struct currentness *c;
 {
 	struct stat *s;
-	int dummy, *curr1 = &dummy, d = 0, u = 0, g = 0, m = 0;
 	int *extra = 0;
-	char *format, *name, same_name, type;
+	char *end, *format, *name, same_name, type;
+	int dummy, *curr1 = &dummy, d = 0, u = 0, g = 0, m = 0;
 
 	/* these long-int temps are necessary for pc/rt compatibility:
 	 * sscanf cannot scan into a short, though it may sometimes succeed
@@ -263,9 +301,19 @@ char *line; struct currentness *c;
 	 * longs to shorts, explicitly.
 	 */
 
+	/* for speed, we laboriously parse the type-independent part
+	 * of the statline without calling sscanf().
+	 * thus, we avoid copying the pathname strings around,
+	 * since the caller can re-use the originals,
+	 * once they're broken out of the line-format.
+	 */
 	type = *line++;
 	name = line;
 	line = index( line, ' ');
+	if ( ! line) {
+		sprintf(errmsg, "garbled statfile\n");
+		do_panic();
+	}
 	*line++ = '\0';
 
 	/* in the  statfile, which contains only relative pathnames,
@@ -282,7 +330,19 @@ char *line; struct currentness *c;
 			name);
 		do_gripe();
 	}
-	c->link = "";
+	/* the subscriber needs to know whether the currency-data
+	 * came from the remote fromfile or from the remote cmpfile.
+	 */
+	switch( same_name = *line++) {
+	case '=': strcpy( c->name, name);
+		  break;
+	case '~': *c->name = '\0';
+		  break;
+	default:
+		sprintf(errmsg,"garbled statfile: bad flag = %c\n",same_name);
+		do_panic();
+	}
+	*c->link = '\0';
 	c->cksum = 0;
 
 	/*
@@ -295,14 +355,19 @@ char *line; struct currentness *c;
 	switch( type) {
 	case 'f':
 		s->st_mode = S_IFREG;
-		curr1 = &c->cksum;
-		extra = &s->st_mtime;
+		curr1 = ( int*)&c->cksum;
+		extra = ( int*)&s->st_mtime;
 		break;
 	case 'l':	/* more common than dir's */
 		s->st_mode = S_IFLNK;
-		same_name = *line;
-		*index( line, '\n') = '\0';
-		c->link = line + 1;
+		if ( end = index( line, '\n'))
+			*end = '\0';
+		else {
+			sprintf(errmsg, "garbled statfile\n");
+			do_panic();
+		}
+		if ( !*line) fake_link( fromroot, c->name, c);
+		else strcpy( c->link, line);
 		break;
 	case 'd':
 		s->st_mode = S_IFDIR;
@@ -324,20 +389,8 @@ char *line; struct currentness *c;
 	 * as in S_IFLNK case, skip the sscanf call:
 	 */
 	if ( *(format = read_formats[ s->st_mode >> 13]))
-		sscanf( line, format, &same_name, curr1, &u, &g, &m, extra);
+		sscanf( line, format, curr1, &u, &g, &m, extra);
 
-	/* the subscriber needs to know whether the currency-data
-	 * came from the remote fromfile or from the remote cmpfile.
-	 */
-	switch( same_name) {
-	case '=': strcpy( c->name, name);
-		  break;
-	case '~': *c->name = '\0';
-		  break;
-	default:
-		sprintf(errmsg,"garbled statfile: bad flag = %c\n",same_name);
-		do_panic();
-	}
 	s->st_uid   = (short) u;
 	s->st_gid   = (short) g;
 	s->st_mode |= (short) m & 07777;
@@ -361,7 +414,6 @@ int
 get_next_match( name)
 char *name;
 {
-	int i = cur_ent;
 	char key[ LINELEN];
 
 	KEYCPY( key, name);
@@ -438,8 +490,8 @@ dec_entry( entnum, fr, to, cmp, tail)
 int entnum; char *fr[], *to[], *cmp[], *tail; {
         static struct currentness currency_buf, *entry_currency;
 	static int prev_ent = 0;
-	unsigned int cmp_type = 0;
 	int i;
+	Entry *e;
 	static int xref_flag = 0;
 
 	/* this routine's main purpose is to transfer entnum's contents
@@ -458,12 +510,11 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 	 * to see if what we've modified is another entry's cmpfile.
 	 * if so, propagate the "out-of-date" mark to that entry.
 	 */
-	if ( xref_flag && ! TYPE( currency_buf.sbuf)) {
-		for ( i = 1; i <= entrycnt; i++) {
-			if ( !  entries[ i].currency.sbuf.st_mode) continue;
-			if ( ! strcmp(
-				entries[ i].cmpfile, currency_buf.name))
-				entries[ i].currency.sbuf.st_mode = 0;
+	if ( xref_flag && updated( &currency_buf, NULL)) {
+		for ( e = &entries[ i = 1]; i <= entrycnt; e = &entries[ ++i]) {
+			if ( updated( &e->currency, NULL) ||
+			     strcmp(   e->cmpfile,   currency_buf.name));
+			else updated( &e->currency, &currency_buf);
 		}
 	}
 	currency_buf.sbuf.st_mode = S_IFMT;	/* kill short-term data. */
@@ -473,9 +524,10 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 
 		/* a subtler, longer search would set this flag less often.
 		 */
-		xref_flag = strncmp( entries[ entnum].cmpfile,
-				     entries[ entnum].tofile,
-			     strlen( entries[ entnum].tofile));
+		if ( ! writeflag)
+			xref_flag = strncmp( entries[ entnum].cmpfile,
+					     entries[ entnum].tofile,
+				     strlen( entries[ entnum].tofile));
 
 		poppath( fr); pushpath( fr,  entries[ entnum].fromfile);
 		poppath( to); pushpath( to,  entries[ entnum].tofile);
@@ -488,7 +540,7 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 
 		entry_currency = &entries[ entnum].currency;
 	}
-	if ( ! TYPE( entry_currency->sbuf))
+	if ( updated( entry_currency, NULL))
 		get_currentness( cmp, entry_currency);
 
 	if ( ! tail || ! *tail )
@@ -507,7 +559,7 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 	return( entry_currency);
 }
 
-/* these abstractions handle a stack of pointers into a character-string,
+/* these routines handle a stack of pointers into a character-string,
  * which typically is a UNIX pathname.
  * the first element CNT of the stack points to a depth-counter.
  * the second element ROOT points to the beginning of the pathname string.

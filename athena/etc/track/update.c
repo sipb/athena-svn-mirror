@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 3.0 1988-03-09 13:17:18 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.0 1988-04-14 16:43:30 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 3.0  88/03/09  13:17:18  don
+ * this version is incompatible with prior versions. it offers:
+ * 1) checksum-handling for regular files, to detect filesystem corruption.
+ * 2) more concise & readable "updating" messages & error messages.
+ * 3) better update-simulation when nopullflag is set.
+ * 4) more support for non-default comparison-files.
+ * finally, the "currentness" data-structure has replaced the statbufs
+ * used before, so that the notion of currency is more readily extensible.
+ * note: the statfile format has been changed.
+ * 
  * Revision 2.2  88/01/29  18:24:18  don
  * bug fixes. also, now track can update the root.
  * 
@@ -31,13 +41,20 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 3.0 1988-03-09 13:17:18 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.0 1988-04-14 16:43:30 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include "track.h"
 #include <sys/errno.h>
+
+/* this array converts stat()'s type-bits to a character string:
+ * to make the index, right-shift the st_mode field by 13 bits.
+ */
+static char *type_str[] = { "ERROR", "char-device", "directory",
+	"block-device", "file", "symlink", "socket(ERROR)", "nonexistent"
+};
 
 #define DIFF( l, r, field) (short)(((l).sbuf.field) != ((r).sbuf.field))
 
@@ -62,7 +79,7 @@ currency_diff( l, r) struct currentness *l, *r; {
 
 	TIME( *s) = 0;
 	DEV( *s) = 0;
-	d.link = NULL;
+	*d.link = '\0';
 	d.cksum = 0;
 
 	switch ( TYPE( r->sbuf)) {
@@ -74,15 +91,15 @@ currency_diff( l, r) struct currentness *l, *r; {
 	case S_IFDIR: break;
 
 	case S_IFLNK:
-		d.link = (char *)( 0 != strcmp( r->link, l->link));
-		diff = (int) d.link;
+		*d.link = (char)( 0 != strcmp( r->link, l->link));
+		diff = (int) *d.link;
 		break;
 
 	case S_IFCHR:
 	case S_IFBLK:
 		if (! incl_devs) return( NULL);
 		DEV( *s) = DIFF( *l, *r, st_dev);
-		diff != DEV( *s);
+		diff |= DEV( *s);
 		break;
 
 	case S_IFMT:
@@ -105,16 +122,22 @@ struct currentness *r, *l;
 	struct currentness *diff;
 	struct stat lstat;
 	struct timeval *timevec;
+	static List_element *missing_dirs;
+	List_element *p;
 	unsigned int oumask;
 	unsigned int exists, local_type, remote_type, same_name;
+
+	diff = currency_diff( l, r);
 
 	/* if the cmpfile doesn't exist, and tofile != cmpfile,
 	 * give up, since we want to be conservative about updating.
 	 */
-	same_name = ! strcmp( lpath[ NAME], l->name);
+	same_name = ! strcmp( l->name, lpath[ NAME]);
 
 	if ( S_IFMT == TYPE( l->sbuf) && ! same_name) {
-		sprintf( errmsg, "nonexistent comparison-file %s\n", l->name);
+		sprintf( errmsg, "%s%s.\n%s%s.\n",
+			 "nonexistent local comparison-file ", l->name,
+			 "trying to update from ", rpath[ ROOT]);
 		errno = 0;
 		do_gripe();
 		return( -1);
@@ -127,52 +150,83 @@ struct currentness *r, *l;
 
 	exists = S_IFMT != local_type;
 
-	diff = currency_diff( l, r);
-
 	/* that diff == NULL doesn't mean localname exists,
 	 * since l may represent a different file.
 	 */
-	if ( ! diff && exists) {
-		return( -1);
-	}
+	if ( ! diff && exists) return( -1);
 
 	if ( verboseflag) banner( remotename, localname, r, l, diff);
 
-	/* if fromfile != the remote cmpfile, 
+	/* speed hack: when we can, we avoid re-extracting remote currentness.
+	 * reasons that we can't:
+	 * 1) if fromfile != the remote cmpfile,
 	 * we need to extract fromfile's real currency info.
-	 * note that we compare the "unmounted" version of remotename,
-	 * since r->name comes from the statfile, and so doesn't
-	 * include the mountpoint path-component.
+	 * 2) if nopullflag is set, we need to simulate real update of files.
+	 * 3) if fromfile is a dir or device, we need to ensure that it's real.
+	 * XXX: for detecting case 1, dec_statfile() makes
+	 *	strcmp( r->name, rpath[ NAME]) unnecessary:
+	 *      if '~' was in statline, r->name contains "".
+	 *      if '=' was in statline, r->name contains rpath[ NAME].
 	 */
-	if ( strcmp( r->name,    rpath[ NAME]))
-		get_currentness( rpath, r);
-
 	remote_type = TYPE( r->sbuf);
+	do {
+	    if ( ! *r->name); /* remote_type isn't necessarily rpath's type. */
+	    else switch( remote_type) {
+		 case S_IFREG: if ( nopullflag) break;	 /* call get_curr(). */
+		 case S_IFLNK: continue; /* leave do block, skip get_curr(). */
+		 default:      break;	 /* dir's & dev's must exist. */
+	    }
+	    if ( get_currentness( rpath, r)) {
+		sprintf( errmsg,
+			 "master-copy doesn't exist:\n\t%s should be a %s.\n",
+			 rpath[ ROOT], type_str[ remote_type >> 13]);
+		do_gripe();
 
-	/* same_name == 1 means that we're updating the cmpfile.
-	 * if this cmpfile is the entry's top-level cmpfile,
-	 * then we need to update the entry's currency-info.
-	 */
-	if ( same_name && nopullflag) { /* simulate cmpfile's update */
-		l->sbuf.st_mode  = r->sbuf.st_mode;
-		l->sbuf.st_uid   = r->sbuf.st_uid;
-		l->sbuf.st_gid   = r->sbuf.st_gid;
-		l->sbuf.st_rdev  = r->sbuf.st_rdev;
-		l->sbuf.st_mtime = r->sbuf.st_mtime;
-		l->link		 = r->link;
-		l->cksum	 = r->cksum;
-	}
-	else if ( same_name) /* nopullflag off; usual case */
-		/* mark the currency as "out-of-date",
-		 * in case it's an entry's currency, because
-		 * dec_entry() reuses each entry's currencies repeatedly.
-		 * dec_entry() will refresh the entry's currency,
-		 * if it sees this mark.
+		/* for nopullflag, 
+		 * maintain list of dir's whose creation would fail,
+		 * so we can see whether lpath's parent "exists".
+		 * the only predictable reason that we wouldn't create a dir
+		 * is if the corresponding remote-dir doesn't exist.
 		 */
-		l->sbuf.st_mode = 0;
+		if ( remote_type == S_IFDIR) {
+			 pushpath( lpath, "");	/* append slash */
+			 add_list_elt( lpath[ ROOT], 0, &missing_dirs);
+			 poppath( lpath);	/* remove slash */
+		}
+		return( -1);
+	    }
+	    else remote_type = TYPE( r->sbuf);
+	} while( 0); /* just once */
 
-	if ( nopullflag) return(-1);
+	/* if cmpfile == tofile, then we're updating the cmpfile.
+	 * just in case this cmpfile is some entry's top-level cmpfile,
+	 * we need to update that entry's currency-info for dec_entry().
+	 * because dec_entry() reuses each entry's currencies repeatedly.
+	 */
+	if ( same_name) updated( l, r);
 
+	if ( ! nopullflag);
+	else if ( S_IFDIR == remote_type || exists)
+	    return(-1);
+	else {
+	    /* simulate findparent():
+	     * search missing_dirs list for ancestors of lpath.
+	     * we must search the whole list,
+	     * because we can't assume that the list is in recognizable order:
+	     * the list contains tofile's, sorted in order of decreasing
+	     * fromfile-name.
+	     */
+	    for ( p = missing_dirs; p; p = NEXT( p))
+		if ( ! strncmp( lpath[ ROOT], TEXT( p), strlen( TEXT( p)))) {
+		    sprintf(errmsg,"%s %s,\n\t%s %s.\n",
+			    "would't find parent directory for", localname,
+			    "because track previously failed to create",
+			    TEXT( p));
+		    do_gripe();
+		    break;
+		}
+	    return(-1);
+	}
 	/* if tofile is supposed to be a dir,
 	 * we can create its whole path if necessary;
 	 * otherwise, its parent must exist:
@@ -195,7 +249,7 @@ struct currentness *r, *l;
 	 * it has the same type as its remote counterpart.
 	 */
 
-	switch ( TYPE( r->sbuf)) {
+	switch ( remote_type) {
 
 	case S_IFREG:
 		/* the stat structure happens to contain
@@ -238,7 +292,7 @@ struct currentness *r, *l;
 		}
 		return( set_prots( localname, &r->sbuf));
 
-	case S_IFMT: /* this message could ask the user whether to continue: */
+	case S_IFMT: /* should have been caught already. */
 		sprintf( errmsg, "fromfile %s doesn't exist.\n", remotename);
 		do_gripe();
 		return( -1);
@@ -247,16 +301,46 @@ struct currentness *r, *l;
 		do_gripe();
 		return(-1);
 	}
+	/*NOTREACHED*/
+	/*
 	sprintf( errmsg, "ERROR (update_file): internal error.\n");
 	do_panic();
-	/*NOTREACHED*/
 	return( -1);
+	*/
+}
+
+updated( cmp, fr) struct currentness *cmp, *fr; {
+
+	if ( ! fr) return( ! TYPE( cmp->sbuf));
+
+	else if ( nopullflag) {
+		/* simulate cmpfile's update for dec_entry().
+		 * we do this for every cmpfile, because we can't
+		 * tell whether this cmpfile represents an entry.
+		 */
+		cmp->sbuf.st_mode  = fr->sbuf.st_mode;
+		cmp->sbuf.st_uid   = fr->sbuf.st_uid;
+		cmp->sbuf.st_gid   = fr->sbuf.st_gid;
+		cmp->sbuf.st_rdev  = fr->sbuf.st_rdev;
+		cmp->sbuf.st_mtime = fr->sbuf.st_mtime;
+		cmp->cksum	   = fr->cksum;
+		strcpy( cmp->link,   fr->link);
+	}
+	else	/* usual case. mark the currency as "out-of-date",
+		 * dec_entry() will refresh the entry's currency,
+		 * if it sees this mark.
+		 * this an efficiency hack; dec_entry() will seldom
+		 * see this mark, because most cmpfiles aren't at top-level.
+		 */
+		cmp->sbuf.st_mode = 0;
+
+	return( 0);
 }
 
 get_currentness( path, c) char **path; struct currentness *c; {
         strcpy( c->name, path[ NAME]);
         c->cksum = 0;
-        c->link = "";
+        *c->link = '\0';
         if ( (*statf)( path[ ROOT], &c->sbuf)) {
 		clear_stat( &c->sbuf);
                 c->sbuf.st_mode = S_IFMT;       /* XXX */
@@ -273,8 +357,8 @@ get_currentness( path, c) char **path; struct currentness *c; {
 			c->cksum = in_cksum( path[ ROOT], &c->sbuf);
                 break;
         case S_IFLNK:
-                if ( !( c->link = follow_link( path[ ROOT]))) {
-                        c->link = "";
+                if ( follow_link( path[ ROOT], c->link)) {
+                        *c->link = '\0';
                         return( -1);
                 }
                 break;
@@ -285,7 +369,7 @@ get_currentness( path, c) char **path; struct currentness *c; {
 }
 
 clear_stat( sp) struct stat *sp; {
-	int *p;;
+	int *p;
 
 	/* it happens that  a stat is 16 long integers;
 	 * we exploit this fact for speed.
@@ -377,13 +461,6 @@ char *from,*to;
 	return (0);
 }
 
-/* this array converts stat()'s type-bits to a character string:
- * to make the index, right-shift the st_mode field by 13 bits.
- */
-static char *type_str[] = { "ERROR", "char-device", "directory",
-	"block-device", "file", "symlink", "socket(ERROR)", "nonexistent"
-};
-
 banner( rname, lname, r, l, d)
 char *rname, *lname;
 struct currentness *r, *l, *d;
@@ -420,7 +497,7 @@ struct currentness *r, *l, *d;
 		n = TIME( *ls);
 		m = TIME( *rs);
 		format =	"%s %s%s %s ( mod-time=%d)\n"; }
-	else if	  (      d->link) {
+	else if	  (     *d->link) {
 		n = (int)l->link;
 		m = (int)r->link;
 		format =	"%s %s%s %s ( symlink -> %s)\n"; }

@@ -1,11 +1,12 @@
 %%
 
 GLOBAL		{
-			char * patt;
-			while ( patt = next_def_except())
-				strcpy( wordbuf[ wordcnt++], patt); /* XXX */
 			strncat(linebuf,yytext,yyleng);
 			return(GEXCEPT);
+		}
+"->"		{
+			strncat(linebuf,yytext,yyleng);
+			return(ARROW);
 		}
 \\[\t ]*#[\t\40-\176]*\n	
 		{
@@ -19,7 +20,10 @@ GLOBAL		{
 		}
 [\42\44-\71\73-\133\135-\176]+	{ /* everything except # : ! and \  */
 			strncat(linebuf,yytext,yyleng);
-			strcpy(wordbuf[wordcnt++],yytext);
+			for ( wordp = yytext;
+			     *wordp == '/' && wordp[1];
+			      wordp++);
+			strcpy(wordbuf, wordp);
 			return(WORD);
 		}
 ":"		{

@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 3.0 1988-03-09 13:17:34 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.0 1988-04-14 16:42:53 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 3.0  88/03/09  13:17:34  don
+ * this version is incompatible with prior versions. it offers:
+ * 1) checksum-handling for regular files, to detect filesystem corruption.
+ * 2) more concise & readable "updating" messages & error messages.
+ * 3) better update-simulation when nopullflag is set.
+ * 4) more support for non-default comparison-files.
+ * finally, the "currentness" data-structure has replaced the statbufs
+ * used before, so that the notion of currency is more readily extensible.
+ * note: the statfile format has been changed.
+ * 
  * Revision 2.3  88/01/29  18:23:59  don
  * bug fixes. also, now track can update the root.
  * 
@@ -30,7 +40,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 3.0 1988-03-09 13:17:34 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.0 1988-04-14 16:42:53 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -40,18 +50,34 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 /*
  * diagnostic stuff: used throughout track
  */
-printmsg()
-
+printmsg( filep) FILE *filep;
 {
 	int i;
 	char *s;
+	extern int sys_nerr;
+	extern char *sys_errlist[];
 
-	fprintf(stderr, "***%s: %s", prgname, errmsg);
+	if ( filep);
+	else if ( nopullflag) return;
+	else if ( logfile = fopen( logfilepath, "w+")) {
+		fchmod( logfile, 0664);
+		filep = logfile;
+	}
+	else {
+		fprintf( stderr, "can't open logfile %s.\n", logfilepath);
+		perror("system error is: ");
+		clearlocks();
+		exit(1);
+	}
+	fprintf( filep, "\n***%s: %s", prgname, errmsg);
 
 	if ( '\n' != errmsg[ strlen( errmsg) - 1])
-		putc('\n', stderr);
+		putc('\n', filep);
 
-	perror("errno is");
+	if ( errno < sys_nerr) 
+	     fprintf( filep, "   system error is '%s'.\n", sys_errlist[ errno]);
+	else fprintf( filep, "   system errno is %d ( not in sys_errlist).\n",
+		      errno);
 
 	if	( entnum >= 0)	i = entnum;	/* passed parser */
 	else if ( entrycnt >= 0)i = entrycnt;	/* in parser */
@@ -61,21 +87,40 @@ printmsg()
 	else if ( *subfilename)	s = subfilename;
 	else			s = "<unknown>";
 
-	fprintf(stderr, "Working on list named %s", s);
+	fprintf( filep, "   Working on list named %s", s);
 
-	if ( i < 0) fprintf(stderr," before parsing a list-elt.\n");
-	else	    fprintf(stderr," & entry '%s'\n", entries[ i].fromfile);
+	if ( i < 0) fprintf( filep," before parsing a list-elt.\n");
+	else	    fprintf( filep," & entry #%d: '%s'\n",
+			    i, entries[ i].fromfile);
+
+	/* a nuance of formatting:
+	 * we want to separate error-msgs from the update banners
+	 * with newlines, but if the update banners aren't present,
+	 * we don't want the error-msgs to be double-spaced.
+	 */
+	if ( verboseflag && filep == stderr)
+		fputc('\n', filep);
 }
 
 do_gripe()
 {
-	if (!quietflag)
-		printmsg();
+	printmsg( logfile);
+	if ( quietflag) return;
+	printmsg( stderr);
+
+	if ( ! verboseflag) {
+		/* turn on verbosity, on the assumption that the user
+		 * now needs to know what's being done.
+		 */
+		verboseflag = 1;
+		fprintf(stderr, "Turning on -v option. -q suppresses this.\n");
+	}
 }
 
 do_panic()
 {
-	printmsg();
+	printmsg( logfile);
+	printmsg( stderr);
 	clearlocks();
 	exit(1);
 }
@@ -86,8 +131,8 @@ do_panic()
 
 doreset()
 {
-	strcpy(linebuf,"");;
-	wordcnt = 0;
+	*linebuf = '\0';
+	*wordbuf = '\0';
 }
 
 parseinit( subfile) FILE *subfile;
@@ -97,29 +142,33 @@ parseinit( subfile) FILE *subfile;
 	doreset();
 	entrycnt = 0;
 	clear_ent();
+	errno = 0;
 }
 
+Entry *
 clear_ent()
 {
-	int i;
-	struct currentness *c = &entries[ entrycnt].currency;
+	Entry* e = &entries[ entrycnt];
+	struct currentness *c = &e->currency;
 
-       *entries[ entrycnt].sortkey	=	'\0';
-	entries[ entrycnt].keylen	=	  0;
-	entries[ entrycnt].followlink	=         0;
-	entries[ entrycnt].fromfile	= (char*) 0;
-	entries[ entrycnt].tofile	= (char*) 0;
-	entries[ entrycnt].cmpfile	= (char*) 0;
-	entries[ entrycnt].cmdbuf	= (char*) 0;
+       *e->sortkey	=	'\0';
+	e->keylen	=	  0;
+	e->followlink	=         0;
+	e->fromfile	= (char*) 0;
+	e->tofile	= (char*) 0;
+	e->cmpfile	= (char*) 0;
+	e->cmdbuf	= (char*) 0;
+
        *c->name  =	  '\0';
-	c->link  =  (char*) 0;
+       *c->link  =	  '\0';
 	c->cksum =	    0;
 	clear_stat( &c->sbuf);
 
-	/* add global exceptions
-	 */
-	for(i=0;i<WORDMAX;i++)
-		entries[ entrycnt].exceptions[ i] = (char *) 0;
+	e->names.table	= (List_element**) 0;
+	e->names.shift  = 0;
+	e->patterns     = (List_element *) 0;
+
+	return( e);
 }
 
 savestr(to,from)

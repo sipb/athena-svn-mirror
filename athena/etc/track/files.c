@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 3.0 1988-03-09 13:17:41 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.0 1988-04-14 16:42:41 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 3.0  88/03/09  13:17:41  don
+ * this version is incompatible with prior versions. it offers:
+ * 1) checksum-handling for regular files, to detect filesystem corruption.
+ * 2) more concise & readable "updating" messages & error messages.
+ * 3) better update-simulation when nopullflag is set.
+ * 4) more support for non-default comparison-files.
+ * finally, the "currentness" data-structure has replaced the statbufs
+ * used before, so that the notion of currency is more readily extensible.
+ * note: the statfile format has been changed.
+ * 
  * Revision 2.2  88/01/29  18:23:52  don
  * bug fixes. also, now track can update the root.
  * 
@@ -21,7 +31,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 3.0 1988-03-09 13:17:41 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.0 1988-04-14 16:42:41 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -57,39 +67,42 @@ long maxtime;
 	return (retval);
 }
 
-char *follow_link( name)
-char *name;
+follow_link( name, retval)
+char *name, *retval;
 {
-        static char target[ LINELEN];
         int cc;
-        if (0 >= ( cc = readlink( name, target, LINELEN))) {
+        if (0 >= ( cc = readlink( name, retval, LINELEN))) {
                 sprintf( errmsg, "can't read link: %s\n", name);
                 do_gripe();
-                return( NULL);
+                return( -1);
         }
-        target[ cc] = '\0';
+        retval[ cc] = '\0';
 
+	/*
         if ( verboseflag)
-                fprintf( stderr, "following link: %s -> %s\n", name, target);
+                fprintf( stderr, "following link: %s -> %s\n", name, retval);
+	*/
 
-        return( target);
+        return( 0);
 }
 
-char *resolve(name)
-char *name;
+char *resolve( name, root)
+char *root, *name;
 {
-	/* only called during parsing,
-	 * to trace links provided as cmpfiles,
-	 * and then only if the sublist entry starts with '!'.
+	/* return the shortest pathname for the inode returned by stat().
+	 * only called during parsing, to trace links provided in entries,
+	 * and then only if the entry starts with '!'.
+	 * this routine is pretty slow, because it uses getwd().
 	 */
 	static char path[ LINELEN];
 	static char home[ LINELEN] = "";
+	static char val[ LINELEN];
 	char *end, *linkval = path;
 	struct stat sbuf;
 
-	sprintf( path, "%s/%s", fromroot, name);
+	sprintf( path, "%s/%s", root, name);
 	if( stat( path, &sbuf)) {
-		sprintf( errmsg, "can't stat %s/%s\n", fromroot, name);
+		sprintf( errmsg, "can't stat %s/%s\n", root, name);
 		do_gripe();
 		return("");
 	}
@@ -105,11 +118,12 @@ char *name;
 		if ( S_IFLNK != TYPE( sbuf))
 			break;
 
-		if ( NULL == ( linkval = follow_link( path))) {
+		if ( follow_link( path, val)) {
 			/* back out. something's broken */
 			chdir( home);
 			return( name);
 		}
+		linkval = val;
 		if ( *linkval != '/' && ( end = rindex( path, '/'))) {
 			/* linkval isn't an absolute pathname, and
 			 * we're not already in path's parent dir.
@@ -122,7 +136,7 @@ char *name;
 	}
 	/* reduce  linkval to its optimal absolute pathname:
 	 * we do this by chdir'ing to linkval's parent-dir,
-	 * so that getwd() will optimize for us.
+	 * so that getwd() will optimize for us. note: getwd() is SLOW.
 	 */
 	if ( *linkval == '/');
 	else if ( end = rindex( linkval, '/')) {
@@ -150,9 +164,9 @@ char *name;
 		strcat( path, linkval);
 		linkval = path;
 	}
-	if ( strncmp( linkval, fromroot, strlen( fromroot))) {
+	if ( strncmp( linkval, root, strlen( root))) {
 		sprintf( errmsg, "link %s->%s value not under mountpoint %s\n",
-			 name, linkval, fromroot);
+			 name, linkval, root);
 		do_gripe();
 		linkval = "";
 	}
