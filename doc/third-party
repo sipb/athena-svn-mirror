@@ -103,6 +103,7 @@ Distribution sites for software under third
 	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
 	db		http://www.sleepycat.com/download.html
 	diffutils	ftp.gnu.org:pub/gnu/diffutils
+	eel		ftp.gnome.org:pub/GNOME/stable/sources/eel
 	emacs		ftp.gnu.org:pub/gnu/emacs; see below
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
 	evolution	ftp.gnome.org:pub/GNOME/unstable/sources/evolution
@@ -136,6 +137,7 @@ Distribution sites for software under third
 	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
 	libpng		http://www.libpng.org/pub/png/libpng.html
 	librep		librep.sourceforge.net:pub/librep
+	librsvg		ftp.gnome.org:pub/GNOME/stable/sources/librsvg
 	libungif	prtr-13.ucsc.edu:pub/libungif
 	libxml		ftp.gnome.org:pub/GNOME/stable/sources/libxml
 	libxml2		ftp.gnome.org:pub/GNOME/stable/sources/libxml
