@@ -18,8 +18,14 @@ on a tty.
 */
 
 /*
- * $Id: login.c,v 1.1.1.3 1999-03-08 17:43:07 danw Exp $
+ * $Id: login.c,v 1.1.1.3.4.1 1999-11-09 16:22:00 tb Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1999/11/07 22:22:18  tb
+ * Define _GNU_SOURCE to make <utmpx.h> extensions visible.
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:07  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.10  1998/07/08 00:44:01  kivinen
  * 	Added better hpux TCB auth support. Added ut_syslen support.
  *
@@ -75,6 +81,8 @@ on a tty.
  *
  * $Endlog$
  */
+
+#define _GNU_SOURCE /* Make utmpx extensions visible on glibc systems */
 
 #include "includes.h"
 #ifdef HAVE_UTMP_H
@@ -434,7 +442,6 @@ void record_login(int pid, const char *ttyname, const char *user, uid_t uid,
     ux.ut_session = pid;
     strncpy(ux.ut_host, host, sizeof(ux.ut_host));
     ux.ut_host[sizeof(ux.ut_host) - 1] = 0;
-    ux.ut_syslen = strlen(ux.ut_host);
 #ifdef HAVE_SYSLEN_IN_UTMPX
     ux.ut_syslen = strlen(ux.ut_host);
 #endif
