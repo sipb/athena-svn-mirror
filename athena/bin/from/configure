@@ -1027,7 +1027,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err $LIBS"
+LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 1033 "configure"
 #include "confdefs.h"
@@ -1055,7 +1055,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  KRB4_LIBS="-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err"
+  KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"
 else
   echo "$ac_t""no" 1>&6
 { echo "configure: error: Kerberos 4 libraries not found" 1>&2; exit 1; }
