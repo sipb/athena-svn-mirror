@@ -1,0 +1,54 @@
+
+How to Set Up an Application or Library to use GTK-Doc
+======================================================
+
+This assumes that you are using autoconf & automake to build your package.
+
+
+1. Insert the code from examples/configure.in into your configure.in.
+   (somewhere before the call to AC_OUTPUT.)
+
+2. Create a directory in which you want the docs to be built,
+   e.g. 'myproject/docs/reference'.
+
+3. Copy examples/Makefile.am to this directory and edit the variables at
+   the top of the file. (See the GTK+ source for an example.)
+
+4. Add the new Makefile to your configure.in's AC_OUTPUT call, and make sure
+   all the SUBDIRS variables are set properly so the docs directory is built.
+
+5. If your library or application includes GtkObjects/GObjects, and you want
+   their signals, arguments/parameters and position in the hierarchy to be
+   documented:
+
+   Create a MODULE.types file in the docs directory, e.g. "myproject.types".
+   This should contain any '#include' directives needed to compile a program
+   with your module, and a list of functions to initialize all of the widgets
+   and objects in the library. For example, the gtk.types file starts like
+   this:
+
+	#include <gtk/gtk.h>
+
+	gtk_accel_label_get_type
+	gtk_adjustment_get_type
+	gtk_alignment_get_type
+	gtk_arrow_get_type
+
+
+That's it! If you now build the application or library you should get a
+complete set of documentation. (Note that due to make being awkward the build
+may fail the first time, but if you run make again it should work.)
+
+
+You can tweak the output in several ways:
+
+ o modify the main SGML file to add introductory sections or to split the
+   documentation into several chapters.
+
+ o modify the MODULE-sections.txt file to rearrange the documentation into
+   different sections or a different order (see sections-file.txt for info).
+
+ o add a MODULE-overrides.txt to override particular declarations.
+
+
+Damon
