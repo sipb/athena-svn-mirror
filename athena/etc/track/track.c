@@ -1,8 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.0 1988-04-14 16:43:19 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.1 1988-05-04 18:11:38 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.0  88/04/14  16:43:19  don
+ * this version is not compatible with prior versions.
+ * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
+ * it also offers sped-up exception-checking, via hash-tables.
+ * a bug remains in -nopullflag support: if the entry's to-name top-level
+ * dir doesn't exist, update_file doesn't get over it.
+ * the fix should be put into the updated() routine, or possibly dec_entry().
+ * 
  * Revision 3.0  88/03/09  13:18:05  don
  * this version is incompatible with prior versions. it offers:
  * 1) checksum-handling for regular files, to detect filesystem corruption.
@@ -86,7 +94,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.0 1988-04-14 16:43:19 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.1 1988-05-04 18:11:38 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -349,12 +357,12 @@ char **argv;
 	if (debug)
 		printf("parse worked\n");
 
+	sort_entries();
+
 	if (parseflag) {  /* -p: Just show the fields */
 		justshow();
 		cleanup();
 	}
-
-	sort_entries();
 
 	setlock();
 
