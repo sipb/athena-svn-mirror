@@ -49,9 +49,24 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 echo "%dir /var/athena/sessions" >> rpm.filelist
 
 %ifos linux
+%triggerin -- initscripts
+# Use the krb5 login on virtual consoles.  Also undo any previous
+# use of the Athena mingetty (which was based on an older version
+# of mingetty, without the --loginprog option).
+sed -e 's|/etc/athena/mingetty|/sbin/mingetty|' \
+    -e 's|/sbin/mingetty tty|/sbin/mingetty --loginprog=/usr/athena/etc/login.krb5 tty|' \
+  /etc/inittab > /etc/inittab.new && mv /etc/inittab.new /etc/inittab
+
 %triggerin -- krb5-libs
 %else
 %post
 %endif
 cp -f /etc/krb5.conf /etc/krb5.conf.aside
 cp -f /etc/krb5.conf.athena /etc/krb5.conf
+
+%ifos linux
+%preun
+[ $1 = 0 ] || exit 0
+sed -e 's|/sbin/mingetty --loginprog=/usr/athena/etc/login.krb5 tty|/sbin/mingetty tty|' \
+  /etc/inittab > /etc/inittab.new && mv /etc/inittab.new /etc/inittab
+%endif
