@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.2 1998-05-07 21:53:24 ghudson Exp $
+# $Id: Makefile,v 1.3 1998-05-12 18:35:10 ghudson Exp $
 
 SUBDIRS = resolv irs isc bsd inet nameser
 
@@ -50,28 +50,33 @@ MARGS =	"SYSTYPE=${SYSTYPE}" "SHELL=${SHELL}" "A=${A}" "O=${O}" \
 	"INSTALL=${INSTALL}" "CPPFLAGS=${CPPFLAGS}" "TOP=../${TOP}"
 
 LIB = libbind.${A}
+LIBTS = ${TOP}/lib/libbind.ts
 
 all depend clean install distclean::
 	@for x in ${SUBDIRS}; do \
 		(cd $$x; pwd; ${MAKE} ${MARGS} $@); \
 	done
 
-all::
-	${RANLIB} ${LIB}
+all:: ${LIBTS}
+
+${LIBTS}: ${LIBBIND}
+	${RANLIB} ${LIBBIND}
+	touch ${LIBTS}
 
 distclean:: clean
 
 clean:: FRC
 	rm -f *~ *.BAK *.CKP *.orig
-	rm -f ${LIBBIND}
+	rm -f ${LIBBIND} ${LIBTS}
 
 install::
 
 ${DESTDIR}${DESTLIB}:
 	mkdir -p ${DESTDIR}${DESTLIB}
 
-${DESTDIR}${DESTLIB}/${LIB}: ${LIB}
-	${INSTALL} -c -o bin -g bin -m 644 ${LIB} ${DESTDIR}${DESTLIB}/${LIB}
+${DESTDIR}${DESTLIB}/${LIB}: ${LIBBIND}
+	${INSTALL} -c -o bin -g bin -m 644 ${LIBBIND} \
+		${DESTDIR}${DESTLIB}/${LIB}
 	( cd ${DESTDIR}${DESTLIB} ; ${RANLIB} ${LIB} )
 
 links:: FRC

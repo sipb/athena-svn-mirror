@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.2 1998-05-07 21:52:38 ghudson Exp $
+# $Id: Makefile,v 1.3 1998-05-12 18:35:08 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -40,7 +40,7 @@ DESTHELP= /usr/share/misc
 STRIP=-s
 
 LDFLAGS=
-DEFS=	-D_PATH_HELPFILE=\"$(DESTHELP)/nslookup.help\"
+DEFS=	-D_PATH_HELPFILE=\"${DESTDIR}${DESTHELP}/nslookup.help\"
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL} ${DEFS}
 
 PROG= nslookup

@@ -1,3 +1,5 @@
+#include "os_version.h"
+
 #undef HAS_SA_LEN
 #define USE_POSIX
 #define POSIX_SIGNALS
@@ -9,13 +11,8 @@
 #define SETPWENT_VOID
 #define SIOCGIFCONF_ADDR
 #define IP_OPT_BUF_SIZE 40
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/sbin/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/sbin/named-xfer"
-#undef _PATH_PIDFILE
-#define _PATH_PIDFILE	"/etc/named.pid"
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define PORT_NONBLOCK	O_NONBLOCK
 #define PORT_WOULDBLK	EWOULDBLOCK
@@ -41,7 +38,13 @@
 #define AF_INET6	24
 #endif
 
+/*
+ * Prior to 2.6, Solaris needs a prototype for gethostname().
+ */
+#if (OS_MAJOR == 5 && OS_MINOR < 6)
 #include <sys/types.h>
+extern int gethostname(char *, size_t);
+#endif
 
 #define NEED_STRSEP
 extern char *strsep(char **, const char *);
@@ -58,8 +61,11 @@ int daemon(int nochdir, int noclose);
 #endif
 
 /*
- * Solaris recvfrom() occasionally returns ECHILD for some reason.  We
- * define SPURIOUS_ECHILD so that the server doesn't complain about it
- * when it happens.
+ * Solaris 2.5 and later have getrlimit(), setrlimit() and getrusage().
  */
-#define SPURIOUS_ECHILD
+#if (OS_MAJOR > 5 || (OS_MAJOR == 5 && OS_MINOR >= 5))
+#include <sys/resource.h>
+#define HAVE_GETRUSAGE
+#define RLIMIT_TYPE rlim_t
+#define RLIMIT_FILE_INFINITY
+#endif

@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.2 1998-05-07 21:52:01 ghudson Exp $
+# $Id: Makefile,v 1.3 1998-05-12 18:35:04 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -66,7 +66,7 @@ OBJS=	db_dump.${O} db_load.${O} db_lookup.${O} db_save.${O} db_update.${O} \
 
 all: ${PROG} pathnames
 
-${PROG}: ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
+${PROG}: pathnames.h ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
 	${CC} ${CDEBUG} ${LDFLAGS} -o ${PROG} ${OBJS} tmp_version.${O} \
 		${LIBBIND} ${SYSLIBS}
 
@@ -79,6 +79,14 @@ tmp_version.c: version.c Makefile ../Makefile ${SRCS} ${HDRS}
 	    -e "s|%WHOANDWHERE%|$${u}@$${h}:$${d}|" \
 	    < version.c > tmp_version.c)
 
+pathnames.h: ${TOP}/.settings Makefile
+	rm -f pathnames.h
+	sed -e "s|%DESTSBIN%|${DESTSBIN}|" \
+	    -e "s|%DESTEXEC%|${DESTEXEC}|" \
+	    -e "s|%DESTETC%|${DESTETC}|" \
+	    -e "s|%DESTRUN%|${DESTRUN}|" \
+	    < pathtemplate.h > pathnames.h
+
 pathnames: pathnames.${O} pathnames.h ${LIBBIND} Makefile
 	${CC} ${CDEBUG} ${LDFLAGS} -o $@ pathnames.${O} \
 		${LIBBIND} ${SYSLIBS}
@@ -89,10 +97,11 @@ distclean: clean
 clean: FRC
 	rm -f ${PROG} ${OBJS} core .depend
 	rm -f *.BAK *.CKP *~ *.orig
-	rm -f tmp_version.c tmp_version.${O} pathnames pathnames.${O}
+	rm -f tmp_version.c tmp_version.${O}
+	rm -f pathnames pathnames.${O} tmp_pathnames.h pathnames.h
 	rm -f y.tab.h y.tab.c
 
-depend: ${SRCS}
+depend: ${SRCS} pathnames.h
 	mkdep ${CPPFLAGS} -I${INCL} -I${PORTINCL} ${DEFS} ${SRCS}
 
 ${DESTDIR}${DESTSBIN}:
