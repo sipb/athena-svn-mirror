@@ -18,6 +18,10 @@ cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
 cp athena-ntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-time.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
+
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
 

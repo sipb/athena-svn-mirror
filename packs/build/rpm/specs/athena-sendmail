@@ -24,6 +24,10 @@ chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sendmail
 mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-sendmail.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/75sendmail
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/75sendmail
+
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/aliases$|%config \0|" \

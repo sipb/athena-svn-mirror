@@ -22,6 +22,14 @@ cp zephyrd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm 
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-zephyr.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/50zephyr
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/50zephyr
+
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/user
+cp user-zephyr.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/50zephyr
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/50zephyr
+
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/zephyr.vars$|%config \0|" |

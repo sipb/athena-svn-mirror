@@ -22,6 +22,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/athena/login
 cp config $RPM_BUILD_ROOT/etc/athena/login/config
 install -c -m 555 xwrapper.sh $RPM_BUILD_ROOT/etc/athena/xwrapper
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/user
+cp user-xauth.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/10xauth
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/10xauth
+
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/login/config$|%config \0|" |

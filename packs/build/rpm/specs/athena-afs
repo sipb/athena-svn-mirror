@@ -17,6 +17,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
+
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/usr/vice/etc/CellServDB$|%config \0|" \

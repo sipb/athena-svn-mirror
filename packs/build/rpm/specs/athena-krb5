@@ -31,6 +31,10 @@ cp krb5.conf $RPM_BUILD_ROOT/etc
 cp ftpusers $RPM_BUILD_ROOT/etc
 mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/user
+cp user-kerberos.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
+
 # Don't install /bin/login on Linux.
 rm $RPM_BUILD_ROOT/bin/login
 
