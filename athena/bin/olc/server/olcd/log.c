@@ -12,18 +12,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.24 1990-07-16 10:20:32 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: log.c,v 1.25 1990-08-24 03:24:28 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.24 1990-07-16 10:20:32 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.25 1990-08-24 03:24:28 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -33,6 +34,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
+#include <com_err.h>
 
 #if __STDC__ && __GNUC__
 #include <stdarg.h>
@@ -53,6 +55,7 @@ extern const char *fmt ();
 #undef fmt
 
 extern int errno;
+
 
 #if __STDC__
 static ERRCODE terminate_log_crash (KNUCKLE *);
