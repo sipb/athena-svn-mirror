@@ -1,5 +1,10 @@
 #!/bin/sh
-# $Id: build.sh,v 1.16 1997-10-03 17:57:14 ghudson Exp $
+# $Id: build.sh,v 1.17 1997-11-15 23:59:48 ghudson Exp $
+
+# This is the script for building the Athena source tree, or pieces of
+# it.  It is less flexible than the do.sh script in this directory.
+# See doc/maintenance in the source tree for information about
+# building the tree.
 
 source="/mit/source"
 build="/build"
