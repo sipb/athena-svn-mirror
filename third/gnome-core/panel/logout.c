@@ -89,7 +89,7 @@ create_logout_widget (void)
 			    "LOGOUT");
 
 	g_free (pixmap_name);
-	gtk_tooltips_set_tip (panel_tooltips, button, _("Log out of GNOME"), NULL);
+	gtk_tooltips_set_tip (panel_tooltips, button, _("Log out"), NULL);
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
 			    GTK_SIGNAL_FUNC (logout), NULL);

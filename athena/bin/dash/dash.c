@@ -1,5 +1,5 @@
 /*
- * $Id: dash.c,v 1.3 1999-02-22 18:21:33 danw Exp $
+ * $Id: dash.c,v 1.3.8.1 2001-08-01 14:17:43 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: dash.c,v 1.3 1999-02-22 18:21:33 danw Exp $";
+"$Id: dash.c,v 1.3.8.1 2001-08-01 14:17:43 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -1271,6 +1271,15 @@ caddr_t data;
   return 0;				/* For linting... */
 }
 
+int enableGnome(fromJet, what, data)
+caddr_t fromJet;
+int what;
+caddr_t data;
+{
+  system("rm -f $HOME/.athena_dash_interface");
+  return 0;				/* For linting... */
+}
+
 int debug(fromJet, what, data)
 caddr_t fromJet;
 char *what;
@@ -1756,6 +1765,7 @@ XjCallbackRec callbacks[] =
   { "message", message },
   { "stdout", std_out },
   { "stderr", std_err },
+  { "enableGnome", enableGnome },
 /*
   { "load", load },
   { "cpu", cpu },
