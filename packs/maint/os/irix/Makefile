@@ -1,12 +1,17 @@
-# $Id: Makefile,v 1.3 1999-01-22 04:01:55 rbasch Exp $
+# $Id: Makefile,v 1.4 1999-04-23 01:10:09 rbasch Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
 ATHRETCDIR=/etc/athena
+ATHETCDIR=/usr/athena/etc
+CFLAGS=-g
 
-all:
+all: os-checkfiles
+
+os-checkfiles: os-checkfiles.o array.o
+	${CC} ${LDFLAGS} -o $@ os-checkfiles.o array.o
 
 check:
 
@@ -15,12 +20,15 @@ install:
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${ATHETCDIR}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 axdm ${DESTDIR}${INITD}
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 network ${DESTDIR}${INITD}
+	install -c -m 0755 os-checkfiles ${DESTDIR}${ATHETCDIR}
+	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	rm -f ${DESTDIR}${RC0}/K02xdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
@@ -40,5 +48,7 @@ install:
 	ln -s ../init.d/axdm ${DESTDIR}${RC2}/S98xdm
 
 clean:
+	rm -f os-checkfiles.o array.o os-checkfiles
 
 distclean:
+	rm -f os-checkfiles.o array.o os-checkfiles
