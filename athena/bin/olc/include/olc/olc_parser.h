@@ -17,10 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.12 1992-02-05 02:56:12 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olc_parser.h,v 1.13 1997-04-30 18:17:00 ghudson Exp $
+ *	$Author: ghudson $
  */
 
+
+#ifndef __olc_olc_parser_h
+#define __olc_olc_parser_h
 
 /* These really don't return anything useful.  */
 typedef ERRCODE (*Pfunction)OPrototype((char **));
@@ -121,3 +124,5 @@ char **handle_argument P((char **args , REQUEST *req , int *status ));
 ERRCODE do_olc_zephyr P((char **arguments ));
 
 #undef P
+
+#endif /* __olc_olc_parser_h */
