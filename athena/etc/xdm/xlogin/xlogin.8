@@ -1,5 +1,5 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.6 1992-06-03 16:49:21 epeisach Exp $
-.TH XLOGIN 8 "16 November 1990"
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.7 1994-05-25 14:35:22 cfields Exp $
+.TH XLOGIN 8 "25 May 1994"
 .ds ]W MIT Project Athena
 .SH NAME
 xlogin \- open X login window with pre-login options and screen saver
@@ -11,7 +11,7 @@ xlogin -config \fIdirectory\fR [X-options]
 \fIXlogin\fR is used to login users on the display head of a
 workstation.  It handles a number of login options, applications that
 can be run without logging in, and a screensaver mode.  It also
-handles reactivating the workstation while it is idle.
+handles reactivating the workstation while it is or should be idle.
 .PP
 If the user requests a console login, \fIXlogin\fR will exit with
 status 3.  On successful login, it will exec the session script.  On
@@ -42,8 +42,12 @@ Turns on blanking of all screens on a multi-screened X server.
 Turns off blanking of all screens on a multi-screened X server.
 .TP
 .B -reactivate \fIscript\fR
-Name of script to run to reactivate the workstation.  This is only run
-while no one is logged in.
+Name of script to run to reactivate the workstation. \fIXlogin\fR runs
+this script once when it starts up, prior to prompting the user to log
+in and regardless of whether anyone is logged in, with the
+\fB-prelogin\fR option. It is also runs the script periodically later
+only if no one is logged in, occasionally with the \fB-detach\fR
+option.
 .TP
 .B -idle \fIseconds\fR
 How long to let the machine lie idle before attempting to reactivate it.
@@ -95,8 +99,8 @@ Boolean value that determines whether to blank all screens on a
 multi-screened X server.  Default is "True".
 .TP
 .B *reactivateProg
-Name of script to run to reactivate the workstation.  This is only run
-while no one is logged in.
+Name of script to run to reactivate the workstation. Same as
+\fB-reactivate\fR above.
 .TP
 .B *reactivateTimeout
 How long to let the machine lie idle before attempting to reactivate it.
@@ -136,8 +140,10 @@ Name of the file in which to find a local message of the day to append
 to the global one for the idle screen.  This defaults to an empty
 string, in which case it is ignored.
 .SH "SEE ALSO"
-dm(8), console(8)
+dm(8), console(8), reactivate(8)
+.SH "BUGS"
+The login window sometimes looks strange when the moon is full.
 .SH AUTHORS
 Mark Rosenstein, Chris VanHaren, Craig Fields of MIT Project Athena
 .br
-Copyright (c) 1990, 1992 Massachusetts Institute of Technology
+Copyright (c) 1990, 1992, 1994 Massachusetts Institute of Technology
