@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.6 1989-11-26 22:17:59 epeisach Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.7 1990-07-15 13:25:38 probe Exp $";
 #endif lint
 
 /*
@@ -24,10 +24,20 @@ All Rights Reserved.
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
+#ifdef KERBEROS
 #include <krb.h>
+#endif
 
+#ifdef KERBEROS
 #ifndef KRB_REALM
 #define KRB_REALM	"ATHENA.MIT.EDU"
+#endif
+#else
+#include <sys/param.h> /* for MAXHOSTNAMELEN */
+#define	REALM_SZ	MAXHOSTNAMELEN
+#define	INST_SZ		0		/* no instances w/o Kerberos */
+#define	ANAME_SZ	9		/* size of a username + null */
+#define	KRB_REALM	"ATHENA.MIT.EDU" /* your local "realm" */
 #endif
 
 /* "aname.inst@realm" */
@@ -113,9 +123,14 @@ char *canon;
 	strncpy(canon, atsign, len);
 	canon += len;
 	*canon++ = '\0';
-    } else if(krb_get_lrealm(canon, 1) != KSUCCESS) {
+    }
+#ifdef KERBEROS
+    else if(krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }
+#else
+    else strcpy(canon, KRB_REALM);
+#endif
 }
 	    
 /* Get a lock to modify acl_file */
