@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.56 2001-05-21 16:15:40 rbasch Exp $
+# $Id: reactivate.sh,v 1.57 2001-05-25 14:18:03 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -83,12 +83,17 @@ if [ "$full" = true ]; then
 		pids=`who -u | awk '{ print $7; }'`
 	fi
 
-	# If any session leader pid is current, quit now.
+	# If any session leader pid is current, quit now.  Ignore dm
+	# (which is the session leader on the console tty), in case of
+	# a stale utmp entry from a console login.
+	dmpid=`cat /var/athena/dm.pid 2>/dev/null`
 	for pid in $pids ; do
-		kill -0 $pid 2>/dev/null
-		if [ $? -eq 0 ]; then
-			rm -f $countfile
-			exit 0
+		if [ "$pid" != "$dmpid" ]; then
+			kill -0 $pid 2>/dev/null
+			if [ $? -eq 0 ]; then
+				rm -f $countfile
+				exit 0
+			fi
 		fi
 	done
 
