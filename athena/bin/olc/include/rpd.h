@@ -1,5 +1,5 @@
 /*
- * $Id: rpd.h,v 1.22 1999-06-28 22:52:28 ghudson Exp $
+ * $Id: rpd.h,v 1.23 2001-04-04 22:09:09 ghudson Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -28,6 +28,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <limits.h>
+#include <unistd.h>
 
 #ifdef STDC_HEADERS
 #include <stdlib.h>
