@@ -2120,7 +2120,7 @@ else
 fi
 
 cat >> confdefs.h <<\EOF
-#define DEFAULT_TIMEOUT 20
+#define DEFAULT_TIMEOUT 240
 EOF
 
 
