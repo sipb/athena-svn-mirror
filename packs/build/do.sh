@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.73 2002-03-07 13:20:31 ghudson Exp $
+# $Id: do.sh,v 1.74 2002-03-28 05:09:02 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -146,8 +146,18 @@ if [ false = "$mungepath" ]; then
   PATH=$savepath
 fi
 
-# Determine the Athena version
-. $source/packs/build/version
+if [ dist = "$operation" ]; then
+  # Copy in the version file, for the few packages which need to know
+  # the Athena version.
+  cp $source/packs/build/version athena-version
+
+  # Force all source files to the same timestamp, to prevent third-party
+  # build systems from thinking some are out of date with respect to others.
+  find . ! -type l -exec touch -t `date +%Y%m%d%H%M.%S` {} \;
+fi
+
+# Determine the Athena version and set variables for the build system.
+. ./athena-version
 ATHENA_MAJOR_VERSION=$major
 ATHENA_MINOR_VERSION=$minor
 if [ -z "$ATHENA_PATCH_VERSION" ]; then
@@ -164,12 +174,6 @@ else
 fi
 
 export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
-
-if [ dist = "$operation" ]; then
-  # Force all source files to the same timestamp, to prevent third-party
-  # build systems from thinking some are out of date with respect to others.
-  find . ! -type l -exec touch -t `date +%Y%m%d%H%M.%S` {} \;
-fi
 
 if [ -r Makefile.athena ]; then
   export SRVD SOURCE COMPILER
