@@ -1,8 +1,8 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v $
-#	$Author: builder $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v 1.5 1985-11-13 21:22:05 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v 1.6 1989-09-16 12:50:38 epeisach Exp $
 #
 DESTDIR=
 CFLAGS=-O 
@@ -17,3 +17,12 @@ install: rep
 
 clean:
 	rm -f core rep
+
+depend:
+	makedepend ${CFLAGS} rep.c
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+rep.o: rep.c /usr/include/curses.h /usr/include/stdio.h /usr/include/sgtty.h
+rep.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+rep.o: /usr/include/sys/ttydev.h /usr/include/signal.h
