@@ -31,35 +31,28 @@ interface print_logger {
 	quota_service 	service;
 	recordptr	next;
 	recordptr	prev;
-	union switch (logfunc func) 
-		{ case LO_ADD		:
-		  case LO_SET		:
-		  case LO_SUBTRACT	:
-		  case LO_DELETEUSER	:
-		  case LO_ALLOW		:	
-		  case LO_DISALLOW	:	
-		  case LO_ADJUST	:	
-		      struct {
-			  quota_value amount;
-			  quota_username wname;
-		      } offset;
-		  case LO_CHARGE	:
-		      struct {
-			  print_time      ptime;
-			  printed_pages   npages;
-			  media_cost	  pcost;
-			  printer_name 	  where;
-			  quota_username  wname;
-		      } charge;
-		  case LO_ADD_ADMIN:
-		  case LO_DELETE_ADMIN:
-		  case LO_ADD_USER:
-		  case LO_DELETE_USER:
-		      struct {
-			  quota_username uname;
-			  quota_username aname;
-		      } group;
-		  } func_union;
+	logfunc		func;
+	/* This should be a union except nidl doesn't add up union structs
+	   properly in sending over the wire. */
+	/* The following are for: LO_ADD, LO_SET, LO_SUBTRACT, LO_DELETEUSER, 
+	   LO_ALLOW, LO_DISALLOW, LO_ADJUST */
+	struct {
+	    quota_value amount;
+	    quota_username wname;
+	} offset;
+	/* For: LO_CHARGE */
+	struct {
+	    print_time      ptime;
+	    printed_pages   npages;
+	    media_cost	  pcost;
+	    printer_name 	  where;
+	    quota_username  wname;
+	} charge;
+	/* For LO_ADD_ADMIN, LO_DELETE_ADMIN, LO_ADD_USER, LO_DELETE_USER */
+	struct {
+	    quota_username uname;
+	    quota_username aname;
+	} group;
     } LogEnt;
 
     
