@@ -1,0 +1,4 @@
+This is the initial release of libgail-gnome, the 
+Gnome Accessibility Implementation library additions which implement 
+ATK interfaces for libbonoboui and libgnomeui widgets.
+

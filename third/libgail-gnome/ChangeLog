@@ -1,0 +1,232 @@
+2002-11-22  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Fix to work with gtk-doc versions > 9.
+
+2002-09-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail-gnome/bonobo_socket_atk_object.c
+	(bonobo_socket_atk_object_get_frame): Omit cast to BONOBO_CONTROL_FRAME
+	as it may be NULL.
+	(bonobo_socket_atk_object_new): Check socket->frame is non-NULL before
+	referring to it. (bug #92465)
+	
+2002-09-05  jacob berkman  <jacob@ximian.com>
+
+	* autogen.sh (DIE): use automake-1.4
+
+2002-08-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail-gnome/bonobo-plug-atk-object.c 
+	(bonobo_plug_atk_object_get__type): Derive BonoboPlugAtkObject from
+	accessible object for GtkPlug instead of GtkContainer. (bug #89595)
+
+2002-06-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail-gnome/Makefile.am:
+	Make libgail-gnome a module and install into module directory.
+	
+2002-04-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Remove following files:
+	gail-gnome/bonobo-plug-atk-object.c
+	gail-gnome/bonobo-plug-atk-object.h
+	gail-gnome/bonobo-plug-atk-object_factory.c
+	gail-gnome/bonobo-plug-atk-object_factory.h
+	gail-gnome/bonobo-socket-atk-object.c
+	gail-gnome/bonobo-socket-atk-object.h
+	gail-gnome/bonobo-socket-atk-object_factory.c
+	gail-gnome/bonobo-socket-atk-object_factory.h
+
+	* gail-gnome/bonobo-accessibility-init.c 
+	gail-gnome/bonobo-control-accessible.c
+	gail-gnome/bonobo-control-accessible.h
+	gail-gnome/bonobo-control-frame-accessible.c
+	gail-gnome/bonobo-control-frame-accessible.h
+	gail-gnome/bonobo_plug_atk_object.c
+	gail-gnome/bonobo_plug_atk_object.h
+	gail-gnome/bonobo_plug_atk_object_factory.c
+	gail-gnome/bonobo_plug_atk_object_factory.h
+	gail-gnome/bonobo_socket_atk_object.c
+	gail-gnome/bonobo_socket_atk_object.h
+	gail-gnome/bonobo_socket_atk_object_factory.c
+	gail-gnome/bonobo_socket_atk_object_factory.h
+	gail-gnome/gail-gnome-debug.h test/test-gail-gnome.c:
+	Standardize file header
+
+2002-03-27  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.5.0
+
+2002-03-26  Michael Meeks  <michael@ximian.com>
+
+	* gail-gnome/gail-gnome-debug.h: only turn
+	debug on when explicitely enabled, too much
+	churn in nautilus for G_ENABLE_DEBUG.
+
+2002-03-16  Bill Haneman  <bill.haneman@sun.com>
+
+	* gail-gnome/bonobo_plug_atk_object.c
+	(bonobo_plug_atk_object_init):
+	Set the object's role to ATK_ROLE_WINDOW
+	(as distinct from ATK_ROLE_FRAME which is
+	reserved for toplevels).
+
+	* test/test-gail-gnome.c:
+	(setup_inproc_control, setup_outproc_control):
+	Added calls to atk_object_set_name for the
+	inproc and outproc control widgets (helps with
+	diagnosis and debugging).
+	(test_gail_gnome):
+	Removed #define guards on "test_spi_stuff"
+	calls, since they work now.	
+
+2002-03-15  Bill Haneman  <bill.haneman@sun.com>
+
+	* test/test-gail-gnome.c:
+	(main): removed putenv calls (for testing).
+	(test_gail_gnome): reinstated out-of-process 
+	component tests.
+	(test_gail_gnome, setup_inproc_control, setup_outproc_control): 
+	Added the components into a GtkWindow and GtkVBox, so 
+	that they get mapped to the screen.
+	
+2002-03-14  Michael Meeks  <michael@ximian.com>
+
+	* gail-gnome/bonobo-control-accessible.c
+	(bonobo_control_accessible_new): add IS_REMOTE_OBJECT
+	assertion.
+
+	* gail-gnome/bonobo-control-frame-accessible.c
+	(bonobo_control_frame_accessible_new): ditto.
+
+	* test/test-gail-gnome.c (main): upd. init.
+
+2002-03-13  Michael Meeks  <michael@ximian.com>
+
+	* gail-gnome/bonobo_socket_atk_object.c
+	(bonobo_socket_atk_object_get_accessible): handle
+	uninitialized returns correctly.
+
+	* gail-gnome/bonobo_plug_atk_object.c
+	(bonobo_plug_atk_object_get_accessible): ditto.
+
+2002-03-13  Bill Haneman <bill.haneman@sun.com>
+
+	* gail-gnome/bonobo-control-accessible.c
+	(bonobo_control_accessible_class_init):
+	Changed cast to use macro (should have no
+	functional impact).
+	
+	* gail-gnome/bonobo-control-frame-accessible.c
+	(bonobo_control_frame_accessible_class_init):
+	Fixed nasty misuse of method overriding in which 
+	we were mistakenly overriding the *parent* class's
+	method.
+	(bonobo_control_frame_accessible_new): added assertion.
+	
+	
+	* gail-gnome/bonobo_socket_atk_object.c 
+	(bonobo_socket_atk_object_get_accessible):
+	Added assertions.
+
+	* gail-gnome/bonobo_plug_atk_object.c
+	(bonobo_plug_atk_object_get_accessible):
+	Added assertion.
+	
+	* test/test-gail-gnome (main):
+	Changed order of GTK_MODULES to gail:gail-gnome:atk-bridge.
+
+2002-03-13  Michael Meeks  <michael@ximian.com>
+
+	* gail-gnome/bonobo-accessibility-init.c
+	(gnome_accessibility_module_init): impl.
+	(gnome_accessibility_module_shutdown): impl.
+
+2002-01-28  Bill Haneman     <bill.haneman@sun.com>
+
+	* configure.in:
+	Revved to 0.4 for GNOME-2 alpha.
+
+2002-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* gail-gnome/bonobo-control-accessible.c:
+	(bonobo_control_accessible_new): wrap the accessible around
+	the plug, not the plug's child.
+
+	* gail-gnome/bonobo_plug_atk_object_factory.c,
+	* gail-gnome/bonobo_socket_atk_object_factory.c,
+	* gail-gnome/bonobo_plug_atk_object.[ch],
+	* gail-gnome/bonobo_socket_atk_object.[ch]: pass sockets and
+	plugs to new() methods instead of controls/frames. Derive
+	from GailWidget and GailContainer using anonymous inheritance
+	hack. Update to use SpiRemoteObject as an interface.
+
+	* test/test-gail-gnome.c: expand tests a little and add an out of
+	process test.
+
+2002-01-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add --enable-debug option, dependancy
+	checks for regressions tests and removeed unnecessary
+	pkg-config calls.
+
+	* gail-gnome/Makefile.am: use debug flags.
+
+	* gail-gnome/bonobo-accessibility-init.c:
+	(gtk_module_init): kill log/message handlers.
+	(gail_accessibility_finalize): mark unused.
+
+	* gail-gnome/bonobo-control-accessible.[ch]:
+	* gail-gnome/bonobo-control-frame-accessible.[ch]:
+	* gail-gnome/bonobo_plug_atk_object.[ch]:
+	* gail-gnome/bonobo_plug_atk_object_factory.[ch]:
+	* gail-gnome/bonobo_socket_atk_object.[ch]:
+	* gail-gnome/bonobo_socket_atk_object_factory.[ch]:
+	mostly cleanups, with some fixes.
+
+	* test/*: beginnings of regression tests.
+
+	* Makefile.am: add test subdir.
+
+2002-01-10 Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Fix package check; check for libspi-1.0 package instead of
+	at-spi-1.0 package.
+
+	* Makefile.am:
+	Replace (incorrect) references to xml-i18n-* with
+	'intltool-*'.
+
+2002-01-10 Bill Haneman <bill.haneman@sun.com>
+
+	* gail-gnome/bonobo-control-accessible.c:
+	* gail-gnome/bonobo-control-frame-accessible.c:
+	Replace calls to spi_accessible_new (which used a buggy codepath
+	in libspi) with spi_accessible_construct.
+	
+2002-01-07 Bill Haneman <bill.haneman@sun.com>
+
+	* gail-gnome/bonobo_plug_atk_object_factory.c:
+	* gail-gnome/bonobo_socket_atk_object_factory.c:
+	Fixed misnaming bug in class_init funcs.
+
+	* gail-gnome/bonobo-accessible-init.c:
+	Added some print and error logging funcs to write to /tmp/bonobo-*
+	files, to enhance early debuging efforts.
+
+	* gail-gnome/*.c:
+	Added some g_print, g_message calls.
+	
+2002-01-07 Bill Haneman <bill.haneman@sun.com>
+
+	* gail-gnome/bonobo_plug_atk_object.c:
+	* gail-gnome/bonobo_socket_atk_object.c:
+	Added missing bonobo_plug/socket_atk_object_new () methods.
+
+	Added some (temporary) g_prints.
+
+2002-01-03 Bill Haneman <bill.haneman@sun.com>
+
+	* Initial checkin.
