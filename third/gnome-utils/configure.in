@@ -85,14 +85,6 @@ dnl *******************************
 GNOME_CHECK_GUILE
 
 dnl *******************************
-dnl gnome-print checks
-dnl *******************************
-if test "x$enable_gnome_print" = "xyes"; then
-  AM_PATH_GNOME_PRINT(0.12.0)
-  AC_DEFINE(HAVE_GNOME_PRINT)
-fi
-
-dnl *******************************
 dnl LibGlade
 dnl *******************************
 AC_MSG_CHECKING(for Glade libraries >= 0.11)
