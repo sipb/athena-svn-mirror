@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 2000-04-14 23:28:34 rbasch Exp $
+# $Id: Makefile,v 1.18 2000-07-20 13:31:02 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -16,7 +16,6 @@ NCS=/var/ncs
 SGICONFIG=/etc/config
 CONFIG=/afs/athena.mit.edu/system/config
 XDMDIR=/var/X11/xdm
-AMCONFIGDIR=/var/adm/avail/config
 
 all:
 
@@ -35,7 +34,6 @@ install:
 	mkdir -p ${DESTDIR}${FLEXLM}
 	mkdir -p ${DESTDIR}${NCS}
 	mkdir -p ${DESTDIR}${XDMDIR}
-	mkdir -p ${DESTDIR}${AMCONFIGDIR}
 	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
@@ -53,8 +51,6 @@ install:
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autofs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
-	install -c -m 0644 autoemail ${DESTDIR}${AMCONFIGDIR}
-	install -c -m 0644 autoemail.list ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 bsdlpr ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 compiler.defaults ${DESTDIR}${ETCDIR}
 	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
@@ -63,11 +59,9 @@ install:
 	install -c -m 0644 fonts.alias ${DESTDIR}${FONTS}
 	install -c -m 0644 fonts.dir ${DESTDIR}${FONTS}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
-	install -c -m 0644 hinvupdate ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
-	install -c -m 0644 livenotification ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 lp ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 miser ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 netwr_client ${DESTDIR}${SGICONFIG}
@@ -86,13 +80,10 @@ install:
 	install -c -m 0644 sdpd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 services ${DESTDIR}${ETCDIR}
-	install -c -m 0644 shutdownreason ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 snetd ${DESTDIR}${SGICONFIG}
-	install -c -m 0644 statusinterval ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 su ${DESTDIR}${DEFAULT}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 system.chestrc ${DESTDIR}${X11LIB}
-	install -c -m 0644 tickerd ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 verbose ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 webface ${DESTDIR}${SGICONFIG}
 	rm -f ${DESTDIR}${FLEXLM}/license.dat
