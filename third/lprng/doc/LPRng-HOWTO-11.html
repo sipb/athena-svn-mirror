@@ -229,7 +229,7 @@ See
 for an example.
 <P>By default,
 LPRng will brutally convert a non-conforming RFC1179 control file
-into one that is acceptible to most,
+into one that is acceptable to most,
 if not all,
 existing RFC1179 implementation.
 <P>In order to prevent problems with 
@@ -422,6 +422,8 @@ rather than IPV4 will be used.
 In future versions,  this may not be necessary.
 <P>The <CODE>lockfile</CODE> specifies the location of the
 lock file used by the <CODE>lpd</CODE> server.
+This file has the <CODE>lpd_port</CODE> value appended to form a unique
+lock file name.
 <P>The <CODE>spool_dir_perms</CODE> and <CODE>spool_file_perms</CODE>
 (default 0700 and 0600 respectively)
 values are the (numeric) permissions for the spool directory and
@@ -527,11 +529,11 @@ short_status_length#3
 <P>In order to be compatible with non-LPRng client programs which
 are totally unpredictable,
 this allows the administrator to specify the format for LPQ
-status when requests arrrive.
+status when requests arrive.
 <P>The <CODE>force_lpq_status=</CODE> specifies a list of formats
 and printers or IP addresses
 for which the <CODE>lpd</CODE> server will return status
-in the sepcified format.
+in the specified format.
 The entry has the format
 <CODE>KEY=list;KEY=list...</CODE> where
 <CODE>KEY</CODE> is
@@ -548,7 +550,7 @@ force_lpq_status=s=pc*.eng.com,130.192.12.0/24,l=sun*.eng.com
 <CODE>pc*eng.com</CODE> or from subnet <CODE>130.192.12.0</CODE> to get short
 status returned and hosts which match <CODE>sun*.eng.com</CODE> get
 long status.
-<H3><A NAME="forcefqdnhostname"></A> <A NAME="ignorerequesteduserpriority"></A> The ignore_requested_user_priority and force_fqdn_host Options</H3>
+<H3><A NAME="forcefqdnhostname"></A> <A NAME="ignorerequesteduserpriority"></A> The ignore_requested_user_priority and force_fqdn_hostname Options</H3>
 
 <P>Options used:
 <UL>
@@ -562,11 +564,12 @@ requested user priority.
 However, the <CODE>topq</CODE> operation will still be effective.
 <P>Similarly,  some print spoolers do not put a FQDN host name in their control file.
 The <CODE>force_fqdn_hostname</CODE> flag will cause <CODE>lpd</CODE> to put a FQDN
-host name in.
+host name in the control file.
+This option will assume that the domain is where the connection originated from.
 <H3><A NAME="lprbsd"></A> The lpr_bsd Options</H3>
 
 <P>This will force the <CODE>lpr -m</CODE> (send mail to user)
-option not to take an arguement, as in the BSD lpr.
+option not to take an argument, as in the BSD lpr.
 <HR>
 <A HREF="LPRng-HOWTO-12.html">Next</A>
 <A HREF="LPRng-HOWTO-10.html">Previous</A>

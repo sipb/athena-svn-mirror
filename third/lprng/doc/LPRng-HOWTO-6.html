@@ -207,7 +207,7 @@ pr:lp=/dev/lp:check_for_nonprintable@
 </CODE></BLOCKQUOTE>
 <P>As you can see,
 the <CODE>server</CODE>
-keyword indicates that the printcap entry is only for the printer.
+keyword indicates that the printcap entry is only for the server.
 The LPR utility will send the job to the host, while the LPD server
 will print it on <CODE>/dev/lp</CODE>.
 <P>Note that the <CODE>lp=...</CODE> information overrides the
@@ -272,7 +272,7 @@ ONLY fields from a very small set.  In addition,  RFC1179 is silent
 about the ORDER the fields can appear.
 <P>LPRng quite happily will accept jobs from poor or nonconforming RFC1179
 spooler programs,
-and fix them up to be comformant.
+and fix them up to be conformant.
 <P>If you are sending jobs to one of a non-conforming spooler,
 you can force LPRng to send jobs with only the fields described
 in RFC1179 by setting the

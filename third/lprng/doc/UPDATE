@@ -19,13 +19,13 @@ $newdir = $path . "/" . $newprog;
 print "prog $prog, name $name, ver $ver, newprog $newprog, oldprog $oldprog, newdir $newdir\n";
 
 @err = `rm -f $path/$name-*gz*`;
-# check in current version
-print "doing gmake cifast\n";
-# `gmake cifast 2>&1 1>/dev/tty`;
-@err = `gmake cifast`;
-if( $? ){
-	die "gmake cifast failed - @err $!\n";
-}
+## check in current version
+#print "doing gmake cifast\n";
+## `gmake cifast 2>&1 1>/dev/tty`;
+#@err = `gmake cifast`;
+#if( $? ){
+#	die "gmake cifast failed - @err $!\n";
+#}
 # make a distribution
 print "doing gmake dist\n";
 # `gmake dist 2>&1 1>/dev/tty`;
@@ -43,29 +43,29 @@ print "doing: cd $path/OLD; tar zxf $prog.tgz >/dev/tty\n";
 if( $? ){ die "untar OLD failed - $!\n"; }
 $patch="$name-$oldvernum-$ver.patch";
 @err = `rm -f $path/$patch $path/$patch.gz`;
-open(PATCH,">$path/$patch") or die "cannot open $path/$patch - $!\n";
-print PATCH <<"EOF" ;
-# $patch Patch File- version $name-$oldvernum to $prog
+# open(PATCH,">$path/$patch") or die "cannot open $path/$patch - $!\n";
+# print PATCH <<"EOF" ;
+# # $patch Patch File- version $name-$oldvernum to $prog
+# # 
+# # If the $name software current distribution directory is
+# # $prog, and this patch file is $patch.gz,
+# # do the following.  NOTE - the -p flag to patch is CRITICAL,
+# # otherwise the wrong files will get patched.
+# #
+# # cd $name-$oldvernum
+# # gunzip -c $patch.gz | patch -p
+# # cd ..
+# # mv $name-$oldvernum $prog
+# # 
+# # ------ Patch starts here ----
 # 
-# If the $name software current distribution directory is
-# $prog, and this patch file is $patch.gz,
-# do the following.  NOTE - the -p flag to patch is CRITICAL,
-# otherwise the wrong files will get patched.
-#
-# cd $name-$oldvernum
-# gunzip -c $patch.gz | patch -p
-# cd ..
-# mv $name-$oldvernum $prog
-# 
-# ------ Patch starts here ----
-
-EOF
-close PATCH;
-print "cd $path/OLD/$prog; diff -c3 -i -r -P ../$name-$oldvernum . >>$path/$patch\n" ;
-@err = `cd $path/OLD/$prog; diff -c3 -i -r -P ../$name-$oldvernum . >>$path/$patch` ;
-print "doing gzip $path/$patch and md5 digest\n";
-@err = `gzip $path/$patch`;
-@err = ` md5 $path/$patch.gz | pgp -fast -u papowell\@astart > $path/$patch.gz.md5 `;
+# EOF
+# close PATCH;
+# print "cd $path/OLD/$prog; diff -c3 -i -r -P ../$name-$oldvernum . >>$path/$patch\n" ;
+# @err = `cd $path/OLD/$prog; diff -c3 -i -r -P ../$name-$oldvernum . >>$path/$patch` ;
+# print "doing gzip $path/$patch and md5 digest\n";
+# @err = `gzip $path/$patch`;
+# @err = ` md5 $path/$patch.gz | pgp -fast -u papowell\@astart > $path/$patch.gz.md5 `;
 
 print "\nupdating directory name and links\n";
 @err = `mv $dir $newdir`;

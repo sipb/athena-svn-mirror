@@ -111,6 +111,40 @@ from the accounting filter or remote server.
 See
 <A HREF="LPRng-HOWTO-15.html#accountingserver">Accounting Printcap Options</A>
 for more information on the LPRng accounting support.</LI>
+<LI>
+<A NAME="accountstart"></A> 
+If <CODE>la</CODE> (local accounting) is true and we are printing a job
+or <CODE>ar</CODE> (remote accounting) is true and we are transferring a job,
+the <CODE>as</CODE> value is examined.
+If it is a filter (program) specification,
+then the program is started with its STDIN attached to
+<CODE>/dev/null</CODE>, STDOUT will be read by the print spooler,
+STDERR output will be written to the error log,
+and file descriptor 3 output will be appended to the accounting file.
+The lpd program will wait until the accounting filter program terminates,
+and examine the error code for action, as for the filters
+(see
+<A HREF="#errorcodes">errorcodes</A> below).
+If the exit status is 0,
+(JSUCC) then the printing process will continue,
+if JHOLD the job will be held,
+if JREMOVE the job will be removed,
+if JFAIL the job processing will terminate with a JFAIL indication,
+otherwise
+the job processing will terminate with a JABORT indication.</LI>
+<LI>If the accounting filter exited with a JSUCC (no error code)
+and the <CODE>achk</CODE> (accounting check) flag is set, 
+the line read from the accounting filter STDOUT will be examined.
+This line should be
+<CODE>accept</CODE>,
+<CODE>hold</CODE>,
+<CODE>fail</CODE>,
+<CODE>remove</CODE>,
+otherwise the job processing terminates with a JABORT indication.
+An <CODE>accept</CODE> will allow the job to be printed,
+<CODE>hold</CODE> will hold the job,
+<CODE>fail</CODE> will cause the job to fail,
+<CODE>remove</CODE> will cause the job to be removed.</LI>
 <LI>If the
 <CODE>connect_grace</CODE>
 value is non-zero and the server is opening a device or
@@ -190,27 +224,6 @@ See
 for details of options passed to the control filter,
 and
 <A HREF="#errorcodes">errorcodes</A> for the exit codes of the filter.</LI>
-<LI>
-<A NAME="accountstart"></A> 
-If <CODE>la</CODE> (local accounting) is true and we are printing a job
-or <CODE>ar</CODE> (remote accounting) is true and we are transferring a job,
-the <CODE>as</CODE> value is examined.
-If it is a filter (program) specification,
-then the program is started with its STDIN attached to
-<CODE>/dev/null</CODE> and STDOUT to the io_fd,
-STDERR to the error file,
-and file descriptor 3 to the accounting file descriptor af_fd.
-The lpd program will wait until it terminates,
-and examine the error code for action, as for the filters
-(see
-<A HREF="#errorcodes">errorcodes</A> below).
-If it is a string,
-then it is interpreted, the escape sequences replaced with the appropriate
-information,  and written to the accounting file.</LI>
-<LI>If the <CODE>achk</CODE> (accounting check) flag is set, 
-a line is read from the accounting filter af_fd file descriptor.
-This line should be <CODE>accept</CODE>,
-otherwise the job processing terminates with a JFAIL indication.</LI>
 <LI>If the operation is a job transfer, the operation proceeds as outlined in
 <A HREF="LPRng-HOWTO-18.html#rfc1179ref">RFC1179</A>,
 and then the
@@ -228,7 +241,7 @@ and written to the of_fd file descriptor.</LI>
 is translated (escapes removed)
 and written to the of_fd file descriptor.</LI>
 </OL>
-<H2><A NAME="bannerprinting"></A> <A NAME="of"></A> <A NAME="sh"></A> <A NAME="sb"></A> <A NAME="bs"></A> <A NAME="bp"></A> <A NAME="bl"></A> <A NAME="be"></A> <A NAME="hl"></A> <A NAME="ab"></A> <A NAME="ss12.2">12.2 Printing Banner At Beginning</A>
+<H2><A NAME="generatebanner"></A> <A NAME="bannerprinting"></A> <A NAME="of"></A> <A NAME="sh"></A> <A NAME="sb"></A> <A NAME="bs"></A> <A NAME="bp"></A> <A NAME="bl"></A> <A NAME="be"></A> <A NAME="hl"></A> <A NAME="ab"></A> <A NAME="ss12.2">12.2 Printing Banner At Beginning</A>
 </H2>
 
 <P>Options used:
@@ -238,63 +251,138 @@ and written to the of_fd file descriptor.</LI>
 <LI> <CODE>bl=</CODE><EM>Short banner line format</EM></LI>
 <LI> <CODE>bp=</CODE><EM>Banner generator program</EM></LI>
 <LI> <CODE>bs=</CODE><EM>Start banner generator</EM></LI>
+<LI> <CODE>generate_banner</CODE><EM>&nbsp;&nbsp;Generate banner for forwarded jobs</EM></LI>
 <LI> <CODE>hl</CODE><EM>&nbsp;&nbsp;Banner (header) Last</EM></LI>
 <LI> <CODE>of=</CODE><EM>Banner and File Separator Filter</EM></LI>
 <LI> <CODE>sb</CODE><EM>&nbsp;&nbsp;Short banner (default FALSE)</EM></LI>
 <LI> <CODE>sh</CODE><EM>&nbsp;&nbsp;Suppress header (banners) (default FALSE)</EM></LI>
 </UL>
-
-Sequence of Operations:
+<P>Banner printing is one of the more complicated configuration options
+of LPRng.
+This is due mainly to historical evolution of the software,
+as well as a lack of a well defined standard for
+filter responsibilities.
+In the original BSD print spoolers,
+the philosophy was that banner printing should be delegated to the
+filters,
+as they were the most aware of the capabilities of the printers.
+This required an
+<EM>out of band</EM>
+method to convey banner printing information to the filter,
+and resulted in a complicated interface.
+The original interface was:
+<OL>
+<LI>The filter doing banner printing was invoked as a special
+<CODE>of</CODE> filter,
+or passed a special flag.</LI>
+<LI>The print spooling software would send a special
+<B>single line</B>
+of information telling it what the banner information should be.
+Note that this line was never documented except for the source code,
+and was inconsistent from version to version.
+Also,
+there was no indication of what to do with additional lines,
+if any.</LI>
+<LI>The filter would generate the banner,
+discard the line,
+and then pass other lines to the output device.</LI>
+</OL>
+<P>Adding to the confusion,
+the original print spoolers had a <CODE>:sh</CODE> (suppress header or banner)
+flag,
+which was supposed to suppress banner printing.
+It did this by having the print spooler not generate the magic banner
+information line.
+<P>A more sophisticated banner printing system would allow the
+print spooler software to generate the banner,
+and would then have the <CODE>of</CODE> filter act as a pass through.
+Thus, we need configure the <CODE>of</CODE> filter NOT to use the first
+line as banner printing information,
+and to pass through all information to the device.
+<P>Complicating this whole mess is the
+<CODE>ld</CODE>  (leader option)
+and
+<CODE>tr</CODE>  (trailer option)
+which is a string sent to the output device (<CODE>of</CODE> filter)
+when the device (filter) is initialized or terminated.
+This can sometimes be interpreted as the banner line,
+leading to unexpected results.
+<P>Sequence of Operations:
 <OL>
 <LI>If the
 <CODE>sh</CODE> (suppress header) flag is true, no banner is
 printed,
-and the actions in this section are skipped.</LI>
-<LI>If the <CODE>hl</CODE> (header last) flag is true, the banner is printed at the end
-of the job,
-and the actions in this section are skipped.</LI>
-<LI>If the user does not want banner pages and uses
-<CODE>lpr -h </CODE>
-then the <CODE>L</CODE> line in the control file will be missing.
-This is a signal not to print a banner.
+and the actions in this section are skipped.
+No <I>banner information line</I>
+is generated for the <CODE>of</CODE> filter,
+and no banner printing program is invoked.
+If there is an <CODE>of</CODE> filter and it is expecting such a line
+and you have <CODE>ld</CODE> or <CODE>tr</CODE> information then
+you may get unexpected results
+(actually, catastrophic failure is a better term, but I digress).</LI>
+<LI>If the <CODE>hl</CODE> (header last) flag is true the banner is printed at the end
+of the job
+and the actions in this section are done at the end of the job.</LI>
+<LI>If the user does not want banner pages she can use the
+<CODE>lpr -h </CODE> option.
+This will cause the <CODE>lpr</CODE> program
+to delete the <CODE>L</CODE> (banner name) line in the control file.
 If there is no <CODE>L</CODE> line in the control file
 and
 <CODE>ab</CODE> (always print a banner) is false
 (the default),
-then no banner is printed.
-If there is no <CODE>L</CODE> line and
-<CODE>ab</CODE> is true, then ANONYMOUS is used.</LI>
-<LI>LPRng generates banners by using
-either a banner printing program specified by <CODE>bp</CODE>, tt<CODE>bs</CODE>,
-or <CODE>be</CODE> options.
-For historical compatibility,
-if the <CODE>sb</CODE> flag is set, then the
-<CODE>bl</CODE>
-(banner line) contents  are sent directly to the of_fd;
-By default the
-<CODE>bl</CODE> value is:
-<CODE>bl=$-'C:$-'n Job: $-'J Date: $-'t</CODE>
-(See
-<A HREF="LPRng-HOWTO-13.html#filtercmd">Filter Command Line Flags</A>
-for details.)
-This will get translated to:<BR>
-<CODE>papowell:A Job: file1 file2 Date: Thu Nov 27 23:02:04 PST 1997</CODE></LI>
-<LI>If
-<CODE>bs</CODE> (start banner) program is specified, then it is used
-to generate a banner,
-otherwise if the
-<CODE>bp</CODE> (banner) program is specified, then it is used
-to generate a banner.
-If no program is available, we skip the banner generation.
-The banner generator program is started with the normal command line
-flags
+then no banner is printed
+and the other actions in this section are skipped.
+If
+<CODE>ab</CODE> is true
+and the <CODE>L</CODE> line is missing then the <CODE>N</CODE> (user login name) is used;
+if it is missing as well,
+then ANONYMOUS is used for the user name.</LI>
+<LI>If a banner printing program is specified by <CODE>bp</CODE>, tt<CODE>bs</CODE>,
+or <CODE>be</CODE> options,
+then LPRng will invoke the
+program to generate a banner and then send the generated
+banner to the printer
+via the <CODE>of</CODE> filter.
+The banner printing program will be invoked using
+the standard filter command line flags
 (see
-<A HREF="LPRng-HOWTO-13.html#filtercmd">Filter Command Line Flags</A>),
-with its STDOUT attached to the of_fd descriptor.
-The short banner string described in the previous step is written
-to the STDIN.
-The banner printer is responsible for generating a banner
-appropriate to the printing device.</LI>
+<A HREF="LPRng-HOWTO-13.html#filtercmd">Filter Command Line Flags</A>
+for details),
+with is STDIN attached to /dev/null
+and STDOUT attached to a file to hold the output banner.</LI>
+<LI>If no banner printing program is specified
+and the
+<CODE>sb</CODE> (short banner) option is TRUE (default is true),
+then the <CODE>bl=...</CODE> (banner line) option value
+is expanded and sent to the <CODE>of_fd</CODE>  (<CODE>of</CODE> filter or
+device.
+The default <CODE>bl</CODE> value is:
+<CODE>bl=$-'C:$-'n Job: $-'J Date: $-'t</CODE>.
+Using our example, this will get translated to:
+<BLOCKQUOTE><CODE>
+<PRE>
+papowell:A Job: file1 file2 Date: Thu Nov 27 23:02:04 PST 1997
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI>If no banner printing program is specified and we have <CODE>sb@</CODE>
+(no short banner)
+then we skip banner generation,
+i.e. - we do <EM>not</EM> send a banner generation line
+to the output (<CODE>of</CODE> filter).</LI>
+<LI>If the queue is a normal forwarding queue,
+then the
+<CODE>generate_banner</CODE>
+option will invoke the
+<CODE>bp</CODE>, <CODE>bs</CODE> or <CODE>be</CODE>
+program as appropriate to create a banner page file which is then made the
+first (default) or last (<CODE>hl</CODE> flag or <CODE>be=...</CODE> present)
+file in a job.
+This option has no effect in other types of queues.
+See the <CODE>
+<A HREF="LPRng-HOWTO-8.html#translateformat">translate_format</A></CODE>
+option as well.</LI>
 </OL>
 <H2><A NAME="format"></A> <A NAME="sf"></A> <A NAME="sendqueryrwtimeout"></A> <A NAME="sendjobrwtimeout"></A> <A NAME="ss12.3">12.3 Printing Job Files</A>
 </H2>
@@ -337,8 +425,11 @@ Note that certain formats such as
 (see
 <A HREF="LPRng-HOWTO-13.html#filtercmd">Filter Command Line Flags</A>),
 and with its STDOUT attached to the printing device (io_fd),
-STDERR to the log file (<CODE>lf</CODE>),
-and file descriptor 3 to the accounting fd af_fd.</LI>
+STDERR to a pipe which results in the output being written
+to the status file,
+and file descriptor 3 to the accounting file or program.
+If debugging is enabled,
+then the STDERR output is also written to the error log file (lf).</LI>
 <LI>When doing a read/write operation to a device or remote system,
 a timeout can be specified.
 When doing a print or job transfer operation,
@@ -394,7 +485,7 @@ rather than the
 then we print a banner at the end of the job,
 rather than start.
 <P>
-<H2><A NAME="normalterm"></A> <A NAME="tr"></A> <A NAME="savewhendone"></A> <A NAME="fq"></A> <A NAME="ae"></A> <A NAME="ss12.5">12.5 Normal Termination</A>
+<H2><A NAME="exitlingertimeout"></A> <A NAME="waitforeof"></A> <A NAME="normalterm"></A> <A NAME="tr"></A> <A NAME="savewhendone"></A> <A NAME="fq"></A> <A NAME="ae"></A> <A NAME="ss12.5">12.5 Normal Termination</A>
 </H2>
 
 <P>Options used:
@@ -404,6 +495,8 @@ rather than start.
 <LI> <CODE>tr=</CODE><EM>Trailer on Close</EM></LI>
 <LI> <CODE>ae=</CODE><EM>Accounting at end</EM></LI>
 <LI> <CODE>save_when_done</CODE><EM>&nbsp;&nbsp;Save when done</EM></LI>
+<LI> <CODE>wait_for_eof</CODE><EM>&nbsp;&nbsp;Wait for EOF before closing device</EM></LI>
+<LI> <CODE>exit_linger_timeout</CODE><EM>&nbsp;&nbsp;connection linger on close timeout</EM></LI>
 </UL>
 <P>Sequence of Operations:
 <OL>
@@ -425,7 +518,14 @@ for the
 its STDIN is closed,
 and the <CODE>lpd</CODE> server waits for it to exit.
 The exit status is used as described above.</LI>
-<LI>The device (io_fd) is closed.</LI>
+<LI>If the device is a socket or network connection,
+the socket linger time is set to
+<CODE>job_send_rw_timeout</CODE> value if nonzero or the
+<CODE>exit_linger_timeout</CODE> value if nonzero,
+a write <CODE>shutdown</CODE> is done,
+and if the <CODE>wait_for_eof</CODE> option is true (default)
+then a read is done on the connection until an EOF is found.
+The device (io_fd) is then closed.</LI>
 <LI>The job is marked as completed in the spool queue.</LI>
 <LI>If the <CODE>save_when_done</CODE> flag is not specified,
 the job is removed.</LI>
@@ -447,12 +547,9 @@ the job is removed.</LI>
 the following sequence of events occurs:
 <OL>
 <LI>The job is marked as having an error during processing.</LI>
-<LI>The LPD server will attempt to kill all filters and other associated process
-by using a sequence of
-<CODE>kill -INT</CODE>,
-<CODE>kill -QUIT</CODE>,
-and finally
-<CODE>kill -KILL</CODE> operations.</LI>
+<LI>The LPD server will attempt to kill all filters and other associated processes
+by sending a SIGINT and SIGCONT (<CODE>kill -INT</CODE> and <CODE>kill -CONT</CODE>)
+to them.</LI>
 <LI>If there is a <CODE>mail_operator_on_error</CODE> value,
 the specified operator will be mailed an error indication.
 The <CODE>sendmail</CODE> option specifies the pathname of the

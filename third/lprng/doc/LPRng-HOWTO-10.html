@@ -48,13 +48,20 @@ All information,
 files,
 etc.,
 for a print queue is stored in the spool directory.
-<H2><A NAME="ss10.2">10.2 Queue Lock File</A>
+<H2><A NAME="queue_lock_file"></A> <A NAME="ss10.2">10.2 Queue Lock File</A>
 </H2>
 
+<P>
+<UL>
+<LI> <CODE>spool_lock_file</CODE><EM>&nbsp;&nbsp;spool queue lock file - default %P</EM></LI>
+</UL>
 <P>When the <CODE>lpd</CODE> server starts printing,
 it will fork individual worker processes to service each queue.
 To prevent multiple processes from working on the same queue,
-a printer lock file with the cannonical spool queue name is used.
+a printer lock file specified by the
+<CODE>queue_lock_file</CODE> option
+(default <CODE>%P</CODE> - the %P is expanded to the print queue name)
+is used.
 In our example,
 the lock file would be:
 <CODE>/var/lpd/pr/pr</CODE>.
@@ -65,13 +72,19 @@ programs such as <CODE>lpq</CODE> can determine queue activity.
 the worker process may need to create other processes to assist it.
 These in turn will create lock or temporary files in the spool directory
 as well.
-<H2><A NAME="ss10.3">10.3 Spool Control File</A>
+<H2><A NAME="queue_control_file"></A> <A NAME="ss10.3">10.3 Spool Control File</A>
 </H2>
 
+<P>
+<UL>
+<LI> <CODE>spool_control_file</CODE><EM>&nbsp;&nbsp;spool queue control file - default control.%P</EM></LI>
+</UL>
 <P>The spool control file is used to control the operations of the
 spooler,
 and is in the spool or control directory.
-The file name has the form <CODE>control.<EM>printer</EM></CODE>;
+The file name specified by the
+<CODE>queue_control_file</CODE> option
+(default <CODE>control.%P</CODE> - the %P is expanded to the print queue name);
 in our example,
 the control file would be:
 <CODE>/var/lpd/pr/control.pr</CODE>.
@@ -111,7 +124,7 @@ key value
 are managed using the <CODE>lpc start</CODE>, <CODE>lpc stop</CODE>,
 <CODE>lpc enable</CODE> and <CODE>lpc disable</CODE>
 commands.
-Similary,
+Similarly,
 <CODE>holdall</CODE> is enabled and disabled by <CODE>holdall</CODE> and
 <CODE>noholdall</CODE>
 commands respectively.
@@ -142,7 +155,7 @@ entry is set by the <CODE>lpc debug</CODE> command,
 and is used to enable or disable debugging and tracing information
 for a spool queue.
 This facility is for diagnostic purposes only.
-<H2><A NAME="createfiles"></A> <A NAME="minlogfilesize"></A> <A NAME="maxlogfilesize"></A> <A NAME="minstatussize"></A> <A NAME="maxstatussize"></A> <A NAME="maxstatusline"></A> <A NAME="ps"></A> <A NAME="lf"></A> <A NAME="ss10.4">10.4 Log and Status Files</A>
+<H2><A NAME="queue_status_file"></A> <A NAME="createfiles"></A> <A NAME="minlogfilesize"></A> <A NAME="maxlogfilesize"></A> <A NAME="minstatussize"></A> <A NAME="maxstatussize"></A> <A NAME="maxstatusline"></A> <A NAME="short_status_date"></A> <A NAME="ps"></A> <A NAME="lf"></A> <A NAME="ss10.4">10.4 Log and Status Files</A>
 </H2>
 
 <P>
@@ -155,11 +168,14 @@ This facility is for diagnostic purposes only.
 <LI> <CODE>max_status_size#</CODE><EM>&nbsp;&nbsp;maximum status file size (Kbytes)</EM></LI>
 <LI> <CODE>min_status_size#</CODE><EM>&nbsp;&nbsp;minimum status file size (Kbytes)</EM></LI>
 <LI> <CODE>ps=</CODE><EM>filter status file name (default: status)</EM></LI>
+<LI> <CODE>queue_status_file=</CODE><EM>queue status file (default: status.%P)</EM></LI>
+<LI> <CODE>short_status_date=</CODE><EM>display short (hh:mm) timestamp (default: true)</EM></LI>
 </UL>
 <P>During operation,
 the <CODE>lpd</CODE> server records the current printing operations
-in the <CODE>status.<EM>printer</EM></CODE> file.
-For our example, this would be
+in the spool queue status file specified by the <CODE>spool_status_file</CODE> option
+(default <CODE>status.%P</CODE> - the %P is expanded to the print queue name);
+for our example, this would be
 <CODE>/var/lpd/pr/status.pr</CODE>.
 In order to prevent this file from growing too large,
 the server will periodically truncate the file.
@@ -196,20 +212,32 @@ and it is passed to a print filter using the <CODE>$s</CODE>
 option
 (see
 <A HREF="LPRng-HOWTO-13.html#filtercmd">Filter Command Line Flags</A>).
-<P>The log file (<CODE>lf</CODE>) is opened and used as the
-STDERR output for filters and debugging information from
-the <CODE>lpd</CODE> server.
+<P>The STDERR output for filters is put into the printer
+status file.
+This allows the filter to produce informative messages that can be displayed
+as part of the user status.
+In addition,
+a separate status file specified by the
+<CODE>ps</CODE> (Printer Status) can be used as well.
+This file is 
+<EM>not</EM>
+truncated by the LPRng system.
 <P>When reporting status information,
 the length of line returned can be a problem.
 The <CODE>max_status_line#79</CODE> option restricts the status line
 to a maximum of 79 characters.
+<P>The <CODE>short_status_date</CODE> (default is true)
+option causes short (hour:minute) timestamps to be displayed
+on status queries.
 <H2><A NAME="ss10.5">10.5 Job Files</A>
 </H2>
 
 <P>
+<A NAME="nline_after_file"></A> 
 <UL>
 <LI> <CODE>longnumber</CODE><EM>&nbsp;&nbsp; long job number</EM></LI>
 <LI> <CODE>default_priority=</CODE><EM>default job priority</EM></LI>
+<LI> <CODE>nline_after_file=</CODE><EM>N line after data file</EM></LI>
 </UL>
 <P>A print job consists of a control file and one or more data files.
 <A HREF="LPRng-HOWTO-6.html#rfc1179">RFC1179</A>
@@ -281,6 +309,12 @@ Z</TD><TD>zopts *</TD><TD>lpr -Z zopts</TD></TR><TR><TD>
 are associated with a print file.
 The <CODE>N</CODE> line is the original name of the print
 file.
+By default,
+LPRng places this line <I>before</I>
+the corresponding data file.
+You can use the
+<CODE>nline_after_file</CODE>
+option to have LPRng place the N line after the data file line.
 The <CODE>U</CODE> line originally was used to indicate that the
 named file was to be unlinked after printing.
 This information is now ignored by LPRng.
