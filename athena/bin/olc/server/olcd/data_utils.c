@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.8 1990-01-10 11:13:05 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.9 1990-01-17 05:39:54 vanharen Exp $";
 #endif
 
 
@@ -545,10 +545,11 @@ init_user(knuckle,person)
      PERSON *person;
 #endif /* STDC */
 {
-  (void) strncpy(knuckle->user->realname,person->realname, NAME_LENGTH);
+  (void) strncpy(knuckle->user->realname,person->realname, NAME_SIZE);
   (void) strncpy(knuckle->user->username,person->username, LOGIN_SIZE);
-  (void) strncpy(knuckle->user->machine,person->machine,NAME_LENGTH);
-  (void) strncpy(knuckle->user->realm,person->realm,REALM_SZ);
+  (void) strncpy(knuckle->user->machine,person->machine, NAME_SIZE);
+  (void) strncpy(knuckle->user->realm,person->realm, REALM_SZ);
+  knuckle->user->uid = person->uid;
   knuckle->status = 0;
   init_dbinfo(knuckle->user);
   (void) strcpy(knuckle->title,knuckle->user->title1);

@@ -14,11 +14,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.8 1990-01-10 11:30:49 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.9 1990-01-17 05:39:10 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -88,8 +88,8 @@ write_msgs(fd, msg)
   
   length = strlen(msg);
 
-  if(write(fd,TEXT_SEP,sizeof(char) * STRING_LENGTH) != 
-     sizeof(char) * STRING_LENGTH)
+  if(write(fd,TEXT_SEP,sizeof(char) * STRING_SIZE) != 
+     sizeof(char) * STRING_SIZE)
     {
       perror("write_msgs");
       return(ERROR);
@@ -112,8 +112,8 @@ write_knuckle_info(fd, knuckle)
   int size;
   QUESTION q;
 
-  if(write(fd,KNUCKLE_SEP,sizeof(char) * STRING_LENGTH) != 
-     sizeof(char) * STRING_LENGTH)
+  if(write(fd,KNUCKLE_SEP,sizeof(char) * STRING_SIZE) != 
+     sizeof(char) * STRING_SIZE)
     {
       perror("write_knuckle_info");
       return(ERROR);
@@ -126,8 +126,8 @@ write_knuckle_info(fd, knuckle)
   if(knuckle->question != (QUESTION *) NULL && 
      knuckle->question->owner == knuckle) 
     {
-       if(write(fd,TRANS_SEP,sizeof(char) * STRING_LENGTH) != 
-	  sizeof(char) * STRING_LENGTH)
+       if(write(fd,TRANS_SEP,sizeof(char) * STRING_SIZE) != 
+	  sizeof(char) * STRING_SIZE)
 	 {
 	   perror("write_knuckle_info");
 	   return(ERROR);
@@ -140,8 +140,8 @@ write_knuckle_info(fd, knuckle)
 	}
     }
   else
-    if(write(fd,BLANK_SEP,sizeof(char) * STRING_LENGTH) !=  
-       sizeof(char) * STRING_LENGTH)
+    if(write(fd,BLANK_SEP,sizeof(char) * STRING_SIZE) !=  
+       sizeof(char) * STRING_SIZE)
       {
 	perror("write_knuckle_info");
 	return(ERROR);
@@ -150,8 +150,8 @@ write_knuckle_info(fd, knuckle)
   if (knuckle->new_messages != (char *) NULL)
     return(write_msgs(fd, knuckle->new_messages));
   else
-    if(write(fd,BLANK_SEP,sizeof(char) * STRING_LENGTH) != 
-       sizeof(char) * STRING_LENGTH)
+    if(write(fd,BLANK_SEP,sizeof(char) * STRING_SIZE) != 
+       sizeof(char) * STRING_SIZE)
       {
 	perror("write_knuckle_info");
 	return(ERROR);
@@ -171,7 +171,7 @@ read_knuckle_info(fd, knuckle)
 {
   QUESTION q;
   int size;
-  char type[STRING_LENGTH];
+  char type[STRING_SIZE];
 
   size = read(fd, (char *) knuckle, sizeof(KNUCKLE));
   if (size != sizeof(KNUCKLE))
@@ -180,8 +180,8 @@ read_knuckle_info(fd, knuckle)
       return(ERROR);
     }
 
-  if(read(fd, (char *) type, sizeof(char) * STRING_LENGTH) != 
-     sizeof(char) * STRING_LENGTH)
+  if(read(fd, (char *) type, sizeof(char) * STRING_SIZE) != 
+     sizeof(char) * STRING_SIZE)
     {
       log_error("read_kncukle_info: cannot read type");
       perror("read_knuckle");
@@ -209,8 +209,8 @@ read_knuckle_info(fd, knuckle)
   else
     knuckle->question = (QUESTION *) NULL;
 
-  if(read(fd, (char *) type, sizeof(char) * STRING_LENGTH) != 
-     sizeof(char) * STRING_LENGTH)
+  if(read(fd, (char *) type, sizeof(char) * STRING_SIZE) != 
+     sizeof(char) * STRING_SIZE)
     {
       log_error("read_kncukle_info: cannot read second type");
       perror("read_knuckle");
@@ -241,8 +241,8 @@ write_user_info(fd, user)
 {
   int size;
 
-  if(write(fd,USER_SEP,sizeof(char) * STRING_LENGTH) 
-     != sizeof(char) * STRING_LENGTH)
+  if(write(fd,USER_SEP,sizeof(char) * STRING_SIZE) 
+     != sizeof(char) * STRING_SIZE)
     return(ERROR);
 
   size = write(fd, (char *) user, sizeof(USER));
@@ -482,8 +482,8 @@ backup_data()
 	      }
 	}
     }
-  if(write(fd,DATA_SEP,sizeof(char) * STRING_LENGTH) != 
-     sizeof(char) * STRING_LENGTH)
+  if(write(fd,DATA_SEP,sizeof(char) * STRING_SIZE) != 
+     sizeof(char) * STRING_SIZE)
     {
       log_error("backup_data: unable to write data sep");
       goto PUNT;
@@ -516,7 +516,7 @@ load_data()
   int successful = 0;
   KNUCKLE *kptr;
   USER *uptr = (USER *) NULL;
-  char type[STRING_LENGTH];
+  char type[STRING_SIZE];
   char buf[BUF_SIZE];
 
   i = j = 0;
@@ -535,8 +535,8 @@ load_data()
     {
       if(skip == FALSE)
 	{
-	  if((status = read(fd,type, sizeof(char) * STRING_LENGTH)) != 
-	     sizeof(char) * STRING_LENGTH)
+	  if((status = read(fd,type, sizeof(char) * STRING_SIZE)) != 
+	     sizeof(char) * STRING_SIZE)
 	    {
 	      if(status == -1)
 		break;
@@ -547,7 +547,7 @@ load_data()
 	}
       else
 	{
-	  bcopy(type_buf,type,STRING_LENGTH);
+	  bcopy(type_buf,type,STRING_SIZE);
 	  skip = FALSE;
 	}
 
@@ -655,31 +655,31 @@ type_error(fd,string)
   char buf2[BUF_SIZE];
   int cc;
  
-  bcopy(string,buf,STRING_LENGTH);
+  bcopy(string,buf,STRING_SIZE);
   skip = TRUE;
 
   while(TRUE)
     {
-/*      write(1,buf,STRING_LENGTH);
+/*      write(1,buf,STRING_SIZE);
       write(1,"\n",1);*/
-      if(!strncmp(buf,USER_SEP,STRING_LENGTH))
+      if(!strncmp(buf,USER_SEP,STRING_SIZE))
 	{
-	  bcopy(buf,type_buf,STRING_LENGTH);
+	  bcopy(buf,type_buf,STRING_SIZE);
 	  log_error("type_error: recovered\n");
 	  return;
 	}
-      bcopy(buf,buf2,STRING_LENGTH);
-      bcopy(&buf2[1],buf, STRING_LENGTH-1);
+      bcopy(buf,buf2,STRING_SIZE);
+      bcopy(&buf2[1],buf, STRING_SIZE-1);
       if((cc = read(fd,buf2,sizeof(char))) != sizeof(char))
 	{
-	  bcopy(buf,type_buf,STRING_LENGTH);
+	  bcopy(buf,type_buf,STRING_SIZE);
 	  if(cc == 0)
 	    skip = FALSE;
 	  log_error("type_error: brain damage\n");
 	  return;
 	}
-      buf[STRING_LENGTH-1] = buf2[0];
-      bcopy(buf,type_buf,STRING_LENGTH);
+      buf[STRING_SIZE-1] = buf2[0];
+      bcopy(buf,type_buf,STRING_SIZE);
     }
 }
 

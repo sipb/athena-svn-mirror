@@ -16,8 +16,8 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: raeburn $
- *      $Id: olcd.h,v 1.12 1990-01-16 11:27:23 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Id: olcd.h,v 1.13 1990-01-17 05:44:48 vanharen Exp $
  */
 
 #ifndef __olcd_h
@@ -99,12 +99,12 @@ typedef struct tUSER
   struct tKNUCKLE **knuckles;       /* all user instances */
   int    uid;                       /* user id */
   char   username[LOGIN_SIZE];      /* user name */
-  char   realname[NAME_LENGTH];
-  char   nickname[NAME_LENGTH];         
-  char   title1[NAME_LENGTH];        /* title of user in OLC */
-  char   title2[NAME_LENGTH];        /* title of consultant in OLC */
-  char   machine[NAME_LENGTH];      /* user location */
-  char   realm[NAME_LENGTH];
+  char   realname[NAME_SIZE];
+  char   nickname[NAME_SIZE];         
+  char   title1[NAME_SIZE];        /* title of user in OLC */
+  char   title2[NAME_SIZE];        /* title of consultant in OLC */
+  char   machine[NAME_SIZE];      /* user location */
+  char   realm[NAME_SIZE];
   int    specialties[SPEC_SIZE];    /* Specialty list. */
   int    no_specialties;
   int    permissions;
@@ -121,7 +121,7 @@ typedef struct tKNUCKLE
   struct tQUESTION *question;        /* question */
   struct tKNUCKLE *connected;        /* connected user */
   struct tUSER *user;                /* central user */
-  char   title[NAME_LENGTH];
+  char   title[NAME_SIZE];
   int    instance;                   
   int    priority;
   int    queue;
@@ -150,8 +150,8 @@ typedef struct tQUESTION
 
 typedef struct tTOPIC
 {
-  char acl[NAME_LENGTH];
-  char name[NAME_LENGTH];
+  char acl[NAME_SIZE];
+  char name[NAME_SIZE];
   int  value;
   struct tTOPIC **subtopic;
 } TOPIC;

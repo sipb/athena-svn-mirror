@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.4 1990-01-10 21:23:03 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.5 1990-01-17 05:45:03 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -42,7 +42,7 @@ olc_load_user(fd,request,auth)
   KNUCKLE *requester, *target;
   USER *user;
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -79,7 +79,7 @@ olc_dump(fd,request,auth)
 {
   KNUCKLE *requester;
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -108,7 +108,7 @@ olc_change_motd(fd,request,auth)
 {
   KNUCKLE *requester, *target;
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -140,7 +140,7 @@ olc_change_acl(fd,request,auth)
   ACL *a_ptr;
   char *acl;
   char *name;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int status;
 
 #ifdef LOG
@@ -258,7 +258,7 @@ olc_get_accesses(fd,request,auth)
 {
   KNUCKLE *requester;
   USER *user, u;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   FILE *fp;
   ACL *a_ptr;
   int status;
