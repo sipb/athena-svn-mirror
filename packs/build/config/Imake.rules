@@ -217,7 +217,7 @@ Makefiles:: Makefile							@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
-		  make -f $${newtop}/Makefile TOP=${newtop}/$(TOP) \	@@\
+		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
 			CURDIR=$(CURDIR)/$$d Makefile; \		@@\
 		  make $(MFLAGS) Makefiles; \				@@\
 		  echo "### Done with" `pwd` ) ; \			@@\
