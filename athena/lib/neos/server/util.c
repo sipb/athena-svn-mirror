@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.1 1992-04-27 13:27:18 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.2 1992-04-30 10:02:31 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.1 1992-04-27 13:27:18 epeisach Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.2 1992-04-30 10:02:31 epeisach Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -28,21 +28,25 @@ static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 
 /*
  * Check a string to see if it is a valid course name.  This means
- * that it only contains alphanumeric characters and ".".  Return 1 on
- * valid, 0 on invalid.
+ * that it does not begin with "." and only contains alphanumeric
+ * characters and ".".  Return 1 on valid, 0 on invalid.
  */
 
 valid_course_name(s)
     char *s;
 {
-    char *ptr;
+    register char *ptr;
+    register short cc=0;		/* character count */
 
-    if (!*s)
+    if (!*s || *s == '.')
 	return 0;
     
-    for (ptr=s; *ptr; ptr++)
+    for (ptr=s; *ptr; ptr++, cc++)
+      {
 	if (!isalnum(*ptr) && *ptr != '.' && *ptr != '_')
-	    return 0;
+	  return 0;
+	if (cc > 128) return 0;	/* limit length */
+      }
     return 1;
 }
 
@@ -54,10 +58,11 @@ valid_course_name(s)
 valid_filename(s)
     char *s;
 {
-    char *ptr;
+    register char *ptr;
+    register short cc=0;
 
-    for (ptr=s; *ptr; ptr++)
-	if (*ptr == '/')
+    for (ptr=s; *ptr; ptr++, cc++)
+	if (*ptr == '/' || cc > 128)
 	    return 0;
     return 1;
 }
@@ -262,7 +267,11 @@ do_log(type, s, a, b, c, d, e)
     static int opened = 0;
 
     if (!opened) {
+#ifdef LOG_LOCAL4
 	openlog("fxserver", LOG_PID, LOG_LOCAL4);
+#else
+	openlog("fxserver", LOG_PID);
+#endif
 	opened = 1;
     }
     
