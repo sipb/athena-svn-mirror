@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.7 1999-10-23 16:07:00 ghudson Exp $
+#* $Id: Makefile.in,v 1.8 1999-12-06 15:03:19 danw Exp $
 #
 
 
@@ -112,8 +112,8 @@ install: all
 	for i in $(DATAINSTALL) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(DATAINSTDIR)/`basename $$i`; \
 	done ;
-	cd $(DESTDIR)$(INSTDIR); rm -f ofhp banner; \
-		ln -s ifhp ofhp; ln -s ifhp banner
+	cd $(DESTDIR)$(INSTDIR); rm -f ofhp; \
+		ln -s ifhp ofhp
 	@if test ! -f $(DESTDIR)/etc/ifhp.conf; then \
 		echo "You do not have an /etc/ifhp.conf file"; \
 		echo "copy ifhp.conf to /etc/ifhp.conf file"; \
