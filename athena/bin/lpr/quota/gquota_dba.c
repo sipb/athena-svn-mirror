@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.2 1990-11-14 16:42:27 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.3 1991-01-23 13:34:43 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.2 1990-11-14 16:42:27 epeisach Exp $";
+static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.3 1991-01-23 13:34:43 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -525,7 +525,7 @@ gquota_db_iterate (func, arg)
     int code;
     DBM *db;
     
-    gquota_db_init();		/* initialize and open the database */
+    (void) gquota_db_init();	/* initialize and open the database */
     if ((code = gquota_dbl_lock(GQUOTA_DBL_SHARED)) != 0)
 	return code;
 
