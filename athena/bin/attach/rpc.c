@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.10 1992-01-06 15:55:23 probe Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.11 1992-07-31 19:23:00 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -287,11 +287,7 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 	if (debug_flag)
 	    printf("nfsid operation requiring authentication...op = %d\n",
 		   op);
-#ifdef OLD_KERBEROS
-	realm = (char *) krb_getrealm(host);
-#else
 	realm = (char *) krb_realmofhost(host);
-#endif
 	strcpy(instance, host);
 	ptr = index(instance, '.');
 	if (ptr)
