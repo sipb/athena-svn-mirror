@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx.h,v 1.1.1.2 1999-12-22 20:05:45 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx.h,v 1.1.1.3 2000-04-12 19:45:34 ghudson Exp $ */
 
 /*
 ****************************************************************************
@@ -93,7 +93,7 @@ struct rx_service *rx_NewService();
 struct rx_connection *rx_NewConnection();
 struct rx_call *rx_NewCall();
 struct rx_call *rx_GetCall();  /* Not normally used, but not obsolete */
-int32 rx_EndCall();
+afs_int32 rx_EndCall();
 int rx_AllocPackets();
 void rx_FreePackets();
 int rx_WriteProc();
@@ -220,18 +220,26 @@ returned with an error code of RX_CALL_DEAD ( transient error ) : dhruba */
 /* This is the maximum size data packet that can be sent on this connection, accounting for security module-specific overheads. */
 #define	rx_MaxUserDataSize(call)		((call)->MTU - RX_HEADER_SIZE - (call)->conn->securityHeaderSize - (call)->conn->securityMaxTrailerSize)
 
+/* Macros to turn the hot thread feature on and off. Enabling hot threads
+ * allows the listener thread to trade places with an idle worker thread,
+ * which moves the context switch from listener to worker out of the
+ * critical path.
+ */
+#define rx_EnableHotThread()		(rx_enable_hot_thread = 1)
+#define rx_DisableHotThread()		(rx_enable_hot_thread = 0)
+
 struct rx_securityObjectStats {
     char type;				/* 0:unk 1:null,2:vab 3:kad */
     char level;
     char sparec[10];			/* force correct alignment */
-    int32 flags;				/* 1=>unalloc, 2=>auth, 4=>expired */
-    u_int32 expires;
-    u_int32 packetsReceived;
-    u_int32 packetsSent;
-    u_int32 bytesReceived;
-    u_int32 bytesSent;
+    afs_int32 flags;				/* 1=>unalloc, 2=>auth, 4=>expired */
+    afs_uint32 expires;
+    afs_uint32 packetsReceived;
+    afs_uint32 packetsSent;
+    afs_uint32 bytesReceived;
+    afs_uint32 bytesSent;
     short spares[4];
-    int32 sparel[8];
+    afs_int32 sparel[8];
 };
 
 /* XXXX (rewrite this description) A security class object contains a set of
@@ -307,7 +315,7 @@ struct rx_service {
     u_short nRequestsRunning;	    /* Number of requests currently in progress */
     u_short nSecurityObjects;	    /* Number of entries in security objects array */
     struct rx_securityClass **securityObjects;  /* Array of security class objects */
-    int32 (*executeRequestProc)();   /* Routine to call when an rpc request is received */
+    afs_int32 (*executeRequestProc)();   /* Routine to call when an rpc request is received */
     VOID (*destroyConnProc)();	    /* Routine to call when a server connection is destroyed */
     VOID (*newConnProc)();	    /* Routine to call when a server connection is created */
     VOID (*beforeProc)();	    /* routine to call before a call is executed */
@@ -369,14 +377,14 @@ struct rx_peer {
 #ifdef RX_ENABLE_LOCKS
     afs_kmutex_t peer_lock;		    /* Lock peer */
 #endif /* RX_ENABLE_LOCKS */
-    u_int32 host;		    /* Remote IP address, in net byte order */
+    afs_uint32 host;		    /* Remote IP address, in net byte order */
     u_short port;		    /* Remote UDP port, in net byte order */
 
     /* interface mtu probably used for this host  -  includes RX Header */
     u_short ifMTU;                  /* doesn't include IP header */
 
     /* For garbage collection */
-    u_int32 idleWhen;		    /* When the refcountwent to zero */
+    afs_uint32 idleWhen;		    /* When the refcountwent to zero */
     short refCount;		    /* Reference count for this structure */
 
     /* Congestion control parameters */
@@ -395,8 +403,8 @@ struct rx_peer {
  * The maximum skew values allow us to decide when a packet hasn't
  * been received yet because it is out-of-order, as opposed to when it
  * is likely to have been dropped. */
-    u_int32 inPacketSkew;	    /* Maximum skew on incoming packets */
-    u_int32 outPacketSkew;     /* Peer-reported max skew on our sent packets */
+    afs_uint32 inPacketSkew;	    /* Maximum skew on incoming packets */
+    afs_uint32 outPacketSkew;     /* Peer-reported max skew on our sent packets */
     int       rateFlag;       /* Flag for rate testing (-no 0yes +decrement) */
 
     /* the "natural" MTU, excluding IP,UDP headers, is negotiated by the endpoints */
@@ -440,19 +448,19 @@ struct rx_connection {
     afs_kcondvar_t conn_call_cv;
     afs_kmutex_t conn_data_lock;	/* locks packet data */
 #endif
-    u_int32 epoch;	  /* Process start time of client side of connection */
-    u_int32 cid;	    /* Connection id (call channel is bottom bits) */
-    int32 error;	    /* If this connection is in error, this is it */
+    afs_uint32 epoch;	  /* Process start time of client side of connection */
+    afs_uint32 cid;	    /* Connection id (call channel is bottom bits) */
+    afs_int32 error;	    /* If this connection is in error, this is it */
 #ifdef KDUMP_RX_LOCK
     struct rx_call_rx_lock *call[RX_MAXCALLS];
 #else
     struct rx_call *call[RX_MAXCALLS];
 #endif
-    u_int32 callNumber[RX_MAXCALLS]; /* Current call numbers */
-    u_int32 serial;		    /* Next outgoing packet serial number */
-    u_int32 lastSerial;	    /* # of last packet received, for computing skew */
-    int32 maxSerial;	   /* largest serial number seen on incoming packets */
-/*    int32 maxPacketSize;    max packet size should be per-connection since */
+    afs_uint32 callNumber[RX_MAXCALLS]; /* Current call numbers */
+    afs_uint32 serial;		    /* Next outgoing packet serial number */
+    afs_uint32 lastSerial;	    /* # of last packet received, for computing skew */
+    afs_int32 maxSerial;	   /* largest serial number seen on incoming packets */
+/*    afs_int32 maxPacketSize;    max packet size should be per-connection since */
          /* peer process could be restarted on us. Includes RX Header.       */
     struct rxevent *challengeEvent; /* Scheduled when the server is challenging a     */
     struct rxevent *delayedAbortEvent; /* Scheduled to throttle looping client */
@@ -538,17 +546,17 @@ struct rx_call {
 #else
     struct rx_connection *conn;	    /* Parent connection for this call */
 #endif
-    u_int32 *callNumber;	    /* Pointer to call number field within connection */
-    u_int32 flags;		    /* Some random flags */
+    afs_uint32 *callNumber;	    /* Pointer to call number field within connection */
+    afs_uint32 flags;		    /* Some random flags */
     u_char localStatus;		    /* Local user status sent out of band */
     u_char remoteStatus;	    /* Remote user status received out of band */ 
-    int32 error;			    /* Error condition for this call */
-    u_int32 timeout;		    /* High level timeout for this call */
-    u_int32 rnext;		    /* Next sequence number expected to be read by rx_ReadData */
-    u_int32 rprev;	    	    /* Previous packet received; used for deciding what the next packet to be received should be, in order to decide whether a negative acknowledge should be sent */
-    u_int32 rwind;		    /* The receive window:  the peer must not send packets with sequence numbers >= rnext+rwind */
-    u_int32 tfirst;		    /* First unacknowledged transmit packet number */
-    u_int32 tnext;		    /* Next transmit sequence number to use */
+    afs_int32 error;			    /* Error condition for this call */
+    afs_uint32 timeout;		    /* High level timeout for this call */
+    afs_uint32 rnext;		    /* Next sequence number expected to be read by rx_ReadData */
+    afs_uint32 rprev;	    	    /* Previous packet received; used for deciding what the next packet to be received should be, in order to decide whether a negative acknowledge should be sent */
+    afs_uint32 rwind;		    /* The receive window:  the peer must not send packets with sequence numbers >= rnext+rwind */
+    afs_uint32 tfirst;		    /* First unacknowledged transmit packet number */
+    afs_uint32 tnext;		    /* Next transmit sequence number to use */
     u_short twind;		    /* The transmit window:  we cannot assign a sequence number to a packet >= tfirst + twind */
     u_short cwind;		    /* The congestion window */
     u_short nSoftAcked;		    /* Number soft acked transmit packets */
@@ -574,9 +582,8 @@ struct rx_call {
     VOID (*arrivalProc)();	    /* Procedure to call when reply is received */
     VOID *arrivalProcHandle;	    /* Handle to pass to replyFunc */
     VOID *arrivalProcArg;	    /* Additional arg to pass to reply Proc */
-    u_int32 lastAcked;		    /* last packet "hard" acked by receiver */
-    u_int32 startTime;	            /* time the call started running */
-    u_int32 startWait;	            /* time server began waiting for input data/send quota */
+    afs_uint32 lastAcked;	    /* last packet "hard" acked by receiver */
+    afs_uint32 startWait;	    /* time server began waiting for input data/send quota */
     struct clock traceWait;	    /* time server began waiting for input data/send quota */
     struct clock traceStart;	    /* time the call started running */
     u_short MTU;                    /* size of packets currently sending */
@@ -601,6 +608,10 @@ struct rx_call {
     int iovMax;			/* number elements in current iovec */
     int iovNext;		/* next entry in current iovec */
     struct iovec *iov;		/* current iovec */
+    struct clock queueTime;	/* time call was queued */
+    struct clock startTime;	/* time call was started */
+    afs_hyper_t bytesSent;	/* Number bytes sent */
+    afs_hyper_t bytesRcvd;	/* Number bytes received */
 };
 
 #ifndef KDUMP_RX_LOCK
@@ -673,9 +684,9 @@ struct rx_call {
 struct rx_ackPacket {
     u_short bufferSpace;    /* Number of packet buffers available.  That is:  the number of buffers that the sender of the ack packet is willing to provide for data, on this or subsequent calls.  Lying is permissable. */
     u_short maxSkew;	    /* Maximum difference between serial# of packet acknowledged and highest packet yet received */
-    u_int32  firstPacket;    /* The first packet in the list of acknowledged packets */
-    u_int32  previousPacket; /* The previous packet number received (obsolete?) */
-    u_int32  serial;	    /* Serial number of the packet which prompted the acknowledge */
+    afs_uint32  firstPacket;    /* The first packet in the list of acknowledged packets */
+    afs_uint32  previousPacket; /* The previous packet number received (obsolete?) */
+    afs_uint32  serial;	    /* Serial number of the packet which prompted the acknowledge */
     u_char  reason;	    /* Reason for the acknowledge of ackPacket, defined below */
     u_char  nAcks;	    /* Number of acknowledgements */
     u_char  acks[RX_MAXACKS]; /* Up to RX_MAXACKS packet acknowledgements, defined below */
@@ -739,7 +750,7 @@ struct rx_ackPacket {
  * code should be updated as well.
  *
  * Clearly we assume that ntohl will work on these structures so sizeof(int)
- * must equal sizeof(int32). */
+ * must equal sizeof(afs_int32). */
 
 struct rx_stats {			/* General rx statistics */
     int	packetRequests;	    /* Number of packet allocation requests */
@@ -777,7 +788,7 @@ struct rx_stats {			/* General rx statistics */
     int	nCallStructs;	    /* Total number of call structures allocated */
     int	nFreeCallStructs;   /* Total number of previously allocated free call structures */
     int netSendFailures;
-    int32 fatalErrors;
+    afs_int32 fatalErrors;
     int ignorePacketDally;  /* packets dropped because call is in dally state */
     int receiveCbufPktAllocFailures;
     int sendCbufPktAllocFailures;
@@ -788,8 +799,8 @@ struct rx_stats {			/* General rx statistics */
 
 /* debug input types */
 struct rx_debugIn {
-    int32 type;
-    int32 index;
+    afs_int32 type;
+    afs_int32 index;
 };
 
 /* Invalid rx debug package type */
@@ -816,24 +827,24 @@ struct rx_debugIn {
 #define	RX_DEBUGI_GETPEER	5	/* get all peer structs */
 
 struct rx_debugStats {
-    int32 nFreePackets;
-    int32 packetReclaims;
-    int32 callsExecuted;
+    afs_int32 nFreePackets;
+    afs_int32 packetReclaims;
+    afs_int32 callsExecuted;
     char waitingForPackets;
     char usedFDs;
     char version;
     char spare1;
-    int32 nWaiting;
-    int32 idleThreads;	    /* Number of server threads that are idle */
-    int32 spare2[8];
+    afs_int32 nWaiting;
+    afs_int32 idleThreads;	    /* Number of server threads that are idle */
+    afs_int32 spare2[8];
 };
 
 struct rx_debugConn_vL {
-    int32 host;
-    int32 cid;
-    int32 serial;
-    int32 callNumber[RX_MAXCALLS];
-    int32 error;
+    afs_int32 host;
+    afs_int32 cid;
+    afs_int32 serial;
+    afs_int32 callNumber[RX_MAXCALLS];
+    afs_int32 error;
     short port;
     char flags;
     char type;
@@ -844,15 +855,15 @@ struct rx_debugConn_vL {
     char callOther[RX_MAXCALLS];
     /* old style getconn stops here */
     struct rx_securityObjectStats secStats;
-    int32 sparel[10];
+    afs_int32 sparel[10];
 };
 
 struct rx_debugConn {
-    int32 host;
-    int32 cid;
-    int32 serial;
-    int32 callNumber[RX_MAXCALLS];
-    int32 error;
+    afs_int32 host;
+    afs_int32 cid;
+    afs_int32 serial;
+    afs_int32 callNumber[RX_MAXCALLS];
+    afs_int32 error;
     short port;
     char flags;
     char type;
@@ -864,28 +875,28 @@ struct rx_debugConn {
     char callOther[RX_MAXCALLS];
     /* old style getconn stops here */
     struct rx_securityObjectStats secStats;
-    int32 epoch;
-    int32 natMTU;
-    int32 sparel[9];
+    afs_int32 epoch;
+    afs_int32 natMTU;
+    afs_int32 sparel[9];
 };
 
 struct rx_debugPeer {
-    u_int32 host;
+    afs_uint32 host;
     u_short port;
     u_short ifMTU;
-    u_int32 idleWhen;
+    afs_uint32 idleWhen;
     short refCount;
     u_char burstSize;
     u_char burst;
     struct clock burstWait;
-    int32 rtt;
-    int32 rtt_dev;
+    afs_int32 rtt;
+    afs_int32 rtt_dev;
     struct clock timeout;
-    int32 nSent;
-    int32 reSends;
-    int32 inPacketSkew;
-    int32 outPacketSkew;
-    int32 rateFlag;
+    afs_int32 nSent;
+    afs_int32 reSends;
+    afs_int32 inPacketSkew;
+    afs_int32 outPacketSkew;
+    afs_int32 rateFlag;
     u_short natMTU;
     u_short maxMTU;
     u_short maxDgramPackets;
@@ -896,7 +907,7 @@ struct rx_debugPeer {
     u_short congestSeq;
     afs_hyper_t bytesSent;
     afs_hyper_t bytesReceived;
-    int32 sparel[10];
+    afs_int32 sparel[10];
 };
 
 #define	RX_OTHER_IN	1	/* packets avail in in queue */
@@ -963,59 +974,78 @@ void rx_ReleaseCachedConnection(
 #define RX_SERVER_DEBUG_NEW_PACKETS		0x40
 #define RX_SERVER_DEBUG_ALL_PEER		0x80
 
-int32 rx_GetServerDebug(
+afs_int32 rx_GetServerDebug(
   int socket,
-  u_int32 remoteAddr,
-  u_int16 remotePort,
+  afs_uint32 remoteAddr,
+  afs_uint16 remotePort,
   struct rx_debugStats *stat,
-  u_int32 *supportedValues
+  afs_uint32 *supportedValues
 );
 
-int32 rx_GetServerStats(
+afs_int32 rx_GetServerStats(
   int socket,
-  u_int32 remoteAddr,
-  u_int16 remotePort,
+  afs_uint32 remoteAddr,
+  afs_uint16 remotePort,
   struct rx_stats *stat,
-  u_int32 *supportedValues
+  afs_uint32 *supportedValues
 );
 
-int32 rx_GetServerVersion(
+afs_int32 rx_GetServerVersion(
   int socket,
-  u_int32 remoteAddr,
-  u_int16 remotePort,
+  afs_uint32 remoteAddr,
+  afs_uint16 remotePort,
   size_t version_length,
   char *version
 );
 
-int32 rx_GetServerConnections(
+afs_int32 rx_GetServerConnections(
   int socket,
-  u_int32 remoteAddr,
-  u_int16 remotePort,
-  int32 *nextConnection,
+  afs_uint32 remoteAddr,
+  afs_uint16 remotePort,
+  afs_int32 *nextConnection,
   int allConnections,
-  u_int32 debugSupportedValues,
+  afs_uint32 debugSupportedValues,
   struct rx_debugConn *conn,
-  u_int32 *supportedValues
+  afs_uint32 *supportedValues
 );
 
-int32 rx_GetServerPeers(
+afs_int32 rx_GetServerPeers(
   int socket,
-  u_int32 remoteAddr,
-  u_int16 remotePort,
-  int32 *nextPeer,
-  u_int32 debugSupportedValues,
+  afs_uint32 remoteAddr,
+  afs_uint16 remotePort,
+  afs_int32 *nextPeer,
+  afs_uint32 debugSupportedValues,
   struct rx_debugPeer *peer,
-  u_int32 *supportedValues
+  afs_uint32 *supportedValues
 );
+
+#define AFS_RX_STATS_CLEAR_ALL			0xffffffff
+#define AFS_RX_STATS_CLEAR_INVOCATIONS		0x1
+#define AFS_RX_STATS_CLEAR_BYTES_SENT		0x2
+#define AFS_RX_STATS_CLEAR_BYTES_RCVD		0x4
+#define AFS_RX_STATS_CLEAR_QUEUE_TIME_SUM	0x8
+#define AFS_RX_STATS_CLEAR_QUEUE_TIME_SQUARE	0x10
+#define AFS_RX_STATS_CLEAR_QUEUE_TIME_MIN	0x20
+#define AFS_RX_STATS_CLEAR_QUEUE_TIME_MAX	0x40
+#define AFS_RX_STATS_CLEAR_EXEC_TIME_SUM	0x80
+#define AFS_RX_STATS_CLEAR_EXEC_TIME_SQUARE	0x100
+#define AFS_RX_STATS_CLEAR_EXEC_TIME_MIN	0x200
+#define AFS_RX_STATS_CLEAR_EXEC_TIME_MAX	0x400
 
 typedef struct rx_function_entry_v1 {
-  u_int32 remote_peer;
-  u_int32 remote_port;
-  u_int32 remote_is_server;
-  u_int32 interfaceId;
-  u_int32 func_total;
-  u_int32 func_index;
-  u_int32 invocations;
+  afs_uint32 remote_peer;
+  afs_uint32 remote_port;
+  afs_uint32 remote_is_server;
+  afs_uint32 interfaceId;
+  afs_uint32 func_total;
+  afs_uint32 func_index;
+  afs_hyper_t invocations;
+  afs_hyper_t bytes_sent;
+  afs_hyper_t bytes_rcvd;
+  struct clock queue_time_sum;
+  struct clock queue_time_sum_sqr;
+  struct clock queue_time_min;
+  struct clock queue_time_max;
   struct clock execution_time_sum;
   struct clock execution_time_sum_sqr;
   struct clock execution_time_min;
@@ -1042,31 +1072,38 @@ typedef struct rx_interface_stat {
 
 void rx_IncrementTimeAndCount(
   struct rx_peer *peer,
-  u_int32 rxInterface,
-  u_int32 currentFunc,
-  u_int32 totalFunc,
-  struct clock execTime,
+  afs_uint32 rxInterface,
+  afs_uint32 currentFunc,
+  afs_uint32 totalFunc,
+  struct clock *queueTime,
+  struct clock *execTime,
+  afs_hyper_t *bytesSent,
+  afs_hyper_t *bytesRcvd,
   int isServer
 );
 
 int rx_RetrieveProcessRPCStats(
-  u_int32 callerVersion,
-  u_int32 *myVersion,
+  afs_uint32 callerVersion,
+  afs_uint32 *myVersion,
+  afs_uint32 *clock_sec,
+  afs_uint32 *clock_usec,
   size_t *allocSize,
-  u_int32 *statCount,
-  u_int32 **stats
+  afs_uint32 *statCount,
+  afs_uint32 **stats
 );
 
 int rx_RetrievePeerRPCStats(
-  u_int32 callerVersion,
-  u_int32 *myVersion,
+  afs_uint32 callerVersion,
+  afs_uint32 *myVersion,
+  afs_uint32 *clock_sec,
+  afs_uint32 *clock_usec,
   size_t *allocSize,
-  u_int32 *statCount,
-  u_int32 **stats
+  afs_uint32 *statCount,
+  afs_uint32 **stats
 );
 
 void rx_FreeRPCStats(
-  u_int32 *stats,
+  afs_uint32 *stats,
   size_t allocSize
 );
 
@@ -1083,21 +1120,23 @@ void rx_disableProcessRPCStats();
 void rx_disablePeerRPCStats();
 
 void rx_clearProcessRPCStats(
-  u_int32 clearFlag
+  afs_uint32 clearFlag
 );
 
 void rx_clearPeerRPCStats(
-  u_int32 clearFlag
+  afs_uint32 clearFlag
 );
 
-#define RX_STATS_SERVICE_ID 509
+void rx_SetRxStatUserOk(
+  int (*proc)(struct rx_call *call)
+);
 
-#define RX_STATS_CLEAR_ALL			0xffffffff
-#define RX_STATS_CLEAR_INVOCATIONS		0x1
-#define RX_STATS_CLEAR_TIME_SUM			0x2
-#define RX_STATS_CLEAR_TIME_SQUARE		0x4
-#define RX_STATS_CLEAR_TIME_MIN			0x8
-#define RX_STATS_CLEAR_TIME_MAX			0x10
+int rx_RxStatUserOk(
+  struct rx_call *call
+);
+
+
+#define RX_STATS_SERVICE_ID 409
 
 #endif /* _RX_	 End of rx.h */
 

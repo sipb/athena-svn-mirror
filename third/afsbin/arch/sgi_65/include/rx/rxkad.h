@@ -29,7 +29,7 @@
 */
 
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rxkad.h,v 1.1.1.2 1999-12-22 20:05:50 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rxkad.h,v 1.1.1.3 2000-04-12 19:45:40 ghudson Exp $ */
 
 #ifndef TRANSARC_RXKAD_RXKAD_H
 #define TRANSARC_RXKAD_RXKAD_H
@@ -100,25 +100,25 @@ typedef char rxkad_level;
     ((((type) == 1) || ((type) == 2)) ? (type) : 0)
 
 struct rxkad_stats {
-    u_int32 connections[3];	/* client side only */
-    u_int32 destroyObject;	/* client security objects */
-    u_int32 destroyClient;	/* client connections */
-    u_int32 destroyUnused;	/* unused server conn */
-    u_int32 destroyUnauth;	/* unauthenticated server conn */
-    u_int32 destroyConn[3];	/* server conn per level */
-    u_int32 expired;		/* server packets rejected */
-    u_int32 challengesSent;	/* server challenges sent */
-    u_int32 challenges[3];	/* challenges seen by client */
-    u_int32 responses[3];		/* responses seen by server */
-    u_int32 preparePackets[6];
-    u_int32 checkPackets[6];
-    u_int32 bytesEncrypted[2];	/* index just by type */
-    u_int32 bytesDecrypted[2];
-    u_int32 fc_encrypts[2];	/* DECRYPT==0, ENCRYPT==1 */
-    u_int32 fc_key_scheds;	/* key schedule creations */
-    u_int32 des_encrypts[2];	/* DECRYPT==0, ENCRYPT==1 */
-    u_int32 des_key_scheds;	/* key schedule creations */
-    u_int32 des_randoms;		/* random blocks generated */
+    afs_uint32 connections[3];	/* client side only */
+    afs_uint32 destroyObject;	/* client security objects */
+    afs_uint32 destroyClient;	/* client connections */
+    afs_uint32 destroyUnused;	/* unused server conn */
+    afs_uint32 destroyUnauth;	/* unauthenticated server conn */
+    afs_uint32 destroyConn[3];	/* server conn per level */
+    afs_uint32 expired;		/* server packets rejected */
+    afs_uint32 challengesSent;	/* server challenges sent */
+    afs_uint32 challenges[3];	/* challenges seen by client */
+    afs_uint32 responses[3];		/* responses seen by server */
+    afs_uint32 preparePackets[6];
+    afs_uint32 checkPackets[6];
+    afs_uint32 bytesEncrypted[2];	/* index just by type */
+    afs_uint32 bytesDecrypted[2];
+    afs_uint32 fc_encrypts[2];	/* DECRYPT==0, ENCRYPT==1 */
+    afs_uint32 fc_key_scheds;	/* key schedule creations */
+    afs_uint32 des_encrypts[2];	/* DECRYPT==0, ENCRYPT==1 */
+    afs_uint32 des_key_scheds;	/* key schedule creations */
+    afs_uint32 des_randoms;		/* random blocks generated */
     long spares[10];
 };
 

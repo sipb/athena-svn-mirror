@@ -1,6 +1,6 @@
 /* 
  *Copyright (C) 1998  Transarc Corporation.  All rights reserved.
- *$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_pthread.h,v 1.1.1.1 1999-12-22 20:05:46 ghudson Exp $
+ *$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_pthread.h,v 1.1.1.2 2000-04-12 19:45:36 ghudson Exp $
  */
 
 /* rx_pthread.h defines the lock and cv primitives required for a thread
@@ -39,10 +39,14 @@ typedef pthread_cond_t afs_kcondvar_t;
 typedef pthread_mutex_t afs_kmutex_t;
 typedef pthread_cond_t afs_kcondvar_t;
 
-#ifdef AFS_SUN5_ENV
+#if !defined(pthread_yield) && defined(AFS_SUN5_ENV)
 #define pthread_yield() thr_yield()
-#elif !defined(AFS_AIX_ENV)
+#endif
+#if !defined(pthread_yield) && !defined(AFS_AIX_ENV)
 #define pthread_yield() sleep(0)
+#endif
+#if !defined(pthread_yield) && (_XOPEN_SOURCE + 0) >= 500
+#define pthread_yield() sched_yield()
 #endif
 
 

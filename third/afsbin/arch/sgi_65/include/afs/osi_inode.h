@@ -41,10 +41,10 @@
 
 /* we hang this struct off of the incore inode */
 struct afsparms {
-        int32 vicep1;
-        int32 vicep2;
-        int32 vicep3;
-        int32 vicep4;
+        afs_int32 vicep1;
+        afs_int32 vicep2;
+        afs_int32 vicep3;
+        afs_int32 vicep4;
     };
 
 #define dmag(p,n)        ((p)->di_u.di_extents[n].ex_magic)

@@ -75,9 +75,19 @@
 
 typedef struct rpcStats {
 	u_int rpcStats_len;
-	u_int32 *rpcStats_val;
+	afs_uint32 *rpcStats_val;
 } rpcStats;
 bool_t xdr_rpcStats();
+
+#define RXSTATS_STATINDEX 9
+
+#include <rx/rx_multi.h>
+#define multi_RXSTATS_RetrieveProcessRPCStats(clientVersion, serverVersion, clock_sec, clock_usec, stat_count, stats) \
+	multi_Body(StartRXSTATS_RetrieveProcessRPCStats(multi_call, clientVersion), EndRXSTATS_RetrieveProcessRPCStats(multi_call, serverVersion, clock_sec, clock_usec, stat_count, stats))
+
+
+#define multi_RXSTATS_RetrievePeerRPCStats(clientVersion, serverVersion, stat_count, clock_sec, clock_usec, stats) \
+	multi_Body(StartRXSTATS_RetrievePeerRPCStats(multi_call, clientVersion), EndRXSTATS_RetrievePeerRPCStats(multi_call, serverVersion, stat_count, clock_sec, clock_usec, stats))
 
 
 /* Opcode-related useful stats for package: RXSTATS_ */
@@ -85,14 +95,9 @@ bool_t xdr_rpcStats();
 #define RXSTATS_HIGHEST_OPCODE	10
 #define RXSTATS_NUMBER_OPCODES	11
 
-#define RXSTATS_NO_OF_CLIENT_STAT_FUNCS	11
-
-#define RXSTATS_NO_OF_SERVER_STAT_FUNCS	11
+#define RXSTATS_NO_OF_STAT_FUNCS	11
 
 AFS_RXGEN_EXPORT
-extern const char *RXSTATS_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *RXSTATS_server_function_names[];
+extern const char *RXSTATS_function_names[];
 
 #endif	/* _RXGEN_RXSTAT_ */

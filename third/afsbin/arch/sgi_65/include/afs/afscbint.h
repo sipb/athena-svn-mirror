@@ -75,18 +75,18 @@
 #ifndef FSINT_COMMON_XG
 
 struct AFSFid {
-	u_int32 Volume;
-	u_int32 Vnode;
-	u_int32 Unique;
+	afs_uint32 Volume;
+	afs_uint32 Vnode;
+	afs_uint32 Unique;
 };
 typedef struct AFSFid AFSFid;
 bool_t xdr_AFSFid();
 
 
 struct AFSCallBack {
-	u_int32 CallBackVersion;
-	u_int32 ExpirationTime;
-	u_int32 CallBackType;
+	afs_uint32 CallBackVersion;
+	afs_uint32 ExpirationTime;
+	afs_uint32 CallBackType;
 };
 typedef struct AFSCallBack AFSCallBack;
 bool_t xdr_AFSCallBack();
@@ -107,14 +107,14 @@ bool_t xdr_AFSDBLockDesc();
 
 
 struct AFSDBCacheEntry {
-	int32 addr;
-	int32 cell;
+	afs_int32 addr;
+	afs_int32 cell;
 	AFSFid netFid;
-	int32 Length;
-	int32 DataVersion;
+	afs_int32 Length;
+	afs_int32 DataVersion;
 	struct AFSDBLockDesc lock;
-	int32 callback;
-	int32 cbExpires;
+	afs_int32 callback;
+	afs_int32 cbExpires;
 	short refCount;
 	short opens;
 	short writers;
@@ -167,14 +167,14 @@ bool_t xdr_AFSCBs();
 
 typedef struct AFSCB_CollData {
 	u_int AFSCB_CollData_len;
-	int32 *AFSCB_CollData_val;
+	afs_int32 *AFSCB_CollData_val;
 } AFSCB_CollData;
 bool_t xdr_AFSCB_CollData();
 
 
 typedef struct AFS_CollData {
 	u_int AFS_CollData_len;
-	int32 *AFS_CollData_val;
+	afs_int32 *AFS_CollData_val;
 } AFS_CollData;
 bool_t xdr_AFS_CollData();
 
@@ -185,39 +185,35 @@ bool_t xdr_AFS_CollData();
 #define AFS_XSTATSCOLL_PERF_INFO 1
 #define AFS_XSTATSCOLL_FULL_PERF_INFO 2
 
-typedef u_int32 VolumeId;
+typedef afs_uint32 VolumeId;
 bool_t xdr_VolumeId();
 
 
-typedef u_int32 VolId;
+typedef afs_uint32 VolId;
 bool_t xdr_VolId();
 
 
-typedef u_int32 VnodeId;
+typedef afs_uint32 VnodeId;
 bool_t xdr_VnodeId();
 
 
-typedef u_int32 Unique;
+typedef afs_uint32 Unique;
 bool_t xdr_Unique();
 
 
-typedef u_int32 UserId;
+typedef afs_uint32 UserId;
 bool_t xdr_UserId();
 
 
-typedef u_int32 FileVersion;
+typedef afs_uint32 FileVersion;
 bool_t xdr_FileVersion();
 
 
-typedef u_int32 Date;
-bool_t xdr_Date();
-
-
-typedef int32 ErrorCode;
+typedef afs_int32 ErrorCode;
 bool_t xdr_ErrorCode();
 
 
-typedef int32 Rights;
+typedef afs_int32 Rights;
 bool_t xdr_Rights();
 
 #define AFS_DISKNAMESIZE 32
@@ -231,17 +227,30 @@ bool_t xdr_DiskName();
 struct interfaceAddr {
 	int numberOfInterfaces;
 	afsUUID uuid;
-	int32 addr_in[AFS_MAX_INTERFACE_ADDR];
-	int32 subnetmask[AFS_MAX_INTERFACE_ADDR];
-	int32 mtu[AFS_MAX_INTERFACE_ADDR];
+	afs_int32 addr_in[AFS_MAX_INTERFACE_ADDR];
+	afs_int32 subnetmask[AFS_MAX_INTERFACE_ADDR];
+	afs_int32 mtu[AFS_MAX_INTERFACE_ADDR];
 };
 typedef struct interfaceAddr interfaceAddr;
 bool_t xdr_interfaceAddr();
+
+#define AFSMAXCELLHOSTS 8
+
+typedef afs_int32 serverList[AFSMAXCELLHOSTS];
+bool_t xdr_serverList();
+
+
+typedef struct cacheConfig {
+	u_int cacheConfig_len;
+	afs_uint32 *cacheConfig_val;
+} cacheConfig;
+bool_t xdr_cacheConfig();
 
 #endif /* FSINT_COMMON_XG */
 #ifdef KERNEL
 #include "../afs/longc_procs.h"
 #endif
+#define RXAFSCB_STATINDEX 6
 
 #include <rx/rx_multi.h>
 #define multi_RXAFSCB_CallBack(Fids_Array, CallBacks_Array) \
@@ -258,17 +267,12 @@ bool_t xdr_interfaceAddr();
 
 /* Opcode-related useful stats for package: RXAFSCB_ */
 #define RXAFSCB_LOWEST_OPCODE   204
-#define RXAFSCB_HIGHEST_OPCODE	214
-#define RXAFSCB_NUMBER_OPCODES	11
+#define RXAFSCB_HIGHEST_OPCODE	218
+#define RXAFSCB_NUMBER_OPCODES	15
 
-#define RXAFSCB_NO_OF_CLIENT_STAT_FUNCS	17
-
-#define RXAFSCB_NO_OF_SERVER_STAT_FUNCS	11
+#define RXAFSCB_NO_OF_STAT_FUNCS	15
 
 AFS_RXGEN_EXPORT
-extern const char *RXAFSCB_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *RXAFSCB_server_function_names[];
+extern const char *RXAFSCB_function_names[];
 
 #endif	/* _RXGEN_AFSCBINT_ */

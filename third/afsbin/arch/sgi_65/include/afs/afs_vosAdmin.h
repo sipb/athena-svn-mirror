@@ -4,7 +4,7 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs_vosAdmin.h,v 1.1.1.1 1999-12-22 20:05:42 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs_vosAdmin.h,v 1.1.1.2 2000-04-12 19:45:29 ghudson Exp $
  */
 
 #include <afs/param.h>

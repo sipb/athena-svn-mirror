@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/acl.h,v 1.1.1.2 1999-12-22 20:05:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/acl.h,v 1.1.1.3 2000-04-12 19:44:50 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/acl.h,v $ */
 
 /*

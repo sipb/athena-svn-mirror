@@ -4,7 +4,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 /* Copyright (C) 1995 Transarc Corporation - All rights reserved. */
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs.h,v 1.1.1.2 1999-12-22 20:05:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs.h,v 1.1.1.3 2000-04-12 19:45:06 ghudson Exp $ */
 
 #ifndef _AFS_H_
 #define _AFS_H_
@@ -112,15 +112,11 @@ extern int afs_shuttingdown;
 #define	BUWAIT		4	    /* someone is waiting for BUVALID */
 struct brequest {
     struct vcache *vnode;	    /* vnode to use, with vrefcount bumped */
-#ifdef	AFS_FINEGR_SUNLOCK
-    kmutex_t lock;
-    kcondvar_t cv;
-#endif
     struct AFS_UCRED *cred;	    /* credentials to use for operation */
     long parm[BPARMS];		    /* random parameters - long's work for
 				     * both 32 and 64 bit platforms.
 				     */
-    int32 code;			    /* return code */
+    afs_int32 code;			    /* return code */
     short refCount;		    /* use counter for this structure */
     char opcode;		    /* what to do (store, fetch, etc) */
     char flags;			    /* free, etc */
@@ -131,22 +127,22 @@ struct SecretToken {
 };
 
 struct ClearToken {
-	int32 AuthHandle;
+	afs_int32 AuthHandle;
 	char HandShakeKey[8];
-	int32 ViceId;
-	int32 BeginTimestamp;
-	int32 EndTimestamp;
+	afs_int32 ViceId;
+	afs_int32 BeginTimestamp;
+	afs_int32 EndTimestamp;
 };
 
 struct VenusFid {
-    int32 Cell;			    /* better sun packing if at end of structure */
+    afs_int32 Cell;			    /* better sun packing if at end of structure */
     struct AFSFid Fid;
 };
 
 /* Temporary struct to be passed between afs_fid and afs_vget; in SunOS4.x we can only pass a maximum of 10 bytes for a handle (we ideally need 16!) */
 struct SmallFid {
-    int32 Volume;
-    int32 CellAndUnique;
+    afs_int32 Volume;
+    afs_int32 CellAndUnique;
     u_short Vnode;
 };
 /* The actual number of bytes in the SmallFid, not the sizeof struct. */
@@ -162,9 +158,9 @@ struct afs_q {
 };
 
 struct vrequest {
-    int32 uid;			/* user id making the request */
-    int32 busyCount;		/* how many busies we've seen so far */
-    int32 flags;                 /* things like O_SYNC, O_NONBLOCK go here */
+    afs_int32 uid;			/* user id making the request */
+    afs_int32 busyCount;		/* how many busies we've seen so far */
+    afs_int32 flags;                 /* things like O_SYNC, O_NONBLOCK go here */
     char initd;			/* if non-zero, non-uid fields meaningful */
     char accessError;		/* flags for overriding error return code */
     char volumeError;		/* encountered a missing or busy volume */
@@ -193,10 +189,7 @@ struct afs_cbr {
 
 struct cell {
     struct afs_q lruq;			     /* lru q next and prev */
-#ifdef	AFS_FINEGR_SUNLOCK
-    afs_rwlock_t lock;
-#endif
-    int32 cell;				    /* unique id assigned by venus */
+    afs_int32 cell;				    /* unique id assigned by venus */
     char *cellName;			    /* char string name of cell */
     struct server *cellHosts[MAXCELLHOSTS]; /* volume *location* hosts for this cell */
     struct cell *lcellp;		    /* Associated linked cell */
@@ -206,11 +199,7 @@ struct cell {
     short cellIndex;			    /* relative index number per cell */
 };
 
-#ifdef	AFS_FINEGR_SUNLOCK
-#define	afs_PutCell(cellp, locktype)	ReleaseLock(&(cellp)->lock, (locktype))
-#else
 #define	afs_PutCell(cellp, locktype)
-#endif
 
 /* the unixuser flag bit definitions */
 #define	UHasTokens	1	    /* are the st and ct fields valid (ever set)? */
@@ -241,24 +230,19 @@ enum
 , AFS_GCPAGS_ENICECHECK
 };
 
-extern int32 afs_gcpags;
-extern int32 afs_gcpags_procsize;
+extern afs_int32 afs_gcpags;
+extern afs_int32 afs_gcpags_procsize;
 
 struct unixuser {
     struct unixuser *next;	    /* next hash pointer */
-    int32 uid;			    /* search based on uid and cell */
-    int32 cell;
-    int32 vid;			    /* corresponding vice id in specified cell */
+    afs_int32 uid;			    /* search based on uid and cell */
+    afs_int32 cell;
+    afs_int32 vid;			    /* corresponding vice id in specified cell */
     short refCount;		    /* reference count for allocation */
     char states;		    /* flag info */
-    int32 tokenTime;		    /* last time tokens were set, used for timing out conn data */
-    int32 stLen;			    /* ticket length (if kerberos, includes kvno at head) */
+    afs_int32 tokenTime;		    /* last time tokens were set, used for timing out conn data */
+    afs_int32 stLen;			    /* ticket length (if kerberos, includes kvno at head) */
     char *stp;			    /* pointer to ticket itself */
-#ifdef	AFS_FINEGR_SUNLOCK
-    afs_rwlock_t lock;
-    kmutex_t mlock;
-    kcondvar_t cv;
-#endif
     struct ClearToken ct;
     struct afs_exporter	*exporter;  /* more info about the exporter for the remote user */
 };
@@ -266,9 +250,6 @@ struct unixuser {
 struct conn {
     /* Per-connection block. */
     struct conn	*next;		    /* Next dude same server. */
-#ifdef	AFS_FINEGR_SUNLOCK
-    afs_rwlock_t lock;	
-#endif
     struct unixuser *user;	    /* user validated with respect to. */
     struct rx_connection *id;	    /* RPC connid. */
     struct srvAddr *srvr;	    /* server associated with this conn */
@@ -323,7 +304,7 @@ struct srvAddr {
     struct srvAddr *next_sa;    /* another interface on same host */
     struct server *server;	/* back to parent */
     struct conn	*conns;		/* All user connections to this server */
-    int32 sa_ip;	        /* Host addr in network byte order */
+    afs_int32 sa_ip;	        /* Host addr in network byte order */
     u_short sa_iprank;		/* indiv ip address priority */
     u_short sa_portal;		/* port addr in network byte order */
     u_char sa_flags;
@@ -347,8 +328,8 @@ struct server {
     union {
 	struct {
 	    afsUUID suuid;
-	    int32 addr_uniquifier;
-	    int32 spares[2];
+	    afs_int32 addr_uniquifier;
+	    afs_int32 spares[2];
 	} _srvUuid;
         struct {
 	    struct srvAddr haddr;
@@ -362,28 +343,17 @@ struct server {
 #define sr_flags	_suid._srvId.haddr.flags
 #define sr_conns	_suid._srvId.haddr.conns
     struct server *next;	/* Ptr to next server in hash chain */
-#ifdef	AFS_FINEGR_SUNLOCK
-    afs_rwlock_t lock;	
-#endif
     struct cell	*cell;		/* Cell in which this host resides */
     struct afs_cbr *cbrs;	/* Return list of callbacks */
-    int32 activationTime;	/* Time when this record was first activated */
-    int32 lastDowntimeStart;	/* Time when last downtime incident began */
-    int32 numDowntimeIncidents;	/* # (completed) downtime incidents */
-    int32 sumOfDowntimes;	/* Total downtime experienced, in seconds */
+    afs_int32 activationTime;	/* Time when this record was first activated */
+    afs_int32 lastDowntimeStart;	/* Time when last downtime incident began */
+    afs_int32 numDowntimeIncidents;	/* # (completed) downtime incidents */
+    afs_int32 sumOfDowntimes;	/* Total downtime experienced, in seconds */
     struct srvAddr *addr;
     char flags;			/* Misc flags*/
-#ifdef	AFS_FINEGR_SUNLOCK
-    kmutex_t lockcv;
-    kcondvar_t cv;
-#endif
 };
 
-#ifdef	AFS_FINEGR_SUNLOCK
-#define	afs_PutServer(servp, locktype)	if (locktype) ReleaseLock(&(servp)->lock, (locktype))
-#else
 #define	afs_PutServer(servp, locktype)	
-#endif
 
 /* structs for some pioctls  - these are (or should be) 
  * also in venus.h
@@ -420,7 +390,7 @@ struct setspref {
 /* struct for GAG pioctl
  */
 struct gaginfo {
-	u_int32 showflags, logflags, logwritethruflag, spare[3];
+	afs_uint32 showflags, logflags, logwritethruflag, spare[3];
 	unsigned char spare2[128];
 };
 #define GAGUSER    1
@@ -428,11 +398,11 @@ struct gaginfo {
 #define logwritethruON	1
 
 struct rxparams {
-	int32 rx_initReceiveWindow, rx_maxReceiveWindow,
+	afs_int32 rx_initReceiveWindow, rx_maxReceiveWindow,
 	      rx_initSendWindow, rx_maxSendWindow, rxi_nSendFrags,
 	      rxi_nRecvFrags, rxi_OrphanFragSize;
-	int32 rx_maxReceiveSize, rx_MyMaxSendSize;
-	u_int32 spare[21];
+	afs_int32 rx_maxReceiveSize, rx_MyMaxSendSize;
+	afs_uint32 spare[21];
       };
 
 /* struct for checkservers */
@@ -442,8 +412,8 @@ struct chservinfo
         int magic;
 	char tbuffer[128];
 	int tsize;
-	int32 tinterval;
-	int32 tflags;
+	afs_int32 tinterval;
+	afs_int32 tflags;
 }
 ;
 
@@ -463,50 +433,45 @@ struct volume {
     /* One structure per volume, describing where the volume is located
 	  and where its mount points are. */
     struct volume *next;	/* Next volume in hash list. */
-    int32 cell;			/* the cell in which the volume resides */
+    afs_int32 cell;			/* the cell in which the volume resides */
     afs_rwlock_t lock;		/* the lock for this structure */
-    int32 volume;		/* This volume's ID number. */
+    afs_int32 volume;		/* This volume's ID number. */
     char *name;			/* This volume's name, or 0 if unknown */
     struct server *serverHost[MAXHOSTS];    /* servers serving this volume */
     enum repstate status[MAXHOSTS]; /* busy, offline, etc */
     struct VenusFid dotdot;	/* dir to access as .. */
     struct VenusFid mtpoint;	/* The mount point for this volume. */
-    int32 rootVnode, rootUnique;	/* Volume's root fid */
-    int32 roVol;
-    int32 backVol;
-    int32 rwVol;			/* For r/o vols, original read/write volume. */
-    int32 accessTime;		/* last time we used it */
-    int32 vtix;			/* volume table index */
-    int32 copyDate;		/* copyDate field, for tracking vol releases */
-    int32 expireTime;            /* for per-volume callbacks... */
+    afs_int32 rootVnode, rootUnique;	/* Volume's root fid */
+    afs_int32 roVol;
+    afs_int32 backVol;
+    afs_int32 rwVol;			/* For r/o vols, original read/write volume. */
+    afs_int32 accessTime;		/* last time we used it */
+    afs_int32 vtix;			/* volume table index */
+    afs_int32 copyDate;		/* copyDate field, for tracking vol releases */
+    afs_int32 expireTime;            /* for per-volume callbacks... */
     short refCount;		/* reference count for allocation */
     char states;		/* here for alignment reasons */
 };
 
-#ifndef	AFS_FINEGR_SUNLOCK
 #define afs_PutVolume(av, locktype) ((av)->refCount--)
-#else
-#define afs_PutVolume(av, locktype) 	(av)->refCount --; \
-                                        if (locktype) ReleaseLock(&(av)->lock, (locktype))
-#endif
 
 /* format of an entry in volume info file */
 struct fvolume {
-    int32 cell;			/* cell for this entry */
-    int32 volume;		/* volume */
-    int32 next;			/* has index */
+    afs_int32 cell;			/* cell for this entry */
+    afs_int32 volume;		/* volume */
+    afs_int32 next;			/* has index */
     struct VenusFid dotdot;	/* .. value */
     struct VenusFid mtpoint;	/* mt point's fid */
-    int32 rootVnode, rootUnique;	/* Volume's root fid */
+    afs_int32 rootVnode, rootUnique;	/* Volume's root fid */
 };
 
 struct SimpleLocks {
     struct SimpleLocks *next;
     int type;
-    int32 boff, eoff;
-    int32 pid;
+    afs_int32 boff, eoff;
+    afs_int32 pid;
 #if	defined(AFS_AIX32_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV)
-    int32 sysid;
+    afs_int32 sysid;
 #endif
 };
 
@@ -552,7 +517,7 @@ struct SimpleLocks {
 #define	AFS_MAXDV   0x7fffffff	    /* largest dataversion number */
 #define	AFS_NOTRUNC 0x7fffffff	    /* largest dataversion number */
 
-extern int32 vmPageHog; /* counter for # of vnodes which are page hogs. */
+extern afs_int32 vmPageHog; /* counter for # of vnodes which are page hogs. */
 
 /*
  * Fast map from vcache to dcache courtesy mts@umich.edu
@@ -560,13 +525,13 @@ extern int32 vmPageHog; /* counter for # of vnodes which are page hogs. */
 struct	vtodc
 	{
 	struct dcache * dc;
-	u_int32		stamp;
+	afs_uint32		stamp;
 	struct osi_file * f;
-	u_int32		minLoc;	/* smallest offset into dc. */
-	u_int32		len;	/* largest offset into dc. */
+	afs_uint32		minLoc;	/* smallest offset into dc. */
+	afs_uint32		len;	/* largest offset into dc. */
 	};
 
-extern u_int32 afs_stampValue;		/* stamp for pair's usage */
+extern afs_uint32 afs_stampValue;		/* stamp for pair's usage */
 #define	MakeStamp()	(++afs_stampValue)
 
 /* INVARIANTs: (vlruq.next != NULL) == (vlruq.prev != NULL)
@@ -580,12 +545,12 @@ struct vcache {
     struct vcache *hnext;		/* Hash next */
     struct VenusFid fid;
     struct mstat {
-        u_int32 Length;
+        afs_uint32 Length;
         afs_hyper_t DataVersion;
-        u_int32 Date;
-        u_int32 Owner;
-	u_int32 Group;
-        ushort Mode;			/* XXXX Should be int32 XXXX */
+        afs_uint32 Date;
+        afs_uint32 Owner;
+	afs_uint32 Group;
+        ushort Mode;			/* XXXX Should be afs_int32 XXXX */
         ushort LinkCount;
 	/* vnode type is in v.v_type */
     } m;
@@ -600,10 +565,6 @@ struct vcache {
     krwlock_t rwlock;
     struct cred *credp;
 #endif
-#ifdef	AFS_FINEGR_SUNLOCK
-    afs_lock_t vm_lock;
-    kcondvar_t vm_cv;    
-#endif
     afs_bozoLock_t pvnLock;	/* see locks.x */
 #endif
 #ifdef	AFS_AIX32_ENV
@@ -615,21 +576,21 @@ struct vcache {
 #ifdef AFS_AIX_ENV
     int ownslock;	/* pid of owner of excl lock, else 0 - defect 3083 */
 #endif
-    int32 parentVnode;			/* Parent dir, if a file. */
-    int32 parentUnique;
+    afs_int32 parentVnode;			/* Parent dir, if a file. */
+    afs_int32 parentUnique;
     struct VenusFid *mvid;		/* Either parent dir (if root) or root (if mt pt) */
     char *linkData;			/* Link data if a symlink. */
     afs_hyper_t flushDV;			/* data version last flushed from text */
     afs_hyper_t mapDV;			/* data version last flushed from map */
-    u_int32 truncPos;			/* truncate file to this position at next store */
+    afs_uint32 truncPos;			/* truncate file to this position at next store */
     struct server *callback;		/* The callback host, if any */
-    u_int32 cbExpires;			/* time the callback expires */
+    afs_uint32 cbExpires;			/* time the callback expires */
     struct afs_q callsort;              /* queue in expiry order, sort of */
     struct axscache *Access;            /* a list of cached access bits */
-    int32 anyAccess;			/* System:AnyUser's access to this. */
-    int32 last_looker;                  /* pag/uid from last lookup here */
+    afs_int32 anyAccess;			/* System:AnyUser's access to this. */
+    afs_int32 last_looker;                  /* pag/uid from last lookup here */
 #if	defined(AFS_SUN5_ENV) && !defined(AFS_NCR_ENV)
-    int32 activeV;
+    afs_int32 activeV;
 #endif /* defined(AFS_SUN5_ENV) && !defined(AFS_NCR_ENV) */
     struct SimpleLocks *slocks;
     short opens;		    /* The numbers of opens, read or write, on this file. */
@@ -637,12 +598,12 @@ struct vcache {
 				       this file. */
     short flockCount;		    /* count of flock readers, or -1 if writer */
     char mvstat;			/* 0->normal, 1->mt pt, 2->root. */
-    u_int32 states;			/* state bits */
+    afs_uint32 states;			/* state bits */
 #if	defined(AFS_SUN5_ENV) && !defined(AFS_NCR_ENV)
-    u_int32 vstates;			/* vstate bits */
+    afs_uint32 vstates;			/* vstate bits */
 #endif /* defined(AFS_SUN5_ENV) && !defined(AFS_NCR_ENV) */
     struct vtodc quick;
-    u_int32 symhintstamp;
+    afs_uint32 symhintstamp;
     union {
       struct vcache *symhint;
       struct dcache *dchint;
@@ -666,7 +627,7 @@ struct vcache {
     struct bhv_desc vc_bhv_desc;	/* vnode's behavior data. */
 #endif
 #endif /* AFS_SGI_ENV */
-    int32 vc_error;			/* stash write error for this vnode. */
+    afs_int32 vc_error;			/* stash write error for this vnode. */
     int xlatordv;			/* Used by nfs xlator */
     struct AFS_UCRED *uncred;
     int asynchrony;                     /* num kbytes to store behind */
@@ -723,21 +684,21 @@ struct vcxstat {
     struct VenusFid fid;
     afs_hyper_t DataVersion;
     afs_rwlock_t lock;
-    int32 parentVnode;	
-    int32 parentUnique;
+    afs_int32 parentVnode;	
+    afs_int32 parentUnique;
     afs_hyper_t flushDV;
     afs_hyper_t mapDV;
-    int32 truncPos;
-    int32 randomUid[CPSIZE];
-    int32 callback;		/* Now a pointer to 'server' struct */
-    int32 cbExpires;
-    int32 randomAccess[CPSIZE];
-    int32 anyAccess;
+    afs_int32 truncPos;
+    afs_int32 randomUid[CPSIZE];
+    afs_int32 callback;		/* Now a pointer to 'server' struct */
+    afs_int32 cbExpires;
+    afs_int32 randomAccess[CPSIZE];
+    afs_int32 anyAccess;
     short opens;
     short execsOrWriters;
     short flockCount;
     char mvstat;
-    u_int32 states;
+    afs_uint32 states;
 };
 
 struct sbstruct {
@@ -790,9 +751,7 @@ struct cm_initparams {
 #define	DFNextStarted	1	/* next chunk has been prefetched already */
 #define	DFEntryMod	2	/* has entry itself been modified? */
 #define	DFFetching	4	/* file is currently being fetched */
-#ifndef	AFS_FINEGR_SUNLOCK
 #define	DFWaiting	8	/* someone waiting for file */
-#endif
 #define	DFFetchReq	0x10	/* someone is waiting for DFFetching to go on */
 
 
@@ -833,32 +792,32 @@ struct afs_ioctl32 {
  */
 struct afs_fheader {
 #define AFS_FHMAGIC	    0x7635abaf /* uses version number */
-    int32 magic;
+    afs_int32 magic;
 #if defined(AFS_SUN57_64BIT_ENV)
 #define AFS_CI_VERSION 3
 #else
 #define AFS_CI_VERSION 2
 #endif
-    int32 version;
-    int32 firstCSize;
-    int32 otherCSize;
+    afs_int32 version;
+    afs_int32 firstCSize;
+    afs_int32 otherCSize;
 };
 
 /* kept on disk and in dcache entries */
 struct fcache {
     struct VenusFid fid;	/* Fid for this file */
-    int32 modTime;		/* last time this entry was modified */
+    afs_int32 modTime;		/* last time this entry was modified */
     afs_hyper_t versionNo;		/* Associated data version number */
-    int32 chunk;			/* Relative chunk number */
+    afs_int32 chunk;			/* Relative chunk number */
 #if defined(AFS_SGI61_ENV) || defined(AFS_SUN57_64BIT_ENV)
     /* Using ino64_t here so that user level debugging programs compile
      * the size correctly.
      */
     ino64_t inode;			/* Unix inode for this chunk */
 #else
-    int32 inode;			/* Unix inode for this chunk */
+    afs_int32 inode;			/* Unix inode for this chunk */
 #endif
-    int32 chunkBytes;		/* Num bytes in this chunk */
+    afs_int32 chunkBytes;		/* Num bytes in this chunk */
     char states;		/* Has this chunk been modified? */
 };
 
@@ -872,21 +831,13 @@ struct fcache {
 /* kept in memory */
 struct dcache {
     struct afs_q lruq;		/* Free queue for in-memory images */
-#ifdef	AFS_FINEGR_SUNLOCK
-    kmutex_t lock;
-    kmutex_t lockw;
-    kcondvar_t cv_waiting;
-    kmutex_t lockf;
-    kcondvar_t cv_fetchreq;
-#else
     afs_rwlock_t lock;		/* XXX */
-#endif
     short refCount;		/* Associated reference count. */
-    int32 index;			/* The index in the CacheInfo file*/
+    afs_int32 index;			/* The index in the CacheInfo file*/
     short flags;		/* more flags bits */
-    int32 validPos;		/* number of valid bytes during fetch */
+    afs_int32 validPos;		/* number of valid bytes during fetch */
     struct fcache f;		/* disk image */
-    int32 stamp; 		/* used with vtodc struct for hints */
+    afs_int32 stamp; 		/* used with vtodc struct for hints */
 };
 /* this is obsolete and should be removed */
 #define ihint stamp 
@@ -958,22 +909,22 @@ struct dcache {
 #define	VCHash(fid)	(((fid)->Fid.Volume + (fid)->Fid.Vnode) & (VCSIZE-1))
 
 extern struct dcache **afs_indexTable;		/*Pointers to in-memory dcache entries*/
-extern int32 *afs_indexUnique;			/*dcache entry Fid.Unique */
-extern int32 *afs_dvnextTbl;			/*Dcache hash table links */
-extern int32 *afs_dcnextTbl;			/*Dcache hash table links */
-extern int32 afs_cacheFiles;			/*Size of afs_indexTable*/
-extern int32 afs_cacheBlocks;			/*1K blocks in cache*/
-extern int32 afs_cacheStats;			/*Stat entries in cache*/
+extern afs_int32 *afs_indexUnique;			/*dcache entry Fid.Unique */
+extern afs_int32 *afs_dvnextTbl;			/*Dcache hash table links */
+extern afs_int32 *afs_dcnextTbl;			/*Dcache hash table links */
+extern afs_int32 afs_cacheFiles;			/*Size of afs_indexTable*/
+extern afs_int32 afs_cacheBlocks;			/*1K blocks in cache*/
+extern afs_int32 afs_cacheStats;			/*Stat entries in cache*/
 extern struct vcache *afs_vhashT[VCSIZE];	/*Stat cache hash table*/
-extern int32 afs_initState;			/*Initialization state*/
-extern int32 afs_termState;			/* Termination state */
+extern afs_int32 afs_initState;			/*Initialization state*/
+extern afs_int32 afs_termState;			/* Termination state */
 extern struct VenusFid afs_rootFid;		/*Root for whole file system*/
-extern int32 afs_allCBs;				/* Count of callbacks*/
-extern int32 afs_oddCBs;				/* Count of odd callbacks*/
-extern int32 afs_evenCBs;			/* Count of even callbacks*/
-extern int32 afs_allZaps;			/* Count of fid deletes */
-extern int32 afs_oddZaps;			/* Count of odd fid deletes */
-extern int32 afs_evenZaps;			/* Count of even fid deletes */
+extern afs_int32 afs_allCBs;				/* Count of callbacks*/
+extern afs_int32 afs_oddCBs;				/* Count of odd callbacks*/
+extern afs_int32 afs_evenCBs;			/* Count of even callbacks*/
+extern afs_int32 afs_allZaps;			/* Count of fid deletes */
+extern afs_int32 afs_oddZaps;			/* Count of odd fid deletes */
+extern afs_int32 afs_evenZaps;			/* Count of even fid deletes */
 extern struct brequest afs_brs[NBRS];		/* request structures */
 
 #define	UHash(auid)	((auid) & (NUSERS-1))
@@ -989,7 +940,7 @@ extern struct volume	    *afs_GetVolumeByName();
 extern struct conn	    *afs_Conn();
 extern struct conn	    *afs_ConnByHost();
 extern struct conn	    *afs_ConnByMHosts();
-extern int32		    afs_NewCell();
+extern afs_int32		    afs_NewCell();
 extern struct dcache	    *afs_GetDCache();
 extern struct dcache	    *afs_FindDCache();
 extern struct dcache	    *afs_NewDCache();
@@ -1053,9 +1004,9 @@ extern void shutdown_osifile();
 #define	afs_nlrdwr(avc, uio, rw, io, cred) \
     (((rw) == UIO_WRITE) ? afs_write(avc, uio, io, cred, 1) : afs_read(avc, uio, cred, 0, 0, 1))
 
-extern int32 afs_blocksUsed, afs_blocksDiscarded;
-extern int32 afs_discardDCCount, afs_freeDCCount;
-extern int32 afs_bulkStatsDone, afs_bulkStatsLost;
+extern afs_int32 afs_blocksUsed, afs_blocksDiscarded;
+extern afs_int32 afs_discardDCCount, afs_freeDCCount;
+extern afs_int32 afs_bulkStatsDone, afs_bulkStatsLost;
 extern int afs_TruncateDaemonRunning;
 extern int afs_CacheTooFull;
 /* Cache size truncation uses the following low and high water marks:
@@ -1096,7 +1047,7 @@ extern int afs_WaitForCacheDrain;
     } while (0)
 
 /* Handy max length of a numeric string. */
-#define	CVBS	12  /* max int32 is 2^32 ~ 4*10^9, +1 for NULL, +luck */
+#define	CVBS	12  /* max afs_int32 is 2^32 ~ 4*10^9, +1 for NULL, +luck */
 
 extern int afs_norefpanic;
 #define refpanic(foo) if (afs_norefpanic) \

@@ -1,6 +1,6 @@
 /* Copyright (C) 1998 Transarc Corporation - All rights reserved. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/usd.h,v 1.1.1.1 1999-12-22 20:05:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/usd.h,v 1.1.1.2 2000-04-12 19:45:02 ghudson Exp $ */
 
 #ifndef TRANSARC_USD_H
 #define TRANSARC_USD_H
@@ -42,8 +42,8 @@
 typedef struct usd_handle * usd_handle_t;
  
 struct usd_handle {
-    int (*read)(usd_handle_t usd, char *buf, u_int32 nbyte, u_int32 *xferdP);
-    int (*write)(usd_handle_t usd, char *buf, u_int32 nbyte, u_int32 *xferdP);
+    int (*read)(usd_handle_t usd, char *buf, afs_uint32 nbyte, afs_uint32 *xferdP);
+    int (*write)(usd_handle_t usd, char *buf, afs_uint32 nbyte, afs_uint32 *xferdP);
     int (*seek)(usd_handle_t usd,
 		afs_hyper_t inOff, int whence, afs_hyper_t *outOffP);
     int (*ioctl)(usd_handle_t usd, int req, void *arg);
@@ -78,6 +78,8 @@ struct usd_handle {
 #define USD_CLOSE(usd) ((*(usd)->close)(usd))
 
 extern int usd_Open(const char *path, int oflag, int mode, usd_handle_t *usdP);
+extern int usd_StandardInput(usd_handle_t *usdP);
+extern int usd_StandardOutput(usd_handle_t *usdP);
 
 /* Open flag bits */
 
@@ -123,6 +125,11 @@ extern int usd_Open(const char *path, int oflag, int mode, usd_handle_t *usdP);
  */
 
 #define USD_IOCTL_TAPEOPERATION 8
+
+/* GetBlkSize(long *sizeP) -- returns blocksize used by filesystem for a file.
+ *     Doesn't work on BLK or CHR devices. */
+
+#define USD_IOCTL_GETBLKSIZE	9
 
 typedef struct {
     int  tp_op;       /* tape operation */

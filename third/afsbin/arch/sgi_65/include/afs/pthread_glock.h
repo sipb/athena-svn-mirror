@@ -1,7 +1,7 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/pthread_glock.h,v 1.1.1.1 1999-12-22 20:05:07 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/pthread_glock.h,v 1.1.1.2 2000-04-12 19:44:38 ghudson Exp $
  */
 
 #ifndef _AFS_PTHREAD_GLOCK_H_

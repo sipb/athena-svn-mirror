@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v 1.1.1.2 1999-12-22 20:05:48 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v 1.1.1.3 2000-04-12 19:45:38 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v $ */
 
 /*
@@ -53,8 +53,8 @@
 
 /* A clock value is the number of seconds and microseconds that have elapsed since calling clock_Init. */
 struct clock {
-    int32 sec;	    /* Seconds since clock_Init */
-    int32 usec;	    /* Microseconds since clock_Init */
+    afs_int32 sec;	    /* Seconds since clock_Init */
+    afs_int32 usec;	    /* Microseconds since clock_Init */
 };
 
 #ifndef	KERNEL
@@ -147,10 +147,10 @@ extern void clock_UpdateTime();
 #define	clock_Addmsec(c1, ms)					 \
     BEGIN							 \
 	if ((ms) >= 1000) {					 \
-	    (c1)->sec += (int32)((ms) / 1000);			 \
-	    (c1)->usec += (int32)(((ms) % 1000) * 1000);	 \
+	    (c1)->sec += (afs_int32)((ms) / 1000);			 \
+	    (c1)->usec += (afs_int32)(((ms) % 1000) * 1000);	 \
 	} else {						 \
-	    (c1)->usec += (int32)((ms) * 1000);			 \
+	    (c1)->usec += (afs_int32)((ms) * 1000);			 \
 	}							 \
         if ((c1)->usec >= 1000000) {		                 \
 	    (c1)->usec -= 1000000;				 \

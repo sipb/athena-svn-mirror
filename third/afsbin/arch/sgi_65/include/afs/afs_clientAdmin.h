@@ -4,7 +4,7 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs_clientAdmin.h,v 1.1.1.1 1999-12-22 20:05:42 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/afs_clientAdmin.h,v 1.1.1.2 2000-04-12 19:45:30 ghudson Exp $
  */
 
 #include <afs/afs_Admin.h>
@@ -172,9 +172,53 @@ extern int ADMINAPI afsclient_RPCStatOpen(
   afs_status_p st
 );
 
+extern int ADMINAPI afsclient_RPCStatOpenPort(
+  const void *cellHandle,
+  const char *serverName,
+  int serverPort,
+  struct rx_connection **rpcStatHandleP,
+  afs_status_p st
+);
+
 extern int ADMINAPI afsclient_RPCStatClose(
   struct rx_connection *rpcStatHandle,
   afs_status_p st
 );
+
+extern int ADMINAPI afsclient_CMStatOpen(
+  const void *cellHandle,
+  const char *serverName,
+  struct rx_connection **rpcStatHandleP,
+  afs_status_p st
+);
+
+extern int ADMINAPI afsclient_CMStatOpenPort(
+  const void *cellHandle,
+  const char *serverName,
+  int serverPort,
+  struct rx_connection **rpcStatHandleP,
+  afs_status_p st
+);
+
+extern int ADMINAPI afsclient_CMStatClose(
+  struct rx_connection *rpcStatHandle,
+  afs_status_p st
+);
+
+extern int ADMINAPI afsclient_RXDebugOpen(
+  const char *serverName,
+  afs_stat_source_t type,
+  rxdebugHandle_p *rxdebugHandleP,
+  afs_status_p st);
+
+extern int ADMINAPI afsclient_RXDebugOpenPort(
+  const char *serverName,
+  int serverPort,
+  rxdebugHandle_p *rxdebugHandleP,
+  afs_status_p st);
+
+extern int ADMINAPI afsclient_RXDebugClose(
+  rxdebugHandle_p rxdebugHandle,
+  afs_status_p st);
 
 #endif /* TRANSARC_AFS_CLIENT_ADMIN_H */

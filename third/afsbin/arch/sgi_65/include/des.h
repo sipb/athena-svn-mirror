@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v $
  * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v 1.1.1.2 1999-12-22 20:04:56 ghudson Exp $ 
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v 1.1.1.3 2000-04-12 19:44:26 ghudson Exp $ 
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

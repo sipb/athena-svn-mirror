@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/viceinode.h,v 1.1.1.2 1999-12-22 20:05:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/viceinode.h,v 1.1.1.3 2000-04-12 19:45:07 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/viceinode.h,v $ */
 
 #ifndef _VICEINODE_H_
 #define _VICEINODE_H_
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidviceinode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/viceinode.h,v 1.1.1.2 1999-12-22 20:05:27 ghudson Exp $";
+static char *rcsidviceinode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/viceinode.h,v 1.1.1.3 2000-04-12 19:45:07 ghudson Exp $";
 #endif
 
 /*
