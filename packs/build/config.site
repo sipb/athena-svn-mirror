@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.3 1996-10-09 21:22:54 ghudson Exp $
+# $Id: config.site,v 1.4 1996-11-08 04:01:34 ghudson Exp $
 #
 
 athena=true
@@ -31,5 +31,6 @@ esac
 prefix=/usr/athena
 datadir='${exec_prefix}/lib'
 sbindir='${exec_prefix}/etc'
+sysconfdir=/etc/athena
 lbindir=/bin/athena
 lsbindir=/etc/athena
