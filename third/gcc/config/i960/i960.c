@@ -1,5 +1,5 @@
 /* Subroutines used for code generation on intel 80960.
-   Copyright (C) 1992, 1995 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
    Contributed by Steven McGeady, Intel Corp.
    Additional Work by Glenn Colon-Bonet, Jonathan Shapiro, Andy Wilson
    Converted to GCC 2.0 by Jim Wilson and Michael Tiemann, Cygnus Support.
@@ -21,9 +21,8 @@ along with GNU CC; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <stdio.h>
-
 #include "config.h"
+#include <stdio.h>
 #include "rtl.h"
 #include "regs.h"
 #include "hard-reg-set.h"
@@ -36,8 +35,8 @@ Boston, MA 02111-1307, USA.  */
 #include "flags.h"
 #include "tree.h"
 #include "insn-codes.h"
-#include "assert.h"
 #include "expr.h"
+#include "except.h"
 #include "function.h"
 #include "recog.h"
 #include <math.h>
@@ -89,30 +88,30 @@ static int ret_label = 0;
 /* ??? This is incomplete, since it does not handle all pragmas that the
    intel compilers understand.  */
 
-void
-process_pragma (finput)
+int
+process_pragma (finput, t)
      FILE *finput;
+     tree t;
 {
-  int c;
   int i;
+  register int c;
+  register char *pname;
 
-  c = getc (finput);
-  while (c == ' ' || c == '\t')
-    c = getc (finput);
+  if (TREE_CODE (t) != IDENTIFIER_NODE)
+    return 0;
 
-  if (c == 'a'
-      && getc (finput) == 'l'
-      && getc (finput) == 'i'
-      && getc (finput) == 'g'
-      && getc (finput) == 'n'
-      && ((c = getc (finput)) == ' ' || c == '\t' || c == '\n'))
+  pname = IDENTIFIER_POINTER (t);
+
+  if (strcmp (pname, "align") == 0)
     {
       char buf[20];
       char *s = buf;
       int align;
 
-      while (c == ' ' || c == '\t')
+      do {
 	c = getc (finput);
+      } while (c == ' ' || c == '\t');
+
       if (c == '(')
 	c = getc (finput);
       while (c >= '0' && c <= '9')
@@ -122,6 +121,11 @@ process_pragma (finput)
 	  c = getc (finput);
 	}
       *s = '\0';
+
+      /* We had to read a non-numerical character to get out of the
+	 while loop---often a newline.  So, we have to put it back to
+	 make sure we continue to parse everything properly.  */
+      ungetc (c, finput);
 
       align = atoi (buf);
       switch (align)
@@ -158,11 +162,13 @@ process_pragma (finput)
 	 - missing identifier means next struct
 
 	 - alignment rules for bitfields need more investigation  */
+
+      return 1;
     }
 
   /* Should be pragma 'far' or equivalent for callx/balx here.  */
 
-  ungetc (c, finput);
+  return 0;
 }
 
 /* Initialize variables before compiling any files.  */
@@ -213,6 +219,19 @@ arith_operand (op, mode)
      enum machine_mode mode;
 {
   return (register_operand (op, mode) || literal (op, mode));
+}
+
+/* Return truth value of whether OP can be used as an operands in a three
+   address logic insn, possibly complementing OP, of mode MODE.  */
+
+int
+logic_operand (op, mode)
+     rtx op;
+     enum machine_mode mode;
+{
+  return (register_operand (op, mode)
+	  || (GET_CODE (op) == CONST_INT
+	      && INTVAL(op) >= -32 && INTVAL(op) < 32));
 }
 
 /* Return true if OP is a register or a valid floating point literal.  */
@@ -570,8 +589,13 @@ emit_move_sequence (operands, mode)
      adding 4 to the memory address may not yield a valid insn.  */
   /* ??? We don't always need the scratch, but that would complicate things.
      Maybe later.  */
+  /* ??? We must also handle stores to pseudos here, because the pseudo may be
+     replaced with a MEM later.  This would be cleaner if we didn't have
+     a separate pattern for unaligned DImode/TImode stores.  */
   if (GET_MODE_SIZE (mode) > UNITS_PER_WORD
-      && GET_CODE (operands[0]) == MEM
+      && (GET_CODE (operands[0]) == MEM
+	  || (GET_CODE (operands[0]) == REG
+	      && REGNO (operands[0]) >= FIRST_PSEUDO_REGISTER))
       && GET_CODE (operands[1]) == REG
       && REGNO (operands[1]) < FIRST_PSEUDO_REGISTER
       && ! HARD_REGNO_MODE_OK (REGNO (operands[1]), mode))
@@ -1638,10 +1662,13 @@ i960_print_operand (file, x, code)
     }
   else if (rtxcode == CONST_INT)
     {
-      if (INTVAL (x) > 9999 || INTVAL (x) < -999)
-	fprintf (file, "0x%x", INTVAL (x));
+      HOST_WIDE_INT val = INTVAL (x);
+      if (code == 'C')
+	val = ~val;
+      if (val > 9999 || val < -999)
+	fprintf (file, "0x%x", val);
       else
-	fprintf (file, "%d", INTVAL (x));
+	fprintf (file, "%d", val);
       return;
     }
   else if (rtxcode == CONST_DOUBLE)
@@ -2218,7 +2245,8 @@ i960_arg_size_and_align (mode, type, size_out, align_out)
   else if (mode == VOIDmode)
     {
       /* End of parm list.  */
-      assert (type != 0 && TYPE_MODE (type) == VOIDmode);
+      if (type == 0 || TYPE_MODE (type) != VOIDmode)
+	abort ();
       size = 1;
     }
   else
