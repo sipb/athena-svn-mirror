@@ -1,7 +1,9 @@
-# $Id: athena,v 1.1 1998-12-25 19:33:50 ghudson Exp $
+# $Id: athena,v 1.2 1999-02-09 19:55:58 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
-# First, set up some useful variables.
+# First, set up some useful variables.  Note /usr/athena/etc at the
+# end of PATH; we don't want to check AFS for binaries which live on
+# local disk.
 
 IS_ON=/sbin/chkconfig
 if $IS_ON verbose ; then
@@ -11,7 +13,9 @@ else            # For a quiet startup and shutdown
 fi
 
 HOME=/; export HOME
-PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc; export PATH
+PATH=/etc/athena:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc
+PATH=$PATH:/usr/etc:/usr/athena/etc
+export PATH
 
 umask 022
 
@@ -58,17 +62,17 @@ rm -f /var/tmp/!!!SuperLock!!!
 
 # afsd is started by init.d/afs.  We just do our little additions here.
 if [ "$AFSCLIENT" != false ]; then
-	sh /etc/athena/config_afs
+	config_afs
 fi
 
 if [ "$NFSCLIENT" != false ]; then
 	$ECHO "Flushing old NFS connections... \c"
-	/bin/athena/fsid -p -q -a
+	fsid -p -q -a
 	$ECHO "done."
 fi
 
 $ECHO "Removing old attach mount points"
-/bin/athena/detach -L -O -n -h -a
+detach -L -O -n -h -a
 
 if [ "$PUBLIC" = true ]; then
 	rm -f /var/athena/attachtab
@@ -77,11 +81,11 @@ fi
 
 if [ "$RVDCLIENT" = true ]; then
 	$ECHO "Getting cluster information"
-	/etc/athena/save_cluster_info
+	save_cluster_info
 	if [ -f /var/athena/clusterinfo.bsh ]; then
 		. /var/athena/clusterinfo.bsh
 		$ECHO "Attaching system libraries"
-		/bin/athena/attach -h -n -o hard -O $SYSLIB
+		attach -h -n -o hard -O $SYSLIB
 	fi
 fi
 
@@ -119,7 +123,7 @@ if [ "$PUBLIC" = true ]; then
 		thisv=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
 		if [ "$newv" = "$thisv" ]; then
 			$ECHO "Running track"
-			/usr/athena/etc/track
+			track
 			if [ -f /srvd/etc/athena/rc.conf ]; then
 	       			sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
 				  -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
@@ -178,21 +182,16 @@ if [ "$KRBSRV" != false -a -f /.k ]; then
 	else
 		krbopt="-r $KRBSRV -n"
 	fi
-	/usr/athena/etc/kerberos $krbopt &
+	kerberos $krbopt &
 	if [ "$KADMSRV" = true ]; then
 		$ECHO "kadmind... \c"
-		/usr/athena/etc/kadmind $krbopt &
+		kadmind $krbopt &
 	fi
-fi
-
-if [ "$KNETD" = true ]; then
-	$ECHO "knetd... \c"
-	/usr/athena/etc/knetd &
 fi
 
 if [ "$TIMECLIENT" = true ]; then
 	$ECHO "xntpd... \c"
-	/etc/athena/xntpd &
+	xntpd &
 fi
 
 # Tell inetd to reread its config file, now that all
@@ -200,6 +199,7 @@ fi
 killall -HUP inetd
 
 # Start Athena's inetd.  Make sure the time zone is set in its environment.
+# Use full pathname to distinguish from native inetd.
 . /etc/TIMEZONE
 $ECHO "inetd... \c"
 if [ "$ACCESSON" = true ]; then
@@ -210,34 +210,35 @@ fi
 
 if [ "$OLC" = true ]; then
 	$ECHO "olcd... \c"
-	/usr/athena/etc/olcd &
+	olcd &
 	$ECHO "rpd... \c"
-	/usr/athena/etc/rpd &
+	rpd &
 fi
 
 if [ "$ZSERVER" = true ] ; then
 	$ECHO "zephyrd... \c"
-	/usr/athena/etc/zephyrd &
+	zephyrd &
 fi
 
 if [ "$ZCLIENT" = true ]; then
 	$ECHO "zhm... \c"
-	/etc/athena/zhm &
+	zhm &
 fi
 
 if [ "$LPD" = true ]; then
+	# Use absolute path to distinguish from the vendor lpd.
 	$ECHO "lpd... \c"
 	/usr/athena/etc/lpd &
 fi
 
 if [ "$MRUPDATE" = true ]; then
 	$ECHO "update_server... \c"
-	/usr/athena/etc/update_server &
+	update_server &
 fi
 
 if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
 	$ECHO "sshd... \c"
-	/etc/athena/sshd &
+	sshd &
 fi
 
 $ECHO "done."

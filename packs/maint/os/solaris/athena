@@ -1,10 +1,13 @@
-# $Id: athena,v 1.1 1998-12-25 19:33:53 ghudson Exp $
+# $Id: athena,v 1.2 1999-02-09 19:55:48 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
-# First, set up some useful variables.
+# First, set up some useful variables.  Note /usr/athena/etc at the
+# end of PATH; we don't want to check AFS for binaries which live on
+# local disk.
 
 HOME=/; export HOME
-PATH=/bin:/usr/ucb:/usr/sbin:/etc:/sbin; export PATH
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
 
 umask 022
 
@@ -75,29 +78,29 @@ rm -f /var/tmp/!!!SuperLock!!!
 # Reset time with the time hub
 if [ "$TIMECLIENT" = true ]; then
 	echo "Setting time: \c"
-	/etc/athena/gettime -s "$TIMEHUB"
+	gettime -s "$TIMEHUB"
 fi
 
 # afsd is started by init.d/afs.  We just do our little additions here.
 if [ "$AFSCLIENT" != false ]; then
-	sh /etc/athena/config_afs
+	config_afs
 fi
 
 echo "Loading pcfile system... \c"
-/usr/sbin/modload /usr/kernel/fs/pcfs
+modload /usr/kernel/fs/pcfs
 echo "done."
 echo "Loading fd driver... \c"
-/usr/sbin/modload /usr/kernel/fs/fdfs
+modload /usr/kernel/fs/fdfs
 echo "done."
 
 if [ "$NFSCLIENT" != false ]; then
 	echo "Flushing old NFS connections... \c"
-	/bin/athena/fsid -p -q -a
+	fsid -p -q -a
 	echo "done."
 fi
 
 echo "Removing old attach mount points"
-/bin/athena/detach -L -O -n -h -a
+detach -L -O -n -h -a
 
 if [ "$PUBLIC" = true ]; then
 	cp /dev/null /var/athena/attachtab
@@ -105,11 +108,11 @@ fi
 
 if [ "$RVDCLIENT" = true ]; then
 	echo "Getting cluster information"
-	/etc/athena/save_cluster_info
+	save_cluster_info
 	if [ -f /var/athena/clusterinfo.bsh ]; then
 		. /var/athena/clusterinfo.bsh
 		echo "Attaching system libraries"
-		/bin/athena/attach -h -n -o hard -O $SYSLIB
+		attach -h -n -o hard -O $SYSLIB
 	fi
 fi
 
@@ -159,10 +162,9 @@ if [ "$PUBLIC" = true ]; then
 		thisv=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
 		if [ "$newv" = "$thisv" ]; then
 			echo "Running track"
-			/usr/athena/etc/track -F /os -T / \
-				-W /srvd/usr/athena/lib \
+			track -F /os -T / -W /srvd/usr/athena/lib \
 				-s stats/os_rvd slists/os_rvd
-			/usr/athena/etc/track
+			track
 			cp -p /etc/inet/hosts.save /etc/inet/hosts
 			rm -f /etc/inet/hosts.save
 			if [ -f /srvd/etc/athena/rc.conf ]; then
@@ -219,10 +221,10 @@ echo "Starting Athena daemons: \c"
 
 if [ "$TIMECLIENT" = true ]; then
 	echo "xntpd... \c"
-	/etc/athena/xntpd &
+	xntpd &
 fi
 
-# Start Athena's inetd
+# Start Athena's inetd.  Use full pathname to distinguish from native inetd.
 echo "inetd... \c"
 if [ "$ACCESSON" = true ]; then
 	/etc/athena/inetd -n &
@@ -237,16 +239,12 @@ if [ "$KRBSRV" != false -a -f /.k ]; then
 	else
 		krbopt="-r $KRBSRV -n"
 	fi
-	/usr/athena/etc/kerberos $krbopt &
+	kerberos $krbopt &
 	if [ "$KADMSRV" = true ]; then
+		# Use full pathname to distinguish from native kadmind.
 		echo "kadmind... \c"
 		/usr/athena/etc/kadmind $krbopt &
 	fi
-fi
-
-if [ "$KNETD" = true ]; then
-	echo "knetd... \c"
-	/usr/athena/etc/knetd &
 fi
 
 if [ "$SENDMAIL" = true ]; then
@@ -256,34 +254,35 @@ fi
 
 if [ "$OLC" = true ]; then
 	echo "olcd... \c"
-	/usr/athena/etc/olcd &
+	olcd &
 	echo "rpd... \c"
-	/usr/athena/etc/rpd &
+	rpd &
 fi
 
 if [ "$ZSERVER" = true ] ; then
 	echo "zephyrd... \c"
-	/usr/athena/etc/zephyrd &
+	zephyrd &
 fi
 
 if [ "$ZCLIENT" = true ]; then
 	echo "zhm... \c"
-	/etc/athena/zhm &
+	zhm &
 fi
 
 if [ "$LPD" = true ]; then
+	# Use absolute path to distinguish from the vendor lpd.
 	echo "lpd... \c"
 	/usr/athena/etc/lpd &
 fi
 
 if [ "$MRUPDATE" = true ]; then
 	echo "update_server... \c"
-	/usr/athena/etc/update_server &
+	update_server &
 fi
 
 if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
 	echo "sshd... \c"
-	/etc/athena/sshd &
+	sshd &
 fi
 
 echo "done."
