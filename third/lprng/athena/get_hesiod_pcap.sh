@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: get_hesiod_pcap.sh,v 1.1 1999-02-25 21:42:14 danw Exp $
+# $Id: get_hesiod_pcap.sh,v 1.2 1999-04-08 01:26:11 mwhitson Exp $
 
 # Support script used by LPRng to fetch Hesiod printcap entries
 
@@ -18,8 +18,8 @@ all)
 	PRINTER=`hesinfo $host cluster 2>/dev/null | \
 	    awk '/^lpr / {print $2; exit;}'`
 	if [ -z "$PRINTER" ]; then
-	    echo "No default printer for $host" 1>&2
-	    exit 1
+	    # We have no default.  Let LPRng come up with its own default.
+	    exit 0
 	fi
     fi
     echo "all:all=$PRINTER"
@@ -30,3 +30,5 @@ all)
     hesinfo $printer pcap 2>/dev/null
     ;;
 esac
+
+exit 0
