@@ -549,7 +549,7 @@ install.perl:	all installperl
 		cd ../pod; $(MAKE) compile; \
 	else :; \
 	fi
-	$(LDLIBPTH) ./perl installperl $(STRIPFLAGS)
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installperl $(STRIPFLAGS)
 
 install.man:	all installman
 	$(LDLIBPTH) ./perl installman
