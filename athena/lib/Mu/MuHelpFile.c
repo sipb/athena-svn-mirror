@@ -14,14 +14,18 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuHelpFile.c,v $
- * $Author: djf $
+ * $Author: cfields $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:14:31  djf
+ * Initial revision
+ * 
  */
 
 #include "Mu.h"
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 char *malloc();
 
