@@ -1,5 +1,5 @@
 ;; workspace.jl -- similar to virtual desktops
-;; $Id: workspace.jl,v 1.1.1.4 2003-01-05 00:33:28 ghudson Exp $
+;; $Id: workspace.jl,v 1.1.1.4.2.1 2003-07-24 19:32:19 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -106,6 +106,7 @@
 
     (open rep
 	  rep.system
+	  rep.io.files
 	  sawfish.wm.windows
 	  sawfish.wm.misc
 	  sawfish.wm.events
@@ -130,6 +131,8 @@ window, one of `stop', `keep-going', `wrap-around'")
     :group workspace
     :widget-flags (expand-vertically)
     :after-set (lambda () (workspace-names-changed)))
+
+  (defvar workspace-filename "~/.sawfish/workspaces")
 
   (defvar lock-first-workspace t
     "Preserve outermost empty workspaces in the pager.")
@@ -337,7 +340,7 @@ window, one of `stop', `keep-going', `wrap-around'")
 	(setq last-interesting-workspace max-w))
       (cons min-w max-w)))
 
-  (define (set-number-of-workspaces wanted)
+  (define (internal-set-number-of-workspaces wanted)
     (or (> wanted 0) (error "Too few workspaces: %s" wanted))
     (let* ((limits (workspace-limits))
 	   (total (1+ (- (cdr limits) (car limits)))))
@@ -350,6 +353,14 @@ window, one of `stop', `keep-going', `wrap-around'")
 	     (setq first-interesting-workspace (car limits))
 	     (setq last-interesting-workspace (1- (+ (car limits) wanted)))
 	     (call-hook 'workspace-state-change-hook)))))
+
+  (define (set-number-of-workspaces wanted)
+    (internal-set-number-of-workspaces wanted)
+    (let ((file (open-file workspace-filename 'write)))
+      (when file
+	(unwind-protect
+	    (format file "%S\n" wanted)
+	  (close-file file)))))
 
   (define (workspace-id-to-logical space #!optional limits)
     (unless limits
@@ -932,4 +943,11 @@ last instance remaining, then delete the actual window."
   (add-hook 'unmap-notify-hook ws-window-unmapped)
   (add-hook 'destroy-notify-hook ws-remove-window)
   (add-hook 'sm-window-save-functions ws-saved-state)
-  (add-hook 'sm-restore-window-hook ws-load-state))
+  (add-hook 'sm-restore-window-hook ws-load-state)
+
+  (when (file-exists-p workspace-filename)
+    (let ((file (open-file workspace-filename 'read)))
+      (when file
+	(unwind-protect
+	    (internal-set-number-of-workspaces (read file))
+	  (close-file file))))))
