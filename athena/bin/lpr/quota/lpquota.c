@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.14 1992-12-23 11:50:46 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.15 1993-06-07 08:27:46 probe Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: probe $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.14 1992-12-23 11:50:46 probe Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.15 1993-06-07 08:27:46 probe Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -442,7 +442,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 
     ret = krb_mk_req(&auth, KLPQUOTA_SERVICE, hostname, krb_realm, (long) 0);
     if (ret != KSUCCESS) {
-	fprintf(stderr, "Kerberos authenticaion failed - %s\n", krb_err_txt[ret]);
+	fprintf(stderr, "Kerberos authentication failed - %s\n", krb_err_txt[ret]);
 	fprintf(stderr, "Running unauthenticated.\n");
 	auth.length=0;
 	auth.dat[0]='\0';
