@@ -1,11 +1,11 @@
 #ifdef KERBEROS
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.4 1988-01-25 10:30:26 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.5 1988-06-16 09:43:59 jtkohl Exp $
  */
 
 #ifndef lint
-static char *rcsid_kstuff_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.4 1988-01-25 10:30:26 jtkohl Exp $";
+static char *rcsid_kstuff_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.5 1988-06-16 09:43:59 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -69,7 +69,7 @@ GetKerberosData(fd, haddr, kdata, service, srvtab)
 	 */
 	(void) strcpy(instance,"*");	/* let Kerberos fill it in */
 
-	return(rd_ap_req(&ticket,service,instance,haddr,kdata, srvtab ? srvtab : ""));
+	return(krb_rd_req(&ticket,service,instance,haddr,kdata, srvtab ? srvtab : ""));
 }
 
 /*
@@ -96,7 +96,7 @@ char *service, *host;			/* service name, foreign host */
     if (rem != KSUCCESS)
       return(rem);
 
-    rem = mk_ap_req( ticket, service, host, krb_realm, (u_long)0 );
+    rem = krb_mk_req( ticket, service, host, krb_realm, (u_long)0 );
     if (rem != KSUCCESS)
       return(rem);
 
