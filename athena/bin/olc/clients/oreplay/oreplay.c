@@ -3,11 +3,12 @@
  *
  * This replays question logs
  *      and gets queue listings
+ *      and shows new messages
  */
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.12 1991-01-08 16:46:45 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.13 1991-01-15 18:05:42 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,8 +38,8 @@ main(argc,argv)
   long len;
   struct sockaddr_in sin;
   struct servent *sent;
-  char username[9];
-  int instance;
+  char username[9], tusername[9];
+  int instance, tinstance;
   int c;
   char **olc_servers;
   char *buf;
@@ -111,7 +112,7 @@ main(argc,argv)
     exit(1);
   }
 
-  if ((nuke && !i_show) || (i_show && i_list)) {
+  if ((nuke && i_list) || (i_show && i_list)) {
     usage();
     exit(1);
   }
@@ -122,18 +123,30 @@ main(argc,argv)
     /* list */
     instance = -1;
     strcpy(username,"qlist");
+    switch (argc-optind) {
+    case 2:
+      tinstance = atoi(argv[optind+1]);
+    case 1:
+      strcpy(tusername,argv[optind]);
+    }      
   }
   else {
     /* replay/show */
-    if (((argc - optind) > 2) || (argc == optind)) {
+    if ((((argc - optind) > 2) && !nuke) ||
+	(argc == optind)) {
       usage();
       exit(1);
     }
     
-    strcpy(username,argv[optind]);
-    optind++;
-    if ((argc - optind) == 1)
+    strcpy(username,argv[optind++]);
+    switch (argc-optind) {
+    case 3:
+      tinstance = atoi(argv[optind+2]);
+    case 2:
+      strcpy(tusername,argv[optind+1]);
+    case 1:
       instance = atoi(argv[optind]);
+    }
   }
 
 /* Find out where the server is */
@@ -198,13 +211,24 @@ main(argc,argv)
   if (i_show)
     version = htonl((u_long) (nuke ? SHOW_KILL_REQ : SHOW_NO_KILL_REQ));
   else
-    version = htonl((u_long) LIST_REQ);
+    if (nuke) {
+      version = htonl((u_long) REPLAY_KILL_REQ);
+    } else {
+      version = htonl((u_long) LIST_REQ);
+    }
 
   write(sock,&version,sizeof(version));
 
   write(sock,username,9);
   instance = htonl(instance);
   write(sock,&instance,sizeof(instance));
+
+  if (!i_show && nuke) {
+    write(sock,tusername,9);
+    tinstance = htonl(tinstance);
+    write(sock,&tinstance,sizeof(tinstance));
+  }
+
 #ifdef KERBEROS
   my_auth.length = htonl(my_auth.length);
   write(sock,&(my_auth.length),sizeof(my_auth.length));
@@ -256,12 +280,57 @@ main(argc,argv)
       punt(temp_fd,filename);
     }
   }
+
   while (total_read < len) {
-    c = read(sock,buf,(int)len);
-    write(output_fd,buf,c);
+    c = read(sock,(buf + total_read),(int)len);
     total_read += c;
   }
+  write(output_fd,buf,total_read);
   close(sock);
+
+/* If it's the special case where they want status of the user as well, */
+/* continue on */
+
+  if (i_list && (tusername[0] != '\0')) {
+    char *p1,*p2; /* current position in buffer */
+    int n;        /* number of users in this queue */
+    int i,j;
+    int len;
+
+    p1 = buf;
+    len = strlen(tusername);
+
+    for(i=0;i<2;i++) {
+      p1 = index(p1,'\n')+1; /* Scan past queue name */
+      n = atoi(p1);           /* number of users in this queue */
+      p1 = index(p1,'\n')+1;  /* past number of users */
+      for(;n>0;n--) {
+	for(j=0;j<4;j++)
+	  p1 = index(p1,'\n')+1;  /* Scan past the user info */
+	if (strncmp(tusername,p1,len) == 0) {
+	  /* username right, check instance */
+	  p1 = index(p1,'\n')+1;
+	  if (tinstance == atoi(p1)) {
+	    p1 = index(p1,'\n')+1;
+	    p2 = index(p1,'\n')+1;
+	    *p2 = '\0';
+	    write(output_fd,p1,strlen(p1));
+	    goto done;               /* Get out of this whole mess */
+	  }
+	}
+	else
+	  p1 = index(p1,'\n')+1;
+	
+	for(j=0;j<7;j++)   /* Skip rest of information for this user */
+	  p1 = index(p1,'\n')+1;
+      }
+      write(output_fd,"none\n",5);
+    }
+  }
+
+ done: 
+
+/* format listing if neccessary */
 
   if (!gimme_raw && i_list) {
     FILE *input_file;
