@@ -5,11 +5,7 @@
 #include <sys/file.h>
 #include <fcntl.h>
 #include <sys/param.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/stat.h>
 
 #ifndef MAXBSIZE
@@ -98,11 +94,7 @@ int recursive_rmdir(dirname)
 {
     char path[MAXPATHLEN];
     DIR *dirp;
-#ifdef POSIX
     struct dirent *dp;
-#else
-    struct direct *dp;
-#endif
     struct stat statbuf;
     
     if (verbosef)

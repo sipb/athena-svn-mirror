@@ -178,7 +178,7 @@ char *string;
 #include <stdio.h>
 #include <signal.h>
 
-cleanup()
+void cleanup()
 {
     exit(1);
 }
@@ -186,16 +186,12 @@ main()
 {
     char s1[80], s2[80];
     int s3;
+    struct sigaction sa;
 
-#ifdef POSIX
-    static struct sigaction sa;
     (void) sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
-    sa.sa_handler = (void (*)()) cleanup;
+    sa.sa_handler = cleanup;
     (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
-#else
-    signal(SIGINT,cleanup);
-#endif /* POSIX */
 loop:
     printf("Pattern ==> ");
     if (!gets(s1))
