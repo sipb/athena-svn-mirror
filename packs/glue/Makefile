@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.26 1998-05-08 15:55:23 ghudson Exp $
+# $Id: Makefile,v 1.27 1998-06-08 14:11:15 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -105,6 +105,7 @@ install:
 	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
+	install -c -m 555 xlock.sh ${DESTDIR}${ATHBINDIR}/xlock
 	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
 		echo rm -f ${DESTDIR}$$2; \
 		rm -f ${DESTDIR}$$2; \
