@@ -15,8 +15,11 @@ login (authentication) dialog.
 */
 
 /*
- * $Id: sshconnect.c,v 1.1.1.3 1998-05-13 19:11:27 danw Exp $
+ * $Id: sshconnect.c,v 1.2 1998-11-09 16:25:24 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.3  1998/05/13 19:11:27  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.26  1998/04/30 01:56:01  kivinen
  * 	Added PasswordPromptLogin and PasswordPromptHost option code.
  * 	Added check that proxy command isn't empty.
@@ -269,7 +272,7 @@ int ssh_proxy_connect(const char *host, int port, uid_t original_real_uid,
 
       /* Child.  Permanently give up superuser privileges. */
       if (setuid(getuid()) < 0)
-	fatal("setuid: %s", strerror(errno));
+	fatal("setuid: %.100s", strerror(errno));
 
       /* Redirect stdin and stdout. */
       close(pin[1]);
@@ -931,7 +934,7 @@ int try_kerberos_authentication()
   if (!ssh_context)
     {
       if ((r = krb5_init_context(&ssh_context)))
-	fatal("Kerberos V5: %s while initializing krb5.", error_message(r));
+	fatal("Kerberos V5: %.100s while initializing krb5.", error_message(r));
       krb5_init_ets(ssh_context);
     }
   
@@ -946,14 +949,14 @@ int try_kerberos_authentication()
 				   "host", KRB5_NT_SRV_HST,
 				   &creds.server)))
     {
-      debug("Kerberos V5: error while constructing service name: %s.",
+      debug("Kerberos V5: error while constructing service name: %.100s.",
 	    error_message(r));
       goto cleanup;
     }
   if ((r = krb5_cc_get_principal(ssh_context, ccache,
 				 &creds.client)))
     {
-      debug("Kerberos V5: failure on principal (%s).",
+      debug("Kerberos V5: failure on principal (%.100s).",
 	    error_message(r));
       goto cleanup;
     }
@@ -962,7 +965,7 @@ int try_kerberos_authentication()
   if ((r = krb5_get_credentials(ssh_context, 0,
 				ccache, &creds, &new_creds)))
     {
-      debug("Kerberos V5: failure on credentials(%s).",
+      debug("Kerberos V5: failure on credentials(%.100s).",
 	    error_message(r));
       goto cleanup;
     }
@@ -974,7 +977,7 @@ int try_kerberos_authentication()
     {
       if ((r = krb5_auth_con_init(ssh_context, &auth_context)))
 	{
-	  debug("Kerberos V5: failed to init auth_context (%s)",
+	  debug("Kerberos V5: failed to init auth_context (%.100s)",
 		error_message(r));
 	  goto cleanup;
         }
@@ -985,7 +988,7 @@ int try_kerberos_authentication()
   if ((r = krb5_mk_req_extended(ssh_context, &auth_context, ap_opts,
 				0, new_creds, &auth)))
     {
-      debug("Kerberos V5: failed krb5_mk_req_extended (%s)",
+      debug("Kerberos V5: failed krb5_mk_req_extended (%.100s)",
 	    error_message(r));
       goto cleanup;
     }
@@ -1033,7 +1036,7 @@ int try_kerberos_authentication()
       
       if (r = krb5_rd_rep(ssh_context, auth_context, &auth, &repl))
 	{
-	  packet_disconnect("Kerberos V5 Authentication failed: %s",
+	  packet_disconnect("Kerberos V5 Authentication failed: %.100s",
 			    error_message(r));
 	  goto cleanup;
 	}
@@ -1077,7 +1080,7 @@ int send_kerberos_tgt()
   krb5_data outbuf;
   krb5_error_code r;
   int type;
-  char server_name[128];
+  char server_name[512];
   
   remotehost = (char *) get_canonical_hostname();
   memset(&outbuf, 0 , sizeof(outbuf));
@@ -1087,14 +1090,14 @@ int send_kerberos_tgt()
   if (!ssh_context)
     {
       if ((r = krb5_init_context(&ssh_context)))
-	fatal("Kerberos V5: %s while initializing krb5.", error_message(r));
+	fatal("Kerberos V5: %.100s while initializing krb5.", error_message(r));
       krb5_init_ets(ssh_context);
     }
   if (!auth_context)
     {
       if ((r = krb5_auth_con_init(ssh_context, &auth_context)))
 	{
-	  debug("Kerberos V5: failed to init auth_context (%s)",
+	  debug("Kerberos V5: failed to init auth_context (%.100s)",
 		error_message(r));
 	  return 0 ;
         }
@@ -1111,7 +1114,7 @@ int send_kerberos_tgt()
     if ((r = krb5_cc_get_principal(ssh_context, ccache,
                                    &client)))
       {
-        debug("Kerberos V5: failure on principal (%s)",
+        debug("Kerberos V5: failure on principal (%.100s)",
 	      error_message(r));
         return 0 ;
       }
@@ -1123,7 +1126,7 @@ int send_kerberos_tgt()
        principal and point it to clients realm. This way
        we pass over a TGT of the clients realm. */
     
-    sprintf(server_name,"host/%s@", remotehost);
+    sprintf(server_name,"host/%.100s@", remotehost);
     strncat(server_name,client->realm.data,client->realm.length);
     krb5_parse_name(ssh_context,server_name, &server);
     server->type = KRB5_NT_SRV_HST;
@@ -1132,7 +1135,7 @@ int send_kerberos_tgt()
     if ((r = krb5_fwd_tgt_creds(ssh_context, auth_context, 0, client, 
  			        server, ccache, 1, &outbuf)))
       {
-	debug("Kerberos V5 krb5_fwd_tgt_creds failure (%s)",
+	debug("Kerberos V5 krb5_fwd_tgt_creds failure (%.100s)",
 	      error_message(r));
 	krb5_free_principal(ssh_context, client);
         krb5_free_principal(ssh_context, server);
@@ -1403,7 +1406,7 @@ void ssh_login(RandomState *state, int host_key_valid,
       error("Someone could be eavesdropping on you right now (man-in-the-middle attack)!");
       error("It is also possible that the host key has just been changed.");
       error("Please contact your system administrator.");
-      error("Add correct host key in %s to get rid of this message.", 
+      error("Add correct host key in %.100s to get rid of this message.", 
 	    options->user_hostfile);
       
       /* If strict host key checking is in use, the user will have to edit
@@ -1576,7 +1579,7 @@ void ssh_login(RandomState *state, int host_key_valid,
   if (!ssh_context)
     {
       if ((problem = krb5_init_context(&ssh_context)))
-	fatal("Kerberos V5: %s while initializing krb5.",
+	fatal("Kerberos V5: %.100s while initializing krb5.",
 	      error_message(problem));
       krb5_init_ets(ssh_context);
     }
@@ -1592,7 +1595,7 @@ void ssh_login(RandomState *state, int host_key_valid,
 	  if ((problem = krb5_cc_get_principal(ssh_context, ccache,
 					       &client)))
 	    {
-	      debug("Kerberos V5: failure on principal (%s).",
+	      debug("Kerberos V5: failure on principal (%.100s).",
                     error_message(problem));
 	    }
 	  else {
