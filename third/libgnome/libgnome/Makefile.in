@@ -81,11 +81,8 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
-GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
 GNOME_VFS_VERSION = @GNOME_VFS_VERSION@
 GTKDOC = @GTKDOC@
-HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HELP_DOCBOOK_MODULE_CFLAGS = @HELP_DOCBOOK_MODULE_CFLAGS@
 HELP_DOCBOOK_MODULE_LIBS = @HELP_DOCBOOK_MODULE_LIBS@
 HELP_VFS_MODULE_CFLAGS = @HELP_VFS_MODULE_CFLAGS@
@@ -104,7 +101,6 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -136,10 +132,8 @@ REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 Z_LIBS = @Z_LIBS@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
 lib_LTLIBRARIES = libgnome-2.la
@@ -148,28 +142,83 @@ LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 libgnomeincludedir = $(includedir)/libgnome-2.0/libgnome
 
-INCLUDES =  	-I..								-I$(srcdir)/..							$(WARN_CFLAGS)							$(LIBGNOME_CFLAGS)						-DG_DISABLE_DEPRECATED						-DLIBGNOME_PREFIX=\""$(prefix)"\"				-DLIBGNOME_LIBDIR=\""$(libdir)"\"				-DLIBGNOME_DATADIR=\""$(datadir)"\"				-DLIBGNOME_BINDIR=\""$(bindir)"\"				-DLIBGNOME_LOCALSTATEDIR=\""$(localstatedir)"\"			-DLIBGNOME_LOCALEDIR=\""$(gnomelocaledir)"\"			-DLIBGNOME_SYSCONFDIR=\""$(sysconfdir)"\"			-DVERSION=\""$(VERSION)"\"					-DGNOMEVFSVERSION=\"$(GNOME_VFS_VERSION)\"			-DG_LOG_DOMAIN=\"Gnome\"
+INCLUDES = \
+	-I..							\
+	-I$(srcdir)/..						\
+	$(WARN_CFLAGS)						\
+	$(LIBGNOME_CFLAGS)					\
+	-DG_DISABLE_DEPRECATED					\
+	-DLIBGNOME_PREFIX=\""$(prefix)"\"			\
+	-DLIBGNOME_LIBDIR=\""$(libdir)"\"			\
+	-DLIBGNOME_DATADIR=\""$(datadir)"\"			\
+	-DLIBGNOME_BINDIR=\""$(bindir)"\"			\
+	-DLIBGNOME_LOCALSTATEDIR=\""$(localstatedir)"\"		\
+	-DLIBGNOME_LOCALEDIR=\""$(gnomelocaledir)"\"		\
+	-DLIBGNOME_SYSCONFDIR=\""$(sysconfdir)"\"		\
+	-DVERSION=\""$(VERSION)"\"				\
+	-DGNOMEVFSVERSION=\"$(GNOME_VFS_VERSION)\"		\
+	-DG_LOG_DOMAIN=\"Gnome\"
 
 
-libgnome_2_la_SOURCES =  	libgnometypebuiltins.h		libgnometypebuiltins.c		gnome-config.c			gnome-sound.c			gnome-triggers.c		gnome-triggersP.h		gnome-program.c			gnome-help.c			gnome-exec.c			gnome-gconf.c			gnome-gconfP.h			gnome-i18n.c			gnome-i18nP.h			gnome-url.c			gnome-util.c			gnome-score.c			gnome-init.c
+libgnome_2_la_SOURCES = \
+	libgnometypebuiltins.h	\
+	libgnometypebuiltins.c	\
+	gnome-config.c		\
+	gnome-sound.c		\
+	gnome-triggers.c	\
+	gnome-triggersP.h	\
+	gnome-program.c		\
+	gnome-help.c		\
+	gnome-exec.c		\
+	gnome-gconf.c		\
+	gnome-gconfP.h		\
+	gnome-i18n.c		\
+	gnome-i18nP.h		\
+	gnome-url.c		\
+	gnome-util.c		\
+	gnome-score.c		\
+	gnome-init.c
 
 
-libgnome_headers =  	gnome-config.h			gnome-sound.h			gnome-triggers.h		gnome-program.h			gnome-help.h			gnome-i18n.h			gnome-exec.h			gnome-gconf.h			gnome-url.h			gnome-util.h   			gnome-macros.h			gnome-score.h			gnome-init.h			libgnome.h
+libgnome_headers = \
+	gnome-config.h		\
+	gnome-sound.h		\
+	gnome-triggers.h	\
+	gnome-program.h		\
+	gnome-help.h		\
+	gnome-i18n.h		\
+	gnome-exec.h		\
+	gnome-gconf.h		\
+	gnome-url.h		\
+	gnome-util.h   		\
+	gnome-macros.h		\
+	gnome-score.h		\
+	gnome-init.h		\
+	libgnome.h
 
 
-libgnomeinclude_HEADERS =  	libgnometypebuiltins.h		$(libgnome_headers)
+libgnomeinclude_HEADERS = \
+	libgnometypebuiltins.h	\
+	$(libgnome_headers)
 
 
-EXTRA_DIST =  	libgnome-2.0.pc.in			parse-path.cP
+EXTRA_DIST = \
+	libgnome-2.0.pc.in		\
+	parse-path.cP
 
 
-BUILT_SOURCES =  	libgnometypebuiltins.h			libgnometypebuiltins.c		
+BUILT_SOURCES = \
+	libgnometypebuiltins.h		\
+	libgnometypebuiltins.c		
 
 
-libgnome_2_la_LDFLAGS =  	-version-info $(LIBGNOME_CURRENT:)$(LIBGNOME_REVISION):$(LIBGNOME_AGE) 	-export-symbols-regex "^[^_].*"
+libgnome_2_la_LDFLAGS = \
+	-version-info $(LIBGNOME_CURRENT):$(LIBGNOME_REVISION):$(LIBGNOME_AGE) \
+	-export-symbols-regex "^[^_].*"
 
 
-libgnome_2_la_LIBADD =  	$(LIBGNOME_LIBS)
+libgnome_2_la_LIBADD = \
+	$(LIBGNOME_LIBS)
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -199,7 +248,7 @@ DIST_COMMON =  Makefile.am Makefile.in libgnome-2.0.pc.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgnome_2_la_SOURCES)
 OBJECTS = $(libgnome_2_la_OBJECTS)
@@ -388,6 +437,12 @@ gnome-init.lo gnome-init.o : gnome-init.c ../config.h gnome-i18nP.h \
 	gnome-i18n.h gnome-init.h gnome-program.h gnome-gconfP.h \
 	gnome-gconf.h gnome-util.h gnome-init.h gnome-sound.h \
 	gnome-triggers.h
+gnome-marshal-main.lo gnome-marshal-main.o : gnome-marshal-main.c \
+	../config.h libgnome.h gnome-program.h gnome-i18n.h \
+	gnome-config.h gnome-init.h gnome-gconf.h gnome-help.h \
+	gnome-macros.h gnome-triggers.h gnome-sound.h gnome-score.h \
+	gnome-exec.h gnome-util.h gnome-url.h gnome-marshal.h \
+	gnome-marshal.c
 gnome-program.lo gnome-program.o : gnome-program.c ../config.h \
 	gnome-macros.h gnome-i18nP.h gnome-i18n.h gnome-program.h \
 	gnome-util.h gnome-init.h gnome-program.h gnome-init.h \
@@ -414,6 +469,11 @@ libgnometypebuiltins.lo libgnometypebuiltins.o : libgnometypebuiltins.c \
 	gnome-config.h gnome-init.h gnome-gconf.h gnome-help.h \
 	gnome-macros.h gnome-triggers.h gnome-sound.h gnome-score.h \
 	gnome-exec.h gnome-util.h gnome-url.h
+test-libgnome.o: test-libgnome.c ../config.h gnome-i18nP.h gnome-i18n.h \
+	libgnome.h gnome-program.h gnome-i18n.h gnome-config.h \
+	gnome-init.h gnome-gconf.h gnome-help.h gnome-macros.h \
+	gnome-triggers.h gnome-sound.h gnome-score.h gnome-exec.h \
+	gnome-util.h gnome-url.h
 
 info-am:
 info: info-am

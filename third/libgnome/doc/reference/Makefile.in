@@ -79,11 +79,8 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
-GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
 GNOME_VFS_VERSION = @GNOME_VFS_VERSION@
 GTKDOC = @GTKDOC@
-HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HELP_DOCBOOK_MODULE_CFLAGS = @HELP_DOCBOOK_MODULE_CFLAGS@
 HELP_DOCBOOK_MODULE_LIBS = @HELP_DOCBOOK_MODULE_LIBS@
 HELP_VFS_MODULE_CFLAGS = @HELP_VFS_MODULE_CFLAGS@
@@ -102,7 +99,6 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -134,10 +130,8 @@ REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 Z_LIBS = @Z_LIBS@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
 DOC_MODULE = libgnome
@@ -164,7 +158,11 @@ HFILE_GLOB = $(top_srcdir)/libgnome/*.h
 CFILE_GLOB = $(top_srcdir)/libgnome/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES =  	gnome-gconfP.h			gnome-i18nP.h			gnome-preferences.h		gnome-triggersP.h
+IGNORE_HFILES = \
+	gnome-gconfP.h		\
+	gnome-i18nP.h		\
+	gnome-preferences.h	\
+	gnome-triggersP.h
 
 
 # Images to copy into HTML directory.
@@ -178,7 +176,11 @@ extra_files =
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS = @STRIP_BEGIN@ 						@CFLAGS@						-I$(top_srcdir) 					-I$(top_builddir) 			GTKDOC_LIBS =
+GTKDOC_CFLAGS = @STRIP_BEGIN@ 				\
+		@CFLAGS@				\
+		-I$(top_srcdir) 			\
+		-I$(top_builddir) 			\
+GTKDOC_LIBS =
 
 
 GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC)
@@ -197,13 +199,24 @@ GPATH = $(srcdir)
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 
-EXTRA_DIST =  	$(content_files)			$(extra_files)				$(HTML_IMAGES)				$(DOC_MAIN_SGML_FILE)			$(DOC_MODULE).types			$(DOC_MODULE)-sections.txt		$(DOC_MODULE)-overrides.txt
+EXTRA_DIST = \
+	$(content_files)		\
+	$(extra_files)			\
+	$(HTML_IMAGES)			\
+	$(DOC_MAIN_SGML_FILE)		\
+	$(DOC_MODULE).types		\
+	$(DOC_MODULE)-sections.txt	\
+	$(DOC_MODULE)-overrides.txt
 
 
-DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
+DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
+	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
 
-SCANOBJ_FILES =  	$(DOC_MODULE).args 		$(DOC_MODULE).hierarchy 	$(DOC_MODULE).signals
+SCANOBJ_FILES = \
+	$(DOC_MODULE).args 	\
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).signals
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -213,7 +226,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

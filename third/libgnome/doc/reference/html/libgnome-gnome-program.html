@@ -17,7 +17,40 @@ TITLE="GNOME Library (libgnome)"
 HREF="libgnome.html"><LINK
 REL="NEXT"
 TITLE="gnome-init"
-HREF="libgnome-gnome-init.html"></HEAD
+HREF="libgnome-gnome-init.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -25,99 +58,69 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Library Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
+ACCESSKEY="u"
 HREF="libgnome.html#AEN6"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
 ><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Library Reference Manual</TH
+><TD
+><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-init.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
-NAME="LIBGNOME-GNOME-PROGRAM">gnome-program</H1
+NAME="LIBGNOME-GNOME-PROGRAM"
+></A
+>gnome-program</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
@@ -129,15 +132,10 @@ NAME="AEN14"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN17"><H2
+NAME="AEN17"
+></A
+><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;libgnome/libgnome.h&gt;
@@ -207,9 +205,7 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >* <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INITV"
 >gnome_program_initv</A
->           (<A
-HREF=../gobject/gobject-gtype.html#GTYPE
->GType</A> type,
+>           (GType type,
                                              const char *app_id,
                                              const char *app_version,
                                              const <A
@@ -250,9 +246,7 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-GET-APP-VERSION"
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);
-<A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      <A
+gchar*      <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-LOCATE-FILE"
 >gnome_program_locate_file</A
 >       (<A
@@ -263,15 +257,9 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 HREF="libgnome-gnome-program.html#GNOMEFILEDOMAIN"
 >GnomeFileDomain</A
 > domain,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *file_name,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> only_if_exists,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> **ret_locations);
+                                             const gchar *file_name,
+                                             gboolean only_if_exists,
+                                             GSList **ret_locations);
 
 void        <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-MODULE-REGISTER"
@@ -280,9 +268,7 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-MODULE-REGISTER"
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *module_info);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+gboolean    <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-MODULE-REGISTERED"
 >gnome_program_module_registered</A
 > (const <A
@@ -297,21 +283,13 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-MODULE-LOAD"
 >gnome_program_module_load</A
 >
                                             (const char *mod_name);
-<A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       <A
+guint       <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INSTALL-PROPERTY"
 >gnome_program_install_property</A
 >  (GnomeProgramClass *pclass,
-                                             <A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECTGETPROPERTYFUNC
->GObjectGetPropertyFunc</A> get_fn,
-                                             <A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECTSETPROPERTYFUNC
->GObjectSetPropertyFunc</A> set_fn,
-                                             <A
-HREF=../gobject/gobject-gparamspec.html#GPARAMSPEC
->GParamSpec</A> *pspec);
+                                             GObjectGetPropertyFunc get_fn,
+                                             GObjectSetPropertyFunc set_fn,
+                                             GParamSpec *pspec);
 poptContext <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-PREINIT"
 >gnome_program_preinit</A
@@ -419,9 +397,6 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-STANDARD-PROPERTIES-CAPS"
 >GNOME_PROGRAM_STANDARD_PROPERTIES</A
 >
 &#13;</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -450,13 +425,6 @@ NAME="AEN99"
 NAME="GNOMEFILEDOMAIN"
 ></A
 >enum GnomeFileDomain</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef enum {
@@ -478,9 +446,6 @@ CLASS="PROGRAMLISTING"
     GNOME_FILE_DOMAIN_APP_CONFIG,
     GNOME_FILE_DOMAIN_APP_HELP
 } GnomeFileDomain;</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Many of the files that a GNOME application needs to access will be installed in
 standard locations. For example, GNOME help files will be in one location,
@@ -498,237 +463,274 @@ locations relative to <A
 HREF="libgnome-gnome-program.html#GNOME-PARAM-APP-DATADIR-CAPS"
 >GNOME_PARAM_APP_DATADIR</A
 >.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN107"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#F0F0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN108"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_UNKNOWN</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->An unknown file domain (should never be used).</TD
+><P
+>An unknown file domain (should never be used).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN113"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_LIBDIR</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Libraries in the main GNOME installation.</TD
+><P
+>Libraries in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN118"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_DATADIR</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Data files in the main GNOME installation.</TD
+><P
+>Data files in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN123"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_SOUND</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Sound files in the main GNOME installation.</TD
+><P
+>Sound files in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN128"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_PIXMAP</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Pixmap files in the main GNOME installation.</TD
+><P
+>Pixmap files in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN133"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_CONFIG</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Config files in the main GNOME installation.</TD
+><P
+>Config files in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN138"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_HELP</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Help files in the main GNOME installation.</TD
+><P
+>Help files in the main GNOME installation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN143"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_LIBDIR</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific libraries.</TD
+><P
+>Application specific libraries.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN148"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_DATADIR</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific data files.</TD
+><P
+>Application specific data files.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN153"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_SOUND</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific sound files.</TD
+><P
+>Application specific sound files.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN158"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_PIXMAP</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific pixmap files.</TD
+><P
+>Application specific pixmap files.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN163"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_CONFIG</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific config files.</TD
+><P
+>Application specific config files.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN168"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_FILE_DOMAIN_APP_HELP</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Application specific help files.&#13;</TD
+><P
+>Application specific help files.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN164"
+NAME="AEN173"
 ></A
 ><H3
 ><A
 NAME="GNOMEPROGRAM"
 ></A
 >struct GnomeProgram</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomeProgram
@@ -737,90 +739,76 @@ CLASS="PROGRAMLISTING"
 
     GnomeProgramPrivate *_priv;
 };</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A structure containing information about the current application. Initialised
 during a call to <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
 >gnome_program_init</A
 >().</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN170"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFF0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
->GObject</A> <TT
+NAME="AEN180"><SPAN
+STYLE="white-space: nowrap"
+>GObject <TT
 CLASS="STRUCTFIELD"
 ><I
 >object</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->A <A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
->GObject</A> containing the parameters and their values which were set
-dring initialisation.</TD
+><P
+>A GObject containing the parameters and their values which were set
+dring initialisation.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN187"><SPAN
+STYLE="white-space: nowrap"
 >GnomeProgramPrivate *<TT
 CLASS="STRUCTFIELD"
 ><I
 >_priv</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Private data about the program instance.&#13;</TD
+><P
+>Private data about the program instance.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN186"
+NAME="AEN193"
 ></A
 ><H3
 ><A
 NAME="GNOMEMODULEINFO"
 ></A
 >struct GnomeModuleInfo</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomeModuleInfo {
@@ -841,9 +829,6 @@ CLASS="PROGRAMLISTING"
     const char *opt_prefix;
     gpointer    expansion1;
 };</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A structure containing information about a module. This contains descriptive
 information about the module, as well as how to initialise it and what its
@@ -853,78 +838,87 @@ CLASS="PARAMETER"
 >requirements</I
 ></TT
 > parameter).</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN192"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFF0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN200"><SPAN
+STYLE="white-space: nowrap"
 >const char *<TT
 CLASS="STRUCTFIELD"
 ><I
 >name</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->The module name.</TD
+><P
+>The module name.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN205"><SPAN
+STYLE="white-space: nowrap"
 >const char *<TT
 CLASS="STRUCTFIELD"
 ><I
 >version</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->The module's version string.</TD
+><P
+>The module's version string.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN210"><SPAN
+STYLE="white-space: nowrap"
 >const char *<TT
 CLASS="STRUCTFIELD"
 ><I
 >description</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A string describing the module (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN216"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULEREQUIREMENT"
 >GnomeModuleRequirement</A
@@ -933,23 +927,27 @@ CLASS="STRUCTFIELD"
 ><I
 >requirements</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A pointer to an array of modules that are required by this
 module. The last module in the array should have its required_version field set
 to <TT
 CLASS="LITERAL"
 >NULL</TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN223"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULEHOOK"
 >GnomeModuleHook</A
@@ -958,22 +956,26 @@ CLASS="STRUCTFIELD"
 ><I
 >instance_init</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A function to call to initialise an instance of this module
 (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN230"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULEHOOK"
 >GnomeModuleHook</A
@@ -982,22 +984,26 @@ CLASS="STRUCTFIELD"
 ><I
 >pre_args_parse</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A function to call before parsing the arguments for this
 module (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN237"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULEHOOK"
 >GnomeModuleHook</A
@@ -1006,43 +1012,51 @@ CLASS="STRUCTFIELD"
 ><I
 >post_args_parse</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A function to call after parsing the arguments for this
 module (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN244"><SPAN
+STYLE="white-space: nowrap"
 >struct poptOption *<TT
 CLASS="STRUCTFIELD"
 ><I
 >options</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A poptOption structure giving any special arguments for this module
 (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN252"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINITHOOK"
 >GnomeModuleInitHook</A
@@ -1051,11 +1065,12 @@ CLASS="STRUCTFIELD"
 ><I
 >init_pass</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A function which is run before the <TT
 CLASS="PARAMETER"
 ><I
@@ -1063,13 +1078,16 @@ CLASS="PARAMETER"
 ></TT
 > function to allow
 the module to register other modules as needed. The module cannot assume its
-required modules are initialized (although they might be).</TD
+required modules are initialized (although they might be).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN259"><SPAN
+STYLE="white-space: nowrap"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEMODULECLASSINITHOOK"
 >GnomeModuleClassInitHook</A
@@ -1078,123 +1096,119 @@ CLASS="STRUCTFIELD"
 ><I
 >class_init</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A function to call to initialise this module prior to creating any
 instances (can be <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN266"><SPAN
+STYLE="white-space: nowrap"
 >const char *<TT
 CLASS="STRUCTFIELD"
 ><I
 >opt_prefix</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Unused.</TD
+><P
+>Unused.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> <TT
+NAME="AEN271"><SPAN
+STYLE="white-space: nowrap"
+>gpointer <TT
 CLASS="STRUCTFIELD"
 ><I
 >expansion1</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Unused.&#13;</TD
+><P
+>Unused.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN262"
+NAME="AEN277"
 ></A
 ><H3
 ><A
 NAME="GNOMEMODULEREQUIREMENT"
 ></A
 >struct GnomeModuleRequirement</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomeModuleRequirement {
     const char *required_version;
     const GnomeModuleInfo *module_info;
 };</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A structure which allows a module to specify the minimum required versions of
 modules it depends upon.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN267"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFF0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN283"><SPAN
+STYLE="white-space: nowrap"
 >const char *<TT
 CLASS="STRUCTFIELD"
 ><I
 >required_version</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->The version required by the parent module.</TD
+><P
+>The version required by the parent module.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN288"><SPAN
+STYLE="white-space: nowrap"
 >const <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
@@ -1203,107 +1217,85 @@ CLASS="STRUCTFIELD"
 ><I
 >module_info</I
 ></TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
-> structure detailing the required module.&#13;</TD
+> structure detailing the required module.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN282"
+NAME="AEN295"
 ></A
 ><H3
 ><A
 NAME="GNOMEMODULEINITHOOK"
 ></A
 >GnomeModuleInitHook ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        (*GnomeModuleInitHook)          (const <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *mod_info);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A function that will be called to allow a module to do any pre-initialisation
 it might need to do prior to having arguments parsed by the controlling parent
 module (the parent will do the argument parsing for all modules in the
 hierarchy).</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN288"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN302"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >mod_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >The current module.
-&#13;</TD
+&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN297"
+NAME="AEN307"
 ></A
 ><H3
 ><A
 NAME="GNOMEMODULECLASSINITHOOK"
 ></A
 >GnomeModuleClassInitHook ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        (*GnomeModuleClassInitHook)     (GnomeProgramClass *klass,
@@ -1311,84 +1303,74 @@ CLASS="PROGRAMLISTING"
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *mod_info);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A function called to perform any class specific setup that is required by each
 module.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN304"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN315"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >klass</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >The class of the parent module (which could be this module's class).
-This will usually be GnomeProgramClass.</TD
+This will usually be GnomeProgramClass.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN321"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >mod_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >The current module.
-&#13;</TD
+&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN318"
+NAME="AEN326"
 ></A
 ><H3
 ><A
 NAME="GNOMEMODULEHOOK"
 ></A
 >GnomeModuleHook ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        (*GnomeModuleHook)              (<A
@@ -1399,90 +1381,80 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *mod_info);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A function that is called to perform some intialisation in a module (which
 could be either the main init function or the pre or post argument parsing
 phase).</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN325"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN334"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >The <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
-> instance which is being initialised.</TD
+> instance which is being initialised.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN340"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >mod_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >The current module's <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > structure.
-&#13;</TD
+&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN340"
+NAME="AEN346"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-INIT"
 ></A
 >gnome_program_init ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
@@ -1498,9 +1470,6 @@ HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
                                              char **argv,
                                              const char *first_property_name,
                                              ...);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Initialises the current GNOME libraries for use by the application.</P
 ><P
@@ -1523,9 +1492,9 @@ CLASS="PARAMETER"
 HREF="libgnome-gnome-init.html#LIBGNOME-MODULE-CAPS"
 >LIBGNOME_MODULE</A
 > or
-<A
-HREF=../libgnomeui/libgnomeui-gnome-ui-init.html#LIBGNOMEUI-MODULE-CAPS
->LIBGNOMEUI_MODULE</A> and pulls in all the dependencies.  Programs that are not
+<a
+href="../libgnomeui/libgnomeui-gnome-ui-init.html#LIBGNOMEUI-MODULE-CAPS"
+>LIBGNOMEUI_MODULE</a> and pulls in all the dependencies.  Programs that are not
 running in setuid or setgid mode will also load modules specified in the
 <TT
 CLASS="PARAMETER"
@@ -1554,23 +1523,18 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-POSTINIT"
 ><P
 >The following example shows how one might initialise a typical program
 using a popt table that is defined elsewhere (in other words, this is how to
-remove the use of the deprecated <A
-HREF=../libgnomeui/libgnomeui-gnome-ui-init.html#GNOME-INIT-WITH-POPT-TABLE
->gnome_init_with_popt_table</A>() from code).</P
+remove the use of the deprecated <a
+href="../libgnomeui/libgnomeui-gnome-ui-init.html#GNOME-INIT-WITH-POPT-TABLE"
+>gnome_init_with_popt_table</a>() from code).</P
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN361"><P
+NAME="AEN367"
+></A
+><P
 ><B
 >Example 1. Initializing a GNOME application</B
 ></P
-><TABLE
-BORDER="0"
-BGCOLOR="#D8F8D8"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >int main(int argc, char **argv) {
@@ -1585,128 +1549,143 @@ CLASS="PROGRAMLISTING"
 				    GNOME_PARAM_NONE);
 	/* Now process any extra args, etc ... */
 }</PRE
-></TD
-></TR
-></TABLE
 ></DIV
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN364"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN371"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_id</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application ID string.</TD
+><P
+> Application ID string.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN376"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_version</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application version string.</TD
+><P
+> Application version string.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN381"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >module_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The module to init with this program.</TD
+><P
+> The module to init with this program.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN386"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The number of commmand line arguments contained in <TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN392"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string array of command line arguments.</TD
+><P
+> A string array of command line arguments.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN397"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >first_property_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The first item in a <TT
 CLASS="LITERAL"
 >NULL</TT
@@ -1714,81 +1693,78 @@ CLASS="LITERAL"
 name and value pairs (so this will be an attribute name or <TT
 CLASS="LITERAL"
 >NULL</TT
->).</TD
+>).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN404"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >...</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The continuation of a <TT
 CLASS="LITERAL"
 >NULL</TT
 >-terminated list of attribute name/value
-pairs.</TD
+pairs.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN410"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
-> instance representing the current application.</TD
+> instance representing the current application.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN406"
+NAME="AEN416"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-INITV"
 ></A
 >gnome_program_initv ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
->* gnome_program_initv           (<A
-HREF=../gobject/gobject-gtype.html#GTYPE
->GType</A> type,
+>* gnome_program_initv           (GType type,
                                              const char *app_id,
                                              const char *app_version,
                                              const <A
@@ -1799,9 +1775,6 @@ HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
                                              char **argv,
                                              const char *first_property_name,
                                              va_list args);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Provides a non-varargs form of <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
@@ -1810,163 +1783,189 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
 to call this function directly.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN416"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN427"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >type</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The type of application to be initialized (usually
-GNOME_TYPE_PROGRAM).</TD
+GNOME_TYPE_PROGRAM).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN433"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_id</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application ID string.</TD
+><P
+> Application ID string.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN438"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_version</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application version string.</TD
+><P
+> Application version string.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN443"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >module_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The modules to init with the application.</TD
+><P
+> The modules to init with the application.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN448"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The number of command line arguments contained in <TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN454"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string array of command line arguments.</TD
+><P
+> A string array of command line arguments.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN459"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >first_property_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The first item in a <TT
 CLASS="LITERAL"
 >NULL</TT
 >-terminated list of attribute
-name/value.</TD
+name/value.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN465"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >args</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The remaining elements in the <TT
 CLASS="LITERAL"
 >NULL</TT
@@ -1976,61 +1975,53 @@ CLASS="PARAMETER"
 ><I
 >first_property_name</I
 ></TT
-> is the first element).</TD
+> is the first element).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN472"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
-> instance representing the current application.</TD
+> instance representing the current application.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN463"
+NAME="AEN478"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-GET"
 ></A
 >gnome_program_get ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 >* gnome_program_get             (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves an object that stored information about the application's state.
 Other functions assume this will always return a <A
@@ -2043,35 +2034,33 @@ CLASS="LITERAL"
 >) has already been initialized.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN472"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN488"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The application's <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
@@ -2079,31 +2068,22 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 CLASS="LITERAL"
 >NULL</TT
 > if it does not
-exist.</TD
+exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN483"
+NAME="AEN495"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-GET-HUMAN-READABLE-NAME"
 ></A
 >gnome_program_get_human_readable_name ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >const char* gnome_program_get_human_readable_name
@@ -2111,9 +2091,6 @@ CLASS="PROGRAMLISTING"
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This function returns a pointer to a static string that the
 application has provided as a human readable name. The app
@@ -2127,86 +2104,76 @@ CLASS="LITERAL"
 > if no name was set.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN492"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN505"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The application object</TD
+><P
+> The application object</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN510"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application human-readable name string.</TD
+><P
+> Application human-readable name string.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN505"
+NAME="AEN515"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-GET-APP-ID"
 ></A
 >gnome_program_get_app_id ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >const char* gnome_program_get_app_id        (<A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This function returns a pointer to a static string that the
 application has provided as an identifier. This is not meant as a
@@ -2214,86 +2181,76 @@ human-readable identifier so much as a unique identifier for
 programs and libraries.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN512"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN523"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The program object</TD
+><P
+> The program object</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN528"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application ID string.</TD
+><P
+> Application ID string.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN525"
+NAME="AEN533"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-GET-APP-VERSION"
 ></A
 >gnome_program_get_app_version ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >const char* gnome_program_get_app_version   (<A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This function returns a pointer to a static string that the
 application has provided as a version number. This is not meant as a
@@ -2301,82 +2258,73 @@ human-readable identifier so much as a unique identifier for
 programs and libraries.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN532"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN541"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The application object</TD
+><P
+> The application object</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN546"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application version string.</TD
+><P
+> Application version string.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN545"
+NAME="AEN551"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-LOCATE-FILE"
 ></A
 >gnome_program_locate_file ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      gnome_program_locate_file       (<A
+>gchar*      gnome_program_locate_file       (<A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program,
@@ -2384,18 +2332,9 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 HREF="libgnome-gnome-program.html#GNOMEFILEDOMAIN"
 >GnomeFileDomain</A
 > domain,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *file_name,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> only_if_exists,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> **ret_locations);</PRE
-></TD
-></TR
-></TABLE
+                                             const gchar *file_name,
+                                             gboolean only_if_exists,
+                                             GSList **ret_locations);</PRE
 ><P
 >This function finds a full path to the <TT
 CLASS="PARAMETER"
@@ -2439,34 +2378,32 @@ CLASS="PARAMETER"
 should the returned string.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN566"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN573"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A valid <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
@@ -2474,100 +2411,120 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 CLASS="LITERAL"
 >NULL</TT
 > (in which case the current
-application is used).</TD
+application is used).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN580"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >domain</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A <A
 HREF="libgnome-gnome-program.html#GNOMEFILEDOMAIN"
 >GnomeFileDomain</A
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN586"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >file_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A file name or path inside the 'domain' to find.</TD
+><P
+> A file name or path inside the 'domain' to find.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN591"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >only_if_exists</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > Only return a full pathname if the specified file
-                 actually exists</TD
+                 actually exists</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN596"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >ret_locations</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > If this is not <TT
 CLASS="LITERAL"
 >NULL</TT
 >, a list of all the possible locations
-                of the file will be returned.</TD
+                of the file will be returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN602"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The full path to the file (if it exists or only_if_exists is
          <TT
 CLASS="LITERAL"
@@ -2575,40 +2532,28 @@ CLASS="LITERAL"
 >) or <TT
 CLASS="LITERAL"
 >NULL</TT
->.</TD
+>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN601"
+NAME="AEN609"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-MODULE-REGISTER"
 ></A
 >gnome_program_module_register ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_program_module_register   (const <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *module_info);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This function is used to register a module to be initialized by the
 GNOME library framework. The memory pointed to by <TT
@@ -2632,149 +2577,126 @@ CLASS="PARAMETER"
 register itself.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN611"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN620"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >module_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a GnomeModuleInfo structure describing the module
-              to be initialized</TD
+              to be initialized</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN620"
+NAME="AEN625"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-MODULE-REGISTERED"
 ></A
 >gnome_program_module_registered ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gnome_program_module_registered (const <A
+>gboolean    gnome_program_module_registered (const <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 > *module_info);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This method checks to see whether a specific module has been
              initialized in the specified program.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN628"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN634"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >module_info</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a GnomeModuleInfo structure describing the module
-              to be queried</TD
+              to be queried</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN639"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A value indicating whether the specified module has been
-         registered/initialized in the current program</TD
+         registered/initialized in the current program</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN641"
+NAME="AEN644"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-MODULE-LOAD"
 ></A
 >gnome_program_module_load ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >const <A
@@ -2782,9 +2704,6 @@ HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
 >* gnome_program_module_load
                                             (const char *mod_name);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Loads a shared library that contains a
 <A
@@ -2793,52 +2712,54 @@ HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 > dynamic_module_info structure.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN649"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN653"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >mod_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> module name</TD
+><P
+> module name</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN658"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The <A
 HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 >GnomeModuleInfo</A
@@ -2846,48 +2767,28 @@ HREF="libgnome-gnome-program.html#GNOMEMODULEINFO"
 CLASS="LITERAL"
 >NULL</TT
 > if the
-module could not be loaded.</TD
+module could not be loaded.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN664"
+NAME="AEN665"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-INSTALL-PROPERTY"
 ></A
 >gnome_program_install_property ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       gnome_program_install_property  (GnomeProgramClass *pclass,
-                                             <A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECTGETPROPERTYFUNC
->GObjectGetPropertyFunc</A> get_fn,
-                                             <A
-HREF=../gobject/gobject-the-base-object-type.html#GOBJECTSETPROPERTYFUNC
->GObjectSetPropertyFunc</A> set_fn,
-                                             <A
-HREF=../gobject/gobject-gparamspec.html#GPARAMSPEC
->GParamSpec</A> *pspec);</PRE
-></TD
-></TR
-></TABLE
+>guint       gnome_program_install_property  (GnomeProgramClass *pclass,
+                                             GObjectGetPropertyFunc get_fn,
+                                             GObjectSetPropertyFunc set_fn,
+                                             GParamSpec *pspec);</PRE
 ><P
 >Install a collection of available properties, their default values and the
 functions to set and retrieve these properties.</P
@@ -2896,128 +2797,133 @@ functions to set and retrieve these properties.</P
 use by other platform library authors.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN676"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN678"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pclass</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A GnomeProgramClass.</TD
+><P
+> A GnomeProgramClass.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN684"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >get_fn</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A function to get property values.</TD
+><P
+> A function to get property values.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN689"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >set_fn</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A function to set property values.</TD
+><P
+> A function to set property values.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN694"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pspec</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A collection of properties.</TD
+><P
+> A collection of properties.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN699"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The number of properties installed.</TD
+><P
+> The number of properties installed.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN702"
+NAME="AEN704"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-PREINIT"
 ></A
 >gnome_program_preinit ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >poptContext gnome_program_preinit           (<A
@@ -3028,229 +2934,218 @@ HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
                                              const char *app_version,
                                              int argc,
                                              char **argv);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This function performs the portion of application initialization that
 needs to be done prior to command line argument parsing. The poptContext
 returned can be used for getopt()-style option processing.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN711"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN714"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application object</TD
+><P
+> Application object</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN719"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_id</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> application ID string</TD
+><P
+> application ID string</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN724"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >app_version</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> application version string</TD
+><P
+> application version string</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN729"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The number of commmand line arguments contained in 'argv'</TD
+><P
+> The number of commmand line arguments contained in 'argv'</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN734"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string array of command line arguments</TD
+><P
+> A string array of command line arguments</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN739"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A poptContext representing the argument parsing state.</TD
+><P
+> A poptContext representing the argument parsing state.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN740"
+NAME="AEN744"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-PARSE-ARGS"
 ></A
 >gnome_program_parse_args ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_program_parse_args        (<A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Parses the command line arguments for the application</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN747"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN752"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application object</TD
+><P
+> Application object</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN756"
+NAME="AEN757"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-POSTINIT"
 ></A
 >gnome_program_postinit ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_program_postinit          (<A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
 >GnomeProgram</A
 > *program);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Called after <A
 HREF="libgnome-gnome-program.html#GNOME-PROGRAM-PARSE-ARGS"
@@ -3259,65 +3154,51 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-PARSE-ARGS"
 takes care of post-parse initialization and cleanup</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN764"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN766"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >program</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Application object</TD
+><P
+> Application object</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN773"
+NAME="AEN771"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-POPT-TABLE-CAPS"
 ></A
 >GNOME_PARAM_POPT_TABLE</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_POPT_TABLE          "popt-table"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the table of options to be passed to popt (write on
 init only).</P
@@ -3325,52 +3206,32 @@ init only).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN778"
+NAME="AEN776"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-POPT-FLAGS-CAPS"
 ></A
 >GNOME_PARAM_POPT_FLAGS</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_POPT_FLAGS          "popt-flags"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the flags to use for popt (write on init only).</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN783"
+NAME="AEN781"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-POPT-CONTEXT-CAPS"
 ></A
 >GNOME_PARAM_POPT_CONTEXT</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_POPT_CONTEXT        "popt-context"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the context pointer that <A
 HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
@@ -3381,26 +3242,16 @@ popt parsing (readable).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN789"
+NAME="AEN787"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-CREATE-DIRECTORIES-CAPS"
 ></A
 >GNOME_PARAM_CREATE_DIRECTORIES</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_CREATE_DIRECTORIES  "create-directories"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains <TT
 CLASS="LITERAL"
@@ -3411,130 +3262,80 @@ created on startup.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN795"
+NAME="AEN793"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-ENABLE-SOUND-CAPS"
 ></A
 >GNOME_PARAM_ENABLE_SOUND</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_ENABLE_SOUND        "enable-sound"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter determines whether or not to enable sound on startup.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN800"
+NAME="AEN798"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-ESPEAKER-CAPS"
 ></A
 >GNOME_PARAM_ESPEAKER</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_ESPEAKER            "espeaker"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter describes how to connect to esd.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN805"
+NAME="AEN803"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-ID-CAPS"
 ></A
 >GNOME_PARAM_APP_ID</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_ID              "app-id"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the ID string to use for the application (readable).</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN810"
+NAME="AEN808"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-VERSION-CAPS"
 ></A
 >GNOME_PARAM_APP_VERSION</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_VERSION         "app-version"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the application version (readable).</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN815"
+NAME="AEN813"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-GNOME-PREFIX-CAPS"
 ></A
 >GNOME_PARAM_GNOME_PREFIX</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_GNOME_PREFIX        "gnome-prefix"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where the main GNOME system is installed
 (readable, writable on init only).</P
@@ -3542,26 +3343,16 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN820"
+NAME="AEN818"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-GNOME-SYSCONFDIR-CAPS"
 ></A
 >GNOME_PARAM_GNOME_SYSCONFDIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_GNOME_SYSCONFDIR    "gnome-sysconfdir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where the GNOME configuration files
 are installed (readable, writable on init only).</P
@@ -3569,26 +3360,16 @@ are installed (readable, writable on init only).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN825"
+NAME="AEN823"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-GNOME-DATADIR-CAPS"
 ></A
 >GNOME_PARAM_GNOME_DATADIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_GNOME_DATADIR       "gnome-datadir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where the GNOME data files are installed
 (readable, writable on init only).</P
@@ -3596,26 +3377,16 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN830"
+NAME="AEN828"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-GNOME-LIBDIR-CAPS"
 ></A
 >GNOME_PARAM_GNOME_LIBDIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_GNOME_LIBDIR        "gnome-libdir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where the GNOME library files are installed
 (readable, writable on init only).</P
@@ -3623,26 +3394,16 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN835"
+NAME="AEN833"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-PREFIX-CAPS"
 ></A
 >GNOME_PARAM_APP_PREFIX</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_PREFIX          "app-prefix"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where this application was installed
 (read / write).</P
@@ -3650,26 +3411,16 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN840"
+NAME="AEN838"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-SYSCONFDIR-CAPS"
 ></A
 >GNOME_PARAM_APP_SYSCONFDIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_SYSCONFDIR      "app-sysconfdir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where this application's configuration files
 are installed (read / write).</P
@@ -3677,26 +3428,16 @@ are installed (read / write).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN845"
+NAME="AEN843"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-DATADIR-CAPS"
 ></A
 >GNOME_PARAM_APP_DATADIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_DATADIR         "app-datadir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where this application's data files are
 installed (read / write).</P
@@ -3704,26 +3445,16 @@ installed (read / write).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN850"
+NAME="AEN848"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-APP-LIBDIR-CAPS"
 ></A
 >GNOME_PARAM_APP_LIBDIR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_APP_LIBDIR          "app-libdir"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the prefix where this application's library files are
 installed (read / write).</P
@@ -3731,52 +3462,32 @@ installed (read / write).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN855"
+NAME="AEN853"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-HUMAN-READABLE-NAME-CAPS"
 ></A
 >GNOME_PARAM_HUMAN_READABLE_NAME</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_HUMAN_READABLE_NAME "human-readable-name"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the human readable name of the application (readable).</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN860"
+NAME="AEN858"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-GNOME-PATH-CAPS"
 ></A
 >GNOME_PARAM_GNOME_PATH</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_GNOME_PATH          "gnome-path"</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This parameter contains the path in which to look for installed files (taken
 from the GNOME2_PATH environment variable).</P
@@ -3784,52 +3495,32 @@ from the GNOME2_PATH environment variable).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN865"
+NAME="AEN863"
 ></A
 ><H3
 ><A
 NAME="GNOME-PARAM-NONE-CAPS"
 ></A
 >GNOME_PARAM_NONE</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_PARAM_NONE                NULL</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Used to terminate a list of parameters and their values.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN870"
+NAME="AEN868"
 ></A
 ><H3
 ><A
 NAME="GNOME-PROGRAM-STANDARD-PROPERTIES-CAPS"
 ></A
 >GNOME_PROGRAM_STANDARD_PROPERTIES</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     GNOME_PROGRAM_STANDARD_PROPERTIES</PRE
-></TD
-></TR
-></TABLE
 ><P
 >When PREFIX, SYSCONFDIR, DATADIR and LIBDIR are defined during the build
 process, this macro can be used to assign these values to
@@ -3856,109 +3547,34 @@ HREF="libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
 >().</P
 ></DIV
 ></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;GNOME Library (libgnome)</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="libgnome.html#AEN6"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
 ><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-init.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->Next Page &#62;&#62;&#62;</B
-></FONT
+>gnome-init&nbsp;&gt;&gt;&gt;</B
 ></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->GNOME Library (libgnome)</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-init</B
-></FONT
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

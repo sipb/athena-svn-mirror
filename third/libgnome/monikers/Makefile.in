@@ -77,11 +77,8 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
-GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
 GNOME_VFS_VERSION = @GNOME_VFS_VERSION@
 GTKDOC = @GTKDOC@
-HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HELP_DOCBOOK_MODULE_CFLAGS = @HELP_DOCBOOK_MODULE_CFLAGS@
 HELP_DOCBOOK_MODULE_LIBS = @HELP_DOCBOOK_MODULE_LIBS@
 HELP_VFS_MODULE_CFLAGS = @HELP_VFS_MODULE_CFLAGS@
@@ -100,7 +97,6 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -132,13 +128,15 @@ REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 Z_LIBS = @Z_LIBS@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES =  	-I$(top_srcdir) 					$(LIBGNOME_CFLAGS)					-DG_LOG_DOMAIN=\"libgnome\"				-DVERSION=\"$(VERSION)\"
+INCLUDES = \
+	-I$(top_srcdir) 				\
+	$(LIBGNOME_CFLAGS)				\
+	-DG_LOG_DOMAIN=\"libgnome\"			\
+	-DVERSION=\"$(VERSION)\"
 
 
 CLEANFILES =  GNOME_Moniker_std.server GNOME_Moniker_std.server.in
@@ -149,7 +147,13 @@ server_DATA = GNOME_Moniker_std.server
 monikerdir = $(libdir)/bonobo/monikers
 moniker_LTLIBRARIES = libmoniker_extra_2.la
 
-libmoniker_extra_2_la_SOURCES =  	bonobo-config-bag.c				bonobo-config-bag.h				bonobo-moniker-config.c				bonobo-moniker-conf-indirect.c			bonobo-moniker-extra.h            		bonobo-moniker-extra.c			
+libmoniker_extra_2_la_SOURCES = \
+	bonobo-config-bag.c			\
+	bonobo-config-bag.h			\
+	bonobo-moniker-config.c			\
+	bonobo-moniker-conf-indirect.c		\
+	bonobo-moniker-extra.h            	\
+	bonobo-moniker-extra.c			
 
 
 libmoniker_extra_2_la_LDFLAGS = -module -avoid-version $(LIBGNOME_LIBS)
@@ -178,7 +182,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libmoniker_extra_2_la_SOURCES)
 OBJECTS = $(libmoniker_extra_2_la_OBJECTS)

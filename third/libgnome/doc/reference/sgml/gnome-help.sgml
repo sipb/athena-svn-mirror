@@ -25,16 +25,35 @@ enum        <link linkend="GnomeHelpError">GnomeHelpError</link>;
                                              const char *file_name,
                                              const char *link_id,
                                              <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-help-display-with-doc-id-and-env">gnome_help_display_with_doc_id_and_env</link>
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const char *doc_id,
+                                             const char *file_name,
+                                             const char *link_id,
+                                             char **envp,
+                                             <link linkend="GError">GError</link> **error);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-help-display-desktop">gnome_help_display_desktop</link>      (<link linkend="GnomeProgram">GnomeProgram</link> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-help-display-desktop-with-env">gnome_help_display_desktop_with_env</link>
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const char *doc_id,
+                                             const char *file_name,
+                                             const char *link_id,
+                                             char **envp,
+                                             <link linkend="GError">GError</link> **error);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-help-display-uri">gnome_help_display_uri</link>          (const char *help_uri,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-help-display-uri-with-env">gnome_help_display_uri_with_env</link> (const char *help_uri,
+                                             char **envp,
                                              <link linkend="GError">GError</link> **error);
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -60,24 +79,20 @@ application.
 </programlisting>
 <para>
 The different error codes which can be thrown in the <link linkend="GNOME-HELP-ERROR-CAPS">GNOME_HELP_ERROR</link> domain.
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_HELP_ERROR_INTERNAL</literal></entry>
-<entry>Something went wrong internally. This is most
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_HELP_ERROR_INTERNAL</literal></term>
+<listitem><simpara>Something went wrong internally. This is most
 likely caused by a resource problem or bad installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_HELP_ERROR_NOT_FOUND</literal></entry>
-<entry>Help file does not exist.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_HELP_ERROR_NOT_FOUND</literal></term>
+<listitem><simpara>Help file does not exist.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-HELP-ERROR-CAPS">GNOME_HELP_ERROR</title>
 <programlisting>#define GNOME_HELP_ERROR (gnome_help_error_quark ())
@@ -96,26 +111,22 @@ Displays the help file specified by <parameter>file_name</parameter> at location
 preferred help browser of the user.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>file_name</parameter>&nbsp;:</entry>
-<entry> The name of the help document to display.
-</entry></row>
-<row><entry align="right"><parameter>link_id</parameter>&nbsp;:</entry>
-<entry> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
+</para><variablelist role="params">
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help document to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_id</parameter>&nbsp;:</term>
+<listitem><simpara> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
 requested document.
-</entry></row>
-<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
 occurs during processing, or <literal>NULL</literal>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
 contain the actual error).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-help-display-with-doc-id">gnome_help_display_with_doc_id ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_with_doc_id  (<link linkend="GnomeProgram">GnomeProgram</link> *program,
@@ -141,33 +152,70 @@ from the global GNOME domain, you will want to use
 <link linkend="gnome-help-display-desktop">gnome_help_display_desktop</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> The current application object, or <literal>NULL</literal> for the default one.
-</entry></row>
-<row><entry align="right"><parameter>doc_id</parameter>&nbsp;:</entry>
-<entry> The document identifier, or <literal>NULL</literal> to default to the application ID
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The current application object, or <literal>NULL</literal> for the default one.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc_id</parameter>&nbsp;:</term>
+<listitem><simpara> The document identifier, or <literal>NULL</literal> to default to the application ID
 (app_id) of the specified <parameter>program</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>file_name</parameter>&nbsp;:</entry>
-<entry> The name of the help document to display.
-</entry></row>
-<row><entry align="right"><parameter>link_id</parameter>&nbsp;:</entry>
-<entry> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help document to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_id</parameter>&nbsp;:</term>
+<listitem><simpara> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
 requested document.
-</entry></row>
-<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
 occurs during processing, or <literal>NULL</literal>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
 contain the actual error).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-help-display-with-doc-id-and-env">gnome_help_display_with_doc_id_and_env ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_with_doc_id_and_env
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const char *doc_id,
+                                             const char *file_name,
+                                             const char *link_id,
+                                             char **envp,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Like <link linkend="gnome-display-with-doc-id">gnome_display_with_doc_id</link>(), but the the contents of <parameter>envp</parameter>
+will become the url viewer's environment rather than inheriting
+from the parents environment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The current application object, or <literal>NULL</literal> for the default one.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc_id</parameter>&nbsp;:</term>
+<listitem><simpara> The document identifier, or <literal>NULL</literal> to default to the application ID
+(app_id) of the specified <parameter>program</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help document to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_id</parameter>&nbsp;:</term>
+<listitem><simpara> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
+requested document.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envp</parameter>&nbsp;:</term>
+<listitem><simpara> child's environment, or <literal>NULL</literal> to inherit parent's.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+occurs during processing, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+contain the actual error).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-help-display-desktop">gnome_help_display_desktop ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_desktop      (<link linkend="GnomeProgram">GnomeProgram</link> *program,
@@ -188,33 +236,70 @@ Please note that this only displays system help.  To display help files
 for an application, you will want to use <link linkend="gnome-help-display">gnome_help_display</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> The current application object, or <literal>NULL</literal> for the default one.
-</entry></row>
-<row><entry align="right"><parameter>doc_id</parameter>&nbsp;:</entry>
-<entry> The name of the help file relative to the system's help domain
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The current application object, or <literal>NULL</literal> for the default one.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc_id</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help file relative to the system's help domain
 (<link linkend="GNOME-FILE-DOMAIN-HELP-CAPS">GNOME_FILE_DOMAIN_HELP</link>).
-</entry></row>
-<row><entry align="right"><parameter>file_name</parameter>&nbsp;:</entry>
-<entry> The name of the help document to display.
-</entry></row>
-<row><entry align="right"><parameter>link_id</parameter>&nbsp;:</entry>
-<entry> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help document to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_id</parameter>&nbsp;:</term>
+<listitem><simpara> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
 requested document.
-</entry></row>
-<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
 occurs during processing, or <literal>NULL</literal>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
 contain the actual error).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-help-display-desktop-with-env">gnome_help_display_desktop_with_env ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_desktop_with_env
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const char *doc_id,
+                                             const char *file_name,
+                                             const char *link_id,
+                                             char **envp,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Like <link linkend="gnome-help-display-desktop">gnome_help_display_desktop</link>(), but the the contents of <parameter>envp</parameter>
+will become the url viewer's environment rather than inheriting
+from the parents environment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The current application object, or <literal>NULL</literal> for the default one.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc_id</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help file relative to the system's help domain
+(<link linkend="GNOME-FILE-DOMAIN-HELP-CAPS">GNOME_FILE_DOMAIN_HELP</link>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the help document to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_id</parameter>&nbsp;:</term>
+<listitem><simpara> Can be <literal>NULL</literal>. If set, refers to an anchor or section id within the
+requested document.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envp</parameter>&nbsp;:</term>
+<listitem><simpara> child's environment, or <literal>NULL</literal> to inherit parent's.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+occurs during processing, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+contain the actual error).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-help-display-uri">gnome_help_display_uri ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_uri          (const char *help_uri,
@@ -227,22 +312,44 @@ depends upon the scheme of the URI (so it is not strictly a help-only
 function).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>help_uri</parameter>&nbsp;:</entry>
-<entry> The URI to display.
-</entry></row>
-<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+</para><variablelist role="params">
+<varlistentry><term><parameter>help_uri</parameter>&nbsp;:</term>
+<listitem><simpara> The URI to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
 occurs during processing, or <literal>NULL</literal>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
 contain the actual error).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-help-display-uri-with-env">gnome_help_display_uri_with_env ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_help_display_uri_with_env (const char *help_uri,
+                                             char **envp,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Like <link linkend="gnome-help-display-uri">gnome_help_display_uri</link>(), but the the contents of <parameter>envp</parameter>
+will become the help viewer's environment rather than inheriting
+from the parents environment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>help_uri</parameter>&nbsp;:</term>
+<listitem><simpara> The URI to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envp</parameter>&nbsp;:</term>
+<listitem><simpara> child's environment, or <literal>NULL</literal> to inherit parent's.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GError">GError</link> instance that will hold the specifics of any error which
+occurs during processing, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> otherwise (in which case <parameter>error</parameter> will
+contain the actual error).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

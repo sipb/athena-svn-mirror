@@ -96,6 +96,8 @@ void        <link linkend="gnome-program-postinit">gnome_program_postinit</link>
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -137,78 +139,74 @@ location.
 The different types of files are given in this enum. User applications make use
 of the <structfield>GNOME_FILE_DOMAIN_APP_*</structfield> types, which specify
 locations relative to <link linkend="GNOME-PARAM-APP-DATADIR-CAPS">GNOME_PARAM_APP_DATADIR</link>.
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_UNKNOWN</literal></entry>
-<entry>An unknown file domain (should never be used).
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_LIBDIR</literal></entry>
-<entry>Libraries in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_DATADIR</literal></entry>
-<entry>Data files in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_SOUND</literal></entry>
-<entry>Sound files in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_PIXMAP</literal></entry>
-<entry>Pixmap files in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_CONFIG</literal></entry>
-<entry>Config files in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_HELP</literal></entry>
-<entry>Help files in the main GNOME installation.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_LIBDIR</literal></entry>
-<entry>Application specific libraries.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_DATADIR</literal></entry>
-<entry>Application specific data files.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_SOUND</literal></entry>
-<entry>Application specific sound files.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_PIXMAP</literal></entry>
-<entry>Application specific pixmap files.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_CONFIG</literal></entry>
-<entry>Application specific config files.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_FILE_DOMAIN_APP_HELP</literal></entry>
-<entry>Application specific help files.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_UNKNOWN</literal></term>
+<listitem><simpara>An unknown file domain (should never be used).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_LIBDIR</literal></term>
+<listitem><simpara>Libraries in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_DATADIR</literal></term>
+<listitem><simpara>Data files in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_SOUND</literal></term>
+<listitem><simpara>Sound files in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_PIXMAP</literal></term>
+<listitem><simpara>Pixmap files in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_CONFIG</literal></term>
+<listitem><simpara>Config files in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_HELP</literal></term>
+<listitem><simpara>Help files in the main GNOME installation.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_LIBDIR</literal></term>
+<listitem><simpara>Application specific libraries.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_DATADIR</literal></term>
+<listitem><simpara>Application specific data files.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_SOUND</literal></term>
+<listitem><simpara>Application specific sound files.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_PIXMAP</literal></term>
+<listitem><simpara>Application specific pixmap files.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_CONFIG</literal></term>
+<listitem><simpara>Application specific config files.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_FILE_DOMAIN_APP_HELP</literal></term>
+<listitem><simpara>Application specific help files.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeProgram">struct GnomeProgram</title>
 <programlisting>struct GnomeProgram
@@ -221,24 +219,20 @@ locations relative to <link linkend="GNOME-PARAM-APP-DATADIR-CAPS">GNOME_PARAM_A
 <para>
 A structure containing information about the current application. Initialised
 during a call to <link linkend="gnome-program-init">gnome_program_init</link>().
-</para><informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><link linkend="GObject">GObject</link> <structfield>object</structfield></entry>
-<entry>A <link linkend="GObject">GObject</link> containing the parameters and their values which were set
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GObject">GObject</link> <structfield>object</structfield></term>
+<listitem><simpara>A <link linkend="GObject">GObject</link> containing the parameters and their values which were set
 dring initialisation.
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeProgramPrivate">GnomeProgramPrivate</link> *<structfield>_priv</structfield></entry>
-<entry>Private data about the program instance.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeProgramPrivate">GnomeProgramPrivate</link> *<structfield>_priv</structfield></term>
+<listitem><simpara>Private data about the program instance.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeModuleInfo">struct GnomeModuleInfo</title>
 <programlisting>struct GnomeModuleInfo {
@@ -264,82 +258,78 @@ dring initialisation.
 A structure containing information about a module. This contains descriptive
 information about the module, as well as how to initialise it and what its
 dependencies are (chained via the <parameter>requirements</parameter> parameter).
-</para><informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry>const char *<structfield>name</structfield></entry>
-<entry>The module name.
-</entry>
-</row>
-<row>
-<entry>const char *<structfield>version</structfield></entry>
-<entry>The module's version string.
-</entry>
-</row>
-<row>
-<entry>const char *<structfield>description</structfield></entry>
-<entry>A string describing the module (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleRequirement">GnomeModuleRequirement</link> *<structfield>requirements</structfield></entry>
-<entry>A pointer to an array of modules that are required by this
+</para><variablelist role="struct">
+<varlistentry>
+<term>const char *<structfield>name</structfield></term>
+<listitem><simpara>The module name.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const char *<structfield>version</structfield></term>
+<listitem><simpara>The module's version string.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const char *<structfield>description</structfield></term>
+<listitem><simpara>A string describing the module (can be <literal>NULL</literal>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleRequirement">GnomeModuleRequirement</link> *<structfield>requirements</structfield></term>
+<listitem><simpara>A pointer to an array of modules that are required by this
 module. The last module in the array should have its required_version field set
 to <literal>NULL</literal>.
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>instance_init</structfield></entry>
-<entry>A function to call to initialise an instance of this module
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>instance_init</structfield></term>
+<listitem><simpara>A function to call to initialise an instance of this module
 (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>pre_args_parse</structfield></entry>
-<entry>A function to call before parsing the arguments for this
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>pre_args_parse</structfield></term>
+<listitem><simpara>A function to call before parsing the arguments for this
 module (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>post_args_parse</structfield></entry>
-<entry>A function to call after parsing the arguments for this
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleHook">GnomeModuleHook</link> <structfield>post_args_parse</structfield></term>
+<listitem><simpara>A function to call after parsing the arguments for this
 module (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry>struct <link linkend="poptOption">poptOption</link> *<structfield>options</structfield></entry>
-<entry>A <link linkend="poptOption">poptOption</link> structure giving any special arguments for this module
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>struct <link linkend="poptOption">poptOption</link> *<structfield>options</structfield></term>
+<listitem><simpara>A <link linkend="poptOption">poptOption</link> structure giving any special arguments for this module
 (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleInitHook">GnomeModuleInitHook</link> <structfield>init_pass</structfield></entry>
-<entry>A function which is run before the <parameter>init_instance</parameter> function to allow
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleInitHook">GnomeModuleInitHook</link> <structfield>init_pass</structfield></term>
+<listitem><simpara>A function which is run before the <parameter>init_instance</parameter> function to allow
 the module to register other modules as needed. The module cannot assume its
 required modules are initialized (although they might be).
-</entry>
-</row>
-<row>
-<entry><link linkend="GnomeModuleClassInitHook">GnomeModuleClassInitHook</link> <structfield>class_init</structfield></entry>
-<entry>A function to call to initialise this module prior to creating any
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GnomeModuleClassInitHook">GnomeModuleClassInitHook</link> <structfield>class_init</structfield></term>
+<listitem><simpara>A function to call to initialise this module prior to creating any
 instances (can be <literal>NULL</literal>).
-</entry>
-</row>
-<row>
-<entry>const char *<structfield>opt_prefix</structfield></entry>
-<entry>Unused.
-</entry>
-</row>
-<row>
-<entry><link linkend="gpointer">gpointer</link> <structfield>expansion1</structfield></entry>
-<entry>Unused.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const char *<structfield>opt_prefix</structfield></term>
+<listitem><simpara>Unused.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gpointer">gpointer</link> <structfield>expansion1</structfield></term>
+<listitem><simpara>Unused.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeModuleRequirement">struct GnomeModuleRequirement</title>
 <programlisting>struct GnomeModuleRequirement {
@@ -350,23 +340,19 @@ instances (can be <literal>NULL</literal>).
 <para>
 A structure which allows a module to specify the minimum required versions of
 modules it depends upon.
-</para><informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry>const char *<structfield>required_version</structfield></entry>
-<entry>The version required by the parent module.
-</entry>
-</row>
-<row>
-<entry>const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> *<structfield>module_info</structfield></entry>
-<entry>A <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure detailing the required module.
+</para><variablelist role="struct">
+<varlistentry>
+<term>const char *<structfield>required_version</structfield></term>
+<listitem><simpara>The version required by the parent module.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> *<structfield>module_info</structfield></term>
+<listitem><simpara>A <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure detailing the required module.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeModuleInitHook">GnomeModuleInitHook ()</title>
 <programlisting>void        (*GnomeModuleInitHook)          (const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> *mod_info);</programlisting>
@@ -375,17 +361,13 @@ A function that will be called to allow a module to do any pre-initialisation
 it might need to do prior to having arguments parsed by the controlling parent
 module (the parent will do the argument parsing for all modules in the
 hierarchy).
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mod_info</parameter>&nbsp;:</entry>
-<entry>The current module.
+</para><variablelist role="params">
+<varlistentry><term><parameter>mod_info</parameter>&nbsp;:</term>
+<listitem><simpara>The current module.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeModuleClassInitHook">GnomeModuleClassInitHook ()</title>
 <programlisting>void        (*GnomeModuleClassInitHook)     (<link linkend="GnomeProgramClass">GnomeProgramClass</link> *klass,
@@ -393,21 +375,17 @@ hierarchy).
 <para>
 A function called to perform any class specific setup that is required by each
 module.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>klass</parameter>&nbsp;:</entry>
-<entry>The class of the parent module (which could be this module's class).
+</para><variablelist role="params">
+<varlistentry><term><parameter>klass</parameter>&nbsp;:</term>
+<listitem><simpara>The class of the parent module (which could be this module's class).
 This will usually be <link linkend="GnomeProgramClass">GnomeProgramClass</link>.
-</entry></row>
-<row><entry align="right"><parameter>mod_info</parameter>&nbsp;:</entry>
-<entry>The current module.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_info</parameter>&nbsp;:</term>
+<listitem><simpara>The current module.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeModuleHook">GnomeModuleHook ()</title>
 <programlisting>void        (*GnomeModuleHook)              (<link linkend="GnomeProgram">GnomeProgram</link> *program,
@@ -416,20 +394,16 @@ This will usually be <link linkend="GnomeProgramClass">GnomeProgramClass</link>.
 A function that is called to perform some intialisation in a module (which
 could be either the main init function or the pre or post argument parsing
 phase).
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry>The <link linkend="GnomeProgram">GnomeProgram</link> instance which is being initialised.
-</entry></row>
-<row><entry align="right"><parameter>mod_info</parameter>&nbsp;:</entry>
-<entry>The current module's <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure.
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeProgram">GnomeProgram</link> instance which is being initialised.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mod_info</parameter>&nbsp;:</term>
+<listitem><simpara>The current module's <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-init">gnome_program_init ()</title>
 <programlisting><link linkend="GnomeProgram">GnomeProgram</link>* gnome_program_init            (const char *app_id,
@@ -481,37 +455,33 @@ int main(int argc, char **argv) {
 	/* Now process any extra args, etc ... */
 }
 </programlisting>
-</example><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app_id</parameter>&nbsp;:</entry>
-<entry> Application ID string.
-</entry></row>
-<row><entry align="right"><parameter>app_version</parameter>&nbsp;:</entry>
-<entry> Application version string.
-</entry></row>
-<row><entry align="right"><parameter>module_info</parameter>&nbsp;:</entry>
-<entry> The module to init with this program.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> The number of commmand line arguments contained in <parameter>argv</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> A string array of command line arguments.
-</entry></row>
-<row><entry align="right"><parameter>first_property_name</parameter>&nbsp;:</entry>
-<entry> The first item in a <literal>NULL</literal>-terminated list of attribute
+</example><variablelist role="params">
+<varlistentry><term><parameter>app_id</parameter>&nbsp;:</term>
+<listitem><simpara> Application ID string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_version</parameter>&nbsp;:</term>
+<listitem><simpara> Application version string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>module_info</parameter>&nbsp;:</term>
+<listitem><simpara> The module to init with this program.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> The number of commmand line arguments contained in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> A string array of command line arguments.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first_property_name</parameter>&nbsp;:</term>
+<listitem><simpara> The first item in a <literal>NULL</literal>-terminated list of attribute
 name and value pairs (so this will be an attribute name or <literal>NULL</literal>).
-</entry></row>
-<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry> The continuation of a <literal>NULL</literal>-terminated list of attribute name/value
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> The continuation of a <literal>NULL</literal>-terminated list of attribute name/value
 pairs.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A <link linkend="GnomeProgram">GnomeProgram</link> instance representing the current application.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GnomeProgram">GnomeProgram</link> instance representing the current application.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-initv">gnome_program_initv ()</title>
 <programlisting><link linkend="GnomeProgram">GnomeProgram</link>* gnome_program_initv           (<link linkend="GType">GType</link> type,
@@ -527,41 +497,37 @@ Provides a non-varargs form of <link linkend="gnome-program-init">gnome_program_
 to call this function directly.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> The type of application to be initialized (usually
+</para><variablelist role="params">
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> The type of application to be initialized (usually
 <link linkend="GNOME-TYPE-PROGRAM-CAPS">GNOME_TYPE_PROGRAM</link>).
-</entry></row>
-<row><entry align="right"><parameter>app_id</parameter>&nbsp;:</entry>
-<entry> Application ID string.
-</entry></row>
-<row><entry align="right"><parameter>app_version</parameter>&nbsp;:</entry>
-<entry> Application version string.
-</entry></row>
-<row><entry align="right"><parameter>module_info</parameter>&nbsp;:</entry>
-<entry> The modules to init with the application.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> The number of command line arguments contained in <parameter>argv</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> A string array of command line arguments.
-</entry></row>
-<row><entry align="right"><parameter>first_property_name</parameter>&nbsp;:</entry>
-<entry> The first item in a <literal>NULL</literal>-terminated list of attribute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_id</parameter>&nbsp;:</term>
+<listitem><simpara> Application ID string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_version</parameter>&nbsp;:</term>
+<listitem><simpara> Application version string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>module_info</parameter>&nbsp;:</term>
+<listitem><simpara> The modules to init with the application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> The number of command line arguments contained in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> A string array of command line arguments.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first_property_name</parameter>&nbsp;:</term>
+<listitem><simpara> The first item in a <literal>NULL</literal>-terminated list of attribute
 name/value.
-</entry></row>
-<row><entry align="right"><parameter>args</parameter>&nbsp;:</entry>
-<entry> The remaining elements in the <literal>NULL</literal> terminated list (of which
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>args</parameter>&nbsp;:</term>
+<listitem><simpara> The remaining elements in the <literal>NULL</literal> terminated list (of which
 <parameter>first_property_name</parameter> is the first element).
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A <link linkend="GnomeProgram">GnomeProgram</link> instance representing the current application.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GnomeProgram">GnomeProgram</link> instance representing the current application.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-get">gnome_program_get ()</title>
 <programlisting><link linkend="GnomeProgram">GnomeProgram</link>* gnome_program_get             (void);</programlisting>
@@ -571,15 +537,11 @@ Other functions assume this will always return a <link linkend="GnomeProgram">Gn
 (if not <literal>NULL</literal>) has already been initialized.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The application's <link linkend="GnomeProgram">GnomeProgram</link> instance, or <literal>NULL</literal> if it does not
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The application's <link linkend="GnomeProgram">GnomeProgram</link> instance, or <literal>NULL</literal> if it does not
 exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-get-human-readable-name">gnome_program_get_human_readable_name ()</title>
 <programlisting>const char* gnome_program_get_human_readable_name
@@ -591,17 +553,13 @@ should provide the name with the <link linkend="GNOME-PARAM-HUMAN-READABLE-NAME-
 init argument. Returns <literal>NULL</literal> if no name was set.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> The application object
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Application human-readable name string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The application object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Application human-readable name string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-get-app-id">gnome_program_get_app_id ()</title>
 <programlisting>const char* gnome_program_get_app_id        (<link linkend="GnomeProgram">GnomeProgram</link> *program);</programlisting>
@@ -612,17 +570,13 @@ human-readable identifier so much as a unique identifier for
 programs and libraries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> The program object
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Application ID string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The program object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Application ID string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-get-app-version">gnome_program_get_app_version ()</title>
 <programlisting>const char* gnome_program_get_app_version   (<link linkend="GnomeProgram">GnomeProgram</link> *program);</programlisting>
@@ -633,17 +587,13 @@ human-readable identifier so much as a unique identifier for
 programs and libraries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> The application object
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Application version string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> The application object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Application version string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-locate-file">gnome_program_locate_file ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_program_locate_file       (<link linkend="GnomeProgram">GnomeProgram</link> *program,
@@ -671,33 +621,29 @@ The <parameter>ret_locations</parameter> list and its contents should be freed b
 should the returned string.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> A valid <link linkend="GnomeProgram">GnomeProgram</link> object or <literal>NULL</literal> (in which case the current
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> A valid <link linkend="GnomeProgram">GnomeProgram</link> object or <literal>NULL</literal> (in which case the current
 application is used).
-</entry></row>
-<row><entry align="right"><parameter>domain</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeFileDomain">GnomeFileDomain</link>.
-</entry></row>
-<row><entry align="right"><parameter>file_name</parameter>&nbsp;:</entry>
-<entry> A file name or path inside the 'domain' to find.
-</entry></row>
-<row><entry align="right"><parameter>only_if_exists</parameter>&nbsp;:</entry>
-<entry> Only return a full pathname if the specified file
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>domain</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeFileDomain">GnomeFileDomain</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
+<listitem><simpara> A file name or path inside the 'domain' to find.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>only_if_exists</parameter>&nbsp;:</term>
+<listitem><simpara> Only return a full pathname if the specified file
                  actually exists
-</entry></row>
-<row><entry align="right"><parameter>ret_locations</parameter>&nbsp;:</entry>
-<entry> If this is not <literal>NULL</literal>, a list of all the possible locations
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ret_locations</parameter>&nbsp;:</term>
+<listitem><simpara> If this is not <literal>NULL</literal>, a list of all the possible locations
                 of the file will be returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The full path to the file (if it exists or only_if_exists is
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The full path to the file (if it exists or only_if_exists is
          <literal>FALSE</literal>) or <literal>NULL</literal>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-module-register">gnome_program_module_register ()</title>
 <programlisting>void        gnome_program_module_register   (const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> *module_info);</programlisting>
@@ -709,16 +655,12 @@ described by <parameter>module_info</parameter> must only use the <parameter>mod
 register itself.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>module_info</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeModuleInfo structure describing the module
+</para><variablelist role="params">
+<varlistentry><term><parameter>module_info</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeModuleInfo structure describing the module
               to be initialized
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-module-registered">gnome_program_module_registered ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_program_module_registered (const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> *module_info);</programlisting>
@@ -727,19 +669,15 @@ This method checks to see whether a specific module has been
              initialized in the specified program.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>module_info</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeModuleInfo structure describing the module
+</para><variablelist role="params">
+<varlistentry><term><parameter>module_info</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeModuleInfo structure describing the module
               to be queried
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A value indicating whether the specified module has been
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A value indicating whether the specified module has been
          registered/initialized in the current program
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-module-load">gnome_program_module_load ()</title>
 <programlisting>const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* gnome_program_module_load
@@ -749,18 +687,14 @@ Loads a shared library that contains a
 <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> dynamic_module_info structure.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mod_name</parameter>&nbsp;:</entry>
-<entry> module name
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure that was loaded, or <literal>NULL</literal> if the
+</para><variablelist role="params">
+<varlistentry><term><parameter>mod_name</parameter>&nbsp;:</term>
+<listitem><simpara> module name
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure that was loaded, or <literal>NULL</literal> if the
 module could not be loaded.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-install-property">gnome_program_install_property ()</title>
 <programlisting><link linkend="guint">guint</link>       gnome_program_install_property  (<link linkend="GnomeProgramClass">GnomeProgramClass</link> *pclass,
@@ -776,26 +710,22 @@ Normal applications will never need to call this function, it is mostly for
 use by other platform library authors.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pclass</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeProgramClass">GnomeProgramClass</link>.
-</entry></row>
-<row><entry align="right"><parameter>get_fn</parameter>&nbsp;:</entry>
-<entry> A function to get property values.
-</entry></row>
-<row><entry align="right"><parameter>set_fn</parameter>&nbsp;:</entry>
-<entry> A function to set property values.
-</entry></row>
-<row><entry align="right"><parameter>pspec</parameter>&nbsp;:</entry>
-<entry> A collection of properties.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The number of properties installed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pclass</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeProgramClass">GnomeProgramClass</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_fn</parameter>&nbsp;:</term>
+<listitem><simpara> A function to get property values.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_fn</parameter>&nbsp;:</term>
+<listitem><simpara> A function to set property values.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pspec</parameter>&nbsp;:</term>
+<listitem><simpara> A collection of properties.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The number of properties installed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-preinit">gnome_program_preinit ()</title>
 <programlisting><link linkend="poptContext">poptContext</link> gnome_program_preinit           (<link linkend="GnomeProgram">GnomeProgram</link> *program,
@@ -809,29 +739,25 @@ needs to be done prior to command line argument parsing. The poptContext
 returned can be used for <link linkend="getopt">getopt</link>()-style option processing.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> Application object
-</entry></row>
-<row><entry align="right"><parameter>app_id</parameter>&nbsp;:</entry>
-<entry> application ID string
-</entry></row>
-<row><entry align="right"><parameter>app_version</parameter>&nbsp;:</entry>
-<entry> application version string
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> The number of commmand line arguments contained in 'argv'
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> A string array of command line arguments
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A poptContext representing the argument parsing state.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> Application object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_id</parameter>&nbsp;:</term>
+<listitem><simpara> application ID string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_version</parameter>&nbsp;:</term>
+<listitem><simpara> application version string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> The number of commmand line arguments contained in 'argv'
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> A string array of command line arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A poptContext representing the argument parsing state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-parse-args">gnome_program_parse_args ()</title>
 <programlisting>void        gnome_program_parse_args        (<link linkend="GnomeProgram">GnomeProgram</link> *program);</programlisting>
@@ -839,15 +765,11 @@ returned can be used for <link linkend="getopt">getopt</link>()-style option pro
 Parses the command line arguments for the application</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> Application object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> Application object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-program-postinit">gnome_program_postinit ()</title>
 <programlisting>void        gnome_program_postinit          (<link linkend="GnomeProgram">GnomeProgram</link> *program);</programlisting>
@@ -856,15 +778,11 @@ Called after <link linkend="gnome-program-parse-args">gnome_program_parse_args</
 takes care of post-parse initialization and cleanup</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> Application object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> Application object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PARAM-POPT-TABLE-CAPS">GNOME_PARAM_POPT_TABLE</title>
 <programlisting>#define GNOME_PARAM_POPT_TABLE          "popt-table"

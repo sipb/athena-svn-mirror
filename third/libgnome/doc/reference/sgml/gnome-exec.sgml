@@ -55,6 +55,8 @@ int         <link linkend="gnome-execute-terminal-shell-fds">gnome_execute_termi
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -81,24 +83,20 @@ Like <link linkend="gnome-execute-async-with-env">gnome_execute_async_with_env</
 to child's environment.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executesd, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executesd, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of arguments
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument vector to exec child
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of child, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of child, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-async-fds">gnome_execute_async_fds ()</title>
 <programlisting>int         gnome_execute_async_fds         (const char *dir,
@@ -110,27 +108,23 @@ Like <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_e
 anything to child's environment.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of arguments
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument vector to exec child
-</entry></row>
-<row><entry align="right"><parameter>close_fds</parameter>&nbsp;:</entry>
-<entry> If <literal>TRUE</literal>, will close all but file descriptors 0, 1 and 2.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of child, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, will close all but file descriptors 0, 1 and 2.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of child, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-async-with-env">gnome_execute_async_with_env ()</title>
 <programlisting>int         gnome_execute_async_with_env    (const char *dir,
@@ -146,30 +140,26 @@ are added to the existing environment -- they do not completely replace it.
 This function closes all fds besides 0, 1, and 2 for the child</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or NULL for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or NULL for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of arguments
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument vector to exec child
-</entry></row>
-<row><entry align="right"><parameter>envc</parameter>&nbsp;:</entry>
-<entry> Number of environment slots
-</entry></row>
-<row><entry align="right"><parameter>envv</parameter>&nbsp;:</entry>
-<entry> Environment vector
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the process id, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of environment slots
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
+<listitem><simpara> Environment vector
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the process id, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds ()</title>
 <programlisting>int         gnome_execute_async_with_env_fds
@@ -184,33 +174,29 @@ Like <link linkend="gnome-execute-async-with-env">gnome_execute_async_with_env</
 decide whether or not to close fd's</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of arguments
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument vector to exec child
-</entry></row>
-<row><entry align="right"><parameter>envc</parameter>&nbsp;:</entry>
-<entry> Number of environment slots
-</entry></row>
-<row><entry align="right"><parameter>envv</parameter>&nbsp;:</entry>
-<entry> Environment vector
-</entry></row>
-<row><entry align="right"><parameter>close_fds</parameter>&nbsp;:</entry>
-<entry> If <literal>TRUE</literal> will close all fds but 0,1, and 2
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the process id, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of environment slots
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
+<listitem><simpara> Environment vector
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal> will close all fds but 0,1, and 2
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the process id, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-shell">gnome_execute_shell ()</title>
 <programlisting>int         gnome_execute_shell             (const char *dir,
@@ -221,21 +207,17 @@ to run the desired program.  Note that the pid of the shell is returned, not
 the pid of the user's program.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>commandline</parameter>&nbsp;:</entry>
-<entry> Shell command to execute
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of shell, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of shell, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-shell-fds">gnome_execute_shell_fds ()</title>
 <programlisting>int         gnome_execute_shell_fds         (const char *dir,
@@ -247,24 +229,20 @@ shell to run the desired program.  Note that the pid of the shell is
 returned, not the pid of the user's program.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>commandline</parameter>&nbsp;:</entry>
-<entry> Shell command to execute
-</entry></row>
-<row><entry align="right"><parameter>close_fds</parameter>&nbsp;:</entry>
-<entry> Like close_fds in <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</link>()
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of shell, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> Like close_fds in <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</link>()
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of shell, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-prepend-terminal-to-vector">gnome_prepend_terminal_to_vector ()</title>
 <programlisting>void        gnome_prepend_terminal_to_vector
@@ -281,18 +259,14 @@ size will first be computed.  Also note that passing in pointers to a vector
 that is empty, will just create a new vector for you.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> a pointer to the vector size
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> a pointer to the vector
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the vector size
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the vector
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-terminal-shell">gnome_execute_terminal_shell ()</title>
 <programlisting>int         gnome_execute_terminal_shell    (const char *dir,
@@ -304,21 +278,17 @@ returned, not the pid of the user's program.
 If commandline is <literal>NULL</literal>, just the shell is run.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or NULL for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or NULL for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>commandline</parameter>&nbsp;:</entry>
-<entry> Shell command to execute
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of terminal, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of terminal, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-execute-terminal-shell-fds">gnome_execute_terminal_shell_fds ()</title>
 <programlisting>int         gnome_execute_terminal_shell_fds
@@ -332,24 +302,20 @@ returned, not the pid of the user's program.
 If commandline is <literal>NULL</literal>, just the shell is run.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory in which child should be executed, or <literal>NULL</literal> for current
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
       directory
-</entry></row>
-<row><entry align="right"><parameter>commandline</parameter>&nbsp;:</entry>
-<entry> Shell command to execute
-</entry></row>
-<row><entry align="right"><parameter>close_fds</parameter>&nbsp;:</entry>
-<entry> Like close_fds in <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</link>()
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> process id of terminal, or <literal>-1</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> Like close_fds in <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</link>()
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of terminal, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

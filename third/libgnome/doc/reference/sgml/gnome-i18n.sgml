@@ -27,6 +27,8 @@ void        <link linkend="gnome-i18n-pop-c-numeric-locale">gnome_i18n_pop_c_num
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -57,18 +59,14 @@ list if it does not already appear (other routines depend on this
 behaviour). If <parameter>category_name</parameter> is <literal>NULL</literal>, then <literal>LC_ALL</literal> is assumed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>category_name</parameter>&nbsp;:</entry>
-<entry> Name of category to look up, e.g. %"LC_MESSAGES".
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the list of languages, this list should not be freed as it is
+</para><variablelist role="params">
+<varlistentry><term><parameter>category_name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of category to look up, e.g. %"LC_MESSAGES".
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the list of languages, this list should not be freed as it is
 owned by gnome-i18n.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-i18n-push-c-numeric-locale">gnome_i18n_push_c_numeric_locale ()</title>
 <programlisting>void        gnome_i18n_push_c_numeric_locale

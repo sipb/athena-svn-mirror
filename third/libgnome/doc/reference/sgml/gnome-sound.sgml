@@ -28,6 +28,8 @@ int         <link linkend="gnome-sound-connection-get">gnome_sound_connection_ge
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -51,15 +53,11 @@ sounds and they will just quietly return if no action is possible.
 Initialize the esd connection.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>hostname</parameter>&nbsp;:</entry>
-<entry> Hostname where esd daemon resides.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>hostname</parameter>&nbsp;:</term>
+<listitem><simpara> Hostname where esd daemon resides.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-sound-shutdown">gnome_sound_shutdown ()</title>
 <programlisting>void        gnome_sound_shutdown            (void);</programlisting>
@@ -76,15 +74,11 @@ Plays the audio stored in <parameter>filename</parameter>, if possible. Fail qui
 not possible (due to missing sound support or for other reasons).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> File containing the sound sample.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> File containing the sound sample.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-sound-sample-load">gnome_sound_sample_load ()</title>
 <programlisting>int         gnome_sound_sample_load         (const char *sample_name,
@@ -95,21 +89,17 @@ playing. Programs will rarely want to call this function directly. Use
 <link linkend="gnome-sound-play">gnome_sound_play</link>() instead for fire and forget sound playing.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>sample_name</parameter>&nbsp;:</entry>
-<entry> The name of the sample.
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> The filename where the audio is stored.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The esound sample_id or <literal>-1</literal> if the sample was unable to be cached
+</para><variablelist role="params">
+<varlistentry><term><parameter>sample_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the sample.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> The filename where the audio is stored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The esound sample_id or <literal>-1</literal> if the sample was unable to be cached
 for esound.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-sound-connection-get">gnome_sound_connection_get ()</title>
 <programlisting>int         gnome_sound_connection_get      (void);</programlisting>
@@ -119,15 +109,11 @@ program has cached a sample with <link linkend="gnome-sound-sample-load">gnome_s
 call <link linkend="esd-sample-play">esd_sample_play</link>() to play the sample.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the file descriptor of our esound connection or <literal>-1</literal>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the file descriptor of our esound connection or <literal>-1</literal>
 on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

@@ -95,6 +95,8 @@ void        <link linkend="gnome-config-make-vector">gnome_config_make_vector</l
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -256,17 +258,13 @@ Retrieves the value of a configuration item as a string. This value should
 be freed with <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item as a string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item as a string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-string-with-default">gnome_config_get_string_with_default()</title>
 <programlisting>#define     gnome_config_get_string_with_default(path,def)</programlisting>
@@ -275,22 +273,18 @@ Retrieves the value of a configuration item as a string. This value should
 be freed with <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item as a string, or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item as a string, or <parameter>def</parameter> if the
 configuration key does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-translated-string">gnome_config_get_translated_string()</title>
 <programlisting>#define     gnome_config_get_translated_string(path)</programlisting>
@@ -300,17 +294,13 @@ current language. The returned value should be freed with <link linkend="g-free"
 longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-translated-string-with-default">gnome_config_get_translated_string_with_default()</title>
 <programlisting>#define     gnome_config_get_translated_string_with_default(path,def)</programlisting>
@@ -320,22 +310,18 @@ current language. The returned value should be freed with <link linkend="g-free"
 longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item or <parameter>def</parameter> if the configuration
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item or <parameter>def</parameter> if the configuration
 item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-string">gnome_config_private_get_string()</title>
 <programlisting>#define     gnome_config_private_get_string(path)</programlisting>
@@ -345,17 +331,13 @@ configuration directory as a string. This value should be freed with
 <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item as a string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item as a string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-string-with-default">gnome_config_private_get_string_with_default()</title>
 <programlisting>#define     gnome_config_private_get_string_with_default(path,def)</programlisting>
@@ -365,22 +347,18 @@ configuration directory as a string. This value should be freed with
 <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item as a string, or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item as a string, or <parameter>def</parameter> if the
 configuration key does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-translated-string">gnome_config_private_get_translated_string()</title>
 <programlisting>#define     gnome_config_private_get_translated_string(path)</programlisting>
@@ -391,17 +369,13 @@ longer needed.  The item is retrieved from the user's private configuration
 storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-translated-string-with-default">gnome_config_private_get_translated_string_with_default()</title>
 <programlisting>#define     gnome_config_private_get_translated_string_with_default(path,def)</programlisting>
@@ -412,22 +386,18 @@ longer needed.  The item is retrieved from the user's private configuration
 storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of the configuration item or <parameter>def</parameter> if the configuration
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the configuration item or <parameter>def</parameter> if the configuration
 item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-string">gnome_config_set_string()</title>
 <programlisting>#define     gnome_config_set_string(path,new_value)</programlisting>
@@ -436,18 +406,14 @@ Stores the string value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A string value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A string value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-translated-string">gnome_config_set_translated_string()</title>
 <programlisting>#define     gnome_config_set_translated_string(path,value)</programlisting>
@@ -457,18 +423,14 @@ by the <parameter>path</parameter> on the proper section for the current languag
 by the user.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry> A string value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> A string value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-string">gnome_config_private_set_string()</title>
 <programlisting>#define     gnome_config_private_set_string(path,new_value)</programlisting>
@@ -478,18 +440,14 @@ defined by the <parameter>path</parameter>. The configuration value is stored in
 private storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A string value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A string value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-translated-string">gnome_config_private_set_translated_string()</title>
 <programlisting>#define     gnome_config_private_set_translated_string(path,new_value)</programlisting>
@@ -499,18 +457,14 @@ Stores the string value <parameter>new_value</parameter> in the file/section/key
 The configuration value is stored in the user's private storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A string value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A string value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-int">gnome_config_get_int()</title>
 <programlisting>#define     gnome_config_get_int(path)</programlisting>
@@ -518,17 +472,13 @@ The configuration value is stored in the user's private storage area.</para>
 Retrieves an integer value configuration item.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-int-with-default">gnome_config_get_int_with_default()</title>
 <programlisting>#define     gnome_config_get_int_with_default(path,def)</programlisting>
@@ -536,22 +486,18 @@ Retrieves an integer value configuration item.</para>
 Retrieves an integer value configuration item.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as an integer or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as an integer or <parameter>def</parameter> if the
 configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-int">gnome_config_private_get_int()</title>
 <programlisting>#define     gnome_config_private_get_int(path)</programlisting>
@@ -560,17 +506,13 @@ Retrieves a configuration item as an int from the user's private
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as an integer.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as an integer.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-int-with-default">gnome_config_private_get_int_with_default()</title>
 <programlisting>#define     gnome_config_private_get_int_with_default(path,def)</programlisting>
@@ -579,22 +521,18 @@ Retrieves a configuration item as an int from the user's private
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as an integer or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as an integer or <parameter>def</parameter> if the
 configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-int">gnome_config_set_int()</title>
 <programlisting>#define     gnome_config_set_int(path,new_value)</programlisting>
@@ -603,18 +541,14 @@ Stores the integer value <parameter>new_value</parameter> in the file/section/ke
 defined by the <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A int value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A int value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-int">gnome_config_private_set_int()</title>
 <programlisting>#define     gnome_config_private_set_int(path,new_value)</programlisting>
@@ -624,18 +558,14 @@ defined by the <parameter>path</parameter>. The value is stored in the user's pr
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A int value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A int value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-float">gnome_config_get_float()</title>
 <programlisting>#define     gnome_config_get_float(path)</programlisting>
@@ -643,17 +573,13 @@ configuration storage area.</para>
 Retrieves a floating-point valued configuration item.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-float-with-default">gnome_config_get_float_with_default()</title>
 <programlisting>#define     gnome_config_get_float_with_default(path,def)</programlisting>
@@ -661,22 +587,18 @@ Retrieves a floating-point valued configuration item.</para>
 Retrieves a floating-point valued configuration item.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as a floating-point
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as a floating-point
 number or <parameter>def</parameter> if the configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-float">gnome_config_private_get_float()</title>
 <programlisting>#define     gnome_config_private_get_float(path)</programlisting>
@@ -685,18 +607,14 @@ Retrieves a configuration item from the user's private configuration storage
 area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as a floating-point
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as a floating-point
 number.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-float-with-default">gnome_config_private_get_float_with_default()</title>
 <programlisting>#define     gnome_config_private_get_float_with_default(path,def)</programlisting>
@@ -705,22 +623,18 @@ Retrieves a configuration item from the user's private configuration storage
 area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as a floating-point
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as a floating-point
 number or <parameter>def</parameter> if the configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-float">gnome_config_set_float()</title>
 <programlisting>#define     gnome_config_set_float(path,new_value)</programlisting>
@@ -729,18 +643,14 @@ Stores the double value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A double value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A double value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-float">gnome_config_private_set_float()</title>
 <programlisting>#define     gnome_config_private_set_float(path,new_value)</programlisting>
@@ -750,18 +660,14 @@ defined by the <parameter>path</parameter>. The value is stored in the user's pr
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A double value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A double value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-bool">gnome_config_get_bool()</title>
 <programlisting>#define     gnome_config_get_bool(path)</programlisting>
@@ -769,17 +675,13 @@ configuration storage area.</para>
 Retrieves a boolean configuration value.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-bool-with-default">gnome_config_get_bool_with_default()</title>
 <programlisting>#define     gnome_config_get_bool_with_default(path,def)</programlisting>
@@ -787,22 +689,18 @@ Retrieves a boolean configuration value.</para>
 Retrieves a boolean configuration value.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item, or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item, or <parameter>def</parameter> if the
 configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-bool">gnome_config_private_get_bool()</title>
 <programlisting>#define     gnome_config_private_get_bool(path)</programlisting>
@@ -810,17 +708,13 @@ configuration item does not exist.
 Retrieves the item from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as a boolean.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as a boolean.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-bool-with-default">gnome_config_private_get_bool_with_default()</title>
 <programlisting>#define     gnome_config_private_get_bool_with_default(path,def)</programlisting>
@@ -828,22 +722,18 @@ Retrieves the item from the user's private configuration storage area.</para>
 Retrieves the item from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The value of a configuration item as a boolean, or <parameter>def</parameter> if the
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of a configuration item as a boolean, or <parameter>def</parameter> if the
 configuration item does not exist.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-bool">gnome_config_set_bool()</title>
 <programlisting>#define     gnome_config_set_bool(path,new_value)</programlisting>
@@ -852,18 +742,14 @@ Stores boolean value <parameter>new_value</parameter> in the file/section/key de
 <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A boolean value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A boolean value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-bool">gnome_config_private_set_bool()</title>
 <programlisting>#define     gnome_config_private_set_bool(path,new_value)</programlisting>
@@ -872,18 +758,14 @@ Stores boolean value <parameter>new_value</parameter> in the file/section/key de
 The value is stored in the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry> A boolean value to set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A boolean value to set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-vector">gnome_config_get_vector()</title>
 <programlisting>#define     gnome_config_get_vector(path, argcp, argvp)</programlisting>
@@ -892,21 +774,17 @@ Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>argcp</parameter>&nbsp;:</entry>
-<entry> Number of elements in the vector.
-</entry></row>
-<row><entry align="right"><parameter>argvp</parameter>&nbsp;:</entry>
-<entry> Vector of strings.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argcp</parameter>&nbsp;:</term>
+<listitem><simpara> Number of elements in the vector.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argvp</parameter>&nbsp;:</term>
+<listitem><simpara> Vector of strings.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-vector-with-default">gnome_config_get_vector_with_default()</title>
 <programlisting>#define     gnome_config_get_vector_with_default(path, argcp, argvp, def)</programlisting>
@@ -915,25 +793,21 @@ Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free">g_free</link>() when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item.
-</entry></row>
-<row><entry align="right"><parameter>argcp</parameter>&nbsp;:</entry>
-<entry> Number of elements in the vector.
-</entry></row>
-<row><entry align="right"><parameter>argvp</parameter>&nbsp;:</entry>
-<entry> Vector of strings.
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argcp</parameter>&nbsp;:</term>
+<listitem><simpara> Number of elements in the vector.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argvp</parameter>&nbsp;:</term>
+<listitem><simpara> Vector of strings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-vector">gnome_config_private_get_vector()</title>
 <programlisting>#define     gnome_config_private_get_vector(path, argcp, argvp)</programlisting>
@@ -944,21 +818,17 @@ configuration value is retrieved from the user's private configuration
 storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>argcp</parameter>&nbsp;:</entry>
-<entry> Number of elements in the vector.
-</entry></row>
-<row><entry align="right"><parameter>argvp</parameter>&nbsp;:</entry>
-<entry> Vector of strings.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argcp</parameter>&nbsp;:</term>
+<listitem><simpara> Number of elements in the vector.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argvp</parameter>&nbsp;:</term>
+<listitem><simpara> Vector of strings.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-vector-with-default">gnome_config_private_get_vector_with_default()</title>
 <programlisting>#define     gnome_config_private_get_vector_with_default(path, argcp, argvp, def)</programlisting>
@@ -969,25 +839,21 @@ configuration value is retrieved from the user's private configuration
 storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to an item in the user-private namespace.
-</entry></row>
-<row><entry align="right"><parameter>argcp</parameter>&nbsp;:</entry>
-<entry> Number of elements in the vector
-</entry></row>
-<row><entry align="right"><parameter>argvp</parameter>&nbsp;:</entry>
-<entry> Vector of strings
-</entry></row>
-<row><entry align="right"><parameter>def</parameter>&nbsp;:</entry>
-<entry> A pointer to a flag that will be set if the default value for the item
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to an item in the user-private namespace.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argcp</parameter>&nbsp;:</term>
+<listitem><simpara> Number of elements in the vector
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argvp</parameter>&nbsp;:</term>
+<listitem><simpara> Vector of strings
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a flag that will be set if the default value for the item
 is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-set-vector">gnome_config_set_vector()</title>
 <programlisting>#define     gnome_config_set_vector(path,argc,argv)</programlisting>
@@ -996,21 +862,17 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> The number of elements in <parameter>argv</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> A string array holding the data to store.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> The number of elements in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> A string array holding the data to store.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-vector">gnome_config_private_set_vector()</title>
 <programlisting>#define     gnome_config_private_set_vector(path,argc,argv)</programlisting>
@@ -1019,21 +881,17 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by <pa
 configuration value is set in the user's private storage area.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> The number of elements in <parameter>argv</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> A string array holding the data to store.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> The number of elements in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> A string array holding the data to store.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-assemble-vector">gnome_config_assemble_vector ()</title>
 <programlisting>char*       gnome_config_assemble_vector    (int argc,
@@ -1044,20 +902,16 @@ spaces. The return value should be freed with <link linkend="g-free">g_free</lin
 required.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of elements in the <parameter>argv</parameter> string array.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> An array of strings.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A string with the concatenation results.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of elements in the <parameter>argv</parameter> string array.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> An array of strings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A string with the concatenation results.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-has-section">gnome_config_has_section()</title>
 <programlisting>#define     gnome_config_has_section(path)</programlisting>
@@ -1066,17 +920,13 @@ Queries the gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a section
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if the section exists, <literal>FALSE</literal> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a section
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the section exists, <literal>FALSE</literal> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-has-section">gnome_config_private_has_section()</title>
 <programlisting>#define     gnome_config_private_has_section(path)</programlisting>
@@ -1085,17 +935,13 @@ Queries the private gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a section
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if the section exists, <literal>FALSE</literal> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a section
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the section exists, <literal>FALSE</literal> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-init-iterator">gnome_config_init_iterator()</title>
 <programlisting>#define     gnome_config_init_iterator(path)</programlisting>
@@ -1106,17 +952,13 @@ file.  <parameter>path</parameter> must refer to a section.  The returned value
 can be used as an iterator for <link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path for a section.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The iterator handle.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path for a section.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The iterator handle.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-init-iterator">gnome_config_private_init_iterator()</title>
 <programlisting>#define     gnome_config_private_init_iterator(path)</programlisting>
@@ -1127,17 +969,13 @@ file.  <parameter>path</parameter> must refer to a section.  The returned value
 can be used as an iterator for <link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path for a section.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The iterator handle.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path for a section.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The iterator handle.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-init-iterator-sections">gnome_config_init_iterator_sections()</title>
 <programlisting>#define     gnome_config_init_iterator_sections(path)</programlisting>
@@ -1148,17 +986,13 @@ gnome configuration file.  The returned value can be used as an
 iterator for <link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path for a file.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The iterator handle.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path for a file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The iterator handle.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-init-iterator-sections">gnome_config_private_init_iterator_sections()</title>
 <programlisting>#define     gnome_config_private_init_iterator_sections(path)</programlisting>
@@ -1169,17 +1003,13 @@ gnome configuration file.  The returned value can be used as an
 iterator for <link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path for a file
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The iterator handle.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path for a file
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The iterator handle.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-iterator-next">gnome_config_iterator_next ()</title>
 <programlisting>void*       gnome_config_iterator_next      (void *iterator_handle,
@@ -1194,22 +1024,18 @@ If <parameter>value</parameter> is non-NULL, then <parameter>value</parameter> w
 holds the key.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iterator_handle</parameter>&nbsp;:</entry>
-<entry> A gnome configu iterator handle, returned from any
+</para><variablelist role="params">
+<varlistentry><term><parameter>iterator_handle</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configu iterator handle, returned from any
                   iteration start routine or this routine.
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>   Address where the key gets stored.
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry> Address where the value gets stored.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>   Address where the key gets stored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> Address where the value gets stored.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-drop-all">gnome_config_drop_all ()</title>
 <programlisting>void        gnome_config_drop_all           (void);</programlisting>
@@ -1232,15 +1058,11 @@ Note: the gnome-config code does not write anything to the
 configuration files until this routine is actually invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if everything went well. <literal>FALSE</literal> if any file
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if everything went well. <literal>FALSE</literal> if any file
 could not be written to disk.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-sync-file">gnome_config_sync_file()</title>
 <programlisting>#define     gnome_config_sync_file(path)</programlisting>
@@ -1254,19 +1076,15 @@ configuration files until this routine or <link linkend="gnome-config-sync">gnom
 is actually invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if everything went well, <literal>FALSE</literal> if the file
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if everything went well, <literal>FALSE</literal> if the file
 could not be written to for some reason.  <literal>FALSE</literal> is only returned
 when a write was actually attempted and failed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-sync-file">gnome_config_private_sync_file()</title>
 <programlisting>#define     gnome_config_private_sync_file(path)</programlisting>
@@ -1280,19 +1098,15 @@ configuration files until this routine or <link linkend="gnome-config-sync">gnom
 is actually invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if everything went well, <literal>FALSE</literal> if the file
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if everything went well, <literal>FALSE</literal> if the file
 could not be written to for some reason.  <literal>FALSE</literal> is only returned
 when a write was actually attempted and failed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-drop-file">gnome_config_drop_file()</title>
 <programlisting>#define     gnome_config_drop_file(path)</programlisting>
@@ -1302,15 +1116,11 @@ the configuration file in <parameter>path</parameter>.  Changes will take place 
 <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-drop-file">gnome_config_private_drop_file()</title>
 <programlisting>#define     gnome_config_private_drop_file(path)</programlisting>
@@ -1319,15 +1129,11 @@ Releases any memory resources that were allocated from accessing the
 private configuration file in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-clean-file">gnome_config_clean_file()</title>
 <programlisting>#define     gnome_config_clean_file(path)</programlisting>
@@ -1339,15 +1145,11 @@ configuration information.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-clean-file">gnome_config_private_clean_file()</title>
 <programlisting>#define     gnome_config_private_clean_file(path)</programlisting>
@@ -1359,15 +1161,11 @@ any configuration information.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome-config path
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome-config path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-clean-section">gnome_config_clean_section()</title>
 <programlisting>#define     gnome_config_clean_section(path)</programlisting>
@@ -1377,15 +1175,11 @@ configuration information.  Changes will only take place
 after <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a section.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a section.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-clean-section">gnome_config_private_clean_section()</title>
 <programlisting>#define     gnome_config_private_clean_section(path)</programlisting>
@@ -1395,15 +1189,11 @@ configuration information.  Changes will only take place after
 <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a section.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a section.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-clean-key">gnome_config_clean_key()</title>
 <programlisting>#define     gnome_config_clean_key(path)</programlisting>
@@ -1414,15 +1204,11 @@ Removes the definition for the key on a gnome configuration file.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-clean-key">gnome_config_private_clean_key()</title>
 <programlisting>#define     gnome_config_private_clean_key(path)</programlisting>
@@ -1434,54 +1220,42 @@ file.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link>() has been invoked.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path to a key.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path to a key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-get-real-path">gnome_config_get_real_path()</title>
 <programlisting>#define     gnome_config_get_real_path(path)</programlisting>
 <para>
 Retrieves the full (absolute) path to a configuration file.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry>A configuration file (this should only be the file, not the section or
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>A configuration file (this should only be the file, not the section or
 key).
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>An absolute path to the config file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>An absolute path to the config file.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-get-real-path">gnome_config_private_get_real_path()</title>
 <programlisting>#define     gnome_config_private_get_real_path(path)</programlisting>
 <para>
 Retrieves the full (absolute) path to a configuration file in the user's
 private configuration storage area.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry>A configuration file (this should only be the file, not the section or
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>A configuration file (this should only be the file, not the section or
 key).
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>An absolute path to the config file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>An absolute path to the config file.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-push-prefix">gnome_config_push_prefix ()</title>
 <programlisting>void        gnome_config_push_prefix        (const char *path);</programlisting>
@@ -1498,15 +1272,11 @@ any gnome-configuration access, since the application might
 be using their own prefix.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> A gnome configuration path prefix.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> A gnome configuration path prefix.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-pop-prefix">gnome_config_pop_prefix ()</title>
 <programlisting>void        gnome_config_pop_prefix         (void);</programlisting>
@@ -1526,21 +1296,17 @@ breaks the string on spaces except if the space is escaped with a
 backslash.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>string</parameter>&nbsp;:</entry>
-<entry> The stringified vector to decode into 'argcp' and 'argvp'
-</entry></row>
-<row><entry align="right"><parameter>argcp</parameter>&nbsp;:</entry>
-<entry> Returns the number of elements in <parameter>string</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argvp</parameter>&nbsp;:</entry>
-<entry> Returns the array of strings found in <parameter>string</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>string</parameter>&nbsp;:</term>
+<listitem><simpara> The stringified vector to decode into 'argcp' and 'argvp'
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argcp</parameter>&nbsp;:</term>
+<listitem><simpara> Returns the number of elements in <parameter>string</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argvp</parameter>&nbsp;:</term>
+<listitem><simpara> Returns the array of strings found in <parameter>string</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

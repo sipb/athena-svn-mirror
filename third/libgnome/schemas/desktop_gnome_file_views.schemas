@@ -2,14 +2,124 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <applyto>/desktop/gnome/file_views/icon_theme</applyto>
       <key>/schemas/desktop/gnome/file-views/icon_theme</key>
+      <applyto>/desktop/gnome/file_views/icon_theme</applyto>
       <owner>gnome</owner>
       <type>string</type>
       <default>crux_teal</default>
       <locale name="C">
         <short>File Icon Theme</short>
         <long>Theme used for displaying file icons</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Име на темата с икони</short>
+        <long>Тема на иконите, която да се използва</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Téma ikon souborů</short>
+        <long>Téma používané pro zobrazování ikon souborů</long>
+      </locale>
+
+      <locale name="da">
+        <short>Filikontema</short>
+        <long>Tema som benyttes til at vise filikoner</long>
+      </locale>
+
+      <locale name="de">
+        <short>Datei-Icon-Thema</short>
+        <long>Zum Anzeigen von Dateisymbole verwendetes Thema</long>
+      </locale>
+
+      <locale name="el">
+        <short>Θέμα εικονιδίου αρχείου</short>
+        <long>Θέμα που χρησιμοποιείται για την προβολή εικονιδιών αρχείων</long>
+      </locale>
+
+      <locale name="es">
+        <short>Archivo de tema de iconos</short>
+        <long>Tema usado para mostrar los iconos de los archivos</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Tiedostokuvakkeiden teema</short>
+        <long>Teema, joka määrää, miltä tiedostokuvakkeet näyttävät</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Fichier du thème d&apos;icône</short>
+        <long>Thème utilisé pour afficher le fichier d&apos;icônes</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Faila Ikonas Tēma</short>
+        <long>Ikonu attēlošanai lietotā tēma</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Файлын эмблемийн хэлбэр</short>
+        <long>Файлын эмблемийг үзүүлэхэд ашиглах хэлбэр</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Tema Ikon Fail</short>
+        <long>Tema digunakan untuk memapar ikon fail</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Bestandspictogramthema</short>
+        <long>Te gebruiken thema voor bestandspictogrammen</long>
+      </locale>
+
+      <locale name="no">
+        <short>Ikontema for fil</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Tema de Ícones de Arquivos</short>
+        <long>Tema usado para mostrar ícones de arquivos</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Temă icon fişier</short>
+        <long>Temă folosită pentru a afişa iconurile fişierelor</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Téma ikony súboru</short>
+        <long>Téma použitá pri zobrazovaní ikon súboru</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Tema ikon datotek</short>
+        <long>Tema za prikaz ikon datotek</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Filikontema</short>
+        <long>Tema som används för visning av filikoner</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Dosya Simge Teması</short>
+        <long>Dosya simgelerini görüntülemekte kullanılan tema</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Theme biểu tượng tập tin</short>
+        <long>Theme được dùng để hiển thị biểu tượng tập tin</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>文件图标主题</short>
+        <long>用于显示文件图标的主题</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>檔案圖示主題</short>
+        <long>顯示檔案圖示所使用的圖示主題</long>
       </locale>
     </schema>
   </schemalist>
