@@ -1,21 +1,20 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Imakefile,v 1.2 1991-02-06 14:31:12 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Imakefile,v 1.3 1991-03-28 12:53:13 mar Exp $
 FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
 FONTSM=	6x13 cursor 9x15
 BITMAPS=menu16
-POPUPSCRIPTS=library lucy mitvma moira register techinfo xcluster xinfo
+POPUPSCRIPTS=library lucy mitvma moira register techinfo xcluster \
+	xinfo machine
 
 create_dir(/etc/athena/login/fonts)
 create_dir(/usr/athena/lib/login)
 
-install_file(Xsession,/etc/athena/login/Xsession)
+install_script(Xsession,-m 0555,/etc/athena/login/Xsession)
 install_file(config,/etc/athena/login/config)
 
 install::
-	$(INSTALL) machine	$(DESTDIR)/etc/athena/login/machine
 	-for i in $(POPUPSCRIPTS); do \
-		$(INSTALL) $$i $(DESTDIR)/usr/athena/lib/login/$$i; \
+		$(INSTALL) $$i -m 0555 $(DESTDIR)/usr/athena/lib/login/$$i; \
 		done
-
 	-for i in txt dir pag; do \
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/rgb.$$i \
 			$(DESTDIR)/etc/athena/login/rgb.$$i; done
@@ -28,7 +27,4 @@ install::
 	-for i in $(BITMAPS); do \
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/bitmaps/$$i \
 			$(DESTDIR)/etc/athena/login/$$i; done
-
-	-/usr/bin/X11/mkfontdir $(DESTDIR)/etc/athena/login/fonts/
 	$(INSTALL) fonts.alias	$(DESTDIR)/etc/athena/login/fonts/
-
