@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendmail.sh,v 1.1 2003-10-23 22:57:57 ghudson Exp $
+# $Id: sendmail.sh,v 1.1.2.1 2003-10-23 23:00:55 ghudson Exp $
 
 # If we don't have tickets, we must do direct delivery and not do
 # authentication.
