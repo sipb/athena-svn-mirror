@@ -1,0 +1,24 @@
+# This is the Imakefile for the CREF finder.
+#
+#	Lucien Van Elsen
+#	MIT Project Athena
+#
+#	Copyright (c) 1991 by the Massachusetts Institute of Technology
+#
+# 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
+#	$Author: lwvanels $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.1 1991-02-25 16:11:37 lwvanels Exp $
+#
+
+SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c signal.c
+OBJS	= cref.o commands.o display.o cref_utils.o globals.o update.o signal.o
+
+SYS_LIBRARIES = $(CursesLib)
+
+NormalProgramTarget(olc_browser,$(OBJS),,,$(SYS_LIBRARIES))
+SaberProgramTarget(olc_browser,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
+
+DependTarget()
+LintTarget()
+
+AllTarget(olc_browser)
