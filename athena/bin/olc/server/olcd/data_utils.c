@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.31 1991-03-07 13:29:53 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.32 1991-03-26 10:53:22 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.31 1991-03-07 13:29:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.32 1991-03-26 10:53:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -567,7 +567,7 @@ init_user(knuckle,person)
 #ifdef HESIOD
   pw = hes_getpwnam(person->username);
 #else
-  pw = getpwname(person->username);
+  pw = getpwnam(person->username);
 #endif /* Hesiod */
   if (pw != NULL) {
     user->uid = pw->pw_uid;
