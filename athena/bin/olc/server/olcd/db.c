@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.13 1991-03-28 13:28:44 lwvanels Exp $
+ *	$Id: db.c,v 1.14 1991-04-08 21:10:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.13 1991-03-28 13:28:44 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.14 1991-04-08 21:10:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -118,7 +118,6 @@ load_db()
       (void) sprintf(msgbuf, "load_db: can't open OLC database %s", 
 		     TOPIC_FILE);
       log_error(msgbuf);
-      perror("load_db");
       return(ERROR);
     }
 
@@ -130,7 +129,7 @@ load_db()
       t = (TOPIC *) malloc(sizeof(TOPIC));
       if(t == (TOPIC *) NULL)
 	{
-	  perror("load_db: topic malloc:");
+	  log_error("load_db: topic malloc:");
 	  fclose(fp);
 	  return(ERROR);
 	}
@@ -138,14 +137,11 @@ load_db()
       sprintf(t->acl,"%s/%s.acl",SPECIALTY_DIR,t->name);
       t->value = i;
       if (insert_topic(t) != SUCCESS) {
-	perror("load_db: insert_topic:");
+	log_error("load_db: insert_topic:");
 	fclose(fp);
 	return(ERROR);
       }
 
-#ifdef TEST
-      log_status (fmt ("load_db: %s %d %s\n",t->name,i, t->acl));
-#endif /* TEST */
       ++i;
     } 
 
@@ -187,7 +183,7 @@ get_user_info(user)
       (void) sprintf(msgbuf, "load_user: can't open OLC database %s", 
 		     DATABASE_FILE);
       log_error(msgbuf);
-      perror("load_user");
+      log_error("load_user: %m");
       return(ERROR);
     }
 
@@ -207,10 +203,6 @@ get_user_info(user)
 	      db = get_next_word(db, user->title2, NotWhiteSpace);
 	      db = get_next_word(db, buf, NotWhiteSpace);
 	      user->max_answer = atoi(buf);
-#ifdef TEST
-	      printf("%s %s %d %s %d\n",canon, user->title1, user->max_ask,
-		user->title2,user->max_answer);
-#endif /* TEST */
 	      fclose(fp);
 	      return(SUCCESS);
 	    }
