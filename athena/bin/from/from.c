@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: from.c,v 1.26 1999-10-13 20:01:07 ghudson Exp $";
+static const char rcsid[] = "$Id: from.c,v 1.27 2001-07-09 12:56:54 ghudson Exp $";
 
 /* This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -545,7 +545,7 @@ static void print_report(char **headers, int num_headers, int winlength)
     if (p == NULL)
       continue;
 
-    if (strncmp("From", headers[j], 4) == 0) {
+    if (strncasecmp("From", headers[j], 4) == 0) {
       p++;
       while (p[0] == ' ')
 	p++;
@@ -553,7 +553,7 @@ static void print_report(char **headers, int num_headers, int winlength)
       if (subject_field)
 	break;
     }
-    else if (strncmp("Subject", headers[j], 7) == 0) {
+    else if (strncasecmp("Subject", headers[j], 7) == 0) {
       p++;
       while (p[0] == ' ') 
 	p++;
