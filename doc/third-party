@@ -95,6 +95,8 @@ Distribution sites for software under third
 	bind		ftp.isc.org:isc/bind/src
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	gcc		ftp.gnu.org:pub/gnu/gcc
+	glib		ftp.gtk.org:pub/gtk
+	gtk		ftp.gtk.org:pub/gtk
 	gmake		ftp.gnu.org:pub/gnu/make
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
