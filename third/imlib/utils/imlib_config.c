@@ -12,14 +12,16 @@
 #        define N_(String) (String)
 #    endif
 #else
+#ifndef __svr4__
 /* Stubs that do something close enough.  */
 #    define textdomain(String) (String)
 #    define gettext(String) (String)
 #    define dgettext(Domain,Message) (Message)
 #    define dcgettext(Domain,Message,Type) (Message)
 #    define bindtextdomain(Domain,Directory) (Domain)
-#    define _(String) (String)
 #    define N_(String) (String)
+#endif
+#    define _(String) (String)
 #endif
 
 #include <gdk/gdk.h>
