@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.1 1989-11-17 14:07:41 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.2 1990-01-17 02:54:00 vanharen Exp $";
 #endif
 
 
@@ -75,8 +75,8 @@ ERRCODE
 do_olc_help(arguments)
 	char *arguments[];
 {
-  char help_filename[NAME_LENGTH]; /* Name of help file. */
-  char ret[LINE_LENGTH];
+  char help_filename[NAME_SIZE]; /* Name of help file. */
+  char ret[LINE_SIZE];
 
   if (arguments[1] == (char *)NULL) 
     {

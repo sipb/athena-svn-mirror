@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.6 1989-11-17 14:08:12 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.7 1990-01-17 02:54:12 vanharen Exp $";
 #endif
 
 
@@ -32,12 +32,12 @@ do_olc_motd(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int status;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
-  char editor[NAME_LENGTH];
+  char editor[NAME_SIZE];
   char *editorP = (char *) NULL;
 
   if(fill_request(&Request) != SUCCESS)

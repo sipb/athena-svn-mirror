@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.1 1989-11-17 14:06:47 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.2 1990-01-17 02:53:39 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -54,7 +54,7 @@ command_loop(Command_Table, prompt)
      char *prompt;
 {
   REQUEST Request;
-  char command_line[COMMAND_LENGTH]; 
+  char command_line[COMMAND_SIZE]; 
   char *comm_ptr;		
   char *arguments[MAX_ARGS];
   char arglist[MAX_ARGS][MAX_ARG_LENGTH];	

@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.8 1989-11-17 14:09:01 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.9 1990-01-17 02:54:27 vanharen Exp $";
 #endif
 
 
@@ -47,7 +47,7 @@ do_olc_topic(arguments)
 {
   REQUEST Request;
   char topic[TOPIC_SIZE];	
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int status;
   int function  = 0;
   int save_file = 0;

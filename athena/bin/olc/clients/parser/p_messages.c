@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.6 1989-11-17 14:07:47 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.7 1990-01-17 02:54:03 vanharen Exp $";
 #endif
 
 
@@ -51,7 +51,7 @@ do_olc_replay(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int savefile = FALSE;
   int status;
   int sort = FALSE;
@@ -133,7 +133,7 @@ do_olc_show(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int savefile;		 
   int status;
   int connected = 0;

@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.5 1989-11-17 14:08:39 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.6 1990-01-17 02:54:23 vanharen Exp $";
 #endif
 
 
@@ -33,8 +33,8 @@ do_olc_send(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_LENGTH];
-  char editor[NAME_LENGTH];
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   char *editorP = (char *) NULL;
   char *fileP = (char *) NULL;
   int temp = FALSE;
@@ -113,8 +113,8 @@ do_olc_comment(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_LENGTH];
-  char editor[NAME_LENGTH];
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   char *editorP = (char *) NULL;
   char *fileP = (char *) NULL;
   int temp = FALSE;
@@ -182,12 +182,12 @@ do_olc_mail(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
-  char editor[NAME_LENGTH];
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   char *editorP = (char *) NULL;
   char *fileP = (char *) NULL;
-  char smargs[NAME_LENGTH][NAME_LENGTH];
-  char *smargsP[NAME_LENGTH];
+  char smargs[NAME_SIZE][NAME_SIZE];
+  char *smargsP[NAME_SIZE];
   int status;
   int temp = FALSE;
   int checkhub = 0;
@@ -240,17 +240,17 @@ do_olc_mail(arguments)
 		      if(*arguments[0] == '\\')
 			*(*arguments)++;
 		      
-		      if(i >= NAME_LENGTH-1)
+		      if(i >= NAME_SIZE-1)
 			{
 			  fprintf(stderr,"Too many options...\n");
 			  break;
 			}
 		      
-		      if(strlen(*arguments) >= (NAME_LENGTH))
+		      if(strlen(*arguments) >= (NAME_SIZE))
 			fprintf(stderr, "Name too long. Continuing...\n");
 		      else
 			{
-			  strncpy(smargs[i], *arguments, NAME_LENGTH-1);
+			  strncpy(smargs[i], *arguments, NAME_SIZE-1);
 			  *smargs[i+1] = '\0';
 			  smargsP[i] = &smargs[i][0];
 			}

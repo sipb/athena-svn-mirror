@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.2 1989-11-17 14:07:19 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.3 1990-01-17 02:53:44 vanharen Exp $";
 #endif
 
 
@@ -32,7 +32,7 @@ do_olc_describe(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   char note[NOTE_SIZE];
   char *noteP = (char *) NULL;
   int status;

@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.1 1989-11-17 14:07:59 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.2 1990-01-17 02:54:08 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -60,7 +60,7 @@ do_olc_dump(arguments)
 {
   REQUEST Request;
   int status;            
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int save_file = 0;
 
   if(fill_request(&Request) != SUCCESS)
@@ -118,7 +118,7 @@ do_olc_dbinfo(arguments)
 {
   REQUEST Request;
   int status;            
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int save_file = 0;
   int change = 0;
 

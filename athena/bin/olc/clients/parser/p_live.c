@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v 1.2 1989-07-13 12:10:54 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v 1.3 1990-01-17 02:53:57 vanharen Exp $";
 #endif
 
 
@@ -32,7 +32,7 @@ do_olc_live(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   int savefile;		 
   int status;
 

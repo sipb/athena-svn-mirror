@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.1 1989-11-17 14:07:34 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.2 1990-01-17 02:53:50 vanharen Exp $";
 #endif
 
 
@@ -44,13 +44,13 @@ do_olc_list(arguments)
   REQUEST Request;
   int  status;
   int  stati = 0;
-  char queues[NAME_LENGTH];
-  char users[NAME_LENGTH];
-  char topics[NAME_LENGTH];
-  char instances[NAME_LENGTH];
-  char sort[NAME_LENGTH][NAME_LENGTH];
-  char *sortP[NAME_LENGTH];
-  char file[NAME_LENGTH];
+  char queues[NAME_SIZE];
+  char users[NAME_SIZE];
+  char topics[NAME_SIZE];
+  char instances[NAME_SIZE];
+  char sort[NAME_SIZE][NAME_SIZE];
+  char *sortP[NAME_SIZE];
+  char file[NAME_SIZE];
   int savefile = FALSE;
   int comments = 0;
   int i,mask,display= FALSE;
@@ -102,12 +102,12 @@ do_olc_list(arguments)
 	 
 	  for(i=0; *arguments != (char *) NULL; arguments++)
 	    {
-	      if(strlen(*arguments) >= (NAME_LENGTH -i))
+	      if(strlen(*arguments) >= (NAME_SIZE -i))
 		fprintf(stderr,"Too many queues specified. Continuing...\n");
 	      else
 		{
 		  strcat(queues," ");
-		  strncat(queues,*arguments,NAME_LENGTH-1);
+		  strncat(queues,*arguments,NAME_SIZE-1);
 		  break;
 		}
 	      if(*(arguments+1) && (*(arguments+1)[0] == '-'))
@@ -154,7 +154,7 @@ do_olc_list(arguments)
 		      "You must specify something after the -user option.\n");
 	      return(ERROR);
 	    }
-	  strncpy(users,*arguments,NAME_LENGTH-1);
+	  strncpy(users,*arguments,NAME_SIZE-1);
 	  continue;
 	}
       
@@ -170,12 +170,12 @@ do_olc_list(arguments)
 
 	  for(i=0; *arguments != (char *) NULL; arguments++)
 	    {
-	      if(strlen(*arguments) >= (NAME_LENGTH -i))
+	      if(strlen(*arguments) >= (NAME_SIZE -i))
 		fprintf(stderr,
 			"Too many topics specified. Continuing...\n");
 	      else
 		{
-		  strncpy(topics, *arguments, NAME_LENGTH-1);
+		  strncpy(topics, *arguments, NAME_SIZE-1);
 		  break;
 		}
 	      if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
@@ -213,17 +213,17 @@ do_olc_list(arguments)
 	    }
 	  for(i=0; *arguments != (char *) NULL; arguments++)
 	    {
-	      if(i >= NAME_LENGTH-1)
+	      if(i >= NAME_SIZE-1)
 		{
 		  fprintf(stderr,"Too many rules...\n");
 		  break;
 		}
-	      if(strlen(*arguments) >= (NAME_LENGTH))
+	      if(strlen(*arguments) >= (NAME_SIZE))
 		fprintf(stderr,
 			"Name too long. Continuing...\n");
 	      else
 		{
-		  strncpy(sort[i], *arguments, NAME_LENGTH-1);
+		  strncpy(sort[i], *arguments, NAME_SIZE-1);
 		  *sort[i+1] = '\0';
 		  sortP[i] = &sort[i][0];
 		}

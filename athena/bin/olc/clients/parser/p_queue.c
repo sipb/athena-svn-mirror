@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.6 1989-11-17 14:08:20 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.7 1990-01-17 02:54:16 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,7 +31,7 @@ do_olc_queue(arguments)
 {
   REQUEST Request;
   int instance = -1;
-  char queue[NAME_LENGTH];
+  char queue[NAME_SIZE];
   int status;
 
   if(fill_request(&Request) != SUCCESS)
@@ -44,7 +44,7 @@ do_olc_queue(arguments)
 	{
           ++arguments;
 	  if(*arguments != (char *) NULL)
-	    strncpy(queue,*arguments, NAME_LENGTH);
+	    strncpy(queue,*arguments, NAME_SIZE);
 /*	  else
 	    t_input_queue(&Request,queue,FALSE);*/
 	}

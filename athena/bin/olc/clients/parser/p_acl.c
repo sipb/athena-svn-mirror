@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.1 1989-11-17 14:06:18 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.2 1990-01-17 02:53:30 vanharen Exp $";
 #endif
 
 
@@ -32,8 +32,8 @@ do_olc_acl(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char acl[NAME_LENGTH];
-  char file[NAME_LENGTH];
+  char acl[NAME_SIZE];
+  char file[NAME_SIZE];
   int save_file = 0;
   int list_flag = 0;
   int acl_flag  = 0;
@@ -55,7 +55,7 @@ do_olc_acl(arguments)
 	    change_flag = TRUE;	    
 
 	    if(*arguments != (char *) NULL)
-	      strncpy(acl,*arguments,NAME_LENGTH);
+	      strncpy(acl,*arguments,NAME_SIZE);
 	    continue;
 	  }
 
@@ -66,7 +66,7 @@ do_olc_acl(arguments)
 	    change_flag = TRUE;
 	    
 	    if(*arguments != (char *) NULL)
-	      strncpy(acl,*arguments,NAME_LENGTH);
+	      strncpy(acl,*arguments,NAME_SIZE);
 	    continue;
 	  }
 
@@ -75,7 +75,7 @@ do_olc_acl(arguments)
 	  list_flag = TRUE;
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
-	    strncpy(acl,*arguments,NAME_LENGTH);
+	    strncpy(acl,*arguments,NAME_SIZE);
 	    
 	  continue;
 	}

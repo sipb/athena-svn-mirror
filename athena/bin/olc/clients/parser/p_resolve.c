@@ -16,7 +16,7 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
@@ -47,7 +47,7 @@ do_olc_done(arguments)
   REQUEST Request;
   int status;
   char topic[TOPIC_SIZE];
-  char title[LINE_LENGTH];
+  char title[LINE_SIZE];
   char *titleP = (char *) NULL;
   int off = 0;
 
@@ -88,7 +88,7 @@ do_olc_done(arguments)
 	  if(*arguments == (char *) NULL)
 	    (void) get_prompted_input("Title: ", title);
 	  else
-	    strncpy(title,*arguments,LINE_LENGTH);
+	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
 	}
 
@@ -136,7 +136,7 @@ do_olc_cancel(arguments)
 {
   REQUEST Request;
   int status;
-  char title[LINE_LENGTH];
+  char title[LINE_SIZE];
   char *titleP = (char *) NULL;
 
   title[0] = '\0';
@@ -152,7 +152,7 @@ do_olc_cancel(arguments)
 	  if(*arguments == (char *) NULL)
 	    (void) get_prompted_input("Title: ", title);
 	  else
-	    strncpy(title,*arguments,LINE_LENGTH);
+	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
 	}
 
