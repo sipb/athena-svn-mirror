@@ -20,11 +20,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.15 1990-02-06 02:27:29 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.16 1990-04-25 16:24:24 vanharen Exp $";
 #endif 
 
 
@@ -92,49 +92,52 @@ extern int krb_ap_req_debug;
  */
 
 COMMAND OLC_Command_Table[] = {
-  "?",		do_olc_list_cmds,"List available commands",
-  "help",	do_olc_help,	"Describe the various commands.",
-  "quit",	do_quit,	"Temporarily exit OLC",
-  "send",	do_olc_send,	"Send a message to the consultant",
-  "done",	do_olc_done,	"Mark your question resolved",
-  "cancel",     do_olc_cancel,  "Cancel your question",
-  "replay",	do_olc_replay, 	"Replay the conversation so far",
-  "show",       do_olc_show,	"Show any new messages",
-  "topic",      do_olc_topic,   "Find question topic",
-  "motd",       do_olc_motd,    "See message of the day",
-  "answers",    do_olc_stock,   "Read answers to common questions",
-  "status",     do_olc_status,  "Print your status",
-  "who",        do_olc_who,     "Find name of connected consultant",
+  "?",		do_olc_list_cmds,	"List available commands",
+  "help",	do_olc_help,		"Describe the various commands.",
+  "answers",	do_olc_stock,		"Read answers to common questions",
+  "ask",	do_olc_ask,		"Ask a question",
+  "cancel",	do_olc_cancel,		"Cancel your question",
+  "done",	do_olc_done,		"Mark your question resolved",
+  "exit",	do_quit,		"Temporarily exit OLC",
+  "motd",	do_olc_motd,		"See message of the day",
+  "quit",	do_quit,		"Temporarily exit OLC",
+  "replay",	do_olc_replay,		"Replay the conversation so far",
+  "send",	do_olc_send,		"Send a message to the consultant",
+  "show",	do_olc_show,		"Show any new messages",
+  "status",	do_olc_status,		"Print your status",
+  "topic",	do_olc_topic,		"Find question topic",
+  "who",	do_olc_who,		"Find name of connected consultant",
   (char *) NULL, (int(*)()) NULL,	""
   };
   
 COMMAND OLCR_Command_Table[] = {
-  "?",		do_olc_list_cmds,"List available commands",
-  "help",	do_olc_help,	 "Describe the various commands",
-  "ask",        do_olc_ask,      "Ask a question",
-  "cancel",     do_olc_cancel,   "Cancel your question",
-  "comment",    do_olc_comment,  "Make a comment",
-/*  "dbinfo",     do_olc_dbinfo,   "Display database info.",*/
-  "describe",   do_olc_describe, "Show/Change summary info",
-  "done",	do_olc_done,	 "Resolve question",    
-  "exit",       do_quit,         "Quit",
-  "forward",    do_olc_forward,  "Forward a question",
-  "grab",       do_olc_grab,     "Grab a user",
-  "instance",   do_olc_instance, "Show/Change default instance",
-  "list",       do_olc_list,     "List the world",
-  "mail",       do_olc_mail,     "Mail a message",
-  "motd",       do_olc_motd,     "See motd",
-  "off",        do_olc_off,      "Sign off",
-  "on",         do_olc_on,       "Sign on",
-/*  "queue",      do_olc_queue,    "Show/Change queues",*/
-  "quit",	do_quit,	 "Quit",
-  "replay",	do_olc_replay,   "Replay the conversation",        
-  "send",	do_olc_send,	 "Send a message",                     
-  "show",       do_olc_show,	 "Show any new messages",
-  "status",     do_olc_status,   "Find your status",
-  "stock",      do_olc_stock,    "Browse thru stock answers",
-  "topic",      do_olc_topic,    "Show/Change question topic",
-  "who",        do_olc_who,      "Find status for current instance",
+  "?",		do_olc_list_cmds,	"List available commands",
+  "help",	do_olc_help,		"Describe the various commands",
+  "answers",	do_olc_stock,		"Read answers to common questions",
+  "ask",	do_olc_ask,		"Ask a question",
+  "cancel",	do_olc_cancel,		"Cancel a question",
+  "comment",	do_olc_comment, 	"Make a comment",
+/*"dbinfo",	do_olc_dbinfo,		"Display database info.",*/
+  "describe",	do_olc_describe,	"Show/Change summary info",
+  "done",	do_olc_done,		"Resolve question",	
+  "exit",	do_quit,		"Quit",
+  "forward",	do_olc_forward,		"Forward a question",
+  "grab",	do_olc_grab,		"Grab a user",
+  "instance",	do_olc_instance,	"Show/Change default instance",
+  "list",	do_olc_list,		"List the world",
+  "mail",	do_olc_mail,		"Mail a message",
+  "motd",	do_olc_motd,		"See motd",
+  "off",	do_olc_off,		"Sign off",
+  "on",		do_olc_on,		"Sign on",
+/*"queue",	do_olc_queue,		"Show/Change queues",*/
+  "quit",	do_quit,		"Quit",
+  "replay",	do_olc_replay,		"Replay the conversation",	   
+  "send",	do_olc_send,		"Send a message",		       
+  "show",	do_olc_show,		"Show any new messages",
+  "status",	do_olc_status,		"Find your status",
+  "stock",	do_olc_stock,		"Browse thru stock answers",
+  "topic",	do_olc_topic,		"Show/Change question topic",
+  "who",	do_olc_who,		"Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
   };
 
@@ -316,11 +319,6 @@ do_olc_init()
     }
   read_response(fd, &status);
 
-#ifdef TEST
-  printf("do_olcinit: requester %s, response: %d\n",
-	 Request.requester.username, status);
-#endif TEST
-
   switch(status) 
     {
     case USER_NOT_FOUND:
@@ -333,10 +331,6 @@ do_olc_init()
 #endif LAVIN
       first = 1;
 	
-#ifdef TEST
-      printf("do_olc_init: %s not found\n", Request.requester.username);
-#endif TEST
-
       break;
          
     case CONNECTED:
@@ -371,22 +365,20 @@ do_olc_init()
   t_get_motd(&Request,OLC,file,FALSE);
   unlink(file);
 
-  if(OLC && first)
+  if(OLC)
     {
-      topic[0]='\0';
-      if(t_input_topic(&Request,topic,TRUE) != SUCCESS)
-	exit(1);
-      if(t_ask(&Request,topic) != SUCCESS)
-	exit(1);
-      if(OLC)
+      printf("\nTo see answers to common questions, type:      answers\n");
+      if (first)
 	{
-	  printf("\nSome other useful OLC commands are: \n\n");
-	  printf("\tsend  - send a message\n");
-	  printf("\tshow  - show new messages\n");
-	  printf("\tdone  - mark your question resolved\n");
-	  printf("\t?     - see entire listing of commands\n");
+	  topic[0]='\0';
+	  printf("To ask a consultant a question, type:          ask\n");
+#if 0
+	  if(t_input_topic(&Request,topic,TRUE) != SUCCESS)
+	    exit(1);
+	  if(t_ask(&Request,topic) != SUCCESS)
+	    exit(1);
+#endif
 	}
-      
     }
 
   return(errcode);
