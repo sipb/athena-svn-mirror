@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.23 1998-03-11 21:57:17 miki Exp $
+# $Id: phase3.sh,v 1.24 1998-03-17 15:18:23 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -191,6 +191,15 @@ if [ -d $auxdir ]; then
 	done
 fi
 
+case $REBOOT in
+N)
+    echo "after doing your customizations, type exit "
+    echo "and the machine will reboot itself"
+    /sbin/sh
+    ;;
+default)
+    ;;
+esac
 echo "Unmounting filesystems and checking them"
 cd /
 
@@ -204,5 +213,5 @@ fsck -y -F ufs $rusrdrive
 /usr/sbin/fsck -y -F ufs $rrootdrive
 sleep 5
 
-echo "rebooting now"
-reboot
+echo "Rebooting now"
+reboot 
