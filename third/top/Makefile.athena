@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.9 2001-05-25 18:18:46 zacheiss Exp $
+# $Id: Makefile.athena,v 1.10 2001-05-30 03:26:05 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -36,10 +36,10 @@ install: always
 	     mkdir -p $$SRVD/usr/athena/bin/sparcv9 && \
 	     ./install -o root -m 4755 -g other top.sparcv7 $$SRVD/usr/athena/bin/sparcv7/top && \
 	     ./install -o root -m 4755 -g other top $$SRVD/usr/athena/bin/sparcv9/top && \
-	     cp /usr/lib/isaexec $$SRVD/usr/athena/bin/top \	     
+	     cp /usr/lib/isaexec $$SRVD/usr/athena/bin/top; \
 	     ;; \
 	 *) \
-	     ${MAKE} install "DESTDIR=$$SRVD" \
+	     ${MAKE} install "DESTDIR=$$SRVD"; \
 	     ;; \
 	 esac
 
