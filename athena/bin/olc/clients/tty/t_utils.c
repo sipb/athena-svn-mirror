@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  *
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.13 1990-03-01 18:11:10 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.14 1990-04-25 16:57:31 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -103,7 +103,7 @@ enter_message(file,editor)
 {
   int status;
 
-  if(editor == (char *) NULL)
+  if(string_eq(editor, ""))
     {
       if(isatty(1))
         {
