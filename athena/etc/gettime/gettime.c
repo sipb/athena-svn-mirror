@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
  *	$Author: treese $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.2 1987-02-21 21:16:25 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.3 1987-08-30 19:56:33 treese Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.2 1987-02-21 21:16:25 treese Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.3 1987-08-30 19:56:33 treese Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -19,12 +19,12 @@ static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <signal.h>
 #include <setjmp.h>
 
-/* On the RT, we need to explicitly make this an unsigned long.  The VAX
-   pcc does not accept this syntax, however.
+/* On the RT, we need to explicitly make this an unsigned long.  Neither the
+   VAX or RT versions of pcc accept this syntax, however.
    - Win Treese, 2/21/86
  */
 
-#ifdef ibm032
+#if defined(ibm032) && !defined(_pcc_)
 #define TM_OFFSET 2208988800UL
 #else
 #define TM_OFFSET 2208988800
