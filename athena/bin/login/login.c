@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.59 1993-06-17 18:25:19 miki Exp $
+ * $Id: login.c,v 1.60 1993-06-30 12:48:17 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.59 1993-06-17 18:25:19 miki Exp $";
+static char *rcsid = "$Id: login.c,v 1.60 1993-06-30 12:48:17 cfields Exp $";
 #endif
 
 /*
@@ -44,7 +44,9 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/file.h>
-#ifdef SOLARIS
+#ifndef SOLARIS
+#include <sys/dir.h>
+#else
 #include <unistd.h>
 #include <limits.h>
 #include <dirent.h>
@@ -1383,7 +1385,7 @@ char	*speeds[] =
 doremoteterm(term, term1, tp)
 	char *term, *term1;
 #else
-	doremoteterm(term,  &ttyb); 
+doremoteterm(term, tp)
 	char *term;
 #endif
 
@@ -1988,6 +1990,8 @@ struct passwd *pwd;
       return(0);
     }else return(1);
 }
+
+#ifdef SOLARIS
 remove_spwent(pwd)
 struct passwd *pwd;
 {
@@ -2036,6 +2040,7 @@ struct passwd *pwd;
 	return(0);
     } else return(1);
 }
+#endif
 
 get_groups()
 {
