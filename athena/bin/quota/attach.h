@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.2 1991-07-18 22:46:59 probe Exp $
+ * $Id: attach.h,v 1.3 1992-04-10 20:23:23 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -185,8 +185,11 @@ extern struct _fstypes fstypes[];
 
 extern void lock_attachtab(), unlock_attachtab();
 extern void get_attachtab(), free_attachtab();
-extern struct _attachtab *attachtab_lookup_mntpt(), *attachtab_first;
 extern struct _fstypes *get_fs();
+extern struct _attachtab
+    *attachtab_first,
+    *attachtab_lookup(),
+    *attachtab_lookup_mntpt();
     
 
 #if !defined(__STDC__) && !(defined(AIX) && defined(i386))
