@@ -1,4 +1,4 @@
-# $Id: packages,v 1.129 2001-04-04 14:36:22 ghudson Exp $
+# $Id: packages,v 1.130 2001-04-12 03:14:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -173,7 +173,7 @@ third/pine			requires krb5,hesiod
 third/popt			except linux
 third/rcs			on solaris
 third/read-edid			on linux
-third/readline
+third/readline			except linux
 third/rep-gtk			requires librep,libglade,gnome-libs
 third/rs
 third/sawfish			requires rep-gtk,gnome-libs,control-center
