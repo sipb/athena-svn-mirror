@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.23 1997-04-30 09:00:08 ghudson Exp $
+# $Id: update_ws.sh,v 1.24 1997-05-04 05:02:30 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -23,7 +23,7 @@
 
 trap "" 1 15
 
-export CONFDIR LIBDIR PATH HOSTTYPE AUTO
+export CONFDIR LIBDIR PATH HOSTTYPE
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
@@ -31,12 +31,28 @@ HOSTTYPE=`/bin/athena/machtype`
 
 case "$0" in
 *auto_update)
-	AUTO=true
+	method=Auto
 	;;
 *)
-	AUTO=false
+	method=Manual
 	;;
 esac
+
+# The -r option specifies that the update is remote and that we shouldn't
+# give the user a shell after the reboot.
+while getopts r opt; do
+	case "$opt" in
+	r)
+		method=Remote
+		;;
+	\?)
+		echo "$0 [-r] [reactivate|rc]" 1>&2
+		exit 1
+		;;
+	esac
+done
+shift `expr $OPTIND - 1`
+why="$1"
 
 if [ "`whoami`" != "root" ];  then
 	echo "You are not root.  This update script must be run as root."
@@ -91,7 +107,7 @@ AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$NEWVERS" > \
 	/var/athena/clusterinfo.bsh.update
 if [ $? -ne 0 -o ! -s /var/athena/clusterinfo.bsh.update ]; then
 	# No updates for machines without cluster info.
-	if [ "$AUTO" = false ]; then
+	if [ "$method" != Auto ]; then
 		echo "Cannot find Hesiod information for this machine;"
 		echo "aborting update."
 	fi
@@ -123,7 +139,7 @@ packsnewer=`echo "$NEWVERS $VERSION" | awk '{
 
 # If the packs aren't any newer, print an appropriate message and exit.
 if [ -z "$packsnewer" ]; then
-	if [ "$AUTO" != true ]; then
+	if [ "$method" != Auto ]; then
 		# User ran update_ws; display something appropriate.
 		if [ -n "$NEW_PRODUCTION_RELEASE" -o \
 		     -n "$NEW_TESTING_RELEASE" ]; then
@@ -162,7 +178,7 @@ fi
 
 # The packs are newer, but if we were run as auto_update, we don't want to do
 # an update unless the machine is autoupdate (or public).
-if [ "$AUTO" = true -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
+if [ "$method" = Auto -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	cat <<EOF
 
 	A new version of Athena software is now available.
@@ -178,7 +194,7 @@ EOF
 	exit 1
 fi
 
-if [ "$AUTO" = true ]; then
+if [ "$method" = Auto ]; then
 	# The packs are newer and we want to take the update, but not
 	# necessarily right now.  Use desync to stagger the update
 	# over a four-hour period.  (Use the version from /srvd for
@@ -233,7 +249,7 @@ sgi)
 esac
 
 # Tell dm to shut down everything and sleep forever during the update.
-if [ "$AUTO" = true -a "$1" = reactivate ]; then
+if [ "$method" = Auto -a "$why" = reactivate ]; then
 	if [ -f /var/athena/dm.pid ]; then
 		kill -FPE `cat /etc/athena/dm.pid`
 	fi
@@ -252,7 +268,7 @@ if [ "$AUTO" = true -a "$1" = reactivate ]; then
 	fi
 fi
 
-if [ "$AUTO" = true ]; then
+if [ "$method" = Auto ]; then
 	echo
 	echo THIS WORKSTATION IS ABOUT TO UNDERGO AN AUTOMATIC SOFTWARE UPDATE.
 	echo THIS PROCEDURE MAY TAKE SOME TIME.
@@ -263,7 +279,7 @@ fi
 
 # Everything is all set; do the actual update.
 rm -f /var/athena/update.log
-sh "$LIBDIR/do-update" "$AUTO" < /dev/null 2>&1 | tee /var/athena/update.log
+sh "$LIBDIR/do-update" "$method" < /dev/null 2>&1 | tee /var/athena/update.log
 echo "Update partially completed, system will reboot in 15 seconds."
 sync
 sleep 15

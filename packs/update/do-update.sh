@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.16 1997-04-17 17:49:42 ghudson Exp $
+# $Id: do-update.sh,v 1.17 1997-05-04 05:02:30 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -29,6 +29,10 @@ SERVERDIR=/var/server
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 CPUTYPE=`/bin/athena/machtype -c`
+
+# We get one argument, the method by which the machine was rebooted.
+# Possible values are Auto, Manual, and Remote.
+method="$1"
 
 echo "Starting update"
 
@@ -263,12 +267,6 @@ sgi)
 	chkconfig -f suppress-network-daemons on
 	;;
 esac
-
-if [ "$AUTO" = true ]; then
-	method=Auto
-else
-	method=Manual
-fi
 
 echo "Updating version for reboot"
 echo "Athena Workstation ($HOSTTYPE) Version Reboot $method $NEWVERS `date`" \
