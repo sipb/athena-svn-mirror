@@ -1,23 +1,15 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.20 1993-02-22 15:40:52 probe Exp $
-#
-# CC can be overridden from driver makefile.  Note the -g flag
-# is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
-# driver makefile can force optimization instead of debugging.
-#
-#       CC = gcc -g -DFUNCTION_PROTOTYPES -ansi
+# $Id: Imakefile,v 1.21 1993-02-25 15:14:09 probe Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
 #endif
 
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
-DEFINES = -I. $(MACHDEFS) \
-	-DMOTD_FILE=\"/afs/athena.mit.edu/system/config/motd/login.`. $(ATHVERS);echo $$ATHMAJV$$ATHMINV`\"
-LINTFLAGS = $(CFLAGS) -b -h -u -v -z
+DEFINES = $(MACHDEFS)
 
-  SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
-  OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
-  LIBS = -lXaw  ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
+SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
+OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
+LIBS = -lXaw  ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	 $(AFSLIBS) $(MACHLIBS) -lm
 
 create_dir(/etc/athena/login)
@@ -33,11 +25,15 @@ install:: Xlogin
 #if defined(_IBMR2)
 Xlogin:	Xlogin.rios.presed
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.rios.presed > Xlogin
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
+		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
+		Xlogin.rios.presed > Xlogin
 #else
 Xlogin:	Xlogin.presed
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.presed > Xlogin
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
+		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
+		Xlogin.presed > Xlogin
 #endif
 	
 install_file(bitmaps/check,/etc/athena/login/bitmaps/check)
@@ -78,7 +74,3 @@ install_file(bitmaps/Shift-F9,/etc/athena/login/bitmaps/Shift-F9)
 install_file(Xlogin,/etc/athena/login/Xlogin)
 install_man(timeout.1,timeout.1)
 install_man(xlogin.8,xlogin.8)
-
-lint:
-	$(LINT) $(LINTFLAGS) $(SRCS)
-
