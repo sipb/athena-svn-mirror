@@ -3,7 +3,7 @@
 # MIT Project Athena
 #
 #
-ftp	stream	tcp	nowait	switched	root	/etc/athena/ftpd	ftpd -a
+ftp	stream	tcp	nowait	switched	root	/etc/athena/ftpd	ftpd -a off
 telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a cred
 shell	stream	tcp	nowait	switched	root	/usr/sbin/in.rshd	in.rshd
 login	stream	tcp	nowait	switched	root	/usr/sbin/in.rlogind	in.rlogind
