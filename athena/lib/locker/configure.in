@@ -1,0 +1,26 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(locker.h)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_PATH_PROG(MOUNT_CMD, mount, , ${PATH}:/sbin:/usr/sbin)
+AC_PATH_PROG(UMOUNT_CMD, umount, , ${PATH}:/sbin:/usr/sbin)
+
+AC_MSG_CHECKING(if rpcsvc/mount.h needs sys/fs/nfs.h)
+AC_TRY_COMPILE([
+#include <rpc/rpc.h>
+#include <rpcsvc/mount.h>
+], , AC_MSG_RESULT(no), AC_TRY_COMPILE([
+#include <rpc/rpc.h>
+#include <sys/fs/nfs.h>
+#include <rpcsvc/mount.h>
+], , AC_MSG_RESULT(yes)
+     AC_DEFINE(NEED_SYS_FS_NFS_H),
+  AC_MSG_ERROR(couldn't include rpcsvc/mount.h)))
+
+ATHENA_KRB4_REQUIRED
+ATHENA_AFS_REQUIRED
+ATHENA_HESIOD_REQUIRED
+
+AC_OUTPUT(Makefile)
