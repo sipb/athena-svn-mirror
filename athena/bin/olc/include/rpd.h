@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.16 1991-09-22 11:45:21 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.17 1993-05-16 19:21:14 vanharen Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -80,7 +80,7 @@ int acl_exact_match P((char *acl , char *principal ));
 
 /* fdcache.c */
 void init_cache P((void ));
-char *get_log P((char *username , int instance , int *result ));
+char *get_log P((char *username , int instance , int *result , int censored));
 int get_bucket_index P((char *username , int instance ));
 int allocate_entry P((void ));
 void delete_entry P((struct entry *ent ));
