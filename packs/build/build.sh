@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.15 1997-09-24 06:54:27 ghudson Exp $
+# $Id: build.sh,v 1.16 1997-10-03 17:57:14 ghudson Exp $
 
 source="/mit/source"
 build="/build"
@@ -34,8 +34,11 @@ case "`uname -a`" in
 esac
 
 # Send all output friom this point on to the build log file.
-mkdir -p $build/LOGS 2>/dev/null
-logfile="$build/LOGS/washlog.`date '+%y.%m.%d.%H'`"
+mkdir -p "$build/logs" 2>/dev/null
+now=`date '+%y.%m.%d.%H'`
+logfile=$build/logs/washlog.$now
+rm -f "$build/logs/current"
+ln -s "washlog.$now" "$build/logs/current"
 exec >> "$logfile" 2>&1
 
 echo ========
