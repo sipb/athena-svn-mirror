@@ -54,16 +54,12 @@ Boston, MA 02111-1307, USA.  */
 #endif /* emacs */
 #endif /* NOT_C_CODE */
 
-/*
- *	Define HAVE_TERMIOS if the system provides POSIX-style
- *	functions and macros for terminal control.
- */
+/* Define HAVE_TERMIOS if the system provides POSIX-style
+   functions and macros for terminal control.  */
 
 #define HAVE_TERMIOS
 
-/*
- *	Define HAVE_PTYS if the system supports pty devices.
- */
+/* Define HAVE_PTYS if the system supports pty devices.  */
 
 #define HAVE_PTYS
 
@@ -335,9 +331,11 @@ Boston, MA 02111-1307, USA.  */
    and the function definitions in libc.  So turn this off.  */
 /* #define REGEXP_IN_LIBC */
 
-/* Use BSD process groups, but use setpgid() instead of setpgrp() to
-   actually set a process group. */
+/* Use BSD process groups.  */
 
 #define BSD_PGRPS
-#define setpgrp(pid,pgid) setpgid(pid,pgid)
-#define getpgrp(n) getpgid()
+
+/* Use mmap directly for allocating larger buffers.  */
+#ifdef DOUG_LEA_MALLOC
+#undef REL_ALLOC
+#endif

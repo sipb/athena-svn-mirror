@@ -3,9 +3,9 @@
 ;; Copyright (C) 1992, 1993, 1994, 1995, 1996, 1998 Free Software Foundation, Inc.
 
 ;; Author:     Eric S. Raymond <esr@snark.thyrsus.com>
-;; Maintainer: Andre Spiegel <spiegel@inf.fu-berlin.de>
+;; Maintainer: Andre Spiegel <spiegel@gnu.org>
 
-;; $Id: vc-hooks.el,v 1.4 1998/12/16 21:53:04 ghudson Exp $
+;; $Id: vc-hooks.el,v 1.6 2001/01/01 18:34:39 ghudson Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -194,7 +194,7 @@ similarly for other version control systems."
   ;; number of the subexpression that should be returned. If there's
   ;; a third element (also the number of a subexpression), that 
   ;; subexpression is assumed to be a date field and we want the most
-  ;; recent entry matching the template.
+  ;; recent entry matching the template; this works for RCS format dates only.
   ;; If FILE and PROPERTIES are given, the latter must be a list of
   ;; properties of the same length as PATTERNS; each property is assigned 
   ;; the corresponding value.
@@ -213,6 +213,13 @@ similarly for other version control systems."
 	      (let ((latest-date "") (latest-val))
 		(while (re-search-forward (car p) nil t)
 		  (let ((date (vc-match-substring (elt p 2))))
+		    ;; Most (but not all) versions of RCS use two-digit years
+		    ;; to represent dates in the range 1900 through 1999.
+		    ;; The two-digit and four-digit notations can both appear
+		    ;; in the same file.  Normalize the two-digit versions.
+		    (save-match-data
+		      (if (string-match "\\`[0-9][0-9]\\." date)
+                          (setq date (concat "19" date))))
 		    (if (string< latest-date date)
 			(progn
 			  (setq latest-date date)
@@ -879,15 +886,16 @@ For CVS, the full name of CVS/Entries is returned."
 	   (file-directory-p (concat dirname "CVS/"))
 	   (file-readable-p (concat dirname "CVS/Entries")))
       (let ((file (concat dirname basename))
-            ;; make sure that the file name is searched 
-            ;; case-sensitively
-            (case-fold-search nil)
             buffer)
 	(unwind-protect
 	    (save-excursion
 	      (setq buffer (set-buffer (get-buffer-create "*vc-info*")))
 	      (vc-insert-file (concat dirname "CVS/Entries"))
 	      (goto-char (point-min))
+	      ;; make sure that the file name is searched 
+	      ;; case-sensitively - case-fold-search is a buffer-local
+	      ;; variable, so setting it here won't affect any other buffers
+	      (setq case-fold-search nil)
 	      (cond
 	       ;; entry for a "locally added" file (not yet committed)
 	       ((re-search-forward
@@ -962,7 +970,10 @@ For CVS, the full name of CVS/Entries is returned."
   "Change read-only status of current buffer, perhaps via version control.
 If the buffer is visiting a file registered with version control,
 then check the file in or out.  Otherwise, just change the read-only flag
-of the buffer.  With prefix argument, ask for version number."
+of the buffer.
+With prefix argument, ask for version number to check in or check out.
+Check-out of a specified version number does not lock the file;
+to do that, use this command a second time with no argument."
   (interactive "P")
   (if (or (and (boundp 'vc-dired-mode) vc-dired-mode)
           ;; use boundp because vc.el might not be loaded
@@ -1174,7 +1185,7 @@ Returns t if checkout was successful, nil otherwise."
     '("Retrieve Snapshot" . vc-retrieve-snapshot))
   (define-key vc-menu-map [vc-create-snapshot]
     '("Create Snapshot" . vc-create-snapshot))
-  (define-key vc-menu-map [vc-directory] '("Show Locked Files" . vc-directory))
+  (define-key vc-menu-map [vc-directory] '("VC Directory Listing" . vc-directory))
   (define-key vc-menu-map [separator1] '("----"))
   (define-key vc-menu-map [vc-annotate] '("Annotate" . vc-annotate))
   (define-key vc-menu-map [vc-rename-file] '("Rename File" . vc-rename-file))
@@ -1193,18 +1204,22 @@ Returns t if checkout was successful, nil otherwise."
   (define-key vc-menu-map [vc-next-action] '("Check In/Out" . vc-next-action))
   (define-key vc-menu-map [vc-register] '("Register" . vc-register)))
 
-(put 'vc-rename-file 'menu-enable 'vc-mode)
-(put 'vc-annotate 'menu-enable '(eq (vc-buffer-backend) 'CVS))
-(put 'vc-version-other-window 'menu-enable 'vc-mode)
-(put 'vc-diff 'menu-enable 'vc-mode)
-(put 'vc-update-change-log 'menu-enable
-     '(eq (vc-buffer-backend) 'RCS))
-(put 'vc-print-log 'menu-enable 'vc-mode)
-(put 'vc-cancel-version 'menu-enable 'vc-mode)
-(put 'vc-revert-buffer 'menu-enable 'vc-mode)
-(put 'vc-insert-headers 'menu-enable 'vc-mode)
-(put 'vc-next-action 'menu-enable 'vc-mode)
-(put 'vc-register 'menu-enable '(and buffer-file-name (not vc-mode)))
+;;; These are not correct and it's not currently clear how doing it
+;;; better (with more complicated expressions) might slow things down
+;;; on older systems.
+
+;;;(put 'vc-rename-file 'menu-enable 'vc-mode)
+;;;(put 'vc-annotate 'menu-enable '(eq (vc-buffer-backend) 'CVS))
+;;;(put 'vc-version-other-window 'menu-enable 'vc-mode)
+;;;(put 'vc-diff 'menu-enable 'vc-mode)
+;;;(put 'vc-update-change-log 'menu-enable
+;;;     '(eq (vc-buffer-backend) 'RCS))
+;;;(put 'vc-print-log 'menu-enable 'vc-mode)
+;;;(put 'vc-cancel-version 'menu-enable 'vc-mode)
+;;;(put 'vc-revert-buffer 'menu-enable 'vc-mode)
+;;;(put 'vc-insert-headers 'menu-enable 'vc-mode)
+;;;(put 'vc-next-action 'menu-enable 'vc-mode)
+;;;(put 'vc-register 'menu-enable '(and buffer-file-name (not vc-mode)))
 
 (provide 'vc-hooks)
 

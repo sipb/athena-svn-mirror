@@ -304,7 +304,7 @@ mostlyclean:
 
 clean: mostlyclean
 	-rm -f ${INSTALLABLES} ${UTILITIES} ${DONT_INSTALL}
-	-rm -f ../etc/DOC* *.tab.c *.tab.h
+	-rm -f ../etc/DOC* fns*.el *.tab.c *.tab.h
 
 distclean: clean
 	-rm -f TAGS
@@ -378,7 +378,7 @@ digest-doc: ${srcdir}/digest-doc.c
 sorted-doc: ${srcdir}/sorted-doc.c ${ALLOCA}
 	$(CC) ${ALL_CFLAGS} ${srcdir}/sorted-doc.c ${ALLOCA} $(LOADLIBES) -o sorted-doc
 
-b2m: ${srcdir}/b2m.c ../src/config.h
+b2m: ${srcdir}/b2m.c ../src/config.h $(GETOPTDEPS)
 	$(CC) ${ALL_CFLAGS} ${srcdir}/b2m.c  -DVERSION="\"${version}\"" \
 	   $(GETOPTOBJS) $(LOADLIBES) -o b2m 
 
@@ -397,7 +397,7 @@ cvtmail: ${srcdir}/cvtmail.c
 fakemail: ${srcdir}/fakemail.c ../src/config.h
 	$(CC) ${ALL_CFLAGS} ${srcdir}/fakemail.c $(LOADLIBES) -o fakemail
 
-yow: ${srcdir}/yow.c ../src/paths.h
+yow: ${srcdir}/yow.c ../src/epaths.h
 	$(CC) ${ALL_CFLAGS} ${srcdir}/yow.c $(LOADLIBES) -o yow
 
 emacsserver: ${srcdir}/emacsserver.c ../src/config.h

@@ -254,8 +254,12 @@ the associated section number."
   "Regular expression describing a manpage section within parentheses.")
 
 (defvar Man-page-header-regexp
-  (concat "^[ \t]*\\(" Man-name-regexp
-	  "(\\(" Man-section-regexp "\\))\\).*\\1")
+  (if (and (string-match "-solaris2\\." system-configuration)
+	   (not (string-match "-solaris2\\.[123435]$" system-configuration)))
+      (concat "^[-A-Za-z0-9_].*[ \t]\\(" Man-name-regexp
+	      "(\\(" Man-section-regexp "\\))\\)$")
+    (concat "^[ \t]*\\(" Man-name-regexp
+	    "(\\(" Man-section-regexp "\\))\\).*\\1"))
   "Regular expression describing the heading of a page.")
 
 (defvar Man-heading-regexp "^\\([A-Z][A-Z ]+\\)$"
@@ -381,7 +385,8 @@ This is necessary if one wants to dump man.el with emacs."
 	    nil))))
 
   (setq Man-filter-list
-	(list
+	;; Avoid trailing nil which confuses customize.
+	(apply 'list
 	 (cons
 	  Man-sed-command
 	  (list
@@ -415,9 +420,10 @@ This is necessary if one wants to dump man.el with emacs."
 	   "'"
 	   ))
 	 (if (not Man-uses-untabify-flag)
-	     (cons
-	      Man-untabify-command
-	      Man-untabify-command-args)
+	     ;; The outer list will be stripped off by apply.
+	     (list (cons
+		    Man-untabify-command
+		    Man-untabify-command-args))
 	   )))
 )
 
@@ -448,7 +454,7 @@ that string instead of from the current buffer."
 			 ; which do support stderr redirection.
 			 (if (not (fboundp 'start-process))
 			     " %s"
-			   " %s 2>/dev/null")))
+			   (concat " %s 2>" null-device))))
 	(flist Man-filter-list))
     (while (and flist (car flist))
       (let ((pcom (car (car flist)))
@@ -654,13 +660,15 @@ See the variable `Man-notify-method' for the different notification behaviors."
      )))
 
 (defun Man-softhyphen-to-minus ()
-  ;; \255 is some kind of dash in Latin-1.
-  (goto-char (point-min))
-  (if enable-multibyte-characters
-      (while (search-forward "\255" nil t)
-	(if (= (preceding-char) ?\255)
-	    (replace-match "-")))
-    (while (search-forward "\255" nil t) (replace-match "-"))))
+  ;; \255 is some kind of dash in Latin-N.  Versions of Debian man, at
+  ;; least, emit it even when not in a Latin-N locale.
+  (unless (eq t (compare-strings "latin-" 0 nil
+				 current-language-environment 0 6 t))
+    (goto-char (point-min))
+    (let ((str "\255"))
+      (if enable-multibyte-characters
+	  (setq str (string-as-multibyte str)))
+      (while (search-forward str nil t) (replace-match "-")))))
 
 (defun Man-fontify-manpage ()
   "Convert overstriking and underlining to the correct fonts.

@@ -282,6 +282,7 @@ enum coding_type
 #define CODING_FINISH_INSUFFICIENT_SRC	1
 #define CODING_FINISH_INSUFFICIENT_DST	2
 #define CODING_FINISH_INCONSISTENT_EOL	3
+#define CODING_FINISH_INTERRUPT		4
 
 /* Macros used for the member `mode' of the struct coding_system.  */
 
@@ -332,6 +333,9 @@ struct coding_system
      decoding or encoding.  See macros COMPOSING_XXXX above for the
      meaing of each non-zero value.  */
   int composing;
+
+  /* Number of composed characters in the current composing sequence.  */
+  int composed_chars;
 
   /* Detailed information specific to each type of coding system.  */
   union spec
@@ -513,6 +517,24 @@ struct coding_system
       ? code_convert_string_norecord (name, Vdefault_file_name_coding_system, 0) \
       : name))
 
+#ifdef WINDOWSNT
+/* Encode the string STR using the specified coding system
+   for w32 system functions, if any.  */
+#define ENCODE_SYSTEM(str)						   \
+  (! NILP (Vw32_system_coding_system)					   \
+   && XFASTINT (Vw32_system_coding_system) != 0				   \
+   ? code_convert_string_norecord (str, Vw32_system_coding_system, 1)	   \
+   : str)
+
+/* Decode the string STR using the specified coding system
+   for w32 system functions, if any.  */
+#define DECODE_SYSTEM(name)						   \
+  (! NILP (Vw32_system_coding_system)					   \
+   && XFASTINT (Vw32_system_coding_system) != 0				   \
+   ? code_convert_string_norecord (str, Vw32_system_coding_system, 0)	   \
+   : str)
+#endif
+
 /* Extern declarations.  */
 extern int decode_coding P_ ((struct coding_system *, unsigned char *,
 			      unsigned char *, int, int));
@@ -537,10 +559,10 @@ extern Lisp_Object Vcoding_category_list;
 extern Lisp_Object Qtranslation_table;
 extern Lisp_Object Qtranslation_table_id;
 
-/* Mnemonic character to indicate each type of end-of-line.  */
-extern int eol_mnemonic_unix, eol_mnemonic_dos, eol_mnemonic_mac;
-/* Mnemonic character to indicate type of end-of-line is not yet decided.  */
-extern int eol_mnemonic_undecided;
+/* Mnemonic strings to indicate each type of end-of-line.  */
+extern Lisp_Object eol_mnemonic_unix, eol_mnemonic_dos, eol_mnemonic_mac;
+/* Mnemonic string to indicate type of end-of-line is not yet decided.  */
+extern Lisp_Object eol_mnemonic_undecided;
 
 #ifdef emacs
 extern Lisp_Object Qfile_coding_system;
@@ -588,6 +610,11 @@ extern Lisp_Object Vfile_name_coding_system;
 /* Coding system for file names used only when
    Vfile_name_coding_system is nil.  */
 extern Lisp_Object Vdefault_file_name_coding_system;
+
+#ifdef WINDOWSNT
+/* Coding system for w32 system strings, or nil if none.  */
+extern Lisp_Object Vw32_system_coding_system;
+#endif
 #endif
 
 #endif /* _CODING_H */

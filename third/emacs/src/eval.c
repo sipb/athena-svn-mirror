@@ -623,18 +623,11 @@ If INITVALUE is missing, SYMBOL's value is not set.")
 
 DEFUN ("defconst", Fdefconst, Sdefconst, 2, UNEVALLED, 0,
   "(defconst SYMBOL INITVALUE DOCSTRING): define SYMBOL as a constant variable.\n\
-The intent is that programs do not change this value, but users may.\n\
+The intent is that neither programs nor users should ever change this value.\n\
 Always sets the value of SYMBOL to the result of evalling INITVALUE.\n\
 If SYMBOL is buffer-local, its default value is what is set;\n\
  buffer-local values are not affected.\n\
-DOCSTRING is optional.\n\
-If DOCSTRING starts with *, this variable is identified as a user option.\n\
- This means that M-x set-variable and M-x edit-options recognize it.\n\n\
-Note: do not use `defconst' for user options in libraries that are not\n\
-normally loaded, since it is useful for users to be able to specify\n\
-their own values for such variables before loading the library.\n\
-Since `defconst' unconditionally assigns the variable,\n\
-it would override the user's choice.")
+DOCSTRING is optional.")
   (args)
      Lisp_Object args;
 {
@@ -1215,6 +1208,8 @@ See also the function `condition-case'.")
   (error_symbol, data)
      Lisp_Object error_symbol, data;
 {
+  /* When memory is full, ERROR-SYMBOL is nil,
+     and DATA is (REAL-ERROR-SYMBOL . REAL-DATA).  */
   register struct handler *allhandlers = handlerlist;
   Lisp_Object conditions;
   extern int gc_in_progress;
@@ -1245,6 +1240,13 @@ See also the function `condition-case'.")
   for (; handlerlist; handlerlist = handlerlist->next)
     {
       register Lisp_Object clause;
+      
+      if (lisp_eval_depth + 20 > max_lisp_eval_depth)
+	max_lisp_eval_depth = lisp_eval_depth + 20;
+  
+      if (specpdl_size + 40 > max_specpdl_size)
+	max_specpdl_size = specpdl_size + 40;
+  
       clause = find_handler_clause (handlerlist->handler, conditions,
 				    error_symbol, data, &debugger_value);
 
@@ -1293,7 +1295,7 @@ See also the function `condition-case'.")
     data = Fcons (error_symbol, data);
 
   string = Ferror_message_string (data);
-  fatal (XSTRING (string)->data, 0, 0);
+  fatal ("%s", XSTRING (string)->data, 0);
 }
 
 /* Return nonzero iff LIST is a non-nil atom or
@@ -1361,8 +1363,9 @@ skip_debugger (conditions, data)
 
 /* Value of Qlambda means we have called debugger and user has continued.
    There are two ways to pass SIG and DATA:
-    - SIG is the error symbol, and DATA is the rest of the data.
+    = SIG is the error symbol, and DATA is the rest of the data.
     = SIG is nil, and DATA is (SYMBOL . REST-OF-DATA).
+       This is for memory-full errors only.
 
    Store value returned from debugger into *DEBUGGER_VALUE_PTR.  */
 
@@ -1385,11 +1388,16 @@ find_handler_clause (handlers, conditions, sig, data, debugger_value_ptr)
       int count = specpdl_ptr - specpdl;
       int debugger_called = 0;
       Lisp_Object sig_symbol, combined_data;
+      /* This is set to 1 if we are handling a memory-full error,
+	 because these must not run the debugger.
+	 (There is no room in memory to do that!)  */
+      int no_debugger = 0;
 
       if (NILP (sig))
 	{
 	  combined_data = data;
 	  sig_symbol = Fcar (data);
+	  no_debugger = 1;
 	}
       else
 	{
@@ -1408,9 +1416,10 @@ find_handler_clause (handlers, conditions, sig, data, debugger_value_ptr)
 					       Fbacktrace, Qnil);
 #endif
 	}
-      if ((EQ (sig_symbol, Qquit)
-	   ? debug_on_quit
-	   : wants_debugger (Vdebug_on_error, conditions))
+      if (! no_debugger
+	  && (EQ (sig_symbol, Qquit)
+	      ? debug_on_quit
+	      : wants_debugger (Vdebug_on_error, conditions))
 	  && ! skip_debugger (conditions, combined_data)
 	  && when_entered_debugger < num_nonmacro_input_events)
 	{
@@ -1482,7 +1491,7 @@ error (m, a1, a2, a3)
 
   while (1)
     {
-      int used = doprnt (buf, size, m, m + mlen, 3, args);
+      int used = doprnt (buffer, size, m, m + mlen, 3, args);
       if (used < size)
 	break;
       size *= 2;
@@ -1495,7 +1504,7 @@ error (m, a1, a2, a3)
 	}
     }
 
-  string = build_string (buf);
+  string = build_string (buffer);
   if (allocated)
     free (buffer);
 
@@ -1647,12 +1656,15 @@ do_autoload (fundef, funname)
   CHECK_SYMBOL (funname, 0);
   GCPRO3 (fun, funname, fundef);
 
-  /* Value saved here is to be restored into Vautoload_queue */
+  /* Preserve the match data.  */
+  record_unwind_protect (Fset_match_data, Fmatch_data (Qnil, Qnil));
+  
+  /* Value saved here is to be restored into Vautoload_queue.  */
   record_unwind_protect (un_autoload, Vautoload_queue);
   Vautoload_queue = Qt;
   Fload (Fcar (Fcdr (fundef)), Qnil, noninteractive ? Qt : Qnil, Qnil, Qt);
 
-  /* Save the old autoloads, in case we ever do an unload. */
+  /* Save the old autoloads, in case we ever do an unload.  */
   queue = Vautoload_queue;
   while (CONSP (queue))
     {
@@ -1662,7 +1674,7 @@ do_autoload (fundef, funname)
 
       /* Note: This test is subtle.  The cdr of an autoload-queue entry
 	 may be an atom if the autoload entry was generated by a defalias
-	 or fset. */
+	 or fset.  */
       if (CONSP (second))
 	Fput (first, Qautoload, (Fcdr (second)));
 
@@ -2072,7 +2084,8 @@ run_hook_with_args (nargs, args, cond)
      enum run_hooks_condition cond;
 {
   Lisp_Object sym, val, ret;
-  struct gcpro gcpro1, gcpro2;
+  Lisp_Object globals;
+  struct gcpro gcpro1, gcpro2, gcpro3;
 
   /* If we are dying or still initializing,
      don't do anything--it would probably crash if we tried.  */
@@ -2092,7 +2105,8 @@ run_hook_with_args (nargs, args, cond)
     }
   else
     {
-      GCPRO2 (sym, val);
+      globals = Qnil;
+      GCPRO3 (sym, val, globals);
 
       for (;
 	   CONSP (val) && ((cond == to_completion)
@@ -2104,7 +2118,6 @@ run_hook_with_args (nargs, args, cond)
 	    {
 	      /* t indicates this hook has a local binding;
 		 it means to run the global binding too.  */
-	      Lisp_Object globals;
 
 	      for (globals = Fdefault_value (sym);
 		   CONSP (globals) && ((cond == to_completion)
@@ -2146,10 +2159,12 @@ run_hook_list_with_args (funlist, nargs, args)
 {
   Lisp_Object sym;
   Lisp_Object val;
-  struct gcpro gcpro1, gcpro2;
+  Lisp_Object globals;
+  struct gcpro gcpro1, gcpro2, gcpro3;
 
   sym = args[0];
-  GCPRO2 (sym, val);
+  globals = Qnil;
+  GCPRO3 (sym, val, globals);
 
   for (val = funlist; CONSP (val); val = XCONS (val)->cdr)
     {
@@ -2157,7 +2172,6 @@ run_hook_list_with_args (funlist, nargs, args)
 	{
 	  /* t indicates this hook has a local binding;
 	     it means to run the global binding too.  */
-	  Lisp_Object globals;
 
 	  for (globals = Fdefault_value (sym);
 	       CONSP (globals);
