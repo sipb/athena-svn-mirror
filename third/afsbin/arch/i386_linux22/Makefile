@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2.4.1 1999-11-29 15:14:39 tb Exp $
+# $Id: Makefile,v 1.2.4.2 2000-02-03 17:50:06 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -25,15 +25,16 @@ install:
 	install -c -m 444 libafs-2.2.3.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.5-15.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.10.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.12.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.12-20smp.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.0.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.1.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.2.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.3.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.5-15.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.10.o $(DESTDIR)$(VICE)/modload
-	ln -s libafs-2.2.10.mp.o \
-		$(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.mp.o
-	ln -s libafs-2.2.10.o $(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.o
+	install -c -m 444 libafs-2.2.12.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.12-20.o $(DESTDIR)$(VICE)/modload
 	install -c -m 555 fs $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 tokens $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 unlog $(DESTDIR)$(ATHRBINDIR)
