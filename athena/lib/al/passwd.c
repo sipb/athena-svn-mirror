@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.13 1999-03-30 18:40:51 danw Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.14 1999-07-01 14:07:25 rbasch Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -147,6 +147,13 @@ static int update_passwd(FILE *fp)
       return AL_EPASSWD;
     }
 #endif /* HAVE_MASTER_PASSWD */
+
+#ifdef sgi
+  /* Kludge: nsd has a one-second granularity in checking the mod time
+   * of a file, so make sure we don't modify it twice within a second.
+   */
+  sleep(1);
+#endif
 
   /* Unlock the passwd file if we're using System V style locking. */
 #ifdef HAVE_LCKPWDF
@@ -527,21 +534,29 @@ int al__update_cryptpw(const char *username, struct al_record *record,
       return AL_SUCCESS;
     }
 
-  status = copy_changing_cryptpw(in, out, username, cryptpw);
+  status = (copy_changing_cryptpw(in, out, username, cryptpw) <= 0);
 
   fclose(in);
 #ifdef HAVE_SHADOW
   status = ferror(out) || status;
   if (fclose(out) || status)
-    rename(PATH_SHADOW_TMP, PATH_SHADOW);
-  else
     unlink(PATH_SHADOW_TMP);
+  else
+    {
+      rename(PATH_SHADOW_TMP, PATH_SHADOW);
+#ifdef sgi
+      /* Kludge: nsd has a one-second granularity in checking the mod time
+       * of a file, so make sure we don't modify it twice within a second.
+       */
+      sleep(1);
+#endif
+    }
   discard_passwd_lockfile(lock);
 #else
   if (status)
-    update_passwd(lock);
-  else
     discard_passwd_lockfile(lock);
+  else
+    update_passwd(lock);
 #endif
   return AL_SUCCESS;
 }

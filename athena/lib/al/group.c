@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.8 1998-05-31 22:18:53 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.9 1999-07-01 14:07:23 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -334,10 +334,7 @@ static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
    * group name.  Start by finding the gid. */
   pwd = al__getpwnam(username);
   if (!pwd)
-    {
-      hesiod_end(hescontext);
-      return -1;
-    }
+    return -1;
   *primary_gid = pwd->pw_gid;
   al__free_passwd(pwd);
 
@@ -601,7 +598,16 @@ static int update_group(FILE *fp, int fd)
    * file into place. */
   status = ferror(fp);
   if (fclose(fp) == 0 && !status)
-    status = rename(PATH_GROUP_TMP, PATH_GROUP);
+    {
+      status = rename(PATH_GROUP_TMP, PATH_GROUP);
+#ifdef sgi
+      /* Kludge: nsd has a one-second granularity in checking the mod time
+       * of a file, so make sure we don't modify it twice within a second.
+       */
+      if (status == 0)
+	sleep(1);
+#endif
+    }
   else
     status = -1;
 
