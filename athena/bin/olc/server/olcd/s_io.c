@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.25 1991-05-08 10:56:36 lwvanels Exp $
+ *	$Id: s_io.c,v 1.26 1992-02-04 19:56:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.25 1991-05-08 10:56:36 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.26 1992-02-04 19:56:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -240,8 +240,8 @@ send_list(fd, request, list)
   len = 0;
   while (len < sizeof(IO_LIST)) {
     size = swrite(fd, (char *) &net_req, sizeof(IO_LIST));
-    if (size == -1) {
-      log_error("read_list: error writing io_list: %s");
+    if (size < 0) {
+      log_error("read_list: error writing io_list: %m");
       return(ERROR);
     }
     len += size;
