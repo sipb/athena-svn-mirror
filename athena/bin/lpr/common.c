@@ -14,15 +14,12 @@ static char sccsid[] = "@(#)common.c	5.2 (Berkeley) 5/6/86";
 
 #include "lp.h"
 
-#ifdef SERVER
 int	DU;		/* daeomon user-id */
-#endif SERVER
 int	MX;		/* maximum number of blocks to copy */
 int	MC;		/* maximum number of copies allowed */
 char	*LP;		/* line printer device name */
 char	*RM;		/* remote machine name */
 char	*RP;		/* remote printer name */
-#ifdef SERVER
 char	*LO;		/* lock file name */
 char	*ST;		/* status file name */
 char	*SD;		/* spool directory */
@@ -40,9 +37,7 @@ char	*CF;		/* name of cifplot filter (per job) */
 char	*PF;		/* name of vrast filter (per job) */
 char	*FF;		/* form feed string */
 char	*TR;		/* trailer string to be output when Q empties */
-#endif /* SERVER */
 short	SC;		/* suppress multiple copies */
-#ifdef SERVER
 short	SF;		/* suppress FF on each print job */
 short	SH;		/* suppress header page */
 short	SB;		/* short banner instead of normal header */
@@ -68,7 +63,6 @@ char	*AC;		/* Local ACL file to use */
 short	PA;		/* ACL file used as positive ACL */
 short	RA;		/* Restricted host access */
 #endif /* LACL */
-#endif SERVER
 
 char	line[BUFSIZ];
 char	pbuf[BUFSIZ/2];	/* buffer for printcap strings */
@@ -164,7 +158,6 @@ getline(cfp)
 	return(linel);
 }
 
-#ifdef SERVER
 /*
  * Scan the current directory and make a list of daemon files sorted by
  * creation time.
@@ -245,7 +238,6 @@ compar(p1, p2)
 		return(1);
 	return(0);
 }
-#endif SERVER
 
 /*VARARGS1*/
 fatal(msg, a1, a2, a3)
