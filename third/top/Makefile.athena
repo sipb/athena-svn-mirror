@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 1996-11-20 15:46:36 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 1997-02-22 23:08:41 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -17,4 +17,4 @@ all:
 check:
 
 install:
-	${MAKE} install "DESTDIR=$$SRVD"
+	${MAKE} install-top install-man "DESTDIR=$$SRVD"
