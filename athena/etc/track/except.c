@@ -1,65 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.4 1988-09-19 18:07:33 don Exp $
- *
- *	$Log: not supported by cvs2svn $
- * Revision 4.3  88/06/21  19:45:53  don
- * fixed a bug in store(), and made gettail() NOT delete hash-table matches,
- * to support link-first updates.
- * 
- * Revision 4.2  88/06/10  14:43:55  don
- * moved incl_devs (-d option) control to gettail() from update_files();
- * 
- * Revision 4.1  88/05/17  19:00:31  don
- * fixed another bug in GLOBAL handling, by simplifying pattern-list
- * traversal. now, global-list is chained onto end of each entry's list.
- * 
- * Revision 4.0  88/04/14  16:42:35  don
- * this version is not compatible with prior versions.
- * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
- * it also offers sped-up exception-checking, via hash-tables.
- * a bug remains in -nopullflag support: if the entry's to-name top-level
- * dir doesn't exist, update_file doesn't get over it.
- * the fix should be put into the updated() routine, or possibly dec_entry().
- * 
- * Revision 3.0  88/03/09  13:53:42  don
- * no changes.
- * 
- * Revision 2.4  88/01/29  18:22:53  don
- * bug fixes. also, now track can update the root.
- * 
- * Revision 2.3  87/12/03  20:36:59  don
- * fixed a portability bug in FASTEQ macro, and made yacc sort each
- * exceptions-list, so that goodname can run faster.
- * 
- * Revision 2.2  87/12/03  17:33:54  don
- * fixed lint warnings.
- * 
- * Revision 2.2  87/12/01  20:22:31  don
- * fixed a bug in match(): it was usually compiling exception-names,
- * even if they weren't regexp's. this seems to have led to some bogus
- * matches. at least, "track -w" doesn't miss files anymore.
- * this bug was created during the rewrite.
- * 
- * Revision 2.1  87/12/01  16:41:36  don
- * fixed bugs in readstat's traversal of entries] and statfile:
- * cur_ent is no longer global, but is now part of get_next_match's
- * state. also, last_match() was causing entries[]'s last element to be
- * skipped.
- * 
- * Revision 2.0  87/11/30  15:19:17  don
- * general rewrite; got rid of stamp data-type, with its attendant garbage,
- * cleaned up pathname-handling. readstat & writestat now sort overything
- * by pathname, which simplifies traversals/lookup. should be comprehensible
- * now.
- * 
- * Revision 1.1  87/02/12  21:14:36  rfrench
- * Initial revision
- * 
+ * $Id: except.c,v 4.5 1991-07-06 15:44:01 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.4 1988-09-19 18:07:33 don Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.5 1991-07-06 15:44:01 probe Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -375,3 +319,36 @@ char *from;
 	*to++ = '\0';
 	return(tmp);
 }
+
+/*
+ * This is for A/UX.  It is a wrapper around the C library regex functions.
+ *
+ * $Id: except.c,v 4.5 1991-07-06 15:44:01 probe Exp $
+ */
+
+#ifdef _AUX_SOURCE
+
+static char *re;
+int Error;
+
+char *re_comp(s)
+    char *s;
+{
+    if (!s)
+	return 0;
+    if (re)
+	free(re);
+
+    if (!(re = regcmp(s, (char *)0)))
+	return "Bad argument to re_comp";
+
+    return 0;
+}
+
+int re_exec(s)
+    char *s;
+{
+    return regex(re, s) != 0;
+}
+
+#endif
