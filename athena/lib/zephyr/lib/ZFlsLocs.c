@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFlsLocs.c,v 1.1 1987-06-20 19:21:00 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFlsLocs.c,v 1.2 1987-07-01 01:49:13 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,8 +23,11 @@ Code_t ZFlushLocations()
 	if (!__locate_list)
 		return (ZERR_NONE);
 
-	for (i=0;i<__locate_num;i++)
-		free(__locate_list[i]);
+	for (i=0;i<__locate_num;i++) {
+		free(__locate_list[i].host);
+		free(__locate_list[i].time);
+	}
+	
 	free(__locate_list);
 
 	__locate_list = 0;
