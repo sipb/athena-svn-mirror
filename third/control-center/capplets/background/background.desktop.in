@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Background
-_Comment=Customize your desktop background
-Exec=gnome-background-properties
-Icon=background-capplet.png
-Terminal=0
-Type=Application
-Categories=Settings;Appearance;
