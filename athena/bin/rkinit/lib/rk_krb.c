@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_krb.c,v 1.6 1994-07-18 22:02:11 cfields Exp $
+ * $Id: rk_krb.c,v 1.7 1996-06-12 07:16:26 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
- * $Author: cfields $
+ * $Author: ghudson $
  *
  * This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.6 1994-07-18 22:02:11 cfields Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.7 1996-06-12 07:16:26 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -225,9 +225,6 @@ int rki_get_tickets(version, host, r_krealm, info)
     rii.scip = &scip;
     rii.host = host;
     rii.username = info->username;
-    printf("the realm is %s\n", info-> realm);
-    printf("the instance is %s\n", info-> inst);
-    strcpy(info-> inst, "\0");
     if (status = krb_get_in_tkt(info->aname, info->inst, info->realm, 
 				"krbtgt", info->realm, 1,
 				rki_key_proc, rki_decrypt_tkt, (char *)&rii)) {
