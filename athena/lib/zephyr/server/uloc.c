@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.9 1987-08-03 12:14:41 jtkohl Exp $";
+static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.10 1987-09-15 11:31:59 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -162,21 +162,18 @@ ZServerDesc_t *server;
 {
 	zdbug((LOG_DEBUG,"ulocate_disp"));
 
-	/* we allow unauthenticated locates */
-	if (!strcmp(notice->z_opcode, LOCATE_LOCATE)) {
-		zdbug((LOG_DEBUG,"locate"));
-		ulogin_locate(notice, who);
-		/* does xmit and ack itself, so return */
-		return;
-	} 
-	/* ... but not unauthentic changes of location status */
 	if (!auth) {
 		zdbug((LOG_DEBUG,"unauthentic ulocate"));
 		if (server == me_server)
 			clt_ack(notice, who, AUTH_FAILED);
 		return;
 	}
-	if (!strcmp(notice->z_opcode, LOCATE_HIDE)) {
+	if (!strcmp(notice->z_opcode, LOCATE_LOCATE)) {
+		zdbug((LOG_DEBUG,"locate"));
+		ulogin_locate(notice, who);
+		/* does xmit and ack itself, so return */
+		return;
+	} else if (!strcmp(notice->z_opcode, LOCATE_HIDE)) {
 		zdbug((LOG_DEBUG,"user hide"));
 		if (ulogin_hide_user(notice, INVISIBLE)) {
 			if (server == me_server)
