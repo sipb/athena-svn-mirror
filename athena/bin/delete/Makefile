@@ -5,12 +5,12 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.6 1989-02-05 20:35:01 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.7 1989-03-08 09:40:27 jik Exp $
 #
 
 DESTDIR =
 TARGETS = delete undelete expunge purge lsdel
-INSTALLDIR = bin/athena
+INSTALLDIR = /bin/athena
 CC = cc
 CFLAGS = -O
 SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
@@ -21,7 +21,7 @@ all: $(TARGETS)
 install:
 	for i in $(TARGETS) ;\
 	do \
-	install -c -s $$i $(DESTDIR)/$(INSTALLDIR) ; \
+	install -c -s $$i $(DESTDIR)$(INSTALLDIR) ; \
 	install -c man1/$$i.1 $(DESTDIR)/usr/man/man1 ; \
 	done
 
