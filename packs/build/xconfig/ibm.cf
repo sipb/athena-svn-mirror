@@ -119,6 +119,7 @@ XCOMM operating system:  OSName
  *              .../server/ddx/ibm/common/Makefile
  * Also, be sure to remove .../server/ddx/ibm/common/ibmscreen.o
  */
+#define BuildServer     NO /* Another pass, another Imakefile... */
 #define ibmInclude8514  NO /* YES */
 #define ibmIncludeAED   NO
 #define ibmIncludeAPA16 YES
