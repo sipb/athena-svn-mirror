@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: subscriptions.c,v 1.12 1999-01-22 23:20:37 ghudson Exp $
+ *      $Id: subscriptions.c,v 1.13 1999-06-01 19:01:19 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -12,7 +12,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.12 1999-01-22 23:20:37 ghudson Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.13 1999-06-01 19:01:19 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -222,16 +222,17 @@ char ourhost[MAXHOSTNAMELEN],ourhostcanon[MAXHOSTNAMELEN];
 static void inithosts()
 {
     struct hostent *hent;
-    if (gethostname(ourhost,sizeof(ourhost)-1) == -1) {
+    if (gethostname(ourhost, sizeof(ourhost)-1) == -1) {
 	ERROR3("unable to retrieve hostname, %s and %s will be wrong in subscriptions.\n", TOKEN_HOSTNAME, TOKEN_CANONNAME);
 	return;
     }
 
     if (!(hent = gethostbyname(ourhost))) {
 	ERROR2("unable to resolve hostname, %s will be wrong in subscriptions.\n", TOKEN_CANONNAME);
+	strncpy(ourhostcanon, ourhost, sizeof(ourhostcanon)-1);
 	return;
     }
-    (void) strncpy(ourhostcanon,hent->h_name, sizeof(ourhostcanon)-1);
+    strncpy(ourhostcanon, hent->h_name, sizeof(ourhostcanon)-1);
     return;
 }
 
