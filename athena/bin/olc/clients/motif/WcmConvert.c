@@ -505,7 +505,6 @@ void CvtStringToMenuWidget (args, num_args, fromVal, toVal)
     char	cleanName[MAX_XRMSTRING];
     Widget	root;
     Widget	widget;
-    Arg		existing[1];
 
     (void)WcCleanName( fromVal->addr, cleanName );
 
