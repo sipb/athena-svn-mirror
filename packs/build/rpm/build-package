@@ -51,11 +51,13 @@ source_name=$package_name-$version
 # Determine appropriate path and RPM target.
 case `uname -s` in
 Linux)
+  OS=linux
   PATH=/usr/bin:/bin:/usr/X11R6/bin
   target=i386-athena-linux
   rpmlib=/usr/lib/rpm
   ;;
 SunOS)
+  OS=solaris
   PATH=/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
   PATH=${PATH}:/usr/gcc/bin
   target=sun4u-athena-solaris
@@ -63,7 +65,7 @@ SunOS)
   ;;
 esac
 PATH=/usr/athena/bin:$PATH
-export PATH
+export PATH OS
 
 ## STEP 0: Prepare the "topdir" area.
 
