@@ -4,8 +4,6 @@ AC_INIT(aklog.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
-AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 ATHENA_UTIL_COM_ERR
 ATHENA_KRB4_REQUIRED
 ATHENA_AFS_REQUIRED
