@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.38 1999-07-20 13:40:59 ghudson Exp $
+# $Id: do.sh,v 1.39 1999-07-21 12:56:18 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -55,7 +55,7 @@ esac
 umask 022
 export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS CONFIG_SITE PATH M4
 CONFIG_SITE=$source/packs/build/config.site
-M4=$ATHTOOLROOT/usr/athena/bin/m4
+M4=$athtoolroot/usr/athena/bin/m4
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
