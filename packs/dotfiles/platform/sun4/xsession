@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.23 1991-06-20 07:31:11 probe Exp $
+# $Id: xsession,v 1.24 1991-07-09 20:34:22 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -53,14 +53,14 @@ setenv XSESSION $$
 # Set the sleep time for waiting between launching large applications.
 # These can be overridden in the ~/.cshrc or ~/.environment files.
 
-switch (`machtype -c`)
+switch ("`machtype -c`")
     case VAXSTAR:
 	set sleep_time=10
 	breaksw
     case MVAX-II:
 	set sleep_time=10
 	breaksw
-    case RTPC-ROMPC:
+    case RTPC-*:
 	set sleep_time=6
 	breaksw
     case PS2-*:
