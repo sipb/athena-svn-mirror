@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.17 1998-05-08 15:58:38 ghudson Exp $
+## $Id: os_rvd,v 1.18 1998-05-11 15:01:25 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -92,6 +92,7 @@ GLOBAL : *.CKP *.local *.pid :
 		*uucp
 		*lp
 		S88sendmail
+		S99sspdefs
 		*bdconfig
 		*audit
 		*dtlogin
