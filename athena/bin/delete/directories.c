@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.19 1991-02-28 18:42:28 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.20 1991-03-11 18:42:56 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -232,11 +232,7 @@ int follow; /* follow symlinks or not? */
      specs->st_mode = realspecs.st_mode;
      specs->st_size = realspecs.st_size;
      specs->st_ctime = realspecs.st_ctime;
-#ifdef notdef
-     /*
-      * See comment in directories.h to understand why this is
-      * disabled.
-      */
+#ifdef USE_BLOCKS
      specs->st_blocks = realspecs.st_blocks;
 #endif
 
