@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2002-06-26 06:05+0200\n"
 "Last-Translator: Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -267,16 +267,16 @@ msgstr ""
 msgid "Unsupported file format."
 msgstr ""
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr ""
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 #, fuzzy
 msgid "Load Image"
 msgstr "Картинка"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 #, fuzzy
 msgid "Save Image"
 msgstr "Отваря Картинка"
@@ -301,7 +301,7 @@ msgstr "Помощ на това приложение"
 msgid "New"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Отваря"
 
@@ -376,23 +376,23 @@ msgstr "_Напуска"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr "Борислав Александров"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Eye на Гноме"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Програма за преглед и коталогизиране на картинки на ГНОМЕ"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -401,7 +401,7 @@ msgstr ""
 "Не мога да покажа помощ за 'Eye' на Гноме.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -412,15 +412,15 @@ msgstr ""
 "едновременно. Искате ли да ги отворите\n"
 "вместо това в колекция?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Единичен Прозорец"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Колекция"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -429,7 +429,7 @@ msgstr ""
 "Вие се каните да отворите %i прозорци\n"
 "едновременно. Искате ли да продължите?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -438,7 +438,7 @@ msgstr ""
 "Няма достъп до %s\n"
 "'Eye' на Гноме няма да бъде в състояние да покаже този файл."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -449,11 +449,11 @@ msgstr ""
 "достъп до тях:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Не мога да инициализирам GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Не мога да инициализирам Bonobo!\n"
 
@@ -578,41 +578,41 @@ msgstr "Преглед преди Печат"
 msgid "Printing of image failed"
 msgstr "Печатането на картинката не е успешно"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 #, fuzzy
 msgid "/_Zoom In"
 msgstr "/Мащаб _Увеличава"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/Мащаб _Намалява"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr ""
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 #, fuzzy
 msgid "/Best _Fit"
 msgstr "/Мащаб до _Изпълване"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/_Затваря"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Ширина на картинка"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Височина на Картинка"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Заглавие на прозорец"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Текстови низ за състояние"
 

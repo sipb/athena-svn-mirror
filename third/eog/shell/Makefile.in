@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -118,17 +118,39 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(GCONF_CFLAGS)							$(EXTRA_WARNING_CFLAGS)						$(EOG_CFLAGS)							$(COLLECTION_FLAGS)						-DDATADIR=\""$(datadir)"\"					-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
+INCLUDES = \
+        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-I$(top_srcdir)/libeog					\
+	-I$(top_builddir)/libeog				\
+	$(GCONF_CFLAGS)						\
+	$(EXTRA_WARNING_CFLAGS)					\
+	$(EOG_CFLAGS)						\
+	$(COLLECTION_FLAGS)					\
+	-DDATADIR=\""$(datadir)"\"				\
+	-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
 
 
 bin_PROGRAMS = eog
 
-eog_SOURCES =  	eog-window.h			eog-window.c			eog-preferences.h		eog-preferences.c		main.c				session.c			session.h			util.h				util.c
+eog_SOURCES = \
+	eog-window.h		\
+	eog-window.c		\
+	eog-preferences.h	\
+	eog-preferences.c	\
+	main.c			\
+	session.c		\
+	session.h		\
+	util.h			\
+	util.c
 
 
 eog_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
 
-eog_LDADD =  	-L$(top_builddir)/libeog 		-leog					$(POPT_LIBS)				$(EOG_LIBS)
+eog_LDADD = \
+	-L$(top_builddir)/libeog 	\
+	-leog				\
+	$(POPT_LIBS)			\
+	$(EOG_LIBS)
 
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -156,7 +178,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(eog_SOURCES)
 OBJECTS = $(eog_OBJECTS)
@@ -257,7 +279,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -285,7 +307,8 @@ distdir: $(DISTFILES)
 	done
 eog-preferences.o: eog-preferences.c eog-preferences.h
 eog-window.o: eog-window.c ../config.h eog-window.h util.h \
-	../libeog/zoom.h ../libeog/Eog.h ../libeog/eog-file-selection.h
+	../libeog/zoom.h ../libeog/Eog.h ../libeog/eog-file-selection.h \
+	eog-preferences.h
 main.o: main.c ../config.h eog-window.h session.h
 session.o: session.c ../config.h eog-window.h session.h
 util.o: util.c ../config.h util.h

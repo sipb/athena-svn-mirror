@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2002-05-31 17:50-0300\n"
 "Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -266,16 +266,16 @@ msgstr ""
 msgid "Unsupported file format."
 msgstr ""
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr ""
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 #, fuzzy
 msgid "Load Image"
 msgstr "صورة"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 #, fuzzy
 msgid "Save Image"
 msgstr "افتح صورة"
@@ -300,7 +300,7 @@ msgstr "مساعدة حول هذا البرنامج"
 msgid "New"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "افتح"
 
@@ -375,24 +375,24 @@ msgstr "خروج"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr ""
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "عيون جينوم"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "حقوق النشر (C) 2000-2002 مؤسسة البرامج الحرة"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 #, fuzzy
 msgid "The GNOME image viewing and cataloging program."
 msgstr "برنامج جينوم لعرض الصور وفهرستها"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -401,7 +401,7 @@ msgstr ""
 "لا يمكن عرض المساعدة لعين جينوم.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -412,15 +412,15 @@ msgstr ""
 "في ان واحد.هل تريد \n"
 "فتحها بجﻻ عن ذلكفي مجموعة"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "نوافذ مفردة"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "مجموعة"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -429,14 +429,14 @@ msgstr ""
 "انت بصدد فتح %i نوافذ في ان واحد.\n"
 "هل تريد فتحها بدﻻ عن ذلك في مجموعة؟"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
 "Eye of Gnome will not be able to display this file."
 msgstr ""
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -444,11 +444,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "لم استطع تهيئة GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "تعذرت تهيئة بونوبو!\n"
 
@@ -573,43 +573,43 @@ msgstr "معاينة طباعة"
 msgid "Printing of image failed"
 msgstr "فشلت طباعة الصورة"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 #, fuzzy
 msgid "/_Zoom In"
 msgstr "تكبير"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 #, fuzzy
 msgid "/Zoom _Out"
 msgstr "تصغير"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr ""
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 #, fuzzy
 msgid "/Best _Fit"
 msgstr "تكبير للملائمة"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 #, fuzzy
 msgid "/_Close"
 msgstr "أغلق"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "عرض الصورة"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "طول الصورة"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "عنوان الشباك"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "نص شريط الحالة"
 

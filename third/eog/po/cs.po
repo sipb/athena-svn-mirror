@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog 1.0.2\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
-"PO-Revision-Date: 2002-11-25 22:29GMT\n"
-"Last-Translator: Michal Bukovjan <bukm@centrum.cz>\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
+"PO-Revision-Date: 2003-02-22 18:07+0100\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,11 +37,11 @@ msgstr "Prohlížení mnoha různých typů obrázků"
 
 #: eog.glade.h:1
 msgid "By c_olor"
-msgstr "Podle _barvy"
+msgstr "_Barvou"
 
 #: eog.glade.h:2
 msgid "By check_pattern"
-msgstr "Podle _vzoru čtverců"
+msgstr "Čtvercovým _vzorem"
 
 #: eog.glade.h:3
 msgid "Eye of Gnome Preferences"
@@ -132,7 +132,7 @@ msgid ""
 "Wether the image should be interpolated on zoom or not. This leads to better "
 "quality but is somewhat slower than non interpolated images."
 msgstr ""
-"Zda-li se má obrázek při zvětšení interpolovat nebo ne. Interpolace vede k "
+"Jestli se má obrázek při zvětšení interpolovat nebo ne. Interpolace vede k "
 "lepší kvalitě, ale je pomalejší než u neinterpolovaných obrázků."
 
 #: eog.schemas.in.h:14
@@ -141,7 +141,7 @@ msgid ""
 "automatically based on the size of the image. If this option is not set, "
 "image windows will get whatever size the window manager assigns to them."
 msgstr ""
-"Zda-li mají okna s obrázky zvolit svou velikost a poměr zvětšení automaticky "
+"Jestli mají okna s obrázky zvolit svou velikost a poměr zvětšení automaticky "
 "na základě velikosti obrázku. Pokud tato volba není nastavena, okna s "
 "obrázky budou tak velká, jakou velikost jim přiřadí správce oken."
 
@@ -150,7 +150,7 @@ msgid ""
 "Whether opening an image should create a new window instead of replacing the "
 "image in the current window."
 msgstr ""
-"Zda-li má otevření obrázku vytvořit nové okno místo nahrazení obrázku v okně "
+"Jestli má otevření obrázku vytvořit nové okno místo nahrazení obrázku v okně "
 "stávajícím."
 
 #: eog.schemas.in.h:16
@@ -158,7 +158,7 @@ msgid ""
 "Whether the full screen view should display a bevel along the edges of the "
 "screen."
 msgstr ""
-"Zda-li by měl celoobrazovkový pohled zobrazit rám okolo okrajů obrazovky."
+"Jestli by měl celoobrazovkový pohled zobrazit rám okolo okrajů obrazovky."
 
 #: eog.schemas.in.h:17
 msgid ""
@@ -166,7 +166,7 @@ msgid ""
 "1 (automatic; only display scrollbars if the image is larger than the "
 "window), 2 (never display scrollbars)."
 msgstr ""
-"Zda-li se mají zobrazovat posuvníky při celoobrazovkovém pohledu. Možné "
+"Jestli se mají zobrazovat posuvníky při celoobrazovkovém pohledu. Možné "
 "hodnoty jsou: 1 (automaticky, pouze zobrazovat pokud je obrázek větší než "
 "okno), 2 (nikdy nezobrazovat)."
 
@@ -177,9 +177,9 @@ msgid ""
 "selects whether such images should be scaled to fit the screen regardless of "
 "the setting for the default zoom factor of the full screen view."
 msgstr ""
-"Zda-li se mají přizpůsobovat obrázky standardní velikosti obrazovce při "
+"Jestli se mají přizpůsobovat obrázky standardní velikosti obrazovce při "
 "celoobrazovkovém pohledu. Jedná se o obrázky o velikosti 320×200, 640×480, "
-"800×600 atd. Tato volba určuje, zda-li by takové obrázky měly být zvětšeny "
+"800×600 atd. Tato volba určuje, jestli by takové obrázky měly být zvětšeny "
 "na velikost obrazovky bez ohledu na nastavení výchozího poměru pro "
 "celoobrazovkový pohled."
 
@@ -288,15 +288,15 @@ msgstr "XPM"
 msgid "Unsupported file format."
 msgstr "Nepodporovaný formát souboru."
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr "Určit typ souboru:"
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 msgid "Load Image"
 msgstr "Načíst obrázek"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 msgid "Save Image"
 msgstr "Uložit obrázek"
 
@@ -320,7 +320,7 @@ msgstr "Nápověda pro tuto aplikaci"
 msgid "New"
 msgstr "Nový"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Otevřít"
 
@@ -392,23 +392,23 @@ msgstr "U_končit"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr "Michal Bukovjan <bukm@centrum.cz>"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Oči pro GNOME"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Program pro prohlížení a katalogizaci obrázků pro GNOME"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -417,7 +417,7 @@ msgstr ""
 "Nelze zobrazit nápovědu pro Oči pro GNOME.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -428,15 +428,15 @@ msgstr ""
 "najednou. Chcete tyto obrázky\n"
 "raději otevřít v kolekci?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Samostatná okna"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Kolekce"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -445,7 +445,7 @@ msgstr ""
 "Chystáte se otevřít %i oken\n"
 "najednou. Chcete pokračovat?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -454,7 +454,7 @@ msgstr ""
 "Nelze přistoupit k %s.\n"
 "Oči pro GNOME nebudou schopné tento soubor zobrazit."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -465,11 +465,11 @@ msgstr ""
 "nim přistoupit:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Nelze inicializovat GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Nelze inicializovat Bonobo!\n"
 
@@ -587,39 +587,39 @@ msgstr "Náhled tisku"
 msgid "Printing of image failed"
 msgstr "Tisk obrázku selhal"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 msgid "/_Zoom In"
 msgstr "/_Zvětšit"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/Z_menšit"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr "/_Normální velikost"
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 msgid "/Best _Fit"
 msgstr "/Nejlepší _velikost"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/_Zavřít"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Šířka obrázku"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Výška obrázku"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Titulek okna"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Text stavové lišty"
 
@@ -809,14 +809,8 @@ msgstr "Promítání snímků"
 #~ msgid "Change preferences"
 #~ msgstr "Změnit nastavení"
 
-#~ msgid "Close"
-#~ msgstr "Zavřít"
-
 #~ msgid "_New Window"
 #~ msgstr "_Nové okno"
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
 
 #~ msgid "Zoom _1:1"
 #~ msgstr "Zobrazit _1:1"

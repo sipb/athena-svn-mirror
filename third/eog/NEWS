@@ -1,3 +1,16 @@
+Version 2.2.2
+-------------
+* Translation updates (ml) (Christian Rose).
+* General code cleanup --- #108342 (Kelledin).
+* Escape filenames on the command line properly (Federico).
+* Factory registration changes (Shivram).
+
+Version 2.2.1
+-------------
+* Translation updates
+* Makefile fixes (Kang Jeong-Hee)
+* Fixes for gnome-common head 
+
 Version 2.2.0
 -------------
 * Translation updates.

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog 0.3\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2003-01-23 02:58--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -286,15 +286,15 @@ msgstr "XPM"
 msgid "Unsupported file format."
 msgstr "Непідтримуваний формат файла."
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr "Тип файла:"
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 msgid "Load Image"
 msgstr "Завантажити зображення"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 msgid "Save Image"
 msgstr "Зберегти зображення"
 
@@ -318,7 +318,7 @@ msgstr "Довідка про програму"
 msgid "New"
 msgstr "Новий"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Відкрити"
 
@@ -390,23 +390,23 @@ msgstr "Ви_йти"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr "Юрій Сирота <yuriy@beer.com>"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Ого гнома"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Авторське право © 2000-2002 Фундація Вільного Програмного Забезпечення"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Програма перегляду та каталогізації зображень для GNOME"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -415,7 +415,7 @@ msgstr ""
 "Не вдалося відобразити довідку до Ока GNOME.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -426,15 +426,15 @@ msgstr ""
 "одночасно. Чи не чочете ви відкрити\n"
 "їх в колекції?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Одинокі вікна"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Колекція"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -443,7 +443,7 @@ msgstr ""
 "Ви збираєтесь відкрити %i вікон\n"
 "одночасно. Продовжити?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -452,7 +452,7 @@ msgstr ""
 "Не вдалося отримати доступ до %s\n"
 "Немає змоги відобразити цей файл."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -462,11 +462,11 @@ msgstr ""
 "Такі файли не можуть бути відображені через відсутність доступу до них:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Не вдалось ініціалізувати GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Не вдалось ініціалізувати Bonobo!\n"
 
@@ -584,39 +584,39 @@ msgstr "Перегляд друку"
 msgid "Printing of image failed"
 msgstr "Збій друку зображення"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 msgid "/_Zoom In"
 msgstr "/З_більшити"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/З_меншити"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr "/_Нормальний розмір"
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 msgid "/Best _Fit"
 msgstr "/Піді_гнати"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/_Закрити"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Ширина зображення"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Висота зображення"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Заголовок вікна"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Текст панелі стану"
 

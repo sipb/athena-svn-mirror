@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -118,22 +118,75 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						-DDATADIR=\""$(datadir)"\"					$(LIBPREVIEW_FLAGS)						-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(EOG_CFLAGS)							$(LIBPREVIEW_CFLAGS)						$(EXTRA_WARNING_CFLAGS)
+INCLUDES = \
+        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-DG_LOG_DOMAIN=\"Eog\"					\
+	-DDATADIR=\""$(datadir)"\"				\
+	$(LIBPREVIEW_FLAGS)					\
+	-I$(top_srcdir)						\
+	-I$(top_builddir)					\
+	-I$(top_srcdir)/libeog					\
+	-I$(top_builddir)/libeog				\
+	$(EOG_CFLAGS)						\
+	$(LIBPREVIEW_CFLAGS)					\
+	$(EXTRA_WARNING_CFLAGS)
 
 
 libexec_PROGRAMS = eog-collection-view
 
-BUILT_SOURCES =  	eog-collection-marshal.c		eog-collection-marshal.h
+BUILT_SOURCES = \
+	eog-collection-marshal.c	\
+	eog-collection-marshal.h
 
 
-@ENABLE_EVOLUTION_TRUE@EVOLUTION_GENERATED = 	Evolution-Composer.h			Evolution-Composer-common.c		Evolution-Composer-skels.c		Evolution-Composer-stubs.c
+@ENABLE_EVOLUTION_TRUE@EVOLUTION_GENERATED = @ENABLE_EVOLUTION_TRUE@\
+@ENABLE_EVOLUTION_TRUE@	Evolution-Composer.h		\
+@ENABLE_EVOLUTION_TRUE@	Evolution-Composer-common.c	\
+@ENABLE_EVOLUTION_TRUE@	Evolution-Composer-skels.c	\
+@ENABLE_EVOLUTION_TRUE@	Evolution-Composer-stubs.c
 
-eog_collection_view_SOURCES =  	$(EVOLUTION_GENERATED)			eog-collection-marshal.h		eog-collection-marshal.c		eog-wrap-list.c				eog-wrap-list.h				eog-collection-control.c        	eog-collection-control.h        	eog-collection-view.h			eog-collection-view.c			cimage.c				cimage.h				eog-image-loader.c			eog-image-loader.h			eog-image-loader-simple.c		eog-image-loader-simple.h		eog-image-loader-preview.c		eog-image-loader-preview.h		eog-collection-model.h			eog-collection-model.c			eog-slide-show.h			eog-slide-show.c			eog-item-factory.h			eog-item-factory.c			eog-item-factory-simple.c		eog-item-factory-simple.h		eog-item-factory-clean.h		eog-item-factory-clean.c		eog-collection-preferences.h		eog-collection-preferences.c		main.c
+eog_collection_view_SOURCES = \
+	$(EVOLUTION_GENERATED)		\
+	eog-collection-marshal.h	\
+	eog-collection-marshal.c	\
+	eog-wrap-list.c			\
+	eog-wrap-list.h			\
+	eog-collection-control.c        \
+	eog-collection-control.h        \
+	eog-collection-view.h		\
+	eog-collection-view.c		\
+	cimage.c			\
+	cimage.h			\
+	eog-image-loader.c		\
+	eog-image-loader.h		\
+	eog-image-loader-simple.c	\
+	eog-image-loader-simple.h	\
+	eog-image-loader-preview.c	\
+	eog-image-loader-preview.h	\
+	eog-collection-model.h		\
+	eog-collection-model.c		\
+	eog-slide-show.h		\
+	eog-slide-show.c		\
+	eog-item-factory.h		\
+	eog-item-factory.c		\
+	eog-item-factory-simple.c	\
+	eog-item-factory-simple.h	\
+	eog-item-factory-clean.h	\
+	eog-item-factory-clean.c	\
+	eog-collection-preferences.h	\
+	eog-collection-preferences.c	\
+	main.c
 
 
 eog_collection_view_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
 
-eog_collection_view_LDADD =  	-L$(top_builddir)/libeog			-leog						$(EOG_LIBS)					$(LIBPREVIEW_LIBS)				$(INTLLIBS)					$(LIBPNG) $(LIBJPEG)
+eog_collection_view_LDADD = \
+	-L$(top_builddir)/libeog		\
+	-leog					\
+	$(EOG_LIBS)				\
+	$(LIBPREVIEW_LIBS)			\
+	$(INTLLIBS)				\
+	$(LIBPNG) $(LIBJPEG)
 
 
 server_in_files = GNOME_EOG_Collection.server.in.in
@@ -188,7 +241,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(eog_collection_view_SOURCES)
 OBJECTS = $(eog_collection_view_OBJECTS)
@@ -308,7 +361,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
