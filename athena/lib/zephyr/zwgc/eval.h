@@ -5,16 +5,14 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/eval.h,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
+ *	$Id: eval.h,v 1.3 1989-11-08 14:35:38 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
-#if (!defined(lint) && !defined(SABER))
-static char rcsid_eval_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/eval.h,v 1.2 1989-11-02 01:55:52 marc Exp $";
-#endif
 
 #include <zephyr/mit-copyright.h>
 

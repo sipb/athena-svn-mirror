@@ -5,16 +5,14 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
+ *	$Id: X_gram.h,v 1.3 1989-11-08 14:35:24 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
-#if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v 1.2 1989-11-02 01:54:55 marc Exp $";
-#endif
 
 #include <zephyr/mit-copyright.h>
 
