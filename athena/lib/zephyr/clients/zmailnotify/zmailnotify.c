@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,10 +16,9 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.2 1987-10-25 01:21:56 rfrench Exp $";
+static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.3 1988-06-25 17:50:40 jtkohl Exp $";
 #endif lint
 
-#include <zephyr/zephyr.h>
 #include <sys/uio.h>
 #include <sys/syslog.h>
 #include <sys/wait.h>
