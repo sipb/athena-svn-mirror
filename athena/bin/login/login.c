@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $
+ * $Id: login.c,v 1.77 1995-11-09 19:02:21 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.77 1995-11-09 19:02:21 cfields Exp $";
 #endif
 
 /*
@@ -39,12 +39,12 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <sys/param.h>
 #if !defined(VFS) || defined(_I386) || defined(ultrix)
 #include <sys/quota.h>
-#endif !VFS
+#endif /* !VFS */
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/file.h>
-#ifndef SOLARIS
+#ifndef SYSV
 #include <sys/dir.h>
 #else
 #include <unistd.h>
@@ -60,7 +60,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 
 #include <sgtty.h>
 #include <utmp.h>
-#ifdef SOLARIS
+#ifdef SYSV
 #include <utmpx.h>
 #include <shadow.h>
 #endif
@@ -69,7 +69,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <stdio.h>
 #include <lastlog.h>
 #include <errno.h>
-#ifndef SOLARIS
+#ifndef SYSV
 #include <ttyent.h>
 #endif
 #ifdef ultrix
@@ -98,8 +98,12 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #endif
 
 #ifdef SOLARIS
-#define INITTAB
 /* #define NGROUPS NGROUPS_MAX; see below */
+#endif
+
+/* Not sure about what this buys. */
+#ifdef sgi
+#define CRMOD  020
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -126,10 +130,18 @@ typedef int sigtype;
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
 
+#ifndef PASSWD
+#define PASSWD "/etc/passwd"
+#endif
+
+#ifndef PASSTEMP
+#define PASSTEMP "/etc/ptmp"
+#endif
+
 #define	SCMPN(a, b)	strncmp(a, b, sizeof(a))
 #define	SCPYN(a, b)	strncpy(a, b, sizeof(a))
 
-#ifdef SOLARIS
+#ifdef SYSV
 #define NMAX	sizeof(utmpx.ut_name)
 #define HMAX	sizeof(utmpx.ut_host)
 #else
@@ -148,7 +160,7 @@ typedef int sigtype;
 
 #ifdef VFS
 #define QUOTAWARN	"quota"	/* warn user about quotas */
-#endif VFS
+#endif /* VFS */
 
 #ifndef KRB_REALM
 #define KRB_REALM	"ATHENA.MIT.EDU"
@@ -234,7 +246,7 @@ struct	passwd newuser = {"\0\0\0\0\0\0\0\0", "*", START_UID, MIT_GID, 0,
 
 struct	sgttyb ttyb;
 struct	utmp utmp;
-#ifdef SOLARIS
+#ifdef SYSV
     struct utmpx utmpx;
     char    term1[64];
     int second_time_around = 0;
@@ -285,6 +297,7 @@ int	attachedflag = FALSE;	/* True if homedir attached */
 int	errorprtflag = FALSE;	/* True if login error already printed */
 int	no_remote = FALSE;	/* True if /etc/noremote exists */
 int	no_crack = FALSE;	/* True if /etc/nocrack exists */
+int	shadow = TRUE;		/* True if using /etc/shadow */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -292,22 +305,23 @@ char	*rhost;
 
 AUTH_DAT *kdata = (AUTH_DAT *)NULL;
 
-#if !defined(SOLARIS)
-union wait waitstat;
+#ifdef SHADOW
+#ifdef sgi
+extern int _getpwent_no_shadow;
 #endif
 
-#ifdef SOLARIS
 struct passwd *
 get_pwnam(usr)
 char *usr;
 {
   struct passwd *pwd;
   struct spwd *sp;
-  pwd = getpwnam (usr);
+
+  pwd = getpwnam(usr);
   sp = getspnam(usr);
   if ((sp != NULL) && (pwd != NULL))
     pwd->pw_passwd = sp->sp_pwdp;
-   return(pwd);
+  return(pwd);
 }
 #endif
 
@@ -315,7 +329,7 @@ main(argc, argv)
     char *argv[];
 {
     register char *namep;
-#ifdef SOLARIS
+#ifdef SYSV
     int pflag = 0, t, f, c;
     char pasname[9];
 #else
@@ -335,13 +349,13 @@ main(argc, argv)
     struct stat 	pwdbuf;
 #endif
 
-#ifdef SOLARIS
+#ifdef SYSV
     char ptty [10];
     char utmpx_tty[20];
     char *p;
     char new_id[20];
     char *tp;
-    struct utmp ut_tmp;
+    struct utmp *ut_tmp;
     struct utmpx *utx_tmp;
     char *tmp; /* temp pointer */
 #endif
@@ -389,7 +403,7 @@ main(argc, argv)
 	      exit(1);
 	    rflag = 1;
 	    usererr = doremotelogin(argv[2]);
-#ifdef SOLARIS
+#ifdef SYSV
 	    SCPYN(utmpx.ut_host, argv[2]);
 #else
 	    SCPYN(utmp.ut_host, argv[2]);
@@ -405,7 +419,7 @@ main(argc, argv)
 			}
 			kflag = 1;
 			usererr = doKerberosLogin(argv[2]);
-#ifdef SOLARIS
+#ifdef SYSV
 			SCPYN(utmpx.ut_host, argv[2]);
 #else
 			SCPYN(utmp.ut_host, argv[2]);
@@ -421,7 +435,7 @@ main(argc, argv)
 			}
 			Kflag = 1;
 			usererr = doKerberosLogin(argv[2]);
-#ifdef SOLARIS
+#ifdef SYSV
 			SCPYN(utmpx.ut_host, argv[2]);
 #else
 			SCPYN(utmp.ut_host, argv[2]);
@@ -431,7 +445,7 @@ main(argc, argv)
 			continue;
 		}
 	if (strcmp(argv[1], "-h") == 0 && getuid() == 0) {
-#ifdef SOLARIS
+#ifdef SYSV
           term1[0] = '\0';
           tmp = index(argv[3], '=');
           if (tmp != NULL) {
@@ -443,7 +457,7 @@ main(argc, argv)
 		exit(1);
 	    }
 	    hflag = 1;
-#ifdef SOLARIS
+#ifdef SYSV
 			SCPYN(utmpx.ut_host, argv[2]);
 #else
 			SCPYN(utmp.ut_host, argv[2]);
@@ -471,7 +485,7 @@ main(argc, argv)
      * baud rate across the network.
      */
     if (rflag || kflag || Kflag)
-#ifdef SOLARIS
+#ifdef SYSV
 	doremoteterm(term, term1, &ttyb); 
 #else
 	doremoteterm(term,  &ttyb); 
@@ -547,12 +561,27 @@ main(argc, argv)
     attachable = access(noattach, F_OK);
     no_remote = !access(noremote, F_OK);
     no_crack = !access(nocrack, F_OK);
+
+    /* Use /etc/shadow on the SGI iff it exists.
+       Use /etc/shadow on Solaris always.
+       On other platforms, never. */
+#ifdef sgi
+    shadow = !access(SHADOW, F_OK);
+    _getpwent_no_shadow = 1;
+#else
+#ifdef SOLARIS
+    shadow = TRUE;
+#else
+    shadow = FALSE;
+#endif
+#endif
+
     do {
 	    errorprtflag = 0;
 	    ldisc = 0;
 	found = 0;
 	ioctl(0, TIOCSETD, &ldisc);
-#ifdef SOLARIS
+#ifdef SYSV
 	SCPYN(utmpx.ut_name, "");
 #else
 	SCPYN(utmp.ut_name, "");
@@ -562,7 +591,7 @@ main(argc, argv)
 	 * Name specified, take it.
 	 */
 	if (argc > 1) {
-#ifdef SOLARIS
+#ifdef SYSV
         if (!hflag) 
 	    SCPYN(utmpx.ut_name, argv[1]);
 #else
@@ -576,7 +605,7 @@ main(argc, argv)
 	 */
 	if ((rflag || kflag || Kflag) && !invalid) {
 
-#ifdef SOLARIS
+#ifdef SHADOW
 	    SCPYN(utmpx.ut_name, lusername);
 	    if((pwd = get_pwnam(lusername)) == NULL) {
 #else
@@ -588,7 +617,7 @@ main(argc, argv)
 		    found = 0;
 	    } else found = 1;
 	} else {
-#ifdef SOLARIS
+#ifdef SYSV
 		found = getloginname(&utmpx);
                 second_time_around = 1;
 		if (utmpx.ut_name[0] == '-') {
@@ -702,7 +731,7 @@ main(argc, argv)
 		if(krb_get_lrealm(realm, 1) != KSUCCESS) {
 		    SCPYN(realm, KRB_REALM);
 		}
-#ifdef SOLARIS
+#ifdef SYSV
 		strncpy(lusername, utmpx.ut_name, NMAX);
 #else
 		strncpy(lusername, utmp.ut_name, NMAX);
@@ -749,7 +778,7 @@ main(argc, argv)
 				    invalid = TRUE;
 				    goto leavethis;
 				}
-#ifdef SOLARIS
+#ifdef SYSV
 				bzero(pasname, sizeof(pasname));
 				pwd->pw_name = &pasname[0];
 				strncpy(pwd->pw_name, utmpx.ut_name, 8); 
@@ -815,9 +844,6 @@ main(argc, argv)
 			    }
 			    while(wait(0) != forkval);
 			    remove_pwent(pwd); 
-#ifdef SOLARIS
-                            remove_spwent(pwd);
-#endif
 			    exit(0);
 			}
 			/* run the passwd program as the user */
@@ -892,14 +918,14 @@ leavethis:
 	 * see if root logins on this terminal are permitted.
 	 */
 	if (!invalid && pwd->pw_uid == 0 && !rootterm(tty)) {
-#ifdef SOLARIS
+#ifdef SYSV
 	    if (utmpx.ut_host[0])
 #else
 	    if (utmp.ut_host[0])
 #endif
 		syslog(LOG_CRIT,
 		       "ROOT LOGIN REFUSED ON %s FROM %.*s",
-#ifdef SOLARIS
+#ifdef SYSV
 		       tty, HMAX, utmpx.ut_host);
 #else
 		       tty, HMAX, utmp.ut_host);
@@ -913,14 +939,14 @@ leavethis:
 		if (!errorprtflag)
 			printf("Login incorrect\n");
 		if (++t >= 5) {
-#ifdef SOLARIS
+#ifdef SYSV
 		if (utmpx.ut_host[0])
 #else
 		if (utmp.ut_host[0])
 #endif
 		    syslog(LOG_CRIT,
 			   "REPEATED LOGIN FAILURES ON %s FROM %.*s, %.*s",
-#ifdef SOLARIS
+#ifdef SYSV
 			   tty, HMAX, utmpx.ut_host,
 			   NMAX, utmpx.ut_name);
 #else
@@ -931,7 +957,7 @@ leavethis:
 		else
 		    syslog(LOG_CRIT,
 			   "REPEATED LOGIN FAILURES ON %s, %.*s",
-#ifdef SOLARIS
+#ifdef SYSV
 			   tty, NMAX, utmpx.ut_name);
 #else
 			   tty, NMAX, utmp.ut_name);
@@ -972,9 +998,6 @@ leavethis:
     alarm(0);
     if (tmppwflag) {
 	    remove_pwent(pwd); 
-#ifdef SOLARIS
-            remove_spwent(pwd);
-#endif
 	    insert_pwent(pwd); 
     } 
     if (!krbflag) puts("Warning: no Kerberos tickets obtained.");
@@ -998,12 +1021,12 @@ leavethis:
 	}
 	exit(0);
     }
-#endif VFS
+#endif /* VFS */
 #ifdef _I386
     statx(pwd->pw_dir, &pwdbuf, sizeof(pwdbuf),0);
     quota(Q_DOWARN,pwd->pw_uid,pwdbuf.st_dev,0); 
 #endif
-#ifndef SOLARIS
+#ifndef SYSV
 
     time(&utmp.ut_time);
 #if !defined(_AIX)
@@ -1035,7 +1058,7 @@ leavethis:
 	write(f, (char *)&utmp, sizeof(utmp));
 	close(f);
     }
-#else /* is SOLARIS */
+#else /* is SYSV */
 /* Fill in the utmp/utmpx information */
     gettimeofday(&utmpx.ut_tv);
     if (index(ttyn, 'c') == NULL ) {
@@ -1046,7 +1069,11 @@ leavethis:
         strcpy(ptty, tty);
         strcpy(utmpx_tty, ptty);
     }
+#ifdef SOLARIS	/* Here we search for /dev/pts/# */
     strcpy(utmpx.ut_line, utmpx_tty);
+#else		/* But here it's pts/# */
+    strcpy(utmpx.ut_line, ptty);
+#endif
     utmpx.ut_type = USER_PROCESS;
     setutxent();
     utx_tmp = getutxline(&utmpx);
@@ -1060,9 +1087,11 @@ leavethis:
     strcpy(utmpx.ut_id , new_id);
     if (p)
         strcat(utmpx.ut_id, ptty);
+    utmpx.ut_syslen = strlen(utmpx.ut_host);
     pututxline(&utmpx);
     getutmp(&utmpx, &utmp); 
     setutent();
+    ut_tmp = getutline(&utmp);
     pututline(&utmp);
     if ((f = open("/usr/adm/wtmp", O_WRONLY|O_APPEND)) >= 0) {
 	write(f, (char *)&utmp, sizeof(utmp));
@@ -1091,7 +1120,7 @@ leavethis:
 	lseek(f, (long)pwd->pw_uid * sizeof (struct lastlog), 0);
 	time(&ll.ll_time);
 	SCPYN(ll.ll_line, tty);
-#ifdef SOLARIS
+#ifdef SYSV
 	SCPYN(ll.ll_host, utmpx.ut_host);
 #else
 	SCPYN(ll.ll_host, utmp.ut_host);
@@ -1115,7 +1144,7 @@ leavethis:
     initgroups(name, pwd->pw_gid);
 #ifndef VFS
     quota(Q_DOWARN, pwd->pw_uid, (dev_t)-1, 0);
-#endif !VFS
+#endif /* !VFS */
 
     /* This call MUST succeed */
     if(setuid(pwd->pw_uid) < 0) {
@@ -1132,7 +1161,7 @@ leavethis:
 
     setenv("HOME", pwd->pw_dir, 1);
     setenv("SHELL", pwd->pw_shell, 1);
-#ifdef SOLARIS
+#ifdef SYSV
     if (term1[0] == '\0')
 	setenv("TERM", "vt100", 0);
     else
@@ -1143,18 +1172,28 @@ leavethis:
      setenv("TERM", term, 0);
 #endif
     setenv("USER", pwd->pw_name, 1);
-#ifndef SOLARIS
-    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
+
+#ifdef sgi
+    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11", 1);
 #else
-    setenv("PATH", "/usr/athena/bin:/bin/athena::/bin:/usr/ucb:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin", 1);
+#ifdef SOLARIS
+    setenv("PATH", "/usr/athena/bin:/bin/athena:/bin:/usr/ucb:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin", 1);
     setenv("LD_LIBRARY_PATH", "/usr/openwin/lib", 1);
-#endif
+#else
+    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
+#endif /* SOLARIS */
+#endif /* sgi */
+
 #if defined(ultrix) && defined(mips)
     setenv("hosttype", "decmips", 1);
 #endif
-#if defined(SOLARIS)
+#ifdef SOLARIS
     setenv("hosttype", "sun4", 1);
 #endif
+#ifdef sgi
+    setenv("hosttype", "sgi", 1);
+#endif
+
     if ((namep = rindex(pwd->pw_shell, '/')) == NULL)
 	namep = pwd->pw_shell;
     else
@@ -1163,14 +1202,14 @@ leavethis:
     if (tty[sizeof("tty")-1] == 'd')
 	syslog(LOG_INFO, "DIALUP %s, %s", tty, pwd->pw_name);
     if (pwd->pw_uid == 0)
-#ifdef SOLARIS
+#ifdef SYSV
 	if (utmpx.ut_host[0])
 #else
 	if (utmp.ut_host[0])
 #endif
 			if (kdata) {
 				syslog(LOG_NOTICE, "ROOT LOGIN via Kerberos from %.*s",
-#ifdef SOLARIS
+#ifdef SYSV
 					HMAX, utmpx.ut_host);
 #else
 					HMAX, utmp.ut_host);
@@ -1179,7 +1218,7 @@ leavethis:
 					kdata->pname, kdata->pinst, kdata->prealm );
 			} else {
 				syslog(LOG_NOTICE, "ROOT LOGIN %s FROM %.*s",
-#ifdef SOLARIS
+#ifdef SYSV
 					tty, HMAX, utmpx.ut_host);
 #else
 					tty, HMAX, utmp.ut_host);
@@ -1215,7 +1254,7 @@ leavethis:
 	while(wait(0) != forkval) ;
 	break;
     }
-#endif VFS
+#endif /* VFS */
 #ifdef POSIX
     sa.sa_handler = SIG_DFL;
     (void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
@@ -1248,7 +1287,7 @@ getloginname(up)
 	int c;
 	while (up->ut_name[0] == '\0') {
 		namep = up->ut_name;
-#ifdef SOLARIS
+#ifdef SYSV
                 if (hflag || second_time_around || rflag || kflag || Kflag)
 #endif
 		  printf("login: "); 
@@ -1263,7 +1302,7 @@ getloginname(up)
 	}
 	strncpy(lusername, up->ut_name, NMAX);
 	lusername[NMAX] = 0;
-#ifdef SOLARIS
+#ifdef SHADOW
 	if((pwd = get_pwnam(lusername)) == NULL) {
 #else
 	if((pwd = getpwnam(lusername)) == NULL) {
@@ -1363,7 +1402,7 @@ showmotd()
 
 #undef	UNKNOWN
 #define UNKNOWN "su"
-#ifndef SOLARIS
+#ifndef SYSV
 char *
 stypeof(ttyid)
 	char *ttyid;
@@ -1385,7 +1424,7 @@ doremotelogin(host)
 		pwd = &nouser;
 		return(-1);
 	}
-#ifdef SOLARIS
+#ifdef SHADOW
 	if((pwd = get_pwnam(lusername)) == NULL) {
 #else
 	if((pwd = getpwnam(lusername)) == NULL) {
@@ -1442,7 +1481,7 @@ paranoid:
 		pwd = &nouser;
 		return(-1);
 	}
-#ifdef SOLARIS
+#ifdef SHADOW
 	pwd = get_pwnam(lusername);
 #else
 	pwd = getpwnam(lusername);
@@ -1501,7 +1540,7 @@ char	*speeds[] =
       "600", "1200", "1800", "2400", "4800", "9600", "19200", "38400" };
 #define	NSPEEDS	(sizeof (speeds) / sizeof (speeds[0]))
 
-#ifdef SOLARIS
+#ifdef SYSV
 doremoteterm(term, term1, tp)
 	char *term, *term1;
 #else
@@ -1513,7 +1552,7 @@ doremoteterm(term, tp)
 {
 	register char *cp = index(term, '/'), **cpp;
 	char *speed;
-#ifdef SOLARIS
+#ifdef SYSV
         strncpy(term1, term, cp-term);
         term1[cp-term + 1] = '\0';
 #endif
@@ -1529,7 +1568,11 @@ doremoteterm(term, tp)
 				break;
 			}
 	}
+#ifdef sgi
+	tp->sg_flags = ECHO|CRMOD|O_ANYP|XTABS;
+#else
 	tp->sg_flags = ECHO|CRMOD|ANYP|XTABS;
+#endif
 }
 
 /* BEGIN TRASH
@@ -1689,11 +1732,7 @@ dofork()
 	    (void) detach_homedir();
 
     if (tmppwflag)
-#ifdef SOLARIS
-	    if (remove_pwent(pwd) || remove_spwent(pwd)) 
-#else
 	    if (remove_pwent(pwd)) 
-#endif
 		    puts("Couldn't remove password entry");
 
     /* Leave */
@@ -1720,7 +1759,11 @@ char *
 getlongpass(prompt)
 char *prompt;
 {
+#ifdef sgi /* POSIX but not tested elsewhere */
+	struct termios ttyb;
+#else
 	struct sgttyb ttyb;
+#endif
 	int flags;
 	register char *p;
 	register c;
@@ -1747,10 +1790,17 @@ char *prompt;
 #else
 	sig = signal(SIGINT, SIG_IGN);
 #endif
+#ifdef sgi /* POSIX but not tested */
+	tcgetattr(fileno(fi),&ttyb);
+	flags = ttyb.c_lflag;
+	ttyb.c_lflag &=~ECHO;
+	tcsetattr(fileno(fi),TCSANOW,&ttyb);
+#else
 	ioctl(fileno(fi), TIOCGETP, &ttyb);
 	flags = ttyb.sg_flags;
 	ttyb.sg_flags &= ~ECHO;
 	ioctl(fileno(fi), TIOCSETP, &ttyb);
+#endif
 	fprintf(stderr, "%s", prompt); fflush(stderr);
 	for (p=pbuf; (c = getc(fi))!='\n' && c!=EOF;) {
 		if (p < &pbuf[MAXPWSIZE])
@@ -1758,10 +1808,15 @@ char *prompt;
 	}
 	*p = '\0';
 	fprintf(stderr, "\n"); fflush(stderr);
+#ifdef sgi /* POSIX but not tested */
+	ttyb.c_lflag = flags;
+	tcsetattr(fileno(fi),TCSANOW,&ttyb);
+#else
 	ttyb.sg_flags = flags;
 	ioctl(fileno(fi), TIOCSETP, &ttyb);
+#endif
 #ifdef POSIX
-      (void) sigaction(SIGINT, &osa, NULL);
+	(void) sigaction(SIGINT, &osa, NULL);
 #else
 	signal(SIGINT, sig);
 #endif
@@ -1775,7 +1830,7 @@ char *prompt;
  */
 attach_homedir()
 {
-#ifdef SOLARIS
+#ifdef SYSV
         int status;
 #else
 	union wait status;
@@ -1800,7 +1855,7 @@ attach_homedir()
 	} 
 	while (wait(&status) != attachpid)
 		;
-#ifdef SOLARIS
+#ifdef SYSV
 	if (!status) {
 #else
 	if (!status.w_retcode) {
@@ -1814,7 +1869,7 @@ attach_homedir()
 /* Detach the user's home directory */
 detach_homedir()
 {
-#ifdef SOLARIS
+#ifdef SYSV
         int status;
 #else
 	union wait status;
@@ -1856,11 +1911,11 @@ detach_homedir()
 		while (wait(0) != pid)
 			;
 	}
-#endif notdef
+#endif /* notdef */
 	return;
 #ifdef notdef
 	printf("Couldn't detach home directory!\n");
-#endif notdef
+#endif /* notdef */
 }
 
 isremotedir(dir)
@@ -1881,12 +1936,12 @@ char *dir;
     return(TRUE);
 #endif
     
-#if (defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
+#if (defined(vax) || defined(ibm032) || defined(sun) || defined(sgi)) && !defined(REMOTEDONE)
 #define REMOTEDONE
 #if defined(vax) || defined(ibm032)
 #define NFS_MAJOR 0xff
 #endif
-#if defined(sun)
+#if defined(sun) || defined(sgi)
 #define NFS_MAJOR 130
 #endif
     struct stat stbuf;
@@ -1984,7 +2039,7 @@ make_homedir()
 	}
 	
     /* Make the home dir and chdir to it */
-#ifdef SOLARIS
+#ifdef SYSV
     if(mkdir(pwd->pw_dir, TEMP_DIR_PERM) < 0) {
 #else
     if(mkdir(pwd->pw_dir) < 0) {
@@ -1995,7 +2050,7 @@ make_homedir()
       return(-1);
     } 
     chown(pwd->pw_dir, pwd->pw_uid, pwd->pw_gid);
-#ifndef SOLARIS
+#ifndef SYSV
     chmod(pwd->pw_dir, TEMP_DIR_PERM);
 #endif
     chdir(pwd->pw_dir);
@@ -2062,57 +2117,55 @@ struct passwd *pwd;
 {
     FILE *pfile;
     int cnt, fd;
-#ifdef SOLARIS
+#ifdef SYSV
     long lastchg = DAY_NOW;
 #endif
 
     while (getpwuid(pwd->pw_uid))
       (pwd->pw_uid)++;
 
+#ifdef SYSV
+    fd = lckpwdf();
+#else
     cnt = 10;
     while (cnt-- > 0 &&
-	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
+	   (fd = open(PASSTEMP, O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
       sleep(1);
-    if (fd < 0) {
-	syslog(LOG_CRIT, "failed to lock /etc/passwd for insert");
-	printf("Failed to add you to /etc/passwd\n");
-    }
-
-
-#ifndef SOLARIS
-    if((pfile=fopen("/etc/passwd", "a")) != NULL) {
-	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
-		pwd->pw_name,
-		no_crack ? "*" : pwd->pw_passwd,
-		pwd->pw_uid,
-		pwd->pw_gid,
-		pwd->pw_gecos,
-		pwd->pw_dir,
-		pwd->pw_shell);
-	fclose(pfile);
-    }
-#else
-   if((pfile=fopen("/etc/shadow", "a")) != NULL) {
-   fprintf(pfile,"%s:%s:%d::::::\n",
-     	    pwd->pw_name,
-	    pwd->pw_passwd,
-            lastchg);
-	fclose(pfile);
-    }
-    if((pfile=fopen("/etc/passwd", "a")) != NULL) {
-	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
-		pwd->pw_name,
-                "x",
-		pwd->pw_uid,
-		pwd->pw_gid,
-		pwd->pw_gecos,
-		pwd->pw_dir,
-		pwd->pw_shell);
-	fclose(pfile);
-    }
 #endif
+    if (fd == -1) {
+	syslog(LOG_CRIT, "failed to lock /etc/passwd for insert");
+/*	printf("Failed to add you to /etc/passwd\n"); a big lie */
+    }
+
+    if((pfile=fopen(PASSWD, "a")) != NULL) {
+	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
+		pwd->pw_name,
+		shadow ? "x" : (no_crack ? "*" : pwd->pw_passwd),
+		pwd->pw_uid,
+		pwd->pw_gid,
+		pwd->pw_gecos,
+		pwd->pw_dir,
+		pwd->pw_shell);
+	fclose(pfile);
+    }
+
+#ifdef SHADOW
+   if( shadow &&
+       (pfile=fopen(SHADOW, "a")) != NULL) {
+     fprintf(pfile,"%s:%s:%d::::::\n",
+	     pwd->pw_name,
+	     pwd->pw_passwd,
+	     lastchg);
+     fclose(pfile);
+   }
+#endif
+
+#ifdef SYSV
+    (void)ulckpwdf();
+#else
     close(fd);
-    unlink("/etc/ptmp");
+    unlink(PASSTEMP);
+#endif
 }
 
 remove_pwent(pwd)
@@ -2122,12 +2175,19 @@ struct passwd *pwd;
     struct passwd *copypw;
     struct stat statb;
     int cnt, fd;
+    int failure = 0;
 
+#ifdef SYSV
+    fd = lckpwdf();
+    if (fd != -1)
+      fd = open(PASSTEMP, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+#else
     cnt = 10;
     while (cnt-- > 0 &&
-	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
+	   (fd = open(PASSTEMP, O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
       sleep(1);
-    if (fd < 0) {
+#endif
+    if (fd == -1) {
 	syslog(LOG_CRIT, "failed to lock /etc/passwd for remove");
 	printf("Failed to remove you from /etc/passwd\n");
     }
@@ -2145,31 +2205,50 @@ struct passwd *pwd;
 			    copypw->pw_shell);
 	endpwent();
 	fclose(newfile);
-	if (stat("/etc/ptmp", &statb) != 0 || statb.st_size < 80) {
+	if (stat(PASSTEMP, &statb) != 0 || statb.st_size < 80) {
 	    syslog(LOG_CRIT, "something stepped on /etc/ptmp");
 	    printf("Failed to cleanup login\n");
+	    failure = 1;
 	} else
-	  rename("/etc/ptmp", "/etc/passwd");
-	if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+	  rename(PASSTEMP, PASSWD);
+	if (stat(PASSWD, &statb) != 0 || statb.st_size < 80) {
 	    syslog(LOG_CRIT, "something stepped on /etc/passwd");
 	    printf("Failed to cleanup login\n");
 	    sleep(12);
-	    if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+	    if (stat(PASSWD, &statb) != 0 || statb.st_size < 80) {
 		syslog(LOG_CRIT, "/etc/passwd still empty, adding root");
-		newfile = fopen("/etc/passwd", "w");
-#ifdef SOLARIS
-		fprintf(newfile, "root:x:0:1:System PRIVILEGED Account:/:/bin/csh\n");
-#else
-		fprintf(newfile, "root:*:0:1:System PRIVILEGED Account:/:/bin/csh\n");
-#endif
+		newfile = fopen(PASSWD, "w");
+		if (shadow)
+		  fprintf(newfile, "root:x:0:1:System PRIVILEGED Account:/:/bin/csh\n");
+		else
+		  fprintf(newfile, "root:*:0:1:System PRIVILEGED Account:/:/bin/csh\n");
 		fclose(newfile);
+	      }
+	    failure = 1;
+	  }
+#ifdef SHADOW
+	if (!failure)
+	  /* We execute this code if all stages of removing the user
+	     from /etc/passwd were successful. Otherwise, something
+	     may be broken and we should give up right now. */
+	    {
+	      if (shadow)
+		failure = remove_spwent(pwd);
 	    }
-	}
-      return(0);
-    }else return(1);
+#endif
+#ifdef SYSV
+      (void)ulckpwdf();
+#endif
+      return(failure);
+    }
+
+#ifdef SYSV
+    (void)ulckpwdf();
+#endif
+    return(1);
 }
 
-#ifdef SOLARIS
+#ifdef SHADOW
 remove_spwent(pwd)
 struct passwd *pwd;
 {
@@ -2178,19 +2257,28 @@ struct passwd *pwd;
     struct spwd   *copyspw;
     struct stat statb;
     int cnt, fd;
+    int failure = 0;
 
-
+#ifdef SYSV
+    /* We don't lock here, assuming we've been called from remove_pwent
+       and are operating under its lock. We do this so that, with
+       respect to the lock, updating both /etc/passwd and /etc/shadow
+       is atomic. */
+    if (fd != -1)
+      fd = open(SHADTEMP, O_WRONLY|O_CREAT|O_TRUNC, 0600);
+#else
     cnt = 10;
     while (cnt-- > 0 &&
-	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0600)) < 0)
+	   (fd = open(SHADTEMP, O_WRONLY|O_CREAT|O_EXCL, 0600)) < 0)
       sleep(1);
+#endif
     if (fd < 0) {
 	syslog(LOG_CRIT, "failed to lock /etc/shadow for remove");
 	printf("Failed to remove you from /etc/shadow\n");
     }
     if ((newfile = fdopen(fd, "w")) != NULL) {
         setspent();
-	while ((copyspw = getspent()) != 0)
+	while ((copyspw = getspent()) != NULL)
 	    if (strcmp(copyspw->sp_namp , pwd->pw_name)) {
 		    fprintf(newfile, "%s:%s:%d::::::\n",
 			    copyspw->sp_namp,
@@ -2199,23 +2287,25 @@ struct passwd *pwd;
 		  }
 	endspent();
 	fclose(newfile);
-	if (stat("/etc/ptmp", &statb) != 0 || statb.st_size < 80) {
+	if (stat(SHADTEMP, &statb) != 0 || statb.st_size < 80) {
 	    syslog(LOG_CRIT, "something stepped on /etc/ptmp");
 	    printf("Failed to cleanup login\n");
+	    failure = 1;
 	} else
-	  rename("/etc/ptmp", "/etc/shadow");
-	if (stat("/etc/shadow", &statb) != 0 || statb.st_size < 80) {
+	  rename(SHADTEMP, SHADOW);
+	if (stat(SHADOW, &statb) != 0 || statb.st_size < 80) {
 	    syslog(LOG_CRIT, "something stepped on /etc/shadow");
 	    printf("Failed to cleanup login\n");
 	    sleep(12);
-	    if (stat("/etc/shadow", &statb) != 0 || statb.st_size < 80) {
+	    if (stat(SHADOW, &statb) != 0 || statb.st_size < 80) {
 		syslog(LOG_CRIT, "/etc/shadow still empty, adding root");
-		newfile = fopen("/etc/shadow", "w");
+		newfile = fopen(SHADOW, "w");
 		fprintf(newfile, "root::6445::::::");
 		fclose(newfile);
 	    }
+	    failure = 1;
 	}
-	return(0);
+	return(failure);
     } else return(1);
 }
 #endif
@@ -2363,6 +2453,7 @@ init_wgfile()
         char wgfile[16];
         char *wgfile1;
 	static char errbuf[1024];
+
 	strcpy(wgfile, "/tmp/wg.XXXXXX");
 	wgfile1 = mktemp(&wgfile[0]);
 	sprintf(errbuf, "WGFILE=%s", wgfile);
