@@ -1,0 +1,9 @@
+Name: athena-ksrvutil
+Summary: ksrvutil is a simple utility to list and update srvtab files
+Copyright: MIT
+Group: System Environment/Base
+
+Requires: athena-krb5
+
+%description
+ksrvutil is a simple utility to list and update srvtab files

@@ -1,0 +1,10 @@
+Name: athena-libal
+Summary: The Athena login library
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-hesiod athena-afs
+
+%description
+A library of functions used to implement login functionality on Athena
+workstations. 

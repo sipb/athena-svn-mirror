@@ -1,0 +1,25 @@
+Name: athena-discuss
+Summary: A conferencing and mail archiving system
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-krb5 athena-zephyr athena-libet
+
+%pre
+mkdir -p /var/spool/discuss
+touch /var/spool/discuss/.k{5,}login
+grep -s -q ^discuss /etc/passwd \
+	|| useradd	-d /var/spool/discuss \
+			-g 101 \
+			-u 32000 \
+			-s /dev/null \
+			-M \
+			discuss
+
+%post
+grep -s -q ^discuss /etc/services \
+	|| echo "discuss	2100/tcp	# Networked conferencing." \
+		>> /etc/services
+
+%description
+Discuss is a user-interface front end to a networked conferencing system.  

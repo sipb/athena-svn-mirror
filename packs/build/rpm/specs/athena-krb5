@@ -1,0 +1,77 @@
+Name: athena-krb5
+Summary: Version 5 of the Kerberos system
+Copyright: MIT
+Group: System Environment/Base
+
+Requires: getty_ps
+
+%description
+The Kerberos secure net authentication system.
+
+%build
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+exit 1
+fi
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
+
+cp version src/appl/version
+(cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT all)
+
+%install
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+cp version src/appl/version
+(cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT install)
+
+# Extra files; see prep/athena-krb5.
+cp krb.conf $RPM_BUILD_ROOT/etc/athena/krb.conf
+cp krb.realms $RPM_BUILD_ROOT/etc/athena/krb.realms
+cp krb5.conf $RPM_BUILD_ROOT/etc
+cp ftpusers $RPM_BUILD_ROOT/etc
+mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
+
+# Don't install /bin/login on Linux.
+rm $RPM_BUILD_ROOT/bin/login
+
+%files
+/usr
+/etc/athena/telnetd
+%config /etc/athena/krb.conf
+%config /etc/athena/krb.realms
+%config /etc/krb5.conf
+%config /etc/ftpusers
+%dir /var/athena/sessions
+
+%post
+if [ -e /etc/conf.getty ] && grep -s -q LOGIN /etc/conf.getty ; then
+  echo Not updating conf.getty to point at krb5. Current value:
+  grep LOGIN /etc/conf.getty
+else
+  echo LOGIN=/usr/athena/etc/login.krb5 >> /etc/conf.getty
+fi
+
+# Force use of getty instead of mingetty
+sed -e s/mingetty/getty/ < /etc/inittab > /tmp/sedout
+mv /tmp/sedout /etc/inittab
+kill -1 1
+
+
+%preun
+sed -e s@LOGIN=/usr/athena/etc/login.krb5@@ /etc/conf.getty > /tmp/sedout
+mv /tmp/sedout /etc/conf.getty

@@ -1,0 +1,8 @@
+Name: athena-tex
+Summary: The TeX typesetting system and support utilities, for Athena
+Copyright: Donald Knuth and others
+Group: Applications/Publishing
+
+%description
+The TeX typesetting system and support utilities, for Athena
+

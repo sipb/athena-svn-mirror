@@ -1,0 +1,8 @@
+Name: athena-session
+Summary: The Athena session management tools
+Copyright: MIT
+Group: User Interface/X
+
+%description
+The end_session and session_gate utilities implement a simple X-based
+session management facility for Athena.

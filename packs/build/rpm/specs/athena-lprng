@@ -1,0 +1,42 @@
+Name: athena-lprng
+Summary: The LPRNG printing system for Athena.
+Copyright: Artistic License
+Group: System Environment/Base
+Provides: lpr
+
+%description
+The LPRNG printing system for Athena.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
+cp lpd.conf $RPM_BUILD_ROOT/etc/lpd.conf
+cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
+cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+cp athena-lpd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-lpd
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-lpd
+
+%post
+chkconfig --add athena-lpd
+
+%files
+/etc/rc.d
+/usr/athena
+%config /etc/lpd.conf
+%config /etc/lpd.perms
+%config /etc/sysconfig/athena-lpd
+

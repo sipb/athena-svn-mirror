@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# athena-lpd:	Start the Athena lpd service.
+#
+# chkconfig: 2345 80 30
+# description: lpd startup.
+# processname: lpd
+#
+# config: /etc/sysconfig/network
+# config: /etc/sendmail.cf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+. /etc/sysconfig/athena-lpd
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+# Check that networking is up.
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /usr/athena/etc/lpd ] || exit 0
+
+[ "$LPD" = true ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Starting Athena printer server: "
+
+	daemon /usr/athena/etc/lpd
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-lpd
+	;;
+
+  stop)
+	echo -n "Stopping Athena printer service: "
+	killproc lpd
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-lpd
+	;;
+
+  status)
+	status lpd
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP lpd
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: athena-lpd {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

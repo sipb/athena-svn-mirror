@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cp $1/packs/config/lpd.conf $2
+cp $1/packs/config/lpd.perms $2
+cp $1/packs/maint/os/linux/athena-lpd.rc $2
+cp $1/packs/config/os/linux/athena-lpd.conf $2

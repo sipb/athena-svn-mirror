@@ -1,0 +1,14 @@
+Name: athena-autoconf
+Summary: GNU autoconf as modified for Athena workstations.
+Copyright: GPL
+Group: Development/Tools
+
+%description 
+A modified version of the normal GNU autoconf utility, for use on
+Athena workstations.  Athena workstations should normally have this
+package installed.
+
+GNU's Autoconf is a tool for configuring source code and Makefiles.
+Using Autoconf, programmers can create portable and configurable
+packages, since the person building the package is allowed to
+specify various configuration options.

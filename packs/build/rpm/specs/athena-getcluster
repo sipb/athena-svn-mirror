@@ -1,0 +1,13 @@
+Name: athena-getcluster
+Summary: Retrieve service cluster info from Hesiod for Athena workstations
+Copyright: MIT
+Group: System Environment/Base
+
+Requires: athena-hesiod
+
+%description
+The getcluster program is used on all Athena workstations to find the
+service cluster information for the workstation and writes a list of
+environment variable assignments which can be used to initialize a
+shell accordingly.
+

@@ -1,0 +1,12 @@
+Name: athena-gms
+Summary: A program to display the global Athena message of the day
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-hesiod athena-libet
+
+%description
+The get_message utility locates the Athena Global Message server,
+retrieves the current message of the day, and displays it if
+necessary.
+

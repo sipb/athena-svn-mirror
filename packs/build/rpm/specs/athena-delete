@@ -1,0 +1,15 @@
+Name: athena-delete
+Summary: A friendlier version of rm for Athena.
+Copyright: MIT
+Group: Applications/File
+
+Requires: athena-afs athena-libet
+
+%description
+The delete utility marks files and directories for later permanent
+removal by prefixing them with `.#'.  Files accidentally marked for
+deletion can be recovered with undelete.  Permanent removal can be
+effected immediately with the purge and expunge commands.  The lsdel
+utility lists the files that have been marked for deletion but not yet
+removed. 
+

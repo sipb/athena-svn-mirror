@@ -1,0 +1,48 @@
+Name: athena-zephyr
+Summary: The Athena Zephyr instant messaging system
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-krb5 athena-ares athena-hesiod athena-libss athena-libet
+
+%description
+Zephyr provides an instant messaging system for users in the Athena
+networked environment.
+
+%install
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files; see prep/athena-zephyr
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
+cp zephyr.vars $RPM_BUILD_ROOT/etc/athena/zephyr.vars
+cp zhm.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm
+cp zephyrd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
+cp zhm.conf $RPM_BUILD_ROOT/etc/sysconfig/zhm
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm 
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
+
+%post
+chkconfig --add zhm
+chkconfig --add zephyrd
+
+%files
+/etc/rc.d
+/etc/athena/syslogd
+/etc/athena/zephyr
+/etc/athena/zhm
+/etc/athena/zshutdown_notify
+/usr
+%config /etc/athena/zephyr.vars
+%config /etc/sysconfig/zhm

@@ -1,0 +1,44 @@
+Name: athena-xntp
+Summary: The Network Time Protocol, to keep Athena workstations in sync
+Copyright: David L. Mills
+Group: System Environment/Base
+
+%description
+The Network Time Protocol, to keep Athena workstations in sync
+
+%install
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
+cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
+cp athena-xntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
+cp athena-xntp.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
+
+# It will need this to run.
+mkdir -p $RPM_BUILD_ROOT/var/athena
+
+%post
+chkconfig --add athena-xntp
+
+%files
+/etc/rc.d
+/etc/athena
+/usr
+%dir /var/athena
+%config /etc/ntp.conf
+%config /etc/sysconfig/athena-xntp

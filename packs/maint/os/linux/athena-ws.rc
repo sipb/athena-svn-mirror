@@ -1,0 +1,143 @@
+#!/bin/sh
+#
+# athena-ws:	Set up initial Athena workstation state.
+#
+# chkconfig: 2345 20 80
+# description: Initial Athena startup.
+#
+# config: /etc/sysconfig/network
+# config: /etc/athena/rc.conf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+. /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	logger -p user.notice "Booting"
+
+	if [ -f /etc/passwd.local ]; then
+		echo -n "Recovering Athena password file"
+		cp /etc/passwd.local /etc/passwd \
+			 && success "passwd recovery" \
+				 || failure "passwd recovery"
+		echo		 
+	fi
+
+	if [ -f /etc/shadow.local ]; then
+		echo -n "Recovering Athena shadow password file"
+		cp /etc/shadow.local /etc/shadow \
+			 && success "shadow recovery" \
+				 || failure "shadow recovery"
+		echo		 
+	fi
+
+	if [ -f /etc/group.local ]; then
+		echo -n "Recovering Athena group file"
+		cp /etc/group.local /etc/group \
+			 && success "group recovery" \
+				 || failure "group recovery"
+		echo
+	fi
+
+	if [ ! -f /var/athena/core.root ]; then
+		echo -n "Creating Athena core.root file"
+		touch /var/athena/core.root \
+			 && chmod 660 /var/athena/core.root \
+			 && chown root:daemon /var/athena/core.root \
+			 && success "making core.root" \
+				 || failure "making core.root"
+		echo
+	fi
+
+	echo -n "Removing stale locks and session records"
+	rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/* \
+		&& rm -f '/var/tmp/!!!SuperLock!!!' \
+		&& success "removing stale files" \
+			|| failure "removing stale files"
+	echo
+
+
+	if [ "$PUBLIC" = true ]; then
+		echo -n Public workstation cleanup
+
+#		Should also check rpm integrity here
+
+		rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist \
+			&& rm -rf /usr/local \
+			&& rm -f {/etc,/etc/athena,/etc/athena/login}/*.local \
+			&& chmod 600 /etc/shadow \
+			&& cp /dev/null /etc/X0.hosts \
+			&& success "public ws clean" \
+				|| failure "public ws clean"
+
+		echo
+	fi
+
+	echo -n Editing /etc/motd:
+	awk '{ prev = $0; } END { print prev; }' /etc/athena/version >/tmp/t1\
+		&& if [ "$PUBLIC" != true ]; then  \
+			awk '{ if (NR > 1) print $0; }' /etc/motd >> /tmp/t1; \
+		    fi \
+		&& mv -f /tmp/t1 /etc/motd \
+		&& chmod 644 /etc/motd \
+		&& success "editing /etc/motd" || failure "editing /etc/motd"
+	echo
+
+	echo -n Fixing nocreate:
+	if [ "$NOCREATE" = true ]; then
+		touch /etc/nocreate
+	else
+		rm -f /etc/noattach
+	fi && success nocreate || failure nocreate
+	echo
+
+	echo -n Fixing noattach:
+	if [ "$NOATTACH" = true ]; then
+		touch /etc/noattach
+	else
+		rm -f /etc/noattach
+	fi && success noattach || failure noattach
+	echo
+
+	echo -n Fixing noremote:
+	if [ "$NOREMOTE" = true ]; then
+		touch /etc/noremote
+	else
+		rm -f /etc/noremote
+	fi && success noremote || failure noremote
+	echo
+
+	echo -n Fixing nologin:
+	if [ -f /etc/nologin.persist ]; then
+		cp /etc/nologin.persist /etc/nologin
+	else
+		rm -f /etc/nologin
+	fi && success nologin || failure nologin
+	echo
+	;;
+  stop)
+	;;
+
+  status)
+	;;
+
+  restart)
+	$0 start
+	;;
+
+  reload)
+	;;
+
+  *)
+	echo "Usage: athena-ws {start|stop|status|restart|reload}"
+	exit 1
+	;;
+esac
+
+exit 0

@@ -1,0 +1,34 @@
+Name: athena-athinfod
+Summary: An Athena server to respond to athinfo requests
+Copyright: MIT
+Group: Applications/Internet
+
+%description 
+Respond to network queries for information about the workstation, such
+as its hardware type and configuration, its current software
+installation state, the number of users logged on, and various other
+informational state queries.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+cp athinfo.access $RPM_BUILD_ROOT/etc/athena/athinfo.access
+cp athinfo.defs $RPM_BUILD_ROOT/etc/athena/athinfo.defs
+
+%files
+/etc/athena/athinfod
+/usr
+%config /etc/athena/athinfo.access
+%config /etc/athena/athinfo.defs

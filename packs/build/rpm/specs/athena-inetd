@@ -1,0 +1,61 @@
+Name: athena-inetd
+Summary: The Athena version of Internet master daemon server.
+Copyright: BSD
+Group: System Environment/Daemons
+
+%description
+Athena needs this modified version of inetd to support special Athena
+functions, it runs along side the normal system inetd.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/athena $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
+cp inetd.conf.athena $RPM_BUILD_ROOT/etc/athena/inetd.conf
+cp inetd.conf $RPM_BUILD_ROOT/etc/inetd.conf.minimal
+cp athena-inetd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
+cp athena-inetd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-inetd
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-inetd
+
+# Rename the program
+mv $RPM_BUILD_ROOT/etc/athena/inetd $RPM_BUILD_ROOT/etc/athena/athena-inetd
+mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
+	$RPM_BUILD_ROOT/usr/athena/man/man8/athena-inetd.8
+
+%post
+chkconfig --add athena-inetd
+cp /etc/inetd.conf.minimal /etc/inetd.conf
+
+( grep -s -q ^rkinit /etc/services \
+	|| echo "rkinit	2108/tcp	rkinitd	# Remote ticket granting svc."
+ grep -s -q ^write /etc/services \
+	|| echo "write	811/tcp			# Athena remote write service"
+ grep -s -q ^busypoll /etc/services \
+	|| echo "busypoll	49154/udp	# busy polling port for ws"
+ grep -s -q ^athinfo /etc/services \
+	|| echo "athinfo	49155/tcp	# workstation info server"
+ grep -s -q ^gshell /etc/services \
+	|| echo "gshell		3715/tcp	# gsh service"
+) >> /etc/services
+
+%files
+/etc/athena/athena-inetd
+%config /etc/inetd.conf.minimal
+%config /etc/athena/inetd.conf
+%config /etc/sysconfig/athena-inetd
+/etc/rc.d
+/usr/athena
+

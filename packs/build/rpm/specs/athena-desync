@@ -1,0 +1,9 @@
+Name: athena-desync
+Summary: Desynchronize timed jobs on networks
+Copyright: MIT
+Group: System Environment/Base
+
+%description
+The desync tool sleeps a random amount of time in order to skew jobs
+that would otherwise run simultaneously on a large number of networked
+computers, imposing unusual network load spikes.

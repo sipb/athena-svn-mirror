@@ -1,0 +1,46 @@
+Name: athena-bind
+Summary: The Berkeley Internet Name Daemon, implementing DNS for Athena
+Copyright: BSD
+Group: System Environment/Daemons
+
+%description 
+The BIND server and nameservice libraries, as configured for Athena
+workstations.
+
+%install
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp named.conf 			$RPM_BUILD_ROOT/etc/named.conf
+cp named.localhost		$RPM_BUILD_ROOT/etc/named.localhost
+cp named.localhost.rev		$RPM_BUILD_ROOT/etc/named.localhost.rev
+cp named.root			$RPM_BUILD_ROOT/etc/named.root
+cp resolv.conf			$RPM_BUILD_ROOT/etc/resolv.conf
+cp athena-bind.rc		$RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
+
+%post
+chkconfig --add athena-bind
+
+%files
+/etc/rc.d
+/etc/athena
+/usr
+%config /etc/named.conf
+%config /etc/named.localhost
+%config /etc/named.localhost.rev
+%config /etc/named.root
+%config /etc/resolv.conf
+

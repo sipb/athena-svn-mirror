@@ -1,0 +1,17 @@
+Name: athena-gmake
+Summary: GNU Make as modified for Athena workstations.
+Copyright: GPL
+Group: Development/Tools
+
+%description
+A modified version of the normal GNU make utility, for use on Athena
+workstations.  Athena workstations should normally have this package
+installed.
+
+GNU make is a tool for controlling the generation of executables and
+other non-source files of a program from the program's source files.
+Make allows users to build and install packages without any
+significant knowledge about the details of the build process.  The
+details about how the program should be built are provided for make in
+the program's makefile.
+

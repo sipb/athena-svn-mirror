@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# athena-bind:	Start the Athena named service.
+#
+# chkconfig: 345 15 85
+# description: named startup
+# processname: named
+# pidfile: /var/athena/named.pid
+# config: /etc/sysconfig/network
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+# Check that networking is up.
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /etc/athena/named ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Starting Athena named: "
+	daemon /etc/athena/named
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-bind
+	;;
+
+  stop)
+	echo -n "Stopping Athena NTP: "
+	killproc named
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-bind
+	;;
+
+  status)
+	status named
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP named
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: athena-bind {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

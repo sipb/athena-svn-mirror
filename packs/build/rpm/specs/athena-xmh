@@ -1,0 +1,8 @@
+Name: athena-xmh
+Summary: An X interface to MH, the Athena mail reading system
+Copyright: DEC
+Group: Applications/Communications
+
+%description
+An X interface to MH, the Athena mail reading system
+

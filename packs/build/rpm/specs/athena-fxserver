@@ -1,0 +1,11 @@
+Name: athena-fxserver
+Summary: The File Exchange server
+Copyright: MIT
+Group: Applications/Productivity
+
+Requires: athena-libfxcl athena-krb5 athena-hesiod
+
+%description 
+The File Exchange server is used to exchange files in a secure and
+verifyable manner.
+

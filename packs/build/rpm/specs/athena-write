@@ -1,0 +1,9 @@
+Name: athena-write
+Summary: An Athena program to facilitate remote `write' functionality
+Copyright: BSD and MIT
+Group: Applications/Communication
+
+%description
+The Athena write utility is an extension of the normal one; it allows
+writing to users on other hosts if they are running the Athena writed daemon. 
+

@@ -1,0 +1,36 @@
+Name: athena-bash
+Summary: The GNU Bourne Again shell (bash), as configured for Athena.
+Copyright: GPL
+Group: System Environment/Shells
+
+%description
+Bash is a GNU project sh-compatible shell or command language
+interpreter. Bash (Bourne Again shell) incorporates useful features
+from the Korn shell (ksh) and the C shell (csh). Most sh scripts
+can be run by bash without modification.
+
+Bash offers several improvements over sh, including command line
+editing, unlimited size command history, job control, shell
+functions and aliases, indexed arrays of unlimited size and
+integer arithmetic in any base from two to 64. Bash is ultimately
+intended to conform to the IEEE POSIX P1003.2/ISO 9945.2 Shell and
+Tools standard.
+
+# Annoyingly, the bash source embeds info about where it was
+# configured in the makefile, so this will override it.
+
+%build
+make all BUILD_DIR=`pwd`
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT BUILD_DIR=`pwd`

@@ -1,0 +1,10 @@
+Name: athena-neos
+Summary: The Athena Educational Online System
+Copyright: MIT
+Group: Applications/Productivity
+
+Requires: athena-libfxcl athena-krb5 athena-hesiod
+
+%description
+The Educational Online System enables students to submit assignments
+and receive graded returns in a secure and verifyable manner.

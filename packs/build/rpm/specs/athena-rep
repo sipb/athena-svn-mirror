@@ -1,0 +1,7 @@
+Name: athena-rep
+Summary: An Athena program to run a program repeatedly and display the output
+Copyright: MIT
+Group: Applications/System
+
+%description
+The rep utility runs a program repeatedly, displaying its output nicely.

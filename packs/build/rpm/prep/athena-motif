@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cp $1/packs/config/os/linux/Mwm $2
+cp $1/packs/config/system.mwmrc $2

@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# athena-inetd:	Start the Athena inetd Internet Network Daemon.
+#
+# chkconfig: 345 50 50
+# description: This is the athena daemon-starting daemon.  It exists
+#		so that Athena workstations can have a single standard
+#		inetd, with some special added features.
+# processname: athena-inetd
+# pidfile: /var/athena/inetd.pid
+# config: /etc/sysconfig/network
+# config: /etc/athena/inetd.conf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+. /etc/sysconfig/athena-inetd
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+# Check that networking is up.
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /etc/athena/athena-inetd ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Starting Athena INET services: "
+	daemon athena-inetd $([ "$ACCESSON" = true ] && echo -n - && echo n)
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-inetd
+	;;
+
+  stop)
+	echo -n "Stopping Athena INET services: "
+	killproc athena-inetd
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-inetd
+	;;
+
+  status)
+	status athena-inetd
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP athena-inetd
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: athena-inetd {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

@@ -1,0 +1,45 @@
+Name: athena-afs
+Summary: AFS binaries for Athena workstations
+Copyright: Transarc
+Group: System Environment/Base
+Requires: athena-listsuidcells
+
+%description
+Binary support for AFS client implementation from Transarc, and
+associated libraries.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
+chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
+
+%post
+chkconfig --add afs
+[ -d /afs ] || mkdir -p /afs
+
+%files
+/bin/athena
+/etc/athena
+/etc/rc.d
+/usr/afsws
+/usr/athena
+/usr/vice/etc/afsd
+/usr/vice/etc/modload
+%dir /usr/vice/cache
+%config /usr/vice/etc/CellServDB
+%config /usr/vice/etc/ThisCell
+%config /usr/vice/etc/cacheinfo
+%config /etc/sysconfig/afs

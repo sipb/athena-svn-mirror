@@ -1,0 +1,44 @@
+Name: athena-locker
+Summary: Locker management library functions for Athena
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-zephyr athena-krb5 athena-hesiod athena-afs athena-libet
+
+%description
+Locker management library functions for Athena
+
+%install
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files; see prep/athena-locker
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/{directory,locker,mountpoint}
+cp attach.conf $RPM_BUILD_ROOT/etc/athena/attach.conf
+cp attach.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
+
+%post
+mkdir -p /mit
+chkconfig --add attach
+
+
+%files
+/etc/rc.d
+/usr
+%config /etc/athena/attach.conf
+%dir /var/athena/attachtab/directory
+%dir /var/athena/attachtab/locker
+%dir /var/athena/attachtab/mountpoint

@@ -1,0 +1,39 @@
+Name: athena-olc
+Summary: The Athena Online Consultant system
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet athena-motif athena-libMu athena-wcl
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
+cp olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
+cp olc.conf $RPM_BUILD_ROOT/etc/sysconfig/olc
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/olc
+
+%post
+chkconfig --add olc
+
+%description
+The Online Consultant system enables a variety of styles of
+interaction with the Athena Online Consultants.
+
+%files
+/etc/rc.d
+/usr
+%config /etc/sysconfig/olc
