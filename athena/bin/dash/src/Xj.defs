@@ -42,8 +42,8 @@
  * libraries are in the standard places, you can comment out the following
  * lines.
  */
-#define LOCAL_INCLUDES -I/usr/athena/include
-#define LOCAL_LIBS -L/usr/athena/lib
+LOCAL_INCLUDES = -I/usr/athena/include
+LOCAL_LIBS = -L/usr/athena/lib
 
 /*
  * Here we provide some paths...  the man directory, followed by a
