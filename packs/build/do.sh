@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.19 1998-04-18 16:57:50 danw Exp $
+# $Id: do.sh,v 1.20 1998-04-22 22:03:54 ghudson Exp $
 
 source="/mit/source"
 srvd="/srvd"
@@ -43,7 +43,7 @@ esac
 
 # Set up the build environment.
 umask 022
-export ATHENA_SYS HOSTTYPE CONFIG_SITE PATH
+export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE CONFIG_SITE PATH
 CONFIG_SITE=$source/packs/build/config.site
 
 # Determine proper ATHENA_SYS value.
