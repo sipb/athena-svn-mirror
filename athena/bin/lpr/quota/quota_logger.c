@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.4 1990-11-14 17:30:41 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.5 1991-01-23 15:13:02 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.4 1990-11-14 17:30:41 epeisach Exp $";
+static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.5 1991-01-23 15:13:02 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -24,7 +24,7 @@ static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "mit-copyright.h"
 
 char *set_service();
-
+long time();
 /* These routines handle the printing out to the logger server info file */
 /* Fatal errors exit. */
 
@@ -58,7 +58,7 @@ quota_value		qamount;
     char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
     char *service;
 
-    service = set_service(qid->service);
+    service = set_service((char *)qid->service);
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
     open_acct();
@@ -116,7 +116,7 @@ quota_value		qamount;
     char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
     char *service;
 
-    service = set_service(qid->service);
+    service = set_service((char *)qid->service);
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
     open_acct();
@@ -186,7 +186,7 @@ quota_report	  	*qreport;
     char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
     char *service;
 
-    service = set_service(qid->service);
+    service = set_service((char *)qid->service);
 
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
@@ -223,7 +223,7 @@ quota_report	  	*qreport;
     char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
     char *service;
 
-    service = set_service(qid->service);
+    service = set_service((char *) qid->service);
 
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
