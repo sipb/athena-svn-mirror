@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.9 1988-06-23 16:57:35 jtkohl Exp $";
+static char rcsid_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.10 1988-07-19 10:16:27 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -394,8 +394,17 @@ ZAcl_t *acl;
 
 		class_bucket[hashval] = ptr2;
 		return(ZERR_NONE);
-	} else
-		return(ZSRV_CLASSXISTS);
+	} else {
+	    for (ptr2 = ptr->q_forw; ptr2 != ptr; ptr2 = ptr2->q_forw)
+		/* walk down the list, looking for a match */
+		if (!strcmp(ptr2->zct_classname, class))
+		    return(ZSRV_CLASSXISTS);
+	    if (!(ptr2 = class_alloc(class)))
+		return(ENOMEM);
+	    ptr2->zct_acl = acl;
+	    xinsque(ptr2, ptr);
+	    return(ZERR_NONE);
+	}
 }
 
 /* private routines */
