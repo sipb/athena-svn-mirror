@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.1 1989-12-13 15:00:33 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.2 1989-12-13 15:01:03 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.1 1989-12-13 15:00:33 probe Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.2 1989-12-13 15:01:03 probe Exp $";
 #endif lint
 
 /*
@@ -1179,7 +1179,7 @@ init()
 				  RM);
 			}
 			/* if printer is not on local machine, ignore LP */
-			else if (strcmp (name, hp->h_name) != 0) *LP = '\0';
+			else if (strcasecmp(name, hp->h_name) != 0) *LP = '\0';
 		      }
 
 	     }
