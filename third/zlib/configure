@@ -69,11 +69,11 @@ esac
 
 if test "$gcc" -eq 1 && ($cc -c $cflags $test.c) 2>/dev/null; then
   CC="$cc"
-  SFLAGS=${CFLAGS-"-fPIC -O3"}
+  SFLAGS=${CFLAGS-"-fPIC"}
   CFLAGS="$cflags"
   case `(uname -s || echo unknown) 2>/dev/null` in
-  Linux | linux) LDSHARED=${LDSHARED-"gcc -shared -Wl,-soname,libz.so.1"};;
-  *)             LDSHARED=${LDSHARED-"gcc -shared"};;
+  Linux | linux) LDSHARED=${LDSHARED-"$CC -shared -Wl,-soname,libz.so.1"};;
+  *)             LDSHARED=${LDSHARED-"$CC -shared"};;
   esac
 else
   # find system name and corresponding cc options
