@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.11 1989-11-06 19:53:08 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.12 1989-11-22 21:31:58 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -33,7 +33,7 @@
 #include "delete_errs.h"
 #include "errors.h"
 
-extern char *malloc(), *realloc();
+extern char *realloc();
 extern time_t current_time;
 extern int errno;
 
@@ -134,7 +134,7 @@ purge()
      char *home;
      int retval;
      
-     home = malloc((unsigned) MAXPATHLEN);
+     home = Malloc((unsigned) MAXPATHLEN);
      if (! home) {
 	  set_error(errno);
 	  error("purge");
@@ -435,11 +435,11 @@ list_files()
      int num;
      int retval;
      
-     strings = (char **) malloc(sizeof(char *));
+     strings = (char **) Malloc(sizeof(char *));
      num = 0;
      if (! strings) {
 	  set_error(errno);
-	  error("malloc");
+	  error("Malloc");
 	  return error_code;
      }
 

@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.14 1989-11-06 19:53:01 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.15 1989-11-22 21:32:24 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -28,7 +28,7 @@
 #include "mit-copyright.h"
 #include "errors.h"
 
-extern char *malloc(), *realloc();
+extern char *realloc();
 extern long time();
 extern int errno;
 
@@ -399,10 +399,10 @@ Boolean specified;
 	  return 0;
      }
      if (*last) {
-	  (*last)->next = (filerec *) malloc((unsigned) sizeof(filerec));
+	  (*last)->next = (filerec *) Malloc((unsigned) sizeof(filerec));
 	  if (! (*last)->next) {
 	       set_error(errno);
-	       error("malloc");
+	       error("Malloc");
 	       return error_code;
 	  }
 	  *(*last)->next = default_file;
@@ -411,10 +411,10 @@ Boolean specified;
 	  (*last) = (*last)->next;
      }
      else {
-	  parent->files = (filerec *) malloc(sizeof(filerec));
+	  parent->files = (filerec *) Malloc(sizeof(filerec));
 	  if (! parent->files) {
 	       set_error(errno);
-	       error("malloc");
+	       error("Malloc");
 	       return error_code;
 	  }
 	  *parent->files = default_file;
@@ -452,10 +452,10 @@ Boolean specified;
 	  return 0;
      }
      if (*last) {
-	  (*last)->next = (filerec *) malloc(sizeof(filerec));
+	  (*last)->next = (filerec *) Malloc(sizeof(filerec));
 	  if (! (*last)->next) {
 	       set_error(errno);
-	       error("malloc");
+	       error("Malloc");
 	       return error_code;
 	  }
 	  *(*last)->next = default_directory;
@@ -464,10 +464,10 @@ Boolean specified;
 	  (*last) = (*last)->next;
      }
      else {
-	  parent->dirs = (filerec *) malloc(sizeof(filerec));
+	  parent->dirs = (filerec *) Malloc(sizeof(filerec));
 	  if (! parent->dirs) {
 	       set_error(errno);
-	       error("malloc");
+	       error("Malloc");
 	       return error_code;
 	  }
 	  *parent->dirs = default_directory;
@@ -606,10 +606,10 @@ char leaf_buf[]; /* RETURN */
 {
      char *name_ptr;
 
-     name_ptr = malloc(1);
+     name_ptr = Malloc(1);
      if (! name_ptr) {
 	  set_error(errno);
-	  error("malloc");
+	  error("Malloc");
 	  *leaf_buf = '\0';
 	  return error_code;
      }
@@ -663,10 +663,10 @@ int *num;
 	       return retval;
 	  }
 	  (void) convert_to_user_name(newname, newname);
-	  strings[*num - 1] = malloc((unsigned) (strlen(newname) + 1));
+	  strings[*num - 1] = Malloc((unsigned) (strlen(newname) + 1));
 	  if (! strings[*num - 1]) {
 	       set_error(errno);
-	       error("malloc");
+	       error("Malloc");
 	       return error_code;
 	  }
 	  (void) strcpy(strings[*num - 1], newname);
