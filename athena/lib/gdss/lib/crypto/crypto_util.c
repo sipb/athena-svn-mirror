@@ -32,7 +32,11 @@
  */
 
 #include <stdio.h>
+#ifdef ibm032
+#include <sys/time.h>
+#else
 #include <time.h>
+#endif
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include "random.h"
