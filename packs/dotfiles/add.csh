@@ -19,7 +19,7 @@
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
               add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_print add_i)
+              add_man add_mandir add_print add_path add_i)
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
@@ -103,6 +103,8 @@ set add_dirs = `attach -p $add_attach`
 # Loop through all of the lockers attach told us about.
 #
 
+set add_path
+
 foreach add_i ($add_dirs)
   unset add_bin
   unset add_man
@@ -144,7 +146,7 @@ foreach add_i ($add_dirs)
        case 00:
          if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
            if ($?add_verbose) echo $add_bin added to end of \$PATH
-           setenv PATH ${PATH}:$add_bin
+           set add_path = ${add_path}:$add_bin
          endif
 
          if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
@@ -156,7 +158,7 @@ foreach add_i ($add_dirs)
        case 01:
          if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
            if ($?add_verbose) echo $add_bin added to front of \$PATH
-           setenv PATH ${add_bin}:$PATH
+           set add_path = ${add_bin}:$add_path
          endif
 
          if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
@@ -195,6 +197,14 @@ foreach add_i ($add_dirs)
     echo add: warning: $add_i has no binary directory
   endif
 end
+
+if ( $?add_path ) then
+  if ( $?add_front ) then
+    setenv PATH ${add_path}${PATH}
+  else
+    setenv PATH ${PATH}${add_path}
+  endif
+endif
 
 finish:
 
