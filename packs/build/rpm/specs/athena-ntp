@@ -8,15 +8,6 @@ Provides: ntp = 4.1.1
 The Network Time Protocol, to keep Athena workstations in sync
 
 %install
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
@@ -26,6 +17,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
 cp athena-ntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
+
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-time.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
 
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
