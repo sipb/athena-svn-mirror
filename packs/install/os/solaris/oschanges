@@ -1,14 +1,47 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.20 2004-05-05 03:08:06 zacheiss Exp $
+# $Id: oschanges,v 1.21 2004-06-24 12:27:05 rbasch Exp $
 
-# The SUNWcsr package undoes our inittab mod, so restore it.
-cp -p /srvd/etc/inittab $UPDATE_ROOT/etc && [ ${UPDATE_ROOT:-/} = / ] && \
-  /etc/telinit q
+# Restore various files which belong to the OS, but which are replaced
+# in the Athena release.
+copy_from_srvd() {
+  file=$1
+  rm -f $UPDATE_ROOT$file
+  cp -p /srvd$file $UPDATE_ROOT$file
+}
 
-# The SUNWcsr package installs the stock /etc/default/init when not in
-# UPDATE mode.
-cp -p /srvd/etc/default/init $UPDATE_ROOT/etc/default
+copy_from_srvd /etc/default/cron
+copy_from_srvd /etc/default/init
+copy_from_srvd /etc/default/su
+copy_from_srvd /etc/init.d/inetsvc
+copy_from_srvd /etc/init.d/nfs.client
+copy_from_srvd /etc/init.d/rpc
+copy_from_srvd /etc/inittab && [ ${UPDATE_ROOT:-/} = / ] && /etc/telinit q
+copy_from_srvd /etc/logindevperm
+copy_from_srvd /etc/name_to_sysnum
+copy_from_srvd /etc/nsswitch.conf
+copy_from_srvd /usr/bin/login
+copy_from_srvd /usr/openwin/lib/app-defaults/XTerm
+copy_from_srvd /usr/openwin/share/etc/keytables/keytable.map
+
+# Recreate various symlinks which replace OS entities.
+relink() {
+  path=$1
+  target=$2
+  rm -f $UPDATE_ROOT$path
+  ln -s $target $UPDATE_ROOT$path
+}
+
+relink /etc/rc0.d/K41rpc ../init.d/rpc
+relink /etc/rc0.d/K42inetsvc ../init.d/inetsvc
+relink /etc/rc1.d/K41rpc ../init.d/rpc
+relink /etc/rc1.d/K42inetsvc ../init.d/inetsvc
+relink /etc/rc2.d/S71rpc ../init.d/rpc
+relink /etc/rc2.d/S72inetsvc ../init.d/inetsvc
+relink /etc/rcS.d/K41rpc ../init.d/rpc
+relink /etc/rcS.d/K42inetsvc ../init.d/inetsvc
+relink /usr/bin/lp /usr/athena/bin/lp
+relink /usr/lib/print/printd /os/usr/bin/lp
 
 # removed
 rm -f $UPDATE_ROOT/etc/rc2.d/S25tsaldog
