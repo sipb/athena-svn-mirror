@@ -10,13 +10,13 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.6 1990-12-20 15:23:55 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.7 1991-02-05 09:06:23 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
 extern char	*RunCommand();
 extern char	filebase[];
-extern int	whichTopScreen;
+extern int	topscreen;
 extern Widget	topW, paneW;
 extern TextWidget	bottextW;
 extern int	char_width;
@@ -24,18 +24,29 @@ extern int	char_width;
 static char	sourcefile[80];
 
 static void	SendCB();
+void		TriggerSend();
 
-static Widget	writePopupW = 0, writeDialogW;
+static Widget	writePopupW = 0, writeTextW;
 static void	WriteCB();
+void		TriggerWrite();
+
+static Widget	numPopupW = 0, numTextW;
+static void	NumCB();
+void		GetTransactionNum();
+void		TriggerNum();
 
 static Widget	addPopupW = 0, addHostTextW, addPathTextW;
 static void	AddCB();
+void		TriggerAdd();
 
 static Widget	deletePopupW = 0, deleteMtgTextW;
 static void	DeleteCB();
+void		TriggerDelete();
 
 static Widget	warningPopupW = 0;
-void		PopDownCB(), DieCB();
+void		PopdownCB(), DieCB();
+void		TriggerPopdown();
+void		TriggerFocusMove();
 
 static Widget	helpPopupW = 0;
 
@@ -48,7 +59,23 @@ typedef struct {
 	Widget	bodyTextW;
 	char	mtg[80];
 	int	replynum;
-} senddata, *senddataptr;
+} SendData, *SendDataPtr;
+
+typedef struct trnrec {
+        SendDataPtr	data;
+        struct trnrec	*nextrec;
+} TransactionRec, *TransactionRecPtr;
+
+static TransactionRecPtr	listhead = 0;
+
+/*
+** The structures TransactionRec and SendData are to keep track of the
+** contexts for multiple enter-transaction windows.  listhead is the
+** first of a chain of TransactionRec's, one per window.  This is
+** so we can search through the list when a keyhit comes in trying to
+** trigger a button, and figure out which button matches a particular
+** text widget.
+*/
 
 void
 SubmitTransaction(myreplynum)
@@ -61,9 +88,30 @@ int	myreplynum;
 	char		*ptr1, *ptr2;
 	char		*returndata;
 	Widget		localPaneW, box1W, box2W, buttonW;
-	senddataptr	data;
+	SendDataPtr	data;
+	TransactionRecPtr	i;
 
-	data = (senddataptr) malloc (sizeof (senddata));
+	if (listhead == 0) {
+		listhead = (TransactionRecPtr) malloc (sizeof (TransactionRec));
+		listhead->data = 0;
+		listhead->nextrec = 0;
+	}
+
+	for (i = listhead; i->data != 0 && i->nextrec != 0; i = i->nextrec)
+		;
+
+	if (i->data != 0) {
+		i->nextrec = 
+			(TransactionRecPtr) malloc (sizeof (TransactionRec));
+		i = i->nextrec;
+		i->data = 0;
+		i->nextrec = 0;
+	}
+
+	data = (SendDataPtr) malloc (sizeof (SendData));
+
+	i->data = data;
+
 /*
 **  Save current meeting name and reply number
 */
@@ -219,6 +267,7 @@ int	myreplynum;
 			args,
 			n);
 	XtAddCallback (buttonW, XtNcallback, SendCB, data);
+	XtSetKeyboardFocus(paneW, data->subjectTextW);
 	XtPopup(data->sendPopupW, XtGrabNone);
 }
 
@@ -235,7 +284,8 @@ XtPointer	call_data;
 	char		filename[50];
 	FILE		*fp;
 	char		*returndata;
-	senddataptr	data = (senddataptr) client_data;
+	SendDataPtr	data = (SendDataPtr) client_data;
+	TransactionRecPtr	i, parent;
 
 	if (data->sendButtonW == w) {
 		n = 0;
@@ -276,6 +326,18 @@ XtPointer	call_data;
 	XtDestroyWidget(data->sendPopupW);
 	myfree (data);
 
+	for (i = listhead, parent = 0; i; parent = i, i = i->nextrec) {
+		if (data->subjectTextW == i->data->subjectTextW) {
+			if (parent)
+				parent->nextrec = i->nextrec;
+			else
+				listhead = i->nextrec;
+			myfree (i->data);
+			myfree (i);
+			break;
+		}
+	}
+
 	GoToTransaction (TransactionNum(CURRENT), False);
 
 	XFlush(XtDisplay(topW));
@@ -287,8 +349,8 @@ int	current;
 {
 	Arg		args[5];
 	unsigned int	n;
-	Widget		writeButton1W, writeButton2W;
 	char		destfile[80];
+	Widget		button, writePaneW, writeBox1W;
 
 	if (writePopupW)
 		return;
@@ -308,41 +370,65 @@ int	current;
 			topW,
 			args,
 			n);
-	n = 0;
-	XtSetArg(args[n], XtNvalue, destfile);			n++;
-	writeDialogW = XtCreateManagedWidget(
-			"dialog",
-			dialogWidgetClass,
+
+	writePaneW = XtCreateManagedWidget(
+			"pane",
+			panedWidgetClass,
 			writePopupW,
+			NULL,
+			0);
+
+	n = 0;
+	(void) XtCreateManagedWidget(
+			"label",
+			labelWidgetClass,
+			writePaneW,
 			args,
 			n);
 
 	n = 0;
-	writeButton1W = XtCreateManagedWidget(
+	XtSetArg(args[n], XtNborderWidth, 0);			n++;
+	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 15 * char_width);		n++;
+	XtSetArg(args[n], XtNstring, destfile);			n++;
+
+	writeTextW = XtCreateManagedWidget(
+			"text",
+			asciiTextWidgetClass,
+			writePaneW,
+			args,
+			n);
+
+	n = 0;
+	XtSetArg(args[n], XtNborderWidth, 0);			n++;
+	writeBox1W = XtCreateManagedWidget(
+			"box1",
+			boxWidgetClass,
+			writePaneW,
+			args,
+			n);
+
+	n = 0;
+	button = XtCreateManagedWidget(
 			"write",
 			commandWidgetClass,
-			writeDialogW,
+			writeBox1W,
 			args,
 			n);
 
-	XtAddCallback (writeButton1W, XtNcallback, WriteCB, True);
+	XtAddCallback (button, XtNcallback, WriteCB, True);
 
 	n = 0;
-
-	writeButton2W = XtCreateManagedWidget(
+	button = XtCreateManagedWidget(
 			"abort",
 			commandWidgetClass,
-			writeDialogW,
+			writeBox1W,
 			args,
 			n);
 
-/*
-** I really wish this wasn't necessary, but the dialog widget IGNORES
-** XtNwidth at creation time and in the app-defaults file!
-*/
-	XtResizeWidget(writePopupW, 400, 80, 1);
+	XtAddCallback (button, XtNcallback, WriteCB, False);
 
-	XtAddCallback (writeButton2W, XtNcallback, WriteCB, False);
+	XtSetKeyboardFocus(paneW, writeTextW);
 	XtPopup(writePopupW, XtGrabNone);
 }
 
@@ -354,9 +440,17 @@ XtPointer	call_data;
 {
 	char	command[165];
 	char	*tempptr1, *destfile;
+	Arg		args[5];
+	unsigned int	n;
+
+	if (!writePopupW)
+		return;
 
 	if ((Boolean) client_data) {
-		destfile = XawDialogGetValueString(writeDialogW);
+		n = 0;
+		XtSetArg(args[n], XtNstring, &destfile);	n++;
+		XtGetValues (writeTextW, args, n);
+
 /*
 ** Make directory path.  We ignore errors until we actually try to copy.
 */
@@ -384,132 +478,6 @@ XtPointer	call_data;
 	writePopupW = 0;
 }
 
-/*
-void
-AddMeeting()
-{
-	Arg		args[5];
-	unsigned int	n;
-
-	Widget		addPaneW, addBox1W, addLabel1W;
-	Widget		addBox2W, addLabel2W, addBox3W, addButton1W;
-	Widget		addButton2W;
-
-	if (addPopupW)
-		return;
-
-	n = 0;
-	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
-	addPopupW = XtCreatePopupShell(	
-			"addpopup",
-			topLevelShellWidgetClass,
-			topW,
-			args,
-			n);
-
-	n = 0;
-	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
-	addPaneW = XtCreateManagedWidget(
-			"pane",
-			panedWidgetClass,
-			addPopupW,
-			args,
-			n);
-
-	n = 0;
-	(void) XtCreateManagedWidget(
-			"label",
-			labelWidgetClass,
-			addPaneW,
-			args,
-			n);
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, 0);			n++;
-	addBox1W = XtCreateManagedWidget(
-			"box1",
-			boxWidgetClass,
-			addPaneW,
-			args,
-			n);
-
-	n = 0;
-	addLabel1W = XtCreateManagedWidget(
-			"label",
-			labelWidgetClass,
-			addBox1W,
-			args,
-			n);
-
-
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, 0);			n++;
-	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
-	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
-	addHostTextW = XtCreateManagedWidget(
-			"hosttext",
-			asciiTextWidgetClass,
-			addBox1W,
-			args,
-			n);
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, 0);			n++;
-	addBox2W = XtCreateManagedWidget(
-			"box2",
-			boxWidgetClass,
-			addPaneW,
-			args,
-			n);
-
-	n = 0;
-	addLabel2W = XtCreateManagedWidget(
-			"label",
-			labelWidgetClass,
-			addBox2W,
-			args,
-			n);
-
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, 0);			n++;
-	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
-	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
-	addPathTextW = XtCreateManagedWidget(
-			"pathtext",
-			asciiTextWidgetClass,
-			addBox2W,
-			args,
-			n);
-
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, 0);			n++;
-	addBox3W = XtCreateManagedWidget(
-			"box3",
-			boxWidgetClass,
-			addPaneW,
-			args,
-			n);
-
-	n = 0;
-	addButton1W = XtCreateManagedWidget(
-			"add",
-			commandWidgetClass,
-			addBox3W,
-			args,
-			n);
-	XtAddCallback (addButton1W, XtNcallback, AddCB, True);
-
-	n = 0;
-	addButton2W = XtCreateManagedWidget(
-			"abort",
-			commandWidgetClass,
-			addBox3W,
-			args,
-			n);
-
-	XtAddCallback (addButton2W, XtNcallback, AddCB, False);
-	XtPopup(addPopupW, XtGrabNone);
-}
-*/
-
 void
 AddMeeting()
 {
@@ -519,9 +487,9 @@ AddMeeting()
 
 /*
 ** Enforce single line input.
-*/
 	static String	specialTranslations =
 		"<Key>Return:	Stub()";
+*/
 
 	Widget		addPaneW, addBox1W, addLabel1W;
 	Widget		addBox2W, addLabel2W, addBox3W, addButton1W;
@@ -591,8 +559,10 @@ AddMeeting()
 	if (defaultvalue1)
 		myfree (defaultvalue1);
 
+/*
 	XtOverrideTranslations(	addHostTextW,
 				XtParseTranslationTable(specialTranslations));
+*/
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	addBox2W = XtCreateManagedWidget(
@@ -631,8 +601,10 @@ AddMeeting()
 	if (defaultvalue2)
 		myfree (defaultvalue2);
 
+/*
 	XtOverrideTranslations(	addPathTextW,
 				XtParseTranslationTable(specialTranslations));
+*/
 
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
@@ -661,6 +633,7 @@ AddMeeting()
 			n);
 
 	XtAddCallback (addButton2W, XtNcallback, AddCB, False);
+	XtSetKeyboardFocus(paneW, addHostTextW);
 	XtPopup(addPopupW, XtGrabNone);
 }
 
@@ -675,7 +648,7 @@ XtPointer	call_data;
 	Arg		args[5];
 	unsigned int	n;
 
-	if ((Boolean) client_data) {
+	if ((Boolean) client_data && addPopupW) {
 		n = 0;
 		XtSetArg(args[n], XtNstring, &tempstring1);		n++;
 		XtGetValues (addHostTextW, args, n);
@@ -695,7 +668,11 @@ XtPointer	call_data;
 		myfree (tempstring2);
 	}
 
-	XtDestroyWidget(addPopupW);
+	if (addPopupW) {
+		XtDestroyWidget(addPopupW);
+		XtSetKeyboardFocus(topW, paneW);
+	}
+
 	addPopupW = 0;
 }
 
@@ -708,8 +685,10 @@ DeleteMeeting()
 	Widget		deletePaneW, deleteBox1W;
 	Widget		deleteBox2W, deleteButton1W, deleteButton2W;
 	char		*defaultvalue;
+/*
 	static String	specialTranslations =
 		"<Key>Return:	Stub()";
+*/
 
 	if (deletePopupW)
 		return;
@@ -763,14 +742,16 @@ DeleteMeeting()
 		XtSetArg(args[n], XtNstring, defaultvalue);	n++;
 	}
 	deleteMtgTextW = XtCreateManagedWidget(
-			"mtgtext",
+			"text",
 			asciiTextWidgetClass,
 			deleteBox1W,
 			args,
 			n);
 
+/*
 	XtOverrideTranslations(	deleteMtgTextW,
 				XtParseTranslationTable(specialTranslations));
+*/
 	if (defaultvalue)
 		myfree (defaultvalue);
 
@@ -800,7 +781,7 @@ DeleteMeeting()
 			args,
 			n);
 	XtAddCallback (deleteButton2W, XtNcallback, DeleteCB, False);
-
+	XtSetKeyboardFocus(paneW, deleteMtgTextW);
 	XtPopup(deletePopupW, XtGrabNone);
 }
 
@@ -814,6 +795,9 @@ XtPointer	call_data;
 	char		*tempstring1, *returndata;
 	Arg		args[5];
 	unsigned int	n;
+
+	if (!deletePopupW)
+		return;
 
 	if ((Boolean) client_data) {
 		n = 0;
@@ -847,15 +831,31 @@ Boolean	deathoption;
 	Arg		args[5];
 	unsigned int	n;
 	Widget		warningPaneW, warningButtonW, warningBoxW, deathButtonW;
+	Position	parentx, parenty;
+	Dimension	parentwidth, mywidth;
+	int		flag = 0;
 
 	if (warningPopupW)
 		return;
 
 	n = 0;
-	XtSetArg(args[n], XtNwidth, (strlen(message)+2) * char_width);	n++;
+	XtSetArg(args[n], XtNwidth, &parentwidth);	n++;
+	XtSetArg(args[n], XtNx, &parentx);		n++;
+	XtSetArg(args[n], XtNy, &parenty);		n++;
+	XtGetValues (topW, args, n);
+
+	mywidth = (strlen(message)+2) * char_width;
+
+	n = 0;
+	XtSetArg(args[n], XtNwidth, mywidth);		n++;
+	XtSetArg(args[n], XtNtransient, True);		n++;
+	XtSetArg(args[n], XtNtransientFor, topW);	n++;
+	XtSetArg(args[n], XtNx, 
+		parentx + ((parentwidth - mywidth) / 2));	n++;
+	XtSetArg(args[n], XtNy, parenty + 100);	n++;
 	warningPopupW = XtCreatePopupShell(	
 			"warningpopup", 
-			topLevelShellWidgetClass,
+			transientShellWidgetClass,
 			topW,
 			args,
 			n);
@@ -902,7 +902,7 @@ Boolean	deathoption;
 			args,
 			n);
 
-	XtAddCallback (warningButtonW, XtNcallback, PopDownCB, False);
+	XtAddCallback (warningButtonW, XtNcallback, PopdownCB, False);
 
 	if (deathoption) {
 		deathButtonW = XtCreateManagedWidget(
@@ -915,6 +915,7 @@ Boolean	deathoption;
 	}
 
 	XtInstallAllAccelerators(warningPopupW, paneW);
+	XtSetKeyboardFocus(paneW, warningPopupW);
 
 	XtPopup(warningPopupW, XtGrabNone);
 }
@@ -929,7 +930,7 @@ XtPointer	call_data;
 }
 
 void
-PopDownCB(w, client_data, call_data)
+PopdownCB(w, client_data, call_data)
 Widget	w;
 XtPointer	client_data;
 XtPointer	call_data;
@@ -943,32 +944,29 @@ XtPointer	call_data;
 		XtDestroyWidget(helpPopupW);
 		helpPopupW = 0;
 	}
+	XtSetKeyboardFocus(paneW, paneW);
 }
 
 
 static char *helptext1 =
 "                      Actions on main screen\n\
 ---------------------------------------------------------------------\n\
-  down meeting	Move to the next meeting with new transactions\n\
-  up meeting	Move to the previous meeting with new transactions\n\
-  inc		Check for new transactions\n\
-  edit mtgs	Change mode to edit the list of meetings\n\
-  show trns	Change mode to show transaction headers\n\
+  downarrow	Move to the next meeting with new transactions\n\
+  uparrow	Move to the previous meeting with new transactions\n\
+  update	Check for new transactions\n\
+  configure	Change the list of meetings you attend\n\
+  mode		Choose between listing meetings or transactions\n\
+  show		Choose how many transactions should be listed\n\
   HELP 		Display this screen\n\
   QUIT 		Quit\n\
 ---------------------------------------------------------------------\n\
-  next		Read the next transaction in the\n\
-		current meeting\n\
-  prev		Read the previous transaction in the\n\
-		current meeting\n\
+  leftarrow	Read the next transaction in the current meeting\n\
+  rightarrow	Read the previous transaction in the current meeting\n\
   Next in chain	Read the next transaction in this chain\n\
   Prev in chain	Read the previous transaction in this chain\n\
-  reply		Enter a new transaction chained to the\n\
-		current one\n\
-  compose	Enter a new transaction\n\
-  write		Save the current transaction to a file\n\
-  first		Go to the first transaction in the meeting\n\
-  last		Go to the last transaction in the meeting\n\
+  goto		Choose a specific transaction to read\n\
+  enter		Enter a new transaction or reply to the current one\n\
+  write		Save the current transaction to a file or mail it\n\
   spacebar	'do the right thing'\n\
   backspace	reverse what space did\n\
 ---------------------------------------------------------------------\n\
@@ -976,58 +974,44 @@ You can also enter a meeting by clicking on its title with mouse\n\
 button two or three.\n\
 \n\
 The keyboard equivalent for clicking on a button is always the first\n\
-character on the button.  Note that uppercase and lowercase\n\
-letters can be distinct.\n\
+character on the button.\n\
 \n\
 If a button is grayed out, this action is not possible at this time.\n\
-For example, the 'Next' button will gray out when you are at the last\n\
-transaction in a meeting.\n\
-";
-
-static char *helptext2 =
-"                Actions while editting meeting list\n\
----------------------------------------------------------------------\n\
-  add meeting		Put a new meeting on the list of\n\
-			meetings you attend\n\
-  delete meeting	Remove a meeting from the list of\n\
-			meetings you attend\n\
-  main screen		Go back to the main screen\n\
-  HELP 			Display this screen\n\
-  QUIT 			Quit\n\
----------------------------------------------------------------------\n\
-The keyboard equivalent for clicking on a button is always the first\n\
-character of the button's label\n\
+For example, the 'enter' button will gray out when you do not have\n\
+permission to enter transactions in a meeting.  It's also possible\n\
+that the feature hasn't been implemented yet!\n\
 ";
 
 static char *helptext3 =
-"              Actions while showing transaction headers\n\
+"        Additional actions while showing transaction headers\n\
 ---------------------------------------------------------------------\n\
   unread	Show headers of unread transactions\n\
   all		Show headers of all transactions\n\
 			(This can take a while!)\n\
   back ten	Show headers of ten more transactions\n\
-  main screen	Go back to the main screen\n\
   HELP 		Display this screen\n\
   QUIT 		Quit\n\
 ---------------------------------------------------------------------\n\
-  next		Read the next transaction\n\
-  prev		Read the previous transaction\n\
+  leftarrow	Read the next transaction in the current meeting\n\
+  rightarrow	Read the previous transaction in the current meeting\n\
   Next in chain	Read the next transaction in this chain\n\
   Prev in chain	Read the previous transaction in this chain\n\
-  reply		Enter a new transaction in response to the current one\n\
-  compose	Enter a new transaction\n\
-  write		Save the current transaction to a file\n\
-  first		Go to the first transaction in the meeting\n\
-  last		Go to the last transaction in the meeting\n\
+  goto		Choose a specific transaction to read\n\
+  enter		Enter a new transaction or reply to the current one\n\
+  write		Save the current transaction to a file or mail it\n\
   spacebar	'do the right thing'\n\
   backspace	reverse what space did\n\
 ---------------------------------------------------------------------\n\
-You can read a specific transaction by clicking on its header with\n\
-mouse button two or three.\n\
+You can also enter a meeting by clicking on its title with mouse\n\
+button two or three.\n\
 \n\
 The keyboard equivalent for clicking on a button is always the first\n\
-character on the button.  Note that uppercase and lowercase\n\
-letters can be distinct.\n\
+character on the button.\n\
+\n\
+If a button is grayed out, this action is not possible at this time.\n\
+For example, the 'enter' button will gray out when you do not have\n\
+permission to enter transactions in a meeting.  It's also possible\n\
+that the feature hasn't been implemented yet!\n\
 ";
 
 void
@@ -1061,12 +1045,9 @@ PutUpHelp()
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 
-	switch (whichTopScreen) {
+	switch (topscreen) {
 	case MAIN:
 		XtSetArg(args[n], XtNstring, helptext1);	n++;
-		break;
-	case EDITMTGS:
-		XtSetArg(args[n], XtNstring, helptext2);	n++;
 		break;
 	case LISTTRNS:
 		XtSetArg(args[n], XtNstring, helptext3);	n++;
@@ -1099,7 +1080,7 @@ PutUpHelp()
 			n);
 
 	XtInstallAllAccelerators(helpPopupW, paneW);
-	XtAddCallback (buttonW, XtNcallback, PopDownCB, True);
+	XtAddCallback (buttonW, XtNcallback, PopdownCB, True);
 	XtPopup(helpPopupW, XtGrabNone);
 }
 
@@ -1152,4 +1133,270 @@ char	*prompt;
 	strcpy (retval, string2);
 	*(strchr(string2, '\0')) = '\n';
 	return (retval);
+}
+
+void
+GetTransactionNum()
+{
+	Arg		args[5];
+	unsigned int	n;
+	Widget		button, numPaneW, numBox1W;
+	char		number[10];
+
+	if (numPopupW)
+		return;
+
+	strcpy (number, "");
+
+	n = 0;
+	XtSetArg(args[n], XtNwidth, 35 * char_width);		n++;
+	numPopupW = XtCreatePopupShell(	
+			"numpopup", 
+			topLevelShellWidgetClass,
+			topW,
+			args,
+			n);
+
+	numPaneW = XtCreateManagedWidget(
+			"pane",
+			panedWidgetClass,
+			numPopupW,
+			NULL,
+			0);
+
+	n = 0;
+
+	(void) XtCreateManagedWidget(
+			"label",
+			labelWidgetClass,
+			numPaneW,
+			args,
+			n);
+
+	n = 0;
+	XtSetArg(args[n], XtNborderWidth, 0);			n++;
+	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 15 * char_width);		n++;
+
+	numTextW = XtCreateManagedWidget(
+			"text",
+			asciiTextWidgetClass,
+			numPaneW,
+			args,
+			n);
+
+	n = 0;
+	XtSetArg(args[n], XtNborderWidth, 0);			n++;
+	numBox1W = XtCreateManagedWidget(
+			"box1",
+			boxWidgetClass,
+			numPaneW,
+			args,
+			n);
+
+	n = 0;
+	button = XtCreateManagedWidget(
+			"goto",
+			commandWidgetClass,
+			numBox1W,
+			args,
+			n);
+
+	XtAddCallback (button, XtNcallback, NumCB, True);
+
+	n = 0;
+	button = XtCreateManagedWidget(
+			"abort",
+			commandWidgetClass,
+			numBox1W,
+			args,
+			n);
+
+	XtAddCallback (button, XtNcallback, NumCB, False);
+
+	XtSetKeyboardFocus(paneW, numTextW);
+	XtPopup(numPopupW, XtGrabNone);
+}
+
+static void
+NumCB(w, client_data, call_data)
+Widget	w;
+XtPointer	client_data;
+XtPointer	call_data;
+{
+	char		*tempstring;
+	Arg		args[5];
+	unsigned int	n;
+
+	if (!numPopupW)
+		return;
+
+	if ((Boolean) client_data) {
+		n = 0;
+		XtSetArg(args[n], XtNstring, &tempstring);		n++;
+		XtGetValues (numTextW, args, n);
+		GoToTransaction(atoi(tempstring), True);
+		myfree (tempstring);
+	}
+
+	XtDestroyWidget(numPopupW);
+	XtSetKeyboardFocus(topW, paneW);
+	numPopupW = 0;
+}
+
+void
+TriggerAdd(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	if (*num_params < 1)
+		return;
+
+	AddCB(w, (XtPointer) atoi(params[0]), NULL);
+}
+
+void
+TriggerNum(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	if (*num_params < 1)
+		return;
+
+	NumCB(w, (XtPointer) atoi(params[0]), NULL);
+}
+
+void
+TriggerWrite(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	if (*num_params < 1)
+		return;
+
+	WriteCB(w, (XtPointer) atoi(params[0]), NULL);
+}
+
+void
+TriggerDelete(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	if (*num_params < 1)
+		return;
+
+	DeleteCB(w, (XtPointer) atoi(params[0]), NULL);
+}
+
+void
+TriggerPopdown(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	if (*num_params < 1)
+		return;
+
+	PopdownCB(w, (XtPointer) atoi(params[0]), NULL);
+}
+
+void
+TriggerSend(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	TransactionRecPtr	i;
+
+	if (*num_params < 1)
+		return;
+
+	if (listhead == 0) {
+		return;
+	}
+
+	for (i = listhead; i; i = i->nextrec) {
+		if (w == i->data->subjectTextW)
+			break;
+		if (w == i->data->bodyTextW)
+			break;
+		if (w == i->data->sendButtonW)
+			break;
+		if (w == i->data->sendPopupW)
+			break;
+	}
+
+	if (i == 0)
+		return;
+
+/*
+** Okay, here's a kludge.  SendCB() checks the incoming widget ID,
+** and if it's equal to the sendButtonW stored in the data structure,
+** it actually does the send.  So we fool it here.
+*/
+	if (atoi(params[0]) != 0)
+		SendCB(i->data->sendButtonW, i->data, NULL);
+	else
+		SendCB(NULL, i->data, NULL);
+}
+
+/*
+** Pass TriggerFocusMove a 1 to move focus up, a 2 to move it down.
+** 0 toggles between two widgets.
+** It figures out which widget got the event and moves focus to
+** the appropriate neighbor.
+*/
+
+void
+TriggerFocusMove(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	TransactionRecPtr	i;
+	int			direction;
+	Widget			targetW = 0;
+
+	if (*num_params < 1)
+		return;
+
+	direction = atoi(params[0]);
+
+/*
+** Was the hit widget in the add-mtg popup?
+*/
+	if (addPopupW) {
+		if (w == addHostTextW && (direction == 2 || direction == 0))
+			targetW = addPathTextW;
+		if (w == addPathTextW && (direction == 1 || direction == 0))
+			targetW = addHostTextW;
+	}
+
+/*
+** Check the subject and body widgets in the list of entryrecs.
+*/
+	if (listhead != 0) {
+		for (i = listhead; i; i = i->nextrec) {
+			if (w == i->data->subjectTextW && 
+					(direction == 2 || direction == 0))
+				targetW = i->data->bodyTextW;
+			if (w == i->data->bodyTextW && 
+					(direction == 1 || direction == 0))
+				targetW = i->data->subjectTextW;
+		}
+	}
+
+	if (targetW)
+		XtSetKeyboardFocus(paneW, targetW);
 }
