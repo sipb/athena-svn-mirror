@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.8 1991-03-14 13:28:36 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.9 1991-06-24 15:18:13 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.8  91/03/14  13:28:36  epeisach
+ * Under AIX don't perform the umount.
+ * 
  * Revision 4.7  90/07/12  14:45:15  epeisach
  * Don't umount / under ultrix.
  * 
@@ -140,7 +143,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.8 1991-03-14 13:28:36 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.9 1991-06-24 15:18:13 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -630,7 +633,11 @@ char *f[], *c[];
 struct currentness *currency;
 {
 	DIR *dirp;
+#ifdef POSIX
+	struct dirent *dp;
+#else
 	struct direct *dp;
+#endif
 	char *tail;
 
 	dirp = opendir( f[ ROOT]);

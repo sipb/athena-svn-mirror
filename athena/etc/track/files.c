@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.3 1991-03-07 17:47:31 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.4 1991-06-24 15:18:02 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.3  91/03/07  17:47:31  epeisach
+ * Fixed typo.
+ * 
  * Revision 4.2  91/02/28  11:10:39  epeisach
  * For PS2 may need rmslink.
  * 
@@ -46,7 +49,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.3 1991-03-07 17:47:31 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.4 1991-06-24 15:18:02 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -261,7 +264,11 @@ removeit(name, type)
 char *name;
 unsigned int type;
 {
+#ifdef POSIX
+	struct dirent *next;
+#else
 	struct direct *next;
+#endif
 	DIR *dirp;
 	char *leaf, *type_str = "";
 	struct stat sbuf;
