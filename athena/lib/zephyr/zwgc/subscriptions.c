@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.4 1989-11-15 22:47:29 jtkohl Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.5 1989-12-15 09:53:40 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -165,7 +165,6 @@ static void free_subscription_list(list, number_of_elements)
 
 static void flush_subscriptions()
 {
-    if (subscription_list_size)
       TRAP(ZSubscribeTo(subscription_list,subscription_list_size, 0),
 	   "while subscribing");
 
@@ -321,13 +320,17 @@ static void load_subscriptions_from_file(file)
     fclose(file);
 }
 
+#define DEFSUBS "/dev/null"
+
 static void load_subscriptions()
 {
     FILE *subscriptions_file;
 
     /* no system default sub file on client--they live on the server */
+    /* BUT...we need to use something to call load_subscriptions_from_file,
+       so we use /dev/null */
     subscriptions_file = locate_file(subscriptions_filename_override,
-				     USRSUBS, NULL);
+				     USRSUBS, DEFSUBS);
     if (subscriptions_file)
       load_subscriptions_from_file(subscriptions_file);
 }
