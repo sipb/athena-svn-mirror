@@ -1,9 +1,9 @@
 /*
- * $Id: except.c,v 4.10 1998-12-18 13:34:53 rbasch Exp $
+ * $Id: except.c,v 4.11 1999-01-22 23:15:58 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.10 1998-12-18 13:34:53 rbasch Exp $";
+static char *rcsid = "$Id: except.c,v 4.11 1999-01-22 23:15:58 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"

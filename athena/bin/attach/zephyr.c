@@ -1,13 +1,12 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v $
- *	$Author: ghudson $
+ *	$Id: zephyr.c,v 1.12 1999-01-22 23:08:39 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.11 1998-04-17 20:14:32 ghudson Exp $";
+static char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.12 1999-01-22 23:08:39 ghudson Exp $";
 #endif
 
 #include "attach.h"

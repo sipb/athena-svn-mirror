@@ -5,9 +5,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/sort.h,v $
- *	$Id: sort.h,v 1.3 1991-04-08 21:00:58 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: sort.h,v 1.4 1999-01-22 23:13:46 ghudson Exp $
  */
 
 #include <mit-copyright.h>

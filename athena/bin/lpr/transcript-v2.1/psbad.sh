@@ -2,7 +2,7 @@
 # dummy entry for unavailable filters
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psbad.sh,v 1.1 1993-10-12 05:28:02 probe Exp $
+# RCSID: $Id: psbad.sh,v 1.2 1999-01-22 23:11:26 ghudson Exp $
 
 # argv is: psbad filtername user host
 prog=`basename $0`

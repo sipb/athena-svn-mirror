@@ -18,14 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.23 1998-10-22 03:53:01 kcr Exp $
- *	$Author: kcr $
+ *	$Id: init.c,v 1.24 1999-01-22 23:12:06 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.23 1998-10-22 03:53:01 kcr Exp $";
+static char rcsid[] ="$Id: init.c,v 1.24 1999-01-22 23:12:06 ghudson Exp $";
 #endif
 #endif
 

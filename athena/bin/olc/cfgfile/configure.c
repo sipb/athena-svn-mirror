@@ -8,13 +8,11 @@
  * Copyright (C) 1996 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/cfgfile/configure.c,v $
- *	$Id: configure.c,v 1.1 1997-04-30 17:32:35 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: configure.c,v 1.2 1999-01-22 23:11:56 ghudson Exp $
  */
 
 #if !defined(SABER) && !defined(lint)
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/cfgfile/configure.c,v 1.1 1997-04-30 17:32:35 ghudson Exp $";
+static char rcsid[] = "$Id: configure.c,v 1.2 1999-01-22 23:11:56 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>

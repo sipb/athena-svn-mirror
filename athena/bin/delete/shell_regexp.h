@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.h,v $
- * $Author: jik $
+ * $Id: shell_regexp.h,v 1.4 1999-01-22 23:09:05 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.h,v $
- *      $Author: ghudson $
- *	$Id: text_operations.h,v 1.5 1997-09-23 19:37:09 ghudson Exp $
+ *      $Id: text_operations.h,v 1.6 1999-01-22 23:20:40 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

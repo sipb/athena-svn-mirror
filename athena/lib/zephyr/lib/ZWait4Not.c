@@ -4,8 +4,7 @@
  *
  *	Created by:	<Joe Random Hacker>
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZWait4Not.c,v $
- *	$Author: ghudson $
+ *	$Id: ZWait4Not.c,v 1.3 1999-01-22 23:19:31 ghudson Exp $
  *
  *	Copyright (c) 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_ZWaitForNotice_c[] = "$Zephyr$";
+static char rcsid_ZWaitForNotice_c[] = "$Id: ZWait4Not.c,v 1.3 1999-01-22 23:19:31 ghudson Exp $";
 #endif
 
 #include <internal.h>

@@ -1,7 +1,5 @@
 /* 
- * $Id: rk_krb.c,v 1.9 1998-05-07 16:59:47 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
- * $Author: ghudson $
+ * $Id: rk_krb.c,v 1.10 1999-01-22 23:15:03 ghudson Exp $
  *
  * This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.9 1998-05-07 16:59:47 ghudson Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.10 1999-01-22 23:15:03 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

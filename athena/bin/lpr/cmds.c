@@ -1,12 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: rbasch $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.11 1998-12-22 21:21:54 rbasch Exp $
+ *	$Id: cmds.c,v 1.12 1999-01-22 23:10:36 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.11 1998-12-22 21:21:54 rbasch Exp $";
+static char *rcsid_cmds_c = "$Id: cmds.c,v 1.12 1999-01-22 23:10:36 ghudson Exp $";
 #endif lint
 
 /*

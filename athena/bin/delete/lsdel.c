@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v $
- * $Author: ghudson $
+ * $Id: lsdel.c,v 1.24 1999-01-22 23:09:01 ghudson Exp $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.23 1998-11-16 16:42:26 ghudson Exp $";
+     static char rcsid_lsdel_c[] = "$Id: lsdel.c,v 1.24 1999-01-22 23:09:01 ghudson Exp $";
 #endif
 
 #include <stdio.h>

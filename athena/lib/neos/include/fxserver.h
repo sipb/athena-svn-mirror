@@ -1,9 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: danw $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.5 1998-02-17 19:48:48 danw Exp $
+ * $Id: fxserver.h,v 1.6 1999-01-22 23:17:46 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *

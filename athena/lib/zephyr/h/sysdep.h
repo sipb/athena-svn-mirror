@@ -3,8 +3,7 @@
  *
  *	Created by:	Greg Hudson
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/sysdep.h,v $
- *	$Author: ghudson $
+ *	$Id: sysdep.h,v 1.3 1999-01-22 23:18:57 ghudson Exp $
  *	$Zephyr: /mit/zephyr/src/include/zephyr/RCS/zephyr_conf.h,v 1.8 90/12/21 17:40:40 raeburn Exp $
  *
  *	Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.

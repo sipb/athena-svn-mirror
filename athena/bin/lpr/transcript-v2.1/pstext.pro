@@ -4,7 +4,7 @@
 % Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 % GOVERNMENT END USERS: See Notice file in TranScript library directory
 % -- probably /usr/lib/ps/Notice
-% RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pstext.pro,v 1.1 1993-10-12 05:28:49 probe Exp $
+% RCSID: $Id: pstext.pro,v 1.2 1999-01-22 23:11:31 ghudson Exp $
 /StartPage{/sv save def 48 760 moveto}def
 /ld -11.4 def
 /S{count{gsave show grestore}repeat 0 ld rmoveto}def

@@ -26,14 +26,12 @@
  * contains several local state variables that are only accessible by
  * the functions in this file.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.15 1997-04-30 17:29:58 ghudson Exp $
+ *	$Id: update.c,v 1.16 1999-01-22 23:11:47 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_update_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.15 1997-04-30 17:29:58 ghudson Exp $";
+static char *rcsid_update_c = "$Id: update.c,v 1.16 1999-01-22 23:11:47 ghudson Exp $";
 #endif
 #endif
 

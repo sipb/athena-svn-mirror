@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpqck.c,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpqck.c,v 1.1 1993-10-12 05:27:53 probe Exp $
+ *	$Id: lpqck.c,v 1.2 1999-01-22 23:11:03 ghudson Exp $
  */
 
 /*
@@ -11,7 +9,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char lpqck_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpqck.c,v 1.1 1993-10-12 05:27:53 probe Exp $";
+static char lpqck_rcsid[] = "$Id: lpqck.c,v 1.2 1999-01-22 23:11:03 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 

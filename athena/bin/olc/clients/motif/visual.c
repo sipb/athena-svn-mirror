@@ -8,9 +8,7 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.11 1998-12-18 18:23:08 rbasch Exp $
- *	$Author: rbasch $
+ *	$Id: visual.c,v 1.12 1999-01-22 23:12:22 ghudson Exp $
  */
 
 #include <mit-copyright.h>

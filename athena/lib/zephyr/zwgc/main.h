@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
- *      $Author: ghudson $
- *	$Id: main.h,v 1.8 1998-09-03 01:45:12 ghudson Exp $
+ *      $Id: main.h,v 1.9 1999-01-22 23:20:23 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

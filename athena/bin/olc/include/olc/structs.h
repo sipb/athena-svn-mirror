@@ -17,9 +17,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.10 1991-03-28 13:24:13 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: structs.h,v 1.11 1999-01-22 23:13:47 ghudson Exp $
  */
 
 #include <mit-copyright.h>

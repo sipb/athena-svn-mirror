@@ -1,12 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: cfields $
+ *	$Id: util.c,v 1.29 1999-01-22 23:08:38 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.28 1998-04-08 21:58:33 cfields Exp $";
+static char *rcsid_util_c = "$Id: util.c,v 1.29 1999-01-22 23:08:38 ghudson Exp $";
 
 #include "attach.h"
 

@@ -14,9 +14,7 @@
  * of this software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuInitialize.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
+ * $Id: MuInitialize.c,v 1.2 1999-01-22 23:16:37 ghudson Exp $
  */
 
 #include "MuP.h"

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.98 1998-11-06 18:48:54 ghudson Exp $ */
+/* $Id: verify.c,v 1.99 1999-01-22 23:16:25 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>

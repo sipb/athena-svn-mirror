@@ -20,9 +20,7 @@
 /* This file is part of the CREF finder.  It contains global variable
  * definitions for the curses (non-X) browser.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/browser/cur_globals.h,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/browser/cur_globals.h,v 1.1 1997-04-30 18:14:41 ghudson Exp $
+ *	$Id: cur_globals.h,v 1.2 1999-01-22 23:13:34 ghudson Exp $
  */
 
 #include <mit-copyright.h>

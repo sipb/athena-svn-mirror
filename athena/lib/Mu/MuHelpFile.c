@@ -13,12 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuHelpFile.c,v $
- * $Author: cfields $
- * $Log: not supported by cvs2svn $
- * Revision 1.1  89/12/09  15:14:31  djf
- * Initial revision
- * 
+ * $Id: MuHelpFile.c,v 1.3 1999-01-22 23:16:36 ghudson Exp $
  */
 
 #include "Mu.h"

@@ -2,12 +2,11 @@
  * Netsend - sends a file to a remote lpd.  Code is taken from
  * printjob.c, with demon code references taken out.
  *
- * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $
+ * 	$Id: netsend.c,v 1.8 1999-01-22 23:10:40 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $";
+static char *rcsid_netsend_c = "$Id: netsend.c,v 1.8 1999-01-22 23:10:40 ghudson Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"

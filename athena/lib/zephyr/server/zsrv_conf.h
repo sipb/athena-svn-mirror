@@ -3,9 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.12 1998-09-03 01:38:08 ghudson Exp $
+ *	$Id: zsrv_conf.h,v 1.13 1999-01-22 23:19:54 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file

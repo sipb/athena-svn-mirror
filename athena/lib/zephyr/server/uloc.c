@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v $
- *	$Author: ghudson $
+ *	$Id: uloc.c,v 1.58 1999-01-22 23:19:51 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +17,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_uloc_c[] =
-"$Id: uloc.c,v 1.57 1998-10-26 18:55:27 ghudson Exp $";
+"$Id: uloc.c,v 1.58 1999-01-22 23:19:51 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 

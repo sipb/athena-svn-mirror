@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/Tree.c,v $
- * $Author: ghudson $ 
+ * $Id: Tree.c,v 1.2 1999-01-22 23:17:03 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/Xj/Tree.c,v 1.1 1998-12-17 16:23:09 ghudson Exp $";
+"$Id: Tree.c,v 1.2 1999-01-22 23:17:03 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"

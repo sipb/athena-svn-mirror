@@ -6,9 +6,7 @@
  *
  * Created by Ken Raeburn.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.h,v $
- * $Author: ghudson $
- * $Id: access.h,v 1.4 1997-09-14 21:54:05 ghudson Exp $
+ * $Id: access.h,v 1.5 1999-01-22 23:19:37 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file

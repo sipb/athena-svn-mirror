@@ -15,38 +15,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterWidget.c,v $
- * $Author: cfields $
- * $Log: not supported by cvs2svn $
- * Revision 1.4  1990/09/07  18:03:29  vanharen
- * Changed MuGetWidget to MuLookupWidget since the include file "Mu.h"
- * defines MuGetWidget(w) as MuLookupWidget(w).  I think the intent was to
- * rename the function, but provide the macro for backwards compatibility.
- *
- * Also, modified MuLookupWidget to return NULL if the hash table hasn't
- * been initialized yet.
- *
- * Revision 1.3  90/02/13  14:26:54  djf
- * fixed bad buffer declaration in MuRegisterWidget()
- * 
- * Revision 1.2  90/02/13  14:21:08  djf
- * 
- * Revision 1.1  89/12/09  15:14:44  djf
- * Initial revision
- * 
- *
- * This file contains the functions MuRegisterWidgetCallback (which is
- * called from uil as MuRegisterWidget -- see register.c) and MuGetWidget.
- *
- * MuRegisterWidget is called from uil as a create callback procedure. 
- * It is passed a char *string which it converts to a quark using 
- * XrmStringToQuark.  It stores the widget ID of the created widget
- * in a hash table using the quark as an integer key (see hash.c).
- *
- * MuGetWidget is called from C, and it returns the widget ID associated  
- * with the char *string passed.  It calls the routine hash_lookup in 
- * hash.c , passing it the hash table created in MuRegisterWidget and  
- * the quark of the string passed.
+ * $Id: MuRegisterWidget.c,v 1.6 1999-01-22 23:16:39 ghudson Exp $
  */
 
 #include "Mu.h"

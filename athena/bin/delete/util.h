@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
- * $Author: danw $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.13 1997-12-31 22:36:02 danw Exp $
+ * $Id: util.h,v 1.14 1999-01-22 23:09:09 ghudson Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

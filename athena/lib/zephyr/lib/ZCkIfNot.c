@@ -3,19 +3,17 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v $
- *	$Author: ghudson $
+ *	$Id: ZCkIfNot.c,v 1.15 1999-01-22 23:19:03 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.14 1997-09-14 21:52:27 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
-static const char rcsid_ZCheckIfNotice_c[] = "$Id: ZCkIfNot.c,v 1.14 1997-09-14 21:52:27 ghudson Exp $";
+static const char rcsid_ZCheckIfNotice_c[] = "$Id: ZCkIfNot.c,v 1.15 1999-01-22 23:19:03 ghudson Exp $";
 #endif
 
 Code_t ZCheckIfNotice(notice, from, predicate, args)

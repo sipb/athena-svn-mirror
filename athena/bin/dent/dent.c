@@ -1,12 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v $
- *	$Author: ghudson $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.2 1998-11-16 16:48:03 ghudson Exp $
+ *	$Id: dent.c,v 1.3 1999-01-22 23:09:17 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_dent_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.2 1998-11-16 16:48:03 ghudson Exp $";
+static char *rcsid_dent_c = "$Id: dent.c,v 1.3 1999-01-22 23:09:17 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -3,8 +3,7 @@
  *
  *	Created by:	Lucien W. Van Elsen
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zstring.c,v $
- *	$Author: ghudson $
+ *	$Id: zstring.c,v 1.5 1999-01-22 23:19:55 ghudson Exp $
  *
  *	Copyright (c) 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_zstring_c[] =
-"$Id: zstring.c,v 1.4 1997-09-14 21:54:51 ghudson Exp $";
+"$Id: zstring.c,v 1.5 1999-01-22 23:19:55 ghudson Exp $";
 #endif
 #endif
 

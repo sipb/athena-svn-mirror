@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v $
- *	$Author: ghudson $
+ *	$Id: subscr.c,v 1.56 1999-01-22 23:19:48 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.55 1998-10-13 17:12:05 ghudson Exp $";
+static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.56 1999-01-22 23:19:48 ghudson Exp $";
 #endif
 #endif
 

@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v $
- *	$Author: ghudson $
+ *	$Id: server.c,v 1.65 1999-01-22 23:19:47 ghudson Exp $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +16,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_server_c[] = "$Id: server.c,v 1.64 1998-09-03 01:37:53 ghudson Exp $";
+static const char rcsid_server_c[] = "$Id: server.c,v 1.65 1999-01-22 23:19:47 ghudson Exp $";
 #endif
 #endif
 

@@ -3,8 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v $
- *      $Author: ghudson $
+ *      $Id: zhm_client.c,v 1.11 1999-01-22 23:20:03 ghudson Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.10 1997-09-23 06:01:28 ghudson Exp $";
+static char rcsid_hm_client_c[] = "$Id: zhm_client.c,v 1.11 1999-01-22 23:20:03 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 

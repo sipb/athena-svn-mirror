@@ -22,14 +22,12 @@
 /* This file is part of the CREF finder.  It contains the primary definitions
  * of the global variables.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.7 1997-04-30 17:29:12 ghudson Exp $
+ *	$Id: globals.c,v 2.8 1999-01-22 23:11:45 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_globals_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.7 1997-04-30 17:29:12 ghudson Exp $";
+static char *rcsid_globals_c = "$Id: globals.c,v 2.8 1999-01-22 23:11:45 ghudson Exp $";
 #endif
 #endif
 

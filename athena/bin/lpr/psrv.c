@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/psrv.c,v 1.1 1993-10-12 05:18:00 probe Exp $";
+_NOTICE RCSID[]="$Id: psrv.c,v 1.2 1999-01-22 23:10:45 ghudson Exp $";
 #endif
 /* psrv.c
  *
@@ -12,31 +12,6 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/psrv
  * -- probably /usr/lib/ps/Notice
  *
  * page-reversal (only) filter to be invoked by spooler communications filter
- *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 2.2  87/11/17  16:52:26  byron
- * Release 2.1
- * 
- * Revision 2.1.1.4  87/11/12  13:41:58  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.3  87/04/23  10:26:46  byron
- * Copyright notice.
- * 
- * Revision 2.1.1.2  87/03/24  16:50:26  shore
- * deleted %%EndProlog case as it was deemed to be a bug
- * now, the first %%Page comment marks the end of the prolog
- * 
- * Revision 2.1.1.1  86/02/26  10:38:53  shore
- * fixed vanishing file problem for non-conforming input
- * 
- * Revision 2.1  85/11/24  11:51:09  shore
- * Product Release 2.0
- * 
- * Revision 1.1  85/11/20  00:53:48  shore
- * Initial revision
- * 
  *
  */
 

@@ -4,9 +4,7 @@
  *      Created by:     John T. Kohl
  *      Derived from timer_manager_.h by Ken Raeburn
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/timer.h,v $
- *      $Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/timer.h,v 1.1 1997-09-14 22:13:27 ghudson Exp $
+ *      $Id: timer.h,v 1.2 1999-01-22 23:19:59 ghudson Exp $
  *
  */
 

@@ -1,12 +1,10 @@
 /* 
- * $Id: popmail.c,v 1.9 1998-04-28 18:31:20 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
- * $Author: ghudson $
+ * $Id: popmail.c,v 1.10 1999-01-22 23:10:24 ghudson Exp $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.9 1998-04-28 18:31:20 ghudson Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.10 1999-01-22 23:10:24 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>

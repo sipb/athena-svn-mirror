@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.h,v 1.5 1991-02-28 18:44:06 jik Exp $
+ * $Id: undelete.h,v 1.6 1999-01-22 23:09:08 ghudson Exp $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

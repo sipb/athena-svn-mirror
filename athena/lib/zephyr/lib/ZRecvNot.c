@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v $
- *	$Author: ghudson $
+ *	$Id: ZRecvNot.c,v 1.15 1999-01-22 23:19:21 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.14 1997-09-14 21:52:50 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZReceiveNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.14 1997-09-14 21:52:50 ghudson Exp $";
+static char rcsid_ZReceiveNotice_c[] = "$Id: ZRecvNot.c,v 1.15 1999-01-22 23:19:21 ghudson Exp $";
 #endif
 
 #include <internal.h>

@@ -23,15 +23,13 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.9 1997-11-22 19:24:40 ghudson Exp $
+ *	$Id: signal.c,v 1.10 1999-01-22 23:11:46 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.9 1997-11-22 19:24:40 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: signal.c,v 1.10 1999-01-22 23:11:46 ghudson Exp $";
 #endif
 #endif
 

@@ -2,7 +2,7 @@
  * xman - X window system manual page display program.
  *
  * $XConsortium: ScrollByL.c,v 1.5 89/01/06 18:41:40 kit Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.4 1990-05-01 14:49:05 epeisach Exp $
+ * $Id: ScrollByLine.c,v 1.5 1999-01-22 23:15:41 ghudson Exp $
  *
  * Copyright 1987, 1988 Massachusetts Institute of Technology
  *

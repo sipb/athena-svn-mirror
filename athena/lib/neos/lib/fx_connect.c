@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_connect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_connect.c,v 1.1 1993-10-12 03:03:59 probe Exp $
+ * $Id: fx_connect.c,v 1.2 1999-01-22 23:17:54 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_connect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_connect.c,v 1.1 1993-10-12 03:03:59 probe Exp $";
+static char rcsid_fx_connect_c[] = "$Id: fx_connect.c,v 1.2 1999-01-22 23:17:54 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"

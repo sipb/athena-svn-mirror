@@ -9,9 +9,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.14 1997-04-30 17:42:04 ghudson Exp $
- *      $Author: ghudson $
+ *      $Id: xolc.h,v 1.15 1999-01-22 23:12:28 ghudson Exp $
  */
 
 #include <mit-copyright.h>

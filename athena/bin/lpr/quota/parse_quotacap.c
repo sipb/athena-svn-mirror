@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parse_quotacap.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parse_quotacap.c,v 1.2 1991-09-25 10:46:42 epeisach Exp $
+ *	$Id: parse_quotacap.c,v 1.3 1999-01-22 23:11:04 ghudson Exp $
  */
 
 /*
@@ -11,7 +9,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char parse_quotacap_rcsid[] = "$Id: parse_quotacap.c,v 1.2 1991-09-25 10:46:42 epeisach Exp $";
+static char parse_quotacap_rcsid[] = "$Id: parse_quotacap.c,v 1.3 1999-01-22 23:11:04 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"

@@ -1,8 +1,7 @@
 /*
  * Various stuff stolen from the X Toolkit...
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/Jets.h,v $
- * $Author: ghudson $ 
+ * $Id: Jets.h,v 1.2 1999-01-22 23:16:54 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *

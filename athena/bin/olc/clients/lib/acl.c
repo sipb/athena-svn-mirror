@@ -18,14 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/acl.c,v $
- *	$Id: acl.c,v 1.6 1994-03-15 10:50:36 vrt Exp $
- *	$Author: vrt $
+ *	$Id: acl.c,v 1.7 1999-01-22 23:12:00 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/acl.c,v 1.6 1994-03-15 10:50:36 vrt Exp $";
+static char rcsid[] ="$Id: acl.c,v 1.7 1999-01-22 23:12:00 ghudson Exp $";
 #endif
 #endif
 

@@ -8,9 +8,7 @@
  * Copyright (C) 1996 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/cfgfile/configure.h,v $
- *	$Id: configure.h,v 1.1 1997-04-30 18:14:53 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: configure.h,v 1.2 1999-01-22 23:13:37 ghudson Exp $
  */
 
 #include <mit-copyright.h>

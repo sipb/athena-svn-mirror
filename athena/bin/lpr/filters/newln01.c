@@ -5,7 +5,7 @@
  */
 
 #ifndef lint
-static char rcsid_ln01filter_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/filters/newln01.c,v 1.2 1986-07-09 15:28:33 treese Exp $";
+static char rcsid_ln01filter_c[] = "$Id: newln01.c,v 1.3 1999-01-22 23:10:49 ghudson Exp $";
 #endif not lint
 
 /*

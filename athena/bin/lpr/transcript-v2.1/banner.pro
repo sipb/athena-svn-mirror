@@ -1,13 +1,12 @@
 %!
-%	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/banner.pro,v $
-%	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/banner.pro,v 1.3 1995-12-01 21:54:10 miki Exp $
+%	$Id: banner.pro,v 1.4 1999-01-22 23:11:21 ghudson Exp $
 % Start of banner.pro -- prolog for printer banner maker
 % Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 % GOVERNMENT END USERS: See Notice file in TranScript library directory
 % -- probably /usr/lib/ps/Notice
 % 4.2bsd banner page prolog (uses lpd/"of" short banner string)
 % host:user  Job: file  Date: Day Mth dd hh:mm:ss yyyy
-% RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/banner.pro,v 1.3 1995-12-01 21:54:10 miki Exp $
+% RCSID: $Id: banner.pro,v 1.4 1999-01-22 23:11:21 ghudson Exp $
 /Banner{14 dict begin dup statusdict exch /jobname exch put
  save /sv exch def /jobstr exch def /PN exch def
  jobstr(Job: )search not{0()}if /hu exch def pop

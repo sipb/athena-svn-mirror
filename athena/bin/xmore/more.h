@@ -5,9 +5,7 @@
  *	Created: 	October 22, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v $
- *      $Author: vrt $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.4 1993-05-05 13:26:06 vrt Exp $
+ *      $Id: more.h,v 1.5 1999-01-22 23:15:45 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

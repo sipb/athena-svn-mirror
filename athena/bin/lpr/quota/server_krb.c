@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.5 1991-01-23 15:16:46 epeisach Exp $
+ *	$Id: server_krb.c,v 1.6 1999-01-22 23:11:15 ghudson Exp $
  */
 
 /*
@@ -10,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.5 1991-01-23 15:16:46 epeisach Exp $";
+static char quota_server_rcsid[] = "$Id: server_krb.c,v 1.6 1999-01-22 23:11:15 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"

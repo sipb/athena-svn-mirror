@@ -3,8 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v $
- *      $Author: ghudson $
+ *      $Id: queue.c,v 1.21 1999-01-22 23:19:57 ghudson Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.20 1998-07-02 18:32:32 ghudson Exp $";
+static char rcsid_queue_c[] = "$Id: queue.c,v 1.21 1999-01-22 23:19:57 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 

@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/new_string.h,v $
- *      $Author: ghudson $
- *	$Id: new_string.h,v 1.1 1997-09-14 22:14:22 ghudson Exp $
+ *      $Id: new_string.h,v 1.2 1999-01-22 23:20:26 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

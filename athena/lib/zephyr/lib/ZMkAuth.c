@@ -3,19 +3,17 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v $
- *	$Author: ghudson $
+ *	$Id: ZMkAuth.c,v 1.19 1999-01-22 23:19:16 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Id: ZMkAuth.c,v 1.18 1997-10-25 21:47:21 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
-static const char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.18 1997-10-25 21:47:21 ghudson Exp $";
+static const char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.19 1999-01-22 23:19:16 ghudson Exp $";
 #endif
 
 #ifdef HAVE_KRB4

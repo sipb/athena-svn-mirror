@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: psbanner.c,v 1.5 1996-09-20 02:09:00 ghudson Exp $";
+_NOTICE RCSID[]="$Id: psbanner.c,v 1.6 1999-01-22 23:11:27 ghudson Exp $";
 #endif
 
 /* psbanner.c
@@ -61,65 +61,6 @@ adobe:shore  Job: test.data  Date: Tue Sep 18 16:22:33 1984
  * banner page looks, change the BANNERPRO file to
  * do something else.
  *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 1.4  1995/12/01 21:49:05  miki
- * Changed psbanner to call the macro Banner instead of do_flagpage
- *
- * Revision 1.3  1995/10/23  21:17:51  miki
- * Change Banner directive with do_flagpage directive
- *
- * Revision 1.2  1995/07/11  21:15:13  miki
- * replaced signal with sigaction for POSIX
- * eliminated laps command
- * replaced the ps command for printing job name, to eliminate do_flagpage,
- * which is not understood by all printers
- *
- * Revision 1.2  93/11/19  17:10:24  probe
- * POSIX signal handling
- * Use memset on all platforms
- * 
- * Revision 1.1  93/11/14  12:51:43  probe
- * Initial revision
- * 
- * Revision 1.1  93/08/23  16:32:21  probe
- * Initial revision
- * 
- * Revision 1.2  89/05/22  10:50:36  epeisach
- * Fixed syntax which cc on RT complained. '\(' caused failure.
- * 
- * Revision 1.1  89/05/22  10:47:20  epeisach
- * Initial revision
- * 
- * Revision 2.2  87/11/17  16:50:39  byron
- * Release 2.1
- * 
- * Revision 2.1.1.5  87/11/12  13:40:38  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.4  87/06/18  16:05:00  byron
- * Removed unlink of banner file from interrupt processing.  pscomm may
- * need it after the interrupt, and will delete it itself.
- * 
- * Revision 2.1.1.3  87/06/09  14:10:46  byron
- * Only do the .banner file if pscomm will use it.
- * Also, fixed a couple of bugs in the previous revision.
- * 
- * Revision 2.1.1.2  87/06/04  10:55:37  byron
- * Added error handling for banner buffer overflow.  Buffer could overflow
- * before, producing random (bad) problems and psbanner crashes.
- * 
- * Revision 2.1.1.1  87/04/23  10:25:48  byron
- * Copyright notice.
- * 
- * Revision 2.2  86/11/02  14:19:27  shore
- * Product Update
- * 
- * Revision 2.1  85/11/24  11:49:49  shore
- * Product Release 2.0
- * 
- * Revision 1.1  85/11/20  01:02:26  shore
- * Initial revision
  */
 
 #include <stdio.h>

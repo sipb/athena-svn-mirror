@@ -1,11 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.10 1998-12-27 15:43:02 ghudson Exp $
+ *	$Id: config.c,v 1.11 1999-01-22 23:08:31 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.10 1998-12-27 15:43:02 ghudson Exp $";
+static char *rcsid_config_c = "$Id: config.c,v 1.11 1999-01-22 23:08:31 ghudson Exp $";
 #endif
 
 #include "attach.h"

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange turnin client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/turnin.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/turnin.c,v 1.3 1996-09-20 04:34:51 ghudson Exp $
+ * $Id: turnin.c,v 1.4 1999-01-22 23:17:34 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *

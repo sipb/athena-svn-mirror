@@ -1,11 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.5 1996-09-19 22:13:15 ghudson Exp $
+ *	$Id: pathcan.c,v 1.6 1999-01-22 23:08:34 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.5 1996-09-19 22:13:15 ghudson Exp $";
+static char *rcsid_pathcan_c = "$Id: pathcan.c,v 1.6 1999-01-22 23:08:34 ghudson Exp $";
 #endif
 
 #include <stdio.h>

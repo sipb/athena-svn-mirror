@@ -3,8 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
- *	$Author: ghudson $
+ *	$Id: zaway.c,v 1.13 1999-01-22 23:18:27 ghudson Exp $
  *
  *	Copyright (c) 1987, 1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +17,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.12 1998-04-30 20:06:05 ghudson Exp $";
+static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.13 1999-01-22 23:18:27 ghudson Exp $";
 #endif
 
 #define MESSAGE_CLASS "MESSAGE"

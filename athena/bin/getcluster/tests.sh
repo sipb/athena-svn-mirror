@@ -1,7 +1,6 @@
 #!/bin/sh
 # Test getcluster's ability to do proper version resolution.
-# $Id: tests.sh,v 1.3 1998-11-30 15:24:27 ghudson Exp $
-# $Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/tests.sh,v $
+# $Id: tests.sh,v 1.4 1999-01-22 23:10:27 ghudson Exp $
 
 temp=/tmp/test.out.$$
 

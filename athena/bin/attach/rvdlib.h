@@ -1,7 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdlib.h,v 1.1 1990-07-16 08:01:33 jfc Exp $
- * $Author: jfc $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdlib.h,v $
+ * $Id: rvdlib.h,v 1.2 1999-01-22 23:08:36 ghudson Exp $
  */
 #ifndef _RVDLIB_H_
 #define _RVDLIB_H_

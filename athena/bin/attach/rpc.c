@@ -1,12 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v $
- *	$Author: ghudson $
+ *	$Id: rpc.c,v 1.16 1999-01-22 23:08:35 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.15 1997-03-06 00:52:12 ghudson Exp $";
+static char *rcsid_rpc_c = "$Id: rpc.c,v 1.16 1999-01-22 23:08:35 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS

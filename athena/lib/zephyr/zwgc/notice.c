@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/notice.c,v $
- *      $Author: ghudson $
+ *      $Id: notice.c,v 1.12 1999-01-22 23:20:28 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_notice_c[] = "$Id: notice.c,v 1.11 1998-09-03 01:45:14 ghudson Exp $";
+static const char rcsid_notice_c[] = "$Id: notice.c,v 1.12 1999-01-22 23:20:28 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/string_dictionary_aux.h,v $
- *      $Author: ghudson $
- *	$Id: string_dictionary_aux.h,v 1.1 1997-09-14 22:14:44 ghudson Exp $
+ *      $Id: string_dictionary_aux.h,v 1.2 1999-01-22 23:20:37 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

@@ -5,14 +5,12 @@
  * Copyright (C) 1987,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.15 1996-09-20 02:34:36 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.15 1996-09-20 02:34:36 ghudson Exp $";
+static char rcsid[] ="$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $";
 #endif
 #endif
 

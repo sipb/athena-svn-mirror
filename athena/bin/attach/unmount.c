@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.14 1997-12-17 18:17:35 ghudson Exp $
+ * $Id: unmount.c,v 1.15 1999-01-22 23:08:37 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.14 1997-12-17 18:17:35 ghudson Exp $";
+static char *rcsid_mount_c = "$Id: unmount.c,v 1.15 1999-01-22 23:08:37 ghudson Exp $";
 
 #include "attach.h"
 

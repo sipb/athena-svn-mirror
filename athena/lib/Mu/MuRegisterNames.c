@@ -14,15 +14,7 @@
  * of this software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterNames.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
- *
- * This file contains the function MuRegisterNames, which calls 
- * MrmRegisterNames to register all the "Callback" MotifUtilities 
- * functions. Listed below are all the MotifUtilities functions which
- * can be called from uil.  They are called without the "Callback" tag
- * in their names.
+ * $Id: MuRegisterNames.c,v 1.2 1999-01-22 23:16:39 ghudson Exp $
  */
 
 #include "Mu.h"

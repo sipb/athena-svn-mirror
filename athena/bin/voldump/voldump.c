@@ -13,8 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.4 1997-11-19 03:04:24 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/voldump/voldump.c,v $
+ * $Id: voldump.c,v 1.5 1999-01-22 23:15:30 ghudson Exp $
  */
 
 #include <stdio.h>

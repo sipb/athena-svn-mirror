@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.8 1994-05-02 11:01:00 vrt Exp $ */
+/* $Id: timeout.c,v 1.9 1999-01-22 23:16:24 ghudson Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>

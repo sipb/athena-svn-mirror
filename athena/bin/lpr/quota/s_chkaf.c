@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.12 1992-04-19 21:29:09 epeisach Exp $
+ * $Id: s_chkaf.c,v 1.13 1999-01-22 23:11:14 ghudson Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.12 1992-04-19 21:29:09 epeisach Exp $";
+static char rcsid[] = "$Id: s_chkaf.c,v 1.13 1999-01-22 23:11:14 ghudson Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/

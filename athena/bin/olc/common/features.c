@@ -8,14 +8,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v $
- *      $Id: features.c,v 1.3 1997-04-30 18:09:20 ghudson Exp $
- *      $Author: ghudson $
+ *      $Id: features.c,v 1.4 1999-01-22 23:13:13 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v 1.3 1997-04-30 18:09:20 ghudson Exp $";
+static char rcsid[] ="$Id: features.c,v 1.4 1999-01-22 23:13:13 ghudson Exp $";
 #endif
 #endif
 

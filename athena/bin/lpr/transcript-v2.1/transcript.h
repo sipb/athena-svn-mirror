@@ -3,43 +3,9 @@
  * Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
  * GOVERNMENT END USERS: See notice of rights in Notice file in TranScript
  * library directory -- probably /usr/lib/ps/Notice
- * RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/transcript.h,v 1.2 1995-07-11 21:24:25 miki Exp $
+ * RCSID: $Id: transcript.h,v 1.3 1999-01-22 23:11:32 ghudson Exp $
  *
  * some general global defines
- *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 1.3  94/09/15  12:01:25  probe
- * POSIX compliance.
- * 
- * Revision 1.2  94/09/14  13:59:22  probe
- * POSIX support added.
- * Assume everything has strchr/strrchr (even BSD did)
- * 
- * Revision 1.1  94/02/22  15:52:07  probe
- * Initial revision
- * 
- * Revision 2.2  87/11/17  16:52:57  byron
- * Release 2.1
- * 
- * Revision 2.1.1.2  87/11/12  13:42:14  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.1  87/04/23  10:27:01  byron
- * Copyright notice.
- * 
- * Revision 2.2  86/11/02  14:13:42  shore
- * Product Update
- * 
- * Revision 2.1  85/11/24  11:51:21  shore
- * Product Release 2.0
- * 
- * Revision 1.3  85/11/20  00:58:05  shore
- * changes for Release 2 with System V support
- * 
- * Revision 1.2  85/05/14  11:31:52  shore
- * 
- * 
  *
  */
 

@@ -2,8 +2,7 @@
 ;
 ; This file is part of the Project Athena Zephyr Notification System.
 ; Created by: Mark W. Eichin <eichin@athena.mit.edu>
-; $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.el,v $
-; $Author: ghudson $
+; $Id: zwgc.el,v 1.4 1999-01-22 23:20:51 ghudson Exp $
 ; Copyright (c) 1988 by the Massachusetts Institute of Technology.
 ; For copying and distribution information, see the file
 ; "mit-copyright.h". 
@@ -32,7 +31,7 @@
 ;	enddoes
 ;
 (defvar zwgc_el-RCS-id)
-(setq zwgc_el-RCS-id "$Id: zwgc.el,v 1.3 1997-09-14 22:15:11 ghudson Exp $")
+(setq zwgc_el-RCS-id "$Id: zwgc.el,v 1.4 1999-01-22 23:20:51 ghudson Exp $")
 ;
 ;
 

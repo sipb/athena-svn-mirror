@@ -14,17 +14,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuModalDialogs.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
- * Revision 1.2  89/12/19  14:57:04  vanharen
- * Change XtUnmanage to XtDestroy for unused button widgets.
- * Saves (a little) memory...
- * 
- * Revision 1.1  89/12/09  15:14:36  djf
- * Initial revision
- * 
- *
+ * $Id: MuModalDialogs.c,v 1.4 1999-01-22 23:16:37 ghudson Exp $
  */
 
 

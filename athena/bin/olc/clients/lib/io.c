@@ -19,14 +19,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.23 1997-04-30 17:35:51 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: io.c,v 1.24 1999-01-22 23:12:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.23 1997-04-30 17:35:51 ghudson Exp $";
+static char rcsid[] ="$Id: io.c,v 1.24 1999-01-22 23:12:07 ghudson Exp $";
 #endif
 #endif
 

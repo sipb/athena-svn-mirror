@@ -6,9 +6,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.12 1996-11-15 03:29:56 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: os.h,v 1.13 1999-01-22 23:13:44 ghudson Exp $
  */
 
 #include <mit-copyright.h>

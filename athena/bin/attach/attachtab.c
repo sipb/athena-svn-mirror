@@ -1,7 +1,6 @@
 /*	Created by:	Theodore Ts'o
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v $
- *	$Author: cfields $
+ *	$Id: attachtab.c,v 1.12 1999-01-22 23:08:30 ghudson Exp $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *
@@ -9,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.11 1998-04-08 21:54:38 cfields Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.12 1999-01-22 23:08:30 ghudson Exp $";
 #endif
 
 #include "attach.h"

@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/acl_files.c,v $
- *	$Author: ghudson $
+ *	$Id: acl_files.c,v 3.3 1999-01-22 23:19:38 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -25,7 +24,7 @@
 
 #ifndef SABER
 #ifndef lint
-static const char rcsid_acl_files_c[] = "$Id: acl_files.c,v 3.2 1997-10-25 21:47:25 ghudson Exp $";
+static const char rcsid_acl_files_c[] = "$Id: acl_files.c,v 3.3 1999-01-22 23:19:38 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 

@@ -22,15 +22,13 @@
 /* This file is part of the CREF finder.  It contains the primary command
  * loop.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 2.13 1997-04-30 17:26:37 ghudson Exp $
+ *	$Id: cref.c,v 2.14 1999-01-22 23:11:44 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 2.13 1997-04-30 17:26:37 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: cref.c,v 2.14 1999-01-22 23:11:44 ghudson Exp $";
 #endif
 #endif
 

@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $
+ *	$Id: logger_server_v1.c,v 1.6 1999-01-22 23:11:03 ghudson Exp $
  */
 
 /*
@@ -10,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $";
+static char logger_server_rcsid[] = "$Id: logger_server_v1.c,v 1.6 1999-01-22 23:11:03 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"

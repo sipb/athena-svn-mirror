@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pstext.c,v 1.1 1993-10-12 05:28:45 probe Exp $";
+_NOTICE RCSID[]="$Id: pstext.c,v 1.2 1999-01-22 23:11:30 ghudson Exp $";
 #endif
 /* pstext.c
  *
@@ -23,35 +23,6 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  * shell script, and has more control(?) and different args.
  *
  * If you want nicer listings, use enscript.
- *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 2.2  87/11/17  16:52:41  byron
- * Release 2.1
- * 
- * Revision 2.1.1.3  87/11/12  13:42:06  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.2  87/04/23  10:26:53  byron
- * Copyright notice.
- * 
- * Revision 2.1.1.1  86/06/02  10:30:19  shore
- * fixed formfeed processing -- produced incorrect PS files
- * 
- * Revision 2.1  85/11/24  11:51:14  shore
- * Product Release 2.0
- * 
- * Revision 1.4  85/11/20  00:55:32  shore
- * Support for System V
- * argv changes to work with both
- * 4.2bsd and Sys V spooler interface
- * 
- * Revision 1.3  85/06/16  20:31:19  shore
- * fixed page-break bug
- * 
- * Revision 1.2  85/05/14  11:27:46  shore
- * fixed blank page bug
- * 
  *
  */
 

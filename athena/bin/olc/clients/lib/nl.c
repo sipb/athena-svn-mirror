@@ -9,14 +9,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.9 1997-04-30 17:36:16 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: nl.c,v 1.10 1999-01-22 23:12:11 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.9 1997-04-30 17:36:16 ghudson Exp $";
+static char rcsid[] ="$Id: nl.c,v 1.10 1999-01-22 23:12:11 ghudson Exp $";
 #endif
 #endif
 

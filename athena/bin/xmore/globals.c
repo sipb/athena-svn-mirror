@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/globals.c,v 1.1 1993-10-12 05:34:41 probe Exp $";
+  static char rcsid_module_c[] = "$Id: globals.c,v 1.2 1999-01-22 23:15:42 ghudson Exp $";
 #endif lint
 
 /*	This is the file globals.c for the Xmore, a file browsing utility
@@ -9,9 +9,7 @@
  *	Created: 	October 22, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/globals.c,v $
- *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/globals.c,v 1.1 1993-10-12 05:34:41 probe Exp $
+ *      $Id: globals.c,v 1.2 1999-01-22 23:15:42 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: epeisach $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.2 1992-04-27 13:01:04 epeisach Exp $
+ * $Id: fx_retrieve_file.c,v 1.3 1999-01-22 23:18:02 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_retrieve_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.2 1992-04-27 13:01:04 epeisach Exp $";
+static char rcsid_fx_retrieve_file_c[] = "$Id: fx_retrieve_file.c,v 1.3 1999-01-22 23:18:02 ghudson Exp $";
 #endif /* lint */
 
 #include <errno.h>

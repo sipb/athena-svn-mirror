@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.5 1996-09-20 04:34:31 ghudson Exp $
+ * $Id: dump.c,v 1.6 1999-01-22 23:17:26 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.5 1996-09-20 04:34:31 ghudson Exp $";
+static char rcsid_collect_c[] = "$Id: dump.c,v 1.6 1999-01-22 23:17:26 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -1,12 +1,10 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v $
- *	$Id: c_status.c,v 1.3 1991-08-29 11:25:31 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: c_status.c,v 1.4 1999-01-22 23:13:12 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v 1.3 1991-08-29 11:25:31 lwvanels Exp $";
+static char rcsid[] ="$Id: c_status.c,v 1.4 1999-01-22 23:13:12 ghudson Exp $";
 #endif
 #endif
 

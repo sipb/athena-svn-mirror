@@ -8,14 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_structs.c,v $
- *	$Id: data_structs.c,v 1.2 1996-09-20 02:34:39 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: data_structs.c,v 1.3 1999-01-22 23:14:23 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_structs.c,v 1.2 1996-09-20 02:34:39 ghudson Exp $";
+static char rcsid[] ="$Id: data_structs.c,v 1.3 1999-01-22 23:14:23 ghudson Exp $";
 #endif
 #endif
 

@@ -17,14 +17,12 @@
  *
  *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
- *      $Id: x_motd.c,v 1.9 1997-04-30 17:46:29 ghudson Exp $
- *      $Author: ghudson $
+ *      $Id: x_motd.c,v 1.10 1999-01-22 23:12:24 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.9 1997-04-30 17:46:29 ghudson Exp $";
+static char rcsid[]= "$Id: x_motd.c,v 1.10 1999-01-22 23:12:24 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $
+ * $Id: fx_directory.c,v 1.3 1999-01-22 23:17:56 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_directory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $";
+static char rcsid_fx_directory_c[] = "$Id: fx_directory.c,v 1.3 1999-01-22 23:17:56 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"

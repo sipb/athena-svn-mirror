@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v $
- * $Author: jik $
+ * $Id: shell_regexp.c,v 1.4 1999-01-22 23:09:04 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_shell_regexp_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v 1.3 1991-02-28 18:43:43 jik Exp $";
+     static char rcsid_shell_regexp_c[] = "$Id: shell_regexp.c,v 1.4 1999-01-22 23:09:04 ghudson Exp $";
 #endif
 
 #include <com_err.h>

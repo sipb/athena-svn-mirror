@@ -14,28 +14,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuHelp.c,v $
- * $Author: rbasch $
- * $Log: not supported by cvs2svn $
- * Revision 1.2  1989/12/19 14:56:18  vanharen
- * fixed an error in logic when hitting the 25 mark...
- *
- * Revision 1.1  89/12/09  15:14:29  djf
- * Initial revision
- * 
- *
- * help.c
- * This file contains the function MuHelp
- *
- * These two functions share an array of InformationDialog widgets.
- * As many as 25 dialog widgets may be managed at once, but only 5
- * are not destroyed after it's unmanaged.  When called, the function 
- * checks to see if helpbox[0] has been created. If yes, it checks to 
- * see if it's managed.  If not, it will simply set the resource to display  
- * the proper message string and manage it.  If it's managed, then it will
- * check to see if helpbox[1] has been created.  If not, it will create and
- * manage it.  If yes, it will continue to check if it's managed and so on.
- *
+ * $Id: MuHelp.c,v 1.4 1999-01-22 23:16:36 ghudson Exp $
  */
 
 #include "MuP.h"

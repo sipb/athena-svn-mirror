@@ -1,9 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: danw $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.4 1998-02-17 19:48:54 danw Exp $
+ * $Id: util.c,v 1.5 1999-01-22 23:18:18 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.4 1998-02-17 19:48:54 danw Exp $";
+static char rcsid_util_c[] = "$Id: util.c,v 1.5 1999-01-22 23:18:18 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange fxdestroy client
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxdestroy.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxdestroy.c,v 1.1 1993-10-12 03:09:29 probe Exp $
+ * $Id: fxdestroy.c,v 1.2 1999-01-22 23:17:29 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxdestroy_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxdestroy.c,v 1.1 1993-10-12 03:09:29 probe Exp $";
+static char rcsid_fxdestroy_c[] = "$Id: fxdestroy.c,v 1.2 1999-01-22 23:17:29 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

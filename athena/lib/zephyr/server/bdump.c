@@ -3,9 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.51 1998-11-19 21:39:51 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: bdump.c,v 1.52 1999-01-22 23:19:39 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +16,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.51 1998-11-19 21:39:51 ghudson Exp $";
+static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.52 1999-01-22 23:19:39 ghudson Exp $";
 #endif /* lint */
 
 /*

@@ -1,9 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.7 1998-07-25 21:02:11 ghudson Exp $
+ * $Id: commands.c,v 1.8 1999-01-22 23:18:13 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.7 1998-07-25 21:02:11 ghudson Exp $";
+static char rcsid_commands_c[] = "$Id: commands.c,v 1.8 1999-01-22 23:18:13 ghudson Exp $";
 #endif /* lint */
 
 #include <com_err.h>

@@ -3,17 +3,15 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v $
- *	$Author: ghudson $
+ *	$Id: ZFmtSmRLst.c,v 1.9 1999-01-22 23:19:09 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.8 1997-09-14 21:52:35 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.8 1997-09-14 21:52:35 ghudson Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Id: ZFmtSmRLst.c,v 1.9 1999-01-22 23:19:09 ghudson Exp $";
 #endif
 
 #include <internal.h>

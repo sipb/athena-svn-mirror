@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_lengthen.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_lengthen.c,v 1.2 1996-09-20 04:36:06 ghudson Exp $
+ * $Id: _fx_lengthen.c,v 1.3 1999-01-22 23:17:49 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid__fx_lengthen_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_lengthen.c,v 1.2 1996-09-20 04:36:06 ghudson Exp $";
+static char rcsid__fx_lengthen_c[] = "$Id: _fx_lengthen.c,v 1.3 1999-01-22 23:17:49 ghudson Exp $";
 #endif /* lint */
 
 #include <string.h>

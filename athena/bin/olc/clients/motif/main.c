@@ -9,13 +9,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v $
- *      $Author: ghudson $
+ *      $Id: main.c,v 1.21 1999-01-22 23:12:21 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.20 1997-04-30 17:45:27 ghudson Exp $";
+static char rcsid[]="$Id: main.c,v 1.21 1999-01-22 23:12:21 ghudson Exp $";
 #endif
 #endif
 

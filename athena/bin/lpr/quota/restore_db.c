@@ -1,5 +1,4 @@
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/restore_db.c,v $ */
-/* $Author: epeisach $ */
+/* $Id: restore_db.c,v 1.4 1999-01-22 23:11:13 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

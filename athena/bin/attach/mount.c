@@ -1,11 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Id: mount.c,v 1.11 1997-12-17 18:17:34 ghudson Exp $
+ *	$Id: mount.c,v 1.12 1999-01-22 23:08:33 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.11 1997-12-17 18:17:34 ghudson Exp $";
+static char *rcsid_mount_c = "$Id: mount.c,v 1.12 1999-01-22 23:08:33 ghudson Exp $";
 
 #include "attach.h"
 

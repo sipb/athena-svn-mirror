@@ -2,9 +2,7 @@
 /**********************************************************************
  * Access Control List Library
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.4 1996-09-20 04:36:17 ghudson Exp $
+ * $Id: libacl.c,v 1.5 1999-01-22 23:18:04 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +13,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.4 1996-09-20 04:36:17 ghudson Exp $";
+static char rcsid_libacl_c[] = "$Id: libacl.c,v 1.5 1999-01-22 23:18:04 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

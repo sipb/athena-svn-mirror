@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_rpc_errno.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_rpc_errno.c,v 1.1 1993-10-12 03:03:21 probe Exp $
+ * $Id: _fx_rpc_errno.c,v 1.2 1999-01-22 23:17:50 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid__fx_rpc_errno_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_rpc_errno.c,v 1.1 1993-10-12 03:03:21 probe Exp $";
+static char rcsid__fx_rpc_errno_c[] = "$Id: _fx_rpc_errno.c,v 1.2 1999-01-22 23:17:50 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"

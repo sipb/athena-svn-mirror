@@ -3,19 +3,17 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFlsSubs.c,v $
- *	$Author: ghudson $
+ *	$Id: ZFlsSubs.c,v 1.5 1999-01-22 23:19:06 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFlsSubs.c,v 1.4 1997-09-14 21:52:30 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
-static const char rcsid_ZFlushSubscriptions_c[] = "$Id: ZFlsSubs.c,v 1.4 1997-09-14 21:52:30 ghudson Exp $";
+static const char rcsid_ZFlushSubscriptions_c[] = "$Id: ZFlsSubs.c,v 1.5 1999-01-22 23:19:06 ghudson Exp $";
 #endif
 
 Code_t ZFlushSubscriptions()

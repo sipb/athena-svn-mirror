@@ -1,11 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v $
- *	$Author: miki $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.6 1995-07-11 21:13:30 miki Exp $
+ *	$Id: lps40comm.c,v 1.7 1999-01-22 23:11:26 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.6 1995-07-11 21:13:30 miki Exp $";
+static char *rcsid_lps40_c = "$Id: lps40comm.c,v 1.7 1999-01-22 23:11:26 ghudson Exp $";
 #endif lint
 
 /* lps40comm.c

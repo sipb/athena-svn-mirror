@@ -1,7 +1,4 @@
-#	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
-#	$Author: epeisach $
-#	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.12 1990-08-29 16:53:30 epeisach Exp $
+#	$Id: Makefile,v 1.13 1999-01-22 23:10:55 ghudson Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.

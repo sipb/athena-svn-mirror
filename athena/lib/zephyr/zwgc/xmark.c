@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: ghudson $
+ *      $Id: xmark.c,v 1.9 1999-01-22 23:20:44 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +12,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.8 1997-09-14 22:14:57 ghudson Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.9 1999-01-22 23:20:44 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

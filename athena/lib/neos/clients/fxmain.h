@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange fxmain header
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.h,v 1.2 1991-06-30 16:26:32 probe Exp $
+ * $Id: fxmain.h,v 1.3 1999-01-22 23:17:31 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *

@@ -5,9 +5,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/status.h,v $
- *	$Id: status.h,v 1.4 1990-05-25 16:13:18 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: status.h,v 1.5 1999-01-22 23:13:46 ghudson Exp $
  */
 
 #include <mit-copyright.h>

@@ -1,13 +1,11 @@
 /* 
- * $Id: rkinit.c,v 1.7 1996-09-20 03:15:45 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
- * $Author: ghudson $
+ * $Id: rkinit.c,v 1.8 1999-01-22 23:15:14 ghudson Exp $
  *
  * This is an rkinit client
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.7 1996-09-20 03:15:45 ghudson Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.8 1999-01-22 23:15:14 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

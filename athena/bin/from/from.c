@@ -1,7 +1,5 @@
 /* 
- * $Id: from.c,v 1.22 1998-06-17 18:01:36 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: ghudson $
+ * $Id: from.c,v 1.23 1999-01-22 23:10:24 ghudson Exp $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +8,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.22 1998-06-17 18:01:36 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.23 1999-01-22 23:10:24 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>

@@ -1,12 +1,11 @@
 /*
  * 	signals.c -- deal with concerting signal names to numbers and back.
  *
- * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v $
- * 	$Author: danw $
+ * 	$Id: signames.c,v 1.4 1999-01-22 23:15:52 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v 1.3 1998-11-05 14:39:26 danw Exp $";
+static char *rcsid = "$Id: signames.c,v 1.4 1999-01-22 23:15:52 ghudson Exp $";
 #endif
 
 #include <string.h>

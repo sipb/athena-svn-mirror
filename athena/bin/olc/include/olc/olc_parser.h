@@ -16,9 +16,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.13 1997-04-30 18:17:00 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: olc_parser.h,v 1.14 1999-01-22 23:13:43 ghudson Exp $
  */
 
 

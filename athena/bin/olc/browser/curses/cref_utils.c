@@ -22,14 +22,12 @@
 /* This file is part of the CREF finder.  It contains miscellaneous useful
  * utilities.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: danw $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.11 1998-08-01 17:42:14 danw Exp $
+ *	$Id: cref_utils.c,v 2.12 1999-01-22 23:11:44 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.11 1998-08-01 17:42:14 danw Exp $";
+static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.12 1999-01-22 23:11:44 ghudson Exp $";
 #endif
 #endif
 

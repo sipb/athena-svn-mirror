@@ -21,9 +21,7 @@
 /* This file is part of the CREF finder.  It contains global variable
  * definitions.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/browser/cref.h,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/browser/cref.h,v 1.1 1997-04-30 18:14:28 ghudson Exp $
+ *	$Id: cref.h,v 1.2 1999-01-22 23:13:33 ghudson Exp $
  */
 
 

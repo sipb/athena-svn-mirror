@@ -3,8 +3,7 @@ GLOBAL : *.CKP :
 ##
 ##	MIT Project Athena
 ##
-##	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/slists/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/slists/sys_rvd,v 1.1 1993-10-12 04:48:42 probe Exp $
+##	$Id: sys_rvd,v 1.2 1999-01-22 23:16:05 ghudson Exp $
 
 # We'll want to track the . files on public workstations.
 #	/.profile::::

@@ -18,14 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.25 1998-12-12 22:30:25 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: utils.c,v 1.26 1999-01-22 23:12:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.25 1998-12-12 22:30:25 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.26 1999-01-22 23:12:15 ghudson Exp $";
 #endif
 #endif
 

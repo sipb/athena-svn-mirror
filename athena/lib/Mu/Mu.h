@@ -12,12 +12,7 @@
  * of this software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/Mu.h,v $
- * $Author: vanharen $
- * $Log: not supported by cvs2svn $
- * Revision 1.1  89/12/09  15:15:00  djf
- * Initial revision
- * 
+ * $Id: Mu.h,v 1.3 1999-01-22 23:16:31 ghudson Exp $
  */
 
 #ifndef Mu_h

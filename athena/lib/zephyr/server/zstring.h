@@ -2,9 +2,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zstring.h,v $
- *	$Id: zstring.h,v 1.4 1997-09-14 21:54:52 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: zstring.h,v 1.5 1999-01-22 23:19:56 ghudson Exp $
  */
 
 #include <zephyr/mit-copyright.h>

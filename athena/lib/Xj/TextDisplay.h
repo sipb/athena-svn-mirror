@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/TextDisplay.h,v $
- * $Author: ghudson $ 
+ * $Id: TextDisplay.h,v 1.2 1999-01-22 23:17:03 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *

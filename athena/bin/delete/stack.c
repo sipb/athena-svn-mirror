@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v $
- * $Author: ghudson $
+ * $Id: stack.c,v 1.13 1999-01-22 23:09:06 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.12 1998-02-25 22:27:24 ghudson Exp $";
+     static char rcsid_stack_c[] = "$Id: stack.c,v 1.13 1999-01-22 23:09:06 ghudson Exp $";
 #endif
 
 #include <sys/types.h>

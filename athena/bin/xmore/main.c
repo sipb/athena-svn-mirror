@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.2 1990-05-01 14:48:49 epeisach Exp $";
+  static char rcsid_module_c[] = "$Id: main.c,v 1.3 1999-01-22 23:15:44 ghudson Exp $";
 #endif lint
 
 /*	This is the file main.c for the Xmore, a file browsing utility
@@ -10,9 +10,7 @@
  *	Created: 	October 22, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v $
- *      $Author: epeisach $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/main.c,v 1.2 1990-05-01 14:48:49 epeisach Exp $
+ *      $Id: main.c,v 1.3 1999-01-22 23:15:44 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

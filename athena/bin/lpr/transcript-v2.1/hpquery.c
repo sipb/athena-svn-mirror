@@ -15,15 +15,12 @@
  */
 
 #ifndef lint
-static char Productid[] = "@(#) $Revision: 1.2 $";
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v 1.2 1995-07-11 21:11:03 miki Exp $";
+static char Productid[] = "@(#) $Revision: 1.3 $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v 1.3 1999-01-22 23:11:24 ghudson Exp $";
 #endif
 
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v $
- * $Revision: 1.2 $
- * $State: Exp $ $Locker:  $
- * $Date: 1995-07-11 21:11:03 $
+ * $Id: hpquery.c,v 1.3 1999-01-22 23:11:24 ghudson Exp $
  *
  * hpnpadmin.c - send SNMP GetRequests and SetRequests to a network
  *               peripheral using the CMU SNMP library routines.

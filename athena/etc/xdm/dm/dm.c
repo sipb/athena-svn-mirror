@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.71 1998-11-28 22:22:48 ghudson Exp $
+/* $Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.71 1998-11-28 22:22:48 ghudson Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */

@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.44 1998-09-12 00:16:34 ghudson Exp $
+# $Id: Imakefile,v 1.45 1999-01-22 23:16:22 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -42,7 +42,7 @@ install:: Xlogin
 Xlogin: $(PRESOURCES) $(ATHVERS)
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$major.$$minor/" \
-		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$major$$minor:" \
+		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$Id: Imakefile,v 1.45 1999-01-22 23:16:22 ghudson Exp $$minor:" \
 		$(PRESOURCES) > Xlogin
 
 install_file(bitmaps/check,/etc/athena/login/bitmaps/check)

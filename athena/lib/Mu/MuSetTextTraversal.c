@@ -13,23 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetTextTraversal.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
- *
- * MuSetTextTraversal.c
- * This file contains the function MuSetTextTraversal.  When passed an
- * array of text widgets, the number of widgets in the array, and the subtree
- * of the hierarchy for which the keyboard focus is to be set (most often
- * the toplevel widget or the dialog shell widget), this function enables
- * traversal among the text widgets passed using the up arrow, down arrow, 
- * and the return key.  If a multi-line text widget is passed, the 
- * return key will not be bound for that text widget.  If a passed text widget
- * is not sensitive at any time, it will be skipped during traversal. 
- *
- * MuSetTextTraversal is dependent on the functions get_new_entry, find_entry, 
- * get_prev_entry, get_next_entry and the upfocus and downfocus callback 
- * functions contained in this file.
+ * $Id: MuSetTextTraversal.c,v 1.2 1999-01-22 23:16:41 ghudson Exp $
  */
 
 #include "Mu.h"

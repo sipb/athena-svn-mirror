@@ -1,7 +1,6 @@
 %!
 % Banner prolog for LPS 40
-%	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40banner.pro,v $
-%	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40banner.pro,v 1.1 1993-10-12 05:28:48 probe Exp $
+%	$Id: lps40banner.pro,v 1.2 1999-01-22 23:11:25 ghudson Exp $
 %
 % use: push the following strings onto the stack, then execute do_flagpage
 %	then end the pagedict

@@ -1,12 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v $
- *	$Author: probe $
+ *	$Id: detach.c,v 1.12 1999-01-22 23:08:32 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.11 1992-01-27 03:09:15 probe Exp $";
+static char *rcsid_detach_c = "$Id: detach.c,v 1.12 1999-01-22 23:08:32 ghudson Exp $";
 
 #include "attach.h"
 #include <string.h>

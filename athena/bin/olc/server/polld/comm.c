@@ -8,15 +8,13 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v $
- *	$Id: comm.c,v 1.3 1994-08-21 18:34:51 cfields Exp $
- *	$Author: cfields $
+ *	$Id: comm.c,v 1.4 1999-01-22 23:14:41 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v 1.3 1994-08-21 18:34:51 cfields Exp $";
+static char rcsid[] ="$Id: comm.c,v 1.4 1999-01-22 23:14:41 ghudson Exp $";
 #endif
 #endif
 

@@ -2,9 +2,7 @@
  * ansify.c -- utility to correct rpcgen's bad habit of constructing
  *		{ foo, bar, baz, }; <-- extra comma
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/ansify.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/ansify.c,v 1.1 1993-10-12 03:10:11 probe Exp $
+ * $Id: ansify.c,v 1.2 1999-01-22 23:18:09 ghudson Exp $
  *
  * Copyright 1992 by the Massachusetts Institute of Technology.
  *

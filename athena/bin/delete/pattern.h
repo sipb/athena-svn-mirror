@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.h,v 1.6 1991-02-28 18:43:19 jik Exp $
+ * $Id: pattern.h,v 1.7 1999-01-22 23:09:03 ghudson Exp $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v $
- *      $Author: ghudson $
+ *      $Id: formatter.c,v 1.15 1999-01-22 23:20:20 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_formatter_c[] = "$Id: formatter.c,v 1.14 1997-09-14 22:14:05 ghudson Exp $";
+static const char rcsid_formatter_c[] = "$Id: formatter.c,v 1.15 1999-01-22 23:20:20 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

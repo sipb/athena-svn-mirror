@@ -3,14 +3,12 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v $
- *	$Author: ghudson $
+ *	$Id: ZSendPkt.c,v 1.32 1999-01-22 23:19:24 ghudson Exp $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.31 1997-09-14 21:52:57 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZSendPacket_c[] =

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.78 1998-11-06 18:49:21 ghudson Exp $ */
+/* $Id: xlogin.c,v 1.79 1999-01-22 23:16:27 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>

@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v $
- *      $Author: ghudson $
+ *      $Id: main.c,v 1.36 1999-01-22 23:20:22 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -18,7 +17,7 @@
 #endif
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_main_c[] = "$Id: main.c,v 1.35 1998-09-03 01:45:09 ghudson Exp $";
+static const char rcsid_main_c[] = "$Id: main.c,v 1.36 1999-01-22 23:20:22 ghudson Exp $";
 #endif
 
 #include <netdb.h>

@@ -3,30 +3,9 @@
  * Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
  * GOVERNMENT END USERS: See notice of rights in Notice file in TranScript
  * library directory -- probably /usr/lib/ps/Notice
- * RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psspool.h,v 1.1 1993-10-12 05:28:05 probe Exp $
+ * RCSID: $Id: psspool.h,v 1.2 1999-01-22 23:11:30 ghudson Exp $
  *
  * nice constants for printcap spooler filters
- *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 2.2  87/11/17  16:52:34  byron
- * Release 2.1
- * 
- * Revision 2.1.1.2  87/11/12  13:42:02  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.1  87/04/23  10:26:50  byron
- * Copyright notice.
- * 
- * Revision 2.2  86/11/02  14:13:37  shore
- * Product Update
- * 
- * Revision 2.1  85/11/24  11:51:12  shore
- * Product Release 2.0
- * 
- * Revision 1.2  85/05/14  11:26:54  shore
- * 
- * 
  *
  */
 

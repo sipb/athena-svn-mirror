@@ -1,7 +1,5 @@
 #
-# $Id: Imakefile,v 1.9 1997-04-30 17:32:56 ghudson Exp $
-# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/Imakefile,v $
-# $Author: ghudson $ 
+# $Id: Imakefile,v 1.10 1999-01-22 23:11:58 ghudson Exp $
 #
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.

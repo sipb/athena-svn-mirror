@@ -2,8 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype.c,v 1.1 1998-09-30 21:07:11 ghudson Exp $
- *    $Locker:  $
+ *    $Id: machtype.c,v 1.2 1999-01-22 23:11:35 ghudson Exp $
  */
 
 #include <stdio.h>

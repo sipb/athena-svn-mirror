@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
- *	$Author: ghudson $
+ *	$Id: ZFmtAuth.c,v 1.20 1999-01-22 23:19:06 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.19 1997-10-25 21:47:19 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.19 1997-10-25 21:47:19 ghudson Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Id: ZFmtAuth.c,v 1.20 1999-01-22 23:19:06 ghudson Exp $";
 #endif
 
 #include <internal.h>

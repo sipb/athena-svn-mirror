@@ -1,8 +1,7 @@
 /*
  * Generic hash table routines.  Uses integer keys to store objects.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/hash.c,v $
- * $Author: ghudson $ 
+ * $Id: hash.c,v 1.2 1999-01-22 23:17:08 ghudson Exp $
  *
  *  (c) Copyright 1988,1991 by the Massachusetts Institute of Technology.
  *  For copying and distribution information, please see the file
@@ -21,7 +20,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/Xj/hash.c,v 1.1 1998-12-17 16:23:12 ghudson Exp $";
+"$Id: hash.c,v 1.2 1999-01-22 23:17:08 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"

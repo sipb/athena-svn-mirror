@@ -1,76 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $
- *
- *	$Log: not supported by cvs2svn $
- *	Revision 4.10  1998/02/08 22:26:53  ghudson
- *	Remove the unsupported and incomplete followlinks features.
- *
- *	Revision 4.9  1997/11/11 19:33:07  ghudson
- *	Nuke bogus i386-conditionalized code.
- *
- *	Revision 4.8  1996/05/01 18:54:36  ghudson
- *	getwd -> getcwd
- *
- *	Revision 4.7  1995/05/14 00:57:26  cfields
- *	Never checked in.
- *	Reversion to 4.5, probably by Miki.
- *	May 26  1994
- *
- * Revision 4.5  91/07/16  15:08:26  probe
- * Removed assumption that . and .. are first
- * Missing closedir()
- * 
- * Revision 4.4  91/06/24  15:18:02  epeisach
- * POSIX dirent handling
- * 
- * Revision 4.3  91/03/07  17:47:31  epeisach
- * Fixed typo.
- * 
- * Revision 4.2  91/02/28  11:10:39  epeisach
- * For PS2 may need rmslink.
- * 
- * 
- * Revision 4.1  88/09/19  20:25:03  don
- * bellcore copyright.
- * 
- * Revision 4.0  88/04/14  16:42:41  don
- * this version is not compatible with prior versions.
- * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
- * it also offers sped-up exception-checking, via hash-tables.
- * a bug remains in -nopullflag support: if the entry's to-name top-level
- * dir doesn't exist, update_file doesn't get over it.
- * the fix should be put into the updated() routine, or possibly dec_entry().
- * 
- * Revision 3.0  88/03/09  13:17:41  don
- * this version is incompatible with prior versions. it offers:
- * 1) checksum-handling for regular files, to detect filesystem corruption.
- * 2) more concise & readable "updating" messages & error messages.
- * 3) better update-simulation when nopullflag is set.
- * 4) more support for non-default comparison-files.
- * finally, the "currentness" data-structure has replaced the statbufs
- * used before, so that the notion of currency is more readily extensible.
- * note: the statfile format has been changed.
- * 
- * Revision 2.2  88/01/29  18:23:52  don
- * bug fixes. also, now track can update the root.
- * 
- * Revision 2.1  87/12/03  17:33:39  don
- * fixed lint warnings.
- * 
- * Revision 2.0  87/11/30  15:19:24  don
- * general rewrite; got rid of stamp data-type, with its attendant garbage,
- * cleaned up pathname-handling. readstat & writestat now sort overything
- * by pathname, which simplifies traversals/lookup. should be comprehensible
- * now.
- * 
- * Revision 1.1  87/02/12  21:14:49  rfrench
- * Initial revision
- * 
+ *	$Id: files.c,v 4.12 1999-01-22 23:15:59 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $";
+static char *rcsid_header_h = "$Id: files.c,v 4.12 1999-01-22 23:15:59 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"

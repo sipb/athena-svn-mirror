@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.6 1991-01-23 15:09:21 epeisach Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v $ */
-/* $Author: epeisach $ */
+/* $Id: parser.c,v 1.7 1999-01-22 23:11:05 ghudson Exp $ */
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."

@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/Imakefile,v 1.1 1993-10-12 04:57:32 probe Exp $
+# $Id: Imakefile,v 1.2 1999-01-22 23:16:07 ghudson Exp $
 
 CFILES = config_console.c
 OBJS = config_console.o

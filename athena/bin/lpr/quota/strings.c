@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.7 1993-10-14 12:10:41 probe Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
-/* $Author: probe $ */
+/* $Id: strings.c,v 1.8 1999-01-22 23:11:17 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

@@ -3,9 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: ghudson $
- *	$Id: zephyr.h,v 1.53 1997-09-25 00:15:28 ghudson Exp $
+ *	$Id: zephyr.h,v 1.54 1999-01-22 23:18:59 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology. For copying and distribution information, see the

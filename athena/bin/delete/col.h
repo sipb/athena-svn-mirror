@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.h,v $
- * $Author: jik $
+ * $Id: col.h,v 1.4 1999-01-22 23:08:51 ghudson Exp $
  *
  * This header file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

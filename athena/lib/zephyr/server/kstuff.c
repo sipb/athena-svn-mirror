@@ -8,15 +8,14 @@
  *	"mit-copyright.h". 
  */
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.20 1997-10-17 02:25:53 ghudson Exp $
+ *	$Id: kstuff.c,v 1.21 1999-01-22 23:19:44 ghudson Exp $
  */
 
 #include "zserver.h"
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.20 1997-10-17 02:25:53 ghudson Exp $";
+static const char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.21 1999-01-22 23:19:44 ghudson Exp $";
 #endif
 #endif
 

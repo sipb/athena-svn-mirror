@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.6 1993-05-10 13:42:12 vrt Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v $ */
-/* $Author: vrt $ */
+/* $Id: quota_dba.c,v 1.7 1999-01-22 23:11:09 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +6,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.6 1993-05-10 13:42:12 vrt Exp $";
+static char rcs_id[] = "$Id: quota_dba.c,v 1.7 1999-01-22 23:11:09 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"

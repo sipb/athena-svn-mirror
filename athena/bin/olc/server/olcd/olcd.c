@@ -22,14 +22,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.62 1997-09-20 06:50:02 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: olcd.c,v 1.63 1999-01-22 23:14:29 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.62 1997-09-20 06:50:02 ghudson Exp $";
+static char rcsid[] ="$Id: olcd.c,v 1.63 1999-01-22 23:14:29 ghudson Exp $";
 #endif
 #endif
 

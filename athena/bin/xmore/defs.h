@@ -5,9 +5,7 @@
  *	Created: 	October 23 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/defs.h,v $
- *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/defs.h,v 1.2 1990-07-17 13:35:34 probe Exp $
+ *      $Id: defs.h,v 1.3 1999-01-22 23:15:42 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

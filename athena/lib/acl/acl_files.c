@@ -1,10 +1,9 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: ghudson $
+ *	$Id: acl_files.c,v 1.13 1999-01-22 23:17:14 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.12 1996-09-23 01:54:16 ghudson Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.13 1999-01-22 23:17:14 ghudson Exp $";
 #endif /* lint */
 
 /*

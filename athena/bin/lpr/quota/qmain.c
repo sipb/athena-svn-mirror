@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
- *	$Author: vrt $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.14 1993-05-10 13:42:18 vrt Exp $
+ *	$Id: qmain.c,v 1.15 1999-01-22 23:11:06 ghudson Exp $
  */
 
 /*
@@ -11,7 +9,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.14 1993-05-10 13:42:18 vrt Exp $";
+static char qmain_rcsid[] = "$Id: qmain.c,v 1.15 1999-01-22 23:11:06 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #ifdef POSIX

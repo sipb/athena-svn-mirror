@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.5 1991-02-09 16:43:43 epeisach Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v $ */
-/* $Author: epeisach $ */
+/* $Id: logger.h,v 1.6 1999-01-22 23:11:01 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

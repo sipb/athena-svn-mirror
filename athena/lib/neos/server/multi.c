@@ -1,9 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.5 1998-07-25 21:02:12 ghudson Exp $
+ * $Id: multi.c,v 1.6 1999-01-22 23:18:17 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.5 1998-07-25 21:02:12 ghudson Exp $";
+static char rcsid_multi_c[] = "$Id: multi.c,v 1.6 1999-01-22 23:18:17 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>

@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/node.h,v $
- *      $Author: ghudson $
- *	$Id: node.h,v 1.4 1997-09-14 22:14:26 ghudson Exp $
+ *      $Id: node.h,v 1.5 1999-01-22 23:20:27 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

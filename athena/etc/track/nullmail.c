@@ -1,7 +1,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/nullmail.c,v 3.1 1988-09-19 20:25:30 don Exp $";
+static char rcsid[] = "$Id: nullmail.c,v 3.2 1999-01-22 23:16:01 ghudson Exp $";
 #endif
 
 #include <stdio.h>

@@ -1,5 +1,4 @@
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gdump_db.c,v $ */
-/* $Author: epeisach $ */
+/* $Id: gdump_db.c,v 1.4 1999-01-22 23:10:58 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

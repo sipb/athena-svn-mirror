@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v 1.4 1993-05-10 13:41:41 vrt Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v $ */
-/* $Author: vrt $ */
+/* $Id: config.h,v 1.5 1999-01-22 23:10:56 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

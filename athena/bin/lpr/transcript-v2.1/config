@@ -3,7 +3,7 @@
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
 # PostScript is a registered trademark of Adobe Systems Incorporated
 # TranScript is a trademark of Adobe Systems Incorporated
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/config,v 1.1 1993-10-09 19:59:54 probe Exp $
+# RCSID: $Id: config,v 1.2 1999-01-22 23:11:23 ghudson Exp $
 #
 # this is a shell script that get's "sourced" when building and
 # installing TranScript software.  It sets up definitions of the

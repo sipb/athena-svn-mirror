@@ -1,9 +1,7 @@
 /**********************************************************************
  * usage tracking library
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.11 1997-04-30 18:18:48 ghudson Exp $
+ * $Id: log.c,v 1.12 1999-01-22 23:14:03 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.11 1997-04-30 18:18:48 ghudson Exp $";
+static char rcsid[] = "$Id: log.c,v 1.12 1999-01-22 23:14:03 ghudson Exp $";
 #endif
 #endif
 

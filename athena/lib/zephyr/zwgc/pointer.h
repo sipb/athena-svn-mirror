@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/pointer.h,v $
- *      $Author: ghudson $
- *	$Id: pointer.h,v 1.5 1997-09-14 22:14:33 ghudson Exp $
+ *      $Id: pointer.h,v 1.6 1999-01-22 23:20:30 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

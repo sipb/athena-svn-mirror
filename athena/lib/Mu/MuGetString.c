@@ -14,8 +14,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuGetString.c,v $
- * $Author: djf $
+ * $Id: MuGetString.c,v 1.2 1999-01-22 23:16:35 ghudson Exp $
  * 
  * SyncDialogs.c
  * This file contains the functions MuGetBoolean, MuGetString, and

@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
- *	$Author: vrt $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.13 1993-05-10 13:41:56 vrt Exp $
+ *	$Id: quota_server.c,v 1.14 1999-01-22 23:11:12 ghudson Exp $
  */
 
 /*
@@ -10,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.13 1993-05-10 13:41:56 vrt Exp $";
+static char quota_server_rcsid[] = "$Id: quota_server.c,v 1.14 1999-01-22 23:11:12 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"

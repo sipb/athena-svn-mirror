@@ -1,7 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.3 1997-12-19 03:04:09 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v $
- * $Locker:  $
+ * $Id: error_message.c,v 1.4 1999-01-22 23:17:19 ghudson Exp $
  *
  * Copyright 1987 by the Student Information Processing Board
  * of the Massachusetts Institute of Technology
@@ -14,7 +12,7 @@
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
 
-static const char rcsid[] = "$Id: error_message.c,v 1.3 1997-12-19 03:04:09 ghudson Exp $";
+static const char rcsid[] = "$Id: error_message.c,v 1.4 1999-01-22 23:17:19 ghudson Exp $";
 static const char copyright[] =
     "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
 

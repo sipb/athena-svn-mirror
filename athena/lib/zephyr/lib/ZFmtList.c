@@ -3,20 +3,18 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v $
- *	$Author: ghudson $
+ *	$Id: ZFmtList.c,v 1.16 1999-01-22 23:19:07 ghudson Exp $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.15 1997-09-14 21:52:32 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
 static const char rcsid_ZFormatNoticeList_c[] =
-    "$Id: ZFmtList.c,v 1.15 1997-09-14 21:52:32 ghudson Exp $";
+    "$Id: ZFmtList.c,v 1.16 1999-01-22 23:19:07 ghudson Exp $";
 #endif
 
 Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len, 

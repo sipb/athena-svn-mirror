@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_unshorten.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_unshorten.c,v 1.2 1996-09-20 04:36:08 ghudson Exp $
+ * $Id: _fx_unshorten.c,v 1.3 1999-01-22 23:17:51 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid__fx_unshorten_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_unshorten.c,v 1.2 1996-09-20 04:36:08 ghudson Exp $";
+static char rcsid__fx_unshorten_c[] = "$Id: _fx_unshorten.c,v 1.3 1999-01-22 23:17:51 ghudson Exp $";
 #endif /* lint */
 
 #include <string.h>

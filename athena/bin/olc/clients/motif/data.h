@@ -9,9 +9,7 @@
  * Copyright (c) 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/data.h,v $
- *	$Id: data.h,v 1.7 1991-08-12 13:44:59 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: data.h,v 1.8 1999-01-22 23:12:20 ghudson Exp $
  */
 
 #include <mit-copyright.h>

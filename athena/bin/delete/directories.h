@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
- * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.15 1998-11-16 16:42:16 ghudson Exp $
+ * $Id: directories.h,v 1.16 1999-01-22 23:08:57 ghudson Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

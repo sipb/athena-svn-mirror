@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/dash.c,v $
- * $Author: ghudson $ 
+ * $Id: dash.c,v 1.2 1999-01-22 23:08:47 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/dash.c,v 1.1 1998-12-27 15:45:27 ghudson Exp $";
+"$Id: dash.c,v 1.2 1999-01-22 23:08:47 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"

@@ -4,8 +4,7 @@
  *      Created by:     John T. Kohl
  *      Derived from timer_manager_ by Ken Raeburn
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/timer.c,v $
- *      $Author: ghudson $
+ *      $Id: timer.c,v 1.2 1999-01-22 23:19:58 ghudson Exp $
  *
  */
 
@@ -15,7 +14,7 @@
 #ifndef SABER
 #ifndef lint
 static const char rcsid[] =
-"$Id: timer.c,v 1.1 1997-09-14 22:13:27 ghudson Exp $";
+"$Id: timer.c,v 1.2 1999-01-22 23:19:58 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 

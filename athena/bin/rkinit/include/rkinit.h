@@ -1,7 +1,5 @@
 /* 
- * $Id: rkinit.h,v 1.3 1990-07-16 14:14:29 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v $
- * $Author: qjb $
+ * $Id: rkinit.h,v 1.4 1999-01-22 23:14:59 ghudson Exp $
  *
  * Main header file for rkinit library users
  */
@@ -10,7 +8,7 @@
 #define __RKINIT_H__
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid_rkinit_h = "$Id: rkinit.h,v 1.3 1990-07-16 14:14:29 qjb Exp $";
+static char *rcsid_rkinit_h = "$Id: rkinit.h,v 1.4 1999-01-22 23:14:59 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <krb.h>

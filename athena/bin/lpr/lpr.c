@@ -16,14 +16,11 @@
 #endif
 
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: rbasch $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.19 1998-12-22 21:21:56 rbasch Exp $
+ *	$Id: lpr.c,v 1.20 1999-01-22 23:10:39 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.19 1998-12-22 21:21:56 rbasch Exp $";
+static char *rcsid_lpr_c = "$Id: lpr.c,v 1.20 1999-01-22 23:10:39 ghudson Exp $";
 #endif lint
 
 /*

@@ -18,14 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.19 1998-02-28 18:07:43 danw Exp $
- *	$Author: danw $
+ *	$Id: p_cmdloop.c,v 1.20 1999-01-22 23:12:42 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.19 1998-02-28 18:07:43 danw Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.20 1999-01-22 23:12:42 ghudson Exp $";
 #endif
 #endif
 

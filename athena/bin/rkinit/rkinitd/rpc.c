@@ -1,13 +1,11 @@
 /* 
- * $Id: rpc.c,v 1.4 1997-12-03 22:05:07 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rpc.c,v $
- * $Author: ghudson $
+ * $Id: rpc.c,v 1.5 1999-01-22 23:15:19 ghudson Exp $
  *
  * This file contains the network parts of the rkinit server.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rpc.c,v 1.4 1997-12-03 22:05:07 ghudson Exp $";
+static char *rcsid = "$Id: rpc.c,v 1.5 1999-01-22 23:15:19 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange pickup client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.3 1996-09-20 04:34:45 ghudson Exp $
+ * $Id: pickup.c,v 1.4 1999-01-22 23:17:32 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.3 1996-09-20 04:34:45 ghudson Exp $";
+static char rcsid_collect_c[] = "$Id: pickup.c,v 1.4 1999-01-22 23:17:32 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

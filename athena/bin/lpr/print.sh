@@ -5,11 +5,5 @@
 lpr -p $*
 exit
 #
-# 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/print.sh,v $
-#	$Author: probe $
-#	$Locker:  $
-#	$Log: not supported by cvs2svn $
-# Revision 1.1  84/11/18  23:05:05  dgg
-# Initial revision
-# 
+# 	$Id: print.sh,v 1.2 1999-01-22 23:10:42 ghudson Exp $
 #

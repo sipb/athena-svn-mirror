@@ -18,9 +18,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_structs.h,v $
- *	$Id: server_structs.h,v 1.2 1992-02-04 19:55:38 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: server_structs.h,v 1.3 1999-01-22 23:13:31 ghudson Exp $
  */
 
 #include <mit-copyright.h>

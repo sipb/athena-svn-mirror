@@ -2,12 +2,11 @@
  * 	newsyslog - roll over selected logs at the appropriate time,
  * 		keeping the a specified number of backup files around.
  *
- * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v $
- * 	$Author: ghudson $    $Revision: 1.8 $
+ * 	$Id: newsyslog.c,v 1.9 1999-01-22 23:15:52 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.8 1998-03-09 04:52:29 ghudson Exp $";
+static char *rcsid = "$Id: newsyslog.c,v 1.9 1999-01-22 23:15:52 ghudson Exp $";
 #endif  /* lint */
 
 #include "config.h"

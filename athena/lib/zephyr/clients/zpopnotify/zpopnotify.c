@@ -3,8 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: ghudson $
+ *	$Id: zpopnotify.c,v 1.12 1999-01-22 23:18:44 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -23,7 +22,7 @@
 #include <errno.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.11 1997-09-14 21:51:44 ghudson Exp $";
+static char rcsid_zpopnotify_c[] = "$Id: zpopnotify.c,v 1.12 1999-01-22 23:18:44 ghudson Exp $";
 #endif /* lint */
 
 #define MAIL_CLASS "MAIL"

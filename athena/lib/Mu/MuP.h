@@ -12,9 +12,7 @@
  * of this software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuP.h,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
+ * $Id: MuP.h,v 1.2 1999-01-22 23:16:38 ghudson Exp $
  */
 
 #ifndef MuP_h

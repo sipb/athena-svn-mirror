@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/notice.h,v $
- *      $Author: ghudson $
- *	$Id: notice.h,v 1.4 1997-09-14 22:14:28 ghudson Exp $
+ *      $Id: notice.h,v 1.5 1999-01-22 23:20:29 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

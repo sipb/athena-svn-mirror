@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: ghudson $
+ *	$Id: main.c,v 1.68 1999-01-22 23:19:45 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -19,7 +18,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_main_c[] =
-    "$Id: main.c,v 1.67 1998-06-11 18:01:59 ghudson Exp $";
+    "$Id: main.c,v 1.68 1999-01-22 23:19:45 ghudson Exp $";
 #endif
 #endif
 

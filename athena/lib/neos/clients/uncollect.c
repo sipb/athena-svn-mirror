@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange uncollect client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.2 1996-09-20 04:34:52 ghudson Exp $
+ * $Id: uncollect.c,v 1.3 1999-01-22 23:17:34 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uncollect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.2 1996-09-20 04:34:52 ghudson Exp $";
+static char rcsid_uncollect_c[] = "$Id: uncollect.c,v 1.3 1999-01-22 23:17:34 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -1,7 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.10 1993-05-10 13:42:46 vrt Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
-/* $Author: vrt $ */
+/* $Id: periodic.c,v 1.11 1999-01-22 23:11:06 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -10,7 +8,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.10 1993-05-10 13:42:46 vrt Exp $";
+static char periodic_rcs_id[] = "$Id: periodic.c,v 1.11 1999-01-22 23:11:06 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"

@@ -8,9 +8,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_defines.h,v $
- *	$Id: server_defines.h,v 1.4 1993-10-08 13:10:04 cfields Exp $
- *	$Author: cfields $
+ *	$Id: server_defines.h,v 1.5 1999-01-22 23:13:30 ghudson Exp $
  */
 /*  NEED to change /usr/athena/lib to something like /var/server/olc/....  
 

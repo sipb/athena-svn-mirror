@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v $
- *	$Author: ghudson $
+ *	$Id: access.c,v 1.18 1999-01-22 23:19:36 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +16,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_access_c[] =
-    "$Id: access.c,v 1.17 1997-09-14 21:54:04 ghudson Exp $";
+    "$Id: access.c,v 1.18 1999-01-22 23:19:36 ghudson Exp $";
 #endif
 
 /*

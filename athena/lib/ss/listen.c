@@ -1,8 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.8 1998-01-20 23:10:27 ghudson Exp $
- *	$Locker:  $
+ *	$Id: listen.c,v 1.9 1999-01-22 23:18:21 ghudson Exp $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -18,7 +17,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-static const char rcsid[] = "$Id: listen.c,v 1.8 1998-01-20 23:10:27 ghudson Exp $";
+static const char rcsid[] = "$Id: listen.c,v 1.9 1999-01-22 23:18:21 ghudson Exp $";
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;

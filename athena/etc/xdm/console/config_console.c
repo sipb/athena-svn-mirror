@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.6 1997-04-01 01:05:09 ghudson Exp $
+/* $Id: config_console.c,v 1.7 1999-01-22 23:16:09 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file

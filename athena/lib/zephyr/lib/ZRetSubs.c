@@ -4,20 +4,18 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v $
- *	$Author: ghudson $
+ *	$Id: ZRetSubs.c,v 1.26 1999-01-22 23:19:23 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.25 1997-09-14 21:52:54 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
 static const char rcsid_ZRetrieveSubscriptions_c[] =
-    "$Id: ZRetSubs.c,v 1.25 1997-09-14 21:52:54 ghudson Exp $";
+    "$Id: ZRetSubs.c,v 1.26 1999-01-22 23:19:23 ghudson Exp $";
 #endif
 
 static Code_t Z_RetSubs ();

@@ -4,7 +4,7 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.8 1997-06-27 22:58:47 ghudson Exp $
+# RCSID: $Id: psif.proto,v 1.9 1999-01-22 23:11:28 ghudson Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH

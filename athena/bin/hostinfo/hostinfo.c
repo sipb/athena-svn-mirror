@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.12 1998-12-22 21:27:08 rbasch Exp $";
+static char rcsid[] = "$Id: hostinfo.c,v 1.13 1999-01-22 23:10:29 ghudson Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */

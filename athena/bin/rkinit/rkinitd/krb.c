@@ -1,13 +1,11 @@
 /* 
- * $Id: krb.c,v 1.13 1997-12-31 18:16:15 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
- * $Author: ghudson $
+ * $Id: krb.c,v 1.14 1999-01-22 23:15:16 ghudson Exp $
  *
  * This file contains all of the kerberos part of rkinitd.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.13 1997-12-31 18:16:15 ghudson Exp $";
+static char *rcsid = "$Id: krb.c,v 1.14 1999-01-22 23:15:16 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

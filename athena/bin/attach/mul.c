@@ -1,10 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.9 1998-03-17 03:56:03 cfields Exp $
+ * $Id: mul.c,v 1.10 1999-01-22 23:08:33 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.9 1998-03-17 03:56:03 cfields Exp $";
+static char *rcsid_mul_c = "$Id: mul.c,v 1.10 1999-01-22 23:08:33 ghudson Exp $";
 
 
 #include "attach.h"

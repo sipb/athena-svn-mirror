@@ -1,5 +1,4 @@
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/bill_db.c,v $ */
-/* $Author: danw $ */
+/* $Id: bill_db.c,v 1.6 1999-01-22 23:10:55 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

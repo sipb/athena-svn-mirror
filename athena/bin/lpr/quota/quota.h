@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.10 1996-09-20 02:07:23 ghudson Exp $
+ *	$Id: quota.h,v 1.11 1999-01-22 23:11:08 ghudson Exp $
  */
 
 /*

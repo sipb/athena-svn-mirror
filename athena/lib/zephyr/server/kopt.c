@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kopt.c,v $
- * $Author: ghudson $
+ * $Id: kopt.c,v 1.14 1999-01-22 23:19:44 ghudson Exp $
  *
  * Copyright 1985, 1986, 1987, 1988, 1990, 1991 by the Massachusetts
  * Institute of Technology.
@@ -22,7 +21,7 @@
 #ifndef lint
 #ifndef SABER
 static const char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.13 1997-10-25 21:47:30 ghudson Exp $";
+    "$Id: kopt.c,v 1.14 1999-01-22 23:19:44 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 

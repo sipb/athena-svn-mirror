@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.2 1990-04-25 11:48:21 epeisach Exp $
+ *	$Id: qping.c,v 1.3 1999-01-22 23:11:07 ghudson Exp $
  */
 
 /*
@@ -21,7 +19,7 @@
 #include <sys/time.h>
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.2 1990-04-25 11:48:21 epeisach Exp $";
+static char qmain_rcsid[] = "$Id: qping.c,v 1.3 1999-01-22 23:11:07 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 char *progname;

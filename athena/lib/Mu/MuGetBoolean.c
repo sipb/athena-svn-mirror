@@ -13,24 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuGetBoolean.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
- * 
- * SyncDialogs.c
- * This file contains the functions MuGetBoolean, MuGetString, and
- * MuGetFileName. These popup a modal dialog box for communication with 
- * the user.  They provide a synchronous interface to the programmer.
- * That is, like gets() or scanf() they return the desired value 
- * directly to the programmer, without any intervening callbacks. 
- * This is accomplished by invoking a recursive copy of XtMainLoop
- * inside of the each utility routine, and using longjmp() from within
- * the ok and cancel callbacks to abort from that recursive copy.
- * This is witchcraft, but provides powerful interface tools to the
- * programmer.  
- * For additional convenience, these functions never take compound 
- * strings as arguments.  All strings are passed as char *.
- *
+ * $Id: MuGetBoolean.c,v 1.2 1999-01-22 23:16:34 ghudson Exp $
  */
 
 #include "MuP.h"

@@ -19,14 +19,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.26 1997-04-30 18:09:02 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: c_io.c,v 1.27 1999-01-22 23:13:12 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.26 1997-04-30 18:09:02 ghudson Exp $";
+static char rcsid[] ="$Id: c_io.c,v 1.27 1999-01-22 23:13:12 ghudson Exp $";
 #endif
 #endif
 

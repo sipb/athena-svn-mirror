@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v $
- *	$Author: ghudson $
+ *	$Id: client.c,v 1.34 1999-01-22 23:19:41 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +16,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_client_c[] =
-"$Id: client.c,v 1.33 1998-10-13 17:12:04 ghudson Exp $";
+"$Id: client.c,v 1.34 1999-01-22 23:19:41 ghudson Exp $";
 #endif
 
 /*

@@ -3,8 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: ghudson $
+ *      $Id: zhm.c,v 1.60 1999-01-22 23:20:02 ghudson Exp $
  *
  *      Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +12,7 @@
 
 #include "zhm.h"
 
-static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.59 1998-07-02 18:32:20 ghudson Exp $";
+static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.60 1999-01-22 23:20:02 ghudson Exp $";
 
 #ifdef HAVE_HESIOD
 int use_hesiod = 0;

@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/Arrow.h,v $
- * $Author: ghudson $ 
+ * $Id: Arrow.h,v 1.2 1999-01-22 23:16:47 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *

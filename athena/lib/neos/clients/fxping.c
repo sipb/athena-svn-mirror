@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange fxping client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.3 1996-09-20 04:34:41 ghudson Exp $
+ * $Id: fxping.c,v 1.4 1999-01-22 23:17:31 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxping_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.3 1996-09-20 04:34:41 ghudson Exp $";
+static char rcsid_fxping_c[] = "$Id: fxping.c,v 1.4 1999-01-22 23:17:31 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

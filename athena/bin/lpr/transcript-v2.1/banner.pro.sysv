@@ -5,7 +5,7 @@
 % -- probably /usr/lib/ps/Notice
 % 4.2bsd banner page prolog (uses lpd/"of" short banner string)
 % host:user  Job: file  Date: Day Mth dd hh:mm:ss yyyy
-% RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/banner.pro.sysv,v 1.1 1996-08-17 01:12:47 ghudson Exp $
+% RCSID: $Id: banner.pro.sysv,v 1.2 1999-01-22 23:11:22 ghudson Exp $
 /Banner{14 dict begin dup statusdict exch /jobname exch put
  save /sv exch def /jobstr exch def /PN exch def
  jobstr(Job: )search not{0()}if /hu exch def pop

@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_db.h,v 1.2 1991-01-23 13:35:35 epeisach Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_db.h,v $ */
-/* $Author: epeisach $ */
+/* $Id: gquota_db.h,v 1.3 1999-01-22 23:10:59 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

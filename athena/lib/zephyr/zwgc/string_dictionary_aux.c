@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/string_dictionary_aux.c,v $
- *      $Author: ghudson $
+ *      $Id: string_dictionary_aux.c,v 1.2 1999-01-22 23:20:35 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +12,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_string_dictionary_aux_c[] = "$Id: string_dictionary_aux.c,v 1.1 1997-09-14 22:14:41 ghudson Exp $";
+static char rcsid_string_dictionary_aux_c[] = "$Id: string_dictionary_aux.c,v 1.2 1999-01-22 23:20:35 ghudson Exp $";
 #endif
 
 /*

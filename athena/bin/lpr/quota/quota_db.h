@@ -1,6 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v 1.3 1990-07-11 10:35:50 epeisach Exp $ */
-/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v $ */
-/* $Author: epeisach $ */
+/* $Id: quota_db.h,v 1.4 1999-01-22 23:11:09 ghudson Exp $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.

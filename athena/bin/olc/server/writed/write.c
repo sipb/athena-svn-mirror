@@ -27,12 +27,11 @@
 #include <mit-copyright.h>
 
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.2 1996-09-20 02:46:53 ghudson Exp $
+ *	$Id: write.c,v 1.3 1999-01-22 23:14:55 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_write_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.2 1996-09-20 02:46:53 ghudson Exp $";
+static char *rcsid_write_c = "$Id: write.c,v 1.3 1999-01-22 23:14:55 ghudson Exp $";
 #endif lint
 
 #ifndef	lint

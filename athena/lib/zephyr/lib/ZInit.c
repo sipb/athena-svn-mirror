@@ -3,14 +3,12 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v $
- *	$Author: ghudson $
+ *	$Id: ZInit.c,v 1.27 1999-01-22 23:19:14 ghudson Exp $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.26 1998-06-10 22:29:22 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZInitialize_c[] =

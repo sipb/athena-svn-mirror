@@ -18,14 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/resolve.c,v $
- *	$Id: resolve.c,v 1.8 1990-11-13 14:29:44 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: resolve.c,v 1.9 1999-01-22 23:12:12 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/resolve.c,v 1.8 1990-11-13 14:29:44 lwvanels Exp $";
+static char rcsid[] ="$Id: resolve.c,v 1.9 1999-01-22 23:12:12 ghudson Exp $";
 #endif
 #endif
 

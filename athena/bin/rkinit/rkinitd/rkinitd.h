@@ -1,7 +1,5 @@
 /* 
- * $Id: rkinitd.h,v 1.1 1990-07-16 14:16:46 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.h,v $
- * $Author: qjb $
+ * $Id: rkinitd.h,v 1.2 1999-01-22 23:15:18 ghudson Exp $
  *
  * This header file contains function declarations for use for rkinitd
  */
@@ -10,7 +8,7 @@
 #define __RKINITD_H__
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid_rkinitd_h = "$Id: rkinitd.h,v 1.1 1990-07-16 14:16:46 qjb Exp $";
+static char *rcsid_rkinitd_h = "$Id: rkinitd.h,v 1.2 1999-01-22 23:15:18 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #ifdef __STDC__

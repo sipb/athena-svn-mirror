@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange fxmain module
  *
- * $Author: probe $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.c,v 1.1 1993-10-12 03:09:18 probe Exp $
+ * $Id: fxmain.c,v 1.2 1999-01-22 23:17:30 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *

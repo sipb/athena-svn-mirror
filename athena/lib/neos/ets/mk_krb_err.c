@@ -1,9 +1,7 @@
 /**********************************************************************
  * Error table generator for kerberos
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/ets/mk_krb_err.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/ets/mk_krb_err.c,v 1.2 1996-08-10 05:40:15 ghudson Exp $
+ * $Id: mk_krb_err.c,v 1.3 1999-01-22 23:17:39 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *

@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.h,v 1.3 1991-02-28 18:43:52 jik Exp $
+ * $Id: stack.h,v 1.4 1999-01-22 23:09:06 ghudson Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

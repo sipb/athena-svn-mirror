@@ -1,9 +1,7 @@
 /*
  *  session_gate - Keeps session alive by continuing to run
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.15 1998-03-29 08:07:00 danw Exp $
- *	$Author: danw $
+ *	$Id: session_gate.c,v 1.16 1999-01-22 23:15:28 ghudson Exp $
  */
 
 #include <signal.h>

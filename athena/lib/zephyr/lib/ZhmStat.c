@@ -3,8 +3,7 @@
  *
  *      Created by:     Marc Horowitz
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZhmStat.c,v $
- *      $Author: ghudson $
+ *      $Id: ZhmStat.c,v 1.5 1999-01-22 23:19:32 ghudson Exp $
  *
  *      Copyright (c) 1996 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

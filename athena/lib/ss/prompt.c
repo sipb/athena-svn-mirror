@@ -1,8 +1,7 @@
 /*
  * prompt.c: Routines for retrieving and setting a prompt.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/prompt.c,v 1.1 1993-10-12 02:50:32 probe Exp $
- * $Locker:  $
+ * $Id: prompt.c,v 1.2 1999-01-22 23:18:23 ghudson Exp $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -14,7 +13,7 @@
 #include "ss_internal.h"
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/prompt.c,v 1.1 1993-10-12 02:50:32 probe Exp $";
+    "$Id: prompt.c,v 1.2 1999-01-22 23:18:23 ghudson Exp $";
 
 ss_set_prompt(sci_idx, new_prompt)
      int sci_idx;

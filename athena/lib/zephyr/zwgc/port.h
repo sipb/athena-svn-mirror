@@ -7,9 +7,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.h,v $
- *      $Author: ghudson $
- *	$Id: port.h,v 1.5 1997-09-14 22:14:37 ghudson Exp $
+ *      $Id: port.h,v 1.6 1999-01-22 23:20:32 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

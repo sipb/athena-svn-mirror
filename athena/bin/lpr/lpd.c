@@ -1,8 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: ghudson $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.23 1997-12-03 21:56:34 ghudson Exp $
+ *	$Id: lpd.c,v 1.24 1999-01-22 23:10:38 ghudson Exp $
  */
 
 /*
@@ -17,7 +14,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.23 1997-12-03 21:56:34 ghudson Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.24 1999-01-22 23:10:38 ghudson Exp $";
 #endif
 
 /*

@@ -10,12 +10,11 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v $
- *      $Author: rbasch $
+ *      $Id: callbacks.c,v 1.16 1999-01-22 23:11:50 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.15 1998-12-18 18:22:43 rbasch Exp $";
+static char rcsid[]="$Id: callbacks.c,v 1.16 1999-01-22 23:11:50 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>

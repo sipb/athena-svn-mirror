@@ -1,9 +1,7 @@
 /***********************************************************************
  * to be included by all fx library clients
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.5 1996-09-20 04:35:29 ghudson Exp $
+ * $Id: fxcl.h,v 1.6 1999-01-22 23:17:45 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +13,7 @@
 #define _fxcl_h_
 
 #ifndef lint
-static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.5 1996-09-20 04:35:29 ghudson Exp $";
+static char rcsid_fxcl_h[] = "$Id: fxcl.h,v 1.6 1999-01-22 23:17:45 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

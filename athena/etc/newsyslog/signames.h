@@ -1,6 +1,6 @@
 /* signames.h -- deal with concerting signal names to numbers and back.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.h,v 1.2 1996-04-29 18:53:10 bert Exp $
+ * $Id: signames.h,v 1.3 1999-01-22 23:15:53 ghudson Exp $
  */
 
 #ifndef SIGNAMES_H

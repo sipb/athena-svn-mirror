@@ -5,9 +5,7 @@
  *	Created: 	October 22, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/mit-copyright.h,v $
- *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/mit-copyright.h,v 1.1 1993-10-12 05:34:44 probe Exp $
+ *      $Id: mit-copyright.h,v 1.2 1999-01-22 23:15:44 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

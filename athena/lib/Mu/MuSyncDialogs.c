@@ -13,10 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSyncDialogs.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
- *
+ * $Id: MuSyncDialogs.c,v 1.2 1999-01-22 23:16:42 ghudson Exp $
  */
 
 #include "MuP.h"

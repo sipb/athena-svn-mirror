@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/xselect.h,v $
- *      $Author: ghudson $
+ *      $Id: xselect.h,v 1.2 1999-01-22 23:17:11 ghudson Exp $
  *
  *      Copyright (c) 1991 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

@@ -1,7 +1,5 @@
 /* 
- * $Id: rk_util.c,v 1.7 1997-12-03 22:01:56 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v $
- * $Author: ghudson $
+ * $Id: rk_util.c,v 1.8 1999-01-22 23:15:05 ghudson Exp $
  *
  * This file contains internal routines for general use by the rkinit
  * library and server.  
@@ -11,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_util.c,v 1.7 1997-12-03 22:01:56 ghudson Exp $";
+static char *rcsid = "$Id: rk_util.c,v 1.8 1999-01-22 23:15:05 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

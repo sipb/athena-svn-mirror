@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/standard_ports.c,v $
- *      $Author: ghudson $
+ *      $Id: standard_ports.c,v 1.13 1999-01-22 23:20:34 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.12 1997-09-14 22:14:40 ghudson Exp $";
+static const char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.13 1999-01-22 23:20:34 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

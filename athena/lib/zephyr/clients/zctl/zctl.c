@@ -3,8 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v $
- *	$Author: ghudson $
+ *	$Id: zctl.c,v 1.28 1999-01-22 23:18:29 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +17,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #ifndef lint
-static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.27 1998-08-14 03:49:00 ghudson Exp $";
+static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.28 1999-01-22 23:18:29 ghudson Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -131,7 +130,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.27 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.28 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	

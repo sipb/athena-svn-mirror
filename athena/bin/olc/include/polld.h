@@ -8,9 +8,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/polld.h,v $
- *	$Id: polld.h,v 1.4 1991-11-05 13:58:36 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: polld.h,v 1.5 1999-01-22 23:13:29 ghudson Exp $
  */
 
 #include <mit-copyright.h>

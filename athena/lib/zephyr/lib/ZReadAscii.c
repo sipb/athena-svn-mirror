@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v $
- *	$Author: ghudson $
+ *	$Id: ZReadAscii.c,v 1.18 1999-01-22 23:19:21 ghudson Exp $
  *
  *	Copyright (c) 1987, 1990 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.17 1997-09-14 21:52:50 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZReadAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.17 1997-09-14 21:52:50 ghudson Exp $";
+static char rcsid_ZReadAscii_c[] = "$Id: ZReadAscii.c,v 1.18 1999-01-22 23:19:21 ghudson Exp $";
 #endif /* lint */
 
 #include <internal.h>

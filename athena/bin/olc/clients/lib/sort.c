@@ -18,14 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.13 1992-08-18 19:26:52 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: sort.c,v 1.14 1999-01-22 23:12:13 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.13 1992-08-18 19:26:52 lwvanels Exp $";
+static char rcsid[] ="$Id: sort.c,v 1.14 1999-01-22 23:12:13 ghudson Exp $";
 #endif
 #endif
 

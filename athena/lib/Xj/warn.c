@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/warn.c,v $
- * $Author: ghudson $ 
+ * $Id: warn.c,v 1.2 1999-01-22 23:17:10 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/Xj/warn.c,v 1.1 1998-12-17 16:23:13 ghudson Exp $";
+"$Id: warn.c,v 1.2 1999-01-22 23:17:10 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"

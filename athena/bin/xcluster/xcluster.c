@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/xcluster/xcluster.c,v $
- * $Author: ghudson $ 
+ * $Id: xcluster.c,v 1.2 1999-01-22 23:15:36 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +10,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xcluster/xcluster.c,v 1.1 1998-12-27 15:44:26 ghudson Exp $";
+"$Id: xcluster.c,v 1.2 1999-01-22 23:15:36 ghudson Exp $";
 #endif	/* lint */
 
 #include "mit-copyright.h"

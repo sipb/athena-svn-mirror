@@ -20,13 +20,11 @@
 /* This file is part of the CREF finder.  It contains functions for executing
  * CREF commands.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.12 1997-11-22 19:25:57 ghudson Exp $
+ *	$Id: commands.c,v 2.13 1999-01-22 23:11:43 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.12 1997-11-22 19:25:57 ghudson Exp $";
+static char *rcsid_commands_c = "$Id: commands.c,v 2.13 1999-01-22 23:11:43 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>

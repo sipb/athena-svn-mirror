@@ -21,14 +21,12 @@
 /* This file is part of the CREF finder.  It contains the display routines.
  *
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.10 1997-11-22 19:25:58 ghudson Exp $
+ *	$Id: display.c,v 2.11 1999-01-22 23:11:45 ghudson Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.10 1997-11-22 19:25:58 ghudson Exp $";
+static char *rcsid_display_c = "$Id: display.c,v 2.11 1999-01-22 23:11:45 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>

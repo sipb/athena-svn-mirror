@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetDest.c,v $
- *	$Author: ghudson $
+ *	$Id: ZSetDest.c,v 1.5 1999-01-22 23:19:28 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetDest.c,v 1.4 1997-09-14 21:52:59 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSetDestAddr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetDest.c,v 1.4 1997-09-14 21:52:59 ghudson Exp $";
+static char rcsid_ZSetDestAddr_c[] = "$Id: ZSetDest.c,v 1.5 1999-01-22 23:19:28 ghudson Exp $";
 #endif
 
 #include <internal.h>

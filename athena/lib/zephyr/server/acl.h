@@ -3,9 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/acl.h,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/acl.h,v 3.1 1997-09-14 21:54:06 ghudson Exp $
+ *	$Id: acl.h,v 3.2 1999-01-22 23:19:38 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file

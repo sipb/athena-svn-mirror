@@ -2,8 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.13 1998-12-27 21:36:03 rbasch Exp $
- *	$Locker:  $
+ *	$Id: machtype_sgi.c,v 1.14 1999-01-22 23:11:36 ghudson Exp $
  */
 
 #include <stdio.h>

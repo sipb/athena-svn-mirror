@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange return client
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.4 1996-09-20 04:34:50 ghudson Exp $
+ * $Id: return.c,v 1.5 1999-01-22 23:17:33 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_return_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.4 1996-09-20 04:34:50 ghudson Exp $";
+static char rcsid_return_c[] = "$Id: return.c,v 1.5 1999-01-22 23:17:33 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -28,7 +28,7 @@ without express or implied warranty.
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.16 1998-12-20 23:05:12 rbasch Exp $";
+static char rcsid[] = "$Id: reply.c,v 1.17 1999-01-22 23:15:39 ghudson Exp $";
 
 extern char     *getenv();
 extern char	*RunCommand();

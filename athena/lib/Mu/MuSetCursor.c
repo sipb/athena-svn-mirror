@@ -13,9 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetCursor.c,v $
- * $Author: djf $
- * $Log: not supported by cvs2svn $
+ * $Id: MuSetCursor.c,v 1.2 1999-01-22 23:16:40 ghudson Exp $
  */
 
 #include "Mu.h"

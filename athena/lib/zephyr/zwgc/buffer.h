@@ -4,9 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/buffer.h,v $
- *      $Author: ghudson $
- *	$Id: buffer.h,v 1.4 1997-09-14 22:13:50 ghudson Exp $
+ *      $Id: buffer.h,v 1.5 1999-01-22 23:20:12 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

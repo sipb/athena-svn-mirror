@@ -3,16 +3,14 @@
  * It contains the definition of strcasecmp, which isn't present on the
  * *^&)(&* broken PS/2's.
  *
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/strcasecmp.c,v $
- * $Id: strcasecmp.c,v 1.1 1993-10-12 03:04:16 probe Exp $
- * $Author: probe $
+ * $Id: strcasecmp.c,v 1.2 1999-01-22 23:18:05 ghudson Exp $
  *
  */
 
 #if defined(_I386) && defined(_BSD)
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/strcasecmp.c,v 1.1 1993-10-12 03:04:16 probe Exp $";
+static char *RCSid = "$Id: strcasecmp.c,v 1.2 1999-01-22 23:18:05 ghudson Exp $";
 #endif
 #endif
 

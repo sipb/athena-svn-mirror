@@ -1,81 +1,10 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.8 1998-02-08 22:26:59 ghudson Exp $
- *
- *	$Log: not supported by cvs2svn $
- *	Revision 4.7  1993/10/19 10:30:35  vrt
- *	Changed the wording in error message from would't to couldn't.
- *	This is netprob bug 439.
- *
- * Revision 4.6  91/02/28  11:35:53  epeisach
- * Changes by jfc to be more machine independent and not know the order
- * of the bits in the type field.
- * 
- * Revision 4.5  88/09/19  20:27:49  don
- * bellcore copyright.
- * 
- * Revision 4.4  88/06/13  16:27:24  don
- * fixed a bug in device-handling: if device major/minor #'s are wrong,
- * have to delete the node & call mknode().
- * 
- * Revision 4.3  88/06/10  15:55:29  don
- * fixed a bug in device-handling: update  was triggered by differences in
- * st_dev, rather than st_rdev.
- * 
- * Revision 4.2  88/05/27  20:15:21  don
- * fixed two bugs at once: the nopulflag bug, and -I wasn't preserving
- * mode-bits at all. see update().
- * 
- * Revision 4.1  88/05/25  21:42:09  don
- * added -I option. needs compatible track.h & track.c.
- * 
- * Revision 4.0  88/04/14  16:43:30  don
- * this version is not compatible with prior versions.
- * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
- * it also offers sped-up exception-checking, via hash-tables.
- * a bug remains in -nopullflag support: if the entry's to-name top-level
- * dir doesn't exist, update_file doesn't get over it.
- * the fix should be put into the updated() routine, or possibly dec_entry().
- * 
- * Revision 3.0  88/03/09  13:17:18  don
- * this version is incompatible with prior versions. it offers:
- * 1) checksum-handling for regular files, to detect filesystem corruption.
- * 2) more concise & readable "updating" messages & error messages.
- * 3) better update-simulation when nopullflag is set.
- * 4) more support for non-default comparison-files.
- * finally, the "currentness" data-structure has replaced the statbufs
- * used before, so that the notion of currency is more readily extensible.
- * note: the statfile format has been changed.
- * 
- * Revision 2.2  88/01/29  18:24:18  don
- * bug fixes. also, now track can update the root.
- * 
- * Revision 2.1  87/12/03  17:33:18  don
- * fixed lint warnings.
- * 
- * Revision 2.1  87/12/01  20:56:26  don
- * robustified file-updating, so that more failure-checking is done,
- * and so that if either utimes() or  set_prots() fails, the other will
- * still run.  made double-sure that protections & time don't
- * change, unless copy-file succeeds.
- * 
- * Revision 2.0  87/11/30  15:19:35  don
- * general rewrite; got rid of stamp data-type, with its attendant garbage,
- * cleaned up pathname-handling. readstat & writestat now sort overything
- * by pathname, which simplifies traversals/lookup. should be comprehensible
- * now.
- * 
- * Revision 1.2  87/09/02  17:44:20  shanzer
- * Aborts if We get a write error when copying a file.. 
- * 
- * Revision 1.1  87/02/12  21:16:00  rfrench
- * Initial revision
- * 
+ *	$Id: update.c,v 4.9 1999-01-22 23:16:04 ghudson Exp $
  */
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.8 1998-02-08 22:26:59 ghudson Exp $";
+*rcsid_header_h = "$Id: update.c,v 4.9 1999-01-22 23:16:04 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"

@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.c,v $
- *      $Author: ghudson $
+ *      $Id: character_class.c,v 1.8 1999-01-22 23:20:13 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_character_class_c[] = "$Id: character_class.c,v 1.7 1997-09-14 22:13:51 ghudson Exp $";
+static const char rcsid_character_class_c[] = "$Id: character_class.c,v 1.8 1999-01-22 23:20:13 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

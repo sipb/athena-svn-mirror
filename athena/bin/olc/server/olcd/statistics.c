@@ -9,14 +9,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.13 1995-05-14 01:03:01 cfields Exp $
- *	$Author: cfields $
+ *	$Id: statistics.c,v 1.14 1999-01-22 23:14:33 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.13 1995-05-14 01:03:01 cfields Exp $";
+static char rcsid[] ="$Id: statistics.c,v 1.14 1999-01-22 23:14:33 ghudson Exp $";
 #endif
 #endif
 

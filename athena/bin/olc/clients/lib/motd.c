@@ -18,14 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v $
- *	$Id: motd.c,v 1.9 1991-01-03 15:38:31 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: motd.c,v 1.10 1999-01-22 23:12:10 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.9 1991-01-03 15:38:31 lwvanels Exp $";
+static char rcsid[] ="$Id: motd.c,v 1.10 1999-01-22 23:12:10 ghudson Exp $";
 #endif
 #endif
 

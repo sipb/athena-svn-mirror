@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v $
- * $Author: danw $
+ * $Id: col.c,v 1.10 1999-01-22 23:08:50 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.9 1997-12-31 22:35:57 danw Exp $";
+     static char rcsid_col_c[] = "$Id: col.c,v 1.10 1999-01-22 23:08:50 ghudson Exp $";
 #endif
 
 /*

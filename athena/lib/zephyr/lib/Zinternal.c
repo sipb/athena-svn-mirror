@@ -3,15 +3,13 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v $
- *	$Author: ghudson $
+ *	$Id: Zinternal.c,v 1.39 1999-01-22 23:19:33 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.38 1998-03-17 19:19:51 ghudson Exp $ */
 
 #include <internal.h>
 #include <arpa/inet.h>
@@ -20,7 +18,7 @@
 
 #ifndef lint
 static const char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.38 1998-03-17 19:19:51 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.39 1999-01-22 23:19:33 ghudson Exp $";
 static const char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif

@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/pages.c,v 1.1 1993-10-12 05:34:45 probe Exp $";
+  static char rcsid_module_c[] = "$Id: pages.c,v 1.2 1999-01-22 23:15:46 ghudson Exp $";
 #endif lint
 
 /*	This is the file pages.c for the Xmore, a file browsing utility
@@ -9,9 +9,7 @@
  *	Created: 	November 10, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/pages.c,v $
- *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/pages.c,v 1.1 1993-10-12 05:34:45 probe Exp $
+ *      $Id: pages.c,v 1.2 1999-01-22 23:15:46 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

@@ -2,7 +2,7 @@
  * xdm - display manager daemon
  *
  * $XConsortium: verify.c,v 1.24 91/07/18 22:22:45 rws Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.6 1997-12-31 22:48:44 danw Exp $
+ * $Id: verify.c,v 1.7 1999-01-22 23:16:19 ghudson Exp $
  *
  * Copyright 1988 Massachusetts Institute of Technology
  *

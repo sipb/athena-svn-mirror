@@ -3,20 +3,18 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v $
- *	$Author: ghudson $
+ *	$Id: ZGetSender.c,v 1.14 1999-01-22 23:19:11 ghudson Exp $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.13 1997-10-25 21:47:20 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
 static const char rcsid_ZGetSender_c[] =
-    "$Id: ZGetSender.c,v 1.13 1997-10-25 21:47:20 ghudson Exp $";
+    "$Id: ZGetSender.c,v 1.14 1999-01-22 23:19:11 ghudson Exp $";
 #endif
 
 #include <pwd.h>

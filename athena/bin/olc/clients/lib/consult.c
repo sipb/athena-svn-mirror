@@ -18,14 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/consult.c,v $
- *	$Id: consult.c,v 1.9 1990-11-13 14:26:43 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: consult.c,v 1.10 1999-01-22 23:12:02 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/consult.c,v 1.9 1990-11-13 14:26:43 lwvanels Exp $";
+static char rcsid[] ="$Id: consult.c,v 1.10 1999-01-22 23:12:02 ghudson Exp $";
 #endif
 #endif
 

@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/version.c,v $
- *	$Author: ghudson $
+ *	$Id: version.c,v 3.24 1999-01-22 23:19:51 ghudson Exp $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -19,14 +18,14 @@
 const char zephyr_version[] = "Zephyr system version 2.0";
 
 #ifdef DEBUG
-const char version[] = "Zephyr server (DEBUG) $Revision: 3.23 $";
+const char version[] = "Zephyr server (DEBUG) $Revision: 3.24 $";
 #else
-const char version[] = "Zephyr server $Revision: 3.23 $";
+const char version[] = "Zephyr server $Revision: 3.24 $";
 #endif
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_version_c[] =
-    "$Id: version.c,v 3.23 1997-09-14 21:54:36 ghudson Exp $";
+    "$Id: version.c,v 3.24 1999-01-22 23:19:51 ghudson Exp $";
 static const char copyright[] =
     "Copyright (c) 1987,1988,1989,1990 Massachusetts Institute of Technology.\n";
 #endif
@@ -38,10 +37,10 @@ get_version()
 
   if (vers_buf[0] == '\0') {
 #ifdef DEBUG
-    sprintf(vers_buf,"Zephyr Server (DEBUG) $Revision: 3.23 $: %s",
+    sprintf(vers_buf,"Zephyr Server (DEBUG) $Revision: 3.24 $: %s",
 	    ZSERVER_VERSION_STRING);
 #else
-    sprintf(vers_buf,"Zephyr Server $Revision: 3.23 $: %s",
+    sprintf(vers_buf,"Zephyr Server $Revision: 3.24 $: %s",
 	    ZSERVER_VERSION_STRING);
 #endif /* DEBUG */
 

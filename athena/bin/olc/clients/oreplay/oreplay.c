@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.27 1997-04-30 17:56:54 ghudson Exp $";
+static char *RCSid = "$Id: oreplay.c,v 1.28 1999-01-22 23:12:35 ghudson Exp $";
 #endif
 #endif
 

@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.12 1993-05-16 19:27:29 vanharen Exp $";
+static char *RCSid = "$Id: fdcache.c,v 1.13 1999-01-22 23:14:49 ghudson Exp $";
 #endif
 #endif
 

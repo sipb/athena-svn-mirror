@@ -1,9 +1,7 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.15 1997-04-30 18:18:34 ghudson Exp $
+ * $Id: bbd.c,v 1.16 1999-01-22 23:14:03 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.15 1997-04-30 18:18:34 ghudson Exp $";
+static char rcsid_[] = "$Id: bbd.c,v 1.16 1999-01-22 23:14:03 ghudson Exp $";
 #endif
 #endif
 

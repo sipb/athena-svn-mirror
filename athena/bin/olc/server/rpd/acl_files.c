@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.6 1996-09-20 02:43:36 ghudson Exp $";
+  static char rcsid[] ="$Id: acl_files.c,v 1.7 1999-01-22 23:14:48 ghudson Exp $";
 #endif
 #endif
 

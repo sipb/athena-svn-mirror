@@ -1,11 +1,10 @@
 /*
- * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v $
- *	$Author: cfields $
+ * 	$Id: nfs.c,v 1.11 1999-01-22 23:08:34 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.10 1998-03-17 03:56:34 cfields Exp $";
+static char *rcsid_nfs_c = "$Id: nfs.c,v 1.11 1999-01-22 23:08:34 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS

@@ -18,9 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.27 1997-04-30 18:16:47 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: olc.h,v 1.28 1999-01-22 23:13:42 ghudson Exp $
  */
 
 #include <mit-copyright.h>

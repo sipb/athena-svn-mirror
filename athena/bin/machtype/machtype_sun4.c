@@ -2,8 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.24 1998-09-30 21:07:12 ghudson Exp $
- *    $Locker:  $
+ *    $Id: machtype_sun4.c,v 1.25 1999-01-22 23:11:36 ghudson Exp $
  */
 
 #define volatile 

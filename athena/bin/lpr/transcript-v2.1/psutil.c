@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.4 1998-12-22 21:22:08 rbasch Exp $";
+_NOTICE RCSID[]="$Id: psutil.c,v 1.5 1999-01-22 23:11:31 ghudson Exp $";
 #endif
 /* psutil.c
  *
@@ -12,39 +12,6 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  * -- probably /usr/lib/ps/Notice
  *
  * common utility subroutines
- *
- * RCSLOG:
- * $Log: not supported by cvs2svn $
- * Revision 1.3  1995/07/11 21:19:47  miki
- * for POSIX include fcntl.h, string.h and unistd.h
- * for Solaris , although a SYSV system, gethostname is defined
- *
- * Revision 1.2  90/08/25  16:52:40  epeisach
- * Under _AUX include sys/types.h
- * 
- * Revision 1.1  90/08/25  16:50:09  epeisach
- * Initial revision
- * 
- * Revision 2.2  87/11/17  16:52:49  byron
- * Release 2.1
- * 
- * Revision 2.1.1.2  87/11/12  13:42:10  byron
- * Changed Government user's notice.
- * 
- * Revision 2.1.1.1  87/04/23  10:26:58  byron
- * Copyright notice.
- * 
- * Revision 2.1  85/11/24  11:51:18  shore
- * Product Release 2.0
- * 
- * Revision 1.3  85/11/20  00:57:02  shore
- * Support for System V
- * fixed bug in copyfile
- * added envget and Sys V gethostname
- * 
- * Revision 1.2  85/05/14  11:28:42  shore
- * 
- * 
  *
  */
 

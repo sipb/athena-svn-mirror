@@ -8,14 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_admin.c,v $
- *	$Id: t_admin.c,v 1.1 1991-11-05 14:07:58 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_admin.c,v 1.2 1999-01-22 23:12:55 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_admin.c,v 1.1 1991-11-05 14:07:58 lwvanels Exp $";
+static char rcsid[] ="$Id: t_admin.c,v 1.2 1999-01-22 23:12:55 ghudson Exp $";
 #endif
 #endif
 

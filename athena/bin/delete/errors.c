@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v $
- * $Author: jik $
+ * $Id: errors.c,v 1.5 1999-01-22 23:08:58 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.4 1991-02-28 18:42:40 jik Exp $";
+     static char rcsid_errors_c[] = "$Id: errors.c,v 1.5 1999-01-22 23:08:58 ghudson Exp $";
 #endif
 
 #include <com_err.h>

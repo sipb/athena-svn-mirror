@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qtest.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qtest.c,v 1.2 1990-04-25 11:48:24 epeisach Exp $
+ *	$Id: qtest.c,v 1.3 1999-01-22 23:11:08 ghudson Exp $
  */
 
 /*
@@ -10,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qtest.c,v 1.2 1990-04-25 11:48:24 epeisach Exp $";
+static char qmain_rcsid[] = "$Id: qtest.c,v 1.3 1999-01-22 23:11:08 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"

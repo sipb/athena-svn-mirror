@@ -1,8 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: ghudson $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.16 1997-10-13 21:50:43 ghudson Exp $
+ *	$Id: lp.h,v 1.17 1999-01-22 23:10:37 ghudson Exp $
  */
 
 /*

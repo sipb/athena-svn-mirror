@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/converters.c,v 1.1 1991-07-11 10:55:08 lwvanels Exp $ */
+/* $Id: converters.c,v 1.2 1999-01-22 23:12:19 ghudson Exp $ */
 /*******************************************************************
   Copyright (C) 1990 by the Massachusetts Institute of Technology
 

@@ -1,7 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.5 1990-11-14 17:32:13 epeisach Exp $
+ *	$Id: quota_notify.c,v 1.6 1999-01-22 23:11:11 ghudson Exp $
  */
 
 /*
@@ -10,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.5 1990-11-14 17:32:13 epeisach Exp $";
+static char quota_notify_rcsid[] = "$Id: quota_notify.c,v 1.6 1999-01-22 23:11:11 ghudson Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"

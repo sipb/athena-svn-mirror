@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange purge module
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/purge.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/purge.c,v 1.2 1996-09-20 04:34:49 ghudson Exp $
+ * $Id: purge.c,v 1.3 1999-01-22 23:17:33 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/purge.c,v 1.2 1996-09-20 04:34:49 ghudson Exp $";
+static char rcsid_collect_c[] = "$Id: purge.c,v 1.3 1999-01-22 23:17:33 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -1,7 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.h,v 1.5 1991-02-28 18:43:08 jik Exp $
+ * $Id: lsdel.h,v 1.6 1999-01-22 23:09:02 ghudson Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a

@@ -19,14 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.27 1995-05-14 01:05:23 cfields Exp $
- *	$Author: cfields $
+ *	$Id: requests_admin.c,v 1.28 1999-01-22 23:14:30 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.27 1995-05-14 01:05:23 cfields Exp $";
+static char rcsid[] ="$Id: requests_admin.c,v 1.28 1999-01-22 23:14:30 ghudson Exp $";
 #endif
 #endif
 

@@ -1,13 +1,11 @@
 /* 
- * $Id: util.c,v 1.2 1990-07-16 14:16:40 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/util.c,v $
- * $Author: qjb $
+ * $Id: util.c,v 1.3 1999-01-22 23:15:19 ghudson Exp $
  *
  * This file contains general rkinit server utilities.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: util.c,v 1.2 1990-07-16 14:16:40 qjb Exp $";
+static char *rcsid = "$Id: util.c,v 1.3 1999-01-22 23:15:19 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>

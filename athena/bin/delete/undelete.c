@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v $
- * $Author: ghudson $
+ * $Id: undelete.c,v 1.29 1999-01-22 23:09:07 ghudson Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.28 1998-11-16 16:42:34 ghudson Exp $";
+     static char rcsid_undelete_c[] = "$Id: undelete.c,v 1.29 1999-01-22 23:09:07 ghudson Exp $";
 #endif
 
 #include <stdio.h>

@@ -13,30 +13,7 @@
  * express or implied warranty.
  *
  * MotifUtils:   Utilities for use with Motif and UIL
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
- * $Author: cfields $
- * $Log: not supported by cvs2svn $
- * Revision 1.5  1990/08/30  12:40:31  vanharen
- * Two strings were not terminated correctly -- the end-quotes were on the
- * next line down.  GCC didn't complain, but other compilers did...
- *
- * Revision 1.4  90/08/28  14:33:58  vanharen
- * added return binding for single-line bindings.
- * 
- * Revision 1.3  90/08/23  13:27:24  vanharen
- * fixed translation table.
- * 
- * Revision 1.2  89/12/09  16:36:03  djf
- * 
- * changed arg in call to XtGetValues to &arg
- * 
- * Revision 1.1  89/12/09  15:14:49  djf
- * Initial revision
- * 
- *
- * These functions add emacs key bindings to multiple line or single
- * line text widgets when they are passed as arguments.
- * 
+ * $Id: MuSetEmacsBindings.c,v 1.7 1999-01-22 23:16:41 ghudson Exp $
  */
 
 #include "Mu.h"

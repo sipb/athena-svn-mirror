@@ -1,7 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v 1.2 1997-12-19 03:04:11 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v $
- * $Locker:  $
+ * $Id: init_et.c,v 1.3 1999-01-22 23:17:19 ghudson Exp $
  *
  * Copyright 1986, 1987, 1988 by MIT Information Systems and
  *	the MIT Student Information Processing Board.
@@ -15,7 +13,7 @@
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
 
-static const char rcsid[] = "$Id: init_et.c,v 1.2 1997-12-19 03:04:11 ghudson Exp $";
+static const char rcsid[] = "$Id: init_et.c,v 1.3 1999-01-22 23:17:19 ghudson Exp $";
 
 struct foobar {
     struct et_list etl;

@@ -4,19 +4,17 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v $
- *	$Author: ghudson $
+ *	$Id: ZSubs.c,v 1.21 1999-01-22 23:19:30 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.20 1997-09-14 21:53:02 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
-static const char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.20 1997-09-14 21:53:02 ghudson Exp $";
+static const char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.21 1999-01-22 23:19:30 ghudson Exp $";
 #endif
 
 static Code_t Z_Subscriptions __P((register ZSubscription_t *sublist,

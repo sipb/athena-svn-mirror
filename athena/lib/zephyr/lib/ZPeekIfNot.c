@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v $
- *	$Author: ghudson $
+ *	$Id: ZPeekIfNot.c,v 1.14 1999-01-22 23:19:19 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.13 1997-09-14 21:52:47 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.13 1997-09-14 21:52:47 ghudson Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Id: ZPeekIfNot.c,v 1.14 1999-01-22 23:19:19 ghudson Exp $";
 #endif
 
 #include <internal.h>

@@ -2,8 +2,7 @@
  * full_name module
  *
  * $Author
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v 1.3 1996-09-20 04:34:34 ghudson Exp $
+ * $Id: full_name.c,v 1.4 1999-01-22 23:17:26 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *

@@ -1,8 +1,5 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: ghudson $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.30 1997-12-03 21:56:55 ghudson Exp $
+ *	$Id: printjob.c,v 1.31 1999-01-22 23:10:44 ghudson Exp $
  */
 
 /*
@@ -13,7 +10,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.30 1997-12-03 21:56:55 ghudson Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.31 1999-01-22 23:10:44 ghudson Exp $";
 #endif
 
 /*

@@ -1,9 +1,7 @@
 /**********************************************************************
  * File Exchange client routines
  *
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.2 1996-09-20 04:34:21 ghudson Exp $
+ * $Id: arg.c,v 1.3 1999-01-22 23:17:24 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_arg_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.2 1996-09-20 04:34:21 ghudson Exp $";
+static char rcsid_arg_c[] = "$Id: arg.c,v 1.3 1999-01-22 23:17:24 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -3,8 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v $
- *	$Author: ghudson $
+ *	$Id: common.c,v 1.13 1999-01-22 23:19:42 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_common_c[] =
-    "$Id: common.c,v 1.12 1997-09-14 21:54:11 ghudson Exp $";
+    "$Id: common.c,v 1.13 1999-01-22 23:19:42 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 

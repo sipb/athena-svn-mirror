@@ -3,17 +3,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v $
- *	$Author: ghudson $
+ *	$Id: ZSendRaw.c,v 1.8 1999-01-22 23:19:27 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.7 1997-09-14 21:52:59 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.7 1997-09-14 21:52:59 ghudson Exp $";
+static char rcsid_ZSendRawNotice_c[] = "$Id: ZSendRaw.c,v 1.8 1999-01-22 23:19:27 ghudson Exp $";
 #endif
 
 #include <internal.h>

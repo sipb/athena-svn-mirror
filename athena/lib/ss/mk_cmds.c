@@ -1,8 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.7 1997-12-19 05:00:36 ghudson Exp $
- * $Locker:  $
+ * $Id: mk_cmds.c,v 1.8 1999-01-22 23:18:22 ghudson Exp $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *

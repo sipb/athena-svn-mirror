@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Xj/Tree.h,v $
- * $Author: ghudson $ 
+ * $Id: Tree.h,v 1.2 1999-01-22 23:17:04 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *

@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xerror.c,v $
- *      $Author: ghudson $
+ *      $Id: xerror.c,v 1.4 1999-01-22 23:20:43 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_xerror_c[] = "$Id: xerror.c,v 1.3 1997-09-14 22:14:55 ghudson Exp $";
+static const char rcsid_xerror_c[] = "$Id: xerror.c,v 1.4 1999-01-22 23:20:43 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

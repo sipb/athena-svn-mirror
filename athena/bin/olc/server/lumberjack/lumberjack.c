@@ -5,14 +5,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.21 1996-09-20 02:28:40 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: lumberjack.c,v 1.22 1999-01-22 23:14:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.21 1996-09-20 02:28:40 ghudson Exp $";
+static char rcsid[] ="$Id: lumberjack.c,v 1.22 1999-01-22 23:14:18 ghudson Exp $";
 #endif
 #endif
 

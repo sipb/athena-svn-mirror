@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.2 1990-05-01 14:48:44 epeisach Exp $";
+  static char rcsid_module_c[] = "$Id: help.c,v 1.3 1999-01-22 23:15:43 ghudson Exp $";
 #endif lint
 
 /*	This is the file help.c for the Xmore, a file browsing utility
@@ -9,9 +9,7 @@
  *	Created: 	January 19, 1987
  *	By:		Chris D. Peterson
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v $
- *      $Author: epeisach $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/help.c,v 1.2 1990-05-01 14:48:44 epeisach Exp $
+ *      $Id: help.c,v 1.3 1999-01-22 23:15:43 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

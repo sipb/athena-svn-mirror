@@ -1,13 +1,12 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: cfields $
+ *	$Id: rvd.c,v 1.10 1999-01-22 23:08:35 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.9 1998-03-17 03:57:07 cfields Exp $";
+static char rcsid_rvd_c[] = "$Id: rvd.c,v 1.10 1999-01-22 23:08:35 ghudson Exp $";
 #endif
 
 #include "attach.h"

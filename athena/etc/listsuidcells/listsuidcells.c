@@ -1,5 +1,4 @@
-/* $Id: listsuidcells.c,v 1.4 1997-10-14 05:55:16 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/etc/listsuidcells/listsuidcells.c,v $
+/* $Id: listsuidcells.c,v 1.5 1999-01-22 23:15:48 ghudson Exp $
  * Created by Greg Hudson.
  * Copyright (c) 1996 by the Massachusetts Institute of Technology.
  */

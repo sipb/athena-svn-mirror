@@ -4,8 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.c,v $
- *      $Author: ghudson $
+ *      $Id: X_gram.c,v 1.22 1999-01-22 23:20:09 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.21 1997-09-14 22:13:46 ghudson Exp $";
+static const char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.22 1999-01-22 23:20:09 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

@@ -1,7 +1,5 @@
 /* 
- * $Id: rkinit_private.h,v 1.6 1998-05-07 16:57:26 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v $
- * $Author: ghudson $
+ * $Id: rkinit_private.h,v 1.7 1999-01-22 23:15:00 ghudson Exp $
  *
  * Header file for rkinit library and server internal use
  */
@@ -10,7 +8,7 @@
 #define __RKINIT_PRIVATE_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.6 1998-05-07 16:57:26 ghudson Exp $";
+static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.7 1999-01-22 23:15:00 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <sys/types.h>

@@ -1,6 +1,5 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v $
- * $Author: ghudson $
+ * $Id: getrealm.c,v 1.5 1999-01-22 23:08:32 ghudson Exp $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +13,7 @@
 #ifdef OLD_KERBEROS
 
 static char *rcsid_getrealm_c =
-  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.4 1996-09-19 22:13:13 ghudson Exp $";
+  "$Id: getrealm.c,v 1.5 1999-01-22 23:08:32 ghudson Exp $";
 
 #include <mit-copyright.h>
 #include <strings.h>

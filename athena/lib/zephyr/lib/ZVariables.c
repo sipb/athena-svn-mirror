@@ -4,17 +4,15 @@
  *
  *	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v $
- *	$Author: ghudson $
+ *	$Id: ZVariables.c,v 1.16 1999-01-22 23:19:30 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.15 1997-09-23 19:25:10 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.15 1997-09-23 19:25:10 ghudson Exp $";
+static char rcsid_ZVariables_c[] = "$Id: ZVariables.c,v 1.16 1999-01-22 23:19:30 ghudson Exp $";
 #endif
 
 #include <internal.h>

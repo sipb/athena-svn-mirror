@@ -2,9 +2,7 @@
 #
 #  end_session - Sends hangup signal to all session_gate processes
 #
-#	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v 1.3 1993-03-12 19:07:49 probe Exp $
-#	$Author: probe $
+#	$Id: end_session.sh,v 1.4 1999-01-22 23:15:27 ghudson Exp $
 #
 
 MAX_PASSES=10
