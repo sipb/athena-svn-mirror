@@ -3,7 +3,7 @@
 #
 #  The Intltool Message Merger
 #
-#  Copyright (C) 2000, 2002 Free Software Foundation.
+#  Copyright (C) 2000, 2003 Free Software Foundation.
 #  Copyright (C) 2000, 2001 Eazel, Inc
 #
 #  Intltool is free software; you can redistribute it and/or
@@ -34,12 +34,21 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.25";
+my $VERSION = "0.30";
 
 ## Loaded modules
 use strict; 
 use Getopt::Long;
 use Text::Wrap;
+use File::Basename;
+
+my $must_end_tag      = -1;
+my $last_depth        = -1;
+my $translation_depth = -1;
+my @tag_stack = ();
+my @entered_tag = ();
+my @translation_strings = ();
+my $leading_space = "";
 
 ## Scalars used by the option stuff
 my $HELP_ARG = 0;
@@ -53,6 +62,7 @@ my $RFC822DEB_STYLE_ARG = 0;
 my $QUIET_ARG = 0;
 my $PASS_THROUGH_ARG = 0;
 my $UTF8_ARG = 0;
+my $MULTIPLE_OUTPUT = 0;
 my $cache_file;
 
 ## Handle options
@@ -70,6 +80,7 @@ GetOptions
  "rfc822deb-style|r" => \$RFC822DEB_STYLE_ARG,
  "pass-through|p" => \$PASS_THROUGH_ARG,
  "utf8|u" => \$UTF8_ARG,
+ "multiple-output|m" => \$MULTIPLE_OUTPUT,
  "cache|c=s" => \$cache_file
  ) or &error;
 
@@ -79,6 +90,7 @@ my $OUTFILE;
 
 my %po_files_by_lang = ();
 my %translations = ();
+my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
 
 # Use this instead of \w for XML files to handle more possible characters.
 my $w = "[-A-Za-z0-9._:]";
@@ -108,7 +120,9 @@ elsif ($XML_STYLE_ARG && @ARGV > 2)
         &utf8_sanity_check;
 	&preparation;
 	&print_message;
-	&xml_merge_translations;
+	
+    &xml_merge_output;
+
 	&finalize;
 } 
 elsif ($KEYS_STYLE_ARG && @ARGV > 2) 
@@ -150,35 +164,49 @@ exit;
 ## Sub for printing release information
 sub print_version
 {
-    print "${PROGRAM} (${PACKAGE}) ${VERSION}\n";
-    print "Written by Maciej Stachowiak, Darin Adler and Kenneth Christiansen.\n\n";
-    print "Copyright (C) 2000-2002 Free Software Foundation, Inc.\n";
-    print "Copyright (C) 2000-2001 Eazel, Inc.\n";
-    print "This is free software; see the source for copying conditions.  There is NO\n";
-    print "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+    print <<_EOF_;
+${PROGRAM} (${PACKAGE}) ${VERSION}
+Written by Maciej Stachowiak, Darin Adler and Kenneth Christiansen.
+
+Copyright (C) 2000-2003 Free Software Foundation, Inc.
+Copyright (C) 2000-2001 Eazel, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+_EOF_
     exit;
 }
 
 ## Sub for printing usage information
 sub print_help
 {
-    print "Usage: ${PROGRAM} [OPTIONS] PO_DIRECTORY FILENAME OUTPUT_FILE\n";
-    print "Generates an output file that includes translated versions of some attributes,\n";
-    print "from an untranslated source and a po directory that includes translations.\n\n";
-    print "  -b, --ba-style         includes translations in the bonobo-activation style\n";
-    print "  -d, --desktop-style    includes translations in the desktop style\n";
-    print "  -k, --keys-style       includes translations in the keys style\n";
-    print "  -s, --schemas-style    includes translations in the schemas style\n";
-    print "  -r, --rfc822deb-style  includes translations in the RFC822 style\n";
-    print "  -x, --xml-style        includes translations in the standard xml style\n";
-    print "  -u, --utf8             convert all strings to UTF-8 before merging\n";
-    print "  -p, --pass-through     use strings as found in .po files, without\n";
-    print "                         conversion (STRONGLY unrecommended with -x)\n";
-    print "  -q, --quiet            suppress most messages\n";
-    print "      --help             display this help and exit\n";
-    print "      --version          output version information and exit\n";
-    print "\nReport bugs to bugzilla.gnome.org, module intltool, or contact us through \n";
-    print "<xml-i18n-tools-list\@gnome.org>.\n";
+    print <<_EOF_;
+Usage: ${PROGRAM} [OPTION]... PO_DIRECTORY FILENAME OUTPUT_FILE
+Generates an output file that includes some localized attributes from an
+untranslated source file.
+
+Mandatory options: (exactly one must be specified)
+  -b, --ba-style         includes translations in the bonobo-activation style
+  -d, --desktop-style    includes translations in the desktop style
+  -k, --keys-style       includes translations in the keys style
+  -s, --schemas-style    includes translations in the schemas style
+  -r, --rfc822deb-style  includes translations in the RFC822 style
+  -x, --xml-style        includes translations in the standard xml style
+
+Other options:
+  -u, --utf8             convert all strings to UTF-8 before merging
+  -p, --pass-through     use strings as found in .po files, without
+                         conversion (STRONGLY unrecommended with -x)
+  -m, --multiple-output  output one localized file per locale, instead of 
+	                 a single file containing all localized elements
+  -c, --cache=FILE       specify cache file name
+                         (usually \$top_builddir/po/.intltool-merge-cache)
+  -q, --quiet            suppress most messages
+      --help             display this help and exit
+      --version          output version information and exit
+
+Report bugs to http://bugzilla.gnome.org/ (product name "$PACKAGE")
+or send email to <xml-i18n-tools\@gnome.org>.
+_EOF_
     exit;
 }
 
@@ -186,7 +214,7 @@ sub print_help
 ## Sub for printing error messages
 sub print_error
 {
-    print "Try `${PROGRAM} --help' for more information.\n";
+    print STDERR "Try `${PROGRAM} --help' for more information.\n";
     exit;
 }
 
@@ -265,11 +293,14 @@ sub get_po_encoding
 
     if (!$encoding) 
     {
-        print "Warning: no encoding found in $in_po_file. Assuming ISO-8859-1\n";
+        print STDERR "Warning: no encoding found in $in_po_file. Assuming ISO-8859-1\n" unless $QUIET_ARG;
         $encoding = "ISO-8859-1";
     }
 
-    $encoding = get_local_charset($encoding);
+    system ("$iconv -f $encoding -t UTF-8 </dev/null 2>/dev/null");
+    if ($?) {
+	$encoding = get_local_charset($encoding);
+    }
 
     return $encoding
 }
@@ -303,6 +334,8 @@ sub get_newest_po_age
 	my $file_age = -M $file;
 	$newest_age = $file_age if !$newest_age || $file_age < $newest_age;
     }
+
+    $newest_age = 0 if !$newest_age;
 
     return $newest_age;
 }
@@ -364,7 +397,8 @@ sub create_translation_database
             } 
             else 
             {
-                my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
+		print STDERR "WARNING: $po_file is not in UTF-8 but $encoding, converting...\n" unless $QUIET_ARG;;
+
                 open PO_FILE, "$iconv -f $encoding -t UTF-8 $po_file|";	
             }
         } 
@@ -456,6 +490,11 @@ sub entity_decode
 
     return $_;
 }
+ 
+# entity_encode: (string)
+#
+# Encode the given string to XML format (encode '<' etc). It also 
+# encodes high bit if not in UTF-8 mode.
 
 sub entity_encode
 {
@@ -469,6 +508,7 @@ sub entity_encode
     } 
     else 
     {
+	# with UTF-8 we only encode minimalistic
         return join ('', map (&entity_encode_int_minimalist, @list_of_chars));
     }
 }
@@ -558,53 +598,420 @@ sub ba_merge_translations
 
 ## XML (non-bonobo-activation) merge code
 
-sub xml_merge_translations
+sub parseTree
 {
-    my $source;
+    my $fh        = shift;
+    my $ref       = shift;
+    my $depth     = shift || 0;
+    my $language  = shift || "";
+    my $not_cdata = 0;
+    my $has_children;
 
-    {
-       local $/; # slurp mode
-       open INPUT, "<$FILE" or die "can't open $FILE: $!";
-       $source = <INPUT>;
-       close INPUT;
-    }
+    $entered_tag[$depth + 1] = 0;
 
-    open OUTPUT, ">$OUTFILE" or die;
-
-    # FIXME: support attribute translations
-
-    # Empty nodes never need translation, so unmark all of them.
-    # For example, <_foo/> is just replaced by <foo/>.
-    $source =~ s|<\s*_($w+)\s*/>|<$1/>|g;
-
-    # Support for <_foo>blah</_foo> style translations.
-    while ($source =~ s|^(.*?)([ \t]*)<\s*_($w+)\s*>(.*?)<\s*/_\3\s*>([ \t]*\n)?||s) 
-    {
-        print OUTPUT $1;
-
-        my $spaces = $2;
-        my $tag = $3;
-        my $string = $4;
-
-	print OUTPUT "$spaces<$tag>$string</$tag>\n";
-
-	$string =~ s/\s+/ /g;
-	$string =~ s/^ //;
-	$string =~ s/ $//;
-	$string = entity_decode($string);
-
-	for my $lang (sort keys %po_files_by_lang) 
-        {
-	    my $translation = $translations{$lang, $string};
-	    next if !$translation;
-	    $translation = entity_encode($translation);
-	    print OUTPUT "$spaces<$tag xml:lang=\"$lang\">$translation</$tag>\n";
+    # Check to see if this is not a CDATA element.
+    #
+    foreach my $sub (@{ $ref }) {
+        if (ref $sub eq 'ARRAY') {
+            $not_cdata = 1;
         }
     }
 
-    print OUTPUT $source;
+    foreach my $sub (@{ $ref }) {
 
+        # Handle empty nodes.
+        #
+        if (! $sub) {
+            next;
+        }
+
+        if (ref $sub eq 'ARRAY') {
+
+            # Process subnodes
+            #
+            $has_children = 0;
+
+            # Check to see if current tag has any elements that need to be translated.
+            #
+            if ($translation_depth == -1) {
+                foreach my $subsub (@{ $sub } ) {
+                    if (ref $subsub eq 'HASH') {
+                        foreach my $e (reverse(keys %{ $subsub })) {
+                            if ($e =~ /^_/) {
+                                $translation_depth = $depth;
+                            }
+                        }
+                    } elsif (ref $subsub eq 'ARRAY') {
+                        $has_children = 1;
+                    }
+                }
+            }
+
+            my $current_tag = pop(@tag_stack);
+            push @tag_stack, $current_tag;
+            @translation_strings = ();
+
+            $must_end_tag = $depth;
+            print $fh "<", $current_tag;
+
+            parseTree($fh, $sub, $depth + 1, $language);
+
+            # Close any open tags
+            #
+            if ($must_end_tag != -1) {
+                if ($must_end_tag < $depth) {
+                    print $fh ">";
+                } else {
+                    print $fh " />";
+                        pop(@tag_stack);
+                    if ($depth == $translation_depth) {
+                        $translation_depth = -1;
+                    }
+                }
+                $must_end_tag = -1;
+            }
+
+            # Add ending tag(s), if needed
+            #
+            if ($entered_tag[$depth + 1] == 1) {
+                while ($last_depth > $depth) {
+                    $last_depth--;
+ 
+                    print $fh "</", pop(@tag_stack), ">";
+                }
+            }
+            $last_depth = $depth;
+
+            # If beginning a translation block, then process for each language.
+            #
+            if ($translation_depth == $depth) {
+                my $do_language;
+
+                # Skip languages that do not have translations.  Since we only
+                # do this check when $translation_depth == $depth, it will never
+                # happen for nodes inside a node with a translated element.
+                #
+                for my $lang (sort keys %po_files_by_lang) {
+                    if ($has_children == 1) {
+                        $do_language = 1;
+                    } else {
+                        # Skip this language if there is no translation
+                        #
+                        $do_language = 0;
+                        foreach my $string (@translation_strings) {
+                            my $decode_string = entity_decode($string);
+                            my $translation = $translations{$lang, $decode_string};
+                            if ($translation) {
+                                $do_language = 1;
+                                last;
+                            }
+                        }
+                    }
+
+                    if ($do_language == 0) {
+                       next;
+                    }
+
+                    print $fh "\n";
+                    $leading_space =~ s/.*\n//g;
+                    print $fh $leading_space;
+                    if ($MULTIPLE_OUTPUT && $lang ne "$language") {
+                        next;
+                    }
+
+                    print $fh "<", $current_tag, " xml:lang=\"", $lang, "\"";
+                    $must_end_tag = $depth;
+
+                    parseTree($fh, $sub, $depth + 1, $lang);
+
+                    # Close any open tags
+                    #
+                    if ($must_end_tag != -1) {
+                        if ($must_end_tag < $depth) {
+                            print $fh ">";
+                        } else {
+                            print $fh " />";
+                            pop(@tag_stack);
+                            if ($depth == $translation_depth) {
+                                $translation_depth = -1;
+                            }
+                        }
+                        $must_end_tag = -1;
+                    }
+
+                    # Add ending tag(s), if needed
+                    #
+                    if ($entered_tag[$depth + 1] == 1) {
+                        while ($last_depth > $depth + 1) {
+                            $last_depth--;
+     
+                            print $fh "</", pop(@tag_stack), ">";
+                        }
+                        print $fh "</", $current_tag, ">";
+                    }
+                }
+                $translation_depth = -1;
+                $last_depth = $depth;
+            }
+            $leading_space = "";
+
+        } elsif (ref $sub eq 'HASH') {
+
+            # Process tag elements
+            #
+            foreach my $e (reverse(keys %{ $sub })) {
+                my $key    = $e;
+                my $string = $sub->{$e};
+                my $quote = '"';
+
+                $string =~ s/^[\s]+//;
+                $string =~ s/[\s]+$//;
+
+                if ($string =~ /^'.*'$/)
+                {
+                   $quote = "'";
+                }
+                $string =~ s/^['"]//g;
+                $string =~ s/['"]$//g;
+
+                if ($key =~ /^_/) {
+                    $key =~ s|^_||g;
+
+                    if ($language) {
+
+                        # Handle translation
+                        #
+                        my $decode_string = entity_decode($string);
+                        my $translation = $translations{$language, $decode_string};
+                        if ($translation) {
+                            $translation = entity_encode($translation);
+                            $string = $translation;
+                        }
+                    }
+                }
+
+                print $fh " $key=$quote$string$quote";
+            }
+
+        } else {
+
+            # Handle tags and CDATA values
+
+            # Mark parent tag as having been entered.
+            #
+            $entered_tag[$depth] = 1;
+
+            # The last_depth flag allows us to determine if this tag should be
+            # closed with "/>" or ">"
+            #
+            $last_depth = $depth;
+
+            # Close any open tags
+            #
+            if ($must_end_tag != -1) {
+                if ($must_end_tag < $depth) {
+                    print $fh ">";
+                } else {
+                    print $fh " />";
+                    pop(@tag_stack);
+                }
+                $must_end_tag = -1;
+            }
+
+            if ($sub =~ /^[\s]*$/) {
+                $leading_space .= $sub;
+                print $fh $sub;
+            } elsif ($not_cdata) {
+
+                # Handle tags
+                #
+                my $temp_tag = $sub;
+
+                # Display key
+                #
+                if ($sub =~ /^_/) {
+
+                    $temp_tag =~ s|^_||g;
+
+                    if ($translation_depth == -1) {
+                        $translation_depth = $depth;
+                    }
+                }
+
+                # Push the tag on the stack, it will get handled when the ARRAY
+                # for this tag is processed.
+                #
+                push(@tag_stack, $temp_tag);
+
+            } else {
+
+                # Handle CDATA
+                #
+                my $string = $sub;
+
+                $string =~ s/^[\s]+//;
+                $string =~ s/[\s]+$//;
+
+                push(@translation_strings, $string);
+
+                # Display CDATA
+                #
+                if ($language) {
+
+                    # Handle translation
+                    #
+                    my $decode_string = entity_decode($string);
+                    my $translation = $translations{$language, $decode_string};
+                    if ($translation) {
+                        $translation = entity_encode($translation);
+                        $string = $translation;
+                    }
+                }
+
+                print $fh $string;
+            }
+        }
+    }
+}
+
+sub intltool_tree_char
+{
+    my $expat = shift;
+    my $text  = shift;
+    my $clist = $expat->{Curlist};
+    my $pos   = $#$clist;
+
+    # Use original_string so that we retain escaped entities
+    # in CDATA sections.
+    #
+    if ($pos > 0 and $clist->[$pos - 1] eq '0') {
+        $clist->[$pos] .= $expat->original_string();
+    } else {
+        push @$clist, 0 => $expat->original_string();
+    }
+}
+
+sub intltool_tree_start
+{
+    my $expat    = shift;
+    my $tag      = shift;
+    my @origlist = ();
+
+    # Use original_string so that we retain escaped entities
+    # in attribute values.  We must convert the string to an
+    # @origlist array to conform to the structure of the Tree
+    # Style.
+    #
+    my @original_array = split /\x/, $expat->original_string();
+    my $source         = $expat->original_string();
+
+    # Remove leading tag.
+    #
+    $source =~ s|^\s*<\s*(\S+)||s;
+
+    # Grab attribute key/value pairs and push onto @origlist array.
+    #
+    while ($source)
+    {
+       if ($source =~ /^\s*([\w:-]+)\s*[=]\s*["]/)
+       {
+           $source =~ s|^\s*([\w:-]+)\s*[=]\s*["]([^"]*)["]||s;
+           push @origlist, $1;
+           push @origlist, '"' . $2 . '"';
+       }
+       elsif ($source =~ /^\s*([\w:-]+)\s*[=]\s*[']/)
+       {
+           $source =~ s|^\s*([\w:-]+)\s*[=]\s*[']([^']*)[']||s;
+           push @origlist, $1;
+           push @origlist, "'" . $2 . "'";
+       }
+       else
+       {
+           last;
+       }
+    }
+
+    my $ol = [ { @origlist } ];
+
+    push @{ $expat->{Lists} }, $expat->{Curlist};
+    push @{ $expat->{Curlist} }, $tag => $ol;
+    $expat->{Curlist} = $ol;
+}
+
+sub readXml
+{
+    my $filename = shift || return;
+    if(!-f $filename) {
+        die "ERROR Cannot find filename: $filename\n";
+    }
+
+    my $ret = eval 'require XML::Parser';
+    if(!$ret) {
+        die "You must have XML::Parser installed to run $0\n\n";
+    } 
+    my $xp = new XML::Parser(Style => 'Tree');
+    $xp->setHandlers(Char => \&intltool_tree_char);
+    $xp->setHandlers(Start => \&intltool_tree_start);
+    my $tree = $xp->parsefile($filename);
+
+# <foo><head id="a">Hello <em>there</em></head><bar>Howdy<ref/></bar>do</foo>
+# would be:
+# [foo, [{}, head, [{id => "a"}, 0, "Hello ",  em, [{}, 0, "there"]], bar, [{},
+# 0, "Howdy",  ref, [{}]], 0, "do" ] ]
+
+    return $tree;
+}
+
+sub print_header
+{
+    my $infile = shift;
+    my $fh = shift;
+    my $source;
+
+    if(!-f $infile) {
+        die "ERROR Cannot find filename: $infile\n";
+    }
+
+    print $fh qq{<?xml version="1.0" encoding="UTF-8"?>\n};
+    {
+        local $/;
+        open DOCINPUT, "<${FILE}" or die;
+        $source = <DOCINPUT>;
+        close DOCINPUT;
+    }
+    if ($source =~ /(<!DOCTYPE.*\[.*\]\s*>)/s)
+    {
+        print $fh "$1\n";
+    }
+    elsif ($source =~ /(<!DOCTYPE[^>]*>)/s)
+    {
+        print $fh "$1\n";
+    }
+}
+
+sub xml_merge_output
+{
+    my $source;
+
+    if ($MULTIPLE_OUTPUT) {
+        for my $lang (sort keys %po_files_by_lang) {
+	    if ( ! -e $lang ) {
+	        mkdir $lang or die "Cannot create subdirectory $lang: $!\n";
+            }
+            open OUTPUT, ">$lang/$OUTFILE" or die "Cannot open $lang/$OUTFILE: $!\n";
+            my $tree = readXml($FILE);
+            print_header($FILE, \*OUTPUT);
+            parseTree(\*OUTPUT, $tree, 0, $lang);
+            close OUTPUT;
+            print "CREATED $lang/$OUTFILE\n" unless $QUIET_ARG;
+        }
+    } 
+    open OUTPUT, ">$OUTFILE" or die "Cannot open $OUTFILE: $!\n";
+    my $tree = readXml($FILE);
+    print_header($FILE, \*OUTPUT);
+    parseTree(\*OUTPUT, $tree, 0);
     close OUTPUT;
+    print "CREATED $OUTFILE\n" unless $QUIET_ARG;
 }
 
 sub keys_merge_translations
@@ -774,9 +1181,15 @@ sub schemas_merge_translations
 
 sub rfc822deb_merge_translations
 {
+    my %encodings = ();
+    for my $lang (keys %po_files_by_lang) {
+        $encodings{$lang} = ($UTF8_ARG ? 'UTF-8' : get_po_encoding($po_files_by_lang{$lang}));
+    }
+
     my $source;
 
     $Text::Wrap::huge = 'overflow';
+    $Text::Wrap::break = qr/\n|\s(?=\S)/;
 
     {
        local $/; # slurp mode
@@ -787,22 +1200,25 @@ sub rfc822deb_merge_translations
 
     open OUTPUT, ">${OUTFILE}" or die;
 
-    while ($source =~ /(^|\n+)(_)?([^:_\n]+)(:\s*)(.*?)(?=\n[\S\n]|$)/sg) 
+    while ($source =~ /(^|\n+)(_*)([^:\s]+)(:[ \t]*)(.*?)(?=\n[\S\n]|$)/sg)
     {
 	    my $sep = $1;
 	    my $non_translated_line = $3.$4;
 	    my $string = $5;
-	    my $is_translatable = defined($2);
+	    my $underscore = length($2);
+	    next if $underscore eq 0 && $non_translated_line =~ /^#/;
 	    #  Remove [] dummy strings
-	    $string =~ s/\[\s[^\[\]]*\]$//;
-            $non_translated_line .= $string;
+	    my $stripped = $string;
+	    $stripped =~ s/\[\s[^\[\]]*\],/,/g if $underscore eq 2;
+	    $stripped =~ s/\[\s[^\[\]]*\]$//;
+	    $non_translated_line .= $stripped;
 
-            print OUTPUT $sep.$non_translated_line;
+	    print OUTPUT $sep.$non_translated_line;
     
-            if ($is_translatable) 
-            {
-                my @str_list = rfc822deb_split($string);
-           
+	    if ($underscore) 
+	    {
+	        my @str_list = rfc822deb_split($underscore, $string);
+
 	        for my $lang (sort keys %po_files_by_lang) 
                 {
                     my $is_translated = 1;
@@ -825,15 +1241,29 @@ sub rfc822deb_merge_translations
                         
                         if ($first) 
                         {
-                            $str_translated .=
-                                Text::Tabs::expand($translation) .
-                                "\n";
+                            if ($underscore eq 2)
+                            {
+                                $str_translated .= $translation;
+                            }
+                            else
+                            {
+                                $str_translated .=
+                                    Text::Tabs::expand($translation) .
+                                    "\n";
+                            }
                         } 
                         else 
                         {
-                            $str_translated .= Text::Tabs::expand(
-                                Text::Wrap::wrap(' ', ' ', $translation)) .
-                                "\n .\n";
+                            if ($underscore eq 2)
+                            {
+                                $str_translated .= ', ' . $translation;
+                            }
+                            else
+                            {
+                                $str_translated .= Text::Tabs::expand(
+                                    Text::Wrap::wrap(' ', ' ', $translation)) .
+                                    "\n .\n";
+                            }
                         }
                         $first = 0;
 
@@ -846,10 +1276,10 @@ sub rfc822deb_merge_translations
                     $str_translated =~ s/\s+$//;
 
                     $_ = $non_translated_line;
-                    s/^(\w+):\s*.*/$sep${1}-$lang: $str_translated/s;
+                    s/^(\w+):\s*.*/$sep${1}-$lang.$encodings{$lang}: $str_translated/s;
                     print OUTPUT;
                 }
-            }
+	    }
     }
     print OUTPUT "\n";
 
@@ -866,8 +1296,12 @@ sub rfc822deb_split
     #       and paragraphs are separated by a single dot on a line
     # This routine returns an array of all paragraphs, and reformat
     # them.
+    # When first argument is 2, the string is a comma separated list of
+    # values.
+    my $type = shift;
     my $text = shift;
-    $text =~ s/^ //mg;
+    $text =~ s/^[ \t]//mg;
+    return (split(/, */, $text, 0)) if $type ne 1;
     return ($text) if $text !~ /\n/;
 
     $text =~ s/([^\n]*)\n//;
@@ -877,9 +1311,7 @@ sub rfc822deb_split
     for my $line (split (/\n/, $text)) 
     {
         chomp $line;
-        $line =~ /\s+$/;
-    
-        if ($line =~ /^\.$/) 
+        if ($line =~ /^\.\s*$/)
         {
             #  New paragraph
             $str =~ s/\s*$//;
@@ -890,12 +1322,13 @@ sub rfc822deb_split
         {
             #  Line which must not be reformatted
             $str .= "\n" if length ($str) && $str !~ /\n$/;
+            $line =~ s/\s+$//;
             $str .= $line."\n";
         } 
         else 
         {
             #  Continuation line, remove newline
-            $str .= " " if length ($str) && $str !~ /[\n ]$/;
+            $str .= " " if length ($str) && $str !~ /\n$/;
             $str .= $line;
         }
     }

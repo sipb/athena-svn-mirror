@@ -21,7 +21,6 @@
 #define __ACCESSIBLE_IMAGE_VIEW_FACTORY_H__
 
 #include <atk/atkobjectfactory.h>
-#include <image-view.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,7 +51,7 @@ struct _AccessibleImageViewFactoryClass
         AtkObjectFactoryClass parent_class;
 };
 
-GType accessible_image_view_get_type (void);
+GType accessible_image_view_factory_get_type (void);
 AtkObjectFactory *accessible_image_view_factory_new (void);
 
 GType accessible_image_view_factory_get_type ();

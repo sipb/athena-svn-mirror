@@ -1,388 +1,453 @@
 # Persian translation of eog.
-# Copyright (C) 2003 The FarsiWeb Project Group
-# Roozbeh Pournader <roozbeh@sharif.edu>, 2003.
+# Copyright (C) 2003, 2004 Sharif FarsiWeb, Inc.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# Roozbeh Pournader <roozbeh@sharif.edu>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eog\n"
-"POT-Creation-Date: 2003-03-26 17:08-0600\n"
-"PO-Revision-Date: 2003-03-17 15:50+0330\n"
-"Last-Translator: Roozbeh Pournader <roozbeh@sharif.edu>\n"
+"Project-Id-Version: eog 2.5.2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"PO-Revision-Date: 2004-08-16 04:35+0330\n"
+"Last-Translator: Meelad Zakaria <meelad@bamdad.org>\n"
 "Language-Team: Persian <farsi@lists.sharif.edu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:1
-msgid "EOG Image Collection Viewer"
-msgstr ""
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:2
-msgid "EOG Image collection view factory"
-msgstr ""
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:3
-msgid "Image Collection"
-msgstr "مجموعه‌ی تصویر"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: eog.desktop.in.h:1
-msgid "Eye of Gnome Image Viewer"
-msgstr "نمایشگر تصویر چشم گنوم"
+msgid "Image Viewer"
+msgstr "نمایشگر تصویر"
 
 #: eog.desktop.in.h:2
 msgid "View many different types of images"
 msgstr "نمایش انواع متعددی از تصاویر"
 
 #: eog.glade.h:1
-msgid "By c_olor"
-msgstr ""
+msgid "    "
+msgstr "    "
 
 #: eog.glade.h:2
-msgid "By check_pattern"
-msgstr ""
+msgid "*"
+msgstr "*"
 
 #: eog.glade.h:3
+msgid "."
+msgstr ""
+
+#: eog.glade.h:4
+msgid "<b>File Name Preview</b>"
+msgstr "<b>پیش‌نمایش نام پرونده</b>"
+
+#: eog.glade.h:5
+msgid "<b>File Path Specifications</b>"
+msgstr "<B>مشخصات مسیر پرونده</b>"
+
+#: eog.glade.h:6
+msgid "<b>Image Interpolation</b>"
+msgstr "<b>درون یابی تصویر</b>"
+
+#: eog.glade.h:7
+msgid "<b>Image Zoom</b>"
+msgstr "<b>زوم تصویر</b>"
+
+#: eog.glade.h:8
+msgid "<b>Options</b>"
+msgstr "<b>گزینه‌ها</b>"
+
+#: eog.glade.h:9
+msgid "<b>Sequence</b>"
+msgstr "<b>دنباله</b>"
+
+#: eog.glade.h:10
+msgid "<b>Transparent Parts</b>"
+msgstr "<b>قسمت‌های شفاف</b>"
+
+#: eog.glade.h:12
+#, no-c-format
+msgid "Allow _zoom greater than 100% initially"
+msgstr "اجازه برای _زوم شدن بیشتر از ۱۰۰٪ در ابندا"
+
+#: eog.glade.h:13
+msgid "As _background"
+msgstr "به رنگ _پس‌زمینه"
+
+#: eog.glade.h:14
+msgid "As check _pattern"
+msgstr "به شکل شطرنجی"
+
+#: eog.glade.h:15
+msgid "As custom c_olor"
+msgstr "به _رنگ سفارشی"
+
+#: eog.glade.h:16
+msgid "Color for Transparent Areas"
+msgstr "رنگ نواحی شفاف"
+
+#: eog.glade.h:17
+msgid "Destination Folder:"
+msgstr "پوشه‌ی مقصد"
+
+#: eog.glade.h:18
 msgid "Eye of Gnome Preferences"
 msgstr "ترجیحات چشم گنوم"
 
-#: eog.glade.h:4
-msgid "Image Viewer"
-msgstr "نمایشگر تصویر"
+#: eog.glade.h:19
+msgid "Filename Format:"
+msgstr "قالب نام پرونده:"
 
-#: eog.glade.h:5
-msgid "Indicate Transparency"
-msgstr ""
+#: eog.glade.h:20
+msgid "Image _View"
+msgstr "_نمایش تصویر"
 
-#: eog.glade.h:6
-msgid "Pick a color"
-msgstr "یک رنگ انتخاب کنید"
+#: eog.glade.h:21
+msgid "Rename From:"
+msgstr "تغییر نام از:"
 
-#: eog.glade.h:7
-msgid "_Interpolate image on zoom (better quality but slower)"
-msgstr ""
+#: eog.glade.h:22
+msgid "Replace spaces by underscore"
+msgstr "جابجایی فاصله‌ها با زیرخط"
+
+#: eog.glade.h:23
+msgid "Save As"
+msgstr "ذخیره به نام..."
+
+#: eog.glade.h:24
+msgid "Saving Image"
+msgstr "در حال ذخیره‌ی تصویر"
+
+#: eog.glade.h:25
+msgid "Show _next image automatically after:"
+msgstr "نمایش تصویر بعدی به طور خود کار پس از:"
+
+#: eog.glade.h:26
+msgid "Sli_de Show"
+msgstr "نمایش _اسلایدی"
+
+#: eog.glade.h:27
+msgid "Start counter at:"
+msgstr "شروع شمارنده از:"
+
+#: eog.glade.h:28
+msgid "To:"
+msgstr "تا:"
+
+#: eog.glade.h:29
+msgid "_Browse"
+msgstr "م_رور"
+
+#: eog.glade.h:30
+msgid "_Interpolate image on zoom"
+msgstr "_درون یابی تصویر در حالت زوم"
+
+#: eog.glade.h:31
+msgid "_Loop sequence"
+msgstr "_تکرار دنباله"
+
+#: eog.glade.h:32
+msgid "seconds"
+msgstr "ثانیه"
 
 #: eog.schemas.in.h:1
-msgid "Automatically pick window size"
-msgstr "انتخاب خودکار اندازه‌ی پنجره"
-
-#: eog.schemas.in.h:2
-msgid "Default zoom factor for the full screen view"
+msgid ""
+"A value greater than 0 determines the seconds an image stays on screen until "
+"the next one is shown automatically. Zero disables the automatic browsing."
 msgstr ""
+"مقدار بزرگةر از صفر ثانیه‌هایی را معین می‌کند که تصویر تا پیش از آن که تصویر "
+"بعدی به طور خودکار نمایش داده شود روی صفحه می‌ماند. صفر مرور خودکار را از کار "
+"می‌اندازد."
 
 #: eog.schemas.in.h:3
-msgid ""
-"Default zoom factor for the full screen view. Possible values are: 0 (use "
-"1:1 zoom factor), 1 (use the same zoom factor as the image window), 2 (fit "
-"the image to the screen)."
-msgstr ""
+#, no-c-format
+msgid "Allow zoom greater than 100% initially"
+msgstr "اجازه برای زوم بیشتر از ۱۰۰٪ در ابتدا"
 
 #: eog.schemas.in.h:4
-msgid ""
-"Determines how transparency should be indicated. Valid values are "
-"CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color key "
-"determines the used color value."
-msgstr ""
+msgid "Delay in seconds until showing the next image"
+msgstr "تأخیر به ثانیه تا نمایش تصویر بعد"
 
 #: eog.schemas.in.h:5
-msgid "Fit standard-sized images to the screen"
+msgid ""
+"Determines how transparency should be indicated. Valid values are "
+"CHECK_PATTERN, COLOR and NONE. If COLOR is choosen, then the trans_color key "
+"determines the used color value."
 msgstr ""
+"تعیین می‌کند شفافیت چطور مشخص شود. مقادیر معتبر عبارتند از CHECK_PATTERN, "
+"COLOR و NONE. اگر COLOR انتخاب شود، کلید trans_color مقدار رنگ مورد استفاده "
+"را تعیین می‌کند."
 
 #: eog.schemas.in.h:6
+#, fuzzy
 msgid ""
 "If the transparency key has the value COLOR, then this key determines the "
 "color which is used for indicating transparency."
 msgstr ""
+"اگر کلید شفافیت مقدار COLOR را داشته باشد، این کلید مقدار رنگی را که برای "
+"مشخص کردن شفافیت به کار می‌رود تعیین خواهد کرد.."
 
 #: eog.schemas.in.h:7
-msgid "Interpolate Image"
+msgid ""
+"If this is set to FALSE small images will not be stretched to fit into the "
+"screen initially."
 msgstr ""
+"اگر FALSE تنظیم شود تصاویر کوچک از ابتدا تا جایی که هم اندازه‌ی صفحه شوند کش "
+"نمی‌آیند."
 
 #: eog.schemas.in.h:8
+msgid "Interpolate Image"
+msgstr "درون یابی تصویر"
+
+#: eog.schemas.in.h:9
+msgid "Loop through the image sequence"
+msgstr "حلقه در دنباله‌ی تصاویر"
+
+#: eog.schemas.in.h:10
 msgid "Open images in a new window"
 msgstr "باز کردن تصاویر در یک پنجره‌ی جدید"
 
-#: eog.schemas.in.h:9
-msgid "Put a bevel around the screen"
-msgstr ""
-
-#: eog.schemas.in.h:10
-msgid "Scrollbar policy for the full screen view"
-msgstr ""
-
 #: eog.schemas.in.h:11
-msgid "Transparency color"
-msgstr ""
+msgid "Show/hide the window statusbar."
+msgstr "نمایش/پنهان کردن نوار وضعیت پنجره."
 
 #: eog.schemas.in.h:12
-msgid "Transparency indicator"
-msgstr ""
+msgid "Show/hide the window toolbar."
+msgstr "نمایش/پنهان کردن نوار ابزار پنجره"
 
 #: eog.schemas.in.h:13
-msgid ""
-"Wether the image should be interpolated on zoom or not. This leads to better "
-"quality but is somewhat slower than non interpolated images."
-msgstr ""
+msgid "Transparency color"
+msgstr "رنگ شفافیت"
 
 #: eog.schemas.in.h:14
-msgid ""
-"Whether image windows should pick their size and zooming factor "
-"automatically based on the size of the image. If this option is not set, "
-"image windows will get whatever size the window manager assigns to them."
-msgstr ""
+msgid "Transparency indicator"
+msgstr "مشخصه‌ی شفافیت"
 
 #: eog.schemas.in.h:15
 msgid ""
 "Whether opening an image should create a new window instead of replacing the "
 "image in the current window."
 msgstr ""
+"این که آیا باز کردن یک تصویر به جای جایگزینی تصویر در پنجره‌ی جاری باعث ایجاد "
+"یک پنجره‌ی جدید بشود یا نه."
 
 #: eog.schemas.in.h:16
 msgid ""
-"Whether the full screen view should display a bevel along the edges of the "
-"screen."
-msgstr ""
+"Whether or not the sequence of images should be shown in an endless loop."
+msgstr "این که آیا دنباله‌ی تصاویر در حلقه‌ای بی‌پایان نمایش داده شوند یا نه."
 
 #: eog.schemas.in.h:17
 msgid ""
-"Whether to display scrollbars on the full screen view. Possible values are: "
-"1 (automatic; only display scrollbars if the image is larger than the "
-"window), 2 (never display scrollbars)."
+"Whether the image should be interpolated on zoom or not. This leads to "
+"better quality but is somewhat slower than non interpolated images."
 msgstr ""
+"این که آیا تصویر در حالت زوم درون یابی بشود یا نه. به کیفیت بهتر منجر خواهد "
+"شد ولی کمی از تصاویر درون یابی نشده آهسته‌تر خواهد بود."
 
-#: eog.schemas.in.h:18
-msgid ""
-"Whether to fit standard-sized images to the screen when in full screen mode. "
-"These are images with sizes like 320x240, 640x480, 800x800, etc. This "
-"selects whether such images should be scaled to fit the screen regardless of "
-"the setting for the default zoom factor of the full screen view."
-msgstr ""
+#: libeog/eog-file-selection.c:124
+msgid "All Files"
+msgstr "همه‌ی پرونده‌ها"
 
-#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:721
-msgid "EOG Image"
-msgstr "تصویر EOG"
+#: libeog/eog-file-selection.c:129
+msgid "All Images"
+msgstr "همه‌ی تصاویر"
 
-#: libeog/GNOME_EOG.server.in.in.h:2
-msgid "EOG Image Viewer"
-msgstr "نمایشگر تصویر EOG"
+#. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
+#: libeog/eog-file-selection.c:147
+#, c-format
+msgid "%s (*.%s)"
+msgstr "%s (&.%s)"
 
-#: libeog/GNOME_EOG.server.in.in.h:3
-msgid "EOG Image viewer factory"
-msgstr "کارخانه‌ی نمایش تصویر EOG"
+#. Pixel size of image: width x height in pixel
+#: libeog/eog-file-selection.c:240
+#, c-format
+msgid "%s x %s pixel"
+msgstr "%s×%s نقطه"
 
-#: libeog/GNOME_EOG.server.in.in.h:4
-msgid "Embeddable EOG Image"
-msgstr ""
-
-#. Second page
-#: libeog/GNOME_EOG.server.in.in.h:5 viewer/eog-print-setup.c:689
-msgid "Image"
-msgstr "تصویر"
-
-#: libeog/image-view.c:1896
-msgid "interpolation type"
-msgstr ""
-
-#: libeog/image-view.c:1897
-msgid "the type of interpolation to use"
-msgstr ""
-
-#: libeog/image-view.c:1903 libeog/image-view.c:1910
-msgid "check type"
-msgstr ""
-
-#: libeog/image-view.c:1904
-msgid "the type of chequering to use"
-msgstr ""
-
-#: libeog/image-view.c:1911
-msgid "the size of chequers to use"
-msgstr ""
-
-#: libeog/image-view.c:1917
-msgid "dither"
-msgstr ""
-
-#: libeog/image-view.c:1918
-msgid "dither type"
-msgstr ""
-
-#: libeog/eog-file-selection.c:29 libeog/eog-file-selection.c:46
-msgid "By Extension"
-msgstr "از روی پسوند"
-
-#: libeog/eog-file-selection.c:30
-msgid "BMP"
-msgstr "BMP"
-
-#: libeog/eog-file-selection.c:31
-msgid "GIF"
-msgstr "GIF"
-
-#: libeog/eog-file-selection.c:32
-msgid "ICO"
-msgstr "ICO"
-
-#: libeog/eog-file-selection.c:33 libeog/eog-file-selection.c:48
-msgid "JPEG"
-msgstr "JPEG"
-
-#: libeog/eog-file-selection.c:34 libeog/eog-file-selection.c:51
-msgid "PNG"
-msgstr "PNG"
-
-#: libeog/eog-file-selection.c:35
-msgid "PNM"
-msgstr "PNM"
-
-#: libeog/eog-file-selection.c:36
-msgid "RAS"
-msgstr "RAS"
-
-#: libeog/eog-file-selection.c:37
-msgid "SVG"
-msgstr "SVG"
-
-#: libeog/eog-file-selection.c:38
-msgid "TGA"
-msgstr "TGA"
-
-#: libeog/eog-file-selection.c:39
-msgid "TIFF"
-msgstr "TIFF"
-
-#: libeog/eog-file-selection.c:40
-msgid "XBM"
-msgstr "XBM"
-
-#: libeog/eog-file-selection.c:41 libeog/eog-file-selection.c:54
-msgid "XPM"
-msgstr "XPM"
-
-#: libeog/eog-file-selection.c:207
-msgid "Unsupported file format."
-msgstr "قالب پرونده‌ی پشتیبانی‌نشده."
-
-#: libeog/eog-file-selection.c:225
-msgid "Determine File Type:"
-msgstr "تعیین نوع پرونده:"
-
-#: libeog/eog-file-selection.c:268
+#: libeog/eog-file-selection.c:396
 msgid "Load Image"
 msgstr "بار کردن تصویر"
 
-#: libeog/eog-file-selection.c:274
+#: libeog/eog-file-selection.c:404
 msgid "Save Image"
 msgstr "ذخیره‌ی تصویر"
 
-#: shell/eog-shell-ui.xml.h:1
-msgid "About this application"
-msgstr "درباره‌ی این برنامه"
+#: libeog/eog-file-selection.c:412
+msgid "Open Folder"
+msgstr "باز کردن پوشه"
 
-#: shell/eog-shell-ui.xml.h:2
-msgid "Cancel"
-msgstr "انصراف"
+#: libeog/eog-image-jpeg.c:330 libeog/eog-image-jpeg.c:569
+#, c-format
+msgid "Couldn't create temporary file for saving: %s"
+msgstr "ایجاد پرونده‌ی موقت برای ذخیره مقدور نیست: %s"
 
-#: shell/eog-shell-ui.xml.h:3
-msgid "Close window"
-msgstr "بستن پنجره"
+#: libeog/eog-image-jpeg.c:349 libeog/eog-image-jpeg.c:590
+msgid "Couldn't allocate memory for loading JPEG file"
+msgstr "اختصاص حافظه برای بار کردن تصویر JPEG مقدور نیست"
 
-#: shell/eog-shell-ui.xml.h:4
-msgid "Help On this application"
-msgstr "راهنمای این برنامه"
+#: libeog/eog-image.c:814
+msgid "empty file"
+msgstr "پرونده‌ی خالی"
 
-#: shell/eog-shell-ui.xml.h:5
-msgid "New"
-msgstr "جدید"
+#: libeog/eog-image.c:1247 libeog/eog-image.c:1458
+msgid "File exists"
+msgstr "پرونده وجود دارد"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
-msgid "Open"
-msgstr "باز کردن"
+#: libeog/eog-image.c:1400 libeog/eog-image.c:1526
+msgid "No image loaded."
+msgstr "تصویری بار نشده است."
 
-#: shell/eog-shell-ui.xml.h:7
-msgid "Open a file"
-msgstr "باز کردن یک پرونده"
+#: libeog/eog-image.c:1409 libeog/eog-image.c:1535
+msgid "Temporary file creation failed."
+msgstr "شکست در ایجاد پرونده‌ی موقت."
 
-#: shell/eog-shell-ui.xml.h:8
-msgid "Open a new window"
-msgstr "باز کردن یک پنجره‌ی جدید"
+#: libeog/eog-info-view-exif.c:26
+msgid "Camera"
+msgstr "دوربین"
 
-#: shell/eog-shell-ui.xml.h:9
-msgid "Open in new window"
-msgstr "باز کردن در یک پنجره‌ی جدید"
+#: libeog/eog-info-view-exif.c:27
+msgid "Image Data"
+msgstr "داده‌های تصویر"
 
-#: shell/eog-shell-ui.xml.h:10
-msgid "Open in this window"
-msgstr "باز کردن در این پنجره"
+#: libeog/eog-info-view-exif.c:28
+msgid "Image Taking Conditions"
+msgstr "شرایط گرفتن تصویر"
 
-#: shell/eog-shell-ui.xml.h:11
-msgid "Prefere_nces"
-msgstr "ترجیحات"
+#: libeog/eog-info-view-exif.c:29
+msgid "Maker Note"
+msgstr "شادداشت سازنده"
 
-#: shell/eog-shell-ui.xml.h:12
-msgid "Preferences for EoG components"
-msgstr ""
+#: libeog/eog-info-view-exif.c:30
+msgid "Other"
+msgstr "بقیه"
 
-#: shell/eog-shell-ui.xml.h:13
-msgid "Quit the program"
-msgstr "خروج از برنامه"
+#: libeog/eog-info-view-exif.c:212
+msgid "Tag"
+msgstr "برچسب"
 
-#: shell/eog-shell-ui.xml.h:14
-msgid "_About"
-msgstr "درباره"
+#: libeog/eog-info-view-exif.c:220 libeog/eog-info-view-file.c:96
+msgid "Value"
+msgstr "مقدار"
 
-#: shell/eog-shell-ui.xml.h:15
-msgid "_Close"
-msgstr "بستن"
+#. only used for internal purpose
+#: libeog/eog-info-view-file.c:25 libeog/eog-uri-converter.h:45
+msgid "Filename"
+msgstr "نام پرونده"
 
-#: shell/eog-shell-ui.xml.h:16
-msgid "_Contents"
-msgstr "محتویات"
+#: libeog/eog-info-view-file.c:26
+msgid "Width"
+msgstr "عرض"
 
-#: shell/eog-shell-ui.xml.h:17 viewer/eog-image-view-ui.xml.h:13
-msgid "_Edit"
-msgstr "ویرایش"
+#: libeog/eog-info-view-file.c:27
+msgid "Height"
+msgstr "ارتفاع"
 
-#: shell/eog-shell-ui.xml.h:18
-msgid "_File"
+#: libeog/eog-info-view-file.c:28
+msgid "Filesize"
+msgstr "اندازه‌ی پرونده"
+
+#: libeog/eog-info-view-file.c:88
+msgid "Attribute"
+msgstr "مشخصه"
+
+#: libeog/eog-info-view.c:92
+msgid "File"
 msgstr "پرونده"
 
-#: shell/eog-shell-ui.xml.h:19
-msgid "_Help"
-msgstr "راهنما"
+#: libeog/eog-info-view.c:101
+msgid "EXIF"
+msgstr ""
 
-#: shell/eog-shell-ui.xml.h:20
-msgid "_New"
-msgstr "جدید"
+#: libeog/eog-info-view.c:108
+msgid "IPTC"
+msgstr ""
 
-#: shell/eog-shell-ui.xml.h:21
-msgid "_Open..."
-msgstr "باز کردن..."
+#: libeog/eog-save-as-dialog-helper.c:137
+msgid "Option not available."
+msgstr "گزینه موجود نیست"
 
-#: shell/eog-shell-ui.xml.h:22
-msgid "_Quit"
-msgstr "خروج"
+#: libeog/eog-save-as-dialog-helper.c:138
+msgid ""
+"To use this function you need the libexif library. Please install libexif "
+"(http://libexif.sf.net) and recompile Eye of Gnome."
+msgstr ""
+"برای استفاده از این تابع به کتاب‌خانه‌ی libexif نیاز دارید. لطفاْ libexif را "
+"نصب کنید (http://libexif.sf.net) و چشم گنوم را دوباره کامپایل کنید."
+
+#: libeog/eog-save-as-dialog-helper.c:214
+msgid "as is"
+msgstr "همین طور که هست"
+
+#: libeog/eog-save-dialog-helper.c:162
+#, c-format
+msgid "Saving image %s."
+msgstr "در حال ذخیره‌ی تصویر %s."
+
+#: libeog/eog-save-dialog-helper.c:208
+msgid "Cancel saving ..."
+msgstr "انصراف از ذخیره ..."
+
+#: libeog/eog-uri-converter.c:1023
+msgid "Filenames are not disjunct."
+msgstr "نام پرونده‌ها نامتقاطع نیست"
+
+#: libeog/eog-uri-converter.h:46
+msgid "Counter"
+msgstr ""
+
+#: libeog/eog-uri-converter.h:47
+msgid "Comment"
+msgstr "نظر"
+
+#: libeog/eog-uri-converter.h:48
+msgid "Date"
+msgstr "تاریخ"
+
+#: libeog/eog-uri-converter.h:49
+msgid "Time"
+msgstr "زمان"
+
+#: libeog/eog-uri-converter.h:50
+msgid "Day"
+msgstr "روز"
+
+#: libeog/eog-uri-converter.h:51
+msgid "Month"
+msgstr "ماه"
+
+#: libeog/eog-uri-converter.h:52
+msgid "Year"
+msgstr "سال"
+
+#: libeog/eog-uri-converter.h:53
+msgid "Hour"
+msgstr "ساعت"
+
+#: libeog/eog-uri-converter.h:54
+msgid "Minute"
+msgstr "دقیقه"
+
+#: libeog/eog-uri-converter.h:55
+msgid "Second"
+msgstr "ثانیه"
 
 #. Translators should localize the following string
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:216
-msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
-msgstr "روزبه پورنادر <roozbeh@sharif.edu>"
+#: shell/eog-window.c:321
+msgid "translator-credits"
+msgstr "ترجمه‌ی:"
 
-#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
+#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
+#: shell/main.c:498
 msgid "Eye of Gnome"
 msgstr "چشم گنوم"
 
-#: shell/eog-window.c:223
-msgid "Copyright (C) 2000-2002 The Free Software Foundation"
-msgstr "Copyright © 2000-2002 The Free Software Foundation"
-
-#: shell/eog-window.c:224
+#: shell/eog-window.c:329
 msgid "The GNOME image viewing and cataloging program."
-msgstr ""
+msgstr "برنامه‌ی نمایش و کاتالوگ کردن تصاویر گنوم"
 
-#: shell/eog-window.c:261
+#: shell/eog-window.c:366
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -391,376 +456,499 @@ msgstr ""
 "نمی‌توان راهنمای چشم گنوم را نمایش داد.\n"
 "%s"
 
-#: shell/main.c:160
+#: shell/eog-window.c:635
 #, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to open\n"
-"them in a collection instead?"
-msgstr ""
+msgid "Overwrite file %s?"
+msgstr "روی پرونده‌ی %s نوشته شود؟"
 
-#: shell/main.c:165
+#: shell/eog-window.c:636
+msgid "File exists. Do you want to overwrite it?"
+msgstr "پرونده وجود دارد. آیا می‌خواهید روی آن بنویسید؟"
+
+#: shell/eog-window.c:646 shell/eog-window.c:659
+msgid "Skip"
+msgstr "پرش"
+
+#: shell/eog-window.c:647
+msgid "Overwrite"
+msgstr "رونویسی"
+
+#: shell/eog-window.c:652
+#, c-format
+msgid "Error on saving %s."
+msgstr "خطا در ذخیره‌ی %s."
+
+#: shell/eog-window.c:660 shell/eog-window.c:1044
+msgid "Retry"
+msgstr "سعی مجدد"
+
+#: shell/eog-window.c:1033
+#, c-format
+msgid "Couldn't determine file format of %s"
+msgstr "تعیین قالب پرونده‌ی %s مقدور نیست"
+
+#: shell/eog-window.c:1034
+msgid "Please use an appropriate filename suffix or select a file format."
+msgstr ""
+"لطفاْ از پس‌وند پرونده‌ی مناسب استفاده کنید یا قالب پرونده را انتخاب کنید."
+
+#: shell/eog-window.c:1176
+msgid "Error on saving images."
+msgstr "خطا در ذخیره‌ی تصاویر."
+
+#: shell/eog-window.c:1409
+#, fuzzy, c-format
+msgid "Do you really want to move %i image to trash?"
+msgid_plural "Do you really want to move %i images to trash?"
+msgstr[0] "آیا واقعاْ می‌خواهید %Ii تصویر را در سطل آشغال بیندازید؟"
+
+#: shell/eog-window.c:1447
+msgid "Couldn't access trash."
+msgstr "دسترسی به سطل آشغال مقدور نیست."
+
+#: shell/eog-window.c:1521
+#, c-format
+msgid "Error on deleting image %s"
+msgstr "خطا در حذف تصویر %s"
+
+#. Images: (n_selected_images) / (n_total_images)
+#: shell/eog-window.c:2114
+#, c-format
+msgid "Images: %i/%i"
+msgstr "تصاویر: %Ii از %Ii"
+
+#: shell/eog-window.c:2193
+msgid "_File"
+msgstr "_پرونده"
+
+#: shell/eog-window.c:2194
+msgid "_Edit"
+msgstr "_ویرایش"
+
+#: shell/eog-window.c:2195
+msgid "_View"
+msgstr "_نمایش"
+
+#: shell/eog-window.c:2196
+msgid "_Help"
+msgstr "_راهنما"
+
+#: shell/eog-window.c:2197
+msgid "_New"
+msgstr "_جدید"
+
+#: shell/eog-window.c:2197
+msgid "Open a new window"
+msgstr "باز کردن یک پنجره‌ی جدید"
+
+#: shell/eog-window.c:2198
+msgid "_Open..."
+msgstr "_باز کردن..."
+
+#: shell/eog-window.c:2198
+msgid "Open a file"
+msgstr "باز کردن یک پرونده"
+
+#: shell/eog-window.c:2199
+msgid "Open _Directory..."
+msgstr "باز کردن _شاخه..."
+
+#: shell/eog-window.c:2199
+msgid "Open a directory"
+msgstr "باز کردن یک شاخه"
+
+#: shell/eog-window.c:2200
+msgid "_Close"
+msgstr "_بستن"
+
+#: shell/eog-window.c:2200
+msgid "Close window"
+msgstr "بستن پنجره"
+
+#: shell/eog-window.c:2201
+msgid "_Quit"
+msgstr "_ترک"
+
+#: shell/eog-window.c:2201
+msgid "Close all windows and quit"
+msgstr "بستن پنجره‌ها و ترک برنامه"
+
+#: shell/eog-window.c:2202
+msgid "Prefere_nces"
+msgstr "ترجی_حات"
+
+#: shell/eog-window.c:2202
+msgid "Preferences for Eye of Gnome"
+msgstr "ترجیحات چشم گنوم"
+
+#: shell/eog-window.c:2203
+msgid "_Contents"
+msgstr "_محتویات"
+
+#: shell/eog-window.c:2203
+msgid "Help On this application"
+msgstr "راهنمای این برنامه"
+
+#: shell/eog-window.c:2204
+msgid "_About"
+msgstr "_درباره"
+
+#: shell/eog-window.c:2204
+msgid "About this application"
+msgstr "درباره‌ی این برنامه"
+
+#: shell/eog-window.c:2209
+msgid "_Toolbar"
+msgstr "نوار _ابزار"
+
+#: shell/eog-window.c:2210
+msgid "_Statusbar"
+msgstr "نوار _وضعیت"
+
+#: shell/eog-window.c:2215
+msgid "_Save"
+msgstr "_ذخیره"
+
+#: shell/eog-window.c:2216
+msgid "Save _As"
+msgstr "ذخیره به نام..."
+
+#: shell/eog-window.c:2218
+msgid "_Undo"
+msgstr "_برگردان"
+
+#: shell/eog-window.c:2220
+msgid "Flip _Horizontal"
+msgstr "پشت و رو کردن ا_فقی"
+
+#: shell/eog-window.c:2221
+msgid "Flip _Vertical"
+msgstr "پشت و رو کردن _عمودی"
+
+#: shell/eog-window.c:2223
+msgid "_Rotate Clockwise"
+msgstr "چرخاندن در _جهت عقربه‌های ساعت"
+
+#: shell/eog-window.c:2224
+msgid "Rotate Counter C_lockwise"
+msgstr "چرخاندن در _خلاف جهت عقربه‌های ساعت"
+
+#: shell/eog-window.c:2225
+msgid "Rotat_e 180°"
+msgstr "چرخاندن ۱۸۰ _درجه"
+
+#: shell/eog-window.c:2227
+msgid "Delete"
+msgstr "حذف"
+
+#: shell/eog-window.c:2229
+msgid "_Full Screen"
+msgstr "_تمام‌صفحه"
+
+#: shell/eog-window.c:2230
+msgid "_Zoom In"
+msgstr "زوم به _داخل"
+
+#: shell/eog-window.c:2231
+msgid "Zoom _Out"
+msgstr "زوم به _خارج"
+
+#: shell/eog-window.c:2232
+msgid "_Normal Size"
+msgstr "اندازه‌ی _عادی"
+
+#: shell/eog-window.c:2233
+msgid "Best _Fit"
+msgstr "بهترین اندازه"
+
+#: shell/main.c:236
+#, fuzzy, c-format
+msgid ""
+"You are about to open %i windows simultaneously. Do you want to open them in "
+"a collection instead?"
+msgstr ""
+"شما دارید %Ii پنجره را هم‌زمان باز می‌کنید. آیا می‌خواهید در عوض آنها را در یک "
+"مجموعه باز کنید؟"
+
+#: shell/main.c:240
+msgid "Open multiple single windows?"
+msgstr "باز کردن چند پنجره‌ی تنها"
+
+#: shell/main.c:244
 msgid "Single Windows"
 msgstr "پنجره‌های تنها"
 
-#: shell/main.c:166
+#: shell/main.c:246
 msgid "Collection"
-msgstr ""
+msgstr "مجموعه"
 
-#: shell/main.c:190
-#, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to continue?"
-msgstr ""
-"شما دارید %i پنجره را هم‌زمان باز می‌کنید.\n"
-"آیا می‌خواهید ادامه دهید؟"
-
-#: shell/main.c:273
-#, c-format
-msgid ""
-"Could not access %s\n"
-"Eye of Gnome will not be able to display this file."
-msgstr ""
-
-#: shell/main.c:276
-#, c-format
-msgid ""
-"The following files cannot be displayed because Eye of Gnome was not able to "
-"access them:\n"
-"%s"
-msgstr ""
-
-#: shell/main.c:447
-msgid "Could not initialize GnomeVFS!\n"
-msgstr "نمی‌توان GnomeVFS را راه‌اندازی کرد!\n"
-
-#: shell/main.c:450
-msgid "Could not initialize Bonobo!\n"
-msgstr "نمی‌توان بونوبو را راه‌اندازی کرد!\n"
+#: shell/main.c:298
+msgid "File not found."
+msgid_plural "Files not found."
+msgstr[0] "پرونده پیدا نشد."
 
 #: shell/util.c:52
 #, c-format
 msgid "Could not open `%s'"
 msgstr "نمی‌توان %s را باز کرد"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:1
-msgid "Best _Fit"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:2
-msgid "Fit"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
-msgid "In"
-msgstr "داخل"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:4
-msgid "Normal"
-msgstr "عادی"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:5
-msgid "Out"
-msgstr "خارج"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:6
-msgid "Zoom _Out"
-msgstr "زوم به خارج"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:7
-msgid "_Normal Size"
-msgstr "اندازه‌ی عادی"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:8
-msgid "_Zoom In"
-msgstr "زوم به داخل"
-
-#: viewer/eog-image-view-ui.xml.h:1
-msgid "Flip Horizontal"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:2
-msgid "Flip Vertical"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:3
-msgid "Full Screen"
-msgstr "تمام‌صفحه"
-
-#: viewer/eog-image-view-ui.xml.h:4
-msgid "Previews the image to be printed"
-msgstr "پیش‌نمایش تصویری که قرار است چاپ شود"
-
-#: viewer/eog-image-view-ui.xml.h:5
-msgid "Print Previe_w..."
-msgstr "پیش‌نمایش چاپ..."
-
-#: viewer/eog-image-view-ui.xml.h:6
-msgid "Print Set_up"
-msgstr "تنظیمات چاپ"
-
-#: viewer/eog-image-view-ui.xml.h:7
-msgid "Print image to the printer"
-msgstr "چاپ تصویر با چاپگر"
-
-#: viewer/eog-image-view-ui.xml.h:8
-msgid "Rotate 180 Degrees"
-msgstr "چرخاندن ۱۸۰ درجه"
-
-#: viewer/eog-image-view-ui.xml.h:9
-msgid "Rotate Clockwise"
-msgstr "چرخاندن در جهت عقربه‌های ساعت"
-
-#: viewer/eog-image-view-ui.xml.h:10
-msgid "Rotate Counter Clockwise"
-msgstr "چرخاندن در خلاف جهت عقربه‌های ساعت"
-
-#: viewer/eog-image-view-ui.xml.h:11
-msgid "Save _As..."
-msgstr "ذخیره با نام..."
-
-#: viewer/eog-image-view-ui.xml.h:12
-msgid "Setup the page settings for your current printer"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:14
-msgid "_Print..."
-msgstr "چاپ"
-
-#: viewer/eog-image-view-ui.xml.h:15 collection/eog-collection-view-ui.xml.h:2
-msgid "_View"
-msgstr "نمایش"
-
-#: viewer/eog-image-view.c:270
-#, c-format
-msgid "Could not save image as '%s': %s."
-msgstr ""
-
-#: viewer/eog-image-view.c:954
-msgid "Print Image"
-msgstr "چاپ تصویر"
-
-#: viewer/eog-image-view.c:962
-msgid "Pages"
-msgstr "صفحات"
-
-#: viewer/eog-image-view.c:1049
-msgid "Print Preview"
-msgstr "پیش‌نمایش چاپ"
+#~ msgid "EOG Image Collection Viewer"
+#~ msgstr "نمایش‌گر مجموعه تصویر EOG"
 
-#: viewer/eog-image-view.c:1055
-msgid "Printing of image failed"
-msgstr "چاپ تصویر شکست خورد"
+#~ msgid "EOG Image collection view factory"
+#~ msgstr "کارخانه‌ی نمایش مجموعه تصویر EOG"
 
-#: viewer/eog-image-view.c:1870
-msgid "/_Zoom In"
-msgstr "/زوم به داخل"
+#~ msgid "Image Collection"
+#~ msgstr "مجموعه تصویر"
 
-#: viewer/eog-image-view.c:1872
-msgid "/Zoom _Out"
-msgstr "/زوم به خارج"
+#~ msgid "Image Collection Viewer"
+#~ msgstr "نمایش‌گر مجموعه تصویر"
 
-#: viewer/eog-image-view.c:1874
-msgid "/_Normal Size"
-msgstr "/اندازه‌ی عادی"
+#~ msgid "View as I_mage Collection"
+#~ msgstr "نمایش به صورت مجموعه ت_صویر"
 
-#: viewer/eog-image-view.c:1876
-msgid "/Best _Fit"
-msgstr ""
-
-#: viewer/eog-image-view.c:1879
-msgid "/_Close"
-msgstr "/بستن"
-
-#: viewer/eog-image-view.c:2005
-msgid "Image Width"
-msgstr "عرض تصویر"
-
-#: viewer/eog-image-view.c:2008
-msgid "Image Height"
-msgstr "ارتفاع تصویر"
-
-#: viewer/eog-image-view.c:2011
-msgid "Window Title"
-msgstr "عنوان پنجره"
-
-#: viewer/eog-image-view.c:2014
-msgid "Statusbar Text"
-msgstr "متن نوار وضعیت"
-
-#: viewer/eog-image.c:480
-msgid "Couldn't initialize GnomeVFS!\n"
-msgstr "نمی‌توان GnomeVFS را راه‌اندازی کرد!\n"
-
-#: viewer/eog-print-setup.c:76
-msgid "pts"
-msgstr "پونت"
-
-#: viewer/eog-print-setup.c:76
-msgid "points"
-msgstr "پونت"
-
-#: viewer/eog-print-setup.c:77
-msgid "mm"
-msgstr "میل"
-
-#: viewer/eog-print-setup.c:77
-msgid "millimeter"
-msgstr "میلی‌متر"
-
-#: viewer/eog-print-setup.c:78
-msgid "cm"
-msgstr "سانت"
-
-#: viewer/eog-print-setup.c:78
-msgid "centimeter"
-msgstr "سانتی‌متر"
-
-#: viewer/eog-print-setup.c:79
-msgid "inch"
-msgstr "اینچ"
-
-#: viewer/eog-print-setup.c:469
-msgid "Print Setup"
-msgstr "تنظیمات چاپ"
-
-#: viewer/eog-print-setup.c:476
-msgid "Print"
-msgstr "چاپ"
-
-#: viewer/eog-print-setup.c:478
-msgid "Print preview"
-msgstr "پیش‌نمایش چاپ"
-
-#: viewer/eog-print-setup.c:547
-msgid "Units: "
-msgstr "واحدها: "
-
-#. First page
-#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
-msgid "Paper"
-msgstr "کاغذ"
-
-#: viewer/eog-print-setup.c:569
-msgid "Paper size:"
-msgstr "اندازه‌ی کاغذ"
-
-#. Orientation
-#: viewer/eog-print-setup.c:586
-msgid "Orientation"
-msgstr "جهت"
-
-#: viewer/eog-print-setup.c:593
-msgid "Portrait"
-msgstr "پرتره‌ای"
-
-#: viewer/eog-print-setup.c:600
-msgid "Landscape"
-msgstr "منظره‌ای"
-
-#. Margins
-#: viewer/eog-print-setup.c:609
-msgid "Margins"
-msgstr "حاشیه‌ها"
-
-#. Top margin
-#: viewer/eog-print-setup.c:617
-msgid "Top:"
-msgstr "بالا:"
-
-#. Left margin
-#: viewer/eog-print-setup.c:635
-msgid "Left:"
-msgstr "چپ:"
-
-#. Right margin
-#: viewer/eog-print-setup.c:653
-msgid "Right:"
-msgstr "راست:"
-
-#. Bottom margin
-#: viewer/eog-print-setup.c:671
-msgid "Bottom:"
-msgstr "پایین:"
-
-#. Scale
-#: viewer/eog-print-setup.c:697
-msgid "Scale"
-msgstr "مقیاس"
-
-#: viewer/eog-print-setup.c:701
-msgid "Adjust to:"
-msgstr "تنظیم به:"
-
-#: viewer/eog-print-setup.c:706
-msgid "Fit to page"
-msgstr ""
-
-#: viewer/eog-print-setup.c:725
-#, no-c-format
-msgid "% of original size"
-msgstr "٪ اندازه‌ی اصلی"
-
-#. Center on page
-#: viewer/eog-print-setup.c:731
-msgid "Center"
-msgstr "مرکز"
-
-#: viewer/eog-print-setup.c:735
-msgid "Horizontally"
-msgstr "افقی"
-
-#: viewer/eog-print-setup.c:742
-msgid "Vertically"
-msgstr "عمودی"
-
-#. Overlap
-#: viewer/eog-print-setup.c:751
-msgid "Overlapping"
-msgstr ""
-
-#: viewer/eog-print-setup.c:755
-msgid "Overlap horizontally by "
-msgstr ""
-
-#: viewer/eog-print-setup.c:760
-msgid "Overlap vertically by "
-msgstr ""
-
-#. Third page
-#: viewer/eog-print-setup.c:797
-msgid "Printing"
-msgstr "در حال چاپ"
-
-#. Helpers
-#: viewer/eog-print-setup.c:805
-msgid "Helpers"
-msgstr "راهنماها"
-
-#: viewer/eog-print-setup.c:806
-msgid "Print cutting help"
-msgstr "راهنمای برش چاپ"
-
-#: viewer/eog-print-setup.c:812
-msgid "Print overlap help"
-msgstr "راهنمای روی‌هم‌اندازی چاپ"
-
-#. Page order
-#: viewer/eog-print-setup.c:821
-msgid "Page order"
-msgstr "ترتیب صفحات"
-
-#. Down right
-#: viewer/eog-print-setup.c:827
-msgid "Down, then right"
-msgstr "پایین، بعد راست"
-
-#. Right down
-#: viewer/eog-print-setup.c:844
-msgid "Right, then down"
-msgstr "راست، بعد پایین"
-
-#: collection/eog-collection-view-ui.xml.h:1
-msgid "Slide Show"
-msgstr "نمایش اسلایدی"
+#~ msgid "View as Image Collection"
+#~ msgstr "نمایش به صورت مجموعه تصویر"
+
+#~ msgid "Next"
+#~ msgstr "بعدی"
+
+#~ msgid "Next Image"
+#~ msgstr "تصویر بعد"
+
+#~ msgid "Previous"
+#~ msgstr "قبلی"
+
+#~ msgid "Previous Image"
+#~ msgstr "تصویر قبل"
+
+#~ msgid "Rotate 180 _Degrees"
+#~ msgstr "چرخاندن ۱۸۰ _درجه"
+
+#~ msgid "Rotate C_lockwise"
+#~ msgstr "چرخاندن در _جهت عقربه‌های ساعت"
+
+#~ msgid "Rotate Counte_r Clockwise"
+#~ msgstr "چرخاندن در _خلاف جهت عقربه‌های ساعت"
+
+#~ msgid "Slide Show"
+#~ msgstr "نمایش اسلایدی"
+
+#~ msgid "Cancel saving"
+#~ msgstr "انصراف از ذخیره"
+
+#~ msgid "Saving finished"
+#~ msgstr "ذخیره پایان یافت"
+
+#~ msgid "Move to Trash"
+#~ msgstr "انتقال به سطل آشغال"
+
+#~ msgid "Collection View"
+#~ msgstr "نمایش مجموعه"
+
+#~ msgid "Window Title"
+#~ msgstr "عنوان پنجره"
+
+#~ msgid "Status Text"
+#~ msgstr "متن وضعیت"
+
+#~ msgid "Progress of Image Loading"
+#~ msgstr "پیشرفت بارکردن تصویر"
+
+#~ msgid "Saving image"
+#~ msgstr "در حال ذخیره‌ی تصویر"
+
+#~ msgid "EOG Image"
+#~ msgstr "تصویر EOG"
+
+#~ msgid "EOG Image Viewer"
+#~ msgstr "نمایشگر تصویر EOG"
+
+#~ msgid "EOG Image viewer factory"
+#~ msgstr "کارخانه‌ی نمایش تصویر EOG"
+
+#~ msgid "Embeddable EOG Image"
+#~ msgstr "تصویر EOG توکار"
+
+#~ msgid "Image"
+#~ msgstr "تصویر"
+
+#~ msgid "Fit"
+#~ msgstr "اندازه کردن"
+
+#~ msgid "In"
+#~ msgstr "داخل"
+
+#~ msgid "Normal"
+#~ msgstr "عادی"
+
+#~ msgid "Out"
+#~ msgstr "خارج"
+
+#~ msgid "Full Screen"
+#~ msgstr "تمام‌صفحه"
+
+#~ msgid "Previews the image to be printed"
+#~ msgstr "پیش‌نمایش تصویری که قرار است چاپ شود"
+
+#~ msgid "Print Previe_w..."
+#~ msgstr "پیش‌نمایش چاپ..."
+
+#~ msgid "Print Set_up"
+#~ msgstr "تنظیمات چاپ"
+
+#~ msgid "Print image to the printer"
+#~ msgstr "چاپ تصویر با چاپگر"
+
+#~ msgid "Rotate Left"
+#~ msgstr "چرخش به چپ"
+
+#~ msgid "Rotate Right"
+#~ msgstr "چرخش به راست"
+
+#~ msgid "Save _As..."
+#~ msgstr "ذخیره به نام..."
+
+#~ msgid "Setup the page settings for your current printer"
+#~ msgstr "برپاسازی تنظیمات صفحه برای چاپگر جاری"
+
+#~ msgid "_Print..."
+#~ msgstr "_چاپ"
+
+#~ msgid "Preview"
+#~ msgstr "پیش‌نمایش"
+
+#~ msgid "%i x %i pixel  %s    %i%%"
+#~ msgstr "‏%Ii × %Ii نقطه  %s    %Ii%%"
+
+#~ msgid "/Rotate C_lockwise"
+#~ msgstr "/چرخاندن در جهت عقربه‌های ساعت"
+
+#~ msgid "/Rotate Counte_r Clockwise"
+#~ msgstr "/چرخاندن در _خلاف جهت عقربه‌های ساعت"
+
+#~ msgid "/_Zoom In"
+#~ msgstr "/_زوم به داخل"
+
+#~ msgid "/Zoom _Out"
+#~ msgstr "/زوم به _خارج"
+
+#~ msgid "/_Normal Size"
+#~ msgstr "/اندازه‌ی _عادی"
+
+#~ msgid "/Best _Fit"
+#~ msgstr "بهترین اندازه"
+
+#~ msgid "/_Close"
+#~ msgstr "/_بستن"
+
+#~ msgid "Loading of image %s failed."
+#~ msgstr "بار کردن تصویر %s شکست خورد."
+
+#~ msgid ""
+#~ "Loading of image %s failed.\n"
+#~ "Reason: %s."
+#~ msgstr ""
+#~ "بار کردن تصویر %s شکست خورد.\n"
+#~ "دلیل: %s."
+
+#~ msgid "Loading failed"
+#~ msgstr "بار کردن شکست خورد"
+
+#~ msgid "Image successfully saved"
+#~ msgstr "تصویر با موفقیت ذخیره شد"
+
+#~ msgid "Image saving failed"
+#~ msgstr "ذخیره‌ی تصویر شکست خورد"
+
+#~ msgid "Image Width"
+#~ msgstr "عرض تصویر"
+
+#~ msgid "Image Height"
+#~ msgstr "ارتفاع تصویر"
+
+#~ msgid "Statusbar Text"
+#~ msgstr "متن نوار وضعیت"
+
+#~ msgid "Desired Window Width"
+#~ msgstr "عرض مطلوب پنجره"
+
+#~ msgid "Desired Window Height"
+#~ msgstr "ارتفاع مطلوب پنجره"
+
+#~ msgid "Images can only be saved as local files."
+#~ msgstr "تصاویر را تنها می‌توان به‌شکل پرونده‌های محلی ذخیره کرد."
+
+#, fuzzy
+#~ msgid "Unsupported image type for saving."
+#~ msgstr "قالب پرونده‌ی پشتیبانی‌نشده."
+
+#~ msgid "Page"
+#~ msgstr "صفحه"
+
+#~ msgid "Millimeter"
+#~ msgstr "میلی‌متر"
+
+#~ msgid "Paper"
+#~ msgstr "کاغذ"
+
+#~ msgid "% of original size"
+#~ msgstr "٪ اندازه‌ی اصلی"
+
+#~ msgid "Adjust to "
+#~ msgstr "تنظیم به "
+
+#~ msgid "Cutting help"
+#~ msgstr "راهنمای برش"
+
+#~ msgid "Down, then right"
+#~ msgstr "پایین، بعد راست"
+
+#~ msgid "Horizontally"
+#~ msgstr "افقی"
+
+#~ msgid "Margins"
+#~ msgstr "حاشیه‌ها"
+
+#~ msgid "Overlap help"
+#~ msgstr "راهنمای روی‌هم‌اندازی"
+
+#~ msgid "Page order"
+#~ msgstr "ترتیب صفحات"
+
+#~ msgid "Right, then down"
+#~ msgstr "راست، بعد پایین"
+
+#~ msgid "Scale"
+#~ msgstr "مقیاس"
+
+#~ msgid "Show"
+#~ msgstr "نشان دادن"
+
+#~ msgid "Vertically"
+#~ msgstr "عمودی"
+
+#~ msgid "Cancel"
+#~ msgstr "انصراف"
+
+#~ msgid "New"
+#~ msgstr "جدید"
+
+#~ msgid "Open"
+#~ msgstr "باز کردن"
+
+#~ msgid "Open in new window"
+#~ msgstr "باز کردن در یک پنجره‌ی جدید"
+
+#~ msgid "Open in this window"
+#~ msgstr "باز کردن در این پنجره"
+
+#~ msgid "Quit the program"
+#~ msgstr "خروج از برنامه"
+
+#~ msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+#~ msgstr "روزبه پورنادر <roozbeh@sharif.edu>"
+
+#, fuzzy
+#~ msgid "Could not find files"
+#~ msgstr "نمی‌توان %s را باز کرد"

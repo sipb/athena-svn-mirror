@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </creator>
     <maintainer>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </maintainer>
-<!--
     <title>
-      Eye of GNOME Manual V2.4
-    </title>
--->
-    <title>
-      Eye of GNOME
+      Eye of GNOME Manual V2.7
     </title>
     <date>
-      2003-01-27
+      2004-02-26
     </date>
-    <version identifier="2.4" date="2003-01-27" description="Updated for GNOME 2.2, program version 1.0.2"/>
+    <version identifier="2.7" date="2004-02-26" description="Updated for GNOME 2.6, program version 2.5.6"/>
     <subject category="GNOME|Applications|Graphics"/>
     <description>
       User manual for Eye of GNOME. 
@@ -30,6 +25,6 @@
     <identifier url="eog.xml"/>
     <language code="C"/>
     <relation seriesid="b368da3a-2acc-11d6-82aa-c98d986e621f"/>
-    <rights type="GNU FDL" license.version="1.1"holder="Sun Microsystems"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
   </resource>
 </omf>

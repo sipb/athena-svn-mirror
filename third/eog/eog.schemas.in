@@ -8,7 +8,7 @@
       <default>1</default>
       <locale name="C">
 	<short>Interpolate Image</short>
-	<long>Wether the image should be interpolated on zoom or not.
+	<long>Whether the image should be interpolated on zoom or not.
 	This leads to better quality but is somewhat slower than non 
         interpolated images.</long>
       </locale>
@@ -23,8 +23,8 @@
       <locale name="C">
 	<short>Transparency indicator</short>
 	<long>Determines how transparency should be indicated. Valid values
-        are CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color 
-        key determines the used color value.
+        are CHECK_PATTERN, COLOR and NONE. If COLOR is choosen, then
+        the trans_color key determines the used color value.
         </long>
       </locale>
     </schema>
@@ -44,26 +44,11 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/eog/window/auto_size</key>
-      <applyto>/apps/eog/window/auto_size</applyto>
-      <owner>eog</owner>
-      <type>bool</type>
-      <default>1</default>
-      <locale name="C">
-        <short>Automatically pick window size</short>
-	<long>Whether image windows should pick their size and zooming
-	factor automatically based on the size of the image.  If this
-	option is not set, image windows will get whatever size the
-	window manager assigns to them.</long>
-      </locale>
-    </schema>
-
-    <schema>
       <key>/schemas/apps/eog/window/open_new_window</key>
       <applyto>/apps/eog/window/open_new_window</applyto>
       <owner>eog</owner>
       <type>bool</type>
-      <default>0</default>
+      <default>1</default>
       <locale name="C">
         <short>Open images in a new window</short>
 	<long>Whether opening an image should create a new window
@@ -72,62 +57,66 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/eog/full_screen/sb_policy</key>
-      <applyto>/apps/eog/full_screen/sb_policy</applyto>
-      <owner>eog</owner>
-      <type>int</type>
-      <default>2</default>
-      <locale name="C">
-        <short>Scrollbar policy for the full screen view</short>
-	<long>Whether to display scrollbars on the full screen view.
-	Possible values are:  1 (automatic; only display scrollbars if
-	the image is larger than the window), 2 (never display
-	scrollbars).</long>
-      </locale>
-    </schema>
-
-    <schema>
-      <key>/schemas/apps/eog/full_screen/zoom</key>
-      <applyto>/apps/eog/full_screen/zoom</applyto>
-      <owner>eog</owner>
-      <type>int</type>
-      <default>2</default>
-      <locale name="C">
-        <short>Default zoom factor for the full screen view</short>
-	<long>Default zoom factor for the full screen view.  Possible
-	values are: 0 (use 1:1 zoom factor), 1 (use the same zoom
-	factor as the image window), 2 (fit the image to the
-	screen).</long>
-      </locale>
-    </schema>
-
-    <schema>
-      <key>/schemas/apps/eog/full_screen/fit_standard</key>
-      <applyto>/apps/eog/full_screen/fit_standard</applyto>
+      <key>/schemas/apps/eog/full_screen/loop</key>
+      <applyto>/apps/eog/full_screen/loop</applyto>
       <owner>eog</owner>
       <type>bool</type>
       <default>1</default>
       <locale name="C">
-        <short>Fit standard-sized images to the screen</short>
-	<long>Whether to fit standard-sized images to the screen when
-	in full screen mode.  These are images with sizes like
-	320x240, 640x480, 800x800, etc.  This selects whether such
-	images should be scaled to fit the screen regardless of the
-	setting for the default zoom factor of the full screen
-	view.</long>
+        <short>Loop through the image sequence</short>
+        <long>Whether or not the sequence of images should be shown in an
+        endless loop.</long>
       </locale>
     </schema>
 
     <schema>
-      <key>/schemas/apps/eog/full_screen/bevel</key>
-      <applyto>/apps/eog/full_screen/bevel</applyto>
+      <key>/schemas/apps/eog/full_screen/upscale</key>
+      <applyto>/apps/eog/full_screen/upscale</applyto>
+      <owner>eog</owner>
       <type>bool</type>
-      <default>0</default>
+      <default>1</default>
       <locale name="C">
-        <short>Put a bevel around the screen</short>
-	<long>Whether the full screen view should display a bevel
-	along the edges of the screen.</long>
+        <short>Allow zoom greater than 100% initially</short>
+        <long>If this is set to FALSE small images will not be
+        stretched to fit into the screen initially.</long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/eog/full_screen/seconds</key>
+      <applyto>/apps/eog/full_screen/seconds</applyto>
+      <owner>eog</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Delay in seconds until showing the next image</short>
+        <long>A value greater than 0 determines the seconds an image stays
+        on screen until the next one is shown automatically. Zero 
+        disables the automatic browsing.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/eog/ui/toolbar</key>
+      <applyto>/apps/eog/ui/toolbar</applyto>
+      <owner>eog</owner>
+      <type>bool</type>
+      <default>1</default>
+      <locale name="C">
+        <short>Show/hide the window toolbar.</short>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/eog/ui/statusbar</key>
+      <applyto>/apps/eog/ui/statusbar</applyto>
+      <owner>eog</owner>
+      <type>bool</type>
+      <default>1</default>
+      <locale name="C">
+        <short>Show/hide the window statusbar.</short>
+      </locale>
+    </schema>
+
   </schemalist>
 </gconfschemafile>

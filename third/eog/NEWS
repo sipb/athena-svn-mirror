@@ -1,15 +1,418 @@
-Version 2.2.2
+Version 2.8.0
 -------------
-* Translation updates (ml) (Christian Rose).
-* General code cleanup --- #108342 (Kelledin).
-* Escape filenames on the command line properly (Federico).
-* Factory registration changes (Shivram).
+- Bug fixes
+- Translation Updates:
+  Adam Weinberger (en_CA), Alexander Shopov (bg), Arafat Medini 
+  (ar), Baris Cicek (tr), Changwoo Ryu (ko), Christian Rose (sv),
+  Christophe Merlet (fr), Dafydd Harries (cy), Danilo Šegan (sr),
+  David Lodge (en_GB), Estêvão Samuel Procópio (pt_BR), Francisco 
+  Javier F. Serrador (es), Gora Mohanty (or), Ilkka Tuohela (fi),
+  Iñaki Larrañaga (eu), Jayaradha (ta), Jordi Mallach (ca), 
+  Kjartan Maraas (nb, no), Kostas Papadimas (el), Laszlo Dvornik (hu),
+  Laurent Dhima (sq), Leonid Kanter (ru), Martin Willemoes Hansen (da),
+  Miloslav Trmac (cs), Mugurel Tudor (ro), Peteris Krisjanis (lv),
+  Roozbeh Pournader (fa), Takeshi AIHANA (ja), Vincent van Adrighem (nl),
+  Åsmund Skjæveland (nn)
 
-Version 2.2.1
+Version 2.7.1
 -------------
-* Translation updates
-* Makefile fixes (Kang Jeong-Hee)
-* Fixes for gnome-common head 
+- eog.desktop fix (Ray Strode)
+- About icon added (Mason Kidd)
+- Removed bonob dependencies
+- Compile with new libexif (Grzegorz Golawski)
+- Multiple string translation fixes
+- Multiple bug fixes (slideshow, crasher)
+- Translation Updates:
+  Adam Weinberger (en_CA), Alexander Shopov (bg), Ankit Patel (gu), 
+  Artur Flinta (pl), Changwoo Ryu (ko), Christian Rose (bs, or), 
+  Danilo Šegan (sr), David Lodge (en_GB), Duarte Loreto (pt), 
+  Francisco Javier F. Serrador (es), Funda Wang (zh_CN), Gareth Owen
+  (en_GB), Gora Mohanty (or), Guntupalli Karunakar (hi), Gustavo Maciel
+  Dias Vieira (pt_BR), Hasbullah Bin Pit (ms), Jens Finke (de), 
+  Kjartan Maraas (nb, no), Laszlo Dvornik (hu), Laurent Dhima (sq), 
+  Martin Willemoes Hansen (da), Maxim Dziumanenko (uk), Miloslav 
+  Trmac (cs), Takeshi AIHANA (ja), Telsa Gwynne (cy), Tommi Vainikainen 
+  (fi), Vincent van Adrighem (nl), Åsmund Skjæveland (nn), 
+  Žygimantas Beručka (lt)
+
+Version 2.7.0
+-------------
+- Kicked bonobo components. Eog is a monolithic program again.
+- Display image info for single and collection view.
+- Better metadata reader
+- Speed improvements 
+- Use new GtkUIManager
+- New icons for flipping transformations
+- "Save As" function in collection view
+- "Delete" function
+- Translation Updates:
+  Adam Weinberger (en_CA), Alexander Shopov (bg), Alexander Winston (en_CA), 
+  Christian Rose (tk), Christophe Merlet (fr), Est Samuel Proc io (pt_BR), 
+  Francisco Javier F. Serrador (es), Gareth Owen (en_GB), Gil Osher (he),
+  Gustavo Maciel Dias Vieira (pt_BR), Jens Finke (de), Laurent Dhima (sq),
+  Miloslav Trmac (cs), Pablo Saratxaga (wa), Pawan Chitrakar (ne), 
+  Vincent van Adrighem (nl)
+
+Version 2.6.1
+-------------
+* General:
+   - Fullscreen fixes for Xinerama (#137137)
+* Translation Updates:
+  Abel Cheung (zh_TW), Andras Timar (hu), Christian Rose (af),
+  Guntupalli Karunakar (gu), Iñaki Larrañaga (eu), Pablo Saratxaga (wa),
+  Samúel Jón Gunnarsson (is)
+
+Version 2.6.0
+-------------
+* General:
+   - Fileselector opens non local URIs (Seth Nickell)
+   - Italian documentation update (Lucca Feretti)
+* Translation Updates:
+  Andras Timar (hu), Arafat Medini (ar), Baris Cicek (tr), Dmitry G.
+  Mastrukov (ru), Gareth Owen (en_GB), Guntupalli Karunakar (pa), 
+  Stanislav Visnovsky (sk), Telsa Gwynne (cy)
+
+Version 2.5.91
+--------------
+* Translation Updates:
+  Abel Cheung (zh_TW), Alastair McKinstry (ga), 
+  Alexander Winston (en_CA), Dafydd Harries (cy), Dinesh Nadarajah (ta),
+  Francisco Javier F. Serrador (es), Gustavo Maciel Dias Vieira (pt_BR),
+  Leonid Kanter (ru), Maxim Dziumanenko (uk), Miloslav Trmac (cs), 
+  Robert Sedak (hr), Sanlig Badral (mn), Sayamindu Dasgupta (bn)
+
+Version 2.5.90
+--------------
+* General:
+   - Documentation updates (Breda McColgan)
+   - Translation markup fix (Ole Laursen) - #119170
+   - File Selection fixes (Jan Arne Peterson, Jonathan Blandford,
+     Jens) - #128396, #135816 
+* Collection:
+   - New busy icon, borrowed from nautilus. - #134981
+   - Thumbnail layout fixes.
+* Translation Updates:
+  Alastair McKinstry (ga), Ales Nyakhaychyk (be), 
+  Alessio Frusciante (it), Changwoo Ryu (ko), Christophe Merlet (fr),
+  Duarte Loreto (pt), Francisco Javier F. Serrador (es), Guntupalli 
+  Karunakar (hi), Jarkko Ranta (fi), Jordi Mallach (ca), 
+  Kjartan Maraas (no), Kostas Papadimas (el), Miloslav Trmac (cs), 
+  Mugurel Tudor (ro), Mətin Əmirov (az), Ole Laursen (da), 
+  Paisa Seeluangsawat (th), Priit Laes (et), Takeshi AIHANA (ja), 
+  Vincent van Adrighem (nl), Yuriy Syrota (uk), Žygimantas Beručka (lt)
+
+Version 2.5.6
+-------------
+* General:
+   - Updated documentation (Breda McColgan)
+   - Typo fixes (Alessio Frusciante)
+   - AIX compilation fixes 
+   - Recent files update 
+* Collection:
+   - Marked forgotten string for translation (Danilo Šegan)
+* Translation Updates:
+  Artur Flinta (pl), Christian Rose (sv), Danilo Šegan (sr),
+  Francisco Javier F. Serrador (es), Hasbullah Bin Pit (ms),
+  Jarkko Ranta (fi), Jens Finke (de), Kostas Papadimas (el), 
+  Laurent Dhima (sq), Miloslav Trmac (cs), Takeshi AIHANA (ja), 
+  Åsmund Skjæveland (nn)
+
+Versino 2.5.5
+-------------
+* General:
+  - Don't force file selector window size.
+* Collection:
+  - Save scroll position in exif data, when switching images. 
+    Fixes #123463.
+* Translation Updates:
+  Alastair McKinstry (ga), Arafat Medini (ar), Changwoo Ryu (ko),
+  Christian Rose (sv), Danilo Šegan (sr, sr@Latn), Francisco 
+  Javier F. Serrador (es), Hasbullah Bin Pit (ms), Laurent Dhima (sq),
+  Mətin Əmirov (az), Nikos Charonitakis (el), Takeshi AIHANA (ja),
+  Vincent van Adrighem (nl)
+
+Version 2.5.4
+-------------
+* General: 
+  - Recent files update (Jason Leach)
+  - Compile fixes - #131766 (German Poo Caaman~o)
+  - Crash fix for filenames with ':' - #130726
+  - Close file dialog on cancel in all cases - #131654
+    (Balamurali Viswanathan)
+* Collection:
+  - Display name of the directory shown - #132263
+  - Fixed memory leaks.
+  - Mnemonic for "View as Image Collection" in Nautilus - #128796
+   (Christian Neumair)
+* Translation Updates:
+  Changwoo Ryu (ko), Laurent Dhima (sq), Christophe Merlet (fr), 
+  Miloslav Trmac (cs), Takeshi AIHANA (ja), Kostas Papadimas (el), 
+  Robert Sedak (hr), Sanlig Badral (mn), Jens Finke (de), 
+  Artur Flinta (pl), Vincent van Adrighem (nl), Francisco Javier F.
+  Serrador (es), Žygimantas Beručka (lt), Duarte Loreto (pt), 
+  Ole Laursen (da), Hasbullah Bin Pit (ms), Kjartan Maraas (no),
+  Andras Timar (hu), Mətin Əmirov (az), Åsmund Skjæveland (nn), 
+  Danilo Šegan (sr)
+
+Version 2.5.3
+-------------
+* General:
+  - Preview of images in the fileselector if an thumbnail
+    already exists.
+  - 'eog *.jpg' works again and give you a nice collection view
+  - Handle spaces in filenames.
+* Translation Updates:
+  Žygimantas Beručka (lt), Miloslav Trmac (cs), Francisco Javier 
+  F. Serrador (es), Taneem Ahmed (bn), Danilo Šegan (sr, sr@Latn),
+  Robert Sedak (hr), Duarte Loreto (pt), Christophe Merlet (fr), 
+  Åsmund Skjæveland (nn), Laurent Dhima (sq), Jordi 
+  Mallach (ca), Roozbeh Pournader (fa), Kjartan Maraas (no),
+  Artur Flinta (pl), Arafat Medini (ar)
+
+Version 2.5.2.1
+---------------
+* General: 
+  - Intltool build fix (#130062)
+* Collection:
+  - Indicate modified images by bold caption
+  - Better caption wrapping 
+* Translation Updates:
+   Laurent Dhima (sq), Gustavo Noronha Silva (pt_BR), 
+   Takeshi AIHANA (ja), Miloslav Trmac (cs),
+   Åsmund Skjæveland (nn), Duarte Loreto (pt), 
+   Artur Flinta (pl)
+
+Version 2.5.2
+-------------
+* General:
+  - Use new GTK file chooser (Jan Arne Petersen)
+  - Compilation fixes (Kaushal Kumar)
+  - Build fix (Thomas Vander Stichele)
+  - Multiple save-issues fixed
+  - Fullscreen mode crash fixed
+  - 0-byte file issue fixed
+* Collection:
+  - Show only image files, which can actully loaded by GdkPixbuf
+* Translation Updates:
+  Jens Finke (de), Danilo Šegan (sr, sr@Latn), Francisco Javier 
+  F. Serrador (sp), Miloslav Trmac (cs), Kjartan Maraas (no),
+  Changwoo Ryu (ko), Takeshi AIHANA (jp), Arafat Medini (ar), 
+  Vincent van Adrighem (nl), Laurent Dhima (sq), Kjartan Maraas (no)
+
+Version 2.5.1
+-------------
+* General: 
+  - Support lossless saving of jpeg files (Jens)
+* Collection:
+  - Select last viewed slideshow image when returning from fullscreen 
+    (Jens) - #118617
+* Viewer:
+  - Display image file size (Jens)
+  - Ask user before overwriting files (pasupathi.duraisamy@wipro.com)
+    #119469
+* Translation Updates:
+  Laurent Dhima (sq), Paisa Seeluangsawat (th), Vincent van Adrighem
+  (nl), Miloslav Trmac (cs), Žygimantas Beručka (lt), Danilo Šegan
+   Šegan (sr), Ole Laursen (da), Jordi Mallach (ca), Kostas Papadimas
+  (el), Francisco Javier F. Serrador (es)
+
+Version 2.5.0.1
+---------------
+* General:
+  - Cache recently loaded images. 
+  - Use exif loader from libexif >= 0.5.12.
+  - Reworked image loading status cycle
+  - Made fullscreen shortcut key F11 work on Solaris (Shivaram
+    Upadhyayula, Jens) - #104805
+  - Updated help (Breda McColgan)
+* Collection:
+  - Don't include auto-generated files in tarball - #125118
+  - New model implementation (EogImageList)
+  - Mem leak fix
+  - Slideshow: automatic switching after user determined timeout.
+  - Slideshow: determine upscale status for small images by config
+    key.
+* Shell:
+  - Consider gconf key 'open_new_window' - #91189
+  - Tool-/statusbar hiding (Kaushal Kumar, Jens) - #114231
+
+* Translation Updates: 
+  Danilo Šegan (sr, sr@Latn), Åsmund Skjæveland (nn), Kostas Papadimas (el), 
+  KAMAGASAKO Masatoshi (ja), Jordi Mallach (ca), Vincent van Adrighem (nl), 
+  Hasbullah Bin Pit (ms)
+
+Version 2.5.0 (changes since 2.4.0)
+-------------
+* General:
+  - Better filename -> UTF-8 translation - #122671, #117838 (Jens,
+    Hidetoshi Tajima)
+  - configure switch to disable libexif support
+  - Added X-GNOME-DocPath to .desktop file - #124196
+* Collection:
+  - Fixed crash on shutdown
+  - Fixed crash when libexif is not available
+  - Fixed duplicate size entries in info view
+  - Update image infos on modification
+  - Much better thumbnail layout   
+  - Mark status message for translation
+  - Don't show frame around temporary icons
+* Translation Updates:
+  Pablo Saratxaga (wa), Gustavo Maciel Dias Vieira (pt_BR), 
+  Žygimantas Beručka (lt), toivo@linux.ee (et), Jordi Mallach (ca),
+  Christian Rose (sv), Pablo Gonzalo del Campo (es),
+  Vincent van Adrighem (nl), Danilo Šegan (sr), Jens Finke (de)
+
+==== gnome-2-4 branch ====
+
+Version 2.4.0
+-------------
+* General: 
+  - User documentation updates (Irene Ryan) 
+* Collection View: 
+  - Crash fixed on startup when not linking against libexif. (Jens)
+* Translation Updates:
+  Mugurel Tudor (ro), Jarkko Ranta (fi), Ivan Stojmirov (mk),
+  Guntupalli Karunakar (hi), Pablo Saratxaga (vi)
+
+Version 2.3.90
+--------------
+* Build fix - #120871 (William Jon McCann
+* Translation Updates:
+  Dafydd Harries (cy), Vincent van Adrighem (nl), Stanislav Visnovsky (sk), 
+  Pablo Gonzalo del Campo (es), Yuriy Syrota (uk)
+
+Version 2.3.6
+-------------
+* General:
+  - HIG dialog fixes - #117799 (Martin Kretzschmar)
+  - Menu layout fixes - #117270 (Andreas KÃ¶hler)
+  - Removal of debug messages/code (Jens)
+  - Destroy "file does not exsit" dialog #117673 - (Andreas KÃ¶hler)
+* Controls:
+  - Wait until timeout before destroying control on last reference
+    #118204 - (Gustavo Carneiro, Jens)
+* Translation Updates:
+  Vincent van Adrighem (nl), Duarte Loreto (pt), Kostas Papadimas
+  (el), Francisco Javier Fernandez (es), Takeshi AIHANA (jp), Changwoo Ryu (ko),
+  Dafydd Harries (cy), Pablo Saratxaga (vi), Christophe Merlet (fr), 
+  Laurent Dhima (sq), Evandro Fernandes Giovanini (pt_BR),
+  Hasbullah Bin Pit (ms), Alessio Frusciante (it), Dmitry G. Mastrukov (be),
+  Ole Laursen (da), Funda Wang (zh_CN), Metin Amiroff (az), Danilo
+  Šegan (sr, sr@Latn), Jarkko Ranta (fi), Metin Amiroff (az), 
+  Kjartan Maraas (no), Abel Cheung (zh_TW), SamÃÂºel JÃÂ³n Gunnarsson (is), 
+  Sanlig Badral (mn)  
+
+Version 2.3.5
+-------------
+* General:
+  - UI polishing
+  - Documentation build fixes (John Fleck)
+  - Don't show title on error dialogs
+  - Unified copyright string - #101726 (Christian Neumair)
+  - eog.desktop fixes (Jordi Mallach)
+* Collection View:
+  - Hide side panes on splitter mouse click
+  - Draw frame around thumbnails
+  - Arrange thumbnails better 
+  - Show scrollbars only if required (Andreas KÃ¶hler)
+* Image View:
+  - Window should be adapted to image size in all cases now - #114189
+  - Show error dialog on I/O errors
+* Translation Updates: 
+  Valek Filippov (ru), Andras Timar (hu), Vincent van Adrighem (nl),
+  Dmitry G. Mastrukov (b), Pablo Saratxaga (wa), Metin Amiroff (az),
+  Owain Green & Dafydd Harries (cy), Jens Finke (de), Christian Rose
+  (sv), Jordi Mallach (ca), Miloslav Trmac (cs), Gil "Dolfin" Osher
+  (he), Artur Flinta (pl)
+ 
+Version 2.3.4
+-------------
+* SVG mime type fixes (Christian Schaller)
+* Special support for JPEG images on save (preserves EXIF data, 
+  requires libjpeg)
+* Function for saving modified images in a collection.
+* Collection thumbnail creation/update fixes.
+* Code cleanup
+* GUI cleanup (before the freeze)
+* Gconf keys cleanup
+* Translation Updates:
+  Christian Rose (sv), Jordi Mallach (ca), Takeshi AIHANA (ja),
+  Christophe Merlet (fr), Sam?el J?n Gunnarsson (is), Dmitry
+  G. Mastrukov (ru), Laurent Dhima (sq), Hasbullah Bin Pit (ms),
+  Miloslav Trmac (cs), Vincent van Adrighem (nl), Taneem Ahmed (bn),
+  Mohammad DAMT (id), Jens Finke (de), Gil "Dolfin" Osher (he), Ole
+  Laursen (da), Artur Flinta (pl), Pauli Virtanen (fi).
+
+Version 2.3.3
+-------------
+* Printing of images in image viewer (Lutz MÃ¼ller)
+* Image Collection View:
+   - Layout computation fix (Federico) 
+   - image rotation/flipping (Jens)
+   - drag'n'drop source (Jens)
+* Load/transform progress indication (Jens)
+* Scheme type fixes (Abel Cheung)
+* Build fix (Art Haas)
+* Translation Updates:
+  Christophe Merlet (fr), Takeshi AIHANA (ja), Paul Duffy (ga), 
+  Pablo Gonzalo del Campo (es), Danilo Danilo Šegan (sr@Latn), 
+  Paisa Seeluangsawat (th), Hasbullah Bin Pit (ms), 
+  Duarte Loreto (pt), Abel Cheung (zh_TW), Christian Rose (sv), 
+  Dmitry G. Mastrukov (be), Laurent Dhima (sq), Miloslav Trmac (cs),
+  Christian Neumair (de), Jordi Mallach (ca), Kostas Papadimas (el),
+  Vincent van Adrighem (nl), Evandro Fernandes Giovanini (pt_BR), 
+
+Version 2.3.2
+-------------
+Release skipped.
+
+Version 2.3.1
+-------------
+* TIFF loading fixes - #109139 (Jens)
+* Consider theme background (Jens)
+* Code cleanup (Federico)
+* List collection view in nautilus only if there are images in 
+  the directory (Alexander Larsson)
+* Hide mouse cursor in fullscreen mode - #92184 (Jens)
+* Added menu mnemonics - #107831 (Jens)
+* More international help docs (Mike Lei)
+* Collection view supports zoom interface (Jens)
+* Recent files support (Jens)
+* Scheme installation fixes (Bobby Kashani, Jens)
+* Fullscreen image pre-load improvements (Jens)
+* Translation updates: 
+  Jens Finke (de), Fatih Demir (ta), Laurent Dhima (sq), Miloslav
+  Trmac (cs), Changwoo Ryu (ko)
+
+Version 2.3.0
+-------------
+* Architectual changes (Jens)
+* Build image collection component always
+  (this is also usable in Nautilus as photo collection view) (Jens)
+* Collection view shows the selected image in the top 
+  half of the window (Jens)
+* Support for thumbnail management spec (Jens)
+* Adaption to content size works better (Jens)
+* Sticky zoom to fit (if you resize the window the image zoom will be 
+  adapted automatically) (Jens)
+* Progressive image loading for remote or large files - #89831 (Jens)
+* EXIF support in collection view (requires optional libexif) (Jens)
+* Correct filename escaping - #105192, #95561, #104961 (Federico)
+* Session recovery fixes - #108829 (Shivaram Upadhyayula)
+* File selector improvements - #101888, #102116, #90767, #102117 (Jens)
+* More HIG compatible - #106169, #100206 (Jens)
+* Use 'Image Viewer' in .desktop entry - #100205 (Elle Uca)
+* Require libeel (Federico)
+* Compiler warning fixes - #108342 (Kelledin, Jens) 
+* Don't close preferences on ESC - #105720 (Jens)
+* Updates of strings to translate - #99572 (Jens)
+* GConf configure fixes - #106130 (Julio Merino)  
+* Translation Updates: 
+   Roozbeh Pournader (fa), FSF-India (ml),
+   Metin Amiroff (az), Paul Duffy (ga),
+   Belarusian team (be), Christophe Merlet (fr)
+  
+=============== Branch for Gnome 2.4 ================
 
 Version 2.2.0
 -------------
@@ -295,7 +698,7 @@ Version 0.4
 
 * Miscellaneous UI polishing (Federico).
 
-* New and updated translations (Fatih, Pablo, Rasta, Kjartan, Jes�s,
+* New and updated translations (Fatih, Pablo, Rasta, Kjartan, JesÃºs,
   Zbigniew, Yukihiro, Christopher, Andreas, Jarkko, Valek, Gergo,
   Ville, Yuri, Kusano, Kenny, Kai, George, Matthias, Federico).
 

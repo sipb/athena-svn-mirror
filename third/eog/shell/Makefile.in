@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -57,8 +57,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
-BONOBO_IDLDIR = @BONOBO_IDLDIR@
+ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -67,21 +66,20 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 EOG_CFLAGS = @EOG_CFLAGS@
 EOG_LIBS = @EOG_LIBS@
-EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
 GCONFTOOL = @GCONFTOOL@
-GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
-INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -95,16 +93,13 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBJPEG = @LIBJPEG@
-LIBPNG = @LIBPNG@
-LIBPREVIEW_CFLAGS = @LIBPREVIEW_CFLAGS@
-LIBPREVIEW_LIBS = @LIBPREVIEW_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-ORBIT_IDL = @ORBIT_IDL@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
@@ -116,45 +111,30 @@ RANLIB = @RANLIB@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES = \
-        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
-	-I$(top_srcdir)/libeog					\
-	-I$(top_builddir)/libeog				\
-	$(GCONF_CFLAGS)						\
-	$(EXTRA_WARNING_CFLAGS)					\
-	$(EOG_CFLAGS)						\
-	$(COLLECTION_FLAGS)					\
-	-DDATADIR=\""$(datadir)"\"				\
-	-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
+SUBDIRS = recent-files
+
+@ENABLE_JPEG_TRUE@jpeg_LIB = -L$(top_builddir)/jpegutils -leog-jpegutils
+@ENABLE_JPEG_TRUE@jpeg_DEPS = $(top_builddir)/jpegutils/libeog-jpegutils.a
+
+INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					-I$(top_srcdir)/shell/recent-files				$(WARN_CFLAGS)							$(EOG_CFLAGS)							-DHAVE_COLLECTION						-DDATADIR=\""$(datadir)"\"					-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
 
 
 bin_PROGRAMS = eog
 
-eog_SOURCES = \
-	eog-window.h		\
-	eog-window.c		\
-	eog-preferences.h	\
-	eog-preferences.c	\
-	main.c			\
-	session.c		\
-	session.h		\
-	util.h			\
-	util.c
+eog_SOURCES =  	eog-window.h			eog-window.c			eog-preferences.h		eog-preferences.c		main.c				session.c			session.h			util.h				util.c
 
 
-eog_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
+eog_DEPENDENCIES =  	$(top_builddir)/libeog/libeog.a 		$(top_builddir)/shell/recent-files/librecent.a 	$(jpeg_DEPS)
 
-eog_LDADD = \
-	-L$(top_builddir)/libeog 	\
-	-leog				\
-	$(POPT_LIBS)			\
-	$(EOG_LIBS)
+
+eog_LDADD =  	-L$(top_builddir)/libeog 		-L$(top_builddir)/shell/recent-files 	-leog					-lrecent				$(jpeg_LIB)				$(POPT_LIBS)				$(X_LIBS)				$(EOG_LIBS)
 
 
 uidir = $(datadir)/gnome-2.0/ui
-UI_FILES = eog-shell-ui.xml 
+UI_FILES = eog-gtk-ui.xml 
 ui_DATA = $(UI_FILES)
 
 EXTRA_DIST = $(UI_FILES)
@@ -166,6 +146,9 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 eog_OBJECTS =  eog-window.o eog-preferences.o main.o session.o util.o
 eog_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -178,7 +161,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(eog_SOURCES)
 OBJECTS = $(eog_OBJECTS)
@@ -261,6 +244,61 @@ uninstall-uiDATA:
 	  rm -f $(DESTDIR)$(uidir)/$$p; \
 	done
 
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
+
+@SET_MAKE@
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	done
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -271,9 +309,14 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -305,38 +348,63 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-eog-preferences.o: eog-preferences.c eog-preferences.h
+	for subdir in $(SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
+eog-preferences.o: eog-preferences.c eog-preferences.h \
+	../libeog/eog-config-keys.h
 eog-window.o: eog-window.c ../config.h eog-window.h util.h \
-	../libeog/zoom.h ../libeog/Eog.h ../libeog/eog-file-selection.h \
-	eog-preferences.h
-main.o: main.c ../config.h eog-window.h session.h
+	../libeog/zoom.h ../libeog/eog-file-selection.h \
+	eog-preferences.h ../libeog/libeog-marshal.h \
+	recent-files/egg-recent.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-view.h \
+	recent-files/egg-recent-view-gtk.h ../libeog/eog-config-keys.h \
+	../libeog/eog-scroll-view.h ../libeog/eog-image.h \
+	../libeog/eog-transform.h ../libeog/eog-image-save-info.h \
+	../libeog/eog-wrap-list.h ../libeog/eog-image-list.h \
+	../libeog/eog-vertical-splitter.h \
+	../libeog/eog-horizontal-splitter.h ../libeog/eog-info-view.h \
+	../libeog/eog-full-screen.h ../libeog/eog-save-dialog-helper.h \
+	../libeog/eog-hig-dialog.h ../libeog/eog-uri-converter.h \
+	../libeog/eog-save-as-dialog-helper.h \
+	../libeog/eog-pixbuf-util.h
+main.o: main.c ../config.h ../libeog/eog-hig-dialog.h eog-window.h \
+	session.h ../libeog/eog-config-keys.h
 session.o: session.c ../config.h eog-window.h session.h
 util.o: util.c ../config.h util.h
 
 info-am:
-info: info-am
+info: info-recursive
 dvi-am:
-dvi: dvi-am
+dvi: dvi-recursive
 check-am: all-am
-check: check-am
+check: check-recursive
 installcheck-am:
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
-install-exec: install-exec-am
+install-exec: install-exec-recursive
 
 install-data-am: install-uiDATA
-install-data: install-data-am
+install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-am
+install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-uiDATA
-uninstall: uninstall-am
+uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(DATA)
-all-redirect: all-am
+all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs:
+installdirs: installdirs-recursive
+installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(uidir)
 
 
@@ -352,17 +420,17 @@ maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-tags mostlyclean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-binPROGRAMS clean-compile clean-tags clean-generic \
 		mostlyclean-am
 
-clean: clean-am
+clean: clean-recursive
 
 distclean-am:  distclean-binPROGRAMS distclean-compile distclean-tags \
 		distclean-generic clean-am
 
-distclean: distclean-am
+distclean: distclean-recursive
 
 maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-tags \
@@ -370,21 +438,24 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 
 .PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile uninstall-uiDATA install-uiDATA tags \
-mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-am install-data \
-install-am install uninstall-am uninstall all-redirect all-am all \
+maintainer-clean-compile uninstall-uiDATA install-uiDATA \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-@ENABLE_COLLECTION_TRUE@ COLLECTION_FLAGS=-DHAVE_COLLECTION
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -57,8 +57,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
-BONOBO_IDLDIR = @BONOBO_IDLDIR@
+ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -67,21 +66,20 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 EOG_CFLAGS = @EOG_CFLAGS@
 EOG_LIBS = @EOG_LIBS@
-EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
 GCONFTOOL = @GCONFTOOL@
-GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
-INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -95,16 +93,13 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBJPEG = @LIBJPEG@
-LIBPNG = @LIBPNG@
-LIBPREVIEW_CFLAGS = @LIBPREVIEW_CFLAGS@
-LIBPREVIEW_LIBS = @LIBPREVIEW_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-ORBIT_IDL = @ORBIT_IDL@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
@@ -116,70 +111,28 @@ RANLIB = @RANLIB@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
 SUBDIRS = cursors
 
-INCLUDES = \
-        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
-	-DG_LOG_DOMAIN=\"Eog\"					\
-	$(COLLECTION_FLAGS)					\
-	-DDATADIR=\""$(datadir)"\"				\
-	-I$(srcdir) -I$(top_srcdir)				\
-	-I$(top_srcdir)/src					\
-	-I$(top_builddir)					\
-	$(EOG_CFLAGS)						\
-	$(EXTRA_WARNING_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						-DHAVE_COLLECTION						-DDATADIR=\""$(datadir)"\"					-I$(srcdir) -I$(top_srcdir)					-I$(top_srcdir)/src						-I$(top_srcdir)/jpegutils					-I$(top_builddir)						$(EOG_CFLAGS)							$(WARN_CFLAGS)
 
 
-CORBA_SOURCES = \
-	Eog.h			\
-	Eog-common.c		\
-	Eog-stubs.c		\
-	Eog-skels.c
+MARSHAL_SOURCES =  	libeog-marshal.h		libeog-marshal.c
 
 
 noinst_LIBRARIES = libeog.a
 
-libeog_a_SOURCES = \
-	$(CORBA_SOURCES)		\
-	access.c			\
-	access.h			\
-        accessible-image-view-factory.h	\
-        accessible-image-view-factory.c	\
-        accessible-image-view.h		\
-        accessible-image-view.c		\
-	eog-file-selection.h		\
-	eog-file-selection.c		\
-	eog-pixbuf-util.h		\
-	eog-pixbuf-util.c		\
-	image-view.c			\
-	image-view.h			\
-	uta.c				\
-	uta.h				\
-	cursors.c			\
-	cursors.h			\
-	ui-image.c			\
-	ui-image.h			\
-	zoom.c				\
-	zoom.h
+libeog_a_SOURCES =  	$(MARSHAL_SOURCES)			access.c				access.h			        accessible-image-view-factory.h	        accessible-image-view-factory.c	        accessible-image-view.h		        accessible-image-view.c			eog-file-selection.h			eog-file-selection.c			eog-full-screen.h			eog-full-screen.c			eog-pixbuf-util.h			eog-pixbuf-util.c			eog-transform.h				eog-transform.c				eog-image.c				eog-image.h				eog-image-private.h			eog-image-jpeg.c			eog-image-jpeg.h			eog-image-save-info.c			eog-image-save-info.h			eog-save-dialog-helper.h		eog-save-dialog-helper.c		eog-save-as-dialog-helper.h		eog-save-as-dialog-helper.c		eog-image-cache.h			eog-image-cache.c			eog-image-list.c			eog-image-list.h			eog-uri-converter.h			eog-uri-converter.c			eog-scroll-view.c			eog-scroll-view.h			eog-info-view.c				eog-info-view.h				eog-info-view-detail.h			eog-info-view-detail.c			eog-info-view-file.h			eog-info-view-file.c			eog-info-view-exif.h			eog-info-view-exif.c			eog-metadata-reader.h			eog-metadata-reader.c			eog-hig-dialog.h			eog-hig-dialog.c			eog-horizontal-splitter.c		eog-horizontal-splitter.h		eog-vertical-splitter.c			eog-vertical-splitter.h			eog-config-keys.h			eog-wrap-list.h				eog-wrap-list.c				eog-collection-item.h			eog-collection-item.c			eog-canvas-pixbuf.h			eog-canvas-pixbuf.c			uta.c					uta.h					cursors.c				cursors.h				zoom.c					zoom.h
 
 
-idls = \
-	$(top_srcdir)/idl/Eog.idl
+BUILT_SOURCES =  	$(MARSHAL_SOURCES)
 
 
-idl_flags = -I$(BONOBO_IDLDIR) -I$(BONOBO_ACT_IDLDIR) -I$(top_srcdir)/idl -D__EOG_COMPILATION
+CLEANFILES = $(BUILT_SOURCES)
 
-server_in_files = GNOME_EOG.server.in.in
-
-serverdir = $(libdir)/bonobo/servers
-server_DATA = $(server_in_files:.server.in.in=.server)
-
-BUILT_SOURCES = $(CORBA_SOURCES)
-CLEANFILES = $(BUILT_SOURCES) $(server_DATA)
-
-EXTRA_DIST = $(server_in_files)
+EXTRA_DIST = libeog-marshal.list 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -188,23 +141,30 @@ LIBRARIES =  $(noinst_LIBRARIES)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 libeog_a_LIBADD = 
-libeog_a_OBJECTS =  Eog-common.o Eog-stubs.o Eog-skels.o access.o \
+libeog_a_OBJECTS =  libeog-marshal.o access.o \
 accessible-image-view-factory.o accessible-image-view.o \
-eog-file-selection.o eog-pixbuf-util.o image-view.o uta.o cursors.o \
-ui-image.o zoom.o
+eog-file-selection.o eog-full-screen.o eog-pixbuf-util.o \
+eog-transform.o eog-image.o eog-image-jpeg.o eog-image-save-info.o \
+eog-save-dialog-helper.o eog-save-as-dialog-helper.o eog-image-cache.o \
+eog-image-list.o eog-uri-converter.o eog-scroll-view.o eog-info-view.o \
+eog-info-view-detail.o eog-info-view-file.o eog-info-view-exif.o \
+eog-metadata-reader.o eog-hig-dialog.o eog-horizontal-splitter.o \
+eog-vertical-splitter.o eog-wrap-list.o eog-collection-item.o \
+eog-canvas-pixbuf.o uta.o cursors.o zoom.o
 AR = ar
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(server_DATA)
-
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libeog_a_SOURCES)
 OBJECTS = $(libeog_a_OBJECTS)
@@ -252,25 +212,6 @@ libeog.a: $(libeog_a_OBJECTS) $(libeog_a_DEPENDENCIES)
 	-rm -f libeog.a
 	$(AR) cru libeog.a $(libeog_a_OBJECTS) $(libeog_a_LIBADD)
 	$(RANLIB) libeog.a
-
-install-serverDATA: $(server_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(serverdir)
-	@list='$(server_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-serverDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(server_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(serverdir)/$$p; \
-	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -389,21 +330,70 @@ distdir: $(DISTFILES)
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 access.o: access.c ../config.h access.h
 accessible-image-view-factory.o: accessible-image-view-factory.c \
-	accessible-image-view-factory.h image-view.h \
-	accessible-image-view.h
+	accessible-image-view-factory.h accessible-image-view.h
 accessible-image-view.o: accessible-image-view.c accessible-image-view.h \
-	image-view.h
+	eog-scroll-view.h eog-image.h eog-transform.h \
+	eog-image-save-info.h
 cursors.o: cursors.c ../config.h cursors.h cursors/hand-open-data.xbm \
 	cursors/hand-open-mask.xbm cursors/hand-closed-data.xbm \
 	cursors/hand-closed-mask.xbm
-Eog-common.o: Eog-common.c Eog.h
+eog-canvas-pixbuf.o: eog-canvas-pixbuf.c eog-canvas-pixbuf.h
+eog-collection-item.o: eog-collection-item.c eog-collection-item.h \
+	eog-image.h eog-transform.h eog-image-save-info.h \
+	eog-canvas-pixbuf.h
 eog-file-selection.o: eog-file-selection.c ../config.h \
-	eog-file-selection.h
+	eog-file-selection.h eog-hig-dialog.h eog-pixbuf-util.h
+eog-full-screen.o: eog-full-screen.c ../config.h eog-full-screen.h \
+	eog-image.h eog-transform.h eog-image-save-info.h \
+	eog-image-list.h eog-scroll-view.h cursors.h eog-config-keys.h
+eog-hig-dialog.o: eog-hig-dialog.c eog-hig-dialog.h
+eog-horizontal-splitter.o: eog-horizontal-splitter.c ../config.h \
+	eog-horizontal-splitter.h
+eog-image-cache.o: eog-image-cache.c eog-image-cache.h eog-image.h \
+	eog-transform.h eog-image-save-info.h eog-image-private.h
+eog-image-jpeg.o: eog-image-jpeg.c eog-image-jpeg.h ../config.h \
+	eog-image.h eog-transform.h eog-image-save-info.h \
+	../jpegutils/transupp.h eog-image-private.h
+eog-image-list.o: eog-image-list.c eog-image-list.h eog-image.h \
+	eog-transform.h eog-image-save-info.h libeog-marshal.h
+eog-image-save-info.o: eog-image-save-info.c eog-image-save-info.h \
+	eog-image-private.h eog-image.h eog-transform.h \
+	eog-pixbuf-util.h
+eog-image.o: eog-image.c ../config.h libeog-marshal.h eog-image.h \
+	eog-transform.h eog-image-save-info.h eog-image-private.h \
+	eog-pixbuf-util.h eog-image-cache.h eog-metadata-reader.h \
+	eog-image-jpeg.h
+eog-info-view-detail.o: eog-info-view-detail.c eog-info-view-detail.h
+eog-info-view-exif.o: eog-info-view-exif.c eog-info-view-exif.h \
+	../config.h eog-info-view-detail.h
+eog-info-view-file.o: eog-info-view-file.c eog-info-view-file.h \
+	eog-info-view-detail.h eog-image.h eog-transform.h \
+	eog-image-save-info.h
+eog-info-view.o: eog-info-view.c ../config.h eog-info-view.h eog-image.h \
+	eog-transform.h eog-image-save-info.h eog-info-view-file.h \
+	eog-info-view-detail.h eog-info-view-exif.h
+eog-metadata-reader.o: eog-metadata-reader.c eog-metadata-reader.h \
+	../config.h
 eog-pixbuf-util.o: eog-pixbuf-util.c eog-pixbuf-util.h
-Eog-skels.o: Eog-skels.c Eog.h
-Eog-stubs.o: Eog-stubs.c Eog.h
-image-view.o: image-view.c ../config.h cursors.h image-view.h uta.h
-ui-image.o: ui-image.c ../config.h image-view.h ui-image.h zoom.h
+eog-save-as-dialog-helper.o: eog-save-as-dialog-helper.c \
+	eog-save-as-dialog-helper.h eog-uri-converter.h eog-image.h \
+	eog-transform.h eog-image-save-info.h eog-pixbuf-util.h \
+	eog-hig-dialog.h eog-file-selection.h
+eog-save-dialog-helper.o: eog-save-dialog-helper.c \
+	eog-save-dialog-helper.h eog-image.h eog-transform.h \
+	eog-image-save-info.h
+eog-scroll-view.o: eog-scroll-view.c libeog-marshal.h eog-scroll-view.h \
+	eog-image.h eog-transform.h eog-image-save-info.h cursors.h \
+	uta.h zoom.h
+eog-transform.o: eog-transform.c eog-transform.h libeog-marshal.h
+eog-uri-converter.o: eog-uri-converter.c eog-uri-converter.h eog-image.h \
+	eog-transform.h eog-image-save-info.h eog-pixbuf-util.h
+eog-vertical-splitter.o: eog-vertical-splitter.c ../config.h \
+	eog-vertical-splitter.h
+eog-wrap-list.o: eog-wrap-list.c ../config.h eog-wrap-list.h \
+	eog-image-list.h eog-image.h eog-transform.h \
+	eog-image-save-info.h libeog-marshal.h eog-collection-item.h
+libeog-marshal.o: libeog-marshal.c
 uta.o: uta.c ../config.h uta.h
 zoom.o: zoom.c ../config.h zoom.h
 
@@ -418,21 +408,20 @@ installcheck: installcheck-recursive
 install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am: install-serverDATA
+install-data-am:
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-serverDATA
+uninstall-am:
 uninstall: uninstall-recursive
-all-am: Makefile $(LIBRARIES) $(DATA)
+all-am: Makefile $(LIBRARIES)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(serverdir)
 
 
 mostlyclean-generic:
@@ -472,8 +461,8 @@ maintainer-clean: maintainer-clean-recursive
 .PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
 clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile uninstall-serverDATA install-serverDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+maintainer-clean-compile install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
@@ -486,15 +475,13 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-@ENABLE_COLLECTION_TRUE@ COLLECTION_FLAGS=-DHAVE_COLLECTION
+libeog-marshal.h: libeog-marshal.list $(GLIB_GENMARSHAL)
+	echo "genmarshal h" && \
+        $(GLIB_GENMARSHAL) $< --header --prefix=libeog_marshal > $@
 
-$(CORBA_SOURCES): $(idls)
-	$(ORBIT_IDL)   $(top_srcdir)/idl/Eog.idl $(idl_flags)
-
-Eog.h: $(idls)
-$(server_in_files:.server.in.in=.server.in): $(server_in_files)
-	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
-@INTLTOOL_SERVER_RULE@
+libeog-marshal.c: libeog-marshal.list $(GLIB_GENMARSHAL)
+	echo "genmarshal c" && \
+        $(GLIB_GENMARSHAL) $< --body --prefix=libeog_marshal > $@
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

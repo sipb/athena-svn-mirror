@@ -1,20 +1,19 @@
-collection/GNOME_EOG_Collection.server.in.in
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+[encoding: UTF-8]
 eog.desktop.in
 eog.glade
 eog.schemas.in
-libeog/GNOME_EOG.server.in.in
-libeog/image-view.c
-libeog/ui-image.c
 libeog/eog-file-selection.c
-shell/eog-shell-ui.xml
+libeog/eog-image-jpeg.c
+libeog/eog-image.c
+libeog/eog-info-view-exif.c
+libeog/eog-info-view-file.c
+libeog/eog-info-view.c
+libeog/eog-save-as-dialog-helper.c
+libeog/eog-save-dialog-helper.c
+libeog/eog-uri-converter.c
+libeog/eog-uri-converter.h
 shell/eog-window.c
 shell/main.c
 shell/util.c
-viewer/eog-image-view-ctrl-ui.xml
-viewer/eog-image-view-ui.xml
-viewer/eog-image-view.c
-viewer/eog-image.c
-viewer/eog-print-setup.c
-viewer/main.c
-
-collection/eog-collection-view-ui.xml
