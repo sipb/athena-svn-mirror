@@ -2,8 +2,15 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.10 1990-08-07 19:39:32 probe Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.11 1991-01-14 13:45:43 epeisach Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.10  90/08/07  19:39:32  probe
+ * Changes to prevent the super-user from accesing a user's quota on a server
+ * running the old RPC daemon, fix formatting problems for long-named
+ * filesystems, prevent printing of quota information the user "root" or the
+ * group "wheel" which are not quota-controlled, fixed core-dump that would
+ * happen if warnings were to be printed for multiple users.  [jnrees]
+ * 
  * Revision 1.9  90/07/17  09:12:43  epeisach
  * Quota changes from jnrees for 7.1
  * 
@@ -33,7 +40,18 @@
  *   Uses the rcquota rpc call for group and user quotas
  */
 #include <stdio.h>
+#ifndef ultrix
 #include <mntent.h>
+#else
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/mount.h>
+#include <fstab.h>
+#include <sys/fs_types.h>
+#include <sys/stat.h>
+#define mntent fs_data
+struct fs_data mountbuffer[NMOUNT];
+#endif
 #include <ctype.h>
 #include <pwd.h>
 #include <grp.h>
@@ -41,8 +59,14 @@
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/time.h>
+#ifdef ultrix
+#include <sys/quota.h>
+#else
 #include <ufs/quota.h>
+#endif
+#ifndef ultrix
 #include <qoent.h>
+#endif
 
 #include <rpc/rpc.h>
 #include <rpc/pmap_prot.h>
@@ -53,7 +77,11 @@
 
 static char *warningstring = NULL;
 
-static int	vflag, uflag, gflag;
+static int	vflag=0, uflag=0, gflag=0;
+#ifdef ultrix
+int	qflag=0, done=0;
+#endif
+
 #define user_and_groups (!uflag && !gflag)
 #define QFNAME	"quotas"
 
@@ -79,6 +107,12 @@ main(argc, argv)
       case 'v':
 	vflag=1;
 	break;
+
+#ifdef ultrix
+    case 'q':
+	qflag=1;
+	break;
+#endif
 
       case 'g':
 	gflag=1;
@@ -218,10 +252,26 @@ showquotas(id,name)
      char *name;
 {
   register struct mntent *mntp;
+#ifdef ultrix
+#define mnt_dir fd_path
+#define mnt_type fd_fstype
+#define mnt_fsname fd_devname
+#define dqb_fhardlimit dqb_bhardlimit
+#define dqb_fsoftlimit dqb_bsoftlimit
+#define dqb_curfiles dqb_curinodes
+#define MNTTYPE_42 GT_ULTRIX
+#define MNTTYPE_NFS GT_NFS
+#define MNTOPT_QUOTA MOUNT_QUOTA
+#define Q_GETQUOTA Q_GETDLIM
+#endif
   FILE *mtab;
   int myuid, ngroups, gidset[NGROUPS];
   struct getcquota_rslt qvalues;
-  
+#ifdef ultrix
+  int loc=0, ret;
+  int ultlocalquotas=0;
+#endif
+
   myuid = getuid();
 
   if (gflag){ /* User must be in group or be the super-user */
@@ -242,8 +292,21 @@ showquotas(id,name)
     }
   }
 
+#ifndef ultrix
   mtab = setmntent(MOUNTED, "r");
+#else
+  ret = getmountent(&loc, mountbuffer, NMOUNT);
+  if (ret == 0) {
+      perror("getmountent");
+      exit(3);
+  }
+#endif
+
+#ifndef ultrix
   while(mntp = getmntent(mtab)){
+#else
+  for(mntp = mountbuffer; mntp < &mountbuffer[ret]; mntp++) {
+#endif
     if (fsind)
       {
 	int i, l;
@@ -256,11 +319,22 @@ showquotas(id,name)
 				     punt.*/
       }
         
+#ifndef ultrix
     if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0 &&
 	hasmntopt(mntp, MNTOPT_QUOTA)){
       if (getlocalquota(mntp,id,&qvalues)) continue;
+#else
+    if (mntp->mnt_type == MNTTYPE_42 &&
+        (mntp->fd_flags & M_QUOTA)) {
+	ultlocalquotas++;
+      continue;
+#endif
       }
+#ifndef ultrix
     else if (strcmp(mntp->mnt_type, MNTTYPE_NFS) == 0){
+#else
+    else if (mntp->mnt_type == MNTTYPE_NFS){
+#endif
       if (!getnfsquota(mntp, id, &qvalues)) continue;
     }
     else continue;
@@ -268,14 +342,21 @@ showquotas(id,name)
     if (vflag) prquota(mntp, &qvalues, id, name);      
     if (user_and_groups || !vflag) warn(mntp, &qvalues);
   }
+#ifndef ultrix
   endmntent(mtab);
+#endif
   if (warningstring){
     printf("\n%s\n", warningstring);
     free(warningstring);
     warningstring = NULL;
   }
+#ifdef ultrix
+  if(ultlocalquotas) 
+      ultprintquotas(id,name);
+#endif
 }
 
+#ifndef ultrix
 getlocalquota(mntp, uid, qvp)
      struct mntent *mntp;
      int uid;
@@ -344,6 +425,7 @@ getlocalquota(mntp, uid, qvp)
     return(0);
   }
 }
+#endif
 
 int
 getnfsquota(mntp, uid, qvp)
@@ -845,6 +927,7 @@ alldigits(s)
 	return (1);
 }
 
+#ifndef ultrix
 dqblk2rcquota(dqblkp, rcquotap, uid)
      struct dqblk *dqblkp;
      struct rcquota *rcquotap;
@@ -860,6 +943,7 @@ dqblk2rcquota(dqblkp, rcquotap, uid)
   rcquotap->rq_btimeleft  = dqblkp->dqb_btimelimit;
   rcquotap->rq_ftimeleft  = dqblkp->dqb_ftimelimit;
 }
+#endif
     
 getgroupname(id,buffer)
      int id;
@@ -935,18 +1019,36 @@ verify_filesystems()
   struct mntent *mntp;
   FILE *mtab;
   int i,l, found;
+#ifdef ultrix
+  int loc=0, ret;
+#endif
 
   for(i=0;i<fsind;i++){
     l = strlen(fslist[i]);
     found = 0;
+#ifndef ultrix
     mtab = setmntent(MOUNTED, "r");
+#else
+  ret = getmountent(&loc, mountbuffer, NMOUNT);
+  if (ret == 0) {
+      perror("getmountent");
+      exit(3);
+  }
+#endif
+
+#ifndef ultrix
     while(mntp = getmntent(mtab)){
+#else
+    for(mntp = mountbuffer; mntp < &mountbuffer[ret]; mntp++) {
+#endif
       if (!strncmp(fslist[i], mntp->mnt_dir,l)){
 	found = 1;
 	break;
       }
     }
+#ifndef ultrix
     endmntent(mtab);
+#endif
     if (!found){
       fprintf(stderr, "quota: '%s' matches no mounted filesystems.\n",
 	      fslist[i]);
@@ -954,3 +1056,173 @@ verify_filesystems()
     }
   }
 }
+
+#ifdef ultrix
+#undef mnt_dir
+#undef mnt_type
+#undef mnt_fsname
+#undef dqb_fhardlimit 
+#undef dqb_fsoftlimit 
+#undef dqb_curfiles 
+ultprintquotas(uid, name)
+	int uid;
+	char *name;
+{
+	register char c, *p;
+	register struct fstab *fs;
+	int myuid;
+
+	myuid = getuid();
+	if (uid != myuid && myuid != 0) {
+		printf("quota: %s (uid %d): permission denied\n", name, uid);
+		return;
+	}
+	done = 0;
+	setfsent();
+	while (fs = getfsent()) {
+		register char *msgi = (char *)0, *msgb = (char *)0;
+		register enab = 1;
+		dev_t	fsdev;
+		struct	stat statb;
+		struct	dqblk dqblk;
+		char qfilename[MAXPATHLEN + 1], iwarn[8], dwarn[8];
+
+		if (stat(fs->fs_spec, &statb) < 0)
+			continue;
+		fsdev = statb.st_rdev;
+		(void) sprintf(qfilename, "%s/%s", fs->fs_file, QFNAME);
+		if (stat(qfilename, &statb) < 0 || statb.st_dev != fsdev)
+			continue;
+		if (quota(Q_GETDLIM, uid, fsdev, &dqblk) != 0) {
+			register fd = open(qfilename, O_RDONLY);
+
+			if (fd < 0)
+				continue;
+			lseek(fd, (long)(uid * sizeof (dqblk)), L_SET);
+			if (read(fd, &dqblk, sizeof dqblk) != sizeof (dqblk)) {
+				close(fd);
+				continue;
+			}
+			close(fd);
+			if (dqblk.dqb_isoftlimit == 0 &&
+			    dqblk.dqb_bsoftlimit == 0)
+				continue;
+			enab = 0;
+		}
+		if (dqblk.dqb_ihardlimit &&
+		    dqblk.dqb_curinodes >= dqblk.dqb_ihardlimit)
+			msgi = "File count limit reached on %s";
+		else if (enab && dqblk.dqb_iwarn == 0)
+			msgi = "Out of inode warnings on %s";
+		else if (dqblk.dqb_isoftlimit &&
+		    dqblk.dqb_curinodes >= dqblk.dqb_isoftlimit)
+			msgi = "Too many files on %s";
+		if (dqblk.dqb_bhardlimit &&
+		    dqblk.dqb_curblocks >= dqblk.dqb_bhardlimit)
+			msgb = "Block limit reached on %s";
+		else if (enab && dqblk.dqb_bwarn == 0)
+			msgb = "Out of block warnings on %s";
+		else if (dqblk.dqb_bsoftlimit &&
+		    dqblk.dqb_curblocks >= dqblk.dqb_bsoftlimit)
+			msgb = "Over disc quota on %s";
+		if (dqblk.dqb_iwarn < MAX_IQ_WARN)
+			sprintf(iwarn, "%d", dqblk.dqb_iwarn);
+		else
+			iwarn[0] = '\0';
+		if (dqblk.dqb_bwarn < MAX_DQ_WARN)
+			sprintf(dwarn, "%d", dqblk.dqb_bwarn);
+		else
+			dwarn[0] = '\0';
+		if (qflag) {
+			if (msgi != (char *)0 || msgb != (char *)0)
+				ultheading(uid, name);
+			if (msgi != (char *)0)
+				xprintf(msgi, fs->fs_file);
+			if (msgb != (char *)0)
+				xprintf(msgb, fs->fs_file);
+			continue;
+		}
+		if (vflag || dqblk.dqb_curblocks || dqblk.dqb_curinodes) {
+			ultheading(uid, name);
+			printf("%10s%8d%c%7d%8d%8s%8d%c%7d%8d%8s\n"
+				, fs->fs_file
+				, (dqblk.dqb_curblocks / btodb(1024)) 
+				, (msgb == (char *)0) ? ' ' : '*'
+				, (dqblk.dqb_bsoftlimit / btodb(1024)) 
+				, (dqblk.dqb_bhardlimit / btodb(1024)) 
+				, dwarn
+				, dqblk.dqb_curinodes
+				, (msgi == (char *)0) ? ' ' : '*'
+				, dqblk.dqb_isoftlimit
+				, dqblk.dqb_ihardlimit
+				, iwarn
+			);
+		}
+	}
+	endfsent();
+	if (!done && !qflag) {
+		if (idind)
+			putchar('\n');
+		xprintf("Disc quotas for %s (uid %d):", name, uid);
+		xprintf("none.");
+	}
+	xprintf(0);
+}
+
+ultheading(uid, name)
+	int uid;
+	char *name;
+{
+
+	if (done++)
+		return;
+	xprintf(0);
+	if (qflag) {
+		if (!idind)
+			return;
+		xprintf("User %s (uid %d):", name, uid);
+		xprintf(0);
+		return;
+	}
+	putchar('\n');
+#if 0
+	xprintf("Disc quotas for %s (uid %d):", name, uid);
+#endif
+	xprintf(0);
+	printf("%10s%8s %7s%8s%8s%8s %7s%8s%8s\n"
+		, "Filsys"
+		, "current"
+		, "quota"
+		, "limit"
+		, "#warns"
+		, "files"
+		, "quota"
+		, "limit"
+		, "#warns"
+	);
+}
+
+xprintf(fmt, arg1, arg2, arg3, arg4, arg5, arg6)
+	char *fmt;
+{
+	char	buf[100];
+	static int column;
+
+	if (fmt == 0 && column || column >= 40) {
+		putchar('\n');
+		column = 0;
+	}
+	if (fmt == 0)
+		return;
+	sprintf(buf, fmt, arg1, arg2, arg3, arg4, arg5, arg6);
+	if (column != 0 && strlen(buf) < 39)
+		while (column++ < 40)
+			putchar(' ');
+	else if (column) {
+		putchar('\n');
+		column = 0;
+	}
+	printf("%s", buf);
+	column += strlen(buf);
+}
+#endif
