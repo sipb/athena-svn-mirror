@@ -15,7 +15,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.16 1997-09-14 22:13:38 ghudson Exp $";
+static const char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.17 1998-04-30 20:03:39 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -265,7 +265,7 @@ int open_display_and_load_resources(pargc, argv)
       return(1);
 
     /* Read in our application-specific resources: */
-    sprintf(dbasename, "%s/zwgc_resources", DATADIR);
+    sprintf(dbasename, "%s/zephyr/zwgc_resources", DATADIR);
     temp_db1 = XrmGetFileDatabase(dbasename);
 
     /*

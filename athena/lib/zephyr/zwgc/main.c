@@ -15,7 +15,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_main_c[] = "$Id: main.c,v 1.32 1998-03-09 05:11:53 ghudson Exp $";
+static const char rcsid_main_c[] = "$Id: main.c,v 1.33 1998-04-30 20:03:40 ghudson Exp $";
 #endif
 
 #include <sys/resource.h>
@@ -120,7 +120,7 @@ static void read_in_description_file()
 
 /*    var_clear_all_variables(); <<<>>> */
 
-    sprintf(defdesc, "%s/%s", DATADIR, DEFDESC);
+    sprintf(defdesc, "%s/zephyr/%s", DATADIR, DEFDESC);
     input_file = locate_file(description_filename_override, USRDESC, defdesc);
     if (input_file)
       program = parse_file(input_file);
