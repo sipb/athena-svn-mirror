@@ -1,11 +1,11 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.5 1991-07-22 17:00:09 epeisach Exp $
+# $Id: sendbug.sh,v 1.6 1991-07-23 15:13:57 lwvanels Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@Athena.MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
-version_file=/etc/version
+version_file=/etc/athena/version
 if [ ! -r $version_file ]; then
 	version="unknown version (no $version_file found)"
 else
@@ -71,7 +71,7 @@ if [ -r $HOME/.mh_profile ]; then
 fi
 # not using MH; run the editor, and send, ourselves.
 if [ "x$EDITOR" = "x" ]; then
-	EDITOR=/usr/athena/emacs ; export EDITOR
+	EDITOR=/usr/athena/bin/emacs ; export EDITOR
 fi
 
 $EDITOR $report_file
