@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.28 1991-01-21 01:21:00 lwvanels Exp $
+ *	$Id: olcd.h,v 1.29 1991-02-01 23:22:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -129,7 +129,7 @@
 #define DEFAULT_TITLE2  "consultant"
 #endif
 
-#define VERSION_INFO	"Version 3.0: $Id: olcd.h,v 1.28 1991-01-21 01:21:00 lwvanels Exp $"
+#define VERSION_INFO	"Version 3.0"
 
 /* OLCD data definitions */
 
