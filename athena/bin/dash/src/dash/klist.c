@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.9 1996-09-19 22:20:40 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.10 1997-12-03 21:44:47 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -25,13 +25,6 @@ static char *rcsid =
 #include <Jets.h>
 #include <Button.h>
 #include <warn.h>
-
-
-#if defined(NEED_ERRNO_DEFS)
-extern int errno;
-extern char *sys_errlist[];
-extern int sys_nerr;
-#endif
 
 
 char   *tkt_string();
@@ -76,10 +69,7 @@ void checkTkts(info, id)
 
   if (stat(file, &statbuf))
     {
-      if (errno == 0 || errno > sys_nerr)
-	sprintf(line1, "Could not stat `%s':  Error %d", file, errno);
-      else
-	sprintf(line1, "%s: `%s'", sys_errlist[errno], file);
+      sprintf(line1, "%s: `%s'", strerror(errno), file);
 
       ret = 1;
       goto done;
