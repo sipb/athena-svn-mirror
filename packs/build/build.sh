@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.28 1999-08-19 10:56:48 danw Exp $
+# $Id: build.sh,v 1.29 2000-01-11 19:11:21 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -58,6 +58,10 @@ IRIX)
 Linux) 
 	os=linux
 	awk=awk
+	;;
+*)
+	echo "Unrecognized system type, aborting." 1>&2
+	exit 1
 	;;
 esac
 
