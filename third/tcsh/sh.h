@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.6 2001-04-26 16:43:36 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.7 2005-03-19 20:29:15 ghudson Exp $ */
 /*
  * sh.h: Catch it all globals and includes file!
  */
@@ -431,19 +431,6 @@ typedef void pret_t;
 typedef int bool;
 
 #include "sh.types.h"
-
-#ifndef WINNT
-# ifndef POSIX
-extern pid_t getpgrp __P((int));
-# else /* POSIX */
-#  if (defined(BSD) && !defined(BSD4_4)) || defined(SUNOS4) || defined(IRIS4D) || defined(DGUX)
-extern pid_t getpgrp __P((int));
-#  else /* !(BSD || SUNOS4 || IRIS4D || DGUX) */
-extern pid_t getpgrp __P((void));
-#  endif	/* BSD || SUNOS4 || IRISD || DGUX */
-# endif /* POSIX */
-extern pid_t setpgrp __P((pid_t, pid_t));
-#endif /* !WINNT */
 
 typedef sigret_t (*signalfun_t) __P((int));
 
