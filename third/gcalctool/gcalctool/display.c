@@ -1,5 +1,5 @@
 
-/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/gcalctool/display.c,v 1.1.1.1 2004-10-06 18:42:15 ghudson Exp $
+/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/gcalctool/display.c,v 1.1.1.2 2005-03-10 19:15:57 ghudson Exp $
  *
  *  Copyright (c) 1987-2004 Sun Microsystems, Inc. All Rights Reserved.
  *           
@@ -452,7 +452,7 @@ paren_disp(char c)
  */
 
     n = strlen(v->display);
-    if (c == -1) {         /* Is it a Delete character? */
+    if (c == -1 || c == 127) {         /* Is it a Delete character? */
         v->noparens = v->pending = v->opsptr = v->numsptr = 0;
         v->cur_op = '?';
         i = 0;

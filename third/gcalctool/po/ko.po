@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gcalctool 4.3.42\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 08:54-0700\n"
-"PO-Revision-Date: 2004-08-01 03:10+0900\n"
+"POT-Creation-Date: 2005-01-12 11:11-0800\n"
+"PO-Revision-Date: 2004-10-06 12:28+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -668,7 +668,7 @@ msgstr "E"
 msgid "Hexadecimal digit E"
 msgstr "16진수 E"
 
-#: gcalctool/calctool.c:845 gcalctool/gtk.c:1381
+#: gcalctool/calctool.c:845 gcalctool/gtk.c:1382
 msgid "F"
 msgstr "F"
 
@@ -732,7 +732,7 @@ msgstr "B"
 msgid "Hexadecimal digit B"
 msgstr "16진수 B"
 
-#: gcalctool/calctool.c:927 gcalctool/gtk.c:1373
+#: gcalctool/calctool.c:927 gcalctool/gtk.c:1374
 msgid "C"
 msgstr "C"
 
@@ -900,9 +900,25 @@ msgstr "\t\t [-?] [-v] [-?]\n"
 
 #. translators: R is the short form of register used inter alia
 #. in popup menus
-#: gcalctool/graphics.c:66 gcalctool/gtk.c:1173 gcalctool/gtk.c:1306
+#: gcalctool/graphics.c:66 gcalctool/gtk.c:1174 gcalctool/gtk.c:1307
 msgid "R"
 msgstr "R"
+
+#: gcalctool/gtk.c:178
+msgid "_Calculator"
+msgstr "계산기(_C)"
+
+#: gcalctool/gtk.c:179
+msgid "_Edit"
+msgstr "편집(_E)"
+
+#: gcalctool/gtk.c:180
+msgid "_View"
+msgstr "보기(_V)"
+
+#: gcalctool/gtk.c:181
+msgid "_Help"
+msgstr "도움말(_H)"
 
 #: gcalctool/gtk.c:183
 msgid "_Quit"
@@ -1157,7 +1173,7 @@ msgstr "모든 상수는 10진수이어야 합니다."
 
 #: gcalctool/gtk.c:892
 msgid "Click a _value or description to edit it:"
-msgstr "값 또는 설명을 누르고 고치십시오:"
+msgstr "값 또는 설명을 누르고 고치십시오(_V):"
 
 #: gcalctool/gtk.c:915
 msgid "No."
@@ -1176,23 +1192,23 @@ msgid "Calculator"
 msgstr "계산기"
 
 #. Make Hyp and Inv trigonometric check boxes.
-#: gcalctool/gtk.c:1241
+#: gcalctool/gtk.c:1242
 msgid "_Inv"
 msgstr "_Inv"
 
-#: gcalctool/gtk.c:1249
+#: gcalctool/gtk.c:1250
 msgid "H_yp"
 msgstr "H_yp"
 
-#: gcalctool/gtk.c:1297
+#: gcalctool/gtk.c:1298
 msgid "Memory Registers"
 msgstr "메모리 레지스터"
 
-#: gcalctool/gtk.c:1362
+#: gcalctool/gtk.c:1363
 msgid "Edit Constants..."
 msgstr "상수 편집..."
 
-#: gcalctool/gtk.c:1362
+#: gcalctool/gtk.c:1363
 msgid "Edit Functions..."
 msgstr "함수 편집..."
 
@@ -1224,23 +1240,14 @@ msgstr "계산을 합니다"
 #~ msgid "grams or ounces"
 #~ msgstr "그램 또는 온스"
 
-#~ msgid "/_Calculator"
-#~ msgstr "/계산기(_C)"
-
 #~ msgid "/Calculator/_Quit"
 #~ msgstr "/계산기/끝내기(_Q)"
-
-#~ msgid "/_Edit"
-#~ msgstr "/편집(_E)"
 
 #~ msgid "/Edit/sep1"
 #~ msgstr "/편집/sep1"
 
 #~ msgid "/Edit/_Insert ASCII Value..."
 #~ msgstr "/편집/아스키 값 넣기(_I)..."
-
-#~ msgid "/_View"
-#~ msgstr "/보기(_E)"
 
 #~ msgid "/View/_Basic Mode"
 #~ msgstr "/보기/기본 모드(_B)"
@@ -1262,9 +1269,6 @@ msgstr "계산을 합니다"
 
 #~ msgid "/View/_Memory Registers"
 #~ msgstr "/보기/메모리 레지스터(_M)"
-
-#~ msgid "/_Help"
-#~ msgstr "/도움말(_H)"
 
 #~ msgid "/sep1"
 #~ msgstr "/sep1"

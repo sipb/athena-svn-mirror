@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gcalctool.gnome-2-8.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 08:54-0700\n"
-"PO-Revision-Date: 2004-08-23 16:32+0530\n"
+"POT-Creation-Date: 2005-01-12 11:11-0800\n"
+"PO-Revision-Date: 2004-10-26 10:02+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "<magnet@magnet-i.com>\n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 
@@ -145,7 +146,7 @@ msgstr "૭"
 
 #: gcalctool/calctool.c:143
 msgid "Numeric 7"
-msgstr "આંકડાે ૭"
+msgstr "આંકડો ૭"
 
 #: gcalctool/calctool.c:151
 msgid "8"
@@ -153,7 +154,7 @@ msgstr "૮"
 
 #: gcalctool/calctool.c:153
 msgid "Numeric 8"
-msgstr "આંકડાે ૮"
+msgstr "આંકડો ૮"
 
 #: gcalctool/calctool.c:161
 msgid "9"
@@ -161,7 +162,7 @@ msgstr "૯"
 
 #: gcalctool/calctool.c:163
 msgid "Numeric 9"
-msgstr "આંકડાે ૯"
+msgstr "આંકડો ૯"
 
 #: gcalctool/calctool.c:171
 msgid "/"
@@ -213,7 +214,7 @@ msgstr "૪"
 
 #: gcalctool/calctool.c:225
 msgid "Numeric 4"
-msgstr "આંકડાે ૪"
+msgstr "આંકડો ૪"
 
 #: gcalctool/calctool.c:233
 msgid "5"
@@ -221,7 +222,7 @@ msgstr "૫"
 
 #: gcalctool/calctool.c:235
 msgid "Numeric 5"
-msgstr "આંકડાે ૫"
+msgstr "આંકડો ૫"
 
 #: gcalctool/calctool.c:243
 msgid "6"
@@ -229,7 +230,7 @@ msgstr "૬"
 
 #: gcalctool/calctool.c:245
 msgid "Numeric 6"
-msgstr "આંકડાે ૬"
+msgstr "આંકડો ૬"
 
 #: gcalctool/calctool.c:253
 msgid "*"
@@ -277,7 +278,7 @@ msgstr "૧"
 
 #: gcalctool/calctool.c:307
 msgid "Numeric 1"
-msgstr "આંકડાે ૧"
+msgstr "આંકડો ૧"
 
 #: gcalctool/calctool.c:315
 msgid "2"
@@ -285,7 +286,7 @@ msgstr "૨"
 
 #: gcalctool/calctool.c:317
 msgid "Numeric 2"
-msgstr "આંકડાે ૨"
+msgstr "આંકડો ૨"
 
 #: gcalctool/calctool.c:325
 msgid "3"
@@ -293,7 +294,7 @@ msgstr "૩"
 
 #: gcalctool/calctool.c:327
 msgid "Numeric 3"
-msgstr "આંકડાે ૩"
+msgstr "આંકડો ૩"
 
 #: gcalctool/calctool.c:335
 msgid "-"
@@ -349,7 +350,7 @@ msgstr "૦"
 
 #: gcalctool/calctool.c:389
 msgid "Numeric 0"
-msgstr "આંકડાે ૦"
+msgstr "આંકડો ૦"
 
 #: gcalctool/calctool.c:397
 msgid "."
@@ -473,7 +474,7 @@ msgstr "Syd"
 
 #: gcalctool/calctool.c:554
 msgid "Sum-of-the years'-digits depreciation"
-msgstr "વર્ષના બધા ઘસારાનાે સરવાળો"
+msgstr "વર્ષના બધા ઘસારાનો સરવાળો"
 
 #: gcalctool/calctool.c:565
 msgid "Term"
@@ -542,7 +543,7 @@ msgstr "ગણતરીઓનું જૂથ શરુ કરો"
 
 #: gcalctool/calctool.c:713
 msgid "Left bracket"
-msgstr "ડાબો કાૈંસ"
+msgstr "ડાબો કૌંસ"
 
 #: gcalctool/calctool.c:721
 msgid ")"
@@ -554,7 +555,7 @@ msgstr "ગણતરીઓનું જૂથ પૂરુ કરો"
 
 #: gcalctool/calctool.c:723
 msgid "Right bracket"
-msgstr "જમણો કાૈંસ"
+msgstr "જમણો કૌંસ"
 
 #: gcalctool/calctool.c:731
 msgid "Acc"
@@ -672,7 +673,7 @@ msgstr "E"
 msgid "Hexadecimal digit E"
 msgstr "૧૬ આધારવાળી સંખ્યા E છે"
 
-#: gcalctool/calctool.c:845 gcalctool/gtk.c:1381
+#: gcalctool/calctool.c:845 gcalctool/gtk.c:1382
 msgid "F"
 msgstr "F"
 
@@ -736,7 +737,7 @@ msgstr "B"
 msgid "Hexadecimal digit B"
 msgstr "૧૬ આધારવાળી સંખ્યા B છે"
 
-#: gcalctool/calctool.c:927 gcalctool/gtk.c:1373
+#: gcalctool/calctool.c:927 gcalctool/gtk.c:1374
 msgid "C"
 msgstr "C"
 
@@ -904,9 +905,26 @@ msgstr "\t\t [-?] [-v] [-?]\n"
 
 #. translators: R is the short form of register used inter alia
 #. in popup menus
-#: gcalctool/graphics.c:66 gcalctool/gtk.c:1173 gcalctool/gtk.c:1306
+#: gcalctool/graphics.c:66 gcalctool/gtk.c:1174 gcalctool/gtk.c:1307
 msgid "R"
 msgstr "R"
+
+# gcalctool/gtk.c:801 gcalctool/gtk.c:803 gcalctool.desktop.in.h:1
+#: gcalctool/gtk.c:178
+msgid "_Calculator"
+msgstr "કેલ્ક્યુલેટર (_C)"
+
+#: gcalctool/gtk.c:179
+msgid "_Edit"
+msgstr "ફેરફાર કરો (_E)"
+
+#: gcalctool/gtk.c:180
+msgid "_View"
+msgstr "જુઓ (_V)"
+
+#: gcalctool/gtk.c:181
+msgid "_Help"
+msgstr "મદદ (_H)"
 
 #: gcalctool/gtk.c:183
 msgid "_Quit"
@@ -1123,7 +1141,7 @@ msgstr "વૈજ્ઞાનિક સ્થિતિ"
 msgid "translator_credits"
 msgstr ""
 "નીરવ <nirav@magnet-i.com>\n"
-"અંકિત <ankit644@linux.net>\n"
+"અંકિત <ankit644@yahoo.com>\n"
 "અંકુર <ankur_surti@linux.net>\n"
 "અતિત <shahatit_84@linux.net>\n"
 "ભાવિન <bhavinshah@linux.net>\n"
@@ -1165,7 +1183,7 @@ msgstr "નોંધ:"
 
 #: gcalctool/gtk.c:882
 msgid "All constant values are specified in the decimal numeric base."
-msgstr "બધી અચલ કિંમતો દશાંંશ આંકડાકીય આધારમાં સ્પષ્ટ કરાયેલી છે."
+msgstr "બધી અચલ કિંમતો દશાંશ આંકડાકીય આધારમાં સ્પષ્ટ કરાયેલી છે."
 
 #: gcalctool/gtk.c:892
 msgid "Click a _value or description to edit it:"
@@ -1189,23 +1207,23 @@ msgid "Calculator"
 msgstr "કેલ્ક્યુલેટર"
 
 #. Make Hyp and Inv trigonometric check boxes.
-#: gcalctool/gtk.c:1241
+#: gcalctool/gtk.c:1242
 msgid "_Inv"
 msgstr "_Inv"
 
-#: gcalctool/gtk.c:1249
+#: gcalctool/gtk.c:1250
 msgid "H_yp"
 msgstr "H_yp"
 
-#: gcalctool/gtk.c:1297
+#: gcalctool/gtk.c:1298
 msgid "Memory Registers"
 msgstr "મેમરી રજીસ્ટરો"
 
-#: gcalctool/gtk.c:1362
+#: gcalctool/gtk.c:1363
 msgid "Edit Constants..."
 msgstr "અચલોમાં ફેરફાર કરો..."
 
-#: gcalctool/gtk.c:1362
+#: gcalctool/gtk.c:1363
 msgid "Edit Functions..."
 msgstr "વિધેયોમાં ફેરફાર કરો..."
 

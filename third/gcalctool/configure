@@ -1798,7 +1798,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=gcalctool
- VERSION=4.4.18
+ VERSION=4.4.22
 
 
 cat >>confdefs.h <<_ACEOF
@@ -21091,7 +21091,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
-ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB es eu fa fi fr ga gu he hi hr hu id it ja ko lt mk ml mn ms nb nl no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tk uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB es eu fa fi fr ga gu he hi hr hu id it ja ko lt mk ml mn ms nb nl no or pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tk uk vi zh_CN zh_TW"
 
 
 for ac_header in locale.h
