@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.13 2004-08-23 12:04:04 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.13.2.1 2004-10-27 01:21:42 ghudson Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -40,7 +40,7 @@ SunOS)
   java_plugin_dir=/usr/j2se/jre/plugin/sparc/ns610
   ;;
 Linux)
-  java_plugin_dir=/usr/java/j2re1.4.2_04/plugin/i386/ns610-gcc32
+  java_plugin_dir=/usr/java/j2sdk/jre/plugin/i386/ns610-gcc32
   ;;
 esac
 
