@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v $
- *	$Id: p_queue.c,v 1.9 1990-07-16 08:21:35 lwvanels Exp $
+ *	$Id: p_queue.c,v 1.10 1990-11-14 12:34:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.9 1990-07-16 08:21:35 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.10 1990-11-14 12:34:21 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -34,7 +37,6 @@ do_olc_queue(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int instance = -1;
   char queue[NAME_SIZE];
   int status;
 
