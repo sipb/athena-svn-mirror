@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: log.c,v 1.49 1999-05-15 19:31:03 jweiss Exp $
+ *	$Id: log.c,v 1.50 1999-05-26 01:53:57 jweiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: log.c,v 1.49 1999-05-15 19:31:03 jweiss Exp $";
+static char rcsid[] ="$Id: log.c,v 1.50 1999-05-26 01:53:57 jweiss Exp $";
 #endif
 #endif
 
@@ -681,10 +681,12 @@ char *os;
 	}
       } else {
 	p = strchr(o_mach,',');
-	if (p==NULL)
+	if (p == NULL)
 	  o_disp="none";
-	*p = '\0';
-	o_disp = p+1;
+	else {
+	  *p = '\0';
+	  o_disp = p+1;
+	}
       }
     }
   }
