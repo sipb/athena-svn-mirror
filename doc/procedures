@@ -7,6 +7,7 @@ to CVS.  Areas covered in this file are:
 	Checking out a working directory
 	Preparing changes for review
 	Reviewing changes
+	Early checkins
 	Updating third-party sources
 
 You should use cvs from the gnu locker with the source repository.
@@ -100,6 +101,26 @@ with it, and no one else has responded to the change, you should sign
 onto the change rather than remaining silent.  You are encouraged to
 try out changes before signing onto them, but in some cases the
 inconvenience outweights the benefit of this consideration.
+
+Early checkins
+--------------
+
+In some cases it may be appropriate to check in a change in advance of
+the normal review period.  The following should be true of those
+cases:
+
+	1. The change is obvious and noncontroversial, such as a fix
+	   for a syntax error.
+
+	2. The problem being fixed is causing an immediate difficulty,
+	   usually "I'm doing a build of /mit/source and it blows out
+	   at this point."
+
+The change should still be sent to source-reviewers with a note about
+the early checkin.  If the immediate difficulty is "the wash is broken
+and I want the next wash to work," then it is good to get a positive
+review of the change before checking it in.  Close to a release cycle,
+though, that can be ignored.
 
 Updating third-party sources
 ----------------------------
