@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: jtkohl $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.43 1989-12-18 13:20:06 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.44 1990-02-09 17:10:11 jfc Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -426,6 +426,7 @@ send_stats(notice, sin)
      char *bfr;
      char *list[20];
      int len, i, nitems = 10;
+     unsigned int size;
 
      newnotice = *notice;
      
@@ -454,8 +455,21 @@ send_stats(notice, sin)
 	  (void)sprintf(list[6], "no");
      list[7] = (char *)malloc(64);
      (void)sprintf(list[7], "%ld", time((time_t *)0) - starttime);
+     size = (unsigned int)sbrk(0);
+#ifdef ibm032
+     size -= 0x10000000;
+#endif
+#ifdef i386
+     size -= 0x800000;
+#endif
+#ifdef vax
+     {
+       extern int etext;
+       size -= (unsigned int) &etext;
+     }
+#endif
      list[8] = (char *)malloc(64);
-     (void)sprintf(list[8], "%ld", (long)sbrk(0));
+     (void)sprintf(list[8], "%ld", size);
      list[9] = (char *)malloc(32);
      (void)strcpy(list[9], MACHINE);
 
