@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: zephyr.h,v 1.5 1999-01-22 23:20:50 ghudson Exp $
+ *      $Id: zephyr.h,v 1.6 2004-06-24 02:27:38 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -19,5 +19,6 @@
 
 extern void zephyr_init();
 extern void finalize_zephyr();
+extern void write_wgfile();
 
 #endif
