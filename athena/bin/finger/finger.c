@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.33 1997-12-03 21:55:15 ghudson Exp $
+ * $Id: finger.c,v 1.34 1997-12-31 19:28:48 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.33 1997-12-03 21:55:15 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.34 1997-12-31 19:28:48 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -68,17 +68,13 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
  * option turns off plans for long format outputs.
  */
 
-#include <unistd.h>
 #include <sys/types.h>
-#include <sys/file.h>
 #include <sys/stat.h>
-#ifdef SYSV
-#include <utmpx.h>
-#include <lastlog.h>
-#endif
+#include <unistd.h>
+#include <fcntl.h>
 #include <string.h>
 #include <utmp.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,6 +84,15 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#ifdef HAVE_UTMPX_H
+#include <utmpx.h>
+#endif
+#ifdef HAVE_LASTLOG_H
+#include <lastlog.h>
+#endif
+#ifdef HAVE_PATHS_H
+#include <paths.h>
+#endif
 #include <hesiod.h>
 #include <zephyr/zephyr.h>
 #include "mit-copyright.h"
@@ -106,7 +111,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define TALKABLE	0220	/* tty is writable if 220 mode */
 #define MAILDIR 	"/usr/spool/mail/"	/* default mail directory */
 
-#ifdef SYSV
+#ifdef HAVE_UTMPX_H
 struct utmpx user;
 #define UTTIME(ut) (ut).ut_tv.tv_sec
 #else
@@ -144,7 +149,7 @@ struct person {			/* one for each person fingered */
 	int zlocation;		/* found via Zephyr */
 };
 
-#if defined(SYSV)
+#if defined(HAVE_UTMPX_H)
 char USERLOG[] = UTMPX_FILE;		/* who is logged in */
 char ACCTLOG[] = WTMPX_FILE;		/* Accounting file */
 #elif defined(UTMP_FILE)
@@ -182,7 +187,7 @@ int wide = 1;			/* -w option default */
 
 int numloc = 1;			/* number of locations from zgetlocations */
 ZLocations_t location;		/* holds Zephyr locations */
-int znloc = NULL;		/* number of locations returned via a Zephyr
+int znloc = 0;			/* number of locations returned via a Zephyr
 				 * lookup */
 int unshort;
 int lf = -1;			/* LASTLOG file descriptor */
@@ -197,17 +202,6 @@ char ttnames[MAXTTYS][LMAX];	/* TTY names */
 time_t logouts[MAXTTYS];	/* Logout times */
 
 struct passwd *pwdcopy();
-
-#ifdef NOTDEF
-/* I think these are now all declared by headers. Remove this in a couple
-   of months. This works on AIX and Ultrix... It's up to the Solaris
-   build now. */
-char *strcpy();
-char *strcat();
-char *strncpy();
-char *malloc();
-char *ctime();
-#endif
 
 /*ARGSUSED*/
 main(argc, argv)
@@ -972,11 +966,11 @@ decode(pers)
 	if (*gp == COMMA) {	/* nickname */
 		gp++;
 		bp = buffer;
-		while ((*gp != NULL) && (*gp != COMMA)) {
+		while ((*gp != 0) && (*gp != COMMA)) {
 			if (*gp == SAMENAME) {
 				lp = pers->pwd->pw_name;
 				*bp++ = CAPITALIZE(*lp++);
-				while (*lp != NULL) {
+				while (*lp != 0) {
 					*bp++ = *lp++;
 				}
 			}
@@ -985,7 +979,7 @@ decode(pers)
 			}
 			gp++;
 		}
-		*bp = NULL;
+		*bp = 0;
 		if (strlen(buffer) > 0) {
 			pers->nickname = malloc((unsigned) (strlen(&buffer[0])
 							    + 1));
@@ -1079,7 +1073,7 @@ findwhen(pers)
 	struct lastlog ll;
 #endif
 	struct stat stb;
-#ifndef SYSV
+#ifndef HAVE_UTMPX_H
 	struct utmp *bp;
 	struct utmp buf[128];
 #else
