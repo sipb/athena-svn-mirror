@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange fxping client
  *
- * $Id: fxping.c,v 1.1 1999-09-28 22:10:58 danw Exp $
+ * $Id: fxping.c,v 1.2 2002-03-13 17:06:41 zacheiss Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxping_c[] = "$Id: fxping.c,v 1.1 1999-09-28 22:10:58 danw Exp $";
+static char rcsid_fxping_c[] = "$Id: fxping.c,v 1.2 2002-03-13 17:06:41 zacheiss Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -23,7 +23,6 @@ main(argc, argv)
   int argc;
   char *argv[];
 {
-  FX fx;
   FX *fxp;
   long code;
   stringlist node;
@@ -35,27 +34,27 @@ main(argc, argv)
   initialize_rpc_error_table();
   initialize_fxsv_error_table();
   initialize_krb_error_table();
-/*  fxp = fx_open("", &code);
-  if (code) com_err(argv[0], code, "while connecting.");
-
-  if (!fxp) exit(1);
- */
-  fxp = &fx;
-  memset(&fx, 0, sizeof(fx));
+  fxp = fx_open("", &code);
+  if (code) 
+    com_err(argv[0], code, "while connecting.");
+  if (!fxp)
+    exit(1);
   for (node = fx_host_list(); node != NULL; node = node->next) {
-    strcpy(fx.host, node->s);
-    code = fx_connect(&fx);
-    if (!code) fx_stat(fxp, &stats);
-    fx_close(fxp);
-    if (code) {
-      printf("%16s down: %s\n", fx.host, error_message(code));
-      continue;
-    }
+    strcpy(fxp->host, node->s);
+    code = fx_connect(fxp);
+    if (!code)
+      fx_stat(fxp, &stats);
+    else
+      {
+	printf("%16s down: %s\n", fxp->host, error_message(code));
+	continue;
+      }
 
     tim = (struct tm *)gmtime(&stats->uptime);
     printf("%16s up %d days, %02d:%02d:%02d, DB %ld/%ld\n", fxp->host,
 	   tim->tm_yday, tim->tm_hour, tim->tm_min, tim->tm_sec,
 	   stats->vers.synctime, stats->vers.commit);
   }
+  fx_close(fxp);
   exit(0);
 }
