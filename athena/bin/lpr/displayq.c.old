@@ -41,7 +41,8 @@ displayq(format)
 	int rem_fils;
 	char *tmpptr;
 	struct hostent	*hp;
-	
+
+	char name[MAXHOSTNAMELEN];
 	register char *cp;
 	lflag = format;
 	totsize = 0;
@@ -66,11 +67,11 @@ displayq(format)
 	if ((RP = pgetstr("rp", &bp)) == NULL)
 		RP = LP;
 	if ((RM = pgetstr("rm", &bp)) == NULL) {
-		gethostname(name,sizeof(name)-1);
-		name[sizeof(name)-1] = '\0';
+		gethostname(name,sizeof(name));
 		if (hp = gethostbyname(name))
-			(void) strncpy(name,hp->h_name,sizeof(name));
+			(void) strcpy(name,hp->h_name);
 		RP = LP;
+		RM = name;
 	}
 
 	/*
