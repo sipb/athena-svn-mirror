@@ -48,7 +48,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.8 1995-07-12 05:28:05 cfields Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.9 1997-09-23 06:05:24 ghudson Exp $";
 #endif	/* ! lint */
 
 static void
@@ -75,9 +75,9 @@ static void
         vfprintf (stderr, fmt, args);
     }
 
-    putc('\n', stderr);
-    /* should do this only on a tty in raw mode */
+    /* possibly should do the \r only on a tty in raw mode */
     putc('\r', stderr);
+    putc('\n', stderr);
     fflush(stderr);
 }
 
