@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.62 $
+# $Revision: 1.63 $
 
 umask 2
 
@@ -251,7 +251,7 @@ if ($machine == "sun4" || $machine == "sgi") then
 	ln -s /afs/athena/astaff/project/afsdev/dist/@sys $BUILD/transarc
 endif
 
-	mkdir $BUILD/bin
+	mkdir -p $BUILD/bin
 	cd $BUILD/support/imake
 		((make -f Makefile.ini clean >>& $outfile) && \
 			(make -f Makefile.ini >>& $outfile ) && \
@@ -261,6 +261,10 @@ endif
 		if ($status == 1 ) then
 			echo "We bombed in imake" >>& $outfile
 			exit -1
+		endif
+		if ($machine == "sun4") then
+			# Need an imake which defines SOLARIS.
+			install -c -s -m 755 imake $SRVD/usr/athena/bin/imake
 		endif
 
 	rehash
@@ -301,6 +305,15 @@ endif
 	(make install DESTDIR=$SRVD >>& $outfile))
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
+		exit -1
+	endif
+
+	cd $BUILD/support/config/cf
+	((echo "In config" >>& $outfile) &&\
+	(xmkmf . >>& $outfile) &&\
+	(make install DESTDIR=$SRVD >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in config" >>& $outfile
 		exit -1
 	endif
 
@@ -567,7 +580,7 @@ if ( $installonly == "0" ) then
 	(cd $BUILD/$package ; xmkmf . >>& $outfile)
 	(cd $BUILD/$package ; make >>& $outfile)
 endif # installonly
-	mkdir $BUILD/transarc
+	mkdir -p $BUILD/transarc
 	cp -rp $BUILD/$package/$AFS/dest/lib $BUILD/transarc >>& $outfile
 	cp -rp $BUILD/$package/$AFS/dest/include $BUILD/transarc  >>& $outfile
 	(cd $BUILD/$package; make install DESTDIR=$SRVD >>& $outfile)
