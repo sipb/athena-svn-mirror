@@ -1,9 +1,8 @@
-# $Id: Makefile,v 1.18 2003-10-26 20:12:22 ghudson Exp $
+# $Id: Makefile,v 1.19 2003-11-13 01:54:27 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
 ATHMANDIR=/usr/athena/man
-USRLIBDIR=/usr/lib
 
 all: os-checkfiles
 	cd os/${OS} && ${MAKE} $@
@@ -17,7 +16,6 @@ check:
 install:
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
-	mkdir -p ${DESTDIR}${USRLIBDIR}
 	install -c -m 0555 clean_tmp_areas.sh \
 		${DESTDIR}${ATHRETCDIR}/clean_tmp_areas
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs
