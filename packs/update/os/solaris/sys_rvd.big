@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.1 2001-08-16 14:46:53 ghudson Exp $
+## $Id: sys_rvd.big,v 1.2 2002-04-05 18:09:54 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -57,7 +57,9 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		-> prototype_user
 		-> afsws
 		-> openwin/lib/app-defaults/XTerm
+		vice
 		:
+	/usr/vice/etc::::
 	/usr/athena:::
 		! bin
 		! lib
@@ -121,6 +123,8 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		! lib/libart_lgpl.so*
 		! lib/libaudiofile.so*
 		! lib/libcapplet.so*
+		! lib/libcom_err.so*
+		! lib/libdes425.so*
 		! lib/libesd.so*
 		! lib/libgdk-1.2.so*
 		! lib/libgdk_imlib.so*
@@ -141,7 +145,11 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		! lib/libhistory.so*
 		! lib/libimlib-png.so*
 		! lib/libjpeg.so*
+		! lib/libk5crypto.so*
+		! lib/libkrb4.so*
+		! lib/libkrb5.so*
 		! lib/libpng.so*
+		! lib/libpty.so*
 		! lib/libreadline.so*
 		! lib/librep.so*
 		! lib/libungif.so*
