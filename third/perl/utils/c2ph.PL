@@ -3,6 +3,28 @@
 use Config;
 use File::Basename qw(&basename &dirname);
 use Cwd;
+use subs qw(link);
+
+sub link { # This is a cut-down version of installperl:link().
+    my($from,$to) = @_;
+    my($success) = 0;
+
+    eval {
+	CORE::link($from, $to)
+	    ? $success++
+	    : ($from =~ m#^/afs/# || $to =~ m#^/afs/#)
+	      ? die "AFS"  # okay inside eval {}
+	      : die "Couldn't link $from to $to: $!\n";
+    };
+    if ($@) {
+	warn $@;
+	require File::Copy;
+	File::Copy::copy($from, $to)
+	    ? $success++
+	    : warn "Couldn't copy $from to $to: $!\n";
+    }
+    $success;
+}
 
 # List explicitly here the variables you want Configure to
 # generate.  Metaconfig only looks for shell variables, so you
@@ -256,7 +278,7 @@ Anyway, here it is.  Should run on perl v4 or greater.  Maybe less.
 
 =cut
 
-$RCSID = '$Id: c2ph.PL,v 1.1.1.2 2000-04-07 20:47:05 ghudson Exp $';
+$RCSID = '$Id: c2ph.PL,v 1.1.1.3 2003-01-10 13:41:25 zacheiss Exp $';
 
 
 ######################################################################

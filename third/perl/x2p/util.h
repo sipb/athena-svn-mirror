@@ -1,6 +1,6 @@
-/* $RCSfile: util.h,v $$Revision: 1.1.1.4 $$Date: 2002-02-07 21:12:49 $
+/* $RCSfile: util.h,v $$Revision: 1.1.1.5 $$Date: 2003-01-10 13:40:59 $
  *
- *    Copyright (c) 1991-2001, Larry Wall
+ *    Copyright (c) 1991-2002, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
