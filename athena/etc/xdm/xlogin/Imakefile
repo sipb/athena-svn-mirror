@@ -1,9 +1,11 @@
-# $Id: Imakefile,v 1.23 1993-05-20 11:57:45 miki Exp $
+# $Id: Imakefile,v 1.24 1993-06-17 18:23:11 miki Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
 #endif
-
+#ifdef SOLARIS
+LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
+#endif
 #ifdef SOLARIS
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 #else
