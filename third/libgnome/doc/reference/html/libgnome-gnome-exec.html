@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-exec</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="libgnome.html#id2860442" title="Initializing applications and starting programs"><link rel="previous" href="libgnome-gnome-init.html" title="gnome-init"><link rel="next" href="ch01s02.html" title="Configuration"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-exec.html#id2920282" title="Description"><link rel="section" href="libgnome-gnome-exec.html#id2920302" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-init.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnome.html#id2860442"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-exec"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-exec</span></h2><p>gnome-exec &#8212; Execution of programs from within GNOME applications.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-exec</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="libgnome.html#id2641131" title="Initializing applications and starting programs"><link rel="previous" href="libgnome-gnome-init.html" title="gnome-init"><link rel="next" href="ch01s02.html" title="Configuration"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-init.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnome.html#id2641131"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-exec"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-exec</span></h2><p>gnome-exec &#8212; Execution of programs from within GNOME applications.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -36,7 +66,7 @@ int         <a href="libgnome-gnome-exec.html#gnome-execute-terminal-shell-fds">
                                             (const char *dir,
                                              const char *commandline,
                                              gboolean close_fds);
-</pre></div><div class="refsect1" lang="en"><a name="id2920282"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2700514"></a><h2>Description</h2><p>
 The gnome-execute family of functions are provided to simplify execution of
 programs from withing GNOME applications.  These routines are required to avoid
 passing opened file descriptors to a child process (like the X11 sockets and
@@ -44,7 +74,7 @@ CORBA sockets). They will also make sure to terminate properly.
 </p><p>
 The range of possibilities goes from the most simple use to the most
 specialized ones.
-</p></div><div class="refsect1" lang="en"><a name="id2920302"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2920307"></a><h3><a name="gnome-execute-async"></a>gnome_execute_async ()</h3><a class="indexterm" name="id2920319"></a><pre class="programlisting">int         gnome_execute_async             (const char *dir,
+</p></div><div class="refsect1" lang="en"><a name="id2700533"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2700539"></a><h3><a name="gnome-execute-async"></a>gnome_execute_async ()</h3><a class="indexterm" name="id2700550"></a><pre class="programlisting">int         gnome_execute_async             (const char *dir,
                                              int argc,
                                              char *const argv[]);</pre><p>
 Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env"><tt class="function">gnome_execute_async_with_env()</tt></a>, but doesn't add anything
@@ -55,7 +85,7 @@ to child's environment.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of arguments
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of child, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920446"></a><h3><a name="gnome-execute-async-fds"></a>gnome_execute_async_fds ()</h3><a class="indexterm" name="id2920457"></a><pre class="programlisting">int         gnome_execute_async_fds         (const char *dir,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2700678"></a><h3><a name="gnome-execute-async-fds"></a>gnome_execute_async_fds ()</h3><a class="indexterm" name="id2700689"></a><pre class="programlisting">int         gnome_execute_async_fds         (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              gboolean close_fds);</pre><p>
@@ -68,7 +98,7 @@ anything to child's environment.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt>, will close all but file descriptors 0, 1 and 2.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of child, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920613"></a><h3><a name="gnome-execute-async-with-env"></a>gnome_execute_async_with_env ()</h3><a class="indexterm" name="id2920624"></a><pre class="programlisting">int         gnome_execute_async_with_env    (const char *dir,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2700844"></a><h3><a name="gnome-execute-async-with-env"></a>gnome_execute_async_with_env ()</h3><a class="indexterm" name="id2700856"></a><pre class="programlisting">int         gnome_execute_async_with_env    (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              int envc,
@@ -86,7 +116,7 @@ This function closes all fds besides 0, 1, and 2 for the child</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>envc</tt></i> :</span></td><td> Number of environment slots
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>envv</tt></i> :</span></td><td> Environment vector
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the process id, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920803"></a><h3><a name="gnome-execute-async-with-env-fds"></a>gnome_execute_async_with_env_fds ()</h3><a class="indexterm" name="id2920815"></a><pre class="programlisting">int         gnome_execute_async_with_env_fds
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701035"></a><h3><a name="gnome-execute-async-with-env-fds"></a>gnome_execute_async_with_env_fds ()</h3><a class="indexterm" name="id2701047"></a><pre class="programlisting">int         gnome_execute_async_with_env_fds
                                             (const char *dir,
                                              int argc,
                                              char *const argv[],
@@ -104,7 +134,7 @@ decide whether or not to close fd's</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>envv</tt></i> :</span></td><td> Environment vector
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt> will close all fds but 0,1, and 2
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the process id, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921015"></a><h3><a name="gnome-execute-shell"></a>gnome_execute_shell ()</h3><a class="indexterm" name="id2921026"></a><pre class="programlisting">int         gnome_execute_shell             (const char *dir,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701247"></a><h3><a name="gnome-execute-shell"></a>gnome_execute_shell ()</h3><a class="indexterm" name="id2701258"></a><pre class="programlisting">int         gnome_execute_shell             (const char *dir,
                                              const char *commandline);</pre><p>
 Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env"><tt class="function">gnome_execute_async_with_env()</tt></a>, but uses the user's shell
 to run the desired program.  Note that the pid of the shell is returned, not
@@ -114,7 +144,7 @@ the pid of the user's program.</p><p>
       directory
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of shell, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921134"></a><h3><a name="gnome-execute-shell-fds"></a>gnome_execute_shell_fds ()</h3><a class="indexterm" name="id2921145"></a><pre class="programlisting">int         gnome_execute_shell_fds         (const char *dir,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701365"></a><h3><a name="gnome-execute-shell-fds"></a>gnome_execute_shell_fds ()</h3><a class="indexterm" name="id2701376"></a><pre class="programlisting">int         gnome_execute_shell_fds         (const char *dir,
                                              const char *commandline,
                                              gboolean close_fds);</pre><p>
 Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>, but uses the user's
@@ -126,7 +156,7 @@ returned, not the pid of the user's program.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> Like close_fds in <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of shell, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921285"></a><h3><a name="gnome-prepend-terminal-to-vector"></a>gnome_prepend_terminal_to_vector ()</h3><a class="indexterm" name="id2921297"></a><pre class="programlisting">void        gnome_prepend_terminal_to_vector
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701517"></a><h3><a name="gnome-prepend-terminal-to-vector"></a>gnome_prepend_terminal_to_vector ()</h3><a class="indexterm" name="id2701529"></a><pre class="programlisting">void        gnome_prepend_terminal_to_vector
                                             (int *argc,
                                              char ***argv);</pre><p>
 Prepends a terminal (either the one configured as default in
@@ -140,7 +170,7 @@ that is empty, will just create a new vector for you.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> a pointer to the vector size
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> a pointer to the vector
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921402"></a><h3><a name="gnome-execute-terminal-shell"></a>gnome_execute_terminal_shell ()</h3><a class="indexterm" name="id2921413"></a><pre class="programlisting">int         gnome_execute_terminal_shell    (const char *dir,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701633"></a><h3><a name="gnome-execute-terminal-shell"></a>gnome_execute_terminal_shell ()</h3><a class="indexterm" name="id2701645"></a><pre class="programlisting">int         gnome_execute_terminal_shell    (const char *dir,
                                              const char *commandline);</pre><p>
 Like <a href="libgnome-gnome-exec.html#gnome-execute-async"><span class="type">gnome_execute_async</span></a>, except that it runs the
 terminal as well.  Note that the pid of the terminal is
@@ -151,7 +181,7 @@ If commandline is <tt class="literal">NULL</tt>, just the shell is run.</p><p>
       directory
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of terminal, or <tt class="literal">-1</tt> on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921519"></a><h3><a name="gnome-execute-terminal-shell-fds"></a>gnome_execute_terminal_shell_fds ()</h3><a class="indexterm" name="id2921530"></a><pre class="programlisting">int         gnome_execute_terminal_shell_fds
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701750"></a><h3><a name="gnome-execute-terminal-shell-fds"></a>gnome_execute_terminal_shell_fds ()</h3><a class="indexterm" name="id2701762"></a><pre class="programlisting">int         gnome_execute_terminal_shell_fds
                                             (const char *dir,
                                              const char *commandline,
                                              gboolean close_fds);</pre><p>

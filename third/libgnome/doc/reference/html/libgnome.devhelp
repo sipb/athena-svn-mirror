@@ -2,7 +2,7 @@
 <book xmlns="http://www.devhelp.net/book" title="GNOME Library Reference Manual" link="index.html" author="" name="libgnome">
   <chapters>
     <sub name="GNOME Library (libgnome)" link="libgnome.html">
-      <sub name="Initializing applications and starting programs" link="libgnome.html#id2860442">
+      <sub name="Initializing applications and starting programs" link="libgnome.html#id2641131">
         <sub name="gnome-program" link="libgnome-gnome-program.html"/>
         <sub name="gnome-init" link="libgnome-gnome-init.html"/>
         <sub name="gnome-exec" link="libgnome-gnome-exec.html"/>

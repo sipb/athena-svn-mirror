@@ -118,6 +118,11 @@
         <long>Postavi potvrdno za isključivanje svih vanjskih programa za prikazivanje sličica, neovisno o tome dali su nezavisno uključeni ili isključeni.</long>
       </locale>
 
+      <locale name="hu">
+        <short>Minden külső előnézet-program kikapcsolása</short>
+        <long>Állítsa igazra az összes külső előnézet-program kikapcsolásához, függetlenül attól, hogy ezek egyenként ki vagy be vannak-e kapcsolva.</long>
+      </locale>
+
       <locale name="id">
         <short>Matikan semua pembuat gambar kecil eksternal</short>
         <long>Nyalakan untuk menonaktifkan semua program pembuat gambar kecil, terserah nantinya mau dinonaktifkan/dinyalakan per program atau tidak.</long>
@@ -261,6 +266,11 @@
       <locale name="uk">
         <short>Вимкнути всі зовнішні мініатюризатори</short>
         <long>Відмітьте, для вимикання всіх зовнішніх програм мініатюризації, незалежно від того, чи вони ввімкнені іншими способами.</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Tắt mọi trình xem ảnh mẫu bên ngoài</short>
+        <long>Đặt true để vô hiệu hoá mọi trình xem ảnh mẫu bên ngoài, không cần biết chúng có bị vô hiệu hoá hay không.</long>
       </locale>
 
       <locale name="zh_CN">

@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-09-04 17:47+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team:  <nls@tux.hellug.gr>\n"
@@ -86,7 +86,7 @@ msgstr ""
 "Αδυναμία εύρεσης τερματικού, χρήση του xterm, ακόμα και αν μπορεί να μη "
 "δουλέψει"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "Υποστήριξη GNOME GConf"
 

@@ -152,7 +152,6 @@ SOUND_TEST_LIBS = @SOUND_TEST_LIBS@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_AS = @ac_ct_AS@
@@ -398,7 +397,7 @@ uninstall-am: uninstall-info-am uninstall-schemaDATA
 @GCONF_SCHEMAS_INSTALL_TRUE@install-data-local:
 @GCONF_SCHEMAS_INSTALL_TRUE@	if test -z "$(DESTDIR)" ; then \
 @GCONF_SCHEMAS_INSTALL_TRUE@		for p in $(schema_DATA) ; do \
-@GCONF_SCHEMAS_INSTALL_TRUE@			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
+@GCONF_SCHEMAS_INSTALL_TRUE@			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p; \
 @GCONF_SCHEMAS_INSTALL_TRUE@		done \
 @GCONF_SCHEMAS_INSTALL_TRUE@	fi
 @GCONF_SCHEMAS_INSTALL_FALSE@install-data-local:

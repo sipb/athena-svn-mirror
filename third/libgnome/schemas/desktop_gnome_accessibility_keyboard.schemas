@@ -159,8 +159,8 @@
 	      </locale>
 
 	      <locale name="gu">
-		<short>મિલિસેકંડમાં ન્યૂનત્તમ સમયાંતર</short>
-		<long>અેક જ કીનુ એક કરતા વધારે દબાયેલ @વિલંબ મિલિસેકંડમાં અવગણો</long>
+		<short>મિલિસેકન્ડમાં ન્યૂનત્તમ સમયાંતર</short>
+		<long>એક જ કીનુ એક કરતા વધારે દબાયેલ @વિલંબ મિલિસેકન્ડમાં અવગણો</long>
 	      </locale>
 
 	      <locale name="he">
@@ -180,7 +180,7 @@
 
 	      <locale name="hu">
 		<short>minimális időköz ezredmásodpercben</short>
-		
+		<long>Ugyanazon billentyű többszöri lenyomásának figyelmen kívül hagyása @delay ezredmásodpercen belül</long>
 	      </locale>
 
 	      <locale name="id">
@@ -195,7 +195,7 @@
 
 	      <locale name="it">
 		<short>Intervallo minimo in millisecondi</short>
-		<long>Ingnora pressioni multiple dello STESSO tasto se entro @delay millisecondi</long>
+		<long>Ignora pressioni multiple dello STESSO tasto se entro @delay millisecondi</long>
 	      </locale>
 
 	      <locale name="ja">
@@ -488,8 +488,8 @@
 	      </locale>
 
 	      <locale name="gu">
-		<short>પ્રત્યેક સેકંડ દીઠ પિક્સેલ</short>
-		<long>મહત્તમ ઝડપે પ્રત્યેક સેકંડે કેટલા બિંદુઓ આગળ જવુ</long>
+		<short>પ્રત્યેક સેકન્ડ દીઠ પિક્સેલ</short>
+		<long>મહત્તમ ઝડપે પ્રત્યેક સેકન્ડે કેટલા બિંદુઓ આગળ જવુ</long>
 	      </locale>
 
 	      <locale name="he">
@@ -509,7 +509,7 @@
 
 	      <locale name="hu">
 		<short>képpont másodpercenként</short>
-		
+		<long>Hány képpontot mozduljon másodpercenként maximális sebességnél</long>
 	      </locale>
 
 	      <locale name="id">
@@ -794,8 +794,8 @@
 	      </locale>
 
 	      <locale name="gu">
-		<short>મિલિસેકંડમાં કેટલુ લાંબુ પ્રવેગિત કરવુ</short>
-		<long>૦ થી મહત્તમ ઝડપ પર જવા માટે તે કેટલી મિલિસેકંડ લેશે</long>
+		<short>મિલિસેકન્ડમાં કેટલુ લાંબુ પ્રવેગિત કરવુ</short>
+		<long>૦ થી મહત્તમ ઝડપ પર જવા માટે તે કેટલી મિલિસેકન્ડ લેશે</long>
 	      </locale>
 
 	      <locale name="he">
@@ -811,6 +811,11 @@
 	      <locale name="hr">
 		<short>koliko dugo treba ubrzavati u milisekundama</short>
 		<long>Koliko milisekundi je potrebno da prelazak od 0 do najveće brzine</long>
+	      </locale>
+
+	      <locale name="hu">
+		<short>meddig gyorsítson, ezredmásodpercben</short>
+		<long>Hány ezredmásodpercig tart a 0-ról maximális sebességre gyorsulás</long>
 	      </locale>
 
 	      <locale name="id">
@@ -1095,8 +1100,8 @@
 	      </locale>
 
 	      <locale name="gu">
-		<short>મિલિસેકંડમાં શરુઆતનો વિલંબ</short>
-		<long>માઉસ ફેરવવાની કી શરુ થાય તે ક્રિયા પહેલા કેટલી મિલિસેકંડ રાહ જોવી</long>
+		<short>મિલિસેકન્ડમાં શરુઆતનો વિલંબ</short>
+		<long>માઉસ ફેરવવાની કી શરુ થાય તે ક્રિયા પહેલા કેટલી મિલિસેકન્ડ રાહ જોવી</long>
 	      </locale>
 
 	      <locale name="he">
@@ -1116,7 +1121,7 @@
 
 	      <locale name="hu">
 		<short>kezdő késleltetés ezredmásodpercben</short>
-		
+		<long>Hány másodpercet várjon mielőtt az egérmozgató billentyűk működni kezdenek</long>
 	      </locale>
 
 	      <locale name="id">
@@ -1131,7 +1136,7 @@
 
 	      <locale name="it">
 		<short>Ritardo iniziale in millisecondi</short>
-		<long>Quanti millisecondi attendere prima che i tasti per il movimento del mouse inzino ad operare</long>
+		<long>Quanti millisecondi attendere prima che i tasti per il movimento del mouse inizino ad operare</long>
 	      </locale>
 
 	      <locale name="ja">
@@ -1413,8 +1418,8 @@
 	      </locale>
 
 	      <locale name="gu">
-		<short>મિલિસેકંડમાં ન્યૂનત્તમ સમયાંતર</short>
-		<long>કી જેવી દબાવવામાં આવે તેવી સ્વીકારવી નહિ જ્યાં સુધી @વિલંબ મિલિસેકંડમાં હોય</long>
+		<short>મિલિસેકન્ડમાં ન્યૂનત્તમ સમયાંતર</short>
+		<long>કી જેવી દબાવવામાં આવે તેવી સ્વીકારવી નહિ જ્યાં સુધી @વિલંબ મિલિસેકન્ડમાં હોય</long>
 	      </locale>
 
 	      <locale name="he">
@@ -1434,7 +1439,7 @@
 
 	      <locale name="hu">
 		<short>minimális időköz ezredmásodpercben</short>
-		
+		<long>Ne fogadja el a billentyű lenyomását, hacsak nincs @delay ezredmásodpercig lenyomva</long>
 	      </locale>
 
 	      <locale name="id">
@@ -1783,6 +1788,11 @@
 		<long>Isključi ako su pritisnute dvije tipke istovremeno.</long>
 	      </locale>
 
+	      <locale name="hu">
+		
+		<long>Kikapcsolás két gomb egyidejű lenyomásakor.</long>
+	      </locale>
+
 	      <locale name="id">
 		
 		<long>Nonaktifkan bila ada dua tombol ditekan pada saat yang sama.</long>
@@ -2082,6 +2092,11 @@
 	      <locale name="hr">
 		
 		<long>Svira kad je pritisnut i izmjenitelj</long>
+	      </locale>
+
+	      <locale name="hu">
+		
+		<long>Hangjelzés egy módosító megnyomásakor</long>
 	      </locale>
 
 	      <locale name="id">

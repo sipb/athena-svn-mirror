@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-09-06 22:04+0000\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -72,7 +72,7 @@ msgstr ""
 "Kan ikkje finna terminal. Brukar xterm, sjølv om det er mogleg at det ikkje "
 "kjem til å virka"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "GNOME GConf-støtte"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-07-22 14:24+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
 "Language-Team: Punjabi <pa@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "ਯੂਜਰ-ਇੰਟਰਫੇਸ ਘਟਨਾਵਾਂ"
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "ਟਰਮੀਨਲ ਨਹੀ ਲੱਭਿਆ ਹੈ, xterm ਵਰਤਕੇ, ਫਿਰ ਵੀ ਕੰਮ ਨਹੀ ਕਰਦਾ ਹੈ"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "ਗਨੋਮ ਜੀ-ਕਾਨਫ ਸਹਾਇਤਾ"
 

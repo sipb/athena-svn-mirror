@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2003-01-24 09:30+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr ""
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr ""
 

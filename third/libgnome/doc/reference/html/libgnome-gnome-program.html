@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-program</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="libgnome.html#id2860442" title="Initializing applications and starting programs"><link rel="previous" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="next" href="libgnome-gnome-init.html" title="gnome-init"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-program.html#id2910392" title="Description"><link rel="section" href="libgnome-gnome-program.html#id2910402" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnome.html#id2860442"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-init.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-program"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-program</span></h2><p>gnome-program &#8212; Initialize and retrieve information about a GNOME application.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-program</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="libgnome.html#id2641131" title="Initializing applications and starting programs"><link rel="previous" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="next" href="libgnome-gnome-init.html" title="gnome-init"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnome.html#id2641131"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-init.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-program"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-program</span></h2><p>gnome-program &#8212; Initialize and retrieve information about a GNOME application.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -77,9 +107,9 @@ void        <a href="libgnome-gnome-program.html#gnome-program-postinit">gnome_p
 #define     <a href="libgnome-gnome-program.html#GNOME-PROGRAM-STANDARD-PROPERTIES-CAPS">GNOME_PROGRAM_STANDARD_PROPERTIES</a>
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2910392"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2691098"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2910402"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2910407"></a><h3><a name="GnomeFileDomain"></a>enum GnomeFileDomain</h3><a class="indexterm" name="id2910418"></a><pre class="programlisting">typedef enum {
+</p></div><div class="refsect1" lang="en"><a name="id2691108"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2691114"></a><h3><a name="GnomeFileDomain"></a>enum GnomeFileDomain</h3><a class="indexterm" name="id2691124"></a><pre class="programlisting">typedef enum {
     GNOME_FILE_DOMAIN_UNKNOWN = 0,
 
     /* Gnome installed files */
@@ -121,7 +151,7 @@ locations relative to <a href="libgnome-gnome-program.html#GNOME-PARAM-APP-DATAD
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_FILE_DOMAIN_APP_CONFIG</tt></span></td><td>Application specific config files.
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_FILE_DOMAIN_APP_HELP</tt></span></td><td>Application specific help files.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2910666"></a><h3><a name="GnomeProgram"></a>struct GnomeProgram</h3><a class="indexterm" name="id2910677"></a><pre class="programlisting">struct GnomeProgram {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691373"></a><h3><a name="GnomeProgram"></a>struct GnomeProgram</h3><a class="indexterm" name="id2691383"></a><pre class="programlisting">struct GnomeProgram {
 
     GObject object;
 
@@ -134,7 +164,7 @@ during a call to <a href="libgnome-gnome-program.html#gnome-program-init"><tt cl
 dring initialisation.
 </td></tr><tr><td><span class="term">GnomeProgramPrivate *<i class="structfield"><tt>_priv</tt></i></span></td><td>Private data about the program instance.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2910760"></a><h3><a name="GnomeModuleInfo"></a>struct GnomeModuleInfo</h3><a class="indexterm" name="id2910771"></a><pre class="programlisting">struct GnomeModuleInfo {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691466"></a><h3><a name="GnomeModuleInfo"></a>struct GnomeModuleInfo</h3><a class="indexterm" name="id2691478"></a><pre class="programlisting">struct GnomeModuleInfo {
 
     const char *name;
     const char *version;
@@ -179,7 +209,7 @@ instances (can be <tt class="literal">NULL</tt>).
 </td></tr><tr><td><span class="term">const char *<i class="structfield"><tt>opt_prefix</tt></i></span></td><td>Unused.
 </td></tr><tr><td><span class="term">gpointer <i class="structfield"><tt>expansion1</tt></i></span></td><td>Unused.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911112"></a><h3><a name="GnomeModuleRequirement"></a>struct GnomeModuleRequirement</h3><a class="indexterm" name="id2911124"></a><pre class="programlisting">struct GnomeModuleRequirement {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691819"></a><h3><a name="GnomeModuleRequirement"></a>struct GnomeModuleRequirement</h3><a class="indexterm" name="id2691830"></a><pre class="programlisting">struct GnomeModuleRequirement {
 
     const char *required_version;
     const GnomeModuleInfo *module_info;
@@ -190,7 +220,7 @@ modules it depends upon.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term">const char *<i class="structfield"><tt>required_version</tt></i></span></td><td>The version required by the parent module.
 </td></tr><tr><td><span class="term">const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *<i class="structfield"><tt>module_info</tt></i></span></td><td>A <a href="libgnome-gnome-program.html#GnomeModuleInfo"><span class="type">GnomeModuleInfo</span></a> structure detailing the required module.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911197"></a><h3><a name="GnomeModuleInitHook"></a>GnomeModuleInitHook ()</h3><a class="indexterm" name="id2911208"></a><pre class="programlisting">void        (*GnomeModuleInitHook)          (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *mod_info);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691903"></a><h3><a name="GnomeModuleInitHook"></a>GnomeModuleInitHook ()</h3><a class="indexterm" name="id2691914"></a><pre class="programlisting">void        (*GnomeModuleInitHook)          (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *mod_info);</pre><p>
 A function that will be called to allow a module to do any pre-initialisation
 it might need to do prior to having arguments parsed by the controlling parent
 module (the parent will do the argument parsing for all modules in the
@@ -198,7 +228,7 @@ hierarchy).
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mod_info</tt></i> :</span></td><td>The current module.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911256"></a><h3><a name="GnomeModuleClassInitHook"></a>GnomeModuleClassInitHook ()</h3><a class="indexterm" name="id2911270"></a><pre class="programlisting">void        (*GnomeModuleClassInitHook)     (GnomeProgramClass *klass,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691962"></a><h3><a name="GnomeModuleClassInitHook"></a>GnomeModuleClassInitHook ()</h3><a class="indexterm" name="id2691977"></a><pre class="programlisting">void        (*GnomeModuleClassInitHook)     (GnomeProgramClass *klass,
                                              const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *mod_info);</pre><p>
 A function called to perform any class specific setup that is required by each
 module.
@@ -207,7 +237,7 @@ This will usually be <span class="type">GnomeProgramClass</span>.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mod_info</tt></i> :</span></td><td>The current module.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911352"></a><h3><a name="GnomeModuleHook"></a>GnomeModuleHook ()</h3><a class="indexterm" name="id2911363"></a><pre class="programlisting">void        (*GnomeModuleHook)              (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692060"></a><h3><a name="GnomeModuleHook"></a>GnomeModuleHook ()</h3><a class="indexterm" name="id2692070"></a><pre class="programlisting">void        (*GnomeModuleHook)              (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *mod_info);</pre><p>
 A function that is called to perform some intialisation in a module (which
 could be either the main init function or the pre or post argument parsing
@@ -216,7 +246,7 @@ phase).
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mod_info</tt></i> :</span></td><td>The current module's <a href="libgnome-gnome-program.html#GnomeModuleInfo"><span class="type">GnomeModuleInfo</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911452"></a><h3><a name="gnome-program-init"></a>gnome_program_init ()</h3><a class="indexterm" name="id2911463"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_init            (const char *app_id,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692158"></a><h3><a name="gnome-program-init"></a>gnome_program_init ()</h3><a class="indexterm" name="id2692169"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_init            (const char *app_id,
                                              const char *app_version,
                                              const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info,
                                              int argc,
@@ -242,7 +272,7 @@ After setting up the module loading, this function then calls (in order)
 </p><p>The following example shows how one might initialise a typical program
 using a popt table that is defined elsewhere (in other words, this is how to
 remove the use of the deprecated <tt class="function">gnome_init_with_popt_table()</tt> from code).
-</p><div class="example"><a name="id2911657"></a><p class="title"><b>Example 1. Initializing a GNOME application</b></p><pre class="programlisting">
+</p><div class="example"><a name="id2692364"></a><p class="title"><b>Example 1. Initializing a GNOME application</b></p><pre class="programlisting">
 int main(int argc, char **argv) {
 	GnomeProgram *my_app;
 	
@@ -265,7 +295,7 @@ name and value pairs (so this will be an attribute name or <tt class="literal">N
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> The continuation of a <tt class="literal">NULL</tt>-terminated list of attribute name/value
 pairs.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A <a href="libgnome-gnome-program.html#GnomeProgram"><span class="type">GnomeProgram</span></a> instance representing the current application.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2911825"></a><h3><a name="gnome-program-initv"></a>gnome_program_initv ()</h3><a class="indexterm" name="id2911836"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_initv           (GType type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692531"></a><h3><a name="gnome-program-initv"></a>gnome_program_initv ()</h3><a class="indexterm" name="id2692542"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_initv           (GType type,
                                              const char *app_id,
                                              const char *app_version,
                                              const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info,
@@ -288,14 +318,14 @@ name/value.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>args</tt></i> :</span></td><td> The remaining elements in the <tt class="literal">NULL</tt> terminated list (of which
 <i class="parameter"><tt>first_property_name</tt></i> is the first element).
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A <a href="libgnome-gnome-program.html#GnomeProgram"><span class="type">GnomeProgram</span></a> instance representing the current application.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912106"></a><h3><a name="gnome-program-get"></a>gnome_program_get ()</h3><a class="indexterm" name="id2912117"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_get             (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692812"></a><h3><a name="gnome-program-get"></a>gnome_program_get ()</h3><a class="indexterm" name="id2692823"></a><pre class="programlisting"><a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a>* gnome_program_get             (void);</pre><p>
 Retrieves an object that stored information about the application's state.
 Other functions assume this will always return a <a href="libgnome-gnome-program.html#GnomeProgram"><span class="type">GnomeProgram</span></a> object which
 (if not <tt class="literal">NULL</tt>) has already been initialized.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The application's <a href="libgnome-gnome-program.html#GnomeProgram"><span class="type">GnomeProgram</span></a> instance, or <tt class="literal">NULL</tt> if it does not
 exist.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912188"></a><h3><a name="gnome-program-get-human-readable-name"></a>gnome_program_get_human_readable_name ()</h3><a class="indexterm" name="id2912200"></a><pre class="programlisting">const char* gnome_program_get_human_readable_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692894"></a><h3><a name="gnome-program-get-human-readable-name"></a>gnome_program_get_human_readable_name ()</h3><a class="indexterm" name="id2692906"></a><pre class="programlisting">const char* gnome_program_get_human_readable_name
                                             (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
 This function returns a pointer to a static string that the
 application has provided as a human readable name. The app
@@ -304,7 +334,7 @@ init argument. Returns <tt class="literal">NULL</tt> if no name was set.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The application object
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Application human-readable name string.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912282"></a><h3><a name="gnome-program-get-app-id"></a>gnome_program_get_app_id ()</h3><a class="indexterm" name="id2912293"></a><pre class="programlisting">const char* gnome_program_get_app_id        (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2692988"></a><h3><a name="gnome-program-get-app-id"></a>gnome_program_get_app_id ()</h3><a class="indexterm" name="id2692999"></a><pre class="programlisting">const char* gnome_program_get_app_id        (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
 This function returns a pointer to a static string that the
 application has provided as an identifier. This is not meant as a
 human-readable identifier so much as a unique identifier for
@@ -312,7 +342,7 @@ programs and libraries.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The program object
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Application ID string.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912358"></a><h3><a name="gnome-program-get-app-version"></a>gnome_program_get_app_version ()</h3><a class="indexterm" name="id2912370"></a><pre class="programlisting">const char* gnome_program_get_app_version   (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693064"></a><h3><a name="gnome-program-get-app-version"></a>gnome_program_get_app_version ()</h3><a class="indexterm" name="id2693076"></a><pre class="programlisting">const char* gnome_program_get_app_version   (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
 This function returns a pointer to a static string that the
 application has provided as a version number. This is not meant as a
 human-readable identifier so much as a unique identifier for
@@ -320,7 +350,7 @@ programs and libraries.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The application object
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Application version string.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912436"></a><h3><a name="gnome-program-locate-file"></a>gnome_program_locate_file ()</h3><a class="indexterm" name="id2912447"></a><pre class="programlisting">gchar*      gnome_program_locate_file       (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693142"></a><h3><a name="gnome-program-locate-file"></a>gnome_program_locate_file ()</h3><a class="indexterm" name="id2693154"></a><pre class="programlisting">gchar*      gnome_program_locate_file       (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              <a href="libgnome-gnome-program.html#GnomeFileDomain">GnomeFileDomain</a> domain,
                                              const gchar *file_name,
                                              gboolean only_if_exists,
@@ -350,7 +380,7 @@ application is used).
                 of the file will be returned.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The full path to the file (if it exists or only_if_exists is
          <tt class="literal">FALSE</tt>) or <tt class="literal">NULL</tt>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912697"></a><h3><a name="gnome-program-module-register"></a>gnome_program_module_register ()</h3><a class="indexterm" name="id2912709"></a><pre class="programlisting">void        gnome_program_module_register   (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693403"></a><h3><a name="gnome-program-module-register"></a>gnome_program_module_register ()</h3><a class="indexterm" name="id2693415"></a><pre class="programlisting">void        gnome_program_module_register   (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info);</pre><p>
 This function is used to register a module to be initialized by the
 GNOME library framework. The memory pointed to by <i class="parameter"><tt>module_info</tt></i> must be
 valid during the whole application initialization process, and the module
@@ -359,7 +389,7 @@ register itself.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>module_info</tt></i> :</span></td><td> A pointer to a GnomeModuleInfo structure describing the module
               to be initialized
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912782"></a><h3><a name="gnome-program-module-registered"></a>gnome_program_module_registered ()</h3><a class="indexterm" name="id2912794"></a><pre class="programlisting">gboolean    gnome_program_module_registered (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693489"></a><h3><a name="gnome-program-module-registered"></a>gnome_program_module_registered ()</h3><a class="indexterm" name="id2693500"></a><pre class="programlisting">gboolean    gnome_program_module_registered (const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a> *module_info);</pre><p>
 This method checks to see whether a specific module has been
              initialized in the specified program.</p><p>
 
@@ -367,7 +397,7 @@ This method checks to see whether a specific module has been
               to be queried
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A value indicating whether the specified module has been
          registered/initialized in the current program
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912860"></a><h3><a name="gnome-program-module-load"></a>gnome_program_module_load ()</h3><a class="indexterm" name="id2912872"></a><pre class="programlisting">const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a>* gnome_program_module_load
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693566"></a><h3><a name="gnome-program-module-load"></a>gnome_program_module_load ()</h3><a class="indexterm" name="id2693578"></a><pre class="programlisting">const <a href="libgnome-gnome-program.html#GnomeModuleInfo">GnomeModuleInfo</a>* gnome_program_module_load
                                             (const char *mod_name);</pre><p>
 Loads a shared library that contains a
 <a href="libgnome-gnome-program.html#GnomeModuleInfo"><span class="type">GnomeModuleInfo</span></a> dynamic_module_info structure.</p><p>
@@ -375,7 +405,7 @@ Loads a shared library that contains a
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mod_name</tt></i> :</span></td><td> module name
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The <a href="libgnome-gnome-program.html#GnomeModuleInfo"><span class="type">GnomeModuleInfo</span></a> structure that was loaded, or <tt class="literal">NULL</tt> if the
 module could not be loaded.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2912958"></a><h3><a name="gnome-program-install-property"></a>gnome_program_install_property ()</h3><a class="indexterm" name="id2912970"></a><pre class="programlisting">guint       gnome_program_install_property  (GnomeProgramClass *pclass,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693665"></a><h3><a name="gnome-program-install-property"></a>gnome_program_install_property ()</h3><a class="indexterm" name="id2693676"></a><pre class="programlisting">guint       gnome_program_install_property  (GnomeProgramClass *pclass,
                                              GObjectGetPropertyFunc get_fn,
                                              GObjectSetPropertyFunc set_fn,
                                              GParamSpec *pspec);</pre><p>
@@ -390,7 +420,7 @@ use by other platform library authors.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>set_fn</tt></i> :</span></td><td> A function to set property values.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pspec</tt></i> :</span></td><td> A collection of properties.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of properties installed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2913114"></a><h3><a name="gnome-program-preinit"></a>gnome_program_preinit ()</h3><a class="indexterm" name="id2913125"></a><pre class="programlisting">poptContext gnome_program_preinit           (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693820"></a><h3><a name="gnome-program-preinit"></a>gnome_program_preinit ()</h3><a class="indexterm" name="id2693831"></a><pre class="programlisting">poptContext gnome_program_preinit           (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *app_id,
                                              const char *app_version,
                                              int argc,
@@ -405,85 +435,85 @@ returned can be used for <tt class="function">getopt()</tt>-style option process
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> The number of commmand line arguments contained in 'argv'
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> A string array of command line arguments
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A poptContext representing the argument parsing state.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2913288"></a><h3><a name="gnome-program-parse-args"></a>gnome_program_parse_args ()</h3><a class="indexterm" name="id2913299"></a><pre class="programlisting">void        gnome_program_parse_args        (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2693994"></a><h3><a name="gnome-program-parse-args"></a>gnome_program_parse_args ()</h3><a class="indexterm" name="id2694005"></a><pre class="programlisting">void        gnome_program_parse_args        (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
 Parses the command line arguments for the application</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> Application object
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2913350"></a><h3><a name="gnome-program-postinit"></a>gnome_program_postinit ()</h3><a class="indexterm" name="id2913361"></a><pre class="programlisting">void        gnome_program_postinit          (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2694056"></a><h3><a name="gnome-program-postinit"></a>gnome_program_postinit ()</h3><a class="indexterm" name="id2694067"></a><pre class="programlisting">void        gnome_program_postinit          (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program);</pre><p>
 Called after <a href="libgnome-gnome-program.html#gnome-program-parse-args"><tt class="function">gnome_program_parse_args()</tt></a>, this function
 takes care of post-parse initialization and cleanup</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> Application object
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2913423"></a><h3><a name="GNOME-PARAM-POPT-TABLE-CAPS"></a>GNOME_PARAM_POPT_TABLE</h3><a class="indexterm" name="id2913434"></a><pre class="programlisting">#define GNOME_PARAM_POPT_TABLE          "popt-table"
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2694130"></a><h3><a name="GNOME-PARAM-POPT-TABLE-CAPS"></a>GNOME_PARAM_POPT_TABLE</h3><a class="indexterm" name="id2694141"></a><pre class="programlisting">#define GNOME_PARAM_POPT_TABLE          "popt-table"
 </pre><p>
 This parameter contains the table of options to be passed to popt (write on
 init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913452"></a><h3><a name="GNOME-PARAM-POPT-FLAGS-CAPS"></a>GNOME_PARAM_POPT_FLAGS</h3><a class="indexterm" name="id2913463"></a><pre class="programlisting">#define GNOME_PARAM_POPT_FLAGS          "popt-flags"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694158"></a><h3><a name="GNOME-PARAM-POPT-FLAGS-CAPS"></a>GNOME_PARAM_POPT_FLAGS</h3><a class="indexterm" name="id2694169"></a><pre class="programlisting">#define GNOME_PARAM_POPT_FLAGS          "popt-flags"
 </pre><p>
 This parameter contains the flags to use for popt (write on init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913480"></a><h3><a name="GNOME-PARAM-POPT-CONTEXT-CAPS"></a>GNOME_PARAM_POPT_CONTEXT</h3><a class="indexterm" name="id2913492"></a><pre class="programlisting">#define GNOME_PARAM_POPT_CONTEXT        "popt-context"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694186"></a><h3><a name="GNOME-PARAM-POPT-CONTEXT-CAPS"></a>GNOME_PARAM_POPT_CONTEXT</h3><a class="indexterm" name="id2694199"></a><pre class="programlisting">#define GNOME_PARAM_POPT_CONTEXT        "popt-context"
 </pre><p>
 This parameter contains the context pointer that <a href="libgnome-gnome-program.html#GnomeProgram"><span class="type">GnomeProgram</span></a> is using for
 popt parsing (readable).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913518"></a><h3><a name="GNOME-PARAM-CREATE-DIRECTORIES-CAPS"></a>GNOME_PARAM_CREATE_DIRECTORIES</h3><a class="indexterm" name="id2913530"></a><pre class="programlisting">#define GNOME_PARAM_CREATE_DIRECTORIES  "create-directories"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694224"></a><h3><a name="GNOME-PARAM-CREATE-DIRECTORIES-CAPS"></a>GNOME_PARAM_CREATE_DIRECTORIES</h3><a class="indexterm" name="id2694236"></a><pre class="programlisting">#define GNOME_PARAM_CREATE_DIRECTORIES  "create-directories"
 </pre><p>
 This parameter contains <tt class="literal">TRUE</tt> if the standard GNOME directories should be
 created on startup.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913553"></a><h3><a name="GNOME-PARAM-ENABLE-SOUND-CAPS"></a>GNOME_PARAM_ENABLE_SOUND</h3><a class="indexterm" name="id2913565"></a><pre class="programlisting">#define GNOME_PARAM_ENABLE_SOUND        "enable-sound"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694259"></a><h3><a name="GNOME-PARAM-ENABLE-SOUND-CAPS"></a>GNOME_PARAM_ENABLE_SOUND</h3><a class="indexterm" name="id2694272"></a><pre class="programlisting">#define GNOME_PARAM_ENABLE_SOUND        "enable-sound"
 </pre><p>
 This parameter determines whether or not to enable sound on startup.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913582"></a><h3><a name="GNOME-PARAM-ESPEAKER-CAPS"></a>GNOME_PARAM_ESPEAKER</h3><a class="indexterm" name="id2913594"></a><pre class="programlisting">#define GNOME_PARAM_ESPEAKER            "espeaker"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694289"></a><h3><a name="GNOME-PARAM-ESPEAKER-CAPS"></a>GNOME_PARAM_ESPEAKER</h3><a class="indexterm" name="id2694300"></a><pre class="programlisting">#define GNOME_PARAM_ESPEAKER            "espeaker"
 </pre><p>
 This parameter describes how to connect to esd.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913610"></a><h3><a name="GNOME-PARAM-APP-ID-CAPS"></a>GNOME_PARAM_APP_ID</h3><a class="indexterm" name="id2913622"></a><pre class="programlisting">#define GNOME_PARAM_APP_ID              "app-id"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694316"></a><h3><a name="GNOME-PARAM-APP-ID-CAPS"></a>GNOME_PARAM_APP_ID</h3><a class="indexterm" name="id2694328"></a><pre class="programlisting">#define GNOME_PARAM_APP_ID              "app-id"
 </pre><p>
 This parameter contains the ID string to use for the application (readable).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913639"></a><h3><a name="GNOME-PARAM-APP-VERSION-CAPS"></a>GNOME_PARAM_APP_VERSION</h3><a class="indexterm" name="id2913650"></a><pre class="programlisting">#define GNOME_PARAM_APP_VERSION         "app-version"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694345"></a><h3><a name="GNOME-PARAM-APP-VERSION-CAPS"></a>GNOME_PARAM_APP_VERSION</h3><a class="indexterm" name="id2694356"></a><pre class="programlisting">#define GNOME_PARAM_APP_VERSION         "app-version"
 </pre><p>
 This parameter contains the application version (readable).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913667"></a><h3><a name="GNOME-PARAM-GNOME-PREFIX-CAPS"></a>GNOME_PARAM_GNOME_PREFIX</h3><a class="indexterm" name="id2913679"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_PREFIX        "gnome-prefix"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694374"></a><h3><a name="GNOME-PARAM-GNOME-PREFIX-CAPS"></a>GNOME_PARAM_GNOME_PREFIX</h3><a class="indexterm" name="id2694385"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_PREFIX        "gnome-prefix"
 </pre><p>
 This parameter contains the prefix where the main GNOME system is installed
 (readable, writable on init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913697"></a><h3><a name="GNOME-PARAM-GNOME-SYSCONFDIR-CAPS"></a>GNOME_PARAM_GNOME_SYSCONFDIR</h3><a class="indexterm" name="id2913708"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_SYSCONFDIR    "gnome-sysconfdir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694403"></a><h3><a name="GNOME-PARAM-GNOME-SYSCONFDIR-CAPS"></a>GNOME_PARAM_GNOME_SYSCONFDIR</h3><a class="indexterm" name="id2694414"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_SYSCONFDIR    "gnome-sysconfdir"
 </pre><p>
 This parameter contains the prefix where the GNOME configuration files
 are installed (readable, writable on init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913726"></a><h3><a name="GNOME-PARAM-GNOME-DATADIR-CAPS"></a>GNOME_PARAM_GNOME_DATADIR</h3><a class="indexterm" name="id2913738"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_DATADIR       "gnome-datadir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694432"></a><h3><a name="GNOME-PARAM-GNOME-DATADIR-CAPS"></a>GNOME_PARAM_GNOME_DATADIR</h3><a class="indexterm" name="id2694444"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_DATADIR       "gnome-datadir"
 </pre><p>
 This parameter contains the prefix where the GNOME data files are installed
 (readable, writable on init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913756"></a><h3><a name="GNOME-PARAM-GNOME-LIBDIR-CAPS"></a>GNOME_PARAM_GNOME_LIBDIR</h3><a class="indexterm" name="id2913767"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_LIBDIR        "gnome-libdir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694462"></a><h3><a name="GNOME-PARAM-GNOME-LIBDIR-CAPS"></a>GNOME_PARAM_GNOME_LIBDIR</h3><a class="indexterm" name="id2694473"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_LIBDIR        "gnome-libdir"
 </pre><p>
 This parameter contains the prefix where the GNOME library files are installed
 (readable, writable on init only).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913785"></a><h3><a name="GNOME-PARAM-APP-PREFIX-CAPS"></a>GNOME_PARAM_APP_PREFIX</h3><a class="indexterm" name="id2913796"></a><pre class="programlisting">#define GNOME_PARAM_APP_PREFIX          "app-prefix"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694491"></a><h3><a name="GNOME-PARAM-APP-PREFIX-CAPS"></a>GNOME_PARAM_APP_PREFIX</h3><a class="indexterm" name="id2694502"></a><pre class="programlisting">#define GNOME_PARAM_APP_PREFIX          "app-prefix"
 </pre><p>
 This parameter contains the prefix where this application was installed
 (read / write).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913814"></a><h3><a name="GNOME-PARAM-APP-SYSCONFDIR-CAPS"></a>GNOME_PARAM_APP_SYSCONFDIR</h3><a class="indexterm" name="id2913825"></a><pre class="programlisting">#define GNOME_PARAM_APP_SYSCONFDIR      "app-sysconfdir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694520"></a><h3><a name="GNOME-PARAM-APP-SYSCONFDIR-CAPS"></a>GNOME_PARAM_APP_SYSCONFDIR</h3><a class="indexterm" name="id2694531"></a><pre class="programlisting">#define GNOME_PARAM_APP_SYSCONFDIR      "app-sysconfdir"
 </pre><p>
 This parameter contains the prefix where this application's configuration files
 are installed (read / write).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913843"></a><h3><a name="GNOME-PARAM-APP-DATADIR-CAPS"></a>GNOME_PARAM_APP_DATADIR</h3><a class="indexterm" name="id2913854"></a><pre class="programlisting">#define GNOME_PARAM_APP_DATADIR         "app-datadir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694549"></a><h3><a name="GNOME-PARAM-APP-DATADIR-CAPS"></a>GNOME_PARAM_APP_DATADIR</h3><a class="indexterm" name="id2694561"></a><pre class="programlisting">#define GNOME_PARAM_APP_DATADIR         "app-datadir"
 </pre><p>
 This parameter contains the prefix where this application's data files are
 installed (read / write).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913872"></a><h3><a name="GNOME-PARAM-APP-LIBDIR-CAPS"></a>GNOME_PARAM_APP_LIBDIR</h3><a class="indexterm" name="id2913883"></a><pre class="programlisting">#define GNOME_PARAM_APP_LIBDIR          "app-libdir"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694578"></a><h3><a name="GNOME-PARAM-APP-LIBDIR-CAPS"></a>GNOME_PARAM_APP_LIBDIR</h3><a class="indexterm" name="id2694589"></a><pre class="programlisting">#define GNOME_PARAM_APP_LIBDIR          "app-libdir"
 </pre><p>
 This parameter contains the prefix where this application's library files are
 installed (read / write).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913901"></a><h3><a name="GNOME-PARAM-HUMAN-READABLE-NAME-CAPS"></a>GNOME_PARAM_HUMAN_READABLE_NAME</h3><a class="indexterm" name="id2913913"></a><pre class="programlisting">#define GNOME_PARAM_HUMAN_READABLE_NAME "human-readable-name"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694607"></a><h3><a name="GNOME-PARAM-HUMAN-READABLE-NAME-CAPS"></a>GNOME_PARAM_HUMAN_READABLE_NAME</h3><a class="indexterm" name="id2694619"></a><pre class="programlisting">#define GNOME_PARAM_HUMAN_READABLE_NAME "human-readable-name"
 </pre><p>
 This parameter contains the human readable name of the application (readable).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913931"></a><h3><a name="GNOME-PARAM-GNOME-PATH-CAPS"></a>GNOME_PARAM_GNOME_PATH</h3><a class="indexterm" name="id2913942"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_PATH          "gnome-path"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694637"></a><h3><a name="GNOME-PARAM-GNOME-PATH-CAPS"></a>GNOME_PARAM_GNOME_PATH</h3><a class="indexterm" name="id2694648"></a><pre class="programlisting">#define GNOME_PARAM_GNOME_PATH          "gnome-path"
 </pre><p>
 This parameter contains the path in which to look for installed files (taken
 from the GNOME2_PATH environment variable).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913960"></a><h3><a name="GNOME-PARAM-NONE-CAPS"></a>GNOME_PARAM_NONE</h3><a class="indexterm" name="id2913971"></a><pre class="programlisting">#define GNOME_PARAM_NONE                NULL
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694666"></a><h3><a name="GNOME-PARAM-NONE-CAPS"></a>GNOME_PARAM_NONE</h3><a class="indexterm" name="id2694677"></a><pre class="programlisting">#define GNOME_PARAM_NONE                NULL
 </pre><p>
 Used to terminate a list of parameters and their values.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2913988"></a><h3><a name="GNOME-PROGRAM-STANDARD-PROPERTIES-CAPS"></a>GNOME_PROGRAM_STANDARD_PROPERTIES</h3><a class="indexterm" name="id2913999"></a><pre class="programlisting">#define     GNOME_PROGRAM_STANDARD_PROPERTIES</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2694694"></a><h3><a name="GNOME-PROGRAM-STANDARD-PROPERTIES-CAPS"></a>GNOME_PROGRAM_STANDARD_PROPERTIES</h3><a class="indexterm" name="id2694706"></a><pre class="programlisting">#define     GNOME_PROGRAM_STANDARD_PROPERTIES</pre><p>
 When PREFIX, SYSCONFDIR, DATADIR and LIBDIR are defined during the build
 process, this macro can be used to assign these values to
 <a href="libgnome-gnome-program.html#GNOME-PARAM-APP-PREFIX-CAPS"><span class="type">GNOME_PARAM_APP_PREFIX</span></a>, <a href="libgnome-gnome-program.html#GNOME-PARAM-APP-SYSCONFDIR-CAPS"><span class="type">GNOME_PARAM_APP_SYSCONFDIR</span></a>, <a href="libgnome-gnome-program.html#GNOME-PARAM-APP-DATADIR-CAPS"><span class="type">GNOME_PARAM_APP_DATADIR</span></a>

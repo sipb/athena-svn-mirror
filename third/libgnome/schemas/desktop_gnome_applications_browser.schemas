@@ -109,7 +109,7 @@
 
       <locale name="gu">
         <short>મૂળભૂત બ્રાઉઝર</short>
-        <long>બધા URLs માટે મૂળભૂત બ્રાઉઝર</long>
+        <long>બધા URL માટે મૂળભૂત બ્રાઉઝર</long>
       </locale>
 
       <locale name="he">
@@ -428,6 +428,11 @@
         <long>Koji uobičajeni preglednik treba pokrenuti terminal</long>
       </locale>
 
+      <locale name="hu">
+        <short>A böngészőnek szüksége van-e terminálra?</short>
+        <long>Az alapértelmezett böngészőnek szüksége van-e terminálra a futáshoz?</long>
+      </locale>
+
       <locale name="id">
         <short>Browser menggunakan terminal</short>
         <long>Menentukan apakah browser default menggunakan terminal atau tidak</long>
@@ -724,6 +729,11 @@
         <long>Koji uobičajeni preglednik razumije udaljeni netscape</long>
       </locale>
 
+      <locale name="hu">
+        <short>A böngésző távirányítható-e?</short>
+        <long>Az alapértelmezett böngésző távirányítható-e &quot;netscape remote&quot; segítségével?</long>
+      </locale>
+
       <locale name="id">
         <short>Browser mengerti remote</short>
         <long>Menentukan apakah browser default mengerti netscape remote atau tidak</long>
@@ -736,7 +746,7 @@
 
       <locale name="it">
         <short>Il browser gestisce file remoti</short>
-        <long>Indica se il browser gestisce netscape remote</long>
+        <long>Indica se il browser predefinito gestisce l&apos;opzione &apos;remote&apos; di Netscape</long>
       </locale>
 
       <locale name="ja">
@@ -885,7 +895,7 @@
       </locale>
 
       <locale name="vi">
-        
+        <short>Trình duyệt điều khiển từ xa</short>
         <long>Trình duyệt mặc định có hiểu netscape remote không</long>
       </locale>
 

@@ -117,6 +117,11 @@
             <long>Popis pomoćnih tehnoloških programa koje se pokreću kod prijavljivanja uGMOE radnu površinu</long>
          </locale>
 
+         <locale name="hu">
+            <short>Bejelentkezéskor elindítandó kisegítő alkalmazások</short>
+            <long>Bejelentkezéskor elindítandó kisegítő alkalmazások listája</long>
+         </locale>
+
          <locale name="id">
             <short>Startup Assistive Technology Applications</short>
             <long>Daftar aplikasi teknologi bantu yang dijalankan saat mulai login ke desktop GNOME</long>
@@ -129,7 +134,7 @@
 
          <locale name="it">
             <short>Avvio applicazioni tecnologia assistiva</short>
-            <long>Lista delle applicazioni di tecnologia assistiva da avviare al login nel desktop GNOME</long>
+            <long>Lista delle applicazioni di tecnologia assistiva da avviare all&apos;accessp nel desktop GNOME</long>
          </locale>
 
          <locale name="ja">
@@ -258,8 +263,8 @@
          </locale>
 
          <locale name="th">
-            <short>โปรแกรมช่วยเหลือผู้พิการเมื่อเข้าสู่ระบบ</short>
-            <long>รายการของบริการช่วยเหลือผู้พิการที่จะเริ่มใช้เมื่อเข้าสู่ระบบ GNOME</long>
+            <short>โปรแกรมอำนวยการใช้งานเมื่อเข้าสู่ระบบ</short>
+            <long>รายการของบริการอำนวยการใช้งานที่จะเริ่มใช้เมื่อเข้าสู่ระบบ GNOME</long>
          </locale>
 
          <locale name="tr">
@@ -270,6 +275,11 @@
          <locale name="uk">
             <short>Виконувані при вході програми зі спеціальними можливостями</short>
             <long>Перелік програм для людей с обмеженими можливостями, що запускаються при вході в сеанс середовища Гном</long>
+         </locale>
+
+         <locale name="vi">
+            <short>Ứng dụng Công nghệ Trợ giúp lúc khởi động</short>
+            <long>Danh sách các ứng dụng công nghệ trợ giúp cần khởi động khi đăng nhập GNOME</long>
          </locale>
 
          <locale name="zh_CN">

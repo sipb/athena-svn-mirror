@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-09-12 04:24+0100\n"
 "Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -66,7 +66,7 @@ msgstr "Digwyddiad rhyngwyneb defnyddiwr"
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "Methu canfod terfynell, defnyddio xterm, er efalli ni fydd yn gweithio"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "Cynhaliaeth GConf GNOME"
 

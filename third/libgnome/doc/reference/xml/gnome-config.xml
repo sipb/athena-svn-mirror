@@ -256,6 +256,7 @@ which returns the translated version of the string for the current locale.
 <refsect2>
 <title><anchor id="gnome-config-get-string"/>gnome_config_get_string()</title>
 <indexterm><primary>gnome_config_get_string</primary></indexterm><programlisting>#define     gnome_config_get_string(path)</programlisting>
+<warning><para><literal>gnome_config_get_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string. This value should
 be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed.</para>
@@ -271,6 +272,7 @@ be freed with <link linkend="g-free"><function>g_free()</function></link> when n
 <refsect2>
 <title><anchor id="gnome-config-get-string-with-default"/>gnome_config_get_string_with_default()</title>
 <indexterm><primary>gnome_config_get_string_with_default</primary></indexterm><programlisting>#define     gnome_config_get_string_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_get_string_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string. This value should
 be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed.</para>
@@ -291,6 +293,7 @@ configuration key does not exist.
 <refsect2>
 <title><anchor id="gnome-config-get-translated-string"/>gnome_config_get_translated_string()</title>
 <indexterm><primary>gnome_config_get_translated_string</primary></indexterm><programlisting>#define     gnome_config_get_translated_string(path)</programlisting>
+<warning><para><literal>gnome_config_get_translated_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string appropriate for the
 current language. The returned value should be freed with <link linkend="g-free"><function>g_free()</function></link> when no
@@ -307,6 +310,7 @@ longer needed.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-translated-string-with-default"/>gnome_config_get_translated_string_with_default()</title>
 <indexterm><primary>gnome_config_get_translated_string_with_default</primary></indexterm><programlisting>#define     gnome_config_get_translated_string_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_get_translated_string_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string appropriate for the
 current language. The returned value should be freed with <link linkend="g-free"><function>g_free()</function></link> when no
@@ -328,6 +332,7 @@ item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-private-get-string"/>gnome_config_private_get_string()</title>
 <indexterm><primary>gnome_config_private_get_string</primary></indexterm><programlisting>#define     gnome_config_private_get_string(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item from the user's private
 configuration directory as a string. This value should be freed with
@@ -344,6 +349,7 @@ configuration directory as a string. This value should be freed with
 <refsect2>
 <title><anchor id="gnome-config-private-get-string-with-default"/>gnome_config_private_get_string_with_default()</title>
 <indexterm><primary>gnome_config_private_get_string_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_string_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_private_get_string_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item from the user's private
 configuration directory as a string. This value should be freed with
@@ -365,6 +371,7 @@ configuration key does not exist.
 <refsect2>
 <title><anchor id="gnome-config-private-get-translated-string"/>gnome_config_private_get_translated_string()</title>
 <indexterm><primary>gnome_config_private_get_translated_string</primary></indexterm><programlisting>#define     gnome_config_private_get_translated_string(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_translated_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string appropriate for the
 current language. The returned value should be freed with <link linkend="g-free"><function>g_free()</function></link> when no
@@ -382,6 +389,7 @@ storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-get-translated-string-with-default"/>gnome_config_private_get_translated_string_with_default()</title>
 <indexterm><primary>gnome_config_private_get_translated_string_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_translated_string_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_private_get_translated_string_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string appropriate for the
 current language. The returned value should be freed with <link linkend="g-free"><function>g_free()</function></link> when no
@@ -404,6 +412,7 @@ item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-set-string"/>gnome_config_set_string()</title>
 <indexterm><primary>gnome_config_set_string</primary></indexterm><programlisting>#define     gnome_config_set_string(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_set_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the string value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>.</para>
@@ -420,6 +429,7 @@ defined by the <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-set-translated-string"/>gnome_config_set_translated_string()</title>
 <indexterm><primary>gnome_config_set_translated_string</primary></indexterm><programlisting>#define     gnome_config_set_translated_string(path,value)</programlisting>
+<warning><para><literal>gnome_config_set_translated_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the string value <parameter>value</parameter> in the file/section/key defined
 by the <parameter>path</parameter> on the proper section for the current language set by
@@ -437,6 +447,7 @@ by the user.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-set-string"/>gnome_config_private_set_string()</title>
 <indexterm><primary>gnome_config_private_set_string</primary></indexterm><programlisting>#define     gnome_config_private_set_string(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_private_set_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the string value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>. The configuration value is stored in the user's
@@ -454,6 +465,7 @@ private storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-set-translated-string"/>gnome_config_private_set_translated_string()</title>
 <indexterm><primary>gnome_config_private_set_translated_string</primary></indexterm><programlisting>#define     gnome_config_private_set_translated_string(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_private_set_translated_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the string value <parameter>new_value</parameter> in the file/section/key defined by the
 <parameter>path</parameter> on the proper section for the current language set by by the user.
@@ -471,6 +483,7 @@ The configuration value is stored in the user's private storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-int"/>gnome_config_get_int()</title>
 <indexterm><primary>gnome_config_get_int</primary></indexterm><programlisting>#define     gnome_config_get_int(path)</programlisting>
+<warning><para><literal>gnome_config_get_int</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves an integer value configuration item.</para>
 <para>
@@ -485,6 +498,7 @@ Retrieves an integer value configuration item.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-int-with-default"/>gnome_config_get_int_with_default()</title>
 <indexterm><primary>gnome_config_get_int_with_default</primary></indexterm><programlisting>#define     gnome_config_get_int_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_get_int_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves an integer value configuration item.</para>
 <para>
@@ -504,6 +518,7 @@ configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-private-get-int"/>gnome_config_private_get_int()</title>
 <indexterm><primary>gnome_config_private_get_int</primary></indexterm><programlisting>#define     gnome_config_private_get_int(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_int</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a configuration item as an int from the user's private
 configuration storage area.</para>
@@ -519,6 +534,7 @@ configuration storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-get-int-with-default"/>gnome_config_private_get_int_with_default()</title>
 <indexterm><primary>gnome_config_private_get_int_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_int_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_private_get_int_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a configuration item as an int from the user's private
 configuration storage area.</para>
@@ -539,6 +555,7 @@ configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-set-int"/>gnome_config_set_int()</title>
 <indexterm><primary>gnome_config_set_int</primary></indexterm><programlisting>#define     gnome_config_set_int(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_set_int</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the integer value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>.</para>
@@ -555,6 +572,7 @@ defined by the <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-set-int"/>gnome_config_private_set_int()</title>
 <indexterm><primary>gnome_config_private_set_int</primary></indexterm><programlisting>#define     gnome_config_private_set_int(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_private_set_int</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the integer value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>. The value is stored in the user's private
@@ -572,6 +590,7 @@ configuration storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-float"/>gnome_config_get_float()</title>
 <indexterm><primary>gnome_config_get_float</primary></indexterm><programlisting>#define     gnome_config_get_float(path)</programlisting>
+<warning><para><literal>gnome_config_get_float</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a floating-point valued configuration item.</para>
 <para>
@@ -586,6 +605,7 @@ Retrieves a floating-point valued configuration item.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-float-with-default"/>gnome_config_get_float_with_default()</title>
 <indexterm><primary>gnome_config_get_float_with_default</primary></indexterm><programlisting>#define     gnome_config_get_float_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_get_float_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a floating-point valued configuration item.</para>
 <para>
@@ -605,6 +625,7 @@ number or <parameter>def</parameter> if the configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-private-get-float"/>gnome_config_private_get_float()</title>
 <indexterm><primary>gnome_config_private_get_float</primary></indexterm><programlisting>#define     gnome_config_private_get_float(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_float</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a configuration item from the user's private configuration storage
 area.</para>
@@ -621,6 +642,7 @@ number.
 <refsect2>
 <title><anchor id="gnome-config-private-get-float-with-default"/>gnome_config_private_get_float_with_default()</title>
 <indexterm><primary>gnome_config_private_get_float_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_float_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_private_get_float_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a configuration item from the user's private configuration storage
 area.</para>
@@ -641,6 +663,7 @@ number or <parameter>def</parameter> if the configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-set-float"/>gnome_config_set_float()</title>
 <indexterm><primary>gnome_config_set_float</primary></indexterm><programlisting>#define     gnome_config_set_float(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_set_float</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the double value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>.</para>
@@ -657,6 +680,7 @@ defined by the <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-set-float"/>gnome_config_private_set_float()</title>
 <indexterm><primary>gnome_config_private_set_float</primary></indexterm><programlisting>#define     gnome_config_private_set_float(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_private_set_float</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores the double value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter>. The value is stored in the user's private
@@ -674,6 +698,7 @@ configuration storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-bool"/>gnome_config_get_bool()</title>
 <indexterm><primary>gnome_config_get_bool</primary></indexterm><programlisting>#define     gnome_config_get_bool(path)</programlisting>
+<warning><para><literal>gnome_config_get_bool</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a boolean configuration value.</para>
 <para>
@@ -688,6 +713,7 @@ Retrieves a boolean configuration value.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-bool-with-default"/>gnome_config_get_bool_with_default()</title>
 <indexterm><primary>gnome_config_get_bool_with_default</primary></indexterm><programlisting>#define     gnome_config_get_bool_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_get_bool_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves a boolean configuration value.</para>
 <para>
@@ -707,6 +733,7 @@ configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-private-get-bool"/>gnome_config_private_get_bool()</title>
 <indexterm><primary>gnome_config_private_get_bool</primary></indexterm><programlisting>#define     gnome_config_private_get_bool(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_bool</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the item from the user's private configuration storage area.</para>
 <para>
@@ -721,6 +748,7 @@ Retrieves the item from the user's private configuration storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-get-bool-with-default"/>gnome_config_private_get_bool_with_default()</title>
 <indexterm><primary>gnome_config_private_get_bool_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_bool_with_default(path,def)</programlisting>
+<warning><para><literal>gnome_config_private_get_bool_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the item from the user's private configuration storage area.</para>
 <para>
@@ -740,6 +768,7 @@ configuration item does not exist.
 <refsect2>
 <title><anchor id="gnome-config-set-bool"/>gnome_config_set_bool()</title>
 <indexterm><primary>gnome_config_set_bool</primary></indexterm><programlisting>#define     gnome_config_set_bool(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_set_bool</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores boolean value <parameter>new_value</parameter> in the file/section/key defined by
 <parameter>path</parameter>.</para>
@@ -756,6 +785,7 @@ Stores boolean value <parameter>new_value</parameter> in the file/section/key de
 <refsect2>
 <title><anchor id="gnome-config-private-set-bool"/>gnome_config_private_set_bool()</title>
 <indexterm><primary>gnome_config_private_set_bool</primary></indexterm><programlisting>#define     gnome_config_private_set_bool(path,new_value)</programlisting>
+<warning><para><literal>gnome_config_private_set_bool</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores boolean value <parameter>new_value</parameter> in the file/section/key defined by <parameter>path</parameter>.
 The value is stored in the user's private configuration storage area.</para>
@@ -772,6 +802,7 @@ The value is stored in the user's private configuration storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-get-vector"/>gnome_config_get_vector()</title>
 <indexterm><primary>gnome_config_get_vector</primary></indexterm><programlisting>#define     gnome_config_get_vector(path, argcp, argvp)</programlisting>
+<warning><para><literal>gnome_config_get_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed.</para>
@@ -791,6 +822,7 @@ The returned vector should be freed with <link linkend="g-free"><function>g_free
 <refsect2>
 <title><anchor id="gnome-config-get-vector-with-default"/>gnome_config_get_vector_with_default()</title>
 <indexterm><primary>gnome_config_get_vector_with_default</primary></indexterm><programlisting>#define     gnome_config_get_vector_with_default(path, argcp, argvp, def)</programlisting>
+<warning><para><literal>gnome_config_get_vector_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed.</para>
@@ -814,6 +846,7 @@ is returned.
 <refsect2>
 <title><anchor id="gnome-config-private-get-vector"/>gnome_config_private_get_vector()</title>
 <indexterm><primary>gnome_config_private_get_vector</primary></indexterm><programlisting>#define     gnome_config_private_get_vector(path, argcp, argvp)</programlisting>
+<warning><para><literal>gnome_config_private_get_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed. The
@@ -835,6 +868,7 @@ storage area.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-get-vector-with-default"/>gnome_config_private_get_vector_with_default()</title>
 <indexterm><primary>gnome_config_private_get_vector_with_default</primary></indexterm><programlisting>#define     gnome_config_private_get_vector_with_default(path, argcp, argvp, def)</programlisting>
+<warning><para><literal>gnome_config_private_get_vector_with_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the value of a configuration item as a string array.
 The returned vector should be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed. The
@@ -860,6 +894,7 @@ is returned.
 <refsect2>
 <title><anchor id="gnome-config-set-vector"/>gnome_config_set_vector()</title>
 <indexterm><primary>gnome_config_set_vector</primary></indexterm><programlisting>#define     gnome_config_set_vector(path,argc,argv)</programlisting>
+<warning><para><literal>gnome_config_set_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <parameter>path</parameter>.</para>
@@ -879,6 +914,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <refsect2>
 <title><anchor id="gnome-config-private-set-vector"/>gnome_config_private_set_vector()</title>
 <indexterm><primary>gnome_config_private_set_vector</primary></indexterm><programlisting>#define     gnome_config_private_set_vector(path,argc,argv)</programlisting>
+<warning><para><literal>gnome_config_private_set_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Stores vector <parameter>argv</parameter> in the file/section/key defined by <parameter>path</parameter>. The
 configuration value is set in the user's private storage area.</para>
@@ -899,6 +935,7 @@ configuration value is set in the user's private storage area.</para>
 <title><anchor id="gnome-config-assemble-vector"/>gnome_config_assemble_vector ()</title>
 <indexterm><primary>gnome_config_assemble_vector</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_config_assemble_vector    (<link linkend="int">int</link> argc,
                                              const <link linkend="char">char</link> *const argv[]);</programlisting>
+<warning><para><literal>gnome_config_assemble_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This routine returns the the strings in the array contactenated by
 spaces. The return value should be freed with <link linkend="g-free"><function>g_free()</function></link> when it is no longer
@@ -918,6 +955,7 @@ required.</para>
 <refsect2>
 <title><anchor id="gnome-config-has-section"/>gnome_config_has_section()</title>
 <indexterm><primary>gnome_config_has_section</primary></indexterm><programlisting>#define     gnome_config_has_section(path)</programlisting>
+<warning><para><literal>gnome_config_has_section</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Queries the gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
@@ -933,6 +971,7 @@ of the section specified in <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-private-has-section"/>gnome_config_private_has_section()</title>
 <indexterm><primary>gnome_config_private_has_section</primary></indexterm><programlisting>#define     gnome_config_private_has_section(path)</programlisting>
+<warning><para><literal>gnome_config_private_has_section</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Queries the private gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
@@ -948,6 +987,7 @@ of the section specified in <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-init-iterator"/>gnome_config_init_iterator()</title>
 <indexterm><primary>gnome_config_init_iterator</primary></indexterm><programlisting>#define     gnome_config_init_iterator(path)</programlisting>
+<warning><para><literal>gnome_config_init_iterator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates an iterator handle that can be used to
 iterate over the keys in a section in a gnome configuration
@@ -965,6 +1005,7 @@ can be used as an iterator for <link linkend="gnome-config-iterator-next"><funct
 <refsect2>
 <title><anchor id="gnome-config-private-init-iterator"/>gnome_config_private_init_iterator()</title>
 <indexterm><primary>gnome_config_private_init_iterator</primary></indexterm><programlisting>#define     gnome_config_private_init_iterator(path)</programlisting>
+<warning><para><literal>gnome_config_private_init_iterator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates an iterator handle that can be used to
 iterate over the keys in a section in a private gnome configuration
@@ -982,6 +1023,7 @@ can be used as an iterator for <link linkend="gnome-config-iterator-next"><funct
 <refsect2>
 <title><anchor id="gnome-config-init-iterator-sections"/>gnome_config_init_iterator_sections()</title>
 <indexterm><primary>gnome_config_init_iterator_sections</primary></indexterm><programlisting>#define     gnome_config_init_iterator_sections(path)</programlisting>
+<warning><para><literal>gnome_config_init_iterator_sections</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates an iterator handle that can be used to iterate over the
 sections in a gnome configuration file.  <parameter>path</parameter> must refer to a
@@ -999,6 +1041,7 @@ iterator for <link linkend="gnome-config-iterator-next"><function>gnome_config_i
 <refsect2>
 <title><anchor id="gnome-config-private-init-iterator-sections"/>gnome_config_private_init_iterator_sections()</title>
 <indexterm><primary>gnome_config_private_init_iterator_sections</primary></indexterm><programlisting>#define     gnome_config_private_init_iterator_sections(path)</programlisting>
+<warning><para><literal>gnome_config_private_init_iterator_sections</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates an iterator handle that can be used to iterate over the
 sections in a private gnome configuration file.  <parameter>path</parameter> must refer to a
@@ -1018,6 +1061,7 @@ iterator for <link linkend="gnome-config-iterator-next"><function>gnome_config_i
 <indexterm><primary>gnome_config_iterator_next</primary></indexterm><programlisting><link linkend="void">void</link>*       gnome_config_iterator_next      (<link linkend="void">void</link> *iterator_handle,
                                              <link linkend="char">char</link> **key,
                                              <link linkend="char">char</link> **value);</programlisting>
+<warning><para><literal>gnome_config_iterator_next</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 If <parameter>key</parameter> is non-NULL, then <parameter>key</parameter> will point to a <link linkend="g-malloc"><function>g_malloc()</function></link>ed region that
 holds the key.
@@ -1042,6 +1086,7 @@ holds the key.</para>
 <refsect2>
 <title><anchor id="gnome-config-drop-all"/>gnome_config_drop_all ()</title>
 <indexterm><primary>gnome_config_drop_all</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_config_drop_all           (void);</programlisting>
+<warning><para><literal>gnome_config_drop_all</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Drops any information cached in memory that was fetched with
 gnome config. Any pending information that has not been
@@ -1052,6 +1097,7 @@ written to disk is discarded.</para>
 <refsect2>
 <title><anchor id="gnome-config-sync"/>gnome_config_sync ()</title>
 <indexterm><primary>gnome_config_sync</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_config_sync               (void);</programlisting>
+<warning><para><literal>gnome_config_sync</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Writes all of the information modified by gnome-config to the
 disk.
@@ -1069,6 +1115,7 @@ could not be written to disk.
 <refsect2>
 <title><anchor id="gnome-config-sync-file"/>gnome_config_sync_file()</title>
 <indexterm><primary>gnome_config_sync_file</primary></indexterm><programlisting>#define     gnome_config_sync_file(path)</programlisting>
+<warning><para><literal>gnome_config_sync_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Writes all of the information modified by gnome-config to the
 disk for the given file.
@@ -1091,6 +1138,7 @@ when a write was actually attempted and failed.
 <refsect2>
 <title><anchor id="gnome-config-private-sync-file"/>gnome_config_private_sync_file()</title>
 <indexterm><primary>gnome_config_private_sync_file</primary></indexterm><programlisting>#define     gnome_config_private_sync_file(path)</programlisting>
+<warning><para><literal>gnome_config_private_sync_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Writes all of the information modified by gnome-config to the
 disk for the given private file.
@@ -1113,6 +1161,7 @@ when a write was actually attempted and failed.
 <refsect2>
 <title><anchor id="gnome-config-drop-file"/>gnome_config_drop_file()</title>
 <indexterm><primary>gnome_config_drop_file</primary></indexterm><programlisting>#define     gnome_config_drop_file(path)</programlisting>
+<warning><para><literal>gnome_config_drop_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Releases any memory resources that were allocated from accessing
 the configuration file in <parameter>path</parameter>.  Changes will take place after
@@ -1127,6 +1176,7 @@ the configuration file in <parameter>path</parameter>.  Changes will take place 
 <refsect2>
 <title><anchor id="gnome-config-private-drop-file"/>gnome_config_private_drop_file()</title>
 <indexterm><primary>gnome_config_private_drop_file</primary></indexterm><programlisting>#define     gnome_config_private_drop_file(path)</programlisting>
+<warning><para><literal>gnome_config_private_drop_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Releases any memory resources that were allocated from accessing the
 private configuration file in <parameter>path</parameter>.</para>
@@ -1140,6 +1190,7 @@ private configuration file in <parameter>path</parameter>.</para>
 <refsect2>
 <title><anchor id="gnome-config-clean-file"/>gnome_config_clean_file()</title>
 <indexterm><primary>gnome_config_clean_file</primary></indexterm><programlisting>#define     gnome_config_clean_file(path)</programlisting>
+<warning><para><literal>gnome_config_clean_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Cleans up the configuration file specified by <parameter>path</parameter> from any
 configuration information.
@@ -1156,6 +1207,7 @@ Changes will take place after <link linkend="gnome-config-sync"><function>gnome_
 <refsect2>
 <title><anchor id="gnome-config-private-clean-file"/>gnome_config_private_clean_file()</title>
 <indexterm><primary>gnome_config_private_clean_file</primary></indexterm><programlisting>#define     gnome_config_private_clean_file(path)</programlisting>
+<warning><para><literal>gnome_config_private_clean_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Cleans up the private configuration file specified by <parameter>path</parameter> from
 any configuration information.
@@ -1172,6 +1224,7 @@ Changes will take place after <link linkend="gnome-config-sync"><function>gnome_
 <refsect2>
 <title><anchor id="gnome-config-clean-section"/>gnome_config_clean_section()</title>
 <indexterm><primary>gnome_config_clean_section</primary></indexterm><programlisting>#define     gnome_config_clean_section(path)</programlisting>
+<warning><para><literal>gnome_config_clean_section</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Cleans up the section specified by <parameter>path</parameter> from any
 configuration information.  Changes will only take place
@@ -1186,6 +1239,7 @@ after <link linkend="gnome-config-sync"><function>gnome_config_sync()</function>
 <refsect2>
 <title><anchor id="gnome-config-private-clean-section"/>gnome_config_private_clean_section()</title>
 <indexterm><primary>gnome_config_private_clean_section</primary></indexterm><programlisting>#define     gnome_config_private_clean_section(path)</programlisting>
+<warning><para><literal>gnome_config_private_clean_section</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Cleans up the section specified by <parameter>path</parameter> in a private file from any
 configuration information.  Changes will only take place after
@@ -1200,6 +1254,7 @@ configuration information.  Changes will only take place after
 <refsect2>
 <title><anchor id="gnome-config-clean-key"/>gnome_config_clean_key()</title>
 <indexterm><primary>gnome_config_clean_key</primary></indexterm><programlisting>#define     gnome_config_clean_key(path)</programlisting>
+<warning><para><literal>gnome_config_clean_key</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Removes the definition for the key on a gnome configuration file.
 </para>
@@ -1215,6 +1270,7 @@ Changes will take place after <link linkend="gnome-config-sync"><function>gnome_
 <refsect2>
 <title><anchor id="gnome-config-private-clean-key"/>gnome_config_private_clean_key()</title>
 <indexterm><primary>gnome_config_private_clean_key</primary></indexterm><programlisting>#define     gnome_config_private_clean_key(path)</programlisting>
+<warning><para><literal>gnome_config_private_clean_key</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Removes the definition for the key on a private gnome configuration
 file.
@@ -1231,6 +1287,7 @@ Changes will take place after <link linkend="gnome-config-sync"><function>gnome_
 <refsect2>
 <title><anchor id="gnome-config-get-real-path"/>gnome_config_get_real_path()</title>
 <indexterm><primary>gnome_config_get_real_path</primary></indexterm><programlisting>#define     gnome_config_get_real_path(path)</programlisting>
+<warning><para><literal>gnome_config_get_real_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the full (absolute) path to a configuration file.
 </para><variablelist role="params">
@@ -1246,6 +1303,7 @@ key).
 <refsect2>
 <title><anchor id="gnome-config-private-get-real-path"/>gnome_config_private_get_real_path()</title>
 <indexterm><primary>gnome_config_private_get_real_path</primary></indexterm><programlisting>#define     gnome_config_private_get_real_path(path)</programlisting>
+<warning><para><literal>gnome_config_private_get_real_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the full (absolute) path to a configuration file in the user's
 private configuration storage area.
@@ -1262,6 +1320,7 @@ key).
 <refsect2>
 <title><anchor id="gnome-config-push-prefix"/>gnome_config_push_prefix ()</title>
 <indexterm><primary>gnome_config_push_prefix</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_config_push_prefix        (const <link linkend="char">char</link> *path);</programlisting>
+<warning><para><literal>gnome_config_push_prefix</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 <parameter>path</parameter> is a prefix that will be prepended automatically to any
 non-absolute configuration path in gnome config.
@@ -1283,6 +1342,7 @@ be using their own prefix.</para>
 <refsect2>
 <title><anchor id="gnome-config-pop-prefix"/>gnome_config_pop_prefix ()</title>
 <indexterm><primary>gnome_config_pop_prefix</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_config_pop_prefix         (void);</programlisting>
+<warning><para><literal>gnome_config_pop_prefix</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Call this routine to remove the current configuration prefix from the stack.</para>
 <para>
@@ -1293,6 +1353,7 @@ Call this routine to remove the current configuration prefix from the stack.</pa
 <indexterm><primary>gnome_config_make_vector</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_config_make_vector        (const <link linkend="char">char</link> *string,
                                              <link linkend="int">int</link> *argcp,
                                              <link linkend="char">char</link> ***argvp);</programlisting>
+<warning><para><literal>gnome_config_make_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates a new vector from a string as it stored in the config file,
 breaks the string on spaces except if the space is escaped with a

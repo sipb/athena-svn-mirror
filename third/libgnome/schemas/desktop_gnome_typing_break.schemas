@@ -123,6 +123,11 @@
          <long>Broj minuta vremena pisanja prije početka predaha.</long>
       </locale>
 
+      <locale name="hu">
+         <short>Gépelési idő</short>
+         <long>Gépelési idő szünet előtt.</long>
+      </locale>
+
       <locale name="id">
          <short>Waktu pengetikan</short>
          <long>Lama waktu mengetik (dalam menit) sebelum mode jeda dimulai.</long>
@@ -278,6 +283,11 @@
          <long>Кількість хвилин активності перед початком перерви.</long>
       </locale>
 
+      <locale name="vi">
+         <short>Thời gian nhập liệu</short>
+         <long>Số phút nhập liệu trước khi bắt đầu thư giãn.</long>
+      </locale>
+
       <locale name="zh_CN">
          <short>打字时间</short>
          <long>间断模式开始前的最少打字时间。</long>
@@ -410,6 +420,11 @@
       <locale name="hr">
          <short>Pauza</short>
          <long>Broj minuta koliko treba trajati pauza pisanja.</long>
+      </locale>
+
+      <locale name="hu">
+         <short>Szünet ideje</short>
+         <long>Ennyi percig tartson a gépelési szünet.</long>
       </locale>
 
       <locale name="id">
@@ -567,6 +582,11 @@
          <long>Тривалість перерви.</long>
       </locale>
 
+      <locale name="vi">
+         <short>Thời gian thư giãn</short>
+         <long>Số phút thư giãn.</long>
+      </locale>
+
       <locale name="zh_CN">
          <short>间断时间</short>
          <long>打字间断应该持续的分钟数。</long>
@@ -694,6 +714,11 @@
       <locale name="hr">
          <short>Omogući odgađanje pauza</short>
          <long>Bilo da može ili ne zaslon prekida pisanja biti odgođen.</long>
+      </locale>
+
+      <locale name="hu">
+         <short>Szünetek felfüggeszthetők</short>
+         <long>A gépelési szünet felfüggeszthető legyen-e?</long>
       </locale>
 
       <locale name="id">
@@ -846,6 +871,11 @@
          <long>Чи дозволяється відкладати перерву.</long>
       </locale>
 
+      <locale name="vi">
+         <short>Cho phép hoãn thư giãn</short>
+         <long>Có cho phép hoãn thư giãn nhập liệu hay không</long>
+      </locale>
+
       <locale name="zh_CN">
          <short>允许推迟间断</short>
          <long>是否可推迟打字间断屏幕。</long>
@@ -977,7 +1007,7 @@
 
       <locale name="hu">
          <short>Engedélyezve legyen-e a billentyűzetzárolás vagy sem</short>
-         <long>Engedélyezve legyen-e a billentyűzetzárolás vagy sem.</long>
+         <long>Engedélyezve legyen-e a billentyűzetzárolás vagy sem?</long>
       </locale>
 
       <locale name="id">
@@ -1128,6 +1158,11 @@
       <locale name="uk">
          <short>Чи дозволяється блокування клавіатури</short>
          <long>Чи дозволяється блокування клавіатури.</long>
+      </locale>
+
+      <locale name="vi">
+         <short>Có khoá bàn phím hay không</short>
+         <long>Có khoá bàn phím hay không</long>
       </locale>
 
       <locale name="zh_CN">

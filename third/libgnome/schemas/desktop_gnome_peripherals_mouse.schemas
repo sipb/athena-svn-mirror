@@ -737,7 +737,7 @@
 
       <locale name="hu">
         <short>Egyszeres kattintás</short>
-        
+        <long>Gyorsítási szorzó az egér mozgatásához. A -1 érték a rendszer alapértelmezése.</long>
       </locale>
 
       <locale name="id">
@@ -902,7 +902,7 @@
 
       <locale name="vi">
         <short>Nhấp đơn</short>
-        
+        <long>Bộ nhân gia tốc cho chuyển động chuột. Giá trị -1 là mặc định hệ thống.</long>
       </locale>
 
       <locale name="wa">
@@ -1025,7 +1025,7 @@
 
       <locale name="gu">
         <short>ગતિ થ્રેશોલ્ડ</short>
-        <long>પ્રવેગિત માઉસની ગતિ સક્રિય થાય એ પહેલા નિર્દેશકનુ અંતર પિક્સેલાેમાં જ હોવુ જોઈએ. કિંમત -૧ એ સિસ્ટમની મૂળભુત કિંમત છે.</long>
+        <long>પ્રવેગિત માઉસની ગતિ સક્રિય થાય એ પહેલા નિર્દેશકનુ અંતર પિક્સેલોમાં જ હોવુ જોઈએ. કિંમત -૧ એ સિસ્ટમની મૂળભુત કિંમત છે.</long>
       </locale>
 
       <locale name="he">
@@ -1043,6 +1043,11 @@
         <long>Udaljenost u točkama koje pokazivač miša mora preći prije nego se uključi ubrzano pokretanje miša. Postavke sustava su -1.</long>
       </locale>
 
+      <locale name="hu">
+        <short>Mozgási küszöbérték</short>
+        <long>Az a távolság képpontokban, amit az egérnek meg kell tennie, mielőtt a gyorsított egérmozgatás aktivizálódik. A -1 érték a rendszer alapértelmezése.</long>
+      </locale>
+
       <locale name="id">
         <short>Derajat gerakan</short>
         <long>Jarak dalam satuan piksel yang digunakan pointer untuk bergerak, sebelum faktor pengali kecepatan mouse diaktifkan. Nilai -1 adalah nilai awal sistem.</long>
@@ -1055,7 +1060,7 @@
 
       <locale name="it">
         <short>Soglia movimento</short>
-        <long>Numero di pixel di cui muovere il puntatore prima che il movimento accelerato del mouse sia attivato. Impostare a  -1 per usare le preferenze di sistema.</long>
+        <long>Numero di pixel di cui muovere il puntatore prima che il movimento accelerato del mouse sia attivato. Impostare a -1 per usare le preferenze di sistema.</long>
       </locale>
 
       <locale name="ja">
@@ -1811,7 +1816,7 @@
       </locale>
 
       <locale name="vi">
-        <short>Thời gian nhấp đúp</short>
+        <short>Khoảng thời gian nhấp đúp</short>
         <long>Độ dài nhấp đúp</long>
       </locale>
 
@@ -1958,7 +1963,7 @@
       </locale>
 
       <locale name="hu">
-        
+        <short>Mutató kiemelése</short>
         <long>Az egérmutató jelenlegi helyének kiemelése a Control billentyű lenyomásakor és felengedésekor</long>
       </locale>
 
@@ -2219,7 +2224,7 @@
 
       <locale name="en_CA">
 	<short>Cursor font</short>
-	<long>Font name of the cursor. If unset, the default font is used. This value is only propagated to the X server start of each session, so changing it mid-session won&apos;t have an effect until the next time you log in.</long>
+	<long>Font name of the cursor. If unset, the default font is used. This value is only propagated to the X server start of each session, so changing it mid-session will not have an effect until the next time you log in.</long>
       </locale>
 
       <locale name="en_GB">
@@ -2438,8 +2443,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Font con trỏ</short>
-	
+	<short>Phông con trỏ</short>
+	<long>Tên phông của con trỏ. Nếu bỏ chọn, phông mặc định sẽ được dùng. Giá trị này chỉ tác động khi khởi động máy chủ X mỗi phiên làm việc, vì thế thay đổi giá trị này khi đang chạy sẽ không tác động gì cho đến khi bạn đăng nhập lại.</long>
       </locale>
 
       <locale name="wa">
@@ -2540,7 +2545,7 @@
 
       <locale name="en_CA">
 	<short>Cursor theme</short>
-	<long>Cursor theme name. Used only by Xservers that support Xcursor, such as XFree86 4.3 and later. This value is only propagated to the X server at the start of each session, so changing it mid-session won&apos;t have an effect until the next time you log in.</long>
+	<long>Cursor theme name. Used only by Xservers that support Xcursor, such as XFree86 4.3 and later. This value is only propagated to the X server at the start of each session, so changing it mid-session will not have an effect until the next time you log in.</long>
       </locale>
 
       <locale name="en_GB">
@@ -2759,6 +2764,11 @@
 	<long>Тема курсора. Використовується лише серверами системи  Xservers, які підтримують розширення Xcursor, такими як XFree86 4.3 і пізнішими версіями. Це значення передається системі X Window лише на початку кожного сеансу, так що зміни, внесені протягом сеансу, не матимуть ефекту до наступного входу в сеанс.</long>
       </locale>
 
+      <locale name="vi">
+	<short>Sắc thái Con trỏ</short>
+	<long>Tên sắc thái con trỏ. Chỉ được dùng bởi Xserver hỗ trợ Xcursor, như XFree86 4.3 và mới hơn. Giá trị này chỉ tác động khi khởi động máy chủ X mỗi phiên làm việc, vì thế thay đổi giá trị này khi đang chạy sẽ không tác động gì cho đến khi bạn đăng nhập lại.</long>
+      </locale>
+
       <locale name="wa">
 	<short>Tinme pol cursoe</short>
 	<long>No do tinme pol cursoe. Eployî seulmint påzès sierveus X11 ki sopoirtèt «Xcursor», come XFree86 modêye 4.3 et å dzeu. Cisse valixhance chal est evoyeye å sierveu X al comince di tchaeke session, dj&apos; ô bén, el candjî å mitan d&apos; ene session n&apos; årè nol efet disk&apos; a l&apos; elodjaedje shuvant.</long>
@@ -2857,7 +2867,7 @@
 
       <locale name="en_CA">
 	<short>Cursor size</short>
-	<long>Size of the cursor referenced by cursor_theme. This value is only propagated to the X server start of each session, so changing it mid-session won&apos;t have an effect until the next time you log in.</long>
+	<long>Size of the cursor referenced by cursor_theme. This value is only propagated to the X server start of each session, so changing it mid-session will not have an effect until the next time you log in.</long>
       </locale>
 
       <locale name="en_GB">
@@ -2912,7 +2922,7 @@
 
       <locale name="hu">
 	<short>Kurzor mérete</short>
-	
+	<long>A cursor_theme kulcs által hivatkozott kurzor mérete. Ez az érték csak az egyes munkamenetek indításakor kerül átadásra az X-kiszolgálónak, így megváltoztatása egy munkamenet közepén semmilyen hatással sincs a következő bejelentkezésig.</long>
       </locale>
 
       <locale name="id">
@@ -3073,6 +3083,11 @@
       <locale name="uk">
 	<short>Розмір курсора</short>
 	<long>Розмір курсора, що визначається темою курсора(cursor_theme). Це значення передається системі X Window лише на початку кожного сеансу, так що зміни, внесені протягом сеансу, не матимуть ефекту до наступного входу в сеанс.</long>
+      </locale>
+
+      <locale name="vi">
+	<short>Kích thước con trỏ</short>
+	<long>Kích thước con trỏ tham chiếu bởi cursor_theme. Giá trị này chỉ tác động khi khởi động máy chủ X mỗi phiên làm việc, vì thế thay đổi giá trị này khi đang chạy sẽ không tác động gì cho đến khi bạn đăng nhập lại.</long>
       </locale>
 
       <locale name="wa">

@@ -54,6 +54,7 @@ operations.
 <refsect2>
 <title><anchor id="gnome-i18n-get-language-list"/>gnome_i18n_get_language_list ()</title>
 <indexterm><primary>gnome_i18n_get_language_list</primary></indexterm><programlisting>const <link linkend="GList">GList</link>* gnome_i18n_get_language_list   (const <link linkend="gchar">gchar</link> *category_name);</programlisting>
+<warning><para><literal>gnome_i18n_get_language_list</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This computes a list of language strings that the user wants.  It searches in
 the standard environment variables to find the list, which is sorted in order
@@ -74,6 +75,7 @@ owned by gnome-i18n.
 <title><anchor id="gnome-i18n-push-c-numeric-locale"/>gnome_i18n_push_c_numeric_locale ()</title>
 <indexterm><primary>gnome_i18n_push_c_numeric_locale</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_i18n_push_c_numeric_locale
                                             (void);</programlisting>
+<warning><para><literal>gnome_i18n_push_c_numeric_locale</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Saves the current LC_NUMERIC locale and sets it to "C"
 This way you can safely read write floating point numbers all in the
@@ -88,6 +90,7 @@ The calls can be nested.</para>
 <refsect2>
 <title><anchor id="gnome-i18n-pop-c-numeric-locale"/>gnome_i18n_pop_c_numeric_locale ()</title>
 <indexterm><primary>gnome_i18n_pop_c_numeric_locale</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_i18n_pop_c_numeric_locale (void);</programlisting>
+<warning><para><literal>gnome_i18n_pop_c_numeric_locale</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Restores the LC_NUMERIC locale to what it was 
 before the matching <link linkend="gnome-i18n-push-c-numeric-locale"><function>gnome_i18n_push_c_numeric_locale()</function></link>. If these calls

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-03-20 18:04+0200\n"
 "Last-Translator: Ismail Aslan <ismail@iaslan.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -71,7 +71,7 @@ msgstr "Kullanıcı arayüzü olayları"
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "Terminal bulunamadı, xterm kullanılıyor, ancak çalışmayabilir"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "GNOME GConf Desteği"
 

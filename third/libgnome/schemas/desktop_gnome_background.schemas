@@ -128,7 +128,7 @@
 
         <locale name="hu">
         <short>Munkaasztal hátterének megjelenítése</short>
-        
+        <long>A GNOME megrajzolja-e az asztal hátterét</long>
         </locale>
 
         <locale name="id">
@@ -441,7 +441,7 @@
 
         <locale name="hu">
         <short>Kép beállításai</short>
-         
+        <long>Meghatározza a wallpaper_filename kulcsban beállított képernyővédő megjelenését.Lehetséges értékek: &quot;none&quot; (nincs) &quot;wallpaper&quot; (mozaik), &quot;centered&quot; (középre igazított),&quot;scaled&quot; (kifeszített), &quot;stretched&quot; (nyújtott).</long> 
         </locale>
 
         <locale name="id">
@@ -1058,7 +1058,7 @@
 
         <locale name="hu">
         <short>Kép átlátszósága</short>
-        
+        <long>A háttérkép rajzolásához használandó átlátszatlanság</long>
         </locale>
 
         <locale name="id">
@@ -1073,7 +1073,7 @@
 
         <locale name="it">
         <short>Opacità immagine</short>
-        <long>Opacitò con cui disegnare l&apos;immagine di sfondo</long>
+        <long>Opacità con cui disegnare l&apos;immagine di sfondo</long>
         </locale>
 
         <locale name="ja">
@@ -1364,7 +1364,7 @@
 
         <locale name="hu">
         <short>Elsődleges szín</short>
-        
+        <long>Színátmenet rajzolásánál a bal vagy a felső szín, vagy az egyszínű háttér színe.</long>
         </locale>
 
         <locale name="id">
@@ -1659,7 +1659,7 @@
         </locale>
 
         <locale name="gu">
-        <short>ગાૈણ રંગ</short>
+        <short>ગૌણ રંગ</short>
         <long>ઢાળો દોરવા માટે જમણો અથવા નીચેનો રંગ વપરાય છે, ઘાટો રંગ વપરાતો નથી.</long>
         </locale>
 
@@ -1680,7 +1680,7 @@
 
         <locale name="hu">
         <short>Másodlagos szín</short>
-        
+        <long>Színátmenet rajzolásánál a jobb vagy az alsó szín, egyszínű háttér esetén nem használt.</long>
         </locale>
 
         <locale name="id">
@@ -1849,7 +1849,7 @@
         </locale>
 
         <locale name="vi">
-        <short>Màu phục</short>
+        <short>Màu phụ</short>
         <long>Màu Phải hoặc Dưới khi vẽ gradients, không được dùng để vẽ màu đặc.</long>
         </locale>
 
@@ -1991,7 +1991,7 @@
 
         <locale name="hu">
         <short>Színárnyalat típusa</short>
-        <long>Hogyan legyen árnyalva a háttérszín. Lehetséges értékek: &quot;horizontal-gradient&quot;, &quot;vertical-gradient&quot;, és &quot;solid&quot;</long>
+        <long>Hogyan legyen árnyalva a háttérszín. Lehetséges értékek: &quot;horizontal-gradient&quot; (vízszintes színátmenet), &quot;vertical-gradient&quot; (függőleges színátmenet), és &quot;solid&quot; (egyszínű).</long>
         </locale>
 
         <locale name="id">
