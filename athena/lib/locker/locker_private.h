@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.5 2000-04-24 02:13:44 mwhitson Exp $ */
+/* $Id: locker_private.h,v 1.6 2001-08-16 14:27:52 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -128,6 +128,7 @@ int locker__canonicalize_path(locker_context context, int check,
 			      char **pathp, char **extp);
 int locker__build_mountpoint(locker_context context, locker_attachent *at);
 int locker__remove_mountpoint(locker_context context, locker_attachent *at);
+void locker__put_mountpoint(locker_context context, locker_attachent *at);
 
 /* Prototypes from util.c */
 int locker__read_line(FILE *fp, char **buf, int *bufsize);
