@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1999-06-01 19:17:59 ghudson Exp $
+# $Id: Makefile,v 1.8.2.1 2000-11-04 16:06:35 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -68,7 +68,8 @@ install:
 	install -c -m 0644 minor_perm.sun4m ${DESTDIR}${ETCDIR}
 	install -c -m 0644 minor_perm.sun4u ${DESTDIR}${ETCDIR}
 	install -c -m 0644 name_to_major.sun4m ${DESTDIR}${ETCDIR}
-	install -c -m 0644 name_to_major.sun4u ${DESTDIR}${ETCDIR}
+	install -c -m 0644 name_to_major.134.sun4u ${DESTDIR}${ETCDIR}
+	install -c -m 0644 name_to_major.136.sun4u ${DESTDIR}${ETCDIR}
 	install -c -m 0644 name_to_sysnum ${DESTDIR}${ETCDIR}
 	install -c -m 0644 netspy ${DESTDIR}${ETCDIR}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}

@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3.2.2 2000-06-08 16:36:20 ghudson Exp $
+# $Id: phase3.sh,v 1.3.2.3 2000-11-04 16:06:43 ghudson Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -108,7 +108,15 @@ for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
 		cp -p /os$i /root$i
 	fi
 done
-cp -p "/srvd/etc/name_to_major.$platform" etc/name_to_major
+installer_type=`grep dad /etc/name_to_major | awk '{print $2}'`;
+case $platform in
+sun4m)
+	cp -p "/srvd/etc/name_to_major.$platform" etc/name_to_major
+	;;
+sun4u)
+	cp -p "/srvd/etc/name_to_major.$installer_type.$platform" etc/name_to_major
+	;;
+esac
 cp -p "/srvd/etc/driver_aliases.$platform" etc/driver_aliases
 cp -p "/srvd/etc/driver_classes.$platform" etc/driver_classes
 cp -p "/srvd/etc/minor_perm.$platform" etc/minor_perm

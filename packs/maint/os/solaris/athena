@@ -1,4 +1,4 @@
-# $Id: athena,v 1.10.2.2 2000-01-11 19:07:17 ghudson Exp $
+# $Id: athena,v 1.10.2.3 2000-11-04 16:06:46 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -201,8 +201,15 @@ if [ "$PUBLIC" = true ]; then
 			cp -p "/srvd/etc/driver_classes.$platform" \
 			  /etc/driver_classes
 			cp -p "/srvd/etc/minor_perm.$platform" /etc/minor_perm
-			cp -p "/srvd/etc/name_to_major.$platform" \
-			  /etc/name_to_major
+			installer_type=`grep dad /etc/name_to_major | awk '{print $2}'`;
+			case $platform in
+			sun4m)
+				cp -p "/srvd/etc/name_to_major.$platform" etc/name_to_major
+				;;
+			sun4u)
+				cp -p "/srvd/etc/name_to_major.$installer_type.$platform" etc/name_to_major
+				;;
+			esac
 			sync
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
