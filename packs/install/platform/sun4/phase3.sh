@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.10 1997-05-08 00:51:04 ghudson Exp $
+# $Id: phase3.sh,v 1.11 1997-05-15 03:40:40 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -11,6 +11,12 @@ if [ "$CPUTYPE" = SPARC/4 ]; then
 	/os/usr/sbin/eeprom output-device=screen:r1152x900x94
 	/os/usr/sbin/eeprom fcode-debug?=true
 fi
+
+# Sun documents "uname -i" as the way to find stuff under /platform or
+# /usr/platform.  We rely in the fact that the uname -i names are symlinks
+# to the uname -m names, in order to save space on the root.  Be on the
+# alert for changes.
+platform=`uname -m`
 
 ROOT=/root; export ROOT
 echo "Mounting hard disk's root partition..."
@@ -47,6 +53,8 @@ echo "copying kernel modules from /srvd/kernel"
 cp -p /srvd/kernel/drv/* /root/kernel/drv/
 cp -p /srvd/kernel/fs/* /root/kernel/fs/
 cp -p /srvd/kernel/strmod/* /root/kernel/strmod/
+echo "copying platform directory"
+cp -rp "/os/platform/$platform" "/root/platform/$platform"
 
 echo "Create devices and dev"
 mkdir /root/dev
@@ -137,6 +145,7 @@ cd /root/var
 cpio -idm </srvd/install/var.cpio
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
+cp -p /srvd/var/spool/cron/crontabs/root /var/spool/cron/crontabs/root
 
 cd /var/usr/vice
 for i in  CellServDB SuidCells 
@@ -152,10 +161,8 @@ cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
-# Replace `uname -m` with `uname -i` when the miniroot is running 2.5.1 or
-# better.
-cp -p /os/platform/`uname -m`/ufsboot /root
-installboot /os/usr/platform/`uname -m`/lib/fs/ufs/bootblk $rrootdrive
+cp -p "/os/platform/$platform/ufsboot" /root
+installboot "/os/usr/platform/$platform/lib/fs/ufs/bootblk" "$rrootdrive"
 cd /root
 
 # Note: device scripts depend on ROOT being set properly.
