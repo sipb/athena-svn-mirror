@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.8 1989-10-02 08:37:45 jtkohl Exp $ */
+/* $Id: ZMkAuth.c,v 1.9 1989-10-02 08:38:23 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.8 1989-10-02 08:37:45 jtkohl Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.9 1989-10-02 08:38:23 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
