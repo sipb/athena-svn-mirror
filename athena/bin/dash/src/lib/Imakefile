@@ -158,12 +158,12 @@ all::	sintable.h
 
 NormalLibraryTarget(Xj,${OBJS})
 #if defined(InstallXj)
-InstallLibrary(Xj,${XJ_LIB_DIR})
+InstallLibrary(Xj,${DESTDIR}${XJ_LIB_DIR})
 #endif
 
 #if defined(InstallXj)
-MakeDirectories(install,$(XJ_INC_DIR)/Xj)
-InstallMultiple($(HEADERS),$(XJ_INC_DIR)/Xj)
+MakeDirectories(install,$(DESTDIR)$(XJ_INC_DIR)/Xj)
+InstallMultiple($(HEADERS),$(DESTDIR)$(XJ_INC_DIR)/Xj)
 #endif
 
 

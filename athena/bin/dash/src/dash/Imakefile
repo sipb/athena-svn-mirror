@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/Imakefile,v $
- *   $Author: vanharen $ 
+ *   $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -96,13 +96,13 @@ AllTarget(${DASHRESOURCES})
 
 NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
 NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
-InstallProgram($(DASH),$(DASH_BIN_DIR))
+InstallProgram($(DASH),$(DESTDIR)$(DASH_BIN_DIR))
 
-InstallNonExec(${DASH}.1,${MAN_DIR}/${DASH}.1)
-InstallNonExec(${DASHRESOURCES},${DASH_APP_DIR}/${DASHRESOURCES})
-InstallNonExec(arrow,${DASH_XBM_DIR}/arrow)
-InstallNonExec(question,${DASH_XBM_DIR}/question)
-InstallNonExec(Dash.xbm,${DASH_XBM_DIR}/Dash.xbm)
+InstallNonExec(${DASH}.1,${DESTDIR}${MAN_DIR}/${DASH}.1)
+InstallNonExec(${DASHRESOURCES},${DESTDIR}${DASH_APP_DIR}/${DASHRESOURCES})
+InstallNonExec(arrow,${DESTDIR}${DASH_XBM_DIR}/arrow)
+InstallNonExec(question,${DESTDIR}${DASH_XBM_DIR}/question)
+InstallNonExec(Dash.xbm,${DESTDIR}${DASH_XBM_DIR}/Dash.xbm)
 
 DependTarget()
 
