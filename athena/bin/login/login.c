@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.44 1992-04-28 17:32:27 lwvanels Exp $
+ * $Id: login.c,v 1.45 1992-04-30 14:47:46 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.44 1992-04-28 17:32:27 lwvanels Exp $";
+static char *rcsid = "$Id: login.c,v 1.45 1992-04-30 14:47:46 lwvanels Exp $";
 #endif
 
 /*
@@ -73,6 +73,8 @@ typedef struct in_addr inaddr_t;
 typedef int sigtype;
 #endif
 
+#define SETPAG
+
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
 
@@ -119,7 +121,6 @@ char	maildir[30] =	"/usr/spool/mail/";
 char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
-char	noremote[] =	"/etc/noremote";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
 
@@ -206,13 +207,15 @@ int	kflag=0;
 int 	Kflag=0;
 int	usererr = -1;
 int	krbflag = FALSE;	/* True if Kerberos-authenticated login */
+#ifdef SETPAG
+int	pagflag = FALSE;	/* True if we call setpag() */
+#endif
 int	tmppwflag = FALSE;	/* True if passwd entry is temporary */
 int	tmpdirflag = FALSE;	/* True if home directory is temporary */
 int	inhibitflag = FALSE;	/* inhibit account creation on the fly */
 int	attachable = FALSE;	/* True if /etc/noattach doesn't exist */
 int	attachedflag = FALSE;	/* True if homedir attached */
 int	errorprtflag = FALSE;	/* True if login error already printed */
-int	no_remote = FALSE;	/*True if /etc/noremote exists */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -233,7 +236,6 @@ main(argc, argv)
     long salt;
     int ldisc = 0, zero = 0, found = 0, i, j;
     char **envnew;
-    FILE *nrfd;
 #ifdef POSIX
     struct termios tio;
 #endif
@@ -398,7 +400,6 @@ main(argc, argv)
     invalid = FALSE;
     inhibitflag = !access(inhibit,F_OK);
     attachable = access(noattach, F_OK);
-    no_remote = !access(noremote, F_OK);
     do {
 	    errorprtflag = 0;
 	    ldisc = 0;
@@ -463,24 +464,11 @@ main(argc, argv)
 	    setpriority(PRIO_PROCESS, 0, -4);
 	    pp = getlongpass("Password:");
 	    
-	    if (!found) { /* check if we can create an entry */
-	      if (inhibitflag) {
-		invalid = TRUE;
-	      } else if (no_remote && (hflag || rflag || kflag || Kflag)) {
-		invalid = TRUE;
-		fprintf(stderr, "You are not allowed to log in here.\n");
-		if ((nrfd = fopen(noremote,"r")) != NULL) {
-		  while ((c = getc(nrfd)) != EOF)
-		    putchar(c);
-		  fflush(stdout);
-		  fclose(nrfd);
-		}
-		errorprtflag = TRUE;
-		goto leavethis;
-	      }
-	      else /* we are allowed to create an entry */
-		pwd = &nouser;
-	    }
+	    if (!found) /* check if we can create an entry */
+		    if (inhibitflag)
+			invalid = TRUE;
+		    else /* we are allowed to create an entry */
+			pwd = &nouser;
 
 	    /* Modifications for Kerberos authentication -- asp */
 	    SCPYN(pp2, pp);
@@ -507,7 +495,12 @@ main(argc, argv)
 	    setpriority(PRIO_PROCESS, 0, 0);
 
 	    if (!invalid && (pwd->pw_uid != 0)) { 
-		    /* if not root, get Kerberos tickets */
+#ifdef SETPAG
+		/* We only call setpag() for non-root users */
+		setpag();
+		pagflag = TRUE;
+#endif
+		/* if not root, get Kerberos tickets */
 		if(krb_get_lrealm(realm, 1) != KSUCCESS) {
 		    SCPYN(realm, KRB_REALM);
 		}
@@ -1279,7 +1272,12 @@ dofork()
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
 
-    
+#ifdef SETPAG
+    /* Destroy any AFS tokens */
+    if (pagflag)
+	ktc_ForgetAllTokens();
+#endif
+
     /* Detach home directory if previously attached */
     if (attachedflag)
 	    (void) detach_homedir();
