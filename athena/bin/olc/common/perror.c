@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.2 1991-02-24 11:27:33 lwvanels Exp $
+ *	$Id: perror.c,v 1.3 1991-04-08 20:58:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -17,7 +17,7 @@
 #include <sys/file.h>
 #include <sys/uio.h>
 #include <sys/time.h>           /* System time definitions. */
-#ifdef m68k
+#ifdef _AUX_SOURCE
 #include <time.h>
 #endif
 
@@ -82,7 +82,7 @@ void time_now(time_buf)
 
 
 /*
- * Function:	perror() similar to that of the C library, except that
+ * Function:	olc_perror() similar to that of the C library, except that
  *	a datestamp precedes the message printed.
  * Arguments:	msg:	Message to print.
  * Returns:	nothing
@@ -92,27 +92,15 @@ void time_now(time_buf)
 extern int sys_nerr;
 extern char *sys_errlist[];
 extern int errno;
-static char time_buf[25];
  
-#ifndef m68k
-/* punt it all, the mac can't deal with multiply defined symbols */
-#ifdef mips
-int errno; /* declared in same file as perror in libc,
-	      so we must declare it here to avoid
-	      multiple defs & linker lossage */
-#endif
-
 void
-#if __STDC__
-perror(char *msg)
-#else
-perror(msg)
+olc_perror(msg)
      char *msg;
-#endif
 {
 	register int error_number;
 	struct iovec iov[6];
 	register struct iovec *v = iov;
+	static char time_buf[25];
 
 	error_number = errno;
 
@@ -149,4 +137,3 @@ perror(msg)
 	(void) writev(2, iov, (v - iov) + 1);
 }
 
-#endif
