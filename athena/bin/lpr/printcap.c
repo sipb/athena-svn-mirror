@@ -12,6 +12,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #include "lp.local.h"
@@ -125,7 +126,7 @@ getclus()
 	if ((hv = hes_resolve(host, "cluster")) == NULL)
 		return NULL;
 	while (*hv) {
-		if (strncmp(*hv, "lpr ", len) == NULL) {
+		if (strncmp(*hv, "lpr ", len) == 0) {
 			strcpy(cluster, *hv + len);
 			return cluster;
 			}
