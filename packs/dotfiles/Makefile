@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2003-03-15 16:16:03 ghudson Exp $
+# $Id: Makefile,v 1.15 2003-03-15 16:18:21 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -10,9 +10,11 @@ ATHLOGINDIR=${ATHRETCDIR}/login
 
 all:
 	cd os/${OS} && ${MAKE} $@
+	cd gnome && ${MAKE} $@
 
 check:
 	cd os/${OS} && ${MAKE} $@
+	cd gnome && ${MAKE} $@
 
 install:
 	mkdir -p ${DESTDIR}${PROTOTYPE}
@@ -47,9 +49,13 @@ install:
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
 	install -c -m 0755 xsession ${DESTDIR}${SYSTEM}
 	cd os/${OS} && ${MAKE} $@
+	cd gnome && ${MAKE} $@
 
 clean:
 	cd os/${OS} && ${MAKE} $@
+	cd gnome && ${MAKE} $@
 
 distclean:
 	cd os/${OS} && ${MAKE} $@
+	cd gnome && ${MAKE} $@
+

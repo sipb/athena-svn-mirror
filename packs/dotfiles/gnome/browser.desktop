@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=WWW
+Comment=Web browser
+Exec=/usr/athena/share/gnome/athena/browser-script
+Icon=/usr/athena/share/gnome/athena/browser-icon
+Type=Application

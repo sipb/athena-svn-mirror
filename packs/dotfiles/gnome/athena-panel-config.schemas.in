@@ -1,0 +1,95 @@
+# This is not what a GConf schemas file really looks like.  We process
+# it with gen-schemas.pl to produce the much more verbose XML format
+# used by schemas.  But this format lets the reader see what's going
+# on much better.
+
+# Indentation is significant.  Blank lines and lines beginning with
+# '#' are ignored.  Don't use tabs.  Use "[foo]" lines to specify the
+# key path and "var = value" lines to spit out schemas.  Values can be
+# integers, booleans, quoted strings, or lists of strings.  List of
+# strings can be split across multiple lines for clarity.
+
+[schemas/apps/panel/default_profiles/medium]
+ [general]
+  panel_id_list = [athena-edge]
+  object_id_list = [athena-menu,athena-mail,athena-browser,athena-terminal,
+                    athena-editor,athena-logout]
+  applet_id_list = [athena-tasklist,athena-clock]
+
+ [panels/athena-edge]
+  panel_type = "edge-panel"
+  panel_size = "panel-size-medium"
+  panel_hide_mode = 0
+  panel_hide_state = 0
+  screen = 0
+  monitor = 0
+  screen_edge = "panel-edge-bottom"
+  hide_buttons_enabled = "false"
+  hide_buttons_pixmaps_enabled = "false"
+  panel_background_type = "no-background"
+  panel_background_pixmap = ""
+  panel_background_pixmap_fit = "true"
+  panel_background_pixmap_stretch = "false"
+  panel_background_pixmap_rotate = "true"
+  panel_background_color = "#ffffff"
+  panel_background_color_alpha = 65535
+
+ [objects/athena-menu]
+  object_type = "menu-object"
+  path = "file:///var/athena/menus"
+  main-menu = false
+  global-main = false
+  custom-icon = true
+  custom-icon-file = "/usr/athena/share/gnome/athena/menu-icon"
+  panel_id = "athena-edge"
+  position = 3
+  panel_right_stick = false
+
+ [objects/athena-mail]
+  object_type = "launcher-object"
+  launcher_location = "file:///usr/athena/share/gnome/athena/mail.desktop"
+  panel_id = "athena-edge"
+  position = 54
+  panel_right_stick = false
+
+ [objects/athena-browser]
+  object_type = "launcher-object"
+  launcher_location = "file:///usr/athena/share/gnome/athena/browser.desktop"
+  panel_id = "athena-edge"
+  position = 105
+  panel_right_stick = false
+
+ [objects/athena-terminal]
+  object_type = "launcher-object"
+  launcher_location = "file:///usr/athena/share/gnome/athena/terminal.desktop"
+  panel_id = "athena-edge"
+  position = 156
+  panel_right_stick = false
+
+ [objects/athena-editor]
+  object_type = "launcher-object"
+  launcher_location = "file:///usr/athena/share/gnome/athena/editor.desktop"
+  panel_id = "athena-edge"
+  position = 207
+  panel_right_stick = false
+
+ [applets/athena-tasklist]
+  object_type = "bonobo-applet"
+  bonobo_iid = "OAFIID:GNOME_TasklistApplet"
+  panel_id = "athena-edge"
+  position = 636
+  panel_right_stick = true
+
+ [objects/athena-logout]
+  object_type = "launcher-object"
+  launcher_location = "file:///usr/athena/share/gnome/athena/logout.desktop"
+  panel_id = "athena-edge"
+  position = 124
+  panel_right_stick = true
+
+ [applets/athena-clock]
+  object_type = "bonobo-applet"
+  bonobo_iid = "OAFIID:GNOME_ClockApplet"
+  panel_id = "athena-edge"
+  position = 73
+  panel_right_stick = true

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Logout
+Comment=Log out of Athena
+Exec=/usr/athena/share/gnome/athena/logout-script
+Icon=/usr/athena/share/gnome/athena/logout-icon
+Type=Application
