@@ -212,16 +212,6 @@ write_data_to_file (CamelMimePart *part, const char *name, gboolean unique)
 	/* should this have progress of what its doing? */
 	mail_msg_wait (mail_save_part (part, name, write_data_written, &ret));
 	
-	/* Athena hack: chmod the file read-only as a hint to editing-
-	   capable viewers that they should not allow editing before
-	   the file is saved under a different name. */
-	{
-		struct stat st;
-
-		if (ret && stat (name, &st) == 0)
-			chmod (name, st.st_mode & 0444);
-	}
-
 	return ret;
 }
 
@@ -427,6 +417,16 @@ launch_cb (GtkWidget *widget, gpointer user_data)
 		return;
 	}
 	
+	/* Athena hack: chmod the file read-only as a hint to editing-
+	   capable viewers that they should not allow editing before
+	   the file is saved under a different name. */
+	{
+		struct stat st;
+
+		if (stat (filename, &st) == 0)
+			chmod (filename, st.st_mode & 0444);
+	}
+
 	command = g_strdup_printf ("%s %s%s &", app->command,
 				   app->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ?
 				   "file://" : "", filename);
