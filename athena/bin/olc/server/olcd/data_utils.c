@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.10 1990-01-30 03:15:07 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.11 1990-01-30 03:24:10 vanharen Exp $";
 #endif
 
 
@@ -59,10 +59,12 @@ extern PROC         Proc_List[];
 static int validate_instance (KNUCKLE *);
 static int assign_instance (USER *);
 static int was_connected (KNUCKLE *, KNUCKLE *);
+void disconnect_knuckles (KNUCKLE *, KNUCKLE *);
 #else
 static int validate_instance ();
 static int assign_instance ();
 static int was_connected ();
+void disconnect_knuckles ();
 #endif /* STDC */
 
 
