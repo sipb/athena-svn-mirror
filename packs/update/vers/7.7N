@@ -3,6 +3,7 @@
 
 case ${MACH} in
 DS*)
+	echo "/etc/crontab"			>> ${CONFCHG}
 	;;
 RSAIX)
 	;;
