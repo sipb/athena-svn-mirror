@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.9 1990-12-31 21:25:37 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.10 1991-01-08 16:47:49 lwvanels Exp $
  */
 
 #include "requests.h"
@@ -19,10 +19,6 @@
 #include <strings.h>
 #include <ctype.h>
 #include <syslog.h>
-
-#ifdef KERBEROS
-#include <krb.h>
-#endif /* KERBEROS */
 
 struct 	entry {
   int fd;		/* file descriptor */
