@@ -48,6 +48,23 @@ ALmodifyRemoveUser(ALsession session, char buf[])
   return 0L;
 }
 
+long ALmodifyAppendPasswd(ALsession session, int fd)
+{
+  char buf[256];
+
+  sprintf(buf, "%s:x:%d:%d:%s:%s:%s\n",
+	  ALpw_name(session),
+	  ALpw_uid(session),
+	  ALpw_gid(session),
+	  ALpw_gecos(session),
+	  ALpw_dir(session),
+	  ALpw_shell(session));
+
+  if (write(fd, buf, strlen(buf)) <0) return((long) errno);
+
+  return 0L;
+}
+
 /* ALmodifyLinesOfFile() is a generalized way to lock a file
  * and remove/modify all lines or a specific line
  * e.g. removing any line beginning with "brlewis:" from /etc/passwd
