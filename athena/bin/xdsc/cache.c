@@ -18,7 +18,7 @@
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.4 1991-02-05 08:59:48 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.5 1991-02-11 16:15:59 sao Exp $";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];
@@ -27,6 +27,7 @@ extern Boolean	debug;
 extern char	filebase[];
 extern int	topscreen;
 extern Widget	topW;
+extern void	TopSelect();
 
 extern char	axis[];
 
@@ -51,7 +52,7 @@ int	which;
 }
 
 int
-EnterMeeting(newlong, newshort)
+SaveMeetingNames(newlong, newshort)
 char	*newlong;
 char	*newshort;
 {
@@ -67,7 +68,7 @@ char	*newshort;
 		strcpy (currentmtglong, newlong);
 		strcpy (oldshort, currentmtgshort);
 		strcpy (currentmtgshort, newshort);
-		if (HighestTransaction() == -1) {
+		if (SetUpTransactionNumbers() == -1) {
 			strcpy (currentmtglong, oldlong);
 			strcpy (currentmtgshort, oldshort);
 			return (-1);
@@ -108,13 +109,6 @@ Boolean	update;
 				currentmtglong, first, last, num);
 	PutUpStatusMessage(command);
 
-/*
-	if (num > last) {
-		sprintf (command,"A request was made for transaction #%d of\nmeeting '%s'.  Unfortunately, the last\ntransaction is #%d.", num, currentmtglong, last);
-		PutUpWarning("WARNING", command, True);
-	}
-*/
-
 	if (GetTransactionFile(num) == -1)
 		return (-1);
 
@@ -131,18 +125,13 @@ Boolean	update;
 			&current, &prev, &next, &pref, 
 			&nref, &fref, &lref);
 
-	if (current > last) {
-		sprintf (command,"Reading transaction information for #%d of\nmeeting '%s' returned %d\nas the current transaction.", num, currentmtglong, num);
-		PutUpWarning("WARNING", command, True);
-	}
-
 	myfree(returndata);
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 
 	CacheSurroundingTransactions();
 
 	if ( next > last || current > last)
-		(void) HighestTransaction();
+		(void) SetUpTransactionNumbers();
 
 	if ( current >  highestseen)
 		highestseen = current;
@@ -273,11 +262,14 @@ int	num;
 
 /*
 ** Return the highestseen from mtg.  Also set first, last, and highestseen.
+** Set current to highestseen if it's not already set (ie, we've just
+** entered the meeting)
+**
 ** Return -1 if something went wrong.
 */
 
 int
-HighestTransaction()
+SetUpTransactionNumbers()
 {
 
 	char	command[LONGNAMELEN + 25];
@@ -316,6 +308,8 @@ HighestTransaction()
 
 		fprintf (stderr, "first is %d, last is %d\n",first, last);
 	}
+
+	GoToTransaction (highestseen, False);
 
 	return (highestseen);
 }
@@ -370,26 +364,50 @@ MoveToMeeting(which)
 int	which;
 {
 	Arg	args[2];
+	Boolean	transactionflag = False;
 /*
-	char	command[LONGNAMELEN + 25];
+** If we're currently showing transactions, we have to restore the top-level
+** list of meetings.
 */
+	if (topscreen == LISTTRNS) {
+		XawTextDisableRedisplay(toptextW);
+		TopSelect (NULL, 4 + (1 << 4));
+		transactionflag = True;
+	}
 
+/*
+** HighlightNewItem will eventually call SaveMeetingNames and 
+** SetUpTransactionNumbers to get the next, prev, etc. vars set.
+*/
 	if (HighlightNewItem(toptextW, which, True) == 0) {
+
+/*
+** Need to restore transaction list?
+*/
+		if (transactionflag == True) {
+			TopSelect (NULL, 4 + (0 << 4));
+			XawTextEnableRedisplay(toptextW);
+		}
+
+/*
+** Clear out bottom text window.
+*/
 		XtSetArg (args[0], XtNstring, "");
 		XtSetArg (args[1], XtNlength, 0);
 		XtSetValues (bottextW, args, 1);
-		current=0; next=1; prev=0; 
-		nref=0; pref=0; fref=0; lref=0;
+
+/*
+** If we're at the end of the meeting, make it so the "next" button
+** will show us the last transaction.
+*/
+		if (next == 0)
+			next = last;
+
 		CheckButtonSensitivity(BUTTONS_ON);
 		return (0);
 	}
 
 	else {
-/*
-		sprintf (command,"HighlightNewItem of %d in %s failed\n",
-			which, CurrentMtg(0));
-		PutUpWarning("WARNING", command, False);
-*/
 		return (-1);
 	}
 }
