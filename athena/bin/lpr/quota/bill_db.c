@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/bill_db.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: danw $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -282,8 +282,8 @@ char semester;
     fprintf(fp2, "%3s", STUFF);             /* trans code */
     fprintf(fp2, "%09d", user->number);  /* ID number */
     fprintf(fp2, "%3s", ATHCODE);           /* Athena code */
-    fprintf(fp2, "%2d%c", year+(semester == '1' ? 1 : 0), semester);  /* semester */
-    fprintf(fp2, "%02d%02d%2d", month, day, year); /* billing date */
+    fprintf(fp2, "%2d%c", (year+(semester == '1' ? 1 : 0))%100, semester);  /* semester */
+    fprintf(fp2, "%02d%02d%2d", month, day, year%100); /* billing date */
     fprintf(fp2, "%08d", billing_amount);   /* amount */
     fprintf(fp2, "%-30.30s", TITLE1);            /* title */
     fprintf(fp2, "%5s", ACC);               /* account # */

@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.7 1997-04-30 18:09:35 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: perror.c,v 1.8 1998-02-28 18:07:52 danw Exp $
+ *	$Author: danw $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.7 1997-04-30 18:09:35 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.8 1998-02-28 18:07:52 danw Exp $";
 #endif
 #endif
 
@@ -69,13 +69,12 @@ char *format_time(time_buf,time_info)
   if(hour > 12)  hour -= 12;
   if(hour == 0)  hour = 12;	/* If it's the midnight hour... */
 
-  (void) sprintf(time_buf, "%3.3s %s%d-%3.3s-%s%d %s%d:%s%d%s",
+  (void) sprintf(time_buf, "%3.3s %s%d-%3.3s-%.2d %s%d:%s%d%s",
 		 wday[time_info->tm_wday],
 		 time_info->tm_mday > 9 ? "" : "0", 
 		 time_info->tm_mday,
 		 month[time_info->tm_mon], 
-		 time_info->tm_year > 9 ? "" : "0",
-		 time_info->tm_year,
+		 time_info->tm_year % 100,
 		 hour > 9 ? "" : " ",
 		 hour,
 		 time_info->tm_min > 9 ? "" : "0", 

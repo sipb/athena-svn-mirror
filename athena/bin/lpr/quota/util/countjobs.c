@@ -137,13 +137,17 @@ gtime(ap)
 	}
 
 	L = localtime((time_t *)&tv.tv_sec);
-	year = L->tm_year;			/* defaults */
+	year = L->tm_year + 1900;		/* defaults */
 	month = L->tm_mon + 1;
 	day = L->tm_mday;
 
 	switch ((int)(C - ap)) {		/* length */
+		case 12:			/* yyyymmddhhmm */
+			year = ATOI2(ap) * 100 + ATOI2(ap);
+			goto domonth;
 		case 10:			/* yymmddhhmm */
-			year = ATOI2(ap);
+			year = ATOI2(ap) + 1900;
+		domonth:
 		case 8:				/* mmddhhmm */
 			month = ATOI2(ap);
 		case 6:				/* ddhhmm */
@@ -167,7 +171,6 @@ gtime(ap)
 		return(1);
 
 	tv.tv_sec = 0;
-	year += TM_YEAR_BASE;
 	if (isleap(year) && month > 2)
 		++tv.tv_sec;
 	for (--year;year >= EPOCH_YEAR;--year)

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.18 1997-04-30 17:59:46 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: p_cmdloop.c,v 1.19 1998-02-28 18:07:43 danw Exp $
+ *	$Author: danw $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.18 1997-04-30 17:59:46 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.19 1998-02-28 18:07:43 danw Exp $";
 #endif
 #endif
 
@@ -417,7 +417,7 @@ expand_variable(Request,var)
 	  sprintf(buf, "%4d", time_info->tm_year + 1900);
 	  break;
 	case 7:			/* year (year number, century srtipped) */
-	  sprintf(buf, "%2d", time_info->tm_year);
+	  sprintf(buf, "%2d", time_info->tm_year % 100);
 	  break;
 	case 8:			/* milhour (24 hour time) */
 	  sprintf(buf, "%2.2d", time_info->tm_hour);
