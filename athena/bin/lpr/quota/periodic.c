@@ -1,5 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.2 1990-04-25 11:48:00 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.3 1990-07-10 20:31:02 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.2 1990-04-25 11:48:00 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.3 1990-07-10 20:31:02 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -19,6 +19,9 @@ static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/ath
 #include "logger.h"
 #include <sys/file.h>
 #include <sys/types.h>
+#if defined(ultrix) && defined(NULL)
+#undef NULL
+#endif
 #include <sys/param.h>
 #include <sys/stat.h>
 void get_new_data();
@@ -39,7 +42,7 @@ logger_periodic()
 
 #if 0
     if(shutdown_requested) {
-	/* Well then, shutdown... We don'tneed to save anything */
+	/* Well then, shutdown... We don't need to save anything */
 	syslog(LOG_INFO, "%s Logger shutdown\n", loggerSrvrName);
 	graceful_exit();
     }
@@ -175,18 +178,21 @@ char *name;
 	upt = t;
 	ateof = 1;
     }
+
     if((pos = ftell(acct))< 0) {
-	syslog(LOG_INFO, "Unable to find current pos in acct file %s", LOGTRANSFILE);
+	syslog(LOG_INFO, "Unable to find current pos in acct file %s", 
+	       LOGTRANSFILE);
 	fclose(acct);
 	return;
     }
+
 
     if(logger_journal_add_entry(&out, upt, pos)) {
 	syslog(LOG_INFO, "Error in updating journal file");
 	fclose(acct);
 	return;
     }
-    
+
     /* If we succeeded, we need to get te header again */
     if(logger_journal_get_header(&jhead)) {
 	syslog(LOG_INFO, "Unable to read header from journal db.");
