@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.1 1988-09-19 20:25:03 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.2 1991-02-28 11:10:39 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/09/19  20:25:03  don
+ * bellcore copyright.
+ * 
  * Revision 4.0  88/04/14  16:42:41  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -39,7 +42,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.1 1988-09-19 20:25:03 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.2 1991-02-28 11:10:39 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -280,7 +283,11 @@ unsigned int type;
 		fprintf(stderr,"removing %s %s\n",type_str,name);
 	}
 	if ( type == S_IFDIR);
+#ifdef i386
+	else if ( unlink( name) == -1 && rmsline(name) == -1) {
+#else
 	else if ( unlink( name)) {
+#endif
 		sprintf( errmsg, "can't remove %s %s", type_str, name);
 		do_gripe();
 		return(-1);
@@ -297,6 +304,8 @@ unsigned int type;
 	strcat( name,"/");		/* XXX: don't copy for recursive call */
 	leaf =  name + strlen( name);
 	for( next = readdir(dirp); next != NULL; next = readdir(dirp)) {
+	        if(!(strcmp(next->d_name, "")))
+		    continue;
 		strcpy( leaf, next->d_name);	/* changes name[] */
 		removeit( name, 0);
 	}
