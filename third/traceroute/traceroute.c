@@ -24,7 +24,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1988, 1989, 1991, 1994, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.5 2000-05-08 17:40:03 ghudson Exp $ (LBL)";
+    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.6 2000-09-21 15:03:34 ghudson Exp $ (LBL)";
 #endif
 
 /*
@@ -899,15 +899,18 @@ send_probe(register int seq, int ttl, register struct timeval *tp)
 	else
 		outudp->uh_dport = htons(port + seq);
 
-	/* (We can only do the checksum if we know our ip address) */
-	if (docksum) {
-		if (useicmp) {
-			outicmp->icmp_cksum = 0;
-			outicmp->icmp_cksum = in_cksum((u_short *)outicmp,
-			    packlen - (sizeof(*outip) + optlen));
-			if (outicmp->icmp_cksum == 0)
-				outicmp->icmp_cksum = 0xffff;
-		} else {
+	if (useicmp) {
+		/* Always compute ICMP checksum -- kernel does not compute
+		 * it for us.
+		 */
+		outicmp->icmp_cksum = 0;
+		outicmp->icmp_cksum = in_cksum((u_short *)outicmp,
+		    packlen - (sizeof(*outip) + optlen));
+		if (outicmp->icmp_cksum == 0)
+			outicmp->icmp_cksum = 0xffff;
+	} else {
+		/* (We can only do the checksum if we know our ip address) */
+		if (docksum) {
 			/* Checksum (must save and restore ip header) */
 			tip = *outip;
 			ui = (struct udpiphdr *)outip;
