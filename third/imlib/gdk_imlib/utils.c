@@ -636,8 +636,12 @@ gdk_imlib_crop_and_clone_image(GdkImlibImage * im, int x, int y, int w, int h)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 void
@@ -920,8 +924,12 @@ gdk_imlib_create_image_from_data(unsigned char *data, unsigned char *alpha, gint
   im->bmod.brightness = id->bmod.brightness;
   im->bmod.contrast = id->bmod.contrast;
   im->map = NULL;
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   return im;
 }
@@ -995,8 +1003,12 @@ gdk_imlib_clone_image(GdkImlibImage * im)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 
@@ -1176,8 +1188,12 @@ gdk_imlib_clone_scaled_image(GdkImlibImage * im, int w, int h)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 
@@ -1563,8 +1579,11 @@ gdk_imlib_create_image_from_xpm_data(char **data)
     g_snprintf (im->filename, i, "%p.%i.%i.%s.%s.%s", data, im->rgb_width,
 		im->rgb_height, data[0], data[1], data [3]);
 
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   free(cmap);
   return im;
