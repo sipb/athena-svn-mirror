@@ -17,7 +17,7 @@
  * functions for querying the printers for queue status information.
  */
 
-static const char rcsid[] = "$Id: printer.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
+static const char rcsid[] = "$Id: printer.c,v 1.3 1999-07-07 22:42:02 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -299,7 +299,8 @@ void printer_handle_input(struct serverstate *state, struct printer *printer)
 	     printer->name, p);
       if (strncmp(p, "active ", 7) == 0 || isdigit(*p))
 	printer->jobs_counted++;
-      else if (strstr(p, "is down") || strstr(p, "Printer Error"))
+      else if (strstr(p, "is down") || strstr(p, "Printer Error") ||
+	       strstr(p, "printing disabled"))
 	printer->up_so_far = 0;
       p = q + 1;
       q = memchr(p, '\n', printer->buf + printer->buflen - p);
