@@ -1,8 +1,9 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.1 1990-10-25 21:59:03 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.2 1990-10-30 16:22:06 mar Exp $
 
-xlogin.wcChildren:		login, savershell, instructions
+xlogin.wcChildren:		login, savershell, instructions, \
+				warningShell, getSessionShell
 *title:				xlogin
-*BorderWidth:			0
+*saveTimeout:			60
 
 xlogin*top:			ChainTop
 xlogin*bottom:			ChainTop
@@ -11,8 +12,10 @@ xlogin*bottom:			ChainTop
 *login.wcChildren:		eyes, version, \
 				logo, welcome, host, clock, \
 				userName, password, \
-				register, options, menu, \
-				name_input, pword_input
+				name_input, pword_input, \
+				selection, \
+				loptions, ooptions, lmenu, omenu, \
+				register
 
 *savershell.wcConstructor:	XtCreateTransientShell
 *savershell.geometry:		2000x2000+0+0
@@ -25,21 +28,16 @@ xlogin*bottom:			ChainTop
 *instructions*right:		ChainLeft
 
 *hitanykey.wcClass:		formWidgetClass
-*hitanykey.wcChildren:		version, logo, welcome, host, clock
+*hitanykey.wcChildren:		version, logo, welcome, host, clock, mesg
 *hitanykey*Foreground:		white
 *hitanykey*Background:		black
-*hitanykey*host.label:		Hit any key to start . . .
 
+*warningShell.wcConstructor:	XtCreateTransientShell
+*warningShell.wcChildren:	warning
 
+*getSessionShell.wcConstructor:	XtCreateTransientShell
+*getSessionShell.wcChildren:	getsession
 
-
-*optionShell.wcConstructor:	XtCreateTransientShell
-*optionShell.wcChildren:	OptionsFrame
-*OptionsFrame.wcClass:		formWidgetClass
-*OptionsFrame.wcChildren:	optionsMessage, \
-				UserDefault, defaultLabel, \
-				SystemDefault, CustomLogin, \
-				systemLabel, customLabel
 
 ! ------------------------------------------------------------
 !		General Resources.
@@ -47,6 +45,7 @@ xlogin*bottom:			ChainTop
 
 xlogin.Geometry: 		580x305+205+75
 *bitmapFilePath:		/usr/local/xlogin
+*BorderWidth:			0
 *Background:			white
 *Foreground:			black
 *Command.translations:		#override \
@@ -89,7 +88,6 @@ xlogin.Geometry: 		580x305+205+75
 !  plus 4,2 for normal internal spacing.  geez!
 *eyes.horizDistance:		79
 *eyes.vertDistance:		48
-!*eyes.borderWidth:		0
 *eyes.internalWidth:		0
 *eyes.internalHeight:		0
 *eyes*left:			ChainLeft
@@ -102,7 +100,6 @@ xlogin.Geometry: 		580x305+205+75
 *version.label:			7.2 
 *version.horizDistance:		56
 *version.vertDistance:		99
-!*version.borderWidth:		0
 *version.internalWidth:		0
 *version.internalHeight:	0
 *version.font:			-adobe-new century schoolbook-bold-r-*-120-*
@@ -118,25 +115,32 @@ xlogin.Geometry: 		580x305+205+75
 *welcome.font:			-adobe-new century schoolbook-bold-r-*-240-*
 
 *host.wcClass:			labelWidgetClass
+*host.label:			hostname.mit.edu
+*host.width:			340
 *host.fromHoriz:		*logo
-*host.width:			350
 *host.horizDistance:		35
 *host.vertDistance:		-5
 *host.fromVert:			*welcome
-*host.label:			fries
-*host.font:			-adobe-new century schoolbook-medium-r-*-180-*
+*host.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*host.resize:			False
 
 *clock.wcClass:			clockWidgetClass
 *clock.update:			1
 *clock.analog:			False
 *clock*font:			-adobe-new century schoolbook-medium-r-*-120-*
-!*clock*borderWidth:		0
-!*clock*width:			100
-!*clock*height:			100
 *clock.fromVert:		*host
 *clock.fromHoriz:		*logo
 *clock.horizDistance:		130
 *clock.vertDistance:		-5
+
+*mesg.wcClass:			labelWidgetClass
+*mesg.fromHoriz:		*logo
+*mesg.width:			340
+*mesg.horizDistance:		35
+*mesg.vertDistance:		20
+*mesg.fromVert:			*clock
+*mesg.font:			-adobe-new century schoolbook-bold-r-*-240-*
+*mesg.label:			Press any key to start . . .
 
 *userName.wcClass:		labelWidgetClass
 *userName.fromVert:		*welcome
@@ -178,21 +182,26 @@ xlogin.Geometry: 		580x305+205+75
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
-	<Expose>:	setfocus(*name_input) \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
 	<Key>Return:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: white) \
 			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
 			setfocus(*pword_input) \n\
 	<Key>KP_Enter:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: white) \
 			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
 			setfocus(*pword_input) \n\
 	Ctrl<Key>m:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: white) \
 			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
 			setfocus(*pword_input) \n\
-	None <Key>:	insert-char()
+	None <Key>:	insert-char() \
+			idleReset() \n\
+	Shift <Key>:	insert-char() \
+			idleReset()
 
 *password.wcClass:		labelWidgetClass
 *password.fromVert:		*userName
@@ -237,174 +246,258 @@ xlogin.Geometry: 		580x305+205+75
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
-	<Key>Return:	WcSetValueACT(this.borderColor: white) \
-			WcSetValueACT(*name_input.displayCaret: TRUE) \
-			WcSetValueACT(*name_input.borderColor: black) \
-			setfocus(*name_input) \n\
-	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
-			WcSetValueACT(*name_input.displayCaret: TRUE) \
-			WcSetValueACT(*name_input.borderColor: black) \
-			setfocus(*name_input) \n\
-	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
-			WcSetValueACT(*name_input.displayCaret: TRUE) \
-			WcSetValueACT(*name_input.borderColor: black) \
-			setfocus(*name_input) \n\
-	None <Key>:	insert-char()
+	<Key>Return:	login() \n\
+	<Key>KP_Enter:	login() \n\
+	Ctrl<Key>m:	login() \n\
+	None <Key>:	insert-char() \
+			idleReset() \n\
+	Shift <Key>:	insert-char() \
+			idleReset()
 
-*register.wcClass:		commandWidgetClass
-*register.vertDistance:		40
-*register.horizDistance:	75
-*register.label:		Register for an Account
-*register.fromVert:		*password
-*register.callback:	WcSystemCB(/bin/athena/attach -n -h -q -f register), \
-			runCB(/mit/register/xregister)
-!*register.callback:		WcSetValueCB(*eyes.bitmap: owleyes1.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes2.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes3.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes4.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes5.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes4.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes3.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes2.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes1.xbm), \
-! WcSetValueCB(*register.callback: WcSetValueCB(*eyes.bitmap: owleyes0.xbm) \
-! )))))))))
+!	<Key>Return:	WcSetValueACT(this.borderColor: white) \
+!			WcSetValueACT(*name_input.displayCaret: TRUE) \
+!			WcSetValueACT(*name_input.borderColor: black) \
+!			idleReset() \
+!			setfocus(*name_input) \n\
+!	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
+!			WcSetValueACT(*name_input.displayCaret: TRUE) \
+!			WcSetValueACT(*name_input.borderColor: black) \
+!			idleReset() \
+!			setfocus(*name_input) \n\
+!	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
+!			WcSetValueACT(*name_input.displayCaret: TRUE) \
+!			WcSetValueACT(*name_input.borderColor: black) \
+!			idleReset() \
+!			setfocus(*name_input) \n\
 
+*selection.wcClass:		labelWidgetClass
+*selection.label:		
+*selection.width:		470
+*selection.horizDistance:	35
+*selection.fromVert:		*password
+*selection.vertDistance:	5
+*selection.font:		-adobe-new century schoolbook-medium-r-*-180-*
 
-!*options.wcClass:		commandWidgetClass
-*options.wcClass:		menuButtonWidgetClass
-*options.vertDistance:		40
-*options.horizDistance:		55
-*options.label:			Other Options
-*options.fromVert:		*password
-*options.fromHoriz:		*register
-*options.leftBitmap:		menu16
-*options.leftMargin:		20
-!*options.callback:		WcPopupGrabNoneCB(*optionShell)
+*loptions.wcClass:		menuButtonWidgetClass
+*loptions.vertDistance:		40
+*loptions.horizDistance:	100
+*loptions.label:		Login Options
+*loptions.fromVert:		*password
+*loptions.leftBitmap:		menu16
+*loptions.leftMargin:		20
+*loptions.menuName:		lmenu
 
-*menu.wcClass:			simpleMenuWidgetClass
-*menu.right:			ChainRight
-!*menu.wcClass:			simpleMenuWidgetClass
-*menu.wcManaged:		False
-*menu.wcChildren:		menuEntry1, menuEntry2, menuEntry3, \
-				menuEntry4, menuLine, menuEntry5, \
-				menuEntry6, menuEntry7, menuEntry8, \
+*ooptions.wcClass:		menuButtonWidgetClass
+*ooptions.vertDistance:		40
+*ooptions.horizDistance:	70
+*ooptions.label:		Other Options
+*ooptions.fromVert:		*password
+*ooptions.fromHoriz:		*loptions
+*ooptions.leftBitmap:		menu16
+*ooptions.leftMargin:		20
+*ooptions.menuName:		omenu
+
+*SimpleMenu*popupCallback:	idleResetCB()
+*SimpleMenu*popdownCallback:	idleResetCB()
+
+*lmenu.wcClass:			simpleMenuWidgetClass
+*lmenu.right:			ChainRight
+*lmenu.wcManaged:		False
+*lmenu.wcChildren:		lmenuEntry1, lmenuEntry2, lmenuEntry3, \
+				lmenuEntry4, lmenuEntry5
+
+*lmenuEntry1.wcClass:		smeBSBObjectClass
+*lmenuEntry2.wcClass:		smeBSBObjectClass
+*lmenuEntry3.wcClass:		smeBSBObjectClass
+*lmenuEntry4.wcClass:		smeBSBObjectClass
+*lmenuEntry5.wcClass:		smeBSBObjectClass
+
+*lmenuEntry1*leftMargin:	25
+*lmenuEntry2*leftMargin:	25
+*lmenuEntry3*leftMargin:	25
+*lmenuEntry4*leftMargin:	25
+*lmenuEntry1.leftBitmap:	check
+*lmenuEntry2.leftBitmap:	white
+*lmenuEntry3.leftBitmap:	white
+*lmenuEntry4.leftBitmap:	white
+
+*lmenuEntry1.label:		Your usual login session
+*lmenuEntry2.label:		Ignore your customizations
+*lmenuEntry3.label:		Quick login
+*lmenuEntry4.label:		Specify special login
+*lmenuEntry5.label:		Start Over
+
+*lmenuEntry1.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*selection.label: )
+*lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*selection.label: Ignore customizations selected)
+*lmenuEntry3.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*selection.label: Quick login session selected)
+*lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: check), \
+			WcSetValueCB(*selection.label: Special login session selected), \
+			WcPopupGrabCB(*getSessionShell), \
+			setfocusCB(*getsession*value)
+*lmenuEntry5.callback:	resetCB()
+
+*omenu.wcClass:			simpleMenuWidgetClass
+*omenu.right:			ChainRight
+*omenu.wcManaged:		False
+*omenu.wcChildren:		omenuEntry1, omenuEntry2, omenuEntry3, \
+				omenuEntry4, omenuEntry5, omenuEntry6, \
 				menuLine, \
-				menuEntry9, menuEntry10, menuEntry11
+				omenuEntry7, omenuEntry8, omenuEntry9, \
+				omenuEntry10
 
 *menuLine.wcClass:		smeLineObjectClass
-*menuEntry1.wcClass:		smeBSBObjectClass
-*menuEntry2.wcClass:		smeBSBObjectClass
-*menuEntry3.wcClass:		smeBSBObjectClass
-*menuEntry4.wcClass:		smeBSBObjectClass
-*menuEntry5.wcClass:		smeBSBObjectClass
-*menuEntry6.wcClass:		smeBSBObjectClass
-*menuEntry7.wcClass:		smeBSBObjectClass
-*menuEntry8.wcClass:		smeBSBObjectClass
-*menuEntry9.wcClass:		smeBSBObjectClass
-*menuEntry10.wcClass:		smeBSBObjectClass
-*menuEntry11.wcClass:		smeBSBObjectClass
+*omenuEntry1.wcClass:		smeBSBObjectClass
+*omenuEntry2.wcClass:		smeBSBObjectClass
+*omenuEntry3.wcClass:		smeBSBObjectClass
+*omenuEntry4.wcClass:		smeBSBObjectClass
+*omenuEntry5.wcClass:		smeBSBObjectClass
+*omenuEntry6.wcClass:		smeBSBObjectClass
+*omenuEntry7.wcClass:		smeBSBObjectClass
+*omenuEntry8.wcClass:		smeBSBObjectClass
+*omenuEntry9.wcClass:		smeBSBObjectClass
+*omenuEntry10.wcClass:		smeBSBObjectClass
 
-*menuEntry1*leftMargin:		25
-*menuEntry2*leftMargin:		25
-*menuEntry3*leftMargin:		25
-*menuEntry1.leftBitmap:		radio_on
-*menuEntry2.leftBitmap:		radio_off
-*menuEntry3.leftBitmap:		radio_off
+*omenuEntry1.label:		Information
+*omenuEntry1.justify:		center
+!*omenuEntry1.sensitive:		False
+*omenuEntry2.label:		Athena On-Line Help (olh)
+*omenuEntry2.callback:		runCB(/mit/xdm/src/conf/olh)
+*omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
+*omenuEntry3.callback:		runCB(/mit/xdm/src/conf/xcluster)
+*omenuEntry4.label:		MIT On-Line Information (TechInfo)
+*omenuEntry4.callback:		runCB(/mit/xdm/src/conf/techinfo)
+*omenuEntry5.label:		MIT Library Card Catalog (Barton)
+!*omenuEntry5.callback:		runCB(/mit/xdm/src/conf/barton)
+*omenuEntry6.label:		Display Workstation Configuration
+*omenuEntry6.callback:		runCB(/mit/xdm/src/conf/machine)
+*omenuEntry7.label:		Other
+*omenuEntry7.justify:		center
+!*omenuEntry7.sensitive:		False
+*omenuEntry8.label:		Login to MITVMA
+*omenuEntry8.callback:		runCB(/mit/xdm/src/conf/mitvma)
+*omenuEntry9.label:		Update Mail Info
+*omenuEntry9.callback:		runCB(/mit/xdm/src/conf/moira)
+*omenuEntry10.label:		Shutdown Window System
+*omenuEntry10.callback:		WcExitCB(3)
 
-*menuEntry1.label:		User default login session
-*menuEntry2.label:		Standard system (no customizations)
-*menuEntry3.label:		Custom login
-*menuEntry4.label:		Start Over
-*menuEntry5.label:		On-Line Help
-*menuEntry5.callback:		runCB(/usr/athena/olh)
-*menuEntry6.label:		TechInfo
-*menuEntry7.label:		XCluster
-*menuEntry7.callback:		runCB(/usr/athena/xcluster)
-*menuEntry8.label:		Login to MITVMA
-*menuEntry8.callback:		runCB(/mit/xdm/src/conf/mitvma)
-*menuEntry9.label:		Shutdown X, login on console
-*menuEntry9.callback:		WcExitCB(3)
-*menuEntry10.label:		Show machine configuration
-*menuEntry11.label:		Shutdown machine
-
-*menuEntry1.callback:	WcSetValueCB(*menuEntry1.leftBitmap: radio_on), \
-			WcSetValueCB(*menuEntry2.leftBitmap: radio_off), \
-			WcSetValueCB(*menuEntry3.leftBitmap: radio_off)
-*menuEntry2.callback:	WcSetValueCB(*menuEntry1.leftBitmap: radio_off), \
-			WcSetValueCB(*menuEntry2.leftBitmap: radio_on), \
-			WcSetValueCB(*menuEntry3.leftBitmap: radio_off)
-*menuEntry3.callback:	WcSetValueCB(*menuEntry1.leftBitmap: radio_off), \
-			WcSetValueCB(*menuEntry2.leftBitmap: radio_off), \
-			WcSetValueCB(*menuEntry3.leftBitmap: radio_on)
+*register.wcClass:		commandWidgetClass
+*register.vertDistance:		10
+*register.horizDistance:	175
+*register.label:		Register for an Account
+*register.fromVert:		*loptions
+*register.callback:		runCB(/mit/xdm/src/conf/register)
+!*register.callback:	WcTraceCB(register)
 
 
 ! ------------------------------------------------------------
 ! 		Option Shell Widget specifications.
 ! ------------------------------------------------------------
 
+*getSessionShell.geometry:	+200+400
 
-*optionShell.x:			205
-*optionShell.y:			410
-*optionShell.width: 		580
-*optionShell*Toggle.font:	-adobe-new century schoolbook-medium-r-*-180-*
-*optionShell*Label.font:	-adobe-new century schoolbook-bold-r-*-140-*
+*getsession.wcClass:		dialogWidgetClass
+*getsession*icon:		question
+*getsession.label:		Please enter the name of a shell script or program:
+*getsession.wcChildren:		doit, abort
 
-!*optionShell*Label.borderWidth:	0
-*optionShell*Toggle.width:	120
-*optionShell*defaultDistance:	15
+*getsession*value.borderWidth:		2
+*getsession*value.horizDistance:	100
+*getsession*value.width:		300
+*getsession*value.length:		128
+*getsession*value.useStringInPlace:	True
+*getsession*value:			
+*getsession*value*resize:		False
+*getsession*value.translations:	#replace \n\
+	Ctrl<Key>a:	beginning-of-line() \n\
+	Ctrl<Key>b:	backward-character() \n\
+	Ctrl<Key>d:	delete-next-character() \n\
+	Ctrl<Key>e:	end-of-line() \n\
+	Ctrl<Key>f:	forward-character() \n\
+	Ctrl<Key>h:	delete-previous-character() \n\
+	Ctrl<Key>k:	kill-to-end-of-line() \n\
+	Ctrl<Key>t:	transpose-characters() \n\
+	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
+	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
+	:Meta<Key>d:	delete-next-word() \n\
+	:Meta<Key>h:	delete-previous-word() \n\
+	~Shift Meta<Key>Delete:		delete-previous-word() \n\
+	Shift Meta<Key>Delete:		backward-kill-word() \n\
+	~Shift Meta<Key>BackSpace:	delete-previous-word() \n\
+	Shift Meta<Key>BackSpace:	backward-kill-word() \n\
+	<Key>Right:	forward-character() \n\
+	<Key>Left:	backward-character() \n\
+	<Key>Delete:	delete-previous-character() \n\
+	<Key>BackSpace:	delete-previous-character() \n\
+	<FocusIn>:	focus-in() \n\
+	<FocusOut>:	focus-out() \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	<Key>Return:	WcPopdownACT(*getSessionShell) \
+			setfocus(*name_input) \
+			idleReset() \n\
+	<Key>KP_Enter:	WcPopdownACT(*getSessionShell) \
+			setfocus(*name_input) \
+			idleReset() \n\
+	Ctrl<Key>m:	WcPopdownACT(*getSessionShell) \
+			setfocus(*name_input) \
+			idleReset() \n\
+	None <Key>:	insert-char() \
+			idleReset() \n\
+	Shift <Key>:	insert-char() \
+			idleReset()
 
-!*optionsMessage.wcClass:	asciiTextWidgetClass
-*optionsMessage.wcClass:	labelWidgetClass
-!*optionsMessage.type:		string
-*optionsMessage.label:		Select the option you want, move the mouse to the top window, then\nenter your user name and password
-!*optionsMessage.wrap:		word
-!*optionsMessage.resize:		height
-!*optionsMessage.useStringInPlace:	TRUE
-!*optionsMessage.width:		537
-!*optionsMessage.cursor:		X_cursor
-*optionsMessage.horizDistance:	29
-*optionsMessage.font:		-adobe-new century schoolbook-bold-r-*-140-*
-!*optionsMessage.borderWidth:	0
-!*optionsMessage.displayCaret:	false
-
-*UserDefault.wcClass:		toggleWidgetClass
-*UserDefault.label:		DEFAULT
-*UserDefault.horizDistance:	50
-*UserDefault.fromVert:		*optionsMessage
-*UserDefault.state:		true
-
-*defaultLabel.wcClass:		labelWidgetClass
-*defaultLabel.label:		Run your usual login session
-*defaultLabel.fromVert:		*optionsMessage
-*defaultLabel.fromHoriz:	*UserDefault
-
-*SystemDefault.wcClass:		toggleWidgetClass
-*SystemDefault.label:		SYSTEM
-*SystemDefault.horizDistance:	50
-*SystemDefault.fromVert:	*UserDefault
-*SystemDefault.radioGroup:	*UserDefault
-
-*systemLabel.wcClass:		labelWidgetClass
-*systemLabel.label:		Run session ignoring your customization files
-*systemLabel.fromVert:		*UserDefault
-*systemLabel.fromHoriz:		*UserDefault
-
-*CustomLogin.wcClass:		toggleWidgetClass
-*CustomLogin.label:		CUSTOM
-*CustomLogin.horizDistance:	50
-*CustomLogin.fromVert:		*SystemDefault
-*CustomLogin.radioGroup:	*UserDefault
-
-*customLabel.wcClass:		labelWidgetClass
-*customLabel.label:		Run session based on alternate session file
-*customLabel.fromVert:		*SystemDefault
-*customLabel.fromHoriz:		*UserDefault
+*doit.wcClass:			commandWidgetClass
+*doit.label:			OK
+*doit.callback:			WcPopdownCB(*getSessionShell), \
+				setfocusCB(*name_input)
+*abort.wcClass:			commandWidgetClass
+*abort.fromHoriz:		*doit
+*abort.label			abort
+*abort.callback:		WcPopdownCB(*getSessionShell), \
+				setfocusCB(*name_input), \
+				WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
+				WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+				WcSetValueCB(*selection.label: )
 
 
-!*optionShell*OptionsFrame.borderWidth:	0
+*warningShell.geometry:		400x350+250+300
 
-*optionShell*Toggle.translations:	#override \
-					<Btn1Down>,<Btn1Up>: set() notify() \n\
-					<Btn2Down>,<Btn2Up>: set() notify() \n\
-					<Btn3Down>,<Btn3Up>: set() notify()
+*warning.wcClass:		dialogWidgetClass
+*warning.icon:			warning
+*warning.label:			Login Failed
+*warning.value:			this will be replaced before it is used
+*warning.wcChildren:		continue
+
+*warning*value.width:		380
+*warning*value.height:		180
+*warning*value.borderWidth:	0
+*warning*value.autoFill:	True
+*warning*value.resize:		False
+*warning*value.displayCaret:	False
+*warning*value.translations:	#replace \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	<Key>Return:	WcPopdownACT(*warningShell) \
+			reset() \n\
+	<Key>KP_Enter:	WcPopdownACT(*warningShell) \
+			reset() \n\
+	Ctrl<Key>m:	WcPopdownACT(*warningShell) \
+			reset()
+
+*continue.wcClass:		commandWidgetClass
+*continue.callback:		WcPopdownCB(*warningShell), \
+				resetCB()
+
