@@ -12,6 +12,7 @@ The areas covered in this file are:
 	Building the tree
 	Imake templates
 	Release cycles
+	Cluster information
 
 Mailing lists
 -------------
@@ -252,7 +253,7 @@ Release cycles
 We haven't had one yet with the current repository, but some notes on
 how they should be carried out:
 
-	* doc/third-party should be checked to see if any tidbits of
+	* doc/third-party should be checked to see if any pieces of
 	  third-party material need to be updated before a release
 	  cycle.
 
@@ -277,3 +278,41 @@ how they should be carried out:
 	  source; individual packages should be rebuilt with the build
 	  script (moving any relevant binaries into .deleted first),
 	  followed by a rebuild of packs/build/finish.
+
+Clusters
+--------
+
+The getcluster(8) man explains how clients interpret cluster
+information.  This section documents the clusters related to the
+release cycle, and how they should be managed.
+
+There are five clusters for each platform, each named by a phase of
+the release cycle (crash, alpha, beta, early, public) of the form
+PHASE-PLATFORM.  There are two filsys entries for each platform and
+release pointing to system packs for the release,
+athena-PLATFORMsys-XY and dev-PLATFORMsys-XY, where X and Y are the
+major and minor numbers of the release.  For the SGI, we currently
+also have athena-sgi-inst-XY and dev-sgi-inst-XY.
+
+At the crash and burn, alpha, and beta phases of the release cycle,
+the appropriate cluster (PHASE-PLATFORM) should be updated to include
+data records of the form:
+
+	Label: syslib		Data: dev-PLATFORMsys-XY X.Y t
+(SGI)	Label: instlib		Data: dev-sgi-inst-XY X.Y t
+
+This change will cause console messages to appear on the appropriate
+machines informing their maintainers of a new testing release which
+they can take manually.
+
+At the early and public phases of the release cycle, the 't' should be
+removed from the new syslib records in the crash, alpha, and beta
+clusters, and the appropriate cluster (early-PLATFORM or
+public-PLATFORM) should be updated to include data records:
+
+	Label: syslib		Data: athena-PLATFORMsys-XY X.Y
+(SGI)	Label: instlib		Data: athena-sgi-inst-XY X.Y
+
+This change will cause AUTOUPDATE machines in the appropriate cluster
+(as well as the crash, alpha, and beta clusters) to take the new
+release; console messages will appear on non-AUTOUPDATE machines.
