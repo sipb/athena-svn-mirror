@@ -80,7 +80,7 @@ start)
 
 		UPDATE_ROOT=/root
 		export UPDATE_ROOT
-		mkdir $UPDATE_ROOT
+		mkdir -p $UPDATE_ROOT
 		mount $ROOTDEVICE $UPDATE_ROOT
 
 		echo "$UPDATE_ROOT/afs:/usr/vice/cache:30000" \
@@ -101,6 +101,11 @@ start)
 		done
 
 		/etc/init.d/afs start
+
+		# Turn on swapping - inst needs lots of virtual memory.
+		# Note that a swap file should have been created by
+		# setup-swap-boot.
+		/etc/init.d/swap start
 
 		. /srvd/usr/athena/lib/update/update-environment
 		. $CONFDIR/rc.conf
