@@ -26,7 +26,7 @@
 #include <sys/time.h> /* TODO: replace timeofday with g_timers */
 #include <gdk/gdkwindow.h>
 #include <gtk/gtk.h>
-#ifndef USE_GDKPIXBUF_RENDER_TO_DRAWABLE
+#ifdef USE_GDKPIXBUF_RENDER_TO_DRAWABLE
 #include <gdk/gdkpixbuf.h>
 #else
 #include <gdk/gdk.h>
@@ -39,10 +39,22 @@
 #include <X11/cursorfont.h>
 #include <X11/extensions/XTest.h>
 #include <math.h>
+
+#undef ZOOM_REGION_DEBUG
+
 #include "zoom-region.h"
 #include "zoom-region-private.h"
 #include "magnifier.h" /* needed to access parent data */
 #include "magnifier-private.h" /* needed to access parent data */
+
+#define DEBUG_CLIENT_CALLS
+
+#ifdef DEBUG_CLIENT_CALLS
+static gboolean client_debug = FALSE;
+#define DBG(a) if (client_debug) { (a); }
+#else
+#define DBG(a) 
+#endif
 
 static GObjectClass *parent_class = NULL;
 
@@ -65,6 +77,29 @@ enum {
 	ZOOM_REGION_TIMING_PAN_RATE_PROP,
 	ZOOM_REGION_EXIT_MAGNIFIER
 } PropIdx;
+
+#ifdef DEBUG_CLIENT_CALLS
+gchar* prop_names[ZOOM_REGION_EXIT_MAGNIFIER + 1] = 
+{
+    "MANAGED",
+    "SMOOTHSCROLL",
+    "INVERT",
+    "SMOOTHING",
+    "CONTRAST",
+    "XSCALE",
+    "YSCALE",
+    "BORDERSIZE",
+    "BORDERCOLOR",
+    "XALIGN",
+    "YALIGN",
+    "VIEWPORT",
+    "TESTPATTERN",
+    "TIMING_TEST",
+    "TIMING_OUTPUT",
+    "TIMING_PAN_RATE",
+    "EXIT_MAGNIFIER"
+};
+#endif
 
 typedef enum {
 	ZOOM_REGION_ERROR_NONE,
@@ -180,6 +215,11 @@ static int  zoom_region_process_updates (gpointer data);
 static void zoom_region_paint (ZoomRegion *zoom_region, GdkRectangle *rect);
 static void zoom_region_paint_pixmap (ZoomRegion *zoom_region, GdkRectangle *rect);
 static int  zoom_region_update_pointer_timeout (gpointer data);
+static void zoom_region_recompute_exposed_viewport (ZoomRegion *zoom_region);
+
+static GdkRectangle zoom_region_rect_from_bounds (ZoomRegion *zoom_region,
+						  const GNOME_Magnifier_RectBounds *bounds);
+static ZoomRegionPixmapCreationError zoom_region_create_pixmap (ZoomRegion *zoom_region);
 
 void
 reset_timing_stats()
@@ -561,8 +601,12 @@ static GdkRectangle
 _rectangle_clip_to_rectangle (GdkRectangle area,
 			      GdkRectangle clip_rect)
 {
-	/* TODO: Implement this! */
-	return area;
+        GdkRectangle clipped;
+        clipped.x = MAX (area.x, clip_rect.x);
+        clipped.y = MAX (area.y, clip_rect.y);
+        clipped.width = MIN ((area.x + area.width), (clip_rect.x + clip_rect.width)) - clipped.x;
+        clipped.height = MIN ((area.y + area.height), (clip_rect.y + clip_rect.height)) - clipped.y;
+	return clipped;
 }
 
 static GdkRectangle
@@ -586,6 +630,7 @@ zoom_region_clip_to_source (ZoomRegion *zoom_region,
     if (zoom_region && zoom_region->priv && zoom_region->priv->parent)
     {
 	source_rect_ptr = &((Magnifier *)zoom_region->priv->parent)->source_bounds;
+        DEBUG_RECT ("clipping to source bounds", zoom_region_rect_from_bounds (zoom_region, source_rect_ptr)); 
 	return _rectangle_clip_to_bounds (area, source_rect_ptr);
     }
     return area;
@@ -624,22 +669,39 @@ zoom_region_clip_to_viewport (ZoomRegion *zoom_region,
 }
 #endif
 
-static const GdkRectangle
-zoom_region_clip_to_target (ZoomRegion *zoom_region,
-			    GdkRectangle area)
+static GdkRectangle
+zoom_region_clip_to_scaled_pixmap (ZoomRegion *zoom_region,
+				   GdkRectangle area)
 {
-	return _rectangle_clip_to_bounds (area, &zoom_region->priv->source_area);
+        GdkRectangle pixmap_area = {0, 0, 0, 0};
+	if (zoom_region->priv && zoom_region->priv->pixmap)
+	{
+	    gdk_drawable_get_size (zoom_region->priv->pixmap, &pixmap_area.width, &pixmap_area.height);
+	    return _rectangle_clip_to_rectangle (area, pixmap_area);
+	}
+	else
+	    return area;
 }
 
 static GdkRectangle
 zoom_region_clip_to_window (ZoomRegion *zoom_region,
 			    GdkRectangle area)
 {
-	GdkRectangle window_rect = {0, 0, 0, 0};
+	GdkRectangle window_rect;
+
+	/* we can just return ATM because _rectangle_clip_to_rectangle is unimplemented now */
+
+	return area;
+
 	if (zoom_region->priv->w->window)
 		gdk_drawable_get_size (GDK_DRAWABLE (zoom_region->priv->w->window),
 				       &window_rect.x,
 				       &window_rect.y);
+	else 
+	{
+		window_rect.x = 0;
+		window_rect.y = 0;
+	}
 	return _rectangle_clip_to_rectangle (area, window_rect);
 }
 
@@ -706,22 +768,39 @@ zoom_region_queue_update (ZoomRegion *zoom_region,
 	GdkRectangle *rect =
 		g_new0 (GdkRectangle, 1);
 	*rect = update_rect;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	DEBUG_RECT ("queueing update", *rect);
+
 	zoom_region->priv->q =
-	g_list_prepend (zoom_region->priv->q, rect);
-	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-			 zoom_region_process_updates,
-			 zoom_region,
-			 NULL);
+		g_list_prepend (zoom_region->priv->q, rect);
+	if (zoom_region->priv && zoom_region->priv->update_handler_id == 0)
+		zoom_region->priv->update_handler_id = 
+			g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+					 zoom_region_process_updates,
+					 zoom_region,
+					 NULL);
 }
 
 static void
 zoom_region_update_current (ZoomRegion *zoom_region)
 {
-	zoom_region_update (zoom_region,
-			    zoom_region_source_rect_from_view_bounds (
-				    zoom_region,
-				    &zoom_region->priv->exposed_viewport));
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	if (zoom_region->priv)
+	{
+		gboolean pixmap_valid = GDK_IS_DRAWABLE (zoom_region->priv->pixmap);
+		if (!pixmap_valid)
+			pixmap_valid = (zoom_region_create_pixmap (zoom_region) == ZOOM_REGION_ERROR_NONE);
+		if (pixmap_valid)
+			zoom_region_update (zoom_region,
+					    zoom_region_source_rect_from_view_bounds (
+						    zoom_region,
+						    &zoom_region->priv->exposed_viewport));
+	}
 }
 
 static GdkRectangle
@@ -750,25 +829,25 @@ zoom_region_unpaint_crosswire_cursor (ZoomRegion *zoom_region,
 {
 	Magnifier *magnifier = zoom_region->priv->parent;
 	GdkRectangle vline_rect, hline_rect;
-	GdkRectangle rect;
+	GdkPoint cursor_pos;
 
-	if (magnifier->crosswire_size <= 0) return;
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	if (!magnifier || magnifier->crosswire_size <= 0) return;
 
-	rect = zoom_region->priv->cursor_backing_rect;
-	rect.x += magnifier->cursor_hotspot.x;
-	rect.y += magnifier->cursor_hotspot.y;
-	vline_rect.x = rect.x - magnifier->crosswire_size/2;
+	cursor_pos = zoom_region->priv->last_drawn_crosswire_pos;
+	vline_rect.x = cursor_pos.x - magnifier->crosswire_size/2;
 	vline_rect.y = clip_rect ? clip_rect->y : 0; 
 	vline_rect.width = MAX (magnifier->crosswire_size, 1);
 	vline_rect.height = clip_rect ? clip_rect->height : 4096; 
 	hline_rect.x = clip_rect ? clip_rect->x : 0; 
-	hline_rect.y = rect.y - magnifier->crosswire_size/2;
+	hline_rect.y = cursor_pos.y - magnifier->crosswire_size/2;
 	hline_rect.width = clip_rect ? clip_rect->width : 4096;
 	hline_rect.height = MAX (magnifier->crosswire_size, 1);
 
 	zoom_region_paint_pixmap (zoom_region, &vline_rect);
 	zoom_region_paint_pixmap (zoom_region, &hline_rect);
-/*	gdk_display_sync (gdk_drawable_get_display (zoom_region->priv->w->window)); */
 }
 
 static void
@@ -786,8 +865,12 @@ zoom_region_paint_crosswire_cursor (ZoomRegion *zoom_region, GdkRectangle *clip_
 	int x_left_clip = 0, x_right_clip = 0, y_top_clip = 0, y_bottom_clip = 0;
 	int csize;
 	
-	if (!(magnifier && zoom_region->priv->w &&
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	if (!(magnifier &&
 	      zoom_region->priv->w->window &&
+	      GDK_IS_DRAWABLE (zoom_region->priv->w->window) &&
 	      magnifier->crosswire_size > 0)) return;
 
 	if (zoom_region->priv->crosswire_gc == NULL) 
@@ -799,9 +882,9 @@ zoom_region_paint_crosswire_cursor (ZoomRegion *zoom_region, GdkRectangle *clip_
 
 	if (magnifier->crosswire_color == 0)
 	{
-		color.red = 0xFF;
-		color.blue = 0xFF;
-		color.green = 0xFF;
+		color.red = 0xFFFF;
+		color.blue = 0xFFFF;
+		color.green = 0xFFFF;
 		values.function = GDK_INVERT;
 	}
 	else
@@ -836,8 +919,11 @@ zoom_region_paint_crosswire_cursor (ZoomRegion *zoom_region, GdkRectangle *clip_
 
 	rect.x = zoom_region->priv->last_cursor_pos.x;
 	rect.y = zoom_region->priv->last_cursor_pos.y;
+	rect.width = 0;
+	rect.height = 0;
 	rect = zoom_region_view_rect_from_source_rect (zoom_region, rect);
 	if (clip_rect) gdk_gc_set_clip_rectangle (zoom_region->priv->crosswire_gc, clip_rect);
+	else gdk_gc_set_clip_rectangle (zoom_region->priv->crosswire_gc, NULL);
 
 	if (magnifier->crosswire_clip &&
 	    (cursor = magnifier_get_cursor (magnifier)))
@@ -891,6 +977,9 @@ zoom_region_paint_crosswire_cursor (ZoomRegion *zoom_region, GdkRectangle *clip_
 static void
 zoom_region_unpaint_cursor (ZoomRegion *zoom_region, GdkRectangle *clip_rect)
 {
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	zoom_region_paint_pixmap (zoom_region, &zoom_region->priv->cursor_backing_rect);
 }
 
@@ -903,12 +992,19 @@ zoom_region_paint_cursor (ZoomRegion *zoom_region,
 	GdkRectangle fullscreen;
 	Magnifier *magnifier = zoom_region->priv->parent;
 	rect = zoom_region_cursor_rect (zoom_region);
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (clip_rect == NULL)
 	{
 		fullscreen = zoom_region_rect_from_bounds (zoom_region,
 							   &zoom_region->viewport);
 		clip_rect = &fullscreen;
 	}
+	/* save the unclipped cursor pos for 'undrawing' the crosswire, the clipped one is no good */
+	zoom_region->priv->last_drawn_crosswire_pos.x = rect.x + magnifier->cursor_hotspot.x;
+	zoom_region->priv->last_drawn_crosswire_pos.y = rect.y + magnifier->cursor_hotspot.y;
+
 	if (gdk_rectangle_intersect (clip_rect, &rect, &intersct))
 	{
 		int width = 0, height = 0;
@@ -916,6 +1012,7 @@ zoom_region_paint_cursor (ZoomRegion *zoom_region,
 		GdkDrawable *cursor = magnifier_get_cursor (magnifier);
 		if (!cursor)
 			return;
+		else if (!GDK_IS_DRAWABLE (cursor)) g_message ("cursor isn't DRAWABLE!");
 		zoom_region->priv->cursor_backing_rect = rect;
 		if (zoom_region->priv->cursor_backing_pixels) {
 			gdk_drawable_get_size (zoom_region->priv->cursor_backing_pixels,
@@ -946,7 +1043,7 @@ zoom_region_paint_cursor (ZoomRegion *zoom_region,
 				     rect.height);
 		}
 		DEBUG_RECT ("painting", rect);
-		if (cursor)
+		if (cursor && zoom_region->priv->w && GDK_IS_DRAWABLE (zoom_region->priv->w->window))
 		{
 		    if (zoom_region->priv->paint_cursor_gc == NULL)
 				zoom_region->priv->paint_cursor_gc = gdk_gc_new (zoom_region->priv->w->window);
@@ -986,14 +1083,19 @@ zoom_region_coalesce_updates (ZoomRegion *zoom_region)
 	GList *q;
 	int lookahead_n = 4; /* 'distance' to look ahead in queue */
 	int max_qlen = 50;
-	if (g_list_length (zoom_region->priv->q) > max_qlen)
+
+	if (zoom_region->priv && zoom_region->priv->q && g_list_length (zoom_region->priv->q) > max_qlen)
 	{
+		g_list_free (zoom_region->priv->q);
 		zoom_region->priv->q = NULL; /* just discard and update everything */
 		/* CAUTION: this can be an expensive operation! */
 		zoom_region_queue_update (zoom_region, zoom_region_rect_from_bounds
 			(zoom_region, &zoom_region->priv->source_area));
 	}
-	else if ((g_list_length (zoom_region->priv->q) > 1) && can_coalesce)
+	else 
+
+        if (zoom_region->priv && zoom_region->priv->q && 
+	    (g_list_length (zoom_region->priv->q) > 1) && can_coalesce)
 	{		
 		q = g_list_reverse (g_list_copy (zoom_region->priv->q));
 		if (q)
@@ -1018,6 +1120,10 @@ zoom_region_paint_border (ZoomRegion *zoom_region,
 			  GdkRectangle *area)
 {
 	GdkColor color;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if ((zoom_region->border_size > 0) && (zoom_region->priv->w->window))
 	{
 		if (!zoom_region->priv->border_gc)
@@ -1048,10 +1154,17 @@ static void
 zoom_region_paint_pixmap (ZoomRegion *zoom_region,
 			  GdkRectangle *area)
 {
-	if (zoom_region->priv->default_gc == NULL) 
-		zoom_region->priv->default_gc = gdk_gc_new(zoom_region->priv->w->window);
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	g_assert (zoom_region->priv);
+	g_assert (zoom_region->priv->w);
 
-	if (zoom_region->priv->pixmap)
+        if (!GDK_IS_DRAWABLE (zoom_region->priv->w->window)) return;
+	if (zoom_region->priv->default_gc == NULL) 
+		zoom_region->priv->default_gc = gdk_gc_new (zoom_region->priv->w->window);
+
+	if (zoom_region->priv->pixmap && GDK_IS_DRAWABLE (zoom_region->priv->w->window))
 	{
 		gdk_draw_drawable (zoom_region->priv->w->window,
 				   zoom_region->priv->default_gc,
@@ -1073,10 +1186,13 @@ zoom_region_paint (ZoomRegion *zoom_region,
 		   GdkRectangle *area)
 {
 	GdkRectangle paint_area;
-	DEBUG_RECT ("painting", *area);
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	DEBUG_RECT ("painting (clipped)", *area);
-	zoom_region_paint_border (zoom_region, area);
 	paint_area = zoom_region_clip_to_window (zoom_region, *area);
+	zoom_region_paint_border (zoom_region, area);
 	zoom_region_paint_pixmap (zoom_region, &paint_area);
 	zoom_region_paint_cursor (zoom_region, &paint_area);
 	zoom_region_paint_crosswire_cursor (zoom_region, &paint_area);
@@ -1085,6 +1201,9 @@ zoom_region_paint (ZoomRegion *zoom_region,
 static ZoomRegionPixmapCreationError
 zoom_region_create_pixmap (ZoomRegion *zoom_region)
 {
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (zoom_region->priv->w && GDK_IS_DRAWABLE (zoom_region->priv->w->window))
 	{
 		long width = (zoom_region->priv->source_area.x2 -
@@ -1104,10 +1223,28 @@ zoom_region_create_pixmap (ZoomRegion *zoom_region)
 			return ZOOM_REGION_ERROR_TOO_BIG;
 		}
 
-		zoom_region_update (zoom_region,
-				    zoom_region_source_rect_from_view_bounds (
+		zoom_region_recompute_exposed_viewport (zoom_region);
+#ifdef ZOOM_REGION_DEBUG
+		g_message ("create-pixmap-update: %d,%d - %d,%d",
+			   zoom_region->priv->exposed_viewport.x1,
+			   zoom_region->priv->exposed_viewport.y1,
+			   zoom_region->priv->exposed_viewport.x2,
+			   zoom_region->priv->exposed_viewport.y2);
+#endif
+
+			    DEBUG_RECT("viewport", zoom_region_source_rect_from_view_bounds
+					    (zoom_region, &zoom_region->priv->exposed_viewport));
+			    DEBUG_RECT("source", zoom_region_rect_from_bounds
+					    (zoom_region, &((Magnifier*)zoom_region->priv->parent)->source_bounds));
+
+			    zoom_region_update (zoom_region,
+/*				    zoom_region_source_rect_from_view_bounds (
 					    zoom_region,
 					    &zoom_region->priv->exposed_viewport));
+*/
+				    zoom_region_rect_from_bounds 
+				    (zoom_region, 
+				     &((Magnifier *)zoom_region->priv->parent)->source_bounds));
 		return ZOOM_REGION_ERROR_NONE;
 	}
 
@@ -1122,16 +1259,22 @@ zoom_region_expose_handler (GtkWindow * w,
 	ZoomRegion *zoom_region = data;
 	DEBUG_RECT ("expose", event->area);
 
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (zoom_region->priv->pixmap == NULL)
 	{
+	        ZoomRegionPixmapCreationError ret; 
 		/* TODO: scale down if this fails here */
-		while (zoom_region_create_pixmap (zoom_region) ==
+		while ((ret = zoom_region_create_pixmap (zoom_region)) ==
 		    ZOOM_REGION_ERROR_TOO_BIG) {
 			zoom_region->xscale -= 1.0;
 			zoom_region->yscale -= 1.0;
 			zoom_region->priv->pixmap = NULL;
 			g_warning ("Scale factor too big to fit in memory; shrinking.");
 		}
+		if (ret == ZOOM_REGION_ERROR_NO_TARGET_DRAWABLE) 
+		    g_warning ("create-pixmap: no target drawable");
 	}
 	zoom_region_paint (zoom_region, &event->area);
 }
@@ -1139,12 +1282,19 @@ zoom_region_expose_handler (GtkWindow * w,
 static void zoom_region_update_cursor (ZoomRegion *zoom_region, int dx, int dy,
 				       GdkRectangle *clip_rect)
 {
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	zoom_region_unpaint_crosswire_cursor (zoom_region, clip_rect);
+	zoom_region_unpaint_cursor (zoom_region, clip_rect);
 	zoom_region->priv->cursor_backing_rect.x += dx;
 	zoom_region->priv->cursor_backing_rect.y += dy;
-	zoom_region_unpaint_crosswire_cursor (zoom_region, NULL);
-	zoom_region_unpaint_cursor (zoom_region, clip_rect);
-	zoom_region_paint_crosswire_cursor (zoom_region, clip_rect);
+	zoom_region->priv->last_drawn_crosswire_pos.x += dx;
+	zoom_region->priv->last_drawn_crosswire_pos.y += dy;
 	zoom_region_paint_cursor (zoom_region, clip_rect);
+	zoom_region_paint_crosswire_cursor (zoom_region, clip_rect);
+	if (GTK_IS_WIDGET (zoom_region->priv->w) && GDK_IS_WINDOW (zoom_region->priv->w->window))
+	    gdk_display_sync (gdk_drawable_get_display (zoom_region->priv->w->window));
 }
 
 static gboolean
@@ -1154,17 +1304,22 @@ zoom_region_calculate_scroll_rects (ZoomRegion *zoom_region,
 				    GdkRectangle *expose_rect_h,
 				    GdkRectangle *expose_rect_v)
 {
-	GdkWindow *window;
-	GdkRectangle rect;
+	GdkWindow *window = NULL;
+	GdkRectangle rect = {0, 0, 0, 0};
+	gboolean retval = TRUE;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	rect.x = 0;
 	rect.y = 0;
 	if (zoom_region && zoom_region->priv->w &&
 	    zoom_region->priv->w->window)
 		window = zoom_region->priv->w->window;
 	else
-		return FALSE;
+		retval = FALSE;
 	if (!window)
-		return FALSE;
+		retval = FALSE;
 
 	if (window != NULL)
 	  gdk_drawable_get_size (GDK_DRAWABLE (window),
@@ -1173,8 +1328,8 @@ zoom_region_calculate_scroll_rects (ZoomRegion *zoom_region,
 
 	if ((ABS (dx) >= rect.width) || (ABS (dy) >= rect.height)) {
 		*scroll_rect = rect;
-		fprintf (stderr, "deltas too big to scroll\n");
-		return FALSE;
+		DBG(fprintf (stderr, "deltas too big to scroll\n"));
+		retval = FALSE;
 	}
 	
 	scroll_rect->x = MAX (0, dx);
@@ -1192,7 +1347,7 @@ zoom_region_calculate_scroll_rects (ZoomRegion *zoom_region,
 	expose_rect_v->width = rect.width - scroll_rect->width;
 	expose_rect_v->height = scroll_rect->height;
 
-	return TRUE;
+	return retval;
 }
 
 static void
@@ -1202,16 +1357,21 @@ zoom_region_scroll_fast (ZoomRegion *zoom_region, int dx, int dy,
 			 GdkRectangle *expose_rect_v)
 {
 	GdkWindow *window;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (zoom_region->priv->w && zoom_region->priv->w->window)
 		window = zoom_region->priv->w->window;
 	else {
 		processing_updates = FALSE;
 		return;
 	}
-	if (zoom_region->smooth_scroll_policy > GNOME_Magnifier_ZoomRegion_SCROLL_FAST) 
-		gdk_display_sync (gdk_drawable_get_display (window));
+	zoom_region_unpaint_crosswire_cursor (zoom_region, scroll_rect);
+	zoom_region_unpaint_cursor (zoom_region, scroll_rect);
 	gdk_window_scroll (window, dx, dy);
-	zoom_region_update_cursor (zoom_region, dx, dy, scroll_rect);
+	zoom_region_paint_cursor (zoom_region, scroll_rect);
+	zoom_region_paint_crosswire_cursor (zoom_region, scroll_rect);
 	gdk_window_process_updates (window, FALSE);
 	/* sync reduces cursor flicker, but slows things down */
 	if (zoom_region->smooth_scroll_policy > GNOME_Magnifier_ZoomRegion_SCROLL_FASTEST)
@@ -1224,10 +1384,15 @@ zoom_region_scroll_smooth (ZoomRegion *zoom_region, int dx, int dy,
 			   GdkRectangle *expose_rect_h,
 			   GdkRectangle *expose_rect_v)
 {
-	GdkWindow *window = zoom_region->priv->w->window;
+	GdkWindow *window = NULL;
 	GdkRectangle window_rect;
 
-	if (!window)
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	if (zoom_region->priv->w && GDK_IS_DRAWABLE (zoom_region->priv->w->window))
+		window = zoom_region->priv->w->window;
+	else
 		return;
 	window_rect.x = 0;
 	window_rect.y = 0;
@@ -1247,6 +1412,9 @@ zoom_region_scroll (ZoomRegion *zoom_region, int dx, int dy)
 	GdkRectangle scroll_rect, expose_rect_h, expose_rect_v;
 	gboolean can_scroll;
 
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (timing_test) {
 		mag_timing.num_line_samples++;
 		mag_timing.dx = abs(dx);
@@ -1323,7 +1491,6 @@ zoom_region_recompute_exposed_bounds (ZoomRegion *zoom_region)
 static void
 zoom_region_set_cursor_pos (ZoomRegion *zoom_region, int x, int y)
 {
-
 	if (zoom_region->priv)
 	{
 		zoom_region->priv->last_cursor_pos.x = x;
@@ -1352,10 +1519,14 @@ zoom_region_update_pointer (ZoomRegion *zoom_region, gboolean draw_cursor)
 	gint mouse_x_return, mouse_y_return;
 	guint mask_return;
 
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	if (!zoom_region->priv || !zoom_region->priv->parent)
-	  return FALSE; 
+	      return FALSE; 
 
 	magnifier = zoom_region->priv->parent;
+
 	/* TODO: there's really no reason we should be using magnifier->priv->root here */
 	if (magnifier && magnifier->priv && magnifier_get_root (magnifier))
 	{
@@ -1368,15 +1539,27 @@ zoom_region_update_pointer (ZoomRegion *zoom_region, gboolean draw_cursor)
 		if (zoom_region->priv->last_cursor_pos.x != mouse_x_return
 		    || zoom_region->priv->last_cursor_pos.y != mouse_y_return)
 		{
-			/*
-			 * dx and dy offsets are with respect to stored cursor coords;
-			 * these only should be nonzero if the window coord system has
-			 * changed, for instance via a gdk_window_scroll.
-			 */
 			zoom_region_set_cursor_pos (zoom_region,
 						    mouse_x_return, mouse_y_return);
 			if (draw_cursor)
-				zoom_region_update_cursor (zoom_region, 0, 0, NULL);
+			{
+				GdkRectangle paint_area, *clip = NULL;
+
+				if (GTK_IS_WIDGET (zoom_region->priv->w) && 
+				    GDK_IS_DRAWABLE (zoom_region->priv->w->window))
+				{
+					gdk_drawable_get_size (
+						GDK_DRAWABLE (
+							zoom_region->priv->w->window),
+						&paint_area.width, &paint_area.height);
+					paint_area.x = 0;
+					paint_area.y = 0;
+					clip = &paint_area;
+					paint_area = zoom_region_clip_to_source (
+						zoom_region, paint_area);
+				}
+				zoom_region_update_cursor (zoom_region, 0, 0, clip);
+			}
 			return TRUE;
 		}
 	}	
@@ -1387,14 +1570,17 @@ static int
 zoom_region_update_pointer_idle (gpointer data)
 {
 	ZoomRegion *zoom_region = (ZoomRegion *) data;
+
 	if (zoom_region_update_pointer (zoom_region, TRUE))
 	        return TRUE;
 	else {
-	        g_timeout_add_full (G_PRIORITY_DEFAULT,
-				    100,
-				    zoom_region_update_pointer_timeout,
-				    zoom_region,
-				    NULL);
+		if (zoom_region->priv)
+			zoom_region->priv->update_pointer_id =
+			    g_timeout_add_full (G_PRIORITY_DEFAULT,
+						100,
+						zoom_region_update_pointer_timeout,
+						zoom_region,
+						NULL);
                 return FALSE;
 	}
 }
@@ -1404,13 +1590,14 @@ zoom_region_update_pointer_timeout (gpointer data)
 {
 	ZoomRegion *zoom_region = data;
 
-	if (zoom_region_update_pointer (zoom_region, TRUE)) {
+	if (zoom_region->priv && zoom_region_update_pointer (zoom_region, TRUE)) {
+	    zoom_region->priv->update_pointer_id =
 	        g_idle_add_full (G_PRIORITY_HIGH_IDLE,
 				 zoom_region_update_pointer_idle,
 				 data,
 				 NULL);
 		return FALSE;
-	} else
+	} else 
 		return TRUE;
 }
 
@@ -1420,7 +1607,10 @@ zoom_region_moveto (ZoomRegion *zoom_region,
 {
 	long dx = x * zoom_region->xscale - zoom_region->priv->exposed_bounds.x1;
 	long dy = y * zoom_region->yscale - zoom_region->priv->exposed_bounds.y1;
-/*	fprintf (stderr, "moveto %ld %ld\n", x, y); */
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+/* fprintf (stderr, "moveto %ld %ld\n", x, y); */
 
 	mag_timing.dx = 0;
 	mag_timing.dy = 0;
@@ -1487,6 +1677,10 @@ zoom_region_get_source_subwindow (ZoomRegion *zoom_region,
 	int i, j, width, height;
 	Magnifier *magnifier = zoom_region->priv->parent;
 	GdkPixbuf *subimage = NULL;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	width = gdk_screen_get_width (
 		gdk_display_get_screen (magnifier->source_display,
 					magnifier->source_screen_num));
@@ -1495,11 +1689,13 @@ zoom_region_get_source_subwindow (ZoomRegion *zoom_region,
 					magnifier->source_screen_num));
 
 	if ((bounds.width <= 0) || (bounds.height <= 0))
+	{
 		return NULL;
+	}
 	
-	/* TESTING ONLY */
 	if (!zoom_region->priv->source_drawable)
 	{
+		/* TESTING ONLY */
 		if (zoom_region->priv->test) {
 			GdkImage *test_image = NULL;
 
@@ -1551,6 +1747,8 @@ zoom_region_get_source_subwindow (ZoomRegion *zoom_region,
 						 0,
 						 bounds.width,
 						 bounds.height);
+
+	/* TODO: blank the region overlapped by the target display if source == target */
 	
 	if (!subimage)
 		_debug_announce_rect ("update of invalid subregion!\n", bounds);
@@ -1588,23 +1786,33 @@ zoom_region_update (ZoomRegion *zoom_region,
 {
 	GdkPixbuf *subimage;
 	GdkRectangle source_rect;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	DEBUG_RECT ("unclipped update rect", update_rect);
 	source_rect = zoom_region_clip_to_source (zoom_region, update_rect);
 	DEBUG_RECT ("clipped to source", source_rect);
 	source_rect = zoom_region_clip_to_exposed_target (zoom_region, source_rect);
 	DEBUG_RECT ("update rect clipped to exposed target", source_rect); 
+
 	subimage = zoom_region_get_source_subwindow (zoom_region, source_rect);
 
 	if (subimage && zoom_region->priv->w && zoom_region->priv->w->window)
 	{
 		GdkRectangle paint_rect;
 		gettimeofday(&mag_timing.scale_start, NULL);
+		DEBUG_RECT ("source rect", source_rect);
 		paint_rect = zoom_region_view_rect_from_source_rect (zoom_region, source_rect);
-		paint_rect = zoom_region_clip_to_window (zoom_region, paint_rect);
+		/* paint_rect = zoom_region_clip_to_scaled_pixmap (zoom_region, paint_rect); */
 		DEBUG_RECT ("paint rect", paint_rect);
 		if (zoom_region->invert)
 			_zoom_region_invert_pixbuf (subimage);
 
+		/** 
+		 *   XXX: We seem to be breaking with the original intention here, which was to 
+		 *   keep a fullscreen scaled pixbuf in-sync.
+		 **/
 		gdk_pixbuf_scale (subimage,
 				  zoom_region->priv->scaled_pixbuf,
 				  0,
@@ -1623,18 +1831,21 @@ zoom_region_update (ZoomRegion *zoom_region,
 			zoom_region->priv->default_gc = gdk_gc_new(zoom_region->priv->w->window);
 
 #ifndef USE_GDK_PIXBUF_RENDER_TO_DRAWABLE 
-		gdk_draw_pixbuf (zoom_region->priv->pixmap,
-				 zoom_region->priv->default_gc,
-				 zoom_region->priv->scaled_pixbuf,
-				 0,
-				 0,
-				 paint_rect.x + zoom_region->priv->exposed_bounds.x1,
-				 paint_rect.y + zoom_region->priv->exposed_bounds.y1,
-				 paint_rect.width,
-				 paint_rect.height,
-				 GDK_RGB_DITHER_NONE,
-				 0,
-				 0);
+		if (GDK_IS_DRAWABLE (zoom_region->priv->pixmap))
+		    gdk_draw_pixbuf (zoom_region->priv->pixmap,
+				     zoom_region->priv->default_gc,
+				     zoom_region->priv->scaled_pixbuf,
+				     0,
+				     0,
+				     paint_rect.x + zoom_region->priv->exposed_bounds.x1,
+				     paint_rect.y + zoom_region->priv->exposed_bounds.y1,
+				     paint_rect.width,
+				     paint_rect.height,
+				     GDK_RGB_DITHER_NONE,
+				     0,
+				     0);
+		else
+		    g_warning ("updating non-drawable pixmap: region %p", zoom_region);
 #else
 		gdk_pixbuf_render_to_drawable (zoom_region->priv->scaled_pixbuf,
 					       zoom_region->priv->pixmap,
@@ -1697,19 +1908,22 @@ zoom_region_init_window (ZoomRegion *zoom_region)
 {
 	GtkFixed *parent;
 	GtkWidget *zoomer, *border;
-	fprintf (stderr, "window not yet created...\n");
+	DBG(fprintf (stderr, "window not yet created...\n"));
 	parent = GTK_FIXED (
 		((Magnifier *)zoom_region->priv->parent)->priv->canvas);
 	zoomer = gtk_drawing_area_new ();
 	border = gtk_fixed_new ();
 	zoom_region->priv->border = border;
 	zoom_region->priv->w = zoomer;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	gtk_widget_set_size_request (GTK_WIDGET (zoomer),
 				     zoom_region->viewport.x2 -
 				     zoom_region->viewport.x1 - zoom_region->border_size * 2,
 				     zoom_region->viewport.y2 -
 				     zoom_region->viewport.y1 - zoom_region->border_size * 2);
-	fprintf (stderr, "putting into fixed\n");
 	gtk_fixed_put (parent, border,
 		       zoom_region->viewport.x1,
 		       zoom_region->viewport.y1);
@@ -1719,13 +1933,12 @@ zoom_region_init_window (ZoomRegion *zoom_region)
 	gtk_widget_show (GTK_WIDGET (border));
 	gtk_widget_show (GTK_WIDGET (zoomer));
 	gtk_widget_show (GTK_WIDGET (parent));
-	fprintf (stderr, "shown\n");
 	zoom_region->priv->expose_handler_id =
 		g_signal_connect (G_OBJECT (zoom_region->priv->w),
 			    "expose_event",
 			    G_CALLBACK (zoom_region_expose_handler),
 			    zoom_region);
-	fprintf (stderr, "New window created\n");
+	DBG(fprintf (stderr, "New window created\n"));
 	gtk_widget_show (GTK_WIDGET (zoom_region->priv->w));
 }
 
@@ -1733,11 +1946,15 @@ static int
 zoom_region_process_updates (gpointer data)
 {
 	ZoomRegion *zoom_region = (ZoomRegion *) data;
+
 	/* TODO: lock the queue when copying it? */
 	zoom_region_coalesce_updates (zoom_region);
+
 	if (zoom_region->priv->q != NULL) {
 		GList *last = g_list_last (zoom_region->priv->q);
-/*		fprintf (stderr, "qlen=%d\n", g_list_length (zoom_region->priv->q));*/
+#ifdef ZOOM_REGION_DEBUG
+		fprintf (stderr, "qlen=%d\n", g_list_length (zoom_region->priv->q));
+#endif
 		if (last) {
 			zoom_region->priv->q = g_list_remove_link (zoom_region->priv->q,
 								   last);
@@ -1751,7 +1968,11 @@ zoom_region_process_updates (gpointer data)
 		return TRUE;
 	}
 	else 
+	{
+		if (zoom_region->priv) 
+			zoom_region->priv->update_handler_id = 0;
 		return FALSE;
+	}
 }
 
 void
@@ -2059,14 +2280,15 @@ static void
 zoom_region_set_viewport (ZoomRegion *zoom_region,
 			  const GNOME_Magnifier_RectBounds *viewport)
 {
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	zoom_region->viewport = *viewport;
-#define DEBUG
 #ifdef DEBUG
-	fprintf (stderr, "setting viewport %d,%d - %d,%d\n",
+	fprintf (stderr, "Setting viewport %d,%d - %d,%d\n",
 		 (int) viewport->x1, (int) viewport->y1,
 		 (int) viewport->x2, (int) viewport->y2);
 #endif
-#undef DEBUG
 	zoom_region_recompute_exposed_viewport (zoom_region);
 	zoom_region_align (zoom_region);
 	if (!zoom_region->priv->w) {
@@ -2097,7 +2319,12 @@ zoom_region_get_property (BonoboPropertyBag *bag,
 			  gpointer user_data)
 {
 	ZoomRegion *zoom_region = user_data;
-	
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	DBG (fprintf (stderr, "Get zoom-region property: %s\n", prop_names[arg_id]));
+
 	switch (arg_id) {
 	case ZOOM_REGION_MANAGED_PROP:
 		BONOBO_ARG_SET_BOOLEAN (arg, zoom_region->is_managed);
@@ -2170,6 +2397,11 @@ zoom_region_set_property (BonoboPropertyBag *bag,
 	ZoomRegion *zoom_region = user_data;
 	GNOME_Magnifier_RectBounds bounds;
 
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	DBG (fprintf (stderr, "Set zoom-region property: %s\n", prop_names[arg_id]));
+
 	switch (arg_id) {
 	case ZOOM_REGION_MANAGED_PROP:
 		zoom_region->is_managed = BONOBO_ARG_GET_BOOLEAN (arg);
@@ -2209,7 +2441,6 @@ zoom_region_set_property (BonoboPropertyBag *bag,
 		break;
 	case ZOOM_REGION_BORDERSIZE_PROP:
 		zoom_region->border_size = BONOBO_ARG_GET_LONG (arg);
-	    g_message ("border size set to %d", zoom_region->border_size);
 		zoom_region_recompute_exposed_viewport (zoom_region);
 		zoom_region_update_current (zoom_region);
 		break;
@@ -2260,6 +2491,10 @@ static int
 zoom_region_process_pending (gpointer data)
 {
 	ZoomRegion *zoom_region = (ZoomRegion *) data;
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	zoom_region_align (zoom_region);
 	return FALSE;
 }
@@ -2274,7 +2509,7 @@ zoom_region_pan_test (gpointer data)
 	CORBA_Environment ev;
 	static int counter = 0;
 	static gboolean finished_update = !TRUE;
-    static float last_pixels_at_speed = -1;
+        static float last_pixels_at_speed = -1;
 	float pixels_at_speed;
 	float total_time;
 	int screen_height, height;
@@ -2361,6 +2596,24 @@ impl_zoom_region_set_roi (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
+	DBG (fprintf (stderr, "Set ROI: \t%d,%d %d,%d\n", 
+		      bounds->x1, bounds->y1, bounds->x2, bounds->y2));
+
+	/* if these bounds are clearly bogus, warn and ignore */
+	if (!bounds || (bounds->x2 <= bounds->x1)
+	    || (bounds->y2 < bounds->y1) || 
+	    ((bounds->x1 + bounds->x2)/2 < 0) || 
+	    ((bounds->y1 + bounds->y2)/2 < 0))
+	{
+	    g_warning ("Bad bounds request (%d,%d to %d,%d), ignoring.\n",
+		       bounds->x1, bounds->y1, bounds->x2, bounds->y2);
+	    return;
+	}
+
 	zoom_region->roi = *bounds;
 
 	if (zoom_region->timing_pan_rate > 0) {
@@ -2391,6 +2644,7 @@ impl_zoom_region_set_roi (PortableServer_Servant servant,
 		}
 
 		/* Set idle handler to process this pending update when possible */
+
 		pending_idle_handler = g_idle_add_full (GDK_PRIORITY_REDRAW + 2,
 			zoom_region_process_pending, zoom_region, NULL);
 
@@ -2413,6 +2667,10 @@ impl_zoom_region_set_mag_factor (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	CORBA_any *any;
 	double xs_old = zoom_region->xscale;
 	double ys_old = zoom_region->yscale;
@@ -2439,10 +2697,10 @@ impl_zoom_region_set_mag_factor (PortableServer_Servant servant,
 
 	zoom_region->priv->scaled_pixbuf = gdk_pixbuf_new (
 		GDK_COLORSPACE_RGB, FALSE, 8,
-		zoom_region->priv->source_area.x2 -
-		zoom_region->priv->source_area.x1 * zoom_region->xscale + 1,
-		zoom_region->priv->source_area.y2 -
-		zoom_region->priv->source_area.y1 * zoom_region->yscale + 1);
+		(zoom_region->priv->source_area.x2 -
+		zoom_region->priv->source_area.x1) * zoom_region->xscale + 1,
+		(zoom_region->priv->source_area.y2 -
+		zoom_region->priv->source_area.y1) * zoom_region->yscale + 1);
 
 	if (zoom_region->priv->pixmap) {
 		g_object_unref (zoom_region->priv->pixmap);
@@ -2454,12 +2712,13 @@ impl_zoom_region_set_mag_factor (PortableServer_Servant servant,
 		zoom_region_create_pixmap (zoom_region);
 		g_object_unref (zoom_region->priv->scaled_pixbuf);
 
+		/* only create a scaled image big enough for the target display, for now */
 		zoom_region->priv->scaled_pixbuf = gdk_pixbuf_new (
 			GDK_COLORSPACE_RGB, FALSE, 8,
-			zoom_region->priv->source_area.x2 -
-			zoom_region->priv->source_area.x1 * zoom_region->xscale + 1,
-			zoom_region->priv->source_area.y2 -
-			zoom_region->priv->source_area.y1 * zoom_region->yscale + 1);
+			(zoom_region->priv->source_area.x2 -
+			zoom_region->priv->source_area.x1) * zoom_region->xscale + 1,
+			(zoom_region->priv->source_area.y2 -
+			zoom_region->priv->source_area.y1) * zoom_region->yscale + 1);
 		retval = CORBA_FALSE;
 	}
 	zoom_region_update_current (zoom_region);
@@ -2477,6 +2736,10 @@ impl_zoom_region_get_mag_factor (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	*mag_factor_x = zoom_region->xscale;
 	*mag_factor_y = zoom_region->yscale;
 }
@@ -2487,6 +2750,10 @@ impl_zoom_region_get_properties (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	return bonobo_object_dup_ref (
 		BONOBO_OBJREF (zoom_region->properties), ev);
 }
@@ -2498,11 +2765,17 @@ impl_zoom_region_mark_dirty (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	DEBUG_RECT ("mark dirty", zoom_region_rect_from_bounds (
 			    zoom_region, roi_dirty) );
-	zoom_region_update_pointer (zoom_region, FALSE);
+
+	zoom_region_update_pointer (zoom_region, TRUE);
+	/* XXX ? should we clip here, or wait till process_updates? */
 	zoom_region_queue_update (zoom_region, 
-	  zoom_region_clip_to_target (zoom_region, 
+	  zoom_region_clip_to_source (zoom_region, 
 	      zoom_region_rect_from_bounds (zoom_region, roi_dirty)));
 }
 
@@ -2512,6 +2785,10 @@ impl_zoom_region_get_roi (PortableServer_Servant servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	return zoom_region->roi;
 }
 
@@ -2522,19 +2799,34 @@ impl_zoom_region_move_resize (PortableServer_Servant            servant,
 {
 	ZoomRegion *zoom_region =
 		ZOOM_REGION (bonobo_object_from_servant (servant));
+
+#ifdef ZOOM_REGION_DEBUG
+	g_assert (zoom_region->alive);
+#endif
 	zoom_region_set_viewport (zoom_region, viewport_bounds);
 }
 
+/* could be called multiple times... */
 static void
 zoom_region_do_dispose (ZoomRegion *zoom_region)
 {
-	if (zoom_region->priv->expose_handler_id) {
+	DBG(g_message ("disposing region %p", zoom_region));
+	if (zoom_region->priv && zoom_region->priv->expose_handler_id && 
+	    GTK_IS_WIDGET (zoom_region->priv->w)) {
 		g_signal_handler_disconnect (
 			zoom_region->priv->w,
 			zoom_region->priv->expose_handler_id);
 		zoom_region->priv->expose_handler_id = 0;
 	}
+	if (zoom_region->priv && zoom_region->priv->update_pointer_id)
+	    g_source_remove (zoom_region->priv->update_pointer_id);
+	if (zoom_region->priv && zoom_region->priv->update_handler_id)
+	    g_source_remove (zoom_region->priv->update_handler_id);
 	g_idle_remove_by_data (zoom_region);
+	
+#ifdef ZOOM_REGION_DEBUG
+	zoom_region->alive = FALSE;
+#endif
 }
 
 static void
@@ -2546,6 +2838,8 @@ impl_zoom_region_dispose (PortableServer_Servant servant,
 	zoom_region_do_dispose (zoom_region);
 }
 
+
+/* could be called multiple times */
 static void
 zoom_region_dispose (GObject *object)
 {
@@ -2561,6 +2855,7 @@ zoom_region_class_init (ZoomRegionClass *klass)
 {
 	GObjectClass * object_class = (GObjectClass *) klass;
 	POA_GNOME_Magnifier_ZoomRegion__epv *epv = &klass->epv;
+	parent_class = g_type_class_peek (BONOBO_TYPE_OBJECT); /* needed by BONOBO_CALL_PARENT! */
 
 	object_class->dispose = zoom_region_dispose;
 	object_class->finalize = zoom_region_finalize;
@@ -2575,6 +2870,9 @@ zoom_region_class_init (ZoomRegionClass *klass)
 	epv->dispose = impl_zoom_region_dispose;
 
 	reset_timing_stats();
+#ifdef DEBUG_CLIENT_CALLS
+	client_debug = (g_getenv ("MAG_CLIENT_DEBUG") != NULL);
+#endif
 }
 
 static void
@@ -2813,6 +3111,7 @@ static void
 zoom_region_private_init (ZoomRegionPrivate *priv)
 {
 	GdkRectangle rect = {0, 0, 0, 0};
+	GNOME_Magnifier_RectBounds rectbounds = {0, 0, 0, 0};
 	priv->parent = NULL;
 	priv->w = NULL;
 	priv->default_gc = NULL;
@@ -2823,21 +3122,31 @@ zoom_region_private_init (ZoomRegionPrivate *priv)
 	priv->source_pixbuf_cache = NULL;
 	priv->source_drawable = NULL;
 	priv->pixmap = NULL;
-	priv->parent = NULL;
 	priv->cursor_backing_rect = rect;
 	priv->cursor_backing_pixels = NULL;
 	priv->border_gc = NULL;
 	priv->gdk_interp_type = GDK_INTERP_NEAREST;
 	priv->expose_handler_id = 0;
 	priv->test = FALSE;
+	priv->last_cursor_pos.x = 0;
+	priv->last_cursor_pos.y = 0;
+	priv->last_drawn_crosswire_pos.x = 0;
+	priv->last_drawn_crosswire_pos.y = 0;
+	priv->exposed_bounds = rectbounds;
+	priv->exposed_viewport = rectbounds;
+	priv->source_area = rectbounds;
+	priv->update_pointer_id = 0;
+	priv->update_handler_id = 0;
 }
 
 static void
 zoom_region_init (ZoomRegion *zoom_region)
 {
+	DBG(g_message ("initializing region %p", zoom_region));
+
 	zoom_region_properties_init (zoom_region);
 	zoom_region->smooth_scroll_policy =
-		GNOME_Magnifier_ZoomRegion_SCROLL_FASTEST;
+		GNOME_Magnifier_ZoomRegion_SCROLL_SMOOTH;
 	zoom_region->invert = FALSE;
 	zoom_region->cache_source = FALSE;
 	zoom_region->border_size = 0;
@@ -2849,16 +3158,20 @@ zoom_region_init (ZoomRegion *zoom_region)
 	zoom_region->x_align_policy = GNOME_Magnifier_ZoomRegion_ALIGN_CENTER;
 	zoom_region->y_align_policy = GNOME_Magnifier_ZoomRegion_ALIGN_CENTER;
 	zoom_region->coalesce_func = _coalesce_update_rects;
-	bonobo_object_add_interface (BONOBO_OBJECT (zoom_region),
-				     BONOBO_OBJECT (zoom_region->properties));
 	zoom_region->priv = g_malloc (sizeof (ZoomRegionPrivate));
 	zoom_region_private_init (zoom_region->priv);
+	bonobo_object_add_interface (BONOBO_OBJECT (zoom_region),
+				     BONOBO_OBJECT (zoom_region->properties));
 	zoom_region->timing_output = FALSE;
-	g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-			    200,
-			    zoom_region_update_pointer_timeout,
-			    zoom_region,
-			    NULL);
+#ifdef ZOOM_REGION_DEBUG
+	zoom_region->alive = TRUE;
+#endif
+	zoom_region->priv->update_pointer_id =
+	    g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+				200,
+				zoom_region_update_pointer_timeout,
+				zoom_region,
+				NULL);
 }
 
 ZoomRegion *
@@ -2867,25 +3180,43 @@ zoom_region_new (void)
 	return g_object_new (zoom_region_get_type(), NULL);
 }
 
+/* this one really shuts down the object - called once only */
 static void
 zoom_region_finalize (GObject *region)
 {
 	ZoomRegion *zoom_region = (ZoomRegion *) region;
 
-	g_list_free (zoom_region->priv->q);
-	gtk_container_remove (GTK_CONTAINER (zoom_region->priv->border),
-			      GTK_WIDGET (zoom_region->priv->w));
-	gtk_container_remove (GTK_CONTAINER (((Magnifier *) 
-					      zoom_region->priv->parent)->priv->canvas),
-			      GTK_WIDGET (zoom_region->priv->border));
-	g_object_unref (zoom_region->priv->source_pixbuf_cache);
-	g_object_unref (zoom_region->priv->scaled_pixbuf);
-	g_object_unref (zoom_region->priv->pixmap);
-	g_object_unref (zoom_region->priv->cursor_backing_pixels);
-	g_object_unref (zoom_region->priv->border_gc);
+	DBG(g_message ("finalizing region %p", zoom_region));
+
+	if (zoom_region->priv && zoom_region->priv->q) 
+	{
+		g_list_free (zoom_region->priv->q);
+		zoom_region->priv->q = NULL;
+	}
+	if (GTK_IS_WIDGET (zoom_region->priv->w))
+		gtk_container_remove (GTK_CONTAINER (zoom_region->priv->border),
+				      GTK_WIDGET (zoom_region->priv->w));
+	if (GTK_IS_WIDGET (zoom_region->priv->border))
+		gtk_container_remove (GTK_CONTAINER (((Magnifier *) 
+						      zoom_region->priv->parent)->priv->canvas),
+				      GTK_WIDGET (zoom_region->priv->border));
+	if (zoom_region->priv->source_pixbuf_cache) 
+	    g_object_unref (zoom_region->priv->source_pixbuf_cache);
+	if (zoom_region->priv->scaled_pixbuf) 
+	    g_object_unref (zoom_region->priv->scaled_pixbuf);
+	if (zoom_region->priv->pixmap) 
+	    g_object_unref (zoom_region->priv->pixmap);
+	zoom_region->priv->pixmap = NULL;
+	zoom_region->priv->parent = NULL;
+	if (zoom_region->priv->cursor_backing_pixels) 
+	    g_object_unref (zoom_region->priv->cursor_backing_pixels);
+	if (zoom_region->priv->border_gc) 
+	    g_object_unref (zoom_region->priv->border_gc);
 	g_free (zoom_region->priv);
 	zoom_region->priv = NULL;
-
+#ifdef ZOOM_REGION_DEBUG
+	zoom_region->alive = FALSE;
+#endif
 	BONOBO_CALL_PARENT (G_OBJECT_CLASS, finalize, (region));
 }
 

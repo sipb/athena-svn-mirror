@@ -66,6 +66,7 @@ typedef struct {
 	unsigned long  border_color;
 	int   test_pattern;
         int   is_override_redirect;
+        int   ignore_damage;
 } MagnifierOptions;
 
 static MagnifierOptions global_options = { ":0.0",
@@ -78,20 +79,21 @@ static MagnifierOptions global_options = { ":0.0",
 					   500,
 					   50,
 					   0,
-					   1.0F,
+					   0.0F,
 					   0xFF000000,
 					   0,
 					   0,
 					   0,
 					   0,
-					   0,					   
-					   0,
+					   0,	
+                                   	   0,
 					   0,
 					   0,
 					   10,
 					   10,
 					   0,
 					   1,
+					   0,
 					   0,
 					   0,
 					   0,
@@ -125,6 +127,7 @@ struct poptOption magnifier_options [] = {
 	{"border-color", 'c', POPT_ARG_LONG, &global_options.border_color, '\0', "border color specified as (A)RGB 23-bit value, Alpha-MSB", NULL},
 	{"use-test-pattern", '\0', POPT_ARG_NONE, &global_options.test_pattern, '\0', "use test pattern as source", NULL},
 	{"override-redirect", '\0', POPT_ARG_NONE, &global_options.is_override_redirect, '\0', "make the magnifier window totally unmanaged by the window manager", NULL},
+	{"ignore-damage", '\0', POPT_ARG_NONE, &global_options.ignore_damage, '\0', "ignore the X server DAMAGE extension, if present", NULL},
 	POPT_AUTOHELP
 	{NULL, 0, 0, NULL, 0, 0}
 };
@@ -313,7 +316,6 @@ magnifier_main_refresh_all (gpointer data)
 #ifdef DEBUG_REFRESH
 	fprintf (stderr, "refreshing %d regions\n", regions->_length);
 #endif
-#undef DEBUG_REFRESH
 
 	properties = GNOME_Magnifier_Magnifier_getProperties (BONOBO_OBJREF (magnifier), &ev);
 
@@ -325,10 +327,10 @@ magnifier_main_refresh_all (gpointer data)
 	}
 
 	dirty_bounds = (GNOME_Magnifier_RectBounds *) dirty_bounds_any->_value;
-	/*
+
 	  fprintf (stderr, "region to update: %d %d %d %d\n",
 		 dirty_bounds->x1, dirty_bounds->y1, dirty_bounds->x2, dirty_bounds->y2);
-	*/
+
 	for (i = 0; i < regions->_length; ++i)
 		GNOME_Magnifier_ZoomRegion_markDirty (
 			regions->_buffer [i], dirty_bounds, &ev);
@@ -385,8 +387,12 @@ main (int argc, char** argv)
   /* FIXME */
   gtk_init (&argc, &argv);
 
+  if (global_options.ignore_damage)
+  {
+      g_setenv ("MAGNIFIER_IGNORE_DAMAGE", "1", TRUE);
+  }
+
   magnifier = magnifier_new (global_options.is_override_redirect);
-  fprintf (stderr, "New magnifier created.\n");
   
   properties = GNOME_Magnifier_Magnifier_getProperties (
 	  BONOBO_OBJREF (magnifier), &ev);
@@ -408,9 +414,12 @@ main (int argc, char** argv)
 	  bonobo_pbclient_set_long (properties, "cursor-size",
 				    global_options.cursor_size, NULL);
 
-  else if (global_options.cursor_scale_factor != 1.0F)
+  else if (global_options.cursor_scale_factor != 0.0F)
 	  bonobo_pbclient_set_float (properties, "cursor-scale-factor",
 				     global_options.cursor_scale_factor, NULL);
+  else 
+	  bonobo_pbclient_set_float (properties, "cursor-scale-factor",
+				     global_options.zoom_factor, NULL);
 
   if (global_options.cursor_color)
 	  bonobo_pbclient_set_ulong (properties, "cursor-color",
@@ -463,7 +472,6 @@ main (int argc, char** argv)
   {
 	  int scroll_policy;
 	  
-	  fprintf (stderr, "creating an initial zoom region.\n");
 	  init_rect_bounds (roi, 0, 0, 100, 100);
 	  init_rect_bounds (viewport, 0, 0, screen_width, screen_height);
 	  zoom_region =
@@ -489,7 +497,6 @@ main (int argc, char** argv)
 				       global_options.timing_output, &ev);
 	  bonobo_pbclient_set_long (properties, "timing-pan-rate",
 				       global_options.timing_pan_rate, &ev);
-	  g_message ("setting zoom properties border-size to %d\n", global_options.border_width);
 	  bonobo_pbclient_set_long    (properties, "border-size",
 				       global_options.border_width, &ev);
 	  bonobo_pbclient_set_long    (properties, "border-color",
@@ -542,7 +549,8 @@ main (int argc, char** argv)
   }
   else
   {
-	  if (!magnifier_source_has_damage_extension (magnifier)) 
+	  if (global_options.ignore_damage ||
+	      !magnifier_source_has_damage_extension (magnifier)) 
 	  {
 		  refresh_handle = g_timeout_add (
 			  global_options.refresh_time,

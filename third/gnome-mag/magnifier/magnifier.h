@@ -50,9 +50,12 @@ typedef struct {
 	BonoboPropertyBag *property_bag;
 	GdkDisplay *source_display;
 	GdkDisplay *target_display;
+	gchar *source_display_name;
+	gchar *target_display_name;
 	int source_screen_num;
 	int target_screen_num;
 	GList *zoom_regions;
+        gboolean source_initialized;
 	gint crosswire_size;
 	guint32 crosswire_color;
 	gboolean crosswire_clip;

@@ -1,3 +1,67 @@
+What's new in gnome-mag-0.11.14:
+
+* Fix for bug #166282; we now work properly if the source display size is
+  smaller than the target display size.
+
+What's new in gnome-mag-0.11.13:
+
+* Fixes for #164444, #164371, #158468, #164175, #164491.
+
+* Fixes for multi-DISPLAY and fullscreen support:
+  we now accept setting target==source if not initially set equal;
+  we correctly connect to source's DAMAGE events if source server isn't 
+    the default GDK_DISPLAY;
+  we tear down the zoom regions in the magnifier when changing source as
+    well as target;
+  we correctly reparent the magnifier's zoom regions _after_ redefining
+    the magnifier's gtk-window;
+  better lifecycle management of the zoom regions themselves, so that
+    idle handlers and timeouts are removed when the regions are disposed.
+
+What's new in gnome-mag-0.11.11:
+
+* Fix crosswire trails when using DAMAGE and XFIXES, at least for
+  smooth-scrolling mode (#160352).
+
+* Reinstate crosswires, they were inadvertently removed by an error in 
+  a compiler-warnings fix.
+
+* Improved test for XFIXES and DAMAGE extensions, so that they 
+  are properly built into gnome-mag when building on XOrg server platform.
+
+* Fixed XFIXES cursor image support on big-endian architectures. (#159398)
+
+* Fixes for #160352, #157187.
+
+What's new in gnome-mag-0.11.9:
+
+* different handling of changes to source and target displays;
+  we don't try to reparent windows any more, we tear down and
+  start over (works better with some x servers).
+
+* Suppress a bunch of gdk critical warnings.
+
+What's new in gnome-mag-0.11.8:
+
+* bugfixes, sanity checks on client requests.
+
+What's new in gnome-mag-0.11.7:
+
+* magnifier's use of the new DAMAGE x extension can be turned off via
+  the MAGNIFIER_IGNORE_DAMAGE environment variable, or via
+  the "--ignore-damage" command line flag.  This is a debugging
+  feature.
+
+* magnifier now does some sanity checking on the setROI calls before 
+  attempting to comply.
+
+What's new in gnome-mag-0.11.6:
+
+* Fix for bug 141376 and 152300; we now provide the missing epv
+  implementation for getTargetDisplay and getSourceDisplay, and 
+  we check to make sure we can connect to a display before
+  trying to change source or target.
+
 What's new in gnome-mag-0.11.5:
 
 * We now implement LoginHelper from at-spi - this allows clients to
