@@ -13,7 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.3 1997-11-17 16:26:21 ghudson Exp $
+ * $Id: voldump.c,v 1.4 1997-11-19 03:04:24 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/voldump/voldump.c,v $
  */
 
@@ -35,6 +35,7 @@
 #include <afs/cmd.h>
 #include <afs/volser.h>
 #include <afs/volint.h>
+#include <afs/ktime.h>
 
 extern int verbose;
 extern int UV_SetSecurity();
