@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.3 1989-11-17 14:58:27 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.4 1989-12-11 16:33:15 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -89,6 +89,7 @@ t_display_list(list,comments,file)
   char chstatusbuf[10];
   char nseenbuf[5];
   char cbuf[32];
+  char ubuf[32];
   char buf[32];
   FILE *fp;
 
@@ -105,7 +106,7 @@ t_display_list(list,comments,file)
       return(ERROR);
     }
 
-  fprintf(fp,"User          Status            Consultant                Status     Topic\n\n");
+  fprintf(fp,"User                      Status            Consultant    Status     Topic\n\n");
   for(l=list; l->ustatus != END_OF_LIST; ++l)
     {
 #ifdef TEST
@@ -128,10 +129,12 @@ t_display_list(list,comments,file)
 	  sprintf(uinstbuf,"[%d]",l->user.instance);
 	  sprintf(cinstbuf,"[%d]",l->connected.instance);
 	  sprintf(nseenbuf,"(%d)",l->nseen);
-	  sprintf(cbuf,"%s@%s",l->connected.username,l->connected.machine);
-	  fprintf(fp,"%-8.8s %-4.4s %-17.17s %-20.20s %-4.4s %-5.5s %-4.4s %-10.10s",
-		 l->user.username, uinstbuf, ustatusbuf,
-		 cbuf, cinstbuf,chstatusbuf,nseenbuf,l->topic);
+	  sprintf(cbuf,"%s",l->connected.username);
+	  sprintf(ubuf,"%s@%s",l->user.username, l->user.machine);
+	  fprintf(fp,
+	       "%-20.20s %-4.4s %-17.17s %-8.8s %-4.4s %-5.5s %-4.4s %-10.10s",
+		  ubuf, uinstbuf, ustatusbuf, l->connected.username,
+		  cinstbuf,chstatusbuf,nseenbuf,l->topic);
 	  if(comments && (l->note[0] != '\0'))
 	    fprintf(fp,"\t[%-64.64s]",l->note);
 	}
@@ -143,8 +146,10 @@ t_display_list(list,comments,file)
 	    sprintf(ustatusbuf,"(%s/%s)",buf,cbuf);
 	    sprintf(uinstbuf,"[%d]",l->user.instance);
 	    sprintf(nseenbuf,"(%d)",l->nseen);
-	    fprintf(fp,"%-8.8s %-4.4s %-17.17s                                 %-4.4s %-10.10s",
-		   l->user.username, uinstbuf, ustatusbuf, nseenbuf, l->topic);
+	    sprintf(ubuf,"%s@%s",l->user.username, l->user.machine);
+	    fprintf(fp,
+                "%-20.20s %-4.4s %-17.17s                     %-4.4s %-10.10s",
+		    ubuf, uinstbuf, ustatusbuf, nseenbuf, l->topic);
 	    if(comments && (l->note[0] != '\0'))
 	      fprintf(fp,"\t[%-64.64s]",l->note);
 	  }
@@ -165,8 +170,9 @@ t_display_list(list,comments,file)
 	sprintf(chstatusbuf,"(%-3.3s)",buf);
 	sprintf(cbuf,"%s@%s",l->user.username,l->user.machine);
 	sprintf(cinstbuf,"[%d]",l->user.instance);
-	fprintf(fp,"                                %-20.20s %-4.4s %-5.5s\n",
-	       cbuf, cinstbuf, chstatusbuf);
+	fprintf(fp,
+	  "                                            %-8.8s %-4.4s %-5.5s\n",
+		cbuf, cinstbuf, chstatusbuf);
       }
   fclose(fp);
   return(SUCCESS);
