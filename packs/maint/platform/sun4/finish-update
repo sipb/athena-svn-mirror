@@ -16,6 +16,8 @@ start)
 		fi
 
 		echo "Finishing partially completed update"
+		echo "***** Finishing update after reboot" \
+			>> /var/athena/update.log
 		sh /usr/athena/lib/update/finish-update 2>&1 \
 			| tee -a /var/athena/update.log
 
