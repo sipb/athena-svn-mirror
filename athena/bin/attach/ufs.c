@@ -1,14 +1,14 @@
 /*	Created by:  Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.2 1991-03-04 12:57:38 epeisach Exp $";
-#endif lint
+static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.3 1992-01-06 15:56:11 probe Exp $";
+#endif
 
 #include "attach.h"
 #include <sys/stat.h>
