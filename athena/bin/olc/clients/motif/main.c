@@ -21,12 +21,18 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
+#ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.8 1989-12-01 20:58:55 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.9 1991-03-06 15:32:57 lwvanels Exp $";
 #endif
+#endif
+
+#include <pwd.h>
+#include <netdb.h>
+#include <sys/param.h>
 
 #include "xolc.h"
 #include "data.h"
@@ -36,23 +42,18 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
  */
 
 PERSON User;                            /* Structure describing user. */
-char DaemonHost[LINE_LENGTH];           /* Name of the daemon's machine. */
+char DaemonHost[MAXHOSTNAMELEN];           /* Name of the daemon's machine. */
 char *program;
 
-char REALM[40];
-char INSTANCE[40];
+#ifdef KERBEROS
+char REALM[REALM_SZ];
+char INSTANCE[INST_SZ];
 
-char *LOCAL_REALM = "ATHENA.MIT.EDU";
-char *LOCAL_REALMS[] =
-{
-  "MIT.EDU",
-  "DU.MIT.EDU",
-  "SIPB.MIT.EDU",
-  "PIKA.MIT.EDU",
-  "CARLA.MIT.EDU",
-  "ZBT.MIT.EDU",
-  "",
-};
+extern char *LOCAL_REALM;
+extern char *LOCAL_REALMS[];
+#endif
+
+int select_timeout = 600;
 
 int has_question=FALSE;
 int init_screen=FALSE;
@@ -78,7 +79,7 @@ main(argc, argv)
 {  
   struct passwd *getpwuid();   /* Get a password entry based on the user ID.*/
   struct passwd *pwent;        /* Password entry. */
-  char hostname[LINE_LENGTH];  /* Name of local machine. */
+  char hostname[MAXHOSTNAMELEN];  /* Name of local machine. */
   struct hostent *host;
   int uid;                     /* User ID number. */
 
@@ -88,11 +89,6 @@ main(argc, argv)
 #ifdef HESIOD
   char **hp;                   /* return value of Hesiod resolver */
 #endif
-
-/*
- * All client specific stuff should be initialized here, if they wish
- * to play after dinner.
- */
 
   program = rindex(*argv,'/');
   if(program == (char *) NULL)
@@ -114,19 +110,34 @@ main(argc, argv)
 #ifdef HESIOD
   if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
     {
-      fprintf(stderr, "\n%s:\tUnable to get name of OLC server host from the Hesiod nameserver.\n\tThis means that you cannot use OLC at this time. Any problems \n\tyou may be experiencing with your workstation may be the result\n\tof this problem.  Try again in a few minutes, or call a consultant\n\tfor help at 253-4435.\n\n", program);
+      fprintf(stderr, "\tUnable to get name of OLC server host from the Hesiod nameserver.\n");
+      fprintf(stderr, "\tThis means that you cannot use OLC at this time. Any problems \n");
+      fprintf(stderr, "\tyou may be experiencing with your workstation may be the result\n");
+      fprintf(stderr, "\tof this problem.\n");
+#ifdef ATHENA
+      fprintf(stderr, "Try again in a few minutes, or call a consultant\n");
+      fprintf(stderr, "\tfor help at 253-4435.\n\n");
+#else
+      fprintf(stderr, "Try again in a few minutes\n\n")
+#endif
       exit(ERROR);
     }
   else
     (void) strcpy(DaemonHost, *hp);
-
-#endif HESIOD
+#endif
 
 
   uid = getuid();
   if ((pwent = getpwuid(uid)) == NULL)
     {
-      fprintf(stderr, "\n%s:\tUnable to find you in the password file.  Any problems that you\n\tmay have been having may be related to the fact that you are not\n\tin the password file.  Try logging out and back in again, or\n\tcall a consultant for help at 253-4435.\n\n", program);
+      fprintf(stderr, "Unable to find you in the password file.  Any problems that you\n");
+      fprintf(stderr, "\tmay have been having may be related to the fact that you are not\n");
+#ifdef ATHENA
+      fprintf(stderr, "\tin the password file.  Try logging out and back in again, or\n");
+      fprintf(stderr, "\tcall a consultant for help at 253-4435.\n\n");
+#else
+      fprintf(stderr, "\tin the password file.  Try logging out and back in again.\n");
+#endif
       exit(ERROR);
     }
   (void) strcpy(User.username, pwent->pw_name);
@@ -134,7 +145,7 @@ main(argc, argv)
   if (index(User.realname, ',') != 0)
     *index(User.realname, ',') = '\0';
 
-  gethostname(hostname, LINE_LENGTH);
+  gethostname(hostname, MAXHOSTNAMELEN);
   host = gethostbyname(hostname);
   (void) strcpy(User.machine, (host ? host->h_name : hostname));
   User.uid = uid;
@@ -147,24 +158,26 @@ main(argc, argv)
  */
   if (XOpenDisplay(NULL) == NULL)
     {
-      fprintf(stderr, "\n%s:\tUnable to open X display.  Check to make sure that your DISPLAY\n\tenvironment variable is set.  Type:\n\n\t\tprintenv  DISPLAY\n\n\tto see if it is set.\n\n\tIf it is not, usually the problem can be fixed by setting your\n\tDISPLAY to 'unix:0.0'.   Type:\n\n\t\tsetenv  DISPLAY  unix:0.0\n\n\tand try running this program again.  Any problems you may have\n\tbeen having while trying to run X programs may be due to problem.\n\tTry running them again after setting your DISPLAY variable.  If\n\tyou are still having problems, you may want to use the text\n\tinterface for OLC instead.  Type:\n\n\t\tolc\n\n", program);
+      fprintf(stderr, "\n\tUnable to open X display.  Check to make sure that your DISPLAY\n");
+      fprintf(stderr, "\tenvironment variable is set.  Type:\n\n");
+      fprintf(stderr, "\t\tprintenv  DISPLAY\n\n\tto see if it is set.\n\n");
+      fprintf(stderr, "\tIf it is not, usually the problem can be fixed by setting your");
+      fprintf(stderr, "\n\tDISPLAY to 'unix:0.0'.   Type:\n\n\t\tsetenv  DISPLAY  unix:0.0\n\n");
+      fprintf(stderr, "\tand try running this program again.  Any problems you may have\n");
+      fprintf(stderr, "\tbeen having while trying to run X programs may be due to problem.\n");
+      fprintf(stderr, "\tTry running them again after setting your DISPLAY variable.  If\n");
+      fprintf(stderr, "\tyou are still having problems, you may want to use the text\n");
+      fprintf(stderr, "\tinterface for OLC instead.  Type:\n\n\t\tolc\n\n");
       exit(ERROR);
     }
 /*
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
-  MuSetAppPath(AD_PATH);
   toplevel = XtInitialize(NULL, "Xolc", NULL, 0, &argc, argv);
-
-  MuSetIconPixmap(toplevel, XBM_PATH, ICON_FILE);
 
   n=0;
   XtSetArg(args[n], XmNallowShellResize, TRUE); n++;
-  XtSetArg(args[n], XmNwidth, 530); n++;
-  XtSetArg(args[n], XmNheight, 355); n++;
-  XtSetArg(args[n], XmNminWidth, 530); n++;
-  XtSetArg(args[n], XmNminHeight, 355); n++;
   XtSetValues(toplevel, args, n);
 
   MuInitialize(toplevel);
@@ -212,7 +225,7 @@ olc_init()
   RESPONSE response;		/* Response code from daemon. */
   REQUEST Request;
   int n=0;
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
   int status;
   Arg arg;
 
@@ -222,7 +235,13 @@ olc_init()
   fill_request(&Request);
   Request.request_type = OLC_STARTUP;
   
-  fd = open_connection_to_daemon();
+  status = open_connection_to_daemon(&Request, &fd);
+  if(status)
+    {
+      handle_response(status, &Request);
+      exit(ERROR);
+    }
+
   status = send_request(fd, &Request);
   if (status)
     {
