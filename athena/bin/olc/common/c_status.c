@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v $
- *	$Id: c_status.c,v 1.2 1991-02-24 11:28:48 lwvanels Exp $
+ *	$Id: c_status.c,v 1.3 1991-08-29 11:25:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v 1.2 1991-02-24 11:28:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v 1.3 1991-08-29 11:25:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,6 +36,7 @@ STATUS Status_Table[] =
   {UNKNOWN_STATUS,"unknown"},
 };
 
+ERRCODE
 OGetStatusString(status,string)
      int status;
      char *string;
@@ -47,8 +48,10 @@ OGetStatusString(status,string)
     ind++;
     
   strcpy(string,Status_Table[ind].label);
+  return 0;
 }
 
+ERRCODE
 OGetStatusCode(string,status)
      char *string;
      int *status;
@@ -67,5 +70,6 @@ OGetStatusCode(string,status)
 
   if ((*status == UNKNOWN_STATUS) || (*status == -2))
     *status = -1;
+  return 0;
 }
 
