@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.12 1991-01-08 20:37:46 qjb Exp $
+ * $Id: aklog_main.c,v 1.13 1991-07-01 09:54:23 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
- * $Author: qjb $
+ * $Author: probe $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.12 1991-01-08 20:37:46 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.13 1991-07-01 09:54:23 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -75,8 +75,10 @@ static char *progname = NULL;	/* Name of this program */
 static int dflag = FALSE;	/* Give debugging information */
 static int noauth = FALSE;	/* If true, don't try to get tokens */
 static int zsubs = FALSE;	/* Are we keeping track of zephyr subs? */
+static int hosts = FALSE;	/* Are we keeping track of hosts? */
 static int noprdb = FALSE;	/* Should we skip resolving name to id? */
 static linked_list zsublist;	/* List of zephyr subscriptions */
+static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
 
 
@@ -268,12 +270,8 @@ static int auth_to_cell(cell, realm)
 			status);
 		params.pstdout(msgbuf);
 	    }
-	    sprintf(msgbuf, "%s: Couldn't get AFS tickets (%s.%s@%s)",
-		    progname, name, instance, realm_of_cell);
-	    params.pstderr(msgbuf);
-	    sprintf(msgbuf," for cell %s", cell_to_use);
-	    params.pstderr(msgbuf);
-	    sprintf(msgbuf,":\n%s\n", krb_err_txt[status]);
+	    sprintf(msgbuf, "%s: Couldn't get %s AFS tickets: %s\n",
+		    progname, cell_to_use, krb_err_txt[status]);
 	    params.pstderr(msgbuf);
 	    return(AKLOG_KERBEROS);
 	}
@@ -539,19 +537,18 @@ static char *next_path(origpath)
 }
 	
 #ifdef __STDC__
-static void add_hosts_to_zsublist(char *file)
+static void add_hosts(char *file)
 #else
-static void add_hosts_to_zsublist(file)
+static void add_hosts(file)
   char *file;
 #endif /* __STDC__ */
 {
     struct ViceIoctl vio;
     char outbuf[BUFSIZ];
-    long *hosts;
-#ifdef ALLHOSTS
+    long *phosts;
     int i;
-#endif /* ALLHOSTS */
     struct hostent *hp;
+    struct in_addr in;
     
     bzero(outbuf, sizeof(outbuf));
 
@@ -565,7 +562,7 @@ static void add_hosts_to_zsublist(file)
     }
     /* Don't worry about errors. */
     if (!pioctl(file, VIOCWHEREIS, &vio, 1)) {
-	hosts = (long *) outbuf;
+	phosts = (long *) outbuf;
 
 	/*
 	 * Lists hosts that we care about.  If ALLHOSTS is defined,
@@ -579,25 +576,27 @@ static void add_hosts_to_zsublist(file)
 	 * probably won't need which reduces the instances of 
 	 * people getting messages that don't apply to them.
 	 */
-#ifdef ALLHOSTS
-	for (i = 0; hosts[i]; i++) 
-	    if (hp = gethostbyaddr(&hosts[i], sizeof(long), AF_INET)) {
+#ifndef ALLHOSTS
+	if (phosts[1] != '\0')
+	    return;
+#endif
+	for (i = 0; phosts[i]; i++) {
+	    if (hosts) {
+		in.s_addr = phosts[i];
 		if (dflag) {
-		    sprintf(msgbuf, "Got host %s\n", hp->h_name);
+		    sprintf(msgbuf, "Got host %s\n", inet_ntoa(in));
 		    params.pstdout(msgbuf);
 		}
-		ll_string(&zsublist, SL_ADD, hp->h_name);
+		ll_string(&hostlist, ll_s_add, inet_ntoa(in));
 	    }
-#else
-	if (hosts[1] == '\0') 
-	    if (hp = gethostbyaddr(&hosts[0], sizeof(long), AF_INET)) {
+	    if (zsubs && (hp=gethostbyaddr(&phosts[i],sizeof(long),AF_INET))) {
 		if (dflag) {
 		    sprintf(msgbuf, "Got host %s\n", hp->h_name);
 		    params.pstdout(msgbuf);
 		}
 		ll_string(&zsublist, ll_s_add, hp->h_name);
 	    }
-#endif /* ALLHOSTS */
+	}
     }
 }
     
@@ -660,10 +659,10 @@ static int auth_to_path(path)
 	    /* skip over the '#' or '%' */
 	    cell = mountpoint + 1;
 	    /* Add this (cell:volumename) to the list of zsubs */
-	    if (zsubs) {
+	    if (zsubs)
 		ll_string(&zsublist, ll_s_add, cell);
-		add_hosts_to_zsublist(pathtocheck);
-	    }
+	    if (zsubs || hosts)
+		add_hosts(pathtocheck);
 	    if (endofcell = strchr(mountpoint, VOLMARKER)) {
 		*endofcell = '\0';
 		if (auth_to_cell_status = auth_to_cell(cell, NULL)) {
@@ -707,7 +706,7 @@ static void usage()
     sprintf(msgbuf, "\nUsage: %s %s%s%s\n", progname,
 	    "[-d] [[-cell | -c] cell [-k krb_realm]] ",
 	    "[[-p | -path] pathname]\n",
-	    "    [-zsubs] [-noauth] [-noprdb]\n");
+	    "    [-zsubs] [-hosts] [-noauth] [-noprdb]\n");
     params.pstderr(msgbuf);
     sprintf(msgbuf, "    -d gives debugging information.\n");
     params.pstderr(msgbuf);
@@ -718,6 +717,8 @@ static void usage()
     sprintf(msgbuf, "you wish to authenticate.\n");
     params.pstderr(msgbuf);
     sprintf(msgbuf, "    -zsubs gives zephyr subscription information.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    -hosts gives host address information.\n");
     params.pstderr(msgbuf);
     sprintf(msgbuf, "    -noauth does not attempt to get tokens.\n");
     params.pstderr(msgbuf);
@@ -772,6 +773,7 @@ void aklog(argc, argv, a_params)
     ll_init(&paths);
 
     ll_init(&zsublist);
+    ll_init(&hostlist);
 
     /* Store the program name here for error messages */
     if (progname = strrchr(argv[0], DIR))
@@ -792,6 +794,8 @@ void aklog(argc, argv, a_params)
 	    noauth++;
 	else if (strcmp(argv[i], "-zsubs") == 0)
 	    zsubs++;
+	else if (strcmp(argv[i], "-hosts") == 0)
+	    hosts++;
 	else if (strcmp(argv[i], "-noprdb") == 0)
 	    noprdb++;
 	else if (((strcmp(argv[i], "-cell") == 0) ||
@@ -915,6 +919,13 @@ void aklog(argc, argv, a_params)
 	    sprintf(msgbuf, "zsub: %s\n", cur_node->data);
 	    params.pstdout(msgbuf);
 	}
-    
+
+    /* If we are keeping track of host information, print it. */
+    if (hosts)
+	for (cur_node = hostlist.first; cur_node; cur_node = cur_node->next) {
+	    sprintf(msgbuf, "host: %s\n", cur_node->data);
+	    params.pstdout(msgbuf);
+	}
+
     params.exitprog(status);
 }
