@@ -1,11 +1,75 @@
-Changes in 1.0.7:
+Changes in 2.2.0:
 -----------------
-* i18n fixes                                    (Marius Andreina)
-* Bug fixes                                     (Padraig O'Briain,
-                                                 Mikael Hallendal)
-* Added translations (be, he, ta,               (Yanko Kaneti,
-                                                 Fatih Demir,
-                                                 Dmitry G. Mastrukov)
+
+* Updated translations
+  (hi, he, vi, de)                              (Christian Neumair,
+                                                 Pablo Saratxaga,
+                                                 Toivo,
+                                                 Gil Osher,
+                                                 Naba Kumar)
+
+Changes in 2.1.5:
+-----------------
+
+* Stylesheet fixes                              (Padraig O'Briain)
+* Hide unimplemented search options             (Richard Hult)
+* Updated translations 
+  (am, hi, ko, ru, sq, ta)
+
+Changes in 2.1.4:
+-----------------
+
+* Updated translations 
+  (am, bg, ca, el, es, ja, lv, no, pl, pt_BR, sk, wa)
+
+Changes in 2.1.3:
+-----------------
+
+* Multihead fix                                 (Mark McLoughlin)
+* Updated translations 
+  (be, fr, hu, da, nl, am, de, fr, sq,
+   bg, zh_CN, sv, pt_BR, ca, no, ms)            (Dmitry G. Mastrukov
+                                                 Christophe Merlet
+                                                 Andras Timar
+                                                 Ole Laursen
+                                                 Vincent van Adrighem
+                                                 Daniel Yacob 
+                                                 Christian Neumair
+                                                 Jean-Michel Ardantz
+                                                 Laurent Dhima
+                                                 Alexander Shopov
+                                                 He Qiangqiang
+                                                 Christian Rose
+                                                 Evandro Fernandes Giovanini
+                                                 Jordi Mallach
+                                                 Kjartan Maraas
+                                                 Hasbullah bin Pit)
+                                                                                                              
+Changes in 2.1.2:
+-----------------
+
+* Search in page                                (Richard Hult)
+* Fixes to yelp-pregenerate                     (Richard Hult)
+* Updated Norwegian (bokmål) translation        (Kjartan Maraas)
+
+Changes in 2.1.1:
+-----------------
+
+* i18n fixes to stylesheets                     (Marius Andreiana)
+* Use GnomeApp instead of GtkWindow             (Paolo Maggi)
+* Fix crash when loading external files         (Mikael Hallendal,
+                                                 Paolo Maggi)
+* Support 'yelp index:' to show index page      (Mikael Hallendal)
+* Updated hungarian translation                 (Andras Timar)
+
+Changes in 2.1.0:
+-----------------
+
+* Added pregeneration of HTML cache.            (Narayana Pattipati)
+* Stylesheet updates                            (sander Vesik)
+* Internal cleanups                             (Mikael Hallendal)
+* a11y fix                                      (Padraig O'Briain)
+* Linking error                                 (Mikael Hallendal)
 
 Changes in 1.0.6:
 -----------------

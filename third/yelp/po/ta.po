@@ -1,18 +1,50 @@
 # Tamil translation of Yelp.
-# Copyright (C) 2002
+# Copyright (C) 2003 Yelp's COPYRIGHT HOLDER
 # This file is distributed under the same license as the Yelp package.
-# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2002.
-#
+# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2003.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Tamil Yelp 1.9.4\n"
-"POT-Creation-Date: 2002-11-18 23:28+0100\n"
-"PO-Revision-Date: 2002-11-09 08:38+0100\n"
+"Project-Id-Version: Tamil Version of Yelp 2.1.0\n"
+"POT-Creation-Date: 2003-01-20 21:54+0100\n"
+"PO-Revision-Date: 2003-01-09 22:50+0600\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: data/ui/yelp.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: data/ui/yelp.glade.h:2
+msgid "<b>Find text in the document:</b>"
+msgstr "<b>þù×¨Ã¨Â ¬Å½ò¾¢ø ¸ñÎÀ¢Ê:</b>"
+
+#: data/ui/yelp.glade.h:3
+msgid "Automatically _wrap around"
+msgstr "¾É¢Âì¸¾¡¸ wrap ¦ºö"
+
+#: data/ui/yelp.glade.h:4
+msgid "Find text..."
+msgstr "ºÃõ ¸ñÎÀ¢Êì¸×õ..."
+
+#: data/ui/yelp.glade.h:5
+msgid "Match _entire word"
+msgstr "ÓØ ¦º¡ø¨ÄÔõ ºÁÁ¡ìÌ"
+
+#: data/ui/yelp.glade.h:6
+msgid "_Match upper/lower case"
+msgstr "§Áø/¸£ú Å¨¸¨Â ºÁÁ¡ìÌ"
+
+#: data/ui/yelp.glade.h:7
+msgid "_Next"
+msgstr "_«ÎòÐ"
+
+#: data/ui/yelp.glade.h:8
+msgid "_Previous"
+msgstr "_Óý"
 
 #: src/GNOME_Yelp.server.in.h:1
 msgid "Yelp"
@@ -22,12 +54,12 @@ msgstr "¦Âøô"
 msgid "Yelp Factory"
 msgstr "¦Âøô ¦¾¡Æ¢üº¡¨Ä"
 
-#: src/yelp-main.c:114
+#: src/yelp-main.c:117
 #, c-format
 msgid "Could not activate Yelp: '%s'"
 msgstr "¦Âøô ¦ºÂüÀÎò¾ ÓÊÂÅ¢ø¨Ä: '%s'"
 
-#: src/yelp-main.c:133
+#: src/yelp-main.c:136
 msgid "Could not open new window."
 msgstr "Ò¾¢Â º¡ÇÃò¨¾ ¾¢Èì¸ÓÊÂÅ¢ø¨Ä."
 
@@ -74,7 +106,7 @@ msgstr "¸Õ ¿¨¼Ó¨È¸û"
 
 #: src/yelp-man.c:429
 msgid "Applications"
-msgstr "ÀÂýÀ¡Î¸û"
+msgstr "¦ºÂøÀ¡Î¸û"
 
 #: src/yelp-man.c:434
 msgid "Development"
@@ -100,152 +132,163 @@ msgstr "¦À¡Ð¨ÁÂ¡É¨Å"
 msgid "System Administration"
 msgstr "«¨ÁôÒ ¿¢÷Å¡¸õ"
 
-#: src/yelp-view-content.c:422 src/yelp-view-index.c:498
-msgid "Section"
-msgstr "ÀÌ¾¢"
-
-#: src/yelp-view-content.c:567 src/yelp-view-index.c:566
+#: src/yelp-view-content.c:502 src/yelp-view-index.c:423
 msgid "Loading..."
 msgstr "²üÈôÀÎ¸¢ýÈÐ..."
 
-#: src/yelp-view-index.c:461
-msgid "Search for:"
-msgstr "þ¾ü¸¡¸ §¾Î:"
+#: src/yelp-view-content.c:543 src/yelp-view-index.c:517
+msgid "Section"
+msgstr "À¢Ã¢×"
+
+#: src/yelp-view-index.c:480
+msgid "_Search for:"
+msgstr "_þ¾ð¸¡¸ §¾Î:"
 
 #. GList           *seriesids;
-#: src/yelp-view-toc.c:183
+#: src/yelp-view-toc.c:165
 msgid "Help Contents"
 msgstr "¯¾Å¢ ¯ûÇ¼ì¸í¸û"
 
-#: src/yelp-view-toc.c:184
+#: src/yelp-view-toc.c:166
 msgid "GNOME - Desktop"
 msgstr "¸§É¡õ - ¸½¢§Á¨º"
 
-#: src/yelp-view-toc.c:185
+#: src/yelp-view-toc.c:167
 msgid "Additional documents"
 msgstr "ÁüÈ/§ÅÚ ¬Å½í¸û"
 
-#: src/yelp-view-toc.c:186 src/yelp-view-toc.c:511
+#: src/yelp-view-toc.c:168 src/yelp-view-toc.c:493
 msgid "Manual Pages"
 msgstr "¯¾Å¢ô Àì¸¹¸û"
 
-#: src/yelp-view-toc.c:187 src/yelp-view-toc.c:567
+#: src/yelp-view-toc.c:169 src/yelp-view-toc.c:549
 msgid "Info Pages"
 msgstr "¾¸Åø Àì¸¹¸û"
 
-#: src/yelp-view-toc.c:384 src/yelp-view-toc.c:568 src/yelp-view-toc.c:792
+#: src/yelp-view-toc.c:366 src/yelp-view-toc.c:550 src/yelp-view-toc.c:749
 msgid "Documents"
 msgstr "¬Å½í¸û"
 
-#: src/yelp-view-toc.c:385 src/yelp-view-toc.c:512 src/yelp-view-toc.c:793
+#: src/yelp-view-toc.c:367 src/yelp-view-toc.c:494 src/yelp-view-toc.c:750
 msgid "Categories"
 msgstr "Å¨¸Â¢Éí¸û"
 
-#: src/yelp-view-toc.c:466
+#: src/yelp-view-toc.c:448
 msgid "Manual pages"
 msgstr "¯¾Å¢ô Àì¸¹¸û"
 
-#: src/yelp-view-toc.c:731
+#: src/yelp-view-toc.c:712
 msgid "GNOME is"
 msgstr "¸§É¡õ"
 
-#: src/yelp-view-toc.c:732
+#: src/yelp-view-toc.c:713
 msgid "Free Software"
 msgstr "þÄÅº ¦Áý¦À¡Õû"
 
-#: src/yelp-view-toc.c:733
+#: src/yelp-view-toc.c:714
 msgid "(C)"
 msgstr "(À)"
 
-#: src/yelp-window.c:159
+#: src/yelp-window.c:163
 msgid "/_File"
 msgstr "/_§¸¡ôÒ"
 
-#: src/yelp-window.c:160
+#: src/yelp-window.c:164
 msgid "/File/_New window"
 msgstr "/§¸¡ôÒ/Ò¾¢Â º¡ÇÃõ"
 
-#: src/yelp-window.c:161
+#: src/yelp-window.c:165
 msgid "/File/_Close window"
 msgstr "/§¸¡ôÒ/º¡ÇÃò¨¾ ãÎ¸"
 
-#. {N_("/File/_Quit"),         NULL,         window_exit_cb,         0,                           "<StockItem>", GTK_STOCK_QUIT    },
-#: src/yelp-window.c:163
+#: src/yelp-window.c:167
+msgid "/_Edit"
+msgstr "/_¦¾¡Ì"
+
+#: src/yelp-window.c:168
+msgid "/Edit/_Find in page..."
+msgstr "/¦¾¡Ì/þôÀì¸ò¾¢ø ¸ñÎÀ¢Ê..."
+
+#: src/yelp-window.c:169
+msgid "/Edit/_Find again"
+msgstr "/¦¾¡Ì/ÁÚÀÊÔõ ¸ñÎÀ¢Ê"
+
+#: src/yelp-window.c:171
 msgid "/_Go"
 msgstr "/_§À¡"
 
-#: src/yelp-window.c:164
+#: src/yelp-window.c:172
 msgid "/Go/_Back"
 msgstr "/§À¡/À¢ý¦ºø"
 
-#: src/yelp-window.c:165
+#: src/yelp-window.c:173
 msgid "/Go/_Forward"
 msgstr "/§À¡/Óý¦ºø"
 
-#: src/yelp-window.c:166
+#: src/yelp-window.c:174
 msgid "/Go/_Home"
 msgstr "/§À¡/_þøÄõ"
 
-#: src/yelp-window.c:167
+#: src/yelp-window.c:175
 msgid "/Go/_Index"
 msgstr "/Go/_ÍðÎ"
 
-#: src/yelp-window.c:168
+#: src/yelp-window.c:177
 msgid "/_Help"
 msgstr "/_¯¾Å¢"
 
-#: src/yelp-window.c:169
+#: src/yelp-window.c:178
 msgid "/Help/_About"
 msgstr "/¯¾Å¢/_ÀüÈ¢"
 
-#: src/yelp-window.c:227 src/yelp-window.c:429
+#: src/yelp-window.c:238 src/yelp-window.c:438
 msgid "Help Browser"
 msgstr "¯¾Å¢ §Á§Ä¡Ê"
 
-#: src/yelp-window.c:339
+#: src/yelp-window.c:351
 #, c-format
 msgid "The document '%s' does not exist"
 msgstr "'%s' ¬Å½õ þø¨Ä. ¸¢¨¼Â¡Ð."
 
 #. Note to translators: put here your name (and address) so it
 #. * will shop up in the "about" box
-#: src/yelp-window.c:598
+#: src/yelp-window.c:675
 msgid "translator_credits"
-msgstr "¦Á¡Æ¢Á¡üÈ¢§Â¡÷"
+msgstr "¦Á¡Æ¢¦ÀÂ÷ôÀ÷ ÀüÚ"
 
-#: src/yelp-window.c:602
+#: src/yelp-window.c:679
 msgid "Help Browser for GNOME 2.0"
 msgstr "¸§É¡õ 2.0 ì¸¡É ¯¾Å¢ §Á§Ä¡Ê"
 
-#: src/yelp-window.c:657
+#: src/yelp-window.c:788
 msgid "Back"
 msgstr "À¢ý"
 
-#: src/yelp-window.c:658
+#: src/yelp-window.c:789
 msgid "Show previous page in history"
 msgstr "ÅÃÄ¡È¢ø Óý ¸¡ñÀ¢ò¾ Àì¸ò¾¢üÌô §À¡¸×õ"
 
-#: src/yelp-window.c:669
+#: src/yelp-window.c:800
 msgid "Forward"
 msgstr "Óý"
 
-#: src/yelp-window.c:670
+#: src/yelp-window.c:801
 msgid "Show next page in history"
 msgstr "ÅÃÄ¡È¢ø «Îò¾ Àì¸ò¾¢üÌô §À¡¸×õ"
 
-#: src/yelp-window.c:683
+#: src/yelp-window.c:814
 msgid "Home"
-msgstr "þøÄõ"
+msgstr "­øÄõ"
 
-#: src/yelp-window.c:684
+#: src/yelp-window.c:815
 msgid "Go to home view"
 msgstr "þøÄõ ¸¡ðº¢ìÌ §À¡"
 
-#: src/yelp-window.c:694
+#: src/yelp-window.c:825
 msgid "Index"
 msgstr "ÍðÎ"
 
-#: src/yelp-window.c:695
+#: src/yelp-window.c:826
 msgid "Search in the index"
 msgstr "ÍðÊÂ¢ø §¾Î¸"
 

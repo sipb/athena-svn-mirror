@@ -5,8 +5,8 @@
     </oaf_attribute>
 
     <oaf_attribute name="name" type="string" value="Yelp Factory"/>
-    <oaf_attribute name="name-am" type="string" value="á¨áá á áá«á½"/>
-    <oaf_attribute name="name-ar" type="string" value="ÙØµÙØ¹ Yelp"/>
+    <oaf_attribute name="name-am" type="string" value="á¨áá áá¥áªá«"/>
+    <oaf_attribute name="name-ar" type="string" value="ÙØµÙØ¹ ÙÙØ¨"/>
     <oaf_attribute name="name-be" type="string" value="Ð¤Ð°Ð±ÑÑÐºÐ° Yelp"/>
     <oaf_attribute name="name-bg" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð½Ð° ÐÐµÐ»Ð¿"/>
     <oaf_attribute name="name-ca" type="string" value="FÃ brica de Yelp"/>
@@ -16,11 +16,10 @@
     <oaf_attribute name="name-el" type="string" value="ÎÏÎ³Î¿ÏÏÎ¬ÏÎ¹Î¿ Yelp"/>
     <oaf_attribute name="name-es" type="string" value="FÃ¡brica Yelp"/>
     <oaf_attribute name="name-et" type="string" value="Yelp Factory"/>
-    <oaf_attribute name="name-fa" type="string" value="Ú©Ø§Ø±Ø®Ø§ÙÙâÛ Yelp"/>
     <oaf_attribute name="name-fi" type="string" value="Yelp tehdas"/>
     <oaf_attribute name="name-fr" type="string" value="Fabrique Yelp"/>
     <oaf_attribute name="name-gl" type="string" value="FÃ¡brica Yelp"/>
-    <oaf_attribute name="name-he" type="string" value="××¤×¢× Yelp"/>
+    <oaf_attribute name="name-hi" type="string" value="à¤¯à¤²à¥à¤ª à¤à¤¾à¤°à¤à¤¾à¤¨à¤¾"/>
     <oaf_attribute name="name-hu" type="string" value="Yelp Factory"/>
     <oaf_attribute name="name-it" type="string" value="Fabbrica di Yelp"/>
     <oaf_attribute name="name-ja" type="string" value="Yelp ãã¡ã¯ããª"/>
@@ -35,7 +34,7 @@
     <oaf_attribute name="name-pt" type="string" value="FÃ¡brica Yelp"/>
     <oaf_attribute name="name-pt_BR" type="string" value="FÃ¡brica Yelp"/>
     <oaf_attribute name="name-ro" type="string" value="Factory Yelp"/>
-    <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Yelp"/>
+    <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð¿ÑÐ¾Ð³ÑÐ°Ð¼Ð¼Ñ &quot;ÐÐµÐ»Ð¿&quot;"/>
     <oaf_attribute name="name-sk" type="string" value="VytvÃ¡racie rozhranie Yelp"/>
     <oaf_attribute name="name-sl" type="string" value="Tovarna Yelp"/>
     <oaf_attribute name="name-sq" type="string" value="Yelp Factory"/>
@@ -56,7 +55,7 @@
     </oaf_attribute>
     <oaf_attribute name="name" type="string" value="Yelp"/>
     <oaf_attribute name="name-am" type="string" value="á¨áá"/>
-    <oaf_attribute name="name-ar" type="string" value="Yelp"/>
+    <oaf_attribute name="name-ar" type="string" value="ÙÙØ¨"/>
     <oaf_attribute name="name-az" type="string" value="Yelp"/>
     <oaf_attribute name="name-be" type="string" value="Yelp"/>
     <oaf_attribute name="name-bg" type="string" value="ÐÐµÐ»Ð¿"/>
@@ -67,11 +66,11 @@
     <oaf_attribute name="name-el" type="string" value="Yelp"/>
     <oaf_attribute name="name-es" type="string" value="Yelp"/>
     <oaf_attribute name="name-et" type="string" value="Yelp"/>
-    <oaf_attribute name="name-fa" type="string" value="Yelp"/>
     <oaf_attribute name="name-fi" type="string" value="Yelp"/>
     <oaf_attribute name="name-fr" type="string" value="Yelp"/>
     <oaf_attribute name="name-gl" type="string" value="Yelp"/>
     <oaf_attribute name="name-he" type="string" value="Yelp"/>
+    <oaf_attribute name="name-hi" type="string" value="à¤¯à¤²à¥à¤ª"/>
     <oaf_attribute name="name-hu" type="string" value="Yelp"/>
     <oaf_attribute name="name-it" type="string" value="Yelp"/>
     <oaf_attribute name="name-ja" type="string" value="Yelp"/>
@@ -86,7 +85,7 @@
     <oaf_attribute name="name-pt" type="string" value="Yelp"/>
     <oaf_attribute name="name-pt_BR" type="string" value="Yelp"/>
     <oaf_attribute name="name-ro" type="string" value="Yelp"/>
-    <oaf_attribute name="name-ru" type="string" value="Yelp"/>
+    <oaf_attribute name="name-ru" type="string" value="ÐÐµÐ»Ð¿"/>
     <oaf_attribute name="name-sk" type="string" value="Yelp"/>
     <oaf_attribute name="name-sl" type="string" value="Yelp"/>
     <oaf_attribute name="name-sq" type="string" value="Yelp"/>

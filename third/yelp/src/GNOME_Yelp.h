@@ -32,7 +32,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Yelp_7 'e'
 #define TC_IMPL_TC_GNOME_Yelp_8 'l'
 #define TC_IMPL_TC_GNOME_Yelp_9 'p'
-   extern const struct CORBA_TypeCode_struct TC_GNOME_Yelp_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GNOME_Yelp_struct;
 #define TC_GNOME_Yelp ((CORBA_TypeCode)&TC_GNOME_Yelp_struct)
 #endif
 #endif
@@ -70,8 +75,12 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_7 'e'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'l'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 'p'
-   extern const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_string_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -95,7 +104,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Yelp_WindowList_7 'e'
 #define TC_IMPL_TC_GNOME_Yelp_WindowList_8 'l'
 #define TC_IMPL_TC_GNOME_Yelp_WindowList_9 'p'
-   extern const struct CORBA_TypeCode_struct TC_GNOME_Yelp_WindowList_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GNOME_Yelp_WindowList_struct;
 #define TC_GNOME_Yelp_WindowList ((CORBA_TypeCode)&TC_GNOME_Yelp_WindowList_struct)
 #endif
 #define GNOME_Yelp_WindowList__alloc() ((GNOME_Yelp_WindowList *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -166,25 +180,21 @@ extern "C"
 			     CORBA_Environment * ev);
    GNOME_Yelp_WindowList *GNOME_Yelp_getWindows(GNOME_Yelp _obj,
 						CORBA_Environment * ev);
-
-/** more internals **/
-#if !defined(MARSHAL_IMPL_CORBA_sequence_CORBA_string_0)
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_0 'G'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_1 'N'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_2 'O'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_3 'M'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_4 'E'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_5 '_'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_6 'Y'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_7 'e'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_8 'l'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_string_9 'p'
-#endif
 #include <orbit/orb-core/orbit-interface.h>
 
-   extern ORBit_IInterface GNOME_Yelp__iinterface;
-   extern ORBit_IMethod GNOME_Yelp__imethods[];
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+   static
+#else
+   extern
+#endif
+   ORBit_IInterface GNOME_Yelp__iinterface;
 #define GNOME_Yelp_IMETHODS_LEN 2
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+   static
+#else
+   extern
+#endif
+   ORBit_IMethod GNOME_Yelp__imethods[GNOME_Yelp_IMETHODS_LEN];
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

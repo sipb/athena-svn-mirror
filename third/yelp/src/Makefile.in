@@ -75,15 +75,9 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
-GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
 GOBJECT_QUERY = @GOBJECT_QUERY@
-GTKDOC = @GTKDOC@
-HAVE_GTK_DOC = @HAVE_GTK_DOC@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -93,10 +87,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -119,126 +115,71 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 YELP_IDL_INCLUDES = @YELP_IDL_INCLUDES@
-cxxflags_set = @cxxflags_set@
 yelplocaledir = @yelplocaledir@
 
-INCLUDES = \
-	-I$(top_srcdir)							\
-	@YELP_CFLAGS@							\
-	-DG_LOG_DOMAIN=\"Yelp\"						\
-	-DPREFIX=\""$(prefix)"\"					\
-	-DSYSCONFDIR=\""$(sysconfdir)"\"				\
-	-DDATADIR=\""$(datadir)"\"					\
-	-DLIBDIR=\""$(libdir)"\"					\
-	-DIMAGEDIR=\""$(datadir)/images/yelp"\"				\
-	-DGNOMELOCALEDIR=\""$(yelplocaledir)"\"				\
-	-DLIBGNOME_MAN2HTML=\"$(LIBGNOME_MAN2HTML)\"			\
-	-DLIBGNOME_INFO2HTML=\"$(LIBGNOME_INFO2HTML)\"			\
-	-DSERVERDIR=\"$(libexecdir)\"
+INCLUDES =  	-I$(top_srcdir)								@YELP_CFLAGS@								-DG_LOG_DOMAIN=\"Yelp\"							-DPREFIX=\""$(prefix)"\"						-DSYSCONFDIR=\""$(sysconfdir)"\"					-DDATADIR=\""$(datadir)"\"						-DLIBDIR=\""$(libdir)"\"						-DIMAGEDIR=\""$(datadir)/images/yelp"\"					-DGNOMELOCALEDIR=\""$(yelplocaledir)"\"					-DLIBGNOME_MAN2HTML=\"$(LIBGNOME_MAN2HTML)\"				-DLIBGNOME_INFO2HTML=\"$(LIBGNOME_INFO2HTML)\"				-DSERVERDIR=\"$(libexecdir)\"						-DBINDIR=\""$(bindir)"\"
 
-@HTML_WIDGET_GTKHTML1_TRUE@html_widget_impl = @HTML_WIDGET_GTKHTML1_TRUE@yelp-html-gtkhtml1.c
-@HTML_WIDGET_GTKHTML1_FALSE@html_widget_impl = @HTML_WIDGET_GTKHTML1_FALSE@yelp-html-gtkhtml2.c
+@HTML_WIDGET_GTKHTML1_TRUE@html_widget_impl = yelp-html-gtkhtml1.c
+@HTML_WIDGET_GTKHTML1_FALSE@html_widget_impl = yelp-html-gtkhtml2.c
 
 libexec_PROGRAMS = yelp-db2html
-bin_PROGRAMS = yelp
+bin_PROGRAMS = yelp yelp-pregenerate
 
 noinst_PROGRAMS = test-uri test-reader
 
-test_uri_SOURCES = \
-	test-uri.c							\
-	yelp-uri.c		yelp-uri.h				\
-	yelp-error.c		yelp-error.h				\
-	yelp-util.c		yelp-util.h
+test_uri_SOURCES =  	test-uri.c								yelp-uri.c		yelp-uri.h					yelp-error.c		yelp-error.h					yelp-util.c		yelp-util.h
 
 
-test_uri_LDADD = \
-	@YELP_LIBS@
+test_uri_LDADD =  	@YELP_LIBS@
 
 
-test_reader_SOURCES = \
-	test-reader.c							\
-	yelp-uri.c		yelp-uri.h				\
-	yelp-cache.c		yelp-cache.h				\
-	yelp-reader.c		yelp-reader.h				\
-	yelp-error.c		yelp-error.h				\
-	yelp-util.c		yelp-util.h				\
-	yelp-marshal-main.c
+test_reader_SOURCES =  	test-reader.c								yelp-uri.c		yelp-uri.h					yelp-cache.c		yelp-cache.h					yelp-reader.c		yelp-reader.h					yelp-error.c		yelp-error.h					yelp-util.c		yelp-util.h					yelp-marshal-main.c
 
 
-test_reader_LDADD = \
-	@YELP_LIBS@
+test_reader_LDADD =  	@YELP_LIBS@
 
 
-yelp_db2html_SOURCES = \
-	yelp-db2html.c
+yelp_db2html_SOURCES =  	yelp-db2html.c
 
 
-yelp_db2html_LDADD = \
-	@DB2HTML_LIBS@
+yelp_pregenerate_SOURCES =  	yelp-pregenerate.c      yelp-pregenerate.h
 
 
-yelp_SOURCES = \
-	$(gnome_yelp_idl_sources)					\
-	yelp-base.c		yelp-base.h				\
-	yelp-cache.c		yelp-cache.h				\
-	yelp-error.c		yelp-error.h				\
-	yelp-history.c		yelp-history.h				\
-	$(html_widget_impl) 	yelp-html.h				\
-	yelp-index-model.c	yelp-index-model.h			\
-	yelp-info.c		yelp-info.h				\
-	yelp-main.c							\
-	yelp-man.c		yelp-man.h				\
-	yelp-marshal-main.c						\
-	yelp-reader.c		yelp-reader.h				\
-	yelp-section.c		yelp-section.h				\
-	yelp-scrollkeeper.c	yelp-scrollkeeper.h			\
-	yelp-util.c		yelp-util.h				\
-	yelp-view-content.c	yelp-view-content.h			\
-	yelp-view-index.c	yelp-view-index.h			\
-	yelp-view-toc.c		yelp-view-toc.h				\
-	yelp-window.c 		yelp-window.h				\
-	yelp-uri.c	        yelp-uri.h
+yelp_db2html_LDADD =  	@DB2HTML_LIBS@
 
 
-yelp_LDADD = \
-	@YELP_LIBS@							\
-	@HTML_WIDGET_LIBS@						\
-	$(POPT_LIBS)
+yelp_pregenerate_LDADD =  	@YELP_LIBS@
 
 
-gnome_yelp_idl_sources = \
-	GNOME_Yelp-stubs.c						\
-	GNOME_Yelp-skels.c						\
-	GNOME_Yelp.in							\
-	GNOME_Yelp-common.c						\
-	GNOME_Yelp.h
+yelp_SOURCES =  	$(gnome_yelp_idl_sources)						yelp-base.c		yelp-base.h					yelp-cache.c		yelp-cache.h					yelp-error.c		yelp-error.h					yelp-history.c		yelp-history.h					$(html_widget_impl) 	yelp-html.h					yelp-index-model.c	yelp-index-model.h				yelp-info.c		yelp-info.h					yelp-main.c								yelp-man.c		yelp-man.h					yelp-marshal-main.c							yelp-reader.c		yelp-reader.h					yelp-section.c		yelp-section.h					yelp-scrollkeeper.c	yelp-scrollkeeper.h				yelp-util.c		yelp-util.h					yelp-view.c		yelp-view.h					yelp-view-content.c	yelp-view-content.h				yelp-view-index.c	yelp-view-index.h				yelp-view-toc.c		yelp-view-toc.h					yelp-window.c 		yelp-window.h					yelp-uri.c	        yelp-uri.h
+
+
+yelp_LDADD =  	@YELP_LIBS@								@HTML_WIDGET_LIBS@							$(POPT_LIBS)
+
+
+gnome_yelp_idl_sources =  	GNOME_Yelp-stubs.c							GNOME_Yelp-skels.c							GNOME_Yelp-common.c							GNOME_Yelp.h
 
 
 serverdir = $(libdir)/bonobo/servers
 server_in_files = GNOME_Yelp.server.in
 server_DATA = $(server_in_files:.server.in=.server)
 
-CLEANFILES = \
-	$(gnome_yelp_idl_sources)					\
-	gnome_yelp_idl_stamp						\
-	GNOME_Yelp.server
+CLEANFILES =  	$(gnome_yelp_idl_sources)						gnome_yelp_idl_stamp							GNOME_Yelp.server
 
 
-EXTRA_DIST = \
-	yelp-marshal.list						\
-	$(server_in_files)						\
-	$(server_DATA)
+EXTRA_DIST =  	yelp-marshal.list							$(server_in_files)							$(server_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  yelp$(EXEEXT)
+bin_PROGRAMS =  yelp$(EXEEXT) yelp-pregenerate$(EXEEXT)
 libexec_PROGRAMS =  yelp-db2html$(EXEEXT)
 noinst_PROGRAMS =  test-uri$(EXEEXT) test-reader$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(libexec_PROGRAMS) $(noinst_PROGRAMS)
@@ -259,7 +200,7 @@ LIBS = @LIBS@
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-marshal-main.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-reader.$(OBJEXT) yelp-section.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-scrollkeeper.$(OBJEXT) \
-@HTML_WIDGET_GTKHTML1_TRUE@yelp-util.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-util.$(OBJEXT) yelp-view.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-view-content.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-view-index.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_TRUE@yelp-view-toc.$(OBJEXT) \
@@ -277,13 +218,16 @@ LIBS = @LIBS@
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-reader.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-section.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-scrollkeeper.$(OBJEXT) \
-@HTML_WIDGET_GTKHTML1_FALSE@yelp-util.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-util.$(OBJEXT) yelp-view.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-view-content.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-view-index.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-view-toc.$(OBJEXT) \
 @HTML_WIDGET_GTKHTML1_FALSE@yelp-window.$(OBJEXT) yelp-uri.$(OBJEXT)
 yelp_DEPENDENCIES = 
 yelp_LDFLAGS = 
+yelp_pregenerate_OBJECTS =  yelp-pregenerate.$(OBJEXT)
+yelp_pregenerate_DEPENDENCIES = 
+yelp_pregenerate_LDFLAGS = 
 yelp_db2html_OBJECTS =  yelp-db2html.$(OBJEXT)
 yelp_db2html_DEPENDENCIES = 
 yelp_db2html_LDFLAGS = 
@@ -309,8 +253,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(yelp_SOURCES) $(yelp_db2html_SOURCES) $(test_uri_SOURCES) $(test_reader_SOURCES)
-OBJECTS = $(yelp_OBJECTS) $(yelp_db2html_OBJECTS) $(test_uri_OBJECTS) $(test_reader_OBJECTS)
+SOURCES = $(yelp_SOURCES) $(yelp_pregenerate_SOURCES) $(yelp_db2html_SOURCES) $(test_uri_SOURCES) $(test_reader_SOURCES)
+OBJECTS = $(yelp_OBJECTS) $(yelp_pregenerate_OBJECTS) $(yelp_db2html_OBJECTS) $(test_uri_OBJECTS) $(test_reader_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -430,6 +374,10 @@ yelp$(EXEEXT): $(yelp_OBJECTS) $(yelp_DEPENDENCIES)
 	@rm -f yelp$(EXEEXT)
 	$(LINK) $(yelp_LDFLAGS) $(yelp_OBJECTS) $(yelp_LDADD) $(LIBS)
 
+yelp-pregenerate$(EXEEXT): $(yelp_pregenerate_OBJECTS) $(yelp_pregenerate_DEPENDENCIES)
+	@rm -f yelp-pregenerate$(EXEEXT)
+	$(LINK) $(yelp_pregenerate_LDFLAGS) $(yelp_pregenerate_OBJECTS) $(yelp_pregenerate_LDADD) $(LIBS)
+
 yelp-db2html$(EXEEXT): $(yelp_db2html_OBJECTS) $(yelp_db2html_DEPENDENCIES)
 	@rm -f yelp-db2html$(EXEEXT)
 	$(LINK) $(yelp_db2html_LDFLAGS) $(yelp_db2html_OBJECTS) $(yelp_db2html_LDADD) $(LIBS)
@@ -505,6 +453,55 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+GNOME_Yelp-common.o: GNOME_Yelp-common.c GNOME_Yelp.h
+GNOME_Yelp-skels.o: GNOME_Yelp-skels.c GNOME_Yelp.h
+GNOME_Yelp-stubs.o: GNOME_Yelp-stubs.c GNOME_Yelp.h
+test-reader.o: test-reader.c ../config.h yelp-uri.h yelp-reader.h
+test-uri.o: test-uri.c ../config.h yelp-uri.h
+yelp-base.o: yelp-base.c ../config.h yelp-cache.h yelp-uri.h \
+	yelp-window.h yelp-base.h GNOME_Yelp.h yelp-section.h \
+	yelp-scrollkeeper.h yelp-man.h yelp-info.h
+yelp-cache.o: yelp-cache.c ../config.h yelp-cache.h yelp-uri.h
+yelp-db2html.o: yelp-db2html.c ../config.h yelp-error.h
+yelp-error.o: yelp-error.c ../config.h yelp-error.h
+yelp-history.o: yelp-history.c ../config.h yelp-history.h yelp-section.h \
+	yelp-uri.h
+yelp-html-gtkhtml2.o: yelp-html-gtkhtml2.c ../config.h yelp-util.h \
+	yelp-uri.h yelp-marshal.h yelp-error.h yelp-html.h \
+	yelp-section.h
+yelp-index-model.o: yelp-index-model.c yelp-section.h yelp-uri.h \
+	yelp-index-model.h
+yelp-info.o: yelp-info.c ../config.h yelp-section.h yelp-uri.h \
+	yelp-util.h yelp-info.h
+yelp-main.o: yelp-main.c ../config.h GNOME_Yelp.h yelp-window.h \
+	yelp-base.h yelp-uri.h
+yelp-man.o: yelp-man.c ../config.h yelp-section.h yelp-uri.h yelp-util.h \
+	yelp-man.h
+yelp-marshal-main.o: yelp-marshal-main.c yelp-marshal.h yelp-marshal.c
+yelp-pregenerate.o: yelp-pregenerate.c ../config.h yelp-pregenerate.h
+yelp-reader.o: yelp-reader.c yelp-cache.h yelp-uri.h yelp-marshal.h \
+	yelp-reader.h
+yelp-scrollkeeper.o: yelp-scrollkeeper.c ../config.h yelp-section.h \
+	yelp-uri.h yelp-util.h yelp-scrollkeeper.h
+yelp-section.o: yelp-section.c ../config.h yelp-section.h yelp-uri.h
+yelp-uri.o: yelp-uri.c yelp-error.h yelp-util.h yelp-uri.h
+yelp-util.o: yelp-util.c yelp-section.h yelp-uri.h yelp-util.h
+yelp-view-content.o: yelp-view-content.c ../config.h yelp-html.h \
+	yelp-section.h yelp-uri.h yelp-marshal.h yelp-reader.h \
+	yelp-scrollkeeper.h yelp-util.h yelp-view-content.h yelp-view.h
+yelp-view-index.o: yelp-view-index.c ../config.h yelp-index-model.h \
+	yelp-html.h yelp-section.h yelp-uri.h yelp-marshal.h \
+	yelp-reader.h yelp-view-index.h yelp-view.h
+yelp-view-toc.o: yelp-view-toc.c ../config.h yelp-view-toc.h \
+	yelp-section.h yelp-uri.h yelp-view.h yelp-html.h \
+	yelp-marshal.h yelp-util.h yelp-scrollkeeper.h
+yelp-view.o: yelp-view.c ../config.h yelp-index-model.h yelp-html.h \
+	yelp-section.h yelp-uri.h yelp-marshal.h yelp-reader.h \
+	yelp-view.h
+yelp-window.o: yelp-window.c ../config.h yelp-error.h yelp-html.h \
+	yelp-section.h yelp-uri.h yelp-util.h yelp-history.h \
+	yelp-view-content.h yelp-view.h yelp-view-index.h \
+	yelp-view-toc.h yelp-window.h yelp-base.h GNOME_Yelp.h
 
 info-am:
 info: info-am
@@ -600,6 +597,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 install-exec-local:
 	rm -f $(DESTDIR)$(bindir)/gnome-help
 	ln -s yelp $(DESTDIR)$(bindir)/gnome-help
+	ln -sf yelp $(DESTDIR)$(bindir)/gman
 
 yelp-marshal.h: yelp-marshal.list
 	cd $(srcdir) && \

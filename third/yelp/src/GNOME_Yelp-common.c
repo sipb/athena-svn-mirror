@@ -24,7 +24,7 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
 static const CORBA_TypeCode anon_subtypes_array1[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
@@ -32,7 +32,8 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_tk_sequence,
    0,
    0,
-   4,
+   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
+       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
    0,
    1,
    (CORBA_TypeCode *) anon_subtypes_array1,
@@ -60,7 +61,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
 static const CORBA_TypeCode anon_subtypes_array8[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
@@ -68,7 +69,8 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_tk_sequence,
    0,
    0,
-   4,
+   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
+       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
    0,
    1,
    (CORBA_TypeCode *) anon_subtypes_array8,
@@ -96,7 +98,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 #define TC_DEF_TC_GNOME_Yelp_WindowList 1
 static const CORBA_TypeCode anon_subtypes_array11[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Yelp_WindowList_struct = {
@@ -104,7 +106,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Yelp_WindowList_struct = {
    CORBA_tk_alias,
    0,
    0,
-   4,
+   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
+       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
    0,
    1,
    (CORBA_TypeCode *) anon_subtypes_array11,
@@ -130,7 +133,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Yelp_WindowList_struct = {
 && (TC_IMPL_TC_GNOME_Yelp_9 == 'p') \
 ) && !defined(TC_DEF_TC_GNOME_Yelp)
 #define TC_DEF_TC_GNOME_Yelp 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Yelp_struct = {
@@ -138,7 +141,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Yelp_struct = {
    CORBA_tk_objref,
    0,
    0,
-   4,
+   ORBIT_ALIGNOF_CORBA_POINTER,
    0,
    0,
    NULL,
@@ -153,40 +156,39 @@ const struct CORBA_TypeCode_struct TC_GNOME_Yelp_struct = {
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 CORBA_unsigned_long GNOME_Yelp__classid = 0;
 #endif
 
 /* Interface type data */
 
 static ORBit_IArg GNOME_Yelp_newWindow__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "url"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "url"}
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 ORBit_IMethod GNOME_Yelp__imethods[] = {
    {
-    {2, 2, GNOME_Yelp_newWindow__arginfo, FALSE},
+    {1, 1, GNOME_Yelp_newWindow__arginfo, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "newWindow", 9,
-    0},
-   {
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_GNOME_Yelp_WindowList, "getWindows", 10,
-    0},
+    TC_void, "newWindow", 9,
+    0}
+   , {
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      TC_GNOME_Yelp_WindowList, "getWindows", 10,
+      0}
 };
 static CORBA_string GNOME_Yelp__base_itypes[] = {
    "IDL:Bonobo/Unknown:1.0",
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Yelp
 static
 #endif
 ORBit_IInterface GNOME_Yelp__iinterface = {
