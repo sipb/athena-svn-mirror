@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.36 1991-03-28 23:52:50 lwvanels Exp $
+ *	$Id: log.c,v 1.37 1991-04-08 21:12:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.36 1991-03-28 23:52:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.37 1991-04-08 21:12:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -323,11 +323,6 @@ init_log(knuckle, question, machinfo)
   char current_time[32];	/* Current time value. */
   char topic[TOPIC_SIZE];	/* Real topic. */
 
-#ifdef TEST
-  log_status (fmt ("init_log: %s (%d)\n",knuckle->user->username,
-		   knuckle->instance));
-#endif
-
   (void) sprintf(knuckle->question->logfile, "%s/%s_%d.log", LOG_DIR, 
 	  knuckle->user->username,knuckle->instance);
   (void) sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
@@ -418,10 +413,8 @@ terminate_log_answered(knuckle)
   question = knuckle->question;
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
-      perror("terminate_log_answered: fopen");
-      perror(question->logfile);
       (void) sprintf(error,
-		     "terminate_log_answered: can't open temporary log %s",
+		     "terminate_log_answered: can't open temporary log %s: %m",
 		     question->logfile);
       log_error(error);
       return(ERROR);
@@ -461,9 +454,8 @@ terminate_log_unanswered(knuckle)
   question = knuckle->question;
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
-    perror(question->logfile);
     (void) sprintf(error,
-		   "terminate_log_unanswered: can't open temp. log %s",
+		   "terminate_log_unanswered: can't open temp. log %s: %m",
 		   question->logfile);
     log_error(error);
     return(ERROR);
@@ -544,11 +536,8 @@ dispose_of_log(knuckle)
   char msgbuf[BUF_SIZE];	/* Construct messages to be logged. */
   long time_now;		/* time now, in seconds (a unique number) */
   char filename[NAME_SIZE];
+  char *p;
   
-#ifdef TEST
-  printf("dispose title: %s\n",knuckle->question->title);
-#endif
-
   sprintf(filename,"%s.censored",knuckle->question->logfile);
   unlink(filename);
   unlink(knuckle->question->infofile);
@@ -569,24 +558,27 @@ dispose_of_log(knuckle)
 
   if (rename(question->logfile, newfile) == -1) 
     {
-      perror("dispose_of_log: rename");
-      log_error("Can't rename user log.");
+      log_error("Can't rename user log: %m");
       return(ERROR);
     }
   if ((fp = fopen(ctrlfile, "w")) == NULL)
     {
-      perror("dispose_of_log: control file");
-      log_error("Can't create control file.");
+      log_error("Can't create control file: %m");
       return(ERROR);
     }
+  
+/* Make sure there's no newlines in the title */
+
+  while ((p = index(question->title,'\n')) != NULL)
+    *p = ' ';
+
   fprintf(fp, "%s\n%s\n%s\n%s\n", newfile, question->title,
 	  question->topic, question->owner->user->username);
   fclose(fp);
       
   if ((pid = vfork()) == -1) 
     {
-      perror("dispose_of_log: vfork");
-      log_error("Can't fork to dispose of log.");
+      log_error("Can't fork to dispose of log: %m");
       return(ERROR);
     }
   else if (pid == 0) 
@@ -595,9 +587,9 @@ dispose_of_log(knuckle)
 		     question->logfile, question->topic);
       log_status(msgbuf);
 
-      execl("/usr/local/lumberjack", "lumberjack", 0);
-      perror("dispose_of_log: /usr/local/lumberjack");
-      log_error("dispose_of_log: cannot exec /usr/local/lumberjack.\n");
+      execl(LUMBERJACK_LOC, "lumberjack", 0);
+      sprintf(msgbuf,"dispose_of_log: cannot exec %s: %%m",LUMBERJACK_LOC);
+      log_error(msgbuf);
       _exit(0);
     }
 #else
