@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.15 1987-11-21 15:25:22 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.16 1987-11-21 15:55:40 treese Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.15 1987-11-21 15:25:22 treese Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.16 1987-11-21 15:55:40 treese Exp $";
 #endif	lint
 
 /*
@@ -31,8 +31,6 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
  * login -h hostname (for telnetd, etc.)
  */
 
-/* #define ZEPHYR */
-	
 #include <sys/param.h>
 #ifndef VFS
 #include <sys/quota.h>
@@ -202,6 +200,8 @@ main(argc, argv)
 		printf("Only one of -r -k -K or -h allowed\n");
 		exit(1);
 	    }
+	    if (argv[2] == 0)
+	      exit(1);
 	    rflag = 1;
 	    usererr = doremotelogin(argv[2]);
 	    SCPYN(utmp.ut_host, argv[2]);
@@ -323,8 +323,15 @@ main(argc, argv)
 		    pwd = &nouser;
 		    found = 0;
 	    } else found = 1;
-	} else
-	  found = getloginname(&utmp);
+	} else {
+		found = getloginname(&utmp);
+		if (utmp.ut_name[0] == '-') {
+			puts("login names may not start with '-'.");
+			invalid = TRUE;
+			continue;
+		}
+	}
+ 
 	invalid = FALSE;
 	if (!strcmp(pwd->pw_shell, "/bin/csh")) {
 	    ldisc = NTTYDISC;
