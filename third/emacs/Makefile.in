@@ -336,6 +336,7 @@ install-arch-indep: mkdir
 		rm -f  $${subdir}/[mM]akefile* ; \
 		rm -f  $${subdir}/ChangeLog* ; \
 		rm -f  $${subdir}/dired.todo ; \
+		rm -f  $${subdir}/.rconf ; \
 	      done) ; \
 	done
 	-rm -f ${DESTDIR}${lispdir}/subdirs.el
