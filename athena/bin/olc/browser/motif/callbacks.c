@@ -15,13 +15,13 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.12 1994-08-14 16:22:24 cfields Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.13 1996-08-10 21:28:40 cfields Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include <Mrm/MrmAppl.h>
-#include <Xm/Mu.h>
+#include <Mu.h>
 #include "cref.h"
 #include <Xm/Text.h>
 #include <Xm/SelectioB.h>
@@ -147,7 +147,7 @@ ParseContents(dir)
       continue;
     if (*ptr == (char) NULL)
       continue;
-    if ( (delim_ptr = index(ptr, CONTENTS_DELIM)) == NULL) {
+    if ( (delim_ptr = strchr(ptr, CONTENTS_DELIM)) == NULL) {
       sprintf(error, "Broken index file: %s\nPlease select another entry.",
 	      dir);
       MuError(error);
@@ -159,7 +159,7 @@ ParseContents(dir)
       new_entry_table[i].type = PLAINFILE;
     else
       new_entry_table[i].type = SUBDIR;
-    if ( (delim_ptr = index(title_ptr, CONTENTS_DELIM)) == NULL) {
+    if ( (delim_ptr = strchr(title_ptr, CONTENTS_DELIM)) == NULL) {
       sprintf(error, "Broken index file: %s.\nInvalid title field (field 2) in line %d", contents_name, i+1);
       MuError(error);
       return(ERROR);
@@ -167,7 +167,7 @@ ParseContents(dir)
     *delim_ptr = '\0';
     strcpy(new_entry_table[i].title, title_ptr);
     filename_ptr = delim_ptr + 1;
-    if ((delim_ptr = index(filename_ptr, CONTENTS_DELIM)) == NULL){
+    if ((delim_ptr = strchr(filename_ptr, CONTENTS_DELIM)) == NULL){
       sprintf(error, "Broken index file: %s\nInvalid filename field (field 3) in line %d", contents_name, i+1);
       MuError(error);
       return(ERROR);
@@ -175,7 +175,7 @@ ParseContents(dir)
     *delim_ptr = '\0';
     strcpy(new_entry_table[i].filename, filename_ptr);
     format_ptr = delim_ptr + 1;
-    if ((delim_ptr = index(format_ptr, CONTENTS_DELIM)) == NULL) {
+    if ((delim_ptr = strchr(format_ptr, CONTENTS_DELIM)) == NULL) {
       sprintf(error, "Broken index file: %s\nInvalid formatter field (field 4) in line %d.", contents_name, i+1);
       MuError(error);
       return(ERROR);
