@@ -2,17 +2,17 @@
 
 case "$HOSTTYPE" in
 sun4)
-  echo "106980-10"					>> $PATCHES
-  echo "107636-03"					>> $PATCHES
-  echo "108376-07"					>> $PATCHES
-  echo "107153-01"					>> $PATCHES
-  echo "106541-11"					>> $PATCHES
-  echo "107544-03"					>> $PATCHES
-  echo "109104-01"					>> $PATCHES
-  echo "106950-09"					>> $PATCHES
-  echo "106327-08"					>> $PATCHES
   echo "106300-09"					>> $PATCHES
-  echo "107081-20"					>> $PATCHES
+  echo "106327-08"					>> $PATCHES
+  echo "106541-14"					>> $PATCHES
+  echo "106950-13"					>> $PATCHES
+  echo "106980-15"					>> $PATCHES
+  echo "107081-25"					>> $PATCHES
+  echo "107153-01"					>> $PATCHES
+  echo "107226-14"					>> $PATCHES
+  echo "107636-05"					>> $PATCHES
+  echo "108374-04"					>> $PATCHES
+  echo "108376-18"					>> $PATCHES
   echo "OSCHANGES=true"					>> $CONFVARS
   echo "/etc/athena/athinfo.defs"			>> $CONFCHG
   ;;
