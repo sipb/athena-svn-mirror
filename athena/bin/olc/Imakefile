@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.19 1991-05-15 12:51:12 lwvanels Exp $
+# $Id: Imakefile,v 1.20 1991-06-30 11:06:19 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # For copying and distribution information,
@@ -36,16 +36,6 @@ world2:
 	make ${MFLAGS} Makefiles
 	make ${MFLAGS} depend
 	make ${MFLAGS} all
-
-install::
-#ifndef TestInstall
-	$(RM) $(DESTDIR)/usr/lib/olc
-	#if defined(ultrix)
-	ln -s /var/usr/lib/olc $(DESTDIR)/usr/lib/olc
-	#else
-	ln -s /site/usr/lib/olc $(DESTDIR)/usr/lib/olc
-	#endif
-#endif
 
 mytags::
 	make ${MFLAGS} olc_tags olcd_tags rpd_tags polld_tags xolc_tags
