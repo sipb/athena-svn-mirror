@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_cmdloop.c,v 1.3 1989-07-16 17:09:58 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_cmdloop.c,v 1.4 1989-08-04 11:04:04 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -132,11 +132,9 @@ do_command(Command_Table, arguments)
     return(-1);
 #endif CSH
 
-  if(string_eq(arguments[0],"home")&&!OLC)
-    {
-      printf("227-9517\n");
-      return(SUCCESS);
-    }
+  if(string_eq(arguments[0],"answers")&&!OLC)
+    strcpy(arguments[0],"stock");
+
   index = command_index(Command_Table, arguments[0]);
   
   if (index == NOT_UNIQUE)
