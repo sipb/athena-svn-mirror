@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.16 2004-03-06 17:13:18 ghudson Exp $
+# $Id: xsession,v 1.17 2004-03-27 03:04:45 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -98,7 +98,7 @@ if ($?ATHENA_DASH_INTERFACE) then
   set terminal='xterm -geometry 80x48+0+38'
 else
   set default_windowmanager=sawfish
-  set terminal='gnome-terminal --geometry=80x43+0+30'
+  set terminal='gnome-terminal --geometry=80x40-0-52'
 endif
 
 
@@ -157,33 +157,6 @@ else if ($?offer_gnome_upgrade) then
   unset dtext
 endif
 
-# 2003-07-17: Due to bugs in the public 9.2 release, many users
-# received a broken panel state.  This will manifest as a broken or
-# missing panel_id_list value or (more likely) as a single extra-small
-# menu panel at the top of the screen.  For now, detect those states
-# and revert to the default panel configuration.  (If the user
-# actually wants an extra-small menu panel at the top of the screen,
-# this will be an irritation, but there's no easy way around that.)
-# This check can probably go away after a few months.
-if ( ! $?NOCALLS && -d ~/.gnome2 ) then
-  set pnidlist=/apps/panel/profiles/default/general/panel_id_list
-  set npnids=`$gconftool --get-list-size $pnidlist`
-  if ( $npnids == 0 || $npnids == "" ) then
-    echo "Detected broken panel config, reverting to defaults"
-    $gconftool --recursive-unset /apps/panel
-  else if ( $npnids == 1 ) then
-    set pnid=`$gconftool --get-list-element $pnidlist 0`
-    set pndir=/apps/panel/profiles/default/panels/$pnid
-    set pntype=`$gconftool --get $pndir/panel_type`
-    set pnsize=`$gconftool --get $pndir/panel_size`
-    if ( $pntype == menu-panel && $pnsize == panel-size-x-small ) then
-      echo "Detected broken panel config, reverting to defaults"
-      $gconftool --recursive-unset /apps/panel
-    endif
-  endif
-  unset pnidlist npnids pnid pndir pntype pnsize
-endif
-
 if ( ! $?ATHENA_DASH_INTERFACE) then
   # GNOME processes can apparently collide trying to start gconfd, so
   # spawn one before we start any in the background.
@@ -203,6 +176,14 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
     if ($?verbose_login) echo "Starting panel..."
     (gnome-panel >& /dev/null && kill -HUP $XSESSION &)
   endif
+
+  # If you decide to set skip_nautilus, GNOME will stop taking care
+  # of your background image unless you run:
+  #   gconftool-2 -s -t bool /apps/nautilus/preferences/show_desktop false
+  if (! $?skip_nautilus ) then
+    (nautilus -n >& /dev/null &)
+  endif
+
 else if (! $?skip_dash) then
   if (! $?skip_xlogout) then
     if ($?verbose_login) echo "Starting the Athena Dashboard..."
