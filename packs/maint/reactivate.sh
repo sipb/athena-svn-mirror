@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.57 2001-05-25 14:18:03 rbasch Exp $
+# $Id: reactivate.sh,v 1.58 2001-06-01 19:52:49 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -75,7 +75,8 @@ trap cleanexit EXIT
 if [ "$full" = true ]; then
 	if [ linux = "$HOSTTYPE" ]; then
 		pids=
-		for tty in `who | awk '{ print $2; }'` ; do
+		# Use w instead of who, since it ignores stale utmp entries.
+		for tty in `w -h -s | awk '{ print $2; }'` ; do
 			pids="$pids `ps --no-heading -j -t $tty 2>/dev/null | \
 				awk '($1 == $3) { print $1; }'`"
 		done
