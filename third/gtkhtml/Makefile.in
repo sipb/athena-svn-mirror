@@ -76,6 +76,7 @@ EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_LIBS = @GCONF_LIBS@
 GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
 GMOFILES = @GMOFILES@
@@ -151,31 +152,19 @@ ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
-@BONOBO_TRUE@DIR_COMPONENTS = @BONOBO_TRUE@components
+@BONOBO_TRUE@DIR_COMPONENTS = components
 @BONOBO_FALSE@DIR_COMPONENTS = 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gtkhtml-@GTKHTML_RELEASE@.pc
 
-SUBDIRS = \
-	intl					\
-	macros					\
-	src					\
-	doc					\
-	art					\
-	$(DIR_COMPONENTS)			\
-	po
+SUBDIRS = m4 						macros						src							doc						art						$(DIR_COMPONENTS)				po
 
 
-EXTRA_DIST = \
-	gtkhtml.spec.in				\
-	gtkhtml.spec                            \
-	COPYING.LIB				\
-	BUGS					\
-	xml-i18n-extract.in			\
-	xml-i18n-update.in			\
-	xml-i18n-merge.in
+EXTRA_DIST = config.rpath 						gtkhtml.spec.in					gtkhtml.spec                            	COPYING.LIB					BUGS						xml-i18n-extract.in				xml-i18n-update.in				xml-i18n-merge.in
 
+
+ACLOCAL_AMFLAGS = -I m4
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -191,9 +180,9 @@ mkinstalldirs
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DIST_SUBDIRS =  intl macros src doc art components po
+DIST_SUBDIRS =  m4 macros src doc art components po
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
@@ -203,8 +192,13 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
-	cd $(srcdir) && $(ACLOCAL)
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  m4/codeset.m4 \
+		m4/gettext.m4 m4/glibc21.m4 m4/iconv.m4 m4/intdiv0.m4 \
+		m4/inttypes-pri.m4 m4/inttypes.m4 m4/inttypes_h.m4 \
+		m4/isc-posix.m4 m4/lcmessage.m4 m4/lib-ld.m4 \
+		m4/lib-link.m4 m4/lib-prefix.m4 m4/progtest.m4 \
+		m4/stdint_h.m4 m4/uintmax_t.m4 m4/ulonglong.m4
+	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -340,7 +334,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LI
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP))
 
 mostlyclean-tags:
 

@@ -7,8 +7,7 @@ endif
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gtkhtml-@GTKHTML_RELEASE@.pc
 
-SUBDIRS =					\
-	intl					\
+SUBDIRS = m4 					\
 	macros					\
 	src					\
 	doc					\
@@ -16,7 +15,7 @@ SUBDIRS =					\
 	$(DIR_COMPONENTS)			\
 	po
 
-EXTRA_DIST =					\
+EXTRA_DIST = config.rpath 					\
 	gtkhtml.spec.in				\
 	gtkhtml.spec                            \
 	COPYING.LIB				\
@@ -24,3 +23,5 @@ EXTRA_DIST =					\
 	xml-i18n-extract.in			\
 	xml-i18n-update.in			\
 	xml-i18n-merge.in
+
+ACLOCAL_AMFLAGS = -I m4
