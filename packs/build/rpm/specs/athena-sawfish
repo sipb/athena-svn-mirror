@@ -9,3 +9,21 @@ Sawfish is an extensible window manager using an Emacs Lisp-like
 scripting language--all window decorations are configurable, the basic
 idea is to have as much user-interface policy as possible controlled
 through the Lisp language.
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# control-center can only see desktop files in the default GNOME
+# prefix for now.  This will make us conflict with the native sawfish
+# RPM, unfortunately.
+mkdir -p $RPM_BUILD_ROOT/usr/share/gnome/wm-properties
+mv $RPM_BUILD_ROOT/usr/athena/share/gnome/wm-properties/Sawfish.desktop \
+  $RPM_BUILD_ROOT/usr/share/gnome/wm-properties/Sawfish.desktop
+
+# Don't try to install a /usr/athena/info/dir file.
+rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
