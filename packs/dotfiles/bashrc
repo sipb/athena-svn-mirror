@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.2 1999-06-15 23:19:45 ghudson Exp $
+# $Id: bashrc,v 1.3 1999-06-17 21:51:26 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -92,9 +92,8 @@ if [ "${ENV_SET+set}" != set]; then
 	# pathnames being printed when /mit/<user> is a symlink to a
 	# path within AFS.
 
-	# This code has been optimized to run as quickly as possible.
-	# Since it is being invoked only at the beginning of the
-	# session, and prior to the inclusion of any of the user's
+	# Since this code is being invoked only at the beginning of
+	# the session, and prior to the inclusion of any of the user's
 	# other dotfiles, we can assume that the current directory is
 	# the user's home directory.
 
@@ -125,6 +124,7 @@ if [ "${ENV_SET+set}" != set]; then
 	
 	# Standard Athena path
 	PATH=`athdir $HOME`:$athena_path:.
+	unset athena_path
 
 	# Make sure applications can properly find their appdefs, etc.
 
