@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_structs.h,v $
- *	$Id: server_structs.h,v 1.1 1991-11-05 13:59:51 lwvanels Exp $
+ *	$Id: server_structs.h,v 1.1.1.1 1992-01-07 19:01:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -32,7 +32,7 @@
 
 typedef struct tUSER 
 {
-  struct tKNUCKLE **knuckles;       /* all user instances */
+  struct tKNUCKLE *knuckles;       /* all user instances */
   int    uid;                       /* user id */
   char   username[LOGIN_SIZE];      /* user name */
   char   realname[NAME_SIZE];
@@ -49,7 +49,10 @@ typedef struct tUSER
   int    no_knuckles;               /* number of current connections */
   int    max_ask;                   /* maximum allowable connections */
   int    max_answer;
+  int in_use;			    /* be parinoid and make sure we don't */
+				    /* screw up the linked lists... */
   struct tUSER *next;		/* For use in chaining */
+  struct tUSER *prev;		/* For use in chaining */
 } USER;
 
 typedef struct tdLIST
@@ -84,8 +87,12 @@ typedef struct tKNUCKLE
   char   nm_file[NAME_SIZE+6];
   int    new_messages;              /* new messages for this knuckle */
 				    /* 0 = none, 1 = yes, -1 = unknown */
-  struct tKNUCKLE *next;	    /* for chaining */
-  
+  int in_use;			    /* be parinoid and make sure we don't */
+				    /* screw up the linked lists... */
+  struct tKNUCKLE *next;	    /* for chaining in inuse/free lists */
+  struct tKNUCKLE *prev;	    /* for chaining in inuse/free lists */
+  struct tKNUCKLE *next_k;	    /* for chaining in user's knuckle list */
+  struct tKNUCKLE *prev_k;	    /* for chaining in user's knuckle list */
 } KNUCKLE;
 
 typedef struct tQSTATS
@@ -153,9 +160,17 @@ typedef struct tTRANS
   char trans[80];
 } TRANS;
 
+#define USER_HASHSIZE	23
+#define KNUC_HASHSIZE   47
+
+struct hash_entry {
+  void *entry;
+  struct hash_entry *prev;
+  struct hash_entry *next;
+};
+
 /* Global variables */
 
-extern KNUCKLE          **Knuckle_List;
 extern TOPIC            **Topic_List;
 
 #define KNUC_ALLOC_SZ	50
