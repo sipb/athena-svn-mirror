@@ -165,7 +165,7 @@ Distribution sites for software under third
 			 with some modifications for portability.
 	tcp_wrappers*	ftp.porcupine.org:/pub/security
 	tcsh		ftp.astron.com:pub/tcsh
-	tex		See below
+	tetex		ctan.tug.org:tex-archive/systems/unix/teTeX
 	top		ftp.groupsys.com:pub/top
 	traceroute	ftp.ee.lbl.gov (top level)
 	transcript	From Adobe
@@ -229,49 +229,6 @@ LEIM
 LEIM (Library of Emacs Input Methods) is built as part of Emacs, but
 distributed separately.  Untar both emacs and leim (leim will untar
 into emacs-xx.yy/leim) and import them both with one command.
-
-TeX
----
-
-There is no single distribution of what we install from TeX.  The
-files we install were retrieved from the CTAN (Comprehensive TeX
-Archive Network) archive, mirrors of which are at several places
-including ftp.duke.edu:/tex-archive and ftp.cdrom.com:pub/tex/ctan.
-A list of CTAN mirrors is available via "finger ctan@ftp.dante.de".
-Here is a list of what we got and what subdirectories they were
-imported into:
-
-	web, web2c from systems/web2c		web2c
-	dvips from dviware/dvips		dvips
-	xdvi from diware/xdvi			xdvi
-	fonts/cm/mf				lib/mf/typefaces/cm
-	fonts/latex/mf/* (ignore symlinks)	lib/mf/typefaces/latex
-	fonts/amsfonts/sources/euler		lib/mf/typefaces/euler
-	fonts/amsfonts/sources/symbols		lib/mf/typefaces/ams
-	fonts/amsfonts/sources/extracm		lib/mf/typefaces/cm-ams
-	fonts/amsfonts/sources/cyrillic		lib/mf/typefaces/cyrillic
-	fonts/punk				lib/mf/typefaces/other
-	fonts/tengwar				lib/mf/typefaces/tolkien
-	fonts/cirth				lib/mf/typefaces/tolkien
-	fonts/oca				lib/mf/typefaces/ocr
-	fonts/ocr-a				lib/mf/typefaces/ocr
-	fonts/ocr-b				lib/mf/typefaces/ocr
-	fonts/amsfonts/sources/*.mf		lib/mf/macros
-	systems/knuth/lib/*.mf*	(must gunzip)	lib/mf/macros
-	systems/knuth/lib/*.tex (must gunzip)	lib/tex/macros
-	macros/amstex/ams* (include amssym)	lib/tex/macros
-	biblio/bibtex/distribs/styles		lib/tex/macros/bib
-	macros/latex/unpacked			lib/tex/macros/latex
-	macros/latex/packages/amslatex		lib/tex/macros/amslatex
-
-This is pretty complicated (especially when you add in our own files,
-plus the stuff in lib/tex/macros/other which we don't bother
-identifying the source of).  Ideally, the contents of lib should be
-organized around distributions rather than installed directories, but
-the CTAN archive is not especially well-organized in that respect.  If
-anyone ever attempts a reorganization around distributions, they
-should probably just create a new hierarchy and delete the contents of
-the "lib" hierarchy.
 
 Imports of new versions
 -----------------------
