@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.29 1999-04-05 18:18:25 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.30 1999-05-27 16:02:58 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -343,29 +343,39 @@ static int print_callback(locker_context context, locker_attachent *at,
 
 static void attach_print_entry(char *fs, char *mp, char *user, char *mode)
 {
-  printf("%-22.22s %-22.22s  %-18.18s%s\n", fs, mp, user, mode);
+  printf("%-22s %-22s %-18s %s\n", fs, mp, user, mode);
 }
 
 static int attach_print(locker_context context, locker_attachent *at,
 			void *data)
 {
-  char *ownerlist, *p, optstr[32], name[32];
+  char *ownerlist, *p, optstr[32], *name;
   struct passwd *pw;
   int i;
 
   /* Build name. */
   if (at->flags & LOCKER_FLAG_NAMEFILE)
-    strcpy(name, at->name);
+    name = at->name;
   else
-    sprintf(name, "(%s)", at->name);
+    {
+      name = malloc(strlen(at->name) + 3);
+      if (!name)
+	{
+	  fprintf(stderr, "%s: Out of memory.\n", whoami);
+	  exit(1);
+	}
+      sprintf(name, "(%s)", at->name);
+    }
 
   /* Build ownerlist. */
-  p = ownerlist = malloc(9 * at->nowners);
+  p = ownerlist = malloc(9 * at->nowners + 2);
   if (!ownerlist)
     {
       fprintf(stderr, "%s: Out of memory.\n", whoami);
       exit(1);
     }
+  if (at->nowners > 1)
+    *p++ = '{';
   for (i = 0; i < at->nowners; i++)
     {
       if (i)
@@ -376,6 +386,8 @@ static int attach_print(locker_context context, locker_attachent *at,
       else
 	p += sprintf(p, "#%lu", (unsigned long) at->owners[i]);
     }
+  if (at->nowners > 1)
+    strcat(p, "}");
 
   /* Build optstr. (32 characters is "long enough".) */
   optstr[0] = at->mode;
@@ -390,6 +402,8 @@ static int attach_print(locker_context context, locker_attachent *at,
   attach_print_entry(name, at->mountpoint[0] == '/' ? at->mountpoint : "-",
 		     ownerlist, optstr);
   free(ownerlist);
+  if (!(at->flags & LOCKER_FLAG_NAMEFILE))
+    free(name);
 
   return LOCKER_SUCCESS;
 }
