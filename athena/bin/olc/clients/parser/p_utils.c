@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.4 1989-08-04 11:09:51 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.5 1989-08-22 13:51:04 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -87,38 +87,4 @@ handle_argument(args, req, status)
 
 
 
-fill_request(req)
-     REQUEST *req;
-{
-  int status;
 
-#ifdef KERBEROS
-  int result;
-  CREDENTIALS k_cred;
-#endif KERBEROS
-
-  req->options = NO_OPT;
-  req->version = CURRENT_VERSION;
-
-  req->requester.instance = User.instance;
-  req->requester.uid      = User.uid;
-  (void) strncpy(req->requester.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->requester.realname, User.realname, NAME_LENGTH);
-  (void) strncpy(req->requester.machine,  User.machine,  NAME_LENGTH);
-  
-  req->target.instance = User.instance;
-  req->target.uid      = User.uid;
-  (void) strncpy(req->target.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->target.realname, User.realname, NAME_LENGTH);
-  (void) strncpy(req->target.machine,  User.machine,  NAME_LENGTH);
-
-#ifdef KERBEROS
-  if(krb_get_cred(K_SERVICE,INSTANCE,REALM, &k_cred) == KSUCCESS)
-    {
-      (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
-      (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
-    }
-#endif KERBEROS
-
-  return(SUCCESS);
-}
