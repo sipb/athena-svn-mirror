@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.16 1991-01-23 13:24:46 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.17 1991-03-01 11:52:51 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.16 1991-01-23 13:24:46 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.17 1991-03-01 11:52:51 epeisach Exp $";
 #endif lint
 
 /*
@@ -543,7 +543,7 @@ print(format, file)
 	int fi, fo;
 	char *av[15], buf[BUFSIZ];
 	int pid, p[2], stopped = 0;
-#if defined(_IBMR2) && !defined(_BSD)
+#if defined(_IBMR2) && !defined(_BSD) 
 	int status;
 #else
 	union wait status;
@@ -689,7 +689,7 @@ print(format, file)
 		write(ofd, "\031\1", 2);
 		while ((pid = wait3(&status, WUNTRACED, 0)) > 0 && pid != ofilter)
 			;
-#if defined(_IBMR2)
+#if defined(_IBMR2) 
 		if (!WIFSTOPPED(status)) {
 			(void) close(fi);
 			syslog(LOG_WARNING, "%s: output filter died (%d)",
