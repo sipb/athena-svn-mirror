@@ -20,10 +20,7 @@ fi
 
 if [ -s "$DEADFILES" ]; then
   echo "Removing outdated files"
-  dead="`cat $DEADFILES`"
-  for i in $dead; do
-    rm -rf $UPDATE_ROOT/$i
-  done
+  sed -e "s|^|$UPDATE_ROOT|" "$DEADFILES" | xargs rm -rf
 fi
 
 yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
