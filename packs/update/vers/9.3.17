@@ -30,5 +30,6 @@ echo "113886-26"					>> $PATCHES
 echo "113887-26"					>> $PATCHES
 echo "112785-44"					>> $PATCHES
 echo "117171-12"					>> $PATCHES
+echo "116774-03"					>> $PATCHES
 
 echo "OSCHANGES=true"					>> $CONFVARS
