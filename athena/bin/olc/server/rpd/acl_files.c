@@ -1,31 +1,49 @@
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.1 1990-11-27 14:06:07 lwvanels Exp $";
+  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.2 1990-12-02 13:25:04 lwvanels Exp $";
 #endif
 #endif
 
+
+/* "aname.inst@realm" */
+#define MAX_PRINCIPAL_SIZE  (ANAME_SZ + INST_SZ + REALM_SZ + 3)
+#define INST_SEP '.'
+#define REALM_SEP '@'
+#define LINESIZE 2048		/* Maximum line length in an acl file */
+#define CACHED_ACLS  2	/* How many acls to cache */
+			/* Each acl costs 1 open file descriptor */
+#define ACL_LEN 128
+#define COR(a,b) ((a!=NULL)?(a):(b))
+
+struct hashtbl {
+  int size;			/* Max number of entries */
+  int entries;		/* Actual number of entries */
+  char **tbl;			/* Pointer to start of table */
+};
+
+#include "rpd.h"
+
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
+
+int acl_load P((char *name));
+void add_hash P((struct hashtbl *h, char *el));
+int check_hash P((struct hashtbl *h, char *el));
+void destroy_hash P((struct hashtbl *h));
+unsigned int hashval P((char *s));
+struct hashtbl *make_hash P((int size));
+int nuke_whitespace P((char *buf));
+
+#undef P
 
 /* CHANGES from std. file:  fixed fd leak and null ptr. deref.
  *                          increased cache size
  *                          decreased lock time
  */
 
-/*** Routines for manipulating access control list files ***/
-
-#include "rpd.h"
-
-/* "aname.inst@realm" */
-#define MAX_PRINCIPAL_SIZE  (ANAME_SZ + INST_SZ + REALM_SZ + 3)
-#define INST_SEP '.'
-#define REALM_SEP '@'
-
-#define LINESIZE 2048		/* Maximum line length in an acl file */
-
-#define CACHED_ACLS  2 /* How many acls to cache */
-/* Each acl costs 1 open file descriptor */
-#define ACL_LEN 128
-
-#define COR(a,b) ((a!=NULL)?(a):(b))
 
 /* Canonicalize a principal name */
 /* If instance is missing, it becomes "" */
@@ -33,8 +51,8 @@
 /* Canonicalized form is put in canon, which must be big enough to hold
    MAX_PRINCIPAL_SIZE characters */
 
-int
-  acl_canonicalize_principal(principal, canon)
+void
+acl_canonicalize_principal(principal, canon)
 char *principal;
 char *canon;
 {
@@ -111,14 +129,6 @@ char *buf;
     if(!isspace(*pin)) *pout++ = *pin;
   *pout = '\0';		/* Terminate the string */
 }
-
-/* Hash table stuff */
-
-struct hashtbl {
-  int size;			/* Max number of entries */
-  int entries;		/* Actual number of entries */
-  char **tbl;			/* Pointer to start of table */
-};
 
 /* Make an empty hash table of size s */
 static struct hashtbl *
