@@ -2,11 +2,11 @@
  * 	newsyslog - roll over selected logs at the appropriate time,
  * 		keeping the a specified number of backup files around.
  *
- * 	$Id: newsyslog.c,v 1.9 1999-01-22 23:15:52 ghudson Exp $
+ * 	$Id: newsyslog.c,v 1.10 1999-01-27 04:49:10 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: newsyslog.c,v 1.9 1999-01-22 23:15:52 ghudson Exp $";
+static char *rcsid = "$Id: newsyslog.c,v 1.10 1999-01-27 04:49:10 ghudson Exp $";
 #endif  /* lint */
 
 #include "config.h"
@@ -60,7 +60,9 @@ static char *rcsid = "$Id: newsyslog.c,v 1.9 1999-01-22 23:15:52 ghudson Exp $";
 #define kbytes(size)  (((size) + 1023) >> 10)
 #ifdef _IBMR2
 /* Calculates (db * DEV_BSIZE) */
-#define dbtob(db)  ((unsigned)(db) << UBSHIFT) 
+#define dbtob(db)  ((unsigned)(db) << UBSHIFT)
+#elif defined(__linux__)
+#define dbtob(db)  (db * DEV_BSIZE)
 #endif
 
 /* special (i.e. non-configurable) flags for logfile entries */
