@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.26 1997-12-31 22:35:58 danw Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.27 1998-11-16 16:42:12 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -223,9 +223,7 @@ int follow; /* follow symlinks or not? */
      specs->st_mode = realspecs.st_mode;
      specs->st_size = realspecs.st_size;
      specs->st_chtime = realspecs.st_ctime;
-#ifdef USE_BLOCKS
      specs->st_blocks = realspecs.st_blocks;
-#endif
 
      return 0;
 }

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.22 1998-02-25 22:27:22 ghudson Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.23 1998-11-16 16:42:26 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -271,10 +271,10 @@ int num;
 
 
 
-static int alphacmp(str1, str2)
-char **str1, **str2;
+static int alphacmp(arg1, arg2)
+const void *arg1, *arg2;
 {
-     return(strcmp(*str1, *str2));
+     return(strcmp(*(char **) arg1, *(char **) arg2));
 }
 
 list_files()
@@ -302,17 +302,12 @@ list_files()
 	  return retval;
      }
 
-     if (retval = sort_files(strings, num)) {
-	  error("sort_files");
-	  return retval;
-     }
-     
+     qsort(strings, num, sizeof(char *), alphacmp);
+
      if (retval = unique(&strings, &num)) {
 	  error("unique");
 	  return retval;
      }
-
-     qsort((char *) strings, num, sizeof(char *), alphacmp);
 
      if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, singlecolumn,
 			       2, 1, 0, 1, stdout)) {
@@ -323,16 +318,6 @@ list_files()
      for ( ; num; num--)
 	  free(strings[num - 1]);
      free((char *) strings);
-     return 0;
-}
-
-
-int sort_files(data, num_data)
-char **data;
-int num_data;
-{
-     qsort((char *) data, num_data, sizeof(char *), strcmp);
-
      return 0;
 }
 

@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
- * $Author: cfields $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.14 1995-07-31 23:28:50 cfields Exp $
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.15 1998-11-16 16:42:16 ghudson Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -18,15 +18,9 @@ typedef short Boolean;
 #define False			(Boolean) 0
 
 
-#ifdef USE_BLOCKS
 #define specs_to_space(x)	((x).st_blocks)
 #define space_to_k(x)		((x) / 2 + (((x) % 2) ? 1 : 0))
 #define specs_to_k(x)		space_to_k((x).st_blocks)
-#else
-#define specs_to_space(x)	((x).st_size)
-#define space_to_k(x)		((x) / 1024 + (((x) % 1024) ? 1 : 0))
-#define specs_to_k(x)		space_to_k((x).st_size)
-#endif
 
 #define FOLLOW_LINKS		1
 #define DONT_FOLLOW_LINKS	0
@@ -40,9 +34,7 @@ typedef struct mystat {
      unsigned short st_mode;
      off_t st_size;
      time_t st_chtime;
-#ifdef USE_BLOCKS
      long st_blocks;
-#endif
 } mystat;
 
      

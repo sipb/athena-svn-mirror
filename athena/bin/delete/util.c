@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.30 1997-12-31 22:36:02 danw Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.31 1998-11-16 16:42:47 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -21,15 +21,13 @@
 #include <string.h>
 #include <pwd.h>
 #include <errno.h>
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
 #include <sys/ioctl.h>
+#include <rx/rx.h>
 #include <afs/param.h>
 #include <afs/vice.h>
 #include <netinet/in.h>
 #include <afs/venus.h>
-#endif
-#ifdef SOLARIS
-#include <sys/ioccom.h>
 #endif
 #include "delete_errs.h"
 #include "util.h"
@@ -295,7 +293,7 @@ struct stat *oldbuf;
      struct stat statbuf;
      dev_t device;
      char buf[MAXPATHLEN];
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
      struct ViceIoctl blob;
      char retbuf[MAXPATHLEN];
      int retval;
@@ -331,7 +329,7 @@ struct stat *oldbuf;
      if (statbuf.st_dev != device)
 	  return 1;
 
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
      /* Check for AFS mountpoint using the AFS pioctl call. */
      if ((shortname = lastpart(name)) == name) {
 	  strcpy(buf, ".");
@@ -368,7 +366,7 @@ struct stat *oldbuf;
 	       error(name);
 	  }
      }
-#endif /* AFS_MOUNTPOINTS */
+#endif /* HAVE_AFS */
 
      return 0;
 }

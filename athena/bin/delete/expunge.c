@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.23 1997-12-31 22:35:59 danw Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.24 1998-11-16 16:42:21 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -34,7 +34,7 @@
 
 extern time_t current_time;
 
-char *whoami;
+extern char *whoami;
 
 time_t timev; 		/* minimum mod time before undeletion */
 

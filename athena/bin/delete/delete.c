@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,11 +11,11 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.31 1997-12-31 22:35:58 danw Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.32 1998-11-16 16:42:05 ghudson Exp $";
 #endif
 
 #include <sys/types.h>
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
 #include <sys/time.h>
 #endif
 #include <stdio.h>
@@ -71,7 +71,7 @@
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 int emulate_rm, linked_to_rm, linked_to_rmdir;
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
 struct timeval tvp[2];
 #endif
 
@@ -87,7 +87,7 @@ char *argv[];
 
      initialize_del_error_table();
 
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
      gettimeofday(&tvp[0], (struct timezone *)0);
      tvp[1] = tvp[0];
 #endif
@@ -496,7 +496,7 @@ int subs_not_deleted; /* If the file in question is a directory, and  */
      else {
 	  if (verbose)
 	       fprintf(stderr, "%s: %s removed\n", whoami, filename);
-#ifdef AFS_MOUNTPOINTS
+#ifdef HAVE_AFS
 	  /*
 	   * Normally, expunge uses the ctime to determine how long
 	   * ago a file was deleted (since the ctime is normally

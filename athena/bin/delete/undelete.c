@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.27 1998-02-25 22:27:24 ghudson Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.28 1998-11-16 16:42:34 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -417,9 +417,11 @@ char *real_name, *user_name;
 
 
 
-filecmp(file1, file2)
-listrec *file1, *file2;
+filecmp(arg1, arg2)
+const void *arg1, *arg2;
 {
+     listrec *file1 = (listrec *) arg1, *file2 = (listrec *) arg2;
+
      return(strcmp(file1->user_name, file2->user_name));
 }
 
@@ -429,7 +431,7 @@ int sort_files(data, num_data)
 listrec *data;
 int num_data;
 {
-     qsort((char *) data, num_data, sizeof(listrec), filecmp);
+     qsort(data, num_data, sizeof(listrec), filecmp);
 
      return 0;
 }
