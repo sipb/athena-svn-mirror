@@ -1,6 +1,6 @@
 %!
 
-% $Id: banner.ps,v 1.2 1999-04-08 01:27:04 mwhitson Exp $
+% $Id: banner.ps,v 1.3 1999-09-04 05:12:02 mwhitson Exp $
 
 % The following should be defined by a wrapper (such as banner.pl):
 
@@ -262,6 +262,37 @@ inchwidth inch 0 translate 90 rotate
 	24 {15 rotate rmax neg 0 moveto rmax 0 lineto stroke} repeat
 } bind def
 
+% Draw musical staff (from srcd)
+
+/staff {
+    % ulx uly length height
+    4 div		% substitute h/4 for h
+    4 2 roll moveto	% go to x, y
+    5 {
+	1 index 0 rlineto		% draw the line
+	1 index neg 1 index neg rmoveto	% back up and down by h/4
+    } repeat
+    pop pop		% clear off the stack
+} bind def
+
+/musicpaper {
+    % llx lly urx ury height number
+    %    (coords assume transforms undone)
+    [/n /h /ury /urx /lly /llx] {exch def} forall
+    % undo transforms from the top of the job
+    -90 rotate
+    inchwidth inch neg 0 translate
+    2 setlinecap
+    newpath
+    % calculate dy between staves based on size and num/page
+    ury lly sub h n mul sub n 1 sub div h add
+    0 1 n 1 sub {	% spc i
+	1 index mul neg ury add
+	llx exch urx llx sub h staff
+    } for
+    stroke pop
+} bind def
+
 % 1/8" graph paper
 /dograph {
 	gsave [.5] 0 setdash pageleft pagebot pageright vsplit .25 inch sub .125 inch graph grestore 
@@ -292,6 +323,18 @@ inchwidth inch 0 translate 90 rotate
 	pageleft pagebot pageright vsplit .25 inch sub .125 inch polar
 } bind def
 
+% Musical staff paper, 12 staves/page, 25 pt. staves
+/dostaff {
+    0.40 setlinewidth
+    pagetop vsplit sub 1 inch add pageleft pagetop pageright .5 inch sub 25 12 musicpaper
+} bind def
+
+% Musical staff paper, 10 staves/page, 30 pt. staves
+/dobigstaff {
+    0.48 setlinewidth
+    pagetop vsplit sub 1 inch add pageleft pagetop pageright .5 inch sub 30 10 musicpaper
+} bind def
+
 % pick a random graph
 /dorandom {
 	statusdict/pagecount get exec srand    % Seed off the pagecount.
@@ -307,16 +350,20 @@ inchwidth inch 0 translate 90 rotate
         /hex		{ dohex }
 	/loglog		{ dologlog }
 	/polar		{ dopolar }
+	/staff		{ dostaff }
+	/bigstaff	{ dobigstaff }
 	/blank		{ }
 	/random		{ dorandom }
 >> def
 
 /graphweights <<
-	/graph		7
+	/graph		8
 	/biggraph	1
 	/hex		1
 	/loglog		1
 	/polar		1
+	/staff		1
+	/bigstaff	1
 	/blank		1
 >> def
 
