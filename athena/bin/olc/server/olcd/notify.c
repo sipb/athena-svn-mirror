@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.22 1990-08-20 04:41:01 lwvanels Exp $
+ *	$Id: notify.c,v 1.23 1990-08-25 23:45:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.22 1990-08-20 04:41:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.23 1990-08-25 23:45:02 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -48,9 +48,7 @@ extern "C" {
 #include <sys/uio.h>		/* for perror() */
 #ifdef ZEPHYR
 #include <com_err.h>
-#define class c_class
 #include <zephyr/zephyr.h>
-#undef class
 #endif /* ZEPHYR */
 #if is_cplusplus
     extern int writev (int, struct iovec *, int);
@@ -555,6 +553,12 @@ extern int sys_nerr;
 extern char *sys_errlist[];
 extern int errno;
 static char time_buf[20];
+ 
+#ifdef mips
+int errno; /* declared in same file as perror in libc,
+	      so we must declare it here to avoid
+	      multiple defs & linker lossage */
+#endif
 
 void
 #if __STDC__
