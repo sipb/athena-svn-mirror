@@ -143,6 +143,15 @@ xsltGetSpecialNamespace(xsltTransformContextPtr ctxt, xmlNodePtr cur,
     if ((ctxt == NULL) || (cur == NULL) || (out == NULL) || (URI == NULL))
 	return(NULL);
 
+    if ((prefix == NULL) && (URI[0] == 0)) {
+	ret = xmlSearchNs(out->doc, out, NULL);
+	if (ret != NULL) {
+	    ret = xmlNewNs(out, URI, prefix);
+	    return(ret);
+	}
+	return(NULL);
+    }
+
     if ((out->parent != NULL) &&
 	(out->parent->type == XML_ELEMENT_NODE) &&
 	(out->parent->ns != NULL) &&
@@ -207,8 +216,16 @@ xsltGetNamespace(xsltTransformContextPtr ctxt, xmlNodePtr cur, xmlNsPtr ns,
 	(out->parent->ns != NULL) &&
 	(xmlStrEqual(out->parent->ns->href, URI)))
 	ret = out->parent->ns;
-    else
-	ret = xmlSearchNsByHref(out->doc, out, URI);
+    else {
+	if (ns->prefix != NULL) {
+	    ret = xmlSearchNs(out->doc, out, ns->prefix);
+	    if ((ret == NULL) || (!xmlStrEqual(ns->href, URI))) {
+		ret = xmlSearchNsByHref(out->doc, out, URI);
+	    }
+	} else {
+	    ret = xmlSearchNsByHref(out->doc, out, URI);
+	}
+    }
 
     if (ret == NULL) {
 	if (out->type == XML_ELEMENT_NODE)

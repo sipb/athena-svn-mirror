@@ -713,10 +713,18 @@ xsltCopyNode(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    if (node->nsDef != NULL)
 		xsltCopyNamespaceList(ctxt, copy, node->nsDef);
 	}
-	if (((node->type == XML_ELEMENT_NODE) ||
-	     (node->type == XML_ATTRIBUTE_NODE)) &&
-	    (node->ns != NULL)) {
-	    copy->ns = xsltGetNamespace(ctxt, node, node->ns, copy);
+	if ((node->type == XML_ELEMENT_NODE) ||
+	     (node->type == XML_ATTRIBUTE_NODE)) {
+	    if (node->ns != NULL) {
+		copy->ns = xsltGetNamespace(ctxt, node, node->ns, copy);
+	    } else if ((insert != NULL) && (insert->type == XML_ELEMENT_NODE) &&
+		     (insert->ns != NULL)) {
+		xmlNsPtr defaultNs;
+
+		defaultNs = xmlSearchNs(insert->doc, insert, NULL);
+		if (defaultNs != NULL)
+		    xmlNewNs(copy, BAD_CAST "", NULL);
+	    }
 	}
     } else {
 	xsltTransformError(ctxt, NULL, node,
@@ -806,7 +814,8 @@ xsltCopyTree(xsltTransformContextPtr ctxt, xmlNodePtr node,
         case XML_XINCLUDE_END:
             return(NULL);
     }
-    if (xmlStrEqual(node->name, (const xmlChar *) "fake node libxslt")) {
+    if ((node->name != NULL) && (node->name[0] == ' ') &&
+	(xmlStrEqual(node->name, (const xmlChar *) " fake node libxslt"))) {
 	if (node->children != NULL)
 	    copy = xsltCopyTreeList(ctxt, node->children, insert);
 	else
@@ -814,8 +823,8 @@ xsltCopyTree(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	return(copy);
     }
     copy = xmlCopyNode(node, 0);
-    copy->doc = ctxt->output;
     if (copy != NULL) {
+	copy->doc = ctxt->output;
 	xmlAddChild(insert, copy);
 	/*
 	 * The node may have been coalesced into another text node.
@@ -827,8 +836,18 @@ xsltCopyTree(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	/*
 	 * Add namespaces as they are needed
 	 */
-	if (node->ns != NULL) {
-	    copy->ns = xsltGetNamespace(ctxt, node, node->ns, copy);
+	if ((node->type == XML_ELEMENT_NODE) ||
+	    (node->type == XML_ATTRIBUTE_NODE)) {
+	    if (node->ns != NULL)
+		copy->ns = xsltGetNamespace(ctxt, node, node->ns, copy);
+	    else if ((insert != NULL) && (insert->type == XML_ELEMENT_NODE) &&
+		     (insert->ns != NULL)) {
+		xmlNsPtr defaultNs;
+
+		defaultNs = xmlSearchNs(insert->doc, insert, NULL);
+		if (defaultNs != NULL)
+		    xmlNewNs(copy, BAD_CAST "", NULL);
+	    }
 	}
 	if (node->nsDef != NULL)
 	    xsltCopyNamespaceList(ctxt, copy, node->nsDef);
@@ -1170,7 +1189,8 @@ xsltProcessOneNode(xsltTransformContextPtr ctxt, xmlNodePtr node,
     xsltTemplatePtr template;
     xmlNodePtr oldNode;
 
-    if (xmlStrEqual(node->name, BAD_CAST "fake node libxslt")) {
+#if 0
+    if (xmlStrEqual(node->name, BAD_CAST " fake node libxslt")) {
 	xmlNodePtr children;
 
 	children = node->children;
@@ -1180,6 +1200,7 @@ xsltProcessOneNode(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	}
 	return;
     }
+#endif
     template = xsltGetTemplate(ctxt, node, NULL);
     /*
      * If no template is found, apply the default rule.
@@ -1823,7 +1844,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 
 	URI = xsltGetQNameURI(inst, &prop);
 	if (prop == NULL) {
-	    style->errors++;
+	    if (style != NULL) style->errors++;
 	} else if (URI == NULL) {
 	    if ((xmlStrEqual(prop, (const xmlChar *) "xml")) ||
 		(xmlStrEqual(prop, (const xmlChar *) "html")) ||
@@ -1832,7 +1853,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    } else {
 		xsltTransformError(ctxt, NULL, inst,
 				 "invalid value for method: %s\n", prop);
-		style->warnings++;
+		if (style != NULL) style->warnings++;
 	    }
 	} else {
 	    style->method = prop;
@@ -1867,7 +1888,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    xsltTransformError(ctxt, NULL, inst,
 			     "invalid value for standalone: %s\n",
 			     prop);
-	    style->warnings++;
+	    if (style != NULL) style->warnings++;
 	}
 	xmlFree(prop);
     }
@@ -1883,7 +1904,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	} else {
 	    xsltTransformError(ctxt, NULL, inst,
 			     "invalid value for indent: %s\n", prop);
-	    style->warnings++;
+	    if (style != NULL) style->warnings++;
 	}
 	xmlFree(prop);
     }
@@ -1901,7 +1922,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    xsltTransformError(ctxt, NULL, inst,
 			     "invalid value for omit-xml-declaration: %s\n",
 			     prop);
-	    style->warnings++;
+	    if (style != NULL) style->warnings++;
 	}
 	xmlFree(prop);
     }
@@ -2155,7 +2176,7 @@ xsltCopy(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    case XML_HTML_DOCUMENT_NODE:
 		break;
 	    case XML_ELEMENT_NODE:
-		if (xmlStrEqual(node->name, BAD_CAST "fake node libxslt"))
+		if (xmlStrEqual(node->name, BAD_CAST " fake node libxslt"))
 		    return;
 
 #ifdef WITH_XSLT_DEBUG_PROCESS

@@ -1,5 +1,5 @@
 
-	      XSLT support for libxml2 (XML toolkit from the GNOME project)
+     XSLT support for libxml2 (XML toolkit from the GNOME project)
 
 Full documentation is available on-line at
     http://xmlsoft.org/XSLT/
@@ -15,6 +15,10 @@ A mailing-list xslt@gnome.org is available, to subscribe:
 The list archive is at:
     http://mail.gnome.org/archives/xslt/
 
+All technical answers asked privately will be automatically answered on
+the list and archived for public access unless pricacy is explicitely
+required and justified.
+
 Daniel Veillard
 
-$Id: README,v 1.1.1.1 2002-12-26 06:44:09 ghudson Exp $
+$Id: README,v 1.1.1.2 2003-03-24 05:02:48 ghudson Exp $

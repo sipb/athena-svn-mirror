@@ -365,7 +365,7 @@ xsltEvalVariable(xsltTransformContextPtr ctxt, xsltStackElemPtr elem,
 	    xmlDocPtr  oldoutput;
 
 	    container = xmlNewDocNode(ctxt->document->doc, NULL,
-			      (const xmlChar *) "fake node libxslt", NULL);
+			      (const xmlChar *) " fake node libxslt", NULL);
 	    if (container == NULL)
 		return(NULL);
 	    container->parent = NULL;
@@ -495,7 +495,7 @@ xsltEvalGlobalVariable(xsltStackElemPtr elem, xsltTransformContextPtr ctxt) {
 	    xmlDocPtr  oldoutput;
 
 	    container = xmlNewDocNode(ctxt->document->doc, NULL,
-			      (const xmlChar *) "fake node libxslt", NULL);
+			      (const xmlChar *) " fake node libxslt", NULL);
 	    if (container == NULL)
 		return(NULL);
 	    container->parent = NULL;
@@ -600,7 +600,7 @@ xsltEvalGlobalVariables(xsltTransformContextPtr ctxt) {
 		    (elem->comp->inst->doc == def->comp->inst->doc)) {
 		    xsltTransformError(ctxt, style, elem->comp->inst,
 			"Global variable %s already defined\n", elem->name);
-		    style->errors++;
+		    if (style != NULL) style->errors++;
 		}
 	    }
 	    elem = elem->next;
@@ -680,7 +680,7 @@ xsltRegisterGlobalVariable(xsltStylesheetPtr style, const xmlChar *name,
 		 (xmlStrEqual(elem->nameURI, tmp->nameURI)))) {
 		xsltTransformError(NULL, style, comp->inst,
 		"redefinition of global variable %s\n", elem->name);
-		style->errors++;
+		if (style != NULL) style->errors++;
 	    }
 	    if (tmp->next == NULL)
 	        break;

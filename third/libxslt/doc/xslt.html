@@ -151,7 +151,9 @@ answer a given question, ask on the list.</p>
     the list or on bugzilla</span> in case of problems, so that the Question
     and Answers can be shared publicly. Failing to do so carries the implicit
     message "I want free support but I don't want to share the benefits with
-    others" and is not welcome.</li>
+    others" and is not welcome. I will automatically Carbon-Copy the
+    xslt@gnome.org mailing list for any technical reply made about libxml2 or
+    libxslt.</li>
   <li>There is <span style="color: #E50000">no garantee for support</span>,
     if your question remains unanswered after a week, repost it, making sure
     you gave all the detail needed and the informations requested.</li>
@@ -252,6 +254,11 @@ platform, get in touch with me to upload the package. I will keep them in the
     <p>or use</p>
     <p>xsltproc --stringparam test alpha foo.xsl foo.xml</p>
   </li>
+  <li><em>Is there C++ bindings ?</em>
+    <p>Yes for example <a
+    href="http://pmade.org/pjones/software/xmlwrapp/">xmlwrapp</a> , see <a
+    href="python.html">the related pages about bindings</a></p>
+  </li>
 </ol>
 
 <h2><a name="News">News</a></h2>
@@ -259,6 +266,28 @@ platform, get in touch with me to upload the package. I will keep them in the
 <h3>CVS only : check the <a
 href="http://cvs.gnome.org/lxr/source/libxslt/ChangeLog">Changelog</a> file
 for a really accurate description</h3>
+
+<h3>1.0.27: Feb 24 2003</h3>
+<ul>
+  <li>bug fixes: spurious xmlns:nsX="" generation, serialization bug (in
+    libxml2), a namespace copy problem, errors in the RPM spec prereqs</li>
+  <li>Windows path canonicalization and document cache fix (Igor) </li>
+</ul>
+
+<h3>1.0.26: Feb 10 2003</h3>
+<ul>
+  <li>Fixed 3 serious bugs in document() and stylesheet compilation which
+    could lead to a crash</li>
+</ul>
+
+<h3>1.0.25: Feb 5 2003</h3>
+<ul>
+  <li>Bug fix: double-free for standalone stylesheets introduced in 1.0.24, C
+    syntax pbm, 3 bugs reported by Eric van der Vlist</li>
+  <li>Some XPath and XInclude related problems were actually fixed in
+    libxml2-2.5.2</li>
+  <li>Documentation: emphasize taht --docbook is not for XML docs.</li>
+</ul>
 
 <h3>1.0.24: Jan 14 2003</h3>
 <ul>
@@ -846,6 +875,12 @@ or libxslt wrappers or bindings:</p>
   <li>Steve Ball and contributors maintains <a
     href="http://tclxml.sourceforge.net/">libxml2 and libxslt bindings for
     Tcl</a></li>
+  <li><a href="mailto:xmlwrapp@pmade.org">Peter Jones</a> maintains C++
+    bindings for libxslt within <a
+    href="http://pmade.org/pjones/software/xmlwrapp/">xmlwrapp</a></li>
+  <li><a href="phillim2@comcast.net">Mike Phillips</a> provides a module
+    using <a href="http://siasl.dyndns.org/projects/projects.html">libxslt
+    for PHP</a>.</li>
 </ul>
 
 <p>The libxslt Python module depends on the <a
@@ -1965,19 +2000,19 @@ close the connection to the database to keep the same example.</p>
   <li><a href="mailto:dkuhlman@cutter.rexx.com">Dave Kuhlman</a> provides
     libxml/libxslt <a href="http://www.rexx.com/~dkuhlman">wrappers for
     Python</a></li>
-  <li>Steve Ball and contributors maintains <a
-    href="http://tclxml.sourceforge.net/">libxml2</a> and <a
-    href="http://tclxml.sourceforge.net/tclxslt.html">libxslt</a> bindings
-    for Tcl</li>
+  <li><a href="mailto:Steve.Ball@zveno.com">Steve Ball</a>, <a
+    href="http://www.zveno.com/">Zveno</a> and contributors maintain <a
+    href="http://tclxml.sourceforge.net/">tcl bindings for libxml2 and
+    libxslt</a>, as well as <a
+    href="http://tclxml.sf.net/tkxmllint.html">tkxmllint</a> a GUI for
+    xmllint and <a href="http://tclxml.sf.net/tkxsltproc.html">tkxsltproc</a>
+    a GUI for xsltproc.</li>
   <li>If you want to use libxslt in a Mac OS X/Cocoa or Objective-C
     framework, Marc Liyanage provides <a
     href="http://www.entropy.ch/software/macosx/#testxslt">an application
     TestXSLT for XSLT and XML editing</a> including wrapper classes for the
     XML parser and XSLT processor.</li>
 </ul>
-
-<p>I'm still waiting for someone to contribute a simple XSLT processing
-module for Apache :-)</p>
 
 <p></p>
 
