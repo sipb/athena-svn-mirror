@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-install.sh,v 1.2 2004-05-25 16:50:36 rbasch Exp $
+# $Id: finish-install.sh,v 1.3 2005-03-24 14:36:56 rbasch Exp $
 
 echo "Starting the second stage of the install at `date`."
 
@@ -68,7 +68,7 @@ echo "Formatting Athena man pages."
 /usr/bin/catman -M /usr/athena/man > /dev/null 2>&1
 
 echo "Creating windex databases."
-/usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
+/usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man:/usr/sfw/share/man
 
 echo "Updating version"
 hosttype=`/bin/athena/machtype`
