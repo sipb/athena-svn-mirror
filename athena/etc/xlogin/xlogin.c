@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.31 2004-07-02 23:51:38 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.32 2004-09-24 22:05:32 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -133,7 +133,6 @@ typedef struct _XLoginResources {
   int restart_timeout;
   int randomize;
   String reactivate_prog;
-  String tty;
   String session;
   String reset;
   String startup;
@@ -158,7 +157,6 @@ static XrmOptionDescRec options[] = {
   {"-randomize","*randomize",		XrmoptionSepArg,	NULL},
   {"-wait",	"*activateTimeout",	XrmoptionSepArg,	NULL},
   {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
-  {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
   {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
   {"-reset",	"*resetScript",		XrmoptionSepArg,	NULL},
   {"-startup",	"*startupScript",	XrmoptionSepArg,	NULL},
@@ -191,8 +189,6 @@ static XtResource my_resources[] = {
      Offset(activate_timeout), XtRImmediate, (caddr_t) 30},
   {"restartTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(restart_timeout), XtRImmediate, (caddr_t) (60 * 60 * 12)},
-  {"loginTty", XtCFile, XtRString, sizeof(String),
-     Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
   {"sessionScript", XtCFile, XtRString, sizeof(String),
      Offset(session), XtRImmediate, (caddr_t) "/etc/athena/login/Xsession"},
   {"resetScript", XtCFile, XtRString, sizeof(String),
@@ -889,9 +885,8 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
 		   HeightOfScreen(DefaultScreenOfDisplay(dpy)) - 100);
       XFlush(dpy);
       larv_set_busy(1);
-      tb.ptr = dologin(loginname, passwd, mode, script, resources.tty,
-		       resources.startup, resources.session,
-		       DisplayString(dpy));
+      tb.ptr = dologin(loginname, passwd, mode, script, resources.startup,
+		       resources.session, DisplayString(dpy));
       larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,

@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.16 2004-06-16 16:56:49 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.17 2004-09-24 22:05:32 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -26,7 +26,6 @@ static const char rcsid[] = "$Id: verify.c,v 1.16 2004-06-16 16:56:49 ghudson Ex
 #endif
 #include <errno.h>
 #include <fcntl.h>
-#include <grp.h>
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
@@ -44,7 +43,6 @@ static const char rcsid[] = "$Id: verify.c,v 1.16 2004-06-16 16:56:49 ghudson Ex
 #ifdef HAVE_UTIL_H
 #include <util.h>
 #endif
-#include <utime.h>
 #include <utmp.h>
 #ifdef HAVE_UTMPX_H
 #include <utmpx.h>
@@ -107,11 +105,12 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 #endif
 #endif
 
-int al_pid;
+pid_t al_pid;
 
 static char *get_tickets(char *username, char *password);
 static void abort_verify(void *user);
-static void add_utmp(char *user, char *tty, char *display);
+static void add_utmp(char *user, char *device);
+static char *strip_display(const char *display);
 
 #ifdef HAVE_KRB5
 static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
@@ -121,7 +120,7 @@ static krb5_error_code do_v5_kdestroy(const char *cachename);
 #endif
 
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
-extern int attach_state, attachhelp_state, errno;
+extern int attach_state, attachhelp_state;
 extern sigset_t sig_zero;
 
 #ifdef HAVE_AFS
@@ -162,18 +161,15 @@ static struct passwd *get_pwnam(char *usr)
 #endif
 
 char *dologin(char *user, char *passwd, int option, char *script,
-	      char *tty, char *startup, char *session, char *display)
+	      char *startup, char *session, char *display)
 {
   static char errbuf[5120];
-  char tkt_file[128], *msg, wgfile[16];
+  char tkt_file[128], *msg, wgfile[16], *stripped_display;
 #ifdef HAVE_KRB5
   char tkt5_file[128];
 #endif
   struct passwd *pwd;
-  struct group *gr;
-  struct utimbuf times;
   char **environment;
-  char fixed_tty[16], *p;
   int i;
   /* state variables: */
   int local_ok = FALSE;		/* verified from local password file */
@@ -262,21 +258,12 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	return "Strange failure in Hesiod lookup.";
     }
 
+  al_pid = getpid();
+
   /* Only do Kerberos-related things if the account is not local. */
   if (!local_acct)
       {
-	/* Terminal names may be something like pts/0; we don't want any /'s
-	 * in the path name; replace them with _'s.
-	 */
-	if (tty != NULL)
-	  {
-	    strcpy(fixed_tty, tty);
-	    while ((p = strchr(fixed_tty, '/')))
-	      *p = '_';
-	  }
-	else
-	  sprintf(fixed_tty, "%lu", (unsigned long)pwd->pw_uid);
-	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
+	sprintf(tkt_file, "/tmp/tkt_p%lu", al_pid);
 	psetenv("KRBTKFILE", tkt_file, 1);
 
 	/* We set the ticket file here because a previous dest_tkt() might
@@ -285,7 +272,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	krb_set_tkt_string(tkt_file);
 
 #ifdef HAVE_KRB5
-	sprintf(tkt5_file, "/tmp/krb5cc_%s", fixed_tty);
+	sprintf(tkt5_file, "/tmp/krb5cc_p%lu", al_pid);
 	psetenv("KRB5CCNAME", tkt5_file, 1);
 #endif
 
@@ -344,8 +331,6 @@ char *dologin(char *user, char *passwd, int option, char *script,
 #ifdef HAVE_AFS
   try_setpag();
 #endif
-
-  al_pid = getpid();
 
   if (!local_acct)
     {
@@ -526,20 +511,20 @@ char *dologin(char *user, char *passwd, int option, char *script,
 
   environment[i++] = NULL;
 
-  add_utmp(user, tty, display);
+  /* Use the display string, stripped of the screen number,
+   * for the device name in the utmp record.
+   */
+  stripped_display = strip_display(display);
+  if (stripped_display)
+    {
+      add_utmp(user, stripped_display);
+      free(stripped_display);
+    }
+
   if (pwd->pw_uid == ROOT)
-    syslog(LOG_CRIT, "ROOT LOGIN on tty %s", tty ? tty : "X");
+    syslog(LOG_CRIT, "ROOT LOGIN on display %s", display);
   else
-    syslog(LOG_INFO, "%s LOGIN on tty %s", user, tty ? tty : "X");
-
-  /* Set the owner and modtime on the tty. */
-  sprintf(errbuf, "/dev/%s", tty);
-  gr = getgrnam("tty");
-  chown(errbuf, pwd->pw_uid, gr ? gr->gr_gid : pwd->pw_gid);
-  chmod(errbuf, 0620);
-
-  times.actime = times.modtime = time(NULL);
-  utime(errbuf, &times);
+    syslog(LOG_INFO, "%s LOGIN on display %s", user, display);
 
   i = setgid(pwd->pw_gid);
   if (i) 
@@ -694,7 +679,7 @@ static void abort_verify(void *user)
 }
 
 #if HAVE_GETUTXENT && !HAVE_LOGIN
-static void add_utmp(char *user, char *tty, char *display)
+static void add_utmp(char *user, char *device)
 {
   struct utmp ut_entry;
   struct utmp *ut_tmp;
@@ -703,12 +688,8 @@ static void add_utmp(char *user, char *tty, char *display)
 
   memset(&utx_entry, 0, sizeof(utx_entry));
 
-  strncpy(utx_entry.ut_line, tty, sizeof(utx_entry.ut_line));
+  strncpy(utx_entry.ut_line, device, sizeof(utx_entry.ut_line));
   strncpy(utx_entry.ut_name, user, sizeof(utx_entry.ut_name));
-
-  /* Be sure the host string is null terminated. */
-  strncpy(utx_entry.ut_host, display, sizeof(utx_entry.ut_host));
-  utx_entry.ut_host[sizeof(utx_entry.ut_host) - 1] = '\0';
 
   gettimeofday(&utx_entry.ut_tv, NULL);
   utx_entry.ut_pid = getppid();
@@ -732,7 +713,7 @@ static void add_utmp(char *user, char *tty, char *display)
   updwtmpx(WTMPX, &utx_entry);
 }
 #else /* HAVE_GETUTXENT && !HAVE_LOGIN */
-static void add_utmp(char *user, char *tty, char *display)
+static void add_utmp(char *user, char *device)
 {
   struct utmp ut_entry;
   struct utmp ut_tmp;
@@ -740,12 +721,8 @@ static void add_utmp(char *user, char *tty, char *display)
 
   memset(&ut_entry, 0, sizeof(ut_entry));
 
-  strncpy(ut_entry.ut_line, tty, sizeof(ut_entry.ut_line));
+  strncpy(ut_entry.ut_line, device, sizeof(ut_entry.ut_line));
   strncpy(ut_entry.ut_name, user, sizeof(ut_entry.ut_name));
-
-  /* Be sure the host string is null terminated. */
-  strncpy(ut_entry.ut_host, display, sizeof(ut_entry.ut_host));
-  ut_entry.ut_host[sizeof(ut_entry.ut_host) - 1] = '\0';
 
   time(&(ut_entry.ut_time));
 #ifdef USER_PROCESS
@@ -780,7 +757,28 @@ static void add_utmp(char *user, char *tty, char *display)
 }
 #endif /* GETUTXENT && !HAVE_LOGIN */
 
-#define MAXGNAMELENGTH	32
+/* Strip the screen number from the given display string.
+ * Returns the stripped display string, which should be
+ * freed by the caller, or NULL if memory could not be
+ * allocated for the string.
+ */
+static char *strip_display(const char *display)
+{
+  char *stripped_display, *p;
+
+  stripped_display = strdup(display);
+  if (stripped_display)
+    {
+      p = strchr(stripped_display, ':');
+      if (p)
+	{
+	  p = strchr(p, '.');
+	  if (p)
+	    *p = '\0';
+	}
+    }
+  return stripped_display;
+}
 
 /* Fork, storing the pid in a variable var and returning the pid.
  * Make sure that the pid is stored before any SIGCHLD can be

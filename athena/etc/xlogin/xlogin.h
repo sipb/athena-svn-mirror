@@ -1,4 +1,4 @@
-/* $Id: xlogin.h,v 1.3 2000-04-25 13:47:35 rbasch Exp $ */
+/* $Id: xlogin.h,v 1.4 2004-09-24 22:05:33 rbasch Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -25,7 +25,7 @@ pid_t fork_and_store(pid_t *var);
 int psetenv(const char *name, const char *value, int overwrite);
 int punsetenv(const char *name);
 char *dologin(char *user, char *passwd, int option, char *script,
-	      char *tty, char *startup, char *session, char *display);
+	      char *startup, char *session, char *display);
 void cleanup(char *user);
 
 /* from xlogin.c */
