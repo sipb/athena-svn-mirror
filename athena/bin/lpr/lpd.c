@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.5 1990-06-26 13:39:00 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.6 1990-07-03 12:44:05 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.5 1990-06-26 13:39:00 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.6 1990-07-03 12:44:05 epeisach Exp $";
 #endif lint
 
 /*
@@ -617,6 +617,11 @@ chkhost(f)
 		}
 	}
 	*cp = '\0';
+#ifndef _AUX_SOURCE
+	/* AUX does not have a validuser routine in the C lib.
+	   We cheat in the Athena environ and say that no printing allowed
+	   check above should be sufficient */
+
 	hostf = fopen("/etc/hosts.equiv", "r");
 again:
 	if (hostf) {
@@ -632,6 +637,7 @@ again:
 		goto again;
 	}
 	printer = (char *) NULL;
+#endif /* _AUX_SOURCE */
 	fatal("Your host does not have line printer access");
 }
 
