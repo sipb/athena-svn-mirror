@@ -15,7 +15,7 @@ AFSLIBS= $(AFSDIR)/lib/afs/libsys.a
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 LIBS = $(MACHLIBS) $(AFSLIBS)
 
-#if defined(vax) || defined(ibm032)
+#if defined(vax) || defined(ibm032) || defined(sun)
 BINDIR=/usr/ucb
 MACHDEFS= -DUW
 MACHLIBS= -lrpcsvc
@@ -29,7 +29,7 @@ MACHLIBS= -lrpclib
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 #endif
 
-#if defined(ultrix) || defined(i386)
+#if defined(ultrix) || defined(i386) || defined(sun)
 MACHOBJS=rcquotaxdr.o
 #endif
 
