@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.59 1997-04-01 01:11:17 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.60 1997-04-04 17:53:19 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -987,9 +987,7 @@ Cardinal *n;
       tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x3-1410, hotline@mit.edu.";
     else {
 	setAutoRepeat(autorep);
-#ifndef sgi /* Fonts be local on the SGI. */
  	setFontPath();
-#endif
 #ifdef sgi
 	/* We obtained the tty earlier from nanny. */
 	resources.tty = athconsole + 5;
@@ -1153,9 +1151,7 @@ Cardinal *n;
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
-#ifndef sgi /* All fonts local on SGI. */
     setFontPath();
-#endif
     setAutoRepeat(autorep);
     XFlush(dpy);
     XtCloseDisplay(dpy);
@@ -1875,24 +1871,40 @@ static void setFontPath()
 {
     static int ndirs = 0;
     static char **dirlist;
-    register char *cp;
-    register int i=0, j;
+    char *cp, **oldlist;
+    int i, j, nold;
     char *dirs;
     struct stat statbuf;
 
     if (!ndirs) {
- 	dirs = cp = strdup(resources.fontpath);
- 	if (cp == NULL)
-	  localErrorHandler("Out of memory");
+	/* Make a copy of the fontpath which we can step on. */
+	dirs = strdup(resources.fontpath);
+ 	if (dirs == NULL)
+	    localErrorHandler("Out of memory");
 
- 	ndirs = 1;
- 	while (cp = strchr(cp, ',')) { ndirs++; cp++; }
+	/* Get the old font path so we can add to it. */
+	oldlist = XGetFontPath(dpy, &nold);
 
- 	cp = dirs;
- 	dirlist = (char **)malloc(ndirs*sizeof(char *));
+	/* Count the number of directories we will have total. */
+ 	ndirs = nold + 1;
+	cp = dirs;
+ 	while (cp = strchr(cp, ',')) {
+	    ndirs++;
+	    cp++;
+	}
+
+	/* Allocate space for the directory list. */
+ 	dirlist = (char **) malloc(ndirs * sizeof(char *));
  	if (dirlist == NULL)
-	  localErrorHandler("Out of memory");
+	    localErrorHandler("Out of memory");
 
+	/* Copy the old directory list. */
+	for (i = 0; i < nold; i++)
+	    dirlist[i] = strdup(oldlist[i]);
+	XFreeFontPath(oldlist);
+
+	/* Copy the entries in resources.fontpath. */
+	cp = dirs;
  	dirlist[i++] = cp;
  	while (cp = strchr(cp, ',')) {
  	    *cp++ = '\0';
