@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.1 1994-09-18 12:55:54 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.2 1995-07-12 03:36:52 cfields Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18  12:55:54  cfields
+ * Initial revision
+ *
  * Revision 2.2  93/06/18  14:35:36  root
  * first cut at solaris port
  * 
@@ -48,7 +51,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.1 1994-09-18 12:55:54 cfields Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.2 1995-07-12 03:36:52 cfields Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *
@@ -93,7 +96,6 @@ main(argc, argv)
 	int buf[2];
 #endif
 #ifdef MIT
-	struct passwd *p;
 	int login_state, current_state;
 	struct timeval timeout;
 	timeout.tv_sec  = 30;   /* tune for select timeout BE CAREFUL */
@@ -241,8 +243,6 @@ main(argc, argv)
 	 * suid to daemon
 	 */
 	 
-        if((p = getpwent(user)) == (struct passwd *) NULL)
-	     p->pw_uid = 1;
 	if(setuid(1) < 0)  {
 	     syslog(LOG_ERR, "Unable to set uid process");
 	     quit(1);
