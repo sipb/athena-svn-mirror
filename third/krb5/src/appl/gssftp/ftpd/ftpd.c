@@ -989,6 +989,7 @@ char *name, *passwd;
 	my_creds.client = me;
 
 	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
+	setenv("KRB5CCNAME", ccname, 1);
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return(0);
 	if (krb5_cc_initialize(kcontext, ccache, me))
@@ -2934,6 +2935,7 @@ ftpd_gss_convert_creds(name, creds)
 		return;
 
 	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
+	setenv("KRB5CCNAME", ccname, 1);
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return;
 	if (krb5_cc_initialize(kcontext, ccache, me))
