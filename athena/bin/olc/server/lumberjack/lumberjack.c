@@ -6,12 +6,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.5 1990-12-07 09:16:04 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.6 1990-12-09 16:49:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.5 1990-12-07 09:16:04 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.6 1990-12-09 16:49:28 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -42,10 +44,20 @@ main (argc, argv)
   char username[SIZE];		/* name of person that asked the question */
 
   char syscmd[SIZE];		/* buffer for constructing sys call */
-  char timebuf[26];		/* buffer for storing ascii current time */
+  char logbuf[255];		/* buffer for constructing error message */
 
   char *temp;			/* pointer used for walking over title to */
 				/* remove 's */
+
+/*
+ *  Set up syslogging
+ */
+
+#ifdef LOG_CONS
+  openlog("lumberjack", LOG_CONS | LOG_PID, LOG_LOCAL6);
+#else
+  openlog("lumberjack", LOG_PID, LOG_LOCAL6);
+#endif
 
 /*
  *  Chdir to the directory containing the done'd logs, in case we dump
@@ -54,9 +66,7 @@ main (argc, argv)
 
   if (chdir(DONE_DIR))
     {
-      time_now(timebuf);
-      fprintf(stderr, "%s: lumberjack: unable to chdir to %s.\n",
-	      timebuf,DONE_DIR);
+      syslog(LOG_ERR,"chdir: %m");
       exit(-1);
     }
 
@@ -66,16 +76,12 @@ main (argc, argv)
 
   if ((lock_fd = open(LOCKFILE, O_CREAT, 0)) <= 0)
     {
-      time_now(timebuf);
-      fprintf(stderr, "%s: lumberjack: unable to create/open file %s.\n",
-	      timebuf, LOCKFILE);
+      syslog(LOG_ERR,"open (lock file): %m");
       exit(-1);
     }
   if (flock(lock_fd, LOCK_EX | LOCK_NB))
     {
-      time_now(timebuf);
-      fprintf(stderr, "%s: lumberjack: unable to lock file %s.\n", timebuf,
-	      LOCKFILE);
+      syslog(LOG_ERR,"flock: %m");
       close(lock_fd);
       exit(-1);
     }
@@ -86,8 +92,7 @@ main (argc, argv)
   
   if ((dirp = opendir(".")) == NULL)
     {
-      time_now(timebuf);
-      fprintf(stderr, "%s: lumberjack: unable to malloc enough memory or open dir.\n", timebuf);
+      syslog(LOG_ERR,"opendir: %m");
       close(lock_fd);
       flock(lock_fd, LOCK_UN);
       exit(-1);
@@ -102,17 +107,16 @@ main (argc, argv)
       if (!strncmp(next->d_name, "ctrl", 4))
 	{
 	  if ((fd = open(next->d_name, O_RDONLY, 0)) <= 0)  {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: unable to open file %s.\n",
-		    timebuf, next->d_name);
+	    sprintf(logbuf,"open (%s) %%m",next->d_name);
+	    syslog(LOG_WARNING,logbuf);
 	    continue;
 	  }
 	  file = fdopen(fd, "r");
 
 	  if (fgets(logname, SIZE, file) == NULL)  {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: unable to get logfilename from file %s.\n",
-		    timebuf, next->d_name);
+	    sprintf(logbuf,"unable to get logfilename from %s %%m",
+		    next->d_name);
+	    syslog(LOG_WARNING,logbuf);
 	    fclose(file);
 	    continue;
 	  }
@@ -120,9 +124,8 @@ main (argc, argv)
 					       /* the end.  get rid of it. */
 
 	  if (fgets(title, SIZE, file) == NULL)  {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: unable to get title from file %s.\n",
-		    timebuf, next->d_name);
+	    sprintf(logbuf,"unable to get title from %s %%m", next->d_name);
+	    syslog(LOG_WARNING,logbuf);
 	    fclose(file);
 	    continue;
 	  }
@@ -136,18 +139,18 @@ main (argc, argv)
 
 
 	  if (fgets(topic, SIZE, file) == NULL)  {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: unable to get topic from file %s.\n",
-		    timebuf, next->d_name);
+	    sprintf(logbuf,"unable to get topic from %s %%m",
+		    next->d_name);
+	    syslog(LOG_WARNING,logbuf);
 	    fclose(file);
 	    continue;
 	  }
 	  topic[strlen(topic) - 1] = '\0';
 
 	  if (fgets(username, SIZE, file) == NULL)  {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: unable to get username from file %s.\n",
-		    timebuf, next->d_name);
+	    sprintf(logbuf,"unable to get time from %s %%m",
+		    next->d_name);
+	    syslog(LOG_WARNING,logbuf);
 	    fclose(file);
 	    continue;
 	  }
@@ -162,9 +165,8 @@ main (argc, argv)
 	  retval = system(syscmd);
 	  /* dspipe sometimes looses and returns a bogus error value (36096) */
 	  if (retval != 0) {
-	    time_now(timebuf);
-	    fprintf(stderr, "%s: lumberjack: bad exit status %d occurred in:\n\t%s\n",
-		    timebuf, retval, syscmd);
+	    sprintf(logbuf,"Bad exit status %d in: %s %%m", retval, syscmd);
+	    syslog(LOG_WARNING,logbuf);
 	  }
 	  else
 	    {
