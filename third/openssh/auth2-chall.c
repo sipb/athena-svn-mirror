@@ -243,6 +243,8 @@ input_userauth_info_response(int type, int plen, void *ctxt)
 
 	authctxt->postponed = 0;	/* reset */
 	nresp = packet_get_int();
+	if (nresp > 100)
+		fatal("input_userauth_info_response: nresp too big %u", nresp);
 	if (nresp > 0) {
 		response = xmalloc(nresp * sizeof(char*));
 		for (i = 0; i < nresp; i++)

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.1 2001-02-19 07:12:06 ghudson Exp $";
+static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.1.4.1 2002-07-18 18:03:52 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -5108,10 +5108,14 @@ do_broach_folder(newfolder, new_context)
      * So, IF we're asked to open inbox AND it's already open AND
      * the only stream AND it's healthy, just return ELSE fall thru
      * and close mail_stream returning with inbox_stream as new stream...
+     *
+     * Athena hack: only special-case "inbox" in the first context (where
+     * it is shoved by init_folders()), so that the MH or pine folder
+     * collection can display an "inbox" folder.
      */
-    if(open_inbox = (strucmp(newfolder, ps_global->inbox_name) == 0
+    if(open_inbox = ((strucmp(newfolder, ps_global->inbox_name) == 0
+		      && new_context == ps_global->context_list)
 		     || strcmp(newfolder, ps_global->VAR_INBOX_PATH) == 0)){
-	new_context = ps_global->context_list; /* restore first context */
 	if(ps_global->inbox_stream 
 	   && (ps_global->inbox_stream == ps_global->mail_stream))
 	  return(1);

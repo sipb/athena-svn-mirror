@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.1.1.1 2002-01-31 21:32:18 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.1.1.1.2.1 2002-07-18 18:04:09 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -999,7 +999,7 @@ afs_lookup(adp, aname, avcp, acred)
 
     /* Check for read access as well.  We need read access in order to
        stat files, but not to stat subdirectories. */
-    if (!afs_AccessOK(adp, PRSFS_READ, &treq, CHECK_MODE_BITS))
+    if (!afs_AccessOK(adp, PRSFS_LOOKUP, &treq, CHECK_MODE_BITS))
 	no_read_access = 1;
 
     /* special case lookup of ".".  Can we check for it sooner in this code,

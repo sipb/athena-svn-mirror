@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: folder.c,v 1.1.1.1 2001-02-19 07:11:44 ghudson Exp $";
+static char rcsid[] = "$Id: folder.c,v 1.1.1.1.4.1 2002-07-18 18:03:59 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -6502,8 +6502,13 @@ mail_list_filter(stream, mailbox, delim, attribs, data)
     /*
      * "Inbox" is filtered out here, since pine only supports one true
      * inbox...
+     * Athena hack: don't do this filtering.  Also see mailcmd.c,
+     * where we modify pine to only special-case folders named "inbox"
+     * in the first context.  (The first context is where the primary
+     * inbox gets shoved in by init_folders(); that's pretty bogus,
+     * but it doesn't bother our default configuration.)
      */
-    if(!(attribs & LATT_NOSELECT) && strucmp(mailbox, "inbox")){
+    if(1){
 	ld->response.count++;
 	ld->response.isfile = 1;
 	new_f = new_folder(mailbox, 0);
