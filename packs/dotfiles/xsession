@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.3 2003-03-15 16:14:13 ghudson Exp $
+# $Id: xsession,v 1.4 2003-04-07 22:21:46 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -129,10 +129,7 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
   # Run the GNOME capplets unless the user has chosen to skip them.
   if (! $?skip_capplets) then
     if ($?verbose_login) echo "Initializing settings..."
-    sound-properties --init-session-settings
-    background-properties-capplet --init-session-settings
-    mouse-properties-capplet --init-session-settings
-    keyboard-properties --init-session-settings
+    (gnome-settings-daemon &)
   endif
 
   # Run the GNOME panel unless the user has chosen to skip it.  For
