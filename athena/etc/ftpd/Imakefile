@@ -1,22 +1,16 @@
 DEFINES	=	-DATHENA -DSETPAG
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
+AFSLIBS = 	-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -llwp
 
 #ifdef _AIX
-LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lodm -lcfg -ls
-#else
+OSLIBS	=	-lodm -lcfg -ls
+#endif
 #ifdef ultrix
-LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lnsyslog
-#else
+OSLIBS	=	-lnsyslog
+#endif
 #ifdef SOLARIS
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a \
-       $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
-LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
-LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod 
-#else
-LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod
+OSLIBS	=	-lbsd
 #endif
-#endif
-#endif
+LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod $(OSLIBS)
 
 CFILES	=	ftpd.c athena_ftpd.c ftpcmd.y glob.c logwtmp.c\
 			popen.c vers.c
