@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.18 1992-05-07 08:33:40 probe Exp $
+ * $Id: aklog_main.c,v 1.19 1992-06-26 15:17:18 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.18 1992-05-07 08:33:40 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.19 1992-06-26 15:17:18 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -76,7 +76,8 @@ static int dflag = FALSE;	/* Give debugging information */
 static int noauth = FALSE;	/* If true, don't try to get tokens */
 static int zsubs = FALSE;	/* Are we keeping track of zephyr subs? */
 static int hosts = FALSE;	/* Are we keeping track of hosts? */
-static int noprdb = FALSE;	/* Should we skip resolving name to id? */
+static int noprdb = FALSE;	/* Skip resolving name to id? */
+static int force = FALSE;	/* Bash identical tokens? */
 static linked_list zsublist;	/* List of zephyr subscriptions */
 static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
@@ -191,7 +192,7 @@ static int auth_to_cell(cell, realm)
     CREDENTIALS c;
     struct ktc_principal aserver;
     struct ktc_principal aclient;
-    struct ktc_token atoken;
+    struct ktc_token atoken, btoken;
     
     char *calloc();
 
@@ -378,16 +379,24 @@ static int auth_to_cell(cell, realm)
 	atoken.ticketLen = c.ticket_st.length;
 	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
 	
+	if (!force &&
+	    !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
+	    atoken.kvno == btoken.kvno &&
+	    atoken.ticketLen == btoken.ticketLen &&
+	    !bcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
+	    !bcmp(atoken.ticket, btoken.ticket, atoken.ticketLen)) {
+
+	    if (dflag) {
+		sprintf(msgbuf, "Identical tokens already exist; skipping.\n");
+		params.pstdout(msgbuf);
+	    }
+	    return 0;
+	}
+
 	if (dflag) {
 	    sprintf(msgbuf, "Getting tokens.\n");
 	    params.pstdout(msgbuf);
 	}
-	
-	/* 
-	 * Last argument is only used for non-afs services; not 
-	 * needed for athena service model.
-	 */
-	
 	if (status = ktc_SetToken(&aserver, &atoken, &aclient)) {
 	    sprintf(msgbuf, 
 		    "%s: unable to obtain tokens for cell %s (status: %d).\n",
@@ -728,7 +737,7 @@ static void usage()
     sprintf(msgbuf, "\nUsage: %s %s%s%s\n", progname,
 	    "[-d] [[-cell | -c] cell [-k krb_realm]] ",
 	    "[[-p | -path] pathname]\n",
-	    "    [-zsubs] [-hosts] [-noauth] [-noprdb]\n");
+	    "    [-zsubs] [-hosts] [-noauth] [-noprdb] [-force]\n");
     params.pstderr(msgbuf);
     sprintf(msgbuf, "    -d gives debugging information.\n");
     params.pstderr(msgbuf);
@@ -820,6 +829,8 @@ void aklog(argc, argv, a_params)
 	    hosts++;
 	else if (strcmp(argv[i], "-noprdb") == 0)
 	    noprdb++;
+	else if (strcmp(argv[i], "-force") == 0)
+	    force++;
 	else if (((strcmp(argv[i], "-cell") == 0) ||
 		  (strcmp(argv[i], "-c") == 0)) && !pmode)
 	    if (++i < argc) {
