@@ -8,6 +8,7 @@
  * SimpleProgram(prog,objs,libs,dest)	- Build/install a program    (simple)
  * build_program(prog,objs,ldflags,libs)- Build a program            (complex)
  * install_program(prog,instflags,dest)	- Install a program          (complex)
+ * install_script(prog,instflags,dest)	- Install a script	     (complex)
  *
  * SimpleLibrary(base,objs,destdir)	- Build/install a library    (simple)
  * build_library(base,objs)		- Build a library
@@ -39,6 +40,10 @@ clean::									@@\
 #define install_program(prog,instflags,dest)				@@\
 install::								@@\
 	$(INSTALL) InstPgmFlags instflags prog $(DESTDIR)dest
+
+#define install_script(prog,instflags,dest)				@@\
+install::								@@\
+	$(INSTALL) InstScriptFlags instflags prog $(DESTDIR)dest
 
 #define install_file(src,dest)						@@\
 install::								@@\
