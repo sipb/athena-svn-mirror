@@ -7,24 +7,25 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
 #	$Author: lwvanels $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.3 1991-03-21 16:09:33 lwvanels Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.4 1991-04-08 21:23:41 lwvanels Exp $
 #
 
-/* #define Logging */
-
 SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c \
-	  signal.c log.c
+	  signal.c
 OBJS	= cref.o commands.o display.o cref_utils.o globals.o update.o \
-	  signal.o log.o
+	  signal.o
 
 SYS_LIBRARIES = $(CursesLib)
 
-#ifdef Logging
-DEFINES = -DLOG
+#if DoUsageLog
+LOCAL_LIBS = $(LOGGERLIB)
+#else
+LOCAL_LIBS =
 #endif
 
-NormalProgramTarget(olc_browser,$(OBJS),,,$(SYS_LIBRARIES))
-SaberProgramTarget(olc_browser,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
+
+NormalProgramTarget(olc_browser,$(OBJS),,$(LOCAL_LIBS),$(SYS_LIBRARIES))
+SaberProgramTarget(olc_browser,$(SRCS),$(OBJS),$(LOCAL_LIBS),$(SYS_LIBRARIES))
 
 DependTarget()
 LintTarget()
