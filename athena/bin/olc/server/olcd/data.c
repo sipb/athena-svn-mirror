@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.24 1993-08-05 19:01:59 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: data.c,v 1.25 1995-05-14 01:04:45 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.24 1993-08-05 19:01:59 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.25 1995-05-14 01:04:45 cfields Exp $";
 #endif
 #endif
 
@@ -51,7 +51,7 @@ PROC Proc_List[] =
   OLC_STARTUP,         olc_startup,	     "olc startup",
   OLC_SHOW,            olc_show,	     "olc show",
   OLC_GRAB,            olc_grab,	     "olc grab",
-  OLC_CANCEL,          olc_cancel,	     "olc cancel",
+  OLC_LIST_SERVICES,   olc_list_services,    "olc list services",
   OLC_ASK,             olc_ask,              "olc ask",
   OLC_WHO,             olc_who,              "olc who",
   OLC_SET_TOPIC,       olc_chtopic,          "olc chtopic",

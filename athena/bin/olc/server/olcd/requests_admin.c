@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.26 1992-02-05 02:51:39 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: requests_admin.c,v 1.27 1995-05-14 01:05:23 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.26 1992-02-05 02:51:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.27 1995-05-14 01:05:23 cfields Exp $";
 #endif
 #endif
 
@@ -144,7 +144,7 @@ olc_change_hours(fd,request)
   return(status);
 }
 
-
+  
 ERRCODE
 olc_change_acl(fd,request)
      int fd;
@@ -194,32 +194,44 @@ olc_change_acl(fd,request)
 	  if(is_option(request->options, ADD_OPT))
 	    {
 	      if(acl_check(a_ptr->file, name))   /* acl_add won't tell us */
-		  return(send_response(fd,USER_EXISTS));
-	      if(user != (USER *) NULL)
-		user->permissions |= a_ptr->code;
-	      if(acl_add(a_ptr->file, name) <0)    /* try again */
-		if(acl_add(a_ptr->file, name) <0)  /* a bug in acl lib */
-		  return(send_response(fd,ERROR));
-	      return(send_response(fd,SUCCESS));
+		{  
+		  send_response(fd,USER_EXISTS);
+		  goto RELOAD;
+		}
+	      if ((acl_add(a_ptr->file, name) <0)    /* try again */
+		&& (acl_add(a_ptr->file, name) <0))  /* a bug in acl lib */
+		  send_response(fd,ERROR);
+	      else
+		send_response(fd,SUCCESS);
+	      goto RELOAD;
 	    }
-	  else
+	  else       /* remove acl */
 	    {
 	      if(!acl_check(a_ptr->file, name)) /*it adds it if doesn't exist*/
-		return(send_response(fd,USER_NOT_FOUND));
-	      if(user != (USER *) NULL)
-		if(user->permissions & a_ptr->code)
-		  user->permissions &= ~(a_ptr->code);
-	      if(acl_delete(a_ptr->file, name) <0)
-		if(acl_add(a_ptr->file, name) <0)
-		  return(send_response(fd,ERROR));
-	      return(send_response(fd,SUCCESS));
+		{
+		  send_response(fd,USER_NOT_FOUND);
+		  goto RELOAD;
+		}
+	      if ((acl_delete(a_ptr->file, name) <0)
+		&& (acl_delete(a_ptr->file, name) <0))
+		  send_response(fd,ERROR);
+	      else
+		send_response(fd,SUCCESS);
+	      goto RELOAD;
 	    }
 	}
     }
-  return(send_response(fd,UNKNOWN_ACL));
-}
+  send_response(fd,UNKNOWN_ACL);
 
-  
+ RELOAD:    /* no matter what reload the permissions from file */
+
+  if (user != (USER *) NULL)
+    {
+      user->permissions = 0;
+      get_acls(user);
+    }
+  return 1;  /* is the error code ever used ? */
+}
 
 ERRCODE
 olc_list_acl(fd, request)
