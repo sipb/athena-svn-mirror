@@ -1,11 +1,12 @@
-# $Id: phase3.sh,v 1.9 1997-05-04 04:48:25 ghudson Exp $
+# $Id: phase3.sh,v 1.10 1997-05-08 00:51:04 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
 # from the miniroot.
 
-if [ `/sbin/machtype -c` = SPARC/4 ]; then
+CPUTYPE=`/sbin/machtype -c`; export HOSTTYPE
+if [ "$CPUTYPE" = SPARC/4 ]; then
 	echo "Setting monitor resolution..."
 	/os/usr/sbin/eeprom output-device=screen:r1152x900x94
 	/os/usr/sbin/eeprom fcode-debug?=true
@@ -151,11 +152,10 @@ cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
-# We may need to replace "sun4m" with "`uname -i`" at some point.  Right now
-# (as of 8.1, with a 2.4 miniroot on the install server), `uname -i` doesn't
-# work on the miniroot.
-cp -p /os/platform/sun4m/ufsboot /root
-installboot /os/usr/platform/sun4m/lib/fs/ufs/bootblk $rrootdrive
+# Replace `uname -m` with `uname -i` when the miniroot is running 2.5.1 or
+# better.
+cp -p /os/platform/`uname -m`/ufsboot /root
+installboot /os/usr/platform/`uname -m`/lib/fs/ufs/bootblk $rrootdrive
 cd /root
 
 # Note: device scripts depend on ROOT being set properly.
