@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.19 1997-10-02 18:57:29 ghudson Exp $
+ * $Id: from.c,v 1.20 1998-04-28 18:31:20 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.19 1997-10-02 18:57:29 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.20 1998-04-28 18:31:20 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -453,21 +453,32 @@ getmail_unix(user)
 	int havemail = 0, stashed = 0;
 	register char *name;
 	char *getlogin();
+	char *maildrop;
 
 	if (sender != NULL)
 	  for (name = sender; *name; name++)
 	    if (isupper(*name))
 	      *name = tolower(*name);
 
-	if (chdir("/usr/spool/mail") < 0) {
-	    unixmail = 0;
-	    return -1;
-	}
-	if (freopen(user, "r", stdin) == NULL) {
-	    if(!popmail)
-		  fprintf(stderr, "Can't open /usr/spool/mail/%s.\n", user);
-	    unixmail = 0;
-	    return -1;
+	maildrop = getenv("MAILDROP");
+	if (maildrop && *maildrop) {
+	    if (freopen(maildrop, "r", stdin) == NULL) {
+		if (!popmail)
+		    fprintf(stderr, "Can't open maildrop: %s.\n", maildrop);
+		unixmail = 0;
+		return -1;
+	    }
+	} else {
+	    if (chdir("/var/spool/mail") < 0) {
+		unixmail = 0;
+		return -1;
+	    }
+	    if (freopen(user, "r", stdin) == NULL) {
+		if (!popmail)
+		    fprintf(stderr, "Can't open /usr/spool/mail/%s.\n", user);
+		unixmail = 0;
+		return -1;
+	    }
 	}
 
 	while (fgets(lbuf, sizeof lbuf, stdin) != NULL)
