@@ -33,6 +33,9 @@ esac
 
 unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
 eval `AUTOUPDATE=false getcluster -b "$athenaversion"`
+if [ "${SYSPREFIX+set}" != set ]; then
+  errorout "$0: Cannot find Linux clusterinfo for this machine."
+fi
 
 # Find the files list from the control file.
 
