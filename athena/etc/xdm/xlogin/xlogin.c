@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.36 1993-09-14 15:24:31 vrt Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.37 1994-03-03 20:03:57 cfields Exp $ */
 
 #ifdef POSIX
 #include <unistd.h>
@@ -832,6 +832,7 @@ Cardinal *n;
 	alarm(resources.activate_timeout);
 	while (activation_state != ACTIVATED)
 	  sigpause(0);
+	alarm(0);
 	signal(SIGALRM, oldsig);
 	fprintf(stderr, "done.\n");
     }
