@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.56 1998-01-31 03:54:34 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.57 1998-02-17 01:28:31 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,7 +36,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.56 1998-01-31 03:54:34 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.57 1998-02-17 01:28:31 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -126,16 +126,17 @@ grabconsole()
     char buf[BUFSIZ];
     
     if (pipe(p) < 0) {
-       fprintf(stderr, "dm: could not open pipe\n");
+       fprintf(stderr, "dm: could not open pipe: %s\n",strerror(errno));
        exit(1);
     }
 
     if ((console = open("/dev/console", O_RDONLY)) < 0 ) {
-        fprintf(stderr, "dm:could not open /dev/console\n");
+        fprintf(stderr, "dm:could not open /dev/console: %s\n",
+		strerror(errno));
 	exit(1);
     }
     if (ioctl(console, SRIOCSREDIR, p[1]) < 0) {
-        fprintf(stderr, "dm:could not issue ioctl\n");
+        fprintf(stderr, "dm:could not issue ioctl: %s\n",strerror(errno));
 	exit(1);
     }
     return(p[0]);
@@ -228,9 +229,9 @@ char **argv;
 
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
-	message("usage: ");
-	message(argv[0]);
-	message(" configfile logintty [-noconsole] consoletty\n");
+	fprintf(stderr,
+		"usage: %s configfile logintty [-noconsole] consoletty\n",
+		argv[0]);
 	console_login(NULL);
     }
     if (argc == 5) console = FALSE;
@@ -328,7 +329,7 @@ char **argv;
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
 #ifdef DEBUG
-	message("Starting X\n");
+	fprintf(stderr,"Starting X\n");
 #endif
 	x_running = STARTUP;
 	xpid = fork();
@@ -346,10 +347,11 @@ char **argv;
 	    p = *xargv;
 	    *xargv = "X";
 	    execv(p, xargv);
-	    message("dm: X server failed exec\n");
+	    fprintf(stderr,"dm: X server failed exec: %s\n", strerror(errno));
 	    _exit(1);
 	case -1:
-	    message("dm: Unable to fork to start X server\n");
+	    fprintf(stderr,"dm: Unable to fork to start X server: %s\n",
+		    strerror(errno));
 	    break;
 	default:
 	    sigact.sa_handler = (void (*)())xready;
@@ -364,14 +366,14 @@ char **argv;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
 #ifdef DEBUG
-	    message("waiting for X\n");
+	    fprintf(stderr,"waiting for X\n");
 #endif
 	    sigsuspend(&sig_zero);
 	    if (x_running != RUNNING) {
 		if (alarm_running == NONEXISTENT)
-		  message("dm: Unable to start X\n");
+		  fprintf(stderr,"dm: Unable to start X\n");
 		else
-		  message("dm: X failed to become ready\n");
+		  fprintf(stderr,"dm: X failed to become ready\n");
 	    }
 	    sigact.sa_handler = (void (*)())SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
@@ -441,7 +443,7 @@ char **argv;
     /* Fire up the X login */
     for (tries = 0; tries < 3; tries++) {
 #ifdef DEBUG
-	message("Starting X Login\n");
+	fprintf(stderr,"Starting X Login\n");
 #endif
 	login_running = STARTUP;
 	sigact.sa_handler = (void (*)())loginready;
@@ -474,10 +476,11 @@ char **argv;
             sigact.sa_handler = (void (*)())SIG_DFL;;
             sigaction(SIGPIPE, &sigact, NULL);
 	    execv(loginargv[0], loginargv);
-	    message("dm: X login failed exec\n");
+	    fprintf(stderr,"dm: X login failed exec: %s\n", strerror(errno));
 	    _exit(1);
 	case -1:
-	    message("dm: Unable to fork to start X login\n");
+	    fprintf(stderr,"dm: Unable to fork to start X login: %s\n",
+		    strerror(errno));
 	    break;
 	default:
 	    alarm(LOGIN_START_WAIT);
@@ -487,9 +490,9 @@ char **argv;
 	    if (login_running != RUNNING) {
 		kill(loginpid, SIGKILL);
 		if (alarm_running != NONEXISTENT)
-		  message("dm: Unable to start Xlogin\n");
+		  fprintf(stderr,"dm: Unable to start Xlogin\n");
 		else
-		  message("dm: Xlogin failed to become ready\n");
+		  fprintf(stderr,"dm: Xlogin failed to become ready\n");
 	    }
 	}
 	if (login_running == RUNNING) break;
@@ -506,7 +509,7 @@ char **argv;
     (void) sigprocmask(SIG_BLOCK, &sig_cur, NULL);
     while (1) {
 #ifdef DEBUG
-	message("waiting...\n");
+	fprintf(stderr,"waiting...\n");
 #endif
 	/* Wait for something to hapen */
 	if (console_failed) {
@@ -553,8 +556,7 @@ char *msg;
     struct termios ttybuf;
 
 #ifdef DEBUG
-    message("starting console login\n");
-    message(msg);
+    fprintf(stderr,"starting console login\n%s",msg);
 #endif
 
     sigemptyset(&sig_zero);
@@ -599,9 +601,9 @@ char *msg;
       close(i);
 
     if (msg)
-      message(msg);
+      fprintf(stderr,"%s",msg);
     else
-      message(nl);
+      fprintf(stderr,"%s",nl);
 #ifdef SOLARIS 
     close(0); close(1); close(2);
     setsid();
@@ -612,7 +614,7 @@ char *msg;
 #else
     execl(login_prog, login_prog, 0);
 #endif
-    message("dm: Unable to start console login\n");
+    fprintf(stderr,"dm: Unable to start console login: %s\n", strerror(errno));
     _exit(1);
 }
 
@@ -635,7 +637,7 @@ char **argv;
     int fd;
 #endif
 #ifdef DEBUG
-    message("Starting Console\n");
+    fprintf(stderr,"Starting Console\n");
 #endif
 
     if (console_tty == 0) {
@@ -669,7 +671,7 @@ char **argv;
     if (now.tv_sec <= last_try.tv_sec + 3) {
 	/* giveup on console */
 #ifdef DEBUG
-	message("Giving up on console\n");
+	fprintf(stderr,"Giving up on console\n");
 #endif
 	/* Set the console characteristics so we don't lose later */
 	setpgid(0, pgrp=getpid());		/* Reset the tty pgrp */
@@ -759,10 +761,11 @@ char **argv;
 	*(argvp - 1) = buf;
 #endif
 	execv(argv[0], argv);
-	message("dm: Failed to exec console\n");
+	fprintf(stderr,"dm: Failed to exec console: %s\n", strerror(errno));
 	_exit(1);
     case -1:
-	message("dm: Unable to fork to start console\n");
+	fprintf(stderr,"dm: Unable to fork to start console: %s\n",
+		strerror(errno));
 	_exit(1);
     default:
 	if ((file = open(consolepidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
@@ -925,11 +928,11 @@ void child()
     if (pid == 0 || pid == -1) return;
 
 #ifdef DEBUG
-    message("Child exited "); message(number(pid));
+    fprintf(stderr,"Child exited %d\n",pid);
 #endif
     if (pid == xpid) {
 #ifdef DEBUG
-	message("X Server exited\n");
+	fprintf(stderr,"X Server exited\n");
 #endif
 #ifdef TRACE
 	trace("X Server exited status ");
@@ -938,7 +941,7 @@ void child()
 	x_running = NONEXISTENT;
     } else if (pid == consolepid) {
 #ifdef DEBUG
-	message("Console exited\n");
+	fprintf(stderr,"Console exited\n");
 #endif
 #ifdef TRACE
 	trace("Console exited status ");
@@ -947,7 +950,7 @@ void child()
 	console_running = NONEXISTENT;
     } else if (pid == loginpid) {
 #ifdef DEBUG
-	message("X Login exited\n");
+	fprintf(stderr,"X Login exited\n");
 #endif
 #ifdef TRACE
 	trace("X Login exited status ");
@@ -958,7 +961,7 @@ void child()
 	else
 	  login_running = NONEXISTENT;
     } else {
-	message("dm: Unexpected SIGCHLD from pid ");message(number(pid));
+	fprintf(stderr,"dm: Unexpected SIGCHLD from pid %d\n",pid);
     }
 }
 
@@ -966,7 +969,7 @@ void child()
 void xready()
 {
 #ifdef DEBUG
-    message("X Server ready\n");
+    fprintf(stderr,"X Server ready\n");
 #endif
     x_running = RUNNING;
 }
@@ -974,7 +977,7 @@ void xready()
 void loginready()
 {
 #ifdef DEBUG
-    message("X Login ready\n");
+    fprintf(stderr,"X Login ready\n");
 #endif
     login_running = RUNNING;
 }
@@ -984,7 +987,7 @@ void loginready()
 void catchalarm()
 {
 #ifdef DEBUG
-    message("Alarm!\n");
+    fprintf(stderr,"Alarm!\n");
 #endif
     alarm_running = NONEXISTENT;
 }
@@ -995,7 +998,7 @@ void catchalarm()
 void die()
 {
 #ifdef DEBUG
-    message("Killing children and exiting\n");
+    fprintf(stderr,"Killing children and exiting\n");
 #endif
     cleanup(logintty);
     _exit(0);
@@ -1045,18 +1048,6 @@ char *extra2;
 }
 
 
-/* Used for logging errors and other messages so we don't need to link
- * against the stdio library.
- */
-
-message(s)
-char *s;
-{
-    int i = strlen(s);
-    write(2, s, i);
-}
-
-
 /* Convert an int to a string, and return a pointer to this string in a
  * static buffer.  The string will be newline and null terminated.
  */
@@ -1102,7 +1093,7 @@ char *name;
 	if (fd < 0) return(NULL);
 	i = read(fd, buf, sizeof(buf));
 	if (i >= sizeof(buf) - 1)
-	  message("dm: warning - config file is to long to parse\n");
+	  fprintf(stderr,"dm: warning - config file is to long to parse\n");
 	buf[i] = 0;
 	close(fd);
 	inited = 1;
