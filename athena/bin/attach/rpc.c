@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.14 1996-12-11 21:59:58 ghudson Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.15 1997-03-06 00:52:12 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -122,11 +122,10 @@ CLIENT *rpc_create(addr, sinp)
     struct sockaddr_in *sinp;
 {
     CLIENT *client;
-    struct sockaddr_in sin, sin2;
+    struct sockaddr_in sin;
     struct timeval timeout;
     struct cache_ent *ent;
     int s;
-    int err;
     u_short port;
 
     if (debug_flag)
@@ -164,43 +163,10 @@ CLIENT *rpc_create(addr, sinp)
 
     *sinp = sin;
     
-    get_myaddress(&sin2);
-    sin2.sin_family = AF_INET;
-    err = 1;
-    for (port=IPPORT_RESERVED-1;err && port >= IPPORT_RESERVED/2;
-	 port--) {
-	sin2.sin_port = htons(port);
-	err = bind(s, &sin2, sizeof(sin2));
-	if (err) {
-		err = errno;
-		if (err == EINVAL) {
-			/*
-			 * On the NeXT, and possibly other Mach machines,
-			 * the socket from clntudp_create is already bound.
-			 * So if it is, we'll just go on ahead.
-			 */
-			err = 0;
-			break;
-		}
-	}
-    }
-
     add_cache_ent(addr, client, s, sinp);
     if (debug_flag)
 	printf("Adding cache entry with FD = %d\n", s);
 
-    if (err) {
-	if (debug_flag) {
-		printf("Couldn't allocate a reserved port!\n");
-		errno = err;
-		perror("bind");
-	}
-	clnt_destroy(client);
-	client = (CLIENT *)0;
-	mark_errored(addr);
-	error_status = ERR_NOPORTS;
-    } 
-	
     return (client);
 }
 
