@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.28 1988-07-19 10:12:40 jtkohl Exp $";
+static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.29 1988-07-19 10:32:22 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -337,7 +337,8 @@ losinghost *which;
 	ZNotice_t notice;
 	struct sockaddr_in who;
 	Code_t retval;
-	char **buffer;
+	char *buffer;
+	int len;
 
 	int omask = sigblock(sigmask(SIGFPE)); /* don't start db dumps */
 
