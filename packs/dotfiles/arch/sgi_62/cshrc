@@ -1,13 +1,13 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 1998-05-19 17:17:21 ghudson Exp $
+# $Id: cshrc,v 1.8 1998-06-07 20:46:58 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
 set initdir=/usr/athena/lib/init
 
 # Have no better way to do this at the moment.
-if ($?prompt) then
+if (($?prompt) && (-t 0)) then
   stty sane intr ^C
 endif
 
