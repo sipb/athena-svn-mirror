@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.20 1992-03-30 15:39:08 lwvanels Exp $
+ *	$Id: c_io.c,v 1.21 1992-04-12 15:49:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.20 1992-03-30 15:39:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.21 1992-04-12 15:49:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -51,9 +51,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <signal.h>
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
-#ifdef DEBUG
 #include <syslog.h>
-#endif
 
 #include <olc/olc.h>
 
@@ -605,6 +603,7 @@ int sread(fd, buf, nbytes)
   struct timeval tval;	/* System time structure. */
   fd_set read_fds;		/* File descriptors to check.*/
   register int n_read, s_val, tot_read;
+  int loops = 0;
 
   if (nbytes <= 0)
     return(0);
@@ -614,7 +613,15 @@ int sread(fd, buf, nbytes)
    */
 
   tot_read = 0;
+  loops = 0;
+  n_read = 0;
   do {
+    if (loops > 5) {
+      syslog(LOG_ERR,"sread: too many loops: %d/%d",
+	     loops,n_read,nbytes+n_read);
+      return(-1);
+    }
+
     tval.tv_sec = select_timeout;
     tval.tv_usec = 0;
     
@@ -622,30 +629,33 @@ int sread(fd, buf, nbytes)
     FD_SET(fd,&read_fds);
     if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
       {
-	if (errno == EINTR)
+	if (errno == EINTR) {
+	  loops++;
 	  continue;
+	}
 
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
 
-#ifdef DEBUG
-	syslog(LOG_ERR,"sread select: %m");
-#endif
 	olc_perror("sread: select");
 	close(fd);
 	return(-1);
       }
     
+    if (! FD_ISSET(fd,&read_fds)) {
+      syslog(LOG_ERR,"sread: select lied!");
+      close(fd);
+      return(-1);
+    }
     n_read = read(fd, (char *)(buf + tot_read), nbytes);
     if (n_read < 0) {
-#ifdef DEBUG
-      syslog(LOG_ERR,"sread read: %m");
-#endif
+      olc_perror("sread: read");
       close(fd);
       return(n_read);
     }
     tot_read += n_read;
     nbytes = nbytes - n_read;
+    loops++;
   } while (nbytes != 0);
 
   return(tot_read);
@@ -674,12 +684,21 @@ int swrite(fd, buf, nbytes)
   struct timeval tval;	        /* System time structure. */
   fd_set write_fds;		/* File descriptors to check.*/
   register int n_wrote, s_val, tot_wrote;
+  int loops = 0;
 
   if (nbytes <= 0)
     return(0);
 	
   tot_wrote = 0;
+  loops = 0;
+  n_wrote = 0;
   do {
+    if (loops > 5) {
+      syslog(LOG_ERR,"swrite: too many loops: %d/%d",
+	     loops,n_wrote,nbytes+n_wrote);
+      return(-1);
+    }
+
     tval.tv_sec = select_timeout;
     tval.tv_usec = 0;
     
@@ -687,30 +706,34 @@ int swrite(fd, buf, nbytes)
     FD_SET(fd,&write_fds);
     if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
       {
-	if (errno == EINTR)
+	if (errno == EINTR) {
+	  loops++;
 	  continue;
+	}
 
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
 	
-#ifdef DEBUG
-	syslog(LOG_ERR,"swrite select: %m");
-#endif
 	olc_perror("swrite: select");
 	close(fd);
 	return(-1);
       }
     
+    if (! FD_ISSET(fd,&write_fds)) {
+      syslog(LOG_ERR,"swrite: select lied!");
+      close(fd);
+      return(-1);
+    }
+
     n_wrote = write(fd, (char *)(buf + tot_wrote), nbytes);
     if (n_wrote < 0) {
-#ifdef DEBUG
-      syslog(LOG_ERR,"swrite write: %m");
-#endif
+      olc_perror("swrite: write:");
       close(fd);
       return(n_wrote);
     }
     tot_wrote += n_wrote;
     nbytes = nbytes - n_wrote;
+    loops++;
   } while (nbytes != 0);
 
   return(tot_wrote);
