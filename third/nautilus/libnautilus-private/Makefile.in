@@ -60,7 +60,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BONOBO_UI_REQUIRED = @BONOBO_UI_REQUIRED@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,6 +82,7 @@ EEL_REQUIRED = @EEL_REQUIRED@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
@@ -85,14 +90,17 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +110,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -124,10 +134,14 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
@@ -558,368 +572,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-egg-screen-exec.lo egg-screen-exec.o : egg-screen-exec.c ../config.h \
-	egg-screen-exec.h
-egg-screen-help.lo egg-screen-help.o : egg-screen-help.c ../config.h \
-	egg-screen-help.h egg-screen-url.h egg-screen-exec.h
-egg-screen-url.lo egg-screen-url.o : egg-screen-url.c ../config.h \
-	egg-screen-url.h egg-screen-exec.h
-eggtreemultidnd.lo eggtreemultidnd.o : eggtreemultidnd.c \
-	eggtreemultidnd.h
-gnome-icon-lookup.lo gnome-icon-lookup.o : gnome-icon-lookup.c \
-	gnome-icon-lookup.h gnome-thumbnail.h
-gnome-thumbnail-pixbuf-utils.lo gnome-thumbnail-pixbuf-utils.o : \
-	gnome-thumbnail-pixbuf-utils.c ../config.h gnome-thumbnail.h
-gnome-thumbnail.lo gnome-thumbnail.o : gnome-thumbnail.c ../config.h \
-	gnome-thumbnail.h
-nautilus-audio-player.lo nautilus-audio-player.o : \
-	nautilus-audio-player.c ../config.h nautilus-audio-player.h
-nautilus-authn-manager.lo nautilus-authn-manager.o : \
-	nautilus-authn-manager.c ../config.h nautilus-authn-manager.h
-nautilus-bonobo-extensions.lo nautilus-bonobo-extensions.o : \
-	nautilus-bonobo-extensions.c ../config.h \
-	nautilus-bonobo-extensions.h
-nautilus-bookmark.lo nautilus-bookmark.o : nautilus-bookmark.c \
-	../config.h nautilus-bookmark.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-icon-factory.h
-nautilus-customization-data.lo nautilus-customization-data.o : \
-	nautilus-customization-data.c ../config.h \
-	nautilus-customization-data.h nautilus-file-utilities.h
-nautilus-default-file-icon.lo nautilus-default-file-icon.o : \
-	nautilus-default-file-icon.c ../config.h \
-	nautilus-default-file-icon.h
-nautilus-desktop-file-loader.lo nautilus-desktop-file-loader.o : \
-	nautilus-desktop-file-loader.c ../config.h \
-	nautilus-desktop-file-loader.h nautilus-program-choosing.h \
-	nautilus-file.h nautilus-view-identifier.h
-nautilus-directory-async.lo nautilus-directory-async.o : \
-	nautilus-directory-async.c ../config.h \
-	nautilus-directory-metafile.h nautilus-directory.h \
-	nautilus-directory-notify.h nautilus-file.h \
-	nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-monitor.h ../libnautilus/nautilus-idle-queue.h \
-	nautilus-file-attributes.h nautilus-file-private.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-link.h nautilus-metafile.h nautilus-search-uri.h
-nautilus-directory-background.lo nautilus-directory-background.o : \
-	nautilus-directory-background.c ../config.h \
-	nautilus-directory-background.h nautilus-file.h \
-	nautilus-icon-container.h nautilus-icon-factory.h \
-	nautilus-dnd.h nautilus-global-preferences.h \
-	nautilus-metadata.h nautilus-file-attributes.h \
-	../libbackground/preferences.h
-nautilus-directory-metafile-monitor.lo nautilus-directory-metafile-monitor.o : \
-	nautilus-directory-metafile-monitor.c ../config.h \
-	nautilus-directory-metafile-monitor.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h nautilus-file-private.h \
-	nautilus-bonobo-extensions.h
-nautilus-directory-metafile.lo nautilus-directory-metafile.o : \
-	nautilus-directory-metafile.c ../config.h \
-	nautilus-directory-metafile.h nautilus-directory.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h \
-	nautilus-metafile-factory.h nautilus-metafile-server.h
-nautilus-directory.lo nautilus-directory.o : nautilus-directory.c \
-	../config.h nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h \
-	nautilus-directory-metafile.h nautilus-directory-notify.h \
-	nautilus-file-attributes.h nautilus-file-private.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-lib-self-check-functions.h nautilus-metadata.h \
-	nautilus-metafile.h nautilus-trash-directory.h \
-	nautilus-merged-directory.h nautilus-vfs-directory.h
-nautilus-dnd.lo nautilus-dnd.o : nautilus-dnd.c ../config.h \
-	nautilus-dnd.h nautilus-program-choosing.h nautilus-file.h \
-	nautilus-view-identifier.h nautilus-link.h
-nautilus-drag-window.lo nautilus-drag-window.o : nautilus-drag-window.c \
-	../config.h nautilus-drag-window.h
-nautilus-emblem-utils.lo nautilus-emblem-utils.o : \
-	nautilus-emblem-utils.c ../config.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-emblem-utils.h
-nautilus-entry.lo nautilus-entry.o : nautilus-entry.c ../config.h \
-	nautilus-entry.h nautilus-global-preferences.h \
-	nautilus-undo-signal-handlers.h nautilus-entry.h
-nautilus-file-changes-queue.lo nautilus-file-changes-queue.o : \
-	nautilus-file-changes-queue.c ../config.h \
-	nautilus-file-changes-queue.h nautilus-directory-notify.h \
-	nautilus-file.h
-nautilus-file-dnd.lo nautilus-file-dnd.o : nautilus-file-dnd.c \
-	../config.h nautilus-file-dnd.h nautilus-file.h nautilus-dnd.h
-nautilus-file-operations-progress.lo nautilus-file-operations-progress.o : \
-	nautilus-file-operations-progress.c ../config.h \
-	nautilus-file-operations-progress.h \
-	nautilus-file-operations-progress-icons.h
-nautilus-file-operations.lo nautilus-file-operations.o : \
-	nautilus-file-operations.c ../config.h \
-	nautilus-file-operations.h nautilus-file-operations-progress.h \
-	nautilus-lib-self-check-functions.h \
-	nautilus-file-changes-queue.h nautilus-global-preferences.h \
-	nautilus-link.h nautilus-trash-monitor.h \
-	nautilus-volume-monitor.h
-nautilus-file-queue.lo nautilus-file-queue.o : nautilus-file-queue.c \
-	../config.h nautilus-file-queue.h nautilus-file.h
-nautilus-file-utilities.lo nautilus-file-utilities.o : \
-	nautilus-file-utilities.c ../config.h nautilus-file-utilities.h \
-	nautilus-global-preferences.h \
-	nautilus-lib-self-check-functions.h nautilus-metadata.h \
-	nautilus-metafile.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-file.lo nautilus-file.o : nautilus-file.c ../config.h \
-	nautilus-file.h nautilus-directory-metafile.h \
-	nautilus-directory.h nautilus-directory-notify.h \
-	nautilus-file.h nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-monitor.h ../libnautilus/nautilus-idle-queue.h \
-	nautilus-file-attributes.h nautilus-file-private.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-lib-self-check-functions.h nautilus-link.h \
-	nautilus-link-desktop-file.h nautilus-link.h \
-	nautilus-metadata.h nautilus-trash-directory.h \
-	nautilus-merged-directory.h nautilus-trash-file.h \
-	nautilus-vfs-file.h
-nautilus-find-icon-image.lo nautilus-find-icon-image.o : \
-	nautilus-find-icon-image.c ../config.h \
-	nautilus-find-icon-image.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-file-utilities.h
-nautilus-font-factory.lo nautilus-font-factory.o : \
-	nautilus-font-factory.c ../config.h nautilus-font-factory.h \
-	nautilus-global-preferences.h
-nautilus-global-preferences.lo nautilus-global-preferences.o : \
-	nautilus-global-preferences.c ../config.h \
-	nautilus-global-preferences.h nautilus-file-utilities.h \
-	nautilus-file.h nautilus-icon-factory.h nautilus-file.h
-nautilus-horizontal-splitter.lo nautilus-horizontal-splitter.o : \
-	nautilus-horizontal-splitter.c ../config.h \
-	nautilus-horizontal-splitter.h
-nautilus-icon-canvas-item.lo nautilus-icon-canvas-item.o : \
-	nautilus-icon-canvas-item.c ../config.h \
-	nautilus-icon-canvas-item.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-file-utilities.h \
-	nautilus-global-preferences.h nautilus-icon-factory.h \
-	nautilus-icon-private.h nautilus-icon-canvas-item.h \
-	nautilus-icon-container.h nautilus-icon-dnd.h nautilus-dnd.h \
-	nautilus-theme.h
-nautilus-icon-container.lo nautilus-icon-container.o : \
-	nautilus-icon-container.c ../config.h nautilus-icon-container.h \
-	nautilus-icon-factory.h nautilus-file.h \
-	nautilus-global-preferences.h nautilus-icon-private.h \
-	nautilus-icon-canvas-item.h nautilus-icon-container.h \
-	nautilus-icon-dnd.h nautilus-dnd.h \
-	nautilus-lib-self-check-functions.h nautilus-marshal.h
-nautilus-icon-dnd.lo nautilus-icon-dnd.o : nautilus-icon-dnd.c \
-	../config.h nautilus-icon-dnd.h nautilus-icon-container.h \
-	nautilus-icon-factory.h nautilus-file.h nautilus-dnd.h \
-	nautilus-file-dnd.h nautilus-icon-private.h \
-	nautilus-icon-canvas-item.h nautilus-icon-dnd.h nautilus-link.h \
-	nautilus-metadata.h
-nautilus-icon-factory.lo nautilus-icon-factory.o : \
-	nautilus-icon-factory.c ../config.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-default-file-icon.h \
-	nautilus-file-attributes.h nautilus-file-private.h \
-	nautilus-directory.h nautilus-monitor.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-icon-factory-private.h \
-	nautilus-lib-self-check-functions.h nautilus-link.h \
-	nautilus-theme.h nautilus-thumbnails.h nautilus-trash-monitor.h \
-	nautilus-volume-monitor.h
-nautilus-icon-text-item.lo nautilus-icon-text-item.o : \
-	nautilus-icon-text-item.c ../config.h nautilus-icon-text-item.h
-nautilus-keep-last-vertical-box.lo nautilus-keep-last-vertical-box.o : \
-	nautilus-keep-last-vertical-box.c ../config.h \
-	nautilus-keep-last-vertical-box.h
-nautilus-lib-self-check-functions.lo nautilus-lib-self-check-functions.o : \
-	nautilus-lib-self-check-functions.c ../config.h \
-	nautilus-lib-self-check-functions.h
-nautilus-link-desktop-file.lo nautilus-link-desktop-file.o : \
-	nautilus-link-desktop-file.c ../config.h \
-	nautilus-link-desktop-file.h nautilus-link.h \
-	nautilus-directory-notify.h nautilus-file.h \
-	nautilus-directory.h nautilus-file-attributes.h \
-	nautilus-file-utilities.h nautilus-icon-factory.h \
-	nautilus-file.h nautilus-metadata.h nautilus-program-choosing.h \
-	nautilus-view-identifier.h
-nautilus-link-historical.lo nautilus-link-historical.o : \
-	nautilus-link-historical.c ../config.h \
-	nautilus-link-historical.h nautilus-link.h \
-	nautilus-directory-notify.h nautilus-file.h \
-	nautilus-directory.h nautilus-file-attributes.h nautilus-file.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-metadata.h nautilus-program-choosing.h \
-	nautilus-view-identifier.h
-nautilus-link.lo nautilus-link.o : nautilus-link.c ../config.h \
-	nautilus-link.h nautilus-link-historical.h nautilus-link.h \
-	nautilus-link-desktop-file.h nautilus-directory-notify.h \
-	nautilus-file.h nautilus-directory.h nautilus-file-attributes.h \
-	nautilus-file.h nautilus-file-utilities.h \
-	nautilus-global-preferences.h nautilus-metadata.h
-nautilus-marshal.lo nautilus-marshal.o : nautilus-marshal.c \
-	nautilus-marshal.h nautilus-marshal-guts.c
-nautilus-medusa-support.lo nautilus-medusa-support.o : \
-	nautilus-medusa-support.c ../config.h nautilus-medusa-support.h
-nautilus-merged-directory.lo nautilus-merged-directory.o : \
-	nautilus-merged-directory.c ../config.h \
-	nautilus-merged-directory.h nautilus-directory.h \
-	nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h nautilus-file.h
-nautilus-metafile-factory.lo nautilus-metafile-factory.o : \
-	nautilus-metafile-factory.c ../config.h \
-	nautilus-metafile-factory.h nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-metafile.h \
-	nautilus-directory.h
-nautilus-metafile-server-common.lo nautilus-metafile-server-common.o : \
-	nautilus-metafile-server-common.c nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-metafile-server-skels.lo nautilus-metafile-server-skels.o : \
-	nautilus-metafile-server-skels.c nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-metafile-server-stubs.lo nautilus-metafile-server-stubs.o : \
-	nautilus-metafile-server-stubs.c nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-metafile.lo nautilus-metafile.o : nautilus-metafile.c \
-	../config.h nautilus-metafile.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-bonobo-extensions.h nautilus-directory.h \
-	nautilus-file-private.h nautilus-file.h nautilus-monitor.h \
-	nautilus-file-utilities.h nautilus-global-preferences.h \
-	nautilus-metadata.h nautilus-search-uri.h nautilus-thumbnails.h
-nautilus-mime-actions.lo nautilus-mime-actions.o : \
-	nautilus-mime-actions.c ../config.h nautilus-mime-actions.h \
-	nautilus-file.h nautilus-file-attributes.h nautilus-file.h \
-	nautilus-metadata.h
-nautilus-monitor.lo nautilus-monitor.o : nautilus-monitor.c ../config.h \
-	nautilus-monitor.h nautilus-file-changes-queue.h \
-	nautilus-file-utilities.h nautilus-volume-monitor.h
-nautilus-program-chooser.lo nautilus-program-chooser.o : \
-	nautilus-program-chooser.c ../config.h \
-	nautilus-program-chooser.h nautilus-file.h \
-	nautilus-view-identifier.h nautilus-global-preferences.h \
-	nautilus-mime-actions.h nautilus-program-choosing.h \
-	nautilus-view-identifier.h \
-	../cut-n-paste-code/libegg/egg-screen-help.h
-nautilus-program-choosing.lo nautilus-program-choosing.o : \
-	nautilus-program-choosing.c ../config.h \
-	nautilus-program-choosing.h nautilus-file.h \
-	nautilus-view-identifier.h nautilus-mime-actions.h \
-	nautilus-program-chooser.h nautilus-global-preferences.h \
-	../cut-n-paste-code/libegg/egg-screen-exec.h
-nautilus-recent.lo nautilus-recent.o : nautilus-recent.c \
-	nautilus-recent.h ../cut-n-paste-code/libegg/egg-recent-model.h \
-	../cut-n-paste-code/libegg/egg-recent-item.h
-nautilus-search-uri.lo nautilus-search-uri.o : nautilus-search-uri.c \
-	../config.h nautilus-search-uri.h \
-	nautilus-lib-self-check-functions.h
-nautilus-set-keywords.o: nautilus-set-keywords.c \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-metafile-factory.h
-nautilus-sidebar-functions.lo nautilus-sidebar-functions.o : \
-	nautilus-sidebar-functions.c ../config.h \
-	nautilus-sidebar-functions.h nautilus-view-identifier.h
-nautilus-sound.lo nautilus-sound.o : nautilus-sound.c ../config.h \
-	nautilus-sound.h
-nautilus-theme.lo nautilus-theme.o : nautilus-theme.c ../config.h \
-	nautilus-theme.h nautilus-file-utilities.h nautilus-file.h \
-	nautilus-global-preferences.h nautilus-metadata.h
-nautilus-thumbnails-jpeg.lo nautilus-thumbnails-jpeg.o : \
-	nautilus-thumbnails-jpeg.c ../config.h \
-	nautilus-thumbnails-jpeg.h
-nautilus-thumbnails.lo nautilus-thumbnails.o : nautilus-thumbnails.c \
-	../config.h nautilus-thumbnails.h nautilus-file.h \
-	nautilus-directory-notify.h nautilus-global-preferences.h \
-	nautilus-icon-factory-private.h nautilus-icon-factory.h \
-	nautilus-theme.h nautilus-file-private.h nautilus-directory.h \
-	nautilus-monitor.h
-nautilus-trash-directory.lo nautilus-trash-directory.o : \
-	nautilus-trash-directory.c ../config.h \
-	nautilus-trash-directory.h nautilus-merged-directory.h \
-	nautilus-directory.h nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h nautilus-trash-monitor.h \
-	nautilus-volume-monitor.h nautilus-volume-monitor.h
-nautilus-trash-file.lo nautilus-trash-file.o : nautilus-trash-file.c \
-	../config.h nautilus-trash-file.h nautilus-file.h \
-	nautilus-directory-notify.h nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-monitor.h ../libnautilus/nautilus-idle-queue.h \
-	nautilus-file-attributes.h nautilus-file-private.h \
-	nautilus-file-utilities.h nautilus-trash-directory.h \
-	nautilus-merged-directory.h
-nautilus-trash-monitor.lo nautilus-trash-monitor.o : \
-	nautilus-trash-monitor.c ../config.h nautilus-trash-monitor.h \
-	nautilus-volume-monitor.h nautilus-directory-notify.h \
-	nautilus-file.h nautilus-directory.h nautilus-file-attributes.h \
-	nautilus-trash-directory.h nautilus-merged-directory.h \
-	nautilus-directory.h
-nautilus-tree-view-drag-dest.lo nautilus-tree-view-drag-dest.o : \
-	nautilus-tree-view-drag-dest.c ../config.h \
-	nautilus-tree-view-drag-dest.h nautilus-file.h \
-	nautilus-file-dnd.h nautilus-file.h nautilus-icon-dnd.h \
-	nautilus-icon-container.h nautilus-icon-factory.h \
-	nautilus-dnd.h nautilus-link.h nautilus-marshal.h
-nautilus-undo-context.lo nautilus-undo-context.o : \
-	nautilus-undo-context.c ../config.h nautilus-undo-context.h \
-	../libnautilus/nautilus-distributed-undo.h
-nautilus-undo-manager.lo nautilus-undo-manager.o : \
-	nautilus-undo-manager.c ../config.h nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-undo-private.h nautilus-undo-context.h
-nautilus-undo-signal-handlers.lo nautilus-undo-signal-handlers.o : \
-	nautilus-undo-signal-handlers.c ../config.h \
-	../libnautilus/nautilus-undo.h nautilus-undo-signal-handlers.h \
-	nautilus-entry.h
-nautilus-vfs-directory.lo nautilus-vfs-directory.o : \
-	nautilus-vfs-directory.c ../config.h nautilus-vfs-directory.h \
-	nautilus-directory.h nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-file.h nautilus-monitor.h \
-	../libnautilus/nautilus-idle-queue.h nautilus-file-private.h
-nautilus-vfs-file.lo nautilus-vfs-file.o : nautilus-vfs-file.c \
-	../config.h nautilus-vfs-file.h nautilus-file.h \
-	nautilus-directory-private.h \
-	nautilus-directory-metafile-monitor.h nautilus-directory.h \
-	nautilus-metafile-server.h \
-	../libnautilus/nautilus-view-component.h nautilus-file-queue.h \
-	nautilus-monitor.h ../libnautilus/nautilus-idle-queue.h \
-	nautilus-file-private.h
-nautilus-view-identifier.lo nautilus-view-identifier.o : \
-	nautilus-view-identifier.c ../config.h \
-	nautilus-view-identifier.h
-nautilus-volume-monitor.lo nautilus-volume-monitor.o : \
-	nautilus-volume-monitor.c ../config.h nautilus-volume-monitor.h \
-	nautilus-cdrom-extensions.h nautilus-directory-notify.h \
-	nautilus-file.h nautilus-file-utilities.h nautilus-iso9660.h
 
 info-am:
 info: info-am

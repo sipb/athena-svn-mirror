@@ -60,7 +60,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BONOBO_UI_REQUIRED = @BONOBO_UI_REQUIRED@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,6 +82,7 @@ EEL_REQUIRED = @EEL_REQUIRED@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
@@ -85,14 +90,17 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +110,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -124,10 +134,14 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
@@ -699,484 +713,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-nautilus-about.o: nautilus-about.c ../config.h nautilus-about.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-theme.h
-nautilus-applicable-views.o: nautilus-applicable-views.c ../config.h \
-	nautilus-applicable-views.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-mime-actions.h
-nautilus-application.o: nautilus-application.c ../config.h \
-	nautilus-application.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	file-manager/fm-desktop-icon-view.h file-manager/fm-icon-view.h \
-	file-manager/fm-directory-view.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-icon-container.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-link.h \
-	../libnautilus/nautilus-view.h \
-	../libnautilus/nautilus-view-component.h \
-	file-manager/fm-list-view.h file-manager/fm-search-list-view.h \
-	nautilus-desktop-window.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-first-time-druid.h nautilus-main.h \
-	nautilus-shell-interface.h nautilus-shell.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-metafile-factory.h \
-	../libnautilus-private/nautilus-metafile-server.h \
-	../libnautilus-private/nautilus-sound.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-volume-monitor.h \
-	../libnautilus-private/nautilus-authn-manager.h
-nautilus-bookmark-list.o: nautilus-bookmark-list.c ../config.h \
-	nautilus-bookmark-list.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	nautilus-bookmark-parsing.h \
-	../libnautilus-private/nautilus-file-utilities.h
-nautilus-bookmark-parsing.o: nautilus-bookmark-parsing.c ../config.h \
-	nautilus-bookmark-parsing.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h
-nautilus-bookmarks-window.o: nautilus-bookmarks-window.c ../config.h \
-	nautilus-bookmarks-window.h nautilus-bookmark-list.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus/nautilus-undo.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../cut-n-paste-code/libegg/egg-screen-help.h \
-	../libnautilus-private/nautilus-undo-signal-handlers.h \
-	../libnautilus-private/nautilus-entry.h
-nautilus-complex-search-bar.o: nautilus-complex-search-bar.c ../config.h \
-	nautilus-complex-search-bar.h \
-	../libnautilus-private/nautilus-entry.h nautilus-search-bar.h \
-	nautilus-navigation-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h \
-	../cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h \
-	nautilus-search-bar-criterion-private.h \
-	nautilus-search-bar-criterion.h nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-undo-signal-handlers.h \
-	../libnautilus/nautilus-clipboard.h
-nautilus-component-adapter-factory.o: \
-	nautilus-component-adapter-factory.c ../config.h \
-	nautilus-component-adapter-factory.h \
-	../libnautilus/nautilus-view-component.h \
-	../libnautilus-adapter/nautilus-adapter-factory.h
-nautilus-desktop-window.o: nautilus-desktop-window.c ../config.h \
-	nautilus-desktop-window.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../libnautilus-private/nautilus-file-utilities.h
-nautilus-file-management-properties-main.o: \
-	nautilus-file-management-properties-main.c ../config.h \
-	nautilus-file-management-properties.h
-nautilus-file-management-properties.o: \
-	nautilus-file-management-properties.c ../config.h \
-	nautilus-file-management-properties.h \
-	../libnautilus-private/nautilus-global-preferences.h
-nautilus-first-time-druid.o: nautilus-first-time-druid.c ../config.h \
-	nautilus-first-time-druid.h \
-	../libnautilus-private/nautilus-file-utilities.h
-nautilus-information-panel.o: nautilus-information-panel.c ../config.h \
-	nautilus-information-panel.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-sidebar-title.h ../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-dnd.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-file-dnd.h \
-	../libnautilus-private/nautilus-file-operations.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-keep-last-vertical-box.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-mime-actions.h \
-	../libnautilus-private/nautilus-program-choosing.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	../libnautilus-private/nautilus-sidebar-functions.h \
-	../libnautilus-private/nautilus-trash-monitor.h \
-	../libnautilus-private/nautilus-volume-monitor.h
-nautilus-location-bar.o: nautilus-location-bar.c ../config.h \
-	nautilus-location-bar.h nautilus-navigation-bar.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-entry.h \
-	../libnautilus-private/nautilus-icon-dnd.h \
-	../libnautilus-private/nautilus-icon-container.h \
-	../libnautilus-private/nautilus-dnd.h \
-	../libnautilus/nautilus-clipboard.h
-nautilus-main.o: nautilus-main.c ../config.h nautilus-main.h \
-	nautilus-application.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	nautilus-self-check-functions.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../libnautilus-private/nautilus-directory-metafile.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-lib-self-check-functions.h
-nautilus-navigation-bar.o: nautilus-navigation-bar.c ../config.h \
-	nautilus-navigation-bar.h
-nautilus-preferences-dialog.o: nautilus-preferences-dialog.c ../config.h \
-	nautilus-preferences-dialog.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-theme-selector.h \
-	../libnautilus-private/nautilus-sidebar-functions.h \
-	../libnautilus-private/egg-screen-help.h
-nautilus-profiler.o: nautilus-profiler.c ../config.h nautilus-profiler.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h
-nautilus-property-browser.o: nautilus-property-browser.c ../config.h \
-	nautilus-property-browser.h nautilus-signaller.h \
-	../cut-n-paste-code/libegg/egg-screen-help.h \
-	../libnautilus-private/nautilus-customization-data.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-drag-window.h \
-	../libnautilus-private/nautilus-emblem-utils.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-theme.h
-nautilus-search-bar-criterion.o: nautilus-search-bar-criterion.c \
-	../config.h nautilus-search-bar-criterion.h \
-	nautilus-complex-search-bar.h \
-	../libnautilus-private/nautilus-entry.h nautilus-search-bar.h \
-	nautilus-navigation-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-search-bar-criterion-private.h nautilus-signaller.h \
-	../libnautilus-private/nautilus-customization-data.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-search-uri.h \
-	../libnautilus-private/nautilus-undo-signal-handlers.h \
-	../cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h \
-	../cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h
-nautilus-search-bar.o: nautilus-search-bar.c ../config.h \
-	nautilus-search-bar.h nautilus-navigation-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h
-nautilus-self-check-functions.o: nautilus-self-check-functions.c \
-	../config.h nautilus-self-check-functions.h
-nautilus-server-connect.o: nautilus-server-connect.c ../config.h
-nautilus-shell-interface-common.o: nautilus-shell-interface-common.c \
-	nautilus-shell-interface.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-shell-interface-skels.o: nautilus-shell-interface-skels.c \
-	nautilus-shell-interface.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-shell-interface-stubs.o: nautilus-shell-interface-stubs.c \
-	nautilus-shell-interface.h \
-	../libnautilus/nautilus-view-component.h
-nautilus-shell.o: nautilus-shell.c ../config.h nautilus-shell.h \
-	nautilus-application.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	nautilus-shell-interface.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-desktop-window.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-main.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h
-nautilus-side-pane.o: nautilus-side-pane.c ../config.h \
-	nautilus-side-pane.h
-nautilus-sidebar-tabs.o: nautilus-sidebar-tabs.c ../config.h \
-	nautilus-sidebar-tabs.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-theme.h
-nautilus-sidebar-title.o: nautilus-sidebar-title.c ../config.h \
-	nautilus-sidebar-title.h ../libnautilus-private/nautilus-file.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../libnautilus-private/nautilus-file-attributes.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-search-uri.h \
-	../libnautilus-private/nautilus-theme.h
-nautilus-sidebar.o: nautilus-sidebar.c ../config.h nautilus-sidebar.h \
-	nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-sidebar-tabs.h nautilus-sidebar-title.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-file-dnd.h \
-	../libnautilus-private/nautilus-file-operations.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-keep-last-vertical-box.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-mime-actions.h \
-	../libnautilus-private/nautilus-program-choosing.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	../libnautilus-private/nautilus-sidebar-functions.h \
-	../libnautilus-private/nautilus-theme.h \
-	../libnautilus-private/nautilus-trash-monitor.h \
-	../libnautilus-private/nautilus-volume-monitor.h
-nautilus-signaller.o: nautilus-signaller.c ../config.h \
-	nautilus-signaller.h
-nautilus-simple-search-bar.o: nautilus-simple-search-bar.c ../config.h \
-	nautilus-simple-search-bar.h nautilus-search-bar.h \
-	nautilus-navigation-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-search-bar-criterion.h nautilus-complex-search-bar.h \
-	../libnautilus-private/nautilus-entry.h \
-	nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus/nautilus-clipboard.h \
-	../libnautilus-private/nautilus-search-uri.h \
-	../libnautilus-private/nautilus-undo-signal-handlers.h
-nautilus-switchable-navigation-bar.o: \
-	nautilus-switchable-navigation-bar.c ../config.h \
-	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
-	nautilus-location-bar.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-search-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-switchable-search-bar.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-search-uri.h
-nautilus-switchable-search-bar.o: nautilus-switchable-search-bar.c \
-	../config.h nautilus-switchable-search-bar.h \
-	nautilus-search-bar.h nautilus-navigation-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-complex-search-bar.h \
-	../libnautilus-private/nautilus-entry.h \
-	nautilus-simple-search-bar.h \
-	../libnautilus-private/nautilus-directory.h
-nautilus-theme-selector.o: nautilus-theme-selector.c ../config.h \
-	nautilus-theme-selector.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-theme.h
-nautilus-view-frame-corba.o: nautilus-view-frame-corba.c ../config.h \
-	nautilus-view-frame-private.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../libnautilus/nautilus-view.h
-nautilus-view-frame.o: nautilus-view-frame.c ../config.h \
-	nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-component-adapter-factory.h nautilus-signaller.h \
-	nautilus-view-frame-private.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-information-panel.h \
-	nautilus-side-pane.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-marshal.h \
-	../libnautilus/nautilus-idle-queue.h \
-	../libnautilus/nautilus-view.h
-nautilus-window-manage-views.o: nautilus-window-manage-views.c \
-	../config.h nautilus-window-manage-views.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-location-bar.h nautilus-navigation-bar.h \
-	nautilus-main.h nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	nautilus-zoom-control.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-file-attributes.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-mime-actions.h \
-	../libnautilus-private/nautilus-monitor.h \
-	../libnautilus-private/nautilus-search-uri.h \
-	../libnautilus-private/nautilus-theme.h \
-	nautilus-desktop-window.h
-nautilus-window-menus.o: nautilus-window-menus.c ../config.h \
-	nautilus-application.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	nautilus-bookmark-list.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	nautilus-bookmark-parsing.h nautilus-bookmarks-window.h \
-	nautilus-file-management-properties.h \
-	nautilus-property-browser.h nautilus-signaller.h \
-	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
-	nautilus-location-bar.h nautilus-window.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-search-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window-manage-views.h nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	../cut-n-paste-code/libegg/egg-screen-help.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus/nautilus-bonobo-ui.h
-nautilus-window-toolbars.o: nautilus-window-toolbars.c ../config.h \
-	nautilus-application.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	nautilus-window-manage-views.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus/nautilus-view-component.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	nautilus-window-private.h \
-	../libnautilus-private/nautilus-directory.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-theme.h \
-	nautilus-desktop-window.h
-nautilus-window.o: nautilus-window.c ../config.h \
-	nautilus-window-private.h nautilus-window.h \
-	../libnautilus-private/nautilus-bookmark.h \
-	../libnautilus-private/nautilus-icon-factory.h \
-	../libnautilus-private/nautilus-file.h \
-	../libnautilus-private/nautilus-view-identifier.h \
-	nautilus-applicable-views.h nautilus-view-frame.h \
-	../libnautilus-private/nautilus-undo-manager.h \
-	../libnautilus/nautilus-distributed-undo.h \
-	../libnautilus/nautilus-view-component.h nautilus-application.h \
-	nautilus-information-panel.h nautilus-side-pane.h \
-	../libnautilus-private/nautilus-directory.h \
-	nautilus-bookmarks-window.h nautilus-bookmark-list.h \
-	nautilus-main.h nautilus-signaller.h \
-	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
-	nautilus-location-bar.h nautilus-search-bar.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	nautilus-window-manage-views.h nautilus-zoom-control.h \
-	../libnautilus-private/nautilus-bonobo-extensions.h \
-	../libnautilus-private/nautilus-drag-window.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-file-attributes.h \
-	../libnautilus-private/nautilus-horizontal-splitter.h \
-	../libnautilus-private/nautilus-metadata.h \
-	../libnautilus-private/nautilus-mime-actions.h \
-	../libnautilus-private/nautilus-program-choosing.h \
-	../libnautilus-private/nautilus-sidebar-functions.h \
-	../libnautilus/nautilus-bonobo-ui.h \
-	../libnautilus/nautilus-clipboard.h \
-	../libnautilus/nautilus-undo.h nautilus-desktop-window.h
-nautilus-zoom-control.o: nautilus-zoom-control.c ../config.h \
-	nautilus-zoom-control.h \
-	../libnautilus-private/nautilus-file-utilities.h \
-	../libnautilus-private/nautilus-global-preferences.h \
-	../libnautilus-private/nautilus-marshal.h \
-	../libnautilus-private/nautilus-theme.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

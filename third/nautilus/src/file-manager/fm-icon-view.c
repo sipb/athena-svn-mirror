@@ -51,6 +51,7 @@
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
@@ -2303,6 +2304,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *path;
 	char *stripped_uri;
 	char *container_uri;
+	char *mime_type;
 	const char *last_slash, *link_name;
 	int n_uris;
 	gboolean all_local;
@@ -2393,11 +2395,20 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			/* Make a link using the desktop file contents? */
 			uri = node->data;
 			path = gnome_vfs_get_local_path_from_uri (uri);
-			
+
 			if (path != NULL) {
-				entry = gnome_desktop_item_new_from_file (path,
-									  GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
-									  NULL);
+				mime_type = gnome_vfs_get_mime_type (uri);
+
+				if (mime_type != NULL &&
+				    strcmp (mime_type, "application/x-gnome-app-info") == 0) {
+					entry = gnome_desktop_item_new_from_file (path,
+							GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+							NULL);
+				} else {
+					entry = NULL;
+				}
+
+				g_free (mime_type);
 				g_free (path);
 			} else {
 				entry = NULL;
@@ -2503,9 +2514,9 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->zoom_to_level = fm_icon_view_zoom_to_level;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
+        fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
-        fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;
         fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
         fm_directory_view_class->start_renaming_file = fm_icon_view_start_renaming_file;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;

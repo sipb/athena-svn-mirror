@@ -417,7 +417,8 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 	 * aspect of the file might have), then don't clobber changes.
 	 */
 	current_name = nautilus_file_get_display_name (file);
-	if (eel_strcmp (original_name, current_name) != 0) {
+	if (original_name == NULL || 
+	    eel_strcmp (original_name, current_name) != 0) {
 		g_object_set_data_full (G_OBJECT (name_field),
 					"original_name",
 					current_name,
@@ -1585,6 +1586,17 @@ should_show_link_target (FMPropertiesWindow *window)
 	return FALSE;
 }
 
+static gboolean
+should_show_free_space (FMPropertiesWindow *window)
+{
+	if (nautilus_file_is_local (window->details->target_file)
+	    && nautilus_file_is_directory (window->details->target_file)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 create_basic_page (FMPropertiesWindow *window)
 {
@@ -1693,6 +1705,11 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_value_pair (table, _("Size:"), target_file, "size");
 	}
 	append_title_and_ellipsizing_value (table, _("Location:"), target_file, "where");
+	
+	if (should_show_free_space (window)) {
+		append_title_and_ellipsizing_value (table, _("Volume:"), target_file, "volume");
+		append_title_value_pair (table, _("Free space:"), target_file, "free_space");
+	}
 	if (should_show_link_target (window)) {
 		append_title_and_ellipsizing_value (table, _("Link target:"), target_file, "link_target");
 	}
@@ -1747,8 +1764,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	NautilusFile *file;
 	GList *icons, *l;
 
-	
-	file = window->details->target_file;
+	file = window->details->original_file;
 
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);

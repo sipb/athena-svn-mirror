@@ -78,7 +78,6 @@ typedef struct {
 typedef enum {
 	DRAG_STATE_INITIAL,
 	DRAG_STATE_MOVE_OR_COPY,
-	DRAG_STATE_MOVE_COPY_OR_MENU,
 	DRAG_STATE_STRETCH
 } DragState;
 
@@ -204,6 +203,9 @@ struct NautilusIconContainerDetails {
 	 */
 	Axis arrow_key_axis;
 	int arrow_key_start;
+	int arrow_key_start_x;
+	int arrow_key_start_y;
+	GtkDirectionType arrow_key_direction;
 
 	/* Mode settings. */
 	gboolean single_click_mode;

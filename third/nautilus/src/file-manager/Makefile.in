@@ -60,7 +60,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BONOBO_UI_REQUIRED = @BONOBO_UI_REQUIRED@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,6 +82,7 @@ EEL_REQUIRED = @EEL_REQUIRED@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
@@ -85,14 +90,17 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +110,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -124,10 +134,14 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
@@ -357,184 +371,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-egg-recent-item.lo egg-recent-item.o : egg-recent-item.c \
-	egg-recent-item.h egg-recent-vfs-utils.h
-egg-recent-model.lo egg-recent-model.o : egg-recent-model.c \
-	../../config.h egg-recent-model.h egg-recent-item.h \
-	egg-recent-vfs-utils.h
-egg-recent-vfs-utils.lo egg-recent-vfs-utils.o : egg-recent-vfs-utils.c \
-	../../config.h egg-recent-vfs-utils.h
-fm-desktop-icon-view.lo fm-desktop-icon-view.o : fm-desktop-icon-view.c \
-	../../config.h fm-icon-container.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-file.h fm-icon-view.h \
-	fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-desktop-icon-view.h \
-	../../cut-n-paste-code/libegg/egg-screen-exec.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-directory-notify.h \
-	../../libnautilus-private/nautilus-file-changes-queue.h \
-	../../libnautilus-private/nautilus-file-operations.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-monitor.h \
-	../../libnautilus-private/nautilus-program-choosing.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../../libnautilus-private/nautilus-trash-monitor.h \
-	../../libnautilus-private/nautilus-volume-monitor.h
-fm-directory-view.lo fm-directory-view.o : fm-directory-view.c \
-	../../config.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-error-reporting.h fm-properties-window.h \
-	../../libnautilus-private/nautilus-recent.h \
-	../../cut-n-paste-code/libegg/egg-recent-model.h \
-	../../cut-n-paste-code/libegg/egg-recent-item.h \
-	../../cut-n-paste-code/libegg/egg-screen-exec.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-file-dnd.h \
-	../../libnautilus-private/nautilus-file-operations.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-mime-actions.h \
-	../../libnautilus-private/nautilus-program-choosing.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../../libnautilus-private/nautilus-trash-directory.h \
-	../../libnautilus-private/nautilus-merged-directory.h \
-	../../libnautilus-private/nautilus-trash-monitor.h \
-	../../libnautilus-private/nautilus-volume-monitor.h \
-	../../libnautilus/nautilus-bonobo-ui.h
-fm-error-reporting.lo fm-error-reporting.o : fm-error-reporting.c \
-	../../config.h fm-error-reporting.h \
-	../../libnautilus-private/nautilus-file.h
-fm-icon-container.lo fm-icon-container.o : fm-icon-container.c \
-	../../config.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	fm-icon-container.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-file.h fm-icon-view.h \
-	fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h
-fm-icon-view.lo fm-icon-view.o : fm-icon-view.c ../../config.h \
-	fm-icon-view.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h fm-icon-container.h \
-	fm-desktop-icon-view.h fm-error-reporting.h \
-	../../libnautilus-private/nautilus-audio-player.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-dnd.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-icon-dnd.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-sound.h \
-	../../libnautilus/nautilus-bonobo-ui.h \
-	../../libnautilus/nautilus-clipboard.h \
-	../../libnautilus/nautilus-scroll-positionable.h
-fm-list-model.lo fm-list-model.o : fm-list-model.c ../../config.h \
-	fm-list-model.h ../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../cut-n-paste-code/libegg/eggtreemultidnd.h \
-	../../libnautilus-private/nautilus-dnd.h
-fm-list-view.lo fm-list-view.o : fm-list-view.c ../../config.h \
-	fm-list-view.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-error-reporting.h fm-list-model.h \
-	../../cut-n-paste-code/libegg/eggtreemultidnd.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-dnd.h \
-	../../libnautilus-private/nautilus-file-dnd.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-icon-dnd.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-tree-view-drag-dest.h \
-	../../libnautilus/nautilus-scroll-positionable.h
-fm-properties-window.lo fm-properties-window.o : fm-properties-window.c \
-	../../config.h fm-properties-window.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-error-reporting.h \
-	../../cut-n-paste-code/libegg/egg-screen-help.h \
-	../../libnautilus-private/nautilus-customization-data.h \
-	../../libnautilus-private/nautilus-entry.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-emblem-utils.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-undo-signal-handlers.h \
-	../../libnautilus-private/nautilus-mime-actions.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../../libnautilus/nautilus-undo.h
-fm-search-list-view.lo fm-search-list-view.o : fm-search-list-view.c \
-	../../config.h fm-search-list-view.h fm-list-view.h \
-	fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	nautilus-indexing-info.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-medusa-support.h \
-	../../libnautilus-private/nautilus-search-uri.h \
-	../nautilus-search-bar-criterion.h \
-	../nautilus-complex-search-bar.h \
-	../../libnautilus-private/nautilus-entry.h \
-	../nautilus-search-bar.h ../nautilus-navigation-bar.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../nautilus-window.h \
-	../../libnautilus-private/nautilus-bookmark.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../nautilus-applicable-views.h ../nautilus-view-frame.h \
-	../../libnautilus-private/nautilus-undo-manager.h \
-	../../libnautilus/nautilus-distributed-undo.h \
-	../nautilus-application.h ../nautilus-information-panel.h \
-	../nautilus-side-pane.h
-nautilus-indexing-info.lo nautilus-indexing-info.o : \
-	nautilus-indexing-info.c ../../config.h \
-	nautilus-indexing-info.h \
-	../../libnautilus-private/nautilus-medusa-support.h
 
 info-am:
 info: info-am
