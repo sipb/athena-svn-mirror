@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.47 1991-11-05 13:50:50 lwvanels Exp $
+ *	$Id: olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.47 1991-11-05 13:50:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,6 +45,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #endif
 #include <netinet/in.h>		/* More IPC definitions. */
 #include <sys/wait.h>		/* Wait defs. */
+#include <sys/param.h>
 #include <errno.h>		/* Standard error numbers. */
 #include <pwd.h>		/* Password entry defintions. */
 #include <signal.h>		/* Signal definitions. */
