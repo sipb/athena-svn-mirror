@@ -3,7 +3,7 @@ Summary: GNOME object activation framework, for Athena
 Copyright: LGPL and GPL
 Group: System Environment/Libraries
 
-Requires: athena-libxml athena-ORBit
+Requires: athena-libxml athena-ORBit athena-dustbuster
 
 %description
 OAF is an object activation framework for GNOME. It uses ORBit.
