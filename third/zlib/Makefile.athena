@@ -1,11 +1,11 @@
-# $Id: Makefile.athena,v 1.1 2000-11-01 20:42:04 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2002-03-27 19:50:36 rbasch Exp $
 
 SHELL=/bin/sh
 
 dist:
 
 prepare:
-	./configure --shared --prefix=/usr/athena
+	. ./compiler && CC=$$cc ./configure --shared --prefix=/usr/athena
 
 clean all:
 	${MAKE} $@

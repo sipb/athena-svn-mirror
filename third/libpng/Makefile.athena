@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 2002-02-04 14:56:36 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 2002-03-27 19:45:39 rbasch Exp $
 
 dist:
 
@@ -8,7 +8,8 @@ prepare:
 		mfsuffix=solaris; \
 		;; \
 	sgi) \
-		mfsuffix=sggcc; \
+		mfsuffix=sgi; \
+		CC=cc; \
 		;; \
 	esac; \
 	sed -e "/^ZLIBLIB=/s%=.*%=/usr/athena/lib%" \
