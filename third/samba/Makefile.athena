@@ -1,0 +1,20 @@
+# $Id: Makefile.athena,v 1.1 2004-04-09 16:56:10 zacheiss Exp $
+
+SHELL=/bin/sh
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f source/config.cache
+	cd source && CONFIG_SITE=`pwd`/../config.site.athena \
+		./configure --with-configdir=/etc/athena
+
+clean:
+	cd source && ${MAKE} clean
+
+all:
+	cd source && ${MAKE} all
+
+install:
+	cd source && ${MAKE} install DESTDIR="$$SRVD"
