@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.8 1993-06-22 09:24:59 root Exp $
+/* $Id: cleanup.c,v 2.9 1993-09-14 22:42:36 cfields Exp $
  *
  * Cleanup program for stray processes
  *
@@ -39,7 +39,7 @@
 #include <dirent.h>
 #endif
 
-char *version = "$Id: cleanup.c,v 2.8 1993-06-22 09:24:59 root Exp $";
+char *version = "$Id: cleanup.c,v 2.9 1993-09-14 22:42:36 cfields Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -432,6 +432,7 @@ struct cl_proc *get_processes()
     for (i = 0; i < nproc; i++) {
 #ifdef _AIX
         readx(kmem, &p, sizeof(p), 1);
+#else
 	read(kmem, &p, sizeof(p));
 #endif
 	if (p.p_pid == 0) continue;
