@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.6 1990-11-18 18:33:35 probe Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.7 1991-01-22 16:19:27 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -318,10 +318,9 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 	    } else {
 	      if (errorout)
 		{
-		  fprintf(stderr, "%s: Could not get Kerberos ticket for filesystem %s\n",
-			  progname, errname);
-		  fprintf(stderr, "\trealm %s instance %s, kerberos error is: %s\n",
-			  realm, instance, krb_err_txt[status]);
+		  fprintf(stderr, "%s: Could not get Kerberos ticket (%s.%s@%s)\n\tfor filesystem %s, kerberos error is: %s\n",
+			  progname, KERB_NFSID_INST, instance, realm,
+			  errname, krb_err_txt[status]);
 		}
 	    }
 	    error_status = ERR_KERBEROS;
