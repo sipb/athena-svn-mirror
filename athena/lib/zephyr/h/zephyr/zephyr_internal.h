@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.5 1987-06-24 04:52:34 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.6 1987-06-26 03:43:36 rfrench Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
@@ -31,11 +31,12 @@ extern int __Q_Length;
 extern int __Zephyr_open;
 extern int __HM_set;
 extern int __Zephyr_server;
-extern char __Zephyr_realm[];
 
 extern char **__locate_list;
 extern int __locate_num;
 extern int __locate_next;
+
+extern int Z_UIDpred();
 
 #define Z_QLength() (__Q_Length)
 
