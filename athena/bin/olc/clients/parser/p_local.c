@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.15 1992-02-14 21:22:40 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_local.c,v 1.16 1997-04-30 18:00:10 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.15 1992-02-14 21:22:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.16 1997-04-30 18:00:10 ghudson Exp $";
 #endif
 #endif
 
@@ -34,7 +34,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc_parser.h>
 
 extern COMMAND *Command_Table;		
-extern char *HELP_FILE, *HELP_DIR, *HELP_EXT;
 
 /*
  * Function:	do_quit() exits from OLC.
@@ -61,7 +60,7 @@ do_quit(arguments)
   switch (status)
     {
     case SUCCESS:
-      if(OLC)
+      if(client_is_user_client())
 	{
 	  printf("To continue this question, just run this program again.  Remember, your\n");
 	  printf("question is active until you use the 'done' or 'cancel' command.  It will be\n");
@@ -82,7 +81,7 @@ do_quit(arguments)
 	    }
 	  if (status)
 #endif
-	    printf("Warning: you are still active in %s.  You may be signed on,\n", OLC_SERVICE_NAME);
+	    printf("Warning: you are still active in %s.  You may be signed on,\n", client_service_name());
             printf("connected to someone, or have a question of your own in the queue.\n");
 	}
 
@@ -98,7 +97,7 @@ do_quit(arguments)
 
     default:
       fprintf(stderr, "An error occurered when trying to determine whether you were still\n");
-      fprintf(stderr, "active in %s:\n",OLC_SERVICE_NAME);
+      fprintf(stderr, "active in %s:\n",client_service_name());
       status = handle_response(status, &Request);
       break;
     }
@@ -127,16 +126,17 @@ do_olc_help(arguments)
 
   if (arguments[1] == (char *)NULL) 
     {
-      (void) strcpy(help_filename, HELP_DIR);
+      (void) strcpy(help_filename, client_help_directory());
       (void) strcat(help_filename, "/");
-      (void) strcat(help_filename, HELP_FILE);
+      (void) strcat(help_filename, client_help_primary_file());
     }
   else 
     {
-      (void) strcpy(help_filename, HELP_DIR);
+      (void) strcpy(help_filename, client_help_directory());
       (void) strcat(help_filename, "/");
 
-      if ((ind = command_index(Command_Table, arguments[1])) == ERROR)
+      ind = command_index(Command_Table, arguments[1]);
+      if (ind == ERROR)
 	{
 	  printf("The command \"%s\" is not defined.  ", arguments[1]);
 	  printf("For a list of commands, type \"?\".\n");
@@ -149,7 +149,7 @@ do_olc_help(arguments)
       (void) strcat(help_filename, Command_Table[ind].command_name);
     }
 
-  (void) strcat(help_filename, HELP_EXT);
+  (void) strcat(help_filename, client_help_ext());
   return(display_file(help_filename));
 }
 
