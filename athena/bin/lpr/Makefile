@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.14 1990-07-14 12:32:56 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.15 1990-11-07 13:37:59 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -19,7 +19,7 @@
 #
 DESTDIR=
 
-CFLAGS=-O -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -Iquota
+CFLAGS=-O -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL `./cppflags` -Iquota 
 LIBS= -lhesiod -lzephyr -lcom_err -lkrb -ldes
 LIBDIR=/usr/lib
 BINDIR=/usr/ucb
@@ -35,13 +35,14 @@ OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
 	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
-ALL=	lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr 
+ALL=	cppflags lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr 
 
 SUBDIR=quota transcript-v2.1 man
 all:	${ALL} FILTERS ${SUBDIR}
 
 ${SUBDIR}: FRC
-	cd $@; make ${MFLAGS} all; cd ..
+	cd $@; make ${MFLAGS} Makefile; make ${MFLAGS} all; cd ..
+
 FRC:
 
 saber_lpr:
@@ -51,6 +52,9 @@ lpd:	lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o
 lpd:	lpdchar.o s_common.o printcap.o tcp_conn.o
 	${CC} -o lpd lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
 		lpdchar.o s_common.o printcap.o tcp_conn.o ${LIBS}
+
+cppflags: cppflags.c
+	${CC} -o cppflags cppflags.c
 
 s_rmjob.c: rmjob.c
 	rm -f s_rmjob.c
@@ -147,7 +151,7 @@ lpc.o o_lpc.o cmdtab.o: lpc.h
 cmds.o: lp.h lp.local.h
 
 FILTERS:
-	cd filters; make ${MFLAGS}
+	cd filters; make Makefile ; make ${MFLAGS}
 
 install:
 	-for i in lpr lpq lprm; do \
