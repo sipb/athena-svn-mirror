@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.7 1990-01-10 12:23:05 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.8 1990-02-01 12:00:38 vanharen Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -84,6 +84,7 @@ read_request(fd, request)
 #endif /* STDC */
 {
   static IO_REQUEST io_req;
+  char msgbuf[BUF_SIZE];
 
   if (sread(fd, (char *) &io_req, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
     return(ERROR);
@@ -102,10 +103,12 @@ read_request(fd, request)
 #endif TEST
 
   if ((request->version != CURRENT_VERSION) && (request->version != VERSION_3))
-     {
-        log_error("Error in version");
-        return(ERROR);
-     }
+    {
+      sprintf(msgbuf, "Error in version from %s@%s",
+	      io_req.requester.username, io_req.requester.machine);
+      log_error(msgbuf);
+      return(ERROR);
+    }
 
 #ifdef KERBEROS
   if (read(fd, (char *) &(request->kticket.length), sizeof(int)) != 
