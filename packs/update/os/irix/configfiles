@@ -8,6 +8,7 @@
 /etc/athena/newsyslog.conf
 /etc/aliases
 /etc/compiler.defaults
+/etc/cshrc
 /etc/ftpusers
 /etc/ifhp.conf
 /etc/inetd.conf
@@ -15,6 +16,7 @@
 /etc/named.conf
 /etc/ntp.conf
 /etc/printcap
+/etc/profile
 /etc/resolv.conf
 /etc/sendmail.cf
 /etc/services
