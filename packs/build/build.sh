@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.19 1998-07-15 18:29:35 ghudson Exp $
+# $Id: build.sh,v 1.20 1998-10-03 20:04:43 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -35,13 +35,13 @@ shift `expr $OPTIND - 1`
 start="$1"
 end="${2-$1}"
 
-# Determine the platform type.
-case "`uname -sm`" in
-	SunOS*sun4*)	platform=sun4 ;;
-	IRIX*)		platform=sgi ;;
+# Determine the operating system.
+case `uname -s` in
+	SunOS)		os=solaris ;;
+	IRIX)		os=irix ;;
 esac
 
-# Read in the list of packages, filtering for platform type.
+# Read in the list of packages, filtering for operating system.
 packages=`awk '
 	/^#|^$/		{ next; }
 	start == $1	{ start = ""; }
@@ -50,9 +50,9 @@ packages=`awk '
 		split($2, p, ",");
 		build = 0;
 		for (i = 1; p[i]; i++) {
-			if (p[i] == platform || p[i] == "all")
+			if (p[i] == os || p[i] == "all")
 				build = 1;
-			if (p[i] == ("-" platform))
+			if (p[i] == ("-" os))
 				build = 0;
 		}
 		if (build)
@@ -60,8 +60,8 @@ packages=`awk '
 		next;
 	}
 			{ print; }
-	end == $1	{ exit; }' platform="$platform" start="$start" \
-		end="$end" $source/packs/build/packages`
+	end == $1	{ exit; }' os="$os" start="$start" end="$end" \
+		$source/packs/build/packages`
 
 case $nobuild in
 	true)
@@ -79,7 +79,7 @@ ln -s "washlog.$now" "$build/logs/current"
 exec >> "$logfile" 2>&1
 
 echo ========
-echo Starting at `date` on a $platform
+echo Starting at `date` on $os
 
 # Build the packages.
 for package in $packages; do
