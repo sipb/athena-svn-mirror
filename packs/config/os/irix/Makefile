@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 1999-05-12 18:20:46 rbasch Exp $
+# $Id: Makefile,v 1.10.2.1 1999-07-30 22:08:34 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -47,6 +47,7 @@ install:
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
 	install -c -m 0644 Toolchest ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 appletalk ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 array ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
@@ -72,6 +73,7 @@ install:
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 pcnfsd ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 pmcd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
