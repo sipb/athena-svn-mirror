@@ -111,9 +111,6 @@ if [ -r $resources ]; then
         fi
 fi
 
-XUSERFILESEARCHPATH="$HOME/$dotdesktop/%N:$HOME/%N:`/usr/bin/X11/appdefpath`"
-export XUSERFILESEARCHPATH
-
 # Check to see if the user has a .chestrc that they haven't been
 # warned about
 
