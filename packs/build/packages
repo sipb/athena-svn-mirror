@@ -1,4 +1,4 @@
-# $Id: packages,v 1.161 2002-03-04 15:46:37 ghudson Exp $
+# $Id: packages,v 1.162 2002-03-10 02:23:18 amb Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -139,6 +139,7 @@ third/bzip2			except linux
 third/db
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
 third/diffutils			on solaris
+third/eel			requires librsvg
 third/emacs			requires hesiod,krb5
 third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,bison
@@ -175,6 +176,7 @@ third/libglade			requires gtk,gnome-libs,libxml
 third/libiconv			except linux
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
+third/librsvg
 third/libungif			except linux
 third/libxml
 third/libxml2
@@ -186,6 +188,7 @@ third/mdoc
 third/mingetty			on linux
 third/motif			on linux
 third/motif/clients/mwm		on solaris
+third/nautilus			requires bonobo,ORBit,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
