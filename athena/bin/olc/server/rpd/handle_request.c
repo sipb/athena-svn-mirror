@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.10 1991-01-21 01:37:11 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.11 1991-03-28 13:30:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,10 +34,10 @@ handle_request(fd, from)
   int auth;
   char principal_buffer[ANAME_SZ+INST_SZ+REALM_SZ];
   static char instance_buffer[INST_SZ];
-#endif /* KERBEROS */
 
   if (instance_buffer[0] == '\0')
     instance_buffer[0] = '*';
+#endif /* KERBEROS */
 
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
     if (len == -1)
