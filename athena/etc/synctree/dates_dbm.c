@@ -6,7 +6,9 @@
 #include <string.h>
 #include <time.h>
 #include <ndbm.h>
-
+#ifdef sparc
+#include <alloca.h>
+#endif
 time_t get_date(dbmpp,fname)
      DBM **dbmpp;
      char *fname;

@@ -11,7 +11,9 @@
 #ifdef OLD
 #include <ndbm.h>
 #endif
-
+#ifdef sparc
+#include <alloca.h>
+#endif
 #include "synctree.h"
 
 #ifndef DEBUG

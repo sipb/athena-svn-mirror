@@ -4,7 +4,9 @@
 #include <strings.h>
 #include <stdio.h>
 #include <a.out.h>
-
+#ifdef sparc
+#include <alloca.h>
+#endif
 extern char *date_db_name;
 extern rule rules[];
 extern unsigned int lastrule;
