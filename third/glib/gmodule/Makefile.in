@@ -92,7 +92,7 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/gmodule 	-DG_LOG_DOMAIN=g_log_domain_gmodule @GLIB_DEBUG_FLAGS@
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/gmodule 	-DG_LOG_DOMAIN=\"GModule\" @GLIB_DEBUG_FLAGS@
 
 
 EXTRA_DIST =  		gmoduleconf.h.in 		gmodule.def			gmodule-dl.c			gmodule-dld.c			gmodule-win32.c			gmoduleconf.h.win32
