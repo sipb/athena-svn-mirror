@@ -1,0 +1,7 @@
+this version is not compatible with prior versions.
+it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
+it also offers sped-up exception-checking, via hash-tables.
+a bug remains in -nopullflag support: if the entry's to-name top-level
+dir doesn't exist, update_file doesn't get over it.
+the fix should be put into the updated() routine, or possibly dec_entry().
+.

@@ -1,0 +1,45 @@
+ #!/bin/sh -euk
+
+### This is the first script file in the installation program for
+### installing Athena software on Solaris2.1
+
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/athenainstall,v 1.1 1993-10-12 05:03:43 probe Exp $
+### $Locker:  $
+
+
+# Define some variables
+TR_SERVER=atalanta; export TR_SERVER
+PACK=/afs/.rel-eng/system/sun4c_51/srvd.75; export PACK
+hostname=`cat /etc/nodename`
+netaddr=`cat /etc/myIPaddr`
+gateway=`cat /etc/defaultrouter`
+save_var_flag=false
+case `uname -m` in
+sun4c)
+	MACH=4c
+	;;
+sun4m)
+	MACH=4m
+	;;
+*)
+	echo "Can't figure out what kind of machine I'm running on!"
+	echo "Call in an expert!"
+	exit 1
+	esac
+
+echo "Finished setting up variables"
+export  MACH  save_var_flag netaddress  hostname gateway
+
+
+## Make sure files are created with proper protection setting
+umask 022
+
+
+stty sane	# Flush terminal input.
+
+# Mounting the install srvd
+	mount  $TR_SERVER:$PACK /srvd
+
+echo "Starting script on  srvd..."
+#sh /srvd/install/phase2.sh
+exit 1

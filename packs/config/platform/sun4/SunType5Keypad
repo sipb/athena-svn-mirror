@@ -1,0 +1,15 @@
+keycode 53 = F25 F25 KP_Divide 
+keycode 54 = F26 F26 KP_Multiply 
+keycode 57 = Delete Delete KP_Decimal 
+keycode 75 = F27 F27 KP_7 Home
+keycode 76 = Up F28 KP_8 
+keycode 77 = F29 F29 KP_9 Prior
+keycode 78 = F24 F24 KP_Subtract 
+keycode 98 = Left F30 KP_4 
+keycode 99 = F31 F31 KP_5 
+keycode 100 = Right F32 KP_6 
+keycode 101 = Insert Insert KP_0 
+keycode 105 = Num_Lock   
+keycode 119 = F33 F33 KP_1 End
+keycode 120 = Down F34 KP_2 
+keycode 121 = F35 F35 KP_3 Next

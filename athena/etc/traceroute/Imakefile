@@ -1,0 +1,10 @@
+/* $Id: Imakefile,v 1.1 1993-10-12 04:55:32 probe Exp $ */
+
+#if (defined(_AIX) && (AIXV==31))
+all install clean depend::
+	@echo "traceroute is not available on this platform"
+#else
+build_program(traceroute,traceroute.o,,)
+install_program(traceroute,-o root -m 4755,$(ATHETCDIR))
+install_man(traceroute.8,traceroute.8)
+#endif

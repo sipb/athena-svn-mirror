@@ -1,0 +1,16 @@
+#
+# The netmasks file associates Internet Protocol (IP) address
+# masks with IP network numbers.
+# 
+# 	network-number	netmask
+#
+# Both the network-number and the netmasks are specified in
+# "decimal dot" notation, e.g:
+#
+# 		128.32.0.0 255.255.255.0
+#
+18.0.0.0	255.255.0.0
+#
+# MIT Default Netmask (do not edit this line)
+#
+18		255.255.0.0

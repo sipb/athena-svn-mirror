@@ -1,0 +1,137 @@
+.TH SYNCTREE 1 "May 6, 1988"
+.UC
+.SH NAME
+synctree \- reconcile directory tree with original
+.SH SYNOPSIS
+.B synctree
+[
+.B \-v | \-q
+] [
+.B \-b
+] [
+.B \-nosrcrules
+] [
+.B \-s 
+.I srcdir
+] [
+.B \-d
+.I dstdir
+]
+.br
+.SH DESCRIPTION
+.I Synctree
+intelligently copies one directory tree to
+another, according to a set of rules files found in both the source and
+destination directory trees.
+.I synctree
+allows files to copied from the source to the destination, establish
+symbolic links on the destination tree, and allows commands to be
+executed when files are updated.
+
+.I synctree
+is useful for installing or updating systems, by reconciling the files
+on the destination system with the original.  Depending on the rules
+files, directories and files on the destination tree can be links to
+the original, allowing them to remain on a file server.  Synctree
+records what the modification times for files that it creates, so that
+it can tell if a file has been independently modified on the
+destination tree.
+
+.SH OPTIONS
+.TP 
+.B \-v
+Verbose mode.  Prints debugging level information.  Each occurrence of
+this option increments the debugging level (and thus more will be
+displayed).  The default setting is 1, which prints all file updates
+that are transpiring.
+.TP
+.B \-q
+Quiet mode.  Does not inform user of what updates occur.
+.TP
+.B \-n
+No-op mode.  No updates or deletions will be performed.  This mode is
+useful for seeing what would occur, without causing any damage to the
+destination tree.
+.TP
+.B \-nosrcrules
+Rules files are only read from the destination directory tree.  Rules files
+on the source tree are ignored.
+.TP
+.B \-s
+Specifies the source directory tree.  The default is /server.
+.TP
+.B \-d
+Specifies the destination directory tree.  The default is /.
+
+.SH RULES
+Rules for reconciling the source and destination trees can be found both
+in the source tree
+.BI (\.rconf) " and in the destination tree " (\.rconf\.local).
+These files (which may be in any sub-directory and apply to that
+directory downward) indicate the steps that should be taken to synctree
+the two directory trees.  The rules files are parsed top-down, with
+later actions in the rules files superceding earlier rules.
+.PP
+The available options in the rules files are:
+.TP
+.B map
+Map files from the source directory to the destination directory.
+.TP
+.B copy
+Copy files from the source directory to the destination directory.
+.TP
+.B link
+Create symbolic links from the destination directory to the source
+directory.
+.TP
+.B chase
+Copy files, chasing symbolic links, from the source directory to the
+destination directory.
+.TP
+.B ignore
+Do not perform any actions on the listed files.
+.TP
+.B delete
+Delete files from the destination directory.
+
+.PP
+The format of the majority of the actions is:
+.TP
+    <action> file [\-option \-option \.\.\.]
+.TP
+where file can be a wildcard expression.  Wildcard expressions consist
+of:
+.TP
+    *
+.TP
+    [range of letters]
+.TP
+and can be suffixed by a semi-colon, followed by the file type
+(r,l,d,b,c,s).
+
+.PP
+Some of the action-options available are:
+.TP
+.B copy \-p
+This mode will preserve owner, group, and setuid/setgid information
+during the copy.
+.TP
+.B copy/link \-f
+This mode will force a copy, regardless of whether the source and
+destination file types differ or the destination file was more recent
+than the source.
+
+.SH AUTHOR
+Tim Shepard,
+with some input from Mark Reinhold and Stan Zanarotti.
+Re-written by Richard Basch and Ezra Peisach, MIT Project Athena.
+.SH FILES
+.ta 3i
+.nf
+ .rconf			Rules files on source directory tree
+ .rconf.local		Rules files on destination directory tree
+ .reconcile_dates.{dir,pag}	Database where file modification times are
+				stored
+.fi
+.SH BUGS
+Synctree is still under development, and under documented.

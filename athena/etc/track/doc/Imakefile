@@ -1,0 +1,5 @@
+
+install_man(track.1,track.1)
+install_man(statfile.5,statfile.5)
+install_man(permissions.5,permissions.5)
+install_man(subscriptionlist.5, subscriptionlist.5)

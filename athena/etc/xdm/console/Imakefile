@@ -1,0 +1,25 @@
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/Imakefile,v 1.1 1993-10-12 04:57:32 probe Exp $
+
+CFILES = config_console.c
+OBJS = config_console.o
+
+
+build_program(config_console,config_console.o,,)
+install_program(config_console,-m 4755 -o root,$(ATHBINDIR)/config_console)
+
+
+install::
+	rm -f $(DESTDIR)/$(ATHBINDIR)/show_console
+	rm -f $(DESTDIR)/$(ATHBINDIR)/hide_console
+	ln -s config_console $(DESTDIR)/$(ATHBINDIR)/show_console
+	ln -s config_console $(DESTDIR)/$(ATHBINDIR)/hide_console
+
+install_man(config_console.1,config_console.1)
+install_man(hide_console.1,hide_console.1)
+install_man(show_console.1,show_console.1)
+
+#if 0
+depend: $(CFILES)
+	mkdep $(CFLAGS) $(CFILES)
+#endif
+
