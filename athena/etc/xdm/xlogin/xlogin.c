@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.26 1992-06-10 19:35:14 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.27 1992-06-12 14:56:13 lwvanels Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -625,7 +625,7 @@ do_motd()
     struct stat stbuf, stbuf2;
     Arg args[1];
     char buf[10000], *temp, *s, *d;
-    int fid, len, do_motd, do_l_motd;
+    int fid, len, do_g_motd, do_l_motd;
 
     if (!motdtext) {
 	motdtext = WcFullNameToWidget(appShell, "*motd");
@@ -639,10 +639,10 @@ do_motd()
     }
 
     if (resources.showMotd) {
-        do_motd = (resources.motdFile != NULL && *resources.motdFile &&
+        do_g_motd = (resources.motdFile != NULL && *resources.motdFile &&
 		   !stat(resources.motdFile, &stbuf) && 
 		   stbuf.st_mtime != modtime);
-	if (do_motd)
+	if (do_g_motd)
 	    modtime = stbuf.st_mtime;
 
 	do_l_motd = (resources.motd2File != NULL && *resources.motd2File &&
@@ -651,7 +651,7 @@ do_motd()
 	if (do_l_motd)
 	        modtime2 = stbuf2.st_mtime;
 
-	if (do_motd || do_l_motd) {
+	if (do_g_motd || do_l_motd) {
 	    /* read the new motd */
 	    len = 0;
 	    if (resources.motdFile != NULL && *resources.motdFile &&
