@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.5 1997-03-28 10:36:23 ghudson Exp $
+## $Id: sys_rvd,v 1.6 1998-01-05 21:39:10 brlewis Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -9,6 +9,7 @@ GLOBAL : *.CKP *.local *.pid :
 		ftpusers
 		inetd.conf
 		group
+		ntp.conf
 		passwd
 		passwd.fallback
 		sendmail.cf

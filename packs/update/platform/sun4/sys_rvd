@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.28 1997-12-06 21:06:59 ghudson Exp $
+## $Id: sys_rvd,v 1.29 1998-01-05 21:39:12 brlewis Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -15,6 +15,7 @@ GLOBAL : *.CKP *.local *.pid :
 		inet/netmasks	
 		inet/services
 		netspy
+		ntp.conf
 		passwd
 		passwd.fallback
 		shells

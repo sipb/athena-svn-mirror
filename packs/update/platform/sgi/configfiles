@@ -8,6 +8,7 @@
 /etc/aliases
 /etc/ftpusers
 /etc/inetd.conf
+/etc/ntp.conf
 /etc/printcap
 /etc/resolv.conf
 /etc/sendmail.cf

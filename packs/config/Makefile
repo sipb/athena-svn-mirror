@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 1997-12-30 18:37:03 ghudson Exp $
+# $Id: Makefile,v 1.13 1998-01-05 21:39:06 brlewis Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -31,6 +31,7 @@ install:
 	install -c -m 0644 named.localhost ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.localhost.rev ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.root ${DESTDIR}${ETCDIR}
+	install -c -m 0644 ntp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
 	rm -f ${DESTDIR}${ETCDIR}/krb.conf
