@@ -23,44 +23,71 @@
 
 #include <string.h>
 
+#include <gst/audio/multichannel.h>
+
 #include "gstfaad.h"
 
-GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/mpeg, "
-        "systemstream = (bool) FALSE, " "mpegversion = { (int) 2, (int) 4 }")
+    GST_STATIC_CAPS ("audio/mpeg, " "mpegversion = (int) { 2, 4 }")
     );
 
-GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
+#define STATIC_INT_CAPS(bpp) \
+  "audio/x-raw-int, " \
+    "endianness = (int) BYTE_ORDER, " \
+    "signed = (bool) TRUE, " \
+    "width = (int) " G_STRINGIFY (bpp) ", " \
+    "depth = (int) " G_STRINGIFY (bpp) ", " \
+    "rate = (int) [ 8000, 96000 ], " \
+    "channels = (int) [ 1, 8 ]"
+
+#define STATIC_FLOAT_CAPS(bpp) \
+  "audio/x-raw-float, " \
+    "endianness = (int) BYTE_ORDER, " \
+    "depth = (int) " G_STRINGIFY (bpp) ", " \
+    "rate = (int) [ 8000, 96000 ], " \
+    "channels = (int) [ 1, 8 ]"
+
+/*
+ * All except 16-bit integer are disabled until someone fixes FAAD.
+ * FAAD allocates approximately 8*1024*2 bytes bytes, which is enough
+ * for 1 frame (1024 samples) of 6 channel (5.1) 16-bit integer 16bpp
+ * audio, but not for any other. You'll get random segfaults, crashes
+ * and even valgrind goes crazy.
+ */
+
+#define STATIC_CAPS \
+  STATIC_INT_CAPS (16)
+#if 0
+"; "
+STATIC_INT_CAPS (24)
+    "; "
+STATIC_INT_CAPS (32)
+    "; "
+STATIC_FLOAT_CAPS (32)
+    "; "
+STATIC_FLOAT_CAPS (64)
+#endif
+     static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "endianness = (int) BYTE_ORDER, "
-        "signed = (bool) TRUE, "
-        "width = (int) { 16, 24, 32 }, "
-        "depth = (int) { 16, 24, 32 }, "
-        "rate = (int) [ 8000, 96000 ], "
-        "channels = (int) [ 1, 6 ]; "
-        "audio/x-raw-float, "
-        "endianness = (int) BYTE_ORDER, "
-        "depth = (int) { 32, 64 }, "
-        "rate = (int) [ 8000, 96000 ], " "channels = (int) [ 1, 6 ]")
+    GST_STATIC_CAPS (STATIC_CAPS)
     );
 
-static void gst_faad_base_init (GstFaadClass * klass);
-static void gst_faad_class_init (GstFaadClass * klass);
-static void gst_faad_init (GstFaad * faad);
+     static void gst_faad_base_init (GstFaadClass * klass);
+     static void gst_faad_class_init (GstFaadClass * klass);
+     static void gst_faad_init (GstFaad * faad);
 
-static GstPadLinkReturn
-gst_faad_sinkconnect (GstPad * pad, const GstCaps * caps);
-static GstPadLinkReturn
-gst_faad_srcconnect (GstPad * pad, const GstCaps * caps);
-static GstCaps *gst_faad_srcgetcaps (GstPad * pad);
-static void gst_faad_chain (GstPad * pad, GstData * data);
-static GstElementStateReturn gst_faad_change_state (GstElement * element);
+     static GstPadLinkReturn
+         gst_faad_sinkconnect (GstPad * pad, const GstCaps * caps);
+     static GstPadLinkReturn
+         gst_faad_srcconnect (GstPad * pad, const GstCaps * caps);
+     static GstCaps *gst_faad_srcgetcaps (GstPad * pad);
+     static void gst_faad_chain (GstPad * pad, GstData * data);
+     static GstElementStateReturn gst_faad_change_state (GstElement * element);
 
-static GstElementClass *parent_class = NULL;
+     static GstElementClass *parent_class = NULL;
 
 /* static guint gst_faad_signals[LAST_SIGNAL] = { 0 }; */
 
@@ -92,12 +119,11 @@ gst_faad_get_type (void)
 static void
 gst_faad_base_init (GstFaadClass * klass)
 {
-  GstElementDetails gst_faad_details = {
-    "Free AAC Decoder (FAAD)",
-    "Codec/Decoder/Audio",
-    "Free MPEG-2/4 AAC decoder",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>",
-  };
+  static GstElementDetails gst_faad_details =
+      GST_ELEMENT_DETAILS ("Free AAC Decoder (FAAD)",
+      "Codec/Decoder/Audio",
+      "Free MPEG-2/4 AAC decoder",
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   gst_element_class_add_pad_template (element_class,
@@ -124,6 +150,10 @@ gst_faad_init (GstFaad * faad)
   faad->handle = NULL;
   faad->samplerate = -1;
   faad->channels = -1;
+  faad->tempbuf = NULL;
+  faad->need_channel_setup = TRUE;
+  faad->channel_positions = NULL;
+  faad->init = FALSE;
 
   GST_FLAG_SET (faad, GST_ELEMENT_EVENT_AWARE);
 
@@ -143,6 +173,107 @@ gst_faad_init (GstFaad * faad)
   gst_pad_set_getcaps_function (faad->srcpad, gst_faad_srcgetcaps);
 }
 
+/*
+ * Channel identifier conversion - caller g_free()s result!
+ */
+
+static guchar *
+gst_faad_chanpos_from_gst (GstAudioChannelPosition * pos, guint num)
+{
+  guchar *fpos = g_new (guchar, num);
+  guint n;
+
+  for (n = 0; n < num; n++) {
+    switch (pos[n]) {
+      case GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT:
+        fpos[n] = FRONT_CHANNEL_LEFT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT:
+        fpos[n] = FRONT_CHANNEL_RIGHT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER:
+      case GST_AUDIO_CHANNEL_POSITION_FRONT_MONO:
+        fpos[n] = FRONT_CHANNEL_CENTER;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT:
+        fpos[n] = SIDE_CHANNEL_LEFT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT:
+        fpos[n] = SIDE_CHANNEL_RIGHT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_REAR_LEFT:
+        fpos[n] = BACK_CHANNEL_LEFT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT:
+        fpos[n] = BACK_CHANNEL_RIGHT;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_REAR_CENTER:
+        fpos[n] = BACK_CHANNEL_CENTER;
+        break;
+      case GST_AUDIO_CHANNEL_POSITION_LFE:
+        fpos[n] = LFE_CHANNEL;
+        break;
+      default:
+        GST_WARNING ("Unsupported GST channel position 0x%x encountered",
+            pos[n]);
+        g_free (fpos);
+        return NULL;
+    }
+  }
+
+  return fpos;
+}
+
+static GstAudioChannelPosition *
+gst_faad_chanpos_to_gst (guchar * fpos, guint num)
+{
+  GstAudioChannelPosition *pos = g_new (GstAudioChannelPosition, num);
+  guint n;
+
+  for (n = 0; n < num; n++) {
+    switch (fpos[n]) {
+      case FRONT_CHANNEL_LEFT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        break;
+      case FRONT_CHANNEL_RIGHT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        break;
+      case FRONT_CHANNEL_CENTER:
+        /* argh, mono = center */
+        if (num == 1)
+          pos[n] = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
+        else
+          pos[n] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+        break;
+      case SIDE_CHANNEL_LEFT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT;
+        break;
+      case SIDE_CHANNEL_RIGHT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT;
+        break;
+      case BACK_CHANNEL_LEFT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
+        break;
+      case BACK_CHANNEL_RIGHT:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
+        break;
+      case BACK_CHANNEL_CENTER:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
+        break;
+      case LFE_CHANNEL:
+        pos[n] = GST_AUDIO_CHANNEL_POSITION_LFE;
+        break;
+      default:
+        GST_WARNING ("Unsupported FAAD channel position 0x%x encountered",
+            fpos[n]);
+        g_free (pos);
+        return NULL;
+    }
+  }
+
+  return pos;
+}
+
 static GstPadLinkReturn
 gst_faad_sinkconnect (GstPad * pad, const GstCaps * caps)
 {
@@ -152,7 +283,6 @@ gst_faad_sinkconnect (GstPad * pad, const GstCaps * caps)
   GstBuffer *buf;
 
   if ((value = gst_structure_get_value (str, "codec_data"))) {
-    GstPadLinkReturn ret;
     gulong samplerate;
     guchar channels;
 
@@ -162,15 +292,19 @@ gst_faad_sinkconnect (GstPad * pad, const GstCaps * caps)
             GST_BUFFER_SIZE (buf), &samplerate, &channels) < 0)
       return GST_PAD_LINK_REFUSED;
 
-    faad->samplerate = samplerate;
-    faad->channels = channels;
+    //faad->samplerate = samplerate;
+    //faad->channels = channels;
+    faad->init = TRUE;
 
-    ret = gst_pad_renegotiate (faad->srcpad);
-    if (ret == GST_PAD_LINK_DELAYED)
-      ret = GST_PAD_LINK_OK;
-
-    return ret;
+    if (faad->tempbuf) {
+      gst_buffer_unref (faad->tempbuf);
+      faad->tempbuf = NULL;
+    }
+  } else {
+    faad->init = FALSE;
   }
+
+  faad->need_channel_setup = TRUE;
 
   /* if there's no decoderspecificdata, it's all fine. We cannot know
    * much more at this point... */
@@ -181,27 +315,45 @@ static GstCaps *
 gst_faad_srcgetcaps (GstPad * pad)
 {
   GstFaad *faad = GST_FAAD (gst_pad_get_parent (pad));
+  static GstAudioChannelPosition *supported_positions = NULL;
+  static gint num_supported_positions = LFE_CHANNEL - FRONT_CHANNEL_CENTER;
+  GstCaps *templ;
+
+  if (!supported_positions) {
+    guchar *supported_fpos = g_new0 (guchar,
+        LFE_CHANNEL - FRONT_CHANNEL_CENTER);
+    gint n;
+
+    for (n = 0; n < LFE_CHANNEL - FRONT_CHANNEL_CENTER; n++) {
+      supported_fpos[n] = n + FRONT_CHANNEL_CENTER;
+    }
+    supported_positions = gst_faad_chanpos_to_gst (supported_fpos, n);
+    g_free (supported_fpos);
+  }
 
   if (faad->handle != NULL && faad->channels != -1 && faad->samplerate != -1) {
     GstCaps *caps = gst_caps_new_empty ();
     GstStructure *str;
     gint fmt[] = {
       FAAD_FMT_16BIT,
+#if 0
       FAAD_FMT_24BIT,
       FAAD_FMT_32BIT,
       FAAD_FMT_FLOAT,
       FAAD_FMT_DOUBLE,
+#endif
       -1
     }
     , n;
 
     for (n = 0; fmt[n] != -1; n++) {
-      switch (n) {
+      switch (fmt[n]) {
         case FAAD_FMT_16BIT:
           str = gst_structure_new ("audio/x-raw-int",
               "signed", G_TYPE_BOOLEAN, TRUE,
               "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16, NULL);
           break;
+#if 0
         case FAAD_FMT_24BIT:
           str = gst_structure_new ("audio/x-raw-int",
               "signed", G_TYPE_BOOLEAN, TRUE,
@@ -220,6 +372,7 @@ gst_faad_srcgetcaps (GstPad * pad)
           str = gst_structure_new ("audio/x-raw-float",
               "depth", G_TYPE_INT, 64, NULL);
           break;
+#endif
         default:
           str = NULL;
           break;
@@ -235,8 +388,26 @@ gst_faad_srcgetcaps (GstPad * pad)
 
       if (faad->channels != -1) {
         gst_structure_set (str, "channels", G_TYPE_INT, faad->channels, NULL);
+
+        /* put channel information here */
+        if (faad->channel_positions) {
+          GstAudioChannelPosition *pos;
+
+          pos = gst_faad_chanpos_to_gst (faad->channel_positions,
+              faad->channels);
+          if (!pos) {
+            gst_structure_free (str);
+            continue;
+          }
+          gst_audio_set_channel_positions (str, pos);
+          g_free (pos);
+        } else {
+          gst_audio_set_structure_channel_positions_list (str,
+              supported_positions, num_supported_positions);
+        }
       } else {
-        gst_structure_set (str, "channels", GST_TYPE_INT_RANGE, 1, 6, NULL);
+        gst_structure_set (str, "channels", GST_TYPE_INT_RANGE, 1, 8, NULL);
+        /* we set channel positions later */
       }
 
       gst_structure_set (str, "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
@@ -244,10 +415,20 @@ gst_faad_srcgetcaps (GstPad * pad)
       gst_caps_append_structure (caps, str);
     }
 
+    if (faad->channels == -1) {
+      gst_audio_set_caps_channel_positions_list (caps,
+          supported_positions, num_supported_positions);
+    }
+
     return caps;
   }
 
-  return gst_caps_copy (GST_PAD_TEMPLATE_CAPS (GST_PAD_PAD_TEMPLATE (pad)));
+  /* template with channel positions */
+  templ = gst_caps_copy (GST_PAD_TEMPLATE_CAPS (GST_PAD_PAD_TEMPLATE (pad)));
+  gst_audio_set_caps_channel_positions_list (templ,
+      supported_positions, num_supported_positions);
+
+  return templ;
 }
 
 static GstPadLinkReturn
@@ -259,11 +440,13 @@ gst_faad_srcconnect (GstPad * pad, const GstCaps * caps)
   gint depth, rate, channels;
   GstFaad *faad = GST_FAAD (gst_pad_get_parent (pad));
 
-  if (!faad->handle || (faad->samplerate == -1 || faad->channels == -1)) {
+  structure = gst_caps_get_structure (caps, 0);
+
+  if (!faad->handle || (faad->samplerate == -1 || faad->channels == -1) ||
+      !faad->channel_positions) {
     return GST_PAD_LINK_DELAYED;
   }
 
-  structure = gst_caps_get_structure (caps, 0);
   mimetype = gst_structure_get_name (structure);
 
   /* Samplerate and channels are normally provided through
@@ -272,6 +455,30 @@ gst_faad_srcconnect (GstPad * pad, const GstCaps * caps)
       !gst_structure_get_int (structure, "rate", &rate) ||
       rate != faad->samplerate || channels != faad->channels) {
     return GST_PAD_LINK_REFUSED;
+  }
+
+  /* Another internal checkup. */
+  if (faad->need_channel_setup) {
+    GstAudioChannelPosition *pos;
+    guchar *fpos;
+    guint i;
+
+    pos = gst_audio_get_channel_positions (structure);
+    if (!pos) {
+      return GST_PAD_LINK_DELAYED;
+    }
+    fpos = gst_faad_chanpos_from_gst (pos, faad->channels);
+    g_free (pos);
+    if (!fpos)
+      return GST_PAD_LINK_REFUSED;
+
+    for (i = 0; i < faad->channels; i++) {
+      if (fpos[i] != faad->channel_positions[i]) {
+        g_free (fpos);
+        return GST_PAD_LINK_REFUSED;
+      }
+    }
+    g_free (fpos);
   }
 
   if (!strcmp (mimetype, "audio/x-raw-int")) {
@@ -287,24 +494,28 @@ gst_faad_srcconnect (GstPad * pad, const GstCaps * caps)
       case 16:
         fmt = FAAD_FMT_16BIT;
         break;
+#if 0
       case 24:
         fmt = FAAD_FMT_24BIT;
         break;
       case 32:
         fmt = FAAD_FMT_32BIT;
         break;
+#endif
     }
   } else {
     if (!gst_structure_get_int (structure, "depth", &depth))
       return GST_PAD_LINK_REFUSED;
 
     switch (depth) {
+#if 0
       case 32:
         fmt = FAAD_FMT_FLOAT;
         break;
       case 64:
         fmt = FAAD_FMT_DOUBLE;
         break;
+#endif
     }
   }
 
@@ -313,7 +524,9 @@ gst_faad_srcconnect (GstPad * pad, const GstCaps * caps)
 
     conf = faacDecGetCurrentConfiguration (faad->handle);
     conf->outputFormat = fmt;
-    faacDecSetConfiguration (faad->handle, conf);
+    if (faacDecSetConfiguration (faad->handle, conf) == 0)
+      return GST_PAD_LINK_REFUSED;
+
     /* FIXME: handle return value, how? */
     faad->bps = depth / 8;
 
@@ -326,9 +539,12 @@ gst_faad_srcconnect (GstPad * pad, const GstCaps * caps)
 static void
 gst_faad_chain (GstPad * pad, GstData * data)
 {
+  guint input_size;
+  guchar *input_data;
   GstFaad *faad = GST_FAAD (gst_pad_get_parent (pad));
   GstBuffer *buf, *outbuf;
-  faacDecFrameInfo info;
+  faacDecFrameInfo *info;
+  guint64 next_ts;
   void *out;
 
   if (GST_IS_EVENT (data)) {
@@ -336,6 +552,10 @@ gst_faad_chain (GstPad * pad, GstData * data)
 
     switch (GST_EVENT_TYPE (event)) {
       case GST_EVENT_EOS:
+        if (faad->tempbuf != NULL) {
+          gst_buffer_unref (faad->tempbuf);
+          faad->tempbuf = NULL;
+        }
         gst_element_set_eos (GST_ELEMENT (faad));
         gst_pad_push (faad->srcpad, data);
         return;
@@ -345,61 +565,115 @@ gst_faad_chain (GstPad * pad, GstData * data)
     }
   }
 
-  buf = GST_BUFFER (data);
+  info = g_new0 (faacDecFrameInfo, 1);
 
-  if (faad->samplerate == -1 || faad->channels == -1) {
-    GstPadLinkReturn ret;
+  /* buffer + remaining data */
+  buf = GST_BUFFER (data);
+  next_ts = GST_BUFFER_TIMESTAMP (buf);
+  if (faad->tempbuf) {
+    buf = gst_buffer_join (faad->tempbuf, buf);
+    faad->tempbuf = NULL;
+  }
+
+  /* init if not already done during capsnego */
+  if (!faad->init) {
     gulong samplerate;
     guchar channels;
 
     faacDecInit (faad->handle,
         GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf), &samplerate, &channels);
-    faad->samplerate = samplerate;
-    faad->channels = channels;
-    ret = gst_pad_renegotiate (faad->srcpad);
-    if (GST_PAD_LINK_FAILED (ret)) {
-      GST_ELEMENT_ERROR (faad, CORE, NEGOTIATION, (NULL), (NULL));
-      gst_buffer_unref (buf);
-      return;
+    faad->init = TRUE;
+
+    /* store for renegotiation later on */
+    info->samplerate = samplerate;
+    info->channels = channels;
+  } else {
+    info->samplerate = 0;
+    info->channels = 0;
+  }
+
+  /* decode cycle */
+  input_data = GST_BUFFER_DATA (buf);
+  input_size = GST_BUFFER_SIZE (buf);
+  info->bytesconsumed = input_size;
+  while (input_size >= FAAD_MIN_STREAMSIZE && info->bytesconsumed > 0) {
+    out = faacDecDecode (faad->handle, info, input_data, input_size);
+    if (info->error) {
+      GST_ELEMENT_ERROR (faad, STREAM, DECODE, (NULL),
+          ("Failed to decode buffer: %s",
+              faacDecGetErrorMessage (info->error)));
+      break;
+    }
+
+    if (info->bytesconsumed > input_size)
+      info->bytesconsumed = input_size;
+    input_size -= info->bytesconsumed;
+    input_data += info->bytesconsumed;
+
+    if (out && info->samples > 0) {
+      gboolean fmt_change = FALSE;
+
+      /* see if we need to renegotiate */
+      if (info->samplerate != faad->samplerate ||
+          info->channels != faad->channels || !faad->channel_positions) {
+        fmt_change = TRUE;
+      } else {
+        gint i;
+
+        for (i = 0; i < info->channels; i++) {
+          if (info->channel_position[i] != faad->channel_positions[i])
+            fmt_change = TRUE;
+        }
+      }
+
+      if (fmt_change) {
+        GstPadLinkReturn ret;
+
+        /* store new negotiation information */
+        faad->samplerate = info->samplerate;
+        faad->channels = info->channels;
+        if (faad->channel_positions)
+          g_free (faad->channel_positions);
+        faad->channel_positions = g_new (guint8, faad->channels);
+        memcpy (faad->channel_positions, info->channel_position,
+            faad->channels);
+
+        /* and negotiate */
+        ret = gst_pad_renegotiate (faad->srcpad);
+        if (GST_PAD_LINK_FAILED (ret)) {
+          GST_ELEMENT_ERROR (faad, CORE, NEGOTIATION, (NULL), (NULL));
+          break;
+        }
+      }
+
+      /* play decoded data */
+      if (info->samples > 0) {
+        outbuf = gst_buffer_new_and_alloc (info->samples * faad->bps);
+        /* ugh */
+        memcpy (GST_BUFFER_DATA (outbuf), out, GST_BUFFER_SIZE (outbuf));
+        GST_BUFFER_TIMESTAMP (outbuf) = next_ts;
+        GST_BUFFER_DURATION (outbuf) =
+            (guint64) GST_SECOND *info->samples / faad->samplerate;
+        next_ts += GST_BUFFER_DURATION (outbuf);
+        gst_pad_push (faad->srcpad, GST_DATA (outbuf));
+      }
     }
   }
 
-  out = faacDecDecode (faad->handle, &info,
-      GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
-  if (info.error) {
-    GST_ELEMENT_ERROR (faad, STREAM, DECODE, (NULL),
-        ("Failed to decode buffer: %s", faacDecGetErrorMessage (info.error)));
-    gst_buffer_unref (buf);
-    return;
-  }
-
-  if (info.samplerate != faad->samplerate || info.channels != faad->channels) {
-    GstPadLinkReturn ret;
-
-    faad->samplerate = info.samplerate;
-    faad->channels = info.channels;
-    ret = gst_pad_renegotiate (faad->srcpad);
-    if (GST_PAD_LINK_FAILED (ret)) {
-      GST_ELEMENT_ERROR (faad, CORE, NEGOTIATION, (NULL), (NULL));
-      gst_buffer_unref (buf);
-      return;
+  /* Keep the leftovers */
+  if (input_size > 0) {
+    if (input_size < GST_BUFFER_SIZE (buf)) {
+      faad->tempbuf = gst_buffer_create_sub (buf,
+          GST_BUFFER_SIZE (buf) - input_size, input_size);
+    } else {
+      faad->tempbuf = buf;
+      gst_buffer_ref (buf);
     }
   }
-
-  if (info.samples == 0) {
-    gst_buffer_unref (buf);
-    return;
-  }
-
-  /* FIXME: did it handle the whole buffer? */
-  outbuf = gst_buffer_new_and_alloc (info.samples * faad->bps);
-  /* ugh */
-  memcpy (GST_BUFFER_DATA (outbuf), out, GST_BUFFER_SIZE (outbuf));
-  GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
-  GST_BUFFER_DURATION (outbuf) = GST_BUFFER_DURATION (buf);
 
   gst_buffer_unref (buf);
-  gst_pad_push (faad->srcpad, GST_DATA (outbuf));
+
+  g_free (info);
 }
 
 static GstElementStateReturn
@@ -416,16 +690,25 @@ gst_faad_change_state (GstElement * element)
 
         conf = faacDecGetCurrentConfiguration (faad->handle);
         conf->defObjectType = LC;
+        conf->dontUpSampleImplicitSBR = 1;
         faacDecSetConfiguration (faad->handle, conf);
       }
       break;
     case GST_STATE_PAUSED_TO_READY:
       faad->samplerate = -1;
       faad->channels = -1;
+      faad->need_channel_setup = TRUE;
+      faad->init = FALSE;
+      g_free (faad->channel_positions);
+      faad->channel_positions = NULL;
       break;
     case GST_STATE_READY_TO_NULL:
       faacDecClose (faad->handle);
       faad->handle = NULL;
+      if (faad->tempbuf) {
+        gst_buffer_unref (faad->tempbuf);
+        faad->tempbuf = NULL;
+      }
       break;
     default:
       break;
@@ -440,7 +723,8 @@ gst_faad_change_state (GstElement * element)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  return gst_element_register (plugin, "faad", GST_RANK_PRIMARY, GST_TYPE_FAAD);
+  return gst_library_load ("gstaudio") &&
+      gst_element_register (plugin, "faad", GST_RANK_PRIMARY, GST_TYPE_FAAD);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

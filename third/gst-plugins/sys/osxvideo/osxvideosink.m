@@ -1,6 +1,6 @@
 /* GStreamer
  * OSX video sink
- * Copyright (C) <2004> Zaheer Abbas Merali <zaheerabbas@merali.org>
+ * Copyright (C) <2004> Zaheer Abbas Merali <zaheerabbas at merali dot org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,7 +37,7 @@ static GstElementDetails gst_osxvideosink_details =
 GST_ELEMENT_DETAILS ("Video sink",
     "Sink/Video",
     "OSX native videosink",
-    "Zaheer Abbas Merali <zaheerabbas at merali.org>");
+    "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
 
 /* Default template - initiated with class struct to allow gst-register to work
    without X running */

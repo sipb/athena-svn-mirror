@@ -101,6 +101,7 @@ gst_v4l2src_clear_format_list (GstV4l2Src * v4l2src)
 {
   g_slist_foreach (v4l2src->formats, (GFunc) g_free, NULL);
   g_slist_free (v4l2src->formats);
+  v4l2src->formats = NULL;
 
   return TRUE;
 }
@@ -317,6 +318,7 @@ gst_v4l2src_capture_init (GstV4l2Src * v4l2src)
   }
 
   GST_V4L2_SET_ACTIVE (GST_V4L2ELEMENT (v4l2src));
+
   return TRUE;
 }
 
@@ -349,6 +351,8 @@ gst_v4l2src_capture_start (GstV4l2Src * v4l2src)
     return FALSE;
   }
 
+  v4l2src->is_capturing = TRUE;
+
   return TRUE;
 }
 
@@ -379,6 +383,7 @@ gst_v4l2src_capture_stop (GstV4l2Src * v4l2src)
 
   /* make an optional pending wait stop */
   v4l2src->quit = TRUE;
+  v4l2src->is_capturing = FALSE;
 
   return TRUE;
 }

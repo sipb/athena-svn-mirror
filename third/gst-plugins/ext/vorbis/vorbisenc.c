@@ -30,13 +30,16 @@
 #include <gst/tag/tag.h>
 #include "vorbisenc.h"
 
+GST_DEBUG_CATEGORY_EXTERN (vorbisenc_debug);
+#define GST_CAT_DEFAULT vorbisenc_debug
+
 static GstPadTemplate *gst_vorbisenc_src_template, *gst_vorbisenc_sink_template;
 
 /* elementfactory information */
 GstElementDetails vorbisenc_details = {
-  "Ogg Vorbis encoder",
+  "Vorbis encoder",
   "Codec/Encoder/Audio",
-  "Encodes audio in OGG Vorbis format",
+  "Encodes audio in Vorbis format",
   "Monty <monty@xiph.org>, " "Wim Taymans <wim@fluendo.com>",
 };
 
@@ -93,7 +96,8 @@ gst_vorbisenc_get_formats (GstPad * pad)
 #define BITRATE_DEFAULT 	-1
 #define MIN_BITRATE_DEFAULT 	-1
 #define QUALITY_DEFAULT 	0.3
-#define LOWEST_BITRATE 8000     /* lowest allowed for a 8 kHz stream */
+#define LOWEST_BITRATE 		6000    /* lowest allowed for a 8 kHz stream */
+#define HIGHEST_BITRATE 	250001  /* highest allowed for a 44 kHz stream */
 
 static void gst_vorbisenc_base_init (gpointer g_class);
 static void gst_vorbisenc_class_init (VorbisEncClass * klass);
@@ -159,9 +163,9 @@ raw_caps_factory (void)
   return
       gst_caps_new_simple ("audio/x-raw-float",
       "rate", GST_TYPE_INT_RANGE, 8000, 50000,
-      "channels", GST_TYPE_INT_RANGE, 1, 2, NULL,
+      "channels", GST_TYPE_INT_RANGE, 1, 2,
       "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "width", G_TYPE_INT, 32, "buffer-frames", G_TYPE_INT, 0);
+      "width", G_TYPE_INT, 32, "buffer-frames", G_TYPE_INT, 0, NULL);
 }
 
 static void
@@ -195,16 +199,20 @@ gst_vorbisenc_class_init (VorbisEncClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MAX_BITRATE,
       g_param_spec_int ("max-bitrate", "Maximum Bitrate",
-          "Specify a maximum bitrate (in bps). Useful for encoding for a fixed-size channel",
-          -1, G_MAXINT, MAX_BITRATE_DEFAULT, G_PARAM_READWRITE));
+          "Specify a maximum bitrate (in bps). Useful for streaming "
+          "applications. (-1 == disabled)",
+          -1, HIGHEST_BITRATE, MAX_BITRATE_DEFAULT, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BITRATE,
       g_param_spec_int ("bitrate", "Target Bitrate",
-          "Specify a target average bitrate (in bps). ",
-          -1, G_MAXINT, BITRATE_DEFAULT, G_PARAM_READWRITE));
+          "Attempt to encode at a bitrate averaging this (in bps). "
+          "This uses the bitrate management engine, and is not recommended for most users. "
+          "Quality is a better alternative. (-1 == disabled)",
+          -1, HIGHEST_BITRATE, BITRATE_DEFAULT, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MIN_BITRATE,
       g_param_spec_int ("min_bitrate", "Minimum Bitrate",
-          "Specify a minimum bitrate (in bps).",
-          -1, G_MAXINT, MIN_BITRATE_DEFAULT, G_PARAM_READWRITE));
+          "Specify a minimum bitrate (in bps). Useful for encoding for a "
+          "fixed-size channel. (-1 == disabled)",
+          -1, HIGHEST_BITRATE, MIN_BITRATE_DEFAULT, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_QUALITY,
       g_param_spec_float ("quality", "Quality",
           "Specify quality instead of specifying a particular bitrate.",
@@ -473,7 +481,6 @@ gst_vorbisenc_init (VorbisEnc * vorbisenc)
   vorbisenc->eos = FALSE;
   vorbisenc->header_sent = FALSE;
 
-  vorbisenc->newmediacount = 0;
   vorbisenc->tags = gst_tag_list_new ();
 
   /* we're chained and we can deal with events */
@@ -809,20 +816,6 @@ gst_vorbisenc_chain (GstPad * pad, GstData * _data)
         }
         gst_pad_event_default (pad, event);
         return;
-      case GST_EVENT_DISCONTINUOUS:
-        if (GST_EVENT_DISCONT_NEW_MEDIA (event)) {
-	  /* only do for new media events after the first one */
-	  if (vorbisenc->newmediacount++ > 0) {
-	    vorbisenc->setup = FALSE;
-            vorbisenc->header_sent = FALSE;
-            gst_tag_list_free (vorbisenc->tags);
-            vorbisenc->tags = gst_tag_list_new ();
-	    vorbisenc->eos = FALSE;
-	    gst_vorbisenc_setup (vorbisenc);
-          }
-          gst_pad_event_default (pad, event);
-	  break;
-	}
       default:
         gst_pad_event_default (pad, event);
         return;

@@ -46,8 +46,19 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
     GstBuffer * strf_data, GstBuffer * strd_data, char **codec_name)
 {
   GstCaps *caps = NULL;
+  GstBuffer *palette = NULL;
 
   switch (codec_fcc) {
+    case GST_MAKE_FOURCC ('D', 'I', 'B', ' '):
+      caps = gst_caps_new_simple ("video/x-raw-rgb",
+          "bpp", G_TYPE_INT, 8,
+          "depth", G_TYPE_INT, 8, "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+      palette = strf_data;
+      strf_data = NULL;
+      if (codec_name)
+        *codec_name = g_strdup ("Palettized 8-bit RGB");
+      break;
+
     case GST_MAKE_FOURCC ('I', '4', '2', '0'):
       caps = gst_caps_new_simple ("video/x-raw-yuv",
           "format", GST_TYPE_FOURCC, codec_fcc, NULL);
@@ -125,6 +136,7 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
       break;
 
     case GST_MAKE_FOURCC ('M', '2', '6', '3'):
+    case GST_MAKE_FOURCC ('m', '2', '6', '3'):
       caps = gst_caps_new_simple ("video/x-h263", NULL);
       if (codec_name)
         *codec_name = g_strdup ("Microsoft H.263");
@@ -146,6 +158,18 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
       caps = gst_caps_new_simple ("video/x-h263", NULL);
       if (codec_name)
         *codec_name = g_strdup ("Xirlink H.263");
+      break;
+
+    case GST_MAKE_FOURCC ('h', '2', '6', '4'):
+      caps = gst_caps_new_simple ("video/x-h264", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("ITU H.264");
+      break;
+
+    case GST_MAKE_FOURCC ('V', 'S', 'S', 'H'):
+      caps = gst_caps_new_simple ("video/x-h264", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("VideoSoft H.264");
       break;
 
     case GST_MAKE_FOURCC ('D', 'I', 'V', '3'):
@@ -170,6 +194,13 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
         *codec_name = g_strdup ("DivX MPEG-4 Version 4");
       break;
 
+    case GST_MAKE_FOURCC ('B', 'L', 'Z', '0'):
+      caps = gst_caps_new_simple ("video/x-divx",
+          "divxversion", G_TYPE_INT, 4, NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Blizzard DivX");
+      break;
+
     case GST_MAKE_FOURCC ('D', 'X', '5', '0'):
       caps = gst_caps_new_simple ("video/x-divx",
           "divxversion", G_TYPE_INT, 5, NULL);
@@ -185,6 +216,7 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
       break;
 
     case GST_MAKE_FOURCC ('M', 'P', 'G', '4'):
+    case GST_MAKE_FOURCC ('M', 'P', '4', 'S'):
       caps = gst_caps_new_simple ("video/x-msmpeg",
           "msmpegversion", G_TYPE_INT, 41, NULL);
       if (codec_name)
@@ -266,25 +298,8 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
     case GST_MAKE_FOURCC (0x1, 0x0, 0x0, 0x0): /* why, why, why? */
       caps = gst_caps_new_simple ("video/x-rle",
           "layout", G_TYPE_STRING, "microsoft", NULL);
-      if (strf_data && GST_BUFFER_SIZE (strf_data) >= 256 * 4) {
-        GstBuffer *copy = gst_buffer_copy (strf_data);
-        GValue value = { 0 };
-
-#if (G_BYTE_ORDER == G_BIG_ENDIAN)
-        gint n;
-        guint32 *data = (guint32 *) GST_BUFFER_DATA (copy);
-
-        /* own endianness */
-        for (n = 0; n < 256; n++)
-          data[n] = GUINT32_FROM_LE (data[n]);
-#endif
-        g_value_init (&value, GST_TYPE_BUFFER);
-        g_value_set_boxed (&value, copy);
-        gst_structure_set_value (gst_caps_get_structure (caps, 0),
-            "palette_data", &value);
-        g_value_unset (&value);
-        gst_buffer_unref (copy);
-      }
+      palette = strf_data;
+      strf_data = NULL;
       if (strf) {
         gst_caps_set_simple (caps,
             "depth", G_TYPE_INT, (gint) strf->bit_cnt, NULL);
@@ -292,7 +307,21 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
         gst_caps_set_simple (caps, "depth", GST_TYPE_INT_RANGE, 1, 64, NULL);
       }
       if (codec_name)
-        *codec_name = g_strdup ("Mcrosoft RLE");
+        *codec_name = g_strdup ("Microsoft RLE");
+      break;
+
+    case GST_MAKE_FOURCC ('X', 'x', 'a', 'n'):
+      caps = gst_caps_new_simple ("video/x-xan",
+          "wcversion", G_TYPE_INT, 4, NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Xan Wing Commander 4");
+      break;
+
+    case GST_MAKE_FOURCC ('I', 'V', '5', '0'):
+      caps = gst_caps_new_simple ("video/x-intel",
+          "ivversion", G_TYPE_INT, 5, NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Intel Video 5");
       break;
 
     default:
@@ -318,6 +347,28 @@ gst_riff_create_video_caps_with_data (guint32 codec_fcc,
     gst_caps_set_simple (caps,
         "width", GST_TYPE_INT_RANGE, 16, 4096,
         "height", GST_TYPE_INT_RANGE, 16, 4096, NULL);
+  }
+
+  /* extradata */
+  if (strf_data || strd_data) {
+    gst_caps_set_simple (caps, "codec_data", GST_TYPE_BUFFER,
+        strf_data ? strf_data : strd_data, NULL);
+  }
+
+  /* palette */
+  if (palette && GST_BUFFER_SIZE (palette) >= 256 * 4) {
+    GstBuffer *copy = gst_buffer_copy (palette);
+
+#if (G_BYTE_ORDER == G_BIG_ENDIAN)
+    gint n;
+    guint32 *data = (guint32 *) GST_BUFFER_DATA (copy);
+
+    /* own endianness */
+    for (n = 0; n < 256; n++)
+      data[n] = GUINT32_FROM_LE (data[n]);
+#endif
+    gst_caps_set_simple (caps, "palette_data", GST_TYPE_BUFFER, copy, NULL);
+    gst_buffer_unref (copy);
   }
 
   return caps;
@@ -431,8 +482,11 @@ gst_riff_create_audio_caps_with_data (guint16 codec_id,
       break;
     case GST_RIFF_WAVE_FORMAT_WMAV1:
     case GST_RIFF_WAVE_FORMAT_WMAV2:
+    case GST_RIFF_WAVE_FORMAT_WMAV3:
     {
-      gint version = codec_id == GST_RIFF_WAVE_FORMAT_WMAV1 ? 1 : 2;
+      gint version = (codec_id - GST_RIFF_WAVE_FORMAT_WMAV1) + 1;
+
+      channels_max = 6;
 
       block_align = TRUE;
 
@@ -449,12 +503,14 @@ gst_riff_create_audio_caps_with_data (guint16 codec_id,
         gst_caps_set_simple (caps,
             "bitrate", GST_TYPE_INT_RANGE, 0, G_MAXINT, NULL);
       }
-      if (strf_data) {
-        gst_caps_set_simple (caps,
-            "codec_data", GST_TYPE_BUFFER, strf_data, NULL);
-      }
       break;
     }
+    case GST_RIFF_WAVE_FORMAT_SONY_ATRAC3:
+      caps = gst_caps_new_simple ("audio/x-vnd.sony.atrac3", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Sony ATRAC3");
+      break;
+
     default:
       GST_WARNING ("Unknown audio tag 0x%04x", codec_id);
       return NULL;
@@ -478,8 +534,14 @@ gst_riff_create_audio_caps_with_data (guint16 codec_id,
     }
     if (block_align) {
       gst_caps_set_simple (caps,
-          "block_align", GST_TYPE_INT_RANGE, 1, 8192, NULL);
+          "block_align", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
     }
+  }
+
+  /* extradata */
+  if (strf_data || strd_data) {
+    gst_caps_set_simple (caps, "codec_data", GST_TYPE_BUFFER,
+        strf_data ? strf_data : strd_data, NULL);
   }
 
   return caps;
@@ -532,6 +594,7 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('D', 'V', 'S', 'D'),
     GST_MAKE_FOURCC ('W', 'M', 'V', '1'),
     GST_MAKE_FOURCC ('W', 'M', 'V', '2'),
+    GST_MAKE_FOURCC ('W', 'M', 'V', '3'),
     GST_MAKE_FOURCC ('M', 'P', 'G', '4'),
     GST_MAKE_FOURCC ('M', 'P', '4', '2'),
     GST_MAKE_FOURCC ('M', 'P', '4', '3'),
@@ -539,6 +602,7 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('D', 'I', 'V', '3'),
     GST_MAKE_FOURCC ('M', 'P', 'E', 'G'),
     GST_MAKE_FOURCC ('H', '2', '6', '3'),
+    GST_MAKE_FOURCC ('h', '2', '6', '4'),
     GST_MAKE_FOURCC ('D', 'I', 'V', 'X'),
     GST_MAKE_FOURCC ('D', 'X', '5', '0'),
     GST_MAKE_FOURCC ('X', 'V', 'I', 'D'),
@@ -546,6 +610,9 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('c', 'v', 'i', 'd'),
     GST_MAKE_FOURCC ('m', 's', 'v', 'c'),
     GST_MAKE_FOURCC ('R', 'L', 'E', ' '),
+    GST_MAKE_FOURCC ('D', 'I', 'B', ' '),
+    GST_MAKE_FOURCC ('X', 'x', 'a', 'n'),
+    GST_MAKE_FOURCC ('I', 'V', '5', '0'),
     /* FILL ME */
     0
   };
@@ -577,6 +644,7 @@ gst_riff_create_audio_template_caps (void)
     GST_RIFF_WAVE_FORMAT_DVI_ADPCM,
     GST_RIFF_WAVE_FORMAT_WMAV1,
     GST_RIFF_WAVE_FORMAT_WMAV2,
+    GST_RIFF_WAVE_FORMAT_WMAV3,
     /* FILL ME */
     0
   };

@@ -222,7 +222,10 @@ gst_osssrc_dispose (GObject * object)
 {
   GstOssSrc *osssrc = (GstOssSrc *) object;
 
-  gst_object_unparent (GST_OBJECT (osssrc->provided_clock));
+  if (osssrc->provided_clock != NULL) {
+    gst_object_unparent (GST_OBJECT (osssrc->provided_clock));
+    osssrc->provided_clock = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -305,7 +308,7 @@ gst_osssrc_get_time (GstClock * clock, gpointer data)
   if (ioctl (GST_OSSELEMENT (osssrc)->fd, SNDCTL_DSP_GETISPACE, &info) < 0)
     return 0;
 
-  return (osssrc->curoffset +
+  return (osssrc->curoffset * GST_OSSELEMENT (osssrc)->sample_width +
       info.bytes) * GST_SECOND / GST_OSSELEMENT (osssrc)->bps;
 }
 
@@ -591,7 +594,7 @@ gst_osssrc_src_query (GstPad * pad, GstQueryType type, GstFormat * format,
   switch (type) {
     case GST_QUERY_POSITION:
       res = gst_osselement_convert (GST_OSSELEMENT (osssrc),
-          GST_FORMAT_BYTES, osssrc->curoffset, format, value);
+          GST_FORMAT_DEFAULT, osssrc->curoffset, format, value);
       break;
     default:
       break;

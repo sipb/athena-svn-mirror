@@ -28,7 +28,7 @@ sub read_config
 {
   my $command = shift;
 
-  my $config_file = `echo -n ~`."/.gst";
+  my $config_file = $ENV{HOME}."/.gst";
   if (-e $config_file)
   {
     open CONFIG, $config_file;
@@ -57,7 +57,7 @@ sub read_config
   }
   if (!defined $cfg{AUDIOSINK})  { $cfg{AUDIOSINK} = "osssink"; }
   if (!defined $cfg{VIDEOSINK})  { $cfg{VIDEOSINK} = "ffmpegcolorspace ! xvimagesink"; }
-  if (!defined $cfg{CVS_PATH})   { $cfg{CVS_PATH} =  `echo -n ~`."/gst/cvs"; }
+  if (!defined $cfg{CVS_PATH})   { $cfg{CVS_PATH} =  $ENV{HOME}."/gst/cvs"; }
 
   if ($command =~ /(.+)\/gst-launch-ext-@GST_MAJORMINOR@$/)
   { $cfg{COMMAND_PATH} = "$1"; }
@@ -103,8 +103,8 @@ read_config ($0);
 %pipes = ( 
   "ac3", "a52dec ! $cfg{AUDIOSINK}",
   "au", "auparse ! $cfg{AUDIOSINK}",
-  "avi", "avidemux name=demux ! { queue ! spider ! $cfg{VIDEOSINK} } { demux. ! queue ! spider ! $cfg{AUDIOSINK} }",
-  "asf", "asfdemux name=demux ! { queue ! spider ! $cfg{VIDEOSINK} } { demux. ! queue ! spider ! $cfg{AUDIOSINK} }",
+  "avi", "decodebin name=d ! { d. ! queue ! ffmpegcolorspace !  $cfg{VIDEOSINK} } { d. ! queue ! ! $cfg{AUDIOSINK} }",
+  "asf", "decodebin name=d ! { d. ! queue ! ffmpegcolorspace ! $cfg{VIDEOSINK} } { d. ! queue ! audioconvert ! audioscale ! $cfg{AUDIOSINK} }",
   "flac", "flacdec ! $cfg{AUDIOSINK}",
   "fli", "flxdec ! colorspace ! $cfg{VIDEOSINK}",
   "m1v", "mpegdemux ! { queue ! mpeg2dec ! $cfg{VIDEOSINK} }",
@@ -113,12 +113,13 @@ read_config ($0);
   "mod", "modplug !  $cfg{AUDIOSINK}",
   "mp2", "mad ! $cfg{AUDIOSINK}",
   "mp3", "mad ! $cfg{AUDIOSINK}",
-  "mpeg", "mpegdemux name=demux ! { queue ! mpeg2dec ! $cfg{VIDEOSINK} } { demux. ! queue ! mad ! $cfg{AUDIOSINK} }",
-  "mpg", "mpegdemux name=demux ! { queue ! mpeg2dec ! $cfg{VIDEOSINK} } { demux. ! queue ! mad ! $cfg{AUDIOSINK} }",
+  "mp4", "decodebin name=d { d. ! queue ! ffmpegcolorspace ! videoscale ! $cfg{VIDEOSINK} } { d. ! queue ! audioconvert ! audioscale ! $cfg{AUDIOSINK} }",
+  "mpeg", "mpegdemux name=d { d.audio_00 ! queue ! mad ! audioconvert ! audioscale ! $cfg{AUDIOSINK} } { d.video_00 ! queue ! mpeg2dec ! $cfg{VIDEOSINK} }",
+  "mpg", "mpegdemux name=demux { demux.video_00 ! queue ! mpeg2dec ! ffmpegcolorspace ! $cfg{VIDEOSINK} } { demux.audio_00 ! queue ! mad ! $cfg{AUDIOSINK} }",
   "ogg", "oggdemux ! vorbisdec ! audioconvert ! $cfg{AUDIOSINK}",
   "sid", "siddec ! $cfg{AUDIOSINK}",
   "swf", "swfdec name=swfdec ! { queue ! colorspace ! $cfg{VIDEOSINK} }  { swfdec. ! queue ! $cfg{AUDIOSINK} }",
-  "vob", "mpegdemux name=demux ! { queue ! mpeg2dec ! $cfg{VIDEOSINK} }  { demux. ! queue ! a52dec ! $cfg{AUDIOSINK} }",
+  "vob", "mpegdemux name=d { d.video_00 ! queue ! mpeg2dec ! $cfg{VIDEOSINK} } { d.audio_00 ! queue ! a52dec ! audioconvert ! audioscale ! $cfg{AUDIOSINK} }",
   "wav", "wavparse ! $cfg{AUDIOSINK}",
   "wm", "asfdemux name=demux ! { queue ! spider ! $cfg{VIDEOSINK} } { demux. ! queue ! spider ! $cfg{AUDIOSINK} }",
 ### a wma file can use wmav1 or wmav2 codec so we must use spider to decode it  
@@ -126,15 +127,15 @@ read_config ($0);
   "wmv", "asfdemux name=demux ! { queue ! spider ! $cfg{VIDEOSINK} } { demux. ! queue ! spider ! $cfg{AUDIOSINK} }",
   "mkv", "matroskademux name=demux ! { queue ! spider ! $cfg{VIDEOSINK} } { demux. ! queue ! spider ! $cfg{AUDIOSINK} }",
   "mka", "matroskademux ! spider ! $cfg{AUDIOSINK}",
-  "mov", "qtdemux name=demux { .video_00 ! queue ! spider ! $cfg{VIDEOSINK} } { demux. !  queue ! spider ! $cfg{AUDIOSINK} }",
+  "mov", "decodebin name=d { d. ! queue ! ffmpegcolorspace ! videoscale ! $cfg{VIDEOSINK} } { d. ! queue ! audioconvert ! audioscale ! $cfg{AUDIOSINK} }",
 );
 
 if ($cfg{VISUALIZER}) {
   %pipes = (
     %pipes,
-    "vis.mp3", "mad ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! colorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
-    "vis.ogg", "vorbisdec ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! colorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
-    "vis.wav", "wavparse ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! colorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
+    "vis.mp3", "mad ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! ffmpegcolorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
+    "vis.ogg", "vorbisdec ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! ffmpegcolorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
+    "vis.wav", "wavparse ! tee name=tee silent=true ! queue leaky=1 ! { $cfg{VISUALIZER} ! ffmpegcolorspace ! $cfg{VIDEOSINK} } tee. ! $cfg{AUDIOSINK}",
   );
 }              
 

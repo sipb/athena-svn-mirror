@@ -230,11 +230,15 @@ gst_alsa_sink_check_event (GstAlsaSink * sink, gint pad_nr)
         if (gst_event_discont_get_value (event, GST_FORMAT_TIME, &value)) {
           gst_element_set_time_delay (GST_ELEMENT (this), value,
               MIN (value, delay));
-        } else if (this->format
-            && (gst_event_discont_get_value (event, GST_FORMAT_DEFAULT, &value)
-                || gst_event_discont_get_value (event, GST_FORMAT_BYTES,
-                    &value))) {
+        } else if (this->format && (gst_event_discont_get_value (event,
+                    GST_FORMAT_DEFAULT, &value))) {
           value = gst_alsa_samples_to_timestamp (this, value);
+          gst_element_set_time_delay (GST_ELEMENT (this), value, MIN (value,
+                  delay));
+        } else if (this->format
+            && (gst_event_discont_get_value (event, GST_FORMAT_BYTES,
+                    &value))) {
+          value = gst_alsa_bytes_to_timestamp (this, value);
           gst_element_set_time_delay (GST_ELEMENT (this), value, MIN (value,
                   delay));
         } else {
@@ -302,7 +306,11 @@ gst_alsa_sink_mmap (GstAlsa * this, snd_pcm_sframes_t * avail)
     goto out;
   }
   if ((err = snd_pcm_mmap_commit (this->handle, offset, *avail)) < 0) {
-    GST_ERROR_OBJECT (this, "mmap commit failed: %s", snd_strerror (err));
+    if (err == -EPIPE) {
+      gst_alsa_xrun_recovery (GST_ALSA (this));
+    } else {
+      GST_ERROR_OBJECT (this, "mmap commit failed: %s", snd_strerror (err));
+    }
     goto out;
   }
 
@@ -356,17 +364,11 @@ sink_restart:
     goto sink_restart;
   if (avail < 0)
     return;
-  if (avail > 0) {
 
-    /* Not enough space. We grab data nonetheless and sleep afterwards */
-    if (avail < this->period_size) {
-      avail = this->period_size;
-    }
+  if (avail > 0 || (avail == 0 && !this->format)) {
 
-    /* check how many bytes we still have in all our bytestreams */
-    /* initialize this value to a somewhat sane state, we might alloc
-     * this much data below (which would be a bug, but who knows)... */
-    bytes = this->period_size * this->period_count * element->numpads * 8;      /* must be > max sample size in bytes */
+    bytes = G_MAXINT;
+
     for (i = 0; i < element->numpads; i++) {
       GstBuffer *buf;
 
@@ -381,6 +383,7 @@ sink_restart:
         if (GST_IS_EVENT (sink->gst_data[i])) {
           GST_LOG_OBJECT (sink, "pulled data %p is an event, checking",
               sink->gst_data[i]);
+
           if (gst_alsa_sink_check_event (sink, i))
             continue;
           return;
@@ -402,7 +405,7 @@ sink_restart:
          * assumes that both calls return the same value. However they can be
          * wildly different, since snd_pcm_delay goes deep into the kernel.
          */
-        if (gst_element_get_clock (element) == GST_CLOCK (this->clock)) {
+        if (this->ext_clock == GST_CLOCK (this->clock)) {
           /* FIXME: this is ugly because of the variables it uses but I
            * don't know a better way to get this info */
           if (element->base_time > this->clock->start_time) {
@@ -437,9 +440,15 @@ sink_restart:
           /* there are empty samples in front of us, fill them with silence */
           int samples = MIN (bytes, sample_diff) *
               (element->numpads == 1 ? this->format->channels : 1);
-          int size =
-              samples * snd_pcm_format_physical_width (this->format->format) /
-              8;
+          int width = snd_pcm_format_physical_width (this->format->format);
+          int size = samples * width / 8;
+
+          if (size / (width / 8) != samples) {
+            GST_WARNING_OBJECT (this,
+                "Integer overflow for size=%d/samples=%d - broken stream",
+                size, samples);
+            goto no_difference;
+          }
           GST_INFO_OBJECT (this,
               "Allocating %d bytes (%ld samples) now to resync: sample %lu expected, but got %ld",
               size, MIN (bytes, sample_diff), expected, samplestamp);
@@ -483,6 +492,16 @@ sink_restart:
       bytes = MIN (bytes, sink->size[i]);
     }
 
+    /* check how many bytes we still have in all our bytestreams */
+    /* initialize this value to a somewhat sane state, we might alloc
+     * this much data below (which would be a bug, but who knows)... */
+    bytes = MIN (bytes,
+        this->period_size * this->period_count * element->numpads * 8);
+    /* must be > max sample size in bytes */
+
+    /* Not enough space. We grab data nonetheless and sleep afterwards */
+    if (avail < this->period_size)
+      avail = this->period_size;
     avail = MIN (avail, gst_alsa_bytes_to_samples (this, bytes));
 
     /* wait until the hw buffer has enough space */
@@ -519,6 +538,9 @@ sink_restart:
       if (sink->behaviour[i] != 1)
         sink->buf_data[i] += bytes;
     }
+  } else if (avail == 0 && gst_element_get_state (element) == GST_STATE_PLAYING) {
+    if (gst_alsa_pcm_wait (this) == FALSE)
+      return;
   }
 
   if (snd_pcm_state (this->handle) != SND_PCM_STATE_RUNNING
@@ -564,8 +586,10 @@ gst_alsa_sink_get_time (GstAlsa * this)
 
   if (!this->format)
     return 0;
-  if (snd_pcm_delay (this->handle, &delay) != 0) {
-    return this->played / this->format->rate;
+  if (!GST_FLAG_IS_SET (this, GST_ALSA_RUNNING)) {
+    delay = 0;
+  } else if (snd_pcm_delay (this->handle, &delay) != 0) {
+    delay = 0;
   }
   if (this->played <= delay) {
     return 0;

@@ -255,6 +255,8 @@ static void paint_setup_YUY2 (paintinfo * p, char *dest);
 static void paint_setup_UYVY (paintinfo * p, char *dest);
 static void paint_setup_YVYU (paintinfo * p, char *dest);
 static void paint_setup_IYU2 (paintinfo * p, char *dest);
+static void paint_setup_Y41B (paintinfo * p, char *dest);
+static void paint_setup_Y42B (paintinfo * p, char *dest);
 static void paint_setup_Y800 (paintinfo * p, char *dest);
 
 #if 0
@@ -277,6 +279,8 @@ static void paint_setup_xRGB1555 (paintinfo * p, char *dest);
 static void paint_hline_I420 (paintinfo * p, int x, int y, int w);
 static void paint_hline_YUY2 (paintinfo * p, int x, int y, int w);
 static void paint_hline_IYU2 (paintinfo * p, int x, int y, int w);
+static void paint_hline_Y41B (paintinfo * p, int x, int y, int w);
+static void paint_hline_Y42B (paintinfo * p, int x, int y, int w);
 static void paint_hline_Y800 (paintinfo * p, int x, int y, int w);
 
 #if 0
@@ -339,7 +343,9 @@ struct fourcc_list_struct fourcc_list[] = {
 #endif
   /* CLPL */
   /* Y41B */
+  {"Y41B", "Y41B", 12, paint_setup_Y41B, paint_hline_Y41B},
   /* Y42B */
+  {"Y42B", "Y42B", 16, paint_setup_Y42B, paint_hline_Y42B},
   /* Y800 grayscale */
   {"Y800", "Y800", 8, paint_setup_Y800, paint_hline_Y800},
 
@@ -747,7 +753,7 @@ paint_setup_YVYU (paintinfo * p, char *dest)
 
 #ifndef HAVE_LIBOIL
 void
-splat_u8 (guint8 * dest, int dstr, guint8 val, int n)
+oil_splat_u8 (guint8 * dest, int dstr, guint8 val, int n)
 {
   int i;
 
@@ -766,9 +772,9 @@ paint_hline_YUY2 (paintinfo * p, int x, int y, int w)
   int offset;
 
   offset = y * p->ystride;
-  splat_u8 (p->yp + offset + x * 2, 2, p->color->Y, w);
-  splat_u8 (p->up + offset + x1 * 4, 4, p->color->U, x2 - x1);
-  splat_u8 (p->vp + offset + x1 * 4, 4, p->color->V, x2 - x1);
+  oil_splat_u8 (p->yp + offset + x * 2, 2, p->color->Y, w);
+  oil_splat_u8 (p->up + offset + x1 * 4, 4, p->color->U, x2 - x1);
+  oil_splat_u8 (p->vp + offset + x1 * 4, 4, p->color->V, x2 - x1);
 }
 
 static void
@@ -788,9 +794,59 @@ paint_hline_IYU2 (paintinfo * p, int x, int y, int w)
   int offset;
 
   offset = y * p->ystride;
-  splat_u8 (p->yp + offset + x * 3, 3, p->color->Y, w);
-  splat_u8 (p->up + offset + x * 3, 3, p->color->U, w);
-  splat_u8 (p->vp + offset + x * 3, 3, p->color->V, w);
+  oil_splat_u8 (p->yp + offset + x * 3, 3, p->color->Y, w);
+  oil_splat_u8 (p->up + offset + x * 3, 3, p->color->U, w);
+  oil_splat_u8 (p->vp + offset + x * 3, 3, p->color->V, w);
+}
+
+static void
+paint_setup_Y41B (paintinfo * p, char *dest)
+{
+  p->yp = dest;
+  p->ystride = ROUND_UP_4 (p->width);
+  p->up = p->yp + p->ystride * p->height;
+  p->ustride = ROUND_UP_8 (p->width) / 4;
+  p->vp = p->up + p->ustride * p->height;
+  p->vstride = ROUND_UP_8 (p->width) / 4;
+  p->endptr = p->vp + p->vstride * p->height;
+}
+
+static void
+paint_hline_Y41B (paintinfo * p, int x, int y, int w)
+{
+  int x1 = x / 4;
+  int x2 = (x + w) / 4;
+  int offset = y * p->ystride;
+  int offset1 = y * p->ustride;
+
+  memset (p->yp + offset + x, p->color->Y, w);
+  memset (p->up + offset1 + x1, p->color->U, x2 - x1);
+  memset (p->vp + offset1 + x1, p->color->V, x2 - x1);
+}
+
+static void
+paint_setup_Y42B (paintinfo * p, char *dest)
+{
+  p->yp = dest;
+  p->ystride = ROUND_UP_4 (p->width);
+  p->up = p->yp + p->ystride * p->height;
+  p->ustride = ROUND_UP_8 (p->width) / 2;
+  p->vp = p->up + p->ustride * p->height;
+  p->vstride = ROUND_UP_8 (p->width) / 2;
+  p->endptr = p->vp + p->vstride * p->height;
+}
+
+static void
+paint_hline_Y42B (paintinfo * p, int x, int y, int w)
+{
+  int x1 = x / 2;
+  int x2 = (x + w) / 2;
+  int offset = y * p->ystride;
+  int offset1 = y * p->ustride;
+
+  memset (p->yp + offset + x, p->color->Y, w);
+  memset (p->up + offset1 + x1, p->color->U, x2 - x1);
+  memset (p->vp + offset1 + x1, p->color->V, x2 - x1);
 }
 
 static void
@@ -964,9 +1020,9 @@ paint_hline_str4 (paintinfo * p, int x, int y, int w)
 {
   int offset = y * p->ystride;
 
-  splat_u8 (p->yp + offset + x * 4, 4, p->color->R, w);
-  splat_u8 (p->up + offset + x * 4, 4, p->color->G, w);
-  splat_u8 (p->vp + offset + x * 4, 4, p->color->B, w);
+  oil_splat_u8 (p->yp + offset + x * 4, 4, p->color->R, w);
+  oil_splat_u8 (p->up + offset + x * 4, 4, p->color->G, w);
+  oil_splat_u8 (p->vp + offset + x * 4, 4, p->color->B, w);
 }
 
 static void
@@ -974,9 +1030,9 @@ paint_hline_str3 (paintinfo * p, int x, int y, int w)
 {
   int offset = y * p->ystride;
 
-  splat_u8 (p->yp + offset + x * 3, 3, p->color->R, w);
-  splat_u8 (p->up + offset + x * 3, 3, p->color->G, w);
-  splat_u8 (p->vp + offset + x * 3, 3, p->color->B, w);
+  oil_splat_u8 (p->yp + offset + x * 3, 3, p->color->R, w);
+  oil_splat_u8 (p->up + offset + x * 3, 3, p->color->G, w);
+  oil_splat_u8 (p->vp + offset + x * 3, 3, p->color->B, w);
 }
 
 static void
@@ -997,11 +1053,11 @@ paint_hline_RGB565 (paintinfo * p, int x, int y, int w)
   b = ((p->color->G << 3) & 0xe0) | (p->color->B >> 3);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-  splat_u8 (p->yp + offset + x * 2 + 0, 2, b, w);
-  splat_u8 (p->yp + offset + x * 2 + 1, 2, a, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 0, 2, b, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 1, 2, a, w);
 #else
-  splat_u8 (p->yp + offset + x * 2 + 0, 2, a, w);
-  splat_u8 (p->yp + offset + x * 2 + 1, 2, b, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 0, 2, a, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 1, 2, b, w);
 #endif
 }
 
@@ -1023,10 +1079,10 @@ paint_hline_xRGB1555 (paintinfo * p, int x, int y, int w)
   b = ((p->color->G << 2) & 0xe0) | (p->color->B >> 3);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-  splat_u8 (p->yp + offset + x * 2 + 0, 2, b, w);
-  splat_u8 (p->yp + offset + x * 2 + 1, 2, a, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 0, 2, b, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 1, 2, a, w);
 #else
-  splat_u8 (p->yp + offset + x * 2 + 0, 2, a, w);
-  splat_u8 (p->yp + offset + x * 2 + 1, 2, b, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 0, 2, a, w);
+  oil_splat_u8 (p->yp + offset + x * 2 + 1, 2, b, w);
 #endif
 }

@@ -24,6 +24,7 @@
 #include "vorbisdec.h"
 #include <string.h>
 #include <gst/tag/tag.h>
+#include <gst/audio/multichannel.h>
 
 GST_DEBUG_CATEGORY_EXTERN (vorbisdec_debug);
 #define GST_CAT_DEFAULT vorbisdec_debug
@@ -52,8 +53,8 @@ GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/x-raw-float, "
-        "rate = (int) [ 11025, 48000 ], "
-        "channels = (int) [ 1, 2 ], " "endianness = (int) BYTE_ORDER, "
+        "rate = (int) [ 8000, 50000 ], "
+        "channels = (int) [ 1, 6 ], " "endianness = (int) BYTE_ORDER, "
 /* no ifdef in macros, please
 #ifdef GST_VORBIS_DEC_SEQUENTIAL
       "layout = \"sequential\", "
@@ -113,7 +114,7 @@ vorbis_dec_get_formats (GstPad * pad)
     0
   };
   static GstFormat sink_formats[] = {
-    GST_FORMAT_BYTES,
+    /*GST_FORMAT_BYTES, */
     GST_FORMAT_TIME,
     GST_FORMAT_DEFAULT,         /* granulepos or samples */
     0
@@ -153,6 +154,7 @@ gst_vorbis_dec_init (GstVorbisDec * dec)
       (&vorbis_dec_sink_factory), "sink");
   gst_pad_set_chain_function (dec->sinkpad, vorbis_dec_chain);
   gst_pad_set_formats_function (dec->sinkpad, vorbis_dec_get_formats);
+  gst_pad_set_convert_function (dec->sinkpad, vorbis_dec_convert);
   gst_element_add_pad (GST_ELEMENT (dec), dec->sinkpad);
 
   dec->srcpad =
@@ -182,6 +184,10 @@ vorbis_dec_convert (GstPad * pad,
   dec = GST_VORBIS_DEC (gst_pad_get_parent (pad));
 
   if (dec->packetno < 1)
+    return FALSE;
+
+  if (dec->sinkpad == pad &&
+      (src_format == GST_FORMAT_BYTES || *dest_format == GST_FORMAT_BYTES))
     return FALSE;
 
   switch (src_format) {
@@ -240,7 +246,8 @@ vorbis_dec_src_query (GstPad * pad, GstQueryType query, GstFormat * format,
     granulepos = dec->granulepos;
   } else {
     /* query peer in default format */
-    if (!gst_pad_query (GST_PAD_PEER (dec->sinkpad), query, &my_format,
+    if (!dec->sinkpad ||
+        !gst_pad_query (GST_PAD_PEER (dec->sinkpad), query, &my_format,
             &granulepos))
       return FALSE;
   }
@@ -367,6 +374,9 @@ vorbis_dec_chain (GstPad * pad, GstData * data)
   packet.granulepos = GST_BUFFER_OFFSET_END (buf);
   packet.packetno = vd->packetno++;
 
+  if (GST_BUFFER_OFFSET_END_IS_VALID (buf))
+    vd->granulepos = GST_BUFFER_OFFSET_END (buf);;
+
   /* 
    * FIXME. Is there anyway to know that this is the last packet and
    * set e_o_s??
@@ -378,9 +388,9 @@ vorbis_dec_chain (GstPad * pad, GstData * data)
     /* header packet */
     if (packet.packet[0] / 2 != packet.packetno) {
       /* FIXME: just skip? */
-      GST_ELEMENT_ERROR (GST_ELEMENT (vd), STREAM, DECODE,
-          (NULL), ("unexpected packet type %d, expected %d",
-              (gint) packet.packet[0], (gint) packet.packetno));
+      GST_WARNING_OBJECT (GST_ELEMENT (vd),
+          "unexpected packet type %d, expected %d",
+          (gint) packet.packet[0], (gint) packet.packetno);
       gst_data_unref (data);
       return;
     }
@@ -408,7 +418,8 @@ vorbis_dec_chain (GstPad * pad, GstData * data)
         g_free (encoder);
       }
       gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
-          GST_TAG_ENCODER_VERSION, vd->vi.version, NULL);
+          GST_TAG_ENCODER_VERSION, vd->vi.version,
+          GST_TAG_AUDIO_CODEC, "Vorbis", NULL);
       if (vd->vi.bitrate_upper > 0)
         gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
             GST_TAG_MAXIMUM_BITRATE, (guint) vd->vi.bitrate_upper, NULL);
@@ -421,6 +432,7 @@ vorbis_dec_chain (GstPad * pad, GstData * data)
       gst_element_found_tags_for_pad (GST_ELEMENT (vd), vd->srcpad, 0, list);
     } else if (packet.packetno == 2) {
       GstCaps *caps;
+      const GstAudioChannelPosition *pos = NULL;
 
       /* done */
       vorbis_synthesis_init (&vd->vd, &vd->vi);
@@ -430,6 +442,63 @@ vorbis_dec_chain (GstPad * pad, GstData * data)
           "channels", G_TYPE_INT, vd->vi.channels,
           "endianness", G_TYPE_INT, G_BYTE_ORDER,
           "width", G_TYPE_INT, 32, "buffer-frames", G_TYPE_INT, 0, NULL);
+      switch (vd->vi.channels) {
+        case 1:
+        case 2:
+          /* nothing */
+          break;
+        case 3:{
+          static GstAudioChannelPosition pos3[] = {
+            GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT
+          };
+          pos = pos3;
+          break;
+        }
+        case 4:{
+          static GstAudioChannelPosition pos4[] = {
+            GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT
+          };
+          pos = pos4;
+          break;
+        }
+        case 5:{
+          static GstAudioChannelPosition pos5[] = {
+            GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT
+          };
+          pos = pos5;
+          break;
+        }
+        case 6:{
+          static GstAudioChannelPosition pos6[] = {
+            GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+            GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+            GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+            GST_AUDIO_CHANNEL_POSITION_LFE
+          };
+          pos = pos6;
+          break;
+        }
+        default:
+          gst_data_unref (data);
+          gst_caps_free (caps);
+          GST_ELEMENT_ERROR (vd, STREAM, NOT_IMPLEMENTED, (NULL),
+              ("Unsupported channel count %d", vd->vi.channels));
+          return;
+      }
+      if (pos) {
+        gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
+      }
       if (!gst_pad_set_explicit_caps (vd->srcpad, caps)) {
         gst_caps_free (caps);
         return;

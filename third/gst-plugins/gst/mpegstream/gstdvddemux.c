@@ -60,6 +60,13 @@ enum
 
 /* Define the capabilities separately, to be able to reuse them. */
 
+static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("video/mpeg, "
+        "mpegversion = (int) 2, " "systemstream = (boolean) TRUE")
+    );
+
 #define VIDEO_CAPS \
   GST_STATIC_CAPS ("video/mpeg, " \
     "mpegversion = (int) { 1, 2 }, " \
@@ -73,7 +80,7 @@ enum
     "audio/x-raw-int, " \
       "endianness = (int) BIG_ENDIAN, " \
       "signed = (boolean) TRUE, " \
-      "width = (int) { 16, 20, 24 }, " \
+      "width = (int) { 16, 24 }, " \
       "depth = (int) { 16, 20, 24 }, " \
       "rate = (int) { 48000, 96000 }, " \
       "channels = (int) [ 1, 8 ];" \
@@ -152,6 +159,7 @@ static void gst_dvd_demux_set_cur_audio
 static void gst_dvd_demux_set_cur_subpicture
     (GstDVDDemux * dvd_demux, gint stream_nr);
 
+static GstElementStateReturn gst_dvd_demux_change_state (GstElement * element);
 
 static GstMPEGDemuxClass *parent_class = NULL;
 
@@ -196,6 +204,10 @@ gst_dvd_demux_base_init (GstDVDDemuxClass * klass)
 
   mpeg_parse_class->send_data = gst_dvd_demux_send_data;
 
+  /* sink pad */
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+
   demux_class->audio_template = gst_static_pad_template_get (&audio_template);
 
   klass->cur_video_template = gst_static_pad_template_get (&cur_video_template);
@@ -232,6 +244,8 @@ gst_dvd_demux_class_init (GstDVDDemuxClass * klass)
   mpeg_parse_class = (GstMPEGParseClass *) klass;
   mpeg_demux_class = (GstMPEGDemuxClass *) klass;
 
+  gstelement_class->change_state = gst_dvd_demux_change_state;
+
   mpeg_parse_class->send_discont = gst_dvd_demux_send_discont;
 
   mpeg_demux_class->get_audio_stream = gst_dvd_demux_get_audio_stream;
@@ -247,7 +261,6 @@ static void
 gst_dvd_demux_init (GstDVDDemux * dvd_demux)
 {
   GstMPEGDemux *mpeg_demux = GST_MPEG_DEMUX (dvd_demux);
-  GstMPEGParse *mpeg_parse = GST_MPEG_PARSE (dvd_demux);
   gint i;
 
   GST_FLAG_SET (dvd_demux, GST_ELEMENT_EVENT_AWARE);
@@ -256,12 +269,15 @@ gst_dvd_demux_init (GstDVDDemux * dvd_demux)
   dvd_demux->cur_video =
       DEMUX_CLASS (dvd_demux)->new_output_pad (mpeg_demux, "current_video",
       CLASS (dvd_demux)->cur_video_template);
+  gst_element_add_pad (GST_ELEMENT (mpeg_demux), dvd_demux->cur_video);
   dvd_demux->cur_audio =
       DEMUX_CLASS (dvd_demux)->new_output_pad (mpeg_demux, "current_audio",
       CLASS (dvd_demux)->cur_audio_template);
+  gst_element_add_pad (GST_ELEMENT (mpeg_demux), dvd_demux->cur_audio);
   dvd_demux->cur_subpicture =
       DEMUX_CLASS (dvd_demux)->new_output_pad (mpeg_demux, "current_subpicture",
       CLASS (dvd_demux)->cur_subpicture_template);
+  gst_element_add_pad (GST_ELEMENT (mpeg_demux), dvd_demux->cur_subpicture);
 
   dvd_demux->mpeg_version = 0;
   dvd_demux->cur_video_nr = 0;
@@ -271,10 +287,24 @@ gst_dvd_demux_init (GstDVDDemux * dvd_demux)
   /* Start the timestamp sequence in 0. */
   dvd_demux->last_end_ptm = 0;
 
+  /* (Ronald) so, this was disabled. I'm enabling (default) it again.
+   * Timestamp adjustment is fairly evil, we would ideally use discont
+   * events instead. However, our current clocking has a pretty serious
+   * race condition: imagine that $pipeline is at time 30sec and $audio
+   * receives a discont to 0sec. Video processes its last buffer and
+   * calls _wait() on $timestamp, which is 30s - so we wait (hang) 30sec.
+   * This is unacceptable, obviously, and timestamp adjustment, no matter
+   * how evil, solves this.
+   * Before disabling this again, tripple check that al .vob files on our
+   * websites /media/ directory work fine, especially bullet.vob and
+   * barrage.vob.
+   */
+#if 0
   /* Try to prevent the mpegparse infrastructure from doing timestamp
      adjustment. */
   mpeg_parse->do_adjust = FALSE;
   mpeg_parse->adjust = 0;
+#endif
 
   dvd_demux->just_flushed = FALSE;
   dvd_demux->discont_time = GST_CLOCK_TIME_NONE;
@@ -484,9 +514,9 @@ gst_dvd_demux_get_audio_stream (GstMPEGDemux * mpeg_demux,
   guint8 sample_info = 0;
   GstMPEGStream *str;
   GstDVDLPCMStream *lpcm_str = NULL;
-  gchar *name;
   GstCaps *caps;
   gint width, rate, channels;
+  gboolean add_pad = FALSE;
 
   g_return_val_if_fail (stream_nr < GST_MPEG_DEMUX_NUM_AUDIO_STREAMS, NULL);
   g_return_val_if_fail (type > GST_MPEG_DEMUX_AUDIO_UNKNOWN &&
@@ -501,20 +531,23 @@ gst_dvd_demux_get_audio_stream (GstMPEGDemux * mpeg_demux,
   }
 
   str = mpeg_demux->audio_stream[stream_nr];
-
   if (str == NULL) {
+    gchar *name;
+
     if (type != GST_DVD_DEMUX_AUDIO_LPCM) {
       str = g_new0 (GstMPEGStream, 1);
     } else {
       lpcm_str = g_new0 (GstDVDLPCMStream, 1);
       str = (GstMPEGStream *) lpcm_str;
     }
-    str->type = GST_MPEG_DEMUX_AUDIO_UNKNOWN;
 
     name = g_strdup_printf ("audio_%02d", stream_nr);
     DEMUX_CLASS (dvd_demux)->init_stream (mpeg_demux, type, str, stream_nr,
         name, DEMUX_CLASS (dvd_demux)->audio_template);
+    /* update caps */
+    str->type = GST_MPEG_DEMUX_AUDIO_UNKNOWN;
     g_free (name);
+    add_pad = TRUE;
 
     mpeg_demux->audio_stream[stream_nr] = str;
   } else {
@@ -566,6 +599,9 @@ gst_dvd_demux_get_audio_stream (GstMPEGDemux * mpeg_demux,
 
 
         lpcm_str->sample_info = sample_info;
+        lpcm_str->width = width;
+        lpcm_str->rate = rate;
+        lpcm_str->channels = channels;
         break;
 
       case GST_DVD_DEMUX_AUDIO_AC3:
@@ -587,6 +623,8 @@ gst_dvd_demux_get_audio_stream (GstMPEGDemux * mpeg_demux,
       /* This is the current audio stream.  Use the same caps. */
       gst_pad_set_explicit_caps (dvd_demux->cur_audio, gst_caps_copy (caps));
     }
+    if (add_pad)
+      gst_element_add_pad (GST_ELEMENT (mpeg_demux), str->pad);
 
     str->type = type;
   }
@@ -603,6 +641,7 @@ gst_dvd_demux_get_subpicture_stream (GstMPEGDemux * mpeg_demux,
   GstMPEGStream *str;
   gchar *name;
   GstCaps *caps;
+  gboolean add_pad = FALSE;
 
   g_return_val_if_fail (stream_nr < GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS, NULL);
   g_return_val_if_fail (type > GST_DVD_DEMUX_SUBP_UNKNOWN &&
@@ -612,12 +651,13 @@ gst_dvd_demux_get_subpicture_stream (GstMPEGDemux * mpeg_demux,
 
   if (str == NULL) {
     str = g_new0 (GstMPEGStream, 1);
-    str->type = GST_DVD_DEMUX_SUBP_UNKNOWN;
 
     name = g_strdup_printf ("subpicture_%02d", stream_nr);
     DEMUX_CLASS (dvd_demux)->init_stream (mpeg_demux, type, str, stream_nr,
         name, CLASS (dvd_demux)->subpicture_template);
+    str->type = GST_DVD_DEMUX_SUBP_UNKNOWN;
     g_free (name);
+    add_pad = TRUE;
 
     dvd_demux->subpicture_stream[stream_nr] = str;
   } else {
@@ -637,6 +677,8 @@ gst_dvd_demux_get_subpicture_stream (GstMPEGDemux * mpeg_demux,
     }
 
     gst_caps_free (caps);
+    if (add_pad)
+      gst_element_add_pad (GST_ELEMENT (mpeg_demux), str->pad);
     str->type = GST_DVD_DEMUX_SUBP_DVD;
   }
 
@@ -654,6 +696,7 @@ gst_dvd_demux_process_private (GstMPEGDemux * mpeg_demux,
   guint8 ps_id_code, lpcm_sample_info;
   GstMPEGStream *outstream = NULL;
   guint first_access = 0;
+  gint align = 1, len, off;
 
   basebuf = GST_BUFFER_DATA (buffer);
 
@@ -682,11 +725,14 @@ gst_dvd_demux_process_private (GstMPEGDemux * mpeg_demux,
         headerlen += 4;
         datalen -= 4;
       } else if (ps_id_code >= 0xA0 && ps_id_code <= 0xA7) {
+        GstDVDLPCMStream *lpcm_str;
+
         GST_LOG_OBJECT (dvd_demux,
             "we have an audio (LPCM) packet, track %d", ps_id_code - 0xA0);
         lpcm_sample_info = basebuf[headerlen + 9];
         outstream = DEMUX_CLASS (dvd_demux)->get_audio_stream (mpeg_demux,
             ps_id_code - 0xA0, GST_DVD_DEMUX_AUDIO_LPCM, &lpcm_sample_info);
+        lpcm_str = (GstDVDLPCMStream *) outstream;
 
         /* Determine the position of the "first access". */
         first_access = *(basebuf + headerlen + 6) * 256 +
@@ -695,6 +741,9 @@ gst_dvd_demux_process_private (GstMPEGDemux * mpeg_demux,
         /* Get rid of the LPCM header. */
         headerlen += 7;
         datalen -= 7;
+
+        /* align by samples */
+        align = lpcm_str->width * lpcm_str->channels / 8;
       } else if (ps_id_code >= 0x20 && ps_id_code <= 0x3F) {
         GST_LOG_OBJECT (dvd_demux,
             "we have a subpicture packet, track %d", ps_id_code - 0x20);
@@ -748,14 +797,29 @@ gst_dvd_demux_process_private (GstMPEGDemux * mpeg_demux,
        a means to associate a timestamp to the middle of a buffer, we
        send two separate buffers and put the timestamp in the second
        one. */
-    DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
-        buffer, GST_CLOCK_TIME_NONE, headerlen + 4, first_access - 1);
-    DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
-        buffer, timestamp,
-        headerlen + 3 + first_access, datalen - (first_access - 1));
+    off = headerlen + 4;
+    len = first_access - 1;
+    len -= len % align;
+    if (len > 0) {
+      DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
+          buffer, GST_CLOCK_TIME_NONE, headerlen + 4, first_access - 1);
+    }
+    off += len;
+    len = datalen - len;
+    len -= len % align;
+    if (len > 0) {
+      DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
+          buffer, timestamp,
+          headerlen + 3 + first_access, datalen - (first_access - 1));
+    }
   } else {
-    DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
-        buffer, timestamp, headerlen + 4, datalen);
+    off = headerlen + 4;
+    len = datalen;
+    len -= len % align;
+    if (len > 0) {
+      DEMUX_CLASS (dvd_demux)->send_subbuffer (mpeg_demux, outstream,
+          buffer, timestamp, headerlen + 4, datalen);
+    }
   }
 }
 
@@ -850,7 +914,7 @@ gst_dvd_demux_set_cur_audio (GstDVDDemux * dvd_demux, gint stream_nr)
   str = mpeg_demux->audio_stream[stream_nr];
   if (str != NULL) {
     /* (Re)set the caps in the "current" pad. */
-    caps = gst_pad_get_negotiated_caps (str->pad);
+    caps = GST_RPAD_EXPLICIT_CAPS (str->pad);
     if (caps != NULL) {
       gst_pad_set_explicit_caps (dvd_demux->cur_audio, caps);
     }
@@ -862,7 +926,6 @@ static void
 gst_dvd_demux_set_cur_subpicture (GstDVDDemux * dvd_demux, gint stream_nr)
 {
   GstMPEGStream *str;
-  const GstCaps *caps = NULL;
 
   g_return_if_fail (stream_nr >= -1 &&
       stream_nr < GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS);
@@ -878,18 +941,62 @@ gst_dvd_demux_set_cur_subpicture (GstDVDDemux * dvd_demux, gint stream_nr)
 
   str = dvd_demux->subpicture_stream[stream_nr];
   if (str != NULL) {
+    GstCaps *caps = NULL;
+
     /* (Re)set the caps in the "current" pad. */
-    caps = gst_pad_get_negotiated_caps (str->pad);
-    if (caps != NULL) {
-      gst_pad_set_explicit_caps (dvd_demux->cur_subpicture, caps);
-    }
+    caps = GST_RPAD_EXPLICIT_CAPS (str->pad);
+    gst_pad_set_explicit_caps (dvd_demux->cur_subpicture, caps);
   }
 }
 
+static void
+gst_dvd_demux_reset (GstDVDDemux * dvd_demux)
+{
+  int i;
+
+  GST_INFO ("Resetting the dvd demuxer");
+  for (i = 0; i < GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS; i++) {
+    if (dvd_demux->subpicture_stream[i]) {
+      gst_element_remove_pad (GST_ELEMENT (dvd_demux),
+          dvd_demux->subpicture_stream[i]->pad);
+      g_free (dvd_demux->subpicture_stream[i]);
+      dvd_demux->subpicture_stream[i] = NULL;
+    }
+    dvd_demux->subpicture_time[i] = 0;
+  }
+  gst_pad_set_explicit_caps (dvd_demux->cur_video, NULL);
+  gst_pad_set_explicit_caps (dvd_demux->cur_audio, NULL);
+  gst_pad_set_explicit_caps (dvd_demux->cur_subpicture, NULL);
+
+  dvd_demux->cur_video_nr = 0;
+  dvd_demux->cur_audio_nr = 0;
+  dvd_demux->cur_subpicture_nr = 0;
+  dvd_demux->mpeg_version = 0;
+  dvd_demux->last_end_ptm = 0;
+
+  dvd_demux->just_flushed = FALSE;
+  dvd_demux->discont_time = GST_CLOCK_TIME_NONE;
+}
+
+static GstElementStateReturn
+gst_dvd_demux_change_state (GstElement * element)
+{
+  GstDVDDemux *dvd_demux = GST_DVD_DEMUX (element);
+
+  switch (GST_STATE_TRANSITION (element)) {
+    case GST_STATE_PAUSED_TO_READY:
+      gst_dvd_demux_reset (dvd_demux);
+      break;
+    default:
+      break;
+  }
+
+  return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+}
 
 gboolean
 gst_dvd_demux_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "dvddemux",
-      GST_RANK_PRIMARY - 1, GST_TYPE_DVD_DEMUX);
+      GST_RANK_PRIMARY, GST_TYPE_DVD_DEMUX);
 }

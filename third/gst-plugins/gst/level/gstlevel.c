@@ -43,29 +43,27 @@ static GstElementDetails level_details = {
 /* pad templates */
 
 static GstStaticPadTemplate sink_template_factory =
-GST_STATIC_PAD_TEMPLATE ("level_sink",
+GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS("audio/x-raw-int, " \
-        "rate = (int) [ 1, MAX ], " \
-        "channels = (int) 2, " \
-        "endianness = (int) BYTE_ORDER, " \
-        "width = (int) { 8, 16 }, " \
-        "depth = (int) { 8, 16 }, " \
-        "signed = (boolean) true")
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 1, MAX ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) { 8, 16 }, "
+        "depth = (int) { 8, 16 }, " "signed = (boolean) true")
     );
 
 static GstStaticPadTemplate src_template_factory =
-GST_STATIC_PAD_TEMPLATE ("level_src",
+GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS("audio/x-raw-int, " \
-        "rate = (int) [ 1, MAX ], " \
-        "channels = (int) 2, " \
-        "endianness = (int) BYTE_ORDER, " \
-        "width = (int) { 8, 16 }, " \
-        "depth = (int) { 8, 16 }, " \
-        "signed = (boolean) true")
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 1, MAX ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) { 8, 16 }, "
+        "depth = (int) { 8, 16 }, " "signed = (boolean) true")
     );
 
 /* Filter signals and args */

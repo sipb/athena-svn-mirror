@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ e Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,6 +32,7 @@
 /* FIXME: small cheat */
 gboolean gst_v4l_set_window_properties (GstV4lElement * v4lelement);
 gboolean gst_v4l_get_capabilities (GstV4lElement * v4lelement);
+extern const char *v4l_palette_name[];
 
 /* elementfactory information */
 static GstElementDetails gst_v4lsrc_details =
@@ -64,6 +65,7 @@ enum
   ARG_SYNC_MODE,
   ARG_COPY_MODE,
   ARG_AUTOPROBE,
+  ARG_AUTOPROBE_FPS,
   ARG_LATENCY_OFFSET
 };
 
@@ -213,6 +215,10 @@ gst_v4lsrc_class_init (GstV4lSrcClass * klass)
       g_param_spec_boolean ("autoprobe", "Autoprobe",
           "Whether the device should be probed for all possible features",
           TRUE, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_AUTOPROBE_FPS,
+      g_param_spec_boolean ("autoprobe-fps", "Autoprobe FPS",
+          "Whether the device should be probed for framerates",
+          TRUE, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LATENCY_OFFSET,
       g_param_spec_int ("latency-offset", "Latency offset",
           "A latency offset subtracted from timestamps set on buffers (in ns)",
@@ -278,8 +284,11 @@ gst_v4lsrc_init (GstV4lSrc * v4lsrc)
 
   v4lsrc->is_capturing = FALSE;
   v4lsrc->autoprobe = TRUE;
+  v4lsrc->autoprobe_fps = TRUE;
 
   v4lsrc->latency_offset = 0;
+
+  v4lsrc->fps_list = NULL;
 }
 
 static void
@@ -305,13 +314,18 @@ gst_v4lsrc_open (GstElement * element, const gchar * device)
     -1
   }, i;
 
+  GST_DEBUG_OBJECT (v4lsrc, "Checking supported palettes");
   for (i = 0; palette[i] != -1; i++) {
     /* try palette out */
     if (!gst_v4lsrc_try_capture (v4lsrc, width, height, palette[i]))
       continue;
+    GST_DEBUG_OBJECT (v4lsrc, "Added palette %d (%s) to supported list",
+        palette[i], v4l_palette_name[palette[i]]);
     v4lsrc->colourspaces = g_list_append (v4lsrc->colourspaces,
         GINT_TO_POINTER (palette[i]));
   }
+  GST_DEBUG_OBJECT (v4lsrc, "%d palette(s) supported",
+      g_list_length (v4lsrc->colourspaces));
 }
 
 static void
@@ -326,6 +340,7 @@ gst_v4lsrc_close (GstElement * element, const gchar * device)
 /* get a list of possible framerates
  * this is only done for webcams;
  * other devices return NULL here.
+ * this function takes a LONG time to execute.
  */
 static GValue *
 gst_v4lsrc_get_fps_list (GstV4lSrc * v4lsrc)
@@ -567,8 +582,8 @@ gst_v4lsrc_palette_to_caps (int palette)
             "bpp = (int) 24, "
             "depth = (int) 24, "
             "endianness = (int) BIG_ENDIAN, "
-            "red_mask = 0xFF0000, "
-            "green_mask = 0x00FF00, " "blue_mask = 0x0000FF");
+            "red_mask = 0x0000FF, "
+            "green_mask = 0x00FF00, " "blue_mask = 0xFF0000");
         break;
       case VIDEO_PALETTE_RGB32:
         caps = gst_caps_from_string ("video/x-raw-rgb, "
@@ -601,6 +616,9 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
   gboolean was_capturing;
   struct video_window *vwin;
 
+  /* if your fourcc stays sexy then something is wrong */
+  fourcc = GST_MAKE_FOURCC ('S', 'E', 'X', 'Y');
+
   v4lsrc = GST_V4LSRC (gst_pad_get_parent (pad));
   vwin = &GST_V4LELEMENT (v4lsrc)->vwin;
   was_capturing = v4lsrc->is_capturing;
@@ -618,6 +636,7 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
     return GST_PAD_LINK_DELAYED;
   }
 
+  /* FIXME: setting the first one is just stupid.  We should loop */
   structure = gst_caps_get_structure (vscapslist, 0);
 
   if (!strcmp (gst_structure_get_name (structure), "video/x-raw-yuv"))
@@ -628,6 +647,7 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
   gst_structure_get_int (structure, "width", &w);
   gst_structure_get_int (structure, "height", &h);
   gst_structure_get_double (structure, "framerate", &fps);
+  GST_DEBUG_OBJECT (v4lsrc, "linking with %dx%d at %f fps", w, h, fps);
 
   /* set framerate if it's not already correct */
   if (fps != gst_v4lsrc_get_fps (v4lsrc)) {
@@ -640,9 +660,10 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
     vwin->flags |= fps_index << 16;
     if (!gst_v4l_set_window_properties (GST_V4LELEMENT (v4lsrc))) {
       GST_ELEMENT_ERROR (v4lsrc, RESOURCE, SETTINGS, (NULL),
-          ("Could not set framerate of %d fps", fps));
+          ("Could not set framerate of %f fps", fps));
     }
   }
+
   switch (fourcc) {
     case GST_MAKE_FOURCC ('I', '4', '2', '0'):
       palette = VIDEO_PALETTE_YUV420P;
@@ -707,7 +728,8 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
   }
 
   if (palette == -1) {
-    GST_WARNING_OBJECT (v4lsrc, "palette is -1, refusing link");
+    GST_WARNING_OBJECT (v4lsrc, "palette for fourcc " GST_FOURCC_FORMAT
+        " is -1, refusing link", GST_FOURCC_ARGS (fourcc));
     return GST_PAD_LINK_REFUSED;
   }
 
@@ -730,7 +752,7 @@ gst_v4lsrc_src_link (GstPad * pad, const GstCaps * vscapslist)
   if (!gst_v4lsrc_capture_init (v4lsrc))
     return GST_PAD_LINK_REFUSED;
 
-  if (was_capturing) {
+  if (was_capturing || GST_STATE (v4lsrc) == GST_STATE_PLAYING) {
     if (!gst_v4lsrc_capture_start (v4lsrc))
       return GST_PAD_LINK_REFUSED;
   }
@@ -794,8 +816,6 @@ gst_v4lsrc_getcaps (GstPad * pad)
   struct video_capability *vcap = &GST_V4LELEMENT (v4lsrc)->vcap;
   gfloat fps = 0.0;
   GList *item;
-  static GValue *fps_list;      /* FIXME: this should be done in a hash table
-                                 * on device name instead */
 
   if (!GST_V4L_IS_OPEN (GST_V4LELEMENT (v4lsrc))) {
     return gst_caps_new_any ();
@@ -805,11 +825,12 @@ gst_v4lsrc_getcaps (GstPad * pad)
     return gst_caps_new_any ();
   }
 
-  /* if not cached from last run, get it */
-  if (!fps_list)
-    fps_list = gst_v4lsrc_get_fps_list (v4lsrc);
-  if (!fps_list)
-    fps = gst_v4lsrc_get_fps (v4lsrc);
+  /*
+     FIXME: if we choose a fixed one because we didn't probe, fixated caps don't
+     work.  So comment this out for now.
+     if (!v4lsrc->fps_list)
+     fps = gst_v4lsrc_get_fps (v4lsrc);
+   */
 
   list = gst_caps_new_empty ();
   for (item = v4lsrc->colourspaces; item != NULL; item = item->next) {
@@ -817,25 +838,38 @@ gst_v4lsrc_getcaps (GstPad * pad)
 
     one = gst_v4lsrc_palette_to_caps (GPOINTER_TO_INT (item->data));
     if (!one)
-      g_print ("Palette %d gave no caps\n", GPOINTER_TO_INT (item->data));
+      GST_WARNING_OBJECT (v4lsrc, "Palette %d gave no caps\n",
+          GPOINTER_TO_INT (item->data));
     GST_DEBUG_OBJECT (v4lsrc,
         "Device reports w: %d-%d, h: %d-%d, fps: %f for palette %d",
         vcap->minwidth, vcap->maxwidth, vcap->minheight, vcap->maxheight, fps,
         GPOINTER_TO_INT (item->data));
 
-    gst_caps_set_simple (one, "width", GST_TYPE_INT_RANGE, vcap->minwidth,
-        vcap->maxwidth, "height", GST_TYPE_INT_RANGE, vcap->minheight,
-        vcap->maxheight, NULL);
+    if (vcap->minwidth < vcap->maxwidth) {
+      gst_caps_set_simple (one, "width", GST_TYPE_INT_RANGE, vcap->minwidth,
+          vcap->maxwidth, NULL);
+    } else {
+      gst_caps_set_simple (one, "width", G_TYPE_INT, vcap->minwidth, NULL);
+    }
+    if (vcap->minheight < vcap->maxheight) {
+      gst_caps_set_simple (one, "height", GST_TYPE_INT_RANGE, vcap->minheight,
+          vcap->maxheight, NULL);
+    } else {
+      gst_caps_set_simple (one, "height", G_TYPE_INT, vcap->minheight, NULL);
+    }
 
-    if (fps_list) {
+    if (v4lsrc->fps_list) {
       GstStructure *structure = gst_caps_get_structure (one, 0);
 
-      gst_structure_set_value (structure, "framerate", fps_list);
-    } else {
+      gst_structure_set_value (structure, "framerate", v4lsrc->fps_list);
+    }
+/* see higher up why we comment this
+else {
       GstStructure *structure = gst_caps_get_structure (one, 0);
 
       gst_structure_set (structure, "framerate", G_TYPE_DOUBLE, fps, NULL);
     }
+*/
     GST_DEBUG_OBJECT (v4lsrc, "caps: %" GST_PTR_FORMAT, one);
     gst_caps_append (list, one);
   }
@@ -1004,7 +1038,7 @@ gst_v4lsrc_get (GstPad * pad)
     GST_LOG_OBJECT (v4lsrc, "waiting until %" GST_TIME_FORMAT,
         GST_TIME_ARGS (until));
     if (!gst_element_wait (GST_ELEMENT (v4lsrc), until))
-      g_warning ("waiting from now %" GST_TIME_FORMAT
+      GST_WARNING_OBJECT (v4lsrc, "waiting from now %" GST_TIME_FORMAT
           " until %" GST_TIME_FORMAT " failed",
           GST_TIME_ARGS (now), GST_TIME_ARGS (until));
     GST_LOG_OBJECT (v4lsrc, "wait done.");
@@ -1061,6 +1095,13 @@ gst_v4lsrc_set_property (GObject * object,
       }
       break;
 
+    case ARG_AUTOPROBE_FPS:
+      if (!GST_V4L_IS_ACTIVE (GST_V4LELEMENT (v4lsrc))) {
+        v4lsrc->autoprobe_fps = g_value_get_boolean (value);
+      }
+      break;
+
+
     case ARG_LATENCY_OFFSET:
       v4lsrc->latency_offset = g_value_get_int (value);
       break;
@@ -1107,6 +1148,10 @@ gst_v4lsrc_get_property (GObject * object,
       g_value_set_boolean (value, v4lsrc->autoprobe);
       break;
 
+    case ARG_AUTOPROBE_FPS:
+      g_value_set_boolean (value, v4lsrc->autoprobe_fps);
+      break;
+
     case ARG_LATENCY_OFFSET:
       g_value_set_int (value, v4lsrc->latency_offset);
       break;
@@ -1124,14 +1169,14 @@ gst_v4lsrc_change_state (GstElement * element)
   GstV4lSrc *v4lsrc;
   GTimeVal time;
   gint transition = GST_STATE_TRANSITION (element);
+  GstElementStateReturn parent_ret = GST_STATE_SUCCESS;
 
   g_return_val_if_fail (GST_IS_V4LSRC (element), GST_STATE_FAILURE);
 
   v4lsrc = GST_V4LSRC (element);
 
+  /* pre-parent state change */
   switch (transition) {
-    case GST_STATE_NULL_TO_READY:
-      break;
     case GST_STATE_READY_TO_PAUSED:
       v4lsrc->handled = 0;
       v4lsrc->need_discont = TRUE;
@@ -1144,7 +1189,8 @@ gst_v4lsrc_change_state (GstElement * element)
       break;
     case GST_STATE_PAUSED_TO_PLAYING:
       /* queue all buffer, start streaming capture */
-      if (!gst_v4lsrc_capture_start (v4lsrc))
+      if (GST_V4LELEMENT (v4lsrc)->buffer != NULL &&
+          !gst_v4lsrc_capture_start (v4lsrc))
         return GST_STATE_FAILURE;
       g_get_current_time (&time);
       v4lsrc->substract_time =
@@ -1152,15 +1198,17 @@ gst_v4lsrc_change_state (GstElement * element)
       break;
     case GST_STATE_PLAYING_TO_PAUSED:
       /* de-queue all queued buffers */
-      if (!gst_v4lsrc_capture_stop (v4lsrc))
+      if (v4lsrc->is_capturing && !gst_v4lsrc_capture_stop (v4lsrc))
         return GST_STATE_FAILURE;
+      gst_v4lsrc_capture_stop (v4lsrc);
       g_get_current_time (&time);
       v4lsrc->substract_time =
           GST_TIMEVAL_TO_TIME (time) - v4lsrc->substract_time;
       break;
     case GST_STATE_PAUSED_TO_READY:
       /* stop capturing, unmap all buffers */
-      if (!gst_v4lsrc_capture_deinit (v4lsrc))
+      if (GST_V4LELEMENT (v4lsrc)->buffer != NULL &&
+          !gst_v4lsrc_capture_deinit (v4lsrc))
         return GST_STATE_FAILURE;
       break;
     case GST_STATE_READY_TO_NULL:
@@ -1168,9 +1216,22 @@ gst_v4lsrc_change_state (GstElement * element)
   }
 
   if (GST_ELEMENT_CLASS (parent_class)->change_state)
-    return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+    parent_ret = GST_ELEMENT_CLASS (parent_class)->change_state (element);
 
-  return GST_STATE_SUCCESS;
+  /* post-parent change_state */
+  switch (transition) {
+    case GST_STATE_NULL_TO_READY:
+      GST_DEBUG_OBJECT (v4lsrc,
+          "Doing post-parent NULL_TO_READY, checking probes");
+      if (v4lsrc->autoprobe_fps) {
+        GST_DEBUG_OBJECT (v4lsrc, "autoprobing framerates");
+        v4lsrc->fps_list = gst_v4lsrc_get_fps_list (v4lsrc);
+      }
+    default:
+      break;
+  }
+
+  return parent_ret;
 }
 
 

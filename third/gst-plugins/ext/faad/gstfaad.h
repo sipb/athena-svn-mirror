@@ -47,8 +47,16 @@ typedef struct _GstFaad {
        channels,
        bps;
 
+  /* used to keep input leftovers */
+  GstBuffer *tempbuf;
+
   /* FAAD object */
   faacDecHandle handle;
+  gboolean init;
+
+  /* FAAD channel setup */
+  guchar *channel_positions;
+  gboolean need_channel_setup;
 } GstFaad;
 
 typedef struct _GstFaadClass {

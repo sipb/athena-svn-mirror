@@ -4,7 +4,7 @@
  *
  * Based on oneton: Iain Holmes <iain@prettypeople.org>
  * Based on stereosplit: Richard Boulton <richard@tartarus.org>
- * Based on stereo2mono: Zaheer Merali <zaheer@bellworldwide.net>
+ * Based on stereo2mono: Zaheer Abbas Merali <zaheerabbas at merali dot org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

@@ -29,6 +29,9 @@
 #include "riff-ids.h"
 #include "riff-read.h"
 
+GST_DEBUG_CATEGORY_STATIC (riffread_debug);
+#define GST_CAT_DEFAULT riffread_debug
+
 enum
 {
   ARG_0,
@@ -75,6 +78,9 @@ gst_riff_read_class_init (GstRiffReadClass * klass)
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+
+  GST_DEBUG_CATEGORY_INIT (riffread_debug, "riffread",
+      0, "RIFF stream helper class");
 
   gstelement_class->change_state = gst_riff_read_change_state;
 }
@@ -146,6 +152,64 @@ gst_riff_read_element_level_up (GstRiffRead * riff)
 }
 
 /*
+ * Event handler. Basic:
+ * - EOS: end-of-file, stop processing, forward EOS.
+ * - Interrupt: stop processing.
+ * - Discont: shouldn't be handled here but in the seek handler. Error.
+ * - Flush: ignore, since we check for flush flags manually. Don't forward.
+ * - Others: warn, ignore.
+ * Return value indicates whether to continue processing.
+ */
+
+static gboolean
+gst_riff_read_use_event (GstRiffRead * riff, GstEvent * event)
+{
+  if (!event) {
+    GST_ELEMENT_ERROR (riff, RESOURCE, READ, (NULL), (NULL));
+    return FALSE;
+  }
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_EOS:
+      gst_pad_event_default (riff->sinkpad, event);
+      return FALSE;
+
+    case GST_EVENT_INTERRUPT:
+      gst_event_unref (event);
+      return FALSE;
+
+    case GST_EVENT_DISCONTINUOUS:
+      GST_WARNING_OBJECT (riff, "Unexpected discont - might lose sync");
+      gst_event_unref (event);
+      return TRUE;
+
+    case GST_EVENT_FLUSH:
+      gst_event_unref (event);
+      return TRUE;
+
+    default:
+      GST_WARNING ("don't know how to handle event %d", GST_EVENT_TYPE (event));
+      gst_pad_event_default (riff->sinkpad, event);
+      return FALSE;
+  }
+
+  /* happy */
+  g_assert_not_reached ();
+  return FALSE;
+}
+
+static gboolean
+gst_riff_read_handle_event (GstRiffRead * riff)
+{
+  GstEvent *event = NULL;
+  guint32 remaining;
+
+  gst_bytestream_get_status (riff->bs, &remaining, &event);
+
+  return gst_riff_read_use_event (riff, event);
+}
+
+/*
  * Read the next tag plus length (may be NULL). Return
  * TRUE on success or FALSE on failure.
  */
@@ -174,21 +238,8 @@ gst_riff_peek_head (GstRiffRead * riff,
 
   /* read */
   while (gst_bytestream_peek_bytes (riff->bs, &data, 8) != 8) {
-    GstEvent *event = NULL;
-    guint32 remaining;
-
-    /* Here, we might encounter EOS */
-    gst_bytestream_get_status (riff->bs, &remaining, &event);
-    if (event && GST_IS_EVENT (event)) {
-      gboolean eos = (GST_EVENT_TYPE (event) == GST_EVENT_EOS);
-
-      gst_pad_event_default (riff->sinkpad, event);
-      if (eos)
-        return FALSE;
-    } else {
-      GST_ELEMENT_ERROR (riff, RESOURCE, READ, (NULL), (NULL));
+    if (!gst_riff_read_handle_event (riff))
       return FALSE;
-    }
   }
 
   /* parse tag + length (if wanted) */
@@ -215,33 +266,10 @@ gst_riff_read_element_data (GstRiffRead * riff, guint length, guint * got_bytes)
   guint32 got;
 
   while ((got = gst_bytestream_peek (riff->bs, &buf, length)) != length) {
-    /*GST_ELEMENT_ERROR (riff, RESOURCE, READ, (NULL), (NULL)); */
-    GstEvent *event = NULL;
-    guint32 remaining;
-
-    gst_bytestream_get_status (riff->bs, &remaining, &event);
-    if (event && GST_IS_EVENT (event)) {
-      gst_pad_event_default (riff->sinkpad, event);
-      if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
-
-        if (buf)
-          gst_buffer_unref (buf);
-
-        if (got_bytes)
-          *got_bytes = got;
-
-        return NULL;
-      }
-    } else {
-      GST_ELEMENT_ERROR (riff, RESOURCE, READ, (NULL), (NULL));
-      if (buf)
-        gst_buffer_unref (buf);
-
-      if (got_bytes)
-        *got_bytes = got;
-
+    if (buf)
+      gst_buffer_unref (buf);
+    if (!gst_riff_read_handle_event (riff))
       return NULL;
-    }
   }
 
   /* we need 16-bit alignment */
@@ -275,7 +303,10 @@ gst_riff_read_seek (GstRiffRead * riff, guint64 offset)
   /* first, flush remaining buffers */
   gst_bytestream_get_status (riff->bs, &remaining, &event);
   if (event) {
-    g_warning ("Unexpected event before seek");
+    GST_WARNING ("Unexpected event before seek");
+    if (!gst_riff_read_use_event (riff, event))
+      return NULL;
+    event = NULL;
   }
 
   if (remaining)
@@ -301,10 +332,7 @@ gst_riff_read_seek (GstRiffRead * riff, guint64 offset)
       GST_WARNING ("No discontinuity event after seek - seek failed");
       break;
     } else if (GST_EVENT_TYPE (event) != GST_EVENT_DISCONTINUOUS) {
-      GstEventType type = GST_EVENT_TYPE (event);
-
-      gst_pad_event_default (riff->sinkpad, event);
-      if (type == GST_EVENT_EOS)
+      if (!gst_riff_read_use_event (riff, event))
         return NULL;
       event = NULL;
     }
@@ -361,7 +389,7 @@ gboolean
 gst_riff_read_skip (GstRiffRead * riff)
 {
   guint32 tag, length;
-  GstEvent *event;
+  GstEvent *event = NULL;
   guint32 remaining;
 
   if (!gst_riff_peek_head (riff, &tag, &length, NULL))
@@ -376,12 +404,9 @@ gst_riff_read_skip (GstRiffRead * riff)
 
   /* see if we have that much data available */
   gst_bytestream_get_status (riff->bs, &remaining, &event);
-  if (event && GST_IS_EVENT (event)) {
-    gboolean eos = (GST_EVENT_TYPE (event) == GST_EVENT_EOS);
-
-    g_warning ("Unexpected event in skip");
-    gst_pad_event_default (riff->sinkpad, event);
-    if (eos)
+  if (event) {
+    GST_WARNING ("Unexpected event in skip");
+    if (!gst_riff_read_use_event (riff, event))
       return FALSE;
   }
 
@@ -458,7 +483,7 @@ gst_riff_read_strh (GstRiffRead * riff, gst_riff_strh ** header)
     return FALSE;
   }
   if (GST_BUFFER_SIZE (buf) < sizeof (gst_riff_strh)) {
-    g_warning ("Too small strh (%d available, %d needed)",
+    GST_WARNING ("Too small strh (%d available, %d needed)",
         GST_BUFFER_SIZE (buf), (int) sizeof (gst_riff_strh));
     gst_buffer_unref (buf);
     return FALSE;
@@ -526,7 +551,7 @@ gst_riff_read_strf_vids_with_data (GstRiffRead * riff,
     return FALSE;
   }
   if (GST_BUFFER_SIZE (buf) < sizeof (gst_riff_strf_vids)) {
-    g_warning ("Too small strf_vids (%d available, %d needed)",
+    GST_WARNING ("Too small strf_vids (%d available, %d needed)",
         GST_BUFFER_SIZE (buf), (int) sizeof (gst_riff_strf_vids));
     gst_buffer_unref (buf);
     return FALSE;
@@ -557,9 +582,9 @@ gst_riff_read_strf_vids_with_data (GstRiffRead * riff,
   } else if (strf->size < GST_BUFFER_SIZE (buf)) {
     gint len;
 
-    len = GST_BUFFER_SIZE (buf) - strf->size - 2;
+    len = GST_BUFFER_SIZE (buf) - strf->size;
     if (len > 0) {
-      *extradata = gst_buffer_create_sub (buf, strf->size + 2, len);
+      *extradata = gst_buffer_create_sub (buf, strf->size, len);
     }
   }
 
@@ -620,7 +645,7 @@ gst_riff_read_strf_auds_with_data (GstRiffRead * riff,
     return FALSE;
   }
   if (GST_BUFFER_SIZE (buf) < sizeof (gst_riff_strf_auds)) {
-    g_warning ("Too small strf_auds (%d available, %d needed)",
+    GST_WARNING ("Too small strf_auds (%d available, %d needed)",
         GST_BUFFER_SIZE (buf), (int) sizeof (gst_riff_strf_auds));
     gst_buffer_unref (buf);
     return FALSE;
@@ -639,16 +664,18 @@ gst_riff_read_strf_auds_with_data (GstRiffRead * riff,
 
   /* size checking */
   *extradata = NULL;
-  if (strf->size > GST_BUFFER_SIZE (buf)) {
-    g_warning ("strf_auds header gave %d bytes data, only %d available",
-        strf->size, GST_BUFFER_SIZE (buf));
-    strf->size = GST_BUFFER_SIZE (buf);
-  } else if (strf->size < GST_BUFFER_SIZE (buf)) {
+  if (GST_BUFFER_SIZE (buf) > sizeof (gst_riff_strf_auds) + 2) {
     gint len;
 
-    len = GST_BUFFER_SIZE (buf) - strf->size - 2;
+    len = GST_READ_UINT16_LE (&GST_BUFFER_DATA (buf)[16]);
+    if (len + 2 + sizeof (gst_riff_strf_auds) > GST_BUFFER_SIZE (buf)) {
+      GST_WARNING ("Extradata indicated %d bytes, but only %d available",
+          len, GST_BUFFER_SIZE (buf) - 2 - sizeof (gst_riff_strf_auds));
+      len = GST_BUFFER_SIZE (buf) - 2 - sizeof (gst_riff_strf_auds);
+    }
     if (len > 0) {
-      *extradata = gst_buffer_create_sub (buf, strf->size + 2, len);
+      *extradata = gst_buffer_create_sub (buf,
+          sizeof (gst_riff_strf_auds) + 2, len);
     }
   }
 
@@ -702,7 +729,7 @@ gst_riff_read_strf_iavs (GstRiffRead * riff, gst_riff_strf_iavs ** header)
     return FALSE;
   }
   if (GST_BUFFER_SIZE (buf) < sizeof (gst_riff_strf_iavs)) {
-    g_warning ("Too small strf_iavs (%d available, %d needed)",
+    GST_WARNING ("Too small strf_iavs (%d available, %d needed)",
         GST_BUFFER_SIZE (buf), (int) sizeof (gst_riff_strf_iavs));
     gst_buffer_unref (buf);
     return FALSE;
@@ -890,8 +917,7 @@ gst_riff_read_info (GstRiffRead * riff)
 
       if (name && name[0] != '\0') {
         GValue src = { 0 }
-        , dest =
-        {
+        , dest = {
         0};
         GType dest_type = gst_tag_get_type (type);
 

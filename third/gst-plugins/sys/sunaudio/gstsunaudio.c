@@ -31,6 +31,7 @@
 #include <sys/audioio.h>
 #include "gstsunelement.h"
 #include "gstsunmixer.h"
+#include "gstsunaudiosrc.h"
 
 
 #define GST_TYPE_SUNAUDIOSINK \
@@ -276,6 +277,19 @@ gst_sunaudiosink_setparams (GstSunAudioSink * sunaudiosink)
 {
   audio_info_t ainfo;
   int ret;
+  int ports;
+
+  ret = ioctl (sunaudiosink->fd, AUDIO_GETINFO, &ainfo);
+  if (ret == -1) {
+    GST_ELEMENT_ERROR (sunaudiosink, RESOURCE, SETTINGS, (NULL), ("%s",
+            strerror (errno)));
+    return FALSE;
+  }
+
+  ports = ainfo.play.port;
+  if (!(ports & AUDIO_SPEAKER) && (ainfo.play.avail_ports & AUDIO_SPEAKER)) {
+    ports = ports | AUDIO_SPEAKER;
+  }
 
   AUDIO_INITINFO (&ainfo);
 
@@ -283,7 +297,7 @@ gst_sunaudiosink_setparams (GstSunAudioSink * sunaudiosink)
   ainfo.play.channels = sunaudiosink->channels;
   ainfo.play.precision = sunaudiosink->width;
   ainfo.play.encoding = AUDIO_ENCODING_LINEAR;
-  ainfo.play.port = AUDIO_SPEAKER;
+  ainfo.play.port = ports;
   ainfo.play.buffer_size = sunaudiosink->buffer_size;
   ainfo.output_muted = 0;
 
@@ -300,12 +314,9 @@ gst_sunaudiosink_setparams (GstSunAudioSink * sunaudiosink)
 static gboolean
 gst_sunaudiosink_open (GstSunAudioSink * sunaudiosink)
 {
-  const char *file;
   int fd, ret;
 
-  file = "/dev/audio";
-
-  fd = open (file, O_WRONLY);
+  fd = open (sunaudiosink->device, O_WRONLY);
   if (fd == -1) {
     /* FIXME error */
     return FALSE;
@@ -431,7 +442,9 @@ plugin_init (GstPlugin * plugin)
   if (!gst_element_register (plugin, "sunaudiosink", GST_RANK_NONE,
           GST_TYPE_SUNAUDIOSINK) ||
       !gst_element_register (plugin, "sunaudiomixer", GST_RANK_NONE,
-          GST_TYPE_SUNAUDIOELEMENT))
+          GST_TYPE_SUNAUDIOELEMENT) ||
+      !gst_element_register (plugin, "sunaudiosrc", GST_RANK_NONE,
+          GST_TYPE_SUNAUDIOSRC))
     return FALSE;
 
   return TRUE;

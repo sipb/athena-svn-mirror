@@ -36,26 +36,42 @@ typedef struct _GstStreamInfoClass GstStreamInfoClass;
 
 typedef enum {
   GST_STREAM_TYPE_UNKNOWN = 0,
-  GST_STREAM_TYPE_AUDIO   = 1,
-  GST_STREAM_TYPE_VIDEO   = 2,
-  GST_STREAM_TYPE_TEXT    = 3,
+  GST_STREAM_TYPE_AUDIO   = 1,	/* an audio stream */
+  GST_STREAM_TYPE_VIDEO   = 2,	/* a video stream */
+  GST_STREAM_TYPE_TEXT    = 3,	/* a subtitle/text stream */
+  GST_STREAM_TYPE_ELEMENT = 4,	/* stream handled by an element */
 } GstStreamType;
 
 struct _GstStreamInfo {
   GObject 	 parent;
 
-  GstPad 	*pad;
-  GstStreamType	 type;
-  gchar 	*decoder;
+  GstObject 	*object;	/* pad/element providing/handling this stream */
+  GstStreamType	 type;		/* the type of the provided stream */
+  gchar 	*decoder;	/* string describing the decoder */
+  gboolean	 mute;		/* is the stream muted or not */
+  GstObject 	*origin;	/* the real object providing this stream, this can
+				   be different from the object as the object can be
+				   a queue pad, inserted for preroll. */
+  GstCaps	*caps;		/* the caps of the stream */
 };
 
 struct _GstStreamInfoClass {
   GObjectClass 	 parent_class;
+
+  /* signals */
+  void (*muted) (GstStreamInfo *info, gboolean mute);
 };
 
 GType gst_stream_info_get_type (void);
 
-GstStreamInfo* gst_stream_info_new (GstPad *pad, GstStreamType type, gchar *decoder);
+GstStreamInfo* 	gst_stream_info_new 		(GstObject     *object,
+				    		 GstStreamType  type,
+				    		 const gchar   *decoder,
+				    		 const GstCaps *caps);
+
+gboolean 	gst_stream_info_set_mute 	(GstStreamInfo *stream_info, 
+						 gboolean mute);
+gboolean 	gst_stream_info_is_mute 	(GstStreamInfo *stream_info);
 
 
 G_END_DECLS

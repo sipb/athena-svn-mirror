@@ -1,48 +1,64 @@
-if USE_GCONFTOOL
-GCONF_DIR=gconf
+if BUILD_DOCS
+# disabled until it actually works
+# SUBDIRS_DOCS = docs
+SUBDIRS_DOCS =
 else
-GCONF_DIR=
+SUBDIRS_DOCS =
+endif
+
+if USE_GCONFTOOL
+GCONF_DIR = gconf
+else
+GCONF_DIR =
 endif
 
 if BUILD_EXTERNAL
-EXT_DIR=ext
+EXT_DIR = ext
 else
-EXT_DIR=
+EXT_DIR =
 endif
 
 if BUILD_EXAMPLES
-EXAMPLES_DIR=examples
+EXAMPLES_DIR = examples
 else
-EXAMPLES_DIR=
+EXAMPLES_DIR =
 endif
 
-SUBDIRS=gst-libs \
-	gst sys $(EXT_DIR) \
-	$(EXAMPLES_DIR) \
-	tools \
-	$(GCONF_DIR) \
-	testsuite \
-	po \
-	common \
-	m4 \
+SUBDIRS = 			\
+	gst-libs 		\
+	gst sys $(EXT_DIR) 	\
+	$(EXAMPLES_DIR) 	\
+	tools 			\
+	$(GCONF_DIR) 		\
+	testsuite 		\
+	po 			\
+	common 			\
+	m4 			\
+	pkgconfig
+# disabled
+#	$(SUBDIRS_DOCS)
+
+DIST_SUBDIRS = 			\
+	gst-libs		\
+	gst sys ext		\
+	examples		\
+	tools 			\
+	gconf 			\
+	testsuite 		\
+	po 			\
+	common 			\
+	m4 			\
 	pkgconfig
 
-DIST_SUBDIRS=ext gst-libs \
-	gst sys \
-	examples \
-	tools \
-	gconf \
-	testsuite \
-	po \
-	common \
-	m4 \
-	pkgconfig
+# disabled
+#	docs
 
-EXTRA_DIST=gst-plugins.spec depcomp \
-	   AUTHORS COPYING COPYING.LIB NEWS README RELEASE REQUIREMENTS \
-	   ChangeLog autogen.sh
+EXTRA_DIST = \
+	gst-plugins.spec depcomp \
+	AUTHORS COPYING COPYING.LIB NEWS README RELEASE REQUIREMENTS \
+	ChangeLog autogen.sh
 
-DISTCLEANFILES=_stdint.h
+DISTCLEANFILES = _stdint.h
 
 # check that no marshal or enumtypes files are included
 # this in turn ensures that distcheck fails for missing .list files which is currently

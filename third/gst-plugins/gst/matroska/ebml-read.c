@@ -28,6 +28,9 @@
 #include "ebml-read.h"
 #include "ebml-ids.h"
 
+GST_DEBUG_CATEGORY_STATIC (ebmlread_debug);
+#define GST_CAT_DEFAULT ebmlread_debug
+
 enum
 {
   /* FILL ME */
@@ -73,6 +76,9 @@ gst_ebml_read_class_init (GstEbmlReadClass * klass)
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
+  GST_DEBUG_CATEGORY_INIT (ebmlread_debug, "ebmlread",
+      0, "EBML stream helper class");
+
   gstelement_class->change_state = gst_ebml_read_change_state;
 }
 
@@ -82,6 +88,7 @@ gst_ebml_read_init (GstEbmlRead * ebml)
   ebml->sinkpad = NULL;
   ebml->bs = NULL;
   ebml->level = NULL;
+  ebml->id_cache = 0;
 }
 
 static GstElementStateReturn
@@ -112,6 +119,66 @@ gst_ebml_read_change_state (GstElement * element)
     return GST_ELEMENT_CLASS (parent_class)->change_state (element);
 
   return GST_STATE_SUCCESS;
+}
+
+/*
+ * Event handler. Basic:
+ * - EOS: end-of-file, stop processing, forward EOS.
+ * - Interrupt: stop processing.
+ * - Discont: shouldn't be handled here but in the seek handler. Error.
+ * - Flush: ignore, since we check for flush flags manually. Don't forward.
+ * - Others: warn, ignore.
+ * Return value indicates whether to continue processing.
+ */
+
+static gboolean
+gst_ebml_read_use_event (GstEbmlRead * ebml, GstEvent * event)
+{
+  if (!event) {
+    GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL), (NULL));
+    return FALSE;
+  }
+
+  GST_LOG ("Received event of type %d", GST_EVENT_TYPE (event));
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_EOS:
+      gst_pad_event_default (ebml->sinkpad, event);
+      return FALSE;
+
+    case GST_EVENT_INTERRUPT:
+      gst_event_unref (event);
+      return FALSE;
+
+    case GST_EVENT_DISCONTINUOUS:
+      GST_WARNING_OBJECT (ebml, "Unexpected discont - might lose sync");
+      gst_event_unref (event);
+      return TRUE;
+
+    case GST_EVENT_FLUSH:
+      gst_event_unref (event);
+      return TRUE;
+
+    default:
+      GST_WARNING ("don't know how to handle event %d", GST_EVENT_TYPE (event));
+      gst_pad_event_default (ebml->sinkpad, event);
+      return FALSE;
+  }
+
+  /* happy */
+  g_assert_not_reached ();
+  return FALSE;
+}
+
+static gboolean
+gst_ebml_read_handle_event (GstEbmlRead * ebml)
+{
+  GstEvent *event = NULL;
+  guint32 remaining;
+
+  gst_bytestream_get_status (ebml->bs, &remaining, &event);
+
+  return gst_ebml_read_use_event (ebml, event);
 }
 
 /*
@@ -154,26 +221,17 @@ gst_ebml_read_element_id (GstEbmlRead * ebml, guint32 * id, guint * level_up)
   gint len_mask = 0x80, read = 1, n = 1;
   guint32 total;
 
+  if (ebml->id_cache) {
+    *id = ebml->id_cache;
+    if (level_up)
+      *level_up = 0;
+
+    return 0;
+  }
+
   while (gst_bytestream_peek_bytes (ebml->bs, &data, 1) != 1) {
-    GstEvent *event = NULL;
-    guint32 remaining;
-
-    /* Here, we might encounter EOS */
-    gst_bytestream_get_status (ebml->bs, &remaining, &event);
-    if (event && GST_IS_EVENT (event)) {
-      gboolean eos = (GST_EVENT_TYPE (event) == GST_EVENT_EOS);
-
-      gst_pad_event_default (ebml->sinkpad, event);
-      if (eos)
-        return FALSE;
-    } else {
-      guint64 pos = gst_bytestream_tell (ebml->bs);
-
-      gst_event_unref (event);
-      GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL),
-          ("Read error at position %llu (0x%llx)", pos, pos));
+    if (!gst_ebml_read_handle_event (ebml))
       return -1;
-    }
   }
   total = data[0];
   while (read <= 4 && !(total & len_mask)) {
@@ -189,23 +247,22 @@ gst_ebml_read_element_id (GstEbmlRead * ebml, guint32 * id, guint * level_up)
     return -1;
   }
 
-  if (gst_bytestream_peek_bytes (ebml->bs, &data, read) != read) {
-    guint64 pos = gst_bytestream_tell (ebml->bs);
-
-    GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL),
-        ("Read error at position %llu (0x%llx)", pos, pos));
-    return -1;
+  while (gst_bytestream_peek_bytes (ebml->bs, &data, read) != read) {
+    if (!gst_ebml_read_handle_event (ebml))
+      return -1;
   }
   while (n < read)
     total = (total << 8) | data[n++];
 
-  *id = total;
+  *id = ebml->id_cache = total;
 
   /* level */
   if (level_up)
     *level_up = gst_ebml_read_element_level_up (ebml);
 
-  return read;
+  gst_bytestream_flush_fast (ebml->bs, read);
+
+  return 0;
 }
 
 /*
@@ -220,12 +277,9 @@ gst_ebml_read_element_length (GstEbmlRead * ebml, guint64 * length)
   gint len_mask = 0x80, read = 1, n = 1, num_ffs = 0;
   guint64 total;
 
-  if (gst_bytestream_peek_bytes (ebml->bs, &data, 1) != 1) {
-    guint64 pos = gst_bytestream_tell (ebml->bs);
-
-    GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL),
-        ("Read error at position %llu (0x%llx)", pos, pos));
-    return -1;
+  while (gst_bytestream_peek_bytes (ebml->bs, &data, 1) != 1) {
+    if (!gst_ebml_read_handle_event (ebml))
+      return -1;
   }
   total = data[0];
   while (read <= 8 && !(total & len_mask)) {
@@ -243,12 +297,9 @@ gst_ebml_read_element_length (GstEbmlRead * ebml, guint64 * length)
 
   if ((total &= (len_mask - 1)) == len_mask - 1)
     num_ffs++;
-  if (gst_bytestream_peek_bytes (ebml->bs, &data, read) != read) {
-    guint64 pos = gst_bytestream_tell (ebml->bs);
-
-    GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL),
-        ("Read error at position %llu (0x%llx)", pos, pos));
-    return -1;
+  while (gst_bytestream_peek_bytes (ebml->bs, &data, read) != read) {
+    if (!gst_ebml_read_handle_event (ebml))
+      return -1;
   }
   while (n < read) {
     if (data[n] == 0xff)
@@ -276,13 +327,8 @@ gst_ebml_read_element_data (GstEbmlRead * ebml, guint64 length)
   GstBuffer *buf = NULL;
 
   if (gst_bytestream_peek (ebml->bs, &buf, length) != length) {
-    guint64 pos = gst_bytestream_tell (ebml->bs);
-
-    GST_ELEMENT_ERROR (ebml, RESOURCE, READ, (NULL),
-        ("Read error at position %llu (0x%llx)", pos, pos));
-    if (buf)
-      gst_buffer_unref (buf);
-    return NULL;
+    if (!gst_ebml_read_handle_event (ebml))
+      return NULL;
   }
 
   gst_bytestream_flush_fast (ebml->bs, length);
@@ -303,7 +349,7 @@ gst_ebml_peek_id (GstEbmlRead * ebml, guint * level_up)
 
   g_assert (level_up);
 
-  if (gst_ebml_read_element_id (ebml, &id, level_up) <= 0)
+  if (gst_ebml_read_element_id (ebml, &id, level_up) < 0)
     return 0;
 
   return id;
@@ -323,8 +369,10 @@ gst_ebml_read_seek (GstEbmlRead * ebml, guint64 offset)
   /* first, flush remaining buffers */
   gst_bytestream_get_status (ebml->bs, &remaining, &event);
   if (event) {
-    g_warning ("Unexpected event before seek");
-    gst_event_unref (event);
+    GST_WARNING ("Unexpected event before seek");
+    if (!gst_ebml_read_use_event (ebml, event))
+      return NULL;
+    event = NULL;
   }
   if (remaining)
     gst_bytestream_flush_fast (ebml->bs, remaining);
@@ -350,10 +398,14 @@ gst_ebml_read_seek (GstEbmlRead * ebml, guint64 offset)
       GST_WARNING ("No discontinuity event after seek - seek failed");
       break;
     } else if (GST_EVENT_TYPE (event) != GST_EVENT_DISCONTINUOUS) {
-      gst_pad_event_default (ebml->sinkpad, event);
+      if (!gst_ebml_read_use_event (ebml, event))
+        return NULL;
       event = NULL;
     }
   }
+
+  /* at the end of a seek, we have no cached ID anymore */
+  ebml->id_cache = 0;
 
   return event;
 }
@@ -382,18 +434,57 @@ gst_ebml_read_skip (GstEbmlRead * ebml)
   gst_bytestream_get_status (ebml->bs, &remaining, &event);
   if (event) {
     g_warning ("Unexpected event before skip");
-    gst_event_unref (event);
+    if (!gst_ebml_read_use_event (ebml, event))
+      return FALSE;
   }
 
-  if (remaining >= length)
-    return gst_bytestream_flush (ebml->bs, length);
+  if (remaining >= length) {
+    ebml->id_cache = 0;
+    gst_bytestream_flush_fast (ebml->bs, length);
+
+    return TRUE;
+  }
 
   if (!(event = gst_ebml_read_seek (ebml,
-              gst_bytestream_tell (ebml->bs) + length)))
+              gst_bytestream_tell (ebml->bs) + length))) {
     return FALSE;
+  }
 
   gst_event_unref (event);
+  ebml->id_cache = 0;
 
+  return TRUE;
+}
+
+/*
+ * Make sure there's one whole next chunk available
+ * for uninterrupted reading.
+ */
+
+gboolean
+gst_ebml_read_reserve (GstEbmlRead * ebml)
+{
+  guint64 length;
+  gint bytes;
+  guint8 *data;
+  guint32 id;
+
+  /* make sure the ID is cached */
+  if (gst_ebml_read_element_id (ebml, &id, NULL) < 0)
+    return FALSE;
+
+  /* now we can peek the length */
+  if ((bytes = gst_ebml_read_element_length (ebml, &length)) < 0)
+    return FALSE;
+  length += bytes;
+
+  /* now check if we have that amount available */
+  while (gst_bytestream_peek_bytes (ebml->bs, &data, length) != length) {
+    if (!gst_ebml_read_handle_event (ebml))
+      return FALSE;
+  }
+
+  /* yes, available */
   return TRUE;
 }
 
@@ -414,6 +505,7 @@ gst_ebml_read_buffer (GstEbmlRead * ebml, guint32 * id, GstBuffer ** buf)
   if ((bytes = gst_ebml_read_element_length (ebml, &length)) < 0)
     return FALSE;
   gst_bytestream_flush_fast (ebml->bs, bytes);
+  ebml->id_cache = 0;
 
   return ((*buf = gst_ebml_read_element_data (ebml, length)) != NULL);
 }
@@ -591,13 +683,18 @@ gst_ebml_read_utf8 (GstEbmlRead * ebml, guint32 * id, gchar ** str)
 }
 
 /*
- * Read the next element as a date (nanoseconds since 1/1/2000).
+ * Read the next element as a date.
+ * Returns the seconds since the unix epoch.
  */
 
 gboolean
 gst_ebml_read_date (GstEbmlRead * ebml, guint32 * id, gint64 * date)
 {
-  return gst_ebml_read_sint (ebml, id, date);
+  gint64 ebml_date;
+  gboolean res = gst_ebml_read_sint (ebml, id, &ebml_date);
+
+  *date = (ebml_date / GST_SECOND) + GST_EBML_DATE_OFFSET;
+  return res;
 }
 
 /*
@@ -625,6 +722,7 @@ gst_ebml_read_master (GstEbmlRead * ebml, guint32 * id)
   level->start = gst_bytestream_tell (ebml->bs);
   level->length = length;
   ebml->level = g_list_append (ebml->level, level);
+  ebml->id_cache = 0;
 
   return TRUE;
 }

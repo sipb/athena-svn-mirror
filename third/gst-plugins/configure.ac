@@ -12,7 +12,7 @@ AM_MAINTAINER_MODE
 
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AS_VERSION(gst-plugins, GST_PLUGINS_VERSION, 0, 8, 4, 0, GST_CVS="no", GST_CVS="yes")
+AS_VERSION(gst-plugins, GST_PLUGINS_VERSION, 0, 8, 7, 0, GST_CVS="no", GST_CVS="yes")
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
@@ -100,6 +100,30 @@ fi
 dnl Check for FIONREAD ioctl declaration :
 GST_CHECK_FIONREAD()
 
+DEFAULT_AUDIOSINK="osssink"
+DEFAULT_VIDEOSINK="xvimagesink"
+DEFAULT_AUDIOSRC="osssrc"
+DEFAULT_VIDEOSRC="v4lsrc"
+DEFAULT_VISUALIZER="goom"
+case "$host" in 
+  *-sun-* | *pc-solaris* )
+    DEFAULT_AUDIOSINK="sunaudiosink"
+    DEFAULT_VIDEOSINK="ximagesink"
+    DEFAULT_AUDIOSRC="sunaudiosrc"
+    ;;
+  *-darwin* )
+    DEFAULT_AUDIOSINK="osxaudiosink"
+    DEFAULT_AUDIOSRC="osxaudiosrc"
+    DEFAULT_VIDEOSINK="osxvideosink"
+    ;;
+esac
+
+AC_SUBST(DEFAULT_AUDIOSINK)
+AC_SUBST(DEFAULT_AUDIOSRC)
+AC_SUBST(DEFAULT_VIDEOSINK)
+AC_SUBST(DEFAULT_VIDEOSRC)
+AC_SUBST(DEFAULT_VISUALIZER)
+
 dnl ############################################
 dnl # Super Duper options for plug-in building #
 dnl ############################################
@@ -153,21 +177,15 @@ AC_ARG_WITH(pkg-config-path,
    AC_HELP_STRING([--with-pkg-config-path],[colon-separated list of pkg-config(1) dirs]),
    [export PKG_CONFIG_PATH=${withval}])
 
+GST_DOC()
 dnl check architecture
 GST_ARCH()
 
-dnl Check for nasm
-AC_PATH_PROG(NASM_PATH, nasm, no)
-AC_SUBST(NASM_PATH)
-if test x$NASM_PATH = xno; then
-  AC_MSG_WARN(Couldn't find nasm)
-  HAVE_NASM="no"
-else
-  AC_DEFINE(HAVE_NASM, 1, [Define if NASM, the netwide assembler, is available])
-  HAVE_NASM="yes"
-fi
-
 dnl check for gconftool-2
+
+dnl this macro defines an am conditional, so it needs to be run always
+AM_GCONF_SOURCE_2
+
 translit(dnm, m, l) AM_CONDITIONAL(USE_GCONFTOOL, true)
 GST_CHECK_FEATURE(GCONFTOOL, [GConf schemas], , [
   AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
@@ -175,7 +193,6 @@ GST_CHECK_FEATURE(GCONFTOOL, [GConf schemas], , [
     AC_MSG_WARN(Not installing GConf schemas)
     HAVE_GCONFTOOL="no"
   else
-    AM_GCONF_SOURCE_2
     HAVE_GCONFTOOL="yes"
   fi
   AC_SUBST(HAVE_GCONFTOOL)
@@ -191,7 +208,7 @@ GST_CHECK_FEATURE(GCONF, [GConf libraries], , [
 
 dnl check for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
-GST_REQ=0.8.4
+GST_REQ=0.8.7.1
 PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQ,
   HAVE_GST="yes", HAVE_GST="no")
 
@@ -317,7 +334,7 @@ if test "x$HAVE_GDK_LOADERS" = "xyes"; then
 fi
 AM_CONDITIONAL(HAVE_GDK_LOADERS, test "x$HAVE_GDK_LOADERS" = "xyes")
 
-PKG_CHECK_MODULES(LIBOIL, liboil-0.1, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
+PKG_CHECK_MODULES(LIBOIL, liboil-0.2, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
 AC_SUBST(LIBOIL_CFLAGS)
 AC_SUBST(LIBOIL_LIBS)
 if test "x${HAVE_LIBOIL}" = xyes ; then
@@ -340,6 +357,7 @@ GST_PLUGINS_ALL="\
 	ac3parse \
 	adder \
 	alpha \
+	apetag \
 	asfdemux \
 	audioconvert \
 	audioscale \
@@ -353,6 +371,7 @@ GST_PLUGINS_ALL="\
 	debug \
 	deinterlace \
 	effectv \
+	equalizer \
 	festival \
 	ffmpegcolorspace \
 	filter \
@@ -392,6 +411,7 @@ GST_PLUGINS_ALL="\
 	synaesthesia \
 	tags \
 	tcp \
+	tta \
 	typefind \
 	udp \
 	vbidec \
@@ -658,15 +678,17 @@ dnl v4l/v4l2 checks have been moved down because they require X
 
 dnl *** Video 4 Linux ***
 dnl for information about the header/define, see sys/v4l/gstv4lelement.h
-translit(dnm, m, l) AM_CONDITIONAL(USE_V4L, true)
-GST_CHECK_FEATURE(V4L, [Video 4 Linux], v4lsrc v4lmjpegsrc v4lmjpegsink, [
+dnl renamed to GST_V4L in accordance with V4L2 below
+translit(dnm, m, l) AM_CONDITIONAL(USE_GST_V4L, true)
+GST_CHECK_FEATURE(GST_V4L, [Video 4 Linux], v4lsrc v4lmjpegsrc v4lmjpegsink, [
   # first check X
-  HAVE_V4L="no"
+  HAVE_GST_V4L="no"
   if test "$HAVE_X" = "yes"
   then
-    AC_CHECK_DECL(VID_TYPE_MPEG_ENCODER, HAVE_V4L="yes", HAVE_V4L="no", [
+    AC_CHECK_DECL(VID_TYPE_MPEG_ENCODER, HAVE_GST_V4L="yes", HAVE_GST_V4L="no", [
 #include <sys/types.h>
 #define _LINUX_TIME_H
+#define __user
 #include <linux/videodev.h>
     ])
   fi
@@ -674,7 +696,8 @@ GST_CHECK_FEATURE(V4L, [Video 4 Linux], v4lsrc v4lmjpegsrc v4lmjpegsink, [
 
 dnl *** Video 4 Linux 2 ***
 dnl for information about the header/define, see sys/v4l2/gstv4l2element.h
-translit(dnm, m, l) AM_CONDITIONAL(USE_V4L2, true)
+dnl renamed to GST_V4L2 because of some conflict with kernel headers
+translit(dnm, m, l) AM_CONDITIONAL(USE_GST_V4L2, true)
 GST_CHECK_FEATURE(GST_V4L2, [Video 4 Linux 2], v4l2src, [
   HAVE_GST_V4L2="no"
   if test "$HAVE_X" = "yes"
@@ -684,6 +707,7 @@ GST_CHECK_FEATURE(GST_V4L2, [Video 4 Linux 2], v4l2src, [
 #include <sys/types.h>
 #include <linux/types.h>
 #define _LINUX_TIME_H
+#define __user
 #include <linux/videodev2.h>
 #if defined(V4L2_MAJOR_VERSION) || defined(V4L2_MINOR_VERSION)
 #error too early v4l2 version or no v4l2 at all
@@ -705,6 +729,7 @@ return 0;
 #include <sys/types.h>
 #include <linux/types.h>
 #define _LINUX_TIME_H
+#define __user
 #include <linux/videodev2.h>
     ],[
 struct v4l2_buffer buf;
@@ -785,6 +810,31 @@ GST_CHECK_FEATURE(AUDIOFILE, [audiofile], afsink afsrc, [
     AC_CHECK_LIB(audiofile, af_virtual_file_new, , HAVE_AUDIOFILE="no")
   fi])
 
+dnl *** audioresample ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_AUDIORESAMPLE, true)
+GST_CHECK_FEATURE(AUDIORESAMPLE, [audioresample plug-in], audioresample, [
+  PKG_CHECK_MODULES(AUDIORESAMPLE, audioresample-0.1, HAVE_AUDIORESAMPLE=yes, HAVE_AUDIORESAMPLE=no)
+  AC_SUBST(AUDIORESAMPLE_CFLAGS)
+  AC_SUBST(AUDIORESAMPLE_LIBS)
+])
+
+dnl *** cairo ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_CAIRO, true)
+GST_CHECK_FEATURE(CAIRO, [cairo plug-in], cairo, [
+  PKG_CHECK_MODULES(CAIRO, cairo, HAVE_CAIRO=yes, HAVE_CAIRO=no)
+  AC_SUBST(CAIRO_CFLAGS)
+  AC_SUBST(CAIRO_LIBS)
+])
+
+dnl *** cdaudio ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_CDAUDIO, true)
+GST_CHECK_FEATURE(CDAUDIO, [cdaudio], cdaudio, [
+  GST_CHECK_CONFIGPROG(CDAUDIO, libcdaudio-config)
+  AC_SUBST(CDAUDIO_CFLAGS)
+  AC_SUBST(CDAUDIO_LIBS)
+])
+
+
 dnl *** CDParanoia ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_CDPARANOIA, true)
 GST_CHECK_FEATURE(CDPARANOIA, [CDParanoia], cdparanoia, [
@@ -817,9 +867,22 @@ dnl AC_CHECK_HEADER(cdda_paranoia.h, :, HAVE_CDPARANOIA=no)
 dnl *** dirac ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_DIRAC, true)
 GST_CHECK_FEATURE(DIRAC, [dirac plug-ins], dirac, [
-  PKG_CHECK_MODULES(DIRAC, dirac, HAVE_DIRAC="yes", HAVE_DIRAC="no")
+  PKG_CHECK_MODULES(DIRAC, dirac-pic >= 0.4, HAVE_DIRAC="yes", HAVE_DIRAC="no")
+  if test x$HAVE_DIRAC = xno ; then
+    PKG_CHECK_MODULES(DIRAC, dirac >= 0.4, HAVE_DIRAC="yes", HAVE_DIRAC="no")
+  fi
   AC_SUBST(DIRAC_CFLAGS)
   AC_SUBST(DIRAC_LIBS)
+])
+
+dnl *** DirectFB ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTFB, true)
+GST_CHECK_FEATURE(DIRECTFB, [directfb], directfbvideosink , [
+  translit(dnm, m, l) AC_SUBST(DIRECTFB_LIBS)
+  translit(dnm, m, l) AC_SUBST(DIRECTFB_CFLAGS)
+  dnl check with pkg-config
+  PKG_CHECK_MODULES(DIRECTFB, directfb,
+                    HAVE_DIRECTFB="yes", HAVE_DIRECTFB="no")
 ])
 
 dnl *** DIVX ***
@@ -1119,71 +1182,6 @@ for dir in $qt_lib_dirs; do
   fi
 done
 
-dnl * KDE *
-
-translit(dnm, m, l) AM_CONDITIONAL(USE_KIO, true)
-GST_CHECK_FEATURE(KIO, [kio], kio, [
-  AC_PATH_PROG(KDE_MOC, moc, no)
-  if test x$KDE_MOC = xno; then
-    HAVE_KIO="no"
-  else
-    AC_PATH_PROG(KDE_CONFIG, kde-config, no)
-
-    if test x$KDE_CONFIG != xno; then
-      KDE_PREFIX=`$KDE_CONFIG --prefix`
-    fi
-
-    kde_include_dirs="/usr/lib/kde/include /usr/local/kde/include /usr/local/include /usr/kde/include /usr/include/kde /usr/include /opt/kde3/include /opt/kde/include"
-    kde_lib_dirs="/usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib/kde3 /usr/lib /usr/X11R6/lib /usr/local/lib /opt/kde3/lib /opt/kde/lib /usr/X11R6/kde/lib"
-
-    if test -n "$KDE_PREFIX"; then
-      kde_include_dirs="$KDE_PREFIX/include $KDE_PREFIX/include/kde $KDE_PREFIX $kde_include_dirs"
-      kde_lib_dirs="$KDE_PREFIX/lib $KDE_PREFIX $kde_lib_dirs"
-    fi
-    if test -n "$KDEDIR"; then
-      kde_include_dirs="$KDEDIR/include $KDEDIR/include/kde $KDEDIR $kde_include_dirs"
-      kde_lib_dirs="$KDEDIR/lib $KDEDIR $kde_lib_dirs"
-    fi
-
-    for dir in $kde_include_dirs; do
-      if test -r "$dir/kglobal.h" && test -r "$dir/kdemacros.h"; then
-	kde_include_dir=$dir
-	break
-      fi
-    done
-
-    for dir in $kde_lib_dirs; do
-      try="ls -1 $dir/libkio.*"
-      if test -n "`$try 2> /dev/null`"; then
-	kde_lib_dir=$dir
-	break
-      fi
-    done
-
-    if test -n $kde_include_dir && test -n $kde_lib_dir; then
-      KIO_CFLAGS="-I$kde_include_dir -I$qt_include_dir"
-      KIO_LIBS="-L$KDE_PREFIX/lib -L$qt_lib_dir -lkio -lqt-mt"
-      AC_LANG_PUSH(C++)
-      save_LIBS="$LIBS"
-      save_CPPFLAGS="$CPPFLAGS"
-      LIBS="$LIBS $KIO_LIBS"
-      CPPFLAGS="$CPPFLAGS $KIO_CFLAGS"
-      AC_TRY_LINK([
-#include <kio/job.h>
-		   ], [
-  KIO::get ("bla")
-		   ], HAVE_KIO="yes", HAVE_KIO="no")
-      LIBS="$save_LIBS"
-      CPPFLAGS="$save_CPPFLAGS"
-      AC_LANG_POP(C++)
-      AC_SUBST(KIO_CFLAGS)
-      AC_SUBST(KIO_LIBS)
-    else
-      HAVE_KIO="no"
-    fi
-  fi
-])
-
 dnl *** ladspa ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LADSPA, true)
 GST_CHECK_FEATURE(LADSPA, [ladspa], ladspa, [
@@ -1193,20 +1191,35 @@ GST_CHECK_FEATURE(LADSPA, [ladspa], ladspa, [
 dnl *** lame ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LAME, true)
 GST_CHECK_FEATURE(LAME, [lame mp3 encoder library], lame, [
-  GST_CHECK_LIBHEADER(LAME, mp3lame, lame_init, -lm, lame/lame.h, HAVE_LAME="yes" LAME_LIBS="-lmp3lame -lm")
-])
-dnl is lame presets available
-LAME_CFLAGS=""
-AC_TRY_RUN([
+  GST_CHECK_LIBHEADER(LAME, mp3lame, lame_init, -lm, lame/lame.h, 
+  [
+    HAVE_LAME="yes"
+    LAME_LIBS="-lmp3lame -lm"
+    dnl is lame presets available
+    LAME_CFLAGS=""
+    AC_TRY_RUN([
 #include <lame/lame.h>
 int main (int argc, char *argv[])
 {
   printf("%d\n", MEDIUM);
   return 0;
 }
-],[LAME_CFLAGS="-DGSTLAME_PRESET"],[LAME_CFLAGS=""])
-AC_SUBST(LAME_CFLAGS)
-AC_SUBST(LAME_LIBS)
+      ],
+      [LAME_CFLAGS="-DGSTLAME_PRESET"],
+      [LAME_CFLAGS=""]
+    )
+  AC_SUBST(LAME_CFLAGS)
+  AC_SUBST(LAME_LIBS)
+  ])
+])
+
+dnl *** MAS (TODO) ***
+dnl translit(dnm, m, l) AM_CONDITIONAL(USE_MAS, true)
+dnl GST_CHECK_FEATURE(MAS, [mas], mas, [
+dnl   GST_CHECK_CONFIGPROG(MAS, mas-config)
+dnl   AC_SUBST(MAS_CFLAGS)
+dnl   AC_SUBST(MAS_LIBS)
+dnl ])
 
 dnl *** libcaca ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBCACA, true)
@@ -1248,6 +1261,21 @@ GST_CHECK_FEATURE(LIBPNG, [libpng PNG encoder], pngenc, [
   AC_SUBST(LIBPNG_LIBS)
 ])
 
+dnl *** libmms ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_LIBMMS, true)
+GST_CHECK_FEATURE(LIBMMS, [mms protocol library], libmms, [
+  dnl check with pkg-config first
+  PKG_CHECK_MODULES(LIBMMS, libmms >= 0.1, HAVE_LIBMMS="yes", HAVE_LIBMMS="no")
+])
+AC_SUBST(LIBMMS_LIBS)
+
+dnl *** libmng ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_LIBMNG, true)
+GST_CHECK_FEATURE(LIBMNG, [libmng library], mngdec, [
+  GST_CHECK_LIBHEADER(LIBMNG, mng, mng_initialize,, libmng.h, LIBMNG_LIBS="-lmng")
+  AC_SUBST(LIBMNG_LIBS)
+])
+
 dnl *** librfb ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBRFB, true)
 GST_CHECK_FEATURE(LIBRFB, [librfb Remote Framebuffer], rfbsrc, [
@@ -1259,7 +1287,7 @@ GST_CHECK_FEATURE(LIBRFB, [librfb Remote Framebuffer], rfbsrc, [
 dnl *** libvisual ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBVISUAL, true)
 GST_CHECK_FEATURE(LIBVISUAL, [libvisual visualization plugins], libvisual, [
-  PKG_CHECK_MODULES(LIBVISUAL, libvisual = 0.1.1, HAVE_LIBVISUAL="yes", HAVE_LIBVISUAL="no")
+  PKG_CHECK_MODULES(LIBVISUAL, libvisual = 0.1.7, HAVE_LIBVISUAL="yes", HAVE_LIBVISUAL="no")
   AC_SUBST(LIBVISUAL_CFLAGS)
   AC_SUBST(LIBVISUAL_LIBS)
 ])
@@ -1329,7 +1357,7 @@ main (int   argc,
       char *argv[])
 {
   MPEG2EncOptions *options = new MPEG2EncOptions ();
-  MPEG2Encoder encoder (*options);
+  MPEG2Encoder *encoder = new MPEG2Encoder (*options);
   return 0;
 }
         ],[
@@ -1388,7 +1416,7 @@ main (int   argc,
   vector<IBitStream *> inputs;
   job->SetupInputStreams (inputs);
   TestOutputStream *out = new TestOutputStream ();
-  Multiplexor mux (*job, *out);
+  Multiplexor *mux = new Multiplexor(*job, *out);
   return 0;
 }
         ],[
@@ -1403,6 +1431,18 @@ main (int   argc,
       AC_LANG_C
     ], HAVE_MPLEX="no")
   fi
+])
+
+dnl *** musepack ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_MUSEPACK, true)
+GST_CHECK_FEATURE(MUSEPACK, [musepackdec], musepack, [
+  AC_LANG_CPLUSPLUS
+  AC_CHECK_HEADER([musepack/mpc_dec.h], [
+    HAVE_MUSEPACK="yes"
+    MUSEPACK_LIBS="-lmusepack"
+    AC_SUBST(MUSEPACK_LIBS)
+    ], [HAVE_MUSEPACK="no"])
+  AC_LANG_C
 ])
 
 dnl *** musicbrainz ***
@@ -1440,11 +1480,39 @@ GST_CHECK_FEATURE(PANGO, [pango], pango, [
   AC_SUBST(PANGO_LIBS)
 ])
 
-dnl *** raw1394 ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_RAW1394, true)
-GST_CHECK_FEATURE(RAW1394, [raw1394 library], dv1394src, [
-  GST_CHECK_LIBHEADER(RAW1394, raw1394, raw1394_new_handle,, libraw1394/raw1394.h, RAW1394_LIBS="-lraw1394")
-  AC_SUBST(RAW1394_LIBS)
+dnl *** polypaudio ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_POLYP, true)
+GST_CHECK_FEATURE(POLYP, [polyp], polyp, [
+  PKG_CHECK_MODULES(POLYP, polyplib >= 0.7,
+      HAVE_POLYP="yes", HAVE_POLYP="no")
+  AC_SUBST(POLYP_CFLAGS)
+  AC_SUBST(POLYP_CFLAGS)
+])
+
+dnl *** dv1394 ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_DV1394, true)
+GST_CHECK_FEATURE(DV1394, [raw1394 and avc1394 library], dv1394src, [
+  dnl we need to test three headers and three libs
+  GST_CHECK_LIBHEADER(RAW1394,
+    raw1394, raw1394_new_handle,,
+    libraw1394/raw1394.h, RAW1394_LIBS="-lraw1394")
+  GST_CHECK_LIBHEADER(AVC1394,
+    avc1394, avc1394_send_command, $RAW1394_LIBS,
+    libavc1394/avc1394.h, AVC1394_LIBS="-lavc1394")
+  GST_CHECK_LIBHEADER(ROM1394,
+    rom1394, rom1394_free_directory, $RAW1394_LIBS,
+    libavc1394/rom1394.h, ROM1394_LIBS="-lrom1394")
+
+  dnl now see how far we got
+  if test x$HAVE_RAW1394 = xyes && \
+     test x$HAVE_AVC1394 = xyes && \
+     test x$HAVE_ROM1394 = xyes; then
+       HAVE_DV1394=yes
+       DV1394_LIBS="$RAW1394_LIBS $AVC1394_LIBS $ROM1394_LIBS"
+       AC_SUBST(DV1394_LIBS)
+  else
+       HAVE_DV1394=no
+  fi
 ])
 
 dnl *** SDL ***
@@ -1477,7 +1545,7 @@ GST_CHECK_FEATURE(SHOUT2, [shout2 plug-in], shout2send, [
   ])
 ])
 
-dnl *** sidplay ***
+dnl *** sidplay : works with libsidplay 1.36.x (not 2.x.x) ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_SIDPLAY, true)
 GST_CHECK_FEATURE(SIDPLAY, [sidplay plug-in], sidplay, [
   GST_PATH_SIDPLAY()
@@ -1497,28 +1565,47 @@ GST_CHECK_FEATURE(LIBPNG, [snapshot plug-in], snapshot, [
   AC_SUBST(LIBPNG_LIBS)
 ])
 
-dnl *** speex 1.0.x or >= 1.1.5 (1.1.4 and earlier were not API/ABI compatible ***
-dnl speex_jitter.h is 1.1 only
+dnl *** speex >= 1.0.4 or >= 1.1.5 ***
+dnl   1.1.4 and earlier were not API/ABI compatible with 1.0
+dnl   1.1.6 is the first to use a .pc/pkg-config file ***
+dnl   speex_jitter.h is 1.1.x only
 translit(dnm, m, l) AM_CONDITIONAL(USE_SPEEX, true)
 GST_CHECK_FEATURE(SPEEX, [speex plug-in], speex, [
-  GST_CHECK_LIBHEADER(SPEEX, speex, speex_bits_init, , speex.h, [
-    AC_CHECK_HEADER(speex_jitter.h, [
-      dnl speex 1.1.x :
-      GST_CHECK_LIBHEADER(SPEEX, speex, speex_encode_int, , speex.h, [
-        dnl speex 1.1.5 or + :
-        HAVE_SPEEX="yes"
-        SPEEX_LIBS="-lspeex"
-        AC_SUBST(SPEEX_CFLAGS)
-        AC_SUBST(SPEEX_LIBS)
+  PKG_CHECK_MODULES(SPEEX, speex >= 1.1.6, [
+    HAVE_SPEEX="yes"
+    AC_SUBST(SPEEX_CFLAGS)
+    AC_SUBST(SPEEX_LIBS)
+  ], [
+    GST_CHECK_LIBHEADER(SPEEX, speex, speex_bits_init, , speex/speex.h, [
+      AC_CHECK_HEADER(speex/speex_jitter.h, [
+        dnl speex 1.1.x :
+        GST_CHECK_LIBHEADER(SPEEX, speex, speex_encode_int, , speex/speex.h, [
+          dnl speex 1.1.5 or + :
+          HAVE_SPEEX="yes"
+          SPEEX_LIBS="-lspeex"
+          AC_SUBST(SPEEX_CFLAGS)
+          AC_SUBST(SPEEX_LIBS)
+        ],[
+          HAVE_SPEEX="no"
+        ])
       ],[
-        HAVE_SPEEX="no"
+        dnl speex 1.0.x :
+          AC_CHECK_DECL(SPEEX_GET_LOOKAHEAD, [
+            dnl speex 1.0.4
+            HAVE_SPEEX="yes"
+            SPEEX_LIBS="-lspeex"
+            AC_SUBST(SPEEX_CFLAGS)
+            AC_SUBST(SPEEX_LIBS)
+
+            AC_DEFINE_UNQUOTED(SPEEX_1_0, 1,
+              [defined if speex 1.0.x API detected])
+        ],[
+            HAVE_SPEEX="no"
+            AC_MSG_NOTICE(You need at least 1.0.4 to compile the speex plugin)
+        ], [
+#include <speex/speex.h>
+        ])
       ])
-    ], [
-      dnl speex 1.0.x :
-      HAVE_SPEEX="yes"
-      SPEEX_LIBS="-lspeex"
-      AC_SUBST(SPEEX_CFLAGS)
-      AC_SUBST(SPEEX_LIBS)
     ])
   ])
 ])
@@ -1534,7 +1621,7 @@ GST_CHECK_FEATURE(SNDFILE, [sndfile plug-in], sfsrc sfsink, [
 dnl *** swfdec ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_SWFDEC, true)
 GST_CHECK_FEATURE(SWFDEC, [swfdec plug-in], swfdec, [
-  PKG_CHECK_MODULES(SWFDEC, swfdec >= 0.1.3.1, HAVE_SWFDEC=yes, HAVE_SWFDEC=no)
+  PKG_CHECK_MODULES(SWFDEC, swfdec-0.3 >= 0.3.0, HAVE_SWFDEC=yes, HAVE_SWFDEC=no)
   AC_SUBST(SWFDEC_CFLAGS)
   AC_SUBST(SWFDEC_LIBS)
 ])
@@ -1670,15 +1757,6 @@ dnl ######################################################################
 dnl # Check command line parameters, and set shell variables accordingly #
 dnl ######################################################################
 
-AC_ARG_ENABLE(libmmx,
-  AC_HELP_STRING([--enable-libmmx],[use libmmx, if available]),
-[case "${enableval}" in
-  yes) USE_LIBMMX=$HAVE_LIBMMX ;;
-  no)  USE_LIBMMX=no ;;
-  *) AC_MSG_ERROR(bad value ${enableval} for --enable-libmmx) ;;
-esac], 
-[USE_LIBMMX=$HAVE_LIBMMX]) dnl Default value
-
 AC_ARG_ENABLE(atomic,
   AC_HELP_STRING([--enable-atomic],[use atomic reference counting header]),
 [case "${enableval}" in
@@ -1731,10 +1809,6 @@ dnl # Set defines according to variables set above #
 dnl ################################################
 
 
-if test "x$USE_LIBMMX" = xyes; then
-  AC_DEFINE(HAVE_LIBMMX, 1, [Define if libmmx is available])
-fi
-
 if test "x$USE_ATOMIC_H" = xyes; then
   AC_DEFINE(HAVE_ATOMIC_H, 1, [Define if atomic.h header file is available])
 fi
@@ -1752,8 +1826,6 @@ dnl #############################
 
 dnl These should be "USE_*" instead of "HAVE_*", but some packages expect
 dnl HAVE_ and it is likely to be easier to stick with the old name
-AM_CONDITIONAL(HAVE_LIBMMX,         test "x$USE_LIBMMX" = "xyes")
-
 AM_CONDITIONAL(HAVE_ATOMIC_H,       test "x$USE_ATOMIC_H" = "xyes")
 
 AM_CONDITIONAL(EXPERIMENTAL,        test "$EXPERIMENTAL" = "$xyes")
@@ -1833,12 +1905,13 @@ gst/Makefile
 gst/ac3parse/Makefile
 gst/adder/Makefile
 gst/alpha/Makefile
+gst/apetag/Makefile
+gst/asfdemux/Makefile
 gst/audioconvert/Makefile
 gst/audioscale/Makefile
 gst/audiorate/Makefile
 gst/auparse/Makefile
 gst/avi/Makefile
-gst/asfdemux/Makefile
 gst/cdxaparse/Makefile
 gst/chart/Makefile
 gst/colorspace/Makefile
@@ -1846,6 +1919,7 @@ gst/cutter/Makefile
 gst/debug/Makefile
 gst/deinterlace/Makefile
 gst/effectv/Makefile
+gst/equalizer/Makefile
 gst/festival/Makefile
 gst/ffmpegcolorspace/Makefile
 gst/filter/Makefile
@@ -1887,6 +1961,7 @@ gst/switch/Makefile
 gst/synaesthesia/Makefile
 gst/tags/Makefile
 gst/tcp/Makefile
+gst/tta/Makefile
 gst/typefind/Makefile
 gst/udp/Makefile
 gst/vbidec/Makefile
@@ -1925,10 +2000,15 @@ ext/alsa/Makefile
 ext/arts/Makefile
 ext/artsd/Makefile
 ext/audiofile/Makefile
+ext/audioresample/Makefile
+ext/cairo/Makefile
+ext/cdaudio/Makefile
 ext/cdparanoia/Makefile
 ext/dirac/Makefile
+ext/directfb/Makefile
 ext/divx/Makefile
 ext/dts/Makefile
+ext/libmms/Makefile
 ext/dv/Makefile
 ext/dvdread/Makefile
 ext/dvdnav/Makefile
@@ -1943,25 +2023,28 @@ ext/hermes/Makefile
 dnl ext/http/Makefile
 ext/jack/Makefile
 ext/jpeg/Makefile
-ext/kio/Makefile
 ext/ladspa/Makefile
 ext/lame/Makefile
 ext/ivorbis/Makefile
 ext/lcs/Makefile
 ext/libcaca/Makefile
 ext/libfame/Makefile
+ext/libmng/Makefile
 ext/libpng/Makefile
 ext/librfb/Makefile
 ext/libvisual/Makefile
 ext/mad/Makefile
+dnl ext/mas/Makefile
 ext/mikmod/Makefile
 ext/mpeg2dec/Makefile
 ext/mpeg2enc/Makefile
 ext/mplex/Makefile
+ext/musepack/Makefile
 ext/musicbrainz/Makefile
 ext/nas/Makefile
 ext/ogg/Makefile
 ext/pango/Makefile
+ext/polyp/Makefile
 ext/raw1394/Makefile
 ext/sdl/Makefile
 ext/shout/Makefile
@@ -2029,6 +2112,10 @@ common/Makefile
 common/m4/Makefile
 m4/Makefile
 )
+dnl disabled until it actually passes make distcheck
+dnl docs/Makefile
+dnl docs/libs/Makefile
+dnl docs/version.entities
 AC_OUTPUT
 
 echo -n "configure: *** Plug-ins that will be built :"

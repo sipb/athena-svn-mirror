@@ -130,7 +130,8 @@ alawenc_getcaps (GstPad * pad)
     otherpad = alawenc->srcpad;
     base_caps = gst_caps_new_simple ("audio/x-raw-int",
         "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
-        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+        "endianness", G_TYPE_INT, G_BYTE_ORDER,
+        "signed", G_TYPE_BOOLEAN, TRUE, NULL);
   }
   othercaps = gst_pad_get_allowed_caps (otherpad);
 
@@ -173,7 +174,8 @@ alawenc_link (GstPad * pad, const GstCaps * caps)
     otherpad = alawenc->sinkpad;
     base_caps = gst_caps_new_simple ("audio/x-raw-int",
         "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
-        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+        "endianness", G_TYPE_INT, G_BYTE_ORDER,
+        "signed", G_TYPE_BOOLEAN, TRUE, NULL);
   }
 
   structure = gst_caps_get_structure (base_caps, 0);
@@ -216,7 +218,7 @@ gst_alawenc_base_init (GstALawEncClass * klass)
     "PCM to A Law conversion",
     "Codec/Encoder/Audio",
     "Convert 16bit PCM to 8bit A law",
-    "Zaheer Merali <zaheer@bellworldwide.net>"
+    "Zaheer Abbas Merali <zaheerabbas at merali dot org>"
   };
 
   gst_element_class_add_pad_template (element_class, alawenc_src_template);

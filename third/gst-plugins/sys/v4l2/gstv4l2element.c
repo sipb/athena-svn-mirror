@@ -28,7 +28,9 @@
 
 #include "v4l2_calls.h"
 #include "gstv4l2tuner.h"
+#ifdef HAVE_XVIDEO
 #include "gstv4l2xoverlay.h"
+#endif
 #include "gstv4l2colorbalance.h"
 
 #include <gst/propertyprobe/propertyprobe.h>
@@ -83,14 +85,21 @@ gst_v4l2_iface_supported (GstImplementsInterface * iface, GType iface_type)
 {
   GstV4l2Element *v4l2element = GST_V4L2ELEMENT (iface);
 
+#ifdef HAVE_XVIDEO
   g_assert (iface_type == GST_TYPE_TUNER ||
       iface_type == GST_TYPE_X_OVERLAY || iface_type == GST_TYPE_COLOR_BALANCE);
+#else
+  g_assert (iface_type == GST_TYPE_TUNER ||
+      iface_type == GST_TYPE_COLOR_BALANCE);
+#endif
 
   if (v4l2element->video_fd == -1)
     return FALSE;
 
+#ifdef HAVE_XVIDEO
   if (iface_type == GST_TYPE_X_OVERLAY && !GST_V4L2_IS_OVERLAY (v4l2element))
     return FALSE;
+#endif
 
   return TRUE;
 }
@@ -284,11 +293,13 @@ gst_v4l2element_get_type (void)
       NULL,
       NULL,
     };
+#ifdef HAVE_XVIDEO
     static const GInterfaceInfo v4l2_xoverlay_info = {
       (GInterfaceInitFunc) gst_v4l2_xoverlay_interface_init,
       NULL,
       NULL,
     };
+#endif
     static const GInterfaceInfo v4l2_colorbalance_info = {
       (GInterfaceInitFunc) gst_v4l2_color_balance_interface_init,
       NULL,
@@ -308,8 +319,10 @@ gst_v4l2element_get_type (void)
         GST_TYPE_IMPLEMENTS_INTERFACE, &v4l2iface_info);
     g_type_add_interface_static (v4l2element_type,
         GST_TYPE_TUNER, &v4l2_tuner_info);
+#ifdef HAVE_XVIDEO
     g_type_add_interface_static (v4l2element_type,
         GST_TYPE_X_OVERLAY, &v4l2_xoverlay_info);
+#endif
     g_type_add_interface_static (v4l2element_type,
         GST_TYPE_COLOR_BALANCE, &v4l2_colorbalance_info);
     g_type_add_interface_static (v4l2element_type,
@@ -412,13 +425,10 @@ gst_v4l2element_init (GstV4l2Element * v4l2element)
   v4l2element->video_fd = -1;
   v4l2element->buffer = NULL;
   v4l2element->device = g_strdup ("/dev/video0");
-  v4l2element->display = g_strdup (g_getenv ("DISPLAY"));
 
   v4l2element->channels = NULL;
   v4l2element->norms = NULL;
   v4l2element->colors = NULL;
-
-  v4l2element->overlay = gst_v4l2_xoverlay_new (v4l2element);
 }
 
 
@@ -426,14 +436,6 @@ static void
 gst_v4l2element_dispose (GObject * object)
 {
   GstV4l2Element *v4l2element = GST_V4L2ELEMENT (object);
-
-  if (v4l2element->overlay) {
-    gst_v4l2_xoverlay_free (v4l2element);
-  }
-
-  if (v4l2element->display) {
-    g_free (v4l2element->display);
-  }
 
   g_free (v4l2element->device);
   v4l2element->device = NULL;
@@ -451,13 +453,10 @@ gst_v4l2element_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec)
 {
   GstV4l2Element *v4l2element;
-  GstTuner *tuner;
 
   /* it's not null if we got it, but it might not be ours */
   g_return_if_fail (GST_IS_V4L2ELEMENT (object));
   v4l2element = GST_V4L2ELEMENT (object);
-  /* stupid GstInterface */
-  tuner = (GstTuner *) object;
 
   switch (prop_id) {
     case ARG_DEVICE:
@@ -469,7 +468,9 @@ gst_v4l2element_set_property (GObject * object,
       break;
     case ARG_NORM:
       if (GST_V4L2_IS_OPEN (v4l2element)) {
-        GstTunerNorm *norm = gst_tuner_get_norm (tuner);
+        GstTuner *tuner = GST_TUNER (v4l2element);
+        GstTunerNorm *norm = gst_tuner_find_norm_by_name (tuner,
+            (gchar *) g_value_get_string (value));
 
         if (norm) {
           gst_tuner_set_norm (tuner, norm);
@@ -482,7 +483,9 @@ gst_v4l2element_set_property (GObject * object,
       break;
     case ARG_CHANNEL:
       if (GST_V4L2_IS_OPEN (v4l2element)) {
-        GstTunerChannel *channel = gst_tuner_get_channel (tuner);
+        GstTuner *tuner = GST_TUNER (v4l2element);
+        GstTunerChannel *channel = gst_tuner_find_channel_by_name (tuner,
+            (gchar *) g_value_get_string (value));
 
         if (channel) {
           gst_tuner_set_channel (tuner, channel);
@@ -495,13 +498,13 @@ gst_v4l2element_set_property (GObject * object,
       break;
     case ARG_FREQUENCY:
       if (GST_V4L2_IS_OPEN (v4l2element)) {
-        GstTunerChannel *channel;
+        GstTuner *tuner = GST_TUNER (v4l2element);
+        GstTunerChannel *channel = gst_tuner_get_channel (tuner);
 
-        if (!v4l2element->channel)
-          return;
-        channel = gst_tuner_get_channel (tuner);
-        g_assert (channel);
-        gst_tuner_set_frequency (tuner, channel, g_value_get_ulong (value));
+        if (channel &&
+            GST_TUNER_CHANNEL_HAS_FLAG (channel, GST_TUNER_CHANNEL_FREQUENCY)) {
+          gst_tuner_set_frequency (tuner, channel, g_value_get_ulong (value));
+        }
       } else {
         v4l2element->frequency = g_value_get_ulong (value);
         g_object_notify (object, "frequency");
@@ -540,7 +543,7 @@ gst_v4l2element_get_property (GObject * object,
       guint flags = 0;
 
       if (GST_V4L2_IS_OPEN (v4l2element)) {
-        flags |= v4l2element->vcap.capabilities & 30007;
+        flags |= v4l2element->vcap.capabilities & 0x30007;
       }
       g_value_set_flags (value, flags);
       break;
@@ -575,19 +578,21 @@ gst_v4l2element_change_state (GstElement * element)
    */
   switch (GST_STATE_TRANSITION (element)) {
     case GST_STATE_NULL_TO_READY:
-      gst_v4l2_set_display (v4l2element);
-
       if (!gst_v4l2_open (v4l2element))
         return GST_STATE_FAILURE;
 
+#ifdef HAVE_XVIDEO
       gst_v4l2_xoverlay_open (v4l2element);
+#endif
 
       /* emit a signal! whoopie! */
       g_signal_emit (G_OBJECT (v4l2element),
           gst_v4l2element_signals[SIGNAL_OPEN], 0, v4l2element->device);
       break;
     case GST_STATE_READY_TO_NULL:
+#ifdef HAVE_XVIDEO
       gst_v4l2_xoverlay_close (v4l2element);
+#endif
 
       if (!gst_v4l2_close (v4l2element))
         return GST_STATE_FAILURE;

@@ -56,7 +56,7 @@ enum
 static void gst_flacdec_base_init (gpointer g_class);
 static void gst_flacdec_class_init (FlacDecClass * klass);
 static void gst_flacdec_init (FlacDec * flacdec);
-static void gst_flacdec_dispose (GObject * object);
+static void gst_flacdec_finalize (GObject * object);
 
 static void gst_flacdec_loop (GstElement * element);
 static GstElementStateReturn gst_flacdec_change_state (GstElement * element);
@@ -169,7 +169,7 @@ gst_flacdec_class_init (FlacDecClass * klass)
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
-  gobject_class->dispose = gst_flacdec_dispose;
+  gobject_class->finalize = gst_flacdec_finalize;
 
   gstelement_class->change_state = gst_flacdec_change_state;
 }
@@ -231,7 +231,7 @@ gst_flacdec_init (FlacDec * flacdec)
 }
 
 static void
-gst_flacdec_dispose (GObject * object)
+gst_flacdec_finalize (GObject * object)
 {
   FlacDec *flacdec;
 
@@ -241,7 +241,7 @@ gst_flacdec_dispose (GObject * object)
     FLAC__seekable_stream_decoder_delete (flacdec->decoder);
   flacdec->decoder = NULL;
 
-  G_OBJECT_CLASS (parent_class)->dispose (object);
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 
@@ -275,7 +275,8 @@ gst_flacdec_update_metadata (FlacDec * flacdec,
       g_free (value);
     }
   }
-
+  gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
+      GST_TAG_AUDIO_CODEC, "FLAC", NULL);
 
   gst_element_found_tags (GST_ELEMENT (flacdec), list);
   if (GST_PAD_IS_USABLE (flacdec->srcpad)) {
@@ -700,12 +701,12 @@ gst_flacdec_src_query (GstPad * pad, GstQueryType type,
       else
         samples = flacdec->stream_samples;
 
-      gst_pad_convert (flacdec->srcpad,
+      res = gst_pad_convert (flacdec->srcpad,
           GST_FORMAT_DEFAULT, samples, format, value);
       break;
     }
     case GST_QUERY_POSITION:
-      gst_pad_convert (flacdec->srcpad,
+      res = gst_pad_convert (flacdec->srcpad,
           GST_FORMAT_DEFAULT, flacdec->total_samples, format, value);
       break;
     default:

@@ -26,11 +26,14 @@
 #include "gst/gst-i18n-plugin.h"
 
 #include "gstgnomevfs.h"
+#include <libgnomevfs/gnome-vfs.h>
 #include <gst/gst.h>
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  gnome_vfs_init ();
+
   if (!gst_element_register (plugin, "gnomevfssrc",
           GST_RANK_SECONDARY, gst_gnomevfssrc_get_type ()) ||
       !gst_element_register (plugin, "gnomevfssink",

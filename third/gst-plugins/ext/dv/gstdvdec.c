@@ -21,6 +21,7 @@
 #include "config.h"
 #endif
 #include <string.h>
+#include <math.h>
 
 /* First, include the header file for the plugin, to bring in the
  * object definition and other useful things.
@@ -34,6 +35,16 @@
 #define PAL_HEIGHT 576
 #define PAL_BUFFER 144000
 #define PAL_FRAMERATE 25.0
+
+#define PAL_NORMAL_PAR_X	16
+#define PAL_NORMAL_PAR_Y	15
+#define PAL_WIDE_PAR_X		64
+#define PAL_WIDE_PAR_Y		45
+
+#define NTSC_NORMAL_PAR_X	80
+#define NTSC_NORMAL_PAR_Y	89
+#define NTSC_WIDE_PAR_X		320
+#define NTSC_WIDE_PAR_Y		267
 
 /* The ElementDetails structure gives a human-readable description
  * of the plugin, as well as author and version data.
@@ -98,7 +109,13 @@ static GstStaticPadTemplate video_src_temp = GST_STATIC_PAD_TEMPLATE ("video",
         "width = (int) 720, "
         "height = (int) { "
         G_STRINGIFY (NTSC_HEIGHT) ", " G_STRINGIFY (PAL_HEIGHT)
-        " }, " "framerate = (double) [ 1.0, 60.0 ];"
+        " }, "
+        "pixel-aspect-ratio=(fraction) { "
+        G_STRINGIFY (PAL_NORMAL_PAR_X) "/" G_STRINGIFY (PAL_NORMAL_PAR_Y) ","
+        G_STRINGIFY (PAL_WIDE_PAR_X) "/" G_STRINGIFY (PAL_WIDE_PAR_Y) ","
+        G_STRINGIFY (NTSC_NORMAL_PAR_X) "/" G_STRINGIFY (NTSC_NORMAL_PAR_Y) ","
+        G_STRINGIFY (NTSC_WIDE_PAR_X) "/" G_STRINGIFY (NTSC_WIDE_PAR_Y) "},"
+        "framerate = (double) [ 1.0, 60.0 ];"
         //"framerate = (double) { "
         //G_STRINGIFY (PAL_FRAMERATE) ", " G_STRINGIFY (NTSC_FRAMERATE)
         //" }; "
@@ -112,7 +129,13 @@ static GstStaticPadTemplate video_src_temp = GST_STATIC_PAD_TEMPLATE ("video",
         "width = (int) 720, "
         "height = (int) { "
         G_STRINGIFY (NTSC_HEIGHT) ", " G_STRINGIFY (PAL_HEIGHT)
-        " }, " "framerate = (double) [ 1.0, 60.0 ];"
+        " }, "
+        "pixel-aspect-ratio=(fraction) { "
+        G_STRINGIFY (PAL_NORMAL_PAR_X) "/" G_STRINGIFY (PAL_NORMAL_PAR_Y) ","
+        G_STRINGIFY (PAL_WIDE_PAR_X) "/" G_STRINGIFY (PAL_WIDE_PAR_Y) ","
+        G_STRINGIFY (NTSC_NORMAL_PAR_X) "/" G_STRINGIFY (NTSC_NORMAL_PAR_Y) ","
+        G_STRINGIFY (NTSC_WIDE_PAR_X) "/" G_STRINGIFY (NTSC_WIDE_PAR_Y) "},"
+        "framerate = (double) [ 1.0, 60.0 ];"
         //"framerate = (double) { "
         //G_STRINGIFY (PAL_FRAMERATE) ", " G_STRINGIFY (NTSC_FRAMERATE)
         //" }; "
@@ -126,7 +149,13 @@ static GstStaticPadTemplate video_src_temp = GST_STATIC_PAD_TEMPLATE ("video",
         "width = (int) 720, "
         "height = (int) { "
         G_STRINGIFY (NTSC_HEIGHT) ", " G_STRINGIFY (PAL_HEIGHT)
-        " }, " "framerate = (double) [ 1.0, 60.0 ]"
+        " }, "
+        "pixel-aspect-ratio=(fraction) { "
+        G_STRINGIFY (PAL_NORMAL_PAR_X) "/" G_STRINGIFY (PAL_NORMAL_PAR_Y) ","
+        G_STRINGIFY (PAL_WIDE_PAR_X) "/" G_STRINGIFY (PAL_WIDE_PAR_Y) ","
+        G_STRINGIFY (NTSC_NORMAL_PAR_X) "/" G_STRINGIFY (NTSC_NORMAL_PAR_Y) ","
+        G_STRINGIFY (NTSC_WIDE_PAR_X) "/" G_STRINGIFY (NTSC_WIDE_PAR_Y) "},"
+        "framerate = (double) [ 1.0, 60.0 ]"
         //"framerate = (double) { "
         //G_STRINGIFY (PAL_FRAMERATE) ", " G_STRINGIFY (NTSC_FRAMERATE)
         //" }"
@@ -372,6 +401,7 @@ gst_dvdec_init (GstDVDec * dvdec)
   dvdec->height = 0;
   dvdec->frequency = 0;
   dvdec->channels = 0;
+  dvdec->wide = FALSE;
   dvdec->drop_factor = 1;
 
   dvdec->clamp_luma = FALSE;
@@ -627,6 +657,9 @@ gst_dvdec_handle_sink_event (GstDVDec * dvdec)
         gst_event_ref (event);
         gst_pad_push (dvdec->audiosrcpad, GST_DATA (event));
       }
+      if (type == GST_EVENT_EOS) {
+        gst_element_set_eos (GST_ELEMENT (dvdec));
+      }
       break;
     }
     case GST_EVENT_DISCONTINUOUS:
@@ -740,7 +773,25 @@ gst_dvdec_video_getcaps (GstPad * pad)
 
   if (dvdec->found_header) {
     int i;
+    gint par_x, par_y;
 
+    if (dvdec->PAL) {
+      if (dvdec->wide) {
+        par_x = PAL_WIDE_PAR_X;
+        par_y = PAL_WIDE_PAR_Y;
+      } else {
+        par_x = PAL_NORMAL_PAR_X;
+        par_y = PAL_NORMAL_PAR_Y;
+      }
+    } else {
+      if (dvdec->wide) {
+        par_x = NTSC_WIDE_PAR_X;
+        par_y = NTSC_WIDE_PAR_Y;
+      } else {
+        par_x = NTSC_NORMAL_PAR_X;
+        par_y = NTSC_NORMAL_PAR_Y;
+      }
+    }
     /* set the height */
     for (i = 0; i < gst_caps_get_size (caps); i++) {
       GstStructure *structure = gst_caps_get_structure (caps, i);
@@ -748,7 +799,7 @@ gst_dvdec_video_getcaps (GstPad * pad)
       gst_structure_set (structure,
           "height", G_TYPE_INT, dvdec->height,
           "framerate", G_TYPE_DOUBLE, dvdec->framerate / dvdec->drop_factor,
-          NULL);
+          "pixel-aspect-ratio", GST_TYPE_FRACTION, par_x, par_y, NULL);
     }
   }
 
@@ -777,8 +828,9 @@ gst_dvdec_video_link (GstPad * pad, const GstCaps * caps)
       !gst_structure_get_double (structure, "framerate", &framerate))
     return GST_PAD_LINK_REFUSED;
 
-  if ((height != dvdec->height)
-      || (framerate != dvdec->framerate / dvdec->drop_factor))
+  /* allow a margin of error for the framerate caused by float rounding errors */
+  if ((height != dvdec->height) ||
+      (fabs (framerate - (dvdec->framerate / dvdec->drop_factor)) > 0.00000001))
     return GST_PAD_LINK_REFUSED;
 
   if (strcmp (gst_structure_get_name (structure), "video/x-raw-rgb") == 0) {
@@ -836,6 +888,7 @@ gst_dvdec_loop (GstElement * element)
   guint32 length, got_bytes;
   GstClockTime ts, duration;
   gdouble fps;
+  gboolean wide;
 
   dvdec = GST_DVDEC (element);
 
@@ -866,6 +919,7 @@ gst_dvdec_loop (GstElement * element)
   fps = (dvdec->PAL ? PAL_FRAMERATE : NTSC_FRAMERATE);
   height = (dvdec->PAL ? PAL_HEIGHT : NTSC_HEIGHT);
   length = (dvdec->PAL ? PAL_BUFFER : NTSC_BUFFER);
+  wide = dv_format_wide (dvdec->decoder);
 
   if (length != dvdec->length) {
     dvdec->length = length;
@@ -956,9 +1010,11 @@ gst_dvdec_loop (GstElement * element)
     }
     dvdec->framecount = 0;
 
-    if ((dvdec->framerate != fps) || (dvdec->height != height)) {
+    if ((dvdec->framerate != fps) || (dvdec->height != height)
+        || dvdec->wide != wide) {
       dvdec->height = height;
       dvdec->framerate = fps;
+      dvdec->wide = wide;
 
       if (GST_PAD_LINK_FAILED (gst_pad_renegotiate (dvdec->videosrcpad))) {
         GST_ELEMENT_ERROR (dvdec, CORE, NEGOTIATION, (NULL), (NULL));
@@ -992,6 +1048,7 @@ gst_dvdec_loop (GstElement * element)
   } else {
     dvdec->height = height;
     dvdec->framerate = fps;
+    dvdec->wide = wide;
   }
 
 end:

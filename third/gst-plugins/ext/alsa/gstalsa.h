@@ -147,6 +147,7 @@ struct _GstAlsa {
   GstAlsaFormat *		format;		/* NULL if undefined */
   gboolean			mmap; 		/* use mmap transmit (fast) or read/write (sloooow) */
   GstAlsaTransmitFunction	transmit;
+  GstCaps *			cached_caps;	/* we cache caps to speed up get_caps */
 
   /* latency / performance parameters */
   snd_pcm_uframes_t		period_size;
@@ -156,6 +157,7 @@ struct _GstAlsa {
 
   /* clocking */
   GstAlsaClock *		clock;		/* our provided clock */
+  GstClock *			ext_clock;	/* externally set clock. */
   snd_pcm_uframes_t		played; 	/* samples transmitted since last sync 
 						   This thing actually is our master clock.
 						   We will event insert silent samples or
