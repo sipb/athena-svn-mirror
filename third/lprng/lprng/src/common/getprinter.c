@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getprinter.c,v 1.1.1.3 1999-05-24 18:29:19 danw Exp $";
+"$Id: getprinter.c,v 1.1.1.4 1999-10-27 20:10:05 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -72,27 +72,6 @@ char *Get_printer(void)
  ***************************************************************************/
 
 
-char *Find_pc_entry( char *pr, struct line_list *alias,
-	struct line_list *entry )
-{
-	char *s;
-	s = Find_str_value( &PC_names_line_list, pr, Value_sep);
-	DEBUG1("Find_pc_entry: pr '%s', found '%s'", pr, s );
-	if( !s && PC_filters_line_list.count ){
-
-		/* try the filter list to get the information */
-		Filterprintcap( &RawPC_line_list, &PC_filters_line_list, pr);
-		Build_printcap_info( &PC_names_line_list, &PC_order_line_list,
-			&PC_info_line_list, &RawPC_line_list, &Host_IP );
-		/* now we can free up the Raw stuff */
-		Free_line_list( &RawPC_line_list );
-	}
-
-	/* look for the information */
-	s = Select_pc_info( alias, entry, &PC_names_line_list, &PC_info_line_list, pr );
-	return(s);
-}
-
 void Fix_Rm_Rp_info(void)
 {
 	char *s;
@@ -112,26 +91,30 @@ void Fix_Rm_Rp_info(void)
 	Set_DYN(&RemotePrinter_DYN, 0 );
 	Set_DYN(&RemoteHost_DYN, 0 );
 
-	if( (s = strchr( Printer_DYN, '@' ))  ){
+	if( (s = safestrchr( Printer_DYN, '@' ))  ){
 		Set_DYN(&RemotePrinter_DYN, Printer_DYN );
 		*s = 0;
 		Set_DYN(&Queue_name_DYN, Printer_DYN );
-		s = strchr( RemotePrinter_DYN, '@');
+		s = safestrchr( RemotePrinter_DYN, '@');
 		*s++ = 0;
 		Set_DYN(&RemoteHost_DYN, s );
-		if( (s = strchr(RemoteHost_DYN,'%')) ){
+		if( (s = safestrchr(RemoteHost_DYN,'%')) ){
 			*s++ = 0;
 			Set_DYN(&Lpd_port_DYN,s);
 		}
 	} else {
 		/* we search for the values in the printcap */
 		Set_DYN(&Queue_name_DYN, Printer_DYN );
-		if( (s = Find_pc_entry(Printer_DYN, &PC_alias_line_list,
-			&PC_entry_line_list ))
+		if( (s = Select_pc_info(Printer_DYN, &PC_alias_line_list,
+			&PC_entry_line_list,
+			&PC_names_line_list, &PC_order_line_list,
+			&PC_info_line_list, 0 ))
 			||
 			(Is_server && Default_printer_when_unknown
-				&& (s = Find_pc_entry(Default_printer_when_unknown,
-					&PC_alias_line_list, &PC_entry_line_list )) ) ){
+				&& (s = Select_pc_info(Default_printer_when_unknown,
+					&PC_alias_line_list, &PC_entry_line_list,
+					&PC_names_line_list, &PC_order_line_list,
+					&PC_info_line_list, 0 )) ) ){
 
 			Set_DYN(&Printer_DYN,s);
 
@@ -148,12 +131,12 @@ void Fix_Rm_Rp_info(void)
 			 */
 			Set_DYN( &RemoteHost_DYN, LOCALHOST );
 			Set_DYN( &RemotePrinter_DYN, Printer_DYN );
-		} else if( Lp_device_DYN && (s = strchr( Lp_device_DYN, '@' )) ){
+		} else if( Lp_device_DYN && (s = safestrchr( Lp_device_DYN, '@' )) ){
 			Set_DYN(&RemotePrinter_DYN, Lp_device_DYN );
-			s = strchr( RemotePrinter_DYN, '@');
+			s = safestrchr( RemotePrinter_DYN, '@');
 			if( s ) *s++ = 0;
 			Set_DYN(&RemoteHost_DYN, s );
-			if( (s = strchr(RemoteHost_DYN,'%')) ){
+			if( (s = safestrchr(RemoteHost_DYN,'%')) ){
 				*s++ = 0;
 				Set_DYN(&Lpd_port_DYN,s);
 			}
@@ -208,13 +191,15 @@ void Get_all_printcap_entries(void)
 	DEBUG1("Get_all_printcap_entries: starting");
 	if( !Find_str_value( &PC_names_line_list, ALL, Value_sep)
 		&& PC_filters_line_list.count ){
+		struct line_list raw;
 
 		/* try the filter list to get the information */
-		Filterprintcap( &RawPC_line_list, &PC_filters_line_list, ALL);
+		Init_line_list(&raw);
+		Filterprintcap( &raw, &PC_filters_line_list, ALL);
 		Build_printcap_info( &PC_names_line_list, &PC_order_line_list,
-			&PC_info_line_list, &RawPC_line_list, &Host_IP );
-		/* now we can free up the Raw stuff */
-		Free_line_list( &RawPC_line_list );
+			&PC_info_line_list, &raw, &Host_IP );
+		/* now we can free up the raw list */
+		Free_line_list( &raw );
 		if(DEBUGL3){
 		Dump_line_list("Get_all_printcap_entries: PC names", &PC_names_line_list );
 		Dump_line_list("Get_all_printcap_entries: PC order", &PC_order_line_list );
@@ -224,9 +209,10 @@ void Get_all_printcap_entries(void)
 	}
 
 	/* look for the information */
-	if( (s = Select_pc_info( &PC_alias_line_list,
-		&PC_entry_line_list, &PC_names_line_list, &PC_info_line_list,
-		ALL )) ){
+	if( (s = Select_pc_info( ALL, &PC_alias_line_list,
+		&PC_entry_line_list,
+		&PC_names_line_list, &PC_order_line_list,
+		&PC_info_line_list, 0 )) ){
 		t = Find_str_value( &PC_entry_line_list, ALL, Value_sep );
 		DEBUG2("Get_all_printcap_entries: found '%s'='%s'", s,t );
 		Split(&All_line_list,t,File_sep,0,0,0,1,0);
@@ -235,8 +221,9 @@ void Get_all_printcap_entries(void)
 	}
 
 	for( i = 0; i < All_line_list.count; ++i ){
-		if( !strcasecmp( ALL, All_line_list.list[i] )
+		if( !safestrcasecmp( ALL, All_line_list.list[i] )
 			|| ispunct( cval( All_line_list.list[i] ) )
+			|| strstr( ":tc_only", All_line_list.list[i] )
 			){
 			Remove_line_list( &All_line_list, i );
 			--i;

@@ -22,10 +22,12 @@ SHELL =		@SHELL@
 
 DOC=LPRng-HOWTO
 
-all: license.txt $(DOC).html $(DOC).ps purge LPRng.html
+all: license.txt y2k.txt $(DOC).html $(DOC).ps purge LPRng.html
 
 
 license.txt: $(SRC)/../LICENSE
+	cp $> $@
+y2k.txt: $(SRC)/../Y2KCompliance
 	cp $> $@
 
 $(DOC).html: $(DOC).sgml Makefile
@@ -43,7 +45,7 @@ $(DOC).ps: $(DOC).tex Makefile
 		'\nonstopmode\input{$(DOC).tex}'
 	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
 		'\nonstopmode\input{$(DOC).tex}'
-	dvips -q -t a4 -o $(DOC).ps $(DOC).dvi
+	dvips -q -t letter -o $(DOC).ps $(DOC).dvi
 LPRng.html: $(SRC)/LPRng.html.orig
 	cp $> $@
 purge:
@@ -85,3 +87,6 @@ cifast ci:
 	for i in  *.sgml Makefile.in Makefile; do \
 		checkin $$i; \
 	done;
+
+correct:
+	correct -d dict *.sgml

@@ -21,6 +21,7 @@ CO=-kv
 
 cifast ci:
 	checkin() { \
+		rcs -l $$1; \
 		ci $(CI) -mUpdate -t-Initial $$1; \
 		co $(CO) $$1; \
 	}; \

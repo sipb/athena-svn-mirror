@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: termclear.c,v 1.1.1.2 1999-05-04 18:06:58 danw Exp $";
+"$Id: termclear.c,v 1.1.1.3 1999-10-27 20:10:01 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -67,6 +67,9 @@
  * Solaris 2.4 term.h
  * extern  int  tputs(char *, int, int (*)(char))
  *
+ * HP-UX 10.20
+ * extern  int     tputs(char *, int, void (*)(int));
+ *
  *  Depending on you stdio package, putchar can return (void)
  *  or be a macro, returning wacko values.  We take the easy road,
  *  and return void(), be compatible with definitions.
@@ -76,7 +79,7 @@
 #define TPUTS_RETTYPE int
 #define PPUTS_VALTYPE int
 #define PPUTS_RETVAL(X) (X)
-#if defined(IS_BSDI)
+#if defined(IS_BSDI) || defined(HPUX)
 #undef PPUTS_RETTYPE
 #undef PPUTS_RETVAL
 #define PPUTS_RETTYPE void

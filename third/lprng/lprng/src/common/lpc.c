@@ -8,12 +8,12 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.1.1.1 1999-05-04 18:06:53 danw Exp $";
+"$Id: lpc.c,v 1.1.1.2 1999-10-27 20:09:56 mwhitson Exp $";
 
 
 /***************************************************************************
  * SYNOPSIS
- *      lpc [ -PPrinter] [-S Server] [-V] [-D debug] [command]
+ *      lpc [ -PPrinter] [-S Server] [-U username ][-V] [-D debug] [command]
  * commands:
  *
  *   status [printer]     - show printer status (default is all printers)
@@ -35,8 +35,10 @@
  *   lpq printer [ user [@host]  | host | jobnumber ] *
  *   lpd [pr | pr@host]   - PID of LPD server
  *   active [pr |pr@host] - check to see if server accepting connections
- *   local [all | pr ]     - show client configuration and printcap info 
+ *   client [all | pr ]     - show client configuration and printcap info 
  *   server [all |pr ]     - show server configuration and printcap info 
+ *   defaultq               - show default queue for LPD server\n\
+ *   defaults               - show default configuration values\n\
  *
  * DESCRIPTION
  *   lpc sends a  request to lpd(8)
@@ -86,6 +88,7 @@
 
  void use_msg(void);
  void doaction( struct line_list *args );
+ static char *Username_JOB;
 
 int main(int argc, char *argv[], char *envp[])
 {
@@ -116,19 +119,7 @@ int main(int argc, char *argv[], char *envp[])
 
 	Get_parms(argc, argv);      /* scan input args */
 
-	/* get the printer name */
-	Get_printer();
-	Fix_Rm_Rp_info();
-	if( Server ){
-		DEBUG1("doaction: overriding Remotehost with '%s'", Server );
-		Set_DYN(&RemoteHost_DYN, Server );
-	}
-	if( RemoteHost_DYN == 0 ){
-		Diemsg( _("No remote host specified") );
-	}
-
-	DEBUG1("lpc: RemotePrinter_DYN '%s', RemoteHost_DYN '%s'", RemotePrinter_DYN, RemoteHost_DYN );
-	DEBUG1("lpc: Optind '%d', argc '%d'", Optind, argc );
+	DEBUG1("lpc: Printer '%s', Optind '%d', argc '%d'", Printer_DYN, Optind, argc );
 	if(DEBUGL1){
 		int ii;
 		for( ii = Optind; ii < argc; ++ii ){
@@ -136,10 +127,40 @@ int main(int argc, char *argv[], char *envp[])
 		}
 	}
 
-	if( Check_for_rg_group( Logname_DYN ) ){
-		fprintf( stderr, "cannot use printer - not in privileged group\n" );
-		Errorcode = 1;
-		exit(0);
+	if( Username_JOB ){
+		/* check to see if you were root */
+		if( 0 != OriginalRUID ){
+			struct line_list user_list;
+			char *str, *t;
+			struct passwd *pw;
+			int found, uid;
+
+			DEBUG2("lpc: checking '%s' for -U perms",
+				Allow_user_setting_DYN );
+			Init_line_list(&user_list);
+			Split( &user_list, Allow_user_setting_DYN,File_sep,0,0,0,0,0);
+			
+			found = 0;
+			for( i = 0; !found && i < user_list.count; ++i ){
+				str = user_list.list[i];
+				DEBUG2("lpc: checking '%s'", str );
+				uid = strtol( str, &t, 10 );
+				if( str == t || *t ){
+					/* try getpasswd */
+					pw = getpwnam( str );
+					if( pw ){
+						uid = pw->pw_uid;
+					}
+				}
+				DEBUG2( "lpc: uid '%d'", uid );
+				found = ( uid == OriginalRUID );
+				DEBUG2( "lpc: found '%d'", found );
+			}
+			if( !found ){
+				Diemsg( _("-U (username) can only be used by ROOT") );
+			}
+		}
+		Set_DYN(&Logname_DYN, Username_JOB);
 	}
 
 	if( Optind < argc ){
@@ -153,7 +174,7 @@ int main(int argc, char *argv[], char *envp[])
 		fprintf( stdout, "lpc>" );
 		fflush( stdout );
 		if( fgets( msg, sizeof(msg), stdin ) == 0 ) break;
-		if( (s = strchr( msg, '\n' )) ) *s = 0;
+		if( (s = safestrchr( msg, '\n' )) ) *s = 0;
 		DEBUG1("lpc: '%s'", msg );
 		Free_line_list(&args);
 		Split(&args,msg,Whitespace,0,0,0,0,0);
@@ -162,7 +183,7 @@ int main(int argc, char *argv[], char *envp[])
 		if(DEBUGL1)Dump_line_list("lpc - args", &args );
 		if( args.count == 0 ) continue;
 		s = args.list[0];
-		if( strcasecmp(s,"exit") == 0 || s[0] == 'q' || s[0] == 'Q' ){
+		if( safestrcasecmp(s,"exit") == 0 || s[0] == 'q' || s[0] == 'Q' ){
 			break;
 		}
 		doaction(&args);
@@ -195,20 +216,32 @@ void doaction( struct line_list *args )
 		Fix_Rm_Rp_info();
 		DEBUG1("doaction: Printer '%s', RemotePrinter '%s', RemoteHost '%s'",
 			Printer_DYN, RemotePrinter_DYN, RemoteHost_DYN );
-		if( (s = strchr(args->list[1],'@')) ) *s = 0;
-		if( Server ){
-			DEBUG1("doaction: overriding Remotehost with '%s'", Server );
-			Set_DYN(&RemoteHost_DYN, Server );
-		}
+		if( (s = safestrchr(args->list[1],'@')) ) *s = 0;
+	} else if( Printer_DYN == 0 ){
+		/* get the printer name */
+		Get_printer();
+		Fix_Rm_Rp_info();
+	} else {
+		Fix_Rm_Rp_info();
 	}
+	if( Server ){
+		DEBUG1("doaction: overriding Remotehost with '%s'", Server );
+		Set_DYN(&RemoteHost_DYN, Server );
+	}
+
+	DEBUG1("lpc: RemotePrinter_DYN '%s', RemoteHost_DYN '%s'", RemotePrinter_DYN, RemoteHost_DYN );
 	if( action == OP_SERVER ){
 		Is_server = 1;
 		Setup_configuration();
 	}
-	if( action == OP_LOCAL || action == OP_SERVER ){
+	if( action == OP_DEFAULTS ){
+		Is_server = 0;
+		Setup_configuration();
+		Dump_parms( "Defaults", Pc_var_list );
+	} else if( action == OP_CLIENT || action == OP_SERVER ){
 		s = Join_line_list(&Config_line_list,"\n :");
 		printcap = safestrdup3("Config","\n :",s,__FILE__,__LINE__);
-		if( (w = strrchr(printcap,' ')) ) *w = 0;
+		if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 		if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 		if( s ) free(s); s = 0;
 		if( t ) free(t); t = 0;
@@ -216,13 +249,13 @@ void doaction( struct line_list *args )
 
 		if( args->count > 1 ){
 			Get_all_printcap_entries();
-			if( !strcasecmp(args->list[1], "all") ){
+			if( !safestrcasecmp(args->list[1], "all") ){
 				if(s) free(s); s = 0;
 				if( t ) free(t); t = 0;
 				if(printcap) free(printcap); printcap = 0;
 				s = Join_line_list(&PC_names_line_list,"\n :");
 				printcap = safestrdup3("\nNames","\n :",s,__FILE__,__LINE__);
-				if( (w = strrchr(printcap,' ')) ) *w = 0;
+				if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 				if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 
 				if(s) free(s); s = 0;
@@ -230,14 +263,14 @@ void doaction( struct line_list *args )
 				if(printcap) free(printcap); printcap = 0;
 				s = Join_line_list(&All_line_list,"\n :");
 				printcap = safestrdup3("\nAll","\n :",s,__FILE__,__LINE__);
-				if( (w = strrchr(printcap,' ')) ) *w = 0;
+				if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 				if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 			}
 
 			if( Write_fd_str( 1,"\nPrintcap Information\n") < 0 ) cleanup(0);
 			for( i = 0; i < All_line_list.count; ++i ){
-				if( strcasecmp(args->list[1], "all")
-					&& strcasecmp(args->list[1], All_line_list.list[i]) ){
+				if( safestrcasecmp(args->list[1], "all")
+					&& safestrcasecmp(args->list[1], All_line_list.list[i]) ){
 					continue;
 				}
 				Set_DYN(&Printer_DYN,All_line_list.list[i]);
@@ -248,9 +281,9 @@ void doaction( struct line_list *args )
 				t = Join_line_list(&PC_alias_line_list,"|");
 				s = Join_line_list(&PC_entry_line_list,"\n :");
 				if( s && t ){
-					if( (w = strrchr(t,'|')) ) *w = 0;
+					if( (w = safestrrchr(t,'|')) ) *w = 0;
 					printcap = safestrdup3(t,"\n :",s,__FILE__,__LINE__);
-					if( (w = strrchr(printcap,' ')) ) *w = 0;
+					if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 					if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 				}
 			}
@@ -268,7 +301,7 @@ void doaction( struct line_list *args )
 			args->list[args->count] = 0;
 		} else if( args->count > 1 ){
 			s = args->list[1];
-			if( strcasecmp(s,"all") ){
+			if( safestrcasecmp(s,"all") ){
 				plp_snprintf(msg,sizeof(msg), "-P%s", s );
 			} else {
 				strcpy(msg, "-a" );
@@ -296,6 +329,12 @@ void doaction( struct line_list *args )
 			result, Decode_status( &status ) );
 	} else {
 		Add_line_list(&l, Logname_DYN, Value_sep, 0, 0 );
+		Add_line_list(&l, args->list[0], Value_sep, 0, 0);
+		Remove_line_list(args, 0);
+		if( args->count > 0 ) {
+			Add_line_list(&l, RemotePrinter_DYN, Value_sep, 0, 0 );
+			Remove_line_list(args, 0);
+		}
 		Merge_line_list(&l, args, 0, 0, 0 );
 		Check_max(&l, 1 );
 		l.list[l.count] = 0;
@@ -339,7 +378,7 @@ void doaction( struct line_list *args )
 	return;
 }
 
- void send_to_logger (struct job *job,const char *header, char *fmt){;}
+ void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
  void setmessage (struct job *job,const char *header, char *fmt,...)
@@ -379,7 +418,7 @@ void doaction( struct line_list *args )
  void usage(void);
 
  char LPC_optstr[] 	/* LPC options */
- = "D:P:S:V";
+ = "D:P:S:VU:";
 
 /* scan the input arguments, setting up values */
 
@@ -400,6 +439,7 @@ void Get_parms(int argc, char *argv[] )
 		case 'S':
 			Server = Optarg;
 			break;
+		case 'U': Username_JOB = Optarg; break;
 		default:
 			usage();
 		}
@@ -410,7 +450,7 @@ void Get_parms(int argc, char *argv[] )
 }
 
  char *msg = N_("\
-usage: %s [-A] [-Ddebuglevel] [-Pprinter] [-V] [command]\n\
+usage: %s [-A] [-Ddebuglevel] [-U username] [-Pprinter] [-V] [command]\n\
  with no commands, reads from stdin\n\
   -Pprinter    - specify printer\n\
   -V           - increase information verbosity\n\
@@ -445,7 +485,8 @@ usage: %s [-A] [-Ddebuglevel] [-Pprinter] [-V] [command]\n\
  up        (printer[@host] | all) - enable printing and queueing\n\
    diagnostic:\n\
       defaultq               - show default queue for LPD server\n\
-      local  (printer | all) - client config and printcap information\n\
+      defaults               - show default configuration values\n\
+      client  (printer | all) - client config and printcap information\n\
       server (printer | all) - server config and printcap\n");
 
 void use_msg(void)

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.1.1.1 1999-05-04 18:06:53 danw Exp $";
+"$Id: lpr.c,v 1.1.1.2 1999-10-27 20:09:56 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -124,7 +124,7 @@ int main(int argc, char *argv[], char *envp[])
 		fatal( LOG_INFO,_("cannot use printer - not in privileged group\n") );
 	}
 	if( Remote_support_DYN
-		&& strpbrk( "rR", Remote_support_DYN ) == 0 ){
+		&& safestrpbrk( "rR", Remote_support_DYN ) == 0 ){
 		Errorcode = 1;
 		fatal(LOG_INFO, _("no remote support for %s@%s"),
 			RemotePrinter_DYN,RemoteHost_DYN );
@@ -152,7 +152,7 @@ int main(int argc, char *argv[], char *envp[])
 		if( !Verbose ){
 			Write_fd_str(2,"Status Information:\n ");
 			s = Join_line_list(&Status_lines,"\n ");
-			if( (t = strrchr(s,' ')) ) *t = 0;
+			if( (t = safestrrchr(s,' ')) ) *t = 0;
 			Write_fd_str(2,s);
 			if(s) free(s); s = 0;
 		} else {
@@ -163,6 +163,20 @@ int main(int argc, char *argv[], char *envp[])
 			Write_fd_str(2,buffer);
 		}
 		cleanup(0);
+	}
+
+	if( LP_mode ){
+		char *id;
+		int n;
+		char msg[SMALLBUFFER];
+		id = Find_str_value(&prjob.info,IDENTIFIER,Value_sep);
+		if( id ){
+			plp_snprintf( msg,sizeof(msg)-1,"request id is %s\n", id );
+		} else {
+			n = Find_decimal_value(&prjob.info,NUMBER,Value_sep);
+			plp_snprintf( msg,sizeof(msg)-1,"request id is %d\n", n );
+		}
+		Write_fd_str(1, msg );
 	}
 
 	/* the dreaded -r (remove files) option */
@@ -217,7 +231,7 @@ int main(int argc, char *argv[], char *envp[])
 	return;
 }
 
- void send_to_logger (struct job *job,const char *header, char *fmt){;}
+ void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
 
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
@@ -270,13 +284,13 @@ void Get_parms(int argc, char *argv[] )
 	int option, i;
 	char *name, *s;
 
-	if( argv[0] && (name = strrchr( argv[0], '/' )) ) {
+	if( argv[0] && (name = safestrrchr( argv[0], '/' )) ) {
 		++name;
 	} else {
 		name = argv[0];
 	}
 	/* check to see if we simulate (poorly) the LP options */
-	if( name && strcmp( name, "lp" ) == 0 ){
+	if( name && safestrcmp( name, "lp" ) == 0 ){
 		LP_mode = 1;
 	}
 	DEBUG1("Get_parms: LP_mode %d", LP_mode );
@@ -309,10 +323,10 @@ void Get_parms(int argc, char *argv[] )
 						Diemsg( _("-ncopies -number of copies must be greater than 0\n"));
 					}
 					break;
-		case 'o':	if( strcasecmp( Optarg, "nobanner" ) == 0 ){
+		case 'o':	if( safestrcasecmp( Optarg, "nobanner" ) == 0 ){
 						No_header = 1;
-					} else if( strncasecmp( Optarg, "width", 5 ) == 0 ){
-						s = strchr( Optarg, '=' );
+					} else if( safestrncasecmp( Optarg, "width", 5 ) == 0 ){
+						s = safestrchr( Optarg, '=' );
 						if( s ){
 							Pwidth = atoi( s+1 );
 						}
@@ -418,8 +432,7 @@ void Get_parms(int argc, char *argv[] )
 		case 'T':
 		    Check_str_dup( option, &Prtitle_JOB, Optarg, M_PRTITLE);
 		    break;
-		case 'U':
-		    Check_str_dup( option, &Username_JOB, Optarg, M_BNRNAME );
+		case 'U': Check_str_dup( option, &Username_JOB, Optarg, M_BNRNAME );
 		    break;
 		case 'V':
 			++Verbose;
@@ -595,8 +608,8 @@ void usage(void)
 
 
  void get_job_number( struct job *job );
- off_t Copy_stdin( struct job *job );
- off_t Check_files( struct job *job );
+ double Copy_stdin( struct job *job );
+ double Check_files( struct job *job );
 
 /***************************************************************************
  * Commentary:
@@ -622,7 +635,7 @@ int Make_job( struct job *job )
 	char *s, *name, *t;		/* buffer where we allocate stuff */
 	void *p;
 	int i, n, tempfd;
-	int job_size = 0;
+	double job_size = 0;
 	struct line_list *lp;
 	char *tempfile;
 
@@ -630,7 +643,6 @@ int Make_job( struct job *job )
 	Fix_Rm_Rp_info();
 
 	if(DEBUGL4)Dump_line_list("Make_job - PC_entry",&PC_entry_line_list );
-	Set_var_list( Pc_var_list, &PC_entry_line_list );
 	if(DEBUGL4)Dump_parms("Make_job",Pc_var_list);
 
 	/* check for priority in range */
@@ -668,7 +680,7 @@ int Make_job( struct job *job )
 			name = 0;
 			for( i = 0; i < Files.count; ++i ){
 				s = Files.list[i];
-				if( strcmp(s, "-" ) == 0 ) s = "(stdin)";
+				if( safestrcmp(s, "-" ) == 0 ) s = "(stdin)";
 				if( name ){
 					t = name;
 					name = safestrdup3(name,",",s,__FILE__,__LINE__);
@@ -695,7 +707,35 @@ int Make_job( struct job *job )
 	if( Username_JOB ){
 		/* check to see if you were root */
 		if( 0 != OriginalRUID ){
-			Diemsg( _("-U (username) can only be used by ROOT") );
+			struct line_list user_list;
+			char *str, *t;
+			struct passwd *pw;
+			int found, uid;
+
+			DEBUG2("Make_job: checking '%s' for -U perms",
+				Allow_user_setting_DYN );
+			Init_line_list(&user_list);
+			Split( &user_list, Allow_user_setting_DYN,File_sep,0,0,0,0,0);
+			
+			found = 0;
+			for( i = 0; !found && i < user_list.count; ++i ){
+				str = user_list.list[i];
+				DEBUG2("Make_job: checking '%s'", str );
+				uid = strtol( str, &t, 10 );
+				if( str == t || *t ){
+					/* try getpasswd */
+					pw = getpwnam( str );
+					if( pw ){
+						uid = pw->pw_uid;
+					}
+				}
+				DEBUG2( "Make_job: uid '%d'", uid );
+				found = ( uid == OriginalRUID );
+				DEBUG2( "Make_job: found '%d'", found );
+			}
+			if( !found ){
+				Diemsg( _("-U (username) can only be used by ROOT") );
+			}
 		}
 		Bnrname_JOB = Username_JOB;
 	} else {
@@ -717,8 +757,8 @@ int Make_job( struct job *job )
 	if( isupper(Format) ) Format = tolower(Format);
 
 	DEBUG1("Make_job: after checking format '%c'", Format );
-	if( strchr( "aios", Format )
-		|| (Formats_allowed_DYN && !strchr( Formats_allowed_DYN, Format ) )){
+	if( safestrchr( "aios", Format )
+		|| (Formats_allowed_DYN && !safestrchr( Formats_allowed_DYN, Format ) )){
 		Diemsg( _("Bad format specification '%c'"), Format );
 	}
 
@@ -819,7 +859,7 @@ int Make_job( struct job *job )
 		Set_str_value(lp,FORMAT,Bounce_queue_format_DYN);
 		Set_str_value(lp,"N","(lpr_filter)");
 		Set_flag_value(lp,COPIES,1);
-		Set_decimal_value(lp,SIZE,job_size);
+		Set_double_value(lp,SIZE,job_size);
 		if( !name ) Set_str_value(&job->info,TRANSFERNAME,0);
 	}
 	if(DEBUGL2) Dump_job( "Make_job - final value", job );
@@ -871,10 +911,10 @@ void get_job_number( struct job *job )
  * 3. stat the  temporary file to prevent games
  ***************************************************************************/
 
-off_t Copy_stdin( struct job *job )
+double Copy_stdin( struct job *job )
 {
 	int fd, count;
-	off_t size = 0;
+	double size = 0;
 	char *tempfile;
 	struct line_list *lp;
 	char buffer[LARGEBUFFER];
@@ -908,7 +948,7 @@ off_t Copy_stdin( struct job *job )
 	Set_flag_value(lp,COPIES,1);
 	plp_snprintf(buffer,sizeof(buffer),"%c",Format);
 	Set_str_value(lp,FORMAT,buffer);
-	Set_flag_value(lp,SIZE,size);
+	Set_double_value(lp,SIZE,size);
 
 	return( size );
 }
@@ -921,10 +961,10 @@ off_t Copy_stdin( struct job *job )
  * 5. Put information in the data_file{} entry
  ***************************************************************************/
 
-off_t Check_files( struct job *job )
+double Check_files( struct job *job )
 {
-	off_t size = 0;
-	int i, fd, printable, n;
+	double size = 0;
+	int i, fd, printable;
 	struct stat statb;
 	char *s;
 	char buffer[SMALLBUFFER];
@@ -936,7 +976,7 @@ off_t Check_files( struct job *job )
 	for( i = 0; i < Files.count; ++i){
 		s = Files.list[i];
 		DEBUG2( "Check_files: doing '%s'", s );
-		if( strcmp( s, "-" ) == 0 ){
+		if( safestrcmp( s, "-" ) == 0 ){
 			size += Copy_stdin( job );
 			continue;
 		}
@@ -960,16 +1000,15 @@ off_t Check_files( struct job *job )
 			Set_flag_value(lp,COPIES,1);
 			plp_snprintf(buffer,sizeof(buffer),"%c",Format);
 			Set_str_value(lp,FORMAT,buffer);
-			n = statb.st_size;
-			size += n;
-			Set_flag_value(lp,SIZE,n);
+			size = size + statb.st_size;
+			Set_double_value(lp,SIZE,(double)(statb.st_size) );
 			DEBUG2( "Check_files: printing '%s'", s );
 		} else {
 			DEBUG2( "Check_files: not printing '%s'", s );
 		}
 	}
 	if( Copies ) size *= Copies;
-	DEBUG2( "Check_files: %d files, size %d", job->datafiles.count, size );
+	DEBUG2( "Check_files: %d files, size %0.0f", job->datafiles.count, size );
 	return( size );
 }
 

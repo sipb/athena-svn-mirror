@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getopt.c,v 1.1.1.2 1999-05-04 18:06:53 danw Exp $";
+"$Id: getopt.c,v 1.1.1.3 1999-10-27 20:10:02 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -43,7 +43,7 @@ int Getopt (int argc, char *argv[], char *optstring)
 		 */
 		if( Name == 0 ){
 			if( argv[0] ){
-				if( (basename = strrchr( argv[0], '/' )) ){
+				if( (basename = safestrrchr( argv[0], '/' )) ){
 					++basename;
 				} else {
 					basename = argv[0];
@@ -83,12 +83,18 @@ int Getopt (int argc, char *argv[], char *optstring)
 	 * Case of '--',  Force end of options
 	 */
 	if (option == '-') {
+		if( *next_opt ){
+			if( Opterr ){
+				(void) fprintf (stderr, "--X option form illegal\n" );
+				return('?');
+			}
+		}
 		return ( EOF );
 	}
 	/*
 	 * See if option is in optstring
 	 */
-	if ((match = (char *) strchr (optstring, option)) == 0 ){
+	if ((match = (char *) safestrchr (optstring, option)) == 0 ){
 		if( Opterr ){
 		    (void) fprintf (stderr, "%s: Illegal option '%c'\n", Name, option);
 		}

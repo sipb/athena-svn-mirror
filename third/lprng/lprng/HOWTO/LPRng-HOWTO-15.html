@@ -37,7 +37,7 @@ set,
 the comments are appropriate to other issues.
 <P>In Academic institutions, avoiding printing accounting has been
 regarded as a challenge,  an ongoing game of fat cat and poor starving
-mouse, between the Administration and the downtrodden, poor, overcharged
+mouse, between the Administration and the downtrodden, poor, over charged
 student.  The following is a lighthearted ramble down the dark lane of
 printing accounting.
 <P>We will disregard the fact that if most students put as much effort
@@ -144,7 +144,7 @@ attitude,  using the pagecount information as follows:
 start OF -- starting point for THIS job
 start IF --  nice information, but not useful
 start IF --
-end   OF -- ending point for this job - can record infomation
+end   OF -- ending point for this job - can record information
 start OF --
 if no end OF for previous job,  then treat as end OF and
   update accounting.
@@ -172,7 +172,7 @@ carefully pruned and copied, perhaps on an hourly basis.
 <P>Now some administrators have fallen in love with network based printers;
 do not believe ANYTHING that comes over a network connection without
 some form of authentication;  PGP has some very nice Public Key
-mechansims for handling this.  This is a major weakness in using a
+mechanisms for handling this.  This is a major weakness in using a
 database for keeping track of accounting - a weak authentication
 mechanism may lead to denial of service attacks by students flooding
 the database with bogus print usage reports;  suddenly NOBODY can print
@@ -270,18 +270,18 @@ times of a job and its size to the accounting file. A typical entry
 for the printcap defaults are shown below.
 <BLOCKQUOTE><CODE>
 <PRE>
-jobstart -H'taco.astart.com' -n'root' -P'ps' -k'cfA938taco.astart.com' \
--b'1093' -t'Nov  5 19:39:59'
-start -p'12942' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--c'0' -F'o' -t'Sun Nov  5 19:39:25 1995'
-start -p'12944' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--c'0' -F'f' -t'Sun Nov  5 19:39:27 1995'
-end -p'12944' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--b'3' -c'0' -F'f' -t'Sun Nov  5 19:39:58 1995'
-end -p'12942' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--b'2' -c'0' -F'o' -t'Sun Nov  5 19:39:59 1995'
-jobend -H'taco.astart.com' -n'root' -P'ps' -k'cfA938taco.astart.com' \
--b'1093' -t'Nov  5 19:39:59'
+jobstart '-Htaco.astart.com' '-nroot' '-Pps' '-kcfA938taco.astart.com' \
+'-b1093' '-tNov  5 19:39:59'
+start '-p12942' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-c0' '-Fo' '-tSun Nov  5 19:39:25 1995'
+start '-p12944' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-c0' '-Ff' '-tSun Nov  5 19:39:27 1995'
+end '-p12944' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-b3' '-c0' '-Ff' '-tSun Nov  5 19:39:58 1995'
+end '-p12942' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-b2' '-c0' '-Fo' '-tSun Nov  5 19:39:59 1995'
+jobend '-Htaco.astart.com' '-nroot' '-Pps' '-kcfA938taco.astart.com' \
+'-b1093' '-tNov  5 19:39:59'
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The <CODE>jobstart</CODE> and <CODE>jobend</CODE> lines are added by the LPD server,  as
@@ -298,10 +298,28 @@ and the -b value indicates the total number of pages used.
 process an accounting file and update accounting information for
 accounting purposes;  the usual problems with truncation, time stamps,
 etc., are left as an exercise for the system administrator.
-<P>Note that the accounting file must exist; LPRng will not create it
-(and also will not create the log file).  This prevents accidentally
-growing log and accounting files.
-<H2><A NAME="ss15.5">15.5 Remote Server Accounting</A>
+However,
+for those who are exercise challenged,
+the LPRng distribution
+<CODE>.../LPRng/UTILS/accounting.pl</CODE>
+file is a template that can be used to process the accounting information.
+The printcap for using this file should resemble:
+<BLOCKQUOTE><CODE>
+<PRE>
+pr:
+  :as=|/.../accounting.pl START
+  :ae=|/.../accounting.pl END
+  :if=/.../ifhp
+  :of=/.../ofhp
+  # set this to the printing device
+  :lp=prdevice
+  :sd=/.../%P
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>Note that the accounting file must exist and will not be created by the
+<CODE>lpd</CODE> server.
+The accounting file should be periodically truncated.
+<H2><A NAME="ss15.5">15.5 Accounting Using an Accounting Server</A>
 </H2>
 
 <P>To accommodate even more aggressive and centralized accounting,
@@ -351,7 +369,7 @@ but its exit status is ignored.
 the STDIN  is attached (read/write) to the accounting file or remote host
 specified by the <CODE>af</CODE> printcap option,
 STDOUT to the output device,
-and STDERR to the log file.
+and STDERR to the status file.
 The filter program would be invoked with the default filter options.
 <P>For example, here is a sample entry to check and update accounting
 <BLOCKQUOTE><CODE>

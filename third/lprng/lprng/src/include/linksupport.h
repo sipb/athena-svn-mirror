@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: linksupport.h,v 1.1.1.2 1999-05-04 18:07:15 danw Exp $
+ * $Id: linksupport.h,v 1.1.1.3 1999-10-27 20:10:15 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -14,6 +14,7 @@
 
 /* PROTOTYPES */
 int Link_setreuse( int sock );
+int Link_setkeepalive( int sock );
 int connect_timeout( int timeout,
 	int sock, struct sockaddr *name, int namelen);
 int getconnection ( char *hostname, char *dest_port,
@@ -29,14 +30,14 @@ void Link_close( int *sock );
 int Link_send( char *host, int *sock, int timeout,
 	char *sendstr, int count, int *ack );
 int Link_copy( char *host, int *sock, int readtimeout, int writetimeout,
-	char *src, int fd, long pcount);
+	char *src, int fd, double pcount);
 int Link_dest_port_num( char *port );
 int Link_line_read(char *host, int *sock, int timeout,
 	  char *buf, int *count );
 int Link_read(char *host, int *sock, int timeout,
 	  char *buf, int *count );
 int Link_file_read(char *host, int *sock, int readtimeout, int writetimeout,
-	  int fd, int *count, int *ack );
+	  int fd, double *count, int *ack );
 const char *Link_err_str (int n);
 const char *Ack_err_str (int n);
 int AF_Protocol(void);

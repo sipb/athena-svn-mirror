@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: debug.c,v 1.1.1.1 1999-05-04 18:06:57 danw Exp $";
+"$Id: debug.c,v 1.1.1.2 1999-10-27 20:09:58 mwhitson Exp $";
 
 
 /*************************************************************
@@ -59,11 +59,11 @@ struct keywords debug_vars[]		/* debugging variables */
     { "control+2",FLAG_K,(void *)&DbgFlag,DCTRL2|DCTRL1, DCTRLMASK },
     { "control+3",FLAG_K,(void *)&DbgFlag,DCTRL3|DCTRL2|DCTRL1, DCTRLMASK },
     { "control+4",FLAG_K,(void *)&DbgFlag,DCTRL4|DCTRL3|DCTRL2|DCTRL1, DCTRLMASK },
-    { "memory",FLAG_K,(void *)&DbgFlag,DMEM1, DMEMMASK },
-    { "memory+1",FLAG_K,(void *)&DbgFlag,DMEM1, DMEMMASK },
-    { "memory+2",FLAG_K,(void *)&DbgFlag,DMEM2|DMEM1, DMEMMASK },
-    { "memory+3",FLAG_K,(void *)&DbgFlag,DMEM3|DMEM2|DMEM1, DMEMMASK },
-    { "memory+4",FLAG_K,(void *)&DbgFlag,DMEM4|DMEM3|DMEM2|DMEM1, DMEMMASK },
+    { "lprm",FLAG_K,(void *)&DbgFlag,DLPRM1, DLPRMMASK },
+    { "lprm+1",FLAG_K,(void *)&DbgFlag,DLPRM1, DLPRMMASK },
+    { "lprm+2",FLAG_K,(void *)&DbgFlag,DLPRM2|DLPRM1, DLPRMMASK },
+    { "lprm+3",FLAG_K,(void *)&DbgFlag,DLPRM3|DLPRM2|DLPRM1, DLPRMMASK },
+    { "lprm+4",FLAG_K,(void *)&DbgFlag,DLPRM4|DLPRM3|DLPRM2|DLPRM1, DLPRMMASK },
     { "lpq",FLAG_K,(void *)&DbgFlag,DLPQ1, DLPQMASK },
     { "lpq+1",FLAG_K,(void *)&DbgFlag,DLPQ1, DLPQMASK },
     { "lpq+2",FLAG_K,(void *)&DbgFlag,DLPQ2|DLPQ1, DLPQMASK },
@@ -105,13 +105,13 @@ void Parse_debug (char *dbgstr, int interactive )
 			if( n == 0 )DbgFlag = 0;
 			found = 1;
 		} else {
-			if( (end = strchr(key,'=')) ){
+			if( (end = safestrchr(key,'=')) ){
 				*end++ = 0;
 				n = strtol(end,0,0);
 			}
 			/* search the keyword list */
 			for (i = 0;
-				(convert = list[i].keyword) && strcasecmp( convert, key );
+				(convert = list[i].keyword) && safestrcasecmp( convert, key );
 				++i );
 			if( convert != 0 ){
 				switch( list[i].type ){
@@ -139,7 +139,7 @@ void Parse_debug (char *dbgstr, int interactive )
 	"debug usage: -D [ num | key=num | key=str | flag | flag@ | flag+N ]*\n");
 		    fprintf (stderr, "  keys recognized:");
 		    for (i = 0; list[i].keyword; i++) {
-				if( strchr( list[i].keyword, '+' ) ) continue;
+				if( safestrchr( list[i].keyword, '+' ) ) continue;
 				if( nooutput == 0 ){
 					if( i ){
 						fprintf( stderr, ", " );

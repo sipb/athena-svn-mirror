@@ -32,8 +32,8 @@ being transferred to a printer.
 <P>The filter is executed with STDIN reading from the file to be
 printed
 STDOUT to the printer device or a temporary file.
-STDERR (file handle 2) is redirected to a log file,
-and file handle&nbsp;3 to an accounting file.
+STDERR (file handle 2) is redirected to the status file,
+and file handle&nbsp;3 to an accounting file or program.
 <P>A filter can be as simple as a <CODE>LF</CODE> to <CODE>CR/LF</CODE>
 translator,
 or it can incorporate a complete
@@ -240,13 +240,16 @@ but may apply various setups to the printer.
 usually has the form:
 <BLOCKQUOTE><CODE>
 <PRE>
-:option=| [flags] /path [arguments]
-:option=[flags] /path [arguments]
+:option=| [flags] /path [argument | "argument" | 'argument' ]*
+:option=[flags]   /path [argument | "argument" | 'argument' ]*
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The first case is used where the option value can be a string or filter,
 and the second where a program is always expected.
 The following procedure is used to run a filter program.
+Arguments in single or double quotes are passed as a single value,
+as for a shell.
+No escape (backslash) support is provided.
 <P>The sequence of operations to run a filter is as follows:
 <OL>
 <LI>The program must be specified with an absolute path name.</LI>
@@ -554,14 +557,14 @@ lp
   :bp=/usr/local/lib/filters/pclbanner
   :of=/usr/local/lib/filters/ifhp
   :if=/usr/local/lib/filters/ifhp
-  :sf:sb
+  :sf
 #
 # for a parallel port printer or when you want VERY fast
 #  throughput, no pagecounts, error messages, etc.  The
 #
 lp
   :ifhp=status@
-  :/usr/local/lib/filters/ifhp -Tstatus@
+  :/usr/local/lib/filters/ifhp
   :sh:sf
 </PRE>
 </CODE></BLOCKQUOTE>

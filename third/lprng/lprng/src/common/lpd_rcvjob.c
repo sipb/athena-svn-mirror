@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_rcvjob.c,v 1.1.1.2 1999-05-24 18:29:33 danw Exp $";
+"$Id: lpd_rcvjob.c,v 1.1.1.3 1999-10-27 20:10:03 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -103,17 +103,17 @@ int Receive_job( int *sock, char *input )
 	char buffer[SMALLBUFFER];	/* line buffer for input */
 	int errlen = sizeof(error);
 	char *tempfile;				/* name of temp file */
-	int file_len;				/* length of file */
-	int read_len;				/* amount to read from sock */
-	int jobsize = 0;			/* size of job */
+	double file_len;			/* length of file */
+	double read_len;			/* amount to read from sock */
+	double jobsize = 0;			/* size of job */
 	int ack = 0;				/* ack to send */
 	int status = 0;				/* status of the last command */
-	int len;					/* length of last read */
+	double len;					/* length of last read */
 	char *s, *filename;			/* name of control or data file */
 	int temp_fd = -1;				/* used for file opening and locking */
 	int filetype;				/* type of file - control or data */
 	int fd;						/* for log file */
-	int db, dbf;
+	int db, dbf, rlen;
 	struct line_list files, info, l;
 	struct job job;
 	struct stat statb;
@@ -156,8 +156,12 @@ int Receive_job( int *sock, char *input )
 	if( !(DRECVMASK & DbgFlag) ){
 		Debug = db;
 		DbgFlag = dbf;
-	}
-	DEBUGFC(DRECV1){
+	} else {
+		int i, j;
+		i = Debug;
+		j = DbgFlag;
+		Debug = db;
+		DbgFlag = dbf;
 		if( Log_file_DYN ){
 			fd = Checkwrite( Log_file_DYN, &statb,0,0,0);
 			if( fd > 0 && fd != 2 ){
@@ -165,6 +169,8 @@ int Receive_job( int *sock, char *input )
 				close(fd);
 			}
 		}
+		Debug = i;
+		DbgFlag = j;
 	}
 #ifndef NODEBUG 
 	DEBUGF(DRECV1)("Receive_job: debug '%s', Debug %d, DbgFlag 0x%x", s, Debug, DbgFlag );
@@ -191,15 +197,14 @@ int Receive_job( int *sock, char *input )
 	}
 
 	while( status == 0 ){
-		Free_line_list(&info);
 		DEBUGF(DRECV1)("Receive_job: from %s- getting file transfer line", FQDNRemote_FQDN );
-		len = sizeof(line)-1;
+		rlen = sizeof(line)-1;
 		line[0] = 0;
-		status = Link_line_read( ShortRemote_FQDN, sock, Send_job_rw_timeout_DYN, line, &len );
+		status = Link_line_read( ShortRemote_FQDN, sock, Send_job_rw_timeout_DYN, line, &rlen );
 
 		DEBUGF(DRECV1)( "Receive_job: read from %s- status %d read %d bytes '%s'",
-				FQDNRemote_FQDN, status, len, line );
-		if( len == 0 || status ){
+				FQDNRemote_FQDN, status, rlen, line );
+		if( rlen == 0 || status ){
 			DEBUGF(DRECV1)( "Receive_job: ending reading from remote" );
 			/* treat like normal closing of connection */
 			line[0] = 0;
@@ -208,7 +213,6 @@ int Receive_job( int *sock, char *input )
 		}
 		filetype = line[0];
 		Clean_meta(line+1);
-		Split(&info,line+1,Whitespace,0,0,0,0,0);
 
 		/* make sure we have a data file transfer */
 		if( filetype != DATA_FILE && filetype != CONTROL_FILE ){
@@ -216,12 +220,21 @@ int Receive_job( int *sock, char *input )
 			status = 0;
 			break;
 		}
-		/* make sure we have two entries */
-		if( info.count != 2 || (file_len = atoi(info.list[0])) < 0
+		/* make sure we have length and filename */
+		filename = 0;
+		file_len = strtod(line+1,&filename);
+		if( filename ){
+			while( isspace(cval(filename)) ) ++filename;
+			s = filename;
+			while( ( s = strpbrk(s," \t"))) *s++ = '_';
+		}
+		if( file_len < 0
+			|| filename == 0 || *filename == 0
 			|| (file_len == 0 && filetype != DATA_FILE) ){
 			ack = ACK_STOP_Q;
 			plp_snprintf( error, errlen,
-				_("%s: Receive_job - bad control line '%s'"), Printer_DYN, line );
+			_("%s: Receive_job - bad control line '%s', len %0.0f, name '%s'"),
+				Printer_DYN, line, file_len, filename );
 			goto error;
 		}
 
@@ -230,14 +243,13 @@ int Receive_job( int *sock, char *input )
 		 * This is done here so that we can neatly clean up
 		 * if we need to. Note we do this after we truncate...
 		 ************************************************/
-		filename = info.list[1];
 		jobsize += file_len;
 		read_len = file_len;
 
 		if( read_len == 0 ) read_len = Max_job_size_DYN*1024;
 		if( Max_job_size_DYN > 0 && (read_len+1023)/1024 > Max_job_size_DYN ){
 			plp_snprintf( error, errlen,
-				_("%s: job size %d is larger than %d K"),
+				_("%s: job size %0.0f is larger than %d K"),
 				Printer_DYN, jobsize, Max_job_size_DYN );
 			ack = ACK_RETRY;
 			goto error;
@@ -292,7 +304,10 @@ int Receive_job( int *sock, char *input )
 		 */
 
 		if( filetype == CONTROL_FILE ){
+			DEBUGF(DRECV2)("Receive_job: received control file, job.info.count %d, files.count %d",
+				job.info.count, files.count );
 			if( job.info.count ){
+				/* we receive another control file */
 				if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
 					goto error;
 				}
@@ -309,8 +324,19 @@ int Receive_job( int *sock, char *input )
 			if( Do_perm_check( &job, error, errlen ) == P_REJECT ){
 				goto error;
 			}
+			if( files.count ){
+				/* we have datafiles, FOLLOWED by a control file,
+					followed (possibly) by another control file */
+				/* we receive another control file */
+				if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+					goto error;
+				}
+				Free_line_list(&files);
+				jobsize = 0;
+				Free_job(&job);
+			}
 		} else {
-			Set_str_value(&files,filename,tempfile);
+			Set_casekey_str_value(&files,filename,tempfile);
 		}
 		DEBUGF(DRECV2)("Receive_job: sending 0 ACK transfer done" );
 		status = Link_send( ShortRemote_FQDN, sock, Send_job_rw_timeout_DYN, "",1, 0 );
@@ -373,15 +399,16 @@ int Receive_job( int *sock, char *input )
 int Receive_block_job( int *sock, char *input )
 {
 	int temp_fd = -1, fd;	/* fd for received file */
-	int read_len;	/* file read length */
+	double read_len;	/* file read length */
 	char error[SMALLBUFFER];
 	int errlen = sizeof(error);
 	char buffer[SMALLBUFFER];
 	int ack = 0, status = 0;
-	int file_len;
+	double file_len;
 	char *tempfile, *s;
 	struct stat statb;
 	struct line_list l;
+	int db, dbf;
 
 
 	error[0] = 0;
@@ -409,11 +436,19 @@ int Receive_block_job( int *sock, char *input )
 		goto error;
 	}
 
+
+	db = Debug;
+	dbf =DbgFlag;
 	s = Find_str_value(&Spool_control,DEBUG,Value_sep);
 	if(!s) s = New_debug_DYN;
 	Parse_debug( s, 0 );
 
-	DEBUGFC(DRECV1){
+	if( !(DRECVMASK & DbgFlag) ){
+		Debug = db;
+		DbgFlag = dbf;
+	} else {
+		dbf = Debug;
+		Debug = db;
 		if( Log_file_DYN ){
 			fd = Checkwrite( Log_file_DYN, &statb,0,0,0);
 			if( fd > 0 && fd != 2 ){
@@ -421,7 +456,9 @@ int Receive_block_job( int *sock, char *input )
 				close(fd);
 			}
 		}
+		Debug = dbf;
 	}
+
 #ifndef NODEBUG 
 	DEBUGF(DRECV1)("Receive_block_job: debug '%s', Debug %d, DbgFlag 0x%x", s, Debug, DbgFlag );
 #endif
@@ -437,12 +474,12 @@ int Receive_block_job( int *sock, char *input )
 
 	/* check for space */
 
-	file_len  = atoi( l.list[1] );
+	file_len  = strtod( l.list[1], 0 );
 	read_len = file_len;
 
 	if( Max_job_size_DYN > 0 && (read_len+1023)/1024 > Max_job_size_DYN ){
 		plp_snprintf( error, errlen,
-			_("%s: job size %d is larger than %dK"),
+			_("%s: job size %0.0f is larger than %dK"),
 			Printer_DYN, file_len, Max_job_size_DYN );
 		ack = ACK_RETRY;
 		goto error;
@@ -467,7 +504,7 @@ int Receive_block_job( int *sock, char *input )
 	}
 
 	temp_fd = Make_temp_fd( &tempfile );
-	DEBUGF(DRECV4)("Receive_block_job: receiving '%s' %d bytes ", tempfile, file_len );
+	DEBUGF(DRECV4)("Receive_block_job: receiving '%s' %0.0f bytes ", tempfile, file_len );
 	status = Link_file_read( ShortRemote_FQDN, sock,
 		Send_job_rw_timeout_DYN, 0, temp_fd, &read_len, &ack );
 	DEBUGF(DRECV4)("Receive_block_job: received %d bytes ", read_len );
@@ -568,8 +605,8 @@ int Scan_block_file( int fd, char *error, int errlen )
 		Errorcode = JABORT;
 		logerr_die( LOG_INFO,"Scan_block_file: fstat failed");
 	}
-	DEBUGF(DRECV2)("Scan_block_file: starting, file size '%ld'",
-		(long)(statb.st_size) );
+	DEBUGF(DRECV2)("Scan_block_file: starting, file size '%0.0f'",
+		(double)(statb.st_size) );
 	Init_line_list(&l);
 	Init_line_list(&info);
 	Init_line_list(&files);
@@ -647,7 +684,7 @@ int Scan_block_file( int fd, char *error, int errlen )
 			}
 			Free_job(&job);
 			Free_line_list(&l);
-			Get_file_image_and_split(0,tempfile,0,1, &l,Line_ends,1,Value_sep,1,1,1);
+			Get_file_image_and_split(0,tempfile,0,1, &l,Line_ends,0,0,0,1,0);
 			DEBUGF(DRECV2)("Scan_block_file- control file '%s'", filename );
 			DEBUGFC(DRECV2)Dump_line_list("Scan_block_file- control file", &l );
 			Setup_job( &job, &Spool_control, Spool_dir_DYN, filename, 0, &l);
@@ -702,15 +739,15 @@ int Read_one_line( int fd, char *buffer, int maxlen )
 	return( status );
 }
 
-int Check_space( int jobsize, int min_space, char *pathname )
+int Check_space( double jobsize, int min_space, char *pathname )
 {
-	unsigned long space = Space_avail(pathname);
+	double space = Space_avail(pathname);
 	int ok;
 
 	jobsize = ((jobsize+1023)/1024);
 	ok = ((jobsize + min_space) < space);
 
-	DEBUGF(DRECV1)("Check_space: path '%s', space %ld, jobsize %dK, ok %d",
+	DEBUGF(DRECV1)("Check_space: path '%s', space %0.0f, jobsize %0.0fK, ok %d",
 		pathname, space, jobsize, ok );
 
 	return( ok );
@@ -735,7 +772,7 @@ int Do_perm_check( struct job *job, char *error, int errlen )
 
 	/* check for permission */
 
-	if( (permission = Perms_check( &Perm_line_list, &Perm_check, job ))
+	if( (permission = Perms_check( &Perm_line_list, &Perm_check, job, 0 ))
 			== P_REJECT ){
 		plp_snprintf( error, errlen,
 			_("%s: no permission to print"), Printer_DYN );
@@ -758,9 +795,19 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 	int fd = -1, status = 0;
 	char *openname, *transfername;
 	plp_block_mask oblock;
-	long jobsize;
+	double jobsize;
 	int copies;
 	struct stat statb;
+	struct timeval start_time;
+
+	if( gettimeofday( &start_time, 0 ) ){
+		Errorcode = JABORT;
+		logerr_die( LOG_INFO, "Receive_job: gettimeofday failed");
+	}
+	DEBUGF(DRECV1)("Check_for_missing_files: time 0x%x usec 0x%x",
+		(int)start_time.tv_sec, (int)start_time.tv_usec );
+	Set_flag_value(&job->info,JOB_TIME,(int)start_time.tv_sec);
+	Set_flag_value(&job->info,JOB_TIME_USEC,(int)start_time.tv_usec);
 
 	Init_line_list(&datafiles);
 	DEBUGFC(DRECV1)Dump_job("Check_for_missing_files - starting", job );
@@ -771,9 +818,9 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 		lp = (void *)job->datafiles.list[count];
 		transfername = Find_str_value(lp,TRANSFERNAME,Value_sep);
 		/* find the open name and replace it in the information */
-		if( (openname = Find_str_value(files,transfername,Value_sep)) ){
+		if( (openname = Find_casekey_str_value(files,transfername,Value_sep)) ){
 			Set_str_value(lp,OPENNAME,openname);
-			Set_str_value(&datafiles,transfername,openname);
+			Set_casekey_str_value(&datafiles,transfername,openname);
 		} else {
 			plp_snprintf(error,errlen,"missing data file '%s'",transfername);
 			goto error;
@@ -786,7 +833,7 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 		if( copies == 0 ) copies = 1;
 		jobsize += copies * statb.st_size;
 	}
-	Set_decimal_value(&job->info,SIZE,jobsize);
+	Set_double_value(&job->info,SIZE,jobsize);
 
 	DEBUGFC(DRECV1)Dump_line_list("Check_for_missing_files- found", &datafiles );
 	if( files->count != datafiles.count ){
@@ -829,7 +876,7 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 	plp_block_all_signals( &oblock ); /**/
 	for( count = 0; status == 0 && count < datafiles.count; ++count ){
 		transfername = datafiles.list[count];
-		if( (openname = strpbrk(transfername,Value_sep)) ){
+		if( (openname = safestrpbrk(transfername,Value_sep)) ){
 			*openname++ = 0;
 		}
 		DEBUGF(DRECV1)("Check_for_missing_files: renaming '%s' to '%s'",
@@ -844,7 +891,7 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 		openname = safestrdup( Find_str_value(&job->info,OPENNAME,Value_sep),
 			__FILE__,__LINE__);
 		Set_str_value(&job->info,OPENNAME,0);
-		if( (status = Set_hold_file( job )) ){
+		if( (status = Set_hold_file( job, 0 )) ){
 			logerr(LOG_INFO,"Check_for_missing_files: error setting up hold file" );
 		}
 		Set_str_value(&job->info,OPENNAME,openname);
@@ -861,6 +908,7 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 				openname, transfername );
 		}
 	}
+	DEBUGFC(DRECV1)Dump_job("Check_for_missing_files - ending", job );
 	if( status ){
 		/* we need to unlink the data files */
 		openname = Find_str_value(&datafiles,OPENNAME,Value_sep);
@@ -877,8 +925,11 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 		openname = Find_str_value(&job->info,HF_NAME,Value_sep);
 		if( openname ) unlink(openname);
 	}
-	plp_unblock_all_signals( &oblock ); /**/
+	plp_set_signal_mask( &oblock, 0 ); /**/
 
+	if( status == 0 ){
+		setmessage( job, "STATE", "CREATE" );
+	}
 
  error:
 	if( fd >= 0 ) close(fd);
@@ -987,7 +1038,7 @@ int Get_route( struct job *job, char *error, int errlen )
 	while( len < sizeof(buffer)
 		&& (n = read(out[0], buffer+len, sizeof(buffer)-len-1)) > 0 ){
 		buffer[len+n] = 0;
-		while( (s = strchr(buffer,'\n')) ){
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			DEBUGF(DRECV1)("Get_route: filter error '%s'", buffer );
 			memmove(buffer,s,strlen(s)+1);
@@ -1001,11 +1052,15 @@ int Get_route( struct job *job, char *error, int errlen )
 	
 	while( (n = plp_waitpid(pid,&status,0)) != pid );
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
-		errorcode = 1;
-		plp_snprintf(error,errlen,
-		"Get_route: control filter process exit status %d",
-			n);
-		goto error;
+		if( n == JHOLD ){
+			Set_flag_value(&job->info,HOLD_TIME,time((void *)0) );
+		} else {
+			errorcode = 1;
+			plp_snprintf(error,errlen,
+			"Get_route: control filter process exit status %d",
+				n);
+			goto error;
+		}
 	} else if( WIFSIGNALED(status) ){
 		errorcode = 1;
 		plp_snprintf(error,errlen,
@@ -1019,9 +1074,9 @@ int Get_route( struct job *job, char *error, int errlen )
 	count = 0;
 	for(i = 0; i < l.count; ++i ){
 		s = l.list[i];
-		if( strcasecmp(END,s) ){
+		if( safestrcasecmp(END,s) ){
 			if( !isupper(cval(s))
-				&& (t = strpbrk(s,Value_sep)) ){
+				&& (t = safestrpbrk(s,Value_sep)) ){
 				*t = '=';
 			}
 			Add_line_list(&job->destination,s,Value_sep,1,1);

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpr.h,v 1.1.1.1 1999-05-04 18:07:03 danw Exp $
+ * $Id: lpr.h,v 1.1.1.2 1999-10-27 20:10:06 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -48,8 +48,8 @@ void Get_parms(int argc, char *argv[] );
 void usage(void);
 int Make_job( struct job *job );
 void get_job_number( struct job *job );
-off_t Copy_stdin( struct job *job );
-off_t Check_files( struct job *job );
+double Copy_stdin( struct job *job );
+double Check_files( struct job *job );
 int Check_lpr_printable(char *file, int fd, struct stat *statb, int format );
 int is_exec( char *buf, int n);
 int is_arch(char *buf, int n);

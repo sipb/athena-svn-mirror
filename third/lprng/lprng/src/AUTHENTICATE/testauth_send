@@ -1,9 +1,8 @@
 #!/usr/local/bin/perl
-# $Id: testauth_send,v 1.1.1.1 1999-05-04 18:06:45 danw Exp $
 # LPRng authorization test program
 # 
-#   - used to send and decode authenticated information
-#
+#   - used to receive and decode remote authenticated
+#     information
 #   command line:
 #   /filter -C/F -P printer -n sender_id -A authtype -R receiver_id -Ttempfile
 #   The sender_id and receiver_id are URL escaped values
@@ -33,7 +32,7 @@ my($debug, %args,$key,$value,$v, $tempfile, $temp, $printfile,
 	@lines, $print, $buf, $socket, @s, $len, $test, $recv, $send );
 
 $|= 1;
-$debug = 1;
+$debug = 0;
 $test = 0;
 
 getopts("CFD:P:n:A:R:T:",\%args);
@@ -75,30 +74,30 @@ if( not $send ){
 	exit(1);
 }
 
-$line = "pgp +force +batch -sea $tempfile '$recv' -u '$send' -o $tempfile 2>&1";
-print STDERR "$line\n" if $debug;
-eval{ @lines = `$line`; };
-if( $@ ){
-	print STDERR "eval error '$@'\n";
-	exit(1);
-} elsif( $? ){
-	$line = join( '', @lines);
-	chomp($line);
-	$i = $? >> 8;
-	print STDERR "pgp error '$line'\n";
-	exit(1);
-}
-
-if( $debug ){
-	print STDERR "pgp returned:\n";
-	for( $i = 0; $i < @lines; ++$i ){
-		$line = $lines[$i];
-		chomp $line;
-		print STDERR " [$i] '$line'\n";
-	}
-}
-
-exit(1) if $test;
+#$line = "pgp +force +batch -sea $tempfile '$recv' -u '$send' -o $tempfile 2>&1";
+#print STDERR "$line\n" if $debug;
+#eval{ @lines = `$line`; };
+#if( $@ ){
+#	print STDERR "eval error '$@'\n";
+#	exit(1);
+#} elsif( $? ){
+#	$line = join( '', @lines);
+#	chomp($line);
+#	$i = $? >> 8;
+#	print STDERR "pgp error '$line'\n";
+#	exit(1);
+#}
+#
+#if( $debug ){
+#	print STDERR "pgp returned:\n";
+#	for( $i = 0; $i < @lines; ++$i ){
+#		$line = $lines[$i];
+#		chomp $line;
+#		print STDERR " [$i] '$line'\n";
+#	}
+#}
+#
+#exit(1) if $test;
 
 $socket->open(">&0") or die "cannot open fd 0";
 $socket->autoflush(1);

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: globmatch.c,v 1.1.1.2 1999-05-04 18:06:52 danw Exp $";
+"$Id: globmatch.c,v 1.1.1.3 1999-10-27 20:09:58 mwhitson Exp $";
 
 #include "lp.h"
 
@@ -21,12 +21,12 @@ int glob_pattern( char *pattern, const char *str )
 	char *glob;
 
 	/* DEBUG4("glob_pattern: pattern '%s' to '%s'", pattern, str ); */
-	if( (glob = strpbrk( pattern, "*?[" )) ){
+	if( (glob = safestrpbrk( pattern, "*?[" )) ){
 		/* check the characters up to the glob length for a match */
 		len = glob - pattern;
 		c = *glob;
 	 	/* DEBUG4("glob_pattern: meta '%c', len %d", c, len ); */
-		if( (len == 0 || !strncasecmp( pattern, str, len )) ){
+		if( (len == 0 || !safestrncasecmp( pattern, str, len )) ){
 			/* matched: pattern xxxx*  to xxxx
 			 * now we have to do the remainder. We simply check for rest
 			 */
@@ -44,7 +44,7 @@ int glob_pattern( char *pattern, const char *str )
 				/* now we check for the characters in the pattern
 				 * this can have the format N or N-M
 				 */
-				glob = strchr( pattern, ']' );
+				glob = safestrchr( pattern, ']' );
 				if( glob == 0 ){
 					return( 1 );
 				}
@@ -85,7 +85,7 @@ int glob_pattern( char *pattern, const char *str )
 			}
 		}
 	} else {
-		result = strcasecmp( pattern, str );
+		result = safestrcasecmp( pattern, str );
 	}
 	return( result );
 }

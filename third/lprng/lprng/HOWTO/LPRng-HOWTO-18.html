@@ -204,7 +204,7 @@ This will be repeated until all available ports have been tried.
 printing a job and the <CODE>lpd</CODE> server connection to a remote
 site or device open fails,
 the <CODE>retry_nolink</CODE> (default on)
-will cause the attempt to be retried indefinately.
+will cause the attempt to be retried indefinitely.
 The combination of <CODE>retry_econnrefused</CODE> and <CODE>retry_nolink</CODE>
 will provide robust connection attempts to remote systems.
 <P>While the above problems cause difficulties when making connections,
@@ -570,7 +570,7 @@ when reporting job status.
 <CODE>L</CODE> (print banner page) field is one that has caused many
 problems for users.
 RFC1179 indicates that its presence causes the banner page to be printed,
-and its absense suppresses banner pages.
+and its absence suppresses banner pages.
 The <CODE>lpr -h</CODE> option suppresses putting this line into the
 control file.
 Usually the <CODE>L</CODE> field is a duplicate of the <CODE>P</CODE>
@@ -816,7 +816,7 @@ including control file and data files.
 <P>The transfer command line has the form:
 <BLOCKQUOTE><CODE>
 <PRE>
-\006printer user@host size\n
+\007printer size\n
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The receiver will return any acknowledgement of a single 0 octet,

@@ -32,7 +32,7 @@ Network print boxes can be obtained from
 Hewlett Packard
 (
 <A HREF="http://www.hp.com">http://www.hp.com</A>),
-Lantronixs
+Lantronix's
 (
 <A HREF="http://www.lantronix.com">http://www.lantronix.com</A>),
 and Rose Electronics
@@ -45,7 +45,7 @@ LPRng directly supports the LPD (RFC1179) and Socket API interfaces,
 and you can use the 
 <CODE>smbclient</CODE> program from the
 <A HREF="LPRng-HOWTO-5.html#smb">Samba Software Package</A> for the SMB interface.
-There are no plans to support the Novell Netware interace,
+There are no plans to support the Novell Netware interface,
 given the wide range of alternatives.
 <H3>Socket API</H3>
 
@@ -89,10 +89,10 @@ Example:
   nc 10.0.0.25 9100 &lt; ellipse.ps
 </PRE>
 </CODE></BLOCKQUOTE>
-<H3>LPD (RFC 1179) Protcol</H3>
+<H3>LPD (RFC 1179) Protocol</H3>
 
 <P>The second most common network print protocol is the
-RFC1179 TCP/IP protcol.
+RFC1179 TCP/IP protocol.
 This is described in detail in later sections of this document,
 but basically consists of a
 simple set of command and responses.
@@ -104,7 +104,7 @@ another job or has another network connection open.</LI>
 <LI>Once the connection has been established,
 a print request command is sent to the printer,
 and if printing is allowed,
-and acknowlegement will be received.</LI>
+and acknowledgment will be received.</LI>
 <LI>The files comprising the print job are sent to the printer.</LI>
 <LI>The connection to the printer is closed.</LI>
 </OL>
@@ -187,7 +187,7 @@ such as
 (TCP/IP printing using the LPD print protocol),
 Novell Printer Protocols,
 SMB print protocols,
-and Appletalk protocols.
+and AppleTalk protocols.
 One of the observed problems with Network Print servers is that while they
 can usually support one protocol and one user at a time quite well,
 when you try to use multiple protocols and/or multiple users try to transfer
@@ -266,7 +266,7 @@ a single column.
 </H2>
 
 <P>If your printer is attached by a serial line,
-then you may need to set the serial line characteristictics before sending
+then you may need to set the serial line characteristics before sending
 the job to the printer.
 Here are a set of guidelines to following when attaching a serial port printer
 to a serial line.
@@ -285,7 +285,7 @@ you might want to change the ownership of the serial line to the LPD server
 and change the permissions to 0600.
 <P>3. Make sure that you can print a test file on the printer via the
 serial port.
-This may require setting the line characteristictics and then sending
+This may require setting the line characteristics and then sending
 a file to the printer.
 You should try to use 8 bit, no parity, with hardware flow control
 and no special character interpretation,
@@ -312,9 +312,9 @@ etc.
 <P>Experience has shown that serially connected printers are the least
 reliable and lowest speed.
 Where possible,
-it is stongly recommended that they be attached to a <I>network print box</I>
+it is strongly recommended that they be attached to a <I>network print box</I>
 which will provide a
-Socket API interace and handle the low level network to serial port protocol 
+Socket API interface and handle the low level network to serial port protocol 
 conversions.
 <HR>
 <A HREF="LPRng-HOWTO-4.html">Next</A>

@@ -1,78 +1,103 @@
                LPRng Installation 
           Patrick Powell <papowell@astart.com>
- * README.install,v 3.9 1997/12/31 19:30:10 papowell Exp *
+         Updated Thu Aug 26 20:49:10 PDT 1999
 
 CAVEATS and WARNINGS:
 
-The LPRng software requires an ANSI C compiler and the
-GNU Make software from the Free Software Foundation,
+The LPRng software requires an ANSI C compiler and the GNU Make
+(verson 3.73 at least) software from the Free Software Foundation,
 or a BSD 4.3/4.4 compatible make.
-GNU Make is available at many FTP sites, such as:
+
+GNU Make is available at many
+FTP sites, such as:
   ftp://prep.ai.mit.edu/pub/gnu
   ftp://ftp.uu.net/pub/gnu
 
-If you want to use the GNU gettext() facility for Internationalization,
-please read ABOUT-NLS.LPRng - it contains directions on how to get the
-various GNU packages.
-
-If you are using the BSD Make,  you will need to use make -f Makefile.bsd
-or rename the Makefile.bsd files as Makefile and edit them, replacing
-the lines containing 'make -f Makefile.bsd' with just 'make'.
+Note:  the BSD Make is supported as a courtesy to BSDI, FreeBSD, NetBSD,
+and others.  It is NOT guaranteed to be compatible with other Make facilities
+supplied by other vendors.
 
 THE EXPRESS INSTALLATION INSTRUCTIONS
 
-To compile and install LPRng,  you can use the following commands.
+The LPRng default configure, make,  and make install puts files
+  in the following locations or uses the following paths:
+
+   default installation directories:
+     ${prefix}  is usually /usr/local
+     ${exec_prefix}  is usually ${prefix}
+     ${bindir}  is usually ${exec_refix}/bin, (/usr/local/bin)
+     ${sbindir} is usually ${exec_prefix}/sbin (/usr/local/sbin)
+     ${libexecdir} is usually ${exec_prefix}/libexec (/usr/local/libexec)
+     ${sysconfdir} is usually ${prefix}/etc (/usr/local/etc)
+     ${mandir} is usually ${prefix}/man     (/usr/local/man)
+
+     we use ${sysconfdir}/ lpd.conf, lpd.perms, printcap
+    
+   We install the executables in: 
+         (* indicates default SETUID Root install) 
+     ${bindir}/ lpr *, lprm *, lpq *, lpstat *
+     ${sbindir}/lpc *, checkpc, lpd *
+     ${libexecdir}/filters/ lpf, banner, etc 
+     ${sysconfdir}/ lpd.conf, lpd.perms, printcap
+     ${mandir}/ man pages
+
+     We install a sample lpd.conf or lpd.perms in
+      ${sysconfdir}/lpd.conf.sample, lpd.perms.sample,
+     and if there is no lpd.conf or lpd.perms we install the sample file
+     as the working file as well.
+
+  ***** WARNING WARNING WARNING: if you want to install lprng non-setuid
+  ***** please see 'NON-SETUID Install' note
+     
+   Suppose you wanted to install in /usr/bin, /usr/sbin, and /etc:
+     configure --prefix=/usr --sysconfdir=/etc
+     
+   Note the following explicit overrides:
+  --disable-setuid        disable setuid root client and server executables
+  --disable-strip         disable stripping of executables
+  --enable-priv_ports     require connections to be from privileged ports
+  --disable-force_localhost force_localhost default to disabled
+  --with-lpddir=DIR       lpd executable directory (default ${sbindir})
+  --with-filterdir=DIR     filter directory (default ${libexecdir}/filters)
+  --with-lpd_conf_path=PATH     path to lpd.conf (default: ${sysconfdir}/lpd.conf)
+  --with-lpd_perms_path=PATH    path to lpd.perms (default: ${sysconfdir}/lpd.perms)
+  --with-printcap_path=PATH     path to printcap (default ${sysconfdir}/printcap)
 
 GNU Make:
-    ./configure;
-      #if you want internationalization, do:
-      # ./configure --enable-nls 
-      # see section below on tuning the configure script
-
+    # We recommend that you use the existing /etc/printcap file,
+    ./configure  --with-printcap_path=/etc/printcap \
+         [other options you need ]
     make clean all;
     su   # you must do the following commands as root
     make install
     # this will put the executables in /usr/local,
-    #   and lpd.conf in /etc/lpd.conf
+    #   and lpd.conf in /usr/local/etc/lpd.conf
     # if  you have not installed LPRng before,
-    #  install default /etc/lpd.perms
+    #  install default /usr/local/etc/lpd.perms
     ./src/checkpc -f
 
 BSD Make:
-    ./configure;
-      #if you want internationalization, do:
-      # ./configure --enable-nls 
+    ./configure  --with-printcap_path=/etc/printcap \
+         [other options you need ]
     make -f Makefile.bsd clean all;
     su   # you must do the following commands as root
     make -f Makefile.bsd install
-    # if  you have not installed LPRng before,
-    # install default lpd.perms and lpd.conf file in /etc
-    if [ ! -f /etc/lpd.perms ]; then make default; fi;
-    # update permissions,  create files needed for LPRng, check
-    # /etc/printcap file for problems. Do as root:
     ./src/checkpc -f
-
-If you do not want to have the LPRng executables installed SUID root
-(which could open some security loopholes),  then edit the src/Makefile
-and comment out the indicated line:
-
-	# comment out the next line to have LPRng installed non-setuid
-	PERMS=$(SUID_ROOT_PERMS)
 
 To run LPRng after installation,  you can do the following:
 
     # kill off the old server
     kill `ps -aux |grep lpd | awk '{print $2}'`
-	# you should remove or rename the existing lpd binaries
+    # you should remove or rename the existing lpd binaries if they
     mv /usr/lib/lpd /usr/lib/lpd.old
     ln -s /usr/local/bin/lpd /usr/lib/lpd
-	# you might want to track down the old lpr, lpq, lprm binaries
-	find /usr -type file -name lp\* \; -print >/tmp/candidates
-	find /sbin -type file -name lp\* \; -print >>/tmp/candidates
+    # you might want to track down the old lpr, lpq, lprm binaries
+    find /usr -type file -name lp\*  -print >/tmp/candidates
+    find /sbin -type file -name lp\* -print >>/tmp/candidates
     # Examine the /tmp/candidates file, and remove or rename the
     # non-LPRng versions of the programs
-	# remove or rename the candidate files
-    lpd;    # start up LPD
+    # remove or rename the candidate files
+    /usr/local/sbin/lpd;    # start up LPD
     lpq;    # test it with LPQ
 
 If you are running on Solaris, see the Solaris section in the
@@ -106,8 +131,6 @@ case "$1" in
         ;;
 esac
 
-
- 
 PRINTCAP FILES:
 
 You will probably want to update your printcap files.  See
@@ -119,7 +142,7 @@ printcap entry:
 Example:
 
 lp:bkf:\
-  :if=/usr/libexec/psfilter
+  :if=/usr/local/libexec/very.old.filter
 
 KERBEROS IV:
    If you want to use Kerberos 4,  see the comments in the src/Makefile
@@ -131,7 +154,8 @@ The configure script attempts to generate Makefiles which should compile
 and build on your system.
 
 ./configure --help
-
+Usage: configure [options] [host]
+Options: [defaults in brackets after descriptions]
 Configuration:
   --cache-file=FILE       cache test results in FILE
   --help                  print this message
@@ -179,15 +203,18 @@ Features and packages:
   --with-linker=LINKER    select linker to use
   --with-ldopts=LDFLAGS    select linker command line options
   --with-cppopts=CPPFLAGS  select compiler preprocessor command line options
-  --with-lpddir=DIR       where to install the lpd binary.  default: $(bindir)
-
-  --with-admindir=DIR     where to install the administrative commands, like
-                          checkpc, lpc, etc.                default: $(bindir)
+  --disable-setuid        disable setuid root client and server executables
+  --enable-priv_ports     require connections to be from privileged ports
+  --disable-force_localhost force_localhost default to disabled
+  --with-lpddir=DIR       lpd executable directory (default ${sbindir})
+  --with-filterdir=DIR     filter directory (default ${libexecdir}/filters)
+  --with-lpd_conf_path=PATH     path to lpd.conf (default: ${sysconfdir}/lpd.conf)
+  --with-lpd_perms_path=PATH    path to lpd.perms (default: ${sysconfdir}/lpd.perms)
+  --with-printcap_path=PATH     path to printcap (default ${sysconfdir}/printcap)
 
   --enable-nls           use Native Language Support
   --with-included-gettext use the GNU gettext library included here
   --with-catgets          use catgets functions if available
-
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -363,3 +390,54 @@ operates.
 
 `configure' also accepts some other, not widely useful, options.
 
+SECURITY WARNINGS
+
+  The default configuration for LPRng allows connections from
+  any port, while a strict RFC1179 implementation would require
+  connections only from a port in the range 721-731.  Relaxing
+  this restriction allows non-setuid root clients (lpr, lpq, etc)
+  to connect to the LPRng server.
+
+  The following is the default LPRng system installation:
+
+    1. All client programs are installed Setuid Root
+    2. No checking is done for strict RFC1179 conformance by clients
+       or the lpr server
+    3. By default, all client programs will connect to the server
+       on the local host (force_localhost configuration option).
+
+  This configuration allows you to connect directly to non-LPRng systems
+  using the LPRng clients,  and to have the maximum flexibility with the
+  least amount of system configuration problems.  You can modify the
+  /etc/printcap file, and set 'force_localhost@' for printers whosse
+  spool queues are not on the localhost,  and which require connections
+  to originate from a privileged port.
+
+  This configuration is the most common one encountered by system
+  administrators,  but has the drawback of having SETUID clients.
+
+  A more cautious approch is to use the following:
+
+    1. No LPRng programs are installed Setuid Root
+       (configure --disable-setuid)
+    2. All clients communicate directly to the server on the localhost.
+    3. The server is started are system initialization time by root.
+
+  If you insist on strict RFC1179 conformance for remote connections
+  to your server:
+    1. All client programs are installed Setuid Root
+    2. All connections must originate from a privileged port
+       (configure --enable-priv_ports)
+
+  Finally you are truly paranoid,  then you should read the LPRng HOWTO
+  section on Authentication,  and add either PGP or Kerberos authentication
+  to your system,  and do not install the LPRng clients Setuid ROOT.
+
+NON-SETUID Install
+
+  If you want to install LPRng without setuid permissions,  then you must
+  use the following:
+      ./configure --disable-setuid ...
+      make all install
+
+      vi /.../etc/lpd.perms

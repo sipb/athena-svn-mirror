@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpstat.h,v 1.1.1.1 1999-05-04 18:07:16 danw Exp $
+ * $Id: lpstat.h,v 1.1.1.2 1999-10-27 20:10:15 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -20,26 +20,12 @@ EXTERN int Clear_scr;       /* clear screen */
 EXTERN int Interval;        /* display interval */
 
 /* PROTOTYPES */
-int Pflag, Rflag, Sflag, aflag, cflag, dflag, fflag, lflag,
-	oflag, pflag, rflag, sflag, tflag, uflag, vflag;
-char *S_val, *a_val, *c_val, *f_val, *o_val, *p_val, *u_val, *v_val;
-
- struct line_list Lpq_options;
-
-#define MAX_SHORT_STATUS 6
-
-/***************************************************************************
- * main()
- * - top level of LPQ
- *
- ****************************************************************************/
-
 int main(int argc, char *argv[], char *envp[]);
-void Show_status(char **argv);
+void Show_status(char **argv, int display_format);
 int Read_status_info( char *host, int sock,
-	int output, int timeout, int displayformat,
+	int output, int timeout, int display_format,
 	int status_line_count );
-int Remove_excess( struct line_list *l, int status_line_count, int output );
+int Add_val( char **var, char *val );
 void Get_parms(int argc, char *argv[] );
 void usage(void);
 

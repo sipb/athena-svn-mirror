@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_secure.c,v 1.1.1.2 1999-05-24 18:29:15 danw Exp $";
+"$Id: lpd_secure.c,v 1.1.1.3 1999-10-27 20:10:03 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -132,11 +132,20 @@ int Receive_secure( int *sock, char *input )
 			goto error;
 		}
 	} else {
+		int db, dbf;
+
+		db = Debug;
+		dbf = DbgFlag;
 		s = Find_str_value(&Spool_control,DEBUG,Value_sep);
 		if(!s) s = New_debug_DYN;
 		Parse_debug( s, 0 );
 
-		DEBUGFC(DRECV1){
+		if( !(DRECVMASK & DbgFlag) ){
+			Debug = db;
+			DbgFlag = dbf;
+		} else {
+			dbf = Debug;
+			Debug = db;
 			if( Log_file_DYN ){
 				temp_fd = Checkwrite( Log_file_DYN, &statb,0,0,0);
 				if( temp_fd > 0 && temp_fd != 2 ){
@@ -145,6 +154,7 @@ int Receive_secure( int *sock, char *input )
 				}
 				temp_fd = -1;
 			}
+			Debug = dbf;
 			logDebug("Receive_secure: socket fd %d", *sock );
 			Dump_line_list("Receive_secure - input", &args);
 		}
@@ -210,19 +220,41 @@ int Receive_secure( int *sock, char *input )
 #endif
 
 	
-	DEBUGF(DRECV1)( "Receive_secure: pgp path '%s', key '%s'",
-		Pgp_path_DYN, Pgp_server_key_DYN );
+	DEBUGF(DRECV1)( "Receive_secure: pgp path '%s', passphrasefile '%s'",
+		Pgp_path_DYN, Pgp_server_passphrasefile_DYN );
 	if( (safestrcasecmp( authtype,PGP ) == 0) ){
-		if( Pgp_path_DYN && Pgp_server_key_DYN ){
-			status = Link_send( ShortRemote_FQDN, sock,
-					Send_query_rw_timeout_DYN,"",1,0 );
-			if( !status ) status = Pgp_receive( sock, user, jobsize, from_server );
-		} else {
+		int fd;
+		if( Pgp_path_DYN == 0 ){
 			plp_snprintf( error, sizeof(error),
-				_("authentication type '%s' not supported"), authtype );
+				_("missing pgp program path") );
 			ack = ACK_RETRY;
 			status = JFAIL;
+			goto error;
 		}
+		if( Pgp_server_passphrasefile_DYN == 0 ){
+			logerr( LOG_INFO, "Receive_secure: no Pgp_server_passphrasefile value");
+			plp_snprintf( error, sizeof(error),
+				_("no pgp server passphrasefile") );
+			ack = ACK_RETRY;
+			status = ACK_RETRY;
+			status = JFAIL;
+			goto error;
+		}
+		if( (fd = Checkread(Pgp_server_passphrasefile_DYN, &statb) ) < 0 ){
+			logerr( LOG_INFO,
+				_("Receive_secure: cannot open passphrasefile '%s' on server"),
+				Pgp_server_passphrasefile_DYN );
+			plp_snprintf( error, sizeof(error),
+				_("bad pgp server passphrasefile") );
+			ack = ACK_RETRY;
+			status = ACK_RETRY;
+			status = JFAIL;
+			goto error;
+		}
+		close(fd);
+		status = Link_send( ShortRemote_FQDN, sock,
+			Send_query_rw_timeout_DYN,"",1,0 );
+		if( !status ) status = Pgp_receive( sock, user, jobsize, from_server );
 		goto error;
 	}
 
@@ -234,6 +266,7 @@ int Receive_secure( int *sock, char *input )
 		goto error;
 	}
 
+	DEBUGF(DRECV1)( "Receive_secure: sending 0 ack value");
 	status = Link_send( ShortRemote_FQDN, sock,
 			Send_query_rw_timeout_DYN,"",1,0 );
 	if( status ){
@@ -250,6 +283,8 @@ int Receive_secure( int *sock, char *input )
 		Auth_receive_filter_DYN, Printer_DYN, esc_Auth_id_DYN,
 		authtype, user, tempfile );
 
+	DEBUGF(DRECV1)( "Receive_secure: rcv authenticator '%s'", buffer);
+
 	/* now set up the file descriptors:
 	 *   FD Options Purpose
 	 *   0  R/W     socket connection to remote host (R/W)
@@ -261,7 +296,7 @@ int Receive_secure( int *sock, char *input )
 	if( pipe(pipe_fd) == -1 || pipe(report_fd) == -1 || pipe(error_fd) == -1 ){
 		Errorcode = JFAIL;
 		logerr_die( LOG_INFO, _("Receive_secure: pipe failed") );
-	};
+	}
 
 	Free_line_list(&options);
 	Set_str_value(&options,PRINTER,Printer_DYN);
@@ -312,7 +347,7 @@ int Receive_secure( int *sock, char *input )
 		&& (len = read( pipe_fd[0], buffer+n, sizeof(buffer)-1-n )) > 0 ){
 		buffer[n+len] = 0;
 		DEBUGF(DRECV1)("Receive_secure: read authentication '%s'", buffer );
-		while( (s = strchr(buffer,'\n')) ){
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			if( strlen(buffer) == 0 ){
 				break;
@@ -331,7 +366,9 @@ int Receive_secure( int *sock, char *input )
 
 	/* now we do the dirty work */
 	if( (s = Find_str_value(&options,INPUT,Value_sep)) ){
-		DEBUGF(DRECV1)("Receive_secure: command '%s'", s );
+		DEBUGF(DRECV1)("Receive_secure: undecoded command '%s'", s );
+		Unescape(s);
+		DEBUGF(DRECV1)("Receive_secure: decoded command '%s'", s );
 		Dispatch_input( sock, s );
 		status = 0;
 		goto error;
@@ -358,11 +395,13 @@ int Receive_secure( int *sock, char *input )
 	if( status ){
 		if( ack == 0 ) ack = ACK_FAIL;
 		buffer[0] = ack;
+		buffer[1] = 0;
 		(void)Link_send( ShortRemote_FQDN, sock,
 			Send_query_rw_timeout_DYN, buffer, 1, 0 );
 		if( error[0] ){
 			safestrncat( error, "\n" );
-			Write_fd_str( *sock, error );
+			(void)Link_send( ShortRemote_FQDN, sock,
+				Send_query_rw_timeout_DYN, error, strlen(error), 0 );
 		}
 		Errorcode = JFAIL;
 	}
@@ -405,11 +444,12 @@ int Receive_secure( int *sock, char *input )
 int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 {
 	char *tempfile, *s, *cmdstr, *t;
-	int tempfd, len, error_fd[2], pipe_fd[2], status, cnt, n, pid;
+	int tempfd, error_fd[2], pipe_fd[2], status, cnt, n, pid;
 	char buffer[LARGEBUFFER];
 	struct line_list env, files, args, pgp_info, file_info;
 	struct stat statb;
 	plp_status_t procstatus;
+	double len;
 
 	Init_line_list(&env);
 	Init_line_list(&args);
@@ -420,22 +460,22 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 	
 
 	DEBUGF(DRECV1)( "Pgp_receive: path '%s', key '%s'",
-		Pgp_path_DYN, Pgp_server_key_DYN );
-	len = sizeof(buffer)-1;
+		Pgp_path_DYN, Pgp_server_passphrasefile_DYN );
+	cnt = sizeof(buffer)-1;
 	status = Link_line_read(ShortRemote_FQDN,sock,
-		Send_job_rw_timeout_DYN,buffer,&len);
-	DEBUGF(DRECV1)( "Pgp_receive: read status %d, len %d, '%s'",
-		status, len, buffer );
+		Send_job_rw_timeout_DYN,buffer,&cnt);
+	DEBUGF(DRECV1)( "Pgp_receive: read status %d, cnt %d, '%s'",
+		status, cnt, buffer );
 	tempfd = Make_temp_fd(&tempfile);
-	if( status || len == 0 ){
+	if( status || cnt == 0 ){
 		DEBUGF(DRECV1)( "Pgp_receive: bad read from socket" );
 		goto error;
 	}
-
-	len = strtol(buffer,0,0);
+	buffer[cnt] = 0;
+	len = strtod(buffer,0);
 	while( len  > 0 ){
-		cnt = len;
-		if( cnt > sizeof(buffer)-1 ) cnt = sizeof(buffer)-1;
+		cnt = sizeof(buffer)-1;
+		if( cnt > len ) cnt = len;
 		if( (n = read(*sock, buffer,cnt) != cnt ) ){
 			DEBUGF(DRECV1)("Pgp_receive: bad read from socket" );
 			goto error;
@@ -460,7 +500,7 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 	files.list[files.count++] = Cast_int_to_voidstar(0);
 	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
 	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-	if( (tempfd = Checkread(Pgp_server_key_DYN,&statb)) < 0 ){
+	if( (tempfd = Checkread(Pgp_server_passphrasefile_DYN,&statb)) < 0 ){
 		DEBUGF(DRECV1)("Pgp_receive: cannot open '%s' - '%s'", Errormsg(errno));
 		goto error;
 	}
@@ -487,14 +527,14 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 
 	n = 0;
 	while( n < sizeof(buffer)-1
-		&& (len = read( error_fd[0], buffer+n, sizeof(buffer)-1-n )) > 0 ){
-		buffer[n+len] = 0;
-		while( (s = strchr(buffer,'\n')) ){
+		&& (cnt = read( error_fd[0], buffer+n, sizeof(buffer)-1-n )) > 0 ){
+		buffer[n+cnt] = 0;
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			DEBUGF(DRECV1)("Pgp_receive: pgp output '%s'", buffer );
-			if( !strncmp("Good",buffer,4) ){
-				if( (t = strrchr(buffer,'"')) ) *t = 0;
-				if( (t = strchr(buffer,'"')) ){
+			if( !safestrncmp("Good",buffer,4) ){
+				if( (t = safestrrchr(buffer,'"')) ) *t = 0;
+				if( (t = safestrchr(buffer,'"')) ){
 					*t++ = 0;
 					if( *t ){
 						Set_str_value(&pgp_info,FROM,t);
@@ -535,9 +575,9 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 	}
 	n = 0;
 	while( n < sizeof(buffer)-1
-		&& (len = read( tempfd, buffer+n, sizeof(buffer)-1-n )) > 0 ){
-		buffer[n+len] = 0;
-		while( (s = strchr(buffer,'\n')) ){
+		&& (cnt = read( tempfd, buffer+n, sizeof(buffer)-1-n )) > 0 ){
+		buffer[n+cnt] = 0;
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			if( strlen(buffer) == 0 ){
 				break;
@@ -557,7 +597,10 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 	}
 	buffer[0] = 0;
 	if( (cmdstr = Find_str_value(&pgp_info,INPUT,Value_sep)) ){
-		Set_DYN(&esc_Auth_received_id_DYN, (s = Escape(Auth_received_id_DYN,1)));
+		DEBUGF(DRECV1)("Pgp_receive: encoded cmd - '%s'", cmdstr );
+		Unescape(cmdstr);
+		DEBUGF(DRECV1)("Pgp_receive: decoded cmd - '%s'", cmdstr );
+		Set_DYN(&esc_Auth_received_id_DYN, (s = Escape(Auth_received_id_DYN,1,1)));
 		if(s) free(s); s = 0;
 		if( pipe(error_fd) == -1 || pipe(pipe_fd) == -1 ){
 			DEBUGF(DRECV1)("Pgp_receive: pipe failed - '%s'", Errormsg(errno) );
@@ -581,7 +624,7 @@ int Pgp_receive( int *sock, char *user, char *jobsize, int from_server )
 		files.list[files.count++] = Cast_int_to_voidstar(pipe_fd[0]);
 		files.list[files.count++] = Cast_int_to_voidstar(*sock);
 		files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-		if( (tempfd = Checkread(Pgp_server_key_DYN,&statb)) < 0 ){
+		if( (tempfd = Checkread(Pgp_server_passphrasefile_DYN,&statb)) < 0 ){
 			logerr(LOG_INFO,"Pgp_send: cannot open '%s'", Errormsg(errno));
 			goto error;
 		}   
@@ -689,7 +732,7 @@ int Krb5_receive( int *sock, char *authtype, char *user,
 	while( !done && n < sizeof(buffer)-1
 		&& (len = read( fd, buffer+n, sizeof(buffer)-1-n )) > 0 ){
 		buffer[n+len] = 0;
-		while( !done && (s = strchr(buffer,'\n')) ){
+		while( !done && (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			if( strlen(buffer) == 0 ){
 				done = 1;

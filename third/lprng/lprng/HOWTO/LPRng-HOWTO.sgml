@@ -6,12 +6,12 @@
 <author> Patrick Powell <tt><htmlurl url="mailto:papowell@astart.com"
     name="papowell@astart.com"></tt>
 <!--VERSION-->
-<date> 21 Dec 1998 (For LPRng-3.5.4)
+<date> 24 Oct 1999 (For LPRng-3.6.11)
 <abstract>
 The LPRng software is an enhanced, extended, and portable implementation
 of the Berkeley LPR print spooler functionality. While providing the same
 interface and meeting RFC1179 requirements, the implementation is completely
-independant and provides support for the following features: lightweight (no databases
+independent and provides support for the following features: lightweight (no databases
 needed) lpr, lpc, and lprm programs; dynamic redirection of print queues;
 automatic job holding; highly verbose diagnostics; multiple printers serving
 a single queue; client programs do not need to run SETUID root; greatly enhanced
@@ -30,7 +30,7 @@ and to produce banner pages.
 
 For users that require compatibility with the SVR4 lp and lpstat programs,
 the LPRng package provides emulation of these programs.
-In addition, a publically available PCNFSD server
+In addition, a publicly available PCNFSD server
 is distributed with LPRng and interfaces with the PC/DOS/Windows based
 NFS style print spoolers.
 In addition,
@@ -66,21 +66,21 @@ based multi-user system,
 there may be one or more printers shared by multiple users on many different
 systems.
 The print <it/spoolers/ will need to cooperate to provide print services to
-the users in a simple an predictible manner.
+the users in a simple an predictable manner.
 <p>
 The LPRng print spooler software was developed to a flexible and scalable
 approach to each of these printing problems.
 It has been used since 1988 in extremely demanding
-academic printing enviroments such as University of Minnesota, MIT,
+academic printing environments such as University of Minnesota, MIT,
 and Rutgers,
-commerial companies such as Dow Jones and Abbot Pharmaceuticals,
+commercial companies such as Dow Jones and Abbot Pharmaceuticals,
 as well as being distributed with Linux, FreeBSD, and other systems.
 Each of these environments has a unique set of problems,
 demanding various configuration and administrative capabilities.
 For example,
 the simple single user system with a single or limited number of printers
 requires easy configuration and simple diagnostic procedures,
-while the network based printing system requires highly robutest
+while the network based printing system requires highly robust
 error logging,
 authentication,
 and failover support.
@@ -95,7 +95,7 @@ more complex configurations are described,
 and their management and configuration are outlined.
 Next,
 an extremely detailed description of the LPRng print spooling components
-and their functionallity is provided.
+and their functionality is provided.
 Finally,
 an index to the various features and functions of LPRng is provided.
 <sect1>What is LPRng?
@@ -198,7 +198,7 @@ For your convenience, see
 <sect1>Copyright
 <p>
 Material included in this document from the LPRng distribution
-Copyright Patrick Powell 1988-1997, where applicable.
+Copyright Patrick Powell 1988-1999, where applicable.
 <p>
 The rights to distribute this document complete or in part are hereby
 granted for non-commercial purposes. Partial reproductions must
@@ -252,6 +252,7 @@ name=
 <htmlurl url="ftp://ftp.cs.umn.edu/pub/LPRng" name="ftp://ftp.cs.umn.edu/pub/LPRng"> (US)<newline>
 <htmlurl url="ftp://ftp.iona.com/pub/plp/LPRng" name="ftp://ftp.iona.com/pub/plp/LPRng"> (US)<newline>
 <htmlurl url="ftp://uiarchive.uiuc.edu/pub/packages/LPRng" name="ftp://uiarchive.uiuc.edu/pub/packages/LPRng"> (US)<newline>
+<htmlurl url="ftp://uabgate.uab.ericsson.se/pub/unix/LPRng" name="ftp://uabgate.uab.ericsson.se/pub/unix/LPRng">(SE)<newline>
 <sect1>Mailing List
 <p>
 To join the LPRng mailing list, please send mail to
@@ -314,7 +315,7 @@ The client programs are used to submit jobs to the print spooler
 program which performs the actual printing operations.
 In order to carry out these operations,
 the server may need to use other programs to convert print job files
-into a format acceptible to a printer,
+into a format acceptable to a printer,
 or perform various accounting or administrative functions.
 <sect1>Overview
 <p>
@@ -337,7 +338,7 @@ or perform various accounting or administrative functions.
 <p>
 Figure 1 shows the flow of data between the individual components of the
 LPRng print spooling system.
-A progam (or user) will use the <tt/lpr/ program to send a file
+A program (or user) will use the <tt/lpr/ program to send a file
 to the <tt/lpd/ server over a TCP/IP connection.
 The <tt/lpd/server will store the file temporarily in a
 spool queue directory.
@@ -349,7 +350,7 @@ The <tt/lpd/ server sorts the queue entries and determines the print order.
 It will select a job to be printed,
 open a connection to the printer,
 and then use a <it/filter/ program to convert the file contents into a
-format suiteable for the printer.
+format suitable for the printer.
 If the file does not need conversion,
 then the <tt/lpd/ server will send the file directly to the printer.
 <p>
@@ -401,7 +402,7 @@ server to do the printing.
 psqueue:server
   :lp=/dev/lp0
   :sd=/var/spool/lpd/psqueue
-  :if=/usr/local/bin/psfilter
+  :if=/usr/local/bin/ifhp
 </verb>
 </tscreen>
 <p>
@@ -463,7 +464,7 @@ box which provides a network interface.
 Network print boxes can be obtained from
 Hewlett Packard
 (<htmlurl url="http://www.hp.com" name="http://www.hp.com">),
-Lantronixs
+Lantronix's
 (<htmlurl url="http://www.lantronix.com" name="http://www.lantronix.com">),
 and Rose Electronics
 (<htmlurl url="http://www.rosel.com" name="http://www.rosel.com">).
@@ -475,7 +476,7 @@ LPRng directly supports the LPD (RFC1179) and Socket API interfaces,
 and you can use the 
 <tt/smbclient/ program from the
 <ref id="smb" name="Samba Software Package"> for the SMB interface.
-There are no plans to support the Novell Netware interace,
+There are no plans to support the Novell Netware interface,
 given the wide range of alternatives.
 <sect2>Socket API
 <p>
@@ -525,10 +526,10 @@ Example:
   nc 10.0.0.25 9100 &lt ellipse.ps
 </verb>
 </tscreen>
-<sect2>LPD (RFC 1179) Protcol
+<sect2>LPD (RFC 1179) Protocol
 <p>
 The second most common network print protocol is the
-RFC1179 TCP/IP protcol.
+RFC1179 TCP/IP protocol.
 This is described in detail in later sections of this document,
 but basically consists of a
 simple set of command and responses.
@@ -542,7 +543,7 @@ another job or has another network connection open.
 Once the connection has been established,
 a print request command is sent to the printer,
 and if printing is allowed,
-and acknowlegement will be received.
+and acknowledgment will be received.
 <item>
 The files comprising the print job are sent to the printer.
 <item>
@@ -640,7 +641,7 @@ such as
 (TCP/IP printing using the LPD print protocol),
 Novell Printer Protocols,
 SMB print protocols,
-and Appletalk protocols.
+and AppleTalk protocols.
 One of the observed problems with Network Print servers is that while they
 can usually support one protocol and one user at a time quite well,
 when you try to use multiple protocols and/or multiple users try to transfer
@@ -724,7 +725,7 @@ a single column.
 <label id="secserial">
 <p>
 If your printer is attached by a serial line,
-then you may need to set the serial line characteristictics before sending
+then you may need to set the serial line characteristics before sending
 the job to the printer.
 Here are a set of guidelines to following when attaching a serial port printer
 to a serial line.
@@ -746,7 +747,7 @@ and change the permissions to 0600.
 <p>
 3. Make sure that you can print a test file on the printer via the
 serial port.
-This may require setting the line characteristictics and then sending
+This may require setting the line characteristics and then sending
 a file to the printer.
 You should try to use 8 bit, no parity, with hardware flow control
 and no special character interpretation,
@@ -775,9 +776,9 @@ etc.
 Experience has shown that serially connected printers are the least
 reliable and lowest speed.
 Where possible,
-it is stongly recommended that they be attached to a <it/network print box/
+it is strongly recommended that they be attached to a <it/network print box/
 which will provide a
-Socket API interace and handle the low level network to serial port protocol 
+Socket API interface and handle the low level network to serial port protocol 
 conversions.
 <sect>Installing the Software
 <label id="installingprograms">
@@ -787,59 +788,6 @@ The basic components of the LPRng system are the executables
 and the database files.
 This section deals with generating and installing the executable
 files.
-<sect1>Files and Setup
-<p>
-The LPRng package consists of:
-<itemize>
-<item> <em><tt>lpd</tt></em> - the LPD print server program
-<item>
-<em><tt>lpr</tt></em>,
-<em><tt>lpq</tt></em>,
-<em><tt>lprm</tt></em>,
-and
-<em><tt>lpc</tt></em> -
-client programs for printing,
-status queries, job removal, and server configuration respectively.
-<item>
-<em><tt>/etc/printcap</tt></em> print queue database file.
-<item>
-<em><tt>/etc/lpd.conf</tt></em> program configuration options.
-<item>
-<em><tt>/etc/lpd.perms</tt></em> permission information.
-</itemize>
-<p>
-By default, the LPRng client programs are installed in
-<tt>/usr/local/bin</tt>
-and the <tt/lpd/ server in
-<tt>/usr/local/sbin</tt>.
-By tradition,
-UNIX systems have installed printer utilities in
-in widely varied locations such as
-<tt>/usr/lib</tt>,
-<tt>/usr/bin</tt>,
-<tt>/usr/libexec</tt>,
-<tt>/usr/ucb</tt>,
-<tt>/opt</tt>,
-<tt>/usr/sbin</tt>,
-and
-<tt>/usr/etc/</tt>.
-During installation the old print system files should either be renamed or removed.
-<p>
-The
-<tt><ref id="printcapref" name="/etc/printcap"></tt>
-file contains the printer database information.
-Information in this file can override the
-<tt>/etc/lpd.conf</tt>
-and default configuration information.
-The
-<tt><ref id="lpdconf" name="/etc/lpd.conf"></tt>
-file contains configuration
-information for the server and client programs.
-The compiled in defaults should be suitable for most small user installations.
-The
-<tt><ref id="lpdpermsref" name="/etc/lpd.perms"></tt>
-file contains the permission database information.
-
 <sect1>Source Code and Support Programs
 <p>
 <enum>
@@ -866,11 +814,125 @@ is strongly recommended.
 Solaris Sparc and X86 Binaries for GCC and Make  can be obtained from
 <htmlurl url="http://smc.vnet.net/" name="http://smc.vnet.net/">.
 </enum>
-<sect1>Configuration and Installation
+<sect1>Configuration
 <p>
-In the following discussion,
-the LPRng distribution will have the name
-<tt/LPRng-&lt;version&gt;.tgz/.
+<p>
+The LPRng package consists of:
+<itemize>
+<item> <em><tt>lpd</tt></em> - the LPD print server program
+<item>
+<em><tt>lpr</tt></em>,
+<em><tt>lpq</tt></em>,
+<em><tt>lprm</tt></em>,
+<em><tt>lpstat</tt></em>,
+and
+<em><tt>lpc</tt></em> -
+client programs for printing,
+status queries, job removal, and server configuration respectively.
+<item>
+<em><tt>printcap</tt></em> print queue database file.
+<item>
+<em><tt>lpd.conf</tt></em> LPRng configuration options.
+<item>
+<em><tt>lpd.perms</tt></em> permission information.
+</itemize>
+<p>
+By tradition,
+UNIX systems have installed printer utilities in
+in widely varied locations such as
+<tt>/usr/lib</tt>,
+<tt>/usr/bin</tt>,
+<tt>/usr/libexec</tt>,
+<tt>/usr/ucb</tt>,
+<tt>/opt</tt>,
+<tt>/usr/sbin</tt>,
+and
+<tt>/usr/etc/</tt>.
+This can lead to a great deal of confusion when installation LPRng.
+To simplify the installation,
+the <tt/configure/ program is used to specify the exact locations
+of programs.
+It does this by setting the following variables that are
+used during the installation process:
+<tscreen>
+<verb>
+Installation directory variables:
+  ${prefix}  (default /usr/local)
+  ${exec_prefix}  (default ${prefix})
+  ${bindir}  is usually ${exec_prefix}/bin, (/usr/local/bin)
+  ${sbindir} is usually ${exec_prefix}/sbin (/usr/local/sbin)
+  ${libexecdir} is usually ${exec_prefix}/libexec (/usr/local/libexec)
+  ${sysconfdir} is usually ${prefix}/etc (/usr/local/etc)
+  ${mandir} is usually ${prefix}/man     (/usr/local/man)
+</verb>
+</tscreen>
+<p>
+These values are used as follows by the LPRng installation
+procedures (* indicates default SETUID root executable):
+<tscreen>
+<verb>
+Executables:
+  ${bindir}/   lpr *, lprm *, lpq *, lpstat *
+  ${sbindir}/  lpc *, checkpc, lpd *
+  ${libexecdir}/filters/ lpf, banner, etc
+Configuration:
+  ${sysconfdir}/ lpd.conf, lpd.perms, printcap
+Man Pages
+  ${mandir}/ man pages
+</verb>
+</tscreen>
+<p>
+The <tt/configure/ program has options which allow us to override and
+specify the new values or exact locations for these files.
+For a complete list of configuration options,
+use the <tt/configure --help/ option.
+You can set explicit values for the
+<tt/prefix/
+<tt/bindir/
+<tt/sbindir/
+<tt/libexecdir/
+and
+<tt/mandir/ variables using the <tt/--name=PATH/
+option.
+For example,
+<tt>/configure --prefix=/usr</tt> will set the
+<tt>${prefix}</tt> variable to <tt>/usr</tt>,
+and files will be installed in
+<tt>/usr/bin</tt>,
+<tt>/usr/sbin</tt>,
+<tt>/usr/libexec/filter</tt>,
+and
+<tt>/etc</tt>.
+<p>
+In addition to these general purpose options,
+the <tt/configure/ script has the following LPRng specific ones.
+These options allow extremely specific actions to be taken to control
+how and were the various files are copied and used.
+<descrip>
+<tag><tt>
+--disable-setuid
+</tt></tag>
+Install the executables without setuid ROOT permissions.
+<tag><tt>
+--disable-strip
+</tt></tag>
+Do not strip the executables before installing.
+<tag><tt>
+--enable-priv_ports.
+</tt></tag>
+Require connections to be made from a privileged port.
+<tag><tt> --disable-force_localhost.  </tt></tag> By default,
+the LPRng software is configured to expect to have a server running
+on the local host.
+This option will cause the location of the server to be obtained from the
+<tt/lpd.conf/ or <tt/printcap/ information.
+<tag><tt> --with-lpddir=DIR.  </tt></tag> lpd executable directory (default ${sbindir}).
+<tag><tt> --with-filterdir=DIR.  </tt></tag> Filter directory (default ${libexecdir}/filters).
+<tag><tt> --with-lpd_conf_path=PATH.  </tt></tag> Path of <tt/lpd.conf/ file.
+<tag><tt> --with-lpd_perms_path=PATH </tt></tag> Path of <tt/lpd.perms/ file.
+<tag><tt> --with-printcap_path=PATH </tt></tag> Path of <tt/printcap/ file.
+</descrip>
+<sect1>Installation
 <p>
 Unpack,  configure,
 compile, and install,
@@ -879,8 +941,10 @@ and initialize the distribution using:
 <verb>
 gunzip -c LPRng-<version>.tgz | tar xvf -
 cd LPRng-<version>
-# see discussion below for configuration options
-./configure
+# see discussion above for configuration options
+# This configuration uses the standard /etc/printcap file
+./configure --with-printcap_path=/etc/printcap
+           [with other options as required]
 gmake clean all
 su   # you must do the following commands as root
 gmake install
@@ -895,7 +959,7 @@ fi;
 </verb>
 </tscreen>
 <p>
-<sect1>Configuration Options and Problems with Compilation
+<sect1>Solving Installation Problems
 <p>
 The <tt/configure/
 script will determine the type of system and establish a set of defaults
@@ -947,18 +1011,6 @@ configure --with-cppopts="-I/usr/local/include -I/usr/include/kerberosIV" \
   --with-ldopts="-L/usr/local/lib -L/usr/lib/kerberosIV"
 </verb>
 </tscreen>
-<item>
-The default installation locations are not the desired ones.
-<newline>
-See the detailed discussions in the INSTALL file,
-especially the section dealing with the
-<tt/--with-lpddir/,
-<tt/--exec-prefix=/,
-<tt/--bindir=/,
-<tt/--sbindir=/,
-and other basic
-<tt/configure/
-options.
 </enum>
 <p>
 The <tt>configure</tt> and <tt>make</tt> steps must be run on
@@ -970,7 +1022,7 @@ there tend to be changes in the system's include files between
 versions
 as well as support libraries.
 <p>
-Also read the notes for your OS in section
+Read the notes for your OS in section
 <ref id="sysdep" name="System-dependent notes">
 for specific installation help (if any).
 <sect1>Advanced Configuration Options
@@ -993,35 +1045,48 @@ and do not run
 <tt/lpd/ servers on user systems.
 The
 <tt/--disable-force_localhost/
-configuration will simply this type of operation by eliminating the need for
-a
+configuration will simply this type of operation by eliminating the need for a
 <tt>/etc/lpd.conf</tt> file to override the <tt>force_localhost</tt> option.
-Example:
-<tscreen>
-<verb>
-./configure --disable-force_localhost
-</verb>
-</tscreen>
-<item><tt/--disable-lpd_bounce/
-The default LPRng configuration assumes that each
-<tt/lpd/ server will process and modify print jobs as they are forwarded
-from server to server.
-While this is usually the desired operation on small sites or on individual systems,
-this is usually not the desired operation on sites running central servers,
-as will requires distributing filter software to all the user workstations.
-Example:
-<tscreen>
-<verb>
-./configure --disable-lpd_bounce
-</verb>
-</tscreen>
+<item><tt/--disable-setuid/
+This option will install the LPRng executables without SETUID permissions.
+Non-setuid clients and programs are inherently more secure than SETUID programs,
+and system administrators would be well advised to install them without
+SETUID root permissions.
+Please see <ref id="setuid" name="Advanced Security Considerations">
+for more details about this option.
+<item><tt/--enable-priv_ports/
+This option will install a default
+<tt/lpd.perms/ file which disallows connections from non-privileged ports.
+In effect,
+this will require that on UNIX systems the originating user be root or
+the program be SETUID root.
+By default,
+LPRng will allow connections from any port.
+Please see <ref id="setuid" name="Advanced Security Considerations">
+for more details about this option.
+<item><tt/--disable-require_configfiles/
+By default, the
+<tt/lpr/,
+<tt/lpq/,
+<tt/lpc/, ...
+clients will required a <tt/lpd.conf/ file and the <tt/printcap/
+to be present.
+The
+<tt/--disable-require_configfiles/
+option relaxes this requirement,
+and if the files are missing,
+will not complain.
 </enum>
-
 <sect1>Printcap and lpd.conf files
+<label id="requireconfig">
 <p>
-The <tt>/etc/printcap</tt> file contains the definitions of print queues
+The <tt>printcap</tt> file contains the definitions of print queues
 and other information used by LPRng.
-If your system does not have an <tt>/etc/printcap</tt> file,
+The exact location of the file is determined by the
+<tt/configure/ options and defaults for your system.
+The default used by <tt/configure/ is <tt>/usr/local/etc/printcap</tt>,
+but it is more commonly found in <tt>/etc/printcap</tt>.
+If your system does not have an <tt>printcap</tt> file,
 then the following is suitable for initial testing and configuration:
 <tscreen>
 <verb>
@@ -1032,20 +1097,36 @@ lp:cm=Test Printcap Entry:
 </verb>
 </tscreen>
 <p>
-The <tt>/etc/ifhp.conf</tt>
+The <tt>lpd.conf</tt>
+(default location is <tt>/usr/local/etc/lpd.conf</tt>)
 file contains settings that override the defaults provided at compile time.
-You will find a prototype or template <tt/ifhp.conf/ file in the LPRng distribution.
-You can install this by using:
+You will find a prototype or template <tt/lpd.conf/ file in the LPRng distribution.
+If you do not have an existing <tt/lpd.conf/ file,
+the default one will be installed.
+You can install this by hand using:
 <tscreen>
 <verb>
-astart > cd LPRng
+astart > cd LPRng/src
 astart > su
-ASTART # make init
-           or
-ASTART # cp /etc/ifhp.conf /etc
-ASTART # chmod 644 /etc/ifhp.conf
+ASTART # cp lpd.conf /usr/local/etc/lpd.conf
+ASTART # chmod 644 /usr/local/etc/lpd.conf
 </verb>
 </tscreen>
+<p>
+The various client programs such as
+<tt/lpr/,
+<tt/lpq/,
+etc. will check for a <tt/lpd.conf/ and <tt/printcap/
+file.
+You can relax this requirement by setting
+the
+<tt/require_configfile/ option false
+(<tt/require_configfile@/)
+by using the configuration option <tt/--disable-require_configfile/,
+by setting the <tt/require_configfile/ option in the
+<tt/lpd.conf/ file,
+or building the
+executables with <tt/make REQUIRE_CONFIGILE="1"/.
 <sect1>Security, Permissions, and CHECKPC
 <label id="group">
 <label id="user">
@@ -1073,11 +1154,11 @@ This user does not need login privileges,
 but will need a home directory if secure authentication
 such as Kerberos or PGP will be done.
 <item>
-The <tt>/etc/lpd.conf</tt>
+The <tt>lpd.conf</tt>
 file should be owned by root (user 0),
 and should have read-only (0444) permissions.
 <item>
-The <tt>/etc/printcap</tt>
+The <tt>printcap</tt>
 file should be owned by root (user 0),
 and should have read-only (0444) permissions.
 <item>
@@ -1101,8 +1182,8 @@ For example:
 % astart > su
 #>cd LPRng/src
 #>./checkpc
-Warning - No configuration file found in '/etc/lpd.conf:/usr/etc/lpd.conf'
-Warning - No lpd only printcap file found in '/etc/lpd_printcap,/usr/etc/lpd_printcap'
+Warning - No configuration file '/usr/local/etc/lpd.conf'
+Warning - No lpd only printcap file found in '/usr/local/lpd_printcap'
 Warning -  ** cannot open '/var/run/lpd.printer' - 'Permission denied'
 Warning -  bad directory - /var/spool/lpd/lp
 Warning -   Printer_DYN 'lp' spool dir '/var/spool/lpd/lp' needs fixing
@@ -1110,7 +1191,7 @@ Warning -   Printer_DYN 'lp' spool dir '/var/spool/lpd/lp' needs fixing
 </tscreen>
 <p>
 In the above example,
-<tt/checkpc/ has discovered that the <tt>/etc/lpd.conf</tt>
+<tt/checkpc/ has discovered that the <tt>lpd.conf</tt>
 file is missing.
 This is not a serious problem if the system defaults are to be used,
 but you might want to put the default <tt>LPRng/lpd.conf</tt> file from the
@@ -1119,7 +1200,7 @@ distribution in place.
 The <it/lpd only printcap/
 message is usually of concern to administrators who wish to use some of
 LPRng's more exotic configuration options.
-It is possible to have separarte printcap databases for client and server programs.
+It is possible to have separate printcap databases for client and server programs.
 This is useful when printcap files get extremely large and cuts down
 substantially on system management problems.
 <p>
@@ -1129,7 +1210,7 @@ as the <tt/lpd/ server uses this as a lock file.
 The <it/bad directory/ message about the spool directory is usually caused by
 bad permissions or when the directory is missing.
 <p>The <tt/checkpc -f/ option causes <tt/checkpc/ to take action to rectify errors.
-You can see what is happening if you run it with the <tt/-V/ (vervose) option:
+You can see what is happening if you run it with the <tt/-V/ (verbose) option:
 <tscreen>
 <verb>
 % astart > su
@@ -1137,15 +1218,15 @@ You can see what is happening if you run it with the <tt/-V/ (vervose) option:
 # ./checkpc -f -V
 LPRng version LPRng-3.6.1
  DaemonUID 1, DaemonGID 12
-Using Config file '/etc/lpd.conf:/usr/etc/lpd.conf'
-Checking for configuration files '/etc/lpd.conf:/usr/etc/lpd.conf'
-Warning - No configuration file found in '/etc/lpd.conf:/usr/etc/lpd.conf'
-Checking for printcap files '/etc/printcap,/usr/etc/printcap'
-  found '/etc/printcap', mod 0100644
+Using Config file '/usr/local/etc/lpd.conf'
+Checking for configuration files '/usr/local/etc/lpd.conf'
+Warning - No configuration file found in '/usr/local/etc/lpd.conf'
+Checking for printcap files '/usr/local/etc/printcap'
+  found '/usr/local/etc/printcap', mod 0100644
 Checking for lpd only printcap files
-     '/etc/lpd_printcap,/usr/etc/lpd_printcap'
+     '/usr/local/etc/lpd_printcap'
 Warning - No lpd only printcap file found in
-     '/etc/lpd_printcap,/usr/etc/lpd_printcap'
+     '/usr/local/etc/lpd_printcap'
 LPD lockfile '/var/run/lpd.printer'
   checking '/var/run/lpd.printer' file
 Names
@@ -1170,16 +1251,13 @@ Checking printer 'lp'
   cleaning 'status' file, 0 bytes long: no truncation
   checking 'log' file
   cleaning 'log' file, 0 bytes long: no truncation
-
-# ./checkpc
-Warning - No configuration file found in '/etc/lpd.conf:/usr/etc/lpd.conf'
-Warning - No lpd only printcap file found in '/etc/lpd_printcap,/usr/etc/lpd_printcap'
 </verb>
 </tscreen>
 <p>
 As you can see, <tt/checkpc/ can not only print detailed information about your
 printing system,  but it also fixes up the various problems.
 <sect2>Advanced Security Concerns
+<label id="setuid">
 <p>
 While <tt/checkpc/ will set permissions,
 there is always the problem with undetected errors in the LPRng
@@ -1191,22 +1269,25 @@ The most serious concern is that of gaining root (user 0) permissions.
 One way to avoid this is to run
 <it/client/
 programs without root permission.
-This is the default operation for LPRng,
+This operation is possible for LPRng
 in contrast to other print spooling software.
 <p>
-A remaining problem is the fact that on most UNIX
-platforms,
-<tt/lpd/ requires root permissions to open port 515.
+A serious problem running LPRng as a nonprivileged
+user (root) is the fact that the RFC protocol specifies
+that connections are made to port 515
+and
+<tt/lpd/
+requires root permissions to open and bind to port 515.
 One option is to have the <tt/lpd/ server drop root permissions
 soon after binding to this port and before accepting any user
 commands.
 However,
-in order to be compatible with RFC1179,
+in order to fully compatible with RFC1179,
 <tt/lpd/ must originate connections from a <it/reserved/
 port in the range 721-731,
-although in practice port 1-1023 seems to be acceptible.
+although in practice port 1-1023 seems to be acceptable.
 <p>
-If interoperability with existing print spoolers is not desired,
+If inter-operability with non-LPRng print spoolers is not desired,
 then it is <it/trivial/
 to configure LPRng using the <tt/lpd.conf/
 file or by modifying the compile time
@@ -1343,7 +1424,7 @@ you will need to locate the <tt>/etc/rc</tt> startup files
 that start system services.
 During system startup,
 a set of shell scripts stored in the <tt>/etc/rc.d</tt>
-diretories are executed.
+directories are executed.
 The individual startupfile files are usually links to a
 common one in the <tt>/etc/init.d</tt> directory.
 You first need to find the files containing the startup commands.
@@ -1488,6 +1569,11 @@ SUN # nlsadmin -r lp tcp
 Once you disable this,
 you should try to reconnect to port 515.  If you still cannot,
 then you have a problem  and need to reboot once more.
+<p>
+You might also want to run
+<tt>pmadm -l</tt> and if you see anything other than zsmon stuff (e.g. lp
+stuff is there), then use <tt>pmadm -r </tt>to remove it.
+See the man page for details.
 <sect1>Initial System Testing
 <p>
 We will now run the <tt/lpd/ executable in the
@@ -1521,7 +1607,7 @@ If you get the above error message,
 then you have either not killed off other the running <tt/lpd/ server
 or you are not starting the <tt/lpd/ server as ROOT.
 This is the most common error during setup.
-Correct the problem and then restart the server if neccessary.
+Correct the problem and then restart the server if necessary.
 You should see the output indicated below:
 <tscreen>
 <verb>
@@ -1653,7 +1739,7 @@ This can be done by using symbolic links or copying the programs.
 <p>
 Note that many of the <tt/vintage/ applications have fully qualified
 paths to the <tt/lp/ and <tt/lpstat/ executables,
-so it will be nessary to copy them to the original program locations.
+so it will be necessary to copy them to the original program locations.
 <tscreen>
 <verb>
 # original - /usr/bin/lp
@@ -1712,7 +1798,7 @@ to check to see if the <tt>lpd</tt> server is active.
 </item>
 </enum>
 <p>
-James P. Dugal <tt>&lt;jpd@usl.ed&gt;</tt> has also makde the following
+James P. Dugal <tt>&lt;jpd@usl.ed&gt;</tt> has also made the following
 suggestions as well.
 <tscreen>
 <verb>
@@ -1750,7 +1836,7 @@ Christopher Hylands, Ptolemy Project Manager
 of the University of California.
 <p>
 The Sun Newsprint printer is actually
-an OEM version of the  Textronix PhaserII;
+an OEM version of the  Tektronix PhaserII;
 Sun Microsystems appears to have dropped support for Newsprint,
 and the recommended migration path is to buy a PostScript printer.
 If you want more information on using the Newsprint system,
@@ -1758,8 +1844,8 @@ notes are available via
 <tt>http://ptolemy.eecs.berkeley.edu/~cxh/lprng.html</tt>.
 <p>
 Looking through the mailing list logs, it looks like everyone was
-having a hard time getting lprng to work with Sun's braindead
-newsprinters.  I tried using ghostscript, but the fonts were, IMHO,
+having a hard time getting lprng to work with Sun's brain-dead
+newsprinters.  I tried using GhostScript, but the fonts were, IMHO,
 ugly, so I spent a little time getting the newsprint fonts to work.
 <p>
 The key thing was to grab the file
@@ -1798,12 +1884,12 @@ The printcap entry looks like:
 <tscreen>
 <verb>
 sp524|524:
-    :mx#0:sf:sh:sb:
-    :lp=:rm=doppler:rp=xsp524:mx#0:
+    :mx=0:sf:sh:sb:
+    :lp=:rm=doppler:rp=xsp524:
     :sd=/var/spool/lpd/sp524d:
     :lf=/var/spool/lpd/sp524d/log:
 xsp524|Sun SPARCprinter NeWSprint printer:
-    :mx#0:sf:sb:sh:rs:
+    :mx=0:sf:sb:sh:rs:
     :lp=/dev/lpvi0:
     :sd=/etc/lp/printers/xsp524:
     :lf=/etc/lp/printers/xsp524/log:
@@ -1915,7 +2001,7 @@ section for details on how to install LPRng and
 deactivate the existing print support.
 <p>
 You may need to update the printcap file and filters.
-See <ref id="printcapref" name="Using the Princap Database">
+See <ref id="printcapref" name="Using the Printcap Database">
 for details.
 <sect1>AIX
 <p>
@@ -2013,7 +2099,7 @@ Printer/Plotter Interface: parallel
 Parent Adapter:            ppa0 Available
 </verb>
 </tscreen>
-Now define the characteristictics of the device:
+Now define the characteristics of the device:
 <tscreen>
 <verb>
 Port Number: p
@@ -2029,7 +2115,7 @@ Send all characters to printer UNMODIFIED   no
 and select <tt>yes</tt>! We have had a lot of trouble with
 <tt>no</tt>.  This is very important! Expect erroneous output if
 you choose <tt>no</tt>. If you have already created a device
-file, change the characteristictics! SMIT's fast path is <tt>smit
+file, change the characteristics! SMIT's fast path is <tt>smit
 chdev</tt>.
 <p>
 Finally remove all AIX printing commands like <tt>qprt</tt>,
@@ -2039,11 +2125,11 @@ Finally remove all AIX printing commands like <tt>qprt</tt>,
 you want to use the general queueing facility.
 <p>
 Now you can start your new <tt>lpd</tt>.
-<sect1>Appletalk Support
+<sect1>AppleTalk Support
 <p>
 Netatalk is used to communicate from TCP/IP to
-Appletalk printers and vice versa.
-The netalk distribution FAQ is at:
+AppleTalk printers and vice versa.
+The Netatalk distribution FAQ is at:
 <p>
 <htmlurl url="http://www.umich.edu/~rsug/netatalk" name="http://www.umich.edu/~rsug/netatalk">
 <p>
@@ -2075,7 +2161,7 @@ Edan Idzerda    <edan@mtu.edu>
 System Administrator -- Michigan Technological University, Houghton MI USA
 </verb>
 </tscreen>
-<sect1>LPRng to Appletalk Printing
+<sect1>LPRng to AppleTalk Printing
 <p>
 The netatalk package comes with a PostScript filter called <tt>psf</tt>.  After
 compilation, it is in (e.g.) <tt>netatalk-1.4b2/etc/psf</tt> and will be installed
@@ -2146,18 +2232,10 @@ Lab Engineer, CS Department
 University of Tennessee, Knoxville                   
 </verb>
 </tscreen>
-<sect1>SAMBA Support
+<sect1>SAMBA, SMB and LPRng
 <label id="smb">
 <p>
-From the
-<htmlurl url="http://www.samba.org" name="http://www.samba.org">
-Web Site.
-<p>
-<sect2>What is SMB
-<p>
-This is a big question.
-<p>
-The very short answer is that it is the protocol by which a lot of
+SMB is the protocol by which a lot of
 PC-related machines share files and printers and other information
 such as lists of available files and printers. Operating systems that
 support this natively include Windows NT, OS/2, and Linux and add on
@@ -2166,96 +2244,71 @@ VMS, Unix of all kinds, MVS, and more. There is no reason why Apple
 Macs and indeed any Web browser should not be able to speak this
 protocol, and current development (in which the Samba team is heavily
 involved) is aimed at exactly that. Alternatives to SMB include
-Netware, NFS, Appletalk, Banyan Vines, Decnet etc; many of these have
+Netware, NFS, AppleTalk, Banyan Vines, Decnet etc; many of these have
 advantages but none are both public specifications and widely
 implemented in desktop machines by default.
 <p>
-The Common Internet Filesystem is what the new SMB initiative is
-called. For details watch
+SAMBA is a package that supports the SMB protocol and provides
+a simple and easy way to import and export file systems and printer
+facilities.
+The web site for SAMBA is
 <htmlurl url="http://www.samba.org" name="http://www.samba.org">.
-<p>
-<bf>WHAT CAN SAMBA DO?</bf>
-<p>
-Here is a very short list of what samba includes, and what it does.
-<itemize>
-<item> a SMB server, to provide Windows NT and LAN Manager-style file and print
-services to SMB clients such as Windows 95, Warp Server, smbfs and others.
-<item> a Netbios (rfc1001/1002) nameserver, which among other things gives
-browsing support. Samba can be the master browser on your LAN if you wish.
-<item> a ftp-like SMB client so you can access PC resources (disks and
-printers) from unix, Netware and other operating systems
-<item> a tar extension to the client for backing up PCs
-</itemize>
-<p>
-For a much better overview have a look at the web site at
-<htmlurl url="http://www.samba.org" name="http://www.samba.org">
-and browse the user survey.
-<p>
-Related packages include:
-<itemize>
-<item> smbfs, a Linux-only filesystem allowing you to mount remote SMB
-filesystems from PCs on your Linux box. This is included as standard with
-Linux 2.0 and later.
-<item> tcpdump-smb, a extension to tcpdump to allow you to investigate SMB
-networking problems over netbeui and tcp/ip.
-<item> smblib, a library of smb functions which are designed to make it
-easy to smb-ise any particular application.
-</itemize>
-<p>
-<bf>FTP SITE and WEB SITE</bf>
-<p>
-The main anonymous ftp and web site for this software is found using
-<htmlurl url="http://www.samba.org" name="http://www.samba.org">.
-<p>
-As well as general information and documentation, this also has searchable
-archives of the mailing list and a user survey that shows who else is using
-this package. Have you registered with the survey yet? :-)
-<sect2>Samba and LPRng
 <p>
 The SAMBA code is very easy to configure.  See the SAMBA
-documentation for details,  but you only need to modify
-the samba.conf file and put in the pathnames of the LPRng
-facilities.  The following is a sample.
-<p>
+<tt>doc/text/Printing.txt</tt> and related documentation for details.
+In the
+<tt/samba.conf/ file
+<tt/[global]/ section you specify the
+<tt/print/, <tt/lpq/, and <tt/lprm/ commands to be used,
+and in the <tt/[printing]/ section the location
+of a temporary directory to hold print jobs when they are submitted.
 <tscreen>
 <verb>
-From: Sascha Ottolski <alzhimer@cs.tu-berlin.de>
-Subject: Re: [LPRng] lprng-3.2.6 and smb on Linux
-webnut@conc.tds.net said:
-
- I have samba sending print from Win95 machines to LPRng.  The key to
- making it work is in the samba.conf file in the [global] section:
-
-[global]
+[printers]
+    path = /tmp
+    guest ok = no
+    print ok = yes
     printing = lprng
-    print command = /usr/local/bin/lpr  -P%p %s -r
+    load printers = yes 
+    printcap name = /etc/printcap
+    print command = /usr/local/bin/lpr  -P%p -r %s
     lpq command   = /usr/local/bin/lpq  -P%p
     lprm command  = /usr/local/bin/lprm -P%p %j
-    printcap name = /etc/printcap
-    load printers = no 
-[printers]
-   comment = All Printers
-   path = /tmp
-   browseable = no
-   printable = yes
-   guest ok = no
-   writable = no
-   create mode = 0700
-
-Note: the path= value specifies the spool directory where
-the print files are temporarily stored.  This should NOT
-be the LPRng spool directory,  but some other directory that
-Samba has write permissions for.
-</verb>
-</tscreen>
-<tscreen>
-<verb>
-From: "Pascal A. Dupuis" <dupuis@lei.ucl.ac.be>
-Subject: Re: LPRng-3.2.10 and SAMBA
+    lppause command = lpc hold %p %j
+    lpresume command = lpc release %p %j
+    queuepause command = lpc -P%p stop
+    queueresume command = lpc -P%p start
+	#
+    # alternative to allow userid to be specified as well
+	#
+    # You will have to add the samba UID to the 'allow_user_setting'
+    #   option in the /etc/lpd.conf file.
+    # WARNING: the %U is the name the user requests.  If you have
+	# 'guest' printer use,  then you should be aware that this
+	# will allow anybody to impersonate a another user,  and they will
+	# be able to execute the various LPRng commands as that user.
+	#
+#   print command = /usr/local/bin/lpr -U%U -P%p -r %s
+#   lprm command  = /usr/local/bin/lprm -P%p -U%U %j
+#   lppause command = lpc -U%U hold %p %j
+#   lpresume command = lpc -U%U release %p %j
+#   queuepause command = lpc -U%U -P%p stop
+#   queueresume command = lpc -U%U -P%p start
 </verb>
 </tscreen>
 <p>
-I include the smbprint script used to send stdin to a NetBEUI printer.
+The path= value specifies a directory where
+the print files are temporarily stored.  This must NOT
+be an LPRng printer spool directory,  but some other directory that
+Samba has write permissions for.
+<p>
+If you plan to use SAMBA and LPRng,
+then you should use the old BSD format for the printcap files,
+i.e.- using the <tt/\/ line continuation indicator.
+<sect1> Printing to a NetBEUI Printer
+<p>
+You can use the SAMBA smprint script to
+send a print job to an SMB client.
 <tscreen>
 <verb>
 #!/bin/sh -x
@@ -2286,19 +2339,30 @@ I include the smbprint script used to send stdin to a NetBEUI printer.
 # Should read the following variables set in the config file:
 #   server, service, password
 config_file=.config
-eval `cat $config_file`
-# echo "server $server, service $service" 2>&1
-(
+eval `/bin/cat $config_file`
+# echo "server $server, service $service" 1>&2
 # NOTE You may wish to add the line `echo translate' if you want automatic
 # CR/LF translation when printing.
-#       echo translate
+(
+#   echo translate
     echo "print -"
-    cat
+    /bin/cat
 ) | /usr/local/bin/smbclient "\\\\$server\\$service" \
-   $password -U $server -N -P
-# comment preceeding line and uncomment following 
-# to just test for correct filter working
-#) | cat > /dev/null
+   "$password" -U "$server" -N -P 1>&2
+</verb>
+</tscreen>
+<p>
+If the above script was in <tt>/usr/local/lib/filters/smbprint</tt>,
+the printcap entry for this printer would be:
+<tscreen>
+<verb>
+pauls_pc:
+  :sd=/var/spool/lpd/%P
+  # we filter the output
+  :lp=|/usr/local/lib/filters/smbprint
+  # you can add filters if you want to do specific actions
+  :ifhp=model=hp4
+  if=/usr/local/lib/filters/ifhp
 </verb>
 </tscreen>
 <sect1>Printer Specific notes
@@ -2311,7 +2375,7 @@ and applications.
 <tscreen>
 <verb>
 From: jarausch@igpm.rwth-aachen.de (Helmut Jarausch)
-Subject: Re: Using gs (ghostscript) as a filter? 
+Subject: Re: Using gs (GhostScript) as a filter? 
 To: lprng@iona.com
 Cc: Rick Gaine <rgaine@nbcs.rutgers.edu>
 Sender: majordomo-owner@iona.com
@@ -2321,8 +2385,8 @@ Reply-To: lprng@iona.com
 >> 
 >> I would like to use LPRng 3.1.4 with an HP LaserJet 4P.  I'd like to be
 >> able to use gs to convert PostScript files so that I can print them on my
->> HP 4P.  Can I do this with LPRng?  If so, could someone semd me a printcap
->> entry?  I'd appreciate it.  I am not sure how I will be cconnecting the
+>> HP 4P.  Can I do this with LPRng?  If so, could someone send me a printcap
+>> entry?  I'd appreciate it.  I am not sure how I will be connecting the
 >> printer yet, but I am thinking either serial or network.  Probably serial
 >> though.  Thanks for any help.
 </verb>
@@ -2333,7 +2397,7 @@ This printcap works for my Deskjet:
 <verb>
 djps
     :cm=Local Deskjet(GhostScript)
-    :sd=/var/spool/djps:sf:sh:mx#0
+    :sd=/var/spool/djps:sf:sh:mx=0
     :lp=/dev/plp
     :if=/usr/local/bin/LPRng/ps_to_deskjet:
 </verb>
@@ -2362,7 +2426,7 @@ D 52056 Aachen, Germany
 <verb>
 > From majordomo-owner@iona.com Mon Aug 31 11:17:26 1998
 > To: lprng@lprng.org
-> Subject: [LPRng] problems printing PS-level2 jobs on LJIIIsi's...
+> Subject: [LPRng] problems printing PS-level2 jobs on LjIIsi's...
 > Date: Mon, 31 Aug 1998 15:06:22 -0400
 > From: "John Saroglou" <johny@yorku.ca>
 >
@@ -2386,11 +2450,11 @@ PostScript should produce only PS level 1.
 <p>
 Beware: latest version of Adobe Windows PS driver produces *ONLY* PS
 level 2.
-So if you have (or receive) level 2 files, read them using ghostscript
+So if you have (or receive) level 2 files, read them using GhostScript
 and print a screen dump :-) or as a bitmap. 
 <p>
 You can also convert them into PDF (using either Adobe distiller or
-ghostscript ps2pdf) then use <it/acroread/ to print the result.
+GhostScript's ps2pdf) then use <it/acroread/ to print the result.
 <it/Acroread/ can
 produce either level 1 or level 2 PostScript. THE definite solution!
 <p>
@@ -2615,7 +2679,7 @@ authentication-trap: on
 # include the kernel (LOG_KERN), the mail system (LOG_MAIL), and the spooling
 # system (LOG_LPR).  The card only allows its syslog facility to be configured
 # to one of the local user values (LOG_LOCAL0 through LOG_LOCAL7).  The
-# selectable option strings, local0 through local7 (configured to LOG_LOCAL0
+# selectible option strings, local0 through local7 (configured to LOG_LOCAL0
 # through LOG_LOCAL7, respectively) are case insensitive.  The default
 # syslog-facility for the card is LOG_LPR.
 
@@ -3173,7 +3237,7 @@ about the ORDER the fields can appear.
 <p>
 LPRng quite happily will accept jobs from poor or nonconforming RFC1179
 spooler programs,
-and fix them up to be comformant.
+and fix them up to be conformant.
 <p>
 If you are sending jobs to one of a non-conforming spooler,
 you can force LPRng to send jobs with only the fields described
@@ -3413,7 +3477,7 @@ values set in the <tt>/etc/lpd.conf</tt> file or by the compile time defaults.
 <p>
 Using the fallback values is usually not a desirable event and may indicate
 that you have a misconfigured host, so the fallback values are usually set
-by administrators to <tt/missingprinter@localhost/ to provoke an annonying message for users.
+by administrators to <tt/missingprinter@localhost/ to provoke an annoying message for users.
 <sect2>LPD Default Printer
 <p>
 For completeness,
@@ -3637,7 +3701,7 @@ lp2: :lp=pr@10.0.0.1:client
 <p>
 Luckily, LPRng ignores empty options like <tt/:&nbsp;:/.
 While it is strongly recommended that <tt/\/
-be avoided it may be necessary for compatiblitye with other system utilities.
+be avoided it may be necessary for compatibility with other system utilities.
 <item>
 The <tt/lp=pr@10.0.0.1/ option is an alternate way to
 specify a remote queue and server.
@@ -3707,7 +3771,7 @@ Options used:
 <item> <tt>cm=</tt><em>comment for status</em>
 <item> <tt>if=</tt><em>default job file filter </em>
 <item> <tt>lf=</tt><em>log file </em>
-<item> <tt>mx#</tt><em>maximum job size</em>
+<item> <tt>mx=</tt><em>maximum job size</em>
 <item> <tt>lp=</tt><em>output device</em>
 <item> <tt>sd=</tt><em>spool directory file </em>
 <item> <tt>sh</tt><em>&nbsp;&nbsp;suppress headers (banners) </em>
@@ -3731,7 +3795,7 @@ lp1|printer
   :sd=/var/spool/lpd/lp1
   :lf=log:af=acct
   :if=/usr/local/sbin/lpf
-  :mx#0:sh:sf
+  :mx=0:sh:sf
 </verb>
 </tscreen>
 <p>
@@ -3790,7 +3854,20 @@ form feeds between the files of a multi-file print job.
 </enum>
 <sect1>The Printcap Parsing Rules
 <label id="printcapparse">
+<label id="server">
+<label id="client">
+<label id="tc">
+<label id="oh">
 <p>
+Options used:
+<itemize>
+<item> <tt>client</tt><em>&nbsp;&nbsp; printcap entry valid only for client programs </em>
+<item> <tt>oh</tt><em>&nbsp;&nbsp; printcap entry valid only on these hosts </em>
+<item> <tt>server</tt><em>&nbsp;&nbsp; printcap entry valid only for lpd server </em>
+<item> <tt>tc</tt><em>&nbsp;&nbsp; add named printcap entry contents </em>
+</itemize>
+<p>
+
 In this section,
 we will discuss the remaining tricky parts of the LPRng printcap
 database:
@@ -3845,7 +3922,7 @@ will override the ones from the <tt/tc/ included entries.
 Finally,
 each string printcap option with a <it/%X/ value
 has <it/%X/ replaced by the following values.
-Unspecifed values will not be modified.
+Unspecified values will not be modified.
 <tscreen>
 <verb>
 %P           printcap name
@@ -3874,8 +3951,8 @@ Here is an example:
 <tscreen>
 <verb>
 # seen by both client and server
-lp1:lp=lp@pr1:mx#100
-lp1:sd=/usr/local/spool/lp1:mx#0
+lp1:lp=lp@pr1:mx=100
+lp1:sd=/usr/local/spool/lp1:mx=0
 # seen only by client
 lp2:lp=lp@pr2:client
 # seen only by server
@@ -3897,7 +3974,7 @@ both client and server will have:
 <tscreen>
 <verb>
 lp1:lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 </verb>
 </tscreen>
@@ -3910,7 +3987,7 @@ Thus, the LPRng clients will see:
 <verb>
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :client
@@ -3922,7 +3999,7 @@ and the server will see:
 <verb>
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :lp=/dev/lp
@@ -3952,7 +4029,7 @@ For example:
 <verb>
 .hp:
   :sd=/usr/local/spool/%P
-  :mx#0:sf:sh
+  :mx=0:sf:sh
 hp1:tc=.hp,.filter
   :lp=lp@10.0.0.1
 hp2:tc=.hp,.filter
@@ -3964,7 +4041,7 @@ hp2:tc=.hp,.filter
 </tscreen>
 <enum>
 <item>
-The <tt/.hp/ and <tt/@filter/ printcap enties will not be used as
+The <tt/.hp/ and <tt/.filter/ printcap entities will not be used as
 real printcaps by LPRng,
 but can be referenced by the <tt/tc/ printcap include facility.
 After <tt/tc/ include processing is completed,
@@ -3975,15 +4052,15 @@ hp1
   :lp=lp@10.0.0.1
   :if=/usr/local/bin/ifhp
   :lpd_bounce
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/%P
   :sf
   :sh
 hp2
-  :lp=lp@10.0.0.1
+  :lp=lp@10.0.0.2
   :if=/usr/local/bin/ifhp
   :lpd_bounce
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/%P
   :sf
   :sh
@@ -3997,22 +4074,22 @@ so we would have:
 <verb>
 hp1
   :lp=lp@10.0.0.1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/hp1
   :sf
   :sh
 hp2
-  :lp=lp@10.0.0.1
-  :mx#0
-  :sd=/usr/local/spool/hp1
+  :lp=lp@10.0.0.2
+  :mx=0
+  :sd=/usr/local/spool/hp2
   :sf
   :sh
 </verb>
 </tscreen>
 </enum>
 <p>
-When administring a large number of printers over a large area,
-it is sometimes desireable to have a <it/default/ printer for
+When administering a large number of printers over a large area,
+it is sometimes desirable to have a <it/default/ printer for
 each host.
 This default printer may be different for each host,
 and can be selected by using the <tt/oh/ entry.
@@ -4048,7 +4125,7 @@ as the <tt/*.admin.org.com/ glob pattern would match our host name.
 if our host name is
 <tt/booster.dev.org.com/ and our IP address is 10.2.0.1,
 then we would use <tt/lp=pr1@server1/,
-as the <tt>10.0.0.0/16</tt> ip address would match.
+as the <tt>10.2.0.0/16</tt> ip address would be in the specified address range.
 </enum>
 <sect1>Displaying Printcap Information
 <p>
@@ -4068,7 +4145,7 @@ For example:
 #> lpc client all
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :client
@@ -4085,7 +4162,7 @@ Options used:
 </itemize>
 <p>
 You can have the <tt/lpd/ server forward jobs to another server
-or print which supports the RFC1179 procol by using the
+or print which supports the RFC1179 protocol by using the
 following printcap:
 <tscreen>
 <verb>
@@ -4161,7 +4238,7 @@ See <ref id="ifhp" name="IFHP Filter"> for details.
 The <tt/ifhp/ filter will perform the appropriate printer resets,
 translate job information,
 and ensure correct printer operation in the presence of errors.
-It will also produce voluminous error messages and logging information.
+It will also produce voluminous error messages and status information.
 </enum>
 <sect1>Parallel Printer
 <p>
@@ -4223,7 +4300,6 @@ This entry will specify that the printer is an HP4,
 and that no status information is available.
 This is usually the case with a parallel port.
 <sect1>A serial printer queue
-<label id="rw">
 <label id="br">
 <label id="stty">
 <p>
@@ -4245,7 +4321,7 @@ lp2
   :sd=/var/spool/lpd/lp2
   :stty=9600 -echo -crmod -raw -oddp -evenp pass8 cbreak ixon
   :if=/usr/local/sbin/lpf
-  :mx#0:sh
+  :mx=0:sh
 </verb>
 </tscreen>
 <p>
@@ -4254,7 +4330,7 @@ Let's examine the new options:
 <item>
 A serial port is usually <em/bidirectional/,
 and printers will report errors back to the host computer.
-The <tt/rw/ flag will cause the printer port to be openned 
+The <tt/rw/ flag will cause the printer port to be opened 
 <tt/read-write/,
 and the <tt/lpd/ server will report status information.
 <item>
@@ -4326,7 +4402,6 @@ overriding the common <tt/lp/ entries.
 <label id="lpdbounce">
 <label id="bqformat">
 <label id="bouncequeues">
-<label id="translateformat">
 <p>
 Options used:
 <itemize>
@@ -4361,9 +4436,9 @@ processing.
 bounce:lp=bounce@bouncehost
 bounce:server
     :lp=lp@remote
-	:lpd_bounce
-	# LEGACY
-	#bq=lp@remote
+    :lpd_bounce
+    # LEGACY
+    #bq=lp@remote
     :sd=/usr/spool/lpd/%P
     :if=/usr/local/bin/lpf
     :vf=/usr/local/bin/lpf
@@ -4410,7 +4485,7 @@ Options used:
 </itemize>
 <p>
 A rarely encountered problem is when a job is printed with
-one format but for compatiblity needs to be processed with another.
+one format but for compatibility needs to be processed with another.
 The simple
 <tt>translate_format=vlxf</tt>
 option will rename format
@@ -4418,7 +4493,7 @@ option will rename format
 files to
 <tt>f</tt> format.
 <p>
-This can be used to resolve problems with PC based sofware,
+This can be used to resolve problems with PC based software,
 which spools jobs using the <tt/v/ format.
 Unfortunately,
 many RCF1179 print spoolers do not understand the
@@ -4584,7 +4659,7 @@ and loop over all the names in the list looking for the "job" that you are inter
 If there is no
 <tt>destinations</tt>
 information, the
-<tt>bq</tt> information will be usued.
+<tt>bq</tt> information will be used.
 <p>
 Lars Anderson &lt;<tt>lsa@business.auc.dk</tt>&gt; supplied this example
 (slightly edited):
@@ -4594,16 +4669,16 @@ This script will attempt to distribute print jobs evenly on
 <p>
 <tscreen>
 <verb>
-hpl5bounce|for PLP/LPRng software - network based HP Jetdirect card:
+hpl5bounce|for PLP/LPRng software - network based HP JetDirect card:
         :lpd_bounce
         #default
         :rp=hpl5b
         :destinations=hp5a,hp5b
         :router=/usr/local/admscripts/bouncer.pl
-hpl5a|for PLP/LPRng software - network based HP Jetdirect card:
+hpl5a|for PLP/LPRng software - network based HP JetDirect card:
         :lp=hpl5a%9100
         :tc=.hplcommon
-hpl5b|for PLP/LPRng software - network based HP Jetdirect card:
+hpl5b|for PLP/LPRng software - network based HP JetDirect card:
         :lp=hpl5b%9100
         :tc=.hplcommon
 # Common settings
@@ -4622,7 +4697,7 @@ The perl script <tt>bouncer.pl</tt> looks like this:
 <verb>
 #!/usr/bin/perl
 #
-# Script for printjob loadsharing
+# Script for printjob load sharing
 #   This is static, not dynamic balancing
 #
 # Printqueues to check
@@ -4703,7 +4778,7 @@ laser|pi|Room 1359 LaserWriters
     :sd=/usr/spool/laser
 .commonlaser
     :sd=/usr/spool/%P
-    :rw:mx#0:sh
+    :rw:mx=0:sh
     :lf=/usr/adm/laser1-log
     :if=/s/lprng/lib/filters/cappsif
     :of=/s/lprng/depend/cap/bin/papof
@@ -4759,7 +4834,7 @@ server to determine if the spool queue device is available.
 <p>
 The program is invoked with the standard filter options,
 STDIN and STDOUT connected to <tt>/dev/null</tt>,
-and STDERR to the error log.
+and STDERR to the status file.
 <p>
 The program should make a connection to the remote device or system
 and should determine that the remote device is available for use,
@@ -5091,7 +5166,7 @@ lp23a|lp23|lp|main printhost printer - KB, EUCS front Door:\
 lplabel|lpl|TEST - Labels printer:
         :lp=:rm=printhost:rp=lplabel:
         :sd=/usr/spool/lpr/lplabel:
-        :rg=lpadm:mx#1:
+        :rg=lpadm:mx=1:
 </verb>
 </tscreen>
 <p>
@@ -5179,7 +5254,7 @@ lp1
  :server:oh=servername
  :sd=/var/spool/lpd/lp1
  :lp=/dev/lp1
- :sh:mx#0
+ :sh:mx=0
 ---------- end of /etc/printcap snippet
 </verb>
 </tscreen>
@@ -5282,7 +5357,7 @@ The result of processing the sample printcap file is:
 <tscreen>
 <verb>
 lp1_1 lp1:lp=lp1@server
-lp1_2 lp1:server:oh=servername:sd=/var/spool/lpd/lp1:lp=/dev/lp1:sh:mx#0
+lp1_2 lp1:server:oh=servername:sd=/var/spool/lpd/lp1:lp=/dev/lp1:sh:mx=0
 lp2_1 lp2:lp=lp2@server
 all_1 all:all=lp1,lp2
 </verb>
@@ -5427,29 +5502,44 @@ files,
 etc.,
 for a print queue is stored in the spool directory.
 <sect1>Queue Lock File
+<label id="queue_lock_file">
+<p>
+<itemize>
+<item> <tt>spool_lock_file</tt><em>&nbsp;&nbsp;spool queue lock file - default %P</em>
+</itemize>
 <p>
 When the <tt>lpd</tt> server starts printing,
 it will fork individual worker processes to service each queue.
 To prevent multiple processes from working on the same queue,
-a printer lock file with the cannonical spool queue name is used.
+a printer lock file specified by the
+<tt/queue_lock_file/ option
+(default <tt/%P/ - the %P is expanded to the print queue name)
+is used.
 In our example,
 the lock file would be:
 <tt>/var/lpd/pr/pr</tt>.
 <p>
 The process ID of the currently active printer is stored in the lock file.
 By reading the lock file and testing to see if the process is still active,
-programs such as <tt>lpq</tt> can determine queue activity.
+programs such as <tt/lpq/ can determine queue activity.
 <p>
 Similarly,
 the worker process may need to create other processes to assist it.
 These in turn will create lock or temporary files in the spool directory
 as well.
 <sect1>Spool Control File
+<label id="queue_control_file">
+<p>
+<itemize>
+<item> <tt>spool_control_file</tt><em>&nbsp;&nbsp;spool queue control file - default control.%P</em>
+</itemize>
 <p>
 The spool control file is used to control the operations of the
 spooler,
 and is in the spool or control directory.
-The file name has the form <tt>control.<em>printer</em></tt>;
+The file name specified by the
+<tt/queue_control_file/ option
+(default <tt/control.%P/ - the %P is expanded to the print queue name);
 in our example,
 the control file would be:
 <tt>/var/lpd/pr/control.pr</tt>.
@@ -5495,7 +5585,7 @@ The <tt>printing_disabled</tt> and <tt>spooling_disabled</tt>
 are managed using the <tt>lpc start</tt>, <tt>lpc stop</tt>,
 <tt>lpc enable</tt> and <tt>lpc disable</tt>
 commands.
-Similary,
+Similarly,
 <tt>holdall</tt> is enabled and disabled by <tt>holdall</tt> and
 <tt>noholdall</tt>
 commands respectively.
@@ -5533,12 +5623,14 @@ This facility is for diagnostic purposes only.
 <sect1>Log and Status Files
 <label id="lf">
 <label id="ps">
+<label id="short_status_date">
 <label id="maxstatusline">
 <label id="maxstatussize">
 <label id="minstatussize">
 <label id="maxlogfilesize">
 <label id="minlogfilesize">
 <label id="createfiles">
+<label id="queue_status_file">
 <p>
 <itemize>
 <item> <tt>create_files</tt><em>&nbsp;&nbsp;create log, accounting and status files</em>
@@ -5549,12 +5641,15 @@ This facility is for diagnostic purposes only.
 <item> <tt>max_status_size#</tt><em>&nbsp;&nbsp;maximum status file size (Kbytes)</em>
 <item> <tt>min_status_size#</tt><em>&nbsp;&nbsp;minimum status file size (Kbytes)</em>
 <item> <tt>ps=</tt><em>filter status file name (default: status)</em>
+<item> <tt>queue_status_file=</tt><em>queue status file (default: status.%P)</em>
+<item> <tt>short_status_date=</tt><em>display short (hh:mm) timestamp (default: true)</em>
 </itemize>
 <p>
 During operation,
 the <tt>lpd</tt> server records the current printing operations
-in the <tt>status.<em>printer</em></tt> file.
-For our example, this would be
+in the spool queue status file specified by the <tt/spool_status_file/ option
+(default <tt/status.%P/ - the %P is expanded to the print queue name);
+for our example, this would be
 <tt>/var/lpd/pr/status.pr</tt>.
 In order to prevent this file from growing too large,
 the server will periodically truncate the file.
@@ -5594,14 +5689,25 @@ option
 (see
 <ref id="filtercmd" name="Filter Command Line Flags">).
 <p>
-The log file (<tt>lf</tt>) is opened and used as the
-STDERR output for filters and debugging information from
-the <tt>lpd</tt> server.
+The STDERR output for filters is put into the printer
+status file.
+This allows the filter to produce informative messages that can be displayed
+as part of the user status.
+In addition,
+a separate status file specified by the
+<tt>ps</tt> (Printer Status) can be used as well.
+This file is 
+<em>not</em>
+truncated by the LPRng system.
 <p>
 When reporting status information,
 the length of line returned can be a problem.
 The <tt>max_status_line#79</tt> option restricts the status line
 to a maximum of 79 characters.
+<p>
+The <tt>short_status_date</tt> (default is true)
+option causes short (hour:minute) timestamps to be displayed
+on status queries.
 <sect1>Job Files
 <p>
 <itemize>
@@ -6289,7 +6395,7 @@ for an example.
 <p>
 By default,
 LPRng will brutally convert a non-conforming RFC1179 control file
-into one that is acceptible to most,
+into one that is acceptable to most,
 if not all,
 existing RFC1179 implementation.
 <p>
@@ -6515,6 +6621,8 @@ In future versions,  this may not be necessary.
 <p>
 The <tt>lockfile</tt> specifies the location of the
 lock file used by the <tt>lpd</tt> server.
+This file has the <tt/lpd_port/ value appended to form a unique
+lock file name.
 <p>
 The <tt>spool_dir_perms</tt> and <tt>spool_file_perms</tt>
 (default 0700 and 0600 respectively)
@@ -6638,12 +6746,12 @@ Options used:
 In order to be compatible with non-LPRng client programs which
 are totally unpredictable,
 this allows the administrator to specify the format for LPQ
-status when requests arrrive.
+status when requests arrive.
 <p>
 The <tt>force_lpq_status=</tt> specifies a list of formats
 and printers or IP addresses
 for which the <tt>lpd</tt> server will return status
-in the sepcified format.
+in the specified format.
 The entry has the format
 <tt/KEY=list;KEY=list.../ where
 <tt/KEY/ is
@@ -6661,7 +6769,7 @@ will cause hosts whose Fully Qualified Domain Name (FQDN) matches
 <tt>pc*eng.com</tt> or from subnet <tt>130.192.12.0</tt> to get short
 status returned and hosts which match <tt/sun*.eng.com/ get
 long status.
-<sect2>The ignore_requested_user_priority and force_fqdn_host Options
+<sect2>The ignore_requested_user_priority and force_fqdn_hostname Options
 <label id="ignorerequesteduserpriority">
 <label id="forcefqdnhostname">
 <p>
@@ -6680,12 +6788,13 @@ However, the <tt>topq</tt> operation will still be effective.
 <p>
 Similarly,  some print spoolers do not put a FQDN host name in their control file.
 The <tt>force_fqdn_hostname</tt> flag will cause <tt>lpd</tt> to put a FQDN
-host name in.
+host name in the control file.
+This option will assume that the domain is where the connection originated from.
 <sect2>The lpr_bsd Options
 <label id="lprbsd">
 <p>
 This will force the <tt>lpr -m</tt> (send mail to user)
-option not to take an arguement, as in the BSD lpr.
+option not to take an argument, as in the BSD lpr.
 <sect>Job Processing
 <label id="jobsteps">
 <p>
@@ -6809,6 +6918,41 @@ See
 <ref id="accountingserver" name="Accounting Printcap Options">
 for more information on the LPRng accounting support.
 <item>
+<label id="accountstart">
+If <tt>la</tt> (local accounting) is true and we are printing a job
+or <tt>ar</tt> (remote accounting) is true and we are transferring a job,
+the <tt>as</tt> value is examined.
+If it is a filter (program) specification,
+then the program is started with its STDIN attached to
+<tt>/dev/null</tt>, STDOUT will be read by the print spooler,
+STDERR output will be written to the error log,
+and file descriptor 3 output will be appended to the accounting file.
+The lpd program will wait until the accounting filter program terminates,
+and examine the error code for action, as for the filters
+(see
+<ref id="errorcodes" name="errorcodes"> below).
+If the exit status is 0,
+(JSUCC) then the printing process will continue,
+if JHOLD the job will be held,
+if JREMOVE the job will be removed,
+if JFAIL the job processing will terminate with a JFAIL indication,
+otherwise
+the job processing will terminate with a JABORT indication.
+<item>
+If the accounting filter exited with a JSUCC (no error code)
+and the <tt>achk</tt> (accounting check) flag is set, 
+the line read from the accounting filter STDOUT will be examined.
+This line should be
+<tt>accept</tt>,
+<tt>hold</tt>,
+<tt>fail</tt>,
+<tt>remove</tt>,
+otherwise the job processing terminates with a JABORT indication.
+An <tt>accept</tt> will allow the job to be printed,
+<tt>hold</tt> will hold the job,
+<tt>fail</tt> will cause the job to fail,
+<tt>remove</tt> will cause the job to be removed.
+<item>
 If the
 <tt>connect_grace</tt>
 value is non-zero and the server is opening a device or
@@ -6913,28 +7057,6 @@ for details of options passed to the control filter,
 and
 <ref id="errorcodes" name="errorcodes"> for the exit codes of the filter.
 <item>
-<label id="accountstart">
-If <tt>la</tt> (local accounting) is true and we are printing a job
-or <tt>ar</tt> (remote accounting) is true and we are transferring a job,
-the <tt>as</tt> value is examined.
-If it is a filter (program) specification,
-then the program is started with its STDIN attached to
-<tt>/dev/null</tt> and STDOUT to the io_fd,
-STDERR to the error file,
-and file descriptor 3 to the accounting file descriptor af_fd.
-The lpd program will wait until it terminates,
-and examine the error code for action, as for the filters
-(see
-<ref id="errorcodes" name="errorcodes"> below).
-If it is a string,
-then it is interpreted, the escape sequences replaced with the appropriate
-information,  and written to the accounting file.
-<item>
-If the <tt>achk</tt> (accounting check) flag is set, 
-a line is read from the accounting filter af_fd file descriptor.
-This line should be <tt>accept</tt>,
-otherwise the job processing terminates with a JFAIL indication.
-<item>
 If the operation is a job transfer, the operation proceeds as outlined in
 <ref id="rfc1179ref" name="RFC1179">,
 and then the
@@ -6965,6 +7087,7 @@ and written to the of_fd file descriptor.
 <label id="sh">
 <label id="of">
 <label id="bannerprinting">
+<label id="generatebanner">
 <p>
 Options used:
 <itemize>
@@ -6973,11 +7096,70 @@ Options used:
 <item> <tt>bl=</tt><em>Short banner line format</em>
 <item> <tt>bp=</tt><em>Banner generator program</em>
 <item> <tt>bs=</tt><em>Start banner generator</em>
+<item> <tt>generate_banner</tt><em>&nbsp;&nbsp;Generate banner for forwarded jobs</em>
 <item> <tt>hl</tt><em>&nbsp;&nbsp;Banner (header) Last</em>
 <item> <tt>of=</tt><em>Banner and File Separator Filter</em>
 <item> <tt>sb</tt><em>&nbsp;&nbsp;Short banner (default FALSE)</em>
 <item> <tt>sh</tt><em>&nbsp;&nbsp;Suppress header (banners) (default FALSE)</em>
 </itemize>
+<p>
+Banner printing is one of the more complicated configuration options
+of LPRng.
+This is due mainly to historical evolution of the software,
+as well as a lack of a well defined standard for
+filter responsibilities.
+In the original BSD print spoolers,
+the philosophy was that banner printing should be delegated to the
+filters,
+as they were the most aware of the capabilities of the printers.
+This required an
+<em/out of band/
+method to convey banner printing information to the filter,
+and resulted in a complicated interface.
+The original interface was:
+<enum>
+<item>
+The filter doing banner printing was invoked as a special
+<tt/of/ filter,
+or passed a special flag.
+<item>
+The print spooling software would send a special
+<bf>single line</bf>
+of information telling it what the banner information should be.
+Note that this line was never documented except for the source code,
+and was inconsistent from version to version.
+Also,
+there was no indication of what to do with additional lines,
+if any.
+<item>
+The filter would generate the banner,
+discard the line,
+and then pass other lines to the output device.
+</enum>
+<p>
+Adding to the confusion,
+the original print spoolers had a <tt/:sh/ (suppress header or banner)
+flag,
+which was supposed to suppress banner printing.
+It did this by having the print spooler not generate the magic banner
+information line.
+<p>
+A more sophisticated banner printing system would allow the
+print spooler software to generate the banner,
+and would then have the <tt/of/ filter act as a pass through.
+Thus, we need configure the <tt/of/ filter NOT to use the first
+line as banner printing information,
+and to pass through all information to the device.
+<p>
+Complicating this whole mess is the
+<tt/ld/  (leader option)
+and
+<tt/tr/  (trailer option)
+which is a string sent to the output device (<tt/of/ filter)
+when the device (filter) is initialized or terminated.
+This can sometimes be interpreted as the banner line,
+leading to unexpected results.
+<p>
 Sequence of Operations:
 <enum>
 <item>
@@ -6985,56 +7167,80 @@ If the
 <tt>sh</tt> (suppress header) flag is true, no banner is
 printed,
 and the actions in this section are skipped.
+No <it/banner information line/
+is generated for the <tt/of/ filter,
+and no banner printing program is invoked.
+If the is an <tt/of/ filter and if it is expecting such a line
+and you have <tt/ld/ or <tt/tr/ information
+you may get unexpected results
+(actually, catastrophic failure is a better term, but I digress).
 <item>
-If the <tt>hl</tt> (header last) flag is true, the banner is printed at the end
-of the job,
-and the actions in this section are skipped.
+If the <tt>hl</tt> (header last) flag is true the banner is printed at the end
+of the job
+and the actions in this section are done at the end of the job.
 <item>
-If the user does not want banner pages and uses
-<tt/lpr -h /
-then the <tt>L</tt> line in the control file will be missing.
-This is a signal not to print a banner.
+If the user does not want banner pages she can use the
+<tt/lpr -h / option.
+This will cause the <tt/lpr/ program
+to delete the <tt>L</tt> (banner name) line in the control file.
 If there is no <tt/L/ line in the control file
 and
 <tt>ab</tt> (always print a banner) is false
 (the default),
-then no banner is printed.
-If there is no <tt/L/ line and
-<tt>ab</tt> is true, then ANONYMOUS is used.
-<item>
-LPRng generates banners by using
-either a banner printing program specified by <tt/bp/, tt<tt/bs/,
-or <tt/be/ options.
-For historical compatibility,
-if the <tt>sb</tt> flag is set, then the
-<tt>bl</tt>
-(banner line) contents  are sent directly to the of_fd;
-By default the
-<tt>bl</tt> value is:
-<tt>bl=$-'C:$-'n Job: $-'J Date: $-'t</tt>
-(See
-<ref id="filtercmd" name="Filter Command Line Flags">
-for details.)
-This will get translated to:
-<newline>
-<tt>papowell:A Job: file1 file2 Date: Thu Nov 27 23:02:04 PST 1997</tt>
-<item>
+then no banner is printed
+and the other actions in this section are skipped.
 If
-<tt>bs</tt> (start banner) program is specified, then it is used
-to generate a banner,
-otherwise if the
-<tt>bp</tt> (banner) program is specified, then it is used
-to generate a banner.
-If no program is available, we skip the banner generation.
-The banner generator program is started with the normal command line
-flags
+<tt>ab</tt> is true
+and the <tt/L/ line is missing then the <tt/N/ (user login name) is used;
+if it is missing as well,
+then ANONYMOUS is used for the user name.
+<item>
+If a banner printing program is specified by <tt/bp/, tt<tt/bs/,
+or <tt/be/ options,
+then LPRng will invoke the
+program to generate a banner and then send the generated
+banner to the printer
+via the <tt/of/ filter.
+The banner printing program will be invoked using
+the standard filter command line flags
 (see
-<ref id="filtercmd" name="Filter Command Line Flags">),
-with its STDOUT attached to the of_fd descriptor.
-The short banner string described in the previous step is written
-to the STDIN.
-The banner printer is responsible for generating a banner
-appropriate to the printing device.
+<ref id="filtercmd" name="Filter Command Line Flags">
+for details),
+with is STDIN attached to /dev/null
+and STDOUT attached to a file to hold the output banner.
+<item>
+If no banner printing program is specified
+and the
+<tt/sb/ (short banner) option is TRUE (default is true),
+then the <tt/bl=.../ (banner line) option value
+is expanded and sent to the <tt/of_fd/  (<tt/of/ filter or
+device.
+The default <tt>bl</tt> value is:
+<tt>bl=$-'C:$-'n Job: $-'J Date: $-'t</tt>.
+Using our example, this will get translated to:
+<tscreen>
+<verb>
+papowell:A Job: file1 file2 Date: Thu Nov 27 23:02:04 PST 1997
+</verb>
+</tscreen>
+<item>
+If no banner printing program is specified and we have <tt/sb@/
+(no short banner)
+then we skip banner generation,
+i.e. - we do <em/not/ send a banner generation line
+to the output (<tt/of/ filter).
+<item>
+If the queue is a normal forwarding queue,
+then the
+<tt>generate_banner</tt>
+option will invoke the
+<tt/bp/, <tt/bs/ or <tt/be/
+program as appropriate to create a banner page file which is then made the
+first (default) or last (<tt/hl/ flag or <tt/be=.../ present)
+file in a job.
+This option has no effect in other types of queues.
+See the <tt><ref id="translateformat" name="translate&lowbar;format"></tt>
+option as well.
 </enum>
 <sect1>Printing Job Files
 <label id="sendjobrwtimeout">
@@ -7086,8 +7292,11 @@ The filter program is started with an appropriate set of command line options
 (see
 <ref id="filtercmd" name="Filter Command Line Flags">),
 and with its STDOUT attached to the printing device (io_fd),
-STDERR to the log file (<tt>lf</tt>),
-and file descriptor 3 to the accounting fd af_fd.
+STDERR to a pipe which results in the output being written
+to the status file,
+and file descriptor 3 to the accounting file or program.
+If debugging is enabled,
+then the STDERR output is also written to the error log file (lf).
 <item>
 When doing a read/write operation to a device or remote system,
 a timeout can be specified.
@@ -7153,6 +7362,8 @@ rather than start.
 <label id="savewhendone">
 <label id="tr">
 <label id="normalterm">
+<label id="waitforeof">
+<label id="exitlingertimeout">
 <p>
 Options used:
 <itemize>
@@ -7161,6 +7372,8 @@ Options used:
 <item> <tt>tr=</tt><em>Trailer on Close</em>
 <item> <tt>ae=</tt><em>Accounting at end</em>
 <item> <tt>save_when_done</tt><em>&nbsp;&nbsp;Save when done</em>
+<item> <tt>wait_for_eof</tt><em>&nbsp;&nbsp;Wait for EOF before closing device</em>
+<item> <tt>exit_linger_timeout</tt><em>&nbsp;&nbsp;connection linger on close timeout</em>
 </itemize>
 <p>
 Sequence of Operations:
@@ -7187,7 +7400,14 @@ its STDIN is closed,
 and the <tt>lpd</tt> server waits for it to exit.
 The exit status is used as described above.
 <item>
-The device (io_fd) is closed.
+If the device is a socket or network connection,
+the socket linger time is set to
+<tt/job_send_rw_timeout/ value if nonzero or the
+<tt/exit_linger_timeout/ value if nonzero,
+a write <tt/shutdown/ is done,
+and if the <tt/wait_for_eof/ option is true (default)
+then a read is done on the connection until an EOF is found.
+The device (io_fd) is then closed.
 <item>
 The job is marked as completed in the spool queue.
 <item>
@@ -7348,8 +7568,8 @@ being transferred to a printer.
 The filter is executed with STDIN reading from the file to be
 printed
 STDOUT to the printer device or a temporary file.
-STDERR (file handle 2) is redirected to a log file,
-and file handle&nbsp;3 to an accounting file.
+STDERR (file handle 2) is redirected to the status file,
+and file handle&nbsp;3 to an accounting file or program.
 <p>
 A filter can be as simple as a <tt>LF</tt> to <tt>CR/LF</tt>
 translator,
@@ -7583,14 +7803,17 @@ A filter (or program) specification in the LPRng printcap database
 usually has the form:
 <tscreen>
 <verb>
-:option=| [flags] /path [arguments]
-:option=[flags] /path [arguments]
+:option=| [flags] /path [argument | "argument" | 'argument' ]*
+:option=[flags]   /path [argument | "argument" | 'argument' ]*
 </verb>
 </tscreen>
 <p>
 The first case is used where the option value can be a string or filter,
 and the second where a program is always expected.
 The following procedure is used to run a filter program.
+Arguments in single or double quotes are passed as a single value,
+as for a shell.
+No escape (backslash) support is provided.
 <p>
 The sequence of operations to run a filter is as follows:
 <enum>
@@ -8070,14 +8293,14 @@ lp
   :bp=/usr/local/lib/filters/pclbanner
   :of=/usr/local/lib/filters/ifhp
   :if=/usr/local/lib/filters/ifhp
-  :sf:sb
+  :sf
 #
 # for a parallel port printer or when you want VERY fast
 #  throughput, no pagecounts, error messages, etc.  The
 #
 lp
   :ifhp=status@
-  :/usr/local/lib/filters/ifhp -Tstatus@
+  :/usr/local/lib/filters/ifhp
   :sh:sf
 </verb>
 </tscreen>
@@ -8092,7 +8315,7 @@ See the source code in the
 <sect>Permissions and Authentication
 <label id="lpdpermsref">
 <p>
-The contents of the <tt>/etc/lpd.perm</tt> file
+The contents of the <tt>/etc/lpd.perms</tt> file
 is used to specify the restrictions on the use
 of the LPRng software,
 printers,
@@ -8132,8 +8355,8 @@ then the last specified default authorization will be used.
 The sense of a pattern match can be inverted using the NOT keyword.
 For example,
 the rules with
-<tt>ACCEPT NOT USER=john,bill</tt>
-succeeds only if USER is defined and the USER value
+<tt>ACCEPT NOT REMOTEUSER=john,bill</tt>
+succeeds only if the REMOTEUSER value is defined and
 is not <tt>john</tt> or <tt>bill</tt>.
 <p>
 The following patterns and matching are applied.
@@ -8150,11 +8373,13 @@ default result
 @
 <tt>SERVICE</tt>
 |
-lpC Status and User, lpR, lprM, lpQ request
+lpC, lpR, lprM, lpQ requests, and Printing jobs
 @
 <tt>USER</tt>
 |
-user name in print job
+user name in print job.
+This check will always succeed when checking for spool queue permissions,
+and only be done when checking for job permissions.
 @
 <tt>REMOTEUSER</tt>
 |
@@ -8162,7 +8387,9 @@ user making request
 @
 <tt>HOST</tt>
 |
-host name in print job
+host name in print job.
+This check will always succeed when checking for spool queue permissions,
+and only be done when checking for job permissions.
 @
 <tt>REMOTEHOST</tt>
 |
@@ -8171,6 +8398,8 @@ host making request
 <tt>IP</tt>
 |
 IP address and mask of host in print job
+This check will always succeed when checking for spool queue permissions,
+and only be done when checking for job permissions.
 @
 <tt>REMOTEIP</tt>
 |
@@ -8202,7 +8431,8 @@ USER is in the specified group
 @
 <tt>LPC</tt>
 |
-LPC command requested
+LPC command in the LPC request.
+This must be preceeded by SERVICE=C clause.
 @
 <tt>REMOTEGROUP</tt>
 |
@@ -8263,12 +8493,12 @@ then REMOTEUSER is assigned the name.
 If the request contains the name of the printer,
 then PRINTER is assigned the name.
 <item>
-If a print job is being printed,
+If permissions checking is to be done for a particular
+job in a spool queue,
 then the USER, HOST, IP, and PRINTER are set to the
 user name, host, and printer information in the control file for the
 print job.
-To be specific,
-the HOST entry in the control file is used by
+The HOST entry in the control file is used by
 <tt>gethostbyname()</tt> to get the fully qualified domain name of the host.
 The IP value is assigned a 
 <em>set</em> or <em>list</em> of IP addresses that could be
@@ -8290,28 +8520,62 @@ has been authenticated.
 <p>
 When a connection is made to the <tt>lpd</tt> server,
 the originating site's IP address and hostname are determined,
-and a check with <tt>SERVICE=X</tt> is made.
-The REMOTEHOST,
+and a check with <tt>SERVICE=X</tt>
+and valid REMOTEHOST,
 REMOTEIP,
-and PORT will be defined for the purposes of this check.
+and PORT information is done.
 <p>
-If the result is to accept the connection,
-then the request is then read from the connection,
+If the connection was not rejected,
+then the request information is read
 and the
 SERVICE,
-REMOTEUSER and PRINTER
-will be defined.
-A further check is performed to determine if the service request would
-be accepted.
+REMOTEUSER,
+REMOTEHOST,
+REMOTEIP,
+PORT,
+PRINTER,
+and other authentication values will be defined.
+The SERVICE value will be Q, R, M, or C for
+<tt/lpq/,
+<tt/lpr/,
+<tt/lprm/,
+or
+<tt/lpc/ respectively.
+The permissions file will be scanned to determine if the
+request should be immediately discarded based on the print queue
+it is for.
+During this stage of processing,
+permissions checks which require information from jobs in spool queues
+will be ignored and treated as though a match had succeeded.
 <p>
-When performing a service activity and a particular job is to
-be acted on,
+If the request is not rejected,
+then it will be processed or carried out.
+If the request is for an operation on one or more user jobs in
+a spool queue,
+then the spool queue for the jobs are scanned and permissions are
+again checked against individual jobs.
+At this stage in the processing,
 the
-USER, HOST, and other control file information will be available,
-and a further check can be performed.
+USER and
+HOST 
+information obtained from the job file will be used in permissions checking.
+This two levels of checks are necessary in order to allow
+find control over individual jobs and users.
 <p>
-If a rule is specified and the particular value is not defined,
-then a rule will fail to match.
+There is a problem with permissions checking for <tt/lpq/ (SERVICE=Q)
+requests.
+Since the user name is not passed as part of the request,
+it is impossible to use the REMOTEUSER clause to restrict <tt/lpq/
+operations.
+<p>
+The <tt>SERVICE=R</tt> and <tt>SERVICE=P</tt>
+facilities are provided to handle problems with print spoolers that
+do not recognize a <it>lack of permission</it> error code,
+and will indefinately retry sending a job to the <tt>lpd</tt> server.
+If this is the case,
+then the <tt>SERVICE=R</tt> clause can be used to accept jobs,
+and then the <tt>SERVICE=P</tt> clause will cause the <tt>lpd</tt>
+server to remove of the job when it is scheduled for printing.
 <sect1>Match Procedure
 <p>
 <tscreen>
@@ -8404,10 +8668,6 @@ LPQ Status Request
 |
 LPR Job Transfer
 @
-<tt>S</tt>
-|
-LPC Status Request
-@
 <tt>X</tt>
 |
 Connection Request
@@ -8418,9 +8678,10 @@ Connection Request
 Each of the above codes corresponds either directly to the user command,
 or a set of subcommands.
 <p>
-All the LPC subcommands are SERVICE=C;
-status commands such as <tt>lpc status, printcap, active, </tt>
-or <tt>lpd</tt> are SERVICE=S commands as well.
+If you have an LPC request,
+you can add an <tt>LPC=xxx</tt> clause to refine the
+permissions checking to allow or disallow
+<tt/lpc/ commands such as <tt>lpc status, printcap, active, </tt>.
 <sect2>USER
 <p>
 Match type: GLOB
@@ -8600,8 +8861,8 @@ be IPV4 or IPV6 information,  depending on the origination of the
 system.  This information is used by gethostbyaddr() to obtain the
 originating host fully qualified domain name (FQDN) and set of IP addresses.
 Note that this FQDN will be for the originating interface,  and may
-not be the cannonical host name.  Some systems which use the Domain Name Server
-(DNS) system may add the cannonical system name as an alias.
+not be the canonical host name.  Some systems which use the Domain Name Server
+(DNS) system may add the canonical system name as an alias.
 <sect1>Permission File Location
 <label id="permspath">
 <p>
@@ -8690,7 +8951,7 @@ would match all hosts with a DNS entry which ended with
 <tt>astart.com</tt>.
 <p>
 The NOT keyword reverses the match sense.  For example
-<tt>REJECT NOT REMOTEHOST=*.astart.com,*.murpy.com</tt>
+<tt>REJECT NOT REMOTEHOST=*.astart.com,*.murphy.com</tt>
 would reject all requests from hosts which did not have a DNS entry
 ending in
 <tt>astart.com</tt>
@@ -8752,7 +9013,7 @@ the comments are appropriate to other issues.
 <p>
 In Academic institutions, avoiding printing accounting has been
 regarded as a challenge,  an ongoing game of fat cat and poor starving
-mouse, between the Administration and the downtrodden, poor, overcharged
+mouse, between the Administration and the downtrodden, poor, over charged
 student.  The following is a lighthearted ramble down the dark lane of
 printing accounting.
 <p>
@@ -8876,7 +9137,7 @@ attitude,  using the pagecount information as follows:
 start OF -- starting point for THIS job
 start IF --  nice information, but not useful
 start IF --
-end   OF -- ending point for this job - can record infomation
+end   OF -- ending point for this job - can record information
 start OF --
 if no end OF for previous job,  then treat as end OF and
   update accounting.
@@ -8911,7 +9172,7 @@ carefully pruned and copied, perhaps on an hourly basis.
 Now some administrators have fallen in love with network based printers;
 do not believe ANYTHING that comes over a network connection without
 some form of authentication;  PGP has some very nice Public Key
-mechansims for handling this.  This is a major weakness in using a
+mechanisms for handling this.  This is a major weakness in using a
 database for keeping track of accounting - a weak authentication
 mechanism may lead to denial of service attacks by students flooding
 the database with bogus print usage reports;  suddenly NOBODY can print
@@ -9057,18 +9318,18 @@ times of a job and its size to the accounting file. A typical entry
 for the printcap defaults are shown below.
 <tscreen>
 <verb>
-jobstart -H'taco.astart.com' -n'root' -P'ps' -k'cfA938taco.astart.com' \
--b'1093' -t'Nov  5 19:39:59'
-start -p'12942' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--c'0' -F'o' -t'Sun Nov  5 19:39:25 1995'
-start -p'12944' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--c'0' -F'f' -t'Sun Nov  5 19:39:27 1995'
-end -p'12944' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--b'3' -c'0' -F'f' -t'Sun Nov  5 19:39:58 1995'
-end -p'12942' -k'cfA938taco.astart.com' -n'root' -h'taco.astart.com' -P'ps' \
--b'2' -c'0' -F'o' -t'Sun Nov  5 19:39:59 1995'
-jobend -H'taco.astart.com' -n'root' -P'ps' -k'cfA938taco.astart.com' \
--b'1093' -t'Nov  5 19:39:59'
+jobstart '-Htaco.astart.com' '-nroot' '-Pps' '-kcfA938taco.astart.com' \
+'-b1093' '-tNov  5 19:39:59'
+start '-p12942' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-c0' '-Fo' '-tSun Nov  5 19:39:25 1995'
+start '-p12944' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-c0' '-Ff' '-tSun Nov  5 19:39:27 1995'
+end '-p12944' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-b3' '-c0' '-Ff' '-tSun Nov  5 19:39:58 1995'
+end '-p12942' '-kcfA938taco.astart.com' '-nroot' '-htaco.astart.com' '-Pps' \
+'-b2' '-c0' '-Fo' '-tSun Nov  5 19:39:59 1995'
+jobend '-Htaco.astart.com' '-nroot' '-Pps' '-kcfA938taco.astart.com' \
+'-b1093' '-tNov  5 19:39:59'
 </verb>
 </tscreen>
 <p>
@@ -9088,11 +9349,29 @@ It should be clear that a simple AWK or Perl script will be able to
 process an accounting file and update accounting information for
 accounting purposes;  the usual problems with truncation, time stamps,
 etc., are left as an exercise for the system administrator.
+However,
+for those who are exercise challenged,
+the LPRng distribution
+<tt>.../LPRng/UTILS/accounting.pl</tt>
+file is a template that can be used to process the accounting information.
+The printcap for using this file should resemble:
+<tscreen>
+<verb>
+pr:
+  :as=|/.../accounting.pl START
+  :ae=|/.../accounting.pl END
+  :if=/.../ifhp
+  :of=/.../ofhp
+  # set this to the printing device
+  :lp=prdevice
+  :sd=/.../%P
+</verb>
+</tscreen>
 <p>
-Note that the accounting file must exist; LPRng will not create it
-(and also will not create the log file).  This prevents accidentally
-growing log and accounting files.
-<sect1>Remote Server Accounting
+Note that the accounting file must exist and will not be created by the
+<tt/lpd/ server.
+The accounting file should be periodically truncated.
+<sect1>Accounting Using an Accounting Server
 <p>
 To accommodate even more aggressive and centralized accounting,
 a method to make a connection to a print server and send information
@@ -9144,7 +9423,7 @@ When using an accounting filter,
 the STDIN  is attached (read/write) to the accounting file or remote host
 specified by the <tt>af</tt> printcap option,
 STDOUT to the output device,
-and STDERR to the log file.
+and STDERR to the status file.
 The filter program would be invoked with the default filter options.
 <p>
 For example, here is a sample entry to check and update accounting
@@ -9233,7 +9512,7 @@ In addition,
 it provides Kerberos 5 based authentication.
 <p>
 LPRng also supports the use of the PGP (Pretty Good Privacy) program
-and can sign and optionally encrypt command and reponses between servers
+and can sign and optionally encrypt command and responses between servers
 and clients.
 <p>
 Finally,
@@ -9445,7 +9724,7 @@ If data transfer or authentication fails,  the authenticator
 will write an error message to FD 2 and exit with error code
 JFAIL.
 <p>
-If no error has occured the client authenticator will
+If no error has occurred the client authenticator will
 then exit with error code JSUCC.
 
 <sect1>Server Operations for Client To lpd Server Authentication
@@ -9489,7 +9768,7 @@ to the remote client program.
 <p>
 Many authentication programs require that the
 users provide some form of key or identification.
-The <tt>auth_server_id</tt> option is used for this purpose.
+The <tt>userid</tt> option is used for this purpose.
 <p>
 The server will start the server authenticator program and provide the
 following open file descriptors for it.  The program
@@ -9509,7 +9788,7 @@ FD  Options Purpose
 Command line arguments:
 <tscreen>
 <verb>
-program -S -PPRINTER -nUSER -aAUTHTYPE -Rauth_server_id -Ttempfile
+program -S -PPRINTER -nserver_auth_id -aAUTHTYPE -RUSERID -Ttempfile
 </verb>
 </tscreen>
 <p>
@@ -9518,7 +9797,19 @@ The
 <tt/USER/,
 and
 <tt/AUTHTYPE/,
-are obtained from the original command.
+are obtained from the command sent to the server,
+and are the
+<tt/printer/,
+<tt/user/,
+and
+<tt/authtype/
+values sent.
+The
+<tt/server_auth_id/
+is obtained from the printcap or configuration information for this
+printer,
+and should be identical to the value used by the sending program to
+when it invoked the authenticator program.
 <p>
 The authentication filter will read the file transferred by the
 client authenticator,
@@ -9534,7 +9825,7 @@ and used as the identification of the originating end of the connection.
 If the originating program is an LPRng client,
 then the <tt/from_id/ value will be the user identification for the authentication protocol;
 if the originating program is an LPRng server,
-this value will be the server identificatio for the authentication protocol.
+this value will be the server identification for the authentication protocol.
 <p>
 After writing this value,
 the transfer program will close FD 1.
@@ -9628,16 +9919,16 @@ transfer a job acting similar to a client.  The initial information
 transfer from the sending server will have the format:
 <tscreen>
 <verb>
-\008printer F server_user authtype \n          - for commands
-\008printer F server_user authtype controlfilename\n - for print jobs
+\008printer F local_server_id authtype \n     - for commands
+\008printer F local_server_id authtype size\n - for print jobs
 </verb>
 </tscreen>
 <p>
 The sending server will invoke its authenticator with the arguments:
 <tscreen>
 <verb>
-auth_forward_filter -F -Pprinter -nserver_user -aauthtype \
--Rremote_user -Ttempfile
+auth_forward_filter -F -Pprinter -nlocal_server_id -aauthtype \
+-Rremote_server_id -Ttempfile
 </verb>
 </tscreen>
 <p>
@@ -9646,12 +9937,11 @@ will have the form:
 <tscreen>
 <verb>
 user_authentication_info\n
-\n
 <normal file contents>
 </verb>
 </tscreen>
 That is,
-the user authentication information is place in the tempfile.
+the user authentication information is placed in the tempfile.
 <p>
 The tempfile will be transferred to the remote server in the same fashion
 as for a user job.
@@ -9662,7 +9952,8 @@ the transfer chain.
 On the destination server the same operations
 for receiving an authentication request from a client
 is performed.
-The AUTHUSER, AUTHFROM, and AUTHTYPE values will be the derived from the
+The AUTHUSER, AUTHFROM, and AUTHTYPE permission
+checking values will be the derived from the
 authentication request as for the client.
 The AUTHSAMEUSER will compare the remote client authentication
 information and the authentication information used to create the job.
@@ -9793,7 +10084,7 @@ The user id chosen for the LPD server should be easily used to identify
 the server.
 For example,
 <tt/lpr@hostname/,
-where hostname is the fully qualified domain name of the server is userful.
+where hostname is the fully qualified domain name of the server is useful.
 <p>
 The next step is to place the passphrase in a file that is only readable by
 <tt/daemon/,
@@ -9847,7 +10138,7 @@ Options used:
 <itemize>
 <item><tt>pgp_path=</tt><em>path to PGP program</em>
 <item><tt>pgp_server_key=</tt><em>path to server passphrase file</em>
-<item><tt>pgp_passphrase=</tt><em>user passphrase file in PGPPATH or $HOME/.pgp</em>
+<item><tt>pgp_passphrasefile=</tt><em>user passphrase file in PGPPATH or $HOME/.pgp</em>
 </itemize>
 <p>
 The <tt/pgp_path/ option is the path to the PGP program.
@@ -9857,7 +10148,7 @@ This file will be read by <tt/lpd/ to get the passphrase to unlock the server's
 keyring.
 <p>
 The LPRng client software will check to see if the
-<tt/pgp_passphrase/  value (default <tt/clientkey/) file in
+<tt/pgp_passphrasefile/  value (default <tt/clientkey/) file in
 <tt/$PGPPATH/, and if not present,
 then in <tt>$HOME/.pgp</tt>.
 By default, the <tt/pass_env/ option is <tt/pass_env=PGPPASS,PGPPATH,PGPPASSFD/
@@ -9872,7 +10163,7 @@ pr:
     :auth=pgp
     :auth_server_id=lpr@wayoff.com
     :pgp_path=/usr/local/bin/pgp
-    :pgp_passphrase=.mypass
+    :pgp_passphrasefile=.mypass
 </verb>
 </tscreen>
 <p>
@@ -10017,7 +10308,7 @@ as it will try to read the file to get its server key.
 auth=kerberos5
 kerberos_keytab=/etc/lpd.keytab
 kerberos_service=lpr
-# optional - explicit prinipal name for server, used by clients
+# optional - explicit prinicpal name for server, used by clients
 #kerberos_server_principal=lpr/hostname@REALM
 # optional - forwarding to another server with authentication
 # kerberos_forward_principal=lpr/hostname@REALM
@@ -10379,7 +10670,7 @@ Update messages are used to report changes in the queue contents,
 such as job arrival.
 <tscreen>
 <verb>
-Decode: update=host=astart4.astart.com%0aidentifier=papowell@astart4+676%0anumbe
+Decode: update=host=astart4.astart.com%0aidentifier=papowell@astart4+676%0anumber=
  ...
 host=astart4.astart.com
 identifier=papowell@astart4+676
@@ -10428,9 +10719,9 @@ The <tt/cf_esc_image/ value is the URL escaped control file information.
 These messages report printing or other activity related to a job.
 <tscreen>
 <verb>
-Decode: prstatus=host=astart4.astart.com%0aidentifier=papowell@astart4+676%0anum
-ber=676%0aprinter=t1%0aprocess=1692%0aupdate_time=1999-03-23-21:02:04.855%0avalu
-e=finished 'papowell@astart4+676'%252c status 'JSUCC'%0a
+Decode: prstatus=host=astart4.astart.com%0aidentifier=papowell@astart4+676%0anumber=
+676%0aprinter=t1%0aprocess=1692%0aupdate_time=1999-03-23-21:02:04.855%0avalue=
+finished 'papowell@astart4+676'%252c status 'JSUCC'%0a
 
 host=astart4.astart.com
 identifier=papowell@astart4+676
@@ -10672,7 +10963,7 @@ When
 printing a job and the <tt>lpd</tt> server connection to a remote
 site or device open fails,
 the <tt>retry_nolink</tt> (default on)
-will cause the attempt to be retried indefinately.
+will cause the attempt to be retried indefinitely.
 The combination of <tt>retry_econnrefused</tt> and <tt>retry_nolink</tt>
 will provide robust connection attempts to remote systems.
 <p>
@@ -11350,7 +11641,7 @@ The
 <tt>L</tt> (print banner page) field is one that has caused many
 problems for users.
 RFC1179 indicates that its presence causes the banner page to be printed,
-and its absense suppresses banner pages.
+and its absence suppresses banner pages.
 The <tt>lpr -h</tt> option suppresses putting this line into the
 control file.
 Usually the <tt>L</tt> field is a duplicate of the <tt>P</tt>
@@ -11712,7 +12003,7 @@ including control file and data files.
 The transfer command line has the form:
 <tscreen>
 <verb>
-\006printer user@host size\n
+\007printer size\n
 </verb>
 </tscreen>
 <p>
@@ -11885,7 +12176,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="bk" name="bk"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Berkeley LPD job file format <newline>
 <tt><ref id="bkfilteroptions" name="bk&lowbar;filter&lowbar;options"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Berkeley LPD filter options <newline>
 <tt><ref id="bkoffilteroptions" name="bk&lowbar;of&lowbar;filter&lowbar;options"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Berkeley LPD OF filter options <newline>
-<tt><ref id="bkf" name="bkf"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  backwards-compatible filters: use simple paramters <newline>
+<tt><ref id="bkf" name="bkf"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  backwards-compatible filters: use simple parameters <newline>
 <tt><ref id="bl" name="bl"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  short banner line sent to banner printer <newline>
 <tt><ref id="bp" name="bp"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Banner Generation Program (see bs, be) <newline>
 <tt><ref id="bq" name="bq"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Use filters on bounce queue jobs <newline>
@@ -11896,6 +12187,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="checkfornonprintable" name="check&lowbar;for&lowbar;nonprintable"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  LPR checks for nonprintable file <newline>
 <tt><ref id="checkidle" name="check&lowbar;idle"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  program used to check for idle printer <newline>
 <tt><ref id="classinstatus" name="class&lowbar;in&lowbar;status"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Show job class name in <tt>lpq</tt> status information <newline>
+<tt><ref id="client" name="client"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Mark printcap entry for client programs only <newline>
 <tt><ref id="cm" name="cm"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  comment identifying printer (LPQ) <newline>
 <tt><ref id="configfile" name="config&lowbar;file"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  configuration file <newline>
 <tt><ref id="connectgrace" name="connect&lowbar;grace"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  connection control for remote printers <newline>
@@ -11912,16 +12204,18 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="defaultremotehost" name="default&lowbar;remote&lowbar;host"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default remote host <newline>
 <tt><ref id="defaulttmpdir" name="default&lowbar;tmp&lowbar;dir"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default directory for temp files <newline>
 <tt><ref id="destinations" name="destinations"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  printers that a route filter may return and we should query <newline>
+<tt><ref id="exitlingertimeout" name="exit_linger_timeout"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  connection close linger timeout<newline>
 <tt><ref id="ff" name="ff"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  string to send for a form feed <newline>
 <tt><ref id="filterldpath" name="filter&lowbar;ld&lowbar;path"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  filter LD&lowbar;LIBRARY&lowbar;PATH value <newline>
 <tt><ref id="filteroptions" name="filter&lowbar;options"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  filter options <newline>
 <tt><ref id="filterpath" name="filter&lowbar;path"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  filter PATH environment variable <newline>
 <tt><ref id="fo" name="fo"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  send form feed when device is opened <newline>
-<tt><ref id="forcefqdnhostname" name="force&lowbar;fqdn&lowbar;hostname"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  force FQDN HOST value in control file <newline>
+<tt><ref id="forcefqdnhostname" name="force&lowbar;fqdn&lowbar;hostname"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  force FQDN hostname value in control file <newline>
 <tt><ref id="forcelocalhost" name="force&lowbar;localhost"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  force clients to send all requests to localhost <newline>
 <tt><ref id="forcequeuename" name="force&lowbar;queuename"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  force use of this queuename if none provided <newline>
 <tt><ref id="fq" name="fq"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  send form feed when device is closed <newline>
 <tt><ref id="fulltime" name="full&lowbar;time"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  use extended time format <newline>
+<tt><ref id="generatebanner" name="generate&lowbar;banner"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  generate banner page for forwarded jobs<newline>
 <tt><ref id="group" name="group"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Effective Group ID (EGID) for SUID ROOT programs <newline>
 <tt><ref id="hl" name="hl"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Header (banner) last, at end of job <newline>
 <tt><ref id="ignorerequesteduserpriority" name="ignore&lowbar;requested&lowbar;user&lowbar;priority"></tt><tt></tt>  Ignore requested user priority <newline>
@@ -11969,6 +12263,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="networkconnectgrace" name="network&lowbar;connect&lowbar;grace"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  pause between transferring jobs to remote printer <newline>
 <tt><ref id="of" name="of"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  banner output filter <newline>
 <tt><ref id="offilteroptions" name="of&lowbar;filter&lowbar;options"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  OF filter options <newline>
+<tt><ref id="oh" name="oh"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Printcap entry valid only on these hosts <newline>
 <tt><ref id="originateport" name="originate&lowbar;port"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  originate connections from these ports <newline>
 <tt><ref id="passenv" name="pass&lowbar;env"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  clients pass these environment variables to filters <newline>
 <tt><ref id="permspath" name="perms&lowbar;path"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  lpd.perms files <newline>
@@ -11979,6 +12274,9 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="pw" name="pw"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  page width (in characters) <newline>
 <tt><ref id="px" name="px"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  page width in pixels (horizontal) <newline>
 <tt><ref id="py" name="py"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  page length in pixels (vertical) <newline>
+<tt><ref id="queue_lock_file" name="queue_lock_file"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>queue lock file name<newline>
+<tt><ref id="queue_control_file" name="queue_control_file"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>queue control file name<newline>
+<tt><ref id="queue_status_file" name="queue_status_file"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>queue status file name<newline>
 <tt><ref id="qq" name="qq"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  put queue name in control file <newline>
 <tt><ref id="remotesupport" name="remote&lowbar;support"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  operations allowed to remote host <newline>
 <tt><ref id="reportserveras" name="report&lowbar;server&lowbar;as"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  server name for status reports <newline>
@@ -12004,9 +12302,11 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="sendqueryrwtimeout" name="send&lowbar;query&lowbar;rw&lowbar;timeout"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  status query operation read/write timeout <newline>
 <tt><ref id="sendtry" name="send&lowbar;try"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  maximum number of times to try sending job <newline>
 <tt><ref id="sendmail" name="sendmail"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  sendmail program <newline>
+<tt><ref id="server" name="server"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Mark printcap entry for lpd server program only <newline>
 <tt><ref id="servertmpdir" name="server&lowbar;tmp&lowbar;dir"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  server temporary file directory <newline>
 <tt><ref id="sf" name="sf"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  suppress form feeds separating data files in job <newline>
 <tt><ref id="sh" name="sh"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  suppress header (banner) pages <newline>
+<tt><ref id="short_status_date" name="short&lowbar;status&lowbar;date"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  short (hh:mm) timestamp format for status <newline>
 <tt><ref id="shortstatuslength" name="short&lowbar;status&lowbar;length"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  short lpq status length in lines <newline>
 <tt><ref id="socketlinger" name="socket&lowbar;linger"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  set the SO&lowbar;LINGER socket option <newline>
 <tt><ref id="spooldirperms" name="spool&lowbar;dir&lowbar;perms"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  spool directory permissions <newline>
@@ -12015,9 +12315,10 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="ss" name="ss"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  name of queue that server serves (with sv) <newline>
 <tt><ref id="stalledtime" name="stalled&lowbar;time"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  time after which to report active job stalled <newline>
 <tt><ref id="stoponabort" name="stop&lowbar;on&lowbar;abort"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  stop processing queue on filter abort <newline>
-<tt><ref id="stty" name="stty"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  stty commands to set output line characteristictics <newline>
+<tt><ref id="stty" name="stty"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  stty commands to set output line characteristics <newline>
 <tt><ref id="sv" name="sv"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  names of servers for queue (with ss) <newline>
 <tt><ref id="syslogdevice" name="syslog&lowbar;device"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  name of syslog device <newline>
+<tt><ref id="tc" name="tc"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Include indicated printcap entries in current entry<newline>
 <tt><ref id="tr" name="tr"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  trailer string to send before closing printer <newline>
 <tt><ref id="translateformat" name="translate&lowbar;format"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  translate data format in control file <newline>
 <tt><ref id="usedate" name="use&lowbar;date"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  force date in control file <newline>
@@ -12026,6 +12327,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="usequeuename" name="use&lowbar;queuename"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  put queue name in control file (alias for qq) <newline>
 <tt><ref id="useshorthost" name="use&lowbar;shorthost"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Use short hostname for lpr control and data file names <newline>
 <tt><ref id="user" name="user"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Effective User ID (EUID) for SUID ROOT programs <newline>
+<tt><ref id="waitforeof" name="wait_for_eof"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Wait for EOF on connection <newline>
 <!-- END OPTIONS -->
 <!-- LPRng-HOWTO SGML format -->
 </article>

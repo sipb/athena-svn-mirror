@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpd_logger.h,v 1.1.1.1 1999-05-04 18:07:10 danw Exp $
+ * $Id: lpd_logger.h,v 1.1.1.2 1999-10-27 20:10:12 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -25,7 +25,7 @@ char *Get_record( struct file_info *io, int start, int *len );
 int Put_record( struct file_info *io, int start, char *buf );
 void Remove_first_record( struct file_info *io );
 void Add_record( struct file_info *io, char *buf );
-void Dump_queue_status(void);
+int Dump_queue_status(int fd);
 void Logger( struct line_list *args );
 
 #endif

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: gethostinfo.c,v 1.1.1.2 1999-05-04 18:07:02 danw Exp $";
+"$Id: gethostinfo.c,v 1.1.1.3 1999-10-27 20:10:05 mwhitson Exp $";
 
 /********************************************************************
  * char *get_fqdn (char *shorthost)
@@ -148,10 +148,12 @@ char *Fixup_fqdn( const char *shorthost, struct host_information *info,
 	 * To say that I am not impressed with this is a severe understatement.
 	 * Patrick Powell, Jan 29, 1997
 	 */
-	fqdn = strchr( host_ent->h_name, '.' );
-	for( list = host_ent->h_aliases;
-		fqdn == 0 && list && *list; ++list ){
-		fqdn = strchr( *list, '.' );
+	fqdn = 0;
+	if( safestrchr( host_ent->h_name, '.' ) ){
+		fqdn = host_ent->h_name;
+	} else if( (list = host_ent->h_aliases) ){
+		for( ; *list && !safestrchr(*list,'.'); ++list );
+		fqdn = *list;
 	}
 	if( fqdn == 0 ){
 		char buffer[64];
@@ -187,20 +189,22 @@ char *Fixup_fqdn( const char *shorthost, struct host_information *info,
 		}
 	}
 
-	fqdn = 0;
-	if( strchr( host_ent->h_name, '.' ) ){
-		fqdn = host_ent->h_name;
-	} else if( (list = host_ent->h_aliases) ){
-		for( ; fqdn == 0 && (fqdn = *list) && !strchr(fqdn,'.'); ++list );
+	if( fqdn == 0 ){
+		if( safestrchr( host_ent->h_name, '.' ) ){
+			fqdn = host_ent->h_name;
+		} else if( (list = host_ent->h_aliases) ){
+			for( ; *list && !safestrchr(*list,'.'); ++list );
+			fqdn = *list;
+		}
+		if( fqdn == 0 ) fqdn = host_ent->h_name;
 	}
-	if( !fqdn ) fqdn = host_ent->h_name;
 
 	info->h_addrtype = host_ent->h_addrtype;
 	info->h_length = host_ent->h_length;
 	/* put the names in the database */
 	info->fqdn = safestrdup(fqdn,__FILE__,__LINE__);
 	info->shorthost = safestrdup(fqdn,__FILE__,__LINE__);
-	if( (s = strchr(info->shorthost,'.')) ) *s = 0;
+	if( (s = safestrchr(info->shorthost,'.')) ) *s = 0;
 
 	Add_line_list(&info->host_names,host_ent->h_name,0,0,0 );
 	for( list = host_ent->h_aliases; list && (s = *list); ++list ){
@@ -481,7 +485,7 @@ void form_addr_and_mask(char *v, char *addr,char *mask,
 	}
 	memset( addr, 0, addrlen );
 	memset( mask, ~0, addrlen );
-	if( (s = strchr( v, '/' )) ) *s = 0;
+	if( (s = safestrchr( v, '/' )) ) *s = 0;
 	inet_pton(family, v, addr );
 	if( s ){
 		*s++ = '/';

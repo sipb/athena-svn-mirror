@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.1.1.3 1999-05-24 18:29:20 danw Exp $";
+"$Id: krb5_auth.c,v 1.1.1.4 1999-10-27 20:09:55 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -314,7 +314,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 	DEBUG1( "client_krb5_auth: keytab '%s',"
 		" service '%s', host '%s', sock %d, file '%s'",
 		keytabfile, service, host, sock, file );
-	if( !strcasecmp(host,LOCALHOST) ){
+	if( !safestrcasecmp(host,LOCALHOST) ){
 		host = FQDNHost_FQDN;
 		DEBUG1( "client_krb5_auth: using host='%s'", host );
 	}
@@ -556,7 +556,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		retval = 1;
 		goto done;
 	}
-	DEBUG1( "client_krb5_auth: opened for read %s, fd %d, size %d", file, fd, (int)statb.st_size );
+	DEBUG1( "client_krb5_auth: opened for read %s, fd %d, size %0.0f", file, fd, (double)statb.st_size );
 	while( (len = read( fd, buffer, sizeof(buffer)-1 )) > 0 ){
 		/* status = Write_fd_len( sock, buffer, len ); */
 		inbuf.data = buffer;
@@ -622,7 +622,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		retval = 1;
 		goto done;
 	}
-	DEBUG1( "client_krb5_auth: reopened for read %s, fd %d, size %d", file, fd, (int)statb.st_size );
+	DEBUG1( "client_krb5_auth: reopened for read %s, fd %d, size %0.0f", file, fd, (double)statb.st_size );
 	if( dup2(fd,sock) == -1){
 		plp_snprintf( err, errlen,
 			"client_krb5_auth: dup2(%d,%d) failed - '%s'",

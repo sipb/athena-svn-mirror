@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd.c,v 1.1.1.2 1999-05-24 18:29:29 danw Exp $";
+"$Id: lpd.c,v 1.1.1.3 1999-10-27 20:09:57 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -65,13 +65,11 @@
 int main(int argc, char *argv[], char *envp[])
 {
 	int sock = 0;		/* socket for listen */
-	int newsock;		/* new socket */
 	int pid;			/* pid */
 	fd_set defreadfds, readfds;	/* for select() */
 	struct timeval timeval, *timeout;
 	int timeout_encountered = 0;	/* we have a timeout */
 	int max_socks;		/* maximum number of sockets */
-	struct sockaddr sinaddr;	/* the connection remote IP address */
 	int n, m;	/* ACME?  Hmmm... well, ok */
 	int err;
  	time_t last_time;	/* time that last Start_all was done */
@@ -140,6 +138,12 @@ int main(int argc, char *argv[], char *envp[])
 	}
 #endif
 
+	/* chdir to the root directory */
+	if( chdir( "/" ) == -1 ){
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "cannot chdir to /");
+	}
+
 	/*
 	 * This is the one of the two places where we need to be
 	 * root in order to open a socket
@@ -153,6 +157,7 @@ int main(int argc, char *argv[], char *envp[])
 		 */
   		pid = Get_lpd_pid();
  		if( pid > 0 && kill(pid,0) ) pid = 0;
+		Errorcode = JACTIVE;
   		if( pid > 0 ){
   			Diemsg( _("Another print spooler is using TCP printer port, possibly lpd process '%d'"),
   				pid );
@@ -162,6 +167,7 @@ int main(int argc, char *argv[], char *envp[])
  			}
  			Diemsg( _("Another print spooler is using TCP printer port - not LPRng") );
   		}
+		Errorcode = JSUCC;
 	}
 
 	/* setting nonblocking on the listening fd
@@ -369,9 +375,13 @@ int main(int argc, char *argv[], char *envp[])
 		/* if we got a SIGHUP then we reread configuration */
 		if( Reread_config || !Use_info_cache_DYN ){
 			DEBUG1( "lpd: rereading configuration" );
-			Reread_config = 0;
+			/* we need to force the LPD logger to use new printcap information */
+			if( Reread_config ){
+				if( status_pid > 0 ) kill( status_pid, SIGINT );
+				setmessage(0,LPD,"Restart");
+				Reread_config = 0;
+			}
 			Setup_configuration();
-			setmessage(0,LPD,"Restart");
 		}
 		/* mark this as a timeout */
 		timeout_encountered = (m == 0);
@@ -387,26 +397,29 @@ int main(int argc, char *argv[], char *envp[])
 			continue;
 		}
 		if( FD_ISSET( sock, &readfds ) ){
-			m = sizeof( sinaddr );
-			DEBUG1("lpd: accepting connection on %d", sock );
-			newsock = accept( sock, &sinaddr, &m );
-			err = errno;
-			DEBUG1("lpd: connection on fd %d", newsock );
-
-			if( newsock >= 0 ){
-				Set_block_io(newsock);
-				Free_line_list( &args );
-				Set_str_value(&args,CALL,SERVER);
-				pid = Start_worker( &args, newsock );
-				Free_line_list(&args);
-				close(newsock);
-			} else {
-				errno = err;
-				logerr(LOG_INFO, _("lpd: accept on listening socket failed") );
+			int p[2];
+			char b[32];
+			if( pipe(p) == -1 ){
+				logerr(LOG_INFO, _("lpd: pipe() failed") );
 			}
+			Free_line_list( &args );
+			Lpd_ack_fd = p[1];
+			Set_str_value(&args,CALL,SERVER);
+			pid = Start_worker( &args, sock );
+			if( pid < 0 ){
+				logerr(LOG_INFO, _("lpd: fork() failed") );
+			}
+			Free_line_list(&args);
+			Lpd_ack_fd = 0;
+			close( p[1] );
+			while( read( p[0], b, sizeof(b) ) > 0 );
+			DEBUG1( "lpd: listener %d running", pid );
+			close( p[0] );
 		}
-		if( FD_ISSET( request_pipe[0], &readfds ) ){
-			Service_printer( request_pipe[0] );
+		if( FD_ISSET( request_pipe[0], &readfds ) 
+			&& Read_server_status( request_pipe[0] ) == 0 ){
+			Errorcode = JABORT;
+			logerr_die(LOG_INFO, _("lpd: Lpd_request pipe EOF! cannot happen") );
 		}
 		if( start_fd > 0 && FD_ISSET( start_fd, &readfds ) ){
 			start_fd = Read_server_status( start_fd );
@@ -441,11 +454,14 @@ void Setup_log(char *logfile )
     /*
      * open logfile; if it is "-", use stderr; if Foreground is set, use stderr
      */
+	if( fstat(2,&statb) == -1 && dup2(1,2) == -1 ){
+		logerr_die(LOG_ERR, _("Setup_log: dup2(%d,%d) failed"), 1, 2);
+	}
     if( logfile == 0 ){
 		if( !Foreground_LPD && dup2(1,2) == -1 ){
 			logerr_die(LOG_ERR, _("Setup_log: dup2(%d,%d) failed"), 1, 2);
 		}
-	} else if( strcmp(logfile, "-") ){
+	} else if( safestrcmp(logfile, "-") ){
 		close(2);
 		if( Checkwrite(logfile, &statb, O_WRONLY|O_APPEND, 0, 0) != 2) {
 			logerr_die(LOG_ERR, _("Setup_log: open %s failed"), logfile );
@@ -469,7 +485,7 @@ void Service_connection( struct line_list *args )
 	char buffer[LINEBUFFER];	/* for messages */
 	int len, talk;
 	int status;		/* status of operation */
-	int permission;
+	int permission, newsock, err;
 	int port = 0;
 	struct sockaddr sinaddr;
 
@@ -481,15 +497,32 @@ void Service_connection( struct line_list *args )
 		Errorcode = JABORT;
 		fatal(LOG_ERR,"Service_connection: no talk fd"); 
 	}
-	Free_line_list(args);
 
-	DEBUG1("Service_connection: input fd %d", talk );
-	len = sizeof(sinaddr);
-	if( getpeername( talk, &sinaddr, &len ) == -1 ){
-		Errorcode = JABORT;
-		logerr_die(LOG_ERR,"Service_connection: getpeername fd %d failed",
-			talk); 
+	Free_line_list(args);
+	len = sizeof( sinaddr );
+	DEBUG1("Service_connection: listening fd %d", talk );
+	newsock = accept( talk, &sinaddr, &len );
+	err = errno;
+	DEBUG1("Service_connection: connection fd %d", newsock );
+
+	if( newsock > 0 ){
+		if( dup2( newsock, talk ) == -1 ){
+			logerr_die( LOG_INFO, "Service_connection: dup2() failed!" );
+		}
+		if( newsock != talk ){
+			close( newsock );
+		}
+	} else {
+		errno = err;
+		logerr_die(LOG_INFO, _("Service_connection: accept on listening socket failed") );
 	}
+
+	if( Lpd_ack_fd ){
+		close( Lpd_ack_fd );
+		Lpd_ack_fd = -1;
+	}
+
+	Set_block_io(talk);
 
 	/* get the remote name and set up the various checks */
 	Perm_check.addr = &sinaddr;
@@ -526,7 +559,7 @@ void Service_connection( struct line_list *args )
 	if( status ){
 		logerr_die( LOG_DEBUG, _("Service_connection: cannot read request") );
 	}
-	if( len < 3 ){
+	if( len < 2 ){
 		fatal( LOG_INFO, _("Service_connection: bad request line '%s'"), input );
 	}
 
@@ -537,7 +570,7 @@ void Service_connection( struct line_list *args )
 
 	Perm_check.service = 'X';
 
-	permission = Perms_check( &Perm_line_list, &Perm_check, 0 );
+	permission = Perms_check( &Perm_line_list, &Perm_check, 0, 0 );
 	if( permission == P_REJECT ){
 		DEBUG1("Service_connection: talk socket '%d' no connect perms", talk );
 		Write_fd_str( talk, _("\001no connect permissions\n") );
@@ -596,41 +629,6 @@ void Reinit(void)
 	(void) plp_signal (SIGHUP,  (plp_sigfunc_t)Reinit);
 }
 
-/***************************************************************************
- * Service_printer( int talk )
- *  Read the printer to be started from the talk socket
- * 1. fork a connection
- * 2. Mother:  close talk and return
- * 2  Child:  close listen
- * 2  Child:  read input line and decide what to do
- *
- ***************************************************************************/
-
-void Service_printer( int talk )
-{
-	char *name;
-	char line[SMALLBUFFER];
-	int count, n;
-	struct line_list l;
-
-	/* get the line */
-
-	Init_line_list(&l);
-	line[0] = 0;
-	if( (n = read(talk, line,sizeof(line)-1)) > 0 ){
-		line[n] = 0;
-	} else {
-		logerr_die(LOG_ERR,"Service_printer: bad read from pipe");
-	}
-	Split(&l,line,Whitespace,0,0,0,0,0);
-
-	if(DEBUGL1)Dump_line_list("Service_printer - input", &l );
-	for( count = 0; count < l.count; ++count ){ 
-		name = l.list[count];
-		Add_line_list(&Servers_line_list,name,0,0,0);
-	}
-	Free_line_list(&l);
-}
 
 /***************************************************************************
  * Get_lpd_pid() and Set_lpd_pid()
@@ -656,12 +654,14 @@ int Get_lpd_pid(void)
 
 void Set_lpd_pid(void)
 {
-	int lockfd;
+	int lockfd, err;
 	char *path;
 	struct stat statb;
 
 	path = safestrdup3( Lockfile_DYN,".", Lpd_port_DYN, __FILE__, __LINE__ );
+	To_root();
 	lockfd = Checkwrite( path, &statb, O_WRONLY|O_TRUNC, 1, 0 );
+	To_daemon();
 	if( lockfd < 0 ){
 		logerr_die( LOG_ERR, _("lpd: Cannot open '%s'"), path );
 	} else {
@@ -669,6 +669,12 @@ void Set_lpd_pid(void)
 		Server_pid = getpid();
 		DEBUG1( "lpd: writing lockfile '%s' fd %d with pid '%d'",path,lockfd,Server_pid );
 		Write_pid( lockfd, Server_pid, (char *)0 );
+		To_root();
+		err = fchmod( lockfd, (statb.st_mode | 0644) );
+		To_daemon();
+		if( err == -1 ){
+			logerr_die( LOG_ERR, _("lpd: Cannot change mode '%s'"), path );
+		}
 	}
 	if(path) free(path); path = 0;
 	close( lockfd );
@@ -676,17 +682,19 @@ void Set_lpd_pid(void)
 
 int Read_server_status( int fd )
 {
-	int status;
+	int status, count, found, n;
 	char buffer[LINEBUFFER];
-	char *s, *end;
+	char *name;
 	fd_set readfds;	/* for select() */
 	struct timeval timeval;
+	struct line_list l;
 
 	buffer[0] = 0;
 	errno = 0;
 
 	DEBUG1( "Read_server_status: starting" );
 
+	Init_line_list(&l);
 	while(1){
 		FD_ZERO( &readfds );
 		FD_SET( fd, &readfds );
@@ -712,12 +720,16 @@ int Read_server_status( int fd )
 		}
 		buffer[status] = 0;
 		/* we split up read line and record information */
-		for( s = buffer; s && *s; s = end ){
-			end = strchr(buffer,'\n');
-			if( end ) *end++ = 0;
-			DEBUG1( "Read_server_status: read '%s'", s );
-			if( *s ){
-				Add_line_list(&Servers_line_list,s,0,0,0);
+		Split(&l,buffer,Whitespace,0,0,0,0,0);
+		if(DEBUGL1)Dump_line_list("Read_server_status - input", &l );
+		for( count = 0; count < l.count; ++count ){ 
+			name = l.list[count];
+			found = 0;
+			for( n = 0;!found && n < Servers_line_list.count; ++n ){
+				found = !safestrcasecmp( Servers_line_list.list[n], name);
+			}
+			if( !found ){
+				Add_line_list(&Servers_line_list,name,0,0,0);
 			}
 		}
 	}
@@ -758,7 +770,7 @@ void Get_parms(int argc, char *argv[] )
 
 	while ((option = Getopt (argc, argv, LPD_optstr )) != EOF) {
 		switch (option) {
-		case 'D': Parse_debug(Optarg, 0); break;
+		case 'D': Parse_debug(Optarg, 1); break;
 		case 'L': Logfile_LPD = Optarg; break;
 		case 'F': Foreground_LPD = 1; break;
 		case 'X': Worker_LPD = 1; break;
@@ -769,6 +781,9 @@ void Get_parms(int argc, char *argv[] )
 			verbose = !verbose;
 			break;
 		}
+	}
+	if( Optind != argc ){
+		usage();
 	}
 	if( verbose > 0 ) {
 		fprintf( stderr, _("Version %s\n"), PATCHLEVEL );
@@ -792,9 +807,7 @@ void Get_parms(int argc, char *argv[] )
     struct job *job;
     char *fmt;
 #endif
-	char *s;
-	int len;
-	char *path = 0, *at_time = 0;
+	char *path = 0;
 	char msg_b[SMALLBUFFER];
 	static int insetstatus;
     VA_LOCAL_DECL
@@ -803,58 +816,25 @@ void Get_parms(int argc, char *argv[] )
     VA_SHIFT (job, struct job * );
     VA_SHIFT (fmt, char *);
 
-	if( fmt == 0 || *fmt == 0) return;
-	if( insetstatus ) return;
+	if( Doing_cleanup || fmt == 0 || *fmt == 0 || insetstatus ) return;
 
 	insetstatus = 1;
 	(void) plp_vsnprintf( msg_b, sizeof(msg_b)-4, fmt, ap);
 
-	DEBUG1("setstatus: Status_fd %d, msg '%s'", Status_fd, msg_b);
+	DEBUG1("setstatus: Status_fd %d, Mail_fd %d, msg '%s'", Status_fd, Mail_fd, msg_b);
 
-	len = strlen(msg_b);
-	at_time = msg_b+len;
-	(void) plp_snprintf( msg_b+len, sizeof(msg_b)-len-4, " at %s\n", 
-		Time_str(1,0) );
-
-	/* append new status to end of old */
 	if( Status_fd <= 0 && Spool_dir_DYN && Printer_DYN ){
-		s = safestrdup2("status.",Printer_DYN,__FILE__,__LINE__);
-		path = Make_pathname( Spool_dir_DYN,s);
+		path = Make_pathname( Spool_dir_DYN, Queue_status_file_DYN);
 		Status_fd = Trim_status_file( path,
 			Max_status_size_DYN, Min_status_size_DYN );
 		if( path ) free(path); path = 0;
-		if( s ) free(s); s = 0;
-	}
-	if( Status_fd > 0 && Write_fd_str( Status_fd, msg_b ) < 0 ){
-		close( Status_fd );
-		Status_fd = -1;
-	}
-	if( Mail_fd > 0 && Write_fd_str( Mail_fd, msg_b ) < 0 ){
-		DEBUG4("setstatus: write to fd %d failed - %s",
-			Mail_fd, Errormsg(errno) );
-		close(Mail_fd);
-		Mail_fd = -1;
 	}
 
-	*at_time = 0;
-	send_to_logger( job, PRSTATUS, msg_b );
+	send_to_logger( Status_fd, Mail_fd, job, PRSTATUS, msg_b );
 	insetstatus = 0;
 	VA_END;
 }
 
-void Put_header( struct job *job, struct line_list *l )
-{
-	if( job ){
-		Set_str_value(l,IDENTIFIER,
-			Find_str_value(&job->info,IDENTIFIER,Value_sep) );
-		Set_decimal_value(l,NUMBER,
-			Find_flag_value(&job->info,NUMBER,Value_sep) );
-	}
-	Set_str_value(l,PRINTER,Printer_DYN);
-	Set_str_value(l,HOST,FQDNHost_FQDN);
-	Set_decimal_value(l,PROCESS,getpid());
-	Set_str_value(l,UPDATE_TIME,Time_str(0,0));
-}
 
 /***************************************************************************
  * void setmessage (struct job *job,char *header, char *fmt,...)
@@ -873,7 +853,6 @@ void Put_header( struct job *job, struct line_list *l )
     char *header;
     char *fmt;
 #endif
-	int len;
 	char msg_b[SMALLBUFFER];
 
     VA_LOCAL_DECL
@@ -883,17 +862,10 @@ void Put_header( struct job *job, struct line_list *l )
     VA_SHIFT (header, char *);
     VA_SHIFT (fmt, char *);
 
+	if( Doing_cleanup ) return;
 	(void) plp_vsnprintf( msg_b, sizeof(msg_b)-4, fmt, ap);
-	len = strlen( msg_b );
-	plp_snprintf(msg_b+len, sizeof(msg_b)-len, "\n");
-	if( Mail_fd > 0 && Write_fd_str( Mail_fd, msg_b ) < 0 ){
-		DEBUG4("setmessage: write to fd %d failed - %s",
-			Mail_fd, Errormsg(errno) );
-		close(Mail_fd);
-		Mail_fd = -1;
-	}
-	msg_b[len] = 0;
-	send_to_logger( job, header, msg_b );
+	DEBUG1("setmessage: msg '%s'", msg_b);
+	send_to_logger( -1, -1, job, header, msg_b );
 	VA_END;
 }
 
@@ -903,33 +875,65 @@ void Put_header( struct job *job, struct line_list *l )
  *  This will try and send to the logger.
  ***************************************************************************/
 
- void send_to_logger( struct job *job, const char *header, char *msg_b )
+ void send_to_logger( int send_to_status_fd, int send_to_mail_fd,
+	struct job *job, const char *header, char *msg_b )
 {
 	char *s, *t;
+	char *id, *tstr;
+	int num,pid;
+	char out_b[4*SMALLBUFFER];
 	struct line_list l;
 
-	if( DEBUGL4){
+	if( Doing_cleanup ) return;
+	Init_line_list(&l);
+	if(DEBUGL4){
 		char buffer[32];
 		plp_snprintf(buffer,sizeof(buffer)-5,"%s", msg_b );
 		if( msg_b ) safestrncat( buffer,"...");
-		logDebug("send_to_logger: Logger_fd fd %d, header '%s', body '%s'",
-			Logger_fd, header, buffer );
+		logDebug("send_to_logger: Logger_fd fd %d, Status_fd fd %d, Mail_fd fd %d, header '%s', body '%s'",
+			Logger_fd, Status_fd, Mail_fd, header, buffer );
 	}
-	if( Logger_fd >= 0 ){
-		Init_line_list(&l);
-		Put_header( job, &l );
-		s = Escape(msg_b,0);
+	s = t = id = tstr = 0;
+	num = 0;
+	if( job ){
+		Set_str_value(&l,IDENTIFIER,
+			(id = Find_str_value(&job->info,IDENTIFIER,Value_sep)) );
+		Set_decimal_value(&l,NUMBER,
+			(num = Find_decimal_value(&job->info,NUMBER,Value_sep)) );
+	}
+	Set_str_value(&l,UPDATE_TIME,(tstr=Time_str(0,0)));
+	Set_decimal_value(&l,PROCESS,(pid=getpid()));
+
+	plp_snprintf( out_b, sizeof(out_b), "%s at %s ## %s=%s %s=%d %s=%d\n",
+		msg_b, tstr, IDENTIFIER, id, NUMBER, num, PROCESS, pid );
+
+	if( send_to_status_fd > 0 && Status_fd > 0 && Write_fd_str( Status_fd, out_b ) < 0 ){
+		DEBUG4("send_to_logger: write to fd %d failed - %s",
+			Status_fd, Errormsg(errno) );
+		close( Status_fd );
+		Status_fd = -1;
+	}
+	if( send_to_mail_fd > 0 && Mail_fd > 0 && Write_fd_str( Mail_fd, out_b ) < 0 ){
+		DEBUG4("send_to_logger: write to fd %d failed - %s",
+			Mail_fd, Errormsg(errno) );
+		close(Mail_fd);
+		Mail_fd = -1;
+	}
+	if( Logger_fd > 0 ){
+		Set_str_value(&l,PRINTER,Printer_DYN);
+		Set_str_value(&l,HOST,FQDNHost_FQDN);
+		s = Escape(msg_b,0,1);
 		Set_str_value(&l,VALUE,s);
 		if(s) free(s); s = 0;
 		t = Join_line_list(&l,"\n");
-		s = Escape(t,0); 
+		s = Escape(t,0,1); 
 		if(t) free(t); t = 0;
 		t = safestrdup4(header,"=",s,"\n",__FILE__,__LINE__);
 		Write_fd_str( Logger_fd, t );
 		if( s ) free(s); s = 0;
 		if( t ) free(t); t = 0;
-		Free_line_list(&l);
 	}
+	Free_line_list(&l);
 }
 
 /*
@@ -975,14 +979,18 @@ void Setup_lpd_call( struct line_list *passfd, struct line_list *args )
 		Set_decimal_value(args,LPD_REQUEST,passfd->count);
 		passfd->list[passfd->count++] = Cast_int_to_voidstar(Lpd_request);
 	}
+	if( Lpd_ack_fd > 0 ){
+		Set_decimal_value(args,LPD_ACK_FD,passfd->count);
+		passfd->list[passfd->count++] = Cast_int_to_voidstar(Lpd_ack_fd);
+	}
 	Set_flag_value(args,DEBUG,Debug);
 	Set_flag_value(args,DEBUGFV,DbgFlag);
 #ifdef DMALLOC
 	{
-		extern int dmalloc_outfile;
-		if( dmalloc_outfile > 0 ){
+		extern int _dmalloc_outfile;
+		if( _dmalloc_outfile > 0 ){
 			Set_decimal_value(args,DMALLOC_OUTFILE,passfd->count);
-			passfd->list[passfd->count++] = Cast_int_to_voidstar(dmalloc_outfile);
+			passfd->list[passfd->count++] = Cast_int_to_voidstar(_dmalloc_outfile);
 		}
 	}
 #endif
@@ -1106,19 +1114,20 @@ void Do_work( struct line_list *args )
 	Logger_fd = Find_flag_value(args, LOGGER,Value_sep);
 	Status_fd = Find_flag_value(args, STATUS_FD,Value_sep);
 	Mail_fd = Find_flag_value(args, MAIL_FD,Value_sep);
+	Lpd_ack_fd = Find_flag_value(args, LPD_ACK_FD,Value_sep);
 	Lpd_request = Find_flag_value(args, LPD_REQUEST,Value_sep);
 	Debug= Find_flag_value( args, DEBUG, Value_sep);
 	DbgFlag= Find_flag_value( args, DEBUGFV, Value_sep);
 #ifdef DMALLOC
 	{
-		extern int dmalloc_outfile;
-		dmalloc_outfile = Find_flag_value(args, DMALLOC_OUTFILE,Value_sep);
+		extern int _dmalloc_outfile;
+		_dmalloc_outfile = Find_flag_value(args, DMALLOC_OUTFILE,Value_sep);
 	}
 #endif
 	name = Find_str_value(args,CALL,Value_sep);
 	DEBUG3("Do_work: calling '%s'", name );
 	ps = 0;
-	for( i = 0; name && (ps = Calls[i].id) && strcasecmp(*ps,name); ++i);
+	for( i = 0; name && (ps = Calls[i].id) && safestrcasecmp(*ps,name); ++i);
 	if( ps ){
 		DEBUG3("Do_work: found '%s'", name );
 		(Calls[i].p)(args);
@@ -1348,7 +1357,7 @@ void Service_log( struct line_list *args )
 	while( Outlen < Outmax
 		&& (n = read(error, Outbuf+Outlen, Outmax-Outlen)) > 0 ){
 		Outbuf[Outlen+n] = 0;
-		while( (s = strchr(Outbuf,'\n')) ){
+		while( (s = safestrchr(Outbuf,'\n')) ){
 			*s++ = 0;
 			DEBUG2("Service_log: %s '%s'", name, Outbuf);
 			plp_snprintf(buffer,sizeof(buffer),

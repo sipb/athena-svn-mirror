@@ -122,11 +122,14 @@
 /* Define if the `long double' type works.  */
 #undef HAVE_LONG_DOUBLE
 
+/* Define if you support file names longer than 14 characters.  */
+#undef HAVE_LONG_FILE_NAMES
+
 /* Define if the `long long' type works.  */
 #undef HAVE_LONG_LONG
 
-/* Define if you support file names longer than 14 characters.  */
-#undef HAVE_LONG_FILE_NAMES
+/* Define if there is lseek proto.  */
+#undef HAVE_LSEEK_PROTO
 
 /* Define if you have a working `mmap' system call.  */
 #undef HAVE_MMAP

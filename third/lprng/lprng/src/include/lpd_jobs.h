@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpd_jobs.h,v 1.1.1.2 1999-05-24 18:29:07 danw Exp $
+ * $Id: lpd_jobs.h,v 1.1.1.3 1999-10-27 20:10:11 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,7 @@ int Local_job( struct job *job, char *id );
 int Fork_subserver( struct line_list *server_info, int use_subserver,
 	struct line_list *parms );
 void Wait_for_subserver( struct line_list *servers, struct line_list *order );
-int Decode_transfer_failure( int attempt, struct job *job );
+int Decode_transfer_failure( int attempt, struct job *job, char *id );
 void Update_status( struct job *job, int status );
 int Check_print_perms( struct job *job );
 void Setup_user_reporting( struct job *job );

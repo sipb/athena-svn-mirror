@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendjob.c,v 1.1.1.2 1999-05-04 18:06:57 danw Exp $";
+"$Id: sendjob.c,v 1.1.1.3 1999-10-27 20:09:51 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -151,7 +151,10 @@ int Send_job( struct job *job,
 	if( real_host ) free( real_host );
 	setstatus( job, "connected to '%s'", RemoteHost_DYN );
 
-	if( safestrcasecmp(Auth_DYN,NONE) ){
+	if( (Is_server && Auth_forward_DYN
+		&& safestrcasecmp(Auth_client_id_DYN,NONEP)
+		&& safestrcasecmp(Auth_forward_DYN,NONEP))
+		|| (!Is_server && Auth_DYN && safestrcasecmp(Auth_DYN,NONEP)) ){
 		/* we send the Kerberos 4 authentication,
 		 * then use normal transfer.  This is only for client to server
 		 * otherwise we are in trouble.
@@ -202,7 +205,7 @@ int Send_job( struct job *job,
 				&& (n = read(sock,msg+len,sizeof(msg)-len-1)) > 0 ){
 				msg[len+n] = 0;
 				DEBUG2("Send_job: read %d, '%s'", n, msg);
-				while( (s = strchr(msg,'\n')) ){
+				while( (s = safestrchr(msg,'\n')) ){
 					*s++ = 0;
 					setstatus( job, "error msg: '%s'", msg );
 					memmove(msg,s,strlen(s)+1);
@@ -274,7 +277,7 @@ int Send_normal( int *sock, struct job *job, int transfer_timeout, int block_fd 
 		if( (status = Link_send( RemoteHost_DYN, sock, transfer_timeout,
 			line, strlen(line), &ack ) )){
 			char *v;
-			if( (v = strchr(line,'\n')) ) *v = 0;
+			if( (v = safestrchr(line,'\n')) ) *v = 0;
 			if( ack ){
 				plp_snprintf(error,sizeof(error),
 					"error '%s' with ack '%s' sending str '%s' to %s@%s",
@@ -318,8 +321,8 @@ int Send_control( int *sock, struct job *job, int transfer_timeout,
 	size = strlen(cf);
 	transfername = Find_str_value(&job->info,TRANSFERNAME,Value_sep);
 
-	DEBUG3( "Send_control: '%s' is %d bytes, sock %d, block_fd %d",
-		transfername, size, cf, *sock, block_fd );
+	DEBUG3( "Send_control: '%s' is %d bytes, sock %d, block_fd %d, cf '%s'",
+		transfername, size, *sock, block_fd, cf );
 	if( !block_fd ){
 		setstatus( job, "sending control file '%s' to %s@%s",
 		transfername, RemotePrinter_DYN, RemoteHost_DYN );
@@ -333,7 +336,7 @@ int Send_control( int *sock, struct job *job, int transfer_timeout,
 	if( !block_fd ){
 		if( (status = Link_send( RemoteHost_DYN, sock, transfer_timeout,
 			msg, strlen(msg), &ack )) ){
-			if( (s = strchr(msg,'\n')) ) *s = 0;
+			if( (s = safestrchr(msg,'\n')) ) *s = 0;
 			if( ack ){
 				plp_snprintf(error,sizeof(error),
 				"error '%s' with ack '%s' sending str '%s' to %s@%s",
@@ -405,7 +408,7 @@ int Send_data_files( int *sock, struct job *job, int transfer_timeout,
 	int block_fd )
 {
 	int count, fd, err, status = 0, ack;
-	long size;
+	double size;
 	struct line_list *lp;
 	char *openname, *transfername, *id, *s;
 	char msg[SMALLBUFFER];
@@ -437,12 +440,12 @@ int Send_data_files( int *sock, struct job *job, int transfer_timeout,
 		}
 		size = statb.st_size;
 
-		DEBUG3( "Send_files: openname '%s', fd %d, size %ld",
+		DEBUG3( "Send_files: openname '%s', fd %d, size %0.0f",
 			openname, fd, size );
 		/*
 		 * send the data file name line
 		 */
-		plp_snprintf( msg, sizeof(msg), "%c%ld %s\n",
+		plp_snprintf( msg, sizeof(msg), "%c%0.0f %s\n",
 				DATA_FILE, size, transfername );
 		if( block_fd == 0 ){
 			setstatus( job, "sending data file '%s' to %s@%s", transfername,
@@ -451,7 +454,7 @@ int Send_data_files( int *sock, struct job *job, int transfer_timeout,
 			errno = 0;
 			if( (status = Link_send( RemoteHost_DYN, sock, transfer_timeout,
 				msg, strlen(msg), &ack )) ){
-				if( (s = strchr(msg,'\n')) ) *s = 0;
+				if( (s = safestrchr(msg,'\n')) ) *s = 0;
 				if( ack ){
 					plp_snprintf(error,sizeof(error),
 					"error '%s' with ack '%s' sending str '%s' to %s@%s",
@@ -492,7 +495,7 @@ int Send_data_files( int *sock, struct job *job, int transfer_timeout,
 			setstatus( job, "completed sending '%s' to %s@%s",
 				transfername, RemotePrinter_DYN, RemoteHost_DYN );
 		} else {
-			int total;
+			double total;
 			int len;
 
 			if( Write_fd_str( block_fd, msg ) < 0 ){
@@ -562,7 +565,7 @@ int Send_block( int *sock, struct job *job, int transfer_timeout )
 	char msg[SMALLBUFFER];	/* buffer */
 	char error[SMALLBUFFER];	/* buffer */
 	struct stat statb;
-	long size;				/* ACME! The best... */
+	double size;				/* ACME! The best... */
 	int status = 0;				/* job status */
 	int ack;
 	char *id, *transfername, *tempfile;
@@ -597,10 +600,10 @@ int Send_block( int *sock, struct job *job, int transfer_timeout )
 	size = statb.st_size;
 
 	/* now we know the size */
-	DEBUG3("Send_block: size %ld", size );
+	DEBUG3("Send_block: size %0.0f", size );
 	setstatus( job, "sending job '%s' to %s@%s, block transfer",
 		id, RemotePrinter_DYN, RemoteHost_DYN );
-	plp_snprintf( msg, sizeof(msg), "%c%s %ld\n",
+	plp_snprintf( msg, sizeof(msg), "%c%s %0.0f\n",
 		REQ_BLOCK, RemotePrinter_DYN, size );
 	DEBUG3("Send_block: sending '%s'", msg );
 	status = Link_send( RemoteHost_DYN, sock, transfer_timeout,
@@ -608,7 +611,7 @@ int Send_block( int *sock, struct job *job, int transfer_timeout )
 	DEBUG3("Send_block: status '%s'", Link_err_str(status) );
 	if( status ){
 		char *v;
-		if( (v = strchr(msg,'\n')) ) *v = 0;
+		if( (v = safestrchr(msg,'\n')) ) *v = 0;
 		if( ack ){
 			plp_snprintf(error,sizeof(error),
 			"error '%s' with ack '%s' sending str '%s' to %s@%s",
@@ -635,7 +638,7 @@ int Send_block( int *sock, struct job *job, int transfer_timeout )
 	}
 	if( status ){
 		char *v;
-		if( (v = strchr(msg,'\n')) ) *v = 0;
+		if( (v = safestrchr(msg,'\n')) ) *v = 0;
 		if( ack ){
 			plp_snprintf(error,sizeof(error),
 				"error '%s' with ack '%s' sending file '%s' to %s@%s",
@@ -685,7 +688,9 @@ int Send_secure_block( int *sock, struct job *job, int transfer_timeout )
 {
 	int tempfd;			/* temp file for data transfer */
 	int status = 0;		/* job status */
-	char *tempfilename, *auth_id, *transfername;
+	int n, count;			/* ACME temps */
+	char *tempfilename, *auth_id, *transfername, *s;
+	char buffer[SMALLBUFFER];
 
 	DEBUG3("Send_secure_block: RemotePrinter_DYN '%s'", RemotePrinter_DYN );
 	auth_id = Find_str_value(&job->info,AUTHINFO,Value_sep);
@@ -704,5 +709,19 @@ int Send_secure_block( int *sock, struct job *job, int transfer_timeout )
 	close( tempfd ); tempfd = -1;
 	status = Send_auth_transfer( sock, transfer_timeout, tempfilename, 1 );
 	DEBUG3("Send_secure_block: status %d", status );
+	if( status == 0 ){
+		buffer[0] = 0;
+		while( (count = strlen(buffer)) < sizeof(buffer)-1
+			&& (n = read(*sock, buffer+count, sizeof(buffer)-count-1)) > 0 ){
+			buffer[count+n] = 0;
+			DEBUG3("Send_secure_block: read %d, '%s'", n, buffer );
+			while( (s = strchr( buffer, '\n' )) ){
+				*s++ = 0;
+				setstatus( job, "SECURE ERROR from %s@%s '%s'",
+					RemotePrinter_DYN, RemoteHost_DYN, buffer );
+				memmove( buffer, s, strlen(s)+1 );
+			}
+		}
+	}
 	return( status );
 }

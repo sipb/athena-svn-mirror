@@ -636,9 +636,10 @@ sub Get_remote_pr_host( $ $)
 	if( not $port ){
 		$port = "printer";
 	}
-	my( $num );
-	$num = getservbyname( $port, "tcp" );
-	return( $pr, $remote, $num );
+	if( $port + 0 == 0 ){
+		$port = getservbyname( $port, "tcp" );
+	}
+	return( $pr, $remote, $port );
 }
 
 sub getconnection ($ $)
@@ -693,6 +694,7 @@ sub sendit( $ $ )
 {
 	my( $SOCK, $line ) = @_;
 	my( $count );
+	print "sendit sending '$line'\n" if $Debug;
 	print $SOCK $line or die "print to socket failed - $!\n";
 	$line = "";
 	$count = read $SOCK, $line, 1;

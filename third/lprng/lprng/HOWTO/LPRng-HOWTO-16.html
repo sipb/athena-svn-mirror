@@ -25,7 +25,7 @@ and the Kerberos 4 implementation.
 In addition,
 it provides Kerberos 5 based authentication.
 <P>LPRng also supports the use of the PGP (Pretty Good Privacy) program
-and can sign and optionally encrypt command and reponses between servers
+and can sign and optionally encrypt command and responses between servers
 and clients.
 <P>Finally,
 LPRng provide a general purpose interface allowing users to insert their
@@ -213,7 +213,7 @@ The client authenticator will write this information to FD 1.
 If data transfer or authentication fails,  the authenticator
 will write an error message to FD 2 and exit with error code
 JFAIL.
-<P>If no error has occured the client authenticator will
+<P>If no error has occurred the client authenticator will
 then exit with error code JSUCC.
 <P>
 <H2><A NAME="authforwardfilter"></A> <A NAME="authreceivefilter"></A> <A NAME="ss16.5">16.5 Server Operations for Client To lpd Server Authentication</A>
@@ -251,7 +251,7 @@ and a non-zero error code and message will be written to the connection
 to the remote client program.
 <P>Many authentication programs require that the
 users provide some form of key or identification.
-The <CODE>auth_server_id</CODE> option is used for this purpose.
+The <CODE>userid</CODE> option is used for this purpose.
 <P>The server will start the server authenticator program and provide the
 following open file descriptors for it.  The program
 will run as the same UID as the <CODE>lpd</CODE> server.
@@ -269,7 +269,7 @@ FD  Options Purpose
 <P>Command line arguments:
 <BLOCKQUOTE><CODE>
 <PRE>
-program -S -PPRINTER -nUSER -aAUTHTYPE -Rauth_server_id -Ttempfile
+program -S -PPRINTER -nserver_auth_id -aAUTHTYPE -RUSERID -Ttempfile
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The
@@ -277,7 +277,19 @@ program -S -PPRINTER -nUSER -aAUTHTYPE -Rauth_server_id -Ttempfile
 <CODE>USER</CODE>,
 and
 <CODE>AUTHTYPE</CODE>,
-are obtained from the original command.
+are obtained from the command sent to the server,
+and are the
+<CODE>printer</CODE>,
+<CODE>user</CODE>,
+and
+<CODE>authtype</CODE>
+values sent.
+The
+<CODE>server_auth_id</CODE>
+is obtained from the printcap or configuration information for this
+printer,
+and should be identical to the value used by the sending program to
+when it invoked the authenticator program.
 <P>The authentication filter will read the file transferred by the
 client authenticator,
 decrypt it,
@@ -291,7 +303,7 @@ and used as the identification of the originating end of the connection.
 <P>If the originating program is an LPRng client,
 then the <CODE>from_id</CODE> value will be the user identification for the authentication protocol;
 if the originating program is an LPRng server,
-this value will be the server identificatio for the authentication protocol.
+this value will be the server identification for the authentication protocol.
 <P>After writing this value,
 the transfer program will close FD 1.
 At this point the LPD server will use the contents of the tempfile to perform
@@ -370,15 +382,15 @@ transfer a job acting similar to a client.  The initial information
 transfer from the sending server will have the format:
 <BLOCKQUOTE><CODE>
 <PRE>
-\008printer F server_user authtype \n          - for commands
-\008printer F server_user authtype controlfilename\n - for print jobs
+\008printer F local_server_id authtype \n     - for commands
+\008printer F local_server_id authtype size\n - for print jobs
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The sending server will invoke its authenticator with the arguments:
 <BLOCKQUOTE><CODE>
 <PRE>
-auth_forward_filter -F -Pprinter -nserver_user -aauthtype \
--Rremote_user -Ttempfile
+auth_forward_filter -F -Pprinter -nlocal_server_id -aauthtype \
+-Rremote_server_id -Ttempfile
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The tempfile containing the job or command information to be sent
@@ -386,13 +398,12 @@ will have the form:
 <BLOCKQUOTE><CODE>
 <PRE>
 user_authentication_info\n
-\n
 &lt;normal file contents>
 </PRE>
 </CODE></BLOCKQUOTE>
 
 That is,
-the user authentication information is place in the tempfile.
+the user authentication information is placed in the tempfile.
 <P>The tempfile will be transferred to the remote server in the same fashion
 as for a user job.
 Any error or logging information returned will either be written to the
@@ -401,7 +412,8 @@ the transfer chain.
 <P>On the destination server the same operations
 for receiving an authentication request from a client
 is performed.
-The AUTHUSER, AUTHFROM, and AUTHTYPE values will be the derived from the
+The AUTHUSER, AUTHFROM, and AUTHTYPE permission
+checking values will be the derived from the
 authentication request as for the client.
 The AUTHSAMEUSER will compare the remote client authentication
 information and the authentication information used to create the job.
@@ -514,7 +526,7 @@ and then disable logins for <CODE>daemon</CODE>.
 the server.
 For example,
 <CODE>lpr@hostname</CODE>,
-where hostname is the fully qualified domain name of the server is userful.
+where hostname is the fully qualified domain name of the server is useful.
 <P>The next step is to place the passphrase in a file that is only readable by
 <CODE>daemon</CODE>,
 say
@@ -561,14 +573,14 @@ pgp -ka /tmp/keyfile ~daemon/.pgp/pubring.pgp
 <UL>
 <LI><CODE>pgp_path=</CODE><EM>path to PGP program</EM></LI>
 <LI><CODE>pgp_server_key=</CODE><EM>path to server passphrase file</EM></LI>
-<LI><CODE>pgp_passphrase=</CODE><EM>user passphrase file in PGPPATH or $HOME/.pgp</EM></LI>
+<LI><CODE>pgp_passphrasefile=</CODE><EM>user passphrase file in PGPPATH or $HOME/.pgp</EM></LI>
 </UL>
 <P>The <CODE>pgp_path</CODE> option is the path to the PGP program.
 <P>The <CODE>pgp_server_key</CODE> is the path to the file containing the server passphrase.
 This file will be read by <CODE>lpd</CODE> to get the passphrase to unlock the server's
 keyring.
 <P>The LPRng client software will check to see if the
-<CODE>pgp_passphrase</CODE>  value (default <CODE>clientkey</CODE>) file in
+<CODE>pgp_passphrasefile</CODE>  value (default <CODE>clientkey</CODE>) file in
 <CODE>$PGPPATH</CODE>, and if not present,
 then in <CODE>$HOME/.pgp</CODE>.
 By default, the <CODE>pass_env</CODE> option is <CODE>pass_env=PGPPASS,PGPPATH,PGPPASSFD</CODE>
@@ -582,7 +594,7 @@ pr:
     :auth=pgp
     :auth_server_id=lpr@wayoff.com
     :pgp_path=/usr/local/bin/pgp
-    :pgp_passphrase=.mypass
+    :pgp_passphrasefile=.mypass
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>One problem with using PGP is the need to have users input their
@@ -721,7 +733,7 @@ as it will try to read the file to get its server key.
 auth=kerberos5
 kerberos_keytab=/etc/lpd.keytab
 kerberos_service=lpr
-# optional - explicit prinipal name for server, used by clients
+# optional - explicit prinicpal name for server, used by clients
 #kerberos_server_principal=lpr/hostname@REALM
 # optional - forwarding to another server with authentication
 # kerberos_forward_principal=lpr/hostname@REALM

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.1.1.3 1999-05-24 18:29:16 danw Exp $";
+"$Id: vars.c,v 1.1.1.4 1999-10-27 20:09:52 mwhitson Exp $";
 
 
 /* force local definitions */
@@ -50,18 +50,23 @@ Put all of the variables in a separate file.
 #define ARCHITECTURE "unknown"
 #endif
 #if !defined(LPD_CONF_PATH)
-#define LPD_CONF_PATH "=/etc/lpd.conf:/usr/etc/lpd.conf"
+#error Missing LPD_CONF_PATH definition
+#endif
+#if !defined(LPD_PERMS_PATH)
+#error Missing LPD_PERMS_PATH definition
 #endif
 #if !defined(PRINTCAP_PATH)
-#define PRINTCAP_PATH "=/etc/printcap:/usr/etc/printcap"
+#error Missing PRINTCAP_PATH definition
 #endif
-
-#if !defined(DISABLE_FORCE_LOCALHOST)
-#define FORCE_LOCALHOST "1"
-#else
-#define FORCE_LOCALHOST
+#if !defined(LPD_PRINTCAP_PATH)
+#error Missing LPD_PRINTCAP_PATH definition
 #endif
-
+#if !defined(FORCE_LOCALHOST)
+#error Missing FORCE_LOCALHOST definition
+#endif
+#if !defined(REQUIRE_CONFIGFILES)
+#error Missing REQUIRE_CONFIGFILES definition
+#endif
 
 struct keywords Pc_var_list[] = {
 
@@ -82,6 +87,8 @@ struct keywords Pc_var_list[] = {
 { "allow_getenv", FLAG_K, &Allow_getenv_DYN,1,0,ENV},
    /* allow users to request logging info using lpr -mhost%port */
 { "allow_user_logging", FLAG_K, &Allow_user_logging_DYN,0,0},
+   /* allow these users or UIDs to set owner of job.  For Samba front ending */
+{ "allow_user_setting", STRING_K, &Allow_user_setting_DYN,0,0},
    /*  write remote transfer accounting (if af is set) */
 { "ar",  FLAG_K,  &Accounting_remote_DYN,0,0,"1"},
    /* host architecture */
@@ -168,6 +175,8 @@ struct keywords Pc_var_list[] = {
 { "destinations", STRING_K, &Destinations_DYN,0,0},
    /* list of keys used to search config for environment variable setup */
 { "env_names", STRING_K, &Env_names_DYN,0,0},
+   /* exit linger timeout to wait for socket to close */
+{ "exit_linger_timeout", INTEGER_K, &Exit_linger_timeout_DYN,0,0,"=600"},
    /*  string to send for a form feed */
 { "ff",  STRING_K,  &Form_feed_DYN,0,0,"=\\f"},
    /* default filter */
@@ -196,6 +205,8 @@ struct keywords Pc_var_list[] = {
 { "full_time",  FLAG_K,  &Full_time_DYN,0,0},
    /*  valid output filter formats */
 { "fx",  STRING_K,  &Formats_allowed_DYN,0,0},
+   /* generate a banner when forwarding job */
+{ "generate_banner", FLAG_K, &Generate_banner_DYN,0,0},
    /* group to run SUID ROOT programs */
 { "group", STRING_K, &Daemon_group_DYN,1,0,"=daemon"},
    /*  print banner after job instead of before */
@@ -206,6 +217,8 @@ struct keywords Pc_var_list[] = {
 { "ignore_requested_user_priority",  FLAG_K,  &Ignore_requested_user_priority_DYN,0,0},
    /*  Running IPV6 */
 { "ipv6",  FLAG_K,  &IPV6Protocol_DYN,0,0},
+	/* TCP keepalive enabled */
+{ "keepalive", FLAG_K, &Keepalive_DYN,0,0,"1"},
 	/* keytab file location for kerberos, used by server */
 { "kerberos_keytab", STRING_K, &Kerberos_keytab_DYN,0,0,"=/etc/lpd.keytab"},
 	/* key lifetime for kerberos, used by server */
@@ -251,7 +264,7 @@ struct keywords Pc_var_list[] = {
    /* lpd port */
 { "lpd_port", STRING_K, &Lpd_port_DYN,0,0,"=printer"},
    /* lpd printcap path */
-{ "lpd_printcap_path", STRING_K, &Lpd_printcap_path_DYN,1,0,"=/etc/lpd_printcap,/usr/etc/lpd_printcap"},
+{ "lpd_printcap_path", STRING_K, &Lpd_printcap_path_DYN,1,0,"=" LPD_PRINTCAP_PATH},
    /* use lpr filtering as in bounce queue */
 { "lpr_bounce", FLAG_K, &Lpr_bounce_DYN,0,0},
    /* BSD LPR -m flag, does not require mail address */
@@ -297,19 +310,19 @@ struct keywords Pc_var_list[] = {
    /* if client, pass these environment variables */
 { "pass_env",  STRING_K,  &Pass_env_DYN,0,0,"=PGPPASS,PGPPATH,PGPPASSFD"},
    /* lpd.perms files */
-{ "perms_path", STRING_K, &Printer_perms_path_DYN,1,0,"=/etc/lpd.perms,/usr/etc/lpd.perms"},
+{ "perms_path", STRING_K, &Printer_perms_path_DYN,1,0,"=" LPD_PERMS_PATH },
    /* pathname of PGP program */
 { "pgp_path", STRING_K, &Pgp_path_DYN,0,0},
-   /* pathname of PGP program */
-{ "pgp_passphrase", STRING_K, &Pgp_passphrase_DYN,0,0,"clientkey"},
-   /* pathname of PGP program */
-{ "pgp_server_key", STRING_K, &Pgp_server_key_DYN,0,0},
+   /* client passphrase file for built in PGP authentication */
+{ "pgp_passphrasefile", STRING_K, &Pgp_passphrasefile_DYN,0,0,"clientkey"},
+   /* server passphrasefile PGP authentication */
+{ "pgp_server_passphrasefile", STRING_K, &Pgp_server_passphrasefile_DYN,0,0},
    /*  page length (in lines) */
 { "pl",  INTEGER_K,  &Page_length_DYN,0,0,"=66"},
    /*  pr program for p format */
 { "pr",  STRING_K,  &Pr_program_DYN,0,0,"=/bin/pr"},
    /* /etc/printcap files */
-{ "printcap_path", STRING_K, &Printcap_path_DYN,1,0,PRINTCAP_PATH},
+{ "printcap_path", STRING_K, &Printcap_path_DYN,1,0,"=" PRINTCAP_PATH},
    /*  printer status file name */
 { "ps",  STRING_K,  &Status_file_DYN,0,0,"=status"},
    /*  page width (in characters) */
@@ -318,12 +331,22 @@ struct keywords Pc_var_list[] = {
 { "px",  INTEGER_K,  &Page_x_DYN,0,0},
    /*  page length in pixels (vertical) */
 { "py",  INTEGER_K,  &Page_y_DYN,0,0},
+   /*  print queue lock file name */
+{ "queue_lock_file",  STRING_K,  &Queue_lock_file_DYN,0,0,"=%P"},
+   /*  print queue control file name */
+{ "queue_control_file",  STRING_K,  &Queue_control_file_DYN,0,0,"=control.%P"},
+   /*  print queue status file name */
+{ "queue_status_file",  STRING_K,  &Queue_status_file_DYN,0,0,"=status.%P"},
+   /*  print queue unspooler pid file name */
+{ "queue_unspooler_file",  STRING_K,  &Queue_unspooler_file_DYN,0,0,"=unspooler.%P"},
    /*  put queue name in control file */
 { "qq",  FLAG_K,  &Use_queuename_DYN,0,0,"=1"},
    /*  operations allowed to remote host */
 { "remote_support",  STRING_K,  &Remote_support_DYN,0,0,"=RMQVC"},
    /*  report server as this value for LPQ status */
 { "report_server_as",  STRING_K,  &Report_server_as_DYN,0,0},
+   /*  client requires lpd.conf, printcap */
+{ "require_configfiles",  FLAG_K,  &Require_configfiles_DYN,0,0,"=" REQUIRE_CONFIGFILES},
    /*  retry on ECONNREFUSED error */
 { "retry_econnrefused",  FLAG_K,  &Retry_ECONNREFUSED_DYN,0,0,"1"},
    /*  retry on NOLINK connection */
@@ -334,6 +357,8 @@ struct keywords Pc_var_list[] = {
 { "reuse_addr",  FLAG_K,  &Reuse_addr_DYN,0,0},
    /*  reverse LPQ status format when specified remotehost */
 { "reverse_lpq_status",  STRING_K,  &Reverse_lpq_status_DYN,0,0},
+   /*  reverse priority order, z-aZ-A, so A is lowest */
+{ "reverse_priority_order",  FLAG_K,  &Reverse_priority_order_DYN,0,0},
    /*  remote-queue machine (hostname) (with rp) */
 { "rm",  STRING_K,  &RemoteHost_DYN,0,0},
    /*  routing filter, returns destinations */
@@ -374,12 +399,14 @@ struct keywords Pc_var_list[] = {
 { "sh",  FLAG_K,  &Suppress_header_DYN,0,0},
    /*  SHELL enviornment variable value for filters */
 { "shell",  STRING_K,  &Shell_DYN,0,0,"=/bin/sh"},
+   /*  short status date enabled or disabled */
+{ "short_status_date",  FLAG_K,  &Short_status_date_DYN,0,0,"=1"},
    /*  short status length in lines */
 { "short_status_length",  INTEGER_K,  &Short_status_length_DYN,0,0,"=3"},
    /* set the SO_LINGER socket option */
 { "socket_linger", INTEGER_K,  &Socket_linger_DYN,0,0,"=10"},
    /* spool directory permissions */
-{ "spool_dir_perms", INTEGER_K, &Spool_dir_perms_DYN,0,0,"=042700"},
+{ "spool_dir_perms", INTEGER_K, &Spool_dir_perms_DYN,0,0,"=000700"},
    /* spool file permissions */
 { "spool_file_perms", INTEGER_K, &Spool_file_perms_DYN,0,0,"=000600"},
    /* amount to spread jobs to avoid collisions */
@@ -410,6 +437,8 @@ struct keywords Pc_var_list[] = {
 { "use_shorthost",  FLAG_K,  &Use_shorthost_DYN,0,0},
    /*  server user for SUID purposes */
 { "user", STRING_K, &Daemon_user_DYN,1,0,"=daemon"},
+   /*  wait for EOF on device before closing */
+{ "wait_for_eof", FLAG_K, &Wait_for_eof_DYN,0,0,"1"},
 /* END */
 { (char *)0 }
 } ;
@@ -443,21 +472,5 @@ struct keywords DYN_var_list[] = {
 
 { "Current_date_DYN",  STRING_K, &Current_date_DYN },
 
-{ 0 }
-} ;
-
-struct keywords Expand_var_list[] = {
-{ "Printer_DYN",  STRING_K, &Printer_DYN },
-{ "Queue_name_DYN",  STRING_K, &Queue_name_DYN },
-{ "Config_file_DYN",  STRING_K, &Config_file_DYN },
-{ "Printcap_path_DYN",  STRING_K, &Printcap_path_DYN },
-{ "Printer_perms_path_DYN",  STRING_K, &Printer_perms_path_DYN },
-{ "Lpd_printcap_path_DYN",  STRING_K, &Lpd_printcap_path_DYN },
-{ "Accounting_file_DYN",  STRING_K, &Accounting_file_DYN },
-{ "RemoteHost_DYN",  STRING_K, &RemoteHost_DYN },
-{ "RemotePrinter_DYN",  STRING_K, &RemotePrinter_DYN },
-{ "Lp_device_DYN",  STRING_K, &Lp_device_DYN },
-{ "Spool_dir_DYN",  STRING_K, &Spool_dir_DYN },
-{ "Lockfile_DYN",  STRING_K, &Lockfile_DYN },
 { 0 }
 } ;

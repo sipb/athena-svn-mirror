@@ -63,7 +63,14 @@ for( $i = 0; $i < @files; ++$i ){
 		$dfn[$i] = $df;
 		$cf .= "N$file\n" . "f$df\n" . "U$df\n";
 		++$filecount;
+		++$fn;
+		if( $filecount == 26 ){ $fn = "a"; }
 	}
+}
+
+if( $filecount > 52 ){
+	print STDERR "too many files\n";
+	exit 2;
 }
 
 if( $filecount == 0 ){

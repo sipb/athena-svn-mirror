@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: initialize.c,v 1.1.1.2 1999-05-04 18:06:52 danw Exp $";
+"$Id: initialize.c,v 1.1.1.3 1999-10-27 20:09:55 mwhitson Exp $";
 
 #include "lp.h"
 #include "initialize.h"
@@ -99,22 +99,24 @@ void Initialize(int argc,  char *argv[], char *envp[] )
 void Setup_configuration()
 {
 	char *s;
+	struct line_list raw;
 
 	/* Get default configuration file information */
 #ifdef DMALLOC
-	extern int dmalloc_outfile;
-	extern char *dmalloc_logpath;
+	extern int _dmalloc_outfile;
+	extern char *_dmalloc_logpath;
 	char buffer[SMALLBUFFER];
 
 	safestrdup("DMALLOC",__FILE__,__LINE__);
-	if( dmalloc_logpath && dmalloc_outfile < 0 ){
-		dmalloc_outfile = open( dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if( _dmalloc_logpath && _dmalloc_outfile < 0 ){
+		_dmalloc_outfile = open( _dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	}
 	plp_snprintf(buffer,sizeof(buffer),"*** Setup_configuration: pid %d\n", getpid() );
-	Write_fd_str(dmalloc_outfile,buffer);
-	DEBUG1("Setup_configuration: dmalloc_outfile fd %d", dmalloc_outfile);
+	Write_fd_str(_dmalloc_outfile,buffer);
+	DEBUG1("Setup_configuration: _dmalloc_outfile fd %d", _dmalloc_outfile);
 #endif
 
+	Init_line_list(&raw);
 	Clear_config();
 
 
@@ -137,8 +139,7 @@ void Setup_configuration()
 
     DEBUG1("Setup_configuration: Configuration file '%s'", Config_file_DYN );
 
-	Get_config( Config_file_DYN );
-
+	Get_config( Is_server || Require_configfiles_DYN, Config_file_DYN );
 
 	if( Is_server ){
 		Reset_daemonuid();
@@ -155,20 +156,26 @@ void Setup_configuration()
 
 	if(DEBUGL2) Dump_parms( "Setup_configuration - final values", Pc_var_list );
 
-	Getprintcap_pathlist( &RawPC_line_list, &PC_filters_line_list,
-		Printcap_path_DYN );
 	if( Is_server ){
+		DEBUG2("Setup_configuration: Printcap_path '%s'", Printcap_path_DYN );
+		Getprintcap_pathlist( 1, &raw, &PC_filters_line_list,
+			Printcap_path_DYN );
 		DEBUG2("Setup_configuration: Lpd_printcap_path '%s'", Lpd_printcap_path_DYN );
-		Getprintcap_pathlist( &RawPC_line_list, &PC_filters_line_list,
+		Getprintcap_pathlist( 0, &raw, &PC_filters_line_list,
 			Lpd_printcap_path_DYN );
 		DEBUG2("Setup_configuration: Printer_perms_path '%s'", Printer_perms_path_DYN );
-		Getprintcap_pathlist( &RawPerm_line_list, &Perm_filters_line_list,
+		Getprintcap_pathlist( 1, &raw, &Perm_filters_line_list,
 			Printer_perms_path_DYN );
+	} else {
+		DEBUG2("Setup_configuration: Printcap_path '%s'", Printcap_path_DYN );
+		Getprintcap_pathlist( Require_configfiles_DYN,
+			&raw, &PC_filters_line_list,
+			Printcap_path_DYN );
 	}
 	Build_printcap_info( &PC_names_line_list, &PC_order_line_list,
-		&PC_info_line_list, &RawPC_line_list, &Host_IP );
-	/* now we can free up the Raw stuff */
-	Free_line_list( &RawPC_line_list );
+		&PC_info_line_list, &raw, &Host_IP );
+	/* now we can free up the raw list */
+	Free_line_list( &raw );
 	if(DEBUGL3){
 		Dump_line_list("Setup_configuration: PC names", &PC_names_line_list );
 		Dump_line_list("Setup_configuration: PC order", &PC_order_line_list );

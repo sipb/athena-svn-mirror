@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: portable.h,v 1.1.1.2 1999-05-04 18:07:04 danw Exp $
+ * $Id: portable.h,v 1.1.1.3 1999-10-27 20:10:08 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -48,6 +48,10 @@ LPRng requires ANSI Standard C compiler
 #endif
 
 #include "config.h"
+
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
 
 /*************************************************************************
  * ARGH: some things that "configure" can't get right.
@@ -698,7 +702,7 @@ extern int lockf(int fd, int cmd, long size );
 /*extern int lseek(int fd, off_t pos, int how ); */
 extern int lstat(const char *path, struct stat *buf );
 #define memmove(dest,src,len) bcopy(src,dest,len)
-extern void bcopy(char *src,char *dest,int len);
+extern void bcopy(const void *src,void *dest,size_t len);
 extern int mkstemp(char *s );
 extern int openlog( const char *ident, int logopt, int facility );
 extern int perror(const char *);
@@ -716,7 +720,13 @@ extern int stat(const char *path, struct stat *buf );
 extern int strcasecmp( const char *, const char * );
 extern char *strerror( int );
 extern int strncasecmp( const char *, const char *, int n );
-extern int long strtol( char *str, char **ptr, int base );
+extern long strtol( const char *str, char **ptr, int base );
+extern double strtod( const char *str, char **ptr );
+extern int shutdown( int sock, int how );
+extern int gettimeofday(struct timeval *tp, struct timezone *tzp);
+extern int getrlimit(int resource, struct rlimit *rlp);
+extern char * sbrk(int incr);
+extern int fchmod(int fd, int mode);
 extern int strftime(char *buf, int bufsize, const char *fmt, struct tm *tm);
 extern void syslog(int, const char *, ...);
 extern int system( const char *str );

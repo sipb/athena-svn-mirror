@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sclient.c,v 1.1.1.1 1999-05-04 18:07:00 danw Exp $";
+"$Id: sclient.c,v 1.1.1.2 1999-10-27 20:10:02 mwhitson Exp $";
 
 /*
  * Simple Kerberos client tester.
