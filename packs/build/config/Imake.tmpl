@@ -162,7 +162,8 @@ PTOP = $(TOP)/ProjectTop
 #ifdef UseInstalled
 IMAKE= imake
 IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR
-XIFLAGS= -I$(IRULESRC)/../xconfig -DUseInstalled -DTOPDIR=. -DSRCDIR=TOPDIR
+XIRULESRC = TOPDIR/xconfig
+XIFLAGS= -I$(XIRULESRC) -DUseInstalled -DTOPDIR=. -DCONFIGDIR=$(XIRULESRC)
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
