@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
  *      $Author: jtkohl $
- *	$Id: main.h,v 1.4 1989-11-15 10:00:51 jtkohl Exp $
+ *	$Id: main.h,v 1.5 1989-11-15 22:48:20 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -37,7 +37,7 @@ extern void usage();
 /* DEFDESC points to where the system default description is stored */
 
 #ifndef DEFDESC
-#define DEFDESC "/etc/athena/zwgc.desc"
+#define DEFDESC "/usr/athena/lib/zephyr/zwgc.desc"
 #endif
 
 #endif
