@@ -19,15 +19,17 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v $
- *	$Id: p_utils.c,v 1.12 1990-12-14 11:59:45 lwvanels Exp $
+ *	$Id: p_utils.c,v 1.13 1991-01-15 17:47:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.12 1990-12-14 11:59:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.13 1991-01-15 17:47:52 lwvanels Exp $";
 #endif
 #endif
+
+#include <ctype.h>
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
@@ -97,6 +99,11 @@ handle_argument(args, req, status)
   else          
     if(*args)
 	{
+	  if (!isalnum(*args[0])) {
+	    fprintf(stderr,"The username \"%s\" is invalid.\n", *args);
+	    *status = ERROR;
+	    return((char **) NULL);
+	  }
 	  (void) strcpy(req->target.username,*args);
 	  num_of_args++;
 	  if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
@@ -117,7 +124,3 @@ handle_argument(args, req, status)
 	} 
   return(args);
 }
-
-
-
-
