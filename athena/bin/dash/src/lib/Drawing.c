@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.2 1991-09-04 10:11:41 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.3 1991-12-17 10:27:33 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -107,26 +107,26 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCLineWidth | GCFunction
 	       | GCFont | GCGraphicsExposures );
 
-  me->drawing.foreground_gc = XCreateGC(me->core.display,
-				       me->core.window,
-				       valuemask,
-				       &values);
+  me->drawing.foreground_gc = XjCreateGC(me->core.display,
+					 me->core.window,
+					 valuemask,
+					 &values);
 
   values.foreground = me->drawing.background;
 
-  me->drawing.background_gc = XCreateGC(me->core.display,
-				       me->core.window,
-				       valuemask,
-				       &values);
+  me->drawing.background_gc = XjCreateGC(me->core.display,
+					 me->core.window,
+					 valuemask,
+					 &values);
 
   values.function = GXxor;
   values.foreground = (me->drawing.foreground ^
 		       me->drawing.background);
 
-  me->drawing.invert_gc = XCreateGC(me->core.display,
-				   me->core.window,
-				   valuemask,
-				   &values);
+  me->drawing.invert_gc = XjCreateGC(me->core.display,
+				     me->core.window,
+				     valuemask,
+				     &values);
   /*
    * Usurp events for this window
    */
@@ -142,9 +142,9 @@ static void realize(me)
 static void destroy(me)
      DrawingJet me;
 {
-  XFreeGC(me->core.display, me->drawing.invert_gc);
-  XFreeGC(me->core.display, me->drawing.foreground_gc);
-  XFreeGC(me->core.display, me->drawing.background_gc);
+  XjFreeGC(me->core.display, me->drawing.invert_gc);
+  XjFreeGC(me->core.display, me->drawing.foreground_gc);
+  XjFreeGC(me->core.display, me->drawing.background_gc);
 
   XjUnregisterWindow(me->core.window, (Jet) me);
 }

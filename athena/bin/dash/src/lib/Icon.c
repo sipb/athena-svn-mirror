@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Icon.c,v 1.2 1991-09-04 10:11:50 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Icon.c,v 1.3 1991-12-17 10:29:55 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -105,7 +105,7 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCFunction
 	       | GCGraphicsExposures );
 
-  me->icon.gc = XCreateGC(me->core.display,
+  me->icon.gc = XjCreateGC(me->core.display,
 			   me->core.window,
 			   valuemask,
 			   &values);
@@ -113,20 +113,20 @@ static void realize(me)
   values.foreground = me->icon.background;
   values.background = me->icon.foreground;
 
-  me->icon.reversegc = XCreateGC(me->core.display,
-				 me->core.window,
-				 valuemask,
-				 &values);
+  me->icon.reversegc = XjCreateGC(me->core.display,
+				  me->core.window,
+				  valuemask,
+				  &values);
 
 }
 
 static void destroy(me)
      IconJet me;
 {
-  XFreeGC(me->core.display, me->icon.gc);
-  XFreeGC(me->core.display, me->icon.reversegc);
+  XjFreeGC(me->core.display, me->icon.gc);
+  XjFreeGC(me->core.display, me->icon.reversegc);
   if(me->icon.pixmap)
-    XFreePixmap(me->core.display, me->icon.pixmap->pixmap);
+    XjFreePixmap(me->core.display, me->icon.pixmap->pixmap);
 }
 
 static void querySize(me, size)
