@@ -14,11 +14,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.6 1990-01-05 06:21:46 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.7 1990-01-09 16:08:54 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,8 +30,11 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <sys/file.h>           /* System file defs. */
 #include <setjmp.h>             /* For string validation kludge */
 
+#ifdef __STDC__
 static void type_error (int, const char *);
-
+#else
+static void type_error();
+#endif
 
 /* 
  * Strings used to separate data chunks in the backup file.
@@ -49,7 +52,12 @@ static type_buf[BUF_SIZE];
 static int skip;
 
 static char *
+#ifdef __STDC__
 read_msgs(int fd)			
+#else
+read_msgs(fd)
+     int fd;
+#endif
 {
   int length;
   char *return_value = (char *)NULL;
@@ -68,7 +76,13 @@ read_msgs(int fd)
 }
 
 static int
+#ifdef __STDC__
 write_msgs(int fd, char *msg)
+#else
+write_msgs(fd, msg)
+     int fd;
+     char *msg;
+#endif
 {
   int length;
   
@@ -87,7 +101,13 @@ write_msgs(int fd, char *msg)
 }
 
 static int
+#ifdef __STDC__
 write_knuckle_info(int fd, KNUCKLE *knuckle)
+#else
+write_knuckle_info(fd, knuckle)
+     int fd;
+     KNUCKLE *knuckle;
+#endif
 {
   int size;
   QUESTION q;
@@ -141,7 +161,13 @@ write_knuckle_info(int fd, KNUCKLE *knuckle)
 }
 
 static int
+#ifdef __STDC__
 read_knuckle_info(int fd, KNUCKLE *knuckle)
+#else
+read_knuckle_info(fd, knuckle)
+     int fd;
+     KNUCKLE *knuckle;
+#endif
 {
   QUESTION q;
   int size;
@@ -205,7 +231,13 @@ read_knuckle_info(int fd, KNUCKLE *knuckle)
 
 
 static int
+#ifdef __STDC__
 write_user_info(int fd, USER *user)
+#else
+write_user_info(fd, user)
+     int fd;
+     USER *user;
+#endif
 {
   int size;
 
@@ -221,7 +253,13 @@ write_user_info(int fd, USER *user)
 }
 
 static int
+#ifdef __STDC__
 read_user_info(int fd, USER *user)
+#else
+read_user_info(fd, user)
+     int fd;
+     USER *user;
+#endif
 {
   int size;
   
@@ -246,13 +284,22 @@ read_user_info(int fd, USER *user)
 
 static jmp_buf trap;
 
+#ifdef __STDC__
 oops(void)
+#else
+oops()
+#endif
 {
   longjmp(trap, 1);
 }
 
 static int
+#ifdef __STDC__
 verify_string(char *str)
+#else
+verify_string(str)
+     char *str;
+#endif
 {
   register int string_is_bogus;
 
@@ -275,7 +322,11 @@ verify_string(char *str)
 }
 
 static void
+#ifdef __STDC__
 ensure_consistent_state(void)
+#else
+ensure_consistent_state()
+#endif
 {
   register KNUCKLE **k_ptr, *k;
   KNUCKLE *foo;
@@ -356,7 +407,11 @@ ensure_consistent_state(void)
 }
 
 
+#ifdef __STDC__
 reconnect_knuckles(void)
+#else
+reconnect_knuckles()
+#endif
 {
   KNUCKLE **k_ptr;
   KNUCKLE *k;
@@ -399,7 +454,11 @@ int needs_backup = 0;
  */
 
 void
+#ifdef __STDC__
 backup_data(void)
+#else
+backup_data()
+#endif
 {
   KNUCKLE **k_ptr, **k_again;	           /* Current user. */
   int no_knuckles=0;
@@ -459,7 +518,12 @@ backup_data(void)
  * Notes:
  */
 
-void load_data(void)
+void
+#ifdef __STDC__
+load_data(void)
+#else
+load_data()
+#endif
 {
   int no_knuckles=0;
   int fd, i,j,nk;		
@@ -593,7 +657,14 @@ void load_data(void)
 
 /* code like this can only be written the day after an all nighter */
 
-static void type_error(int fd, char *string)
+static void
+#ifdef __STDC__
+type_error(int fd, char *string)
+#else
+type_error(fd,string)
+     int fd;
+     char *string;
+#endif
 {
   char buf[BUF_SIZE];
   char buf2[BUF_SIZE];
@@ -628,7 +699,12 @@ static void type_error(int fd, char *string)
 }
 
 void
+#ifdef __STDC__
 dump_data(char *file)
+#else
+dump_data(file)
+     char *file;
+#endif
 {
   FILE *fp;
   KNUCKLE **k_ptr, **k_again;	           /* Current user. */
