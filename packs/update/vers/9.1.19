@@ -14,4 +14,5 @@ sgi)
   ;;
 esac
 
+cp -p /srvd/etc/athena/local-lockers.conf /etc/athena
 echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
