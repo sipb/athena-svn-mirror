@@ -1,0 +1,1356 @@
+<HTML
+><HEAD
+><TITLE
+>gnome-popup-menu</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Application management"
+HREF="x1495.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeAbout"
+HREF="gnomeabout.html"><LINK
+REL="NEXT"
+TITLE="Druids"
+HREF="x6263.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomeabout.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x1495.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x6263.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="LIBGNOMEUI-GNOME-POPUP-MENU">gnome-popup-menu</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN5979"
+></A
+><H2
+>Name</H2
+>gnome-popup-menu&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN5982"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW"
+>gnome_popup_menu_new</A
+>            (<A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP"
+>gnome_popup_menu_new_with_accelgroup</A
+>
+                                            (<A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo,
+                                             GtkAccelGroup *accelgroup);
+GtkAccelGroup* <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-GET-ACCEL-GROUP"
+>gnome_popup_menu_get_accel_group</A
+>
+                                            (<A
+HREF=../gtk/gtkmenu.html
+>GtkMenu</A> *menu);
+void        <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-ATTACH"
+>gnome_popup_menu_attach</A
+>         (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);
+void        <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP"
+>gnome_popup_menu_do_popup</A
+>       (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkmenu.html#GTKMENUPOSITIONFUNC
+>GtkMenuPositionFunc</A> pos_func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> pos_data,
+                                             <A
+HREF=../gdk/gdk-event-structures.html#GDKEVENTBUTTON
+>GdkEventButton</A> *event,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *for_widget);
+int         <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP-MODAL"
+>gnome_popup_menu_do_popup_modal</A
+> (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkmenu.html#GTKMENUPOSITIONFUNC
+>GtkMenuPositionFunc</A> pos_func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> pos_data,
+                                             <A
+HREF=../gdk/gdk-event-structures.html#GDKEVENTBUTTON
+>GdkEventButton</A> *event,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *for_widget);
+void        <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-APPEND"
+>gnome_popup_menu_append</A
+>         (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo);
+void        <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-GTK-WIDGET-ADD-POPUP-ITEMS"
+>gnome_gtk_widget_add_popup_items</A
+>
+                                            (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget,
+                                             <A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6020"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6023"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6025"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-NEW"
+></A
+>gnome_popup_menu_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_popup_menu_new            (<A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function behaves just like
+<A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP"
+>gnome_popup_menu_new_with_accelgroup</A
+>(), except that it creates an
+accelgroup for you and attaches it to the menu object.  Use
+<A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-GET-ACCEL-GROUP"
+>gnome_popup_menu_get_accel_group</A
+>() to get the accelgroup that is
+created.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6035"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uiinfo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a menu widget&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6048"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP"
+></A
+>gnome_popup_menu_new_with_accelgroup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_popup_menu_new_with_accelgroup
+                                            (<A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo,
+                                             GtkAccelGroup *accelgroup);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a popup menu out of the specified uiinfo array.  Use
+<A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP"
+>gnome_popup_menu_do_popup</A
+>() to pop the menu up, or attach it to a
+window with <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-ATTACH"
+>gnome_popup_menu_attach</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6059"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uiinfo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>accelgroup</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a menu widget</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6076"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-GET-ACCEL-GROUP"
+></A
+>gnome_popup_menu_get_accel_group ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkAccelGroup* gnome_popup_menu_get_accel_group
+                                            (<A
+HREF=../gtk/gtkmenu.html
+>GtkMenu</A> *menu);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6084"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>menu</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the accelgroup associated with the specified GtkMenu.  This
+is the accelgroup that was created by <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW"
+>gnome_popup_menu_new</A
+>().  If
+you want to specify the accelgroup that the popup menu accelerators
+use, then use <A
+HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP"
+>gnome_popup_menu_new_with_accelgroup</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6099"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-ATTACH"
+></A
+>gnome_popup_menu_attach ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_popup_menu_attach         (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Attaches the specified popup menu to the specified widget.  The
+menu can then be activated by pressing mouse button 3 over the
+widget.  When a menu item callback is invoked, the specified
+user_data will be passed to it.</P
+><P
+>This function requires the widget to have its own window
+(i.e. GTK_WIDGET_NO_WINDOW (widget) == FALSE), This function will
+try to set the GDK_BUTTON_PRESS_MASK flag on the widget's event
+mask if it does not have it yet; if this is the case, then the
+widget must not be realized for it to work.</P
+><P
+>The popup menu can be attached to different widgets at the same
+time.  A reference count is kept on the popup menu; when all the
+widgets it is attached to are destroyed, the popup menu will be
+destroyed as well.</P
+><P
+>Under the current implementation, setting a popup menu for a NO_WINDOW widget and then reparenting
+that widget will cause Bad Things to happen.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6111"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>popup</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>widget</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6128"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-DO-POPUP"
+></A
+>gnome_popup_menu_do_popup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_popup_menu_do_popup       (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkmenu.html#GTKMENUPOSITIONFUNC
+>GtkMenuPositionFunc</A> pos_func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> pos_data,
+                                             <A
+HREF=../gdk/gdk-event-structures.html#GDKEVENTBUTTON
+>GdkEventButton</A> *event,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *for_widget);</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can use this function to pop up a menu.  When a menu item *
+callback is invoked, the specified user_data will be passed to it.</P
+><P
+>The pos_func and pos_data parameters are the same as for
+<A
+HREF=../gtk/gtkmenu.html#GTK-MENU-POPUP
+>gtk_menu_popup</A>(), i.e. you can use them to specify a function to
+position the menu explicitly.  If you want the default position
+(near the mouse), pass NULL for these parameters.</P
+><P
+>The event parameter is needed to figure out the mouse button that
+activated the menu and the time at which this happened.  If you
+pass in NULL, then no button and the current time will be used as
+defaults.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6143"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>popup</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pos_func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pos_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>event</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>for_widget</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6172"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-DO-POPUP-MODAL"
+></A
+>gnome_popup_menu_do_popup_modal ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         gnome_popup_menu_do_popup_modal (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF=../gtk/gtkmenu.html#GTKMENUPOSITIONFUNC
+>GtkMenuPositionFunc</A> pos_func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> pos_data,
+                                             <A
+HREF=../gdk/gdk-event-structures.html#GDKEVENTBUTTON
+>GdkEventButton</A> *event,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *for_widget);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Same as above, but runs the popup menu modally and returns the
+index of the selected item, or -1 if none.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6184"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>popup</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pos_func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pos_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>event</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>for_widget</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6217"
+></A
+><H3
+><A
+NAME="GNOME-POPUP-MENU-APPEND"
+></A
+>gnome_popup_menu_append ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_popup_menu_append         (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *popup,
+                                             <A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6224"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>popup</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uiinfo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6237"
+></A
+><H3
+><A
+NAME="GNOME-GTK-WIDGET-ADD-POPUP-ITEMS"
+></A
+>gnome_gtk_widget_add_popup_items ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_gtk_widget_add_popup_items
+                                            (<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget,
+                                             <A
+HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO"
+>GnomeUIInfo</A
+> *uiinfo,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This creates a new popup menu for the widget if none exists, and
+then adds the items in 'uiinfo' to the widget's popup menu.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6246"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>widget</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The widget to append popup menu items for</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uiinfo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The array holding information on the menu items</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The user_data to pass to the callbacks for the menu items</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomeabout.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x1495.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x6263.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeAbout</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Druids</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

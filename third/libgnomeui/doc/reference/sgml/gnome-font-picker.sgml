@@ -1,0 +1,494 @@
+<refentry id="GnomeFontPicker">
+<refmeta>
+<refentrytitle>GnomeFontPicker</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeFontPicker</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+enum        <link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link>;
+struct      <link linkend="GnomeFontPickerPrivate">GnomeFontPickerPrivate</link>;
+struct      <link linkend="GnomeFontPicker-struct">GnomeFontPicker</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-font-picker-new">gnome_font_picker_new</link>           (void);
+void        <link linkend="gnome-font-picker-set-title">gnome_font_picker_set_title</link>     (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *title);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-font-picker-get-title">gnome_font_picker_get_title</link>    (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+<link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link> <link linkend="gnome-font-picker-get-mode">gnome_font_picker_get_mode</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+void        <link linkend="gnome-font-picker-set-mode">gnome_font_picker_set_mode</link>      (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link> mode);
+void        <link linkend="gnome-font-picker-fi-set-use-font-in-label">gnome_font_picker_fi_set_use_font_in_label</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="gboolean">gboolean</link> use_font_in_label,
+                                             <link linkend="gint">gint</link> size);
+void        <link linkend="gnome-font-picker-fi-set-show-size">gnome_font_picker_fi_set_show_size</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="gboolean">gboolean</link> show_size);
+void        <link linkend="gnome-font-picker-uw-set-widget">gnome_font_picker_uw_set_widget</link> (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="GtkWidget">GtkWidget</link> *widget);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-font-picker-uw-get-widget">gnome_font_picker_uw_get_widget</link> (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-font-picker-get-font-name">gnome_font_picker_get_font_name</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+<link linkend="GdkFont">GdkFont</link>*    <link linkend="gnome-font-picker-get-font">gnome_font_picker_get_font</link>      (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-font-picker-set-font-name">gnome_font_picker_set_font_name</link> (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *fontname);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-font-picker-get-preview-text">gnome_font_picker_get_preview_text</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);
+void        <link linkend="gnome-font-picker-set-preview-text">gnome_font_picker_set_preview_text</link>
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *text);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkButton">GtkButton</link>
+                                 +----GnomeFontPicker
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeFontPicker--title">title</link>&quot;                <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeFontPicker--mode">mode</link>&quot;                 <link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link>  : Read / Write
+  &quot;<link linkend="GnomeFontPicker--font-name">font-name</link>&quot;            <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeFontPicker--preview-text">preview-text</link>&quot;         <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeFontPicker--use-font-in-label">use-font-in-label</link>&quot;    <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeFontPicker--label-font-size">label-font-size</link>&quot;      <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="GnomeFontPicker--show-size">show-size</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeFontPicker--font">font</link>&quot;                 <link linkend="gpointer">gpointer</link>             : Read
+</synopsis>
+</refsect1>
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeFontPicker-font-set">font-set</link>&quot;  void        user_function      (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *fontpicker,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeFontPickerMode">enum GnomeFontPickerMode</title>
+<programlisting>typedef enum {
+    GNOME_FONT_PICKER_MODE_PIXMAP,
+    GNOME_FONT_PICKER_MODE_FONT_INFO,
+    GNOME_FONT_PICKER_MODE_USER_WIDGET,
+    GNOME_FONT_PICKER_MODE_UNKNOWN
+} GnomeFontPickerMode;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeFontPickerPrivate">struct GnomeFontPickerPrivate</title>
+<programlisting>struct GnomeFontPickerPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeFontPicker-struct">struct GnomeFontPicker</title>
+<programlisting>struct GnomeFontPicker;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-new">gnome_font_picker_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_font_picker_new           (void);</programlisting>
+<para>
+Create new font picker widget.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Pointer to new font picker widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-set-title">gnome_font_picker_set_title ()</title>
+<programlisting>void        gnome_font_picker_set_title     (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *title);</programlisting>
+<para>
+Sets the title for the font selection dialog.  If <parameter>title</parameter> is <literal>NULL</literal>,
+then the default is used.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
+<entry> String containing font selection dialog title.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-get-title">gnome_font_picker_get_title ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* gnome_font_picker_get_title    (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Retrieve name of the font selection dialog title</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Pointer to an internal copy of the title string
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-get-mode">gnome_font_picker_get_mode ()</title>
+<programlisting><link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link> gnome_font_picker_get_mode
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Returns current font picker button mode (or what to show).  Possible
+values include <literal>GNOME_FONT_PICKER_MODE_PIXMAP</literal>,
+<literal>GNOME_FONT_PICKER_MODE_FONT_INFO</literal>, and
+<literal>GNOME_FONT_PICKER_MODE_USER_WIDGET</literal>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Button mode currently set in font picker widget, or
+<literal>GNOME_FONT_PICKER_MODE_UNKNOWN</literal> on error.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-set-mode">gnome_font_picker_set_mode ()</title>
+<programlisting>void        gnome_font_picker_set_mode      (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link> mode);</programlisting>
+<para>
+Set value of subsequent font picker button mode (or what to show).</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>mode</parameter>&nbsp;:</entry>
+<entry> Value of subsequent font picker button mode (or what to show)
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-fi-set-use-font-in-label">gnome_font_picker_fi_set_use_font_in_label ()</title>
+<programlisting>void        gnome_font_picker_fi_set_use_font_in_label
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="gboolean">gboolean</link> use_font_in_label,
+                                             <link linkend="gint">gint</link> size);</programlisting>
+<para>
+If <parameter>use_font_in_label</parameter> is <literal>TRUE</literal>, font name will be written using font chosen
+by user and using <parameter>size</parameter> passed to this function.  This only applies if
+current button mode is <literal>GNOME_FONT_PICKER_MODE_FONT_INFO</literal>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>use_font_in_label</parameter>&nbsp;:</entry>
+<entry> If <literal>TRUE</literal>, font name will be written using font chosen.
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry> Display font using this point size.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-fi-set-show-size">gnome_font_picker_fi_set_show_size ()</title>
+<programlisting>void        gnome_font_picker_fi_set_show_size
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="gboolean">gboolean</link> show_size);</programlisting>
+<para>
+If <parameter>show_size</parameter> is <literal>TRUE</literal>, font size will be displayed along with font chosen
+by user.  This only applies if current button mode is
+<literal>GNOME_FONT_PICKER_MODE_FONT_INFO</literal>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>show_size</parameter>&nbsp;:</entry>
+<entry> <literal>TRUE</literal> if font size should be displayed in dialog.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-uw-set-widget">gnome_font_picker_uw_set_widget ()</title>
+<programlisting>void        gnome_font_picker_uw_set_widget (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             <link linkend="GtkWidget">GtkWidget</link> *widget);</programlisting>
+<para>
+Set the user-supplied <parameter>widget</parameter> as the inside of the font picker.
+This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
+<entry> User widget to display for inside of font picker.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-uw-get-widget">gnome_font_picker_uw_get_widget ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_font_picker_uw_get_widget (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Get the user-supplied widget inside of the font picker.
+This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="GtkWidget">GtkWidget</link>, or <literal>NULL</literal> if
+not in GNOME_FONT_PICKER_MODE_USER_WIDGET mode
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-get-font-name">gnome_font_picker_get_font_name ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* gnome_font_picker_get_font_name
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Retrieve name of font from font selection dialog.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Pointer to an internal copy of the font name.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-get-font">gnome_font_picker_get_font ()</title>
+<programlisting><link linkend="GdkFont">GdkFont</link>*    gnome_font_picker_get_font      (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Retrieve font info from font selection dialog.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Return value of gtk_font_selection_dialog_get_font, or <literal>NULL</literal> if
+font dialog is not being displayed.  The value is not a copy but
+an internal value and should not be modified.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-set-font-name">gnome_font_picker_set_font_name ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_font_picker_set_font_name (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *fontname);</programlisting>
+<para>
+Set or update currently-displayed font in font picker dialog.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>fontname</parameter>&nbsp;:</entry>
+<entry> Name of font to display in font selection dialog
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Return value of gtk_font_selection_dialog_set_font_name if the
+font selection dialog exists, otherwise <literal>FALSE</literal>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-get-preview-text">gnome_font_picker_get_preview_text ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* gnome_font_picker_get_preview_text
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp);</programlisting>
+<para>
+Retrieve preview text from font selection dialog if available.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+Reference to internal copy of preview text string, or <literal>NULL</literal> if no
+font dialog is being displayed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-font-picker-set-preview-text">gnome_font_picker_set_preview_text ()</title>
+<programlisting>void        gnome_font_picker_set_preview_text
+                                            (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *gfp,
+                                             const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+Set preview text in font picker, and in font selection dialog if one
+is being displayed.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gfp</parameter>&nbsp;:</entry>
+<entry> Pointer to GNOME font picker widget.
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> New preview text
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<variablelist>
+<varlistentry><term><anchor id="GnomeFontPicker--title">&quot;<literal>title</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>The title of the selection dialog box.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--mode">&quot;<literal>mode</literal>&quot; (<link linkend="GnomeFontPickerMode">GnomeFontPickerMode</link> : Read / Write)</term>
+<listitem>
+<para>The mode of operation of the font picker.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--font-name">&quot;<literal>font-name</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>Name of the selected font.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--preview-text">&quot;<literal>preview-text</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>Preview text shown in the dialog.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--use-font-in-label">&quot;<literal>use-font-in-label</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>Use font in the label in font info mode.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--label-font-size">&quot;<literal>label-font-size</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>Font size for label in font info mode.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--show-size">&quot;<literal>show-size</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>Show size in font info mode.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeFontPicker--font">&quot;<literal>font</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read)</term>
+<listitem>
+<para>The selected GtkFont.</para>
+</listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeFontPicker-font-set">The &quot;font-set&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GnomeFontPicker">GnomeFontPicker</link> *fontpicker,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>fontpicker</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+
+</refentry>

@@ -1,0 +1,529 @@
+<refentry id="GnomeDruidPageEdge">
+<refmeta>
+<refentrytitle>GnomeDruidPageEdge</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeDruidPageEdge</refname><refpurpose>A widget used to implement first and last pages in a druid's sequence.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+enum        <link linkend="GnomeEdgePosition">GnomeEdgePosition</link>;
+struct      <link linkend="GnomeDruidPageEdge-struct">GnomeDruidPageEdge</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-druid-page-edge-new">gnome_druid_page_edge_new</link>       (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-druid-page-edge-new-aa">gnome_druid_page_edge_new_aa</link>    (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-druid-page-edge-new-with-vals">gnome_druid_page_edge_new_with_vals</link>
+                                            (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position,
+                                             <link linkend="gboolean">gboolean</link> antialiased,
+                                             const <link linkend="gchar">gchar</link> *title,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *logo,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *watermark,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *top_watermark);
+void        <link linkend="gnome-druid-page-edge-set-bg-color">gnome_druid_page_edge_set_bg_color</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);
+void        <link linkend="gnome-druid-page-edge-set-textbox-color">gnome_druid_page_edge_set_textbox_color</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);
+void        <link linkend="gnome-druid-page-edge-set-logo-bg-color">gnome_druid_page_edge_set_logo_bg_color</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);
+void        <link linkend="gnome-druid-page-edge-set-title-color">gnome_druid_page_edge_set_title_color</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);
+void        <link linkend="gnome-druid-page-edge-set-text-color">gnome_druid_page_edge_set_text_color</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);
+void        <link linkend="gnome-druid-page-edge-set-text">gnome_druid_page_edge_set_text</link>  (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             const <link linkend="gchar">gchar</link> *text);
+void        <link linkend="gnome-druid-page-edge-set-title">gnome_druid_page_edge_set_title</link> (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             const <link linkend="gchar">gchar</link> *title);
+void        <link linkend="gnome-druid-page-edge-set-logo">gnome_druid_page_edge_set_logo</link>  (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *logo_image);
+void        <link linkend="gnome-druid-page-edge-set-watermark">gnome_druid_page_edge_set_watermark</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *watermark);
+void        <link linkend="gnome-druid-page-edge-set-top-watermark">gnome_druid_page_edge_set_top_watermark</link>
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *top_watermark_image);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GnomeDruidPage">GnomeDruidPage</link>
+                                 +----GnomeDruidPageEdge
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A druid can be thought of as having a page that starts the sequence, one or
+more pages that end the sequences (there can be multiple end pages if the flow
+of pages diverges at some point) and some pages that are in between the start
+and end pages. 
+</para>
+<para>
+The <link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> widget is for the first and last pages in a druid's
+sequence of pages. Pages in the "middle" of a sequence should use
+<link linkend="GnomeDruidPageStandard">GnomeDruidPageStandard</link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeEdgePosition">enum GnomeEdgePosition</title>
+<programlisting>typedef enum {
+  /* update structure when adding enums */
+	GNOME_EDGE_START,
+	GNOME_EDGE_FINISH,
+	GNOME_EDGE_OTHER,
+	GNOME_EDGE_LAST /* for counting purposes */
+} GnomeEdgePosition;
+</programlisting>
+<para>
+Used to pass around information about the position of a <link linkend="GnomeDruidPage">GnomeDruidPage</link>
+within the overall <link linkend="GnomeDruid">GnomeDruid</link>. This enables the correct "surrounding"
+content for the page to be drawn.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>GNOME_EDGE_START</literal></entry>
+<entry> The current page is at the beginning of the druid.
+</entry>
+</row>
+<row>
+<entry><literal>GNOME_EDGE_FINISH</literal></entry>
+<entry> The current page is at the end of the druid.
+</entry>
+</row>
+<row>
+<entry><literal>GNOME_EDGE_OTHER</literal></entry>
+<entry> The current page is neither the first nor the last page
+(usually not required).
+</entry>
+</row>
+<row>
+<entry><literal>GNOME_EDGE_LAST</literal></entry>
+<entry> Used internally to indicate the last value of the
+enumeration. This should not be passed in to any function expecting a
+<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> value.
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GnomeDruidPageEdge-struct">struct GnomeDruidPageEdge</title>
+<programlisting>struct GnomeDruidPageEdge {
+	gchar *title;
+	gchar *text;
+	GdkPixbuf *logo_image;
+	GdkPixbuf *watermark_image;
+	GdkPixbuf *top_watermark_image;
+
+	GdkColor background_color;
+	GdkColor textbox_color;
+	GdkColor logo_background_color;
+	GdkColor title_color;
+	GdkColor text_color;
+
+	GnomeEdgePosition position : 2;
+
+};
+</programlisting>
+<para>
+A widget holding information about the overall look of the currently
+displaying druid page.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="struct">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><link linkend="gchar">gchar</link> *<structfield>title</structfield></entry>
+<entry> The current title of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="gchar">gchar</link> *<structfield>text</structfield></entry>
+<entry> The current text of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkPixbuf">GdkPixbuf</link> *<structfield>logo_image</structfield></entry>
+<entry> The logo of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkPixbuf">GdkPixbuf</link> *<structfield>watermark_image</structfield></entry>
+<entry> The watermark on the left side of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkPixbuf">GdkPixbuf</link> *<structfield>top_watermark_image</structfield></entry>
+<entry> The watermark on the top of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkColor">GdkColor</link> <structfield>background_color</structfield></entry>
+<entry> The color of the edge of the current page (outside the
+text area).
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkColor">GdkColor</link> <structfield>textbox_color</structfield></entry>
+<entry> The color of the textbox area of the displayed page.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkColor">GdkColor</link> <structfield>logo_background_color</structfield></entry>
+<entry> The background color of the displayed page's logo.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkColor">GdkColor</link> <structfield>title_color</structfield></entry>
+<entry> The color of the title text.
+</entry>
+</row>
+<row>
+<entry><link linkend="GdkColor">GdkColor</link> <structfield>text_color</structfield></entry>
+<entry> The color of the body text.
+</entry>
+</row>
+<row>
+<entry><link linkend="GnomeEdgePosition">GnomeEdgePosition</link> <structfield>position</structfield> : 2</entry>
+<entry> The position of the current page within the druid (a
+<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> value).
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-new">gnome_druid_page_edge_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_page_edge_new       (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position);</programlisting>
+<para>
+Creates a new GnomeDruidPageEdge widget.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
+<entry> Position in druid.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GtkWidget">GtkWidget</link> pointer to a new <link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-new-aa">gnome_druid_page_edge_new_aa ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_page_edge_new_aa    (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position);</programlisting>
+<para>
+Creates a new GnomeDruidPageEdge widget.  The
+internal canvas is created in an antialiased mode.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
+<entry> Position in druid.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GtkWidget">GtkWidget</link> pointer to a new <link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-new-with-vals">gnome_druid_page_edge_new_with_vals ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_page_edge_new_with_vals
+                                            (<link linkend="GnomeEdgePosition">GnomeEdgePosition</link> position,
+                                             <link linkend="gboolean">gboolean</link> antialiased,
+                                             const <link linkend="gchar">gchar</link> *title,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *logo,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *watermark,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *top_watermark);</programlisting>
+<para>
+This will create a new GNOME Druid Edge page, with the values given.  It is
+acceptable for any of them to be <literal>NULL</literal>.  Position should be
+<literal>GNOME_EDGE_START</literal>, <literal>GNOME_EDGE_FINISH</literal> or <literal>GNOME_EDGE_OTHER</literal>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
+<entry> Position in druid.
+</entry></row>
+<row><entry align="right"><parameter>antialiased</parameter>&nbsp;:</entry>
+<entry> Use an antialiased canvas
+</entry></row>
+<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
+<entry> The title.
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> The introduction text.
+</entry></row>
+<row><entry align="right"><parameter>logo</parameter>&nbsp;:</entry>
+<entry> The logo in the upper right corner.
+</entry></row>
+<row><entry align="right"><parameter>watermark</parameter>&nbsp;:</entry>
+<entry> The watermark on the left.
+</entry></row>
+<row><entry align="right"><parameter>top_watermark</parameter>&nbsp;:</entry>
+<entry> The watermark on the left.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GtkWidget">GtkWidget</link> pointer to a new <link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-bg-color">gnome_druid_page_edge_set_bg_color ()</title>
+<programlisting>void        gnome_druid_page_edge_set_bg_color
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+This will set the background color to be the <parameter>color</parameter>.  You do
+not need to allocate the color, as the <parameter>druid_page_edge</parameter> will do it for you.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> The new background color.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-textbox-color">gnome_druid_page_edge_set_textbox_color ()</title>
+<programlisting>void        gnome_druid_page_edge_set_textbox_color
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Sets the color of the background in the main text area of the page.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> The new textbox color.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-logo-bg-color">gnome_druid_page_edge_set_logo_bg_color ()</title>
+<programlisting>void        gnome_druid_page_edge_set_logo_bg_color
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Set the color behind the druid page's logo.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> The new color of the logo's background.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-title-color">gnome_druid_page_edge_set_title_color ()</title>
+<programlisting>void        gnome_druid_page_edge_set_title_color
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Sets the color of the title text on the current page.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> The color of the title text.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-text-color">gnome_druid_page_edge_set_text_color ()</title>
+<programlisting>void        gnome_druid_page_edge_set_text_color
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Sets the color of the text in the body of the druid page.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> The new test color.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-text">gnome_druid_page_edge_set_text ()</title>
+<programlisting>void        gnome_druid_page_edge_set_text  (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+Sets the contents of the text portion of the druid page.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> The text contents.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-title">gnome_druid_page_edge_set_title ()</title>
+<programlisting>void        gnome_druid_page_edge_set_title (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             const <link linkend="gchar">gchar</link> *title);</programlisting>
+<para>
+Sets the contents of the page's title text.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
+<entry> The title text
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-logo">gnome_druid_page_edge_set_logo ()</title>
+<programlisting>void        gnome_druid_page_edge_set_logo  (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *logo_image);</programlisting>
+<para>
+Sets a <link linkend="GdkPixbuf">GdkPixbuf</link> as the logo in the top right corner.
+If <literal>NULL</literal>, then no logo will be displayed.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>logo_image</parameter>&nbsp;:</entry>
+<entry> The <link linkend="GdkPixbuf">GdkPixbuf</link> to use as a logo.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-watermark">gnome_druid_page_edge_set_watermark ()</title>
+<programlisting>void        gnome_druid_page_edge_set_watermark
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *watermark);</programlisting>
+<para>
+Sets a <link linkend="GdkPixbuf">GdkPixbuf</link> as the watermark on the left strip on the
+druid. If <parameter>watermark</parameter> is <literal>NULL</literal>, it is reset to the normal color.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> A <parameter>GnomeDruidPageEdge</parameter> instance.
+</entry></row>
+<row><entry align="right"><parameter>watermark</parameter>&nbsp;:</entry>
+<entry> The <link linkend="GdkPixbuf">GdkPixbuf</link> to use as a watermark.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-druid-page-edge-set-top-watermark">gnome_druid_page_edge_set_top_watermark ()</title>
+<programlisting>void        gnome_druid_page_edge_set_top_watermark
+                                            (<link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> *druid_page_edge,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *top_watermark_image);</programlisting>
+<para>
+Sets a <link linkend="GdkPixbuf">GdkPixbuf</link> as the watermark on top of the top
+strip on the druid.  If <parameter>top_watermark_image</parameter> is <literal>NULL</literal>, it is reset
+to the normal color.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>druid_page_edge</parameter>&nbsp;:</entry>
+<entry> the <link linkend="GnomeDruidPageEdge">GnomeDruidPageEdge</link> to work on
+</entry></row>
+<row><entry align="right"><parameter>top_watermark_image</parameter>&nbsp;:</entry>
+<entry> The <link linkend="GdkPixbuf">GdkPixbuf</link> to use as a top watermark
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

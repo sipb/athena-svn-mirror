@@ -1,0 +1,1992 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeIconEntry</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="FIXME"
+HREF="x8080.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeHRef"
+HREF="gnomehref.html"><LINK
+REL="NEXT"
+TITLE="GnomeIconList"
+HREF="gnomeiconlist.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomehref.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x8080.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnomeiconlist.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOMEICONENTRY">GnomeIconEntry</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN12448"
+></A
+><H2
+>Name</H2
+>GnomeIconEntry&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN12451"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <A
+HREF="gnomeiconentry.html#GNOMEICONENTRYPRIVATE"
+>GnomeIconEntryPrivate</A
+>;
+struct      <A
+HREF="gnomeiconentry.html#GNOMEICONENTRY-STRUCT"
+>GnomeIconEntry</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-NEW"
+>gnome_icon_entry_new</A
+>            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);
+void        <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-CONSTRUCT"
+>gnome_icon_entry_construct</A
+>      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);
+void        <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-PIXMAP-SUBDIR"
+>gnome_icon_entry_set_pixmap_subdir</A
+>
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *subdir);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-GET-FILENAME"
+>gnome_icon_entry_get_filename</A
+>   (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-FILENAME"
+>gnome_icon_entry_set_filename</A
+>   (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);
+void        <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-BROWSE-DIALOG-TITLE"
+>gnome_icon_entry_set_browse_dialog_title</A
+>
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);
+void        <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-HISTORY-ID"
+>gnome_icon_entry_set_history_id</A
+> (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-PICK-DIALOG"
+>gnome_icon_entry_pick_dialog</A
+>    (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);
+void        <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-ICON"
+>gnome_icon_entry_set_icon</A
+>       (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-GNOME-FILE-ENTRY"
+>gnome_icon_entry_gnome_file_entry</A
+>
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-GNOME-ENTRY"
+>gnome_icon_entry_gnome_entry</A
+>    (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-GTK-ENTRY"
+>gnome_icon_entry_gtk_entry</A
+>      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12495"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  <A
+HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
+>GObject</A>
+   +----<A
+HREF=../gtk/gtkobject.html
+>GtkObject</A>
+         +----<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>
+               +----<A
+HREF=../gtk/gtkcontainer.html
+>GtkContainer</A>
+                     +----<A
+HREF=../gtk/gtkbox.html
+>GtkBox</A>
+                           +----<A
+HREF=../gtk/gtkvbox.html
+>GtkVBox</A>
+                                 +----GnomeIconEntry</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12504"
+></A
+><H2
+>Properties</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  &quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY--HISTORY-ID"
+>history-id</A
+>&quot;           <A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A>           : Read / Write
+  &quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY--BROWSE-DIALOG-TITLE"
+>browse-dialog-title</A
+>&quot;  <A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A>           : Read / Write
+  &quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY--PIXMAP-SUBDIR"
+>pixmap-subdir</A
+>&quot;        <A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A>           : Read / Write
+  &quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY--FILENAME"
+>filename</A
+>&quot;             <A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A>           : Read / Write
+  &quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY--PICK-DIALOG"
+>pick-dialog</A
+>&quot;          <A
+HREF=../gtk/gtkdialog.html
+>GtkDialog</A>            : Read</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12517"
+></A
+><H2
+>Signal Prototypes</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;&quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY-BROWSE"
+>browse</A
+>&quot;    void        user_function      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *iconentry,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);
+&quot;<A
+HREF="gnomeiconentry.html#GNOMEICONENTRY-CHANGED"
+>changed</A
+>&quot;   void        user_function      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *iconentry,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12526"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12529"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12531"
+></A
+><H3
+><A
+NAME="GNOMEICONENTRYPRIVATE"
+></A
+>struct GnomeIconEntryPrivate</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeIconEntryPrivate;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12536"
+></A
+><H3
+><A
+NAME="GNOMEICONENTRY-STRUCT"
+></A
+>struct GnomeIconEntry</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeIconEntry;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12541"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-NEW"
+></A
+>gnome_icon_entry_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_icon_entry_new            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new icon entry widget</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12550"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>history_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the id given to <A
+HREF="gnomeentry.html#GNOME-ENTRY-NEW"
+>gnome_entry_new</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>browse_dialog_title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> title of the browse dialog and icon selection dialog</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns the new object</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12568"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-CONSTRUCT"
+></A
+>gnome_icon_entry_construct ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_icon_entry_construct      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>For language bindings and subclassing, from C use
+<A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-NEW"
+>gnome_icon_entry_new</A
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12578"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>history_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the id given to <A
+HREF="gnomeentry.html#GNOME-ENTRY-NEW"
+>gnome_entry_new</A
+> in the browse dialog</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>browse_dialog_title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> title of the icon selection dialog</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12596"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-SET-PIXMAP-SUBDIR"
+></A
+>gnome_icon_entry_set_pixmap_subdir ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_icon_entry_set_pixmap_subdir
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *subdir);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the subdirectory below gnome's default
+pixmap directory to use as the default path for the file
+entry.  The path can also be an absolute one.  If <TT
+CLASS="LITERAL"
+>NULL</TT
+> is passed
+then the pixmap directory itself is used.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12605"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>subdir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> subdirectory</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12618"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-GET-FILENAME"
+></A
+>gnome_icon_entry_get_filename ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_icon_entry_get_filename   (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the file name of the image if it was possible
+to load it into the preview. That is, it will only return a filename
+if the image exists and it was possible to load it as an image.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12626"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a newly allocated string with the path or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if it
+couldn't load the file</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12640"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-SET-FILENAME"
+></A
+>gnome_icon_entry_set_filename ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_icon_entry_set_filename   (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the icon of GnomeIconEntry to be the one pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+> (in the current subdirectory).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12650"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a filename</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if icon was loaded ok, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12669"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-SET-BROWSE-DIALOG-TITLE"
+></A
+>gnome_icon_entry_set_browse_dialog_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_icon_entry_set_browse_dialog_title
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *browse_dialog_title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the title of the browse dialog.  It will not effect
+an existing dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12677"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>browse_dialog_title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> title of the icon selection dialog</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12690"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-SET-HISTORY-ID"
+></A
+>gnome_icon_entry_set_history_id ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_icon_entry_set_history_id (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *history_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the history_id of the entry in the browse dialog
+and reload the history</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12698"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>history_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the id given to <A
+HREF="gnomeentry.html#GNOME-ENTRY-NEW"
+>gnome_entry_new</A
+> in the browse dialog</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12712"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-PICK-DIALOG"
+></A
+>gnome_icon_entry_pick_dialog ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_icon_entry_pick_dialog    (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>If a pick dialog exists, return a pointer to it or
+return NULL.  This is if you need to do something with all dialogs.
+You would use the browse signal with connect_after to get the
+pick dialog when it is displayed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12720"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The pick dialog or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if none exists</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12734"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-SET-ICON"
+></A
+>gnome_icon_entry_set_icon ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_icon_entry_set_icon       (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Deprecated in favour of <A
+HREF="gnomeiconentry.html#GNOME-ICON-ENTRY-SET-FILENAME"
+>gnome_icon_entry_set_filename</A
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12743"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a filename</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12756"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-GNOME-FILE-ENTRY"
+></A
+>gnome_icon_entry_gnome_file_entry ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_icon_entry_gnome_file_entry
+                                            (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the GnomeFileEntry widget that's part of the entry
+DEPRECATED! Use the "changed" signal for getting changes</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12764"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns GnomeFileEntry widget</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12777"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-GNOME-ENTRY"
+></A
+>gnome_icon_entry_gnome_entry ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_icon_entry_gnome_entry    (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the GnomeEntry widget that's part of the entry
+DEPRECATED! Use the "changed" signal for getting changes</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12785"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns GnomeEntry widget</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12798"
+></A
+><H3
+><A
+NAME="GNOME-ICON-ENTRY-GTK-ENTRY"
+></A
+>gnome_icon_entry_gtk_entry ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_icon_entry_gtk_entry      (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *ientry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the GtkEntry widget that's part of the entry.
+DEPRECATED! Use the "changed" signal for getting changes</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12806"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ientry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GnomeIconEntry to work with</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns GtkEntry widget</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12819"
+></A
+><H2
+>Properties</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GNOMEICONENTRY--HISTORY-ID"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>history-id</TT
+>&quot; (<A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A> : Read / Write)</DT
+><DD
+><P
+>Unique identifier for the icon entry.  This will be used to save the history list.</P
+></DD
+><DT
+><A
+NAME="GNOMEICONENTRY--BROWSE-DIALOG-TITLE"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>browse-dialog-title</TT
+>&quot; (<A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A> : Read / Write)</DT
+><DD
+><P
+>Title for the Browse icon dialog.</P
+></DD
+><DT
+><A
+NAME="GNOMEICONENTRY--PIXMAP-SUBDIR"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>pixmap-subdir</TT
+>&quot; (<A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A> : Read / Write)</DT
+><DD
+><P
+>Directory that will be searched for icons.</P
+></DD
+><DT
+><A
+NAME="GNOMEICONENTRY--FILENAME"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>filename</TT
+>&quot; (<A
+HREF=../gobject/gobject-standard-parameter-and-value-types.html#GCHARARRAY
+>gchararray</A> : Read / Write)</DT
+><DD
+><P
+>Filename that should be displayed in the icon entry.</P
+></DD
+><DT
+><A
+NAME="GNOMEICONENTRY--PICK-DIALOG"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>pick-dialog</TT
+>&quot; (<A
+HREF=../gtk/gtkdialog.html
+>GtkDialog</A> : Read)</DT
+><DD
+><P
+>Icon picker dialog.  You can use this property to get the GtkDialog if you need to modify or query any of its properties.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN12857"
+></A
+><H2
+>Signals</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12859"
+></A
+><H3
+><A
+NAME="GNOMEICONENTRY-BROWSE"
+></A
+>The &quot;browse&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *iconentry,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12866"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iconentry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the object which received the signal.&#13;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>user data set when the signal handler was connected.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12879"
+></A
+><H3
+><A
+NAME="GNOMEICONENTRY-CHANGED"
+></A
+>The &quot;changed&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="gnomeiconentry.html"
+>GnomeIconEntry</A
+> *iconentry,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12886"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iconentry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the object which received the signal.&#13;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>user data set when the signal handler was connected.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomehref.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x8080.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnomeiconlist.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeHRef</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeIconList</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,158 @@
+<refentry id="libgnomeui-gnome-window-icon">
+<refmeta>
+<refentrytitle>gnome-window-icon</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-window-icon</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+void        <link linkend="gnome-window-icon-set-from-default">gnome_window_icon_set_from_default</link>
+                                            (<link linkend="GtkWindow">GtkWindow</link> *w);
+void        <link linkend="gnome-window-icon-set-from-file">gnome_window_icon_set_from_file</link> (<link linkend="GtkWindow">GtkWindow</link> *w,
+                                             const char *filename);
+void        <link linkend="gnome-window-icon-set-from-file-list">gnome_window_icon_set_from_file_list</link>
+                                            (<link linkend="GtkWindow">GtkWindow</link> *w,
+                                             const char **filenames);
+void        <link linkend="gnome-window-icon-set-default-from-file">gnome_window_icon_set_default_from_file</link>
+                                            (const char *filename);
+void        <link linkend="gnome-window-icon-set-default-from-file-list">gnome_window_icon_set_default_from_file_list</link>
+                                            (const char **filenames);
+void        <link linkend="gnome-window-icon-init">gnome_window_icon_init</link>          (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-window-icon-set-from-default">gnome_window_icon_set_from_default ()</title>
+<programlisting>void        gnome_window_icon_set_from_default
+                                            (<link linkend="GtkWindow">GtkWindow</link> *w);</programlisting>
+<para>
+Makes the <link linkend="GtkWindow">GtkWindow</link> <parameter>w</parameter> use the default icon.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
+<entry> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-window-icon-set-from-file">gnome_window_icon_set_from_file ()</title>
+<programlisting>void        gnome_window_icon_set_from_file (<link linkend="GtkWindow">GtkWindow</link> *w,
+                                             const char *filename);</programlisting>
+<para>
+Makes the <link linkend="GtkWindow">GtkWindow</link> <parameter>w</parameter> use the icon in <parameter>filename</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
+<entry> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
+</entry></row>
+<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
+<entry> the name of the file to load
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-window-icon-set-from-file-list">gnome_window_icon_set_from_file_list ()</title>
+<programlisting>void        gnome_window_icon_set_from_file_list
+                                            (<link linkend="GtkWindow">GtkWindow</link> *w,
+                                             const char **filenames);</programlisting>
+<para>
+Convenience wrapper around <link linkend="gtk-window-set-icon-list">gtk_window_set_icon_list</link>(),
+which loads the icons in <parameter>filenames</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
+<entry> window to set icons on
+</entry></row>
+<row><entry align="right"><parameter>filenames</parameter>&nbsp;:</entry>
+<entry> NULL terminated string array
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-window-icon-set-default-from-file">gnome_window_icon_set_default_from_file ()</title>
+<programlisting>void        gnome_window_icon_set_default_from_file
+                                            (const char *filename);</programlisting>
+<para>
+Set the default icon to the image in <parameter>filename</parameter>, if one 
+of the gnome_window_icon_set_default_from* functions have not already
+been called.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
+<entry> filename for the default window icon
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-window-icon-set-default-from-file-list">gnome_window_icon_set_default_from_file_list ()</title>
+<programlisting>void        gnome_window_icon_set_default_from_file_list
+                                            (const char **filenames);</programlisting>
+<para>
+Wrapper around <link linkend="gtk-window-set-default-icon-list">gtk_window_set_default_icon_list</link>(),
+which loads the icons in <parameter>filenames</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>filenames</parameter>&nbsp;:</entry>
+<entry> NULL terminated string array
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-window-icon-init">gnome_window_icon_init ()</title>
+<programlisting>void        gnome_window_icon_init          (void);</programlisting>
+<para>
+Initialize the gnome window icon by checking the
+GNOME_DESKTOP_ICON environment variable.  This function is 
+automatically called by the gnome_init process.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
