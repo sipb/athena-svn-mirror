@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.3 1990-04-19 12:56:21 jfc Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.4 1990-07-04 16:26:09 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -18,6 +18,8 @@ static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/a
 #include <string.h>
 
 #define TOKSEP " \t\r\n"
+
+static int parse_attach();
 
 struct	_attachtab	*attachtab_first, *attachtab_last;
 
@@ -101,7 +103,7 @@ void get_attachtab()
 			fprintf(stderr, abort_msg);
 			exit(ERR_FATAL);
 		}
-		parse_attach(attach_buf, at);
+		parse_attach(attach_buf, at, 0);
 		at->prev = atprev;
 		if (atprev)
 			atprev->next = at;
@@ -191,12 +193,46 @@ put_attachtab()
 	}
 }
 
+void lint_attachtab()
+{
+	struct _attachtab	*atprev = NULL;
+	struct _attachtab	*at = NULL;
+	FILE			*f;
+	char			attach_buf[BUFSIZ];
+	
+	free_attachtab();
+	if ((f = fopen(attachtab_fn, "r")) == NULL)
+		return;
+	
+	while (fgets(attach_buf, sizeof attach_buf, f)) {
+		if (!(at = (struct _attachtab *) malloc(sizeof(*at)))) {
+			fprintf(stderr,
+				"Can't malloc while parsing attachtab\n");
+			fprintf(stderr, abort_msg);
+			exit(ERR_FATAL);
+		}
+		if(parse_attach(attach_buf, at, 1) == FAILURE)
+		  continue;	/* bad line -- ignore */
+		at->prev = atprev;
+		if (atprev)
+			atprev->next = at;
+		else
+			attachtab_first = at;
+		atprev = at;
+	}
+	attachtab_last = at;
+	fclose(f);
+	put_attachtab();
+	free_attachtab();
+}
+
 /*
  * Convert an attachtab line to an attachtab structure
  */
-parse_attach(bfr, at)
+static int parse_attach(bfr, at, lint)
     char *bfr;
     struct _attachtab *at;
+    int lint;
 {
     char	*cp, *dp;
     int		old_version = 0; /* Backwards compat attachtab line */
@@ -214,6 +250,8 @@ parse_attach(bfr, at)
 	    old_version = 1;
     else if (strcmp(cp, ATTACH_VERSION)) {
 	    fprintf(stderr, "Bad version number in %s\n", attachtab_fn);
+	    if(lint) 
+	      return FAILURE;
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
     }
@@ -297,10 +335,12 @@ parse_attach(bfr, at)
     
     at->next = NULL;
     at->prev = NULL;
-    return;
+    return SUCCESS;
     
 bad_line:
     fprintf(stderr,"Badly formatted entry in %s\n", attachtab_fn);
+    if(lint)
+      return FAILURE;
     fprintf(stderr, abort_msg);
     exit(ERR_FATAL);
 }
