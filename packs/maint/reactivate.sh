@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.40 1998-10-26 18:57:29 ghudson Exp $
+# $Id: reactivate.sh,v 1.41 1999-04-02 16:09:36 rbasch Exp $
 
 trap "" 1 15
 
@@ -92,8 +92,6 @@ if [ "$PUBLIC" = true ]; then
 		cp -p /srvd/etc/shadow /etc/shadow.local
 		chmod 600 /etc/shadow.local
 		chown root /etc/shadow.local
-	elif [ "$HOSTTYPE" = sgi ]; then
-		rm -f /etc/shadow
 	fi
 fi
 
