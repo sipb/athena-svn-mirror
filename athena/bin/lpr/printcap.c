@@ -75,7 +75,10 @@ int pralias(buf, name)
 	char buf[];		/* buffer to put printer alias in */
 	char *name;		/* name of printer to look up */
 {
-	char *e, **hv, temp[BUFSIZ/2];
+	char *e, temp[BUFSIZ/2];
+#ifdef OLD_DEFAULT_ALIAS
+	char **hv;
+#endif
 	char *getclus();
 	
 	strcpy(temp, name);
