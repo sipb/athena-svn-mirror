@@ -13,3 +13,7 @@
 #ifdef SOLARIS
 #define HOSTTYPE "sun4"
 #endif
+
+#ifdef sgi
+#define HOSTTYPE "sgi"
+#endif
