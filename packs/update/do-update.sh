@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.42 2003-03-05 22:24:59 miki Exp $
+# $Id: do-update.sh,v 1.42.2.1 2003-07-16 17:11:04 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -81,9 +81,6 @@ sleep 2
 echo "Shutting down running services"
 if [ -f /var/athena/inetd.pid ]; then
 	kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
-fi
-if [ -f /var/athena/sshd.pid ]; then
-	kill `cat /var/athena/sshd.pid` > /dev/null 2>&1
 fi
 if [ -f /var/athena/named.pid ]; then
 	kill `cat /var/athena/named.pid` > /dev/null 2>&1
