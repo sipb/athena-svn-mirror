@@ -18,15 +18,19 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.4 2000-05-02 21:44:27 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.5 2000-05-17 20:23:32 ghudson Exp $";
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <assert.h>
+#include <errno.h>
 #include <rpmlib.h>
 #include <misc.h>	/* From /usr/include/rpm */
 
@@ -64,6 +68,7 @@ static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
 static void display_action(struct package *pkg, enum act action);
+static void update_lilo(struct package *pkg);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
@@ -129,6 +134,9 @@ int main(int argc, char **argv)
 
   /* Walk the table and perform the required updates. */
   perform_updates(pkgtab, public, dryrun);
+
+  if (!dryrun)
+    update_lilo(get_package(pkgtab, "kernel"));
 
   exit(0);
 }
@@ -431,9 +439,89 @@ static void display_action(struct package *pkg, enum act action)
     }
 }
 
+/* Red Hat's kernel package doesn't take care of lilo.conf; the update
+ * agent does.  So we have to take care of it too.
+ */
+static void update_lilo(struct package *pkg)
+{
+  const char *name = "/etc/lilo.conf", *savename = "/etc/lilo.conf.rpmsave";
+  FILE *in, *out;
+  char *buf = NULL, *oldkname, *newkname, *p;
+  int bufsize = 0, status, replaced;
+  struct stat statbuf;
+
+  /* For now, only act on updates. */
+  if (!pkg->instrev.present || !pkg->newlistrev.present
+      || revsame(&pkg->instrev, &pkg->newlistrev))
+    return;
+
+  /* Figure out kernel names. */
+  oldkname = emalloc(strlen("/boot/vmlinuz-")
+		     + strlen(pkg->instrev.version) + strlen("-")
+		     + strlen(pkg->instrev.release) + 1);
+  sprintf(oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
+	  pkg->instrev.release);
+  newkname = emalloc(strlen("/boot/vmlinuz-")
+		     + strlen(pkg->newlistrev.version) + strlen("-")
+		     + strlen(pkg->newlistrev.release) + 1);
+  sprintf(newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
+	  pkg->newlistrev.release);
+
+  if (stat(name, &statbuf) == -1)
+    die("Can't stat lilo.conf for rewrite.");
+
+  /* This isn't very atomic, but it's what Red Hat's update agent does. */
+  if (rename(name, savename) == -1)
+    die("Can't rename /etc/lilo.conf to /etc/lilo.conf.rpmsave.");
+  in = fopen(savename, "r");
+  out = fopen(name, "w");
+  if (!in || !out)
+    {
+      rename(savename, name);
+      die("Can't open lilo.conf files for rewrite.");
+    }
+  fchmod(fileno(out), statbuf.st_mode & 0777);
+
+  /* Rewrite lilo.conf, changing the old kernel name to the new kernel
+   * name in "image" lines.  Remove "initrd" lines following images we
+   * replace, since we don't currently use a ramdisk.
+   */
+  replaced = 0;
+  while ((status = read_line(in, &buf, &bufsize)) == 0)
+    {
+      p = buf;
+      while (isspace(*p))
+	p++;
+      if (strncmp(p, "image", 5) == 0 && !isalpha(p[5]))
+	{
+	  p = strstr(buf, oldkname);
+	  if (p != NULL)
+	    {
+	      fprintf(out, "%.*s%s%s\n", p - buf, buf, newkname,
+		      p + strlen(oldkname));
+	      replaced = 1;
+	      continue;
+	    }
+	  else
+	    replaced = 0;
+	}
+      else if (replaced && strncmp(p, "initrd", 6) == 0 && !isalpha(p[6]))
+	continue;
+      fprintf(out, "%s\n", buf);
+    }
+  fclose(in);
+  if (status == -1 || ferror(out) || fclose(out) == EOF)
+    {
+      rename(savename, name);
+      die("Error rewriting lilo.conf: %s", strerror(errno));
+    }
+
+  system("/sbin/lilo");
+}
+
 static void printrev(struct rev *rev)
 {
-  assert (rev->present);
+  assert(rev->present);
   if (rev->epoch != -1)
     printf("%d:", rev->epoch);
   printf("%s-%s", rev->version, rev->release);
