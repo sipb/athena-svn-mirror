@@ -20,68 +20,120 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.8 1990-02-15 18:14:24 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.9 1990-02-23 16:48:41 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
+static const char *const default_sort_order[] = {
+    "foo",
+    "unconnected_consultants_last",
+    "time",
+    0,
+};
+
 ERRCODE
-t_replay(Request,file, display, sort)
+t_replay(Request, queues, topics, users, stati, file, display)
      REQUEST *Request;
+     char *queues;
+     char *topics;
+     char *users;
+     int stati;
      char *file;
      int display;
-     int sort;
 {
-  int status;
-  char cmd[LINE_SIZE];
-  char users[NAME_SIZE];
+  int status, n;
+  char c;
+  LIST *list;
+  LIST *l;
 
-  users[0] = (char) NULL;
+  if ((queues[0] == '\0') && (topics[0] == '\0') && (stati == 0))
+    {
+      status = OReplayLog(Request,file);
+      switch (status)
+	{
+	case SUCCESS:
+	  if (display)
+	    status = display_file(file, TRUE);
+	  break;
 
-  status = OReplayLog(Request,file);
-  
+	case NOT_CONNECTED:
+	  fprintf(stderr,
+		  "%s [%d] does not have a question.\n",
+		  Request->target.username, Request->target.instance);
+	  break;
+
+	case PERMISSION_DENIED:
+	  fprintf(stderr, "You cannot replay log of %s [%d].\n",
+		  Request->target.username, Request->target.instance);
+	  break;
+	  
+	case ERROR:
+	  fprintf(stderr, "Error replaying conversation.\n");
+	  break;
+	  
+	case NAME_NOT_UNIQUE:
+	  fprintf(stderr,
+		  "The string \"%s\" is not unique.  Choose one of:\n",
+		  Request->target.username);
+	  strcpy(users, Request->target.username);
+	  (void) t_list_queue(Request, (char *) NULL, (char) NULL, (char) NULL,
+			      users, 0, 0, file, FALSE);
+	  break;
+
+	default:
+	  status = handle_response(status, Request);
+	  status = ERROR;
+	  break;
+	}
+      return(status);
+    }
+
+
+  status = OListQueue(Request,&list,queues,topics,users,stati);
+  OSortListByRule(list, default_sort_order);
+
   switch (status)
     {
     case SUCCESS:
-      if(sort)
+      for(n = 0, l = list; l->ustatus != END_OF_LIST; l++, n++);
+
+      for (l = list; l->ustatus != END_OF_LIST; l++)
 	{
-	  sprintf(cmd,"/usr/bin/sort %s -o %s",file,file);
-	  system(cmd);
+	  (void) strcpy(Request->target.username, l->user.username);
+	  Request->target.instance = l->user.instance;
+	  (void) t_replay(Request, (char *) NULL, (char *) NULL,
+			  (char *) NULL, 0, file, display);
+	  if (--n)
+	    {
+	      printf("========  Hit 'q' to quit, any other key ");
+	      c = get_key_input("to continue.  ========");
+	      printf("\n");
+	      if ((c == 'q') || (c == 'Q'))
+		{
+		  free(list);
+		  return(status);
+		}
+	    }
 	}
-      if (display)
-	status = display_file(file, TRUE);
+      free(list);
       break;
-
-    case NOT_CONNECTED:
-      fprintf(stderr,
-	"%s [%d] does not have a question.\n",
-	 Request->target.username, Request->target.instance);
-      break;
-
-    case PERMISSION_DENIED:
-      fprintf(stderr, "You cannot replay log of %s [%d].\n", 
-	      Request->target.username, Request->target.instance);
-       break;
 
     case ERROR:
-      fprintf(stderr, "Error replaying conversation.\n");
-       break;
+      fprintf(stderr, "Error listing conversations.\n");
+      break;
 
-    case NAME_NOT_UNIQUE:
-      fprintf(stderr,
-	      "The string \"%s\" is not unique.  Choose one of:\n",
-	      Request->target.username);
-      strcpy(users, Request->target.username);
-      (void) t_list_queue(Request, (char *) NULL, (char) NULL, (char) NULL,
-			  users, 0, 0, file, FALSE);
+    case EMPTY_LIST:
+      printf ("No questions match the given criteria.\n");
+      status = SUCCESS;
       break;
 
     default:
       status = handle_response(status, Request);
-      status = ERROR;
-       break;
+      break;
     }
+
   return(status);
 }
 
