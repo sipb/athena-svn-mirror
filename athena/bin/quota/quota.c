@@ -2,8 +2,13 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.5 1990-05-22 12:12:09 jnrees Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.6 1990-05-23 12:25:41 jnrees Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.5  90/05/22  12:12:09  jnrees
+ * Fixup of permissions, plus fallback to old rpc call
+ * if the first call fails because the rpc server is not
+ * registered on the server machine.
+ * 
  * Revision 1.4  90/05/17  15:04:02  jnrees
  * Fixed bug where unknown uid or gid would result in a bus error
  * 
@@ -29,7 +34,9 @@
 #include <rpcsvc/rquota.h>
 #include <rpcsvc/rcquota.h>
 
-static int	vflag, iflag, localflag, gflag;
+static char *warningstring;
+
+static int	vflag, localflag, gflag;
 #define QFNAME	"quotas"
 
 #define kb(n)   (howmany(dbtob(n), 1024))
@@ -48,10 +55,6 @@ main(argc, argv)
 	vflag=1;
 	break;
 
-      case 'i':
-        iflag=1;
-        break;
-
       case 'g':
 	gflag=1;
 	break;
@@ -59,6 +62,7 @@ main(argc, argv)
       default:
 	fprintf(stderr, "quota: %c: unknown option\n",
 		*cp);
+	usage();
 	exit(1);
       }
     else
@@ -66,6 +70,12 @@ main(argc, argv)
     argc--, argv++;
   }
   if (argc == 0){
+    if (gflag){
+      fprintf(stderr, "A group name or id must be specified with the -g option.\n");
+      usage();
+      exit(1);
+    }
+    
     showid(getuid());
     exit(0);
   }
@@ -147,7 +157,7 @@ showquotas(id, name)
   if (gflag){			/* User must be in group or be root */
     if ((ngroups = getgroups(NGROUPS, gidset)) == -1){
       perror("Couldn't get groups you are in.");
-      exit(-1);
+      exit(1);
     }
     while(ngroups){
       if (id == gidset[ngroups-1]) break;
@@ -167,7 +177,7 @@ showquotas(id, name)
 
   if (vflag && !localflag)
     heading(id, name);
-  if (localflag) localheading(id,name);
+  if (vflag && localflag) localheading(id,name);
 
   mtab = setmntent(MOUNTED, "r");
   while (mntp = getmntent(mtab)) {
@@ -181,13 +191,15 @@ showquotas(id, name)
     else {
       continue;
     }
-    if (vflag || localflag)
+    if (vflag){
       prquota(mntp, &qvalues);
-    else
-      warn(mntp, &qvalues);
+      if (!localflag) warn(mntp, &qvalues);
+    }
+    else warn(mntp, &qvalues);
   }
-
-    endmntent(mtab);
+  endmntent(mtab);
+  if (warningstring[0]) printf("\n%s\n", warningstring);
+  
 }
 
 getlocalquota(mntp, uid, qvp)
@@ -237,6 +249,7 @@ getlocalquota(mntp, uid, qvp)
       fprintf(stderr, "quotactl: %s %d\n", mntp->mnt_fsname, uid);
       return(-1);
     }
+    qvp->rq_ngrps = 1;
     qvp->gqr_rcquota[0].rq_id = uid;
     qvp->gqr_rcquota[0].rq_bhardlimit = dqblk.dqb_bhardlimit;
     qvp->gqr_rcquota[0].rq_bsoftlimit = dqblk.dqb_bsoftlimit;
@@ -282,10 +295,11 @@ warn(mntp, qvp)
 {
   struct timeval tv;
   int i;
+  char buf[1024];
   char *id_name, *id_type;
   struct rcquota *rqp;
 
-  id_type = (qvp->rq_group? "group" : "user");
+  id_type = (qvp->rq_group? "Group" : "User");
   if (!qvp->rq_group) qvp->rq_ngrps = 1;
 
   gettimeofday(&tv, NULL);
@@ -309,64 +323,83 @@ warn(mntp, qvp)
       rqp->rq_fhardlimit = qvp->gqr_zm.rq_fhardlimit;
 
     /* Now check for over...*/
-    if(rqp->rq_curblocks != 0 && rqp->rq_curblocks >= rqp->rq_bhardlimit)
-      printf("Block limit reached for %s %s on %s\n",
+    if(rqp->rq_bhardlimit &&
+       rqp->rq_curblocks >= rqp->rq_bhardlimit){
+      sprintf(buf,
+	      "Block limit reached for %s %s on %s\n",
 	     id_type, id_name, mntp->mnt_dir);
+      putwarning(buf);
+    }
 
-    else if (rqp->rq_curblocks != 0 &&
+    else if (rqp->rq_bsoftlimit &&
 	     rqp->rq_curblocks >= rqp->rq_bsoftlimit){
       if (rqp->rq_btimeleft == 0) {
-	printf("%s %s over disk quota on %s, remove %dK\n",
+	sprintf(buf,
+		"%s %s over disk quota on %s, remove %dK\n",
 	       id_type, id_name, mntp->mnt_dir,
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1));
+	putwarning(buf);
       }
       else if (rqp->rq_btimeleft > tv.tv_sec) {
 	char btimeleft[80];
 
 	fmttime(btimeleft, rqp->rq_btimeleft - tv.tv_sec);
-	printf("%s %s over disk quota on %s, remove %dK within %s\n",
+	sprintf(buf,
+		"%s %s over disk quota on %s, remove %dK within %s\n",
 	       id_type, id_name, mntp->mnt_dir,
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1),
 	       btimeleft);
+	putwarning(buf);
       }
       else {
-	printf("%s %s over disk quota on %s, time limit has expired, remove %dK\n",
+	sprintf(buf,
+		"%s %s over disk quota on %s, time limit has expired, remove %dK\n",
 	       id_type, id_name, mntp->mnt_dir,
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1));
+	putwarning(buf);
       }
     }
 
-    if (rqp->rq_curfiles != 0 &&
-	rqp->rq_curfiles >= rqp->rq_fhardlimit)
-      printf("File count limit reached for %s %s on %s\n",
+    if (rqp->rq_fhardlimit &&
+	rqp->rq_curfiles >= rqp->rq_fhardlimit){
+      sprintf(buf,
+	      "File count limit reached for %s %s on %s\n",
 	     id_type, id_name, mntp->mnt_dir);
+      putwarning(buf);
+    }
 
-    else if (rqp->rq_curfiles != 0 &&
+    else if (rqp->rq_fsoftlimit &&
 	     rqp->rq_curfiles >= rqp->rq_fsoftlimit) {
       if (rqp->rq_ftimeleft == 0) {
-	printf("%s %s over file quota on %s, remove %d file%s\n",
+	sprintf(buf,
+		"%s %s over file quota on %s, remove %d file%s\n",
 	       id_type, id_name, mntp->mnt_dir,
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ));
+	putwarning(buf);
       }
 
       else if (rqp->rq_ftimeleft > tv.tv_sec) {
 	char ftimeleft[80];
 
 	fmttime(ftimeleft, rqp->rq_ftimeleft - tv.tv_sec);
-	printf("%s %s over file quota on %s, remove %d file%s within %s\n",
+	sprintf(buf,
+		"%s %s over file quota on %s, remove %d file%s within %s\n",
 	       id_type,id_name,mntp->mnt_dir,
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ), ftimeleft);
+	putwarning(buf);
       }
       else {
-	printf("%s %s over file quota on %s, time limit has expired, remove %d file%s\n",
+	sprintf(buf,
+		"%s %s over file quota on %s, time limit has expired, remove %d file%s\n",
 	       id_type, id_name, mntp->mnt_dir,
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ));
+	putwarning(buf);
       }
     }
   }
@@ -377,18 +410,14 @@ heading(uid,name)
      char *name;
 {
   printf("Disk quotas for %s (uid %d):\n",name,uid);
-  printf("%-27s%-6s%-15s%6s%7s%7s%12s\n"
+  printf("%-16s%-6s%-12s%6s%7s%7s  %7s%7s%7s\n"
 	 , "Filesystem"
 	 , "Type"
 	 , "ID"
-	 , (iflag ? "files" : "usage")
-	 , "quota"
-	 , "limit"
-	 , "timeleft"
+	 , "usage", "quota", "limit"
+	 , "files", "quota", "limit"
 	 );
 }
-  
-
 
 localheading(uid, name)
 	int uid;
@@ -411,8 +440,8 @@ localheading(uid, name)
 }
 
 prquota(mntp, qvp)
-	register struct mntent *mntp;
-	register struct getcquota_rslt *qvp;
+     register struct mntent *mntp;
+     register struct getcquota_rslt *qvp;
 {
   struct timeval tv;
   char ftimeleft[80], btimeleft[80], idbuf[20];
@@ -424,21 +453,21 @@ prquota(mntp, qvp)
   id_type = (qvp->rq_group? "group" : "user");
   if (!qvp->rq_group || localflag) qvp->rq_ngrps = 1;
 
-  gettimeofday(&tv, NULL);
-
-  if (strlen(mntp->mnt_dir) > 26) {
-    printf("%s\n", mntp->mnt_dir);
+  cp = mntp->mnt_dir;
+  if (strlen(cp) > 15){
+    printf("%s\n", cp);
     cp = "";
-  } else {
-    cp = mntp->mnt_dir;
   }
+
+  gettimeofday(&tv, NULL);
 
   for(i=0; i<qvp->rq_ngrps; i++){
     rqp = &(qvp->gqr_rcquota[i]);
+
     /* We're not interested in this group if all is zero */
     if (!rqp->rq_bsoftlimit && !rqp->rq_bhardlimit
-	&& !rqp->rq_curblocks && !rqp->rq_fsoftlimit
-	&& !rqp->rq_fhardlimit && !rqp->rq_curfiles) continue;
+        && !rqp->rq_curblocks && !rqp->rq_fsoftlimit
+        && !rqp->rq_fhardlimit && !rqp->rq_curfiles) continue;
 
     if (!localflag){
       if (qvp->rq_group){
@@ -469,7 +498,13 @@ prquota(mntp, qvp)
     if(!rqp->rq_fhardlimit)
       rqp->rq_fhardlimit = qvp->gqr_zm.rq_fhardlimit;
 
-    if (rqp->rq_curblocks >= rqp->rq_bsoftlimit) {
+    if (!rqp->rq_bsoftlimit && !rqp->rq_bhardlimit &&
+	!rqp->rq_fsoftlimit && !rqp->rq_fhardlimit)
+      /* Skip this entirely for compatibility */
+      continue;
+
+    if (rqp->rq_bsoftlimit &&
+	rqp->rq_curblocks >= rqp->rq_bsoftlimit) {
       if (rqp->rq_btimeleft == 0) {
 	strcpy(btimeleft, "NOT STARTED");
       } else if (rqp->rq_btimeleft > tv.tv_sec) {
@@ -480,7 +515,8 @@ prquota(mntp, qvp)
     } else {
       btimeleft[0] = '\0';
     }
-    if (rqp->rq_fsoftlimit && rqp->rq_curfiles >= rqp->rq_fsoftlimit) {
+    if (rqp->rq_fsoftlimit &&
+	rqp->rq_curfiles >= rqp->rq_fsoftlimit) {
       if (rqp->rq_ftimeleft == 0) {
 	strcpy(ftimeleft, "NOT STARTED");
       } else if (rqp->rq_ftimeleft > tv.tv_sec) {
@@ -494,26 +530,28 @@ prquota(mntp, qvp)
 
     if (localflag){
       printf("%-12.12s %7d%7d%7d%12s%7d%7d%7d%12s\n",
-	     cp,
+	   cp,
+	   kb(rqp->rq_curblocks),
+	   kb(rqp->rq_bsoftlimit),
+	   kb(rqp->rq_bhardlimit),
+	   btimeleft,
+	   rqp->rq_curfiles,
+	   rqp->rq_fsoftlimit,
+	   rqp->rq_fhardlimit,
+	   ftimeleft
+	   );
+    }
+    else{
+      printf("%-16s%-6s%-12.12s%6d%7d%7d%-2s%7d%7d%7d%-2s\n",
+	     cp, id_type, id_name,
 	     kb(rqp->rq_curblocks),
 	     kb(rqp->rq_bsoftlimit),
 	     kb(rqp->rq_bhardlimit),
-	     btimeleft,
+	     (btimeleft[0]? "<<" : ""),
 	     rqp->rq_curfiles,
 	     rqp->rq_fsoftlimit,
 	     rqp->rq_fhardlimit,
-	     ftimeleft
-	     );
-    }
-    else{
-      printf("%-27s%-6s%-15s%6d%7d%7d%12s\n",
-	     cp,
-	     id_type,
-	     id_name,
-	     (iflag? rqp->rq_curfiles : kb(rqp->rq_curblocks)),
-	     (iflag? rqp->rq_fsoftlimit : kb(rqp->rq_bsoftlimit)),
-	     (iflag? rqp->rq_fhardlimit : kb(rqp->rq_bhardlimit)),
-	     (iflag? ftimeleft : btimeleft));
+	     (ftimeleft[0]? "<<" : ""));
     }
   }
 }
@@ -598,23 +636,25 @@ getnfsquota(mntp, uid, qvp)
 	  }
 	  else{
 	    /* We have to convert the old return structure to
-	       a new format structure */
+	       a new format structure.*/
 	    qvp->gqr_status = (enum gcqr_status) oldquota_result.gqr_status;
 	    qvp->rq_group = 0;
 	    qvp->rq_ngrps = 0;
 	    qvp->rq_bsize = oldquota_result.gqr_rquota.rq_bsize;
-	    bzero((char*)&qvp->gqr_zm, sizeof(struct rcquota));
+
+	    bzero(&qvp->gqr_zm, sizeof(struct rcquota));
+
 	    qvp->gqr_rcquota[0].rq_id = getuid();
 	    qvp->gqr_rcquota[0].rq_bhardlimit =
-	      oldquota_result.gqr_rquota.rq_bhardlimit;
+	       oldquota_result.gqr_rquota.rq_bhardlimit;
 	    qvp->gqr_rcquota[0].rq_bsoftlimit =
-	      oldquota_result.gqr_rquota.rq_bsoftlimit;
+	       oldquota_result.gqr_rquota.rq_bsoftlimit;
 	    qvp->gqr_rcquota[0].rq_curblocks =
 	      oldquota_result.gqr_rquota.rq_curblocks;
 	    qvp->gqr_rcquota[0].rq_fhardlimit =
-	      oldquota_result.gqr_rquota.rq_fhardlimit;
+	       oldquota_result.gqr_rquota.rq_fhardlimit;
 	    qvp->gqr_rcquota[0].rq_fsoftlimit =
-	      oldquota_result.gqr_rquota.rq_fsoftlimit;
+	       oldquota_result.gqr_rquota.rq_fsoftlimit;
 	    qvp->gqr_rcquota[0].rq_curfiles = 
 	      oldquota_result.gqr_rquota.rq_curfiles;
 	    qvp->gqr_rcquota[0].rq_btimeleft = 
@@ -733,3 +773,27 @@ callaurpc(host, prognum, versnum, procnum, inproc, in, outproc, out)
 	return ((int) clnt_stat);
 }
 
+putwarning(string)
+     char *string;
+{
+  static warningmaxsize = 0;
+  
+  if (warningmaxsize == 0){
+    warningstring = (char*)malloc(10);
+    warningstring[0] = '\0';
+    warningmaxsize = 10;
+  }
+
+  while (strlen(warningstring) + strlen(string) + 1 > warningmaxsize){
+    warningstring = (char*)realloc(warningstring, (warningmaxsize * 3)/2);
+    warningmaxsize = (warningmaxsize * 3) / 2;
+  }
+
+  sprintf(&warningstring[strlen(warningstring)], "%s", string);
+}
+
+usage()
+{
+  fprintf(stderr, "Usage: quota [-v] [ user | uid ] ...\n");
+  fprintf(stderr, "       quota -g [-v] [ group | gid ] ...\n");
+}
