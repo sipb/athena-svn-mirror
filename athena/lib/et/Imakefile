@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.7 1991-06-20 06:18:10 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.8 1997-10-17 01:51:24 ghudson Exp $
 #	$Locker:  $
 #
 
@@ -107,7 +107,5 @@ TAGS:	et_name.c error_message.c compile_et.c error_table.c \
 	etags et_name.c error_message.c compile_et.c \
 		error_table.c perror.c init_et.c
 
-# 'make depend' code
-depend:: ${CFILES} et_lex.lex.c
-	makedepend ${CFLAGS} ${CFILES}
-
+depend:: et_lex.lex.c error_table.c
+create_depend(${CFILES})
