@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/acl_files.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -23,7 +23,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.3 1992-08-14 12:16:43 lwvanels Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.4 1993-09-24 16:08:36 probe Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -71,8 +71,8 @@ acl_canonicalize_principal(principal, canon)
     char *dot, *atsign;
     int len;
 
-    dot = (char *) index(principal, INST_SEP);
-    atsign = (char *) index(principal, REALM_SEP);
+    dot = (char *) strchr(principal, INST_SEP);
+    atsign = (char *) strchr(principal, REALM_SEP);
 
     /* Maybe we're done already */
     if(dot != NULL && atsign != NULL) {
@@ -512,8 +512,8 @@ acl_check(acl, principal)
 	return 1;
 
     /* Try the wildcards */
-    realm = (char *) index(canon, REALM_SEP);
-    *((char *)index(canon, INST_SEP)) = '\0';	/* Chuck the instance */
+    realm = (char *) strchr(canon, REALM_SEP);
+    *((char *)strchr(canon, INST_SEP)) = '\0';	/* Chuck the instance */
 
     sprintf(buf, "%s.*%s", canon, realm);
     if(acl_exact_match(acl, buf)) return 1;
