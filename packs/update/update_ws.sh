@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.54 2001-06-09 03:12:16 zacheiss Exp $
+# $Id: update_ws.sh,v 1.55 2001-06-20 17:39:26 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -243,46 +243,47 @@ failupdate() {
 
 case "$HOSTTYPE" in
 sun4)
-  # Make sure / is at least a 48MB partition and /usr is at least a
-  # 150MB partition, or it can't run the current release.  Since
-  # roughly 7% of the partition is lost to filesystem overhead, we
-  # check for filesystem sizes of 10% less than the required partition
-  # sizes.
+
+  # Set required filesystem sizes 9.0 release, and required filesystem
+  # space for the 9.0 update.  Filesystem overhead consumes about 7% of
+  # a partition, so we check for a filesystem size 10% less than the
+  # partition size we want.  We get some extra margin from minfree,
+  # but we don't deliberately rely on that.
+  case `uname -m` in
+  sun4u)
+    reqrootsize=88473	# 96MB partition; measured use 54839K
+    requsrsize=184320	# 200MB partition; measured use 134646K
+    reqrootspace=30720	# 30MB; measured space increase 25557K
+    requsrspace=61440	# 60MB; measured space increase 51909K
+    ;;
+  *) # Presume sun4m
+    reqrootsize=44236	# 48MB partition; measured use 29993K
+    requsrsize=138240	# 150MB partition; measured use 109238K
+    reqrootspace=10240	# 10MB; measured space increase 5462K
+    requsrspace=30720	# 30MB; measured space increase 26662K
+    ;;
+  esac
+
+  # Check filesystem sizes.
   rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
   usrsize=`df -k /usr | awk '{ x = $2; } END { print x; }'`
-  if [ 44236 -gt "$rootsize" -o 138240 -gt "$usrsize" ]; then
+  if [ "$reqrootsize" -gt "$rootsize" -o "$requsrsize" -gt "$usrsize" ]; then
     echo "Your / or /usr partition is not big enough for Athena release 9.0"
     echo "and higher.  You must reinstall to take this update."
     logger -t "$HOST" -p user.notice / or /usr too small to take update
     failupdate
   fi
 
-  # For the update to 9.0, ensure that there is space avaiable.
-  # Information relevant to this calculation (for sun4m machines;
-  # sun4u machines don't generally have space issues):
-  #
-  #	* A freshly installed 8.4 machine uses 24531K on / and 82576K
-  #	  on /usr.
-  #	* A freshly updated 9.0 machine uses 29993K on / and 109238K
-  #	  on /usr.
-  #	* Roughly 7% of the partition is lost to overhead.
-  #	* The df -k available space output reflects another 10%
-  #	  reduction on account of minfree.
-  #
-  # So on a freshly installed 8.4 machine with a 48MB root partition
-  # and a 150MB usr partition, there will be roughly 16MB available on
-  # the root partition and 44MB available on the usr partition, and
-  # the update will consume roughly 6MB on the root partition and 26MB
-  # on the usr partition.  We will require 10MB of space on the root
-  # and 30MB of space on /usr for margin.
+  # Check free space if this is a full update to 9.0.
   case $version in
   8.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
     usrspace=`df -k /usr | awk '{ x = $4; } END { print x; }'`
-    if [ 10240 -gt "$rootspace" -o 30720 -gt "$usrspace" ]; then
-      echo "The / partition must have 10MB free and the /usr partition must"
-      echo "have 30MB free for this update.  Please reinstall or clean local"
-      echo "files off the / and /usr partitions."
+    if [ "$reqrootspace" -gt "$rootspace" \
+	 -o "$requsrspace" -gt "$usrspace" ]; then
+      echo "The / partition must have ${reqrootspace}K free and the /usr"
+      echo "partition must have ${requsrspace}K free for this update.  Please"
+      echo "reinstall or clean local files off the / and /usr partitions."
       logger -t "$HOST" -p user.notice / or /usr too full to take update
       failupdate
     fi
