@@ -28,7 +28,7 @@ SOFTWARE.
 #include <X11/StringDefs.h>
 #include <X11/IntrinsicP.h>
 #include <X11/Xaw/XawInit.h>
-#include <X11/Xaw/ClockP.h>
+#include "ClockP.h"
 #include <X11/Xosdefs.h>
 
 #if __STDC__
