@@ -6,7 +6,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: lwvanels $
+ *      $Author: probe $
  *      $Zephyr: /mit/zephyr/src.rw/zhm/RCS/zhm.h,v 1.13 90/10/19 07:11:48 raeburn Exp $
  *
  *      Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
@@ -97,7 +97,7 @@ extern void init_queue(), retransmit_queue();
 #define adjust_size(size)	size -= 0x400000
 #endif
 #ifdef _IBMR2
-#define	MACHINE "IBM RS/6000"
+#define	MACHINE "IBM RISC/6000"
 #define	adjust_size(size)	size -= 0x20000000
 #endif
 #define	ok
