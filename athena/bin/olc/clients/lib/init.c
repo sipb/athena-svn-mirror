@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.18 1992-01-07 19:14:39 lwvanels Exp $
+ *	$Id: init.c,v 1.19 1992-03-16 15:36:57 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.18 1992-01-07 19:14:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.19 1992-03-16 15:36:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -66,21 +66,18 @@ OInitialize()
 	  fprintf(stderr,
 		  "Unable to get name of %s server host from the Hesiod nameserver.\n",inst);
 	  fprintf(stderr, 
-		  "This means that you cannot use %s at this time.  Any problems \n",inst);
+		  "Any problems you may be experiencing with your workstation may be\n");
 	  fprintf(stderr,
-		  "you may be experiencing with your workstation may be the result of this\n");
-	  fprintf(stderr,
-		  "problem. \n");
+		  "the result of this problem.\n");
       
-	  exit(ERROR);
+	  h = OLC_SERVER;
       }
       else
 	  h = *hp;
     }
 #else
   if (!h) {
-    fprintf (stderr, "Can't find %s server host!\n",inst);
-    exit (ERROR);
+    h = OLC_SERVER;
   }
 #endif /* HESIOD */
 
