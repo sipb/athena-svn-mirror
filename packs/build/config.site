@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.7 1996-12-31 23:15:39 ghudson Exp $
+# $Id: config.site,v 1.8 1997-09-23 18:54:11 ghudson Exp $
 #
 
 athena=true
@@ -32,8 +32,14 @@ case "${HOSTTYPE}" in
 		;;
 esac
 
-# Set location of AFS includes and libraries.
-with_afs=/usr/afsws
+# Set location of various includes and libraries.  ATHTOOLROOT is set to
+# /srvd by the do script if we're doing a self-contained build.
+with_afs=$ATHTOOLROOT/usr/afsws
+with_krb4=$ATHTOOLROOT/usr/athena
+with_krb5=$ATHTOOLROOT/usr/athena
+with_hesiod=$ATHTOOLROOT/usr/athena
+with_com_err=$ATHTOOLROOT/usr/athena
+with_ss=$ATHTOOLROOT/usr/athena
 
 prefix=/usr/athena
 datadir='${exec_prefix}/lib'
