@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.5 1991-03-05 14:48:46 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.6 1991-03-24 14:55:43 lwvanels Exp $
 #
 # $Author: lwvanels $ 
 #
@@ -19,7 +19,7 @@ DEPLIBS= $(LOCAL_LIBRARIES)
 NormalProgramTarget(olc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 SaberProgramTarget(olc,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
-#ifdef TestInstall
+#ifdef InstallAltLoc
 InstallLink(olc,olcr,/mit/olcdev/@sys)
 #else
 InstallLink(olc,olcr,$(DESTDIR)/usr/athena)
