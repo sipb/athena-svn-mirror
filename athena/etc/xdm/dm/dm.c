@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.27 1992-10-16 08:14:41 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.28 1992-11-07 00:10:08 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -49,7 +49,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.27 1992-10-16 08:14:41 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.28 1992-11-07 00:10:08 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -141,15 +141,17 @@ char **argv;
     int pgrp, file, tries, console = TRUE, mask;
 #ifdef ultrix
     int login_tty;
-#endif
-#if defined(ultrix) && defined(mips)
+#ifdef mips
     int uacbuf[2];
+#endif
+#endif
+#ifdef _AIX
+    char pathenv[1024];
 #endif
 #ifdef USE_X11R3
     fd_set rdlist;
     int pp[2], nfd, nfound;
     struct timeval timeout;
-    char pathenv[1024];
     static char displayenv[256] = "DISPLAY=";
 #endif
 
