@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.11 1997-03-26 20:55:18 ghudson Exp $
+# $Id: Xsession.sgi,v 1.12 1997-11-28 19:41:53 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -42,8 +42,11 @@ case $defsession in
 		configchecks=$dotdesktop/configchecks
 		xsessioncheck=$configchecks/checkxsession
 		confirmdirectory=/usr/share/misc/sessionwarnings
+		if [ -d $confirmdirectory/C ]; then
+		    confirmdirectory=$confirmdirectory/C
+		fi
 
-		if [ ! -f $xsessioncheck ]
+		if [ ! -f $xsessioncheck -a -r $confirmdirectory/xsession.msg ]
 		then
 		  xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
 
