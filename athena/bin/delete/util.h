@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.8 1989-11-22 21:24:44 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.9 1989-12-15 04:37:03 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -33,3 +33,7 @@ int is_mountpoint(), is_link();
 			 (*(A + 2) == '\0'))))
 
 #define is_deleted(A) ((*A == '.') && (*(A + 1) == '#'))
+
+ /* It would be BAD to pass something with a ++ anywhere near it into */
+ /* this macro! 						      */
+#define Opendir(dir) opendir(*(dir) ? (dir) : ".")
