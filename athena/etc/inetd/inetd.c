@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.5 1996-01-14 15:44:44 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.6 1996-05-30 17:54:21 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.5 1996-01-14 15:44:44 epeisach Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.6 1996-05-30 17:54:21 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -94,13 +94,9 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #define       MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#ifdef POSIX
 static sigset_t sig_zero;
 static sigset_t sig_block;
 static sigset_t sig_switch;
-#else
-#define	SIGBLOCK	(sigmask(SIGCHLD)|sigmask(SIGHUP)|sigmask(SIGALRM))
-#endif
 
 extern	int errno;
 
@@ -198,12 +194,8 @@ main(argc, argv, envp)
 	register struct passwd *pwd;
 	char *cp, buf[50];
 	int pid, i, dofork;
-#ifdef POSIX
-    struct sigaction sa;
-#else
-	struct sigvec sv;
-#endif
-    register int tmpint;
+	struct sigaction sa;
+	register int tmpint;
 	FILE *pidfile;
 
 	Argv = argv;
@@ -245,16 +237,7 @@ nextopt:
 	(void) open("/", O_RDONLY);
 	(void) dup2(0, 1);
 	(void) dup2(0, 2);
-#ifdef POSIX
 	setsid();
-#else
-	{ int tt = open("/dev/tty", O_RDWR);
-	  if (tt > 0) {
-		ioctl(tt, TIOCNOTTY, (char *)0);
-		close(tt);
-	  }
-	}
-#endif
 #endif
 #ifdef LOG_NOWAIT
 	openlog("inetd", LOG_PID | LOG_NOWAIT, LOG_DAEMON);
@@ -266,62 +249,37 @@ nextopt:
 	    fclose(pidfile);
 	} else syslog(LOG_WARNING, "cannot write pid file %s", pidfilename);
 
-#ifdef POSIX
-    sa.sa_flags = 0;
+	sa.sa_flags = 0;
 
-    (void) sigemptyset(&sig_zero);
-    (void) sigemptyset(&sig_block);
-    (void) sigaddset(&sig_block, SIGCHLD);
-    (void) sigaddset(&sig_block, SIGHUP);
-    (void) sigaddset(&sig_block, SIGALRM);
+	(void) sigemptyset(&sig_zero);
+	(void) sigemptyset(&sig_block);
+	(void) sigaddset(&sig_block, SIGCHLD);
+	(void) sigaddset(&sig_block, SIGHUP);
+	(void) sigaddset(&sig_block, SIGALRM);
 
-    sa.sa_mask = sig_block;
-    sa.sa_handler = (void (*)()) retry;
-    (void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
-    restartme();
-    sa.sa_handler = (void (*)()) restartme();
-    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
-    sa.sa_handler = (void (*)()) reapchild;
-    (void) sigaction(SIGCHLD, &sa, (struct sigaction *)0);
-    sa.sa_handler = (void (*)()) config;
-    (void) sigaction(SIGUSR1, &sa, (struct sigaction *)0);
-    sa.sa_handler = (void (*)()) switchoff;
-    (void) sigaction(SIGUSR2, &sa, (struct sigaction *)0);
-    sa.sa_handler = (void (*)()) removepidfile;
-    (void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
-#else
-	bzero((char *)&sv, sizeof(sv));
-	sv.sv_mask = SIGBLOCK;
-	sv.sv_handler = retry;
-	sigvec(SIGALRM, &sv, (struct sigvec *)0);
+	sa.sa_mask = sig_block;
+	sa.sa_handler = (void (*)()) retry;
+	(void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
 	restartme();
-	sv.sv_handler = restartme;
-	sigvec(SIGHUP, &sv, (struct sigvec *)0);
-	sv.sv_handler = reapchild;
-	sigvec(SIGCHLD, &sv, (struct sigvec *)0);
-	sv.sv_handler = config;
-	sigvec(SIGUSR1, &sv, (struct sigvec *)0);
-	sv.sv_handler = switchoff;
-	sigvec(SIGUSR2, &sv, (struct sigvec *)0);
-	sv.sv_handler = removepidfile;
-	sigvec(SIGTERM, &sv, (struct sigvec *)0);
-#endif	
+	sa.sa_handler = (void (*)()) restartme;
+	(void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+	sa.sa_handler = (void (*)()) reapchild;
+	(void) sigaction(SIGCHLD, &sa, (struct sigaction *)0);
+	sa.sa_handler = (void (*)()) config;
+	(void) sigaction(SIGUSR1, &sa, (struct sigaction *)0);
+	sa.sa_handler = (void (*)()) switchoff;
+	(void) sigaction(SIGUSR2, &sa, (struct sigaction *)0);
+	sa.sa_handler = (void (*)()) removepidfile;
+	(void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
 	for (;;) {
 	    int ctrl, n;
 	    fd_set readable;
 
 	    if (nsock == 0) {
-#ifdef POSIX
-	    (void) sigprocmask(SIG_BLOCK, &sig_block, (sigset_t *)0);
-	    while (nsock == 0)
-		sigsuspend(&sig_zero);
-	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#else
-		(void) sigblock(SIGBLOCK);
+		(void) sigprocmask(SIG_BLOCK, &sig_block, (sigset_t *)0);
 		while (nsock == 0)
-		    sigpause(0);
-		(void) sigsetmask(0);
-#endif
+		    sigsuspend(&sig_zero);
+		(void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
 	    }
 	    readable = allsock;
 	    if ((n = select(maxsock + 1, &readable, (fd_set *)0,
@@ -350,11 +308,7 @@ nextopt:
 		} else
 		  ctrl = sep->se_fd;
 
-#ifdef POSIX
 		(void) sigprocmask(SIG_BLOCK, &sig_block, (sigset_t *)0);
-#else
-		(void) sigblock(SIGBLOCK);
-#endif
 		pid = 0;
 
 		dofork = (sep->se_bi == 0 || sep->se_bi->bi_fork);
@@ -379,11 +333,8 @@ nextopt:
 					sep->se_fd = -1;
 					sep->se_count = 0;
 					nsock--;
-#ifdef POSIX
-					(void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-					sigsetmask(0);
-#endif
+					(void) sigprocmask(SIG_SETMASK,
+							   &sig_zero, NULL);
 					if (!timingout) {
 						timingout = 1;
 						alarm(RETRYTIME);
@@ -396,11 +347,7 @@ nextopt:
 		if (pid < 0) {
 			if (!sep->se_wait && sep->se_socktype == SOCK_STREAM)
 				close(ctrl);
-#ifdef POSIX
-	(void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-			sigsetmask(0);
-#endif
+			(void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 			sleep(1);
 			continue;
 		}
@@ -409,11 +356,7 @@ nextopt:
 			FD_CLR(sep->se_fd, &allsock);
 			nsock--;
 		}
-#ifdef POSIX
-	(void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-		sigsetmask(0);
-#endif
+		(void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 		if (pid == 0) {
 #ifdef	DEBUG
 			int tt;
@@ -466,31 +409,19 @@ nextopt:
 sigtype
 reapchild()
 {
-#ifdef POSIX
         int status;
-#else
-	union wait status;
-#endif
 	int pid;
 	register struct servtab *sep;
 
 	for (;;) {
-#ifdef POSIX
-	pid = waitpid((pid_t)-1, &status, WNOHANG);
-#else
-		pid = wait3(&status, WNOHANG, (struct rusage *)0);
-#endif
+		pid = waitpid((pid_t)-1, &status, WNOHANG);
 		if (pid <= 0)
 			break;
 		if (debug)
 			fprintf(stderr, "%d reaped\n", pid);
 		for (sep = servtab; sep; sep = sep->se_next)
 			if (sep->se_wait == pid) {
-#ifdef POSIX
-			       if(status)
-#else
-				if (status.w_status)
-#endif
+				if(status)
 					syslog(LOG_WARNING,
 					    "%s: exit status 0x%x",
 					    sep->se_server, status);
@@ -509,11 +440,7 @@ config()
 {
 	register struct servtab *sep, *cp, **sepp;
 	struct servtab *getconfigent(), *enter();
-#ifdef POSIX
 	sigset_t omask;
-#else
-	int omask;
-#endif
 
 	if (!setconfig()) {
 		syslog(LOG_ERR, "%s: %m", CONFIG);
@@ -529,11 +456,7 @@ config()
 		if (sep != 0) {
 			int i;
 
-#ifdef POSIX
 			(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
-#else
-			omask = sigblock(SIGBLOCK);
-#endif
 
 			if (cp->se_bi == 0) {
 			    /* sep->se_wait may be holding a
@@ -555,11 +478,7 @@ config()
 				SWAP(sep->se_server, cp->se_server);
 			for (i = 0; i < MAXARGV; i++)
 				SWAP(sep->se_argv[i], cp->se_argv[i]);
-#ifdef POSIX
-	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
-#else
-			sigsetmask(omask);
-#endif
+			(void) sigprocmask(SIG_BLOCK, &omask, NULL);
 			freeconfig(cp);
 			if (debug)
 				print_service("REDO", sep);
@@ -589,11 +508,7 @@ config()
 	/*
 	 * Purge anything not looked at above.
 	 */
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
-#else
-	omask = sigblock(SIGBLOCK);
-#endif
 	sepp = &servtab;
 	while (sep = *sepp) {
 		if (sep->se_checked) {
@@ -611,11 +526,7 @@ config()
 		freeconfig(sep);
 		free((char *)sep);
 	}
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
-#else
-	(void) sigsetmask(omask);
-#endif
 }
 
 sigtype
@@ -672,11 +583,7 @@ enter(cp)
 	struct servtab *cp;
 {
 	register struct servtab *sep;
-#ifdef POSIX
 	sigset_t omask;
-#else
-	int omask;
-#endif
 
 	sep = (struct servtab *)malloc(sizeof (*sep));
 	if (sep == (struct servtab *)0) {
@@ -685,18 +592,10 @@ enter(cp)
 	}
 	*sep = *cp;
 	sep->se_fd = -1;
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
-#else
-	omask = sigblock(SIGBLOCK);
-#endif
 	sep->se_next = servtab;
 	servtab = sep;
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
-#else
-	sigsetmask(omask);
-#endif
 	return (sep);
 }
 
@@ -1136,18 +1035,10 @@ switchoff()
 {
 	register struct servtab *sep, **sepp;
 	struct servtab *enter();
-#ifdef POSIX
 	sigset_t omask;
-#else
-	int omask;
-#endif
 
 	/* garbage collect the "switched off" services */
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
-#else
-	omask = sigblock(SIGBLOCK);
-#endif
 	sepp = &servtab;
 	while (sep = *sepp) {
 		if (!sep->se_switched) {
@@ -1165,36 +1056,20 @@ switchoff()
 		freeconfig(sep);
 		free((char *)sep);
 	}
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
-#else
-	(void) sigsetmask(omask);
-#endif
 
 }
 
 sigtype
 restartme()
 {
-#ifdef POSIX
 	sigset_t omask;
-#else
-	int 	omask;
-#endif
 
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
-#else
-	omask = sigblock(SIGBLOCK);
-#endif
 	(void) config();
 	if (facist)
 		(void) switchoff();
-#ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
-#else
-	(void) sigsetmask(omask);
-#endif
 }
 
 sigtype
