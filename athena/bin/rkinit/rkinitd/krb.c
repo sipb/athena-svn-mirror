@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.8 1994-03-30 11:13:47 miki Exp $
+ * $Id: krb.c,v 1.9 1994-05-05 12:35:11 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: miki $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.8 1994-03-30 11:13:47 miki Exp $";
+static char *rcsid = "$Id: krb.c,v 1.9 1994-05-05 12:35:11 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -40,6 +40,7 @@ typedef struct {
     jmp_buf env;
 } rkinitd_intkt_info;
 
+static uid_t user_id;
 
 #if defined(_AIX) && defined(_IBMR2)
 
@@ -224,11 +225,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	longjmp(rii->env, status);
     }
 
-#ifdef POSIX
-    memmove(key, auth_dat.session,  sizeof(key));
-#else
-    bcopy(auth_dat.session, key, sizeof(key)); 
-#endif
+    bcopy(auth_dat.session, key, sizeof(key));
     if (des_key_sched(key, sched)) {
 	sprintf(errbuf, "Error in des_key_sched");
 	rkinit_errmsg(errbuf);
@@ -240,11 +237,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	 krb_rd_priv((u_char *)scip.app_data, scip.app_length, 
 		     sched, key, &caddr, &saddr, &msg_data)) == KSUCCESS) {
 	cip->length = msg_data.app_length;
-#ifdef POSIX
-      memmove(cip->dat, msg_data.app_data, msg_data.app_length);
-#else
-	bcopy(msg_data.app_data, cip->dat, msg_data.app_length); 
-#endif
+	bcopy(msg_data.app_data, cip->dat, msg_data.app_length);
 	cip->dat[cip->length] = 0;
     } 
     else {
@@ -252,8 +245,15 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	rkinit_errmsg(errbuf);
 	longjmp(rii->env, status);
     }
-    
-    return(status);
+#ifdef SOLARIS    
+    if (setuid(user_id) < 0) {
+	sprintf(errbuf,	"Failure setting uid to %d: %s\n", user_id,
+		sys_errlist[errno]);
+	rkinit_errmsg(errbuf);
+	longjmp(rii->env, RKINIT_DAEMON);
+   }	
+#endif
+    return(KSUCCESS);
 }
 
 #ifdef __STDC__
@@ -282,12 +282,9 @@ static int validate_user(aname, inst, realm, username, errmsg)
     strcpy(auth_dat.pname, aname);
     strcpy(auth_dat.pinst, inst);
     strcpy(auth_dat.prealm, realm);
-
+    user_id = pwnam->pw_uid;
 #ifndef SOLARIS
     if (seteuid(pwnam->pw_uid) < 0) {
-#else
-    if (setuid(pwnam->pw_uid) < 0) {
-#endif
 	sprintf(errmsg, "Failure setting euid to %d: %s\n", pwnam->pw_uid, 
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
@@ -295,19 +292,23 @@ static int validate_user(aname, inst, realm, username, errmsg)
 	return(FAILURE);
     }
     kstatus = kuserok(&auth_dat, username);
-#ifndef SOLARIS
     if (seteuid(0) < 0) {
-#else
-     if (setuid(0) < 0) {
-#endif
 	sprintf(errmsg, "Failure setting euid to 0: %s\n", 
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
     }
-    
-    if (kstatus != KSUCCESS) {
+#else
+    /*
+     *
+     *  For Solaris there is not seteuid, but if the e uid is root, the
+     *	process can access the .klogin file           
+     *
+     */
+      kstatus = kuserok(&auth_dat, username);
+#endif
+      if (kstatus != KSUCCESS) {
 	sprintf(errmsg, "%s has not allowed you to log in with", username);
 	if (strlen(auth_dat.pinst))
 	    sprintf(errmsg, "%s %s.%s", errmsg, auth_dat.pname, 
@@ -316,24 +317,23 @@ static int validate_user(aname, inst, realm, username, errmsg)
 	    sprintf(errmsg, "%s %s", errmsg, auth_dat.pname);
 	sprintf(errmsg, "%s@%s tickets.", errmsg, auth_dat.prealm);
 	return(FAILURE);
-    }
+      }
     
     /* 
      * Set real uid to owner of ticket file.  The library takes care
      * of making the appropriate change. 
      */
-#ifdef SOLARIS
-    if (setuid(pwnam->pw_uid) < 0) {
-#else
+#ifndef SOLARIS
+    /*  Solaris does not have setruid, but will use setuid after srvtab has
+        been read  */
     if (setruid(pwnam->pw_uid) < 0) {
-#endif
 	sprintf(errmsg,	"Failure setting ruid to %d: %s\n", pwnam->pw_uid,
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
     }
-	
+#endif
     return(RKINIT_SUCCESS);
 }
 
