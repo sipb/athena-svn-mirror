@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.8 1988-06-21 19:44:36 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.9 1991-02-28 11:32:57 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.8  88/06/21  19:44:36  don
+ * fixed a bug in the prior version's dec_entry. don't use the prior
+ * version.
+ * 
  * Revision 4.7  88/06/20  18:57:38  don
  * support for stamp.c version 4.4 :
  * this version's dec_entry has less static state, because it
@@ -84,44 +88,14 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.8 1988-06-21 19:44:36 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.9 1991-02-28 11:32:57 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include "track.h"
 
-/* XXX
- * convert right-shifted st_mode type-bits to corresponding formats:
- * S_IFCHR = 0020000 gets mapped to elt 1 of the array,
- * S_IFDIR = 0040000 => elt 2 of the array,
- * S_IFBLK = 0060000 => elt 3 of the array,
- * S_IFREG = 0100000 => elt 4 of the array,
- * S_IFLNK = 0120000 => elt 5 of the array,
- * S_IFSOCK= 0140000 => elt 6 of the array, ( only for error messagess),
- * S_IFMT  = 0170000 => elt 7 of the array, ( dropping 1 bit).
- */
-static char *write_formats[] = {
-	"*ERROR (write_statline): %s's file type is 0.\n",
-	"c%s %c%d(%d.%d.%o)\n",		/* S_IFCHR */
-	"d%s %c%d(%d.%d.%o)\n",		/* S_IFDIR */
-	"b%s %c%d(%d.%d.%o)\n",		/* S_IFBLK */
-	"f%s %c%x(%d.%d.%o)%ld\n",	/* S_IFREG */
-	"l%s %c%s\n",			/* S_IFLNK */
-	"*ERROR (write_statline): can't track socket %s.\n",
-	"*ERROR (write_statline): bad type S_IFMT %s.\n"
-};
-
-static char *read_formats[] = {
-	"",
-	"%d(%d.%d.%o)\n",	/* S_IFCHR */
-	"%d(%d.%d.%o)\n",	/* S_IFDIR */
-	"%d(%d.%d.%o)\n",	/* S_IFBLK */
-	"%x(%d.%d.%o)%ld\n",	/* S_IFREG */
-	"",			/* S_IFLNK */
-	"",			/* S_IFSOCK */
-	""			/* S_IFMT */
-};
+extern char *mode_to_char(), *mode_to_fmt(), *mode_to_rfmt();
 
 char type_char[] = " cdbfls*89ABCDEF";
 
@@ -184,7 +158,7 @@ char **path; struct currentness *c;
 	default:
 		sprintf( errmsg,
 		"bad type for inode %d, pathname %s.\n\tapparent type = %c\n",
-		    c->sbuf.st_ino, path[ ROOT], type_char[ type >> 13]);
+		    c->sbuf.st_ino, path[ ROOT], mode_to_string(type));
 		do_panic();
 	}
 	/* set up name & sortkey:
@@ -206,7 +180,7 @@ char **path; struct currentness *c;
 	/* to choose printing format, convert type-bits to array-index:
 	 * the formats specify 3-7 arguments, according to type:
 	 */
-	format = write_formats[ type >> 13];
+	format = mode_to_fmt(type);
 
 	sprintf( linebuf, format, name, same_name ? '=' : '~' , curr1,
 		 UID( *s), GID( *s), MODE( *s), extra);
@@ -433,7 +407,7 @@ char *line; struct currentness *c;
 	/* if we've already parsed the line,
 	 * as in S_IFLNK case, skip the sscanf call:
 	 */
-	if ( *(format = read_formats[ s->st_mode >> 13]))
+	if ( *(format = mode_to_rfmt(s->st_mode)))
 		sscanf( line, format, curr1, &u, &g, &m, extra);
 
 	s->st_uid   = (short) u;
