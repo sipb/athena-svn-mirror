@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.16 1989-05-04 17:36:55 jtkohl Exp $";
+static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.17 1989-05-15 14:26:28 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -115,9 +115,9 @@ int wantdefaults;
 	xinsque(clist, hlp2->zh_clients);
 	(void) sigsetmask(omask);
 
-	if (!server->zs_dumping || wantdefaults)
+	if (!server->zs_dumping && wantdefaults)
 		/* add default subscriptions only if this is not
-		   resulting from a brain dump, or this request
+		   resulting from a brain dump, AND this request
 		   wants defaults */
 		return(subscr_def_subs(*client));
 	else
