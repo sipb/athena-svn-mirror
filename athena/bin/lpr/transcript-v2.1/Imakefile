@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.12 1995-07-11 21:06:47 miki Exp $
+ * $Id: Imakefile,v 1.13 1995-11-28 23:08:00 cfields Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -16,6 +16,9 @@ OLIBS=-lbsd
 #endif
 #if defined(_AUX_SOURCE)
 OLIBS=-lposix
+#endif
+#ifdef SOLARIS
+OLIBS=-lmapmalloc
 #endif
 
 DEFINES=-DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
