@@ -5023,7 +5023,7 @@ create_desktop_menu (GtkWidget *menu, gboolean fake_submenus, gboolean tearoff)
 	menuitem = gtk_menu_item_new ();
 	gtk_widget_lock_accelerators (menuitem);
 	setup_menuitem_try_pixmap (menuitem,
-				   "gnome-term-night.png",
+				   "logout-icon-menu.png",
 				   _("Log out"), SMALL_ICON_SIZE);
 	gtk_menu_append (GTK_MENU (menu), menuitem);
 	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
