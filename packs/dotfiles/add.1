@@ -40,24 +40,16 @@ csh script \fI/usr/athena/lib/init/add\fR.
 .TP 9
 .B \-f
 \fIadd\fR normally adds lockers to the end of your path. This option
-causes it to add lockers to the front of your path instead. This is
-useful when you want to cause programs in the lockers to replace programs
-found in other places, such as on the system packs. You usually want
-lockers added to the end of your path, however, to prevent the possibility
-of locker maintainers replacing important binaries with things you don't
-expect.
-.TP 9
-.B \-m
-This option causes \fIadd\fR, when adding a locker already in your
-path, to move the locker's position in your path from where it is to
-where it would have wound up if it hadn't been in your path to begin
-with. For example, if the locker FOO is at the end of your path,
-typing "add -m -f FOO" will cause it to be moved to the beginning of
-your path. Without the -m option specified, FOO would remain at the
-end of your path. This option is not set by default for backwards
-compatibility reasons. (See add_flags, below under VARIABLES, to see
-how to make it default for you.) It has no effect when used in your
-~/.environment file.
+causes it to add lockers to the front of your path instead. If the
+locker is already in your path but not at the front, it will be moved
+there. However, when -f is used in your ~/.environment file, it does
+not affect lockers already in your path.
+
+This is feature useful when you want to cause programs in the lockers
+to replace programs found in other places, such as on the system
+packs. You usually want lockers added to the end of your path,
+however, to prevent the possibility of locker maintainers replacing
+important binaries with things you don't expect.
 .TP 9
 .B \-r
 This option causes \fIadd\fR to remove the specified lockers from your
@@ -137,6 +129,7 @@ sysname value when determining path names for new style paths.
 /usr/athena/lib/init/add      the script the add alias calls
 .br
 ~/.cshrc                      user's cshrc file
+~/.environment                user's environment file
 
 .SH "SEE ALSO"
 attach(1), athdir(1), man(1), csh(1), lockers(7)
