@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.10 1991-03-04 17:00:59 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.11 1991-03-07 15:08:54 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -537,11 +537,22 @@ Cardinal *n;
     XDeleteProperty(dpy, DefaultRootWindow(dpy), XA_CUT_BUFFER1);
     XFlush(dpy);
 
-    /* wait for activation to finish */
-    if (activation_state != ACTIVATED)
-      fprintf(stderr, "Waiting for workstation to finish activating...\n");
-    while (activation_state != ACTIVATED)
-      sigpause(0);
+    /* wait for activation to finish.  We play games with signals here
+     * because we are not waiting within the XtMainloop for it to handle
+     * the timers.
+     */
+    if (activation_state != ACTIVATED) {
+	int (*oldsig)();
+
+	fprintf(stderr, "Waiting for workstation to finish activating...");
+	fflush(stderr);
+	oldsig = signal(SIGALRM, stop_activate);
+	alarm(resources.activate_timeout);
+	while (activation_state != ACTIVATED)
+	  sigpause(0);
+	signal(SIGALRM, oldsig);
+	fprintf(stderr, "done.\n");
+    }
 
     if (access("/srvd/.rvdinfo", F_OK) != 0)
       tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
