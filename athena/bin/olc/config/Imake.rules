@@ -562,8 +562,7 @@ clean::									@@\
 #ifndef TagsTarget
 #define	TagsTarget()							@@\
 tags::									@@\
-	$(TAGS) -w *.[ch]						@@\
-	$(TAGS) -xw *.[ch] > TAGS
+	$(TAGS)  *.[ch]
 #endif /* TagsTarget */
 
 
