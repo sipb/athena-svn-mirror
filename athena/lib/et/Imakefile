@@ -4,16 +4,20 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.2 1990-05-03 11:13:20 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.3 1990-11-07 11:34:56 epeisach Exp $
 #	$Locker:  $
 #
 
-CFLAGS=	-O
+CFLAGS=	-O $(CADDS)
+
+#ifdef ULTRIX40
+CADDS=-DULTRIX_40
+#endif
 #if defined(ultrix) && defined(mips) 
 # The -p on the decmips causes memory faults.
-LINTFLAGS=-uhvb
+LINTFLAGS=-uhvb ${CFLAGS}
 #else
-LINTFLAGS= -uhvpb
+LINTFLAGS= -uhvpb ${CFLAGS}
 #endif
 LINTFILES= error_message.c et_name.c init_et.c com_err.c # perror.c
 LIBOBJS= error_message.o et_name.o init_et.o com_err.o # perror.o
