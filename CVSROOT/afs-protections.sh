@@ -30,6 +30,7 @@ attach -h -n -q gnu
 	-path ./athena/etc/synctree -prune -o \
 	-path ./athena/etc/ftpd -prune -o \
 	-path ./athena/etc/snmp -prune -o \
+	-path ./third/motif -prune -o \
 	-path ./third/mwm -prune -o \
 	-path ./third/transcript -prune -o \
 	-type d -print | xargs fs sa -acl $public -clear -dir
@@ -43,5 +44,6 @@ find athena/lib/gdss/lib -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/etc/synctree -type d -print | xargs fs sa -acl $auth -clear -dir
 find athena/etc/ftpd -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/etc/snmp -type d -print | xargs fs sa -acl $auth -clear -dir
+find third/motif -type d -print | xargs fs sa -acl $fascist -clear -dir
 find third/mwm -type d -print | xargs fs sa -acl $fascist -clear -dir
 find third/transcript -type d -print | xargs fs sa -acl $fascist -clear -dir
