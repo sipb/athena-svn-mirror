@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.29 1991-04-08 23:43:22 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olc.c,v 1.30 1991-08-23 12:54:45 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.29 1991-04-08 23:43:22 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.30 1991-08-23 12:54:45 raek Exp $";
 #endif
 #endif
 
@@ -253,7 +253,7 @@ main(argc, argv)
  * Function:	olc_init() completes the initialization process for
  *			the user program.
  * Arguments:	None.
- * Returns:	Nothing.
+ * Returns:	an error code (which is always 0).
  * Notes:
  *	First, find out if the user has a current question.  If not,
  *	prompt for topic and question.  Next, send an OLC_STARTUP
@@ -263,6 +263,7 @@ main(argc, argv)
  *	to the OLC main loop.
  */
 
+ERRCODE
 do_olc_init() 
 {
   int fd;			/* File descriptor for socket. */
