@@ -103,7 +103,7 @@ Distribution sites for software under third
 	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
 	db		http://www.sleepycat.com/download.html
 	diffutils	ftp.gnu.org:pub/gnu/diffutils
-	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
+	emacs		ftp.gnu.org:pub/gnu/emacs; see below
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
 	evolution	ftp.gnome.org:pub/GNOME/unstable/sources/evolution
 	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
@@ -132,7 +132,6 @@ Distribution sites for software under third
 	kermit		http://www.columbia.edu/kermit
 	krb5*		http://web.mit.edu/network/kerberos-form.html
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
-	leim		ftp.gnu.org:pub/gnu/emacs; see below
 	libghttp	ftp.gnome.org:pub/GNOME/stable/sources/libghttp
 	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
 	libpng		http://www.libpng.org/pub/png/libpng.html
@@ -230,12 +229,22 @@ We import three packages: the LPRng sources themselves
 (LPRng/LPRng_DOC-x.tgz) into third/lprng/doc, and the ifhp filter
 (FILTERS/ifhp-x.tgz) into third/lprng/ifhp.
 
-LEIM
-----
+Emacs
+-----
 
 LEIM (Library of Emacs Input Methods) is built as part of Emacs, but
 distributed separately.  Untar both emacs and leim (leim will untar
 into emacs-xx.yy/leim) and import them both with one command.
+
+Emacs is distributed with .elc files.  When you import new versions of
+emacs, do so with the "-I \!" option to prevent CVS from ignoring
+these files.  .elc files should be tagged as binary, using "cvs admin
+-kb", although that's not terribly critical to Unix CVS clients
+(except for the vc-mode files).
+
+Elisp source related to vc-mode needs to be set to "-ko" mode to
+prevent expansion of those keywords.  Use "cvs admin -ko" on these
+files if they move or if new ones are added.
 
 Third-party build systems
 -------------------------
