@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.2 1989-01-23 02:23:35 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.3 1989-01-23 08:32:34 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -130,7 +130,7 @@ char *argv[];
 	  exit(1);
      }
      while (optind < argc) {
-	  status = status || delete(argv[optind]);
+	  status = status || delete(argv[optind], 0);
 	  optind++;
      }
      exit(status);
@@ -159,8 +159,9 @@ usage()
 
 
 
-delete(filename)
+delete(filename, recursed)
 char *filename;
+int recursed;
 {
      struct stat stat_buf;
 
@@ -203,7 +204,7 @@ char *filename;
 		    else {
 			 /* is the recursive option specified? */
 			 if (recursive) {
-			      return(recursive_delete(filename));
+			      return(recursive_delete(filename, recursed));
 			 }
 			 else {
 			      if (! force)
@@ -290,15 +291,16 @@ char *filename;
 
 
 
-recursive_delete(filename)
+recursive_delete(filename, recursed)
 char *filename;
+int recursed;
 {
      DIR *dirp;
      struct direct *dp;
      int status = 0;
      char newfile[MAXPATHLEN];
      
-     if (interactive) {
+     if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
 	  if (! yes())
 	       return(0);
@@ -315,12 +317,13 @@ char *filename;
 	  else {
 	       strcpy(newfile, append(filename, dp->d_name, !force));
 	       if (*newfile)
-		    status = status || delete(newfile);
+		    status = status || delete(newfile, 1);
 	       else
 		    status = 1;
 	  }
      }
      closedir(dirp);
+     status = status || do_move(filename);
      return(status);
 }
 
@@ -411,7 +414,7 @@ struct stat stat_buf;
 	  if (! yes())
 	       return(0);
      }
-     else if ((! force) && access(buf, W_OK)) {
+     else if ((! force) && access(filename, W_OK)) {
 	  printf("%s: override protection %o for %s? ", whoami,
 		 stat_buf.st_mode & 0777, filename);
 	  if (! yes())
