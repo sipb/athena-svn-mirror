@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1997-02-28 18:27:43 ghudson Exp $
+# $Id: Makefile,v 1.7 1997-03-01 17:39:58 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -8,7 +8,7 @@ MF=${MFVARS} ./mf
 CMMF=${MFVARS} ./cmmf
 MODE=ljfour
 
-NORMALTFMS=	dummy.tfm logo8.tfm logo9.tfm logo10.tfm \
+NORMALTFMS=	logo8.tfm logo9.tfm logo10.tfm \
 		logobf10.tfm logosl10.tfm manfnt.tfm icmcsc10.tfm icmex10.tfm \
 		icmmi8.tfm icmsy8.tfm icmtt8.tfm ilasy8.tfm ilcmss8.tfm \
 		ilcmssb8.tfm ilcmssi8.tfm lasy10.tfm lasy5.tfm lasy6.tfm \
@@ -89,7 +89,7 @@ CMPKS=		${CM600PK} ${CM657PK} ${CM720PK} ${CM864PK} ${CM1037PK} \
 		${CM1244PK} ${CM1493PK}
 PKS=		${NORMALPKS} ${CMPKS}
 
-all: mf cmmf ${PKS}
+all: dummy.tfm ${PKS}
 
 mf:
 	rm -f mf
@@ -99,33 +99,36 @@ cmmf:
 	rm -f cmmf
 	ln -s ${WEB2C}/mf/virmf cmmf
 
-${NORMAL600GF}:
+dummy.tfm: mf
+	${MF} '\mode=${MODE}; input dummy'
+
+${NORMAL600GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(0); input '`basename $@ .600gf`
-${NORMAL657GF}:
+${NORMAL657GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(0.5); input '`basename $@ .657gf`
-${NORMAL720GF}:
+${NORMAL720GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(1); input '`basename $@ .720gf`
-${NORMAL864GF}:
+${NORMAL864GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(2); input '`basename $@ .864gf`
-${NORMAL1037GF}:
+${NORMAL1037GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(3); input '`basename $@ .1037gf`
-${NORMAL1244GF}:
+${NORMAL1244GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(4); input '`basename $@ .1244gf`
-${NORMAL1493GF}:
+${NORMAL1493GF}: mf
 	${MF} '\mode=${MODE}; mag=magstep(5); input '`basename $@ .1493gf`
-${CM600GF}:
+${CM600GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(0); input '`basename $@ .600gf`
-${CM657GF}:
+${CM657GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(0.5); input '`basename $@ .657gf`
-${CM720GF}:
+${CM720GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(1); input '`basename $@ .720gf`
-${CM864GF}:
+${CM864GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(2); input '`basename $@ .864gf`
-${CM1037GF}:
+${CM1037GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(3); input '`basename $@ .1037gf`
-${CM1244GF}:
+${CM1244GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(4); input '`basename $@ .1244gf`
-${CM1493GF}:
+${CM1493GF}: cmmf
 	${CMMF} '\mode=${MODE}; mag=magstep(5); input '`basename $@ .1493gf`
 
 .SUFFIXES: .600gf .600pk .657gf .657pk .720gf .720pk .864gf .864pk .1037gf \
