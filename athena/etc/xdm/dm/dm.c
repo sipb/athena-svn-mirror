@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.1 1998-07-05 05:45:08 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.2 1998-10-30 19:56:19 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.1 1998-07-05 05:45:08 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.2 1998-10-30 19:56:19 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -57,6 +57,7 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #define RUNNING		1
 #define STARTUP		2
 #define CONSOLELOGIN	3
+#define FAILED		4
 
 #ifndef FALSE
 #define FALSE		0
@@ -160,7 +161,7 @@ int main(int argc, char **argv)
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
-    int pgrp, file, tries, console = TRUE;
+    int pgrp, file, tries, count, console = TRUE;
 #ifdef TIOCCONS
     int on = 1;
 #endif
@@ -171,6 +172,7 @@ int main(int argc, char **argv)
     int nhosts, dpynum = 0;
     struct stat hostsinfo;
     Bool state;
+    time_t now, last_console_failure = 0;
 
 #ifdef SOLARIS
     char openv[1024];
@@ -534,9 +536,9 @@ int main(int argc, char **argv)
 	    FD_ZERO(&readfds);
 	    FD_SET(console_tty, &readfds);
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, &mask);
-	    select(console_tty + 1, &readfds, NULL, NULL, NULL);
+	    count = select(console_tty + 1, &readfds, NULL, NULL, NULL);
 	    (void) sigprocmask(SIG_BLOCK, &mask, NULL);
-	    if (FD_ISSET(console_tty, &readfds)) {
+	    if (count > 0 && FD_ISSET(console_tty, &readfds)) {
 		file = read(console_tty, buf, sizeof(buf));
 		write(1, buf, file);
 	    }
@@ -549,7 +551,20 @@ int main(int argc, char **argv)
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 	    console_login(conf, "\nConsole login requested.\n");
 	}
-	if (console && console_running == NONEXISTENT)
+	if (console_running == FAILED) {
+	    console_running = NONEXISTENT;
+	    time(&now);
+	    if (now - last_console_failure <= 3) {
+		/* Give up on console.  Set the console characteristics so
+		 * we don't lose later. */
+		syslog(LOG_ERR, "Giving up on the console");
+		setpgid(0, pgrp=getpid());	/* Reset the tty pgrp */
+		tcsetpgrp(0, pgrp);
+		console_failed = TRUE;
+	    } else
+		last_console_failure = now;
+	}
+	if (console && console_running == NONEXISTENT && !console_failed)
 	  start_console(line, consoleargv);
 	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
 	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
@@ -634,8 +649,6 @@ static void console_login(char *conf, char *msg)
 
 static void start_console(char *line, char **argv)
 {
-    static struct timeval last_try = { 0, 0 };
-    struct timeval now;
     int file, pgrp, i;
     char *number(), c, buf[64], **argvp;
     struct termios tc;
@@ -670,18 +683,6 @@ static void start_console(char *line, char **argv)
 	chown(consolelog, DAEMON, 0);
     }
     line[5] = 't';
-
-    gettimeofday(&now, 0);
-    if (now.tv_sec <= last_try.tv_sec + 3) {
-	/* giveup on console */
-	/* Set the console characteristics so we don't lose later */
-	setpgid(0, pgrp=getpid());		/* Reset the tty pgrp */
-	tcsetpgrp(0, pgrp);
-	console_failed = TRUE;
-	return;
-    }
-    last_try.tv_sec = now.tv_sec;
-
 
     console_running = RUNNING; 
     switch (fork_and_store(&consolepid)) {
@@ -920,7 +921,10 @@ static void child(int signo)
 	    syslog(LOG_DEBUG,
 		   "Received SIGCHLD for consolepid (%d), status %d", pid,
 		   status);
-	    console_running = NONEXISTENT;
+	    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+		console_running = FAILED;
+	    else
+		console_running = NONEXISTENT;
 	} else if (pid == loginpid) {
 	    syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
 		   pid, status);
@@ -1083,13 +1087,15 @@ static char *getconf(char *file, char *name)
 static pid_t fork_and_store(pid_t *var)
 {
   sigset_t mask, omask;
+  pid_t pid;
 
   sigemptyset(&mask);
   sigaddset(&mask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &mask, &omask);
-  *var = fork();
+  pid = fork();
+  *var = pid;
   sigprocmask(SIG_SETMASK, &omask, NULL);
-  return *var;
+  return pid;
 }
 
 static void x_stop_wait(void)
