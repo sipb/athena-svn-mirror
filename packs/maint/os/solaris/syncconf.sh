@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.12 2003-07-22 06:23:21 zacheiss Exp $
+# $Id: syncconf.sh,v 1.13 2003-09-12 01:42:43 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -98,7 +98,7 @@ handle()
 		fi
 
 		remove /etc/nodename.new
-		remove /etc/hotname.$NETDEV.new
+		remove /etc/hostname.$NETDEV.new
 		remove /etc/defaultrouter.new
 		remove /etc/inet/hosts.new
 		remove /etc/inet/netmasks.new
