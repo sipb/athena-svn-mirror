@@ -1,10 +1,10 @@
 /*
- *	$Id: track.c,v 4.23 1999-03-23 19:01:51 ghudson Exp $
+ *	$Id: track.c,v 4.24 1999-08-13 00:15:12 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: track.c,v 4.23 1999-03-23 19:01:51 ghudson Exp $";
-#endif lint
+static char *rcsid_header_h = "$Id: track.c,v 4.24 1999-08-13 00:15:12 danw Exp $";
+#endif
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
@@ -63,12 +63,15 @@ Entry entries[ ENTRYMAX];	/* Subscription list entries */
 int entrycnt = -1;		/* Number of entries */
 int entnum = -1;		/* Current entry number */
 
+void cleanup(), readstat(), clearlocks(), writestat(), walk_trees();
+void get_arg(), justshow(), setuperr(), build_path(), openstat();
+void closestat();
+
 main(argc,argv)
 int argc;
 char **argv;
 {
 	char	scratch[LINELEN];
-	int	cleanup();
 	int	i;
 
 	strcpy(prgname,argv[0]);
@@ -77,9 +80,9 @@ char **argv;
 	umask(022);	/* set default umask for daemons */
 
 #ifdef SYSV
-	sigset( SIGINT, (void *)cleanup);
-	sigset( SIGHUP, (void *)cleanup);
-	sigset( SIGPIPE, (void *)cleanup);
+	sigset( SIGINT, cleanup);
+	sigset( SIGHUP, cleanup);
+	sigset( SIGPIPE, cleanup);
 #else
 	signal( SIGINT, cleanup);
 	signal( SIGHUP, cleanup);
@@ -300,6 +303,7 @@ char **argv;
 
 #define pathtail( p) p[1+*(int*)p[CNT]]
 
+void
 readstat( types) char *types; {
 	struct currentness rem_currency, *cmp_currency;
 	char statline[ LINELEN], *remname;
@@ -424,6 +428,7 @@ setlock()
  * Erase those locks...
  */
 
+void
 clearlocks()
 {
 	if ( !*lockpath) return;
@@ -451,6 +456,7 @@ clearlocks()
  * Act like a librarian and write out the statfile.
  */
 
+void
 writestat()
 {
 	char **from, **cmp, **dummy = (char **) NULL;
@@ -503,6 +509,7 @@ writestat()
  * we take fromfile's subnode's pathname ( not including the prefix fromroot),
  * and we take the stat from cmpfile's corresponding subnode.
  */
+void
 walk_trees( f, c, currency)
 char *f[], *c[];
 struct currentness *currency;
@@ -567,6 +574,7 @@ struct currentness *currency;
  * Get a command line argument
  */
 
+void
 get_arg(to,list,ptr)
 char *to,**list;
 int *ptr;
@@ -616,6 +624,7 @@ char *ptr;
  * Execute shell commands
  */
 
+void
 do_cmds(cmds,local)
 char *cmds,*local;
 {
@@ -652,6 +661,7 @@ char *cmds,*local;
  * Show parsing.
  */
 
+void
 justshow()
 {
 	int i,j, size;
@@ -716,6 +726,7 @@ justshow()
 
 /* REWORK */
 
+void
 setuperr()
 {
 	char msg[LINELEN];
@@ -742,6 +753,7 @@ setuperr()
 	}
 }
 
+void
 build_path( f, w, d, p) char *f, *w, *d, *p; {
 	static char buf[ LINELEN];
 
@@ -771,6 +783,7 @@ opensubfile( path) char *path; {
 	return( subfile);
 }
 
+void
 openstat( path, write) char *path; int write;
 {
 	char *mode = write? "w"   : "r";
@@ -784,6 +797,7 @@ openstat( path, write) char *path; int write;
 	}
 }
 
+void
 closestat() {
 	if ( EOF == fclose( statfile)) {
 		sprintf( errmsg, "can't close %s\n", statfilepath);
@@ -791,6 +805,7 @@ closestat() {
 	}
 }
 
+void
 cleanup()
 {
 	clearlocks();

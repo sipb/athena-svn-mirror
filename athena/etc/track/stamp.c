@@ -1,16 +1,17 @@
 /*
- *	$Id: stamp.c,v 4.13 1999-02-16 15:06:57 danw Exp $
+ *	$Id: stamp.c,v 4.14 1999-08-13 00:15:12 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: stamp.c,v 4.13 1999-02-16 15:06:57 danw Exp $";
-#endif lint
+static char *rcsid_header_h = "$Id: stamp.c,v 4.14 1999-08-13 00:15:12 danw Exp $";
+#endif
 
 #include "mit-copyright.h"
 
 #include "track.h"
 
 extern char *mode_to_char(), *mode_to_fmt(), *mode_to_rfmt();
+void poppath();
 
 char type_char[] = " cdbfls*89ABCDEF";
 
@@ -72,8 +73,9 @@ char **path; struct currentness *c;
 	case S_IFMT:
 	default:
 		sprintf( errmsg,
-		"bad type for inode %d, pathname %s.\n\tapparent type = %c\n",
-		    c->sbuf.st_ino, path[ ROOT], mode_to_string(type));
+		"bad type for inode %ul, pathname %s.\n\tapparent type = %c\n",
+		    (unsigned long)c->sbuf.st_ino, path[ ROOT],
+		    mode_to_string(type));
 		do_panic();
 	}
 	/* set up name & sortkey:
@@ -119,7 +121,7 @@ char **path; struct currentness *c;
 	return( type);
 }
 
-fake_link( root, name, c) char *root, *name; struct currentness *c; {
+void fake_link( root, name, c) char *root, *name; struct currentness *c; {
 
 	/* it is difficult to fool write_statline(),
 	 * update_file(), and curr_diff() all at once.
@@ -142,12 +144,13 @@ fake_link( root, name, c) char *root, *name; struct currentness *c; {
 }
 
 int stat_cmp( ain, bin) 
-char **ain, **bin;
+const void *ain, *bin;
 {
-	char *a, *b, c, d;
+	const char *a, *b;
+	char c, d;
 
-	a = *ain;
-	b = *bin;
+	a = *(const char **)ain;
+	b = *(const char **)bin;
 	/* Skip over first character which refers to file type */
 	a++; b++;
 	while ( *a != ' ' && *b != ' ') {
@@ -160,7 +163,7 @@ char **ain, **bin;
 }
 
 
-sort_stat() {
+void sort_stat() {
 	int i;
 
         qsort( (char *) statfilebufs, cur_line,
@@ -171,7 +174,7 @@ sort_stat() {
 	}
 }
 
-sort_entries() {
+void sort_entries() {
 	char *tail;
 	Table list;
 	Entry *A, *C;
@@ -364,6 +367,7 @@ int prev_ent = 0;;
 
 int cur_ent = 0;	/* not global! index into entries[]. */
 
+void
 init_next_match() {
 	prev_ent = 0;
 	cur_ent = 1;
@@ -552,6 +556,7 @@ pushpath( p, name) char **p; char *name; {
 	p[ COUNT( p) + 1] = top + strlen( top);
 	return( COUNT( p));
 }
+void
 poppath( p) char **p; {
 	if ( ! p) return;
 	else if ( 1 >= COUNT( p)) {

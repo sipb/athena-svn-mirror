@@ -1,10 +1,10 @@
 /*
- *	$Id: files.c,v 4.12 1999-01-22 23:15:59 ghudson Exp $
+ *	$Id: files.c,v 4.13 1999-08-13 00:15:12 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: files.c,v 4.12 1999-01-22 23:15:59 ghudson Exp $";
-#endif lint
+static char *rcsid_header_h = "$Id: files.c,v 4.13 1999-08-13 00:15:12 danw Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include "bellcore-copyright.h"

@@ -176,6 +176,7 @@ opt_ele : NEWLINE | WHITESPACE
 
 #include "lex.yy.c"
 
+void
 yyerror(s)
 char *s;
 {

@@ -1,15 +1,17 @@
 /*
- * $Id: except.c,v 4.11 1999-01-22 23:15:58 ghudson Exp $
+ * $Id: except.c,v 4.12 1999-08-13 00:15:11 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: except.c,v 4.11 1999-01-22 23:15:58 ghudson Exp $";
-#endif lint
+static char *rcsid = "$Id: except.c,v 4.12 1999-08-13 00:15:11 danw Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include "bellcore-copyright.h"
 
 #include "track.h"
+
+void store();
 
 /*
 **	routine to implement exception lists:
@@ -94,7 +96,7 @@ lookup( name, hashval, ht) char *name; unsigned long hashval; Table *ht; {
 	for ( ptop = &ht->table[ hashval >> ht->shift];
 	     *ptop;
 	      ptop = PNEXT( *ptop)) {
-		switch ( SIGN( strcmp( *ptop, name))) {
+		switch ( SIGN( strcmp( (char *)*ptop, name))) {
 		case -1: continue;
 		case 1:  break;
 		case 0:  return( ptop);
@@ -104,6 +106,7 @@ lookup( name, hashval, ht) char *name; unsigned long hashval; Table *ht; {
 	return( NULL);
 }
 
+void
 list2hashtable( p) Table *p; {
 	List_element *names, *wordp;
 	unsigned int tbl_size;
@@ -151,6 +154,7 @@ log2( len) unsigned short len; {
 	return( n);
 }
 
+void
 store( list_elt, p) List_element *list_elt; Table *p; {
 	List_element **collisionp, **nextp;
 
@@ -165,7 +169,7 @@ store( list_elt, p) List_element *list_elt; Table *p; {
 	 * ensure that FORCE_LINK overrides DONT_TRACK.
 	 */ 
 	for ( nextp = collisionp; *nextp; nextp = PNEXT( *nextp)) {
-	    switch( SIGN( strcmp( *nextp, list_elt))) {
+	    switch( SIGN( strcmp( (char *)*nextp, (char *)list_elt))) {
 	    case -1: continue;
 	    case  1: break;				/* switch */
 	    case  0: FLAG( *nextp) |= FLAG( list_elt);
@@ -199,7 +203,7 @@ add_list_elt( str, flag, top) char *str; char flag; List_element **top; {
 	}
 	else NEXT( p) = NULL;
 	FLAG( p)   = flag;
-	strcpy( p, str);
+	strcpy( (char *)p, str);
 	return( p);
 }
 #define RATIO ((unsigned)(0.6125423371 * 0x80000000))

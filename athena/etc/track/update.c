@@ -1,11 +1,11 @@
 /*
- *	$Id: update.c,v 4.9 1999-01-22 23:16:04 ghudson Exp $
+ *	$Id: update.c,v 4.10 1999-08-13 00:15:13 danw Exp $
  */
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Id: update.c,v 4.9 1999-01-22 23:16:04 ghudson Exp $";
-#endif lint
+*rcsid_header_h = "$Id: update.c,v 4.10 1999-08-13 00:15:13 danw Exp $";
+#endif
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
@@ -14,6 +14,7 @@ static char
 #include <sys/errno.h>
 
 extern char *mode_to_string();
+void clear_stat(), banner();
 
 #define DIFF( l, r, field) (short)(((l).sbuf.field) != ((r).sbuf.field))
 
@@ -357,6 +358,7 @@ get_currentness( path, c) char **path; struct currentness *c; {
         return( 0);
 }
 
+void
 clear_stat( sp) struct stat *sp; {
 	int *p;
 
@@ -376,7 +378,7 @@ struct stat *r;
 	int error = 0;
 
 	if ( lstat( name, &sbuf)) {
-		sprintf( errmsg, "(set_prots) can't lstat &s\n", name);
+		sprintf( errmsg, "(set_prots) can't lstat %s\n", name);
 		do_gripe();
 		return(-1);
 	}
@@ -454,6 +456,7 @@ char *from,*to;
 	return (0);
 }
 
+void
 banner( rname, lname, r, l, d)
 char *rname, *lname;
 struct currentness *r, *l, *d;

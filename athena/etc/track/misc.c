@@ -1,10 +1,10 @@
 /*
- *	$Id: misc.c,v 4.8 1999-01-22 23:16:00 ghudson Exp $
+ *	$Id: misc.c,v 4.9 1999-08-13 00:15:12 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: misc.c,v 4.8 1999-01-22 23:16:00 ghudson Exp $";
-#endif lint
+static char *rcsid_header_h = "$Id: misc.c,v 4.9 1999-08-13 00:15:12 danw Exp $";
+#endif
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
@@ -14,6 +14,7 @@ static char *rcsid_header_h = "$Id: misc.c,v 4.8 1999-01-22 23:16:00 ghudson Exp
 /*
  * diagnostic stuff: used throughout track
  */
+void
 printmsg( filep) FILE *filep;
 {
 	int i;
@@ -61,6 +62,7 @@ printmsg( filep) FILE *filep;
 		fputc('\n', filep);
 }
 
+void
 do_gripe()
 {
 	printmsg( logfile);
@@ -76,6 +78,7 @@ do_gripe()
 	}
 }
 
+void
 do_panic()
 {
 	printmsg( logfile);
@@ -88,12 +91,14 @@ do_panic()
  * parser-support routines:
  */
 
+void
 doreset()
 {
 	*linebuf = '\0';
 	*wordbuf = '\0';
 }
 
+void
 parseinit( subfile) FILE *subfile;
 {
 	yyin = subfile;
@@ -130,6 +135,7 @@ clear_ent()
 	return( e);
 }
 
+void
 savestr(to,from)
 char **to, *from;
 {
