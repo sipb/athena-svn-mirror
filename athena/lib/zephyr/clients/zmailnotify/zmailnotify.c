@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 
 #ifndef lint
 static char rcsid_zwmnotify_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.14 1991-03-08 11:21:05 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.15 1992-02-15 23:10:33 lwvanels Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -121,12 +121,25 @@ main(argc, argv)
 		exit(1);
 	}
 
-	lock = fopen(lockfile,"r");
+	lock = fopen(lockfile,"w");
+#ifdef _POSIX_SOURCE
+	if (lock) {
+	  struct flock fl;
+
+	  /* lock the whole file exclusively */
+	  fl.l_type = F_WRLCK;
+	  fl.l_whence = SEEK_SET;
+	  fl.l_start = 0;
+	  fl.l_len = 0;
+	  (void) fcntl(fileno(lock),F_SETLKW,&fl);
+	}
+#else
 #ifndef NO_FLOCK
 	if (lock)
 		(void) flock(fileno(lock),LOCK_EX);
-#endif
-	
+#endif /* ! NO_FLOCK */
+#endif /* POSIX_SOURCE */
+
 	if (pop_init(host) == NOTOK) {
 		fprintf(stderr,"%s: %s\n",prog, Errmsg);
 		exit(1);
@@ -152,9 +165,20 @@ main(argc, argv)
 
 	if (!nmsgs) {
 		if (lock) {
+#ifdef _POSIX_SOURCE
+		  struct flock fl;
+
+		  /* unlock the whole file */
+		  fl.l_type = F_UNLCK;
+		  fl.l_whence = SEEK_SET;
+		  fl.l_start = 0;
+		  fl.l_len = 0;
+		  (void) fcntl(fileno(lock),F_SETLKW,&fl);
+#else
 #ifndef NO_FLOCK
 			(void) flock(fileno(lock),LOCK_UN);
-#endif
+#endif /* ! NO_FLOCK */
+#endif /* _POSIX_SOURCE */
 			(void) fclose(lock);
 		} 
 		(void) unlink(lockfile);
@@ -184,10 +208,23 @@ main(argc, argv)
 	}
 	else {
 		lock = fopen(lockfile,"w");
+#ifdef _POSIX_SOURCE
+		if (lock) {
+		  struct flock fl;
+
+		  /* lock the whole file exclusively */
+		  fl.l_type = F_WRLCK;
+		  fl.l_whence = SEEK_SET;
+		  fl.l_start = 0;
+		  fl.l_len = 0;
+		  (void) fcntl(fileno(lock),F_SETLKW,&fl);
+		}
+#else
 #ifndef NO_FLOCK
 		if (lock)
 			(void) flock(fileno(lock),LOCK_EX);
-#endif
+#endif /* ! NO_FLOCK */
+#endif /* POSIX_SOURCE */
 		uselock = 0;
 	}
 	
@@ -210,9 +247,20 @@ main(argc, argv)
 		mail_notify(&maillist[nmsgs-i]);
 	i--;
 	if (lock) {
+#ifdef _POSIX_SOURCE
+	  struct flock fl;
+
+	  /* unlock the whole file */
+	  fl.l_type = F_UNLCK;
+	  fl.l_whence = SEEK_SET;
+	  fl.l_start = 0;
+	  fl.l_len = 0;
+	  (void) fcntl(fileno(lock),F_SETLKW,&fl);
+#else
 #ifndef NO_FLOCK
 		(void) flock(fileno(lock),LOCK_UN);
-#endif
+#endif /* ! NO_FLOCK */
+#endif /* POSIX */
 		(void) fclose(lock);
 	} 
 	lock = fopen(lockfile,"w");
