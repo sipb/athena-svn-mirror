@@ -18,12 +18,13 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.19 2002-06-05 02:23:44 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.20 2002-07-17 03:58:38 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/utsname.h>
+#include <sys/vfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -37,6 +38,9 @@ static const char rcsid[] = "$Id: rpmupdate.c,v 1.19 2002-06-05 02:23:44 ghudson
 #include <misc.h>	/* From /usr/include/rpm */
 
 #define HASHSIZE 1009
+#define RPMCACHE "/var/athena/rpms"
+
+enum act { UPDATE, ERASE, NONE };
 
 struct rev {
   int present;			/* If 0, rest of structure is invalid */
@@ -53,7 +57,7 @@ struct package {
   struct rev instrev;		/* Most recent version installed */
   int notouch;
   int only_upgrade;
-  int erase;
+  enum act action;
   struct package *next;
 };
 
@@ -67,8 +71,6 @@ struct notify_data {
   struct package **pkgtab;
 };
 
-enum act { UPDATE, ERASE, NONE };
-
 static char *progname;
 
 static void read_old_list(struct package **pkgtab, const char *oldlistname);
@@ -76,19 +78,25 @@ static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_upgrade_list(struct package **pkgtab, const char *listname);
 static void read_exception_list(struct package **pkgtab, const char *listname);
 static void read_installed_versions(struct package **pkgtab);
-static void perform_updates(struct package **pkgtab, int public, int dryrun,
-			    int hashmarks);
+static void decide_actions(struct package **pkgtab, int public);
+static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
+			    int copy);
 static void *notify(const void *arg, rpmCallbackType what,
 		    unsigned long amount, unsigned long total,
 		    const void *pkgKey, void *data);
 static void print_hash(struct notify_data *ndata, int amount);
 static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
-static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
+static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep,
+			    int copy);
 static void display_action(struct package *pkg, enum act action);
 static int kernel_was_updated(rpmdb db, struct package *pkg);
 static void update_lilo(struct package *pkg);
 static char *fudge_arch_in_filename(char *filename);
+static void prepare_copy_area(void);
+static void check_copy_size(struct package **pkgtab);
+static char *copy_local(const char *filename);
+static void clear_copy_area(void);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
@@ -106,12 +114,11 @@ static int easprintf(char **ptr, const char *fmt, ...);
 static int read_line(FILE *fp, char **buf, int *bufsize);
 static void die(const char *fmt, ...);
 static void usage(void);
-static int already_removed(rpmTransactionSet ts, int offset);
 
 int main(int argc, char **argv)
 {
   struct package *pkgtab[HASHSIZE];
-  int i, c, public = 0, dryrun = 0, hashmarks = 0;
+  int i, c, public = 0, dryrun = 0, hashmarks = 0, copy = 0;
   const char *oldlistname, *newlistname, *upgradelistname;
 
   /* Initialize rpmlib. */
@@ -121,10 +128,13 @@ int main(int argc, char **argv)
   rpmSetVerbosity(RPMMESS_NORMAL);
   progname = strrchr(argv[0], '/');
   progname = (progname == NULL) ? argv[0] : progname + 1;
-  while ((c = getopt(argc, argv, "hnpu:v")) != EOF)
+  while ((c = getopt(argc, argv, "chnpu:v")) != EOF)
     {
       switch (c)
 	{
+	case 'c':
+	  copy = 1;
+	  break;
 	case 'h':
 	  hashmarks = 1;
 	  break;
@@ -164,8 +174,9 @@ int main(int argc, char **argv)
     read_exception_list(pkgtab, SYSCONFDIR "/rpmupdate.exceptions");
   read_installed_versions(pkgtab);
 
-  /* Walk the table and perform the required updates. */
-  perform_updates(pkgtab, public, dryrun, hashmarks);
+  /* Decide what updates to perform, and do them. */
+  decide_actions(pkgtab, public);
+  perform_updates(pkgtab, dryrun, hashmarks, copy);
 
   exit(0);
 }
@@ -317,8 +328,27 @@ static void read_installed_versions(struct package **pkgtab)
   rpmdbClose(db);
 }
 
-static void perform_updates(struct package **pkgtab, int public, int dryrun,
-			    int hashmarks)
+static void decide_actions(struct package **pkgtab, int public)
+{
+  int i;
+  struct package *pkg;
+
+  for (i = 0; i < HASHSIZE; i++)
+    {
+      for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
+	{
+	  if (pkg->notouch)
+	    pkg->action = NONE;
+	  else if (public)
+	    pkg->action = decide_public(pkg);
+	  else
+	    pkg->action = decide_private(pkg);
+	}
+    }
+}
+
+static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
+			    int copy)
 {
   int r, i, npackages, nconflicts;
   struct package *pkg;
@@ -337,6 +367,12 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
       if (rpmdbOpen(NULL, &db, O_RDWR, 0644))
 	die("Can't open RPM database for writing");
       rpmdep = rpmtransCreateSet(db, NULL);
+
+      if (copy)
+	{
+	  prepare_copy_area();
+	  check_copy_size(pkgtab);
+	}
     }
 
   /* Decide what to do for each package.  Add updates to the
@@ -348,21 +384,13 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
     {
       for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
 	{
-	  if (pkg->notouch)
-	    continue;
-	  else if (public)
-	    action = decide_public(pkg);
-	  else
-	    action = decide_private(pkg);
 	  if (dryrun)
-	    display_action(pkg, action);
-	  else if (action == UPDATE)
+	    display_action(pkg, pkg->action);
+	  else if (pkg->action == UPDATE)
 	    {
-	      schedule_update(pkg, rpmdep);
+	      schedule_update(pkg, rpmdep, copy);
 	      npackages++;
 	    }
-	  else if (action == ERASE)
-	    pkg->erase = 1;
 	}
     }
 
@@ -385,7 +413,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
       if (!headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL))
 	continue;
       pkg = get_package(pkgtab, pkgname);
-      if (pkg->erase && !already_removed(rpmdep, rpmdbGetIteratorOffset(mi)))
+      if (pkg->action == ERASE)
 	rpmtransRemovePackage(rpmdep, rpmdbGetIteratorOffset(mi));
     }
 
@@ -409,6 +437,8 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   ndata.pkgtab = pkgtab;
   r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
 			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
+  if (copy)
+    clear_copy_area();
   if (r < 0)
     {
       /* The kernel may have been upgraded; make sure to edit
@@ -586,13 +616,16 @@ static enum act decide_private(struct package *pkg)
 }
 
 /* Read the header from an RPM file and add an update transaction for it. */
-static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep)
+static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep,
+			    int copy)
 {
   Header h;
   FD_t fd;
 
   assert(pkg->filename != NULL);
   pkg->filename = fudge_arch_in_filename(pkg->filename);
+  if (copy)
+    pkg->filename = copy_local(pkg->filename);
   fd = fdOpen(pkg->filename, O_RDONLY, 0);
   if (fd == NULL)
     die("Can't read package file %s", pkg->filename);
@@ -832,10 +865,118 @@ static char *fudge_arch_in_filename(char *filename)
 	  return newfile;
 	}
     }
-  /* no appropriate RPM exists */
+  /* No appropriate RPM exists. */
   fprintf(stderr, "Can't find appropriate RPM for architecture %s for %s\n",
 	  arches[j], filename);
   exit(1);
+}
+
+static void prepare_copy_area(void)
+{
+  struct stat statbuf;
+
+  /* Make sure the local copy area exists. */
+  if (stat(RPMCACHE, &statbuf) == -1)
+    {
+      if (mkdir(RPMCACHE, 0755) == -1)
+	die("Can't create local copy area %s: %s", RPMCACHE, strerror(errno));
+    }
+  else if (!S_ISDIR(statbuf.st_mode))
+    die("Local copy area %s exists but is not a directory.", RPMCACHE);
+
+  clear_copy_area();
+}
+
+static void check_copy_size(struct package **pkgtab)
+{
+  int i;
+  struct package *pkg;
+  struct statfs sf;
+  struct stat st;
+  off_t total = 0;
+
+  for (i = 0; i < HASHSIZE; i++)
+    {
+      for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
+	{
+	  if (pkg->action != UPDATE)
+	    continue;
+	  assert(pkg->filename != NULL);
+	  if (stat(pkg->filename, &st) == -1)
+	    die("Can't stat %s: %s", pkg->filename, strerror(errno));
+	  total += st.st_blocks;
+	}
+    }
+
+  if (statfs(RPMCACHE, &sf) == -1)
+    die("Can't statfs %s: %s", RPMCACHE, strerror(errno));
+  if (sf.f_bavail * (sf.f_bsize / 512) < total)
+    {
+      die("Need %dMB free space in %s to copy RPMs (probably more to update).",
+	  total / 2048, RPMCACHE);
+    }
+}
+
+static char *copy_local(const char *filename)
+{
+  const char *basename;
+  char *lname, buf[8192];
+  int rfd, wfd, rcount, wcount, wtotal;
+
+  /* Determine the local filename. */
+  basename = strrchr(filename, '/');
+  basename = (basename == NULL) ? filename : basename + 1;
+  easprintf(&lname, "%s/%s", RPMCACHE, basename);
+
+  /* Open the input and output files. */
+  rfd = open(filename, O_RDONLY);
+  if (rfd == -1)
+    die("Can't read %s: %s", filename, strerror(errno));
+  wfd = open(lname, O_RDWR|O_CREAT|O_EXCL, 0644);
+  if (wfd == -1)
+    die("Can't write %s: %s", lname, strerror(errno));
+
+  /* Do the copy. */
+  while ((rcount = read(rfd, buf, sizeof(buf))) != 0)
+    {
+      if (rcount == -1)
+	die("Can't read data from %s: %s", filename, strerror(errno));
+      wtotal = 0;
+      while (wtotal < rcount)
+	{
+	  wcount = write(wfd, buf + wtotal, rcount - wtotal);
+	  if (wcount == -1)
+	    die("Can't write to %s: %s", lname, strerror(errno));
+	  wtotal += wcount;
+	}
+    }
+
+  close(rfd);
+  if (close(wfd) == -1)
+    die("Can't close %s: %s", lname, strerror(errno));
+
+  return lname;
+}
+
+/* Clear out the local copy area. */
+static void clear_copy_area(void)
+{
+  DIR *dir;
+  struct dirent *d;
+  char *path;
+
+  dir = opendir(RPMCACHE);
+  if (!dir)
+    return;
+  while ((d = readdir(dir)) != NULL)
+    {
+      if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)
+	continue;
+      easprintf(&path, "%s/%s", RPMCACHE, d->d_name);
+      unlink(path);
+      free(path);
+    }
+  closedir(dir);
 }
 
 static void printrev(struct rev *rev)
@@ -970,7 +1111,7 @@ struct package *get_package(struct package **table, const char *pkgname)
   pkg->instrev.present = 0;
   pkg->notouch = 0;
   pkg->only_upgrade = 0;
-  pkg->erase = 0;
+  pkg->action = NONE;
   pkg->next = NULL;
   *pkgptr = pkg;
   return pkg;
@@ -1113,37 +1254,4 @@ static void usage()
 {
   fprintf(stderr, "Usage: %s [-p] oldlist newlist\n", progname);
   exit(1);
-}
-
-/* This is terrible, but there's no other way.  Here we have a copy of
- * the opaque representation of the abstract rpmTransactionSet type,
- * truncated about halfway through.  This lets us get at the
- * removedPackages array, which lets us avoid removing packages twice
- * when an updated package obsoletes a package we were going to remove
- * anyway.
- */
-struct rpmTransactionSet_s {
-    rpmtransFlags transFlags;		/*!< Bit(s) to control operation. */
-    rpmCallbackFunction notify;		/*!< Callback function. */
-/*@observer@*/ rpmCallbackData notifyData;/*!< Callback private data. */
-/*@dependent@*/ rpmProblemSet probs;	/*!< Current problems in transaction. */
-    rpmprobFilterFlags ignoreSet;	/*!< Bits to filter current problems. */
-/*@owned@*/ /*@null@*/ rpmdb rpmdb;	/*!< Database handle. */
-/*@only@*/ int * removedPackages;	/*!< Set of packages being removed. */
-    int numRemovedPackages;		/*!< No. removed rpmdb instances. */
-    int allocedRemovedPackages;		/*!< Size of removed packages array. */
-    /* There's more after this in the real structure, but we don't need it. */
-};
-
-static int already_removed(rpmTransactionSet ts, int offset)
-{
-  struct rpmTransactionSet_s *its = ts;
-  int i;
-
-  for (i = 0; i < its->numRemovedPackages; i++)
-    {
-      if (its->removedPackages[i] == offset)
-	return 1;
-    }
-  return 0;
 }

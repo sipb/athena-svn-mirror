@@ -1,4 +1,4 @@
-.\" $Id: rpmupdate.8,v 1.2 2001-07-25 15:11:54 ghudson Exp $
+.\" $Id: rpmupdate.8,v 1.3 2002-07-17 03:58:33 ghudson Exp $
 .\"
 .\" Copyright 2000 by the Massachusetts Institute of Technology.
 .\"
@@ -17,7 +17,7 @@
 .SH NAME
 rpmupdate \- Update workstation from one RPM list to another
 .SH SYNOPSIS
-.B rpmupdate [-hnpv] [-u \fIupgradelist\fP] \fIoldlist\fP \fInewlist\fP
+.B rpmupdate [-chnpv] [-u \fIupgradelist\fP] \fIoldlist\fP \fInewlist\fP
 .SH DESCRIPTION
 .B rpmupdate
 is normally invoked by
@@ -26,6 +26,11 @@ to update an Athena Red Hat workstation from one list of RPMs to
 another.
 .B rpmupdate
 accepts the following options:
+.TP 5
+.B \-c
+Copy all RPMs to be updated to a local directory (/var/athena/rpms)
+before updating.  This option requires extra disk space, but ensures
+that a network outage cannot disrupt the update.
 .TP 5
 .B \-h
 Display the names of RPMs being installed and show the progress of the
