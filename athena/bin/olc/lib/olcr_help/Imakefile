@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.6 1991-11-05 13:57:05 lwvanels Exp $
+# $Id: Imakefile,v 1.7 1997-11-22 19:27:18 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olcr_help/Imakefile,v $
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.
@@ -8,14 +8,14 @@
 
 .SUFFIXES: .nroff .help
 
-SRCS=	?.nroff acl.nroff answers.nroff ask.nroff cancel.nroff \
+SRCS=	qmark.nroff acl.nroff answers.nroff ask.nroff cancel.nroff \
 	comment.nroff describe.nroff done.nroff forward.nroff grab.nroff \
 	help.nroff instance.nroff list.nroff mail.nroff motd.nroff off.nroff \
 	olcr.nroff on.nroff quit.nroff replay.nroff send.nroff show.nroff \
 	status.nroff stock.nroff topic.nroff who.nroff hours.nroff \
 	version.nroff zephyr.nroff
 
-OBJS=	?.help acl.help answers.help ask.help cancel.help \
+OBJS=	acl.help answers.help ask.help cancel.help \
 	comment.help describe.help done.help forward.help grab.help \
 	help.help instance.help list.help mail.help motd.help off.help \
 	olcr.help on.help quit.help replay.help send.help show.help \
@@ -31,8 +31,9 @@ install::
 		else exit 0; fi
 
 InstallMultipleDestFlags(install,$(OBJS), $(DESTDIR)/usr/athena/lib/olc/olcr_help,$(INSTMANFLAGS))
+InstallNonExec(qmark.help, $(DESTDIR)/usr/athena/lib/olc/olcr_help/\?.help)
 
-AllTarget($(OBJS))
+AllTarget($(OBJS) qmark.help)
 
 clean::
 	rm -f *.help

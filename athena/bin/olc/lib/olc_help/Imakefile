@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.5 1991-04-18 22:07:39 lwvanels Exp $
+# $Id: Imakefile,v 1.6 1997-11-22 19:27:03 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olc_help/Imakefile,v $
 #
 # For copying and distribution information,
@@ -8,12 +8,12 @@
 
 .SUFFIXES: .nroff .help
 
-SRCS=	?.nroff answers.nroff ask.nroff cancel.nroff \
+SRCS=	qmark.nroff answers.nroff ask.nroff cancel.nroff \
 	done.nroff help.nroff motd.nroff olc.nroff quit.nroff \
 	replay.nroff send.nroff show.nroff status.nroff topic.nroff \
 	who.nroff hours.nroff version.nroff
 
-OBJS=	?.help answers.help ask.help cancel.help \
+OBJS=	answers.help ask.help cancel.help \
 	done.help help.help motd.help olc.help quit.help \
 	replay.help send.help show.help status.help topic.help \
 	who.help hours.help version.help
@@ -27,8 +27,9 @@ install::
 		else exit 0;fi
 
 InstallMultipleDestFlags(install, $(OBJS), $(DESTDIR)/usr/athena/lib/olc/olc_help,$(INSTMANFLAGS))
+InstallNonExec(qmark.help, $(DESTDIR)/usr/athena/lib/olc/olc_help/?.help)
 
-AllTarget($(OBJS))
+AllTarget($(OBJS) qmark.help)
 
 clean::
 	rm -f *.help
