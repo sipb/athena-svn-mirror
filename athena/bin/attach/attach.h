@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.24 1998-03-17 03:54:12 cfields Exp $
+ * $Id: attach.h,v 1.25 1998-04-08 21:53:04 cfields Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -268,6 +268,7 @@ struct cache_ent {
 #define ZINIT_CMD	"zinit"
 #endif /* ZEPHYR */
 #define ADD_CMD		"add"
+#define RUN_CMD		"attachandrun"
     
 /*
  * Generic defines
