@@ -51,7 +51,7 @@ rd_and_store_for_creds(context, auth_context, inbuf, ticket)
     k5_haveauth = 0;
 
     if (!UserNameRequested)
-	return -1;
+	return EPERM;
 
     if (retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL)) 
 	return(retval);
