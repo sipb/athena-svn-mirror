@@ -165,6 +165,7 @@ gail_cell_object_init (GailCell *cell)
   atk_state_set_add_state (cell->state_set, ATK_STATE_TRANSIENT);
   atk_state_set_add_state (cell->state_set, ATK_STATE_ENABLED);
   atk_state_set_add_state (cell->state_set, ATK_STATE_SENSITIVE);
+  atk_state_set_add_state (cell->state_set, ATK_STATE_SELECTABLE);
   cell->refresh_index = NULL;
 }
 

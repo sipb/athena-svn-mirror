@@ -140,6 +140,8 @@ gail_canvas_item_get_parent (AtkObject *obj)
   GnomeCanvasItem *item;
 
   g_return_val_if_fail (GAIL_IS_CANVAS_ITEM (obj), NULL);
+  if (obj->accessible_parent)
+    return obj->accessible_parent;
   atk_gobj = ATK_GOBJECT_ACCESSIBLE (obj);
   g_obj = atk_gobject_accessible_get_object (atk_gobj);
   if (g_obj == NULL)
@@ -161,6 +163,27 @@ gail_canvas_item_get_index_in_parent (AtkObject *obj)
   GnomeCanvasItem *item;
 
   g_return_val_if_fail (GAIL_IS_CANVAS_ITEM (obj), -1);
+  if (obj->accessible_parent)
+    {
+      gint n_children, i;
+      gboolean found = FALSE;
+
+      n_children = atk_object_get_n_accessible_children (obj->accessible_parent);
+      for (i = 0; i < n_children; i++)
+        {
+          AtkObject *child;
+
+          child = atk_object_ref_accessible_child (obj->accessible_parent, i);
+          if (child == obj)
+            found = TRUE;
+
+          g_object_unref (child);
+          if (found)
+            return i;
+        }
+      return -1;
+    }
+
   atk_gobj = ATK_GOBJECT_ACCESSIBLE (obj);
   g_obj = atk_gobject_accessible_get_object (atk_gobj);
   if (g_obj == NULL)
@@ -465,10 +488,10 @@ get_item_extents (GnomeCanvasItem   *item,
   gnome_canvas_get_scroll_offsets (item->canvas, &scroll_x, &scroll_y);
 
   if (x)
-    *x = x1 + scroll_x;
+    *x = x1 - scroll_x;
 
   if (y)
-    *y = y1 + scroll_y;
+    *y = y1 - scroll_y;
 
   if (width)
     *width = x2 - x1;
@@ -497,8 +520,8 @@ is_item_in_window (GnomeCanvasItem   *item,
       /*
        * Check whether rectangles intersect
        */
-      if (x + width < 0  ||
-          y + height < 0 ||
+      if (x + width <= 0  ||
+          y + height <= 0 ||
           x > window_width  ||
           y > window_height)
         {

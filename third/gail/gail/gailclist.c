@@ -112,6 +112,7 @@ static void       gail_clist_finalize              (GObject           *object);
 static gint       gail_clist_get_n_children        (AtkObject         *obj);
 static AtkObject* gail_clist_ref_child             (AtkObject         *obj,
                                                     gint              i);
+static AtkStateSet* gail_clist_ref_state_set       (AtkObject         *obj);
 
 
 static void       atk_selection_interface_init     (AtkSelectionIface *iface);
@@ -125,6 +126,13 @@ static gboolean   gail_clist_is_child_selected     (AtkSelection   *selection,
 static gboolean   gail_clist_select_all_selection  (AtkSelection   *selection);
 
 static void       atk_table_interface_init         (AtkTableIface     *iface);
+static gint       gail_clist_get_index_at          (AtkTable      *table,
+                                                    gint          row,
+                                                    gint          column);
+static gint       gail_clist_get_column_at_index   (AtkTable      *table,
+                                                    gint          index);
+static gint       gail_clist_get_row_at_index      (AtkTable      *table,
+                                                    gint          index);
 static AtkObject* gail_clist_ref_at                (AtkTable      *table,
                                                     gint          row,
                                                     gint          column);
@@ -318,6 +326,7 @@ gail_clist_class_init (GailCListClass *klass)
  
   class->get_n_children = gail_clist_get_n_children;
   class->ref_child = gail_clist_ref_child;
+  class->ref_state_set = gail_clist_ref_state_set;
   class->initialize = gail_clist_real_initialize;
 
   gobject_class->finalize = gail_clist_finalize;
@@ -357,6 +366,7 @@ gail_clist_real_initialize (AtkObject *obj,
   clist->summary = NULL;
   clist->row_data = NULL;
   clist->cell_data = NULL;
+  clist->previous_selected_cell = NULL;
 
   gtk_clist = GTK_CLIST (data);
  
@@ -418,6 +428,9 @@ gail_clist_finalize (GObject            *object)
   g_free (clist->columns);
 
   array = clist->row_data;
+
+  if (clist->previous_selected_cell)
+    g_object_unref (clist->previous_selected_cell);
 
   if (array)
     {
@@ -492,6 +505,21 @@ gail_clist_ref_child (AtkObject *obj,
   return gail_clist_ref_at_actual (ATK_TABLE (obj), row, col);
 }
 
+static AtkStateSet*
+gail_clist_ref_state_set (AtkObject *obj)
+{
+  AtkStateSet *state_set;
+  GtkWidget *widget;
+
+  state_set = ATK_OBJECT_CLASS (parent_class)->ref_state_set (obj);
+  widget = GTK_ACCESSIBLE (obj)->widget;
+
+  if (widget != NULL)
+    atk_state_set_add_state (state_set, ATK_STATE_MANAGES_DESCENDANTS);
+
+  return state_set;
+}
+
 static void
 atk_selection_interface_init (AtkSelectionIface *iface)
 {
@@ -502,37 +530,6 @@ atk_selection_interface_init (AtkSelectionIface *iface)
   iface->get_selection_count = gail_clist_get_selection_count;
   iface->is_child_selected = gail_clist_is_child_selected;
   iface->select_all_selection = gail_clist_select_all_selection;
-}
-
-static void
-atk_table_interface_init (AtkTableIface *iface)
-{
-  g_return_if_fail (iface != NULL);
-  iface->ref_at = gail_clist_ref_at;
-  /*
-   * We use the default implementation for get_index_at,
-   * get_row_at_index and get_column_at_index
-   */
-
-  iface->get_caption = gail_clist_get_caption;
-  iface->get_n_columns = gail_clist_get_n_columns;
-  iface->get_column_description = gail_clist_get_column_description;
-  iface->get_column_header = gail_clist_get_column_header;
-  iface->get_n_rows = gail_clist_get_n_rows;
-  iface->get_row_description = gail_clist_get_row_description;
-  iface->get_row_header = gail_clist_get_row_header;
-  iface->get_summary = gail_clist_get_summary;
-  iface->add_row_selection = gail_clist_add_row_selection;
-  iface->remove_row_selection = gail_clist_remove_row_selection;
-  iface->get_selected_rows = gail_clist_get_selected_rows;
-  iface->is_row_selected = gail_clist_is_row_selected;
-  iface->is_selected = gail_clist_is_selected;
-  iface->set_caption = gail_clist_set_caption;
-  iface->set_column_description = gail_clist_set_column_description;
-  iface->set_column_header = gail_clist_set_column_header;
-  iface->set_row_description = gail_clist_set_row_description;
-  iface->set_row_header = gail_clist_set_row_header;
-  iface->set_summary = gail_clist_set_summary;
 }
 
 static gboolean
@@ -621,6 +618,35 @@ gail_clist_select_all_selection (AtkSelection   *selection)
   return TRUE;
 }
 
+static void
+atk_table_interface_init (AtkTableIface *iface)
+{
+  g_return_if_fail (iface != NULL);
+  iface->ref_at = gail_clist_ref_at;
+  iface->get_index_at = gail_clist_get_index_at;
+  iface->get_column_at_index = gail_clist_get_column_at_index;
+  iface->get_row_at_index = gail_clist_get_row_at_index;
+  iface->get_caption = gail_clist_get_caption;
+  iface->get_n_columns = gail_clist_get_n_columns;
+  iface->get_column_description = gail_clist_get_column_description;
+  iface->get_column_header = gail_clist_get_column_header;
+  iface->get_n_rows = gail_clist_get_n_rows;
+  iface->get_row_description = gail_clist_get_row_description;
+  iface->get_row_header = gail_clist_get_row_header;
+  iface->get_summary = gail_clist_get_summary;
+  iface->add_row_selection = gail_clist_add_row_selection;
+  iface->remove_row_selection = gail_clist_remove_row_selection;
+  iface->get_selected_rows = gail_clist_get_selected_rows;
+  iface->is_row_selected = gail_clist_is_row_selected;
+  iface->is_selected = gail_clist_is_selected;
+  iface->set_caption = gail_clist_set_caption;
+  iface->set_column_description = gail_clist_set_column_description;
+  iface->set_column_header = gail_clist_set_column_header;
+  iface->set_row_description = gail_clist_set_row_description;
+  iface->set_row_header = gail_clist_set_row_header;
+  iface->set_summary = gail_clist_set_summary;
+}
+
 static AtkObject*
 gail_clist_ref_at (AtkTable *table,
                    gint     row,
@@ -687,12 +713,10 @@ gail_clist_ref_at_actual (AtkTable      *table,
   switch (cellType) 
     {
     case GTK_CELL_TEXT:
+    case GTK_CELL_PIXTEXT:
       return_object = gail_clist_cell_new ();
       break;
     case GTK_CELL_PIXMAP:
-      return_object = NULL;
-      break;
-    case GTK_CELL_PIXTEXT:
       return_object = NULL;
       break;
     default:
@@ -721,17 +745,66 @@ gail_clist_ref_at_actual (AtkTable      *table,
   
           gail_clist_get_cell_area (GAIL_CELL_PARENT (table), cell, &cell_rect);
           gail_clist_get_visible_rect (clist, &visible_rect);
+          gail_cell_add_state (cell, ATK_STATE_VISIBLE, FALSE);
           if (gail_clist_is_cell_visible (&cell_rect, &visible_rect))
-            gail_cell_add_state (cell, ATK_STATE_VISIBLE, FALSE);
+            gail_cell_add_state (cell, ATK_STATE_SHOWING, FALSE);
         }
       /*
        * If a row is selected, all cells in the row are selected
        */
       if (gail_clist_is_row_selected (table, row))
-        gail_cell_add_state (cell, ATK_STATE_SELECTED, FALSE);
+        {
+          gail_cell_add_state (cell, ATK_STATE_SELECTED, FALSE);
+          if (clist->columns == 1)
+            gail_cell_add_state (cell, ATK_STATE_FOCUSED, FALSE);
+        }
     }
 
   return return_object; 
+}
+
+static gint
+gail_clist_get_index_at (AtkTable *table,
+                         gint     row,
+                         gint     column)
+{
+  gint n_cols, n_rows;
+
+  n_cols = atk_table_get_n_columns (table);
+  n_rows = atk_table_get_n_rows (table);
+
+  g_return_val_if_fail (row < n_rows, 0);
+  g_return_val_if_fail (column < n_cols, 0);
+
+  return row * n_cols + column;
+}
+
+static gint
+gail_clist_get_column_at_index (AtkTable *table,
+                                gint     index)
+{
+  gint n_cols;
+
+  n_cols = atk_table_get_n_columns (table);
+
+  if (n_cols == 0)
+    return 0;
+  else
+    return (gint) (index % n_cols);
+}
+
+static gint
+gail_clist_get_row_at_index (AtkTable *table,
+                             gint     index)
+{
+  gint n_cols;
+
+  n_cols = atk_table_get_n_columns (table);
+
+  if (n_cols == 0)
+    return 0;
+  else
+    return (gint) (index / n_cols);
 }
 
 static AtkObject*
@@ -1189,6 +1262,7 @@ gail_clist_select_row_gtk (GtkCList *clist,
 {
   GailCList *gail_clist;
   GList *temp_list;
+  AtkObject *selected_cell;
 
   gail_clist = GAIL_CLIST (data);
 
@@ -1199,10 +1273,26 @@ gail_clist_select_row_gtk (GtkCList *clist,
       cell_data = (GailCListCellData *) (temp_list->data);
 
       if (row == cell_data->row_number)
-        /*
-         * Row is selected
-         */
-        gail_cell_add_state (cell_data->gail_cell, ATK_STATE_SELECTED, TRUE);
+        {
+          /*
+           * Row is selected
+           */
+          gail_cell_add_state (cell_data->gail_cell, ATK_STATE_SELECTED, TRUE);
+        }
+    }
+  if (clist->columns == 1)
+    {
+      selected_cell = gail_clist_ref_at (ATK_TABLE (data), row, 1);
+      if (selected_cell)
+        {
+          if (gail_clist->previous_selected_cell)
+            g_object_unref (gail_clist->previous_selected_cell);
+          gail_clist->previous_selected_cell = selected_cell;
+          gail_cell_add_state (GAIL_CELL (selected_cell), ATK_STATE_FOCUSED, FALSE);
+          g_signal_emit_by_name (gail_clist,
+                                 "active-descendant-changed",
+                                  selected_cell);
+       }
     }
 
   g_signal_emit_by_name (gail_clist, "selection_changed");
@@ -1227,10 +1317,13 @@ gail_clist_unselect_row_gtk (GtkCList *clist,
       cell_data = (GailCListCellData *) (temp_list->data);
 
       if (row == cell_data->row_number)
-        /*
-         * Row is unselected
-         */
-        gail_cell_remove_state (cell_data->gail_cell, ATK_STATE_SELECTED, TRUE);
+        {
+          /*
+           * Row is unselected
+           */
+          gail_cell_add_state (cell_data->gail_cell, ATK_STATE_FOCUSED, FALSE);
+          gail_cell_remove_state (cell_data->gail_cell, ATK_STATE_SELECTED, TRUE);
+       }
     }
 
   g_signal_emit_by_name (gail_clist, "selection_changed");
@@ -1568,9 +1661,9 @@ gail_clist_adjustment_changed (GtkAdjustment *adjustment,
       gail_clist_get_cell_area (GAIL_CELL_PARENT (atk_obj), 
                                 cell, &cell_rect);
       if (gail_clist_is_cell_visible (&cell_rect, &visible_rect))
-        gail_cell_add_state (cell, ATK_STATE_VISIBLE, TRUE);
+        gail_cell_add_state (cell, ATK_STATE_SHOWING, TRUE);
       else
-        gail_cell_remove_state (cell, ATK_STATE_VISIBLE, TRUE);
+        gail_cell_remove_state (cell, ATK_STATE_SHOWING, TRUE);
     }
   g_signal_emit_by_name (atk_obj, "visible_data_changed");
 }

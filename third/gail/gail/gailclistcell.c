@@ -89,6 +89,7 @@ gail_clist_cell_get_name (AtkObject *accessible)
        */
       GailCell *cell = GAIL_CELL (accessible);
       GtkWidget* widget = cell->widget;
+      GtkCellType cell_type;
       GtkCList *clist;
       gchar *text = NULL;
       gint row, column;
@@ -103,7 +104,18 @@ gail_clist_cell_get_name (AtkObject *accessible)
       g_return_val_if_fail (clist->columns, NULL);
       row = cell->index / clist->columns;
       column = cell->index % clist->columns;
-      gtk_clist_get_text (clist, row, column, &text);
+      cell_type = gtk_clist_get_cell_type (clist, row, column);
+      switch (cell_type)
+        {
+        case GTK_CELL_TEXT:
+          gtk_clist_get_text (clist, row, column, &text);
+          break;
+        case GTK_CELL_PIXTEXT:
+          gtk_clist_get_pixtext (clist, row, column, &text, NULL, NULL, NULL);
+          break;
+        default:
+          break;
+        }
       return text;
     }
 }

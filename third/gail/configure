@@ -1734,7 +1734,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=gail
- VERSION=1.8.0
+ VERSION=1.8.2
 
 
 cat >>confdefs.h <<_ACEOF
@@ -18804,7 +18804,7 @@ echo "$as_me: error: Library requirements ($ATK_PACKAGES >= $ATK_REQUIRED_VERSIO
   fi
 
 
-ALL_LINGUAS="ar az be bg bn bs ca cs cy da de el en_CA en_GB es et fa fi fr ga gu hi hr hu id is it ja ko lt mi mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sq sr sr@Latn sv ta th tk tr uk zh_CN zh_TW"
+ALL_LINGUAS="ar az be bg bn bs ca cs cy da de el en_CA en_GB es et fa fi fr ga gl gu hi hr hu id is it ja ko lt mi mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sq sr sr@Latn sv ta th tk tr uk zh_CN zh_TW"
 
 
 for ac_header in locale.h

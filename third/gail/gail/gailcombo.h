@@ -46,6 +46,7 @@ struct _GailCombo
   guint         action_idle_handler;
 
   gpointer      old_selection;
+  guint         select_idle_handler;
   guint         deselect_idle_handler;
 };
 

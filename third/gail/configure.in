@@ -5,7 +5,7 @@ AC_INIT(ChangeLog)
 AM_CONFIG_HEADER(config.h)
 
 
-AM_INIT_AUTOMAKE(gail, 1.8.0)
+AM_INIT_AUTOMAKE(gail, 1.8.2)
 
 # libtool versioning
 LT_CURRENT=17
@@ -90,7 +90,7 @@ PKG_CHECK_MODULES(DEPS, $ATK_PACKAGES >= $ATK_REQUIRED_VERSION \
 	$GTK_PACKAGES >= $GTK_REQUIRED_VERSION \
 	$LIBGNOMECANVAS_PACKAGES >= $LIBGNOMECANVAS_REQUIRED_VERSION)
 
-ALL_LINGUAS="ar az be bg bn bs ca cs cy da de el en_CA en_GB es et fa fi fr ga gu hi hr hu id is it ja ko lt mi mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sq sr sr@Latn sv ta th tk tr uk zh_CN zh_TW"
+ALL_LINGUAS="ar az be bg bn bs ca cs cy da de el en_CA en_GB es et fa fi fr ga gl gu hi hr hu id is it ja ko lt mi mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sq sr sr@Latn sv ta th tk tr uk zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 AM_GLIB_DEFINE_LOCALEDIR(GAIL_LOCALEDIR)
