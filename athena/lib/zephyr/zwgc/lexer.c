@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/lexer.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_lexer_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/lexer.c,v 1.2 1989-11-02 01:56:16 marc Exp $";
+static char rcsid_lexer_c[] = "$Id: lexer.c,v 1.3 1989-11-15 18:13:29 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
