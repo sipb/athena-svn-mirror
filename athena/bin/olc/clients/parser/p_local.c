@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.10 1991-02-24 11:38:11 lwvanels Exp $
+ *	$Id: p_local.c,v 1.11 1991-05-06 23:23:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.10 1991-02-24 11:38:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.11 1991-05-06 23:23:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -142,7 +142,7 @@ do_olc_help(arguments)
 	if (ind == NOT_UNIQUE)
 	  return(NOT_UNIQUE);
 
-      (void) strcat(help_filename, Command_Table[ind]);
+      (void) strcat(help_filename, Command_Table[ind].command_name);
     }
 
   (void) strcat(help_filename, HELP_EXT);
