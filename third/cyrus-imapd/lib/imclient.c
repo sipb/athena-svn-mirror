@@ -1,6 +1,6 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.2 2003-05-06 22:49:23 rbasch Exp $
+ * $Id: imclient.c,v 1.2.2.1 2003-07-03 15:45:13 ghudson Exp $
  *
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -778,15 +778,17 @@ static void imclient_input(struct imclient *imclient, char *buf, int len)
     while (parsed < imclient->replylen) {
 	/* If we're reading a literal, skip over it. */
 	if (imclient->replyliteralleft) {
-	    if (plainlen > imclient->replyliteralleft) {
-		plainlen -= imclient->replyliteralleft;
+	    size_t avail;
+
+	    avail = imclient->replylen - parsed;
+
+	    if (avail > imclient->replyliteralleft) {
 		parsed += imclient->replyliteralleft;
 		imclient->replyliteralleft = 0;
 		continue;
-	    }
-	    else {
-		parsed += plainlen;
-		imclient->replyliteralleft -= plainlen;
+	    } else {
+		parsed += avail;
+		imclient->replyliteralleft -= avail;
 		return;
 	    }
 	}
@@ -1389,8 +1391,9 @@ static int imclient_authenticate_sub(struct imclient *imclient,
             imclient_writebase64(imclient, out, outlen);
         }
     } else {
+	/* Failed; cancel the authentication exchange.  Wait for
+	 * the server's BAD response before we return. */
 	imclient_write(imclient,"*\r\n", 3);
-	return saslresult;
     }
 
     outlen = 0;
