@@ -1,10 +1,10 @@
 #
 # Note that this is NOT a relocatable package
-# $Id: gconf.spec,v 1.1.1.1 2001-01-16 15:24:21 ghudson Exp $
+# $Id: gconf.spec,v 1.1.1.2 2001-04-03 17:50:26 ghudson Exp $
 #
-%define ver      0.11
+%define ver      1.0.0
 %define rel      1
-%define prefix   /home/hp/devel
+%define	prefix   %{_prefix}
 %define name	 GConf
 %define sysconfdir	/etc
 

@@ -737,7 +737,7 @@ fi
 
 PACKAGE=GConf
 
-VERSION=0.11
+VERSION=1.0.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -2073,7 +2073,7 @@ if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
   :
 else
-  enable_debug=yes
+  enable_debug=no
 fi
 
 
@@ -3408,7 +3408,7 @@ done
 
 fi # docs_only
 
-ALL_LINGUAS="ca cs da de el fi fr ga ja ko no pt_BR ru sv tr uk"
+ALL_LINGUAS="az ca cs da de el es fi fr ga hu it ja ko nl no pt_BR ru sk sl sv tr uk"
 
 echo $ac_n "checking for working const""... $ac_c" 1>&6
 echo "configure:3415: checking for working const" >&5

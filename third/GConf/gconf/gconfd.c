@@ -422,6 +422,41 @@ gconf_get_poa ()
   return the_poa;
 }
 
+static void
+log_handler (const gchar   *log_domain,
+             GLogLevelFlags log_level,
+             const gchar   *message,
+             gpointer       user_data)
+{
+  GConfLogPriority pri = GCL_WARNING;
+  
+  switch (log_level)
+    {
+    case G_LOG_LEVEL_ERROR:
+    case G_LOG_LEVEL_CRITICAL:
+      pri = GCL_ERR;
+      break;
+
+    case G_LOG_LEVEL_WARNING:
+      pri = GCL_WARNING;
+      break;
+
+    case G_LOG_LEVEL_MESSAGE:
+    case G_LOG_LEVEL_INFO:
+      pri = GCL_INFO;
+      break;
+
+    case G_LOG_LEVEL_DEBUG:
+      pri = GCL_DEBUG;
+      break;
+
+    default:
+      break;
+    }
+
+  gconf_log (pri, "%s", message);
+}
+
 int 
 main(int argc, char** argv)
 {
@@ -437,11 +472,19 @@ main(int argc, char** argv)
   gchar* ior;
   OAF_RegistrationResult result;
   int exit_code = 0;
-  
+
+
   chdir ("/");
 
-  umask(0);
-
+  /* This is so we don't prevent unmounting of devices. We divert
+   * all messages to syslog
+   */
+  close (0);
+  close (1);
+  close (2);
+  
+  umask (022);
+  
   gconf_set_daemon_mode(TRUE);
   
   /* Logs */
@@ -451,6 +494,10 @@ main(int argc, char** argv)
   g_snprintf(logname, len, "gconfd (%s-%u)", username, (guint)getpid());
 
   openlog (logname, LOG_NDELAY, LOG_USER);
+
+  g_log_set_handler (NULL, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
+                     log_handler, NULL);
+  
   /* openlog() does not copy logname - what total brokenness.
      So we free it at the end of main() */
   
@@ -458,7 +505,7 @@ main(int argc, char** argv)
              VERSION, (guint)getpid(), g_get_user_name());
 
 #ifdef GCONF_ENABLE_DEBUG
-  gconf_log (GCL_DEBUG, _("GConf was built with debugging features enabled"));
+  gconf_log (GCL_DEBUG, "GConf was built with debugging features enabled");
 #endif
   
   /* Session setup */
@@ -581,12 +628,13 @@ main(int argc, char** argv)
 
 static GSList* main_loops = NULL;
 static guint timeout_id = 0;
+static gboolean need_log_cleanup = FALSE;
 
 static gboolean
-half_hour_timeout(gpointer data)
-{
+periodic_cleanup_timeout(gpointer data)
+{  
   gconf_log (GCL_DEBUG, "Performing periodic cleanup, expiring cache cruft");
-
+  
   drop_old_clients ();
   drop_old_databases ();
 
@@ -600,10 +648,24 @@ half_hour_timeout(gpointer data)
   /* expire old locale cache entries */
   gconfd_locale_cache_expire ();
 
+  if (!need_log_cleanup)
+    {
+      gconf_log (GCL_DEBUG, "No log file saving needed in periodic cleanup handler");
+      return TRUE;
+    }
+  
   /* Compress the running state file */
   logfile_save ();
+
+  need_log_cleanup = FALSE;
   
   return TRUE;
+}
+
+void
+gconfd_need_log_cleanup (void)
+{
+  need_log_cleanup = TRUE;
 }
 
 static void
@@ -616,14 +678,14 @@ gconf_main(void)
   if (main_loops == NULL)
     {
 #ifdef GCONF_ENABLE_DEBUG
-      gulong timeout_len = 1000*60*2; /* 1 sec * 60 s/min * 2 min */
+      gulong timeout_len = 1000*60*1; /* 1 sec * 60 s/min * 1 min */
 #else
-      gulong timeout_len = 1000*60*30; /* 1 sec * 60 s/min * 30 min */
+      gulong timeout_len = 1000*60*15; /* 1 sec * 60 s/min * 15 min */
 #endif
       
       g_assert(timeout_id == 0);
       timeout_id = g_timeout_add (timeout_len,
-                                  half_hour_timeout,
+                                  periodic_cleanup_timeout,
                                   NULL);
 
     }
@@ -669,6 +731,8 @@ static GConfDatabase *default_db = NULL;
 static void
 init_databases (void)
 {
+  gconfd_need_log_cleanup ();
+  
   g_assert(db_list == NULL);
   g_assert(dbs_by_address == NULL);
   
@@ -682,6 +746,8 @@ init_databases (void)
 static void
 set_default_database (GConfDatabase* db)
 {
+  gconfd_need_log_cleanup ();
+  
   default_db = db;
   
   /* Default database isn't in the address hash since it has
@@ -692,9 +758,12 @@ set_default_database (GConfDatabase* db)
 static void
 register_database (GConfDatabase *db)
 {
-  safe_g_hash_table_insert(dbs_by_address,
-                           ((GConfSource*)db->sources->sources->data)->address,
-                           db);
+  gconfd_need_log_cleanup ();
+  
+  if (db->sources->sources)
+    safe_g_hash_table_insert(dbs_by_address,
+                             ((GConfSource*)db->sources->sources->data)->address,
+                             db);
   
   db_list = g_list_prepend (db_list, db);
 }
@@ -702,8 +771,11 @@ register_database (GConfDatabase *db)
 static void
 unregister_database (GConfDatabase *db)
 {
-  g_hash_table_remove(dbs_by_address,
-                      ((GConfSource*)(db->sources->sources->data))->address);
+  gconfd_need_log_cleanup ();
+  
+  if (db->sources->sources)
+    g_hash_table_remove(dbs_by_address,
+                        ((GConfSource*)(db->sources->sources->data))->address);
 
   db_list = g_list_remove (db_list, db);
 
@@ -956,7 +1028,6 @@ gconfd_check_in_shutdown (CORBA_Environment *ev)
     return FALSE;
 }
 
-
 /*
  * Logging
  */
@@ -993,7 +1064,20 @@ get_log_names (gchar **logdir, gchar **logfile)
   *logfile = gconf_concat_dir_and_key (*logdir, "saved_state");
 }
 
+static void close_append_handle (void);
+
 static FILE* append_handle = NULL;
+static guint append_handle_timeout = 0;
+
+static gboolean
+close_append_handle_timeout(gpointer data)
+{
+  close_append_handle ();
+
+  /* uninstall the timeout */
+  append_handle_timeout = 0;
+  return FALSE;
+}
 
 static gboolean
 open_append_handle (GError **err)
@@ -1026,6 +1110,18 @@ open_append_handle (GError **err)
       
       g_free (logdir);
       g_free (logfile);
+
+
+      {
+        const gulong timeout_len = 1000*60*0.5; /* 1 sec * 60 s/min * 0.5 min */
+
+        if (append_handle_timeout != 0)
+          g_source_remove (append_handle_timeout);
+        
+        append_handle_timeout = g_timeout_add (timeout_len,
+                                               close_append_handle_timeout,
+                                               NULL);
+      }
     }
 
   return TRUE;
@@ -1042,6 +1138,12 @@ close_append_handle (void)
                    strerror (errno));
 
       append_handle = NULL;
+
+      if (append_handle_timeout != 0)
+        {
+          g_source_remove (append_handle_timeout);
+          append_handle_timeout = 0;
+        }
     }
 }
 
@@ -1057,7 +1159,7 @@ logfile_save (void)
   gchar *tmpfile = NULL;
   gchar *tmpfile2 = NULL;
   GString *saveme = NULL;
-  int fd = -1;
+  gint fd = -1;
   
   /* Close the running log */
   close_append_handle ();
@@ -1192,7 +1294,7 @@ struct _ListenerLogEntry
   gchar *location;
 };
 
-guint
+static guint
 listener_logentry_hash (gconstpointer v)
 {
   const ListenerLogEntry *lle = v;
@@ -1204,7 +1306,7 @@ listener_logentry_hash (gconstpointer v)
     (g_str_hash (lle->location) & 0x000000ff);
 }
 
-gboolean
+static gboolean
 listener_logentry_equal (gconstpointer ap, gconstpointer bp)
 {
   const ListenerLogEntry *a = ap;
@@ -1254,7 +1356,7 @@ parse_listener_entry (GHashTable *entries,
   errno = 0;
   end = NULL;
   connection_id = strtoul (p, &end, 10);
-  if (errno != 0)
+  if (end == p || errno != 0)
     {
       gconf_log (GCL_DEBUG,
                  "Failed to parse connection ID in saved state file");
@@ -1566,6 +1668,8 @@ restore_listener (GConfDatabase* db,
     }  
 
   new_cnxn = gconf_database_readd_listener (db, cl, lle->location);
+
+  gconf_log (GCL_DEBUG, "Attempting to update listener from saved state file, old connection %u, new connectin %u", (guint) lle->connection_id, (guint) new_cnxn);
   
   ConfigListener_update_listener (cl,
                                   db->objref,
@@ -1940,7 +2044,9 @@ static GHashTable *client_table = NULL;
 
 static void
 add_client (const ConfigListener client)
-{  
+{
+  gconfd_need_log_cleanup ();
+  
   if (client_table == NULL)
     client_table = g_hash_table_new ((GHashFunc) g_CORBA_Object_hash,
                                      (GCompareFunc) g_CORBA_Object_equal);
@@ -1974,6 +2080,8 @@ remove_client (const ConfigListener client)
 {
   ConfigListener old_client;
   CORBA_Environment ev;
+
+  gconfd_need_log_cleanup ();
   
   if (client_table == NULL)
     goto notfound;

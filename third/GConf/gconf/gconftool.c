@@ -704,16 +704,14 @@ recurse_subdir_list(GConfEngine* conf, GSList* subdirs, const gchar* parent, gui
   while (tmp != NULL)
     {
       gchar* s = tmp->data;
-      gchar* full = gconf_concat_dir_and_key(parent, s);
       
       printf("%s%s:\n", whitespace, s);
       
-      list_pairs_in_dir(conf, full, depth);
+      list_pairs_in_dir(conf, s, depth);
 
-      recurse_subdir_list(conf, gconf_engine_all_dirs(conf, full, NULL), full, depth+1);
+      recurse_subdir_list(conf, gconf_engine_all_dirs(conf, s, NULL), s, depth+1);
 
       g_free(s);
-      g_free(full);
       
       tmp = g_slist_next(tmp);
     }
@@ -881,11 +879,18 @@ do_get(GConfEngine* conf, const gchar** args)
               const gchar* long_desc = gconf_schema_get_long_desc(sc);
               const gchar* short_desc = gconf_schema_get_short_desc(sc);
               const gchar* owner = gconf_schema_get_owner(sc);
-
+              GConfValue* def_value = gconf_schema_get_default_value(sc);
+              
               printf(_("Type: %s\n"), gconf_value_type_to_string(stype));
               printf(_("List Type: %s\n"), gconf_value_type_to_string(slist_type));
               printf(_("Car Type: %s\n"), gconf_value_type_to_string(scar_type));
               printf(_("Cdr Type: %s\n"), gconf_value_type_to_string(scdr_type));
+              if (def_value)
+                s = gconf_value_to_string (def_value);
+              else
+                s = NULL;
+              printf(_("Default Value: %s\n"), def_value ? s : _("Unset"));
+              g_free (s);
               printf(_("Owner: %s\n"), owner ? owner : _("Unset"));
               printf(_("Short Desc: %s\n"), short_desc ? short_desc : _("Unset"));
               printf(_("Long Desc: %s\n"), long_desc ? long_desc : _("Unset"));
