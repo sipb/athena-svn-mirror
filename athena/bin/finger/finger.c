@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.32 1997-06-03 22:44:08 danw Exp $
+ * $Id: finger.c,v 1.33 1997-12-03 21:55:15 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.32 1997-06-03 22:44:08 danw Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.33 1997-12-03 21:55:15 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -68,30 +68,22 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
  * option turns off plans for long format outputs.
  */
 
-#ifdef POSIX
 #include <unistd.h>
-#endif
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #ifdef SYSV
 #include <utmpx.h>
+#include <lastlog.h>
 #endif
 #include <string.h>
 #include <utmp.h>
 #include <sys/signal.h>
 #include <pwd.h>
 #include <stdio.h>
-#if !defined(_AIX) || (AIXV < 20)
-/* AIX 3.1 does not have <lastlog.h> */
-#include <lastlog.h>
-#else
-#define NO_LASTLOG
-#endif
+#include <stdlib.h>
 #include <ctype.h>
-#ifdef _AUX_SOURCE
 #include <time.h>
-#endif
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -116,8 +108,10 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 
 #ifdef SYSV
 struct utmpx user;
+#define UTTIME(ut) (ut).ut_tv.tv_sec
 #else
 struct utmp user;
+#define UTTIME(ut) (ut).ut_time
 #endif
 
 #define NMAX sizeof(user.ut_name)
@@ -133,13 +127,8 @@ struct person {			/* one for each person fingered */
 	char tty[BUFSIZ];	/* null terminated tty line */
 	char host[BUFSIZ];	/* null terminated remote host name */
 	int loginout;		/* 0 means login time, 1 logout */
-#ifdef POSIX
-	time_t loginat;
-	time_t idletime;
-#else
-	long loginat;		/* time of (last) login/out */
-	long idletime;		/* how long idle (if logged in) */
-#endif
+	time_t loginat;		/* time of (last) login/out */
+	time_t idletime;	/* how long idle (if logged in) */
 	char *logintime;	/* pointer to string showing logintime */
 	char *realname;		/* pointer to full name */
 	char *nickname;		/* pointer to nickname */
@@ -155,13 +144,24 @@ struct person {			/* one for each person fingered */
 	int zlocation;		/* found via Zephyr */
 };
 
-char LASTLOG[] = "/usr/adm/lastlog";	/* last login info */
-#ifdef SYSV
-char USERLOG[] = "/etc/utmpx";	/* who is logged in */
-char ACCTLOG[] = "/usr/adm/wtmpx";	/* Accounting file */
+#if defined(SYSV)
+char USERLOG[] = UTMPX_FILE;		/* who is logged in */
+char ACCTLOG[] = WTMPX_FILE;		/* Accounting file */
+#elif defined(UTMP_FILE)
+char USERLOG[] = UTMP_FILE;
+char ACCTLOG[] = WTMP_FILE;
+#elif defined(_PATH_UTMP)
+char USERLOG[] = _PATH_UTMP;
+char ACCTLOG[] = _PATH_WTMP;
 #else
-char USERLOG[] = "/etc/utmp";	/* who is logged in */
-char ACCTLOG[] = "/usr/adm/wtmp";	/* Accounting file */
+char USERLOG[] = "/var/adm/utmp";
+char ACCTLOG[] = "/var/adm/wtmp";
+#endif
+
+#ifdef _PATH_LASTLOG
+char LASTLOG[] = _PATH_LASTLOG;		/* last login info */
+#else
+char LASTLOG[] = "/usr/adm/lastlog";
 #endif
 
 char PLAN[] = "/.plan";		/* what plan file is */
@@ -191,14 +191,10 @@ int lw = -1;			/* ACCTLOG file descriptor */
 /* !#$%!@#$! Bezerkeley non-initializations !!! */
 struct person *person1 = (struct person *) NULL;	/* list of people */
 struct person *person2 = (struct person *) NULL;	/* 2nd list of people */
-#ifdef POSIX
 time_t tloc;
-#else
-long tloc;
-#endif
 
 char ttnames[MAXTTYS][LMAX];	/* TTY names */
-long logouts[MAXTTYS];		/* Logout times */
+time_t logouts[MAXTTYS];	/* Logout times */
 
 struct passwd *pwdcopy();
 
@@ -211,10 +207,6 @@ char *strcat();
 char *strncpy();
 char *malloc();
 char *ctime();
-#endif
-
-#ifndef POSIX
-long time();
 #endif
 
 /*ARGSUSED*/
@@ -300,7 +292,7 @@ doall()
 	}
 	if (unquick) {
 		setpwent();
-		fwopen();
+		fw_open();
 	}
 	while (read(uf, (char *) &user, sizeof user) == sizeof user) {
 		if (user.ut_name[0] == 0)
@@ -322,14 +314,11 @@ doall()
 		memcpy(p->host, user.ut_host, HMAX);
 		p->host[HMAX] = 0;
 		p->loginout = 0;
-#ifndef SYSV
-		p->loginat = user.ut_time;
-#else
-		p->loginat = user.ut_tv.tv_sec;
-#endif
+		p->loginat = UTTIME(user);
 		p->pwd = 0;
 		p->loggedin = 1;
 		p->zlocation = 0;
+		p->logintime = NULL;
 		if (unquick && (pw = getpwnam(name))) {
 			p->pwd = pwdcopy(pw);
 			decode(p);
@@ -408,11 +397,6 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#if !defined(ultrix) && !defined(_AIX) && !defined(SOLARIS) || defined(_AUX_SOURCE) 
-			extern _pw_stayopen;
-
-			_pw_stayopen = 1;
-#endif
 			for (p = person1; p != 0; p = p->link)
 				if (pw = getpwnam(p->name))
 					p->pwd = pwdcopy(pw);
@@ -480,11 +464,7 @@ donames(argv)
 				p->tty[LMAX] = 0;
 				memcpy(p->host, user.ut_host, HMAX);
 				p->host[HMAX] = 0;
-#ifndef SYSV
-				p->loginat = user.ut_time;
-#else
-				p->loginat = user.ut_tv.tv_sec;
-#endif
+				p->loginat = UTTIME(user);
 				p->loggedin = 1;
 			}
 			else {	/* p->loggedin == 1 */
@@ -496,11 +476,7 @@ donames(argv)
 				new->tty[LMAX] = 0;
 				memcpy(new->host, user.ut_host, HMAX);
 				new->host[HMAX] = 0;
-#ifndef SYSV
-				new->loginat = user.ut_time;
-#else
-				new->loginat = user.ut_tv.tv_sec;
-#endif
+				new->loginat = UTTIME(user);
 				new->pwd = p->pwd;
 				new->loggedin = 1;
 				new->original = 0;
@@ -553,7 +529,7 @@ ZLocateUser");
 	}
 	(void) close(uf);
 	if (unquick) {
-		fwopen();
+		fw_open();
 		for (p = person1, q = person2; p != 0 && q != 0;
 		     p = p->link, q = q->link) {
 			decode(p);
@@ -1086,14 +1062,11 @@ decode(pers)
  * the uid is known (which it isn't in quick mode)
  */
 
-fwopen()
+fw_open()
 {
 #ifndef NO_LASTLOG
-	if ((lf = open(LASTLOG, 0)) < 0) {
-#ifndef _AIX
+	if ((lf = open(LASTLOG, 0)) < 0)
 		fprintf(stderr, "finger: %s open error\n", LASTLOG);
-#endif
-	}
 #endif
 	if ((lw = open(ACCTLOG, 0)) < 0)
 		fprintf(stderr, "finger: %s open error\n", ACCTLOG);
@@ -1150,21 +1123,15 @@ findwhen(pers)
 							(void) strncpy(ttnames[i],
 								bp->ut_line,
 							sizeof(bp->ut_line));
-#ifndef SYSV
-							logouts[i] = bp->ut_time;
-#else
-							logouts[i] = bp->ut_tv.tv_sec;
-#endif
+							logouts[i] =
+							    UTTIME(*bp);
 							break;
 						}
 						if (!strncmp(ttnames[i],
 							     bp->ut_line,
 						     sizeof(bp->ut_line))) {
-#ifndef SYSV
-							logouts[i] = bp->ut_time;
-#else
-							logouts[i] = bp->ut_tv.tv_sec;
-#endif
+							logouts[i] =
+							    UTTIME(*bp);
 							break;
 						}
 					}
@@ -1215,6 +1182,8 @@ fwclose()
 	}
 }
 
+#define TTYLEN 5
+
 /*
  * find the idle time of a user by doing a stat on /dev/tty??,
  * where tty?? has been gotten from USERLOG, supposedly.
@@ -1223,14 +1192,8 @@ findidle(pers)
 	register struct person *pers;
 {
 	struct stat ttystatus;
-	static char buffer[20] = "/dev/";
-#ifdef POSIX
+	static char buffer[TTYLEN + LMAX + 1] = "/dev/";
 	time_t t;
-#else
-	long t;
-#endif
-
-#define TTYLEN 5
 
 	if (!pers->zlocation) {
 		(void) strcpy(buffer + TTYLEN, pers->tty);
@@ -1261,11 +1224,7 @@ findidle(pers)
  * if the idle time is zero, it prints 4 blanks.
  */
 stimeprint(dt)
-#ifdef POSIX
 	time_t *dt;
-#else
-	long *dt;
-#endif
 {
 	register struct tm *delta;
 
