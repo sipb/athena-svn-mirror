@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.11 1993-10-05 11:27:23 mar Exp $
+# $Id: sendbug.sh,v 1.12 1995-03-01 03:02:49 cfields Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@MIT.EDU
@@ -35,8 +35,10 @@ cpu=`machtype -c`
 hostname=`hostname`
 dpy=`machtype -d`
 fmt << EOF
-Please enter the subject for this bug report.  (Generally, this means the
-name of the program or locker with which you are having problems.)
+Please enter the name of the program or locker with which you are
+having problems. You may first want to check with the consultants to
+see if there is a known workaround to this problem; hit ctrl-c now and
+type 'olc' at your athena% prompt to enter a question.
 EOF
 echo -n ' --> '
 read subject
