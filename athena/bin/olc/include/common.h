@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.4 1990-11-15 09:05:53 lwvanels Exp $
+ *	$Id: common.h,v 1.5 1990-11-15 10:43:22 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -47,9 +47,9 @@ void uncase P((char *string ));
 void upcase_string P((char *string ));
 char *cap P((char *string ));
 int isnumber P((char *string ));
-char *get_next_word P((char *line , char *buf , int (*func )(char c)));
-int IsAlpha P((char c ));
-int NotWhiteSpace P((char (c )));
+char *get_next_word P((char *line , char *buf , int (*func )(int c)));
+int IsAlpha P((int c ));
+int NotWhiteSpace P((int c ));
 void make_temp_name P((char *name ));
 
 #undef P
