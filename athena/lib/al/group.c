@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.5 1997-12-31 19:47:49 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.6 1998-01-23 21:21:01 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -547,7 +547,7 @@ static int parse_to_gid(char *s, char **p, gid_t *gid)
   s++;
   *gid = atoi(s);
 
-  /* Now advance to the next colon, makig sure that everything is a digit. */
+  /* Now advance to the next colon, making sure that everything is a digit. */
   while (isdigit(*s))
     s++;
   if (*s != ':')
