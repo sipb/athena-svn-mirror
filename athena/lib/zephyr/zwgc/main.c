@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.14 1990-01-18 09:19:31 jtkohl Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.15 1990-04-13 00:09:44 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -79,7 +79,7 @@ static void fake_startup_packet()
 {
     ZNotice_t notice;
 
-    var_set_variable("version", "0.3.12");
+    var_set_variable("version", "0.3.13");
 
     bzero(&notice, sizeof(notice));
 
@@ -93,7 +93,7 @@ static void fake_startup_packet()
     notice.z_port = 0;
     notice.z_kind = ACKED;
     notice.z_auth = ZAUTH_YES;
-    notice.z_message = "Zwgc mark II version 0.3.12 now running...";
+    notice.z_message = "Zwgc mark II version 0.3.13 now running...";
     notice.z_message_len = strlen(notice.z_message)+1;
     
     notice_handler(&notice);
