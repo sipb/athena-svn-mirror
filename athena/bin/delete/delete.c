@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.17 1989-03-27 12:05:58 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.18 1989-10-23 13:44:19 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -21,6 +21,9 @@
 #include <strings.h>
 #include <sys/param.h>
 #include <sys/file.h>
+#include <errno.h>
+#include "errors.h"
+#include "delete_errs.h"
 #include "util.h"
 #include "delete.h"
 #include "mit-copyright.h"
@@ -65,8 +68,9 @@
 
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
-char *whoami;
-char *malloc();
+int emulate_rm;
+extern char *malloc();
+extern int errno;
 
 main(argc, argv)
 int argc;
@@ -75,21 +79,22 @@ char *argv[];
      extern char *optarg;
      extern int optind;
      int arg;
-     int status = 0;
      
      whoami = lastpart(argv[0]);
 
+     initialize_del_error_table();
+     
      force = interactive = recursive = noop = verbose = filesonly =
-	  directoriesonly = 0;
-     while ((arg = getopt(argc, argv, "firnvFD")) != -1) {
+	  directoriesonly = emulate_rm = 0;
+     while ((arg = getopt(argc, argv, "efirnvFD")) != -1) {
 	  switch (arg) {
 	  case 'r':
 	       recursive++;
 	       if (directoriesonly) {
-		    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
-			    whoami);
-		    usage();
-		    exit(! force);
+                    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
+                            whoami);
+                    usage();
+		    exit(1);
 	       }
 	       break;
 	  case 'f':
@@ -104,47 +109,54 @@ char *argv[];
 	  case 'v':
 	       verbose++;
 	       break;
+	  case 'e':
+	       emulate_rm++;
+	       break;
 	  case 'F':
 	       filesonly++;
 	       if (directoriesonly) {
 		    fprintf(stderr, "%s: -F and -D are mutually exclusive.\n",
-			    whoami);
-		    usage();
-		    exit(! force);
+                            whoami);
+                    usage();
+		    exit(1);
 	       }
 	       break;
 	  case 'D':
 	       directoriesonly++;
 	       if (recursive) {
-		    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
-			    whoami);
-		    usage();
-		    exit(! force);
+                    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
+                            whoami);
+                    usage();
+		    exit(1);
 	       }
 	       if (filesonly) {
-		    fprintf(stderr, "%s: -F and -D are mutually exclusive.\n",
-			    whoami);
-		    usage();
-		    exit(! force);
+                    fprintf(stderr, "%s: -F and -D are mutually exclusive.\n",
+                            whoami);
+                    usage();
+		    exit(1);
 	       }
 	       break;
 	  default:
 	       usage();
-	       exit(! force);
+	       exit(1);
 	  }
      }
+     report_errors = ! (force || emulate_rm);
+     
      if (optind == argc) {
-	  fprintf(stderr, "%s: no files specified.\n", whoami);
-	  usage();
-	  exit(! force);
+	  if (! force) {
+	       fprintf(stderr, "%s: no files specified.\n", whoami);
+	       usage();
+	  }
+	  exit(force ? 0 : 1);
      }
      while (optind < argc) {
-	  status = status | delete(argv[optind], 0);
+	  if (delete(argv[optind], 0))
+	       error(argv[optind]);
 	  optind++;
      }
-     exit((! force) && (status & ERROR_MASK));
+     exit(((! force) && error_occurred) ? 1 : 0);
 }
-
 
 
 
@@ -167,68 +179,93 @@ usage()
 
 
 
-
-
 delete(filename, recursed)
 char *filename;
 int recursed;
 {
      struct stat stat_buf;
-
+     int retval;
+     
      /* can the file be lstat'd? */
      if (lstat(filename, &stat_buf) == -1) {
-	  if (! force)
+	  set_error(errno);
+	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s nonexistent\n", whoami, filename);
-	  return(ERROR_MASK);
+	  error(filename);
+	  return error_code;
      }
-     
+
      /* is the file a directory? */
      if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  /* is the file a dot file? */
-	  if (is_dotfile(filename)) {
-	       if (! force)
-		    fprintf(stderr, "%s: cannot remove `.' or `..'\n",
-			    whoami);
-	       return(ERROR_MASK);
+	  if (is_dotfile(lastpart(filename))) {
+	       set_error(DELETE_IS_DOTFILE);
+	       if (emulate_rm && (! force))
+		    fprintf(stderr, "%s: cannot remove `.' or `..'\n", whoami);
+	       error(filename);
+	       return error_code;
 	  }
+
 	  /* is the filesonly option set? */
 	  if (filesonly) {
 	       /* is the recursive option specified? */
 	       if (recursive) {
-		    return(recursive_delete(filename, stat_buf, recursed));
+		    if (retval = recursive_delete(filename, stat_buf,
+						  recursed)) {
+			 error(filename);
+			 return retval;
+		    }
 	       }
 	       else {
-		    if (! force)
+		    if (emulate_rm && (! force))
 			 fprintf(stderr, "%s: %s directory\n", whoami,
 				 filename);
-		    return(ERROR_MASK);
+		    set_error(DELETE_CANT_DEL_DIR);
+		    error(filename);
+		    return error_code;
 	       }
 	  }
 	  else {
 	       /* is the directory empty? */
-	       if (empty_directory(filename)) {
+	       if ((retval = empty_directory(filename)) < 0) {
+		    error(filename);
+		    if (! emulate_rm)
+			 return error_code;
+	       }
+
+	       if (retval > 0) {
 		    /* remove it */
-		    return(do_move(filename, stat_buf, 0));
+		    if (retval = do_move(filename, stat_buf, 0)) {
+			 error(filename);
+			 return error_code;
+		    }
 	       }
 	       else {
 		    /* is the directoriesonly option set? */
 		    if (directoriesonly) {
-			 if (! force)
+			 if (emulate_rm && (! force))
 			      fprintf(stderr, "%s: %s: Directory not empty\n",
-				     whoami, filename);
-			 return(ERROR_MASK);
+				      whoami, filename);
+			 set_error(DELETE_DIR_NOT_EMPTY);
+			 error(filename);
+			 return error_code;
 		    }
 		    else {
 			 /* is the recursive option specified? */
 			 if (recursive) {
-			      return(recursive_delete(filename, stat_buf,
-						      recursed));
+			      if (retval = recursive_delete(filename, stat_buf,
+							    recursed)) {
+				   error(filename);
+				   return error_code;
+			      }
 			 }
 			 else {
-			      if (! force)
+			      if (emulate_rm && (! force))
 				   fprintf(stderr, "%s: %s not empty\n",
 					   whoami, filename);
-			      return(ERROR_MASK);
+			      set_error(DELETE_DIR_NOT_EMPTY);
+			      error(filename);
+			      return error_code;
 			 }
 		    }
 	       }
@@ -237,15 +274,22 @@ int recursed;
      else {
 	  /* is the directoriesonly option set? */
 	  if (directoriesonly) {
-	       if (! force)
+	       if (emulate_rm && (! force))
 		    fprintf(stderr, "%s: %s: Not a directory\n", whoami,
 			    filename);
-	       return(ERROR_MASK);
+	       set_error(DELETE_CANT_DEL_FILE);
+	       error(filename);
+	       return error_code;
 	  }
-	  else
-	       return(do_move(filename, stat_buf, 0));
+	  else {
+	       if (retval = do_move(filename, stat_buf, 0)) {
+		    error(filename);
+		    return error_code;
+	       }
+	  }
      }
 }
+	  
 
 		 
 			 
@@ -258,7 +302,9 @@ char *filename;
 
      dirp = opendir(filename);
      if (! dirp) {
-	  return(0);
+	  set_error(errno);
+	  error(filename);
+	  return -1;
      }
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
@@ -267,11 +313,11 @@ char *filename;
 	       continue;
 	  else {
 	       closedir(dirp);
-	       return(0);
+	       return 0;
 	  }
      }
      closedir(dirp);
-     return(1);
+     return 1;
 }
 
 
@@ -286,17 +332,22 @@ int recursed;
      struct direct *dp;
      int status = 0;
      char newfile[MAXPATHLEN];
+     int retval;
      
      if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
-	  if (! yes())
-	       return(NO_DELETE_MASK);
+	  if (! yes()) {
+	       set_status(DELETE_NOT_DELETED);
+	       return error_code;
+	  }
      }
      dirp = opendir(filename);
      if (! dirp) {
-	  if (! force)
+	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s not changed\n", whoami, filename);
-	  return(ERROR_MASK);
+	  set_error(errno);
+	  error(filename);
+	  return error_code;
      }
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
@@ -304,16 +355,32 @@ int recursed;
 	  if (is_deleted(dp->d_name))
 	       continue;
 	  else {
-	       strcpy(newfile, append(filename, dp->d_name, !force));
-	       if (*newfile)
-		    status = status | delete(newfile, 1);
-	       else
-		    status = ERROR_MASK;
+	       (void) strcpy(newfile, append(filename, dp->d_name));
+	       if (! *newfile) {
+		    error(filename);
+		    status = error_code;
+	       }
+
+	       retval = delete(newfile, 1);
+	       if (retval) {
+		    error(newfile);
+		    status = retval;
+	       }
 	  }
      }
      closedir(dirp);
-     status = status | do_move(filename, stat_buf, status);
-     return(status);
+
+     if (status && (! emulate_rm)) {
+	  set_warning(DELETE_DIR_NOT_EMPTY);
+	  error(filename);
+     }
+     else
+	  retval = do_move(filename, stat_buf, status);
+     
+     if (retval)
+	  status = retval;
+
+     return status;
 }
 
 					 
@@ -321,66 +388,91 @@ int recursed;
 
 
 
-do_move(filename, stat_buf, err_mask)
+do_move(filename, stat_buf, subs_not_deleted)
 char *filename;
 struct stat stat_buf;
-int err_mask;
+int subs_not_deleted; /* If the file in question is a directory, and  */
+		      /* there is something underneath it that hasn't */
+		      /* been removed, this will be set to true.      */
+                      /* The program asks if the user wants to delete */
+		      /* the directory, and if the user says yes,     */
+		      /* checks the value of subs_not_deleted.  If    */
+		      /* it's true, an error results.                 */
+                      /* This is used only when emulating rm.         */
 {
      char *last;
      char buf[MAXPATHLEN];
      char name[MAXNAMLEN];
      struct stat deleted_buf;
 
-     strncpy(buf, filename, MAXPATHLEN);
+     (void) strncpy(buf, filename, MAXPATHLEN);
      last = lastpart(buf);
      if (strlen(last) > MAXNAMLEN) {
-	  if (! force)
+	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s: filename too long\n", whoami,
 		       filename);
-	  return(ERROR_MASK);
+	  set_error(ENAMETOOLONG);
+	  error(filename);
+	  return error_code;
      }
-     strcpy(name, last);
+     (void) strcpy(name, last);
      if (strlen(buf) + 3 > MAXPATHLEN) {
-	  if (! force)
+	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s: pathname too long\n", whoami,
 		       filename);
-	  return(ERROR_MASK);
+	  set_error(ENAMETOOLONG);
+	  error(filename);
+	  return error_code;
      }
      *last = '\0';
-     strcat(buf, ".#");
-     strcat(buf, name);
-     if (err_mask) {
-	  if (! force)
-	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
-	  return(err_mask);
-     }
+     (void) strcat(buf, ".#");
+     (void) strcat(buf, name);
      if (interactive) {
 	  printf("%s: remove %s? ", whoami, filename);
-	  if (! yes())
-	       return(NO_DELETE_MASK);
+	  if (! yes()) {
+	       set_status(DELETE_NOT_DELETED);
+	       return error_code;
+	  }
      }
      else if ((! force) && ((stat_buf.st_mode & S_IFMT) != S_IFLNK)
 	      && access(filename, W_OK)) {
-	  printf("%s: override protection %o for %s? ", whoami,
-		 stat_buf.st_mode & 0777, filename);
-	  if (! yes())
-	       return(NO_DELETE_MASK);
+	  if (emulate_rm)
+	       printf("%s: override protection %o for %s? ", whoami,
+		      stat_buf.st_mode & 0777, filename);
+	  else
+	       printf("%s: File %s not writeable.  Delete anyway? ", whoami,
+		      filename);
+	  if (! yes()) {
+	       set_status(DELETE_NOT_DELETED);
+	       return error_code;
+	  }
+     }
+     if (emulate_rm && subs_not_deleted) {
+	  if (! force)
+	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
+	  return 1;
      }
      if (noop) {
 	  fprintf(stderr, "%s: %s would be removed\n", whoami, filename);
-	  return(0);
+	  return 0;
      }
-     if (! lstat(buf, &deleted_buf))
-	  unlink_completely(buf);
-     if (rename(filename, buf)) {
-	  if (! force)
+     if ((! lstat(buf, &deleted_buf)) && unlink_completely(buf)) {
+	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
-	  return(ERROR_MASK);
+	  error(filename);
+	  return error_code;
+     }
+     if (rename(filename, buf)) {
+	  if (emulate_rm && (! force))
+	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
+	  set_error(errno);
+	  error(filename);
+	  return error_code;
      }
      else {
 	  if (verbose)
 	       fprintf(stderr, "%s: %s removed\n", whoami, filename);
-	  return(0);
+	  return 0;
      }
 }
 
@@ -394,28 +486,57 @@ char *filename;
      DIR *dirp;
      struct direct *dp;
      int status = 0;
+     int retval;
      
-     if (lstat(filename, &stat_buf))
-	  return(1);
+     if (lstat(filename, &stat_buf)) {
+	  set_error(errno);
+	  error(filename);
+	  return error_code;
+     }
 
      if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  dirp = opendir(filename);
-	  if (! dirp)
-	       return(1);
-	  readdir(dirp); readdir(dirp); /* get rid of . and .. */
+	  if (! dirp) {
+	       set_error(errno);
+	       error(filename);
+	       return error_code;
+	  }
+	  
 	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	       strcpy(buf, append(filename, dp->d_name, 0));
-	       if (! buf) {
-		    status = 1;
+	       if (is_dotfile(dp->d_name))
+		    continue;
+	       (void) strcpy(buf, append(filename, dp->d_name));
+	       if (! *buf) {
+		    status = error_code;
+		    error(filename);
 		    continue;
 	       }
-	       status = status | unlink_completely(buf);
+	       retval = unlink_completely(buf);
+	       if (retval) {
+		    status = retval;
+		    error(filename);
+	       }
 	  }
 	  closedir(dirp);
-	  status = status | rmdir(filename);
-	  return(status);
-     }
-     else
-	  return(unlink(filename) == -1);
-}
 
+	  if (status)
+	       return status;
+
+	  retval = rmdir(filename);
+	  if (retval) {
+	       set_error(errno);
+	       error(filename);
+	       return errno;
+	  }
+     }
+     else {
+	  retval = unlink(filename);
+	  if (retval) {
+	       set_error(errno);
+	       error(filename);
+	       return error_code;
+	  }
+	  else
+	       return 0;
+     }
+}
