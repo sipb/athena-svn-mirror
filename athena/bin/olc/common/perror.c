@@ -9,15 +9,27 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.3 1991-04-08 20:58:18 lwvanels Exp $
+ *	$Id: perror.c,v 1.4 1991-09-10 11:03:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
+
+
+#ifndef lint
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.4 1991-09-10 11:03:23 lwvanels Exp $";
+#endif
+#endif
+
+#include <mit-copyright.h>
+#if defined(__STDC__) && !defined(ibm032)
+#include <stdlib.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/uio.h>
 #include <sys/time.h>           /* System time definitions. */
-#ifdef _AUX_SOURCE
+#if defined(_AUX_SOURCE) || defined(_ALL_SOURCE)
 #include <time.h>
 #endif
 
