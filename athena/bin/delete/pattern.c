@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.12 1989-11-06 19:53:24 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.13 1989-11-22 21:27:27 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -32,7 +32,7 @@
 #include "errors.h"
 #include "stack.h"
 
-extern char *malloc(), *realloc();
+extern char *realloc();
 extern int errno;
 extern char *whoami;
 
@@ -86,10 +86,10 @@ char *str;
 	  error("realloc");
 	  return error_code;
      }
-     ary[num] = malloc((unsigned) (strlen(str) + 1));
+     ary[num] = Malloc((unsigned) (strlen(str) + 1));
      if (! ary[num]) {
 	  set_error(errno);
-	  error("malloc");
+	  error("Malloc");
 	  return error_code;
      }
      (void) strcpy(ary[num], str);
@@ -159,7 +159,7 @@ char *str;
  *   value is 0; else the return value represents the error code of
  *   the error which occurred.  No matter how many file names are
  *   returned, the memory location addressed in *found is a valid
- *   pointer according to malloc() and can be released using free()
+ *   pointer according to Malloc() and can be released using free()
  *   safely.  However, if an error value is returned, the caller
  *   should not attempt to use the values stored in *num_found or
  *   *found.
@@ -204,13 +204,15 @@ int options;
      }
 
      if (options & RECURS) {
+	  return_files = (char **) Malloc(0);
+	  if (! return_files) {
+	       set_error(errno);
+	       error("Malloc");
+	       return error_code;
+	  }
+	  num_return_files = 0;
+
 	  for (i = 0; i < num_matched_files; i++) {
-	       return_files = (char **) malloc(0);
-	       if (! return_files) {
-		    set_error(errno);
-		    error("malloc");
-		    return error_code;
-	       }
 
 	       retval = do_recurs(matched_files[i], &num_recurs_files,
 				  &recurs_files, options);
@@ -219,13 +221,15 @@ int options;
 		    return retval;
 	       }
 
-	       retval = add_arrays(&return_files, &num_return_files,
-				   &recurs_files, &num_recurs_files);
-	       if (retval) {
-		    error("add_arrays");
-		    return retval;
+	       if (num_recurs_files) {
+		    retval = add_arrays(&return_files, &num_return_files,
+					&recurs_files, &num_recurs_files);
+		    if (retval) {
+			 error("add_arrays");
+			 return retval;
+		    }
 	       }
-	  
+	       
 	       if (is_deleted(matched_files[i])) {
 		    if (options & FIND_DELETED) {
 			 retval = add_str(&return_files, num_return_files,
@@ -309,7 +313,7 @@ int options;
  *   there are no errors, the return value is 0; else the return value
  *   represents the error code of the error which occurred.  No matter
  *   how many file names are returned, the memory location addressed
- *   in *found is a valid pointer according to malloc() and can be
+ *   in *found is a valid pointer according to Malloc() and can be
  *   released using free() safely.  However, if an error value is
  *   returned, the caller should not attempt to use the values stored
  *   in *num_found or *found.
@@ -389,7 +393,12 @@ Boolean match_undeleted, match_deleted;
      else 
 	  *base = '\0';
 
-     *found = (char **) malloc(0);
+     *found = (char **) Malloc(0);
+     if (! *found) {
+	  set_error(errno);
+	  error("Malloc");
+	  return error_code;
+     }
      *num_found = 0;
      
      dirp = opendir(base);
@@ -623,7 +632,12 @@ int options;
 
      /* start: */
      
-     *found = (char **) malloc(0);
+     *found = (char **) Malloc(0);
+     if (! *found) {
+	  set_error(errno);
+	  error("Malloc");
+	  return error_code;
+     }
      *num_found = 0;
      strcpy(base, name);
      
