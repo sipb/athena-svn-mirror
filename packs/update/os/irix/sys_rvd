@@ -1,15 +1,16 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.2 1999-01-04 23:00:43 rbasch Exp $
+## $Id: sys_rvd,v 1.3 1999-02-26 21:00:16 rbasch Exp $
 ##
 ##	MIT Project Athena
 ##
 	/core::::
 	/etc:::
 		aliases
+		compiler.defaults
 		ftpusers
-		inetd.conf
 		group
+		inetd.conf
 		named.conf
 		ntp.conf
 		passwd
@@ -18,10 +19,10 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		services
 		shadow
 		shadow.fallback
+		shells
 		srvtab
 		sshd_config
 		syslog.conf
-		shells
 		:
 	/etc/athena:::
 		athinfo.access
@@ -31,14 +32,18 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		newsyslog.conf
 		rc.conf
 		version
+		-> shutdown_notify
 		-> zephyr.desc
 		-> zephyr.vars
-		-> shutdown_notify
 		:
 	/usr:::
-		-> athena
 		-> afsws
+		-> athena
 		:
 	/var:::
 		spool
 		:
+	/var/sysgen:::
+		boot
+		:
+	/var/sysgen/boot/afs.a::::
