@@ -1,7 +1,7 @@
 /* 
- * $Id: Imakefile,v 1.8 1991-08-16 16:03:54 lwvanels Exp $
+ * $Id: Imakefile,v 1.9 1994-03-29 12:28:07 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/Imakefile,v $
- * $Author: lwvanels $
+ * $Author: miki $
  */
 
 AnsiCC()
@@ -13,8 +13,11 @@ LIBS = -lhesiod -lkrb -ldes -lPW -lc
 OBJS= from.o popmail.o emul_re.o
 SRCS= from.c popmail.c emul_re.c
 #else
-LIBS = -lhesiod -lkrb -ldes
-
+#ifdef SOLARIS
+LIBS = -lhesiod -lkrb -ldes -ladm -lmail
+#else
+LIBS = -lhesiod -lkrb -ldes 
+#endif
 OBJS=	from.o popmail.o
 SRCS=	from.c popmail.c
 #endif
