@@ -5,13 +5,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: raeburn $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.31 1991-03-21 11:44:06 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.32 1993-09-24 16:21:25 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZLocations_c[] =
@@ -70,7 +70,7 @@ Z_SendLocation(class, opcode, auth, format)
     struct hostent *hent;
     short wg_port = ZGetWGPort();
 
-    (void) bzero((char *)&notice, sizeof(notice));
+    (void) _BZERO((char *)&notice, sizeof(notice));
     notice.z_kind = ACKED;
     notice.z_port = (u_short) ((wg_port == -1) ? 0 : wg_port);
     notice.z_class = class;
@@ -103,7 +103,7 @@ Z_SendLocation(class, opcode, auth, format)
 #endif /* X11 */
 		    ttyp = ttyname(0);
 		    if (ttyp) {
-			bptr[2] = rindex(ttyp, '/');
+			bptr[2] = strrchr(ttyp, '/');
 			if (bptr[2])
 			    bptr[2]++;
 			else
