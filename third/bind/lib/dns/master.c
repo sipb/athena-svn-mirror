@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: master.c,v 1.1.1.2 2002-02-03 04:25:00 ghudson Exp $ */
+/* $Id: master.c,v 1.1.1.3 2002-06-07 05:28:53 ghudson Exp $ */
 
 #include <config.h>
 
@@ -370,7 +370,7 @@ loadctx_destroy(dns_loadctx_t *lctx) {
 		incctx_destroy(lctx->mctx, lctx->inc);
 
 	if (lctx->lex != NULL) {
-		isc_lex_close(lctx->lex);
+		/* isc_lex_destroy() will close all open streams */
 		isc_lex_destroy(&lctx->lex);
 	}
 	if (lctx->task != NULL)
@@ -1110,10 +1110,11 @@ load(dns_loadctx_t *lctx) {
 					  ictx->origin, ISC_FALSE, NULL);
 			if (MANYERRS(lctx, result)) {
 				SETRESULT(lctx, result);
+				LOGITFILE(result, include_file);
 				read_till_eol = ISC_TRUE;
 				continue;
 			} else if (result != ISC_R_SUCCESS)
-				goto insist_and_cleanup;
+				goto log_and_cleanup;
 
 			/*
 			 * Finish $ORIGIN / $INCLUDE processing if required.

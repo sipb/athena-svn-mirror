@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2001  Internet Software Consortium.
+ * Copyright (C) 1997-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: mem.c,v 1.1.1.2 2002-02-03 04:25:49 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.3 2002-06-07 05:29:03 ghudson Exp $ */
 
 #include <config.h>
 
@@ -664,6 +664,8 @@ mem_putstats(isc_mem_t *ctx, void *ptr, size_t size) {
 static void *
 default_memalloc(void *arg, size_t size) {
 	UNUSED(arg);
+	if (size == 0)
+		size = 1;
 	return (malloc(size));
 }
 
@@ -1557,7 +1559,11 @@ isc__mempool_put(isc_mempool_t *mpctx, void *mem FLARG) {
 	INSIST(mpctx->allocated > 0);
 	mpctx->allocated--;
 
+#if ISC_MEM_TRACKLINES
+	LOCK(&mctx->lock);
 	DELETE_TRACE(mctx, mem, mpctx->size, file, line);
+	UNLOCK(&mctx->lock);
+#endif /* ISC_MEM_TRACKLINES */
 
 	/*
 	 * If our free list is full, return this to the mctx directly.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: zone.c,v 1.1.1.2 2002-02-03 04:25:19 ghudson Exp $ */
+/* $Id: zone.c,v 1.1.1.3 2002-06-07 05:29:24 ghudson Exp $ */
 
 #include <config.h>
 
@@ -1713,8 +1713,7 @@ dns_zone_setalsonotify(dns_zone_t *zone, isc_sockaddr_t *notify,
 	isc_sockaddr_t *new;
 
 	REQUIRE(DNS_ZONE_VALID(zone));
-	REQUIRE((notify == NULL && count == 0) ||
-		(notify != NULL && count != 0));
+	REQUIRE(count == 0 || notify != NULL);
 
 	LOCK_ZONE(zone);
 	if (zone->notify != NULL) {
@@ -1723,19 +1722,16 @@ dns_zone_setalsonotify(dns_zone_t *zone, isc_sockaddr_t *notify,
 		zone->notify = NULL;
 		zone->notifycnt = 0;
 	}
-	if (notify == NULL)
-		goto unlock;
-
-	new = isc_mem_get(zone->mctx, count * sizeof *new);
-	if (new == NULL) {
-		UNLOCK_ZONE(zone);
-		return (ISC_R_NOMEMORY);
+	if (count != 0) {
+		new = isc_mem_get(zone->mctx, count * sizeof *new);
+		if (new == NULL) {
+			UNLOCK_ZONE(zone);
+			return (ISC_R_NOMEMORY);
+		}
+		memcpy(new, notify, count * sizeof *new);
+		zone->notify = new;
+		zone->notifycnt = count;
 	}
-	memcpy(new, notify, count * sizeof *new);
-	zone->notify = new;
-	zone->notifycnt = count;
-
- unlock:
 	UNLOCK_ZONE(zone);
 	return (ISC_R_SUCCESS);
 }
@@ -4567,7 +4563,9 @@ notify_done(isc_task_t *task, isc_event_t *event) {
 		notify->flags |= DNS_NOTIFY_NOSOA;
 		notify->attempt++;
 		dns_request_destroy(&notify->request);
-		notify_send_queue(notify);
+		result = notify_send_queue(notify);
+		if (result != ISC_R_SUCCESS)
+			notify_destroy(notify, ISC_FALSE);
 	} else {
 		if (result == ISC_R_TIMEDOUT)
 			notify_log(notify->zone, ISC_LOG_DEBUG(1),

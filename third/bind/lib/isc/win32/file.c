@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001  Internet Software Consortium.
+ * Copyright (C) 2000-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: file.c,v 1.1.1.2 2002-02-03 04:26:03 ghudson Exp $ */
+/* $Id: file.c,v 1.1.1.3 2002-06-07 05:29:16 ghudson Exp $ */
 
 #include <config.h>
 
@@ -302,6 +302,8 @@ isc_file_renameunique(const char *file, char *templet) {
 	fd = mkstemp(templet);
 	if (fd == -1)
 		result = isc__errno2result(errno);
+	else
+		close(fd);
 
 	if (result == ISC_R_SUCCESS) {
 		res = isc_file_safemovefile(file, templet);
@@ -310,8 +312,6 @@ isc_file_renameunique(const char *file, char *templet) {
 			(void)unlink(templet);
 		}
 	}
-	if (fd != -1)
-		close(fd);
 	return (result);
 }
 

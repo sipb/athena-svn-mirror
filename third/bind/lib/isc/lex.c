@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1998-2001  Internet Software Consortium.
+ * Copyright (C) 1998-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lex.c,v 1.1.1.2 2002-02-03 04:25:46 ghudson Exp $ */
+/* $Id: lex.c,v 1.1.1.3 2002-06-07 05:29:13 ghudson Exp $ */
 
 #include <config.h>
 
@@ -392,8 +392,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 	    source->at_eof)
 	{
 		if ((options & ISC_LEXOPT_DNSMULTILINE) != 0 &&
-		    lex->paren_count != 0)
+		    lex->paren_count != 0) {
+			lex->paren_count = 0;
 			return (ISC_R_UNBALANCED);
+		}
 		if ((options & ISC_LEXOPT_EOF) != 0) {
 			tokenp->type = isc_tokentype_eof;
 			return (ISC_R_SUCCESS);
@@ -504,6 +506,7 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 				lex->last_was_eol = ISC_FALSE;
 				if ((options & ISC_LEXOPT_DNSMULTILINE) != 0 &&
 				    lex->paren_count != 0) {
+					lex->paren_count = 0;
 					result = ISC_R_UNBALANCED;
 					goto done;
 				}
@@ -809,6 +812,8 @@ isc_lex_getmastertoken(isc_lex_t *lex, isc_token_t *token,
 		if (token->type == isc_tokentype_eol ||
 		    token->type == isc_tokentype_eof)
 			return (ISC_R_UNEXPECTEDEND);
+		if (expect == isc_tokentype_number)
+			return (ISC_R_BADNUMBER);
 		return (ISC_R_UNEXPECTEDTOKEN);
 	}
 	return (ISC_R_SUCCESS);

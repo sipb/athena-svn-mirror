@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: client.c,v 1.1.1.2 2002-02-03 04:22:40 ghudson Exp $ */
+/* $Id: client.c,v 1.1.1.3 2002-06-07 05:29:30 ghudson Exp $ */
 
 #include <config.h>
 
@@ -1014,7 +1014,7 @@ client_addopt(ns_client_t *client) {
 	/*
 	 * Set EXTENDED-RCODE, VERSION, and Z to 0.
 	 */
-	rdatalist->ttl = 0;
+	rdatalist->ttl = (client->extflags & DNS_MESSAGEEXTFLAG_REPLYPRESERVE);
 
 	/*
 	 * No ENDS options in the default case.
@@ -1727,6 +1727,8 @@ client_newconn(isc_task_t *task, isc_event_t *event) {
 			ns_client_log(client, DNS_LOGCATEGORY_SECURITY,
 				      NS_LOGMODULE_CLIENT, ISC_LOG_DEBUG(10),
 				      "blackholed connection attempt");
+			client->newstate = NS_CLIENTSTATE_READY;
+			(void)exit_check(client);
 			goto freeevent;
 		}
 

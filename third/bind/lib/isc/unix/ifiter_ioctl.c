@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ifiter_ioctl.c,v 1.1.1.2 2002-02-03 04:25:57 ghudson Exp $ */
+/* $Id: ifiter_ioctl.c,v 1.1.1.3 2002-06-07 05:24:53 ghudson Exp $ */
 
 /*
  * Obtain the list of network interfaces using the SIOCGLIFCONF ioctl.
@@ -235,6 +235,21 @@ internal_current(isc_interfaceiter_t *iter) {
 
 	get_addr(family, &iter->current.address,
 		 (struct sockaddr *)&lifreq.lifr_addr);
+
+	/*
+	 * If the interface does not have a address ignore it.
+	 */
+	switch (family) {
+	case AF_INET:
+		if (iter->current.address.type.in.s_addr == htonl(INADDR_ANY))
+			return (ISC_R_IGNORE);
+		break;
+	case AF_INET6:
+		if (memcmp(&iter->current.address.type.in6, &in6addr_any,
+			   sizeof(in6addr_any)) == 0)
+			return (ISC_R_IGNORE);
+		break;
+	}
 
 	/*
 	 * Get interface flags.
