@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.21 1997-04-01 00:53:58 ghudson Exp $
+# $Id: cshrc,v 1.22 1997-07-04 00:53:32 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -56,6 +56,7 @@ if (! $?ENV_SET) then
 	endif
 
 	setenv LD_LIBRARY_PATH /usr/openwin/lib
+	setenv OPENWINHOME /usr/openwin
 
 	# Reset the "home" and HOME variables to correspond to the
 	# actual location of the user's home directory.  This will
