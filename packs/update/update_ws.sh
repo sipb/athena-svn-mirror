@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.22 1997-04-30 04:42:30 ghudson Exp $
+# $Id: update_ws.sh,v 1.23 1997-04-30 09:00:08 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -190,6 +190,17 @@ if [ "$AUTO" = true ]; then
 		exit 0
 	fi
 fi
+
+# On SGIs, check if there are 20MB of disk space left, since we don't keep
+# our own partition around.
+case "$HOSTTYPE" in
+sgi)
+	if [ "`df -k / | awk '/root/ { print $5; }'`" -lt 20480 ]; then
+		echo "Root partition low on space (less than 20MB); not"
+		echo "performing update."
+		exit 1
+	fi
+esac
 
 # If this is a private workstations, make sure we can recreate the mkserv
 # state of the machine after the update.
