@@ -1,0 +1,57 @@
+debug		off
+bin		/usr/athena/bin
+etc		/usr/athena/etc
+mandir		/usr/athena/man
+mail		/usr/spool/mail
+mailgroup       system
+manuals		standard
+chown		chown
+editor		emacs
+remove		rm -f
+mts		sendmail
+bboards		off
+mf		off
+pop		on
+popdir		/usr/athena/etc
+bboards		off
+cc		/usr/gcc/bin/gcc -traditional
+ln		ln -s
+options		ATHENA
+options		ATZ
+options		BERK
+options		BIND
+options		DPOP
+options		DUMB
+options		FCNTL
+options		FOLDPROT='"0700"'
+options		HESIOD
+options		KPOP
+options		MHE
+options		MHRC
+options		MIME
+options		MSGPROT='"0600"'
+options		OVERHEAD
+options		RENAME
+options		RPOP
+options		RPATHS
+options		SBACKUP='"\\043"'
+options		SHADOW
+options		SOCKETS
+options		SYS5
+options		SYS5DIR
+options		SVR4
+options		TERMINFO
+options		UCI
+options		UNISTD
+options		VSPRINTF
+options		WAITINT
+options		WHATNOW
+curses		-lcurses
+oldload		none
+ranlib		off
+sharedlib	off
+ccoptions	-O -I/usr/athena/include
+ldoptions	-L/usr/athena/lib
+sprintf		int
+signal		void
+ldoptlibs	-lsocket -lresolv -lnsl -lc -lbsd -lelf -ldl
