@@ -1,4 +1,4 @@
-# $Id: packages,v 1.107 2000-04-14 20:51:29 ghudson Exp $
+# $Id: packages,v 1.108 2000-05-18 15:59:11 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -122,6 +122,8 @@ third/afsbin			package afs
 third/bash
 third/bind
 third/emacs			requires hesiod,krb5
+third/glib
+third/gtk			requires glib
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
 third/ispell			except linux
