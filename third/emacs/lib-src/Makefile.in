@@ -121,7 +121,7 @@ SOURCES = COPYING ChangeLog Makefile.in README emacs.csh \
 # HESIOD		Support Hesiod lookups of user mailboxes.
 # MAILHOST		A string, the host name of the default POP
 #			mail host for the site.
-MOVE_FLAGS=
+MOVE_FLAGS=-I/usr/athena/include
 
 # Additional libraries for movemail:
 # For KERBEROS
@@ -129,7 +129,7 @@ MOVE_FLAGS=
 # For KERBEROS + KRB5
 # MOVE_LIBS= -lkrb5 -lcrypto -lisode -lcom_err
 # Add "-lhesiod" if HESIOD is defined.
-MOVE_LIBS=
+MOVE_LIBS=-L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err
 
 # ========================== start of cpp stuff =======================
 /* From here on, comments must be done in C syntax.  */
@@ -223,50 +223,48 @@ blessmail:
 maybe-blessmail: BLESSMAIL
 #ifdef MOVEMAIL_NEEDS_BLESSING
 /* Don't charge ahead and do it!  Let the installer decide.
-	  ./blessmail ${archlibdir}/movemail  */
+	  ./blessmail ${DESTDIR}${archlibdir}/movemail  */
 	@if [ `wc -l <blessmail` != 2 ] ; then \
 	  dir=`sed -n -e 's/echo mail directory = \(.*\)/\1/p' blessmail`; \
 	  echo Assuming $$dir is really the mail spool directory, you should; \
-	  echo run  lib-src/blessmail ${archlibdir}/movemail; \
+	  echo run  lib-src/blessmail ${DESTDIR}${archlibdir}/movemail; \
 	  echo as root, to give  movemail  appropriate permissions.; \
 	  echo Do that after running  make install.; \
 	fi
 #endif
 
-/* Install the internal utilities.  Until they are installed, we can
-   just run them directly from lib-src.  */
-${archlibdir}: all
+install:
 	@echo
 	@echo "Installing utilities run internally by Emacs."
-	$(top_srcdir)/mkinstalldirs ${archlibdir}
-	if [ `(cd ${archlibdir} && /bin/pwd)` != `/bin/pwd` ]; then \
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${archlibdir}
+	if [ `(cd ${DESTDIR}${archlibdir} && /bin/pwd)` != `/bin/pwd` ]; then \
 	  for file in ${UTILITIES}; do \
-	    $(INSTALL_PROGRAM) $$file ${archlibdir}/$$file ; \
+	    $(INSTALL_PROGRAM) $$file ${DESTDIR}${archlibdir}/$$file ; \
 	  done ; \
         fi
-        if [ `(cd ${archlibdir} && /bin/pwd)` \
+        if [ `(cd ${DESTDIR}${archlibdir} && /bin/pwd)` \
              != `(cd ${srcdir} && /bin/pwd)` ]; then \
 	  for file in ${SCRIPTS}; do \
-	    $(INSTALL_PROGRAM) ${srcdir}/$$file ${archlibdir}/$$file; \
+	    $(INSTALL_PROGRAM) ${srcdir}/$$file \
+		${DESTDIR}${archlibdir}/$$file; \
 	  done ; \
 	fi
-
-install: ${archlibdir}
 	@echo
 	@echo "Installing utilities for users to run."
 	for file in ${INSTALLABLES} ; do \
-	  $(INSTALL_PROGRAM) $${file} ${bindir}/$${file} ; \
+	  $(INSTALL_PROGRAM) $${file} ${DESTDIR}${bindir}/$${file} ; \
 	  chmod a+rx ${bindir}/$${file}; \
 	done
 	for file in ${INSTALLABLE_SCRIPTS} ; do \
-	  $(INSTALL_PROGRAM) ${srcdir}/$${file} ${bindir}/$${file} ; \
+	  $(INSTALL_PROGRAM) ${srcdir}/$${file} \
+		${DESTDIR}${bindir}/$${file} ; \
 	  chmod a+rx ${bindir}/$${file}; \
 	done
 
 uninstall:
-	(cd ${bindir}; \
+	(cd ${DESTDIR}${bindir}; \
 	 rm -f ${INSTALLABLES} ${INSTALLABLE_SCRIPTS})
-	(cd ${archlibdir}; \
+	(cd ${DESTDIR}${archlibdir}; \
 	 rm -f ${UTILITIES} ${INSTALLABLES} ${SCRIPTS} ${INSTALLABLE_SCRIPTS})
 
 mostlyclean:
