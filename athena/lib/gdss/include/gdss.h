@@ -2,6 +2,9 @@
  * Include file for GDSS The Generic Digital Signature Service.
  *
  */
+#ifdef SOLARIS
+#include <strings.h>
+#endif
 
 /* Structures Needed */
 
