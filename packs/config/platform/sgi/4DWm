@@ -49,7 +49,7 @@
 	*iconDecoration:		label image
 	*iconImageMaximum:		85x67
 	*iconPlacement: 		left top tight
-	*iconPlacementMargin:       	10
+	*iconPlacementMargin:       	33
 	*keyBindings:			4DwmKeyBindings
 	*keyboardFocusPolicy:		pointer
 	*limitResize:			true
@@ -276,4 +276,13 @@
 	*intl._SGI_MMX_mwm_nogood_cmap:	Couldn't get a matching colormap
 	*intl._SGI_MMX_mwm_nogood_dble:	Couldn't get a matching drawable
 	*intl._SGI_MMX_mwm_visual5:	Setting visual resources to default values.
+
+/* Athena additions (aside from icon margin change) */
+
+	*Console.clientDecoration:	resizeh
+	*Console.clientFunctions:	-close
+	*XLogout.clientDecoration:	border
+	*XLogout.clientFunctions:	-close
+	*Zwgc.clientDecoration:		none
+
 /* End of app-defaults file */
