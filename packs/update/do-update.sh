@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.18 1997-05-13 20:01:15 ghudson Exp $
+# $Id: do-update.sh,v 1.19 1997-05-24 21:32:42 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -125,10 +125,6 @@ if [ -s "$CONFCHG" ]; then
 	done
 fi
 
-echo "Backing up $CONFDIR/rc.conf to $CONFDIR/rc.conf.old."
-rm -f "$CONFDIR/rc.conf.old"
-cp -p "$CONFDIR/rc.conf" "$CONFDIR/rc.conf.old"
-
 if [ "$PUBLIC" = true ]; then
 	# Just substitute who we are into the current rc.conf from the srvd.
 	echo "Updating $CONFDIR/rc.conf from /srvd$CONFDIR/rc.conf"
@@ -148,6 +144,10 @@ else
 		fi
 	done
 	if [ -n "$vars" ]; then
+		echo "Backing up $CONFDIR/rc.conf to $CONFDIR/rc.conf.orig"
+		rm -f "$CONFDIR/rc.conf.orig"
+		cp -p "$CONFDIR/rc.conf" "$CONFDIR/rc.conf.orig"
+
 		echo "The following variables are being added to /etc/rc.conf:"
 		echo "	$vars"
 		for i in $vars; do
