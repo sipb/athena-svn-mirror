@@ -25,6 +25,10 @@
 ; Athena likes different X paste behavior
 (setq mouse-yank-at-point t)
 
+; Cosmetic change, preferred by most users as far as we know.  (And
+; consistent with gnome-terminal, xterm, etc.)
+(blink-cursor-mode 0)
+
 ; Get info from the gnu locker as well as the normal places.
 (setq Info-default-directory-list
       (append '("/afs/athena.mit.edu/project/gnu/info")
