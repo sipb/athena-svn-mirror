@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx.h,v 2.107 1996/04/24 17:02:34 zumach Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx.h,v 2.118 1996/06/26 17:47:38 zumach Exp $ */
 
 /*
 ****************************************************************************
@@ -21,9 +21,22 @@
 ****************************************************************************
 */
 
+#ifdef KDUMP_RX_LOCK
+/* kdump for SGI needs MP and SP versions of rx_serverQueueEntry,
+ * rx_peer, rx_connection and rx_call structs. rx.h gets included a
+ * second time to pick up mp_ versions of those structs. Currently
+ * the affected struct's have #ifdef's in them for the second pass.
+ * This should change once we start using only ANSI compilers.
+ * Actually, kdump does not use rx_serverQueueEntry, but I'm including
+ * it for completeness.
+ */
+#undef _RX_
+#endif
+
 #ifndef	_RX_
 #define _RX_
 
+#ifndef KDUMP_RX_LOCK
 /* Substitute VOID (char) for void, because some compilers are confused by void
  * in some situations */
 #define	VOID	char
@@ -164,7 +177,8 @@ extern int rx_nPackets;
 #define cpspace(call) \
   ((call)->currentPacket->wirevec[(call)->curvec].iov_len - (call)->curpos)
 #define cppos(call) \
-  ((call)->currentPacket->wirevec[(call)->curvec].iov_base + (call)->curpos)
+  ((char*)((call)->currentPacket->wirevec[(call)->curvec].iov_base) + \
+   (call)->curpos)
 
 #define	rx_Read(call, buf, nbytes)   rx_ReadProc(call, buf, nbytes)
 #define	rx_Write(call, buf, nbytes) rx_WriteProc(call, buf, nbytes)
@@ -180,7 +194,8 @@ extern int rx_nPackets;
    (((call)->nFree > (nbytes)) && (cpspace(call) > (nbytes)) ?    \
          bcopy((buf), cppos(call), (nbytes)),			\
          (call)->nFree -= (nbytes),				\
-         (call)->currentPacket->wirevec[(call)->curvec].iov_base += (nbytes), \
+         (char*)((call)->currentPacket->wirevec[(call)->curvec].iov_base) +=\
+	 (nbytes), \
          (call)->curpos += (nbytes), \
          (nbytes)			\
      : rx_WriteProc((call), (buf), (nbytes)))
@@ -194,7 +209,8 @@ extern int rx_nPackets;
    (((call)->nLeft > (nbytes)) && (cpspace(call) > (nbytes)) ?             \
         bcopy(cppos(call), (buf),  (nbytes)),	   \
         (call)->nLeft -= (nbytes),				           \
-        (call)->currentPacket->wirevec[(call)->curvec].iov_base += (nbytes), \
+        (char*)((call)->currentPacket->wirevec[(call)->curvec].iov_base) +=\
+	(nbytes), \
         (call)->curpos += (nbytes), \
         (nbytes)			\
    : rx_ReadProc((call), (buf), (nbytes)))
@@ -306,30 +322,47 @@ struct rx_service {
     u_short idleDeadTime;		    /* Time a server will wait for I/O to start up again */
 };
 
+#endif /* KDUMP_RX_LOCK */
+
 /* A server puts itself on an idle queue for a service using an
  * instance of the following structure.  When a call arrives, the call
  * structure pointer is placed in "newcall", the routine to execute to
  * service the request is placed in executeRequestProc, and the
  * process is woken up.  The queue entry's address is used for the
  * sleep/wakeup. */
+#ifdef KDUMP_RX_LOCK
+struct rx_serverQueueEntry_rx_lock {
+#else
 struct rx_serverQueueEntry {
+#endif
     struct rx_queue queueItemHeader;
+#ifdef KDUMP_RX_LOCK
+    struct rx_call_rx_lock *newcall;
+#else
     struct rx_call *newcall;
+#endif
 #ifdef	RX_ENABLE_LOCKS
     kmutex_t lock;
     kcondvar_t cv;
 #endif
 };
 
+#ifndef KDUMP_RX_LOCK
 /* Bottom n-bits of the Call Identifier give the call number */
 #define	RX_MAXCALLS 4	/* Power of 2; max async calls per connection */
 #define	RX_CIDSHIFT 2	/* Log2(RX_MAXCALLS) */
 #define	RX_CHANNELMASK (RX_MAXCALLS-1)
 #define	RX_CIDMASK  (~RX_CHANNELMASK)
+#endif /* !KDUMP_RX_LOCK */
 
 /* A peer refers to a peer process, specified by a (host,port) pair.  There may be more than one peer on a given host. */
+#ifdef KDUMP_RX_LOCK
+struct rx_peer_rx_lock {
+    struct rx_peer_rx_lock *next; /* Next in hash conflict or free list */
+#else
 struct rx_peer {
     struct rx_peer *next;	    /* Next in hash conflict or free list */
+#endif
 #ifdef RX_ENABLE_LOCKS
     kmutex_t peer_lock;		    /* Lock peer */
 #endif /* RX_ENABLE_LOCKS */
@@ -370,9 +403,15 @@ struct rx_peer {
 
 /* A connection is an authenticated communication path, allowing 
    limited multiple asynchronous conversations. */
+#ifdef KDUMP_RX_LOCK
+struct rx_connection_rx_lock {
+    struct rx_connection_rx_lock *next;	/*  on hash chain _or_ free list */
+    struct rx_peer_rx_lock *peer;
+#else
 struct rx_connection {
     struct rx_connection *next;	    /*  on hash chain _or_ free list */
     struct rx_peer *peer;
+#endif
 #ifdef	RX_ENABLE_LOCKS
     kmutex_t conn_call_lock;	/* locks conn_call_cv */
     kcondvar_t conn_call_cv;
@@ -382,7 +421,11 @@ struct rx_connection {
     u_int32 cid;	    /* Connection id (call channel is bottom bits) */
     int32 error;	    /* If this connection is in error, this is it */
     VOID *rock;			    /* User definable */
+#ifdef KDUMP_RX_LOCK
+    struct rx_call_rx_lock *call[RX_MAXCALLS];
+#else
     struct rx_call *call[RX_MAXCALLS];
+#endif
     u_int32 callNumber[RX_MAXCALLS]; /* Current call numbers */
     u_int32 serial;		    /* Next outgoing packet serial number */
     u_int32 lastSerial;	    /* # of last packet received, for computing skew */
@@ -411,6 +454,7 @@ struct rx_connection {
     u_char ackRate;                 /* how many packets between ack requests */
 };
 
+#ifndef KDUMP_RX_LOCK
 /* Flag bits for connection structure */
 #define	RX_CONN_MAKECALL_WAITING    1	/* rx_MakeCall is waiting for a channel */
 #define	RX_CONN_DESTROY_ME	    2	/* Destroy *client* connection after last call */
@@ -421,9 +465,14 @@ struct rx_connection {
 /* Type of connection, client or server */
 #define	RX_CLIENT_CONNECTION	0
 #define	RX_SERVER_CONNECTION	1
+#endif /* !KDUMP_RX_LOCK */
 
 /* Call structure:  only instantiated for active calls and dallying server calls.  The permanent call state (i.e. the call number as well as state shared with other calls associated with this connection) is maintained in the connection structure. */
+#ifdef KDUMP_RX_LOCK
+struct rx_call_rx_lock {
+#else
 struct rx_call {
+#endif
     struct rx_queue queue_item_header; /* Call can be on various queues (one-at-a-time) */
     struct rx_queue tq;		    /* Transmit packet queue */
     struct rx_queue rq;		    /* Receive packet queue */
@@ -434,7 +483,11 @@ struct rx_call {
     kcondvar_t cv_twind;
     kcondvar_t cv_rq;
 #endif
+#ifdef KDUMP_RX_LOCK
+    struct rx_connection_rx_lock *conn; /* Parent connection for call */
+#else
     struct rx_connection *conn;	    /* Parent connection for this call */
+#endif
     u_int32 *callNumber;	    /* Pointer to call number field within connection */
     u_short nLeft;		    /* Number of bytes left in first receive queue packet */
     u_short flags;		    /* Some random flags */
@@ -489,6 +542,7 @@ struct rx_call {
 #endif  /* RX_REFCOUNT_CHECK */
 };
 
+#ifndef KDUMP_RX_LOCK
 /* Major call states */
 #define	RX_STATE_NOTINIT  0    /* Call structure has never been initialized */
 #define	RX_STATE_PRECALL  1    /* Server-only:  call is not in progress, but packets have arrived */
@@ -739,3 +793,5 @@ struct rx_debugConn {
 #define	RX_OTHER_IN	1	/* packets avail in in queue */
 #define	RX_OTHER_OUT	2	/* packets avail in out queue */
 #endif /* _RX_	 End of rx.h */
+
+#endif /* !KDUMP_RX_LOCK */

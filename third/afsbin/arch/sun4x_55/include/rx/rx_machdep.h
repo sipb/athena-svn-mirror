@@ -1,7 +1,7 @@
 #ifndef _RX_MACHDEP_
 #define _RX_MACHDEP_
 
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_machdep.h,v 1.51 1996/04/17 17:28:00 cdc Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_machdep.h,v 1.61 1996/08/02 18:21:05 thakur Exp $ */
 /*
 ****************************************************************************
 *        Copyright IBM Corporation 1988, 1989 - All Rights Reserved        *
@@ -79,6 +79,45 @@ typedef simple_lock_data kmutex_t;
 typedef int kcondvar_t;
 #define	osi_rxWakeup(cv)	e_wakeup(cv)
 #endif
+
+#if	defined(AFS_OSF30_ENV) && defined(KERNEL)
+
+#include <kern/lock.h>
+#include <kern/sched_prim.h>
+#include <sys/unix_defs.h>
+
+#define RX_ENABLE_LOCKS		1
+#define AFS_GLOBAL_RXLOCK_KERNEL
+
+/*
+ * Condition variables
+ *
+ * In Digital Unix (OSF/1), we use something akin to the ancient sleep/wakeup
+ * mechanism.  The condition variable itself plays no role; we just use its
+ * address as a convenient unique number.
+ */
+#define CV_INIT(cv,a,b,c)
+#define CV_WAIT(cv, lck)	assert_wait((vm_offset_t)(cv), 0);	\
+				usimple_unlock(lck);	\
+				thread_block();		\
+				usimple_lock(lck)
+
+#define CV_TIMEDWAIT(cv,lck,t)	assert_wait((vm_offset_t)(cv), 0);	\
+				thread_set_timeout(t);	\
+				usimple_unlock(lck);	\
+				thread_block();		\
+				usimple_lock(lck)
+
+#define CV_SIGNAL(cv)		thread_wakeup_one((vm_offset_t)(cv))
+#define CV_BROADCAST(cv)	thread_wakeup((vm_offset_t)(cv))
+
+typedef simple_lock_data_t kmutex_t;
+typedef int kcondvar_t;
+
+#define osi_rxWakeup(cv)	thread_wakeup((vm_offset_t)(cv))
+
+#endif	/* OSF30 && KERNEL */
+
 #if	defined(AFS_SUN5_ENV) && defined(KERNEL) 
 
 #if            defined(AFS_FINEGR_SUNLOCK)
@@ -248,7 +287,11 @@ extern void osirx_AssertMine(void *lockaddr, char *msg);
 
 #else	/* OSF30 */
 #if defined(AFS_SGI53_ENV) && defined(MP) && defined(KERNEL)
+#ifdef AFS_SGI62_ENV
+#define MUTEX_INIT(m, nm, type , a)  mutex_init(m, type, nm)
+#else
 #define MUTEX_INIT(a,b,c,d)  mutex_init(a,b,c,d)
+#endif
 #define MUTEX_DESTROY(a) mutex_destroy(a)
 #undef MUTEX_ISMINE
 #define MUTEX_ISMINE(a)	1

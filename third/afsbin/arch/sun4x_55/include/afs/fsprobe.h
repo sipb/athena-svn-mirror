@@ -74,7 +74,7 @@ struct ProbeViceStatistics {
     int32	  Spare6;
     int32	  Spare7;
     int32	  Spare8;
-    ViceDisk	  Disk[26];
+    ViceDisk	  Disk[VOLMAXPARTS];
 };
 
 

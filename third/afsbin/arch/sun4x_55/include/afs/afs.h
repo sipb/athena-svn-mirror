@@ -4,7 +4,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 /* Copyright (C) 1995 Transarc Corporation - All rights reserved. */
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/afs/RCS/afs.h,v 2.412 1996/06/13 19:10:38 adamson Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/afs/RCS/afs.h,v 2.431 1996/12/23 22:05:40 zumach Exp $ */
 
 /*
  * AFS system call opcodes
@@ -41,6 +41,7 @@
 #define AFSOP_NFSSTATICADDR	 32	/* to contents addr of nfs kernel addr */
 #define AFSOP_NFSSTATICADDRPTR	 33	/* pass address in as ptr - obs. */
 #define AFSOP_NFSSTATICADDR2	 34	/* pass address in as hyper. */
+#define AFSOP_SBLOCKSTATICADDR2  35	/* for sblock and sbunlock */
 #endif
 #define	AFSOP_GETMASK		 42	/* stand-in for SIOCGIFNETMASK */
 
@@ -67,6 +68,7 @@
 #define	AFSOP_STOP_RXCALLBACK	210	/* Stop CALLBACK process */
 #define	AFSOP_STOP_AFS		211	/* Stop AFS process */
 #define	AFSOP_STOP_BKG		212	/* Stop BKG process */
+#define	AFSOP_STOP_TRUNCDAEMON	213	/* Stop cache truncate daemon */
 
 /* Main afs syscall entry; this number may vary per system (i.e. defined in afs/param.h) */
 #ifndef	AFS_SYSCALL
@@ -159,6 +161,8 @@ struct afs_cacheParams {
 #define AFS_ASYNC 	0
 #define AFS_SYNC  	1
 #define AFS_DONTVMSYNC  2
+#define AFS_LASTSTORE   4
+
 
 /* background request structure */
 #define	BPARMS		4
@@ -218,6 +222,8 @@ struct SmallFid {
     int32 CellAndUnique;
     u_short Vnode;
 };
+/* The actual number of bytes in the SmallFid, not the sizeof struct. */
+#define SIZEOF_SMALLFID 10
 
 
 /*
@@ -496,7 +502,7 @@ struct chservinfo
 #define VMoreReps       32   /* This volume has more replicas than we are   */
                              /* keeping track of now -- check with VLDB     */
 
- enum repstate { not_busy, rd_busy, rdwr_busy, offline };
+ enum repstate { not_busy, end_not_busy = 6, rd_busy, rdwr_busy, offline };
 
 struct volume {
     /* One structure per volume, describing where the volume is located
@@ -677,8 +683,8 @@ struct vcache {
     sema_t rwlock;			/* vop_rwlock for afs */
     pgno_t mapcnt;			/* # of pages mapped */
     struct cred *cred;			/* last writer's cred */
-    int error;				/* errors from strategy */
 #endif
+    int32 vc_error;			/* stash write error for this vnode. */
     int xlatordv;			/* Used by nfs xlator */
     struct AFS_UCRED *uncred;
     int asynchrony;                     /* num kbytes to store behind */
@@ -693,7 +699,27 @@ struct vcache {
 #if defined(AFS_SGI_ENV)
 #define AVCRWLOCK(avc)		(valusema(&(avc)->rwlock) <= 0)
 
+/* Shouldn't we try this for all platforms and move it to osi.h? */
+#ifdef AFS_SGI62_ENV
+#define AFS_USER_CRED curprocp->p_cred
+#else
+#define AFS_USER_CRED u.u_cred
+#endif
+
+/* SGI vnode rwlock macros and flags. */
+#ifndef AFS_SGI62_ENV
+/* The following are defined here. SGI 6.2 declares them in vnode.h */
+#define VRWLOCK_READ		0
+#define VRWLOCK_WRITE		1
+#define VRWLOCK_WRITE_DIRECT	2
+#endif
+
 #ifdef AFS_SGI53_ENV
+#ifdef AFS_SGI62_ENV
+#define AFS_RWLOCK_T vrwlock_t
+#else 
+#define AFS_RWLOCK_T int
+#endif /* AFS_SGI62_ENV */
 #define AFS_RWLOCK(V,F) afs_rwlock((V), (F) )
 #define AFS_RWUNLOCK(V,F) afs_rwunlock((V), (F) )
 #else /* AFS_SGI53_ENV */
@@ -927,12 +953,25 @@ extern struct dcache	    *afs_GetDSlot();
 extern struct vcache	    *afs_GetVCache();
 extern struct brequest	    *afs_BQueue();
 
-#if defined(AFS_SGI_ENV)
-extern sema_t afs_sgibksync;
-extern sema_t afs_sgibkwait;
-extern lock_t afs_sgibklock;
-extern struct dcache *afs_sgibklist;
-#endif
+/* afs_cache.c */
+extern int afs_CacheInit();
+extern int32 afs_FlushVCBs();
+extern void afs_StoreWarn();
+extern void afs_AdjustSize();
+extern void afs_ComputeCacheParms();
+extern void afs_FlushDCache();
+extern void afs_FlushActiveVcaches();
+extern void afs_StuffVcache();
+extern void afs_PutVCache();
+extern void afs_TryToSmush();
+extern void afs_ProcessFS();
+extern void afs_WriteThroughDSlots();
+extern void afs_CheckVolSync();
+extern void shutdown_cache();
+/* afs_call.c */
+extern void afs_shutdown();
+/* afs_osifile.c */
+extern void shutdown_osifile();
 
 #ifdef	AFS_HPUX_ENV
 extern sema_t afs_global_sema;
@@ -971,11 +1010,24 @@ extern sema_t afs_global_sema;
 
 extern int32 afs_blocksUsed, afs_discardedChunks, freeDCCount;
 extern int32 afs_bulkStatsDone, afs_bulkStatsLost;
+/* Cache size truncation uses the following low and high water marks:
+ * If the cache is more than 95% full (CM_DCACHECOUNTFREEPCT), the cache
+ * truncation daemon is awakened and will free up space until the cache is 85%
+ * (CM_DCACHESPACEFREEPCT - CM_DCACHEEXTRAPCT) full.
+ * afs_UFSWrite and afs_GetDCache (when it needs to fetch data) will wait on
+ * afs_WaitForCacheDrain if the cache is 98% (CM_WAITFORDRAINPCT) full.
+ * afs_GetDownD wakes those processes once the cache is 95% full
+ * (CM_CACHESIZEDRAINEDPCT).
+ */
 extern int afs_CacheTruncateDaemon();
-#define CM_MAXDISCARDEDCHUNKS 16      /* # of chunks */
-#define CM_DCACHECOUNTFREEPCT 95      /* max pct of chunks in use */
-#define CM_DCACHESPACEFREEPCT 90      /* max pct of space in use */
-#define CM_DCACHEEXTRAPCT     5       /* extra to get when freeing */
+extern int afs_WaitForCacheDrain;
+#define CM_MAXDISCARDEDCHUNKS	16      /* # of chunks */
+#define CM_DCACHECOUNTFREEPCT	95      /* max pct of chunks in use */
+#define CM_DCACHESPACEFREEPCT	90      /* max pct of space in use */
+#define CM_DCACHEEXTRAPCT    	 5      /* extra to get when freeing */
+#define CM_CACHESIZEDRAINEDPCT	95      /* wakeup processes when down to here.*/
+#define CM_WAITFORDRAINPCT	98      /* sleep if cache is this full. */
+
 #define	afs_MaybeWakeupTruncateDaemon()	\
     do { \
        if (afs_discardedChunks > CM_MAXDISCARDEDCHUNKS || \

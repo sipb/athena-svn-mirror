@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptclient.h,v 2.4 1994/10/26 00:31:22 vasilis Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptclient.h,v 2.5 1996/12/10 19:09:37 thakur Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptclient.h,v $ */
 
 
@@ -44,3 +44,9 @@ extern int PR_GetHostCPS();
 extern int PR_UpdateEntry();
 
 #define pr_ErrorMsg error_message
+
+#if     !defined(PR_START)
+#define PR_START		0
+#define PR_RESTART		1
+#endif
+
