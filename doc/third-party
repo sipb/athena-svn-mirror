@@ -93,31 +93,44 @@ Distribution sites for software under third
 
 	afsbin		See below.
 	bind		ftp.isc.org:isc/bind/src
+	db		http://www.sleepycat.com/download.html
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	gcc		ftp.gnu.org:pub/gnu/gcc
+	gettext		ftp.gnu.org:pub/gnu/gettext
 	glib		ftp.gtk.org:pub/gtk
 	gtk		ftp.gtk.org:pub/gtk
 	gmake		ftp.gnu.org:pub/gnu/make
+	gmp		ftp.gnu.org:pub/gnu/gmp
+	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
+	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
+	jpeg		ftp://ftp.uu.net/graphics/jpeg/
 	kermit		http://www.columbia.edu/kermit
 	krb5*		http://web.mit.edu/network/kerberos-form.html
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	leim		ftp.gnu.org:pub/gnu/emacs; see below
+	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
+	libpng		http://www.libpng.org/pub/png/libpng.html
+	libungif	prtr-13.ucsc.edu:pub/libungif
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
+	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
 	patch		ftp.gnu.org:pub/gnu/patch
 	perl		ftp.cpan.org:pub/CPAN/src
 	readline	ftp.gnu.org:pub/gnu/readline
 	rcs		ftp.gnu.org:pub/gnu/rcs
 	read-edid	http://web.onetel.net.uk/~elephant/john/programs\
 			/linux/read-edid/
+	rep		librep.sourceforge.net:pub/librep
+	rep-gtk		rep-gtk.sourceforge.net:pub/rep-gtk
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
+	sawfish		sawmill.sourceforge.net:pub/sawmill
 	sendmail*	ftp.sendmail.org:pub/sendmail
 	ssh*		ftp.cs.hut.fi:pub/ssh
 	sysinfo		http://www.magnicomp.com/
@@ -138,7 +151,9 @@ Distribution sites for software under third
 	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
 	x3270		ftp.x.org:contrib/applications
 	xmh		From X11R5
+	xpm		ftp.x.org:contrib/libraries
 	xscreensaver	http://www.jwz.org/xscreensaver/
+	zlib		ftp.info-zip.org:pub/infozip/zlib
 
 PGP Signatures
 --------------
