@@ -15,13 +15,14 @@
 #
 #   buildhash <infile> <outfile>
 
+DESTDIR=
 CFLAGS = -O
 # BINDIR, LIBDIR, DEFHASH, DEFDICT, MANDIR, MANEXT
-BINDIR = /usr/athena
-LIBDIR = /usr/athena/lib/ispell
+BINDIR = ${DESTDIR}/usr/athena
+LIBDIR = ${DESTDIR}/usr/athena/lib/ispell
 DEFHASH = ispell.hash
 DEFDICT = dict.191
-MANDIR	= /usr/man/man1
+MANDIR	= ${DESTDIR}/usr/man/man1
 MANEXT	= .1
 SHELL = /bin/sh
 
@@ -33,6 +34,8 @@ ispell.hash: buildhash $(DEFDICT)
 	./buildhash $(DEFDICT) $(DEFHASH)
 
 install: all
+	-mkdir ${BINDIR}
+	-mkdir ${LIBDIR}
 	install -m 755 -s ispell $(BINDIR)/ispell
 	install -m 755 -s icombine $(LIBDIR)/icombine
 	install -m 755 munchlist $(BINDIR)/munchlist
