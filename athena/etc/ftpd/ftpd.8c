@@ -196,6 +196,7 @@ the password file and
 It also honors
 .IR /etc/nologin,
 .IR /etc/nocreate,
+.IR /etc/noremote,
 and
 .IR /etc/noattach.
 .PP
