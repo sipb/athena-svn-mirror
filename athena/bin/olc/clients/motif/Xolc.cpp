@@ -197,7 +197,7 @@ xolc.borderWidth:		2
 *optionsRowCol.packing:			PACK_TIGHT
 *optionsRowCol*traversalOn:		False
 !
-*send_btn.labelString:			Open `send' window
+*send_btn.labelString:			Open "send" window
 *done_btn.labelString:			Done
 *cancel_btn.labelString:		Cancel
 *savelog_btn.labelString:		Save to file...
@@ -310,7 +310,7 @@ xolc.borderWidth:		2
 !
 *clear_msg_btn.labelString:		Clear message
 !
-*close_msg_btn.labelString:		Close `send' window
+*close_msg_btn.labelString:		Close "send" window
 !
 *sendSW.rightAttachment:		ATTACH_FORM
 *sendSW.leftAttachment:			ATTACH_FORM
