@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-ws.rc,v 1.10 2004-04-05 16:36:31 rbasch Exp $
+# $Id: athena-ws.rc,v 1.11 2004-04-20 15:24:34 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -262,6 +262,7 @@ start)
   gdir=/etc/athena/gconf
   rm -rf $gdir/gconf.xml.defaults
   mkdir $gdir/gconf.xml.defaults
+  chgrp other $gdir/gconf.xml.defaults
   GCONF_CONFIG_SOURCE=xml::$gdir/gconf.xml.defaults
   export GCONF_CONFIG_SOURCE
   # athena.schemas has to be installed last in order to override
