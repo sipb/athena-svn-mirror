@@ -1,4 +1,6 @@
-Summary:    ScrollKeeper is a cataloging system for documentation on open systems
+%define xmlcatalog	%{_sysconfdir}/xml/catalog	
+
+Summary:    ScrollKeeper is a cataloging system for documentation on open systems.
 Name:       scrollkeeper
 Version:    @VERSION@
 Release:    1
@@ -7,100 +9,109 @@ Copyright:  LGPL
 Group:      System Environment/Base
 BuildRoot:  %{_tmppath}/%{name}-buildroot
 URL:        http://scrollkeeper.sourceforge.net/
-Requires:   libxml
+Requires:   libxml2 >= @LIBXML2_REQUIRED@
+Requires:   intltool >= @INTLTOOL_REQUIRED@
+Requires:   libxslt
+Requires:   docbook-dtd412-xml
+BuildRequires:   libxml2-devel
+BuildRequires:   libxslt-devel
 
 
 %description 
 ScrollKeeper is a cataloging system for documentation. It manages
-documentation metadata (as specified by the Open Source Metadata
-Framework (OMF)) and provides a simple API to allow help browsers to
-find, sort, and search the document catalog. It will also be able to
-communicate with catalog servers on the Net to search for documents
-which are not on the local system.
+documentation metadata, as specified by the Open Source Metadata
+Framework (OMF), as well as metadata which it extracts directly
+from DocBook documents.  It provides a simple API to allow help 
+browsers to find, sort, and search the document catalog. Some 
+day it may also be able to communicate with catalog servers on 
+the Net to search for documents which are not on the local system.
 
 %prep
 %setup
 
 %build
 %configure
-if [ "$SMP" != "" ]; then
-  make -j$SMP "MAKE=make -j$SMP"
-else
-  make
-fi
-
+make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
+if [ ! $RPM_BUILD_ROOT = "/" ]; then rm -rf $RPM_BUILD_ROOT; fi
 %makeinstall
-# mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/scrollkeeper/Templates
-pushd ${RPM_BUILD_ROOT}%{_datadir}/scrollkeeper/Templates
-rm -rf en && ln -sf C en
-rm -rf no* && ln -sf nb no && ln -sf nn no_NY
-for lang in bg_BG bg_BG.cp1251 de_AT en_AU en_GB en_SE en_UK en_US es_DO \
-         es_ES es_GT es_HN es_MX es_PA es_PE es_SV ja_JP.eucJP pt_PT \
-         sr_YU sv_SE zh_CN zh_CN.GB2312 zh_TW zh_TW.Big5 ; do
-    l=${lang%_*}
-    rm -rf $lang
-    ln -sf $l $lang
-done 
-popd
+
+%find_lang %{name}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+if [ ! $RPM_BUILD_ROOT = "/" ]; then rm -rf $RPM_BUILD_ROOT; fi
 
 %pre
-if test -L %{_datadir}/scrollkeeper/Templates/pt_BR; then
-	rm %{_datadir}/scrollkeeper/Templates/pt_BR
-fi
+rm -rf %{_datadir}/scrollkeeper/Templates || true
 
-%files
+%files -f %{name}.lang
 %defattr(-,root,root)
 %doc COPYING COPYING-DOCS AUTHORS README ChangeLog NEWS INSTALL 
+%config %{_sysconfdir}/*
 %{_datadir}/omf/scrollkeeper
 %{_bindir}/*
 %{_libdir}/*
-%{_mandir}/man8/*
+%{_mandir}/*/*
+%{_datadir}/xml/scrollkeeper
 %{_datadir}/scrollkeeper
 %{_datadir}/locale/*/*
 
 
 %post
-if [ $1 = 1 ]; then
-  # There was previously no SK installed.
-  # ie. make a new %{_localstatedir}/lib/scrollkeeper.
-  # Blow away any old database that might be there, in case
-  # the user installed from tarball in the past.
-  rm -rf %{_localstatedir}/lib/scrollkeeper
-  mkdir %{_localstatedir}/lib/scrollkeeper
-  scrollkeeper-update -p %{_localstatedir}/lib/scrollkeeper
-fi
 if [ $1 = 2 ]; then
-  # There was previously a SK installed.
-  #  ie. don't make a new %{_localstatedir}/lib/scrollkeeper.
-  # However, version 0.0.4 of SK did not properly create this
-  # directory if a previous SK was installed, so just to be sure...
-  rm -rf %{_localstatedir}/lib/scrollkeeper
-  mkdir %{_localstatedir}/lib/scrollkeeper
-  scrollkeeper-update -p %{_localstatedir}/lib/scrollkeeper
+  # Upgrading
+  echo "`date +"%b %d %X"` Upgrading to ScrollKeeper `scrollkeeper-config --version`..." >> %{_localstatedir}/log/scrollkeeper.log
 fi
+if [ $1 = 1 ]; then
+  # Installing
+  echo "`date +"%b %d %X"` Installing ScrollKeeper `scrollkeeper-config --version`..." >> %{_localstatedir}/log/scrollkeeper.log
+fi
+/usr/bin/xmlcatalog --noout --add "public" \
+	"-//OMF//DTD Scrollkeeper OMF Variant V1.0//EN" \
+	"%{_datadir}/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd" %xmlcatalog
+scrollkeeper-rebuilddb -q -p %{_localstatedir}/lib/scrollkeeper || true
+/sbin/ldconfig
 
 %postun
 if [ $1 = 0 ]; then
-  # SK is being removed, not upgraded.  
-  #  ie. erase {localstatedir}/lib/scrollkeeper.
+  # SK is being removed, not upgraded.
+  # Remove all generated files
   rm -rf %{_localstatedir}/lib/scrollkeeper
+  rm -rf %{_localstatedir}/log/scrollkeeper.log
+  rm -rf %{_localstatedir}/log/scrollkeeper.log.1
+  /usr/bin/xmlcatalog --noout --del \
+	"%{_datadir}/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd" %xmlcatalog
 fi
-#if [ $1 = 1 ]; then
-#  # SK is being upgraded.  Do not erase {localstatedir}/lib/scrollkeeper.
-#fi
-#
-# Make sure no junk is left in the old template directory, 
-# since upgrade from 0.1.1 to 0.1.2 was broken and can leave
-# files there.
-rm -rf %{_datadir}/scrollkeeper/templates
+
 
 %changelog
+* Sun Apr 7 2002 Dan Mueth <muet@alumni.uchicago.edu>
+- Adding DTD to %files and xmlcatalog registration scripts to %post and %postun
+
+* Thu Apr 4 2002 Dan Mueth <muet@alumni.uchicago.edu>
+- Integrating some of Red Hat's modifications
+
+* Sun Feb 17 2002 Dan Mueth <muet@alumni.uchicago.edu>
+- Making sysconfdir files as %config
+
+* Fri Feb 8 2002 Dan Mueth <d-mueth@uchicago.edu>
+- Small updates to keep from blowing away / by accident, thanks to Paul 
+-       Heinlein <heinlein@measurecast.com>
+
+* Tue Jan 15 2002 Dan Mueth <d-mueth@uchicago.edu>
+- Having variable files only removed by %postun on an rpm removal, not on an upgrade.
+- Changing the three manual lines for database rebuildding with scrollkeeper-rebuilddb
+- Adding logging lines for upgrading/installing
+- Note: From SK 0.2 to 0.3.1, we had a badly written %postun which blows away
+-       the rebuilt database after an upgrade :(
+
+* Sun Jan 13 2002 Dan Mueth <d-mueth@uchicago.edu>
+- Added BuildRequires for libxml2-devel
+
+* Sat Jan 12 2002 Dan Mueth <d-mueth@uchicago.edu>
+- Added %postun to remove log files.
+
 * Mon Mar 5 2001 Dan Mueth <dan@eazel.com>
 - Added %postun to remove $datadir/scrollkeeper/templates
   to compensate for breakage in upgrade from 0.1.1 to 0.1.2

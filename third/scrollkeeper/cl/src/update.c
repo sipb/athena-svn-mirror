@@ -30,13 +30,8 @@
 #include <unistd.h>
 #include <scrollkeeper.h>
 
-#define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
-
-#define PATHLEN	256
-
-char **av;
-
-static int verbose = 0;
+static char **av;
+static char config_omf_dir[PATHLEN];
 
 static void add_element(char ***elem_tab, int *elem_num, char *elem)
 {
@@ -110,14 +105,14 @@ bn_compare (const void *elem1, const void *elem2)
 static void
 usage (char **argv)
 {
-    printf(_("Usage: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
+    printf(_("Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
 	    *argv);
 }
 
 static int parse_omf_dir(char *path, char **name_tab, int name_num, 
 				char ***install_tab, int *install_num,
 			        char ***uninstall_tab, int *uninstall_num,
-				char **dirs)
+				char **dirs, char outputprefs)
 {
     DIR *dir;
     struct dirent *dir_ent;
@@ -148,7 +143,7 @@ static int parse_omf_dir(char *path, char **name_tab, int name_num,
 	{
 	    parse_omf_dir(fullname, name_tab, name_num,
 			  install_tab, install_num,
-			  uninstall_tab, uninstall_num, dirs);
+			  uninstall_tab, uninstall_num, dirs, outputprefs);
 	    free (fullname);
 	    continue;
 	}
@@ -222,8 +217,7 @@ static int parse_omf_dir(char *path, char **name_tab, int name_num,
 
 	if (i != *install_num)
 	{
-	    sk_warning (verbose, _("%s: warning: %s overrides %s\n"), *av,
-		     	(*install_tab)[i], fullname);
+            sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(parse_omf_dir)",_("%s: warning: %s overrides %s\n"), *av, (*install_tab)[i], fullname);
 	}
 	else
 	{
@@ -278,9 +272,75 @@ colon_split (char *s)
     return ret;
 }
 
+static int get_next_doc_name_and_timestamp(FILE *fid, char *name, long *timestamp)
+{
+	char line[2056], *token, sep[5];
+	int ret;
+	
+	fgets(line, 2056, fid);
+	if ((ret = feof(fid))) {
+		return (!ret);
+	}
+	
+	sep[0] = ' ';
+	sep[1] = '\n';
+	sep[2] = '\t';
+	sep[3] = '\0';
+	
+	token = strtok(line, sep);	
+	snprintf(name, PATHLEN, "%s", token);
+	token = strtok(NULL, sep);
+	token = strtok(NULL, sep);
+	token = strtok(NULL, sep);
+	*timestamp = atol(token);
+	
+	return (!ret);
+}
+
+static void read_config_file()
+{
+	FILE *fid;
+	char line[1024], *ptr;
+
+	config_omf_dir[0] = '\0';
+
+	fid = fopen("/etc/scrollkeeper.conf", "r");
+	if (fid == NULL) {
+		return;
+	}
+
+	while (fgets(line, 1024, fid) != NULL) {
+		if (line[0] == '#') {
+			continue;
+		}
+
+		if (! strncmp("OMF_DIR", line, 7)) {
+			ptr = strchr(line, '=');
+			if (ptr == NULL) {
+				continue;
+			}
+
+			ptr++;
+			while((*ptr == ' ') || (*ptr == '\t')) {
+				ptr++;
+			}
+
+			if ((*ptr == '\n') || (*ptr == '\0')) {
+				continue;
+			}
+
+			if (ptr[strlen(ptr)-1] == '\n') {
+				ptr[strlen(ptr)-1] = '\0';
+			}
+			
+			strncpy(config_omf_dir, ptr, PATHLEN);
+		}			
+	}
+}
+
 int main(int argc, char **argv)
 {
-    FILE *fid1, *config_fid;
+    FILE *fid, *config_fid;
     char name[PATHLEN];
     long t;
     struct stat buf;
@@ -290,10 +350,11 @@ int main(int argc, char **argv)
     int install_num = 0, upgrade_num = 0, uninstall_num = 0;
     char scrollkeeper_dir[PATHLEN], omf_dir[PATHLEN];
     char **omf_dirs = NULL;
-    char scrollkeeper_docs[PATHLEN], command[1024];
+    char scrollkeeper_docs[PATHLEN];
+    char scrollkeeper_data_dir[PATHLEN];
     char **upgrade_tab = NULL;
     char *s, **cpp;
-    char verbose_flag[5];
+    char outputprefs=0;
 
     av = argv;
     
@@ -301,23 +362,27 @@ int main(int argc, char **argv)
     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
     textdomain (PACKAGE);
 
-    strcpy (scrollkeeper_dir, "");
-    strcpy (omf_dir, "");
+    scrollkeeper_dir[0] = '\0';
+    omf_dir[0] = '\0';
     
-    while ((i = getopt (argc, argv, "p:o:v")) != -1)
+    while ((i = getopt (argc, argv, "p:o:vq")) != -1)
     {
 	switch (i)
 	{
 	case 'p':
-	    strcpy (scrollkeeper_dir, optarg);  /* XXX buffer overflow */
+	    strncpy (scrollkeeper_dir, optarg, PATHLEN);
 	    break;
 
 	case 'o':
-	    strcpy (omf_dir, optarg); /* XXX buffer overflow */
+	    strncpy (omf_dir, optarg, PATHLEN);
 	    break;
 
 	case 'v':
-	    verbose = 1;
+	    outputprefs = outputprefs | SKOUT_STD_VERBOSE | SKOUT_LOG_VERBOSE; 
+	    break;
+
+	case 'q':
+	    outputprefs = outputprefs | SKOUT_STD_QUIET;
 	    break;
 
 	default:
@@ -325,6 +390,10 @@ int main(int argc, char **argv)
 	    exit (EXIT_FAILURE);
 	}
     }
+    
+    umask(0022);
+
+    read_config_file();
 	
     if (! *scrollkeeper_dir)
     {
@@ -332,52 +401,55 @@ int main(int argc, char **argv)
     	fscanf(config_fid, "%s", scrollkeeper_dir);  /* XXX buffer overflow */
     	pclose(config_fid);
     }
+    
+    fid = popen("scrollkeeper-config --pkgdatadir", "r");
+    fscanf(fid, "%s", scrollkeeper_data_dir);
+    pclose(fid);
 
-    /*
-     * Create the database directory if it does not exist
-     */
-    if (stat (scrollkeeper_dir, &buf) != 0)
-    {
-        if (mkdir (scrollkeeper_dir,0755)) {
-            sk_warning(verbose, _("Unable to create database directory: %s\n"), scrollkeeper_dir);
-        }
+    if (create_database_directory(scrollkeeper_dir, scrollkeeper_data_dir, outputprefs) != 0) {
+        sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", _("Could not create database.  Aborting update.\n"));
+        return 1;
     }
 
     /*
      * Command line wins; environmental variable gets second priority;
+     * then /etc/scrollkeeper.conf;	
      * use scrollkeeper-config if neither is available.
      */
     if (! *omf_dir)
     {
 	if ((s = getenv ("OMF_DIR")) != NULL)
 	{
-	    strcpy (omf_dir, s);   /* XXX buffer overflow */
+	    strncpy (omf_dir, s, PATHLEN);
 	}
-	else
-	{
-	    config_fid = popen("scrollkeeper-config --omfdir", "r");
-	    fscanf(config_fid, "%s", omf_dir);   /* XXX buffer overflow */
-	    pclose(config_fid);
-	}
+	else if (config_omf_dir[0] != '\0')
+	    {
+		strncpy(omf_dir, config_omf_dir, PATHLEN);
+	    }
+	    else
+	    {
+	    	config_fid = popen("scrollkeeper-config --omfdir", "r");
+	    	fscanf(config_fid, "%s", omf_dir);   /* XXX buffer overflow */
+	    	pclose(config_fid);
+	    }
     }
 
     omf_dirs = colon_split (omf_dir);
     
-    sprintf(scrollkeeper_docs, "%s/scrollkeeper_docs", scrollkeeper_dir); 
+    snprintf(scrollkeeper_docs, PATHLEN, "%s/scrollkeeper_docs", scrollkeeper_dir); 
     if (stat(scrollkeeper_docs, &buf) == 0 &&
         S_ISREG(buf.st_mode))
     {
 	char aux_str[1024];
 
-        fid1 = fopen(scrollkeeper_docs, "r");
-	if (!fid1)
+        fid = fopen(scrollkeeper_docs, "r");
+	if (!fid)
 	{
-	    sk_warning(verbose, "%s: %s: %s\n", *av, scrollkeeper_docs,
-		     strerror (errno));
+	    sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", "%s: %s: %s\n", *av, scrollkeeper_docs, strerror (errno));
 	    exit (EXIT_FAILURE);
 	}
 	
-	while (fgets(aux_str, 1024, fid1) != NULL)
+	while (fgets(aux_str, 1024, fid) != NULL)
              line_num++;
         
         name_tab = (char **)calloc(line_num, sizeof(char *));
@@ -391,9 +463,9 @@ int main(int argc, char **argv)
 	 * of the array.
 	 */
 
-        rewind(fid1);
+        rewind(fid);
     
-        while (fscanf(fid1, "%s%*d%*s%ld%*s", name, &t) != EOF)
+        while (get_next_doc_name_and_timestamp(fid, name, &t))
         {            
             name_tab[i] = strdup(name);
 	    check_ptr (name_tab[i], *av);
@@ -415,7 +487,7 @@ int main(int argc, char **argv)
             i++;
         }
     
-        fclose(fid1);
+        fclose(fid);
     
         qsort((void *)name_tab, line_num, sizeof(char *), compare);
     }
@@ -424,18 +496,18 @@ int main(int argc, char **argv)
     {
 	if (stat (*cpp, &buf) != 0)
 	{
-	   sk_warning (verbose, "%s: %s: %s\n", *av, *cpp, strerror (errno));
+	   sk_message(outputprefs, SKOUT_VERBOSE, SKOUT_QUIET, "scrollkeeper-update", "%s: %s: %s\n", *av, *cpp, strerror (errno));
 	   continue;
 	}
 
 	if (! S_ISDIR (buf.st_mode))
 	{
-	   sk_warning (verbose, _("%s: %s: is not a directory\n"), *av, *cpp);
+	   sk_message(outputprefs, SKOUT_VERBOSE, SKOUT_QUIET, "scrollkeeper-update", _("%s: %s: is not a directory\n"), *av, *cpp);
 	   continue;
 	}
 	
 	parse_omf_dir(*cpp, name_tab, line_num, &install_tab, &install_num,
-		      &uninstall_tab, &uninstall_num, omf_dirs);
+		      &uninstall_tab, &uninstall_num, omf_dirs, outputprefs);
     }
            
     for(i = 0; i < line_num; i++)
@@ -443,44 +515,29 @@ int main(int argc, char **argv)
         
     if (name_tab != NULL)
         free((void *)name_tab);
-    
-    if (verbose)
-    	strcpy(verbose_flag, "-v");
-    else
-	verbose_flag[0] = '\0';
-    
-    for(i = 0; i < install_num; i++)
-    {
-	sprintf(command, "scrollkeeper-install %s -p %s %s", verbose_flag,
-		scrollkeeper_dir, install_tab[i]);
-	if (verbose)
-	    puts (command);
-        system(command);
+        
+    for(i = 0; i < install_num; i++) {
+        if (! install(install_tab[i], scrollkeeper_dir, scrollkeeper_data_dir, outputprefs)) {
+            sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", _("Unable to register %s\n"), install_tab[i]);
+        } else
+       {
+	    sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Registering %s\n"), install_tab[i]);
+        }
     }
     
     for(i = 0; i < upgrade_num; i++)
     {
-	sprintf(command, "scrollkeeper-uninstall %s -p %s %s", verbose_flag, 
-		scrollkeeper_dir, upgrade_tab[i]);
-	if (verbose)
-	    puts (command);
-        system(command);
-
-	sprintf(command, "scrollkeeper-install %s -p %s %s", verbose_flag,
-		scrollkeeper_dir, upgrade_tab[i]);
-	if (verbose)
-	    puts (command);
-        system(command);
+	sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Updating %s\n"), upgrade_tab[i]);
+	uninstall(upgrade_tab[i], scrollkeeper_dir, outputprefs);
+        if (! install(upgrade_tab[i], scrollkeeper_dir, scrollkeeper_data_dir, outputprefs)) {
+        sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", _("Unable to complete update.  Could not register %s\n"), upgrade_tab[i]);
+        }
     }
     
     for(i = 0; i < uninstall_num; i++)
     {
-	sprintf(command, "scrollkeeper-uninstall %s -p %s %s", verbose_flag,
-		scrollkeeper_dir, uninstall_tab[i]);
-	if (verbose)
-	    puts (command);
-        system(command);
-
+	sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Unregistering %s\n"), uninstall_tab[i]);
+    	uninstall(uninstall_tab[i], scrollkeeper_dir, outputprefs);
     }
     
     for(i = 0; i < install_num; i++)

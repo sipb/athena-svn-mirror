@@ -1,0 +1,56 @@
+.TH SCROLLKEEPER.CONF 5 "Dec 5, 2001" "ScrollKeeper"
+.SH NAME
+scrollkeeper.conf \- ScrollKeeper configuration file
+.SH SYNOPSIS
+System-wide configuration of ScrollKeeper
+
+.SH DESCRIPTION
+The system-wide scrollkeeper.conf file is typically installed at 
+/etc/scrollkeeper.conf.
+It stores the default OMF paths which are searched by 
+.I scrollkeeper-update (8)
+to update the ScrollKeeper documentation catalog.  The paths are held by the
+OMF_DIR variable which is assigned to a colon (:) delimited list of paths.
+
+Comment lines begin with the (#) character. 
+
+.SH EXAMPLE
+A typical scrollkeeper.conf file will look like:
+.nf
+.sp
+.ft CW
+# Comment
+OMF_DIR=/usr/share/omf:/usr/local/share/omf:/opt/gnome/share/omf:/opt/gnome-2.0/share/omf:/opt/kde/omf
+.sp
+.fi
+
+.SH NOTES 
+Any user on the system is able to use the 
+.I scrollkeeper-update (8)
+command to generate a ScrollKeeper database at any
+path that the user has write permission to.
+The user can over-ride the system default OMF_DIR path variable
+by setting a shell variable of the same name, OMF_DIR.  In this way, a
+user can create a document catalog which contains a superset of the system 
+documentation, or a completely independent set of documents which the 
+user may be interested in.
+
+Note that most applications will register its documentation at install time,
+and unregister it at uninstall time.  Thus, a user who keeps their own 
+personal ScrollKeeper database may need to periodically run
+.I scrollkeeper-update (8)
+manually (or with cron) to keep their database up-to-date.
+
+.SH AUTHOR
+Laszlo Kovacs   <laszlo.kovacs@sun.com>
+.br
+Dan Mueth       <d-mueth@uchicago.edu>
+
+.SH SEE ALSO
+scrollkeeper-config(1),
+scrollkeeper-gen-seriesid(1),
+scrollkeeper(7),
+scrollkeeper-preinstall(8),
+scrollkeeper-rebuilddb(8),
+scrollkeeper-update(8)
+

@@ -1,3 +1,1224 @@
+2002-06-01 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Fixing bug which shows up when somebody declares the DOCTYPE,
+	which was caused by assuming doc->children is always the root
+	element instead of using xmlDocGetRootElement:
+
+	* po/POTFILES.in:  Adding libs/update-url.c
+	* libs/update-url.c:  Adding error messages, comments, call 
+	                      to xmlDocGetRootElement, and gettext/libintl.h
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Bumping version to 0.3.9.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Now that we have a DTD which is installed and properly registered
+	in the XML catalog, we should use it:
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	  Adding the proper DTD declaration.
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Updating example OMF files and instructions for validating OMF files
+	  on the command line.
+
+	Posted the DTD at: 
+http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd
+
+	Note that we can now validate a document using:
+		 xmllint --noout --valid foo.omf
+
+	* TODO: Removing this task from the TODO file.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* INSTALL: Adding more info about DocBook requirements and a couple
+	  commands one can use to test whether their DocBook setup is
+	  sufficient.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+	
+	* TODO: Removing todo item for supporting comment tags everywhere 
+	  properly.  It looks like it works fine now.
+	* configure.in: Bumping version to 0.3.9beta1.
+	* cl/src/update.c: Increasing threshold for sending messages about
+	  OMF directory warnings (eg. a directory in /etc/scrollkeeper.conf doesn't
+	  exist) to verbose, so we don't always see these warnings.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+	
+	* TODO: Adding todo item for supporting comment tags everywhere properly.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Patch from "J.H.M. Dassen (Ray)" <dm@zensunni.demon.nl> via
+	Debian bug tracker and Christian Marillat <marillat@free.fr>.
+
+	"This makes the install() function skip comment nodes while looking for 
+	<OMF> elements.
+
+	It may well be that there are other places where (lib)scrollkeeper's code
+	needs refinement to deal with comment nodes the right way. Also, the
+	install() function really should be rewritten to not have code paths along
+	which it fails without providing a clue for debugging."
+
+	* libs/install.c:
+
+	(I think I committed part of this patch along with Jordi's patch below.
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding update Catalan po file, sent in by Jordi Mallach
+	<jordi@sindominio.net>.
+
+	* po/ca.po:
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Fixing bug 559635, which is a string typo.  Thanks to 
+	Jordi Mallach (jordi).
+
+	* libs/install.c:
+
+2002-05-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+        Changing "return;" to "return 0;".  Thanks to Eloy A. Paris
+        <peloy@chapus.net> for pointing out how this causes a failure
+        on SPARC and to Christian Marillat <marillat@free.fr> for posting
+        the report on scrollkeeper-devel.  Debian Bug #146989.
+
+        * libs/database.c:
+
+2002-05-14 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Change example doc to include and explain the encoding declaration.
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	  Change to include the encoding declaration.
+
+2002-05-13 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Fixing doc so it validates properly.  Also removing reference to the
+	  feature that you can specify categories for non-C docs in C, since
+	  it hasn't been implemented yet.
+
+2002-05-05 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* libs/Makefile.am: Linking libraries against libxslt: Bug #549090
+
+2002-05-05 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	  Fix small typo.
+
+2002-05-05 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Fixing another typo submitted in bug 552675.
+
+2002-05-05 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Fixed "id" error in the example XML OMF blurb, which should have been
+	  "identifier", as pointed out by John Fleck.
+
+2002-04-23 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* libs/scrollkeeper.h.in: Adding #include for types.h which is needed
+	  to build on Solaris.
+
+2002-04-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* INSTALL: Fixing typo
+
+2002-04-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.8 for release.
+
+2002-04-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Adding parameter to set paths to search for OMF files.
+	  Adding config/scrollkeeper.conf to AC_OUTPUT. Changing to 0.3.8beta2.
+	* config/Makefile.am: Updating for .in file.
+	* config/scrollkeeper.conf: -removing-
+	* config/scrollkeeper.conf.in: -adding-
+	* INSTALL: Added information about customizing the default OMF file search
+	  path at configure time.
+
+2002-04-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: new entry
+
+2002-04-19 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* libs/install.c: Updating to work with category as an attribute of
+	  subject instead of as a child.
+	* configure.in: Changing to version 0.3.8beta1
+	* extract/dtds/scrollkeeper-omf.dtd: Fixing bug where the 'subject'
+	  element was not repeatable.
+	* TODO: new entry
+
+2002-04-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* scripts/scrollkeeper-rebuilddb.in: Fixing bug 544912 -- eep!
+	  That bug caused / to be deleted if scrollkeeper-config was not
+	  in one's path =O
+	* scrollkeeper.spec.in: Adding "|| true" on scrollkeeper-rebuilddb call
+	  since scrollkeeper-rebuilddb now returns 1 if it fails.
+
+2002-04-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.7.
+
+2002-04-11 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding a stylesheet to output an HTML file listing the ScrollKeeper
+	categories:
+
+	* extract/stylesheets/categories.xsl: Adding this stylesheet.
+	* extract/stylesheets/Makefile.am: Listing the stylesheet
+
+	* TODO: updated
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Updating doc to mention this stylesheet and how to use it.
+
+2002-04-11 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Some udpates
+
+2002-04-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Fixing bug #542030, where ScrollKeeper cannot create the database
+        directory if the parent directory is missing:
+
+	* libs/database.c: Adding and using new functions - sk_mkdir and
+	  sk_mkdir_with_parents - which create the parent directories, do
+          some error checking, and does some logging and error reporting.
+	* cl/src/update.c: Updating to read returned value from 
+	  create_database_directory, report any problem, and exit gracefully
+          in case of error. 
+	* cl/src/scrollkeeper-install.c: Updating to read returned value from 
+	  create_database_directory, report any problem, and exit gracefully
+          in case of error. 
+	
+	Adding outputprefs to create_database_directory:
+
+	* cl/src/scrollkeeper-install.c: 
+	* cl/src/update.c: 
+	* libs/scrollkeeper.h.in:	
+	* po/POTFILES.in: Adding libs/database.c since it now has error messages
+
+	* configure.in: Changing to version 0.3.7beta6.
+
+2002-04-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/omf.make: small fix to bring it closer to having 'make distcheck'
+	  pass.  Still needs a change or two.
+
+2002-04-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* extract/dtds/scrollkeeper-omf.dtd: Updating this file from 
+	  Eric Baudais <baudais@okstate.edu>.  
+	* extract/dtds/scrollkeeper-cl.dtd: Adding this file from 
+	  Eric Baudais <baudais@okstate.edu>.  It is the DTD for the contents
+	  list file.
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	  Updating to match the new DTD.
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Updating to match the new DTD.
+	* configure.in: Changing to version 0.3.7beta5.
+
+2002-04-08 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Fixing warning and error output from validation of OMF files.  They
+	are never sent to the log file.  The are only sent to STDOUT if
+	-v is passed (ie. in verbose mode).  The log file does get a message
+	indicating that validation failed, but doesn't get the detailed
+	messages about how it failed.
+
+	* libs/scrollkeeper.h.in: Fixing reversal of definitions for
+	  SKOUT_VERBOSE and SKOUT_DEFAULT.
+	* libs/error.c: Adding new function, sk_dtd_validation_message(),
+	  to handle messages passed from libxml during validation of OMF files
+	  against the DTD.
+	* libs/install.c: Calling sk_dtd_validation_message() for error messages
+	  during validation.
+
+2002-04-07 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Improving error and log messages, and having OMF files validated against
+	ScrollKeeper-OMF DTD.  
+
+        Note that we still need to make sure the DTD validation error messages 
+        don't get spewed to screen during RPM install, I believe by modifying
+	cvp.* for xmlValidateDTD.
+
+	* libs/install.c: Improving message strings.  Having it check
+	  that each OMF file is valid against the DTD before parsing the OMF file.
+	* cl/src/scrollkeeper-install.c: Improving messages.
+	* cl/src/update.c: Improving messages.
+	* configure.in: Changing to version 0.3.7beta4.
+	* scrollkeeper.h.in: Defining DTD path.
+	* TODO: updates
+
+	Adding files I forgot to 'cvs add' last commit:
+	* extract/dtds:
+	* extract/dtds/Makefile.am:
+	* extract/dtds/scrollkeeper-omf.dtd:
+
+2002-04-07 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Adding items w/r/t OMF DTD
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	  Fixing to use version.id instead of version.identifier.
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	  Fixing to use version.id instead of version.identifier.
+	* extract/dtds: Created this directory to hold any DTDs we have.
+	* extract/dtds/scrollkeeper-omf.dtd: Adding this file from 
+	  Eric Baudais <baudais@okstate.edu>.  It is the OMF DTD with a few
+	  ScrollKeeper-specific variations.  Eventually we will feed these
+	  upstream.
+	* extract/Makefile.am: Adding 'dtds' to SUBDIRS
+	* configure.in: Adding 'dtds' dir to AC_OUTPUT
+	* extract/dtds/Makefile.am: Adding.  It registers and unregisters the DTD
+	  with the XML catalog.
+	* scrollkeeper.spec.in: Adding the dtd directory to %files, and post/postun
+	  installation scripts for registering it with XML catalog.
+
+2002-04-03 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* toc/src/toc-extract.c: Applied patch from the RHAD labs folks
+	  at Red Hat which is supposed to avoid a crash.
+	* scrollkeeper.spec.in: Applying changes from RHAD labs folks at
+	  Red Hat.
+	* TODO: Added a new problem to fix
+	* configure.in:
+		   Changing to version 0.3.7beta3.
+
+2002-04-03 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* libs/Makefile.am: Patch from Christian to link against libxml2
+			    (Bug 538009)
+	* INSTALL: Added a blurb about people with build problems.
+		   Changed to require libxml2 >= 2.4.19 to fix the problem
+		   with commas inserted into tags.
+	* configure.in:
+		   Changed to require libxml2 >= 2.4.19 to fix the problem
+		   with commas inserted into tags.
+		   Changing to version 0.3.7beta2.
+	* TODO: Removing completed items.
+
+2002-03-27 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* cl/templates/Makefile.am: Adding that there are translations for
+	  no, pl, uk, and zh_TW.  Also adding -f to the rm flag in 'clean'.
+
+	* buildtools/separate.c: Changing sk_warning()'s to printf()'s since
+	  these are functions (and thus error messages) that only are used
+	  during a build and should not (and cannot) be logged. Added 
+	  a number of printf's to give useful progress information and
+	  did some other minor things, mostly with error handling.
+
+	* configure.in: Changing to version 0.3.7beta1.
+
+2002-03-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.6 for release.
+
+2002-03-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Migrating from old omf-install method of installing OMF files to
+	the newer method from scrollkeeper-example2.  This is a simpler
+	system and the newer build files are much cleaner.
+
+	* Makefile.am: Removing omf-install.  Adding dist-hook.  A couple
+	  other small changes. Moving special install and uninstall
+	  tasks into this file, from omf-install.
+	* doc/omf.make: Adding this file from scrollkeeper-example2.
+	  Made substantial modifications for scrollkeeper package since
+	  it is special.
+	* doc/xmldocs.make: Adding this file from scrollkeeper-example2.
+	* doc/Makefile.am: Update EXTRA_DIST
+	* doc/writing_scrollkeeper_omf_files/C/Makefile.am: minor updates for
+	  new doc build system
+
+2002-03-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Adding nice comments and reorganizing to pretty it up
+	* TODO: Added an item.  Removed some things that have been done or
+	  else are obsolete.
+
+2002-03-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* toc/src/toc.h: Applying patch from Daniel Veillard <veillard@redhat.com>
+	  which includes the libxml/ path in the #include lines for libxml
+	  header files.
+
+2002-03-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding the current draft of the specifications for 0.3.x/0.4.x to CVS.
+	Note that it is not up-to-date.
+
+	* /doc/scrollkeeper_devel_docs/scrollkeeper-0.4: Adding this directory
+	* /doc/scrollkeeper_devel_docs/scrollkeeper-0.4/scrollkeeper_0.4_specs_draft.txt:
+
+2002-03-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Deprecating and removing scrollkeeper_toc from build. It was the
+        original code for SGML docs only.  Now we use stylesheets, and
+        SGML support has been temporarily been removed.  This program
+        appears to have busted at some point (changes in libxml?) BTW.
+
+	* configure.in: Removing toc/ stuff.
+	* Makefile.am: Removing toc/ stuff.
+	* toc/README: Marking as deprecated.	
+	* po/POTFILES.in: Removing toc/ stuff.
+
+	A couple more small changes:
+
+	* configure.in: Changing version number to 0.3.6beta1.
+	* omf-install/Makefile.am: Removing unneeded -r flag from rm.
+
+2002-03-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	omf-install/Makefile.am: use escape sequence for quotes in echo,
+		from Morten Welinder <terra@diku.dk>
+
+	configure.in: Removing "-Werror" at the request of Morten 
+		Welinder <terra@diku.dk>
+
+2002-03-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	scripts/scrollkeeper-get-toc-from-docpath.in: updated error message
+
+
+	Added small patches from Morten Welinder <terra@diku.dk>, which appear
+	to make the shell scripts more portable:
+
+	scripts/scrollkeeper-get-toc-from-docpath.in: quotes around variable
+	scripts/scrollkeeper-rebuilddb.in: expr instead of $(())
+
+	Fixed small errors which only show up on some platforms (Solaris?), as
+	pointed out by Morten Welinder <terra@diku.dk>:
+
+	libuuid/parse.c: Do explicit variable cast
+	libs/extract.c: Move error message into non-Solaris loop where it
+		belongs.	
+
+2002-03-16 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding updated and new po files:
+
+	* po/sl.po: New po file
+	* po/no.po: Updated version
+	* po/da.po: Updated version
+
+2002-03-13 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Updating
+
+2002-03-12 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Updating
+	* INSTALL: Adding more information about requirements/dependencies
+	  and about building.
+
+2002-03-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Fixed a duplicated id, pointed out by Kevin Breit:
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+
+2002-02-26 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.5 for unstable developer-only
+	                release.
+	* man/man8/scrollkeeper-update.8: Adding new -q flag to man page.
+	* man/man8/scrollkeeper-rebuilddb.8: Adding new -q flag to man page.
+
+2002-02-26 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing URL for DocBook 4.1.2 DTD to the web
+	  page I set up a while back: 
+	       http://scrollkeeper.sourceforge.net/docbook.shtml
+          (bug #515392)
+
+2002-02-26 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Removed requirement for openjade for now, since
+	  support for DocBook/SGML has been removed temporarily.
+	* scrollkeeper.spec.in: Remove requirement for openjade for now, since
+	  support for DocBook/SGML has been removed temporarily.
+	* TODO: updates
+
+2002-02-26 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* omf-install/Makefile.am: Adding log messages and quiet flag for
+ 	  installing, and removal of created files on uninstall.
+	* configure.in: version to 0.3.5beta5
+	* TODO: minor updates
+
+2002-02-25 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Updating the spec file and database rebuilding to run in quiet mode,
+	since nobody wants to see all the output at install time.  (The
+	new messaging sends more info to STDOUT by default, so we now use
+        the -q flag to make output quiet during installation.) 
+
+	* scrollkeeper.spec.in: Adding -q flag to scrollkeeper-rebuilddb call
+	* scripts/scrollkeeper-rebuilddb.in: Adding -q flag and
+	  rewriting the option handling.
+
+2002-02-25 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Converting all old error message functions over to new messaging
+	function.
+
+	* libs/error.c(sk_message): Fixed position of colon in output.
+	* cl/src/update.c: Moving from sk_warning to sk_message.
+	* cl/src/scrollkeeper-uninstall.c(usage): Added -v flag.
+	* cl/src/scrollkeeper-uninstall.c(main): Added -v flag. Moving from
+	  sk_warning to sk_message.
+	* cl/src/get-cl.c: Moving from sk_warning to sk_message.
+	* cl/src/scrollkeeper-install.c: Moving from sk_warning to sk_message.
+	* extract/src/scrollkeeper-extract.c: Moving from sk_warning to sk_message.
+	* toc/src/toc.c: Moving from sk_warning to sk_message.
+	* libs/uninstall.c: <same>
+	* libs/install.c: <same>
+	* libs/extract.c: <same>
+	* buildtools/separate.c: <same>
+	* configure.in: version to 0.3.5beta4
+
+2002-02-24 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Beginning transition to new messaging (to STDOUT and log file)
+	system.  The main part is done, although we need to add documentation
+	on how this works and move lots of function calls from sk_warning()
+	to sk_message().
+
+	* cl/src/update.c(main): Added -v flag.  Converted some parts
+	                         from sk_warning() to sk_message().
+	* cl/src/update.c(usage): Added -v flag.
+	* libs/error.c(sk_message): Added new messaging function, which will
+	                            replace the old one.
+	* libs/error.c(reconcile_skout_prefs): Used by sk_message.
+	* libs/scrollkeeper.h.in: Added variables for messaging.
+	* TODO: Small changes
+
+2002-02-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+		Added a bunch of indexterms.
+
+	* TODO: Added an item or two
+	* configure.in: Bumping version to 0.3.5beta3
+
+2002-02-17 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Bumping version to 0.3.5beta2
+
+	* doc/xmldocs.make: Have it only create the figures/ directory if
+	                    there are figures.  (We still should add regex
+	                    to strip out white space, and have it no longer
+	                    include all png's in figures/.  In fact, we should
+	                    just put a Makefile.am in figures/ and have that
+	                    handle inclusion of the figures.)
+
+2002-02-17 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Moving Writing ScrollKeeper OMF Files into C directory:
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.xml:
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	* doc/writing_scrollkeeper_omf_files/C/legal.xml:
+
+	Setting up some build stuff for the doc:
+
+	* doc/writing_scrollkeeper_omf_files/C/Makefile.am:
+	* doc/writing_scrollkeeper_omf_files/Makefile.am:
+	* configure.in:
+	* doc/xmldocs.make: (this still needs some work)
+	* Makefile.am:
+	* doc/Makefile.am:
+
+	Marking sysconfdir files as %config files:
+
+	* scrollkeeper.spec.in:
+
+	Removing todo item for OMF tutorial.  Adding item for config-time
+	SGML disabling:
+
+	* TODO:
+
+2002-02-15 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* AUTHORS: Updated my email address, and added a bit more of what
+		I've done lately.
+
+2002-02-15 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/writing_scrollkeeper_omf_files.xml:
+		More small fixes and edits.
+
+2002-02-15 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/writing_scrollkeeper_omf_files.xml:
+	     Added two more sections.  Various small updates and edits.
+             Now I think I'm really done with the first draft. 
+             Bumping doc version to 1.0.
+
+2002-02-15 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* doc/writing_scrollkeeper_omf_files/writing_scrollkeeper_omf_files.xml:
+	     Finished up first draft.
+
+2002-02-14 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Wrote most of a document on writing OMF files.  Still has a couple
+	more sections to go, and then integration into the package.
+
+	* doc/writing_scrollkeeper_omf_files/legal.xml:
+	* doc/writing_scrollkeeper_omf_files/writing_scrollkeeper_omf_files.xml:
+	* doc/writing_scrollkeeper_omf_files/: Added this directory
+	* TODO: Small additions
+
+2002-02-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding another parameter to sk_warning() to take the function/command
+	name.  This way the log file will keep accurate details of where the
+	errors are coming from, although the command line doesn't do so in many
+	cases since the user knows which command was being used.
+
+	* buildtools/separate.c:
+	* libs/extract.c: 
+	* libs/uninstall.c: 
+	* libs/install.c: 
+	* libs/error.c: 
+	* libs/scrollkeeper.h.in: 
+	* cl/src/get-cl.c
+	* cl/src/scrollkeeper-install.c
+	* cl/src/scrollkeeper-uninstall.c
+	* cl/src/update.c
+	* extract/src/scrollkeeper-extract.c:
+	* toc/src/toc.c
+
+2002-02-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding a logging/warning message for not well-formed docs and various
+	other error cases.
+	* libs/extract.c: 
+	* libs/install.c: 
+	* libs/scrollkeeper.h.in: 
+	* extract/src/scrollkeeper-extract.c:
+
+	* configure.in: Changing to version 0.3.5beta1 for development.
+
+	* libs/error.c: Adding error reporting for problems accessing log
+	                file.  Also, in verbose mode now it prints error
+	                to STDOUT before trying to access log file, in case
+	                it fails.
+
+2002-02-10 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Adding a couple items
+
+2002-02-08 Dan Mueth <d-mueth@uchicago.edu>
+
+	* scrollkeeper.spec.in: Small fixes from Paul Heinlein 
+          <heinlein@measurecast.com>
+
+2002-01-24 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: Changing to version 0.3.4 for unstable developer-only
+	                release.
+	* TODO: Adding that we need to do the catalog checking for XML docs
+	        as well.
+
+2002-01-24 Dan Mueth <d-mueth@uchicago.edu>
+
+	* libs/install.c: Taking out support for index and TOC extraction for SGML
+	                  documents for now since it relies on the catalogs being
+	                  installed correctly, which typically is not the case.
+	                  We should put this back later and do proper error case
+	                  checking to avoid spews.
+	* configure.in: Changing to version 0.3.4beta
+	* TODO: Removed item I fixed and added "feature" of replacing SGML support
+	        with proper error checking.
+
+2002-01-16 Dan Mueth <d-mueth@uchicago.edu>
+
+	* README: Added a description of the RPM problem for upgrades from version
+	          0.2 to 0.3.1.
+	* man/man7/scrollkeeper.7: Added Files section.
+
+2002-01-16 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: Promoting to developer-only release version 0.3.3.  Version
+	                0.3.2 never quite made it off the ground.
+	* libs/extract.c: Changing the system identifier from a local file
+	                  path to the oasis-open.org URL.
+	* TODO: Removing this item from the list.
+
+2002-01-16 Dan Mueth <d-mueth@uchicago.edu>
+
+	* scrollkeeper.spec.in:
+		- Adding logging lines
+		- Changing to use scrollkeeper-rebuilddb after installation
+		- Only having logs and database removed in %postun if it is
+		  not an upgrade
+		... Note: From SK 0.2 to 0.3.1, we had a badly written %postun 
+                          which blows away the rebuilt database after an upgrade :(
+	* TODO: Added a couple more things to fix
+
+2002-01-15 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: Promoting to developer-only release version 0.3.2
+	* TODO: Adding a task
+
+2002-01-15 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: 
+		- Removing doc/* from AC_OUTPUT for now, until I get a chance
+		  to update the documentation. This caused a breakage of 0.3.1
+		  tarballs.
+		- Changed test for docbook-dtd412-xml to use xmlcatalog.
+		- Updated the intltool-extract blurb and added URL for source.
+	* TODO: Removed completed tasks.
+
+2002-01-13 Dan Mueth <d-mueth@uchicago.edu>
+
+	* scrollkeeper.spec.in: Adding BuildRequires for libxml2-devel
+	* configure.in: Changing error note about xml2-config and libxml2 to
+          state that the libxml2-devel package is also needed. (xml2-config
+          is actually part of libxml2-devel, not libxml2, on some systems
+	  such as Red Hat.)
+	  Also changing version number to 0.3.2beta.
+	* TODO: added some more details and items.
+
+2002-01-13 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: Promoting to developer-only release version 0.3.1
+	* Makefile.am: Including TODO file in EXTRA_DIST
+	* TODO: a number of updates with more bugs, features, and details.
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	* TODO: small updates
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	* Makefile.am: removing the docs/ directory from the build until we
+	  get the manual updated and converted to XML.
+	* TODO: small update
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	Finishing the migration from xml-i18n-tool to intltool, getting rid
+	of xml-i18n-toolize. Small tweeks to these files: 
+
+	* autogen.sh: 
+	* configure.in:
+	* Makefile.am:
+	* cl/templates/Makefile.am
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+        * scripts/scrollkeeper-rebuilddb.in: Adding logging lines.
+	* cl/src/scrollkeeper-install.c: Added logging line.
+	* cl/src/scrollkeeper-uninstall.c: Added logging line.
+	* cl/src/update.c: Adding a few logging lines.
+	* TODO: Updated, removing a couple things I've done and adding one or
+	  two new tasks.
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	* libs/scrollkeeper.h.in: Defining the log file name here, so that it will
+	  track @localstatedir@.
+	* configure.in: Having libs/scrollkeeper.h be built.
+	* libs/error.c: Switching to use the log file which tracks @localstatedir@
+	  and adding a time stamp to each log entry.
+	* libs/scrollkeeper.h: Removing this file since autoconf generates it
+	  now.
+	* scrollkeeper.spec.in: Updating %postun to track the log file name.
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	* configure.in: Adding new po's to ALL_LINGUAS, as I forgot to on the last
+	  commit.
+	* TODO: Minor updates
+	* README: Minor updates
+	* INSTALL: Minor updates
+	* scrollkeeper.spec.in: Adding a %postun line to remove the log file.
+
+2002-01-12 Dan Mueth <d-mueth@uchicago.edu>
+
+	* TODO: Minor updates
+	* scrollkeeper-spec.txt: Added more info on logging and OMF_DIR, and
+	  and made a few minor changes.
+	* po/az.po: Added
+	* po/pl.po: Added
+	* po/zh_TW.po: Added
+	* po/ca.po: Updated
+	* po/da.po: Updated
+	* po/de.po: Updated
+	* po/sv.po: Updated
+	* po/sk.po: Updated 
+
+2002-01-05 Dan Mueth <d-mueth@uchicago.edu>
+
+	* TODO: Adding this file, so people can easily find things to work
+	  for generally keeping track of tasks.
+
+2002-01-05 Dan Mueth <d-mueth@uchicago.edu>
+
+	Updating to build with intltool instead of xml-i18n-tool.  I still
+	have it using xml-i18n-toolize instead of intltoolize, so we'll
+	need to migrate this part over at some point.
+
+	* configure.in
+	* scrollkeeper.spec.in
+
+2001-12-05 Dan Mueth <d-mueth@uchicago.edu>
+
+	Promoting to version 0.3.1beta, since we just released 0.3.0.
+	* configure.in
+
+	Adding man page for scrollkeeper.conf.
+	* configure.in
+	* scrollkeeper.spec.in
+	* man/man5/scrollkeeper.conf.5
+	* man/man5/Makefile.am
+	* man/Makefile.am
+
+	Updating older man pages to refer to scrollkeeper.conf, have my
+	current email address, and bump up modification date:
+	* man/man1/Makefile.am
+	* man/man1/scrollkeeper-config.1
+	* man/man1/scrollkeeper-gen-seriesid.1
+	* man/man7/Makefile.am
+	* man/man7/scrollkeeper.7
+	* man/man8/Makefile.am
+	* man/man8/scrollkeeper-preinstall.8
+	* man/man8/scrollkeeper-rebuilddb.8
+	* man/man8/scrollkeeper-update.8
+
+2001-12-01 Dan Mueth <d-mueth@uchicago.edu>
+
+	A couple small changes to get RPM's building again, after the 
+	scrollkeeper.conf file was added.
+
+	* scrollkeeper.spec.in: Added sysconfdir to files
+	* config/Makefile.am: Changing to use sysconfdir
+
+2001-08-09 Mary Dwyer <mary.dwyer@sun.com>
+	* extract/stylesheets/index.xsl: Mary's new
+	changed checked in
+
+2001-07-15 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* config/scrollkeeper.conf: default value corrected
+	* cl/src/update.c: omf directories can be specified
+	through /etc/scrollkeeper.conf also
+
+2001-07-15 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in, Makefile.am, config/*: config file added
+
+2001-07-14 Frederic Devernay <Frederic.Devernay@sophia.inria.fr>
+	(reviewed by Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: AC_PROG_CC and AC_PROG_CPP moved 
+	before AC_ISC_POSIX
+	* cl/src/get-cl.c, cl/src/preinstall.c, 
+	cl/src/scrollkeeper-install.c, cl/src/scrollkeeper-uninstall.c:
+	buildtools/separate.c, libs/extract.c, libs/install.c,
+	libs/merge.c, libs/uninstall.c, libs/update-url.c,
+	libs/scrollkeeper.h: 
+	* extract/stylesheets/Makefile.am simplified
+
+2001-06-27 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/preinstall.c, libs/update-url.c: url update 
+	code moved to libs/update-url.c
+	* libs/Makefile.am: update-url.c added
+	* libs/scrollkeeper.h: update_doc_url_in_omf_file() added
+
+2001-06-26 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/update.c: install() and uninstall() from
+	library used for database updates
+
+2001-06-26 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/scrollkeeper.h, libs/scrollkeeper-private.h,
+	libs/Makefile.am, all .c files:  scrollkeeper.h and 
+	scrollkeeper-private.h unified
+
+2001-06-25 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/Makefile.am: uninstall.c added,
+	libs/uninstall.c: added
+	libs/scrollkeeper-private.h: function prototype added
+	* cl/src/scrollkeeper-uninstall.c: added, uninstall code
+	moved to library
+	cl/src/Makefile.am: uninstall.c renamed to 
+	scrollkeeper-uninstall.c
+	po/POTFILES.in: two files renamed, two files added
+
+2001-06-25 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/install.c, libs/database.c: added
+	libs,Makefile.am: install.c, database.c added
+	libs/scrollkeeper-private.h: some routine prototypes
+	added
+	* cl/src/scrollkeeper-install.c: added, install code moved
+	to the library
+	* cl/src/Makefile.am: install.c renamed to scrollkeeper-install.c
+
+2001-06-20 Laszlo Kovacs  <laszlo.kovacs@sun.com>
+	* cl/src/update.c, cl/src/update.c,
+	cl/src/uninstall.c:
+	more security fixes
+
+2001-06-19 Laszlo Kovacs  <laszlo.kovacs@sun.com>
+	* cl/src/install.c, cl/src/get-cl.c,
+	cl/src/uninstall.c, cl/src/update.c,
+	libs/extract.c: 
+	sprintf() calls replaced with snprintf()
+
+2001-06-19 Mary Dwyer <mary.dwyer@sun.com>
+	* cl/src/uninstall.c
+	  Fix for bug 430496: sk-install doesn't remove index file
+        * cl/src/uninstall.c cl/src/install.c cl/src/preinstall.c
+          Corrected error in Usage message
+        * extract/stylesheets/index.xsl
+          Fixed error in key definitions.
+
+2001-06-18  Laszlo Kovacs  <laszlo.kovacs@sun.com>
+	* libs/file.c, libs/scrollkeeper-private.h: 
+	copy_file() added
+	* cl/src/install.c:
+	copy_file() replaces system cp calls
+
+2001-06-18  Laszlo Kovacs  <laszlo.kovacs@sun.com>
+	* cl/src/get-cl.c, cl/src/install.c, cl/src/uninstall.c,
+	cl/src/update.c, extract/src/scrollkeeper-separate.c: 
+	umask() calls added
+	* libs/extract.c: removed encoding detection hack as encoding
+	detection through custom sgml declaration has been added
+	to libxml2
+
+2001-06-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/install.c, cl/src/update.c, 
+	buildtools/separate.c: mkdir commands changed to mkdir() calls
+
+2001-06-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* extract/src/Makefile.am: scrollkeeper-extract installed
+	(previous change was a mistake)
+	* buildtools/Makefile.am: scrollkeeper-tree-separate not installed
+	* cl/src/preisntall.c: failure returned value changed to 1
+
+2001-06-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* extract/src/Makefile.am: scrollkeeper-extract not installed
+
+2001-06-11  Dan Mueth  <dan@eazel.com>
+
+	Fixing name of xml-i18n-tools for configure.in error message.
+
+	* configure.in:
+
+2001-06-07  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/merge.c, buildtools/separate.c,
+	cl/src/install.c, cl/src/uninstall.c,
+	cl/src/preinstall.c: 
+	xmlChar vs char compatibility problems fixed
+	* libs/merge.c, cl/src/install.c: docuid renamed to
+	docseriesid
+
+2001-06-07  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* buildtools/separate.c: fixing xmlStrcat call problem
+	* cl/templates/Makefile.am: fixing library problem
+	* libuuid/gen_uuid.c, libuuid/pack.c, libuuid/unpack.c,
+	libuuid/uuid_time.c, libuuid/uuidP.h:
+	Solaris iconpatibility problems fixed
+
+2001-06-06  Mary Dwyer <mary.dwyer@sun.com>
+	(committed by Laszlo Kovacs)
+	* extract/stylesheets/index.xsl:
+	added latest version of stylesheet
+
+2001-06-06  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Updating man pages to reflect change in name of
+	scrollkeeper-gen-docuid -> scrollkeeper-gen-seriesid
+
+	* man/man1/Makefile.am:
+	* man/man1/scrollkeeper-config.1:
+	* man/man1/scrollkeeper-gen-docuid.1:
+	* man/man1/scrollkeeper-gen-seriesid.1:
+	* man/man7/scrollkeeper.7:
+	* man/man8/scrollkeeper-preinstall.8:
+	* man/man8/scrollkeeper-rebuilddb.8:
+	* man/man8/scrollkeeper-update.8:
+
+2001-06-06  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* scrollkeeper-spec.txt, scripts/Makefile.am:
+	rename scrollkeeper-gen-docuid to
+	scrollkeeper-gen-seriesid
+
+2001-06-05  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Updating man pages a bit.  Added a couple new man pages, moved
+	a couple to better man sections, and made some minor revisions.
+
+	* configure.in:
+	* man/Makefile.am:
+	* man/man1/Makefile.am:
+	* man/man1/scrollkeeper-config.1:
+	* man/man1/scrollkeeper-gen-docuid.1:
+	* man/man7/Makefile.am:
+	* man/man7/scrollkeeper.7:
+	* man/man8/Makefile.am:
+	* man/man8/scrollkeeper-config.8:
+	* man/man8/scrollkeeper-preinstall.8:
+	* man/man8/scrollkeeper-rebuilddb.8:
+	* man/man8/scrollkeeper-update.8:
+	* scrollkeeper-spec.txt:
+	* scrollkeeper.spec.in:
+
+2001-06-05  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* scrollkeeper-spec.txt: updated with i18n support
+	* configure.in: raising version number to 0.3
+
+2001-06-05  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in, scrollkeeper.spec.in:
+	dependencies added
+	* scrollkeeper-spec.txt, Makefile.am: 
+	scrollkeeper-spec.txt (description of Scrollkeeper)
+	added
+
+2001-06-01 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/extract.c, libs/Makefile.c: SGML->XML conversion added
+	* configure.in: dependencies on docbookx 4.1.2 and 
+	opensp added for non-Solaris platforms
+
+2001-05-30 Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/install.c: memory handling problem fixed
+
+2001-05-30 Mary Dwyer <mary.dwyer@sun.com>
+	reviewed by Laszlo Kovacs <laszlo.kovacs@sun.com>
+
+        * extract/stylesheets/index.xsl, extract/stylesheets/Makefile.am:
+        index stylesheet added
+        * cl/src/install.c: create index file 
+        * scripts/scrollkeeper-get-index-from-docpath.in, 
+          scripts/Makefile.am, configure.in:
+          script to find index file added
+	* configure.in: scrollkeeper-get-index-from-docpath added
+
+2001-05-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/i18n.c: sk_get_language_list() modified
+	* configure.in: check for xml-i18n-tools moved before 
+	macro
+
+2001-05-21  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: libxml2 version 2.3.9 or higher is needed
+	* buildtools/separate.c: property removal fixed
+
+2001-05-21  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: xml-i18n-tools 0.8.4 or higher is required
+
+2001-05-17  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/install.c: implemented relation/seriesid tag
+
+2001-05-16  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* scripts/gen-docuid.c, scripts/Makefile.am:
+	unique id generator added
+	* libs/i18n.c: locale variable query fixed
+
+2001-05-16  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/templates/Makefile.am: LD_LIBRARY_PATH set correctly
+	* scrollkeeper.spec.in: updated according to the latest 
+	build structure
+
+2001-05-16  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libuuid/parse.c, libuuid/compare.c: compile
+	errors fixed
+
+2001-05-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libuuid, Makefile.am, configure.in: libuuid added
+
+2001-05-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/i18n.c: small bug fixed
+	* cl/templates/Makefile.am: new category tree translation procedure 
+	added
+	* buildtools/separate.c: categorycode attribute added to the right 
+	node	
+	* configure.in: cl/templates/* Makefiles removed
+
+2001-05-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* po/it.po, po/nb.po: added
+
+2001-05-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* po/*.po: category tree related messages added
+	* cl/templates/scrollkeeper_cl.xml.in: generic category tree added
+	* cl/templates/Makefile.am: scrollkeeper_cl.xml.in added
+	* po/POTFILES.in: cl/templates/scrollkeeper_cl.xml.in added
+
+2001-05-11  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/merge.c: merging starts from the first available 
+	language tree
+	* libs/i18n.c: C locale added to the end of language
+	list if needed in sk_get_language_list()
+
+2001-05-11  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* autogen.sh, configure.in, .cvsignore, Makefile.am:
+	xml-i18n-tools stuff added
+
+2001-05-10  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* buildtools/separate.c: unique id generation 
+	added by concatenating all the titles down to 
+	the current node
+
+2001-05-10  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* buildtools/separate.c: buildtool for tree
+	separation added
+
+2001-05-09  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* buildtools/*, Makefile.am, configure.in:
+	buildtools subdirectory added, code not complete yet
+
+2001-05-04  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* extract/stylesheets/toc.xsl: toplevel title
+	not output
+
+2001-05-03  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: Scrollkeeper depends on libxml2 version
+	2.3.8 or higher rather than libxml2 from CVS head
+
+2001-05-02  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* extract/stylesheets/toc/xsl: tolevel tag changed to tocsect
+
+2001-05-02  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/scrollkeeper.h, libs/scrollkeeper-private.h:
+	apply_stylesheets() moved from scrollkeeper.h to
+	scrollkeeper-private.h
+	*libs/extract.c: file type parameter added to apply_stylesheets()	
+	* extract/src: file type passed to apply_stylesheets()
+	* cl/src/install.c: TOC extraction based on stylesheets added
+	* cl/templates/da/scrollkeeper_cl.xml,
+	cl/templates/it/scrollkeeper_cl.xml: encoding added
+
+2001-05-02  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/Makefile.am, toc/src/Makefile.am: XSLT_FLAGS added,
+	* libs/Makefile.am: XSLT flags and extract.c added,
+	* libs/scrollkeeper.h: tree.h included,
+	* libs/extract.c: added,
+	* extract/*: added,
+	* po/POTFILES.in: extract/src/scrollkeeper-extract.c,
+	* Makefile.am: extract added to SUBDIRS
+	* configure.in: libxslt dependency and extract module Makefiles added
+	
+
+2001-05-01  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* toc/src/toc.c: move to libxml2
+	* cl/src/install.c, cl/src/preinstall.c,
+	cl/src/uninstall.c: move to libxml2
+	* libs/merge.c: move to libxml2
+	* configure.in: move to libxml2
+
+2001-05-01  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: adding ca to ALL_LINGUAS
+	* confiugre.in: INTLTOOL macro removed
+
+2001-04-25  Dan Mueth  <dan@eazel.com>
+
+	Adding Catalan translations provided by 
+	Pablo Saratxaga <pablo@mandrakesoft.com>.
+
+	* cl/templates/ca/scrollkeeper_cl.xml:
+	* po/ca.po:
+
+2001-04-24  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* small bug fixes
+
+2001-04-24  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/i18n.c: sk_get_language_list()fixed
+	* libs/merge.c: merge_locale_trees() fixed
+	* cl/src/get-cl.c: locale.h included
+
+2001-04-24  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/scrollkeeper.h, libs/merge.c: main
+	tree merge routine added
+	* libs/file.c: created
+	* libs/i18n.c: config.h included
+	* libs/Makefile.am: file.c added
+	* libs/scrollkeeper-private.h: file handling routines added
+	* cl/src/install.c: file handling routines moved to libs/file.c
+	* cl/src/get-cl.c: language list based tree merge added
+
+2001-04-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/scrollkeeper.h, libs/merge.c:
+	language list parsing added to tree merge
+
+2001-04-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/i18n.c: added
+	* libs/scrollkeeper-private.h: sk_get_language_list() added
+	* libs/merge.c: memory allocation check added
+	* libs/Makefile.am: i18n.c added
+
+2001-04-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/srcollkeeper.h: changed completely as this
+	is a new file with an existing file's name
+	* libs/merge.c: initial code of tree merging added
+
+2001-04-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/*.c, toc/src/toc.c, libs/error.c:
+	scrollkeeper.h renamed to scrollkeeper-private.h
+	* libs/scrollkeeper-private.h: added
+
+2001-04-11  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/install.c:
+	bug 413022 fixed, xml parsing made more general
+
+2001-04-11  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* bg_BG.cp1251/Makefile.am bg_BG/Makefile.am de_AT/Makefile.am
+	en_AU/Makefile.am en_GB/Makefile.am en/Makefile.am
+	en_SE/Makefile.am en_UK/Makefile.am en_US/Makefile.am
+	es_DO/Makefile.am es_ES/Makefile.am es_GT/Makefile.am
+	es_HN/Makefile.am es_MX/Makefile.am es_PA/Makefile.am
+	es_PE/Makefile.am es_SV/Makefile.am ja_JP.eucJP/Makefile.am
+	no/Makefile.am no_NY/Makefile.am pt_PT/Makefile.am
+	sr_YU/Makefile.am sv_SE/Makefile.am zh_CN.GB2312/Makefile.am
+	zh_CN/Makefile.am zh_TW.Big5/Makefile.am zh_TW/Makefile.am
+	cl/src/install.c:
+	symlinks to content list files made relative
+
+2001-04-11  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* po/da.po, cl/templates/da/scrollkeeper_cl.xml:
+	updated
+
+2001-04-02  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/preinstall.c, cl/src/install.c:
+	bug 412101 fixed, processing of "file:" prefix
+	added to url in metadata files
+
+2001-04-02  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	po/tr.po: updated
+
+2001-03-29  Dan Mueth  <dan@eazel.com>
+
+	Added draft of ScrollKeeper 0.2 Specifications which
+	Laszlo and I have been working on.
+
+	* doc/scrollkeeper_devel_docs/scrollkeeper-0.2/scrollkeeper_0.2_spe
+	cs.txt:
+
+2001-03-29  Dan Mueth  <dan@eazel.com>
+
+	Updates to man pages: include -v for one app,
+	list files, and put our email addresses.
+
+	* man/man8/scrollkeeper-config.8:
+	* man/man8/scrollkeeper-preinstall.8:
+	* man/man8/scrollkeeper-rebuilddb.8:
+	* man/man8/scrollkeeper-update.8:
+
 2001-03-28  Laszlo Kovacs <laszlo.kovacs@sun.com>
 	* Releasing 0.2 from what we have in the CVS
 	at this point in time

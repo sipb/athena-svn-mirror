@@ -1,5 +1,46 @@
 IMPORTANT!!!
-Use --localstatedir=/var when running configure.
+    Use --localstatedir=/var when running configure to have the ScrollKeeper
+    database installed under /var/lib/scrollkeeper.
+
+Requirements:
+  * libxml2 and libxml2-devel >= 2.4.19
+	- See http://www.xmlsoft.org/
+  * libxslt
+	- See http://www.xmlsoft.org/
+  * intltool >= 0.8.4
+  * docbook-dtd412-xml
+	- Note that it is important that the DTD correctly registers its
+	  files with the XML catalog.  
+        - If the following commands don't return paths to files which exist
+	  on your system, then you need to get new DocBook packages:
+	   (a) xmlcatalog /etc/xml/catalog "-//OASIS//DTD DocBook XML V4.1.2//EN"
+	   (b) xmlcatalog /etc/xml/catalog
+		http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+	- For more information and for tarballs which should work, see 
+	  http://scrollkeeper.sourceforge.net/docbook.shtml
+  * docbook-xsl-1.48
+	- See comments above for docbook-dtd412-xml
+  * (Note that openjade is no longer required.)
+
+  Note: Some people have had odd problems with building ScrollKeeper on certain
+  systems.  It appears to be because they have old versions of gettext,
+  iconv, or the requirements listed above.  If you have problems, make sure
+  you have recent versions of these packages.
+ 
+Typically, just do:
+  $ ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc
+  $ make
+  $ make install 
+
+If you will would like to customize the paths where ScrollKeeper searches for 
+OMF files, use the --with-omfdirs option to configure. eg:
+  $ ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc --with-omfdirs=/usr/share/omf:/usr/local/share/omf:/opt/gnome/share/omf:/opt/gnome-2.0/share/omf:/opt/kde/omf/gnome/head/INSTALL/share/oaf:/usr/share/gnome/omf
+
+Note that the default is to search the paths: /usr/share/omf:/usr/local/share/omf:/opt/gnome/share/omf:/opt/gnome-2.0/share/omf:/opt/kde/omf
+
+The default path is stored in $sysconfdir/scrollkeeper.conf and can be modified
+after installation.
+
 
 Basic Installation
 ==================

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -67,47 +67,73 @@ target_alias = @target_alias@
 target_triplet = @target@
 AS = @AS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+HOST_TYPE = @HOST_TYPE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
+INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL = @INTLTOOL@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_REQUIRED = @INTLTOOL_REQUIRED@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+LIBICONV = @LIBICONV@
 LIBTOOL = @LIBTOOL@
+LIBXML2_REQUIRED = @LIBXML2_REQUIRED@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OMFDIRS = @OMFDIRS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SCROLLKEEPER_PARTIAL_DB_DIR = @SCROLLKEEPER_PARTIAL_DB_DIR@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_LIBS = @XML_LIBS@
-l = @l@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 
-SUBDIRS = libs cl toc scripts man doc intl po omf-install
+SUBDIRS = libuuid libs buildtools config cl extract scripts man intl po doc
 
-EXTRA_DIST = scrollkeeper.spec COPYING-DOCS
+EXTRA_DIST = scrollkeeper.spec.in COPYING-DOCS TODO intltool-extract.in intltool-merge.in intltool-update.in scrollkeeper-spec.txt
 
 scrollkeeperdocdir = $(datadir)/doc/scrollkeeper-$(VERSION)
 scrollkeeperdoc_DATA = COPYING-DOCS
+scrollkeeper_localstate_dir = $(localstatedir)/lib/scrollkeeper
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -115,8 +141,8 @@ CONFIG_CLEAN_FILES =  scrollkeeper.spec
 DATA =  $(scrollkeeperdoc_DATA)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS acconfig.h aclocal.m4 config.guess \
-config.h.in config.sub configure configure.in install-sh ltconfig \
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
+config.guess config.h.in config.sub configure configure.in install-sh \
 ltmain.sh missing mkinstalldirs scrollkeeper.spec.in
 
 
@@ -226,7 +252,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -337,6 +363,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 info-am:
 info: info-recursive
 dvi-am:
@@ -352,12 +379,14 @@ install-exec-am:
 install-exec: install-exec-recursive
 
 install-data-am: install-scrollkeeperdocDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-scrollkeeperdocDATA
+uninstall-am: uninstall-scrollkeeperdocDATA uninstall-local
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
@@ -409,10 +438,28 @@ maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
 install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs-am \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+install uninstall-local uninstall-am uninstall all-redirect all-am all \
+installdirs-am installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
+
+dist-hook: scrollkeeper.spec
+	cp scrollkeeper.spec $(distdir)
+
+install-data-hook:
+	# Build/rebuild the catalog
+	rm -rf $(DESTDIR)$(scrollkeeper_localstate_dir)
+	$(mkinstalldirs) $(DESTDIR)$(scrollkeeper_localstate_dir)
+	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/log
+	echo "`date +\"%b %d %X\"` Installing ScrollKeeper `scrollkeeper-config --version`..." >> $(DESTDIR)$(localstatedir)/log/scrollkeeper.log
+	$(DESTDIR)$(bindir)/scrollkeeper-rebuilddb -q -p $(DESTDIR)$(scrollkeeper_localstate_dir)
+
+uninstall-local:
+	# Remove generated files
+	-rm -rf $(DESTDIR)$(scrollkeeper_localstate_dir)
+	-rm -f $(DESTDIR)$(localstatedir)/log/scrollkeeper.log
+	-rm -f $(DESTDIR)$(localstatedir)/log/scrollkeeper.log.1
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
