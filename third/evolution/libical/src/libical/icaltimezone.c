@@ -4,7 +4,7 @@
  CREATOR: Damon Chaplin 15 March 2001
 
 
- $Id: icaltimezone.c,v 1.1.1.2 2001-11-08 23:20:20 ghudson Exp $
+ $Id: icaltimezone.c,v 1.1.1.3 2001-12-03 17:46:31 ghudson Exp $
  $Locker:  $
 
  (C) COPYRIGHT 2001, Damon Chaplin
@@ -1119,6 +1119,11 @@ icaltimezone_get_tzid			(icaltimezone	*zone)
     /* If this is a floating time, without a timezone, return NULL. */
     if (!zone)
 	return NULL;
+
+    /* Initialize the builtin timezones, to ensure that the UTC timezone has
+       its TZID set. */
+    if (!builtin_timezones)
+	icaltimezone_init_builtin_timezones ();
 
     if (!zone->component)
 	icaltimezone_load_builtin_timezone (zone);

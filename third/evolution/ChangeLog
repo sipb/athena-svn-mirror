@@ -1,3 +1,79 @@
+2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
+ 
+ 	* README: Updated. Don't say that the user needs to copy their
+ 	mozilla database files into ~/evolution, since Evolution now
+ 	builds it's own default database files if they don't exist and
+ 	also remove instructions for building with OpenSSL.
+ 
+ 	* acconfig.h: Remove HAVE_OPENSSL define
+ 
+ 	* configure.in: Remove checks for OpenSSL libraries.
+ 
+2001-11-21  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Version 1.0.  Require GtkHTML 1.0.
+
+	* data/evolution.desktop.in: Say "Ximian Evolution", not
+	"Evolution".
+
+2001-11-20  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Re-Added zh_CN. It is checked 
+	against gettext 0.10.40 and 0.10.35 without any problem. 
+	Please contact me if anyone wants to disable it (AGAIN).
+
+2001-11-19  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: I will keep adding zh_TW to ALL_LINGUAS before
+	  somebody is willing to tell me why it is deleted without
+	  reason. It was checked against newest gettext (0.10.40) and
+	  older gettext (0.10.35) without any problem. A few
+	  translations are not removed from ALL_LINGUAS even though
+	  they failed in msgfmt checking.
+
+2001-11-14  Ettore Perazzoli  <ettore@ximian.com>
+
+	* README: Updated.
+
+	* configure.in: 0.99.2.  Require gtkhtml 0.16.1 and GAL 0.18.1.
+
+2001-11-14  Ettore Perazzoli  <ettore@ximian.com>
+
+	* NEWS: Redone with the bug #s from Bugzilla.
+
+2001-11-14  Federico Mena Quintero  <federico@ximian.com>
+
+	* NEWS: Calendar/tasks NEWS.
+
+2001-11-13  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: restore cflags and ldflags properly
+
+2001-11-12  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: save the ldflags properly
+
+2001-11-09  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: Check to make sure pilot-link has the charset
+	conversion stuff enabled
+
+2001-11-09  Ettore Perazzoli  <ettore@ximian.com>
+
+	* tools/killev: Chop the output from `uname -s'.  Thanks to
+	Michael Gerdts for suggesting the fix.
+
+2001-11-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Re-added zh_TW to ALL_LINGUAS. Translator keep
+	  complaining to me, and waste a month before discovering it was
+	  disabled while I know nothing about it. Please at least complain
+	  to me if it's gettext problem.
+
+2001-11-06  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Up to 0.99.1 for snapshot purposes.
+
 2001-11-05  Ettore Perazzoli  <ettore@ximian.com>
 
 	* configure.in: Upgrade version number to 0.99.0.  Require GtkHTML

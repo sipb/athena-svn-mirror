@@ -51,7 +51,7 @@ omf: omf_timestamp
 omf_timestamp: $(omffile)
 	-for file in $(srcdir)/$(omffile); do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  scrollkeeper-preinstall $(docdir)/$(docname).sgml $$file $(omf_dir)/$$basefile; \
+	  scrollkeeper-preinstall $(docdir)/index.html $$file $(omf_dir)/$$basefile; \
 	done
 	touch omf_timestamp
 
@@ -86,14 +86,19 @@ app-dist-hook: index.html
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  cp $$file $(distdir)/$(docname)/stylesheet-images/$$basefile ; \
 	done
-	-if [ -e topic.dat ]; then \
+	-if [ -f topic.dat ]; then \
 		cp $(srcdir)/topic.dat $(distdir); \
 	 fi
 
 install-data-am: index.html omf
 	-$(mkinstalldirs) $(DESTDIR)$(docdir)/stylesheet-images
 	-$(mkinstalldirs) $(DESTDIR)$(docdir)/figures
-	-cp $(srcdir)/$(sgml_files) $(DESTDIR)$(docdir)
+	-$(mkinstalldirs) $(DESTDIR)$(docdir)/sgml
+
+	-for file in $(sgml_files); do \
+         $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(docdir)/sgml ; \
+        done
+
 	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$$basefile; \
@@ -106,7 +111,7 @@ install-data-am: index.html omf
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
 	done
-	-if [ -e $(srcdir)/topic.dat ]; then \
+	-if [ -f $(srcdir)/topic.dat ]; then \
 		$(INSTALL_DATA) $(srcdir)/topic.dat $(DESTDIR)$(docdir); \
 	 fi
 

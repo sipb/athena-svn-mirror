@@ -1,3 +1,164 @@
+2001-11-14  Damon Chaplin  <damon@ximian.com>
+
+	* gui/print.c: Substituted gnome_font_get_width_string() with
+	gnome_font_get_width_utf8() and gnome_font_get_width_string_n()
+	with gnome_font_get_width_utf8_sized(). Fixes calendar part of #15379.
+
+2001-11-14  Federico Mena Quintero  <federico@ximian.com>
+
+	* gui/calendar-model.c (date_value_to_string): Convert the buffer
+	to UTF8.
+	(calendar_model_value_to_string): Do not convert the string fields
+	to UTF8 again; they are already in UTF8.  Fixes the UTF8-related
+	bits of bug #15304.
+
+2001-11-14  Damon Chaplin  <damon@ximian.com>
+
+	* gui/calendar-model.c: 
+	* cal-util/cal-component.h: #ifdef'ed out the LOCATION field for now,
+	since it wasn't supported everywhere, or in the .etspec file.
+
+2001-11-14  Damon Chaplin  <damon@ximian.com>
+
+	* gui/e-calendar-table.c: don't abort when e_table_selected_count()
+	returns odd values. There seems to be a bug in ETable. This is to
+	avoid bug #13843.
+
+2001-11-13  Federico Mena Quintero  <federico@ximian.com>
+
+	(committed to CVS by Damon)
+	Fixes bug #15137.
+	
+	* gui/e-day-view.c (e_day_view_on_delete_appointment): Do not try
+	to operate on the event if it gets deleted while stopping the
+	edition.
+	(e_day_view_on_event_double_click): Likewise.
+	(e_day_view_on_long_event_button_press): Likewise.
+	(e_day_view_on_event_button_press): Likewise.
+	(e_day_view_on_long_event_click): Likewise.
+	(e_day_view_on_event_click): Likewise.
+
+	* gui/e-week-view.c (e_week_view_on_text_item_event): Likewise.
+
+2001-11-14  JP Rosevear  <jpr@ximian.com>
+
+	* conduits/calendar/calendar-conduit.c (pre_sync): remove silly
+	debug warning
+
+2001-11-13  Damon Chaplin  <damon@ximian.com>
+
+	* gui/alarm-notify/config-data.c (ensure_inited): 
+	* gui/calendar-config.c (config_read): 
+	* conduits/todo/todo-conduit.c (get_default_timezone): 
+	* conduits/calendar/calendar-conduit.c (get_default_timezone): 
+	make the timezone default to UTC. Fixes bug #14362.
+
+2001-11-13  Rodrigo Moya <rodrigo@ximian.com>
+
+	* gui/e-week-view.c (selection_received): only change the day,
+	month and year for the start date, for not screwing up the start
+	time, which was being set to midnight always (Fixes Ximian #5287)
+	Also, deal correctly with VCALENDAR components
+	
+	* gui/e-day-view.c (selection_received): dela correctly with
+	VCALENDAR components being pasted
+
+2001-11-11  Federico Mena Quintero  <federico@ximian.com>
+
+	* gui/alarm-notify/save.c (get_calendars_to_load): The last
+	argument to the bonobo_config_get_XXX_with_default() is a gboolean
+	*, not a CORBA_Environment *.  Fixes bug #14655.
+
+2001-11-11  JP Rosevear  <jpr@ximian.com>
+
+ 	* pcs/cal-backend-file.c (free_busy_instance): recurrence
+ 	expansion callback for free/busy
+ 	(create_user_free_busy): expand recurrences and use date/time
+ 	values for dtstart and dtend
+ 
+2001-11-11  JP Rosevear  <jpr@ximian.com>
+
+	* gui/e-meeting-model.h: new protos
+
+	* gui/e-meeting-model.c (e_meeting_model_get_zone): accessor
+	(e_meeting_model_set_zone): ditto
+	(init): init to the calendar default zone
+	(process_free_busy_comp): take the zone to convert to as a param
+	(e_meeting_model_refresh_busy_periods): redraw properly
+
+	* gui/dialogs/schedule-page.c (update_time): set the zone of the
+	model
+
+2001-11-09  Damon Chaplin  <damon@ximian.com>
+
+	* gui/e-week-view.c (e_week_view_key_press): don't subtract a day
+	from DTEND. For DATE values we don't include the entire day now.
+	Fixes bug #14842.
+
+2001-11-09  Damon Chaplin  <damon@ximian.com>
+
+	* gui/e-week-view-layout.c (e_week_view_layout_events): fix buffer
+	overflow. Fixes bug #10285 (the printing of lines & dates in the
+	printout of the month view).
+
+2001-11-09  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gui/dialogs/meeting-page.c
+	(meeting_page_fill_widgets): Convert strings to GTK+ encoding.
+	(meeting_page_destroy): Free allocated strings before freeing the list
+	itself.
+
+2001-11-08  JP Rosevear  <jpr@ximian.com>
+
+	* gui/e-meeting-time-sel.c
+	(e_meeting_time_selector_timeout_handler): don't let an empty
+	event occur for all days when auto scrolling
+
+2001-11-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* pcs/cal-backend-file.c 
+	(cal_backend_file_compute_changes_foreach_key): don't leak the
+	string returned by cal_component_get_as_string nor the temporary
+	CalComponent we create
+
+2001-11-08  JP Rosevear  <jpr@ximian.com>
+	
+ 	* gui/e-itip-control.c (ok_clicked_cb): don't add the item, remove
+ 	it if declining (in case it was added before)
+ 	(remove_item): Since we can't discern between an item not found
+ 	and another error, always say the removal is complete
+
+2001-11-07  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gui/e-cell-date-edit-text.c (ecd_get_text):
+	Convert generated string to UTF-8.
+
+2001-11-07  JP Rosevear  <jpr@ximian.com>
+
+ 	* gui/e-meeting-time-sel.c
+ 	(e_meeting_time_selector_on_start_time_changed): emit changed
+ 	signal
+ 	(e_meeting_time_selector_on_end_time_changed): emit changed
+ 	signal, if end time is now before start time and all day event,
+ 	make sure a whole day is still selected
+ 	(e_meeting_time_selector_drag_meeting_time): calculate the first
+ 	and last_time's in whole days for all day events
+ 	(e_meeting_time_selector_timeout_handler): calculate the drag time
+ 	to be whole days for all day events and scroll the canvas even if
+ 	we don't update the time so the user can see where they're headed
+
+2001-11-06  JP Rosevear  <jpr@ximian.com>
+
+	* gui/dialogs/event-editor.c (event_editor_edit_comp): make sure
+	to remove all attendees from the model when we edit a new comp,
+	append the pages if they are needed and we weren't showing them
+	before
+
+	* gui/dialogs/task-editor.c (task_editor_edit_comp): same as above
+
+ 	* gui/dialogs/comp-editor.c (comp_editor_remove_page): check for a
+ 	return value indicating the page was not found and return if so
+ 
 2001-11-05  Ettore Perazzoli  <ettore@ximian.com>
 
 	* gui/dialogs/e-delegate-dialog.c: #include

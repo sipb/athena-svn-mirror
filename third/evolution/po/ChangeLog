@@ -1,3 +1,161 @@
+2001-11-21  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* POTFILES.in: Remove camel/camel-tcp-stream-openssl.c
+
+2001-11-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-11-20  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Minor QA by Wang Jian.
+
+2001-11-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-11-20  Hector Garcia Alavrez <hector@scouts-es.org>
+
+	* es.po: Updated Spanish translation, last fuzzy string fixed
+	
+2001-11-20  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Some QA.
+
+2001-11-20  Hector Garcia Alavrez <hector@scouts-es.org>
+
+	* es.po: Updated Spanish translation
+
+2001-11-20  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Converted to UTF-8.
+
+2001-11-20  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-20  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated by Wang Jian.
+
+2001-11-19  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Jian(Merged from HEAD), and gettext-0.10.40 compatible.
+
+2001-11-19  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-11-18  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated + normalised Greek translation.
+
+2001-11-18  Administrator  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-11-16  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2001-11-14  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2001-11-14  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-13  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-11-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-11-13  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2001-11-13  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-11-11  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-11-11  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2001-11-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-11-10  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+	
+2001-11-10  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-11-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-11-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Convert to UTF8.
+
+2001-11-09  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Some QA changes.
+
+2001-11-09  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* fr.po: Fix error in French translation
+
+2001-11-08  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-11-08  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-11-08  Jarkko Ranta  <jjranta@cc.joensuu.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2001-11-08  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-07  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation. Added patches from Carlos
+	Perello.
+	
+2001-11-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Merged to new pot file.
+
+2001-11-07  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Small update of Norwegian (nynorsk) translation. 
+
 2001-11-05  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* pl.po: Updated Polish translation by

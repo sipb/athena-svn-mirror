@@ -101,10 +101,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalObj
       *CORBA_sequence_GNOME_Evolution_Calendar_CalObj__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalObj__free(gpointer mem,
-							   gpointer dat,
-							   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalObj__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalObjSeq_defined)
 #define _GNOME_Evolution_Calendar_CalObjSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalObj
@@ -134,9 +131,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjSeq
       *GNOME_Evolution_Calendar_CalObjSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjSeq__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_CalObjUID_defined)
 #define _GNOME_Evolution_Calendar_CalObjUID_defined 1
@@ -222,9 +217,7 @@ extern "C"
 #endif
    extern CORBA_sequence_CORBA_string
       *CORBA_sequence_CORBA_string__alloc(void);
-   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
-						     gpointer dat,
-						     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_StringSeq_defined)
 #define _GNOME_Evolution_Calendar_StringSeq_defined 1
    typedef CORBA_sequence_CORBA_string GNOME_Evolution_Calendar_StringSeq;
@@ -253,9 +246,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_StringSeq
       *GNOME_Evolution_Calendar_StringSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_StringSeq__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_StringSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID) && !defined(_CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID_defined)
 #define ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID 1
@@ -315,10 +306,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID
       *CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID__free(gpointer mem,
-							      gpointer dat,
-							      CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalObjUIDSeq_defined)
 #define _GNOME_Evolution_Calendar_CalObjUIDSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalObjUID
@@ -348,9 +336,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjUIDSeq
       *GNOME_Evolution_Calendar_CalObjUIDSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjUIDSeq__free(gpointer mem,
-							       gpointer dat,
-							       CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjUIDSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_CalTimezoneObj_defined)
 #define _GNOME_Evolution_Calendar_CalTimezoneObj_defined 1
@@ -653,9 +639,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjInstance
       *GNOME_Evolution_Calendar_CalObjInstance__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjInstance__free(gpointer mem,
-								 gpointer dat,
-								 CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjInstance__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance) && !defined(_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_defined)
 #define ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance 1
@@ -715,12 +699,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance
       *CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance__free(gpointer
-								   mem,
-								   gpointer
-								   dat,
-								   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalObjInstanceSeq_defined)
 #define _GNOME_Evolution_Calendar_CalObjInstanceSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance
@@ -750,11 +729,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjInstanceSeq
       *GNOME_Evolution_Calendar_CalObjInstanceSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjInstanceSeq__free(gpointer
-								    mem,
-								    gpointer
-								    dat,
-								    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjInstanceSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_CalObjChange_defined)
 #define _GNOME_Evolution_Calendar_CalObjChange_defined 1
@@ -790,9 +765,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjChange
       *GNOME_Evolution_Calendar_CalObjChange__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjChange__free(gpointer mem,
-							       gpointer dat,
-							       CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjChange__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange) && !defined(_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_defined)
 #define ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange 1
@@ -852,10 +825,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange
       *CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange__free(gpointer mem,
-								 gpointer dat,
-								 CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalObjChangeSeq_defined)
 #define _GNOME_Evolution_Calendar_CalObjChangeSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange
@@ -885,11 +855,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalObjChangeSeq
       *GNOME_Evolution_Calendar_CalObjChangeSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalObjChangeSeq__free(gpointer
-								  mem,
-								  gpointer
-								  dat,
-								  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalObjChangeSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_CalAlarmInstance_defined)
 #define _GNOME_Evolution_Calendar_CalAlarmInstance_defined 1
@@ -927,11 +893,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalAlarmInstance
       *GNOME_Evolution_Calendar_CalAlarmInstance__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalAlarmInstance__free(gpointer
-								   mem,
-								   gpointer
-								   dat,
-								   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalAlarmInstance__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance) && !defined(_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_defined)
 #define ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance 1
@@ -991,12 +953,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance
       *CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance__free(gpointer
-								     mem,
-								     gpointer
-								     dat,
-								     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_defined)
 #define _GNOME_Evolution_Calendar_CalAlarmInstanceSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance
@@ -1026,11 +983,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalAlarmInstanceSeq
       *GNOME_Evolution_Calendar_CalAlarmInstanceSeq__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalAlarmInstanceSeq__free(gpointer
-								      mem,
-								      gpointer
-								      dat,
-								      CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalAlarmInstanceSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_CalComponentAlarms_defined)
 #define _GNOME_Evolution_Calendar_CalComponentAlarms_defined 1
@@ -1066,11 +1019,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalComponentAlarms
       *GNOME_Evolution_Calendar_CalComponentAlarms__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_CalComponentAlarms__free(gpointer
-								     mem,
-								     gpointer
-								     dat,
-								     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalComponentAlarms__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms) && !defined(_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_defined)
 #define ORBIT_DECL_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms 1
@@ -1131,9 +1080,7 @@ extern "C"
    extern CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms
       *CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms__alloc
       (void);
-   extern gpointer
-      CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms__free
-      (gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_CalComponentAlarmsSeq_defined)
 #define _GNOME_Evolution_Calendar_CalComponentAlarmsSeq_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms
@@ -1163,10 +1110,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_CalComponentAlarmsSeq
       *GNOME_Evolution_Calendar_CalComponentAlarmsSeq__alloc(void);
-   extern gpointer
-      GNOME_Evolution_Calendar_CalComponentAlarmsSeq__free(gpointer mem,
-							   gpointer dat,
-							   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalComponentAlarmsSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_Calendar_User_defined)
 #define _GNOME_Evolution_Calendar_User_defined 1
@@ -1254,11 +1198,7 @@ extern "C"
 #endif
    extern CORBA_sequence_GNOME_Evolution_Calendar_User
       *CORBA_sequence_GNOME_Evolution_Calendar_User__alloc(void);
-   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_User__free(gpointer
-								      mem,
-								      gpointer
-								      dat,
-								      CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_GNOME_Evolution_Calendar_User__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_Evolution_Calendar_UserList_defined)
 #define _GNOME_Evolution_Calendar_UserList_defined 1
    typedef CORBA_sequence_GNOME_Evolution_Calendar_User
@@ -1288,9 +1228,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_Calendar_UserList
       *GNOME_Evolution_Calendar_UserList__alloc(void);
-   extern gpointer GNOME_Evolution_Calendar_UserList__free(gpointer mem,
-							   gpointer dat,
-							   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_UserList__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_Query) && !defined(_GNOME_Evolution_Calendar_Query_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_Query 1
@@ -1454,9 +1392,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_Cal_NotFound ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_NotFound_struct)
 #endif
 #define GNOME_Evolution_Calendar_Cal_NotFound__alloc() NULL
-   extern gpointer GNOME_Evolution_Calendar_Cal_NotFound__free(gpointer mem,
-							       gpointer dat,
-							       CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_Cal_NotFound__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_Cal_InvalidRange "IDL:GNOME/Evolution/Calendar/Cal/InvalidRange:1.0"
    void
@@ -1500,11 +1436,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_Cal_InvalidRange ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_InvalidRange_struct)
 #endif
 #define GNOME_Evolution_Calendar_Cal_InvalidRange__alloc() NULL
-   extern gpointer GNOME_Evolution_Calendar_Cal_InvalidRange__free(gpointer
-								   mem,
-								   gpointer
-								   dat,
-								   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_Cal_InvalidRange__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_Cal_InvalidObject "IDL:GNOME/Evolution/Calendar/Cal/InvalidObject:1.0"
    void
@@ -1548,11 +1480,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_Cal_InvalidObject ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_InvalidObject_struct)
 #endif
 #define GNOME_Evolution_Calendar_Cal_InvalidObject__alloc() NULL
-   extern gpointer GNOME_Evolution_Calendar_Cal_InvalidObject__free(gpointer
-								    mem,
-								    gpointer
-								    dat,
-								    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_Cal_InvalidObject__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_Cal_CouldNotCreate "IDL:GNOME/Evolution/Calendar/Cal/CouldNotCreate:1.0"
    void
@@ -1593,11 +1521,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_Cal_CouldNotCreate ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_CouldNotCreate_struct)
 #endif
 #define GNOME_Evolution_Calendar_Cal_CouldNotCreate__alloc() NULL
-   extern gpointer GNOME_Evolution_Calendar_Cal_CouldNotCreate__free(gpointer
-								     mem,
-								     gpointer
-								     dat,
-								     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_Cal_CouldNotCreate__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_Listener) && !defined(_GNOME_Evolution_Calendar_Listener_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_Listener 1
@@ -1857,10 +1781,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CalFactory_NilListener ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CalFactory_NilListener_struct)
 #endif
 #define GNOME_Evolution_Calendar_CalFactory_NilListener__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CalFactory_NilListener__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalFactory_NilListener__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI "IDL:GNOME/Evolution/Calendar/CalFactory/InvalidURI:1.0"
    void
@@ -1901,10 +1822,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CalFactory_InvalidURI ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CalFactory_InvalidURI_struct)
 #endif
 #define GNOME_Evolution_Calendar_CalFactory_InvalidURI__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CalFactory_InvalidURI__free(gpointer mem,
-							   gpointer dat,
-							   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalFactory_InvalidURI__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod "IDL:GNOME/Evolution/Calendar/CalFactory/UnsupportedMethod:1.0"
    void
@@ -1945,12 +1863,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod_struct)
 #endif
 #define GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__free(gpointer
-								  mem,
-								  gpointer
-								  dat,
-								  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_AlarmNotify) && !defined(_GNOME_Evolution_Calendar_AlarmNotify_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_AlarmNotify 1
@@ -2021,10 +1934,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_AlarmNotify_InvalidURI ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_AlarmNotify_InvalidURI_struct)
 #endif
 #define GNOME_Evolution_Calendar_AlarmNotify_InvalidURI__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_AlarmNotify_InvalidURI__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_AlarmNotify_InvalidURI__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_AlarmNotify_BackendContactError "IDL:GNOME/Evolution/Calendar/AlarmNotify/BackendContactError:1.0"
    void
@@ -2065,12 +1975,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_AlarmNotify_BackendContactError ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_AlarmNotify_BackendContactError_struct)
 #endif
 #define GNOME_Evolution_Calendar_AlarmNotify_BackendContactError__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_AlarmNotify_BackendContactError__free(gpointer
-								     mem,
-								     gpointer
-								     dat,
-								     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_AlarmNotify_BackendContactError__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_AlarmNotify_NotFound "IDL:GNOME/Evolution/Calendar/AlarmNotify/NotFound:1.0"
    void
@@ -2111,10 +2016,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_AlarmNotify_NotFound ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_AlarmNotify_NotFound_struct)
 #endif
 #define GNOME_Evolution_Calendar_AlarmNotify_NotFound__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_AlarmNotify_NotFound__free(gpointer mem,
-							  gpointer dat,
-							  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_AlarmNotify_NotFound__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_CompEditorFactory) && !defined(_GNOME_Evolution_Calendar_CompEditorFactory_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_CompEditorFactory 1
@@ -2186,12 +2088,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI_struct)
 #endif
 #define GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI__free(gpointer
-								  mem,
-								  gpointer
-								  dat,
-								  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError "IDL:GNOME/Evolution/Calendar/CompEditorFactory/BackendContactError:1.0"
    void
@@ -2232,9 +2129,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError_struct)
 #endif
 #define GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError__free
-      (gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType "IDL:GNOME/Evolution/Calendar/CompEditorFactory/UnsupportedType:1.0"
    void
@@ -2275,9 +2170,7 @@ extern "C"
 #define TC_GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType_struct)
 #endif
 #define GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType__alloc() NULL
-   extern gpointer
-      GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType__free
-      (gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 
 /** POA structures **/
@@ -2302,8 +2195,7 @@ extern "C"
 				  const
 				  GNOME_Evolution_Calendar_CalTimezoneObjUID
 				  tzid, CORBA_Environment * ev);
-      
-	 GNOME_Evolution_Calendar_CalTimezoneObj(*getTimezoneObject)
+       GNOME_Evolution_Calendar_CalTimezoneObj(*getTimezoneObject)
 	 (PortableServer_Servant _servant,
 	  const GNOME_Evolution_Calendar_CalTimezoneObjUID tzid,
 	  CORBA_Environment * ev);

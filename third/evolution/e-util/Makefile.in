@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -267,7 +265,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libeutil_la_SOURCES) $(libeutil_static_la_SOURCES) $(libeconduit_la_SOURCES) $(libeconduit_static_la_SOURCES) $(libedb3util_la_SOURCES)
 OBJECTS = $(libeutil_la_OBJECTS) $(libeutil_static_la_OBJECTS) $(libeconduit_la_OBJECTS) $(libeconduit_static_la_OBJECTS) $(libedb3util_la_OBJECTS)
@@ -465,45 +463,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-e-bonobo-factory-util.lo e-bonobo-factory-util.o : \
-	e-bonobo-factory-util.c ../config.h e-bonobo-factory-util.h
-e-categories-config.lo e-categories-config.o : e-categories-config.c \
-	e-categories-config.h e-categories-master-list-wombat.h
-e-categories-master-list-wombat.lo e-categories-master-list-wombat.o : \
-	e-categories-master-list-wombat.c ../config.h \
-	e-categories-master-list-wombat.h e-categories-config.h
-e-corba-utils.lo e-corba-utils.o : e-corba-utils.c ../config.h \
-	e-corba-utils.h
-e-db3-utils.lo e-db3-utils.o : e-db3-utils.c ../config.h e-db3-utils.h
-e-dbhash.lo e-dbhash.o : e-dbhash.c ../config.h e-dbhash.h md5-utils.h
-e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c e-dialog-utils.h \
-	../widgets/misc/e-bonobo-widget.h
-e-dialog-widgets.lo e-dialog-widgets.o : e-dialog-widgets.c ../config.h \
-	e-dialog-widgets.h
-e-gtk-utils.lo e-gtk-utils.o : e-gtk-utils.c ../config.h e-gtk-utils.h
-e-gui-utils.lo e-gui-utils.o : e-gui-utils.c ../config.h e-gui-utils.h
-e-host-utils.lo e-host-utils.o : e-host-utils.c ../config.h \
-	e-host-utils.h
-e-html-utils.lo e-html-utils.o : e-html-utils.c e-html-utils.h
-e-iterator.lo e-iterator.o : e-iterator.c ../config.h e-iterator.h
-e-list-iterator.lo e-list-iterator.o : e-list-iterator.c ../config.h \
-	e-list-iterator.h e-iterator.h e-list.h e-list-iterator.h \
-	e-list.h
-e-list.lo e-list.o : e-list.c ../config.h e-list.h e-list-iterator.h \
-	e-iterator.h e-list.h e-list-iterator.h
-e-memory.lo e-memory.o : e-memory.c e-memory.h
-e-mktemp.lo e-mktemp.o : e-mktemp.c e-mktemp.h ../config.h
-e-msgport.lo e-msgport.o : e-msgport.c e-msgport.h
-e-passwords.lo e-passwords.o : e-passwords.c ../config.h e-passwords.h
-e-path.lo e-path.o : e-path.c ../config.h e-path.h
-e-request.lo e-request.o : e-request.c ../config.h e-request.h
-e-sexp.lo e-sexp.o : e-sexp.c e-sexp.h e-memory.h
-e-time-utils.lo e-time-utils.o : e-time-utils.c ../config.h \
-	e-time-utils.h
-e-unicode-i18n.lo e-unicode-i18n.o : e-unicode-i18n.c ../config.h \
-	e-unicode-i18n.h
-e-url.lo e-url.o : e-url.c ../config.h e-url.h
-md5-utils.lo md5-utils.o : md5-utils.c md5-utils.h
 
 info-am:
 info: info-recursive

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -256,7 +254,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(evolution_executive_summary_SOURCES)
 OBJECTS = $(evolution_executive_summary_OBJECTS)
@@ -447,82 +445,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-Mail-common.o: Mail-common.c Mail.h
-Mail-skels.o: Mail-skels.c Mail.h
-Mail-stubs.o: Mail-stubs.c Mail.h
-component-factory.o: component-factory.c ../config.h \
-	../shell/evolution-shell-component.h ../shell/Evolution.h \
-	../shell/evolution-shell-client.h e-summary-factory.h \
-	e-summary-offline-handler.h e-summary.h e-summary-type.h \
-	e-summary-mail.h e-summary-calendar.h e-summary-rdf.h \
-	e-summary-weather.h e-summary-tasks.h \
-	../libical/src/libical/ical.h component-factory.h
-e-summary-calendar.o: e-summary-calendar.c ../config.h \
-	e-summary-calendar.h e-summary-type.h e-summary.h \
-	e-summary-mail.h ../shell/Evolution.h e-summary-rdf.h \
-	e-summary-weather.h e-summary-tasks.h \
-	../libical/src/libical/ical.h \
-	../calendar/cal-client/cal-client.h \
-	../calendar/cal-util/cal-recur.h \
-	../calendar/cal-util/cal-component.h \
-	../calendar/cal-util/cal-util.h \
-	../calendar/cal-client/cal-query.h \
-	../calendar/cal-client/evolution-calendar.h \
-	../calendar/cal-util/timeutil.h
-e-summary-factory.o: e-summary-factory.c ../config.h \
-	../e-util/e-gui-utils.h e-summary.h e-summary-type.h \
-	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
-	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
-	../libical/src/libical/ical.h e-summary-factory.h \
-	e-summary-offline-handler.h e-summary-preferences.h \
-	../shell/evolution-shell-component-utils.h
-e-summary-mail.o: e-summary-mail.c ../config.h Mail.h e-summary.h \
-	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
-	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
-	e-summary-tasks.h ../libical/src/libical/ical.h \
-	../e-util/e-path.h ../shell/evolution-storage-listener.h
-e-summary-offline-handler.o: e-summary-offline-handler.c ../config.h \
-	e-summary-offline-handler.h e-summary.h e-summary-type.h \
-	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
-	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
-	../libical/src/libical/ical.h
-e-summary-preferences.o: e-summary-preferences.c ../config.h e-summary.h \
-	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
-	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
-	e-summary-tasks.h ../libical/src/libical/ical.h \
-	e-summary-preferences.h
-e-summary-rdf.o: e-summary-rdf.c ../config.h e-summary.h \
-	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
-	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
-	e-summary-tasks.h ../libical/src/libical/ical.h
-e-summary-tasks.o: e-summary-tasks.c ../config.h e-summary-tasks.h \
-	e-summary-type.h e-summary.h e-summary-mail.h \
-	../shell/Evolution.h e-summary-calendar.h e-summary-rdf.h \
-	e-summary-weather.h ../libical/src/libical/ical.h \
-	../calendar/cal-client/cal-client.h \
-	../calendar/cal-util/cal-recur.h \
-	../calendar/cal-util/cal-component.h \
-	../calendar/cal-util/cal-util.h \
-	../calendar/cal-client/cal-query.h \
-	../calendar/cal-client/evolution-calendar.h \
-	../calendar/cal-util/timeutil.h
-e-summary-weather.o: e-summary-weather.c ../config.h e-summary.h \
-	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
-	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
-	e-summary-tasks.h ../libical/src/libical/ical.h weather.h \
-	metar.h
-e-summary.o: e-summary.c ../config.h \
-	../calendar/gui/alarm-notify/alarm.h \
-	../calendar/cal-util/timeutil.h ../libical/src/libical/ical.h \
-	e-summary.h e-summary-type.h e-summary-mail.h \
-	../shell/Evolution.h e-summary-calendar.h e-summary-rdf.h \
-	e-summary-weather.h e-summary-tasks.h e-summary-preferences.h \
-	my-evolution-html.h Mail.h
-main.o: main.c ../config.h component-factory.h
-metar.o: metar.c ../config.h e-summary.h e-summary-type.h \
-	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
-	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
-	../libical/src/libical/ical.h weather.h metar.h
 
 info-am:
 info: info-am

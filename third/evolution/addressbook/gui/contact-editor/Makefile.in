@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -252,7 +250,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libecontacteditor_a_SOURCES)
 OBJECTS = $(libecontacteditor_a_OBJECTS)
@@ -408,79 +406,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-contact-editor-address.o: e-contact-editor-address.c ../../../config.h \
-	e-contact-editor-address.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h
-e-contact-editor-fullname.o: e-contact-editor-fullname.c \
-	../../../config.h e-contact-editor-fullname.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h
-e-contact-editor.o: e-contact-editor.c ../../../config.h \
-	../../../e-util/e-categories-master-list-wombat.h \
-	../../../addressbook/printing/e-contact-print.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/printing/e-contact-print-types.h \
-	../../../addressbook/printing/e-contact-print-envelope.h \
-	../../../addressbook/gui/widgets/e-addressbook-util.h \
-	e-contact-editor.h \
-	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
-	../../../addressbook/gui/component/select-names/e-select-names.h \
-	../../../addressbook/gui/widgets/e-addressbook-model.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	../../../addressbook/gui/component/select-names/e-select-names-model.h \
-	../../../addressbook/backend/ebook/e-destination.h \
-	../../../shell/evolution-storage-listener.h \
-	../../../shell/Evolution.h \
-	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
-	../../../e-util/e-gui-utils.h \
-	../../../widgets/misc/e-dateedit.h \
-	../../../shell/evolution-shell-component-utils.h \
-	../../../addressbook/gui/merging/e-card-merging.h \
-	e-contact-editor.h e-contact-editor-address.h \
-	e-contact-editor-fullname.h e-contact-save-as.h
-e-contact-quick-add.o: e-contact-quick-add.c ../../../config.h \
-	../../../addressbook/gui/component/addressbook.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/backend/ebook/e-book-util.h \
-	e-contact-editor.h \
-	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
-	../../../addressbook/gui/component/select-names/e-select-names.h \
-	../../../addressbook/gui/widgets/e-addressbook-model.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	../../../addressbook/gui/component/select-names/e-select-names-model.h \
-	../../../addressbook/backend/ebook/e-destination.h \
-	../../../shell/evolution-storage-listener.h \
-	../../../shell/Evolution.h e-contact-quick-add.h \
-	../../../addressbook/gui/merging/e-card-merging.h
-e-contact-save-as.o: e-contact-save-as.c ../../../config.h \
-	e-contact-save-as.h ../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-simple.h
 
 info-am:
 info: info-am

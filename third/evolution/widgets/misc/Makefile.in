@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -152,8 +152,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -278,7 +276,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libemiscwidgets_a_SOURCES) $(test_calendar_SOURCES) $(test_dateedit_SOURCES) $(test_dropdown_button_SOURCES) $(test_title_bar_SOURCES)
 OBJECTS = $(libemiscwidgets_a_OBJECTS) $(test_calendar_OBJECTS) $(test_dateedit_OBJECTS) $(test_dropdown_button_OBJECTS) $(test_title_bar_OBJECTS)
@@ -421,35 +419,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-bonobo-widget.o: e-bonobo-widget.c ../../config.h e-bonobo-widget.h
-e-calendar-item.o: e-calendar-item.c ../../config.h e-calendar-item.h
-e-calendar.o: e-calendar.c ../../config.h e-calendar.h e-calendar-item.h
-e-cell-date-edit.o: e-cell-date-edit.c ../../config.h e-cell-date-edit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-cell-percent.o: e-cell-percent.c ../../config.h e-cell-percent.h
-e-charset-picker.o: e-charset-picker.c ../../config.h e-charset-picker.h
-e-clipped-label.o: e-clipped-label.c ../../config.h e-clipped-label.h
-e-dateedit.o: e-dateedit.c ../../config.h e-dateedit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-dropdown-button.o: e-dropdown-button.c ../../config.h \
-	e-dropdown-button.h
-e-filter-bar.o: e-filter-bar.c ../../config.h e-dropdown-button.h \
-	e-filter-bar.h e-search-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h \
-	../../filter/rule-editor.h
-e-map.o: e-map.c ../../config.h e-map.h
-e-messagebox.o: e-messagebox.c ../../config.h e-messagebox.h
-e-search-bar.o: e-search-bar.c ../../config.h e-search-bar.h \
-	e-dropdown-button.h
-e-title-bar.o: e-title-bar.c ../../config.h e-clipped-label.h \
-	e-title-bar.h
-test-calendar.o: test-calendar.c ../../config.h e-calendar.h \
-	e-calendar-item.h
-test-dateedit.o: test-dateedit.c ../../config.h e-dateedit.h
-test-dropdown-button.o: test-dropdown-button.c ../../config.h \
-	e-dropdown-button.h
-test-title-bar.o: test-title-bar.c ../../config.h e-title-bar.h
 
 info-am:
 info: info-am

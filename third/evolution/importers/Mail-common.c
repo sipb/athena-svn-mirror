@@ -12,10 +12,8 @@
 ) && !defined(TC_DEF_TC_GNOME_Evolution_MessageList)
 #define TC_DEF_TC_GNOME_Evolution_MessageList 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_MessageList_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "MessageList", "IDL:GNOME/Evolution/MessageList:1.0",
    0, 0,
    NULL,
@@ -31,10 +29,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_MessageList_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Evolution_FolderBrowser)
 #define TC_DEF_TC_GNOME_Evolution_FolderBrowser 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_FolderBrowser_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "FolderBrowser", "IDL:GNOME/Evolution/FolderBrowser:1.0",
    0, 0,
    NULL,
@@ -50,10 +46,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_FolderBrowser_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Evolution_FolderInfo)
 #define TC_DEF_TC_GNOME_Evolution_FolderInfo 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_FolderInfo_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "FolderInfo", "IDL:GNOME/Evolution/FolderInfo:1.0",
    0, 0,
    NULL,
@@ -71,8 +65,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_FolderInfo_struct = {
 static const char *anon_subnames_array13[] = { "path", "count", "unread" };
 static const CORBA_TypeCode anon_subtypes_array14[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_long_struct,
-      (CORBA_TypeCode) & TC_CORBA_long_struct };
+(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_FolderInfo_MessageCount_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -93,10 +86,8 @@ const struct CORBA_TypeCode_struct
 ) && !defined(TC_DEF_TC_GNOME_Evolution_MailConfig)
 #define TC_DEF_TC_GNOME_Evolution_MailConfig 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_MailConfig_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "MailConfig", "IDL:GNOME/Evolution/MailConfig:1.0",
    0, 0,
    NULL,
@@ -113,14 +104,12 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_MailConfig_struct = {
 #define TC_DEF_TC_GNOME_Evolution_MailConfig_Identity 1
 static const char *anon_subnames_array21[] =
    { "name", "address", "organization", "signature", "html_signature",
-      "has_html_signature" };
+"has_html_signature" };
 static const CORBA_TypeCode anon_subtypes_array22[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_boolean_struct };
+(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
+(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
+(CORBA_TypeCode) & TC_CORBA_boolean_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_MailConfig_Identity_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -141,14 +130,12 @@ const struct CORBA_TypeCode_struct
 #define TC_DEF_TC_GNOME_Evolution_MailConfig_Service 1
 static const char *anon_subnames_array25[] =
    { "url", "keep_on_server", "auto_check", "auto_check_time", "save_passwd",
-      "enabled" };
+"enabled" };
 static const CORBA_TypeCode anon_subtypes_array26[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-      (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-      (CORBA_TypeCode) & TC_CORBA_long_struct,
-      (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-      (CORBA_TypeCode) & TC_CORBA_boolean_struct };
+(CORBA_TypeCode) & TC_CORBA_boolean_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
+(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
+(CORBA_TypeCode) & TC_CORBA_boolean_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_MailConfig_Service_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -169,16 +156,14 @@ const struct CORBA_TypeCode_struct
 #define TC_DEF_TC_GNOME_Evolution_MailConfig_Account 1
 static const char *anon_subnames_array29[] =
    { "name", "id", "source", "transport", "drafts_folder_name",
-      "drafts_folder_uri", "sent_folder_name", "sent_folder_uri" };
+"drafts_folder_uri", "sent_folder_name", "sent_folder_uri" };
 static const CORBA_TypeCode anon_subtypes_array30[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Identity_struct,
-      (CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Service_struct,
-      (CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Service_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct };
+(CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Identity_struct,
+(CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Service_struct,
+(CORBA_TypeCode) & TC_GNOME_Evolution_MailConfig_Service_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
+(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
+(CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_MailConfig_Account_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -198,10 +183,8 @@ const struct CORBA_TypeCode_struct
 ) && !defined(TC_DEF_TC_GNOME_Evolution_MailFilter)
 #define TC_DEF_TC_GNOME_Evolution_MailFilter 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_MailFilter_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "MailFilter", "IDL:GNOME/Evolution/MailFilter:1.0",
    0, 0,
    NULL,

@@ -1,30 +1,25 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Advanced Configuration</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Konfigurasjon og håndtering av Evolution"
+TITLE="Konfigurasjon og håndtering av Ximian Evolution"
 HREF="config.html"><LINK
 REL="PREVIOUS"
-TITLE="Konfigurasjon og håndtering av Evolution"
+TITLE="Konfigurasjon og håndtering av Ximian Evolution"
 HREF="config.html"><LINK
 REL="NEXT"
 TITLE="Configuring the Calendar"
 HREF="config-prefs-cal.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -45,7 +40,7 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="config.html"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -58,7 +53,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="config-prefs-cal.html"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -70,15 +65,39 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-PREFS"
->Advanced Configuration</A
+>Chapter 9. Advanced Configuration</A
 ></H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL"
+>Mail Settings</A
+></DT
+><DT
+><A
+HREF="config-prefs-cal.html"
+>Configuring the Calendar</A
+></DT
+><DT
+><A
+HREF="config-prefs-contact.html"
+>Managing the Addressbook</A
+></DT
+></DL
+></DIV
 ><P
 >        Perhaps your mail server has changed names.  Perhaps you've
         grown tired of a certain layout for your appointments.
         Whatever the reason, you want to change your
-        <TT
+        <SPAN
 CLASS="APPLICATION"
->Evolution</TT
+>Evolution</SPAN
 > settings.  This chapter
         will tell you how to do just that.
       </P
@@ -91,13 +110,13 @@ NAME="CONFIG-PREFS-MAIL"
 >Mail Settings</A
 ></H1
 ><P
->        To change your mail settings, select <B
+>        To change your mail settings, select <SPAN
 CLASS="GUIMENU"
->Tools</B
->-&gt;<B
+>Tools</SPAN
+>-&gt;<SPAN
 CLASS="GUIMENUITEM"
 >Mail
-        Settings</B
+        Settings</SPAN
 > in the Inbox.  This
         will open the <SPAN
 CLASS="INTERFACE"
@@ -105,7 +124,7 @@ CLASS="INTERFACE"
 >,
         illustrated in <A
 HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
->Figure 1</A
+>Figure 9-1</A
 >.  Mail
         preferences are separated into several categories:
         <P
@@ -114,11 +133,9 @@ HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Accounts</B
-></TT
+>Accounts</SPAN
 ></DT
 ><DD
 ><P
@@ -127,11 +144,9 @@ CLASS="GUILABEL"
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Display</B
-></TT
+>Display</SPAN
 ></DT
 ><DD
 ><P
@@ -139,11 +154,9 @@ CLASS="GUILABEL"
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Composer</B
-></TT
+>Composer</SPAN
 ></DT
 ><DD
 ><P
@@ -151,18 +164,16 @@ CLASS="GUILABEL"
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Other</B
-></TT
+>Other</SPAN
 ></DT
 ><DD
 ><P
 >		Configures miscellanious aspects of
-		<TT
+		<SPAN
 CLASS="APPLICATION"
->Evolution</TT
+>Evolution</SPAN
 > such as character
 		set and encryption tools.
 	      </P
@@ -177,6 +188,10 @@ CLASS="FIGURE"
 ><A
 NAME="CONFIG-PREFS-MAIL-FIG"
 ></A
+><P
+><B
+>Figure 9-1. Mail Preferences Dialog</B
+></P
 ><DIV
 CLASS="MEDIAOBJECT"
 ><P
@@ -185,10 +200,6 @@ SRC="figures/config-mail.png"
 ></IMG
 ></P
 ></DIV
-><P
-><B
->Figure 1. Mail Preferences Dialog</B
-></P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -199,26 +210,24 @@ NAME="CONFIG-PREFS-MAIL-IDENTITY"
 >Working with the Accounts Tab</A
 ></H2
 ><P
->         <TT
+>         <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 > allows you to
          maintain multiple accounts, or identities.  This is useful
          want to keep personal and professional email separate, or if
          you wear several hats at work. When you are writing an email
          message, you can which account to use by selecting from the
-         drop-down list next to the <TT
+         drop-down list next to the <SPAN
 CLASS="GUILABEL"
-><B
->From</B
-></TT
+>From</SPAN
 > entry in
          the message composer.
        </P
 ><P
->         Clicking <B
+>         Clicking <SPAN
 CLASS="GUIBUTTON"
->Get Mail</B
+>Get Mail</SPAN
 > will refresh any
          IMAP, <TT
 CLASS="FILENAME"
@@ -229,27 +238,25 @@ CLASS="FILENAME"
 >mbox</TT
 > listings
          and check and download mail from all POP servers.  In other
-         words, <B
+         words, <SPAN
 CLASS="GUIBUTTON"
->Get Mail</B
+>Get Mail</SPAN
 > gets your mail, no
          matter how many sources you have, or what types they are.  If
          you don't want to check mail for a given account, select it
-         in the <TT
+         in the <SPAN
 CLASS="GUILABEL"
-><B
->Accounts</B
-></TT
+>Accounts</SPAN
 > tab and click the
-         <B
+         <SPAN
 CLASS="GUIBUTTON"
->Disable</B
+>Disable</SPAN
 > button.
        </P
 ><P
->         To add a new account, simply click <B
+>         To add a new account, simply click <SPAN
 CLASS="GUIBUTTON"
->Add</B
+>Add</SPAN
 >
          to open the mail configuration assistant. To alter an
          existing identity, select it in the
@@ -257,9 +264,9 @@ CLASS="GUIBUTTON"
 CLASS="INTERFACE"
 >Preferences</SPAN
 > window, and then click
-         <B
+         <SPAN
 CLASS="GUIBUTTON"
->Edit</B
+>Edit</SPAN
 > to open the account editor
          dialog.
       </P
@@ -300,46 +307,22 @@ CLASS="GLOSSTERM"
              on your local system.  If you use a server, it may permit
              or require you to use a Secure Socket Layer (SSL)
              connection.  To turn SSL connections on, just click the
-             <B
+             <SPAN
 CLASS="GUIBUTTON"
->Use Secure Connection (SSL)</B
+>Use Secure Connection (SSL)</SPAN
 >
              button.
 
 <DIV
 CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
 ><A
 NAME="CONFIG-ARBITRARY-PORT"
 ></A
 ><P
-></P
-><TABLE
-CLASS="NOTE"
-WIDTH="90%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="./stylesheet-images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TH
-ALIGN="LEFT"
-VALIGN="CENTER"
 ><B
->Specifying Port Numbers</B
-></TH
-></TR
-><TR
-><TD
->&nbsp;</TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
+>Specifying Port Numbers: </B
 >Your system administrator may ask you to connect to a specific port on
 a mail server. To specify which port you use, just type a colon and
 the port number after the server name. For example, to connect to port
@@ -351,9 +334,7 @@ CLASS="USERINPUT"
 >smtp.omniport.com:143</B
 ></TT
 > as the server name.</P
-></TD
-></TR
-></TABLE
+></BLOCKQUOTE
 ></DIV
 >
 
@@ -423,34 +404,32 @@ NAME="CONFIG-PREFS-MAIL-DISPLAY"
 ></H2
 ><P
 >        In this tab you can decide how you would like
-        <TT
+        <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 > to display your
         mail: how to display citations, how long to wait before
         marking a message as read, and so forth.
       </P
 ><P
 >        This is also where you can decide how you would like
-        <TT
+        <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 > to handle inline
         images in HTML mail that you get. There is a detailed
         discussion of the issues surrounding these options in <A
 HREF="usage-mail-getnsend-get.html#USAGE-MAIL-GETNSEND-GET-ATTACH-HTML"
 >the section called <I
 >Inline Images in HTML Mail</I
-> in the chapter called <I
->Using Evolution for Email</I
-></A
+> in Chapter 3</A
 >.
      </P
 ><P
->       To hange the font which <TT
+>       To hange the font which <SPAN
 CLASS="APPLICATION"
 >Ximian
-        Evolution</TT
+        Evolution</SPAN
 > uses to display mail, do the
         following:
        <P
@@ -459,12 +438,12 @@ CLASS="APPLICATION"
 TYPE="1"
 ><LI
 ><P
->              Open the Control Center by selecting <B
+>              Open the Control Center by selecting <SPAN
 CLASS="GUIMENU"
->System</B
->-&gt;<B
+>System</SPAN
+>-&gt;<SPAN
 CLASS="GUIMENUITEM"
->Settings</B
+>Settings</SPAN
 > from
 		the menu panel.
             </P
@@ -489,9 +468,9 @@ CLASS="COMMAND"
 > command. This
        will open the GNOME HTML Display Properties tool, and you can
        select a font and other attributes of your HTML display,
-       including that in <TT
+       including that in <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 >.
      </P
 ></DIV
@@ -518,12 +497,12 @@ CLASS="VARIABLELIST"
 >                 If you would like all email messages that you compose
                  to begin in HTML format, leave this box checked. You
                  can convert messages between HTML and plain text by
-                 selecting the <B
+                 selecting the <SPAN
 CLASS="GUIMENU"
->Format</B
->-&gt;<B
+>Format</SPAN
+>-&gt;<SPAN
 CLASS="GUIMENUITEM"
->HTML</B
+>HTML</SPAN
 > toggle
                  in the message composer.
                </P
@@ -540,22 +519,18 @@ BORDER="0"
 ><TBODY
 ><TR
 ><TD
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Attachment:</B
-></TT
+>Attachment:</SPAN
 > the
                   message you forward appended to the message you send
                   as a seperate file.</TD
 ></TR
 ><TR
 ><TD
-> <TT
+> <SPAN
 CLASS="GUILABEL"
-><B
->Inline:</B
-></TT
+>Inline:</SPAN
 > The message
                   you forward is included at the end of the message
                   you send.</TD
@@ -563,11 +538,9 @@ CLASS="GUILABEL"
 ><TR
 ><TD
 > 
-                     <TT
+                     <SPAN
 CLASS="GUILABEL"
-><B
->Quoted:</B
-></TT
+>Quoted:</SPAN
 > The message
                      you forward is included at the end of the message
                      you send, and a greater-than symbol (&#62;) is
@@ -595,11 +568,9 @@ CLASS="GUILABEL"
 ><DD
 ><P
 >                 The composer will warn you if you try to send a
-                 message that has only <TT
+                 message that has only <SPAN
 CLASS="GUILABEL"
-><B
->Bcc</B
-></TT
+>Bcc</SPAN
 >
                  recipients. This is important because some mail
                  servers will fail to honor blind carbon copy if you
@@ -630,11 +601,9 @@ NAME="CONFIG-PREFS-MAIL-OTHER"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->PGP binary path</B
-></TT
+>PGP binary path</SPAN
 ></DT
 ><DD
 ><P
@@ -647,33 +616,29 @@ CLASS="FILENAME"
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Remember PGP Passphrase until Exit</B
-></TT
+>Remember PGP Passphrase until Exit</SPAN
 ></DT
 ><DD
 ><P
-> Check this box if you want <TT
+> Check this box if you want <SPAN
 CLASS="APPLICATION"
 >Ximian
-                Evolution</TT
+                Evolution</SPAN
 > to remember your PGP
                 passphrase for as long as it is running.  You will
                 still have to enter your passphrase again each time
-                you start <TT
+                you start <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 >.
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Default Character Encoding</B
-></TT
+>Default Character Encoding</SPAN
 ></DT
 ><DD
 ><P
@@ -682,35 +647,31 @@ CLASS="GUILABEL"
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Empty Trash Folders on Exit</B
-></TT
+>Empty Trash Folders on Exit</SPAN
 ></DT
 ><DD
 ><P
 > If you would like to expunge all deleted
-	      mail when you quit <TT
+	      mail when you quit <SPAN
 CLASS="APPLICATION"
 >Ximian
-	      Evolution</TT
+	      Evolution</SPAN
 >, check this box.
 	      </P
 ></DD
 ><DT
-><TT
+><SPAN
 CLASS="GUILABEL"
-><B
->Log filter actions to:</B
-></TT
+>Log filter actions to:</SPAN
 ></DT
 ><DD
 ><P
 > If you like, you can have
-	      <TT
+	      <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 > write all
 	      its message filter actions to a log file. Select a log
 	      file here.
@@ -739,7 +700,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="config.html"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -755,7 +716,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="config-prefs-cal.html"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ><TR
@@ -763,7 +724,7 @@ HREF="config-prefs-cal.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Konfigurasjon og håndtering av Evolution</TD
+>Konfigurasjon og håndtering av Ximian Evolution</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

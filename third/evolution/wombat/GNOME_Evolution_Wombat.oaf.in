@@ -13,6 +13,7 @@
                        _value="The Personal Addressbook Server"/>
 
         <oaf_attribute name="addressbook:supported_protocols" type="stringv">
+		<item value="ldap"/>
 		<item value="file"/>
         </oaf_attribute>
 </oaf_server>
