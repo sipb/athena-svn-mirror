@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.15 1987-07-06 02:09:56 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.16 1987-07-09 20:03:55 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -37,7 +37,7 @@ Code_t ZSendPacket(packet,len)
 			return (retval);
 
 	if ((retval = Z_InternalParseNotice(packet,len,&notice,(int *)0,
-				   (struct sockaddr_in *)0),(int (*)())0)
+				   (struct sockaddr_in *)0,(int (*)())0))
 	    != ZERR_NONE)
 		return (retval);
 
