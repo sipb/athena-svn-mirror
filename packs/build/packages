@@ -1,4 +1,4 @@
-# $Id: packages,v 1.250 2003-09-17 18:26:12 ghudson Exp $
+# $Id: packages,v 1.251 2003-10-11 17:50:23 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -78,6 +78,7 @@ athena/bin/just
 athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
 athena/bin/mail-dialog		requires gnome-libs
+athena/bin/mailquota		requires cyrus-imapd,perl
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
