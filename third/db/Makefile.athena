@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 2002-02-16 22:41:25 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 2002-02-18 15:35:46 ghudson Exp $
 
 .PHONY: dist
 
@@ -22,3 +22,5 @@ all:
 install:
 	cd build_unix && \
 	  ${MAKE} prefix="$$SRVD/usr/athena" install install_static
+	mkdir "$$SRVD/usr/athena/include/db3"
+	ln -s ../db.h "$$SRVD/usr/athena/include/db3/db.h"
