@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.13 2001-05-11 22:54:59 rbasch Exp $
+# $Id: xsession,v 1.14 2001-05-15 23:19:19 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -119,7 +119,7 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
 	# TODO: deal with NOCALLS; add logout confirmation
 	if (! $?skip_panel && ! ($?skip_dash && $?skip_xlogout)) then
 		if ($?verbose_login) echo "Starting panel..."
-		(panel-wrapper && kill -HUP $XSESSION &)
+		(panel-wrapper >& /dev/null && kill -HUP $XSESSION &)
 	endif
 else if (! $?skip_dash) then
 	if (! $?skip_xlogout) then
@@ -156,7 +156,7 @@ endif
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	($terminal &)
+	($terminal >& /dev/null &)
 endif
 
 # Run default system startup activities.  To skip these, put the command
