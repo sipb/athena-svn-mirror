@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
- * $Id: Imakefile,v 1.7 1991-01-08 16:44:57 lwvanels Exp $
+ * $Id: Imakefile,v 1.8 1991-01-20 13:25:51 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -43,14 +43,26 @@ depend: Makefile
 
 LintTarget()
 
-olist::
+#ifdef TestInstall
+InstallProgram(oreplay,/mit/olcdev/@sys)
+InstallProgram(rpd,/mit/olcdev/@sys)
+install::
+	(cd /mit/olcdev/@sys; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+#else
+InstallProgram(oreplay,$(DESTDIR)/usr/etc)
+InstallProgram(rpd,$(DESTDIR)/usr/etc)
+install::
+	(cd $(DESTDIR)/usr/etc; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+#endif
+
+olist:
 	$(RM) olist
 	$(LN) oreplay olist
 
 clean::
 	$(RM) olist
 
-oshow::
+oshow:
 	$(RM) oshow
 	$(LN) oreplay oshow
 
