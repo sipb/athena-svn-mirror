@@ -58,6 +58,7 @@ umask			60
 chroot			61
 fcntl			62
 ulimit			63
+afs			73
 rmdir			79
 mkdir			80
 getdents		81
@@ -80,7 +81,7 @@ sigpending		99
 setcontext		100
 statvfs			103
 fstatvfs		104
-afs			105
+getloadavg		105
 nfs			106
 waitsys			107
 sigsendsys		108
@@ -120,6 +121,7 @@ yield			146
 lwp_sema_wait		147
 lwp_sema_post		148
 lwp_sema_trywait	149
+corectl			151
 modctl			152
 fchroot			153
 utimes			154
@@ -136,7 +138,7 @@ lwp_self		164
 lwp_setprivate		165
 lwp_getprivate		166
 lwp_wait		167
-lwp_mutex_exit		168
+lwp_mutex_wakeup	168
 lwp_mutex_enter		169
 lwp_cv_wait		170
 lwp_cv_signal		171
@@ -170,6 +172,7 @@ install_utrap		204
 signotify		205
 schedctl		206
 pset			207
+sparc_utrap_install	208
 resolvepath		209
 signotifywait		210
 lwp_sigredirect		211
@@ -208,3 +211,7 @@ setsockopt		246
 sockconfig		247
 ntp_gettime		248
 ntp_adjtime		249
+lwp_mutex_unlock	250
+lwp_mutex_trylock	251
+lwp_mutex_init		252
+cladm			253
