@@ -1,7 +1,7 @@
 # Prototype global .login file
-# $Author: cfields $
+# $Author: danw $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.4 1995-05-26 21:27:43 cfields Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.5 1998-04-25 23:40:19 danw Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -93,10 +93,12 @@ endif
 # Run default system startup activities.  To skip these, put the command
 # "set skip_tty_startup" in your ~/.environment file.
 
+if (! $?ZEPHYR_CLIENT) setenv ZEPHYR_CLIENT zwgc
+
 if (! $?skip_tty_startup) then
 	if ($?verbose_login) echo "Running standard startup activities ..."
 	set ignoreeof			# ^D won't log you out
-	zwgc				# Start Zephyr client
+	$ZEPHYR_CLIENT			# Start Zephyr client
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
