@@ -1,7 +1,8 @@
 DESTDIR = /mit/motif
-SRCDIR = /mit/motif
+SRCDIR = /mit/motifdev
 LIBDIR = $(SRCDIR)/$(MACHINE)lib
 INCDIR = $(SRCDIR)/include
+BINDIR = $(SRCDIR)/$(MACHINE)bin
 INCPATH = -I$(INCDIR) 
 LIBPATH = -L$(LIBDIR)
 LIBS = -lMrm -lXm -lXt -lX11
@@ -10,9 +11,9 @@ INSTALLBIN = $(DESTDIR)/$(MACHINE)bin
 INSTALLMAN = $(DESTDIR)/man
 INSTALLDOC = $(DESTDIR)/doc
 
-UIL = uil
+UIL = $(BINDIR)/uil
 CC = gcc
-CFLAGS = -g $(INCPATH)
+CFLAGS = -O $(INCPATH)
 
 LIBMUSRCS = \
 MuGetBoolean.c \
@@ -100,6 +101,7 @@ install: libMu.a mockup document
 	cp mockup $(INSTALLBIN)			# install mockup
 	strip $(INSTALLBIN)/mockup		# strip it
 	cp Mu.h $(INCDIR)			# install C header file
+	cp Mu.h $(INCDIR)/Xm			#     in two places
 	cp Mu.uil $(INCDIR)/uil			# install uil header file
 	cp MotifUtilities.PS $(INSTALLDOC)	# install document
 	cp man/man1/* $(INSTALLMAN)/man1	# install man pages sec. 1
