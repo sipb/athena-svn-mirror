@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.7 1990-07-07 10:24:03 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.8 1990-08-25 14:50:48 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.7 1990-07-07 10:24:03 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.8 1990-08-25 14:50:48 epeisach Exp $";
 #endif lint
 
 /*
@@ -176,9 +176,9 @@ main(argc, argv)
 	if (hp = gethostbyname(host)) strcpy(host, hp -> h_name);
 #endif SERVER
 #ifdef LOG_LPR
-	openlog("lpd", 0, LOG_LPR);
+	openlog("lpr", 0, LOG_LPR);
 #else
-	openlog("lpd", 0);
+	openlog("lpr", 0);
 #endif
 
 	while (argc > 1 && argv[1][0] == '-') {
