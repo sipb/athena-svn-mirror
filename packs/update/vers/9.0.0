@@ -2,25 +2,27 @@
 
 case "$HOSTTYPE" in
 sun4)
-	echo "MINIROOT=true"				>> "$CONFVARS"
-	echo "NEWOS=true"				>> "$CONFVARS"
-	echo "NEWDEVS=true"				>> "$CONFVARS"
-	echo "OSCHANGES=true"				>> "$CONFVARS"
+	echo "/etc/mail/sendmail.cf"			>> $CONFCHG
 
-	cat "$LIBDIR/solaris27-8"			>> "$DEADFILES"
+	echo "MINIROOT=true"				>> $CONFVARS
+	echo "NEWOS=true"				>> $CONFVARS
+	echo "NEWDEVS=true"				>> $CONFVARS
+	echo "OSCHANGES=true"				>> $CONFVARS
+
+	cat "$LIBDIR/solaris27-8"			>> $DEADFILES
 
 	# This file will be inaccurate after we remove the pkgs and patches .
-	echo "/var/sadm/install/contents"		>> "$DEADFILES"
+	echo "/var/sadm/install/contents"		>> $DEADFILES
 
 	# Create list of old packages and old patches to be removed
 	# from the DB.
-	cat "$LIBDIR/solaris27-pkgs"			>> "$OLDPKGS"
-	cat "$LIBDIR/solaris27-ptchs"			>> "$OLDPTCHS"
+	cat "$LIBDIR/solaris27-pkgs"			>> $OLDPKGS
+	cat "$LIBDIR/solaris27-ptchs"			>> $OLDPTCHS
 
 	# Create the lists of packages and patches to install.
-	cat "$LIBDIR/solaris8-local-$SUNPLATFORM"	>> "$LOCALPACKAGES"
-	cat "$LIBDIR/solaris8-nolocal-$SUNPLATFORM"	>> "$LINKPACKAGES"
-	cat "$LIBDIR/solaris8-patches.9.0.0"		>> "$PATCHES"
+	cat "$LIBDIR/solaris8-local-$SUNPLATFORM"	>> $LOCALPACKAGES
+	cat "$LIBDIR/solaris8-nolocal-$SUNPLATFORM"	>> $LINKPACKAGES
+	cat "$LIBDIR/solaris8-patches.9.0.0"		>> $PATCHES
 
 	# /etc/netmasks has changed format.
 	. /etc/athena/rc.conf
@@ -32,4 +34,4 @@ sgi)
 	;;
 esac
 
-echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
+echo "/var/spool/cron/crontabs/root"			>> $CONFCHG
