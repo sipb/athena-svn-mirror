@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.17 1992-04-23 21:34:01 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.18 1992-06-11 17:14:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -213,21 +213,25 @@ olc_init()
 
   OInitialize();
 
+ try_again:
   fill_request(&Request);
   Request.request_type = OLC_STARTUP;
   
   status = open_connection_to_daemon(&Request, &fd);
   if(status)
     {
-      handle_response(status, &Request);
+      if (handle_response(status, &Request) == FAILURE)
+	goto try_again;
       exit(ERROR);
     }
 
   status = send_request(fd, &Request);
   if (status)
     {
-      if ((handle_response(status, &Request)) == FAILURE)
+      if ((handle_response(status, &Request)) == FAILURE) {
 	close(fd);
+	goto try_again;
+      }
       exit(ERROR);
     }
   read_response(fd, &response);
@@ -255,8 +259,15 @@ olc_init()
     case PERMISSION_DENIED:
       MuErrorSync("You are not allowed to use OLC.\nPlease contact a consultant at 253-4435.");
       exit(1);
+
     default:
-      if(handle_response(response, &Request) == ERROR)
+      status = handle_response(response, &Request);
+      if (status == FAILURE)
+	{
+	  close(fd);
+	  goto try_again;
+	}
+      if (status == ERROR)
         exit(ERROR);
     }
 

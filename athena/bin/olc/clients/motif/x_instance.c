@@ -18,12 +18,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v $
- *	$Id: x_instance.c,v 1.5 1991-08-23 13:54:15 raek Exp $
- *      $Author: raek $
+ *	$Id: x_instance.c,v 1.6 1992-06-11 17:14:21 lwvanels Exp $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.5 1991-08-23 13:54:15 raek Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.6 1992-06-11 17:14:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,6 +37,7 @@ t_set_default_instance(Request)
   int instance;  
   int status;
 
+ try_again:
   status = OGetDefaultInstance(Request,&instance);
   switch(status)
     {
@@ -46,7 +47,8 @@ t_set_default_instance(Request)
       Request->requester.instance = instance;
       break;
     default:
-      handle_response(status, Request);
+      if (handle_response(status, Request) == FAILURE)
+	goto try_again;
       break;
     }
   return(status);

@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.9 1992-04-23 21:37:06 lwvanels Exp $
+ *	$Id: visual.c,v 1.10 1992-06-11 17:14:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -342,6 +342,7 @@ MakeDialogs()
   XtAddCallback(w, XmNokCallback, save_cbk, 0);
   XtAddCallback(w, XmNcancelCallback, save_cbk, 0);
   XtDestroyWidget(XmSelectionBoxGetChild(w, XmDIALOG_HELP_BUTTON));
+  MuSetEmacsBindings(XmSelectionBoxGetChild(w, XmDIALOG_TEXT));
 
   w = w_help_dlg = XmCreateInformationDialog(main_form, "help_dlg", NULL, 0);
   XtAddCallback(w, XmNokCallback, dlg_ok, HELP_BTN);

@@ -18,12 +18,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v $
- *      $Id: x_ask.c,v 1.4 1991-10-31 14:57:09 lwvanels Exp $
+ *      $Id: x_ask.c,v 1.5 1992-06-11 17:14:21 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.4 1991-10-31 14:57:09 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.5 1992-06-11 17:14:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -41,6 +41,7 @@ x_ask(Request, topic, question)
   char file[MAXPATHLEN];
   char buf[BUFSIZ];
 
+ try_again:
   set_option(Request->options,VERIFY);
   status = OAsk_buffer(Request,topic,NULL);
   unset_option(Request->options, VERIFY);
@@ -92,7 +93,10 @@ x_ask(Request, topic, question)
       break;
 
     default:
-      if((status = handle_response(status, Request)) != SUCCESS)
+      status = handle_response(status, Request);
+      if (status == FAILURE)
+	goto try_again;
+      if (status != SUCCESS)
 	  return(ERROR);
     }
 
@@ -133,6 +137,8 @@ x_ask(Request, topic, question)
 
     default:
       status = handle_response(status, Request);
+      if (status == FAILURE)
+	goto try_again;
       break;
     }
   return(status);

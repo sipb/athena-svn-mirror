@@ -18,13 +18,13 @@
  *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
- *      $Id: x_motd.c,v 1.7 1991-08-12 13:43:19 lwvanels Exp $
+ *      $Id: x_motd.c,v 1.8 1992-06-11 17:14:21 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.7 1991-08-12 13:43:19 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.8 1992-06-11 17:14:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -51,6 +51,7 @@ x_get_motd(Request,type,file,dialog)
 
   WAIT_CURSOR;
 
+ try_again:
   Request->request_type = OLC_MOTD;
   status = OGetFile(Request,type,file);
   
@@ -113,6 +114,8 @@ x_get_motd(Request,type,file,dialog)
 
     default:
       status = handle_response(status, Request);
+      if (status == FAILURE)
+	goto try_again;
       break;
     }
 

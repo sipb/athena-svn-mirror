@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.22 1992-04-23 21:35:22 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.23 1992-06-11 17:14:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -594,9 +594,10 @@ olc_motd (w, tag, callback_data)
       break;
     }
     
+/*
   XtSetArg(args[0], XmNsensitive, TRUE);
   XtSetValues(w_motd_btn, args, 1);
-
+*/
   unlink(file);  
   XtManageChild(w_motd_dlg);
   STANDARD_CURSOR;
