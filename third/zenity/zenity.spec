@@ -1,4 +1,4 @@
-%define version 2.8.0
+%define version 2.8.2
 %define name zenity
 Summary: Zenity is a basic rewrite of gdialog, with simplicity of use in mind.
 Name: %{name}

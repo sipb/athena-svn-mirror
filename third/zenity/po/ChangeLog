@@ -1,3 +1,41 @@
+2004-11-23  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-10-24  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2004-10-17  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-13  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-12  Glynn Foster  <glynn.foster@sun.com>
+
+	* 2.8.1 version marker
+
+2004-10-03  Marcel Telka  <marcel@telka.sk>
+
+	* sk.po: Updated Slovak translation.
+
+2004-09-26  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-22  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-09-14  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* fa.po: Updated Persian translation by Meelad Zakaria
+	<meelad@bamdad.org>.
+
 2004-09-13  Glynn Foster  <glynn.foster@sun.com>
 
 	* 2.8.0 version marker.
