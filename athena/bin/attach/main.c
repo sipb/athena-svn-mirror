@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.5 1990-04-21 17:56:16 jfc Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.6 1990-05-04 15:40:02 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -779,6 +779,7 @@ zinitcmd(argc, argv)
 	int	argc;
 	char	**argv;
 {
+	extern struct _attachtab *attachtab_first;
 	char instbfr[BUFSIZ];
 	struct _attachtab *p;
 	int	i;
