@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.12 2003-10-14 15:47:46 rbasch Exp $
+# $Id: login,v 1.13 2004-10-22 18:31:12 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -130,7 +130,7 @@ endif
 
 
 # Run notification system, lert. To skip this (a generally bad idea unless
-# you plan to run it yourself), put the commend "set skip_lert" in your
+# you plan to run it yourself), put the command "set skip_lert" in your
 # ~/.environment file.
 
 if (! $?skip_lert) then

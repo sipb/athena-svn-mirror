@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.19 2004-08-03 17:18:31 ghudson Exp $
+# $Id: xsession,v 1.20 2004-10-22 18:30:10 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -265,7 +265,7 @@ if (-r /var/run/athstatusd.sock && ! $?skip_athneteventd) athneteventd
 # to receive the alert in the form of a zephyrgram, and since they may
 # run zwgc from their .startup.X, we wait until that has finished.  To
 # skip lert (a generally bad idea unless you plan to run it yourself -
-# it is not at all intended for frivolous messages), put the commend
+# it is not at all intended for frivolous messages), put the command
 # "set skip_lert" in your ~/.environment file.
 
 if ((! $?NOCALLS) && (-r ~/.startup.X)) then
