@@ -705,6 +705,8 @@ void
 do_exec(Session *s, const char *command)
 {
 #if KRB5
+  if (s->authctxt->krb5_ticket_file)
+    {
 		/* Now that we have krb5 tickets (via forwarding or
 		   password auth, do the krb524init */
 			if (options.kerberos524 && s->authctxt->krb5_user) {
@@ -769,6 +771,7 @@ do_exec(Session *s, const char *command)
 					krb5_cleanup_proc(s->authctxt);
 				}
 			}
+    }
 #endif
   /*
    * This must be the wrong place for this, and it's really just a kludge
@@ -776,7 +779,7 @@ do_exec(Session *s, const char *command)
    * XXX
    */
 			try_afscall(setpag);
-			al_acct_create(s->authctxt->user, NULL, s->pid, 1,
+			al_acct_create(s->authctxt->user, NULL, getpid(), 1,
 				       0, NULL);
 
 	if (forced_command) {
