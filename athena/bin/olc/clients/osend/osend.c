@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v $
- *	$Id: osend.c,v 1.2 1996-09-20 02:17:40 ghudson Exp $
+ *	$Id: osend.c,v 1.3 1997-04-30 17:58:38 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v 1.2 1996-09-20 02:17:40 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v 1.3 1997-04-30 17:58:38 ghudson Exp $";
 #endif
 #endif
 
@@ -51,7 +51,8 @@ main(argc,argv)
   int fd;
   int instance;
   char **olc_servers;
-  char *inst = "OLC";
+  char *inst = "olc";
+  char *buf, *config, *cf_server;
   char username[9];
   struct hostent *hp = NULL;
   extern int optind;
@@ -60,62 +61,89 @@ main(argc,argv)
 
   select_timeout = 600;
 
-  while ((c = getopt(argc, argv, "f:s:i:")) != EOF)
+  config = getenv("OLXX_CONFIG");
+  if (! config)
+    config = OLC_CONFIG_PATH;
+
+  while ((c = getopt(argc, argv, "C:f:s:i:")) != EOF)
     switch(c) {
-    case 'i':
-      inst = optarg;
+    case 'C':	/* -C path: set path for the configuration file */
+      config = optarg;
       break;
-    case 'f':
-      if ((fd = open(optarg, O_RDONLY, 0)) < 0) {
+    case 'i':	/* -i inst: use service INST (eg. "-i olta") */
+      inst = optarg;
+      /* Downcase the instance, so we can use it as the cfg file name. */
+      for (buf=inst ; *buf ; buf++)
+	*buf = tolower(*buf);
+      break;
+    case 'f':	/* -f file: save output in FILE */
+      fd = open(optarg, O_RDONLY, 0);
+      if (fd < 0) {
 	perror("osend: error opening file");
 	exit(1);
       }
       close(0);
       dup2(fd,0);
       break;
-    case 's':
-      if ((hp = gethostbyname(optarg)) == NULL) {
+    case 's':	/* -s host: use server HOST */
+      hp = gethostbyname(optarg);
+      if (hp == NULL) {
 	fprintf(stderr,"%s: unknown host %s\n",argv[0],optarg);
 	exit(1);
       }
       break;
-    case '?':
+    case '?':	/* unknown option... */
     default:
       usage();
-      exit(1);
     }
 
   instance = 0;
 
   if (((argc - optind) > 2) || (argc == optind)) {
     usage();
-    exit(1);
   }
 
   strcpy(username,argv[optind++]);
   if ((argc - optind) == 1)
     instance = atoi(argv[optind]);
 
-  if (hp == NULL) {
+  if (incarnate(inst, config) == FATAL) {
+    /* Fatal problem.  Messages indicating causes were already displayed... */
+    exit(1);
+  }
+
 #ifdef HESIOD
-    if ((olc_servers = hes_resolve(inst,"SLOC")) == NULL) {
-      fprintf(stderr,"%s: Unable to get hesiod information for %s/SLOC\n",
-	      inst,argv[0]);
+  if (hp == NULL) {
+    olc_servers = hes_resolve(inst, OLC_SERV_NAME);
+    if (olc_servers == NULL) {
+      fprintf(stderr,"%s: Unable to get hesiod information for %s.%s\n",
+	      inst, argv[0], OLC_SERV_NAME);
       exit(1);
     }
-    
-    if ((hp = gethostbyname(olc_servers[0])) == NULL) {
+
+    hp = gethostbyname(olc_servers[0]);
+    if (hp == NULL) {
       fprintf(stderr,"%s: Unknown host %s\n",argv[0],olc_servers[0]);
       exit(1);
     }
-    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
-#else /* ! HESIOD */
+  }
+#endif /* HESIOD */
+  if (hp == NULL) {
+    cf_server = client_hardcoded_server();
+    if (cf_server) {
+      hp = gethostbyname(cf_server);
+      if (hp == NULL) {
+	fprintf(stderr,"%s: Unknown host %s\n",argv[0],cf_server);
+	exit(1);
+      }
+    }
+  }
+  if (hp == NULL) {
     fprintf(stderr,"%s: no server specified\n",argv[0]);
     exit(1);
-#endif /* HESIOD */
   }
-  else
-    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
+
+  strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
     
   if (init_request(&Request) != SUCCESS) {
     fprintf(stderr,"Error filling request\n");
@@ -131,7 +159,13 @@ main(argc,argv)
 
 static void usage()
 {
-  fprintf(stderr,"Usage: osend [-f filename] [-s server] username [instance]\n");
+  fprintf(stderr, "Usage: osend [options] username [instance]\n"
+		  "options:\n"
+		  "   -f filename   save output in FILENAME\n"
+		  "   -i service    use SERVICE (olc/olta/owl)\n"
+		  "   -s host       use server HOST\n"
+		  "   -C path       use PATH to search for configuration\n");
+  exit(1);
 }
 
 static int
@@ -158,7 +192,8 @@ init_request(req)
   gethostname(req->requester.machine, sizeof(req->requester.machine));
 
 #ifdef KERBEROS
-  if((status = krb_get_cred("krbtgt",REALM,REALM, &k_cred)) == KSUCCESS)
+  status = krb_get_cred("krbtgt",REALM,REALM, &k_cred);
+  if(status == KSUCCESS)
     {
       (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
       (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
