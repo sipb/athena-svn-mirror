@@ -42,6 +42,13 @@ enum gcqr_status {
         QC_EPERM = 3                     /* no permission to access quota */
 };
 
+#ifndef NGROUPS
+#ifdef SOLARIS
+#include <limits.h>
+#define NGROUPS NGROUPS_MAX
+#endif
+#endif
+
 struct getcquota_rslt {
   enum gcqr_status gqr_status;	/* discriminant */
   bool_t rq_group;              /* inidicates group quotas instead of user */
