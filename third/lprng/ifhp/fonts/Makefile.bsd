@@ -9,7 +9,7 @@
 #* Makefile.in,v 3.2 1998/03/29 23:23:10 papowell Exp
 #
 
-FONTDIR=/usr/local/lib/filters/fonts
+FONTDIR=/usr/athena/lib/filters/fonts
 SRC=.
 
 

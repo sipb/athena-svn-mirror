@@ -7,14 +7,14 @@
 # See LICENSE for conditions of use.
 #
 ###########################################################################
-# $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:06 ghudson Exp $
+# $Id: Makefile.bsd,v 1.2 1999-04-01 21:08:30 mwhitson Exp $
 ########################################################################## 
 
 # FAQ Makefile
 #
 SRC = .
 
-prefix = /usr/local
+prefix = /usr/athena
 MAN =		$(prefix)/man
 SHELL =		/bin/sh
 

@@ -646,7 +646,7 @@ test "$host_alias" != "$target_alias" &&
 
 
 PACKAGE=LPRng
-VERSION=3.1.15
+VERSION=3.2.1
 cat >> confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
 EOF

@@ -5,12 +5,12 @@
 #    papowell@astart.com 
 # See LICENSE for conditions of use.
 ###########################################################################
-# $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+# $Id: Makefile.bsd,v 1.2 1999-04-01 21:07:18 mwhitson Exp $
 ########################################################################## 
 
 SRC=.
 
-INSTALLCMD=/usr/bin/install -c
+INSTALLCMD=/usr/athena/bin/install -c
 
 #=============================================================================
 # List the directories you want to generate:
@@ -108,7 +108,12 @@ shar:
 		shar -S -n $${DIR} -a -s papowell@astart.com \
 		   -c -o /tmp/$${DIR}-Part -L100
 
-dist:
+configure: configure.in
+	autoconf
+	autoheader
+
+dist: configure
+	$(MAKE) ci
 	$(MAKE) update
 	$(MAKE) newmake
 	echo RCS >/tmp/L_X

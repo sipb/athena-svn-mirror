@@ -3,17 +3,17 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1997 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $
+#* $Id: Makefile.bsd,v 1.2 1999-04-01 21:08:54 mwhitson Exp $
 #
 
-prefix=/usr/local
+prefix=/usr/athena
 
 SRC=.
 
 # Directory where the manual pages are to be placed
 
 MAN=${prefix}/man
-INSTALLCMD=/usr/bin/install -c
+INSTALLCMD=/usr/athena/bin/install -c
 FONTDIR=${prefix}/lib/filters/fonts/
 INSTDIR=${prefix}/lib/filters/
 
