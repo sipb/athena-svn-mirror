@@ -1,0 +1,348 @@
+.\"
+.\" Copyright (c) 1992-1994 Michael A. Cooper.
+.\" This software may be freely distributed provided it is not sold for 
+.\" profit and the author is credited appropriately.
+.\"
+.\" $Id: sysinfo.man,v 1.1.1.1 1996-10-07 20:16:47 ghudson Exp $
+.\" 
+.TH sysinfo 1 "6 February 1996"
+.ds ]W USC-UCS
+.SH NAME
+sysinfo \- Display system information
+.SH SYNOPSIS
+sysinfo
+[
+.B +|\-all
+] 
+[
+.B \-cfdir
+.I DirName
+] 
+[
+.B \-cffile
+.I FileName
+] 
+[
+.B \-class
+.I item1,item2,...
+] 
+[
+.B \-debug
+]
+[
+.B \-format
+.I FormatType
+] 
+[
+.B \-level
+.I level1,level2,...
+]
+[
+.B \-offset 
+.I amount
+]
+[
+.B \-repsep
+.I string
+]
+[
+.B \-show
+.I item1,item2,...
+] 
+[
+.B \-type
+.I type1,type2,...
+] 
+[
+.B +|\-unknown
+] 
+[
+.B +|\-useprom
+] 
+.br
+.sp
+sysinfo 
+.B \-list
+[
+.B class|format|level|show|type
+]
+.br
+.sp
+sysinfo 
+.B \-version
+.SH DESCRIPTION
+.I Sysinfo
+displays various types of information about the local host's hardware
+and
+operating system (OS) software.
+It is intended to provide information in both a human readable format
+and
+a consistant interface for use by other programs to obtain
+system information
+in a platform independent manner.
+.PP
+The amount of information displayed varies by operating system.
+Here are some of the types of information that may be provided:
+.IP *
+Host name
+.IP *
+Host name aliases
+.IP *
+Host network addresses
+.IP *
+Host ID
+.IP *
+System serial number
+.IP *
+Manufacturer of the system's hardware
+.IP *
+System model name
+.IP *
+CPU type
+.IP *
+Application architecture
+.IP *
+Kernel architecture
+.IP *
+Amount of main memory
+.IP *
+Operating system name
+.IP *
+Operating system version
+.IP *
+Kernel version
+.IP *
+A variety of information about devices
+.IP *
+A variety of different kernel parameters
+.IP *
+A variety of different system configuration parameters
+.PP
+By default,
+.B sysinfo
+will display most info items it knows about.
+The
+.B "\-level all" 
+option will provide an even greater amount of detail.
+.PP
+The scope of the information presented can by limited by classes
+using the ``\fB\-class \fIName\fR''
+option.
+Further selection can by made specifying the class of information and
+a specific item using ``\fB\-class \fIName\fR \fB\-show \fIItem\fR''
+.PP
+Upon startup,
+.B sysinfo
+searches for a configuration file to parse.
+Searching stops when the first configuration file is found.
+The following search order is used:
+.br
+.sp
+.nf
+.RS
+\fIConfDir\fB/${OSname}_${OSver}.cf
+\fIConfDir\fB/${OSname}_${OSmajver}.cf
+\fIConfDir\fB/${OSname}.cf
+\fIConfDir\fB/Default.cf
+.RE
+.sp
+.fi
+.PP
+If the file
+.I /etc/sysmodel
+exists, the first line of the file is read and used as the
+system model name.
+.SH OPTIONS
+.IP "\fB+|-all\fP"
+Enable (\fB+all\fP) or disable (\fB\-all\fP) displaying all known information.
+This option is enabled by default.
+.IP "\fB\-cfdir \fIDirName\fR"
+Specify the name of the directory to use to find
+.B sysinfo.cf
+format configuration files.
+.IP "\fB\-cffile \fIFileName\fR"
+Specify the name of a 
+.B sysinfo.cf
+format configuration file to use.
+.IP "\fB\-class \fIName1,Name2,...\fR"
+Limit information to a specific class or classes of information.
+The default class is
+.B General.
+.IP "\fB\-format \fIFormatType\fR"
+Display output in
+.I FormatType
+format.
+Valid
+.I FormatType
+values are:
+.RS
+.IP "\fBpretty\fR"
+Output is suitible for human viewing.
+This is the default.
+.IP "\fBreport\fR"
+Output is in a format suitable for parsing by a program.
+Entries are printed one per line with fields seperated by ``|''
+(vertical pipe) by default.
+The 
+.B \-repsep
+option can be used to change this value.
+.B NOTE:
+Output format is currently not finalized and may change in a future release.
+.RE
+.IP "\fB\-debug\fR"
+Enable debugging messages.
+This includes printing all error messages that are normally
+not shown.
+.IP "\fB\-level \fIlevels\fR"
+Set the level of information that is shown.
+.I levels
+is a comma separated list of values used to determine what
+levels of information will be displayed.
+Use the
+.B "\-list level"
+option to get a list of valid 
+.I levels.
+.IP "\fB\-list [ class|format|level|show|type ]\fR"
+List the possible values that may be used with an option.
+With no arguments are specified, a list is valid arguments is
+displayed.
+When an argument is supplied, the information specific to that
+argument
+is displayed.
+.IP "\fB\-offset \fIamount\fR"
+Set the number of spaces to offset (indent) when printing
+device information.
+.IP "\fB\-repsep \fIstring\fR"
+Change the field seperator string used with 
+.B "\-format report"
+to be
+.I string.
+The default is ``|''
+(vertical pipe).
+.IP "\fB\-show \fIitem1,item2,...\fR"
+Show information only about each comma separated item.
+Run
+.B "sysinfo \-list show"
+for a list of valid item arguments.
+If the
+.B \-class
+option is not specified, then the 
+.B General
+class is assumed.
+.IP "\fB\-type \fIitem1,item2,...\fR"
+Limit information to a specific type of item as specified by
+.I item1,item2,...
+Run 
+.B "sysinfo \-list type"
+for a list of valid item arguments.
+.IP "\fB+|-unknown\fP"
+Enable (\fB+unknown\fP) or disable (\fB\-unknown\fP) showing devices
+that appear to be present on the system, but are not "known" to sysinfo.
+This option is enabled by default.
+.IP "\fB+|-useprom\fP"
+Enable (\fB+useprom\fP) or disable (\fB\-useprom\fP) using values
+obtained from the system PROM instead of intepreting values obtained
+directly from the kernel.
+Certain values are normally obtained by looking up a variable in
+the kernel and checking the result against a table of values compiled
+into 
+.B sysinfo.
+By enabling this option, 
+.B sysinfo
+will attempt to obtain certain values from the system PROM.
+This support is currently limited to the
+.B "System Model"
+value.
+Support is also limited to those machines which support such
+a system PROM.
+.IP "\fB-version\fP"
+Show version
+information for
+.I sysinfo.
+.SH AUTHOR
+Michael A. Cooper
+.br
+University Computing Services
+.br
+University of Southern California
+.br
+mcooper@usc.edu
+.SH FILES
+/usr/lsd/conf/sysinfo	\- Directory of config files
+.br
+/etc/sysmodel	\- Explicitly set the CPU model name
+.SH SEE ALSO
+gethostid(2), gethostname(2), gethostbyname(3)
+.SH DIAGNOSTICS
+.IP "\fI%x: Unknown CPU type.\fP"
+The CPU model for the current host could not be determined.
+.IP "(unknown)"
+Information could not be determined for this item.
+.SH BUGS
+.PP
+Not all operating systems support interfaces to various pieces of
+information that sysinfo supports.
+.PP
+Some devices, mostly devices that use 
+removable media such as
+tape drives and floppy disks, are only indicated (shown) as
+present if media is loaded in the device and it's on-line.
+This occurs because the OS does not provide a software
+interface to query the device when media is not loaded.
+.PP
+.B SunOS 
+allows only one process at a time to have
+.B /dev/openprom
+open.
+This may result in certain pieces of information 
+not always showing up consistantly.  When in doubt,
+enable debugging
+.B (\-debug).
+.PP
+Under 
+.B "SunOS 5.4"
+the
+.B "ROM Version"
+field is blank.
+This is due to a change made by Sun in 
+.I libkvm.
+Sun patch 
+.B 102555-01
+is suppose to fix this problem.
+.B Sysinfo 
+uses a new OBP interface in
+.B "SunOS 5.5"
+that by-passes this problem.
+.PP
+Under 
+.B "SunOS 4.x"
+the
+.B "Serial Number"
+field
+is left blank since the kernel usually returns incorrect information.
+.PP
+Under
+.B "SunOS 5.x"
+the
+.B "Serial Number"
+field
+will show the serial number as obtained from the system's
+.B IDPROM.
+This serial number has no correspondence with the system serial
+number that appears on the back of your machine.
+.PP
+Under
+.B SunOS
+there is no way to tell the difference between an MC68020 (like the
+3/60) and MC68030 (like the 3/80)
+based machine.
+.PP
+Under 
+.B Ultrix
+it's virtually impossible to determine the actual
+.B "System Model"
+for 
+.B VAX
+and 
+.B "DEC MIPS"
+based machines.

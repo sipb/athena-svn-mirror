@@ -1,0 +1,17 @@
+#
+# $Id: sunos_5.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
+#
+# SYSINFO configuration information for SunOS 5.x specific items.
+#
+#
+# Include local (site specific) config file
+#
+include		local.cf
+#
+# Kernel Variables
+#
+define|Kernel	|_max_nprocs	||int	|Maximum number of processes for system
+#
+# Include general SunOS config file
+#
+include 	sunos.cf

@@ -1,0 +1,45 @@
+#
+# $Id: hp-ux.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
+#
+# HP-UX Sysinfo Configuration File
+#
+include		local.cf
+#
+# Include common HP-UX info
+#
+include		hp-ux-com.cf
+#
+# Definetions
+# 	Format of Definetions is:
+#
+#define	|DefineName	|StringKey	|NumericKey	|StrValue1|StrValue2
+#
+#
+# Kernel Architectures
+#
+define	|KArch	|9000/2		||hp900s200
+define	|KArch	|9000/3		||hp900s300
+define	|KArch	|9000/4		||hp900s400
+define	|KArch	|9000/5		||hp900s500
+define	|KArch	|9000/7		||hp900s700
+define	|KArch	|9000/8		||hp900s800
+#
+# Kernel Variables
+#
+#		 SYMBOL		  TYPE	 DESCRIPTION
+define|Kernel	|maxuprc	||int	|Maximum number of processes per user
+define|Kernel	|nproc		||int	|Maximum number of processes for system
+define|Kernel	|npty		||int	|Maximum number of BSD (/dev/ptyXX) pty's
+define|Kernel	|nswapdev	||int	|Maximum number of swap devices
+define|Kernel	|nswapfs	||int	|Maximum number of filesystems that can have swap
+define|Kernel	|maxpmem	||int	|Maximum amount of physical memory used
+define|Kernel	|maxfiles	||int	|Soft limit for maximum number of open files per process
+define|Kernel	|maxfiles_lim	||int	|Hard limit for maximum number of open files per process
+define|Kernel	|ninode		||int	|Size of the inode table
+define|Kernel	|nfile		||int	|Size of the file table
+define|Kernel	|ncsize		||int	|Size of the directory name lookup cache
+define|Kernel	|ncallout	||int	|Size of the callout table
+define|Kernel	|nstrpush	||int	|STREAMS: Maximum number of pushes allowed
+define|Kernel	|nstrevent	||int	|STREAMS: Maximum event size
+define|Kernel	|strmsgsz	||int	|STREAMS: Maximum message size
+define|Kernel	|strctlsz	||int	|STREAMS: Maximum size of ctl part of message
