@@ -210,7 +210,7 @@ munge-scripts: $(SCRIPTS)
 	  if cmp -s $(srcdir)/$$program $$tmp ; then			\
 	    true ;							\
 	  else								\
-	    cat $$tmp > ./$$program ;					\
+	    mv -f $$tmp ./$$program ;					\
 	  fi ;								\
 	done
 
