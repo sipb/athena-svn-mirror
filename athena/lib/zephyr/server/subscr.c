@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.31 1988-07-08 14:32:28 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.32 1988-07-16 21:53:55 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1227,6 +1227,9 @@ FILE *fp;
 ZSubscr_t *subs;
 {
 	register ZSubscr_t *ptr;
+
+	if (!subs)			/* no subscriptions to dump */
+	    return;
 
 	for (ptr = subs->q_forw; ptr != subs; ptr = ptr->q_forw) {
 		fputs("\t\t'", fp);
