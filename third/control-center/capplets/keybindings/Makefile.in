@@ -389,15 +389,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-eggaccelerators.o: eggaccelerators.c eggaccelerators.h
-eggcellrendererkeys.o: eggcellrendererkeys.c ../../config.h \
-	eggcellrendererkeys.h eggaccelerators.h
-gnome-keybinding-properties.o: gnome-keybinding-properties.c \
-	../../config.h ../../capplets/common/gnome-theme-info.h \
-	../../capplets/common/wm-common.h \
-	../../capplets/common/capplet-util.h eggcellrendererkeys.h \
-	eggaccelerators.h \
-	../../capplets/common/activate-settings-daemon.h
 
 info-am:
 info: info-am

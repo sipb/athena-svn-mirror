@@ -37,7 +37,7 @@
 
             <locale name="de">
 	        <short>DPI</short>
-                <long>Die zum Konvertieren von Schrift- in Pixel-GrÃ¶Ãen verwendete AuflÃ¶sung (in Punkt pro Zoll)</long>
+                <long>Die zum Konvertieren von Schrift- in Pixel-GrÃ¶Ãen verwendete AuflÃ¶sung (in Pixeln pro Zoll)</long>
             </locale>
 
             <locale name="el">
@@ -70,9 +70,24 @@
                 <long>A felbontÃ¡s a betÅ±mÃ©ret Ã©s a kÃ©ppontok kÃ¶zÃ¶tti Ã¡tvÃ¡ltÃ¡shoz kell, pont/hÃ¼velyk a mÃ©rtÃ©kegysÃ©ge.</long>
             </locale>
 
+            <locale name="ja">
+	        <short>DPI</short>
+                <long>ãã©ã³ãã»ãµã¤ãºããã¯ã»ã«ã»ãµã¤ãºã«å¤æããéã®è§£ååº¦ (ããã/ã¤ã³ã) ã§ã</long>
+            </locale>
+
+            <locale name="ko">
+	        <short>DPI</short>
+                <long>ê¸ê¼´ í¬ê¸°ë¥¼ í½ìí¬ê¸°ë¡ ë°ê¿ ë ì°ì´ë í´ìë, ì¸ì¹ì ë¤ì´ê°ë ì ì ê°ì</long>
+            </locale>
+
             <locale name="lv">
 	        <short>DPI</short>
                 <long>LietojamÄ izÅ¡Ä·irtspÄja, konvertÄjot fontu izmÄrus pikseÄ¼u izmÄros, punkti collÄs</long>
+            </locale>
+
+            <locale name="mn">
+	        <short>DPI</short>
+                <long>ÐÐ¸ÑÐ³ÑÐ½ ÑÑÐ¼Ð¶ÑÑÐ³ ÑÑÐ³ÑÐ½ ÑÑÐ¼Ð¶ÑÑ ÑÒ¯Ò¯ ÑÓ©ÑÐ²Ò¯Ò¯Ð»ÑÑÐ¸Ð¹Ð½ ÑÑÐ»Ð´ ÑÑÑÑÐ³Ð»ÑÐ³Ð´ÑÑ Ð½Ð°ÑÐ¸Ð¹Ð²ÑÐ¸Ð»Ð°Ð» (Ð¯Ð¼Ñ Ð±Ò¯ÑÐ¸Ð¹Ð½ ÑÑÐ²ÑÐ´ ÑÑÐ³ÑÑÑ)</long>
             </locale>
 
             <locale name="ms">
@@ -92,7 +107,12 @@
 
             <locale name="pl">
 	        <short>DPI</short>
-                
+                <long>RozdzielczoÅÄ uÅ¼ywana do konwersji rozmiaru czcionek na piksele, w punktach na cal</long>
+            </locale>
+
+            <locale name="pt">
+	        <short>DPI</short>
+                <long>ResoluÃ§Ã£o para converter tamanhos de fontes para tamanhos pixel, em pontos por polegada</long>
             </locale>
 
             <locale name="pt_BR">
@@ -100,9 +120,14 @@
                 <long>ResoluÃ§Ã£o usada para converter tamanhos de fontes para tamanhos de pixel, em pontos por polegada</long>
             </locale>
 
+            <locale name="ro">
+	        <short>DPI</short>
+                <long>RezoluÅ£ia folositÄ pentru conversia dimensiunilor font Ã®n dimensiuni pixel, Ã®n puncte pe inch</long>
+            </locale>
+
             <locale name="ru">
 	        <short>ÑÐ¾ÑÐµÐº Ð½Ð° Ð´ÑÐ¹Ð¼</short>
-                
+                <long>Ð Ð°Ð·ÑÐµÑÐµÐ½Ð¸Ðµ, Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼Ð¾Ðµ Ð´Ð»Ñ Ð¿ÑÐµÐ¾Ð±ÑÐ°Ð·Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÐ°Ð·Ð¼ÐµÑÐ¾Ð² ÑÑÐ¸ÑÑÐ° Ð² ÑÐ°Ð·Ð¼ÐµÑÑ Ð¿Ð¸ÐºÑÐµÐ»ÐµÐ¹, Ð² ÑÐ¾ÑÐºÐ°Ñ Ð½Ð° Ð´ÑÐ¹Ð¼</long>
             </locale>
 
             <locale name="sk">
@@ -123,6 +148,11 @@
             <locale name="tr">
 	        <short>DPI</short>
                 
+            </locale>
+
+            <locale name="uk">
+	        <short>ÑÐ¾ÑÐ¾Ðº Ð½Ð° Ð´ÑÐ¹Ð¼</short>
+                <long>Ð Ð¾Ð·Ð´ÑÐ»ÑÐ½Ð° Ð·Ð´Ð°ÑÐ½ÑÑÑÑ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸Ð¼ÐµÑÑÑÑ Ð´Ð»Ñ Ð¿ÐµÑÐµÑÐ²Ð¾ÑÐµÐ½Ð½Ñ ÑÐ¾Ð·Ð¼ÑÑÑÐ² ÑÑÐ¸ÑÑÑÐ² Ñ ÑÐ¾Ð·Ð¼ÑÑÐ¸ Ð¿ÑÐºÑÐµÐ»Ñ, Ñ ÑÐ¾ÑÐºÐ°Ñ Ð½Ð° Ð´ÑÐ¹Ð¼</long>
             </locale>
 
             <locale name="vi">
@@ -211,9 +241,24 @@
                 <long>A betÅ±k megjelenÃ­tÃ©sÃ©nÃ©l hasznÃ¡lt Ã©lsimÃ­tÃ¡s tÃ­pusa. A lehetsÃ©ges Ã©rtÃ©kek: &quot;Nincs&quot; - nincs Ã©lsimÃ­tÃ¡s. &quot;SzÃ¼rkeÃ¡rnyalatos&quot; - szabvÃ¡nyos szÃ¼rkeÃ¡rnyalatos Ã©lsimÃ­tÃ¡s. &quot;RGBA&quot; - szubpixeles Ã©lsimÃ­tÃ¡s (csak LCD-kÃ©pernyÅkÃ¶n).</long>
             </locale>
 
+            <locale name="ja">
+	        <short>ã¢ã³ãã¨ã¤ãªã¢ã¹</short>
+                <long>ãã©ã³ããã¬ã³ããªã³ã°ããéã«ä½¿ç¨ããã¢ã³ãã¨ã¤ãªã¢ã¹ã®ç¨®é¡ã§ããå©ç¨å¯è½ãªå¤: &quot;none&quot; - ã¢ã³ãã¨ã¤ãªã¢ã¹ç¡å¹ã&quot;grayscale&quot; - æ¨æºçãªã°ã¬ã¼ã¹ã±ã¼ã«ã®ã¢ã³ãã¨ã¤ãªã¢ã¹ã&quot;rgba&quot; - ãµããã¯ã»ã«ã®ã¢ã³ãã¨ã¤ãªã¢ã¹ (LCD ç»é¢ã®ã¿)</long>
+            </locale>
+
+            <locale name="ko">
+	        <short>ìí°ìë¼ì´ì±</short>
+                <long>ê¸ê¼´ì ê·¸ë¦´ ë ì°ì´ë ìí°ìë¼ì´ì±ì íì. ì¸ ì ìë ê°ì: &quot;none&quot; - ìí°ìë¼ì´ì±ì ì°ì§ ìì. &quot;grayscale&quot; - íì¤ íìì¡° ìí° ìë¼ì´ì±. &quot;rgba&quot; - ë´ë¶ í½ì ìí°ìë¼ì´ì±(LCD íë©´ ì ì©).</long>
+            </locale>
+
             <locale name="lv">
 	        <short>Antialiasings</short>
                 <long>Antialiasinga tips, ko lietot pie fontu attÄloÅ¡anas. IespÄjamÄs vÄrtÄ«bas ir: &quot;nekas&quot; - nav antialiasinga. &quot;melnbalts&quot; - standarta melnbals antialiasings. &quot;rgba&quot; - subpikseÄ¼u antialiasings. (tikai LCD ekrÄniem).</long>
+            </locale>
+
+            <locale name="mn">
+	        <short>Ó¨Ð½Ð³Ó©Ð½Ð¸Ð¹ ÑÑÑÐ¸Ð¼</short>
+                <long>ÐÐ¸ÑÐ³Ð¸Ð¹Ð½ Ð´Ò¯ÑÑÐ»ÑÐ»Ð´ ÑÑÑÑÐ³Ð»ÑÐ³Ð´Ð´ÑÐ³ Ó©Ð½Ð³Ó©Ð½Ð¸Ð¹ ÑÑÑÐ¸Ð¼Ð¸Ð¹Ð½ ÑÓ©ÑÐ»Ò¯Ò¯Ð´. ÐÐ¾Ð»Ð¾Ð¼Ð¶Ð¸Ñ ÑÑÐ³ÑÑÐ´ Ð½Ñ Â»ÑÐ¾Ð¾ÑÐ¾Ð½Â« (ÑÑÑÐ¸Ð¼Ð¶Ð¸Ð»ÑÐ³Ò¯Ð¹), Â»grayscaleÂ« (Ð¡Ð°Ð°ÑÐ°Ð» Ó©Ð½Ð³Ó©Ð½Ð¸Ð¹ ÑÑÐ°Ð½Ð´Ð°ÑÑ-ÑÑÑÐ¸Ð¼) Ð±Ð° Â»rgbaÂ« (Subpixel-antialiasing - Ð·Ó©Ð²ÑÓ©Ð½ LCD-Ð´ÑÐ»Ð³ÑÑÐ¸Ð¹Ð½ ÑÑÐ²ÑÐ´) Ð±Ð°Ð¹Ð´Ð°Ð³.</long>
             </locale>
 
             <locale name="nl">
@@ -226,9 +271,19 @@
                 <long>Type antialiasing som skal brukes ved rendring av skrifter. Mulige verdier er: Â«noneÂ» - ingen antialiasing. Â«greyscaleÂ»Â - standard antialiasing med grÃ¥toner. Â«rgbaÂ» - antialiasing under pikselnivÃ¥ (Kun LCD-skjermer)</long>
             </locale>
 
+            <locale name="pt">
+	        <short>Antialiasing</short>
+                <long>O tipo de antialiasinf a utilizar ao renderizar fontes. Valores possÃ­veis sÃ£o: &quot;nenhum&quot; - sem antialiasing. &quot;escala cinza&quot; - antialiasing standard em escalas cinza. &quot;rgba&quot; - antialiasing de subpixel. (apenas ecrÃ£s LCD).</long>
+            </locale>
+
             <locale name="pt_BR">
 	        <short>Antialiasing</short>
                 <long>O tipo de antialiasing a usar ao renderizar fontes. Valores possÃ­veis sÃ£o: &quot;none&quot; - sem antialiasing. &quot;grayscale&quot; - antialiasing padrÃ£o de escala de cinzas. &quot;rgba&quot; - antialiasing de subpixel. (telas de LCD apenas).</long>
+            </locale>
+
+            <locale name="ro">
+	        <short>Antialiasing</short>
+                <long>Tipul de antialiasing folosit la randarea fonturilor. Valori posibile sunt: &quot;none&quot; - nici un antialiasing. &quot;grayscale&quot; - antialiasing standard, Ã®n trepte de gri. &quot;rgba&quot; - antialiasing pentru subpixeli. (doar pentru ecrane LCD)</long>
             </locale>
 
             <locale name="ru">
@@ -256,6 +311,11 @@
                 
             </locale>
 
+            <locale name="uk">
+	        <short>ÐÐ³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ</short>
+                <long>Ð¢Ð¸Ð¿ Ð·Ð³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÑÑÑÑÑ Ð´Ð»Ñ Ð¼Ð°Ð»ÑÐ²Ð°Ð½Ð½Ñ ÑÑÐ¸ÑÑÑÐ². ÐÐ¾Ð¶Ð»Ð¸Ð²Ñ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ: &quot;none&quot; â Ð½ÐµÐ¼Ð°Ñ Ð·Ð³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ, &quot;grayscale&quot; â ÑÑÐ°Ð½Ð´Ð°ÑÑÐ½Ðµ Ð¿ÑÐ²ÑÐ¾Ð½Ð¾Ð²Ðµ Ð·Ð³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ, &quot;rgba&quot; â ÑÑÐ±Ð¿ÑÐºÑÐµÐ»ÑÐ½Ðµ Ð·Ð³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ (Ð»Ð¸ÑÐµ Ð´Ð»Ñ Ð Ð-Ð¼Ð¾Ð½Ð¸ÑÐ¾ÑÑÐ²).</long>
+            </locale>
+
             <locale name="vi">
 	        <short>LÃ m trÆ¡n</short>
                 <long>Kiá»u antialiasing dÃ¹ng khi xá»­ lÃ½ hiá»n thá» phÃ´ng chá»¯. CÃ¡c giÃ¡ trá» cÃ³ thá» lÃ : &quot;khÃ´ng&quot; - khÃ´ng antialiasing. &quot;cÃ¢n báº±ng xÃ¡m&quot; - antialiasing cÃ¢n báº±ng xÃ¡m chuáº©n. &quot;rgba&quot; - subpixel antialiasing. (Chá» cho mÃ n hÃ¬nh LCD).</long>
@@ -268,7 +328,10 @@
 
             <locale name="zh_TW">
 	        <short>å¹³æ»å­å</short>
-                
+                <long>æç¹ªå­åæå°å­åå¹³æ»åçæ¹å¼ãå¯ä»¥ä½¿ç¨çå¼çºï¼
+ânoneââ ä¸é²è¡å¹³æ»åã
+âgrayscaleââ æ¨æºçå¹³æ»åæ¹å¼ (ä½¿ç¨ç°éé¡è²)ã
+ârgbaââ æ¬¡åç´ (subpixel)å¹³æ»åæ¹å¼ï¼åªé©ç¨æ¼ LCD è¢å¹ã</long>
             </locale>
         </schema>
 	<schema>
@@ -338,9 +401,24 @@
                 <long>A betÅ±k megjelenÃ­tÃ©sÃ©hez hasznÃ¡lt hinting tÃ­pusa. A lehetsÃ©ges Ã©rtÃ©kek: &quot;Nincs&quot; - nincs hinting, &quot;Enyhe&quot;, &quot;KÃ¶zepes&quot; Ã©s &quot;Teljes&quot; - akkora hinting, amennyi csak lehetsÃ©ges; eltorzÃ­thatja a betÅ±k alakjÃ¡t.</long>
             </locale>
 
+            <locale name="ja">
+	        <short>Hinting</short>
+                <long>ãã©ã³ããã¬ã³ããªã³ã°ããéã®ç»é¢ãã¯ã»ã«ã®ç¨®é¡ (Hinting) ã§ããå©ç¨å¯è½ãªå¤: &quot;none&quot; - Hinting ç¡å¹ã&quot;slight&quot;, &quot;medium&quot;, ã¨ &quot;full&quot; - å¯è½ãªéã Hinting ãã; æå­ã®å½¢æãæ­ªãå¯è½æ§ããã</long>
+            </locale>
+
+            <locale name="ko">
+	        <short>íí</short>
+                <long>ê¸ê¼´ì ê·¸ë¦´ ë ì°ì´ë ííì íì. ì¸ ì ìë ê°ì: &quot;none&quot; - íí ì°ì§ ìì. &quot;slight&quot;, &quot;medium&quot;, &quot;full&quot; - ì í ë§í¼ íííê¸°; ê¸ì ëª¨ìì´ íë ¤ì§ëë¤.</long>
+            </locale>
+
             <locale name="lv">
 	        <short>HintÄÅ¡ana</short>
                 <long>HintÄÅ¡anas tips, ko lietot pie fontu attÄloÅ¡anas. IespÄjamÄs vÄrtÄ«bas ir: &quot;nekas&quot; - nav hintÄÅ¡anas, &quot;niecÄ«gs&quot;, &quot;vidÄjs&quot;, un &quot;pilns&quot; - tik daudz hintÄÅ¡anas, cik vien iespÄjams; var izraisÄ«t burtu formas kropÄ¼ojumus.</long>
+            </locale>
+
+            <locale name="mn">
+	        <short>Hinting</short>
+                <long>ÐÐ¸ÑÐ³Ð¸Ð¹Ð½ Ð´Ò¯ÑÑÐ»ÑÐ»Ð´ ÑÑÑÑÐ³Ð»ÑÐ³Ð´Ð´ÑÐ³ Hinting Ð¸Ð¹Ð½ ÑÓ©ÑÐ»Ò¯Ò¯Ð´. ÐÐ¾Ð»Ð¾Ð¼Ð¶Ð¸Ñ ÑÑÐ³ÑÑÐ´ Ð½Ñ Â»ÑÐ¾Ð¾ÑÐ¾Ð½Â« (Hinting -Ð³Ò¯Ð¹), Â»slightÂ« (Ð±Ð°Ð³Ð° Ð·ÑÑÑÐ³ Hinting), Â»medium (Ð´ÑÐ½Ð´ Ð·ÑÑÑÐ³) Ð±Ð° Â»fullÂ« (ÑÒ¯ÑÑÑÐ¹) Ð±Ð¸ÑÐ³Ð¸Ð¹Ð½ Ð·ÑÑÐ³Ð¸Ð¹Ð½ ÑÑÐ»Ð±ÑÑÑÑÑ ÑÐ°Ð»ÑÐ³Ð°Ð°Ð»Ð¶ Ð¾Ð»Ð¾Ð½ Hinting Ð±Ð°Ð¹Ñ Ð±Ð¾Ð»Ð¾Ð¼Ð¶ÑÐ¾Ð¹.) ÑÐ¼.</long>
             </locale>
 
             <locale name="ms">
@@ -358,9 +436,19 @@
                 <long>Type hinting som skal brukes ved rendring av skrifter. Mulige verdier er Â«noneÂ» - ingen hinting, Â«slightÂ», Â«mediumÂ»Â og Â«fullÂ» - sÃ¥ mye hinting som mulig; kan forÃ¥rsake forvrengning av bokstavenes form.</long>
             </locale>
 
+            <locale name="pt">
+	        <short>Dicas</short>
+                <long>O tipo de dicas a utilizar ao renderizar fontes. Valores possÃ­veis sÃ£o: &quot;nenhum&quot; - sem dicas, &quot;suave&quot;, &quot;mÃ©dio&quot;, e &quot;completo&quot; - tantas dicas quantas as possÃ­veis; poderÃ¡ causar distorÃ§Ã£o em formulÃ¡rios carta.</long>
+            </locale>
+
             <locale name="pt_BR">
 	        <short>Dicas</short>
                 <long>O tipo de dicas a usar ao renderizar fontes. Os valores possÃ­veis sÃ£o: &quot;none&quot; - sem dicas, &quot;slight&quot;, &quot;medium&quot; e &quot;full&quot; - tantas dicas quanto possÃ­veis; isso pode causar distorÃ§Ãµes nas formas das letras.</long>
+            </locale>
+
+            <locale name="ro">
+	        <short>Aproximare</short>
+                <long>Tipul de aproximare folosit la randarea fonturilor. Valori posibile sunt: &quot;none&quot; - nici o aproximare, &quot;slight&quot;, &quot;medium&quot;, Åi &quot;full&quot; - aproximarea maxim posibilÄ; poate cauza distorsiuni ale formelor literelor.</long>
             </locale>
 
             <locale name="ru">
@@ -383,6 +471,11 @@
                 <long>Typen av hintning att anvÃ¤nda vid rendering av typsnitt. MÃ¶jliga vÃ¤rden Ã¤r: &quot;none&quot; - ingen hintning, &quot;slight&quot;, &quot;medium&quot; och &quot;full&quot; - sÃ¥ mycket hintning som mÃ¶jligt; kan orsaka fÃ¶rvrÃ¤ngning av bokstavsformer.</long>
             </locale>
 
+            <locale name="uk">
+	        <short>Ð£ÑÐ¾ÑÐ½ÐµÐ½Ð½Ñ</short>
+                <long>Ð¢Ð¸Ð¿ ÑÑÐ¾ÑÐ½ÐµÐ½Ð½Ñ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÑÑÑÑÑ Ð´Ð»Ñ Ð¼Ð°Ð»ÑÐ²Ð°Ð½Ð½Ñ ÑÑÐ¸ÑÑÑÐ². ÐÐ¾Ð¶Ð»Ð¸Ð²Ñ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ: &quot;none&quot; â Ð½ÐµÐ¼Ð°Ñ ÑÑÐ¾ÑÐ½ÐµÐ½Ð½Ñ, &quot;slight&quot;, &quot;medium&quot;, Ñ &quot;full&quot; â Ð½Ð°Ð¹Ð±ÑÐ»ÑÑÐµ Ð¼Ð¾Ð¶Ð»Ð¸Ð²Ðµ ÑÑÐ¾ÑÐ½ÐµÐ½Ð½Ñ (Ð¼Ð¾Ð¶Ðµ Ð²Ð¸ÐºÐ»Ð¸ÐºÐ°ÑÐ¸ ÑÐ¿Ð¾ÑÐ²Ð¾ÑÐµÐ½Ð½Ñ ÑÐ¾ÑÐ¼ Ð±ÑÐºÐ²).</long>
+            </locale>
+
             <locale name="vi">
 	        <short>Hinting</short>
                 <long>Loáº¡i hint khi váº½ font. GiÃ¡ trá» há»£p lá» lÃ : &quot;none&quot; - khÃ´ng hint, &quot;slight&quot;, &quot;medium&quot;, vÃ  &quot;full&quot; - hint tá»i Äa cÃ³ thá»; cÃ³ thá» gÃ¢y ra sá»± mÃ©o mÃ³ trÃªn cÃ¡c máº«u kÃ½ tá»±.</long>
@@ -391,6 +484,12 @@
             <locale name="zh_CN">
 	        <short>å¾®è°</short>
                 <long>ç»å¶å­ä½æ¶æä½¿ç¨çå¾®è°ç±»åãå¯ä¾éç¨çå¼ï¼âæ â - æ²¡ææç¤ºï¼âè½»å¾®âï¼âä¸­ç­âåâå®å¨â - å°½å¯è½å¾®è°ï¼å¯è½å¯¼è´å­æ¯æ ¼å¼åå½¢ã</long>
+            </locale>
+
+            <locale name="zh_TW">
+	        <short>Hinting</short>
+                <long>æç¹ªå­åæä½¿ç¨ç hinting æ¹å¼ãå¯ä»¥ä½¿ç¨çå¼ä¾æ¬¡çºï¼
+ânoneâ(ä¸ä½¿ç¨ hinting)ãâslightâãâmediumâåâfullâ(å®æ´ hinting)ï¼å¯è½æä»¤å­é«è®åã</long>
             </locale>
         </schema>
 	<schema>
@@ -460,9 +559,24 @@
                 <long>A szubpixelek sorrendje az LCD-kÃ©pernyÅn; csak akkor hasznÃ¡latos, ha az Ã©lsimÃ­tÃ¡s &quot;RGBA&quot;-ra ven Ã¡llÃ­tva. A lehetsÃ©ges Ã©rtÃ©kek: &quot;RGB&quot; - a piros a bal oldalon, ez a leggyakoribb. &quot;BGR&quot; - kÃ©k a bal oldalon. &quot;VRGB&quot; - piros a tetejÃ©n. &quot;VBGR&quot; - piros az aljÃ¡n.</long>
             </locale>
 
+            <locale name="ja">
+	        <short>RGBA ã®é çª</short>
+                <long>LCD ç»é¢ç¶ã®ãµããã¯ã»ã«è¦ç´ ã®é çª; ã¢ã³ãã¨ã¤ãªã¢ã¹ã &quot;rgba&quot; ã«ã»ããããå ´åã«ã®ã¿ä½¿ç¨ã§ãã¾ããå©ç¨å¯è½ãªå¤: &quot;rgb&quot; - å·¦å´ãèµ¤ (ã»ã¨ãã©ãå±é)ã&quot;bgr&quot; - å·¦ç«¯ãéã&quot;vrgb&quot; - ä¸å´ãèµ¤ã&quot;vbgr&quot; - ä¸å´ãèµ¤</long>
+            </locale>
+
+            <locale name="ko">
+	        <short>RGBA ìì</short>
+                <long>LCDíë©´ìì ë´ë¶ í½ìììì ìì; ìí°ìë¼ì´ì±ì´ &quot;rgba&quot;ë¡ ì¤ì ëìì ë ìëë¤. ì¸ ì ìë ê°ì: &quot;rgb&quot; - ì¼ìª½ì ë¹¨ê°(ê°ì¥ ìì£¼ ì°ë ê°), &quot;bgr&quot; - ì¼ìª½ì íë, &quot;vrgb&quot; - ììª½ì ë¹¨ê°, &quot;vbgr&quot; - ìëì ë¹¨ê° ìëë¤.</long>
+            </locale>
+
             <locale name="lv">
 	        <short>RGBA KÄrtÄ«ba</short>
                 <long>SubpikseÄ¼u elementu kÄrtÄ«ba LCD ekrÄnÄ; lietota tikai tad, kad antialiasings ir iestatÄ«ts uz &quot;rgba&quot;. IespÄjamÄs vÄrtÄ«bas ir: &quot;rgb&quot; - sarkans pa kreisi, visizplatÄ«tÄkÄ. &quot;bgr&quot; - zils pa kreisi. &quot;vrgb&quot; - sarkans augÅ¡Ä. &quot;vbgr&quot; - sarkans apakÅ¡Ä.</long>
+            </locale>
+
+            <locale name="mn">
+	        <short>RGBA-Ð´Ð°ÑÐ°Ð°Ð»Ð°Ð»</short>
+                <long>LCD-Ð´ÑÐ»Ð³ÑÑ Ð´ÑÑÑÑÐ¸ Subpixel-ÑÐ»ÐµÐ¼ÐµÐ½ÑÒ¯Ò¯Ð´Ð¸Ð¹Ð½ Ð´Ð°ÑÐ°Ð°Ð»Ð°Ð»; Ð¢Ò¯Ð»ÑÒ¯Ò¯Ñ Ð·Ó©Ð²ÑÓ©Ð½ Â»antialiasingÂ« Â»rgbaÂ«-Ñ ÑÐ¾Ð³ÑÐ¾Ð¾Ð³Ð´Ð²Ð¾Ð» ÑÑÑÑÐ³Ð»ÑÐ³Ð´ÑÐ½Ñ. ÐÐ¾Ð»Ð¾Ð¼Ð¶Ð¸Ñ ÑÑÐ³ÑÑÐ´ Ð½Ñ Â»rgbÂ« (Ð£Ð»Ð°Ð°Ð½ Ð·Ò¯Ò¯Ð½ ÑÐ°Ð»ÑÐ½Ñ Ó©ÑÐ³Ó©Ð½ ÑÐ°ÑÑÑÐ°Ð½), Â»bgrÂ« (Ð¥Ó©Ñ Ð·Ò¯Ò¯Ð½), Â»vrgbÂ« (Ð£Ð»Ð°Ð°Ð½ Ð´ÑÑÐ´) Ð±Ð° Â»vbgrÂ« (Ð£Ð»Ð°Ð°Ð½ Ð´Ð¾Ð¾Ð´) Ð±Ð°Ð¹Ð´Ð°Ð³.</long>
             </locale>
 
             <locale name="ms">
@@ -485,9 +599,19 @@
                 
             </locale>
 
+            <locale name="pt">
+	        <short>Ordem RGBA</short>
+                <long>A ordem dos elementos subpixel num ecrÃ£ LCD; apenas utilizado quando antialiasing estiver definido como &quot;rgba&quot;. Valores possÃ­veis sÃ£o: &quot;rgb&quot; - vermelho Ã  esquerda, o mais comum. &quot;bgr&quot; - azul Ã  esquerda. &quot;vrgb&quot; - vermelho no topo. &quot;vbgr&quot; - vermelho na base.</long>
+            </locale>
+
             <locale name="pt_BR">
 	        <short>Ordem RGBA</short>
                 <long>A ordem de elementos de subpixel em uma tela LCD; somente usado quando o antialiasing estÃ¡ definido para &quot;rgba&quot;. Valores possÃ­veis sÃ£o: &quot;rgb&quot; - vermelho Ã  esquerda, mais comum. &quot;bgr&quot; - azul Ã  esquerda. &quot;vrgb&quot; - vermelho no topo. &quot;vbgr&quot; - vermelho no fundo.</long>
+            </locale>
+
+            <locale name="ro">
+	        <short>Ordine RGBA</short>
+                <long>Ordinea elementelor subpixel pe un ecran LCD; este folosit doar cand antialiasingul este setat la &quot;rgba&quot;. Valori posibile sunt: &quot;rgb&quot; - roÅu la stÃ¢nga, cel mai adesea. &quot;bgr&quot; - albastru la stÃ¢nga. &quot;vrgb&quot; - roÅu sus. &quot;vbgr&quot; - roÅu jos.</long>
             </locale>
 
             <locale name="ru">
@@ -507,12 +631,17 @@
 
             <locale name="sv">
 	        <short>RGBA-ordning</short>
-                <long>Ordningen fÃ¶r underbildpunktselement pÃ¥ en LCD-skÃ¤rm. AnvÃ¤nds endast dÃ¥ alntialiasing Ã¤r satt till &quot;rgba&quot;. MÃ¶jliga vÃ¤rden Ã¤r: &quot;rgb&quot; - rÃ¶d till vÃ¤nster, vanligast. &quot;bgr&quot; - blÃ¥ till vÃ¤nster. &quot;vrgb&quot; - rÃ¶d Ã¶verst. &quot;vbgr&quot; - rÃ¶d nederst.</long>
+                <long>Ordningen fÃ¶r underbildpunktselement pÃ¥ en LCD-skÃ¤rm. AnvÃ¤nds endast dÃ¥ antialiasing Ã¤r satt till &quot;rgba&quot;. MÃ¶jliga vÃ¤rden Ã¤r: &quot;rgb&quot; - rÃ¶d till vÃ¤nster, vanligast. &quot;bgr&quot; - blÃ¥ till vÃ¤nster. &quot;vrgb&quot; - rÃ¶d Ã¶verst. &quot;vbgr&quot; - rÃ¶d nederst.</long>
             </locale>
 
             <locale name="tr">
 	        <short>RGBA SÄ±rasÄ±</short>
                 
+            </locale>
+
+            <locale name="uk">
+	        <short>ÐÐ¾ÑÑÐ´Ð¾Ðº RGBA</short>
+                <long>ÐÐ¾ÑÑÐ´Ð¾Ðº ÑÑÐ±Ð¿ÑÐºÑÐµÐ»ÑÐ½Ð¸Ñ ÐµÐ»ÐµÐ¼ÐµÐ½ÑÑÐ² Ñ Ð Ð-Ð¼Ð¾Ð½ÑÑÐ¾ÑÑ; Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÑÑÑÑÑ Ð»Ð¸ÑÐµ ÐºÐ¾Ð»Ð¸ Ð·Ð³Ð»Ð°Ð´Ð¶ÑÐ²Ð°Ð½Ð½Ñ Ð²ÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾ Ñ  &quot;rgba&quot;. ÐÐ¾Ð¶Ð»Ð¸Ð²Ñ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ: &quot;rgb&quot; â ÑÐµÑÐ²Ð¾Ð½Ð¸Ð¹ Ð»ÑÐ²Ð¾ÑÑÑ (Ð½Ð°Ð±ÑÐ»ÑÑ Ð¿Ð¾ÑÐ¸ÑÐµÐ½Ð¾), &quot;bgr&quot; â ÑÐ¸Ð½ÑÐ¹ Ð»ÑÐ²Ð¾ÑÑÑ, &quot;vrgb&quot; â ÑÐµÑÐ²Ð¾Ð½Ð¸Ð¹ Ð²Ð³Ð¾ÑÑ, &quot;vbgr&quot; â ÑÐµÑÐ²Ð¾Ð½Ð¸Ð¹ Ð²Ð½Ð¸Ð·Ñ.</long>
             </locale>
 
             <locale name="vi">
@@ -527,7 +656,11 @@
 
             <locale name="zh_TW">
 	        <short>RGBA æ¬¡åº</short>
-                
+                <long>LCD è¢å¹ä¸ï¼æ¬¡åç´ (subpixel)çæ¬¡åºï¼åªæç¶å¹³æ»å­åæ¨¡å¼è¨­å®çºârgbaâæä½¿ç¨ãå¯ä»¥ä½¿ç¨çå¼çºï¼
+ârgbâ â å·¦éæ¯ç´è²ï¼éæ¯æå¸¸è¦çæå½¢ã
+âbgrâ â å·¦éæ¯èè²ã
+âvrgbââ é ç«¯æ¯ç´è²ã
+âvbgrââ é ç«¯æ¯èè²ã</long>
             </locale>
         </schema>
     </schemalist>

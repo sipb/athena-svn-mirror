@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 2.1.5.1\n"
-"POT-Creation-Date: 2003-01-10 10:20-0500\n"
-"PO-Revision-Date: 2002-12-20 11:57+0100\n"
+"POT-Creation-Date: 2003-02-04 16:51-0500\n"
+"PO-Revision-Date: 2003-01-25 14:17+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: Gnome French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -48,13 +48,12 @@ msgid "Set your keyboard accessibility preferences"
 msgstr "Règle les paramètres d'accessibilité de votre clavier"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
-#, fuzzy
 msgid ""
 "This system does not seem to have the XKB extension.  The keyboard "
 "accessibility features will not operate without it."
 msgstr ""
 "Ce système ne semble pas avoir l'extension XKB.  Les fonctionnalités "
-"d'accessibilité du clavier ne fonctionneront pas."
+"d'accessibilité du clavier ne fonctionneront pas.sans cette extension."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:1
@@ -402,6 +401,11 @@ msgstr "Appliquer et quitter"
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Il y a eu une erreur lors de l'affichage de l'aide : %s"
+
+#: capplets/common/capplet-stock-icons.c:94
+#, c-format
+msgid "Unable to load capplet stock icon '%s'\n"
+msgstr "Impossible de lire l'icône standard pour la capplet « %s »\n"
 
 #: capplets/common/file-transfer-dialog.c:95
 #, c-format
@@ -1960,8 +1964,8 @@ msgstr "_Installer"
 msgid "_Location of new theme:"
 msgstr "_Emplacement du nouveau thème :"
 
-#: capplets/theme-switcher/gnome-theme-details.c:329
-#: capplets/theme-switcher/gnome-theme-manager.c:606
+#: capplets/theme-switcher/gnome-theme-details.c:372
+#: capplets/theme-switcher/gnome-theme-manager.c:609
 msgid ""
 "No themes could be found on your system.  This probably means that your "
 "\"Theme Preferences\" dialog was improperly installed, or you haven't "
@@ -1971,13 +1975,17 @@ msgstr ""
 "probablement que votre boîte de dialogue « Préférences du thème » a été mal "
 "installé, ou que vous n'avez pas installé le paquet « gnome-thèmes »."
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-save.c:72
+msgid "Theme name must be present"
+msgstr "Le nom du thème doit être indiqué"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "Custom theme"
 msgstr "Thème personnalisé"
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "You can save this theme by pressing the Save Theme button."
 msgstr ""
 "Vous pouvez enregistrer ce thème en cliquant sur le bouton « Enregistrer le "
@@ -2408,11 +2416,11 @@ msgstr ""
 "Le gestionnaire de fenêtres « %s » n'a pas enregistré d'outil de "
 "configuration\n"
 
-#: libwindow-settings/metacity-window-manager.c:373
+#: libwindow-settings/metacity-window-manager.c:374
 msgid "Maximize"
 msgstr "Agrandir"
 
-#: libwindow-settings/metacity-window-manager.c:374
+#: libwindow-settings/metacity-window-manager.c:375
 msgid "Roll up"
 msgstr "Replier"
 

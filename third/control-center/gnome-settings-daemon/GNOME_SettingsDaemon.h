@@ -42,7 +42,7 @@ extern "C"
 #define TC_IMPL_TC_GNOME_SettingsDaemon_17 'm'
 #define TC_IMPL_TC_GNOME_SettingsDaemon_18 'o'
 #define TC_IMPL_TC_GNOME_SettingsDaemon_19 'n'
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
    static
 #else
    extern
@@ -107,14 +107,14 @@ extern "C"
 					    CORBA_Environment * ev);
 #include <orbit/orb-core/orbit-interface.h>
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
    static
 #else
    extern
 #endif
    ORBit_IInterface GNOME_SettingsDaemon__iinterface;
 #define GNOME_SettingsDaemon_IMETHODS_LEN 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
    static
 #else
    extern

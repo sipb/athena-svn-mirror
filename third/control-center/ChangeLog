@@ -1,4 +1,20 @@
-Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
+Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* Release 2.2.0.1
+	* configure.in: 2.2.0.1
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+Tue Jan 21 13:20:00 2003  Bill Haneman        <bill.haneman@sun.com>	
+
+        * gnoome-settings-daemon/gnome-settings-mouse.c:
+	(set_locate_pointer): Change the AnyModifier passive grab
+	of the Control keys to grabs on no modifier and on
+	LockModifier. [Fix for bugzilla 104058.]
+	
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>	
 
 	* Release 2.2.0
 

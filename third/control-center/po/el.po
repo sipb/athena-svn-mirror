@@ -22,12 +22,13 @@
 # kostas: 461 messages, 18Oct2002, updated and completed translation.
 # kostas: 535 messages, 10Dec2002, reviewed and updated translation for Gnome 2.1x
 # kostas: 533 messages, 06Jan2003, one more update.
+# kostas: 537 messages, 26Jan2003, one more update.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-control-center 2.0.2.92\n"
-"POT-Creation-Date: 2003-01-10 10:20-0500\n"
-"PO-Revision-Date: 2003-01-06 17:50+0200\n"
+"POT-Creation-Date: 2003-02-04 16:51-0500\n"
+"PO-Revision-Date: 2003-01-26 12:06+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -61,13 +62,12 @@ msgid "Set your keyboard accessibility preferences"
 msgstr "Ρύθμιση των προτιμήσεων προσβασιμότητας πληκτρολογίου"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
-#, fuzzy
 msgid ""
 "This system does not seem to have the XKB extension.  The keyboard "
 "accessibility features will not operate without it."
 msgstr ""
 "Αυτό το σύστημα δεν φαίνεται να έχει την επέκταση XKB. Οι λειτουργίες "
-"προσβασιμότητας πληκτρολογίου δεν θα λειτουργούν με αυτό."
+"προσβασιμότητας πληκτρολογίου δεν θα λειτουργούν χωρίς αυτό."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:1
@@ -417,6 +417,11 @@ msgstr "Εφαρμογή των ρυθμίσεων και έξοδος"
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Σφάλμα προβολής βοήθειας: %s "
+
+#: capplets/common/capplet-stock-icons.c:94
+#, c-format
+msgid "Unable to load capplet stock icon '%s'\n"
+msgstr "Αδυναμία φόρτωσης εικονιδίου εφαρμογιδίου stock '%s'\n"
 
 #: capplets/common/file-transfer-dialog.c:95
 #, c-format
@@ -1977,8 +1982,8 @@ msgstr "_Εγκατάσταση"
 msgid "_Location of new theme:"
 msgstr "_Τοποθεσία του νέου θέματος:"
 
-#: capplets/theme-switcher/gnome-theme-details.c:329
-#: capplets/theme-switcher/gnome-theme-manager.c:606
+#: capplets/theme-switcher/gnome-theme-details.c:372
+#: capplets/theme-switcher/gnome-theme-manager.c:609
 msgid ""
 "No themes could be found on your system.  This probably means that your "
 "\"Theme Preferences\" dialog was improperly installed, or you haven't "
@@ -1988,13 +1993,17 @@ msgstr ""
 "\"Προτιμήσεις Θέματος\" δεν εγκαταστάθηκε σωστά, ή ότι δεν έχετε "
 "εγκαταστήσει το πακέτο \"gnome-themes\"."
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-save.c:72
+msgid "Theme name must be present"
+msgstr "Το όνομα θέματος πρέπει να υπάρχει"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "Custom theme"
 msgstr "Προσαρμοσμένο θέμα"
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "You can save this theme by pressing the Save Theme button."
 msgstr ""
 "Μπορείτε να αποθηκεύσετε το θέμα πατώντας το κουμπί Αποθήκευση θέματος."
@@ -2421,11 +2430,11 @@ msgid "Window manager \"%s\" has not registered a configuration tool\n"
 msgstr ""
 "Ο διαχειριστής παραθύρων \"%s\"  δεν έχει εγγράψει ένα εργαλείο ρυθμίσεων\n"
 
-#: libwindow-settings/metacity-window-manager.c:373
+#: libwindow-settings/metacity-window-manager.c:374
 msgid "Maximize"
 msgstr "Μεγιστοποίηση"
 
-#: libwindow-settings/metacity-window-manager.c:374
+#: libwindow-settings/metacity-window-manager.c:375
 msgid "Roll up"
 msgstr "Δίπλωση πάνω"
 

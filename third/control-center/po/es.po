@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center2 2.1.x\n"
-"POT-Creation-Date: 2003-01-10 10:20-0500\n"
+"POT-Creation-Date: 2003-02-04 16:51-0500\n"
 "PO-Revision-Date: 2003-01-08 14:48-0300\n"
 "Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -197,7 +197,7 @@ msgstr "_Deshabilitar si no se utiliza durante:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
 msgid "_Enable keyboard accessibility features"
-msgstr "Habilitar caract_eristicas de accesibilidad del teclado"
+msgstr "Habilitar características de accesibilidad del t_eclado"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
 msgid "_Import Feature Settings..."
@@ -401,6 +401,11 @@ msgstr "Aplicar los cambios y salir"
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Ha ocurrido un error al mostrar la ayuda: %s"
+
+#: capplets/common/capplet-stock-icons.c:94
+#, c-format
+msgid "Unable to load capplet stock icon '%s'\n"
+msgstr "No se puede cargar el icono de almacén del capplet «%s»\n"
 
 #: capplets/common/file-transfer-dialog.c:95
 #, c-format
@@ -1643,8 +1648,8 @@ msgid ""
 "Maximum time allowed between clicks when double-clicking.   Use the box on "
 "the right to test."
 msgstr ""
-"Tiempo máximo permitido entre clics en el doble clic.   Utilice el cuadro de "
-"la derecha para probar."
+"Tiempo máximo permitido entre los clics en el doble clic.   Utilice el "
+"cuadro de la derecha para probar."
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:17
 msgid "Motion"
@@ -1954,24 +1959,28 @@ msgstr "_Instalar"
 msgid "_Location of new theme:"
 msgstr "_Ubicación del nuevo tema:"
 
-#: capplets/theme-switcher/gnome-theme-details.c:329
-#: capplets/theme-switcher/gnome-theme-manager.c:606
+#: capplets/theme-switcher/gnome-theme-details.c:372
+#: capplets/theme-switcher/gnome-theme-manager.c:609
 msgid ""
 "No themes could be found on your system.  This probably means that your "
 "\"Theme Preferences\" dialog was improperly installed, or you haven't "
 "installed the \"gnome-themes\" package."
 msgstr ""
 "No se han podido encontrar temas en su sistema. Probablemente esto "
-"signifique que su diálogo de «Preferencias del tema» fué instalado "
+"signifique que su diálogo de «Preferencias del tema» fue instalado "
 "incorrectamente, o no se haya instalado el paquete «gnome-themes»."
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-save.c:72
+msgid "Theme name must be present"
+msgstr "El nombre del tema debe estar presente"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "Custom theme"
 msgstr "Tema personalizado"
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "You can save this theme by pressing the Save Theme button."
 msgstr "Puede guardar este tema presionando al botón «Guardar tema»."
 
@@ -2179,7 +2188,7 @@ msgstr "Diseño"
 
 #: control-center/capplet-dir-view.c:159
 msgid "Layout to use for this view of the capplets"
-msgstr "Diseño que se debe utilizar en esta vista de las capplets"
+msgstr "Diseño que se debe utilizar en esta vista de los capplets"
 
 #: control-center/capplet-dir-view.c:165
 msgid "Capplet directory object"
@@ -2238,7 +2247,7 @@ msgstr "Herramienta de configuración de GNOME"
 
 #: control-center/main.c:43
 msgid "Use shell even if nautilus is running."
-msgstr "Utilizar shell aunque se esté ejecutando nautilus."
+msgstr "Utilizar el interprete aún si Nautilus se esta ejecutando."
 
 #: gnome-settings-daemon/factory.c:32
 msgid "Could not initialize Bonobo"
@@ -2405,11 +2414,11 @@ msgstr ""
 "El manejador de ventanas «%s» no ha registrado una herramienta de "
 "configuración\n"
 
-#: libwindow-settings/metacity-window-manager.c:373
+#: libwindow-settings/metacity-window-manager.c:374
 msgid "Maximize"
 msgstr "Maximizar"
 
-#: libwindow-settings/metacity-window-manager.c:374
+#: libwindow-settings/metacity-window-manager.c:375
 msgid "Roll up"
 msgstr "Enrollar"
 
@@ -2417,7 +2426,7 @@ msgstr "Enrollar"
 msgid ""
 "If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
-"Si es true, los manejadores mime para text/plain y text/* se mantendrán "
+"Si es «true», los manejadores mime para text/plain y text/* se mantendrán "
 "sincronizados"
 
 #: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2

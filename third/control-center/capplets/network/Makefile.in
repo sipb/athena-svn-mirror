@@ -361,9 +361,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-network-preferences.o: gnome-network-preferences.c ../../config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h
 
 info-am:
 info: info-am

@@ -62,9 +62,24 @@
                 <long>KÃ©pernyÅvÃ©dÅ futtatÃ¡sa a bejelentkezÃ©skor</long>
             </locale>
 
+            <locale name="ja">
+	        <short>XScreenSaver ãèµ·åãã</short>
+                <long>ã­ã°ã¤ã³æã« XScreenSaver ãèµ·åãã</long>
+            </locale>
+
+            <locale name="ko">
+	        <short>XScreenSaver ìì</short>
+                <long>ë¡ê·¸ì¸í  ë XScreenSaver ì¤í</long>
+            </locale>
+
             <locale name="lv">
 	        <short>SÄknÄt XScreenSaver</short>
                 <long>Palaist XScreenSaver pie pieteikÅ¡anÄs</long>
+            </locale>
+
+            <locale name="mn">
+	        <short>XScreenSaver ÑÑÐ»Ò¯Ò¯Ð»ÑÑ</short>
+                <long>ÐÒ¯ÑÐ³Ò¯Ò¯Ð»ÑÑÑÐ´ XScreenSaver ÑÑÐ»Ò¯Ò¯Ð»ÑÑ</long>
             </locale>
 
             <locale name="ms">
@@ -82,9 +97,19 @@
                 <long>KjÃ¸re XScreenSaver ved pÃ¥logging</long>
             </locale>
 
+            <locale name="pt">
+	        <short>Iniciar XScreenSaver</short>
+                <long>Executar XScreenSaver ao iniciar sessÃ£o</long>
+            </locale>
+
             <locale name="pt_BR">
 	        <short>Iniciar o XScreeSaver</short>
                 <long>Executar o XScreenSaver no login</long>
+            </locale>
+
+            <locale name="ro">
+	        <short>PorneÅte XScreenSaver</short>
+                <long>RuleazÄ XScreenSaver la logare</long>
             </locale>
 
             <locale name="ru">
@@ -109,7 +134,12 @@
 
             <locale name="tr">
 	        <short>XScreenSaver&apos;Ä± ÃalÄ±ÅtÄ±r</short>
-                
+                <long>GiriÅte XScreenSaver programÄ±nÄ± Ã§alÄ±ÅtÄ±r</long>
+            </locale>
+
+            <locale name="uk">
+	        <short>ÐÐ°Ð¿ÑÑÐºÐ°ÑÐ¸ Ð·ÑÑÐ³Ð°Ñ ÐµÐºÑÐ°Ð½Ð°</short>
+                <long>ÐÐ°Ð¿ÑÑÐºÐ°ÑÐ¸ Ð·Ð±ÐµÑÑÐ³Ð°Ñ ÐµÐºÑÐ°Ð½Ð° Ð¿ÑÐ´ ÑÐ°Ñ Ð·Ð°Ð¿ÑÑÐºÑ ÑÐ¸ÑÑÐµÐ¼Ð¸</long>
             </locale>
 
             <locale name="vi">
@@ -188,9 +218,24 @@
 	        <long>PÃ¡rbeszÃ©dablak megjelenÃ­tÃ©se a kÃ©pernyÅvÃ©dÅ hibÃ¡ja esetÃ©n</long>
 	    </locale>
 
+            <locale name="ja">
+                <short>èµ·åæã®ã¨ã©ã¼ãè¡¨ç¤ºãã</short>
+	        <long>XScreenSaver èµ·åä¸­ã«ã¨ã©ã¼ãçºçããããã¤ã¢ã­ã°ãè¡¨ç¤ºãã¾ã</long>
+	    </locale>
+
+            <locale name="ko">
+                <short>ìì ì¤ë¥ ë³´ê¸°</short>
+	        <long>XScreenSaver ì±íì¤ì ì¤ë¥ê° ìê¸¸ ë ëíìì ë³´ì</long>
+	    </locale>
+
             <locale name="lv">
                 <short>ParÄdÄ«t SÄknÄÅ¡anas KÄ¼Å«das</short>
 	        <long>ParÄdÄ«t dialogu, kad ir kÄ¼Å«das palaiÅ¾ot XScreenSaver</long>
+	    </locale>
+
+            <locale name="mn">
+                <short>Ð­ÑÐ»ÑÐ» Ð°Ð»Ð´Ð°Ð°Ð³ ÑÐ°ÑÑÑÐ»Ð°Ñ</short>
+	        <long>XScreenSaver Ð°Ð¶Ð¸Ð»Ð»Ð°Ð¶ Ð±Ð°Ð¹Ñ Ò¯ÐµÐ´ Ð°Ð»Ð´Ð°Ð° Ð³Ð°ÑÐ²Ð°Ð» ÑÐ¼Ð°Ñ Ð½ÑÐ³ Ð´Ð¸Ð°Ð»Ð¾Ð³ ÑÐ°ÑÑÑÐ»Ð°Ñ ÑÑ?</long>
 	    </locale>
 
             <locale name="ms">
@@ -208,9 +253,19 @@
 	        <long>Vis en dialog nÃ¥r det oppstÃ¥r problemer med Ã¥ kjÃ¸re XScreenSaver</long>
 	    </locale>
 
+            <locale name="pt">
+                <short>Mostrar Erros no Arranque</short>
+	        <long>Mostrar um diÃ¡logo quando ocorrerem erros ao executar o XScreenSaver</long>
+	    </locale>
+
             <locale name="pt_BR">
                 <short>Exibir Erros de InicializaÃ§Ã£o</short>
 	        <long>Exibir um diÃ¡logo quando houver erros ao executar o XScreenSaver</long>
+	    </locale>
+
+            <locale name="ro">
+                <short>AratÄ erorile de pornire</short>
+	        <long>AfiÅeazÄ un dialog la apariÅ£ia unei erori generate de XScreenSaver</long>
 	    </locale>
 
             <locale name="ru">
@@ -236,6 +291,11 @@
             <locale name="tr">
                 <short>BaÅlangÄ±Ã§ HatalarÄ±nÄ± GÃ¶ster</short>
 	        
+	    </locale>
+
+            <locale name="uk">
+                <short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÐ¸ Ð¿Ð¾Ð¼Ð¸Ð»ÐºÐ¸ Ð·Ð°Ð¿ÑÑÐºÑ ÑÐ¸ÑÑÐµÐ¼Ð¸</short>
+	        <long>ÐÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ Ð´ÑÐ°Ð»Ð¾Ð³, ÐºÐ¾Ð»Ð¸ ÑÑÐ°ÑÑÑÑÑ Ð¿Ð¾Ð¼Ð¸Ð»ÐºÐ¸ Ð½Ð° Ð·Ð°Ð¿ÑÑÐºÑ Ð·Ð±ÐµÑÑÐ³Ð°ÑÐ° ÐµÐºÑÐ°Ð½Ð°</long>
 	    </locale>
 
             <locale name="vi">
