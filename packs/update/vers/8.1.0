@@ -32,6 +32,7 @@ sun4)
 
 sgi)
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
+	echo "/usr/etc/resolv.conf"		>> "$DEADFILES"
 	;;
 
 esac
