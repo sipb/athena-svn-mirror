@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
@@ -49,9 +49,9 @@ char K_INSTANCEbuf[INST_SZ];
 /* NF_PREFIX is prepended to the topic to create a specific discuss mtg */
 #ifndef TEST
 char *NF_PREFIX = "MATISSE.MIT.EDU:/usr/spool/discuss/o";
-#else TEST
-char *NF_PREFIX = "PICASSO.MIT.EDU:/usr/spool/discuss/o";
-#endif TEST
+#else
+char *NF_PREFIX = "FRIES.MIT.EDU:/usr/spool/discuss/o";
+#endif
 
 /* declaraction of procedure table */
 
