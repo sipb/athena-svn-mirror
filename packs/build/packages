@@ -1,4 +1,4 @@
-# $Id: packages,v 1.237 2003-05-01 03:00:47 ghudson Exp $
+# $Id: packages,v 1.238 2003-05-03 15:22:20 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -43,6 +43,9 @@ third/pkgconfig			early on solaris
 third/sed			early on solaris
 third/bison			early on solaris
 third/flex			early on solaris
+
+# Initial packs setup
+packs/build/setup		early except linux
 
 # Athena software
 athena/bin/access
