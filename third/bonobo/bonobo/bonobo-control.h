@@ -14,7 +14,7 @@
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
 #include <gtk/gtkwidget.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-control-frame.h>
 #include <bonobo/bonobo-property-bag.h>
 #include <bonobo/bonobo-property-bag-client.h>
@@ -31,19 +31,19 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboControlPrivate BonoboControlPrivate;
 
 typedef struct {
-	BonoboObject base;
+	BonoboXObject base;
 
 	BonoboControlPrivate *priv;
 } BonoboControl;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass      parent_class;
 
-	/*
-	 * Signals.
-	 */
-	void (*set_frame)           (BonoboControl *control);
-	void (*activate)            (BonoboControl *control, gboolean state);
+	POA_Bonobo_Control__epv epv;
+
+	/* Signals. */
+	void (*set_frame)      (BonoboControl *control);
+	void (*activate)       (BonoboControl *control, gboolean state);
 } BonoboControlClass;
 
 /* The main API */
@@ -63,9 +63,7 @@ void                        bonobo_control_get_property            (BonoboContro
 /* "Internal" stuff */
 GtkType                     bonobo_control_get_type                (void);
 BonoboControl              *bonobo_control_construct               (BonoboControl       *control,
-								    Bonobo_Control       corba_control,
 								    GtkWidget           *widget);
-Bonobo_Control              bonobo_control_corba_object_create     (BonoboObject        *object);
 BonoboUIComponent          *bonobo_control_get_ui_component        (BonoboControl       *control);
 void                        bonobo_control_set_ui_component        (BonoboControl       *control,
 								    BonoboUIComponent   *component);
@@ -81,7 +79,6 @@ Bonobo_PropertyBag          bonobo_control_get_ambient_properties  (BonoboContro
 void                        bonobo_control_activate_notify         (BonoboControl       *control,
 								    gboolean             activated);
 Bonobo_Control_windowId     bonobo_control_windowid_from_x11       (guint32              x11_id);
-POA_Bonobo_Control__epv    *bonobo_control_get_epv                 (void);
 
 END_GNOME_DECLS
 

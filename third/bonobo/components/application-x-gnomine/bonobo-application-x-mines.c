@@ -9,8 +9,6 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
 
 #include <bonobo.h>
 
@@ -22,12 +20,6 @@
 #include "face-win.xpm"
 #include "face-cool.xpm"
 #include "face-worried.xpm"
-
-/*
- * Number of running objects
- */
-static int running_objects = 0;
-static BonoboGenericFactory *factory = NULL;
 
 /*
  * BonoboControl data
@@ -286,16 +278,6 @@ control_destroy_cb (BonoboControl *control, gpointer data)
 	control_data->data = NULL;
 	
 	g_free (control_data); 
-
-	running_objects--;
-	if (running_objects > 0)
-		return;
-	
-	/*
-	 * When the last object has gone, unref the factory & quit.
-	 */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
 }
 
 static void
@@ -520,57 +502,10 @@ bonobo_mines_factory (BonoboGenericFactory *this, void *data)
 	bonobo_ui_component_add_verb (control_data->uic, "NewGame",
 				      verb_NewGame_cb, control_data);
 
-	/*
-	 * Count the new running object
-	 */
-	running_objects++;
-
 	return BONOBO_OBJECT (bonobo_object);
 }
 
-static void
-init_simple_mines_factory (void)
-{
-	factory = bonobo_generic_factory_new (
-		"OAFIID:bonobo_application-x-mines_factory:79eddfb6-12fd-4588-a02c-3eb50e67137d",
-		bonobo_mines_factory, NULL);
-}
-
-static void
-init_server_factory (int argc, char **argv)
-{
-	CORBA_Environment ev;
-	CORBA_ORB orb;
-
-        bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-
-	CORBA_exception_init (&ev);
-
-        gnome_init_with_popt_table("application-x-mines", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-
-	CORBA_exception_free (&ev);
-
-	if (bonobo_init (orb, NULL, NULL) == FALSE)
-		g_error (_("Could not initialize Bonobo!"));
-}
- 
-int
-main (int argc, char **argv)
-{
-	/*
-	 * Setup the factory.
-	 */
-	init_server_factory (argc, argv);
-	init_simple_mines_factory ();
-
-	/*
-	 * Start processing.
-	 */
-	bonobo_main ();
-
-	return 0;
-}
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Sample_Mines_Factory",
+		    "application-x-mines", VERSION,
+		    bonobo_mines_factory,
+		    NULL)

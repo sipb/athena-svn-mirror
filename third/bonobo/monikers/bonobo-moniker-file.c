@@ -1,5 +1,5 @@
 /*
- * gnome-moniker-file.c: Sample file-system based Moniker implementation
+ * bonobo-moniker-file.c: Sample file-system based Moniker implementation
  *
  * This is the file-system based Moniker implementation.
  *
@@ -9,13 +9,10 @@
  * Copyright 2000, Helix Code, Inc.
  */
 #include <config.h>
-#include <bonobo/bonobo-storage.h>
+
 #include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-moniker.h>
-#include <bonobo/bonobo-moniker-extender.h>
+#include <bonobo/bonobo-storage.h>
 #include <bonobo/bonobo-moniker-util.h>
-#include <libgnome/gnome-mime.h>
-#include <liboaf/liboaf.h>
 
 #include "bonobo-moniker-std.h"
 
@@ -43,8 +40,7 @@ bonobo_moniker_file_resolve (BonoboMoniker               *moniker,
 			return CORBA_OBJECT_NIL;
 		}
 
-		return CORBA_Object_duplicate (
-			bonobo_object_corba_objref (BONOBO_OBJECT (stream)), ev);
+		return CORBA_Object_duplicate (BONOBO_OBJREF (stream), ev);
 
 	} else if (!strcmp (requested_interface, "IDL:Bonobo/Storage:1.0")) {
 		BonoboStorage *storage;
@@ -59,8 +55,7 @@ bonobo_moniker_file_resolve (BonoboMoniker               *moniker,
 			return CORBA_OBJECT_NIL;
 		}
 
-		return CORBA_Object_duplicate (
-			bonobo_object_corba_objref (BONOBO_OBJECT (storage)), ev);
+		return CORBA_Object_duplicate (BONOBO_OBJREF (storage), ev);
 	}
 
 	retval = bonobo_moniker_use_extender (

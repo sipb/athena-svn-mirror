@@ -10,7 +10,7 @@
 #ifndef _BONOBO_MONIKER_H_
 #define _BONOBO_MONIKER_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
@@ -23,13 +23,15 @@ typedef struct _BonoboMonikerPrivate BonoboMonikerPrivate;
 #define BONOBO_IS_MONIKER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_MONIKER_TYPE))
 
 typedef struct {
-        BonoboObject          object;
+        BonoboXObject         object;
 	
 	BonoboMonikerPrivate *priv;
 } BonoboMoniker;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass      parent_class;
+
+	POA_Bonobo_Moniker__epv epv;
 
 	/*
 	 * virtual methods
@@ -49,15 +51,21 @@ typedef struct {
 					      const Bonobo_ResolveOptions *options,
 					      const CORBA_char            *requested_interface,
 					      CORBA_Environment           *ev);
+	CORBA_long     (*equal)              (BonoboMoniker               *moniker,
+					      const CORBA_char            *display_name,
+					      CORBA_Environment           *ev);
+
+	void           (*set_name)           (BonoboMoniker               *moniker,
+					      const char                  *unescaped_name);
+	const char    *(*get_name)           (BonoboMoniker               *moniker);
+
+	gpointer        dummy;
 } BonoboMonikerClass;
 
 GtkType                  bonobo_moniker_get_type            (void);
-POA_Bonobo_Moniker__epv *bonobo_moniker_get_epv             (void);
-Bonobo_Moniker           bonobo_moniker_corba_object_create (BonoboObject      *object);
 
-BonoboMoniker           *bonobo_moniker_construct           (BonoboMoniker *monike,
-							     Bonobo_Moniker corba_moniker,
-							     const char    *prefix);
+BonoboMoniker           *bonobo_moniker_construct           (BonoboMoniker     *moniker,
+							     const char        *prefix);
 
 Bonobo_Moniker           bonobo_moniker_get_parent          (BonoboMoniker     *moniker,
 							     CORBA_Environment *ev);
@@ -65,10 +73,6 @@ void                     bonobo_moniker_set_parent          (BonoboMoniker     *
 							     Bonobo_Moniker     parent,
 							     CORBA_Environment *ev);
 
-/*
- *   Common case convenience functions, for people not
- * overriding the base BonoboMoniker methods.
- */
 const char              *bonobo_moniker_get_name            (BonoboMoniker     *moniker);
 
 const char              *bonobo_moniker_get_name_full       (BonoboMoniker     *moniker);
@@ -78,7 +82,12 @@ void                     bonobo_moniker_set_name            (BonoboMoniker     *
 							     const char        *unescaped_name,
 							     int                num_chars);
 
+const char              *bonobo_moniker_get_prefix          (BonoboMoniker     *moniker);
+
+void                     bonobo_moniker_set_case_sensitive  (BonoboMoniker     *moniker,
+							     gboolean           sensitive);
+gboolean                 bonobo_moniker_get_case_sensitive  (BonoboMoniker     *moniker);
+
 END_GNOME_DECLS
 
 #endif /* _BONOBO_MONIKER_H_ */
-

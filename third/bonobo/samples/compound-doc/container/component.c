@@ -1,4 +1,4 @@
-/* $Id: component.c,v 1.1.1.1 2001-01-16 15:25:29 ghudson Exp $ */
+/* $Id: component.c,v 1.1.1.2 2001-02-11 17:54:56 ghudson Exp $ */
 
 #include "component.h"
 #include "embeddable-io.h"
@@ -23,7 +23,7 @@ object_print (BonoboObjectClient *object,
 	bonobo_print_data_render (ctx, x, y, print_data, 0.0, 0.0);
 	bonobo_print_data_free (print_data);
 
-	bonobo_object_unref (BONOBO_OBJECT (print_client));
+	gtk_object_unref (GTK_OBJECT (print_client));
 }
 
 static void
@@ -119,9 +119,8 @@ sample_client_site_add_frame (SampleClientSite *site)
 	 * so that it can merge menu and toolbar items when it gets
 	 * activated.
 	 */
-	view_frame = bonobo_client_site_new_view (
-		BONOBO_CLIENT_SITE (site),
-		bonobo_object_corba_objref (BONOBO_OBJECT (site->app->ui_container)));
+	view_frame = bonobo_client_site_new_view (BONOBO_CLIENT_SITE (site),
+		BONOBO_OBJREF (site->app->ui_container));
 	
 	/*
 	 * Embed the view frame into the application.
@@ -263,10 +262,7 @@ load_stream_cb (GtkWidget *caller, SampleClientSite *site)
 		/*
 		 * Load the file into the component using PersistStream.
 		 */
-		Bonobo_PersistStream_load (persist,
-					   (Bonobo_Stream)
-					   bonobo_object_corba_objref
-					   (BONOBO_OBJECT (stream)),
+		Bonobo_PersistStream_load (persist, BONOBO_OBJREF (stream),
 					   "", &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION) {
@@ -324,28 +320,15 @@ sample_client_site_class_init (SampleClientSiteClass *klass)
 	object_class->destroy = sample_client_site_destroy;
 }
 
-GtkType
-sample_client_site_get_type (void)
+static void 
+sample_client_site_init (GtkObject *object)
 {
-	static GtkType type = 0;
-
-	if (!type) {
-		GtkTypeInfo info = {
-			"SampleClientSite",
-			sizeof (SampleClientSite),
-			sizeof (SampleClientSiteClass),
-			(GtkClassInitFunc) sample_client_site_class_init,
-			(GtkObjectInitFunc) NULL,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_client_site_get_type (), &info);
-	}
-
-	return type;
+	/* nothing to do */
 }
+
+BONOBO_X_TYPE_FUNC (SampleClientSite, 
+		      bonobo_client_site_get_type (),
+		      sample_client_site);
 
 static void
 site_create_widgets (SampleClientSite *site)
@@ -412,7 +395,6 @@ sample_client_site_new (BonoboItemContainer *container,
 			const char          *embeddable_id)
 {
 	SampleClientSite *site;
-	Bonobo_ClientSite corba_client_site;
 
 	g_return_val_if_fail (app != NULL, NULL);
 	g_return_val_if_fail (embeddable_id != NULL, NULL);
@@ -420,22 +402,14 @@ sample_client_site_new (BonoboItemContainer *container,
 	g_return_val_if_fail (BONOBO_IS_ITEM_CONTAINER (container), NULL);
 	
 	site = gtk_type_new (sample_client_site_get_type ());
-	corba_client_site = bonobo_client_site_corba_object_create
-		(BONOBO_OBJECT (site));
-
-	if (corba_client_site == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (site));
-		return NULL;
-	}
 	
 	site = SAMPLE_CLIENT_SITE (bonobo_client_site_construct (
-		BONOBO_CLIENT_SITE (site), corba_client_site, container));
+		BONOBO_CLIENT_SITE (site), container));
 
 	if (site) {
 		bonobo_client_site_bind_embeddable (BONOBO_CLIENT_SITE (site),
 						    embeddable);
 		bonobo_object_unref (BONOBO_OBJECT (embeddable));
-		bonobo_item_container_add (container, BONOBO_OBJECT (site));
 
 		site->app = app;
 		g_free (site->obj_id);

@@ -10,15 +10,14 @@
 #include <config.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-print.h>
+#include <bonobo/bonobo-stream.h>
+#include <bonobo/bonobo-stream-memory.h>
 
 #include <libgnomeprint/gnome-print.h>
 
 #undef PRINT_DEBUG
 
-static BonoboObjectClass *bonobo_print_parent_class;
-static BonoboPrintClass  *bonobo_print_class;
-
-POA_Bonobo_Print__vepv bonobo_print_vepv;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 #define CLASS(o) BONOBO_PRINT_CLASS(GTK_OBJECT(o)->klass)
 
@@ -31,7 +30,7 @@ bonobo_print_from_servant (PortableServer_Servant _servant)
 		return BONOBO_PRINT (bonobo_object_from_servant (_servant));
 }
 
-static Bonobo_PrintData *
+static Bonobo_Stream
 impl_render (PortableServer_Servant        _servant,
 	     const Bonobo_PrintDimensions *pd,
 	     const Bonobo_PrintScissor    *scissor,
@@ -39,7 +38,7 @@ impl_render (PortableServer_Servant        _servant,
 {
 	GnomePrintMeta    *meta_context;
 	BonoboPrint       *print;
-	Bonobo_PrintData  *data;
+	BonoboStream      *stream;
 	void              *buffer;
 	int                buf_len;
 	GnomePrintContext *ctx;
@@ -65,63 +64,40 @@ impl_render (PortableServer_Servant        _servant,
 	if (print->render)
 		print->render (ctx, pd->width, pd->height,
 			       scissor, print->user_data);
+
+	else if (CLASS (print)->render)
+		CLASS (print)->render (ctx, pd->width, pd->height,
+				       scissor, print->user_data);
+
 	else
-		bonobo_print_class->render (ctx, pd->width, pd->height,
-					    scissor, print->user_data);
+		g_warning ("No render method on print object");
 
 	gnome_print_grestore (ctx);
 	gnome_print_context_close (ctx);
 
-	data = Bonobo_PrintData__alloc ();
-
 	gnome_print_meta_access_buffer (meta_context,
 					&buffer, &buf_len);
 
-	/* FIXME: we could kill this copy by nailing gnome-print-meta.c */
-	data->_buffer = g_malloc (buf_len);
-	memcpy (data->_buffer, buffer, buf_len);
-	data->_length = buf_len;
-	data->_maximum = buf_len;
+	/*
+	 * FIXME: this does an expensive mem-copy that we could
+	 * avoid easily with a custom stream.
+	 */
+	stream = bonobo_stream_mem_create (
+		buffer, buf_len, TRUE, FALSE);
 
 	gtk_object_unref (GTK_OBJECT (meta_context));
 
-	return data;
-}
-
-/**
- * bonobo_print_get_epv:
- *
- * Returns: The EPV for the default BonoboPrint implementation.  
- */
-POA_Bonobo_Print__epv *
-bonobo_print_get_epv (void)
-{
-	POA_Bonobo_Print__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Print__epv, 1);
-
-	epv->render = impl_render;
-
-	return epv;
-}
-
-static void
-init_print_corba_class (void)
-{
-	/* The VEPV */
-	bonobo_print_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_print_vepv.Bonobo_Print_epv   = bonobo_print_get_epv ();
+	return CORBA_Object_duplicate (BONOBO_OBJREF (stream), ev);
 }
 
 static void
 bonobo_print_class_init (BonoboPrintClass *klass)
 {
-	bonobo_print_parent_class = gtk_type_class (bonobo_object_get_type ());
-	bonobo_print_class = klass;
+	POA_Bonobo_Print__epv *epv = &klass->epv;
 
 	klass->render = NULL;
 
-	init_print_corba_class ();
+	epv->render = impl_render;
 }
 
 /**
@@ -134,7 +110,7 @@ bonobo_print_get_type (void)
 {
 	static GtkType type = 0;
 
-	if (!type){
+	if (!type) {
 		GtkTypeInfo info = {
 			"BonoboPrint",
 			sizeof (BonoboPrint),
@@ -146,53 +122,25 @@ bonobo_print_get_type (void)
 			(GtkClassInitFunc) NULL
 		};
 
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
+		type = bonobo_x_type_unique (
+			PARENT_TYPE,
+			POA_Bonobo_Print__init, NULL,
+			GTK_STRUCT_OFFSET (BonoboPrintClass, epv),
+			&info);
 	}
 
 	return type;
 }
 
-Bonobo_Print
-bonobo_print_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_Print *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_Print *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_print_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_Print__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-                g_free (servant);
-		CORBA_exception_free (&ev);
-                return CORBA_OBJECT_NIL;
-        }
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_Print) bonobo_object_activate_servant (object, servant);
-}
-
 BonoboPrint *
 bonobo_print_construct (BonoboPrint         *p,
-			Bonobo_Print         corba_p,
 			BonoboPrintRenderFn *render,
 			gpointer             user_data)
 {
-	static gboolean warned = FALSE;
-
-	if (!warned) {
-/* Still true, but a pain */
-/*		g_warning ("The print interface is horribly immature, use at your own risk");*/
-		warned = TRUE;
-	}
-
 	p->render       = render;
 	p->user_data    = user_data;
-	
-	return BONOBO_PRINT (
-		bonobo_object_construct (BONOBO_OBJECT (p), corba_p));
+
+	return p;
 }
 
 /**
@@ -209,17 +157,10 @@ BonoboPrint *
 bonobo_print_new (BonoboPrintRenderFn *render,
 		  gpointer             user_data)
 {
-	BonoboPrint  *p;
-	Bonobo_Print  corba_p;
+	BonoboPrint *p;
 
 	p = gtk_type_new (bonobo_print_get_type ());
 	g_return_val_if_fail (p != NULL, NULL);
 
-	corba_p = bonobo_print_corba_object_create (BONOBO_OBJECT (p));
-	if (corba_p == CORBA_OBJECT_NIL){
-		bonobo_object_unref (BONOBO_OBJECT (p));
-		return NULL;
-	}
-
-	return bonobo_print_construct (p, corba_p, render, user_data);
+	return bonobo_print_construct (p, render, user_data);
 }

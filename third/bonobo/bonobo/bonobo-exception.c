@@ -8,7 +8,9 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-exception.h>
 
 typedef enum {
@@ -108,6 +110,115 @@ bonobo_exception_add_handler_fn (const char *repo_id,
 	g_hash_table_insert (hash, e->repo_id, e);
 }
 
+char *
+bonobo_exception_repoid_to_text  (const char *repo_id)
+{
+	/* Oaf */
+/*	if (!strcmp (repo_id, "IDL:OAF/GeneralError:1.0")) {
+		OAF_GeneralError *err = ev->_params;
+		
+		if (!err || !err->description)
+			return g_strdup (_("General oaf error with no description"));
+		else
+			return g_strdup (err->description);
+
+			}*/
+
+	/* Bonobo */ 
+	if (!strcmp (repo_id, ex_Bonobo_NotSupported))
+		return g_strdup (_("An unsupported action was attempted"));
+	
+	else if (!strcmp (repo_id, ex_Bonobo_IOError))
+		return g_strdup (_("IO Error"));
+	
+	else if (!strcmp (repo_id, ex_Bonobo_BadArg))
+		return g_strdup (_("Invalid argument value"));
+	
+	/* Bonobo::ItemContainer */
+	else if (!strcmp (repo_id, ex_Bonobo_ItemContainer_NotFound))
+		return g_strdup (_("Object not found"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_ItemContainer_SyntaxError))
+		return g_strdup (_("Syntax error in object description"));
+
+	/* Bonobo::Embeddable */
+	else if (!strcmp (repo_id, ex_Bonobo_Embeddable_UserCancelledSave))
+		return g_strdup (_("The User canceled the save"));
+
+#if 0
+	/* Bonobo::GenericFactory */
+	else if (!strcmp (repo_id, ex_GNOME_ObjectFactory_CannotActivate))
+		return g_strdup (_("Cannot activate object from factory"));
+#endif
+
+	/* Bonobo::Stream */
+	else if (!strcmp (repo_id, ex_Bonobo_Stream_NoPermission))
+		return g_strdup (_("No permission to access stream"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Stream_NotSupported))
+		return g_strdup (_("An unsupported stream action was attempted"));
+	
+	else if (!strcmp (repo_id, ex_Bonobo_Stream_IOError))
+		return g_strdup (_("IO Error on stream"));
+
+	/* Bonobo::Storage */
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_IOError))
+		return g_strdup (_("IO Error on storage"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NameExists))
+		return g_strdup (_("Name already exists in storage"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NotFound))
+		return g_strdup (_("Object not found in storage"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NoPermission))
+		return g_strdup (_("No permission to do operation on storage"));
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NotSupported))
+		return g_strdup (_("An unsupported storage action was attempted"));
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NotStream))
+		return g_strdup (_("Object is not a stream"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NotStorage))
+		return g_strdup (_("Object is not a storage"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Storage_NotEmpty))
+		return g_strdup (_("Storage is not empty"));
+
+	/* Bonobo::UIContainer */
+	else if (!strcmp (repo_id, ex_Bonobo_UIContainer_MalFormedXML))
+		return g_strdup (_("malformed user interface XML description"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_UIContainer_InvalidPath))
+		return g_strdup (_("invalid path to XML user interface element"));
+		
+	/* Bonobo::Persist */
+	else if (!strcmp (repo_id, ex_Bonobo_Persist_WrongDataType))
+		return g_strdup (_("incorrect data type"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Persist_FileNotFound))
+		return g_strdup (_("stream not found"));
+
+	/* Bonobo::PropertyBag */
+	else if (!strcmp (repo_id, ex_Bonobo_PropertyBag_NotFound))
+		return g_strdup (_("property not found"));
+
+	/* Bonobo::Moniker */
+	else if (!strcmp (repo_id, ex_Bonobo_Moniker_InterfaceNotFound))
+		return g_strdup (_("Moniker interface cannot be found"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Moniker_TimeOut))
+		return g_strdup (_("Moniker activation timed out"));
+		
+	else if (!strcmp (repo_id, ex_Bonobo_Moniker_InvalidSyntax))
+		return g_strdup (_("Syntax error within moniker"));
+
+	else if (!strcmp (repo_id, ex_Bonobo_Moniker_UnknownPrefix))
+		return g_strdup (_("Moniker has an unknown moniker prefix"));
+
+	else
+		return NULL;
+}
+
 /**
  * bonobo_exception_get_text:
  * @ev: the corba environment.
@@ -121,108 +232,18 @@ bonobo_exception_add_handler_fn (const char *repo_id,
 char *
 bonobo_exception_get_text (CORBA_Environment *ev)
 {
-	g_return_val_if_fail (ev != NULL, NULL);
+	char *rval;
 
-	if (!BONOBO_EX (ev))
+	if (!ev || !BONOBO_EX (ev))
 		return g_strdup (_("Error checking error; no exception"));
 
-	/* Oaf */
-/*	if (!strcmp (ev->_repo_id, "IDL:OAF/GeneralError:1.0")) {
-		OAF_GeneralError *err = ev->_params;
-		
-		if (!err || !err->description)
-			return g_strdup (_("General oaf error with no description"));
-		else
-			return g_strdup (err->description);
-
-			}*/
-
-	/* Bonobo::ItemContainer */
-	if (!strcmp (ev->_repo_id, ex_Bonobo_ItemContainer_NotFound))
-		return g_strdup (_("Object not found"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_ItemContainer_SyntaxError))
-		return g_strdup (_("Syntax error in object description"));
-
-	/* Bonobo::Embeddable */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Embeddable_UserCancelledSave))
-		return g_strdup (_("The User canceled the save"));
-
-#if 0
-	/* Bonobo::GenericFactory */
-	else if (!strcmp (ev->_repo_id, ex_GNOME_ObjectFactory_CannotActivate))
-		return g_strdup (_("Cannot activate object from factory"));
-#endif
-
-	/* Bonobo::Stream */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Stream_NoPermission))
-		return g_strdup (_("No permission to access stream"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Stream_NotSupported))
-		return g_strdup (_("An unsupported stream action was attempted"));
-	
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Stream_IOError))
-		return g_strdup (_("IO Error on stream"));
-
-	/* Bonobo::Storage */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_IOError))
-		return g_strdup (_("IO Error on storage"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NameExists))
-		return g_strdup (_("Name already exists in storage"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NotFound))
-		return g_strdup (_("Object not found in storage"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NoPermission))
-		return g_strdup (_("No permission to do operation on storage"));
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NotSupported))
-		return g_strdup (_("An unsupported storage action was attempted"));
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NotStream))
-		return g_strdup (_("Object is not a stream"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NotStorage))
-		return g_strdup (_("Object is not a storage"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Storage_NotEmpty))
-		return g_strdup (_("Storage is not empty"));
-
-	/* Bonobo::UIContainer */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_UIContainer_MalFormedXML))
-		return g_strdup (_("malformed user interface XML description"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_UIContainer_InvalidPath))
-		return g_strdup (_("invalid path to XML user interface element"));
-		
-	/* Bonobo::Persist */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Persist_WrongDataType))
-		return g_strdup (_("incorrect data type"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Persist_FileNotFound))
-		return g_strdup (_("stream not found"));
-
-	/* Bonobo::PropertyBag */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_PropertyBag_NotFound))
-		return g_strdup (_("property not found"));
-
-	/* Bonobo::Moniker */
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Moniker_InterfaceNotFound))
-		return g_strdup (_("Moniker interface cannot be found"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Moniker_TimeOut))
-		return g_strdup (_("Moniker activation timed out"));
-		
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Moniker_InvalidSyntax))
-		return g_strdup (_("Syntax error within moniker"));
-
-	else if (!strcmp (ev->_repo_id, ex_Bonobo_Moniker_UnknownPrefix))
-		return g_strdup (_("Moniker has an unknown moniker prefix"));
-
+	if ((rval = bonobo_exception_repoid_to_text (ev->_repo_id)))
+		return rval;
 	else {
 		ExceptionHandle *e;
 		GHashTable *hash = get_hash ();
 		char *str = NULL;
-
+		
 		if ((e = g_hash_table_lookup (hash, ev->_repo_id))) {
 			if (e->type == EXCEPTION_STR)
 				str = g_strdup (e->str);
@@ -234,6 +255,7 @@ bonobo_exception_get_text (CORBA_Environment *ev)
 			return str;
 		else
 			return g_strdup_printf (
-				"Unknown CORBA exception id: '%s'", ev->_repo_id);
+				"Unknown CORBA exception id: '%s'", 
+				ev->_repo_id);
 	}
 }

@@ -171,7 +171,9 @@ create_bag_client (void)
 	bonobo_property_bag_client_set_value_string   (pb, "string-test",
 						       "life is a wonderful gift", NULL);
 
-	exit (0);
+	bonobo_object_release_unref (pb, NULL);
+
+	gtk_main_quit ();
 
 	return FALSE;
 }

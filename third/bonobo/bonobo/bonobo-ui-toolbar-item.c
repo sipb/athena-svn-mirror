@@ -147,6 +147,10 @@ impl_set_orientation (BonoboUIToolbarItem *item,
 	BonoboUIToolbarItemPrivate *priv;
 
 	priv = item->priv;
+
+	if (priv->orientation == orientation)
+		return;
+
 	priv->orientation = orientation;
 
 	gtk_widget_queue_resize (GTK_WIDGET (item));
@@ -159,6 +163,10 @@ impl_set_style (BonoboUIToolbarItem *item,
 	BonoboUIToolbarItemPrivate *priv;
 
 	priv = item->priv;
+
+	if (priv->style == style)
+		return;
+
 	priv->style = style;
 
 	gtk_widget_queue_resize (GTK_WIDGET (item));
@@ -222,14 +230,6 @@ class_init (GtkObjectClass *object_class)
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_BOOL);
 
-	signals[ACTIVATE]
-		= gtk_signal_new ("activate",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (BonoboUIToolbarItemClass, activate),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
-
 	signals[STATE_ALTERED]
 		= gtk_signal_new ("state_altered",
 				  GTK_RUN_LAST,
@@ -237,6 +237,14 @@ class_init (GtkObjectClass *object_class)
 				  GTK_SIGNAL_OFFSET (BonoboUIToolbarItemClass, activate),
 				  gtk_marshal_NONE__STRING,
 				  GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+
+	signals[ACTIVATE]
+		= gtk_signal_new ("activate",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (BonoboUIToolbarItemClass, activate),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -312,6 +320,7 @@ bonobo_ui_toolbar_item_set_tooltip (BonoboUIToolbarItem *item,
 
 	if (klass->set_tooltip)
 		klass->set_tooltip (item, tooltips, tooltip);
+
 	/* FIXME: implement setting of tooltips */
 }
 
@@ -332,7 +341,7 @@ bonobo_ui_toolbar_item_set_state (BonoboUIToolbarItem *item,
 
 void
 bonobo_ui_toolbar_item_set_orientation (BonoboUIToolbarItem *item,
-				     GtkOrientation orientation)
+					GtkOrientation orientation)
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (BONOBO_IS_UI_TOOLBAR_ITEM (item));

@@ -14,21 +14,6 @@
 #include <bonobo/bonobo-storage-plugin.h>
 #include <orb/corba_object_type.h>
 
-/*
- * Creates and activates the corba server 
- */
-static BonoboStorage *
-create_storage_efs_server (const BonoboStorageEFS *storage_efs)
-{
-	Bonobo_Storage corba_storage;
-
-	corba_storage = bonobo_storage_corba_object_create (
-		BONOBO_OBJECT (storage_efs));
-				 
-	return bonobo_storage_construct (BONOBO_STORAGE (storage_efs), 
-					 corba_storage);
-}
-
 static void
 bonobo_storage_efs_destroy (GtkObject *object)
 {
@@ -212,13 +197,6 @@ real_open_storage (BonoboStorage *storage, const CORBA_char *path,
 	sefs->dir = dir;
 	sefs->owner = storage;
 	bonobo_object_ref (BONOBO_OBJECT (storage));
-	
-	if (!create_storage_efs_server (sefs)) {
-		bonobo_object_unref (BONOBO_OBJECT (sefs));
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
-				     ex_Bonobo_Storage_IOError, NULL);
-		return CORBA_OBJECT_NIL;
-	}
 
 	return BONOBO_STORAGE (sefs);
 }
@@ -452,28 +430,15 @@ bonobo_storage_efs_class_init (BonoboStorageEFSClass *class)
 	oclass->destroy = bonobo_storage_efs_destroy;
 }
 
-GtkType
-bonobo_storage_efs_get_type (void)
+static void 
+bonobo_storage_efs_init (GtkObject *object)
 {
-	static GtkType type = 0;
-  
-	if (!type) {
-		GtkTypeInfo info = {
-			"IDL:GNOME/StorageEFS:1.0",
-			sizeof (BonoboStorageEFS),
-			sizeof (BonoboStorageEFSClass),
-			(GtkClassInitFunc) bonobo_storage_efs_class_init,
-			(GtkObjectInitFunc) NULL,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_storage_get_type (), &info);
-	}
-
-	return type;
+	/* nothing to do */
 }
+
+BONOBO_X_TYPE_FUNC (BonoboStorageEFS, 
+		      bonobo_storage_get_type (),
+		      bonobo_storage_efs);
 
 /** 
  * bonobo_storage_efs_open:
@@ -520,13 +485,6 @@ bonobo_storage_efs_open (const gchar *path, gint flags, gint mode,
 		else 
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
 					     ex_Bonobo_Storage_IOError, NULL);
-		return CORBA_OBJECT_NIL;
-	}
-    
-	if (!create_storage_efs_server (sefs)) {
-		bonobo_object_unref (BONOBO_OBJECT (sefs));
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
-				     ex_Bonobo_Storage_IOError, NULL);
 		return CORBA_OBJECT_NIL;
 	}
 

@@ -14,12 +14,6 @@
 #include "color.h"
 
 /*
- * Number of running objects
- */ 
-static int running_objects = 0;
-static BonoboGenericFactory *factory = NULL;
-
-/*
  * Utility functions.
  */
 static void
@@ -276,15 +270,6 @@ bonobo_object_destroy_cb (BonoboObject *bonobo_object, bonobo_object_data_t *bon
 	gtk_object_unref (GTK_OBJECT (bonobo_object_data->vbox));
 
 	g_free (bonobo_object_data); 
-
-	running_objects--;
-	if (running_objects > 0)
-		return;
-	/*
-	 * When last object has gone unref the factory & quit.
-	 */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
 }
 
 static BonoboObject *
@@ -366,7 +351,6 @@ generic_factory (BonoboGenericFactory *this,  void *data)
 		return NULL;
 	}
 
-	running_objects++;
 	bonobo_object_add_interface (BONOBO_OBJECT (bonobo_object),
 				     BONOBO_OBJECT (psink));
 
@@ -381,43 +365,7 @@ generic_factory (BonoboGenericFactory *this,  void *data)
 	return BONOBO_OBJECT (bonobo_object);
 } /* generic_factory */
 
-static void
-init_bonobo_audio_ulaw_factory (void)
-{
-	factory = bonobo_generic_factory_new (
-		"OAFIID:bonobo_audio-ulaw_factory:823935e2-c944-42e7-a462-75cc76b18abb",
-		generic_factory, NULL);
-} /* init_bonobo_audio_ulaw_factory */
-
-static void
-init_server_factory (int argc, char **argv)
-{
-	CORBA_Environment  ev;
-	CORBA_ORB          orb;
-
-	CORBA_exception_init (&ev);
-
-        gnome_init_with_popt_table("bonobo-audio-ulaw", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-
-	color_init();
-
-	if (bonobo_init (orb, NULL, NULL) == FALSE)
-		g_error (_("I could not initialize Bonobo"));
-
-	CORBA_exception_free (&ev);
-} /* init_server_factory */
-
-int
-main (int argc, char **argv)
-{
-	init_server_factory (argc, argv);
-
-	init_bonobo_audio_ulaw_factory ();
-
-	bonobo_main ();
-
-	return 0;
-} /* main */
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Sample_Audio_ulaw_Factory",
+		    "bonobo-audio-ulaw", VERSION,
+		    generic_factory,
+		    NULL)

@@ -9,18 +9,9 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
-
 #include <bonobo.h>
 #include <bonobo/bonobo-print.h>
 #include <libgnomeprint/gnome-print.h>
-
-/*
- * Number of running objects
- */ 
-static int running_objects = 0;
-static BonoboGenericFactory *factory = NULL;
 
 /*
  * The Embeddable data.
@@ -80,15 +71,6 @@ embeddable_destroy_cb (BonoboEmbeddable *embeddable, embeddable_data_t *embeddab
 {
 	gdk_pixmap_unref (embeddable_data->pixmap);
 	g_free (embeddable_data); 
-
-	running_objects--;
-	if (running_objects > 0)
-		return;
-	/*
-	 * When last object has gone unref the factory & quit.
-	 */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
 }
 
 /*
@@ -171,25 +153,21 @@ view_set_color (view_data_t *view_data, char *color)
 }
 
 static void
-view_color_select_cb (BonoboUIComponent *uic, view_data_t *view_data, char *path)
-{
-	if (strstr (path, "Red") != NULL)
-		view_set_color (view_data, "red");
-	else if (strstr (path, "White") != NULL)
-		view_set_color (view_data, "white");
-	else if (strstr (path, "Green") != NULL)
-		view_set_color (view_data, "green");
-	else
-		g_error ("set to unknown color");
-}
-
-static void
-color_listener_cb (BonoboUIComponent *uic, const char *path, Bonobo_UIComponent_EventType type,
+color_listener_cb (BonoboUIComponent *uic, const char *path,
+		   Bonobo_UIComponent_EventType type,
 		   const char *state, gpointer user_data)
 {
-    g_message ("color_listener_cb: `%s' - `%s' - %d", path, state, type);
+	if (atoi (state)) {
+		if (strstr (path, "Red") != NULL)
+			view_set_color (user_data, "red");
+		else if (strstr (path, "White") != NULL)
+			view_set_color (user_data, "white");
+		else if (strstr (path, "Green") != NULL)
+			view_set_color (user_data, "green");
+		else
+			g_error ("set to unknown color");
+	}
 }
-
 
 /*
  * When one of our views is activated, we merge our menus
@@ -201,25 +179,20 @@ view_create_menus (view_data_t *view_data)
 	Bonobo_UIContainer  remote_uic;
 	BonoboView         *view = view_data->view;
 	BonoboUIComponent  *uic;
-#if 0
-	int                 i;
-#endif
 
 	const char *ui_commands =
 		"<commands>\n"
-		"	<cmd name=\"ColorWhite\" state=\"0\" _label=\"White\" group=\"Color\"/>\n"
-		"	<cmd name=\"ColorRed\" state=\"1\" _label=\"Red\" group=\"Color\"/>\n"
-		"	<cmd name=\"ColorGreen\" state=\"2\" _label=\"Green\" group=\"Color\"/>\n"
-		"	<cmd name=\"ColorBlack\" state=\"3\" _label=\"Black\" group=\"Color\"/>\n"
+		"	<cmd name=\"ColorWhite\"  _label=\"White\" group=\"Color\"/>\n"
+		"	<cmd name=\"ColorRed\"    _label=\"Red\"   group=\"Color\"/>\n"
+		"	<cmd name=\"ColorGreen\"  _label=\"Green\" group=\"Color\"/>\n"
 		"</commands>\n";
 
 	const char *ui_menus =
 		"<menu>\n"
 		"	<submenu name=\"Colors\" _label=\"Colors\">\n"
 		"		<menuitem name=\"ColorWhite\" type=\"radio\" verb=\"\"/>\n"
-		"		<menuitem name=\"ColorRed\" type=\"radio\" verb=\"\"/>\n"
+		"		<menuitem name=\"ColorRed\"   type=\"radio\" verb=\"\"/>\n"
 		"		<menuitem name=\"ColorGreen\" type=\"radio\" verb=\"\"/>\n"
-		"		<menuitem name=\"ColorBlack\" type=\"radio\" verb=\"\"/>\n"
 		"	</submenu>\n"
 		"</menu>\n";
 
@@ -244,58 +217,18 @@ view_create_menus (view_data_t *view_data)
 
 	/*
 	 * Give our BonoboUIHandler object a reference to the
-	 * container's UIhandler server.
+	 * container's UIContainer server.
 	 */
 	bonobo_ui_component_set_container (uic, remote_uic);
 
 	bonobo_ui_component_set_translate (uic, "/", ui_commands, NULL);
 	bonobo_ui_component_set_translate (uic, "/", ui_menus, NULL);
 
-	bonobo_ui_component_add_listener (uic, "Color", color_listener_cb, view_data);
+	bonobo_ui_component_add_listener (uic, "ColorWhite", color_listener_cb, view_data);
+	bonobo_ui_component_add_listener (uic, "ColorRed",   color_listener_cb, view_data);
+	bonobo_ui_component_add_listener (uic, "ColorGreen", color_listener_cb, view_data);
 
 	bonobo_ui_component_thaw (uic, NULL);
-
-#if 0
-	/*
-	 * Create our menu entries.
-	 */
-	bonobo_ui_handler_create_menubar (uih);
-
-	bonobo_ui_handler_menu_new_subtree (uih, "/Colors",
-					   N_("Select drawing color..."),
-					   N_("Set the current drawing color"),
-					   1,
-					   BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
-					   0, (GdkModifierType)0);
-
-	bonobo_ui_handler_menu_new_radiogroup (uih, "/Colors/color radiogroup");
-
-	bonobo_ui_handler_menu_new_radioitem (uih, "/Colors/color radiogroup/White",
-					     N_("White"),
-					     N_("Set the current drawing color to white"),
-					     -1,
-					     0, (GdkModifierType) 0,
-					     GTK_SIGNAL_FUNC (view_color_select_cb), (gpointer) view_data);
-
-	bonobo_ui_handler_menu_new_radioitem (uih, "/Colors/color radiogroup/Red",
-					     N_("Red"),
-					     N_("Set the current drawing color to red"),
-					     -1, 
-					     0, (GdkModifierType) 0,
-					     GTK_SIGNAL_FUNC (view_color_select_cb), (gpointer) view_data);
-
-	bonobo_ui_handler_menu_new_radioitem (uih, "/Colors/color radiogroup/Green",
-					     N_("Green"),
-					     N_("Set the current drawing color to green"),
-					     -1,
-					     0, (GdkModifierType) 0,
-					     GTK_SIGNAL_FUNC (view_color_select_cb), (gpointer) view_data);
-
-	g_warning ("Breakpoint");
-	i = bonobo_ui_handler_menu_get_pos (uih, "/Colors/color radiogroup/Green");
-
-	i = bonobo_ui_handler_menu_get_pos (uih, "/Colors");
-#endif
 }
 
 /*
@@ -650,7 +583,6 @@ embeddable_factory (BonoboGenericFactory *this,
 		return NULL;
 	}
 	
-	running_objects++;
 	embeddable_data->embeddable = embeddable;
 
 	/*
@@ -676,50 +608,7 @@ embeddable_factory (BonoboGenericFactory *this,
 	return BONOBO_OBJECT (embeddable);
 }
 
-static BonoboGenericFactory *
-init_simple_paint_factory (void)
-{
-	/*
-	 * This will create a factory server for our simple paint
-	 * component.  When a container wants to create a paint
-	 * component, it will ask the factory to create one, and the
-	 * factory will invoke our embeddable_factory() function.
-	 */
-         return bonobo_generic_factory_new (
-			    "OAFIID:Bonobo_Sample_Paint_EmbeddableFactory",
-			     embeddable_factory, NULL);
-}
-
-static void
-init_server_factory (int argc, char **argv)
-{
-	CORBA_Environment ev;
-	CORBA_ORB orb;
-
-	CORBA_exception_init (&ev);
-
-        gnome_init_with_popt_table("bonobo-simple-paint", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (orb, NULL, NULL) == FALSE)
-		g_error (_("Could not initialize Bonobo!"));
-}
- 
-int
-main (int argc, char **argv)
-{
-	/*
-	 * Setup the factory.
-	 */
-	init_server_factory (argc, argv);
-	factory = init_simple_paint_factory ();
-
-	/*
-	 * Start processing.
-	 */
-	bonobo_main ();
-
-	return 0;
-}
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Sample_Paint_EmbeddableFactory",
+		    "bonobo-simple-paint", VERSION,
+		    embeddable_factory,
+		    NULL)

@@ -10,16 +10,17 @@ SUBDIRS = \
 	gshell				\
 	tests doc po
 
-# removed bonobo-idl
-
 confexecdir = $(libdir)
 confexec_DATA = bonoboConf.sh bonoboxConf.sh bonobox_printConf.sh
 
-EXTRA_DIST = \
-	bonoboConf.sh.in		\
-	bonoboxConf.sh.in		\
-	bonobox_printConf.sh.in		\
-	bonobo.spec.in			\
+EXTRA_DIST =					\
+	bonoboConf.sh.in			\
+	bonoboxConf.sh.in			\
+	bonobox_printConf.sh.in			\
+	bonobo.spec.in				\
+	xml-i18n-extract.in			\
+	xml-i18n-merge.in			\
+	xml-i18n-update.in			\
 	$(NULL)
 
 bonoboConf.sh: $(top_srcdir)/bonoboConf.sh.in Makefile

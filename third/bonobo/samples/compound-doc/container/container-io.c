@@ -16,8 +16,7 @@ save_component (BonoboStorage    *storage,
 {
 	char *curr_dir = g_strdup_printf ("%08d", index);
 
-	Bonobo_Storage corba_storage =
-		bonobo_object_corba_objref (BONOBO_OBJECT (storage));
+	Bonobo_Storage corba_storage = BONOBO_OBJREF (storage);
 	Bonobo_Storage corba_subdir;
 
 	CORBA_Environment ev;
@@ -135,8 +134,7 @@ load_component (SampleApp *app, BonoboStorage *storage, int index)
 	char *curr_dir = g_strdup_printf ("%08d", index);
 	char *goad_id;
 	Bonobo_Storage corba_subdir;
-	Bonobo_Storage corba_storage =
-		bonobo_object_corba_objref (BONOBO_OBJECT (storage));
+	Bonobo_Storage corba_storage = BONOBO_OBJREF (storage);
 	SampleClientSite *site;
 
 	CORBA_Environment ev;
@@ -195,8 +193,7 @@ sample_container_load (SampleApp *app, const char *filename)
 
 	CORBA_exception_init (&ev);
 
-	corba_storage =
-	    bonobo_object_corba_objref (BONOBO_OBJECT (storage));
+	corba_storage = BONOBO_OBJREF (storage);
 
 	list = Bonobo_Storage_listContents (corba_storage, "/", 0, &ev);
 
@@ -231,8 +228,7 @@ sample_container_save (SampleApp *app, const char *filename)
 
 	CORBA_exception_init (&ev);
 
-	corba_storage =
-	    bonobo_object_corba_objref (BONOBO_OBJECT (storage));
+	corba_storage = BONOBO_OBJREF (storage);
 
 	i = 0;
 	for (components = g_list_first (app->components);

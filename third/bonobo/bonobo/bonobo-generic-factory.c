@@ -62,11 +62,12 @@ impl_Bonobo_ObjectFactory_create_object (PortableServer_Servant   servant,
 }
 
 CORBA_Object
-bonobo_generic_factory_corba_object_create (BonoboObject *object)
+bonobo_generic_factory_corba_object_create (BonoboObject *object, 
+					    gpointer shlib_id)
 {
 	POA_GNOME_ObjectFactory *servant;
 	CORBA_Environment ev;
-
+	
 	CORBA_exception_init (&ev);
 
 	servant = (POA_GNOME_ObjectFactory *) g_new0 (BonoboObjectServant, 1);
@@ -80,7 +81,8 @@ bonobo_generic_factory_corba_object_create (BonoboObject *object)
 	}
 
 	CORBA_exception_free (&ev);
-	return bonobo_object_activate_servant (object, servant);
+	
+	return bonobo_object_activate_servant_full (object, servant, shlib_id);
 }
 
 /**
@@ -165,7 +167,7 @@ bonobo_generic_factory_new (const char             *oaf_iid,
 	
 	c_factory = gtk_type_new (bonobo_generic_factory_get_type ());
 
-	corba_factory = bonobo_generic_factory_corba_object_create (BONOBO_OBJECT (c_factory));
+	corba_factory = bonobo_generic_factory_corba_object_create (BONOBO_OBJECT (c_factory), factory);
 	if (corba_factory == CORBA_OBJECT_NIL) {
 		bonobo_object_unref (BONOBO_OBJECT (c_factory));
 		return NULL;
@@ -205,7 +207,7 @@ BonoboGenericFactory *bonobo_generic_factory_new_multi (
 	
 	c_factory = gtk_type_new (bonobo_generic_factory_get_type ());
 
-	corba_factory = bonobo_generic_factory_corba_object_create (BONOBO_OBJECT (c_factory));
+	corba_factory = bonobo_generic_factory_corba_object_create (BONOBO_OBJECT (c_factory), factory_cb);
 	if (corba_factory == CORBA_OBJECT_NIL) {
 		bonobo_object_unref (BONOBO_OBJECT (c_factory));
 		return NULL;

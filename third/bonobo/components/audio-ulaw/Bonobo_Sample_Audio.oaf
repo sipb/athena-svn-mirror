@@ -1,0 +1,89 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:Bonobo_Sample_Audio_ulaw_Factory" type="exe" 
+        location="bonobo-audio-ulaw">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/GenericFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Waveform component factory"/>
+	<oaf_attribute name="name-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#193; Waveform"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#234;&#245;&#236;&#236;&#225;&#244;&#239;&#236;&#239;&#241;&#246;&#222;&#242;"/>
+	<oaf_attribute name="name-da" type="string" value="B&#248;ljeform-komponentfabrik"/>
+	<oaf_attribute name="name-tr" type="string" value="Waveform kontrol mimarisi"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica de componente Waveform"/>
+	<oaf_attribute name="name-fr" type="string" value="Usine du composant Onde"/>
+	<oaf_attribute name="name-ja" type="string" value="&#199;&#200;&#183;&#193;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-az" type="string" value="Dal&#196;&#159;avari &#195;&#188;zv m&#201;&#153;rk&#201;&#153;zi"/>
+	<oaf_attribute name="name-no" type="string" value="B&#248;lgeform komponent factory"/>
+	<oaf_attribute name="name-hu" type="string" value="Hull&#225;mforma komponens factory"/>
+	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent Waveform"/>
+	<oaf_attribute name="description" type="string" value="audio/ulaw bonobo object factory"/>
+	<oaf_attribute name="description-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#207;&#194;'&#164;&#203;&#212;&#213; Bonobo audio/ulaw"/>
+	<oaf_attribute name="description-el" type="string" value="&#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#225;&#237;&#244;&#233;&#234;&#229;&#233;&#236;&#221;&#237;&#239;&#245; bonobo audio/ulaw"/>
+	<oaf_attribute name="description-da" type="string" value="audio/ulaw-bonoboobjektfabrik"/>
+	<oaf_attribute name="description-tr" type="string" value="audio/ulaw bonobo nesne mimarisi"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica de objeto audio/ulaw do bonobo"/>
+	<oaf_attribute name="description-fr" type="string" value="Usine de l'objet Bonobo audio/ulaw"/>
+	<oaf_attribute name="description-ja" type="string" value="audio/ulaw bonobo &#165;&#170;&#165;&#214;&#165;&#184;&#165;&#167;&#165;&#175;&#165;&#200;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-az" type="string" value="audio/ulaw bonobo cismi m&#201;&#153;rk&#201;&#153;zi"/>
+	<oaf_attribute name="description-no" type="string" value="audio/ulaw bonobo objekt factory"/>
+	<oaf_attribute name="description-hu" type="string" value="audio/ulaw bonobo objektum factory"/>
+	<oaf_attribute name="description-sk" type="string" value="vytv&#225;racie rozhranie pre bonobo objekt pre audio/ulaw"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:Bonobo_Sample_Audio_ulaw" type="factory" 
+	location="OAFIID:Bonobo_Sample_Audio_ulaw_Factory">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Bonobo/PersistStream:1.0"/>
+		<item value="IDL:Bonobo/ProgressiveDataSink:1.0"/>
+		<item value="IDL:Bonobo/Persist:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Waveform component"/>
+	<oaf_attribute name="name-uk" type="string" value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Waveform"/>
+	<oaf_attribute name="name-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#234;&#245;&#236;&#236;&#225;&#244;&#239;&#236;&#239;&#241;&#246;&#222;&#242;"/>
+	<oaf_attribute name="name-da" type="string" value="B&#248;ljeform-komponent"/>
+	<oaf_attribute name="name-tr" type="string" value="Dalga bi&#231;imi nesnesi"/>
+	<oaf_attribute name="name-ru" type="string" value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Waveform"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="Componente Waveform"/>
+	<oaf_attribute name="name-fr" type="string" value="Composant Onde"/>
+	<oaf_attribute name="name-ja" type="string" value="&#199;&#200;&#183;&#193;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="name-az" type="string" value="Dal&#196;&#159;avari &#195;&#188;zv"/>
+	<oaf_attribute name="name-no" type="string" value="B&#248;lgeform-komponent"/>
+	<oaf_attribute name="name-hu" type="string" value="Hull&#225;mforma komponens"/>
+	<oaf_attribute name="name-sk" type="string" value="Komponent Waveform"/>
+	<oaf_attribute name="description" type="string" value="audio/ulaw bonobo object"/>
+	<oaf_attribute name="description-uk" type="string" value="&#207;&#194;'&#164;&#203;&#212; Bonobo audio/ulaw"/>
+	<oaf_attribute name="description-el" type="string" value="&#225;&#237;&#244;&#233;&#234;&#229;&#233;&#236;&#221;&#237;&#239;&#245; bonobo audio/ulaw"/>
+	<oaf_attribute name="description-da" type="string" value="audio/ulaw-bonoboobjekt"/>
+	<oaf_attribute name="description-tr" type="string" value="audio/ulaw bonobo nesnesi."/>
+	<oaf_attribute name="description-ru" type="string" value="audio/ulaw &#207;&#194;&#223;&#197;&#203;&#212; Bonobo"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="Objeto audio/ulaw do bonobo"/>
+	<oaf_attribute name="description-fr" type="string" value="Objet Bonobo audio/ulaw"/>
+	<oaf_attribute name="description-ja" type="string" value="audio/ulaw bonobo &#165;&#170;&#165;&#214;&#165;&#184;&#165;&#167;&#165;&#175;&#165;&#200;"/>
+	<oaf_attribute name="description-az" type="string" value="audio/ulaw bonobo cismi"/>
+	<oaf_attribute name="description-no" type="string" value="audio/ulaw bonobo-objekt"/>
+	<oaf_attribute name="description-hu" type="string" value="audio/ulaw bonobo objektum"/>
+	<oaf_attribute name="description-sk" type="string" value="bonobo objekt pre audio/ulaw"/>
+	<oaf_attribute name="bonobo:editable" type="boolean" value="false"/>
+	<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+		<item value="audio/ulaw"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" value="Waveform"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="Waveform"/>
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#202;&#245;&#236;&#236;&#225;&#244;&#239;&#236;&#239;&#241;&#246;&#222;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="B&#248;ljeform"/>
+	<oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Dalga bi&#231;imi"/>
+	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Waveform"/>
+	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Waveform"/>
+	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Onde"/>
+	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#199;&#200;&#183;&#193;"/>
+	<oaf_attribute name="nautilus:view_as_name-az" type="string" value="Dal&#196;&#159;avari"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="B&#248;lgeform"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Hull&#225;mforma"/>
+	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Waveform"/>
+</oaf_server>
+
+</oaf_info>
+

@@ -143,7 +143,7 @@ fi
 %{prefix}/share/idl/*.idl
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/mime-info/*.keys
-%{prefix}/share/oaf/*.oafinfo
+%{prefix}/share/oaf/*.oaf
 
 %files devel
 

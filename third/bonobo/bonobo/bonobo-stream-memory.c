@@ -18,13 +18,21 @@
 static BonoboStreamClass *bonobo_stream_mem_parent_class;
 
 static Bonobo_StorageInfo*
-mem_get_info (BonoboStream *stream,
+mem_get_info (BonoboStream                  *stream,
 	      const Bonobo_StorageInfoFields mask,
-	      CORBA_Environment *ev)
+	      CORBA_Environment             *ev)
 {
-	g_warning ("Not implemented");
+	Bonobo_StorageInfo *si;
+	BonoboStreamMem    *smem = BONOBO_STREAM_MEM (stream);
 
-	return CORBA_OBJECT_NIL;
+	si = Bonobo_StorageInfo__alloc ();
+
+	si->size = smem->size;
+	si->type = Bonobo_STORAGE_TYPE_REGULAR;
+	si->name = CORBA_string_dup ("");
+	si->content_type = CORBA_string_dup ("application/octet-stream");
+
+	return si;
 }
 
 static void
@@ -33,7 +41,16 @@ mem_set_info (BonoboStream *stream,
 	      const Bonobo_StorageInfoFields mask,
 	      CORBA_Environment *ev)
 {
-	g_warning ("Not implemented");
+	BonoboStreamMem *smem = BONOBO_STREAM_MEM (stream);
+
+	if (smem->read_only)
+		CORBA_exception_set (
+			ev, CORBA_USER_EXCEPTION,
+			ex_Bonobo_Stream_NoPermission, NULL);
+	else
+		CORBA_exception_set (
+			ev, CORBA_USER_EXCEPTION,
+			ex_Bonobo_Stream_NotSupported, NULL);
 }
 
 static void

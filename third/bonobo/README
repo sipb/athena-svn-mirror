@@ -13,6 +13,10 @@ document system for the GNU system.
    components and applications that can be used to form more complex
    documents.
 
+   If you want to look into a Java implementation of Bonobo, look in
+   the GNOME CVS for the `monkeybeans' module (Erdi Gergo is the
+   author), you can browse it at: http://cvs.gnome.org/bonsai
+
 * Licensing
 
    Bonobo libraries are released under the terms of the GNU Lesser

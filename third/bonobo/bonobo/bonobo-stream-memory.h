@@ -49,16 +49,19 @@ typedef struct {
 
 GtkType          bonobo_stream_mem_get_type   (void);
 BonoboStreamMem *bonobo_stream_mem_construct  (BonoboStreamMem  *stream_mem,
-					       Bonobo_Stream        corba_stream,
-					       const char          *buffer,
-					       size_t               size,
-					       gboolean             read_only,
-					       gboolean             resizable);
-BonoboStream    *bonobo_stream_mem_create     (const char *buffer, size_t size,
-					       gboolean read_only,
-					       gboolean resizable);
-const char      *bonobo_stream_mem_get_buffer (BonoboStreamMem *stream_mem);
-size_t           bonobo_stream_mem_get_size   (BonoboStreamMem *stream_mem);
+					       Bonobo_Stream     corba_stream,
+					       const char       *buffer,
+					       size_t            size,
+					       gboolean          read_only,
+					       gboolean          resizable);
+
+BonoboStream    *bonobo_stream_mem_create     (const char       *buffer,
+					       size_t            size,
+					       gboolean          read_only,
+					       gboolean          resizable);
+
+const char      *bonobo_stream_mem_get_buffer (BonoboStreamMem  *stream_mem);
+size_t           bonobo_stream_mem_get_size   (BonoboStreamMem  *stream_mem);
 
 END_GNOME_DECLS
 

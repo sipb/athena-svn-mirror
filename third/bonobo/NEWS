@@ -1,3 +1,112 @@
+Bonobo 0.36
+
+	* Convert print to BonoboXObject (Me) - forgot it.
+
+	* Fix flicker issue (Me)
+
+	* Remove bonobo-idl (Me)
+
+	* Use nice type creation macro (Dietmar)
+
+	* Toolbar control leak fix (Maciej)
+
+Bonobo 0.35
+
+	* BonoboXObject (Me)
+
+	* Canvas fixes (Mike Kestner)
+		* IDL cleanups
+		* Misc bug fixage
+
+	* UI handler
+		* Toolbar shadow preference fix (Federico Mena)
+		* Toolbar sizing problems (Ettore)
+		* Builtin toolbar customization GUI & popup (Me)
+		* UI configuration code (Me)
+		* UI Menu rebuild acceleration (Me)
+		* UI config Leak fixes (Iain)
+		* Toolbar resize bug (Cody Russell)
+		* Tearoff menu fixage (Me, Darin Adler)
+
+	* Monikers
+		* comparison method (Me)
+		* stream cache moniker (Dietmar)
+
+	* Misc new features
+		* Use a Stream to transfer print data (Me)
+		* Re-namespace IDL files (Me)
+		* Property bag fixage (Dietmar)
+		* Automatic shlib reference tracking (Dietmar)
+		* Profiling config support (Pavel Cisler)
+		* Zoomable interface expansion (Cody Russell)
+
+	* Misc bug fixing
+		* Leak fixes (Morten, Me)
+		* Method chaining bugs (Me)
+		* Depend on oaf >= 0.6.2 (Me)
+		* LibIDL checks for bonobo-idl (Me)
+		* Fix bonobo-idl build (Me)
+		* function signature fix (George Lebl)
+		* Stream moniker extender fix (Lutz Muller)
+		* Calm ORBit warnings (Maciej Stachowiak)
+
+	* Reference counting problems nailed (Owen, Me)
+
+	* Begginings of keyboard focus fixage (Federico)
+
+Bonobo 0.33
+
+	* Fixed broken standard moniker id (Me)
+
+	* Fix UI verb tracking leak (Me)
+
+	* Fix old UI race condition (Me)
+
+Bonobo 0.32
+
+	* Monikers
+		* Virtualized more of BonoboMoniker (Me)
+		* Item container re-written (Me)
+		* Item handler implemented (Miguel)
+
+	* UI stuff (Me)
+		* Substantialy re-factored
+		* Acceleration (with Pavel)
+		* Configuration engine
+		* Toolbar customization dialog
+		* Ignore Gtk+ keybinding assignment
+		* Hide lots of internals
+		* Docs updated
+		* honour more GNOME prefs (Jacob)
+
+	* Property Bag (Dietmar)
+		* Improved exception handling
+		* Reference leaks fixed
+		* new Property listener methods
+		* Property is an Unknown
+
+	* Canvas Items (Mike Kestner)
+		* Add event signal
+		* Add grab / ungrab
+		* Fix UI merging code
+		* Update proxy creation
+
+	* Fixed reference handling on addInterface (Dietmar)
+
+	* Event Source updated (Dietmar)
+
+	* Several reference leaks nailed (Dietmar)
+
+	* Improved running context ref tracking (Dietmar)
+
+	* Macros to reduce code complexity (Dietmar)
+
+	* Header include cleanups (Jason Leach)
+
+	* Conversion to xml-i18n-tools (Maciej)
+
+	* Misc. bugs fixed (Darin, Eskil Olsen, Robin Slomkowski)
+
 Bonobo 0.31
 
 	* Serious bugs fixed

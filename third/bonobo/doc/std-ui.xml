@@ -113,6 +113,8 @@
 
         <cmd name="GameEnd" _label="End game" _tip="End the current game"/>
 
+	<cmd name="BonoboCustomize" _label="Customize" _tip="Customize toolbars"
+	pixtype="stock" pixname="Preferences"/>
 
         <cmd name="HelpAbout" _label="About..." _tip="About this application"
 	 pixtype="stock" pixname="About"/>
@@ -167,7 +169,7 @@
 	
         <menuitem name="EditPaste" verb="" _label="_Paste"/>
 	
-	<placeholder/>
+	<separator/>
 
         <menuitem name="EditClear" verb="" _label="C_lear"/>
 	
@@ -183,9 +185,13 @@
 	
 	<placeholder name="EditOps"/>
 
+	<separator/>
+
         <menuitem name="EditProperties" verb="" _label="_Properties..."/>
 
 	<menuitem name="EditSelectAll" verb="" _label="_Select All"/>
+
+	<menuitem name="BonoboCustomize" verb="" _label="Customi_ze"/>
 
 </submenu>
 
@@ -240,7 +246,7 @@
 
 </menu>
 
-<dockitem name="Toolbar">
+<dockitem name="Toolbar" _tip="Main toolbar">
 	<toolitem name="whatever" verb="FileClose"/>
 
 	<separator/>
@@ -251,7 +257,8 @@
 
 </dockitem>
 
-<dockitem name="anothertoolbar" band_num="1" in_new_band="0" position="1">
+<dockitem name="anothertoolbar" band_num="1"
+ in_new_band="0" position="1" _tip="Auxiliary toolbar">
 	<toolitem name="whatever" type="toggle"
 		_descr="A duplicate button of mine" pixtype="filename"
 		pixname="bonobo-insert-component.xpm" id="bold"/>

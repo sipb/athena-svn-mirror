@@ -102,7 +102,7 @@ bonobo_shlib_factory_new (const char            *oaf_iid,
 	c_factory = gtk_type_new (bonobo_shlib_factory_get_type ());
 
 	corba_factory = bonobo_generic_factory_corba_object_create (
-		BONOBO_OBJECT (c_factory));
+		BONOBO_OBJECT (c_factory), factory);
 
 	if (corba_factory == CORBA_OBJECT_NIL) {
 		bonobo_object_unref (BONOBO_OBJECT (c_factory));
@@ -115,7 +115,7 @@ bonobo_shlib_factory_new (const char            *oaf_iid,
 }
 
 /**
- * bonobo_shlib_factory_new:
+ * bonobo_shlib_factory_new_multi:
  * @oaf_iid: The GOAD id that this factory implements
  * @poa: the poa.
  * @oaf_impl_ptr: Oaf shlib handle
@@ -149,7 +149,7 @@ BonoboShlibFactory *bonobo_shlib_factory_new_multi (
 	c_factory = gtk_type_new (bonobo_shlib_factory_get_type ());
 
 	corba_factory = bonobo_generic_factory_corba_object_create (
-		BONOBO_OBJECT (c_factory));
+		BONOBO_OBJECT (c_factory), factory_cb);
 
 	if (corba_factory == CORBA_OBJECT_NIL) {
 		bonobo_object_unref (BONOBO_OBJECT (c_factory));
@@ -164,7 +164,7 @@ BonoboShlibFactory *bonobo_shlib_factory_new_multi (
 static void
 bonobo_shlib_factory_finalize (GtkObject *object)
 {
-	BonoboShlibFactory *c_factory = BONOBO_SHLIB_FACTORY (object);
+/*	BonoboShlibFactory *c_factory = BONOBO_SHLIB_FACTORY (object);*/
 
 	/*
 	 * We pray this happens only when we have released our
@@ -173,7 +173,9 @@ bonobo_shlib_factory_finalize (GtkObject *object)
 	 *
 	 * This is achieved by an idle unref handler.
 	 */
-	oaf_plugin_unuse (c_factory->oaf_impl_ptr);
+
+	/* we dont unload it because of a problem with the gtk type system */
+	/* oaf_plugin_unuse (c_factory->oaf_impl_ptr); */
 
 	GTK_OBJECT_CLASS (bonobo_shlib_factory_parent_class)->finalize (object);
 }
@@ -186,9 +188,6 @@ bonobo_shlib_factory_new_generic (BonoboGenericFactory *factory,
 
 	retval = BONOBO_GENERIC_FACTORY_CLASS (
 		bonobo_shlib_factory_parent_class)->new_generic (factory, oaf_iid);
-	
-	bonobo_shlib_factory_track_object (
-		BONOBO_SHLIB_FACTORY (factory), retval);
 
 	return retval;
 }
@@ -243,15 +242,24 @@ bonobo_shlib_factory_inc_live (BonoboShlibFactory *factory)
 	factory->live_objects++;
 }
 
+
+static gboolean
+bonobo_shlib_factory_dec_live_cb (BonoboShlibFactory *factory)
+{
+	factory->live_objects--;
+
+	if (factory->live_objects <= 0)
+		bonobo_object_unref (BONOBO_OBJECT (factory));
+
+	return FALSE;
+}
+
 void
 bonobo_shlib_factory_dec_live (BonoboShlibFactory *factory)
 {
 	g_return_if_fail (BONOBO_IS_SHLIB_FACTORY (factory));
 
-	factory->live_objects--;
-
-	if (factory->live_objects <= 0)
-		bonobo_object_idle_unref (BONOBO_OBJECT (factory));
+	g_idle_add ((GSourceFunc) bonobo_shlib_factory_dec_live_cb, factory);
 }
 
 static void

@@ -19,6 +19,7 @@ void           bonobo_context_add (const CORBA_char  *context_name,
 				   Bonobo_Unknown     context);
 
 BonoboObject  *bonobo_context_running_get (void);
+void           bonobo_running_context_auto_exit_unref (BonoboObject *object);
 
 void           bonobo_context_init        (void);
 void           bonobo_context_shutdown    (void);

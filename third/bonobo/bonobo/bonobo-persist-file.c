@@ -14,11 +14,10 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-persist-file.h>
 
+#define PARENT_TYPE BONOBO_PERSIST_TYPE
+
 /* Parent GTK object class */
 static BonoboPersistClass *bonobo_persist_file_parent_class;
-
-/* The CORBA entry point vectors */
-POA_Bonobo_PersistFile__vepv bonobo_persist_file_vepv;
 
 static CORBA_char *
 impl_get_current_file (PortableServer_Servant servant, CORBA_Environment *ev)
@@ -118,34 +117,6 @@ impl_save (PortableServer_Servant servant,
 	pf->is_dirty = FALSE;
 }
 
-/**
- * bonobo_persist_file_get_epv:
- *
- * Returns: The EPV for the default BonoboPersistFile implementation.  
- */
-POA_Bonobo_PersistFile__epv *
-bonobo_persist_file_get_epv (void)
-{
-	POA_Bonobo_PersistFile__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_PersistFile__epv, 1);
-
-	epv->load           = impl_load;
-	epv->save           = impl_save;
-	epv->isDirty        = impl_is_dirty;
-	epv->getCurrentFile = impl_get_current_file;
-
-	return epv;
-}
-
-static void
-init_persist_file_corba_class (void)
-{
-	bonobo_persist_file_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_persist_file_vepv.Bonobo_Persist_epv = bonobo_persist_get_epv ();
-	bonobo_persist_file_vepv.Bonobo_PersistFile_epv = bonobo_persist_file_get_epv ();
-}
-
 static CORBA_char *
 bonobo_persist_file_get_current_file (BonoboPersistFile *pf,
 				      CORBA_Environment *ev)
@@ -158,46 +129,31 @@ bonobo_persist_file_get_current_file (BonoboPersistFile *pf,
 static void
 bonobo_persist_file_class_init (BonoboPersistFileClass *klass)
 {
-	bonobo_persist_file_parent_class = gtk_type_class (bonobo_persist_get_type ());
+	POA_Bonobo_PersistFile__epv *epv = &klass->epv;
 
-	/*
-	 * Override and initialize methods
-	 */
+	bonobo_persist_file_parent_class = gtk_type_class (PARENT_TYPE);
 
+	/* Override and initialize methods */
 	klass->save = NULL;
 	klass->load = NULL;
 	klass->get_current_file = bonobo_persist_file_get_current_file;
-	
-	init_persist_file_corba_class ();
+
+	epv->load           = impl_load;
+	epv->save           = impl_save;
+	epv->isDirty        = impl_is_dirty;
+	epv->getCurrentFile = impl_get_current_file;
 }
 
 static void
-bonobo_persist_file_init (BonoboPersistFile *pf)
+bonobo_persist_file_init (GtkObject *object)
 {
+	/* nothing to do */
 }
 
-GtkType
-bonobo_persist_file_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboPersistFile",
-			sizeof (BonoboPersistFile),
-			sizeof (BonoboPersistFileClass),
-			(GtkClassInitFunc) bonobo_persist_file_class_init,
-			(GtkObjectInitFunc) bonobo_persist_file_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_persist_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboPersistFile, 
+			   Bonobo_PersistFile,
+			   PARENT_TYPE,
+			   bonobo_persist_file);
 
 /**
  * bonobo_persist_file_construct:
@@ -211,45 +167,20 @@ bonobo_persist_file_get_type (void)
  * operations are performed by the class load and save methods
  */
 BonoboPersistFile *
-bonobo_persist_file_construct (BonoboPersistFile *pf,
-			      Bonobo_PersistFile corba_pf,
-			      BonoboPersistFileIOFn load_fn,
-			      BonoboPersistFileIOFn save_fn,
-			      void *closure)
+bonobo_persist_file_construct (BonoboPersistFile    *pf,
+			       BonoboPersistFileIOFn load_fn,
+			       BonoboPersistFileIOFn save_fn,
+			       void                 *closure)
 {
 	g_return_val_if_fail (pf != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_PERSIST_FILE (pf), NULL);
-	g_return_val_if_fail (corba_pf != CORBA_OBJECT_NIL, NULL);
 
-	bonobo_persist_construct (BONOBO_PERSIST (pf), corba_pf);
-	
 	pf->load_fn = load_fn;
 	pf->save_fn = save_fn;
 	pf->closure = closure;
 		
 	return pf;
 }
-
-static Bonobo_PersistFile
-create_bonobo_persist_file (BonoboObject *object)
-{
-	POA_Bonobo_PersistFile *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_PersistFile *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_persist_file_vepv;
-	CORBA_exception_init (&ev);
-	POA_Bonobo_PersistFile__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_PersistFile) bonobo_object_activate_servant (object, servant);
-}
-
 
 /**
  * bonobo_persist_file_new:
@@ -263,23 +194,16 @@ create_bonobo_persist_file (BonoboObject *object)
  */
 BonoboPersistFile *
 bonobo_persist_file_new (BonoboPersistFileIOFn load_fn,
-			BonoboPersistFileIOFn save_fn,
-			void *closure)
+			 BonoboPersistFileIOFn save_fn,
+			 void                 *closure)
 {
 	BonoboPersistFile *pf;
-	Bonobo_PersistFile corba_pf;
 
 	pf = gtk_type_new (bonobo_persist_file_get_type ());
-	corba_pf = create_bonobo_persist_file (
-		BONOBO_OBJECT (pf));
-	if (corba_pf == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (pf));
-		return NULL;
-	}
 
 	pf->filename = NULL;
 
-	bonobo_persist_file_construct (pf, corba_pf, load_fn, save_fn, closure);
+	bonobo_persist_file_construct (pf, load_fn, save_fn, closure);
 
 	return pf;
 }

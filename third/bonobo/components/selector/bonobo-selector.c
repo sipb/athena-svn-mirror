@@ -15,11 +15,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
-#include <bonobo/bonobo.h>
 
-static BonoboGenericFactory *factory = NULL;
+#include <bonobo/bonobo.h>
 
 enum {
 	PROP_INTERFACE,
@@ -32,6 +29,7 @@ static void
 set_prop (BonoboPropertyBag *bag,
 	  const BonoboArg   *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	g_return_if_fail (BONOBO_IS_SELECTOR_WIDGET (user_data));
@@ -49,7 +47,7 @@ set_prop (BonoboPropertyBag *bag,
 	}
 
 	default:
-		g_warning ("Unhandled arg %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 		break;
 	}
 }
@@ -58,6 +56,7 @@ static void
 get_prop (BonoboPropertyBag *bag,
 	  BonoboArg         *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	g_return_if_fail (BONOBO_IS_SELECTOR_WIDGET (user_data));
@@ -80,17 +79,9 @@ get_prop (BonoboPropertyBag *bag,
 			arg, bonobo_selector_widget_get_description (user_data));
 		break;
 	default:
-		g_warning ("Unhandled arg %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 		break;
 	}
-}
-
-static void
-last_unref_cb (BonoboObject *bonobo_object,
-	       gpointer      dummy)
-{
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
 }
 
 static BonoboObject *
@@ -134,29 +125,7 @@ generic_factory (BonoboGenericFactory *this, void *data)
 	return BONOBO_OBJECT (bonobo_object);
 }
 
-int
-main (int argc, char **argv)
-{
-	CORBA_ORB         orb;
-
-        gnome_init_with_popt_table ("bonobo-selector", VERSION,
-				    argc, argv, oaf_popt_options, 0, NULL); 
-
-	orb = oaf_init (argc, argv);
-
-	if (!bonobo_init (orb, NULL, NULL))
-		g_error (_("I could not initialize Bonobo"));
-
-	factory = bonobo_generic_factory_new (
-		"OAFIID:Bonobo_Selector_ControlFactory",
-		generic_factory, NULL);
-
-	gtk_signal_connect (GTK_OBJECT (bonobo_context_running_get ()),
-			    "last_unref",
-			    GTK_SIGNAL_FUNC (last_unref_cb),
-			    NULL);
-
-	bonobo_main ();
-
-	return 0;
-}
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Selector_ControlFactory",
+		    "bonobo-selector", VERSION,
+		    generic_factory,
+		    NULL)

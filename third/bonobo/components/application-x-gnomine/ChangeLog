@@ -1,3 +1,15 @@
+2001-01-18  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-application-x-mines.c: use the new factory macros.
+
+	* Bonobo_Sample_Mines.oaf: changed oaf IIDs to
+	OAFIID:Bonobo_Sample_Mines_Factory and OAFIID:Bonobo_Sample_Mines
+
+2001-01-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-application-x-mines.c (init_simple_mines_factory): 
+	(init_simple_mines_factory): use the new unref code.
+
 2000-11-05  Fatih Demir	<kabalak@gmx.net>
 
 	* .cvsignores: Added

@@ -10,7 +10,6 @@
 #ifndef _BONOBO_MONIKER_EXTENDER_H_
 #define _BONOBO_MONIKER_EXTENDER_H_
 
-#include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-moniker.h>
 
 BEGIN_GNOME_DECLS
@@ -30,23 +29,20 @@ typedef Bonobo_Unknown (*BonoboMonikerExtenderFn) (BonoboMonikerExtender       *
 						   const CORBA_char            *requested_interface,
 						   CORBA_Environment           *ev);
 struct _BonoboMonikerExtender {
-        BonoboObject            object;
+        BonoboXObject           object;
 	BonoboMonikerExtenderFn resolve;
 	gpointer                data;
 };
 
 typedef struct {
-	BonoboObjectClass       parent_class;
+	BonoboXObjectClass      parent_class;
+
+	POA_Bonobo_MonikerExtender__epv epv;
 	
 	BonoboMonikerExtenderFn resolve;
 } BonoboMonikerExtenderClass;
 
 GtkType                          bonobo_moniker_extender_get_type            (void);
-POA_Bonobo_MonikerExtender__epv *bonobo_moniker_extender_get_epv             (void);
-Bonobo_MonikerExtender           bonobo_moniker_extender_corba_object_create (BonoboObject                *object);
-
-BonoboMonikerExtender           *bonobo_moniker_extender_construct           (BonoboMonikerExtender       *extender,
-									      Bonobo_MonikerExtender       corba_extender);
 BonoboMonikerExtender           *bonobo_moniker_extender_new                 (BonoboMonikerExtenderFn      resolve,
 									      gpointer                     data);
 

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2000-12-29 16:22+0000\n"
+"POT-Creation-Date: 2001-02-09 02:27-0500\n"
 "PO-Revision-Date: 2000-11-21 14:11+01:00\n"
 "Last-Translator: Wu Yulun <migr@operamail.com>\n"
 "Language-Team: \n"
@@ -9,362 +9,326 @@ msgstr ""
 "Content-Type: text/plain; charset=gb2312\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/app.c:227 samples/compound-doc/container/container.c:277
+#: bonobo/bonobo-ui-config-widget.c:235
+msgid "Visible"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:243
+msgid "_Show"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:253
+#, fuzzy
+msgid "_Hide"
+msgstr "文件(_F)"
+
+#: bonobo/bonobo-ui-config-widget.c:263
+msgid "_View tooltips"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:270
+msgid "Toolbars"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:280
+msgid "Look"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+msgid "_Icon"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:300
+msgid "_Text and Icon"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:310
+msgid "_Priority text only"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine-config.c:521
+msgid "Configure UI"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:539
+msgid "B_oth"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:541
+#, fuzzy
+msgid "T_ext"
+msgstr "退出(_X)"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:542
+msgid "Hide t_ips"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:542
+msgid "Show t_ips"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:543
+msgid "_Hide toolbar"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:544
+#, fuzzy
+msgid "Customi_ze"
+msgstr "自定义尺寸"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:544
+msgid "Customize the toolbar"
+msgstr ""
+
+#. -lefence
+#: monikers/moniker-test.c:237
+msgid "Oaf options"
+msgstr ""
+
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
 msgid "Could not initialize Bonobo!\n"
 msgstr "无法初始化Bonobo!\n"
 
-#: bonobo/bonobo-exception.c:127
-msgid "Error checking error; no exception"
-msgstr "Error 检测错误；无异常"
+#: bonobo/bonobo-exception.c:129
+#, fuzzy
+msgid "An unsupported action was attempted"
+msgstr "试图执行一个未支持的流操作"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:132
+#, fuzzy
+msgid "IO Error"
+msgstr "IO流出错"
+
+#: bonobo/bonobo-exception.c:135
+msgid "Invalid argument value"
+msgstr ""
+
+#: bonobo/bonobo-exception.c:139
 msgid "Object not found"
 msgstr "对象找不到"
 
-#: bonobo/bonobo-exception.c:145
+#: bonobo/bonobo-exception.c:142
 msgid "Syntax error in object description"
 msgstr "对象描叙语法错"
 
-#: bonobo/bonobo-exception.c:149
+#: bonobo/bonobo-exception.c:146
 msgid "The User canceled the save"
 msgstr "用户取消保存操作"
 
-#: bonobo/bonobo-exception.c:154
+#: bonobo/bonobo-exception.c:151
 msgid "Cannot activate object from factory"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:156
 msgid "No permission to access stream"
 msgstr "无访问流的权限"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:159
 msgid "An unsupported stream action was attempted"
 msgstr "试图执行一个未支持的流操作"
 
-#: bonobo/bonobo-exception.c:165
+#: bonobo/bonobo-exception.c:162
 msgid "IO Error on stream"
 msgstr "IO流出错"
 
-#: bonobo/bonobo-exception.c:169
+#: bonobo/bonobo-exception.c:166
 msgid "IO Error on storage"
 msgstr "存储IO出错"
 
-#: bonobo/bonobo-exception.c:172
+#: bonobo/bonobo-exception.c:169
 msgid "Name already exists in storage"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:175
+#: bonobo/bonobo-exception.c:172
 msgid "Object not found in storage"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:178
+#: bonobo/bonobo-exception.c:175
 msgid "No permission to do operation on storage"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:180
+#: bonobo/bonobo-exception.c:177
 msgid "An unsupported storage action was attempted"
 msgstr "试图执行一个未支持的存储操作"
 
-#: bonobo/bonobo-exception.c:182
+#: bonobo/bonobo-exception.c:179
 msgid "Object is not a stream"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:185
+#: bonobo/bonobo-exception.c:182
 msgid "Object is not a storage"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:188
+#: bonobo/bonobo-exception.c:185
 msgid "Storage is not empty"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:192
+#: bonobo/bonobo-exception.c:189
 msgid "malformed user interface XML description"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:195
+#: bonobo/bonobo-exception.c:192
 msgid "invalid path to XML user interface element"
 msgstr ""
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:196
 msgid "incorrect data type"
 msgstr "不正确的数据类型"
 
-#: bonobo/bonobo-exception.c:202
+#: bonobo/bonobo-exception.c:199
 msgid "stream not found"
 msgstr "数据流找不到"
 
-#: bonobo/bonobo-exception.c:206
+#: bonobo/bonobo-exception.c:203
 msgid "property not found"
 msgstr "属性找不到"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:207
 msgid "Moniker interface cannot be found"
 msgstr "Moniker 接口找不到"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:210
 msgid "Moniker activation timed out"
 msgstr "Moniker 激活超时"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:213
 msgid "Syntax error within moniker"
 msgstr "Moniker 语法错"
 
-#: bonobo/bonobo-exception.c:219
+#: bonobo/bonobo-exception.c:216
 msgid "Moniker has an unknown moniker prefix"
 msgstr "未知的 moniker 前缀"
 
-#: bonobo/bonobo-selector-widget.c:208
-msgid "Name"
-msgstr "名称"
+#: bonobo/bonobo-exception.c:238
+msgid "Error checking error; no exception"
+msgstr "Error 检测错误；无异常"
 
-#: bonobo/bonobo-selector-widget.c:231
-msgid "Description"
-msgstr "描叙"
-
-#: bonobo/bonobo-object-directory.c:221
+#: bonobo/bonobo-object-directory.c:224
 msgid "No filename"
 msgstr "无文件名"
 
-#: bonobo/bonobo-object-directory.c:227
+#: bonobo/bonobo-object-directory.c:230
 #, c-format
 msgid "unknown mime type for '%s'"
 msgstr "未知MIME类型 \"%s\""
 
-#: bonobo/bonobo-object-directory.c:252
+#: bonobo/bonobo-object-directory.c:255
 #, c-format
 msgid "no handlers for mime type '%s'"
 msgstr ""
 
-#: components/application-x-gnomine/bonobo-application-x-mines.c:558
-#: gshell/gshell.c:652 samples/compound-doc/paint-component-simple.c:707
-msgid "Could not initialize Bonobo!"
-msgstr "无法初始化Bonobo!"
+#: bonobo/bonobo-selector-widget.c:212
+msgid "Name"
+msgstr "名称"
 
-#.
-#. * Translatable strings file generated by extract-ui.
-#. * Add this file to your project's POTFILES.in
-#. * DO NOT compile it as part of your application.
-#.
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:7
+#: bonobo/bonobo-selector-widget.c:235
+msgid "Description"
+msgstr "描叙"
+
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
+msgid "GnoMines control"
+msgstr ""
+
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
+msgid "GnoMines control factory"
+msgstr ""
+
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
+msgid "bonobo GnoMines object"
+msgstr ""
+
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
+msgid "bonobo GnoMines object factory"
+msgstr ""
+
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:1
 msgid "Load a saved game"
 msgstr "装入一个保存的游戏"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:8
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:2
 msgid "New game"
 msgstr "新游戏"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:9
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:3
 msgid "Open game"
 msgstr "打开游戏"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:10
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:4
 msgid "Start a new game"
 msgstr "开始一个新游戏"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:11
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:5
 msgid "_Game"
 msgstr "游戏(_G)"
 
-#: components/audio-ulaw/bonobo-audio-ulaw.c:408
-#: components/text-plain/bonobo-text-plain.c:760
-#: samples/bonobo-class/echo-client.c:30 samples/bonobo-class/main.c:41
-#: samples/compound-doc/bonobo-hello/bonobo-hello.c:94
-msgid "I could not initialize Bonobo"
-msgstr "无法初始化Bonobo"
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
+msgid "Waveform"
+msgstr ""
 
-#: components/text-plain/bonobo-text-plain.c:362
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
+#, fuzzy
+msgid "Waveform component"
+msgstr "启动组件"
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
+msgid "Waveform component factory"
+msgstr ""
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
+#, fuzzy
+msgid "audio/ulaw bonobo object"
+msgstr "无法启动 bonobo 对象。"
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
+#, fuzzy
+msgid "audio/ulaw bonobo object factory"
+msgstr "无法启动 bonobo 对象。"
+
+#: components/selector/Bonobo_Selector.oaf.in.h:1
+msgid "Component Selector"
+msgstr ""
+
+#: components/selector/Bonobo_Selector.oaf.in.h:2
+msgid "Component Selector factory"
+msgstr ""
+
+#: components/selector/Bonobo_Selector.oaf.in.h:3
+msgid "Component selector control"
+msgstr ""
+
+#: components/selector/Bonobo_Selector.oaf.in.h:4
+msgid "component selector control factory"
+msgstr ""
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
+msgid "Text"
+msgstr ""
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
+#, fuzzy
+msgid "Text component"
+msgstr "启动组件"
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
+msgid "Text component factory"
+msgstr ""
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
+#, fuzzy
+msgid "text/plain component"
+msgstr "启动组件"
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
+msgid "text/plain embeddable factory"
+msgstr ""
+
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "清除文本(_C)"
 
-#: components/text-plain/bonobo-text-plain.c:363
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "清除组件中的文本"
-
-#. main
-#.
-#. * Translatable strings file generated by extract-ui.
-#. * Add this file to your project's POTFILES.in
-#. * DO NOT compile it as part of your application.
-#.
-#: gshell/gshell-ui.xml.h:7
-msgid "About this application"
-msgstr "关于本应用程序"
-
-#: gshell/gshell-ui.xml.h:8
-msgid "Close the current window"
-msgstr "关闭当前窗口"
-
-#: gshell/gshell-ui.xml.h:9
-msgid "Configure the application"
-msgstr "配置应用程序"
-
-#: gshell/gshell-ui.xml.h:10
-msgid "Create New _Window"
-msgstr "新建窗口(_W)"
-
-#: gshell/gshell-ui.xml.h:11
-msgid "Create a new window"
-msgstr "创建一个新窗口"
-
-#: gshell/gshell-ui.xml.h:12
-msgid "Displays only one window"
-msgstr "仅显示一个窗口"
-
-#: gshell/gshell-ui.xml.h:13
-msgid "E_xit"
-msgstr "退出(_X)"
-
-#: gshell/gshell-ui.xml.h:14
-msgid "Exit the program"
-msgstr "退出本程序"
-
-#: gshell/gshell-ui.xml.h:15
-msgid "Help on GNOME"
-msgstr "GNOME 帮助"
-
-#: gshell/gshell-ui.xml.h:16
-msgid "Kill the current buffer"
-msgstr "撤消当前缓冲区"
-
-#: gshell/gshell-ui.xml.h:17
-msgid "Launch Control..."
-msgstr "启动控制..."
-
-#: gshell/gshell-ui.xml.h:18
-msgid "Launch Embeddable..."
-msgstr "启动可嵌入式组件..."
-
-#: gshell/gshell-ui.xml.h:19
-msgid "Launches a new Control component"
-msgstr "启动一个新的控制组件"
-
-#: gshell/gshell-ui.xml.h:20
-msgid "Launches a new Embeddable component"
-msgstr "启动一个新的嵌入式组件"
-
-#: gshell/gshell-ui.xml.h:21
-msgid "Loads a file into the current component"
-msgstr "将文件装入当前组件"
-
-#: gshell/gshell-ui.xml.h:22
-msgid "Open a file"
-msgstr "打开一个文件"
-
-#: gshell/gshell-ui.xml.h:23
-msgid "Print S_etup..."
-msgstr "打印设置(_e)..."
-
-#: gshell/gshell-ui.xml.h:24
-msgid "Print the current file"
-msgstr "打印当前文件"
-
-#: gshell/gshell-ui.xml.h:25
-msgid "Save _As..."
-msgstr "另存为(_A)..."
-
-#: gshell/gshell-ui.xml.h:26
-msgid "Save the current file"
-msgstr "保存当前文件"
-
-#: gshell/gshell-ui.xml.h:27
-msgid "Save the current file with a different name"
-msgstr "以别的名字保存当前文件"
-
-#: gshell/gshell-ui.xml.h:28
-msgid "Setup the page settings for your current printer"
-msgstr "为当前打印机改变页面设置"
-
-#: gshell/gshell-ui.xml.h:29
-msgid "Splits the current window"
-msgstr "分裂当前窗口"
-
-#: gshell/gshell-ui.xml.h:30
-msgid "Zoom ..."
-msgstr "缩放..."
-
-#: gshell/gshell-ui.xml.h:31
-msgid "Zoom _in"
-msgstr "放大(_I)"
-
-#: gshell/gshell-ui.xml.h:32
-msgid "Zoom _out"
-msgstr "缩小(_O)"
-
-#: gshell/gshell-ui.xml.h:33
-msgid "Zoom to _default"
-msgstr "恢复默认值(_D)"
-
-#: gshell/gshell-ui.xml.h:34
-msgid "Zoom to _fit"
-msgstr "适当缩放"
-
-#: gshell/gshell-ui.xml.h:35
-msgid "_About..."
-msgstr "关于(_A)..."
-
-#: gshell/gshell-ui.xml.h:36
-msgid "_Buffers"
-msgstr "缓冲区(_B)"
-
-#: gshell/gshell-ui.xml.h:37
-msgid "_Close This Window"
-msgstr "关闭该窗口(_W)"
-
-#: gshell/gshell-ui.xml.h:38
-msgid "_File"
-msgstr "文件(_F)"
-
-#: gshell/gshell-ui.xml.h:39
-msgid "_Help"
-msgstr "帮助(_H)"
-
-#: gshell/gshell-ui.xml.h:40
-msgid "_Help on GNOME"
-msgstr "GNOME帮助(_H)"
-
-#: gshell/gshell-ui.xml.h:41
-msgid "_Kill"
-msgstr "撤消(_K)"
-
-#: gshell/gshell-ui.xml.h:42
-msgid "_Load..."
-msgstr "装入(_L)..."
-
-#: gshell/gshell-ui.xml.h:43
-msgid "_One Window"
-msgstr "一个窗口(_O)"
-
-#: gshell/gshell-ui.xml.h:44
-msgid "_Open..."
-msgstr "打开(_O)..."
-
-#: gshell/gshell-ui.xml.h:45
-msgid "_Preferences..."
-msgstr "选项(_P)..."
-
-#: gshell/gshell-ui.xml.h:46
-msgid "_Print"
-msgstr "打印(_P)"
-
-#: gshell/gshell-ui.xml.h:47
-msgid "_Save"
-msgstr "保存(_S)"
-
-#: gshell/gshell-ui.xml.h:48
-msgid "_Settings"
-msgstr "设置(_S)"
-
-#: gshell/gshell-ui.xml.h:49
-msgid "_Split Window"
-msgstr "分裂窗口(_S)"
-
-#: gshell/gshell-ui.xml.h:50
-msgid "_Window"
-msgstr "窗口(_W)"
-
-#: gshell/gshell-ui.xml.h:51
-msgid "_Zoom"
-msgstr "缩放(_Z)"
 
 #: gshell/controls.c:95 gshell/inout.c:91
 msgid ""
@@ -373,7 +337,7 @@ msgid ""
 msgstr "当尝试使用 PersistFile 装入组件数据时发生异常"
 
 #: gshell/controls.c:119 gshell/inout.c:176
-#: samples/compound-doc/container/component.c:229
+#: samples/compound-doc/container/component.c:228
 #, c-format
 msgid "Could not open file %s"
 msgstr "无法打开文件 %s"
@@ -383,6 +347,186 @@ msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStream"
 msgstr "当尝试使用 PersistStream 装入组件数据时发生异常"
+
+#: gshell/gshell-ui.xml.h:1
+msgid "About this application"
+msgstr "关于本应用程序"
+
+#: gshell/gshell-ui.xml.h:2
+msgid "Close the current window"
+msgstr "关闭当前窗口"
+
+#: gshell/gshell-ui.xml.h:3
+msgid "Configure the application"
+msgstr "配置应用程序"
+
+#: gshell/gshell-ui.xml.h:4
+msgid "Create New _Window"
+msgstr "新建窗口(_W)"
+
+#: gshell/gshell-ui.xml.h:5
+msgid "Create a new window"
+msgstr "创建一个新窗口"
+
+#: gshell/gshell-ui.xml.h:6
+msgid "Displays only one window"
+msgstr "仅显示一个窗口"
+
+#: gshell/gshell-ui.xml.h:7
+msgid "E_xit"
+msgstr "退出(_X)"
+
+#: gshell/gshell-ui.xml.h:8
+msgid "Exit the program"
+msgstr "退出本程序"
+
+#: gshell/gshell-ui.xml.h:9
+msgid "Help on GNOME"
+msgstr "GNOME 帮助"
+
+#: gshell/gshell-ui.xml.h:10
+msgid "Kill the current buffer"
+msgstr "撤消当前缓冲区"
+
+#: gshell/gshell-ui.xml.h:11
+msgid "Launch Control..."
+msgstr "启动控制..."
+
+#: gshell/gshell-ui.xml.h:12
+msgid "Launch Embeddable..."
+msgstr "启动可嵌入式组件..."
+
+#: gshell/gshell-ui.xml.h:13
+msgid "Launches a new Control component"
+msgstr "启动一个新的控制组件"
+
+#: gshell/gshell-ui.xml.h:14
+msgid "Launches a new Embeddable component"
+msgstr "启动一个新的嵌入式组件"
+
+#: gshell/gshell-ui.xml.h:15
+msgid "Loads a file into the current component"
+msgstr "将文件装入当前组件"
+
+#: gshell/gshell-ui.xml.h:16
+msgid "Open a file"
+msgstr "打开一个文件"
+
+#: gshell/gshell-ui.xml.h:17
+msgid "Print S_etup..."
+msgstr "打印设置(_e)..."
+
+#: gshell/gshell-ui.xml.h:18
+msgid "Print the current file"
+msgstr "打印当前文件"
+
+#: gshell/gshell-ui.xml.h:19
+msgid "Save _As..."
+msgstr "另存为(_A)..."
+
+#: gshell/gshell-ui.xml.h:20
+msgid "Save the current file"
+msgstr "保存当前文件"
+
+#: gshell/gshell-ui.xml.h:21
+msgid "Save the current file with a different name"
+msgstr "以别的名字保存当前文件"
+
+#: gshell/gshell-ui.xml.h:22
+msgid "Setup the page settings for your current printer"
+msgstr "为当前打印机改变页面设置"
+
+#: gshell/gshell-ui.xml.h:23
+msgid "Splits the current window"
+msgstr "分裂当前窗口"
+
+#: gshell/gshell-ui.xml.h:24
+msgid "Zoom ..."
+msgstr "缩放..."
+
+#: gshell/gshell-ui.xml.h:25
+msgid "Zoom _in"
+msgstr "放大(_I)"
+
+#: gshell/gshell-ui.xml.h:26
+msgid "Zoom _out"
+msgstr "缩小(_O)"
+
+#: gshell/gshell-ui.xml.h:27
+msgid "Zoom to _default"
+msgstr "恢复默认值(_D)"
+
+#: gshell/gshell-ui.xml.h:28
+msgid "Zoom to _fit"
+msgstr "适当缩放"
+
+#: gshell/gshell-ui.xml.h:29
+msgid "_About..."
+msgstr "关于(_A)..."
+
+#: gshell/gshell-ui.xml.h:30
+msgid "_Buffers"
+msgstr "缓冲区(_B)"
+
+#: gshell/gshell-ui.xml.h:31
+msgid "_Close This Window"
+msgstr "关闭该窗口(_W)"
+
+#: gshell/gshell-ui.xml.h:32
+msgid "_File"
+msgstr "文件(_F)"
+
+#: gshell/gshell-ui.xml.h:33
+msgid "_Help"
+msgstr "帮助(_H)"
+
+#: gshell/gshell-ui.xml.h:34
+msgid "_Help on GNOME"
+msgstr "GNOME帮助(_H)"
+
+#: gshell/gshell-ui.xml.h:35
+msgid "_Kill"
+msgstr "撤消(_K)"
+
+#: gshell/gshell-ui.xml.h:36
+msgid "_Load..."
+msgstr "装入(_L)..."
+
+#: gshell/gshell-ui.xml.h:37
+msgid "_One Window"
+msgstr "一个窗口(_O)"
+
+#: gshell/gshell-ui.xml.h:38
+msgid "_Open..."
+msgstr "打开(_O)..."
+
+#: gshell/gshell-ui.xml.h:39
+msgid "_Preferences..."
+msgstr "选项(_P)..."
+
+#: gshell/gshell-ui.xml.h:40
+msgid "_Print"
+msgstr "打印(_P)"
+
+#: gshell/gshell-ui.xml.h:41
+msgid "_Save"
+msgstr "保存(_S)"
+
+#: gshell/gshell-ui.xml.h:42
+msgid "_Settings"
+msgstr "设置(_S)"
+
+#: gshell/gshell-ui.xml.h:43
+msgid "_Split Window"
+msgstr "分裂窗口(_S)"
+
+#: gshell/gshell-ui.xml.h:44
+msgid "_Window"
+msgstr "窗口(_W)"
+
+#: gshell/gshell-ui.xml.h:45
+msgid "_Zoom"
+msgstr "缩放(_Z)"
 
 #: gshell/gshell.c:46
 #, fuzzy
@@ -408,6 +552,10 @@ msgstr "新的缩放级为 %.3g."
 #: gshell/gshell.c:596
 msgid "Set zoom level:"
 msgstr "设置缩放级:"
+
+#: gshell/gshell.c:652
+msgid "Could not initialize Bonobo!"
+msgstr "无法初始化Bonobo!"
 
 #: gshell/inout.c:55
 msgid ""
@@ -446,22 +594,74 @@ msgstr "另存为"
 msgid "Component has no editable properties"
 msgstr "该组件无可编辑属性"
 
-#: monikers/bonobo-moniker-gunzip.c:278 monikers/bonobo-moniker-http.c:111
-#: samples/controls/sample-control-factory.c:59
-msgid "Could not initialize Bonobo"
+#: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
+msgid "Gunzip Moniker factory"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
+msgid "gunzip Moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
+msgid "HTTP Moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
+msgid "Standard Moniker factory"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
+msgid "file MonikerExtender"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
+msgid "generic file moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
+msgid "generic item moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
+msgid "stream MonikerExtender"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
+msgid "Bonobo Echo server factory"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
+msgid "Bonobo Echo server sample program"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
+#, fuzzy
+msgid "Echo component"
+msgstr "启动组件"
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
+#, fuzzy
+msgid "Echo component factory"
+msgstr "启动组件"
+
+#: samples/bonobo-class/echo-client.c:30
+msgid "I could not initialize Bonobo"
 msgstr "无法初始化Bonobo"
 
-#: samples/compound-doc/container/component.c:254
+#: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
-msgstr ""
-
-#: samples/compound-doc/container/container.c:45
-msgid "Sample Bonobo container"
-msgstr ""
-
-#: samples/compound-doc/container/container.c:113
-#, c-format
-msgid "Could not launch Embeddable %s!"
 msgstr ""
 
 #: samples/compound-doc/container/container-filesel.c:18
@@ -476,6 +676,15 @@ msgstr "选择用于添加的可嵌入式组件"
 msgid "Bonobo sample container"
 msgstr ""
 
+#: samples/compound-doc/container/container.c:45
+msgid "Sample Bonobo container"
+msgstr ""
+
+#: samples/compound-doc/container/container.c:113
+#, c-format
+msgid "Could not launch Embeddable %s!"
+msgstr ""
+
 #: samples/compound-doc/container/embeddable-io.c:36
 msgid ""
 "An exception occured while trying to load data into the component with "
@@ -488,69 +697,64 @@ msgid ""
 "PersistStorage"
 msgstr "当尝试使用 PersistStorage 保存组件数据时发生异常"
 
-#: samples/compound-doc/paint-component-simple.c:265
-msgid "Select drawing color..."
-msgstr "选择绘图颜色..."
-
-#: samples/compound-doc/paint-component-simple.c:266
-msgid "Set the current drawing color"
-msgstr "设置当前绘图颜色"
-
-#: samples/compound-doc/paint-component-simple.c:274
-msgid "White"
-msgstr "白色"
-
-#: samples/compound-doc/paint-component-simple.c:275
-msgid "Set the current drawing color to white"
-msgstr "将当前绘图颜色改为白色"
-
-#: samples/compound-doc/paint-component-simple.c:281
-msgid "Red"
-msgstr "红色"
-
-#: samples/compound-doc/paint-component-simple.c:282
-msgid "Set the current drawing color to red"
-msgstr "将当前绘图颜色改为红色"
-
-#: samples/compound-doc/paint-component-simple.c:288
-msgid "Green"
-msgstr "绿色"
-
-#: samples/compound-doc/paint-component-simple.c:289
-msgid "Set the current drawing color to green"
-msgstr "将当前绘图颜色改为绿色"
-
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
 msgstr "选择对象"
 
-#: tests/test-container.c:67 tests/test-container.c:99
+#: tests/test-container.c:65 tests/test-container.c:95
 msgid "Can not activate object_server"
 msgstr "无法激活 object_server"
 
-#: tests/test-container.c:72 tests/test-container.c:104
+#: tests/test-container.c:70 tests/test-container.c:100
 msgid "Can not bind object server to client_site"
 msgstr "无法将 object server 与 client_site 绑定"
 
-#: tests/test-container.c:273
+#: tests/test-container.c:269
 msgid "Can not activate server"
 msgstr "无法激活服务器"
 
-#: tests/test-container.c:323 tests/test-container.c:368
+#: tests/test-container.c:319 tests/test-container.c:364
 msgid "Could not launch bonobo object."
 msgstr "无法启动 bonobo 对象。"
 
-#: tests/test-container.c:566
+#: tests/test-container.c:562
 msgid "Could not launch Embeddable."
 msgstr "无法启动可嵌入式组件。"
 
-#: tests/test-container.c:601
+#: tests/test-container.c:596
 msgid "Could not launch Control."
 msgstr "无法启动控制。"
 
-#: tests/test-container.c:853 tests/test-storage.c:489
+#: tests/test-container.c:848 tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "无法 bonobo_init"
+
+#~ msgid "Could not initialize Bonobo"
+#~ msgstr "无法初始化Bonobo"
+
+#~ msgid "Select drawing color..."
+#~ msgstr "选择绘图颜色..."
+
+#~ msgid "Set the current drawing color"
+#~ msgstr "设置当前绘图颜色"
+
+#~ msgid "White"
+#~ msgstr "白色"
+
+#~ msgid "Set the current drawing color to white"
+#~ msgstr "将当前绘图颜色改为白色"
+
+#~ msgid "Red"
+#~ msgstr "红色"
+
+#~ msgid "Set the current drawing color to red"
+#~ msgstr "将当前绘图颜色改为红色"
+
+#~ msgid "Green"
+#~ msgstr "绿色"
+
+#~ msgid "Set the current drawing color to green"
+#~ msgstr "将当前绘图颜色改为绿色"
 
 #~ msgid "Tiny"
 #~ msgstr "最小"
@@ -575,9 +779,6 @@ msgstr "无法 bonobo_init"
 
 #~ msgid "Game"
 #~ msgstr "游戏"
-
-#~ msgid "Custom size"
-#~ msgstr "自定义尺寸"
 
 #~ msgid "Horizontal:"
 #~ msgstr "水平:"

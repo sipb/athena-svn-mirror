@@ -30,8 +30,12 @@ handle_new (const BonoboAsyncMethod *method,
 	    CORBA_Environment       *ev)
 {
 	BonoboAsyncReply *handle = g_new0 (BonoboAsyncReply, 1);
-	int             i;
+	int             i, num_args = 0;
 	gpointer       *src;
+	BonoboAsyncArg *arg;
+
+	for (arg = (BonoboAsyncArg *) method->arguments; arg && arg->flag; ++arg) 
+		++num_args;
 
 	handle->cb = cb;
 	handle->object = CORBA_Object_duplicate (object, ev);;
@@ -40,7 +44,7 @@ handle_new (const BonoboAsyncMethod *method,
 	handle->request_cnx = ORBit_object_get_connection (object);
 	giop_connection_ref (handle->request_cnx);
 	handle->request_id = GPOINTER_TO_UINT (handle);
-	handle->args = g_new0 (gpointer, method->num_args);
+	handle->args = g_new0 (gpointer, num_args);
 	handle->timeout_usec = timeout_usec;
 
 	/*
@@ -50,11 +54,11 @@ handle_new (const BonoboAsyncMethod *method,
 	 * instead.
 	 */
 	src = args;
-	for (i = 0; i < method->num_args; i++) {
+	for (i = 0; i < num_args; i++) {
 		/* No point in passing inouts by reference. */
-		if (method->flags [i] & BONOBO_ASYNC_IN) {
+		if (method->arguments [i].flag & BONOBO_ASYNC_IN) {
 			handle->args [i] = ORBit_copy_value (
-				*src, method->arg_types [i]);
+				*src, method->arguments [i].type);
 			src++;
 		}
 	}
@@ -74,7 +78,7 @@ got_reply (BonoboAsyncReply *handle)
 static void
 handle_free (BonoboAsyncReply *handle)
 {
-	int i;
+	int i = 0;
 	CORBA_Environment ev;
 
 	got_reply (handle);
@@ -83,9 +87,10 @@ handle_free (BonoboAsyncReply *handle)
 	CORBA_Object_release (handle->object, &ev);
 	CORBA_exception_free (&ev);
 
-	for (i = 0; i < handle->method->num_args; i++) {
+	while (&handle->method->arguments [i] && handle->method->arguments [i].type) {
 		if (handle->args [i])
 			CORBA_free (handle->args [i]);
+		i++;
 	}
 
 	giop_connection_unref (handle->request_cnx);
@@ -247,7 +252,7 @@ typedef struct {
 static void
 bonobo_async_marshal (BonoboAsyncReply *handle)
 {
-	int             namelen, i;
+	int             namelen, i = 0;
 	OpData         *data;
 	struct iovec    vector;
 	GIOPSendBuffer *send_buffer;
@@ -269,10 +274,12 @@ bonobo_async_marshal (BonoboAsyncReply *handle)
 		&vector, &ORBit_default_principal_iovec);
 
 	if (send_buffer) {
-		for (i = 0; i < handle->method->num_args; i++) {
-			if (handle->method->flags [i] & BONOBO_ASYNC_IN)
-				ORBit_marshal_arg (send_buffer, handle->args [i],
-						   handle->method->arg_types [i]);
+		while (&handle->method->arguments [i] && handle->method->arguments [i].type) {
+			if (handle->method->arguments [i].flag & BONOBO_ASYNC_IN)
+				ORBit_marshal_arg (send_buffer, 
+						   handle->args [i],
+						   handle->method->arguments [i].type);
+			i++;
 		}
 
 		g_assert (handle->request_cnx->fd > 0);
@@ -312,7 +319,7 @@ bonobo_async_demarshal (BonoboAsyncReply *handle,
 	gpointer        value, src;
 	CORBA_TypeCode  tc;
 	CORBA_ORB       orb;
-	int             i;
+	int             i = 0;
        
 	g_return_if_fail (handle != NULL);
 	g_return_if_fail (retval != NULL);
@@ -332,11 +339,11 @@ bonobo_async_demarshal (BonoboAsyncReply *handle,
 	_ORBit_copy_value (&src, &retval, tc);
 	CORBA_free (value);
 
-	for (i = 0; i < handle->method->num_args; i++) {
-		tc = handle->method->arg_types [i];
+	while (&handle->method->arguments [i] && handle->method->arguments [i].type) {
+		tc = handle->method->arguments [i].type;
 
 		/* This is sluggish because ORBit_demarshal_value is not public */
-		if (handle->method->flags [i] & BONOBO_ASYNC_OUT) {
+		if (handle->method->arguments [i].flag & BONOBO_ASYNC_OUT) {
 			gpointer dest;
 
 			g_return_if_fail (out_args != NULL);

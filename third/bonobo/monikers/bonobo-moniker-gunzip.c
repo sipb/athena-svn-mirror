@@ -16,8 +16,6 @@
 
 #include "bonobo-moniker-gunzip.h"
 
-static BonoboGenericFactory *gunzip_factory = NULL;
-
 /* Count number of bytes to skip at start of buf */
 static int gz_magic [2] = {0x1f, 0x8b};
 /* gzip flag byte */
@@ -216,7 +214,7 @@ gunzip_resolve_stream (BonoboMoniker               *moniker,
 		
 	memstream = bonobo_stream_mem_create (ob, len, TRUE, FALSE);
 	g_free (ob);
-	out_stream = bonobo_object_corba_objref (BONOBO_OBJECT (memstream));
+	out_stream = BONOBO_OBJREF (memstream);
 
 	bonobo_object_release_unref (in_stream, ev);
 	bonobo_object_release_unref (parent, ev);
@@ -242,53 +240,20 @@ gunzip_resolve (BonoboMoniker *moniker,
 	if (!strcmp (requested_interface, "IDL:Bonobo/Stream:1.0"))
 		return gunzip_resolve_stream (moniker, options, ev);
 	
-	return bonobo_moniker_use_extender ("OAFIID:Bonobo_MonikerExtender_stream",
-					    moniker, options, requested_interface, ev);
+	return bonobo_moniker_use_extender (
+		"OAFIID:Bonobo_MonikerExtender_stream",
+		moniker, options, requested_interface, ev);
 }
 
 static BonoboObject *
 bonobo_moniker_gunzip_factory (BonoboGenericFactory *this, void *closure)
 {
-	return BONOBO_OBJECT (
-		bonobo_moniker_simple_new (
-			"gunzip:", gunzip_resolve));
+	return BONOBO_OBJECT (bonobo_moniker_simple_new ("gunzip:", 
+							 gunzip_resolve));
 }
 
-static void
-last_unref_cb (BonoboObject *bonobo_object,
-	       gpointer      dummy)
-{
-	bonobo_object_unref (BONOBO_OBJECT (gunzip_factory));
-	gtk_main_quit ();
-}
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Moniker_gzip_Factory",
+		    "gunzip-moniker", VERSION,
+		    bonobo_moniker_gunzip_factory,
+		    NULL)
 
-int
-main (int argc, char *argv [])
-{
-	CORBA_Environment ev;
-	CORBA_ORB orb = CORBA_OBJECT_NIL;
-
-	CORBA_exception_init (&ev);
-
-	gnome_init_with_popt_table (
-		"gunzip-moniker", "0.0", argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-
-	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
-		g_error (_("Could not initialize Bonobo"));
-
-	gunzip_factory = bonobo_generic_factory_new (
-		"OAFIID:Bonobo_Moniker_gzipFactory",
-		bonobo_moniker_gunzip_factory, NULL);
-
-	gtk_signal_connect (GTK_OBJECT (bonobo_context_running_get ()),
-			    "last_unref",
-			    GTK_SIGNAL_FUNC (last_unref_cb),
-			    NULL);
-
-	bonobo_main ();
-
-	CORBA_exception_free (&ev);
-
-	return 0;
-}

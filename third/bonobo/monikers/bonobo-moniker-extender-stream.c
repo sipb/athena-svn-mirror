@@ -68,7 +68,7 @@ bonobo_stream_extender_resolve (BonoboMonikerExtender       *extender,
 
 	oaf_requirements = g_strdup_printf (
 		"bonobo:supported_mime_types.has ('%s') AND repo_ids.has ('%s') AND "
-		"repo_ids.has (['IDL:Bonobo/PersistStream:1.0'])",
+		"repo_ids.has ('IDL:Bonobo/PersistStream:1.0')",
 		mime_type, requested_interface);
 		
 	object = oaf_activate (oaf_requirements, NULL, 0, &ret_id, ev);

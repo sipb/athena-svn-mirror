@@ -8,10 +8,11 @@
  */
 #include <config.h>
 #include <stdarg.h>
+#include <libart_lgpl/art_affine.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-print-client.h>
 #include <libgnomeprint/gnome-print-meta.h>
-#include <libart_lgpl/art_affine.h>
+#include <bonobo/bonobo-stream-client.h>
 
 #undef PRINT_DEBUG
 
@@ -19,10 +20,12 @@ void
 bonobo_print_client_render (BonoboPrintClient   *client,
 			    BonoboPrintData     *pd)
 {
-	Bonobo_PrintData       *data;
+	Bonobo_Stream           stream;
 	Bonobo_PrintDimensions *p_dim;
 	Bonobo_PrintScissor    *p_scissor;
 	CORBA_Environment       ev;
+	CORBA_long              len;
+	guint8                 *data;
 
 	g_return_if_fail (pd != NULL);
 	g_return_if_fail (client != NULL);
@@ -40,7 +43,8 @@ bonobo_print_client_render (BonoboPrintClient   *client,
 	p_dim->width  = pd->width;
 	p_dim->height = pd->height;
 
-	data = Bonobo_Print_render (client->corba_print, p_dim, p_scissor, &ev);
+	stream = Bonobo_Print_render (client->corba_print, p_dim,
+				      p_scissor, &ev);
 
 #ifdef PRINT_DEBUG
 	{
@@ -56,18 +60,25 @@ bonobo_print_client_render (BonoboPrintClient   *client,
 	CORBA_free (p_dim);
 	CORBA_free (p_scissor);
 
-	if (data == CORBA_OBJECT_NIL) {
-		g_warning ("Component print returns no data");
-		return;
-	}
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Component print exception");
 		return;
 	}
+	if (stream == CORBA_OBJECT_NIL) {
+		g_warning ("Component print returns no data");
+		return;
+	}
 
-	pd->meta_data = gnome_print_meta_new_from (data->_buffer);
+	data = bonobo_stream_client_read (stream, -1, &len, &ev);
+	if (BONOBO_EX (&ev) || !data)
+		g_warning ("Failed to read print data from stream");
+	else {
+		pd->meta_data = gnome_print_meta_new_from (data);
 
-	CORBA_free (data);
+		g_free (data);
+	}
+
+	bonobo_object_release_unref (stream, &ev);
 
 	CORBA_exception_free (&ev);
 }

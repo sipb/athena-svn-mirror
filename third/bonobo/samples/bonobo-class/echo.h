@@ -24,10 +24,10 @@ typedef struct {
 } EchoClass;
 
 GtkType   	    echo_get_type  (void);
-Echo      	   *echo_construct (Echo *echo, Demo_Echo corba_echo);
+Echo      	   *echo_construct (Echo *echo, Bonobo_Sample_Echo corba_echo);
 Echo      	   *echo_new       (void);
 
-POA_Demo_Echo__epv *echo_get_epv (void);
+POA_Bonobo_Sample_Echo__epv *echo_get_epv (void);
 
 END_GNOME_DECLS
 

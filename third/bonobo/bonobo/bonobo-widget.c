@@ -197,7 +197,7 @@ bonobo_widget_construct_control (BonoboWidget      *bw,
 		return NULL;
 	}
 
-	control = bonobo_object_corba_objref (BONOBO_OBJECT (bw->priv->server));
+	control = BONOBO_OBJREF (bw->priv->server);
 
 	return bonobo_widget_construct_control_from_objref (bw, control, uic);
 }
@@ -316,13 +316,6 @@ bonobo_widget_create_subdoc_object (BonoboWidget      *bw,
 	 */
 	if (!bonobo_client_site_bind_embeddable (bw->priv->client_site, bw->priv->server))
 		return NULL;
-
-	/*
-	 * Add the client site to the container.  This container is
-	 * basically just there as a place holder; this is the only
-	 * client site that will ever be added to it.
-	 */
-	bonobo_item_container_add (bw->priv->container, BONOBO_OBJECT (bw->priv->client_site));
 
 	/*
 	 * Now create a new view for the remote object.
@@ -473,6 +466,15 @@ bonobo_widget_get_server (BonoboWidget *bonobo_widget)
 	g_return_val_if_fail (BONOBO_IS_WIDGET (bonobo_widget), NULL);
 
 	return bonobo_widget->priv->server;
+}
+
+Bonobo_Unknown
+bonobo_widget_get_objref (BonoboWidget *bonobo_widget)
+{
+	g_return_val_if_fail (bonobo_widget != NULL, NULL);
+	g_return_val_if_fail (BONOBO_IS_WIDGET (bonobo_widget), NULL);
+
+	return BONOBO_OBJREF (bonobo_widget->priv->server);
 }
 
 static void

@@ -58,8 +58,6 @@ launch_server (BonoboClientSite *client_site, BonoboItemContainer *container, ch
 {
 	BonoboObjectClient *object_server;
 	
-	bonobo_item_container_add (container, BONOBO_OBJECT (client_site));
-
 	printf ("Launching...\n");
 	object_server = bonobo_object_activate (id, 0);
 	printf ("Return: %p\n", object_server);
@@ -85,8 +83,6 @@ launch_server_moniker (BonoboClientSite    *client_site,
 	char *moniker_name;
 	BonoboObjectClient *object_server;
 	
-	bonobo_item_container_add (container, BONOBO_OBJECT (client_site));
-
 	moniker_name = bonobo_moniker_client_get_name (moniker, ev);
 	printf ("Launching moniker '%s' ...\n", moniker_name);
 	CORBA_free (moniker_name);
@@ -274,7 +270,7 @@ add_cmd_control (Application *app, char *server_id, BonoboControlFrame **control
 		return NULL;
 	}
 
-	corba_control = bonobo_object_corba_objref (BONOBO_OBJECT (server));
+	corba_control = BONOBO_OBJREF (server);
 	bonobo_control_frame_bind_to_control (*control_frame, corba_control);
 	bonobo_control_frame_control_activate (*control_frame);
 
@@ -344,9 +340,9 @@ verb_AddImage_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 		return;
 	}
 	
-	Bonobo_PersistStream_load (
-		persist,
-		(Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)), "", &ev);
+	Bonobo_PersistStream_load (persist, 
+				   (Bonobo_Stream) BONOBO_OBJREF (stream), 
+				   "", &ev);
 
 	Bonobo_Unknown_unref  (persist, &ev);
 	CORBA_Object_release (persist, &ev);
@@ -387,9 +383,8 @@ verb_AddPdf_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 		return;
 	}
 	
-	Bonobo_PersistStream_load (
-		persist,
-		(Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)), "", &ev);
+	Bonobo_PersistStream_load (persist,
+		(Bonobo_Stream) BONOBO_OBJREF (stream), "", &ev);
 
 	Bonobo_Unknown_unref (persist, &ev);
 	CORBA_Object_release (persist, &ev);
@@ -482,7 +477,7 @@ do_add_canvas_cmd (Application *app, gboolean aa)
 		"OAFIID:Bonobo_Sample_CanvasItem");
 
 	if (server == NULL) {
-		g_warning ("Can not activate OAFIID:Bonobo_SampleCanvasItem");
+		g_warning ("Can not activate OAFIID:Bonobo_Sample_CanvasItem");
 		return;
 	}
 	CORBA_exception_init (&ev);
@@ -523,6 +518,7 @@ do_add_canvas_cmd (Application *app, gboolean aa)
 	 */
 	item = bonobo_client_site_new_item (
 		BONOBO_CLIENT_SITE (client_site),
+		app->corba_container,
 		GNOME_CANVAS_GROUP (gnome_canvas_root (GNOME_CANVAS (canvas))));
 
 	gtk_signal_connect (
@@ -593,8 +589,7 @@ verb_AddText_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 	BonoboStream *stream;
 	Bonobo_PersistStream persist;
 
-	object = add_cmd_control (app,
-				  "OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821",
+	object = add_cmd_control (app, "OAFIID:Bonobo_Sample_Text",
 				  &text_control_frame);
 
 	if (object == NULL) {
@@ -623,8 +618,8 @@ verb_AddText_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 		return;
 	}
 	
-	Bonobo_PersistStream_load (
-	     persist, (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)), "", &ev);
+	Bonobo_PersistStream_load (persist, 
+	        (Bonobo_Stream) BONOBO_OBJREF (stream), "", &ev);
 
 	Bonobo_Unknown_unref (persist, &ev);
 	CORBA_Object_release (persist, &ev);
@@ -814,7 +809,7 @@ application_new (void)
 	ui_container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (ui_container, BONOBO_WINDOW (app->app));
 
-	corba_container = bonobo_object_corba_objref (BONOBO_OBJECT (ui_container));
+	corba_container = BONOBO_OBJREF (ui_container);
 	app->corba_container = bonobo_object_dup_ref (corba_container, NULL);
 
 	app->uic = bonobo_ui_component_new ("test-container");

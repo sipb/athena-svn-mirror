@@ -13,7 +13,7 @@
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
 #include <libgnomeui/gnome-canvas.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-item-container.h>
 
@@ -31,7 +31,7 @@ typedef struct _BonoboClientSitePrivate BonoboClientSitePrivate;
 #include <bonobo/bonobo-view-frame.h>
 
 struct _BonoboClientSite {
-	BonoboObject base;
+	BonoboXObject base;
 
 	BonoboItemContainer *container;
 	BonoboObjectClient  *bound_embeddable; /* IDL:Bonobo/Embeddable:1.0 */
@@ -43,7 +43,9 @@ struct _BonoboClientSite {
 };
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
+
+	POA_Bonobo_ClientSite__epv epv;
 
 	void (*show_window)  (BonoboClientSite *, CORBA_boolean shown);
 	void (*queue_resize) (BonoboClientSite *);
@@ -51,10 +53,8 @@ typedef struct {
 } BonoboClientSiteClass;
 
 GtkType                     bonobo_client_site_get_type            (void);
-Bonobo_ClientSite           bonobo_client_site_corba_object_create (BonoboObject        *object);
 BonoboClientSite           *bonobo_client_site_new                 (BonoboItemContainer *container);
 BonoboClientSite           *bonobo_client_site_construct           (BonoboClientSite    *client_site,
-								    Bonobo_ClientSite    corba_client_site,
 								    BonoboItemContainer *container);
 gboolean                    bonobo_client_site_bind_embeddable     (BonoboClientSite    *client_site,
 								    BonoboObjectClient  *object);
@@ -71,12 +71,11 @@ BonoboViewFrame            *bonobo_client_site_new_view_full    (BonoboClientSit
 BonoboViewFrame            *bonobo_client_site_new_view         (BonoboClientSite   *client_site,
 								 Bonobo_UIContainer  uih);
 GnomeCanvasItem            *bonobo_client_site_new_item         (BonoboClientSite   *client_site,
+								 Bonobo_UIContainer  uic,
 								 GnomeCanvasGroup   *group);
 GList                      *bonobo_client_site_get_verbs        (BonoboClientSite   *client_site);
 void                        bonobo_client_site_free_verbs       (GList              *verb_list);
-POA_Bonobo_ClientSite__epv *bonobo_client_site_get_epv          (void);
 
 END_GNOME_DECLS
 
 #endif
-

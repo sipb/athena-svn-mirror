@@ -13,7 +13,6 @@
 #ifndef __GNOME_MAIN_H__
 #define __GNOME_MAIN_H__ 1
 
-#include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
 #include <bonobo/Bonobo.h>
 

@@ -1,6 +1,6 @@
 # Note this is NOT a relocatable thing :)
 %define name		bonobo
-%define ver		0.31
+%define ver		0.36
 %define RELEASE		pre
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr
@@ -143,7 +143,7 @@ fi
 %{prefix}/share/idl/*.idl
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/mime-info/*.keys
-%{prefix}/share/oaf/*.oafinfo
+%{prefix}/share/oaf/*.oaf
 
 %files devel
 

@@ -49,9 +49,9 @@ struct _BonoboPersistFile {
 typedef struct {
 	BonoboPersistClass parent_class;
 
-	/*
-	 * methods
-	 */
+	POA_Bonobo_PersistFile__epv epv;
+
+	/* methods */
 	int   (*load)             (BonoboPersistFile *ps,
 				   const CORBA_char  *filename,
 				   CORBA_Environment *ev);
@@ -66,20 +66,17 @@ typedef struct {
 } BonoboPersistFileClass;
 
 GtkType             bonobo_persist_file_get_type  (void);
-void                bonobo_persist_file_set_dirty (BonoboPersistFile *ps,
-						    gboolean dirty);
+void                bonobo_persist_file_set_dirty (BonoboPersistFile   *ps,
+						   gboolean             dirty);
 
 BonoboPersistFile *bonobo_persist_file_new       (BonoboPersistFileIOFn load_fn,
 						  BonoboPersistFileIOFn save_fn,
-						  void *closure);
+						  void                 *closure);
 
-BonoboPersistFile *bonobo_persist_file_construct (BonoboPersistFile *ps,
-						  Bonobo_PersistFile corba_ps,
+BonoboPersistFile *bonobo_persist_file_construct (BonoboPersistFile    *ps,
 						  BonoboPersistFileIOFn load_fn,
 						  BonoboPersistFileIOFn save_fn,
-						  void *closure);
-
-POA_Bonobo_PersistFile__epv *bonobo_persist_file_get_epv (void);
+						  void                 *closure);
 
 END_GNOME_DECLS
 

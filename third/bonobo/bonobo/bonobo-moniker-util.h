@@ -33,6 +33,10 @@ BonoboObjectClient *bonobo_moniker_client_resolve_client_default (Bonobo_Moniker
 								  const char        *interface_name,
 								  CORBA_Environment *ev);
 
+gboolean            bonobo_moniker_client_equal                  (Bonobo_Moniker     moniker,
+								  const CORBA_char  *name,
+								  CORBA_Environment *opt_ev);
+
 typedef void (*BonoboMonikerAsyncFn) (Bonobo_Unknown     object,
 				      CORBA_Environment *ev,
 				      gpointer           user_data);

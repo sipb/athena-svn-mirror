@@ -6,6 +6,30 @@
 #include "Bonobo.h"
 
 void
+_ORBIT_Bonobo_NotSupported_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+				     CORBA_Environment * ev)
+{
+   CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
+		       TC_Bonobo_NotSupported_struct.repo_id, NULL);
+}
+
+void
+_ORBIT_Bonobo_IOError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+				CORBA_Environment * ev)
+{
+   CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
+		       TC_Bonobo_IOError_struct.repo_id, NULL);
+}
+
+void
+_ORBIT_Bonobo_BadArg_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+			       CORBA_Environment * ev)
+{
+   CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
+		       TC_Bonobo_BadArg_struct.repo_id, NULL);
+}
+
+void
 Bonobo_Unknown_ref(Bonobo_Unknown _obj, CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
@@ -914,6 +938,121 @@ Bonobo_Moniker_resolve(Bonobo_Moniker _obj,
       }
    }
 }
+CORBA_long
+Bonobo_Moniker_equal(Bonobo_Moniker _obj, const CORBA_char * displayName,
+		     CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   CORBA_long _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Moniker__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_Moniker__epv *) _obj->vepv[Bonobo_Moniker__classid])->
+	 equal(_obj->servant, displayName, ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[6];
+      }
+      _ORBIT_operation_name_data =
+      {
+      6, "equal"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 10 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(displayName) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (displayName),
+				     sizeof(displayName[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_retval))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_retval = *((CORBA_long *) _ORBIT_curptr);
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
 Bonobo_Unknown
 Bonobo_MonikerExtender_resolve(Bonobo_MonikerExtender _obj,
 			       const Bonobo_Moniker m,
@@ -1070,949 +1209,6 @@ Bonobo_MonikerExtender_resolve(Bonobo_MonikerExtender _obj,
 				_ORBIT_user_exceptions, _obj->orb);
 	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
 	 return _ORBIT_retval;
-      }
-   }
-}
-Bonobo_Unknown
-Bonobo_ActivationContext_getObject(Bonobo_ActivationContext _obj,
-				   const CORBA_char * name,
-				   const CORBA_char * repoId,
-				   CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-   Bonobo_Unknown _ORBIT_retval;
-
-   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
-      _ORBIT_retval =
-	 ((POA_Bonobo_ActivationContext__epv *) _obj->
-	  vepv[Bonobo_ActivationContext__classid])->getObject(_obj->servant,
-							      name, repoId,
-							      ev);
-      return _ORBIT_retval;
-   }
-   if (0)
-      return *(&_ORBIT_retval);
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[10];
-      }
-      _ORBIT_operation_name_data =
-      {
-      10, "getObject"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 14 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(name) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (name),
-				     sizeof(name[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      _ORBIT_tmpvar_3 = strlen(repoId) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_3));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (repoId),
-				     sizeof(repoId[_ORBIT_tmpvar_2]) *
-				     _ORBIT_tmpvar_3);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return _ORBIT_retval;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return _ORBIT_retval;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return _ORBIT_retval;
-      }
-   }
-}
-Bonobo_Moniker
-Bonobo_ActivationContext_createFromName(Bonobo_ActivationContext _obj,
-					const CORBA_char * name,
-					CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-   Bonobo_Moniker _ORBIT_retval;
-
-   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
-      _ORBIT_retval =
-	 ((POA_Bonobo_ActivationContext__epv *) _obj->
-	  vepv[Bonobo_ActivationContext__classid])->createFromName(_obj->
-								   servant,
-								   name, ev);
-      return _ORBIT_retval;
-   }
-   if (0)
-      return *(&_ORBIT_retval);
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[15];
-      }
-      _ORBIT_operation_name_data =
-      {
-      15, "createFromName"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 19 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(name) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (name),
-				     sizeof(name[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return _ORBIT_retval;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return _ORBIT_retval;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return _ORBIT_retval;
-      }
-   }
-}
-Bonobo_Moniker
-Bonobo_ActivationContext_createWithParent(Bonobo_ActivationContext _obj,
-					  const Bonobo_Moniker optParent,
-					  const CORBA_char * name,
-					  CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-   Bonobo_Moniker _ORBIT_retval;
-
-   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
-      _ORBIT_retval =
-	 ((POA_Bonobo_ActivationContext__epv *) _obj->
-	  vepv[Bonobo_ActivationContext__classid])->createWithParent(_obj->
-								     servant,
-								     optParent,
-								     name,
-								     ev);
-      return _ORBIT_retval;
-   }
-   if (0)
-      return *(&_ORBIT_retval);
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[17];
-      }
-      _ORBIT_operation_name_data =
-      {
-      17, "createWithParent"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 21 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      ORBit_marshal_object(_ORBIT_send_buffer, optParent);
-      _ORBIT_tmpvar_1 = strlen(name) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (name),
-				     sizeof(name[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return _ORBIT_retval;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return _ORBIT_retval;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return _ORBIT_retval;
-      }
-   }
-}
-Bonobo_MonikerExtender
-Bonobo_ActivationContext_getExtender(Bonobo_ActivationContext _obj,
-				     const CORBA_char * monikerPrefix,
-				     const CORBA_char * interfaceId,
-				     CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-   Bonobo_MonikerExtender _ORBIT_retval;
-
-   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
-      _ORBIT_retval =
-	 ((POA_Bonobo_ActivationContext__epv *) _obj->
-	  vepv[Bonobo_ActivationContext__classid])->getExtender(_obj->servant,
-								monikerPrefix,
-								interfaceId,
-								ev);
-      return _ORBIT_retval;
-   }
-   if (0)
-      return *(&_ORBIT_retval);
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[12];
-      }
-      _ORBIT_operation_name_data =
-      {
-      12, "getExtender"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 16 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(monikerPrefix) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (monikerPrefix),
-				     sizeof(monikerPrefix[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      _ORBIT_tmpvar_3 = strlen(interfaceId) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_3));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (interfaceId),
-				     sizeof(interfaceId[_ORBIT_tmpvar_2]) *
-				     _ORBIT_tmpvar_3);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 _ORBIT_retval =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				   connection->orb_data);
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return _ORBIT_retval;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return _ORBIT_retval;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return _ORBIT_retval;
-      }
-   }
-}
-void
-Bonobo_RunningContext_addObject(Bonobo_RunningContext _obj,
-				const CORBA_Object object,
-				CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-
-   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
-      
-	 ((POA_Bonobo_RunningContext__epv *) _obj->
-       vepv[Bonobo_RunningContext__classid])->addObject(_obj->servant, object,
-							ev);
-      return;
-   }
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[10];
-      }
-      _ORBIT_operation_name_data =
-      {
-      10, "addObject"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 14 };
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      ORBit_marshal_object(_ORBIT_send_buffer, object);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-      } else {
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return;
-      }
-   }
-}
-void
-Bonobo_RunningContext_removeObject(Bonobo_RunningContext _obj,
-				   const CORBA_Object object,
-				   CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-
-   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
-      
-	 ((POA_Bonobo_RunningContext__epv *) _obj->
-       vepv[Bonobo_RunningContext__classid])->removeObject(_obj->servant,
-							   object, ev);
-      return;
-   }
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[13];
-      }
-      _ORBIT_operation_name_data =
-      {
-      13, "removeObject"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 17 };
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      ORBit_marshal_object(_ORBIT_send_buffer, object);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-      } else {
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return;
-      }
-   }
-}
-void
-Bonobo_RunningContext_addKey(Bonobo_RunningContext _obj,
-			     const CORBA_char * key, CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-
-   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
-      
-	 ((POA_Bonobo_RunningContext__epv *) _obj->
-       vepv[Bonobo_RunningContext__classid])->addKey(_obj->servant, key, ev);
-      return;
-   }
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[7];
-      }
-      _ORBIT_operation_name_data =
-      {
-      7, "addKey"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 11 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(key) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (key),
-				     sizeof(key[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-      } else {
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return;
-      }
-   }
-}
-void
-Bonobo_RunningContext_removeKey(Bonobo_RunningContext _obj,
-				const CORBA_char * key,
-				CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-
-   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
-      
-	 ((POA_Bonobo_RunningContext__epv *) _obj->
-       vepv[Bonobo_RunningContext__classid])->removeKey(_obj->servant, key,
-							ev);
-      return;
-   }
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[10];
-      }
-      _ORBIT_operation_name_data =
-      {
-      10, "removeKey"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 14 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(key) + 1;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (key),
-				     sizeof(key[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-      } else {
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return;
       }
    }
 }
@@ -2429,6 +1625,7 @@ Bonobo_Stream_read(Bonobo_Stream _obj, const CORBA_long count,
 	    (*((guint32 *) & (((**buffer))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**buffer))._maximum = ((**buffer))._length;
 	 
 	    ((**buffer))._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf(((**buffer))._length);
@@ -2443,6 +1640,7 @@ Bonobo_Stream_read(Bonobo_Stream _obj, const CORBA_long count,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**buffer))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**buffer))._maximum = ((**buffer))._length;
 	 
 	    ((**buffer))._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf(((**buffer))._length);
@@ -4045,6 +3243,7 @@ Bonobo_Storage_listContents(Bonobo_Storage _obj, const CORBA_char * path,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_StorageInfo_allocbuf((*_ORBIT_retval).
@@ -4097,6 +3296,7 @@ Bonobo_Storage_listContents(Bonobo_Storage _obj, const CORBA_char * path,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_StorageInfo_allocbuf((*_ORBIT_retval).
@@ -4614,22 +3814,1041 @@ Bonobo_Storage_revert(Bonobo_Storage _obj, CORBA_Environment * ev)
       }
    }
 }
-void
-_ORBIT_Bonobo_NotSupported_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+Bonobo_Unknown
+Bonobo_ActivationContext_getObject(Bonobo_ActivationContext _obj,
+				   const CORBA_char * name,
+				   const CORBA_char * repoId,
+				   CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_Unknown _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_ActivationContext__epv *) _obj->
+	  vepv[Bonobo_ActivationContext__classid])->getObject(_obj->servant,
+							      name, repoId,
+							      ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[10];
+      }
+      _ORBIT_operation_name_data =
+      {
+      10, "getObject"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 14 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (name),
+				     sizeof(name[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      _ORBIT_tmpvar_3 = strlen(repoId) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_3));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (repoId),
+				     sizeof(repoId[_ORBIT_tmpvar_2]) *
+				     _ORBIT_tmpvar_3);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+Bonobo_Moniker
+Bonobo_ActivationContext_createFromName(Bonobo_ActivationContext _obj,
+					const CORBA_char * name,
+					CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_Moniker _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_ActivationContext__epv *) _obj->
+	  vepv[Bonobo_ActivationContext__classid])->createFromName(_obj->
+								   servant,
+								   name, ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[15];
+      }
+      _ORBIT_operation_name_data =
+      {
+      15, "createFromName"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 19 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (name),
+				     sizeof(name[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+Bonobo_Moniker
+Bonobo_ActivationContext_createWithParent(Bonobo_ActivationContext _obj,
+					  const Bonobo_Moniker optParent,
+					  const CORBA_char * name,
+					  CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_Moniker _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_ActivationContext__epv *) _obj->
+	  vepv[Bonobo_ActivationContext__classid])->createWithParent(_obj->
+								     servant,
+								     optParent,
+								     name,
+								     ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[17];
+      }
+      _ORBIT_operation_name_data =
+      {
+      17, "createWithParent"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 21 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      ORBit_marshal_object(_ORBIT_send_buffer, optParent);
+      _ORBIT_tmpvar_1 = strlen(name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (name),
+				     sizeof(name[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+Bonobo_MonikerExtender
+Bonobo_ActivationContext_getExtender(Bonobo_ActivationContext _obj,
+				     const CORBA_char * monikerPrefix,
+				     const CORBA_char * interfaceId,
 				     CORBA_Environment * ev)
 {
-   CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
-		       TC_Bonobo_NotSupported_struct.repo_id, NULL);
-}
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_MonikerExtender _ORBIT_retval;
 
+   if (_obj->servant && _obj->vepv && Bonobo_ActivationContext__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_ActivationContext__epv *) _obj->
+	  vepv[Bonobo_ActivationContext__classid])->getExtender(_obj->servant,
+								monikerPrefix,
+								interfaceId,
+								ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[12];
+      }
+      _ORBIT_operation_name_data =
+      {
+      12, "getExtender"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(monikerPrefix) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (monikerPrefix),
+				     sizeof(monikerPrefix[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      _ORBIT_tmpvar_3 = strlen(interfaceId) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_3));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (interfaceId),
+				     sizeof(interfaceId[_ORBIT_tmpvar_2]) *
+				     _ORBIT_tmpvar_3);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
 void
-_ORBIT_Bonobo_IOError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+Bonobo_RunningContext_addObject(Bonobo_RunningContext _obj,
+				const CORBA_Object object,
 				CORBA_Environment * ev)
 {
-   CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
-		       TC_Bonobo_IOError_struct.repo_id, NULL);
-}
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
 
+   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
+      
+	 ((POA_Bonobo_RunningContext__epv *) _obj->
+       vepv[Bonobo_RunningContext__classid])->addObject(_obj->servant, object,
+							ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[10];
+      }
+      _ORBIT_operation_name_data =
+      {
+      10, "addObject"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 14 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      ORBit_marshal_object(_ORBIT_send_buffer, object);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_RunningContext_removeObject(Bonobo_RunningContext _obj,
+				   const CORBA_Object object,
+				   CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
+      
+	 ((POA_Bonobo_RunningContext__epv *) _obj->
+       vepv[Bonobo_RunningContext__classid])->removeObject(_obj->servant,
+							   object, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[13];
+      }
+      _ORBIT_operation_name_data =
+      {
+      13, "removeObject"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 17 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      ORBit_marshal_object(_ORBIT_send_buffer, object);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_RunningContext_addKey(Bonobo_RunningContext _obj,
+			     const CORBA_char * key, CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
+      
+	 ((POA_Bonobo_RunningContext__epv *) _obj->
+       vepv[Bonobo_RunningContext__classid])->addKey(_obj->servant, key, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[7];
+      }
+      _ORBIT_operation_name_data =
+      {
+      7, "addKey"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 11 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(key) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (key),
+				     sizeof(key[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_RunningContext_removeKey(Bonobo_RunningContext _obj,
+				const CORBA_char * key,
+				CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
+      
+	 ((POA_Bonobo_RunningContext__epv *) _obj->
+       vepv[Bonobo_RunningContext__classid])->removeKey(_obj->servant, key,
+							ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[10];
+      }
+      _ORBIT_operation_name_data =
+      {
+      10, "removeKey"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 14 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(key) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (key),
+				     sizeof(key[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_RunningContext_atExitUnref(Bonobo_RunningContext _obj,
+				  const CORBA_Object object,
+				  CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_RunningContext__classid) {
+      
+	 ((POA_Bonobo_RunningContext__epv *) _obj->
+       vepv[Bonobo_RunningContext__classid])->atExitUnref(_obj->servant,
+							  object, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[12];
+      }
+      _ORBIT_operation_name_data =
+      {
+      12, "atExitUnref"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      ORBit_marshal_object(_ORBIT_send_buffer, object);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
 void
 _ORBIT_Bonobo_Persist_WrongDataType_demarshal(GIOPRecvBuffer *
 					      _ORBIT_recv_buffer,
@@ -4721,6 +4940,7 @@ Bonobo_Persist_getContentTypes(Bonobo_Persist _obj, CORBA_Environment * ev)
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Persist_ContentType_allocbuf(
@@ -4749,6 +4969,7 @@ Bonobo_Persist_getContentTypes(Bonobo_Persist _obj, CORBA_Environment * ev)
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Persist_ContentType_allocbuf(
@@ -9559,6 +9780,203 @@ Bonobo_Property_getFlags(Bonobo_Property _obj, CORBA_Environment * ev)
       }
    }
 }
+Bonobo_EventSource_ListenerId
+Bonobo_Property_addListener(Bonobo_Property _obj, const Bonobo_Listener l,
+			    CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_EventSource_ListenerId _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Property__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_Property__epv *) _obj->vepv[Bonobo_Property__classid])->
+	 addListener(_obj->servant, l, ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[12];
+      }
+      _ORBIT_operation_name_data =
+      {
+      12, "addListener"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      ORBit_marshal_object(_ORBIT_send_buffer, l);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_retval))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_retval = *((Bonobo_EventSource_ListenerId *) _ORBIT_curptr);
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+void
+Bonobo_Property_removeListener(Bonobo_Property _obj,
+			       const Bonobo_EventSource_ListenerId id,
+			       CORBA_Environment * ev)
+{
+   static const ORBit_exception_demarshal_info _ORBIT_user_exceptions[] =
+      { {(const CORBA_TypeCode) &TC_Bonobo_EventSource_UnknownListener_struct,
+	 (gpointer) _ORBIT_Bonobo_EventSource_UnknownListener_demarshal},
+      {CORBA_OBJECT_NIL, NULL} };
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Property__classid) {
+      
+	 ((POA_Bonobo_Property__epv *) _obj->vepv[Bonobo_Property__classid])->
+	 removeListener(_obj->servant, id, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[15];
+      }
+      _ORBIT_operation_name_data =
+      {
+      15, "removeListener"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 19 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(id), sizeof(id));
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev,
+				_ORBIT_user_exceptions, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
 Bonobo_PropertyList *
 Bonobo_PropertyBag_getProperties(Bonobo_PropertyBag _obj,
 				 CORBA_Environment * ev)
@@ -9632,6 +10050,7 @@ Bonobo_PropertyBag_getProperties(Bonobo_PropertyBag _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Property_allocbuf((*_ORBIT_retval)._length);
@@ -9652,6 +10071,7 @@ Bonobo_PropertyBag_getProperties(Bonobo_PropertyBag _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Property_allocbuf((*_ORBIT_retval)._length);
@@ -9907,6 +10327,7 @@ Bonobo_PropertyBag_getPropertyNames(Bonobo_PropertyBag _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval)._length);
@@ -9933,6 +10354,7 @@ Bonobo_PropertyBag_getPropertyNames(Bonobo_PropertyBag _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval)._length);
@@ -10198,6 +10620,7 @@ Bonobo_PropertyBag_getValues(Bonobo_PropertyBag _obj, CORBA_Environment * ev)
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Pair_allocbuf((*_ORBIT_retval)._length);
@@ -10232,6 +10655,7 @@ Bonobo_PropertyBag_getValues(Bonobo_PropertyBag _obj, CORBA_Environment * ev)
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_Pair_allocbuf((*_ORBIT_retval)._length);
@@ -10260,6 +10684,111 @@ Bonobo_PropertyBag_getValues(Bonobo_PropertyBag _obj, CORBA_Environment * ev)
 	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
 	 }
 
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+Bonobo_EventSource
+Bonobo_PropertyBag_getEventSource(Bonobo_PropertyBag _obj,
+				  CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_EventSource _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_PropertyBag__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_PropertyBag__epv *) _obj->
+	  vepv[Bonobo_PropertyBag__classid])->getEventSource(_obj->servant,
+							     ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[15];
+      }
+      _ORBIT_operation_name_data =
+      {
+      15, "getEventSource"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 19 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
       return _ORBIT_retval;
@@ -10788,6 +11317,95 @@ Bonobo_ControlFrame_getUIHandler(Bonobo_ControlFrame _obj,
 	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
 	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
 	 return _ORBIT_retval;
+      }
+   }
+}
+void
+Bonobo_ControlFrame_unImplemented(Bonobo_ControlFrame _obj,
+				  CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_ControlFrame__classid) {
+      
+	 ((POA_Bonobo_ControlFrame__epv *) _obj->
+       vepv[Bonobo_ControlFrame__classid])->unImplemented(_obj->servant, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[14];
+      }
+      _ORBIT_operation_name_data =
+      {
+      14, "unImplemented"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 18 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
       }
    }
 }
@@ -11647,6 +12265,105 @@ Bonobo_Control_unrealize(Bonobo_Control _obj, CORBA_Environment * ev)
 	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
 	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
 	 return;
+      }
+   }
+}
+CORBA_boolean
+Bonobo_Control_focus(Bonobo_Control _obj,
+		     const Bonobo_Control_FocusDirection direction,
+		     CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   CORBA_boolean _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Control__classid) {
+      _ORBIT_retval =
+	 ((POA_Bonobo_Control__epv *) _obj->vepv[Bonobo_Control__classid])->
+	 focus(_obj->servant, direction, ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[6];
+      }
+      _ORBIT_operation_name_data =
+      {
+      6, "focus"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 10 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(direction), sizeof(direction));
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
+      } else {
+	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
       }
    }
 }
@@ -12739,6 +13456,7 @@ Bonobo_Zoomable__get_preferredLevels(Bonobo_Zoomable _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_ZoomLevel_allocbuf((*_ORBIT_retval).
@@ -12755,6 +13473,7 @@ Bonobo_Zoomable__get_preferredLevels(Bonobo_Zoomable _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_ZoomLevel_allocbuf((*_ORBIT_retval).
@@ -12866,6 +13585,7 @@ Bonobo_Zoomable__get_preferredLevelNames(Bonobo_Zoomable _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_ZoomLevelName_allocbuf((*_ORBIT_retval).
@@ -12893,6 +13613,7 @@ Bonobo_Zoomable__get_preferredLevelNames(Bonobo_Zoomable _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_Bonobo_ZoomLevelName_allocbuf((*_ORBIT_retval).
@@ -13352,7 +14073,7 @@ Bonobo_Zoomable_setFrame(Bonobo_Zoomable _obj,
       }
    }
 }
-Bonobo_ItemContainer_ObjectList *
+Bonobo_ItemContainer_ObjectNames *
 Bonobo_ItemContainer_enumObjects(Bonobo_ItemContainer _obj,
 				 CORBA_Environment * ev)
 {
@@ -13362,8 +14083,10 @@ Bonobo_ItemContainer_enumObjects(Bonobo_ItemContainer _obj,
    register GIOPSendBuffer *_ORBIT_send_buffer;
    register GIOPRecvBuffer *_ORBIT_recv_buffer;
    register GIOPConnection *_cnx;
-   Bonobo_ItemContainer_ObjectList *_ORBIT_retval;
-   register CORBA_unsigned_long _ORBIT_tmpvar_1;
+   Bonobo_ItemContainer_ObjectNames *_ORBIT_retval;
+   register CORBA_unsigned_long _ORBIT_tmpvar_3;
+   register CORBA_unsigned_long _ORBIT_tmpvar_4;
+   CORBA_unsigned_long _ORBIT_tmpvar_5;
 
    if (_obj->servant && _obj->vepv && Bonobo_ItemContainer__classid) {
       _ORBIT_retval =
@@ -13417,7 +14140,7 @@ Bonobo_ItemContainer_enumObjects(Bonobo_ItemContainer _obj,
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
 	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_retval = Bonobo_ItemContainer_ObjectList__alloc();
+      _ORBIT_retval = Bonobo_ItemContainer_ObjectNames__alloc();
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -13425,40 +14148,52 @@ Bonobo_ItemContainer_enumObjects(Bonobo_ItemContainer _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
-	    CORBA_sequence_Bonobo_Unknown_allocbuf((*_ORBIT_retval)._length);
+	    CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval)._length);
 	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_1 = 0; _ORBIT_tmpvar_1 < (*_ORBIT_retval)._length;
-	      _ORBIT_tmpvar_1++) {
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 for (_ORBIT_tmpvar_3 = 0; _ORBIT_tmpvar_3 < (*_ORBIT_retval)._length;
+	      _ORBIT_tmpvar_3++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1] =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	       (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_3] = CORBA_string_alloc(_ORBIT_tmpvar_5);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
+		   sizeof((*_ORBIT_retval).
+			  _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+		   _ORBIT_tmpvar_5);
+	    _ORBIT_curptr +=
+	       sizeof((*_ORBIT_retval).
+		      _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+	       _ORBIT_tmpvar_5;
 	 }
 
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
-	    CORBA_sequence_Bonobo_Unknown_allocbuf((*_ORBIT_retval)._length);
+	    CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval)._length);
 	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_1 = 0; _ORBIT_tmpvar_1 < (*_ORBIT_retval)._length;
-	      _ORBIT_tmpvar_1++) {
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1] =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	 for (_ORBIT_tmpvar_3 = 0; _ORBIT_tmpvar_3 < (*_ORBIT_retval)._length;
+	      _ORBIT_tmpvar_3++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_3] = CORBA_string_alloc(_ORBIT_tmpvar_5);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
+		   sizeof((*_ORBIT_retval).
+			  _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+		   _ORBIT_tmpvar_5);
+	    _ORBIT_curptr +=
+	       sizeof((*_ORBIT_retval).
+		      _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+	       _ORBIT_tmpvar_5;
 	 }
 
       }
@@ -14154,6 +14889,7 @@ Bonobo_Canvas_Component_update(Bonobo_Canvas_Component _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval).utiles._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval).utiles._maximum = (*_ORBIT_retval).utiles._length;
 	 
 	    (*_ORBIT_retval).utiles._buffer =
 	    CORBA_sequence_Bonobo_Canvas_int32_allocbuf((*_ORBIT_retval).
@@ -14190,6 +14926,7 @@ Bonobo_Canvas_Component_update(Bonobo_Canvas_Component _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval).utiles._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval).utiles._maximum = (*_ORBIT_retval).utiles._length;
 	 
 	    (*_ORBIT_retval).utiles._buffer =
 	    CORBA_sequence_Bonobo_Canvas_int32_allocbuf((*_ORBIT_retval).
@@ -14841,6 +15578,7 @@ Bonobo_Canvas_Component_render(Bonobo_Canvas_Component _obj,
 	    (*((guint32 *) & ((*buf).rgb_buf._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*buf).rgb_buf._maximum = (*buf).rgb_buf._length;
 	 (*buf).rgb_buf._buffer = CORBA_sequence_CORBA_octet_allocbuf((*buf).rgb_buf._length);
 	 (*buf).rgb_buf._release = CORBA_TRUE;
 	 memcpy((*buf).rgb_buf._buffer, _ORBIT_curptr,
@@ -14878,6 +15616,7 @@ Bonobo_Canvas_Component_render(Bonobo_Canvas_Component _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*buf).rgb_buf._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*buf).rgb_buf._maximum = (*buf).rgb_buf._length;
 	 (*buf).rgb_buf._buffer = CORBA_sequence_CORBA_octet_allocbuf((*buf).rgb_buf._length);
 	 (*buf).rgb_buf._release = CORBA_TRUE;
 	 memcpy((*buf).rgb_buf._buffer, _ORBIT_curptr,
@@ -15659,8 +16398,102 @@ Bonobo_Canvas_Component_setBounds(Bonobo_Canvas_Component _obj,
       }
    }
 }
-Bonobo_UIComponent
-Bonobo_Canvas_Component_getUIComponent(Bonobo_Canvas_Component _obj,
+void
+Bonobo_Canvas_ComponentProxy_requestUpdate(Bonobo_Canvas_ComponentProxy _obj,
+					   CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Canvas_ComponentProxy__classid) {
+      
+	 ((POA_Bonobo_Canvas_ComponentProxy__epv *) _obj->
+       vepv[Bonobo_Canvas_ComponentProxy__classid])->requestUpdate(_obj->
+								   servant,
+								   ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[14];
+      }
+      _ORBIT_operation_name_data =
+      {
+      14, "requestUpdate"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 18 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_Canvas_ComponentProxy_grabFocus(Bonobo_Canvas_ComponentProxy _obj,
+				       const CORBA_unsigned_long mask,
+				       const CORBA_long cursor,
+				       const CORBA_unsigned_long time,
 				       CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
@@ -15669,14 +16502,209 @@ Bonobo_Canvas_Component_getUIComponent(Bonobo_Canvas_Component _obj,
    register GIOPSendBuffer *_ORBIT_send_buffer;
    register GIOPRecvBuffer *_ORBIT_recv_buffer;
    register GIOPConnection *_cnx;
-   Bonobo_UIComponent _ORBIT_retval;
 
-   if (_obj->servant && _obj->vepv && Bonobo_Canvas_Component__classid) {
+   if (_obj->servant && _obj->vepv && Bonobo_Canvas_ComponentProxy__classid) {
+      
+	 ((POA_Bonobo_Canvas_ComponentProxy__epv *) _obj->
+       vepv[Bonobo_Canvas_ComponentProxy__classid])->grabFocus(_obj->servant,
+							       mask, cursor,
+							       time, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[10];
+      }
+      _ORBIT_operation_name_data =
+      {
+      10, "grabFocus"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 14 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(mask), sizeof(mask));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(cursor), sizeof(cursor));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(time), sizeof(time));
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+void
+Bonobo_Canvas_ComponentProxy_ungrabFocus(Bonobo_Canvas_ComponentProxy _obj,
+					 const CORBA_unsigned_long time,
+					 CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Canvas_ComponentProxy__classid) {
+      
+	 ((POA_Bonobo_Canvas_ComponentProxy__epv *) _obj->
+       vepv[Bonobo_Canvas_ComponentProxy__classid])->ungrabFocus(_obj->
+								 servant,
+								 time, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[12];
+      }
+      _ORBIT_operation_name_data =
+      {
+      12, "ungrabFocus"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(time), sizeof(time));
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+      } else {
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return;
+      }
+   }
+}
+Bonobo_UIContainer
+Bonobo_Canvas_ComponentProxy_getUIContainer(Bonobo_Canvas_ComponentProxy _obj,
+					    CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   Bonobo_UIContainer _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv && Bonobo_Canvas_ComponentProxy__classid) {
       _ORBIT_retval =
-	 ((POA_Bonobo_Canvas_Component__epv *) _obj->
-	  vepv[Bonobo_Canvas_Component__classid])->getUIComponent(_obj->
-								  servant,
-								  ev);
+	 ((POA_Bonobo_Canvas_ComponentProxy__epv *) _obj->
+	  vepv[Bonobo_Canvas_ComponentProxy__classid])->getUIContainer(_obj->
+								       servant,
+								       ev);
       return _ORBIT_retval;
    }
    if (0)
@@ -15695,7 +16723,7 @@ Bonobo_Canvas_Component_getUIComponent(Bonobo_Canvas_Component _obj,
       }
       _ORBIT_operation_name_data =
       {
-      15, "getUIComponent"};
+      15, "getUIContainer"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 19 };
 
@@ -15762,135 +16790,6 @@ Bonobo_Canvas_Component_getUIComponent(Bonobo_Canvas_Component _obj,
 	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
 	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
 	 return _ORBIT_retval;
-      }
-   }
-}
-void
-Bonobo_Canvas_ComponentProxy_updateArea(Bonobo_Canvas_ComponentProxy _obj,
-					const Bonobo_Canvas_ArtUTA * uta,
-					CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-
-   if (_obj->servant && _obj->vepv && Bonobo_Canvas_ComponentProxy__classid) {
-      
-	 ((POA_Bonobo_Canvas_ComponentProxy__epv *) _obj->
-       vepv[Bonobo_Canvas_ComponentProxy__classid])->updateArea(_obj->servant,
-								uta, ev);
-      return;
-   }
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[11];
-      }
-      _ORBIT_operation_name_data =
-      {
-      11, "updateArea"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 15 };
-      register CORBA_unsigned_long _ORBIT_tmpvar_0;
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 2);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*uta).x0), sizeof((*uta).x0));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*uta).y0), sizeof((*uta).y0));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*uta).width), sizeof((*uta).width));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*uta).height), sizeof((*uta).height));
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof((*uta).utiles._length));
-	 memcpy(_ORBIT_t, &((*uta).utiles._length),
-		sizeof((*uta).utiles._length));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof((*uta).utiles._length));
-      }
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t =
-	    alloca(sizeof((*uta).utiles._buffer[_ORBIT_tmpvar_0]) *
-		   (*uta).utiles._length);
-	    memcpy(_ORBIT_t, ((*uta).utiles._buffer),
-		   sizeof((*uta).utiles._buffer[_ORBIT_tmpvar_0]) *
-		   (*uta).utiles._length);
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof((*uta).utiles.
-					       _buffer[_ORBIT_tmpvar_0]) *
-					(*uta).utiles._length);
-      }
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-      } else {
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return;
       }
    }
 }
@@ -17128,7 +18027,7 @@ Bonobo_Embeddable_createCanvasItem(Bonobo_Embeddable _obj,
       }
    }
 }
-Bonobo_PrintData *
+Bonobo_Stream
 Bonobo_Print_render(Bonobo_Print _obj, const Bonobo_PrintDimensions * pd,
 		    const Bonobo_PrintScissor * scissor,
 		    CORBA_Environment * ev)
@@ -17139,8 +18038,7 @@ Bonobo_Print_render(Bonobo_Print _obj, const Bonobo_PrintDimensions * pd,
    register GIOPSendBuffer *_ORBIT_send_buffer;
    register GIOPRecvBuffer *_ORBIT_recv_buffer;
    register GIOPConnection *_cnx;
-   Bonobo_PrintData *_ORBIT_retval;
-   register CORBA_unsigned_long _ORBIT_tmpvar_1;
+   Bonobo_Stream _ORBIT_retval;
 
    if (_obj->servant && _obj->vepv && Bonobo_Print__classid) {
       _ORBIT_retval =
@@ -17199,38 +18097,21 @@ Bonobo_Print_render(Bonobo_Print _obj, const Bonobo_PrintDimensions * pd,
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
 	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_retval = Bonobo_PrintData__alloc();
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 
-	    (*_ORBIT_retval)._buffer =
-	    CORBA_sequence_CORBA_char_allocbuf((*_ORBIT_retval)._length);
-	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 memcpy((*_ORBIT_retval)._buffer, _ORBIT_curptr,
-		sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1]) *
-		(*_ORBIT_retval)._length);
-	 _ORBIT_curptr +=
-	    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1]) *
-	    (*_ORBIT_retval)._length;
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 
-	    (*_ORBIT_retval)._buffer =
-	    CORBA_sequence_CORBA_char_allocbuf((*_ORBIT_retval)._length);
-	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 memcpy((*_ORBIT_retval)._buffer, _ORBIT_curptr,
-		sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1]) *
-		(*_ORBIT_retval)._length);
-	 _ORBIT_curptr +=
-	    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_1]) *
-	    (*_ORBIT_retval)._length;
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 _ORBIT_retval =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				   connection->orb_data);
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
       return _ORBIT_retval;

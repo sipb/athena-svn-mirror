@@ -184,8 +184,13 @@ item_set_want_label_cb (BonoboUIToolbarItem *item,
 			void *data)
 {
 	BonoboUIToolbar *toolbar;
+	BonoboUIToolbarPrivate *priv;
 
 	toolbar = BONOBO_UI_TOOLBAR (data);
+	priv = toolbar->priv;
+
+	set_attributes_on_child (item, priv->orientation, priv->style);
+
 	gtk_widget_queue_resize (GTK_WIDGET (toolbar));
 }
 
@@ -727,7 +732,6 @@ impl_finalize (GtkObject *object)
 {
 	BonoboUIToolbar *toolbar;
 	BonoboUIToolbarPrivate *priv;
-	GList *p;
 
 	toolbar = BONOBO_UI_TOOLBAR (object);
 	priv = toolbar->priv;
@@ -736,6 +740,9 @@ impl_finalize (GtkObject *object)
 	priv->items = NULL;
 	
 	g_free (priv);
+
+	if (GTK_OBJECT_CLASS (parent_class)->finalize != NULL)
+		GTK_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 
@@ -1143,17 +1150,22 @@ static void
 init (BonoboUIToolbar *toolbar)
 {
 	BonoboUIToolbarPrivate *priv;
+	BonoboUIToolbarStyle style;
 
 	GTK_WIDGET_SET_FLAGS (toolbar, GTK_NO_WINDOW);
 	GTK_WIDGET_UNSET_FLAGS (toolbar, GTK_CAN_FOCUS);
 
 	priv = g_new (BonoboUIToolbarPrivate, 1);
 
+	style = gnome_preferences_get_toolbar_labels ()
+		? BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT
+		: BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY;
+
 	priv->orientation                 = GTK_ORIENTATION_HORIZONTAL;
 	priv->is_floating		  = FALSE;
-	priv->style                       = BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT;
-	priv->hstyle                      = BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT;
-	priv->vstyle                      = BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT;
+	priv->style                       = style;
+	priv->hstyle                      = style;
+	priv->vstyle                      = style;
 	priv->max_width			  = 0;
 	priv->total_width		  = 0;
 	priv->max_height		  = 0;
@@ -1216,7 +1228,6 @@ bonobo_ui_toolbar_construct (BonoboUIToolbar *toolbar)
 			    GTK_SIGNAL_FUNC (popup_window_button_release_cb), toolbar);
 
 	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
 	gtk_widget_show (frame);
 	gtk_container_add (GTK_CONTAINER (priv->popup_window), frame);
 
@@ -1365,4 +1376,16 @@ bonobo_ui_toolbar_set_hv_styles (BonoboUIToolbar      *toolbar,
 	toolbar->priv->vstyle = vstyle;
 
 	gtk_signal_emit (GTK_OBJECT (toolbar), signals [STYLE_CHANGED]);
+}
+
+void
+bonobo_ui_toolbar_show_tooltips (BonoboUIToolbar *toolbar,
+				 gboolean         show_tips)
+{
+	g_return_if_fail (BONOBO_IS_UI_TOOLBAR (toolbar));
+
+	if (show_tips)
+		gtk_tooltips_enable (toolbar->priv->tooltips);
+	else
+		gtk_tooltips_disable (toolbar->priv->tooltips);
 }

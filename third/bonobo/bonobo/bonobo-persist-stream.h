@@ -47,12 +47,12 @@ struct _BonoboPersistStream {
 	 * For the sample routines, NULL if we use the
 	 * methods from the class
 	 */
-	BonoboPersistStreamIOFn    save_fn;
-	BonoboPersistStreamIOFn    load_fn;
-	BonoboPersistStreamMaxFn   max_fn;
-	BonoboPersistStreamTypesFn types_fn;
+	BonoboPersistStreamIOFn     save_fn;
+	BonoboPersistStreamIOFn     load_fn;
+	BonoboPersistStreamMaxFn    max_fn;
+	BonoboPersistStreamTypesFn  types_fn;
 	
-	void *closure;
+	void                       *closure;
 
 	BonoboPersistStreamPrivate *priv;
 };
@@ -60,9 +60,9 @@ struct _BonoboPersistStream {
 typedef struct {
 	BonoboPersistClass parent_class;
 
-	/*
-	 * methods
-	 */
+	POA_Bonobo_PersistStream__epv epv;
+
+	/* methods */
 	void       (*load)         (BonoboPersistStream        *ps,
 				    Bonobo_Stream              stream,
 				    Bonobo_Persist_ContentType type,
@@ -79,23 +79,21 @@ typedef struct {
 } BonoboPersistStreamClass;
 
 GtkType              bonobo_persist_stream_get_type  (void);
-void                 bonobo_persist_stream_set_dirty (BonoboPersistStream *ps,
-						      gboolean dirty);
+void                 bonobo_persist_stream_set_dirty (BonoboPersistStream       *ps,
+						      gboolean                   dirty);
 
-BonoboPersistStream *bonobo_persist_stream_new       (BonoboPersistStreamIOFn load_fn,
-						      BonoboPersistStreamIOFn save_fn,
-						      BonoboPersistStreamMaxFn max_fn,
+BonoboPersistStream *bonobo_persist_stream_new       (BonoboPersistStreamIOFn    load_fn,
+						      BonoboPersistStreamIOFn    save_fn,
+						      BonoboPersistStreamMaxFn   max_fn,
 						      BonoboPersistStreamTypesFn types_fn,
-						      void *closure);
-BonoboPersistStream *bonobo_persist_stream_construct (BonoboPersistStream *ps,
-						      Bonobo_PersistStream corba_ps,
-						      BonoboPersistStreamIOFn load_fn,
-						      BonoboPersistStreamIOFn save_fn,
-						      BonoboPersistStreamMaxFn max_fn,
-						      BonoboPersistStreamTypesFn types_fn,
-						      void *closure);
+						      void                      *closure);
 
-POA_Bonobo_PersistStream__epv *bonobo_persist_stream_get_epv (void);
+BonoboPersistStream *bonobo_persist_stream_construct (BonoboPersistStream       *ps,
+						      BonoboPersistStreamIOFn    load_fn,
+						      BonoboPersistStreamIOFn    save_fn,
+						      BonoboPersistStreamMaxFn   max_fn,
+						      BonoboPersistStreamTypesFn types_fn,
+						      void                      *closure);
 
 END_GNOME_DECLS
 

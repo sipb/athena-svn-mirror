@@ -9,391 +9,333 @@
 #   updated: 6 translated messages, 10 fuzzy translations, 99 untranslated messages.
 msgid ""
 msgstr ""
-"Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2000-12-29 16:22+0000\n"
-"PO-Revision-Date: 2000-09-08 13:45:07+0900\n"
+"Project-Id-Version: bonobo 0.34\n"
+"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"PO-Revision-Date: 2001-02-02 22:22:16+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-7\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/app.c:227 samples/compound-doc/container/container.c:277
+#: bonobo/bonobo-ui-config-widget.c:235
+msgid "Visible"
+msgstr "Ορατό"
+
+#
+#: bonobo/bonobo-ui-config-widget.c:243
+msgid "_Show"
+msgstr "_Εμφάνιση"
+
+#: bonobo/bonobo-ui-config-widget.c:253
+msgid "_Hide"
+msgstr "_Απόκρυψη"
+
+#: bonobo/bonobo-ui-config-widget.c:263
+msgid "_View tooltips"
+msgstr "_Εμφάνιση υποδείξεων"
+
+#
+#: bonobo/bonobo-ui-config-widget.c:270
+msgid "Toolbars"
+msgstr "Γραμμές Εργ."
+
+#: bonobo/bonobo-ui-config-widget.c:280
+msgid "Look"
+msgstr "Εμφάνιση"
+
+#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+msgid "_Icon"
+msgstr "_Εικονίδιο"
+
+#: bonobo/bonobo-ui-config-widget.c:300
+msgid "_Text and Icon"
+msgstr "_Κείμενο και Εικονίδια"
+
+#: bonobo/bonobo-ui-config-widget.c:310
+msgid "_Priority text only"
+msgstr "Μόνο κείμενο _προτεραιότητας"
+
+#: bonobo/bonobo-ui-engine-config.c:521
+msgid "Configure UI"
+msgstr "Ρύθμιση Διασύνδεση Χρήστη"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:539
+msgid "B_oth"
+msgstr "_Και τα δύο"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:541
+msgid "T_ext"
+msgstr "_Κείμενο"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:542
+msgid "Hide t_ips"
+msgstr "Απόκρυ_ψη υποδείξεων"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:542
+msgid "Show t_ips"
+msgstr "Εμ_φάνιση υποδείξεων"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:543
+msgid "_Hide toolbar"
+msgstr "_Απόκρυψη γραμμής εντολών"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:544
+msgid "Customi_ze"
+msgstr "Παραμετρο_ποίηση"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:544
+msgid "Customize the toolbar"
+msgstr "Παραμετροποίηση γραμμής εντολών"
+
+#. -lefence
+#: monikers/moniker-test.c:237
+msgid "Oaf options"
+msgstr "Επιλογές Oaf"
+
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
 msgid "Could not initialize Bonobo!\n"
 msgstr "Αδύνατη η αρχικοποίηση του Bonobo!\n"
 
-#: bonobo/bonobo-exception.c:127
-msgid "Error checking error; no exception"
-msgstr "Σφάλμα ελέγχου λαθών, χωρίς εξαίρεση"
+#: bonobo/bonobo-exception.c:129
+msgid "An unsupported action was attempted"
+msgstr "Έγινε προσπάθεια μη-υποστηριζόμενης λειτουργίας"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:132
+msgid "IO Error"
+msgstr "Σφάλμα Εισόδου/Εξόδου (ΕΕ)"
+
+#: bonobo/bonobo-exception.c:135
+msgid "Invalid argument value"
+msgstr "Μη έγκυρη τιμή ορίσματος"
+
+#: bonobo/bonobo-exception.c:139
 msgid "Object not found"
 msgstr "Δε βρέθηκε το αντικείμενο"
 
-#: bonobo/bonobo-exception.c:145
+#: bonobo/bonobo-exception.c:142
 msgid "Syntax error in object description"
 msgstr "Συντακτικό σφάλμα στην περιγραφή του αντικειμένου"
 
-#: bonobo/bonobo-exception.c:149
+#: bonobo/bonobo-exception.c:146
 msgid "The User canceled the save"
 msgstr "Ο Χρήστης ακύρωσε την αποθήκευση"
 
-#: bonobo/bonobo-exception.c:154
+#: bonobo/bonobo-exception.c:151
 msgid "Cannot activate object from factory"
 msgstr "Αδύνατη η ενεργοποίηση του αντικειμένου από το εργοστάσιο"
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:156
 msgid "No permission to access stream"
 msgstr "Δεν υπάρχει δικαίωμα προσπέλασης της ροής"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:159
 msgid "An unsupported stream action was attempted"
 msgstr "Έγινε προσπάθεια μη-υποστηριζόμενης λειτουργίας ροής"
 
-#: bonobo/bonobo-exception.c:165
+#: bonobo/bonobo-exception.c:162
 msgid "IO Error on stream"
 msgstr "Σφάλμα Εισόδου/Εξόδου (ΕΕ) στη ροή"
 
-#: bonobo/bonobo-exception.c:169
-#, fuzzy
+#: bonobo/bonobo-exception.c:166
 msgid "IO Error on storage"
-msgstr "Σφάλμα Εισόδου/Εξόδου (ΕΕ) στη ροή"
+msgstr "Σφάλμα Εισόδου/Εξόδου (ΕΕ) στην αποθήκη"
+
+#: bonobo/bonobo-exception.c:169
+msgid "Name already exists in storage"
+msgstr "Το όνομα υπάρχει ήδη στην αποθήκη"
 
 #: bonobo/bonobo-exception.c:172
-msgid "Name already exists in storage"
-msgstr "Το όνομα υπάρχει ήδη αποθήκη"
-
-#: bonobo/bonobo-exception.c:175
 msgid "Object not found in storage"
 msgstr "Δε βρέθηκε το αντικείμενο στην αποθήκη"
 
-#: bonobo/bonobo-exception.c:178
+#: bonobo/bonobo-exception.c:175
 msgid "No permission to do operation on storage"
 msgstr "Δεν υπάρχει δικαίωμα εκτέλεσης λειτουργίας στην αποθήκη"
 
-#: bonobo/bonobo-exception.c:180
-#, fuzzy
+#: bonobo/bonobo-exception.c:177
 msgid "An unsupported storage action was attempted"
-msgstr "Έγινε προσπάθεια μη-υποστηριζόμενης λειτουργίας ροής"
+msgstr "Έγινε προσπάθεια μη-υποστηριζόμενης λειτουργίας αποθήκης"
+
+#: bonobo/bonobo-exception.c:179
+msgid "Object is not a stream"
+msgstr "Tο αντικείμενο δεν είναι τύπου ροής"
 
 #: bonobo/bonobo-exception.c:182
-#, fuzzy
-msgid "Object is not a stream"
-msgstr "Δε βρέθηκε το αντικείμενο στην αποθήκη"
+msgid "Object is not a storage"
+msgstr "Το αντικείμενο δεν είναι τύπου αποθήκης"
 
 #: bonobo/bonobo-exception.c:185
-#, fuzzy
-msgid "Object is not a storage"
-msgstr "Δε βρέθηκε το αντικείμενο στην αποθήκη"
-
-#: bonobo/bonobo-exception.c:188
 msgid "Storage is not empty"
-msgstr ""
+msgstr "Η αποθήκη δεν είναι κενή"
+
+#: bonobo/bonobo-exception.c:189
+msgid "malformed user interface XML description"
+msgstr "Κακοσχηματισμένη περιγραφή XML διασύνδεσης χρήστη"
 
 #: bonobo/bonobo-exception.c:192
-msgid "malformed user interface XML description"
-msgstr ""
-
-#: bonobo/bonobo-exception.c:195
 msgid "invalid path to XML user interface element"
-msgstr ""
+msgstr "μη έγκυρο μονοπάτι σε στοιχείο διασύνδεσης χρήστη XML"
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:196
 msgid "incorrect data type"
 msgstr "εσφαλμένος τύπος δεδομένου"
 
-#: bonobo/bonobo-exception.c:202
+#: bonobo/bonobo-exception.c:199
 msgid "stream not found"
-msgstr "η ροή δε βρέθηκε"
+msgstr "δε βρέθηκε η ροή"
 
-#: bonobo/bonobo-exception.c:206
-#, fuzzy
+#: bonobo/bonobo-exception.c:203
 msgid "property not found"
-msgstr "Δε βρέθηκε το αντικείμενο"
+msgstr "δε βρέθηκε η τιμή"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:207
 msgid "Moniker interface cannot be found"
 msgstr "Η διασύνδεση απλουστευμένου ονόματος δε βρέθηκε"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:210
 msgid "Moniker activation timed out"
 msgstr "Η ενεργοποίηση απλουστευμένου ονόματος ξεπέρασε το καθορισμένο χρόνο"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:213
 msgid "Syntax error within moniker"
 msgstr "Συντακτικό σφάλμα στη διαδικασία απλουστευμένου ονόματος"
 
-#: bonobo/bonobo-exception.c:219
+#: bonobo/bonobo-exception.c:216
 msgid "Moniker has an unknown moniker prefix"
 msgstr "Η διαδικασία απλουστευμένου ονόματος έχει άγνωστο πρόθεμα"
 
-#: bonobo/bonobo-selector-widget.c:208
+#: bonobo/bonobo-exception.c:238
+msgid "Error checking error; no exception"
+msgstr "Σφάλμα ελέγχου λαθών, χωρίς εξαίρεση"
+
+#: bonobo/bonobo-object-directory.c:224
+msgid "No filename"
+msgstr "Χωρίς όνομα αρχείου"
+
+#: bonobo/bonobo-object-directory.c:230
+#, c-format
+msgid "unknown mime type for '%s'"
+msgstr "άγνωστο είδος mime για το '%s'"
+
+#: bonobo/bonobo-object-directory.c:255
+#, c-format
+msgid "no handlers for mime type '%s'"
+msgstr "χωρίς χειριστές για το είδος mime '%s'"
+
+#
+#: bonobo/bonobo-selector-widget.c:212
 msgid "Name"
 msgstr "Όνομα"
 
-#: bonobo/bonobo-selector-widget.c:231
+#
+#: bonobo/bonobo-selector-widget.c:235
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: bonobo/bonobo-object-directory.c:221
-msgid "No filename"
-msgstr ""
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
+msgid "GnoMines control"
+msgstr "Έλεγχος GnoMines"
 
-#: bonobo/bonobo-object-directory.c:227
-#, c-format
-msgid "unknown mime type for '%s'"
-msgstr ""
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
+msgid "GnoMines control factory"
+msgstr "Εργοστάσιο ελέγχου GnoMines"
 
-#: bonobo/bonobo-object-directory.c:252
-#, c-format
-msgid "no handlers for mime type '%s'"
-msgstr ""
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
+msgid "bonobo GnoMines object"
+msgstr "αντικείμενο bonobo GnoMines"
 
-#: components/application-x-gnomine/bonobo-application-x-mines.c:558
-#: gshell/gshell.c:652 samples/compound-doc/paint-component-simple.c:707
-msgid "Could not initialize Bonobo!"
-msgstr "Αδύνατη η αρχικοποίηση του Bonobo!"
+#: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
+msgid "bonobo GnoMines object factory"
+msgstr "εργοστάσιο αντικειμένων GnoMines του bonobo"
 
-#.
-#. * Translatable strings file generated by extract-ui.
-#. * Add this file to your project's POTFILES.in
-#. * DO NOT compile it as part of your application.
-#.
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:7
-#, fuzzy
+#
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:1
 msgid "Load a saved game"
-msgstr "Εκκίνηση νέου παιχνιδιού"
+msgstr "Φόρτωση αποθηκευμένου παιχνιδιού"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:8
-#, fuzzy
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:2
 msgid "New game"
-msgstr "_Νέο παιχνίδι"
+msgstr "Νέο παιχνίδι"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:9
-#, fuzzy
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:3
 msgid "Open game"
-msgstr "_Νέο παιχνίδι"
+msgstr "Άνοιγμα παιχνιδιού"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:10
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:4
 msgid "Start a new game"
 msgstr "Εκκίνηση νέου παιχνιδιού"
 
-#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:11
-#, fuzzy
+#: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:5
 msgid "_Game"
-msgstr "Παιγνίδι"
+msgstr "_Παιχνίδι"
 
-#: components/audio-ulaw/bonobo-audio-ulaw.c:408
-#: components/text-plain/bonobo-text-plain.c:760
-#: samples/bonobo-class/echo-client.c:30 samples/bonobo-class/main.c:41
-#: samples/compound-doc/bonobo-hello/bonobo-hello.c:94
-msgid "I could not initialize Bonobo"
-msgstr "Ανεπιτυχής προσπάθεια αρχικοποίησης του Μπονόμπο"
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
+msgid "Waveform"
+msgstr "Κυμματομορφή"
 
-#: components/text-plain/bonobo-text-plain.c:362
-#, fuzzy
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
+msgid "Waveform component"
+msgstr "Συστατικό κυμματομορφής"
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
+msgid "Waveform component factory"
+msgstr "Εργοστάσιο συστατικού κυμματομορφής"
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
+msgid "audio/ulaw bonobo object"
+msgstr "αντικειμένου bonobo audio/ulaw"
+
+#: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
+msgid "audio/ulaw bonobo object factory"
+msgstr "εργοστάσιο αντικειμένου bonobo audio/ulaw"
+
+#: components/selector/Bonobo_Selector.oaf.in.h:1
+msgid "Component Selector"
+msgstr "Επιλογέας Συστατικού"
+
+#: components/selector/Bonobo_Selector.oaf.in.h:2
+msgid "Component Selector factory"
+msgstr "Εργοστάσιο Επιλογέα Συστατικού"
+
+#
+#: components/selector/Bonobo_Selector.oaf.in.h:3
+msgid "Component selector control"
+msgstr "Ελεγκτής επιλογέα συστατικού"
+
+#: components/selector/Bonobo_Selector.oaf.in.h:4
+msgid "component selector control factory"
+msgstr "εργοστάσιο ελεγκτή επιλογέα συστατικού"
+
+#
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
+msgid "Text"
+msgstr "Κείμενο"
+
+#
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
+msgid "Text component"
+msgstr "Συστατικό κειμένου"
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
+msgid "Text component factory"
+msgstr "Εργοστάσιο συστατικού κειμένου"
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
+msgid "text/plain component"
+msgstr "συστατικό text/plain"
+
+#: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
+msgid "text/plain embeddable factory"
+msgstr "ενσωματωμένο εργοστάσιο text/plain"
+
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
-msgstr "_Καθαρισμός Εικόνας"
+msgstr "_Καθαρισμός Κειμένου"
 
-#: components/text-plain/bonobo-text-plain.c:363
-#, fuzzy
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
-msgstr "Π_ροσθήκη νέου αντικειμένου text\\plain αδύνατη"
-
-#. main
-#.
-#. * Translatable strings file generated by extract-ui.
-#. * Add this file to your project's POTFILES.in
-#. * DO NOT compile it as part of your application.
-#.
-#: gshell/gshell-ui.xml.h:7
-msgid "About this application"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:8
-#, fuzzy
-msgid "Close the current window"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής"
-
-#: gshell/gshell-ui.xml.h:9
-msgid "Configure the application"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:10
-msgid "Create New _Window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:11
-msgid "Create a new window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:12
-msgid "Displays only one window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:13
-msgid "E_xit"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:14
-msgid "Exit the program"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:15
-msgid "Help on GNOME"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:16
-msgid "Kill the current buffer"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:17
-#, fuzzy
-msgid "Launch Control..."
-msgstr "Εκκίνηση αντικειμένου bonobo ανεπιτυχής."
-
-#: gshell/gshell-ui.xml.h:18
-#, fuzzy
-msgid "Launch Embeddable..."
-msgstr "Ανεπιτυής εκκίνηση Ενσωματωμένου αντικειμένου (embeddable)."
-
-#: gshell/gshell-ui.xml.h:19
-msgid "Launches a new Control component"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:20
-msgid "Launches a new Embeddable component"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:21
-#, fuzzy
-msgid "Loads a file into the current component"
-msgstr "Π_ροσθήκη νέου αντικειμένου text\\plain αδύνατη"
-
-#: gshell/gshell-ui.xml.h:22
-#, fuzzy
-msgid "Open a file"
-msgstr "Άνοιγμα Αρχείου IDL..."
-
-#: gshell/gshell-ui.xml.h:23
-msgid "Print S_etup..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:24
-#, fuzzy
-msgid "Print the current file"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής"
-
-#: gshell/gshell-ui.xml.h:25
-msgid "Save _As..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:26
-#, fuzzy
-msgid "Save the current file"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής"
-
-#: gshell/gshell-ui.xml.h:27
-msgid "Save the current file with a different name"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:28
-msgid "Setup the page settings for your current printer"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:29
-#, fuzzy
-msgid "Splits the current window"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής"
-
-#: gshell/gshell-ui.xml.h:30
-msgid "Zoom ..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:31
-msgid "Zoom _in"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:32
-msgid "Zoom _out"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:33
-msgid "Zoom to _default"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:34
-msgid "Zoom to _fit"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:35
-msgid "_About..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:36
-msgid "_Buffers"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:37
-msgid "_Close This Window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:38
-msgid "_File"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:39
-msgid "_Help"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:40
-msgid "_Help on GNOME"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:41
-msgid "_Kill"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:42
-msgid "_Load..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:43
-msgid "_One Window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:44
-msgid "_Open..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:45
-msgid "_Preferences..."
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:46
-msgid "_Print"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:47
-#, fuzzy
-msgid "_Save"
-msgstr "Παιγνίδι"
-
-#: gshell/gshell-ui.xml.h:48
-msgid "_Settings"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:49
-msgid "_Split Window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:50
-msgid "_Window"
-msgstr ""
-
-#: gshell/gshell-ui.xml.h:51
-msgid "_Zoom"
-msgstr ""
+msgstr "Καθαρίζει το κείμενο στο συστατικό"
 
 #: gshell/controls.c:95 gshell/inout.c:91
 msgid ""
@@ -402,16 +344,204 @@ msgid ""
 msgstr ""
 
 #: gshell/controls.c:119 gshell/inout.c:176
-#: samples/compound-doc/container/component.c:229
-#, fuzzy, c-format
+#: samples/compound-doc/container/component.c:228
+#, c-format
 msgid "Could not open file %s"
-msgstr "Αδυναμία αρχικοποίησης του Μπονόμπο"
+msgstr "Αδυναμία ανοίγματος του αρχείου %s"
 
 #: gshell/controls.c:144 gshell/inout.c:201
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStream"
 msgstr ""
+
+#: gshell/gshell-ui.xml.h:1
+msgid "About this application"
+msgstr "Σχετικά με αυτήν την εφαρμογή"
+
+#
+#: gshell/gshell-ui.xml.h:2
+msgid "Close the current window"
+msgstr "Κλείσιμο του τρέχοντος παραθύρου"
+
+#: gshell/gshell-ui.xml.h:3
+msgid "Configure the application"
+msgstr "Ρύθμιση της εφαρμογής"
+
+#: gshell/gshell-ui.xml.h:4
+msgid "Create New _Window"
+msgstr "Δημιουργία _Νέου Παραθύρου"
+
+#: gshell/gshell-ui.xml.h:5
+msgid "Create a new window"
+msgstr "Δημιουργία νέου παραθύρου"
+
+#: gshell/gshell-ui.xml.h:6
+msgid "Displays only one window"
+msgstr "Εμφάνιση μόνο ενός παραθύρου"
+
+#: gshell/gshell-ui.xml.h:7
+msgid "E_xit"
+msgstr "Έ_ξοδος"
+
+#
+#: gshell/gshell-ui.xml.h:8
+msgid "Exit the program"
+msgstr "Έξοδος από το πρόγραμμα"
+
+#: gshell/gshell-ui.xml.h:9
+msgid "Help on GNOME"
+msgstr "Βοήθεια στο GNOME"
+
+#: gshell/gshell-ui.xml.h:10
+msgid "Kill the current buffer"
+msgstr "Διαγραφή του τρέχοντος ενταμιευτή"
+
+#: gshell/gshell-ui.xml.h:11
+msgid "Launch Control..."
+msgstr "Εκκίνηση Ελεγκτή..."
+
+#: gshell/gshell-ui.xml.h:12
+msgid "Launch Embeddable..."
+msgstr "Εκκίνηση Προσαρτήσιμου..."
+
+#: gshell/gshell-ui.xml.h:13
+msgid "Launches a new Control component"
+msgstr "Εκκινεί ένα νέο συστατικό Ελεγκτή"
+
+#: gshell/gshell-ui.xml.h:14
+msgid "Launches a new Embeddable component"
+msgstr "Εκκίνεί ένα νέο Προσαρτήσιμο συστατικό"
+
+#: gshell/gshell-ui.xml.h:15
+msgid "Loads a file into the current component"
+msgstr "Φορτώνει ένα αρχείο στο τρέχο συστατικό"
+
+#: gshell/gshell-ui.xml.h:16
+msgid "Open a file"
+msgstr "Άνοιγει ένα αρχείο"
+
+#: gshell/gshell-ui.xml.h:17
+msgid "Print S_etup..."
+msgstr "Εκτύπωση _Ρυθμίσεων..."
+
+#: gshell/gshell-ui.xml.h:18
+msgid "Print the current file"
+msgstr "Εκτύπωση στο τρέχον αρχείο"
+
+#: gshell/gshell-ui.xml.h:19
+msgid "Save _As..."
+msgstr "Αποθήκευση _Ως..."
+
+#: gshell/gshell-ui.xml.h:20
+msgid "Save the current file"
+msgstr "Αποθήκευση του τρέχοντος αρχείου"
+
+#: gshell/gshell-ui.xml.h:21
+msgid "Save the current file with a different name"
+msgstr ""
+
+#: gshell/gshell-ui.xml.h:22
+msgid "Setup the page settings for your current printer"
+msgstr ""
+
+#
+#: gshell/gshell-ui.xml.h:23
+msgid "Splits the current window"
+msgstr "Χωρισμός στα δύο του τρέχοντος παραθύρου"
+
+#: gshell/gshell-ui.xml.h:24
+msgid "Zoom ..."
+msgstr "Αλλαγή κλίμακας..."
+
+#: gshell/gshell-ui.xml.h:25
+msgid "Zoom _in"
+msgstr "Με_γέθυνση"
+
+#: gshell/gshell-ui.xml.h:26
+msgid "Zoom _out"
+msgstr "Σ_μίκρυνση"
+
+#: gshell/gshell-ui.xml.h:27
+msgid "Zoom to _default"
+msgstr "Αλλαγή κλίμακας στο εξ' _ορισμού"
+
+#: gshell/gshell-ui.xml.h:28
+msgid "Zoom to _fit"
+msgstr ""
+
+#: gshell/gshell-ui.xml.h:29
+msgid "_About..."
+msgstr "_Σχετικά με..."
+
+#
+#: gshell/gshell-ui.xml.h:30
+msgid "_Buffers"
+msgstr "_Ενταμιευτές"
+
+#
+#: gshell/gshell-ui.xml.h:31
+msgid "_Close This Window"
+msgstr "_Κλείσιμο Αυτού Του Παραθύρου"
+
+#
+#: gshell/gshell-ui.xml.h:32
+msgid "_File"
+msgstr "_Αρχείο"
+
+#: gshell/gshell-ui.xml.h:33
+msgid "_Help"
+msgstr "_Βοήθεια"
+
+#: gshell/gshell-ui.xml.h:34
+msgid "_Help on GNOME"
+msgstr "_Βοήθεια στο GNOME"
+
+#: gshell/gshell-ui.xml.h:35
+msgid "_Kill"
+msgstr "_Σκότωμα"
+
+#
+#: gshell/gshell-ui.xml.h:36
+msgid "_Load..."
+msgstr "_Φόρτωμα..."
+
+#: gshell/gshell-ui.xml.h:37
+msgid "_One Window"
+msgstr "_Ένα Παράθυρο"
+
+#: gshell/gshell-ui.xml.h:38
+msgid "_Open..."
+msgstr "Άνοι_γμα..."
+
+#: gshell/gshell-ui.xml.h:39
+msgid "_Preferences..."
+msgstr "_Προτιμήσεις..."
+
+#: gshell/gshell-ui.xml.h:40
+msgid "_Print"
+msgstr "_Εκτύπωση"
+
+#: gshell/gshell-ui.xml.h:41
+msgid "_Save"
+msgstr "_Αποθήκευση"
+
+#: gshell/gshell-ui.xml.h:42
+msgid "_Settings"
+msgstr "_Ρυθμίσεις"
+
+#
+#: gshell/gshell-ui.xml.h:43
+msgid "_Split Window"
+msgstr "_Χωρισμός Παράθυρου στα δύο"
+
+#: gshell/gshell-ui.xml.h:44
+msgid "_Window"
+msgstr "_Παράθυρο"
+
+#: gshell/gshell-ui.xml.h:45
+msgid "_Zoom"
+msgstr "Κ_λίμακα"
 
 #: gshell/gshell.c:46
 msgid ""
@@ -434,16 +564,21 @@ msgstr ""
 msgid "Set zoom level:"
 msgstr ""
 
+#: gshell/gshell.c:652
+msgid "Could not initialize Bonobo!"
+msgstr "Αδύνατη η αρχικοποίηση του Bonobo!"
+
 #: gshell/inout.c:55
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistFile"
 msgstr ""
 
+#
 #: gshell/inout.c:115
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save file %s"
-msgstr "Αδυναμία αρχικοποίησης του Μπονόμπο"
+msgstr ""
 
 #: gshell/inout.c:151
 msgid ""
@@ -451,51 +586,99 @@ msgid ""
 "PersistStream"
 msgstr ""
 
+#
 #: gshell/inout.c:364
-#, fuzzy
 msgid "Open"
-msgstr "_Νέο παιχνίδι"
+msgstr "Άνοιγμα"
 
 #: gshell/inout.c:393 gshell/inout.c:450
-#, fuzzy
 msgid "Launch component"
-msgstr "Εκκίνηση αντικειμένου bonobo ανεπιτυχής."
+msgstr "Εκκίνηση αντικειμένου"
 
+#
 #: gshell/inout.c:553
-#, fuzzy
 msgid "Load"
-msgstr "Τοπικό"
+msgstr "Φόρτωση"
 
 #: gshell/inout.c:604
-#, fuzzy
 msgid "Save As"
-msgstr "Παιγνίδι"
+msgstr "Αποθήκευση Ως"
 
 #: gshell/properties.c:152
 msgid "Component has no editable properties"
 msgstr ""
 
-#: monikers/bonobo-moniker-gunzip.c:278 monikers/bonobo-moniker-http.c:111
-#: samples/controls/sample-control-factory.c:59
-msgid "Could not initialize Bonobo"
-msgstr "Αδυναμία αρχικοποίησης του Μπονόμπο"
+#: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
+msgid "Gunzip Moniker factory"
+msgstr ""
 
-#: samples/compound-doc/container/component.c:254
+#: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
+msgid "gunzip Moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
+msgid "HTTP Moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
+msgid "Standard Moniker factory"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
+msgid "file MonikerExtender"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
+msgid "generic file moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
+msgid "generic item moniker"
+msgstr ""
+
+#: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
+msgid "stream MonikerExtender"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
+msgid "Bonobo Echo server factory"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
+msgid "Bonobo Echo server sample program"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
+msgid "Echo component"
+msgstr ""
+
+#: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
+msgid "Echo component factory"
+msgstr ""
+
+#: samples/bonobo-class/echo-client.c:30
+msgid "I could not initialize Bonobo"
+msgstr "Ανεπιτυχής προσπάθεια αρχικοποίησης του Μπονόμπο"
+
+#: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
 msgstr ""
 
-#: samples/compound-doc/container/container.c:45
-msgid "Sample Bonobo container"
-msgstr ""
-
-#: samples/compound-doc/container/container.c:113
-#, fuzzy, c-format
-msgid "Could not launch Embeddable %s!"
-msgstr "Ανεπιτυής εκκίνηση Ενσωματωμένου αντικειμένου (embeddable)."
-
 #: samples/compound-doc/container/container-filesel.c:18
 msgid "Select file"
-msgstr ""
+msgstr "Επιλογή αρχείου"
 
 #: samples/compound-doc/container/container-menu.c:18
 msgid "Select an embeddable Bonobo component to add"
@@ -504,6 +687,15 @@ msgstr ""
 #: samples/compound-doc/container/container-menu.c:100
 msgid "Bonobo sample container"
 msgstr ""
+
+#: samples/compound-doc/container/container.c:45
+msgid "Sample Bonobo container"
+msgstr ""
+
+#: samples/compound-doc/container/container.c:113
+#, c-format
+msgid "Could not launch Embeddable %s!"
+msgstr "Ανεπιτυής εκκίνηση Προσαρτήσιμου %s!"
 
 #: samples/compound-doc/container/embeddable-io.c:36
 msgid ""
@@ -517,312 +709,34 @@ msgid ""
 "PersistStorage"
 msgstr ""
 
-#: samples/compound-doc/paint-component-simple.c:265
-msgid "Select drawing color..."
-msgstr "Επιλογή χρώματος ζωγραφικής..."
-
-#: samples/compound-doc/paint-component-simple.c:266
-msgid "Set the current drawing color"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής"
-
-#: samples/compound-doc/paint-component-simple.c:274
-msgid "White"
-msgstr "Λευκό"
-
-#: samples/compound-doc/paint-component-simple.c:275
-msgid "Set the current drawing color to white"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής σε λευκό"
-
-#: samples/compound-doc/paint-component-simple.c:281
-msgid "Red"
-msgstr "Κόκκινο"
-
-#: samples/compound-doc/paint-component-simple.c:282
-msgid "Set the current drawing color to red"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής σε κόκκινο"
-
-#: samples/compound-doc/paint-component-simple.c:288
-msgid "Green"
-msgstr "Πράσινο"
-
-#: samples/compound-doc/paint-component-simple.c:289
-msgid "Set the current drawing color to green"
-msgstr "Ρύθμιση του τρέχοντος χρώματος ζωγραφικής σε πράσινο"
-
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
 msgstr "Επιλέξτε αντικείμενο"
 
-#: tests/test-container.c:67 tests/test-container.c:99
+#: tests/test-container.c:65 tests/test-container.c:95
 msgid "Can not activate object_server"
 msgstr "Ανεπιτυχής ενεργοποίηση object_server"
 
-#: tests/test-container.c:72 tests/test-container.c:104
+#: tests/test-container.c:70 tests/test-container.c:100
 msgid "Can not bind object server to client_site"
 msgstr "Ανεπιτυχής σύνδεση εξυπηρέτη αντικειμένων με client_site"
 
-#: tests/test-container.c:273
-#, fuzzy
+#: tests/test-container.c:269
 msgid "Can not activate server"
-msgstr "Ανεπιτυχής ενεργοποίηση object_server"
+msgstr "Ανεπιτυχής ενεργοποίηση του εξυπηρετητή"
 
-#: tests/test-container.c:323 tests/test-container.c:368
+#: tests/test-container.c:319 tests/test-container.c:364
 msgid "Could not launch bonobo object."
 msgstr "Εκκίνηση αντικειμένου bonobo ανεπιτυχής."
 
-#: tests/test-container.c:566
+#: tests/test-container.c:562
 msgid "Could not launch Embeddable."
-msgstr "Ανεπιτυής εκκίνηση Ενσωματωμένου αντικειμένου (embeddable)."
+msgstr "Ανεπιτυής εκκίνηση του Προσαρτήσιμου."
 
-#: tests/test-container.c:601
-#, fuzzy
+#: tests/test-container.c:596
 msgid "Could not launch Control."
-msgstr "Εκκίνηση αντικειμένου bonobo ανεπιτυχής."
+msgstr ""
 
-#: tests/test-container.c:853 tests/test-storage.c:489
+#: tests/test-container.c:848 tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "Αποτυχία στο bonobo_init"
-
-#~ msgid "Tiny"
-#~ msgstr "Μικρό"
-
-#~ msgid "Medium"
-#~ msgstr "Μεσαίο"
-
-#~ msgid "Biiiig"
-#~ msgstr "Μεγααάλο"
-
-#~ msgid "Custom"
-#~ msgstr "Κατά παραγγελία"
-
-#~ msgid "Gnome Mines"
-#~ msgstr "Ναρκαλιευτής Gnome"
-
-#~ msgid "Code: Pista"
-#~ msgstr "Κώδικας: Pista"
-
-#~ msgid "Faces: tigert"
-#~ msgstr "Φάτσες: tigert"
-
-#~ msgid "Score: HoraPe"
-#~ msgstr "Βαθμολογία: HoraPe"
-
-#~ msgid "(C) 1997-1999 the Free Software Foundation"
-#~ msgstr "(C) 1997-1999 Free Software Foundation"
-
-#~ msgid "Minesweeper clone"
-#~ msgstr "Παραλλαγή του ναρκαλιευτή"
-
-#~ msgid "Game"
-#~ msgstr "Παιγνίδι"
-
-#~ msgid "Field size"
-#~ msgstr "Μέγεθος πεδίου"
-
-#~ msgid "Custom size"
-#~ msgstr "Διαστάσεις"
-
-#~ msgid "Horizontal:"
-#~ msgstr "Οριζόντια:"
-
-#~ msgid "Vertical:"
-#~ msgstr "Κατακόρυφη:"
-
-#~ msgid "Number of mines:"
-#~ msgstr "Αριθμός ναρκών:"
-
-#~ msgid "Mine size:"
-#~ msgstr "Μέγεθος νάρκης"
-
-#~ msgid "Gnome Mine Preferences"
-#~ msgstr "Ρυθμίσεις Ναρκαλιευτή"
-
-#~ msgid "Width of grid"
-#~ msgstr "Πλάτος ναρκοπεδίου"
-
-#~ msgid "X"
-#~ msgstr "Χ"
-
-#~ msgid "Height of grid"
-#~ msgstr "Ύψος ναρκοπεδίου"
-
-#~ msgid "Y"
-#~ msgstr "Ψ"
-
-#~ msgid "Size of mines"
-#~ msgstr "Μέγεθος ναρκών"
-
-#~ msgid "SIZE"
-#~ msgstr "SIZE"
-
-#~ msgid "Number of mines"
-#~ msgstr "Αριθμός ναρκών"
-
-#~ msgid "NUMBER"
-#~ msgstr "NUMBER"
-
-#~ msgid "Flags:"
-#~ msgstr "Σημαίες:"
-
-#~ msgid "Time:"
-#~ msgstr "Χρόνος:"
-
-#, fuzzy
-#~ msgid "Change the game"
-#~ msgstr "Πάυση του παιχνιδιού"
-
-#~ msgid "_Send progressive data to an existing text\\plain component"
-#~ msgstr "Προοδευτική _αποστολή δεδομένων σε υπάρχον αντικείμενο text\\plain"
-
-#~ msgid "Add a new _view to an existing text\\plain component"
-#~ msgstr "Προσθήκη νέας _προβολής σε υπάρχον αντικείμενο text\\plain"
-
-#~ msgid "_Add a new simple paint component"
-#~ msgstr "Π_ροσθήκη νέου απλού συστατικού ζωγραφικής"
-
-#~ msgid "Add a new _view to an existing paint component"
-#~ msgstr "Προσθήκη νέας _προβολής σε υπάρχον συστατικό ζωγραφικής"
-
-#~ msgid "_Add a new application\\x-png component"
-#~ msgstr "Π_ροσθήκη νέου συστατικού application\\x-png"
-
-#~ msgid "Add a new _view to an existing application\\x-png component"
-#~ msgstr "Προσθήκη νέας _προβολής σε υπάρχον συστατικό application\\x-png"
-
-#~ msgid "_Add a new application\\x-pdf component"
-#~ msgstr "Π_ροσθήκη νέου συστατικού application\\x-png"
-
-#~ msgid "Add a new Gnumeric instance through monikers"
-#~ msgstr "Προσθήκη νέας εκτέλεσης Gnumeric μέσω απλουστευμένων ονομάτων"
-
-#~ msgid "Add a new _object"
-#~ msgstr "Προσθήκη νέου _αντικειμένου"
-
-#~ msgid "Add a new Sample-Canvas item on an AA canvas"
-#~ msgstr "Προσθήκη νέου στοιχείου Δείγμα-Καμβάς σε ένα καμβά ΑΑ"
-
-#~ msgid "Add a new Sample-Canvas item on a regular canvas"
-#~ msgstr "Προσθήκη νέου στοιχείου Δείγμα-Καμβάς σε ένα κανονικό καμβά"
-
-#~ msgid "_text\\plain"
-#~ msgstr "_text\\plain"
-
-#~ msgid "_image\\x-png"
-#~ msgstr "_image\\x-png"
-
-#~ msgid "_app\\x-pdf"
-#~ msgstr "_app\\x-pdf"
-
-#~ msgid "paint sample"
-#~ msgstr "δείγμα ζωγραφικής"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Canvas-based"
-#~ msgstr "Βασισμένο σε καμβά"
-
-#~ msgid "Clear the image to black"
-#~ msgstr "Καθαρισμός της εικόνας σε μαύρο"
-
-#~ msgid "Registration browser"
-#~ msgstr "Περιήγηση καταγραφών"
-
-#~ msgid "Name service browser"
-#~ msgstr "Περιήγηση υπηρεσίας ονομάτων"
-
-#~ msgid "IDL browser"
-#~ msgstr "Περιήγηση του IDL"
-
-#~ msgid "BonoBrowser"
-#~ msgstr "ΜπονοΠεριηγητής"
-
-#~ msgid "file selection dialog"
-#~ msgstr "διάλογος επιλογής αρχείου"
-
-#~ msgid "identifier"
-#~ msgstr "προσδιοριστής"
-
-#~ msgid "kind"
-#~ msgstr "είδος"
-
-#~ msgid "Refresh"
-#~ msgstr "Ανανέωση"
-
-#~ msgid "server id"
-#~ msgstr "ταυότητα εξυπηρετητή"
-
-#~ msgid "location info"
-#~ msgstr "πληροφορίες τοποθεσίας"
-
-#~ msgid "repo ids"
-#~ msgstr "repo ids"
-
-#~ msgid "Register new object..."
-#~ msgstr "Καταχώρηση νέου αντικειμένου..."
-
-#~ msgid "Interface"
-#~ msgstr "Διασύνδεση"
-
-#~ msgid "Activation Type"
-#~ msgstr "Τύπος Ενεργοποίησης"
-
-#~ msgid "Please fill in the creation type."
-#~ msgstr "Παρακαλώ συμπληρώστε τον τύπο δημιουργίας."
-
-#~ msgid "Please fill in the creation method."
-#~ msgstr "Παρακαλώ συμπληρώστε την μέθοδο δημιουργίας."
-
-#~ msgid "The server_id is empty."
-#~ msgstr "Η ταυτότητα_εξυπηρετητή είναι κενή."
-
-#~ msgid "Can't open file %s for writing: %s"
-#~ msgstr "Αδύνατο το άνοιγμα του %s για εγγραφή: %s"
-
-#~ msgid "The file %s already exists!"
-#~ msgstr "Το αρχείο %s υπάρχει ήδη!"
-
-#~ msgid "New"
-#~ msgstr "Νέο"
-
-#~ msgid "Add"
-#~ msgstr "Προσθήκη"
-
-#~ msgid "factory"
-#~ msgstr "εργοστάσιο"
-
-#~ msgid "exe"
-#~ msgstr "exe"
-
-#~ msgid "shlib"
-#~ msgstr "shlib"
-
-#~ msgid "Browse"
-#~ msgstr "Περιήγηση"
-
-#~ msgid "New Object"
-#~ msgstr "Νέο Αντικείμενο"
-
-#~ msgid "Interface(s)"
-#~ msgstr "Διασύνδεση(εις)"
-
-#~ msgid "Server ID"
-#~ msgstr "Ταυότητα Εξυπηρετητή"
-
-#~ msgid "Creation method"
-#~ msgstr "Μέθοδος δημιουργίας"
-
-#~ msgid "Description:"
-#~ msgstr "Περιγραφή:"
-
-#~ msgid "Register this object"
-#~ msgstr "Καταχώριση αυτού του αντικειμένου"
-
-#~ msgid "OK"
-#~ msgstr "Εντάξει"
-
-#~ msgid "path to menu or toolbar item not found"
-#~ msgstr "το μονοπάτι στο μενού ή στην εργαλειοθήκη δε βρέθηκε"
-
-#~ msgid "internal menu or toolbar exception"
-#~ msgstr "εξαίρεση εσωτερικού μενού ή εργαλειοθήκης"

@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -145,7 +153,7 @@ NULL =
 
 idldir = $(datadir)/idl
 
-idl_DATA =  	Bonobo.idl				bonobo-advise.idl			bonobo-desktop.idl			bonobo-canvas.idl			bonobo-client-site.idl			bonobo-context.idl			bonobo-control.idl			bonobo-embeddable.idl			bonobo-item-container.idl		bonobo-listener.idl			bonobo-moniker.idl			bonobo-persist.idl			bonobo-print.idl			bonobo-progressive.idl			bonobo-property.idl			bonobo-storage.idl			bonobo-ui.idl				bonobo-unknown.idl			bonobo-zoomable.idl			$(NULL)
+idl_DATA =  	Bonobo.idl				Bonobo_Advise.idl			Bonobo_Desktop.idl			Bonobo_Canvas.idl			Bonobo_ClientSite.idl			Bonobo_Context.idl			Bonobo_Control.idl			Bonobo_Embeddable.idl			Bonobo_ItemContainer.idl		Bonobo_Listener.idl			Bonobo_Moniker.idl			Bonobo_Persist.idl			Bonobo_Print.idl			Bonobo_Progressive.idl			Bonobo_Property.idl			Bonobo_Storage.idl			Bonobo_UI.idl				Bonobo_Unknown.idl			Bonobo_Zoomable.idl			Bonobo_Exception.idl			$(NULL)
 
 
 EXTRA_DIST = $(idl_DATA)

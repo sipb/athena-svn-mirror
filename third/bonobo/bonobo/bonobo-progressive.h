@@ -10,7 +10,7 @@
 #ifndef _BONOBO_PROGRESSIVE_DATA_SINK_H_
 #define _BONOBO_PROGRESSIVE_DATA_SINK_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
@@ -37,7 +37,7 @@ typedef int (*BonoboProgressiveDataSinkSetSizeFn) (BonoboProgressiveDataSink *ps
 						  const CORBA_long count, void *closure);
 
 struct _BonoboProgressiveDataSink {
-	BonoboObject object;
+	BonoboXObject object;
 
 	/*
 	 * These are the callbacks the user can set.  If we use the
@@ -54,11 +54,11 @@ struct _BonoboProgressiveDataSink {
 };
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
 
-	/*
-	 * Methods.
-	 */
+	POA_Bonobo_ProgressiveDataSink__epv epv;
+
+	/* Methods. */
 	int (*start_fn)    (BonoboProgressiveDataSink *psink);
 	int (*end_fn)      (BonoboProgressiveDataSink *psink);
 	int (*add_data_fn) (BonoboProgressiveDataSink *psink,
@@ -68,26 +68,21 @@ typedef struct {
 			 
 } BonoboProgressiveDataSinkClass;
 
+GtkType		           bonobo_progressive_data_sink_get_type        (void);
 
-GtkType		bonobo_progressive_data_sink_get_type  (void);
-
-BonoboProgressiveDataSink *bonobo_progressive_data_sink_new		(BonoboProgressiveDataSinkStartFn start_fn,
-									 BonoboProgressiveDataSinkEndFn end_fn,
+BonoboProgressiveDataSink *bonobo_progressive_data_sink_new		(BonoboProgressiveDataSinkStartFn   start_fn,
+									 BonoboProgressiveDataSinkEndFn     end_fn,
 									 BonoboProgressiveDataSinkAddDataFn add_data_fn,
 									 BonoboProgressiveDataSinkSetSizeFn set_size_fn,
-									 void *closure);
+									 void                              *closure);
 
-BonoboProgressiveDataSink *bonobo_progressive_data_sink_construct		(BonoboProgressiveDataSink *psink,
-									 Bonobo_ProgressiveDataSink corba_psink,
-									 BonoboProgressiveDataSinkStartFn start_fn,
-									 BonoboProgressiveDataSinkEndFn end_fn,
+BonoboProgressiveDataSink *bonobo_progressive_data_sink_construct       (BonoboProgressiveDataSink         *psink,
+									 BonoboProgressiveDataSinkStartFn   start_fn,
+									 BonoboProgressiveDataSinkEndFn     end_fn,
 									 BonoboProgressiveDataSinkAddDataFn add_data_fn,
 									 BonoboProgressiveDataSinkSetSizeFn set_size_fn,
-									 void *closure);
+									 void                              *closure);
 							       
-
-POA_Bonobo_ProgressiveDataSink__epv *bonobo_progressive_get_epv (void);
-
 END_GNOME_DECLS
 
 #endif /* _BONOBO_PROGRESSIVE_DATA_SINK_H_ */

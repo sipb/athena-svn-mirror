@@ -10,8 +10,8 @@
 #include <config.h>
 
 #include <liboaf/liboaf.h>
-#include <bonobo/bonobo-moniker.h>
 #include <bonobo/bonobo-moniker-util.h>
+
 #include "bonobo-moniker-std.h"
 
 Bonobo_Unknown

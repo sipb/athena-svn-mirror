@@ -17,7 +17,11 @@
  */
 #include <config.h>
 #include <string.h> /* strcmp */
-#include <gnome.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-pixmap.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <bonobo/bonobo-selector-widget.h>
 #include <bonobo/bonobo-object-directory.h>
 

@@ -10,33 +10,46 @@
 #ifndef _BONOBO_RUNNING_CONTEXT_H_
 #define _BONOBO_RUNNING_CONTEXT_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
 typedef struct _BonoboRunningContextPrivate BonoboRunningContextPrivate;
 
 typedef struct {
-	BonoboObject parent;
+	BonoboXObject parent;
 
 	BonoboRunningContextPrivate *priv;
 } BonoboRunningContext;
 
 typedef struct {
-	BonoboObjectClass parent;
+	BonoboXObjectClass parent;
+
+	POA_Bonobo_RunningContext__epv epv;
 
 	void (*last_unref) (void);
 } BonoboRunningContextClass;
 
-BonoboObject *bonobo_running_context_new (void);
+BonoboObject *bonobo_running_context_new             (void);
 
 /*
  *   This interface is private, and purely for speed
  * of impl. of the context.
  */
-void          bonobo_running_context_add_object    (CORBA_Object object);
-void          bonobo_running_context_remove_object (CORBA_Object object);
-void          bonobo_running_context_ignore_object (CORBA_Object object);
+void        bonobo_running_context_add_object      (CORBA_Object object);
+void        bonobo_running_context_remove_object   (CORBA_Object object);
+void        bonobo_running_context_ignore_object   (CORBA_Object object);
+void        bonobo_running_context_trace_objects   (CORBA_Object object,
+						    const char  *fn,
+						    int          line,
+						    int          mode);
+void        bonobo_running_context_at_exit_unref   (CORBA_Object object);
+
+#ifdef BONOBO_OBJECT_DEBUG
+#	define           bonobo_running_context_add_object(o)   G_STMT_START{bonobo_running_context_trace_objects((o),G_GNUC_PRETTY_FUNCTION,__LINE__,0);}G_STMT_END
+#	define           bonobo_running_context_remove_object(o)   G_STMT_START{bonobo_running_context_trace_objects((o),G_GNUC_PRETTY_FUNCTION,__LINE__,1);}G_STMT_END
+#	define           bonobo_running_context_ignore_object(o)   G_STMT_START{bonobo_running_context_trace_objects((o),G_GNUC_PRETTY_FUNCTION,__LINE__,2);}G_STMT_END
+#endif
 
 END_GNOME_DECLS
 

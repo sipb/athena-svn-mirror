@@ -26,10 +26,12 @@ enum {
 	LAST_SIGNAL
 };
 
+#define PARENT_TYPE BONOBO_CONTROL_FRAME_TYPE
+
 static guint view_frame_signals [LAST_SIGNAL];
 
 /* Parent object class in GTK hierarchy */
-static BonoboControlFrameClass *bonobo_view_frame_parent_class;
+static GtkObjectClass *bonobo_view_frame_parent_class;
 
 /* The entry point vectors for the server we provide */
 POA_Bonobo_ViewFrame__vepv bonobo_view_frame_vepv;
@@ -47,29 +49,8 @@ impl_Bonobo_ViewFrame_getClientSite (PortableServer_Servant servant,
 {
 	BonoboViewFrame *view_frame = BONOBO_VIEW_FRAME (bonobo_object_from_servant (servant));
 
-	return bonobo_object_dup_ref (bonobo_object_corba_objref (
-		BONOBO_OBJECT (view_frame->priv->client_site)), ev);
-}
-
-static CORBA_Object
-create_bonobo_view_frame (BonoboObject *object)
-{
-	POA_Bonobo_ViewFrame *servant;
-	CORBA_Environment ev;
-	
-	servant = (POA_Bonobo_ViewFrame *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_view_frame_vepv;
-
-	CORBA_exception_init (&ev);
-	POA_Bonobo_ViewFrame__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return bonobo_object_activate_servant (object, servant);
+	return bonobo_object_dup_ref (
+	        BONOBO_OBJREF (view_frame->priv->client_site), ev);
 }
 
 static gboolean
@@ -116,7 +97,6 @@ bonobo_view_frame_key_press_cb (GtkWidget *wrapper,
 /**
  * bonobo_view_frame_construct:
  * @view_frame: The BonoboViewFrame object to be initialized.
- * @corba_view_frame: A CORBA object for the Bonobo_ViewFrame interface.
  * @wrapper: A BonoboWrapper widget which the new ViewFrame will use to cover its enclosed View.
  * @client_site: the client site to which the newly-created ViewFrame will belong.
  * @ui_container: 
@@ -128,7 +108,6 @@ bonobo_view_frame_key_press_cb (GtkWidget *wrapper,
  */
 BonoboViewFrame *
 bonobo_view_frame_construct (BonoboViewFrame   *view_frame,
-			     Bonobo_ViewFrame   corba_view_frame,
 			     BonoboClientSite  *client_site,
 			     Bonobo_UIContainer ui_container)
 {
@@ -139,8 +118,8 @@ bonobo_view_frame_construct (BonoboViewFrame   *view_frame,
 	g_return_val_if_fail (client_site != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_CLIENT_SITE (client_site), NULL);
 
-	bonobo_control_frame_construct (BONOBO_CONTROL_FRAME (view_frame),
-					corba_view_frame, ui_container);
+	bonobo_control_frame_construct (
+		BONOBO_CONTROL_FRAME (view_frame), ui_container);
 
 	view_frame->priv->client_site = client_site;
 	
@@ -156,7 +135,8 @@ bonobo_view_frame_construct (BonoboViewFrame   *view_frame,
 	gtk_object_ref (GTK_OBJECT (wrapper));
 	view_frame->priv->wrapper = wrapper;
 	gtk_container_add (GTK_CONTAINER (wrapper),
-			   bonobo_control_frame_get_widget (BONOBO_CONTROL_FRAME (view_frame)));
+			   bonobo_control_frame_get_widget (
+				   BONOBO_CONTROL_FRAME (view_frame)));
 
 	/*
 	 * Connect signal handlers to catch activation events (double
@@ -185,7 +165,6 @@ BonoboViewFrame *
 bonobo_view_frame_new (BonoboClientSite  *client_site,
 		       Bonobo_UIContainer ui_container)
 {
-	Bonobo_ViewFrame corba_view_frame;
 	BonoboViewFrame *view_frame;
 	
 	g_return_val_if_fail (client_site != NULL, NULL);
@@ -193,13 +172,7 @@ bonobo_view_frame_new (BonoboClientSite  *client_site,
 
 	view_frame = gtk_type_new (BONOBO_VIEW_FRAME_TYPE);
 
-	corba_view_frame = create_bonobo_view_frame (BONOBO_OBJECT (view_frame));
-	if (corba_view_frame == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (view_frame));
-		return NULL;
-	}
-
-	return bonobo_view_frame_construct (view_frame, corba_view_frame, client_site, ui_container);
+	return bonobo_view_frame_construct (view_frame, client_site, ui_container);
 }
 
 static void
@@ -210,7 +183,7 @@ bonobo_view_frame_destroy (GtkObject *object)
 	if (view_frame->priv->view != CORBA_OBJECT_NIL)
 		bonobo_object_release_unref (view_frame->priv->view, NULL);
 	
-	GTK_OBJECT_CLASS (bonobo_view_frame_parent_class)->destroy (object);
+	bonobo_view_frame_parent_class->destroy (object);
 }
 
 static void
@@ -221,41 +194,16 @@ bonobo_view_frame_finalize (GtkObject *object)
 	gtk_object_unref (GTK_OBJECT (view_frame->priv->wrapper));
 	g_free (view_frame->priv);
 	
-	GTK_OBJECT_CLASS (bonobo_view_frame_parent_class)->finalize (object);
-}
-
-/**
- * bonobo_view_frame_get_epv:
- *
- * Returns: The EPV for the default BonoboViewFrame implementation.  
- */
-POA_Bonobo_ViewFrame__epv *
-bonobo_view_frame_get_epv (void)
-{
-	POA_Bonobo_ViewFrame__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_ViewFrame__epv, 1);
-
-	epv->getClientSite = impl_Bonobo_ViewFrame_getClientSite;
-
-	return epv;
-}
-
-static void
-init_view_frame_corba_class (void)
-{
-	/* Setup the vector of epvs */
-	bonobo_view_frame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_view_frame_vepv.Bonobo_ControlFrame_epv = bonobo_control_frame_get_epv ();
-	bonobo_view_frame_vepv.Bonobo_ViewFrame_epv = bonobo_view_frame_get_epv ();
+	bonobo_view_frame_parent_class->finalize (object);
 }
 
 static void
 bonobo_view_frame_class_init (BonoboViewFrameClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	POA_Bonobo_ViewFrame__epv *epv = &klass->epv;
 
-	bonobo_view_frame_parent_class = gtk_type_class (BONOBO_CONTROL_FRAME_TYPE);
+	bonobo_view_frame_parent_class = gtk_type_class (PARENT_TYPE);
 
 	view_frame_signals [USER_ACTIVATE] =
 		gtk_signal_new ("user_activate",
@@ -281,7 +229,7 @@ bonobo_view_frame_class_init (BonoboViewFrameClass *klass)
 	object_class->destroy  = bonobo_view_frame_destroy;
 	object_class->finalize = bonobo_view_frame_finalize;
 
-	init_view_frame_corba_class ();
+	epv->getClientSite = impl_Bonobo_ViewFrame_getClientSite;
 }
 
 static void
@@ -292,33 +240,10 @@ bonobo_view_frame_init (BonoboObject *object)
 	view_frame->priv = g_new0 (BonoboViewFramePrivate, 1);
 }
 
-/**
- * bonobo_view_frame_get_type:
- *
- * Returns: The GtkType for the BonoboViewFrame class.
- */
-GtkType
-bonobo_view_frame_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboViewFrame",
-			sizeof (BonoboViewFrame),
-			sizeof (BonoboViewFrameClass),
-			(GtkClassInitFunc) bonobo_view_frame_class_init,
-			(GtkObjectInitFunc) bonobo_view_frame_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_control_frame_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboViewFrame, 
+			   Bonobo_ViewFrame,
+			   PARENT_TYPE,
+			   bonobo_view_frame);
 
 /**
  * bonobo_view_frame_bind_to_view:

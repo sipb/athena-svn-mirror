@@ -63,9 +63,8 @@ query_parse_display_name (BonoboMoniker     *moniker,
 	
 	bonobo_moniker_set_name (moniker, name, i);
 
-	return bonobo_moniker_util_new_from_name_full (
-		bonobo_object_corba_objref (BONOBO_OBJECT (m_query)),
-		&name [i], ev);
+	return bonobo_moniker_util_new_from_name_full (BONOBO_OBJREF (m_query),
+						       &name [i], ev);
 }
 
 static Bonobo_Unknown
@@ -147,6 +146,5 @@ BonoboMoniker *
 bonobo_moniker_query_new (void)
 {
 	return bonobo_moniker_construct (
-		gtk_type_new (bonobo_moniker_query_get_type ()),
-		CORBA_OBJECT_NIL, "query:(");
+		gtk_type_new (bonobo_moniker_query_get_type ()), "query:(");
 }

@@ -15,35 +15,36 @@
 #pragma inhibit push
 #endif
 
-#include <bonobo-unknown.idl>
-#include <bonobo-moniker.idl>
-#include <bonobo-context.idl>
+#include <Bonobo_Exception.idl>
+#include <Bonobo_Unknown.idl>
+#include <Bonobo_Moniker.idl>
+#include <Bonobo_Context.idl>
 
 /* Storage stuff. */
-#include <bonobo-storage.idl>
-#include <bonobo-persist.idl>
-#include <bonobo-progressive.idl>
+#include <Bonobo_Storage.idl>
+#include <Bonobo_Persist.idl>
+#include <Bonobo_Progressive.idl>
 
-#include <bonobo-advise.idl>
+#include <Bonobo_Advise.idl>
 
 /* Control stuff. */
-#include <bonobo-listener.idl>
-#include <bonobo-ui.idl>
-#include <bonobo-property.idl>
-#include <bonobo-control.idl>
-#include <bonobo-zoomable.idl>
+#include <Bonobo_Listener.idl>
+#include <Bonobo_UI.idl>
+#include <Bonobo_Property.idl>
+#include <Bonobo_Control.idl>
+#include <Bonobo_Zoomable.idl>
 
 /* Subdocument stuff. */
-#include <bonobo-item-container.idl>
-#include <bonobo-client-site.idl>
-#include <bonobo-canvas.idl>
-#include <bonobo-embeddable.idl>
+#include <Bonobo_ItemContainer.idl>
+#include <Bonobo_ClientSite.idl>
+#include <Bonobo_Canvas.idl>
+#include <Bonobo_Embeddable.idl>
 
 /* Printing stuff */
-#include <bonobo-print.idl>
+#include <Bonobo_Print.idl>
 
 /* Misc. stuff. */
-#include <bonobo-desktop.idl>
+#include <Bonobo_Desktop.idl>
 
 #if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
 #pragma inhibit pop

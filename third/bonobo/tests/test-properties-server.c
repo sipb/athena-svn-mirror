@@ -35,6 +35,7 @@ static void
 set_prop (BonoboPropertyBag *bag,
 	  const BonoboArg   *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	PropData *pd = user_data;
@@ -65,7 +66,7 @@ set_prop (BonoboPropertyBag *bag,
 		break;
 
 	default:
-		g_warning ("Unhandled arg. id %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 	};
 }
 
@@ -73,6 +74,7 @@ static void
 get_prop (BonoboPropertyBag *bag,
 	  BonoboArg         *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	PropData *pd = user_data;
@@ -103,7 +105,7 @@ get_prop (BonoboPropertyBag *bag,
 		break;
 
 	default:
-		g_warning ("Unhandled arg. id %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 	};
 }
 
@@ -200,7 +202,9 @@ create_bag (void)
 	BONOBO_ARG_SET_STRING (def, "a default string");
 
 	bonobo_property_bag_add (pb, "string-test", PROP_STRING_TEST,
-				 BONOBO_ARG_STRING, def, dstr, 0);
+				 BONOBO_ARG_STRING, def, dstr,
+				 BONOBO_PROPERTY_READABLE |
+				 BONOBO_PROPERTY_WRITEABLE);
 
 	bonobo_property_bag_add (pb, "long-test", PROP_LONG_TEST,
 				 BONOBO_ARG_LONG, NULL, dstr, 0);
@@ -217,8 +221,7 @@ create_bag (void)
 				 BONOBO_ARG_DOUBLE, NULL, dstr, 0);
 
 	/* Print out the IOR for this object. */
-	ior = CORBA_ORB_object_to_string (
-		orb, bonobo_object_corba_objref (BONOBO_OBJECT (pb)), &ev);
+	ior = CORBA_ORB_object_to_string (orb, BONOBO_OBJREF (pb), &ev);
 
 	/* So we can tee the output to compare */
 	fprintf (stderr, "%s\n", ior);
@@ -241,7 +244,7 @@ print_props (void)
 		BonoboArg      *arg;
 		char           *s1, *s2;
 
-		arg = bonobo_property_bag_get_value (pb, prop->name);
+		arg = bonobo_property_bag_get_value (pb, prop->name, NULL);
 		s1  = simple_prop_to_string (arg);
 		bonobo_arg_release (arg);
 
@@ -262,6 +265,12 @@ print_props (void)
 	}
 
 	g_list_free (props);
+}
+
+static void
+quit_main (GtkObject *object, gpointer dummy)
+{
+	gtk_main_quit ();
 }
 
 int
@@ -289,6 +298,9 @@ main (int argc, char **argv)
 	create_bag ();
 
 	print_props ();
+
+	gtk_signal_connect (GTK_OBJECT (bonobo_context_running_get ()),
+			    "last_unref", GTK_SIGNAL_FUNC (quit_main), NULL);
 
 	bonobo_main ();
 

@@ -1,3 +1,102 @@
+2001-02-09  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-02-07  Fatih Demir	<kabalak@gmx.net>
+
+	* tr.po: Updated Turkish translation by Görkem.
+
+2001-02-02  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: update of greek translation.
+
+2001-02-02  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-01-31  Szabolcs Ban  <shooby@gnome.hu>
+
+        * hu.po: Terminology fixes by Andras Timar <timar@gnome.hu>
+
+2001-01-28  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-01-27  Fatih Demir	<kabalak@gmx.net>
+
+	* tr.po: Committed updated Turkish translation.
+
+2001-01-27  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-01-26  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Added Azeri file
+	* {fi,fr,sl}.po: fixed headers
+	* az.po: updated walloon file
+
+2001-01-26  Szabolcs Ban  <shhoby@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2001-01-26  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-01-25  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-01-22  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Added Slovak translation.
+
+2001-01-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-01-17  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+	* update.sh: we use xml-i18n-tools or what? =)
+	
+2001-01-17  Michael Meeks  <michael@helixcode.com>
+
+	* POTFILES.in: remove cache oafinfo file.
+
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	* POTFILES.in: Set of files in POTFILES.in must
+	match files in the makefiles, or "make dist" will
+	fail, so I had to remove some files that are not
+	compiled any more.
+
+2001-01-15  Kenneth Christiansen <kenneth@gnu.org>
+
+	* da.po: update
+
+2001-01-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nn.po: Added Norwegian (nynorsk) translation.
+	
+2001-01-07  Benedikt Roth  <Benedikt.Roth@gmx.net>
+
+	* de.po: Updated German translation
+
+2001-01-04  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-1-03  John Sullivan  <sullivan@eazel.com>
+
+	* POTFILES.in: removed bonobo/app.c, since the file
+	no longer exists.
+	
 2000-12-29  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian translation.

@@ -85,6 +85,9 @@ void		 bonobo_zoomable_set_parameters_full		(BonoboZoomable	*zoomable,
 								 float          *preferred_zoom_levels,
 								 const gchar   **preferred_zoom_level_names,
 								 gint		 num_preferred_zoom_levels);
+void             bonobo_zoomable_add_preferred_zoom_level       (BonoboZoomable *zoomable,
+                                                                 float zoom_level,
+                                                                 const gchar *zoom_level_name);
 
 void		 bonobo_zoomable_report_zoom_level_changed	(BonoboZoomable	*zoomable,
 								 float		 new_zoom_level);

@@ -79,7 +79,7 @@ do_load_pf (view_data_t *view_data, const gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (view_data->server)),
+                BONOBO_OBJREF (view_data->server),
 		"IDL:Bonobo/PersistFile:1.0",
 		&ev);
 
@@ -126,7 +126,7 @@ do_load_ps (view_data_t *view_data, const gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (view_data->server)),
+	        BONOBO_OBJREF (view_data->server),
 		"IDL:Bonobo/PersistStream:1.0",
 		&ev);
 
@@ -137,8 +137,8 @@ do_load_ps (view_data_t *view_data, const gchar *filename)
 	}
 
 	Bonobo_PersistStream_load (persist,
-	   (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-				  "", &ev);
+				   (Bonobo_Stream) BONOBO_OBJREF (stream), 
+				   "", &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		gnome_warning_dialog (_("An exception occured while trying "
@@ -190,7 +190,7 @@ view_factory (BonoboEmbeddable *bonobo_object,
 	view_data->bod = (bonobo_object_data_t *) data;
 	view_data->server = bonobo_object_activate (view_data->bod->goad_id, 0);
 
-	corba_control = bonobo_object_corba_objref (BONOBO_OBJECT (view_data->server));
+	corba_control = BONOBO_OBJREF (view_data->server);
 
 	CORBA_exception_init (&ev);
 	corba_uic = Bonobo_ViewFrame_getUIHandler (view_frame, &ev);
@@ -262,7 +262,7 @@ gshell_control_wrapper (const gchar *goad_id)
 	bonobo_object_add_interface (BONOBO_OBJECT (bonobo_object),
 				     BONOBO_OBJECT (pf));
 
-	corba_embeddable = bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_object));
+	corba_embeddable = BONOBO_OBJREF (bonobo_object);
 	object_client = bonobo_object_client_from_corba (corba_embeddable);
 
 	return object_client;

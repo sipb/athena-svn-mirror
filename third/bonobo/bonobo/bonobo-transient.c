@@ -246,10 +246,10 @@ bonobo_transient_construct (BonoboTransient          *transient,
 	 * new POA.
 	 */
 	policies = g_new0 (CORBA_PolicyList, 1);
-	policies->_maximum = 3;
-	policies->_length  = 3;
-	policies->_buffer = g_new0 (CORBA_Policy,
-				    policies->_length);
+	policies->_maximum = 4;
+	policies->_length  = 4;
+	policies->_buffer  = g_new0 (CORBA_Policy,
+				     policies->_length);
 	policies->_release = CORBA_FALSE;
 	
 	/*
@@ -295,7 +295,8 @@ bonobo_transient_construct (BonoboTransient          *transient,
 			&ev);
 	
 	if (BONOBO_EX (&ev)) {
-		g_warning ("Could not create servant retention policy for BonoboTransient POA");
+		g_warning ("Could not create servant retention policy for BonoboTransient POA '%s'",
+			   bonobo_exception_get_text (&ev));
 		CORBA_exception_free (&ev);
 		goto out;
 	}
@@ -312,7 +313,21 @@ bonobo_transient_construct (BonoboTransient          *transient,
 			&ev);
 	
 	if (BONOBO_EX (&ev)){
-		g_warning ("Could not create threading policy for BonoboTransient POA");
+		g_warning ("Could not create threading policy for BonoboTransient POA '%s'",
+			   bonobo_exception_get_text (&ev));
+		CORBA_exception_free (&ev);
+		goto out;
+	}
+
+	policies->_buffer [3] = (CORBA_Policy)
+		PortableServer_POA_create_implicit_activation_policy (
+			bonobo_poa (),
+			PortableServer_NO_IMPLICIT_ACTIVATION,
+			&ev);
+
+	if (BONOBO_EX (&ev)){
+		g_warning ("Could not create activation policy for BonoboTransient POA '%s'",
+			   bonobo_exception_get_text (&ev));
 		CORBA_exception_free (&ev);
 		goto out;
 	}
@@ -328,7 +343,8 @@ bonobo_transient_construct (BonoboTransient          *transient,
 	g_free (poa_name);
 
 	if (BONOBO_EX (&ev)) {
-		g_warning ("BonoboTransient: Could not create BonoboTransient POA");
+		g_warning ("BonoboTransient: Could not create BonoboTransient POA '%s'",
+			   bonobo_exception_get_text (&ev));
 		CORBA_exception_free (&ev);
 		goto out;
 	}
@@ -363,8 +379,8 @@ bonobo_transient_construct (BonoboTransient          *transient,
 	success = TRUE;
 
  out:
-	if (policies->_buffer[0] != NULL) {
-		CORBA_Policy_destroy (policies->_buffer[0], &ev);
+	if (policies->_buffer [0] != NULL) {
+		CORBA_Policy_destroy (policies->_buffer [0], &ev);
 
 		if (BONOBO_EX (&ev)) {
 			g_warning ("bonobo_transient_construct(): could not destroy the "
@@ -374,8 +390,8 @@ bonobo_transient_construct (BonoboTransient          *transient,
 		}
 	}
 
-	if (policies->_buffer[1] != NULL) {
-		CORBA_Policy_destroy (policies->_buffer[1], &ev);
+	if (policies->_buffer [1] != NULL) {
+		CORBA_Policy_destroy (policies->_buffer [1], &ev);
 
 		if (BONOBO_EX (&ev)) {
 			g_warning ("bonobo_transient_construct(): could not destroy the "
@@ -385,12 +401,23 @@ bonobo_transient_construct (BonoboTransient          *transient,
 		}
 	}
 
-	if (policies->_buffer[2] != NULL) {
-		CORBA_Policy_destroy (policies->_buffer[2], &ev);
+	if (policies->_buffer [2] != NULL) {
+		CORBA_Policy_destroy (policies->_buffer [2], &ev);
 
 		if (BONOBO_EX (&ev)) {
 			g_warning ("bonobo_transient_construct(): could not destroy the "
-				   "threading policy policy");
+				   "threading policy");
+			CORBA_exception_free (&ev);
+			success = FALSE;
+		}
+	}
+
+	if (policies->_buffer [3] != NULL) {
+		CORBA_Policy_destroy (policies->_buffer [3], &ev);
+
+		if (BONOBO_EX (&ev)) {
+			g_warning ("bonobo_transient_construct(): could not destroy the "
+				   "activation policy");
 			CORBA_exception_free (&ev);
 			success = FALSE;
 		}
@@ -409,14 +436,20 @@ static void
 bonobo_transient_destroy (GtkObject *object)
 {
 	BonoboTransient *transient = BONOBO_TRANSIENT (object);
-	CORBA_Environment ev;
 	
-	/* Destroy the POA. */
-	CORBA_exception_init (&ev);
-	PortableServer_POA_destroy (transient->priv->poa, TRUE, TRUE, &ev);
-	if (BONOBO_EX (&ev))
-		g_warning ("bonobo_transient_destroy: Could not destroy POA.");
-	CORBA_exception_free (&ev);
+	if (transient->priv->poa) {
+		CORBA_Environment ev;
+
+		/* Destroy the POA. */
+		CORBA_exception_init (&ev);
+		PortableServer_POA_destroy (transient->priv->poa, FALSE, TRUE, &ev);
+
+		if (BONOBO_EX (&ev))
+			g_warning ("bonobo_transient_destroy: Could not destroy POA.");
+
+		CORBA_exception_free (&ev);
+	} else
+		g_warning ("No poa to destroy");
 
 	g_free (transient->priv);
 	

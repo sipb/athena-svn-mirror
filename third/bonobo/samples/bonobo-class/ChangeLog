@@ -1,3 +1,24 @@
+2001-01-25  Michael Meeks  <michael@helixcode.com>
+
+	* main.c: fix include.
+
+2001-01-25  Michael Meeks  <michael@helixcode.com>
+
+	* Bonobo_Sample_Echo.idl: re-namespace.
+
+	* Makefile.am (idl_DATA): upd.
+
+	* echo-client.c: re-namespace
+
+	* echo.c: re-namespace.
+
+2001-01-18  Dietmar Maurer  <dietmar@ximian.com>
+
+	* main.c: use the new factory macros
+
+	* Bonobo_Sample_Echo.oaf.in: changed the oaf IIDs to
+	OAFIID:Bonobo_Sample_Echo_Factory and OAFIID:Bonobo_Sample_Echo
+
 2000-10-31  Michael Meeks  <michael@helixcode.com>
 
 	* Makefile.am: get idl includes the right way round.

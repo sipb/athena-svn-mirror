@@ -13,15 +13,13 @@ check_string (const char *prefix, const char *escaped, const char *unescaped)
 	BonoboMoniker *moniker;
 	const char    *const_str;
 	char          *str;
-	char          *s;
+	char          *s, *name;
 
-	moniker = bonobo_moniker_construct (gtk_type_new (bonobo_moniker_get_type ()),
-					    CORBA_OBJECT_NIL, prefix);
-
+	moniker = bonobo_moniker_construct (
+		gtk_type_new (bonobo_moniker_get_type ()), prefix);
 	
-	s = g_strconcat (prefix, escaped, NULL);
-	bonobo_moniker_set_name (moniker, s, strlen (s));
-	g_free (s);
+	name = g_strconcat (prefix, escaped, NULL);
+	bonobo_moniker_set_name (moniker, name, strlen (name));
 
 	const_str = bonobo_moniker_get_name (moniker);
 	fprintf (stderr, "'%s' == '%s'\n", unescaped, const_str);
@@ -35,7 +33,12 @@ check_string (const char *prefix, const char *escaped, const char *unescaped)
 	g_free (str);
 	g_free (s);
 
+	g_assert (bonobo_moniker_client_equal (
+		BONOBO_OBJREF (moniker), name, NULL));
+
 	bonobo_object_unref (BONOBO_OBJECT (moniker));
+
+	g_free (name);
 }
 
 int

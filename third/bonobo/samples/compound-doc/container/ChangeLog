@@ -1,3 +1,17 @@
+2001-02-06  Michael Meeks  <michael@ximian.com>
+
+	* component.c (object_print): gtk_object_unref the
+	print_client.
+	
+2001-02-06  Michael Meeks  <michael@ximian.com>
+
+	* component.c (sample_client_site_get_type): upd.
+	(sample_client_site_new): upd.
+
+2001-01-17  Michael Meeks  <michael@helixcode.com>
+
+	* component.c (sample_client_site_new): upd.
+
 2000-12-11  Michael Meeks  <michael@helixcode.com>
 
 	* container.c (add_moniker_async): impl.

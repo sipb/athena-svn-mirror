@@ -12,9 +12,7 @@
 #include <gtk/gtkwidget.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <bonobo/bonobo-ui-component.h>
-#include <bonobo/bonobo-ui-xml.h>
 
-void       bonobo_ui_util_build_skeleton       (BonoboUIXml  *xml);
 char      *bonobo_ui_util_pixbuf_to_xml        (GdkPixbuf    *pixbuf);
 
 GdkPixbuf *bonobo_ui_util_xml_to_pixbuf  (const char *xml);

@@ -13,7 +13,10 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-mime.h>
 #include "bonobo-object-directory.h"
 #include <liboaf/liboaf.h>
 

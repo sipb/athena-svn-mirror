@@ -17,7 +17,9 @@
  */
 #include <config.h>
 #include <string.h> /* strcmp */
-#include <gnome.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <bonobo/bonobo-object-directory.h>
 #include <bonobo/bonobo-selector.h>
 
