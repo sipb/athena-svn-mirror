@@ -318,7 +318,7 @@ static void
 xsltNumberFormatTokenize(const xmlChar *format,
 			 xsltFormatPtr tokens)
 {
-    int index = 0;
+    int ix = 0;
     int j;
     int val;
     int len;
@@ -336,19 +336,19 @@ xsltNumberFormatTokenize(const xmlChar *format,
      * Insert initial non-alphanumeric token.
      * There is always such a token in the list, even if NULL
      */
-    while (! (IS_LETTER(val=xmlStringCurrentChar(NULL, format+index, &len)) ||
+    while (! (IS_LETTER(val=xmlStringCurrentChar(NULL, format+ix, &len)) ||
     	      IS_DIGIT(val)) ) {
-	if (format[index] == 0)		/* if end of format string */
+	if (format[ix] == 0)		/* if end of format string */
 	    break; /* while */
-	index += len;
+	ix += len;
     }
-    if (index > 0)
-	tokens->start = xmlStrndup(format, index);
+    if (ix > 0)
+	tokens->start = xmlStrndup(format, ix);
 
 
     for (tokens->nTokens = 0; tokens->nTokens < MAX_TOKENS;
 	 tokens->nTokens++) {
-	if (format[index] == 0)
+	if (format[ix] == 0)
 	    break; /* for */
 
 	/*
@@ -360,27 +360,27 @@ xsltNumberFormatTokenize(const xmlChar *format,
 	    tokens->end = NULL;
 	}
 
-	val = xmlStringCurrentChar(NULL, format+index, &len);
+	val = xmlStringCurrentChar(NULL, format+ix, &len);
 	if (IS_DIGIT_ONE(val) ||
 		 IS_DIGIT_ZERO(val)) {
 	    tokens->tokens[tokens->nTokens].width = 1;
 	    while (IS_DIGIT_ZERO(val)) {
 		tokens->tokens[tokens->nTokens].width++;
-		index += len;
-		val = xmlStringCurrentChar(NULL, format+index, &len);
+		ix += len;
+		val = xmlStringCurrentChar(NULL, format+ix, &len);
 	    }
 	    if (IS_DIGIT_ONE(val)) {
 		tokens->tokens[tokens->nTokens].token = val - 1;
-		index += len;
-		val = xmlStringCurrentChar(NULL, format+index, &len);
+		ix += len;
+		val = xmlStringCurrentChar(NULL, format+ix, &len);
 	    }
 	} else if ( (val == (xmlChar)'A') ||
 		    (val == (xmlChar)'a') ||
 		    (val == (xmlChar)'I') ||
 		    (val == (xmlChar)'i') ) {
 	    tokens->tokens[tokens->nTokens].token = val;
-	    index += len;
-	    val = xmlStringCurrentChar(NULL, format+index, &len);
+	    ix += len;
+	    val = xmlStringCurrentChar(NULL, format+ix, &len);
 	} else {
 	    /* XSLT section 7.7
 	     * "Any other format token indicates a numbering sequence
@@ -401,22 +401,22 @@ xsltNumberFormatTokenize(const xmlChar *format,
 	 * one wonders why XSLT doesn't refer to these instead).
 	 */
 	while (IS_LETTER(val) || IS_DIGIT(val)) {
-	    index += len;
-	    val = xmlStringCurrentChar(NULL, format+index, &len);
+	    ix += len;
+	    val = xmlStringCurrentChar(NULL, format+ix, &len);
 	}
 
 	/*
 	 * Insert temporary non-alphanumeric final tooken.
 	 */
-	j = index;
+	j = ix;
 	while (! (IS_LETTER(val) || IS_DIGIT(val))) {
 	    if (val == 0)
 		break; /* while */
-	    index += len;
-	    val = xmlStringCurrentChar(NULL, format+index, &len);
+	    ix += len;
+	    val = xmlStringCurrentChar(NULL, format+ix, &len);
 	}
-	if (index > j)
-	    tokens->end = xmlStrndup(&format[j], index - j);
+	if (ix > j)
+	    tokens->end = xmlStrndup(&format[j], ix - j);
     }
 }
 
@@ -1158,7 +1158,7 @@ xsltFormatNumberConversion(xsltDecimalFormatPtr self,
      * "number" part, should be in suffix 
      */
     if (delayed_multiplier != 0) {
-	the_format--;
+	the_format -= len;
 	delayed_multiplier = 0;
     }
 
@@ -1176,14 +1176,18 @@ xsltFormatNumberConversion(xsltDecimalFormatPtr self,
      * If the number is -ve, we must substitute the -ve prefix / suffix
      */
     if (number < 0) {
+        /*
+	 * Note that j is the number of UTF8 chars before the separator,
+	 * not the number of bytes! (bug 151975)
+	 */
         j =  xmlUTF8Strloc(format, self->patternSeparator);
 	if (j < 0) {
 	/* No -ve pattern present, so use default signing */
 	    default_sign = 1;
 	}
 	else {
-	    /* Skip over pattern separator */
-	    the_format = format + j + 1;
+	    /* Skip over pattern separator (accounting for UTF8) */
+	    the_format = xmlUTF8Strpos(format, j + 1);
 	    /* 
 	     * Flag changes interpretation of percent/permille 
 	     * in -ve pattern 
@@ -1216,11 +1220,15 @@ xsltFormatNumberConversion(xsltDecimalFormatPtr self,
 		    delayed_multiplier = 0;
 		else
 		    break; /* while */
-		the_format++;
+		if ((len = xsltUTF8Size(the_format)) < 1) {
+		    found_error = 1;
+		    goto OUTPUT_NUMBER;
+		}
+		the_format += len;
 	    }
 	    if (delayed_multiplier != 0) {
 		format_info.is_multiplier_set = FALSE;
-		the_format--;
+		the_format -= len;
 	    }
 
 	    /* Finally do the -ve suffix */
@@ -1229,8 +1237,8 @@ xsltFormatNumberConversion(xsltDecimalFormatPtr self,
 		nsuffix_length = xsltFormatNumberPreSuffix(self, 
 					&the_format, &format_info);
 		if (nsuffix_length < 0) {
-		found_error = 1;
-		goto OUTPUT_NUMBER;
+		    found_error = 1;
+		    goto OUTPUT_NUMBER;
 		}
 	    }
 	    else
