@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.10 1990-11-16 15:06:49 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.11 1991-01-05 15:28:20 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.10 1990-11-16 15:06:49 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.11 1991-01-05 15:28:20 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -33,6 +33,9 @@ static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #include <signal.h>
 #include <errno.h>
 #include <sys/time.h>
+#ifdef _IBMR2
+#include <sys/select.h>
+#endif
 
 short KA;    /* Kerberos Authentication */
 short MA;    /* Mutual Authentication   */
@@ -340,7 +343,7 @@ int fd;
     char buf[1024], outbuf[1024];
     fd_set	fdread;
     char serv[SERV_SZ], princ[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
-    char name[MAX_K_NAME_SZ];
+    unsigned char name[MAX_K_NAME_SZ];
     int more, retval, ret;
     long acct;
     char *service, *set_service();
@@ -396,7 +399,7 @@ int fd;
 	service = set_service(serv);	    
 
 	/* Frob the realms and instance properly... */
-	make_kname(princ, inst, realm, name);
+	make_kname(princ, inst, realm, (char *)name);
 	parse_username(name, princ, inst, realm);
 	if (QD) {
 	    /* Quota server is marked as down */
@@ -587,8 +590,6 @@ init_lncs()
     }
 #endif
     rpc_$listen (1, &st);
-    while(1) ;
-
 }
 
 static int protected = 0;
