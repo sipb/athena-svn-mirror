@@ -73,6 +73,42 @@ extern const char *blurb (void);
 
 
 static void get_screenhacks (saver_preferences *p);
+static char *format_command (const char *cmd, Bool wrap_p);
+static void merge_system_screenhacks (saver_preferences *p,
+                                      screenhack **system_list, int count);
+
+static char *
+chase_symlinks (const char *file)
+{
+# ifdef HAVE_REALPATH
+  if (file)
+    {
+      char buf [2048];
+      if (realpath (file, buf))
+        return strdup (buf);
+
+      sprintf (buf, "%s: realpath", blurb());
+      perror(buf);
+    }
+# endif /* HAVE_REALPATH */
+  return 0;
+}
+
+
+static Bool
+i_am_a_nobody (uid_t uid)
+{
+  struct passwd *p;
+
+  p = getpwnam ("nobody");
+  if (! p) p = getpwnam ("noaccess");
+  if (! p) p = getpwnam ("daemon");
+
+  if (! p) /* There is no nobody? */
+    return False;
+
+  return (uid == p->pw_uid);
+}
 
 
 const char *
@@ -82,7 +118,18 @@ init_file_name (void)
 
   if (!file)
     {
-      struct passwd *p = getpwuid (getuid ());
+      uid_t uid = getuid ();
+      struct passwd *p = getpwuid (uid);
+
+      if (i_am_a_nobody (uid))
+        /* If we're running as nobody, then use root's .xscreensaver file
+           (since ~root/.xscreensaver and ~nobody/.xscreensaver are likely
+           to be different -- if we didn't do this, then xscreensaver-demo
+           would appear to have no effect when the luser is running as root.)
+         */
+        uid = 0;
+
+      p = getpwuid (uid);
 
       if (!p || !p->pw_name || !*p->pw_name)
 	{
@@ -123,6 +170,10 @@ init_file_tmp_name (void)
     {
       const char *name = init_file_name();
       const char *suffix = ".tmp";
+
+      char *n2 = chase_symlinks (name);
+      if (n2) name = n2;
+
       if (!name || !*name)
 	file = "";
       else
@@ -131,6 +182,8 @@ init_file_tmp_name (void)
 	  strcpy(file, name);
 	  strcat(file, suffix);
 	}
+
+      if (n2) free (n2);
     }
 
   if (file && *file)
@@ -151,7 +204,7 @@ static const char * const prefs[] = {
   "installColormap",
   "verbose",
   "timestamp",
-  "splash",			/* not saved -- same as "splashDuration: 0" */
+  "splash",
   "splashDuration",
   "demoCommand",
   "prefsCommand",
@@ -165,6 +218,10 @@ static const char * const prefs[] = {
   "captureStderr",
   "captureStdout",		/* not saved -- obsolete */
   "font",
+  "dpmsEnabled",
+  "dpmsStandby",
+  "dpmsSuspend",
+  "dpmsOff",
   "",
   "programs",
   "",
@@ -339,6 +396,7 @@ parse_init_file (saver_preferences *p)
       if (!p->db) abort();
       handle_entry (&p->db, key, value, name, line);
     }
+  fclose (in);
   free(buf);
 
   p->init_file_date = write_date;
@@ -385,6 +443,44 @@ tab_to (FILE *out, int from, int to)
   return from;
 }
 
+static char *
+stab_to (char *out, int from, int to)
+{
+  int tab_width = 8;
+  int to_mod = (to / tab_width) * tab_width;
+  while (from < to_mod)
+    {
+      *out++ = '\t';
+      from = (((from / tab_width) + 1) * tab_width);
+    }
+  while (from < to)
+    {
+      *out++ = ' ';
+      from++;
+    }
+  return out;
+}
+
+static int
+string_columns (const char *string, int length, int start)
+{
+  int tab_width = 8;
+  int col = start;
+  const char *end = string + length;
+  while (string < end)
+    {
+      if (*string == '\n')
+        col = 0;
+      else if (*string == '\t')
+        col = (((col / tab_width) + 1) * tab_width);
+      else
+        col++;
+      string++;
+    }
+  return col;
+}
+
+
 static void
 write_entry (FILE *out, const char *key, const char *value)
 {
@@ -392,10 +488,8 @@ write_entry (FILE *out, const char *key, const char *value)
   char *v2 = v;
   char *nl = 0;
   int col;
-  Bool do_visual_kludge = (!strcmp(key, "programs"));
-  Bool do_wrap = do_visual_kludge;
-  int tab = (do_visual_kludge ? 16 : 23);
-  int tab2 = 3;
+  Bool programs_p = (!strcmp(key, "programs"));
+  int tab = (programs_p ? 32 : 16);
   Bool first = True;
 
   fprintf(out, "%s:", key);
@@ -403,49 +497,35 @@ write_entry (FILE *out, const char *key, const char *value)
 
   while (1)
     {
-      char *s;
-      Bool disabled_p = False;
-
-      v2 = strip(v2);
+      if (!programs_p)
+        v2 = strip(v2);
       nl = strchr(v2, '\n');
       if (nl)
 	*nl = 0;
 
-      if (do_visual_kludge && *v2 == '-')
-	{
-	  disabled_p = True;
-	  v2++;
-	  v2 = strip(v2);
-	}
-
-      if (first && disabled_p)
-	first = False;
+      if (first && programs_p)
+        {
+	  col = tab_to (out, col, 77);
+	  fprintf (out, " \\\n");
+	  col = 0;
+        }
 
       if (first)
 	first = False;
       else
 	{
-	  col = tab_to(out, col, 75);
-	  fprintf(out, " \\n\\\n");
+	  col = tab_to (out, col, 75);
+	  fprintf (out, " \\n\\\n");
 	  col = 0;
 	}
 
-      if (disabled_p)
-	{
-	  fprintf(out, "-");
-	  col++;
-	}
+      if (!programs_p)
+        col = tab_to (out, col, tab);
 
-      s = (do_visual_kludge ? strpbrk(v2, " \t\n:") : 0);
-      if (s && *s == ':')
-	col = tab_to (out, col, tab2);
-      else
-	col = tab_to (out, col, tab);
-
-      if (do_wrap &&
-	  strlen(v2) + col > 75)
+      if (programs_p &&
+	  string_columns(v2, strlen (v2), col) + col > 75)
 	{
-	  int L = strlen(v2);
+	  int L = strlen (v2);
 	  int start = 0;
 	  int end = start;
 	  while (start < L)
@@ -455,7 +535,7 @@ write_entry (FILE *out, const char *key, const char *value)
 	      while (v2[end] != ' ' && v2[end] != '\t' &&
 		     v2[end] != '\n' && v2[end] != 0)
 		end++;
-	      if (col + (end - start) >= 74)
+	      if (string_columns (v2 + start, (end - start), col) >= 74)
 		{
 		  col = tab_to (out, col, 75);
 		  fprintf(out, "   \\\n");
@@ -464,17 +544,15 @@ write_entry (FILE *out, const char *key, const char *value)
 		    start++;
 		}
 
+              col = string_columns (v2 + start, (end - start), col);
 	      while (start < end)
-		{
-		  fputc(v2[start++], out);
-		  col++;
-		}
+                fputc(v2[start++], out);
 	    }
 	}
       else
 	{
 	  fprintf (out, "%s", v2);
-	  col += strlen(v2);
+	  col += string_columns(v2, strlen (v2), col);
 	}
 
       if (nl)
@@ -487,11 +565,14 @@ write_entry (FILE *out, const char *key, const char *value)
   free(v);
 }
 
-void
-write_init_file (saver_preferences *p, const char *version_string)
+int
+write_init_file (saver_preferences *p, const char *version_string,
+                 Bool verbose_p)
 {
+  int status = -1;
   const char *name = init_file_name();
   const char *tmp_name = init_file_tmp_name();
+  char *n2 = chase_symlinks (name);
   struct stat st;
   int i, j;
 
@@ -499,14 +580,15 @@ write_init_file (saver_preferences *p, const char *version_string)
    */
   char *visual_name;
   char *programs;
-  Bool capture_stderr_p;
   Bool overlay_stderr_p;
   char *stderr_font;
   FILE *out;
 
-  if (!name) return;
+  if (!name) goto END;
 
-  if (p->verbose_p)
+  if (n2) name = n2;
+
+  if (verbose_p)
     fprintf (stderr, "%s: writing \"%s\".\n", blurb(), name);
 
   unlink (tmp_name);
@@ -517,18 +599,24 @@ write_init_file (saver_preferences *p, const char *version_string)
       sprintf(buf, "%s: error writing \"%s\"", blurb(), name);
       perror(buf);
       free(buf);
-      return;
+      goto END;
     }
 
   /* Give the new .xscreensaver file the same permissions as the old one;
      except ensure that it is readable and writable by owner, and not
-     executable.
+     executable.  Extra hack: if we're running as root, make the file
+     be world-readable (so that the daemon, running as "nobody", will
+     still be able to read it.)
    */
   if (stat(name, &st) == 0)
     {
       mode_t mode = st.st_mode;
-      mode |= S_IRUSR | S_IWUSR;
-      mode &= ~(S_IXUSR | S_IXGRP | S_IXOTH);
+      mode |= S_IRUSR | S_IWUSR;		/* read/write by user */
+      mode &= ~(S_IXUSR | S_IXGRP | S_IXOTH);	/* executable by none */
+
+      if (getuid() == (uid_t) 0)		/* read by group/other */
+        mode |= S_IRGRP | S_IROTH;
+
       if (fchmod (fileno(out), mode) != 0)
 	{
 	  char *buf = (char *) malloc(1024 + strlen(name));
@@ -536,26 +624,35 @@ write_init_file (saver_preferences *p, const char *version_string)
 		   tmp_name, (unsigned int) mode);
 	  perror(buf);
 	  free(buf);
-	  return;
+	  goto END;
 	}
     }
 
   /* Kludge, since these aren't in the saver_preferences struct... */
   visual_name = get_string_resource ("visualID", "VisualID");
   programs = 0;
-  capture_stderr_p = get_boolean_resource ("captureStderr", "Boolean");
   overlay_stderr_p = get_boolean_resource ("overlayStderr", "Boolean");
   stderr_font = get_string_resource ("font", "Font");
 
   i = 0;
-  for (j = 0; j < p->screenhacks_count; j++)
-    i += strlen(p->screenhacks[j]) + 2;
   {
-    char *ss = programs = (char *) malloc(i + 10);
+    char *ss;
+    char **hack_strings = (char **)
+      calloc (p->screenhacks_count, sizeof(char *));
+
+    for (j = 0; j < p->screenhacks_count; j++)
+      {
+        hack_strings[j] = format_hack (p->screenhacks[j], True);
+        i += strlen (hack_strings[j]);
+        i += 2;
+      }
+
+    ss = programs = (char *) malloc(i + 10);
     *ss = 0;
     for (j = 0; j < p->screenhacks_count; j++)
       {
-	strcat(ss, p->screenhacks[j]);
+        strcat (ss, hack_strings[j]);
+        free (hack_strings[j]);
 	ss += strlen(ss);
 	*ss++ = '\n';
 	*ss = 0;
@@ -613,7 +710,7 @@ write_init_file (saver_preferences *p, const char *version_string)
       CHECK("installColormap")	type = pref_bool, b = p->install_cmap_p;
       CHECK("verbose")		type = pref_bool, b = p->verbose_p;
       CHECK("timestamp")	type = pref_bool, b = p->timestamp_p;
-      CHECK("splash")		continue;  /* don't save */
+      CHECK("splash")		type = pref_bool, b = p->splash_p;
       CHECK("splashDuration")	type = pref_time, t = p->splash_duration;
       CHECK("demoCommand")	type = pref_str,  s = p->demo_command;
       CHECK("prefsCommand")	type = pref_str,  s = p->prefs_command;
@@ -624,9 +721,13 @@ write_init_file (saver_preferences *p, const char *version_string)
       CHECK("unfade")		type = pref_bool, b = p->unfade_p;
       CHECK("fadeSeconds")	type = pref_time, t = p->fade_seconds;
       CHECK("fadeTicks")	type = pref_int,  i = p->fade_ticks;
-      CHECK("captureStderr")	type = pref_bool, b =    capture_stderr_p;
+      CHECK("captureStderr")	type = pref_bool, b = p->capture_stderr_p;
       CHECK("captureStdout")	continue;  /* don't save */
       CHECK("font")		type = pref_str,  s =    stderr_font;
+      CHECK("dpmsEnabled")	type = pref_bool, b = p->dpms_enabled_p;
+      CHECK("dpmsStandby")	type = pref_time, t = p->dpms_standby;
+      CHECK("dpmsSuspend")	type = pref_time, t = p->dpms_suspend;
+      CHECK("dpmsOff")		type = pref_time, t = p->dpms_off;
       CHECK("programs")		type = pref_str,  s =    programs;
       CHECK("pointerPollTime")	type = pref_time, t = p->pointer_timeout;
       CHECK("windowCreationTimeout")type=pref_time,t= p->notice_events_timeout;
@@ -698,7 +799,7 @@ write_init_file (saver_preferences *p, const char *version_string)
 	  perror(buf);
 	  unlink (tmp_name);
 	  free(buf);
-	  return;
+	  goto END;
 	}
 
       if (rename (tmp_name, name) != 0)
@@ -709,7 +810,7 @@ write_init_file (saver_preferences *p, const char *version_string)
 	  perror(buf);
 	  unlink (tmp_name);
 	  free(buf);
-	  return;
+	  goto END;
 	}
       else
 	{
@@ -718,6 +819,8 @@ write_init_file (saver_preferences *p, const char *version_string)
 	  /* Since the .xscreensaver file is used for IPC, let's try and make
 	     sure that the bits actually land on the disk right away. */
 	  sync ();
+
+          status = 0;    /* wrote and renamed successfully! */
 	}
     }
   else
@@ -727,13 +830,38 @@ write_init_file (saver_preferences *p, const char *version_string)
       perror(buf);
       free(buf);
       unlink (tmp_name);
-      return;
+      goto END;
     }
+
+ END:
+  if (n2) free (n2);
+  return status;
 }
 
 
 /* Parsing the resource database
  */
+
+void
+free_screenhack (screenhack *hack)
+{
+  if (hack->visual) free (hack->visual);
+  if (hack->name) free (hack->name);
+  free (hack->command);
+  memset (hack, 0, sizeof(*hack));
+  free (hack);
+}
+
+static void
+free_screenhack_list (screenhack **list, int count)
+{
+  int i;
+  if (!list) return;
+  for (i = 0; i < count; i++)
+    if (list[i])
+      free_screenhack (list[i]);
+  free (list);
+}
 
 
 /* Populate `saver_preferences' with the contents of the resource database.
@@ -748,6 +876,24 @@ load_init_file (saver_preferences *p)
 {
   static Bool first_time = True;
   
+  screenhack **system_default_screenhacks = 0;
+  int system_default_screenhack_count = 0;
+
+  if (first_time)
+    {
+      /* Get the programs resource before the .xscreensaver file has been
+         parsed and merged into the resource database for the first time:
+         this is the value of *programs from the app-defaults file.
+         Then clear it out so that it will be parsed again later, after
+         the init file has been read.
+       */
+      get_screenhacks (p);
+      system_default_screenhacks = p->screenhacks;
+      system_default_screenhack_count = p->screenhacks_count;
+      p->screenhacks = 0;
+      p->screenhacks_count = 0;
+    }
+
   if (parse_init_file (p) != 0)		/* file might have gone away */
     if (!first_time) return;
 
@@ -764,6 +910,8 @@ load_init_file (saver_preferences *p)
   p->fade_ticks	    = get_integer_resource ("fadeTicks", "Integer");
   p->install_cmap_p = get_boolean_resource ("installColormap", "Boolean");
   p->nice_inferior  = get_integer_resource ("nice", "Nice");
+  p->splash_p       = get_boolean_resource ("splash", "Boolean");
+  p->capture_stderr_p = get_boolean_resource ("captureStderr", "Boolean");
 
   p->initial_delay   = 1000 * get_seconds_resource ("initialDelay", "Time");
   p->splash_duration = 1000 * get_seconds_resource ("splashDuration", "Time");
@@ -774,6 +922,12 @@ load_init_file (saver_preferences *p)
   p->pointer_timeout = 1000 * get_seconds_resource ("pointerPollTime", "Time");
   p->notice_events_timeout = 1000*get_seconds_resource("windowCreationTimeout",
 						       "Time");
+
+  p->dpms_enabled_p  = get_boolean_resource ("dpmsEnabled", "Boolean");
+  p->dpms_standby    = 1000 * get_seconds_resource ("dpmsStandby", "Time");
+  p->dpms_suspend    = 1000 * get_seconds_resource ("dpmsSuspend", "Time");
+  p->dpms_off        = 1000 * get_seconds_resource ("dpmsOff",     "Time");
+
   p->shell = get_string_resource ("bourneShell", "BourneShell");
 
   p->demo_command = get_string_resource("demoCommand", "URL");
@@ -781,12 +935,14 @@ load_init_file (saver_preferences *p)
   p->help_url = get_string_resource("helpURL", "URL");
   p->load_url_command = get_string_resource("loadURL", "LoadURL");
 
+
+  /* If "*splash" is unset, default to true. */
   {
-    char *s;
-    if ((s = get_string_resource ("splash", "Boolean")))
-      if (!get_boolean_resource("splash", "Boolean"))
-	p->splash_duration = 0;
-    if (s) free (s);
+    char *s = get_string_resource ("splash", "Boolean");
+    if (s)
+      free (s);
+    else
+      p->splash_p = True;
   }
 
   p->use_xidle_extension = get_boolean_resource ("xidleExtension","Boolean");
@@ -800,7 +956,6 @@ load_init_file (saver_preferences *p)
    */
   if (p->passwd_timeout <= 0) p->passwd_timeout = 30000;	 /* 30 secs */
   if (p->timeout < 10000) p->timeout = 10000;			 /* 10 secs */
-  if (p->cycle < 0) p->cycle = 0;
   if (p->cycle != 0 && p->cycle < 2000) p->cycle = 2000;	 /*  2 secs */
   if (p->pointer_timeout <= 0) p->pointer_timeout = 5000;	 /*  5 secs */
   if (p->notice_events_timeout <= 0)
@@ -809,19 +964,28 @@ load_init_file (saver_preferences *p)
     p->fade_p = False;
   if (! p->fade_p) p->unfade_p = False;
 
-  if (p->verbose_p && !p->fading_possible_p && (p->fade_p || p->unfade_p))
-    {
-      fprintf (stderr, "%s: there are no PseudoColor or GrayScale visuals.\n",
-	       blurb());
-      fprintf (stderr, "%s: ignoring the request for fading/unfading.\n",
-	       blurb());
-    }
+  if (p->dpms_standby <= 0 || p->dpms_suspend <= 0 || p->dpms_off <= 0)
+    p->dpms_enabled_p = False;
 
-  p->watchdog_timeout = p->cycle;
+  if (p->dpms_standby <= 10000) p->dpms_standby = 10000;	 /* 10 secs */
+  if (p->dpms_suspend <= 10000) p->dpms_suspend = 10000;	 /* 10 secs */
+  if (p->dpms_off     <= 10000) p->dpms_off     = 10000;	 /* 10 secs */
+
+  p->watchdog_timeout = p->cycle * 0.6;
   if (p->watchdog_timeout < 30000) p->watchdog_timeout = 30000;	  /* 30 secs */
   if (p->watchdog_timeout > 3600000) p->watchdog_timeout = 3600000; /*  1 hr */
 
   get_screenhacks (p);
+
+  if (system_default_screenhack_count)  /* note: first_time is also true */
+    {
+      merge_system_screenhacks (p, system_default_screenhacks,
+                                system_default_screenhack_count);
+      free_screenhack_list (system_default_screenhacks,
+                            system_default_screenhack_count);
+      system_default_screenhacks = 0;
+      system_default_screenhack_count = 0;
+    }
 
   if (p->debug_p)
     {
@@ -832,56 +996,141 @@ load_init_file (saver_preferences *p)
     }
 }
 
+
+/* If there are any hacks in the system-wide defaults that are not in
+   the ~/.xscreensaver file, add the new ones to the end of the list.
+   This does *not* actually save the file.
+ */
+static void
+merge_system_screenhacks (saver_preferences *p,
+                          screenhack **system_list, int system_count)
+{
+  /* Yeah yeah, this is an N^2 operation, but I don't have hashtables handy,
+     so fuck it. */
+
+  int made_space = 0;
+  int i;
+  for (i = 0; i < system_count; i++)
+    {
+      int j;
+      Bool matched_p = False;
+
+      for (j = 0; j < p->screenhacks_count; j++)
+        {
+          char *name;
+          if (!system_list[i]->name)
+            system_list[i]->name = make_hack_name (system_list[i]->command);
+
+          name = p->screenhacks[j]->name;
+          if (!name)
+            name = make_hack_name (p->screenhacks[j]->command);
+
+          matched_p = !strcasecmp (name, system_list[i]->name);
+
+          if (name != p->screenhacks[j]->name)
+            free (name);
+
+          if (matched_p)
+            break;
+        }
+
+      if (!matched_p)
+        {
+          /* We have an entry in the system-wide list that is not in the
+             user's .xscreensaver file.  Add it to the end.
+             Note that p->screenhacks is a single malloc block, not a
+             linked list, so we have to realloc it.
+           */
+          screenhack *oh = system_list[i];
+          screenhack *nh = (screenhack *) malloc (sizeof(screenhack));
+
+          if (made_space == 0)
+            {
+              made_space = 10;
+              p->screenhacks = (screenhack **)
+                realloc (p->screenhacks,
+                         (p->screenhacks_count + made_space) 
+                         * sizeof(screenhack));
+              if (!p->screenhacks) abort();
+            }
+
+          nh->enabled_p = oh->enabled_p;
+          nh->visual    = oh->visual  ? strdup(oh->visual)  : 0;
+          nh->name      = oh->name    ? strdup(oh->name)    : 0;
+          nh->command   = oh->command ? strdup(oh->command) : 0;
+
+          p->screenhacks[p->screenhacks_count++] = nh;
+          made_space--;
+
+#if 0
+          fprintf (stderr, "%s: noticed new hack: %s\n", blurb(),
+                   (nh->name ? nh->name : make_hack_name (nh->command)));
+#endif
+        }
+    }
+}
+
+
 
 /* Parsing the programs resource.
  */
 
-static char *
-reformat_hack (const char *hack)
+screenhack *
+parse_screenhack (const char *line)
 {
-  int i;
-  const char *in = hack;
-  int indent = 15;
-  char *h2 = (char *) malloc(strlen(in) + indent + 2);
-  char *out = h2;
-  Bool disabled_p = False;
+  screenhack *h = (screenhack *) calloc (1, sizeof(*h));
+  const char *s;
 
-  while (isspace(*in)) in++;		/* skip whitespace */
+  h->enabled_p = True;
 
-  if (*in == '-')			/* Handle a leading "-". */
+  while (isspace(*line)) line++;		/* skip whitespace */
+  if (*line == '-')				/* handle "-" */
     {
-      in++;
-      hack = in;
-      *out++ = '-';
-      *out++ = ' ';
-      disabled_p = True;
-      while (isspace(*in)) in++;
+      h->enabled_p = False;
+      line++;
+      while (isspace(*line)) line++;		/* skip whitespace */
     }
+
+  s = line;					/* handle "visual:" */
+  while (*line && *line != ':' && *line != '"' && !isspace(*line))
+    line++;
+  if (*line != ':')
+    line = s;
   else
     {
-      *out++ = ' ';
-      *out++ = ' ';
+      h->visual = (char *) malloc (line-s+1);
+      strncpy (h->visual, s, line-s);
+      h->visual[line-s] = 0;
+      if (*line == ':') line++;			/* skip ":" */
+      while (isspace(*line)) line++;		/* skip whitespace */
     }
 
-  while (*in && !isspace(*in) && *in != ':')
-    *out++ = *in++;			/* snarf first token */
-  while (isspace(*in)) in++;		/* skip whitespace */
-
-  if (*in == ':')
-    *out++ = *in++;			/* copy colon */
-  else
+  if (*line == '"')				/* handle "name" */
     {
-      in = hack;
-      out = h2 + 2;			/* reset to beginning */
+      line++;
+      s = line;
+      while (*line && *line != '"')
+        line++;
+      h->name = (char *) malloc (line-s+1);
+      strncpy (h->name, s, line-s);
+      h->name[line-s] = 0;
+      if (*line == '"') line++;			/* skip "\"" */
+      while (isspace(*line)) line++;		/* skip whitespace */
     }
 
-  *out = 0;
+  h->command = format_command (line, False);	/* handle command */
+  return h;
+}
 
-  while (isspace(*in)) in++;		/* skip whitespace */
-  for (i = strlen(h2); i < indent; i++)	/* indent */
-    *out++ = ' ';
 
-  /* copy the rest of the line. */
+static char *
+format_command (const char *cmd, Bool wrap_p)
+{
+  int tab = 30;
+  int col = tab;
+  char *cmd2 = (char *) calloc (1, 2 * (strlen (cmd) + 1));
+  const char *in = cmd;
+  char *out = cmd2;
   while (*in)
     {
       /* shrink all whitespace to one space, for the benefit of the "demo"
@@ -891,30 +1140,145 @@ reformat_hack (const char *hack)
       switch (*in)
 	{
 	case '\'': case '"': case '`': case '\\':
-	  {
-	    /* Metachars are scary.  Copy the rest of the line unchanged. */
-	    while (*in)
-	      *out++ = *in++;
-	  }
+          /* Metachars are scary.  Copy the rest of the line unchanged. */
+          while (*in)
+            *out++ = *in++, col++;
 	  break;
+
 	case ' ': case '\t':
-	  {
-	    while (*in == ' ' || *in == '\t')
-	      in++;
-	    *out++ = ' ';
-	  }
+          /* Squeeze all other whitespace down to one space. */
+          while (*in == ' ' || *in == '\t')
+            in++;
+          *out++ = ' ', col++;
 	  break;
+
 	default:
-	  *out++ = *in++;
+          /* Copy other chars unchanged. */
+	  *out++ = *in++, col++;
 	  break;
 	}
     }
+
   *out = 0;
 
-  /* strip trailing whitespace. */
-  out = out-1;
-  while (out > h2 && (*out == ' ' || *out == '\t' || *out == '\n'))
-    *out-- = 0;
+  /* Strip trailing whitespace */
+  while (out > cmd2 && isspace (out[-1]))
+    *(--out) = 0;
+
+  return cmd2;
+}
+
+
+/* Returns a new string describing the shell command.
+   This may be just the name of the program, capitalized.
+   It also may be something from the resource database (gotten
+   by looking for "hacks.XYZ.name", where XYZ is the program.)
+ */
+char *
+make_hack_name (const char *shell_command)
+{
+  char *s = strdup (shell_command);
+  char *s2;
+  char res_name[255];
+
+  for (s2 = s; *s2; s2++)	/* truncate at first whitespace */
+    if (isspace (*s2))
+      {
+        *s2 = 0;
+        break;
+      }
+
+  s2 = strrchr (s, '/');	/* if pathname, take last component */
+  if (s2)
+    {
+      s2 = strdup (s2+1);
+      free (s);
+      s = s2;
+    }
+
+  if (strlen (s) > 50)		/* 51 is hereby defined as "unreasonable" */
+    s[50] = 0;
+
+  sprintf (res_name, "hacks.%s.name", s);		/* resource? */
+  s2 = get_string_resource (res_name, res_name);
+  if (s2)
+    return s2;
+
+  for (s2 = s; *s2; s2++)	/* if it has any capitals, return it */
+    if (*s2 >= 'A' && *s2 <= 'Z')
+      return s;
+
+  if (s[0] >= 'a' && s[0] <= 'z')			/* else cap it */
+    s[0] -= 'a'-'A';
+  if (s[0] == 'X' && s[1] >= 'a' && s[1] <= 'z')	/* (magic leading X) */
+    s[1] -= 'a'-'A';
+  return s;
+}
+
+
+char *
+format_hack (screenhack *hack, Bool wrap_p)
+{
+  int tab = 32;
+  int size = (2 * (strlen(hack->command) +
+                   (hack->visual ? strlen(hack->visual) : 0) +
+                   (hack->name ? strlen(hack->name) : 0) +
+                   tab));
+  char *h2 = (char *) malloc (size);
+  char *out = h2;
+  char *s;
+  int col = 0;
+
+  if (!hack->enabled_p) *out++ = '-';		/* write disabled flag */
+
+  if (hack->visual && *hack->visual)		/* write visual name */
+    {
+      if (hack->enabled_p) *out++ = ' ';
+      *out++ = ' ';
+      strcpy (out, hack->visual);
+      out += strlen (hack->visual);
+      *out++ = ':';
+      *out++ = ' ';
+    }
+
+  *out = 0;
+  col = string_columns (h2, strlen (h2), 0);
+
+  if (hack->name && *hack->name)		/* write pretty name */
+    {
+      int L = (strlen (hack->name) + 2);
+      if (L + col < tab)
+        out = stab_to (out, col, tab - L - 2);
+      else
+        *out++ = ' ';
+      *out++ = '"';
+      strcpy (out, hack->name);
+      out += strlen (hack->name);
+      *out++ = '"';
+      *out = 0;
+
+      col = string_columns (h2, strlen (h2), 0);
+      if (wrap_p && col >= tab)
+        {
+          out = stab_to (out, col, 77);
+          *out += strlen(out);
+        }
+      else
+        *out++ = ' ';
+
+      if (out >= h2+size) abort();
+    }
+
+  *out = 0;
+  col = string_columns (h2, strlen (h2), 0);
+  out = stab_to (out, col, tab);		/* indent */
+
+  if (out >= h2+size) abort();
+  s = format_command (hack->command, wrap_p);
+  strcpy (out, s);
+  out += strlen (s);
+  free (s);
+  *out = 0;
 
   return h2;
 }
@@ -945,21 +1309,12 @@ get_screenhacks (saver_preferences *p)
 
   d = get_string_resource ("programs", "Programs");
 
-  if (p->screenhacks)
-    {
-      for (i = 0; i < p->screenhacks_count; i++)
-	if (p->screenhacks[i])
-	  free (p->screenhacks[i]);
-      free(p->screenhacks);
-      p->screenhacks = 0;
-    }
+  free_screenhack_list (p->screenhacks, p->screenhacks_count);
+  p->screenhacks = 0;
+  p->screenhacks_count = 0;
 
   if (!d || !*d)
-    {
-      p->screenhacks_count = 0;
-      p->screenhacks = 0;
-      return;
-    }
+    return;
 
   size = strlen (d);
 
@@ -973,7 +1328,7 @@ get_screenhacks (saver_preferences *p)
       i++;
   i++;
 
-  p->screenhacks = (char **) calloc (sizeof (char *), i+1);
+  p->screenhacks = (screenhack **) calloc (sizeof (screenhack *), i+1);
 
   /* Iterate over the lines in `d' (the string with newlines)
      and make new strings to stuff into the `screenhacks' array.
@@ -993,7 +1348,7 @@ get_screenhacks (saver_preferences *p)
       /* null terminate. */
       d[end] = 0;
 
-      p->screenhacks[p->screenhacks_count++] = reformat_hack (d + start);
+      p->screenhacks[p->screenhacks_count++] = parse_screenhack (d + start);
       if (p->screenhacks_count >= i)
 	abort();
 

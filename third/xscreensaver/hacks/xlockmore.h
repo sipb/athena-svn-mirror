@@ -1,5 +1,5 @@
 /* xlockmore.h --- xscreensaver compatibility layer for xlockmore modules.
- * xscreensaver, Copyright (c) 1997, 1998 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1997, 1998, 2001 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -35,8 +35,11 @@ ERROR!  Sorry, xlockmore.h requires ANSI C (gcc, for example.)
 #ifdef USE_GL
 # include <GL/glx.h>
   extern GLXContext *init_GL (ModeInfo *);
+  extern void clear_gl_error (void);
+  extern void check_gl_error (const char *type);
+  extern void do_fps (ModeInfo *);
 # define FreeAllGL(dpy) /* */
-#endif
+#endif /* !USE_GL */
 
 /* Accessor macros for the ModeInfo structure
  */
@@ -90,6 +93,7 @@ ERROR!  Sorry, xlockmore.h requires ANSI C (gcc, for example.)
 #define MI_IS_VERBOSE(MI)	(MI_WIN_IS_VERBOSE(MI))
 #define MI_IS_INSTALL(MI)	(MI_WIN_IS_INSTALL(MI))
 #define MI_IS_DEBUG(MI)		(False)
+#define MI_IS_MOUSE(MI)		(False)
 
 #define MI_CLEARWINDOW(mi) XClearWindow(MI_DISPLAY(mi), MI_WINDOW(mi))
 
@@ -123,6 +127,12 @@ extern void HACK_DRAW(ModeInfo *);
   extern void HACK_FREE(ModeInfo *);
 #else
 # define HACK_FREE 0
+#endif
+
+#ifdef HACK_RESHAPE
+  extern void HACK_RESHAPE(ModeInfo *, int width, int height);
+#else
+# define HACK_RESHAPE 0
 #endif
 
 
@@ -162,6 +172,7 @@ void screenhack (Display *dpy, Window window)
 
 			HACK_INIT,
 			HACK_DRAW,
+			HACK_RESHAPE,
 			HACK_FREE);
 }
 

@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1993-1998 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1993-2001 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -11,6 +11,14 @@
 
 #ifndef __XSCREENSAVER_PREFS_H__
 #define __XSCREENSAVER_PREFS_H__
+
+typedef struct screenhack screenhack;
+struct screenhack {
+  Bool enabled_p;
+  char *visual;
+  char *name;
+  char *command;
+};
 
 typedef struct saver_preferences saver_preferences;
 
@@ -30,6 +38,7 @@ struct saver_preferences {
 
   Bool verbose_p;		/* whether to print out lots of status info */
   Bool timestamp_p;		/* whether to mark messages with a timestamp */
+  Bool capture_stderr_p;	/* whether to redirect stdout/stderr  */
   Bool debug_p;			/* pay no mind to the man behind the curtain */
   Bool xsync_p;			/* whether XSynchronize has been called */
 
@@ -38,19 +47,14 @@ struct saver_preferences {
 
   Bool fade_p;			/* whether to fade to black, if possible */
   Bool unfade_p;		/* whether to fade from black, if possible */
-  int fade_seconds;		/* how long that should take */
+  Time fade_seconds;		/* how long that should take */
   int fade_ticks;		/* how many ticks should be used */
-  Bool fading_possible_p;	/* Whether fading to/from black is possible.
-				   (This isn't strictly a preference, as it
-				   can only be known by querying the display;
-				   the caller of the prefs code may fill this
-				   in if it knows/cares, and warnings will be
-				   issued.) */
+  Bool splash_p;		/* whether to do a splash screen at startup */
 
   Bool install_cmap_p;		/* whether we should use our own colormap
 				   when using the screen's default visual. */
 
-  char **screenhacks;		/* the programs to run */
+  screenhack **screenhacks;	/* the programs to run */
   int screenhacks_count;
 
   int nice_inferior;		/* nice value for subprocs */
@@ -64,6 +68,11 @@ struct saver_preferences {
   Time pointer_timeout;		/* how often to check mouse position */
   Time notice_events_timeout;	/* how long after window creation to select */
   Time watchdog_timeout;	/* how often to re-raise and re-blank screen */
+
+  Bool dpms_enabled_p;		/* Whether to power down the monitor */
+  Time dpms_standby;		/* how long until monitor goes black */
+  Time dpms_suspend;		/* how long until monitor power-saves */
+  Time dpms_off;		/* how long until monitor powers down */
 
   Bool use_xidle_extension;	/* which extension to use, if possible */
   Bool use_mit_saver_extension;
@@ -81,7 +90,19 @@ struct saver_preferences {
 
 extern void load_init_file (saver_preferences *p);
 extern Bool init_file_changed_p (saver_preferences *p);
-extern void write_init_file (saver_preferences *p, const char *version_string);
+extern int write_init_file (saver_preferences *p, const char *version_string,
+                            Bool verbose_p);
 const char *init_file_name (void);
+
+extern screenhack *parse_screenhack (const char *line);
+extern void free_screenhack (screenhack *hack);
+extern char *format_hack (screenhack *hack, Bool wrap_p);
+char *make_hack_name (const char *shell_command);
+
+/* From dpms.c */
+extern void sync_server_dpms_settings (Display *dpy, Bool enabled_p,
+                                       int standby_secs, int suspend_secs,
+                                       int off_secs,
+                                       Bool verbose_p);
 
 #endif /* __XSCREENSAVER_PREFS_H__ */

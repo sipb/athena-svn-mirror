@@ -11,9 +11,18 @@
 
 #include <math.h>
 #include "screenhack.h"
+#include "alpha.h"
+
+#ifdef HAVE_DOUBLE_BUFFER_EXTENSION
+# include "xdbe.h"
+#endif /* HAVE_DOUBLE_BUFFER_EXTENSION */
 
 #define countof(x) (sizeof(x)/sizeof(*(x)))
 #define ABS(x) ((x)<0?-(x):(x))
+
+static Bool transparent_p;
+static int nplanes;
+static unsigned long base_pixel, *plane_masks;
 
 struct throbber {
   int x, y;
@@ -116,6 +125,7 @@ static struct throbber *
 make_throbber (Display *dpy, Drawable d, int w, int h, unsigned long pixel)
 {
   XGCValues gcv;
+  unsigned long flags;
   struct throbber *t = (struct throbber *) malloc (sizeof (*t));
   t->x = w / 2;
   t->y = h / 2;
@@ -133,15 +143,25 @@ make_throbber (Display *dpy, Drawable d, int w, int h, unsigned long pixel)
   else
     t->size = t->thickness, t->speed = -t->speed;
 
-  gcv.foreground = pixel;
+  flags = GCForeground;
+  if (transparent_p)
+    {
+      gcv.foreground = ~0L;
+      gcv.plane_mask = base_pixel | plane_masks[random() % nplanes];
+      flags |= GCPlaneMask;
+    }
+  else
+    {
+      gcv.foreground = pixel;
+    }
+
   gcv.line_width = t->thickness;
   gcv.line_style = LineSolid;
   gcv.cap_style = CapProjecting;
   gcv.join_style = JoinMiter;
-  t->gc = XCreateGC (dpy, d,
-                     (GCForeground|GCLineWidth|GCLineStyle|
-                      GCCapStyle|GCJoinStyle),
-                     &gcv);
+
+  flags |= (GCLineWidth | GCLineStyle | GCCapStyle | GCJoinStyle);
+  t->gc = XCreateGC (dpy, d, flags, &gcv);
 
   switch (random() % 11) {
   case 0: case 1: case 2: case 3: t->draw = draw_star; break;
@@ -197,7 +217,12 @@ char *defaults [] = {
   "*thickness:		50",
   "*speed:		15",
   "*ncolors:		20",
+  "*nlayers:		0",
+  "*transparent:	False",
   "*doubleBuffer:	True",
+#ifdef HAVE_DOUBLE_BUFFER_EXTENSION
+  "*useDBE:		True",
+#endif /* HAVE_DOUBLE_BUFFER_EXTENSION */
   0
 };
 
@@ -207,6 +232,10 @@ XrmOptionDescRec options [] = {
   { "-count",		".count",	XrmoptionSepArg, 0 },
   { "-ncolors",		".ncolors",	XrmoptionSepArg, 0 },
   { "-speed",		".speed",	XrmoptionSepArg, 0 },
+  { "-transparent",	".transparent",	 XrmoptionNoArg,  "True" },
+  { "-opaque",		".transparent",	 XrmoptionNoArg,  "False" },
+  { "-db",		".doubleBuffer", XrmoptionNoArg,  "True" },
+  { "-no-db",		".doubleBuffer", XrmoptionNoArg,  "False" },
   { 0, 0, 0, 0 }
 };
 
@@ -217,23 +246,69 @@ screenhack (Display *dpy, Window window)
   int delay = get_integer_resource ("delay", "Integer");
   int ncolors = get_integer_resource ("ncolors", "Integer");
   Bool dbuf = get_boolean_resource ("doubleBuffer", "Boolean");
-  XColor colors[255];
+  XColor *colors = 0;
   XGCValues gcv;
   GC erase_gc = 0;
   int i;
   struct throbber **throbbers;
   XWindowAttributes xgwa;
   Pixmap b=0, ba=0, bb=0;	/* double-buffer to reduce flicker */
+#ifdef HAVE_DOUBLE_BUFFER_EXTENSION
+  XdbeBackBuffer backb = 0;
+#endif /* HAVE_DOUBLE_BUFFER_EXTENSION */
 
   XGetWindowAttributes (dpy, window, &xgwa);
-  make_random_colormap (dpy, xgwa.visual, xgwa.colormap,
-                        colors, &ncolors, True, True, 0, True);
+
+  transparent_p = get_boolean_resource("transparent", "Transparent");
+
+  colors = (XColor *) calloc (sizeof(*colors), ncolors);
+
+  if (get_boolean_resource("mono", "Boolean"))
+    {
+    MONO:
+      ncolors = 1;
+      colors[0].pixel = get_pixel_resource("foreground", "Foreground",
+                                           dpy, xgwa.colormap);
+    }
+  else if (transparent_p)
+    {
+      nplanes = get_integer_resource ("planes", "Planes");
+      if (nplanes <= 0)
+        nplanes = (random() % (xgwa.depth-2)) + 2;
+
+      allocate_alpha_colors (xgwa.screen, xgwa.visual, xgwa.colormap,
+                             &nplanes, True, &plane_masks,
+			     &base_pixel);
+      if (nplanes <= 1)
+	{
+	  fprintf (stderr,
+         "%s: couldn't allocate any color planes; turning transparency off.\n",
+		   progname);
+          transparent_p = False;
+	  goto COLOR;
+	}
+    }
+  else
+    {
+    COLOR:
+      make_random_colormap (dpy, xgwa.visual, xgwa.colormap,
+                            colors, &ncolors, True, True, 0, True);
+      if (ncolors < 2)
+        goto MONO;
+    }
 
   if (dbuf)
     {
-      ba = XCreatePixmap (dpy, window, xgwa.width, xgwa.height, xgwa.depth);
-      bb = XCreatePixmap (dpy, window, xgwa.width, xgwa.height, xgwa.depth);
-      b = ba;
+#ifdef HAVE_DOUBLE_BUFFER_EXTENSION
+      b = backb = xdbe_get_backbuffer (dpy, window, XdbeUndefined);
+#endif /* HAVE_DOUBLE_BUFFER_EXTENSION */
+
+      if (!b)
+        {
+          ba = XCreatePixmap (dpy, window, xgwa.width, xgwa.height,xgwa.depth);
+          bb = XCreatePixmap (dpy, window, xgwa.width, xgwa.height,xgwa.depth);
+          b = ba;
+        }
     }
   else
     {
@@ -245,26 +320,32 @@ screenhack (Display *dpy, Window window)
     throbbers[i] = make_throbber (dpy, b, xgwa.width, xgwa.height,
                                   colors[random() % ncolors].pixel);
 
-  if (dbuf)
-    {
-      gcv.foreground = get_pixel_resource ("background", "Background",
-                                           dpy, xgwa.colormap);
-      erase_gc = XCreateGC (dpy, b, GCForeground, &gcv);
-      XFillRectangle (dpy, ba, erase_gc, 0, 0, xgwa.width, xgwa.height);
-      XFillRectangle (dpy, bb, erase_gc, 0, 0, xgwa.width, xgwa.height);
-    }
+  gcv.foreground = get_pixel_resource ("background", "Background",
+                                       dpy, xgwa.colormap);
+  erase_gc = XCreateGC (dpy, b, GCForeground, &gcv);
+
+  if (ba) XFillRectangle (dpy, ba, erase_gc, 0, 0, xgwa.width, xgwa.height);
+  if (bb) XFillRectangle (dpy, bb, erase_gc, 0, 0, xgwa.width, xgwa.height);
 
   while (1)
     {
-      if (dbuf)
-        XFillRectangle (dpy, b, erase_gc, 0, 0, xgwa.width, xgwa.height);
-      else
-        XClearWindow (dpy, b);
+      XFillRectangle (dpy, b, erase_gc, 0, 0, xgwa.width, xgwa.height);
 
       for (i = 0; i < count; i++)
         if (throb (dpy, b, throbbers[i]) < 0)
           throbbers[i] = make_throbber (dpy, b, xgwa.width, xgwa.height,
                                         colors[random() % ncolors].pixel);
+
+#ifdef HAVE_DOUBLE_BUFFER_EXTENSION
+      if (backb)
+        {
+          XdbeSwapInfo info[1];
+          info[0].swap_window = window;
+          info[0].swap_action = XdbeUndefined;
+          XdbeSwapBuffers (dpy, info, 1);
+        }
+      else
+#endif /* HAVE_DOUBLE_BUFFER_EXTENSION */
       if (dbuf)
         {
           XCopyArea (dpy, b, window, erase_gc, 0, 0,

@@ -58,8 +58,10 @@ static const char sccsid[] = "@(#)plate.c	4.07 97/11/24 xlockmore";
 # define PROGCLASS						"Planet"
 # define HACK_INIT						init_planet
 # define HACK_DRAW						draw_planet
+# define HACK_RESHAPE					reshape_planet
 # define planet_opts					xlockmore_opts
 #define DEFAULTS	"*delay:			15000   \n"	\
+					"*showFPS:			False   \n" \
                     "*rotate:           True    \n" \
                     "*roll:             True    \n" \
                     "*bounce:           True    \n" \
@@ -161,8 +163,8 @@ ModStruct   planet_description =
  */
 
 #define NUM_STARS 1000
-#define SLICES 15
-#define STACKS 15
+#define SLICES 32
+#define STACKS 32
 
 /* radius of the sphere- fairly arbitrary */
 #define RADIUS 4
@@ -237,8 +239,10 @@ setup_xbm_texture (char *bits, int width, int height,
 		*out++ = (word & 0x0000FF);
 	  }
 
+  clear_gl_error();
   glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
 			   GL_RGB, GL_UNSIGNED_BYTE, data);
+  check_gl_error("texture");
 
   /* setup parameters for texturing */
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -266,9 +270,11 @@ setup_file_texture (ModeInfo *mi, char *filename)
 	  {
 		XImage *image = xpm_to_ximage (dpy, visual, cmap, xpm_data);
 
+        clear_gl_error();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 					 image->width, image->height, 0,
 					 GL_RGBA, GL_UNSIGNED_BYTE, image->data);
+        check_gl_error("texture");
 
 		/* setup parameters for texturing */
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -323,7 +329,7 @@ setup_file_texture (ModeInfo *mi, char *filename)
 		exit (1);
 	  }
 
-	setup_xbm_texture (data, width, height, &gp->fg, &gp->bg);
+	setup_xbm_texture ((char *) data, width, height, &gp->fg, &gp->bg);
   }
 #else  /* !XMU */
 
@@ -422,10 +428,10 @@ void generate_stars(int width, int height)
   glBegin(GL_POINTS);
   for(i = 0 ; i < NUM_STARS ; i++)
 	{
-/*   	  size = (drand48()+size_range[0]) * size_range[1]/2.; */
+/*   	  size = ((random()%size_range[0])) * size_range[1]/2.; */
 /*    glPointSize(size); */
-	  x = drand48()*width;
-	  y = drand48()*height;
+	  x = random() % width;
+	  y = random() % height;
 	  glVertex2f(x,y);
 	}
   glEnd();
@@ -614,33 +620,20 @@ rotate_and_move (ModeInfo * mi)
 
   if (do_bounce)
 	{
-	  /* Move in the direction we had been moving in. */
-	  gp->xpos += gp->dx;
-	  gp->ypos += gp->dy;
-	  gp->zpos += gp->dz;
-
-	  /* Bounce. */
-	  if (gp->xpos > gp->box_depth)
-		gp->xpos = gp->box_depth, gp->dx = -gp->dx;
-	  else if (gp->xpos < 0)
-		gp->xpos = 0, gp->dx = -gp->dx;
-
-	  if (gp->ypos > gp->box_width/2)
-		gp->ypos = gp->box_width/2, gp->dy = -gp->dy;
-	  else if (gp->ypos < -gp->box_width/2)
-		gp->ypos = -gp->box_width/2, gp->dy = -gp->dy;
-
-	  if (gp->zpos > gp->box_height/2)
-		gp->zpos = gp->box_height/2, gp->dz = -gp->dz;
-	  else if (gp->zpos < -gp->box_height/2)
-		gp->zpos = -gp->box_height/2, gp->dz = -gp->dz;
+      static int frame = 0;
+#     define SINOID(SCALE,SIZE) \
+        ((((1 + sin((frame * (SCALE)) / 2 * M_PI)) / 2.0) * (SIZE)) - (SIZE)/2)
+      gp->xpos = SINOID(0.031, gp->box_width);
+      gp->ypos = SINOID(0.023, gp->box_height);
+      gp->zpos = SINOID(0.017, gp->box_depth);
+      frame++;
 	}
 }
 
 
 /* Standard reshape function */
-static void
-reshape(int width, int height)
+void
+reshape_planet(ModeInfo *mi, int width, int height)
 {
   GLfloat light[4];
   GLfloat h = (GLfloat) height / (GLfloat) width;
@@ -711,7 +704,7 @@ init_planet(ModeInfo * mi)
 
   gp->window = MI_WINDOW(mi);
   if ((gp->glx_context = init_GL(mi)) != NULL) {
-	reshape(MI_WIDTH(mi), MI_HEIGHT(mi));
+	reshape_planet(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
 	pinit(mi);
   } else {
 	MI_CLEARWINDOW(mi);
@@ -768,6 +761,7 @@ draw_planet(ModeInfo * mi)
 
 
 
+  if (mi->fps_p) do_fps (mi);
   glFinish();
   glXSwapBuffers(display, window);
 

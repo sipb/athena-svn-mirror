@@ -73,6 +73,25 @@ allocate_writable_colors (Display *dpy, Colormap cmap,
 }
 
 
+static void
+complain (int wanted_colors, int got_colors,
+	  Bool wanted_writable, Bool got_writable)
+{
+  if (got_colors > wanted_colors - 10)
+    /* don't bother complaining if we're within ten pixels. */
+    return;
+
+  if (wanted_writable && !got_writable)
+    fprintf (stderr,
+             "%s: wanted %d writable colors; got %d read-only colors.\n",
+             progname, wanted_colors, got_colors);
+  else
+    fprintf (stderr, "%s: wanted %d%s colors; got %d.\n",
+             progname, wanted_colors, (got_writable ? " writable" : ""),
+             got_colors);
+}
+
+
 
 void
 make_color_ramp (Display *dpy, Colormap cmap,
@@ -83,11 +102,19 @@ make_color_ramp (Display *dpy, Colormap cmap,
 		 Bool allocate_p,
 		 Bool writable_p)
 {
+  Bool verbose_p = True;  /* argh. */
   int i;
-  int ncolors = *ncolorsP;
+  int total_ncolors = *ncolorsP;
+  int ncolors, wanted;
+  Bool wanted_writable = (allocate_p && writable_p);
   double dh, ds, dv;		/* deltas */
 
+  wanted = total_ncolors;
+  if (closed_p)
+    wanted = (wanted / 2) + 1;
+
  AGAIN:
+  ncolors = total_ncolors;
 
   memset (colors, 0, (*ncolorsP) * sizeof(*colors));
 
@@ -154,22 +181,30 @@ make_color_ramp (Display *dpy, Colormap cmap,
 	}
     }
 
-  return;
+  goto WARN;
 
  FAIL:
   /* we weren't able to allocate all the colors we wanted;
      decrease the requested number and try again.
    */
-  ncolors = (ncolors > 170 ? ncolors - 20 :
-	     ncolors > 100 ? ncolors - 10 :
-	     ncolors >  75 ? ncolors -  5 :
-	     ncolors >  25 ? ncolors -  3 :
-	     ncolors >  10 ? ncolors -  2 :
-	     ncolors >   2 ? ncolors -  1 :
-	     0);
-  *ncolorsP = ncolors;
-  if (ncolors > 0)
+  total_ncolors = (total_ncolors > 170 ? total_ncolors - 20 :
+                   total_ncolors > 100 ? total_ncolors - 10 :
+                   total_ncolors >  75 ? total_ncolors -  5 :
+                   total_ncolors >  25 ? total_ncolors -  3 :
+                   total_ncolors >  10 ? total_ncolors -  2 :
+                   total_ncolors >   2 ? total_ncolors -  1 :
+                   0);
+  *ncolorsP = total_ncolors;
+  ncolors = total_ncolors;
+  if (total_ncolors > 0)
     goto AGAIN;
+
+ WARN:
+  
+  if (verbose_p &&
+      /* don't warn if we got 0 writable colors -- probably TrueColor. */
+      (ncolors != 0 || !wanted_writable))
+    complain (wanted, ncolors, wanted_writable, wanted_writable && writable_p);
 }
 
 
@@ -428,23 +463,6 @@ make_color_loop (Display *dpy, Colormap cmap,
 }
 
 
-static void
-complain (int wanted_colors, int got_colors,
-	  Bool wanted_writable, Bool got_writable)
-{
-  if (wanted_writable && !got_writable)
-    fprintf(stderr,
-	    "%s: wanted %d writable colors; got %d read-only colors.\n",
-	    progname, wanted_colors, got_colors);
-
-  else if (wanted_colors > (got_colors + 10))
-    /* don't bother complaining if we're within ten pixels. */
-    fprintf(stderr, "%s: wanted %d%s colors; got %d.\n",
-	    progname, wanted_colors, (got_writable ? " writable" : ""),
-	    got_colors);
-}
-
-
 void
 make_smooth_colormap (Display *dpy, Visual *visual, Colormap cmap,
 		      XColor *colors, int *ncolorsP,
@@ -461,7 +479,7 @@ make_smooth_colormap (Display *dpy, Visual *visual, Colormap cmap,
   double v[MAXPOINTS];
   double total_s = 0;
   double total_v = 0;
-  Screen *screen = DefaultScreenOfDisplay(dpy); /* #### WRONG! */
+  Screen *screen = (dpy ? DefaultScreenOfDisplay(dpy) : 0); /* #### WRONG! */
 
   if (*ncolorsP <= 0) return;
 
@@ -544,7 +562,7 @@ make_uniform_colormap (Display *dpy, Visual *visual, Colormap cmap,
 {
   int ncolors = *ncolorsP;
   Bool wanted_writable = (allocate_p && writable_pP && *writable_pP);
-  Screen *screen = DefaultScreenOfDisplay(dpy); /* #### WRONG! */
+  Screen *screen = (dpy ? DefaultScreenOfDisplay(dpy) : 0); /* #### WRONG! */
 
   double S = ((double) (random() % 34) + 66) / 100.0;	/* range 66%-100% */
   double V = ((double) (random() % 34) + 66) / 100.0;	/* range 66%-100% */
@@ -560,7 +578,8 @@ make_uniform_colormap (Display *dpy, Visual *visual, Colormap cmap,
 		  0,   S, V,
 		  359, S, V,
 		  colors, &ncolors,
-		  False, True, wanted_writable);
+		  False, True,
+                  (writable_pP && *writable_pP));
 
   /* If we tried for writable cells and got none, try for non-writable. */
   if (allocate_p && *ncolorsP == 0 && writable_pP && *writable_pP)
@@ -589,7 +608,7 @@ make_random_colormap (Display *dpy, Visual *visual, Colormap cmap,
   Bool wanted_writable = (allocate_p && writable_pP && *writable_pP);
   int ncolors = *ncolorsP;
   int i;
-  Screen *screen = DefaultScreenOfDisplay(dpy); /* #### WRONG! */
+  Screen *screen = (dpy ? DefaultScreenOfDisplay(dpy) : 0); /* #### WRONG! */
 
   if (*ncolorsP <= 0) return;
 

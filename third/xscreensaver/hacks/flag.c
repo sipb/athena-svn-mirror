@@ -71,10 +71,6 @@ static const char sccsid[] = "@(#)flag.c	4.02 97/04/01 xlockmore";
 #endif /* !STANDALONE */
 
 
-#if defined(VMS) && !defined(HAVE_UNAME) && (__VMS_VER >= 70000000)
-# define HAVE_UNAME 1
-#endif
-
 #ifdef HAVE_UNAME
 # include <sys/utsname.h>
 #endif /* HAVE_UNAME */
@@ -350,9 +346,15 @@ make_flag_bits(ModeInfo *mi)
 				*s = 0;
 			  text = (char *) malloc(strlen(uts.nodename) +
 									 strlen(uts.sysname) +
+									 strlen(uts.version) +
 									 strlen(uts.release) + 10);
+# ifdef _AIX
+			  sprintf(text, "%s\n%s %s.%s",
+					  uts.nodename, uts.sysname, uts.version, uts.release);
+# else  /* !_AIX */
 			  sprintf(text, "%s\n%s %s",
 					  uts.nodename, uts.sysname, uts.release);
+# endif /* !_AIX */
 			}
 #else	/* !HAVE_UNAME */
 # ifdef VMS
@@ -436,8 +438,10 @@ make_flag_bits(ModeInfo *mi)
 	}
   else
 	{
+      char *bits = (char *) malloc (sizeof(bob_bits));
+      memcpy (bits, bob_bits, sizeof(bob_bits));
 	  fp->image = XCreateImage (dpy, MI_VISUAL(mi), 1, XYBitmap, 0,
-								(char *) bob_bits, bob_width, bob_height,
+								bits, bob_width, bob_height,
 								8, 0);
 	  fp->image->byte_order = LSBFirst;
 	  fp->image->bitmap_bit_order = LSBFirst;
@@ -539,6 +543,9 @@ init_flag(ModeInfo * mi)
 	XClearWindow(display, MI_WINDOW(mi));
 }
 
+void release_flag(ModeInfo * mi);
+
+
 void
 draw_flag(ModeInfo * mi)
 {
@@ -570,7 +577,10 @@ draw_flag(ModeInfo * mi)
 	XFlush(display);
 	fp->timer++;
 	if ((MI_CYCLES(mi) > 0) && (fp->timer >= MI_CYCLES(mi)))
+      {
+        release_flag(mi);
 		init_flag(mi);
+      }
 }
 
 void

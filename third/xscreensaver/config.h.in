@@ -1,4 +1,4 @@
-/* config.h.in --- xscreensaver, Copyright (c) 1998 Jamie Zawinski.
+/* config.h.in --- xscreensaver, Copyright (c) 1998-2000 Jamie Zawinski.
  *
  *  The best way to set these parameters is by running the included `configure'
  *  script.  That examines your system, and generates `config.h' from 
@@ -96,6 +96,14 @@
  */
 #undef HAVE_DPMS_EXTENSION
 
+/*  Define this if you have the functions XF86VidModeGetModeLine() and
+ *  XF86VidModeGetViewPort(), in support of virtual desktops where the
+ *  X server's root window is bigger than the actual screen.  This is
+ *  an XFree86 thing, and probably doesn't exist elsewhere.  (It's
+ *  available if the file /usr/include/X11/extensions/xf86vmode.h exists.)
+ */
+#undef HAVE_XF86VMODE
+
 /*  Define this if you have a Linux-like /proc/interrupts file which can be
  *  examined to determine when keyboard activity has occurred.
  */
@@ -111,15 +119,18 @@
  */
 #undef HAVE_MOTIF
 
-/*  Define this if you don't have Motif, but you have Athena (-Xaw).
+/*  Define this if you have the XmComboBox Motif widget (Motif 2.0.)
  */
-#undef HAVE_ATHENA
+#undef HAVE_XMCOMBOBOX
 
-/*  Define this if you have Athena, and the version you have includes the
- *  XawViewportSetCoordinates function in Viewport.h (some old versions of
- *  the library didn't have this function.)
+/*  Define this if you have Gtk.
  */
-#undef HAVE_XawViewportSetCoordinates
+#undef HAVE_GTK
+
+/*  Define this if you have Gnome and want to build support for the 
+    xscreensaver control panel in the Gnome Control Center (gnomecc).
+ */
+#undef HAVE_CRAPPLET
 
 /*  Define this if you have the XPM library installed.  Some of the demos can
  *  make use of this if it is available.
@@ -147,9 +158,21 @@
  */
 #undef HAVE_GLBINDTEXTURE
 
+/*  Define this if you have the -lgle and -lmatrix libraries (GL extrusion.)
+ */
+#undef HAVE_GLE
+
+/*  Define this if you have the -lgle from GLE version 3
+ */
+#undef HAVE_GLE3
+
 /*  Define this if you have the X Shared Memory Extension.
  */
 #undef HAVE_XSHM_EXTENSION
+
+/*  Define this if you have the X Double Buffer Extension.
+ */
+#undef HAVE_DOUBLE_BUFFER_EXTENSION
 
 /*  Some screenhacks like to run an external program to generate random pieces
     of text; set this to the one you like ("yow" and "fortune" are the most
@@ -179,6 +202,11 @@
  */
 #undef HAVE_KERBEROS
 
+/* Define this if you have Kerberos 5, meaning we need to use the Kerberos 4
+ * compatibility layer.
+ */
+#undef HAVE_KERBEROS5
+
 /*  Define this if you want to use PAM (Pluggable Authentication Modules)
  *  to lock/unlock the screen, instead of standard /etc/passwd authentication.
  */
@@ -193,11 +221,14 @@
  */
 #define PAM_SERVICE_NAME "xscreensaver"
 
+/* Define if you have PAM and pam_strerror() requires two arguments.  */
+#undef PAM_STRERROR_TWO_ARGS
+
 /*  Define this if your system uses `shadow' passwords, that is, the passwords
  *  live in /etc/shadow instead of /etc/passwd, and one reads them with
  *  getspnam() instead of getpwnam().  (Note that SCO systems do some random
- *  other thing; others might as well.  See the ifdefs in driver/passwd.c if
- *  you're having trouble related to reading passwords.)
+ *  other thing; others might as well.  See the ifdefs in driver/passwd-pwent.c
+ *  if you're having trouble related to reading passwords.)
  */
 #undef HAVE_SHADOW_PASSWD
 
@@ -224,7 +255,8 @@
     VT_UNLOCKSWITCH ioctls.  If this is defined, then when the screen is
     locked, switching to another virtual terminal will also be prevented.
     That is, the whole console will be locked, rather than just the VT on
-    which X is running.
+    which X is running.  (Well, that's the theory anyway -- in practice,
+    I haven't yet figured out how to make that work.)
  */
 #undef HAVE_VT_LOCKSWITCH
 
@@ -293,6 +325,9 @@
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETWD
 
+/* Define if you have the realpath function.  */
+#undef HAVE_REALPATH
+
 /* Define if you have the uname function.  */
 #undef HAVE_UNAME
 
@@ -315,3 +350,11 @@
    This is necessary at least on SCO OpenServer 5, due to a Unix kernel bug.
  */
 #undef USE_SIGACTION
+
+/* Define this if you do pings with a `struct icmp' and  a `icmp_id' slot.
+ */
+#undef HAVE_ICMP
+
+/* Define this if you do pings with a `struct icmphdr' and a `un.echo.id' slot.
+ */
+#undef HAVE_ICMPHDR

@@ -1,5 +1,5 @@
 /* subprocs.c --- choosing, spawning, and killing screenhacks.
- * xscreensaver, Copyright (c) 1991, 1992, 1993, 1995, 1997, 1998
+ * xscreensaver, Copyright (c) 1991, 1992, 1993, 1995, 1997, 1998, 1999, 2000
  *  Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -67,7 +67,7 @@ extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 
 #include "xscreensaver.h"
 #include "yarandom.h"
-
+#include "visual.h"    /* for id_to_visual() */
 
 extern saver_info *global_si_kludge;	/* I hate C so much... */
 
@@ -169,9 +169,49 @@ exec_complex_command (const char *shell, const char *command)
 {
   char *av[5];
   int ac = 0;
-  char *command2 = (char *) malloc (strlen (command) + 6);
-  memcpy (command2, "exec ", 5);
-  memcpy (command2 + 5, command, strlen (command) + 1);
+  char *command2 = (char *) malloc (strlen (command) + 10);
+  const char *s;
+  int got_eq = 0;
+  const char *after_vars;
+
+  /* Skip leading whitespace.
+   */
+  while (*command == ' ' || *command == '\t')
+    command++;
+
+  /* If the string has a series of tokens with "=" in them at them, set
+     `after_vars' to point into the string after those tokens and any
+     trailing whitespace.  Otherwise, after_vars == command.
+   */
+  after_vars = command;
+  for (s = command; *s; s++)
+    {
+      if (*s == '=') got_eq = 1;
+      else if (*s == ' ')
+        {
+          if (got_eq)
+            {
+              while (*s == ' ' || *s == '\t')
+                s++;
+              after_vars = s;
+              got_eq = 0;
+            }
+          else
+            break;
+        }
+    }
+
+  *command2 = 0;
+  strncat (command2, command, after_vars - command);
+  strcat (command2, "exec ");
+  strcat (command2, after_vars);
+
+  /* We have now done these transformations:
+     "foo -x -y"               ==>  "exec foo -x -y"
+     "BLAT=foop      foo -x"   ==>  "BLAT=foop      exec foo -x"
+     "BLAT=foop A=b  foo -x"   ==>  "BLAT=foop A=b  exec foo -x"
+   */
+
 
   /* Invoke the shell as "/bin/sh -c 'exec prog -arg -arg ...'" */
   av [ac++] = (char *) shell;
@@ -248,6 +288,17 @@ exec_screenhack (saver_info *si, const char *command)
   Bool hairy_p = !!strpbrk (command, "*?$&!<>[];`'\\\"=");
   /* note: = is in the above because of the sh syntax "FOO=bar cmd". */
 
+  if (getuid() == (uid_t) 0 || geteuid() == (uid_t) 0)
+    {
+      /* If you're thinking of commenting this out, think again.
+         If you do so, you will open a security hole.  Mail jwz
+         so that he may enlighten you as to the error of your ways.
+       */
+      fprintf (stderr, "%s: we're still running as root!  Disaster!\n",
+               blurb());
+      saver_exit (si, 1, 0);
+    }
+
   if (p->verbose_p)
     fprintf (stderr, "%s: spawning \"%s\" in pid %lu%s.\n",
 	     blurb(), command, (unsigned long) getpid (),
@@ -323,20 +374,27 @@ make_job (pid_t pid, const char *cmd)
   static char name [1024];
   const char *in = cmd;
   char *out = name;
+  int got_eq = 0;
+  int first = 1;
 
   clean_job_list();
 
+ AGAIN:
   while (isspace(*in)) in++;		/* skip whitespace */
-  while (!isspace(*in) && *in != ':')
+  while (!isspace(*in) && *in != ':') {
+    if (*in == '=') got_eq = 1;
     *out++ = *in++;			/* snarf first token */
-  while (isspace(*in)) in++;		/* skip whitespace */
-  if (*in == ':')			/* token was a visual name; skip it. */
-    {
-      in++;
+  }
+
+  if (got_eq)				/* if the first token was FOO=bar */
+    {					/* then get the next token instead. */
+      got_eq = 0;
       out = name;
-      while (isspace(*in)) in++;		/* skip whitespace */
-      while (!isspace(*in)) *out++ = *in++;	/* snarf first token */
+      first = 0;
+      goto AGAIN;
     }
+
+  while (isspace(*in)) in++;		/* skip whitespace */
   *out = 0;
 
   job->name = strdup(name);
@@ -701,46 +759,25 @@ init_sigchld (void)
 
 
 static Bool
-hack_enabled_p (const char *hack)
-{
-  const char *s = hack;
-  while (isspace(*s)) s++;
-  return (*s != '-');
-}
-
-static Bool
-select_visual_of_hack (saver_screen_info *ssi, const char *hack)
+select_visual_of_hack (saver_screen_info *ssi, screenhack *hack)
 {
   saver_info *si = ssi->global;
   saver_preferences *p = &si->prefs;
   Bool selected;
-  static char vis [1024];
-  const char *in = hack;
-  char *out = vis;
-  while (isspace(*in)) in++;		/* skip whitespace */
-  if (*in == '-') in++;			/* skip optional "-" */
-  while (isspace(*in)) in++;		/* skip whitespace */
 
-  while (!isspace(*in) && *in != ':')
-    *out++ = *in++;			/* snarf first token */
-  while (isspace(*in)) in++;		/* skip whitespace */
-  *out = 0;
-
-  if (*in == ':')
-    selected = select_visual(ssi, vis);
+  if (hack->visual && *hack->visual)
+    selected = select_visual(ssi, hack->visual);
   else
     selected = select_visual(ssi, 0);
 
   if (!selected && (p->verbose_p || si->demoing_p))
-    {
-      if (*in == ':') in++;
-      while (isspace(*in)) in++;
-      fprintf (stderr,
-	       (si->demoing_p
-		? "%s: warning, no \"%s\" visual for \"%s\".\n"
-		: "%s: no \"%s\" visual; skipping \"%s\".\n"),
-	       blurb(), (vis ? vis : "???"), in);
-    }
+    fprintf (stderr,
+             (si->demoing_p
+              ? "%s: warning, no \"%s\" visual for \"%s\".\n"
+              : "%s: no \"%s\" visual; skipping \"%s\".\n"),
+             blurb(),
+             (hack->visual && *hack->visual ? hack->visual : "???"),
+             hack->command);
 
   return selected;
 }
@@ -756,7 +793,7 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 
   if (p->screenhacks_count)
     {
-      char *hack;
+      screenhack *hack;
       pid_t forked;
       char buf [255];
       int new_hack;
@@ -804,7 +841,7 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
         select_visual_of_hack (ssi, hack);
         
       if (!force &&
-	  (!hack_enabled_p (hack) ||
+	  (!hack->enabled_p ||
 	   !select_visual_of_hack (ssi, hack)))
 	{
 	  if (++retry_count > (p->screenhacks_count*4))
@@ -830,25 +867,6 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
       if (si->selection_mode < 0)
 	si->selection_mode = 0;
 
-
-      /* If there's a visual description on the front of the command, nuke it.
-       */
-      {
-	char *in = hack;
-	while (isspace(*in)) in++;			/* skip whitespace */
-	if (*in == '-') in++;				/* skip optional "-" */
-	while (isspace(*in)) in++;			/* skip whitespace */
-	hack = in;
-	while (!isspace(*in) && *in != ':') in++;	/* snarf first token */
-	while (isspace(*in)) in++;			/* skip whitespace */
-	if (*in == ':')
-	  {
-	    in++;
-	    while (isspace(*in)) in++;
-	    hack = in;
-	  }
-      }
-
       switch ((int) (forked = fork ()))
 	{
 	case -1:
@@ -861,13 +879,13 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 	  close (ConnectionNumber (si->dpy));	/* close display fd */
 	  nice_subproc (p->nice_inferior);	/* change process priority */
 	  hack_subproc_environment (ssi);	/* set $DISPLAY */
-	  exec_screenhack (si, hack);		/* this does not return */
+	  exec_screenhack (si, hack->command);	/* this does not return */
 	  abort();
 	  break;
 
 	default:
 	  ssi->pid = forked;
-	  (void) make_job (forked, hack);
+	  (void) make_job (forked, hack->command);
 	  break;
 	}
     }
@@ -877,22 +895,21 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 void
 spawn_screenhack (saver_info *si, Bool first_time_p)
 {
-  int i;
-
-  if (!monitor_powered_on_p (si))
+  if (monitor_powered_on_p (si))
     {
-      if (si->prefs.verbose_p)
-	fprintf (stderr,
-		 "%s: server reports that monitor has powered down; "
-		 "not launching a new hack.\n", blurb());
-      return;
+      int i;
+      for (i = 0; i < si->nscreens; i++)
+        {
+          saver_screen_info *ssi = &si->screens[i];
+          spawn_screenhack_1 (ssi, first_time_p);
+        }
     }
+  else if (si->prefs.verbose_p)
+    fprintf (stderr,
+             "%s: X says monitor has powered down; "
+             "not launching a hack.\n", blurb());
 
-  for (i = 0; i < si->nscreens; i++)
-    {
-      saver_screen_info *ssi = &si->screens[i];
-      spawn_screenhack_1 (ssi, first_time_p);
-    }
+  store_saver_status (si);  /* store current hack numbers */
 }
 
 
@@ -948,15 +965,14 @@ emergency_kill_subproc (saver_info *si)
 Bool
 screenhack_running_p (saver_info *si)
 {
-  Bool result = True;
+  Bool any_running_p = False;
   int i;
   for (i = 0; i < si->nscreens; i++)
     {
       saver_screen_info *ssi = &si->screens[i];
-      if (!ssi->pid)
-	result = False;
+      if (ssi->pid) any_running_p = True;
     }
-  return result;
+  return any_running_p;
 }
 
 
@@ -1027,6 +1043,111 @@ hack_subproc_environment (saver_screen_info *ssi)
     abort ();
 #endif /* HAVE_PUTENV */
 }
+
+
+/* GL crap */
+
+Visual *
+get_best_gl_visual (saver_screen_info *ssi)
+{
+  saver_info *si = ssi->global;
+  pid_t forked;
+  int fds [2];
+  int in, out;
+  char buf[1024];
+
+  char *av[10];
+  int ac = 0;
+
+  av[ac++] = "xscreensaver-gl-helper";
+  av[ac] = 0;
+
+  if (pipe (fds))
+    {
+      perror ("error creating pipe:");
+      return 0;
+    }
+
+  in = fds [0];
+  out = fds [1];
+
+  switch ((int) (forked = fork ()))
+    {
+    case -1:
+      {
+        sprintf (buf, "%s: couldn't fork", blurb());
+        perror (buf);
+        saver_exit (si, 1, 0);
+      }
+    case 0:
+      {
+        int stdout_fd = 1;
+
+        close (in);  /* don't need this one */
+        close (ConnectionNumber (si->dpy));	/* close display fd */
+
+        if (dup2 (out, stdout_fd) < 0)		/* pipe stdout */
+          {
+            perror ("could not dup() a new stdout:");
+            return 0;
+          }
+        hack_subproc_environment (ssi);		/* set $DISPLAY */
+
+        execvp (av[0], av);			/* shouldn't return. */
+
+        if (errno != ENOENT || si->prefs.verbose_p)
+          {
+            /* Ignore "no such file or directory" errors, unless verbose.
+               Issue all other exec errors, though. */
+            sprintf (buf, "%s: running %s", blurb(), av[0]);
+            perror (buf);
+          }
+        exit (1);                               /* exits fork */
+        break;
+      }
+    default:
+      {
+        int result = 0;
+        int wait_status = 0;
+
+        FILE *f = fdopen (in, "r");
+        unsigned long v = 0;
+        char c;
+
+        close (out);  /* don't need this one */
+
+        *buf = 0;
+        fgets (buf, sizeof(buf)-1, f);
+        fclose (f);
+
+        /* Wait for the child to die. */
+        waitpid (-1, &wait_status, 0);
+
+        if (1 == sscanf (buf, "0x%x %c", &v, &c))
+          result = (int) v;
+
+        if (result == 0)
+          {
+            if (si->prefs.verbose_p)
+              fprintf (stderr, "%s: %s did not report a GL visual!\n",
+                       blurb(), av[0]);
+            return 0;
+          }
+        else
+          {
+            Visual *v = id_to_visual (ssi->screen, result);
+            if (si->prefs.verbose_p)
+              fprintf (stderr, "%s: %s says the GL visual is 0x%X%s.\n",
+                       blurb(), av[0], result,
+                       (v == ssi->default_visual ? " (the default)" : ""));
+            return v;
+          }
+      }
+    }
+
+  abort();
+}
+
 
 
 /* Restarting the xscreensaver process from scratch. */

@@ -38,6 +38,7 @@
 #include <X11/Shell.h>
 #include <X11/StringDefs.h>
 #include <X11/Xutil.h>
+#include <X11/keysym.h>
 
 #ifdef __sgi
 # include <X11/SGIScheme.h>	/* for SgiUseSchemes() */
@@ -56,8 +57,17 @@
 #include "version.h"
 #include "vroot.h"
 
+#ifndef isupper
+# define isupper(c)  ((c) >= 'A' && (c) <= 'Z')
+#endif
+#ifndef _tolower
+# define _tolower(c)  ((c) - 'A' + 'a')
+#endif
+
+
 char *progname;
 XrmDatabase db;
+XtAppContext app;
 Bool mono_p;
 
 static XrmOptionDescRec default_options [] = {
@@ -159,10 +169,6 @@ MapNotify_event_p (Display *dpy, XEvent *event, XPointer window)
 }
 
 
-#ifdef USE_GL
-extern Visual *get_gl_visual (Screen *, const char *, const char *);
-#endif
-
 #ifdef XLOCKMORE
 extern void pre_merge_options (void);
 #endif
@@ -188,7 +194,10 @@ screenhack_handle_event (Display *dpy, XEvent *event)
             c == 3 ||	/* ^C */
             c == 27)	/* ESC */
           exit (0);
+        else if (! (keysym >= XK_Shift_L && keysym <= XK_Hyper_R))
+          XBell (dpy, 0);  /* beep for non-chord keys */
       }
+      break;
     case ButtonPress:
       XBell (dpy, 0);
       break;
@@ -232,14 +241,109 @@ screenhack_handle_events (Display *dpy)
 }
 
 
+static Visual *
+pick_visual (Screen *screen)
+{
+#ifdef USE_GL
+  /* If we're linking against GL (that is, this is the version of screenhack.o
+     that the GL hacks will use, which is different from the one that the
+     non-GL hacks will use) then try to pick the "best" visual by interrogating
+     the GL library instead of by asking Xlib.  GL knows better.
+   */
+  Visual *v = 0;
+  char *string = get_string_resource ("visualID", "VisualID");
+  char *s;
+
+  if (string)
+    for (s = string; *s; s++)
+      if (isupper (*s)) *s = _tolower (*s);
+
+  if (!string || !*string ||
+      !strcmp (string, "gl") ||
+      !strcmp (string, "best") ||
+      !strcmp (string, "color") ||
+      !strcmp (string, "default"))
+    v = get_gl_visual (screen);		/* from ../utils/visual-gl.c */
+
+  if (string)
+    free (string);
+  if (v)
+    return v;
+#endif /* USE_GL */
+
+  return get_visual_resource (screen, "visualID", "VisualID", False);
+}
+
+
+/* Notice when the user has requested a different visual or colormap
+   on a pre-existing window (e.g., "-root -visual truecolor" or
+   "-window-id 0x2c00001 -install") and complain, since when drawing
+   on an existing window, we have no choice about these things.
+ */
+static void
+visual_warning (Screen *screen, Window window, Visual *visual, Colormap cmap,
+                Bool window_p)
+{
+  char *visual_string = get_string_resource ("visualID", "VisualID");
+  Visual *desired_visual = pick_visual (screen);
+  char win[100];
+  char why[100];
+
+  if (window == RootWindowOfScreen (screen))
+    strcpy (win, "root window");
+  else
+    sprintf (win, "window 0x%x", (unsigned long) window);
+
+  if (window_p)
+    sprintf (why, "-window-id 0x%x", (unsigned long) window);
+  else
+    strcpy (why, "-root");
+
+  if (visual_string && *visual_string)
+    {
+      char *s;
+      for (s = visual_string; *s; s++)
+        if (isupper (*s)) *s = _tolower (*s);
+
+      if (!strcmp (visual_string, "default") ||
+          !strcmp (visual_string, "default") ||
+          !strcmp (visual_string, "best"))
+        /* don't warn about these, just silently DWIM. */
+        ;
+      else if (visual != desired_visual)
+        {
+          fprintf (stderr, "%s: ignoring `-visual %s' because of `%s'.\n",
+                   progname, visual_string, why);
+          fprintf (stderr, "%s: using %s's visual 0x%x.\n",
+                   progname, win, XVisualIDFromVisual (visual));
+        }
+      free (visual_string);
+    }
+
+  if (visual == DefaultVisualOfScreen (screen) &&
+      has_writable_cells (screen, visual) &&
+      get_boolean_resource ("installColormap", "InstallColormap"))
+    {
+      fprintf (stderr, "%s: ignoring `-install' because of `%s'.\n",
+               progname, why);
+      fprintf (stderr, "%s: using %s's colormap 0x%x.\n",
+               progname, win, (unsigned long) cmap);
+    }
+
+# ifdef USE_GL
+  if (!validate_gl_visual (stderr, screen, win, visual))
+    exit (1);
+# endif /* USE_GL */
+}
+
 
 int
 main (int argc, char **argv)
 {
-  XtAppContext app;
   Widget toplevel;
   Display *dpy;
   Window window;
+  Screen *screen;
   Visual *visual;
   Colormap cmap;
   Bool root_p;
@@ -269,8 +373,14 @@ main (int argc, char **argv)
 			      merged_options_size, &argc, argv,
 			      merged_defaults, 0, 0);
   dpy = XtDisplay (toplevel);
+  screen = XtScreen (toplevel);
   db = XtDatabase (dpy);
+
   XtGetApplicationNameAndClass (dpy, &progname, &progclass);
+
+  /* half-assed way of avoiding buffer-overrun attacks. */
+  if (strlen (progname) >= 100) progname[100] = 0;
+
   XSetErrorHandler (screenhack_ehandler);
 
   XA_WM_PROTOCOLS = XInternAtom (dpy, "WM_PROTOCOLS", False);
@@ -346,6 +456,7 @@ main (int argc, char **argv)
       XGetWindowAttributes (dpy, window, &xgwa);
       cmap = xgwa.colormap;
       visual = xgwa.visual;
+      visual_warning (screen, window, visual, cmap, True);
     }
   else if (root_p)
     {
@@ -355,17 +466,17 @@ main (int argc, char **argv)
       XGetWindowAttributes (dpy, window, &xgwa);
       cmap = xgwa.colormap;
       visual = xgwa.visual;
+      visual_warning (screen, window, visual, cmap, False);
     }
   else
     {
       Boolean def_visual_p;
-      Screen *screen = XtScreen (toplevel);
+      visual = pick_visual (screen);
 
-#ifdef USE_GL
-      visual = get_gl_visual (screen, "visualID", "VisualID");
-#else
-      visual = get_visual_resource (screen, "visualID", "VisualID", False);
-#endif
+# ifdef USE_GL
+      if (!validate_gl_visual (stderr, screen, "window", visual))
+        exit (1);
+# endif /* USE_GL */
 
       if (toplevel->core.width <= 0)
 	toplevel->core.width = 600;
@@ -394,6 +505,7 @@ main (int argc, char **argv)
 				    XtNcolormap, cmap,
 				    XtNbackground, (Pixel) bg,
 				    XtNborderColor, (Pixel) bd,
+				    XtNinput, True,  /* for WM_HINTS */
 				    0);
 	  XtDestroyWidget (toplevel);
 	  toplevel = new;
@@ -402,7 +514,10 @@ main (int argc, char **argv)
 	}
       else
 	{
-	  XtVaSetValues (toplevel, XtNmappedWhenManaged, False, 0);
+	  XtVaSetValues (toplevel,
+                         XtNmappedWhenManaged, False,
+                         XtNinput, True,  /* for WM_HINTS */
+                         0);
 	  XtRealizeWidget (toplevel);
 	  window = XtWindow (toplevel);
 
@@ -459,7 +574,13 @@ main (int argc, char **argv)
     XIfEvent (dpy, &event, MapNotify_event_p, (XPointer) window);
 
   XSync (dpy, False);
-  srandom ((int) time ((time_t *) 0));
+
+  /* This is the one and only place that the random-number generator is
+     seeded in any screenhack.  You do not need to seed the RNG again,
+     it is done for you before your code is invoked. */
+# undef ya_rand_init
+  ya_rand_init (0);
+
   screenhack (dpy, window); /* doesn't return */
   return 0;
 }

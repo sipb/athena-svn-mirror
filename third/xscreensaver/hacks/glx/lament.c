@@ -81,8 +81,10 @@
 #define PROGCLASS	"Lament"
 #define HACK_INIT	init_lament
 #define HACK_DRAW	draw_lament
+#define HACK_RESHAPE	reshape_lament
 #define lament_opts	xlockmore_opts
 #define DEFAULTS	"*delay:	10000   \n"	\
+			"*showFPS:      False   \n"     \
 			"*wireframe:	False	\n"	\
 			"*texture:	True	\n"
 #include "xlockmore.h"
@@ -182,7 +184,6 @@ parse_image_data(ModeInfo *mi)
 			       mi->xgwa.colormap,
 			       lament_faces);
 }
-
 
 
 /* Computing normal vectors (thanks to Nat Friedman <ndf@mit.edu>)
@@ -712,7 +713,6 @@ tetra(ModeInfo *mi, Bool wire)
 	  0.0, 0.0,	 0.5, -0.5,  0.5,
 	  0.0, 0.0,	 0.5,  0.5, -0.5,
 	  0.0, 0.0,	-0.5, -0.5, -0.5);
-    glEnd();
   }
   glEndList();
 
@@ -1873,8 +1873,8 @@ rotate(GLfloat *pos, GLfloat *v, GLfloat *dv, GLfloat max_v)
 /* Window management, etc
  */
 
-static void
-reshape(int width, int height)
+void
+reshape_lament(ModeInfo *mi, int width, int height)
 {
   int target_size = 180;
   int win_size = (width > height ? height : width);
@@ -1976,11 +1976,14 @@ gl_init(ModeInfo *mi)
 	  int height = lc->texture->width;	/* assume square */
 	  glBindTexture(GL_TEXTURE_2D, lc->texids[i]);
 	  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+
+          clear_gl_error();
 	  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 		       lc->texture->width, height, 0,
 		       GL_RGBA, GL_UNSIGNED_BYTE,
 		       (lc->texture->data +
 			(lc->texture->bytes_per_line * height * i)));
+          check_gl_error("texture");
 
 	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -2025,6 +2028,48 @@ gl_init(ModeInfo *mi)
 }
 
 
+# ifdef HAVE_MESA_GL
+
+# include <signal.h>
+
+static RETSIGTYPE
+lament_signal_kludge (int sig)
+{
+  signal (sig, SIG_DFL);
+  fprintf (stderr,
+           "\n"
+           "%s: dying with signal %d (%s).\n"
+           "\n"
+           "\tThis is almost certainly a bug in the MesaGL library,\n"
+           "\tespecially if the stack trace in the core file mentions\n"
+           "\t`lambda_textured_triangle' or `render_quad'.\n"
+           "\n"
+           "\tI encourage you to report this to the Mesa maintainers\n"
+           "\tat <http://www.mesa3d.org/>.  I reported this bug more\n"
+           "\tthan a year ago, and it is trivially reproducible.\n"
+           "\tI do not know a workaround.\n"
+           "\n",
+           progname,
+           sig,
+           (sig == SIGILL ? "SIGILL" :
+            sig == SIGFPE ? "SIGFPE" :
+            sig == SIGBUS ? "SIGBUS" :
+            sig == SIGSEGV ? "SIGSEGV" : "???"));
+  fflush (stderr);
+  kill (getpid (), sig);
+}
+
+static void
+handle_signals (void)
+{
+  signal (SIGILL,  lament_signal_kludge);
+  signal (SIGFPE,  lament_signal_kludge);
+  signal (SIGBUS,  lament_signal_kludge);
+  signal (SIGSEGV, lament_signal_kludge);
+}
+# endif /* HAVE_MESA_GL */
+
+
 void
 init_lament(ModeInfo *mi)
 {
@@ -2066,16 +2111,19 @@ init_lament(ModeInfo *mi)
 
   if ((lc->glx_context = init_GL(mi)) != NULL)
     {
-      reshape(MI_WIDTH(mi), MI_HEIGHT(mi));
+      reshape_lament(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
       gl_init(mi);
     }
+
+# ifdef HAVE_MESA_GL
+  handle_signals ();
+# endif /* HAVE_MESA_GL */
 }
 
 
 void
 draw_lament(ModeInfo *mi)
 {
-  static int tick = 0;
   lament_configuration *lc = &lcs[MI_SCREEN(mi)];
   Display *dpy = MI_DISPLAY(mi);
   Window window = MI_WINDOW(mi);
@@ -2087,6 +2135,8 @@ draw_lament(ModeInfo *mi)
 
   glXMakeCurrent(dpy, window, *(lc->glx_context));
   draw(mi);
+  if (mi->fps_p) do_fps (mi);
+
   glFinish();
   glXSwapBuffers(dpy, window);
 
@@ -2101,12 +2151,6 @@ draw_lament(ModeInfo *mi)
     lc->anim_pause--;
   else
     animate(mi);
-
-  if (++tick > 500)
-    {
-      tick = 0;
-      reshape(MI_WIDTH(mi), MI_HEIGHT(mi));
-    }
 }
 
 #endif /* USE_GL */

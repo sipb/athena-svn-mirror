@@ -195,9 +195,15 @@ get_encrypted_passwd(const char *user)
 	*s = 0;
     }
 
+#ifndef HAVE_PAM
+  /* We only issue this warning if not compiled with support for PAM.
+     If we're using PAM, it's not unheard of that normal pwent passwords
+     would be unavailable. */
+
   if (!result)
     fprintf (stderr, "%s: couldn't get password of \"%s\"\n",
 	     blurb(), (user ? user : "(null)"));
+#endif /* !HAVE_PAM */
 
   return result;
 }
@@ -213,7 +219,7 @@ get_encrypted_passwd(const char *user)
 #ifndef VMS
 
 Bool
-pwent_lock_init (int argc, char **argv, Bool verbose_p)
+pwent_priv_init (int argc, char **argv, Bool verbose_p)
 {
   char *u;
 
@@ -232,6 +238,17 @@ pwent_lock_init (int argc, char **argv, Bool verbose_p)
   else
     return False;
 }
+
+
+Bool
+pwent_lock_init (int argc, char **argv, Bool verbose_p)
+{
+  if (encrypted_user_passwd)
+    return True;
+  else
+    return False;
+}
+
 
 
 static Bool

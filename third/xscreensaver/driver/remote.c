@@ -41,8 +41,8 @@ ERROR! you must not include vroot.h in this file
 
 extern char *progname;
 extern Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_RESPONSE;
-extern Atom XA_SCREENSAVER_ID, XA_SCREENSAVER_TIME;
-extern Atom XA_VROOT, XA_SELECT, XA_DEMO;
+extern Atom XA_SCREENSAVER_ID, XA_SCREENSAVER_STATUS, XA_EXIT;
+extern Atom XA_VROOT, XA_SELECT, XA_DEMO, XA_BLANK, XA_LOCK;
 
 
 static XErrorHandler old_handler = 0;
@@ -58,6 +58,7 @@ BadWindow_ehandler (Display *dpy, XErrorEvent *error)
   else
     {
       fprintf (stderr, "%s: ", progname);
+      if (!old_handler) abort();
       return (*old_handler) (dpy, error);
     }
 }
@@ -81,74 +82,117 @@ find_screensaver_window (Display *dpy, char **version)
   if (parent)
     abort ();
   if (! (kids && nkids))
-    abort ();
+    return 0;
   for (i = 0; i < nkids; i++)
     {
       Atom type;
       int format;
       unsigned long nitems, bytesafter;
       char *v;
+      int status;
 
-      if (XGetWindowProperty (dpy, kids[i],
-			      XA_SCREENSAVER_VERSION,
-			      0, 200, False, XA_STRING,
-			      &type, &format, &nitems, &bytesafter,
-			      (unsigned char **) &v)
-	  == Success
-	  && type != None)
+      /* We're walking the list of root-level windows and trying to find
+         the one that has a particular property on it.  We need to trap
+         BadWindows errors while doing this, because it's possible that
+         some random window might get deleted in the meantime.  (That
+         window won't have been the one we're looking for.)
+       */
+      XSync (dpy, False);
+      if (old_handler) abort();
+      got_badwindow = False;
+      old_handler = XSetErrorHandler (BadWindow_ehandler);
+      status = XGetWindowProperty (dpy, kids[i],
+                                   XA_SCREENSAVER_VERSION,
+                                   0, 200, False, XA_STRING,
+                                   &type, &format, &nitems, &bytesafter,
+                                   (unsigned char **) &v);
+      XSync (dpy, False);
+      XSetErrorHandler (old_handler);
+      old_handler = 0;
+
+      if (got_badwindow)
+        {
+          status = BadWindow;
+          got_badwindow = False;
+        }
+
+      if (status == Success && type != None)
 	{
 	  if (version)
 	    *version = v;
 	  return kids[i];
 	}
     }
-  fprintf (stderr, "%s: no screensaver is running on display %s\n", progname,
-	   DisplayString (dpy));
   return 0;
 }
 
 
 static int
 send_xscreensaver_command (Display *dpy, Atom command, long arg,
-			   Window *window_ret)
+			   Window *window_ret, char **error_ret)
 {
   char *v = 0;
   Window window = find_screensaver_window (dpy, &v);
   XWindowAttributes xgwa;
+  char err[2048];
 
   if (window_ret)
     *window_ret = window;
 
   if (!window)
-    return -1;
+    {
+      sprintf (err, "no screensaver is running on display %s",
+               DisplayString (dpy));
+
+      if (error_ret)
+        {
+          *error_ret = strdup (err);
+          return -1;
+        }
+
+      if (command == XA_EXIT)
+        /* Don't print an error if xscreensaver is already dead. */
+        return 1;
+
+      fprintf (stderr, "%s: %s\n", progname, err);
+      return -1;
+    }
 
   /* Select for property change events, so that we can read the response. */
   XGetWindowAttributes (dpy, window, &xgwa);
   XSelectInput (dpy, window, xgwa.your_event_mask | PropertyChangeMask);
 
-  if (command == XA_SCREENSAVER_TIME ||
+  if (command == XA_SCREENSAVER_STATUS ||
       command == XA_SCREENSAVER_VERSION)
     {
       XClassHint hint;
       memset (&hint, 0, sizeof(hint));
       if (!v || !*v)
 	{
-	  fprintf (stderr, "%s: version property not set on window 0x%x?\n",
-		   progname, (unsigned int) window);
+	  sprintf (err, "version property not set on window 0x%x?",
+		   (unsigned int) window);
+          if (error_ret)
+            *error_ret = strdup (err);
+          else
+            fprintf (stderr, "%s: %s\n", progname, err);
 	  return -1;
 	}
 
       XGetClassHint(dpy, window, &hint);
       if (!hint.res_class)
 	{
-	  fprintf (stderr, "%s: class hints not set on window 0x%x?\n",
-		   progname, (unsigned int) window);
+	  sprintf (err, "class hints not set on window 0x%x?",
+		   (unsigned int) window);
+          if (error_ret)
+            *error_ret = strdup (err);
+          else
+            fprintf (stderr, "%s: %s\n", progname, err);
 	  return -1;
 	}
 
       fprintf (stdout, "%s %s", hint.res_class, v);
 
-      if (command != XA_SCREENSAVER_TIME)
+      if (command != XA_SCREENSAVER_STATUS)
 	{
 	  fprintf (stdout, "\n");
 	}
@@ -157,38 +201,82 @@ send_xscreensaver_command (Display *dpy, Atom command, long arg,
 	  Atom type;
 	  int format;
 	  unsigned long nitems, bytesafter;
-	  unsigned char *data = 0;
-	  Bool active_p = False;
+	  CARD32 *data = 0;
 
-	  if (XGetWindowProperty (dpy, window, XA_VROOT,
-				  0, 0, False, XA_WINDOW,
+	  if (XGetWindowProperty (dpy,
+                                  RootWindow (dpy, 0),
+				  XA_SCREENSAVER_STATUS,
+				  0, 999, False, XA_INTEGER,
 				  &type, &format, &nitems, &bytesafter,
-				  &data)
+				  (unsigned char **) &data)
 	      == Success
-	      && type != None)
-	    active_p = True;
-
-	  if (data) free (data);
-	  data = 0;
-
-	  if (XGetWindowProperty (dpy, window,
-				  XA_SCREENSAVER_TIME,
-				  0, 1, False, XA_INTEGER,
-				  &type, &format, &nitems, &bytesafter,
-				  &data)
-	      == Success
-	      && type == XA_INTEGER
+	      && type
 	      && data)
 	    {
-	      CARD32 time32 = *((CARD32 *)data);
-	      time_t tt = (time_t) time32;
+              Atom blanked;
+              time_t tt;
+              char *s;
 
-	      if (active_p)
-		fprintf (stdout, ": screen blanked since ");
-	      else
+              if (type != XA_INTEGER || nitems < 3)
+                {
+                STATUS_LOSE:
+                  if (data) free (data);
+                  fprintf (stdout, "\n");
+                  fflush (stdout);
+                  fprintf (stderr, "bad status format on root window.\n");
+                  return -1;
+                }
+                  
+              blanked = (Atom) data[0];
+              tt = (time_t) data[1];
+
+              if (tt <= (time_t) 666000000L) /* early 1991 */
+                goto STATUS_LOSE;
+
+	      if (blanked == XA_BLANK)
+		fputs (": screen blanked since ", stdout);
+	      else if (blanked == XA_LOCK)
+		fputs (": screen locked since ", stdout);
+	      else if (blanked == 0)
 		/* suggestions for a better way to phrase this are welcome. */
-		fprintf (stdout, ": screen non-blanked since ");
-	      fprintf (stdout, "%s", ctime(&tt));
+		fputs (": screen non-blanked since ", stdout);
+              else
+                /* `blanked' has an unknown value - fail. */
+                goto STATUS_LOSE;
+
+              s = ctime(&tt);
+              if (s[strlen(s)-1] == '\n')
+                s[strlen(s)-1] = 0;
+              fputs (s, stdout);
+
+              {
+                int nhacks = nitems - 2;
+                Bool any = False;
+                int i;
+                for (i = 0; i < nhacks; i++)
+                  if (data[i + 2] > 0)
+                    {
+                      any = True;
+                      break;
+                    }
+
+                if (any && nhacks == 1)
+                  fprintf (stdout, " (hack #%d)\n", data[2]);
+                else if (any)
+                  {
+                    fprintf (stdout, " (hacks: ");
+                    for (i = 0; i < nhacks; i++)
+                      {
+                        fprintf (stdout, "#%d", data[2 + i]);
+                        if (i != nhacks-1)
+                          fputs (", ", stdout);
+                      }
+                    fputs (")\n", stdout);
+                  }
+                else
+                  fputs ("\n", stdout);
+              }
+
 	      if (data) free (data);
 	    }
 	  else
@@ -196,9 +284,7 @@ send_xscreensaver_command (Display *dpy, Atom command, long arg,
 	      if (data) free (data);
 	      fprintf (stdout, "\n");
 	      fflush (stdout);
-	      fprintf (stderr, "%s: no time on window 0x%x (%s %s).\n",
-		       progname, (unsigned int) window,
-		       hint.res_class, (v ? v : "???"));
+	      fprintf (stderr, "no saver status on root window.\n");
 	      return -1;
 	    }
 	}
@@ -233,8 +319,12 @@ send_xscreensaver_command (Display *dpy, Atom command, long arg,
       event.xclient.data.l[2] = arg2;
       if (! XSendEvent (dpy, window, False, 0L, &event))
 	{
-	  fprintf (stderr, "%s: XSendEvent(dpy, 0x%x ...) failed.\n",
-		   progname, (unsigned int) window);
+	  sprintf (err, "XSendEvent(dpy, 0x%x ...) failed.\n",
+		   (unsigned int) window);
+          if (error_ret)
+            *error_ret = strdup (err);
+          else
+            fprintf (stderr, "%s: %s\n", progname, err);
 	  return -1;
 	}
     }
@@ -244,13 +334,16 @@ send_xscreensaver_command (Display *dpy, Atom command, long arg,
 
 
 static int
-xscreensaver_command_response (Display *dpy, Window window, Bool verbose_p)
+xscreensaver_command_response (Display *dpy, Window window,
+                               Bool verbose_p, Bool exiting_p,
+                               char **error_ret)
 {
   int fd = ConnectionNumber (dpy);
   int timeout = 10;
   int status;
   fd_set fds;
   struct timeval tv;
+  char err[2048];
 
   while (1)
     {
@@ -263,13 +356,25 @@ xscreensaver_command_response (Display *dpy, Window window, Bool verbose_p)
       if (status < 0)
 	{
 	  char buf[1024];
-	  sprintf (buf, "%s: waiting for reply", progname);
-	  perror (buf);
+          if (error_ret)
+            {
+              sprintf (buf, "error waiting for reply");
+              *error_ret = strdup (buf);
+            }
+          else
+            {
+              sprintf (buf, "%s: error waiting for reply", progname);
+              perror (buf);
+            }
 	  return status;
 	}
       else if (status == 0)
 	{
-	  fprintf (stderr, "%s: no response to command.\n", progname);
+	  sprintf (err, "no response to command.");
+          if (error_ret)
+            *error_ret = strdup (err);
+          else
+            fprintf (stderr, "%s: %s\n", progname, err);
 	  return -1;
 	}
       else
@@ -286,50 +391,70 @@ xscreensaver_command_response (Display *dpy, Window window, Bool verbose_p)
 	      unsigned long nitems, bytesafter;
 	      char *msg = 0;
 
-	      old_handler = XSetErrorHandler (BadWindow_ehandler);
 	      XSync (dpy, False);
-
+              if (old_handler) abort();
+	      old_handler = XSetErrorHandler (BadWindow_ehandler);
 	      st2 = XGetWindowProperty (dpy, window,
 					XA_SCREENSAVER_RESPONSE,
 					0, 1024, True,
 					AnyPropertyType,
 					&type, &format, &nitems, &bytesafter,
 					(unsigned char **) &msg);
+	      XSync (dpy, False);
+              XSetErrorHandler (old_handler);
+              old_handler = 0;
 
 	      if (got_badwindow)
 		{
-		  fprintf (stdout,
-			   "%s: xscreensaver window has been deleted.\n",
-			   progname);
-		  return 0;
+                  if (exiting_p)
+                    return 0;
+
+                  sprintf (err, "xscreensaver window unexpectedly deleted.");
+
+                  if (error_ret)
+                    *error_ret = strdup (err);
+                  else
+                    fprintf (stderr, "%s: %s\n", progname, err);
+
+		  return -1;
 		}
 
 	      if (st2 == Success && type != None)
 		{
 		  if (type != XA_STRING || format != 8)
 		    {
-		      fprintf (stderr,
-			       "%s: unrecognized response property.\n",
-			       progname);
+		      sprintf (err, "unrecognized response property.");
+
+                      if (error_ret)
+                        *error_ret = strdup (err);
+                      else
+                        fprintf (stderr, "%s: %s\n", progname, err);
+
 		      if (msg) XFree (msg);
 		      return -1;
 		    }
 		  else if (!msg || (msg[0] != '+' && msg[0] != '-'))
 		    {
-		      fprintf (stderr,
-			       "%s: unrecognized response message.\n",
-			       progname);
+		      sprintf (err, "unrecognized response message.");
+
+                      if (error_ret)
+                        *error_ret = strdup (err);
+                      else  
+                        fprintf (stderr, "%s: %s\n", progname, err);
+
 		      if (msg) XFree (msg);
 		      return -1;
 		    }
 		  else
 		    {
 		      int ret = (msg[0] == '+' ? 0 : -1);
-		      if (verbose_p || ret != 0)
-			fprintf ((ret < 0 ? stderr : stdout),
-				 "%s: %s\n",
-				 progname,
-				 msg+1);
+                      sprintf (err, "%s: %s\n", progname, msg+1);
+
+                      if (error_ret)
+                        *error_ret = strdup (err);
+                      else if (verbose_p || ret != 0)
+			fprintf ((ret < 0 ? stderr : stdout), "%s\n", err);
+
 		      XFree (msg);
 		      return ret;
 		    }
@@ -341,15 +466,19 @@ xscreensaver_command_response (Display *dpy, Window window, Bool verbose_p)
 
 
 int
-xscreensaver_command (Display *dpy, Atom command, long arg, Bool verbose_p)
+xscreensaver_command (Display *dpy, Atom command, long arg, Bool verbose_p,
+                      char **error_ret)
 {
   Window w = 0;
-  int status = send_xscreensaver_command (dpy, command, arg, &w);
+  int status = send_xscreensaver_command (dpy, command, arg, &w, error_ret);
   if (status == 0)
-    status = xscreensaver_command_response (dpy, w, verbose_p);
+    status = xscreensaver_command_response (dpy, w, verbose_p,
+                                            (command == XA_EXIT),
+                                            error_ret);
+
   fflush (stdout);
   fflush (stderr);
-  return status;
+  return (status < 0 ? status : 0);
 }
 
 
@@ -367,6 +496,8 @@ server_xscreensaver_version (Display *dpy,
 
   if (version_ret)
     *version_ret = 0;
+  if (user_ret)
+    *user_ret = 0;
   if (host_ret)
     *host_ret = 0;
 

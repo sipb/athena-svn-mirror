@@ -38,14 +38,11 @@ Getting Started:
 You can try out xscreensaver like so:
 
 	xscreensaver &
-	xscreensaver-command -demo
-
-After a few seconds, the screen should go black, and a dialog box should
-appear in the upper right corner.  This is "Demo Mode".
+	xscreensaver-demo
 
 Note: unlike `xlock', xscreensaver has a client-server model: the
 `xscreensaver' process is a daemon that runs in the background; it is
-controlled by the foreground `xscreensaver-command' program.
+controlled by the foreground `xscreensaver-demo' program.
 
 xscreensaver has an extensive manual -- please read it!
 
@@ -58,7 +55,7 @@ locking mode, when the proper password is typed.)
 
 It is trivially easy to add new display modes to xscreensaver: any program
 which can be invoked in such a way that it draws on the root window of the
-screen can be used as a screensaver.  You just change a resource setting --
+screen can be used as a screensaver.  You just change a config file --
 there's no need to recompile or reinstall anything.
 
                               ============
@@ -67,7 +64,7 @@ Along with the xscreensaver daemon itself, this package also includes
 numerous graphics hacks for use as screensavers.  There is nothing magic
 about these: they are just programs that draw on the root window.
 
-More than 80 such programs are included.  For details, see the xscreensaver
+More than 100 such programs are included.  For details, see the xscreensaver
 web page, or the enclosed manual pages.  There are also some helpful hints
 on customization in the xscreensaver app-defaults file (normally installed
 in /usr/lib/X11/app-defaults/XScreenSaver.)
@@ -77,6 +74,274 @@ http://www.jwz.org/xscreensaver/.
 
                               ============
 
+Changes since 3.28:   * Better rendering of the new logo.
+                      * New hack, `gltext'.
+                      * Added `-planetary' option to `gears', to draw a
+                        different kind of gear system.
+                      * Made motion and rotation be smoother in `gears',
+                        `glplanet', `moebius', `rubik', and `sierpinski3d'.
+                      * Improved coloration in `sierpinski3d'.
+                      * Made the GL hacks react to window size changes.
+                      * Made most of the GL hacks take a -fps option (like
+                        `pulsar' did), so you can use them to benchmark your
+                        3D hardware.
+                      * Fixed the previous fix to `sonar'.
+                      * Minor fix to `nerverot'.
+                        Made sonar able to ping hosts on DEC OSF1.
+                      * Eliminated a bogus "didn't get enough colors" warning
+                        in some of the hacks.
+Changes since 3.27:   * New logo for xscreensaver!
+                      * New hacks, `starwars' and `stonerview'.
+                      * Made the motion of the bouncing ball in `stairs' be a
+                        little less jerky.
+                      * Made newly-added screenhacks be added to .xscreensaver
+                        automatically: if there are hacks in the app-defaults
+                        file that are not also in ~/.xscreensaver, they will
+                        be added to the end of the list.
+                      * Redid the `Screensaver Options' part of the control
+                        panel; xscreensaver now lets you configure your DPMS
+                        settings.
+                      * Fixed some Makefile problems with non-GL builds.
+                      * Fixed detection of MesaGL for version 3.3.
+                      * Better workaround to Red Hat 7.0's broken gcc.
+                      * Added Sparc Solaris kernel panic to `bsod'.
+Changes since 3.26:   * New hacks: `zoom' and `whirlwindwarp'.
+                      * Fixed a free-memory-reference bug in `sonar'.
+                      * Better error handling when there are no suitable GL
+                        visuals.
+                      * Added diagnostic dialog when xscreensaver-demo is
+                        unable to launch xscreensaver (e.g., when running as
+                        root.)
+                      * Fixed a bug that caused screenhack argument changes
+                        to be ignored when xscreensaver-demo was running as
+                        root (if "root" and "nobody" have different home
+                        directories.)
+                      * Made the programs default to ":0" if $DISPLAY is unset.
+                      * Made the `-verbose' output include information about
+                        which server extensions were supported at compile time.
+                      * Worked around Red Hat 7.0's broken gcc 2.96.
+                      * Updated default delays on the GL hacks to look better
+                        on machines with super-fast 3D hardware.
+                      * Install `screensaver-properties-capplet' to work around
+                        the usual egregious GNOME lossage.
+Changes since 3.25:   * Added "enabled" checkboxes in the list of hacks in
+                        xscreensaver-demo (Gtk version only.)
+                      * New hacks `hyperball', `xrayswarm', and `gflux'.
+                      * New versions of `nerverot', `galaxy', and `hypercube'.
+                      * Small fixes to `phosphor', `shadebobs', `xflame',
+                        and `sonar'.
+                      * Added external helper program `xscreensaver-gl-helper'
+                        to figure out which X visual to use for OpenGL
+                        programs.
+                      * Configure updates for XFree86 4.0, and for BSD.
+                      * Made it be more tolerant of bogus /etc/group files.
+                      * When installing the PAM config file, first try to just
+                        copy an existing "xdm" or "login" config file, so that
+                        xscreensaver does authentication in the same way as the
+                        rest of the system.
+Changes since 3.24:   * New hack, `nerverot'.
+                      * Added BSD kernel panic to `bsod'.
+                      * New version of `shadebobs'.
+                      * New version of `petri'.
+                      * Updated `webcollage' to handle recent Altavista URL
+                        format changes; made it search the AP photo gallery.
+                      * Revamped command-line options of `sonar' and made it
+                        properly handle subnets.
+                      * The `bubbles' hack can now trickle up or down the
+                        screen.
+                      * The `xsublim' hack can now read its text from programs.
+                      * Support for GLE version 3 in `extrusion'.
+                      * Fixed compilation problems in `maze'.
+                      * Fixed a rare crash in `flow'.
+                      * Fixes for minor installation problems.
+Changes since 3.23:   * Added `-ignorant' option to `maze' hack.
+                      * Updates to `critical', `bsod', `xflame', and `flow'.
+                      * Added support for Kerberos 5 (via its Kerberos 4
+                        compatibility layer.)
+                      * Fixed a bad leak in `xteevee'.
+                      * Updated `webcollage' to handle recent Altavista URL
+                        format changes.
+                      * Removed xscreensaver-demo's `Ok' and `Cancel' buttons,
+                        since they were confusing people: all changes are now
+                        instantanious.
+                      * Made xscreensaver-demo install itself into the Gnome
+                        Control Center.
+Changes since 3.22:   * Fixed some misplaced text fields in the Motif version
+                        of xscreensaver-demo; fixed a crash in the Gtk version
+                        that would happen if the programs list was empty.
+                      * Fixed a recently-introduced bug in `pulsar'.
+                      * Made `sierpinski3d' use solid tetrahedrons instead of
+                        points.
+		      * Added `-trace' option to `xmatrix'.
+                      * Added new hacks `xteevee' and `xspirograph'.
+Changes since 3.21:   * Fixed some bugs in xscreensaver-demo.
+                      * Rewrote the Motif version of xscreensaver-demo to
+                        match the new Gtk version.
+                      * The Athena toolkit is no longer supported.
+Changes since 3.20:   * Tweaked the xscreensaver-demo UI (Gtk only.)
+                      * Fixed a few visual selection bugs.  I think the proper
+                        GL visual should be used with nVidia systems now.
+                      * Made the Makefiles obey $install_prefix.
+                      * Made the `xscreensaver.spec' file able to generate both
+                        GL and non-GL packages simultaneously.
+Changes since 3.19:   * Added new hacks `ripples' and `sierpinski3d'.
+                      * Made `xscreensaver-command -exit' be silent when no
+                        screen saver was running (instead of complaining.)
+                      * Made `webcollage' and `vidwhacker' use `xloadimage'
+                        when available (in addition to `xli' and `xv'.)
+                      * Improved memory usage in `petri' and gave it a hard
+                        cap on how much memory it can allocate.
+                      * Added `-watch' option to `xscreensaver-command'.
+                      * Made `xscreensaver-demo' come up with the
+                        most-recently-run hack selected by default.
+                      * Rewrote the Gtk version of `xscreensaver-demo'.
+                        It's a lot easier to use now.
+                      * Extended the format of the programs list in the
+                        .xscreensaver file, for the benefit of the new
+                        capabilities of `xscreensaver-demo'.
+                        NOTE: you might want to delete your ~/.xscreensaver
+                        file and allow it to be re-created!  The old one
+                        should still work, but xscreensaver-demo won't be as
+                        pretty.
+Changes since 3.18:   * Fixed gcc dependencies in `bumps' and `ccurve'.
+                      * New hack, `extrusion'.
+                      * Some of the web sites that `webcollage' was using as
+                        its sources changed formats; tweaked it to understand
+                        the current layouts.
+                      * Added typeahead in the password dialog: if the screen
+                        is locked, and you unlock it by typing a character,
+                        that key will be automatically inserted in the
+                        password dialog (unless it is Return, Enter, Space,
+                        or a non-printing key like Shift.)
+                      * Made `xmatrix' take a `-small' option, since some
+                        folks with tiny screens prefer a smaller font.
+Changes since 3.17:   * New versions of `shadebobs', `lmorph', and `distort'.
+                      * Added `ccurve', `blaster', and `bumps' hacks.
+                      * Replaced `forest' hack with a rewritten version.
+                      * Worked around a Xinerama server bug.
+                      * Fixed a bug I introduced in 3.10 that caused some
+                        hacks to print out superfluous warnings about not
+                        having gotten enough colors.
+                      * Made `sproingies' obey the `-delay' option.
+                      * Fixed a portability bug in `shadebobs'.
+                      * Made `webcollage' and `vidwhacker' use `xli' in
+                        preference to `xv', if it is available.
+                      * Added a new source of images to `webcollage'.
+                      * If running under KDE, xscreensaver will add itself to
+                        KDE's list of screensavers (via xscreensaver.kss.)
+                      * Improved detection of GL libraries.
+                      * Made the password dialog include the date and time.
+Changes since 3.16:   * New version of `webcollage' -- deals better with
+                        corrupted images, and can use an http proxy.
+                      * New hack, `xsublim' (run it in the background,
+                        rather than adding it to the programs list.)
+                      * The xscreensaver daemon was leaking a file descriptor
+                        each time you edited your .xscreensaver file.  Fixed.
+Changes since 3.15:   * New version of `shadebobs'.
+                      * Improved image selection in `webcollage', and sped it
+                        up slightly.
+                      * Made configure find the right version of perl.
+                      * Rewrote the CGI part of `webcollage'.
+                      * `make clean' was deleting some things it shouldn't.
+                      * Fixed a typo in the default programs list.
+Changes since 3.14:   * Added `webcollage' and `shadebobs' hacks.
+                      * Added a `-stdout' arg to `vidwhacker' so that it can
+                        be used in a pipeline.
+                      * Made `petri' use less memory.
+Changes since 3.13:   * Various improvements to the Gtk port.
+                      * Turned off PAM by default on Solaris, since PAM seems
+                        generally to be misconfigured out-of-the-box.
+                      * Made the `--without-gtk' configure option work.
+                      * Made configure check the Gtk version number, since it
+                        requires 1.2.
+                      * Fixed a bug in the code that attempted to prevent
+                        changes of screen resolution while the screen is
+                        locked.
+                      * Fixed a race condition in `xscreensaver-demo' that
+                        could cause an X error at startup.
+                      * Added `-transparent' option to `deluxe'.
+                      * Added `petri' hack.
+Changes since 3.12:   * Ported `xscreensaver-demo' to Gtk.
+                      * Made it possible to build Motif, Gtk, and Athena
+                        versions of `xscreensaver-demo' in the same directory
+                        without reconfiguring.
+                      * Made `xscreensaver-demo' chase symlinks before writing
+                        the .xscreensaver file, so that if .xscreensaver is
+                        itself a symlink, the underlying file will be replaced
+                        instead.
+                      * Some Makefile and configure tweaks for Solaris and
+                        FreeBSD.
+                      * Made it possible to set the fire color in `xflame'.
+                      * Made transparency work in TrueColor (for `goop' and
+                        `qix'.)
+                      * Fixed a multi-head bug introduced by the virtual
+                        viewports stuff.
+Changes since 3.11:   * Made it so that you can't scroll the screen while the
+                        lock dialog is up (with XFree86 virtual viewports.)
+                      * Fixed a bug in `flag' that caused bob's chin to get cut
+                        off after a few iterations.
+Changes since 3.10:   * Made `xjack' be black-on-white-ish, so that it looks
+                        less like a computer screen and more like the
+                        typewritten paper it's supposed to be.
+                      * New version of `pulsar'.
+                      * Fixed Solaris compilation problem in `phosphor'.
+                      * Made xscreensaver notice XFree86's virtual root window
+                        hack, so that if the X server's root window is larger
+                        than the monitor's displayable resolution, the screen
+                        saver will limit itself to the area that actually
+                        appears on the screen.
+                      * Made the xscreensaver daemon do a better job of
+                        picking the visual class that should be used for GL
+                        programs.  Less user intervention should be needed
+                        now: you can use the logical visual name `GL' instead
+                        of having to figure out by hand which one to use.
+                      * Oops, the visual was defaulting to "best" instead of
+                        "default", because the .xscreensaver file was not being
+                        loaded quite early enough.
+                      * Made configure figure out how to build icmp ping
+                        support into the `sonar' hack automatically.
+                      * Made warnings about not being able to read shadow
+                        passwords not be printed if compiled with PAM support.
+                      * Improved PAM startup diagnostics.
+                      * Worked around the Solaris PAM bug that was causing
+                        crashes there, so now PAM is turned on by default.
+                      * Made configure detect the number of arguments that
+                        pam_strerror() takes, since on Linux, this apparently
+                        changed between 2.0 and 2.2, sigh.
+                      * Made the /proc/interrupts kludge look for "PS/2 Mouse"
+                        as well as "keyboard".
+                      * Made xscreensaver notice when there has been a sudden
+                        large jump in wall-clock time, and if so, lock right
+                        away, instead of waiting for "lockTimeout" to expire
+                        first.  (Laptops need this for safer recovery from
+                        ``hibernation.'')
+                      * Added `-throttle' option to `xscreensaver-command'.
+Changes since 3.09:   * Added `phosphor', `xmatrix', and `pulsar' hacks.
+                      * Fixed a bug in the color allocator that sometimes
+                        caused `starfish' to fall back to monochrome.
+                      * Reduced the amount of code that runs before root
+                        privileges are disavowed: "normal" and "shadow"
+                        passwords now do some initialization as root, but the
+                        PAM and Kerberos authorization schemes will be
+                        initialized while running as "nobody".  Supposedly 
+                        this closes a potential security hole when using
+                        Kerberos.
+                      * Added some more sanity checking to configure.
+Changes since 3.08:   * Added `compass', `squiral', `xflame', `wander',
+                        `spotlight', and `critical' hacks.
+                      * Added some new modes to `decayscreen'.
+                      * Made `deluxe' work in monochrome.
+                      * Generalized usage of the Double-Buffer server extension
+                        in several hacks (`compass', `deluxe', `interference',
+                        `kumppa', and `moire2'.)
+                      * Fixed another visual-depth problem in `rd-bomb'.
+                      * The screen saver will now defer blanking if neither
+                        the keyboard nor the mouse could be grabbed.  Instead,
+                        it will just try again in a few minutes.  This fixes
+                        a bad interaction between xscreensaver and programs
+                        like VMware that hold the mouse and keyboard grabbed
+                        for a long time.
+                      * Added a new erase mode (expanding spiral.)
 Changes since 3.07:   * Fixed some bugs in my port of `t3d'.
                       * Added `penetrate' and `deluxe' hacks.
                       * When linking against Motif 2.x, also link against XPM.
