@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.4 2002-02-28 15:51:08 ghudson Exp $
+# $Id: makeroot.sh,v 1.5 2002-03-02 20:32:28 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -20,14 +20,14 @@ linux)
   cd "$sysprefix"
   list=`awk '{ x = $2; } END { print x; }' "$syscontrol"`
   rpms=`awk '
-    /\/kernel-headers/ { print $1; }
     /^athena/ { next; }
     /\/(ee|gmc|gnorpm|gtop|libgtop|wmconfig|Xconfigurator)-/ { next; }
-    /\/(iptables|kernel|pciutils|quota|shapecfg|sndconfig)-/ { next; }
-    /\/(tcpdump)-/ { next; }
+    /\/(iptables|pciutils|quota|shapecfg|sndconfig)-/ { next; }
+    /\/(tcpdump|pygtk|nfs-utils|kudzu-devel|xsri)-/ { next; }
     { print $1; }' $list`
 
-  mkdir -p "$root/var/lib/rpm"
+  mkdir -p "$root/var/lib/rpm" "$root/etc"
+  touch "$root/etc/fstab"
   rpm --root "$root" --initdb
   rpm --root "$root" -ivh $rpms
 
@@ -130,7 +130,9 @@ esac
 # The discuss build needs the discuss user to be in the passwd file.
 grep '^discuss' /etc/passwd >> $root/etc/passwd
 
-# Prepare the source locker symlink.
+# Prepare the source locker symlinks.
 mkdir -p "$root/mit"
-mitpath=$root/mit/source${ver:+-}$ver
-ln -s /afs/dev.mit.edu/source/src-${ver:-current} "$mitpath"
+ln -s /afs/dev.mit.edu/source/src-current $root/mit/source
+if [ -n "$ver" ]; then
+  ln -s /afs/dev.mit.edu/source/src-$ver $root/mit/source-$ver
+fi
