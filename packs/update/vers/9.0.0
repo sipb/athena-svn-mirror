@@ -33,3 +33,5 @@ sun4)
 sgi)
 	;;
 esac
+
+echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
