@@ -11,6 +11,12 @@
 *pane.toptext.height:			150
 *pane.toptext.scrollVertical:		whenNeeded
 *pane.toptext.cursor:			left_ptr
+*pane.toptext.translations: #override \
+<Btn2Down>:	select-start() \n\
+<Btn2Up>:	Update() \n\
+<Btn3Down>:	select-start() \n\
+<Btn3Up>:	Update()
+
 
 *pane.bottext.preferredPaneSize:	250
 *pane.bottext.scrollVertical:		always
@@ -32,7 +38,8 @@
 *enterpopup.pane.bodytext.height:               150
 *enterpopup.pane.botbox.send.label:             Send
 *enterpopup.pane.botbox.abort.label:            Abort
-*enterpopup.pane.botbox.allowResize:		False
+*enterpopup.pane.botbox.skipAdjust:		True
+*enterpopup.pane.botbox.showGrip:		False
 
 *writepopup.dialog.label:		Write transaction to file:
 *writepopup.dialog.write.label:		Write
@@ -73,12 +80,6 @@
 
 *pane.accelerators: \
 #override \n\
-<Btn2Down>:	Stub() \n\
-<Btn2Up>:	Stub() \n\
-<Btn2Motion>:	Stub() \n\
-<Btn3Down>:	Stub() \n\
-<Btn3Up>:	Stub() \n\
-<Btn3Motion>:	Stub() \n\
 Shift<Key>N:	BotFakeKeyPress(2) \n\
 Shift<Key>P:	BotFakeKeyPress(3) \n\
 Shift<Key>Q:	QuitCB() \n\
