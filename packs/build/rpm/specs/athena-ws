@@ -85,6 +85,9 @@ mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
 chkconfig --add athena-ws
 chkconfig --add athena-verify
 chkconfig --add syncconf
+# Force a reset to what's specified in the rc file; we changed it to
+# run after afs in 9.0.
+chkconfig --level 2345 athena-ws reset
 
 # Turn on the sound card for the cluster workstations.  Unfortunately,
 # there is no generic tool, but if we know what kind of card to do, then
