@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.4 1999-08-03 04:55:10 jweiss Exp $
+# $Id: root.cshrc,v 1.5 2000-03-15 15:12:07 rbasch Exp $
 
 set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena /usr/sbin \
 	  /usr/bsd /sbin /usr/bin /bin /etc /usr/athena/etc /usr/etc \
@@ -8,10 +8,6 @@ if ( (! $?ENVONLY) && $?prompt ) then
 	set prompt="`uname -n`# "
 	set nostat = (/afs/)
 endif
-
-# Default man pager is ul -b | more -s -f.  Remove the ul -b part
-# to work around a bug where pager input is read in line mode.
-setenv MANPAGER "more -s -f"
 
 set add_flags="-a -h -n"
 alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'

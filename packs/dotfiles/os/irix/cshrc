@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.13 2000-02-11 20:51:53 ghudson Exp $
+# $Id: cshrc,v 1.14 2000-03-15 15:12:06 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -56,10 +56,6 @@ if (! $?ENV_SET) then
 	setenv VISUAL emacs			# Set default screen editor
 	setenv MM_CHARSET iso-8859-1
 	setenv MANPATH "$athena_manpath"
-
-	# Default man pager is ul -b | more -s -f.  Remove the ul -b part
-	# to work around a bug where pager input is read in line mode.
-	setenv MANPAGER "more -s -f"
 
 	# The following set the default error message format to omit the
 	# label and severity components, per the standard IRIX /etc/cshrc.

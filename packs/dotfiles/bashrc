@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.12 2000-02-11 20:52:47 ghudson Exp $
+# $Id: bashrc,v 1.13 2000-03-15 15:11:39 rbasch Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -26,7 +26,6 @@ if [ "${ENV_SET+set}" != set ]; then
 	export EDITOR=emacs			# Set default editor
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
-	export MANPAGER="more -s -f"
 
 	# Set standard Athena path variables (generic path for all users).
 	# PATH will get set later after .bash_environment is run.
