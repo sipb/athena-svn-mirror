@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.10 1991-02-13 13:42:59 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.11 1991-09-25 11:38:20 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.10 1991-02-13 13:42:59 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.11 1991-09-25 11:38:20 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -138,6 +138,10 @@ quota_report *qreport;
 		syslog(LOG_ERR, "Unknown user %s printed to group account %d", name, qid->account);
 		/* oh well post it anyway */
 	    }
+
+	    /* Give a discount - AD guaranteed to be != 0 */
+	    /* We must change the pcost so the reporting mechanism will DTRT */
+	    qreport->pcost = (qreport->pcost * AN) / AD;
 
 	    if(qreport->pages * qreport->pcost < 0) 
 		return QNONEG;
