@@ -18,8 +18,18 @@ using the --with-rsaref configure option.
 */
 
 /*
- * $Id: rsaglue.c,v 1.1.1.2.6.1 2001-02-09 00:11:12 ghudson Exp $
+ * $Id: rsaglue.c,v 1.1.1.2.6.2 2001-03-07 22:01:56 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2001/02/11 21:48:23  ghudson
+ * Revert rev 1.2 (which nullifies rev 1.3, of course).  The 60-second
+ *  delay between key regens doesn't work because the variable is stored
+ *  in the child process.
+ * So, the vulnerability exists again (but is still equally difficult to
+ *  take advantage of).
+ *
+ * Revision 1.3  2001/02/10 00:02:03  ghudson
+ * Fix argument order in previous rev.
+ *
  * Revision 1.2  2001/02/09 00:05:56  ghudson
  * Fix a vulnerability which could allow an attacker to get a server's session key.
  *
@@ -252,15 +262,7 @@ void rsa_private_decrypt(MP_INT *output, MP_INT *input, RSAPrivateKey *key)
   mpz_clear(&aux);
 
   if (value[0] != 0 || value[1] != 2)
-    {
-      static time_t last_kill_time = 0;
-      if (time(NULL) - last_kill_time > 60 && getppid() != 1)
-       {
-         last_kill_time = time(NULL);
-         kill(SIGALRM, getppid());
-       }
-      fatal("Bad result from rsa_private_decrypt");
-    }
+    fatal("Bad result from rsa_private_decrypt");
 
   for (i = 2; i < len && value[i]; i++)
     ;
