@@ -5,7 +5,7 @@ Group: System Environment/Base
 Requires: athena-desync, athena-base, athena-sendmail, athena-gettime, athena-ntp, athena-read-edid, pciutils
 
 %description
-Various maintenanance and configuration files required for any
+Various maintenance and configuration files required for any
 Athena workstation.
 
 %define esh1 /afs/sipb/project/tcsh/tcsh
