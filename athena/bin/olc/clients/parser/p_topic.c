@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.6 1989-08-07 14:49:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.7 1989-08-22 13:50:41 tjcoppet Exp $";
 #endif
 
 
@@ -54,6 +54,7 @@ do_olc_topic(arguments)
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
+  make_temp_name(file);
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
@@ -84,13 +85,16 @@ do_olc_topic(arguments)
 	{
           ++arguments;
 	  unlink(file);
-	  if(*arguments == (char *) NULL)
-	    {
-               fprintf(stderr,"You must specify a file name after the");
-               fprintf(stderr,"-file argument.\n");
-	       return(ERROR);
+	  if (*arguments == (char *)NULL)
+            {
+              file[0] = '\0';
+              get_prompted_input("Enter a file name: ",file);
+              if(file[0] == '\0')
+                return(ERROR);
             }
-	  (void) strcpy(file,*arguments);
+          else
+            (void) strcpy(file, *arguments);
+
 	  save_file = TRUE;
 	  continue;
 	}
