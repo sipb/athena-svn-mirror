@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.14 1998-01-30 22:11:17 rbasch Exp $
+# $Id: Xsession.sgi,v 1.15 1998-02-07 19:09:44 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -20,6 +20,7 @@ host=`hostname`
 ldesktop=.desktop-$host
 indydotdesktop=.desktop_indy
 o2dotdesktop=.desktop_o2
+sysdesktopdir=.desktophost/$host
 
 # The O2/6.3 dotdesktop directory is incompatible with the Indy/5.3/6.2
 # contents.  So, for an O2 machine, set the dotdesktop to be .desktop_o2.
@@ -133,6 +134,7 @@ if [ $status != 0 ]; then
 		if [ -r $hostdir/$host ]; then
 		  rm $ldesktop && rm $hostdir/$host
 		fi
+		rm -rf $sysdesktopdir
 		kdestroy			# destroy tickets.
 		cd /tmp
 		unlog
@@ -148,6 +150,7 @@ fi
 if [ -r $hostdir/$host ]; then
   rm $ldesktop && rm $hostdir/$host
 fi
+rm -rf $sysdesktopdir
 
 kdestroy				# destroy tickets.
 cd /tmp
