@@ -186,6 +186,7 @@ int install(char *omf_name, char *scrollkeeper_dir, char *data_dir, char outputp
         sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(install)", _("Could not parse ScrollKeeper-OMF DTD: %s\n"), SCROLLKEEPER_OMF_DTD); 
         return 0;
     } else {
+#if 0
         xmlValidCtxt cvp;
         cvp.userData = (char *) &outputprefs;
         cvp.error    = (xmlValidityErrorFunc) sk_dtd_validation_message;
@@ -194,6 +195,7 @@ int install(char *omf_name, char *scrollkeeper_dir, char *data_dir, char outputp
             sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(install)", _("OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"), omf_name, SCROLLKEEPER_OMF_DTD); 
             return 0;
         }
+#endif
     }
     xmlFreeDtd(dtd);
 		      	          
