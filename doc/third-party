@@ -102,6 +102,7 @@ Distribution sites for software under third
 	db		http://www.sleepycat.com/download.html
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
+	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
 	freetype	ftp.freetype.org:pub/freetype2
 	gcc		ftp.gnu.org:pub/gnu/gcc
 	GConf		ftp.gnome.org:pub/GNOME/unstable/sources/GConf
