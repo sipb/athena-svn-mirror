@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.15 1988-06-15 16:55:28 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.16 1988-06-15 20:46:51 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZParseNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.15 1988-06-15 16:55:28 rfrench Exp $";
+static char rcsid_ZParseNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.16 1988-06-15 20:46:51 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -38,7 +38,7 @@ Code_t ZParseNotice(buffer, len, notice)
     
     notice->z_version = ptr;
     if (strncmp(ptr, ZVERSIONHDR, strlen(ZVERSIONHDR)))
-/*	return (ZERR_VERS);*/ abort();
+	return (ZERR_VERS);
     ptr += strlen(ZVERSIONHDR);
     maj = atoi(ptr);
     if (maj != ZVERSIONMAJOR)
@@ -198,7 +198,8 @@ Code_t ZParseNotice(buffer, len, notice)
 	ptr += strlen(ptr)+1;
     }
     else
-	bzero(&notice->z_multiuid, sizeof(ZUnique_Id_t));
+	bcopy((char *) &notice->z_uid, (char *) &notice->z_multiuid,
+	      sizeof(ZUnique_Id_t));
 
     for (i=0;i<Z_MAXOTHERFIELDS && numfields;i++,numfields--) {
 	notice->z_other_fields[i] = ptr;
