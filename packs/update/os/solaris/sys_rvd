@@ -1,11 +1,12 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.6 1999-05-20 21:15:02 mwhitson Exp $
+## $Id: sys_rvd,v 1.7 1999-06-16 14:56:25 rbasch Exp $
 ##
 ##	MIT Project Athena
 ##
 	/core::::
 	/etc:::			# These are specific to each machine.
+		.login
 		crontab.root.add
 		default/sulogin
 		driver_aliases.*
@@ -25,6 +26,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		ntp.conf
 		passwd
 		passwd.fallback
+		profile
 		shells
 		system
 		shadow

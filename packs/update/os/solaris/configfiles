@@ -2,6 +2,7 @@
 /.login
 /.profile
 /.xsession
+/etc/.login
 /etc/athena/athinfo.defs
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
@@ -16,6 +17,7 @@
 /etc/mail/sendmail.cf
 /etc/named.conf
 /etc/ntp.conf
+/etc/profile
 /etc/resolv.conf
 /etc/shells
 /etc/sshd_config
