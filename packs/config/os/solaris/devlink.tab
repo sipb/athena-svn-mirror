@@ -125,3 +125,4 @@ type=ddi_pseudo;name=SUNW,rtvc	\M0
 type=ddi_pseudo;name=ses	es/ses\N0
 type=ddi_pseudo;name=atalk;minor=elap	appletalk/lap/ethertalk0/control
 type=ddi_pseudo;name=atalk;minor=ddp	appletalk/ddp/socket
+type=ddi_pseudo;name=random	\M0
