@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.3 1997-02-27 06:47:22 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.4 1997-09-20 06:58:56 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1997/02/27 06:47:22  ghudson
+ * BSD -> ANSI memory functions
+ *
  * Revision 2.2  1994/08/15 15:04:10  cfields
  * Define NGROUPS for Solaris.
  * 7.7 checkin; changes by vrt
@@ -44,7 +47,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.3 1997-02-27 06:47:22 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.4 1997-09-20 06:58:56 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -458,8 +461,13 @@ add_sess(nam, saddr, flgs)
 	 */
 	haddr.s_addr = 0;
 	if(!isdigit(*saddr))
-	  if(hp = gethostbyname(saddr))
+	  if(hp = gethostbyname(saddr)) {
+	    if(hp->h_length != sizeof(haddr.s_addr)) {
+	      syslog(LOG_ERR,"unexpected h_length value for %s", saddr);
+	      return(GEN_ERR);
+	    }
 	    memcpy(&(haddr.s_addr), hp->h_addr, hp->h_length);
+	  }
 #endif /* MIT */
 
 	/*

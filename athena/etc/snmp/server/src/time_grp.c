@@ -15,6 +15,9 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1997/02/27 06:47:56  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.0  1992/04/22 01:59:48  tom
  *    *** empty log message ***
  *
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/time_grp.c,v 2.1 1997-02-27 06:47:56 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/time_grp.c,v 2.2 1997-09-20 06:58:58 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -111,6 +114,11 @@ timed_req(req)
   if((hp = gethostbyname(hostname)) == (struct hostent *) NULL)
     {
       syslog(LOG_ERR, "unable to gethostname of %s", hostname);
+      return((char *) NULL);
+    }
+  if (hp->h_length != sizeof(dest.sin_addr.s_addr))
+    {
+      syslog(LOG_ERR, "unexpected h_length value for %s", hostname);
       return((char *) NULL);
     }
   memcpy(&dest.sin_addr.s_addr, hp->h_addr, hp->h_length);

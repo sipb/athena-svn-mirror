@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.3 1997-02-27 06:47:00 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.4 1997-09-20 06:58:57 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1997/02/27 06:47:00  ghudson
+ * BSD -> ANSI memory functions, BSD -> POSIX signal functions
+ *
  * Revision 1.2  1995/07/12 03:36:52  cfields
  * Removed some frighteningly broken and useless cruft.
  *
@@ -54,7 +57,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.3 1997-02-27 06:47:00 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.4 1997-09-20 06:58:57 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *
@@ -529,6 +532,9 @@ get_my_address(myaddstr)
 		return(BUILD_ERR);
 
 	if ((hp = gethostbyname(hname)) == NULL)
+		return(BUILD_ERR);
+
+	if (hp->h_length != sizeof(myaddstr->sin_addr))
 		return(BUILD_ERR);
 
 #ifdef NAMED
