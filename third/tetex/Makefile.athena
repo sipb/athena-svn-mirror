@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.10 2003-09-06 18:35:26 zacheiss Exp $
+# $Id: Makefile.athena,v 1.11 2003-10-02 22:16:47 amb Exp $
 
 ATHBINDIR=/usr/athena/bin
 TEXMFDIR=/usr/athena/share/texmf
@@ -31,6 +31,8 @@ install:
 	install -c -m 644 bottomtray.pro $$SRVD${TEXMFDIR}/dvips/misc
 	install -c -m 644 duplex.pro $$SRVD${TEXMFDIR}/dvips/misc
 	install -c -m 644 tumble.pro $$SRVD${TEXMFDIR}/dvips/misc
+	mkdir -p $$SRVD${TEXMFDIR}/tex/latex/local
+	install -c -m 644 listings.sty $$SRVD${TEXMFDIR}/tex/latex/local
 	rm -f $$SRVD${TEXMFDIR}/dvips/misc/bottomtray
 	ln -s bottomtray.pro $$SRVD${TEXMFDIR}/dvips/misc/bottomtray
 	rm -f $$SRVD${TEXMFDIR}/dvips/misc/duplex
