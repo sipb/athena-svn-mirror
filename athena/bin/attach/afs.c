@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.12 1997-05-13 13:47:22 danw Exp $
+ * $Id: afs.c,v 1.13 1997-10-18 01:07:03 ghudson Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.12 1997-05-13 13:47:22 danw Exp $";
+static char *rcsid = "$Id: afs.c,v 1.13 1997-10-18 01:07:03 ghudson Exp $";
 
 #include "attach.h"
 
@@ -25,7 +25,7 @@ extern char *krb_realmofhost();	/* <krb.h> doesn't declare this */
 #define AFSAUTH_DOZEPHYR	4
 
 #ifdef __STDC__
-static int afs_auth_internal(char * errorname, char * afs_pathname,
+static int afs_auth_internal(const char * errorname, const char * afs_pathname,
 			     struct in_addr hostaddr[], int flags);
 #else
 static int afs_auth_internal();
@@ -50,8 +50,10 @@ afs_attach(at, mopt, errorout)
 	if ((at->mode != 'n') && do_nfsid)
 		afs_auth_flags |= AFSAUTH_DOAUTH;
 
+#ifdef ZEPHYR
 	if (use_zephyr)
 		afs_auth_flags |= AFSAUTH_DOZEPHYR;
+#endif	
 	
 	if (afs_auth_flags & (AFSAUTH_DOZEPHYR | AFSAUTH_DOAUTH)) {
 		if (afs_auth_internal(at->hesiodname, at->hostdir,
@@ -177,8 +179,8 @@ afs_attach(at, mopt, errorout)
  * aklog does all of that stuff.
  */
 static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
-	char	*errorname;
-	char	*afs_pathname;	/* For future expansion */
+	const char	*errorname;
+	const char	*afs_pathname;	/* For future expansion */
 	struct in_addr hostlist[];
 	int	flags;
 {
