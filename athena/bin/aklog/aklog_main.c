@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.24 1992-12-11 13:47:38 probe Exp $
+ * $Id: aklog_main.c,v 1.25 1994-04-14 18:46:02 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.24 1992-12-11 13:47:38 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.25 1994-04-14 18:46:02 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -654,7 +654,7 @@ static int auth_to_path(path)
     if (path[0] == DIR)
 	strcpy(pathtocheck, path);
     else {
-	if (params.getwd(pathtocheck) == NULL) {
+	if (params.getcwd(pathtocheck, sizeof(pathtocheck)) == NULL) {
 	    sprintf(msgbuf, "Unable to find current working directory:\n");
 	    params.pstderr(msgbuf);
 	    sprintf(msgbuf, "%s\n", pathtocheck);
