@@ -17,7 +17,6 @@ memory		/bin/athena/machtype -v -M
 swap		swapon -s
 rc.conf		cat /etc/athena/rc.conf
 version		cat /etc/athena/version
-rvdinfo		cat /srvd/.rvdinfo
 clusterinfo	test -r /var/athena/clusterinfo && cat /var/athena/clusterinfo 
 clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterinfo.bsh 
 update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
