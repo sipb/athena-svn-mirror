@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.5 1990-07-06 10:59:30 jfc Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.6 1990-07-16 07:25:04 jfc Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -977,4 +977,33 @@ int parse_username(s)
 		exit(1);
 		/* NOTREACHED */
 	}
+}
+
+
+char *errstr(e)
+
+int e;
+
+{
+  if(e < sys_nerr)
+    return sys_errlist[e];
+  else
+    return "Unknown error";
+}
+
+#include <sys/socket.h>	/* AF_INET */
+#include <arpa/inet.h>
+
+char *inaddr_to_name(addr)
+
+long addr;
+
+{
+  struct hostent *h;
+
+  h = gethostbyaddr(&addr, 4, AF_INET);
+  if(h == 0)
+    return 0;
+  else
+    return h->h_name;
 }
