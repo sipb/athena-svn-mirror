@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.39 1989-10-17 16:05:08 jtkohl Exp $";
+static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.40 1989-10-19 12:49:03 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -911,16 +911,19 @@ struct sockaddr_in *who;
 	(void) strcat(buf, "/");
 #ifdef vax
 	(void) strcat(buf, "VAX");
-#endif vax
+#endif /* vax */
 #ifdef ibm032
 	(void) strcat(buf, "IBM 032");
-#endif ibm032
+#endif /* ibm032 */
 #ifdef sun
 	(void) strcat(buf, "SUN");
-#endif sun
+#endif /* sun */
 #ifdef mips
 	(void) strcat(buf, "MIPS");
-#endif mips
+#endif /* mips */
+#ifdef NeXT
+	(void) strcat(buf, "NeXT");
+#endif /* NeXT */
 	vers = strsave(buf);
 
 	(void) sprintf(buf, "%d pkts", npackets);
