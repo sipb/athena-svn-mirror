@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #include <sys/time.h>		/* System time definitions. */
@@ -47,7 +47,7 @@ extern int errno;
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.20 1990-02-20 00:19:03 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.21 1990-02-23 19:37:49 vanharen Exp $";
 #endif
 
 #if __STDC__
@@ -554,7 +554,10 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
 
   question = knuckle->question;
 
-  sprintf(topic,"%s: %s",question->owner->user->username,question->title);
+  sprintf(topic, "%s: ", question->owner->user->username);
+  strncat(topic, question->title, (sizeof(topic) - strlen(topic)) );
+  topic[sizeof(topic) - 1] = '\0';
+
   (void) strcpy(newfile, question->logfile);
   *(rindex(newfile, '/') + 1) = '\0';
   (void) strcat(newfile, "#");
