@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/grestore_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -21,13 +21,19 @@ char *argv[];
   long temp_account;
   int i, trip=0, temp_num;
 
+
+  if (argc != 3) {
+      fprintf(stderr, "Usage: grestore_db gdump_file gquota_db\n");
+      exit(1);
+  }
+
   fp = fopen(argv[1], "r");
-  if (gquota_db_create(argv[1])) {
-    printf("error in creating db %s\n", argv[1]);
+  if (gquota_db_create(argv[2])) {
+    printf("error in creating db %s\n", argv[2]);
     exit(-1);
   }
-  if (gquota_db_set_name(argv[1])) {
-    printf("error in setting db name %s\n", argv[1]);
+  if (gquota_db_set_name(argv[2])) {
+    printf("error in setting db name %s\n", argv[2]);
     exit(-1);
   }
   fscanf(fp, "%s %s\n", title, title_num);
