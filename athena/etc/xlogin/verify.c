@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.17 2004-09-24 22:05:32 rbasch Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.18 2005-03-17 22:21:13 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -873,7 +873,6 @@ static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
     return retval;
 
   cache_name = krb5_cc_default_name(context);
-  krb5_init_ets(context);
 
   retval = krb5_425_conv_principal(context, name, instance, realm, &me);
   if (retval)
@@ -969,8 +968,6 @@ static krb5_error_code do_v5_kdestroy(const char *cachename)
 
   if (!cachename)
     cachename = krb5_cc_default_name(context);
-
-  krb5_init_ets(context);
 
   retval = krb5_cc_resolve(context, cachename, &cache);
   if (retval)
