@@ -15,6 +15,4 @@
 # such a "%s" is specified in the filter program, a brief title is included
 # (as one argument, enclosed in single quotes) showing the relative directory
 # name and listing the modified file names.
-#
-# For example:
-#DEFAULT		(echo ""; who am i; date; cat) >> $CVSROOT/CVSROOT/commitlog
+DEFAULT		sh $CVSROOT/CVSROOT/logfilter.sh %s source-commits source-diffs
