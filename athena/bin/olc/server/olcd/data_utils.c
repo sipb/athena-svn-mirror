@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.30 1991-01-21 01:22:53 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.31 1991-03-07 13:29:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.30 1991-01-21 01:22:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.31 1991-03-07 13:29:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olcd.h>
 
 #include <ctype.h>
+#include <syslog.h>
 #include <sys/types.h>    
 #include <sys/time.h>
 #include <sys/stat.h>
@@ -208,8 +209,7 @@ create_knuckle(user)
   k->status = 0;
   k->new_messages = -1;
   sprintf(k->nm_file,"%s/%s_%d.nm", LOG_DIR, k->user->username,k->instance);
-  strcpy(k->title,k->user->title2);
-
+  k->title = k->user->title2;
 
 #ifdef TEST
   printf("create_knuckle: %s (%d)\n",user->username, k->instance);
@@ -592,7 +592,7 @@ init_user(knuckle,person)
 #endif
   knuckle->status = 0;
   init_dbinfo(knuckle->user);
-  (void) strcpy(knuckle->title,knuckle->user->title1);
+  knuckle->title = knuckle->user->title1;
 }
 
 
@@ -631,15 +631,15 @@ init_question(k,topic,text, machinfo)
 
   k->timestamp = tp.tv_sec;
   k->question->owner = k;
-  k->queue = ACTIVE_Q;
   k->question->nseen = 0;
   k->question->seen[0] = -1;
   k->question->comment[0] = '\0';
   k->question->topic_code = verify_topic(topic);
-  k->question->logfile_timestamp = 0L;
-  (void) strcpy(k->title,k->user->title1);
+  k->title = k->user->title1;
   (void) strcpy(k->question->topic,topic);
   init_log(k, text, machinfo);
+  (void) sprintf(k->question->infofile, "%s/%s_%d.info", LOG_DIR, 
+	  k->user->username,k->instance);
 /*
  * Set the initial description
  */
@@ -664,6 +664,7 @@ init_question(k,topic,text, machinfo)
     }
   k->question->note[j] = '\0';
 
+  write_question_info(k->question);
   return(SUCCESS);
 }
 
@@ -1048,8 +1049,8 @@ connect_knuckles(a,b)
     }
   
   consultant->question = owner->question;
-  (void) strcpy(owner->title, owner->user->title1);
-  (void) strcpy(consultant->title, consultant->user->title2);
+  owner->title = owner->user->title1;
+  consultant->title = consultant->user->title2;
 
   a->connected = b;
   (void) strcpy(a->cusername,b->user->username);
@@ -1081,6 +1082,7 @@ connect_knuckles(a,b)
       owner->question->seen[owner->question->nseen] = consultant->user->uid;
       owner->question->nseen++;
       owner->question->seen[owner->question->nseen] = -1;
+      write_question_info(owner->question);
     }
 
 #ifdef SABER
@@ -1503,4 +1505,25 @@ was_connected(a,b)
       return(TRUE);
 
   return(FALSE);
+}
+
+void
+write_question_info(q)
+     QUESTION *q;
+{
+  FILE *f;
+  int i;
+
+  f = fopen(q->infofile,"w+");
+  if (f == NULL) {
+    syslog(LOG_ERR,"write_question_info: couldn't open file %s: %m",
+	   q->infofile);
+    return;
+  }
+
+  fprintf(f,"%d\n",q->nseen);
+  for(i=1;i<=q->nseen;i++)
+    fprintf(f,"%d\n",q->seen[i-1]);
+  fprintf(f,"%s\n%s\n%s\n",q->title,q->note,q->comment);
+  fclose(f);
 }
