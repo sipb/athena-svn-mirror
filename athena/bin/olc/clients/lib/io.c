@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.15 1991-04-08 20:47:41 lwvanels Exp $
+ *	$Id: io.c,v 1.16 1991-04-15 14:57:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.15 1991-04-08 20:47:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.16 1991-04-15 14:57:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,7 +53,9 @@ extern int errno;
 
 struct hostent *gethostbyname(); /* Get host entry of a host. */
 
+#ifndef MIN
 #define	MIN(a,b)	((a)>(b)?(b):(a))
+#endif
 
 /*
  * Note: All functions that deal with I/O on sockets in this file use the
