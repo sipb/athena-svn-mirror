@@ -301,12 +301,12 @@ void getrules(src,dst)
 
   vtable_push();
   
-  srcrules = (char *) alloca(strlen(src) + strlen(src_rule_file) + 2);
+  srcrules = (char *) malloc(strlen(src) + strlen(src_rule_file) + 2);
   (void) strcpy(srcrules,src);
   (void) strcat(srcrules,"/");
   (void) strcat(srcrules,src_rule_file);
   
-  dstrules = (char *) alloca(strlen(dst) + strlen(dst_rule_file) + 2);
+  dstrules = (char *) malloc(strlen(dst) + strlen(dst_rule_file) + 2);
   (void) strcpy(dstrules,dst);
   (void) strcat(dstrules,"/");
   (void) strcat(dstrules,dst_rule_file);
@@ -329,8 +329,8 @@ void getrules(src,dst)
     }
   
   compute_ifs();  /* see below */
-  freea(dstrules);
-  freea(srcrules);
+  free(dstrules);
+  free(srcrules);
 }
 
 

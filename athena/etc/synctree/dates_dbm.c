@@ -17,7 +17,7 @@ time_t get_date(dbmpp,fname)
   datum datum_date_db;
 
   if (*dbmpp == NULL)
-    { char *p = (char *) alloca(strlen(fname) + strlen(date_db_name) + 1);
+    { char *p = (char *) malloc(strlen(fname) + strlen(date_db_name) + 1);
       char *pp;
       (void) strcpy(p,fname);
       pp = rindex(p,'/');
@@ -29,6 +29,7 @@ time_t get_date(dbmpp,fname)
 	      perror(p);
 	      exit(1);
       }
+      free(p);
     }
   if (!*dbmpp) abort();
   key.dptr = rindex(fname,'/');
@@ -57,7 +58,7 @@ set_date(dbmpp,fname,date)
   datum key;
   datum date_db_datum;
   if (*dbmpp == NULL)
-    { char *p = (char *) alloca(strlen(fname) + strlen(date_db_name) + 1);
+    { char *p = (char *) malloc(strlen(fname) + strlen(date_db_name) + 1);
       char *pp;
       (void) strcpy(p,fname);
       pp = rindex(p,'/');
@@ -65,6 +66,7 @@ set_date(dbmpp,fname,date)
       (void) strcpy(pp,date_db_name);
       *dbmpp = dbm_open(p, O_RDWR|O_CREAT, 00644);
       if (!dbmpp) abort();
+      free(p);
     }
 
   key.dptr = rindex(fname,'/');

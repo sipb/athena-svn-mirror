@@ -98,24 +98,24 @@ main(argc, argv)
       switch (argv[i][1]) {
       case 's':
 	if (argv[i][2])
-	  { srcdir = (char *) alloca(strlen(&argv[i][2])+1);
+	  { srcdir = (char *) malloc(strlen(&argv[i][2])+1);
 	    (void) strcpy(srcdir, &argv[i][2]);
 	  }
 	else if (++i >= argc) usage(argv[0]);
 	else
-	  { srcdir = (char *) alloca(strlen(&argv[i][0])+1);
+	  { srcdir = (char *) malloc(strlen(&argv[i][0])+1);
 	    (void) strcpy(srcdir, argv[i]);
 	  }
 	break;
 
       case 'd':
 	if (argv[i][2])
-	  { dstdir = (char *) alloca(strlen(&argv[i][2])+1);
+	  { dstdir = (char *) malloc(strlen(&argv[i][2])+1);
 	    (void) strcpy(dstdir, &argv[i][2]);
 	  }
 	else if (++i >= argc) usage(argv[0]);
 	else
-	  { dstdir = (char *) alloca(strlen(&argv[i][0])+1);
+	  { dstdir = (char *) malloc(strlen(&argv[i][0])+1);
 	    (void) strcpy(dstdir, argv[i]);
 	  }
 	if (strcmp(dstdir,"/") == 0)
@@ -124,12 +124,12 @@ main(argc, argv)
 
       case 'a':
 	if (argv[i][2])
-	  { afile = (char *) alloca(strlen(&argv[i][2])+1);
+	  { afile = (char *) malloc(strlen(&argv[i][2])+1);
 	    (void) strcpy(afile, &argv[i][2]);
 	  }
 	else if (++i >= argc) usage(argv[0]);
 	else
-	  { afile = (char *) alloca(strlen(&argv[i][0])+1);
+	  { afile = (char *) malloc(strlen(&argv[i][0])+1);
 	    (void) strcpy(afile, argv[i]);
 	  }
 	if (strcmp(afile,"/") == 0)
@@ -166,7 +166,7 @@ main(argc, argv)
 
   if (srcdir[0] != '/')
     { char *p = srcdir;
-      srcdir = (char *) alloca(MAXPATHLEN);
+      srcdir = (char *) malloc(MAXPATHLEN);
       if ((srcdir = getcwd(srcdir,MAXPATHLEN )) == NULL)
 	{ perror("getcwd() failed");
 	  fprintf(stderr,"exiting\n");
@@ -182,7 +182,7 @@ main(argc, argv)
 
   if ((dstdir[0] != '/') && (dstdir[0] != '\0'))
     { char *p = dstdir;
-      dstdir = (char *) alloca(MAXPATHLEN);
+      dstdir = (char *) malloc(MAXPATHLEN);
       if ((dstdir = getcwd(dstdir, MAXPATHLEN)) == NULL)
 	{ perror("getcwd() failed");
 	  fprintf(stderr,"exiting\n");
@@ -263,7 +263,7 @@ int dodir(src,dst,part)
     srclist.next = 0;
     targlist.next = 0;
 
-#define getmem(amt) (((getmemt = alloca(amt)) == NULL)? panic("dodir: bad return from alloca"), (void *) NULL : getmemt)
+#define getmem(amt) (((getmemt = malloc(amt)) == NULL)? panic("dodir: bad return from malloc"), (void *) NULL : getmemt)
 #define newsrc(ptr)  (ptr = (struct src *)  getmem(sizeof(struct src)),  ptr->next=srclist.next,  srclist.next=ptr)
 #define newtarg(ptr) (ptr = (struct targ *) getmem(sizeof(struct targ)), ptr->next=targlist.next, targlist.next=ptr)
 #define allsrcs(ptr)  for (ptr=srclist.next; ptr!=NULL; ptr=ptr->next)
@@ -584,17 +584,17 @@ int dodir(src,dst,part)
 	char * ptr = (char *)NULL;
 	
 	allsrcs(sp) {
-	    freea(ptr);
+	    free(ptr);
 	    ptr = (char *) sp;
-	    freea(sp->pathname);
-	    freea(sp->name);
+	    free(sp->pathname);
+	    free(sp->name);
 	}
 	alltargs(tp) {
-	    freea(ptr);
+	    free(ptr);
 	    ptr = (char *) tp;
-	    freea(tp->pathname);
+	    free(tp->pathname);
 	}
-	freea(ptr);
+	free(ptr);
     }
     
   poprules();

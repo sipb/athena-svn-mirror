@@ -1,17 +1,5 @@
 /* Copyright (C) 1988  Tim Shepard   All rights reserved. */
 
-#if defined(_AIX) || defined(_AUX_SOURCE)
-#define alloca malloc
-#define freea free
-#else
-#ifndef ultrix
-/* Under Ultrix cc (4.2a), including alloca.h gets the compiler built-in
-   version, which isn't smart enough for this program. */
-#include <alloca.h>
-#endif
-#define freea(x)
-#endif
-
 #if defined(_AUX_SOURCE)
 #define NO_RLIMIT
 #define NO_LINEBUF
