@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.12 1998-03-30 18:53:30 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.13 1998-04-09 16:20:28 danw Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: danw $
 #
@@ -18,7 +18,7 @@
 
 # official hostname and domain
 DDMIT.EDU
-Dj$w.$D
+Dj$w
 
 # who I masquerade as (null for no masquerading)
 DMMIT.EDU
