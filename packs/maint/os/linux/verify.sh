@@ -127,21 +127,35 @@ rpm -i --force $pkglist || errorout "$0: rpm package installation failed"
 
 # STEP 3: Copy generic public master config files
 
-config=$SYSPREFIX=config/$athenaversion
+config=$SYSPREFIX/config/$athenaversion
 
 for i in services syslog.conf inittab info-dir inetd.conf conf.linuxconf; do
-    cp config/$i /etc/$i
+    cp $config/etc/$i /etc/$i
 done
 
-cp $config/prefdm /etc/X11/prefdm
-cp $config/X11fsconfig /etc/X11/fs/config
-cp $config/XTerm /usr/X11R6/lib/X11/app-defaults/XTerm
+for i in /etc/passwd /etc/shadow /etc/group; do
+    if [ -r $config$i ]; then
+	syncupdate -c $i.local.new $config$i $i.local
+	if [ -r $i.local ]; then
+	    syncupdate -c $i.new $i.local $i
+	fi
+    fi
+done
+chown 0:0 /etc/passwd /etc/passwd.local /etc/shadow /etc/shadow.local \
+    /etc/group /etc/group.local
+chmod 644 /etc/passwd /etc/passwd.local /etc/group /etc/group.local
+chmod 600 /etc/shadow /etc/shadow.local
 
-if [ -r $config/rc.conf ]; then
+cp $config/etc/X11/prefdm /etc/X11/prefdm
+cp $config/etc/X11/fs/config /etc/X11/fs/config
+cp $config/usr/X11R6/lib/X11/app-defaults/XTerm \
+    /usr/X11R6/lib/X11/app-defaults/XTerm
+
+if [ -r $config/etc/athena/rc.conf ]; then
   sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
       -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
       -e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
       -e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
       -e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
-    $config/rc.conf > /etc/athena/rc.conf
+    $config/etc/athena/rc.conf > /etc/athena/rc.conf
 fi

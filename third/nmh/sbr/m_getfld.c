@@ -2,7 +2,7 @@
 /*
  * m_getfld.c -- read/parse a message
  *
- * $Id: m_getfld.c,v 1.1.1.1 1999-02-07 18:14:09 danw Exp $
+ * $Id: m_getfld.c,v 1.1.1.1.6.1 2000-09-23 19:32:41 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -259,7 +259,7 @@ m_getfld (int state, unsigned char *name, unsigned char *buf,
 		bp = sp = (unsigned char *) iob->_ptr - 1;
 		j = (cnt = iob->_cnt+1) < i ? cnt : i;
 #endif
-		while ((c = *bp++) != ':' && c != '\n' && --j >= 0)
+		while (--j >= 0 && (c = *bp++) != ':' && c != '\n')
 		    *cp++ = c;
 
 		j = bp - sp;
@@ -390,7 +390,8 @@ m_getfld (int state, unsigned char *name, unsigned char *buf,
 		*cp++ = j = *(iob->_ptr + c);
 		c = _filbuf(iob);
 #endif
-		if ((j == '\0' || j == '\n') && c != ' ' && c != '\t') {
+                if (c == EOF || 
+		  ((j == '\0' || j == '\n') && c != ' ' && c != '\t')) {
 		    if (c != EOF) {
 #ifdef LINUX_STDIO
 			--iob->_IO_read_ptr;
@@ -538,7 +539,7 @@ m_unknown(FILE *iob)
 	    ;
 #else /* RPATHS */
 	cp = unixbuf;
-	while ((c = getc (iob)) != '\n')
+	while ((c = getc (iob)) != '\n' && cp - unixbuf < BUFSIZ - 1)
 	    *cp++ = c;
 	*cp = 0;
 #endif /* RPATHS */
@@ -571,7 +572,7 @@ m_unknown(FILE *iob)
     pat_map = (unsigned char **) calloc (256, sizeof(unsigned char *));
 
     for (cp = (char *) fdelim + 1; cp < (char *) delimend; cp++ )
-	pat_map[*cp] = (unsigned char *) cp;
+	pat_map[(unsigned char)*cp] = (unsigned char *) cp;
 
     if (msg_style == MS_MMDF) {
 	/* flush extra msg hdrs */
@@ -639,7 +640,7 @@ m_Eom (int c, FILE *iob)
 		break;
 #else /* RPATHS */
 	cp = unixbuf;
-	while ((c = getc (iob)) != '\n' && c >= 0)
+	while ((c = getc (iob)) != '\n' && c >= 0 && cp - unixbuf < BUFSIZ - 1)
 	    *cp++ = c;
 	*cp = 0;
 #endif /* RPATHS */
@@ -723,7 +724,8 @@ matchc(int patln, char *pat, int strln, char *str)
 		while (pc != *str++)
 			if (str > es)
 				return 0;
-
+		if (str > es+1)
+			return 0;
 		sp = str; pp = pat;
 		while (pp < ep && *sp++ == *pp)
 			pp++;

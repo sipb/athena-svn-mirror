@@ -155,7 +155,7 @@
 *menuClock.width:			1024
 *menuClock.height:			22
 *menuClock.font:			*-*schoolbook-medium-r-*--14-*
-*menuClock.update:			5
+*menuClock.update:			1
 *menuClock.format:			%.3w %.3n %2D %02e:%02m %C%02Y
 
 !
