@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.8,v $
 .\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.8,v 1.1 1988-07-08 16:56:09 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.8,v 1.2 1988-07-10 21:43:47 jtkohl Exp $
 .\"
 .\" Copyright 1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -16,7 +16,8 @@ zpopnotify \- notify users of newly spooled mail
 .SH DESCRIPTION
 .I zpopnotify
 sends a Zephyr notice announcing the delivery of new mail to class MAIL,
-instance POP, recipient .I <user@realm>,
+instance POP, recipient
+.I <user@realm>,
 where <user@realm> is the command-line specified
 .BI username
 concatenated with the local Zephyr realm (e.g. "zpopnotify jruser" would
