@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.2 1987-12-03 17:33:54 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.3 1987-12-03 20:36:59 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  87/12/03  17:33:54  don
+ * fixed lint warnings.
+ * 
  * Revision 2.2  87/12/01  20:22:31  don
  * fixed a bug in match(): it was usually compiling exception-names,
  * even if they weren't regexp's. this seems to have led to some bogus
@@ -27,7 +30,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.2 1987-12-03 17:33:54 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.3 1987-12-03 20:36:59 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -47,11 +50,7 @@ char *tail;
 int entnum;
 {
 	char *pattern;
-	int i;
-
-	if (debug)
-		printf("goodname(%s,%d); fromname=%s\n",
-			tail,entnum, entries[entnum].fromfile);
+	int e, i;
 
 	switch( ( unsigned) *tail) {
 	case '\0': return( 1);
@@ -67,12 +66,15 @@ int entnum;
 	/*	compare the tail with each exception in both lists:
 	 *	the global list ( entries[0].exceptions[] ),
 	 *	and the current entry's exceptions list.
+	 *	both lists are sorted lexicographically, not by sortkey.
 	 */
-	for( i=0; pattern = entries[ 0     ].exceptions[ i]; i++)
-		if ( match( pattern, tail)) return( 0);
-
-	for( i=0; pattern = entries[ entnum].exceptions[ i]; i++)
-		if ( match( pattern, tail)) return( 0);
+	for( e = 0; e <= entnum; e += entnum)
+		for( i=0; pattern = entries[ e].exceptions[ i]; i++)
+			switch ( SIGN( strcmp( pattern, tail))) {
+			case 1: break;
+			case 0: return( 0);
+			case -1: if ( match( pattern, tail)) return( 0);
+			}
 
 	return(1);
 }
@@ -95,13 +97,13 @@ match( p, fname) char *p, *fname;
 	/* all our regexp's begin with ^,
 	 * because re_conv() makes them.
 	 */
-	if ( *p != '^') return( ! strcmp( p, fname));
+	if ( *p != '^') return( 0);
 	if ( re_comp( p)) {
 		sprintf(errmsg, "%s bad regular expression\n", re_comp( p));
 		do_panic();
 	}
 	switch( re_exec( fname)) {
-	case 0: return( 0);
+	case 0: return( 0);		/* most frequent case */
 	case 1: return( 1);
 	case -1: sprintf( errmsg, "%s bad regexp\n", p);
 		 do_panic();
@@ -120,7 +122,7 @@ char *ptr;
 		 index(ptr,'?')));
 }
 
-#define FASTEQ( a, b) (*((short *)(a)) == *((short*)(b)))
+#define FASTEQ( a, b) (*(a) == *(b) && a[1] == b[1])
 
 duplicate( word, entnum) char *word; int entnum; {
         int i;

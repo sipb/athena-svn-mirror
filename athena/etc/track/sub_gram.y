@@ -106,6 +106,9 @@ except  :
 				if ( duplicate( r, entrycnt)) continue;
 				savestr(&entries[entrycnt].exceptions[i++], r);
 			}
+			qsort( (char *)&entries[ entrycnt].exceptions[ 0], i,
+				sizeof( entries[	0].exceptions[ 0]),
+				exceptcmp);
 			doreset();
 		}
 	;
@@ -144,6 +147,10 @@ opt_ele : NEWLINE
 	;
 	
 %%
+
+exceptcmp( p, q) char **p, **q; {
+	return( strcmp( *p, *q));
+}
 
 yyerror(s)
 char *s;
