@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.2 1987-11-16 10:30:05 jtkohl Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.3 1987-11-16 10:39:51 jtkohl Exp $";
 #endif lint
 
 /*
@@ -424,10 +424,10 @@ acl_exact_match(acl, principal)
 char *acl;
 char *principal;
 {
-    int index;
+    int idx;
 
-    return((index = acl_load(acl)) >= 0
-	   && check_hash(acl_cache[index].acl, principal));
+    return((idx = acl_load(acl)) >= 0
+	   && check_hash(acl_cache[idx].acl, principal));
 }
 
 /* Returns nonzero if it can be determined that acl contains principal */
@@ -465,7 +465,7 @@ acl_add(acl, principal)
 char *acl;
 char *principal;
 {
-    int index;
+    int idx;
     int i;
     FILE *new;
     char canon[MAX_PRINCIPAL_SIZE];
@@ -474,14 +474,14 @@ char *principal;
 
     if((new = acl_lock_file(acl)) == NULL) return(-1);
     if((acl_exact_match(acl, canon))
-       || (index = acl_load(acl)) < 0) {
+       || (idx = acl_load(acl)) < 0) {
 	   acl_abort(acl, new);
 	   return(-1);
        }
     /* It isn't there yet, copy the file and put it in */
-    for(i = 0; i < acl_cache[index].acl->size; i++) {
-	if(acl_cache[index].acl->tbl[i] != NULL) {
-	    if(fputs(acl_cache[index].acl->tbl[i], new) == NULL
+    for(i = 0; i < acl_cache[idx].acl->size; i++) {
+	if(acl_cache[idx].acl->tbl[i] != NULL) {
+	    if(fputs(acl_cache[idx].acl->tbl[i], new) == NULL
 	       || putc('\n', new) != '\n') {
 		   acl_abort(acl, new);
 		   return(-1);
@@ -499,7 +499,7 @@ acl_delete(acl, principal)
 char *acl;
 char *principal;
 {
-    int index;
+    int idx;
     int i;
     FILE *new;
     char canon[MAX_PRINCIPAL_SIZE];
@@ -508,15 +508,15 @@ char *principal;
 
     if((new = acl_lock_file(acl)) == NULL) return(-1);
     if((!acl_exact_match(acl, canon))
-       || (index = acl_load(acl)) < 0) {
+       || (idx = acl_load(acl)) < 0) {
 	   acl_abort(acl, new);
 	   return(-1);
        }
     /* It isn't there yet, copy the file and put it in */
-    for(i = 0; i < acl_cache[index].acl->size; i++) {
-	if(acl_cache[index].acl->tbl[i] != NULL
-	   && strcmp(acl_cache[index].acl->tbl[i], canon)) {
-	       fputs(acl_cache[index].acl->tbl[i], new);
+    for(i = 0; i < acl_cache[idx].acl->size; i++) {
+	if(acl_cache[idx].acl->tbl[i] != NULL
+	   && strcmp(acl_cache[idx].acl->tbl[i], canon)) {
+	       fputs(acl_cache[idx].acl->tbl[i], new);
 	       putc('\n', new);
 	}
     }
