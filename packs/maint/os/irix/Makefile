@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.2 1998-12-26 15:51:53 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-01-22 04:01:55 rbasch Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
+ATHRETCDIR=/etc/athena
 
 all:
 
@@ -13,11 +14,14 @@ install:
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC2}
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 axdm ${DESTDIR}${INITD}
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
+	install -c -m 0755 network ${DESTDIR}${INITD}
+	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	rm -f ${DESTDIR}${RC0}/K02xdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
 	rm -f ${DESTDIR}${RC0}/K07athena
