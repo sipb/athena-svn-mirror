@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v $
- * $Author: eichin $
+ * $Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.4 1988-10-12 04:06:11 eichin Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.5 1990-07-12 14:04:36 epeisach Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -54,7 +54,11 @@ main(argc,argv)
    * not listed as ``message the same, repeated 6 times'' but that
    * shouldn't be a problem.
    */
+#ifdef LOG_DAEMON
   openlog(argv[0], LOG_PID, LOG_DAEMON);
+#else
+  openlog(argv[0], LOG_PID);
+#endif
   
   /* gms is just return values; the other com_err tables used will
    * init themselves.

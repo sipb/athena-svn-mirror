@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v $
- * $Author: eichin $
+ * $Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.2 1988-09-28 23:40:24 eichin Exp $";
+static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.3 1990-07-12 14:04:49 epeisach Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -31,7 +31,11 @@ main (argc, argv)
   char *message;
   int zephyr_p = 0, new_p = 0, login_p = 0;
   
+#ifdef LOG_USER
   openlog(argv[0], LOG_PID, LOG_USER);
+#else
+  openlog(argv[0], LOG_PID);
+#endif
   syslog(LOG_INFO, "GMS client started...");
 
   /* Argument Processing:
