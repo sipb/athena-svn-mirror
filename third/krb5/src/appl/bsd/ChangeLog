@@ -1,3 +1,20 @@
+1999-12-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* login.c (main, k_init): Call krb5_cc_set_default_name when
+	setting ccname env var.  Thanks to Donn Cave and Leonard Peirce.
+
+1999-11-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* login.c (k_init): Call krb5_init_secure_context instead of
+	krb5_init_context and krb5_secure_config_files.
+
+1999-10-26  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
+	LOCAL_INCLUDES such that one can override CFLAGS from the command
+	line without losing CPP search patchs and defines. Some associated
+	Makefile cleanup. [from wsanchez@apple.com]
+
 1999-08-24  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in (kshd): Remove $(LOGINLIBS) from kshd dependencies.

@@ -630,9 +630,9 @@ krb5-library-common-linker-options = ¶
 	-dv {krb5-library-definition-version} ¶
 	-uv {krb5-library-implementation-version}
 
-krb5-library-linker-options-ppc-debug = {common-linker-options-debug} {krb5-library-common-linker-options}
+krb5-library-linker-options-ppc-debug = {common-linker-options-debug} {krb5-library-common-linker-options} -weaklib "DriverServicesLib"
 krb5-library-linker-options-68k-debug = {common-linker-options-debug} {krb5-library-common-linker-options}
-krb5-library-linker-options-ppc-final = {common-linker-options-final} {krb5-library-common-linker-options}
+krb5-library-linker-options-ppc-final = {common-linker-options-final} {krb5-library-common-linker-options} -weaklib "DriverServicesLib"
 krb5-library-linker-options-68k-final = {common-linker-options-final} {krb5-library-common-linker-options}
 
 krb5-globals-library-common-linker-options = ¶
@@ -1415,8 +1415,8 @@ documentation Ä unset-echo {documentation-output}
 	End
 	If (`Exists {root-folder}":::Documentation:pdf:krb5api.pdf"`)
 		Catenate {root-folder}":::Documentation:pdf:krb5api.pdf" > {Targ}
+		SetFile -a l -t 'PDF ' -c 'CARO' {Targ}
 	End
-	SetFile -a l -t 'PDF ' -c 'CARO' {Targ}
 
 {krb5-globals-documentation-output-folder}"Kerberos5Globals.html" Ä {root-folder}"mac:libraries:Kerberos v5 Globals:Krb5Globals.html" {makefile-name}
 	"{create-folder}" "{TargDir}"

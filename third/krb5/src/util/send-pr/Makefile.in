@@ -6,14 +6,15 @@ BUILDTOP=$(REL)$(U)$(S)$(U)
 #
 # Makefile for building a standalone send-pr.
 #
-RELEASE=krb5-1.1
+RELEASE=krb5-1.1.1
 SUBMITTER=net
 sendprname = krb5-send-pr
 EMACS=emacs
 
 infodir = $(prefix)/info
 lispdir = $(prefix)/lib/emacs/site-lisp
-man1dir = $(KRB5MANROOT)/man1
+mandir  = $(KRB5MANROOT)
+man1dir = $(mandir)/man1
 datadir = @datadir@
 
 all:: send-pr  install-sid

@@ -1,3 +1,39 @@
+1999-12-03  Danilo Almeida  <dalmeida@mit.edu>
+
+	* changepw.c: Define ETIMEDOUT for Windows.
+
+1999-12-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_os_ctx.c (krb5_secure_config_files): Do define; always
+	return an error, but perform old functionality in case the error
+	is ignored.  Delete when we can make a major version number
+	change.
+
+1999-11-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* an_to_ln.c (default_an_to_ln): Avoid stomping byte after
+	supplied buffer.  Thanks to Matt Crawford.
+
+	* init_os_ctx.c (os_init_paths): Delete SECURE argument; read the
+	value from the profile structure instead.
+	(krb5_os_init_context, krb5_get_profile): Don't pass SECURE
+	argument.
+	(os_init_paths, krb5_get_profile): Cast first arg to
+	profile_init.
+	(krb5_secure_config_files): Don't define.
+
+1999-10-26  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
+	LOCAL_INCLUDES such that one can override CFLAGS from the command
+	line without losing CPP search patchs and defines. Some associated
+	Makefile cleanup. [from wsanchez@apple.com]
+
+1999-10-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* changepw.c (krb5_change_password): Wait only two minutes, not
+	indefinitely, for a response from the kpasswd server.
+
 1999-09-21  Ken Raeburn  <raeburn@mit.edu>
 
 	* changepw.c: Changes from Jeffrey Altman to look up kpasswd

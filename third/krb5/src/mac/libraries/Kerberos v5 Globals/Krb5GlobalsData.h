@@ -1,7 +1,7 @@
 /*
  * Declarations for globally shared data used by Kerberos v5 library
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5GlobalsData.h,v 1.1.1.1 1999-10-05 16:15:53 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5GlobalsData.h,v 1.1.1.2 1999-12-26 03:33:48 ghudson Exp $
  */
  
 #ifndef __Krb5GlobalsData_h__
