@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 1999-04-01 20:09:35 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2000-04-26 15:12:42 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -14,7 +14,7 @@ exec_prefix=@exec_prefix@
 datadir=@datadir@
 libdir=@libdir@
 includedir=@includedir@
-appdefdir=${datadir}/X11/app-defaults
+appdefdir=${libdir}/X11/app-defaults
 bitmapdir=${includedir}/X11/bitmaps
 
 CC=@CC@
