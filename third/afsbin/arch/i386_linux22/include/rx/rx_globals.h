@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_globals.h,v 1.1 1999-04-09 21:03:02 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_globals.h,v 1.1.1.1 1999-12-22 20:45:41 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_globals.h,v $ */
 
 /*
@@ -32,16 +32,15 @@
 
 #ifndef INIT
 #define INIT(x)
-#define	EXT extern
-/* Basic socket for client requests; other sockets (for receiving server requests) are in the service structures */
 #if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
-__declspec(dllimport)
+#define EXT __declspec(dllimport) extern
+#else
+#define	EXT extern
 #endif
-EXT osi_socket rx_socket;
+#endif
 
-#else /* INIT */
-osi_socket rx_socket;
-#endif
+/* Basic socket for client requests; other sockets (for receiving server requests) are in the service structures */
+EXT osi_socket rx_socket;
 
 /* The array of installed services.  Null terminated. */
 EXT struct rx_service *rx_services[RX_MAX_SERVICES+1];
@@ -78,23 +77,37 @@ EXT int rx_intentionallyDroppedPacketsPer100 INIT(0);	/* Dropped on Send */
 #endif
 
 /* extra packets to add to the quota */
-RX_DECLSPEC EXT int rx_extraQuota INIT(0);
+EXT int rx_extraQuota INIT(0);
 /* extra packets to alloc (2 windows by deflt) */
-RX_DECLSPEC EXT int rx_extraPackets INIT(32);
+EXT int rx_extraPackets INIT(32);
 
 EXT int rx_stackSize INIT(RX_DEFAULT_STACK_SIZE);
 
 /* Time until an unresponsive connection is declared dead */
 EXT int	rx_connDeadTime	INIT(12);
+/* Set rx default connection dead time; set on both services and connections at creation time */
+#define rx_SetRxDeadTime(seconds)   (rx_connDeadTime = (seconds))
+
 /* Time until we toss an idle connection */
 EXT int rx_idleConnectionTime INIT(700);
 /* Time until we toss a peer structure, after all connections using are gone */
 EXT int	rx_idlePeerTime	INIT(60);
 
 /* The file server is temporarily salvaging : dhruba */
-RX_DECLSPEC EXT int	rx_tranquil	INIT(0);
+EXT int	rx_tranquil	INIT(0);
+
 /* UDP rcv buffer size */
-RX_DECLSPEC EXT int rx_UdpBufSize   INIT(64*1024);
+EXT int rx_UdpBufSize   INIT(64*1024);
+#define rx_GetMinUdpBufSize()   (64*1024)
+#define rx_SetUdpBufSize(x)     (((x)>rx_GetMinUdpBufSize()) ? (rx_UdpBufSize = (x)):0)
+
+/*
+ * Variables to control RX overload management. When the number of calls
+ * waiting for a thread exceed the threshold, new calls are aborted
+ * with the busy error. 
+ */
+EXT int rx_BusyThreshold INIT(-1);      /* default is disabled */
+EXT int rx_BusyError INIT(-1);
 
 /* These definitions should be in one place */
 #ifdef	AFS_SUN5_ENV
@@ -153,7 +166,7 @@ EXT afs_kmutex_t rx_freePktQ_lock;
 /* Number of free packets */
 EXT int rx_nFreePackets INIT(0);
 EXT int rxi_NeedMorePackets INIT(0);
-RX_DECLSPEC EXT int rx_nWaiting INIT(0);
+EXT int rx_nWaiting INIT(0);
 EXT int rx_packetReclaims INIT(0);
 
 /* largest packet which we can safely receive, initialized to AFS 3.2 value
@@ -245,10 +258,11 @@ EXT afs_kcondvar_t rx_waitingForPackets_cv;
 #endif
 EXT char rx_waitingForPackets; /* Processes set and wait on this variable when waiting for packet buffers */
 
-RX_DECLSPEC EXT struct rx_stats rx_stats;
+EXT struct rx_stats rx_stats;
 
 EXT struct rx_peer **rx_peerHashTable;
 EXT struct rx_connection **rx_connHashTable;
+EXT struct rx_connection *rx_connCleanup_list INIT(0);
 EXT u_int32 rx_hashTableSize INIT(256);	/* Power of 2 */
 EXT u_int32 rx_hashTableMask INIT(255);	/* One less than rx_hashTableSize */
 #ifdef RX_ENABLE_LOCKS
@@ -288,6 +302,8 @@ void rxi_AttachServerProc();
 void rxi_ChallengeOn();
 #define	rxi_ChallengeOff(conn)	rxevent_Cancel((conn)->challengeEvent, (struct rx_call*)0, 0);
 void rxi_ChallengeEvent();
+void rxi_SendDelayedConnAbort();
+void rxi_SendDelayedCallAbort();
 struct rx_packet *rxi_SendAck();
 void rxi_ClearTransmitQueue();
 void rxi_ClearReceiveQueue();
@@ -332,9 +348,11 @@ void rxi_Send();
 #ifdef RXDEBUG
 /* Some debugging stuff */
 EXT FILE *rx_debugFile;	/* Set by the user to a stdio file for debugging output */
+EXT FILE *rxevent_debugFile;	/* Set to an stdio descriptor for event logging to that file */
 
-#define Log rx_debugFile
+#define rx_Log rx_debugFile
 #define dpf(args) if (rx_debugFile) rxi_DebugPrint args; else
+#define rx_Log_event rxevent_debugFile
 
 EXT char *rx_packetTypes[RX_N_PACKET_TYPES] INIT(RX_PACKET_TYPES); /* Strings defined in rx.h */
 
@@ -343,6 +361,10 @@ EXT char *rx_packetTypes[RX_N_PACKET_TYPES] INIT(RX_PACKET_TYPES); /* Strings de
  * Counter used to implement connection specific data
  */
 EXT int rxi_keyCreate_counter INIT(0);
+/*
+ * Array of function pointers used to destory connection specific data
+ */
+EXT rx_destructor_t *rxi_keyCreate_destructor INIT(NULL);
 #ifdef RX_ENABLE_LOCKS
 EXT afs_kmutex_t rxi_keyCreate_lock;
 #endif /* RX_ENABLE_LOCKS */
@@ -351,3 +373,28 @@ EXT afs_kmutex_t rxi_keyCreate_lock;
 #else
 #define dpf(args) 
 #endif /* RXDEBUG */
+
+/*
+ * SERVER ONLY: Threshholds used to throttle error replies to looping
+ * clients. When consecutive calls are aborting with the same error, the
+ * server throttles the client by waiting before sending error messages.
+ * Disabled if abort thresholds are zero.
+ */
+EXT int rxi_connAbortThreshhold INIT(0);
+EXT int rxi_connAbortDelay INIT(3000);
+EXT int rxi_callAbortThreshhold INIT(0);
+EXT int rxi_callAbortDelay INIT(3000);
+
+/*
+ * Thread specific thread ID used to implement LWP_Index().
+ */
+
+#if defined(AFS_PTHREAD_ENV)
+EXT pthread_key_t rx_thread_id_key;
+#endif
+
+#if defined(RX_ENABLE_LOCKS)
+EXT afs_kmutex_t rx_stats_mutex; /* used to activate stats gathering */
+#endif
+
+EXT int rx_enable_stats INIT(0);

@@ -74,6 +74,8 @@
 /* these are for initialization flags */
 
 #define AFSCALL_INIT_MEMCACHE 0x1
+#define AFSCALL_INIT_MEMCACHE_SLEEP 0x2	/* Use osi_Alloc to allocate memcache
+					 * instead of osi_Alloc_NoSleep */
 
 #define	AFSOP_GO		100	/* whether settime is being done */
 /* not for initialization: debugging assist */
@@ -109,23 +111,18 @@ struct afs_cacheParams {
     int32 users;
 };
 
+/*
+ * Note that the AFS_*ALLOCSIZ values should be multiples of sizeof(void*) to
+ * accomodate pointer alignment.
+ */
 /* Used in rx.c as well as afs directory. */
 #if	defined(AFS_AIX32_ENV) || defined(AFS_HPUX_ENV)
 /* XXX Because of rxkad_cprivate... XXX */
-#define	AFS_MDALLOCSIZ 	428	    /* "Medium" allocated size */
+#define	AFS_MDALLOCSIZ 	(127*sizeof(void *))	    /* "Medium" allocated size */
 #define	AFS_MALLOC_LOW_WATER	50 /* Min free blocks before allocating more */
-#define	AFS_SMALLOCSIZ 	152	    /* "Small" allocated size */
+#define	AFS_SMALLOCSIZ 	(38*sizeof(void *))	    /* "Small" allocated size */
 #else
-#ifdef	AFS_ALPHA_ENV
-#define	AFS_SMALLOCSIZ 	192	    /*  "Small" allocated size */
-#else
-#ifdef AFS_LINUX22_ENV
-/* For the size of the osi_file structure. */
-#define	AFS_SMALLOCSIZ 	256
-#else
-#define	AFS_SMALLOCSIZ 	128	    /*  was 256 - "Small" allocated size */
-#endif
-#endif
+#define	AFS_SMALLOCSIZ 	(64*sizeof(void *))         /*  "Small" allocated size */
 #endif
 
 #endif /* _AFS_ARGS_H_ */

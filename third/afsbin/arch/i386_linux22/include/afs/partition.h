@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/partition.h,v 1.1 1999-04-09 21:02:02 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/partition.h,v 1.1.1.1 1999-12-22 20:45:24 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/partition.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/partition.h,v 1.1 1999-04-09 21:02:02 tb Exp $";
+static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/partition.h,v 1.1.1.1 1999-12-22 20:45:24 ghudson Exp $";
 #endif
 
 /*
@@ -68,7 +68,7 @@ struct DiskPartition {
 				   is not reread--does not apply here.  The
 				   superblock is re-read periodically by
 				   VSetPartitionDiskUsage().) */
-    int		minFree;	/* Percentage to be kept free, as last read
+    int		minFree;	/* Number blocks to be kept free, as last read
     				   from the superblock */
     int		flags;
     int 	f_files;	/* total number of files in this partition */

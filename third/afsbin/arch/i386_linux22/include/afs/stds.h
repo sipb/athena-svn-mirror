@@ -1,6 +1,6 @@
 /* Copyright (C) 1998, 1990 Transarc Corporation - All rights reserved */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/stds.h,v 1.1 1999-04-09 21:02:25 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/stds.h,v 1.1.1.1 1999-12-22 20:44:56 ghudson Exp $ */
 
 #ifndef TRANSARC_AFS_CONFIG_STDS_H
 #define TRANSARC_AFS_CONFIG_STDS_H	1
@@ -77,16 +77,16 @@ typedef int	         int32;
  * #undef it if required.
  */
 #define u_int32 unsigned int
+#elif defined(AFS_HPUX_ENV)
+/* It's an error for a 64 bit compile if the following is re-typedef'd
+ */
+#define u_int32 unsigned int
 #else
 typedef unsigned int  u_int32;
 #endif
 #else	/* AFS_64BIT_ENV */
 typedef long	         int32;
 #endif	/* AFS_64BIT_ENV */
-#if defined(AFS_LINUX20_ENV) && !defined(AFS_LINUX22_ENV)
-typedef int int32_t;
-typedef unsigned int u_int32_t;
-#endif
 
 /* The Sun RPC include files define this with a typedef and this caused
  * problems for the NFS Translator.  Users of those include files should just
@@ -113,7 +113,7 @@ typedef unsigned int u_int32_t;
 
 #if	defined(AFS_64BIT_ENV) && 0
 
-typedef	unsigned long	hyper;
+typedef	unsigned long	afs_hyper_t;
 
 #define	hcmp(a,b)	((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
 #define	hsame(a,b)	((a) == (b))
@@ -134,10 +134,10 @@ typedef	unsigned long	hyper;
 
 #else	/* AFS_64BIT_ENV */
 
-typedef struct hyper { /* unsigned 64 bit integers */
+typedef struct afs_hyper_t { /* unsigned 64 bit integers */
     unsigned int high;
     unsigned int low;
-} hyper;
+} afs_hyper_t;
 
 #define hcmp(a,b) ((a).high<(b).high? -1 : ((a).high > (b).high? 1 : \
     ((a).low <(b).low? -1 : ((a).low > (b).low? 1 : 0))))

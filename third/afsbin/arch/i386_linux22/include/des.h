@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/des.h,v $
- * $Author: tb $
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/des.h,v 1.1 1999-04-09 20:59:49 tb Exp $ 
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/des.h,v 1.1.1.1 1999-12-22 20:44:51 ghudson Exp $ 
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *

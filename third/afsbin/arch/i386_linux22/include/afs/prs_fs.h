@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/prs_fs.h,v 1.1 1999-04-09 21:02:13 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/prs_fs.h,v 1.1.1.1 1999-12-22 20:45:10 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/prs_fs.h,v $ */
 
 /*

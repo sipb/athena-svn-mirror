@@ -1,8 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/viceinode.h,v 1.1 1999-04-09 21:02:33 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/viceinode.h,v 1.1.1.1 1999-12-22 20:45:23 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/viceinode.h,v $ */
 
+#ifndef _VICEINODE_H_
+#define _VICEINODE_H_
+
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidviceinode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/viceinode.h,v 1.1 1999-04-09 21:02:33 tb Exp $";
+static char *rcsidviceinode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/viceinode.h,v 1.1.1.1 1999-12-22 20:45:23 ghudson Exp $";
 #endif
 
 /*
@@ -70,3 +73,4 @@ struct ViceInodeInfo {
 #define	VI_MOUNTTABLE	5	/* The volume's mount table */
 #define VI_LINKTABLE	6	/* The volume's link counts */
 
+#endif /* _VICEINODE_H_ */

@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1 1999-04-09 21:02:30 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.1 1999-12-22 20:44:59 ghudson Exp $ */
 /* $ACIS:vice.h 9.0$ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE)  && defined(RCS_HDRS)
-static char *rcsidvice = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1 1999-04-09 21:02:30 tb Exp $";
+static char *rcsidvice = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.1 1999-12-22 20:44:59 ghudson Exp $";
 #endif
 
 /*
@@ -43,15 +43,16 @@ static char *rcsidvice = "$Header: /afs/dev.mit.edu/source/repository/third/afsb
 #include <sys/ioccom.h>
 #endif
 
-#if defined(AFS_SGI61_ENV) && defined(KERNEL)
-struct KViceIoctl {
-	app32_ptr_t in, out;	/* Data to be transferred in, or out */
+#if defined(KERNEL)
+/* a fixed size, whether the kernel uses the ILP32 or LP64 data models */
+struct ViceIoctl32 {
+	unsigned int in, out;	/* Data to be transferred in, or out */
 	short in_size;		/* Size of input buffer <= 2K */
 	short out_size;		/* Maximum size of output buffer, <= 2K */
 };
 #endif
 
-#ifndef AFS_NT40_ENV  /* NT decl in WINNT/afsd/fs_utils.h with pioctl() decl */
+#ifndef AFS_NT40_ENV  /* NT decl in sys/pioctl_nt.h with pioctl() decl */
 struct ViceIoctl {
 	caddr_t in, out;	/* Data to be transferred in, or out */
 	short in_size;		/* Size of input buffer <= 2K */
@@ -64,14 +65,25 @@ struct ViceIoctl {
    The buffer pointers may be null, or the counts may be 0 if there
    are no input or output parameters
  */
-#if defined(AFS_SGI_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_AIX32_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_OSF_ENV) || defined(AFS_LINUX20_ENV)
-#if defined(AFS_SGI61_ENV) && defined(KERNEL)
-#define _VICEIOCTL(id)  ((unsigned int ) _IOW('V', id, struct KViceIoctl))
+/*
+ * The structure argument to _IOW() is used to add a structure
+ * size component to the _IOW() value, to help the kernel code identify
+ * how big a structure the calling process is passing into a system
+ * call.
+ *
+ * In user space, struct ViceIoctl32 and struct ViceIoctl are the same
+ * except on Digital Unix, where user space code is compiled in 64-bit
+ * mode.
+ *
+ * So, in kernel space, regardless whether it is compiled in 32-bit
+ * mode or 64-bit mode, the kernel code can use the struct ViceIoctl32
+ * version of _IOW() to check the size of user space arguments -- except
+ * on Digital Unix.
+ */
+#if defined(KERNEL) && !defined(AFS_OSF_ENV)
+#define _VICEIOCTL(id)  ((unsigned int ) _IOW('V', id, struct ViceIoctl32))
 #else
 #define _VICEIOCTL(id)  ((unsigned int ) _IOW('V', id, struct ViceIoctl))
-#endif
-#else
-#define _VICEIOCTL(id)  ((unsigned int ) _IOW(V, id, struct ViceIoctl))
 #endif
 
 /* Use this macro to define up to 256 vice ioctl's.  These ioctl's

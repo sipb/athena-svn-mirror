@@ -222,7 +222,6 @@ extern struct afs_icl_set *afs_iclLongTermSetp;
 #else
 #define	osi_Alloc		malloc
 #define	osi_Free(a,b)		free(a)
-#define	osi_ThreadUnique()	9999	/*XXX */
 
 #define ICL_RPC_MAX_SETS (64)
 #define ICL_RPC_MAX_LOGS (64)

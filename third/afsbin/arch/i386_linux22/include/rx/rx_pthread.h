@@ -1,6 +1,6 @@
 /* 
  *Copyright (C) 1998  Transarc Corporation.  All rights reserved.
- *$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_pthread.h,v 1.1 1999-04-09 21:03:16 tb Exp $
+ *$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_pthread.h,v 1.1.1.1 1999-12-22 20:45:45 ghudson Exp $
  */
 
 /* rx_pthread.h defines the lock and cv primitives required for a thread
@@ -19,6 +19,9 @@
 #define AFS_GLOBAL_RXLOCK_KERNEL 1
 #endif
 
+/* Block signals to child threads. */
+#include <afs/pthread_nosigs.h>
+
 #ifdef AFS_NT40_ENV
 #include <wtypes.h>
 #include <winbase.h>
@@ -29,9 +32,9 @@ typedef pthread_mutex_t afs_kmutex_t;
 typedef pthread_cond_t afs_kcondvar_t;
 #define MUTEX_ISMINE
 #define pthread_yield() Sleep(0)
-#endif
 
-#if defined(AFS_SUN5_ENV) || defined(AFS_AIX_ENV) || defined(AFS_SGI_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_OSF_ENV)
+#else /* AFS_NT40_ENV */
+
 #include <pthread.h>
 typedef pthread_mutex_t afs_kmutex_t;
 typedef pthread_cond_t afs_kcondvar_t;
@@ -42,6 +45,7 @@ typedef pthread_cond_t afs_kcondvar_t;
 #define pthread_yield() sleep(0)
 #endif
 
+
 #ifndef MUTEX_ISMINE
 /* Only used for debugging. */
 #ifdef AFS_SUN5_ENV
@@ -51,9 +55,9 @@ typedef pthread_cond_t afs_kcondvar_t;
 #define MUTEX_ISMINE(l) (1)
 #endif /* AFS_SUN5_ENV */
 #endif /* !MUTEX_ISMINE */
-#endif /* AFS_SUN5_ENV || AFS_AIX_ENV */
+#endif /* AFS_NT40_ENV */
 
-extern void osirx_AssertMine(void *lockaddr, char *msg);
+extern void osirx_AssertMine(afs_kmutex_t *lockaddr, char *msg);
 
 #ifdef AFS_PTHREAD_ENV
 #ifdef MUTEX_INIT

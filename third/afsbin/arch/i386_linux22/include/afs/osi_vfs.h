@@ -14,7 +14,6 @@
 /* The vnode should match the current implementation of the fs independent
  * part of the Linux inode.
  */
-#ifdef AFS_LINUX22_ENV
 /* The first cut is to continue to use a separate vnode pool. */
 typedef struct vnode {
 	struct list_head	i_hash;
@@ -55,6 +54,9 @@ typedef struct vnode {
 
 	int			i_writecount;
 	unsigned int		i_attr_flags;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,10)
+	__u32                   i_generation;
+#endif
 #ifdef notdef
 	union {
 		struct pipe_inode_info		pipe_i;
@@ -80,7 +82,6 @@ typedef struct vnode {
 	} u;
 #endif
 } vnode_t;
-#endif
 
 /* Map vnode fields to inode fields. */
 #define i_number	i_ino
@@ -112,12 +113,7 @@ enum vcexcl { EXCL, NONEXCL } ;
 
 #define VTOI(V)  ((struct inode*)V)
 #define VN_HOLD(V) ((vnode_t*)V)->i_count++;
-#ifdef AFS_LINUX22_ENV
 #define VN_RELE(V) osi_iput((struct inode *)V);
-#else
-#define VN_RELE(V) iput((struct inode *)V);
-#endif
-
 #define VFS_STATFS(V, S) ((V)->s_op->statfs)((V), (S), sizeof(*(S)))
 
 

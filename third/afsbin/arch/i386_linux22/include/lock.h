@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lock.h,v 1.1 1999-04-09 20:59:56 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lock.h,v 1.1.1.1 1999-12-22 20:44:53 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lock.h,v $ */
 
 #ifndef LOCK_H
 #define LOCK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lock.h,v 1.1 1999-04-09 20:59:56 tb Exp $";
+static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lock.h,v 1.1.1.1 1999-12-22 20:44:53 ghudson Exp $";
 #endif
 
 /*

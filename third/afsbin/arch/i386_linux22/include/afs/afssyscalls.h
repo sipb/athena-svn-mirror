@@ -8,7 +8,7 @@
 #ifndef AFS_NT40_ENV
 
 #ifndef lint
-static char *rcsid_afssyscalls_h = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afssyscalls.h,v 1.1 1999-04-09 21:00:38 tb Exp $";
+static char *rcsid_afssyscalls_h = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afssyscalls.h,v 1.1.1.1 1999-12-22 20:45:06 ghudson Exp $";
 #endif
 
 /* Declare Inode type. */
@@ -16,11 +16,18 @@ static char *rcsid_afssyscalls_h = "$Header: /afs/dev.mit.edu/source/repository/
 #ifdef AFS_SGI62_ENV
 typedef uint64_t Inode;
 #else
-error Need 64 bit Inode defined.
-#endif
+#ifdef AFS_NAMEI_ENV
+#include <sys/types.h>
+typedef u_int64_t Inode;
 #else
+error Need 64 bit Inode defined.
+#endif /* AFS_NAMEI_ENV */
+#endif /* AFS_SGI62_ENV */
+#else /* AFS_64BIT_IOPS_ENV */
 typedef unsigned int Inode;
 #endif
+
+#ifndef AFS_NAMEI_ENV
 
 #ifdef AFS_DEBUG_IOPS
 extern FILE *inode_debug_log;
@@ -49,8 +56,6 @@ extern int debug_idec64(int dev, uint64_t inode, int inode_p1,
 			char *file, int line);
 
 #endif /* AFS_DEBUG_IOPS */
-
-#else
 #endif /* AFS_SGI_XFS_IOPS_ENV */
 
 #ifdef AFS_64BIT_IOPS_ENV
@@ -68,6 +73,7 @@ extern int inode_write();
 extern int afs_init_kernel_config(int flag);
 #endif /* AFS_SGI_VNODE_GLUE */
 
+#endif /* AFS_NAMEI_ENV */
 
 
 /* minimum size of string to hand to PrintInode */
@@ -87,6 +93,8 @@ extern char *PrintInode();
  * an error.
  */
 #define VALID_INO(I) ((I) != (Inode)-1 && (I) != (Inode)0)
+
+#ifndef AFS_NAMEI_ENV 
 
 /* Definitions of inode macros. */
 #ifdef AFS_SGI_XFS_IOPS_ENV
@@ -117,6 +125,9 @@ extern char *PrintInode();
 #define IOPEN(DEV, INO, MODE)	iopen(DEV, INO, MODE)
 #endif
 #endif /* AFS_IOPS_DEFINED */
+
+
+#endif /* AFS_NAMEI_ENV */
 
 #endif /* AFS_NT40_ENV */
 

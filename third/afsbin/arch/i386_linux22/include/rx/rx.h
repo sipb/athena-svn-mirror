@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx.h,v 1.1 1999-04-09 21:02:55 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx.h,v 1.1.1.1 1999-12-22 20:45:39 ghudson Exp $ */
 
 /*
 ****************************************************************************
@@ -36,14 +36,6 @@
 #ifndef	_RX_
 #define _RX_
 
-#ifndef RX_DECLSPEC
-#if defined(AFS_PTHREAD_ENV) && defined(AFS_NT40_ENV)
-#define RX_DECLSPEC __declspec(dllimport)
-#else
-#define RX_DECLSPEC
-#endif
-#endif
-
 #ifndef KDUMP_RX_LOCK
 /* Substitute VOID (char) for void, because some compilers are confused by void
  * in some situations */
@@ -59,6 +51,7 @@
 #include "../rx/rx_queue.h"
 #include "../rx/rx_packet.h"
 #include "../rx/rx_misc.h"
+#include "../netinet/in.h"
 #else /* KERNEL */
 # include <sys/types.h>
 # include <stdio.h>
@@ -75,6 +68,9 @@
 # include "rx_event.h"
 # include "rx_packet.h"
 # include "rx_misc.h"
+#ifndef AFS_NT40_ENV
+# include <netinet/in.h>
+#endif
 #endif /* KERNEL */
 
 
@@ -121,7 +117,8 @@ void rx_SetArrivalProc();
 void rx_Finalize();
 void rx_GetIFInfo();
 #ifndef KERNEL
-int rx_KeyCreate(void);
+typedef void (*rx_destructor_t)(void *);
+int rx_KeyCreate(rx_destructor_t);
 void *rx_GetSpecific(struct rx_connection *conn, int key);
 void rx_SetSpecific(struct rx_connection *conn, int key, void *ptr);
 #endif /* KERNEL */
@@ -145,9 +142,6 @@ int ntoh_syserr_conv(int error);
 #define	rx_ServerConn(conn)		((conn)->type == RX_SERVER_CONNECTION)
 #define	rx_ClientConn(conn)		((conn)->type == RX_CLIENT_CONNECTION)
 #define rx_IsUsingPktCksum(conn)	((conn)->flags & RX_CONN_USING_PACKET_CKSUM)
-/* Set and get rock is applicable to both connections and calls.  It's used by multi rx macros for calls. */
-#define	rx_SetRock(obj, newrock)	((obj)->rock = (VOID *)(newrock))
-#define	rx_GetRock(obj,	type)		((type)(obj)->rock)
 #define rx_ServiceIdOf(conn)		((conn)->serviceId)
 #define	rx_SecurityClassOf(conn)	((conn)->securityIndex)
 #define rx_SecurityObjectOf(conn)	((conn)->securityObject)
@@ -197,20 +191,19 @@ extern void rx_SetConnDeadTime();
 /* Set connection hard timeout for a connection */
 #define rx_SetConnHardDeadTime(conn, seconds) ((conn)->hardDeadTime = (seconds))
 
-/* Set rx default connection dead time; set on both services and connections at creation time */
-RX_DECLSPEC extern int rx_connDeadTime;
-#define	rx_SetRxDeadTime(seconds)   (rx_connDeadTime = (seconds))
+/* Set the overload threshold and the overload error */
+#define rx_SetBusyThreshold(threshold, code) (rx_BusyThreshold=(threshold),rx_BusyError=(code))
 
 /* If this flag is set,no new requests are processed by rx, all new requests are
 returned with an error code of RX_CALL_DEAD ( transient error ) : dhruba */
 #define	rx_SetRxTranquil()   		(rx_tranquil = 1)
 #define	rx_ClearRxTranquil()   		(rx_tranquil = 0)
 
-RX_DECLSPEC extern int rx_UdpBufSize; /* UDP rcv buffer size : the min is 64K*/
-#define rx_GetMinUdpBufSize()	(64*1024)
-#define rx_SetUdpBufSize(x)	(((x)>rx_GetMinUdpBufSize()) ? (rx_UdpBufSize = (x)):0)
-
-extern int rx_nPackets;
+/* Set the threshold and time to delay aborts for consecutive errors */
+#define rx_SetCallAbortThreshold(A) (rxi_callAbortThreshhold = (A))
+#define rx_SetCallAbortDelay(A) (rxi_callAbortDelay = (A))
+#define rx_SetConnAbortThreshold(A) (rxi_connAbortThreshhold = (A))
+#define rx_SetConnAbortDelay(A) (rxi_connAbortDelay = (A))
 
 #define cpspace(call) ((call)->curlen)
 #define cppos(call) ((call)->curpos)
@@ -426,6 +419,9 @@ struct rx_peer {
     u_short cwind;		/* congestion window */
     u_short nDgramPackets;      /* number packets per AFS 3.5 jumbogram */
     u_short congestSeq;		/* Changed when a call retransmits */
+    afs_hyper_t bytesSent;      /* Number of bytes sent to this peer */
+    afs_hyper_t bytesReceived;  /* Number of bytes received from this peer */
+    struct rx_queue rpcStats;	/* rpc statistic list */
 };
 
 /* A connection is an authenticated communication path, allowing 
@@ -447,7 +443,6 @@ struct rx_connection {
     u_int32 epoch;	  /* Process start time of client side of connection */
     u_int32 cid;	    /* Connection id (call channel is bottom bits) */
     int32 error;	    /* If this connection is in error, this is it */
-    VOID *rock;			    /* User definable */
 #ifdef KDUMP_RX_LOCK
     struct rx_call_rx_lock *call[RX_MAXCALLS];
 #else
@@ -460,6 +455,8 @@ struct rx_connection {
 /*    int32 maxPacketSize;    max packet size should be per-connection since */
          /* peer process could be restarted on us. Includes RX Header.       */
     struct rxevent *challengeEvent; /* Scheduled when the server is challenging a     */
+    struct rxevent *delayedAbortEvent; /* Scheduled to throttle looping client */
+    int		abortCount;	    /* count of abort messages sent */
                                     /* client-- to retransmit the challenge */
     struct rx_service *service;	    /* used by servers only */
     u_short serviceId;		    /* To stamp on requests (clients only) */
@@ -542,7 +539,7 @@ struct rx_call {
     struct rx_connection *conn;	    /* Parent connection for this call */
 #endif
     u_int32 *callNumber;	    /* Pointer to call number field within connection */
-    u_short flags;		    /* Some random flags */
+    u_int32 flags;		    /* Some random flags */
     u_char localStatus;		    /* Local user status sent out of band */
     u_char remoteStatus;	    /* Remote user status received out of band */ 
     int32 error;			    /* Error condition for this call */
@@ -560,14 +557,18 @@ struct rx_call {
     u_short ssthresh;		    /* The slow start threshold */
     u_short nDgramPackets;	    /* Packets per AFS 3.5 jumbogram */
     u_short nAcks;                  /* The number of consecttive acks */
-    u_short nNacks;		    /* The number of consecutive NACKS */
+    u_short nNacks;		    /* Number packets acked that follow the
+				     * first negatively acked packet */
     u_short nSoftAcks;		    /* The number of delayed soft acks */
     u_short nHardAcks;		    /* The number of delayed hard acks */
     u_short congestSeq;		    /* Peer's congestion sequence counter */
-    struct rxevent *resendEvent;	    /* If this is non-Null, there is a retransmission event pending */
-    struct rxevent *timeoutEvent;	    /* If this is non-Null, then there is an overall timeout for this call */
+    struct rxevent *resendEvent;    /* If this is non-Null, there is a retransmission event pending */
+    struct rxevent *timeoutEvent;   /* If this is non-Null, then there is an overall timeout for this call */
     struct rxevent *keepAliveEvent;   /* Scheduled periodically in active calls to keep call alive */
     struct rxevent *delayedAckEvent;  /* Scheduled after all packets are received to send an ack if a reply or new call is not generated soon */
+    struct rxevent *delayedAbortEvent; /* Scheduled to throttle looping client */
+    int		abortCode;	    /* error code from last RPC */
+    int		abortCount;	    /* number of times last error was sent */
     u_int	lastSendTime;		    /* Last time a packet was sent on this call */
     u_int lastReceiveTime;	    /* Last time a packet was received for this call */
     VOID (*arrivalProc)();	    /* Procedure to call when reply is received */
@@ -585,12 +586,13 @@ struct rx_call {
 #endif /* RX_ENABLE_LOCKS */
 /* Call refcount modifiers */
 #define RX_CALL_REFCOUNT_BEGIN  0 /* GetCall/NewCall/EndCall */
-#define RX_CALL_REFCOUNT_START  1 /* rxi_Start */
+#define RX_CALL_REFCOUNT_RESEND 1 /* resend event */
 #define RX_CALL_REFCOUNT_DELAY  2 /* delayed ack */
 #define RX_CALL_REFCOUNT_ALIVE  3 /* keep alive event */
 #define RX_CALL_REFCOUNT_PACKET 4 /* waiting for packets. */
 #define RX_CALL_REFCOUNT_SEND   5 /* rxi_Send */
 #define RX_CALL_REFCOUNT_ACKALL 6 /* rxi_AckAll */
+#define RX_CALL_REFCOUNT_ABORT  7 /* delayed abort */
 #define RX_CALL_REFCOUNT_MAX    8 /* array size. */
 #ifdef RX_REFCOUNT_CHECK
     short refCDebug[RX_CALL_REFCOUNT_MAX];
@@ -632,6 +634,7 @@ struct rx_call {
 #define RX_CALL_SLOW_START_OK   8192  /* receiver acks every other packet */
 #define RX_CALL_IOVEC_WAIT	16384 /* waiting thread is using an iovec */
 #define RX_CALL_HAVE_LAST	32768 /* Last packet has been received */
+#define RX_CALL_NEED_START	0x10000 /* tells rxi_Start to start again */
 
 /* Maximum number of acknowledgements in an acknowledge packet */
 #define	RX_MAXACKS	    255
@@ -740,7 +743,9 @@ struct rx_ackPacket {
 
 struct rx_stats {			/* General rx statistics */
     int	packetRequests;	    /* Number of packet allocation requests */
-    int noPackets[RX_N_PACKET_CLASSES]; /* Number of failed packet requests, per allocation class */
+    int receivePktAllocFailures;
+    int sendPktAllocFailures;
+    int specialPktAllocFailures;
     int	socketGreedy;	    /* Whether SO_GREEDY succeeded */
     int bogusPacketOnRead;  /* Number of inappropriately short packets received */
     int	bogusHost;	    /* Host address from bogus packets */
@@ -774,7 +779,9 @@ struct rx_stats {			/* General rx statistics */
     int netSendFailures;
     int32 fatalErrors;
     int ignorePacketDally;  /* packets dropped because call is in dally state */
-    int spares[7];
+    int receiveCbufPktAllocFailures;
+    int sendCbufPktAllocFailures;
+    int spares[5];
 };
 
 /* structures for debug input and output packets */
@@ -789,7 +796,7 @@ struct rx_debugIn {
 #define RX_DEBUGI_BADTYPE     (-8)
 
 #define RX_DEBUGI_VERSION_MINIMUM ('L') /* earliest real version */
-#define RX_DEBUGI_VERSION     ('O')	/* Latest version */
+#define RX_DEBUGI_VERSION     ('Q')	/* Latest version */
     /* first version w/ secStats */
 #define RX_DEBUGI_VERSION_W_SECSTATS ('L')
     /* version M is first supporting GETALLCONN and RXSTATS type */
@@ -799,11 +806,14 @@ struct rx_debugIn {
 #define RX_DEBUGI_VERSION_W_UNALIGNED_CONN ('L')
 #define RX_DEBUGI_VERSION_W_WAITERS ('N')
 #define RX_DEBUGI_VERSION_W_IDLETHREADS ('O')
+#define RX_DEBUGI_VERSION_W_NEWPACKETTYPES ('P')
+#define RX_DEBUGI_VERSION_W_GETPEER ('Q')
 
 #define	RX_DEBUGI_GETSTATS	1	/* get basic rx stats */
 #define	RX_DEBUGI_GETCONN	2	/* get connection info */
 #define	RX_DEBUGI_GETALLCONN	3	/* get even uninteresting conns */
 #define	RX_DEBUGI_RXSTATS	4	/* get all rx stats */
+#define	RX_DEBUGI_GETPEER	5	/* get all peer structs */
 
 struct rx_debugStats {
     int32 nFreePackets;
@@ -859,6 +869,36 @@ struct rx_debugConn {
     int32 sparel[9];
 };
 
+struct rx_debugPeer {
+    u_int32 host;
+    u_short port;
+    u_short ifMTU;
+    u_int32 idleWhen;
+    short refCount;
+    u_char burstSize;
+    u_char burst;
+    struct clock burstWait;
+    int32 rtt;
+    int32 rtt_dev;
+    struct clock timeout;
+    int32 nSent;
+    int32 reSends;
+    int32 inPacketSkew;
+    int32 outPacketSkew;
+    int32 rateFlag;
+    u_short natMTU;
+    u_short maxMTU;
+    u_short maxDgramPackets;
+    u_short ifDgramPackets;
+    u_short MTU;
+    u_short cwind;
+    u_short nDgramPackets;
+    u_short congestSeq;
+    afs_hyper_t bytesSent;
+    afs_hyper_t bytesReceived;
+    int32 sparel[10];
+};
+
 #define	RX_OTHER_IN	1	/* packets avail in in queue */
 #define	RX_OTHER_OUT	2	/* packets avail in out queue */
 
@@ -902,8 +942,162 @@ extern int rx_callHoldType;
 
 #endif /* _CALL_REF_DEFINED_ */
 
-struct rx_connection *rx_GetCachedConnection(unsigned int remoteAddr,unsigned short port,unsigned short service,struct rx_securityClass *securityObject,int securityIndex);
-void rx_ReleaseCachedConnection(struct rx_connection *conn);
+struct rx_connection *rx_GetCachedConnection(
+  unsigned int remoteAddr,
+  unsigned short port,
+  unsigned short service,
+  struct rx_securityClass *securityObject,
+  int securityIndex
+);
+
+void rx_ReleaseCachedConnection(
+  struct rx_connection *conn
+);
+
+#define RX_SERVER_DEBUG_SEC_STATS		0x1
+#define RX_SERVER_DEBUG_ALL_CONN		0x2
+#define RX_SERVER_DEBUG_RX_STATS		0x4
+#define RX_SERVER_DEBUG_WAITER_CNT		0x8
+#define RX_SERVER_DEBUG_IDLE_THREADS		0x10
+#define RX_SERVER_DEBUG_OLD_CONN		0x20
+#define RX_SERVER_DEBUG_NEW_PACKETS		0x40
+#define RX_SERVER_DEBUG_ALL_PEER		0x80
+
+int32 rx_GetServerDebug(
+  int socket,
+  u_int32 remoteAddr,
+  u_int16 remotePort,
+  struct rx_debugStats *stat,
+  u_int32 *supportedValues
+);
+
+int32 rx_GetServerStats(
+  int socket,
+  u_int32 remoteAddr,
+  u_int16 remotePort,
+  struct rx_stats *stat,
+  u_int32 *supportedValues
+);
+
+int32 rx_GetServerVersion(
+  int socket,
+  u_int32 remoteAddr,
+  u_int16 remotePort,
+  size_t version_length,
+  char *version
+);
+
+int32 rx_GetServerConnections(
+  int socket,
+  u_int32 remoteAddr,
+  u_int16 remotePort,
+  int32 *nextConnection,
+  int allConnections,
+  u_int32 debugSupportedValues,
+  struct rx_debugConn *conn,
+  u_int32 *supportedValues
+);
+
+int32 rx_GetServerPeers(
+  int socket,
+  u_int32 remoteAddr,
+  u_int16 remotePort,
+  int32 *nextPeer,
+  u_int32 debugSupportedValues,
+  struct rx_debugPeer *peer,
+  u_int32 *supportedValues
+);
+
+typedef struct rx_function_entry_v1 {
+  u_int32 remote_peer;
+  u_int32 remote_port;
+  u_int32 remote_is_server;
+  u_int32 interfaceId;
+  u_int32 func_total;
+  u_int32 func_index;
+  u_int32 invocations;
+  struct clock execution_time_sum;
+  struct clock execution_time_sum_sqr;
+  struct clock execution_time_min;
+  struct clock execution_time_max;
+} rx_function_entry_v1_t, *rx_function_entry_v1_p;
+
+/*
+ * If you need to change rx_function_entry, you should probably create a brand
+ * new structure.  Keeping the old structure will allow backwards compatibility
+ * with old clients (even if it is only used to calculate allocation size).
+ * If you do change the size or the format, you'll need to bump
+ * RX_STATS_RETRIEVAL_VERSION.  This allows some primitive form
+ * of versioning a la rxdebug.
+ */
+
+#define RX_STATS_RETRIEVAL_VERSION 1		/* latest version */
+#define RX_STATS_RETRIEVAL_FIRST_EDITION 1	/* first implementation */
+
+typedef struct rx_interface_stat {
+  struct rx_queue queue_header;
+  struct rx_queue all_peers;
+  rx_function_entry_v1_t stats[1]; /* make sure this is aligned correctly */
+} rx_interface_stat_t, *rx_interface_stat_p;
+
+void rx_IncrementTimeAndCount(
+  struct rx_peer *peer,
+  u_int32 rxInterface,
+  u_int32 currentFunc,
+  u_int32 totalFunc,
+  struct clock execTime,
+  int isServer
+);
+
+int rx_RetrieveProcessRPCStats(
+  u_int32 callerVersion,
+  u_int32 *myVersion,
+  size_t *allocSize,
+  u_int32 *statCount,
+  u_int32 **stats
+);
+
+int rx_RetrievePeerRPCStats(
+  u_int32 callerVersion,
+  u_int32 *myVersion,
+  size_t *allocSize,
+  u_int32 *statCount,
+  u_int32 **stats
+);
+
+void rx_FreeRPCStats(
+  u_int32 *stats,
+  size_t allocSize
+);
+
+int rx_queryProcessRPCStats();
+
+int rx_queryPeerRPCStats();
+
+void rx_enableProcessRPCStats();
+
+void rx_enablePeerRPCStats();
+
+void rx_disableProcessRPCStats();
+
+void rx_disablePeerRPCStats();
+
+void rx_clearProcessRPCStats(
+  u_int32 clearFlag
+);
+
+void rx_clearPeerRPCStats(
+  u_int32 clearFlag
+);
+
+#define RX_STATS_SERVICE_ID 509
+
+#define RX_STATS_CLEAR_ALL			0xffffffff
+#define RX_STATS_CLEAR_INVOCATIONS		0x1
+#define RX_STATS_CLEAR_TIME_SUM			0x2
+#define RX_STATS_CLEAR_TIME_SQUARE		0x4
+#define RX_STATS_CLEAR_TIME_MIN			0x8
+#define RX_STATS_CLEAR_TIME_MAX			0x10
 
 #endif /* _RX_	 End of rx.h */
 

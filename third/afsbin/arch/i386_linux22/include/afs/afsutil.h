@@ -16,13 +16,34 @@
 
 /* logging defines
  */
+#include <stdio.h>
+#include <stdarg.h>
 extern int LogLevel;
+extern void FSLog(const char *format, ...);
 #define ViceLog(level, str)  if ((level) <= LogLevel) (FSLog str)
+
+extern int OpenLog(const char *filename);
+extern int ReOpenLog(const char *fileName);
+extern void SetupLogSignals(void);
+
 
 /* special version of ctime that clobbers a *different static variable, so
  * that ViceLog can call ctime and not cause buffer confusion.  Barf.
  */
 extern char *vctime(const time_t *atime);
+
+/* Need a thead safe ctime for pthread builds. Use std ctime for LWP */
+#if defined(AFS_PTHREAD_ENV) && !defined(AFS_NT40_ENV)
+#ifdef AFS_SUN5_ENV
+#define afs_ctime(C, B, L) ctime_r(C, B, L)
+#else
+/* Cast is for platforms which do not prototype ctime_r */
+#define afs_ctime(C, B, L) (char*)ctime_r(C, B)
+#endif /* AFS_SUN5_ENV */
+#else /* AFS_PTHREAD_ENV && !AFS_NT40_ENV */
+#define afs_ctime(C, B, S) \
+	((void)strncpy(B, ctime(C), (S-1)), (B)[S-1] = '\0', (B))
+#endif  /* AFS_PTHREAD_ENV && !AFS_NT40_ENV */
 
 
 /* Convert a 4 byte integer to a text string. */
@@ -30,9 +51,9 @@ extern char*	afs_inet_ntoa(int32 addr);
 
 
 /* copy strings, converting case along the way. */
-char *lcstring(char *d, char *s, int n);
-char *ucstring(char *d, char *s, int n);
-char *strcompose(char *buf, size_t len, ...);
+extern char *lcstring(char *d, char *s, int n);
+extern char *ucstring(char *d, char *s, int n);
+extern char *strcompose(char *buf, size_t len, ...);
 
 /* abort the current process. */
 #ifdef AFS_NT40_ENV
@@ -62,12 +83,12 @@ int afs_gettimeofday(struct timeval *tv, struct timezone *tz);
 extern char *re_comp(char *sp);
 extern int rc_exec(char *p);
 
-/* get temp dir path */
-char *gettmpdir(void);
-
 /* Abort on error, possibly trapping to debugger or dumping a trace. */
 void afs_NTAbort(void);
 #endif
+
+/* get temp dir path */
+char *gettmpdir(void);
 
 /* Base 32 conversions used for NT since directory names are
  * case-insensitive.
@@ -76,8 +97,18 @@ typedef char b32_string_t[8];
 char *int_to_base32(b32_string_t s, int a);
 int base32_to_int(char *s);
 
-/* This message preserves our ability to license AFS to the U.S. Government more than
- * once.
+#if defined(AFS_NAMEI_ENV) && !defined(AFS_NT40_ENV)
+/* base 64 converters for namei interface. Flip bits to differences are
+ * early in name.
+ */
+typedef char lb64_string_t[12];
+char *int64_to_flipbase64(b64_string_t s, u_int64_t a);
+int64_t flipbase64_to_int64(char *s);
+#define int32_to_flipbase64(S, A) int64_to_flipbase64(S, (u_int64_t)(A))
+#endif
+
+/* This message preserves our ability to license AFS to the U.S. Government
+ * more than once.
  */
 
 #define AFS_GOVERNMENT_MESSAGE \

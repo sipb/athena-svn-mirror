@@ -193,6 +193,12 @@ typedef struct StreamHandle_s {
  * the file descriptor.  */
 #define FD_DEFAULT_CACHESIZE (255-FD_HANDLE_SETASIDE)
 
+/* We need some limit on the number of files open at once. Some systems
+ * say we can open lots of files, but when we do they run out of slots
+ * in the file table.
+ */
+#define FD_MAX_CACHESIZE (2000 - FD_HANDLE_SETASIDE)
+
 /* Inode handle */
 typedef struct IHandle_s {
     int ih_vid;	/* Parent volume id. */
@@ -219,14 +225,17 @@ typedef struct IHashBucket_s {
 } IHashBucket_t;
 
 /* Prototypes for handle support routines. */
+#ifdef AFS_NAMEI_ENV
 #ifdef AFS_NT40_ENV
 #include "ntops.h"
 #else
+#include "namei_ops.h"
+#endif
 extern void ih_clear(IHandle_t *h);
-extern int ih_create(IHandle_t *h, int dev, char *part, Inode nI, int p1,
+extern Inode ih_create(IHandle_t *h, int dev, char *part, Inode nI, int p1,
 		     int p2, int p3, int p4);
 extern FILE *ih_fdopen(FdHandle_t *h, char *fdperms);
-#endif
+#endif /* AFS_NAMEI_ENV */
 
 /*
  * Prototypes for file descriptor cache routined
@@ -248,8 +257,9 @@ extern int stream_flush(StreamHandle_t *streamP);
 extern int stream_close(StreamHandle_t *streamP, int reallyClose);
 extern int ih_reallyclose(IHandle_t *ihP);
 extern int ih_release(IHandle_t *ihP);
+extern int ih_condsync(IHandle_t *ihP);
 
-/* Macros common to NT and Unix. */
+/* Macros common to user space and inode API's. */
 #define IH_INIT(H, D, V, I) ((H) = ih_init((D), (V), (I)))
 
 #define IH_COPY(D, S) ((D) = ih_copy(S))
@@ -288,10 +298,11 @@ extern int ih_release(IHandle_t *ihP);
 
 #define IH_REALLYCLOSE(H) ih_reallyclose(H)
 
-#define IH_CONDSYNC(H) ( ( (H) && (H)->ih_fdhead ) ? FDH_SYNC((H)->ih_fdhead) : 0)
+#define IH_CONDSYNC(H) ih_condsync(H)
+
+#ifdef AFS_NAMEI_ENV
 
 #ifdef AFS_NT40_ENV
-
 #define IH_CREATE(H, D, P, N, P1, P2, P3, P4) \
 	nt_icreate(H, P, P1, P2, P3, P4)
 
@@ -312,14 +323,11 @@ extern int ih_release(IHandle_t *ihP);
 #define IH_IREAD(H, O, B, S) nt_iread(H, O, B, S)
 #define IH_IWRITE(H, O, B, S) nt_iwrite(H, O, B, S)
 
-#else
-extern Inode ih_icreate(int dev, char *part, Inode nI, int p1, int p2,
-	      int p3, int p4);
-
+#else /* AFS_NT40_ENV */
 #define IH_CREATE(H, D, P, N, P1, P2, P3, P4) \
-	ih_icreate(D, P, N, P1, P2, P3, P4)
+	namei_icreate(H, P, P1, P2, P3, P4)
 
-#define OS_IOPEN(H) (IOPEN((H)->ih_dev, (H)->ih_ino, O_RDWR))
+#define OS_IOPEN(H) namei_iopen(H)
 #define OS_OPEN(F, M, P) open(F, M, P)
 #define OS_CLOSE(FD) close(FD)
 
@@ -331,16 +339,55 @@ extern Inode ih_icreate(int dev, char *part, Inode nI, int p1, int p2,
 #define OS_TRUNC(FD, L) ftruncate(FD, L)
 #define OS_SIZE(FD) ih_size(FD)
 
+#define IH_INC(H, I, P) namei_inc(H, I, P)
+#define IH_DEC(H, I, P) namei_dec(H, I, P)
+#define IH_IREAD(H, O, B, S) namei_iread(H, O, B, S)
+#define IH_IWRITE(H, O, B, S) namei_iwrite(H, O, B, S)
+#endif /* AFS_NT40_ENV */
+
+#else /* AFS_NAMEI_ENV */
+extern Inode ih_icreate(IHandle_t *ih, int dev, char *part, Inode nI, int p1,\
+			int p2, int p3, int p4);
+
+#define IH_CREATE(H, D, P, N, P1, P2, P3, P4) \
+	ih_icreate(H, D, P, N, P1, P2, P3, P4)
+
+#ifdef AFS_LINUX22_ENV
+#define OS_IOPEN(H) -1
+#else
+#define OS_IOPEN(H) (IOPEN((H)->ih_dev, (H)->ih_ino, O_RDWR))
+#endif
+#define OS_OPEN(F, M, P) open(F, M, P)
+#define OS_CLOSE(FD) close(FD)
+
+#define OS_READ(FD, B, S) read(FD, B, S)
+#define OS_WRITE(FD, B, S) write(FD, B, S)
+#define OS_SEEK(FD, O, F) lseek(FD, O, F)
+
+#define OS_SYNC(FD) fsync(FD)
+#define OS_TRUNC(FD, L) ftruncate(FD, L)
+#define OS_SIZE(FD) ih_size(FD)
+
+#ifdef AFS_LINUX22_ENV
+#define IH_INC(H, I, P) -1
+#define IH_DEC(H, I, P) -1
+#define IH_IREAD(H, O, B, S) -1
+#define IH_IWRITE(H, O, B, S) -1
+#else
 #define IH_INC(H, I, P) IINC((H)->ih_dev, I, P)
 #define IH_DEC(H, I, P) IDEC((H)->ih_dev, I, P)
 #define IH_IREAD(H, O, B, S) inode_read((H)->ih_dev, (H)->ih_ino, (H)->ih_vid,\
 					O, B, S)
 #define IH_IWRITE(H, O, B, S) \
 	inode_write((H)->ih_dev, (H)->ih_ino, (H)->ih_vid, O, B, S)
+#endif /* AFS_LINUX22_ENV */
 
+
+#endif /* AFS_NAMEI_ENV */
+
+#ifndef AFS_NT40_ENV
 #define FDH_READV(H, I, N) readv((H)->fd_fd, I, N)
 #define FDH_WRITEV(H, I, N) writev((H)->fd_fd, I, N)
-
 #endif
 
 #define FDH_READ(H, B, S) OS_READ((H)->fd_fd, B, S)

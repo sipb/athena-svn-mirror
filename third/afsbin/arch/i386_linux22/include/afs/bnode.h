@@ -126,6 +126,10 @@ struct bozo_bosEntryStats {
 #define BOSEXIT_LOGGING_FLAG   0x02
 #endif
 
+/* max time to wait for fileserver shutdown */
+#define	FSSDTIME	(30 * 60) /* seconds */
+
+
 /* calls back up to the generic bnode layer */
 extern int bnode_SetTimeout(/* bnode, timeout */);
 extern int bnode_Init(/* bnode, bnodeops */);

@@ -29,7 +29,7 @@
 */
 
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rxkad.h,v 1.1 1999-04-09 21:03:20 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rxkad.h,v 1.1.1.1 1999-12-22 20:45:45 ghudson Exp $ */
 
 #ifndef TRANSARC_RXKAD_RXKAD_H
 #define TRANSARC_RXKAD_RXKAD_H
@@ -123,9 +123,13 @@ struct rxkad_stats {
 };
 
 #if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
-__declspec(dllimport) 
+#ifndef RXKAD_STATS_DECLSPEC
+#define RXKAD_STATS_DECLSPEC __declspec(dllimport) extern
 #endif
-extern struct rxkad_stats rxkad_stats;
+#else
+#define RXKAD_STATS_DECLSPEC extern
+#endif
+RXKAD_STATS_DECLSPEC struct rxkad_stats rxkad_stats;
 #ifdef AFS_PTHREAD_ENV
 #include <pthread.h>
 #include <assert.h>

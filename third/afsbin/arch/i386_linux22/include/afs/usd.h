@@ -1,6 +1,6 @@
 /* Copyright (C) 1998 Transarc Corporation - All rights reserved. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/usd.h,v 1.1 1999-04-09 21:02:27 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/usd.h,v 1.1.1.1 1999-12-22 20:45:15 ghudson Exp $ */
 
 #ifndef TRANSARC_USD_H
 #define TRANSARC_USD_H
@@ -33,7 +33,7 @@
  *
  * As a consequence of this method of reporting errors, output values are
  * returned in reference parameters instead of being encoded in the return
- * value.  Also, offsets and lengths use the hyper type. */
+ * value.  Also, offsets and lengths use the afs_hyper_t type. */
 
 /* NOTE -- this module is preempt safe.  It assume it is being called from a
  *     preemptive environment.  Treat all calls as if they had an "_r"
@@ -45,7 +45,7 @@ struct usd_handle {
     int (*read)(usd_handle_t usd, char *buf, u_int32 nbyte, u_int32 *xferdP);
     int (*write)(usd_handle_t usd, char *buf, u_int32 nbyte, u_int32 *xferdP);
     int (*seek)(usd_handle_t usd,
-		hyper inOff, int whence, hyper *outOffP);
+		afs_hyper_t inOff, int whence, afs_hyper_t *outOffP);
     int (*ioctl)(usd_handle_t usd, int req, void *arg);
     int (*close)(usd_handle_t usd);
 

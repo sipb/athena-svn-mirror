@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/kautils.h,v 1.1 1999-04-09 21:01:47 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/kautils.h,v 1.1.1.1 1999-12-22 20:45:10 ghudson Exp $ */
 
 /* $Log: not supported by cvs2svn $
  * Revision 2.2  1990/09/27  13:51:37  ota
@@ -44,6 +44,7 @@
 
 #include <ubik.h>
 #include <afs/cellconfig.h>
+#include <afs/afsutil.h>
 
 #else
 #include "../afs/ubik.h"
@@ -53,9 +54,6 @@
 
 
 #define KA_TIMESTR_LEN 30
-
-extern char *ucstring();
-extern char *lcstring();
 
 /*
  * Public function prototypes
@@ -76,7 +74,7 @@ extern int32 ka_GetServerToken (
   char *cell,
   Date  lifetime,
   struct ktc_token *token,
-  int   new,
+  int   newer,
   int   dosetpag
 );
 
@@ -87,7 +85,7 @@ extern int32 ka_GetAdminToken (
   struct ktc_encryptionKey *key,
   int32  lifetime,
   struct ktc_token *token,
-  int   new
+  int   newer
 );
 
 extern int32 ka_VerifyUserToken(
@@ -311,6 +309,7 @@ extern int32 ka_VerifyUserPassword(
 #define KA_USERAUTH_DOSETPAG		0x010000
 #define KA_USERAUTH_DOSETPAG2		0x020000
 #define KA_USERAUTH_ONLY_VERIFY		0x040000
+#define KA_USERAUTH_AUTHENT_LOGON	0x100000
 #define ka_UserAuthenticate(n,i,r,p,d,rP) \
     ka_UserAuthenticateGeneral \
         (KA_USERAUTH_VERSION + ((d) ? KA_USERAUTH_DOSETPAG : 0), \
@@ -435,7 +434,6 @@ struct ka_getTicketAnswer {
 #define KAMINERROR ERROR_TABLE_BASE_ka
 #define KAMAXERROR (KAMINERROR+255)
 #endif
-
 
 #endif
 

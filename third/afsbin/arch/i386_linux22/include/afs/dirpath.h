@@ -1,5 +1,5 @@
 /* Copyright (C) 1998 Transarc Corporation - All rights reserved.
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/dirpath.h,v 1.1 1999-04-09 21:01:04 tb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/dirpath.h,v 1.1.1.1 1999-12-22 20:44:58 ghudson Exp $
  */
 
 #ifndef _DIRPATH_H
@@ -68,13 +68,15 @@
 
 /* ---------------------  Exported functions ---------------------- */
 
-extern int initAFSDirPath(void);
+
+#define AFSDIR_CLIENT_PATHS_OK 0x1   /* client paths initialized correctly */
+#define AFSDIR_SERVER_PATHS_OK 0x2   /* server paths initialized correctly */
+extern unsigned int initAFSDirPath(void);
 
 extern int
 ConstructLocalPath(const char *cpath,
 		   const char *relativeTo,
-		   char **fullPathBufp,
-		   short useShortPath);
+		   char **fullPathBufp);
 extern int
 ConstructLocalBinPath(const char *cpath,
 		      char **fullPathBufp);
@@ -133,6 +135,8 @@ ConstructLocalLogPath(const char *cpath,
 
 #define AFSDIR_CELLSERVDB_FILE_NTCLIENT  "afsdcell.ini"
 
+#define AFSDIR_NETINFO_FILE     "NetInfo"
+#define AFSDIR_NETRESTRICT_FILE "NetRestrict"
 
 
 /* -------------- Canonical (wire-format) path macros -------------- */
@@ -215,6 +219,10 @@ typedef enum afsdir_id {
       AFSDIR_SERVER_AUDIT_FILEPATH_ID,
       AFSDIR_CLIENT_THISCELL_FILEPATH_ID,
       AFSDIR_CLIENT_CELLSERVDB_FILEPATH_ID,
+      AFSDIR_CLIENT_NETINFO_FILEPATH_ID,
+      AFSDIR_CLIENT_NETRESTRICT_FILEPATH_ID,
+      AFSDIR_SERVER_NETINFO_FILEPATH_ID,
+      AFSDIR_SERVER_NETRESTRICT_FILEPATH_ID,
       AFSDIR_PATHSTRING_MAX } afsdir_id_t;
 
 /* getDirPath() returns a pointer to a string from an internal array of path strings 
@@ -272,10 +280,13 @@ const char *getDirPath(afsdir_id_t string_id);
 #define AFSDIR_SERVER_SYSID_FILEPATH getDirPath(AFSDIR_SERVER_SYSID_FILEPATH_ID)
 #define AFSDIR_SERVER_FILELOG_FILEPATH getDirPath(AFSDIR_SERVER_FILELOG_FILEPATH_ID)
 #define AFSDIR_SERVER_AUDIT_FILEPATH getDirPath(AFSDIR_SERVER_AUDIT_FILEPATH_ID)
+#define AFSDIR_SERVER_NETINFO_FILEPATH getDirPath(AFSDIR_SERVER_NETINFO_FILEPATH_ID)
+#define AFSDIR_SERVER_NETRESTRICT_FILEPATH getDirPath(AFSDIR_SERVER_NETRESTRICT_FILEPATH_ID)
 
 /* client file paths */
 #define AFSDIR_CLIENT_THISCELL_FILEPATH getDirPath(AFSDIR_CLIENT_THISCELL_FILEPATH_ID)
 #define AFSDIR_CLIENT_CELLSERVDB_FILEPATH getDirPath(AFSDIR_CLIENT_CELLSERVDB_FILEPATH_ID)  
-
+#define AFSDIR_CLIENT_NETINFO_FILEPATH getDirPath(AFSDIR_CLIENT_NETINFO_FILEPATH_ID)
+#define AFSDIR_CLIENT_NETRESTRICT_FILEPATH getDirPath(AFSDIR_CLIENT_NETRESTRICT_FILEPATH_ID)
 
 #endif /* _DIRPATH_H */

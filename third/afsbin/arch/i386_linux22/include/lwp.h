@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lwp.h,v 1.1 1999-04-09 21:00:06 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lwp.h,v 1.1.1.1 1999-12-22 20:44:53 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lwp.h,v $ */
 
 #ifndef __LWP_INCLUDE_
 #define	__LWP_INCLUDE_	1
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lwp.h,v 1.1 1999-04-09 21:00:06 tb Exp $";
+static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/lwp.h,v 1.1.1.1 1999-12-22 20:44:53 ghudson Exp $";
 #endif
 
 /*

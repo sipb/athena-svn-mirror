@@ -23,12 +23,17 @@
  */
 
 
+#ifdef AFS_NT40_ENV
 #ifndef MIN
 #define MIN(a,b)  ((a)<(b)?(a):(b))
 #endif
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
+#else /* AFS_NT40_ENV */
+#include <sys/sysmacros.h>      /* MIN, MAX on Solaris */
+#include <sys/param.h>          /* MIN, MAX elsewhere */
+#endif /* AFS_NT40_ENV */
 
 #define	IPv6_HDR_SIZE		40	/* IPv6 Header */
 #define IPv6_FRAG_HDR_SIZE	 8	/* IPv6 Fragment Header */
@@ -110,7 +115,11 @@
 
 
 #define	RX_PACKET_TYPES	    {"data", "ack", "busy", "abort", "ackall", "challenge", "response", "debug", "params", "unused", "unused", "unused", "version"}
-#define	RX_N_PACKET_TYPES	    13	    /* Must agree with above list; counts 0 */
+#define	RX_N_PACKET_TYPES	    13	    /* Must agree with above list;
+					       counts 0
+					       WARNING: if this number ever
+					       grows past 13, rxdebug packets
+					       will need to be modified */
 
 /* Packet classes, for rx_AllocPacket */
 #define	RX_PACKET_CLASS_RECEIVE	    0

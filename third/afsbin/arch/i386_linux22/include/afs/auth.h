@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/auth.h,v 1.1 1999-04-09 21:00:43 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/auth.h,v 1.1.1.1 1999-12-22 20:45:07 ghudson Exp $ */
 
 #ifndef __AUTH_AFS_INCL_
 #define	__AUTH_AFS_INCL_    1
@@ -21,7 +21,6 @@
 /* super-user pincipal used by servers when talking to other servers */
 #define AUTH_SUPERUSER        "afs"
 
-#ifndef AFS_NT40_ENV
 struct ktc_token {
     int32 startTime;
     int32 endTime;
@@ -30,10 +29,42 @@ struct ktc_token {
     int ticketLen;
     char ticket[MAXKTCTICKETLEN];
 };
-#else
-#define AFSTOKENS_KTC_ONLY  /* hide unwanted declarations */
-#include <afs/afs_tokens.h>
+
+#ifdef AFS_NT40_ENV
+extern int ktc_SetToken(
+        struct ktc_principal *server,
+        struct ktc_token *token,
+        struct ktc_principal *client,
+        int flags
+);
+
+extern int ktc_GetToken(
+        struct ktc_principal *server,
+        struct ktc_token *token,
+        int tokenLen,
+        struct ktc_principal *client
+);
+
+extern int ktc_ListTokens(
+        int cellNum,
+        int *cellNumP,
+        struct ktc_principal *serverName
+);
+
+extern int ktc_ForgetToken(
+        struct ktc_principal *server
+);
+
+extern int ktc_ForgetAllTokens(void);
+
+/* Flags for the flag word sent along with a token */
+#define PIOCTL_LOGON		0x1	/* invoked from integrated logon */
+
 #endif /* AFS_NT40_ENV */
+
+/* Flags for ktc_SetToken() */
+#define AFS_SETTOK_SETPAG	0x1
+#define AFS_SETTOK_LOGON	0x2	/* invoked from integrated logon */
 
 #endif /* __AUTH_AFS_INCL_ */
 
@@ -48,6 +79,7 @@ struct ktc_token {
 #define KTC_NOCELL                               (11862790L)
 #define KTC_NOCM                                 (11862791L)
 #define KTC_RPC                                  (11862792L)
+#define KTC_NOCMRPC                              (11862793L)
 extern void initialize_ktc_error_table ();
 #define ERROR_TABLE_BASE_ktc (11862784L)
 

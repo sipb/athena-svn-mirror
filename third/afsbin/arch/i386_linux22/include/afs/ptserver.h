@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/ptserver.h,v 1.1 1999-04-09 21:02:20 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/ptserver.h,v 1.1.1.1 1999-12-22 20:45:08 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/ptserver.h,v $ */
 
 /* Copyright (C) 1989 Transarc Corporation - All rights reserved */

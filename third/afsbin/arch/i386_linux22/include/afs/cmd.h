@@ -4,7 +4,7 @@
  */
 /* Including cmd.p.h at beginning of cmd.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/cmd.h,v 1.1 1999-04-09 21:00:59 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/cmd.h,v 1.1.1.1 1999-12-22 20:45:04 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/cmd.h,v $ */
 
 /*
@@ -26,8 +26,8 @@
 #define	CMD_ALIAS	1	/* this is an alias */
 #define CMD_HIDDEN      4       /* A hidden command - similar to CMD_HIDE */
 
-#define CMD_HELPPARM	31	/* last one is used by -help switch */
-#define	CMD_MAXPARMS	32	/* max number of parm types to a cmd line */
+#define CMD_HELPPARM	(CMD_MAXPARMS-1)/* last one is used by -help switch */
+#define	CMD_MAXPARMS	64	/* max number of parm types to a cmd line */
 
 /* parse items are here */
 struct cmd_item {
@@ -64,23 +64,56 @@ struct cmd_syndesc {
     struct cmd_parmdesc parms[CMD_MAXPARMS];	/* parms themselves */
 };
 
-#if 0
-#define	CMD_TOOMANY	    1900
-#define	CMD_SYNTAX	    1901
-#define	CMD_AMBIG	    1902
-#define	CMD_TOOFEW	    1903
-#endif
+extern struct cmd_syndesc *cmd_CreateSyntax(
+  char *namep,
+  int (*aprocp)(),
+  char *rockp,
+  char *helpp
+);
 
-extern struct cmd_syndesc *cmd_CreateSyntax();
+extern cmd_SetBeforeProc(
+  int (*aproc)(),
+  char *arock
+);
 
-/* prototypes */
-int cmd_AddParm(struct cmd_syndesc *as, char *aname, int atype,int32 aflags,
-		char *ahelp);
-int cmd_Seek(struct cmd_syndesc *as, int apos);
-int cmd_CreateAlias(struct cmd_syndesc *as, char *aname);
-int cmd_ParseLine(char *aline, char **argv, int32 *an, int32 amaxn);
-int cmd_Dispatch(int argc, char **argv);
-int cmd_FreeArgv(char **argv);
+extern cmd_SetAfterProc(
+  int (*aproc)(),
+  char *arock
+);
+
+extern int cmd_CreateAlias(
+  struct cmd_syndesc *as,
+  char *aname
+);
+
+extern int cmd_Seek(
+  struct cmd_syndesc *as,
+  int apos
+);
+
+extern int cmd_AddParm(
+  struct cmd_syndesc *as,
+  char *aname,
+  int atype,
+  int32 aflags,
+  char *ahelp
+);
+
+extern cmd_Dispatch(
+  int argc,
+  char **argv
+);
+
+extern cmd_FreeArgv(
+  char **argv
+);
+
+extern cmd_ParseLine(
+  char *aline,
+  char **argv,
+  int32 *an,
+  int32 amaxn
+);
 
 #endif /* __CMD_INCL__ */
 

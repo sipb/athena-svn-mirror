@@ -24,7 +24,7 @@
  *
  *	defines a few constants used throughout ITC code
  *
- *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/itc.h,v 1.1 1999-04-09 20:59:55 tb Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/itc.h,v 1.1.1.1 1999-12-22 20:44:50 ghudson Exp $
  */
 
 /* $Log: not supported by cvs2svn $

@@ -620,6 +620,10 @@ struct afs_CMCallStats {
     int32 C_PGetCPrefs;         /* afs_pioctl.c */
     int32 C_PSetCPrefs;		/* afs_pioctl.c */
     int32 C_SRXAFSCB_WhoAreYou;	/* afs_callback.c*/
+    int32 C_afs_DiscardDCache;	/* afs_dcache.c*/
+    int32 C_afs_FreeDiscardedDCache;	/* afs_dcache.c*/
+    int32 C_afs_MaybeFreeDiscardedDCache; /* afs_dcache.c*/
+    int32 C_PFlushMount;	/* afs_pioctl.c */
 };
 
 struct afs_CMMeanStats {
@@ -782,10 +786,11 @@ struct afs_stats_CMPerf {
 
     u_int32 cbloops;
     u_int32 osiread_efaults;
+    int32 cacheBlocksDiscarded;	/*# cache blocks free but not truncated */
     /*
      * Spares for future expansion.
      */
-    int32 spare[14];		/*Spares*/
+    int32 spare[13];		/*Spares*/
 };
 
 
@@ -836,9 +841,8 @@ struct afs_stats_CMPerf {
 #define AFS_STATS_CM_RPCIDX_GETCE		 4
 #define AFS_STATS_CM_RPCIDX_XSTATSVERSION	 5
 #define AFS_STATS_CM_RPCIDX_GETXSTATS		 6
-#define AFS_STATS_CM_RPCIDX_WHOAREYOU		 7
 
-#define AFS_STATS_NUM_CM_RPC_OPS		 8
+#define AFS_STATS_NUM_CM_RPC_OPS		 7
 
 
 /*
@@ -877,8 +881,7 @@ struct afs_stats_xferData {
     osi_timeval_t sqrTime;                 /*Sum of squares of timing values */
     osi_timeval_t minTime;		    /*Minimum xfer time recorded*/
     osi_timeval_t maxTime;		    /*Maximum xfer time recorded*/
-    int32 sumKBytes;			    /*Sum of Kbytes transferred as*/
-    int32 sumBytes;			    /*sumKBytes<<10+sumBytes*/
+    int32 sumBytes;			    /*Sum of KBytes transferred*/
     int32 minBytes;			    /*Minimum value observed*/
     int32 maxBytes;			    /*Maximum value observed*/
     int32 count[AFS_STATS_NUM_XFER_BUCKETS]; /*Tally for each range of bytes*/
@@ -938,6 +941,62 @@ struct afs_stats_xferData {
     t1.tv_sec = t2.tv_sec;		\
     t1.tv_usec = t2.tv_usec;		\
 }
+/*
+ * We calculate the square of a timeval as follows:
+ *
+ * The timeval struct contains two ints - the number of seconds and the
+ * number of microseconds.  These two numbers together gives the correct
+ * amount of time => t = t.tv_sec + (t.tv_usec / 1000000);
+ *
+ * if x = t.tv_sec and y = (t.tv_usec / 1000000) then the square is simply:
+ *
+ * x^2 + 2xy + y^2
+ *
+ * Since we are trying to avoid floating point math, we use the following
+ * observations to simplify the above equation:
+ *
+ * The resulting t.tv_sec (x') only depends upon the x^2 + 2xy portion
+ * of the equation.  This is easy to see if you think about y^2 in
+ * decimal notation.  y^2 is always < 0 since y < 0.  Therefore in calculating
+ * x', we can ignore y^2 (we do need to take care of rounding which is
+ * done below).
+ *
+ * Similarly, in calculating t.tv_usec (y') we can ignore x^2 and concentrate
+ * on 2xy + y^2.
+ *
+ * You'll notice that both x' and y' depend upon 2xy.  We can further
+ * simplify things by realizing that x' depends on upon the integer
+ * portion of the 2xy term.  We can get part of this integer by
+ * multiplying 2 * x * t.tv_usec and then truncating the result by
+ * / 1000000.  Similarly, we can get the decimal portion of this term
+ * by performing the same multiplication and then % 1000000.  It is
+ * possible that the decimal portion will in fact contain some of the
+ * integer portion (this will be taken care of when we ensure that y'
+ * is less than 1000000).
+ *
+ * The only other non-obvious calculation involves y^2.  The key to 
+ * understanding this part of the calculation is to expand y again
+ * in a nonobvious manner.  We do this via the following expansion:
+ *
+ * y = t.tv_usec / 1000000;
+ * let abcdef represent the six digits of t.tv_usec then we have:
+ * t.tv_usec / 1000000 = abc/1000 + def/1000000;
+ *
+ * squaring yields:
+ *
+ * y^2 = (abc/1000)^2 + 2 * (abc/1000) * (def/1000000) + (def/1000000)^2
+ *
+ * Examining this equation yields the following observations:
+ *
+ * The second term can be calculated by multiplying abc and def then
+ * shifting the decimal correctly.
+ *
+ * (def/1000000)^2 contributes only to rounding and we only round up
+ * if def > 707.
+ *
+ * These two observations are the basis for the somewhat cryptic
+ * calculation of usec^2 (i.e. they are the "tricks").
+ */
 
 #define afs_stats_SquareAddTo(t1, t2)                     \
 {                                                         \
@@ -947,15 +1006,17 @@ struct afs_stats_xferData {
    if(t2.tv_sec > 0 )                                               \
      {                                                                        \
        t1.tv_sec += t2.tv_sec * t2.tv_sec                                     \
-                    +  t2.tv_sec * t2.tv_usec /1000000;                       \
+                    +  2 * t2.tv_sec * t2.tv_usec /1000000;                   \
        t1.tv_usec += (2 * t2.tv_sec * t2.tv_usec) % 1000000                   \
                      + (t2.tv_usec / 1000)*(t2.tv_usec / 1000)                \
-                     + 2 * (t2.tv_usec / 1000) * (t2.tv_usec % 1000) / 1000;  \
+                     + 2 * (t2.tv_usec / 1000) * (t2.tv_usec % 1000) / 1000   \
+                     + (((t2.tv_usec % 1000) > 707) ? 1 : 0);                 \
      }                                                                        \
    else                                                                       \
      {                                                                        \
        t1.tv_usec += (t2.tv_usec / 1000)*(t2.tv_usec / 1000)                  \
-                     + 2 * (t2.tv_usec / 1000) * (t2.tv_usec % 1000) / 1000;  \
+                     + 2 * (t2.tv_usec / 1000) * (t2.tv_usec % 1000) / 1000   \
+                     + (((t2.tv_usec % 1000) > 707) ? 1 : 0);                 \
      }                                                                        \
    if (t1.tv_usec > 1000000) {                                                \
         t1.tv_usec -= 1000000;                                                \
@@ -1065,6 +1126,7 @@ struct afs_stats_CMFullPerf {
  */
 extern struct afs_stats_CMPerf afs_stats_cmperf;
 extern struct afs_stats_CMFullPerf afs_stats_cmfullperf;
+extern int32 afs_stats_XferSumBytes[];
 
 #ifndef AFS_NOSTATS
 /*

@@ -1,7 +1,7 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/pthread_glock.h,v 1.1 1999-04-09 21:02:18 tb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/pthread_glock.h,v 1.1.1.1 1999-12-22 20:45:01 ghudson Exp $
  */
 
 #ifndef _AFS_PTHREAD_GLOCK_H_
@@ -19,10 +19,14 @@ typedef struct {
 } pthread_recursive_mutex_t, *pthread_recursive_mutex_p;
 
 #if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
-__declspec(dllimport) extern pthread_recursive_mutex_t grmutex;
-#else
-extern pthread_recursive_mutex_t grmutex;
+#ifndef AFS_GRMUTEX_DECLSPEC
+#define AFS_GRMUTEX_DECLSPEC __declspec(dllimport) extern 
 #endif
+#else
+#define AFS_GRMUTEX_DECLSPEC extern
+#endif
+
+AFS_GRMUTEX_DECLSPEC pthread_recursive_mutex_t grmutex;
 
 extern int pthread_recursive_mutex_lock(pthread_recursive_mutex_p);
 extern int pthread_recursive_mutex_unlock(pthread_recursive_mutex_p);

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v 1.1 1999-04-09 21:03:19 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v 1.1.1.1 1999-12-22 20:45:40 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v $ */
 
 /*
@@ -32,11 +32,8 @@ error-foo error-foo error-foo
 
 #include <afs/param.h>
 #include <stdio.h>
+#include <stdlib.h>	/* for malloc() */
 #include <lwp.h>
-
-#ifdef RXDEBUG
-extern FILE *rx_debugFile;
-#endif
 
 /* These routines are no-ops in the user level implementation */
 #define SPLVAR
@@ -72,11 +69,11 @@ typedef int32 osi_socket;
 #ifndef	AFS_AIX32_ENV
 
 #ifndef osi_Alloc
-#define	osi_Alloc(size)		    ((char *) malloc(size))
+#define	osi_Alloc(size)		    malloc(size)
 #endif
 
 #ifndef osi_Free
-#define	osi_Free(ptr, size)	    free((char *)(ptr))
+#define	osi_Free(ptr, size)	    free(ptr)
 #endif
 
 #endif
@@ -88,6 +85,8 @@ typedef int32 osi_socket;
 #define	osi_QuickAlloc(size)	    osi_Alloc(size)
 
 extern void osi_Panic();
+extern void osi_AssertFailU(const char *expr, const char *file, int line);
+#define osi_Assert(e) (void)((e) || (osi_AssertFailU(#e, __FILE__, __LINE__), 0))
 
 #if  !defined(_ANSI_C_SOURCE) || defined(AFS_NEXT20_ENV) || defined(AFS_SUN_ENV)
 #ifdef AFS_NEXT20_ENV

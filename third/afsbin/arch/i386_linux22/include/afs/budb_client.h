@@ -4,7 +4,7 @@
  */
 /* Including budb_client.p.h at beginning of budb_client.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/budb_client.h,v 1.1 1999-04-09 21:00:52 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/budb_client.h,v 1.1.1.1 1999-12-22 20:45:16 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/budb_client.h,v $ */
 
 /*

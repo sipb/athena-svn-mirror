@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_clock.h,v 1.1 1999-04-09 21:02:57 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_clock.h,v 1.1.1.1 1999-12-22 20:45:42 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_clock.h,v $ */
 
 /*
@@ -40,7 +40,7 @@
 #endif /* ITIMER_REAL */
 #else
 #include <time.h>
-#include <afsutil.h>
+#include <afs/afsutil.h>
 #endif
 #endif /* KERNEL */
 
@@ -98,7 +98,7 @@ extern void clock_UpdateTime();
 #else /* KERNEL */
 #include "../afs/afs_osi.h"
 #define clock_Init()
-#ifdef AFS_SGI61_ENV
+#if defined(AFS_SGI61_ENV) || defined(AFS_HPUX_ENV)
 #define clock_GetTime(cv) osi_GetTime((osi_timeval_t *)cv)
 #else
 #define clock_GetTime(cv) osi_GetTime((struct timeval *)cv)
@@ -144,11 +144,15 @@ extern void clock_UpdateTime();
 #define MSEC(cp)	((cp->sec * 1000) + (cp->usec / 1000))
 
 /* Add ms milliseconds to time c1.  Both ms and c1 must be positive */
-/* optimized for ms << 1000 */
 #define	clock_Addmsec(c1, ms)					 \
     BEGIN							 \
-	(c1)->usec += ((u_int32) (ms)) * 1000;             \
-        while ((c1)->usec >= 1000000) {		                 \
+	if ((ms) >= 1000) {					 \
+	    (c1)->sec += (int32)((ms) / 1000);			 \
+	    (c1)->usec += (int32)(((ms) % 1000) * 1000);	 \
+	} else {						 \
+	    (c1)->usec += (int32)((ms) * 1000);			 \
+	}							 \
+        if ((c1)->usec >= 1000000) {		                 \
 	    (c1)->usec -= 1000000;				 \
 	    (c1)->sec++;					 \
 	}							 \
@@ -165,5 +169,29 @@ extern void clock_UpdateTime();
     END
 
 #define clock_Float(c) ((c)->sec + (c)->usec/1e6)
+
+/* Add square of time c2 to time c1.  Both c2 and c1 must be positive times. */
+#define	clock_AddSq(c1, c2)					              \
+    BEGIN							              \
+   if((c2)->sec > 0 )                                                         \
+     {                                                                        \
+       (c1)->sec += (c2)->sec * (c2)->sec                                     \
+                    +  2 * (c2)->sec * (c2)->usec /1000000;                   \
+       (c1)->usec += (2 * (c2)->sec * (c2)->usec) % 1000000                   \
+                     + ((c2)->usec / 1000)*((c2)->usec / 1000)                \
+                     + 2 * ((c2)->usec / 1000) * ((c2)->usec % 1000) / 1000   \
+                     + ((((c2)->usec % 1000) > 707) ? 1 : 0);                 \
+     }                                                                        \
+   else                                                                       \
+     {                                                                        \
+       (c1)->usec += ((c2)->usec / 1000)*((c2)->usec / 1000)                  \
+                     + 2 * ((c2)->usec / 1000) * ((c2)->usec % 1000) / 1000   \
+                     + ((((c2)->usec % 1000) > 707) ? 1 : 0);                 \
+     }                                                                        \
+   if ((c1)->usec > 1000000) {                                                \
+        (c1)->usec -= 1000000;                                                \
+        (c1)->sec++;                                                          \
+   }                                                                          \
+    END
 
 #endif /* _CLOCK_ */

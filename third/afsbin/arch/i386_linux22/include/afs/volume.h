@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/volume.h,v 1.1 1999-04-09 21:02:46 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/volume.h,v 1.1.1.1 1999-12-22 20:45:23 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/volume.h,v $ */
 
 #ifndef __volume_h
 #define	__volume_h  1
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/volume.h,v 1.1 1999-04-09 21:02:46 tb Exp $";
+static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/volume.h,v 1.1.1.1 1999-12-22 20:45:23 ghudson Exp $";
 #endif
 
 /*
@@ -32,13 +32,20 @@ typedef bit32				FileOffset; /* Offset in this file */
 #include <assert.h>
 #include <pthread.h>
 extern pthread_mutex_t vol_glock_mutex;
+extern pthread_mutex_t vol_attach_mutex;
 extern pthread_cond_t vol_put_volume_cond;
 extern pthread_cond_t vol_sleep_cond;
+#define VATTACH_LOCK \
+    assert(pthread_mutex_lock(&vol_attach_mutex) == 0);
+#define VATTACH_UNLOCK \
+    assert(pthread_mutex_unlock(&vol_attach_mutex) == 0);
 #define VOL_LOCK \
     assert(pthread_mutex_lock(&vol_glock_mutex) == 0);
 #define VOL_UNLOCK \
     assert(pthread_mutex_unlock(&vol_glock_mutex) == 0);
 #else /* AFS_PTHREAD_ENV */
+#define VATTACH_LOCK
+#define VATTACH_UNLOCK
 #define VOL_LOCK
 #define VOL_UNLOCK
 #endif /* AFS_PTHREAD_ENV */
@@ -430,6 +437,7 @@ extern void VBumpVolumeUsage(register Volume *vp);
 extern void VSetDiskUsage(void);
 extern void VPrintCacheStats(void);
 extern void VReleaseVnodeFiles_r(Volume *vp);
+extern void VCloseVnodeFiles_r(Volume *vp);
 extern struct DiskPartition *VGetPartition(char *name, int abortp);
 extern struct DiskPartition *VGetPartition_r(char *name, int abortp);
 extern int VInitVolumePackage(ProgramType pt, int nLargeVnodes,

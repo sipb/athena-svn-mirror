@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/fssync.h,v 1.1 1999-04-09 21:01:15 tb Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/fssync.h,v 1.1.1.1 1999-12-22 20:45:24 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/fssync.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidfssync = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/fssync.h,v 1.1 1999-04-09 21:01:15 tb Exp $";
+static char *rcsidfssync = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/fssync.h,v 1.1.1.1 1999-12-22 20:45:24 ghudson Exp $";
 #endif
 
 /*

@@ -1,5 +1,5 @@
 /*  Copyright (C)  1998  Transarc Corporation.  All rights reserved.
- *  $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/audit.h,v 1.1 1999-04-09 21:00:42 tb Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/audit.h,v 1.1.1.1 1999-12-22 20:45:06 ghudson Exp $
  */
 
 #define AUD_END  0         /* End           of veriable list */
