@@ -40,28 +40,20 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #ifdef AfterVendorCF
 
 #undef ProjectRoot
-
+#define UsrLibDir	/usr/athena/lib
+#define Bindir 		/usr/athena/bin
 #ifdef PS2Architecture
-#define	ProjectRoot	/mit/x11/ps2
-#define	UsrLibDir	/mit/x11/ps2lib
-#define	BinDir		/mit/x11/ps2bin
 #define ExtraLoadFlags  -T0x400000
 #define	HasSaberC	YES			/* stop jik from flaming */
 #endif
 
 #ifdef RtArchitecture
-#define	ProjectRoot	/mit/x11/rt
-#define	UsrLibDir	/mit/x11/rtlib
-#define	BinDir		/mit/x11/rtbin
 #define ExtraLoadFlags  -Z
 #define	BuildPexExt	NO
 #define	StripInstalledPrograms YES
 #endif
 
 #ifdef MipsArchitecture
-#define	ProjectRoot	/mit/x11/decmips
-#define	UsrLibDir	/mit/x11/decmipslib
-#define	BinDir		/mit/x11/decmipsbin
 /* Build the Xdec server */
 #define XcfbpmaxServer NO
 /* We have better uses for 100 MB of disk space than to hold mips
@@ -90,16 +82,10 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 
 #ifdef RsArchitecture
 #define BuildPex	NO
-#define	ProjectRoot	/mit/x11/rsaix
-#define	UsrLibDir	/mit/x11/rsaixlib
-#define	BinDir		/mit/x11/rsaixbin
 #define	CcCmd		xlc -D_ALL_SOURCE
 #endif
 
 #ifdef VaxArchitecture
-#define	ProjectRoot	/mit/x11/vax
-#define	UsrLibDir	/mit/x11/vaxlib
-#define	BinDir		/mit/x11/vaxbin
 #define ExtraLoadFlags  -Z
 #define	StripInstalledPrograms YES
 #undef CcCmd
@@ -109,11 +95,9 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 
 #ifdef SparcArchitecture
 #define BuildPex	NO
-#define	ProjectRoot	/mit/x11/sun4
-#define	UsrLibDir	/mit/x11/sun4lib
-#define	BinDir		/mit/x11/sun4bin
 #define	CcCmd		/usr/gcc/bin/gcc -B/usr/gcc/lib/ -I/usr/gcc/include
-#define ExtraLibraries	-lsocket /usr/athena/lib/libresolv.a -lnsl -lc /usr/ucblib/libucb.a -lelf -ldl
+#define DoRanlibCmd No
+#define ExtraLibraries	-lsocket /usr/athena/lib/libresolv.a -lnsl 
 
 #undef SharedLibraryCcCmd
 #define SharedLibraryCcCmd gcc2 -pipe
@@ -125,18 +109,18 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #undef ExtraLoadFlags
 #endif
 
-#define	XAppLoadDir /mit/x11/lib/app-defaults
-#define	ConfigDir /mit/x11/lib/config
-#define	TwmDir /mit/x11/lib/twm
-#define	XSharedFilePath /mit/x11/lib
+#define	XAppLoadDir /usr/athena/lib/X11/app-defaults
+#define	ConfigDir /usr/athena/lib/X11/config
+#define	TwmDir /usr/athena/lib/X11/twm
+#define	XSharedFilePath /usr/athena/lib/X11/lib
 
 /* MIT Athena path for app-defaults, etc. */
 
 #define XFileSearchPathBase /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
 #define XFileSearchPathDefault /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
-#define	ManDirectoryRoot /mit/x11/man
+#define	ManDirectoryRoot /usr/athena/man
 
-#define	IncRoot /mit/x11/include
+#define	IncRoot /usr/athena/include
 
 #define MotifBC	YES
 
