@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRaw.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRaw.c,v 1.1 1988-05-17 21:21:54 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRaw.c,v 1.2 1988-06-17 17:14:54 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRaw.c,v 1.1 1988-05-17 21:21:54 rfrench Exp $";
+static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRaw.c,v 1.2 1988-06-17 17:14:54 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -28,8 +28,8 @@ Code_t ZFormatSmallRawNotice(notice, buffer, ret_len)
     Code_t retval;
     int hdrlen;
     
-    if ((retval = Z_FormatRawHeader(notice, buffer, Z_MAXHEADERLEN, &hdrlen))
-	!= ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(notice, buffer, Z_MAXHEADERLEN,
+				    &hdrlen, (char **) 0)) != ZERR_NONE)
 	return (retval);
 
     *ret_len = hdrlen+notice->z_message_len;

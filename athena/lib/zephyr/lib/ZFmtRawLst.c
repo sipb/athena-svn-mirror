@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.4 1988-05-17 21:21:49 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.5 1988-06-17 17:17:03 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.4 1988-05-17 21:21:49 rfrench Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.5 1988-06-17 17:17:03 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -32,8 +32,8 @@ Code_t ZFormatRawNoticeList(notice, list, nitems, buffer, ret_len)
     char *ptr;
     Code_t retval;
 
-    if ((retval = Z_FormatRawHeader(notice, header, sizeof(header), &hdrlen))
-	!= ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(notice, header, sizeof(header),
+				    &hdrlen, (char **)0)) != ZERR_NONE)
 	return (retval);
 
     size = 0;

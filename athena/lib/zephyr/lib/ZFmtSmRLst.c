@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Zephyr Notification System.
  * It contains source for the ZFormatSmallRawNoticeList function.
  *
- *	Created by:	John Kohl
+ *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v $
  *	$Author: jtkohl $
@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.2 1988-06-15 22:41:36 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.3 1988-06-17 17:16:21 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.2 1988-06-15 22:41:36 jtkohl Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.3 1988-06-17 17:16:21 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -31,8 +31,8 @@ Code_t ZFormatSmallRawNoticeList(notice, list, nitems, buffer, ret_len)
     int hdrlen, i, size;
     char *ptr;
 
-    if ((retval = Z_FormatRawHeader(notice, buffer, Z_MAXHEADERLEN, &hdrlen))
-	!= ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(notice, buffer, Z_MAXHEADERLEN,
+				    &hdrlen, (char **) 0)) != ZERR_NONE)
 	return (retval);
 
     size = 0;
