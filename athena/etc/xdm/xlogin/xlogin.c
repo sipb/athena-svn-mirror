@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.63 1997-12-11 21:26:50 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.64 1997-12-13 01:33:28 cfields Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1323,15 +1323,42 @@ int *done;
     *done = 1;
 }
 
+typedef struct _prompt_callback_info {
+  void (*abort_proc)();
+  void *abort_arg;
+} prompt_callback_info;
 
-prompt_user(msg, abort_proc)
+void click_abort(widget, client_data, call_data)
+Widget widget;
+XtPointer client_data, call_data;
+{
+  prompt_callback_info *cdata = (prompt_callback_info *)client_data;
+
+  cdata->abort_proc(cdata->abort_arg);
+}
+
+void timeout_abort(client_data, timer_id)
+XtPointer client_data;
+XtIntervalId *timer_id;
+{
+  prompt_callback_info *cdata = (prompt_callback_info *)client_data;
+
+  cdata->abort_proc(cdata->abort_arg);
+}
+
+prompt_user(msg, abort_proc, abort_arg)
 char *msg;
 void (*abort_proc)();
+void *abort_arg;
 {
     XawTextBlock tb;
     XEvent e;
+    prompt_callback_info cb;
     static void (*oldcallback)() = NULL;
     static int done;
+
+    cb.abort_proc = abort_proc;
+    cb.abort_arg = abort_arg;
 
     XtPopup(WcFullNameToWidget(appShell, "*queryShell"), XtGrabExclusive);
     tb.firstPos = 0;
@@ -1350,10 +1377,10 @@ void (*abort_proc)();
       XtAddCallback(WcFullNameToWidget(appShell, "*query*cont"),
 		    XtNcallback, (XtCallbackProc)setvalue, &done);
     XtAddCallback(WcFullNameToWidget(appShell, "*query*giveup"),
-		  XtNcallback, abort_proc, NULL);
+		  XtNcallback, click_abort, &cb);
     oldcallback = abort_proc;
     curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
-				abort_proc, NULL);
+				timeout_abort, &cb);
 
     /* repeat main_loop here so we can check status & return */
     done = 0;
@@ -1367,8 +1394,6 @@ void (*abort_proc)();
     XtPopdown(WcFullNameToWidget(appShell, "*queryShell"));
     XFlush(dpy);
 }
-
-
 
 #define updateOwl()	XCopyPlane(dpy, owlBitmaps[owlCurBitmap], \
 				   owlWindow, owlGC, 0, 0, \
