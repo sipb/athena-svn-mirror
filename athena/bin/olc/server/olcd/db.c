@@ -18,18 +18,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.14 1991-04-08 21:10:20 lwvanels Exp $
+ *	$Id: db.c,v 1.15 1991-04-11 13:33:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.14 1991-04-08 21:10:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.15 1991-04-11 13:33:44 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <stdio.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <ctype.h>		/* Standard type definitions. */
 #include <olcd.h>
@@ -149,7 +150,7 @@ load_db()
   for(a = Acl_List; a->file != (char *) NULL; a++)
     {
       sprintf(buf,"%s/%s",ACL_DIR,a->file);
-      a->file = malloc((strlen(buf)+1) * sizeof(char));
+      a->file = (char *) malloc((strlen(buf)+1) * sizeof(char));
       strcpy(a->file,buf);
     }
 
