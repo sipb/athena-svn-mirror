@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta name="Content-Style" content="text/css">
+</head>
+<body>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
+<!-- Creator     : groff version 1.15  -->
+<!-- CreationDate: Fri Aug 30 14:41:53 2002
+ -->
+<!-- Total number of pages: 1 -->
+<!-- Page: 1 -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
+<a name="NAME"></a><h2>NAME</h2><p><font size=3>arbitron - arbitron mailboxes</p>
+<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>arbitron</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-d</B> <font size=3>days ] [ <font size=3><B>-p</B> <font size=3>months ]<br>
+<span style=" text-indent: 0.2700in;"></span><I>mailbox</I><font size=3>...</p>
+<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Arbitron</I> <font size=3>collects and reports readership statistics for mailboxes on the server. It also optionally prunes the mail- boxes of \Seen state for dormant users.</p>
+<p><font size=3><I>Arbitron</I> <font size=3>produces one line of output per mailbox, reporting the number of readers followed by a space and the name of the mailbox. <font size=3><B>IMPORTANT: This format is subject to change in future versions.</p>
+</B><p><font size=3>Each "reader" is a distinct authentication identity which has "s" rights to the mailbox and which has SELECTed the mailbox within the past <font size=3><I>days</I> <font size=3>days. Users are not counted as reading their own personal mailboxes. Personal mailboxes are not reported unless there is at least one reader other than the mailboxes owner.</p>
+<p><font size=3><I>Arbitron</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>.</p>
+<a name="OPTIONS"></a><h2>OPTIONS</h2>
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.6154%">
+<p><font size=3><B>-C</B> <font size=3><I>config-file</p>
+</I><p><font size=3><B>-d</B> <font size=3><I>days</p>
+</I></td>
+<td valign="top" align="left"  width="7.3846%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
+<p><font size=3>Count as a reader an authentication identity which has SELECTed the mailbox within <font size=3><I>days</I> <font size=3>days. Default is 30.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.6154%">
+<p><font size=3><B>-p</B> <font size=3><I>months</p>
+</I></td>
+<td valign="top" align="left"  width="7.3846%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>Prune \Seen state for users who have not SELECTed the mailbox within <font size=3><I>months</I> <font size=3>months.<br>
+Default is infinity.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.6154%">
+</td>
+<td valign="top" align="left"  width="7.3846%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+</table>
+<br>
+<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2></body>
+</html>

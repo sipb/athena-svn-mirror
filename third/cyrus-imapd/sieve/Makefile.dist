@@ -1,0 +1,26 @@
+# $Id: Makefile.dist,v 1.1.1.1 2002-10-13 18:01:27 ghudson Exp $
+
+YACC = bison -y
+YFLAGS = -d
+LEX = flex
+COMPILE_ET = /usr/local/bin/compile_et
+
+BUILT_SOURCES = addr.c addr.h addr-lex.c \
+	sieve.c sieve.h sieve-lex.c \
+	sieve_err.h sieve_err.c
+
+dist: $(BUILT_SOURCES)
+
+addr.c addr.h: addr.y
+	$(YACC) $(YFLAGS) -p addr addr.y
+	mv -f y.tab.c addr.c
+	mv -f y.tab.h addr.h
+
+sieve.c sieve.h: sieve.y
+	$(YACC) $(YFLAGS) sieve.y
+	mv -f y.tab.c sieve.c
+	mv -f y.tab.h sieve.h
+
+sieve_err.h sieve_err.c: sieve_err.et
+	$(COMPILE_ET) sieve_err.et
+

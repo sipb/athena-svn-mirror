@@ -1,0 +1,105 @@
+# Makefile.in - sieve makefile
+# @configure_input@
+# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:00:27 ghudson Exp $
+################################################################
+#        Copyright 1998 by Carnegie Mellon University
+#
+#                      All Rights Reserved
+#
+#Permission to use, copy, modify, and distribute this software and its
+#documentation for any purpose and without fee is hereby granted,
+#provided that the above copyright notice appear in all copies and that
+#both that copyright notice and this permission notice appear in
+#supporting documentation, and that the name of Carnegie Mellon University
+#not be used in advertising or publicity pertaining to distribution of the
+#software without specific, written prior permission.
+#
+#CARNEGIE MELLON UNIVERSITY DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+#SOFTWARE, INCLUDING #ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, 
+#IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE FOR ANY SPECIAL, 
+#INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM 
+#LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+#OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+#PERFORMANCE OF THIS SOFTWARE.
+################################################################
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+CC = @CC@
+YACC = @YACC@
+YFLAGS = -d
+LEX = @LEX@
+RANLIB = @RANLIB@
+COMPILE_ET = @COMPILE_ET@
+
+DEFS = @DEFS@
+CPPFLAGS = -I. -I.. -I$(srcdir) -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+
+MAKEDEPEND = @MAKEDEPEND@
+
+IMAP_COM_ERR_LIBS = @IMAP_COM_ERR_LIBS@
+LIBS = libsieve.a $(IMAP_COM_ERR_LIBS)
+DEPLIBS=../lib/libcyrus.a @DEPLIBS@
+
+BUILT_SOURCES = addr.c addr.h addr-lex.c \
+	sieve.c sieve.h sieve-lex.c \
+	sieve_err.h sieve_err.c
+
+all: libsieve.a
+
+dist: $(BUILT_SOURCES)
+
+install:
+
+test: $(DEPLIBS) libsieve.a test.o
+	$(CC) $(LDFLAGS) -o test \
+	 test.o $(LIBS) $(DEPLIBS)
+
+OBJS = sieve_err.o \
+        sieve.o sieve-lex.o comparator.o interp.o message.o script.o \
+	tree.o addr.o addr-lex.o @MD5OBJ@
+
+sieve-lex.c: sieve-lex.l sieve.h
+
+sieve.c sieve.h: sieve.y
+	$(YACC) $(YFLAGS) $(srcdir)/sieve.y
+	mv -f y.tab.c sieve.c
+	mv -f y.tab.h sieve.h
+
+addr-lex.c: addr-lex.l addr.h
+
+addr.c addr.h: addr.y
+	$(YACC) $(YFLAGS) -p addr $(srcdir)/addr.y
+	mv -f y.tab.c addr.c
+	mv -f y.tab.h addr.h
+
+libsieve.a: $(OBJS)
+	rm -f libsieve.a
+	ar cr libsieve.a $(OBJS)
+	$(RANLIB) libsieve.a
+
+sieve_interface.h: sieve_err.h
+
+sieve_err.h sieve_err.c: sieve_err.et
+	$(COMPILE_ET) $(srcdir)/sieve_err.et
+
+clean:
+	rm -f test *.o *.a Makefile.bak makedepend.log
+
+distclean: clean
+	rm -f Makefile
+
+clobber:
+	rm -f $(BUILT_SOURCES)
+
+depend:
+	${MAKEDEPEND} $(CPPFLAGS) $(DEFS) -I$(srcdir) $(CFLAGS) *.c *.y $(srcdir)/*.y $(srcdir)/*.c 1>makedepend.log 2>&1
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(DEFS) -I$(srcdir) -I. $(CFLAGS) \
+	$<
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

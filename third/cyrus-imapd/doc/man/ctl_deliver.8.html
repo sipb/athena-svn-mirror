@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta name="Content-Style" content="text/css">
+</head>
+<body>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<!-- Creator     : groff version 1.15  -->
+<!-- CreationDate: Fri Aug 30 14:41:53 2002
+ -->
+<!-- Total number of pages: 1 -->
+<!-- Page: 1 -->
+<!-- left  margin: 100 -->
+<!-- right margin: 742 -->
+<a name="NAME"></a><h2>NAME</h2><p><font size=3>ctl_deliver - perform operations on the duplicate delivery database</p>
+<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>ctl_deliver</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] <font size=3><B>-E</B> <font size=3><I>days<br>
+</I><B>ctl_deliver</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] <font size=3><B>-d</B> <font size=3>[ <font size=3><B>-f</B> <font size=3><I>filename</I> <font size=3>]</p>
+<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Ctl_deliver</I> <font size=3>is used to perform various administrative operations on the duplicate delivery database.</p>
+<p><font size=3><I>Ctl_deliver</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>.</p>
+<a name="OPTIONS"></a><h2>OPTIONS</h2>
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.7726%">
+<p><font size=3><B>-C</B> <font size=3><I>config-file</p>
+</I><p><font size=3><B>-E</B> <font size=3><I>days</p>
+</I><p><font size=3><B>-d</p>
+</B><p><font size=3><B>-f</B> <font size=3><I>filename</p>
+</I></td>
+<td valign="top" align="left"  width="7.4766%">
+</td>
+<td valign="top" align="left"  width="79.7508%">
+<p><font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
+<p><font size=3>Prune the database of entries older than <font size=3><I>days</I><font size=3>.</p>
+<p><font size=3>Dump the contents of the database to standard output in a portable flat-text format.</p>
+<p><font size=3>Use the database specified by <font size=3><I>filename</I> <font size=3>instead of the default (<font size=3><I>configdirectory</I><font size=3><B>/deliver.db</B><font size=3>).</p>
+</td>
+</tr>
+</table>
+<br>
+<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2><a name="SEE ALSO"></a><h2>SEE ALSO</h2><p><font size=3><B>imapd.conf(5)</B><font size=3>, <font size=3><B>master(8)</B><br>
+</p>
+</body>
+</html>
