@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <libbonobo.h>
@@ -48,6 +49,7 @@ static SpiApplication *this_app = NULL;
 static gboolean registry_died = FALSE;
 static gboolean atk_listeners_registered = FALSE;
 static gint toplevels = 0;
+static gboolean exiting = FALSE;
 
 static guint atk_signal_text_changed;
 static guint atk_signal_children_changed;
@@ -108,6 +110,7 @@ extern void gnome_accessibility_module_init     (void);
 extern void gnome_accessibility_module_shutdown (void);
 
 static int     atk_bridge_initialized = FALSE;
+static pid_t   atk_bridge_pid = 0;
 static guint   atk_bridge_focus_tracker_id = 0;
 static guint   atk_bridge_key_event_listener_id = 0;
 static GArray *listener_ids = NULL;
@@ -154,6 +157,7 @@ atk_bridge_init (gint *argc, gchar **argv[])
       return 0;
     }
   atk_bridge_initialized = TRUE;
+  atk_bridge_pid = getpid ();
 
   if (g_getenv ("ATK_BRIDGE_REDIRECT_LOG"))
   {
@@ -313,8 +317,12 @@ spi_atk_bridge_get_registry (void)
   if (registry_died || (registry == CORBA_OBJECT_NIL)) {
 	  CORBA_exception_init (&ev);
 	  if (registry_died) 
-	    DBG (1, g_warning ("registry died! restarting..."));
-	  
+            {
+              if (exiting)
+                return CORBA_OBJECT_NIL;
+              else
+	        DBG (1, g_warning ("registry died! restarting..."));
+            }
 	  bonobo_activation_set_activation_env_value ("AT_SPI_DISPLAY", spi_display_name ());
 
 	  registry = bonobo_activation_activate_from_id (
@@ -484,7 +492,12 @@ spi_atk_bridge_exit_func (void)
       return;
     }
   this_app = NULL;
+  if (atk_bridge_pid != getpid ())
+    {
+      _exit (0);
+    }
 
+  exiting = TRUE;
   /*
    * Check whether we still have windows which have not been deleted.
    */
@@ -501,7 +514,8 @@ spi_atk_bridge_exit_func (void)
       g_assert (bonobo_activate ());
     }
   
-  deregister_application (app);
+  if (!registry_died)
+    deregister_application (app);
 
   DBG (1, g_message ("bridge exit func complete.\n"));
 
@@ -589,6 +603,7 @@ spi_atk_emit_eventv (const GObject         *gobject,
   Accessibility_Event e;
   SpiAccessible      *source;
   AtkObject          *aobject;
+  Accessibility_Registry registry;
 #ifdef SPI_BRIDGE_DEBUG
   CORBA_string s;
 #endif
@@ -629,7 +644,11 @@ spi_atk_emit_eventv (const GObject         *gobject,
       CORBA_free (s);
 #endif
       CORBA_exception_init (&ev);
-      Accessibility_Registry_notifyEvent (spi_atk_bridge_get_registry (), 
+      registry = spi_atk_bridge_get_registry ();
+      if (registry_died)
+        return;
+        
+      Accessibility_Registry_notifyEvent (registry, 
 					  &e, &ev);
 #ifdef SPI_BRIDGE_DEBUG
       if (ev._major != CORBA_NO_EXCEPTION)
@@ -1083,6 +1102,8 @@ spi_atk_tidy_windows (void)
       if (atk_state_set_contains_state (stateset, ATK_STATE_ACTIVE))
         {
           spi_atk_emit_eventv (G_OBJECT (child), 0, 0, &any, "window:deactivate");
+          if (registry_died)
+            return;
         }
       g_object_unref (stateset);
 

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #endif
 
+#include <string.h>
 #include <gdk/gdk.h>
 #include <libbonobo.h>
 #include <glib/gmain.h>
@@ -34,7 +35,8 @@ int
 main (int argc, char **argv)
 {
   int          ret;
-  char        *obj_id, *display_name;
+  char        *obj_id;
+  const char  *display_name;
   char        *cp, *dp;
   SpiRegistry *registry;
   GSList      *reg_env = NULL;

@@ -1,3 +1,72 @@
+2004-12-09  Bill Haneman <billh@gnome.org>
+
+	* registryd/registry-main.c:
+	Added #define <string.h> for strrchr. (bug 160862).
+	Thanks to Vincent Berger for catching.
+	
+2004-12-09  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c (spi_atk_get_registry): Do not attempt to
+	restart registry process if the registry process is found to have died
+	and the current process is exiting.
+	(spi_atk_bridge_exit_func): Do not attempt to deregister the
+	application if the registry process has died.
+	(spi_atk_emit_eventv): Return if call to spi_atk_get_registry
+	does not return a registry object.
+	(spi_atk_tidy_windows): Give up if the registry process has died.
+
+	This fixes problems with hangs and crashes when logging out.
+
+2004-12-03  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/desktop.c: Add checking that we are not exiting before
+	calling spi_desktop_remove_application in 
+	abnormal_application_termination. Fix for bug #152147.
+
+2004-12-02  Bill Haneman <billh@gnome.org>
+
+	* configure.in, NEWS, README: Revved to 1.6.1.
+	
+	Patch from Padraig O'Briain <padraig.obriain@sun.com>
+	* atk-bridge/bridge.c:
+	(atk_bridge_init): Save the pid when we start, to detect forks.
+	(spi_atk_bridge_exit_func): Don't call the cleanup routines
+	if we're in a forked pid.
+	
+2004-10-09  Bill Haneman <billh@gnome.org>
+
+	* idl/Accessibility_LoginHelper.idl:
+	Improved inline documentation.
+
+2004-10-02  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS
+
+2004-09-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libspi/accessible.c:
+	(impl_accessibility_accessible_get_role_name),
+	(impl_accessibility_accessible_get_local_role_name):
+	NULL vs. 0 cleanups.
+	* libspi/component.c:
+	(impl_accessibility_component_get_accessible_at_point):
+	Same here.
+	* libspi/eventlistener.c: (spi_event_listener_new):
+	ANSIfication.
+	* libspi/stateset.c: (impl_compare): More of the same
+	* libspi/table.c: (impl_getRowDescription): Again.
+	* registryd/desktop.c: (spi_atk_desktop_get_type): Same
+	* registryd/deviceeventcontroller.c: (spi_clear_error_state),
+	(impl_generate_keyboard_event): Same.
+	* registryd/registry-main.c: (main): Same
+	* test/event-listener-test.c: (test_exit): Same
+	* test/keysynth-demo.c: (scan_state), (create_vkbd): Same
+	* test/keysynth-test.c: (test_key_synthesis): Same
+	* test/login-helper-server-test.c: (main): Fix warning.
+	* test/screen-review-test.c: (test_exit): Fix include.
+	* test/simple-at.c: (simple_at_exit), (_festival_init):
+	ANSIfication.
+
 2004-09-13  Padraig O'Briain <padraig.vriain@sun.com>
 
 	* configure.in, NEWS, README: Revved to 1.6.0.

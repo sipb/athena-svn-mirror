@@ -1,6 +1,6 @@
 <oaf_info>
 	<oaf_server iid="OAFIID:Accessibility_Registry:1.0"
-        	    type="exe" location="/usr/lib/at-spi-registryd">
+        	    type="exe" location="/usr/libexec/at-spi-registryd">
 		<oaf_attribute name="repo_ids" type="stringv">
 			<item value="IDL:Bonobo/Unknown:1.0"/>
 			<item value="IDL:Accessibility/Registry:1.0"/>
@@ -28,6 +28,7 @@
 		<oaf_attribute name="name-fa" type="string" value="بایگانی AT-SPI"/>
 		<oaf_attribute name="name-fi" type="string" value="AT-SPI-rekisteri"/>
 		<oaf_attribute name="name-fr" type="string" value="Registre AT-SPI"/>
+		<oaf_attribute name="name-gl" type="string" value="Rexistro AT-SPI"/>
 		<oaf_attribute name="name-gu" type="string" value="AT-SPI નોંધણીપત્રક"/>
 		<oaf_attribute name="name-he" type="string" value="רישום AT-SPI"/>
 		<oaf_attribute name="name-hi" type="string" value="एटी-एसपीआई रजिस्ट्री"/>
@@ -36,6 +37,7 @@
 		<oaf_attribute name="name-is" type="string" value="AT-SPI Grunnur"/>
 		<oaf_attribute name="name-it" type="string" value="Registro AT-SPI"/>
 		<oaf_attribute name="name-ja" type="string" value="AT-SPI レジストリ"/>
+		<oaf_attribute name="name-ka" type="string" value="AT-SPI რეგისტრაცია"/>
 		<oaf_attribute name="name-ko" type="string" value="AT-SPI 레지스트리"/>
 		<oaf_attribute name="name-lt" type="string" value="AT-SPI registras"/>
 		<oaf_attribute name="name-mk" type="string" value="Регистер за AT-SPI"/>
@@ -67,6 +69,7 @@
 		<oaf_attribute name="name-vi" type="string" value="Registry AT-SPI"/>
 		<oaf_attribute name="name-wa" type="string" value="Redjisse AT-SPI"/>
 		<oaf_attribute name="name-zh_CN" type="string" value="AT-SPI 注册表"/>
+		<oaf_attribute name="name-zh_TW" type="string" value="AT-SPI 登錄"/>
 		<oaf_attribute name="description" type="string"
 		 value="Accessibility Registry"/>
 		<oaf_attribute name="description-ang" type="string"
@@ -113,6 +116,8 @@
 		 value="Esteettömyysrekisteri"/>
 		<oaf_attribute name="description-fr" type="string"
 		 value="Registre Accessibilité"/>
+		<oaf_attribute name="description-gl" type="string"
+		 value="Rexistro de accesibilidade"/>
 		<oaf_attribute name="description-gu" type="string"
 		 value="સુલભતા નોંધણીપત્રક"/>
 		<oaf_attribute name="description-he" type="string"
@@ -129,6 +134,8 @@
 		 value="Registro accesso facilitato."/>
 		<oaf_attribute name="description-ja" type="string"
 		 value="アクセシビリティ・レジストリ"/>
+		<oaf_attribute name="description-ka" type="string"
+		 value="შეზღუდულთა რეგისტრაცია"/>
 		<oaf_attribute name="description-ko" type="string"
 		 value="접근성 레지스트리"/>
 		<oaf_attribute name="description-lt" type="string"
@@ -191,5 +198,7 @@
 		 value="Redjisse d&apos; accessiblisté"/>
 		<oaf_attribute name="description-zh_CN" type="string"
 		 value="可操作性注册表"/>
+		<oaf_attribute name="description-zh_TW" type="string"
+		 value="快捷鍵登錄"/>
 	</oaf_server>
 </oaf_info>
