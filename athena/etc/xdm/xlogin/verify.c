@@ -1,8 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.5 1990-11-28 18:07:47 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.6 1990-11-30 16:30:12 mar Exp $
  */
 
 #include <stdio.h>
 #include <pwd.h>
+#include <grp.h>
 #include <strings.h>
 #include <sys/file.h>
 #include <sys/param.h>
@@ -71,6 +72,7 @@ char *display;
     static char errbuf[5120];
     char tkt_file[128], *msg, wgfile[16];
     struct passwd *pwd;
+    struct group *gr;
     struct timeval times[2];
     long salt;
     char saltc[2], c;
@@ -117,7 +119,7 @@ char *display;
 	    cleanup(NULL);
 	    return(msg);
 	} else {
-	    prompt_user("Unable to get full authentication, you will have local access only during this login session.  Continue anyway?", abort_verify);
+	    prompt_user("Unable to get full authentication, you will have local access only during this login session (failed to get kerberos tickets).  Continue anyway?", abort_verify);
 	}
     }
 
@@ -270,7 +272,9 @@ char *display;
 
     /* Set the owner and modtime on the tty */
     sprintf(errbuf, "/dev/%s", tty);
-    chown(errbuf, pwd->pw_uid, pwd->pw_gid);
+    gr = getgrnam("tty");
+    chown(errbuf, pwd->pw_uid, gr ? gr->gr_gid : pwd->pw_gid);
+    chmod(errbuf, 0620);
     gettimeofday(&times[0], NULL);
     times[1].tv_sec = times[0].tv_sec;
     times[1].tv_usec = times[0].tv_usec;
@@ -341,18 +345,22 @@ char *password;
 	return(errbuf);
     }
 
-    if (gethostname(hostname, sizeof(hostname)) == -1)
-      return("Authentication error: cannot retrieve local hostname");
+    if (gethostname(hostname, sizeof(hostname)) == -1) {
+	fprintf(stderr, "Warning: cannot retrieve local hostname");
+	return(NULL);
+    }
     strncpy (phost, krb_get_phost (hostname), sizeof (phost));
     phost[sizeof(phost)-1] = 0;
 
     /* without srvtab, cannot verify tickets */
-    if (read_service_key(rcmd, phost, realm, 0, KEYFILE, key) == 0)
+    if (read_service_key(rcmd, phost, realm, 0, KEYFILE, key) == KFAILURE)
       return (NULL);
 
     hp = gethostbyname (hostname);
-    if (!hp)
-      return("Authentication error: cannot retrieve local host address");
+    if (!hp) {
+	fprintf(stderr, "Warning: cannot get address for host %s\n", hostname);
+	return(NULL);
+    }
     bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
 
     error = krb_mk_req(&ticket, rcmd, phost, realm, 0);
