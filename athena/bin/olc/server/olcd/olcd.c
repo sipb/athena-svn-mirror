@@ -22,12 +22,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.23 1990-07-16 08:30:34 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olcd.c,v 1.24 1990-07-16 10:26:23 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.23 1990-07-16 08:30:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.24 1990-07-16 10:26:23 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -43,6 +43,11 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>		/* Standard error numbers. */
 #include <pwd.h>		/* Password entry defintions. */
 #include <signal.h>		/* Signal definitions. */
+
+#ifdef ZEPHYR
+#include <com_err.h>
+#include <zephyr/zephyr.h>
+#endif /* ZEPHYR */
 
 #include <olc/olc.h>
 #include <olcd.h>
@@ -63,17 +68,18 @@ extern "C" {
 
 /* Global variables. */
 
-extern int errno;		      /* System error number. */
-extern PROC  Proc_List[];              /* OLC Proceedure Table */
-char DaemonHost[LINE_SIZE];	      /* Name of daemon's machine. */
+extern int errno;		/* System error number. */
+extern PROC  Proc_List[];	/* OLC Proceedure Table */
+char DaemonHost[LINE_SIZE];	/* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 int request_count = 0;
 int request_counts[OLC_NUM_REQUESTS];
 long start_time;
 int select_timeout = 10;
+char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
 
 #ifdef KERBEROS
-static long ticket_time = 0L;         /* Timer on kerberos ticket */
+static long ticket_time = 0L;	/* Timer on kerberos ticket */
 #if __STDC__
 int get_kerberos_ticket(void);
 #endif
@@ -148,6 +154,9 @@ main (argc, argv)
     int hostset = 0;			/* Flag if host was passed as arg */
     int nofork = 0;			/* Flag if you don't want to fork */
     int port_num = 0;			/* Port number explicitly requested */
+#ifdef ZEPHYR
+    int ret;				/* return value from ZInitialize. */
+#endif
 #ifdef HESIOD
     char **hp;				/* return value of Hesiod resolver */
 #endif
@@ -156,6 +165,8 @@ main (argc, argv)
     strcpy(K_INSTANCEbuf,K_INSTANCE);
     strcpy(SERVER_REALM,DFLT_SERVER_REALM);
 #endif
+
+    strcpy(DaemonInst, OLC_SERVICE); /* set default 'instance' -- "olc" */
 
     /*
      * Parse any arguments
@@ -186,12 +197,25 @@ main (argc, argv)
 	    strcat (ME, argv[arg]);
 	    strcat (ME, "]");
 	}
+	else if (!strcmp (argv[arg], "-inst")) {
+	  if (!argv[++arg])
+	    fprintf (stderr, "-inst requires an instance name\n");
+	  else
+	    strcpy(DaemonInst, argv[arg]);
+	}
 	else {
 	    fprintf (stderr, "unknown argument: %s\n",argv[arg]);
 	    return 1;
 	}
     }
 
+#ifdef ZEPHYR
+	/** We must ZInitialize now, *before* we use "log_error" **/
+	/** for  the first time, as errors are broadcast via zephyr. **/
+    if ((ret = ZInitialize()) != ZERR_NONE)
+      com_err ("main", ret, "couldn't ZInitialize");
+#endif /* ZEPHYR */  
+    
     /*
      * fork off
      */
@@ -288,11 +312,7 @@ main (argc, argv)
     if (!hostset)
     {
 #ifdef HESIOD
-#ifdef OLZ
-	if ((hp = hes_resolve("olz",OLC_SERV_NAME)) == NULL)
-#else
-	if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
-#endif /* OLZ */
+	if ((hp = hes_resolve(DaemonInst, OLC_SERV_NAME)) == NULL)
 	{
 	    log_error("Unable to get name of OLC server host from nameserver.");
 	    log_error("Exiting..");
