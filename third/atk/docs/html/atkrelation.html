@@ -1,0 +1,974 @@
+<HTML
+><HEAD
+><TITLE
+>AtkRelation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkRegistry"
+HREF="atkregistry.html"><LINK
+REL="NEXT"
+TITLE="AtkRelationSet"
+HREF="atkrelationset.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkregistry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkrelationset.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATKRELATION"
+>AtkRelation</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3580"
+></A
+><H2
+>Name</H2
+>AtkRelation&nbsp;--&nbsp;An object used to describe a relation between a object and one or more
+other objects.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3583"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atkrelation.html#ATKRELATION-STRUCT"
+>AtkRelation</A
+>;
+enum        <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+>;
+<A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> <A
+HREF="atkrelation.html#ATK-RELATION-TYPE-REGISTER"
+>atk_relation_type_register</A
+>  (const gchar *name);
+G_CONST_RETURN gchar* <A
+HREF="atkrelation.html#ATK-RELATION-TYPE-GET-NAME"
+>atk_relation_type_get_name</A
+>
+                                            (<A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> type);
+<A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> <A
+HREF="atkrelation.html#ATK-RELATION-TYPE-FOR-NAME"
+>atk_relation_type_for_name</A
+>  (const gchar *name);
+<A
+HREF="atkrelation.html"
+>AtkRelation</A
+>* <A
+HREF="atkrelation.html#ATK-RELATION-NEW"
+>atk_relation_new</A
+>               (<A
+HREF="atkobject.html"
+>AtkObject</A
+> **targets,
+                                             gint n_targets,
+                                             <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> relationship);
+<A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> <A
+HREF="atkrelation.html#ATK-RELATION-GET-RELATION-TYPE"
+>atk_relation_get_relation_type</A
+>
+                                            (<A
+HREF="atkrelation.html"
+>AtkRelation</A
+> *relation);
+GPtrArray*  <A
+HREF="atkrelation.html#ATK-RELATION-GET-TARGET"
+>atk_relation_get_target</A
+>         (<A
+HREF="atkrelation.html"
+>AtkRelation</A
+> *relation);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3608"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GObject
+   +----AtkRelation</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3612"
+></A
+><H2
+>Description</H2
+><P
+>An AtkRelation describes a relation between an object and one or more
+other objects. The actual relations that an object has with other objects
+are defined as an AtkRelationSet, which is a set of AtkRelations.
+&#13;</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3615"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3617"
+></A
+><H3
+><A
+NAME="ATKRELATION-STRUCT"
+></A
+>struct AtkRelation</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkRelation;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkRelation structure should not be accessed directly.&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3622"
+></A
+><H3
+><A
+NAME="ATKRELATIONTYPE"
+></A
+>enum AtkRelationType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  ATK_RELATION_NULL = 0,
+  ATK_RELATION_CONTROLLED_BY,
+  ATK_RELATION_CONTROLLER_FOR,
+  ATK_RELATION_LABEL_FOR,
+  ATK_RELATION_LABELLED_BY,
+  ATK_RELATION_MEMBER_OF,
+  ATK_RELATION_NODE_CHILD_OF,
+  ATK_RELATION_FLOWS_TO,
+  ATK_RELATION_FLOWS_FROM,
+  ATK_RELATION_SUBWINDOW_OF, 
+  ATK_RELATION_EMBEDS, 
+  ATK_RELATION_EMBEDDED_BY, 
+  ATK_RELATION_LAST_DEFINED
+} AtkRelationType;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Describes the type of the relation</P
+><P
+></P
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_NULL</TT
+></DT
+><DD
+><P
+></P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_CONTROLLED_BY</TT
+></DT
+><DD
+><P
+> Indicates an object controlled by one or more target objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_CONTROLLER_FOR</TT
+></DT
+><DD
+><P
+> Indicates an object is an controller for one or more target objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_LABEL_FOR</TT
+></DT
+><DD
+><P
+> Indicates an object is a label for one or more target objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_LABELLED_BY</TT
+></DT
+><DD
+><P
+> Indicates an object is labelled by one or more target objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_MEMBER_OF</TT
+></DT
+><DD
+><P
+> Indicates an object is a member of a group of one or more target objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_NODE_CHILD_OF</TT
+></DT
+><DD
+><P
+> Indicates an object is a cell in a treetable which is displayed because a cell in the same column is expanded and identifies that cell.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_FLOWS_TO</TT
+></DT
+><DD
+><P
+> Indicates that the object has content that flows logically to another
+ AtkObject in a sequential way, (for instance text-flow).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_FLOWS_FROM</TT
+></DT
+><DD
+><P
+> Indicates that the object has content that flows logically from
+ another AtkObject in a sequential way, (for instance text-flow).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_SUBWINDOW_OF</TT
+></DT
+><DD
+><P
+> [not sure about this one, ask Peter]</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_EMBEDS</TT
+></DT
+><DD
+><P
+> Indicates that the object visually embeds 
+ another object's content, i.e. this object's content flows around 
+ another's content.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_EMBEDDED_BY</TT
+></DT
+><DD
+><P
+> Inverse of <TT
+CLASS="LITERAL"
+>ATK_RELATION_EMBEDS</TT
+>, indicates that
+ this object's content is visualy embedded in another object.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_RELATION_LAST_DEFINED</TT
+></DT
+><DD
+><P
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3695"
+></A
+><H3
+><A
+NAME="ATK-RELATION-TYPE-REGISTER"
+></A
+>atk_relation_type_register ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> atk_relation_type_register  (const gchar *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Associate <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> with a new <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a name string</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> associated with <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3718"
+></A
+><H3
+><A
+NAME="ATK-RELATION-TYPE-GET-NAME"
+></A
+>atk_relation_type_get_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_relation_type_get_name
+                                            (<A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the description string describing the <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> whose name is required</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the string describing the AtkRelationType</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3740"
+></A
+><H3
+><A
+NAME="ATK-RELATION-TYPE-FOR-NAME"
+></A
+>atk_relation_type_for_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> atk_relation_type_for_name  (const gchar *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> type corresponding to a relation name.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a string which is the (non-localized) name of an ATK relation type.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> enumerated type corresponding to the specified name,
+         or ATK_RELATION_NULL if no matching relation type is found.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3762"
+></A
+><H3
+><A
+NAME="ATK-RELATION-NEW"
+></A
+>atk_relation_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkrelation.html"
+>AtkRelation</A
+>* atk_relation_new               (<A
+HREF="atkobject.html"
+>AtkObject</A
+> **targets,
+                                             gint n_targets,
+                                             <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> relationship);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new relation for the specified key and the specified list
+of targets.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>targets</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an array of pointers to AtkObjects  </P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>n_targets</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> number of AtkObjects pointed to by <TT
+CLASS="PARAMETER"
+><I
+>targets</I
+></TT
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>relationship</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> with which to create the new
+ <A
+HREF="atkrelation.html"
+>AtkRelation</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a pointer to a new <A
+HREF="atkrelation.html"
+>AtkRelation</A
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3799"
+></A
+><H3
+><A
+NAME="ATK-RELATION-GET-RELATION-TYPE"
+></A
+>atk_relation_get_relation_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkrelation.html#ATKRELATIONTYPE"
+>AtkRelationType</A
+> atk_relation_get_relation_type
+                                            (<A
+HREF="atkrelation.html"
+>AtkRelation</A
+> *relation);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the type of <TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkrelation.html"
+>AtkRelation</A
+> </P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the type of <TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3821"
+></A
+><H3
+><A
+NAME="ATK-RELATION-GET-TARGET"
+></A
+>atk_relation_get_target ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GPtrArray*  atk_relation_get_target         (<A
+HREF="atkrelation.html"
+>AtkRelation</A
+> *relation);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the target list of <TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkrelation.html"
+>AtkRelation</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the target list of <TT
+CLASS="PARAMETER"
+><I
+>relation</I
+></TT
+></P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkregistry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkrelationset.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkRegistry</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkRelationSet</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,703 @@
+<HTML
+><HEAD
+><TITLE
+>AtkRegistry</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkObjectFactory"
+HREF="atkobjectfactory.html"><LINK
+REL="NEXT"
+TITLE="AtkRelation"
+HREF="atkrelation.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkobjectfactory.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkrelation.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATKREGISTRY"
+>AtkRegistry</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3420"
+></A
+><H2
+>Name</H2
+>AtkRegistry&nbsp;--&nbsp;An object used to store the GType of the factories used to create an accessible
+object for an object of a particular GType.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3423"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atkregistry.html#ATKREGISTRY-STRUCT"
+>AtkRegistry</A
+>;
+void        <A
+HREF="atkregistry.html#ATK-REGISTRY-SET-FACTORY-TYPE"
+>atk_registry_set_factory_type</A
+>   (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type,
+                                             GType factory_type);
+GType       <A
+HREF="atkregistry.html#ATK-REGISTRY-GET-FACTORY-TYPE"
+>atk_registry_get_factory_type</A
+>   (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type);
+<A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+>* <A
+HREF="atkregistry.html#ATK-REGISTRY-GET-FACTORY"
+>atk_registry_get_factory</A
+>  (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type);
+<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+>* <A
+HREF="atkregistry.html#ATK-GET-DEFAULT-REGISTRY"
+>atk_get_default_registry</A
+>       (void);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3441"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GObject
+   +----AtkRegistry</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3445"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3448"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3450"
+></A
+><H3
+><A
+NAME="ATKREGISTRY-STRUCT"
+></A
+>struct AtkRegistry</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkRegistry;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkRegistry structure should not be accessed directly.&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3455"
+></A
+><H3
+><A
+NAME="ATK-REGISTRY-SET-FACTORY-TYPE"
+></A
+>atk_registry_set_factory_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        atk_registry_set_factory_type   (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type,
+                                             GType factory_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Associate an <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> subclass with a GType. Note:
+The associated <TT
+CLASS="PARAMETER"
+><I
+>factory_type</I
+></TT
+> will thereafter be responsible for
+the creation of new <A
+HREF="atkobject.html"
+>AtkObject</A
+> implementations for instances
+appropriate for <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>registry</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the <A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> in which to register the type association</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkobject.html"
+>AtkObject</A
+> type </P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>factory_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> type to associate with <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.  Must
+implement AtkObject appropriate for <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3490"
+></A
+><H3
+><A
+NAME="ATK-REGISTRY-GET-FACTORY-TYPE"
+></A
+>atk_registry_get_factory_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GType       atk_registry_get_factory_type   (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Provides a GType indicating the <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> subclass
+associated with <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>registry</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkregistry.html"
+>AtkRegistry</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GType with which to look up the associated <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+>
+subclass</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a GType associated with type <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3523"
+></A
+><H3
+><A
+NAME="ATK-REGISTRY-GET-FACTORY"
+></A
+>atk_registry_get_factory ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+>* atk_registry_get_factory  (<A
+HREF="atkregistry.html"
+>AtkRegistry</A
+> *registry,
+                                             GType type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets an <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> appropriate for creating AtkObjects
+appropriate for <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>registry</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atkregistry.html"
+>AtkRegistry</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GType with which to look up the associated <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> appropriate for creating AtkObjects
+appropriate for <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3557"
+></A
+><H3
+><A
+NAME="ATK-GET-DEFAULT-REGISTRY"
+></A
+>atk_get_default_registry ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkregistry.html"
+>AtkRegistry</A
+>* atk_get_default_registry       (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets a default implementation of the <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+>/type
+registry.
+Note: For most toolkit maintainers, this will be the correct
+registry for registering new <A
+HREF="atkobject.html"
+>AtkObject</A
+> factories. Following
+a call to this function, maintainers may call <A
+HREF="atkregistry.html#ATK-REGISTRY-SET-FACTORY-TYPE"
+>atk_registry_set_factory_type</A
+>()
+to associate an <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+> subclass with the GType of objects
+for whom accessibility information will be provided.</P
+><P
+></P
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a default implementation of the <A
+HREF="atkobjectfactory.html"
+>AtkObjectFactory</A
+>/type
+registry</P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkobjectfactory.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkrelation.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkObjectFactory</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkRelation</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

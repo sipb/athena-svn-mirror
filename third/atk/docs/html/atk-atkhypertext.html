@@ -1,0 +1,543 @@
+<HTML
+><HEAD
+><TITLE
+>AtkHypertext</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkHyperlink"
+HREF="atkhyperlink.html"><LINK
+REL="NEXT"
+TITLE="AtkImage"
+HREF="atk-atkimage.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkhyperlink.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atk-atkimage.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATK-ATKHYPERTEXT"
+>AtkHypertext</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1441"
+></A
+><H2
+>Name</H2
+>AtkHypertext&nbsp;--&nbsp;The ATK interface which provides standard mechanism for manipulating hyperlinks.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1444"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+>;
+<A
+HREF="atkhyperlink.html"
+>AtkHyperlink</A
+>* <A
+HREF="atk-atkhypertext.html#ATK-HYPERTEXT-GET-LINK"
+>atk_hypertext_get_link</A
+>        (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext,
+                                             gint link_index);
+gint        <A
+HREF="atk-atkhypertext.html#ATK-HYPERTEXT-GET-N-LINKS"
+>atk_hypertext_get_n_links</A
+>       (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext);
+gint        <A
+HREF="atk-atkhypertext.html#ATK-HYPERTEXT-GET-LINK-INDEX"
+>atk_hypertext_get_link_index</A
+>    (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext,
+                                             gint char_index);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1459"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1462"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1464"
+></A
+><H3
+><A
+NAME="ATKHYPERTEXT"
+></A
+>struct AtkHypertext</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkHypertext;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkHypertext structure does not contain any fields.</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1469"
+></A
+><H3
+><A
+NAME="ATK-HYPERTEXT-GET-LINK"
+></A
+>atk_hypertext_get_link ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atkhyperlink.html"
+>AtkHyperlink</A
+>* atk_hypertext_get_link        (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext,
+                                             gint link_index);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the link in this hypertext document at index 
+<TT
+CLASS="PARAMETER"
+><I
+>link_index</I
+></TT
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>hypertext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>link_index</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an integer specifying the desired link</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the link in this hypertext document at
+index <TT
+CLASS="PARAMETER"
+><I
+>link_index</I
+></TT
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1497"
+></A
+><H3
+><A
+NAME="ATK-HYPERTEXT-GET-N-LINKS"
+></A
+>atk_hypertext_get_n_links ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_hypertext_get_n_links       (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the number of links within this hypertext document.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>hypertext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the number of links within this hypertext document</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1517"
+></A
+><H3
+><A
+NAME="ATK-HYPERTEXT-GET-LINK-INDEX"
+></A
+>atk_hypertext_get_link_index ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_hypertext_get_link_index    (<A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+> *hypertext,
+                                             gint char_index);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the index into the array of hyperlinks that is associated with
+the character specified by <TT
+CLASS="PARAMETER"
+><I
+>char_index</I
+></TT
+>, or -1 if there is no hyperlink
+associated with this character.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>hypertext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atkhypertext.html#ATKHYPERTEXT"
+>AtkHypertext</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>char_index</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a character index</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an index into the array of hyperlinks in <TT
+CLASS="PARAMETER"
+><I
+>hypertext</I
+></TT
+></P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkhyperlink.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atk-atkimage.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkHyperlink</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkImage</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

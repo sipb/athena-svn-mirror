@@ -1,0 +1,3387 @@
+<HTML
+><HEAD
+><TITLE
+>AtkText</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkTable"
+HREF="atk-atktable.html"><LINK
+REL="NEXT"
+TITLE="AtkUtil"
+HREF="atkutil.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atk-atktable.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkutil.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATK-ATKTEXT"
+>AtkText</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN6217"
+></A
+><H2
+>Name</H2
+>AtkText&nbsp;--&nbsp;The ATK interface implemented by components with text content.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN6220"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+>;
+enum        <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+>;
+struct      <A
+HREF="atk-atktext.html#ATKATTRIBUTE"
+>AtkAttribute</A
+>;
+typedef     <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>;
+enum        <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+>;
+gchar*      <A
+HREF="atk-atktext.html#ATK-TEXT-GET-TEXT"
+>atk_text_get_text</A
+>               (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint start_offset,
+                                             gint end_offset);
+gunichar    <A
+HREF="atk-atktext.html#ATK-TEXT-GET-CHARACTER-AT-OFFSET"
+>atk_text_get_character_at_offset</A
+>
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset);
+gchar*      <A
+HREF="atk-atktext.html#ATK-TEXT-GET-TEXT-AFTER-OFFSET"
+>atk_text_get_text_after_offset</A
+>  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);
+gchar*      <A
+HREF="atk-atktext.html#ATK-TEXT-GET-TEXT-AT-OFFSET"
+>atk_text_get_text_at_offset</A
+>     (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);
+gchar*      <A
+HREF="atk-atktext.html#ATK-TEXT-GET-TEXT-BEFORE-OFFSET"
+>atk_text_get_text_before_offset</A
+> (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);
+gint        <A
+HREF="atk-atktext.html#ATK-TEXT-GET-CARET-OFFSET"
+>atk_text_get_caret_offset</A
+>       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);
+void        <A
+HREF="atk-atktext.html#ATK-TEXT-GET-CHARACTER-EXTENTS"
+>atk_text_get_character_extents</A
+>  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             gint *x,
+                                             gint *y,
+                                             gint *width,
+                                             gint *height,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coords);
+<A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>* <A
+HREF="atk-atktext.html#ATK-TEXT-GET-RUN-ATTRIBUTES"
+>atk_text_get_run_attributes</A
+>
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             gint *start_offset,
+                                             gint *end_offset);
+<A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>* <A
+HREF="atk-atktext.html#ATK-TEXT-GET-DEFAULT-ATTRIBUTES"
+>atk_text_get_default_attributes</A
+>
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);
+gint        <A
+HREF="atk-atktext.html#ATK-TEXT-GET-CHARACTER-COUNT"
+>atk_text_get_character_count</A
+>    (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);
+gint        <A
+HREF="atk-atktext.html#ATK-TEXT-GET-OFFSET-AT-POINT"
+>atk_text_get_offset_at_point</A
+>    (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint x,
+                                             gint y,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coords);
+gint        <A
+HREF="atk-atktext.html#ATK-TEXT-GET-N-SELECTIONS"
+>atk_text_get_n_selections</A
+>       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);
+gchar*      <A
+HREF="atk-atktext.html#ATK-TEXT-GET-SELECTION"
+>atk_text_get_selection</A
+>          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num,
+                                             gint *start_offset,
+                                             gint *end_offset);
+gboolean    <A
+HREF="atk-atktext.html#ATK-TEXT-ADD-SELECTION"
+>atk_text_add_selection</A
+>          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint start_offset,
+                                             gint end_offset);
+gboolean    <A
+HREF="atk-atktext.html#ATK-TEXT-REMOVE-SELECTION"
+>atk_text_remove_selection</A
+>       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num);
+gboolean    <A
+HREF="atk-atktext.html#ATK-TEXT-SET-SELECTION"
+>atk_text_set_selection</A
+>          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num,
+                                             gint start_offset,
+                                             gint end_offset);
+gboolean    <A
+HREF="atk-atktext.html#ATK-TEXT-SET-CARET-OFFSET"
+>atk_text_set_caret_offset</A
+>       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset);
+void        <A
+HREF="atk-atktext.html#ATK-ATTRIBUTE-SET-FREE"
+>atk_attribute_set_free</A
+>          (<A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> *attrib_set);
+<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> <A
+HREF="atk-atktext.html#ATK-TEXT-ATTRIBUTE-REGISTER"
+>atk_text_attribute_register</A
+>
+                                            (const gchar *name);
+G_CONST_RETURN gchar* <A
+HREF="atk-atktext.html#ATK-TEXT-ATTRIBUTE-GET-NAME"
+>atk_text_attribute_get_name</A
+>
+                                            (<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> attr);
+<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> <A
+HREF="atk-atktext.html#ATK-TEXT-ATTRIBUTE-FOR-NAME"
+>atk_text_attribute_for_name</A
+>
+                                            (const gchar *name);
+G_CONST_RETURN gchar* <A
+HREF="atk-atktext.html#ATK-TEXT-ATTRIBUTE-GET-VALUE"
+>atk_text_attribute_get_value</A
+>
+                                            (<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> attr,
+                                             gint index_);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6330"
+></A
+><H2
+>Signal Prototypes</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;&quot;<A
+HREF="atk-atktext.html#ATKTEXT-TEXT-ATTRIBUTES-CHANGED"
+>text-attributes-changed</A
+>&quot;
+            void        user_function      (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gpointer user_data);
+&quot;<A
+HREF="atk-atktext.html#ATKTEXT-TEXT-CARET-MOVED"
+>text-caret-moved</A
+>&quot;
+            void        user_function      (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gint arg1,
+                                            gpointer user_data);
+&quot;<A
+HREF="atk-atktext.html#ATKTEXT-TEXT-CHANGED"
+>text-changed</A
+>&quot;
+            void        user_function      (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gint arg1,
+                                            gint arg2,
+                                            gpointer user_data);
+&quot;<A
+HREF="atk-atktext.html#ATKTEXT-TEXT-SELECTION-CHANGED"
+>text-selection-changed</A
+>&quot;
+            void        user_function      (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gpointer user_data);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6348"
+></A
+><H2
+>Description</H2
+><P
+><A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> should be implemented by AtkObjects on behalf of widgets that
+have text content which is either attributed or otherwise non-trivial.
+AtkObjects whose text content is simple, unattributed, and very brief
+may expose that content via <A
+HREF="atkobject.html#ATK-OBJECT-GET-NAME"
+>atk_object_get_name</A
+> instead; however if the
+text is editable, multi-line, typically longer than three or four words,
+attributed, selectable, or if the object already uses the 'name' ATK
+property for other information, the <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> interface should be used
+to expose the text content.  In the case of editable text content,
+<A
+HREF="atk-atkeditabletext.html#ATKEDITABLETEXT"
+>AtkEditableText</A
+> (a subtype of the <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> interface) should be
+implemented instead.</P
+><P
+><A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> provides not only traversal facilities and change notification
+for text content, but also caret tracking and glyph bounding box
+calculations.  Note that the text strings are exposed as UTF-8, and are
+therefore potentially multi-byte, and caret-to-byte offset mapping makes
+no assumptions about the character length; also bounding box
+glyph-to-offset mapping may be complex for languages which use ligatures.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6360"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6362"
+></A
+><H3
+><A
+NAME="ATKTEXT"
+></A
+>struct AtkText</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkText;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkText structure does not contain any fields.&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6367"
+></A
+><H3
+><A
+NAME="ATKTEXTBOUNDARY"
+></A
+>enum AtkTextBoundary</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+  ATK_TEXT_BOUNDARY_CHAR,
+  ATK_TEXT_BOUNDARY_WORD_START,
+  ATK_TEXT_BOUNDARY_WORD_END,
+  ATK_TEXT_BOUNDARY_SENTENCE_START,
+  ATK_TEXT_BOUNDARY_SENTENCE_END,
+  ATK_TEXT_BOUNDARY_LINE_START,
+  ATK_TEXT_BOUNDARY_LINE_END
+} AtkTextBoundary;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Text boundary types used for specifying boundaries for regions of text</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6373"
+></A
+><H3
+><A
+NAME="ATKATTRIBUTE"
+></A
+>struct AtkAttribute</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkAttribute {
+  gchar* name;
+  gchar* value;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>A string name/value pair representing a text attribute.</P
+><P
+></P
+><DT
+>gchar *<TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+></DT
+><DD
+><P
+> The attribute name. Call atk_text_attr_get_name()</P
+></DD
+><DT
+>gchar *<TT
+CLASS="STRUCTFIELD"
+><I
+>value</I
+></TT
+></DT
+><DD
+><P
+> the value of the attribute, represented as a string. 
+Call atk_text_attr_get_value() for those which are strings.
+For values which are numbers, the string representation of the number 
+is in value.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6394"
+></A
+><H3
+><A
+NAME="ATKATTRIBUTESET"
+></A
+>AtkAttributeSet</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef GSList AtkAttributeSet;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is a singly-linked list (a GSList) of <A
+HREF="atk-atktext.html#ATKATTRIBUTE"
+>AtkAttribute</A
+>. It is
+used by <A
+HREF="atk-atktext.html#ATK-TEXT-GET-RUN-ATTRIBUTES"
+>atk_text_get_run_attributes</A
+>(), <A
+HREF="atk-atktext.html#ATK-TEXT-GET-DEFAULT-ATTRIBUTES"
+>atk_text_get_default_attributes</A
+>()
+and <A
+HREF="atk-atkeditabletext.html#ATK-EDITABLE-TEXT-SET-RUN-ATTRIBUTES"
+>atk_editable_text_set_run_attributes</A
+>()</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6405"
+></A
+><H3
+><A
+NAME="ATKTEXTATTRIBUTE"
+></A
+>enum AtkTextAttribute</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  ATK_TEXT_ATTR_INVALID = 0,
+  ATK_TEXT_ATTR_LEFT_MARGIN,
+  ATK_TEXT_ATTR_RIGHT_MARGIN,
+  ATK_TEXT_ATTR_INDENT,
+  ATK_TEXT_ATTR_INVISIBLE,
+  ATK_TEXT_ATTR_EDITABLE,
+  ATK_TEXT_ATTR_PIXELS_ABOVE_LINES,
+  ATK_TEXT_ATTR_PIXELS_BELOW_LINES,
+  ATK_TEXT_ATTR_PIXELS_INSIDE_WRAP,
+  ATK_TEXT_ATTR_BG_FULL_HEIGHT,
+  ATK_TEXT_ATTR_RISE,
+  ATK_TEXT_ATTR_UNDERLINE,
+  ATK_TEXT_ATTR_STRIKETHROUGH,
+  ATK_TEXT_ATTR_SIZE,
+  ATK_TEXT_ATTR_SCALE,
+  ATK_TEXT_ATTR_WEIGHT,
+  ATK_TEXT_ATTR_LANGUAGE,
+  ATK_TEXT_ATTR_FAMILY_NAME,
+  ATK_TEXT_ATTR_BG_COLOR,
+  ATK_TEXT_ATTR_FG_COLOR,
+  ATK_TEXT_ATTR_BG_STIPPLE,
+  ATK_TEXT_ATTR_FG_STIPPLE,
+  ATK_TEXT_ATTR_WRAP_MODE,
+  ATK_TEXT_ATTR_DIRECTION,
+  ATK_TEXT_ATTR_JUSTIFICATION,
+  ATK_TEXT_ATTR_STRETCH,
+  ATK_TEXT_ATTR_VARIANT,
+  ATK_TEXT_ATTR_STYLE,
+  ATK_TEXT_ATTR_LAST_DEFINED
+} AtkTextAttribute;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Describes the text attributes supported</P
+><P
+></P
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_INVALID</TT
+></DT
+><DD
+><P
+> Invalid attribute</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_LEFT_MARGIN</TT
+></DT
+><DD
+><P
+> The pixel width of the left margin</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_RIGHT_MARGIN</TT
+></DT
+><DD
+><P
+> The pixel width of the right margin</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_INDENT</TT
+></DT
+><DD
+><P
+> The number of pixels that the text is indented</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_INVISIBLE</TT
+></DT
+><DD
+><P
+> Either "true" or "false" indicating whether text is visible or not</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_EDITABLE</TT
+></DT
+><DD
+><P
+> Either "true" or "false" indicating whether text is editable or not</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_PIXELS_ABOVE_LINES</TT
+></DT
+><DD
+><P
+> Pixels of blank space to leave above each newline-terminated line. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_PIXELS_BELOW_LINES</TT
+></DT
+><DD
+><P
+> Pixels of blank space to leave below each newline-terminated line.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_PIXELS_INSIDE_WRAP</TT
+></DT
+><DD
+><P
+> Pixels of blank space to leave between wrapped lines inside the same newline-terminated line (paragraph).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_BG_FULL_HEIGHT</TT
+></DT
+><DD
+><P
+> "true" or "false" whether to make the background color for each character the height of the highest font used on the current line, or the height of the font used for the current character.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_RISE</TT
+></DT
+><DD
+><P
+> Number of pixels that the characters are risen above the baseline</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_UNDERLINE</TT
+></DT
+><DD
+><P
+> "none", "single", "double" or "low"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_STRIKETHROUGH</TT
+></DT
+><DD
+><P
+> "true" or "false" whether the text is strikethrough </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_SIZE</TT
+></DT
+><DD
+><P
+> The size of the characters. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_SCALE</TT
+></DT
+><DD
+><P
+> The scale of the characters. The value is a string representation of a double </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_WEIGHT</TT
+></DT
+><DD
+><P
+> The weight of the characters.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_LANGUAGE</TT
+></DT
+><DD
+><P
+> The language used</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_FAMILY_NAME</TT
+></DT
+><DD
+><P
+> The font family name</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_BG_COLOR</TT
+></DT
+><DD
+><P
+> The background color. The value is an RGB value of the format "<TT
+CLASS="LITERAL"
+>u</TT
+>,<TT
+CLASS="LITERAL"
+>u</TT
+>,<TT
+CLASS="LITERAL"
+>u</TT
+>"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_FG_COLOR</TT
+></DT
+><DD
+><P
+>The foreground color. The value is an RGB value of the format "<TT
+CLASS="LITERAL"
+>u</TT
+>,<TT
+CLASS="LITERAL"
+>u</TT
+>,<TT
+CLASS="LITERAL"
+>u</TT
+>"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_BG_STIPPLE</TT
+></DT
+><DD
+><P
+> "true" if a GdkBitmap is set for stippling the background color.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_FG_STIPPLE</TT
+></DT
+><DD
+><P
+> "true" if a GdkBitmap is set for stippling the foreground color.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_WRAP_MODE</TT
+></DT
+><DD
+><P
+> The wrap mode of the text, if any. Values are "none", "char" or "word" </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_DIRECTION</TT
+></DT
+><DD
+><P
+> The direction of the text, if set. Values are "none", "ltr" or "rtl" </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_JUSTIFICATION</TT
+></DT
+><DD
+><P
+> The justification of the text, if set. Values are "left", "right", "center" or "fill" </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_STRETCH</TT
+></DT
+><DD
+><P
+> The stretch of the text, if set. Values are "ultra_condensed", "extra_condensed", "condensed", "semi_condensed", "normal", "semi_expanded", "expanded", "extra_expanded" or "ultra_expanded"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_VARIANT</TT
+></DT
+><DD
+><P
+> The capitalization variant of the text, if set. Values are "normal" or "small_caps"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_STYLE</TT
+></DT
+><DD
+><P
+> The slant style of the text, if set. Values are "normal", "oblique" or "italic"</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ATK_TEXT_ATTR_LAST_DEFINED</TT
+></DT
+><DD
+><P
+> not a valid text attribute, used for finding end of enumeration</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6565"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-TEXT"
+></A
+>atk_text_get_text ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      atk_text_get_text               (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint start_offset,
+                                             gint end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the specified text.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> start position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> end position</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the text from <TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+> up to, but not including <TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6599"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-CHARACTER-AT-OFFSET"
+></A
+>atk_text_get_character_at_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gunichar    atk_text_get_character_at_offset
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the specified text.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the character at <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6626"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-TEXT-AFTER-OFFSET"
+></A
+>atk_text_get_text_after_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      atk_text_get_text_after_offset  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the specified text.</P
+><P
+>If the boundary_type if ATK_TEXT_BOUNDARY_CHAR the character after the 
+offset is returned.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_START the returned string
+is from the word start after the offset to the next word start.</P
+><P
+>The returned string will contain the word after the offset if the offset 
+is inside a word or if the offset is not inside a word.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_END the returned string
+is from the word end at or after the offset to the next work end.</P
+><P
+>The returned string will contain the word after the offset if the offset
+is inside a word and will contain the word after the word after the offset
+if the offset is not inside a word.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_SENTENCE_START the returned
+string is from the sentence start after the offset to the next sentence
+start.</P
+><P
+>The returned string will contain the sentence after the offset if the offset
+is inside a sentence or if the offset is not inside a sentence.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_SENTENCE_END the returned string
+is from the sentence end at or after the offset to the next sentence end.</P
+><P
+>The returned string will contain the sentence after the offset if the offset
+is inside a sentence and will contain the sentence after the sentence
+after the offset if the offset is not inside a sentence.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_LINE_START the returned
+string is from the line start after the offset to the next line start.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_LINE_END the returned string
+is from the line end at or after the offset to the next line start.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> An <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the start offset of the returned string.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the end offset of the returned string.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the text after <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> bounded by the specified <TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6684"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-TEXT-AT-OFFSET"
+></A
+>atk_text_get_text_at_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      atk_text_get_text_at_offset     (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the specified text.</P
+><P
+>If the boundary_type if ATK_TEXT_BOUNDARY_CHAR the character at the
+offset is returned.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_START the returned string
+is from the word start at or before the offset to the word start after 
+the offset.</P
+><P
+>The returned string will contain the word at the offset if the offset
+is inside a word and will contain the word before the offset if the 
+offset is not inside a word.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_END the returned string
+is from the word end before the offset to the word end at or after the
+offset.</P
+><P
+>The returned string will contain the word at the offset if the offset
+is inside a word and will contain the word after to the offset if the 
+offset is not inside a word.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_SENTENCE_START the returned
+string is from the sentence start at or before the offset to the sentence
+start after the offset.</P
+><P
+>The returned string will contain the sentence at the offset if the offset
+is inside a sentence and will contain the sentence before the offset 
+if the offset is not inside a sentence.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_SENTENCE_END the returned string
+is from the sentence end before the offset to the sentence end at or
+after the offset.</P
+><P
+>The returned string will contain the sentence at the offset if the offset
+is inside a sentence and will contain the sentence after the offset 
+if the offset is not inside a sentence.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_LINE_START the returned
+string is from the line start at or before the offset to the line
+start after the offset.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_LINE_END the returned string
+is from the line end before the offset to the line end at or after
+the offset.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> An <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the start offset of the returned string.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the end offset of the returned string.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the text at <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> bounded by the specified <TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6742"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-TEXT-BEFORE-OFFSET"
+></A
+>atk_text_get_text_before_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      atk_text_get_text_before_offset (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+> boundary_type,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the specified text.</P
+><P
+>If the boundary_type if ATK_TEXT_BOUNDARY_CHAR the character before the
+offset is returned.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_START the returned string
+is from the word start before the word start before the offset to 
+the word start before the offset.</P
+><P
+>The returned string will contain the word before the offset if the offset
+is inside a word and will contain the word before the word before the 
+offset if the offset is not inside a word.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_WORD_END the returned string
+is from the word end before the word end at or before the offset to the 
+word end at or before the offset.</P
+><P
+>The returned string will contain the word before the offset if the offset
+is inside a word or if the offset is not inside a word.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_SENTENCE_START the returned
+string is from the sentence start before the sentence start before 
+the offset to the sentence start before the offset.</P
+><P
+>The returned string will contain the sentence before the offset if the 
+offset is inside a sentence and will contain the sentence before the 
+sentence before the offset if the offset is not inside a sentence.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_SENTENCE_END the returned string
+is from the sentence end before the sentence end at or before the offset to 
+the sentence end at or before the offset.</P
+><P
+>The returned string will contain the sentence before the offset if the 
+offset is inside a sentence or if the offset is not inside a sentence.</P
+><P
+>If the boundary type is ATK_TEXT_BOUNDARY_LINE_START the returned
+string is from the line start before the line start ar or before the offset 
+to the line start ar or before the offset.</P
+><P
+>If the boundary_type is ATK_TEXT_BOUNDARY_LINE_END the returned string
+is from the line end before the line end before the offset to the 
+line end before the offset.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> An <A
+HREF="atk-atktext.html#ATKTEXTBOUNDARY"
+>AtkTextBoundary</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the start offset of the returned string.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the end offset of the returned string.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the text before <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> bounded by the specified <TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6800"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-CARET-OFFSET"
+></A
+>atk_text_get_caret_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_text_get_caret_offset       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the offset position of the caret (cursor).</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the offset position of the caret (cursor).</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6820"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-CHARACTER-EXTENTS"
+></A
+>atk_text_get_character_extents ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        atk_text_get_character_extents  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             gint *x,
+                                             gint *y,
+                                             gint *width,
+                                             gint *height,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coords);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Given an <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>, the <TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+>, and <TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+> values are filled
+appropriately.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> x-position of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> y-position of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> width of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> height of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>coords</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> specify whether coordinates are relative to the screen or widget window </P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6875"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-RUN-ATTRIBUTES"
+></A
+>atk_text_get_run_attributes ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>* atk_text_get_run_attributes
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates an <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> which consists of the attributes explicitly
+set at the position <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> in the text. <TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+> are
+set to the start and end of the range around <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> where the attributes are
+invariant. See the enum AtkTextAttribute for types of text attributes that 
+can be returned. Note that other attributes may also be returned.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the offset at which to get the attributes</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the address to put the start offset of the range</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the address to put the end offset of the range</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> which contains the attributes explicitly set
+at <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>. This <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> should be freed by a call to
+<A
+HREF="atk-atktext.html#ATK-ATTRIBUTE-SET-FREE"
+>atk_attribute_set_free</A
+>().</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6922"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-DEFAULT-ATTRIBUTES"
+></A
+>atk_text_get_default_attributes ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>* atk_text_get_default_attributes
+                                            (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates an <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> which consists of the default values of
+attributes for the text. See the enum AtkTextAttribute for types of text 
+attributes that can be returned. Note that other attributes may also be 
+returned.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> which contains the default values of attributes.
+at <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>. This <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> should be freed by a call to
+<A
+HREF="atk-atktext.html#ATK-ATTRIBUTE-SET-FREE"
+>atk_attribute_set_free</A
+>().</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6947"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-CHARACTER-COUNT"
+></A
+>atk_text_get_character_count ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_text_get_character_count    (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the character count.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the number of characters.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6967"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-OFFSET-AT-POINT"
+></A
+>atk_text_get_offset_at_point ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_text_get_offset_at_point    (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint x,
+                                             gint y,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coords);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the offset of the character located at coordinates <TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>
+are interpreted as being relative to the screen or this widget's window
+depending on <TT
+CLASS="PARAMETER"
+><I
+>coords</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> screen x-position of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> screen y-position of character</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>coords</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> specify whether coordinates are relative to the screen or
+widget window </P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the offset to the character which is located at
+the specified <TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+> coordinates.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7012"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-N-SELECTIONS"
+></A
+>atk_text_get_n_selections ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_text_get_n_selections       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the number of selected regions.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> The number of selected regions, or -1 if a failure
+  occurred.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7032"
+></A
+><H3
+><A
+NAME="ATK-TEXT-GET-SELECTION"
+></A
+>atk_text_get_selection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      atk_text_get_selection          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the text from the specified selection.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>selection_num</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The selection number.  The selected regions are
+assigned numbers that correspond to how far the region is from the
+start of the text.  The selected region closest to the beginning
+of the text region is assigned the number 0, etc.  Note that adding,
+moving or deleting a selected region can change the numbering.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> passes back the start position of the selected region</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> passes back the end position of the selected region</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the selected text.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7070"
+></A
+><H3
+><A
+NAME="ATK-TEXT-ADD-SELECTION"
+></A
+>atk_text_add_selection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    atk_text_add_selection          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint start_offset,
+                                             gint end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Adds a selection bounded by the specified offsets.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the start position of the selected region</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the end position of the selected region</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if success, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7104"
+></A
+><H3
+><A
+NAME="ATK-TEXT-REMOVE-SELECTION"
+></A
+>atk_text_remove_selection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    atk_text_remove_selection       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Removes the specified selection.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>selection_num</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The selection number.  The selected regions are
+assigned numbers that correspond to how far the region is from the
+start of the text.  The selected region closest to the beginning
+of the text region is assigned the number 0, etc.  Note that adding,
+moving or deleting a selected region can change the numbering.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if success, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7132"
+></A
+><H3
+><A
+NAME="ATK-TEXT-SET-SELECTION"
+></A
+>atk_text_set_selection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    atk_text_set_selection          (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint selection_num,
+                                             gint start_offset,
+                                             gint end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Changes the start and end offset of the specified selection.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>selection_num</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The selection number.  The selected regions are
+assigned numbers that correspond to how far the region is from the
+start of the text.  The selected region closest to the beginning
+of the text region is assigned the number 0, etc.  Note that adding,
+moving or deleting a selected region can change the numbering.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the new start position of the selection</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> the new end position of the selection</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if success, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7172"
+></A
+><H3
+><A
+NAME="ATK-TEXT-SET-CARET-OFFSET"
+></A
+>atk_text_set_caret_offset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    atk_text_set_caret_offset       (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *text,
+                                             gint offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the caret (cursor) position to the specified <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+></P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> position</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if success, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7201"
+></A
+><H3
+><A
+NAME="ATK-ATTRIBUTE-SET-FREE"
+></A
+>atk_attribute_set_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        atk_attribute_set_free          (<A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> *attrib_set);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees the memory used by an <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+>, including all its
+AtkAttributes.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>attrib_set</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The <A
+HREF="atk-atktext.html#ATKATTRIBUTESET"
+>AtkAttributeSet</A
+> to free</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7217"
+></A
+><H3
+><A
+NAME="ATK-TEXT-ATTRIBUTE-REGISTER"
+></A
+>atk_text_attribute_register ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> atk_text_attribute_register
+                                            (const gchar *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Associate <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> with a new <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a name string</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> an <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> associated with <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+></P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7240"
+></A
+><H3
+><A
+NAME="ATK-TEXT-ATTRIBUTE-GET-NAME"
+></A
+>atk_text_attribute_get_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_text_attribute_get_name
+                                            (<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> attr);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the name corresponding to the <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>attr</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> whose name is required</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a string containing the name; this string should not be freed</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7261"
+></A
+><H3
+><A
+NAME="ATK-TEXT-ATTRIBUTE-FOR-NAME"
+></A
+>atk_text_attribute_for_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> atk_text_attribute_for_name
+                                            (const gchar *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> type corresponding to a text attribute name.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a string which is the (non-localized) name of an ATK text attribute.</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> the <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> enumerated type corresponding to the specified
+name,
+         or ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7283"
+></A
+><H3
+><A
+NAME="ATK-TEXT-ATTRIBUTE-GET-VALUE"
+></A
+>atk_text_attribute_get_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_text_attribute_get_value
+                                            (<A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> attr,
+                                             gint index_);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the value for the index of the <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+></P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>attr</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The <A
+HREF="atk-atktext.html#ATKTEXTATTRIBUTE"
+>AtkTextAttribute</A
+> for which a value is required</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>index_</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> The index of the required value</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a string containing the value; this string should not be freed;
+NULL is returned if there are no values maintained for the attr value. </P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7310"
+></A
+><H2
+>Signals</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7312"
+></A
+><H3
+><A
+NAME="ATKTEXT-TEXT-ATTRIBUTES-CHANGED"
+></A
+>The &quot;text-attributes-changed&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gpointer user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>atktext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>the object which received the signal.&#13;</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>user data set when the signal handler was connected.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7330"
+></A
+><H3
+><A
+NAME="ATKTEXT-TEXT-CARET-MOVED"
+></A
+>The &quot;text-caret-moved&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gint arg1,
+                                            gpointer user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>atktext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>the object which received the signal.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>arg1</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>The new position of the text caret.&#13;</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>user data set when the signal handler was connected.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7354"
+></A
+><H3
+><A
+NAME="ATKTEXT-TEXT-CHANGED"
+></A
+>The &quot;text-changed&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gint arg1,
+                                            gint arg2,
+                                            gpointer user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This signal will have a detail which is either "insert" or "delete"
+which identifies whether the text change was an insertion or a deletion</P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>atktext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>the object which received the signal.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>arg1</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>The position of the insertion or deletion.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>arg2</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>The length of text inserted or deleted.&#13;</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>user data set when the signal handler was connected.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7384"
+></A
+><H3
+><A
+NAME="ATKTEXT-TEXT-SELECTION-CHANGED"
+></A
+>The &quot;text-selection-changed&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="atk-atktext.html#ATKTEXT"
+>AtkText</A
+> *atktext,
+                                            gpointer user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>atktext</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>the object which received the signal.&#13;</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+>user data set when the signal handler was connected.</P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atk-atktable.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkutil.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkTable</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkUtil</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
