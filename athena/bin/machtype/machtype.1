@@ -1,7 +1,7 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: jweiss $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.18 1998-06-23 05:45:50 jweiss Exp $
+.\"     $Author: ghudson $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.19 1998-09-03 01:14:58 ghudson Exp $
 .TH MACHTYPE 1 "May 14 1996"
 .SH NAME
 machtype \- Print machine type to standard output
@@ -20,20 +20,18 @@ Print the specific cpu type (e.g. SPARC/5 or IP22).
 Print the types of display attached to the system (e.g.  "cgthree").
 .TP
 .B -r
-Print the types of any disk drives attached to the syystem, one to a
+Print the types of any disk drives attached to the system, one to a
 line, as in "SUN0535".
 .TP
 .B -M
-Print the physical memory present.
+Print the physical memory present, in kilobytes.
 .TP
 .B -k
-Override the default kernel:
-.I /vmunix.
+Override the default kernel to examine for symbols.
 .TP
 .B -m
-Override the default memory:
-.I /dev/kmem
-used to look up the specific cpu type, displays, and disk drives.
+Override the default memory image used to look up the specific cpu
+type, displays, and disk drives.
 .TP
 .B -v
 Verbose output (suitable for humans to read, instead of computers).
