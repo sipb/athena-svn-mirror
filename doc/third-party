@@ -89,6 +89,7 @@ Distribution sites for software under third
 	bind		ftp.isc.org:isc/bind/src
 	emacs		ftp.gnu.org:pub/gnu
 	gcc		ftp.gnu.org:pub/gnu
+	gmake		ftp.gnu.org:pub/gnu (as make)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
