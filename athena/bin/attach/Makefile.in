@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.9 2002-04-16 06:02:25 ghudson Exp $
+# $Id: Makefile.in,v 1.10 2003-07-29 14:06:28 zacheiss Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -26,7 +26,7 @@ ZEPHYR_LIBS=-lzephyr
 AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
 	 -lsys -lrx -llwp -lsys
 ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} -lkrb524 ${KRB4_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
 
 ATTACH_OBJS=suite.o agetopt.o add.o attach.o detach.o fsid.o zinit.o
