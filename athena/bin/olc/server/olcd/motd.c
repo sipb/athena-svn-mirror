@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.11 1991-09-22 11:54:09 lwvanels Exp $
+ *	$Id: motd.c,v 1.12 1991-10-21 11:11:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.11 1991-09-22 11:54:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.12 1991-10-21 11:11:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -338,8 +338,9 @@ log_motd(username)
       (void) sprintf(msgbuf, "New motd logged");
       log_status(msgbuf);
 
-      execl("/usr/local/lumberjack", "lumberjack", 0);
-      log_error("log_motd: cannot exec /usr/local/lumberjack: %m");
+      execl(LUMBERJACK_LOC, "lumberjack", 0);
+      (void) sprintf(msgbuf,"log_motd: cannot exec %s: %%m",LUMBERJACK_LOC);
+      log_error(msgbuf);
       _exit(0);
     }
   return;
