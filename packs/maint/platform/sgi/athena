@@ -144,6 +144,25 @@ if [ "${PUBLIC}" = "true" ]; then
         $ECHO "done."
 fi
 
+if [ "${KRBSRV}" != "false" -a -f /.k ]; then
+	$ECHO "kerberos... \c"
+	if [ "${KRBSRV}" = "true" ]; then
+		krbopt="-n"
+	else
+		krbopt="-r ${KRBSRV} -n"
+	fi
+	/usr/athena/etc/kerberos $krbopt &
+	if [ "${KADMSRV}" = "true" ]; then
+		$ECHO "kadmind... \c"
+		/usr/athena/etc/kadmind $krbopt &
+	fi
+fi
+
+if [ "${KNETD}" = "true" ]; then
+	$ECHO "knetd... \c"
+	/usr/athena/etc/knetd &
+fi
+
 if [ -f /etc/sendmail.cf ]; then
 	$ECHO "Freezing sendmail configuration... \c"
 	/usr/lib/sendmail -bz
@@ -167,9 +186,14 @@ $ECHO "Starting Athena daemons: \c"
 $ECHO "inetd... \c"
 /etc/athena/inetd &
 
+if [ "${OLC}" = "true" ]; then
+	$ECHO "olcd... \c"
+        /usr/athena/etc/olcd &
+fi
+
 if [ "${ZSERVER}" = "true" ] ; then
 	$ECHO "zephyrd... \c"
-	/usr/athena/etc/zephyrd
+	/usr/athena/etc/zephyrd &
 fi
 
 if [ "${ZCLIENT}" = "true" ]; then
@@ -179,7 +203,7 @@ if [ "${ZCLIENT}" = "true" ]; then
 fi
 
 if [ "${LPD}" = "true" ]; then
-	echo  "lpd... \c"
+	$ECHO "lpd... \c"
 	/usr/athena/etc/lpd &
 fi
 
