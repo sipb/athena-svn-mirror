@@ -162,18 +162,18 @@ echo ""								>/dev/console
 
 # The audio driver on the Sparcstation 5 has a habit of disappearing.
 # So we put it back periodically...
-if [ -f /kernel/drv/audiocs ]; then
-	case `/bin/athena/machtype -c` in
-	  SPARC/5)
-	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
-	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
-	      /usr/sbin/audlinks
-	      echo "done."					>/dev/console
-	      ;;
-	  *)
-	      ;;
-	esac
-fi
+#if [ -f /kernel/drv/audiocs ]; then
+#	case `/bin/athena/machtype -c` in
+#	  SPARC/5)
+#	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
+#	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
+#	      /usr/sbin/audlinks
+#	      echo "done."					>/dev/console
+#	      ;;
+#	  *)
+#	      ;;
+#	esac
+#fi
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
@@ -186,7 +186,7 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
 	cp -p /srvd/etc/inetd.conf /etc/inetd.conf
 	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
-	cp -p /srvd/etc/minor_perm /etc/minor_perm
+#	cp -p /srvd/etc/minor_perm /etc/minor_perm
 	cp -p /srvd/etc/passwd.std /etc/passwd.local
 	cp -p /etc/passwd.local /etc/passwd
 	cp -p /srvd/etc/shadow.std /etc/shadow.local
@@ -198,6 +198,7 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
 
 	cp /dev/null /etc/named.local
+	cp -p /srvd/etc/netspy /etc/netspy
 	cp /dev/null /etc/X0.hosts
 	cp -p /etc/inet/hosts /etc/inet/hosts.save
 	if [ -f /srvd/.rvdinfo ]; then
@@ -230,6 +231,11 @@ fi
 /usr/lib/sendmail -bz 
 echo "done."							>/dev/console
 
+echo "Removing sendmail temporary files."			>/dev/console
+if [ -d /var/spool/mqueue ]; then
+  (cd /var/spool/mqueue; rm -f nf* lf*)
+fi
+
 # Start standard daemons
 echo ""								>/dev/console
 echo  "Starting Athena daemons: \c"				>/dev/console
@@ -248,7 +254,6 @@ if [ "${SNMP}" = "true" ]; then
 	/etc/athena/snmpd &
 fi
 
-# the sendmail file in rc2.d already cleaned the queues
 if [ "${SENDMAIL}" = "true" ]; then
 	echo  "sendmail... \c"					>/dev/console
 	/usr/lib/sendmail -bd -q1h;
