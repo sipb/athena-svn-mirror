@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.6 1999-06-04 20:50:11 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.7 1999-08-14 16:29:43 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: attachtab.c,v 1.6 1999-06-04 20:50:11 danw Exp
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -40,14 +41,22 @@ struct locker__dirent {
   time_t ctime;
 };
 
+/* Used by lock_attachtab */
+struct locker__lock_data {
+  int fd;
+  sigset_t omask;
+};
+
 static int delete_attachent(locker_context context, locker_attachent *at);
 static int get_attachent(locker_context context, char *name,
 			 char *mountpoint, int create,
 			 locker_attachent **atp);
 static int read_attachent(locker_context context, int kind,
 			  char *name, locker_attachent **atp);
-static int lock_attachtab(locker_context context, int *lock);
-static void unlock_attachtab(locker_context context, int lock);
+static int lock_attachtab(locker_context context,
+			  struct locker__lock_data *lock);
+static void unlock_attachtab(locker_context context,
+			     struct locker__lock_data *lock);
 static int compare_locker__dirents(const void *a, const void *b);
 
 /* Public interface to locker__lookup_attachent. */
@@ -70,7 +79,8 @@ int locker__lookup_attachent(locker_context context, char *name,
 			     char *mountpoint, int which,
 			     locker_attachent **atp)
 {
-  int status, i, lock;
+  int status, i;
+  struct locker__lock_data lock;
   locker_attachent *at;
   char **descs, *desc, *p;
   void *cleanup;
@@ -87,14 +97,14 @@ int locker__lookup_attachent(locker_context context, char *name,
       status = get_attachent(context, name, mountpoint, 0, &at);
       if (status != LOCKER_ENOTATTACHED)
 	{
-	  unlock_attachtab(context, lock);
+	  unlock_attachtab(context, &lock);
 	  if (status == LOCKER_SUCCESS)
 	    *atp = at;
 	  return status;
 	}
       else if (!which)
 	{
-	  unlock_attachtab(context, lock);
+	  unlock_attachtab(context, &lock);
 	  locker__error(context, "%s: Not attached.\n",
 			name ? name : mountpoint);
 	  return status;
@@ -105,7 +115,7 @@ int locker__lookup_attachent(locker_context context, char *name,
   status = locker_lookup_filsys(context, name, &descs, &cleanup);
   if (status)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       return status;
     }
 
@@ -125,7 +135,7 @@ int locker__lookup_attachent(locker_context context, char *name,
 	  p = strrchr(descs[i], ' ');
 	  if (!p)
 	    {
-	      unlock_attachtab(context, lock);
+	      unlock_attachtab(context, &lock);
 	      locker_free_filesys(context, descs, cleanup);
 	      locker__error(context, "%s: Could not parse locker "
 			    "description \"%s\".\n", name, descs[i]);
@@ -142,7 +152,7 @@ int locker__lookup_attachent(locker_context context, char *name,
 
   if (!desc)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       locker_free_filesys(context, descs, cleanup);
       return LOCKER_ENOENT;
     }
@@ -150,7 +160,7 @@ int locker__lookup_attachent(locker_context context, char *name,
   fs = locker__get_fstype(context, desc);
   if (!fs)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       locker__error(context, "%s: Unknown locker type in description "
 		    "\"%s\".\n", name, desc);
       locker_free_filesys(context, descs, cleanup);
@@ -161,7 +171,7 @@ int locker__lookup_attachent(locker_context context, char *name,
   locker_free_filesys(context, descs, cleanup);
   if (status)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       return status;
     }
 
@@ -169,7 +179,7 @@ int locker__lookup_attachent(locker_context context, char *name,
     status = get_attachent(context, NULL, at->mountpoint, which != 0, &at);
   else
     status = get_attachent(context, name, at->mountpoint, which != 0, &at);
-  unlock_attachtab(context, lock);
+  unlock_attachtab(context, &lock);
   if (status == LOCKER_SUCCESS)
     *atp = at;
   else
@@ -187,7 +197,8 @@ int locker__lookup_attachent_explicit(locker_context context, char *type,
 {
   struct locker_ops *fs;
   locker_attachent *at;
-  int status, lock;
+  int status;
+  struct locker__lock_data lock;
 
   fs = locker__get_fstype(context, type);
   if (!fs)
@@ -207,7 +218,7 @@ int locker__lookup_attachent_explicit(locker_context context, char *type,
       return status;
     }
   status = get_attachent(context, NULL, at->mountpoint, create, &at);
-  unlock_attachtab(context, lock);
+  unlock_attachtab(context, &lock);
   if (status == LOCKER_SUCCESS)
     *atp = at;
   else
@@ -219,7 +230,8 @@ int locker__lookup_attachent_explicit(locker_context context, char *type,
 /* Delete an attachent file and its corresponding symlink, if any. */
 static int delete_attachent(locker_context context, locker_attachent *at)
 {
-  int status, lock;
+  int status;
+  struct locker__lock_data lock;
   char *path;
 
   status = lock_attachtab(context, &lock);
@@ -262,12 +274,12 @@ static int delete_attachent(locker_context context, locker_attachent *at)
     }
   free(path);
 
-  unlock_attachtab(context, lock);
+  unlock_attachtab(context, &lock);
   return LOCKER_SUCCESS;
 
 cleanup:
   free(path);
-  unlock_attachtab(context, lock);
+  unlock_attachtab(context, &lock);
   return status;
 }
 
@@ -306,7 +318,8 @@ int locker_iterate_attachtab(locker_context context,
 			     locker_callback test, void *testarg,
 			     locker_callback act, void *actarg)
 {
-  int status, lock;
+  int status;
+  struct locker__lock_data lock;
   char *path;
   DIR *dir;
   struct dirent *entry;
@@ -322,7 +335,7 @@ int locker_iterate_attachtab(locker_context context,
   path = locker__attachtab_pathname(context, LOCKER_MOUNTPOINT, "");
   if (!path)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       locker__error(context, "Out of memory reading attachtab.\n");
       return LOCKER_ENOMEM;
     }
@@ -330,7 +343,7 @@ int locker_iterate_attachtab(locker_context context,
   dir = opendir(path);
   if (!dir)
     {
-      unlock_attachtab(context, lock);
+      unlock_attachtab(context, &lock);
       locker__error(context, "Could not read attachtab:\n%s opening "
 		    "directory %s\n", strerror(errno), path);
       free(path);
@@ -408,7 +421,7 @@ cleanup:
     free(files[i].name);
   free(files);
 
-  unlock_attachtab(context, lock);
+  unlock_attachtab(context, &lock);
   return status;
 }
 
@@ -889,11 +902,13 @@ cleanup2:
  *  - prevent other processes from doing the above, to guarantee
  *    a consistent view of the attachtab.
  */
-static int lock_attachtab(locker_context context, int *lock)
+static int lock_attachtab(locker_context context,
+			  struct locker__lock_data *lock)
 {
   int lockfd, status;
   char *path;
   struct flock fl;
+  sigset_t mask;
 
   /* If the attachtab is already locked (because we're reading a
    * subcomponent of a MUL locker, for instance), just record an
@@ -902,7 +917,6 @@ static int lock_attachtab(locker_context context, int *lock)
   if (context->locks)
     {
       context->locks++;
-      *lock = -1;
       return LOCKER_SUCCESS;
     }
 
@@ -922,6 +936,11 @@ static int lock_attachtab(locker_context context, int *lock)
       return LOCKER_EATTACHTAB;
     }
 
+  /* Protect from ^Z while holding the attachtab lock. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGTSTP);
+  sigprocmask(SIG_BLOCK, &mask, &lock->omask);
+
   fl.l_type = F_WRLCK;
   fl.l_whence = SEEK_SET;
   fl.l_start = fl.l_len = 0;
@@ -929,20 +948,25 @@ static int lock_attachtab(locker_context context, int *lock)
   if (status < 0)
     {
       close(lockfd);
+      sigprocmask(SIG_SETMASK, &lock->omask, NULL);
       locker__error(context, "Could not lock attachtab: %s.\n",
 		    strerror(errno));
       return LOCKER_EATTACHTAB;
     }
 
   context->locks++;
-  *lock = lockfd;
+  lock->fd = lockfd;
   return LOCKER_SUCCESS;
 }
 
-static void unlock_attachtab(locker_context context, int lock)
+static void unlock_attachtab(locker_context context,
+			     struct locker__lock_data *lock)
 {
   if (--context->locks == 0)
-    close(lock);
+    {
+      close(lock->fd);
+      sigprocmask(SIG_SETMASK, &lock->omask, NULL);
+    }
 }
 
 static char *kpath[] = {
