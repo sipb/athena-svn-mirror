@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.43 1994-05-05 09:47:07 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.44 1994-06-09 16:23:24 miki Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.43 1994-05-05 09:47:07 vrt Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.44 1994-06-09 16:23:24 miki Exp $";
 #endif
 
 #ifndef NULL
@@ -213,7 +213,7 @@ char **argv;
     char pathenv[1024];
 #endif
 #ifdef SOLARIS
-    char ldenv[1024];
+    char openv[1024];
 #endif
 #ifdef USE_X11R3
     fd_set rdlist;
@@ -232,9 +232,12 @@ char **argv;
 #endif
 
 #ifdef SOLARIS
-    strcpy(ldenv, "LD_LIBRARY_PATH=");
-    strcat(ldenv, "/usr/openwin/lib");
-    putenv(ldenv);
+    strcpy(openv, "LD_LIBRARY_PATH=");
+    strcat(openv, "/usr/openwin/lib");
+    putenv(openv);
+    strcpy(openv, "OPENWINHOME=");
+    strcat(openv, "/usr/openwin");
+    putenv(openv);
 #endif
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
@@ -826,7 +829,11 @@ char *msg;
 	      kill(xpid, SIGTERM);
 	    else
 	      kill(xpid, SIGKILL);
+/* In the case of Solaris server - ,it should never be killed SIGKILL */
+#ifndef SOLARIS
 	    xfirst = FALSE;
+#endif
+
 	}
 
 	/* wait 1 sec for children to exit */
