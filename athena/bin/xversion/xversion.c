@@ -2,12 +2,14 @@
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*
- * stolen from X10/XOpenDisplay
+ * This program determines which X server is likely to be running by
+ * attempting to connect to the X socket.
  *
- * determine which server is likely to be running by attempting to
- *
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.2 1989-06-10 11:48:01 probe Exp $
  */
- 
+
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.2 1989-06-10 11:48:01 probe Exp $";
+
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -15,13 +17,21 @@
  
 #define X_UNIX_PATH	"/tmp/X0"	/* X10 UNIX socket! */
 
-main()
+main(argc,argv)
+int argc;
+char *argv[];
 {
     struct sockaddr_un addr;		/* UNIX socket address */
+    int full_version = 0;		/* Full protocol version number? */
     int addrlen;
     int fd;
+    int i;
     Display *dpy;
 
+    if (--argc)
+	if (!strcmp(*++argv, "-r"))
+	    full_version = 1;
+    
     addr.sun_family = AF_UNIX;
     strcpy(addr.sun_path, X_UNIX_PATH);
     addrlen = strlen(addr.sun_path) + 2;
@@ -42,7 +52,9 @@ main()
 
     /* X11 requires connection information */
     if ((dpy = XOpenDisplay( "unix:0" )) != NULL) {
-        printf( "11\n" );
+        printf((full_version ? "X%dR%d\n" : "%d\n" ),
+	       ProtocolVersion(dpy),
+	       VendorRelease(dpy));
 	XCloseDisplay( dpy );
 	exit( 0 );
     }
