@@ -1,3 +1,24 @@
+/* Copyright 1997 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* This file is part of the Athena login library.  It implements the
+ * function to check if a user is allowed to log in.
+ */
+
+static const char rcsid[] = "$Id: allowed.c,v 1.3 1997-10-30 23:58:53 ghudson Exp $";
+
 #include <errno.h>
 #include <hesiod.h>
 #include <stdio.h>
@@ -31,7 +52,7 @@
  * AL_ENOCREATE and filetext is not NULL, then *filetext is set to a
  * malloc()'d string (which the caller must free) containing the text
  * of the file which caused the login to be denied.  Otherwise,
- * *filetext is set to NULL. 
+ * *filetext is set to NULL.
  */
 
 int al_login_allowed(const char *username, int isremote,

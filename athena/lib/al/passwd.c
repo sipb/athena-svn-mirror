@@ -1,3 +1,24 @@
+/* Copyright 1997 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* This file is part of the Athena login library.  It implements
+ * functions to add and remove a user from the system passwd database.
+ */
+
+static const char rcsid[] = "$Id: passwd.c,v 1.3 1997-10-30 23:58:56 ghudson Exp $";
+
 #include <errno.h>
 #include <pwd.h>
 #include <stdio.h>
@@ -365,6 +386,7 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
 	  if (!ptr1)		/* Invalid passwd line; bail out. */
 	    goto cleanup;
 	  fwrite(buf, sizeof(char), ptr1 + 1 - buf, out);
+	  fputs(homedir, out);
 	  ptr1 = strchr(ptr1 + 1, ':');
 	  if (ptr1)
 	    fputs(ptr1, out);
