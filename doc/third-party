@@ -101,12 +101,11 @@ Distribution sites for software under third
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	kermit		http://www.columbia.edu/kermit
-	krb5*		athena-dist.mit.edu:pub/kerberos
+	krb5*		http://web.mit.edu/network/kerberos-form.html
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
-	mh		ftp.ics.uci.edu:pub/mh
 	nmh		ftp.math.gatech.edu:pub/nmh
 	patch		ftp.gnu.org:pub/gnu/patch
 	perl		ftp.gnu.org:pub/gnu/perl
@@ -123,7 +122,6 @@ Distribution sites for software under third
 			 with some modifications for portability.
 	tcp_wrappers*	ftp.porcupine.org:/pub/security
 	tcsh		ftp.astron.com:pub/tcsh
-			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
 	top		ftp.groupsys.com:pub/top
 	traceroute	ftp.ee.lbl.gov (top level)
