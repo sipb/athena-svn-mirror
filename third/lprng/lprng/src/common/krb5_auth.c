@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.12 2002-11-22 23:34:13 zacheiss Exp $";
+"$Id: krb5_auth.c,v 1.13 2004-03-12 20:33:02 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -33,8 +33,13 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 
 #else
 
+#define KRB5_DEPRECATED 1
 #include <krb5.h>
 #include <com_err.h>
+
+#if !defined(KRB5_PROTOTYPE)
+#define KRB5_PROTOTYPE(X) X
+#endif
 
  extern krb5_error_code krb5_read_message 
 	KRB5_PROTOTYPE((krb5_context,
@@ -328,14 +333,6 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			"krb5_init_context failed - '%s' ", error_message(retval) );
 		goto done;
 	}
-	if (!valid_cksumtype(CKSUMTYPE_CRC32)) {
-		plp_snprintf( err, errlen,
-			"valid_cksumtype CKSUMTYPE_CRC32 - %s",
-			error_message(KRB5_PROG_SUMTYPE_NOSUPP) );
-		retval = 1;
-		goto done;
-	}
-
 	if(server_principal){
 		if ((retval = krb5_parse_name(context,server_principal, &server))){
 			plp_snprintf( err, errlen, "client_krb5_auth failed - "
