@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology 
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.6 1990-01-05 06:22:44 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.7 1990-01-10 11:43:27 vanharen Exp $";
 #endif
 
 
@@ -32,14 +32,19 @@ static char rcsid[] =
 #include <ctype.h>		/* Standard type definitions. */
 #ifdef NDBM
 #include <ndbm.h>
-#endif NDBM
+#endif /* NDBM */
 
 #ifdef NDBM
 static DBM *dbp = (DBM *) NULL;
-#endif
+#endif /* NDBM */
 
 extern ACL  Acl_List[];
+
+#ifdef __STDC__
 static int get_user_info (USER *);
+#else
+static int get_user_info ();
+#endif /* STDC */
 
 /*
  * Function:	get_specialties() searches the OLC database to find a
@@ -50,7 +55,12 @@ static int get_user_info (USER *);
  */
 
 
+#ifdef __STDC__
 get_specialties(USER *user)
+#else
+get_specialties(user)
+     USER *user;
+#endif /* STDC */
 {
   TOPIC **t_ptr;
   int *s = user->specialties;
@@ -74,7 +84,13 @@ get_specialties(USER *user)
 }
 
 
+void
+#ifdef __STDC__
 get_acls(USER *user)
+#else
+get_acls(user)
+     USER *user;
+#endif /* STDC */
 {
   ACL *a_ptr;
   char buf[BUFSIZ];
@@ -89,7 +105,12 @@ get_acls(USER *user)
 }
 
 
-int load_db(void)
+int
+#ifdef __STDC__
+load_db(void)
+#else
+load_db()
+#endif /* STDC */
 {
   FILE *fp;
   TOPIC *t;
@@ -144,7 +165,13 @@ int load_db(void)
   return(SUCCESS);
 }
 
-void load_user(USER *user)
+void
+#ifdef __STDC__
+load_user(USER *user)
+#else
+load_user(user)
+     USER *user;
+#endif /* STDC */
 {
   get_specialties(user);
   get_acls(user);
@@ -152,8 +179,14 @@ void load_user(USER *user)
 }
 
 #ifdef NDBM
-static int get_user_info(user)
+
+static int
+#ifdef __STDC__
+get_user_info(USER *user)
+#else
+get_user_info(user)
      USER *user;
+#endif /* STDC */
 {
   datum key,d;
   char canon[BUF_SIZE];
@@ -194,8 +227,12 @@ static int get_user_info(user)
   return(SUCCESS);
 }
 
-int save_user_info(user)
-     USER *user;
+int
+#ifdef __STDC__
+save_user_info(USER *user)
+#else
+save_user_info(user)
+#endif /* STDC */
 {
   char buf[BUF_SIZE];
   char canon[BUF_SIZE];
@@ -259,7 +296,13 @@ delete_user_info(user)
 
 #else /* ! NDBM */
 
+static int
+#ifdef __STDC__
 get_user_info(USER *user)
+#else
+get_user_info(user)
+     USER *user;
+#endif /* STDC */
 {
   FILE *fp;
   char db_line[DB_LINE];  
@@ -309,9 +352,15 @@ get_user_info(USER *user)
 }
 
 
+int
+#ifdef __STDC__
 save_user_info(USER *user)
+#else
+save_user_info(user)
+     USER *user;
+#endif /* STDC */
 {
   return(ERROR);
 }
 
-#endif
+#endif /* NDBM */
