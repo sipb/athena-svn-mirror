@@ -1,6 +1,6 @@
 : Use /bin/sh
 #
-# $Id: munchlist.X,v 1.1.1.1 1997-09-03 21:08:12 ghudson Exp $
+# $Id: munchlist.X,v 1.2 1997-12-13 16:07:36 ghudson Exp $
 #
 # Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -88,6 +88,9 @@
 #		2/28/87
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/09/03 21:08:12  ghudson
+# Import of ispell 3.1.20
+#
 # Revision 1.53  1995/01/08  23:23:36  geoff
 # Support variable hashfile suffixes for DOS purposes.
 #
@@ -128,7 +131,7 @@ then
     set -vx
 fi
 LIBDIR=!!LIBDIR!!
-TDIR=${TMPDIR-/usr/tmp}
+TDIR=${TMPDIR-/var/tmp}
 TMP=${TDIR}/munch$$
 SORTTMP="-T ${TDIR}"			# !!SORTTMP!!
 if [ -r ./icombine ]
