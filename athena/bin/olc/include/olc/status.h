@@ -1,3 +1,16 @@
+/*
+ * This file is part of the OLC On-Line Consulting system.
+ * It contains definitions of statuses in OLC.
+ *
+ * Copyright (C) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/status.h,v $
+ *	$Id: status.h,v 1.4 1990-05-25 16:13:18 vanharen Exp $
+ *	$Author: vanharen $
+ */
+
+#include <mit-copyright.h>
 
 #define OFF             0          /* registered in OLC */
 #define ON              1<<1       /* ??? */

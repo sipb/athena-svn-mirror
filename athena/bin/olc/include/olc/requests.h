@@ -11,14 +11,18 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *      $Author: vanharen $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.9 1990-02-27 10:49:22 vanharen Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
+ *	$Id: requests.h,v 1.10 1990-05-25 16:13:12 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 /* request structure */
 

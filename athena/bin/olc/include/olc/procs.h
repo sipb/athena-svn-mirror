@@ -1,6 +1,6 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains definitions common to all parts of OLC.
+ * It contains procedure declarations for OLC.
  *
  *      Win Treese
  *      Dan Morgan
@@ -11,14 +11,18 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *      $Author: vanharen $
- *      $Id: procs.h,v 1.4 1990-01-09 16:03:21 vanharen Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
+ *	$Id: procs.h,v 1.5 1990-05-25 16:13:00 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 /* Declarations of common functions. */
 

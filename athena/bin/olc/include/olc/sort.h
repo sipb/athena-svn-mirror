@@ -3,9 +3,14 @@
  * It contains definitions used by the sorting routines.
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/sort.h,v $
- * $Id: sort.h,v 1.1 1990-04-27 12:04:21 vanharen Exp $
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/sort.h,v $
+ *	$Id: sort.h,v 1.2 1990-05-25 16:13:15 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 #ifndef __olc_sort_h
 #define __olc_sort_h
