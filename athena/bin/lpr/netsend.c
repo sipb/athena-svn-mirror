@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.1 1990-04-16 12:11:37 epeisach Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.2 1990-04-16 12:12:04 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.1 1990-04-16 12:11:37 epeisach Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.2 1990-04-16 12:12:04 epeisach Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -48,6 +48,12 @@ int	ofilter;		/* id of output filter, if any */
 int	remote;			/* true if sending files to remote */
 dev_t	fdev;			/* device of file pointed to by symlink */
 ino_t	fino;			/* inode of file pointed to by symlink */
+
+#ifdef KERBEROS
+KTEXT_ST kticket;
+long kerror;
+extern int kerberos_override;
+#endif KERBEROS
 
 /*
  * Send the daemon control file (cf) and any data files.
@@ -190,8 +196,23 @@ sendfile(type, file)
 		(void) write(pfd, "\1", 1);
 		return(ERROR);
 	}
-	if (write(pfd, "", 1) != 1 || response())
-		return(REPRINT);
+	if (write(pfd, "", 1) != 1 || (resp=response())) {
+#ifdef PQUOTA
+	    if (resp == '\3') {
+		fprintf(stderr, "You are not known by the quota server and ");
+		fprintf(stderr, "are not allowed to print. \n");
+		fprintf(stderr, "See an Accounts Administrator to be added.\n");
+		cleanup();	/* Never returns */
+	    }
+	    if (resp == '\4') {
+		fprintf(stderr, "You are not allowed to print on this printer\n");
+		/* You cannot be over quota, because of policy... */
+		fprintf(stderr, "Contact an administrator if you should be able to.\n");
+		cleanup();	/* Never returns */
+	    }
+#endif PQUOTA
+	    return(REPRINT);
+	}
 	return(OK);
 }
 
@@ -223,13 +244,68 @@ openpr()
 		resp = -1;
 		pfd = getport(RM);
 		if (pfd >= 0) {
-			(void) sprintf(line, "\2%s\n", RP);
+#ifdef KERBEROS
+		    if (use_kerberos) {
+			/* If we require kerberos authentication, 
+			 * then send credentials
+			 * over
+			 */
+			(void) sprintf(line, "k%s\n", RP);
 			n = strlen(line);
-			if (write(pfd, line, n) == n &&
-			    (resp = response()) == '\0')
-				break;
-			(void) close(pfd);
+			if (write(pfd, line, n) != n) {
+			    fprintf(stderr, 
+				    "Error sending kerberos opcode.\n");
+			    cleanup();
+			}
+			if ((resp = response()) != '\0') {
+			    fprintf(stderr,
+				    "Remote printer does not support kerberos authentication\n");
+			    if(kerberos_override == 1) 
+				fprintf(stderr, "Try again without the -k flag\n");
+			    if(kerberos_override == -1) 
+				fprintf(stderr, "Try again using the -u option\n");
+			    cleanup();
+			}
+			
+
+			kerror = krb_sendauth(0L, pfd, &kticket, KLPR_SERVICE,
+					      RM, (char *)krb_realmofhost(RM),
+					      0, (MSG_DAT *) 0, 
+					      (CREDENTIALS *) 0,
+					      (bit_64 *) 0, 
+					      (struct sockaddr_in *)0,
+					      (struct sockaddr_in *)0,
+					      "KLPRV0.1");
+			if (kerror != KSUCCESS) {
+			    fprintf(stderr, "Kerberos authentication failed. Use kinit and try again.\n");
+			    cleanup();
+			}
+			if ((resp = response()) != '\0') {
+			    if (resp == '\3') 
+				fprintf(stderr, "Authentication failed. Use kinit and then try again.\n");
+			    else fprintf(stderr, "Syncronization error.\n");
+			cleanup();
+		    }
+		    }
+#endif KERBEROS
+		    (void) sprintf(line, "\2%s\n", RP);
+		    n = strlen(line);
+
+		    if (write(pfd, line, n) == n &&
+			(resp = response()) == '\0')
+			break;
+		    (void) close(pfd);
 		}
+
+#ifdef KERBEROS
+		if (resp == '\2') {
+		        /* Should provide better error XXX */
+		        fprintf(stderr, "Printer requires kerberos authentication\n");
+			cleanup();
+		    }
+
+#endif /* KERBEROS */
+		    
 		if (resp > 0) {
 			fprintf(stderr,	"Printer queue is disabled.\n");
 			cleanup();
@@ -244,4 +320,3 @@ openpr()
 	ofd = pfd;
 	ofilter = 0;
 }
-

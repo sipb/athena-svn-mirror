@@ -39,6 +39,11 @@ static char sccsid[] = "@(#)lprm.c	5.2 (Berkeley) 11/17/85";
 #include <syslog.h>
 #endif
 
+#ifdef KERBEROS && !(SERVER)
+int use_kerberos;
+int kerberos_override = -1;
+#endif KERBEROS
+
 /*
  * Stuff for handling job specifications
  */
@@ -86,6 +91,14 @@ main(argc, argv)
 					printer = *++argv;
 				}
 				break;
+#ifdef KERBEROS && !(SERVER)
+			case 'u':
+				kerberos_override = 0;
+				break;
+			case 'k':
+				kerberos_override = 1;
+				break;
+#endif KERBEROS
 			case '\0':
 				if (!users) {
 					users = -1;
@@ -130,7 +143,7 @@ int usernums;
 char *printer;
 {
 	struct passwd 	*pwentry;
-	char		*name, *type;
+	char		*name;
 	char 		logbuf[512];
 	char		scratch[512];
 	register int	i;
