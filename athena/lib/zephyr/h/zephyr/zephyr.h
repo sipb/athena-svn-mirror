@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
  *	$Author: probe $
- *	$Id: zephyr.h,v 1.48 1993-09-24 16:10:34 probe Exp $
+ *	$Id: zephyr.h,v 1.49 1993-11-19 15:49:41 probe Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology. For copying and distribution information, see the
@@ -17,6 +17,7 @@
 
 #ifdef POSIX
 #include <unistd.h>
+#include <stdlib.h>
 #endif
 
 #include <zephyr/zephyr_err.h>
@@ -24,9 +25,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
-#if (defined(_AIX) && defined(_IBMR2)) || defined (macII)
 #include <time.h>
-#endif
 #include <sys/time.h>
 #include <stdio.h>
 
