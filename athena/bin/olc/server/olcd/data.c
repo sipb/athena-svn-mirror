@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.23 1993-05-14 14:29:48 vanharen Exp $
+ *	$Id: data.c,v 1.24 1993-08-05 19:01:59 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.23 1993-05-14 14:29:48 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.24 1993-08-05 19:01:59 vanharen Exp $";
 #endif
 #endif
 
@@ -87,10 +87,15 @@ PROC Maint_Proc_List[] =
 {
   OLC_STARTUP,         olc_startup,	     "olc startup",
   OLC_MOTD,            olc_motd,             "olc motd",
+  /* NOTE we bind the show and replay requests to display the motd... */
+  OLC_SHOW,            olc_motd,	     "olc show",
+  OLC_REPLAY,          olc_motd,	     "olc replay",
   OLC_CHANGE_MOTD,     olc_change_motd,      "olc change motd",
   OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
   OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
   OLC_VERSION,	       olc_version,          "olc version",
+  OLC_LIST,            olc_list,             "olc list",
+  OLC_DUMP,            olc_dump,             "olc dump",
 #ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
 #else
