@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 
@@ -43,6 +43,8 @@
 #include <syslog.h>             /* syslog do hickies */
 #endif SYSLOG
 
+static const char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.5 1989-12-14 22:57:49 raeburn Exp $";
 
 /* Global variables. */
 
@@ -607,7 +609,7 @@ get_kerberos_ticket()
       sprintf(mesg, "get new tickets: %s %s ", K_SERVICE, sinstance);
       log_error(mesg);
       dest_tkt();
-      if((ret = get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
+      if((ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
 			       "krbtgt", SERVER_REALM,    
 			       96, SRVTAB_FILE)) != KSUCCESS)
 	{
