@@ -999,12 +999,15 @@ Optional Features:
   --enable-more-warnings  Maximum compiler warnings
   --enable-gtk-theme  Enable a RSVG based GTK+ theme engine default=auto
   --enable-pixbuf-loader  Enable a RSVG based GdkPixbuf loader default=auto
+  --disable-gtk-doc        use gtk-doc to build documentation default=yes
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-pic              try to use only PIC/non-PIC objects default=use both
+  --with-svgz  Use libgsf for run-time decompression
+  --with-html-dir=PATH    path to installed docs
 
 Some influential environment variables:
   CC          C compiler command
@@ -1382,7 +1385,7 @@ POPT_REQUIRED=1.5
 
 LIBRSVG_MAJOR_VERSION=2
 LIBRSVG_MINOR_VERSION=2
-LIBRSVG_MICRO_VERSION=1
+LIBRSVG_MICRO_VERSION=3
 
 
 
@@ -4653,7 +4656,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4656 "configure"' > conftest.$ac_ext
+  echo '#line 4659 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5189,7 +5192,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:5192: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:5195: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -6982,7 +6985,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 6985 "configure"
+#line 6988 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7080,7 +7083,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7083 "configure"
+#line 7086 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8373,213 +8376,6 @@ echo "$as_me: error: Library requirements (\
 
 
 
-
-  succeeded=no
-
-  if test -z "$PKG_CONFIG"; then
-    # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
-  ;;
-esac
-fi
-PKG_CONFIG=$ac_cv_path_PKG_CONFIG
-
-if test -n "$PKG_CONFIG"; then
-  echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
-echo "${ECHO_T}$PKG_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-  fi
-
-  if test "$PKG_CONFIG" = "no" ; then
-     echo "*** The pkg-config script could not be found. Make sure it is"
-     echo "*** in your path, or set the PKG_CONFIG environment variable"
-     echo "*** to the full path to pkg-config."
-     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
-  else
-     PKG_CONFIG_MIN_VERSION=0.9.0
-     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for gtk+-2.0 >= 1.3.12" >&5
-echo $ECHO_N "checking for gtk+-2.0 >= 1.3.12... $ECHO_C" >&6
-
-        if $PKG_CONFIG --exists "gtk+-2.0 >= 1.3.12" ; then
-            echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-            succeeded=yes
-
-            echo "$as_me:$LINENO: checking GTK_CFLAGS" >&5
-echo $ECHO_N "checking GTK_CFLAGS... $ECHO_C" >&6
-            GTK_CFLAGS=`$PKG_CONFIG --cflags "gtk+-2.0 >= 1.3.12"`
-            echo "$as_me:$LINENO: result: $GTK_CFLAGS" >&5
-echo "${ECHO_T}$GTK_CFLAGS" >&6
-
-            echo "$as_me:$LINENO: checking GTK_LIBS" >&5
-echo $ECHO_N "checking GTK_LIBS... $ECHO_C" >&6
-            GTK_LIBS=`$PKG_CONFIG --libs "gtk+-2.0 >= 1.3.12"`
-            echo "$as_me:$LINENO: result: $GTK_LIBS" >&5
-echo "${ECHO_T}$GTK_LIBS" >&6
-        else
-            GTK_CFLAGS=""
-            GTK_LIBS=""
-            ## If we have a custom action on failure, don't print errors, but
-            ## do set a variable so people can do so.
-            GTK_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtk+-2.0 >= 1.3.12"`
-
-        fi
-
-
-
-     else
-        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
-        echo "*** See http://www.freedesktop.org/software/pkgconfig"
-     fi
-  fi
-
-  if test $succeeded = yes; then
-     :
-  else
-     { { echo "$as_me:$LINENO: error: GTK+-2.0 is required to compile gtk-engines" >&5
-echo "$as_me: error: GTK+-2.0 is required to compile gtk-engines" >&2;}
-   { (exit 1); exit 1; }; }
-  fi
-
-
-GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-
-
-
-
-
-
-  succeeded=no
-
-  if test -z "$PKG_CONFIG"; then
-    # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
-  ;;
-esac
-fi
-PKG_CONFIG=$ac_cv_path_PKG_CONFIG
-
-if test -n "$PKG_CONFIG"; then
-  echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
-echo "${ECHO_T}$PKG_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-  fi
-
-  if test "$PKG_CONFIG" = "no" ; then
-     echo "*** The pkg-config script could not be found. Make sure it is"
-     echo "*** in your path, or set the PKG_CONFIG environment variable"
-     echo "*** to the full path to pkg-config."
-     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
-  else
-     PKG_CONFIG_MIN_VERSION=0.9.0
-     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for gdk-pixbuf-2.0" >&5
-echo $ECHO_N "checking for gdk-pixbuf-2.0... $ECHO_C" >&6
-
-        if $PKG_CONFIG --exists "gdk-pixbuf-2.0" ; then
-            echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-            succeeded=yes
-
-            echo "$as_me:$LINENO: checking GDK_PIXBUF_CFLAGS" >&5
-echo $ECHO_N "checking GDK_PIXBUF_CFLAGS... $ECHO_C" >&6
-            GDK_PIXBUF_CFLAGS=`$PKG_CONFIG --cflags "gdk-pixbuf-2.0"`
-            echo "$as_me:$LINENO: result: $GDK_PIXBUF_CFLAGS" >&5
-echo "${ECHO_T}$GDK_PIXBUF_CFLAGS" >&6
-
-            echo "$as_me:$LINENO: checking GDK_PIXBUF_LIBS" >&5
-echo $ECHO_N "checking GDK_PIXBUF_LIBS... $ECHO_C" >&6
-            GDK_PIXBUF_LIBS=`$PKG_CONFIG --libs "gdk-pixbuf-2.0"`
-            echo "$as_me:$LINENO: result: $GDK_PIXBUF_LIBS" >&5
-echo "${ECHO_T}$GDK_PIXBUF_LIBS" >&6
-        else
-            GDK_PIXBUF_CFLAGS=""
-            GDK_PIXBUF_LIBS=""
-            ## If we have a custom action on failure, don't print errors, but
-            ## do set a variable so people can do so.
-            GDK_PIXBUF_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gdk-pixbuf-2.0"`
-            echo $GDK_PIXBUF_PKG_ERRORS
-        fi
-
-
-
-     else
-        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
-        echo "*** See http://www.freedesktop.org/software/pkgconfig"
-     fi
-  fi
-
-  if test $succeeded = yes; then
-     :
-  else
-     { { echo "$as_me:$LINENO: error: Library requirements (gdk-pixbuf-2.0) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (gdk-pixbuf-2.0) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
-   { (exit 1); exit 1; }; }
-  fi
-
-
-
-
-
 echo "$as_me:$LINENO: checking for poptParseArgvString in -lpopt" >&5
 echo $ECHO_N "checking for poptParseArgvString in -lpopt... $ECHO_C" >&6
 if test "${ac_cv_lib_popt_poptParseArgvString+set}" = set; then
@@ -8644,6 +8440,143 @@ echo "$as_me: error: popt 1.5 or newer is required to build librsvg.
 You can download the latest version from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/" >&2;}
    { (exit 1); exit 1; }; }
 fi
+
+
+
+
+LIBGSF_CFLAGS=""
+LIBGSF_LIBS=""
+
+LIBGSFPKG=""
+test_gsf=true
+
+# Check whether --with-svgz or --without-svgz was given.
+if test "${with_svgz+set}" = set; then
+  withval="$with_svgz"
+
+	if test "x$withval" = "xno"; then
+		test_gsf=false
+	fi
+
+fi;
+if test "x$test_gsf" = "xtrue"; then
+
+  succeeded=no
+
+  if test -z "$PKG_CONFIG"; then
+    # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+
+if test -n "$PKG_CONFIG"; then
+  echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+echo "${ECHO_T}$PKG_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  fi
+
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+  else
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        echo "$as_me:$LINENO: checking for libgsf-1 >= 1.6.0" >&5
+echo $ECHO_N "checking for libgsf-1 >= 1.6.0... $ECHO_C" >&6
+
+        if $PKG_CONFIG --exists "libgsf-1 >= 1.6.0" ; then
+            echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+            succeeded=yes
+
+            echo "$as_me:$LINENO: checking LIBGSF_CFLAGS" >&5
+echo $ECHO_N "checking LIBGSF_CFLAGS... $ECHO_C" >&6
+            LIBGSF_CFLAGS=`$PKG_CONFIG --cflags "libgsf-1 >= 1.6.0"`
+            echo "$as_me:$LINENO: result: $LIBGSF_CFLAGS" >&5
+echo "${ECHO_T}$LIBGSF_CFLAGS" >&6
+
+            echo "$as_me:$LINENO: checking LIBGSF_LIBS" >&5
+echo $ECHO_N "checking LIBGSF_LIBS... $ECHO_C" >&6
+            LIBGSF_LIBS=`$PKG_CONFIG --libs "libgsf-1 >= 1.6.0"`
+            echo "$as_me:$LINENO: result: $LIBGSF_LIBS" >&5
+echo "${ECHO_T}$LIBGSF_LIBS" >&6
+        else
+            LIBGSF_CFLAGS=""
+            LIBGSF_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but
+            ## do set a variable so people can do so.
+            LIBGSF_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgsf-1 >= 1.6.0"`
+
+        fi
+
+
+
+     else
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
+     fi
+  fi
+
+  if test $succeeded = yes; then
+     test_gsf=true
+  else
+     test_gsf=false
+  fi
+
+fi
+
+if test "x$test_gsf" = "xtrue"; then
+	LIBGSF_CFLAGS="$LIBGSF_CFLAGS -DHAVE_SVGZ=1"
+	LIBGSFPKG="libgsf-1"
+else
+	{ echo "$as_me:$LINENO: WARNING: SVGZ support disabled, as requested (Use --with-svgz to enable)" >&5
+echo "$as_me: WARNING: SVGZ support disabled, as requested (Use --with-svgz to enable)" >&2;}
+fi
+
+
+if test "$LIBGSFPKG" != ""; then
+  WITH_LIBGSF_TRUE=
+  WITH_LIBGSF_FALSE='#'
+else
+  WITH_LIBGSF_TRUE='#'
+  WITH_LIBGSF_FALSE=
+fi
+
+
+
 
 
 
@@ -8735,18 +8668,121 @@ fi
 # Check whether --enable-gtk-theme or --disable-gtk-theme was given.
 if test "${enable_gtk_theme+set}" = set; then
   enableval="$enable_gtk_theme"
-  enable_gtk_theme="$enableval"
+
 else
-  enable_gtk_theme=auto
+  enable_gtk_theme=yes
 fi;
 
-if test x$enable_gtk_theme = xauto ; then
-    enable_gtk_theme=yes
+if test "x$enable_gtk_theme" = "xyes"; then
+	echo "$as_me:$LINENO: checking for gtk+ engine support" >&5
+echo $ECHO_N "checking for gtk+ engine support... $ECHO_C" >&6
+
+  succeeded=no
+
+  if test -z "$PKG_CONFIG"; then
+    # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+
+if test -n "$PKG_CONFIG"; then
+  echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+echo "${ECHO_T}$PKG_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  fi
+
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+  else
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        echo "$as_me:$LINENO: checking for gtk+-2.0 >= 1.3.12" >&5
+echo $ECHO_N "checking for gtk+-2.0 >= 1.3.12... $ECHO_C" >&6
+
+        if $PKG_CONFIG --exists "gtk+-2.0 >= 1.3.12" ; then
+            echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+            succeeded=yes
+
+            echo "$as_me:$LINENO: checking GTK_CFLAGS" >&5
+echo $ECHO_N "checking GTK_CFLAGS... $ECHO_C" >&6
+            GTK_CFLAGS=`$PKG_CONFIG --cflags "gtk+-2.0 >= 1.3.12"`
+            echo "$as_me:$LINENO: result: $GTK_CFLAGS" >&5
+echo "${ECHO_T}$GTK_CFLAGS" >&6
+
+            echo "$as_me:$LINENO: checking GTK_LIBS" >&5
+echo $ECHO_N "checking GTK_LIBS... $ECHO_C" >&6
+            GTK_LIBS=`$PKG_CONFIG --libs "gtk+-2.0 >= 1.3.12"`
+            echo "$as_me:$LINENO: result: $GTK_LIBS" >&5
+echo "${ECHO_T}$GTK_LIBS" >&6
+        else
+            GTK_CFLAGS=""
+            GTK_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but
+            ## do set a variable so people can do so.
+            GTK_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtk+-2.0 >= 1.3.12"`
+
+        fi
+
+
+
+     else
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
+     fi
+  fi
+
+  if test $succeeded = yes; then
+     enable_gtk_theme=yes
+  else
+     enable_gtk_theme=no
+  fi
+
+	echo "$as_me:$LINENO: result: $enable_gtk_theme" >&5
+echo "${ECHO_T}$enable_gtk_theme" >&6
+GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
+
+
+
 fi
 
 
 
-if test x$enable_gtk_theme = xyes; then
+if test "x$enable_gtk_theme" = "xyes"; then
   ENABLE_GTK_ENGINE_TRUE=
   ENABLE_GTK_ENGINE_FALSE='#'
 else
@@ -8803,11 +8839,11 @@ else
   enable_pixbuf_loader=auto
 fi;
 
-if test x$enable_pixbuf_loader = xauto ; then
-    if test x$QUERYLOADERS = xtrue ; then
-        enable_pixbuf_loader=no
-    else
+if test "x$enable_pixbuf_loader" = xauto ; then
+    if test x$QUERYLOADERS != x ; then
         enable_pixbuf_loader=yes
+    else
+        enable_pixbuf_loader=no
     fi
 fi
 
@@ -8821,8 +8857,160 @@ else
   ENABLE_PIXBUF_LOADER_FALSE=
 fi
 
+##################################################
+# Checks for gtk-doc and docbook-tools
+##################################################
 
-ac_config_files="$ac_config_files librsvg.spec librsvg-features.h Makefile librsvg-2.0.pc gtk-engine/Makefile gtk-engine/examples/Makefile gtk-engine/examples/bubble/Makefile gtk-engine/examples/bubble/gtk-2.0/Makefile gdk-pixbuf-loader/Makefile"
+
+# Check whether --with-html-dir or --without-html-dir was given.
+if test "${with_html_dir+set}" = set; then
+  withval="$with_html_dir"
+
+fi;
+
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/doc/librsvg/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+
+
+# Extract the first word of "gtkdoc-mkdb", so it can be a program name with args.
+set dummy gtkdoc-mkdb; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_GTKDOC+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$GTKDOC"; then
+  ac_cv_prog_GTKDOC="$GTKDOC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_GTKDOC="true"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_prog_GTKDOC" && ac_cv_prog_GTKDOC="false"
+fi
+fi
+GTKDOC=$ac_cv_prog_GTKDOC
+if test -n "$GTKDOC"; then
+  echo "$as_me:$LINENO: result: $GTKDOC" >&5
+echo "${ECHO_T}$GTKDOC" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+gtk_doc_min_version=0.9
+if $GTKDOC ; then
+    gtk_doc_version=`gtkdoc-mkdb --version`
+    echo "$as_me:$LINENO: checking gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version" >&5
+echo $ECHO_N "checking gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version... $ECHO_C" >&6
+
+    IFS="${IFS= 	}"; gtk_save_IFS="$IFS"; IFS="."
+    set $gtk_doc_version
+    for min in $gtk_doc_min_version ; do
+        cur=$1; shift
+        if test -z $min ; then break; fi
+        if test -z $cur ; then GTKDOC=false; break; fi
+        if test $cur -gt $min ; then break ; fi
+        if test $cur -lt $min ; then GTKDOC=false; break ; fi
+    done
+    IFS="$gtk_save_IFS"
+
+    if $GTKDOC ; then
+      echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+   else
+      echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+   fi
+fi
+
+# Extract the first word of "db2html", so it can be a program name with args.
+set dummy db2html; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_DB2HTML+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$DB2HTML"; then
+  ac_cv_prog_DB2HTML="$DB2HTML" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_DB2HTML="true"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_prog_DB2HTML" && ac_cv_prog_DB2HTML="false"
+fi
+fi
+DB2HTML=$ac_cv_prog_DB2HTML
+if test -n "$DB2HTML"; then
+  echo "$as_me:$LINENO: result: $DB2HTML" >&5
+echo "${ECHO_T}$DB2HTML" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if $DB2HTML; then
+  HAVE_DOCBOOK_TRUE=
+  HAVE_DOCBOOK_FALSE='#'
+else
+  HAVE_DOCBOOK_TRUE='#'
+  HAVE_DOCBOOK_FALSE=
+fi
+
+# Check whether --enable-gtk-doc or --disable-gtk-doc was given.
+if test "${enable_gtk_doc+set}" = set; then
+  enableval="$enable_gtk_doc"
+  enable_gtk_doc="$enableval"
+else
+  enable_gtk_doc=yes
+fi;
+
+if test x$enable_gtk_doc = xyes ; then
+  if test x$GTKDOC != xtrue ; then
+    enable_gtk_doc=no
+  fi
+fi
+
+
+
+if test x$enable_gtk_doc = xyes; then
+  ENABLE_GTK_DOC_TRUE=
+  ENABLE_GTK_DOC_FALSE='#'
+else
+  ENABLE_GTK_DOC_TRUE='#'
+  ENABLE_GTK_DOC_FALSE=
+fi
+
+
+ac_config_files="$ac_config_files librsvg.spec librsvg-features.h Makefile librsvg-2.0.pc doc/Makefile gtk-engine/Makefile gtk-engine/examples/Makefile gtk-engine/examples/bubble/Makefile gtk-engine/examples/bubble/gtk-2.0/Makefile gdk-pixbuf-loader/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -9308,6 +9496,7 @@ do
   "librsvg-features.h" ) CONFIG_FILES="$CONFIG_FILES librsvg-features.h" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "librsvg-2.0.pc" ) CONFIG_FILES="$CONFIG_FILES librsvg-2.0.pc" ;;
+  "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
   "gtk-engine/Makefile" ) CONFIG_FILES="$CONFIG_FILES gtk-engine/Makefile" ;;
   "gtk-engine/examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES gtk-engine/examples/Makefile" ;;
   "gtk-engine/examples/bubble/Makefile" ) CONFIG_FILES="$CONFIG_FILES gtk-engine/examples/bubble/Makefile" ;;
@@ -9448,17 +9637,27 @@ s,@LIBTOOL@,$LIBTOOL,;t t
 s,@PKG_CONFIG@,$PKG_CONFIG,;t t
 s,@LIBRSVG_CFLAGS@,$LIBRSVG_CFLAGS,;t t
 s,@LIBRSVG_LIBS@,$LIBRSVG_LIBS,;t t
+s,@POPT_LIBS@,$POPT_LIBS,;t t
+s,@LIBGSF_CFLAGS@,$LIBGSF_CFLAGS,;t t
+s,@LIBGSF_LIBS@,$LIBGSF_LIBS,;t t
+s,@WITH_LIBGSF_TRUE@,$WITH_LIBGSF_TRUE,;t t
+s,@WITH_LIBGSF_FALSE@,$WITH_LIBGSF_FALSE,;t t
+s,@LIBGSFPKG@,$LIBGSFPKG,;t t
 s,@GTK_CFLAGS@,$GTK_CFLAGS,;t t
 s,@GTK_LIBS@,$GTK_LIBS,;t t
 s,@GTK_VERSION@,$GTK_VERSION,;t t
-s,@GDK_PIXBUF_CFLAGS@,$GDK_PIXBUF_CFLAGS,;t t
-s,@GDK_PIXBUF_LIBS@,$GDK_PIXBUF_LIBS,;t t
-s,@POPT_LIBS@,$POPT_LIBS,;t t
 s,@ENABLE_GTK_ENGINE_TRUE@,$ENABLE_GTK_ENGINE_TRUE,;t t
 s,@ENABLE_GTK_ENGINE_FALSE@,$ENABLE_GTK_ENGINE_FALSE,;t t
 s,@QUERYLOADERS@,$QUERYLOADERS,;t t
 s,@ENABLE_PIXBUF_LOADER_TRUE@,$ENABLE_PIXBUF_LOADER_TRUE,;t t
 s,@ENABLE_PIXBUF_LOADER_FALSE@,$ENABLE_PIXBUF_LOADER_FALSE,;t t
+s,@HTML_DIR@,$HTML_DIR,;t t
+s,@GTKDOC@,$GTKDOC,;t t
+s,@DB2HTML@,$DB2HTML,;t t
+s,@HAVE_DOCBOOK_TRUE@,$HAVE_DOCBOOK_TRUE,;t t
+s,@HAVE_DOCBOOK_FALSE@,$HAVE_DOCBOOK_FALSE,;t t
+s,@ENABLE_GTK_DOC_TRUE@,$ENABLE_GTK_DOC_TRUE,;t t
+s,@ENABLE_GTK_DOC_FALSE@,$ENABLE_GTK_DOC_FALSE,;t t
 CEOF
 
 _ACEOF

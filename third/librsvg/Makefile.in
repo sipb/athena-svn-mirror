@@ -63,17 +63,21 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GLIB_REQUIRED = @GLIB_REQUIRED@
+GTKDOC = @GTKDOC@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 GTK_VERSION = @GTK_VERSION@
+HTML_DIR = @HTML_DIR@
 LIBART_REQUIRED = @LIBART_REQUIRED@
+LIBGSFPKG = @LIBGSFPKG@
+LIBGSF_CFLAGS = @LIBGSF_CFLAGS@
+LIBGSF_LIBS = @LIBGSF_LIBS@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
 LIBRSVG_MAJOR_VERSION = @LIBRSVG_MAJOR_VERSION@
@@ -97,24 +101,30 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 
-SUBDIRS = . gtk-engine gdk-pixbuf-loader
+SUBDIRS = . gtk-engine gdk-pixbuf-loader doc
 
 bin_PROGRAMS = rsvg
 
 noinst_PROGRAMS = test-performance test-display
 
 man_MANS = rsvg.1
+@WITH_LIBGSF_TRUE@GSFHEADERS = @WITH_LIBGSF_TRUE@rsvg-gz.h
+@WITH_LIBGSF_FALSE@GSFHEADERS = 
+@WITH_LIBGSF_TRUE@GSFSOURCES = @WITH_LIBGSF_TRUE@rsvg-gz.c
+@WITH_LIBGSF_FALSE@GSFSOURCES = 
 
 EXTRA_DIST = \
 	COPYING.LIB \
 	librsvg.spec.in \
 	librsvg-2.0.pc.in \
+	rsvg-gz.c \
+	rsvg-gz.h \
 	$(man_MANS)
 
 
 lib_LTLIBRARIES = librsvg-2.la
 
-librsvg_2_la_SOURCES = \
+librsvg_2_la_SOURCES = $(GSFSOURCES) \
 	librsvg-features.c \
 	rsvg-bpath-util.c \
 	rsvg-bpath-util.h \
@@ -140,12 +150,12 @@ librsvg_2_la_SOURCES = \
 librsvg_2_la_LDFLAGS = -version-info @VERSION_INFO@
 
 librsvgincdir = $(includedir)/librsvg-2/librsvg
-librsvginc_HEADERS = \
+librsvginc_HEADERS = $(GSFHEADERS) \
 	rsvg.h \
 	librsvg-features.h
 
 
-INCLUDES = \
+INCLUDES = $(LIBGSF_CFLAGS)\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(LIBRSVG_CFLAGS) \
@@ -160,7 +170,8 @@ INCLUDES = \
 
 
 DEPS = $(top_builddir)/librsvg-2.la
-LDADDS = $(top_builddir)/librsvg-2.la \
+LDADDS = $(LIBGSF_LIBS)\
+	$(top_builddir)/librsvg-2.la \
 	$(LIBRSVG_LIBS) \
 	$(POPT_LIBS)
 
@@ -194,9 +205,14 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 librsvg_2_la_LIBADD = 
-librsvg_2_la_OBJECTS =  librsvg-features.lo rsvg-bpath-util.lo \
-rsvg-css.lo rsvg-defs.lo rsvg-paint-server.lo rsvg-path.lo \
-rsvg-file-util.lo rsvg-shapes.lo rsvg-styles.lo rsvg-text.lo rsvg.lo
+@WITH_LIBGSF_FALSE@librsvg_2_la_OBJECTS =  librsvg-features.lo \
+@WITH_LIBGSF_FALSE@rsvg-bpath-util.lo rsvg-css.lo rsvg-defs.lo \
+@WITH_LIBGSF_FALSE@rsvg-paint-server.lo rsvg-path.lo rsvg-file-util.lo \
+@WITH_LIBGSF_FALSE@rsvg-shapes.lo rsvg-styles.lo rsvg-text.lo rsvg.lo
+@WITH_LIBGSF_TRUE@librsvg_2_la_OBJECTS =  rsvg-gz.lo librsvg-features.lo \
+@WITH_LIBGSF_TRUE@rsvg-bpath-util.lo rsvg-css.lo rsvg-defs.lo \
+@WITH_LIBGSF_TRUE@rsvg-paint-server.lo rsvg-path.lo rsvg-file-util.lo \
+@WITH_LIBGSF_TRUE@rsvg-shapes.lo rsvg-styles.lo rsvg-text.lo rsvg.lo
 bin_PROGRAMS =  rsvg$(EXEEXT)
 noinst_PROGRAMS =  test-performance$(EXEEXT) test-display$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
@@ -622,32 +638,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-librsvg-features.lo librsvg-features.o : librsvg-features.c \
-	librsvg-features.h
-rsvg-bpath-util.lo rsvg-bpath-util.o : rsvg-bpath-util.c config.h \
-	rsvg-bpath-util.h
-rsvg-css.lo rsvg-css.o : rsvg-css.c config.h rsvg-css.h
-rsvg-defs.lo rsvg-defs.o : rsvg-defs.c config.h rsvg-defs.h
-rsvg-file-util.lo rsvg-file-util.o : rsvg-file-util.c config.h rsvg.h
-rsvg-paint-server.lo rsvg-paint-server.o : rsvg-paint-server.c config.h \
-	rsvg-paint-server.h rsvg-defs.h rsvg-private.h rsvg.h \
-	rsvg-styles.h rsvg-css.h
-rsvg-path.lo rsvg-path.o : rsvg-path.c config.h rsvg-path.h \
-	rsvg-bpath-util.h
-rsvg-shapes.lo rsvg-shapes.o : rsvg-shapes.c rsvg-shapes.h rsvg.h \
-	rsvg-styles.h rsvg-paint-server.h rsvg-defs.h rsvg-css.h \
-	rsvg-private.h rsvg-bpath-util.h rsvg-path.h
-rsvg-styles.lo rsvg-styles.o : rsvg-styles.c rsvg.h rsvg-css.h \
-	rsvg-styles.h rsvg-paint-server.h rsvg-defs.h rsvg-private.h
-rsvg-text.lo rsvg-text.o : rsvg-text.c rsvg-private.h rsvg.h \
-	rsvg-styles.h rsvg-paint-server.h rsvg-defs.h rsvg-text.h \
-	rsvg-css.h
-rsvg.lo rsvg.o : rsvg.c config.h rsvg.h rsvg-css.h rsvg-styles.h \
-	rsvg-paint-server.h rsvg-defs.h rsvg-private.h rsvg-shapes.h \
-	rsvg-text.h rsvg-bpath-util.h rsvg-path.h
-test-display.o: test-display.c config.h rsvg.h
-test-performance.o: test-performance.c config.h rsvg.h
-test-rsvg.o: test-rsvg.c config.h rsvg.h
 
 info-am:
 info: info-recursive

@@ -84,7 +84,7 @@ rsvg_start_svg (RsvgHandle *ctx, const xmlChar **atts)
 	double y_zoom = 1.;
 	
 	double vbox_x = 0, vbox_y = 0, vbox_w = 0, vbox_h = 0;
-	gboolean has_vbox = TRUE;
+	gboolean has_vbox = FALSE;
 
 	if (atts != NULL)
 		{
@@ -135,8 +135,8 @@ rsvg_start_svg (RsvgHandle *ctx, const xmlChar **atts)
 			
 			if (!has_vbox)
 				{
-					x_zoom = (width < 0 || new_width < 0) ? 1 : (double) new_width / width;
-					y_zoom = (height < 0 || new_height < 0) ? 1 : (double) new_height / height;
+					  x_zoom = (width < 0 || new_width < 0) ? 1 : (double) new_width / width;
+					  y_zoom = (height < 0 || new_height < 0) ? 1 : (double) new_height / height;
 				}
 			else
 				{
@@ -152,7 +152,7 @@ rsvg_start_svg (RsvgHandle *ctx, const xmlChar **atts)
 					new_width  = (width == -1 ? new_width : width);
 					new_height = (height == -1 ? new_height : height);
 				}
-			
+
 			/* Scale size of target pixbuf */
 			state = &ctx->state[ctx->n_state - 1];
 			art_affine_scale (state->affine, x_zoom, y_zoom);
@@ -403,15 +403,12 @@ rsvg_start_linear_gradient (RsvgHandle *ctx, const xmlChar **atts)
 	double x1 = 0., y1 = 0., x2 = 0., y2 = 0.;
 	ArtGradientSpread spread = ART_GRADIENT_PAD;
 	const char * xlink_href = NULL;
-	gboolean got_x1, got_x2, got_y1, got_y2, got_spread, got_transform, cloned, shallow_cloned;
+	gboolean obj_bbox = TRUE;
+	gboolean got_x1, got_x2, got_y1, got_y2, got_spread, got_transform, got_bbox, cloned, shallow_cloned;
 	double affine[6];
 
-	got_x1 = got_x2 = got_y1 = got_y2 = got_spread = got_transform = cloned = shallow_cloned = FALSE;
-	
-	/* 100% is the default */
-	x2 = rsvg_css_parse_normalized_length ("100%", ctx->dpi, (gdouble)ctx->width, state->font_size);
-	
-	/* todo: only handles numeric coordinates in gradientUnits = userSpace */
+	got_x1 = got_x2 = got_y1 = got_y2 = got_spread = got_transform = got_bbox = cloned = shallow_cloned = FALSE;
+		
 	if (atts != NULL)
 		{
 			for (i = 0; atts[i] != NULL; i += 2)
@@ -451,12 +448,24 @@ rsvg_start_linear_gradient (RsvgHandle *ctx, const xmlChar **atts)
 						}
 					else if (!strcmp ((char *)atts[i], "xlink:href"))
 						xlink_href = (const char *)atts[i + 1];
-					else if (!strcmp ((char *)atts[i], "gradientTransform")) {
+					else if (!strcmp ((char *)atts[i], "gradientTransform"))
 						got_transform = rsvg_parse_transform (affine, (const char *)atts[i + 1]);
+					else if (!strcmp ((char *)atts[i], "gradientUnits")) {
+						if (!strcmp ((char *)atts[i+1], "userSpaceOnUse"))
+							obj_bbox = FALSE;
+						got_bbox = TRUE;
 					}
 				}
 		}
-	
+
+	/* set up 100% as the default if not gotten */
+	if (!got_x2) {
+		if (obj_bbox)
+			x2 = 1.0;
+		else
+			x2 = rsvg_css_parse_normalized_length ("100%", ctx->dpi, (gdouble)ctx->width, state->font_size);
+	}
+
 	if (xlink_href != NULL)
 		{
 			RsvgLinearGradient * parent = (RsvgLinearGradient*)rsvg_defs_lookup (ctx->defs, xlink_href+1);
@@ -485,6 +494,7 @@ rsvg_start_linear_gradient (RsvgHandle *ctx, const xmlChar **atts)
 		art_affine_multiply (grad->affine, affine, grad->affine);
 	
 	/* state inherits parent/cloned information unless it's explicity gotten */
+	grad->obj_bbox = (cloned && !got_bbox) ? grad->obj_bbox : obj_bbox;
 	grad->x1 = (cloned && !got_x1) ? grad->x1 : x1;
 	grad->y1 = (cloned && !got_y1) ? grad->y1 : y1;
 	grad->x2 = (cloned && !got_x2) ? grad->x2 : x2;
@@ -513,17 +523,12 @@ rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts, const char * 
 	double cx = 0., cy = 0., r = 0., fx = 0., fy = 0.;  
 	const char * xlink_href = NULL;
 	ArtGradientSpread spread = ART_GRADIENT_PAD;
-	gboolean got_cx, got_cy, got_r, got_fx, got_fy, got_spread, got_transform, cloned, shallow_cloned;
+	gboolean obj_bbox = TRUE;
+	gboolean got_cx, got_cy, got_r, got_fx, got_fy, got_spread, got_transform, got_bbox, cloned, shallow_cloned;
 	double affine[6];
 	
-	got_cx = got_cy = got_r = got_fx = got_fy = got_spread = got_transform = cloned = shallow_cloned = FALSE;
+	got_cx = got_cy = got_r = got_fx = got_fy = got_spread = got_transform = got_bbox = cloned = shallow_cloned = FALSE;
 	
-	/* setup defaults */
-	cx = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->width, state->font_size);
-	cy = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->height, state->font_size);
-	r  = rsvg_css_parse_normalized_length ("50%", ctx->dpi, rsvg_viewport_percentage((gdouble)ctx->width, (gdouble)ctx->height), state->font_size);
-	
-	/* todo: only handles numeric coordinates in gradientUnits = userSpace */
 	if (atts != NULL)
 		{
 			for (i = 0; atts[i] != NULL; i += 2)
@@ -572,6 +577,11 @@ rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts, const char * 
 								got_spread = TRUE;
 							}
 						}
+					else if (!strcmp ((char *)atts[i], "gradientUnits")) {
+						if (!strcmp ((char *)atts[i+1], "userSpaceOnUse"))
+							obj_bbox = FALSE;
+						got_bbox = TRUE;
+					}
 				}
 		}
 	
@@ -593,15 +603,30 @@ rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts, const char * 
 			ctx->handler = rsvg_gradient_stop_handler_new (ctx, &grad->stops, tag);		   
 		}
 
-	if (!cloned || shallow_cloned) {
-		if (!got_fx) {
-			fx = cx;
-			got_fx = TRUE;
-		}
-		if (!got_fy) {
-			fy = cy;
-			got_fy = TRUE;
-		}
+	/* setup defaults */
+	if (!got_cx) {
+		if (obj_bbox)
+			cx = 0.5;
+		else
+			cx = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->width, state->font_size);
+	}
+	if (!got_cy) {
+		if (obj_bbox)
+			cy = 0.5;
+		else
+			cy = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->height, state->font_size);
+	}
+	if (!got_r) {
+		if (obj_bbox)
+			r = 0.5;
+		else
+			r  = rsvg_css_parse_normalized_length ("50%", ctx->dpi, rsvg_viewport_percentage((gdouble)ctx->width, (gdouble)ctx->height), state->font_size);
+	}
+	if (!got_fx) {
+		fx = cx;
+	}
+	if (!got_fy) {
+		fy = cy;
 	}
 	
 	rsvg_defs_set (ctx->defs, id, &grad->super);
@@ -613,6 +638,7 @@ rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts, const char * 
 		art_affine_multiply (grad->affine, affine, grad->affine);
 	
 	/* state inherits parent/cloned information unless it's explicity gotten */
+	grad->obj_bbox = (cloned && !got_bbox) ? grad->obj_bbox : obj_bbox;
 	grad->cx = (cloned && !got_cx) ? grad->cx : cx;
 	grad->cy = (cloned && !got_cy) ? grad->cy : cy;
 	grad->r =  (cloned && !got_r)  ? grad->r  : r;
@@ -711,7 +737,7 @@ rsvg_defs_handler_start (RsvgSaxHandler *self, const xmlChar *name,
 		rsvg_state_init (ctx->state);
 	ctx->n_state++;
 
-	/**
+	/*
 	 * conicalGradient isn't in the SVG spec and I'm not sure exactly what it does. libart definitely
 	 * has no analogue. But it does seem similar enough to a radialGradient that i'd rather get the
 	 * onscreen representation of the colour wrong than not have any colour displayed whatsoever
@@ -740,6 +766,7 @@ rsvg_defs_handler_end (RsvgSaxHandler *self, const xmlChar *name)
 					ctx->handler->free (ctx->handler);
 					ctx->handler = NULL;
 				}
+			ctx->in_defs = FALSE;
 		}
 	
 	/* pop the state stack */
@@ -757,7 +784,8 @@ rsvg_start_defs (RsvgHandle *ctx, const xmlChar **atts)
 	handler->super.start_element = rsvg_defs_handler_start;
 	handler->super.end_element   = rsvg_defs_handler_end;
 	handler->ctx = ctx;
-	
+
+	ctx->in_defs = TRUE;	
 	ctx->handler = &handler->super;
 }
 
@@ -826,7 +854,7 @@ rsvg_end_element (void *data, const xmlChar *name)
 {
 	RsvgHandle *ctx = (RsvgHandle *)data;
 	
-	if (ctx->handler_nest > 0)
+	if (ctx->handler_nest > 0 && ctx->handler != NULL)
 		{
 			if (ctx->handler->end_element != NULL)
 				ctx->handler->end_element (ctx->handler, name);
@@ -842,6 +870,9 @@ rsvg_end_element (void *data, const xmlChar *name)
 
 			if (!strcmp ((char *)name, "g"))
 				rsvg_end_g (ctx);
+			else if (!strcmp ((char *)name, "defs")) {
+				ctx->in_defs = FALSE;
+			}
 			
 			/* pop the state stack */
 			ctx->n_state--;
@@ -930,6 +961,13 @@ static xmlSAXHandler rsvgSAXHandlerStruct = {
     NULL /* */
 };
 
+/**
+ * rsvg_error_quark
+ *
+ * The error domain for RSVG
+ *
+ * Returns: The error domain
+ */
 GQuark
 rsvg_error_quark (void)
 {
@@ -940,16 +978,93 @@ rsvg_error_quark (void)
 	return q;
 }
 
+gboolean
+rsvg_handle_write_impl (RsvgHandle    *handle,
+						const guchar  *buf,
+						gsize          count,
+						GError       **error)
+{
+	GError *real_error;
+	g_return_val_if_fail (handle != NULL, FALSE);
+	
+	handle->error = &real_error;
+	if (handle->ctxt == NULL)
+		{
+			handle->ctxt = xmlCreatePushParserCtxt (&rsvgSAXHandlerStruct, handle, NULL, 0, NULL);
+			handle->ctxt->replaceEntities = TRUE;
+		}
+	
+	xmlParseChunk (handle->ctxt, buf, count, 0);
+	
+	handle->error = NULL;
+	/* FIXME: Error handling not implemented. */
+	/*  if (*real_error != NULL)
+		{
+		g_propagate_error (error, real_error);
+		return FALSE;
+		}*/
+  return TRUE;
+}
+
+gboolean
+rsvg_handle_close_impl (RsvgHandle  *handle,
+						GError     **error)
+{
+	gchar chars[1] = { '\0' };
+	GError *real_error;
+	
+	handle->error = &real_error;
+	
+	if (handle->ctxt != NULL)
+		{
+			xmlParseChunk (handle->ctxt, chars, 1, TRUE);
+			xmlFreeParserCtxt (handle->ctxt);
+		}
+  
+	/* FIXME: Error handling not implemented. */
+	/*
+	  if (real_error != NULL)
+	  {
+      g_propagate_error (error, real_error);
+      return FALSE;
+      }*/
+	return TRUE;
+}
+
+void
+rsvg_handle_free_impl (RsvgHandle *handle)
+{
+	int i;
+	
+	if (handle->pango_context != NULL)
+		g_object_unref (handle->pango_context);
+	rsvg_defs_free (handle->defs);
+	
+	for (i = 0; i < handle->n_state; i++)
+		rsvg_state_finalize (&handle->state[i]);
+	g_free (handle->state);
+	
+	g_hash_table_foreach (handle->entities, rsvg_ctx_free_helper, NULL);
+	g_hash_table_destroy (handle->entities);
+	
+	g_hash_table_destroy (handle->css_props);
+	
+	if (handle->user_data_destroy)
+		(* handle->user_data_destroy) (handle->user_data);
+	if (handle->pixbuf)
+		g_object_unref (handle->pixbuf);
+	g_free (handle);
+}
+
 /**
  * rsvg_handle_new:
- * @void:
  *
  * Returns a new rsvg handle.  Must be freed with @rsvg_handle_free.  This
  * handle can be used for dynamically loading an image.  You need to feed it
  * data using @rsvg_handle_write, then call @rsvg_handle_close when done.  No
  * more than one image can be loaded with one handle.
  *
- * Return value: A new #RsvgHandle
+ * Returns: A new #RsvgHandle
  **/
 RsvgHandle *
 rsvg_handle_new (void)
@@ -957,6 +1072,18 @@ rsvg_handle_new (void)
 	RsvgHandle *handle;
 	
 	handle = g_new0 (RsvgHandle, 1);
+	rsvg_handle_init (handle);
+
+	handle->write = rsvg_handle_write_impl;
+	handle->close = rsvg_handle_close_impl;
+	handle->free  = rsvg_handle_free_impl;
+
+	return handle;
+}
+
+void
+rsvg_handle_init (RsvgHandle * handle)
+{
 	handle->n_state = 0;
 	handle->n_state_max = 16;
 	handle->state = g_new (RsvgState, handle->n_state_max);
@@ -969,8 +1096,6 @@ rsvg_handle_new (void)
 											   g_free, g_free);
 	
 	handle->ctxt = NULL;
-	
-	return handle;
 }
 
 /**
@@ -1051,7 +1176,7 @@ rsvg_handle_set_size_callback (RsvgHandle     *handle,
  * the loader will be closed, and will not accept further writes. If FALSE is
  * returned, @error will be set to an error from the #RSVG_ERROR domain.
  *
- * Return value: #TRUE if the write was successful, or #FALSE if there was an
+ * Returns: #TRUE if the write was successful, or #FALSE if there was an
  * error.
  **/
 gboolean
@@ -1060,62 +1185,32 @@ rsvg_handle_write (RsvgHandle    *handle,
 				   gsize          count,
 				   GError       **error)
 {
-	GError *real_error;
-	g_return_val_if_fail (handle != NULL, FALSE);
-	
-	handle->error = &real_error;
-	if (handle->ctxt == NULL)
-		{
-			handle->ctxt = xmlCreatePushParserCtxt (&rsvgSAXHandlerStruct, handle, NULL, 0, NULL);
-			handle->ctxt->replaceEntities = TRUE;
-		}
-	
-	xmlParseChunk (handle->ctxt, buf, count, 0);
-	
-	handle->error = NULL;
-	/* FIXME: Error handling not implemented. */
-	/*  if (*real_error != NULL)
-		{
-		g_propagate_error (error, real_error);
-		return FALSE;
-		}*/
-  return TRUE;
+	if (handle->write)
+		return (*handle->write) (handle, buf, count, error);
+
+	return FALSE;
 }
 
 /**
  * rsvg_handle_close:
- * @handle: An #RsvgHandle
+ * @handle: A #RsvgHandle
+ * @error: A #GError
  *
  * Closes @handle, to indicate that loading the image is complete.  This will
  * return #TRUE if the loader closed successfully.  Note that @handle isn't
  * freed until @rsvg_handle_free is called.
  *
- * Return value: #TRUE if the loader closed successfully, or #FALSE if there was
+ * Returns: #TRUE if the loader closed successfully, or #FALSE if there was
  * an error.
  **/
 gboolean
 rsvg_handle_close (RsvgHandle  *handle,
 				   GError     **error)
 {
-	gchar chars[1] = { '\0' };
-	GError *real_error;
-	
-	handle->error = &real_error;
-	
-	if (handle->ctxt != NULL)
-		{
-			xmlParseChunk (handle->ctxt, chars, 1, TRUE);
-			xmlFreeParserCtxt (handle->ctxt);
-		}
-  
-	/* FIXME: Error handling not implemented. */
-	/*
-	  if (real_error != NULL)
-	  {
-      g_propagate_error (error, real_error);
-      return FALSE;
-      }*/
-	return TRUE;
+	if (handle->close)
+		return (*handle->close) (handle, error);
+
+	return FALSE;
 }
 
 /**
@@ -1128,7 +1223,7 @@ rsvg_handle_close (RsvgHandle  *handle,
  * will be returned.  Note that the pixbuf may not be complete until
  * @rsvg_handle_close has been called.
  *
- * Return value: the pixbuf loaded by #handle, or %NULL.
+ * Returns: the pixbuf loaded by #handle, or %NULL.
  **/
 GdkPixbuf *
 rsvg_handle_get_pixbuf (RsvgHandle *handle)
@@ -1150,25 +1245,7 @@ rsvg_handle_get_pixbuf (RsvgHandle *handle)
 void
 rsvg_handle_free (RsvgHandle *handle)
 {
-	int i;
-	
-	if (handle->pango_context != NULL)
-		g_object_unref (handle->pango_context);
-	rsvg_defs_free (handle->defs);
-	
-	for (i = 0; i < handle->n_state; i++)
-		rsvg_state_finalize (&handle->state[i]);
-	g_free (handle->state);
-	
-	g_hash_table_foreach (handle->entities, rsvg_ctx_free_helper, NULL);
-	g_hash_table_destroy (handle->entities);
-	
-	g_hash_table_destroy (handle->css_props);
-	
-	if (handle->user_data_destroy)
-		(* handle->user_data_destroy) (handle->user_data);
-	if (handle->pixbuf)
-		g_object_unref (handle->pixbuf);
-	g_free (handle);
+	if (handle->free)
+		(*handle->free) (handle);
 }
 

@@ -63,17 +63,21 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GLIB_REQUIRED = @GLIB_REQUIRED@
+GTKDOC = @GTKDOC@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 GTK_VERSION = @GTK_VERSION@
+HTML_DIR = @HTML_DIR@
 LIBART_REQUIRED = @LIBART_REQUIRED@
+LIBGSFPKG = @LIBGSFPKG@
+LIBGSF_CFLAGS = @LIBGSF_CFLAGS@
+LIBGSF_LIBS = @LIBGSF_LIBS@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
 LIBRSVG_MAJOR_VERSION = @LIBRSVG_MAJOR_VERSION@
@@ -99,13 +103,21 @@ VERSION_INFO = @VERSION_INFO@
 
 loaderdir = $(libdir)/gtk-2.0/$(GTK_VERSION)/loaders
 
-INCLUDES = @LIBRSVG_CFLAGS@ @GDK_PIXBUF_CFLAGS@ -DGDK_PIXBUF_ENABLE_BACKEND -I$(top_srcdir)
+INCLUDES = \
+	$(LIBRSVG_CFLAGS) \
+	$(LIBGSF_CFLAGS) \
+	-DGDK_PIXBUF_ENABLE_BACKEND \
+	-I$(top_srcdir)
+
 @ENABLE_PIXBUF_LOADER_TRUE@target_pixbuf_loader = @ENABLE_PIXBUF_LOADER_TRUE@svg_loader.la 
 @ENABLE_PIXBUF_LOADER_FALSE@target_pixbuf_loader = 
 
 svg_loader_la_SOURCES = io-svg.c
 svg_loader_la_LDFLAGS = -avoid-version -module
-svg_loader_la_LIBADD = $(GDK_PIXBUF_LIBS) $(LIBRSVG_LIBS) $(top_builddir)/librsvg-2.la
+svg_loader_la_LIBADD = $(LIBRSVG_LIBS) \
+	$(LIBGSF_LIBS) \
+	$(top_builddir)/librsvg-2.la
+
 
 loader_LTLIBRARIES = $(target_pixbuf_loader)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -262,7 +274,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-io-svg.lo io-svg.o : io-svg.c ../rsvg.h
 
 info-am:
 info: info-am

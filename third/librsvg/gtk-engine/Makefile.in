@@ -63,17 +63,21 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GLIB_REQUIRED = @GLIB_REQUIRED@
+GTKDOC = @GTKDOC@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 GTK_VERSION = @GTK_VERSION@
+HTML_DIR = @HTML_DIR@
 LIBART_REQUIRED = @LIBART_REQUIRED@
+LIBGSFPKG = @LIBGSFPKG@
+LIBGSF_CFLAGS = @LIBGSF_CFLAGS@
+LIBGSF_LIBS = @LIBGSF_LIBS@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
 LIBRSVG_MAJOR_VERSION = @LIBRSVG_MAJOR_VERSION@
@@ -347,11 +351,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-svg-draw.lo svg-draw.o : svg-draw.c svg.h svg-rc-style.h svg-style.h
-svg-main.lo svg-main.o : svg-main.c svg.h svg-style.h svg-rc-style.h
-svg-rc-style.lo svg-rc-style.o : svg-rc-style.c svg.h svg-style.h \
-	svg-rc-style.h
-svg-render.lo svg-render.o : svg-render.c svg.h ../rsvg.h
 
 info-am:
 info: info-recursive

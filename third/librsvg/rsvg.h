@@ -38,9 +38,16 @@ GQuark rsvg_error_quark (void) G_GNUC_CONST;
 
 typedef struct RsvgHandle RsvgHandle;
 
+/**
+ * RsvgSizeFunc
+ * Function to let a user of the library specify the SVG's dimensions
+ * @width: the ouput width the SVG should be
+ * @height: the output height the SVG should be
+ * @user_data: user data
+ */
 typedef void (* RsvgSizeFunc) (gint     *width,
-			       gint     *height,
-			       gpointer  user_data);
+							   gint     *height,
+							   gpointer  user_data);
 
 
 void        rsvg_set_default_dpi          (double dpi);
@@ -48,39 +55,68 @@ void        rsvg_set_default_dpi          (double dpi);
 RsvgHandle *rsvg_handle_new               (void);
 void        rsvg_handle_set_dpi           (RsvgHandle * handle, double dpi);
 void        rsvg_handle_set_size_callback (RsvgHandle      *handle,
-					   RsvgSizeFunc     size_func,
-					   gpointer         user_data,
-					   GDestroyNotify   user_data_destroy);
+										   RsvgSizeFunc     size_func,
+										   gpointer         user_data,
+										   GDestroyNotify   user_data_destroy);
 gboolean    rsvg_handle_write             (RsvgHandle      *handle,
-					   const guchar    *buf,
-					   gsize            count,
-					   GError         **error);
+										   const guchar    *buf,
+										   gsize            count,
+										   GError         **error);
 gboolean    rsvg_handle_close             (RsvgHandle      *handle,
-					   GError         **error);
+										   GError         **error);
 GdkPixbuf  *rsvg_handle_get_pixbuf        (RsvgHandle      *handle);
 void        rsvg_handle_free              (RsvgHandle      *handle);
 
 /* convenience API */
+
 GdkPixbuf  *rsvg_pixbuf_from_file                  (const gchar  *file_name,
-						    GError      **error);
+													GError      **error);
 GdkPixbuf  *rsvg_pixbuf_from_file_at_zoom          (const gchar  *file_name,
-						    double        x_zoom,
-						    double        y_zoom,
-						    GError      **error);
+													double        x_zoom,
+													double        y_zoom,
+													GError      **error);
 GdkPixbuf  *rsvg_pixbuf_from_file_at_size          (const gchar  *file_name,
-						    gint          width,
-						    gint          height,
-						    GError      **error);
+													gint          width,
+													gint          height,
+													GError      **error);
 GdkPixbuf  *rsvg_pixbuf_from_file_at_max_size      (const gchar  *file_name,
-						    gint          max_width,
-						    gint          max_height,
-						    GError      **error);
+													gint          max_width,
+													gint          max_height,
+													GError      **error);
 GdkPixbuf  *rsvg_pixbuf_from_file_at_zoom_with_max (const gchar  *file_name,
-						    double        x_zoom,
-						    double        y_zoom,
-						    gint          max_width,
-						    gint          max_height,
-						    GError      **error);
+													double        x_zoom,
+													double        y_zoom,
+													gint          max_width,
+													gint          max_height,
+													GError      **error);
+
+/* "New" convenience API (2.2.2+) */
+
+GdkPixbuf  * rsvg_pixbuf_from_file_at_size_ex (RsvgHandle * handle,
+											   const gchar  *file_name,
+											   gint          width,
+											   gint          height,
+											   GError      **error);
+GdkPixbuf  * rsvg_pixbuf_from_file_ex (RsvgHandle * handle,
+									   const gchar  *file_name,
+									   GError      **error);
+GdkPixbuf  * rsvg_pixbuf_from_file_at_zoom_ex (RsvgHandle * handle,
+											   const gchar  *file_name,
+											   double        x_zoom,
+											   double        y_zoom,
+											   GError      **error);
+GdkPixbuf  * rsvg_pixbuf_from_file_at_max_size_ex (RsvgHandle * handle,
+												   const gchar  *file_name,
+												   gint          max_width,
+												   gint          max_height,
+												   GError      **error);
+GdkPixbuf  * rsvg_pixbuf_from_file_at_zoom_with_max_ex (RsvgHandle * handle,
+														const gchar  *file_name,
+														double        x_zoom,
+														double        y_zoom,
+														gint          max_width,
+														gint          max_height,
+														GError      **error);
 
 G_END_DECLS
 
