@@ -10,7 +10,6 @@ DS*)
 RSAIX)
 	;;
 SUN*)
-	echo "Copying in new /etc/init.d/athena..."
-	cp -p /srvd/etc/init.d/athena /etc/init.d/athena
-	echo "Done."
+	chmod 744 /kernel/unix
+	chmod 755 /etc/athena/reactivate
 esac
