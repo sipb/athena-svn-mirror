@@ -4,8 +4,6 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: libwnck = 2.2.0
 
-Requires: athena-gtk2 athena-glib2 athena-startup-notification
-
 %description
 libwnck (pronounced "libwink") is used to implement pagers, tasklists,
 and other such things. It allows applications to monitor information

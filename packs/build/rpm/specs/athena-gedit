@@ -4,10 +4,6 @@ License: GPL
 Group: Applications/Editors
 Provides: gedit = 2.2.0.1
 
-Requires: athena-GConf2 athena-libgnomeui athena-libglade2
-Requires: athena-libgnomeprintui athena-eel athena-glib2 athena-ORBit2
-Requires: athena-libbonobo athena-bonobo-activation
-
 %description
 gEdit is a small but powerful text editor designed specifically for
 the GNOME GUI desktop.  gEdit includes a plug-in API (which supports

@@ -4,10 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: eog = 2.2.0
 
-Requires: athena-gnome-vfs2 athena-libgnomeprint athena-libgnomeui
-Requires: athena-libbonoboui athena-bonobo-activation athena-librsvg
-Requires: athena-ORBit2 athena-GConf2
-
 %description
 Eye of GNOME (EOG) is an image viewer component used by Nautilus.
 

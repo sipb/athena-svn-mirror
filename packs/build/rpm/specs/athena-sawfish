@@ -4,9 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: sawfish = 1.2-gtk2
 
-Requires: athena-librep athena-rep-gtk athena-gtk2 athena-esound
-Requires: athena-control-center
-
 %description
 Sawfish is an extensible window manager using an Emacs Lisp-like
 scripting language--all window decorations are configurable, the basic

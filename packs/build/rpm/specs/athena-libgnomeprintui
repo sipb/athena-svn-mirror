@@ -4,7 +4,5 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: libgnomeprintui22 = 2.2.1.1
 
-Requires: athena-libgnomeprint athena-libgnomecanvas athena-libglade2
-
 %description
 The libgnomeprintui package contains GTK+ widgets related to printing.

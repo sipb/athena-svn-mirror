@@ -3,10 +3,6 @@ Summary: Tool for viewing and creating archives, for Athena
 License: GPL
 Group: Applications/Archiving
 
-Requires: athena-glib2 athena-gtk2 athena-libgnome athena-libgnomeui
-Requires: athena-gnome-vfs2 athena-libglade2 athena-bonobo-activation
-Requires: athena-libbonobo athena-libbonoboui
-
 %description
 File Roller is an application for creating and viewing archives files,
 such as tar files.

@@ -4,9 +4,6 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: at-spi = 1.1.8
 
-Requires: athena-libbonobo athena-atk athena-gtk2 athena-gail
-Requires: athena-bonobo-activation
-
 %description
 at-spi allows assistive technologies to access GTK-based applications.
 Essentially it exposes the internals of applications for automation,

@@ -4,8 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: metacity = 2.4.34
 
-Requires: athena-gtk2 athena-GConf2 athena-startup-notification
-
 %description
 Metacity is a simple window manager that integrates nicely with
 GNOME 2.

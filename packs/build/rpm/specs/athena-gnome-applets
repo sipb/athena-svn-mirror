@@ -4,11 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: gnome-applets = 2.2.0
 
-Requires: athena-gtk2 athena-libgnome athena-libgnomeui
-Requires: athena-gnome-vfs2 athena-GConf2 athena-scrollkeeper
-Requires: athena-gnome-panel athena-libgtop athena-libwnck
-Requires: athena-libglade2 athena-gail
-
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
 applications and desktop tools to be used in conjunction with a window

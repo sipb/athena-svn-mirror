@@ -4,9 +4,6 @@ License: LGPL
 Group: System Environment/Base
 Provides: libgnomeprint22 = 2.2.1.1
 
-Requires: athena-glib2 athena-libart_lgpl athena-pango athena-libxml2
-Requires: athena-libbonobo athena-freetype
-
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
 applications and desktop tools to be used in conjunction with a window

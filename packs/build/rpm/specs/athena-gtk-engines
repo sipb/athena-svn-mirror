@@ -4,8 +4,6 @@ License: GPL
 Group: System Environment/Libraries
 Provides: gtk2-engines = 2.2.0
 
-Requires: athena-gtk2
-
 %description
 The gtk2-engines package contains shared objects and configuration
 files that implement a number of GTK+ theme engines.  Theme engines

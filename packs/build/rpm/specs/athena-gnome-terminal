@@ -4,9 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: gnome-terminal = 2.2.0
 
-Requires: athena-gtk2 athena-GConf2 athena-libglade2 athena-libgnomeui
-Requires: athena-vte athena-startup-notification athena-Xft
-
 %description
 This package contains the GNOME terminal emulator application, which
 is the GNOME analog of xterm.

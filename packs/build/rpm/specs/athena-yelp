@@ -4,10 +4,6 @@ License: GPL
 Group: Applications/System
 Provides: yelp = 2.2.0
 
-Requires: athena-ORBit2 athena-glib2 athena-libgnome athena-libxslt
-Requires: athena-gnome-vfs2 athena-libgnomeui athena-libbonobo
-Requires: athena-GConf2 athena-libgtkhtml athena-libglade2
-
 %description
 Yelp is the Gnome 2 help/documentation browser. It is designed
 to help you browse all the documentation on your system in

@@ -3,8 +3,6 @@ Summary: GStreamer streaming media framework runtime, for Athena
 License: LGPL
 Group: Libraries/Multimedia
 
-Requires: athena-glib2 athena-libxml2
-
 %description
 GStreamer is a streaming-media framework, based on graphs of filters which
 operate on media data.  Applications using this library can do anything

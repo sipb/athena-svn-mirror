@@ -4,9 +4,6 @@ License: GPL
 Group: Applications/System
 Provides: gnome-utils = 2.2.0.3
 
-Requires: athena-libgnome athena-libgnomeui athena-libglade2 athena-libbonoboui
-Requires: athena-gnome-vfs2 athena-gnome-panel athena-pango athena-scrollkeeper
-
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
 GUI applications and desktop tools to be used in conjunction with a

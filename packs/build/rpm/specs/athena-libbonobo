@@ -4,7 +4,5 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: libbonobo = 2.2.0
 
-Requires: athena-glib2 athena-ORBit2 athena-bonobo-activation
-
 %description
 Bonobo is a component system based on CORBA, used by the GNOME desktop.

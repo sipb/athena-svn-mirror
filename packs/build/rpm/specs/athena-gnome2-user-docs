@@ -4,8 +4,6 @@ License: FDL
 Group: Documentation
 Provides: gnome-user-docs = 2.0.5
 
-Requires: athena-scrollkeeper
-
 %description
 This package contains end user documentation for the GNOME desktop
 environment.

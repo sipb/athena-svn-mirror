@@ -4,9 +4,6 @@ License: GPL
 Group: Development/Languages
 Provides: rep-gtk = 0.17
 
-Requires: athena-librep athena-glib2 athena-gtk2 athena-libgnome
-Requires: athena-libgnomeui athena-libgnomecanvas athena-libglade2
-
 %description
 rep-gtk is a binding of GTK+/GNOME/libglade for the rep Lisp
 system.

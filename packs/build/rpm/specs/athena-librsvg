@@ -4,9 +4,6 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: librsvg2 = 2.2.3
 
-Requires: athena-gtk2 athena-glib2 athena-libart_lgpl athena-libxml2
-Requires: athena-pango
-
 %description 
 The librsvg library is a lightweight library for parsing and rendering
 vector-graphic files in SVG format. It also includes functions that

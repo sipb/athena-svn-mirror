@@ -4,7 +4,5 @@ License: MIT
 Group: System Environment/Libraries
 Provides: Xft = 2.1
 
-Requires: athena-fontconfig athena-freetype
-
 %description
 Xft is a font rendering library for X.

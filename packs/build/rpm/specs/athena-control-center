@@ -4,11 +4,6 @@ License: GPL/LGPL
 Group: User Interface/Desktops
 Provides: control-center = 2.2.0.1
 
-Requires: athena-gtk2 athena-GConf2 athena-libgnomeui athena-libglade2
-Requires: athena-libbonobo athena-libbonoboui athena-bonobo-activation
-Requires: athena-libglade2 athena-gnome-desktop athena-libxml2
-Requires: athena-gnome-vfs2 athena-esound athena-metacity athena-Xft
-
 %description
 GNOME (the GNU Network Object Model Environment) is an attractive and
 easy-to-use GUI desktop environment. The control-center package

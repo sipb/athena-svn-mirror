@@ -3,7 +3,6 @@ Summary: IDL parsing library, for Athena
 License: LGPL
 Group: Development/Libraries
 Provides: libIDL = 0.8.0
-Requires: athena-glib2
 
 %description
 libIDL is a small library for creating parse trees of CORBA v2.2

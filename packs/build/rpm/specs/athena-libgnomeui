@@ -4,9 +4,6 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: libgnomeui = 2.2.0.1
 
-Requires: athena-esound athena-libgnome athena-libgnomecanvas
-Requires: athena-libbonoboui athena-GConf2 athena-libglade2 athena-gtk2
-
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
 GUI applications and desktop tools to be used in conjunction with a

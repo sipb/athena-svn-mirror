@@ -3,8 +3,6 @@ Summary: ACME the Versatile Keyboard daemon, for Athena
 License: GPL
 Group: System Environment/Daemons
 
-Requires: athena-libgnomeui athena-libglade athena-libwnck athena-GConf2
-
 %description
 ACME is a small GNOME tool to make use of the multimedia buttons
 present on most laptops and internet keyboards: Volume, Brightness,

@@ -3,9 +3,6 @@ Summary: GStreamer streaming-media framework plugins, for athena
 License: LGPL
 Group: Libraries/Multimedia
 
-Requires: athena-GConf2 athena-gstreamer athena-glib2 athena-gnome-vfs2
-Requires: athena-freetype
-
 %description
 Contains a set of plugins for GStreamer.
 

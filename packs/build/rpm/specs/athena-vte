@@ -4,7 +4,5 @@ License: LGPL
 Group: User Interface/X
 Provides: vte = 0.10.26
 
-Requires: athena-glib2 athena-pango athena-libzvt athena-Xft
-
 %description
 VTE is a terminal emulator widget for use with GTK+ 2.0.

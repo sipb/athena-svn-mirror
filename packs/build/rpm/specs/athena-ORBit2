@@ -3,7 +3,6 @@ Summary: A CORBA Object Request Broker, for Athena
 License: LGPL/GPL
 Group: System Environment/Daemons
 Provides: ORBit2 = 2.6.0
-Requires: athena-glib2 athena-linc athena-libIDL
 
 %description
 ORBit is a high-performance CORBA (Common Object Request Broker

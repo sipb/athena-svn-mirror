@@ -4,10 +4,6 @@ License: LGPL
 Group: System Environment/Libraries
 Provides: gnome-vfs2 = 2.2.0
 
-Requires: athena-glib2 athena-libxml2 athena-GConf2 athena-libbonobo
-Requires: athena-bonobo-activation athena-ORBit2 athena-gnome-mime-data
-Requires: athena-openssl athena-openafs
-
 %description
 GNOME VFS is the GNOME virtual file system. It is the foundation of
 the Nautilus file manager.  It provides a modular architecture and

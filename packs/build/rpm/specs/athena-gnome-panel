@@ -4,10 +4,6 @@ License: GPL
 Group: User Interface/Desktops
 Provides: gnome-panel = 2.2.0.1
 
-Requires: athena-glib2 athena-GConf2 athena-gnome-desktop athena-gtk2
-Requires: athena-libglade2 athena-libgnome athena-libgnomeui athena-ORBit2
-Requires: athena-gnome-vfs2 athena-libwnck athena-libbonoboui athena-pango
-
 %description
 The GNOME panel provides the window list, workspace switcher, menus,
 and other features for the GNOME desktop.
