@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.10 2001-11-28 22:49:16 amb Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.11 2002-02-26 15:35:15 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -94,7 +94,6 @@ static void parse_line(const char *path, char **pkgname, int *epoch,
 struct package *get_package(struct package **table, const char *pkgname);
 static unsigned int hash(const char *str);
 static const char *find_back(const char *start, const char *end, char c);
-static const char *skip_to_value(const char *p, const char *varname);
 static void *emalloc(size_t size);
 static void *erealloc(void *ptr, size_t size);
 static char *estrdup(const char *s);
