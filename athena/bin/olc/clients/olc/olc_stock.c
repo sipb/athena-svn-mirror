@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.14 1991-03-07 13:21:49 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.15 1991-04-08 20:51:15 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.14 1991-03-07 13:21:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.15 1991-04-08 20:51:15 lwvanels Exp $";
 #endif
 #endif
 
@@ -124,7 +124,7 @@ do_olc_stock(arguments)
   switch(vfork()) 
     {
     case -1:                /* error */
-      perror("stock: fork");
+      olc_perror("stock: fork");
       fprintf(stderr, "stock: can't fork to execute OLC browser\n");
       return(ERROR);
     case 0:                 /* child */
@@ -133,7 +133,7 @@ do_olc_stock(arguments)
 	       0);
       else
 	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, 0);
-      perror("stock: execlp");
+      olc_perror("stock: execlp");
       fprintf(stderr, "stock: could not exec OLC browser\n");
       _exit(ERROR);
     default:                /* parent */
