@@ -19,15 +19,15 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.16 1992-02-05 02:56:26 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olc_tty.h,v 1.17 1996-07-05 02:31:40 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
 
 extern int OLC, OLCR, OLCA;
 
-#define DEFAULT_EDITOR "/usr/athena/emacs"
+#define DEFAULT_EDITOR "/usr/athena/bin/emacs"
 #define NO_EDITOR	"NO_EDITOR"
 #ifdef __STDC__
 # define	P(s) s

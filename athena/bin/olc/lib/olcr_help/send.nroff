@@ -27,7 +27,7 @@ directly to the terminal.
 To specify an editor in which to edit the message.  If the editor
 argument is missing, the editor used is that specified by your EDITOR
 environment variable, if it is set; otherwise, by default, 
-/usr/athena/emacs will be used.
+/usr/athena/bin/emacs will be used.
 .TP
 .B \-file <file name>
 Normally, the file /tmp/OLC<pid> is used as a temporary file
