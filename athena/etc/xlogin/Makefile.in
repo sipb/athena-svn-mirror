@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 2001-04-20 14:26:05 ghudson Exp $
+# $Id: Makefile.in,v 1.9 2001-05-09 04:06:51 zacheiss Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -90,6 +90,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/bitmaps/F4 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/F5 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/F6 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/F7 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Prev ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F1 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F2 ${DESTDIR}${bitmapdir}
