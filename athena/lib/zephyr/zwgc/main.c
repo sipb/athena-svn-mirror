@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.20 1990-11-09 18:45:54 raeburn Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.21 1990-12-04 22:49:40 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -352,9 +352,13 @@ static void signal_exit()
 
 /* clean up ALL the waiting children, in case we get hit with
    multiple SIGCHLD's at once, and don't process in time. */
-static signal_child()
+static void signal_child()
 {
+#ifdef NO_UNION_WAIT
+  int status;
+#else
   union wait status;
+#endif
   extern int errno;
   int pid, old_errno = errno;
 
