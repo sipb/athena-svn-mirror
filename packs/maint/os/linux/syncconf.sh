@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.10 2002-02-02 00:20:19 jweiss Exp $
+# $Id: syncconf.sh,v 1.11 2002-05-14 21:18:14 zacheiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -158,23 +158,23 @@ handle()
     ;;
 
   AFS)
-    remove /etc/sysconfig/afs.new
+    remove /etc/sysconfig/openafs.new
 
-    append /etc/sysconfig/afs.new "#! /bin/sh"
+    append /etc/sysconfig/openafs.new "#! /bin/sh"
 
     if [ "true" = "$AFSSRV" ]; then
-      append /etc/sysconfig/afs.new "AFS_SERVER=on"
+      append /etc/sysconfig/openafs.new "AFS_SERVER=on"
     else
-      append /etc/sysconfig/afs.new "AFS_SERVER=off"
+      append /etc/sysconfig/openafs.new "AFS_SERVER=off"
     fi
 
     if [ "true" = "$AFSCLIENT" ]; then
-      append /etc/sysconfig/afs.new "AFS_CLIENT=on"
+      append /etc/sysconfig/openafs.new "AFS_CLIENT=on"
     else
-      append /etc/sysconfig/afs.new "AFS_CLIENT=off"
+      append /etc/sysconfig/openafs.new "AFS_CLIENT=off"
     fi
     
-    update /etc/sysconfig/afs
+    update /etc/sysconfig/openafs
     ;;
 
   esac
