@@ -11,12 +11,13 @@
 
 DESTDIR=
 CFLAGS=	-O
-LIBDIR=	/usr/lib
+LIBDIR=	/usr/lib/lpdfilters
 CXREF=	/usr/ucb/ctags -x
 SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c vpltdmp.c \
-	vplotf.c vfontinfo.c vwidth.c vfw.c fcvt.c rotate.c rotprt.c
-PRINTER=lpf necf
+	vplotf.c vfontinfo.c vwidth.c vfw.c fcvt.c rotate.c rotprt.c \
+	ln01filter.l ln03filter.c
+PRINTER=lpf necf ln01filter ln03filter
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
 
@@ -77,11 +78,26 @@ rotate: rotate.c
 rotprt: rotprt.c
 	${CC} -o rotprt ${CFLAGS} rotprt.c
 
+ln01filter.c: ln01filter.l
+ln01filter.o: ln01filter.o
+ln01filter: ln01filter.o
+	${CC} -o ln01filter ${CFLAGS} ln01filter.o
+
+ln03filter: ln03filter.o
+	${CC} -o ln03filter ${CFLAGS} ln03filter.o
+
 install: printer
+	-mkdir ${DESTDIR}/${LIBDIR}
 	install -s lpf ${DESTDIR}/${LIBDIR}/lpf
 	install -s necf ${DESTDIR}/${LIBDIR}/necf
-
+	install -s ln01filter ${DESTDIR}/${LIBDIR}/ln01filter
+#	for i in ${LN01FILTERS}; do \
+#		rm -f $${DESTDIR}/${LIBDIR}/$i; \
+#		ln ${DESTDIR}/${LIBDIR}/ln01filter ${DESTDIR}/${LIBDIR}/$$i; \
+#	done
+	install -s ln03filter ${DESTDIR}/${LIBDIR}/ln03filter
 installv: varian
+	-mkdir ${DESTDIR}/${LIBDIR}
 	install -s vfontinfo ${DESTDIR}/${LIBDIR}/vfontinfo
 	install -s vwidth ${DESTDIR}/${LIBDIR}/vwidth
 	install -s vfw ${DESTDIR}/${LIBDIR}/vfw
@@ -100,7 +116,7 @@ installv: varian
 	install -s vplotf ${DESTDIR}/${LIBDIR}/vplotf
 
 clean:
-	rm -f ${PRINTER} ${VARIAN} *.o
+	rm -f ${PRINTER} ${VARIAN} *.o ln01filter.c
 
 print:
 	@pr makefile
