@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.10 1990-12-23 13:41:48 probe Exp $
+ * $Id: aklog_main.c,v 1.11 1990-12-25 15:37:58 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: probe $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.10 1990-12-23 13:41:48 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.11 1990-12-25 15:37:58 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -19,6 +19,7 @@ static char *rcsid = "$Id: aklog_main.c,v 1.10 1990-12-23 13:41:48 probe Exp $";
 #include <sys/socket.h>
 #include <krb.h>
 
+#include <afs/param.h>
 #include <afs/auth.h>
 #include <afs/cellconfig.h>
 #include <afs/vice.h>
