@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.20 1991-06-30 11:06:19 lwvanels Exp $
+# $Id: Imakefile,v 1.21 1991-10-30 16:11:21 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # For copying and distribution information,
@@ -42,20 +42,20 @@ mytags::
 
 olc_tags::
 	$(TAGS) clients/tty//**/*.[ch] clients/lib//**/*.[ch] clients/parser//**/*.[ch] clients/olc//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
-	$(MV) TAGS TAGS.olc
+	$(MV) TAGS ../src/TAGS.olc
 
 xolc_tags::
 	$(TAGS) clients/lib//**/*.[ch] clients/motif//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
-	$(MV) TAGS TAGS.xolc
+	$(MV) TAGS ../src/TAGS.xolc
 
 olcd_tags::
 	$(TAGS) common//**/*.[ch] include/olc//**/*.[ch] include//**/*.[ch] server/olcd//**/*.[ch]
-	$(MV) TAGS TAGS.olcd
+	$(MV) TAGS ../src/TAGS.olcd
 
 rpd_tags::
 	$(TAGS) include//**/*.[ch] server/rpd//**/*.[ch]
-	$(MV) TAGS TAGS.rpd
+	$(MV) TAGS ../src/TAGS.rpd
 
 polld_tags::
 	$(TAGS) include//**/*.[ch] server/polld//**/*.[ch]
-	$(MV) TAGS TAGS.polld
+	$(MV) TAGS ../src/TAGS.polld
