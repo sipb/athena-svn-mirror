@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.17 1987-11-15 23:46:17 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.18 1987-12-14 19:28:24 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -88,7 +88,7 @@ typedef struct _losinghost {
 
 static struct hostlist *all_hosts;
 
-static int num_hosts;			/* number of hosts in all_hosts */
+static int num_hosts = 0;		/* number of hosts in all_hosts */
 static long lose_timo = LOSE_TIMO;
 
 static losinghost *losing_hosts = NULLLH; /* queue of pings for hosts we
