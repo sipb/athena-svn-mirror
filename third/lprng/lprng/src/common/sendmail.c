@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.2.2.1 1999-06-30 22:20:52 ghudson Exp $";
+"$Id: sendmail.c,v 1.2.2.2 1999-09-15 20:56:45 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -45,6 +45,20 @@ void Sendmail_to_user( int retval, struct job *job )
 	id = Find_str_value(&job->info,IDENTIFIER,Value_sep);
 	if(!id) id = Find_str_value(&job->info,TRANSFERNAME,Value_sep);
 	mailname = Find_str_value(&job->info,MAILNAME,Value_sep);
+
+	if( mailname == 0 && Athena_Z_compat_DYN ){
+		char *logname, *zname;
+
+		zname = Find_str_value(&job->info,ZNAME,Value_sep);
+		logname = Find_str_value(&job->info,LOGNAME,Value_sep);
+		
+		if( zname && logname && !strcmp(zname, logname) ){
+			mailname = malloc_or_die(8 + strlen(zname),
+						 __FILE__,__LINE__);
+			sprintf(mailname, "zephyr%%%s", zname);
+		}
+	}
+
 	DEBUG2("Sendmail_to_user: MAILNAME '%s' sendmail '%s'", mailname, Sendmail_DYN );
 	if( mailname == 0 ){
 		if( retval != JSUCC ){
