@@ -12,6 +12,7 @@ install_prefix	=
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
+libdir		= @libdir@
 mandir		= @mandir@
 man1dir		= $(mandir)/man1
 mansuffix	= 1
@@ -55,7 +56,7 @@ X_EXTRA_LIBS	= @X_EXTRA_LIBS@
 # CMD_LIBS is the link line for "xscreensaver-command".
 
 
-AD_DIR		= @datadir@/X11/app-defaults
+AD_DIR		= @libdir@/X11/app-defaults
 PAM_DIR		= /etc/pam.d
 PAM_CONF	= /etc/pam.conf
 

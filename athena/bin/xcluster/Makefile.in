@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-12-27 15:44:22 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2000-04-10 02:02:22 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -9,8 +9,10 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+libdir=@libdir@
 mandir=@mandir@
 datadir=@datadir@
+appdefsdir=${libdir}/X11/app-defaults
 
 CC=@CC@
 DEFS=@DEFS@
@@ -45,12 +47,12 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${datadir}/X11/app-defaults
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${appdefsdir}
 	${INSTALL_PROGRAM} xcluster ${DESTDIR}${bindir}
 	${INSTALL_PROGRAM} cview ${DESTDIR}${bindir}
 	${INSTALL} -m 444 ${srcdir}/xcluster.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/cview.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 444 Xcluster ${DESTDIR}${datadir}/X11/app-defaults
+	${INSTALL} -m 444 Xcluster ${DESTDIR}${appdefsdir}
 
 clean:
 	rm -f ${XOBJS} ${COBJS} xcluster cview

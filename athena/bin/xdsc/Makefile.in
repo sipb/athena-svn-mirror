@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 2000-04-05 19:21:04 ghudson Exp $
+# $Id: Makefile.in,v 1.3 2000-04-10 02:02:32 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -10,8 +10,10 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 sbindir=@sbindir@
+libdir=@libdir@
 mandir=@mandir@
 datadir=@datadir@
+appdefsdir=${libdir}/X11/app-defaults
 
 CC=@CC@
 DEFS=@DEFS@ -DEDSC_PATH=\"$(sbindir)/edsc\"
@@ -42,9 +44,9 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${datadir}/X11/app-defaults
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${appdefsdir}
 	${INSTALL_PROGRAM} xdsc ${DESTDIR}${bindir}
-	${INSTALL} -m 444 ${srcdir}/Xdsc ${DESTDIR}${datadir}/X11/app-defaults
+	${INSTALL} -m 444 ${srcdir}/Xdsc ${DESTDIR}${appdefsdir}
 	${INSTALL} -m 444 ${srcdir}/xdsc.1 ${DESTDIR}${mandir}/man1
 
 clean:
