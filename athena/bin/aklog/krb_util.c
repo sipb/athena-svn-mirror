@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.2 1992-12-11 13:26:12 probe Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.3 1992-12-11 13:48:32 probe Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -197,7 +197,7 @@ send_to_kdc(pkt,rpkt,realm)
     }
     /* retry each host in sequence */
     for (retry = 0; retry < CLIENT_KRB_RETRY; ++retry) {
-	extern struct afsconf_cell cellconfig;
+	extern struct afsconf_cell ak_cellconfig;
 
 	if (!no_host) {
 	    for (host = hostlist; host->h_name != (char *)NULL; host++) {
@@ -210,10 +210,10 @@ send_to_kdc(pkt,rpkt,realm)
 		}
 	    }
 	} else {
-	    for (i=0; i<cellconfig.numServers; i++) {
-		to.sin_family = cellconfig.hostAddr[i].sin_family;
-		to.sin_addr   = cellconfig.hostAddr[i].sin_addr;
-		to.sin_port   = krb_udp_port;
+	    to.sin_port = krb_udp_port;
+	    for (i=0; i<ak_cellconfig.numServers; i++) {
+		to.sin_family = ak_cellconfig.hostAddr[i].sin_family;
+		to.sin_addr   = ak_cellconfig.hostAddr[i].sin_addr;
 		if (send_recv(pkt, rpkt, f, &to, (struct hostent *)0)) {
 		    retval = KSUCCESS;
 		    goto rtn;
@@ -342,3 +342,28 @@ static send_recv(pkt,rpkt,f,_to,addrs)
 	
     return 0;
 }
+
+char *afs_realm_of_cell(cellconfig)
+    struct afsconf_cell *cellconfig;
+{
+    char krbhst[MAX_HSTNM];
+    static char krbrlm[REALM_SZ+1];
+
+    if (!cellconfig)
+	return 0;
+    
+    strcpy(krbrlm, (char *)krb_realmofhost(cellconfig->hostName[0]));
+    if (krb_get_krbhst(krbhst, krbrlm, 1) != KSUCCESS) {
+	char *s = krbrlm;
+	char *t = cellconfig->name;
+	int c;
+
+	while (c = *t++) {
+	    if (islower(c)) c=toupper(c);
+	    *s++ = c;
+	}
+	*s++ = 0;
+    }
+    return krbrlm;
+}
+	
