@@ -56,6 +56,7 @@ munchlist:	munchlist.X Makefile
 	chmod +x munchlist
 
 OBJS=ispell.o term.o good.o lookup.o hash.o tree.o
+SRCS=ispell.c term.c good.c lookup.c hash.c tree.c
 ispell: $(OBJS)
 	cc $(CFLAGS) -o ispell $(OBJS) $(TERMLIB)
 
@@ -68,3 +69,23 @@ config.h:	config.X Makefile
 clean:
 	rm -f *.o buildhash ispell core a.out mon.out hash.out \
 		*.stat *.cnt munchlist config.h icombine
+
+depend:
+	makedepend ${CFLAGS} ${SRCS}
+
+	
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+ispell.o: ispell.c /usr/include/stdio.h /usr/include/ctype.h
+ispell.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
+ispell.o: /usr/include/sys/signal.h /usr/include/sys/types.h ispell.h
+ispell.o: config.h
+term.o: term.c /usr/include/stdio.h /usr/include/sgtty.h
+term.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+term.o: /usr/include/sys/ttydev.h /usr/include/sys/signal.h ispell.h
+good.o: good.c /usr/include/stdio.h /usr/include/ctype.h ispell.h config.h
+lookup.o: lookup.c /usr/include/stdio.h ispell.h config.h
+hash.o: hash.c
+tree.o: tree.c /usr/include/stdio.h /usr/include/ctype.h
+tree.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
+tree.o: /usr/include/sys/signal.h /usr/include/sys/types.h ispell.h config.h

@@ -93,3 +93,15 @@ clean:
 	rm -f $(PROGS) print2
 
 
+depend:
+	makedepend ${CFLAGS} ${SRCS}
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+docxref.o: docxref.c /usr/include/stdio.h /usr/include/ctype.h basename.c
+cscan.o: cscan.l constdefs.h
+fmtxref.o: fmtxref.c /usr/include/stdio.h /usr/include/ctype.h basename.c
+cxrfilt.o: cxrfilt.c /usr/include/stdio.h constdefs.h basename.c
+cxref.o: cxref.c /usr/include/stdio.h /usr/include/ctype.h
+cxref.o: /usr/include/signal.h /usr/include/sys/types.h
+cxref.o: /usr/include/sys/stat.h basename.c
