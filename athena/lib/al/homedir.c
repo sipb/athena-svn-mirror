@@ -17,14 +17,14 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.7 1998-01-14 17:09:59 ghudson Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.8 1998-07-25 20:58:31 ghudson Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
