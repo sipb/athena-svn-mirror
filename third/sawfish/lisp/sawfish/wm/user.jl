@@ -1,6 +1,6 @@
 #| user.jl -- do user-local initialization
 
-   $Id: user.jl,v 1.1.1.1 2000-11-12 06:27:33 ghudson Exp $
+   $Id: user.jl,v 1.2 2000-12-27 22:36:27 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -63,8 +63,18 @@
       (error
        (error-handler-function (car data) (cdr data)))))
 
+  ;; Athena addition--load site configuration but pretend user
+  ;; configuration files don't exist.
+  (if (get-command-line-option "--no-user-rc")
+    (progn
+      (load-all "site-init" (lambda (f) (load f nil t)))
+      (load "rep-defaults" t)
+      (unless (batch-mode)
+	(load "sawfish/wm/defaults" t))))
+	
   ;; they're probably not going to leave us in an unusable state
-  (unless (get-command-line-option "--no-rc")
+  (unless (or (get-command-line-option "--no-rc")
+	      (get-command-line-option "--no-user-rc"))
     (condition-case error-data
 	(progn
 	  ;; try to rename ~/.sawmill to ~/.sawfish
