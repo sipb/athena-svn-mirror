@@ -1,4 +1,4 @@
-# $Id: packages,v 1.95 1999-12-08 22:10:57 danw Exp $
+# $Id: packages,v 1.96 1999-12-09 15:32:33 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -51,7 +51,7 @@ athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/finger		requires hesiod,zephyr
 athena/bin/from			requires hesiod,krb5
-athena/bin/get_cluster		requires gms,hesiod
+athena/bin/get_message		requires gms,hesiod
 athena/bin/getcluster		requires hesiod
 athena/bin/hesinfo		requires hesiod
 athena/bin/hostinfo		requires bind,perl
