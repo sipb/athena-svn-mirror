@@ -26,7 +26,7 @@
 #include "e-table-memory-store.h"
 
 #define PARENT_TYPE e_table_memory_get_type ()
-ETableMemoryClass *parent_class = NULL;
+static ETableMemoryClass *parent_class = NULL;
 
 #define STORE_LOCATOR(etms, col, row) (*((etms)->priv->store + (row) * (etms)->priv->col_count + (col)))
 

@@ -79,7 +79,7 @@ libetable_la_SOURCES = 				\
 	e-tree-table-adapter.c			\
 	e-tree.c
 
-libetableincludedir = $(includedir)/gal/e-table
+libetableincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/e-table
 
 libetableinclude_HEADERS = 			\
 	e-cell.h				\

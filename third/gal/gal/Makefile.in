@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -161,19 +162,11 @@ SUBDIRS = $(nonui_subdirs) $(ui_subdirs)
 
 lib_LTLIBRARIES = libgal.la
 
-libgal_la_LDFLAGS = -version-info $(GAL_CURRENT):$(GAL_REVISION):$(GAL_AGE) \
-		    $(ICONV_LIBS) $(GTK_LIBS)
+libgal_la_LDFLAGS = -version-info $(GAL_CURRENT):$(GAL_REVISION):$(GAL_AGE) 		    $(ICONV_LIBS) $(GTK_LIBS)
 
 libgal_la_SOURCES = bogus_automake_hack.c
 
-libgal_la_LIBADD = util/libutil.la \
-		   unicode/libunicode.la \
-		   widgets/libwidgets.la \
-		   e-paned/libepaned.la \
-		   e-table/libetable.la \
-		   e-text/libetext.la \
-		   menus/libgalmenus.la \
-		   shortcut-bar/libshortcut-bar.la
+libgal_la_LIBADD = util/libutil.la 		   unicode/libunicode.la 		   widgets/libwidgets.la 		   e-paned/libepaned.la 		   e-table/libetable.la 		   e-text/libetext.la 		   menus/libgalmenus.la 		   shortcut-bar/libshortcut-bar.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h

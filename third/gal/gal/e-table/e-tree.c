@@ -469,6 +469,8 @@ et_search_search (ETableSearch *search, char *string, ETableSearchFlags flags, E
 	cursor = e_tree_get_cursor (et);
 	cursor = e_tree_sorted_model_to_view_path (et->priv->sorted, cursor);
 
+	g_return_val_if_fail (cursor != NULL, FALSE);
+
 	if (flags & E_TABLE_SEARCH_FLAGS_CHECK_CURSOR_FIRST) {
 		const void *value;
 
@@ -1654,6 +1656,8 @@ e_tree_set_cursor (ETree *e_tree, ETreePath path)
 #else
 	path = e_tree_sorted_model_to_view_path(e_tree->priv->sorted, path);
 
+	g_return_if_fail(path != NULL);
+
 	row = e_tree_table_adapter_row_of_node(E_TREE_TABLE_ADAPTER(e_tree->priv->etta), path);
 
 	if (row == -1)
@@ -1945,7 +1949,7 @@ e_tree_node_is_expanded (ETree *et, ETreePath path)
 {
 	path = e_tree_sorted_model_to_view_path(et->priv->sorted, path);
 
-	g_return_val_if_fail(path, FALSE);
+	g_return_val_if_fail(path != NULL, FALSE);
 
 	return e_tree_table_adapter_node_is_expanded (et->priv->etta, path);
 }
@@ -1958,6 +1962,8 @@ e_tree_node_set_expanded (ETree *et, ETreePath path, gboolean expanded)
 
 	path = e_tree_sorted_model_to_view_path(et->priv->sorted, path);
 
+	g_return_if_fail(path != NULL);
+
 	e_tree_table_adapter_node_set_expanded (et->priv->etta, path, expanded);
 }
 
@@ -1968,6 +1974,8 @@ e_tree_node_set_expanded_recurse (ETree *et, ETreePath path, gboolean expanded)
 	g_return_if_fail (E_IS_TREE(et));
 
 	path = e_tree_sorted_model_to_view_path(et->priv->sorted, path);
+
+	g_return_if_fail(path != NULL);
 
 	e_tree_table_adapter_node_set_expanded_recurse (et->priv->etta, path, expanded);
 }
@@ -1996,6 +2004,9 @@ int
 e_tree_row_of_node (ETree *et, ETreePath path)
 {
 	path = e_tree_sorted_model_to_view_path(et->priv->sorted, path);
+
+	g_return_val_if_fail(path != NULL, 0);
+
 	return e_tree_table_adapter_row_of_node (et->priv->etta, path);
 }
 
@@ -2012,6 +2023,8 @@ e_tree_show_node (ETree *et, ETreePath path)
 	g_return_if_fail (E_IS_TREE(et));
 
 	path = e_tree_sorted_model_to_view_path(et->priv->sorted, path);
+
+	g_return_if_fail(path != NULL);
 
 	e_tree_table_adapter_show_node (et->priv->etta, path);
 }
@@ -2073,6 +2086,8 @@ e_tree_find_next (ETree *et, ETreeFindNextParams params, ETreePathFunc func, gpo
 
 	cursor = e_tree_get_cursor (et);
 	cursor = e_tree_sorted_model_to_view_path (et->priv->sorted, cursor);
+
+	g_return_val_if_fail(cursor != NULL, FALSE);
 
 	found = e_tree_model_node_find (E_TREE_MODEL (et->priv->sorted), cursor, NULL, params & E_TREE_FIND_NEXT_FORWARD, find_next_callback, &cb_data);
 

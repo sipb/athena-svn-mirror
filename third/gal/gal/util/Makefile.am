@@ -20,7 +20,7 @@ libutil_la_SOURCES =	\
 	e-util.c	\
 	e-xml-utils.c
 
-libgalincludedir = $(includedir)/gal/util
+libgalincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/util
 
 libgalinclude_HEADERS =	\
 	e-bit-array.h	\

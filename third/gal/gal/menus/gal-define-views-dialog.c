@@ -129,11 +129,15 @@ gdvd_button_new_dialog_callback(GtkWidget *widget, int button, GalDefineViewsDia
 			       "factory", &factory,
 			       NULL);
 		if (name && factory) {
-			view = gal_view_factory_new_view(factory,
-							 name);
-			gal_define_views_model_append(GAL_DEFINE_VIEWS_MODEL(dialog->model), view);
-			gal_view_edit(view);
-			gtk_object_unref(GTK_OBJECT(view));
+			gchar *dup_of_name = name;
+			g_strchomp(dup_of_name);
+			if (*dup_of_name != '\0') {
+				view = gal_view_factory_new_view(factory, dup_of_name);
+				gal_define_views_model_append(GAL_DEFINE_VIEWS_MODEL(dialog->model), view);
+				gal_view_edit(view);
+				gtk_object_unref(GTK_OBJECT(view));
+			}
+			g_free(name);
 		}
 		break;
 	}

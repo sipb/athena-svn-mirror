@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -154,33 +155,17 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = \
-	-I$(top_srcdir)				\
-	$(EXTRA_GNOME_CFLAGS)			\
-	$(ICONV_CFLAGS)				\
-	-DG_LOG_DOMAIN=\"shortcut-bar\"
+INCLUDES =  	-I$(top_srcdir)					$(EXTRA_GNOME_CFLAGS)				$(ICONV_CFLAGS)					-DG_LOG_DOMAIN=\"shortcut-bar\"
 
 
 noinst_LTLIBRARIES = libshortcut-bar.la
 
-libshortcut_bar_la_SOURCES = \
-	e-group-bar.c		\
-	e-icon-bar-bg-item.c	\
-	e-icon-bar.c		\
-	e-shortcut-bar.c	\
-	e-shortcut-model.c	\
-	e-vscrolled-bar.c
+libshortcut_bar_la_SOURCES =  	e-group-bar.c			e-icon-bar-bg-item.c		e-icon-bar.c			e-shortcut-bar.c		e-shortcut-model.c		e-vscrolled-bar.c
 
 
-libshortcut_barincludedir = $(includedir)/gal/shortcut-bar
+libshortcut_barincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/shortcut-bar
 
-libshortcut_barinclude_HEADERS = \
-	e-group-bar.h		\
-	e-icon-bar-bg-item.h	\
-	e-icon-bar.h		\
-	e-shortcut-bar.h	\
-	e-shortcut-model.h	\
-	e-vscrolled-bar.h
+libshortcut_barinclude_HEADERS =  	e-group-bar.h			e-icon-bar-bg-item.h		e-icon-bar.h			e-shortcut-bar.h		e-shortcut-model.h		e-vscrolled-bar.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

@@ -1,3 +1,15 @@
+2003-01-29  Max Horn  <max@quendi.de>
+
+	* gal/widgets/e-categories-master-list-dialog-model.c : mark 
+	parent_class static for OS X build
+
+2003-01-07  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in: add GAL_API_VERSION, GAL_INCLUDEDIR versioning
+	generate gal.pc.
+	* Makefile.am: dist gal.pc.in
+	
+
 2002-12-05  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* configure.in: Bumped gal version to 0.21.99.99.

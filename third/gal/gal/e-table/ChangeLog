@@ -1,3 +1,36 @@
+2003-01-29  Max Horn  <max@quendi.de>
+
+	* e-table-memory-store.c : mark parent_class static for OS X build
+
+2003-01-22  Antonio Xu  <antonio.xu@sun.com>
+ 
+	* e-cell-text.c (ect_max_width): Add a judgement to avoid use null
+	pointer and evolution crash.
+	(ect_max_width_by_row): Add a judgement to avoid use null pointer
+	and evolution crash
+	(get_line_xpos):Add a judgement  to avoid use null pointer, then
+	x position can be calculated.
+	(_get_xy_from_position):  Add a judgement to avoid use null
+	pointer and evolution crash.
+	(e_cell_text_view_command):  Add a judgement to avoid use null
+	pointer and evolution crash.
+
+2002-12-18  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-subset.c : add guarding for row indexing
+
+2002-12-16  Mike Kestner  <mkestner@ximian.com>
+
+	* e-tree.c : add guarding for unknown sorted paths (33970)
+
+2002-12-16  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-item.c (eti_table_model_rows_deleted): revert last
+
+2002-12-13  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-item.c (eti_table_model_rows_deleted): fix valgrindage
+
 2002-12-05  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* e-table-extras.c (ete_init): Add a "collate" sort callback that

@@ -14,7 +14,7 @@ libshortcut_bar_la_SOURCES = 	\
 	e-shortcut-model.c	\
 	e-vscrolled-bar.c
 
-libshortcut_barincludedir = $(includedir)/gal/shortcut-bar
+libshortcut_barincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/shortcut-bar
 
 libshortcut_barinclude_HEADERS = 	\
 	e-group-bar.h		\

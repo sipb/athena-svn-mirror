@@ -336,7 +336,10 @@ gal_view_instance_construct (GalViewInstance *instance, GalViewCollection *colle
 	if (collection)
 		gtk_object_ref (GTK_OBJECT (collection));
 
-	instance->instance_id = g_strdup (instance_id);
+	if (instance_id)
+		instance->instance_id = g_strdup (instance_id);
+	else
+		instance->instance_id = g_strdup ("");
 
 	safe_id = g_strdup (instance->instance_id);
 	e_filename_make_safe (safe_id);

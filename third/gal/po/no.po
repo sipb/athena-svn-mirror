@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2002-07-22 13:57+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -260,13 +260,13 @@ msgstr "Formater kolonner..."
 msgid "Customize Current View..."
 msgstr "Tilpass aktiv visning..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
 msgstr "Definer visninger for %s"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 msgid "Define Views"
 msgstr "Definer visninger"
 
@@ -299,11 +299,11 @@ msgstr "_Ny..."
 msgid "Table"
 msgstr "Tabell"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 msgid "Custom View"
 msgstr "Tilpasset visning"
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 msgid "Save Custom View"
 msgstr "Lagre tilpasset visning"
 

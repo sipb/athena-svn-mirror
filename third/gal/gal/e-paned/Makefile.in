@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -154,26 +155,17 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = \
-	-I$(top_srcdir)				\
-	$(GNOME_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"e-paned\"
+INCLUDES =  	-I$(top_srcdir)					$(GNOME_INCLUDEDIR)				-DG_LOG_DOMAIN=\"e-paned\"
 
 
 noinst_LTLIBRARIES = libepaned.la
 
-libepaned_la_SOURCES = \
-	e-hpaned.c		\
-	e-paned.c		\
-	e-vpaned.c
+libepaned_la_SOURCES =  	e-hpaned.c			e-paned.c			e-vpaned.c
 
 
-libepanedincludedir = $(includedir)/gal/e-paned
+libepanedincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/e-paned
 
-libepanedinclude_HEADERS = \
-	e-hpaned.h		\
-	e-paned.h		\
-	e-vpaned.h
+libepanedinclude_HEADERS =  	e-hpaned.h			e-paned.h			e-vpaned.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-07-18 09:14+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -315,14 +315,14 @@ msgid "Customize Current View..."
 msgstr "自訂目前檢視..."
 
 # gal/menus/gal-define-views.glade.h:2
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "定義 \"%s\" 的檢視方式"
 
 # gal/menus/gal-define-views.glade.h:2
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "定義 \"%s\" 的檢視方式"
@@ -364,13 +364,13 @@ msgid "Table"
 msgstr "表格"
 
 # gal/e-table/e-table-header-item.c:1283
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "自訂目前檢視..."
 
 # gal/widgets/e-categories-master-list-array.c:53
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 #, fuzzy
 msgid "Save Custom View"
 msgstr "主要客戶"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.4.1\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2002-08-24 13:20+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
@@ -260,13 +260,13 @@ msgstr "Formatar Colunas..."
 msgid "Customize Current View..."
 msgstr "Customizar Vista Actual..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
 msgstr "Definir Vistas para %s"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 msgid "Define Views"
 msgstr "Definir Vistas"
 
@@ -299,11 +299,11 @@ msgstr "_Novo..."
 msgid "Table"
 msgstr "Tabela"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 msgid "Custom View"
 msgstr "Vista Customizada"
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 msgid "Save Custom View"
 msgstr "Gravar Vista Customizada"
 

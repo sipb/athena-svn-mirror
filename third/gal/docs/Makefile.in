@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -72,6 +72,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -167,14 +168,7 @@ tmpl_sources =
 
 gal_docdir = $(HTML_DIR)
 
-gal_doc_DATA = \
-	gal-api.sgml		\
-	gal-api.html		\
-	gal.hierarchy		\
-	gal.signals		\
-	gal.types		\
-	gal-decl.txt		\
-	gal-sections.txt
+gal_doc_DATA =  	gal-api.sgml			gal-api.html			gal.hierarchy			gal.signals			gal.types			gal-decl.txt			gal-sections.txt
 
 
 EXTRA_DIST = $(gal_doc_DATA)

@@ -1,3 +1,18 @@
+2002-12-17  Gilbert Fang  <gilbert.fang@sun.com>
+
+	* gal-define-views-dialog.c (gdvd_button_new_dialog_callback):
+	don't leak the name
+
+2002-12-13  Mike Kestner  <mkestner@ximian.com>
+
+	* gal-view-instance.c (gal_view_instance_construct): convert NULL
+	instance_id's to "".  (bug #35540)
+ 
+2002-12-10  Gilbert Fang  <gilbert.fang@sun.com>
+
+	* gal-define-views-dialog.c (gdvd_button_new_dialog_callback):
+	check for null or blank view names (bug #34901)
+
 2002-12-02  Mike Kestner  <mkestner@ximian.com>
 
 	* gal-view-instance.c : nuke Collection::changed handling (Bug#33439)

@@ -3,6 +3,9 @@ SUBDIRS = gal po intl tests docs art macros
 confexecdir = $(libdir)
 confexec_DATA = galConf.sh 
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gal.pc
+
 galConf.sh: $(top_srcdir)/galConf.sh.in Makefile
 	sed -e 's?\@GAL_LIBDIR\@?$(GAL_LIBDIR)?g' \
 	    -e 's?\@GAL_INCLUDEDIR\@?$(GAL_INCLUDEDIR)?g' \
@@ -12,6 +15,7 @@ galConf.sh: $(top_srcdir)/galConf.sh.in Makefile
 	  && mv galConf.tmp galConf.sh
 
 EXTRA_DIST = 			\
+	gal.pc.in		\
 	gal.spec.in		\
 	galConf.sh.in		\
 	MAINTAINERS		\

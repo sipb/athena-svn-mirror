@@ -43,6 +43,9 @@ static ETableModelClass *etss_parent_class;
 
 #define ETSS_CLASS(object) (E_TABLE_SUBSET_CLASS(GTK_OBJECT(object)->klass))
 
+#define VALID_ROW(etss, row) (row >= -1 && row < etss->n_map)
+#define MAP_ROW(etss, row) (row == -1 ? -1 : etss->map_table[row])
+
 static gint
 etss_get_view_row (ETableSubset *etss, int row)
 {
@@ -137,9 +140,11 @@ etss_value_at (ETableModel *etm, int col, int row)
 {
 	ETableSubset *etss = (ETableSubset *)etm;
 
+	g_return_val_if_fail (VALID_ROW (etss, row), NULL);
+
 	etss->last_access = row;
 	d(g_print("g) Setting last_access to %d\n", row));
-	return e_table_model_value_at (etss->source, col, etss->map_table [row]);
+	return e_table_model_value_at (etss->source, col, MAP_ROW(etss, row));
 }
 
 static void
@@ -147,9 +152,11 @@ etss_set_value_at (ETableModel *etm, int col, int row, const void *val)
 {
 	ETableSubset *etss = (ETableSubset *)etm;
 
+	g_return_if_fail (VALID_ROW (etss, row));
+
 	etss->last_access = row;
 	d(g_print("h) Setting last_access to %d\n", row));
-	e_table_model_set_value_at (etss->source, col, etss->map_table [row], val);
+	e_table_model_set_value_at (etss->source, col, MAP_ROW(etss, row), val);
 }
 
 static gboolean
@@ -157,7 +164,9 @@ etss_is_cell_editable (ETableModel *etm, int col, int row)
 {
 	ETableSubset *etss = (ETableSubset *)etm;
 
-	return e_table_model_is_cell_editable (etss->source, col, etss->map_table [row]);
+	g_return_val_if_fail (VALID_ROW (etss, row), FALSE);
+
+	return e_table_model_is_cell_editable (etss->source, col, MAP_ROW(etss, row));
 }
 
 static gboolean
@@ -171,10 +180,12 @@ etss_get_save_id (ETableModel *etm, int row)
 {
 	ETableSubset *etss = (ETableSubset *)etm;
 
+	g_return_val_if_fail (VALID_ROW (etss, row), NULL);
+
 	if (e_table_model_has_save_id (etss->source))
-		return e_table_model_get_save_id (etss->source, etss->map_table [row]);
+		return e_table_model_get_save_id (etss->source, MAP_ROW(etss, row));
 	else
-		return g_strdup_printf ("%d", etss->map_table[row]);
+		return g_strdup_printf ("%d", MAP_ROW(etss, row));
 }
 
 static void

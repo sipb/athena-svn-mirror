@@ -7,7 +7,7 @@ libunicode_la_SOURCES = 		\
 	guniprop.c			\
 	gutf8.c
 
-libunicodeincludedir = $(includedir)/gal/unicode
+libunicodeincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/unicode
 
 libunicodeinclude_HEADERS = 		\
 	gunicode.h
