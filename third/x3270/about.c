@@ -204,7 +204,7 @@ popup_about()
 	w = left_anchor;
 	left_anchor = NULL;
 
-	MAKE_SMALL("Modifications Copyright \251 1993, 1994, 1995, 1996 by Paul Mattes.\n\
+	MAKE_SMALL("Modifications Copyright \251 1993, 1994, 1995, 1996, 1997 by Paul Mattes.\n\
 Original X11 Port Copyright \251 1990 by Jeff Sparkes.\n\
 File transfer code Copyright \251 1995 by Dick Altenbern.\n\
  Permission to use, copy, modify, and distribute this software and its documentation\n\

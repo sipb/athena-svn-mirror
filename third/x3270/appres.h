@@ -106,6 +106,7 @@ typedef struct {
 	char	*oversize;
 	char	*char_class;
 	char	*ft_command;
+	int	modified_sel_color;
 
 	/* Toggles */
 	struct toggle toggle[N_TOGGLES];

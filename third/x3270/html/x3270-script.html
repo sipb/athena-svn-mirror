@@ -20,9 +20,13 @@ standard output and standard error output.
 The second method is the <B>child script</B> facility, invoked by the
 <B>Script()</B> action.
 This runs a script as a child process of <B>x3270</B>.
-The child's standard input and output are redirected to pipes connected
+The child has access to pipes connected
 to <B>x3270</B>; <B>x3270</B> looks for commands on one pipe, and places the
 responses on the other.
+(The file descriptor of the pipe for commands to <B>x3270</B>
+is passed in the environment variable X3270INPUT; the file descriptor
+of the pipe for responses from <B>x3270</B>
+is passed in the environment variable X3270OUTPUT.)
 <P>
 (It is possible to mix the two methods: A script can invoke another
 script with the <B>Script()</B> action.
@@ -166,6 +170,10 @@ If the script was invoked by the <B>Script()</B> action, the optional
 <B>Script()</B> will complete with an error, and if this script was invoked
 as part of login through the <B>ibm_hosts</B> file, the connection will be
 broken.
+<DT><B>ContinueScript(</B><I>param</I><B>)</B>
+<DD>Allows a script that is waiting in a <B>PauseScript()</B> action, below,
+to continue.
+The <I>param</I> given is output by the <B>PauseScript()</B> action.
 <DT><B>Disconnect()</B>
 <DD>Disconnects from the host.
 <DT>
@@ -194,6 +202,10 @@ No wild-card characters or pattern anchor characters are understood.
 <DD>Pops up an informational message.
 <DT><B>MoveCursor(</B><I>row</I>, <I>col</I><B>)</B>
 <DD>Moves the cursor to the specified coordinates.
+<DT><B>PauseScript()</B>
+<DD>Stops a script until the <B>ContinueScript()</B> action, above, is executed.
+This allows a script to wait for user input and continue.
+Outputs the single parameter to <B>ContinueScript()</B>.
 <DT><B>Wait()</B>
 <DD>A useful utility for use at the beginning of scripts and after the
 <B>Connect()</B> action.
@@ -206,5 +218,5 @@ on a modifiable field.
 <A HREF="x3270.man.html"><I>x3270</I>(1)</A>
 <HR>
 <ADDRESS>
-Last modified 18. July 1995
+Last modified 14. October 1996
 </ADDRESS>

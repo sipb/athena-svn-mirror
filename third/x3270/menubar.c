@@ -960,8 +960,7 @@ XtPointer call_data;
 	s = XawDialogGetValueString((Widget)client_data);
 	if (!s || !*s)
 		return;
-	if (sscanf(s, "%dx%d%c", &ovc, &ovr, &junk) == 2 &&
-	    ovc * ovr < 0x4000) {
+	if (sscanf(s, "%dx%d%c", &ovc, &ovr, &junk) == 2) {
 		XtPopdown(oversize_shell);
 		screen_change_model(model_num, ovc, ovr);
 	} else

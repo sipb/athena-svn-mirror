@@ -23,6 +23,7 @@
 
 #include "actionsc.h"
 #include "ftc.h"
+#include "keypadc.h"
 #include "kybdc.h"
 #include "macrosc.h"
 #include "menubarc.h"
@@ -46,6 +47,7 @@ XtActionsRec actions[] = {
 	{ "Compose",		(XtActionProc)Compose_action },
 	{ "Configure",		(XtActionProc)Configure_action },
 	{ "Connect",		(XtActionProc)Connect_action },
+	{ "ContinueScript",	(XtActionProc)ContinueScript_action },
 	{ "CursorSelect",	(XtActionProc)CursorSelect_action },
 	{ "Cut",		(XtActionProc)Cut_action },
 	{ "Default",		(XtActionProc)Default_action },
@@ -79,18 +81,21 @@ XtActionsRec actions[] = {
 	{ "KeymapEvent",	(XtActionProc)KeymapEvent_action },
 	{ "Left",		(XtActionProc)Left_action },
 	{ "Left2", 		(XtActionProc)Left2_action },
+	{ "Macro",		(XtActionProc)Macro_action },
 	{ "MonoCase",		(XtActionProc)MonoCase_action },
 	{ "MoveCursor",		(XtActionProc)MoveCursor_action },
 	{ "Newline",		(XtActionProc)Newline_action },
 	{ "NextWord",		(XtActionProc)NextWord_action },
 	{ "PA",			(XtActionProc)PA_action },
 	{ "PF",			(XtActionProc)PF_action },
+	{ "PauseScript",	(XtActionProc)PauseScript_action },
 	{ "PreviousWord",	(XtActionProc)PreviousWord_action },
 	{ "PrintText",		(XtActionProc)PrintText_action },
 	{ "PrintWindow",	(XtActionProc)PrintWindow_action },
 	{ "Quit",		(XtActionProc)Quit_action },
 	{ "Reconnect",		(XtActionProc)Reconnect_action },
 	{ "Redraw",		(XtActionProc)Redraw_action },
+	{ "ReparentNotify",	(XtActionProc)ReparentNotify_action },
 	{ "Reset",		(XtActionProc)Reset_action },
 	{ "Right",		(XtActionProc)Right_action },
 	{ "Right2",		(XtActionProc)Right2_action },

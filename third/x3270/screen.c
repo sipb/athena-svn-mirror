@@ -82,6 +82,7 @@ Pixel           colorbg_pixel;
 Pixel           keypadbg_pixel;
 Boolean         flipped = False;
 int		field_colors[4];
+Position	main_x, main_y;
 
 /* Statics */
 static union sp *temp_image;	/* temporary for X display */
@@ -526,6 +527,8 @@ set_toplevel_sizes()
 		XtRemoveTimeOut(configure_id);
 	configure_id = XtAppAddTimeOut(appcontext, 500, configure_stable, 0);
 	configure_ticking = True;
+
+	keypad_move();
 }
 
 static void
@@ -1569,7 +1572,7 @@ int first, last;
 		last = 0;
 
 	zero = FA_IS_ZERO(fa);
-	if (field_ea->fg)
+	if (field_ea->fg && (!appres.modified_sel || !FA_IS_MODIFIED(fa)))
 		field_color = field_ea->fg & COLOR_MASK;
 	else
 		field_color = fa_color(fa);
@@ -1584,7 +1587,7 @@ int first, last;
 			fa = c;
 			field_ea = char_ea;
 			zero = FA_IS_ZERO(fa);
-			if (field_ea->fg)
+			if (field_ea->fg && (!appres.modified_sel || !FA_IS_MODIFIED(fa)))
 				field_color = field_ea->fg & COLOR_MASK;
 			else
 				field_color = fa_color(fa);
@@ -1616,7 +1619,7 @@ int first, last;
 			if (!appres.mono)
 				b.bits.fg = e_color;
 
-			/* Find the right character. */
+			/* Find the right character and character set. */
 			if (zero) {
 				if (ss->debugging_font)
 					b.bits.cg = CG_space;
@@ -1634,7 +1637,14 @@ int first, last;
 					b.bits.cg = CG_space;
 				else {
 					b.bits.cg = c;
-					b.bits.cs = char_ea->cs;
+					if (char_ea->cs)
+						b.bits.cs = char_ea->cs;
+					else
+						b.bits.cs = field_ea->cs;
+					if (b.bits.cs & CS_GE)
+						b.bits.cs = 1;
+					else
+						b.bits.cs &= CS_MASK;
 				}
 
 			} /* otherwise, CG_null */
@@ -1806,7 +1816,7 @@ int baddr;
 	 */
 	if (ea_buf[baddr].fg)
 		color = ea_buf[baddr].fg & COLOR_MASK;
-	else if (fa2ea(fa)->fg)
+	else if (fa2ea(fa)->fg && (!appres.modified_sel || !FA_IS_MODIFIED(*fa)))
 		color = fa2ea(fa)->fg & COLOR_MASK;
 	else
 		color = fa_color(*fa);
@@ -1878,6 +1888,10 @@ Boolean invert;
 	buffer.word = 0L;
 	buffer.bits.cg = screen_buf[baddr];
 	buffer.bits.cs = ea_buf[baddr].cs;
+	if (buffer.bits.cs & CS_GE)
+		buffer.bits.cs = 1;
+	else
+		buffer.bits.cs &= CS_MASK;
 	fa = get_field_attribute(baddr);
 	gr = ea_buf[baddr].gr;
 	if (!gr)
@@ -2468,7 +2482,10 @@ unsigned char fa;
 		 * Color indices are the low-order 4 bits of a 3279 color
 		 * identifier (0 through 15)
 		 */
-		return field_colors[(fa >> 1) & 0x03];
+		if (appres.modified_sel && FA_IS_MODIFIED(fa))
+			return GC_NONDEFAULT | (appres.modified_sel_color & 0xf);
+		else
+			return field_colors[(fa >> 1) & 0x03];
 	} else {
 		/*
 		 * Color indices are the intensity bits (0 through 2)
@@ -2813,7 +2830,7 @@ char *ef;
 {
 	unsigned long svalue, svalue2;
 	extern Atom a_3270;
-	extern Atom a_registry, a_iso8859;
+	extern Atom a_registry, a_iso8859, a_ISO8859;
 	extern Atom a_encoding, a_1;
 
 	if (efontname)
@@ -2830,7 +2847,7 @@ char *ef;
 		nss.latin1_font =
 		    nss.efontinfo->max_char_or_byte2 > 127 &&
 		    XGetFontProperty(f, a_registry, &svalue) &&
-		    svalue == a_iso8859 &&
+		    (svalue == a_iso8859  || svalue == a_ISO8859) &&
 		    XGetFontProperty(f, a_encoding, &svalue2) &&
 		    svalue2 == a_1;
 		nss.xfmap = nss.latin1_font ? cg2asc : cg2asc7;
@@ -3281,6 +3298,9 @@ String	*params;
 Cardinal *num_params;
 {
 	XConfigureEvent *re = (XConfigureEvent *) event;
+	Boolean needs_moving = False;
+	Position xx, yy;
+	static Position main_x = 0, main_y = 0;
 	int current_area;
 	int requested_area;
 	struct rsfont *r;
@@ -3290,10 +3310,28 @@ Cardinal *num_params;
 
 	action_debug(Configure_action, event, params, num_params);
 
+	/*
+	 * Get the new window coordinates.  If the configure event reports it
+	 * as (0,0), ask for it explicitly.
+	 */
+	if (re->x || re->y) {
+		xx = re->x;
+		yy = re->y;
+	} else {
+		XtVaGetValues(toplevel, XtNx, &xx, XtNy, &yy, NULL);
+	}
+
+	/* Save the new coordinates in globals for next time. */
+	if (xx != main_x || yy != main_y) {
+		main_x = re->x;
+		main_y = re->y;
+		needs_moving = True;
+	}
+
 	/* If the window dimensions are "correct", there is nothing to do. */
 	if (re->width == main_width && re->height == main_height) {
 		configure_first = False;
-		return;
+		goto done;
 	}
 
 	/*
@@ -3357,7 +3395,7 @@ Cardinal *num_params;
 		}
 		screen_redo = REDO_NONE;
 
-		return;
+		goto done;
 	}
 
 	/*
@@ -3366,7 +3404,7 @@ Cardinal *num_params;
 	if (rsfonts == (struct rsfont *)NULL || !appres.allow_resize) {
 		/* Illegal or impossible. */
 		set_toplevel_sizes();
-		return;
+		goto done;
 	}
 
 	/*
@@ -3408,7 +3446,7 @@ Cardinal *num_params;
 	requested_area = re->width * re->height;
 	if (current_area == requested_area) {
 		set_toplevel_sizes();
-		return;
+		goto done;
 	}
 	smallest = (struct rsfont *) NULL;
 	largest = (struct rsfont *) NULL;
@@ -3460,6 +3498,10 @@ Cardinal *num_params;
 		}
 		screen_newfont(best->name, False);
 	}
+
+    done:
+	if (needs_moving && !iconic)
+		keypad_move();
 }
 
 /*

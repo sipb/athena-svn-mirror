@@ -464,9 +464,19 @@ x3270.model             Default 3278-4-E (mono) Switch -model
              implies E.
 
 x3270.modifiedSel       Default false
-    When true in 3278 (pseudo-color) mode, modified fields appear in the
-    "input" (light pen selectable) color.  When false, modified fields are
-    displayed in the same colors as unmodified fields.
+    When set to true, modified fields are displayed in a different color than
+    other modifiable fields.  In 3278 mode, this color is the "input" (light
+    pen selectable) color, defined by the x3270.inputColor resource.  In 3279
+    mode, this is the color whose index is defined by the
+    x3270.modifiedSelColor resource.  When x3270.modifiedSel is set to false,
+    modified fields are displayed in the same colors as unmodified fields.
+
+x3270.modifiedSelColor	Default 10
+    In 3279 mode, when the x3270.modifiedSel resource is set to true, this
+    is the index of the color used to display modified fields.  The value is
+    not an X color name or specification; rather it is a 3279 color index,
+    as documented under the x3270.colorScheme resource.  The default value
+    is 10, which corresponds to "orange".
 
 x3270.mono              Default false           Switch -mono
     If set to true, x3270 will operate as if it were running on a monochrome X
