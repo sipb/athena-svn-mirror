@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1990-11-15 12:24:56 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1990-11-16 07:34:47 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
@@ -21,8 +21,6 @@ world2:
 	make ${MFLAGS} depend
 	make ${MFLAGS} all
 
-#if 0		/* so resulting Makefile doesn't get it twice */
-Makefile::
-	-$(RM) Makefile.bak ; $(MV) Makefile Makefile.bak
-	imake -Iconfig -DNEW_TOP=. -s Makefile
-#endif
+install::
+	$(RM) $(DESTDIR)/usr/lib/olc
+	ln -s /site/usr/lib/olc $(DESTDIR)/usr/lib/olc
