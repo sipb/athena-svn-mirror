@@ -4,7 +4,7 @@
  *     For copying and distribution information, see the file
  *     "mit-copying.h".
  *
- *     $Id: Imakefile,v 1.18 1996-06-08 01:06:31 ghudson Exp $
+ *     $Id: Imakefile,v 1.19 1997-11-22 19:23:40 ghudson Exp $
  */
 
 /*
@@ -46,12 +46,7 @@ IFLAGS= -I$(IRULESRC) -DDeleteDevelopment
  */
 
 #ifdef AfsDir
-#ifdef sgi
-AFSLIBS=	-L$(AFSDIR)/lib $(AFSDIR)/lib/afs/libsys.a -lrx \
-		$(AFSDIR)/lib/afs/libsys.a -llwp
-#else
-AFSLIBS=	-L$(AFSDIR)/lib $(AFSDIR)/lib/afs/libsys.a -lrx -llwp
-#endif
+AFSLIBS=	-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
 AFSDEFINES=	-I$(AFSDIR)/include -DAFS_MOUNTPOINTS
 #endif
 
@@ -60,6 +55,9 @@ AFSDEFINES=	-I$(AFSDIR)/include -DAFS_MOUNTPOINTS
 
 #ifdef SOLARIS
 OSLIBS=		-lbsd
+#endif
+#ifdef __NetBSD__
+OSLIBS=		-lcompat
 #endif
 LIBS= 		$(AFSLIBS) -lcom_err $(OSLIBS)
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
