@@ -34,6 +34,13 @@
 			    (text-mode)
 			    (auto-fill-mode 1)
 			    (setq buffer-offer-save t)))
+; compensate for the above
+(setq initial-scratch-message "\
+This buffer is for notes you don't want to save.  If you want to create
+a file, visit that file with C-x C-f, then enter the text in that file's
+own buffer.
+
+")
 
 ; Include PO server in rmail inbox list as well as obvious mbox files.
 (setq local-inbox
