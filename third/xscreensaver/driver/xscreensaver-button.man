@@ -13,17 +13,17 @@ xss-button \- display a button to run xss
 .B \-prefs
 .I command
 ] [
-.B \-logoWidth
+.B \-logo-width
 .I width
 ] [
-.B \-logoHeight
+.B \-logo-height
 .I height
 ] [
 .B \-redirect
 |
 .B \-noredirect
 ] [
-.B \-logFile
+.B \-log-file
 .I file
 ]
 .SH DESCRIPTION
@@ -71,7 +71,7 @@ as the command to change screen saver preferences.  Defaults to
 running the installed
 .BR xss-demo (1).
 .TP 8
-\fB\-logoWidth\fP \fIwidth\fP
+\fB\-logo-width\fP \fIwidth\fP
 Sets the width of the
 .RB skull-and- xlogo (1)
 icon.  This also indirectly sets the width of the button window, and
@@ -79,7 +79,7 @@ is probably more useful than using the canonical
 .B \-width
 switch.  Defaults to 48.
 .TP 8
-\fB\-logoHeight\fP \fIheight\fP
+\fB\-logo-height\fP \fIheight\fP
 Sets the height of the
 .RB skull-and- xlogo (1)
 icon.  This also indirectly sets the height of the button window, and
@@ -89,21 +89,17 @@ switch.  Defaults to 48.
 .TP 8
 .B\-redirect
 Causes standard output and standard error of all child processes to be 
-redirected to a file.
+redirected to a file. This is the default, although the default
+log\-file is \fI/dev/null\fR.
 .TP 8
 .B\-noredirect
-Standard output and standard error will not be redirected.  The
-default is to redirect.
+Standard output and standard error will not be redirected.
 .TP 8
-\fB\-logFile\fP \fIfile\fP
+\fB\-log-file\fP \fIfile\fP
 If standard output and standard error are redirected, sends the output 
 to
 .IR file .
-Defaults to
-.I .xss-log
-in the directory
-.I xss-button
-was started from.
+Defaults to \fI/dev/null\fR.
 .SH X DEFAULTS
 This program consists of essentially a single Athena Label widget.
 The program's useful resources are:
@@ -127,13 +123,13 @@ option.
 .TP 8
 .B xrogerWidth (\fPclass\fB Width)
 Specifies the width of the xss logo.  Same as the
-.B \-logoWidth
+.B \-logo-width
 option.  The width of the window is the width of this logo plus the
 border width of the Label widget.
 .TP 8
 .B xrogerHeight (\fPclass\fB Height)
 Specifies the height of the xss logo.  Same as the
-.B \-logoHeight
+.B \-logo-height
 option.  The height of the window is the height of this logo plus the
 border width of the Label widget.
 .TP 8
@@ -145,11 +141,11 @@ and
 .B \-noredirect
 options.  Defaults to True.
 .TP 8
-.B logFile (\fPclass\fB LogFile)
+.B log-file (\fPclass\fB LogFile)
 The name of the file to send stdout and stderr to, if the
 .B redirect
 resource is True.  Same as the
-.B \-logFile
+.B \-log-file
 option.  Defaults to an unqualified ".xss-log".
 .SH SEE ALSO
 .BR xss (1),

@@ -117,7 +117,7 @@ static XtResource resources[] =
     sizeof(Boolean),
     XtOffsetOf(AppData, redirect),
     XtRImmediate,
-    (XtPointer)False
+    "true"
   },
   {
     XtNlogFile,
@@ -126,20 +126,23 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, log_file),
     XtRString,
-    ".xss-log"
+    "/dev/null"
   },
 };
 
 static XrmOptionDescRec options[] =
 {
-  { "-xss",        "*xscreensaver",    XrmoptionSepArg, NULL             },
-  { "-activate",   "*activateCommand", XrmoptionSepArg, NULL             },
-  { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL             },
-  { "-logoWidth",  "*xrogerWidth",     XrmoptionSepArg, NULL             },
-  { "-logoHeight", "*xrogerHeight",    XrmoptionSepArg, NULL             },
-  { "-redirect",   "*redirect",        XrmoptionNoArg,  (XtPointer)True  },
-  { "-noredirect", "*redirect",        XrmoptionNoArg,  (XtPointer)False },
-  { "-logFile",    "*logFile",         XrmoptionSepArg, NULL             },
+  { "-xss",        "*xscreensaver",    XrmoptionSepArg, NULL	},
+  { "-activate",   "*activateCommand", XrmoptionSepArg, NULL	},
+  { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL	},
+  { "-logoWidth",  "*xrogerWidth",     XrmoptionSepArg, NULL	},
+  { "-logoHeight", "*xrogerHeight",    XrmoptionSepArg, NULL	},
+  { "-logo-width", "*xrogerWidth",     XrmoptionSepArg, NULL	},
+  { "-logo-height","*xrogerHeight",    XrmoptionSepArg, NULL	},
+  { "-redirect",   "*redirect",        XrmoptionNoArg,  "true"	},
+  { "-noredirect", "*redirect",        XrmoptionNoArg,  "false"	},
+  { "-logFile",    "*logFile",         XrmoptionSepArg, NULL	},
+  { "-log-file",   "*logFile",         XrmoptionSepArg, NULL	},
 };
 
 static XtActionsRec actions[] =
