@@ -2,7 +2,6 @@
 #define NOLINT
 #define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
 #define ProfCcFlags -pg
-#define CDebugFlags -O2
 #define CcFlags LintFlags
 #define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L$(ATHLIBDIR)
 #define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
