@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.11 1990-06-07 22:31:31 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.12 1990-09-26 03:42:58 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ extern char *strcmp();
 #include "delete_errs.h"
 #include "errors.h"
 
-char *realloc();
+extern char *realloc();
 extern time_t current_time;
 extern int errno;
 
@@ -233,7 +233,7 @@ process_files(files, num)
 char **files;
 int num;
 {
-     int i;
+     int i, skipped = 0;
      filerec *leaf;
      
      for (i = 0; i < num; i++) {
@@ -244,13 +244,13 @@ int num;
 	  free(files[i]);
 	  if (! timed_out(leaf, current_time, timev)) {
 	       free_leaf(leaf);
-	       num--;
+	       skipped++;
 	       continue;
 	  }
 	  block_total += leaf->specs.st_blocks;
      }
      free((char *) files);
-     return(num);
+     return(num-skipped);
 }
 
 
@@ -343,7 +343,7 @@ int *number;
      *number -= offset;
      files = (char **) realloc((char *) files,
 			       (unsigned) (sizeof(char *) * *number));
-     if (! files) {
+     if ((*number != 0) && (! files)) {
 	  set_error(errno);
 	  error("realloc");
 	  return errno;
