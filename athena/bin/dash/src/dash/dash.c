@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.2 1993-07-01 18:22:14 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.3 1993-07-02 03:02:55 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -43,7 +43,10 @@ static char *rcsid =
 #include "dash.h"
 
 
-#if  defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(sun)
+#if  defined(UltrixArchitcture) \
+  || defined(AIXArchitecture) \
+  || defined(MacIIArchitecture) \
+  || defined(SunArchitecture)
 extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
@@ -154,7 +157,7 @@ static XjResource appResources[] =
 #undef offset
 
 
-#if defined(ultrix) || defined(_AIX) || defined(sun)  || defined(_AUX_SOURCE)
+#if (HasPutenv)
 /*
  *  setenv() doesn't exist on some systems...  it's putenv instead.
  *  So, we write our own setenv routine, and use it instead.
@@ -768,7 +771,7 @@ static Child *firstChild = NULL;
 /*
  * Avoid zombies
  */
-#if defined(_IBMR2)
+#if defined(RsArchitecture)
 void checkChildren(sig)
      int sig;
 #else
@@ -779,15 +782,15 @@ int checkChildren()
   Child *ch, **last;
   int child;
 
-#ifndef _AUX_SOURCE
+#if defined(MacIIArchitecture)
+  int status;
+
+  while ((child = wait3(&status, WNOHANG, 0)) > 0)
+#else
   union wait status;
   struct rusage rus;
 
   while ((child = wait3(&status, WNOHANG, &rus)) > 0)
-#else
-  int status;
-
-  while ((child = wait3(&status, WNOHANG, 0)) > 0)
 #endif
 
     {
@@ -1499,7 +1502,7 @@ int message(info, zilch, data)
 	break;
       }
 
-#ifndef _AUX_SOURCE
+#if !defined(MacIIArchitecture)
   else
     {
       sprintf(errtext, "unrecognized ClientMessage: %d\n",

@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.1 1993-07-01 18:24:36 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.2 1993-07-02 03:02:00 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -37,7 +37,10 @@ static char rcsid[] =
 #define FONTNAME \
  "-Adobe-New Century Schoolbook-Medium-R-Normal--14-140-75-75-P-82-ISO8859-1"
 
-#if  defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(sun)
+#if  defined(UltrixArchitcture) \
+  || defined(AIXArchitecture) \
+  || defined(MacIIArchitecture) \
+  || defined(SunArchitecture)
 extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
