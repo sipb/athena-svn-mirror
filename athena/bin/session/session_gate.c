@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.14 1998-03-25 20:24:27 danw Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.15 1998-03-29 08:07:00 danw Exp $
  *	$Author: danw $
  */
 
@@ -15,6 +15,7 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #ifdef SGISession
 #include <stdio.h>
