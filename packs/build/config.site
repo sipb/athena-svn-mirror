@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.30 2001-01-10 09:11:17 ghudson Exp $
+# $Id: config.site,v 1.31 2001-04-02 19:05:13 ghudson Exp $
 #
 
 athena=true
@@ -7,11 +7,11 @@ athena=true
 # OS-specific shared-library rules, and other hacks
 case "$HOSTTYPE" in
 sgi)
-	SHARED_LDFLAGS="-Wl,-rpath,/usr/athena/lib"
-	;;
+  SHARED_LDFLAGS="-Wl,-rpath,/usr/athena/lib"
+  ;;
 *)
-	SHARED_LDFLAGS="-Wl,-R/usr/athena/lib"
-	;;
+  SHARED_LDFLAGS="-Wl,-R/usr/athena/lib"
+  ;;
 esac
 
 # Compile programs with debugging and without optimization, for ease
@@ -24,23 +24,23 @@ esac
 
 # Set location of X and Motif includes and libraries.
 case "$HOSTTYPE" in
-	sun4)
-		x_includes=/usr/openwin/include
-		x_libraries=/usr/openwin/lib
-		with_motif=/usr/dt
-		;;
-	linux)
-		x_includes=/usr/X11R6/include
-		x_libraries=/usr/X11R6/lib
-		with_motif=yes
-		# Kludge.  libresolv only defines __res_foo.
-		ac_cv_lib_resolv_res_send=yes
-		;;
-	*)
-		x_includes=
-		x_libraries=
-		with_motif=yes
-		;;
+sun4)
+  x_includes=/usr/openwin/include
+  x_libraries=/usr/openwin/lib
+  with_motif=/usr/dt
+  ;;
+linux)
+  x_includes=/usr/X11R6/include
+  x_libraries=/usr/X11R6/lib
+  with_motif=yes
+  # Kludge.  libresolv only defines __res_foo.
+  ac_cv_lib_resolv_res_send=yes
+  ;;
+*)
+  x_includes=
+  x_libraries=
+  with_motif=yes
+  ;;
 esac
 
 # Set location of various includes and libraries if they aren't
