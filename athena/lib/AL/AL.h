@@ -23,39 +23,6 @@
 #define AL_HMAX	sizeof(utmp.ut_host)
 #endif
 
-#ifndef AL_MAXBSIZE
-#define AL_MAXBSIZE 1024
-#endif
-
-#ifdef VFS
-#define AL_QUOTAWARN	"quota"	/* warn user about quotas */
-#endif VFS
-
-#define AL_KRB_ENVIRON	"KRBTKFILE" /* Ticket file environment variable */
-#define AL_KRB_TK_DIR	"/tmp/tkt_" /* Where to put the ticket */
-#define AL_KRBTKLIFETIME	DEFAULT_TKT_LIFE
-
-#define AL_PROTOTYPE_DIR	"/usr/athena/lib/prototype_tmpuser" /* Source for temp files */
-#define AL_TEMP_DIR_PERM	0755	/* Permission on temporary directories */
-
-#define AL_MAXPWSIZE   	128	/* Biggest key getlongpass will return */
-
-#define AL_START_UID	200	/* start assigning arbitrary UID's here */
-#define AL_MIT_GID		101	/* standard primary group "mit" */
-
-extern char *krb_err_txt[];	/* From libkrb */
-
-extern char	nolog[];
-extern char	qlog[];
-extern char	maildir[;
-extern char	lastlog[];
-extern char	inhibit[];
-extern char	noattach[];
-extern char	noremote[];
-extern char	go_register[];
-extern char	get_motd[];
-extern char	rmrf[];
-
 typedef struct _ALsession
 {
   long flags;
