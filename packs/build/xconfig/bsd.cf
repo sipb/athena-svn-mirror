@@ -10,7 +10,7 @@ XCOMM operating system:  OSName
 #define HasVoidSignalReturn NO
 #define HasBsearch NO
 #define DirFailPrefix -
-#define AvoidNullMakeCommand	YES
+#define HasNdbm YES
 
 #ifdef VaxArchitecture
 #define XqdssServer YES
@@ -32,4 +32,8 @@ XCOMM operating system:  OSName
 
 #if OSMajorVersion >= 4 && OSMinorVersion >= 3
 #define SetTtyGroup YES
+#endif
+
+#if HasGcc
+#define	CcCmd	gcc -pipe -fpcc-struct-return
 #endif
