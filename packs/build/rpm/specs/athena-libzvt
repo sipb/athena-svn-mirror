@@ -1,7 +1,0 @@
-Name: athena-libzvt
-Summary: Zed's Virtual Terminal widget, for Athena
-License: LGPL
-Group: X11/Libraries
-
-%description
-zvt is a terminal emulation widget used by gnome-terminal.
