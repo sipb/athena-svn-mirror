@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.19 1994-12-16 05:20:36 cfields Exp $
+# $Id: add.csh,v 1.20 1994-12-16 05:34:03 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -147,10 +147,10 @@ if ( $?add_new ) then
 # fascist lockers, and more reliable output.
 #
   if ( $?add_verbose ) then
-    attach $attach_args
-    set add_dirs = `attach -h -p $attach_args`
+    attach $add_attach
+    set add_dirs = `attach -h -p $add_attach`
   else
-    set add_dirs = `attach -p $attach_args`
+    set add_dirs = `attach -p $add_attach`
   endif
 else
 #
