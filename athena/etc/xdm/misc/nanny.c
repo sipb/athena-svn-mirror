@@ -8,22 +8,50 @@
 #include <errno.h>
 #include "pc.h"
 #include "cons.h"
+#include "var.h"
+#include "cvt.h"
 #include <AL/AL.h>
 
 #define SOCK_SECURE 1
 #define SOCK_INSECURE 2
 
-typedef struct {
+typedef struct disp_state {
   pc_state *ps;
   cons_state *cs;
   ALut ut;
   ALsessionStruct sess;
   int socketSec;
   int consolePreference;
+  varlist *vars;
 } disp_state;
 
 char *name;
 int debug = 5;
+
+typedef char *(*varHandler)(disp_state *, char *, varlist *, varlist *);
+
+typedef struct {
+  char *name;
+  int flags;
+  varHandler func;
+} var_def;
+
+#define NONE 0
+#define READ_ONLY 1
+#define SECURE_SET 2
+
+char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
+{
+}
+
+char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
+{
+  char *value;
+
+  var_getString(vin, name, &value);
+  var_setString(ds->vars, name, value);
+  var_setString(vout, name, "OK");
+}
 
 #define NANNYPORT "/tmp/nanny"
 
@@ -34,6 +62,90 @@ int debug = 5;
 
 #define DOLINK
 static char *athconsole="/etc/athena/consdev";
+
+void init_utmp(disp_state *ds, char *tty)
+{
+  if (tty == NULL)
+    tty = "/dev/ttyq??";
+
+  ds->ut.user = NANNYNAME;
+  ds->ut.host = ":0.0";
+  ds->ut.line = tty + 5;
+  ds->ut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
+}
+
+void clear_utmp(disp_state *ds)
+{
+  ds->ut.user = NANNYNAME;
+  ds->ut.type = ALutDEAD_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);  
+}
+
+char *do_login(char *uname, disp_state *ds)
+{
+  ds->ut.user = uname;
+  ds->ut.type = ALutUSER_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
+
+  ds->socketSec = SOCK_INSECURE;
+  return "logged in";
+}
+
+/*
+ * Be sure to clear all connections that are not the LISTENER
+ * when changing to SOCK_SECURE. secure(ds) probably.
+ */
+char *do_logout(disp_state *ds)
+{
+  ds->ut.user = NANNYNAME;
+  ds->ut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
+
+  ds->socketSec = SOCK_SECURE;
+  return "logged out";
+}
+
+char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
+{
+  char *value;
+
+  var_getString(vin, name, &value);
+
+  if (!strcasecmp(value, "TRUE"))
+    {
+      if (ds->socketSec == SOCK_INSECURE)
+	var_setString(vout, name, "A user is currently logged in.");
+      else
+	{
+	  if (!var_getString(ds->vars, "USER", &value))
+	    {
+	      var_setString(vout, name, do_login(value, ds));
+	      var_setString(ds->vars, name, "TRUE");
+	    }
+	  else
+	    var_setString(vout, name, "USER not set");
+	}
+    }
+  else
+    if (!strcasecmp(value, "FALSE"))
+      {
+	if (ds->socketSec != SOCK_INSECURE)
+	  var_setString(vout, name, "No user is logged in.");
+	else
+	  {
+	    var_setString(vout, name, do_logout(ds));
+	    var_setString(ds->vars, name, "FALSE");
+	    var_setValue(ds->vars, "USER", NULL, 0);
+	  }
+      }
+    else
+      var_setString(vout, name, "BADVALUE");  
+}
 
 char *startConsole(disp_state *ds)
 {
@@ -66,58 +178,121 @@ char *stopConsole(disp_state *ds)
     }
 }
 
-void init_utmp(disp_state *ds, char *tty)
+char *setConsPref(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
-  if (tty == NULL)
-    tty = "/dev/ttyq??";
+  char *value;
 
-  ds->ut.user = NANNYNAME;
-  ds->ut.host = ":0.0";
-  ds->ut.line = tty + 5;
-  ds->ut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);
+  var_getString(vin, name, &value);
+
+  if (!strcasecmp(value, "ON"))
+    {
+      ds->consolePreference = CONS_UP;
+      var_setString(ds->vars, name, "ON");
+      var_setString(vout, name, startConsole(ds));
+    }
+  else
+    if (!strcasecmp(value, "OFF"))
+      {
+	ds->consolePreference = CONS_DOWN;
+	var_setString(ds->vars, name, "OFF");
+	var_setString(vout, name, stopConsole(ds));
+      }
+    else
+      var_setString(vout, name, "BADVALUE");
 }
 
-void clear_utmp(disp_state *ds)
+char *setConsMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
-  ds->ut.user = NANNYNAME;
-  ds->ut.type = ALutDEAD_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);  
 }
 
-char *do_login(pc_message *input, disp_state *ds)
+char *setDebug(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
-  char *uname;
+  char *value;
 
-  if (ds->socketSec == SOCK_INSECURE)
-    return "A user is currently logged in.";
-
-  uname = strchr(input->data, ' ');
-  if (uname == NULL)
-    return "No username specified.";
-
-  uname++;
-
-  ds->ut.user = uname;
-  ds->ut.type = ALutUSER_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);
-
-  ds->socketSec = SOCK_INSECURE;
-  return "logged in";
+  var_getString(vin, name, &value);
+  debug = atoi(value);
+  var_setString(ds->vars, name, value);
+  var_setString(vout, name, "OK");
 }
 
-char *do_logout(disp_state *ds)
+char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
-  ds->ut.user = NANNYNAME;
-  ds->ut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);
+}
 
-  ds->socketSec = SOCK_SECURE;
-  return "logged out";
+/* List of magic variables - variables where changing the value
+   causes something to happen immediately, or other special
+   attributes. */
+var_def vars[] = {
+  { "USER",		SECURE_SET,	setStd },
+  { "REMOVE_USER",	SECURE_SET,	setStd },
+  { "TTY",		READ_ONLY,	setStd },
+  { "LOGGED_IN",	NONE,		setLogin },
+  { "NANNY_MODE",	SECURE_SET,	setNannyMode },
+  { "XCONSOLE",		NONE,		setConsPref },
+  { "CONSOLE_MODE",	NONE,		setConsMode },
+  { "DEBUG",		NONE,		setDebug },
+
+  /* These aren't actually special, but they are in standard use,
+     so we list them for documentation. */
+  { "ELMER_ARGS[",	NONE,		setStd },
+  { "ENV[",		NONE,		setStd },
+  { NULL,		NONE,		setStd }
+};
+
+char *handleVars(pc_message *input, disp_state *ds, buffer **buf)
+{
+  buffer inbuf;
+  varlist *vin, *vout;
+  char **vlist, **ptr, *value;
+  var_def *vstep;
+
+  var_init(&vin);
+  var_init(&vout);
+
+  inbuf.buf = input->data;
+  inbuf.len = input->length;
+
+  cvt_buf2vars(vin, &inbuf);
+  var_listVars(vin, &vlist);
+
+  if (!strcmp(*vlist, "dump"))
+    cvt_vars2buf(buf, ds->vars);
+  else
+    {
+      ptr = vlist;
+      while (*ptr)
+	{
+	  var_getString(vin, *ptr, &value);
+	  if (!strcmp(value, cvt_query))
+	    {
+	      if (var_getString(ds->vars, *ptr, &value))
+		var_setString(vout, *ptr, "NONE");
+	      else
+		var_setString(vout, *ptr, value);
+	    }
+	  else
+	    {
+	      for (vstep = vars; vstep->name != NULL; vstep++)
+		if (!strcmp(vstep->name, *ptr))
+		  break;
+	      
+	      if ((vstep->flags & READ_ONLY) ||
+		  ((vstep->flags & SECURE_SET) && !ds->socketSec))
+		var_setString(vout, *ptr, "EPERM");
+	      else
+		vstep->func(ds, *ptr, vin, vout);
+	    }
+
+	  ptr++;
+	}
+
+      cvt_vars2buf(buf, vout);
+    }
+
+  var_freeList(vin, vlist);
+  var_destroy(vin);
+  var_destroy(vout);
+  return "ha!";
 }
 
 int process(pc_message *input, disp_state *ds)
@@ -125,21 +300,10 @@ int process(pc_message *input, disp_state *ds)
   char *reply = NULL;
   int ret = 0;
   pc_message output;
+  buffer *buf = NULL;
 
   if (debug)
     syslog(LOG_INFO, "request: %s", input->data);
-
-  if (!strcmp(input->data, "xup"))
-    {
-      ds->consolePreference = CONS_UP;
-      reply = startConsole(ds);
-    }
-
-  if (!strcmp(input->data, "xdown"))
-    {
-      ds->consolePreference = CONS_DOWN;
-      reply = stopConsole(ds);
-    }
 
   if (!strcmp(input->data, "die"))
     {
@@ -158,28 +322,37 @@ int process(pc_message *input, disp_state *ds)
 	reply = "can't shut down with user logged in";
     }
 
-  if (!strncmp(input->data, "login", 5))
-    {
-      reply = do_login(input, ds);
-    }
-
-  if (!strncmp(input->data, "logout", 5))
-    {
-      reply = do_logout(ds);
-    }
+  if (reply == NULL)
+    reply = handleVars(input, ds, &buf);
 
   if (reply == NULL)
     reply = "unknown command";
 
   if (input->source)
     {
+      if (buf != NULL)
+	{
+	  output.data = buf->buf;
+	  output.length = buf->len;
+	}
+      else
+	{
+	  output.data = reply;
+	  output.length = strlen(reply);
+	}
+
       output.source = input->source;
-      output.data = reply;
-      output.length = strlen(reply);
       pc_send(&output);
 
       if (debug)
 	syslog(LOG_INFO, "reply: %s", reply);
+
+    }
+
+  if (buf != NULL)
+    {
+      free(buf->buf);
+      free(buf);
     }
 
   return ret;
@@ -213,6 +386,30 @@ void children(int sig, int code, struct sigcontext *sc)
 
 #define ALERROR() { com_err(argv[0], code, ALcontext(&ds.sess)); }
 
+void dumpMessage(pc_message *message)
+{
+  varlist *vout;
+  buffer outbuf;
+  char **vlist, **ptr, *val;
+
+  var_init(&vout);
+
+  outbuf.buf = message->data;
+  outbuf.len = message->length;
+  cvt_buf2vars(vout, &outbuf);
+
+  var_listVars(vout, &vlist);
+
+  for (ptr = vlist; *ptr != NULL; ptr++)
+    {
+      var_getString(vout, *ptr, &val);
+      fprintf(stdout, "%s=%s\n", *ptr, val);
+    }
+
+  var_freeList(vout, vlist);
+  var_destroy(vout);
+}
+
 int main(int argc, char **argv)
 {
   struct sigaction sigact;
@@ -221,6 +418,8 @@ int main(int argc, char **argv)
   pc_port *inport, *outport;
   pc_message *message;
   char *option;
+  buffer *outbuf;
+  char sillybuf[10];
   int ret = 0;
   int silent = 0;
   long code;
@@ -239,7 +438,7 @@ int main(int argc, char **argv)
   if (argc == 2)
     option = argv[1];
   else
-    option = "ping";
+    option = "start";
 
   /* Convention: when xdm calls nanny, we can't send anything out
      to stderr or stdout, because that's the communication pipeline
@@ -254,8 +453,19 @@ int main(int argc, char **argv)
     }
 
   /* Initialize assorted variables. */
+  var_init(&ds.vars);
+
+  sprintf(sillybuf, "%d", debug);
+  var_setString(ds.vars, "DEBUG", sillybuf);
+
   ds.consolePreference = CONS_DOWN;
+  var_setString(ds.vars, "XCONSOLE", "OFF");
+
   ds.socketSec = SOCK_SECURE;
+
+  var_setString(ds.vars, "NANNY_MODE", "RUN"); /* vs. sleep */
+  var_setString(ds.vars, "CONSOLE_MODE", "OFF");
+  var_setString(ds.vars, "LOGGED_IN", "FALSE");
 
   /* Start syslogging. */
   openlog(name, LOG_PID, LOG_USER);
@@ -266,9 +476,19 @@ int main(int argc, char **argv)
   /* Initialize message to send to nanny. We set source to NULL
      in case we wind up sending the message to ourselves. */
   message = malloc(sizeof(pc_message));
-  message->data = option;
-  message->length = strlen(option) + 1;
   message->source = NULL;
+
+  if (argc < 3)
+    {
+      message->data = option;
+      message->length = strlen(option) + 1;
+    }
+  else
+    {
+      cvt_strings2buf(&outbuf, &argv[1]);
+      message->data = outbuf->buf;
+      message->length = outbuf->len;
+    }
 
   /* If there's a nanny already running, give it the command. */
   
@@ -276,12 +496,17 @@ int main(int argc, char **argv)
     {
       message->source = outport;
       pc_send(message);
+      if (argc > 2)
+	{
+	  free(outbuf->buf);
+	  free(outbuf);
+	}
       free(message);
 
       pc_addport(ds.ps, outport);
       if (!pc_wait(&message, ds.ps))
 	{
-	  fprintf(stdout, "%s\n", message->data);
+	  dumpMessage(message);
 	  pc_freemessage(message);
 	}
       pc_removeport(ds.ps, outport);
@@ -290,9 +515,15 @@ int main(int argc, char **argv)
     }
   else
     {
-      if (code == PCerrNotAllowed)
-	fprintf(stderr, "%s: Permission denied opening nanny socket\n", name);
-      exit(1);
+      if (code != PCerrNoListener)
+	{
+	  if (code == PCerrNotAllowed)
+	    fprintf(stderr,
+		    "%s: Permission denied opening nanny socket\n", name);
+	  else
+	    ALERROR();
+	  exit(1);
+	}
     }
 
   /* There's not a nanny running, so we take over. */
@@ -330,6 +561,8 @@ int main(int argc, char **argv)
   /* Initialize console handling. */
   ds.cs = cons_init();
   cons_getpty(ds.cs);
+
+  var_setString(ds.vars, "TTY", cons_name(ds.cs));
 
 #ifdef DOLINK
   unlink(athconsole);
