@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: args.c,v 1.1.1.2 2003-02-12 08:01:10 ghudson Exp $";
+static char rcsid[] = "$Id: args.c,v 1.1.1.3 2003-05-01 01:13:39 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: args.c,v 1.1.1.2 2003-02-12 08:01:10 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -134,11 +134,11 @@ char *args_pine_args[] = {
 " -aux <aux_files_dir>\tUse this with remote pinerc",
 " -P <pine.conf>\tUse pine.conf file for default settings",
 " -nosplash \tDisable the PC-Pine splash screen",
+#endif
 #ifdef PASSFILE
 " -passfile <fully_qualified_filename>\tSet the password file to something other",
 "\t\tthan the default",
 #endif /* PASSFILE */
-#endif
 " -x <config>\tUse configuration exceptions in <config>.",
 "\t\tExceptions are used to override your default pinerc",
 "\t\tsettings for a particular platform, can be a local file or",
@@ -159,7 +159,8 @@ char *args_pine_args[] = {
 " -copy_abook <local_abook> <remote_abook>     copy local addressbook to remote",
 " -convert_sigs -p <pinerc>   convert signatures to literal signatures",
 #if	defined(_WINDOWS)
-" -registry <cmd>\tWhere cmd is set,clear,dump",
+" -install \tPrompt for some basic setup information",
+" -registry <cmd>\tWhere cmd is set,clear,clearsilent,dump",
 #endif
 " -<option>=<value>   Assign <value> to the pinerc option <option>",
 "\t\t     e.g. -signature-file=sig1",
@@ -280,6 +281,7 @@ Loop: while(--ac > 0)
 	      }
 	      else if(strcmp(*av, "nosplash") == 0)
 		goto Loop;   /* already taken care of in WinMain */
+#endif
 #ifdef PASSFILE
 	      else if(strcmp(*av, "passfile") == 0){
 		  if(--ac){
@@ -305,7 +307,6 @@ Loop: while(--ac > 0)
 		  goto Loop;
 	      }
 #endif  /* PASSFILE */
-#endif
 	      else if(strcmp(*av, "create_lu") == 0){
 		  if(ac > 2){
 		      ac -= 2;
@@ -483,6 +484,10 @@ Loop: while(--ac > 0)
 		  goto Loop;
 	      }
 #ifdef	_WINDOWS
+	      else if(strcmp(*av, "install") == 0){
+		  ps_global->install_flag = 1;
+		  goto Loop;
+	      }
 	      else if(strcmp(*av, "registry") == 0){
 		  if(--ac){
 		      if(!strucmp(*++av, "set")){
@@ -497,6 +502,10 @@ Loop: while(--ac > 0)
 			    display_args_err(
 		      "Not all Pine related Registry values could be removed",
 				       NULL, 0);
+			  exit(0);
+		      }
+		      else if(!strucmp(*av, "clearsilent")){
+			  mswin_reg(MSWR_OP_BLAST, MSWR_NULL, NULL, 0);
 			  exit(0);
 		      }
 		      else if(!strucmp(*av, "dump")){
@@ -746,7 +755,7 @@ Loop: while(--ac > 0)
 	  if(*p == ',')
 	    ++commas;
 
-	COM_INIT_CMD_LIST = parse_list(cmd_list, commas+1, &error);
+	COM_INIT_CMD_LIST = parse_list(cmd_list, commas+1, 0, &error);
 	if(error){
 	    sprintf(tmp_20k_buf, args_err_I_error, cmd_list, error);
 	    display_args_err(tmp_20k_buf, NULL, 1);
@@ -789,7 +798,7 @@ Loop: while(--ac > 0)
 	  if(*p == ',')
 	    ++commas;
 
-	pine_state->feat_list_back_compat = parse_list(list, commas+1, &error);
+	pine_state->feat_list_back_compat = parse_list(list,commas+1,0,&error);
 	if(error){
 	    sprintf(tmp_20k_buf, args_err_internal, error);
 	    display_args_err(tmp_20k_buf, NULL, 1);
@@ -856,7 +865,7 @@ process_debug_str(debug_str)
 	      if(*q == ',')
 		++commas;
 
-	    list = parse_list(debug_str, commas+1, &error);
+	    list = parse_list(debug_str, commas+1, 0, &error);
 	    if(error){
 		sprintf(tmp_20k_buf, args_err_d_error, debug_str, error);
 		display_args_err(tmp_20k_buf, NULL, 1);

@@ -551,97 +551,52 @@ the <CODE>pine.conf</CODE> and <CODE>pine.conf.fixed</CODE> files.  <P>
 
 <H2><A NAME="install-pc">Installing PC-Pine</A></H2>
 
-Beginning with the <EM>Pine</EM> 3.90 release, there is a <EM>PC-Pine</EM> version that runs
-under windows using the Winsock network interface.  For those who still
-need to run the DOS version of <EM>PC-Pine</EM>, there are versions for four
-different TCP/IP network stacks: FTP Inc's PC/TCP, Novell's LAN Workplace
-for DOS, Sun's PC/NFS, and WATTCP for packet drivers.  <EM>PC-Pine</EM> needs to be
-able to interact closely with the stack loaded on your PC.  Most of the
-time, this occurs automatically.  However, there are certain modifications
-that need be made.  <P>
-
-<DL COMPACT>
-
-<DT> LAN Workplace for DOS Version 4.1
-
-<DD> Set the environment variable <EM>EXCELAN</EM> in the PC's
-<EM>AUTOEXEC.BAT</EM> file.  This provides the necessary links so that LAN
-Workplace for DOS 4.1 can translate domain names to IP numbers correctly. 
-It is needed because <EM>Pine</EM> was developed for LAN Workplace 4.0 and this
-particular variable is treated differently in 4.1 than in 4.0.  The
-<EM>EXCELAN</EM> variable must point to the directory in which LAN
-Workplace is installed. 
-
-<DT> PC/TCP versions before 2.2
-
-<DD> You need a file called <EM>PCTCP.INI</EM> which contains a
-bare-minimum 2-line description of the PC's configuration.  It looks like
-this: 
-
-<PRE>
-		[pctcp ifcust 0]
-		ip-address=<EM>xx.xx.xx.xx</EM>
-</PRE>
-
-<DT>
-
-<DD> Where <EM>xx.xx.xx.xx</EM> is the IP address of the PC.  <EM>Pine</EM> also
-requires an environment variable, <EM>PCTCP,</EM> which points to this
-file.  For example: 
-
-<PRE>
-		set PCTCP=C:\PINE\PCTCP.INI
-</PRE>
-
-<DT> Packet Drivers
-
-<DD> <EM>Pine</EM> needs to be made aware of the PC's network configuration file. 
-Simply edit the file <CODE>WATTCP.CFG</CODE> included in the <EM>Pine</EM>
-distribution.  The file includes 5 configuration settings--IP-address,
-gateway, netmask, nameserver(s) and domainslist.  If you have a network
-configuration file for NCSA Telnet then <CODE>WATTCP.CFG</CODE> is just a
-pared down version of the <CODE>CONFIG.TEL</CODE> file you already made. 
-Take a look at <CODE>CONFIG.TEL</CODE> to find the correct settings for
-<CODE>WATTCP.CFG</CODE>.  Once the configuration file is made, the DOS
-environment variable <CODE>WATTCP.CFG</CODE> needs to point at it.  For
-example: 
-
-<PRE>
-		set WATTCP.CFG=C:\PINE
-</PRE>
 <P>
+The PC-Pine distribution comes as a .zip file.  To install, unzip the
+files to a directory where you would like the program to reside.  Modern
+Windows versions come with the capability of unzipping .zip files.  Failing
+that, you can use one of the many .zip file extractors out there, or the
+pkunzip.exe program that resides on our FTP server.
+Following current Windows conventions, a common directory into which the files
+could be extracted would be <CODE>C:\Program Files\PC-Pine\</CODE>.
 
-</DL> <P>
+<P>
+Having extracted PC-Pine's .zip file to the directory of choice, you can
+now run that directory's pine.exe, which is the actual PC-Pine program.
+For convenience, you could place shortcuts to it on the task bar, start
+menu, etc.
 
-In addition to networking software issues, you might need to worry about
-setting the time zone.  <EM>PC-Pine</EM> includes the time zone as part of outgoing
-email.  There is a generic way for PC applications to get the time zone,
-but, because <EM>PC-Pine</EM> is one of a very few applications which requires this
-information, time zone might not be previously configured.  <P>
+<P>
+Upon first running PC-Pine, you may be asked where you would like to
+access your Configuration file (called the <I>pinerc</I>).  This
+is useful in accessing already existing configuration files, and it
+does not matter where this file gets created.  If you are connecting 
+to an IMAP server to access your email, it is also possible to store
+this Configuration data on that server, which facilitates accessing
+the same configuration from multiple machines (in fact, your configuration
+may have already been set up this way for use with other pine programs).
 
-The trick is to add an environment variable, <EM>TZ</EM>, to your PC's
-<CODE>AUTOEXEC.BAT</CODE> file.  The format for the <EM>TZ</EM>
-environment variable is as follows:
+<P>
+After having established the location of the configuration file, it may be
+necessary to specify a few configuration settings before reading or sending
+mail.  You may be prompted for the following (which may also be edited from
+the (S)etup (C)onfig screen from the Main Menu):
 
-<PRE>
-	ZZZ[+H]H[:MM:SSTTT]
-</PRE>
+<LI><CODE>Folder to open as inbox</CODE> (or <I>inbox-path</I>) - This can 
+be an inbox residing on an IMAP or POP3 server, or one residing locally. 
+An example of an INBOX for an IMAP server is: 
+<CODE>{server.example.com}INBOX</CODE>.
 
-First is the 3-letter code for your standard time, then a "+" or a "-" for
-direction of offset from GMT, then the amount of offset (hours, minutes,
-seconds) and finally the 3-letter code for your summer- or daylight
-savings time.  Everything in [] brackets is optional.  <P>
+<LI><CODE>User-id</CODE>, <CODE>Personal name</CODE>, and 
+<CODE>host/domain</CODE>, which are to be used as your email address.
 
-The default time zone is "<CODE>PST-8PDT</CODE>" (U.S. Pacific Time). 
-Coincidentally, Microsoft is headquartered in that time zone.  <P>
+<LI><CODE>SMTP server to forward message</CODE> - You must enter your SMTP
+server before you can send any messages.
 
-As an example, people in the Eastern part of the US should add this line
-to their <CODE>AUTOEXEC.BAT</CODE> files:  <P>
-
-<PRE>
-	TZ=EST-5EDT
-</PRE>
-
+<P>
+At this point, you will be able to read and send email messages.  There are,
+however, many more preferences that you can set in the Configuration
+screen.
 <HR>
 
 <H2><A NAME="install-imapd">Installing IMAPd</A></H2>

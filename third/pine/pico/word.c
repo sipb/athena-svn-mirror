@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: word.c,v 1.1.1.2 2003-02-12 08:01:58 ghudson Exp $";
+static char rcsid[] = "$Id: word.c,v 1.1.1.3 2003-05-01 01:13:13 ghudson Exp $";
 #endif
 /*
  * Program:	Word at a time routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: word.c,v 1.1.1.2 2003-02-12 08:01:58 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2003 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -360,92 +360,9 @@ inword()
 	   && isalnum((unsigned char)lgetc(curwp->w_dotp, curwp->w_doto).c));
 }
 
-/*
- * Try to determine what the quote string for given line l is,
- * and put it into buf.
- *
- * Returns: 1 or the total number of indentations
- */
-quote_match_work(q, l, buf, buflen)
-    char *q;
-    LINE *l;
-    char *buf;
-    int   buflen;
-{
-    register int i, n = 1, j, qb;
-    int qstart, qend, k;
-
-    /* 
-     * The method for determining the quote string is:
-     * 1) strip leading and trailing whitespace from q
-     * 2) add all leading whitespace to buf
-     * 3) check for q
-     * 4) if q, append q to buf and any trailing whitespace
-     * 5) repeat steps 3 and 4 as necessary
-     * 
-     * q in the future could be made to be an array of (char *)'s
-     *    (">" and whatever the user's quote_string is)
-     */
-
-    /* count leading whitespace as part of the quote */
-    *buf = '\0';
-    for(j = 0; 
-	(j <= llength(l))
-	  && ((unsigned char) lgetc(l, j).c == ' ')
-	  && j+1 < buflen; j++){
-	buf[j] = lgetc(l, j).c;
-	n = 1;
-    }
-    buf[j] = '\0';
-    if(*q == '\0')
-      return(1);
-
-    /* pare down q so it contains no leading or trailing whitespace */
-    qstart = 0;
-    for(i = 0; (unsigned char)q[i] == ' '; i++)
-      qstart = i + 1;
-    qend = strlen(q);
-    for(i = strlen(q); i > 0 && ((unsigned char)q[i-1] == ' '); i--)
-      qend = i - 1;
-    if(qend <= qstart)
-      return(1);
-
-    while(j <= llength(l)){
-	for(i = qstart; (j <= llength(l)) && i < qend; i++, j++)
-	  if(q[i] != lgetc(l, j).c)
-	    return(n);
-
-	n++;
-	if(i >= qend){
-	    if(strlen(buf) + qend - qstart < (buflen - 1))
-	      strncat(buf, q + qstart, qend - qstart);
-	}
-
-	/* 
-	 * if we're this far along, we've matched a quote string,
-	 * and should now remove the following white space.
-	 */
-	for(k = strlen(buf);
-	    (j <= llength(l))
-	      && ((unsigned char)lgetc(l,j).c == ' ')
-	      && (k + 1 < buflen);
-	    j++, k++){
-	    buf[k] = lgetc(l,j).c;
-	}
-	buf[k] = '\0';
-
-	if(j > llength(l))
-	  return(n);
-    }
-    return(n);  /* never reached */
-}
-
 
 /*
  * Return number of quotes if whatever starts the line matches the quote string
- *
- * The quote string returned in buf is now more lenient in what it returns, and now
- * handles leading white space and any numbers of q indentations.
  */
 quote_match(q, l, buf, buflen)
     char *q;
@@ -453,35 +370,32 @@ quote_match(q, l, buf, buflen)
     char *buf;
     int   buflen;
 {
-    int rv = 0;
-    char nbuf[NLINE], pbuf[NLINE];
+    register int i, n, j, qb;
 
-    rv = quote_match_work(q, l, buf, buflen);
-    /*
-     * Check to see if the next line is part of the same paragraph,
-     * but don't count white space as a quote if that white space
-     * is just a paragraph indentation.
-     */
-    if(lforw(l) != curbp->b_linep
-       && quote_match_work(q, lforw(l), nbuf, NLINE) == rv
-       && strlen(nbuf) < strlen(buf)
-       && strncmp(buf, nbuf, strlen(nbuf)) == 0
-       && llength(lforw(l)) > strlen(nbuf)){
-	/*
-	 * If we get here, we know that the next line has the same indent string
-	 * that the current line, but it is padded with less spaces. This is
-	 * the typical situation that we find at the beginning of a paragraph.
-	 * We need to check, however, that this is so, by checking the previous
-	 * line.
-	 */
-	if((l == curbp->b_linep)
-	   || (rv != quote_match_work(q, lback(l), pbuf, NLINE))
-	   || (strlen(pbuf) != strlen(buf))
-	   || (strncmp(buf, pbuf, strlen(pbuf))))
-	  strcpy(buf,nbuf);
+    *buf = '\0';
+    if(*q == '\0')
+      return(1);
+
+    qb = (strlen(q) > 1 && q[strlen(q)-1] == ' ') ? 1 : 0;
+    for(n = 0, j = 0; ;){
+	for(i = 0; j <= llength(l) && qb ? q[i+1] : q[i]; i++, j++)
+	  if(q[i] != lgetc(l, j).c)
+	    return(n);
+
+	n++;
+	if((!qb && q[i] == '\0') || (qb && q[i+1] == '\0')){
+	    if(strlen(buf) + strlen(q) + 1 < buflen){
+		strcat(buf,q);
+		if(qb && (j > llength(l) || lgetc(l, j).c != ' '))
+		  buf[strlen(buf)-1] = '\0';
+	    }
+	}
+	if(j > llength(l))
+	  return(n);
+	else if(qb && lgetc(l, j).c == ' ')
+	  j++;
     }
-
-    return(rv);
+    return(n);  /* never reached */
 }
 
 
@@ -517,8 +431,10 @@ int f, n;	/* deFault flag and Numeric argument */
     gotobop(FALSE, 1);
 
     /* determine if we're justifying quoted text or not */
-    qstr = (glo_quote_str
-	    && quote_match(glo_quote_str, curwp->w_dotp, qstr2, NSTRING)
+    qstr = ((glo_quote_str || (Pmaster && Pmaster->quote_str))
+	    && quote_match(glo_quote_str ? glo_quote_str
+			   : Pmaster->quote_str, 
+			   curwp->w_dotp, qstr2, NSTRING)
 	    && *qstr2) ? qstr2 : NULL;
     qlen = qstr ? strlen(qstr) : 0;
 

@@ -105,6 +105,7 @@
 #define PINEICON                        400
 #define NEWMAILICON                     401
 #define	PICOHAND			402
+#define MCLOSEDICON                     403
 #define PINEBITMAP                      500
 #define PINESPLASH			501
 #define IDD_ABOUTICON                   0x210

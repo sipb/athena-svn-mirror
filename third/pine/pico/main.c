@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: main.c,v 1.1.1.2 2003-02-12 08:01:36 ghudson Exp $";
+static char rcsid[] = "$Id: main.c,v 1.1.1.3 2003-05-01 01:13:32 ghudson Exp $";
 #endif
 /*
  * Program:	Main stand-alone Pine Composer routines
@@ -73,7 +73,7 @@ static int fkm[12][2] = {
 #endif
 };
 
-char *pico_args PROTO((int, char **, int *, int *));
+char *pico_args PROTO((int, char **, int *, int *, int *, int *));
 void  pico_args_help PROTO((void));
 void  pico_vers_help PROTO((void));
 void  pico_display_args_err PROTO((char *, char **, int));
@@ -116,6 +116,8 @@ char *args_pico_args[] = {
 #endif
 "\t +[line#] \tLine - start on line# line, default=1",
 "\t -v \t\tView - view file",
+"\t -setlocale_ctype\tdo setlocale(LC_CTYPE) if available",
+"\t -no_setlocale_collate\tdo not do setlocale(LC_COLLATE)",
 "\t -version\tPico version number",
 "", 
 "\t All arguments may be followed by a file name to display.",
@@ -140,6 +142,8 @@ char    *argv[];
     register BUFFER *bp;
     int	     viewflag = FALSE;		/* are we starting in view mode?*/
     int	     starton = 0;		/* where's dot to begin with?	*/
+    int      setlocale_collate = 1;
+    int      setlocale_ctype = 0;
     char     bname[NBUFN];		/* buffer name of file to read	*/
     char    *file_to_edit = NULL;
 
@@ -147,13 +151,15 @@ char    *argv[];
     Pmaster = NULL;     		/* turn OFF composer functionality */
     km_popped = 0;
     opertree[0] = opertree[NLINE] = '\0';
-    set_collation();
 
     /*
      * Read command line flags before initializing, otherwise, we never
      * know to init for f_keys...
      */
-    file_to_edit = pico_args(argc, argv, &starton, &viewflag);
+    file_to_edit = pico_args(argc, argv, &starton, &viewflag,
+			     &setlocale_collate, &setlocale_ctype);
+
+    set_collation(setlocale_collate, setlocale_ctype);
 
 #if	defined(DOS) || defined(OS2)
     if(file_to_edit){			/* strip quotes? */
@@ -178,6 +184,7 @@ char    *argv[];
 
 #ifdef	_WINDOWS
     mswin_setwindow(NULL, NULL, NULL, NULL, NULL, NULL);
+    mswin_showwindow();
     mswin_showcaret(1);			/* turn on for main window */
     mswin_allowpaste(MSWIN_PASTE_FULL);
     mswin_setclosetext("Use the ^X command to exit Pico.");
@@ -342,11 +349,13 @@ char    *argv[];
  *       returns the name of any file to open, else NULL
  */
 char *
-pico_args(ac, av, starton, viewflag)
+pico_args(ac, av, starton, viewflag, setlocale_collate, setlocale_ctype)
     int    ac;
     char **av;
     int   *starton;
     int   *viewflag;
+    int   *setlocale_collate;
+    int   *setlocale_ctype;
 {
     int   c, usage = 0;
     char *str;
@@ -384,6 +393,14 @@ Loop:
 
 	if(strcmp(*av, "version") == 0){
 	    pico_vers_help();
+	}
+	else if(strcmp(*av, "setlocale_ctype") == 0){
+	    *setlocale_ctype = 1;
+	    goto Loop;
+	}
+	else if(strcmp(*av, "no_setlocale_collate") == 0){
+	    *setlocale_collate = 0;
+	    goto Loop;
 	}
 #if	defined(DOS) || defined(OS2)
 	else if(strcmp(*av, "cnf") == 0

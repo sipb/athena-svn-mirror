@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-aix.h,v 1.1.1.2 2003-02-12 08:09:24 ghudson Exp $
+  $Id: os-aix.h,v 1.1.1.3 2003-05-01 01:12:53 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -111,11 +111,13 @@
 /*----------------------------------------------------------------------
     Timeouts (seconds)
  ----*/
+#ifndef DF_MAILCHECK
 #define DF_MAILCHECK      "150" /* How often to check for new mail, by
 				   default.  There's some expense in doing
 				   this so it shouldn't be done too
 				   frequently.  (Can be set in config
 				   file now.)  */
+#endif
 
 /*----------------------------------------------------------------------
     Check pointing (seconds)
@@ -162,8 +164,12 @@
 
 
 /*----- System-wide config file ----------------------------------------*/
+#ifndef SYSTEM_PINERC
 #define SYSTEM_PINERC             "/usr/local/lib/pine.conf"
+#endif
+#ifndef SYSTEM_PINERC_FIXED
 #define SYSTEM_PINERC_FIXED       "/usr/local/lib/pine.conf.fixed"
+#endif
 
 
 
@@ -213,8 +219,12 @@
 
 
 /*----- The usual sendmail configuration for sending mail on Unix ------*/
+#ifndef SENDMAIL
 #define SENDMAIL	"/usr/lib/sendmail"
+#endif
+#ifndef SENDMAILFLAGS
 #define SENDMAILFLAGS	"-bs -odb -oem"	/* send via smtp with backgroud
+#endif
 					   delivery and mail back errors */
 
 
@@ -225,7 +235,9 @@
 
 
 /*--------- Program employed by users to change their password ---------*/
+#ifndef	PASSWD_PROG
 #define	PASSWD_PROG	"/bin/passwd"
+#endif
 
 
 /*-------------- A couple constants used to size arrays ----------------*/

@@ -67,6 +67,10 @@ Enable ^Z suspension of \fIpilot\fR.
 Termcap or terminfo definition for input escape sequences are used in
 preference to sequences defined by default.  This option is only available
 if \fIpilot\fR was compiled with the TERMCAP_WINS define turned on.
+.IP \fB-setlocale_ctype\fR
+Do setlocale(LC_CTYPE) if available. Default is to not do this setlocale.
+.IP \fB-no_setlocale_collate\fR
+Do not do setlocale(LC_COLLATE). Default is to do this setlocale.
 .fi
 .SH Authors
 Michael Seibel <mikes@cac.washington.edu>
@@ -79,4 +83,4 @@ Source distribution (part of the Pine Message System):
 .br
    ftp://ftp.cac.washington.edu/mail/pine.tar.Z
 
-$Date: 2001-02-19 07:05:52 $
+$Date: 2003-05-01 01:13:27 $

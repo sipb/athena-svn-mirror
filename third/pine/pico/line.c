@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: line.c,v 1.1.1.2 2003-02-12 08:01:56 ghudson Exp $";
+static char rcsid[] = "$Id: line.c,v 1.1.1.3 2003-05-01 01:12:35 ghudson Exp $";
 #endif
 /*
  * Program:	Line management routines
@@ -633,7 +633,9 @@ lisblank(line)
     int n = 0;
     char qstr[NLINE];
 
-    n = (glo_quote_str && quote_match(glo_quote_str,line,qstr,NLINE))
+    n = ((glo_quote_str || (Pmaster && Pmaster->quote_str))
+	 && quote_match(glo_quote_str ? glo_quote_str : Pmaster->quote_str,
+			line, qstr, NLINE))
 	  ? strlen(qstr) : 0;
 
     for(; n < llength(line); n++)

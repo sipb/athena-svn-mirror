@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: filter.c,v 1.1.1.2 2003-02-12 08:02:21 ghudson Exp $";
+static char rcsid[] = "$Id: filter.c,v 1.1.1.3 2003-05-01 01:13:14 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: filter.c,v 1.1.1.2 2003-02-12 08:02:21 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -2622,6 +2622,7 @@ gf_enriched2plain_opt(plain)
 #define	HTML_BADVALUE	0x0100		/* good data, but bad entity value */
 #define	HTML_BADDATA	0x0200		/* bad data found looking for entity */
 #define	HTML_LITERAL	0x0400		/* Literal character value */
+#define HTML_EXTVALUE   0x0800          /* good data, extended value (Unicode) */
 #define	HTML_NEWLINE	0x010A		/* hard newline */
 #define	HTML_DOBOLD	0x0400		/* Start Bold display */
 #define	HTML_ID_GET	0		/* indent func: return current val */
@@ -2972,8 +2973,9 @@ void	html_putc PROTO((FILTER_S *, int));
  */
 static struct html_entities {
     char *name;			/* entity name */
-    unsigned char value;	/* entity value */
+    unsigned int   value;       /* entity value */
     char  *plain;		/* plain text representation */
+    unsigned char altvalue;     /* non-Unicode equivalent */
 } entity_tab[] = {
     {"quot",	042},		/* Double quote sign */
     {"amp",	046},		/* Ampersand */
@@ -3078,6 +3080,108 @@ static struct html_entities {
     {"yacute",	0375, "y"},	/* small y, acute accent */
     {"thorn",	0376, "p"},	/* small thorn, Icelandic */
     {"yuml",	0377, "y"},	/* small y, dieresis or umlaut mark */
+    {"#8192", 0x2000, NULL, 040},  /* 2000 en quad */
+    {"#8193", 0x2001, NULL, 040},  /* 2001 em quad */
+    {"#8194", 0x2002, NULL, 040},  /* 2002 en space  */
+    {"#8195", 0x2003, NULL, 040},  /* 2003 em space  */
+    {"#8196", 0x2004, NULL, 040},  /* 2004 thick space */
+    {"#8197", 0x2005, NULL, 040},  /* 2005 mid space */
+    {"#8198", 0x2006, NULL, 040},  /* 2006 thin space */
+    {"#8199", 0x2007, NULL, 040},  /* 2007 figure space */
+    {"#8200", 0x2008, NULL, 040},  /* 2008 punctuation space */
+    {"#8201", 0x2009, NULL, 040},  /* 2009 thin space */
+    {"#8202", 0x200A, NULL, 0},    /* 200A hair space */
+    {"#8203", 0x200B, NULL, 0},    /* 200B zero width space */
+    {"#8204", 0x200C, NULL, 0},    /* 200C zero width non-joiner */
+    {"#8205", 0x200D, NULL, 0},    /* 200D zero width joiner */
+    {"#8206", 0x200E, NULL, 0},    /* 200E left-to-right mark */
+    {"#8207", 0x200F, NULL, 0},    /* 200F right to left mark */
+    {"#8208", 0x2010, NULL, 055},  /* 2010 hyphen */
+    {"#8209", 0x2011, NULL, 055},  /* 2011 no-break hyphen */
+    {"#8210", 0x2012, NULL, 055},  /* 2012 figure dash */
+    {"#8211", 0x2013, NULL, 055},  /* 2013 en dash */
+    {"#8212", 0x2014, NULL, 055},  /* 2014 em dash */
+    {"#8213", 0x2015, "--", 0},    /* 2015 horizontal bar */
+    {"#8214", 0x2016, "||", 0},    /* 2016 double vertical line */
+    {"#8215", 0x2017, "__", 0},    /* 2017 double low line */
+    {"#8216", 0x2018, NULL, 0140}, /* 2018 left single quotation mark */
+    {"#8217", 0x2019, NULL, 047},  /* 2019 right single quotation mark */
+    {"#8218", 0x201A, NULL, 054},  /* 201A single low-9 quotation mark */
+    {"#8219", 0x201B, NULL, 0140}, /* 201B single high reversed-9 quotation mark */
+    {"#8220", 0x201C, NULL, 042},  /* 201C left double quote */
+    {"#8221", 0x201D, NULL, 042},  /* 201D right double quote */
+    {"#8222", 0x201E, ",,", 0},    /* 201E double low-9 quotation mark */
+    {"#8223", 0x201F, "``", 0},    /* 201F double high reversed-9 quotation mark  */
+    {"#8224", 0x2020, NULL, 0},    /* 2020 dagger */
+    {"#8225", 0x2021, NULL, 0},    /* 2021 double dagger */
+    {"#8226", 0x2022, NULL, 0267}, /* 2022 bullet */
+    {"#8227", 0x2023, NULL, 0},    /* 2023 triangular bullet */
+    {"#8228", 0x2024, NULL, 056},  /* 2024 one dot leader */
+    {"#8229", 0x2025, "..", 0},    /* 2025 two dot leader */
+    {"#8230", 0x2026, "...", 0},   /* 2026 ellipsis */
+    {"#8231", 0x2027, "-", 0267},  /* 2027 hyphenation point */
+    {"#8232", 0x2028, NULL, 0},    /* 2028 line separator */
+    {"#8233", 0x2029, NULL, 0266}, /* 2029 paragraph separator */
+    {"#8234", 0x202A, NULL, 0},    /* 202A left-to-right embedding */
+    {"#8235", 0x202B, NULL, 0},    /* 202B right-to-left embedding */
+    {"#8236", 0x202C, NULL, 0},    /* 202C pop directional formatting */
+    {"#8237", 0x202D, NULL, 0},    /* 202D left-to-right override */
+    {"#8238", 0x202E, NULL, 0},    /* 202E right-to-left override */
+    {"#8239", 0x202F, NULL, 040},  /* 202F narrow no-break space */
+    {"#8240", 0x2030, "%.", 0},    /* 2030 per mille */
+    {"#8241", 0x2031, "%..", 0},   /* 2031 per ten thousand */
+    {"#8242", 0x2032, NULL, 047},  /* 2032 prime */
+    {"#8243", 0x2033, "\'\'", 0},  /* 2033 double prime */
+    {"#8244", 0x2034, "\'\'\'", 0}, /* 2034 triple prime */
+    {"#8245", 0x2035, NULL, 0140}, /* 2035 reversed prime */
+    {"#8246", 0x2036, "``", 0},    /* 2036 reversed double prime */
+    {"#8247", 0x2037, "```", 0},   /* 2037 reversed triple prime */
+    {"#8248", 0x2038, NULL, 0136}, /* 2038 caret */
+    {"#8249", 0x2039, NULL, 074},  /* 2039 single left angle quotation mark */
+    {"#8250", 0x203A, NULL, 076},  /* 203A single right angle quotation mark  */
+    {"#8251", 0x203B, NULL, 0},    /* 203B reference mark */
+    {"#8252", 0x203C, "!!", 0},    /* 203C double exclamation mark */
+    {"#8253", 0x203D, NULL, 041},  /* 203D interrobang */
+    {"#8254", 0x203E, "-", 0257},  /* 203E overline */
+    {"#8255", 0x203F, NULL, 0137}, /* 203F undertie */
+    {"#8256", 0x2040, NULL, 0},    /* 2040 character tie */
+    {"#8257", 0x2041, NULL, 0},    /* 2041 caret insertion point */
+    {"#8258", 0x2042, NULL, 0},    /* 2042 asterism */
+    {"#8259", 0x2043, NULL, 0},    /* 2043 hyphen bullet */
+    {"#8260", 0x2044, NULL, 057},  /* 2044 fraction slash */
+    {"#8261", 0x2045, NULL, 0133}, /* 2045 left square bracket w/quill */
+    {"#8262", 0x2046, NULL, 0135}, /* 2046 right square bracket w/quill */
+    {"#8263", 0x2047, "??", 0},    /* 2047 double question mark */
+    {"#8264", 0x2048, "?!", 0},    /* 2048 question exclamation mark */
+    {"#8265", 0x2049, "!?", 0},    /* 2049 exclamation question mark */
+    {"#8266", 0x204A, NULL, 0},    /* 204A tironian sign et */
+    {"#8267", 0x204B, NULL, 0},    /* 204B reverse pilcrow */
+    {"#8268", 0x204C, NULL, 0},    /* 204C black left bullet */
+    {"#8269", 0x204D, NULL, 0},    /* 204D black right bullet */
+    {"#8270", 0x204E, NULL, 0},    /* 204E low asterisk */
+    {"#8271", 0x204F, NULL, 0},    /* 204F reversed semicolon */
+    {"#8272", 0x2050, NULL, 0},    /* 2050 close up */
+    {"#8273", 0x2051, NULL, 0},    /* 2051 two vertical asterisks */
+    {"#8274", 0x2052, NULL, 0},    /* 2052 commercial minus */
+    {"#8275", 0x2053, NULL, 0},    /* 2053 reserved */
+    {"#8276", 0x2054, NULL, 0},    /* 2054 reserved */
+    {"#8277", 0x2055, NULL, 0},    /* 2055 reserved */
+    {"#8278", 0x2056, NULL, 0},    /* 2056 reserved */
+    {"#8279", 0x2057, "\'\'\'\'", 0}, /* 2057 quad prime */
+    {"#8280", 0x2058, NULL, 0},    /* 2058 reserved */
+    {"#8281", 0x2059, NULL, 0},    /* 2059 reserved */
+    {"#8282", 0x205A, NULL, 0},    /* 205A reserved */
+    {"#8283", 0x205B, NULL, 0},    /* 205B reserved */
+    {"#8284", 0x205C, NULL, 0},    /* 205C reserved */
+    {"#8285", 0x205D, NULL, 0},    /* 205D reserved */
+    {"#8286", 0x205E, NULL, 0},    /* 205E reserved */
+    {"#8287", 0x205F, NULL, 040},  /* 205F medium math space */
+    {"#8288", 0x2060, NULL, 0},    /* 2060 word joiner */
+    {"#8289", 0x2061, NULL, 0},    /* 2061 function application */
+    {"#8290", 0x2062, NULL, 0},    /* 2062 invisible times */
+    {"#8291", 0x2063, NULL, 0},    /* 2063 invisible separator */
+    {"#8364", 0x20AC, "EUR", 0},   /* 20AC euro symbol */
+    {"#8482", 0x2122, "[tm]", 0},  /* 2122 trademark symbol */
     {NULL,	0}
 };
 
@@ -5266,13 +5370,27 @@ html_entity_collector(f, ch, alternate)
 	    rv = atoi(&buf[1]);
 	    if(ps_global->pass_ctrl_chars
 	       || (rv == '\t' || rv == '\n' || rv == '\r'
-		   || (rv > 31 && rv < 127) || (rv > 159 && rv < 256))){
-		if(alternate)
-		  for(i = 0, *alternate = NULL; entity_tab[i].name; i++)
-		    if(entity_tab[i].value == rv){
-			*alternate = entity_tab[i].plain;
-			break;
+		   || (rv > 31 && rv < 127) || (rv > 159 && rv < 256)
+		   || (rv >= 0x2000 && rv <=0x2063)
+		   || (rv == 0x20AC) || (rv == 0x2122))){
+		if(alternate || rv > 0377){
+		    if(alternate)
+		      *alternate = NULL;
+		    for(i = 0; entity_tab[i].name; i++)
+		      if(entity_tab[i].value == rv){
+			  if(alternate)
+			    *alternate = entity_tab[i].plain;
+			  if(entity_tab[i].altvalue)
+			    rv = entity_tab[i].altvalue;
+			  break;
+		      }
+		    if(rv > 0377){
+			if(entity_tab[i].name && entity_tab[i].plain)
+			  rv = HTML_EXTVALUE;
+			else
+			  rv = HTML_BADVALUE;
 		    }
+		}
 	    }
 	    else
 	      rv = HTML_BADVALUE;
@@ -5297,7 +5415,8 @@ html_entity_collector(f, ch, alternate)
       rv = HTML_BADDATA;		/* bogus input! */
 
     if(rv){				/* nonzero return, clean up */
-	if(rv > 0xff && alternate){	/* provide bogus data to caller */
+	if(rv > 0xff && alternate
+	    && rv != HTML_EXTVALUE){	/* provide bogus data to caller */
 	    if(len < MAX_ENTITY)
 	      buf[len] = '\0';
 
@@ -5366,7 +5485,8 @@ gf_html2plain(f, flg)
 		    /*
 		     * Map some of the undisplayable entities?
 		     */
-		    if(HD(f)->alt_entity && i > 127 && alt && alt[0]){
+		    if(((HD(f)->alt_entity && i > 127)
+			   || i == HTML_EXTVALUE) && alt && alt[0]){
 			for(; *alt; alt++){
 			    c = MAKE_LITERAL(*alt);
 			    HTML_PROC(f, c);
@@ -6679,7 +6799,23 @@ gf_wrap(f, flg)
 		      if(WRAP_QUOTED(f))
 			break;
 
-		      WRAP_FLUSH(f);		/* flush buf */
+		      /*
+		       * This WRAP_FLUSH() was flushing spaces even if they
+		       * went past the wrap column, causing us to go to the
+		       * next line and erase whatever is there. Perhaps
+		       * there is a smarter way to handle this. We'll just
+		       * stop putting out characters when we get to the
+		       * wrap column since they will make it to the end of
+		       * the line and be invisible anyway. If f->f2 then
+		       * there are some real characters that need to be
+		       * flushed. The problem being solved (by the addition
+		       * of the if() statement) only happens when
+		       * there is a string of more than one space that
+		       * overlaps the wrap column.
+		       */
+		      if(f->f2 || !(f->n + WRAP_SPACES(f) >= WRAP_COL(f)))
+		        WRAP_FLUSH(f);		/* flush buf */
+
 		      switch(WRAP_SPACE(f) = c){ /* remember separator */
 			case ' ' :
 			  WRAP_SPC_LEN(f) = 1;

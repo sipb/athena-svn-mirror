@@ -20,7 +20,7 @@ On UNIX machines, the personal configuration file is the
 file <CODE>~/.pinerc</CODE>. 
 For <EM>PC-Pine</EM> systems, the personal configuration file is in
 <CODE>$PINERC</CODE> or <CODE>&lt;PineRC registry value&gt;</CODE> or 
-<CODE>$HOME\PINE\PINERC</CODE> or
+<CODE>${HOME}\PINE\PINERC</CODE> or
 <CODE>&lt;PINE.EXE </CODE>dir<CODE>&gt;\PINERC</CODE>.
 Or the personal configuration file can be specified with the -p command
 line argument.
@@ -44,7 +44,7 @@ the local file &quot;<CODE>PINERCEX</CODE>&quot;
 in the same local directory that the regular config file is located in.
 If the regular config file is remote then <EM>PC-Pine</EM> looks in the
 local directory specfied by the &quot;-aux local_directory&quot; command
-line argument, or the directory <CODE>$HOME&#92;PINE</CODE>, or
+line argument, or the directory <CODE>${HOME}&#92;PINE</CODE>, or
 in <CODE>&lt;PINE.EXE </CODE>directory<CODE>&gt;</CODE>.
 <P>
 
@@ -433,26 +433,86 @@ is actually sent, trailing spaces will be stripped off of each line.
 
 <DT> <A NAME="cust-hdr"><EM>customized-hdrs</EM></A>
 
-<DD> Add these custom headers when composing.  Also possible to add
-default values to these custom headers or to any of the standard headers. 
-This is a list variable.  Each entry in the list is a header name (the
-actual header name that will appear in the message) followed by an
-optional colon and value.  For example, if a Reply-to header was needed
-because it was different from the From address, that could be accomplished
-with: 
-
-<BLOCKQUOTE><CODE>
-    customized-hdrs=Reply-to: fred_flintstone@bedrock.net <BR>
-</CODE></BLOCKQUOTE>
-
-Leaving the optional value out allows the user to fill it in when composing
-a message. If it isn't filled in, it won't be included in the message.
+<DD> You may add your own custom headers to outgoing messages.
+Each header you specify here must include the header tag 
+(Reply-To:, Approved:, etc.)
+and may optionally include a value for that header.
+If you want to see these custom headers each time you compose a message,
+you must add them to your
+<A HREF="#def-comp"><EM>default-composer-hdrs</EM></A> list, 
+otherwise they become part
+of the rich header set which you only see when you press the rich header
+command.
+Here's an example which shows how you might set your From address
+<P>
+<CENTER><SAMP>From: Full Name &lt;user@example.com&gt;</SAMP></CENTER>
+<P>
+and another showing how you might set a Reply-To address
+<P>
+<CENTER><SAMP>Reply-To: user@example.com</SAMP></CENTER>
+<P>
+You may also set non-standard header values here.
+For example, you could add
+<P>
+<CENTER><SAMP>Organization: My Organization Name</SAMP></CENTER>
+<P>
+or even
+<P>
+<CENTER><SAMP>X-Favorite-Colors: Purple and Gold</SAMP></CENTER>
+<P>
+If you include a value after the colon then that header will be included
+in your outgoing messages unless you delete it before sending.
+If a header in the Customized-Headers list has only a tag but no value, then
+it will not be included in outgoing messages unless you edit a value
+in manually.
+For example, if
+<P>
+<CENTER><SAMP>Reply-To:</SAMP></CENTER>
+<P>
+is in the list, then the Reply-To header will be available for editing
+but won't be included unless a value is added while in the composer.
+<P>
+It's actually a little more complicated than that.
+The values of headers that you set with the Customized-Headers option are
+defaults.
+If the message you are about to compose already has a value for a header,
+that value is used instead of a value from your Customized-Headers.
+For example, if you are Replying to a message the Subject field
+will already be filled in.
+In that case, if the Customized-Headers list contains a Subject line, the
+custom subject will <EM>NOT</EM> be used.
+The subject derived from the subject of the message you are Replying
+to will be used instead.
+<P>
+It is also possible to make header setting even more complicated and more
+automatic by using
+<A HREF="#role-config"><EM>Roles</EM></A>,
+but if all you want to do is set a default value for a header, you don't
+need to think about Roles.
+<P>
+If you change your From address you may also find it useful to add the
+changed From address to the
+<A HREF="#alt-addresses"><EM>alt-addresses</EM></A>
+configuration option.
+<P>
+Limitation: Because commas are used to separate the list of
+Customized-Headers, it is not possible to have the value of a
+header contain a comma.
+Nor is there currently an &quot;escape&quot; mechanism provided
+to make this work.
 <P>
 
 <DT> <A NAME="def-comp"><EM>default-composer-hdrs</EM></A>
 
-<DD> Show only these headers (by default) when composing a message.  This
-list may include headers defined in the <EM>customized-hdrs</EM> list. 
+<DD> You can decide which headers you want visible when composing outgoing
+email using this option.  You can specify any of the regular set, any rich
+header or any custom header which you have already defined.  If you use
+this setting at all, you must specify all the headers you want to see, you
+can't just add to the regular header set.  The default set is To:, Cc:,
+Attchmnt:, and Subject:.<p>
+
+Note that the "Newsgroups:" header will be abbreviated in the Composer
+display, but should be spelled out in full here.
 <P>
 
 <DT> <A NAME="def-fcc"><EM>default-fcc</EM></A>	
@@ -476,6 +536,22 @@ Unix <EM>Pine</EM> default is normally
 <EM>saved-messages</EM> in the default folder collection.
 <EM>PC-Pine</EM> default is <EM>SAVEMAIL</EM>
 (normally stored as <EM>SAVEMAIL.MTX</EM>). <P>
+
+<DT> <A NAME="disable-setlocale-collate"><EM>disable-setlocale-collate</EM></A>
+
+<DD> This is a hard to understand feature that should only be used in rare cases.
+Normally, the C function call
+<P>
+<CENTER><SAMP>setlocale(LC_COLLATE, &quot;&quot;)</SAMP></CENTER>
+<P>
+is used by <EM>Pine</EM>.
+If you want to try turning it off,
+setting this feature will turn it off.
+This part of the locale has to do with the sort order
+of characters in your locale.
+A related feature is
+<A HREF="#enable-setlocale-ctype"><EM>enable-setlocale-ctype</EM></A>.
+<P>
 
 <DT> <A NAME="disable-these-drivers"><EM>disable-these-drivers</EM></A>
 
@@ -804,6 +880,132 @@ including <A HREF="#def-fcc"><EM>default-fcc</EM>'s</A>.
 
 <DD> <EM>PC-Pine</EM> only. File extension used for local folder names. This
 is <CODE>.MTX</CODE> by default.
+<P>
+
+<DT> <A NAME="reopen-rule"><EM>folder-reopen-rule</EM></A>
+
+<DD> <EM>Pine</EM> normally checks for new mail in the currently open folder
+and in the INBOX every few <A HREF="#mail-check"><EM>minutes</EM></A>.
+
+<P>
+There are some situations where automatic new-mail checking does not work.
+For example, if a mail folder is opened using the POP protocol or a newsgroup
+is being read using the NNTP protocol, then new-mail checking is disabled.
+
+<P>
+It may be possible to check for new mail in these cases by reopening the
+folder.
+<EM>Pine</EM> does not do this for you automatically, but you may do the commands
+manually to cause this to happen.
+You reopen by going back to the folder list screen from the message
+index screen with the &quot;&lt;&quot; command,
+and then going back into the message index screen with
+the &quot;&gt;&quot; command.
+(Actually, any method you would normally use to open a folder will work the
+same as the &quot;&lt;&quot; followed by &quot;&gt;&quot; method.
+For example, the GoTo Folder command will work, or you may use L to go to the
+Folder List screen and Carriage Return to reopen the folder.)
+
+<P>
+There are some cases where <EM>Pine</EM> knows that reopening the folder should
+be useful as a way to discover new mail.
+At the time of this writing, connections made using the POP protocol,
+news reading using the NNTP protocol, local news reading, and local
+ReadOnly folders which are in the traditional UNIX or the MMDF format all
+fall into this category.
+There are other cases where it <EM>may</EM> be a way to discover new mail, but <EM>Pine</EM>
+has no way of knowing, so it might also just be an exercise in futility.
+All remote, ReadOnly folders other than those listed just above fall into this
+category.
+The setting of this option together with the type of folder
+controls how <EM>Pine</EM> will react to the apparent attempt to reopen a folder.
+
+<P>
+If you don't reopen, then you will just be back in
+the message index with no change.
+You left the index and came back, but the folder remained &quot;open&quot;
+the whole time.
+However, if you do reopen the folder, the folder is closed and then reopened.
+In this case, the current state of the open folder is lost.
+The New status, Important and Answered flags,
+selected state, Zoom state, collapsed or expanded state of threads,
+current message number,
+and any other temporary state is all lost when the reopen happens.
+For POP folders (but not NNTP newsgroups) the Deleted flags are also lost.
+
+<P>
+In the possibilities listed below, the text says &quot;POP/NNTP&quot; in
+several places.
+That really implies the case where <EM>Pine</EM> knows it is a good way to discover
+new mail, which is more than just POP and NNTP, but POP and NNTP are
+the cases of most interest.
+This option probably has more possible values than it deserves. They are:
+<P>
+
+<DL>
+<DT>Always reopen</DT>
+<DD><EM>Pine</EM> will not ask whether you want to reopen but will just do the reopen
+whenever you type a command that implies a reopen, regardless of the
+access method.
+In other words, it is assumed you would always answer Yes if asked
+about reopening.
+</DD>
+
+<DT>Yes for POP/NNTP, Ask about other remote [Yes]</DT>
+<DD><EM>Pine</EM> will assume a Yes answer if the access method is POP or NNTP, but
+will ask you whether to reopen other remote folders,
+with a default answer of Yes.
+</DD>
+
+<DT>Yes for POP/NNTP, Ask about other remote [No]</DT>
+<DD><EM>Pine</EM> will assume a Yes answer if the access method is POP or NNTP, but
+will ask you whether to reopen other remote folders,
+with a default answer of No.
+</DD>
+
+<DT>Yes for POP/NNTP, No for other remote</DT>
+<DD><EM>Pine</EM> will assume a Yes answer if the access method is POP or NNTP, and
+will assume a No answer for all other remote folders.
+</DD>
+
+<DT>Always ask [Yes]</DT>
+<DD><EM>Pine</EM> will not differentiate based on access method.
+It will always ask for all remote folders, with a default answer of Yes.
+</DD>
+
+<DT>Always ask [No]</DT>
+<DD><EM>Pine</EM> will not differentiate based on access method.
+It will always ask for all remote folders, with a default answer of No.
+</DD>
+
+<DT>Ask about POP/NNTP [Yes], No for other remote</DT>
+<DD><EM>Pine</EM> will ask if the access method is POP or NNTP, with a default answer
+of Yes.
+It will never attempt to reopen other remote folders.
+</DD>
+
+<DT>Ask about POP/NNTP [No], No for other remote</DT>
+<DD>This is the default.
+<EM>Pine</EM> will ask if the access method is POP or NNTP, with a default answer
+of No.
+It will never attempt to reopen other remote folders.
+</DD>
+
+<DT>Never reopen</DT>
+<DD><EM>Pine</EM> will never attempt to reopen already open folders.
+</DD>
+</DL>
+
+<P>
+Remember, wherever it says POP or NNTP above it really means POP or NNTP or
+any of the other situations where it is likely that reopening is a good way
+to discover new mail.
+
+<P>
+There is an alternative that may be of useful in some situations.
+Instead of manually checking for new mail you can set up a
+<A HREF="config-notes.html#maildrop">Mail Drop</A>
+and automatically check for new mail.
 <P>
 
 <DT> <A NAME="folder-sort-rule"><EM>folder-sort-rule</EM></A>
@@ -1302,30 +1504,20 @@ SETUP CONFIGURATION window after you are done editing the signature.
 <DD> This option specifies, in seconds, how often <EM>Pine</EM> will check for new
 mail. If set to zero, new-mail checking is disabled. There is a minimum
 value, normally 15 seconds.
+The default value is normally 150 seconds.
+his applies to the INBOX and to the currently open folder if that is
+different from the INBOX.
 <P>
-There are some situations where new-mail checking does not work.
-For example, if a mail folder is opened using the POP protocol or a newsgroup
-is being read using the NNTP protocol, then new-mail checking is disabled.
+There are some situations where automatic new-mail checking does not work.
+See the discussion about new-mail checking in <A HREF="#reopen-rule"><EM>folder-reopen-rule</EM></A>.
 <P>
-It may be possible to check for new mail in these cases by reopening the
-folder.
-There is an experimental method for doing this.
-You reopen by going back to the folder list screen from the message
-index screen with the &quot;&lt;&quot; command,
-and then going back into the message index screen with
-the &quot;&gt;&quot; command.
-If <EM>Pine</EM> knows that reopening the folder would be a way to discover
-new mail, it offers to do the reopen.
-If you don't agree to reopen (you answer No) then you are just back in
-the message index with no change.
-However, if you agree to reopen the folder by answering Yes,
-the folder is closed and then reopened.
-In this case, the current state of the open folder is lost.
-The New status, Important and Answered flags,
-selected state, Zoom state, collapsed or expanded state of threads,
-current message number,
-and any other temporary state is all lost when the reopen happens.
-For POP folders (but not NNTP newsgroups) the Deleted flags are also lost.
+If the mailbox being check uses a
+<A HREF="config-notes.html#maildrop">Mail Drop</A>
+then there is a minimum time (<A HREF="#maildrop-check-minimum"><EM>maildrop-check-minimum</EM></A>) between new mail checks.
+Because of this minimum you may notice that new mail does not
+appear promptly when you expect it.
+The reason for this is to protect the server from over-zealous opening and
+closing of the Mail Drop folder, since that is a costly operation.
 <P>
 A side effect of disabling mail checking is that there will be situations
 in which the user's IMAP connection will be broken due to inactivity timers
@@ -1340,7 +1532,7 @@ option won't work.
 it is used only as the default for storing personal folders (and only if
 there are no <A HREF="#fold-coll"><EM>folder-collections</EM></A> defined).
 The default value is
-<EM>~/mail</EM> on UNIX and <EM>$HOME\MAIL</EM> on a PC.  <P>
+<EM>~/mail</EM> on UNIX and <EM>${HOME}\MAIL</EM> on a PC.  <P>
 
 <DT> <A NAME="mailcap-search-path"><EM>mailcap-search-path</EM></A>
 
@@ -1348,6 +1540,43 @@ The default value is
 mailcap file search path.
 It takes one or more file names (full paths must be specified) in
 which to look for mail capability data.  <P>
+
+<DT> <A NAME="maildrop-check-minimum"><EM>maildrop-check-minimum</EM></A>
+
+<DD> New mail checking for a
+<A HREF="config-notes.html#maildrop">Mail Drop</A>
+is a little different from new
+mail checking for a regular folder.
+One of the differences is that the connection to the Mail Drop is not
+kept open and so the cost of checking
+(delay for you and additional load for the server) may be significant.
+Because of this additional cost we set a minimum time that
+must pass between checks.
+This minimum only applies to the automatic checking done by <EM>Pine</EM>.
+If you force a check by typing ^L or by typing the Next command when you are
+at the end of a folder index, then the check is done right away.
+<P>
+This option specifies, in seconds, the <EM>minimum</EM> time between Mail Drop
+new mail checks.
+You may want to set this minimum high in order to avoid experiencing some
+of the delays associated with the checks.
+Note that the time between checks is still controlled by the regular
+<A HREF="#mail-check"><EM>Mail-Check-Interval</EM></A> option.
+When <EM>Pine</EM> is about to do an automatic check for new mail (because
+the Mail-Check-Interval has expired) then if the time since the last
+new mail check
+of any open Mail Drops has been greater than the MailDrop-Check-Minimum,
+the Mail Drop is checked for new mail as well.
+Therefore, it is only useful to set this option to a value that is higher
+than the Mail-Check-Interval.
+<P>
+If this option is set to zero, automatic Mail Drop new mail
+checking is disabled.
+There is a minimum value, normally 60 seconds.
+The default value is normally 60 seconds as well.
+This applies to the INBOX and to the currently open folder if that is
+different from the INBOX.
+<P>
 
 <DT> <A NAME="mimetype-search-path"><EM>mimetype-search-path</EM></A>
 
@@ -1391,13 +1620,71 @@ path is usually <CODE>/usr/spool/news</CODE>. <P>
 news status and subscription file.  If set, <EM>Pine</EM> will take this value as
 the full pathname for the desired newsrc file. <P>
 
+<DT> <A NAME="nntp-range"><EM>nntp-range</EM></A>
+
+<DD> This option applies only to newsgroups accessed using the NNTP protocol.
+It does not, for example,
+apply to newsgroups accessed using an IMAP-to-NNTP proxy.
+<P>
+When you open a connection to a News server using the NNTP protocol, you
+normally have access to all of the articles in each newsgroup.
+If a server keeps a large backlog of messages it may speed performance
+some to restrict attention to only the newer messages in a group.
+This option allows you to set how many article numbers should be checked
+when opening a newsgroup.
+You can think of &quot;nntp-range&quot; as specifying the maximum number
+of messages you ever want to see.
+For example, if you only ever wanted to look at the last 500 messages in each
+newsgroup you could set this option to 500.
+In actuality, it isn't quite that.
+Instead, for performance reasons, it specifies the range of article
+numbers to be checked, beginning
+with the highest numbered article and going backwards from there.
+If there are messages that have been canceled or deleted
+their article numbers are still counted as part of the range.
+<P>
+So, more precisely, setting the &quot;nntp-range&quot; will cause article
+numbers
+<P><CENTER>last_article_number - nntp-range + 1 through last_article_number</CENTER>
+<P>
+to be considered when reading a newsgroup.
+The number of messages that show up in your index will be less than or equal
+to the value of &quot;nntp-range&quot;.
+<P>
+The purpose of this option is simply to speed up access when reading news.
+The speedup comes because <EM>Pine</EM> can ignore all but the last nntp-range article
+numbers, and can avoid downloading any information about the ignored articles.
+There is a cost you pay for this speedup.
+That cost is that there is no way for you to see those ignored articles.
+The articles that come before the range you specify are invisible to you and
+to <EM>Pine</EM>, as if they did not exist at all.
+There is no way to see those messages using, for example, an unexclude command
+or something similar.
+The only way to see those articles is to set this option high enough (or
+set it to zero) and then to reopen the newsgroup.
+
+<P>
+If this option is set to 0 (which is also the default),
+then the range is unlimited.
+This option applies globally to all NNTP servers and to all newsgroups
+on those servers.
+There is no way to set different values for different newsgroups or servers.
+<P>
+
 <DT> <A NAME="nntp-server"><EM>nntp-server</EM></A>
 
 <DD> One or more NNTP servers (host name or IP address) which <EM>Pine</EM> will
 use for reading and sending news.
 If you read and post news to and from a single
 NNTP server, you can get away with only setting the <EM>nntp-server</EM>
-variable and leaving the <EM>news-collections</EM> variable unset.  <P>
+variable and leaving the <EM>news-collections</EM> variable unset.
+<P>
+When you define an NNTP server, <EM>Pine</EM> implicitly defines a
+news collection for you, assuming that server as the news server
+and assuming that you will use the NNTP protocol and a local newsrc
+configuration file for reading news.
+See also <A HREF="#configuring-news">Configuring News</A>.
+<P>
 
 <DT> <A NAME="norm-back"><EM>normal-background-color</EM></A>
 <DT> <A NAME="normal-foreground-color"><EM>normal-foreground-color</EM></A>
@@ -1510,7 +1797,10 @@ The purpose of scoring files is for sharing scoring rules.
 
 <DD> Personal configuration file only.
 User's full personal name.  On UNIX systems, the default is taken
-from the accounts data base (<CODE>/etc/passwd</CODE>).  <P>
+from the accounts data base (<CODE>/etc/passwd</CODE>).
+The easiest way to change the full From address is with the
+<A HREF="#cust-hdr"><EM>customized-hdrs</EM></A> variable.
+<P>
 
 <DT> <A NAME="personal-print-category"><EM>personal-print-category</EM></A>
 
@@ -1565,20 +1855,39 @@ This variable is set from <EM>Pine</EM>'s <EM>Setup/Printer</EM> screen.
 <DT> <A NAME="pruned-folders"><EM>pruned-folders</EM></A>
 
 <DD> This variable allows you to define a list of one or more folders that
-<EM>Pine</EM> will offer to prune for you in the same way
-it automatically offers
-to prune your <EM>sent-mail</EM> folder each month.
-That is, once a month for
-each folder listed, <EM>Pine</EM> will offer to move the contents
-of the folder to
-a new folder of the same name but with the previous month's date appended. 
-<EM>Pine</EM> will then look for any such date-appended folder
-names created for a
-previous month, and offer each one it finds for deletion. If you decline
-the first offer, no mail is moved and no new folder is created. Folders
-listed are assumed to exist, and the archive folders will be created, in
-the first collection defined by the
-<A HREF="#fold-coll"><EM>folder-collections</EM></A> variable. <P>
+<EM>Pine</EM> will offer to prune for you in the same way it automatically offers
+to prune your "sent-mail" folder each month.
+Each folder in this list must be a folder in your default folder collection
+(the first folder collection if you have more than one), and it is just
+the relative name of the folder in the collection, not the fully-qualified name.
+It is similar to sent-mail.
+Instead of something like
+<P>
+<CENTER><SAMP>pruned-folders={servername}mail/folder</SAMP></CENTER>
+<P>
+the correct value to use would be
+<P>
+<CENTER><SAMP>folder</SAMP></CENTER>
+<P>
+There is an assumption here that your first collection is the folders in
+<P>
+<CENTER><SAMP>{servername}mail</SAMP></CENTER>
+<P>
+
+Once a month, for each folder listed, <EM>Pine</EM> will offer to move
+the contents of the folder to a new folder of the same name but with
+the previous month's date appended.  <EM>Pine</EM> will then look for any such
+date-appended folder names created for a previous month, and offer each
+one it finds for deletion.
+<P>
+
+If you decline the first offer, no mail is moved and no new folder is
+created.
+<P>
+
+The new folders will be created
+in your default folder collection.
+<P>
 
 <DT> <A NAME="pruning-rule"><EM>pruning-rule</EM></A>
 
@@ -1897,7 +2206,9 @@ select which filter (or none) to apply to the message before it is sent.
 For security reasons, the full path of the filter program must be
 specified.
 <P>
-Sending filters do not work with <EM>PC-Pine</EM>.
+Sending filters do not work with <EM>PC-Pine</EM> and sending filters are
+not used if the feature
+<A HREF="#send-without-confirm">send-without-confirm</A> is set.
 <P>
 Command Modifying Tokens:
 
@@ -2080,6 +2391,12 @@ would produce something like
 <CENTER><SAMP>_DAYDATE_ = Sat, 24 Oct 1998</SAMP></CENTER>
 <P>
 It is not possible to have a literal backslash followed by an expanded token.
+<P>
+
+<DT> <A NAME="signature-background-color"><EM>signature-background-color</EM></A>
+<DT> <A NAME="signature-foreground-color"><EM>signature-foreground-color</EM></A>
+
+<DD> <A HREF="#signature-color"><EM>Signature Color</EM></A>.
 <P>
 
 <DT> <A NAME="smtp-server"><EM>smtp-server</EM></A>
@@ -2530,13 +2847,18 @@ meaningful if <A HREF="#user-domain"><EM>user-domain</EM></A> is NOT set.  <P>
 <DT> <A NAME="user-domain"><EM>user-domain</EM></A>
 
 <DD> Sets the domain or host name for the user, overriding the system host
-or domain name.  See the <A HREF="config-notes.html#domain"><EM>domain name section</EM></A>. <P>
+or domain name.  See the <A HREF="config-notes.html#domain"><EM>domain name section</EM></A>.
+The easiest way to change the full From address is with the
+<A HREF="#cust-hdr"><EM>customized-hdrs</EM></A> variable.
+<P>
 
 <DT> <A NAME="user-id"><EM>user-id</EM></A>
 
 <DD> <EM>PC-Pine</EM> only and personal configuration file only.
 Sets the username that is placed on all outgoing
 messages. The username is the part of the address that comes before the "@".
+The easiest way to change the full From address is with the
+<A HREF="#cust-hdr"><EM>customized-hdrs</EM></A> variable.
 <P>
 
 <DT> <A NAME="user-input"><EM>user-input-timeout</EM></A>
@@ -2707,6 +3029,8 @@ setRole, for selecting a role to apply to a composition.
 inverse-video cursor (used to highlight the current item in a list) will be
 replaced by an <EM>arrow</EM> cursor and other screen update optimizations for
 low-speed links (e.g. 2400 bps dialup connections) will be activated.
+One of the optimizations is that colored index lines (set up with Indexcolor
+Rules) will not be colored.
 This might be useful if <I>you</I> know you have a slow speed link but for some
 reason <EM>Pine</EM> doesn't know.
 <P>
@@ -2861,7 +3185,7 @@ does by default).
 
 A complete (fully-qualified) address is one containing a username
 followed by an <EM>@</EM> symbol, followed by a host or domain name (e.g.
-<EM>jsmith@nowhere.edu</EM>). An unqualified name is one without the
+<EM>jsmith@example.com</EM>). An unqualified name is one without the
 <EM>@</EM> symbol
 and host or domain name (e.g. <EM>jsmith</EM>).
 <P>
@@ -3272,6 +3596,8 @@ time it takes a message to arrive at its destination.
 
 This feature isn't supported on all systems.  All DOS and Windows,
 as well as several Unix ports, do not recognize this feature.
+It is not possible to use background sending if the feature
+<A HREF="#send-without-confirm">send-without-confirm</A> is set.
 <P>
 
 Error handling is significantly different when this feature is
@@ -3330,6 +3656,9 @@ prompt.  The subcommand allows you to tell <EM>Pine</EM> to request the type of
 Delivery Status Notification (DSN) which you would like.  Most users will
 be happy with the default, and need not enable this feature. See the online
 help for more details.
+<P>
+It is not possible to use delivery status notifications if the feature
+<A HREF="#send-without-confirm">send-without-confirm</A> is set.
 <P>
 
 Note that this is not a method to request <EM>READ</EM> receipts, which tells
@@ -3659,6 +3988,22 @@ you the choice to Take into the Address Book or Take into a rule.
 option inside the <EM>W WhereIs</EM> command.
 <P>
 
+<DT> <A NAME="enable-setlocale-ctype"><EM>enable-setlocale-ctype</EM></A>
+
+<DD> This is a hard to understand feature that should only be used in rare cases.
+Normally, the C function call
+<P>
+<CENTER><SAMP>setlocale(LC_CTYPE, &quot;&quot;)</SAMP></CENTER>
+<P>
+is not used by <EM>Pine</EM> because it causes problems in some cases.
+If you want to try turning it on, and it is available in your operating system,
+setting this feature will turn it on.
+This part of the locale has to do with identifying space characters and
+alphanumeric characters in your locale.
+A related feature is
+<A HREF="#disable-setlocale-collate"><EM>disable-setlocale-collate</EM></A>.
+<P>
+
 <DT> <A NAME="enable-sigdashes"><EM>enable-sigdashes</EM></A>
 
 <DD> If set and a <EM>signature-file</EM> exists, the line consisting of
@@ -3699,7 +4044,17 @@ Only the user@domain_name part of the address is put in the file.
 
 <DT> <A NAME="enable-tray-icon"><EM>enable-tray-icon</EM></A>
 
-<DD> <EM>PC-Pine</EM> only.
+<DD> <EM>PC-Pine</EM> only. This option restores a behavior of 
+previous versions of PC-Pine.  These
+versions, when started, installed a PC-Pine icon in the notification 
+tray of Window's Taskbar.  The primary use of this icon was to indicate
+new mail arrival by turning red (while the Taskbar icon remained green).
+Additionally, the icon now changes to yellow to signify that a mail folder
+has been closed unexpectedly.
+<P>
+Rather than add another icon to the Taskbar, this version of PC-Pine will 
+color its Taskbar entry's icon red (as well as the icon in the Window
+Title).  This feature is only provided for backwards compatibility.
 <P>
 
 <DT> <A NAME="enable-unix-pipe-cmd"><EM>enable-unix-pipe-cmd</EM></A>
@@ -3829,6 +4184,16 @@ That is, it asks if you really meant to have no recipients.
 If this feature is set, you
 will <B>not</B> be prompted to confirm your intent to make only a copy
 of a message with no recipients.
+<P>
+This feature is closely related to
+<A HREF="#warn-if-blank-to-and-cc-and-newsgroups"><EM>warn-if-blank-to-and-cc-and-newsgroups</EM></A>.
+The difference between this feature and that feature is that this feature
+considers a Bcc to be a recipient while that feature will ask for confirmation
+even if there is a Bcc when there is no To, Cc, or Newsgroup.
+The default values also differ. This feature defaults to asking the question
+and you have to turn it off.
+The warn-if-blank-to-and-cc-and-newsgroups feature defaults to not asking
+unless you turn it on.
 <P>
 
 <DT> <A NAME="fcc-without-attachments"><EM>fcc-without-attachments</EM></A>
@@ -4317,6 +4682,24 @@ problem so that the fetching of data takes significantly longer when partial
 fetching is used. Turning on this feature will turn off partial fetching.
 <P>
 
+<DT> <A NAME="quell-personal-name-prompt"><EM>quell-personal-name-prompt</EM></A>
+
+<DD> <EM>PC-Pine</EM only.  This feature quells the prompting for a 
+<A HREF="#personal-name">personal-name</A>.  This prompt normally happens
+before composing a message, and only happens when there is no personal name
+already set.
+<P>
+
+<DT> <A NAME="quell-user-id-prompt"><EM>quell-user-id-prompt</EM></A>
+
+<DD> <EM>PC-Pine</EM only.  This feature quells the prompting for a
+<A HREF="#user-id">user-id</A>
+if the information can be obtained from the login name used
+to open the INBOX.  Normally, this prompt happens before composing
+a message, and only happens when there is no user-id already set
+in the configuration.
+<P>
+
 <DT> <A NAME="quell-ssl-largeblocks"><EM>quell-ssl-largeblocks</EM></A>
 
 <DD> This feature (<EM>PC-Pine</EM> only) changes the behavior of fetching messages
@@ -4417,6 +4800,17 @@ this timezone to the &quot;From&nbsp;&quot; delimiter.
 <P>
 </DD>
 
+<DT> <A NAME="return-to-inbox-without-confirm"><EM>return-to-inbox-without-confirm</EM></A>
+
+<DD>
+Normally, when you use the TAB
+command and there are no more folders or newsgroups to visit, you are asked
+if you want to return to the INBOX.
+If this feature is set you will not be asked.
+It will be assumed that you do want to return to the INBOX.
+<P>
+</DD>
+
 <DT> <A NAME="save-aggregates-copy-sequence"><EM>save-aggregates-copy-sequence</EM></A>
 
 <DD> This feature will optimize an aggregate copy operation, if
@@ -4503,6 +4897,37 @@ file to be used, but allow you to press <EM>^T</EM> for a
 list of possible names.
 If set, the selected name will be used immediately, without further
 opportunity to confirm or edit the name.
+<P>
+
+<DT> <A NAME="send-without-confirm"><EM>send-without-confirm</EM></A>
+
+<DD> By default, when you send or post a message you will be asked to confirm
+with a question that looks something like:
+
+<P>
+<CENTER><SAMP>Send message?</SAMP></CENTER>
+<P>
+
+If this feature is set, you
+will <B>not</B> be prompted to confirm your intent to send
+and your message will be sent.
+<P>
+If this feature is set it disables some possibilities and renders some
+other features meaningless.
+You will not be able to use
+<A HREF="#sending-filters">Sending Filters</A>,
+Verbose sending mode,
+<A HREF="#enable-background-sending">Background Sending</A>,
+or
+<A HREF="#enable-delivery-status-notification">Delivery Status Notifications</A>.
+These options are normally available as suboptions in the Send prompt, but
+with no Send prompt the options are gone.
+
+<P>
+A somewhat related feature is
+<A HREF="#quell-extra-post-prompt">quell-extra-post-prompt</A>.
+which may be used to eliminate the extra confirmation
+question when posting to a newsgroup.
 <P>
 
 <DT> <A NAME="separate-folder-and-directory-display"><EM>separate-folder-and-directory-display</EM></A>
@@ -4710,7 +5135,7 @@ the possible host/folder path specification flags as follows:
 The <SAMP>/tls</SAMP> host flag, for example,
 
 <P>
-<CENTER><SAMP>{foo.bar.com/tls}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/tls}INBOX</SAMP></CENTER>
 <P>
 will over-ride this feature for the specified host by bypassing the
 SSL connection attempt.
@@ -4722,7 +5147,7 @@ service on port 143 does not offer TLS support.
 The <SAMP>/ssl</SAMP> host flag, for example,
 
 <P>
-<CENTER><SAMP>{foo.bar.com/ssl}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/ssl}INBOX</SAMP></CENTER>
 <P>
 will insist on an SSL connection for the specified host,
 and will fail if the SSL service on port 993 is not available.
@@ -4814,9 +5239,41 @@ the <EM>exit</EM> command instead.
 
 <DT> <A NAME="vertical-folder-list"><EM>vertical-folder-list</EM></A>
 
-<DD> This feature controls an aspect of Pine's FOLDER LIST screen.  If set,
+<DD> This feature controls an aspect of <EM>Pine</EM>'s FOLDER LIST screen.  If set,
 the folders will be listed alphabetically down the columns rather
 than across the columns as is the default.
+
+<P>
+
+<DT> <A NAME="warn-if-subject-is-blank"><EM>warn-if-subject-is-blank</EM></A>
+
+<DD> This feature affects <EM>Pine</EM>'s behavior when you send a message being
+composed.
+If this option is set, <EM>Pine</EM> will check to see if the message about to be sent
+has a subject or not.
+If not, you will be asked if you want to send the message anyway.
+<P>
+
+<DT> <A NAME="warn-if-blank-to-and-cc-and-newsgroups"><EM>warn-if-blank-to-and-cc-and-newsgroups</EM></A>
+
+<DD> This feature affects <EM>Pine</EM>'s behavior when you send a message being
+composed.
+If this option is set, <EM>Pine</EM> will check to see if the message about to be sent
+has either a To address, a Cc address, or a Newsgroup.
+If none of these is set,
+you will be asked if you want to send the message anyway.
+<P>
+This feature is closely related to
+<A HREF="#fcc-only-without-confirm"><EM>fcc-only-without-confirm</EM></A>.
+<EM>Pine</EM> will normally ask if you want to copy a message only to the Fcc.
+This feature also applies to cases where there is a Bcc but still no To, Cc,
+or Newsgroup.
+If the Fcc-Only-Without-Confirm feature is set and you are sending a
+message with only an Fcc, then you won't be asked about sending with
+a blank To and Cc and Newsgroups header even if this feature is set.
+Similarly, if you have already been asked if you want to send to the Fcc
+only and you have answered Yes, then you won't be asked again about sending with
+blank To, Cc, and Newsgroups headers even if this feature is set.
 
 <P>
 
@@ -4831,11 +5288,10 @@ screens. Some of these are suppressed because they are intended to be used
 by system administrators, and in fact may only be set in system-wide
 configuration files. Others are available to users but are thought to be
 of such little value to most users that their presence on the Config
-screens would cause more confusion than help. Those features may only be
-set by hand editing the configuration file.
+screens would cause more confusion than help.
 You may set the feature <A HREF="#expose-hidden-config">expose-hidden-config</A>
-to cause most of these hidden variables and features to show up in
-the Setup/Config screen.
+to cause most of these hidden variables and features to show up at the bottom
+of the Setup/Config screen.
 
 <H3>Hidden Variables Not Settable by Users</H3>
 
@@ -4876,8 +5332,10 @@ This group is usually correct but may be changed by system managers or
 users in special cases.
 
 <UL>
+<LI> <A HREF="#disable-setlocale-collate">disable-setlocale-collate</A>
 <LI> <A HREF="#disable-these-auths">disable-these-authenticators</A>
 <LI> <A HREF="#disable-these-drivers">disable-these-drivers</A>
+<LI> <A HREF="#enable-setlocale-ctype">enable-setlocale-ctype</A>
 <LI> <A HREF="#last-time">last-time-prune-questioned</A>
 <LI> <A HREF="#new-version-threshold">new-version-threshold</A>
 <LI> <A HREF="#remote-abook-history">remote-abook-history</A>
@@ -5247,14 +5705,14 @@ For example, &quot;23rd&quot; or &quot;9th&quot;.
 <DD>
 This token represents the day of the week on which the message was sent,
 according to the &quot;Date&quot; header field.
-For example, &quot;Sun&quot; or &quot;Wed&quot;.
+For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
 </DD>
 
-<DT>DAYOFWEEKLONG</DT>
+<DT>DAYOFWEEKABBREV</DT>
 <DD>
 This token represents the day of the week on which the message was sent,
 according to the &quot;Date&quot; header field.
-For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
+For example, &quot;Sun&quot; or &quot;Wed&quot;.
 </DD>
 
 <DT>MONTHABBREV</DT>
@@ -5586,6 +6044,13 @@ This token represents the current time.
 This time is for a 12 hour clock.
 It has the format HH:MMpm.
 For example, &quot;5:28pm&quot; or &quot;11:13am&quot;.
+</DD>
+
+<DT>ROLENICK</DT>
+<DD>
+This token represents the nickname of the
+role currently being used.  If no role is being used,
+then no text will be printed for this token.
 </DD>
 </DL>
 
@@ -6307,6 +6772,19 @@ Color1, Color2, ...
 If you define only the Quote1 Color, then the entire quote would be
 that color regardless of the quoting levels.
 By default, the Quote Colors are not defined.
+<P>
+
+<DT> <A NAME="signature-color"><EM>Signature Color</EM></A>
+
+<DD> The color <EM>Pine</EM> uses for coloring the signature in the MESSAGE TEXT
+screen. According to USENET conventions, the signature is defined as the
+paragraph following the &quot;sigdashes&quot;, that is, the special line
+consisting of the three characters
+&quot;--&nbsp;&quot; (i.e., dash, dash, and space). <EM>Pine</EM> allows for one
+empty line right after the sigdashes to be considered as part of the
+signature.
+By default, the Signature Color is not defined, so will be the same as
+the Normal Color.
 <P>
 
 <DT> <A NAME="prompt-color"><EM>Prompt Color</EM></A>
@@ -7320,9 +7798,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are some samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 <CENTER><SAMP>mail/local-folder</SAMP></CENTER>
 <P>
@@ -7356,9 +7834,16 @@ than or equal to zero.
 The special value &quot;INF&quot; may be used for
 the max value. It represents infinity.
 <P>
+Actually, this option may be defined as a list of intervals instead
+of just a single interval.
+The list is separated by commas.
+It can look like
+<P>
+<CENTER><SAMP>(min_age1,max_age1),(min_age2,max_age2),...</SAMP></CENTER>
+<P>
 When there is an Age Interval defined, it is a match if the age, in days, of
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals.
+The intervals include both endpoints.
 <P>
 Even though this option is called Age, it isn't actually
 the <EM>age</EM> of the message.
@@ -7392,9 +7877,14 @@ where &quot;min_score&quot; and &quot;max_score&quot; are integers between
 The special values &quot;-INF&quot; and &quot;INF&quot; may be used for
 the min and max values to represent negative and positive infinity.
 <P>
+Actually, a list of intervals may be used if you wish.
+A list would look like
+<P>
+<CENTER><SAMP>(min_score1,max_score1),(min_score2,max_score2),...</SAMP></CENTER>
+<P>
 When there is a Score Interval defined, it is a match if the score for
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals in the list.
+The intervals include the endpoints.
 The score for a message is calculated by looking at every Score rule defined and
 adding up the Score Values for the ones which match the message.
 When deciding whether or not a Pattern matches a message for purposes of
@@ -7618,9 +8108,17 @@ where &quot;min_age&quot; and &quot;max_age&quot; are non-negative integers.
 The special value &quot;INF&quot; may be used for the max value.
 It represents infinity.
 <P>
+In rare cases it may be useful to use the more general form of the value,
+which is a comma-separated list of intervals.
+It would look something like:
+<P>
+<CENTER><SAMP>(min_age1,max_age1),(min_age2,max_age2),...</SAMP></CENTER>
+<P>
 When there is an Age Interval defined, it is a match if the age, in days, of
 the message is contained in the interval.
 The interval includes both endpoints.
+If the option is set to a list of intervals then it is a match if the
+age of the message is contained in any of the intervals.
 <P>
 Even though this option is called Age, it isn't actually
 the <EM>age</EM> of the message.
@@ -7669,9 +8167,15 @@ The special values &quot;-INF&quot; and &quot;INF&quot; can be used for
 the min and max values.
 These represent negative and positive infinity.
 <P>
+Actually, the value may be a list of intervals rather than just a
+single interval if that is useful.
+The elements of the list are separated by commas like:
+<P>
+<CENTER><SAMP>(min_score1,max_score1),(min_score2,max_score2),...</SAMP></CENTER>
+<P>
 When there is a Score Interval defined, it is a match if the score for
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals.
+The intervals include both endpoints.
 The score for a message is calculated by looking at every scoring rule
 defined and adding up the Score Values for the rules which match the message.
 <P>
@@ -7705,9 +8209,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder&quot; field is to use
 the T command which is available when the &quot;Folder&quot; line is
@@ -7850,6 +8354,87 @@ option is set to one of the two &quot;Specific&quot;, values.
 <P>
 
 </DL>
+
+<H2><A NAME="configuring-news"></A>Configuring News</H2>
+
+<EM>Pine</EM> can access news folders in any one of three different ways:
+<DL>
+<DT>REMOTE NNTP</DT>
+<DD>Using the Network News Transport Protocol (NNTP) to
+access news on a remote news server.  In this case the newsrc file is
+stored on the machine where <EM>Pine</EM> is running.
+
+<P>
+To specify a remote news-collection accessed via NNTP use the
+SETUP/collectionList screen's &quot;Add&quot; command.  Set the
+Server: value to the NNTP server's hostname appended with the
+communication method &quot;/service=NNTP&quot;, and set the Path:
+value to the &quot;#news.&quot; namespace (without the quotes).
+<P>
+Instead of specifying a news-collection, you may simply set the
+<A HREF="#nntp-server">nntp-server</A>
+option, which will cause <EM>Pine</EM> to create a default news-collection for you.
+Another NNTP option which may be of interest is
+<A HREF="#nntp-range">nntp-range</A>.
+
+<DT>REMOTE IMAP</DT>
+<DD>Using the Internet Message Access Protocol (IMAP) to
+access news on a remote news server.  In this case, your newsrc file is
+stored on the news server, in your home directory, so you must have an
+account on the news server, but you would be running <EM>Pine</EM> on a different
+machine.  The news server must be running an IMAPd server process. 
+
+<P>
+To specify a remote news-collection accessed via IMAP use the
+SETUP/collectionList screen's &quot;Add&quot; command.  Set the
+Server: value to the IMAP server's hostname, and set the Path: value
+to the &quot;#news.&quot; namespace (without the quotes).
+
+</DD>
+
+<DT>LOCAL</DT>
+<DD>Using local file access to the news database.  In this
+case, your newsrc file is stored on the news server, in your home
+directory, so you must have an account on the news server, and you would
+be running <EM>Pine</EM> on the same machine.
+
+<P>
+To specify a local news-collection use the SETUP/collectionList
+screen's &quot;Add&quot; command.  Leave the Server: value blank, and
+set the Path: value to the &quot;#news.&quot; namespace (without the
+quotes).
+
+</DD>
+</DL>
+
+<P>
+
+NOTE: Should no news-collection be defined as above, <EM>Pine</EM> will
+automatically create one using the Setup/Config screen's
+&quot;nntp-server&quot; variable's value if defined.  The collection
+will be created as a &quot;Remote NNTP&quot; as described above.
+
+<P>
+
+If you are a <EM>PC-Pine</EM> user, either option 1 (NNTP) or option 2 (IMAP) is
+possible.  If you don't have an account on the news server, or if the news
+server is not running an IMAP daemon, then you must use NNTP.  (If you are not
+sure, ask your service provider, university, or company for help.)  In
+this case, your Unix .newsrc file can be transferred to your PC.  A good
+place to put it would be in the same directory as your PINERC file, under
+the name NEWSRC, but you can 
+<A HREF="#newsrc-path">specify a different location</A>.
+
+<P>
+Other configuration features related to news are
+<A HREF="#enable-8bit-nntp-posting">Enable-8bit-Nntp-Posting</A>.
+<A HREF="#compose-sets-newsgroup-without-confirm">Compose-Sets-Newsgroup-Without-Confirm</A>,
+<A HREF="#news-approximates-new-status">News-Approximates-New-Status</A>,
+<A HREF="#news-deletes-across-groups">News-Deletes-Across-Groups</A>,
+<A HREF="#news-offers-catchup-on-close">News-Offers-Catchup-On-Close</A>,
+<A HREF="#news-post-without-validation">News-Post-Without-Validation</A>,
+<A HREF="#news-read-in-newsrc-order">News-Read-in-Newsrc-Order</A>, and
+<A HREF="#quell-extra-post-prompt">Quell-Extra-Post-Prompt</A>.
 
 <HR>
 

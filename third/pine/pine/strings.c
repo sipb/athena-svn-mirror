@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.1.1.3 2003-05-01 01:13:08 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: strings.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -116,6 +116,7 @@ void        free_patline PROTO((PAT_LINE_S **));
 void        free_patgrp PROTO((PATGRP_S **));
 ARBHDR_S   *parse_arbhdr PROTO((char *));
 void        free_arbhdr PROTO((ARBHDR_S **));
+void        free_intvl PROTO((INTVL_S **));
 PAT_S      *copy_pat PROTO((PAT_S *));
 PATGRP_S   *copy_patgrp PROTO((PATGRP_S *));
 void        set_up_search_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
@@ -127,6 +128,7 @@ void        add_type_to_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
 				   ROLE_ARGS_T *));
 void        set_srch PROTO((char *, char *, SEARCHPGM *, ROLE_ARGS_T *));
 void        set_srch_hdr PROTO((char *, char *, SEARCHPGM *, ROLE_ARGS_T *));
+void        set_search_by_age PROTO((INTVL_S *, SEARCHPGM *, int));
 int	    non_eh PROTO((char *));
 void        add_eh PROTO((char **, char **, char *, int *));
 void        set_extra_hdrs PROTO((char *));
@@ -1692,7 +1694,7 @@ strtoval(s, val, minmum, maxmum, otherok, errbuf, varname)
 
     removing_leading_and_trailing_white_space(p);
     for(; *p; p++)
-      if(isdigit((unsigned char)*p)){
+      if(isdigit((unsigned char) *p)){
 	  i = (i * 10) + (*p - '0');
       }
       else if(*p == '-' && i == 0){
@@ -1716,6 +1718,53 @@ strtoval(s, val, minmum, maxmum, otherok, errbuf, varname)
     /* range describes unacceptable values */
     else if(minmum > maxmum && !(i < maxmum || i > minmum))
       sprintf(errstr = errbuf, "%s of %d not supported. Using \"%d\"",
+	      varname, i, *val);
+    else
+      *val = i;
+
+    return(errstr);
+}
+
+
+/*
+ * strtolval - convert the given string to a positive _long_ integer.
+ */
+char *
+strtolval(s, val, minmum, maxmum, otherok, errbuf, varname)
+    char *s;
+    long *val;
+    long  minmum, maxmum, otherok;
+    char *errbuf, *varname;
+{
+    long  i = 0, neg = 1L;
+    char *p = s, *errstr = NULL;
+
+    removing_leading_and_trailing_white_space(p);
+    for(; *p; p++)
+      if(isdigit((unsigned char) *p)){
+	  i = (i * 10L) + (*p - '0');
+      }
+      else if(*p == '-' && i == 0L){
+	  neg = -1L;
+      }
+      else{
+	  sprintf(errstr = errbuf,
+		  "Non-numeric value ('%c' in \"%.8s\") in %s. Using \"%ld\"",
+		  *p, s, varname, *val);
+	  return(errbuf);
+      }
+
+    i *= neg;
+
+    /* range describes acceptable values */
+    if(maxmum > minmum && (i < minmum || i > maxmum) && i != otherok)
+      sprintf(errstr = errbuf,
+	      "%s of %ld not supported (M%s %ld). Using \"%ld\"",
+	      varname, i, (i > maxmum) ? "ax" : "in",
+	      (i > maxmum) ? maxmum : minmum, *val);
+    /* range describes unacceptable values */
+    else if(minmum > maxmum && !(i < maxmum || i > minmum))
+      sprintf(errstr = errbuf, "%s of %ld not supported. Using \"%ld\"",
 	      varname, i, *val);
     else
       *val = i;
@@ -5159,26 +5208,16 @@ parse_patgrp_slash(str, patgrp)
       patgrp->age_uses_sentdate = 1;
     else if(!strncmp(str, "/SCOREI=", 8)){
 	if((p = remove_pat_escapes(str+8)) != NULL){
-	    int left, right;
-
-	    if(parse_score_interval(p, &left, &right)){
-		patgrp->do_score  = 1;
-		patgrp->score_min = left;
-		patgrp->score_max = right;
-	    }
+	    if((patgrp->score = parse_intvl(p)) != NULL)
+	      patgrp->do_score = 1;
 
 	    fs_give((void **)&p);
 	}
     }
     else if(!strncmp(str, "/AGE=", 5)){
 	if((p = remove_pat_escapes(str+5)) != NULL){
-	    int left, right;
-
-	    if(parse_score_interval(p, &left, &right)){
-		patgrp->do_age  = 1;
-		patgrp->age_min = left;
-		patgrp->age_max = right;
-	    }
+	    if((patgrp->age = parse_intvl(p)) != NULL)
+	      patgrp->do_age  = 1;
 
 	    fs_give((void **)&p);
 	}
@@ -5438,7 +5477,7 @@ parse_action_slash(str, action)
 	      if(*q == ',')
 		commas++;
 
-	    action->cstm = parse_list(p, commas+1, NULL);
+	    action->cstm = parse_list(p, commas+1, 0, NULL);
 	    fs_give((void **)&p);
 	}
     }
@@ -5452,7 +5491,7 @@ parse_action_slash(str, action)
 	      if(*q == ',')
 		commas++;
 
-	    action->smtp = parse_list(p, commas+1, NULL);
+	    action->smtp = parse_list(p, commas+1, 1, NULL);
 	    fs_give((void **)&p);
 	}
     }
@@ -5536,97 +5575,150 @@ parse_action_slash(str, action)
 
 
 /*
- * Str looks like (min,max), left and right are return values.
+ * Str looks like (min,max) or a comma-separated list of these.
  *
- * Parens are optional, whitespace is ignored.
+ * Parens are optional if unambiguous, whitespace is ignored.
  * If min is left out it is -INF. If max is left out it is INF.
  * If only one number and no comma number is min and max is INF.
  *
- * Returns 1 if ok, 0 if undefined.
+ * Returns the INTVL_S list.
  */
-int
-parse_score_interval(str, left, right)
+INTVL_S *
+parse_intvl(str)
     char *str;
-    int  *left;
-    int  *right;
 {
     char *q;
-    int   ret = 0;
+    int   left, right;
+    INTVL_S *ret = NULL, **next;
 
-    if(!str || !left || !right)
+    if(!str)
       return(ret);
 
-    *left = *right = SCORE_UNDEF;
     q = str;
 
-    /* skip to first number */
-    while(isspace((unsigned char)*q) || *q == LPAREN)
-      q++;
-    
-    /* min number */
-    if(*q == COMMA || !struncmp(q, "-INF", 4))
-      *left = - SCORE_INF;
-    else if(*q == '-' || isdigit((unsigned char)*q))
-      *left = atoi(q);
-    /* else still UNDEF */
+    for(;;){
+	left = right = SCORE_UNDEF;
 
-    if(*left != SCORE_UNDEF){
-	/* skip to second number */
-	while(*q && *q != COMMA && *q != RPAREN)
+	/* skip to first number */
+	while(isspace((unsigned char) *q) || *q == LPAREN)
 	  q++;
-	if(*q == COMMA)
-	  q++;
-	while(isspace((unsigned char)*q))
-	  q++;
+	
+	/* min number */
+	if(*q == COMMA || !struncmp(q, "-INF", 4))
+	  left = - SCORE_INF;
+	else if(*q == '-' || isdigit((unsigned char) *q))
+	  left = atoi(q);
+	/* else still UNDEF */
 
-	/* max number */
-	if(*q == '\0' || *q == RPAREN || !struncmp(q, "INF", 3))
-	  *right = SCORE_INF;
-	else if(*q == '-' || isdigit((unsigned char)*q))
-	  *right = atoi(q);
+	if(left != SCORE_UNDEF){
+	    /* skip to second number */
+	    while(*q && *q != COMMA && *q != RPAREN)
+	      q++;
+	    if(*q == COMMA)
+	      q++;
+	    while(isspace((unsigned char) *q))
+	      q++;
+
+	    /* max number */
+	    if(*q == '\0' || *q == RPAREN || !struncmp(q, "INF", 3))
+	      right = SCORE_INF;
+	    else if(*q == '-' || isdigit((unsigned char) *q))
+	      right = atoi(q);
+	}
+	
+	if(left == SCORE_UNDEF || right == SCORE_UNDEF){
+	    if(ret)
+	      break;
+
+	    q_status_message1(SM_ORDER, 3, 5,
+		    "Error: Interval \"%.200s\": syntax is (min,max)", str);
+	}
+	else if(left > right)
+	  q_status_message1(SM_ORDER, 3, 5,
+			    "Error: Interval \"%.200s\", min > max", str);
+	else{
+	    if(!ret){
+		ret = (INTVL_S *) fs_get(sizeof(*ret));
+		memset((void *) ret, 0, sizeof(*ret));
+		ret->imin = left;
+		ret->imax = right;
+		next = &ret->next;
+	    }
+	    else{
+		*next = (INTVL_S *) fs_get(sizeof(*ret));
+		memset((void *) *next, 0, sizeof(*ret));
+		(*next)->imin = left;
+		(*next)->imax = right;
+		next = &(*next)->next;
+	    }
+
+	    /* skip to next interval in list */
+	    while(*q && *q != COMMA && *q != RPAREN)
+	      q++;
+	    if(*q == RPAREN)
+	      q++;
+	    while(*q && *q != COMMA)
+	      q++;
+	    if(*q == COMMA)
+	      q++;
+	}
     }
-    
-    if(*left == SCORE_UNDEF || *right == SCORE_UNDEF)
-      q_status_message1(SM_ORDER, 3, 5,
-		    "Error: Interval \"%.200s\" (syntax is (min,max)",
-			str);
-    else if(*left > *right)
-      q_status_message1(SM_ORDER, 3, 5,
-			"Error: Interval \"%.200s\", min > max", str);
-    else
-      ret++;
 
     return(ret);
 }
 
 
 /*
- * Returns string that looks like "(left,right)".
+ * Returns string that looks like "(left,right),(left2,right2)".
  * Caller is responsible for freeing memory.
  */
 char *
-stringform_of_score_interval(left, right)
-    int left, right;
+stringform_of_intvl(intvl)
+    INTVL_S *intvl;
 {
     char *res = NULL;
 
-    if(left != SCORE_UNDEF && right != SCORE_UNDEF && left <= right){
-	char lbuf[20], rbuf[20];
+    if(intvl && intvl->imin != SCORE_UNDEF && intvl->imax != SCORE_UNDEF
+       && intvl->imin <= intvl->imax){
+	char     lbuf[20], rbuf[20], buf[45], *p;
+	INTVL_S *iv;
+	int      count = 0;
+	size_t   reslen;
 
-	if(left == - SCORE_INF)
-	  strcpy(lbuf, "-INF");
-	else
-	  sprintf(lbuf, "%d", left);
+	/* find a max size and allocate it for the result */
+	for(iv = intvl;
+	    (iv && iv->imin != SCORE_UNDEF && iv->imax != SCORE_UNDEF
+	     && iv->imin <= iv->imax);
+	    iv = iv->next)
+	  count++;
 
-	if(right == SCORE_INF)
-	  strcpy(rbuf, "INF");
-	else
-	  sprintf(rbuf, "%d", right);
+	reslen = count * 50 * sizeof(char) + 1;
+	res = (char *) fs_get(reslen);
+	memset((void *) res, 0, reslen);
+	p = res;
 
-	res = fs_get((strlen(lbuf) + strlen(rbuf) + 4) * sizeof(char));
-	sprintf(res, "(%s,%s)", lbuf, rbuf);
+	for(iv = intvl;
+	    (iv && iv->imin != SCORE_UNDEF && iv->imax != SCORE_UNDEF
+	     && iv->imin <= iv->imax);
+	    iv = iv->next){
+
+	    if(iv->imin == - SCORE_INF)
+	      strncpy(lbuf, "-INF", sizeof(lbuf));
+	    else
+	      sprintf(lbuf, "%d", iv->imin);
+
+	    if(iv->imax == SCORE_INF)
+	      strncpy(rbuf, "INF", sizeof(rbuf));
+	    else
+	      sprintf(rbuf, "%d", iv->imax);
+
+	    sprintf(buf, "%.1s(%.20s,%.20s)", (p == res) ? "" : ",",
+		    lbuf, rbuf);
+
+	    sstrncpy(&p, buf, reslen - strlen(res) - 1);
+	}
     }
-    
+
     return(res);
 }
 
@@ -6926,8 +7018,7 @@ data_for_patline(pat)
 	  sentdate = cpystr("/SENTDATE=1");
 
 	if(pat->patgrp->do_score){
-	    p = stringform_of_score_interval(pat->patgrp->score_min,
-					     pat->patgrp->score_max);
+	    p = stringform_of_intvl(pat->patgrp->score);
 	    if(p){
 		scorei_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -6935,8 +7026,7 @@ data_for_patline(pat)
 	}
 
 	if(pat->patgrp->do_age){
-	    p = stringform_of_score_interval(pat->patgrp->age_min,
-					     pat->patgrp->age_max);
+	    p = stringform_of_intvl(pat->patgrp->age);
 	    if(p){
 		age_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -7678,12 +7768,18 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
     /*
      * NULL searchset means that there is no message to compare against.
      * This is a match if the folder type matches above (that gets
-     * us here). We choose to ignore the rest of the pattern and call it
-     * a match. In any case, we don't want to call c-client with the
+     * us here), and there are no patterns to match against.
+     *
+     * If there are patterns and no searchset, then there should be 
+     * no match. In any case, we don't want to call c-client with the
      * null searchset.
      */
-    if(!searchset)
-      return(1);
+    if(!searchset){
+	if(trivial_patgrp(patgrp))
+	  return(1);
+	else
+	  return(0);
+    }
 
     /*
      * change by sderr : match_pattern_folder will sometimes
@@ -7808,12 +7904,22 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 		score = (*get_score)(stream, msgno);
 
 		/*
-		 * If the score is outside the interval, turn off the
-		 * searched bit.
+		 * If the score is outside all of the intervals,
+		 * turn off the searched bit.
+		 * So that means we check each interval and if
+		 * it is inside any interval we stop and leave
+		 * the bit set. If it is outside we keep checking.
 		 */
-		if(score != SCORE_UNDEF &&
-		   (score < patgrp->score_min || score > patgrp->score_max))
-		  mc->searched = NIL;
+		if(score != SCORE_UNDEF){
+		    INTVL_S *iv;
+
+		    for(iv = patgrp->score; iv; iv = iv->next)
+		      if(score >= iv->imin && score <= iv->imax)
+			break;
+		    
+		    if(!iv)
+		      mc->searched = NIL;
+		}
 	    }
 
 	for(i = 1L; i <= stream->nmsgs; i++)
@@ -7918,7 +8024,7 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 			       patgrp->abooks);
 
     for(s = searchset; s; s = s->next)
-      for(msgno = s->first; msgno <= s->last; msgno++)
+      for(msgno = s->first; msgno > 0L && msgno <= s->last; msgno++)
         if(mail_elt(stream, msgno)->searched)
 	  return(1);
 
@@ -8198,58 +8304,20 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
 	set_up_search_pgm("bodytext", patgrp->bodytext, tmppgm, &rargs);
     }
 
-    if(patgrp->do_age && patgrp->age_min <= patgrp->age_max){
-	time_t       now, comparetime;
-	struct tm   *tm;
-	unsigned short i;
+    if(patgrp->do_age && patgrp->age){
+	INTVL_S  *iv;
+	SEARCHOR *or;
 
-	now = time(0);
+	tmppgm = pgm;
 
-	if(patgrp->age_min >= 0 && patgrp->age_min == patgrp->age_max){
-	    comparetime = now;
-	    comparetime -= (patgrp->age_min * 86400);
-	    tm = localtime(&comparetime);
-	    if(tm && tm->tm_year >= 70){
-		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
-				   tm->tm_mday);
-		if(patgrp->age_uses_sentdate)
-		  pgm->senton = i;
-		else
-		  pgm->on = i;
+	for(iv = patgrp->age; iv; iv = iv->next){
+	    if(iv->next){
+		or = next_or(&tmppgm->or);
+		set_search_by_age(iv, or->first, patgrp->age_uses_sentdate);
+		tmppgm = or->second;
 	    }
-	}
-	else{
-	    /*
-	     * The 20000's are just protecting against overflows.
-	     * That's back past the start of email time, anyway.
-	     */
-	    if(patgrp->age_min > 0 && patgrp->age_min < 20000){
-		comparetime = now;
-		comparetime -= ((patgrp->age_min - 1) * 86400);
-		tm = localtime(&comparetime);
-		if(tm && tm->tm_year >= 70){
-		    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
-				       tm->tm_mday);
-		    if(patgrp->age_uses_sentdate)
-		      pgm->sentbefore = i;
-		    else
-		      pgm->before = i;
-		}
-	    }
-
-	    if(patgrp->age_max >= 0 && patgrp->age_max < 20000){
-		comparetime = now;
-		comparetime -= (patgrp->age_max * 86400);
-		tm = localtime(&comparetime);
-		if(tm && tm->tm_year >= 70){
-		    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
-				       tm->tm_mday);
-		    if(patgrp->age_uses_sentdate)
-		      pgm->sentsince = i;
-		    else
-		      pgm->since = i;
-		}
-	    }
+	    else
+	      set_search_by_age(iv, tmppgm, patgrp->age_uses_sentdate);
 	}
     }
     
@@ -8325,9 +8393,14 @@ set_up_search_pgm(field, pattern, pgm, rargs)
 	 * To is special because we want to use the ReSent-To header instead
 	 * of the To header if it exists.  We set up something like:
 	 *
-	 * if((<resent-to exists> AND (resent-to matches pat1 or pat2...))
+	 * if((resent-to matches pat1 or pat2...)
 	 *                  OR
 	 *    (<resent-to doesn't exist> AND (to matches pat1 or pat2...)))
+	 *
+	 *  Some servers (Exchange, apparently) seem to have trouble with
+	 *  the search for the empty string to decide if the header exists
+	 *  or not. So, we will search for either the empty string OR the
+	 *  header with a SPACE in it.
 	 */
 	if(!strucmp(field, "to")){
 	    ROLE_ARGS_T local_args;
@@ -8335,17 +8408,19 @@ set_up_search_pgm(field, pattern, pgm, rargs)
 	    or = next_or(&pgm->or);
 
 	    local_args = *rargs;
-	    local_args.cset = NULL;	/* just to save having to check */
-	    /* check for resent-to exists */
-	    set_srch("resent-to", "", or->first, &local_args);
-
 	    local_args.cset = rargs->cset;
 	    add_type_to_pgm("resent-to", pattern, or->first, &local_args);
 
 	    /* check for resent-to doesn't exist */
 	    or->second->not = mail_newsearchpgmlist();
+
 	    local_args.cset = NULL;
-	    set_srch("resent-to", "", or->second->not->pgm, &local_args);
+	    or->second->not->pgm->or = mail_newsearchor();
+	    set_srch("resent-to", " ", or->second->not->pgm->or->first,
+		     &local_args);
+	    local_args.cset = NULL;
+	    set_srch("resent-to",  "", or->second->not->pgm->or->second,
+		     &local_args);
 
 	    /* now add the real To search to second */
 	    local_args.cset = rargs->cset;
@@ -8366,28 +8441,75 @@ add_type_to_pgm(field, pattern, pgm, rargs)
 {
     PATTERN_S *p;
     SEARCHOR  *or;
+    SEARCHPGM *notpgm, *tpgm;
+    int        cnt = 0;
 
     if(field && pattern && rargs && pgm){
-	for(p = pattern; p; p = p->next){
-	    if(p->next){
-		/*
-		 * The list of or's (the or->next thing) is actually AND'd
-		 * together. So we want to use a different member of that
-		 * list for things we want to AND, like Subject A or B AND
-		 * From C or D. On the other hand, for multiple items in
-		 * one group which we really do want OR'd together, like
-		 * Subject A or B or C we don't use the list, we use an
-		 * OR tree (which is what this for loop is building).
-		 */
+	/*
+	 * Here is a weird bit of logic. What we want here is simply
+	 *       A or B or C or D
+	 * for all of the elements of pattern. Ors are a bit complicated.
+	 * The list of ORs in the SEARCHPGM structure are ANDed together,
+	 * not ORd together. It's for things like
+	 *      Subject A or B  AND  From C or D
+	 * The Subject part would be one member of the OR list and the From
+	 * part would be another member of the OR list. Instead we want
+	 * a big OR which may have more than two members (first and second)
+	 * but the structure just has two members. So we have to build an
+	 * OR tree and we build it by going down one branch of the tree
+	 * instead of by balancing the branches.
+	 *
+	 *            or
+	 *           /  \
+	 *    first==A   second
+	 *                /  \
+	 *          first==B  second
+	 *                     /  \
+	 *               first==C  second==D
+	 *
+	 * There is an additional problem. Some servers don't like deeply
+	 * nested logic in the SEARCH command. The tree above produces a
+	 * fairly deeply nested command if the user wants to match on
+	 * several different From addresses or Subjects...
+	 * We use the tried and true equation
+	 *
+	 *        (A or B) == !(!A or !B)
+	 *
+	 * to change the deeply nested OR tree into ANDs which aren't nested.
+	 * Right now we're only doing that if the nesting is fairly deep.
+	 * We can think of some reasons to do that. First, we know that the
+	 * OR thing works, that's what we've been using for a while and the
+	 * only problem is the deep nesting. 2nd, it is easier to understand.
+	 * 3rd, it looks dumb to use  NOT NOT A   instead of  A.
+	 * It is probably dumb to mix the two, but what the heck.
+	 * Hubert 2003-04-02
+	 */
+	for(p = pattern; p; p = p->next)
+	  cnt++;
 
-		or = next_or(&pgm->or);
+	if(cnt < 10){				/* use ORs if count is low */
+	    for(p = pattern; p; p = p->next){
+		if(p->next){
+		    or = next_or(&pgm->or);
 
-		set_srch(field, p->substring ? p->substring : "",
-			 or->first, rargs);
-		pgm = or->second;
+		    set_srch(field, p->substring ? p->substring : "",
+			     or->first, rargs);
+		    pgm = or->second;
+		}
+		else
+		  set_srch(field, p->substring ? p->substring : "", pgm, rargs);
 	    }
-	    else{
-		set_srch(field, p->substring ? p->substring : "", pgm, rargs);
+	}
+	else{					/* else use ANDs */
+	    /* ( A or B or C )  <=>  ! ( !A and !B and !C ) */
+
+	    /* first, NOT of the whole thing */
+	    notpgm = next_not(pgm);
+
+	    /* then the not list is ANDed together */
+	    for(p = pattern; p; p = p->next){
+		tpgm = next_not(notpgm);
+		set_srch(field, p->substring ? p->substring : "", tpgm, rargs);
 	    }
 	}
     }
@@ -8524,6 +8646,70 @@ set_srch_hdr(field, value, pgm, rargs)
 
     if(cs)
       fs_give((void **)&cs);
+}
+
+
+void
+set_search_by_age(age, pgm, age_uses_sentdate)
+    INTVL_S   *age;
+    SEARCHPGM *pgm;
+    int        age_uses_sentdate;
+{
+    time_t         now, comparetime;
+    struct tm     *tm;
+    unsigned short i;
+
+    if(!(age && pgm))
+      return;
+
+    now = time(0);
+
+    if(age->imin >= 0 && age->imin == age->imax){
+	comparetime = now;
+	comparetime -= (age->imin * 86400);
+	tm = localtime(&comparetime);
+	if(tm && tm->tm_year >= 70){
+	    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+			       tm->tm_mday);
+	    if(age_uses_sentdate)
+	      pgm->senton = i;
+	    else
+	      pgm->on = i;
+	}
+    }
+    else{
+	/*
+	 * The 20000's are just protecting against overflows.
+	 * That's back past the start of email time, anyway.
+	 */
+	if(age->imin > 0 && age->imin < 20000){
+	    comparetime = now;
+	    comparetime -= ((age->imin - 1) * 86400);
+	    tm = localtime(&comparetime);
+	    if(tm && tm->tm_year >= 70){
+		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+				   tm->tm_mday);
+		if(age_uses_sentdate)
+		  pgm->sentbefore = i;
+		else
+		  pgm->before = i;
+	    }
+	}
+
+	if(age->imax >= 0 && age->imax < 20000){
+	    comparetime = now;
+	    comparetime -= (age->imax * 86400);
+	    tm = localtime(&comparetime);
+	    if(tm && tm->tm_year >= 70){
+		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+				   tm->tm_mday);
+		if(age_uses_sentdate)
+		  pgm->sentsince = i;
+		else
+		  pgm->since = i;
+	    }
+	}
+    }
 }
 
 
@@ -8751,6 +8937,8 @@ free_patgrp(patgrp)
 	free_pattern(&(*patgrp)->bodytext);
 	free_pattern(&(*patgrp)->folder);
 	free_arbhdr(&(*patgrp)->arbhdr);
+	free_intvl(&(*patgrp)->score);
+	free_intvl(&(*patgrp)->age);
 	fs_give((void **)patgrp);
     }
 }
@@ -8779,6 +8967,17 @@ free_arbhdr(arbhdr)
 	  fs_give((void **)&(*arbhdr)->field);
 	free_pattern(&(*arbhdr)->p);
 	fs_give((void **)arbhdr);
+    }
+}
+
+
+void
+free_intvl(intvl)
+    INTVL_S **intvl;
+{
+    if(intvl && *intvl){
+	free_intvl(&(*intvl)->next);
+	fs_give((void **) intvl);
     }
 }
 
@@ -8973,12 +9172,50 @@ copy_patgrp(patgrp)
 	}
 
 	new_patgrp->do_score  = patgrp->do_score;
-	new_patgrp->score_min = patgrp->score_min;
-	new_patgrp->score_max = patgrp->score_max;
+	if(patgrp->score){
+	    INTVL_S *intvl, *iv, *new_iv;
+
+	    intvl = NULL;
+	    for(iv = patgrp->score; iv; iv = iv->next){
+		new_iv = (INTVL_S *) fs_get(sizeof(*new_iv));
+		memset((void *) new_iv, 0, sizeof(*new_iv));
+
+		new_iv->imin = iv->imin;
+		new_iv->imax = iv->imax;
+
+		if(intvl){
+		    intvl->next = new_iv;
+		    intvl = intvl->next;
+		}
+		else{
+		    new_patgrp->score = new_iv;
+		    intvl = new_patgrp->score;
+		}
+	    }
+	}
 
 	new_patgrp->do_age    = patgrp->do_age;
-	new_patgrp->age_min   = patgrp->age_min;
-	new_patgrp->age_max   = patgrp->age_max;
+	if(patgrp->age){
+	    INTVL_S *intvl, *iv, *new_iv;
+
+	    intvl = NULL;
+	    for(iv = patgrp->age; iv; iv = iv->next){
+		new_iv = (INTVL_S *) fs_get(sizeof(*new_iv));
+		memset((void *) new_iv, 0, sizeof(*new_iv));
+
+		new_iv->imin = iv->imin;
+		new_iv->imax = iv->imax;
+
+		if(intvl){
+		    intvl->next = new_iv;
+		    intvl = intvl->next;
+		}
+		else{
+		    new_patgrp->age = new_iv;
+		    intvl = new_patgrp->score;
+		}
+	    }
+	}
 
 	new_patgrp->age_uses_sentdate = patgrp->age_uses_sentdate;
 

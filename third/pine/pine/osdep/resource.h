@@ -30,7 +30,9 @@
 #define IDM_OPT_TOOLBAR                 117
 #define IDD_CONFIGDLG                   117
 #define IDM_OPT_TOOLBARPOS              118
+#define IDD_CFVARSDLG                   118
 #define IDM_OPT_USEDIALOGS              119
+#define IDD_LOGINDLG2                   119
 #define IDM_OPT_USEACCEL                120
 #define IDM_OPT_IMAPTELEM               121
 #define IDM_EDIT_SEL_ALL                122
@@ -108,6 +110,7 @@
 #define PINEICON                        400
 #define NEWMAILICON                     401
 #define	PICOHAND			402
+#define MCLOSEDICON                     403
 #define PINEBITMAP                      500
 #define PINESPLASH			501
 #define IDD_ABOUTICON                   0x210
@@ -140,18 +143,28 @@
 #define	IDC_RPASSWORD			1021
 #define	IDC_RPWTEXT               	1022
 #define	IDC_CONFRRADIO               	1023
+#define IDC_CFV_PNAME                   1023
 #define	IDC_CONFLRADIO               	1024
+#define IDC_CFV_EMAILADR                1024
 #define	IDC_CONFSRVRTXT               	1025
+#define IDC_CFV_MSERVER                 1025
 #define	IDC_CONFESERVER               	1026
+#define IDC_CFV_IMAP                    1026
 #define	IDC_CONFUNTXT               	1027
+#define IDC_CFV_POP3                    1027
 #define	IDC_CONFEUSERNAME             	1028
+#define IDC_CFV_LOGIN                   1028
 #define	IDC_CONFDFLTFLDR               	1029
+#define IDC_CFV_SMTPSERVER              1029
 #define	IDC_CONFFLDRTXT               	1030
+#define IDC_CFV_DEFMAILER               1030
 #define	IDC_CONFEFLDRNAME              	1031
+#define IDC_CFV_DEFNEWSRDR              1031
 #define	IDC_CONFFNTXT             	1032
 #define	IDC_CONFEFN              	1033
 #define	IDC_CONFBROWSE              	1034
 #define	IDC_CONFDFLTSET              	1035
+#define	IDC_CONFTEXT              	1036
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

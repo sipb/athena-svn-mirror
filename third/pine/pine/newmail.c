@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: newmail.c,v 1.1.1.2 2003-02-12 08:01:28 ghudson Exp $";
+static char rcsid[] = "$Id: newmail.c,v 1.1.1.3 2003-05-01 01:13:11 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: newmail.c,v 1.1.1.2 2003-02-12 08:01:28 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -84,8 +84,8 @@ static long mailbox_mail_since_command = 0L,
  
  --- */
 long
-new_mail(force, time_for_check_point, flags)
-    int force, time_for_check_point, flags;
+new_mail(force_arg, time_for_check_point, flags)
+    int force_arg, time_for_check_point, flags;
 {
     static time_t last_check = 0;
     static time_t last_check_point_call = 0;
@@ -93,13 +93,15 @@ new_mail(force, time_for_check_point, flags)
     long          n, rv = 0;
     MAILSTREAM   *stream;
     register struct pine *pine_state;
-    int           checknow = 0;
+    int           checknow = 0, force;
 
     dprint(9, (debugfile, "new mail called (%d %d %d)\n",
-               force, time_for_check_point, flags));
+               force_arg, time_for_check_point, flags));
     pine_state = ps_global;  /*  this gets called out of the composer which
                               *  doesn't know about pine_state
                               */
+    force = force_arg;
+
     now = time(0);
 
     if(time_for_check_point == 0)
@@ -145,6 +147,16 @@ new_mail(force, time_for_check_point, flags)
 	now = time(0);
 	dprint(7, (debugfile, "Mail_Ping(mail_stream): %s\n", ctime(&now)));
 #endif
+	/*
+	 * We're about to ping the stream. If the stream is a #move Mail Drop
+	 * there is a minimum time between re-opens of the mail drop to check
+	 * for new mail. If the check is forced by the user, they want
+	 * it to happen now. We use knowledge of c-client internals to
+	 * make this happen.
+	 */
+	if(force_arg && stream && stream->snarf.name)
+	  stream->snarf.time = 0;
+
         /*-- Ping the mailstream to check for new mail --*/
         dprint(6, (debugfile, "New mail checked \n"));
 	if((char *)mail_ping(stream) == NULL)
@@ -179,6 +191,17 @@ new_mail(force, time_for_check_point, flags)
 	now = time(0);
 	dprint(7, (debugfile, "Mail_Ping(inbox_stream): %s\n", ctime(&now)));
 #endif
+	/*
+	 * We're about to ping the stream. If the stream is a #move Mail Drop
+	 * there is a minimum time between re-opens of the mail drop to check
+	 * for new mail. If the check is forced by the user, they want
+	 * it to happen now. We use knowledge of c-client internals to
+	 * make this happen.
+	 */
+	if(force_arg && pine_state->inbox_stream
+	   && pine_state->inbox_stream->snarf.name)
+	  pine_state->inbox_stream->snarf.time = 0;
+
 	if((char *)mail_ping(pine_state->inbox_stream) == NULL)
 	  pine_state->dead_inbox = 1;
 
@@ -415,7 +438,7 @@ new_mail_mess(stream, folder, number, max_num)
 	    from ? ((number > 1L) ? " Most recent f" : " F") : "",
 	    from ? "rom " : "",
 	    from ? from : "");
-    icon_text(tmp_20k_buf);
+    icon_text(tmp_20k_buf, IT_NEWMAIL);
 
     if(from)
       fs_give((void **) &from);
@@ -639,7 +662,7 @@ zero_new_mail_count()
      * Decide if likewise need to clean up the new mail icon...
      */
     if(mailbox_mail_since_command || inbox_mail_since_command)
-      icon_text(NULL);
+      icon_text(NULL, IT_NEWMAIL);
 
     mailbox_mail_since_command = 0L;
     inbox_mail_since_command   = 0L;
@@ -670,11 +693,17 @@ streams_died()
         ps_global->noticed_dead_inbox = 1;
         inbox = 1;
     }
-    if(rv == 1) 
-      q_status_message1(SM_ORDER | SM_DING, 3, 6,
-                        "MAIL FOLDER \"%.200s\" CLOSED DUE TO ACCESS ERROR",
-                        pretty_fn(inbox ? ps_global->inbox_name
-				  	: ps_global->cur_folder));
+    if(rv == 1) {
+	q_status_message1(SM_ORDER | SM_DING, 3, 6,
+			  "MAIL FOLDER \"%.200s\" CLOSED DUE TO ACCESS ERROR",
+			  pretty_fn(inbox ? ps_global->inbox_name
+				    : ps_global->cur_folder));
+	sprintf(tmp_20k_buf, "Folder \"%.200s\" is Closed", 
+		pretty_fn(inbox ? ps_global->inbox_name
+			  : ps_global->cur_folder));
+	icon_text(tmp_20k_buf, IT_MCLOSED);
+    }
+
     return(rv);
 }
         

@@ -206,56 +206,491 @@ of the configuration file. <P>
 
 <HR>
 
-<H2><A NAME="remote-folders">Syntax for Remote Folders</A></H2>
+<H2><A NAME="remote-folders">Syntax for Folder Names</A></H2>
 
 Remote folders are distinguished from local folders by a leading host name
 bracketed by '{' and '}'.  The path and folder name immediately following
-the closing bracket, '}', is interpreted by the IMAP server and is in a
+the closing bracket, '}', is interpreted by the remote server and is in a
 form compatible with that server (i.e., path delimiters and naming syntax
-relative to that server).  <P>
-
-Typically, a folder name without any path description is understood to
-reside in the user's "home directory" (i.e., in some way the user's
-personal, writable file area), as are incomplete path designations. 
-However, the IMAP specification does not require that unqualified folder
-names live in one's home directory, so some IMAP servers may require fully
-qualified names. An example of a remote folder specification would be,
-
-<PRE>
-	{host.dept.washington.edu}mail/saved-messages
-</PRE>
-
-This example simply specifies a folder named ``saved-messages'' on the
-imap server ``host.dept.washington.edu'', in the ``mail'' subdirectory
-of the user's home directory.  Easy isn't it?  <P>
-
-To confuse things a bit, qualifiers are permitted within the brackets
-following the host name.  These qualifiers consist of a slash ('/')
-character followed by a keyword or keyword and value, and have
-the effect of modifying how the connection is made to the host specified. 
-An example of such a specification might be,
-
-<PRE>
-	{news.u.washington.edu/nntp}#news.comp.mail.mime
-</PRE>
+relative to that server).
 <P>
 
-This specifies an altogether different access method:  access via the Network
-News Transport Protocol (NNTP). <P>
+The full syntax for a <EM>Pine</EM> folder name looks like
 
-Some other possible qualifiers are <CODE>/user=username</CODE>, which says
-to login as user <EM>username</EM>; <CODE>/secure</CODE>, which says to
-use the most secure authentication method supported by <EM>Pine</EM> and
-the server and fail to connect if that authentication fails;
-<CODE>/imap</CODE>; <CODE>/pop3</CODE>;
-<CODE>/debug</CODE>;
-<CODE>/ssl</CODE>, which says to use a secure SSL connection;
-<CODE>/novalidate-cert</CODE>, which tells <EM>Pine</EM> to not attempt to
-validate certificates from SSL server;
-and <CODE>/anonymous</CODE>. <P>
+<P>
+<CENTER><SAMP>[{&lt;remote-specification&gt;}][#&lt;namespace&gt;]&lt;namespace-specific-part&gt;</SAMP></CENTER>
+<P>
 
-There is also an optional <CODE>:portnum</CODE> following the hostname. This
-would specify a non-standard port number to connect to. <P>
+The square brackets ([]) mean that the part is optional.
+<P>
+
+If there is no remote-specification, then the folder name is interpreted
+locally on the computer running <EM>Pine</EM>.
+Local folder names depend on the operating system used by the computer 
+running <EM>Pine</EM>, as well as the configuration of that system.  For example,
+&quot;C:&#92;PINE&#92;FOLDERS&#92;OCT-94&quot; might exist on a PC, and
+&quot;~/mail/september-1994&quot; might be a reasonable folder name on a
+system running Unix.
+
+<P>
+<EM>Pine</EM> users have the option of using folders which are stored on some other
+computer.  <EM>Pine</EM> accesses remote folders via IMAP (the Internet Message
+Access Protocol), or in the case of news, via NNTP (the Network News
+Transport Protocol).  To be able to access remote folders in <EM>Pine</EM>, the
+remote host must be running the appropriate server software (imapd or
+nntpd) and you must correctly specify the name of the folder to <EM>Pine</EM>,
+including the domain name of the remote machine. For example,
+<P>
+<CENTER><SAMP>&#123;monet.art.example.com}INBOX</SAMP></CENTER>
+<P>
+could be a remote folder specification, and so could
+<P>
+<CENTER><SAMP>&#123;unixhost.art.example.com}~/mail/september-1994</SAMP></CENTER>
+and
+<P>
+<CENTER><SAMP>&#123;winhost.art.example.com}&#92;mymail&#92;SEP-94</SAMP></CENTER>
+<P>
+Note that in the case of remote folders, the directory/file path in the specification is 
+determined by the operating system of the remote computer, <B>not</B> by
+the operating system of the computer on which you are running <EM>Pine</EM>.
+<P>
+As you can tell, the name of the computer is in &#123;} brackets
+followed immediately by the name of the folder.  (In each of these cases the
+optional namespace is missing.)  If, as in these
+examples, there is no remote access protocol specified, then IMAP is
+assumed.  Check
+<A HREF="#server-name-syntax"><EM>Server Name Syntax</EM></A>
+for a more detailed look at what options can be placed between the brackets.
+If there are no brackets at all, then the folder name is interpreted locally
+on the computer on which you are running <EM>Pine</EM>.
+
+<P>
+To the right of the brackets when a server name is present, or at the
+start of the foldername if no server is present, the sharp sign,
+&quot;#&quot;, holds special meaning.  It indicates a folder name
+outside the area reserved for your personal folders.  In fact, it's
+used to indicate both the name of the folder, and a special phrase
+telling <EM>Pine</EM> how to interpret the name that follows.
+
+<P>
+So, for example, <EM>Pine</EM> can be used to access a newsgroup that might be 
+available on your computer using:
+<P>
+<CENTER><SAMP>#news.comp.mail.pine</SAMP></CENTER>
+<P>
+The sharp sign indicates the folder name is outside your personal
+folder area.  The &quot;news.&quot; phrase after it tells <EM>Pine</EM> to 
+interpret the remainder of the name as a newsgroup.
+
+<P>
+Similarly, to access a newsgroup on your IMAP server, you might
+use something like:
+<P>
+<CENTER><SAMP>&#123;wharhol.art.example.com}#news.comp.mail.misc</SAMP></CENTER>
+
+<P>
+There are a number of such special phrases (or &quot;namespaces&quot;)
+available.  For a more detailed explanation read about
+<A HREF="#folder-namespaces"><EM>Namespaces</EM></A>.
+
+<P>
+Note that &quot;INBOX&quot; has special meaning in both local and remote folder
+names.  The name INBOX refers to your &quot;principal incoming
+message folder&quot; and will be mapped to the actual file name used for your
+INBOX on any given host.  Therefore, a name like
+&quot;&#123;xxx.art.example.com}INBOX&quot; refers to whatever file is used to
+store incoming mail for you on that particular host.
+<P>
+
+<HR>
+
+<H2><A NAME="server-name-syntax">Server Name Syntax for Folders</A></H2>
+
+This section describes the syntax which may be used for the server name
+associated with a remote folder.
+
+<P>
+A server name is the hostname of the server.
+It's a good idea to use the host's fully-qualified network name.
+
+<P>
+<CENTER><SAMP>foo.example.com</SAMP></CENTER>
+<P>
+
+However, IP addresses are allowed if surrounded
+with square-brackets.
+
+<P>
+<CENTER><SAMP>[127.0.0.1]</SAMP></CENTER>
+<P>
+
+An optional network port number may be supplied by appending
+a colon (:) followed by the port number
+to the server name.
+By default, the IMAP port number, 143, is used.
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+Besides server name and optional port number, various other optional
+parameters may be supplied that alter <EM>Pine</EM>'s interaction with the server.
+A parameter is supplied by appending a slash (/) character followed by
+the parameter's name and,
+depending on the particular parameter, the value assigned to that
+name, to the server name (and optional port number).
+Parameter names are <EM>not</EM> case sensitive.
+Currently supported parameters include:
+
+<DL>
+
+<DT>User</DT>
+<DD>This parameter requires an associated value, and is intended to
+provide the username identifier with which to establish the server
+connection.
+An example might be:
+
+<P>
+<CENTER><SAMP>/user=katie</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>SSL</DT>
+<DD>
+This is a unary parameter indicating communication with the server should 
+take place over a Secure Socket Layer connection.  The server must support
+this method, and be prepared to accept connections on the appropriate
+port (993 by default).
+<EM>Pine</EM> must be linked with an SSL library for this option to be operational.
+
+<P>
+<CENTER><SAMP>/ssl</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>NoValidate-Cert</DT>
+<DD>Do not validate certificates (for TLS or SSL connections) from the server.
+This is needed if the server uses self-signed certificates or if <EM>Pine</EM>
+cannot validate the certificate for some other known reason.
+<P>
+</DD>
+
+<DT>Anonymous</DT>
+<DD>This is a unary parameter (that means it does not have a value)
+indicating that the connection be logged in as
+&quot;anonymous&quot; rather than a specific user.
+Not all servers offer anonymous
+access; those which do generally only offer read-only access to certain
+&quot;public&quot; folders.
+
+<P>
+<CENTER><SAMP>/anonymous</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>Secure</DT>
+<DD>This is a unary parameter indicating that the connection use the
+most secure authentication method mutually supported by <EM>Pine</EM> and the
+server.
+<EM>Pine</EM> is capable of authenticating connections to 
+the server using several methods.
+By default, <EM>Pine</EM> will attempt each
+method until either a connection is established or the
+list of methods is exhausted.
+This parameter causes <EM>Pine</EM> to instead fail 
+the connection if the first (generally most &quot;secure&quot;) method fails.
+
+<P>
+<CENTER><SAMP>/secure</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>Debug</DT>
+<DD>This is a unary parameter indicating that the connection be established
+in a verbose mode.  Basically, it causes <EM>Pine</EM> to log the communication with
+the server in <EM>Pine</EM>'s debug file.
+Normally, the pine -d command-line flag would be used instead.
+<P>
+</DD>
+
+<DT>NoRsh</DT>
+<DD>By default, <EM>Pine</EM> attempts to login using &quot;rsh&quot;,
+the UNIX remote shell program.
+Including &quot;NoRsh&quot; will cause connections to this server to skip
+the &quot;rsh&quot; attempt.
+This might be useful to avoid long timeouts caused by rsh firewalls, for
+example.
+<P>
+</DD>
+
+<DT>Service</DT>
+<DD>This parameter requires an associated value.  The default value is
+&quot;IMAP&quot; which indicates communication with the server based
+on the IMAP4rev1 protocol (defined in RFC 3501 -- see 
+<A HREF="http://www.imap.org/docs/rfc3501.html">http://www.imap.org/docs/rfc3501.html</A>).</DD>
+
+Other service values include:
+ <DL>
+ <DT>NNTP</DT>
+ <DD>This value indicates communication with the server takes place via
+the Network News Transfer Protocol.  Use this to define a collection
+of newsgroups on a remote news server.  So
+
+<P>
+<CENTER><SAMP>/service=NNTP</SAMP></CENTER>
+<P>
+or just
+<P>
+<CENTER><SAMP>/NNTP</SAMP></CENTER>
+<P>
+
+is the way to specify NNTP access.
+<P>
+ </DD>
+
+ <DT>POP3</DT>
+ <DD>This value indicates communication with the server takes place via the
+Post Office Protocol 3 protocol.
+
+<P>
+<CENTER><SAMP>/service=POP3</SAMP></CENTER>
+<P>
+or just
+<P>
+<CENTER><SAMP>/POP3</SAMP></CENTER>
+<P>
+
+Note that there are several important issues
+to consider when selecting this option:
+<OL>
+ <LI> POP3 provides access to only your INBOX.  In other words,
+secondary folders such as your &quot;saved-messages&quot; are inaccessible.
+ <LI> <EM>Pine</EM>'s implementation of POP3 does not follow the traditional POP
+model and will leave your mail on the server. Refer to the
+<A HREF="#maildrop"><EM>Mail Drop</EM></A>
+functionality for a possible way around this problem.
+ <LI> See the discussion about new-mail checking in <A HREF="config.html#reopen-rule"><EM>Folder-Reopen-Rule</EM></A>.
+</OL>
+</DD>
+</DL>
+</DL>
+
+<P>
+Note that it is possible to include more than one parameter in a server
+specification by concatenating the parameters. For example:
+
+<P>
+<CENTER><SAMP>foo.example.com:port/user=katie/novalidate-cert/debug</SAMP></CENTER>
+<P>
+
+<HR>
+
+<H2><A NAME="folder-namespaces">Folder Namespaces</A></H2>
+
+A <EM>Pine</EM> folder name looks like
+
+<P>
+<CENTER><SAMP>[{&lt;remote-specification&gt;}][#&lt;namespace&gt;][&lt;namespace-specific-part&gt;]</SAMP></CENTER>
+<P>
+
+The local part of a folder name has an optional &quot;Namespace&quot; which
+tells <EM>Pine</EM> how to interpret the rest of the name.
+
+<P> 
+By default the folder name is interpreted as defining a section of your personal
+folder area.  This area and how you specify it are defined by the
+server, if one is specified, or, typically, the home
+directory, if no server is defined.
+
+<P>
+If a namespace is specified, it begins with the
+sharp, &quot;#&quot;, character followed by the name of the namespace
+and then the namespace's path-element-delimiter.  Aside from the
+path's format, namespaces can also imply access rights, content
+policy, audience, location, and, occasionally, access methods.
+
+<P>
+Each server exports its own set (possibly of size one) of 
+namespaces.  Hence, it's likely communication with your server's
+administrator will be required for specific configurations.  Some of
+the more common namespaces, however, include:
+
+<DL>
+<DT>#news.</DT>
+<DD>This specifies a set of folders in the newsgroup namespace.  Newsgroup
+names are hierarchically defined with each level delimited by a period.
+<P>
+<CENTER><SAMP>#news.comp.mail.pine</SAMP></CENTER>
+<P>
+</DD>
+<DT>#public/</DT>
+<DD>This specifies a folder area that the server may export to the general
+public.
+</DD>
+<DT>#shared/</DT>
+<DD>This specifies a folder area that the folder may export to groups
+of users.
+</DD>
+<DT>#ftp/</DT>
+<DD>This specifies a folder area that is the same as that it may have 
+exported via the &quot;File Transfer Protocol&quot;.
+</DD>
+<DT>#mh/</DT>
+<DD>This specifies the personal folder area associated with folders
+and directories that were created using the MH message handling system.
+</DD>
+<DT>#move/</DT>
+<DD>This namespace is interpreted locally by <EM>Pine</EM>. It has an unusual interpretation and format.
+<P>
+<CENTER><SAMP>#move&lt;DELIM&gt;&lt;MailDropFolder&gt;&lt;DELIM&gt;&lt;DestinationFolder&gt;</SAMP></CENTER>
+<P>
+The <CODE>#move</CODE> namespace is followed by two folder names separated by a delimiter
+character.
+The delimiter character may be any character which does not appear in
+the <CODE>MailDropFolder</CODE> name.
+The meaning of <CODE>#move</CODE> is that mail will be copied from the <CODE>MailDropFolder</CODE> to
+the <CODE>DestinationFolder</CODE> and then deleted (if possible) from the <CODE>MailDropFolder</CODE>.
+Periodic checks at frequency
+<A HREF="config.html#mail-check"><EM>Mail-Check-Interval</EM></A>, but with a minimum time between checks set by
+<A HREF="config.html#maildrop-check-minimum"><EM>MailDrop-Check-Minimum</EM></A>,
+are made for new mail arriving in the <CODE>MailDropFolder</CODE>.
+An example which copies mail from a POP inbox to a local folder follows
+<P>
+<CENTER><SAMP>#move+{popserver.example.com/pop3/ssl}inbox+local folder</SAMP></CENTER>
+<P>
+To you it appears that mail is being delivered to the local folder when it
+is copied from the <CODE>MailDropFolder</CODE>, and you read mail from the local folder.
+<P>
+Note that if the <CODE>DestinationFolder</CODE> does not exist then the messages are not
+copied from the <CODE>MailDropFolder</CODE>.
+A <CODE>#move</CODE> folder may only be used as an
+<A HREF="config.html#enable-incoming-folders"><EM>Incoming folder</EM></A> or
+an Inbox.
+When you are in the FOLDER LIST of Incoming Message Folders (after turning
+on the enable-incoming-folders option)
+the Add command has a subcommand &quot;Use Mail Drop&quot;
+which may be helpful for defining the folder in your <EM>Pine</EM> configuration.
+The same is true when you edit the
+<A HREF="config.html#inbox-path"><EM>Inbox-Path</EM></A>
+option in Setup/Config.
+Each of these configuration methods will also create the <CODE>DestinationFolder</CODE>
+if it doesn't already exist.
+If you are having problems, make sure the <CODE>DestinationFolder</CODE> exists.
+</DD>
+</DL>
+<P>
+
+In addition, the server may support access to other user's folders,
+provided you have suitable permissions.  Common methods use a prefix
+of either &quot;~<VAR>user</VAR>/&quot;, or &quot;/<VAR>user</VAR>/&quot; to
+indicate the root of the other user's folder area.
+<P>
+
+<HR>
+
+<H2><A NAME="maildrop">What is a Mail Drop?</A></H2>
+
+In some situaions it may make sense to have your mail delivered to one
+folder (the Mail Drop) and then when you want to read mail that has been
+delivered to the Mail Drop folder <EM>Pine</EM> will move it to another
+destination folder.
+Often the Mail Drop will be a remote folder and messages will be moved from
+there to a local destination folder.
+
+<P>
+One example where this might make sense is if the Mail Drop folder is accessible
+only with the POP protocol.
+You could designate your POP inbox as the Mail Drop folder and have <EM>Pine</EM> move
+mail from there to a local (on the same machine <EM>Pine</EM> is running on)
+destination folder, where you'll read it.
+
+<P>
+A Mail Drop may only be used as your Inbox or as an
+<A HREF="config.html#enable-incoming-folders"><EM>Incoming folder</EM></A>.
+
+<P>
+There is no attempt to synchronize the contents of the destination folder
+with the contents of the Mail Drop folder.
+All that happens is that all of the messages in the Mail Drop folder are
+copied to the destination folder and then they are deleted and expunged (if possible)
+from the Mail Drop folder.
+The next time a check for new mail is made, any messages in the Mail 
+Drop folder are once again copied to the destination folder and deleted
+and expunged from the Mail Drop folder.
+(If the Mail Drop folder is a news group, then the messages can't be
+expunged from the newsgroup. Instead, only Recent messages are copied from
+the newsgroup to the destination folder.)
+
+<P>
+Configuration of a Mail Drop is a little different from configuration of
+a folder which does not use a Mail Drop because you have to specify two
+folder names instead of one.
+The two folders may be any types of folders that <EM>Pine</EM> can normally use.
+They don't have to be a remote folder and a local folder, that is
+simply the most common usage.
+When you use a Mail Drop folder <EM>Pine</EM> will periodically re-open the Mail
+Drop to check for new mail.
+The new mail checks will happen at the frequency set with the
+<A HREF="config.html#mail-check"><EM>Mail-Check-Interval</EM></A> option,
+but with a minimum time
+(<A HREF="config.html#maildrop-check-minimum"><EM>MailDrop-Check-Minimum</EM></A>)
+between checks.
+Because of this minimum you may notice that new mail does not
+appear promptly when you expect it.
+The reason for this is to protect the server from over-zealous opening and
+closing of the Mail Drop folder.
+If the user initiates the check by typing ^L or the Next command when at
+the end of the folder index, then the check will happen, regardless of how
+long it has been since the previous check.
+<P>
+If there is new mail, that mail will be copied to the destination folder
+and then will be deleted from the Mail Drop.
+Note that using a Mail Drop with a local destination folder does not make
+sense if you read mail from more than one machine, because the mail is
+downloaded to the destination folder (which is accessible from only one
+machine) and deleted from the Mail Drop.
+
+<P>
+The actual syntax used by <EM>Pine</EM> for a folder that uses a Mail Drop is:
+
+<P>
+<CENTER><SAMP>#move&lt;DELIM&gt;&lt;MailDropFolder&gt;&lt;DELIM&gt;&lt;DestinationFolder&gt;</SAMP></CENTER>
+<P>
+The brackets are not literal.
+<P>
+<CENTER><SAMP>&lt;DELIM&gt;</SAMP></CENTER>
+<P>
+is a single character which does not appear in the <CODE>MailDropFolder</CODE> name.
+If the name doesn't contain spaces then it can be a space character.
+The two folder names are full technical
+<A HREF="#server-name-syntax"><EM>folder names</EM></A>
+as used by <EM>Pine</EM>.
+Here are a couple examples to give you an idea what is being talked about:
+
+<P>
+<CENTER><SAMP>#move&nbsp;{popserver.example.com/pop3}inbox&nbsp;localfolder</SAMP></CENTER>
+<P>
+<CENTER><SAMP>#move+{nntpserver.example.com/nntp}inbox+local&nbsp;folder</SAMP></CENTER>
+<P>
+
+A #move folder may only be used as an
+<A HREF="config.html#enable-incoming-folders"><EM>Incoming folder</EM></A> or
+an Inbox.
+When you are in the FOLDER LIST of Incoming Message Folders (after turning
+on the Enable-Incoming-Folders option)
+the Add command has a subcommand &quot;Use Mail Drop&quot;
+which may be helpful for defining the folder in your <EM>Pine</EM> configuration.
+The same is true when you edit the
+<A HREF="config.html#inbox-path"><EM>Inbox-Path</EM></A>
+option in Setup/Config.
+</CODE>
+if it doesn't already exist.
+If you are having problems, make sure the <CODE>DestinationFolder</CODE> exists.
+<P>
 
 <HR>
 
@@ -464,7 +899,7 @@ For Unix <EM>Pine</EM>, the personal configuration file is normally the file
 This can be changed with the -p command line flag.
 For <EM>PC-Pine</EM>, the personal configuration file is in
 <CODE>$PINERC</CODE> or <CODE>&lt;PineRC registry value&gt;</CODE> or 
-<CODE>$HOME&#92;PINE&#92;PINERC</CODE> or
+<CODE>${HOME}&#92;PINE&#92;PINERC</CODE> or
 <CODE>&lt;PINE.EXE </CODE>dir<CODE>&gt;&#92;PINERC</CODE>.
 This can be changed with the -p command line flag.
 If -p or <CODE>$PINERC</CODE> is used, the configuration data may be in
@@ -493,7 +928,7 @@ is not set,
 in the same local directory that the regular config file is located in.
 If the regular config file is remote then <EM>PC-Pine</EM> looks in the
 local directory specified by the &quot;-aux local_directory&quot; command
-line argument, or the directory <CODE>$HOME&#92;PINE</CODE>, or
+line argument, or the directory <CODE>${HOME}&#92;PINE</CODE>, or
 in <CODE>&lt;PINE.EXE </CODE>directory<CODE>&gt;</CODE> for a file named
 &quot;<CODE>PINERCEX</CODE>&quot;.
 <P>

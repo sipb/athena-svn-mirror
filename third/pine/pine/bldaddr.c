@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.2 2003-02-12 08:02:06 ghudson Exp $";
+static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.3 2003-05-01 01:12:14 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -6758,7 +6758,7 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 
     for(s = searchset; s; s = s->next)
       for(i = s->first; i <= s->last; i++)
-	if(i <= stream->nmsgs && (mc=mail_elt(stream, i))->searched)
+	if(i > 0L && i <= stream->nmsgs && (mc=mail_elt(stream, i))->searched)
 	  mc->sequence = 1;
 
     ss = build_searchset(stream);
@@ -6842,7 +6842,7 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 
     for(s = ss; s; s = s->next){
 	for(i = s->first; i <= s->last; i++){
-	    if(i > stream->nmsgs)
+	    if(i <= 0L || i > stream->nmsgs)
 	      continue;
 
 	    /*

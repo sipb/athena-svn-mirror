@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: context.c,v 1.1.1.2 2003-02-12 08:00:09 ghudson Exp $";
+static char rcsid[] = "$Id: context.c,v 1.1.1.3 2003-05-01 01:13:04 ghudson Exp $";
 #endif
 /*
  * Program:	Mailbox Context Management
@@ -18,7 +18,7 @@ static char rcsid[] = "$Id: context.c,v 1.1.1.2 2003-02-12 08:00:09 ghudson Exp 
  * permission of the University of Washington.
  *
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2003 by the University of Washington.
  *
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -357,6 +357,18 @@ context_status (context, stream, name, opt)
     char       *name;
     long	opt;
 {
+    return(context_status_full(context, stream, name, opt, NULL, NULL));
+}
+
+
+long
+context_status_full (context, stream, name, opt, uidvalidity, uidnext)
+    CONTEXT_S  *context;
+    MAILSTREAM *stream;
+    char       *name;
+    long	opt;
+    unsigned long *uidvalidity, *uidnext;
+{
     char tmp[MAILTMPLEN];	/* build FQN from ambiguous name */
     long flags = opt;
 
@@ -366,7 +378,7 @@ context_status (context, stream, name, opt)
 #endif
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_status(stream,tmp,flags) : 0L);
+	    ? pine_mail_status_full(stream,tmp,flags,uidvalidity,uidnext) : 0L);
 }
 
 
@@ -389,6 +401,18 @@ context_status_streamp (context, streamp, name, opt)
     MAILSTREAM **streamp;
     char        *name;
     long	 opt;
+{
+    return(context_status_streamp_full(context,streamp,name,opt,NULL,NULL));
+}
+
+
+long
+context_status_streamp_full (context, streamp, name, opt, uidvalidity, uidnext)
+    CONTEXT_S   *context;
+    MAILSTREAM **streamp;
+    char        *name;
+    long	 opt;
+    unsigned long *uidvalidity, *uidnext;
 {
     MAILSTREAM *stream;
     char        tmp[MAILTMPLEN];	/* build FQN from ambiguous name */
@@ -421,7 +445,7 @@ context_status_streamp (context, streamp, name, opt)
       flags |= OP_DEBUG;
 #endif
 
-    return(mail_status(stream, tmp, flags));
+    return(pine_mail_status_full(stream, tmp, flags, uidvalidity, uidnext));
 }
 
 
@@ -463,7 +487,7 @@ context_delete (context, stream, name)
     char tmp[MAILTMPLEN];		/* build FQN from ambiguous name */
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_delete(stream, tmp) : 0L);
+	     ? pine_mail_delete(stream, tmp) : 0L);
 }
 
 
@@ -485,7 +509,7 @@ context_append (context, stream, name, msg)
     char tmp[MAILTMPLEN];	/* build FQN from ambiguous name */
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_append(stream, tmp, msg) : 0L);
+	     ? pine_mail_append(stream, tmp, msg) : 0L);
 }
 
 
@@ -509,7 +533,7 @@ context_append_full (context, stream, name, flags, date, msg)
     char tmp[MAILTMPLEN];		/* build FQN from ambiguous name */
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_append_full(stream, tmp, flags, date, msg) : 0L);
+	     ? pine_mail_append_full(stream, tmp, flags, date, msg) : 0L);
 }
 
 
@@ -533,7 +557,7 @@ context_append_multiple (context, stream, name, af, data)
     char tmp[MAILTMPLEN];		/* build FQN from ambiguous name */
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_append_multiple(stream, tmp, af, data) : 0L);
+	     ? pine_mail_append_multiple(stream, tmp, af, data) : 0L);
 }
 
 
@@ -565,7 +589,7 @@ context_copy (context, stream, sequence, name)
     if(!*s)
       strcpy(s = tmp, "INBOX");		/* presume "inbox" ala c-client */
 
-    return(cntxt_allowed(s) ? mail_copy(stream, sequence, s) : 0L);
+    return(cntxt_allowed(s) ? pine_mail_copy(stream, sequence, s) : 0L);
 }
 
 

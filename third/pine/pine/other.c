@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: other.c,v 1.1.1.2 2003-02-12 08:02:34 ghudson Exp $";
+static char rcsid[] = "$Id: other.c,v 1.1.1.3 2003-05-01 01:13:25 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -184,6 +184,8 @@ typedef struct conf_screen {
     CONF_S  *current,
 	    *prev,
 	    *top_line;
+    int      ro_warning,
+	     deferred_ro_warning;
 } OPT_SCREEN_S;
 
 
@@ -254,10 +256,11 @@ void	 update_option_screen PROTO((struct pine *, OPT_SCREEN_S *, Pos *));
 void	 print_option_screen PROTO((OPT_SCREEN_S *, char *));
 void	 option_screen_redrawer PROTO(());
 int	 conf_scroll_screen PROTO((struct pine *, OPT_SCREEN_S *, CONF_S *,
-				   char *, char *, int, int));
+				   char *, char *, int));
 HelpType config_help PROTO((int, int));
 int      text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      litsig_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
+int      inbox_path_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 void     exception_override_warning PROTO((struct variable *));
 int	 checkbox_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 flag_checkbox_tool PROTO((struct pine *, int, CONF_S **, unsigned));
@@ -1455,6 +1458,10 @@ option_screen(ps, edit_exceptions)
 	    ctmpa->tool    = litsig_text_tool;
 	    ctmpa->value   = pretty_value(ps, ctmpa);
 	}
+	else if(vtmp == &ps->vars[V_INBOX_PATH]){
+	    ctmpa->tool    = inbox_path_text_tool;
+	    ctmpa->value   = pretty_value(ps, ctmpa);
+	}
 	else if(vtmp->is_list){
 	    if(lval){
 		for(i = 0; lval[i]; i++){
@@ -1482,6 +1489,8 @@ option_screen(ps, edit_exceptions)
 	       || vtmp == &ps->vars[V_MARGIN]
 	       || vtmp == &ps->vars[V_STATUS_MSG_DELAY]
 	       || vtmp == &ps->vars[V_MAILCHECK]
+	       || vtmp == &ps->vars[V_MAILDROPCHECK]
+	       || vtmp == &ps->vars[V_NNTPRANGE]
 #ifdef DEBUGJOURNAL
 	       || vtmp == &ps->vars[V_DEBUGMEM]
 #endif
@@ -1562,10 +1571,12 @@ option_screen(ps, edit_exceptions)
     vsave = save_config_vars(ps, expose_hidden_config);
     first_line = first_sel_confline(first_line);
 
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = readonly_warning;
     switch(conf_scroll_screen(ps, &screen, first_line,
 			      edit_exceptions ? CONFIG_SCREEN_TITLE_EXC
 					      : CONFIG_SCREEN_TITLE,
-			      "configuration ", readonly_warning, 0)){
+			      "configuration ", 0)){
       case 0:
 	break;
 
@@ -1613,6 +1624,7 @@ standard_radio_var(ps, v)
 	   v == &ps->vars[V_GOTO_DEFAULT_RULE] ||
 	   v == &ps->vars[V_INCOMING_STARTUP] ||
 	   v == &ps->vars[V_PRUNING_RULE] ||
+	   v == &ps->vars[V_REOPEN_RULE] ||
 	   v == &ps->vars[V_THREAD_DISP_STYLE] ||
 	   v == &ps->vars[V_THREAD_INDEX_STYLE] ||
 	   v == &ps->vars[V_FLD_SORT_RULE] ||
@@ -1644,6 +1656,8 @@ rulefunc_from_var(ps, v)
       rulefunc = startup_rules;
     else if(v == &ps->vars[V_PRUNING_RULE])
       rulefunc = pruning_rules;
+    else if(v == &ps->vars[V_REOPEN_RULE])
+      rulefunc = reopen_rules;
     else if(v == &ps->vars[V_THREAD_DISP_STYLE])
       rulefunc = thread_disp_styles;
     else if(v == &ps->vars[V_THREAD_INDEX_STYLE])
@@ -2358,11 +2372,13 @@ select_printer(ps, edit_exceptions)
 	ctmpa->value     = cpystr("");
     }
 
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = readonly_warning;
     vsave = save_config_vars(ps, 0);
     switch(conf_scroll_screen(ps, &screen, start_line,
 			      edit_exceptions ? "SETUP PRINTER EXCEPTIONS"
 					      : "SETUP PRINTER",
-			      "printer config ", readonly_warning, 0)){
+			      "printer config ", 0)){
       case 0:
 	break;
     
@@ -2482,8 +2498,9 @@ flag_maintenance_screen(ps, flags)
 	ctmpa->value = cpystr(tmp);
     }
       
+    memset(&screen, 0, sizeof(screen));
     (void) conf_scroll_screen(ps, &screen, first_line,
-			      "FLAG MAINTENANCE", "configuration ", 0, 0);
+			      "FLAG MAINTENANCE", "configuration ", 0);
     ps->mangled_screen = 1;
 }
 
@@ -2535,13 +2552,38 @@ context_config_screen(ps, cs, edit_exceptions)
 
 go_again:
     top = NULL; ctmpa = NULL; first_line = NULL;
-    readonly_warning = 0; some_defined = 0, prime = 0;
+    some_defined = 0, prime = 0;
     fake_fspec = &fake_fspec_var;
     fake_nspec = &fake_nspec_var;
     memset((void *)fake_fspec, 0, sizeof(*fake_fspec));
     memset((void *)fake_nspec, 0, sizeof(*fake_nspec));
-    fake_fspec->is_fixed = (ps->vars[V_FOLDER_SPEC]).is_fixed;
-    fake_nspec->is_fixed = (ps->vars[V_NEWS_SPEC]).is_fixed;
+
+    /* so fixed_var() will work right */
+    fake_fspec->is_list = 1;
+    fake_nspec->is_list = 1;
+    if((ps->vars[V_FOLDER_SPEC]).is_fixed){
+	fake_fspec->is_fixed = 1;
+	if((ps->vars[V_FOLDER_SPEC]).fixed_val.l
+	   && (ps->vars[V_FOLDER_SPEC]).fixed_val.l[0]){
+	    fake_fspec->fixed_val.l = (char **) fs_get(2 * sizeof(char *));
+	    fake_fspec->fixed_val.l[0]
+			    = cpystr((ps->vars[V_FOLDER_SPEC]).fixed_val.l[0]);
+	    fake_fspec->fixed_val.l[1] = NULL;
+	}
+    }
+
+    if((ps->vars[V_NEWS_SPEC]).is_fixed){
+	fake_nspec->is_fixed = 1;
+	if((ps->vars[V_NEWS_SPEC]).fixed_val.l
+	   && (ps->vars[V_NEWS_SPEC]).fixed_val.l[0]){
+	    fake_nspec->fixed_val.l = (char **) fs_get(2 * sizeof(char *));
+	    fake_nspec->fixed_val.l[0] = cpystr(INHERIT);
+	    fake_nspec->fixed_val.l[0]
+			    = cpystr((ps->vars[V_NEWS_SPEC]).fixed_val.l[0]);
+	    fake_nspec->fixed_val.l[1] = NULL;
+	}
+    }
+
     clist = &top;
     lval1 = LVAL(&ps->vars[V_FOLDER_SPEC], ew);
     lval2 = LVAL(&ps->vars[V_NEWS_SPEC], ew);
@@ -2692,8 +2734,10 @@ go_again:
     cs->starting_var = NULL;
 
 
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = readonly_warning;
     ret = conf_scroll_screen(ps, &screen, first_line, cs->title,
-			     cs->print_string, readonly_warning, 0);
+			     cs->print_string, 0);
 
     free_contexts(&top);
     
@@ -3359,8 +3403,10 @@ context_select_screen(ps, cs, ro_warn)
     while(cp = cp->next);
 
 
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = readonly_warning;
     (void) conf_scroll_screen(ps, &screen, first_line, cs->title,
-			      cs->print_string, readonly_warning, 0);
+			      cs->print_string, 0);
     ps->mangled_screen = 1;
     return(cs->selected);
 }
@@ -3580,6 +3626,7 @@ ldap_addr_select(ps, ac, result, style, wp_err)
     struct key_menu *km;
     char             ee[200];
     HelpType         help;
+    void           (*prev_redrawer) ();
 
     dprint(4,(debugfile, "ldap_addr_select()\n"));
 
@@ -3940,7 +3987,11 @@ ldap_addr_select(ps, ac, result, style, wp_err)
 	if(wp_err && wp_err->mangled)
 	  *wp_err->mangled = 1;
 
-	switch(conf_scroll_screen(ps,&screen,first_line,ac->title,"this ",0,0)){
+	prev_redrawer = ps_global->redrawer;
+	push_titlebar_state();
+
+	memset(&screen, 0, sizeof(screen));
+	switch(conf_scroll_screen(ps,&screen,first_line,ac->title,"this ",0)){
 	  case ADDR_SELECT_EXIT_VAL:
 	    retval = -1;
 	    break;
@@ -3961,6 +4012,12 @@ ldap_addr_select(ps, ac, result, style, wp_err)
 	    retval = 0;
 	    break;
 	}
+
+	ClearScreen();
+	pop_titlebar_state();
+	redraw_titlebar();
+	if(ps_global->redrawer = prev_redrawer)
+	  (*ps_global->redrawer)();
 
 	if(result && retval == 0 && ac->selected_ld && ac->selected_entry){
 	    (*result) = (LDAP_SERV_RES_S *)fs_get(sizeof(LDAP_SERV_RES_S));
@@ -4205,9 +4262,10 @@ directory_config(ps, edit_exceptions)
 				      : LVAL(&ps->vars[V_LDAP_SERVERS], ew),
 		     &ps->vars[V_LDAP_SERVERS], &first_line);
 
+    memset(&screen, 0, sizeof(screen));
+    screen.deferred_ro_warning = readonly_warning;
     (void)conf_scroll_screen(ps, &screen, first_line,
-			     "SETUP DIRECTORY SERVERS", "servers ",
-			     readonly_warning, 0);
+			     "SETUP DIRECTORY SERVERS", "servers ", 0);
     ps->mangled_screen = 1;
 }
 
@@ -5191,7 +5249,9 @@ dir_edit_screen(ps, def, title, raw_server)
 
 
     sprintf(tmp, "%s DIRECTORY SERVER", title);
-    rv = conf_scroll_screen(ps, &screen, first_line, tmp, "servers ", 0, 0);
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = saved_screen->deferred_ro_warning;
+    rv = conf_scroll_screen(ps, &screen, first_line, tmp, "servers ", 0);
 
     /*
      * Now look at the fake variables and extract the information we
@@ -5969,8 +6029,10 @@ take_to_export(ps, lines_to_take)
 
     if(!first_line)
       q_status_message(SM_ORDER, 3, 3, "No lines to export");
-    else
-      conf_scroll_screen(ps, &screen, first_line, "Take Export", NULL, 0, 0);
+    else{
+	memset(&screen, 0, sizeof(screen));
+	conf_scroll_screen(ps, &screen, first_line, "Take Export", NULL, 0);
+    }
 }
 
 
@@ -6158,13 +6220,12 @@ take_export_tool(ps, cmd, cl, flags)
  * this function.
  */
 int
-conf_scroll_screen(ps, screen, start_line, title, pdesc, ro_warn, multicol)
+conf_scroll_screen(ps, screen, start_line, title, pdesc, multicol)
     struct pine  *ps;
     OPT_SCREEN_S *screen;
     CONF_S       *start_line;
     char         *title;
     char	 *pdesc;
-    int		  ro_warn;
     int		  multicol;
 {
     char	  tmp[MAXPATH+1];
@@ -6179,13 +6240,12 @@ conf_scroll_screen(ps, screen, start_line, title, pdesc, ro_warn, multicol)
 
     dprint(7,(debugfile, "conf_scroll_screen()\n"));
 
-    if(ro_warn)
+    if(screen->ro_warning)
       q_status_message1(SM_ORDER, 1, 3,
 			"%.200s can't change options or settings",
 			ps_global->restricted ? "Pine demo"
 					      : "Config file not changeable,");
 
-    memset(screen, 0, sizeof(OPT_SCREEN_S));
     screen->current    = start_line;
     if(start_line && start_line->flags & CF_CHANGES)
       changes++;
@@ -6934,7 +6994,7 @@ no_down:
 	    break;
 
 	  default:
-	    if(ro_warn){
+	    if(screen->ro_warning){
 		if(cmd == MC_EXIT){
 		    retval = 0;
 		    done++;
@@ -7255,6 +7315,10 @@ config_help(var, feature)
 	return(h_config_status_msg_delay);
       case V_MAILCHECK :
 	return(h_config_mailcheck);
+      case V_MAILDROPCHECK :
+	return(h_config_maildropcheck);
+      case V_NNTPRANGE :
+	return(h_config_nntprange);
       case V_NEWS_ACTIVE_PATH :
 	return(h_config_news_active);
       case V_NEWS_SPOOL_DIR :
@@ -7279,6 +7343,8 @@ config_help(var, feature)
 	return(h_config_inc_startup);
       case V_PRUNING_RULE:
 	return(h_config_pruning_rule);
+      case V_REOPEN_RULE:
+	return(h_config_reopen_rule);
       case V_THREAD_DISP_STYLE:
 	return(h_config_thread_disp_style);
       case V_THREAD_INDEX_STYLE:
@@ -7323,6 +7389,9 @@ config_help(var, feature)
       case V_QUOTE2_BACK_COLOR :
       case V_QUOTE3_BACK_COLOR :
 	return(h_config_quote_color);
+      case V_SIGNATURE_FORE_COLOR :
+      case V_SIGNATURE_BACK_COLOR :
+	return(h_config_signature_color);
       case V_PROMPT_FORE_COLOR :
       case V_PROMPT_BACK_COLOR :
 	return(h_config_prompt_color);
@@ -7414,7 +7483,7 @@ litsig_text_tool(ps, cmd, cl, flags)
     char           **apval;
     int		     rv = 0;
 
-    if(fixed_var((*cl)->var, NULL, NULL))
+    if(cmd != MC_EXIT && fixed_var((*cl)->var, NULL, NULL))
       return(rv);
 
     apval = APVAL((*cl)->var, ew);
@@ -7536,6 +7605,72 @@ litsig_text_tool(ps, cmd, cl, flags)
 }
 
 
+int
+inbox_path_text_tool(ps, cmd, cl, flags)
+    struct pine  *ps;
+    int		  cmd;
+    CONF_S      **cl;
+    unsigned      flags;
+{
+    char           **apval;
+    int		     rv = 0;
+    char             new_inbox_path[2*MAXFOLDER+1];
+    char            *def = NULL;
+    CONTEXT_S       *cntxt;
+
+    if(cmd != MC_EXIT && fixed_var((*cl)->var, NULL, NULL))
+      return(rv);
+
+    apval = APVAL((*cl)->var, ew);
+
+    switch(cmd){
+      case MC_ADD:
+      case MC_EDIT:
+	cntxt = ps->context_list;
+	if(cmd == MC_EDIT && (*cl)->var){
+	    if(ew == Post && (*cl)->var->post_user_val.p)
+	      def = (*cl)->var->post_user_val.p;
+	    else if(ew == Main && (*cl)->var->main_user_val.p)
+	      def = (*cl)->var->main_user_val.p;
+	    else if((*cl)->var->current_val.p)
+	      def = (*cl)->var->current_val.p;
+	}
+
+	rv = add_new_folder(cntxt, ew, V_INBOX_PATH, new_inbox_path,
+			    sizeof(new_inbox_path), NULL, def);
+	rv = rv ? 1 : 0;
+
+	ps->mangled_screen = 1;
+        break;
+
+      default:
+	rv = text_tool(ps, cmd, cl, flags);
+	break;
+    }
+
+    /*
+     * This is just like the end of text_tool.
+     */
+    if(rv == 1){
+	/*
+	 * Now go and set the current_val based on user_val changes
+	 * above.  Turn off command line settings...
+	 */
+	set_current_val((*cl)->var, TRUE, FALSE);
+	fix_side_effects(ps, (*cl)->var, 0);
+
+	if((*cl)->value)
+	  fs_give((void **) &(*cl)->value);
+
+	(*cl)->value = pretty_value(ps, *cl);
+
+	exception_override_warning((*cl)->var);
+    }
+
+    return(rv);
+}
+
+
 /*
  * simple text variable handler
  *
@@ -7612,6 +7747,16 @@ text_tool(ps, cmd, cl, flags)
 	        (*cl)->var == &ps->vars[V_USERINPUTTIMEO]){
 	    lowrange = 0;
 	    hirange  = 1000;
+	}
+	else if((*cl)->var == &ps->vars[V_MAILDROPCHECK]){
+	    lowrange = 0;
+	    hirange  = 1000000;
+	    incr     = 60;
+	}
+	else if((*cl)->var == &ps->vars[V_NNTPRANGE]){
+	    lowrange = 0;
+	    hirange  = 1000000;
+	    incr     = 100;
 	}
 #ifdef DEBUGJOURNAL
 	else if((*cl)->var == &ps->vars[V_DEBUGMEM]){
@@ -7803,7 +7948,7 @@ replace_text:
 				ltmp[1] = NULL;
 			    }
 			    else
-			      ltmp = parse_list(sval, i + 1, NULL);
+			      ltmp = parse_list(sval, i + 1, 0, NULL);
 
 			    if(ltmp[0]){
 				config_add_list(ps, cl, ltmp, &newval, after);
@@ -8143,7 +8288,7 @@ delete:
 			    i++;	/* conservative count of ,'s */
 
 			if(i)
-			  ltmp = parse_list(sval, i + 1, NULL);
+			  ltmp = parse_list(sval, i + 1, 0, NULL);
 
 			if(ltmp && !ltmp[0])		/* only commas */
 			  goto delete;
@@ -11430,6 +11575,12 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
 
 	break;
 
+      case F_DISABLE_SETLOCALE_COLLATE :
+      case F_ENABLE_SETLOCALE_CTYPE :
+	set_collation(F_OFF(F_DISABLE_SETLOCALE_COLLATE, ps),
+		      F_ON(F_ENABLE_SETLOCALE_CTYPE, ps));
+	break;
+
 #ifdef	_WINDOWS
       case F_SHOW_CURSOR :
 	mswin_showcaret(F_ON(f->id,ps));
@@ -11589,7 +11740,12 @@ fixed_var(v, action, name)
     struct variable *v;
     char	    *action, *name;
 {
-    if(v && v->is_fixed){
+    char **lval;
+
+    if(v && v->is_fixed
+       && (!v->is_list
+           || ((lval=v->fixed_val.l) && lval[0]
+	       && strcmp(INHERIT, lval[0]) != 0))){
 	q_status_message2(SM_ORDER, 3, 3,
 			  "Can't %.200s sys-admin defined %.200s.",
 			  action ? action : "change", name ? name : "value");
@@ -12184,31 +12340,37 @@ int              revert;
 	}
     }
     else if(var == &ps->vars[V_TCPOPENTIMEO]){
+	val = 30;
 	if(!revert)
 	  if(ps->VAR_TCPOPENTIMEO && SVAR_TCP_OPEN(ps, val, tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
     }
     else if(var == &ps->vars[V_TCPREADWARNTIMEO]){
+	val = 15;
 	if(!revert)
 	  if(ps->VAR_TCPREADWARNTIMEO && SVAR_TCP_READWARN(ps,val,tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
     }
     else if(var == &ps->vars[V_TCPWRITEWARNTIMEO]){
+	val = 0;
 	if(!revert)
 	 if(ps->VAR_TCPWRITEWARNTIMEO && SVAR_TCP_WRITEWARN(ps,val,tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
     }
     else if(var == &ps->vars[V_TCPQUERYTIMEO]){
+	val = 60;
 	if(!revert)
 	  if(ps->VAR_TCPQUERYTIMEO && SVAR_TCP_QUERY(ps, val, tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
     }
     else if(var == &ps->vars[V_RSHOPENTIMEO]){
+	val = 15;
 	if(!revert)
 	  if(ps->VAR_RSHOPENTIMEO && SVAR_RSH_OPEN(ps, val, tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
     }
     else if(var == &ps->vars[V_SSHOPENTIMEO]){
+	val = 15;
 	if(!revert)
 	  if(ps->VAR_SSHOPENTIMEO && SVAR_SSH_OPEN(ps, val, tmp_20k_buf))
 	    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
@@ -12262,6 +12424,31 @@ int              revert;
 	    if(ps->VAR_INBOX_PATH && ps->VAR_INBOX_PATH[0] == '{')
 	      q_status_message(SM_ASYNC, 3, 6,
 "Warning: mail-check-interval=0 may cause IMAP server connection to time out");
+	}
+    }
+    else if(var == &ps->vars[V_MAILDROPCHECK]){
+	long rvl;
+
+	rvl = 60L;
+	if(ps->VAR_MAILDROPCHECK && SVAR_MAILDCHK(ps, rvl, tmp_20k_buf))
+	  q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	else{
+	    if(rvl == 0L)
+	      rvl = (60L * 60L * 24L * 100L);	/* 100 days */
+
+	    if(rvl >= 60L)
+	      mail_parameters(NULL, SET_SNARFINTERVAL, (void *) rvl);
+	}
+    }
+    else if(var == &ps->vars[V_NNTPRANGE]){
+	long rvl;
+
+	rvl = 0L;
+	if(ps->VAR_NNTPRANGE && SVAR_NNTPRANGE(ps, rvl, tmp_20k_buf))
+	  q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	else{
+	    if(rvl >= 0L)
+	      mail_parameters(NULL, SET_NNTPRANGE, (void *) rvl);
 	}
     }
     else if(var == &ps->vars[V_CUSTOM_HDRS] || var == &ps->vars[V_COMP_HDRS]){
@@ -12419,14 +12606,15 @@ int              revert;
     else if(var == scorei_pat_global_ptr || var == age_pat_global_ptr){
 	apval = APVAL(var, ew);
 	if(*apval){
-	    int left, right;
-
-	    if(parse_score_interval(*apval, &left, &right)){
-		fs_give((void **)apval);
-		*apval = stringform_of_score_interval(left, right);
+	    INTVL_S *iv;
+	    iv = parse_intvl(*apval);
+	    if(iv){
+		fs_give((void **) apval);
+		*apval = stringform_of_intvl(iv);
+		free_intvl(&iv);
 	    }
 	    else
-	      fs_give((void **)apval);
+	      fs_give((void **) apval);
 	}
 
 	set_current_val(var, FALSE, FALSE);
@@ -12827,8 +13015,9 @@ role_select_screen(ps, role, alt_compose)
 	ctmp->valoffset    = 4;
     }
 
+    memset(&screen, 0, sizeof(screen));
     (void)conf_scroll_screen(ps, &screen, first_line, "SELECT ROLE",
-			     "roles ", 0, 0);
+			     "roles ", 0);
 
     if(sel_pat){
 	*role = sel_pat->action;
@@ -12957,9 +13146,11 @@ abook_select_screen(ps)
 	ctmp->valoffset     = 4;
     }
 
-    if(first_line)
-      (void) conf_scroll_screen(ps, &screen, first_line, "SELECT ADDRESS BOOK",
-			        "abooks ", 0, 0);
+    if(first_line){
+	memset(&screen, 0, sizeof(screen));
+	(void) conf_scroll_screen(ps, &screen, first_line,
+				  "SELECT ADDRESS BOOK", "abooks ", 0);
+    }
     else
       q_status_message(SM_ORDER|SM_DING, 3, 3, "No address books defined!");
 
@@ -13035,6 +13226,10 @@ role_config_screen(ps, rflags, edit_exceptions)
 	}
     }
 
+    role_type_print(title, "%sRules", rflags);
+    if(fixed_var(v, "change", title))
+      return;
+
 uh_oh:
     first_line = NULL;
 
@@ -13057,8 +13252,9 @@ uh_oh:
 	return;
     }
 
-    switch(conf_scroll_screen(ps, &screen, first_line, title, "rules ",
-			      readonly_warning, 0)){
+    memset(&screen, 0, sizeof(screen));
+    screen.deferred_ro_warning = readonly_warning;
+    switch(conf_scroll_screen(ps, &screen, first_line, title, "rules ", 0)){
 	case 0:
 	  break;
 
@@ -15713,8 +15909,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     age_pat_var.is_user    = 1;
     if(def && def->patgrp && def->patgrp->do_age){
 	apval = APVAL(&age_pat_var, ew);
-	*apval = stringform_of_score_interval(def->patgrp->age_min,
-					      def->patgrp->age_max);
+	*apval = stringform_of_intvl(def->patgrp->age);
     }
 
     set_current_val(&age_pat_var, FALSE, FALSE);
@@ -15725,8 +15920,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     scorei_pat_var.is_user    = 1;
     if(def && def->patgrp && def->patgrp->do_score){
 	apval = APVAL(&scorei_pat_var, ew);
-	*apval = stringform_of_score_interval(def->patgrp->score_min,
-					      def->patgrp->score_max);
+	*apval = stringform_of_intvl(def->patgrp->score);
     }
 
     set_current_val(&scorei_pat_var, FALSE, FALSE);
@@ -17297,7 +17491,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	}
     }
 
-    rv = conf_scroll_screen(ps, &screen, first_line, title, "roles ", 0, 1);
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = saved_screen->deferred_ro_warning;
+    rv = conf_scroll_screen(ps, &screen, first_line, title, "roles ", 1);
 
     /*
      * Now look at the fake variables and extract the information we
@@ -17644,23 +17840,13 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		bitnset(FEAT_SENTDATE, feat_option_list) ? 1 : 0;
 
 	if(age_pat){
-	    int left, right;
-
-	    if(parse_score_interval(age_pat, &left, &right)){
-		(*result)->patgrp->do_age  = 1;
-		(*result)->patgrp->age_min = left;
-		(*result)->patgrp->age_max = right;
-	    }
+	    if(((*result)->patgrp->age = parse_intvl(age_pat)) != NULL)
+	      (*result)->patgrp->do_age  = 1;
 	}
 
 	if(scorei_pat){
-	    int left, right;
-
-	    if(parse_score_interval(scorei_pat, &left, &right)){
-		(*result)->patgrp->do_score  = 1;
-		(*result)->patgrp->score_min = left;
-		(*result)->patgrp->score_max = right;
-	    }
+	    if(((*result)->patgrp->score = parse_intvl(scorei_pat)) != NULL)
+	      (*result)->patgrp->do_score  = 1;
 	}
 
 	if(stat_del && *stat_del){
@@ -20231,11 +20417,12 @@ color_config_screen(ps, edit_exceptions)
 
     vsave = save_color_config_vars(ps);
 
+    memset(&screen, 0, sizeof(screen));
+    screen.deferred_ro_warning = readonly_warning;
     switch(conf_scroll_screen(ps, &screen, first_line,
 			      edit_exceptions ? "SETUP COLOR EXCEPTIONS"
 					      : "SETUP COLOR",
-			      "configuration ",
-			      readonly_warning, 1)){
+			      "configuration ", 1)){
       case 0:
 	break;
 
@@ -21915,10 +22102,12 @@ color_edit_screen(ps, cl)
     first_line = first_sel_confline(first_line);
 
     saved_screen = opt_screen;
+    memset(&screen, 0, sizeof(screen));
+    screen.ro_warning = saved_screen->deferred_ro_warning;
     rv = conf_scroll_screen(ps, &screen, first_line,
 			    ew == Post ? "SETUP COLOR EXCEPTIONS"
 				       : "SETUP COLOR",
-			    "configuration ", 0, 1);
+			    "configuration ", 1);
 
     opt_screen = saved_screen;
     ps->mangled_screen = 1;
@@ -21956,6 +22145,7 @@ set_current_color_vals(ps)
     set_color_val(&vars[V_IND_NEW_FORE_COLOR], 0);
     set_color_val(&vars[V_IND_REC_FORE_COLOR], 0);
     set_color_val(&vars[V_IND_UNS_FORE_COLOR], 0);
+    set_color_val(&vars[V_SIGNATURE_FORE_COLOR], 0);
 
     set_current_val(&ps->vars[V_VIEW_HDR_COLORS], TRUE, TRUE);
     set_custom_hdr_colors(ps);

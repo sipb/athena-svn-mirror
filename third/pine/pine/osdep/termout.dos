@@ -555,8 +555,9 @@ CleartoEOS()					/* DOS */
  Result: string indicated become our "icon" text
   ----*/
 void
-icon_text(s)					/* DOS */
+icon_text(s, type)				/* DOS */
     char *s;
+    int  type;
 {
     return;					/* NO OP */
 }

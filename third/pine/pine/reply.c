@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: reply.c,v 1.1.1.2 2003-02-12 08:02:14 ghudson Exp $";
+static char rcsid[] = "$Id: reply.c,v 1.1.1.3 2003-05-01 01:12:58 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: reply.c,v 1.1.1.2 2003-02-12 08:02:14 ghudson Exp $"
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -86,17 +86,20 @@ void	 bounce_mask_header PROTO((char **, char *));
 int	 sigdash_strip PROTO((long, char *, LT_INS_S **, void *));
 int      sigdashes_are_present PROTO((char *));
 char	*sigedit_exit_for_pico PROTO((struct headerentry *, void (*)()));
-char    *get_reply_data PROTO((ENVELOPE *, IndexColType, char *, size_t));
+char    *get_reply_data PROTO((ENVELOPE *, ACTION_S *, IndexColType,
+			       char *, size_t));
 void     get_addr_data PROTO((ENVELOPE *, IndexColType, char *, size_t));
 void     get_news_data PROTO((ENVELOPE *, IndexColType, char *, size_t));
 char    *pico_sendexit_for_roles PROTO((struct headerentry *, void(*)()));
 char    *pico_cancelexit_for_roles PROTO((void (*)()));
-char    *detoken_src PROTO((char *, int, ENVELOPE *, REDRAFT_POS_S **, int *));
-char    *detoken_guts PROTO((char *, int, ENVELOPE *, REDRAFT_POS_S **,
-			     int, int *));
+char    *detoken_src PROTO((char *, int, ENVELOPE *, ACTION_S *,
+			    REDRAFT_POS_S **, int *));
+char    *detoken_guts PROTO((char *, int, ENVELOPE *, ACTION_S *,
+			     REDRAFT_POS_S **, int, int *));
 char    *get_signature_lit PROTO((char *, int, int, int, int));
 void     a_little_addr_string PROTO((ADDRESS *, char *, size_t));
-char    *handle_if_token PROTO((char *, char *, int, ENVELOPE *, char **));
+char    *handle_if_token PROTO((char *, char *, int, ENVELOPE *,
+				ACTION_S *, char **));
 char    *get_token_arg PROTO((char *, char **));
 int      reply_quote_str_contains_tokens PROTO((void));
 char    *rot13 PROTO((char *));
@@ -109,7 +112,6 @@ char    *rot13 PROTO((char *));
 #define	FRM_PMT	"Use \"Reply-To:\" address instead of \"From:\" address"
 #define	ALL_PMT		"Reply to all recipients"
 #define	NEWS_PMT	"Follow-up to news group(s), Reply via email to author or Both? "
-#define SIGDASHES	"-- "
 
 
 /*
@@ -327,12 +329,6 @@ reply(pine_state)
     if(pine_state->expunge_count)	/* somebody expunged current msg */
       goto done_early;
 
-    /*
-     * Reply_seed may call c-client in get_fcc_based_on_to, so env may
-     * no longer be valid. Get it again.
-     */
-    env = mail_fetchstructure(pine_state->mail_stream, seq[times], NULL);
-
     /* Setup possible role */
     rflags = ROLE_REPLY;
     if(nonempty_patterns(rflags, &dummy)){
@@ -348,6 +344,13 @@ reply(pine_state)
 	    goto done_early;
 	}
     }
+
+    /*
+     * Reply_seed may call c-client in get_fcc_based_on_to, so env may
+     * no longer be valid. Get it again.
+     * Similarly for set_role_from_message.
+     */
+    env = mail_fetchstructure(pine_state->mail_stream, seq[times], NULL);
 
     if(role){
 	q_status_message1(SM_ORDER, 3, 4,
@@ -495,7 +498,7 @@ reply(pine_state)
 	    }
 
 	    if(orig_body == NULL || orig_body->type == TYPETEXT || reply_raw_body) {
-		reply_delimiter(env, pc);
+		reply_delimiter(env, role, pc);
 		if(F_ON(F_INCLUDE_HEADER, pine_state))
 		  reply_forward_header(pine_state->mail_stream,
 				       mn_m2raw(pine_state->msgmap,msgno),
@@ -513,7 +516,7 @@ reply(pine_state)
 		if(orig_body->nested.part
 		   && orig_body->nested.part->body.type == TYPETEXT) {
 		    /*---- First part of the message is text -----*/
-		    reply_delimiter(env, pc);
+		    reply_delimiter(env, role, pc);
 		    if(F_ON(F_INCLUDE_HEADER, pine_state))
 		      reply_forward_header(pine_state->mail_stream,
 					   mn_m2raw(pine_state->msgmap,
@@ -574,12 +577,32 @@ reply(pine_state)
 	/*--- Grab current envelope ---*/
 	env = mail_fetchstructure(pine_state->mail_stream, msgno, &orig_body);
 
-	if(orig_body)
-	  reply.orig_charset = rfc2231_get_param(orig_body->parameter,
-						 "charset", NULL, NULL);
+	/*
+	 * If the charset of the body part is different from ascii and
+	 * charset conversion is _not_ happening, then preserve the original
+	 * charset from the message so that if we don't enter any new
+	 * chars with the hibit set we can use the original charset.
+	 * If not all those things, then don't try to preserve it.
+	 */
+	if(orig_body){
+	    char *charset;
 
-	if(reply.orig_charset && !strucmp(reply.orig_charset, "us-ascii"))
-	  fs_give((void **) &reply.orig_charset);
+	    charset = rfc2231_get_param(orig_body->parameter,
+					"charset", NULL, NULL);
+	    if(charset && strucmp(charset, "us-ascii") != 0){
+		/*
+		 * There is a non-ascii charset, is there conversion happening?
+		 */
+		if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
+		   || !conversion_table(charset, ps_global->VAR_CHAR_SET)){
+		    reply.orig_charset = charset;
+		    charset = NULL;
+		}
+	    }
+
+	    if(charset)
+	      fs_give((void **) &charset);
+	}
 
 	if(env) {
 	    if(!(body = reply_body(pine_state->mail_stream, env, orig_body,
@@ -920,15 +943,18 @@ confirm_role(rflags, role)
     done = 0;
     while(!done){
 	if(curpat){
+	    char buf[100];
+
 	    help = h_role_confirm;
 	    ekey[0].name  = "Y";
 	    ekey[0].label = "Yes";
 	    ekey[1].name  = "N";
-	    ekey[1].label = "No Role";
+	    ekey[1].label = "No, use default settings";
 	    ekey[2].label = "To Select Alternate Role";
 	    if(curpat->patgrp && curpat->patgrp->nick)
-	      sprintf(prompt, "Use role \"%.40s\" for %s? ",
-		      curpat->patgrp->nick, prompt_fodder);
+	      sprintf(prompt, "Use role \"%.50s\" for %s? ",
+		      short_str(curpat->patgrp->nick, buf, 50, MidDots),
+		      prompt_fodder);
 	    else
 	      sprintf(prompt,
 		      "Use role \"<a role without a nickname>\" for %s? ",
@@ -1866,7 +1892,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 	    body		     = mail_newbody();
 	    body->type		     = TYPETEXT;
 	    body->contents.text.data = msgtext;
-	    reply_delimiter(env, pc);
+	    reply_delimiter(env, role, pc);
 	    if(F_ON(F_INCLUDE_HEADER, ps_global))
 	      reply_forward_header(stream, msgno, sect_prefix,
 				   env, pc, prefix);
@@ -1904,7 +1930,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 		body->contents.text.data = msgtext;
 
 		if(reply_body_text(orig_body, &tmp_body)){
-		    reply_delimiter(env, pc);
+		    reply_delimiter(env, role, pc);
 		    if(F_ON(F_INCLUDE_HEADER, ps_global))
 		      reply_forward_header(stream, msgno, sect_prefix,
 					   env, pc, prefix);
@@ -1939,7 +1965,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 		        fs_give((void **)&body->nested.part->body.subtype);
 		        body->nested.part->body.subtype = cpystr("Plain");
 		    }
-		    reply_delimiter(env, pc);
+		    reply_delimiter(env, role, pc);
 		    if(F_ON(F_INCLUDE_HEADER, ps_global))
 		      reply_forward_header(stream, msgno, sect_prefix,
 					   env, pc, prefix);
@@ -1959,7 +1985,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 					   &tmp_body)){
 		    int partnum;
 
-		    reply_delimiter(env, pc);
+		    reply_delimiter(env, role, pc);
 		    if(F_ON(F_INCLUDE_HEADER, ps_global))
 		      reply_forward_header(stream, msgno, sect_prefix,
 					   env, pc, prefix);
@@ -2544,8 +2570,9 @@ a_little_addr_string(addr, buf, maxlen)
  * Buf is at least size maxlen+1
  */
 char *
-get_reply_data(env, type, buf, maxlen)
+get_reply_data(env, role, type, buf, maxlen)
     ENVELOPE    *env;
+    ACTION_S    *role;
     IndexColType type;
     char         buf[];
     size_t       maxlen;
@@ -2604,6 +2631,13 @@ get_reply_data(env, type, buf, maxlen)
       case iRecips:
       case iInit:
 	get_addr_data(env, type, buf, maxlen);
+	break;
+
+      case iRoleNick:
+	if(role && role->nick){
+	    strncpy(buf, role->nick, maxlen);
+	    buf[maxlen] = '\0';
+	}
 	break;
 
       case iAddress:
@@ -2718,8 +2752,9 @@ get_reply_data(env, type, buf, maxlen)
  *		     with supplied character writing function.
  */
 void
-reply_delimiter(env, pc)
+reply_delimiter(env, role, pc)
     ENVELOPE *env;
+    ACTION_S *role;
     gf_io_t   pc;
 {
 #define MAX_DELIM 2000
@@ -2772,7 +2807,8 @@ reply_delimiter(env, pc)
 	}
     }
     else{
-	filtered = detoken_src(buf, FOR_REPLY_INTRO, env, NULL, NULL);
+	filtered = detoken_src(buf, FOR_REPLY_INTRO, env, role,
+			       NULL, NULL);
 
 	/* try to truncate if too long */
 	if(filtered && (len = strlen(filtered)) > 80){
@@ -2991,7 +3027,7 @@ detoken(role, env, prenewlines, postnewlines, is_sig, redraft_pos, impl)
 	
     if(src){
 	if(*src)
-	  ret = detoken_src(src, FOR_TEMPLATE, env, redraft_pos, impl);
+	  ret = detoken_src(src, FOR_TEMPLATE, env, role, redraft_pos, impl);
 
 	fs_give((void **)&src);
     }
@@ -3008,10 +3044,11 @@ detoken(role, env, prenewlines, postnewlines, is_sig, redraft_pos, impl)
  * This is really inefficient but who cares? It's just cpu time.
  */
 char *
-detoken_src(src, for_what, env, redraft_pos, impl)
+detoken_src(src, for_what, env, role, redraft_pos, impl)
     char           *src;
     int             for_what;
     ENVELOPE       *env;
+    ACTION_S       *role;
     REDRAFT_POS_S **redraft_pos;
     int            *impl;
 {
@@ -3030,7 +3067,7 @@ detoken_src(src, for_what, env, redraft_pos, impl)
     do {
 	/* short-circuit if no chance it will change */
 	if(strindex(str1, '_'))
-	  str2 = detoken_guts(str1, for_what, env, NULL, 0, NULL);
+	  str2 = detoken_guts(str1, for_what, env, role, NULL, 0, NULL);
 	else
 	  str2 = str1;
 
@@ -3054,7 +3091,7 @@ detoken_src(src, for_what, env, redraft_pos, impl)
      */
     if((str2 && strindex(str2, '_')) ||
        (impl && *impl == 0 && redraft_pos && !*redraft_pos)){
-	ret = detoken_guts(str2, for_what, env, redraft_pos, 1, impl);
+	ret = detoken_guts(str2, for_what, env, role, redraft_pos, 1, impl);
 	if(str2 != src)
 	  fs_give((void **)&str2);
     }
@@ -3108,10 +3145,11 @@ detoken_src(src, for_what, env, redraft_pos, impl)
  * Returns   pointer to alloced result
  */
 char *
-detoken_guts(src, for_what, env, redraft_pos, last_pass, impl)
+detoken_guts(src, for_what, env, role, redraft_pos, last_pass, impl)
     char           *src;
     int             for_what;
     ENVELOPE       *env;
+    ACTION_S       *role;
     REDRAFT_POS_S **redraft_pos;
     int             last_pass;
     int            *impl;
@@ -3177,13 +3215,15 @@ top:
 		}
 		/* these are all from the envelope */
 		else if(pt->what_for & FOR_REPLY_INTRO)
-		  repl = get_reply_data(env,pt->ctype,subbuf,sizeof(subbuf)-1);
+		  repl = get_reply_data(env, role, pt->ctype,
+					subbuf, sizeof(subbuf)-1);
 
 		if(*p == LPAREN){		/* if-else construct */
 		    char *skip_ahead;
 
 		    repl = free_this = handle_if_token(repl, p, for_what,
-						       env, &skip_ahead);
+						       env, role,
+						       &skip_ahead);
 		    p = skip_ahead;
 		}
 
@@ -3293,11 +3333,12 @@ top:
  * Returns -- an allocated string which is the answer, or NULL if nothing.
  */
 char *
-handle_if_token(expands_to, src, for_what, env, skip_ahead)
+handle_if_token(expands_to, src, for_what, env, role, skip_ahead)
     char     *expands_to;
     char     *src;
     int       for_what;
     ENVELOPE *env;
+    ACTION_S *role;
     char    **skip_ahead;
 {
     char *ret = NULL;
@@ -3326,7 +3367,8 @@ handle_if_token(expands_to, src, for_what, env, skip_ahead)
     if(match_this && *match_this == '_'){
 	char *exp_match_this;
 
-	exp_match_this = detoken_src(match_this, for_what, env, NULL, NULL);
+	exp_match_this = detoken_src(match_this, for_what, env,
+				     role, NULL, NULL);
 	fs_give((void **)&match_this);
 	match_this = exp_match_this;
     }
@@ -3806,19 +3848,23 @@ forward(ps)
     }
 
     if(ret != 'y' && totalmsgs == 1L && orig_body){
-	reply.orig_charset = rfc2231_get_param(orig_body->parameter,
-					       "charset", NULL, NULL);
-	/*
-	 * One problem we haven't covered is when the original message
-	 * is ascii but the original headers contain encoded text with
-	 * charsets other than ascii. Since we are including those headers
-	 * in the body we should really send the charset of that encoding
-	 * in orig_charset when the body has no 8bit chars. Instead, we
-	 * just end up labelling that with our own character set.
-	 */
-	if(reply.orig_charset
-	   && !strucmp(reply.orig_charset, "us-ascii"))
-	  fs_give((void **) &reply.orig_charset);
+	char *charset;
+
+	charset = rfc2231_get_param(orig_body->parameter,
+				    "charset", NULL, NULL);
+	if(charset && strucmp(charset, "us-ascii") != 0){
+	    /*
+	     * There is a non-ascii charset, is there conversion happening?
+	     */
+	    if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
+	       || !conversion_table(charset, ps_global->VAR_CHAR_SET)){
+		reply.orig_charset = charset;
+		charset = NULL;
+	    }
+	}
+
+	if(charset)
+	  fs_give((void **) &charset);
 
 	if(reply.orig_charset)
 	  reply.flags = REPLY_FORW;
@@ -4008,6 +4054,11 @@ forward_body(stream, env, orig_body, msgno, sect_prefix, msgtext, flags)
 		/*--- The first part is text ----*/
 		text_body		      = &body->nested.part->body;
 		text_body->contents.text.data = msgtext;
+		if(text_body->subtype && strucmp(text_body->subtype, "Plain")){
+		    /* this text is going to the composer, it should be Plain */
+		    fs_give((void **)&text_body->subtype);
+		    text_body->subtype = cpystr("PLAIN");
+		}
 		if(!(flags & FWD_ANON)){
 		    forward_delimiter(pc);
 		    reply_forward_header(stream, msgno,
@@ -4685,6 +4736,8 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 		filters[i++].data = gf_convert_charset_opt(tab);
 	    }
 	}
+
+	fs_give((void **) &charset);
     }
 
     /*

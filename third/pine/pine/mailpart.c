@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailpart.c,v 1.1.1.2 2003-02-12 08:01:28 ghudson Exp $";
+static char rcsid[] = "$Id: mailpart.c,v 1.1.1.3 2003-05-01 01:12:36 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -2372,7 +2372,8 @@ display_text_att(msgno, a, flags)
     STORE_S  *store;
     HANDLE_S *handles = NULL;
 
-    clear_index_cache_ent(msgno);
+    if(msgno > 0L)
+      clear_index_cache_ent(msgno);
 
     if(store = format_text_att(msgno, a, &handles)){
 	scroll_attachment("ATTACHED TEXT", store, CharStar, handles, a, flags);
@@ -2403,7 +2404,8 @@ display_msg_att(msgno, a, flags)
     gf_io_t	 pc;
     ATTACH_S	*ap = a;
 
-    clear_index_cache_ent(msgno);
+    if(msgno > 0L)
+      clear_index_cache_ent(msgno);
 
     /* BUG, should check this return code */
     (void) mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
@@ -2454,7 +2456,8 @@ display_digest_att(msgno, a, flags)
     SourceType	 src = CharStar;
     int		 bad_news = 0;
 
-    clear_index_cache_ent(msgno);
+    if(msgno > 0L)
+      clear_index_cache_ent(msgno);
 
     /* BUG, should check this return code */
     (void)mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
@@ -2643,10 +2646,7 @@ process_attachment_cmd(cmd, msgmap, sparms)
 	break;
 
       case MC_DELETE :
-	if(delete_attachment(rawno, sparms->proc.data.p))
-	  q_status_message1(SM_ORDER, 0, 3,
-			    "Part %.200s deleted", AD(sparms)->number);
-
+	delete_attachment(rawno, sparms->proc.data.p);
 	break;
 
       case MC_UNDELETE :
@@ -3253,12 +3253,27 @@ forward_msg_att(stream, msgno, a)
 	    else{
 		reply.flags = REPLY_FORW;
 		if(a->body->nested.msg->body){
-		    reply.orig_charset =
-		      rfc2231_get_param(a->body->nested.msg->body->parameter,
-				        "charset", NULL, NULL);
-		    if(reply.orig_charset
-		       && !strucmp(reply.orig_charset, "us-ascii"))
-		      fs_give((void **) &reply.orig_charset);
+		    char *charset;
+
+		    charset
+		      = rfc2231_get_param(a->body->nested.msg->body->parameter,
+				          "charset", NULL, NULL);
+		    
+		    if(charset && strucmp(charset, "us-ascii") != 0){
+			/*
+			 * There is a non-ascii charset,
+			 * is there conversion happening?
+			 */
+			if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
+			   || !conversion_table(charset,
+					        ps_global->VAR_CHAR_SET)){
+			    reply.orig_charset = charset;
+			    charset = NULL;
+			}
+		    }
+
+		    if(charset)
+		      fs_give((void **) &charset);
 		}
 
 		body = forward_body(stream, a->body->nested.msg->env,
@@ -3400,12 +3415,27 @@ reply_msg_att(stream, msgno, a)
 	    memset((void *)&reply, 0, sizeof(reply));
 	    reply.flags = REPLY_FORW;
 	    if(a->body->nested.msg->body){
-		reply.orig_charset =
-		      rfc2231_get_param(a->body->nested.msg->body->parameter,
-				        "charset", NULL, NULL);
-		if(reply.orig_charset
-		   && !strucmp(reply.orig_charset, "us-ascii"))
-		  fs_give((void **) &reply.orig_charset);
+		char *charset;
+
+		charset
+		  = rfc2231_get_param(a->body->nested.msg->body->parameter,
+				      "charset", NULL, NULL);
+		
+		if(charset && strucmp(charset, "us-ascii") != 0){
+		    /*
+		     * There is a non-ascii charset,
+		     * is there conversion happening?
+		     */
+		    if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
+		       || !conversion_table(charset,
+					    ps_global->VAR_CHAR_SET)){
+			reply.orig_charset = charset;
+			charset = NULL;
+		    }
+		}
+
+		if(charset)
+		  fs_give((void **) &charset);
 	    }
 
 	    if(body = reply_body(stream, a->body->nested.msg->env,
@@ -3620,6 +3650,9 @@ delete_attachment(msgno, a)
 	msgno_exceptions(ps_global->mail_stream, msgno,
 			 a->number, &expbits, TRUE);
 
+	q_status_message1(SM_ORDER, 0, 3,
+			"Part %.200s will be omitted only if message is Saved",
+			  a->number);
 	rv = 1;
     }
     else
