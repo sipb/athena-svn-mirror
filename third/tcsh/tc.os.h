@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.h,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.h,v 1.2 1997-12-13 18:41:34 ghudson Exp $ */
 /*
  * tc.os.h: Shell os dependent defines
  */
@@ -37,7 +37,7 @@
 #ifndef _h_tc_os
 #define _h_tc_os
 
-#define NEEDstrerror		/* Too hard to find which systems have it */
+#undef NEEDstrerror
 
 
 #ifdef notdef 

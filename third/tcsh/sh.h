@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.3 1997-10-14 21:25:13 lcs Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.4 1997-12-13 18:41:33 ghudson Exp $ */
 /*
  * sh.h: Catch it all globals and includes file!
  */
@@ -895,14 +895,6 @@ EXTERN int     lastev;          /* Last event reference (default) */
 
 EXTERN Char    HIST;            /* history invocation character */
 EXTERN Char    HISTSUB;         /* auto-substitute character */
-
-/*
- * To print system call errors...
- */
-#ifndef linux
-extern char *sys_errlist[];
-extern int errno, sys_nerr;
-#endif /* !linux */
 
 /*
  * strings.h:
