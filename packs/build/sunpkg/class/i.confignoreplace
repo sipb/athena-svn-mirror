@@ -20,8 +20,10 @@ while read src dest ; do
     }
   fi
   # Copy in the new version, with the .athena suffix.
+  rm -f $dest.athena
   cp -p $src $dest.athena || exit 1
   if [ $noreplace = false ]; then
+    rm -f $dest
     cp -p $dest.athena $dest || exit 1
   fi
 done      

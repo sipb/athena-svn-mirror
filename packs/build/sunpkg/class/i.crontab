@@ -36,6 +36,7 @@ while read src dest ; do
 	# We have changed it in the package.  Save the edited version,
 	# as we will replace it below.
 	oldfile=$savedir/crontab.$cronuser.old
+	rm -f $oldfile
 	cp -p $dest $oldfile || exit 1
 	echo "Replacing the $cronuser crontab; the existing version has been"
 	echo "saved as $oldfile"
@@ -43,8 +44,10 @@ while read src dest ; do
     }
   fi
   # Always copy the new version to the save directory.
+  rm -f $athena_save
   cp -p $src $athena_save || exit 1
   if [ $noreplace = false ]; then
+    rm -f $dest
     cp -p $src $dest || exit 1
   fi
 done      
