@@ -17,10 +17,12 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>		/* BSD includes this from <sys/param.h>,
+				   but AIX does not. */
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.10 1991-06-18 15:11:13 jfc Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.11 1991-06-20 09:15:21 jfc Exp $";
 #endif
 		     
 extern long atol();
