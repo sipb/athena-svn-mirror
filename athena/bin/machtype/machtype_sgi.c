@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.8 1998-04-18 16:58:44 danw Exp $
+ *	$Id: machtype_sgi.c,v 1.9 1998-04-22 22:05:55 ghudson Exp $
  *	$Locker:  $
  */
 
@@ -232,7 +232,7 @@ char	**argv;
     }
     if (dosysnam)
         printf("%s\n", ATHSYS);
-    if (dosyscompatname)
+    if (dosyscompatnam)
         printf("%s\n", ATHSYSCOMPAT);
     if (cpuflg)
 	do_cpu(kernel, memfd);
