@@ -3,12 +3,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#ifdef POSIX
 #include <unistd.h>
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/stat.h>
 
 #include <sys/time.h>
@@ -70,9 +66,6 @@ main(argc, argv)
      char *argv[];
 {
   int i;
-#ifndef POSIX
-  char *getwd();
-#endif
 #ifndef NO_RLIMIT
   struct rlimit rl;
 #endif
@@ -82,8 +75,6 @@ main(argc, argv)
 #else
   setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
 #endif
-
-  printf("SyncTree version %s\n",version_string());
 
   uid = getuid();
   euid = geteuid();
@@ -176,19 +167,11 @@ main(argc, argv)
   if (srcdir[0] != '/')
     { char *p = srcdir;
       srcdir = (char *) alloca(MAXPATHLEN);
-#ifdef POSIX 
       if ((srcdir = getcwd(srcdir,MAXPATHLEN )) == NULL)
 	{ perror("getcwd() failed");
 	  fprintf(stderr,"exiting\n");
 	  exit(1);
 	} 
-#else 
-      if ((srcdir = getwd(srcdir)) == NULL)
-	{ perror("getwd() failed");
-	  fprintf(stderr,"exiting\n");
-	  exit(1);
-	}
-#endif
       if ((strlen(srcdir) + strlen("/") + strlen(p) + 1) > MAXPATHLEN)
 	{ fprintf(stderr,"full pathname is too long, exiting");
 	  exit(1);
@@ -200,19 +183,11 @@ main(argc, argv)
   if ((dstdir[0] != '/') && (dstdir[0] != '\0'))
     { char *p = dstdir;
       dstdir = (char *) alloca(MAXPATHLEN);
-#ifdef POSIX
       if ((dstdir = getcwd(dstdir, MAXPATHLEN)) == NULL)
 	{ perror("getcwd() failed");
 	  fprintf(stderr,"exiting\n");
 	  exit(1);
 	}
-#else 
-      if ((dstdir = getwd(dstdir)) == NULL)
-	{ perror("getwd() failed");
-	  fprintf(stderr,"exiting\n");
-	  exit(1);
-	}
-#endif
       if ((strlen(dstdir) + strlen("/") + strlen(p) + 1) > MAXPATHLEN)
 	{ fprintf(stderr,"full pathname is too long, exiting");
 	  exit(1);
@@ -250,11 +225,7 @@ main(argc, argv)
 }
 
 struct src {
-#ifdef POSIX
-  struct dirent *dir;
-#else
-  struct direct *dir;
-#endif
+  char *name;
   char *pathname;
   struct stat stat;
   unsigned int type;
@@ -271,14 +242,6 @@ struct targ {
   struct targ *next;
 };
 
-#ifdef POSIX
-#ifdef SYSV
-#define dlen(d) (sizeof(struct dirent) + strlen(d->d_name))
-#else
-#define dlen(d) (sizeof(struct dirent))
-#endif
-#endif
-
 int dodir(src,dst,part)
      char *src;
      char *dst;
@@ -290,11 +253,7 @@ int dodir(src,dst,part)
     void *getmemt;
     bool sorted;
     DIR *dirp;
-#ifdef POSIX
     struct dirent *dp;
-#else
-    struct direct *dp;
-#endif
     char *testpath;
     struct stat teststat;
 
@@ -322,15 +281,8 @@ int dodir(src,dst,part)
 	    continue;
 	newsrc(sp);
 	sp->pathname = (char *)0;
-	/**** the next two lines are space inefficient, it can be done better */
-#ifdef POSIX
-	sp->dir    = (struct dirent *) getmem(dlen(dp));
-	memcpy(sp->dir, dp, dlen(dp));
-#else
-	sp->dir    = (struct direct *) getmem(sizeof(struct direct));
-	*(sp->dir) = *dp;
-	strcpy(sp->dir->d_name, dp->d_name);
-#endif
+	sp->name = (char *) getmem(strlen(dp->d_name) + 1);
+	strcpy(sp->name, dp->d_name);
     }
     closedir(dirp);
 
@@ -346,17 +298,11 @@ int dodir(src,dst,part)
 	    strcat(testpath,dp->d_name);
 	    if (lstat(testpath, &teststat)) {
 		newsrc(sp);
-		/* the next two lines are space inefficient */
-#ifdef POSIX
-		sp->dir    = (struct dirent *) getmem(dlen(dp));
-		memcpy(sp->dir, dp, dlen(dp));
-#else
-		sp->dir    = (struct direct *) getmem(sizeof(struct direct));
-		*(sp->dir) = *dp;
-#endif
+		sp->name  = (char *) getmem(strlen(dp->d_name) + 1);
+		strcpy(sp->name, dp->d_name);
 
 		sp->pathname =
-		    (char *) getmem( strlen(src) + strlen(sp->dir->d_name) + 2 );
+		    (char *) getmem( strlen(src) + strlen(sp->name) + 2 );
 		strcpy(sp->pathname, testpath);
 	    }
 	}
@@ -376,10 +322,10 @@ int dodir(src,dst,part)
 	 */
 	if (!sp->pathname) {
 	    sp->pathname =
-		(char *) getmem( strlen(src) + strlen(sp->dir->d_name) + 2 );
+		(char *) getmem( strlen(src) + strlen(sp->name) + 2 );
 	    (void) strcpy(sp->pathname,src);
 	    (void) strcat(sp->pathname,"/");
-	    (void) strcat(sp->pathname,sp->dir->d_name);
+	    (void) strcat(sp->pathname,sp->name);
 	    /* get information about file */
 	    if (lstat(sp->pathname,&(sp->stat)) < 0) {
 #define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, strerror(errno), whatnext)
@@ -395,7 +341,7 @@ int dodir(src,dst,part)
 
 	    (void) strcpy(path, dst);
 	    (void) strcat(path, "/");
-	    (void) strcat(path, sp->dir->d_name);
+	    (void) strcat(path, sp->name);
 
 	    if (lstat(path, &(sp->stat)) < 0) {
 #define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, strerror(errno), whatnext)
@@ -465,7 +411,7 @@ int dodir(src,dst,part)
 	    char *r;
 	    newtarg(tp);
 	    r = destination_pathname(dst,
-				     sp->dir->d_name, 
+				     sp->name, 
 				     rules[sp->map_ruleno].u.u_map.dests[i]);
 	    tp->pathname = (char *) getmem(strlen(r)+1);
 	    strcpy(tp->pathname,r);
@@ -641,7 +587,7 @@ int dodir(src,dst,part)
 	    freea(ptr);
 	    ptr = (char *) sp;
 	    freea(sp->pathname);
-	    freea(sp->dir);
+	    freea(sp->name);
 	}
 	alltargs(tp) {
 	    freea(ptr);
