@@ -3,9 +3,14 @@
  * It contains definitions used by "common.a".
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- * $Id: common.h,v 1.1 1990-04-27 11:58:40 vanharen Exp $
+ * For copying and distribution information, see the file "mit-copyright.h."
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
+ *	$Id: common.h,v 1.2 1990-05-25 15:06:11 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 /*
  * This file must use the old-C compatible definitions, because it
