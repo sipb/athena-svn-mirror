@@ -129,7 +129,7 @@ choose_client() {
 
 	# Kernels compiled for different machine types may have
         # different symbol versions.  Yay Linux.
-        MACHINE=`uname -m`
+        MACHINE=`rpm -q --queryformat='%{ARCH}' kernel`
 
 	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
