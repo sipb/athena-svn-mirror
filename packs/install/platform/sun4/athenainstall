@@ -3,7 +3,7 @@
 ### This is the first script file in the installation program for
 ### installing Athena software on Solaris2.1
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/athenainstall,v 1.2 1994-01-05 12:08:39 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/athenainstall,v 1.3 1994-01-05 12:22:44 miki Exp $
 ### $Locker:  $
 
 
@@ -40,5 +40,5 @@ stty sane	# Flush terminal input.
 #	mount  $TR_SERVER:$PACK /srvd
 
 echo "Starting script on  srvd..."
-sh /srvd/install/phase2.sh
+sh /util/phase2.sh
 exit 1
