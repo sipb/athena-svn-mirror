@@ -204,7 +204,8 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 install-data-local:
-	$(LN_S) -f -n $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
+	rm -f $(DESTDIR)$(scrollkeeper_data_dir)
+	$(LN_S) -f $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

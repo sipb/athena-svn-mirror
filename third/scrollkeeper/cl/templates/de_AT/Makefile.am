@@ -3,4 +3,5 @@
 scrollkeeper_data_dir=$(datadir)/scrollkeeper/Templates/de_AT
 scrollkeeper_data_link_dir=../de
 install-data-local:
-	$(LN_S) -f -n $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
+	rm -f $(DESTDIR)$(scrollkeeper_data_dir)
+	$(LN_S) -f $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
