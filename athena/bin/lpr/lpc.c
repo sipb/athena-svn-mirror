@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.2 1990-04-16 12:06:19 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.3 1990-06-26 13:37:23 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.2 1990-04-16 12:06:19 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.3 1990-06-26 13:37:23 epeisach Exp $";
 #endif lint
 
 /*
@@ -64,11 +64,19 @@ main(argc, argv)
 	extern char *name;
 
 	name = argv[0];
+#ifdef LOG_AUTH
 #ifdef OPERATOR
 	openlog("lpc", 0, LOG_AUTH);
 #else
 	openlog("lpd", 0, LOG_LPR);
 #endif
+#else /* not LOG_AUTH */
+#ifdef OPERATOR
+	openlog("lpc", 0);
+#else
+	openlog("lpd", 0);
+#endif
+#endif /* LOG_AUTH */
 	if (--argc > 0) {
 		c = getcmd(*++argv);
 		if (c == (struct cmd *)-1) {
