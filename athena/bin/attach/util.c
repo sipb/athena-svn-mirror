@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: ghudson $
+ *	$Author: danw $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.25 1997-06-06 20:39:06 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.26 1997-09-11 17:16:05 danw Exp $";
 
 #include "attach.h"
 
@@ -247,6 +247,8 @@ struct _attachtab *build_hesiod_line(name, count)
 	    }
 
 	    hes = (fsp->explicit)(name);
+	    if (!hes)
+		    return (NULL);
     }
 
     if (lookup || debug_flag) {
