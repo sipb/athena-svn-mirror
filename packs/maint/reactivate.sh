@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.22 1995-05-25 22:14:00 cfields Exp $
+# $Id: reactivate.sh,v 1.23 1996-05-09 02:45:54 cfields Exp $
 
 trap "" 1 15
 
@@ -83,6 +83,9 @@ SUN4)
 	cp -p /usr/tmp/ps_data /tmp/ps_data
 	/bin/rm -f /usr/tmp/ps_data
 	;;
+INDY)
+	/bin/rm -rf /tmp/* > /dev/null 2>&1
+	;;
 *)
 	/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
 	/bin/rm -rf /tmp/ > /dev/null 2>&1
@@ -91,25 +94,30 @@ SUN4)
 esac
 fi				# END tmp clean
 
+# Copy in latest password file
+if [ "${PUBLIC}" = "true" ]; then
+	if [ -r /srvd/etc/passwd ]; then
+	    ${cp} /srvd/etc/passwd /etc/passwd.local
+	    chmod 644 /etc/passwd.local
+	    chown root /etc/passwd.local
+	fi
+	if [ -r /srvd/etc/shadow ]; then
+	    ${cp} /srvd/etc/shadow /etc/shadow.local
+	    chmod 600 /etc/shadow.local
+	    chown root /etc/shadow.local
+	fi
+fi
+
 # Restore password and group files
 case "${MACHINE}" in
 RSAIX)
 	;;
-SUN4)
+*)
 	if [ -f /etc/passwd.local ] ; then
 	    ${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
 	fi
 	if [ -f /etc/shadow.local ] ; then
 	    ${cp} /etc/shadow.local /etc/stmp && /bin/mv -f /etc/stmp /etc/shadow
-	fi
-	if [ -f /etc/group.local ] ; then
-	    ${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
-	fi
-	;;
-*)
-	if [ -f /etc/passwd.local ] ; then
-	    ${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
-	    /bin/rm -f /etc/passwd.dir /etc/passwd.pag
 	fi
 	if [ -f /etc/group.local ] ; then
 	    ${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
