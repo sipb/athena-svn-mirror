@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v 1.1 1989-10-23 13:42:23 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v 1.2 1989-11-06 19:55:55 jik Exp $
 #
 
 	et	del
@@ -42,5 +42,14 @@ ec ENOMATCH,
 	"no match"
 ec EXPUNGE_NOT_EXPUNGED,
 	""
+ec PAT_NO_FILES_REQUESTED,
+	"internal error: no files requested in call to find_matches or do_match"
+ec PAT_IS_MOUNT,
+	"ignored (is mount point)"
+ec STACK_BAD_OP,
+	"internal error: call to dostack with undefined stack operation"
+ec STACK_EMPTY,
+	"internal error: attempt to pop from empty stack"
 
 	end
+
