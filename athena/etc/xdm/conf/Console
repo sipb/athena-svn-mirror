@@ -4,6 +4,7 @@
 			textDisplayWindow: scrollBarWindow hide 100 100	\
 			title: hide 0 100 scrollBarWindow
 
+*font:				-adobe-new century schoolbook-bold-r-*-120-*
 *borderWidth:			1
 *hideButton.borderWidth:	1
 *hide.borderWidth:		0
@@ -16,7 +17,7 @@
 *window.mapped:			0
 
 *scrollBarWindow.cursorCode:	116
-*scrollBarWindow.backgroundPixmap: /afs/athena/astaff/project/adt/src/gray
+*scrollBarWindow.backgroundPixmap: /etc/athena/login/gray
 *scrollBarWindow.width:		15
 *scrollBarWindow.height:	200
 
@@ -35,5 +36,5 @@
 *iconWindow.mapped:		0
 *iconWindow.geometry:		50x50
 
-*icon.icon:			/afs/athena/astaff/project/adt/src/console.bits
+*icon.icon:			/etc/athena/login/console.bits
 *icon.Center:			1

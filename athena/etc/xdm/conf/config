@@ -1,6 +1,9 @@
-# DM Configuration for monochrome vaxen
+# Display Manager Configuration File
 
 #prog	command line
-X	/etc/Xqvss -v :0
-console	/afs/athena/astaff/project/xdm/@sys/bin/console -f /afs/athena/astaff/project/xdm/@sys/conf/Console -display :0.0
-login	/afs/athena/astaff/project/xdm/@sys/bin/xlogin -config /afs/athena/astaff/project/xdm/@sys/conf -display :0.0
+X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/
+#X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/
+#X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/
+#X	/etc/Xmfbpmax -bc v :0 -fp /etc/athena/login/fonts/
+console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
+login	/etc/athena/xlogin -config /etc/athena/login -display :0.0
