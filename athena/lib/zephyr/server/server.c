@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Id: server.c,v 1.48 1991-03-08 13:51:48 raeburn Exp $";
+static char rcsid_server_c[] = "$Id: server.c,v 1.49 1991-05-13 13:17:24 raeburn Exp $";
 #endif
 #endif
 
@@ -747,8 +747,9 @@ kill_clt(ZNotice_t *notice, ZServerDesc_t *server)
 	}
 #if 1
 	if (zdebug || 1)
-		syslog(LOG_DEBUG, "kill_clt clt_dereg %s from %s",
-		       inet_ntoa (who.sin_addr), server->addr);
+		syslog(LOG_DEBUG, "kill_clt clt_dereg %s/%d from %s",
+		       inet_ntoa (who.sin_addr), ntohs (who.sin_port),
+		       server->addr);
 #endif
 
 	hostm_lose_ignore(client);
