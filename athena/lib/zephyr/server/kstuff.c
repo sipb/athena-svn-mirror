@@ -10,11 +10,11 @@
  */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.7 1988-10-19 23:07:49 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.8 1989-03-23 09:29:08 jtkohl Exp $
  */
 
 #ifndef lint
-static char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.7 1988-10-19 23:07:49 raeburn Exp $";
+static char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.8 1989-03-23 09:29:08 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -101,7 +101,7 @@ char *service, *host;			/* service name, foreign host */
 
     rem=KSUCCESS;
 
-    rem = get_krbrlm(krb_realm,1);
+    rem = krb_get_lrealm(krb_realm,1);
     if (rem != KSUCCESS)
       return(rem);
 
