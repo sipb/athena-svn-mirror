@@ -181,7 +181,7 @@ MAXSCANCODE 125
 39	RN	XK_0		XK_parenright
 40	RN	XK_minus	XK_underscore
 41	RN	XK_equal	XK_plus
-43	RN	XK_BackSpace
+43	RN	XK_Delete
 
 44	NN	XK_Insert
 52	NN	XK_Home
@@ -215,7 +215,7 @@ MAXSCANCODE 125
 65	RN	XK_bracketright	XK_braceright
 88	RN	XK_backslash	XK_bar		XK_brokenbar
 
-66	RN	XK_Delete
+66	RN	XK_BackSpace
 74	NN	XK_End
 123	NN	XK_Next
 
