@@ -110,7 +110,7 @@ $ECHO ""
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
 	$ECHO "Public workstation cleanup... \c"
-	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
+	rm -rf /.hushlogin /etc/X0.hosts
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	if [ -r /srvd/etc/passwd ]; then
 	    cp -p /srvd/etc/passwd /etc/passwd.local
