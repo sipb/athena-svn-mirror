@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.35 1994-04-26 10:35:55 root Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.36 1994-04-26 13:51:30 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -55,7 +55,7 @@ static sigset_t sig_cur;
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.35 1994-04-26 10:35:55 root Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.36 1994-04-26 13:51:30 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -85,11 +85,11 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #endif
 
 /* flags used by signal handlers */
-volatile int alarm_running = NONEXISTANT;
-volatile int xpid, x_running = NONEXISTANT;
-volatile int consolepid, console_running = NONEXISTANT;
+volatile int alarm_running = NONEXISTENT;
+volatile int xpid, x_running = NONEXISTENT;
+volatile int consolepid, console_running = NONEXISTENT;
 volatile int console_tty = 0, console_failed = FALSE;
-volatile int loginpid, login_running = NONEXISTANT;
+volatile int loginpid, login_running = NONEXISTENT;
 #ifdef _IBMR2
 volatile int swconspid;
 #endif
@@ -412,7 +412,7 @@ char **argv;
 		perror("select");
 		exit(1);
 	    }
-	    if (nfound == 0 || x_running == NONEXISTANT) {
+	    if (nfound == 0 || x_running == NONEXISTENT) {
 		message("dm: X failed to become ready\n");
 	    } else {
 		char buf[64];
@@ -441,7 +441,7 @@ char **argv;
 	    }
 	    close(pp[0]);
 #else /* !X11R3 */
-	    if (x_running == NONEXISTANT) break;
+	    if (x_running == NONEXISTENT) break;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
 #ifdef DEBUG
@@ -449,7 +449,7 @@ char **argv;
 #endif
 	    sigpause(0);
 	    if (x_running != RUNNING) {
-		if (alarm_running == NONEXISTANT)
+		if (alarm_running == NONEXISTENT)
 		  message("dm: Unable to start X\n");
 		else
 		  message("dm: X failed to become ready\n");
@@ -555,7 +555,7 @@ char **argv;
 	      sigpause(0);
 	    if (login_running != RUNNING) {
 		kill(loginpid, SIGKILL);
-		if (alarm_running != NONEXISTANT)
+		if (alarm_running != NONEXISTENT)
 		  message("dm: Unable to start Xlogin\n");
 		else
 		  message("dm: Xlogin failed to become ready\n");
@@ -658,9 +658,9 @@ char **argv;
 #endif
 	    console_login("\nConsole login requested.\n");
 	}
-	if (console && console_running == NONEXISTANT)
+	if (console && console_running == NONEXISTENT)
 	  start_console(line, consoleargv);
-	if (login_running == NONEXISTANT || x_running == NONEXISTANT) {
+	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
 #ifdef POSIX
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 #else
@@ -687,7 +687,7 @@ char *msg;
 
 #else /* supports console login */
 
-    int i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
+    int i, graceful = FALSE, xfirst = TRUE, cfirst = TRUE;
     char *nl = "\r\n";
 #ifdef POSIX
     struct termios ttybuf;
@@ -703,16 +703,16 @@ char *msg;
 #endif
 
     for (i = 0; i < X_STOP_WAIT; i++) {
-	if (login_running != NONEXISTANT && login_running != STARTUP)
+	if (login_running != NONEXISTENT && login_running != STARTUP)
 	  kill(loginpid, SIGKILL);
-	if (console_running != NONEXISTANT) {
+	if (console_running != NONEXISTENT) {
 	    if (cfirst)
 	      kill(consolepid, SIGHUP);
 	    else
 	      kill(consolepid, SIGKILL);
 	    cfirst = FALSE;	
 	}
-	if (x_running != NONEXISTANT) {
+	if (x_running != NONEXISTENT) {
 	    if (xfirst)
 	      kill(xpid, SIGTERM);
 	    else
@@ -726,10 +726,10 @@ char *msg;
 	sigpause(0); 
 #endif
 
-	if (x_running == NONEXISTANT &&
-	    console_running == NONEXISTANT &&
-	    (login_running == NONEXISTANT || login_running == STARTUP)) {
-	    gracefull = TRUE;
+	if (x_running == NONEXISTENT &&
+	    console_running == NONEXISTENT &&
+	    (login_running == NONEXISTENT || login_running == STARTUP)) {
+	    graceful = TRUE;
 	    break;
 	}
     }
@@ -747,7 +747,7 @@ char *msg;
 
 #ifdef vax
     /* attempt to reset the display head */
-    if (!gracefull) {
+    if (!graceful) {
 	i = open(mousedev, O_RDWR, 0);
 	if (i >= 0) {
 	    alarm(2);
@@ -1237,7 +1237,7 @@ void child()
 	trace("X Server exited status ");
 	trace(number(status.w_retcode));
 #endif
-	x_running = NONEXISTANT;
+	x_running = NONEXISTENT;
     } else if (pid == consolepid) {
 #ifdef DEBUG
 	message("Console exited\n");
@@ -1246,7 +1246,7 @@ void child()
 	trace("Console exited status ");
 	trace(number(status.w_retcode));
 #endif
-	console_running = NONEXISTANT;
+	console_running = NONEXISTENT;
     } else if (pid == loginpid) {
 #ifdef DEBUG
 	message("X Login exited\n");
@@ -1262,7 +1262,7 @@ void child()
 #endif
 	  login_running = STARTUP;
 	else
-	  login_running = NONEXISTANT;
+	  login_running = NONEXISTENT;
 #ifdef _IBMR2
     } else if (pid == swconspid) {
 #ifdef TRACE
@@ -1309,7 +1309,7 @@ void catchalarm()
 #ifdef DEBUG
     message("Alarm!\n");
 #endif
-    alarm_running = NONEXISTANT;
+    alarm_running = NONEXISTENT;
 }
 
 
