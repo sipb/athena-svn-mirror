@@ -1,9 +1,0 @@
-Name: athena-tetex-texmf
-Summary: The TeX typesetting data files, for Athena
-Copyright: Donald Knuth and others
-Group: Applications/Publishing
-
-%description
-The teTeX typesetting system data files, for Athena.  This package
-contains the teTeX data files; the athena-tetex-progs package contains
-the programs.
