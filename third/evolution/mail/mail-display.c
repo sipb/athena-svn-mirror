@@ -207,21 +207,20 @@ write_data_to_file (CamelMimePart *part, const char *name, gboolean unique)
 	
 	if (fd != -1)
 		close (fd);
-
+	
+	/* should this have progress of what its doing? */
+	mail_msg_wait (mail_save_part (part, name, write_data_written, &ret));
+	
 	/* Athena hack: chmod the file read-only as a hint to editing-
 	   capable viewers that they should not allow editing before
 	   the file is saved under a different name. */
 	{
 		struct stat st;
-		mode_t newmode;
 
-		if (stat (name, &st) == 0)
+		if (ret && stat (name, &st) == 0)
 			chmod (name, st.st_mode & 0444);
 	}
-	
-	/* should this have progress of what its doing? */
-	mail_msg_wait (mail_save_part (part, name, write_data_written, &ret));
-	
+
 	return ret;
 }
 
