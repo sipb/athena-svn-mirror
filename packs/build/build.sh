@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.35 2001-04-06 18:58:34 ghudson Exp $
+# $Id: build.sh,v 1.36 2001-09-10 16:46:27 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -108,7 +108,7 @@ for package in $packages; do
     rm -rf $package
     mkdir -p $package
     cd $package || exit 1
-    synctree -q -s $source/$package -d . -a $source/packs/build/rconf || exit 1
+    (cd $source/$package && tar cf - .) | tar xfp -
     find . -print | xargs touch -t `date +%Y%m%d%H%M.%S`
   else
     cd $package || exit 1
@@ -116,7 +116,7 @@ for package in $packages; do
   echo "**********************"
   for op in dist prepare clean all check install; do
     echo "***** ${package}: $op"
-    sh $source/packs/build/do.sh -c -s "$source" -d "$srvd" "$op"
+    sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op"
     if [ $? -ne 0 ]; then
       echo "We bombed in $package"
       if [ false = "$ignore" ]; then
