@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailmove.pl,v 1.2 2004-07-29 19:11:53 rbasch Exp $
+# $Id: mitmailmove.pl,v 1.3 2004-08-31 16:00:16 rbasch Exp $
 
 # Move or copy messages between IMAP folders.
 
@@ -108,7 +108,7 @@ foreach (@ARGV) {
 	    print "Creating $target\n" if $opt_debug;
 	    # send_command will error out if either the CREATE fails.
 	    send_command "CREATE \"$target\"";
-	    ($status, $text) = send_command "COPY $_ \"$target\"";
+	    ($status, $text) = send_command "$copy_cmd $_ \"$target\"";
 	}
 	if ($status ne 'OK') {
 	    print STDERR "IMAP error copying $_ to $target: $text\n";
