@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.9 1993-05-20 12:52:48 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.10 1994-03-25 15:36:36 miki Exp $
  *	$Author: miki $
  */
 
@@ -144,7 +144,11 @@ void logout( )
  */
 void clean_child( )
 {
+#ifdef POSIX
+    waitpid((pid_t)-1, 0, WNOHANG);
+#else
     wait3(0, WNOHANG, 0);
+#endif
 }
 
 time_t check_pid_file(filename, pid, mtime)
