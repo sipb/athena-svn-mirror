@@ -11,3 +11,16 @@ Framework (OMF)) and provides a simple API to allow help browsers to
 find, sort, and search the document catalog. It will also be able to
 communicate with catalog servers on the Net to search for documents
 which are not on the local system.
+
+%post
+PATH=/usr/athena/bin:$PATH
+vers=`scrollkeeper-config --version`
+log=/usr/athena/var/log/scrollkeeper.log
+if [ $1 = 1 ] ; then
+  action=Installing
+else
+  action="Upgrading to"
+fi
+echo "`date +"%b %d %X"` $action ScrollKeeper $vers..." >> $log
+scrollkeeper-rebuilddb -p %{_localstatedir}/lib/scrollkeeper >> $log 2>&1
+/sbin/ldconfig
