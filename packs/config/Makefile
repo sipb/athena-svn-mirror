@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.23 1999-04-08 01:28:29 mwhitson Exp $
+# $Id: Makefile,v 1.24 1999-04-12 20:26:59 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -31,7 +31,6 @@ install:
 	install -c -m 0644 named.localhost ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.localhost.rev ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.root ${DESTDIR}${ETCDIR}
-	install -c -m 0644 named.hsroot ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ntp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
