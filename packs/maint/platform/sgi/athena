@@ -166,7 +166,8 @@ fi
 $ECHO ""
 $ECHO "Starting Athena daemons: \c"
 
-# Start Athena's inetd
+# Start Athena's inetd.  Make sure the time zone is set in its environment.
+. /etc/TIMEZONE
 $ECHO "inetd... \c"
 /etc/athena/inetd &
 
