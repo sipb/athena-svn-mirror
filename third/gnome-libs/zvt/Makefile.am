@@ -6,7 +6,7 @@ libzvtincludedir = $(includedir)/zvt
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS)		\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(includedir) $(GTK_CFLAGS)  			\
+	$(GTK_CFLAGS)  					\
 	$(GDK_IMLIB_CFLAGS)				\
 	-DGNOMESBINDIR=\""$(sbindir)"\"
 
