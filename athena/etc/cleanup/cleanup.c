@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.14 1996-03-24 23:30:26 ghudson Exp $
+/* $Id: cleanup.c,v 2.15 1996-04-19 00:44:11 cfields Exp $
  *
  * Cleanup program for stray processes
  *
@@ -25,7 +25,9 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/time.h>
+#ifndef sgi
 #include <sys/proc.h>
+#endif
 #include <signal.h>
 #include <strings.h>
 #include <utmp.h>
@@ -42,7 +44,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.14 1996-03-24 23:30:26 ghudson Exp $";
+char *version = "$Id: cleanup.c,v 2.15 1996-04-19 00:44:11 cfields Exp $";
 
 
 
