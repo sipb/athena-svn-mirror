@@ -2,7 +2,7 @@
 
 /*
  * xalf - X application launch feedback
- * A wrapper for starting X applications. Provides three indicators:
+ * A wrapper for starting X applications. Provides four indicators:
  *
  * 1. An invisible window, to be shown in pagers like Gnomes tasklist_applet
  * or KDE taskbar. 
@@ -11,12 +11,15 @@
  *
  * 3. Add hourglass to mouse cursor for root window and Gnome's panel. 
  *
- * Copyright Peter Åstrand <altic@lysator.liu.se> 2000. GPLV2. 
+ * 4. Animated star. 
+ *
+ * Copyright Peter Åstrand <astrand@lysator.liu.se> 2001. GPLV2. 
  *
  * Source is (hopefully) formatted according to the GNU Coding standards. 
  *
  */
 
+#define _GNU_SOURCE
 
 #include "config.h"
 #include <stdio.h>
@@ -40,6 +43,7 @@
 #include "hgcursor.h"
 #include "hgcursor_mask.h"
 /* animation frames */
+#include "sp0.xpm"
 #include "sp1.xpm"
 #include "sp2.xpm"
 #include "sp3.xpm"
@@ -48,11 +52,10 @@
 #include "sp6.xpm"
 #include "sp7.xpm"
 #include "sp8.xpm"
-#include "sp9.xpm"
-
-
 
 #undef DEBUG 
+/* Uncomment below for debugging */
+/* #define DEBUG */
 
 #ifdef DEBUG
 #   define DPRINTF(args) fprintf args
@@ -60,9 +63,9 @@
 #   define DPRINTF(args) 
 #endif
 
-
-#define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
-#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so"
+#define PID_ENV_NAME "XALF_LAUNCH_PID"
+#define SAVED_PRELOAD_NAME "XALF_SAVED_PRELOAD"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
 #define USAGE "\
 Usage: %s [options] command\n\
 options:\n\
@@ -81,9 +84,7 @@ options:\n\
    -l, --title titlestring  Title to show in the tasklist\n"
 
 
-enum { VERSION_MAJOR = 0 };
-enum { VERSION_MINOR = 3 };
-#define MAINTAINER		"altic@lysator.liu.se"
+#define MAINTAINER		"astrand@lysator.liu.se"
 #define CANONICAL_NAME          "xalf"
 
 
@@ -96,24 +97,29 @@ void change_cursor (int launching);
 gint redraw_cursor (gpointer data);
 void install_sighandlers ();
 void remove_sighandlers ();
-static GdkWindow*	gdk_window_ref_from_xid	(Window xwin);
-static GdkFilterReturn	root_event_monitor (GdkXEvent *gdk_xevent,
-					    GdkEvent *event,
-					    gpointer gdk_root);
+static GdkWindow* gdk_window_ref_from_xid (Window xwin);
+static GdkFilterReturn root_event_monitor (GdkXEvent *gdk_xevent,
+                                           GdkEvent *event,
+                                           gpointer gdk_root);
 char *find_in_path (char *filename);
 int is_setid (char *filename);
 Window find_window (Display *dpy, Window root, char *wname, char *wclass);
 int match_window (Display *dpy, Window w, Atom leader_atom, char *wname, char *wclass);
 void restore_cursor ();
 
+
 /* animation data */
+char **xpm_array[9];
 #define MAX_FRAMES 9
 struct anim_data_struct {
     int active_frame_number;
     GdkPixmap *frames[MAX_FRAMES];
     GdkBitmap *masks[MAX_FRAMES];
-    GtkWidget *active_frame, *win;
+    GtkWidget *pixmaps[MAX_FRAMES];
+    GtkWidget *windows[MAX_FRAMES];
 };
+struct anim_data_struct* anim_data;
+
 void init_animation (struct anim_data_struct* anim_data);
 gint update_anim (gpointer data);
 
@@ -132,70 +138,65 @@ char launch_pid[22];
 Display *dpy;
 /* True if using mouse cursor as indicator */
 int cursor_opt = FALSE;
-int timeout_tag = 0;
+/* GTK timeout tags */
+int cursor_timeout_tag = 0;
+int exit_timeout_tag = 0;
+/* Animated start */
+int anim_opt = FALSE;
+/* The number of MapEvents in mappingmode to detect before we are done. */
+int pending_mapevents = 1;
+
 
 void 
 restore_cursor ()
 {
     if (cursor_opt) 
 	{
-	    gtk_timeout_remove (timeout_tag);
+	    gtk_timeout_remove (cursor_timeout_tag);
 	    change_cursor (FALSE);
 	}
 }
 
 
-void 
-timeout (int signo) 
-{                                                                               
+gint
+timeout_gtk_handler (gpointer data)
+{
+    /* Ignore SIGUSR1; we're about to exit */
     remove_sighandlers ();
     ((void) fprintf (stderr, "%s: timeout launching %s\n", programname, taskname));
     restore_cursor ();
     gtk_exit (1);
-}    
 
-
-void
-child_terminated (int signo)
-{
-    /* Most of the code in this function is disabled, because if one have 
-       shellscripts that starts the application in the background, the script
-       will immediatley exit. Nevertheless, we should keep tracking the launch. */
-
-    /* Athena doesn't care, and wants xalf to give up after htmlview
-       or gnome-moz-remote exits. */
-    
-    int status;
-    remove_sighandlers ();
-
-    if (cursor_opt)
-      	{
-      	    gtk_timeout_remove (timeout_tag);
-      	    change_cursor (FALSE);
-      	}
-    wait (&status);
-    gtk_exit (WIFEXITED(status) ? WEXITSTATUS(status) : 1);
+    return FALSE;
 }
 
 
-void 
-mapped (int signo) 
+gint
+exit_gtk_handler (gpointer data) 
 {      
+    gtk_timeout_remove (exit_timeout_tag);
     remove_sighandlers ();
-    DPRINTF((stderr, "%s: App is now mapped: %s\n", programname, taskname));
     restore_cursor ();
     gtk_exit (0);
+
+    return FALSE;
 }    
 
 
 void 
-terminate (int signo) 
+mapped_sig_handler (int signo) 
 {      
-    
+    DPRINTF((stderr, "%s: App is now mapped: %s\n", programname, taskname));
+    /* Schedule a GTK call */
+    exit_timeout_tag = gtk_timeout_add (50, exit_gtk_handler, NULL);
+}    
+
+
+void 
+terminate_sig_handler (int signo) 
+{      
     DPRINTF((stderr, "%s: Got termination signal %d\n", programname, signo));
-    
-    restore_cursor ();
-    gtk_exit (1);
+    exit_timeout_tag = gtk_timeout_add (50, exit_gtk_handler, NULL);
 }    
 
 
@@ -224,20 +225,186 @@ set_icon (GdkWindow *window)
 
 
 int 
-main (int argc, char **argv)
+xalf_error_handler (Display *dpy, XErrorEvent *xerr)
+{ 
+#ifdef DEBUG
+    if (xerr->error_code) 
+        {
+            char buf[64];
+            
+            XGetErrorText (dpy, xerr->error_code, buf, 63);
+            fprintf (stderr, "X11 error **: %s\n", buf);
+            fprintf (stderr, "serial %ld error_code %d request_code %d "\
+                     "minor_code %d\n", 
+                     xerr->serial, 
+                     xerr->error_code, 
+                     xerr->request_code, 
+                     xerr->minor_code);
+        }
+#endif
+
+    return 0; 
+} 
+
+
+/* Check if we have to force --mappingmode */
+static int 
+forced_mappingmode(char **argv) {
+    int mappingmode_opt = FALSE;
+    
+#ifndef MULTI_PRELOAD
+    {
+        char *preload_env;
+        /* If LD_PRELOAD is alread set and this system does not support 
+           multiple libs in LD_PRELOAD, use use --mappingmode. */
+        preload_env = getenv("LD_PRELOAD");
+        if ( (preload_env != NULL) && (*preload_env != '\0') )
+            {
+                fprintf (stderr, 
+                         "%s: LD_PRELOAD is already set. Using --mappingmode\n", 
+                         programname);
+                mappingmode_opt = TRUE;
+            }
+    }
+#endif
+    
+    /* Check if preload library is available */
+    {
+        void *handle = NULL;
+        /* Set PID_ENV_NAME to -1. libxalflaunch.so knows about this case
+           and refrains from doing anything (like unsetting an 
+           original LD_PRELOAD) */
+        putenv (PID_ENV_NAME"=-1");
+        handle = dlopen (PRELOAD_LIBRARY, RTLD_LAZY);
+        if (!handle)
+            {
+                fprintf (stderr, 
+                         "%s: preload library not found. Using --mappingmode\n", 
+                         programname);
+                mappingmode_opt = TRUE;
+            }
+        /* Note: We do not close */
+        
+    }
+    /* Check if program is setuid or setgid */
+    {
+        gchar *abs_name;
+        gchar *effective_task_name;
+        
+        /* Ugly hack. gnome-libs always executes desktop entries through
+           /bin/sh -c. This makes the setuid/setgid check fail, with 
+           severe consequences: The application won't even start on Solaris, 
+           for example. I'm aware of that this is a really ugly solution, 
+           but there seems to be no alternative. */
+        
+        if (!strcmp (argv[optind], "/bin/sh") && !strcmp (argv[optind+1], "-c")) 
+            {
+                gchar *space_p;
+                effective_task_name = g_strdup(argv[optind+2]);
+                
+                /* Find command in command */
+                space_p = strchr (effective_task_name, ' ');
+                if (space_p != NULL) 
+                    *space_p = '\0';
+                
+                abs_name = find_in_path (effective_task_name);
+            } 
+        else 
+            {
+                effective_task_name = taskname;
+                abs_name = find_in_path (taskname);
+            }
+        
+        if (!abs_name)
+            {
+                fprintf (stderr, "%s: error: couldn't find %s in PATH\n", 
+                         programname, effective_task_name);
+                restore_cursor ();
+                gtk_exit (1);
+            }
+        
+        if (is_setid (abs_name))
+            {
+                fprintf (stderr, "%s: %s is setuid and/or setgid. Using --mappingmode\n", 
+                         programname, abs_name);
+                mappingmode_opt = TRUE;
+            }
+    }
+
+    return mappingmode_opt;
+}
+
+
+static int 
+launch_application (int mappingmode_opt, char **argv) 
 {
     int pid;
+    char *preload_string = NULL;
+    char *saved_preload = NULL;
+    char *saved_preload_env = NULL;
+    
+    /* Set up preload_string */
+#ifdef MULTI_PRELOAD
+    saved_preload = getenv("LD_PRELOAD");
+    if (saved_preload != NULL)
+        {
+            preload_string = g_strconcat ("LD_PRELOAD=", saved_preload, ":", PRELOAD_LIBRARY, NULL);
+            saved_preload_env = g_strconcat (SAVED_PRELOAD_NAME"=", saved_preload, NULL);
+        }
+    else
+        preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);
+#else 
+    preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);    
+#endif /* MULTI_PRELOAD */
+
+    /* Make sure that the file descriptor is not passed to the client. */
+    if (fcntl (ConnectionNumber (dpy), F_SETFD, 1L) == -1) {
+	fprintf (stderr, "%s: warning: one file descriptor unusable for ", programname);
+    }
+    DPRINTF((stderr, "Close on exec flag: %d\n", fcntl (ConnectionNumber (dpy), F_GETFD)));
+    
+    /* A string with our pid */
+    sprintf (launch_pid, "%ld", (long) getpid ());
+    
+    /* Spawn application */
+    {
+	char *pid_string;
+
+	pid_string = g_strconcat (PID_ENV_NAME, "=", launch_pid, NULL);
+	switch (pid = fork ())
+	    {
+	    case -1:
+		fprintf (stderr, "%s: error forking\n", programname);
+		gtk_exit (1);
+	    case 0:
+		if (!mappingmode_opt) 
+		    {
+			putenv (preload_string);
+                        if (saved_preload_env)
+                            putenv (saved_preload_env);
+			putenv (pid_string);
+		    }
+		execvp (argv[optind], argv+optind);
+		fprintf (stderr, "%s: error executing\n", programname);
+		kill (atol (launch_pid), SIGUSR1);
+		_exit (1);
+	    }
+    }
+    return 0;
+}
+
+
+int 
+main (int argc, char **argv)
+{
     int arg = 1;
     int noxalf_opt = FALSE;
     int invisiblewindow_opt = FALSE;
     int splash_opt = FALSE; 
-    int anim_opt = FALSE;
     int mappingmode_opt = FALSE;
     unsigned timeouttime = DEFAULT_TIMEOUT;
     char *endptr;
-    char *preload_string, *oldpreload;
     int optchar;
-    struct anim_data_struct* anim_data;
     guint32 anim_timer = 0;
 
     /* The name of this binary */
@@ -275,8 +442,8 @@ main (int argc, char **argv)
 		    break;
 
 		case 'v':
-		    fprintf (stdout, "%s version %d.%d\n", CANONICAL_NAME, 
-			     VERSION_MAJOR, VERSION_MINOR);
+		    fprintf (stdout, "%s version %s\n", CANONICAL_NAME, VERSION);
+
 		    exit (0);
 		    break;
 
@@ -304,10 +471,12 @@ main (int argc, char **argv)
 
 		case 'i':
 		    invisiblewindow_opt = TRUE;
+                    pending_mapevents++;
 		    break;
 
 		case 's':
 		    splash_opt = TRUE;
+                    pending_mapevents++;
 		    break;
 
 		case 'c':
@@ -332,23 +501,49 @@ main (int argc, char **argv)
 	    return 1;
 	}
     
-    if (!invisiblewindow_opt && !splash_opt && !cursor_opt && !anim_opt)
-	cursor_opt = TRUE;
+    if (!invisiblewindow_opt && !splash_opt && !cursor_opt && !anim_opt) 
+        {
+            invisiblewindow_opt = TRUE;
+            pending_mapevents++;
+        }
 	
     if (noxalf_opt)
 	execvp (argv[optind], argv+optind); 
 
+    /* Initialize GTK etc. */
     gtk_init (&argc, &argv); 
-    taskname = g_strdup (argv[optind]);	
-
-    /* The user didn't supply an title. Use the name of the binary. */
-    if (!title)
-	title = taskname;
-    
-    /* Show indicators. We do this as early as possible, to give rapid feedback */
-
+    XSetErrorHandler (xalf_error_handler);
     dpy = GDK_DISPLAY ();
-
+    taskname = g_strdup (argv[optind]);	
+    
+    /**** Listen for events ****/
+    if (!mappingmode_opt)
+        /* Maybe we need to force mappingmode? */
+        mappingmode_opt = forced_mappingmode(argv);
+    
+    if (mappingmode_opt)
+	{
+	    GdkWindow *window;
+	    XWindowAttributes attribs = { 0, };
+	    
+	    window = gdk_window_ref_from_xid (GDK_ROOT_WINDOW ());
+	    if (!window) 
+                fprintf (stderr, "%s: fatal error.\n", programname);
+	    gdk_window_add_filter (window, root_event_monitor, window);     
+	    /* Set event mask for events on root window */                                
+	    XGetWindowAttributes (GDK_DISPLAY (), 
+				  GDK_ROOT_WINDOW (), 
+				  &attribs); 
+	    XSelectInput (GDK_DISPLAY (), 
+			  GDK_ROOT_WINDOW (), 
+			  attribs.your_event_mask | SubstructureNotifyMask);
+	    gdk_flush (); 
+	}
+    
+    /**** Show indicators ****/
+    if (!title)
+        /* The user didn't supply an title. Use the name of the binary. */
+	title = taskname;
     if (invisiblewindow_opt)
 	create_invisible ();
     if (splash_opt)
@@ -362,147 +557,32 @@ main (int argc, char **argv)
                             programname);
 		    exit(-1);
 		}
-	    anim_data->active_frame_number = 0;
 	    init_animation (anim_data);
-	    anim_timer = gtk_timeout_add(50, update_anim, (gpointer) anim_data);
+	    anim_timer = gtk_timeout_add(75, update_anim, (gpointer) anim_data);
 	}
     if (cursor_opt)
 	{
 	    change_cursor (TRUE);
-	    timeout_tag = gtk_timeout_add (500, redraw_cursor, NULL);
+            /* The cursor may be restored (for example by another Xalf instance),
+               so refresh it two times a second. */
+	    cursor_timeout_tag = gtk_timeout_add (500, redraw_cursor, NULL);
 	}
     
     while (gtk_events_pending ())
 	gtk_main_iteration ();
+    gdk_flush ();
     
-    if (!mappingmode_opt)
-	{
-
-#ifdef RLD_LIST
-	    if (getenv(RLD_LIST) != NULL)
-                preload_string = g_strconcat (RLD_LIST, "=", PRELOAD_LIBRARY,
-                                              ":", getenv(RLD_LIST), NULL);
-            else
-                preload_string = g_strconcat (RLD_LIST, "=", PRELOAD_LIBRARY,
-                                              ":DEFAULT", NULL);
-#else
-#ifdef MULTI_PRELOAD
-	    if (getenv("LD_PRELOAD") != NULL)
-		preload_string = g_strconcat ("LD_PRELOAD=", getenv("LD_PRELOAD"), ":", PRELOAD_LIBRARY, NULL);
-	    else
-		preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);
-	    
-#else
-	    preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);
-
-	    /* If LD_PRELOAD is alread set and this system does not support 
-	       multiple libs in LD_PRELOAD, use use --mappingmode. */
-
-            oldpreload = getenv("LD_PRELOAD");
-	    if (oldpreload && *oldpreload)
-		{
-		    fprintf (stderr, 
-			     "%s: LD_PRELOAD is already set. Using --mappingmode\n", 
-			     programname);
-		    mappingmode_opt = TRUE;
-		}
-#endif       
-#endif       
-
-	    /* Check if preload library is available */
-	    {
-		void *handle = dlopen (PRELOAD_LIBRARY, RTLD_LAZY);
-		if (!handle)
-		    {
-			fprintf (stderr, 
-				 "%s: preload library not found. Using --mappingmode\n", 
-				 programname);
-			mappingmode_opt = TRUE;
-		    }
-		else
-		    dlclose (handle);
-	    }
-	    /* Check if program is setuid or setgid */
-	    {
-		gchar *abs_name;
-		
-		abs_name = find_in_path (taskname);
-		if (!abs_name)
-		    {
-			fprintf (stderr, "%s: error: couldn't find %s in PATH\n", 
-				 programname, taskname);
-			restore_cursor ();
-			gtk_exit (1);
-		    }
-
-		if (is_setid (abs_name))
-		    {
-			fprintf (stderr, "%s: %s is setuid and/or setgid. Using --mappingmode\n", 
-				 programname, taskname);
-			mappingmode_opt = TRUE;
-		    }
-	    }
-	}
-
-
     install_sighandlers ();
-    alarm (timeouttime);  
-
-    if (mappingmode_opt)
-	{
-	    GdkWindow *window;
-	    XWindowAttributes attribs = { 0, };
-	    
-	    window = gdk_window_ref_from_xid (GDK_ROOT_WINDOW ());
-	    if (!window) fprintf(stderr, "%s: fatal error.\n", programname);
-	    gdk_window_add_filter (window, root_event_monitor, window);     
-	    /* set event mask for events on root window */                                
-	    XGetWindowAttributes (GDK_DISPLAY (), 
-				  GDK_ROOT_WINDOW (), 
-				  &attribs); 
-	    XSelectInput (GDK_DISPLAY (), 
-			  GDK_ROOT_WINDOW (), 
-			  attribs.your_event_mask | SubstructureNotifyMask);
-	    gdk_flush (); 
-	}
+    gtk_timeout_add (timeouttime*1000, timeout_gtk_handler, NULL);
     
+    /**** Launch application ****/
+    launch_application (mappingmode_opt, argv);
     
-    /* Make sure that the file descriptor is not passed to the client. */
-    if (fcntl (ConnectionNumber (dpy), F_SETFD, 1L) == -1) {
-	fprintf (stderr, "%s: warning: one file descriptor unusable for ", programname);
-    }
-    DPRINTF((stderr, "Close on exec flag: %d\n", fcntl (ConnectionNumber (dpy), F_GETFD)));
-    
-    /* A string with our pid */
-    sprintf (launch_pid, "%ld", (long) getpid ());
-    
-    /* Spawn application */
-    {
-	char *pid_string;
-
-	pid_string = g_strconcat (PID_PROPERTY_NAME, "=", launch_pid, NULL);
-	switch (pid = fork ())
-	    {
-	    case -1:
-		fprintf (stderr, "%s: error forking\n", programname);
-		gtk_exit (1);
-	    case 0:
-		if (!mappingmode_opt) 
-		    {
-			putenv (preload_string);
-			putenv (pid_string);
-		    }
-		execvp (argv[optind], argv+optind);
-		fprintf (stderr, "%s: error executing\n", programname);
-		kill (atol (launch_pid), SIGUSR1);
-		_exit (1);
-	    }
-    }
-
     gtk_main ();
-
+    
     gtk_exit (0);
     g_free (anim_data);
+    
     return (0);
 }
 
@@ -519,7 +599,7 @@ create_invisible()
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title (GTK_WINDOW(window), tasktitle); 
     gtk_window_set_policy (GTK_WINDOW(window), FALSE, FALSE, TRUE);         
-    gtk_window_set_wmclass (GTK_WINDOW(window), "xalf", "xalf");     
+    gtk_window_set_wmclass (GTK_WINDOW(window), "invisiblewindow", "xalf");     
     gtk_widget_realize (window);
     gdk_window_set_decorations (window->window, 0);
     /* Set a hourglass icon for the indicator via KWM_WIN_ICON */
@@ -528,8 +608,6 @@ create_invisible()
     /* Show window */
     gtk_widget_show (window);
 }
-
-
 
 
 void
@@ -545,7 +623,7 @@ create_splash ()
     dialog = gtk_dialog_new ();
     gtk_window_set_title (GTK_WINDOW (dialog), "Starting...");
     gtk_window_set_policy (GTK_WINDOW (dialog), TRUE, TRUE, FALSE);
-    gtk_window_set_wmclass (GTK_WINDOW(dialog), "xalf", "xalf");     
+    gtk_window_set_wmclass (GTK_WINDOW(dialog), "splash", "xalf");     
     gtk_window_set_position (GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
     dialog_vbox = GTK_DIALOG (dialog)->vbox;
@@ -559,7 +637,6 @@ create_splash ()
 	
 	gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask,
 							   NULL, splash_xpm);
-	
 	pixmap1 = gtk_pixmap_new (gdkpixmap, mask);
 	
 	gdk_pixmap_unref (gdkpixmap);
@@ -567,7 +644,6 @@ create_splash ()
     }
 
     gtk_widget_show (pixmap1);
-    
     gtk_box_pack_start (GTK_BOX (dialog_vbox), pixmap1, TRUE, TRUE, 0);
 
     dialog_action_area1 = GTK_DIALOG (dialog)->action_area;
@@ -583,12 +659,11 @@ create_splash ()
     /* Set a hourglass icon for the indicator via KWM_WIN_ICON */
     gtk_widget_realize (dialog);
     set_icon (dialog->window);
-
-
     
     /* Show window */
     gtk_widget_show (dialog);
 }
+
 
 
 /* Change cursor */
@@ -658,20 +733,17 @@ redraw_cursor (gpointer data)
 void
 install_sighandlers ()
 {
-    signal (SIGALRM, timeout);
-    signal (SIGCHLD, child_terminated);
-    signal (SIGUSR1, mapped);
-    signal (SIGTERM, terminate);
-    signal (SIGINT, terminate);
-    signal (SIGQUIT, terminate);
+    signal (SIGUSR1, mapped_sig_handler);
+    signal (SIGTERM, terminate_sig_handler);
+    signal (SIGINT, terminate_sig_handler);
+    signal (SIGQUIT, terminate_sig_handler);
+    signal (SIGCHLD, terminate_sig_handler);
 }
 
 
 void 
 remove_sighandlers ()
 {
-    signal (SIGALRM, SIG_IGN);
-    signal (SIGCHLD, SIG_IGN);
     signal (SIGUSR1, SIG_IGN);
 }
 
@@ -682,12 +754,19 @@ root_event_monitor (GdkXEvent *gdk_xevent,
 		    gpointer   gdk_root)
 {
     XEvent *xevent = gdk_xevent;
-
+    
     switch (xevent->type)
         {
         case MapNotify:
-            DPRINTF((stderr, "Got MapNotify\n"));
-            mapped (SIGUSR1);
+            if (anim_opt) {
+                if (matched_star ( ((XMapEvent*)xevent)->window) )
+                    /* This came from our own animated star. Ignore. */
+                    return GDK_FILTER_CONTINUE;
+            }
+            DPRINTF((stderr, "Got MapNotify for window %p\n", ((XMapEvent*)xevent)->window));
+            if (--pending_mapevents < 1)
+                /* All MapEvents detected. We are done. */
+                mapped_sig_handler (SIGUSR1);
         default:
             break;
         }
@@ -720,8 +799,8 @@ find_in_path (char *filename)
     int i;
     struct stat statbuf;
     
-    /* If an absolue filename are given, return it */
-    if (filename[0] == '/')
+    /* If an absolut or relative filename are given, return it */
+    if ( (filename[0] == '/') || (filename[0] == '.') )
 	return filename;
 
     pathenv = getenv ("PATH");
@@ -742,8 +821,8 @@ find_in_path (char *filename)
 		continue;      /* File is not a regular file */
 
 	    if (access(testpath, X_OK) == -1)
-                continue;      /* File is not executable */
-
+		continue;      /* File is not executable */
+	    
             foundfile = g_strdup (testpath);
             break;
 	}
@@ -765,7 +844,6 @@ is_setid (char *abs_name)
 	}
     
     return ( (statbuf.st_mode & (S_ISUID)) || (statbuf.st_mode & (S_ISGID)) );
-
 }
 
 
@@ -781,8 +859,7 @@ find_window (Display *dpy, Window root, char *wname, char *wclass)
      * say anything about window managers putting stuff there; but, try
      * anyway.
      */
-
-
+    
     /*
      * get the list of windows
      */
@@ -869,77 +946,104 @@ match_window (Display *dpy, Window w, Atom leader_atom, char *wname, char *wclas
 }
 
 
-
-/* initialize shaped window and frames for animation */
+/* Initialize shaped windows and frames for animation.  Note: Xalf
+   versions < 0.11 used one single window and re-shaped it every time
+   a new frame was displayed. Unfortunately, this seems to crash many
+   Xservers under load (for example XFree86 3.3). Therefor, Xalf now 
+   uses 9 different windows and shows/hides these to make up the animation. 
+   This is both slow and ugly, but at least it doesn't crash the Xserver 
+   (hopefully). */
 void
-init_animation (struct anim_data_struct *anim_data)
+init_animation (struct anim_data_struct* anim_data)
 {
     GtkWidget *fixed;
     GtkStyle *style;
     GdkGC *gc;
+    int i;
+    int pointer_x, pointer_y;
 
-    anim_data->win = gtk_window_new( GTK_WINDOW_POPUP );
-    gtk_widget_realize (anim_data->win);
-
+    xpm_array[0] = sp0_xpm;
+    xpm_array[1] = sp1_xpm;
+    xpm_array[2] = sp2_xpm;
+    xpm_array[3] = sp3_xpm;
+    xpm_array[4] = sp4_xpm;
+    xpm_array[5] = sp5_xpm;
+    xpm_array[6] = sp6_xpm;
+    xpm_array[7] = sp7_xpm;
+    xpm_array[8] = sp8_xpm;
+    
     style = gtk_widget_get_default_style();
     gc = style->black_gc;
-    anim_data->frames[0] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[0]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp1_xpm);
-    anim_data->frames[1] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[1]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp2_xpm);
-    anim_data->frames[2] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[2]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp3_xpm);
-    anim_data->frames[3] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[3]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp4_xpm);
-    anim_data->frames[4] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[4]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp5_xpm);
-    anim_data->frames[5] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[5]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp6_xpm);
-    anim_data->frames[6] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[6]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp7_xpm);
-    anim_data->frames[7] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[7]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp8_xpm);
-    anim_data->frames[8] = gdk_pixmap_create_from_xpm_d ( anim_data->win->window, &(anim_data->masks[8]),
-                                                          &style->bg[GTK_STATE_NORMAL],  sp9_xpm);
 
-    anim_data->active_frame = gtk_pixmap_new( anim_data->frames[0], anim_data->masks[0] );
+    /* Fetch pointer position */
+    gdk_window_get_pointer (gdk_window_ref_from_xid (GDK_ROOT_WINDOW ()) , &pointer_x, &pointer_y, NULL);
+    /* The frames are 48x48 pixels. Center star at cursor. */
+    pointer_x -= 24;
+    if (pointer_x < 0) pointer_x = 0;
+    pointer_y -= 24;
+    if (pointer_y < 0) pointer_y = 0;
+    
+    for (i = 0; i < MAX_FRAMES; i++)
+        {
+            /* Create windows */
+            anim_data->windows[i] = gtk_window_new (GTK_WINDOW_POPUP);
+            gtk_window_set_wmclass (GTK_WINDOW(anim_data->windows[i]), "anim", "xalf");     
+            gtk_widget_realize (anim_data->windows[i]);
+            gtk_widget_set_uposition (anim_data->windows[i], pointer_x, pointer_y);
 
-    fixed = gtk_fixed_new();
-    gtk_widget_set_usize( fixed, 200, 200 );
-    gtk_fixed_put ( GTK_FIXED(fixed), anim_data->active_frame, 0, 0 );
-    gtk_container_add ( GTK_CONTAINER(anim_data->win), fixed );
+            /* Create fixed container */
+            fixed = gtk_fixed_new();
+            gtk_container_add (GTK_CONTAINER(anim_data->windows[i]), fixed);
+            gtk_widget_show (fixed);
+            gtk_widget_set_usize(fixed, 200, 200 );
 
-    /* This masks out everything except for the image itself */
-    gtk_widget_shape_combine_mask (anim_data->win, anim_data->masks[0], 0, 0 );
-    gtk_widget_show (anim_data->win);
-    gtk_widget_show (anim_data->active_frame );
-    gtk_widget_show (fixed );
+            /* Create pixmap */
+            anim_data->frames[i] = gdk_pixmap_create_from_xpm_d (anim_data->windows[i]->window, &(anim_data->masks[i]),
+                                                                 &style->bg[GTK_STATE_NORMAL], xpm_array[i]);
+            anim_data->pixmaps[i] = gtk_pixmap_new (anim_data->frames[i], anim_data->masks[i]);
+            gtk_widget_show (anim_data->pixmaps[i]);
+            
+            /* Put pixmap in container */
+            gtk_fixed_put (GTK_FIXED(fixed), anim_data->pixmaps[i], 0, 0 );
 
-    /* show the window */
-    gtk_widget_set_uposition ( anim_data->win, 50, 20 );
-    gtk_widget_show (anim_data->win );
+            /* Reshape window. */
+            /* This masks out everything except for the image itself. */
+            gtk_widget_shape_combine_mask (anim_data->windows[i], anim_data->masks[i], 0, 0 );
+        }
+
+    anim_data->active_frame_number = 0;
+
+    /* Show the first frame */
+    gtk_widget_show (anim_data->windows[0]);
 }
 
 
-/* show the next frame of animation */
+/* Show the next frame of animation */
 gint
 update_anim (gpointer data)
 {
-    int indx;
+    int cur_index, next_index;
     struct anim_data_struct *anim_data = (struct anim_data_struct *)data;
 
-    ++anim_data->active_frame_number;
-    if ( anim_data->active_frame_number > MAX_FRAMES-1)
-        anim_data->active_frame_number = 0;
-    indx = anim_data->active_frame_number;
-	
-    gtk_pixmap_set(GTK_PIXMAP(anim_data->active_frame), anim_data->frames[indx], anim_data->masks[indx]);
+    cur_index = anim_data->active_frame_number;
+    next_index = (cur_index + 1) % MAX_FRAMES;
+    anim_data->active_frame_number = next_index;
 
-    /* This masks out everything except for the image itself */
-    gtk_widget_shape_combine_mask( anim_data->win, anim_data->masks[indx], 0, 0 );
+    gtk_widget_hide (anim_data->windows[cur_index]);
+    gtk_widget_show (anim_data->windows[next_index]);
 
     return TRUE;
 }
 
 
-
+gint
+matched_star (Window xwin)
+{
+    int i;
+    
+    for (i = 0; i < MAX_FRAMES; i++) {
+        if (xwin == GDK_WINDOW_XWINDOW(anim_data->windows[i]->window))
+            return TRUE;
+    }
+    return FALSE;
+}

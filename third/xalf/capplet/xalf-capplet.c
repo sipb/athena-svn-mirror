@@ -5,7 +5,7 @@
  *
  * GNOME Control Center capplet. 
  *
- * Copyright Peter Åstrand <altic@lysator.liu.se> 2000. GPLV2. 
+ * Copyright Peter Åstrand <astrand@lysator.liu.se> 2001. GPLV2. 
  *
  * Source is (hopefully) formatted according to the GNU Coding standards. 
  *
@@ -48,21 +48,8 @@ static void xalf_setup (void);
 static void
 xalf_help (void)
 {
-    gchar *tmp;
-
-    tmp = gnome_help_file_find_file ("xalf", "xalf.html#CCENTER");
-    if (tmp) {
-        gnome_help_goto(0, tmp);
-        g_free(tmp);
-    } else {
-        GtkWidget *mbox;
-          
-        mbox = gnome_message_box_new(_("No help is available yet. Maybe in next version..."),
-                                     GNOME_MESSAGE_BOX_ERROR,
-                                     _("Close"), NULL);
-        gtk_widget_show(mbox);
-    }
-
+    GnomeHelpMenuEntry help_entry = {"control-center", "xalf.html"};
+    gnome_help_display (NULL, &help_entry);
 }
 
 
@@ -94,32 +81,35 @@ xalf_write (int type)
         
     timeoutval = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (timeout_spinbutton));
 
-    if (timeoutval != DEFAULT_TIMEOUT) {
-        timeout_string = g_strdup_printf ("-t %d ", timeoutval);
-        g_string_append (optionstring, timeout_string);
-        g_free (timeout_string);
-    }
+    if (timeoutval != DEFAULT_TIMEOUT) 
+        {
+            timeout_string = g_strdup_printf ("-t %d ", timeoutval);
+            g_string_append (optionstring, timeout_string);
+            g_free (timeout_string);
+        }
 
-    if (type == REAL_SETTINGS) {
-        gnome_config_set_bool ("/xalf/settings/enabled", 
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (anim_checkbox)));
-
-        gnome_config_set_string ("/xalf/settings/options", optionstring->str);
-    }
+    if (type == REAL_SETTINGS) 
+        {
+            gnome_config_set_bool ("/xalf/settings/enabled", 
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (anim_checkbox)));
+            
+            gnome_config_set_string ("/xalf/settings/options", optionstring->str);
+        }
     
-    if (type == OLD_SETTINGS) {
-        gnome_config_set_bool ("/xalf/old_settings/enabled", 
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
-                               gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (anim_checkbox)));
-
-        gnome_config_set_string ("/xalf/old_settings/options", 
-                                 optionstring->str);
-    }
+    if (type == OLD_SETTINGS) 
+        {
+            gnome_config_set_bool ("/xalf/old_settings/enabled", 
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
+                                   gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (anim_checkbox)));
+            
+            gnome_config_set_string ("/xalf/old_settings/options", 
+                                     optionstring->str);
+        }
 
     gnome_config_sync ();
 }
@@ -218,11 +208,12 @@ xalf_read (int type)
 		{
 		case 't':
                     timeouttime = (unsigned) strtol(optarg, &endptr, 0); 
-                    if (*endptr)  { 
-                        fprintf (stderr, "xalf-capplet: invalid timeout, using default of %d\n", 
-                                 DEFAULT_TIMEOUT); 
-                        timeouttime = DEFAULT_TIMEOUT;
-                    }
+                    if (*endptr)  
+                        { 
+                            fprintf (stderr, "xalf-capplet: invalid timeout, using default of %d\n", 
+                                     DEFAULT_TIMEOUT); 
+                            timeouttime = DEFAULT_TIMEOUT;
+                        }
                     gtk_spin_button_set_value (GTK_SPIN_BUTTON (timeout_spinbutton), timeouttime);
 		    break;
 
@@ -273,7 +264,7 @@ static void
 indicator_toggled (GtkWidget *widget, gpointer data)
 {
     if (wecare)
-        capplet_widget_state_changed(CAPPLET_WIDGET (capplet), TRUE);
+        capplet_widget_state_changed (CAPPLET_WIDGET (capplet), TRUE);
     
     set_sensitive();
 }
@@ -284,7 +275,7 @@ static void
 changes_made (GtkWidget *widget, gpointer data)
 {
     if (wecare)
-        capplet_widget_state_changed(CAPPLET_WIDGET (capplet), TRUE);
+        capplet_widget_state_changed (CAPPLET_WIDGET (capplet), TRUE);
 }
 
 
@@ -294,10 +285,10 @@ set_sensitive()
     int active;
 
     active = 
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (anim_checkbox));
+        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (invisiblewindow_checkbox)) ||
+        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (hourglass_checkbox)) ||
+        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (splashscreen_checkbox)) ||
+        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (anim_checkbox));
 
     gtk_widget_set_sensitive (mappingmode_checkbox, active);
     gtk_widget_set_sensitive (timeout_spinbutton, active);
@@ -336,7 +327,7 @@ xalf_setup (void)
     capplet = capplet_widget_new();
 
     /* Indicators frame */
-    frame1 = gtk_frame_new (_("Enabled indicators"));
+    frame1 = gtk_frame_new (_("Notification Options"));
     gtk_box_pack_start (GTK_BOX (vbox_main), frame1, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame1), GNOME_PAD_SMALL);
         
@@ -344,18 +335,19 @@ xalf_setup (void)
     gtk_container_add (GTK_CONTAINER (frame1), vbox2);
     gtk_container_set_border_width (GTK_CONTAINER (vbox2), GNOME_PAD_SMALL);
 
-    invisiblewindow_checkbox = gtk_check_button_new_with_label 
-        (_("tasklist (invisible window)"));
+    invisiblewindow_checkbox = 
+        gtk_check_button_new_with_label (_("Enable feedback in tasklist"));
     gtk_box_pack_start (GTK_BOX (vbox2), invisiblewindow_checkbox, FALSE, FALSE, 0);
 
-    hourglass_checkbox = gtk_check_button_new_with_label 
-        (_("hourglass mouse cursor"));
+    hourglass_checkbox = 
+        gtk_check_button_new_with_label (_("Add hourglass to mouse cursor"));
     gtk_box_pack_start (GTK_BOX (vbox2), hourglass_checkbox, FALSE, FALSE, 0);
 
-    splashscreen_checkbox = gtk_check_button_new_with_label (_("splashscreen"));
+    splashscreen_checkbox = 
+        gtk_check_button_new_with_label (_("Display splashscreen when launching applications."));
     gtk_box_pack_start (GTK_BOX (vbox2), splashscreen_checkbox, FALSE, FALSE, 0);
 
-    anim_checkbox = gtk_check_button_new_with_label (_("animated star"));
+    anim_checkbox = gtk_check_button_new_with_label (_("Display animated star while launching"));
     gtk_box_pack_start (GTK_BOX (vbox2), anim_checkbox, FALSE, FALSE, 0);
 
     /* Miscellaneous frame */
@@ -367,8 +359,8 @@ xalf_setup (void)
     gtk_container_add (GTK_CONTAINER (frame2), vbox3);
     gtk_container_set_border_width (GTK_CONTAINER (vbox3), GNOME_PAD_SMALL);
 
-    mappingmode_checkbox = gtk_check_button_new_with_label 
-        (_("Do not distinguish between windows (compatibility mode)"));
+    mappingmode_checkbox = 
+        gtk_check_button_new_with_label (_("Do not distinguish between windows (compatibility mode)"));
     gtk_box_pack_start (GTK_BOX (vbox3), mappingmode_checkbox, FALSE, FALSE, 0);
         
     hbox1 = gtk_hbox_new (FALSE, 0);
@@ -432,30 +424,27 @@ main (int argc, char **argv)
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    init_results = gnome_capplet_init("xalf-capplet", VERSION,
-                                      argc, argv, NULL, 0, NULL);
+    init_results = gnome_capplet_init ("xalf-capplet", VERSION,
+                                       argc, argv, NULL, 0, NULL);
 
-    if (init_results < 0) {
-        g_warning (_("an initialization error occurred while "
-                     "starting 'xalf-capplet'.\n"
-                     "aborting...\n"));
-        exit (1);
-    }
+    if (init_results < 0) 
+        {
+            g_warning (_("an initialization error occurred while "
+                         "starting 'xalf-capplet'.\n"
+                         "aborting...\n"));
+            exit (1);
+        }
 
     client = gnome_master_client ();
-    flags = gnome_client_get_flags(client);
+    flags = gnome_client_get_flags (client);
 
-    if (init_results != 1) {
-        xalf_setup ();
-        xalf_read (REAL_SETTINGS);
-        set_sensitive();
-        wecare = TRUE;
-        capplet_gtk_main ();
-    }
+    if (init_results != 1) 
+        {
+            xalf_setup ();
+            xalf_read (REAL_SETTINGS);
+            set_sensitive();
+            wecare = TRUE;
+            capplet_gtk_main ();
+        }
     return 0;
 }
-
-
-
-
-

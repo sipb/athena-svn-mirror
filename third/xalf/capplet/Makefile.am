@@ -5,36 +5,27 @@ xalf_capplet_SOURCES = xalf-capplet.c getopt.c getopt1.c
 
 CFLAGS = $(GNOME_CC_CFLAGS)
 
-xalf_capplet_LDADD = $(GNOME_CC_LIBS)
+xalf_capplet_LDADD = $(GNOME_CC_LIBS) @GTK_LIBS@
 
 INCLUDES = -I. -I$(srcdir) 				\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(includedir) $(GNOME_INCLUDEDIR)		\
-	-DGNOMESYSCONFDIR=\""$(sysconfdir)"\"
+	-DGNOMESYSCONFDIR=\""$(sysconfdir)"\"		\
+	@GTK_CFLAGS@ 
 
 EXTRA_DIST = \
-	settings.desktop Xalf.directory hourglass-big.png hourglass-small.png 
+	xalf-settings.desktop hourglass-big.png hourglass-small.png 
 
 ccenterdir = $(datadir)/control-center
-Xalfdir = $(ccenterdir)/Xalf
+Xalfdir = $(ccenterdir)/Desktop
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps
 	$(INSTALL_DATA) $(srcdir)/hourglass-big.png $(DESTDIR)$(datadir)/pixmaps/hourglass-big.png
 	$(INSTALL_DATA) $(srcdir)/hourglass-small.png $(DESTDIR)$(datadir)/pixmaps/hourglass-small.png	
 	$(mkinstalldirs) $(DESTDIR)$(Xalfdir)
-	$(INSTALL_DATA) $(srcdir)/Xalf.directory $(DESTDIR)$(Xalfdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/settings.desktop $(DESTDIR)$(Xalfdir)/settings.desktop 
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/gnome/apps/Settings/Xalf
-	$(INSTALL_DATA) $(srcdir)/settings.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Xalf/settings.desktop 
-
-
-
-
-
-
-
-
-
+	$(INSTALL_DATA) $(srcdir)/xalf-settings.desktop $(DESTDIR)$(Xalfdir)/xalf-settings.desktop 
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/gnome/apps/Settings/Desktop
+	$(INSTALL_DATA) $(srcdir)/xalf-settings.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Desktop/xalf-settings.desktop 
 

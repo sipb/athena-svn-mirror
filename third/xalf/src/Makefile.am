@@ -6,8 +6,7 @@ xalf_SOURCES = xalf.c getopt.c getopt1.c
 
 xalfoff_SOURCES = xalfoff.c
 
-xalf_LDADD =  -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK_LIBS@
-xalfoff_LDADD =  -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK_LIBS@
+xalf_LDADD =  $(X_LIBS) $(X_PRE_LIBS) -lXmu -lXt -lX11 -lXext $(X_EXTRA_LIBS) @GTK_LIBS@
 
 INCLUDES = @GTK_CFLAGS@ 
 
