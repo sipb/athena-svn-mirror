@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.21 1992-03-16 15:29:43 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.21.1.1 1992-03-16 15:30:46 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,6 +37,20 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include "xolc.h"
 #include "data.h"
 #include "buttons.h"
+
+/*
+ * Hack Hack Hack
+ * Motif 1.1 doesn't cast pointers appropriately in the XtIsRealized defined
+ * in Xm/XmP.h...
+ */
+
+#ifdef XtIsRealized
+#undef XtIsRealized
+#endif
+#define XtIsRealized(widget)                                    \
+   (XtIsWidget(widget)  ?                                       \
+      ((Widget)(widget))->core.window != ((XID) 0)  :                \
+      ((Object)(widget))->object.parent->core.window != ((XID) 0))
 
 char current_topic[TOPIC_SIZE] = "unknown";
 int sa_pid = 0;
@@ -141,7 +155,7 @@ olc_new_ques (w, tag, callback_data)
   WAIT_CURSOR;
   if ( XtIsRealized(w_motd_form) )
     XtUnrealizeWidget(w_motd_form);
-/*  MakeNewqForm(); */
+  MakeNewqForm();
   XtManageChild(w_newq_form);
   ask_screen = TRUE;
 
