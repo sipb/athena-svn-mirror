@@ -1,3 +1,19 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v $
+ * $Author: jik $
+ *
+ * This program is part of a package including delete, undelete,
+ * lsdel, expunge and purge.  The software suite is meant as a
+ * replacement for rm which allows for file recovery.
+ * 
+ * Copyright (c) 1989 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#if (!defined(lint) && !defined(SABER))
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.2 1989-01-23 11:04:41 jik Exp $";
+#endif
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/dir.h>
@@ -20,25 +36,117 @@ static filerec root = {"/", "/"};
 
 extern char *malloc(), *realloc();
 
-char *whoami;
+char *whoami, *error_buf;
 char *lastpart(), *add_char(), *parse_pattern(), *firstpart(), *append();
-filerec *match_pattern();
+filerec *match_pattern(), *unique();
 
-int interactive, recursive, verbose, directoriesonly;
+int interactive, recursive, verbose, directoriesonly, noop;
 
 /* ARGSUSED */
 main(argc, argv)
 int argc;
 char *argv[];
 {
-     whoami = lastpart(argv[0]);
-     interactive = recursive = verbose = directoriesonly = 0;
-
+     extern char *optarg;
+     extern int optind;
+     int arg;
+     int status;
      
+     whoami = lastpart(argv[0]);
+     interactive = recursive = verbose = directoriesonly = noop = 0;
+     error_buf = malloc(MAXPATHLEN + strlen(whoami));
+     if (! error_buf) {
+	  fprintf(stderr, "%s: Can't malloc space for error buffer.\n",
+		  whoami);
+	  exit(1);
+     }
+     while ((arg = getopt(argc, argv, "irvnD")) != -1) {
+	  switch (arg) {
+	  case 'i':
+	       interactive++;
+	       break;
+	  case 'r':
+	       recursive++;
+	       if (directoriesonly) {
+		    fprintf(stderr, "%s: -r and -D and mutually exclusive.\n",
+			    whoami);
+		    usage();
+		    exit(1);
+	       }
+	       break;
+	  case 'v':
+	       verbose++;
+	       break;
+	  case 'n':
+	       noop++;
+	       break;
+	  case 'D':
+	       directoriesonly++;
+	       if (recursive) {
+		    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
+			    whoami);
+		    usage();
+		    exit(1);
+	       }
+	  }
+     }
+     if (optind == argc)
+	  exit(interactive_mode());
+     else while (optind < argc) {
+	  status = status | undelete(argv[optind]);
+	  optind++;
+     }
+     exit(status);
 }
 
 
 
+interactive_mode()
+{
+     return(0);
+}
+
+
+
+usage()
+{
+     printf("Usage: %s [ options ] [filename ...]\n", whoami);
+     printf("Options are:\n");
+     printf("     -r     recursive\n");
+     printf("     -i     interactive\n");
+     printf("     -v     verbose\n");
+     printf("     -n     noop\n");
+     printf("     -D     directories only\n");
+     printf("     --     end options and start filenames\n");
+     printf("-r and -D are mutually exclusive\n");
+}
+
+
+undelete(file_exp)
+char *file_exp;
+{
+     char *file_re;
+     filerec *found_files;
+     int num_found;
+     filerec startdir;
+
+     if (*file_exp == '/') {
+	  startdir = root;
+	  file_re = parse_pattern(file_exp + 1);
+     }
+     else {
+	  startdir = cwd;
+	  file_re = parse_pattern(file_exp);
+     }
+     if (! file_re)
+	  return(1);
+     found_files = match_pattern(startdir, file_re, &num_found);
+     free(file_re);
+     sort_filerecs(found_files, num_found);
+     found_files = unique(found_files, &num_found);
+}
+
+     
 
 /*
  * parse_pattern returns an area of memory allocated by malloc when it
@@ -102,6 +210,12 @@ char *file_pattern;
 
 
 
+/*
+ * add_char() takes two char **, a length which is the current amount
+ * of space implemented for the string pointed to by the first *(char **),
+ * and a character to add to the string.  It reallocs extra space if
+ * necessary, adds the character, and messes with the pointers if necessary.
+ */
 char *add_char(start, finish, length, chr)
 char **start, **finish;
 int *length;
@@ -121,7 +235,11 @@ char chr;
 
 	  
 
-     
+/*
+ * add_arrays() takes two arrays of filerec's and their lengths,
+ * merges the two into the first by realloc'ing the first and then
+ * free's the second's memory usage.
+ */  
 filerec *add_arrays(array1, num1, array2, num2)
 filerec *array1, *array2;
 int *num1, *num2;
@@ -143,6 +261,19 @@ int *num1, *num2;
 
 
 
+/*
+ * match_pattern() takes a filerec base directory to start up in, a
+ * file pattern string which has already been processed with
+ * parse_pattern, and an (int *) argument into which will be placed
+ * the number of files found when match_pattern returns.  It searches
+ * down the directory tree for files matching the given pattern, puts
+ * them into an array of filerec's and returns the array.
+ *
+ * This function is recursive.
+ *
+ * The return array of filerecs can (and should) be freed using free()
+ * when it is no longer needed.
+ */
 filerec *match_pattern(base, file_pattern, num_returned)
 filerec base;
 char *file_pattern;
@@ -247,7 +378,7 @@ filerec *rec1, *rec2;
 }
 
 
-sort_filrecs(data, num_data)
+sort_filerecs(data, num_data)
 filerec *data;
 int num_data;
 {
@@ -258,7 +389,87 @@ int num_data;
 
 
 
+filerec *unique(files, number)
+filerec *files;
+int *number;
+{
+     int i, offset, last;
 
+     for (last = 0, i = 1; i < *number; i++) {
+	  if (! strcmp(files[last].username, files[i].username)) {
+	       int better;
+	       filerec *garbage;
+	       
+	       better = choose_better(files[last].realname, files[i].realname);
+	       if (better == 1) /* the first one is better */
+		    garbage = &files[i];
+	       else {
+		    garbage = &files[last];
+		    last = i;
+	       }
+	       free(garbage->realname);
+	       free(garbage->username);
+	  }
+	  else
+	       last = i;
+     }
+     for (offset = 0, i = 0; i + offset < *number; i++) {
+	  if (! files[i].realname) {
+	       offset++;
+	  }
+	  if (i + offset < *number)
+	       files[i] = files[i + offset];
+     }
+     *number -= offset;
+     realloc(files, sizeof(filerec) * *number);
+     if (! files) {
+	  perror(sprintf("%s: Realloc'ing in unique.\n", whoami));
+	  exit(1);
+     }
+     return(files);
+}
+
+
+
+
+char *strindex(str, sub_str)
+char *str, *sub_str;
+{
+     char *ptr = str;
+     while (ptr = index(ptr, *sub_str)) {
+	  if (! strncmp(ptr, sub_str, strlen(sub_str)))
+	       return(ptr);
+	  ptr++;
+     }
+     return ((char *) NULL);
+}
+
+     
+choose_better(str1, str2)
+char *str1, *str2;
+{
+     char *pos1, *pos2;
+     
+     pos1 = strindex(str1, ".#");
+     pos2 = strindex(str2, ".#");
+     while (pos1 && pos2) {
+	  if (pos1 - str1 < pos2 - str2)
+	       return(2);
+	  else if (pos2 - str2 < pos1 - str1)
+	       return(1);
+	  pos1 = strindex(pos1 + 1, ".#");
+	  pos2 = strindex(pos2 + 1, ".#");
+     }
+     if (! pos1)
+	  return(1);
+     else
+	  return(2);
+}
+
+
+
+
+     
 char *lastpart(filename)
 char *filename;
 {
@@ -322,7 +533,6 @@ char *filename;
  */
 char *append(filepath, filename)
 char *filepath, *filename;
-int print_errors;
 {
      static char buf[MAXPATHLEN];
 
