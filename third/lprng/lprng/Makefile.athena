@@ -1,10 +1,13 @@
-# $Id: Makefile.athena,v 1.1 1999-02-22 03:45:13 danw Exp $
+# $Id: Makefile.athena,v 1.2 1999-03-14 21:56:24 danw Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.cache
-	CC="$$COMPILER -I$(ATHTOOLROOT)/usr/athena/include" LDFLAGS=-L$(ATHTOOLROOT)/usr/athena/lib ./configure
+	CC="$$COMPILER -I$(ATHTOOLROOT)/usr/athena/include" \
+		LDFLAGS=-L$(ATHTOOLROOT)/usr/athena/lib \
+		./configure --with-admindir=\''$${sbindir}'\' \
+		--with-lpddir=\''$${sbindir}'\'
 
 clean:
 	$(MAKE) clean
