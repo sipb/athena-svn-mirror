@@ -1,0 +1,112 @@
+# $Id: Makefile.in,v 1.1 1999-09-28 22:10:55 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=-lfxcl @KRB4_LIBS@ @HESIOD_LIBS@ @LIBS@
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+TURNIN_OBJS=	turnin.o full_name.o fxmain.o
+PICKUP_OBJS=	pickup.o array.o dump.o fxmain.o
+COLLECT_OBJS=	collect.o array.o dump.o full_name.o fxmain.o
+UNCOLLECT_OBJS=	uncollect.o fxmain.o
+RETURN_OBJS=	return.o array.o full_name.o fxmain.o
+FXPURGE_OBJS=	fxpurge.o array.o full_name.o fxmain.o purge.o
+FXBLANCHE_OBJS=	fxblanche.o full_name.o
+FXCREATE_OBJS=	fxcreate.o full_name.o
+FXDESTROY_OBJS=	fxdestroy.o
+FXLS_OBJS=	fxls.o
+FXPING_OBJS=	fxping.o
+
+CLIENTS=	turnin pickup collect uncollect return \
+		fxpurge fxblanche fxcreate fxdestroy fxls fxping
+
+all: ${CLIENTS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+turnin: ${TURNIN_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${TURNIN_OBJS} ${LIBS}
+
+pickup: ${PICKUP_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${PICKUP_OBJS} ${LIBS}
+
+collect: ${COLLECT_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${COLLECT_OBJS} ${LIBS}
+
+uncollect: ${UNCOLLECT_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${UNCOLLECT_OBJS} ${LIBS}
+
+return: ${RETURN_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${RETURN_OBJS} ${LIBS}
+
+fxpurge: ${FXPURGE_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXPURGE_OBJS} ${LIBS}
+
+fxblanche: ${FXBLANCHE_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXBLANCHE_OBJS} ${LIBS}
+
+fxcreate: ${FXCREATE_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXCREATE_OBJS} ${LIBS}
+
+fxdestroy: ${FXDESTROY_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXDESTROY_OBJS} ${LIBS}
+
+fxls: ${FXLS_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXLS_OBJS} ${LIBS}
+
+fxping: ${FXPING_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${FXPING_OBJS} ${LIBS}
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} turnin ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} pickup ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} collect ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} uncollect ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} return ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxpurge ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxblanche ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxcreate ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxdestroy ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxls ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} fxping ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/collect.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxblanche.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxcreate.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxdestroy.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxls.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxoptions.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxping.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/fxpurge.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/pickup.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/return.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/turnin.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/uncollect.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f ${CLIENTS}
+	rm -f ${TURNIN_OBJS} ${PICKUP_OBJS} ${COLLECT_OBJS}
+	rm -f ${UNCOLLECT_OBJS} ${RETURN_OBJS} ${FXPURGE_OBJS}
+	rm -f ${FXBLANCHE_OBJS} ${FXCREATE_OBJS} ${FXDESTROY_OBJS}
+	rm -f ${FXLS_OBJS} ${FXPING_OBJS}
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
