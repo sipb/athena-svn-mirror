@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: tty_filter.c,v 1.18 1999-08-13 00:19:51 danw Exp $
+ *      $Id: tty_filter.c,v 1.19 2001-10-23 17:57:57 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.18 1999-08-13 00:19:51 danw Exp $";
+static const char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.19 2001-10-23 17:57:57 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -321,6 +321,7 @@ static tty_str_info *convert_desc_to_tty_str_info(desc)
 
 	/* Add new block (call it temp) to result: */
 	temp = (tty_str_info *)malloc(sizeof(struct _tty_str_info));
+	*temp = current_mode;
 	if (last_result_block) {
 	    last_result_block->next = temp;
 	    last_result_block = temp;
@@ -344,13 +345,13 @@ static tty_str_info *convert_desc_to_tty_str_info(desc)
 	}
 	if (desc->code == DT_STR) {
 	    /* just combine string info with current mode: */
-	    *temp = current_mode;
 	    temp->str = desc->str;
 	    temp->len = desc->len;
 	} else if (desc->code == DT_NL) {
 	    /* make the new block a ' ' alignment block with an empty string */
 	    temp->alignment = ' ';
 	    temp->len = 0;
+	    temp->ignore = 0;
 	}
     }
 
