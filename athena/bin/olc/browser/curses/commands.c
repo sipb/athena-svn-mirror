@@ -494,7 +494,7 @@ insert_entry()
       get_input(inbuf);
       strcpy(install_file,inbuf);
     }
-  else if (inbuf[0] == 'd')
+  else
     type = CREF_DIR;
   mvaddstr(row++, 0, "Title for index file: ");
   refresh();
