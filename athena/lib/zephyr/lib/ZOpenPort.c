@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.6 1987-07-01 04:37:18 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.7 1987-07-29 15:00:25 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -44,7 +44,7 @@ Code_t ZOpenPort(port)
 	do {
 		if ((retval = bind(__Zephyr_fd,&bindin,sizeof(bindin))) < 0) {
 			if (errno == EADDRINUSE) {
-				if (port)
+				if (port && *port)
 					return (ZERR_PORTINUSE);
 				else
 					/*NOSTRICT*/
@@ -55,7 +55,7 @@ Code_t ZOpenPort(port)
 			else
 				return (errno);
 		}
-	} while (retval < 0 && port);
+	} while (retval < 0 && (!port || !*port));
 
 	__Zephyr_port = bindin.sin_port;
 	__Zephyr_open = 1;
