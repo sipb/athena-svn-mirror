@@ -680,11 +680,12 @@ echo "/etc/athena/login/.Xsession.old"		>> "$DEADFILES"
 echo "/usr/adm/syslog"				>> "$DEADFILES"
 echo "/usr/adm/lastlog/null"			>> "$DEADFILES"
 echo "/.netscaperc"				>> "$DEADFILES"
-# $DEADFILES doesn't deal with directories, and besides a private
-# workstation could conceivably have a /... directory.
+# A private workstation could conceivably have a /... directory,
+# so manually remove the files we expect to find in /... and then
+# rmdir the directory.
 rm -f /.../.index /.../.netscaperc /.../.sh42 /.../.rc /.../skl \
 	/.../skleyes?.xbm
-rmdir /...
+rmdir /... 2>/dev/null
 
 # Thanksgiving RC5 cracking that occured on many cluster machines:
 echo "/usr/bin/.test"				>> "$DEADFILES"
