@@ -15,6 +15,10 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/26  13:36:31  tom
+ * instances are now set to device name in ascii
+ * and a variable to query mount point has been added
+ * 
  * Revision 1.3  90/04/26  17:06:14  tom
  * added rcsid
  * 
@@ -25,7 +29,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 1.4 1990-05-26 13:36:31 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 1.5 1990-05-30 10:29:10 tom Exp $";
 #endif
 
 #include "include.h"
@@ -166,7 +170,7 @@ lu_disk(varnode, repl, instptr, reqflg)
   char *ch;
   struct thing df;     
   struct thing di;
-  char disk[SNMPMXSID];
+  char disk[SNMPMXID];
   int nflag = 0;
 
   if ((varnode->flags & NOT_AVAIL) || (varnode->offset <= 0))
@@ -177,7 +181,7 @@ lu_disk(varnode, repl, instptr, reqflg)
   else
     {
       cnt = 0;
-      while((cnt < instptr->ncmp) && (cnt < SNMPMXSID))
+      while((cnt < instptr->ncmp) && (cnt < SNMPMXID))
 	{
 	  disk[cnt] = instptr->cmp[cnt];
 	  ++cnt;
@@ -264,8 +268,8 @@ lu_disk(varnode, repl, instptr, reqflg)
   cnt = 0;
   ch = &(mnt->mnt_fsname[0]);
   len = strlen(mnt->mnt_fsname);
-  if(len > SNMPMXSID)
-    len = SNMPMXSID;
+  if(len > SNMPMXID)
+    len = SNMPMXID;
 
   while (cnt < len)
     {
