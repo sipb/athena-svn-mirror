@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2002-02-03 19:32:47 ghudson Exp $
+# $Id: Makefile,v 1.9 2002-03-13 20:19:52 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
@@ -44,6 +44,12 @@ install:
 	install -c -m 444 libafs-2.4.9-21.i586.o ${DESTDIR}${MODULES}
 	install -c -m 444 libafs-2.4.9-21smp.i386.mp.o ${DESTDIR}${MODULES}
 	install -c -m 444 libafs-2.4.9-21.i386.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31smp.i686.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31.i686.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31smp.i586.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31.i586.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31smp.i386.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-31.i386.o ${DESTDIR}${MODULES}
 	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
 	ln -s libafs-2.4.3-12smp.i386.mp.o ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
 	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12.i486.o
