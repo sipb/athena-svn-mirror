@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.7 1998-01-24 01:47:21 danw Exp $
+ * $Id: auth-passwd.c,v 1.8 1998-03-08 17:52:01 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  1998/01/24 01:47:21  danw
+ * merge in changes for 1.2.22
+ *
  * Revision 1.6  1998/01/09 22:57:55  danw
  * fix krb4 ticket lifetime bug
  *
@@ -474,13 +477,13 @@ int auth_password(const char *server_user, const char *password)
 {
 #ifdef KERBEROS
   krb5_error_code problem;
-  int krb5_options = KDC_OPT_RENEWABLE | KDC_OPT_FORWARDABLE;
+  int krb5_options = KDC_OPT_PROXIABLE | KDC_OPT_FORWARDABLE;
   krb5_deltat rlife = 0;
   krb5_principal server = 0;
   krb5_creds my_creds;
   krb5_timestamp now;
   krb5_ccache ccache;
-  char ccname[80], krbtkfile[80];
+  char ccname[80], krbtkfile[80], krbtkenv[80];
   int results, status;
 #endif  /* KERBEROS */
   extern ServerOptions options;
@@ -602,8 +605,8 @@ int auth_password(const char *server_user, const char *password)
 	      xfree(saved_pw_passwd);
 	      
 	      /* Now get v4 tickets */
-	      sprintf(krbtkfile, "KRBTKFILE=/tmp/tkt_p%d", getpid());
-	      putenv(xstrdup(krbtkfile));
+	      sprintf(krbtkfile, "/tmp/tkt_p%d", getpid());
+	      krb_set_tkt_string(krbtkfile);
 
 	      status =
 		krb_get_pw_in_tkt(pw->pw_name, "",
@@ -614,6 +617,12 @@ int auth_password(const char *server_user, const char *password)
 				  password);
 	      if (status)
 		goto errout;
+
+	      /* Put the name of the ticket file in the environment
+		 for parts of the login that need it between here 
+		 and the environment variable setting code in do_child(). */
+	      sprintf(krbtkenv, "KRBTKFILE=%s", krbtkfile);
+	      putenv(xstrdup(krbtkenv));
 
 	      havecred = 1;
 	      atexit(krb_cleanup);
