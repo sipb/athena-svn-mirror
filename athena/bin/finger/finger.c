@@ -4,9 +4,12 @@
  * "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
- *	$Author: shanzer $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.8 1989-01-23 21:14:45 shanzer Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.9 1989-02-09 19:30:32 epeisach Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.8  89/01/23  21:14:45  shanzer
+ * Jtkohl's fixes to finger for Zephyr stuff.
+ * 
  * Revision 1.8  89/01/17  09:46:34  jtkohl
  * Fix zephyr stuff.
  * 
@@ -31,7 +34,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.8 1989-01-23 21:14:45 shanzer Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.9 1989-02-09 19:30:32 epeisach Exp $";
 
 #endif lint
 
@@ -496,7 +499,7 @@ ZLocateUser");
 			}
 			q->zlocation = 1;
 			q->loggedin = 0;
-			for (i = 1; i >= znloc; i++) {
+			for (i = 1; i <= znloc; i++) {
 				if ((state = ZGetLocations(&location, &numloc))
 				    != 0)
 					break;
