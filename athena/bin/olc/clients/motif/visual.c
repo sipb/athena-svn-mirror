@@ -10,10 +10,13 @@
 #include <Xm/PanedW.h>
 #include <Xm/DialogS.h>
 
+#include <sys/param.h>
+
 #include "visual.h"
 #include "buttons.h"
-
 #include "xolc.h"
+
+#include "xolc.xbm"
 
 Widget				/* Widget ID's */
   toplevel,
@@ -77,8 +80,12 @@ Widget				/* Widget ID's */
 
 void MakeInterface()
 {
-  Arg args[100];
-  int n = 0;
+  Arg args[1];
+  Pixmap icon_pixmap = None;
+  Widget wl[10];
+  int n;
+
+  n = 0;
 
 /*
  * The main form of the interface.  This initially displays the MOTD and
@@ -86,78 +93,61 @@ void MakeInterface()
  *  for help.  It also provides a "quit" and "help" button.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNverticalSpacing, VERT_SPACING);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, HORIZ_SPACING);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NORMAL_SHADOW);  n++;
-  XtSetArg(args[n], XmNborderWidth, NORMAL_BORDER);  n++;
-  w = main_form = XmCreateForm(toplevel, "main", args, n);
+  XtSetArg(args[0], XtNiconPixmap, &icon_pixmap);
+  XtGetValues(toplevel,args,1);
+  if (icon_pixmap == None) {
+    XtSetArg(args[0], XtNiconPixmap,
+             XCreateBitmapFromData(XtDisplay(toplevel),
+                                   XtScreen(toplevel)->root,
+                                   xolc_bits, xolc_width, xolc_height));
+    XtSetValues (toplevel, args, 1);
+  }
+
+
+  w = main_form = XmCreateForm(toplevel, "main", NULL, 0);
   XtManageChild(w);
 
 /*  Buttons along the top row:  [new_ques, cont_ques], stock, quit, help  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  w = w_newq_btn = XmCreatePushButton(main_form, "new_ques_btn", args, n);
+  w = w_newq_btn = XmCreatePushButton(main_form, "new_ques_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_new_ques, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, NEWQ_BTN);
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  w = w_contq_btn = XmCreatePushButton(main_form, "cont_ques_btn", args, n);
+  w = w_contq_btn = XmCreatePushButton(main_form, "cont_ques_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_cont_ques, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, CONTQ_BTN);
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNleftWidget, w_contq_btn);  n++;
-  w = w_stock_btn = XmCreatePushButton(main_form, "stock_btn", args, n);
+  w = w_stock_btn = XmCreatePushButton(main_form, "stock_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_stock, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, STOCK_BTN);
-  XtManageChild(w);
+  wl[n++] = w;
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  w = w_help_btn = XmCreatePushButton(main_form, "help_btn", args, n);
+  w = w_help_btn = XmCreatePushButton(main_form, "help_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_help, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, HELP_BTN);
-  XtManageChild(w);
+  wl[n++] = w;
   
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNrightWidget, w_help_btn);  n++;
-  w = w_quit_btn = XmCreatePushButton(main_form, "quit_btn", args, n);
+  w = w_quit_btn = XmCreatePushButton(main_form, "quit_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_quit, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, QUIT_BTN);
-  XtManageChild(w);
+  wl[n++] = w;
   
 /*  Separator along the top, below buttons  */
 
-  n=0;
-  XtSetArg(args[n], XmNseparatorType, XmSHADOW_ETCHED_IN);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_help_btn);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  w = w_button_sep = XmCreateSeparatorGadget(main_form, "buttonSep", args, n);
-  XtManageChild(w);
-}
+  w = w_button_sep = XmCreateSeparatorGadget(main_form, "buttonSep", NULL, 0);
+  wl[n++] = w;
 
+  XtManageChildren(wl,(Cardinal) n);
+
+}
 
 void
 MakeNewqForm()
 {
-  Arg args[100];
-  int n = 0;
+  Widget wl[20];
+  int n;
+
+  n = 0;
 
 /*
  * The "new_ques_form" will contain a scrolled_list widget for selecting
@@ -165,166 +155,82 @@ MakeNewqForm()
  *  question.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_button_sep);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  w_newq_form = XmCreateForm(main_form, "new_ques_form", args, n);
+  w_newq_form = XmCreateForm(main_form, "new_ques_form", NULL, 0);
 
 /*
  *  Paned Window widget will hold scrolled list widget (on top) and
  *   scrolled text widget on bottom.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNseparatorOn, TRUE);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNminimum, MINIMUM);  n++;
-  w = w_pane = XmCreatePanedWindow(w_newq_form, "pane", args, n);
+  w = w_pane = XmCreatePanedWindow(w_newq_form, "nq_pane", NULL, 0);
   XtManageChild(w);
 
 /*  Top Form holds a title and scrolled list widget.  */
 
-  n=0;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNverticalSpacing, VERT_SPACING);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, HORIZ_SPACING);  n++;
-  XtSetArg(args[n], XmNminimum, MINIMUM);  n++;
-  w = w_top_form = XmCreateForm(w_pane, "top_form", args, n);
+  w = w_top_form = XmCreateForm(w_pane, "top_form", NULL, 0);
   XtManageChild(w);
 
 /*  Top label.  Used to prompt user to choose a topic.  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  w = w_top_lbl = XmCreateLabelGadget(w_top_form, "top_lbl", args, n);
+  w = w_top_lbl = XmCreateLabelGadget(w_top_form, "top_lbl", NULL, 0);
   XtManageChild(w);
 
-/*  Frame to hold scrolled list widget  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_top_lbl);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  w = w_list_frame = XmCreateFrame(w_top_form, "list_frame", args, n);
+/*  Frame to hold scrolled list widget  */
+  w = w_list_frame = XmCreateFrame(w_top_form, "list_frame", NULL, 0);
   XtManageChild(w);
 
 /*  List widget on top.  */
 
-  n=0;
-  XtSetArg(args[n], XmNlistMarginWidth, NORMAL_SPACING);  n++;
-  XtSetArg(args[n], XmNlistMarginHeight, NORMAL_SPACING);  n++;
-  XtSetArg(args[n], XmNselectionPolicy, XmSINGLE_SELECT);  n++;
-  XtSetArg(args[n], XmNscrollBarDisplayPolicy, XmAS_NEEDED);  n++;
-  XtSetArg(args[n], XmNscrollBarPlacement, XmBOTTOM_LEFT);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  w = w_list = XmCreateScrolledList(w_list_frame, "list", args, n);
+  w = w_list = XmCreateScrolledList(w_list_frame, "topic_list", NULL, 0);
   XtAddCallback(w, XmNsingleSelectionCallback, olc_topic_select, NULL);
   XtAddCallback(w, XmNdefaultActionCallback, olc_topic_select, NULL);
   XtManageChild(w);
 
 /*  Bottom Form holds a title, scrolled text widget, and rowcolumn.  */
 
-  n=0;
-
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNverticalSpacing, VERT_SPACING);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, HORIZ_SPACING);  n++;
-  XtSetArg(args[n], XmNminimum, MINIMUM);  n++;
-  w = w_bottom_form = XmCreateForm(w_pane, "bottom_form", args, n);
+  w = w_bottom_form = XmCreateForm(w_pane, "bottom_form", NULL, 0);
   XtManageChild(w);
 
 /*  Bottom label.  Used to prompt user to type in initial question.  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  w = w_bottom_lbl = XmCreateLabelGadget(w_bottom_form, "bottom_lbl", args, n);
-  XtManageChild(w);
+  w = w_bottom_lbl = XmCreateLabelGadget(w_bottom_form, "bottom_lbl", NULL, 0);
+  wl[n++] = w;
 
 /*  RowColumn containing buttons along bottom of text-entry area:
         send, clear   */
 
-  n=0;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNorientation, XmHORIZONTAL);  n++;
-  XtSetArg(args[n], XmNpacking, XmPACK_TIGHT);  n++;
-  w = w_newq_rowcol = XmCreateRowColumn(w_bottom_form, "newqRowCol", args, n);
-  XtManageChild(w);
+  w = w_newq_rowcol = XmCreateRowColumn(w_bottom_form, "newqRowCol", NULL, 0);
+  wl[n++] = w;
+  XtManageChildren(wl, (Cardinal) n);
 
-  n=0;
+  n = 0;
+
   w = w_send_newq_btn = XmCreatePushButton(w_newq_rowcol,
-					   "send_newq_btn", args, n);
+					   "send_newq_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_send_newq, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, SEND_NEWQ_BTN);
-  XtManageChild(w);
+  wl[n++] = w;
 
-  n=0;
   w = w_clear_btn = XmCreatePushButton(w_newq_rowcol,
-				       "clear_btn", args, n);
+				       "clear_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_clear_newq, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, CLEAR_BTN);
-  XtManageChild(w);
+  wl[n++] = w;
+  XtManageChildren(wl, (Cardinal) n);
+  n = 0;
 
 /*  Frame to hold scrolled text widget.  Scrolled text widget is for
  *   entering initial question.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_bottom_lbl);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNbottomWidget, w_newq_rowcol);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  w = w_newq_frame = XmCreateFrame(w_bottom_form, "newq_frame", args, n);
+  w = w_newq_frame = XmCreateFrame(w_bottom_form, "newq_frame", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNeditable, TRUE);  n++;
-  XtSetArg(args[n], XmNeditMode, XmMULTI_LINE_EDIT);  n++;
-  XtSetArg(args[n], XmNwordWrap, TRUE);  n++;
-  XtSetArg(args[n], XmNscrollHorizontal, FALSE);  n++;
-  XtSetArg(args[n], XmNscrollVertical, TRUE);  n++;
-  w = w_newq_scrl = XmCreateScrolledText(w_newq_frame, "newq_scrl", args, n);
+  w = w_newq_scrl = XmCreateScrolledText(w_newq_frame, "newq_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
+
 }
 
 
@@ -340,70 +246,27 @@ MakeContqForm()
  *  consultant and buttons for canceling, don'ing, and getting the MOTD.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNmarginWidth, NORMAL_SPACING);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_button_sep);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, HORIZ_SPACING);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  w_contq_form = XmCreateForm(main_form, "cont_ques_form", args, n);
+  w_contq_form = XmCreateForm(main_form, "cont_ques_form", NULL, 0);
 
 /*  Status form contains connect_lbl, your_topic_lbl, topic_lbl  */
 
-  n=0;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  w = w_status_form = XmCreateForm(w_contq_form, "status_form", args, n);
+  w = w_status_form = XmCreateForm(w_contq_form, "status_form", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  XtSetArg(args[n], XmNlabelString, MotifString(STATUS_UNKNOWN_LABEL));  n++;
-  w = w_connect_lbl = XmCreateLabelGadget(w_status_form,
-					  "connect_lbl", args, n);
+  w = w_connect_lbl = XmCreateLabelGadget(w_status_form, "connect_lbl",
+					  NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  XtSetArg(args[n], XmNlabelString, MotifString(TOPIC_UNKNOWN_LABEL));  n++;
-  w = w_topic_lbl = XmCreateLabelGadget(w_status_form, "topic_lbl", args, n);
+  w = w_topic_lbl = XmCreateLabelGadget(w_status_form, "topic_lbl", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNrightWidget, w_topic_lbl);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
   XtManageChild( XmCreateLabelGadget(w_status_form,
-				     "your_topic_lbl", args, n));
+				     "your_topic_lbl",NULL, 0));
 
 
 /*  RowColumn containing buttons along bottom:
         send, done, cancel, savelog, motd, update   */
 
-  n=0;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNorientation, XmHORIZONTAL);  n++;
-  XtSetArg(args[n], XmNpacking, XmPACK_TIGHT);  n++;
   w = w_options_rowcol = XmCreateRowColumn(w_contq_form,
 					   "optionsRowCol", args, n);
   XtManageChild(w);
@@ -449,27 +312,11 @@ MakeContqForm()
   
 /*  Frame to hold scrolled text replay_frame  */
 
-  n=0;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget,  w_status_form);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNbottomWidget, w_options_rowcol);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NORMAL_SPACING);  n++;
-  w = w_replay_frame = XmCreateFrame(w_contq_form, "replay_frame", args, n);
+  w = w_replay_frame = XmCreateFrame(w_contq_form, "replay_frame", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNeditable, FALSE);  n++;
-  XtSetArg(args[n], XmNeditMode, XmMULTI_LINE_EDIT);  n++;
-  XtSetArg(args[n], XmNwordWrap, TRUE);  n++;
-  XtSetArg(args[n], XmNscrollHorizontal, FALSE);  n++;
-  XtSetArg(args[n], XmNscrollVertical, TRUE);  n++;
   w = w_replay_scrl = XmCreateScrolledText(w_replay_frame,
-					   "replay_scrl", args, n);
+					   "replay_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
 }
@@ -477,8 +324,6 @@ MakeContqForm()
 void
 MakeMotdForm()
 {
-  Arg args[100];
-  int n = 0;
 
 /*
  * The "motd_form" will contain the motd at start up time.  The MOTD
@@ -486,63 +331,26 @@ MakeMotdForm()
  *  then it will be unmanaged and the new thing popped in it's place.
  */
 
-  n=0;
-/*XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;*/
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_button_sep);  n++;
-  XtSetArg(args[n], XmNverticalSpacing, VERT_SPACING);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, HORIZ_SPACING);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  w = w_motd_form = XmCreateForm(main_form, "motd_form", args, n);
+  w = w_motd_form = XmCreateForm(main_form, "motd_form", NULL, 0);
   XtManageChild(w);
 
 /*  "Welcome to Project Athena's OLC" label  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  w = w_welcome_lbl = XmCreateLabelGadget(w_motd_form, "welcome_lbl", args, n);
+  w = w_welcome_lbl = XmCreateLabelGadget(w_motd_form, "welcome_lbl", NULL, 0);
   XtManageChild(w);
 
 /*  "Copyright MIT" label  */
 
-  n=0;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_welcome_lbl);  n++;
   w = w_copyright_lbl = XmCreateLabelGadget(w_motd_form,
-					    "copyright_lbl", args, n);
+					    "copyright_lbl", NULL,0);
   XtManageChild(w);
 
 /*  Frame to hold scrolled text motd_frame  */
 
-  n=0;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_copyright_lbl);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  w = w_motd_frame = XmCreateFrame(w_motd_form, "motd_frame", args, n);
+  w = w_motd_frame = XmCreateFrame(w_motd_form, "motd_frame", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNeditable, FALSE);  n++;
-  XtSetArg(args[n], XmNeditMode, XmMULTI_LINE_EDIT);  n++;
-  XtSetArg(args[n], XmNwordWrap, TRUE);  n++;
-  XtSetArg(args[n], XmNscrollHorizontal, FALSE);  n++;
-  XtSetArg(args[n], XmNscrollVertical, TRUE);  n++;
-  w = w_motd_scrl = XmCreateScrolledText(w_motd_frame, "motd_scrl", args, n);
+  w = w_motd_scrl = XmCreateScrolledText(w_motd_frame, "motd_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
 }
@@ -559,78 +367,45 @@ MakeDialogs()
  *   motd, help.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNdialogStyle, XmDIALOG_MODELESS);  n++;
-  XtSetArg(args[n], XmNdialogType, XmDIALOG_INFORMATION);  n++;
-  XtSetArg(args[n], XmNmessageAlignment, XmALIGNMENT_BEGINNING);  n++;
-  XtSetArg(args[n], XmNborderWidth, NORMAL_BORDER);  n++;
-  w = w_motd_dlg = XmCreateInformationDialog(main_form, "motd_dlg", args, n);
+  w = w_motd_dlg = XmCreateInformationDialog(main_form, "motd_dlg", NULL, 0);
   XtAddCallback(w, XmNokCallback, dlg_ok, MOTD_BTN);
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
 
-  n=0;
-  XtSetArg(args[n], XmNdialogStyle, XmDIALOG_MODELESS);  n++;
-  XtSetArg(args[n], XmNmessageAlignment, XmALIGNMENT_BEGINNING);  n++;
-  XtSetArg(args[n], XmNborderWidth, NORMAL_BORDER);  n++;
-  w = w_help_dlg = XmCreateInformationDialog(main_form, "help_dlg", args, n);
+  w = w_help_dlg = XmCreateInformationDialog(main_form, "help_dlg", NULL, 0);
   XtAddCallback(w, XmNokCallback, dlg_ok, HELP_BTN);
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
 
 /*  Send Form holds a title, scrolled text widget, and rowcolumn.  */
 
-  n=0;
-
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNborderWidth, NORMAL_BORDER);  n++;
-  XtSetArg(args[n], XmNverticalSpacing, VERT_SPACING);  n++;
-  XtSetArg(args[n], XmNhorizontalSpacing, 2 * HORIZ_SPACING);  n++;
-  w_send_form = XmCreateFormDialog(toplevel, "send_form", args, n);
+  w_send_form = XmCreateFormDialog(toplevel, "send_form", NULL, 0);
 
 /*  Send label.  Used to prompt user to type in message.  */
 
-  n=0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNalignment, XmALIGNMENT_CENTER);  n++;
-  w = w_send_lbl = XmCreateLabelGadget(w_send_form, "send_lbl", args, n);
+  w = w_send_lbl = XmCreateLabelGadget(w_send_form, "send_lbl", NULL, 0);
   XtManageChild(w);
 
 /*  RowColumn containing buttons along bottom of text-entry area:
         send, clear, close.   */
 
-  n=0;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginWidth, NONE);  n++;
-  XtSetArg(args[n], XmNmarginHeight, NONE);  n++;
-  XtSetArg(args[n], XmNorientation, XmHORIZONTAL);  n++;
-  XtSetArg(args[n], XmNpacking, XmPACK_TIGHT);  n++;
-  w = w_send_rowcol = XmCreateRowColumn(w_send_form, "sendRowCol", args, n);
+  w = w_send_rowcol = XmCreateRowColumn(w_send_form, "sendRowCol", NULL, 0);
   XtManageChild(w);
 
-  n=0;
   w = w_send_msg_btn = XmCreatePushButton(w_send_rowcol,
-					  "send_msg_btn", args, n);
+					  "send_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_send_msg, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, SEND_MSG_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_clear_msg_btn = XmCreatePushButton(w_send_rowcol,
-					     "clear_msg_btn", args, n);
+					     "clear_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_clear_msg, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, CLEAR_MSG_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_close_msg_btn = XmCreatePushButton(w_send_rowcol,
-					   "close_msg_btn", args, n);
+					   "close_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_close_msg, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, CLOSE_MSG_BTN);
   XtManageChild(w);
@@ -639,25 +414,10 @@ MakeDialogs()
  *   entering message.
  */
 
-  n=0;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM);  n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNtopWidget, w_send_lbl);  n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_WIDGET);  n++;
-  XtSetArg(args[n], XmNbottomWidget, w_send_rowcol);  n++;
-  XtSetArg(args[n], XmNborderWidth, NONE);  n++;
-  XtSetArg(args[n], XmNshadowThickness, NONE);  n++;
-  w = w_send_frame = XmCreateFrame(w_send_form, "send_frame", args, n);
+  w = w_send_frame = XmCreateFrame(w_send_form, "send_frame", NULL, 0);
   XtManageChild(w);
 
-  n=0;
-  XtSetArg(args[n], XmNeditable, TRUE);  n++;
-  XtSetArg(args[n], XmNeditMode, XmMULTI_LINE_EDIT);  n++;
-  XtSetArg(args[n], XmNwordWrap, TRUE);  n++;
-  XtSetArg(args[n], XmNscrollHorizontal, FALSE);  n++;
-  XtSetArg(args[n], XmNscrollVertical, TRUE);  n++;
-  w = w_send_scrl = XmCreateScrolledText(w_send_frame, "send_scrl", args, n);
+  w = w_send_scrl = XmCreateScrolledText(w_send_frame, "send_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
 }
