@@ -5,7 +5,7 @@ cp $1/packs/config/authinfo $2
 cp $1/packs/config/os/$OS/sendmail-noauth.cf $2
 cp $1/packs/config/os/$OS/sendmail.cf $2
 cp $1/packs/maint/os/$OS/athena-sendmail.rc $2
-cp $1/packs/maint/sendmail-relay-select.sh $2
+cp $1/packs/maint/sendmail-relay-select $2
 cp $1/packs/maint/sendmail.sh $2
 if [ linux = "$OS" ]; then
   cp $1/packs/maint/os/$OS/system-sendmail.sh $2
