@@ -17,8 +17,8 @@
 lnprint|generic LN01 printer:\
 	:br#9600:\
 	:fs#16:\
-	:of=/usr/lib/lpdfilters/ln01p:\
-	:vf=/usr/lib/lpdfilters/ln01raw:\
+	:of=/usr/athena/lib/lpdfilters/ln01p:\
+	:vf=/usr/athena/lib/lpdfilters/ln01raw:\
 	:tr=\f:
 
 
@@ -39,7 +39,7 @@ ln01-1-2|Building 1 ln01 laser printer #2:\
 ln03-1|Building 1 ln03 graphics printer:\
 	:lp=/dev/tty06:rp=ln03-1:rm=ZEUS.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-1:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 # 3-462 Workstation cluster
@@ -53,7 +53,7 @@ lp-3-462|la120 line printer -- 3-462:\
 ln03-3-462|ln03 laser printer -- 3-462:\
         :lp=/dev/tty01:rp=ln03-3-462:rm=3-462-P:\
         :sd=/usr/spool/printer/ln03-3-462:\
-        :of=/usr/lib/lpdfilters/staff_ln03filter:\
+        :of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
         :af=/usr/adm/ln03.acct:\
         :pl#66:pw#80:br#19200:fs#16:
 
@@ -87,7 +87,7 @@ ln03-9-551|crl|ln03 laser printer -- 9-551:\
 ln03-bldg10|Building 10 ln03  printer:\
         :lp=/dev/cerial:rp=ln03-bldg10:rm=10-026-1:\
         :sd=/usr/spool/printer/ln03-bldg10:\
-        :of=/site/usr/lib/lpdfilters/staff_ln03filter:\
+        :of=/site/usr/athena/lib/lpdfilters/staff_ln03filter:\
         :pl#66:pw#80:br#9600:fs#16:
 
 
@@ -97,7 +97,7 @@ ln03-bldg10|Building 10 ln03  printer:\
 ln03-11|Building 11 ln03 graphics printer:\
 	:lp=/dev/tty07:rp=ln03-11:rm=APOLLO.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-11:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 # 11-* workstation clusters
@@ -119,7 +119,7 @@ ln03-11-124G|ln03 laser printer -- 11-124G:\
 ln03-16-034|ln03 laser printer -- 16-034:\
 	:lp=/dev/tty00:rp=ln03-16-034:rm=16-034-P.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-16-034:\
-	:of=/site/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/site/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 # 24-021 Workstation cluster
@@ -127,13 +127,13 @@ ln03-16-034|ln03 laser printer -- 16-034:\
 ln03-24-1|Building 24-021 ln03:\
         :lp=/dev/cereal:rp=ln03-24-1:rm=M24-021-4.MIT.EDU:\
         :sd=/usr/spool/printer/ln03-24-1:\
-        :of=/usr/lib/lpdfilters/staff_ln03filter:\
+        :of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
         :pl#66:pw#80:br#2400:fs#16:
 
 ln03-24-2|Building 24-021 ln03:\
         :lp=/dev/cereal:rp=ln03-24-2:rm=M24-021-5.MIT.EDU:\
         :sd=/usr/spool/printer/ln03-24-2:\
-        :of=/usr/lib/lpdfilters/staff_ln03filter:\
+        :of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
         :pl#66:pw#80:br#2400:fs#16:
 
 # 37-324 Workstation cluster
@@ -172,7 +172,7 @@ ln01-66|Building 66 ln01 laser printer:\
 ln03-66|Building 66 ln03 graphics printer:\
 	:lp=/dev/tty00:rp=ln03-66:rm=CLIO.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-66:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 # E40 Staff cluster (timesharing and workstations)
@@ -181,7 +181,7 @@ ln03-66|Building 66 ln03 graphics printer:\
 ln03-bldge40-1|Staff ln03 laser printer #1 -- E40-391:\
 	:lp=/dev/tty00:rp=ln03-bldge40-1:rm=E40-PRINT-SERVER-1.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-1:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 ln03-bldge40-2|Staff ln03 laser printer #2 -- E40-315:\
@@ -197,7 +197,7 @@ ln03-bldge40-2|Staff ln03 laser printer #2 -- E40-315:\
 ln03-bldge40-3|Staff ln03 laser printer #3 -- E40-358:\
 	:lp=/dev/tty03:rp=ln03-bldge40-3:rm=E40-PRINT-SERVER-1.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-3:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 ln03-bldge40-4|ps-bldge40-1|Matrix|matrix|DEC Scout LN03R:\
@@ -213,7 +213,7 @@ ln03-bldge40-4|ps-bldge40-1|Matrix|matrix|DEC Scout LN03R:\
 ln03-bldge40-5|Staff ln03 laser printer #5 (Demo Center) -- E40-302:\
 	:lp=/dev/cereal:rp=ln03-bldge40-5:rm=E40-302-10.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-5:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 ln03-bldge40-6|Staff ln03 laser printer #6 -- E40-337:\
@@ -294,7 +294,7 @@ ln01-w20-2|Student Center ln01 laser printer #2:\
 ln03-w20-1|Student center ln03-1:\
 	:lp=/dev/tty00:rp=ln03-w20-1:rm=RINGWORLD.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-w20-1:\
-	:of=/usr/lib/lpdfilters/staff_ln03filter:\
+	:of=/usr/athena/lib/lpdfilters/staff_ln03filter:\
 	:pl#66:pw#80:br#2400:fs#16:
 
 # W20 workstation cluster
