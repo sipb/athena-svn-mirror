@@ -1,0 +1,182 @@
+AC_PREREQ(2.52)
+AC_INIT(ggv, 1.99.97, http://bugzilla.gnome.org/enter_bug.cgi?product=ggv)
+AC_CONFIG_SRCDIR(src/gtkgs.c)
+AM_INIT_AUTOMAKE(ggv, 1.99.97)
+
+AM_CONFIG_HEADER(config.h)
+
+AM_MAINTAINER_MODE
+
+AC_PROG_INTLTOOL
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_STDC_HEADERS
+AM_PROG_LIBTOOL
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+AM_GCONF_SOURCE_2
+
+AC_CHECK_HEADER(paths.h)
+AC_PATH_PROG(LPR_PROG, lpr)
+AC_DEFINE_UNQUOTED(LPR_PATH, "$LPR_PROG", [Path to 'lpr' executable.])
+GNOME_PLATFORM_GNOME_2(yes)
+
+dnl a switch for enabling bonobo component logging to a file
+AC_ARG_ENABLE(bonobo-debug,
+              [  --bonobo-debug      Enables logging of bonobo component to a file], AC_DEFINE(BONOBO_DEBUG, 1, [Whether to add log component output to a file.]))
+
+##################################################
+# Checks for  GhostScript package 
+##################################################
+
+
+AC_ARG_WITH(gs-pkg,
+              [  --with-gs=dir       Directory Where GhostScript package is installed.])
+
+if test "x$with_gs" = "x"; then
+	AC_PATH_PROG(GS_PROG, gs)
+	if test -z "$GS_PROG"; then
+		AC_MSG_ERROR(Unable to find GhostScript in the PATH. Provide the full path for GhostScript(--with-gs=PATH). You need to have Ghostscript installed in order to run GGV)
+	fi
+else
+	GS_PROG=$with_gs
+fi
+
+AC_DEFINE_UNQUOTED(GS_PATH, "$GS_PROG", [Path to the 'gs' executable.])
+
+
+dnl check for GS version and define appropriate alpha parameters
+AC_MSG_CHECKING(for Ghostscript version...)
+GS_VERSION=`$GS_PROG --version | head -1`
+AC_MSG_RESULT(found $GS_VERSION)
+dnl GS tends to get a lot of BadMatch errors with the *AlphaBits parameters
+dnl so I've commented their use out
+dnl if test "$GS_VERSION" -gt "5"; then
+dnl	AA_PARMS="-sDEVICE=x11 -dTextAlphaBits=4 -dGraphicsAlphaBits=4"
+dnl else
+dnl 	AA_PARMS="-sDEVICE=x11alpha"
+dnl fi
+AA_PARMS="-sDEVICE=x11alpha"
+AC_DEFINE_UNQUOTED(ALPHA_PARAMS, "$AA_PARMS", [Anti-aliasing parameters for Ghostscript.])
+AC_MSG_RESULT(Antialiasing parameters for Ghostscript: $AA_PARMS)
+
+dnl check for popt. this is required for building on solaris
+AC_CHECK_LIB(popt, poptGetArgs, [POPT_LIBS="-lpopt"],
+AC_MSG_ERROR([popt is required to build ggv.
+You can download the latest version from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/]))
+AC_SUBST(POPT_LIBS)
+
+dnl check for libgstroke library
+dnl removed as we dont have a glib 2.0 based gstroke library
+dnl try_gstroke=true
+dnl gstroke=
+dnl have_gstroke=false
+dnl gstroke_CFLAGS=
+dnl gstroke_LIBS=
+dnl AC_ARG_WITH(gstroke,
+dnl 	[  --{with,without}-gstroke=PFX   Compile with stroke support or without it],
+dnl 	if test x$withval = xno; then
+dnl 		try_gstroke=false
+dnl 	elif test x$withval != xyes; then
+dnl 		gstroke_CFLAGS=-I$withval/include
+dnl 		gstroke_LIBS=-L$withval/lib
+dnl 	fi
+dnl )
+
+dnl if $try_gstroke; then
+dnl 	AC_CHECK_LIB(gstroke, gstroke_enable,
+dnl 			have_gstroke=true
+dnl                   	AC_DEFINE(HAVE_GSTROKE)
+dnl                    	gstroke_LIBS="$gstroke_LIBS -lgstroke", ,
+dnl                      	$gstroke_LIBS $GTK_LIBS)
+dnl fi
+dnl AM_CONDITIONAL(GSTROKE, $have_gstroke)
+
+AC_PATH_XTRA
+PKG_CHECK_MODULES(GGV,
+		  libgnomeui-2.0 >= 1.96.0)
+
+GGV_LIBS="$GGV_LIBS $POPT_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+
+dnl Check for Xinerama
+dnl have_xinerama=false
+dnl have_xinerama_h=false
+dnl AC_CHECK_HEADER(X11/extensions/Xinerama.h,
+dnl		have_xinerama_h=true,, [#include <X11/Xlib.h>] )
+dnl if test x$have_xinerama_h = xtrue; then
+dnl		AC_CHECK_LIB(Xinerama, XineramaIsActive,
+dnl			     have_xinerama=true,,
+dnl			     $GGV_LIBS)
+dnl fi
+dnl AM_CONDITIONAL(XINERAMA, $have_xinerama)
+dnl if test x$have_xinerama = xtrue; then
+dnl	AC_DEFINE(HAVE_XINERAMA)
+dnl fi
+
+dnl **************************************************
+dnl * internationalization support
+dnl **************************************************
+ALL_LINGUAS="am az be bg ca cs da de el es et eu fi fr ga gl hr hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi zh_CN zh_TW"
+
+GETTEXT_PACKAGE=ggv
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext pacakge.])
+
+AM_GLIB_GNU_GETTEXT
+
+dnl AC_LINK_FILES($nls_cv_header_libgt, $nls_cv_header_intl)
+
+AC_SUBST(GGV_CFLAGS)
+AC_SUBST(GGV_LIBS)
+
+dnl ================================
+dnl | ORBit2 |---------------------------
+dnl ================================
+
+ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
+AC_SUBST(ORBIT_IDL)
+
+BONOBO_IDLDIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
+AC_SUBST(BONOBO_IDLDIR)
+
+BONOBO_ACT_IDLDIR="`$PKG_CONFIG --variable=idldir bonobo-activation-2.0`"
+AC_SUBST(BONOBO_ACT_IDLDIR)
+      
+AC_ARG_ENABLE(install_schemas,
+	[  --disable-install-schemas        Disable installation of the gconf schemas])
+AM_CONDITIONAL(INSTALL_SCHEMAS, test x$enable_install_schemas != xno)
+
+GCONF_CONFIG_SOURCE=
+
+AC_ARG_ENABLE(gconf-source, [  --enable-gconf-source=sourceaddress Where to install schema files.], GCONF_CONFIG_SOURCE=$enable_gconf_source,)
+if test "x$GCONF_CONFIG_SOURCE" = "x"; then
+        GCONF_CONFIG_SOURCE="xml::\${sysconfdir}/gconf/gconf.xml.defaults"
+fi
+
+AC_SUBST(GCONF_CONFIG_SOURCE)
+AC_SUBST(INSTALL_GCONF_CONFIG_SOURCE)
+
+GGV_EXTRA_CFLAGS="-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED"
+
+AC_SUBST(GGV_EXTRA_CFLAGS)
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+
+AC_OUTPUT([
+Makefile
+ggv.spec
+po/Makefile.in
+help/Makefile
+help/C/Makefile
+src/Makefile
+src/stock/Makefile
+src/cursors/Makefile
+bonobo/Makefile
+pixmaps/Makefile
+idl/Makefile
+omf-install/Makefile
+])

@@ -1,0 +1,143 @@
+<Root>
+
+  <commands>
+    <cmd name="FileSaveMarked" _label="_Save marked pages"
+	 _tip="Save marked pages to a file" pixtype="stock"
+	 pixname="Save" accel="*Control*s"/>
+    <cmd name="FilePrintMarked" _label="_Print marked pages"
+	 _tip="Print marked pages"/>
+    <cmd name="FilePrintAll" _label="_Print document"
+	 _tip="Print the whole document" pixtype="stock"
+	 pixname="Print" accel="*Control*p"/>
+
+    <cmd name="NextPage" _label="_Next page"
+	 _tip="Go to next page"
+	 pixtype="stock" pixname="gtk-go-forward" accel="*Alt*Right"/>
+    <cmd name="PrevPage" _label="_Previous page"
+	 _tip="Go to previous page"
+	 pixtype="stock" pixname="gtk-go-back" accel="*Alt*Left"/>
+    <cmd name="LastPage" _label="_Last page"
+	 _tip="Go to last page"
+	 pixtype="stock" pixname="gtk-goto-last" accel="*Control*Right"/>
+    <cmd name="FirstPage" _label="_First page"
+	 _tip="Go to first page"
+	 pixtype="stock" pixname="gtk-goto-first" accel="*Control*Left"/>
+
+    <cmd name="SettingsPreferences" _label="GGV _Preferences"
+         _tip="Open the preferences dialog" pixtype="stock"
+         pixname="gtk-preferences"/>
+
+    <cmd name="OrientationDocument" _label="_Document Orientation"
+              type="radio" group="Orientation"/>
+    <cmd name="OrientationPortrait" _label="_Portrait"
+              type="radio" group="Orientation"/>
+    <cmd name="OrientationLandscape" _label="_Landscape"
+         type="radio" group="Orientation"/>
+    <cmd name="OrientationUpsideDown" _label="_Upside down"
+         type="radio" group="Orientation"/>
+    <cmd name="OrientationSeascape" _label="_Seascape"
+         type="radio" group="Orientation"/>
+
+    <cmd name="PaperSizeDoc" _label="_Document Size"
+         type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeBBox" _label="BBox" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeLetter" _label="Letter" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeTabloid" _label="Tabloid" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeLedger" _label="Ledger" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeLegal" _label="Legal" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeStatement" _label="Statement" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeExecutive" _label="Executive" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA0" _label="A0" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA1" _label="A1" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA2" _label="A2" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA3" _label="A3" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA4" _label="A4" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeA5" _label="A5" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeB4" _label="B4" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeB5" _label="B5" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeFolio" _label="Folio" type="radio" group="PaperSize"/>
+    <cmd name="PaperSizeQuarto" _label="Quarto" type="radio" group="PaperSize"/>
+    <cmd name="PaperSize10x14" _label="10x14" type="radio" group="PaperSize"/>
+  </commands>
+
+  <menu>
+    <submenu name="File">
+      <placeholder name="File Items Placeholder">
+        <menuitem name="FileSaveMarked" verb=""/>
+        <menuitem name="FilePrintMarked" verb=""/>
+        <menuitem name="FilePrintAll" verb=""/>
+	<separator/>
+      </placeholder>
+    </submenu>
+    <submenu name="Edit">
+      <placeholder name="Edit Items Placeholder" delimit="top">
+        <menuitem name="SettingsPreferences" verb=""/>
+      </placeholder>
+    </submenu>
+    <submenu name="View" _label="_View">
+      <placeholder name="View Items Placeholder">
+        <menuitem name="NextPage" verb=""/>
+        <menuitem name="PrevPage" verb=""/>
+        <menuitem name="FirstPage" verb=""/>
+        <menuitem name="LastPage" verb=""/>
+	<separator/>
+        <submenu name="Orientation" _label="_Orientation">
+          <menuitem name="OrientationDocument" verb=""/>
+          <menuitem name="OrientationPortrait" verb=""/>
+	  <menuitem name="OrientationLandscape" verb=""/>
+	  <menuitem name="OrientationUpsideDown" verb=""/>
+	  <menuitem name="OrientationSeascape" verb=""/>
+        </submenu>
+        <submenu name="Size" _label="_Size">
+	  <menuitem name="PaperSizeDoc" verb=""/>
+	  <menuitem name="PaperSizeBBox" verb=""/>
+	  <menuitem name="PaperSizeLetter" verb=""/>
+	  <menuitem name="PaperSizeTabloid" verb=""/>
+	  <menuitem name="PaperSizeLedger" verb=""/>
+	  <menuitem name="PaperSizeLegal" verb=""/>
+	  <menuitem name="PaperSizeStatement" verb=""/>
+	  <menuitem name="PaperSizeExecutive" verb=""/>
+          <menuitem name="PaperSizeA0" verb=""/>
+          <menuitem name="PaperSizeA1" verb=""/>
+          <menuitem name="PaperSizeA2" verb=""/>
+          <menuitem name="PaperSizeA3" verb=""/>
+	  <menuitem name="PaperSizeA4" verb=""/>
+	  <menuitem name="PaperSizeA5" verb=""/>
+	  <menuitem name="PaperSizeB4" verb=""/>
+	  <menuitem name="PaperSizeB5" verb=""/>
+	  <menuitem name="PaperSizeFolio" verb=""/>
+	  <menuitem name="PaperSizeQuarto" verb=""/>
+	  <menuitem name="PaperSize10x14" verb=""/>
+        </submenu>
+      </placeholder>
+    </submenu>
+  </menu>
+
+  <dockitem name="Toolbar">
+    <placeholder name="GgvItems" delimit="top">
+      <toolitem name="FirstPage" _label="First" verb=""/>
+      <toolitem name="PrevPage" _label="Prev" verb=""/>
+      <toolitem name="NextPage" _label="Next" verb=""/>
+      <toolitem name="LastPage" _label="Last" verb=""/>
+      <placeholder name="GgvZoomItems" delimit="top"/>
+    </placeholder>
+  </dockitem>
+
+  <dockitem name="Sidebar" relief="none" homogeneous="0"
+            behavior="exclusive,never horizontal" placement="left">
+    <placeholder name="Zoom Control Placeholder"/>
+    <control name="GgvSidebar" behavior="expandable"/>
+  </dockitem>
+
+  <popups>
+    <popup name="button3">
+      <placeholder name="NavigationMenu">
+        <menuitem name="NextPage" verb=""/>
+        <menuitem name="PrevPage" verb=""/>
+        <menuitem name="FirstPage" verb=""/>
+        <menuitem name="LastPage" verb=""/>
+      </placeholder>
+    </popup>
+  </popups>
+
+</Root>

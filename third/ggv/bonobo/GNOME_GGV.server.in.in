@@ -1,0 +1,55 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:GNOME_GGV_Factory"
+	type="exe" location="@LIBEXECDIR@/ggv-postscript-viewer">
+  <oaf_attribute name="repo_ids" type="stringv">
+    <item value="IDL:Bonobo/GenericFactory:1.0"/>
+  </oaf_attribute>
+  <oaf_attribute name="name" type="string"
+                 _value="GGV PostScript viewer factory"/>
+  <oaf_attribute name="description" type="string"
+                 _value="GGV PostScript viewer factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_GGV_Control" type="factory"
+            location="OAFIID:GNOME_GGV_Factory">
+  <oaf_attribute name="repo_ids" type="stringv">
+    <item value="IDL:Bonobo/ItemContainer:1.0"/>
+    <item value="IDL:Bonobo/Zoomable:1.0"/>
+    <item value="IDL:Bonobo/Control:1.0"/>
+    <item value="IDL:Bonobo/Unknown:1.0"/>
+    <item value="IDL:Bonobo/PersistStream:1.0"/>
+    <item value="IDL:Bonobo/PersistFile:1.0"/>
+    <item value="IDL:Bonobo/Persist:1.0"/>
+  </oaf_attribute>
+  <oaf_attribute name="name" type="string" _value="GGV PostScript Document Control"/>
+  <oaf_attribute name="description" type="string"
+                 _value="GGV PostScript Document Control"/>
+  <oaf_attribute name="bonobo:editable" type="boolean" value="false"/>
+  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="application/postscript"/>
+    <item value="application/pdf"/>
+  </oaf_attribute>
+  <oaf_attribute name="nautilus:view_as_name" type="string" value="GGV Postscript Document Control"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_GGV_PostscriptView" type="factory"
+            location="OAFIID:GNOME_GGV_Factory">
+  <oaf_attribute name="repo_ids" type="stringv">
+    <item value="IDL:GNOME/GGV/PostscriptView:1.0"/>
+    <item value="IDL:Bonobo/Unknown:1.0"/>
+    <item value="IDL:Bonobo/ItemContainer:1.0"/>
+    <item value="IDL:Bonobo/PersistStream:1.0"/>
+    <item value="IDL:Bonobo/PersistFile:1.0"/>
+    <item value="IDL:Bonobo/Persist:1.0"/>
+  </oaf_attribute>
+  <oaf_attribute name="name" type="string" _value="GGV PostScript View"/>
+  <oaf_attribute name="description" type="string"
+                 _value="GGV PostScript View"/>
+  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="application/postscript"/>
+    <item value="application/pdf"/>
+  </oaf_attribute>
+</oaf_server>
+
+</oaf_info>

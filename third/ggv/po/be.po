@@ -1,0 +1,999 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Ales Nyakhaychyk <i18n@infonet.by>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv 2.0\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-11-20 09:47+0200\n"
+"Last-Translator: Ales Nyakhaychyk <i18n@infonet.by>\n"
+"Language-Team: Belarusian <i18n@mova.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "GGV, Кантроль PostScript дакумэнту"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "GGV, Прагляд PostScript"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "GGV, Вытворчасьць PostScript праглядальніку"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, no-c-format
+msgid "15_0%"
+msgstr "15_0%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr "Зьмяніць на неабумоўненае значэньне маштабу"
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr "Паменьшыць значэньне маштабу"
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "Падабраць"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "Падагнаць па шырыні"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "Па шырыні"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr "Па памеры старонкі"
+
+#: bonobo/ggv-control-ui.xml.h:12
+msgid "Fit to Page _Width"
+msgstr "Па шырні старонкі"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "+"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr "Павялічыць маштаб"
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Іншы"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "-"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "Маштаб +"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "Маштаб -"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr "Маштабаваць старонку да шырыні акна"
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr "Маштабаваць старонку да памераў акна"
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, no-c-format
+msgid "_75%"
+msgstr "_75%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr "Самастойная падгонка"
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "Дапомны маштаб"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "Да акна"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr "Несамастойная дагонка"
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "Маштаб"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr "A0"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr "A1"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr "A2"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr "BBox"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr "Executive"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "Першая"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "GGV _Перавагі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "Перайсьці да першае старонкі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "Перайсьці да апошняе старонкі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "Перайсьці да наступнае старонкі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "Перайсьці да папярэдняе старнкі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "Апошняя"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr "Ledger"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr "Legal"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "Letter"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "Наступная"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "Адчыніць дыялёг пераваг"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "Папярэдняя"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "Надрукаваць пазначаныя старонкі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "Надрукаваць увесь дакумэнт"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr "Quarto"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "Захаваць пазначаныя старонкі ў файл"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr "Statement"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr "Tabloid"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+msgid "_Document Orientation"
+msgstr "_Спагляданьне дакумэнту"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+msgid "_Document Size"
+msgstr "Па_мер дакумэнту"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "Першая старонка"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "Гарызантальнае"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "Апошняя старонка"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "Наступная старонка"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "Спагляданьне"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "Вэртыкальнае"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "Папярэдняя старонка"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "Надрукаваць дакумэнт"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "Надрукаваць пазначаныя"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "Захаваць пазначаныя"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "Другое гарызантальнае"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "Памер"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "Дагары нагамі"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "Выгляд"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"Немагчыма выканаць загад друку:\n"
+"%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Ніводная старонка не пазначана.\n"
+"Вы жадаеце захаваць увесь дакумэнт?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "Пазначце файл каб захаваць старонкі як"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Файл з такой назвай ужо йснуе.\n"
+"Вы жадаеце перазапісаць яго?"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Ніводная старонка не пазначана.\n"
+"Вы жадаеце надрукаваць увесь дакумэнт?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "Адлюстраваць"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "Вывад GhostScript"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "Загаловак дакумэнт"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr "GGV стан кантролю"
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "Колькасьць старонак"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "Назовы старонак"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "Нумар бягучае старонкі"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "Шырыня дакумэнту"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "Вышыня дакумэнту"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "Спагляданьне дакумэнту"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "Дапомнае спагляданьне"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "Дапомны памер"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Перакрываць спагляданьне дакумэнту"
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr "Перакрываць памер дакумэнту"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr "Паважаць EOF камэнтар"
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr "Сачыць за зьменамі ў адлюстроўвываемым файле"
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Згладжваньне"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr "Пераключыць пазначаны стан усіх старонак"
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+"Пераключыць пазначаны стан усіх старонак: раней пазначаныя старонкі стануць "
+"непазначанымі й наадварот."
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr "Пераключыць пазначаны стан няцотных старонак"
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Пераключыць пазначаны стан няцотных старонак: раней пазначаныя няцотныя "
+"старонкі стануць непазначанымі й наадварот."
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr "Пераключыць пазначаны стан цотных старонак"
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Пераключыць пазначаны стан цотных старонак: раней пазначаныя цотныя старонкі "
+"стануць непазначанымі й наадварот."
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr "Прыбраць пазначэньне з усіх старонак"
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr "Прыбраць пазначэньне з усіх старонак"
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "Дабудова да Ghostscript для адлюстраваньня PostScript файлаў"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "GGV PostScript праглядальнік"
+
+#: src/ggv-prefs-ui.c:311
+#, fuzzy
+msgid "_Use GNOME defaults"
+msgstr "Выкарыстоўваць дапомны"
+
+#: src/ggv-prefs-ui.c:312
+#, fuzzy
+msgid "Show _both icons and text"
+msgstr "Адлюстроўваць і тэкст і значкі"
+
+#: src/ggv-prefs-ui.c:313
+#, fuzzy
+msgid "Show only _icons"
+msgstr "Адлюстроўваць толькі значкі"
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "Адлюстроўваць толькі тэкст"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "GGV, Перавагі"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "Дапомны маштаб:"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+#, fuzzy
+msgid "A_uto-fit mode:"
+msgstr "Рэжым самападбору:"
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "Адзінкі вымярэньня:"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "Дапомны памер старонкі:"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "Перакрываць памер дакумэнту"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "Дапомнае спагляданьне носьбіту:"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "Перакрываць спагляданьне дакумэнту"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "Згладжваньне"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+#, fuzzy
+msgid "_Respect EOF comments"
+msgstr "Паважаць EOF камэнтары"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "Сачыць за файлам"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Дакумэнт"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Адлюстроўваць бакавую панэль"
+
+#: src/ggv-prefs-ui.c:622
+#, fuzzy
+msgid "_Put side panel on the right-hand side"
+msgstr "Разьмеркаваць бакавую панэль зправа ў Nautilus"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "Паказаць палоску мэню"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "Паказаць палоску прылад"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "Стыль палоскі прылад"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "Паказць палоску стану"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "Захаваць гэомэтрыю"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Адлюстраваньне"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Пераскочыць да пачатку старонкі"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+#, fuzzy
+msgid "Automatically _flip pages"
+msgstr "Самастойна перагортваць старонкі"
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+#, fuzzy
+msgid "Outline _last visible part when scrolling"
+msgstr "Падкрэсьліць апошнюю бачную частку пры пракрутцы"
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "Памер бачнае прасторы для пракруткі"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr "Накіроўваньне"
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "Успрымальнік:"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "Згладжваньне:"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+#, fuzzy
+msgid "Convert _PDF to PS:"
+msgstr "Пераўтварыць PDF у PS:"
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip:"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2:"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "Загад друку:"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Друкаваньне"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "Аб гэтым дастасаваньні"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "Адмена"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "Зачыніць"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Зачыніць гэтае акно"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "Вы_хад"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "Выйсьці з праграмы"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr "Паўнаэкранны рэжым"
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "Даведка для гэтага дастасаваньня"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "Новае акно"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "Новае акно"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "Адчыніць"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "Адчыніць новы PostScript дакумэнт"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Адчыніць новае акно"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "Адчыніць у новым акне"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "Адчыніць у гэтым акне"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "Перачытаць"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "Перачытаць бягучы дакумэнт"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "Паказаць бакавую панэль"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Паказаць мэню"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "Паказаць палоску стану"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Паказаць палоску прылад"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "Паказаць/схаваць мэню"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "Паказаць/схаваць бакавую панэль"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "Паказаць/схаваць палоску стану"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "Паказаць/схаваць палоску прылад"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr "Пераключыць поўнаэкранны рэжым"
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "_Аб праграме..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "Зачыніць"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "Зьмест"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "Рэдагаваць"
+
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "Файл"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "Даведка"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "_Адлюстраваньне"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "Адчыніць"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "Перачытаць"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV: дакумэнт не загружаны"
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "Абярыце PostScript дакумэнт"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"Немагчыма загрузіць дакумэнт:\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr ""
+"Belarusian GNU/Linux Translation Project\n"
+"http://mova.linux.by\n"
+"e-mail: i18n@mova.org"
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "GNOME Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "GNOME, Праглядальнік PostScript дакумэнтаў"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV: "
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Вэртыкальная"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Гарызантальная"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Дагары нагамі"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr "Другое гарызантальнае"
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "цалі"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "мм"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "см"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "кропкі"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr "Няма"
+
+#: src/ggvutils.c:79
+msgid "Fit to page width"
+msgstr "Па шырыні старонкі"
+
+#: src/ggvutils.c:79
+msgid "Fit to page size"
+msgstr "Па памеры старонкі"
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "Дакумэнт не загружан."
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "Файл не зьяўляецца рэчаісным PostScript дакумэнтам."
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "Зламаны трубаправод."
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "Памылка разьбіральніка."
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Памылка разьцісканьня файлу %s:\n"
+
+#: src/gtkgs.c:1424
+#, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Памылка пераўтварэньня pdf файлу %s:\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Немагчыма адчыніць файл %s.\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "Файл нечытаемы."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Памылка хуткага прагляду файлу %s\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "Файл не зьяўляецца PostScript дакумэнтам."
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "Дакумэнт загружаны."
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr "Нерэчаісны радок гэомэтрыі \"%s\"\n"
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr "Задайце колькасьць парожніх вокнаў для адчыненьня."
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "Колькасьць парожніх вокнаў"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr "Спэцыфікацыя X-гэомэтрыі (гл. \"X\" man-старонку)."
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "ГЭОМЭТРЫЯ"
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr "Немагчыма ініцыялізаваць Bonobo!\n"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr ""
+#~ "Аўтарскае права (C) 1998-2002 Фонд вольнага праграмнага забесьпячэньня"
+
+#~ msgid "_Override Orientation"
+#~ msgstr "Пекрываць спагляданьне"
+
+#~ msgid "_Override Size"
+#~ msgstr "Перакрываць памер"

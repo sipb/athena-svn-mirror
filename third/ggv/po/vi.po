@@ -1,0 +1,1044 @@
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# pclouds <pclouds@gmx.net>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv VERSION\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-10-17 11:06+0700\n"
+"Last-Translator: pclouds <pclouds@gmx.net>\n"
+"Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "Điều khiển tài liệu PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "Bộ xem PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "GGV PostScript viewer factory"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, fuzzy, no-c-format
+msgid "15_0%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "Vừa khít"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "Khít bề rộng"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "Khít bề _rộng"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:12
+#, fuzzy
+msgid "Fit to Page _Width"
+msgstr "Khít bề _rộng"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "To"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Khác"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "Nhỏ"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "Phóng _to"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "Thu _nhỏ"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, fuzzy, no-c-format
+msgid "_75%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "Cỡ phóng _mặc định"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "_Khít cửa sổ"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "_Phóng to/thu nhỏ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr "Hành chính"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "Đầu tiên"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "_Thông số GGV"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "Về trang đầu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "Tới trang cuối"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "Tới trang kế"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "Về trang trước"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "Cuối cùng"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "Thư"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "Kế"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "Mở hộp thoại thông số"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "Trước"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "In trang được đánh dấu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "In toàn bộ tài liệu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "Lưu trang đánh dấu vào tập tin"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+#, fuzzy
+msgid "_Document Orientation"
+msgstr "Hướng tài liệu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+#, fuzzy
+msgid "_Document Size"
+msgstr "Tựa tài liệu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "_Trang đầu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "Nằm _ngang"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "Trang _cuối"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "Trang _kế"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "_Hướng"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_Thẳng đứng"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "Trang t_rước"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "_In tài liệu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "_In trang đánh dấu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "_Lưu trang đánh dấu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "_Kích thước"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "Từ trên _xuống"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "_Xem"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"Không thể thực hiện lệnh in:\n"
+"%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Không có trang nào được đánh dấu.\n"
+"Bạn có muốn lưu toàn bộ tài liệu?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "Chọn tập tin để lưu trang như"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Tập tin với tên này đã tồn tại rồi.\n"
+"Bạn có muốn ghi đè nó?"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Không có trang nào được đánh dấu.\n"
+"Bạn có muốn in toàn bộ tài liệu?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "Hiển thị"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "Đầu ra GhostScript"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "Tựa tài liệu"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr "Trạng thái điều khiển GGV"
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "Số trang"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "Tên trang"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "Số trang hiện thời"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "Bề rộng tài liệu"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "Bề cao tài liệu"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "Hướng tài liệu"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "Hướng mặc định"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "Cỡ mặc định"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Đè hướng tài liệu"
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr "Đè kích thước tài liệu"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr "Theo dõi thay đổi của tập tin được hiển thị"
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Làm mượt"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr "Đảo đánh dấu mọi trang"
+
+#: bonobo/ggv-sidebar.c:310
+#, fuzzy
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+"Đảo trạng thái đánh dấu của mọi trang: nếu trước đó là đánh dấu thì sẽ trở "
+"thành không đánh dấu và ngược lại."
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr "Đảo đánh dấu trang lẻ"
+
+#: bonobo/ggv-sidebar.c:323
+#, fuzzy
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Đảo trạng thái đánh dấu của các trang lẻ: nếu trước đó là đánh dấu thì sẽ "
+"trở thành không đánh dấu và ngược lại."
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr "Đảo đánh dấu trang chẵn"
+
+#: bonobo/ggv-sidebar.c:337
+#, fuzzy
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Đảo trạng thái đánh dấu của các trang chẵn: nếu trước đó là đánh dấu thì sẽ "
+"trở thành không đánh dấu và ngược lại."
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr "Xóa đánh dấu mọi trang"
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr ""
+"Xóa trạng thái đánh dấu của mọi trang: tất cả các trang sẽ không bị đánh dấu."
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "Một GhostScript frontend để hiển thị tập tin PostScript"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "Bộ xem PostScript GGV"
+
+#: src/ggv-prefs-ui.c:311
+#, fuzzy
+msgid "_Use GNOME defaults"
+msgstr "Dùng mặc định GNOME"
+
+#: src/ggv-prefs-ui.c:312
+#, fuzzy
+msgid "Show _both icons and text"
+msgstr "Hiện hình và chữ"
+
+#: src/ggv-prefs-ui.c:313
+#, fuzzy
+msgid "Show only _icons"
+msgstr "Chỉ hiện hình"
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "Chỉ hiện chữ"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "Thông số GGV"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "Cỡ mặc định:"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr ""
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "Đơn vị gốc:"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "Cỡ trang dự phòng:"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "Đè kích thước tài liệu"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "Hướng dự phòng:"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "Đè hướng tài liệu"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "Làm mượt"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+msgid "_Respect EOF comments"
+msgstr ""
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "Theo dõi tập tin"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Tài liệu"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Hiện khung bên"
+
+#: src/ggv-prefs-ui.c:622
+#, fuzzy
+msgid "_Put side panel on the right-hand side"
+msgstr "Đặt khung bên trong Nautilus bên phải"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "Hiện thanh menu"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "Hiện thanh công cụ"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "Kiểu thanh công cụ"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "Hiện thanh trạng thái"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "Lưu vị trí"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Bố trí"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Nhảy tới đầu trang"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+#, fuzzy
+msgid "Outline _last visible part when scrolling"
+msgstr "Phác họa phần cuối cùng có thể xem khi đang cuộn"
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "Phác họa phần cuối cùng có thể xem khi đang cuộn"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr ""
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "Bộ thông dịch:"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "Làm mượt:"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr ""
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip:"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2:"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "Lệnh in:"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Đang in"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "Giới thiệu ứng dụng này"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "Hủy bỏ"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "Đóng"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Đóng cửa sổ này"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "T_hoát"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "Thoát khỏi chương trình"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "Trợ giúp cho ứng dụng này"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "Cửa sổ _mới"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "Tạo cửa sổ mới"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "Mở"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "Mở tài liệu PostScript mới"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Mở cửa sổ mới"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "Mở trong cửa sổ mới"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "Mở trong cửa sổ này"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "Nạp lại"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "Nạp lại tài liệu"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "Hiện thanh _bên"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Hiện _menu"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "Hiện thanh t_rạng thái"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Hiện thanh _công cụ"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "Ẩn/Hiện menu"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "Ẩn/Hiện thanh bên"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "Ẩn/Hiện thanh trạng thái"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "Ẩn/Hiện thanh công cụ"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "_Giới thiệu..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "Đón_g"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "_Nội dung"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "_Hiệu chỉnh"
+
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "_Tập tin"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "Trợ _giúp"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "_Bố trí"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "_Mở"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "_Nạp lại"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV: Chưa nạp tài liệu"
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "Chọn tài liệu PostScript"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"Không thể nạp tập tin:\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr "Nguyễn Thái Ngọc Duy"
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Gnome Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "Bộ xem trước tài liệu PostScript"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV: "
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Thẳng đứng"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Nằm ngang"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Từ trên xuống"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr ""
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "inch"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "mm"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "cm"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "điểm"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr ""
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page width"
+msgstr "Khít bề rộng"
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page size"
+msgstr "Cỡ trang dự phòng:"
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "Chưa nạp tài liệu."
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "Tập tin không phải là tài liệu PostScript hợp lệ."
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "Ống dẫn gãy."
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "Lỗi bộ thông dịch."
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Lỗi giải nén tập tin %s:\n"
+
+#: src/gtkgs.c:1424
+#, fuzzy, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Lỗi quét tập tin PDF %s:\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Không thể mở tập tin %s.\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "Tập tin không thể đọc được."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Lỗi quét tập tin %s\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "Tập tin không phải là tài liệu PostScript."
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "Đã nạp tài liệu."
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr "Chuỗi tọa độ không hợp lệ \"%s\"\n"
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr "Xác định số cửa sổ trống được mở."
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "Số cửa sổ trống"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr "X geometry specification (xem trang man \"X\")."
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "TỌA ĐỘ"
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr "Lỗi khởi động Bonobo!\n"
+
+#~ msgid "_Override Orientation"
+#~ msgstr "Đè _hướng"
+
+#~ msgid "_Override Size"
+#~ msgstr "Đè _kích thước"
+
+#~ msgid "Scan PDF:"
+#~ msgstr "Quét PDF:"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"
+
+#~ msgid "_Settings"
+#~ msgstr "_Thiết lập"
+
+#~ msgid ""
+#~ "Ghostscript error:\n"
+#~ "Probably the file is not a PostScript file."
+#~ msgstr ""
+#~ "Lỗi GhostScript:\n"
+#~ "Có lẽ đây không phải là tập tin PostScript"
+
+#~ msgid "Show menubar by default"
+#~ msgstr "Hiện thanh menu (mặc định)"
+
+#~ msgid "Show toolbar by default"
+#~ msgstr "Hiện thanh công cụ (mặc định)"
+
+#~ msgid "Show statusbar by default"
+#~ msgstr "Hiện thanh trạng thái (mặc định)"
+
+#~ msgid "1:2"
+#~ msgstr "1:2"
+
+#~ msgid "1:4"
+#~ msgstr "1:4"
+
+#~ msgid "2:1"
+#~ msgstr "2:1"
+
+#~ msgid "4:1"
+#~ msgstr "4:1"
+
+#~ msgid "Zoom to _Fit"
+#~ msgstr "Vừa _khít"
+
+#~ msgid "GGV _Preferences..."
+#~ msgstr "Thông số _GGV..."
+
+#~ msgid "GNOME Ghostview"
+#~ msgstr "GNOME Ghostview"
+
+#~ msgid "Show labels in toolbar"
+#~ msgstr "Hiện nhãn trong thanh công cụ"

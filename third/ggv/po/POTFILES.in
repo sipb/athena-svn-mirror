@@ -1,0 +1,20 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+bonobo/GNOME_GGV.server.in.in
+bonobo/ggv-control-ui.xml
+bonobo/ggv-control.c
+bonobo/ggv-postscript-view-ui.xml
+bonobo/ggv-postscript-view.c
+bonobo/ggv-postscript-view.c
+bonobo/main.c
+bonobo/ggv-sidebar.c
+ggv.desktop.in
+src/ggv-prefs-ui.c
+src/ggv-prefs.c
+src/ggv-ui.xml
+src/ggv-window.c
+src/ggvutils.c
+src/gtkchecklist.c
+src/gtkgs.c
+src/main.c
+src/ps.c

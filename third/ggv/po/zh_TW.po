@@ -1,0 +1,1028 @@
+# traditional Chinese translation of ggv.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Li Wei Jih <lwj83@cs.ccu.edu.tw>, 2001.
+# Joe Man <trmetal@yahoo.com.hk>, 2001-2002.
+# Abel Cheung <maddog@linux.org.hk>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv 1.99.90\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-10-02 09:31+0800\n"
+"Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
+"Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "GGV PostScript 文件控制項"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "GGV PostScript 檢視模式"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "GGV PostScript 檢視程式的元件工廠"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, fuzzy, no-c-format
+msgid "15_0%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "符合"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "符合寬度"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "符合寬度(_W)"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:12
+#, fuzzy
+msgid "Fit to Page _Width"
+msgstr "符合寬度(_W)"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "放大"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "其它"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "縮小"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "放大(_I)"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "縮小(_O)"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, fuzzy, no-c-format
+msgid "_75%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "預設縮放比例(_D)"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "符合視窗尺寸(_F)"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "縮放(_Z)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr "BBox"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr "Executive"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "首頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "偏好設定(_P)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "移至第一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "移至最後一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "移至下一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "移至上一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "最後"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr "Ledger"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr "Legal"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "Letter"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "下一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "開啟「偏好設定」對話窗"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "上一頁"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "列印選定的頁數"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "列印整份文件"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr "Quarto"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "儲存選定頁數至新的檔案"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr "Statement"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr "Tabloid"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+#, fuzzy
+msgid "_Document Orientation"
+msgstr "文件方向"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+#, fuzzy
+msgid "_Document Size"
+msgstr "文件標題"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "首頁(_F)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "右至左橫向(_L)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "尾頁(_L)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "下一頁(_N)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "文件方向(_O)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "直向(_P)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "上一頁(_P)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "列印文件(_P)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "列印加上標記的頁數(_P)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "儲存加上標記的頁數(_S)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "左至右橫向(_S)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "大小(_S)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "上下翻轉(_U)"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "檢視(_V)"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"無法執行列印指令：\n"
+"%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"尚未選定頁數。\n"
+"是否要儲存整份文件？"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "為準備儲存的頁面指定檔案名稱"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"此名稱的檔案已經存在。\n"
+"是否要覆寫該檔案？"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"尚未選定頁數。\n"
+"是否要列印整份文件？"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "顯示"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "Ghostscript 輸出"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "文件標題"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr "GGV 控制狀況"
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "頁數"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "頁面名稱"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "目前頁數"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "文件寬度"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "文件高度"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "文件方向"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "預設方向"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "預設紙張尺寸"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "自訂文件方向"
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr "自訂頁面尺寸"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr "接受 EOF 備註"
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr "當文件被其它程式改變時自動更新。"
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "平滑化"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr "切換所有頁面的標記狀態"
+
+#: bonobo/ggv-sidebar.c:310
+#, fuzzy
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+"切換所有頁面的標記狀態：已標記的頁面會變為未標記的狀態，而未標記的則會加上標"
+"記。"
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr "切換奇數頁的標記狀態"
+
+#: bonobo/ggv-sidebar.c:323
+#, fuzzy
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"切換奇數頁的標記狀態：已標記的奇數頁會變為未標記的狀態，而未標記的則會加上標"
+"記。"
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr "切換偶數頁的標記狀態"
+
+#: bonobo/ggv-sidebar.c:337
+#, fuzzy
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"切換偶數頁的標記狀態：已標記的偶數頁會變為未標記的狀態，而未標記的則會加上標"
+"記。"
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr "清除所有頁面的標記狀態"
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr "清除所有頁面的標記狀態：所有頁面都會成為未標記的狀態。"
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "檢視 PostScript 文件的 Ghostscript 圖形化程式"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "GGV PostScript 檢視程式"
+
+#: src/ggv-prefs-ui.c:311
+#, fuzzy
+msgid "_Use GNOME defaults"
+msgstr "使用 GNOME 預設值"
+
+#: src/ggv-prefs-ui.c:312
+#, fuzzy
+msgid "Show _both icons and text"
+msgstr "同時顯示圖示及文字"
+
+#: src/ggv-prefs-ui.c:313
+#, fuzzy
+msgid "Show only _icons"
+msgstr "只顯示圖示"
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "只顯示文字"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "GGV 偏好設定"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "預設縮放比例："
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr ""
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "座標單位："
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "預設頁面尺寸："
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "自訂頁面尺寸"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "預設文件方向："
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "自訂文件方向"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "平滑化"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+#, fuzzy
+msgid "_Respect EOF comments"
+msgstr "接受 EOF 備註"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "檔案內容更改時重新載入檔案"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "文件"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "顯示側面窗格"
+
+#: src/ggv-prefs-ui.c:622
+#, fuzzy
+msgid "_Put side panel on the right-hand side"
+msgstr "在 Nautilus 中將側面窗格放在右邊顯示"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "顯示選單列"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "顯示工具列"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "工具列樣式"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "顯示狀態列"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "儲存視窗位置及尺寸"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "視窗配置"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "自動移動至頁面開始部份"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+#, fuzzy
+msgid "Outline _last visible part when scrolling"
+msgstr "捲動時顯示頁面邊框"
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "捲動時顯示頁面邊框"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr ""
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "解譯器："
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "平滑化："
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr ""
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip："
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2："
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "列印指令："
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "列印"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "關於此程式的資訊"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "取消"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "關閉"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "關閉此視窗"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "結束(_X)"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "結束程式"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "有關此程式的說明文件"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "新增視窗(_W)"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "新增視窗"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "開啟"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "開啟新的 PostScript 文件"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "開啟新的視窗"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "在新視窗開啟"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "在這個視窗中開啟"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "重新載入"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "重新載入目前的文件"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "顯示側面窗格(_B)"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "顯示選單(_M)"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "顯示狀態列(_S)"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "顯示工具列(_T)"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "顯示/隱藏選單"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "顯示/隱藏側面窗格"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "顯示/隱藏狀態列"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "顯示/隱藏工具列"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "關於(_A)..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "關閉(_C)"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "內容(_C)"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "修改設定(_E)"
+
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "檔案(_F)"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "求助(_H)"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "視窗配置(_L)"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "開啟(_O)"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "重新載入(_R)"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV：沒有載入任何文件"
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "選取 PostScript 文件"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"無法載入檔案：\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr ""
+"Joe Man <trmetal@yahoo.com.hk>, 2001-2002.\n"
+"Li Wei Jih <lwj83@cs.ccu.edu.tw>, 2001."
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Gnome Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "GNOME 的 PostScript 文件檢視程式"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV："
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "直向"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "右至左橫向"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "上下倒置"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr "左至右橫向"
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "英吋"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "毫米"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "厘米"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "點"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr ""
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page width"
+msgstr "符合寬度"
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page size"
+msgstr "預設頁面尺寸："
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "沒有載入任何文件。"
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "此檔案不是正確的 PostScript 文件。"
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "無法連結有關程式進行資料傳送。"
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "執行解譯器失敗。"
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "當解壓縮檔案 %s 時發生錯誤：\n"
+
+#: src/gtkgs.c:1424
+#, fuzzy, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "當掃描 pdf 檔 %s 時發生錯誤：\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "無法開啟檔案 %s。\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "無法讀入檔案。"
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "當掃描檔案 %s 時發生錯誤\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "此檔案不是 PostScript 文件。"
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "已載入文件。"
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr "指定尺寸及位置的字串“%s”無效\n"
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr "指定準備開啟的空白視窗的數目。"
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "空白視窗數目"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr "指定視窗尺寸/位置的規格 (請參考“X”的 manpage)"
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "尺寸及位置"
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr "無法初始化 Bonobo！\n"
+
+#~ msgid "_Override Orientation"
+#~ msgstr "自訂頁面的方向(_O)"
+
+#~ msgid "_Override Size"
+#~ msgstr "自訂頁面大小(_O)"
+
+#~ msgid "Scan PDF:"
+#~ msgstr "掃描 PDF："
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "版權所有 (C) 1998-2002 自由軟體基金會"
+
+#~ msgid "Show menubar by default"
+#~ msgstr "預設顯示選單列"
+
+#~ msgid "Show toolbar by default"
+#~ msgstr "預設顯示工具列"
+
+#~ msgid "Show statusbar by default"
+#~ msgstr "預設顯示狀態列"
+
+#~ msgid ""
+#~ "Ghostscript error:\n"
+#~ "Probably the file is not a PostScript file."
+#~ msgstr ""
+#~ "Ghostscript 錯誤：\n"
+#~ "該檔案可能不是 PostScript 檔案。"
+
+#~ msgid "Zoom to _Default"
+#~ msgstr "縮放至原來尺寸(_D)"
+
+#~ msgid "Zoom to _Fit"
+#~ msgstr "符合視窗(_F)"

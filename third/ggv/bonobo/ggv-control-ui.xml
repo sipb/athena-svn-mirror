@@ -1,0 +1,88 @@
+<Root>
+
+  <commands>
+    <cmd name="ZoomIn" _label="Zoom _In" pixtype="stock"
+         pixname="gtk-zoom-in" accel="*Control*plus"
+	 _tip="Increase zoom factor"/>	
+    <cmd name="ZoomOut" _label="Zoom _Out" pixtype="stock"
+         pixname="gtk-zoom-out" accel="*Control*minus"
+	 _tip="Decrease zoom factor"/>
+    <cmd name="ZoomToDefault" _label="_Default Zoom" pixtype="stock"
+         pixname="gtk-zoom-100" accel="*Control*d"
+	 _tip="Change zoom factor to default"/>
+    <cmd name="ZoomToFit" _label="_Fit Window" pixtype="stock"
+         pixname="gtk-zoom-fit" accel="*Control*g"
+	 _tip="Zoom the page to fit in the window"/>
+    <cmd name="ZoomToFitWidth" _label="Fit _Width" 
+	 accel="*Control*f" _tip="Zoom the page to be as wide as the window"/>
+    <cmd name="Zoom0104" _label="25%" type="radio" group="ZoomLevels"/>
+    <cmd name="Zoom0102" _label="_50%" type="radio" group="ZoomLevels"/>
+    <cmd name="Zoom0304" _label="_75%" type="radio" group="ZoomLevels"/>
+    <cmd name="Zoom0101" _label="_100%" type="radio" group="ZoomLevels" accel="*Control*1"/>
+    <cmd name="Zoom0302" _label="15_0%" type="radio" group="ZoomLevels"/>
+    <cmd name="Zoom0201" _label="_200%" type="radio" group="ZoomLevels"/>
+    <cmd name="Zoom0401" _label="_400%" type="radio" group="ZoomLevels"/>
+    <cmd name="ZoomOther" _label="Other" type="radio" group="ZoomLevels" sensitive="0"/>
+    <cmd name="AutoFitNone" _label="_No Auto-fit" type="radio" group="AutoFitMode"/>
+    <cmd name="AutoFitWidth" _label="Fit to Page _Width" type="radio" group="AutoFitMode"/>
+    <cmd name="AutoFitPage" _label="Fit to Page _Size" type="radio" group="AutoFitMode"/>
+  </commands>
+
+  <menu>
+    <submenu name="View">
+      <placeholder name="Zoom Items Placeholder">
+        <submenu name="Zoom" _label="_Zoom">
+          <menuitem name="ZoomIn" verb=""/>
+    	  <menuitem name="ZoomOut" verb=""/>
+    	  <menuitem name="ZoomToDefault" verb=""/>
+    	  <menuitem name="ZoomToFit" verb=""/>
+    	  <menuitem name="ZoomToFitWidth" verb="" pixtype="pixbuf"/>
+          <separator/>
+          <menuitem name="Zoom0104" verb=""/>
+          <menuitem name="Zoom0102" verb=""/>
+	  <menuitem name="Zoom0304" verb=""/>
+          <menuitem name="Zoom0101" verb=""/>
+	  <menuitem name="Zoom0302" verb=""/>
+          <menuitem name="Zoom0201" verb=""/>
+          <menuitem name="Zoom0401" verb=""/>
+          <menuitem name="ZoomOther" verb=""/>
+        </submenu>
+	<submenu name="AutoFit" _label="_Auto-fit">
+	  <menuitem name="AutoFitNone" verb=""/>
+	  <menuitem name="AutoFitWidth" verb=""/>
+	  <menuitem name="AutoFitPage" verb=""/>
+	</submenu>
+      </placeholder>
+    </submenu>
+  </menu>
+          
+  <dockitem name="Toolbar">
+    <placeholder name="GgvItems">
+      <placeholder name="GgvZoomItems" delimit="top">
+        <toolitem name="ZoomIn" _label="In" verb=""/>
+        <toolitem name="ZoomOut" _label="Out" verb=""/>
+        <toolitem name="ZoomToDefault" _label="1:1" verb=""/>
+        <toolitem name="ZoomToFit" _label="Fit" verb=""/>
+        <toolitem name="ZoomToFitWidth" _label="Fit Width" verb="" pixtype="pixbuf"/>
+      </placeholder>
+    </placeholder>
+  </dockitem>
+
+  <dockitem name="Sidebar">
+    <placeholder name="Zoom Control Placeholder">
+      <control name="ZoomControl"/>
+    </placeholder>
+  </dockitem>
+
+  <popups>
+    <popup name="button3">
+      <placeholder name="ZoomMenu" delimit="top">
+        <menuitem name="ZoomIn" verb=""/>
+        <menuitem name="ZoomOut" verb=""/>
+        <menuitem name="ZoomToDefault" verb=""/>
+        <menuitem name="ZoomToFit" verb=""/>
+        <menuitem name="ZoomToFitWidth" verb="" pixtype="pixbuf"/>
+      </placeholder>
+    </popup>
+  </popups>
+</Root>

@@ -1,0 +1,1234 @@
+# Lithuanian translation of ggv
+# Copyright (C) 2000-2001 Free Software Foundation, Inc.
+# Gediminas Paulauskas <menesis@delfi.lt>, 2000-2001
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv 1.1.0\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2001-05-11 03:02+0200\n"
+"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr ""
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+#, fuzzy
+msgid "GGV PostScript View"
+msgstr "Ghostscript"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, no-c-format
+msgid "15_0%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:11
+#, fuzzy
+msgid "Fit to Page _Size"
+msgstr "_Puslapio dydis"
+
+#: bonobo/ggv-control-ui.xml.h:12
+msgid "Fit to Page _Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Kitas"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:17
+#, fuzzy
+msgid "Zoom _In"
+msgstr "Padidinti"
+
+#: bonobo/ggv-control-ui.xml.h:18
+#, fuzzy
+msgid "Zoom _Out"
+msgstr "Pamažinti"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, no-c-format
+msgid "_75%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:32
+#, fuzzy
+msgid "_Default Zoom"
+msgstr "Įprastas mastelis"
+
+#: bonobo/ggv-control-ui.xml.h:33
+#, fuzzy
+msgid "_Fit Window"
+msgstr "_Naujas langas"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "_Mastelis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+#, fuzzy
+msgid "GGV _Preferences"
+msgstr "GGV nuostatos"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+#, fuzzy
+msgid "Go to first page"
+msgstr "Eiti į tolesnį puslapį"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+#, fuzzy
+msgid "Go to last page"
+msgstr "Eiti į tolesnį puslapį"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+#, fuzzy
+msgid "Go to next page"
+msgstr "Eiti į tolesnį puslapį"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+#, fuzzy
+msgid "Go to previous page"
+msgstr "Eiti į ankstesnį puslapį"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+#, fuzzy
+msgid "Last"
+msgstr "Išdėstymas"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+#, fuzzy
+msgid "Next"
+msgstr "Kitas puslapis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "Spausdinti pažymėtus puslapius"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+#, fuzzy
+msgid "Print the whole document"
+msgstr "Spausdinti dokumentą"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+#, fuzzy
+msgid "Save marked pages to a file"
+msgstr "Išsaugoti pažymėtus puslapius į naują bylą"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+#, fuzzy
+msgid "_Document Orientation"
+msgstr "_Nepaisyti dokumento puslapio formato"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+#, fuzzy
+msgid "_Document Size"
+msgstr "_Dokumentas"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+#, fuzzy
+msgid "_First page"
+msgstr "Kitas puslapis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "_Gulsčiai"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+#, fuzzy
+msgid "_Last page"
+msgstr "Kitas puslapis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+#, fuzzy
+msgid "_Next page"
+msgstr "Kitas puslapis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "_Orientacija"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_Stačiai"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+#, fuzzy
+msgid "_Previous page"
+msgstr "Praeitas puslapis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+#, fuzzy
+msgid "_Print document"
+msgstr "Spausdinti dokumentą"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+#, fuzzy
+msgid "_Print marked pages"
+msgstr "Spausdinti pažymėtus puslapius"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+#, fuzzy
+msgid "_Save marked pages"
+msgstr "Išsaugoti pa_žymėtus puslapius..."
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "_Jūros peizažas"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+#, fuzzy
+msgid "_Size"
+msgstr "_Puslapio dydis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+#, fuzzy
+msgid "_Upside down"
+msgstr "_Aukštyn kojomis"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:800
+#, fuzzy
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Nėra pažymėtų puslapių.\n"
+"Ar nori spausdinti visą dokumentą?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:871
+#, fuzzy
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Nėra pažymėtų puslapių.\n"
+"Ar nori spausdinti visą dokumentą?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1951
+#, fuzzy
+msgid "GhostScript output"
+msgstr "Ghostscript"
+
+#: bonobo/ggv-postscript-view.c:1985
+#, fuzzy
+msgid "Document title"
+msgstr "Dokumentas"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1997
+#, fuzzy
+msgid "Page names"
+msgstr "_Puslapio dydis"
+
+#: bonobo/ggv-postscript-view.c:2001
+#, fuzzy
+msgid "Current page number"
+msgstr "Rodyti puslapio vidurį centre"
+
+#: bonobo/ggv-postscript-view.c:2005
+#, fuzzy
+msgid "Document width"
+msgstr "Dokumentas"
+
+#: bonobo/ggv-postscript-view.c:2009
+#, fuzzy
+msgid "Document height"
+msgstr "Dokumentas"
+
+#: bonobo/ggv-postscript-view.c:2013
+#, fuzzy
+msgid "Document orientation"
+msgstr "Nepaisyti dokumento orientacijos"
+
+#: bonobo/ggv-postscript-view.c:2017
+#, fuzzy
+msgid "Default orientation"
+msgstr "Stačia orientacija (Portrait)"
+
+#: bonobo/ggv-postscript-view.c:2021
+#, fuzzy
+msgid "Default size"
+msgstr "Įprastas mastelis"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Nepaisyti dokumento orientacijos"
+
+#: bonobo/ggv-postscript-view.c:2029
+#, fuzzy
+msgid "Override document size"
+msgstr "_Nepaisyti dokumento dydžio"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:2037
+#, fuzzy
+msgid "Watch displayed file for changes"
+msgstr "Atnaujina vaizdą, jei byla pasikeičia."
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Antialiasingas"
+
+#: bonobo/ggv-sidebar.c:309
+#, fuzzy
+msgid "Toggle marked state of all pages"
+msgstr "Perjungti visus puslapius"
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:322
+#, fuzzy
+msgid "Toggle marked state of odd pages"
+msgstr "Perjungti nelyginius puslapius"
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:336
+#, fuzzy
+msgid "Toggle marked state of even pages"
+msgstr "Perjungti lyginius puslapius"
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr ""
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "GNOME Ghostscript apvalkalas"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:311
+msgid "_Use GNOME defaults"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:312
+msgid "Show _both icons and text"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:313
+msgid "Show only _icons"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "Rodyti tolesnį puslapį"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "GGV nuostatos"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "Įprastas mastelis"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr ""
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "Koordinačių vienetai"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+msgid "_Fallback page size:"
+msgstr ""
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "_Nepaisyti dokumento dydžio"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "Jūros peizažo orientacija (Seascape)"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "Nepaisyti dokumento orientacijos"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "Antialiasingas"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+msgid "_Respect EOF comments"
+msgstr ""
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "Stebėti bylą"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Dokumentas"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Rodyti šoninį skydelį"
+
+#: src/ggv-prefs-ui.c:622
+msgid "_Put side panel on the right-hand side"
+msgstr ""
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "Rodyti _meniu"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "Rodyti įrankių _juostą"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr ""
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "Rodyti įrankių _juostą"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "Išsaugoti geometriją"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Išdėstymas"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Peršokti į puslapio viršų, kai naudojama klaviatūra"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+msgid "Outline _last visible part when scrolling"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "Sutalpinti dokumentą į matomą sritį"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr ""
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "Interpretatorius"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "Antialiasingas"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr ""
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "Spausdinimo komanda"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Spausdinimas"
+
+#: src/ggv-ui.xml.h:1
+#, fuzzy
+msgid "About this application"
+msgstr "Sutvarkyti programą"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr ""
+
+#: src/ggv-ui.xml.h:3
+#, fuzzy
+msgid "Close"
+msgstr "_Uždaryti"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Uždaryti šį langą"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "I_šeiti"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr ""
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:8
+#, fuzzy
+msgid "Help for this application"
+msgstr "Sutvarkyti programą"
+
+#: src/ggv-ui.xml.h:9
+#, fuzzy
+msgid "New _window"
+msgstr "_Naujas langas"
+
+#: src/ggv-ui.xml.h:10
+#, fuzzy
+msgid "New window"
+msgstr "_Naujas langas"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "Atidaryti"
+
+#: src/ggv-ui.xml.h:12
+#, fuzzy
+msgid "Open a new PostScript document"
+msgstr "Įkelti postscript dokumentą"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Atidaryti naują langą"
+
+#: src/ggv-ui.xml.h:14
+#, fuzzy
+msgid "Open in new window"
+msgstr "Atidaryti naują langą"
+
+#: src/ggv-ui.xml.h:15
+#, fuzzy
+msgid "Open in this window"
+msgstr "Uždaryti šį langą"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "Vėl įkelti"
+
+#: src/ggv-ui.xml.h:17
+#, fuzzy
+msgid "Reload current document"
+msgstr "Iš naujo įkelti dokumentą iš disko"
+
+#: src/ggv-ui.xml.h:18
+#, fuzzy
+msgid "Show Side_bar"
+msgstr "Rodyti šoninį skydelį"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Rodyti _meniu"
+
+#: src/ggv-ui.xml.h:20
+#, fuzzy
+msgid "Show _Statusbar"
+msgstr "Rodyti įrankių _juostą"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Rodyti įrankių _juostą"
+
+#: src/ggv-ui.xml.h:22
+#, fuzzy
+msgid "Show/hide the menus"
+msgstr "Rodyti _meniu"
+
+#: src/ggv-ui.xml.h:23
+#, fuzzy
+msgid "Show/hide the sidebar"
+msgstr "Nenaudoti šoninio skydelio"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr ""
+
+#: src/ggv-ui.xml.h:25
+#, fuzzy
+msgid "Show/hide the toolbar"
+msgstr "Rodyti įrankių juostą"
+
+#: src/ggv-ui.xml.h:26
+#, fuzzy
+msgid "Toggle fullscreen mode"
+msgstr "Pažymėti _esamą puslapį"
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr ""
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "_Uždaryti"
+
+#: src/ggv-ui.xml.h:29
+#, fuzzy
+msgid "_Contents"
+msgstr "Koordinačių vienetai"
+
+#: src/ggv-ui.xml.h:30
+#, fuzzy
+msgid "_Edit"
+msgstr "I_šeiti"
+
+#: src/ggv-ui.xml.h:31
+#, fuzzy
+msgid "_File"
+msgstr "Ste_bėti bylą"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr ""
+
+#: src/ggv-ui.xml.h:33
+#, fuzzy
+msgid "_Layout"
+msgstr "Išdėstymas"
+
+#: src/ggv-ui.xml.h:34
+#, fuzzy
+msgid "_Open"
+msgstr "Atidaryti"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "_Vėl įkelti"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr ""
+
+#: src/ggv-window.c:373
+#, fuzzy
+msgid "Select a PostScript document"
+msgstr "Įkelti postscript dokumentą"
+
+#: src/ggv-window.c:382
+#, fuzzy, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr "Negaliu įkelti %s."
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr ""
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Gnome Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr ""
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr ""
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Stačias lapas"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Gulsčias lapas"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Aukštyn kojomis"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr "Jūros peizažas"
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "coliai"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "mm"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "cm"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "taškai"
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "None"
+msgstr "Ne"
+
+#: src/ggvutils.c:79
+msgid "Fit to page width"
+msgstr ""
+
+#: src/ggvutils.c:79
+msgid "Fit to page size"
+msgstr ""
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr ""
+
+#: src/gtkgs.c:491
+#, fuzzy
+msgid "File is not a valid PostScript document."
+msgstr "Įkelti postscript dokumentą"
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr ""
+
+#: src/gtkgs.c:1249
+#, fuzzy
+msgid "Interpreter failed."
+msgstr "Interpretatorius"
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Klaida išarchyvuojant bylą %s:\n"
+
+#: src/gtkgs.c:1424
+#, fuzzy, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Klaida skanuojant pdf bylą %s:\n"
+
+#: src/gtkgs.c:1754
+#, fuzzy, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Negaliu atidaryti bylos %s\n"
+
+#: src/gtkgs.c:1756
+#, fuzzy
+msgid "File is not readable."
+msgstr "%s nėra paprasta byla."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Klaida skanuojant bylą %s\n"
+
+#: src/gtkgs.c:1780
+#, fuzzy
+msgid "The file is not a PostScript document."
+msgstr "Įkelti postscript dokumentą"
+
+#: src/gtkgs.c:1820
+#, fuzzy
+msgid "Document loaded."
+msgstr "Dokumentas"
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr ""
+
+#: src/main.c:175
+#, fuzzy
+msgid "Specify the number of empty windows to open."
+msgstr "Nurodo geometriją pagrindiniam langui"
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr ""
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr ""
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "GEOMETRIJA"
+
+#: src/main.c:225
+#, fuzzy
+msgid "Could not initialize Bonobo!\n"
+msgstr "Negalėjau inicializuoti Bonobo"
+
+#~ msgid "At end"
+#~ msgstr "Gale"
+
+#~ msgid "Unspecified"
+#~ msgstr "Nenurodyta"
+
+#~ msgid "Unknown"
+#~ msgstr "Nežinoma"
+
+#~ msgid ""
+#~ "Filename: %s %s. Magnification %3d%%. Document Orientation: %s. Override "
+#~ "Media: %s"
+#~ msgstr ""
+#~ "Bylos vardas: %s %s. Mastelis: %3d%%. Orientacija: %s. Nepaisyti "
+#~ "laikmenos: %s"
+
+#~ msgid "Yes"
+#~ msgstr "Taip"
+
+#~ msgid "gs warnings for %s"
+#~ msgstr "gs įspėjimai apie %s"
+
+#~ msgid "Opening %s..."
+#~ msgstr "Atidarau %s..."
+
+#~ msgid "Successfully loaded %s."
+#~ msgstr "Sėkmingai įkėliau %s."
+
+#~ msgid "Successfully saved marked pages to file %s."
+#~ msgstr "Sėkmingai išsaugojau pažymėtus puslapius į bylą %s."
+
+#~ msgid "Unable to create %s."
+#~ msgstr "Negaliu sukurti %s."
+
+#~ msgid "Previous Page"
+#~ msgstr "Praeitas puslapis"
+
+#~ msgid "Recenter Page"
+#~ msgstr "Centruoti puslapį"
+
+#~ msgid "Toggle _all pages"
+#~ msgstr "Pažymėti _visus puslapius"
+
+#~ msgid "Toggle _odd pages"
+#~ msgstr "Pažymėti _nelyginius puslapius"
+
+#~ msgid "Toggle _even pages"
+#~ msgstr "Pažymėti _lyginius puslapius"
+
+#~ msgid "_Unmark all pages"
+#~ msgstr "_Atžymėti visus puslapius"
+
+#~ msgid "Landscape orientation"
+#~ msgstr "Gulsčia orientacija (Landscape)"
+
+#~ msgid "Upside down orientation"
+#~ msgstr "Aukštyn kojomis orientacija"
+
+#~ msgid "Override the orientation of the document."
+#~ msgstr "Nepaisyti dokumento puslapio orientacijos."
+
+#~ msgid "Override the size of page to use."
+#~ msgstr "Nepaisyti nurodyto popieriaus dydžio."
+
+#~ msgid "Zoom to _Fit"
+#~ msgstr "Su_talpinti"
+
+#~ msgid "Toggle menu visibility"
+#~ msgstr "Perjungti meniu matomumą"
+
+#~ msgid "S_how Side Panel"
+#~ msgstr "Rodyti _šoninį skydelį"
+
+#~ msgid "Toggle side panel visibility"
+#~ msgstr "Perjungti šoninio skydelio matomumą"
+
+#~ msgid "Toggle toolbar visibility"
+#~ msgstr "Perjungti įrankių juostos matomumą"
+
+#~ msgid "_Open..."
+#~ msgstr "_Atidaryti..."
+
+#~ msgid "_Print"
+#~ msgstr "S_pausdinti"
+
+#~ msgid "Prin_t marked pages"
+#~ msgstr "_Spausdinti pažymėtus puslapius"
+
+#~ msgid "Exit GGv"
+#~ msgstr "Išeiti iš GGv"
+
+#~ msgid "_Next Page"
+#~ msgstr "_Kitas puslapis"
+
+#~ msgid "_Previous Page"
+#~ msgstr "_Praeitas puslapis"
+
+#~ msgid "Show previous page"
+#~ msgstr "Rodyti ankstesnį puslapį"
+
+#~ msgid "_Recenter Page"
+#~ msgstr "_Centruoti puslapį"
+
+#~ msgid "_Antialiasing"
+#~ msgstr "_Antialiasingas"
+
+#~ msgid "Toggle antialiasing"
+#~ msgstr "Perjungti antialiasingą"
+
+#~ msgid "New"
+#~ msgstr "Naujas"
+
+#~ msgid "Create a new window"
+#~ msgstr "Sukurti naują langą"
+
+#~ msgid "Zoom out"
+#~ msgstr "Pamažinti"
+
+#~ msgid "Zoom in"
+#~ msgstr "Padidinti"
+
+#~ msgid "Print marked"
+#~ msgstr "Spausdinti pažymėtus"
+
+#~ msgid "Save marked"
+#~ msgstr "Išsaugoti pažymėtus"
+
+#~ msgid "Preferences"
+#~ msgstr "Nuostatos"
+
+#~ msgid "Unmark all pages"
+#~ msgstr "Atžymėti visus puslapius"
+
+#~ msgid "Override media size"
+#~ msgstr "Nepaisyti laikmenos dydžio"
+
+#~ msgid "Show side panel by default"
+#~ msgstr "Įprastai rodyti šoninį skydelį"
+
+#~ msgid "Show menubar by default"
+#~ msgstr "Įprastai rodyti meniu"
+
+#~ msgid "Show toolbar by default"
+#~ msgstr "Įprastai rodyti įrankių juostą"
+
+#~ msgid "Scan PDF"
+#~ msgstr "Skanuoti PDF"
+
+#~ msgid "Do not use sidebar and toolbar (deprecated)"
+#~ msgstr "Nenaudoti šoninio skydelio nei įrankių juostos (atgyvenęs)"
+
+#~ msgid "SPARTAN"
+#~ msgstr "SPARTAN"
+
+#~ msgid "NOSIDEBAR"
+#~ msgstr "NOSIDEBAR"
+
+#~ msgid "Do not use a menu bar"
+#~ msgstr "Nenaudoti meniu juostos"
+
+#~ msgid "NOMENUBAR"
+#~ msgstr "NOMENUBAR"
+
+#~ msgid "Do not use a tool bar"
+#~ msgstr "Nenaudoti įrankių juostos"
+
+#~ msgid "NOTOOLBAR"
+#~ msgstr "NOTOOLBAR"
+
+#~ msgid "Use the whole screen for the main window"
+#~ msgstr "Naudoti visą ekraną pagrindiniam langui"
+
+#~ msgid "FULLSCREEN"
+#~ msgstr "FULLSCREEN"
+
+#~ msgid "%s does not exist."
+#~ msgstr "Nėra tokios bylos: %s"
+
+#~ msgid ""
+#~ "PostScript(TM) document viewer.\n"
+#~ "Based on Tim Theisen's excellent Ghostview application."
+#~ msgstr ""
+#~ "PostScript(TM) dokumentų žiūrėklė.\n"
+#~ "Paremtas Timo Theisen'o nuostabia programa Ghostview."
+
+#~ msgid "GGv: Open File"
+#~ msgstr "GGv: Atidaryti bylą"
+
+#~ msgid "There are no marked pages."
+#~ msgstr "Nėra pažymėtų puslapių."
+
+#~ msgid "GGv: Save marked pages"
+#~ msgstr "GGv: Išsaugoti pažymėtus puslapius"
+
+#~ msgid "Couldn't find the GGv manual!"
+#~ msgstr "Negaliu rasti GGv žinyno!"
+
+#~ msgid "GNOME Ghostview"
+#~ msgstr "PostScript bylų žiūriklis"
