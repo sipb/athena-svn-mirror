@@ -1,4 +1,4 @@
-# $Id: athena,v 1.61 1998-05-08 16:51:26 miki Exp $
+# $Id: athena,v 1.62 1998-05-20 14:55:07 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -16,7 +16,7 @@ echo "Beginning Athena startup tasks"
 # Let the log host know that we're booting, and whether there was a panic.
 panic=`dmesg | awk '
 	/^panic/	{ panic = " (" $0 ")"; boots = 0; }
-	/UNIX(R)/	{ if (++boots == 2) panic = ""; }
+	/UNIX\(R\)/	{ if (++boots == 2) panic = ""; }
 	END		{ print panic; }'`
 logger -p user.notice "Booting$panic"
 
