@@ -7,8 +7,8 @@ cflags_set=${CFLAGS+set}
 AM_CONFIG_HEADER(config.h)
 
 GDK_PIXBUF_MAJOR=0
-GDK_PIXBUF_MINOR=10
-GDK_PIXBUF_MICRO=1
+GDK_PIXBUF_MINOR=16
+GDK_PIXBUF_MICRO=0
 GDK_PIXBUF_VERSION="${GDK_PIXBUF_MAJOR}.${GDK_PIXBUF_MINOR}.${GDK_PIXBUF_MICRO}"
 AM_INIT_AUTOMAKE(gdk-pixbuf, ${GDK_PIXBUF_VERSION})
 
@@ -33,31 +33,32 @@ AM_MAINTAINER_MODE
 AM_PATH_GLIB(1.2.0,,,gmodule)
 AM_PATH_GTK(1.2.0)
 
-dnl See if we are being built inside gnome-libs.
+AC_MSG_CHECKING(whether make is GNU Make)
+STRIP_BEGIN=
+STRIP_END=
+if $ac_make --version 2>/dev/null | grep '^GNU Make ' >/dev/null ; then
+	STRIP_BEGIN='$(strip $(STRIP_DUMMY)'
+	STRIP_END=')'
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+STRIP_DUMMY=
+AC_SUBST(STRIP_DUMMY)
+AC_SUBST(STRIP_BEGIN)
+AC_SUBST(STRIP_END)
 
-if test -d ../libgnomeui; then
-        echo "Building the GnomeCanvasPixbuf library"
-        GNOME_LIBS="`pwd`/../libgnomeui/libgnomeui.la $GTK_LIBS"
-        GNOME_CFLAGS="-I`pwd`/.. $GTK_CFLAGS"
-        INSIDE_GNOME=yes
+AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
+if test x$GNOME_CONFIG != xno; then
+	echo "Building the GnomeCanvasPixbuf library"
+	GNOME_LIBS=`$GNOME_CONFIG --libs gnomeui`
+	GNOME_CFLAGS=`$GNOME_CONFIG --cflags gnomeui`
 	BUILD_CANVAS=yes
 else
-        dnl We also need Gnome in this case 
+	echo "Not building GnomeCanvasPixbuf library"
+	BUILD_CANVAS=no
+fi       
 
-        AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
-        if test x$GNOME_CONFIG != xno; then
-		echo "Building the GnomeCanvasPixbuf library"
-                GNOME_LIBS=`$GNOME_CONFIG --libs gnomeui`
-                GNOME_CFLAGS=`$GNOME_CONFIG --cflags gnomeui`
-		BUILD_CANVAS=yes
-        else
-		echo "Not building GnomeCanvasPixbuf library"
-		BUILD_CANVAS=no
-        fi
-        INSIDE_GNOME=no
-fi
-
-AM_CONDITIONAL(INSIDE_GNOME_LIBS, test $INSIDE_GNOME = yes)
 AM_CONDITIONAL(BUILD_CANVAS_ITEM, test $BUILD_CANVAS = yes)
 
 AC_SUBST(GNOME_LIBS)
@@ -229,15 +230,15 @@ AM_CONDITIONAL(HAVE_TIFF, test "x$LIBTIFF" != x)
 AM_CONDITIONAL(HAVE_PNG, test "x$LIBPNG" != x)
 AM_CONDITIONAL(HAVE_JPEG, test "x$LIBJPEG" != x)
 
-GDK_PIXBUF_LIBDIR='-L$$ATHTOOLROOT${libdir}'
-GDK_PIXBUF_INCLUDEDIR="-I\$\$ATHTOOLROOT${includedir} \\\`gtk-config --cflags\\\`"
-GDK_PIXBUF_LIBS="\\\`glib-config --libs\\\` -lgdk_pixbuf \\\`gtk-config --libs\\\`"
+GDK_PIXBUF_LIBDIR='-L${libdir}'
+GDK_PIXBUF_INCLUDEDIR="-I${includedir}/gdk-pixbuf-1.0 $GTK_CFLAGS"
+GDK_PIXBUF_LIBS="$GLIB_LIBS -lgdk_pixbuf $GTK_LIBS"
 AC_SUBST(STATIC_LIB_DEPS)
 STATIC_LIB_DEPS="$deps"
 
 GDK_PIXBUF_XLIB_LIBDIR=$GDK_PIXBUF_LIBDIR
 GDK_PIXBUF_XLIB_INCLUDEDIR=$GDK_PIXBUF_INCLUDEDIR
-GDK_PIXBUF_XLIB_LIBS="\\\`glib-config --libs\\\` -lgdk_pixbuf_xlib $X11_LIBS"
+GDK_PIXBUF_XLIB_LIBS="$GLIB_LIBS -lgdk_pixbuf_xlib $X11_LIBS"
 
 GNOMECANVASPIXBUF_LIBDIR=$GDK_PIXBUF_LIBDIR
 GNOMECANVASPIXBUF_INCLUDEDIR=$GDK_PIXBUF_INCLUDEDIR
@@ -255,11 +256,42 @@ AC_SUBST(GNOMECANVASPIXBUF_LIBDIR)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 
-# gtk-doc stuff
+##################################################
+# Checks for gtk-doc and docbook-tools
+##################################################
+
+AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
+
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/gnome/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+AC_SUBST(HTML_DIR)
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
+
+gtk_doc_min_version=0.6
+if $GTKDOC ; then 
+    gtk_doc_version=`gtkdoc-mkdb --version`
+    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
+    if perl <<EOF ; then
+      exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
+            ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
+EOF
+      AC_MSG_RESULT(yes)
+   else
+      AC_MSG_RESULT(no)
+      GTKDOC=false
+   fi
+fi
+
 AM_CONDITIONAL(HAVE_GTK_DOC, $GTKDOC)
 AC_SUBST(HAVE_GTK_DOC)
+
+AC_CHECK_PROG(DB2HTML, db2html, true, false)
+AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
 
 dnl Let people disable the gtk-doc stuff.
 AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=auto]], enable_gtk_doc="$enableval", enable_gtk_doc=auto)
@@ -268,9 +300,13 @@ if test x$enable_gtk_doc = xauto ; then
   if test x$GTKDOC = xtrue ; then
     enable_gtk_doc=yes
   else
-    enable_gtk_doc=no
+    enable_gtk_doc=no 
   fi
 fi
+
+dnl NOTE: We need to use a separate automake conditional for this
+dnl       to make this work with the tarballs.
+AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 
 #
 # Checks to see if we should compile in MMX support (there will be
@@ -326,13 +362,6 @@ else
 fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
-
-dnl NOTE: We need to use a separate automake conditional for this
-dnl       to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
-
-GDK_PIXBUF_DIR=`(cd $srcdir; pwd)`
-AC_SUBST(GDK_PIXBUF_DIR)
 
 # Output files
 
