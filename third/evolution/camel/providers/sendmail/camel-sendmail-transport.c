@@ -34,6 +34,8 @@
 #include <string.h>
 
 #include "camel-sendmail-transport.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-stream-filter.h"
 #include "camel-mime-message.h"
 #include "camel-data-wrapper.h"
 #include "camel-stream-fs.h"
@@ -85,10 +87,11 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		  CamelAddress *from, CamelAddress *recipients,
 		  CamelException *ex)
 {
+	struct _header_raw *header, *savedbcc, *n, *tail;
 	const char *from_addr, *addr, **argv;
 	int i, len, fd[2], nullfd, wstat;
-	struct _header_raw *header;
-	GSList *n, *bcc = NULL;
+	CamelStreamFilter *filter;
+	CamelMimeFilter *crlf;
 	sigset_t mask, omask;
 	CamelStream *out;
 	pid_t pid;
@@ -117,18 +120,23 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	
 	argv[i + 5] = NULL;
 	
-	/* copy and remove the bcc headers */
-	header = CAMEL_MIME_PART (message)->headers;
-	while (header) {
-		if (!strcasecmp (header->name, "Bcc"))
-			bcc = g_slist_append (bcc, g_strdup (header->value));
-		header = header->next;
-	}
+	/* unlink the bcc headers */
+	savedbcc = NULL;
+	tail = (struct _header_raw *) &savedbcc;
 	
-	n = bcc;
-	while (n) {
-		camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
-		n = n->next;
+	header = (struct _header_raw *) &CAMEL_MIME_PART (message)->headers;
+	n = header->next;
+	while (n != NULL) {
+		if (!strcasecmp (n->name, "Bcc")) {
+			header->next = n->next;
+			tail->next = n;
+			n->next = NULL;
+			tail = n;
+		} else {
+			header = n;
+		}
+		
+		n = header->next;
 	}
 	
 	if (pipe (fd) == -1) {
@@ -136,7 +144,11 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 				      _("Could not create pipe to sendmail: "
 					"%s: mail not sent"),
 				      g_strerror (errno));
-		goto exception;
+		
+		/* restore the bcc headers */
+		header->next = savedbcc;
+		
+		return FALSE;
 	}
 	
 	/* Block SIGCHLD so the calling application doesn't notice
@@ -156,7 +168,10 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		sigprocmask (SIG_SETMASK, &omask, NULL);
 		g_free (argv);
 		
-		goto exception;
+		/* restore the bcc headers */
+		header->next = savedbcc;
+		
+		return FALSE;
 	case 0:
 		/* Child process */
 		nullfd = open ("/dev/null", O_RDWR);
@@ -174,6 +189,13 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	/* Parent process. Write the message out. */
 	close (fd[0]);
 	out = camel_stream_fs_new_with_fd (fd[1]);
+	filter = camel_stream_filter_new_with_stream (out);
+	crlf = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
+	camel_stream_filter_add (filter, crlf);
+	camel_object_unref (crlf);
+	camel_object_unref (out);
+	
+	out = (CamelStream *) filter;
 	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), out) == -1
 	    || camel_stream_close (out) == -1) {
 		camel_object_unref (CAMEL_OBJECT (out));
@@ -187,7 +209,10 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		
 		sigprocmask (SIG_SETMASK, &omask, NULL);
 		
-		goto exception;
+		/* restore the bcc headers */
+		header->next = savedbcc;
+		
+		return FALSE;
 	}
 	
 	camel_object_unref (CAMEL_OBJECT (out));
@@ -198,14 +223,8 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 	
-	/* add the bcc headers back */
-	while (bcc) {
-		n = bcc->next;
-		camel_medium_add_header (CAMEL_MEDIUM (message), "Bcc", bcc->data);
-		g_free (bcc->data);
-		g_slist_free1 (bcc);
-		bcc = n;
-	}
+	/* restore the bcc headers */
+	header->next = savedbcc;
 	
 	if (!WIFEXITED (wstat)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -229,17 +248,6 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	}
 	
 	return TRUE;
-	
- exception:
-	
-	/* add the bcc headers back */
-	while (bcc) {
-		n = bcc->next;
-		camel_medium_add_header (CAMEL_MEDIUM (message), "Bcc", bcc->data);
-		g_free (bcc->data);
-		g_slist_free1 (bcc);
-		bcc = n;
-	}
 }
 
 static char *

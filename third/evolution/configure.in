@@ -19,7 +19,7 @@ fi
 
 EVOLUTION_MAJOR_VERSION=1
 EVOLUTION_MINOR_VERSION=2
-EVOLUTION_MICRO_VERSION=2
+EVOLUTION_MICRO_VERSION=4
 EVOLUTION_NANO_VERSION=0
 VERSION=$EVOLUTION_MAJOR_VERSION.$EVOLUTION_MINOR_VERSION.$EVOLUTION_MICRO_VERSION
 PACKAGE=evolution
@@ -313,6 +313,9 @@ AC_CACHE_CHECK([if system has necessary structs and functions for IPv6 support],
 ])
 else
 	msg_ipv6=no
+fi
+if test "x$enable_ipv6" = "xyes"; then
+	AC_DEFINE(ENABLE_IPv6)
 fi
 AM_CONDITIONAL(ENABLE_IPv6, test "x$enable_ipv6" = "xyes")
 
@@ -648,92 +651,82 @@ dnl ********
 AC_SEARCH_LIBS(gethostbyname, nsl)
 AC_SEARCH_LIBS(socket, socket)
 
-AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes])
-AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes])
-msg_krb5=no
-if test ${with_krb5:=no} != no; then
-	LDFLAGS_save="$LDFLAGS"
-	LIBS_save="$LIBS"
+AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes], with_krb5="$withval", with_krb5="no")
+AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes], with_krb4="$withval", with_krb4="no")
 
-	mitlibs="-lkrb5 -lk5crypto -lcom_err"
-	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken"
+msg_krb5="no"
+if test "x$with_krb5" != "xno"; then
+	LDFLAGS_save="$LDFLAGS"
+	
+	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
+	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
 	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
 	[
-		LDFLAGS="$LDFLAGS -L$with_krb5/lib"
-		LIBS="$LIBS $mitlibs"
+		LDFLAGS="$LDFLAGS -L$with_krb5/lib $mitlibs"
 		AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
 		[
-			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib"
-			LIBS="$LIBS_save $heimlibs"
-			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5=no)
+			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib $heimlibs"
+			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5="no")
 		])
 		LDFLAGS="$LDFLAGS_save"
-		LIBS="$LIBS_save"
 	])
-	if test "$ac_cv_lib_kerberos5" != no; then
+	if test "$ac_cv_lib_kerberos5" != "no"; then
 		AC_DEFINE(HAVE_KRB5)
-		msg_krb5=yes
-		KRB5_CFLAGS="-I$with_krb5/include/krb5"
-		KRB5_LDFLAGS="-L$with_krb5/lib"
-		KRB5_LIBS="$ac_cv_lib_kerberos5"
+		if test "$ac_cv_lib_kerberos5" = "$mitlibs"; then
+			KRB5_CFLAGS="-I$with_krb5/include"
+			msg_krb5="yes (MIT)"
+			AC_DEFINE(HAVE_MIT_KRB5)
+		else
+			KRB5_CFLAGS="-I$with_krb5/include/heimdal"
+			msg_krb5="yes (Heimdal)"
+			AC_DEFINE(HAVE_HEIMDAL_KRB5)
+		fi
+		KRB5_LDFLAGS="-L$with_krb5/lib $ac_cv_lib_kerberos5"
 	fi
 else
 	AC_MSG_CHECKING(for Kerberos 5)
 	AC_MSG_RESULT($with_krb5)
 fi
 
-msg_krb4=no
-if test x${with_krb4:=no} != xno; then
+msg_krb4="no"
+if test "x${with_krb4}" != "xno"; then
 	LDFLAGS_save="$LDFLAGS"
-	LIBS_save="$LIBS"
 	AC_CACHE_CHECK(for Kerberos 4, ac_cv_lib_kerberos4,
 	[
-		ac_cv_lib_kerberos4=no
+		ac_cv_lib_kerberos4="no"
 
-		case $ac_cv_lib_kerberos5 in
-		*k5crypto*)
-			# Look for MIT krb5 compat krb4
-			LDFLAGS="$LDFLAGS -L$with_krb4/lib $KRB5_LDFLAGS"
-			LIBS="$LIBS -lkrb4 -ldes425 $KRB5_LIBS"
-			AC_TRY_LINK_FUNC(krb_mk_req,
-			[
-				ac_cv_lib_kerberos4="-lkrb4 -ldes425 $KRB5_LIBS"
-				ac_cv_ldflag_kerberos4="$KRB5_LDFLAGS"
-			])
-			;;
-		esac
-
-		if test "$ac_cv_lib_kerberos4" = no; then
+		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
+		# Look for MIT krb5 compat krb4
+		LDFLAGS="$LDFLAGS -L$with_krb4/lib $mitcompatlibs"
+		AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="$mitcompatlibs")
+		
+		if test "$ac_cv_lib_kerberos4" = "no"; then
 			# Look for KTH krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
-			LIBS="$LIBS_save -lkrb -lcrypto -lcom_err -lroken"
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb -lcrypto -lcom_err -lroken"
 			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken")
 		fi
-		if test "$ac_cv_lib_kerberos4" = no; then
+		if test "$ac_cv_lib_kerberos4" = "no"; then
 			# Look for old MIT krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
-			LIBS="$LIBS_save -lkrb"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4=-lkrb,
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb"
+			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb",
 			[
-				LIBS="$LIBS -ldes"
+				LDFLAGS="$LDFLAGS -ldes"
 				AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -ldes")
 			])
 		fi
 	])
 	LDFLAGS="$LDFLAGS_save"
-	LIBS="$LIBS_save"
-	if test "$ac_cv_lib_kerberos4" != no; then
+	if test "$ac_cv_lib_kerberos4" != "no"; then
 		AC_DEFINE(HAVE_KRB4)
-		msg_krb4=yes
+		msg_krb4="yes"
 		if test -f "$with_krb4/include/krb.h" -o -f "$with_krb4/include/port-sockets.h"; then
 			KRB4_CFLAGS="-I$with_krb4/include"
 		fi
 		if test -d "$with_krb4/include/kerberosIV"; then
 			KRB4_CFLAGS="$KRB4_CFLAGS -I$with_krb4/include/kerberosIV"
 		fi
-		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_ldflag_kerberos4"
-		KRB4_LIBS="$ac_cv_lib_kerberos4"
-
+		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
+		
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
 		AC_TRY_COMPILE([#include "krb.h"
@@ -748,10 +741,8 @@ fi
 
 AC_SUBST(KRB5_CFLAGS)
 AC_SUBST(KRB5_LDFLAGS)
-AC_SUBST(KRB5_LIBS)
 AC_SUBST(KRB4_CFLAGS)
 AC_SUBST(KRB4_LDFLAGS)
-AC_SUBST(KRB4_LIBS)
 
 
 dnl ==========================
@@ -1092,8 +1083,8 @@ AC_SUBST(GNOME_FULL_LIBS)
 dnl --- Flags for the various libraries we build
 
 EVO_SET_COMPILE_FLAGS(CAMEL, gal xml,
-		      $THREADS_CFLAGS $KRB4_CFLAGS $NSS_CFLAGS $NSPR_CFLAGS $OPENSSL_CFLAGS,
-	              $THREADS_LIBS $KRB4_LDFLAGS $NSS_LDFLAGS $NSPR_LDFLAGS $OPENSSL_LDFLAGS)
+		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $NSS_CFLAGS $NSPR_CFLAGS $OPENSSL_CFLAGS,
+	              $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $NSS_LDFLAGS $NSPR_LDFLAGS $OPENSSL_LDFLAGS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 
@@ -1268,7 +1259,7 @@ dnl ******************************
 EVOLUTION_LIBDIR="-L${libdir}"
 EVOLUTION_DATADIR="${datadir}"
 EVOLUTION_INCLUDEDIR="-I${includedir}/evolution"
-CAMEL_INCLUDEDIR="-I${includedir}/camel"
+CAMEL_INCLUDEDIR="-I${includedir}"
 
 AC_SUBST(EVOLUTION_LIBDIR)
 AC_SUBST(EVOLUTION_DATADIR)

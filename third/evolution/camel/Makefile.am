@@ -83,6 +83,7 @@ libcamel_la_SOURCES = 				\
 	camel-sasl-anonymous.c			\
 	camel-sasl-cram-md5.c			\
 	camel-sasl-digest-md5.c			\
+	camel-sasl-gssapi.c			\
 	camel-sasl-kerberos4.c			\
 	camel-sasl-login.c			\
 	camel-sasl-ntlm.c			\
@@ -184,6 +185,7 @@ libcamelinclude_HEADERS =			\
 	camel-sasl-anonymous.h			\
 	camel-sasl-cram-md5.h			\
 	camel-sasl-digest-md5.h			\
+	camel-sasl-gssapi.h			\
 	camel-sasl-kerberos4.h			\
 	camel-sasl-login.h			\
 	camel-sasl-ntlm.h			\
@@ -218,15 +220,15 @@ libcamelinclude_HEADERS =			\
 	hash-table-utils.h			\
 	string-utils.h
 
-libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir) $(KRB4_LDFLAGS)
+libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 
 libcamel_la_LIBADD =				\
 	$(top_builddir)/e-util/libeutil.la 	\
-	$(CAMEL_LIBS) $(KRB4_LIBS) -lhesiod -lares $(RESOLV_LIBS)
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD  = $(libcamel_la_LIBADD)
-libcamel_static_la_LDFLAGS = --all-static $(KRB4_LDFLAGS)
+libcamel_static_la_LDFLAGS = --all-static
 
 camel_lock_helper_SOURCES = 			\
 	camel-lock-helper.c 			\

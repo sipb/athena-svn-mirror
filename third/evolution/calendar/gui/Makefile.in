@@ -1007,13 +1007,13 @@ e-day-view.o: e-day-view.c ../../config.h e-day-view.h gnome-cal.h \
 	../../e-util/e-categories-config.h \
 	../../e-util/e-dialog-utils.h \
 	../../calendar/cal-util/timeutil.h dialogs/delete-comp.h \
-	dialogs/send-comp.h dialogs/cancel-comp.h print.h comp-util.h \
-	itip-utils.h calendar-commands.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h goto.h e-day-view-time-item.h \
-	e-day-view-top-item.h e-day-view-layout.h \
-	e-day-view-main-item.h misc.h ../../art/bell.xpm \
-	../../art/recur.xpm ../../art/timezone-16.xpm \
-	../../art/schedule-meeting-16.xpm
+	dialogs/send-comp.h dialogs/cancel-comp.h dialogs/recur-comp.h \
+	print.h comp-util.h itip-utils.h calendar-commands.h \
+	calendar-config.h ../../widgets/misc/e-dateedit.h goto.h \
+	e-day-view-time-item.h e-day-view-top-item.h \
+	e-day-view-layout.h e-day-view-main-item.h misc.h \
+	../../art/bell.xpm ../../art/recur.xpm \
+	../../art/timezone-16.xpm ../../art/schedule-meeting-16.xpm
 e-itip-control.o: e-itip-control.c ../../config.h \
 	../../libical/src/libical/ical.h \
 	../../calendar/cal-util/cal-component.h \
@@ -1047,7 +1047,6 @@ e-meeting-model.o: e-meeting-model.c ../../config.h \
 	../../addressbook/backend/ebook/e-book-view-listener.h \
 	../../addressbook/backend/ebook/e-book-types.h \
 	../../addressbook/backend/ebook/e-card-simple.h \
-	../../addressbook/backend/ebook/e-destination.h \
 	../../calendar/cal-util/cal-component.h \
 	../../libical/src/libical/ical.h \
 	../../calendar/cal-util/cal-util.h \
@@ -1195,8 +1194,8 @@ e-week-view.o: e-week-view.c ../../config.h e-week-view.h gnome-cal.h \
 	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
 	../../e-util/e-categories-config.h \
 	../../e-util/e-dialog-utils.h dialogs/delete-comp.h \
-	dialogs/send-comp.h dialogs/cancel-comp.h comp-util.h \
-	itip-utils.h ../../calendar/cal-util/timeutil.h \
+	dialogs/send-comp.h dialogs/cancel-comp.h dialogs/recur-comp.h \
+	comp-util.h itip-utils.h ../../calendar/cal-util/timeutil.h \
 	calendar-commands.h calendar-config.h \
 	../../widgets/misc/e-dateedit.h print.h goto.h \
 	e-week-view-event-item.h e-week-view-layout.h \

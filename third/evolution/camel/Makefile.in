@@ -148,10 +148,8 @@ KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
-KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
-KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -307,6 +305,7 @@ libcamel_la_SOURCES = \
 	camel-sasl-anonymous.c			\
 	camel-sasl-cram-md5.c			\
 	camel-sasl-digest-md5.c			\
+	camel-sasl-gssapi.c			\
 	camel-sasl-kerberos4.c			\
 	camel-sasl-login.c			\
 	camel-sasl-ntlm.c			\
@@ -409,6 +408,7 @@ libcamelinclude_HEADERS = \
 	camel-sasl-anonymous.h			\
 	camel-sasl-cram-md5.h			\
 	camel-sasl-digest-md5.h			\
+	camel-sasl-gssapi.h			\
 	camel-sasl-kerberos4.h			\
 	camel-sasl-login.h			\
 	camel-sasl-ntlm.h			\
@@ -444,16 +444,16 @@ libcamelinclude_HEADERS = \
 	string-utils.h
 
 
-libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir) $(KRB4_LDFLAGS)
+libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 
 libcamel_la_LIBADD = \
 	$(top_builddir)/e-util/libeutil.la 	\
-	$(CAMEL_LIBS) $(KRB4_LIBS) -lhesiod -lares $(RESOLV_LIBS)
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD = $(libcamel_la_LIBADD)
-libcamel_static_la_LDFLAGS = --all-static $(KRB4_LDFLAGS)
+libcamel_static_la_LDFLAGS = --all-static
 
 camel_lock_helper_SOURCES = \
 	camel-lock-helper.c 			\
@@ -518,14 +518,14 @@ camel-multipart-encrypted.lo camel-multipart-signed.lo camel-object.lo \
 camel-operation.lo camel-partition-table.lo camel-pgp-mime.lo \
 camel-smime-context.lo camel-smime-utils.lo camel-provider.lo \
 camel-sasl.lo camel-sasl-anonymous.lo camel-sasl-cram-md5.lo \
-camel-sasl-digest-md5.lo camel-sasl-kerberos4.lo camel-sasl-login.lo \
-camel-sasl-ntlm.lo camel-sasl-plain.lo camel-sasl-popb4smtp.lo \
-camel-search-private.lo camel-seekable-stream.lo \
-camel-seekable-substream.lo camel-service.lo camel-session.lo \
-camel-store.lo camel-store-summary.lo camel-stream-buffer.lo \
-camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
-camel-stream-null.lo camel-stream.lo camel-text-index.lo \
-camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
+camel-sasl-digest-md5.lo camel-sasl-gssapi.lo camel-sasl-kerberos4.lo \
+camel-sasl-login.lo camel-sasl-ntlm.lo camel-sasl-plain.lo \
+camel-sasl-popb4smtp.lo camel-search-private.lo \
+camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
+camel-session.lo camel-store.lo camel-store-summary.lo \
+camel-stream-buffer.lo camel-stream-filter.lo camel-stream-fs.lo \
+camel-stream-mem.lo camel-stream-null.lo camel-stream.lo \
+camel-text-index.lo camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
 camel-tcp-stream-openssl.lo camel-tcp-stream.lo camel-transport.lo \
 camel-uid-cache.lo camel-url.lo camel-utf8.lo camel-vee-folder.lo \
 camel-vee-store.lo camel-vtrash-folder.lo camel.lo gstring-util.lo \
@@ -554,14 +554,14 @@ camel-multipart-encrypted.lo camel-multipart-signed.lo camel-object.lo \
 camel-operation.lo camel-partition-table.lo camel-pgp-mime.lo \
 camel-smime-context.lo camel-smime-utils.lo camel-provider.lo \
 camel-sasl.lo camel-sasl-anonymous.lo camel-sasl-cram-md5.lo \
-camel-sasl-digest-md5.lo camel-sasl-kerberos4.lo camel-sasl-login.lo \
-camel-sasl-ntlm.lo camel-sasl-plain.lo camel-sasl-popb4smtp.lo \
-camel-search-private.lo camel-seekable-stream.lo \
-camel-seekable-substream.lo camel-service.lo camel-session.lo \
-camel-store.lo camel-store-summary.lo camel-stream-buffer.lo \
-camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
-camel-stream-null.lo camel-stream.lo camel-text-index.lo \
-camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
+camel-sasl-digest-md5.lo camel-sasl-gssapi.lo camel-sasl-kerberos4.lo \
+camel-sasl-login.lo camel-sasl-ntlm.lo camel-sasl-plain.lo \
+camel-sasl-popb4smtp.lo camel-search-private.lo \
+camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
+camel-session.lo camel-store.lo camel-store-summary.lo \
+camel-stream-buffer.lo camel-stream-filter.lo camel-stream-fs.lo \
+camel-stream-mem.lo camel-stream-null.lo camel-stream.lo \
+camel-text-index.lo camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
 camel-tcp-stream-openssl.lo camel-tcp-stream.lo camel-transport.lo \
 camel-uid-cache.lo camel-url.lo camel-utf8.lo camel-vee-folder.lo \
 camel-vee-store.lo camel-vtrash-folder.lo camel.lo gstring-util.lo \
