@@ -34,6 +34,11 @@ if [ -f ${AIS_ROOT}$scheme \
     mv ${AIS_ROOT}$scheme ${AIS_ROOT}$scheme.old
 fi
 
+# Note that for rc?.d scripts, we use test -l instead of -f. This
+# is because sometimes there are absolute symlinks involved, while
+# absolute paths during an install really live under ${AIS_ROOT},
+# so that test -f may fail even if there is a link there.
+
 # xdm has an /etc/config option, but it runs regardless when
 # windowsystem is on.  And we need windowsystem on in order to
 # run X.
@@ -43,19 +48,6 @@ fi
 
 if [ -l ${AIS_ROOT}/etc/rc0.d/K02xdm ]; then
     mv ${AIS_ROOT}/etc/rc0.d/K02xdm ${AIS_ROOT}/etc/rc0.d/k02xdm
-fi
-
-# Midi startup doesn't have an /etc/config option. Sigh.
-# Note that for rc?.d scripts, we use test -l instead of -f. This
-# is because sometimes there are absolute symlinks involved, while
-# absolute paths during an install really live under ${AIS_ROOT},
-# so that test -f may fail even if there is a link there.
-if [ -l ${AIS_ROOT}/etc/rc2.d/S98midi ]; then
-    mv ${AIS_ROOT}/etc/rc2.d/S98midi ${AIS_ROOT}/etc/rc2.d/s98midi
-fi
-
-if [ -l ${AIS_ROOT}/etc/rc0.d/K02midi ]; then
-    mv ${AIS_ROOT}/etc/rc0.d/K02midi ${AIS_ROOT}/etc/rc0.d/k02midi
 fi
 
 # ns_admin runs a config script (and therefore makes noise) whether
