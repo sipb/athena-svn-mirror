@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.1 1991-01-31 11:00:49 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.2 1991-01-31 11:18:45 probe Exp $
 
 trap "" 1 15
 
@@ -28,13 +28,14 @@ else
 	quiet=
 fi
 
-# Flush all NFS uid mappings
-/bin/athena/nfsid $quiet -p -a
+# Default options
+dflags="-clean"
 
-# Perform an update if appropriate (do this early in the sequence)
-if [ -f /srvd/auto_update ] ; then 
-	/srvd/auto_update reactivate
-fi
+# Parse command line arguments (we only accept one for now -detach)
+if [ "$1" = "-detach" ]; then dflags=""; fi
+
+# Flush all NFS uid mappings
+/bin/athena/fsid $quiet -p -a
 
 # Tell the Zephyr hostmanager to reset state
 if [ -f /etc/athena/zhm.pid ] ; then 
@@ -46,21 +47,19 @@ fi
 /bin/rm -rf /tmp/ > /dev/null 2>&1
 /bin/mv ${partition}/.X11-unix /tmp/.X11-unix
 if [ -f /usr/bin/find ] ;  then
-	find /usr/tmp/ -mtime +4 -exec /bin/rm -f {} \; > /dev/null 2>&1
+	/usr/bin/find /usr/tmp/ -mtime +4 -exec /bin/rm -f {} \; > /dev/null 2>&1
 fi
 
 # Next, restore password, group, and AFS-cell files
 if [ -f /etc/passwd.local ] ; then
-	${cp} /etc/passwd.local /etc/ptmp
-	/bin/mv -f /etc/ptmp /etc/passwd
+	${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
 fi
 if [ -f /etc/group.local ] ; then
-	${cp} /etc/group.local /etc/gtmp
-	/bin/mv -f /etc/gtmp /etc/group
+	${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
 fi
 if [ -f /afs/athena.mit.edu/service/CellServDB ] ; then
-	${cp} /afs/athena.mit.edu/service/CellServDB \
-		   /usr/vice/etc/CellServDB.public
+	${cp} /afs/athena.mit.edu/service/CellServDB /usr/vice/etc/Ctmp && \
+	/bin/mv -f /usr/vice/etc/Ctmp /usr/vice/etc/CellServDB.public
 fi
 if [ -f /afs/athena.mit.edu/service/aklog ] ; then
 	${cp} /afs/athena.mit.edu/service/aklog \
@@ -71,7 +70,7 @@ fi
 /etc/athena/cleanup -passwd
 
 # Finally, detach all remote filesystems
-/bin/athena/detach -O -h -n $quiet -a
+/bin/athena/detach -O -h -n $quiet $dflags -a
 
 # Now start activate again
 /etc/athena/save_cluster_info
@@ -92,6 +91,11 @@ if [ "${RVDCLIENT}" = "true" ]; then
 		/bin/athena/attach	$quiet -h -n -o hard  $SYSLIB \
 					$quiet -h -n -o hard  $USRLIB
 	fi
+fi
+
+# Perform an update if appropriate
+if [ -f /srvd/auto_update ] ; then 
+	/srvd/auto_update reactivate
 fi
 
 # set font path now that we're activated
