@@ -1072,14 +1072,14 @@ gnome_canvas_line_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_pa
 
 		gnome_canvas_item_update_svp_clip (item, &line->fill_svp, svp, clip_path);
 
-		if (line->first_arrow)
+		if (line->first_arrow && line->first_coords)
 			svp = svp_from_points (line->first_coords, NUM_ARROW_POINTS, affine);
 		else
 			svp = NULL;
 
 		gnome_canvas_item_update_svp_clip (item, &line->first_svp, svp, clip_path);
 
-		if (line->last_arrow)
+		if (line->last_arrow && line->last_coords)
 			svp = svp_from_points (line->last_coords, NUM_ARROW_POINTS, affine);
 		else
 			svp = NULL;

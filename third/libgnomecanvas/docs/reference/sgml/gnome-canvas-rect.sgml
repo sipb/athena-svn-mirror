@@ -1,4 +1,4 @@
-<refentry id="libgnomecanvas-GnomeCanvasRect">
+<refentry id="GnomeCanvasRect">
 <refmeta>
 <refentrytitle>GnomeCanvasRect</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GnomeCanvasRect</refname><refpurpose></refpurpose>
+<refname>GnomeCanvasRect</refname><refpurpose>Rectangle canvas item</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -16,11 +16,24 @@
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
 
 
-struct      <link linkend="GnomeCanvasRect">GnomeCanvasRect</link>;
+struct      <link linkend="GnomeCanvasRect-struct">GnomeCanvasRect</link>;
 
 </synopsis>
 </refsynopsisdiv>
 
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----<link linkend="GnomeCanvasShape">GnomeCanvasShape</link>
+                     +----<link linkend="GnomeCanvasRE">GnomeCanvasRE</link>
+                           +----GnomeCanvasRect
+</synopsis>
+
+</refsect1>
 
 
 
@@ -30,21 +43,20 @@ struct      <link linkend="GnomeCanvasRect">GnomeCanvasRect</link>;
 <refsect1>
 <title>Description</title>
 <para>
-
+A canvas item for drawing rectangles and squares. The parameters are
+defined in the parent classes including <link linkend="GnomeCanvasRE">GnomeCanvasRE</link> which is shared with
+<link linkend="GnomeCanvasEllipse">GnomeCanvasEllipse</link> items as well.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeCanvasRect">struct GnomeCanvasRect</title>
-<programlisting>struct GnomeCanvasRect {
-
-	GnomeCanvasRE re;
-};
-</programlisting>
+<title><anchor id="GnomeCanvasRect-struct">struct GnomeCanvasRect</title>
+<programlisting>struct GnomeCanvasRect;</programlisting>
 <para>
-
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
 </para></refsect2>
 
 </refsect1>

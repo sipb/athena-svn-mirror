@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas\n"
-"POT-Creation-Date: 2003-01-23 16:16+0100\n"
+"POT-Creation-Date: 2003-05-18 10:31+0200\n"
 "PO-Revision-Date: 2003-01-09 16:39+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -13,24 +13,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # libgnomecanvas/gnome-canvas.c:1390 libgnomecanvas/gnome-canvas.c:1391
-#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
+#: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
 msgid "X"
 msgstr "X"
 
 # libgnomecanvas/gnome-canvas.c:1397 libgnomecanvas/gnome-canvas.c:1398
-#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
+#: libgnomecanvas/gnome-canvas.c:1408 libgnomecanvas/gnome-canvas.c:1409
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
 msgid "Y"
 msgstr "Y"
 
 # libgnomecanvas/gnome-canvas.c:2039
-#: libgnomecanvas/gnome-canvas.c:2052
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
 msgstr "Сглаженный"
 
 # libgnomecanvas/gnome-canvas.c:2040
-#: libgnomecanvas/gnome-canvas.c:2053
+#: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
 msgstr "Режим сглаживания для холста."
 

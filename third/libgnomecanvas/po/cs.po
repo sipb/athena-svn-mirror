@@ -1,13 +1,14 @@
-# [       Ruang untuk disewa                    ]
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Hasbullah Bin Pit (sebol)<sebol@ikhlas.com>, 2002.
+# Czech translation of libgnomecanvas
+# This file is distributed under the same license as the libgnomecanvas package.
+# Miloslav Trmac <mitr@volny.cz>, 2002.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas\n"
+"Project-Id-Version: libgnomecanvas 2.0\n"
 "POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-01-18 09:04+0800\n"
-"Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
-"Language-Team: Projek Gabai <gabai-penyumbang@list.sourceforge.net>\n"
+"PO-Revision-Date: 2002-09-25 22:47+0200\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,378 +25,379 @@ msgstr "Y"
 
 #: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
-msgstr "Diantialiaskan"
+msgstr "Vyhlazovaný"
 
 #: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
-msgstr "Mod antialias bagi kanvas"
+msgstr "Mód vyhlazování canvasu."
 
 #: libgnomecanvas/gnome-canvas-text.c:206
 #: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
-msgstr "Teks"
+msgstr "Text"
 
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
-msgstr "Teks untuk dirender"
+msgstr "Text pro vykreslení"
 
 #: libgnomecanvas/gnome-canvas-text.c:215
 msgid "Markup"
-msgstr "Markup"
+msgstr "Značkování"
 
 #: libgnomecanvas/gnome-canvas-text.c:216
 msgid "Marked up text to render"
-msgstr "Markup teks untuk dirender"
+msgstr "Označkovaný text pro vykreslení"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "Font"
+msgstr "Písmo"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr "Huraian Font sebagai rentetan"
+msgstr "Popis písma jako řetězec"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr "Huraian Font"
+msgstr "Popis písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr "Huraian Font sebagai struct PangoFontDescription"
+msgstr "Popis písma jako struct PangoFontDescription"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "Keluarga Font:"
+msgstr "Řez písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "Nama keluarga font, seperti Sans, Helvetica, Times, Monospace"
+msgstr "Jméno řezu písma, např. Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "Gaya font"
+msgstr "Styl písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr "Variant font"
+msgstr "Varianta písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "Berat font"
+msgstr "Váha písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "Keregangan font"
+msgstr "Roztažení písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "Saiz font"
+msgstr "Velikost písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "Titik Font"
+msgstr "Body písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr "Saiz font dalam titik"
+msgstr "Velikost písma v bodech"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
-msgstr "Naik"
+msgstr "Vyzdvižení"
 
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
 msgstr ""
-"Offset bagi teks di atas garis asas (di bawah garis asas jika angkat negatif)"
+"Posun textu nad základní čáru (pod základní čáru, pokud je vyzdvižení "
+"záporné)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
-msgstr "Coret tembus"
+msgstr "Přeškrtnutí"
 
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
-msgstr "Samada coret menembusi teks"
+msgstr "Jestli přeškrtnout text"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "Garisbawah"
+msgstr "Podtržení"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr "Gaya garisbawah bagi teks"
+msgstr "Styl podtržení tohoto textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr "Skala skrol"
+msgstr "Měřítko"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr "Saiz font, relatif kepada saiz default"
+msgstr "Velikost písma relativně k implicitní velikosti"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
 #: libgnomecanvas/gnome-canvas-text.c:441
 msgid "Color"
-msgstr "Warna"
+msgstr "Barva"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr "Warna teks sebagai rentetan"
+msgstr "Barva textu jako řetězec"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr "Warna teks sebagai GdkColor"
+msgstr "Barva textu jako GdkColor"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr "Warna teks, sebagai intiger gabungan R/G/B/A"
+msgstr "Barva textu jako kombinované celé číslo R/G/B/A"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr "Lebar teks"
+msgstr "Šířka textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr "Lebar bagi teks yang dirender"
+msgstr "Šířka vykresleného textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr "Tinggi teks"
+msgstr "Výška textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr "Tinggi bagi teks yang dirender"
+msgstr "Výška vykresleného textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "Set keluarga font"
+msgstr "Nastaven řez písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr "Samada tag ini mempengaruhi keluarga font"
+msgstr "Jestli tato značka má vliv na řez písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "Set gaya Font:"
+msgstr "Nastaven styl písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr "Samada tag ini mempengaruhi gaya font"
+msgstr "Jestli tato značka má vliv na velikost písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr "Set variant font"
+msgstr "Nastavena varianta písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
-msgstr "Samada tag ini mempengaruhi variant font"
+msgstr "Jestli tato značka má vliv na variantu písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "Set berat font"
+msgstr "Nastavena váha písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "Samada tag ini mempengaruhi berat font"
+msgstr "Jestli tato značka má vliv na váhu písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "Set keregangan font"
+msgstr "Nastaveno roztažení písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "Samada tag ini mempengaruhi keregangan font"
+msgstr "Jestli tato značka má vliv na roztažení písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr "Set saiz font"
+msgstr "Nastavena velikost písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr "Samada tag ini mempengaruhi saiz font"
+msgstr "Jestli tato značka má vliv na velikost písma"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr "Set Angkat"
+msgstr "Nastaveno vyzdvižení"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
-msgstr "Samada tag ini mempengaruhi kenaikan"
+msgstr "Jestli tato značka má vliv na vyzdvižení"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr "Set coret tembus"
+msgstr "Nastaveno přeškrtnutí"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
-msgstr "Samada tag ini mempengaruhi coret tembus"
+msgstr "Jestli tato značka má vliv na přeškrtnutí"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr "Set garisbawah"
+msgstr "Nastaveno podtržení"
 
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
-msgstr "Samada tag ini mempengaruhi garisbawah"
+msgstr "Jestli tato značka má vliv na podtržení"
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr "Set skala"
+msgstr "Nastaveno měřítko"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr "Samada tag ini mempengaruhi skala font"
+msgstr "Jestli tato značka má vliv na měřítko písma"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
-msgstr "Teks untuk dipaparkan"
+msgstr "Text pro zobrazení"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr "Posisi X"
+msgstr "Pozice X"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr "Posisi Y"
+msgstr "Pozice Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr "Lebar"
+msgstr "Šířka"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr "Lebar bagi kekotak teks"
+msgstr "Šířka rámečku textu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
-msgstr "Tinggi"
+msgstr "Výška"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr "Tinggi bagi kekotak teks"
+msgstr "Výška rámečku textu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr "Bolehedit"
+msgstr "Upravitelná"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr "Adakah iitem teks kaya ini boleh diedit?"
+msgstr "Je tato položka rich textu upravitelná?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr "Tampak"
+msgstr "Viditelná"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr "Adakah item teks kaya ini tampak?"
+msgstr "Je tato položka rich textu viditelná?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr "Ketampakan Kursor"
+msgstr "Viditelný kurzor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
 msgid "Is the cursor visible in this this rich text item?"
-msgstr "Adakah kursor tampak pada item teks kaya?"
+msgstr "Je v této položce rich textu vidět kurzor?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr "Kelipan Kursor"
+msgstr "Kurzor bliká"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
 msgid "Does the cursor blink in this this rich text item?"
-msgstr "Adakah kursor berkelip pada item teks kaya ini?"
+msgstr "Bliká v této položce rich textu kurzor?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
-msgstr "Meninggi"
+msgstr "Zvětšit výšku"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr "Patutkan kekotak teks meninggi jika teks tidak muat?"
+msgstr "Má se zvětšit výška rámečku textu, pokud se text nevejde?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
-msgstr "Mod Balut"
+msgstr "Mód lámání řádek"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr "Mod balut bagi teks multibaris"
+msgstr "Mód lámání řádek pro text na více řádcích"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
-msgstr "Justifikasi"
+msgstr "Zarovnání"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr "Mod justifikasi"
+msgstr "Mód zarovnání"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
-msgstr "Hala"
+msgstr "Směr"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
 msgid "Text direction"
-msgstr "Hala teks"
+msgstr "Směr textu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"
-msgstr "Sauh"
+msgstr "Ukotvení"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr "Titik sauh bagi teks"
+msgstr "Bod ukotvení textu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr "Piksel di Atas Baris"
+msgstr "Pixely nad čárami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr "Bilangan piksel diletakkan diatas baris"
+msgstr "Počet pixelů nad čárami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr "Piksel di Bawah Baris"
+msgstr "Pixely pod čárami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr "Bilangan piksel diletakkan di bawah baris"
+msgstr "Počet pixelů pod čárami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
-msgstr "Piksel di Dalam Balutan"
+msgstr "Pixely v obalu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
-msgstr "Bilangan piksel diletakkan didalam balutan"
+msgstr "Počet pixelů v obalu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr "Margin Kiri"
+msgstr "Levý okraj"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr "Bilangan piksel pada margin kiri"
+msgstr "Počet pixelů na levém okraji"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr "Margin kanan"
+msgstr "Pravý okraj"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr "Bilangan piksel pada margin kanan"
+msgstr "Počet pixelů na pravém okraji"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
-msgstr "Indentasi"
+msgstr "Odsazení"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr "BIlangan piksel untuk indentasi"
+msgstr "Počet pixelů pro odsazení"

@@ -2,11 +2,13 @@
 GnomeCanvasRichText
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Rich text canvas item
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+A canvas item that displays a GtkTextBuffer which is a flexible text display
+and editing widget. Consult GtkTextBuffer info in the GTK+ Reference
+documentation for more details.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -16,15 +18,8 @@ GnomeCanvasRichText
 
 <!-- ##### STRUCT GnomeCanvasRichText ##### -->
 <para>
-
-</para>
-
-@item: 
-@_priv: 
-
-<!-- ##### STRUCT GnomeCanvasRichTextPrivate ##### -->
-<para>
-
+This structure should not be accessed directly. Use the object's properties
+and functions for querying or changing its parameters.
 </para>
 
 
@@ -90,4 +85,112 @@ GnomeCanvasRichText
 @x: 
 @y: 
 
+
+<!-- ##### SIGNAL GnomeCanvasRichText::tag-changed ##### -->
+<para>
+
+</para>
+
+@canvasrichtext: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG GnomeCanvasRichText:anchor ##### -->
+<para>
+Anchor point for text.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:cursor-blink ##### -->
+<para>
+Does the cursor blink in this rich text item?
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:cursor-visible ##### -->
+<para>
+Is the cursor visible?
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:direction ##### -->
+<para>
+Direction of displayed rich text.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:editable ##### -->
+<para>
+Is this rich text item editable?
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:grow-height ##### -->
+<para>
+Should the text box height grow if the text does not fit?
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:height ##### -->
+<para>
+Height for text box.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:indent ##### -->
+<para>
+Number of pixels for indentation.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:justification ##### -->
+<para>
+Justification mode.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:left-margin ##### -->
+<para>
+Number of pixels in the left margin.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:pixels-above-lines ##### -->
+<para>
+Number of pixels to put above lines.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:pixels-below-lines ##### -->
+<para>
+Number of pixels to put below lines.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:pixels-inside-wrap ##### -->
+<para>
+Number of pixels to put inside the wrap.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:right-margin ##### -->
+<para>
+Number of pixels in the right margin.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:text ##### -->
+<para>
+Text to display.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:visible ##### -->
+<para>
+Is this rich text item visible?
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:width ##### -->
+<para>
+Width for text box.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:wrap-mode ##### -->
+<para>
+Wrap mode for multiline text.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:x ##### -->
+<para>
+X position.
+</para>
+
+<!-- ##### ARG GnomeCanvasRichText:y ##### -->
+<para>
+Y position.
+</para>
 

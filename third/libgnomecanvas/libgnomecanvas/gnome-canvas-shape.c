@@ -1079,7 +1079,7 @@ gnome_canvas_shape_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_p
 	}
 
 	/* Outline width */
-	shape->priv->scale = (fabs (affine[0]) + fabs (affine[3])) / 2.0;
+	shape->priv->scale = art_affine_expansion (affine);
 
 	/* Reset bbox */
 	if (item->canvas->aa) {

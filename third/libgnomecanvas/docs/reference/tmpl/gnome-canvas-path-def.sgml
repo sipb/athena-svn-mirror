@@ -2,11 +2,12 @@
 gnome-canvas-path-def
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Container and functions for manipulating ArtBpaths
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Convenient container and functions for manipulating ArtBpaths, which are paths
+defined by line and curve segments.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -16,7 +17,8 @@ gnome-canvas-path-def
 
 <!-- ##### STRUCT GnomeCanvasPathDef ##### -->
 <para>
-
+This structure should not be accessed directly. Use the functions defined
+below.
 </para>
 
 

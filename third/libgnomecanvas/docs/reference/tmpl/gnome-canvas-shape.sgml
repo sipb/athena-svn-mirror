@@ -2,11 +2,12 @@
 GnomeCanvasShape
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Base class for canvas item shapes
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Provides a base class for canvas item shapes, including: #GnomeCanvasBpath,
+#GnomeCanvasEllipse, #GnomeCanvasRect, and #GnomeCanvasPolygon.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -16,15 +17,8 @@ GnomeCanvasShape
 
 <!-- ##### STRUCT GnomeCanvasShape ##### -->
 <para>
-
-</para>
-
-@item: 
-@priv: 
-
-<!-- ##### STRUCT GnomeCanvasShapePriv ##### -->
-<para>
-
+This structure should not be accessed directly. Use the object's properties
+and functions for querying or changing its parameters.
 </para>
 
 
@@ -35,8 +29,6 @@ GnomeCanvasShape
 
 @shape: 
 @def: 
-<!-- # Unused Parameters # -->
-@object: 
 
 
 <!-- ##### FUNCTION gnome_canvas_shape_get_path_def ##### -->
@@ -46,7 +38,84 @@ GnomeCanvasShape
 
 @shape: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@object: 
 
+
+<!-- ##### ARG GnomeCanvasShape:cap-style ##### -->
+<para>
+Cap (end point) style for the bpath.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:dash ##### -->
+<para>
+Dashing pattern.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:fill-color ##### -->
+<para>
+X color specification for fill color, or NULL pointer for no color
+(transparent).
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:fill-color-gdk ##### -->
+<para>
+Allocated GdkColor for fill.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:fill-color-rgba ##### -->
+<para>
+Fill color with an alpha component (in the format 0xRRGGBBAA).
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:fill-stipple ##### -->
+<para>
+Stipple pattern for fill.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:join-style ##### -->
+<para>
+Vertex join style for the bpath.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:miterlimit ##### -->
+<para>
+Minimum angle between segments, where miter join rule is applied.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:outline-color ##### -->
+<para>
+X color specification for outline color, or NULL pointer for no color
+(transparent).
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:outline-color-gdk ##### -->
+<para>
+Allocated GdkColor for outline.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:outline-color-rgba ##### -->
+<para>
+Outline color with an alpha component (in the format 0xRRGGBBAA).
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:outline-stipple ##### -->
+<para>
+Stipple pattern for outline.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:width-pixels ##### -->
+<para>
+Width of the outline in pixels. The outline will not be scaled when the
+canvas zoom factor is changed.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:width-units ##### -->
+<para>
+Width of the outline in canvas units.  The outline will be scaled when
+the canvas zoom factor is changed.
+</para>
+
+<!-- ##### ARG GnomeCanvasShape:wind ##### -->
+<para>
+Winding rule for the bpath (ArtWindRule).
+</para>
 

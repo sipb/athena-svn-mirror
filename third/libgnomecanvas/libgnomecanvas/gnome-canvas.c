@@ -101,6 +101,7 @@ static void group_add                   (GnomeCanvasGroup *group,
 					 GnomeCanvasItem  *item);
 static void group_remove                (GnomeCanvasGroup *group,
 					 GnomeCanvasItem  *item);
+static void add_idle                    (GnomeCanvas      *canvas);
 
 
 /*** GnomeCanvasItem ***/
@@ -2245,6 +2246,9 @@ gnome_canvas_map (GtkWidget *widget)
 
 	canvas = GNOME_CANVAS (widget);
 
+	if (canvas->need_update)
+		add_idle (canvas);
+
 	/* Map items */
 
 	if (GNOME_CANVAS_ITEM_GET_CLASS (canvas->root)->map)
@@ -2464,7 +2468,7 @@ gnome_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 static int
 emit_event (GnomeCanvas *canvas, GdkEvent *event)
 {
-	GdkEvent ev;
+	GdkEvent *ev;
 	gint finished;
 	GnomeCanvasItem *item;
 	GnomeCanvasItem *parent;
@@ -2526,36 +2530,26 @@ emit_event (GnomeCanvas *canvas, GdkEvent *event)
 	 * offsets of the fields in the event structures.
 	 */
 
-	ev = *event;
+	ev = gdk_event_copy (event);
 
-	switch (ev.type)
+	switch (ev->type)
         {
 	case GDK_ENTER_NOTIFY:
 	case GDK_LEAVE_NOTIFY:
 		gnome_canvas_window_to_world (canvas,
-					      ev.crossing.x, ev.crossing.y,
-					      &ev.crossing.x, &ev.crossing.y);
+					      ev->crossing.x, ev->crossing.y,
+					      &ev->crossing.x, &ev->crossing.y);
 		break;
 
 	case GDK_MOTION_NOTIFY:
-                gnome_canvas_window_to_world (canvas,
-                                              ev.motion.x, ev.motion.y,
-                                              &ev.motion.x, &ev.motion.y);
-                break;
-
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
 	case GDK_3BUTTON_PRESS:
-                gnome_canvas_window_to_world (canvas,
-                                              ev.motion.x, ev.motion.y,
-                                              &ev.motion.x, &ev.motion.y);
-                break;
-
 	case GDK_BUTTON_RELEASE:
-		gnome_canvas_window_to_world (canvas,
-					      ev.motion.x, ev.motion.y,
-					      &ev.motion.x, &ev.motion.y);
-		break;
+                gnome_canvas_window_to_world (canvas,
+                                              ev->motion.x, ev->motion.y,
+                                              &ev->motion.x, &ev->motion.y);
+                break;
 
 	default:
 		break;
@@ -2582,13 +2576,15 @@ emit_event (GnomeCanvas *canvas, GdkEvent *event)
 		g_object_ref (G_OBJECT (item));
 
 		g_signal_emit (item, item_signals[ITEM_EVENT], 0,
-			       &ev, &finished);
+			       ev, &finished);
 		
 		parent = item->parent;
 		g_object_unref (G_OBJECT (item));
 
 		item = parent;
 	}
+
+	gdk_event_free (ev);
 
 	return finished;
 }
@@ -3505,13 +3501,12 @@ gnome_canvas_request_update (GnomeCanvas *canvas)
 static void
 gnome_canvas_request_update_real (GnomeCanvas *canvas)
 {
-	if (canvas->need_update) {
-		g_assert (canvas->idle_id != 0);
+	if (canvas->need_update)
 		return;
-	}
 
 	canvas->need_update = TRUE;
-	add_idle (canvas);
+	if (GTK_WIDGET_MAPPED ((GtkWidget *) canvas))
+		add_idle (canvas);
 }
 
 /* Computes the union of two microtile arrays while clipping the result to the
@@ -3682,6 +3677,8 @@ gnome_canvas_request_redraw_uta (GnomeCanvas *canvas,
 		art_uta_free (canvas->redraw_area);
 		art_uta_free (uta);
 		canvas->redraw_area = new_uta;
+		if (canvas->idle_id == 0)
+			add_idle (canvas);
 	} else {
 		ArtUta *new_uta;
 
@@ -3801,8 +3798,9 @@ gnome_canvas_w2c (GnomeCanvas *canvas, double wx, double wy, int *cx, int *cy)
  * @cx: X pixel coordinate (return value).
  * @cy: Y pixel coordinate (return value).
  *
- * Converts world coordinates into canvas pixel coordinates.  This version
- * returns coordinates in floating point coordinates, for greater precision.
+ * Converts world coordinates into canvas pixel coordinates.  This
+ * version returns coordinates in floating point coordinates, for
+ * greater precision.
  **/
 void
 gnome_canvas_w2c_d (GnomeCanvas *canvas, double wx, double wy, double *cx, double *cy)

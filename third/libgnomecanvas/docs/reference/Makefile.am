@@ -14,7 +14,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR=../../libgnomecanvas
+DOC_SOURCE_DIR=$(top_srcdir)/libgnomecanvas
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS=
@@ -30,7 +30,8 @@ HFILE_GLOB=$(top_srcdir)/libgnomecanvas/*.h
 CFILE_GLOB=$(top_srcdir)/libgnomecanvas/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES=gnome-canvas-shape-private.h
+IGNORE_HFILES=gnome-canvas-shape-private.h gnome-canvas-i18n.h \
+  gnome-canvas-marshal.h
 
 # Images to copy into HTML directory.
 HTML_IMAGES =
@@ -43,8 +44,9 @@ extra_files =
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS =
-GTKDOC_LIBS =
+GTKDOC_CFLAGS = -I$(top_srcdir) $(LIBGNOMECANVAS_CFLAGS)
+GTKDOC_LIBS = $(top_builddir)/libgnomecanvas/libgnomecanvas-2.la \
+  $(LIBGNOMECANVAS_LIBS)
 
 GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
 GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
@@ -86,7 +88,7 @@ all-local: html-build.stamp
 scan-build.stamp: $(HFILE_GLOB)
 	@echo '*** Scanning header files ***'
 	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null ; then \
-	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scanobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
+	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
 	    cd $(srcdir) ; \
 	    for i in $(SCANOBJ_FILES) ; do \

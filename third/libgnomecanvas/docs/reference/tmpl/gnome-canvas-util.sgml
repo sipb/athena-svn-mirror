@@ -2,11 +2,29 @@
 gnome-canvas-util
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Canvas utility functions
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+Some useful canvas utility functions.
+</para>
 
+<para>
+The #GnomeCanvasPoints structure manages an array of points (X and Y
+coordinates) and is used by #GnomeCanvasLine and #GnomeCanvasPolygon canvas
+items.
+</para>
+
+<para>
+To create a #GnomeCanvasPoints structure call gnome_canvas_points_new() and
+when finished using it call gnome_canvas_points_free().
+</para>
+
+<para>
+Of note is that the #GnomeCanvasPoints structure is actually managed
+by a reference count, so it won't be freed until this count reaches
+0. To increment its reference count call gnome_canvas_points_ref() and
+to decrement it call gnome_canvas_points_unref().
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -14,39 +32,19 @@ gnome-canvas-util
 
 </para>
 
-<!-- ##### MACRO GNOME_CANVAS_EPSILON ##### -->
+<!-- ##### STRUCT GnomeCanvasPoints ##### -->
 <para>
-
+A structure to manage an array of points (X and Y coordinates). The memory
+management of this structure is handled with functions below, but the point
+coordinates are meant to be written directly into the array pointed to by
+the <structfield>coords</structfield> field.
 </para>
 
-
-
-<!-- ##### MACRO GNOME_CANVAS_COLOR ##### -->
-<para>
-
-</para>
-
-@r: 
-@g: 
-@b: 
-
-
-<!-- ##### MACRO GNOME_CANVAS_COLOR_A ##### -->
-<para>
-
-</para>
-
-@r: 
-@g: 
-@b: 
-@a: 
-
-
-<!-- ##### TYPEDEF GnomeCanvasPoints ##### -->
-<para>
-
-</para>
-
+@coords: Array of coordinates (num_points * 2 in size), X coordinates are
+stored in the even-numbered indices, and Y coordinates are stored in the
+odd-numbered indices.
+@num_points: Read-only - Number of points in this array.
+@ref_count: Read-only - Count of references to this array of points
 
 <!-- ##### FUNCTION gnome_canvas_points_new ##### -->
 <para>
@@ -68,7 +66,8 @@ gnome-canvas-util
 
 <!-- ##### MACRO gnome_canvas_points_unref ##### -->
 <para>
-
+A synonym for gnome_canvas_points_free(). It decrements a #GnomeCanvasPoints
+reference by 1 and frees it when there are no more references.
 </para>
 
 
