@@ -1,0 +1,7 @@
+# $Id: .build,v 1.1 1996-10-10 21:04:23 ghudson Exp $
+
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make && make &&
+echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd &&
+echo In ${package}: make install.man DESTDIR=$srvd &&
+make install.man DESTDIR=$srvd
