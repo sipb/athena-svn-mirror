@@ -1,4 +1,4 @@
-.\"	$Id: lert.1,v 1.3 1999-01-22 23:10:34 ghudson Exp $
+.\"	$Id: lert.1,v 1.4 2000-06-19 18:12:07 zacheiss Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/mit-copyright.h
@@ -19,6 +19,11 @@ lert \- display account deactivation messages
 .BI -n[o]
 ] [
 .BI -q[uiet]
+] 
+.ti +5n
+[
+.BI -s[erver] 
+hostname
 ]
 .SH DESCRIPTION
 .I lert
@@ -48,6 +53,11 @@ is shown one last time and you are not shown these messages again.
 .TP
 .B \-q[uiet]
 fail silently if an error occurs while contacting the server.
+.TP
+\fB\-s[erver]\fI hostname \fR 
+
+Connect to the lert server "hostname".  lert will use Hesiod to determine 
+the default server if this option is not specified.
 .SH EXAMPLE
 .TP
 .B lert | lpr
