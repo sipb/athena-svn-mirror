@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.54 1992-07-31 17:49:30 epeisach Exp $
+ * $Id: login.c,v 1.55 1992-08-01 16:11:05 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.54 1992-07-31 17:49:30 epeisach Exp $";
+static char *rcsid = "$Id: login.c,v 1.55 1992-08-01 16:11:05 probe Exp $";
 #endif
 
 /*
@@ -854,7 +854,7 @@ leavethis:
     setenv("SHELL", pwd->pw_shell, 1);
     if (term[0] == '\0')
 	strncpy(term, stypeof(tty), sizeof(term));
-    setenv("TERM", term, 0);
+    setenv("TERM", term, 1);
     setenv("USER", pwd->pw_name, 1);
     setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
 #if defined(ultrix) && defined(mips)
