@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: mozilla.sh,v 1.1 2002-09-10 16:09:17 ghudson Exp $
+# $Id: mozilla.sh,v 1.1.2.1 2002-09-10 20:24:10 ghudson Exp $
 
 localscript=/var/athena/infoagents/arch/share/bin/mozilla.adjusted
 if [ -x $localscript ]; then
