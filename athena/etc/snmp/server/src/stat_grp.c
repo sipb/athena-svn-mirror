@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/06/05  15:24:35  tom
+ * lbuf is static
+ * 
  * Revision 1.3  90/05/26  13:41:00  tom
  * athena release 7.0e - reduced number of buffers
  * 
@@ -25,7 +28,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.4 1990-06-05 15:24:35 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.5 1990-07-15 18:00:03 tom Exp $";
 #endif
 
 
@@ -170,7 +173,7 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
-  repl->val.type = INT;  /* True of all the replies */
+  repl->val.type = TIME;  /* True of all the replies */
 
   /* 
    * Files should be defined in snmpd.conf
