@@ -40,6 +40,10 @@ main(argc,argv)
 	int	i;
 
 	progname = *argv;
+#ifdef POSIX
+	struct sigaction act;
+#endif
+
         source[0]=0;
 	if (argc == 1)
 		badargs();
@@ -50,7 +54,14 @@ main(argc,argv)
 		strcat(source,*++argv);
 		strcat(source," ");
 	}
+#ifdef POSIX
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) endrep;
+	(void) sigaction(SIGINT, &act, NULL);
+#else
 	signal(SIGINT,endrep);
+#endif
 	if(deathflag == 1)goto die;
 	initscr();
 	if(deathflag == 1)goto die;
@@ -82,7 +93,12 @@ main(argc,argv)
 		if(deathflag == 1)goto die;
 	}
 die:
+#ifdef POSIX
+	act.sa_handler= (void (*)()) SIG_IGN;
+	(void) sigaction(SIGINT, &act, NULL);
+#else
 	signal(SIGINT,SIG_IGN);
+#endif
 	if (input != NULL)
 	  pclose(input);
 	clear();
