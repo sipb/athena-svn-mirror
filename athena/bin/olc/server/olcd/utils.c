@@ -19,25 +19,25 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Id: utils.c,v 1.12 1990-12-12 15:24:26 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: utils.c,v 1.13 1995-05-14 01:09:20 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.12 1990-12-12 15:24:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.13 1995-05-14 01:09:20 cfields Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olcd.h>
+
 
 #include <strings.h>
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/time.h>		/* System time definitions. */
 #include <ctype.h>		/* character types */
-
+#include <olcd.h>
 
 void
 get_list_info(k,data)

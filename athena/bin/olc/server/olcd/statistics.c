@@ -10,22 +10,22 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.12 1992-02-05 02:52:17 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: statistics.c,v 1.13 1995-05-14 01:03:01 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.12 1992-02-05 02:52:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.13 1995-05-14 01:03:01 cfields Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olcd.h>
+
 #include <fcntl.h>
 #include <sys/time.h>
-
+#include <olcd.h>
 void
 write_ask_stats(username,topic,machine,ask_by)
      char *username;
