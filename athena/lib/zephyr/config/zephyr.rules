@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: zephyr.rules,v 1.3 1993-11-24 14:40:11 probe Exp $
+/**/#	$Id: zephyr.rules,v 1.4 1994-04-08 11:21:45 probe Exp $
 
 /* General system configuration */
 #define KERBEROS	/* Has Kerberos installed */
@@ -94,6 +94,7 @@ ATHINCDIR = /mit/zephyr/include
 ATHMANDIR = /mit/zephyr/man
 
 ZLIBDIR = /mit/zephyr/configs
+ZPIDDIR = /etc/athena
 ATHCONFDIR = $(ZLIBDIR)
 ATHETCDIR = $(ATHBINDIR)
 ATHRETCDIR = $(ATHBINDIR)
