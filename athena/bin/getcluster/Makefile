@@ -3,7 +3,7 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v 1.4 1989-09-14 11:33:35 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v 1.5 1990-02-09 09:35:42 epeisach Exp $
 
 DESTDIR=
 CFLAGS=-O
@@ -26,6 +26,6 @@ clean:  ;
 	-rm -f getcluster getcluster.o *~
 
 depend:
-	/usr/athena/makedepend ${CFLAGS} getcluster.c
+	touch Make.depend; /usr/athena/makedepend -fMake.depend ${CFLAGS} getcluster.c
 
 	
