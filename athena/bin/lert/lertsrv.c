@@ -24,10 +24,8 @@
 #include <string.h>
 #include <pwd.h>
 #include <sys/utsname.h>
+#include <errno.h>
 #include "lert.h"
-
-extern char *sys_errlist[];
-extern int errno;
 
 main(argc, argv)
 int argc;
@@ -75,7 +73,7 @@ char *argv[];
 
   if(bind(s, burp_me, sizeof(sin)) < 0) {
     fprintf(stderr, "%s: Unable to bind socket: %s\n",
-	    argv[0], sys_errlist[errno]);
+	    argv[0], strerror(errno));
     exit (1);
   }
 
@@ -91,13 +89,13 @@ char *argv[];
  */
   if (uname(&thishost) == -1) {
     fprintf(stderr, "%s: Unable to get system information: %s\n",
-	    argv[0], sys_errlist[errno]);
+	    argv[0], strerror(errno));
     exit (1);
   }
   hp = gethostbyname(thishost.nodename);
   if (hp == NULL) {
     fprintf(stderr, "%s: Unable to get host name information: %s\n",
-	    argv[0], sys_errlist[errno]);
+	    argv[0], strerror(errno));
     exit (1);
   }
 
@@ -108,7 +106,7 @@ char *argv[];
     plen = recvfrom(s, packet, 2048, 0, (struct sockaddr *) &from, &fromlen);
     if (plen < 0) {
       fprintf(stderr, "lertsrv: Error during recv: %s\n",
-	      sys_errlist[errno]);
+	      strerror(errno));
       sleep (1);		/* Prevent infinite cpu hog loop */
       continue;
     }
@@ -190,7 +188,7 @@ char *argv[];
 	      (struct sockaddr *) &from, 
 	      sizeof(from)) < 0) {
       fprintf(stderr, "lertsrv: sendto failed: %s\n",
-	      sys_errlist[errno]);
+	      strerror(errno));
     }
     memset(&from, 0, sizeof(from));	/* Avoid confusion, zeroize now */
   }
@@ -243,7 +241,7 @@ int onetime;
   db = dbm_open(LERTS_DATA, O_RDWR, 0600);
   if (db == NULL) {
     fprintf(stderr, "Unable to open lert's database file %s: %s.\n",
-	    LERTS_DATA, sys_errlist[errno]);
+	    LERTS_DATA, strerror(errno));
     return(LERT_NO_DB);
   }
 
@@ -279,7 +277,7 @@ int onetime;
       db2 = dbm_open(LERTS_LOG, O_RDWR|O_CREAT, 0600);
       if (db2 == NULL) {
 	fprintf(stderr, "Unable to open lert's log database %s: %s.\n",
-		LERTS_LOG, sys_errlist[errno]);
+		LERTS_LOG, strerror(errno));
       } else {
 	data2 = dbm_fetch(db2, key);
 	if (data2.dptr == NULL) {
