@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.57 1993-04-15 11:01:27 miki Exp $
+ * $Id: login.c,v 1.58 1993-06-09 15:34:59 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.57 1993-04-15 11:01:27 miki Exp $";
+static char *rcsid = "$Id: login.c,v 1.58 1993-06-09 15:34:59 miki Exp $";
 #endif
 
 /*
@@ -964,7 +964,8 @@ leavethis:
     utx_tmp = getutxline(&utmpx);
     strcpy(utmpx.ut_line, ptty);
     utmpx.ut_pid = getpid();
-    strcpy(new_id, utx_tmp->ut_id);
+    if (utx_tmp)
+          strcpy(new_id, utx_tmp->ut_id);
     p = index(new_id, '/');
     if (p)
            strcpy(p, "\0");
@@ -1056,7 +1057,7 @@ leavethis:
 #ifndef SOLARIS
     setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
 #else
-    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin", 1);
+    setenv("PATH", "/usr/athena/bin:/bin/athena::/bin:/usr/ucb:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin", 1);
     setenv("LD_LIBRARY_PATH", "/usr/openwin/lib");
 #endif
 #if defined(ultrix) && defined(mips)
