@@ -1,10 +1,10 @@
 /*
- * $Id: main.c,v 1.34 1998-04-08 22:05:20 cfields Exp $
+ * $Id: main.c,v 1.35 1998-08-23 15:28:08 ghudson Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.34 1998-04-08 22:05:20 cfields Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.35 1998-08-23 15:28:08 ghudson Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -976,6 +976,12 @@ attachandruncmd(argc, argv)
 
     mountpoint = sl_grab_string_array(mountpoint_list);
     if (mountpoint != NULL && *mountpoint != NULL) {
+	if (setuid(getuid())) {
+	    fprintf(stderr, "%s: setuid call failed: %s\n", progname,
+		    strerror(errno));
+	    return(ERR_FATAL);
+	}
+
         found = athdir_get_paths(*mountpoint, "bin",
 				 NULL, NULL, NULL, NULL, 0);
 	if (found != NULL) {
@@ -989,12 +995,6 @@ attachandruncmd(argc, argv)
 	    strcpy(path, *found);
 	    strcat(path, "/");
 	    strcat(path, argv[2]);
-
-	    if (setuid(getuid())) {
-	        fprintf(stderr, "%s: setuid call failed: %s\n", progname,
-			strerror(errno));
-		return(ERR_FATAL);
-	    }
 
 	    execv(path, argv + 3);
 
