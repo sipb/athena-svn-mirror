@@ -3,13 +3,13 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.7 1993-04-29 19:06:13 miki Exp $
+# $Id: save_cluster_info.sh,v 1.8 1995-11-28 23:28:07 cfields Exp $
 #
 # Errors from getcluster guarantee that stdout will be size 0,
 # therefore a size # 0 is a sufficient test.
 # Use old data from last session if getcluster fails.
 
-PATH=/bin:/usr/ucb; export PATH
+PATH=/bin:/usr/ucb:/usr/bsd; export PATH
 
 . /etc/athena/rc.conf
 HOSTNAME=`hostname`
