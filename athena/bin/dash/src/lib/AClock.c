@@ -10,16 +10,13 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.3 1991-12-17 10:22:11 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.4 1993-07-02 01:36:48 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#if defined(ultrix) || defined(_AIX)  ||  defined(_AUX_SOURCE)
-#include <time.h>
-#endif
-#include <sys/time.h>
+#include <X11/Xos.h>		/* needed for <time.h> or <sys/time.h> */
 #include <math.h>
 #include "Jets.h"
 #include "AClock.h"
@@ -102,19 +99,21 @@ static void wakeup(), expose(), realize(), querySize(), move(),
 
 AClockClassRec aClockClassRec = {
   {
-    /* class name */	"AnalogClock",
-    /* jet size   */	sizeof(AClockRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		NULL,
-    /* expose */	expose,
-    /* querySize */     querySize,
-    /* move */		move,
-    /* resize */        resize,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"AnalogClock",
+    /* jet size   */		sizeof(AClockRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			NULL,
+    /* expose */		expose,
+    /* querySize */     	querySize,
+    /* move */			move,
+    /* resize */        	resize,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
@@ -166,7 +165,7 @@ static int intsin(angle)
       return -sinTable[(ANGLES - 1 ) - angle];
     default:
       fprintf(stdout, "sin broken (%d)\n", angle);
-      exit(-1);
+      XjExit(-1);
     }
   return 0;		  /* just to make saber happy... look up 2 lines... */
 }
@@ -273,7 +272,7 @@ static void move(me, x, y)
      int x, y;
 {
   if (DEBUG)
-    printf ("MV(aClock)x=%d,y=%d\n", x, y);
+    printf ("MV(aClock) '%s' x=%d,y=%d\n", me->core.name, x, y);
 
   me->core.x = x;
   me->core.y = y;
@@ -288,7 +287,8 @@ static void resize(me, size)
   int width, height;
 
   if (DEBUG)
-    printf ("RSZ(aClock)w=%d,h=%d\n", size->width, size->height);
+    printf ("RS(aClock) '%s' w=%d,h=%d\n", me->core.name,
+	    size->width, size->height);
 
   if (me->aClock.keepRound)
     width = height = MIN(size->width, size->height);
@@ -452,7 +452,7 @@ static int update(me, expose)
   int h, m, s;
 
   gettimeofday(&now, NULL);
-  t = localtime(&now.tv_sec);
+  t = localtime((time_t *) &now.tv_sec);
 
   h = t->tm_hour%12;
   m = t->tm_min;
