@@ -15,9 +15,9 @@
 char *basename(str)	/* return last portion of a path name */
 char *str;
 {
-	char *cp, *rindex();	/* change to strrchr() for USG systems */
+	char *cp, *strrchr();	/* change to strrchr() for USG systems */
 
-	if((cp = rindex(str, '/')) == NULL)
+	if((cp = strrchr(str, '/')) == NULL)
 		return(str);
 	else
 		return(++cp);
