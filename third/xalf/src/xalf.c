@@ -234,7 +234,7 @@ main (int argc, char **argv)
     int mappingmode_opt = FALSE;
     unsigned timeouttime = DEFAULT_TIMEOUT;
     char *endptr;
-    char *preload_string;
+    char *preload_string, *oldpreload;
     int optchar;
     struct anim_data_struct* anim_data;
     guint32 anim_timer = 0;
@@ -389,7 +389,8 @@ main (int argc, char **argv)
 	    /* If LD_PRELOAD is alread set and this system does not support 
 	       multiple libs in LD_PRELOAD, use use --mappingmode. */
 
-	    if (getenv("LD_PRELOAD") != NULL)
+            oldpreload = getenv("LD_PRELOAD");
+	    if (oldpreload && *oldpreload)
 		{
 		    fprintf (stderr, 
 			     "%s: LD_PRELOAD is already set. Using --mappingmode\n", 
