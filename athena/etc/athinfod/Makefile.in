@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-11-03 17:57:41 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-11-04 17:37:19 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -34,8 +34,8 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL_PROGRAM} athinfod ${DESTDIR}${lsbindir}
-	${INSTALL} -m 444 ${srcdir}/athinfod.defs.5 ${DESTDIR}${mandir}/man5
-	${INSTALL} -m 444 ${srcdir}/athinfod.access.5 ${DESTDIR}${mandir}/man5
+	${INSTALL} -m 444 ${srcdir}/athinfo.defs.5 ${DESTDIR}${mandir}/man5
+	${INSTALL} -m 444 ${srcdir}/athinfo.access.5 ${DESTDIR}${mandir}/man5
 	${INSTALL} -m 444 ${srcdir}/athinfod.8 ${DESTDIR}${mandir}/man8
 
 clean:
