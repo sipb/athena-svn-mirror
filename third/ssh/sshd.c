@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.19 2000-04-09 21:50:52 rbasch Exp $
+ * $Id: sshd.c,v 1.20 2000-05-30 15:26:20 rbasch Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2000/04/09 21:50:52  rbasch
+ * Look up and set user capabilities on IRIX.
+ *
  * Revision 1.18  1999/03/27 01:59:28  ghudson
  * Nuke broken SGI project management code.
  *
@@ -734,6 +737,8 @@ RETSIGTYPE sigterm_handler(int sig)
 {
   log_msg("Received signal %d; terminating.", sig);
   close(listen_sock);
+  if (!debug_flag && options.pid_file != NULL)
+    unlink(options.pid_file);
   exit(255);
 }
 
