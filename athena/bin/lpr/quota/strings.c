@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.5 1990-11-16 15:06:56 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.6 1991-01-23 15:17:54 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -102,7 +102,7 @@ logger_read_strings()
 	return -1;
     }
 
-    if(fscanf(dbfno, "%5.5d\n", &num) < 1) {
+    if(fscanf(dbfno, "%5d\n", &num) < 1) {
 	/* Either end of file or something */
 	(void) close_database();
 	return -1;
@@ -207,7 +207,7 @@ String_num num;
     }
     else {
 	
-	if(!(new = realloc(*string, (num + 1) * sizeof(char *)))) {
+	if(!(new = realloc((char *) *string, (num + 1) * sizeof(char *)))) {
 	    /* We are in big trouble. We are out of memory. We have
 	       possibly corrupted the string table - we better abort, but
 	       we leave it to upper layers to decide */
@@ -222,9 +222,9 @@ String_num num;
 }
 
 char *logger_num_to_string(n)
-int n;
+String_num n;
 {
-    if (n <=0 || n > numstrings) return(NULL);
+    if (n == 0 || n > numstrings) return(NULL);
     return( (*string)[n]); /* XXX */
 }
 
