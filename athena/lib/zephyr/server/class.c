@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_class_c[] =
-    "$Id: class.c,v 1.22 1992-08-14 12:12:56 lwvanels Exp $";
+    "$Id: class.c,v 1.23 1994-08-01 08:38:09 probe Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -74,12 +74,11 @@ static char rcsid_class_c[] =
 /* Private variables */ 
 #define	EMPTY_CLASS	2000
 
-#define	HASHSIZE	511
-#define	HASHMUL		243
+#define	HASHSIZE	1023
+#define CLASS_HASHVAL(cl,in) (cl->hash_val ^ in->hash_val) % HASHSIZE
 
 static ZClass_t *class_bucket[HASHSIZE]; /* the hash table of pointers */
 
-#define CLASS_HASHVAL(cl,in) (cl->hash_val ^ in->hash_val) % HASHSIZE
 
 #ifdef __STDC__
 # define        P(s) s
