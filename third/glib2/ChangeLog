@@ -1,7 +1,142 @@
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.8 ===
+	
+2004-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2004-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2004-11-30  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gspawn-win32-helper.c (WinMain): Also check errno to detect
+	true errors from spawn*(). (#157258, reported by Bruce Hochstetler)
+
+2004-11-08  Matthias Clasen  <mclasen@redhat.com>
+	
+	* glib/gmain.c: Initialize child_watch_count to 1, so 
+	that we don't miss the very first child if it exits 
+	before we set up the child watch. In that case we had 
+	previously source->count == child_watch_count == 0, 
+	causing g_child_watch_check() to skip the waitpid() 
+	call.  (#154827, Gustavo Carneiro)
+
+	* glib/gmain.c (g_child_watch_source_init_single) 
+	(g_child_watch_source_init_multi_threaded): Use sigaction()
+	instead of signal().  (#136867, Jonas Jonsson, patch by
+	Archana Shah)
+
+2004-11-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gutils.c (g_get_any_init): Work around an bug
+	in Mac OS < 10.3.  (#156446, Dave MacLachlan)
+
+2004-10-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gnulib/g-gnulib.h: Undef libc functions before defining
+	them, since they may also be macros.  (#155177, Andrea Campi)
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version.
+
+	* === Released 2.4.7 ===
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates.
+
+	* glib/gmain.c (g_child_watch_add_full): 
+	* glib/gmain.c (g_child_watch_add): Document that GLib supports only
+	a single callback per pid. (#154828, Gustavo Carneiro)
+
+2004-10-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gfileutils.c: Fix some C99isms.  (#154676, Kjartan Maraas)
+
+2004-10-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates.
+
+2004-09-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gfileutils.c: Convert filenames to UTF-8 before 
+	putting them in GErrors.  (#154078, Morten Welinder)
+
+2004-09-22  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gmessages.c: [Win32] Don't ever open a console
+	window. (Which we used to do if standard output or standard error
+	are invalid, as they are for GUI applications.) These console
+	windows that open up unexpectedly have caused endless amounts of
+	confusion among end-users. (#141102, #151175)
+
+	Don't output the process id on Windows. Only output the program
+	name. If not set with g_set_prgname(), fetch the application
+	executable's name and use that.
+
+Thu Sep 16 18:15:32 2004  Manish Singh  <yosh@gimp.org>
+
+	* glib/gstrfuncs.c (g_strncasecmp): Make it take a guint for number
+	of characters, instead of a gsize. Technically this is incorrect,
+	but this makes it match the prototype, and this is a deprecated
+	function anyway.
+
+2004-09-15  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gwin32.c (g_win32_error_message): Convert message to
+	UTF-8. Technically this breaks API, but the actual use cases in
+	gdk/win32 have assumed it is UTF-8 anyway. Fix
+	documentation. (#152618, Kazuki Iwamoto)
+
+2004-09-14  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gwin32.h: Don't define ftruncate as a macro. Was never a
+	good idea, and it clashes with newest mingw headers, which have a
+	ftruncate implementation as an inline function. Thanks to Dominik R.
+
+	* glib/gwin32.c (g_win32_ftruncate): Simplify implementation, just
+	call _chsize() in the C library.
+
+2004-09-08  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+        * configure.in: Added 'or' to ALL_LINGUAS.
+ 
+Mon Aug 30 00:01:01 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/ghash.c (g_hash_table_lookup): Point to 
+	g_hash_table_lookup_extended() for differentiation between
+	not-found and value-is-NULL.  (#150960, Morten Welinder)
+
+2004-08-21  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/giowin32.c (g_io_win32_finalize): Tell select_thread to
+	break out of its loop. Prevents a thread leak. (#147392, Peter
+	Zelezny)
+
+	* glib/gunicollate.c (g_utf8_collate_key): Guard against bogus
+	return value from strxfrm(). For instance Microsoft's strxfrm()
+	returns INT_MAX on errors. (#141124)
+
+2004-08-19  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gunicollate.c (g_utf8_collate, g_utf8_collate_key): Correct
+	source and destination charset parameter order in g_convert()
+	call. (#150394, possibly also #141124)
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
 2004-08-13  Matthias Clasen  <clasen@redhat.com>
-                                                                                
+
+	* configure.in: Post-release version bump.
+
         * === Released 2.4.6 ===
-                                                                                
+
 Fri Aug 13 01:25:06 2004  Matthias Clasen  <maclas@gmx.de>
 
 	* NEWS: Updates.

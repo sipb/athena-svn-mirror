@@ -1325,7 +1325,10 @@ default priority, <link linkend="G-PRIORITY-DEFAULT-CAPS"><type>G_PRIORITY_DEFAU
 Note that on platforms where <link linkend="GPid"><type>GPid</type></link> must be explicitely closed
 (see <link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link>) <parameter>pid</parameter> must not be closed while the
 source is still active. Typically, you will want to call
-<link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link> in the callback function for the source.</para>
+<link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link> in the callback function for the source.
+</para>
+<para>
+GLib supports only a single callback per process id.</para>
 <para>
 
 </para><variablelist role="params">
@@ -1358,7 +1361,10 @@ default priority, <link linkend="G-PRIORITY-DEFAULT-CAPS"><type>G_PRIORITY_DEFAU
 Note that on platforms where <link linkend="GPid"><type>GPid</type></link> must be explicitely closed
 (see <link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link>) <parameter>pid</parameter> must not be closed while the
 source is still active. Typically, you will want to call
-<link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link> in the callback function for the source.</para>
+<link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link> in the callback function for the source.
+</para>
+<para>
+GLib supports only a single callback per process id.</para>
 <para>
 
 </para><variablelist role="params">

@@ -1687,7 +1687,8 @@ be called from an overridden class closure; see
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> data_destroy);</programlisting>
 <para>
 Adds an emission hook for a signal, which will get called for any emission
-of that signal, independent of the instance.
+of that signal, independent of the instance. This is possible only
+for signals which don't have <link linkend="G-SIGNAL-NO-HOOKS-CAPS"><type>G_SIGNAL_NO_HOOKS</type></link> flag set.
 </para><variablelist role="params">
 <varlistentry><term><parameter>signal_id</parameter>&nbsp;:</term>
 <listitem><simpara>the signal identifier, as returned by <link linkend="g-signal-lookup"><function>g_signal_lookup()</function></link>.

@@ -1,7 +1,39 @@
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.8 ===
+	
+2004-10-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/tmpl/gtype.sgml (GTypeInterfaceCheckFunc): Rename
+	first parameter.
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.7 ===
+
+2004-10-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/tmpl/objects.sgml: Improve the docs for
+	g_object_get_property().  (#153424, Stefan Kost)
+
+2004-10-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/tmpl/signals.sgml: Improve docs for 
+	g_signal_add_emission_hook.  (#154299, Nickolay V. Shmyrev)
+
+2004-09-20  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/messages.sgml: Correct the docs for the default log
+	handler wrt to which messages go to stderr. (#153041, Philippe Blain)
+
+Sun Aug 29 23:50:45 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/fileutils.sgml: Fix a typo.  (#151109, Stepan Kasal)
+
 2004-08-13  Matthias Clasen  <clasen@redhat.com>
-                                                                                
-        * === Released 2.4.6 ===
-                                                                                
+
+	* === Released 2.4.6 ===
+
 2004-08-12  Matthias Clasen  <mclasen@redhat.com>
 
 	* glib/tmpl/threads.sgml: Document the necessity to call

@@ -1,7 +1,64 @@
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.8 ===
+	
+2004-10-08  Matthias Clasen  <clasen@redhat.com>
+
+	* === Released 2.4.7 ===
+
+2004-09-13  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* gl.po: Updated Galician translation.
+
+2004-09-09  Baris Cicek <baris@teamforce.name.tr>
+
+	* tr.po: Updated Turkish Translation by Onur Can Cakmak
+
+2004-09-08  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+	* or.po: Updated Oriya translation.
+
+2004-09-06  Åsmund Skjæveland <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-09-05  Marius Andreiana <marius galuna.ro>
+
+	* ro.po: updated by Misu Moldovan
+
+2004-08-31  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2004-08-24  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* ne.po: Updated Nepali Translation
+
+2004-08-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-19  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-08-18  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-18  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* bs.po: Added Bosnian translation by
+	Kenan Hadžiavdić <kenanh@frisurf.no>.
+
 2004-08-13  Matthias Clasen  <clasen@redhat.com>
-                                                                                
-        * === Released 2.4.6 ===
-                                                                                
+
+	* === Released 2.4.6 ===
+
 2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* nb.po: Add correctly named file.
@@ -25,7 +82,7 @@
 
 2004-07-21  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * hi.po: Updated Hindi translation.
+	* hi.po: Updated Hindi translation.
 
 2004-07-09  Matthias Clasen  <mclasen@redhat.com>
 
@@ -49,7 +106,7 @@
 
 2004-06-04  Matthias Clasen  <mclasen@redhat.com>
 
- 	* === Released 2.4.2 ===
+	* === Released 2.4.2 ===
 
 2004-05-25  Alessio Frusciante  <algol@firenze.linux.it>
 
@@ -159,8 +216,8 @@
 
 2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * gu.po: Added Gujurati translation by
-        Gujarati Team <magnet@magnet-i.com>.
+	* gu.po: Added Gujurati translation by
+	Gujarati Team <magnet@magnet-i.com>.
 
 2004-04-07  Iñaki Larrañaga  <dooteo@euskalgnu.org>
 

@@ -318,7 +318,10 @@ Returns the number of elements contained in the <link linkend="GHashTable"><type
 <indexterm><primary>g_hash_table_lookup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    g_hash_table_lookup             (<link linkend="GHashTable">GHashTable</link> *hash_table,
                                              <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
-Looks up a key in a <link linkend="GHashTable"><type>GHashTable</type></link>.</para>
+Looks up a key in a <link linkend="GHashTable"><type>GHashTable</type></link>. Note that this function cannot
+distinguish between a key that is not present and one which is present
+and has the value <literal>NULL</literal>. If you need this distinction, use
+<link linkend="g-hash-table-lookup-extended"><function>g_hash_table_lookup_extended()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">

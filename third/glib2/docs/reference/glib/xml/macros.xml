@@ -86,7 +86,7 @@ The minor version number of the GLib library.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GLIB-MICRO-VERSION-CAPS"/>GLIB_MICRO_VERSION</title>
-<indexterm><primary>GLIB_MICRO_VERSION</primary></indexterm><programlisting>#define GLIB_MICRO_VERSION 6
+<indexterm><primary>GLIB_MICRO_VERSION</primary></indexterm><programlisting>#define GLIB_MICRO_VERSION 8
 </programlisting>
 <para>
 The micro version number of the GLib library.

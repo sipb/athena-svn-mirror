@@ -19,7 +19,6 @@
 #define     <link linkend="MAXPATHLEN-CAPS">MAXPATHLEN</link>
 typedef     <link linkend="pid-t">pid_t</link>;
 #define     <link linkend="pipe">pipe</link>                            (phandles)
-#define     <link linkend="ftruncate">ftruncate</link>                       (fd, size)
 <link linkend="gchar">gchar</link>*      <link linkend="g-win32-error-message">g_win32_error_message</link>           (<link linkend="gint">gint</link> error);
 <link linkend="gchar">gchar</link>*      <link linkend="g-win32-getlocale">g_win32_getlocale</link>               (void);
 <link linkend="gchar">gchar</link>*      <link linkend="g-win32-get-package-installation-directory">g_win32_get_package_installation_directory</link>
@@ -82,31 +81,15 @@ in any UNIX manual.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="ftruncate"/>ftruncate()</title>
-<indexterm><primary>ftruncate</primary></indexterm><programlisting>#    define ftruncate(fd, size)	g_win32_ftruncate (fd, size)
-</programlisting>
-<para>
-Provided for UNIX emulation on Windows; see documentation for <function><link linkend="ftruncate"><function>ftruncate()</function></link></function>
-in any UNIX manual.
-</para><variablelist role="params">
-<varlistentry><term><parameter>fd</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
 <title><anchor id="g-win32-error-message"/>g_win32_error_message ()</title>
 <indexterm><primary>g_win32_error_message</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      g_win32_error_message           (<link linkend="gint">gint</link> error);</programlisting>
 <para>
 Translate a Win32 error code (as returned by <link linkend="GetLastError"><function>GetLastError()</function></link>) into
 the corresponding message. The message is either language neutral,
 or in the thread's language, or the user's language, the system's
-language, or US English (see docs for <link linkend="FormatMessage"><function>FormatMessage()</function></link>). *
-The returned string should be deallocated with <link linkend="g-free"><function>g_free()</function></link>.</para>
+language, or US English (see docs for <link linkend="FormatMessage"><function>FormatMessage()</function></link>). The
+returned string is in UTF-8. It should be deallocated with
+<link linkend="g-free"><function>g_free()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">

@@ -850,6 +850,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
 @MS_LIB_AVAILABLE_FALSE@uninstall-ms-lib:
 
 @OS_WIN32_TRUE@install-libtool-import-lib:
+# 	Don't put the bug compatibility entries in the import lib!
+#	(Unfortunately the GNU linker doesn't yet understand the PRIVATE
+#	directive in .def files.)
+#
+@OS_WIN32_TRUE@	for entry in `grep PRIVATE gobject.def | sed -e 's/PRIVATE//'`; do \
+@OS_WIN32_TRUE@	  file=`nm -A .libs/libgobject-2.0.dll.a | grep -m 1 $$entry | cut -d: -f2`; \
+@OS_WIN32_TRUE@	  ar d .libs/libgobject-2.0.dll.a $$file; \
+@OS_WIN32_TRUE@	done
 @OS_WIN32_TRUE@	$(INSTALL) .libs/libgobject-2.0.dll.a $(DESTDIR)$(libdir)
 @OS_WIN32_TRUE@	$(INSTALL) $(srcdir)/gobject.def $(DESTDIR)$(libdir)/gobject-2.0.def
 

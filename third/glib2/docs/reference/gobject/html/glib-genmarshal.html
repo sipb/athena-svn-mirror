@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>glib-genmarshal</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn02.html" title="Tools Reference"><link rel="previous" href="glib-mkenums.html" title="glib-mkenums"><link rel="next" href="gobject-query.html" title="gobject-query"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="refentry" href="gobject-Type-Information.html" title="GType"><link rel="refentry" href="GTypePlugin.html" title="GTypePlugin"><link rel="refentry" href="GTypeModule.html" title="GTypeModule"><link rel="refentry" href="gobject-The-Base-Object-Type.html" title="GObject"><link rel="refentry" href="gobject-Enumeration-and-Flag-Types.html" title="Enums and Flags"><link rel="refentry" href="gobject-Boxed-Types.html" title="GBoxed"><link rel="refentry" href="gobject-Generic-values.html" title="Generic Values"><link rel="refentry" href="gobject-Standard-Parameter-and-Value-Types.html" title="Parameters and Values"><link rel="refentry" href="gobject-Varargs-Value-Collection.html" title="Varargs Value Collection"><link rel="refentry" href="gobject-GParamSpec.html" title="GParamSpec"><link rel="refentry" href="gobject-Signals.html" title="Signals"><link rel="refentry" href="gobject-Closures.html" title="Closures"><link rel="refentry" href="gobject-Value-arrays.html" title="Value arrays"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="refentry" href="glib-mkenums.html" title="glib-mkenums"><link rel="refentry" href="glib-genmarshal.html" title="glib-genmarshal"><link rel="refentry" href="gobject-query.html" title="gobject-query"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="glib-genmarshal.html#id2743220" title="Description"><link rel="section" href="glib-genmarshal.html#id2743243" title="Invokation"><link rel="section" href="glib-genmarshal.html#id2743736" title="Example"><link rel="section" href="glib-genmarshal.html#id2743797" title="See also"><link rel="section" href="glib-genmarshal.html#id2743812" title="Bugs"><link rel="section" href="glib-genmarshal.html#id2743821" title="Author"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="glib-mkenums.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="gobject-query.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="glib-genmarshal"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">glib-genmarshal</span></h2><p>glib-genmarshal &#8212; C code marshaller generation utility for GLib closures</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><tt class="command">glib-genmarshal</tt>  [options...] [files...]</p></div></div><div class="refsect1" lang="en"><a name="id2743220"></a><h2>Description</h2><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>glib-genmarshal</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn02.html" title="Tools Reference"><link rel="prev" href="glib-mkenums.html" title="glib-mkenums"><link rel="next" href="gobject-query.html" title="gobject-query"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="glib-mkenums.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="gobject-query.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="glib-genmarshal"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">glib-genmarshal</span></h2><p>glib-genmarshal &#8212; C code marshaller generation utility for GLib closures</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><tt class="command">glib-genmarshal</tt>  [options...] [files...]</p></div></div><div class="refsect1" lang="en"><a name="id3024223"></a><h2>Description</h2><p>
 <span><b class="command">glib-genmarshal</b></span> is a small utility that generates C code 
 marshallers for callback functions of the GClosure mechanism in the GObject 
 sublibrary of GLib. The marshaller functions have a standard signature, 
@@ -7,11 +7,11 @@ the callback function parameters and a value structure for the return value
 of the callback. The marshaller is then responsible to call the respective C 
 code function of the closure with all the parameters on the stack and to 
 collect its return value.
-</p></div><div class="refsect1" lang="en"><a name="id2743243"></a><h2>Invokation</h2><p>
+</p></div><div class="refsect1" lang="en"><a name="id3024246"></a><h2>Invokation</h2><p>
 <span><b class="command">glib-genmarshal</b></span> takes a list of marshallers to generate as 
 input. The marshaller list is either read from standard input or from files
 passed as additional arguments on the command line.
-</p><div class="refsect2" lang="en"><a name="id2743260"></a><h3>Options</h3><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="option">--header</tt></span></td><td><p>
+</p><div class="refsect2" lang="en"><a name="id3024263"></a><h3>Options</h3><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="option">--header</tt></span></td><td><p>
 Generate header file contents of the marshallers.
 </p></td></tr><tr><td><span class="term"><tt class="option">--body</tt></span></td><td><p>
 Generate C code file contents of the marshallers.
@@ -28,7 +28,7 @@ Make warnings fatal, that is, exit immediately once a warning occurs.
 Print brief help and exit.
 </p></td></tr><tr><td><span class="term"><tt class="option">-v</tt>, <tt class="option">--version</tt></span></td><td><p>
 Print version and exit.
-</p></td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2743396"></a><h3>Marshaller list format</h3><p>
+</p></td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3024399"></a><h3>Marshaller list format</h3><p>
 The marshaller lists are processed line by line, a line can contain a
 comment in the form of
 </p><pre class="programlisting">
@@ -46,7 +46,7 @@ The <i class="replaceable"><tt>RTYPE</tt></i> part specifies the callback's retu
 type and the <i class="replaceable"><tt>PTYPE</tt></i>s right to the colon specify 
 the callback's parameter list, except for the first and the last arguments 
 which are always pointers.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2743468"></a><h3>Parameter types</h3><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3024471"></a><h3>Parameter types</h3><p>
 Currently, the following types are supported:
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="replaceable"><tt>VOID</tt></i></span></td><td><p>
 indicates no return type, or no extra parameters. 
@@ -89,7 +89,7 @@ deprecated alias for <i class="replaceable"><tt>VOID</tt></i>
 </p></td></tr><tr><td><span class="term"><i class="replaceable"><tt>BOOL</tt></i></span></td><td><p>
 deprecated alias for <i class="replaceable"><tt>BOOLEAN</tt></i>
 </p></td></tr></tbody></table></div><p>
-</p></div></div><div class="refsect1" lang="en"><a name="id2743736"></a><h2>Example</h2><p>
+</p></div></div><div class="refsect1" lang="en"><a name="id3024740"></a><h2>Example</h2><p>
 To generate marshallers for the following callback functions:
 </p><pre class="programlisting">
 void   foo (gpointer data1,
@@ -126,11 +126,11 @@ cc_bar = g_cclosure_new (NULL, bar, NULL);
 g_closure_set_marshal (cc_bar, g_cclosure_marshal_VOID__INT);
 cc_baz = g_cclosure_new (NULL, baz, NULL);
 g_closure_set_marshal (cc_baz, g_cclosure_marshal_FLOAT__BOOLEAN_UCHAR);
-</pre></div><div class="refsect1" lang="en"><a name="id2743797"></a><h2>See also</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id3024800"></a><h2>See also</h2><p>
 <span><b class="command">glib-mkenums</b></span>(1)
-</p></div><div class="refsect1" lang="en"><a name="id2743812"></a><h2>Bugs</h2><p>
+</p></div><div class="refsect1" lang="en"><a name="id3024815"></a><h2>Bugs</h2><p>
 None known yet.
-</p></div><div class="refsect1" lang="en"><a name="id2743821"></a><h2>Author</h2><p>
+</p></div><div class="refsect1" lang="en"><a name="id3024824"></a><h2>Author</h2><p>
 <span><b class="command">glib-genmarshal</b></span> has been written by Tim Janik 
 <tt class="email">&lt;<a href="mailto:timj@gtk.org">timj@gtk.org</a>&gt;</tt>.
 </p><p>

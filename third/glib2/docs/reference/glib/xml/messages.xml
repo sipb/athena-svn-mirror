@@ -389,8 +389,8 @@ and log level combination. It outputs the message to stderr or stdout
 and if the log level is fatal it calls <function><link linkend="abort"><function>abort()</function></link></function>.
 </para>
 <para>
-stderr is used for levels <literal>G_LOG_LEVEL_ERROR</literal>, <literal>G_LOG_LEVEL_CRITICAL</literal>, and
-<literal>G_LOG_LEVEL_WARNING</literal>. stdout is used for the rest.
+stderr is used for levels <literal>G_LOG_LEVEL_ERROR</literal>, <literal>G_LOG_LEVEL_CRITICAL</literal>,
+<literal>G_LOG_LEVEL_WARNING</literal> and <literal>G_LOG_LEVEL_MESSAGE</literal>. stdout is used for the rest.
 </para><variablelist role="params">
 <varlistentry><term><parameter>log_domain</parameter>&nbsp;:</term>
 <listitem><simpara>the log domain of the message.

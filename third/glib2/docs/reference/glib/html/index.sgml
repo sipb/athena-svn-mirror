@@ -951,7 +951,6 @@
 <ANCHOR id="MAXPATHLEN-CAPS" href="glib/glib-Windows-Compatability-Functions.html#MAXPATHLEN-CAPS">
 <ANCHOR id="pid-t" href="glib/glib-Windows-Compatability-Functions.html#pid-t">
 <ANCHOR id="pipe" href="glib/glib-Windows-Compatability-Functions.html#pipe">
-<ANCHOR id="ftruncate" href="glib/glib-Windows-Compatability-Functions.html#ftruncate">
 <ANCHOR id="g-win32-error-message" href="glib/glib-Windows-Compatability-Functions.html#g-win32-error-message">
 <ANCHOR id="g-win32-getlocale" href="glib/glib-Windows-Compatability-Functions.html#g-win32-getlocale">
 <ANCHOR id="g-win32-get-package-installation-directory" href="glib/glib-Windows-Compatability-Functions.html#g-win32-get-package-installation-directory">
