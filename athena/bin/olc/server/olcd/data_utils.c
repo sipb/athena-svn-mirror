@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.39.1.1 1992-01-07 15:52:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.39.1.1 1992-01-07 15:52:03 lwvanels Exp $";
 #endif
 #endif
 
@@ -57,8 +57,6 @@ static int was_connected P((KNUCKLE *a , KNUCKLE *b ));
  *
  *           create_user()
  *           create_knuckle() 
- *           insert_knuckle()
- *           insert_knuckle_in_user()
  *           insert_topic()
  *           delete_user()
  *           delete_knuckle()
@@ -88,6 +86,7 @@ static int was_connected P((KNUCKLE *a , KNUCKLE *b ));
  *     acls, specialties and such. 
  */
 
+
 KNUCKLE *
 create_user(person)
      PERSON *person;
@@ -99,14 +98,14 @@ create_user(person)
    * create user
    */
 
-  if((user = (USER *) malloc(sizeof(USER))) == (USER *) NULL)
-    {
-      log_error("create_user: out of memory");
-      return((KNUCKLE *) NULL);
-    }
-  bzero((char *) user, sizeof(USER));
+  /* Allocate user off of free list, expanding list if necessary */
 
-  user->knuckles = (KNUCKLE **) NULL;
+  if((user = alloc_user()) == (USER *) NULL) {
+    log_error("create_user: out of memory");
+    return((KNUCKLE *) NULL);
+  }
+
+  user->knuckles = (KNUCKLE *) NULL;
 
   /*
    * create knuckle
@@ -150,41 +149,17 @@ KNUCKLE *
 create_knuckle(user)
      USER *user;
 {
-  KNUCKLE *k, **k_ptr;
-
-  /*
-   * first let's see if we already have one
-   */
-
-  if(user->knuckles != (KNUCKLE **) NULL)
-    for (k_ptr = user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-      if(!is_active((*k_ptr)))
-	{
-	  (*k_ptr)->instance = validate_instance((*k_ptr));
-	  return((*k_ptr));
-	}
+  KNUCKLE *k, *k_ptr;
 
   /*
    * Make room for daddy
    */
 
-  k = (KNUCKLE *) malloc(sizeof(KNUCKLE));
-  if(k == (KNUCKLE *) NULL)
-    {
-      log_error("create_knuckle: out of memory");
-      return((KNUCKLE *) NULL);
-    }  
-  bzero((char *) k, sizeof(KNUCKLE));
-
-  /*
-   * insert knuckle in Knuckle List
-   */
-
-  if (insert_knuckle(k) != SUCCESS) 
-    {
-      free((char *) k);
-      return((KNUCKLE *) NULL);
-    }
+  k = alloc_knuc();
+  if(k == (KNUCKLE *) NULL) {
+    log_error("create_knuckle: out of memory");
+    return((KNUCKLE *) NULL);
+  }
 
   /*
    * initialize knuckle and insert in User Knuckle List
@@ -193,11 +168,7 @@ create_knuckle(user)
   k->user = user; 
   k->instance = assign_instance(user);
 
-  if(insert_knuckle_in_user(k,user) != SUCCESS)
-    {
-      free((char *) k);
-      return((KNUCKLE *) NULL);
-    }
+  insert_knuc_in_user(user,k);
 
   k->user->no_knuckles++;
   k->question = (QUESTION *) NULL;
@@ -209,163 +180,7 @@ create_knuckle(user)
 
   return(k);
 }
-  
-
-
-
-/*
- * Function:    insert_knuckle() 
- * Arguments:   KNUCKLE *knuckle:	Knuckle to be inserted.
- * Returns:     Zero on success, non-zero otherwise.
- * Notes:       
- *          Inserts a knuckle to the Knuckle List. 
- */
-
-int
-insert_knuckle(knuckle)
-     KNUCKLE *knuckle;
-{
-  KNUCKLE **k_ptr;
-  int n_knuckles=0;
-  int n_inactive=0;
-  char mesg[BUF_SIZE];
-
-  /*
-   * Start off knuckle list
-   */
-  
-  if (Knuckle_List == (KNUCKLE **) NULL) 
-    {
-      Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
-      if (Knuckle_List == (KNUCKLE **) NULL) 
-	{
-	  log_error("malloc(insert_knuckle)");
-	  return(ERROR);
-	}
-      *Knuckle_List = (KNUCKLE *) NULL;
-    }
-  
-
-  /* 
-   * How many do we have, really
-   */
-
-
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    {
-      ++n_knuckles;
-      if(!is_active((*k_ptr)))
-	++n_inactive;
-    }
-
-#ifdef LOG
-  sprintf(mesg,"no: %d   inactive: %d\n",n_knuckles, n_inactive);
-  log_status(mesg);
-#endif /* LOG */
-
-  if(n_inactive < MAX_CACHE_SIZE)
-    {
-      n_knuckles++;
-      
-      /*
-       * reallocate Knuckle List and add new knuckle
-       */
-      
-      Knuckle_List = (KNUCKLE **) realloc((char *) Knuckle_List, (unsigned)
-					  (n_knuckles+1) * sizeof(KNUCKLE *));
-      if (Knuckle_List == (KNUCKLE **) NULL) {
-	log_error("insert_knuckle: realloc: ");
-	return(ERROR);
-      }
-      Knuckle_List[n_knuckles]   = (KNUCKLE *) NULL;
-      Knuckle_List[n_knuckles-1] = knuckle;
-      return(SUCCESS);
-    }
-  else
-    {
-      for(k_ptr = Knuckle_List;*k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	{
-	  if(!is_active((*k_ptr)))
-	    {
-	      if(((*k_ptr)->user->no_knuckles > 1) && 
-		 ((*k_ptr)->instance == 0))
-		continue;
-	      delete_knuckle((*k_ptr),1);
-	      Knuckle_List[n_knuckles-1] = knuckle;
-	      Knuckle_List[n_knuckles]   = (KNUCKLE *) NULL;
-	      return(SUCCESS);
-	    }
-	} 
-      /* Hopefully, we should never get here: */
-      /* This means a new knuckle was requested, but couldn't be inserted. */
-      /* Should deal with this better in the future; hash table for knucle */
-      /* list, and also allow it to grow w/o bound. */
-
-      sprintf(mesg,"Unable to insert knuckle in list; out of space");
-      log_error(mesg);
-      return(ERROR);
-    }
-}
-
-
-
-/*
- * Function:    insert_knuckle_in_user() 
- * Arguments:   KNUCKLE *knuckle:	Knuckle to be inserted.
- * Returns:     Zero on success, non-zero otherwise.
- * Notes:       
- *          Inserts a knuckle to the User list. 
- */
-
-int
-insert_knuckle_in_user(knuckle, user)
-     KNUCKLE *knuckle;
-     USER *user;
-{
-  int n_knuckles;
-
-  /*
-   * Allocate first knuckle, if needed
-   */
-
-  if (user->knuckles == (KNUCKLE **) NULL) 
-    {
-      user->knuckles = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
-      if (user->knuckles == (KNUCKLE **) NULL) 
-	{
-	  log_error("malloc(insert_knuckle)");
-	  return(ERROR);
-	}
-      *(user->knuckles) = (KNUCKLE *) NULL;
-    }
-
-  /*
-   * count knuckles
-   */
-
-  for (n_knuckles = 0; user->knuckles[n_knuckles] != 
-       (KNUCKLE *) NULL; n_knuckles++);
-    
-  n_knuckles++;
-
-  /*
-   * reallocate user knuckle list and insert knuckle
-   */
-
-  user->knuckles = (KNUCKLE **) realloc((char *) user->knuckles, (unsigned)
-				      ((n_knuckles+1) * sizeof(KNUCKLE *)));
-  if (user->knuckles == (KNUCKLE **) NULL) {
-    log_error("realloc(insert_knuckle)");
-    return(ERROR);
-  }
-  user->knuckles[n_knuckles]   = (KNUCKLE *) NULL;
-  user->knuckles[n_knuckles-1] = knuckle;
-  return(SUCCESS);
-}
-
-
-
-
+ 
 /*
  * Function:    insert_topic()
  * Arguments:   TOPIC *t   Topic structure
@@ -437,113 +252,6 @@ get_topic_code(t)
 
   return(Topic_List[i-1]->value);
 }
-     
-/*
- * Function:	delete_user() 
- * Arguments:	USER *user:	Ptr. to user structure to be deleted.
- * Returns:	Nothing.
- * Notes:
- *        Delete every knuckle in the user list. Delete_knuckle() will
- *        take care of the user structure.   
- */
-
-void
-delete_user(user)
-     USER *user;
-{
-  KNUCKLE *k;
-  int i;
-  
-  k = *(user->knuckles);
-
-  for(i=0; i< user->no_knuckles; i++)
-    delete_knuckle((k+i),0);
-}
-
-
-/*
- * Function:	delete_knuckle() removes a knuckle from the Knuckle List.
- * Arguments:	KNUCKLE *knuckle:      Ptr. to user structure to be deleted.
- * Returns:	Nothing.
- * Notes:
- *      Find the entry that matches the Knuckle, and copy the last entry
- *      in the list into that slot.  (This is a no-op if the user is at
- *      the end of the list.)  Then put a NULL into the last slot, and
- *      free the KNUCKLE structure. The user is deleted if it is the last
- *      knuckle in the User List.
- */
-
-void
-delete_knuckle(knuckle,cont)
-     KNUCKLE *knuckle;
-     int cont;
-{
-  int n_knuckles, knuckle_idx = -1;
-  char msgbuf[BUFSIZ];
-  KNUCKLE **k_ptr;
-  int i;
-
-  for (n_knuckles = 0; Knuckle_List[n_knuckles]; n_knuckles++)
-      if (Knuckle_List[n_knuckles] == knuckle)
-	  knuckle_idx = n_knuckles;
-  if (knuckle_idx == -1)
-      return;
-
-  Knuckle_List[knuckle_idx]  = Knuckle_List[n_knuckles-1];
-  Knuckle_List[n_knuckles-1] = (KNUCKLE *) NULL;
-
-  if(!cont)
-    Knuckle_List = (KNUCKLE **) realloc(Knuckle_List, 
-					sizeof(KNUCKLE *) * (n_knuckles-1));
-      
-
-  /* maintain continuity in the user knuckle list */
-  k_ptr = knuckle->user->knuckles;
-  for(i=0;i<knuckle->user->no_knuckles;i++)
-      if (knuckle == k_ptr[i])
-	  break;
-  
-  k_ptr[i] = k_ptr[knuckle->user->no_knuckles - 1];
-  k_ptr[knuckle->user->no_knuckles - 1] = 0;
-
-  /* delete user if last knuckle */
-  if (knuckle->user->no_knuckles == 1)
-      free((char *) knuckle->user);
-  else
-      knuckle->user->no_knuckles--;
-
-  /* free question */
-  if(knuckle->question != (QUESTION *) NULL)
-    free((char *) knuckle->question);
-      
-  /* free new messages */
-  free_new_messages(knuckle);
-  knuckle->new_messages = -1;
-  knuckle->nm_file[0] = '\0';
-      
-#ifdef LOG
-  /* log it */
-  (void) sprintf(msgbuf, "Deleting knuckle %s (%d)", 
-	  knuckle->user->username, knuckle->instance);
-  log_status(msgbuf);
-#endif /* LOG */
-
-  /* free it */
-  free((char *)knuckle);
-}
-
-
-int
-deactivate_knuckle(knuckle)
-     KNUCKLE *knuckle;
-{
-  if(knuckle->instance > 0)
-    delete_knuckle(knuckle, /*???*/0);
-  else
-    knuckle->status = 0;
-  return(SUCCESS);
-}
-
 
 void
 init_user(knuckle,person)
@@ -670,18 +378,18 @@ get_user(person,user)
      PERSON *person;
      USER **user;
 {
-  KNUCKLE **k_ptr;  
+  KNUCKLE *k_ptr;  
 
-  if (Knuckle_List == (KNUCKLE **) NULL)
+  if (Knuckle_inuse == (KNUCKLE *) NULL)
     {
       log_status("get_knuckle: empty list");
       return(EMPTY_LIST);
     }
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_eq((*k_ptr)->user->username,person->username))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(string_eq(k_ptr->user->username,person->username))
       {
-	*user = (*k_ptr)->user;
+	*user = k_ptr->user;
 	return(SUCCESS);
       }
 
@@ -708,25 +416,25 @@ get_knuckle(name,instance,knuckle,active)
      KNUCKLE **knuckle;
      int active;
 {
-  KNUCKLE **k_ptr;  
+  KNUCKLE *k_ptr;
   int status = 0;
 
-  if (Knuckle_List == (KNUCKLE **) NULL)
+  if (Knuckle_inuse == (KNUCKLE *) NULL)
     {
       log_status("get_knuckle: empty list");
       return(EMPTY_LIST);
     }
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_eq((*k_ptr)->user->username,name))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(string_eq(k_ptr->user->username,name))
       {
-	if(active && (!is_active((*k_ptr))))
+	if(active && (!is_active(k_ptr)))
 	  continue;
 
-	if(((*k_ptr)->instance == instance) && !(!is_active((*k_ptr)) &&
-						 (*k_ptr)->instance > 0))
+	if((k_ptr->instance == instance) && !(!is_active(k_ptr) &&
+						 k_ptr->instance > 0))
 	  {
-	    *knuckle = *k_ptr;
+	    *knuckle = k_ptr;
 	    return(SUCCESS);
 	  }
 
@@ -746,7 +454,7 @@ match_knuckle(name,instance,knuckle)
      int instance;
      KNUCKLE **knuckle;
 {
-  KNUCKLE **k_ptr,*store_ptr;
+  KNUCKLE *k_ptr,*store_ptr;
   int status;
   int not_unique = 0;
 
@@ -757,14 +465,14 @@ match_knuckle(name,instance,knuckle)
   status = 0;
   store_ptr = (KNUCKLE *) NULL;
 
-  if (Knuckle_List == (KNUCKLE **) NULL)
+  if (Knuckle_inuse == (KNUCKLE *) NULL)
     return(EMPTY_LIST);
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_equiv(name,(*k_ptr)->user->username,strlen(name)) && 
-       is_active((*k_ptr)))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(string_equiv(name,k_ptr->user->username,strlen(name)) && 
+       is_active(k_ptr))
       {
-	if((*k_ptr)->instance == instance)
+	if(k_ptr->instance == instance)
 	  {
 	    if(store_ptr != (KNUCKLE *) NULL)
 	      {
@@ -773,11 +481,11 @@ match_knuckle(name,instance,knuckle)
   by the if statement just after the endif TEST above, then we are
   going to pass this one, too, aren't we?    -Chris.
   ******/ 
-		if(store_ptr->instance == (*k_ptr)->instance)
+		if(store_ptr->instance == k_ptr->instance)
 		  not_unique = 1;
 	      }
 	    else
-	      store_ptr = *k_ptr;
+	      store_ptr = k_ptr;
 	  }
 	else
 	  status=1;
@@ -833,20 +541,20 @@ get_instance(user,instance)
      char *user;
      int *instance;
 {
-  KNUCKLE **k_ptr;
+  KNUCKLE *k_ptr;
   KNUCKLE *k_save = (KNUCKLE *) NULL;
 
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_eq(user,(*k_ptr)->user->username) && 
-      is_active((*k_ptr)))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(string_eq(user,k_ptr->user->username) && 
+      is_active(k_ptr))
       {
 	if(k_save != (KNUCKLE *) NULL)
 	  {
-	    if(((*k_ptr)->instance < k_save->instance))
-	    k_save = *k_ptr;
+	    if((k_ptr->instance < k_save->instance))
+	    k_save = k_ptr;
 	  }
 	else
-	  k_save = *k_ptr;
+	  k_save = k_ptr;
       }
 
   if(k_save != (KNUCKLE *) NULL)
@@ -863,16 +571,13 @@ verify_instance(knuckle,instance)
      KNUCKLE *knuckle;
      int instance;
 {
-  KNUCKLE **k;
-  int i;
+  KNUCKLE *k;
 
   if(instance == 0)
     return(SUCCESS);
 
-  k = knuckle->user->knuckles;
-   
-  for(i=0; i< knuckle->user->no_knuckles; i++)
-    if(((*(k+i))->instance == instance) && is_active((*(k+i))))
+  for(k = knuckle->user->knuckles; k != (KNUCKLE *) NULL; k = k->next_k)
+    if((k->instance == instance) && is_active(k))
       return(SUCCESS);
   return(FAILURE);
 }
@@ -896,26 +601,23 @@ static int
 assign_instance(user)
      USER *user;
 {
-  KNUCKLE **k;
+  KNUCKLE *k;
   int match;
-  int i,j;
+  int i;
 
   k = user->knuckles;
   
-  for(i=0; i<= user->no_knuckles; i++)
-    {
-      match = 0;
-      for(j=0; j < user->no_knuckles; j++)
-	{
-	  if( (*(k+j))->instance == i)
-	    {
-	      match = 1;
-	      break;
-	    }
-	}
-      if(!match)
-	return(i);
+  for(i=0; i<= user->no_knuckles; i++) {
+    match = 0;
+    for(k = user->knuckles; k != (KNUCKLE *) NULL; k = k->next_k) {
+      if( k->instance == i) {
+	match = 1;
+	break;
+      }
     }
+    if(!match)
+      return(i);
+  }
   return(ERROR);
 }
 
@@ -1011,8 +713,8 @@ connect_knuckles(a,b)
   if(write_message_to_user(consultant,msg,0)!=SUCCESS)
     {
       free_new_messages(consultant);
-      deactivate(consultant);
       disconnect_knuckles(owner, consultant);
+      dealloc_knuc(consultant);
       return(FAILURE);
     }
       
@@ -1123,8 +825,7 @@ match_maker(knuckle)
 	if (!is_signed_on (knuckle))
 	    return FAILURE;
 	
-	for (i = 0; Knuckle_List[i]; i++) {
-	    k = Knuckle_List[i];
+	for (k = Knuckle_inuse; k != (KNUCKLE *) NULL; k = k->next) {
 	    /* go through unconnected users, find a match */
 	    if(!has_question(k))
 		continue;
@@ -1197,8 +898,7 @@ match_maker(knuckle)
 	    ;
 	}
 
-	for (i = 0; Knuckle_List[i]; i++) {
-	    k = Knuckle_List[i];
+	for (k = Knuckle_inuse; k != (KNUCKLE *) NULL; k = k->next) {
 	    /* check each consultant for availability */
 	    if (k == knuckle)
 		continue;
@@ -1354,27 +1054,25 @@ QUEUE_STATUS *
 get_status_info()
 {
   static QUEUE_STATUS status;	/* Static status structure. */
-  KNUCKLE **k_ptr;	/* Current consultant. */
+  KNUCKLE *k_ptr;	/* Current consultant. */
 
   status.consultants = 0;
   status.busy = 0;
   status.waiting = 0;
 
-  if (Knuckle_List != (KNUCKLE **) NULL) 
-    {
-      for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
+  if (Knuckle_inuse != (KNUCKLE *) NULL) {
+    for(k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next) 
 	{
-	  if ((*k_ptr)->question == (QUESTION *) NULL)
-	    {
-	      if((*k_ptr)->connected != (KNUCKLE *) NULL)
+	  if (k_ptr->question == (QUESTION *) NULL) {
+	      if(k_ptr->connected != (KNUCKLE *) NULL)
 		status.busy++;
 	      status.consultants++;
 	    }
 	  else
-	    if((*k_ptr)->connected == (KNUCKLE *) NULL)
+	    if(k_ptr->connected == (KNUCKLE *) NULL)
 	      status.waiting++;
 	}
-    }
+  }
   return(&status);
 }
 
