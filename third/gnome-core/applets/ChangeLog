@@ -1,3 +1,105 @@
+2001-12-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Build fixes.
+	
+2001-10-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gen_util/clock_applet.desktop: Added icon. Patch from Red Hat.
+	
+2001-10-15  Abel Cheung  <maddog@linux.org.hk>
+
+	* gen_util/Makefile.am: Add PIXBUF_CFLAGS to includes because
+	  gdk-pixbuf headers are moved to new location.
+
+2001-09-14  Jason Leach  <jasonleach@usa.net>
+
+	* applet-dirs/Makefile.am (install-data-local): builddir != srcdir
+	fix.
+
+2001-09-09  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* applet-dirs/Makefile.am: Fix things up so the .directory files
+	are created and installed properly.
+
+2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* */*.sgml: Fix up the sgml a bit.
+	
+2001-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* */*.{soundlist,desktop,directory} : Reviewed/Modified/Added
+	  traditional Chinese strings.
+
+2001-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* */*.[desktop,soundlist]: Added nynorsk.
+	
+2001-07-17  jacob berkman  <jacob@ximian.com>
+
+	* gen_util/popcheck.c (imap_check): make this actually compile and
+	have some sane indenting and stuff.
+
+	it amazes me that this code got in and stuff.
+
+Wed Jul 11 14:23:39 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/popcheck.c: apply and massage patch from Jon Bowman
+	  <jon.bowman@sun.com>toaccept multiline output from the IMAP server
+
+2001-07-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gen_util/main.c: Include <config.h> at the top.
+	* gen_util/mailcheck.c: Fix _() marking of about box.
+	* mailcheck.soundlist: Norwegian translation.
+		
+2001-06-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gen_util/mailcheck.c: Fix typo in the about box.
+	
+2001-06-23 Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+	
+	* applets/gen_util/help/Makefile.am: Included es for mailcheck
+	  Spanish Translation.
+	* applets/gen_util/help/es/mailcheck: Spanish Translation
+
+2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* applets/gen_util/clock.c: Remove trailing comma in enum.
+	From Dan McNichol <mcnichol@austin.ibm.com>
+	
+2001-06-07  Christian Rose  <menthos@menthos.com>
+
+	* applets/gen_util/mailcheck.soundlist: Added Swedish
+	translation.
+
+2001-06-05  Christian Rose  <menthos@menthos.com>
+
+	* applet-dirs/Clocks.directory, applet-dirs/Monitors.directory,
+	applet-dirs/Multimedia.directory, applet-dirs/Network.directory,
+	applet-dirs/Utility.directory, gen_util/mailcheck_applet.desktop,
+	gen_util/printer.desktop, tasklist/tasklist_applet.desktop:
+	Modified Swedish translation.
+
+2001-05-30  Havoc Pennington  <hp@redhat.com>
+
+	* gen_util/clock.c (make_clock_applet): remove "to selection" from
+	"Copy time to selection" and "Copy date to selection". Make them
+	copy to clipboard. Delete "Copy timestamp to selection" item.
+
+	When porting to GTK 2, we should maybe make the label selectable, 
+	and then have a simple Copy menu item. Then you can copy whatever
+	part you want, and also paste with middle mouse.
+
+	(make_clock_applet): reword the "someone should be shot" warning,
+	it occasionally appears and disturbs users
+
+	(create_computer_clock_widget): change shadow type to NONE
+	
+2001-05-27  Stanislav Brabec  <utx@penguin.cz>
+
+	* applet-dirs/Network.directory: Changed incorrrect English
+	Comment "Network menu" to "Network applets".
+
 Wed Apr 25 21:17:51 2001  George Lebl <jirka@5z.com>
 
 	* gen_util/popcheck.[ch], gen_util/remote-helper.[ch],

@@ -21,6 +21,7 @@ struct _PerPanelConfig {
 	gpointer		update_data;
 
 	/*basep types*/
+	int			screen;
 	gboolean		hidebuttons;
 	gboolean		hidebutton_pixmaps;
 	BasePMode               mode;
@@ -69,6 +70,9 @@ struct _PerPanelConfig {
 	/*avoid_on_maximize*/
 	GtkWidget               *avoid_on_maximize_button;
 
+	/*avoid_on_maximize*/
+	GtkWidget               *screen_spin;
+
 	/*hiding stuff*/
 	GtkWidget               *autohide_button;
 	GtkWidget               *hidebuttons_button;
@@ -81,6 +85,7 @@ struct _PerPanelConfig {
 	GtkWidget		*non;
 	GtkWidget		*pix;
 	GtkWidget		*col;
+	GtkWidget		*trans;
 	GtkWidget		*backsel;
 	GtkWidget		*back_om; /* the back type option menu */
 
@@ -105,6 +110,7 @@ void panel_config (GtkWidget *panel);
 void update_config_size (GtkWidget *panel);
 void update_config_level (BasePWidget *panel);
 void update_config_avoid_on_maximize (BasePWidget *panel);
+void update_config_screen (BasePWidget *panel);
 void update_config_mode (BasePWidget *panel);
 void update_config_hidebuttons (BasePWidget *panel);
 void update_config_back (PanelWidget *panel);

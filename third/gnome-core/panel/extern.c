@@ -40,6 +40,7 @@ extern int need_complete_save;
 extern GtkTooltips *panel_tooltips;
 
 extern GlobalConfig global_config;
+extern gboolean commie_mode;
 
 extern char *panel_cfg_path;
 extern char *old_panel_cfg_path;
@@ -48,6 +49,8 @@ extern int ss_cur_applet;
 extern gboolean ss_done_save;
 extern GtkWidget* ss_timeout_dlg;
 extern gushort ss_cookie;
+
+extern gboolean panel_in_startup;
 
 /* Launching applets into other things then the panel */
 
@@ -983,6 +986,9 @@ s_panel_add_applet_full (PortableServer_Servant servant,
 	GNOME_PanelSpot acc;
 	GNOME_PanelAppletBooter booter;
 
+	if (panel_in_startup)
+		return CORBA_OBJECT_NIL;
+
 	booter = pop_outside_extern (goad_id);
 	if (booter != CORBA_OBJECT_NIL) {
 		/* yeah, we do dump the panel and pos, since they
@@ -1172,6 +1178,9 @@ s_panel_add_launcher (PortableServer_Servant _servant,
 	Launcher *launcher;
 	PanelWidget *panel_widget;
 
+	if (panel_in_startup)
+		return;
+
 	g_assert (panels != NULL);
 
 	panel_widget = g_slist_nth_data (panels, panel);
@@ -1192,6 +1201,9 @@ s_panel_ask_about_launcher (PortableServer_Servant _servant,
 			    CORBA_Environment * ev)
 {
 	PanelWidget *panel_widget;
+
+	if (panel_in_startup)
+		return;
 
 	g_assert (panels != NULL);
 
@@ -1214,6 +1226,9 @@ s_panel_add_launcher_from_info (PortableServer_Servant _servant,
 {
 	PanelWidget *panel_widget;
 	char *exec_argv[2] = { NULL, NULL };
+
+	if (panel_in_startup)
+		return;
 
 	g_assert (panels != NULL);
 
@@ -1238,6 +1253,9 @@ s_panel_add_launcher_from_info_url (PortableServer_Servant _servant,
 				    CORBA_Environment * ev)
 {
 	PanelWidget *panel_widget;
+
+	if (panel_in_startup)
+		return;
 
 	g_assert (panels != NULL);
 
@@ -1713,6 +1731,13 @@ s_panelspot_add_callback(PortableServer_Servant servant,
 
 	g_assert(ext != NULL);
 	g_assert(ext->info != NULL);
+
+	if (commie_mode &&
+	    callback_name != NULL &&
+	    (strcmp (callback_name, "preferences") == 0 ||
+	     strcmp (callback_name, "properties") == 0))
+		return;
+
 	applet_add_callback(ext->info, callback_name, stock_item,
 			    menuitem_text);
 }

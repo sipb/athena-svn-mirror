@@ -33,6 +33,9 @@ extern int applet_count;
 static char *default_app_pixmap = NULL;
 
 extern GlobalConfig global_config;
+extern gboolean commie_mode;
+
+extern char *merge_merge_dir;
 
 extern GSList *panels;
 
@@ -321,13 +324,32 @@ create_launcher (const char *parameters, GnomeDesktopEntry *dentry)
 			else
 				extension = ".desktop";
 
-			apps_par = g_strconcat ("apps/", parameters,
+			apps_par = g_strconcat ("gnome/apps/", parameters,
 						extension, NULL);
 			entry = gnome_datadir_file (apps_par);
 			g_free (apps_par);
 
-			if (entry == NULL)
+			if (entry == NULL) {
+				/* perhaps just datadir? */
+				entry = gnome_datadir_file (parameters);
+			}
+
+			if (entry == NULL && merge_merge_dir != NULL) {
+				/* the merge dir? */
+				entry = g_strconcat (merge_merge_dir, "/",
+						     parameters,
+						     extension, NULL);
+				if ( ! panel_file_exists (entry)) {
+					g_free (entry);
+					entry = NULL;
+				}
+			}
+
+			/* eek, not found */
+			if (entry == NULL) {
 				return NULL;
+			}
+
 			dentry = gnome_desktop_entry_load_unconditional (entry);
 			g_free (entry);
 		}
@@ -651,9 +673,10 @@ load_launcher_applet_full (const char *params, GnomeDesktopEntry *dentry,
 			      launcher->dentry->comment,
 			      NULL);
 
-	applet_add_callback (applets_last->data,"properties",
-			     GNOME_STOCK_MENU_PROP,
-			     _("Properties..."));
+	if ( ! commie_mode)
+		applet_add_callback (applets_last->data,"properties",
+				     GNOME_STOCK_MENU_PROP,
+				     _("Properties..."));
 	applet_add_callback (applets_last->data, "help",
 			     GNOME_STOCK_PIXMAP_HELP,
 			     _("Help"));
@@ -888,7 +911,7 @@ static char *
 launcher_get_unique_file (void)
 {
 	int rnd, word;
-#define NUM_OF_WORDS 6
+#define NUM_OF_WORDS 12
 	char *words[] = {
 		"foo",
 		"bar",
@@ -896,6 +919,12 @@ launcher_get_unique_file (void)
 		"gegl",
 		"frobate",
 		"hadjaha",
+		"greasy",
+		"hammer",
+		"eek",
+		"larry",
+		"curly",
+		"moe",
 		NULL};
 	char *fname, *full;
 

@@ -1,3 +1,69 @@
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-terminal.c: Handle SHELL being null. Throw a dialog
+	if this situation occurs. Patch from bugzilla.
+	
+2002-01-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-terminal.c: Add "text/uri-list" to DND targets. Patch from
+	<tal00r@ecs.soton.ac.uk>.
+	
+2002-01-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* C/gnome-terminal.sgml: Fix a typo.
+	
+2001-10-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-terminal.c: Big merge from Red Hat. Adds multibyte handling,
+	IM, font cleanups etc.
+	
+2001-10-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-terminal.c: Change default font to "fixed". Apparently
+	makes it work for 640x480 and for non-latin locales.
+	
+2001-08-31  Darin Adler  <darin@bentspoon.com>
+
+	* gnome-terminal.c: (get_current_event_time), (clipboard_init),
+	(selection_clear), (selection_get), (configure_term_clipboard),
+	(copy_cmd), (paste_cmd), (new_terminal_cmd),
+	(main_terminal_program): Added Copy to go with Paste.
+
+2001-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* *.desktop : Reviewed/Modified/Added traditional Chinese strings.
+
+2001-08-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-terminal.desktop: Added nynorsk.
+	
+Mon Jun 25 Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* gnome-terminal.c (new_terminal_cmd): Change the matching regex so that
+	  you can't dingus click things like a www-admin user in 'ls- l' output.
+	  There must now be either a period in the string, or it must start with
+	  'http:' or 'ftp:' (fixes bug #51939).
+
+	* gnome-terminal.glade: A couple of entries in the colour palette were out
+	  of order. Not any more (bug #51376).
+
+2001-05-30  Havoc Pennington  <hp@redhat.com>
+
+	* gnome-terminal.c (paste_cmd): Paste pastes the clipboard, not
+	the selection. http://www.freedesktop.org/standards/clipboards.txt
+
+Mon May 21 01:49:01 2001  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* Applied patch from Martin Pool <mbp@samba.org> to correct some
+	  inconsistencies in the manual page (it now gives the same info
+	  as --help). (#53885)
+
+	* Applied patch from Dan McNichol <mcnichol@austin.ibm.com> so
+	  that it builds using IBM's compiler on AIX boxes. (#54782)
+
+	* Trying to start terminals with width or height of zero gives
+	  the default dimensions instead (fixes #53412)
+
 Mon Apr 23 19:51:06 2001  George Lebl <jirka@5z.com>
 
 	* gnome-terminal.desktop:  prepend NO_XALF to the exec field so that

@@ -91,7 +91,7 @@ static void about_cb (GtkWidget *w, HelpWindow win);
 static void config_cb (GtkWidget *w, HelpWindow win);
 static void bookmark_cb (GtkWidget *w, HelpWindow win);
 static void close_cb (GtkWidget *w, HelpWindow win);
-static void delete_cb (GtkWidget *w, void *foo, HelpWindow win);
+static gboolean delete_cb (GtkWidget *w, GdkEvent *ev, HelpWindow win);
 static void new_window_cb (GtkWidget *w, HelpWindow win);
 static void help_forward(GtkWidget *w, HelpWindow win);
 static void help_backward(GtkWidget *w, HelpWindow win);
@@ -339,16 +339,19 @@ new_window_cb (GtkWidget *w, HelpWindow win)
 	(win->new_window_cb)(win);
 }
 
-static void
-delete_cb (GtkWidget *w, void *foo, HelpWindow win)
+static gboolean
+delete_cb (GtkWidget *w, GdkEvent *ev, HelpWindow win)
 {
     if (win->close_window_cb)
 	(win->close_window_cb)(win);
+    return FALSE;
 }
 
 static void
 close_cb (GtkWidget *w, HelpWindow win)
 {
+    gtk_widget_destroy (win->app);
+    win->app = NULL;
     if (win->close_window_cb)
 	(win->close_window_cb)(win);
 }
@@ -401,7 +404,7 @@ gtkhtml_formActivate (GtkWidget *w, const gchar *method,
 		tmpstr = g_string_append_c (tmpstr, '?');
 		tmpstr = g_string_append (tmpstr, encoding);
 		
-		helpWindowShowURL (w, tmpstr->str, FALSE, TRUE);
+		helpWindowShowURL ((HelpWindow)w, tmpstr->str, FALSE, TRUE);
 		
 		g_string_free (tmpstr, TRUE);
 	} else {
@@ -524,9 +527,9 @@ reload_page(GtkWidget *w, HelpWindow win)
     if (!s || *s == '\0') {
 	return;
     } else if (*s == '/') {
-	snprintf(buf, sizeof(buf), "file:%s", s);
+	g_snprintf(buf, sizeof(buf), "file:%s", s);
     } else {
-	strncpy(buf, s, sizeof(buf));
+	g_snprintf(buf, sizeof(buf), "%s", s);
     }
     
     g_message("RELOAD PAGE: %s", buf);
@@ -550,9 +553,9 @@ entryChanged(GtkWidget *w, HelpWindow win)
     /* Do a little shorthand processing */
     s = gtk_entry_get_text(GTK_ENTRY(w));
     if (*s == '/') {
-	snprintf(buf, sizeof(buf), "file:%s", s);
+	g_snprintf(buf, sizeof(buf), "file:%s", s);
     } else {
-	strncpy(buf, s, sizeof(buf));
+	g_snprintf(buf, sizeof(buf), "%s", s);
     }
     
     helpWindowShowURL(win, buf, TRUE, TRUE);
@@ -730,13 +733,14 @@ helpWindowJumpToLine(HelpWindow w, gint n)
 void
 helpWindowClose(HelpWindow win)
 {
-    gtk_widget_destroy(win->app);
-
     if (win->currentRef)
 	g_free(win->currentRef);
+    win->currentRef = NULL;
     if (win->humanRef)
 	g_free(win->humanRef);
+    win->humanRef = NULL;
     queue_free(win->queue);
+    win->queue = NULL;
     /*
       gtk_widget_destroy(win->accelWidget);
     */
@@ -1069,7 +1073,7 @@ helpWindowGetCache(HelpWindow win)
 }
 
 void
-helpWindowShowURL(HelpWindow win, gchar *ref, 
+helpWindowShowURL(HelpWindow win, const gchar *ref, 
 		  gboolean useCache, gboolean addToQueue)
 {
 	gchar err[1024];
@@ -1078,11 +1082,11 @@ helpWindowShowURL(HelpWindow win, gchar *ref,
 	if (visitURL(win, ref, useCache, addToQueue, TRUE)) {
 		GtkWidget *msg;
 
-		snprintf(err, sizeof(err), _("Error loading document:\n\n%s\n\nYou probably don't\nhave this documentation\ninstalled on your system."),
+		g_snprintf(err, sizeof(err), _("Error loading document:\n\n%s\n\nYou probably don't\nhave this documentation\ninstalled on your system."),
 			 ref);
 		msg = gnome_message_box_new(err, GNOME_MESSAGE_BOX_ERROR,
 					    GNOME_STOCK_BUTTON_OK, NULL);
-		gnome_message_box_set_modal (GNOME_MESSAGE_BOX (msg));
+		gtk_window_set_modal (GTK_WINDOW (msg), TRUE);
 		gtk_widget_show(msg);
 
 		gtk_entry_set_text(GTK_ENTRY(win->entryBox), win->humanRef);

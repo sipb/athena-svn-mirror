@@ -94,9 +94,9 @@ static void newSelection(GtkWidget *tree)
 	selectCallback = gtk_object_get_data(GTK_OBJECT(tree),
 					     "selectCallback");
 	if (!strstr(path, ":"))
-		snprintf(buf, sizeof(buf), "file:%s", path);
+		g_snprintf(buf, sizeof(buf), "file:%s", path);
 	else
-		strncpy(buf, path, sizeof(buf));
+		g_snprintf(buf, sizeof(buf), "%s", path);
 	(selectCallback)(buf);
     }
 }

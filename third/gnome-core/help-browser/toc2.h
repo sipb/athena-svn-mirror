@@ -35,6 +35,6 @@ gchar *tocLookupInfo(Toc toc, gchar *name, gchar *anchor);
 gchar *tocLookupMan(Toc toc, gchar *name, gchar ext);
 gchar *tocLookupGhelp(Toc toc, gchar *name);
 
-GString *findMatchesBySubstr(Toc toc, gchar *substr);
+GString *findMatchesBySubstr(Toc toc, const gchar *substr);
 
 #endif

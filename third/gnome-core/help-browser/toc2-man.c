@@ -50,9 +50,8 @@ GList *newManTable(struct _toc_config *conf)
 {
     struct _man_sections *p;
     gchar dirname[BUFSIZ];
-    gchar filename[BUFSIZ];
     DIR *d;
-    struct dirent *dirp;
+    struct dirent *dirp = NULL;
     char *lang;
     GList *lang_list = NULL;
     GList *list = NULL;
@@ -60,7 +59,7 @@ GList *newManTable(struct _toc_config *conf)
     struct _big_table_entry *entry;
     gchar *s;
     int tmp_array_size = 256, tmp_array_elems = 0;
-    struct _big_table_entry **tmp_array = g_new(struct _big_table_entry *,
+    struct _big_table_entry **tmp_array = g_new0 (struct _big_table_entry *,
                                                 tmp_array_size);
 
     lang_list = gnome_i18n_get_language_list ("LC_MESSAGE");
@@ -92,10 +91,9 @@ GList *newManTable(struct _toc_config *conf)
 		        continue;
 		    }
 		    /* Add to table */
-		    entry = g_malloc(sizeof(*entry));
-		    g_snprintf(filename, sizeof(filename),
-			     "%s/%s", dirname, dirp->d_name);
-		    entry->filename = g_strdup(filename);
+		    entry = g_malloc0 (sizeof(*entry));
+		    entry->filename = g_strdup_printf ("%s/%s",
+						       dirname, dirp->d_name);
 
 		    entry->name = g_strdup(dirp->d_name);
 		    /* first delete any possible compression extension */

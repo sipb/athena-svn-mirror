@@ -16,8 +16,8 @@ DecomposedUrl decomposeUrl(gchar *url)
     gchar buf[BUFSIZ];
     HTURI parts;
 
-    strncpy(buf, url, sizeof(buf));
-    res = (DecomposedUrl)malloc(sizeof(*res));
+    g_snprintf (buf, sizeof (buf), "%s", url);
+    res = (DecomposedUrl)malloc (sizeof(*res));
 
     HTScan(buf, &parts);
 
@@ -57,8 +57,8 @@ DecomposedUrl decomposeUrlRelative(gchar *url, gchar *ref, gchar **resolved)
     DecomposedUrl res;
     gchar *s;
 
-    strncpy(urlBuf, url, sizeof(urlBuf));
-    strncpy(refBuf, ref ? ref : "", sizeof(refBuf));
+    g_snprintf (urlBuf, sizeof (urlBuf), "%s", url);
+    g_snprintf (refBuf, sizeof (refBuf), "%s", ref ? ref : "");
     s = HTParse(urlBuf, refBuf, PARSE_ALL);
     res = decomposeUrl(s);
     if (resolved) {

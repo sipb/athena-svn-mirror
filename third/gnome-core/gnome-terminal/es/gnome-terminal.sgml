@@ -1,6 +1,33 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 <!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">
 <!ENTITY term "<application>GNOME Terminal</application>">
+
+ <!ENTITY name "Terminal Gnome">
+ <!ENTITY aplication "gnome-terminal">
+
+ <!ENTITY authors SYSTEM "authors.sgml">
+ <!ENTITY license SYSTEM "license.sgml">
+
+ <!ENTITY licencia-nota-es SYSTEM "licencia-nota-es.sgml">
+ <!ENTITY license-es SYSTEM "licencia-es.sgml">
+
+ <!ENTITY authors SYSTEM "authors.sgml">
+ <!ENTITY license SYSTEM "license.sgml">
+
+ <!ENTITY licencia-nota-es SYSTEM "licencia-nota-es.sgml">
+ <!ENTITY license-es SYSTEM "licencia-es.sgml">
+
+ <!ENTITY programer "">
+ <!ENTITY programer-email "<email></email>">
+
+ <!ENTITY writer "Telsa Gwynne">
+ <!ENTITY writer-email "<email></email>">
+
+ <!ENTITY traductor "">
+ <!ENTITY traductor-email "<email></email>">
+
+
+
  ]>
 
 <article id="index" lang="es">
@@ -972,9 +999,7 @@ no tendra efecto alguno.
     <para>
       Muchas personas han trabajado juntas para crear el
 	&term;:
-
-      A large number of people work together to bring you the
-	&term;:</para>
+    </para>
 
     <para>		
       Michael Zucchi ha programado el widget Zvt; Miguel de Icaza y

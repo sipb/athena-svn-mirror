@@ -5,7 +5,7 @@
 
 #include "window.h"
 
-gint visitURL( HelpWindow win, gchar *ref, 
+gint visitURL( HelpWindow win, const gchar *ref, 
 	       gboolean useCache, gboolean addToQueue, gboolean addToHistory );
 
 /* old utility macro */

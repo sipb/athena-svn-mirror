@@ -13,7 +13,53 @@ Settingsdir       = $(appsdir)/Settings
 
 gnewdir           = $(datadir)/mc/templates
 
-gnew_DATA = GIMP.desktop 
+desktop_in_files = \
+	Emacs.desktop.in	\
+	Eterm.desktop.in	\
+	FileRunner.desktop.in	\
+	gaspell.desktop.in	\
+	GIMP.desktop.in		\
+	Gmc.desktop.in		\
+	GXanim.desktop.in	\
+	Imlib_config.desktop.in	\
+	Kterm.desktop.in	\
+	lynx.desktop.in		\
+	Netscape.desktop.in	\
+	realplayer.desktop.in	\
+	rxvt.desktop.in		\
+	Tkrat.desktop.in	\
+	TkSETI.desktop.in	\
+	UNIX.desktop.in		\
+	UNIX-regular.desktop.in	\
+	Vim.desktop.in		\
+	Vnterm.desktop.in	\
+	WordPerfect.desktop.in	\
+	xcolsel.desktop.in	\
+	Xemacs.desktop.in	\
+	XEphem.desktop.in	\
+	XMcd.desktop.in		\
+	xmix.desktop.in		\
+	xv.desktop.in		\
+	GIMP.desktop.in		\
+	Gmc.desktop.in
+gnew_DATA = $(desktop_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
+
+
+directory_in_files = \
+	Applications.directory.in	\
+	Development.directory.in	\
+	Games.directory.in		\
+	Graphics.directory.in		\
+	Internet.directory.in		\
+	Multimedia.directory.in		\
+	Root.directory.in		\
+	Settings.directory.in		\
+	System.directory.in		\
+	Utilities.directory.in
+
+noinst_DATA = $(directory_in_files:.directory.in=.directory)
+@XML_I18N_MERGE_DIRECTORY_RULE@
 
 Order_files = \
 	Root.order
@@ -50,7 +96,6 @@ Utilities_DATA = \
 	FileRunner.desktop	\
 	TkSETI.desktop		\
 	rxvt.desktop		\
-	lynx.desktop		\
 	xbmbrowser.desktop	\
 	Vim.desktop		\
 	xcolsel.desktop		\
@@ -97,10 +142,11 @@ Utilities_DATA =
 
 EXTRA_DIST = $(Applications_DATA) $(Graphics_DATA) $(Utilities_DATA) \
 	$(System_DATA) $(Multimedia_DATA) $(Internet_DATA) $(Games_DATA) \
-	$(Settings_DATA) \
-	$(Directory_files) $(Order_files) $(Root_DATA) $(Settings_Order_files)
+	$(Settings_DATA) $(noinst_DATA) $(directory_in_files) \
+	$(Directory_files) $(Order_files) $(Root_DATA) $(Settings_Order_files) \
+	$(desktop_in_files) $(gnew_DATA)
 
-install-data-local:
+install-data-local: $(Directory_files)
 	$(mkinstalldirs) $(DESTDIR)$(Applicationsdir)
 	$(mkinstalldirs) $(DESTDIR)$(Graphicsdir)
 	$(mkinstalldirs) $(DESTDIR)$(Systemdir)
@@ -114,13 +160,13 @@ install-data-local:
 
 	$(INSTALL_DATA) $(srcdir)/Root.order $(DESTDIR)$(Rootdir)/.order
 	$(INSTALL_DATA) $(srcdir)/Settings.order $(DESTDIR)$(Settingsdir)/.order
-	$(INSTALL_DATA) $(srcdir)/Root.directory $(DESTDIR)$(Rootdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Applications.directory $(DESTDIR)$(Applicationsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Graphics.directory $(DESTDIR)$(Graphicsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/System.directory $(DESTDIR)$(Systemdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Utilities.directory $(DESTDIR)$(Utilitiesdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Internet.directory $(DESTDIR)$(Internetdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Games.directory $(DESTDIR)$(Gamesdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Settings.directory $(DESTDIR)$(Settingsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Development.directory $(DESTDIR)$(Developmentdir)/.directory
+	$(INSTALL_DATA) Root.directory $(DESTDIR)$(Rootdir)/.directory
+	$(INSTALL_DATA) Applications.directory $(DESTDIR)$(Applicationsdir)/.directory
+	$(INSTALL_DATA) Graphics.directory $(DESTDIR)$(Graphicsdir)/.directory
+	$(INSTALL_DATA) System.directory $(DESTDIR)$(Systemdir)/.directory
+	$(INSTALL_DATA) Utilities.directory $(DESTDIR)$(Utilitiesdir)/.directory
+	$(INSTALL_DATA) Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
+	$(INSTALL_DATA) Internet.directory $(DESTDIR)$(Internetdir)/.directory
+	$(INSTALL_DATA) Games.directory $(DESTDIR)$(Gamesdir)/.directory
+	$(INSTALL_DATA) Settings.directory $(DESTDIR)$(Settingsdir)/.directory
+	$(INSTALL_DATA) Development.directory $(DESTDIR)$(Developmentdir)/.directory

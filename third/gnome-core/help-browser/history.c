@@ -40,7 +40,7 @@ History newHistory(gint length, HistoryCB callback, gchar *file)
 {
     History res;
 
-    res = g_new(struct _history_struct, 1);
+    res = g_new0(struct _history_struct, 1);
     res->file = NULL;
     reconfigHistory(res, length, callback, file);
 
@@ -68,7 +68,7 @@ void reconfigHistory(History h, gint length, HistoryCB callback, gchar *file)
 	    g_snprintf(filename, sizeof(filename), "%s/%s",
 		       getenv("HOME"), file);
 	} else {
-	    strncpy(filename, file, sizeof(filename));
+	    g_snprintf(filename, sizeof(filename), "%s", file);
 	}
 	h->file = g_strdup(filename);
     } else {
@@ -135,7 +135,7 @@ static void appendEntry(History h, gchar *ref, gint date, guint count)
     time_t timet;
     gint x;
     
-    entry = g_new(struct _history_entry, 1);
+    entry = g_new0(struct _history_entry, 1);
     entry->ref = g_strdup(ref);
     entry->count = count;
     entry->timestamp = (time_t)date;
@@ -144,7 +144,8 @@ static void appendEntry(History h, gchar *ref, gint date, guint count)
     g_snprintf(buf0, sizeof(buf0), "%s", ref);
     timet = (time_t)entry->timestamp;
     tstruct = localtime(& timet);
-    strftime(buf1, sizeof(buf1), "%b %d, %Y %H:%M", tstruct);
+    if (strftime(buf1, sizeof(buf1), _("%b %d, %Y %H:%M"), tstruct) <= 0)
+	    strcpy (buf1, "???");
     g_snprintf(buf2, sizeof(buf2), "%d", entry->count);
 
     text[0] = buf0;
@@ -189,7 +190,7 @@ void addToHistory(History h, gchar *ref)
     if (entry) {
 	entry->count++;
     } else {
-	entry = g_new(struct _history_entry, 1);
+	entry = g_new0(struct _history_entry, 1);
 	entry->ref = g_strdup(ref);
 	entry->count = 1;
 	g_hash_table_insert(h->table, entry->ref, entry);
@@ -199,7 +200,8 @@ void addToHistory(History h, gchar *ref)
     g_snprintf(buf0, sizeof(buf0), "%s", ref);
     timet = (time_t)entry->timestamp;
     tstruct = localtime(& timet);
-    strftime(buf1, sizeof(buf1), "%b %d, %Y %H:%M", tstruct);
+    if (strftime(buf1, sizeof(buf1), _("%b %d, %Y %H:%M"), tstruct) <= 0)
+	    strcpy (buf1, "???");
     g_snprintf(buf2, sizeof(buf2), "%d", entry->count);
 
     text[0] = buf0;

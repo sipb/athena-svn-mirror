@@ -1,4 +1,4 @@
-<refentry id="AppletWidget" revision="1 May 2001">
+<refentry id="AppletWidget">
 <refmeta>
 <refentrytitle>AppletWidget</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -140,7 +140,7 @@ create a new applet factory.  It is used for applets
 that can run many applets from one process.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -167,7 +167,7 @@ should always use only <link linkend="applet-widget-add">applet_widget_add</link
 only use it once.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -187,7 +187,7 @@ something went wrong.
 For bindings and subclassing only</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -216,7 +216,7 @@ manager and 2) setup stuff to call gtk_main_quit when the last applet
 you create exists.  And that's all really.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -258,7 +258,7 @@ Duplicates the applet's CORBA object.  This should
 be called when a shared library applet is activated.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -294,7 +294,7 @@ be called when a shared library applet is activated.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -339,7 +339,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -349,6 +349,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -358,7 +359,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -368,6 +369,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -378,7 +380,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -387,12 +389,15 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 <entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="AppletWidget-back-change">The &quot;back-change&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AppletWidget">AppletWidget</link> *appletwidget,
@@ -402,7 +407,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -411,11 +416,14 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 <entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -424,7 +432,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -441,7 +449,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -451,6 +459,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -461,7 +470,7 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -470,9 +479,11 @@ Quit the main loop, just like <link linkend="gtk-main-quit">gtk_main_quit</link>
 <entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>

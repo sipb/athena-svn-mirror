@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,15 +10,12 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 REL="HOME"
 TITLE="GNOME Terminal brukermanual."
 HREF="index.html"><LINK
-REL="UP"
-TITLE="The GNOME terminal brukermanual."
-HREF="terminal.html"><LINK
 REL="PREVIOUS"
-TITLE="Emulering"
-HREF="emulation.html"><LINK
+TITLE="Menyer"
+HREF="menus.html"><LINK
 REL="NEXT"
-TITLE="Terminalklasser"
-HREF="classes.html"></HEAD
+TITLE="Pekerbruk"
+HREF="pointerusage.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -44,20 +42,20 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="emulation.html"
+HREF="menus.html"
 >&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->The GNOME terminal brukermanual.</TD
+></TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="classes.html"
+HREF="pointerusage.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -77,8 +75,15 @@ NAME="CONFIG"
 >        Disse alternativene er konfigurerbare gjennom dialogen brukervalg,
 	som kan hents frem fra <A
 HREF="menus.html#MENU-SETTINGS"
->brukervalg menyoppføringen</A
->.
+><B
+CLASS="GUIMENUITEM"
+>Brukervalg</B
+>
+        menyoppføringen</A
+> i <B
+CLASS="GUIMENU"
+>Innstillinger</B
+> menyen.
       </P
 ><DIV
 CLASS="SECT2"
@@ -110,6 +115,33 @@ HREF="classes.html"
 	      </P
 ></DD
 ><DT
+><TT
+CLASS="GUILABEL"
+><B
+>Bruk --login som standard</B
+></TT
+></DT
+><DD
+><P
+>                Hvis dette alternativet er valgt vil <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> starte
+                skallet i login-modus (det vil kjøre alle dine login-
+                skript). Se også informasjon om <TT
+CLASS="OPTION"
+>--login</TT
+>
+                og <TT
+CLASS="OPTION"
+>--nologin</TT
+> <A
+HREF="options.html"
+>kommandolinjealternativene</A
+>.
+              </P
+></DD
+><DT
 >Velg-tegn-etter-ord</DT
 ><DD
 ><P
@@ -118,7 +150,7 @@ HREF="classes.html"
 CLASS="EMPHASIS"
 >tegnklasser</I
 >) som skal ses på
-	        som 'ord tegn'. Disse brukes når
+	        som 'ord-tegn'. Disse brukes når
 	        <A
 HREF="pointerusage.html"
 >valg av tekst</A
@@ -128,6 +160,103 @@ HREF="pointerusage.html"
 ></DD
 ></DL
 ></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-IMAGE"
+>Bakgrunnsbilde</A
+></H2
+><P
+>          I <TT
+CLASS="GUILABEL"
+><B
+>Bilde</B
+></TT
+>-fanen kan du sette bakgrunnsbildet
+          som skal brukes i terminalen. Mulige valg er
+        </P
+><P
+></P
+><UL
+><LI
+><P
+>              <TT
+CLASS="GUILABEL"
+><B
+>Ingen</B
+></TT
+> &#8212; i dette tilfellet
+              vil <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> bruke bakgrunnsfargen som satt i
+              <TT
+CLASS="GUILABEL"
+><B
+>Farger</B
+></TT
+> fanen.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="GUILABEL"
+><B
+>Bakgrunnsbilde</B
+></TT
+> &#8212; dette
+              alternativet lar deg velge en bildefil til bruk som
+              bakgrunn. Du kan klikke på <B
+CLASS="GUIBUTTON"
+>Bla gjennom</B
+>-
+              knappen for å velge en bildefil.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="GUILABEL"
+><B
+>Gjennomsiktig</B
+></TT
+> &#8212; dette
+              alternativet lar <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> bruke "gjennomsiktig"
+              bakgrunn. Bakgrunnen er ikke gjennomsiktig i realiteten,
+              den bare etterligner bakgrunnen på skrivebordet (root-
+              vinduet), slik som chamelon gjør det. Ikke forvent å se
+              andre vinduer bak <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+>.
+            </P
+></LI
+></UL
+><P
+>          For <TT
+CLASS="GUILABEL"
+><B
+>Bilde</B
+></TT
+>- og <TT
+CLASS="GUILABEL"
+><B
+>          Gjennomsiktig</B
+></TT
+> bakgrunner kan du også
+          sjekke knappen <B
+CLASS="GUIBUTTON"
+>Skyggelegg bakgrunn</B
+>,
+          hvilket vil skyggelegge, eller tone ned bakgrunnsbildet.
+        </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -191,6 +320,19 @@ CLASS="VARIABLELIST"
 ></DL
 ></DIV
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-SCROLLING"
+>Rulling</A
+></H2
+><P
+>	    I denne fanen kan du sette plasseringen for rullefeltet
+	    og antall linjer som skal lagres i minne for tilbakerulling.
+	  </P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -207,7 +349,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="emulation.html"
+HREF="menus.html"
 >&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
@@ -223,7 +365,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="classes.html"
+HREF="pointerusage.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -232,20 +374,17 @@ HREF="classes.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Emulering</TD
+>Menyer</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
-><A
-HREF="terminal.html"
->Up</A
-></TD
+>&nbsp;</TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Terminalklasser</TD
+>Pekerbruk</TD
 ></TR
 ></TABLE
 ></DIV

@@ -36,8 +36,8 @@
 /* Current state */
 GSList *deleted_sessions = NULL;
 
-static gboolean autosave;
-static gboolean autosave_revert;
+static gboolean auto_save;
+static gboolean auto_save_revert;
 
 static gboolean logout_prompt;
 static gboolean logout_prompt_revert;
@@ -81,7 +81,7 @@ static void try (void);
 static void revert (void);
 static void ok (void);
 static void cancel (void);
-static void help (void);
+static void show_help (void);
 static void page_hidden (void);
 static void page_shown (void);
 
@@ -132,8 +132,8 @@ capplet_build (void)
   /* Retrieve options */
 
   gnome_config_push_prefix (GSM_OPTION_CONFIG_PREFIX);
-  autosave = gnome_config_get_bool (AUTOSAVE_MODE_KEY "=" AUTOSAVE_MODE_DEFAULT);
-  autosave_revert = autosave;
+  auto_save = gnome_config_get_bool (AUTOSAVE_MODE_KEY "=" AUTOSAVE_MODE_DEFAULT);
+  auto_save_revert = auto_save;
 
   logout_prompt = gnome_config_get_bool (LOGOUT_SCREEN_KEY "=" LOGOUT_SCREEN_DEFAULT);
   logout_prompt_revert = logout_prompt;
@@ -164,7 +164,7 @@ capplet_build (void)
   gtk_signal_connect (GTK_OBJECT (capplet), "page_shown",
 		      GTK_SIGNAL_FUNC (page_shown), NULL);
   gtk_signal_connect (GTK_OBJECT (capplet), "help",
-		      GTK_SIGNAL_FUNC (help), NULL);
+		      GTK_SIGNAL_FUNC (show_help), NULL);
 
   /**** GUI ****/
 
@@ -350,7 +350,7 @@ static void
 write_state (void)
 {
   gchar *current_session_tmp = NULL;
-  autosave = GTK_TOGGLE_BUTTON (autosave_button)->active;
+  auto_save = GTK_TOGGLE_BUTTON (autosave_button)->active;
   logout_prompt = GTK_TOGGLE_BUTTON (logout_prompt_button)->active;
   login_splash  = GTK_TOGGLE_BUTTON (login_splash_button)->active;
  
@@ -372,7 +372,7 @@ write_state (void)
   /* Set the autosave mode in the session manager so it takes 
    * effect immediately.  */
   
-  gsm_protocol_set_autosave_mode (GSM_PROTOCOL(protocol), autosave);
+  gsm_protocol_set_autosave_mode (GSM_PROTOCOL(protocol), auto_save);
   gsm_protocol_set_session_name (GSM_PROTOCOL(protocol), current_session);  
   
   session_list_write (session_list, session_list_revert, hashed_sessions);
@@ -383,7 +383,7 @@ static void
 revert_state (void)
 { 
   GSList *temp;
-  autosave = autosave_revert;
+  auto_save = auto_save_revert;
   logout_prompt = logout_prompt_revert;
   login_splash  = login_splash_revert;
   current_session = NULL;
@@ -434,23 +434,13 @@ cancel (void)
 }
 
 static void
-help (void)
+show_help (void)
 {
-  gchar *tmp;
 
-  tmp = gnome_help_file_find_file ("control-center", "session.html#STARTUP-PROGS");
-  if (tmp) {
-    gnome_help_goto (NULL, tmp);
-    g_free(tmp);
-  } else {
-    GtkWidget *mbox;
-    
-    mbox = gnome_message_box_new(_("No help is available/installed for these settings. Please make sure you\nhave the GNOME User's Guide installed on your system."),
-				 GNOME_MESSAGE_BOX_ERROR,
-				 _("Close"), NULL);
-    
-    gtk_widget_show(mbox);
-  }
+  GnomeHelpMenuEntry help_entry = { "control-center" };
+  help_entry.path = 	"session.html#STARTUP-PROGS";
+  gnome_help_display (NULL, &help_entry);
+
 }
 
 static void
@@ -476,7 +466,7 @@ static void
 update_gui (void)
 { 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autosave_button),
-				autosave);
+				auto_save);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (logout_prompt_button),
 				logout_prompt);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (login_splash_button),
@@ -627,15 +617,6 @@ browse_session_cb (void)
 }
 
 
-/* STARTUP CODE */
-
-static gboolean warner = FALSE;
-
-static struct poptOption options[] = {
-  {"warner", '\0', POPT_ARG_NONE, &warner, 0, N_("Only display warnings."), NULL},
-  {NULL, '\0', 0, NULL, 0}
-};
-
 int
 main (int argc, char *argv[])
 {
@@ -645,7 +626,7 @@ main (int argc, char *argv[])
   textdomain (PACKAGE);
 
   init_result = gnome_capplet_init("session-properties", VERSION, argc, argv,
-				   options, 0, NULL);
+				   NULL, 0, NULL);
   gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-session.png");
   gtk_signal_connect (GTK_OBJECT (gnome_master_client ()), "die",
 		      GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -678,7 +659,6 @@ main (int argc, char *argv[])
    * We ignore the resulting "current_session" signal.
    */
   gsm_protocol_get_current_session (GSM_PROTOCOL (protocol));
-  
   switch(init_result) 
     {
     case 0:
@@ -687,9 +667,6 @@ main (int argc, char *argv[])
       break;
 
     case 1:
-      if (warner)
-	gsm_session_live (gsm_client_new, NULL) ;
-      else
         gtk_main ();
       break;
     }

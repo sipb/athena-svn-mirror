@@ -93,9 +93,6 @@ static GSList *save_request_list = NULL;
 /* This is true if a shutdown is expected to follow the current save.  */
 static gboolean shutting_down = FALSE;
 
-/* This is true if we are starting a client to print warnings. */
-static gint starting_warner = 0;
-
 /* List of all clients waiting for the interaction token.  The head of
    the list actually has the token.  */
 static GSList *interact_list = NULL;
@@ -236,6 +233,16 @@ free_client (Client *client)
  GSList *list; 
  if (! client)
     return;
+  if(client->magic != CLIENT_MAGIC)
+    {
+       if(client->magic != CLIENT_DEAD)
+               g_warning("free_client: Passed a bogon.");
+       else    /* Its that common problem for hungry cannibal lawyers...who live on cheap Czech beer */
+               g_warning("free_client: Passed a dead client.");
+       return;
+    }
+
+  client->magic = CLIENT_DEAD; /* Bang bang, you're dead etc */
 
   if (client->id != NULL)
     g_free (client->id);
@@ -303,8 +310,8 @@ run_command (Client* client, const gchar* command)
 	{
 	  envpc = 0;
 	  envp = NULL;
-	  envc = 0;
-	  envv = NULL;
+	  /* we do not set envv and envc to NULL since this is
+	   * now done correctly in find_vector_property */
 	}
 
       /* We can't run this in the `if' because we might have allocated
@@ -312,6 +319,7 @@ run_command (Client* client, const gchar* command)
 	 reasons.  */
       g_strfreev (envv);
       envv = NULL; /* sanity */
+      envc = 0;
 
       update_splash (argv[0], (gfloat)client->priority);
 
@@ -723,7 +731,7 @@ register_client (SmsConn connection, SmPointer data, char *previous_id)
 	  /* The typecast there is for 64-bit machines */
 	  client->id = g_malloc (43);
 	  g_snprintf (client->id, 43, "1%s%.13ld%.10ld%.4ld", address,
-		      (long) time(NULL), getpid (), sequence);
+		      (long) time(NULL), (long) getpid (), sequence);
 	  sequence++;
 	  
 	  sequence %= 10000;
@@ -799,24 +807,6 @@ no_response_warning (gpointer data)
   gchar *message;
   gchar *reasons[3];
   Client* warner = get_warner ();
-
-  if (!warner)
-    {
-      if (!starting_warner)
-	{
-	  Session *session;
-	  session = read_session (WARNER_SESSION);
-	  warner = (Client*)session->client_list->data;
-	  start_client(warner);
-	  g_slist_free (session->client_list);
-	  session->client_list = NULL;
-	  free_session (session);
-	}
-      starting_warner++;
-      if (starting_warner < 5)
-	return 1;
-    }
-  starting_warner = 0;
 
   switch (save_state)
     {
@@ -959,7 +949,9 @@ process_save_request (Client* client, int save_type, gboolean shutdown,
 	{
 	  /* Just ignore the save.  */
 	  shutting_down = FALSE;
-	  if (client)
+	  if (client && client->magic != CLIENT_MAGIC)
+	    g_warning("Oh my god the dead clients are walking again, please report this!");
+	  else if (client)
 	    SmsShutdownCancelled (client->connection);
 	}
       else
@@ -1544,13 +1536,14 @@ new_client (SmsConn connection, SmPointer data, unsigned long *maskp,
 {
   Client *client;
 
-  if (shutting_down && !starting_warner)
+  if (shutting_down)
     {
       *reasons  = strdup (_("A session shutdown is in progress."));
       return 0;
     }
 
   client = (Client*)g_new0 (Client, 1);
+  client->magic = CLIENT_MAGIC;
   client->priority = DEFAULT_PRIORITY;
   client->connection = connection;
   client->attempts = 1;

@@ -27,7 +27,7 @@ static char Bits[]={'\074', '\110', '\124', '\115', '\114', '\076',
 static char Template[]={'\155', '\141', '\152', '\151', '\143', '\072', '\0'};
 
 gint
-visitURL( HelpWindow win, gchar *ref, 
+visitURL( HelpWindow win, const gchar *ref, 
 	  gboolean useCache, gboolean addToQueue, gboolean addToHistory)
 {
 	docObj obj;
@@ -40,7 +40,7 @@ visitURL( HelpWindow win, gchar *ref,
 	/* trap 'toc:', 'whatis:' urls here for now */
 	/* paranoid exists because of unknown memory problems */
 	if (!strncmp(ref, "whatis:", 4)) {
-		gchar *p=ref+7;
+		const gchar *p=ref+7;
 		gchar *paranoid = g_strdup(ref);
 
 		g_message("WHATIS requested for substr %s",p);
@@ -62,7 +62,7 @@ visitURL( HelpWindow win, gchar *ref,
 
 		g_free(paranoid);
 	} else if (!strncmp(ref, "toc:", 4)) {
-		gchar *p=ref+4;
+		const gchar *p=ref+4;
 		gchar *paranoid = g_strdup(ref);
 
 		g_message("TOC requested for section %s",p);

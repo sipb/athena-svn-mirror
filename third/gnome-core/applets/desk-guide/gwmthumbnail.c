@@ -553,7 +553,8 @@ gdk_image_new_shared_with_pixmap (GdkWindow  *window,
   XShmSegmentInfo *x_shm_info;
   gint depth = -1;
   gint saved_gdk_use_xshm;
-
+  gint errcode;
+  
   g_return_val_if_fail (width != 0 && height != 0, NULL);
   g_return_val_if_fail (pixmap_p != NULL, NULL);
 
@@ -585,8 +586,8 @@ gdk_image_new_shared_with_pixmap (GdkWindow  *window,
 				       x_shm_info,
 				       width, height, depth);
   XSync (private->xdisplay, False);
-  gdk_error_trap_pop ();
-  if (!private->xwindow)
+  errcode = gdk_error_trap_pop ();
+  if (!private->xwindow || errcode != 0) 
     {
       g_free (private);
       gdk_image_destroy (image);

@@ -25,12 +25,15 @@
 
 void		multiscreen_init		(void);
 
-int		multiscreen_screens		(void);
+int		multiscreen_screens		(void) G_GNUC_CONST;
 
 /* information about a screen */
 int		multiscreen_x			(int screen);
 int		multiscreen_y			(int screen);
 int		multiscreen_width		(int screen);
 int		multiscreen_height		(int screen);
+int		multiscreen_screen_from_pos	(int x,
+						 int y);
+int		multiscreen_screen_from_panel	(GtkWidget *widget);
 
 #endif /* MULTISCREEN_STUFF_H */

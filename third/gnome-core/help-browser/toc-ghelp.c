@@ -54,8 +54,8 @@ void expandGHelpRoot(GtkWidget *item)
 		    lang = getenv("LANG");
 		if (!lang)
 		    lang = "C";
-		snprintf(fullname, sizeof(fullname), "%s/%s/%s/index.html",
-			toc->path, dirp->d_name, lang);
+		g_snprintf(fullname, sizeof(fullname), "%s/%s/%s/index.html",
+			   toc->path, dirp->d_name, lang);
 		
 		/* XXX need to traverse LANGUAGE to find right
 		   topic.dat. In fact, this LANG stuff doesn't really

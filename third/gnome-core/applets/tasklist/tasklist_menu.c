@@ -599,6 +599,7 @@ create_task_item (TasklistTask *task, TasklistTask *group)
 		width = group->width;
 	label_string = tasklist_task_get_label (task, width, FALSE);
 	label = gtk_label_new (label_string);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (task->menuitem), label);
 
 	/* only set a tip if the label didn't fit properly */

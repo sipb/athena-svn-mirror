@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,15 +10,12 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 REL="HOME"
 TITLE="GNOME Terminal brukermanual."
 HREF="index.html"><LINK
-REL="UP"
-TITLE="The GNOME terminal brukermanual."
-HREF="terminal.html"><LINK
 REL="PREVIOUS"
 TITLE="Terminalklasser"
 HREF="classes.html"><LINK
 REL="NEXT"
-TITLE="Pekerbruk"
-HREF="pointerusage.html"></HEAD
+TITLE="Miljø"
+HREF="environment.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -51,13 +49,13 @@ HREF="classes.html"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->The GNOME terminal brukermanual.</TD
+></TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="pointerusage.html"
+HREF="environment.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -79,9 +77,9 @@ NAME="OPTIONS"
 ><UL
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--background FARGE</SPAN
+><TT
+CLASS="OPTION"
+>--background FARGE</TT
 ></P
 ><P
 >Brukes til å spesifisere
@@ -91,100 +89,208 @@ CLASS="SYMBOL"
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--class KLASSENAVN</SPAN
+><TT
+CLASS="OPTION"
+>--tclass <TT
+CLASS="REPLACEABLE"
+><I
+>KLASSENAVN</I
+></TT
+>
+		</TT
 ></P
 ><P
->	      KLASSENAVN spesifiserer terminalklassen som brukes til å
+>	      Spesifiserer terminalklassen som brukes til å
 	      konfigurere terminalen ved oppstart.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--command KMD, -e KMD</SPAN
+><TT
+CLASS="OPTION"
+>--command <TT
+CLASS="REPLACEABLE"
+><I
+>KMD</I
+></TT
+>,
+		-e <TT
+CLASS="REPLACEABLE"
+><I
+>KMD</I
+></TT
+>
+	      </TT
 ></P
 ><P
->	      Kjører kommandoen KMD ved oppstart.
+>	      Kjører kommandoen <TT
+CLASS="REPLACEABLE"
+><I
+>KMD</I
+></TT
+> ved oppstart.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--execute KMD ARG, -x KMD ARG</SPAN
+><TT
+CLASS="OPTION"
+>--execute <TT
+CLASS="REPLACEABLE"
+><I
+>KMD ARG</I
+></TT
+>,
+		-x <TT
+CLASS="REPLACEABLE"
+><I
+>KMD ARG</I
+></TT
+>
+	      </TT
 ></P
 ><P
->	      Utfører kommandoen KMD med argumentene ARG ved
-	      oppstart. Ingen argumenter utover disse vil bli
-	      tatt hensyn til av terminalen, denne oppførselen
-	      etterligner xterm -e.
+>	      Utfører kommandoen <TT
+CLASS="REPLACEABLE"
+><I
+>KMD</I
+></TT
+> med argumentene 
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>ARG</I
+></TT
+> ved oppstart. Ingen argumenter utover
+	      disse vil bli tatt hensyn til av terminalen, denne oppførselen
+	      etterligner <B
+CLASS="COMMAND"
+>xterm -e</B
+>.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--font SKRIFTTYPE</SPAN
+><TT
+CLASS="OPTION"
+>--font <TT
+CLASS="REPLACEABLE"
+><I
+>SKRIFTTYPE</I
+></TT
+>
+		</TT
 ></P
 ><P
->	      Setter skrifttypen i terminalen til SKRIFTTYPE.
+>	      Setter skrifttypen i terminalen til 
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>SKRIFTTYPE</I
+></TT
+>.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--foreground FARGE</SPAN
+><TT
+CLASS="OPTION"
+>--foreground <TT
+CLASS="REPLACEABLE"
+><I
+>FARGE</I
+></TT
+>
+		</TT
 ></P
 ><P
->	      Setter forgrunnen i terminalen til FARGE.
+>	      Setter forgrunnen i terminalen til 
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>FARGE</I
+></TT
+>.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--geometry GEOMETRI</SPAN
+><TT
+CLASS="OPTION"
+>--geometry <TT
+CLASS="REPLACEABLE"
+><I
+>GEOMETRI</I
+></TT
+>
+		</TT
 ></P
 ><P
 >	      Spesifiserer geometrien for denne terminalen ved oppstart.
 	      Geometrien spesifiserer ønsket bredde og høyde i antall
-	      terminaltegn.  For eksempel: --geometry=80x40 vil 
-	      lage en terminal med åtti kolonner og førti linjer.</P
-><P
->FIXME:  LInk to gnome-libs document on GEOMETRY specifications
-	      when it is written
+	      terminaltegn.  For eksempel: 
+	      <TT
+CLASS="OPTION"
+>--geometry=80x40</TT
+> vil opprette en terminal med 
+	      åtti kolonner og førti linjer. Du kan også spesifisere plassering
+	      for terminalvinduet på skjermen; for eksempel:
+	      <TT
+CLASS="OPTION"
+>--geometry=80x40+100+200</TT
+> vil opprette et vindu
+	      som har sitt øverste venstre hjørne 100 piksler til høyre og 200
+	      piksler ned fra skjermens øverste venstre hjørne, mens
+	      <TT
+CLASS="OPTION"
+>--geometry=80x40+100-200</TT
+> vil gi deg et vindu som
+	      har nederste venstre hjørne 100 piksler til høyre og 200 piksler
+	      opp fra skjermens nederste venstre hjørne.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--login</SPAN
+><TT
+CLASS="OPTION"
+>--login</TT
 ></P
 ><P
->	      Lar gnome-terminal starte skallet i login modus (det vil kjøre
+>	      Lar <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> starte skallet i login modus (det vil kjøre
 	      alle dine initialiseringsskript for innlogging i dette modus).
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--nologin</SPAN
+><TT
+CLASS="OPTION"
+>--nologin</TT
 ></P
 ><P
->	      Får gnome-terminal til bare å starte et skall.
+>	      Får <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> til bare å starte et skall uten å kjøre noen
+	      påloggingsskript. Dette er standardvalget, med mindre du har valgt
+	      <TT
+CLASS="GUILABEL"
+><B
+>Bruk --login som standard</B
+></TT
+> i <A
+HREF="config.html#CONFIG-GENERAL"
+>brukervalg</A
+>-dialogen.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--noutmp</SPAN
+><TT
+CLASS="OPTION"
+>--noutmp</TT
 ></P
 ><P
 >	      Indikerer at dette og assosierte skall ikke skal registreres
@@ -194,9 +300,9 @@ CLASS="SYMBOL"
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--utmp</SPAN
+><TT
+CLASS="OPTION"
+>--utmp</TT
 ></P
 ><P
 >	      Indikerer at brukeren ønsker at denne terminalen skal
@@ -206,28 +312,153 @@ CLASS="SYMBOL"
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--title TITTEL, -t TITTEL</SPAN
+><TT
+CLASS="OPTION"
+>--lastlog</TT
 ></P
 ><P
->	      Lar GNOME terminal bruke TITTEL til vindusoverskrift.
+>	      Alltid opprett en lastlog oppføring for hver
+	      innlogget terminal.
 	    </P
 ></LI
 ><LI
 ><P
-><SPAN
-CLASS="SYMBOL"
->--termname TERMNAVN</SPAN
+><TT
+CLASS="OPTION"
+>--nolastlog</TT
 ></P
 ><P
->	      Gjør at GNOME terminal bruker TERMNAVN som verdi i
-	      TERM miljøvariabelen.
+>	      Ikke opprett en lastlog oppføring for hver innlogget
+	      terminal.
+	    </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>--title <TT
+CLASS="REPLACEABLE"
+><I
+>TITTEL</I
+></TT
+>,
+		-t <TT
+CLASS="REPLACEABLE"
+><I
+>TITTEL</I
+></TT
+>
+	      </TT
+></P
+><P
+>	      Lar <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> bruke <TT
+CLASS="REPLACEABLE"
+><I
+>TITTEL</I
+></TT
+>
+	      til vindusoverskrift.
+	    </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>--termname <TT
+CLASS="REPLACEABLE"
+><I
+>TERMNAVN</I
+></TT
+>
+	      </TT
+></P
+><P
+>	      Gjør at <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> bruker <TT
+CLASS="REPLACEABLE"
+><I
+>TERMNAVN</I
+></TT
+>
+	       som verdi i <TT
+CLASS="ENVAR"
+>TERM</TT
+> miljøvariabelen.
+	    </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>--start-factory-server</TT
+></P
+><P
+>	      Prøv å starte TerminalFactory tjenesten for denne
+	      terminalen (se under).
+	    </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>--use-factory</TT
+></P
+><P
+>	      Hvis det finnes en allerede kjørende terminalprosess som er
+	      startet med <TT
+CLASS="OPTION"
+>--start-factory-server</TT
+> flagget,
+	      så vil kommandoen <B
+CLASS="COMMAND"
+>gnome-terminal --use-factory</B
+>
+	      opprette et nytt terminalvindu som eies av den eksisterende
+	      terminalprosessen. Det vil med andre ord ha samme effekt som
+	      å velge <A
+HREF="menus.html#MENU-FILE"
+>	      <B
+CLASS="GUIMENU"
+>Fil</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Ny
+	      terminal</B
+></A
+> i
+	      den eksisterende terminalen.
+	    </P
+><P
+>	      Hvis ingen TerminalFactory kjører har dette flagget ingen effekt.
 	    </P
 ></LI
 ></UL
 >
 	
+      </P
+><P
+>        Du kan bruke flere enn ett flagg samtidig: for eksempel, på en
+	maskin som har den tekstbaserte nettleseren <TT
+CLASS="APPLICATION"
+>	Lynx</TT
+> installert, vil <B
+CLASS="COMMAND"
+>gnome-terminal
+	--title Web --commmand lynx</B
+> åpne en <TT
+CLASS="APPLICATION"
+>GNOME terminal</TT
+> som starter
+	opp <TT
+CLASS="APPLICATION"
+>Lynx</TT
+> og har en tittellinje som sier
+	"Web".
       </P
 ></DIV
 ><DIV
@@ -261,7 +492,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="pointerusage.html"
+HREF="environment.html"
 >Next &#62;&#62;&#62;</A
 ></TD
 ></TR
@@ -275,15 +506,12 @@ VALIGN="top"
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
-><A
-HREF="terminal.html"
->Up</A
-></TD
+>&nbsp;</TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Pekerbruk</TD
+>Miljø</TD
 ></TR
 ></TABLE
 ></DIV

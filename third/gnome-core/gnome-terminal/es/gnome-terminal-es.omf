@@ -5,8 +5,8 @@
       Guía de usuario del terminal de GNOME 
     </title>
     <subject>
-      <category>Aplicaciones|Utilitarios|Terminales</category>
-      <category>GNOME|Sistema</category>
+      <category>Applications|Utilities|Terminals</category>
+      <category>GNOME|System</category>
     </subject>
     <format mime="text/sgml"/>
     <identifier url="gnome-terminal.sgml"/>

@@ -44,8 +44,8 @@ GList *newInfoTable(struct _toc_config *conf)
     struct _info_node *p;
     char last[BUFSIZ];
     int tmp_array_size = 256, tmp_array_elems = 0;
-    struct _info_node **tmp_array = g_new(struct _info_node *,
-                                          tmp_array_size);
+    struct _info_node **tmp_array = g_new0 (struct _info_node *,
+					    tmp_array_size);
 
     while (conf->path) {
 	if (conf->type != TOC_INFO_TYPE) {
@@ -140,12 +140,15 @@ static gchar *makeBaseName(gchar *name)
     gchar buf[BUFSIZ];
     gchar *end, *s, *ss;
 
-    strncpy(buf, name, sizeof(buf));
+    g_snprintf (buf, sizeof(buf), "%s", name);
     end = buf + strlen(buf);
 
     /* Strip off any trailing `.gz' */
     if ((strlen(buf) > 3) && !strcmp(end - 3, ".gz")) {
 	end -= 3;
+	*end = '\0';
+    }else if((strlen(buf) > 4) && !strcmp(end - 4, ".bz2")) {
+	end -= 4;
 	*end = '\0';
     }
 
@@ -321,7 +324,7 @@ static gchar *findInfoFile(gchar *rootFile, gchar *name)
     gchar buf[BUFSIZ];
     gchar *s;
 
-    strncpy(buf, rootFile, sizeof(buf));
+    g_snprintf (buf, sizeof(buf), "%s", rootFile);
     s = strrchr(buf, '/');
     s++;
     *s = '\0';
@@ -333,6 +336,11 @@ static gchar *findInfoFile(gchar *rootFile, gchar *name)
 
     /* try a .gz on the end */
     strcat(buf, ".gz");
+    if (!access(buf, R_OK)) {
+	return g_strdup(buf);
+    }
+    *strstr(buf,".gz")=0;
+    strcat(buf, ".bz2");
     if (!access(buf, R_OK)) {
 	return g_strdup(buf);
     }

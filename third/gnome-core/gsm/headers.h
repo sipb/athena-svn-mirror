@@ -35,7 +35,7 @@
 /* Default session name. */
 #define DEFAULT_SESSION "Default"
 
-#define WARNER_SESSION "Warner"
+#define FAILSAFE_SESSION "Failsafe"
 
 /* Config section used for gnome-session's own config details. */
 #define GSM_CONFIG_SECTION "__gsm__"
@@ -76,6 +76,9 @@
 #define APPEND(List,Elt) ((List) = (g_slist_append ((List), (Elt))))
 #define REMOVE(List,Elt) ((List) = (g_slist_remove ((List), (Elt))))
 #define CONCAT(L1,L2) ((L1) = (g_slist_concat ((L1), (L2))))
+
+#define CLIENT_MAGIC 0xFEED50DA
+#define CLIENT_DEAD  0xBADC0DE5
 
 /* Rule used to match client: gets around need to specify proper client ids
  * when starting from sysadmin files or via the GsmAddClient protocol.
@@ -131,6 +134,8 @@ typedef struct
 
   /* Additional details for clients that speak our command protocol */
   CommandData *command_data;
+
+  guint magic;
 } Client;
 
 typedef struct {
@@ -173,10 +178,6 @@ extern gboolean save_selected;
 
 /* Ignoring ~/.gnome/session as it is deemed to be unreliable. */
 extern gboolean failsafe;
-
-/* Vector of sockets we are listening on, and size of vector.  */
-extern gint num_sockets;
-extern IceListenObj *sockets;
 
 /* List of auth entries.  */
 extern GSList *auth_entries;

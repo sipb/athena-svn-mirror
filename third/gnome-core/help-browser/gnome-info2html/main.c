@@ -102,7 +102,7 @@ main(int argc, char **argv)
 	}
 
 	/* hack, just send to stdout for now */
-	fprintf(stdout, "<BODY><HTML>\n");
+	fprintf(stdout, "<HTML><BODY>\n");
 	
 	/* big loop to identify sections of info files */
 	/* NEW PLAN - format on the fly */

@@ -137,7 +137,8 @@ struct _BasePPosClass {
 
 	void (*set_pos)                   (BasePWidget *basep,
 					   int x, int y,
-					   int w, int h);
+					   int w, int h,
+					   gboolean force);
 
 	void (*get_pos)                   (BasePWidget *basep,
 					   int *x, int *y,
@@ -179,6 +180,7 @@ GtkType		basep_widget_get_type		(void) G_GNUC_CONST;
 GtkWidget*	basep_widget_construct		(BasePWidget *basep,
 						 gboolean packed,
 						 gboolean reverse_arrows,
+						 int screen,
 						 PanelOrientation orient,
 						 int sz,
 						 BasePMode mode,
@@ -196,6 +198,7 @@ GtkWidget*	basep_widget_construct		(BasePWidget *basep,
 
 /* changing parameters */
 void		basep_widget_change_params	(BasePWidget *basep,
+						 int screen,
 						 PanelOrientation orient,
 						 int sz,
 						 BasePMode mode,
@@ -291,6 +294,8 @@ void            basep_widget_pre_convert_hook (BasePWidget *basep);
 void            basep_widget_set_state         (BasePWidget *basep,
 						BasePState state,
 						gboolean emit);
+void		basep_widget_screen_change	(BasePWidget *basep,
+						 int screen);
 
 void            basep_update_frame             (BasePWidget *basep);
 
@@ -299,9 +304,10 @@ void		basep_widget_redo_window	(BasePWidget *basep);
 
 /* -1 means don't set, caller will not get queue resized as optimization */
 
-void		basep_border_recalc		(void);
-void		basep_border_queue_recalc	(void);
-void		basep_border_get		(BorderEdge edge,
+void		basep_border_recalc		(int screen);
+void		basep_border_queue_recalc	(int screen);
+void		basep_border_get		(int screen,
+						 BorderEdge edge,
 						 int *left,
 						 int *center,
 						 int *right);

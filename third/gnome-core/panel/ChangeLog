@@ -1,3 +1,413 @@
+2002-01-26  Ian McKellar  <yakk@yakk.net>
+
+	* panel-widget.c: (panel_widget_setup_translucent_background),
+	(setup_background):
+	Fixed some extremely dumb leaks. I suck. Hate me.
+
+2002-01-26  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* panel.hints: Adding a lang tag to panel.hints that seems to
+	have been forgotten.
+
+2002-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help/C/panel.sgml: Reference /usr/bin/poweroff and /usr/bin/reboot
+	since these are the binaries used.
+	
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* logout.c: Apply a patch to fix a race on logout that caused
+	applets to be removed from the panel. From Mike Whitson
+	<mwhitson@mit.edu>.
+	
+2002-01-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* foobar-widget.c: Apply patch from Carlos Perelló Marín to make
+	it easier to see what is 12 hour and 24 hour clock. Fixes #66912.
+	
+2002-01-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help/de/panel.sgml: Fix typo. From Shingo Akagaki <doro@kondara.org>.
+	* help/ja/panel.sgml: Same.
+	
+Thu Jan 03 12:28:10 2002  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: fix a memleak
+
+	* basep-widget.c: fix a possible GList free list corruption bug
+
+2001-12-04  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help/no/panel.sgml: Finish up this one.
+	* foobar-widget.c: Fix some typos and make bugzilla be the
+	bugtracking system, not bugs.gnome.org :)
+	
+2001-11-22  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* panel.hints: Add Norwegian nynorsk strings.
+
+Fri Nov 16 19:56:56 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: fix a crash when running a program in terminal
+	  from the runbox
+
+2001-09-26  Christian Rose  <menthos@menthos.com>
+
+	* panel.hints: Fix reported "medans" typo.
+
+2001-09-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* config/Makefile.am: distcheck fixes.
+	
+2001-09-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* panel.hints: Rename zh_TW.Big5 to zh_TW .
+
+2001-08-31  Kevin Vandersloot <kfv101@psu.edu>
+
+	* panel_widget.c (panel_widget_get_free_space): fix 
+	initializing of right, left ints. They were switched. This
+	fixes the case where the tasklist wouldn't honor the
+	"Only use empty space" option.
+
+2001-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* *.{hints,soundlist}: Added traditional Chinese strings.
+	
+2001-08-02  Havoc Pennington  <hp@pobox.com>
+
+	* xstuff.c (xstuff_set_wmspec_dock_hints): Set the 
+	_NET_WM_WINDOW_TYPE
+
+	* basep-widget.c (basep_widget_update_winhints): call
+	xstuff_set_wmspec_dock_hints()
+	
+2001-08-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.[desktop,soundlist]: Added Nynorsk translation.
+	
+Fri Jul 20 06:08:58 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c: apply patch from Dave Dribin <dave@dribin.org>
+	  to hack around some hints evilness.  The correct thin would be to
+	  debug the hints, but there is no time for that now.
+
+2001-07-17  Aaron Weber  <aaron@ximian.com>
+
+	* panel.hints: Wrong repository. D'oh.
+
+2001-07-17  Aaron Weber  <aaron@ximian.com>
+
+	* panel.hints: Removed references to "Main Menu;" hints should now
+	be functional and useful no matter what version of GNOME is in
+	use.  This will, unfortunately, require some new translations. :(
+
+2001-07-05  Manuel de Vega Barreiro <mbarreiro@red.madritel.es> 
+
+	* panel/help: New Sanish translation.
+
+Thu Jul 05 16:11:32 2001  George Lebl <jirka@5z.com>
+
+	* main.c, extern.c: Removed a race, don't start adding applets from a
+	  corba interface until we're all started up
+
+Thu Jul 05 15:46:36 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: applied a patch from ghudson@mit.edu (Greg Hudson) to fix
+	  add to panel with NO_XALF included
+
+Fri Jun 29 18:32:57 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c:  fix hide position getting to fix hidden small
+	  panels being out of place
+
+Thu Jun 28 13:03:45 2001  George Lebl <jirka@5z.com>
+
+	* main.[ch], menu.c, gnome-run.c:  Make screen checking optional,
+	  which should make telsa happy.
+
+Fri Jun 22 23:15:50 2001  George Lebl <jirka@5z.com>
+
+	* menu.c, gnome-panel-properties.c, panel_config_global.h,
+	  session.c: Make menu titles optional and off by default.  In
+	  the right click menu add a submenu for "Entire menu" so that
+	  one can have most of the funcationality that menu titles had
+	  without them
+
+	* menu.[ch], menu-fentry.h, foobar-widget.c, gnome-run.c: make an
+	  add to favourites menu item to make favourites easier to use
+
+	* menu.c: fix try_pixmap function to setup correct size, this fixes
+	  the problem of distribution menus being small even when icons are
+	  large
+
+2001-06-07  Christian Rose  <menthos@menthos.com>
+
+	* panel/panel.soundlist: Added Swedish translation.
+
+2001-06-06  Anders Carlsson  <andersca@codefactory.se>
+
+	* gnome-panel-screenshot.c (add_file_to_path): If we have a
+	class_name that is not NULL, append it to the file name.
+	(find_toplevel_window): New function to find a toplevel window,
+	ie the window that stores the WM_CLASS hint that we want
+	to use.
+	(take_window_shot): Check if the window being captured has
+	got a toplevel that has a WM_CLASS hint defined and get the
+	window class name from it in that case.
+	(drag_begin): Add the screenshot preview as a drag icon
+	pixmap.
+
+Mon Jun  4 22:49:13 2001  Jonathan Blandford  <jrb@webwynk.net>
+
+	* gnome-panel-screenshot.c (print_pixbuf): Small change to set
+	watch/sensitivity for print dialog when doing a print preview.
+
+Tue Jun 05 03:03:58 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-screenshot.c: Use a temporary directory rather then
+	  just a file, this has two advantages, better (read more securely)
+	  deals with things like nautilus yanking things from under us, and
+	  second is that we get prettier filenames.
+
+Tue Jun 05 02:20:07 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, gnome-panel-screenshot.c: Enabled the printing stuff
+
+	* gnome-panel-screenshot.c: Add the nautilus icon drag type and
+	  handle the case where nautilus despite our best efforts decides to
+	  move the temporary file rather then copy it.
+
+Mon Jun 04 23:55:44 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-screenshot.c: Add dnd (that is drag) to the screenshot
+	  applet, lots of cool and evil foo to create a temporary file
+	  asynchroniously and then maybe use it when saving etc... still some
+	  bits a bit rough but generally works well.  To make this seem
+	  very snappy it starts saving the file immediately which is useless if
+	  the user wants to print the darn thing or cancel.
+
+Mon Jun 04 20:25:54 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-screenshot.c: select the filename and setup activate
+	  on the save entry so that it's easy and fast to control with the
+	  keyboard.  Also when busy make the window insensitive to give
+	  better feedback that things are happening.
+
+Fri Jun 01 16:20:15 2001  George Lebl <jirka@5z.com>
+
+	* panel-widget.c: when stoppong movement 1) ignore the press when
+	  we are still in movement mode and wipe the "event" signal, and 2)
+	  on release wipe the "event" signal yet again.  This way moving 
+	  menu buttons from right click menu actually works.
+
+Thu May 31 00:12:53 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-properties.c, session.c, config/panel.global:  Add the
+	  window screenshot key to the default config and make the default
+	  Shift-Print
+
+Thu May 31 00:08:43 2001  George Lebl <jirka@5z.com>
+
+	* global-keys.[ch], gnome-panel-properties.c: fix the usage of the
+	  mod stuff, ignore bad mods in the crapplet, and properly check
+	  state in the checking code.  Overall, evil shit, but it now
+	  actually works.
+
+Thu May 31 02:53:51 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-panel-screenshot.c (take_window_shot): bug fix for when
+	the cursor's over the root window.
+
+Wed May 30 23:28:48 2001  George Lebl <jirka@5z.com>
+
+	* session.c, gnome-panel-properties.c, panel_config_global.h,
+	  global-keys.c:  Add a Control-Print binding for taking a screenshot
+	  of a specific window.
+
+Wed May 30 22:56:57 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-properties.c, gnome-panel-screenshot.(c|glade|glade.h),
+	  Makefile.am, session.c, global-keys.c, panel_config_global.h:  Add
+	  the screenshot key with default to the print screen key ("Print").
+	  The screenshot program was written by Jonathan Blandford 
+	  <jrb@redhat.com> and it rocks!  The printing stuff is now disabled
+	  pending come more configure foo to detect and optionally link with
+	  gnome-print.
+
+Tue May 29 19:23:10 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: load pixmaps correctly, when loading icon from dentry
+	  look into the pixmap dir as well, check for NULLs at the right
+	  places and use /panel/State rather then /panel/Config for the state
+	  of the advanced toggle setting thingie
+
+Tue May 29 19:07:40 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, conditional.[ch], gnome-panel-properties.c,
+	  launcher.c, main.c, config/Applet_Config, config/Makefile.am,
+	  config/panel.config, config/panel.global: Put the default config
+	  into a set of installed files rather then hardcoded.  The failsafe
+	  default is a bottom panel with a menu, it should also probably
+	  complain in that case.
+
+	* session.c: Allow per user control of which users are restricted or
+	  unrestricted, and change the name of the section to Restrictions
+
+2001-05-29  Havoc Pennington  <hp@redhat.com>
+
+	* gnome-run.c: Add a list of desktop entries, and "advanced mode"
+	for the old behavior
+
+	* menu.c: add panel_add_favorite() function
+
+	* menu-fentry.c: add a way to list all loaded dirs
+	
+Tue May 29 00:55:34 2001  George Lebl <jirka@5z.com>
+
+	* menu.c, drawer.c, extern.c, launcher.c, logout.c, session.c:  Never
+	  set commie mode or no runbox mode on root.  Don't add the
+	  preferences/properties menuitems, even for external applets.
+
+Mon May 28 23:38:29 2001  George Lebl <jirka@5z.com>
+
+	* Applying patch:
+
+Sun May 27 16:14:44 2001  Michal Palczewski <mpalczew@u.washington.edu>
+
+	* tasklist_icon.c: fix memory leak in 
+
+Mon May 28 02:50:50 2001  George Lebl <jirka@5z.com>
+
+	* xstuff.[ch], basep-widget.c, foobar-widget.c:  Set the USSize and
+	  USPosition hints, as well as the Min/Max size hints to disallow
+	  resizing.
+
+Sun May 27 18:30:42 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, session.[ch], menu.c, gnome-panel-properties.c,
+	  main.c, applet.c, gnome-run.c, panel-widget.c, panel.c: Implement
+	  reading of defaults from a global directory.  At some close point
+	  in the future the default config will be made a set of files and
+	  installed and the default config that's hardcoded will disappear
+	  (become something simple for failsafe reasons).  Also add a
+	  LockDown (commie mode) and a NoRunBox configuration stuff for anal
+	  sysadmins and kiosks.  It's untested, except that it doesn't
+	  interfere with normal operation.
+
+	* conditional.c: change "Conditional" to ":Conditional" since that
+	  makes files nicer
+
+Fri May 25 14:36:29 2001  George Lebl <jirka@5z.com>
+
+	* foobar-widget.c: don't use the global for the clock_ebox
+
+Fri May 25 00:52:35 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, conditional.[ch], gnome-panel-properties.c, session.c,
+	  menu.c:  Support a "Conditional" key on panel, tearoff menu and
+	  applet definitions and implement an conditional key getting if the
+	  normal key doesn't work.  The conditions are a fairly full featured
+	  C like conditions with currently not too many possible values.
+	  This is the first step in making the default config be not
+	  hardcoded.
+
+Tue May 22 20:08:06 2001  George Lebl <jirka@5z.com>
+
+	* main.c: fish get scared if you click at them and I hate studying
+	  for finals
+
+Tue May 22 01:15:26 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c, menu.c, panel_config.c: multiscreen polishing and
+	  fixes
+
+Sun May 20 01:31:57 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: include math.h before gnome.h, patch from
+	  mcnichol@austin.ibm.com (Dan McNichol) to make it compile on
+	  some IBM compiler thingie
+
+Sun May 20 00:26:47 2001  George Lebl <jirka@5z.com>
+
+	* applet.c, menu.[ch], foobar-widget.c, scroll-menu.c:  Display menus
+	  on their respective screens
+
+	* basep-widget.c, xstuff.c: Fix border recalculation and the root
+	  property setting
+
+	* sliding-widget.c: Fix moving on offset screens
+
+	* panel-util.c: when finding things in path, use access with X_OK
+	  rather then the exists function which uses F_OK
+
+Sat May 19 18:49:00 2001  George Lebl <jirka@5z.com>
+
+	* multiscreen-stuff.c: fix dranbamage from cut and paste
+
+Sat May 19 16:56:43 2001  George Lebl <jirka@5z.com>
+
+	* aligned-widget.c, foobar-widget.c, basep-widget.[ch], session.c,
+	  xstuff.[ch], edge-widget.c, multiscreen-stuff.c:  do the screen
+	  border calculation and finally add the xinerama code, and
+	  other final multiscreen touches.  So by default now xinerama dudes
+	  get a multiscreen setup.
+
+Sat May 19 02:17:18 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: create panels on the proper screen
+
+	* session.c: sanitize screen
+
+	* multiscreen-stuff.c: When we get an out of range screen number,
+	  give offscreen values.  Also use an env var to setup the fake
+	  xinerama setup for eaze of debugging.
+
+	* foobar-widget.c: redo the multiscreenazition to be more tolerant
+	  of errors, and work with things on non existent screens.
+
+	* panel_config.[ch]: Add the widgetry for screen number and add the
+	  avoid maximize to all proper panels
+
+Fri May 18 02:44:47 2001  George Lebl <jirka@5z.com>
+
+	* aligned-widget.[ch], basep-widget.[ch], border-widget.[ch],
+	  drawer-widget.c, edge-widget.[ch], floating-widget.[ch],
+	  foobar-widget.[ch], menu.c, multiscreen-stuff.[ch],
+	  panel_config.[ch], session.c, sliding-widget.[ch]: Add the 
+	  screen parameter to the change params and new functions, and load
+	  and save it.  Also multiscreenize the foobar a bit.
+
+Sun May 13 02:45:01 2001  Chema Celorio  <chema@celorio.com>
+
+	* foobar-widget.c (append_clock_menu): look for time-admin, if it is
+	in path, add a menu item for "Set Time".
+	(set_time_cb): implement
+
+Sun May 13 01:13:46 2001  George Lebl <jirka@5z.com>
+
+	* session.c: when reading the main menu flags use the default flags
+	  function so that we also get the distribution menu if available
+
+Sat May 12 19:22:39 2001  George Lebl <jirka@5z.com>
+
+	* aligned-widget.c, basep-widget.[ch], sliding-widget.c,
+	  multiscree-stuff.[ch], edge-widget.c, border-widget.c,
+	  floating-widget.c, menu.c, menu-util.c, panel.c, drawer-widget.c:
+	  Further multiscreenization, floating and drawer correctly
+	  multiscreenized and dragging of panels between screens working,
+	  menus fixed for clamping on offset screens
+
+	* foobar-widget.c: warning fix
+
+	* menu.c: Add tooltips to some items
+
+Fri May 11 18:20:39 2001  George Lebl <jirka@5z.com>
+
+	* edge-widget.c, sliding-widget.c, multiscreen-stuff.h: multiscreened
+	  edge and sliding widget moving.  However only tested for single
+	  screen case which which works unchanged.
+
 Tue May 08 15:39:54 2001  George Lebl <jirka@5z.com>
 
 	* foobar-widget.[ch]:  When the separator is on the end of the task menu

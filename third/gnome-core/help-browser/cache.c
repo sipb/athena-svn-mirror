@@ -65,7 +65,7 @@ void reconfigDataCache(DataCache cache, guint maxMemSize, guint maxDiskSize,
 	    g_snprintf(filename, sizeof(filename), "%s/%s",
 		       getenv("HOME"), file);
 	} else {
-	    strncpy(filename, file, sizeof(filename));
+	    g_snprintf(filename, sizeof(filename), "%s", file);
 	}
 	cache->file = g_strdup(filename);
     } else {
@@ -158,7 +158,7 @@ void addToDataCache(DataCache cache, gchar *key, gpointer value,
     }
 
     /* It is not there - make a new entry */
-    hit = g_new(struct _data_cache_entry, 1);
+    hit = g_new0(struct _data_cache_entry, 1);
     hit->key = g_strdup(key);
     hit->value = value;
     hit->size = size;

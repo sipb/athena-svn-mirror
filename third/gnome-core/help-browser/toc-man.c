@@ -47,13 +47,13 @@ void expandManPagesIndex(GtkWidget *item, struct _man_sections *ext)
     GtkWidget *newitem;
     struct _toc_config *toc;
     char dirname[BUFSIZ];
-    char fullname[BUFSIZ];
     DIR *d;
     struct dirent *dirp;
     GList *list = NULL;
     GList *listItem;
     char *last = "";
     char *this;
+    char fullname[BUFSIZ];
 
     if (gtk_object_get_data(GTK_OBJECT(item), "expanded")) {
 	return;
@@ -72,18 +72,18 @@ void expandManPagesIndex(GtkWidget *item, struct _man_sections *ext)
 	    toc++;
 	    continue;
 	}
-	snprintf(dirname, sizeof(dirname), "%s/man%c", toc->path, ext->ch);
+	g_snprintf(dirname, sizeof(dirname), "%s/man%c", toc->path, ext->ch);
 
 	d = opendir(dirname);
 	if (d) {
 	    while ((dirp = readdir(d))) {
+	        char *fname;
 	        if (! (strcmp("..", dirp->d_name)
 		       && strcmp(".", dirp->d_name))) {
 		    continue;
 		}
-		snprintf(fullname, sizeof(fullname),
-			 "%s/%s", dirname, dirp->d_name);
-		list = g_list_insert_sorted(list, g_strdup(fullname),
+		fname = g_strdup_printf ("%s/%s", dirname, dirp->d_name);
+		list = g_list_insert_sorted(list, fname,
 					    (GCompareFunc)compareItems);
 	    }
 	    closedir(d);
@@ -99,8 +99,8 @@ void expandManPagesIndex(GtkWidget *item, struct _man_sections *ext)
 	/* Make item, link it in, show it */
 	this = strrchr(listItem->data, '/') + 1;
 	if (! strcmp(this, last)) {
-	    snprintf(fullname, sizeof(fullname),
-		     "%s (%s)", this, (char *)listItem->data);
+	    g_snprintf(fullname, sizeof(fullname),
+		       "%s (%s)", this, (char *)listItem->data);
 	    newitem = gtk_tree_item_new_with_label(fullname);
 	} else {
 	    newitem = gtk_tree_item_new_with_label(this);
@@ -156,7 +156,7 @@ void expandManPagesRoot(GtkWidget *item)
 	}
 	p = man_sections;
 	while (p->ch) {
-	    snprintf(dirname, sizeof(dirname), "%s/man%c", toc->path, p->ch);
+	    g_snprintf(dirname, sizeof(dirname), "%s/man%c", toc->path, p->ch);
 	    d = opendir(dirname);
 	    if (d) {
 	        while (d && (dirp = readdir(d))) {

@@ -31,10 +31,15 @@ void xstuff_go_through_client_list	(void);
 void xstuff_set_no_group_and_no_input	(GdkWindow *win);
 
 gboolean xstuff_nautilus_desktop_present (void);
-void xstuff_setup_desktop_area		(int left,
+void xstuff_setup_desktop_area		(int screen,
+					 int left,
 					 int right,
 					 int top,
 					 int bottom);
 void xstuff_unsetup_desktop_area	(void);
+void xstuff_set_pos_size		(GdkWindow *window,
+					 int x, int y,
+					 int w, int h);
+void xstuff_set_wmspec_dock_hints       (GdkWindow *window);
 
 #endif

@@ -19,7 +19,8 @@ static void aligned_pos_init (AlignedPos *pos);
 
 static void aligned_pos_set_pos (BasePWidget *basep,
 				 int x, int y,
-				 int w, int h);
+				 int w, int h,
+				 gboolean force);
 static void aligned_pos_get_pos (BasePWidget *basep,
 				 int *x, int *y,
 				 int w, int h);
@@ -94,27 +95,28 @@ aligned_pos_init (AlignedPos *pos) { }
 static void
 aligned_pos_set_pos (BasePWidget *basep,
 		     int x, int y,
-		     int w, int h)
+		     int w, int h,
+		     gboolean force)
 {
-	int minx, miny, maxx, maxy;
 	int innerx, innery;
 	int screen_width, screen_height;
 
 	BorderEdge newpos = BORDER_POS(basep->pos)->edge;
 	AlignedAlignment newalign = ALIGNED_POS(basep->pos)->align;
 
-	gdk_window_get_geometry (GTK_WIDGET(basep)->window,
-				 &minx, &miny, &maxx, &maxy, NULL);
-	gdk_window_get_origin (GTK_WIDGET(basep)->window, &minx, &miny);
-	maxx += minx;
-	maxy += miny;
-	if (x >= minx &&
-	    x <= maxx &&
-	    y >= miny &&
-	    y <= maxy)
- 	        return;
-
-	/* FIXME: screenchanging stuff */
+	if ( ! force) {
+		int minx, miny, maxx, maxy;
+		gdk_window_get_geometry (GTK_WIDGET(basep)->window,
+					 &minx, &miny, &maxx, &maxy, NULL);
+		gdk_window_get_origin (GTK_WIDGET(basep)->window, &minx, &miny);
+		maxx += minx;
+		maxy += miny;
+		if (x >= minx &&
+		    x <= maxx &&
+		    y >= miny &&
+		    y <= maxy)
+			return;
+	}
 	
 	innerx = x - multiscreen_x (basep->screen);
 	innery = y - multiscreen_y (basep->screen);
@@ -204,8 +206,8 @@ aligned_pos_get_pos (BasePWidget *basep, int *x, int *y,
 		break;
 	case BORDER_RIGHT:
 		*x = multiscreen_width(basep->screen) - w;
-		basep_border_get (BORDER_TOP, NULL, NULL, &a);
-		basep_border_get (BORDER_BOTTOM, NULL, NULL, &b);
+		basep_border_get (basep->screen, BORDER_TOP, NULL, NULL, &a);
+		basep_border_get (basep->screen, BORDER_BOTTOM, NULL, NULL, &b);
 		switch (ALIGNED_POS(basep->pos)->align) {
 		case ALIGNED_LEFT:
 			*y = foobar_widget_get_height (basep->screen) + a;
@@ -219,8 +221,8 @@ aligned_pos_get_pos (BasePWidget *basep, int *x, int *y,
 		}
 		break;
 	case BORDER_LEFT:
-		basep_border_get (BORDER_TOP, &a, NULL, NULL);
-		basep_border_get (BORDER_BOTTOM, &b, NULL, NULL);
+		basep_border_get (basep->screen, BORDER_TOP, &a, NULL, NULL);
+		basep_border_get (basep->screen, BORDER_BOTTOM, &b, NULL, NULL);
 		switch (ALIGNED_POS(basep->pos)->align) {
 		case ALIGNED_LEFT:
 			*y = foobar_widget_get_height (basep->screen) + a;
@@ -238,7 +240,7 @@ aligned_pos_get_pos (BasePWidget *basep, int *x, int *y,
 	*x += multiscreen_x (basep->screen);
 	*y += multiscreen_y (basep->screen);
 
-	basep_border_queue_recalc ();
+	basep_border_queue_recalc (basep->screen);
 }
 
 static void
@@ -282,6 +284,7 @@ aligned_pos_show_hide_right (BasePWidget *basep)
 
 void
 aligned_widget_change_params (AlignedWidget *aligned,
+			      int screen,
 			      AlignedAlignment align,
 			      BorderEdge edge,
 			      int sz,
@@ -308,12 +311,19 @@ aligned_widget_change_params (AlignedWidget *aligned,
 	}
 
 	border_widget_change_params (BORDER_WIDGET (aligned),
-				     edge, sz, mode, state,
-				     level, avoid_on_maximize,
+				     screen,
+				     edge,
+				     sz,
+				     mode,
+				     state,
+				     level,
+				     avoid_on_maximize,
 				     hidebuttons_enabled,
 				     hidebutton_pixmaps_enabled,
-				     back_type, pixmap_name,
-				     fit_pixmap_bg, strech_pixmap_bg,
+				     back_type,
+				     pixmap_name,
+				     fit_pixmap_bg,
+				     strech_pixmap_bg,
 				     rotate_pixmap_bg,
 				     back_color);
 }
@@ -330,7 +340,9 @@ aligned_widget_change_align (AlignedWidget *aligned,
 	if (pos->align == align)
 		return;
 
-	aligned_widget_change_params (aligned, align,
+	aligned_widget_change_params (aligned,
+				      basep->screen,
+				      align,
 				      BORDER_POS (pos)->edge,
 				      panel->sz, basep->mode,
 				      basep->state,
@@ -354,8 +366,12 @@ aligned_widget_change_align_edge (AlignedWidget *aligned,
 	BasePWidget *basep = BASEP_WIDGET (aligned);
 	PanelWidget *panel = PANEL_WIDGET (basep->panel);
 
-	aligned_widget_change_params (aligned, align, edge,
-				      panel->sz, basep->mode,
+	aligned_widget_change_params (aligned,
+				      basep->screen,
+				      align,
+				      edge,
+				      panel->sz,
+				      basep->mode,
 				      basep->state,
 				      basep->level,
 				      basep->avoid_on_maximize,
@@ -370,7 +386,8 @@ aligned_widget_change_align_edge (AlignedWidget *aligned,
 }
 				 
 GtkWidget *
-aligned_widget_new (AlignedAlignment align,
+aligned_widget_new (int screen,
+		    AlignedAlignment align,
 		    BorderEdge edge,
 		    BasePMode mode,
 		    BasePState state,
@@ -393,15 +410,21 @@ aligned_widget_new (AlignedAlignment align,
 	BASEP_WIDGET (aligned)->pos = BASEP_POS (pos);
 
 	border_widget_construct (BORDER_WIDGET (aligned),
+				 screen,
 				 edge, 
-				 TRUE, FALSE,
-				 sz, mode, state,
+				 TRUE,
+				 FALSE,
+				 sz,
+				 mode,
+				 state,
 				 level,
 				 avoid_on_maximize,
 				 hidebuttons_enabled,
 				 hidebutton_pixmaps_enabled,
-				 back_type, back_pixmap,
-				 fit_pixmap_bg, strech_pixmap_bg,
+				 back_type,
+				 back_pixmap,
+				 fit_pixmap_bg,
+				 strech_pixmap_bg,
 				 rotate_pixmap_bg,
 				 back_color);
 

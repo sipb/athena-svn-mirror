@@ -205,7 +205,7 @@
 	<class>GtkTable</class>
 	<name>table10</name>
 	<border_width>4</border_width>
-	<rows>5</rows>
+	<rows>6</rows>
 	<columns>2</columns>
 	<homogeneous>False</homogeneous>
 	<row_spacing>4</row_spacing>
@@ -390,8 +390,8 @@
 	  <child>
 	    <left_attach>0</left_attach>
 	    <right_attach>1</right_attach>
-	    <top_attach>4</top_attach>
-	    <bottom_attach>5</bottom_attach>
+	    <top_attach>5</top_attach>
+	    <bottom_attach>6</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
@@ -414,11 +414,57 @@
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
+	    <top_attach>5</top_attach>
+	    <bottom_attach>6</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>open-im-checkbox</name>
+	  <can_focus>True</can_focus>
+	  <label>Open IM (input method)</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>multibyte-checkbox</name>
+	  <can_focus>True</can_focus>
+	  <label>Enable multibyte support</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
 	    <top_attach>4</top_attach>
 	    <bottom_attach>5</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
+	    <xexpand>False</xexpand>
 	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
@@ -944,7 +990,7 @@
 
 	<widget>
 	  <class>GnomeColorPicker</class>
-	  <name>palette-10-colorpicker</name>
+	  <name>palette-11-colorpicker</name>
 	  <can_focus>True</can_focus>
 	  <dither>True</dither>
 	  <use_alpha>False</use_alpha>
@@ -967,7 +1013,7 @@
 
 	<widget>
 	  <class>GnomeColorPicker</class>
-	  <name>palette-11-colorpicker</name>
+	  <name>palette-10-colorpicker</name>
 	  <can_focus>True</can_focus>
 	  <dither>True</dither>
 	  <use_alpha>False</use_alpha>

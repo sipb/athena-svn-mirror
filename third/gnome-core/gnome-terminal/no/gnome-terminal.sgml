@@ -1,57 +1,348 @@
-<!DOCTYPE BOOK PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
-<!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">] >
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">
+<!ENTITY term "<application>GNOME terminal</application>">
+ ]>
 
 
-<book id="index">
+<article id="index">
+
+  <artheader>
   <title>GNOME Terminal brukermanual.</title>
-  <bookinfo>
-    <authorgroup>
-      <author>
-	<firstname>Miguel</firstname>
-	<surname>de Icaza</surname>
-      </author>
-    </authorgroup>
-    <releaseinfo>documentation in progress</releaseinfo>
-     <legalnotice id="legalnotice">
-      <para>
-	Dette dokumentet kan redistribueres fritt i samsvar med
-	betingelsene gitt i GNU General Public License.</para>
-    </legalnotice>
-  </bookinfo>
-  <toc></toc>
-  
-  <chapter id="terminal">
-    <title>The GNOME terminal brukermanual.</title>
+    <copyright>
+      <year>2000</year>
+      <holder>Miguel de Icaza</holder>
+      <holder>Michael Zucchi</holder>
+      <holder>Alexander Kirillov</holder>
+    </copyright>
+
+  <legalnotice id="legalnotice"> 
     
+    <para>Det gis herved rett til å kopiere, distribuere og/eller endre
+      dette dokumentet under betingelsene gitt i <ulink type="help"
+      url="gnome-help:fdl"><citetitle>GNU Free Documentation
+      License</citetitle></ulink>, versjon 1.1 eller enhver senere versjon
+      publisert av Free Software Foundation uten "Invariant
+      Sections", uten forsidetekst, og uten baksidetekst. En kopi av
+      lisensen kan finnes <ulink type="help"
+      url="gnome-help:fdl">her</ulink>.
+    </para>
+
+    <para>
+      Mange av navnene som brukes av firmaer for å gjøre sine
+      produkter og tjenester unik er tatt som merkenavn. Der hvor disse
+      navnene brukes i GNOME's dokumentasjon, og disse merkenavnene gjøres
+      kjent for medlemmer av GNOME Documentation Project, har disse navnene
+      blitt skrevet med store bokstaver eller de begynner med stor bokstav.
+    </para>
+
+  </legalnotice>
+
+  </artheader>
+  
     <sect1 id="Description">
       <title>Beskrivelse</title>
       <para>
-	gnome-terminal er en terminalemulator som er en del av GNOME
-	prosjektet.  Den gir tilgang til Unix-kommandoskallet i GNOME
+	&term; er en terminalemulator som er en del av GNOME
+	prosjektet. Den gir tilgang til Unix-kommandoskallet i GNOME
 	miljøet.
       </para>
 
       <para>
-	gnome-terminal støtter fargevisning (se seksjonen om
-	<link linkend="environment">miljø</link>-variabler for 
-	detaljer), og gir musstøtte til applikasjoner som støtter
-	mushendelser for xterm lignende terminaler.
+	&term; støtter fargevisning (se <xref
+	linkend="config-colour"> for detaljer), og gir musstøtte til 
+	applikasjoner som støtter mushendelser for xterm lignende 
+	terminaler.
       </para>
     </sect1>
     
-    <sect1 id="Emulation">
-      <title>Emulering</title>
-      <para> Emuleringen som støttes av GNOME terminal er den samme som finnes i
-	xterm programmet som leveres av X consortium (som igjen er en nesten
-	komplett emulering av VT102 DEC	terminalen).</para>
+    <sect1 id="usage">
+      <title>Grunnleggende bruk</title>
+      <sect2 id="shells">
+        <title>Skall</title>
+        <para>
+          &term; starter standard skall (kommandolinjefortolker)
+          for brukeren. Avanserte UNIX-skall kan i stor grad utvide
+          funksjonaliteten for et vanlig kommandolinjeskall. <application>
+          bash</application> (som er standard skall på de fleste Linux
+          distribusjoner) gir for eksempel kommandofullføring (prøv å skrive
+          inn begynnelsen på en kommando eller et filnavn og trykk
+          <keycap>Tab</keycap>-tasten), historikk (du kan hente opp igjen
+          tidligere brukte kommandoer ved å trykke <keycap>pil opp</keycap>),
+          og mye mer. For en fullstendig dokumentasjon se manualsidene for
+          de relevante skallene.
+        </para>
+      </sect2>
+
+      <sect2 id="scrolling">
+        <title>Rulling</title>
+        <para>
+          &term; har et rullefelt som gjør det mulig å rulle tilbake
+          for å se tidligere kommandoer og utdata; dette er spesielt
+          nyttig når en kommando skriver ut mer enn det som passer på
+          én skjerm. Som standard er rullefeltet plasert på høyre side
+          av terminalvinduet. Du kan endre plasseringen eller fjerne
+          rullefeltet helt ved å bruke <link linkend="config"><interface>
+          Brukervalg</interface>-dialogen.</link>
+        </para>
+        <para>
+          Du kan også bruke tastaturet for å rulle tilbake:
+          <keysym>Shift-PgUp</keysym> ruller opp,
+          <keysym>Shift-PgDn</keysym> &mdash; ned.
+        </para>
+      </sect2>
+
+      <sect2 id="Emulation">
+        <title>Emulering</title>
+        <para> 
+          Terminalen er designet for å emulere
+	  <application>xterm</application>- programmet som kommer fra X
+          Consortium. <application>xterm</application> er igjen en nesten
+	  komplett emulering av VT102 DEC	terminalen.
+        </para>
       
-      <para>GNOME terminal støtter de samme utvidelsene til VT102
-	som x-termer gir (gjennom spesielle "escape-sekvenser").
-	Senere endringer i xterm er også integrert i gnome-terminal
-	etter hvert som de har blitt oppdaget. Dette inkluderer
-	emulering av de nyere DEC VT220 "escape-sekvensene".
+        <para>GNOME terminal støtter de samme utvidelsene til VT102
+	  som <application>xterm</application> gir, gjennom spesielle
+          "escape-sekvenser". Xterm-programmet er også et program under
+	  utvikling. Endringer i senere versjoner av xterm er også tatt
+	  inn i &term;. Dette inkluderer emulering av de nyere DEC VT220
+          "escape-sekvensene".
+        </para>
+
+        <para>
+          Enklere fortalt betyr dette at GNOME terminal forstår alle
+          kommandoene ("escape-sekvensene") som er brukt av VT102/VT220-
+          terminaler for ting som posisjonering av markøren på skjermen.
+          På grunn av dette vil du kunne kjøre alle applikasjoner som
+          er ment å fungere i en VT102/VT220/xterm-terminal og oppleve at 
+          alle kontroller (slik som piler, <keycap>PageUp</keycap>-taster,
+          <keycap>Tab</keycap>-tast, etc) fungerer som forventet.
+        </para>
+
+      </sect2>
+
+    </sect1>
+
+    <sect1 id="menus">
+      <title>Menyer</title>
+      <para>
+        &term; gir et antall kontrollfunksjoner som kan aksesseres via
+        menyene som er plassert øverst i terminalvinduet, og en
+        <guimenu>pop-up</guimenu>-meny som er tilgjengelig ved å trykke
+        på høyre musknapp i vinduet.
       </para>
-    
+      <sect2 id="menu-file">
+        <title>Fil meny</title>
+        <variablelist>
+          <varlistentry>
+            <term><guimenuitem>Ny terminal</guimenuitem></term>
+            <listitem>
+              <para>
+                Opprett et nytt terminalvindu. Dette er en effektiv
+                måte å opprette flere terminaler, siden dette bruker
+                mindre systemressurser enn å starte en separat kopi av
+                &term;. (For avanserte brukere: det nye terminalvinduet
+                som blir opprettet på denne måten er eid av samme prosess,
+                med samme PID som den opprinnelige terminalen. Hvert vindu
+                starter sin egen prosess for underskallet.)
+              </para>
+	    </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Skjul menylinjen</guimenuitem></term>
+            <listitem>
+              <para>
+                Skjuler hovedmenylinjen for terminalen, hvilket gir en
+                penere, mindre terminal. Menylinjen kan hentes opp igjen med
+                <link linkend="menu-popup"><guimenu>pop-up</guimenu>
+                -menyen</link>.
+    	      </para>
+            </listitem>
+	  </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Lukk terminal</guimenuitem></term>
+    	    <listitem>
+              <para>
+                Lukker aktiv terminal. Denne lukker også alle andre
+                terminaler som er åpnet gjennom kommandolinjen i denne
+                terminalen. Hvis dette er den siste terminalen som blir
+                lukket, vil &term;-programmet avslutte.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect2>
+
+        <sect2 id="menu-edit">
+          <title>Rediger-meny</title>
+          <variablelist>
+            <varlistentry>
+            <term><guimenuitem>Lim inn</guimenuitem></term>
+            <listitem>
+              <para>
+                Limer inn aktivt utvalg eller data fra utklippstavlen
+                i terminalen. Dette kan også gjøres ved å trykke på den
+                midterste musknappen (hvis du har en mus med to knapper
+                får du samme effekt ved å trykke begge musknappene samtidig).
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect2>
+
+      <sect2 id="menu-settings">
+        <title>Innstillinger</title>
+        <variablelist>
+          <varlistentry>
+            <term><guimenuitem>Brukervalg...</guimenuitem></term>
+            <listitem>
+              <para>
+                Viser <interface>Brukervalg</interface>-dialogen,
+                beskrevet i <xref linkend="config">.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Nullstill terminal</guimenuitem></term>
+            <listitem>
+              <para>
+                Nullstiller terminalparameterene. Dette vil ikke tømme
+                skjermen eller flytte markøren, men alt som vises på skjermen
+                etter dette vil ha forvalgt skrifttype og attributter.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Nullstill og tøm</guimenuitem></term>
+            <listitem>
+              <para>
+                Nullstiller terminalparameterene i tillegg til å tømme
+                skjermen. Alle skrifttyper og attributter nullstilles.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Fargevelger</guimenuitem></term>
+            <listitem>
+              <para>
+                Kan brukes til å dra-og-slippe farger inn i terminalen.
+                Se <xref linkend="config-colour"> for detaljer.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect2>
+
+      <sect2 id="menu-help">
+        <title>Hjelp menyen</title>
+        <variablelist>
+          <varlistentry>
+            <term><guimenuitem>GNOME terminal brukerhåndbok
+                  </guimenuitem></term>
+            <listitem>
+              <para>
+                Vis dette dokumentet fra &term;.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Om...</guimenuitem></term>
+            <listitem>
+              <para>
+                En liten takk til alle hardtarbeidende personer som
+                har gjort alt dette mulig.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect2>
+
+      <sect2 id="menu-popup">
+        <title>Pop-up meny</title>
+        <para>
+          <guimenu>Pop-up</guimenu>-kontrollmenyen kan hentes opp ved å
+          klikke høyre musknapp hvor som helst i terminalvinduet med
+          <keycap>CTRL</keycap> tasten trykket ned. (Det er ikke alltid
+          nødvendig å holde nede <keycap>CTRL</keycap>-tasten, men ikke
+          anta at det alltid er slik). Denne gir en enkel snarvei til noen
+          kommandoene i hovedmenyene; spesielt nyttig når menylinjen er
+          skjult. Følgende oppføringer er tilgjengelig:
+        </para>
+        <variablelist>
+          <varlistentry>
+            <term><guimenuitem>Ny terminal...</guimenuitem></term>
+            <listitem>
+              <para>
+                Oppretter et nytt terminalvindu.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Brukervalg...</guimenuitem></term>
+            <listitem>
+              <para>
+                Viser <interface>Brukervalg</interface>-
+                dialogen, beskrevet i <xref
+                linkend="config">.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Vis menylinjen</guimenuitem></term>
+            <listitem>
+              <para>
+                Kryss av her for å vise eller skjule menylinjen øverst
+                i terminalvinduet.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Sikre tastaturet</guimenuitem></term>
+            <listitem>
+              <para>
+                Dette valget tvinger alle inndata fra tastaturet til å
+                bli sendt direkte til terminalen, og gå utenom alt annet.
+                Dette er nyttig i noen få tilfeller hvor samme X-tjener
+                brukes av mange brukere, X-tjeneren ikke bruker gode
+                nok autentiseringsmetoder, og således gjøre det mulig for
+                andre brukere å "lytte" til det du skriver. I slike
+                tilfeller er det anbefalt at du bytter til "sikkert tastatur"-
+                modus før du skriver inn konfidensiell informasjon, slik
+                som passord.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Nullstill terminal</guimenuitem></term>
+            <listitem>
+              <para>
+                Nullstiller terminalattributtene (skrifttype og bakgrunn)
+                uten å tømme skjermen.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Nullstill og tøm</guimenuitem></term>
+            <listitem>
+              <para>
+                Nullstiller terminalattributtene og tømmer skjermen.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><guimenuitem>Åpne i nettleser</guimenuitem></term>
+            <listitem>
+              <para>
+                Hvis muspekeren er over en URL (for eksempel en
+                internett-adresse) når menyen hentes opp, vil dette
+                valget være tilgjengelig for å starte en nettleser
+                for å åpne URLen. <keycap>CTRL</keycap>-venstre musknapp
+                er en snarvei for denne menyoppføringen.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect2>
+
     </sect1>
 
     <sect1 id="config">
@@ -59,7 +350,8 @@
       <para>
         Disse alternativene er konfigurerbare gjennom dialogen brukervalg,
 	som kan hents frem fra <link
-	linkend="menu-settings">brukervalg menyoppføringen</link>.
+	linkend="menu-settings"><guimenuitem>Brukervalg</guimenuitem>
+        menyoppføringen</link> i <guimenu>Innstillinger</guimenu> menyen.
       </para>
       
       <sect2 id="config-general">
@@ -79,17 +371,71 @@
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
+            <term><guilabel>Bruk --login som standard</guilabel></term>
+            <listitem>
+              <para>
+                Hvis dette alternativet er valgt vil &term; starte
+                skallet i login-modus (det vil kjøre alle dine login-
+                skript). Se også informasjon om <option>--login</option>
+                og <option>--nologin</option> <link
+                linkend="options">kommandolinjealternativene</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
 	    <term>Velg-tegn-etter-ord</term>
 	    <listitem>
 	      <para>Definerer en liste med tegn (eller
 	        <emphasis>tegnklasser</emphasis>) som skal ses på
-	        som 'ord tegn'. Disse brukes når
+	        som 'ord-tegn'. Disse brukes når
 	        <link linkend="pointerusage">valg av tekst</link>
 	        etter ord.
 	      </para>
 	    </listitem>
 	  </varlistentry>
         </variablelist>
+      </sect2>
+
+      <sect2 id="config-image">
+        <title>Bakgrunnsbilde</title>
+        <para>
+          I <guilabel>Bilde</guilabel>-fanen kan du sette bakgrunnsbildet
+          som skal brukes i terminalen. Mulige valg er
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <guilabel>Ingen</guilabel> &mdash; i dette tilfellet
+              vil &term; bruke bakgrunnsfargen som satt i
+              <guilabel>Farger</guilabel> fanen.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <guilabel>Bakgrunnsbilde</guilabel> &mdash; dette
+              alternativet lar deg velge en bildefil til bruk som
+              bakgrunn. Du kan klikke på <guibutton>Bla gjennom</guibutton>-
+              knappen for å velge en bildefil.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <guilabel>Gjennomsiktig</guilabel> &mdash; dette
+              alternativet lar &term; bruke "gjennomsiktig"
+              bakgrunn. Bakgrunnen er ikke gjennomsiktig i realiteten,
+              den bare etterligner bakgrunnen på skrivebordet (root-
+              vinduet), slik som chamelon gjør det. Ikke forvent å se
+              andre vinduer bak &term;.
+            </para>
+          </listitem>
+        </itemizedlist>
+          
+        <para>
+          For <guilabel>Bilde</guilabel>- og <guilabel>
+          Gjennomsiktig</guilabel> bakgrunner kan du også
+          sjekke knappen <guibutton>Skyggelegg bakgrunn</guibutton>,
+          hvilket vil skyggelegge, eller tone ned bakgrunnsbildet.
+        </para>
       </sect2>
     
       <sect2 id="config-colour">
@@ -98,6 +444,7 @@
           Gnome terminal støtter alle fargeutvidelser som brukes av
 	  xterm. Disse alternativene lar deg kontrollere disse fargene.
         </para>
+
         <variablelist>
           <varlistentry>
 	    <term>Fargepalett</term>
@@ -144,136 +491,14 @@
         </variablelist>
       </sect2>
 
-    </sect1>
-    
-    <sect1 id="classes">
-      <title>Terminalklasser</title>
-      <para>GNOME terminal lar deg ha forskjellige konfigurasjons-
-	profiler for å kunne tilpasse den til forskjellig bruk. For å
-	gjøre dette trenger du bare å gi et navn for din nye konfigurasjons-
-	klasse ved å skrive inn et nytt navn i dialogboksen for konfigurasjon
-	av egenskaper.
-      </para>
+      <sect2 id="config-scrolling">
+        <title>Rulling</title>
+	  <para>
+	    I denne fanen kan du sette plasseringen for rullefeltet
+	    og antall linjer som skal lagres i minne for tilbakerulling.
+	  </para>
+      </sect2>
       
-      <para>For å aktivere en spsifikk klasse ved start av programmet kan
-	du bruke --class kommandolinjeflagget.
-      </para>
-    </sect1>
-    
-    <sect1 id="Options">
-      <title>Kommandolinjeflagg</title>
-      <para>
-	<itemizedlist>
-	  <listitem>
-	    <para><symbol>--background FARGE</symbol></para>
-	    
-	    <para>Brukes til å spesifisere
-	      bakgrunnsfargen for terminalen ved oppstart. FARGE kan være på
-	      enhver form som aksepteres av vindussystemet.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--class KLASSENAVN</symbol></para>
-	    <para>
-	      KLASSENAVN spesifiserer terminalklassen som brukes til å
-	      konfigurere terminalen ved oppstart.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--command KMD, -e KMD</symbol></para>
-	    <para>
-	      Kjører kommandoen KMD ved oppstart.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--execute KMD ARG, -x KMD ARG</symbol></para>
-	    <para>
-	      Utfører kommandoen KMD med argumentene ARG ved
-	      oppstart. Ingen argumenter utover disse vil bli
-	      tatt hensyn til av terminalen, denne oppførselen
-	      etterligner xterm -e.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--font SKRIFTTYPE</symbol></para>
-	    <para>
-	      Setter skrifttypen i terminalen til SKRIFTTYPE.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--foreground FARGE</symbol></para>
-	    <para>
-	      Setter forgrunnen i terminalen til FARGE.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--geometry GEOMETRI</symbol></para>
-	    <para>
-	      Spesifiserer geometrien for denne terminalen ved oppstart.
-	      Geometrien spesifiserer ønsket bredde og høyde i antall
-	      terminaltegn.  For eksempel: --geometry=80x40 vil 
-	      lage en terminal med åtti kolonner og førti linjer.</para>
-	      <para>FIXME:  LInk to gnome-libs document on GEOMETRY specifications
-	      when it is written
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--login</symbol></para>
-	    <para>
-	      Lar gnome-terminal starte skallet i login modus (det vil kjøre
-	      alle dine initialiseringsskript for innlogging i dette modus).
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--nologin</symbol></para>
-	    <para>
-	      Får gnome-terminal til bare å starte et skall.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--noutmp</symbol></para>
-	    <para>
-	      Indikerer at dette og assosierte skall ikke skal registreres
-	      i systemets database av brukere som er logget inn på 
-	      maskinen. 
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--utmp</symbol></para>
-	    <para>
-	      Indikerer at brukeren ønsker at denne terminalen skal
-	      registreres i systemets database av brukere som er logget
-	      inn på maskinen (utmp databasen).  Dette er satt som standard.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--title TITTEL, -t TITTEL</symbol></para>
-	    <para>
-	      Lar GNOME terminal bruke TITTEL til vindusoverskrift.
-	    </para>
-	  </listitem>
-	  
-	  <listitem>
-	    <para><symbol>--termname TERMNAVN</symbol></para>
-	    <para>
-	      Gjør at GNOME terminal bruker TERMNAVN som verdi i
-	      TERM miljøvariabelen.
-	    </para>
-	  </listitem>
-	</itemizedlist>
-	
-      </para>
     </sect1>
     
     <sect1 id="pointerusage">
@@ -283,7 +508,7 @@
 	utvalg av tekst, lime inn tekst fra andre terminaler eller
 	applikasjoner, og til å hente opp en meny.
       </para>
-      <sect2 id="pekerutvalg">
+      <sect2 id="pointer-select">
         <title>Utvalg</title>
 	<para>
 	  Venstre musknapp kan brukes til å begynne et utvalg.
@@ -355,6 +580,27 @@
 	</para>
       </sect2>
       
+      <sect2 id="url-highlight">
+        <title>Aktivere URLer</title>
+	<para>
+	  GNOME terminal kan brukes til å velge URLer (Uniform Resource
+	  Locators; vanligvis internettadresser, slik som
+	  <literal>http://www.gnome.org</literal>) fra tekstvisningen,
+	  ved å plassere musen over URL-teksten. URLen vil merkes, hvilket
+	  vises ved å understreke den, og muspekeren vil endres til en
+	  pekende hånd.
+	</para>
+	<para>
+	  Hvis du åpner <link linkend="menu-popup">kontrollmenyen</link>
+	  med pekeren over en URL, vil du få et valg for å laste denne
+	  URLen i en nettleser.
+	</para>
+	<para>
+	  Venstre musknapp mens CTRL-tasten holdes nede er en snarvei
+	  for å laste URLen med én gang.
+	</para>
+      </sect2>
+       
       <sect2 id="pointer-dnd">
         <title>Dra-og-slipp</title>
 	<para>
@@ -384,197 +630,217 @@
 	  </varlistentry>
 	</variablelist>
       </sect2>
-   </sect1>
+    </sect1>
     
-    <sect1 id="menus">
-      <title>Menyer</title>
-      <para>
-        Gnome-terminal presenterer et antall kontrollfunksjoner
-	via hovedmenyen, og en oppsprettmeny som er tilgjengelig
-	ved å trykke høyre musknapp mens man holder nede CTRL
-	tasten.
+    <sect1 id="classes">
+      <title>Terminalklasser</title>
+      <para>GNOME terminal lar deg ha forskjellige konfigurasjons-
+	profiler for å kunne tilpasse den til forskjellig bruk. For å
+	gjøre dette trenger du bare å gi et navn for din nye konfigurasjons-
+	klasse ved å skrive inn et nytt navn i dialogboksen for konfigurasjon
+	av egenskaper.
       </para>
-      <sect2 id="menu-file">
-        <title>Filmeny</title>
-	<variablelist>
-	  <varlistentry>
-	    <term>Ny terminal</term>
-	    <listitem>
-	      <para>
-	        Åpner en ny terminal. Dette er en effektiv måte å
-	        starte flere terminaler, siden de håndteres av
-	        samme prosess. Hver terminal starter likevel sin egen 
-	        underskallprosess.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Skjul menylinje</term>
-	    <listitem>
-	      <para>
-	        Skjuler hovedmenylinjen i terminalen, som gir en
-	        mindre terminal. Menylinjen kan hentes frem igjen
-	        ved å bruke kontrollmenyen, som kan vises ved å holde
-	        nede CTRL tasten og samtidig trykke høyre musknapp.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Lukk terminal</term>
-	    <listitem>
-	      <para>
-	        Lukker aktiv terminal. Hvis dette er den siste terminalen
-	        som lukkes, vil gnome-terminal programmet avslutte.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-        </variablelist>
-      </sect2>
-    
-      <sect2 id="menu-edit">
-        <title>Rediger menyen</title>
-        <variablelist>
-          <varlistentry>
-	    <term>Lim inn</term>
-	    <listitem>
-	      <para>
-	        Limer inn utvalg eller innholdet på utklippstavlen
-	        i terminalen. Dette kan også oppnås ved å bruke den
-	        midterste musknappen.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-        </variablelist>
-      </sect2>
-    
-      <sect2 id="menu-settings">
-        <title>Inntillinger menyen</title>
-        <variablelist>
-	  <varlistentry>
-	    <term>Brukervalg ...</term>
-	    <listitem>
-	      <para>
-	        Viser dialogen brukervalg. Innstillingene
-		som kan kontolleres fra denne dialogen er
-		beskrevet i <link linkend="config">konfigurasjons-
-		seksjonen</link>
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Nullstill terminal</term>
-	    <listitem>
-	      <para>
-	        Nullstiller terminalparameterene. Dette vil ikke
-		tømme skjermen eller flytte markøren, men alt
-		som skrives ut på skjermen vil bli satt tilbake
-		til standard skrifttype og attributter.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Nullstill og tøm</term>
-	    <listitem>
-	      <para>
-	        Nullstiller alle terminalparametere, og tømmer i
-		tillegg skjermen. Alle skrifttyper og attributter
-		nullstilles.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Fargevelger ...</term>
-	    <listitem>
-	      <para>
-	        Kan brukes til å dra og slippe farger inn i
-		terminalen. Se <link
-		linkend="config-colour">fargevelger</link> beskrivelsen.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </sect2>
       
-      <sect2 id="menu-help">
-        <title>Hjelpmenyen</title>
-	<variablelist>
-	  <varlistentry>
-	    <term>GNOME terminal brukermanual ...</term>
-	    <listitem>
-	      <para>
-	        Hvordan man henter dette dokumentet fra gnome-terminal.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Om ...</term>
-	    <listitem>
-	      <para>
-	        Takk til alle hardt arbeidende mennesker som gjorde det
-		hele mulig.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </sect2>
-      
-      <sect2 id="menu-popup">
-        <title>Oppsprettmeny</title>
-	<para>
-	  Oppsprettmenyen kan vises ved å trykke ned høyre
-	  musknapp mens CTRL tasten er nedtrykt. Den skal være
-	  en enkel snarvei til hovedmenyen, eller til bruk når
-	  hovedmenyen er skjult. Følgende oppføringer er
-	  tilgjengelige:
-	</para>
-	<variablelist>
-	  <varlistentry>
-	    <term>Ny terminal ...</term>
-	    <listitem>
-	      <para>
-	        Åpner et nytt terminalvindu.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Brukervalg ...</term>
-	    <listitem>
-	      <para>
-	        Viser brukervalg dialogen.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Skjul/vis menylinje ...</term>
-	    <listitem>
-	      <para>
-	        Skjuler eller viser hovedmenylinjen, avhengig
-		av dens tilstand.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Nullstill terminal</term>
-	    <listitem>
-	      <para>
-	        Nullstiller terminalattributtene uten å tømme
-		skjermen.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>Nullstill og tøm</term>
-	    <listitem>
-	      <para>
-	        Nullstiller terminalattributtene og tømmer
-		skjermen.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </sect2>
+      <para>For å aktivere en spsifikk klasse ved start av programmet kan
+	du bruke --class kommandolinjeflagget.
+      </para>
+    </sect1>
+    
+    <sect1 id="options">
+      <title>Kommandolinjeflagg</title>
+      <para>
+	<itemizedlist>
+	  <listitem>
+	    <para><option>--background FARGE</option></para>
+	    
+	    <para>Brukes til å spesifisere
+	      bakgrunnsfargen for terminalen ved oppstart. FARGE kan være på
+	      enhver form som aksepteres av vindussystemet.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--tclass <replaceable>KLASSENAVN</replaceable>
+		</option></para>
+	    <para>
+	      Spesifiserer terminalklassen som brukes til å
+	      konfigurere terminalen ved oppstart.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--command <replaceable>KMD</replaceable>,
+		-e <replaceable>KMD</replaceable>
+	      </option></para>
+	    <para>
+	      Kjører kommandoen <replaceable>KMD</replaceable> ved oppstart.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--execute <replaceable>KMD ARG</replaceable>,
+		-x <replaceable>KMD ARG</replaceable>
+	      </option></para>
+	    <para>
+	      Utfører kommandoen <replaceable>KMD</replaceable> med argumentene 
+	      <replaceable>ARG</replaceable> ved oppstart. Ingen argumenter utover
+	      disse vil bli tatt hensyn til av terminalen, denne oppførselen
+	      etterligner <command>xterm -e</command>.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--font <replaceable>SKRIFTTYPE</replaceable>
+		</option></para>
+	    <para>
+	      Setter skrifttypen i terminalen til 
+	      <replaceable>SKRIFTTYPE</replaceable>.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--foreground <replaceable>FARGE</replaceable>
+		</option></para>
+	    <para>
+	      Setter forgrunnen i terminalen til 
+	      <replaceable>FARGE</replaceable>.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--geometry <replaceable>GEOMETRI</replaceable>
+		</option></para>
+	    <para>
+	      Spesifiserer geometrien for denne terminalen ved oppstart.
+	      Geometrien spesifiserer ønsket bredde og høyde i antall
+	      terminaltegn.  For eksempel: 
+	      <option>--geometry=80x40</option> vil opprette en terminal med 
+	      åtti kolonner og førti linjer. Du kan også spesifisere plassering
+	      for terminalvinduet på skjermen; for eksempel:
+	      <option>--geometry=80x40+100+200</option> vil opprette et vindu
+	      som har sitt øverste venstre hjørne 100 piksler til høyre og 200
+	      piksler ned fra skjermens øverste venstre hjørne, mens
+	      <option>--geometry=80x40+100-200</option> vil gi deg et vindu som
+	      har nederste venstre hjørne 100 piksler til høyre og 200 piksler
+	      opp fra skjermens nederste venstre hjørne.
+	    </para>
+	    <!--  <para>FIXME:  LInk to gnome-libs document on GEOMETRY specifications
+	      when it is written
+	    </para> -->
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--login</option></para>
+	    <para>
+	      Lar &term; starte skallet i login modus (det vil kjøre
+	      alle dine initialiseringsskript for innlogging i dette modus).
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--nologin</option></para>
+	    <para>
+	      Får &term; til bare å starte et skall uten å kjøre noen
+	      påloggingsskript. Dette er standardvalget, med mindre du har valgt
+	      <guilabel>Bruk --login som standard</guilabel> i <link
+	      linkend="config-general">brukervalg</link>-dialogen.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--noutmp</option></para>
+	    <para>
+	      Indikerer at dette og assosierte skall ikke skal registreres
+	      i systemets database av brukere som er logget inn på 
+	      maskinen. 
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--utmp</option></para>
+	    <para>
+	      Indikerer at brukeren ønsker at denne terminalen skal
+	      registreres i systemets database av brukere som er logget
+	      inn på maskinen (utmp databasen).  Dette er satt som standard.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--lastlog</option></para>
+	    <para>
+	      Alltid opprett en lastlog oppføring for hver
+	      innlogget terminal.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--nolastlog</option></para>
+	    <para>
+	      Ikke opprett en lastlog oppføring for hver innlogget
+	      terminal.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--title <replaceable>TITTEL</replaceable>,
+		-t <replaceable>TITTEL</replaceable>
+	      </option></para>
+	    <para>
+	      Lar &term; bruke <replaceable>TITTEL</replaceable>
+	      til vindusoverskrift.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--termname <replaceable>TERMNAVN</replaceable>
+	      </option></para>
+	    <para>
+	      Gjør at &term; bruker <replaceable>TERMNAVN</replaceable>
+	       som verdi i <envar>TERM</envar> miljøvariabelen.
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--start-factory-server</option></para>
+	    <para>
+	      Prøv å starte TerminalFactory tjenesten for denne
+	      terminalen (se under).
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><option>--use-factory</option></para>
+	    <para>
+	      Hvis det finnes en allerede kjørende terminalprosess som er
+	      startet med <option>--start-factory-server</option> flagget,
+	      så vil kommandoen <command>gnome-terminal --use-factory</command>
+	      opprette et nytt terminalvindu som eies av den eksisterende
+	      terminalprosessen. Det vil med andre ord ha samme effekt som
+	      å velge <link linkend="menu-file">
+	      <menuchoice><guimenu>Fil</guimenu>
+	      <guimenuitem>Ny
+	      terminal</guimenuitem></menuchoice></link> i
+	      den eksisterende terminalen.
+	    </para>
+	    <para>
+	      Hvis ingen TerminalFactory kjører har dette flagget ingen effekt.
+	    </para>
+	  </listitem>
+	  
+	</itemizedlist>
+	
+      </para>
+      <para>
+        Du kan bruke flere enn ett flagg samtidig: for eksempel, på en
+	maskin som har den tekstbaserte nettleseren <application>
+	Lynx</application> installert, vil <command>gnome-terminal
+	--title Web --commmand lynx</command> åpne en &term; som starter
+	opp <application>Lynx</application> og har en tittellinje som sier
+	"Web".
+      </para>
       
     </sect1>
+    
     
     <sect1 id="environment">
       <title>Miljø</title>
@@ -582,7 +848,7 @@
 	Følgende variabler settes av gnome-terminal: 
 	<itemizedlist>
 	  <listitem>
-	    <para><symbol>TERM</symbol></para>
+	    <para><envar>TERM</envar></para>
 
 	    <para>
 	      Denne variabelen er satt til "xterm" som standard. Noen curses
@@ -591,12 +857,12 @@
 	      for å støtte farger.  Du må kanskje endre denne innstillingen
 	      til en av disse verdiene hvis ikke dine applikasjoner viser 
 	      farger. Denne kan nå settes via
-	      --termname <link linkend="Options">kommandolinjeflaggene</link>
+	      --termname <link linkend="options">kommandolinjeflaggene</link>
 	    </para>
 	  </listitem>
 
 	  <listitem>
-	    <para><symbol>COLORTERM</symbol></para>
+	    <para><envar>COLORTERM</envar></para>
 
 	    <para>
 	      Denne variabelen er satt til "gnome-terminal".
@@ -607,7 +873,7 @@
 	  </listitem>
 
 	  <listitem>
-	    <para><symbol>WINDOWID</symbol></para>
+	    <para><envar>WINDOWID</envar></para>
 
 	    <para>
 	      Denne variabelen inneholder X11 vindusidentifikatoren.
@@ -646,18 +912,7 @@
 	</para>
     </sect1>
     
-  </chapter>
-  
-  <chapter id="termtech">
-    <title>GNOME terminal, teknisk manual.</title>
-    <sect1 id="test">
-      <title>Test</title>
-      <para>test
-      </para>
-    </sect1>
-    
-  </chapter>
-</book>
+</article>
 
 <!-- Keep this comment at the end of the file
 Local variables:
