@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.23 2002-02-28 14:42:04 ghudson Exp $
+### $Id: install1.sh,v 1.24 2002-03-13 20:12:38 ghudson Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -370,6 +370,7 @@ Y)
 		printf "label\ny\nprint\nq\nq\n";
        }' mem="$mem"`
        if [ -n "$fmtstring" ]; then
+		echo "Generating partition layout for $DISK"
 		echo "$fmtstring" | format "$drive" > /dev/null 2>&1
 		partitioning=one
        else
