@@ -1,4 +1,4 @@
-/* $Id: auth-pam.h,v 1.1.1.1 2001-11-15 19:24:32 ghudson Exp $ */
+/* $Id: auth-pam.h,v 1.2 2002-02-15 19:46:58 zacheiss Exp $ */
 
 #include "includes.h"
 #ifdef USE_PAM
@@ -17,6 +17,7 @@ void print_pam_messages(void);
 int is_pam_password_change_required(void);
 void do_pam_chauthtok(void);
 void do_pam_set_conv(struct pam_conv *);
+int do_pam_putenv(char *, char *);
 void message_cat(char **p, const char *a);
 
 #endif /* USE_PAM */

@@ -56,6 +56,10 @@ RCSID("$OpenBSD: auth2.c,v 1.72 2001/11/07 22:41:51 markus Exp $");
 extern char *session_username;
 extern int is_local_acct;
 
+#ifdef GSSAPI
+#include "ssh-gss.h"
+#endif
+
 /* import */
 extern ServerOptions options;
 extern u_char *session_id2;
@@ -96,10 +100,23 @@ static int userauth_pubkey(Authctxt *);
 static int userauth_hostbased(Authctxt *);
 static int userauth_kbdint(Authctxt *);
 
+#ifdef GSSAPI
+int 	userauth_external(Authctxt *authctxt);
+int	userauth_gssapi(Authctxt *authctxt);
+#endif
+
 Authmethod authmethods[] = {
 	{"none",
 		userauth_none,
 		&one},
+#ifdef GSSAPI
+	{"external-keyx",
+		userauth_external,
+		&options.gss_authentication},
+	{"gssapi",
+		userauth_gssapi,
+		&options.gss_authentication},
+#endif
 	{"publickey",
 		userauth_pubkey,
 		&options.pubkey_authentication},
@@ -276,6 +293,12 @@ input_userauth_request(int type, int plen, void *ctxt)
 	}
 	/* reset state */
 	dispatch_set(SSH2_MSG_USERAUTH_INFO_RESPONSE, &protocol_error);
+
+#ifdef GSSAPI
+	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, &protocol_error);
+	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE, &protocol_error);
+#endif
+
 	authctxt->postponed = 0;
 #ifdef BSD_AUTH
 	if (authctxt->as) {
