@@ -15,9 +15,9 @@ if [ "$CPUTYPE" = SPARC/4 ]; then
     /os/usr/platform/$platform/sbin/eeprom fcode-debug?=true
 fi
 
-ROOT=/root; export ROOT
+UPDATE_ROOT=/root; export UPDATE_ROOT
 echo "Mounting hard disk's root partition..."
-/etc/mount  $rootdrive $ROOT
+/etc/mount  $rootdrive $UPDATE_ROOT
 
 cd /
 echo "Making dirs on root"
