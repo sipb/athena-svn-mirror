@@ -1,3 +1,51 @@
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-glib-extensions.[ch]:
+	New function, eel_get_filename_charset.
+	
+	* eel/eel-vfs-extensions.c:
+	Use eel_get_filename_charset to handle filename charset.
+	
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.c: (eel_canvas_group_draw), (eel_canvas_expose):
+	Update to latest foocanvas, fix expose returning TRUE.
+
+2004-10-15  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-mime-extensions.c: (eel_mime_add_application),
+	(eel_mime_check_for_duplicates):
+	Handle null mimetypes (required for property page if
+	file has no extension).
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump
+
+=== eel 2.8.1 ===
+	
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.8.1
+
+2004-09-28  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+    
+2004-09-13  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump.
+
+=== eel 2.8.0 ===
+	
 2004-09-13  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS: 

@@ -217,6 +217,10 @@ eel_mime_add_application (const char *mime_type,
 	char *basename;
 	char *desktop_text;
 	int i;
+
+	if (mime_type == NULL) {
+		return NULL;
+	}
 	
 	if (!ensure_application_dir ()) {
 		return NULL;
@@ -702,6 +706,10 @@ eel_mime_check_for_duplicates (const char *mime_type,
 	gchar **argv;
 	gint argc;
 
+	if (mime_type == NULL) {
+		return NULL;
+	}
+	
 	applications = gnome_vfs_mime_get_all_applications (mime_type);
 	if (applications == NULL) {
 		return NULL;

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:25+0200\n"
-"PO-Revision-Date: 2004-07-24 15:20+0200\n"
+"POT-Creation-Date: 2004-10-28 16:52+0200\n"
+"PO-Revision-Date: 2004-09-06 21:17+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,6 @@ msgstr ""
 "L'allineamento reciproco delle righe nel testo dell'etichetta. NON influisce "
 "sull'allineamento dell'etichetta. Si veda GtkMisc::xalign per questo."
 
-# Se il messaggio successivo, come in ogni libreria del progetto GNOME è la spiegazione lunga....
 #: eel/eel-editable-label.c:381
 msgid "Line wrap"
 msgstr "A capo automatico"
@@ -135,17 +134,17 @@ msgstr "Errore GConf"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1162
+#: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00 AM"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1164
+#: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00 AM"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1166
+#: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 AM"
 
@@ -161,7 +160,6 @@ msgstr "Fare clic su un'immagine per selezionarla."
 msgid "No Selection Made"
 msgstr "Nessuna selezione"
 
-# credo applicazione, verifico una volta compilato
 #: eel/eel-mime-application-chooser.c:224
 msgid "Default"
 msgstr "Predefinita"
@@ -180,9 +178,8 @@ msgstr "<i>Nessuna applicazione selezionata</i>"
 msgid "%s document"
 msgstr "Documento %s"
 
-# O "Sconosciuta" se intende applicazione.... magari dare un'occhiata al codice sorgente
+# Se non ho letto male i sorgenti si intende "Tipo MIME" in ambo i casi, quindi maschile è OK
 #: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
-#, fuzzy
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -268,6 +265,6 @@ msgstr "Errore"
 msgid "Question"
 msgstr "Domanda"
 
-#: eel/eel-vfs-extensions.c:693
+#: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
 msgstr " (Unicode non valido)"

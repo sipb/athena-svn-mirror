@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"POT-Creation-Date: 2004-10-28 16:52+0200\n"
 "PO-Revision-Date: 2004-08-26 13:10+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
@@ -138,19 +138,19 @@ msgstr "ਜੀ-ਕਾਨਫ ਭੁੱਲ"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1162
+#: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 1:00 ਸਵੇਰੇ"
 
 #  The second one is "%-m/%-d/%-y, %-I:%M %p".
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1164
+#: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00 ਸਵੇਰੇ"
 
 #  The third one is "%_m/%_d/%_y, %_I:%M %p".
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1166
+#: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 ਸਵੇਰੇ"
 
@@ -268,6 +268,6 @@ msgstr "ਭੁੱਲ"
 msgid "Question"
 msgstr "ਸਵਾਲ"
 
-#: eel/eel-vfs-extensions.c:693
+#: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
 msgstr "(ਗਲਤ ਯੂਨੀ-ਕੋਡ)"

@@ -1,68 +1,68 @@
-# translation of eel.HEAD.hi.po to Hindi
-# Copyright (C) 2004 Free Software Foundation, Inc.
-# G Karunakar <karunakar@freedomink.org>, 2004.
-# Ravishankar Shrivastava <raviratlami@yahoo.com>, 2004.
+# Oriya translation of eel.HEAD.pot.
+# Copyright (C) 2004, Free Software Foundation, Inc.
+# This file is distributed under the same license as the eel package.
+# Gora Mohanty <gora_mohanty@yahoo.co.in>, 2004.
+# $Id: or.po,v 1.1.1.1 2005-03-10 17:55:32 ghudson Exp $
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eel.HEAD.hi\n"
+"Project-Id-Version: eel.HEAD.or\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-28 16:52+0200\n"
-"PO-Revision-Date: 2004-08-01 15:31+0530\n"
-"Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
-"Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2004-09-26 21:25+0530\n"
+"Last-Translator: Gora Mohanty <gora_mohanty@yahoo.co.in>\n"
+"Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
 
 #: eel/eel-alert-dialog.c:114
 msgid "Image/label border"
-msgstr "छवि/लेबल किनारा"
+msgstr "ଚିତ୍ର/ଚିହ୍ନକ ଧାର"
 
 #: eel/eel-alert-dialog.c:115
 msgid "Width of border around the label and image in the alert dialog"
-msgstr "चेतावनी संवाद में लेबल तथा छवि के चारों ओर किनारों की चौड़ाई"
+msgstr "ଚେତାବନୀ ସଂଳାପରେ ଚିହ୍ନକ ଓ ଚିତ୍ର ଚାରିପାଖେ ଧାରର ଓସାର"
 
 #: eel/eel-alert-dialog.c:124
 msgid "Alert Type"
-msgstr "चेतावनी प्रकार"
+msgstr "ଚେତାବନୀ ପ୍ରକାର"
 
 #: eel/eel-alert-dialog.c:125
 msgid "The type of alert"
-msgstr "चेतावनी प्रकार"
+msgstr "ଚେତାବନୀ ପ୍ରକାର"
 
 #: eel/eel-alert-dialog.c:133
 msgid "Alert Buttons"
-msgstr "चेतावनी बटन"
+msgstr "ଚେତାବନୀ ଚାବିଗୁଡ଼ିକ"
 
 #: eel/eel-alert-dialog.c:134
 msgid "The buttons shown in the alert dialog"
-msgstr "चेतावनी संवाद में प्रदर्शित बटन"
+msgstr "ଚେତାବନୀ ସଂଳାପରେ ପ୍ରଦର୍ଶିତ ଚାବିଗୁଡ଼ିକ"
 
 #: eel/eel-alert-dialog.c:198
 msgid "Show more _details"
-msgstr "अधिक विवरण दिखाएँ (_d)"
+msgstr "ଅଧିକ ବିସ୍ତୃତ ବିବରଣୀ ଦେଖାନ୍ତୁ (_d)"
 
 #: eel/eel-canvas.c:1226 eel/eel-canvas.c:1227
 msgid "X"
-msgstr "एक्स"
+msgstr "X"
 
 #: eel/eel-canvas.c:1233 eel/eel-canvas.c:1234
 msgid "Y"
-msgstr "वाई"
+msgstr "Y"
 
 #: eel/eel-editable-label.c:365
 msgid "Text"
-msgstr "पाठ"
+msgstr "ପାଠ୍ଯ"
 
 #: eel/eel-editable-label.c:366
 msgid "The text of the label."
-msgstr "लेबल का पाठ."
+msgstr "ଚିହ୍ନକର ପାଠ୍ଯ"
 
 #: eel/eel-editable-label.c:372
 msgid "Justification"
-msgstr "औचित्य"
+msgstr "ଦ୍ବିପାର୍ଶ୍ବୀ ସଜ୍ଜା"
 
 #: eel/eel-editable-label.c:373
 msgid ""
@@ -70,41 +70,42 @@ msgid ""
 "This does NOT affect the alignment of the label within its allocation. See "
 "GtkMisc::xalign for that."
 msgstr ""
-"एक दूसरे के सापेक्ष, लेबल के पाठ की पंक्तियों की पंक्तिबद्धता. यह लेबल की पंक्तिबद्धता को उसके "
-"एलोकेशन के भीतर प्रभावित नहीं करता. इस हेतु देखें GtkMisc::xalign."
+"ଚିହ୍ନକର ପାଠ୍ଯରେ ଧାଡ଼ିଗୁଡ଼ିକର ଆପେକ୍ଷିକ ପାର୍ଶ୍ବ ସଜ୍ଜା. ଏହା ନିଜ ବଣ୍ଟନ ମଧ୍ଯରେ ଚିହ୍ନକର ପାର୍ଶ୍ବ ସଜ୍ଜାକୁ "
+"ପ୍ରଭାବିତ କରେ ନାହିଁ. ତାହା ପାଇଁ GtkMisc::xalign ଦେଖନ୍ତୁ."
 
 #: eel/eel-editable-label.c:381
 msgid "Line wrap"
-msgstr "पंक्ति व्रेप"
+msgstr "ଧାଡ଼ି ମୋଡ଼ା"
 
 #: eel/eel-editable-label.c:382
 msgid "If set, wrap lines if the text becomes too wide."
-msgstr "यदि नियत है, जब पाठ ज्यादा चौड़ा हो तो पंक्तियाँ व्रेप करें"
+msgstr "ଏହା ବିନ୍ଯାସ କରାଯାଇଥିଲେ, ପାଠ୍ଯଟି ଅତି ଓସାରିଆ ହେଲେ ଧାଡ଼ି ମୋଡ଼ନ୍ତୁ"
 
 #: eel/eel-editable-label.c:389
 msgid "Cursor Position"
-msgstr "संकेतक स्थिति"
+msgstr "ଦର୍ଶିକା ସ୍ଥିତି"
 
 #: eel/eel-editable-label.c:390
 msgid "The current position of the insertion cursor in chars."
-msgstr "प्रविष्टि संकेतक की अक्षरों में वर्तमान स्थिति"
+msgstr "ଅକ୍ଷରରେ ଭରଣ ଦର୍ଶିକାର ସାମ୍ପ୍ରତିକ ସ୍ଥିତି"
 
 #: eel/eel-editable-label.c:399
+#, fuzzy
 msgid "Selection Bound"
-msgstr "चयन सीमा"
+msgstr "ବଚ୍ଛାର ସୀମା"
 
 #: eel/eel-editable-label.c:400
 msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
-msgstr "संकेतक से चयन के विपरीत सिरे की अक्षरों में स्थिति."
+msgstr "ଅକ୍ଷରରେ ଦର୍ଶିକାଠାରୁ ବଚ୍ଛାର ବିପରୀତ ଆଡ଼ର ସ୍ଥିତି"
 
 #: eel/eel-editable-label.c:3069
 msgid "Select All"
-msgstr "सभी चुनें"
+msgstr "ସବୁ ବାଚ୍ଛନ୍ତୁ"
 
 #: eel/eel-editable-label.c:3080
 msgid "Input Methods"
-msgstr "इनपुट पद्धति"
+msgstr "ନିବେଶ ଧାରାଗୁଡ଼ିକ"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -112,159 +113,154 @@ msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"जीकान्फ त्रुटि:\n"
-" %s"
+"ଜିକନ୍ଫ ତ୍ରୁଟି:\n"
+"  %s"
 
 #: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid "GConf error: %s"
-msgstr "जीकान्फ त्रुटि: %s"
+msgstr "ଜିକନ୍ଫ ତ୍ରୁଟି: %s"
 
 #: eel/eel-gconf-extensions.c:90
 msgid "All further errors shown only on terminal."
-msgstr "आगे की सभी त्रुटियां सिर्फ टर्मिनल पर दिखाएँ."
+msgstr "ଭବିଷ୍ଯତରେ ସବୁ ତ୍ରୁଟିଗୁଡ଼ିକ କେବଳ ଟର୍ମିନାଲରେ ପ୍ରଦର୍ଶିତ କରାଯିବ"
 
 #: eel/eel-gconf-extensions.c:92
 msgid "GConf Error"
-msgstr "जीकान्फ त्रुटि"
+msgstr "ଜିକନ୍ଫ ତ୍ରୁଟି"
 
-#  localizers: These strings are part of the strftime
-#  * self-check code and must be changed to match what strtfime
-#  * yields. The first one is "%m/%d/%y, %I:%M %p".
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
 #: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
-msgstr "01/01/00, 01:00 पूर्वाह्न"
+msgstr "01/01/00, 01:00 ଅପରାହ୍ନ"
 
-#  The second one is "%-m/%-d/%-y, %-I:%M %p".
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
 #: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
-msgstr "1/1/00, 1:00 पूर्वाह्न"
+msgstr "1/1/00, 1:00 ଅପରାହ୍ନ"
 
-#  The third one is "%_m/%_d/%_y, %_I:%M %p".
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
 #: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
-msgstr " 1/ 1/00,  1:00 पूर्वाह्न"
+msgstr " 1/ 1/00,  1:00 ଅପରାହ୍ନ"
 
 #: eel/eel-gnome-extensions.c:284
 msgid "No image was selected."
-msgstr "कोई छवि चयनित नहीं."
+msgstr "କୌଣସି ଚିତ୍ର ବଚ୍ଛାଯାଇ ନ ଥିଲା"
 
 #: eel/eel-gnome-extensions.c:285
 msgid "You must click on an image to select it."
-msgstr "छवि चयनित करने हेतु उसपर क्लिक करें."
+msgstr "ଚିତ୍ର ବାଚ୍ଛିବା ପାଇଂ ଆପଣଙ୍କୁ ତାହା ଉପରେ ମାଉସ୍ ଚାବି ଦବାଇବାକୁ ପଡ଼ିବ"
 
 #: eel/eel-gnome-extensions.c:286
 msgid "No Selection Made"
-msgstr "कोई चयन नहीं किया गया है"
+msgstr "କୌଣସି ବଚ୍ଛା ହୋଇ ନାହିଁ"
 
 #: eel/eel-mime-application-chooser.c:224
 msgid "Default"
-msgstr "डिफ़ॉल्ट"
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ"
 
 #: eel/eel-mime-application-chooser.c:233
 msgid "Name"
-msgstr "नाम"
+msgstr "ନାମ"
 
 #: eel/eel-mime-application-chooser.c:425
 msgid "<i>No applications selected</i>"
-msgstr "<i>कोइ अनुप्रयोग चयनित नही</i>"
+msgstr "<i>କୌଣସି ପ୍ରୟୋଗ ବଚ୍ଛାଯାଇ ନାହିଁ</i>"
 
 #: eel/eel-mime-application-chooser.c:469 eel/eel-open-with-dialog.c:581
 #, c-format
 msgid "%s document"
-msgstr "%s दस्तावेज़"
+msgstr "%s ଦଲିଲ"
 
 #: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
 msgid "Unknown"
-msgstr "अज्ञात"
+msgstr "ଅଜଣା"
 
 #: eel/eel-mime-application-chooser.c:485
 #, c-format
 msgid "Select an application to open <i>%s</i> and others of type \"%s\""
-msgstr " <i>%s</i> को तथा अन्य प्रकार \"%s\" को खोलने हेतु एक अनुप्रयोग चुनें"
+msgstr "<i>%s</i> ଓ \"%s\" ପ୍ରକାରର ଅନ୍ଯ ଦଲିଲ ଖୋଲିବା ପାଇଁ ପ୍ରୟୋଗ ବାଚ୍ଛନ୍ତୁ"
 
 #: eel/eel-open-with-dialog.c:125 eel/eel-open-with-dialog.c:127
 #: eel/eel-open-with-dialog.c:193 eel/eel-open-with-dialog.c:195
 msgid "Could not run application"
-msgstr "अनुप्रयोग चला नहीं सका"
+msgstr "ପ୍ରୟୋଗ ଚଳାଇହେଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:144
 #, c-format
 msgid "The application '%s' is not a valid executable"
-msgstr "अनुप्रयोग '%s' एक वैध एक्ज़ीक्यूटेबल नहीं है"
+msgstr "'%s' ପ୍ରୟୋଗଟି ଗୋଟିଏ ବୈଧ ନିଷ୍ପାଦ୍ଯ ଫାଇଲ ନୁହେଁ"
 
 #: eel/eel-open-with-dialog.c:147 eel/eel-open-with-dialog.c:149
 msgid "Could not open application"
-msgstr "अनुप्रयोग नहीं खोल सका"
+msgstr "ପ୍ରୟୋଗ ଖୋଲିହେଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:161
 #, c-format
 msgid "Could not find '%s'"
-msgstr "'%s' नहीं ढूंढ सका"
+msgstr "'%s' ମିଳିଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:164 eel/eel-open-with-dialog.c:166
 msgid "Could not find application"
-msgstr "अनुप्रयोग नहीं ढूंढ सका"
+msgstr "ପ୍ରୟୋଗ ମିଳିଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:251 eel/eel-open-with-dialog.c:253
 msgid "Could not add application"
-msgstr "अनुप्रयोग नहीं जोड़ सका"
+msgstr "ପ୍ରୟୋଗ ଯୋଗ କରିହେଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:252
 msgid "Could not add application to the application database"
-msgstr "अनुप्रयोग डेटाबेस में अनुप्रयोग नहीं जोड़ सका"
+msgstr "ପ୍ରୟୋଗ ତଥ୍ଯାଧାରରେ ପ୍ରୟୋଗ ଯୋଗ କରିହେଲା ନାହିଁ"
 
 #: eel/eel-open-with-dialog.c:366
 msgid "Select an Application"
-msgstr "अनुप्रयोग चुनें"
+msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ ବାଚ୍ଛନ୍ତୁ"
 
 #: eel/eel-open-with-dialog.c:438
 msgid "Open With"
-msgstr "इससे खोलें"
+msgstr "ଏହା ଦ୍ବାରା ଖୋଲନ୍ତୁ"
 
 #: eel/eel-open-with-dialog.c:481
 msgid "_Browse..."
-msgstr "ब्राउज़ (_B)..."
+msgstr "ଖୋଜିବୁଲନ୍ତୁ... (_B)"
 
 #: eel/eel-open-with-dialog.c:600
 #, c-format
 msgid "Open <i>%s</i> and other files of type \"%s\" with:"
-msgstr " <i>%s</i> को तथा अन्य फ़ाइल प्रकार  \"%s\" को इससे खोलें:"
+msgstr "ଏହା ଦ୍ବାରା <i>%s</i> ଓ \"%s\" ପ୍ରକାରର ଅନ୍ଯ ଫାଇଲ ଖୋଲନ୍ତୁ:"
 
 #: eel/eel-open-with-dialog.c:631
 msgid "_Add"
-msgstr "जोडें (_A)"
+msgstr "ଯୋଗ କରନ୍ତୁ (_A)"
 
 #: eel/eel-open-with-dialog.c:636
 msgid "Add Application"
-msgstr "अनुप्रयोग जोडें"
+msgstr "ପ୍ରୟୋଗ ଯୋଗ କରନ୍ତୁ"
 
 #: eel/eel-stock-dialogs.c:216
 msgid "You can stop this operation by clicking cancel."
-msgstr "आप इस ऑपरेशन को रद्द पर क्लिक कर रोक सकते हैं."
+msgstr "ଆପଣ ବାତିଲ ଦବାଇ ଏହି ଚାଳନାକୁ ଅଟକାଇପାରନ୍ତି"
 
 #: eel/eel-stock-dialogs.c:462 eel/eel-stock-dialogs.c:482
 msgid "Info"
-msgstr "जानकारी"
+msgstr "ସୂଚନା"
 
 #: eel/eel-stock-dialogs.c:501
 msgid "Warning"
-msgstr "चेतावनी"
+msgstr "ଚେତାବନୀ"
 
 #: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:537
 msgid "Error"
-msgstr "त्रुटि"
+msgstr "ତ୍ରୁଟି"
 
 #: eel/eel-stock-dialogs.c:567 eel/eel-stock-dialogs.c:602
 msgid "Question"
-msgstr "प्रश्न"
+msgstr "ପ୍ରଶ୍ନ"
 
 #: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
-msgstr "(अवैध यूनिकोड)"
+msgstr "(ଅବୈଧ ୟୁନିକୋଡ୍)"

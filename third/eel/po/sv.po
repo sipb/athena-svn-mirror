@@ -5,13 +5,13 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000, 2001.
 #
-# $Id: sv.po,v 1.1.1.7 2004-10-04 03:35:44 ghudson Exp $
+# $Id: sv.po,v 1.1.1.8 2005-03-10 17:55:33 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"POT-Creation-Date: 2004-10-28 16:52+0200\n"
 "PO-Revision-Date: 2004-08-19 17:08+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -137,17 +137,17 @@ msgstr "GConf-fel"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1162
+#: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00 "
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1164
+#: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/0, 1:00 "
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1166
+#: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/ 0,  1:00 "
 
@@ -265,7 +265,7 @@ msgstr "Fel"
 msgid "Question"
 msgstr "Fråga"
 
-#: eel/eel-vfs-extensions.c:693
+#: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
 msgstr " (ogiltig Unicode)"
 
