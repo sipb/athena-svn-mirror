@@ -168,6 +168,7 @@ int locker_check_owner(locker_context context, locker_attachent *at,
 		       void *ownerp);
 int locker_check_host(locker_context context, locker_attachent *at,
 		       void *addrp);
+int locker_convert_attachtab(locker_context context, char *oattachtab);
 
 /* Attaching lockers */
 int locker_attach(locker_context context, char *filesystem,

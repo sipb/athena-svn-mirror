@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.2 1999-03-08 14:51:08 ghudson Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.3 1999-03-19 16:25:54 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -991,4 +991,234 @@ locker_attachent *locker__new_attachent(locker_context context,
 
   at->fs = type;
   return at;
+}
+
+
+/* Convert an old attachtab file into a new attachtab directory */
+int locker_convert_attachtab(locker_context context, char *oattachtab)
+{
+  FILE *fp;
+  char *buf = NULL;
+  int bufsize, status;
+  char *p, *lasts = NULL, *host, *name;
+  int rmdir;
+  locker_attachent *at;
+  struct locker_ops *fs;
+
+  fp = fopen(oattachtab, "r");
+  if (!fp)
+    {
+      locker__error(context, "Could not open %s: %s.\n", oattachtab,
+		    strerror(errno));
+      return LOCKER_EATTACHTAB;
+    }
+
+  while ((status = locker__read_line(fp, &buf, &bufsize)) == LOCKER_SUCCESS)
+    {
+      /* Check attachtab version. */
+      if (strncmp(buf, "A1 ", 3))
+	{
+	  locker__error(context, "Ignoring unrecognized attachtab line: %s\n",
+			buf);
+	  continue;
+	}
+
+      /* Check if it's attached, attaching, or detaching. */
+      if (buf[4] != '+')
+	{
+	  locker__error(context, "Ignoring not-fully-attached locker: %s\n",
+			buf);
+	  continue;
+	}
+
+      /* Get fs type. */
+      p = strtok_r(buf + 5, " ", &lasts);
+      fs = locker__get_fstype(context, p);
+      if (!fs)
+	{
+	  locker__error(context, "Ignoring unknown locker type \"%s\"\n", p);
+	  continue;
+	}
+      at = locker__new_attachent(context, fs);
+      if (!at)
+	{
+	  locker__error(context, "Out of memory.\n");
+	  status = LOCKER_ENOMEM;
+	  break;
+	}
+
+      /* Now start parsing. First name. */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	at->name = strdup(p);
+
+      /* Host */
+      host = strtok_r(NULL, " ", &lasts);
+
+      /* Directory */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	{
+	  if (!strcmp(at->fs->name, "MUL"))
+	    {
+	      /* Old attachtab stores MUL components as hostdir. We store
+	       * it as mountpoint.
+	       */
+
+	      char *q;
+	      /* Convert commas to spaces */
+	      for (q = p; *q; q++)
+		{
+		  if (*q == ',')
+		    *q = ' ';
+		}
+
+	      at->mountpoint = strdup(p);
+	      at->hostdir = strdup("");
+	    }
+	  else if (host && strcmp(host, "localhost"))
+	    {
+	      at->hostdir = malloc(strlen(host) + strlen(p) + 2);
+	      if (at->hostdir)
+		sprintf(at->hostdir, "%s:%s", host, p);
+	    }
+	  else
+	    at->hostdir = strdup(p);
+	}
+
+      /* IP addr */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	at->hostaddr.s_addr = inet_addr(p);
+
+      /* Number of directories to rm on detach.
+       * Needs special conversion later.
+       */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	rmdir = atoi(p);
+
+      /* Mountpoint */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p && strcmp(at->fs->name, "MUL"))
+	at->mountpoint = strdup(p);
+
+      /* Convert old flags to new flags */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	{
+	  int oflags = atoi(p);
+	  if (oflags & 0x1)
+	    at->flags |= LOCKER_FLAG_NOSUID;
+	  if (oflags & 0x2)
+	    at->flags |= LOCKER_FLAG_LOCKED;
+	  if (oflags & 0x8)
+	    at->flags |= LOCKER_FLAG_KEEP;
+	}
+
+      /* Comma-separated list of owners */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	{
+	  char *q = p;
+
+	  do
+	    {
+	      at->nowners++;
+	      q++;
+	    }
+	  while ((q = strchr(q, ',')));
+
+	  at->owners = malloc(at->nowners * sizeof(uid_t));
+	  if (at->owners)
+	    {
+	      int i;
+	      for (i = 0; i < at->nowners; i++)
+		{
+		  at->owners[i] = strtoul(p, &p, 10);
+		  p++;
+		}
+	    }
+	}
+
+      /* RVD drivenum -- Ignored */
+      p = strtok_r(NULL, " ", &lasts);
+
+      /* And mount mode */
+      p = strtok_r(NULL, " ", &lasts);
+      if (p)
+	at->mode = *p;
+
+      /* Make sure we got all that */
+      if (!p || !at->name || !at->hostdir || !at->mountpoint || !at->owners)
+	{
+	  locker__error(context, "Parse error or out of memory.\n");
+	  status = LOCKER_EATTACHTAB;
+	  break;
+	}
+
+      at->attached = 1;
+      if (buf[3] == '0')
+	{
+	  at->flags |= LOCKER_FLAG_NAMEFILE;
+	  name = at->name;
+	}
+      else
+	name = NULL;
+
+      status = get_attachent(context, name, at->mountpoint, 1, &at);
+      if (status != LOCKER_SUCCESS)
+	{
+	  locker__error(context, "Could not create attachent for %s.\n",
+			at->name);
+	  locker_free_attachent(context, at);
+	  continue;
+	}
+
+      locker__update_attachent(context, at);
+
+      /* Due to a bug in the old attach, rmdir will be "1" instead of "0"
+       * if you attach an AFS locker in an immediate subdir of "/".
+       */
+      if (rmdir == 1 && !strchr(at->mountpoint + 1, '/'))
+	rmdir--;
+
+      /* Now record the directories to delete on detach. */
+      while (rmdir--)
+	{
+	  int fd;
+	  char *file = locker__attachtab_pathname(context, LOCKER_DIRECTORY,
+						  at->mountpoint);
+	  if (!file)
+	    {
+	      locker__error(context, "Out of memory.\n");
+	      status = LOCKER_ENOMEM;
+	      goto cleanup;
+	    }
+
+	  fd = open(file, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	  if (fd == -1 && errno != EEXIST)
+	    {
+	      locker__error(context, "Could not create directory data file "
+			    "%s:\n%s.\n", file, strerror(errno));
+	      free(file);
+	      continue;
+	    }
+	  free(file);
+	  close(fd);
+
+	  p = strrchr(at->mountpoint, '/');
+	  if (!p || p == at->mountpoint)
+	    break;
+	  *p = '\0';
+	}
+
+      locker_free_attachent(context, at);
+    }
+
+cleanup:
+  fclose(fp);
+  free(buf);
+
+  return status;
 }
