@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.2 1987-06-12 16:59:27 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.3 1987-06-12 17:21:20 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -39,7 +39,7 @@ Code_t ZSendPacket(packet,len)
 	bcopy(__HM_addr,&sin.sin_addr,__HM_length);
 
 	if (sendto(ZGetFD(),packet,len,0,&sin,sizeof(sin)) < 0)
-		return (ZERR_UNIX);
+		return (errno);
 
 	return (ZERR_NONE);
 }
