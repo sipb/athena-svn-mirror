@@ -83,10 +83,14 @@ gtk_html_stream_vprintf (GtkHTMLStream *stream,
 			 const char *format,
 			 va_list ap)
 {
-	size_t len = g_printf_string_upper_bound (format, ap);
+	size_t len;
 	char *buf = NULL;
 	char *mbuf = NULL;
 	int rv;
+	va_list ap_copy;
+
+	G_VA_COPY (ap_copy, ap);
+	len = g_printf_string_upper_bound (format, ap_copy);
 
 	if (len < 8192)
 		buf = alloca (len);

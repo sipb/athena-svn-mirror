@@ -33,6 +33,7 @@ struct _HTMLUndoAction {
 	HTMLUndoFunc function;	        /* Function to call when the action is performed.  */
 	HTMLUndoData *data;             /* Data to pass to the action function when it's called.  */
 	guint position;                 /* Cursor position, to be set when the action is executed.  */
+	guint position_after;           /* cursor position to go after undo action executed */
 
 #ifdef UNDO_DEBUG
 	gboolean is_level;
@@ -42,7 +43,8 @@ struct _HTMLUndoAction {
 HTMLUndoAction *html_undo_action_new      (const gchar            *description,
 					   HTMLUndoFunc            function,
 					   HTMLUndoData           *data,
-					   guint                   position);
+					   guint                   position,
+					   guint                   position_after);
 void            html_undo_action_destroy  (HTMLUndoAction         *action);
 
 #endif /* _HTML_UNDO_ACTION_H */

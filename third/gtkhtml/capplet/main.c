@@ -121,6 +121,13 @@ apply_fonts ()
 	g_free (actual_prop-> f); \
 	actual_prop-> f = g_strdup (gnome_font_picker_get_font_name (GNOME_FONT_PICKER (w))); \
 	size_str = get_attr (gnome_font_picker_get_font_name (GNOME_FONT_PICKER (w)), 7); \
+        if (!strcmp (size_str, "*")) { \
+                g_free (size_str); \
+	        size_str = get_attr (gnome_font_picker_get_font_name (GNOME_FONT_PICKER (w)), 8); \
+                actual_prop-> f ## _points = TRUE; \
+        } else { \
+                actual_prop-> f ## _points = FALSE; \
+        } \
 	actual_prop-> s = atoi (size_str); \
 	g_free (size_str)
 

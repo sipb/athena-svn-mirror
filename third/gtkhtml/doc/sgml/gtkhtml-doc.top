@@ -1,0 +1,5 @@
+<!ENTITY gtkhtml-GtkHTMLEmbedded SYSTEM "sgml/gtkhtml-embedded.sgml">
+<!ENTITY GtkHTML SYSTEM "sgml/gtkhtml.sgml">
+<!ENTITY gtkhtml-gtkhtml-enums SYSTEM "sgml/gtkhtml-enums.sgml">
+<!ENTITY gtkhtml-gtkhtml-stream SYSTEM "sgml/gtkhtml-stream.sgml">
+<!ENTITY gtkhtml-gtkhtml-types SYSTEM "sgml/gtkhtml-types.sgml">

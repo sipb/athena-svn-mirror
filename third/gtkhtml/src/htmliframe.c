@@ -41,7 +41,7 @@
 
 HTMLIFrameClass html_iframe_class;
 static HTMLEmbeddedClass *parent_class = NULL;
-static gboolean calc_size (HTMLObject *o, HTMLPainter *painter);
+static gboolean calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs);
 
 static void
 iframe_url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data)
@@ -237,9 +237,39 @@ check_page_split (HTMLObject *self, gint y)
 	return html_object_check_page_split (GTK_HTML (HTML_IFRAME (self)->html)->engine->clue, y);
 }
 
+static void
+copy (HTMLObject *self,
+      HTMLObject *dest)
+{
+        HTMLIFrame *s = HTML_IFRAME (self);
+        HTMLIFrame *d = HTML_IFRAME (dest);
+
+	(* HTML_OBJECT_CLASS (parent_class)->copy) (self, dest);
+
+	d->scroll = NULL;
+	d->html = NULL;
+	d->gdk_painter = NULL;
+
+	d->url = g_strdup (s->url);
+	d->width = s->width;
+	d->height = s->height;
+	d->frameborder = s->frameborder;
+}
+
+void
+html_iframe_set_scrolling (HTMLIFrame *iframe, GtkPolicyType scroll)
+{
+#if E_USE_SCROLLED_WINDOW
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (iframe->scroll),
+					scroll, scroll);
+#else
+	e_scroll_frame_set_policy (E_SCROLL_FRAME (iframe->scroll),
+				   scroll, scroll);
+#endif					
+}
+
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLIFrame *iframe;
 	HTMLEngine *e;
@@ -255,7 +285,7 @@ calc_size (HTMLObject *o,
 
 	if ((iframe->width < 0) && (iframe->height < 0)) {
 		e->width = o->max_width;
-		html_engine_calc_size (e);
+		html_engine_calc_size (e, changed_objs);
 
 		height = html_engine_get_doc_height (e);
 		width = html_engine_get_doc_width (e);
@@ -263,22 +293,13 @@ calc_size (HTMLObject *o,
 		gtk_widget_set_usize (iframe->scroll, width, height);
 		gtk_widget_queue_resize (iframe->scroll);
 		
-#ifdef USE_SCROLLED_WINDOW
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (iframe->scroll),
-						GTK_POLICY_NEVER,
-						GTK_POLICY_NEVER);
-#else
-		e_scroll_frame_set_policy (E_SCROLL_FRAME (iframe->scroll),
-					   GTK_POLICY_NEVER,
-					   GTK_POLICY_NEVER);
-#endif
+		html_iframe_set_scrolling (iframe, GTK_POLICY_NEVER);
 
 		o->width = width;
 		o->ascent = height;
 		o->descent = 0;
 	} else
-		return (* HTML_OBJECT_CLASS (parent_class)->calc_size) 
-			(o, painter);
+		return (* HTML_OBJECT_CLASS (parent_class)->calc_size) (o, painter, changed_objs);
 
 	if (o->descent != old_descent
 	    || o->ascent != old_ascent
@@ -426,25 +447,20 @@ html_iframe_init (HTMLIFrame *iframe,
 	
 #if USE_SCROLLED_WINDOW
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-
 #else
 	scrolled_window = e_scroll_frame_new (NULL, NULL);
-        e_scroll_frame_set_policy (E_SCROLL_FRAME (scrolled_window),
-				   GTK_POLICY_AUTOMATIC,
-				   GTK_POLICY_AUTOMATIC);
-	
 	e_scroll_frame_set_shadow_type (E_SCROLL_FRAME (scrolled_window), 
 					border ? GTK_SHADOW_IN : GTK_SHADOW_NONE);
 
 #endif
-	  
-	new_tokenizer = html_tokenizer_clone (parent_html->engine->ht);
+
+	iframe->scroll = scrolled_window;
+	html_iframe_set_scrolling (iframe, GTK_POLICY_AUTOMATIC);
 
 	new_widget = gtk_html_new ();
 	new_html = GTK_HTML (new_widget);
+
+	new_tokenizer = html_tokenizer_clone (parent_html->engine->ht);
 
 	html_engine_set_tokenizer (new_html->engine, new_tokenizer);
 	gtk_object_unref (GTK_OBJECT (new_tokenizer));
@@ -490,7 +506,6 @@ html_iframe_init (HTMLIFrame *iframe,
 	gtk_widget_set_usize (scrolled_window, width, height);
 
 	gtk_widget_show (scrolled_window);	
-	iframe->scroll = scrolled_window;
 
 	html_embedded_set_widget (em, scrolled_window);
 
@@ -546,6 +561,7 @@ html_iframe_class_init (HTMLIFrameClass *klass,
 	object_class->set_painter             = set_painter;
 	object_class->reset                   = reset;
 	object_class->draw                    = draw;
+	object_class->copy                    = copy;
 	object_class->set_max_width           = set_max_width;
 	object_class->forall                  = forall;
 	object_class->check_page_split        = check_page_split;

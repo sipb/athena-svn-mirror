@@ -59,8 +59,7 @@ set_max_width (HTMLObject *o, HTMLPainter *painter, gint w)
 }
 
 static gboolean
-calc_size (HTMLObject *clue,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *clue, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLObject *obj;
 	gint lmargin = 0;
@@ -72,7 +71,7 @@ calc_size (HTMLObject *clue,
 	/* Make sure the children are properly sized */
 	html_object_set_max_width (clue, painter, clue->max_width);
 
-	changed = HTML_OBJECT_CLASS (&html_clue_class)->calc_size (clue, painter);
+	changed = HTML_OBJECT_CLASS (&html_clue_class)->calc_size (clue, painter, changed_objs);
 
 	if (clue->parent != NULL)
 		lmargin = html_object_get_left_margin (clue->parent, painter, clue->y);

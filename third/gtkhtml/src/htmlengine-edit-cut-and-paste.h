@@ -30,7 +30,7 @@ void  html_engine_copy                    (HTMLEngine  *e);
 void  html_engine_copy_object             (HTMLEngine  *e,
 					   HTMLObject **o,
 					   guint       *len);
-void  html_engine_cut                     (HTMLEngine  *e);
+gint  html_engine_cut                     (HTMLEngine  *e);
 void  html_engine_cut_line                (HTMLEngine  *e);
 void  html_engine_delete                  (HTMLEngine  *e);
 void  html_engine_paste                   (HTMLEngine  *e);
@@ -45,8 +45,12 @@ void  html_engine_insert_text             (HTMLEngine  *e,
 					   guint        len);
 void  html_engine_insert_object           (HTMLEngine  *e,
 					   HTMLObject  *o,
-					   guint        len);
+					   guint        len,
+					   gint         level);
 void  html_engine_append_object           (HTMLEngine  *e,
+					   HTMLObject  *o,
+					   guint        len);
+void  html_engine_append_flow             (HTMLEngine  *e,
 					   HTMLObject  *o,
 					   guint        len);
 void  html_engine_insert_link             (HTMLEngine  *e,

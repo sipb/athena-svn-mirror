@@ -355,7 +355,7 @@ static void
 resize_cb (GtkWidget *widget, gpointer data)
 {
 	g_print ("forcing resize\n");
-	html_engine_calc_size (html->engine);
+	html_engine_calc_size (html->engine, FALSE);
 }
 
 static void

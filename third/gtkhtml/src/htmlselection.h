@@ -46,5 +46,7 @@ void      html_engine_activate_selection    (HTMLEngine *e,
 					     guint32     time);
 void      html_engine_block_selection       (HTMLEngine *e);
 void      html_engine_unblock_selection     (HTMLEngine *e);
+gboolean  html_selection_word               (gunichar    uc);
+guint32   html_selection_current_time       (void);
 
 #endif

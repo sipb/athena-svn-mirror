@@ -68,6 +68,20 @@ copy (HTMLObject *self,
       HTMLObject *dest)
 {
 	/* FIXME TODO */
+	HTMLSelect *s = HTML_SELECT (self);
+	HTMLSelect *d = HTML_SELECT (dest);
+
+	(* HTML_OBJECT_CLASS (parent_class)->copy) (self,dest);
+
+	g_warning ("HTMLSelect::copy() is broken");
+	d->size =    s->size;
+	d->multi =   s->multi;
+	
+	d->values = NULL;
+	d->strings = NULL;
+	d->default_selection = NULL;
+
+	d->clist = NULL;
 }
 
 

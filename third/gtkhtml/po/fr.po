@@ -1,15 +1,15 @@
 # gtkhtml fr.po.
 # Copyright (C) 2000-2001 Free Software Foundation, Inc.
 # Yannick LE NY <y-le-ny@ifrance.com>, 2000.
-# Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
+# maintainer: Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtkhtml 0.13.99\n"
-"POT-Creation-Date: 2001-10-09 09:44-0500\n"
-"PO-Revision-Date: 2001-09-22 17:23+0200\n"
+"Project-Id-Version: gtkhtml 0.15.99\n"
+"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"PO-Revision-Date: 2001-10-13 09:14+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
-"Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,10 +18,10 @@ msgstr ""
 msgid "<None>"
 msgstr "<Aucun>"
 
-#: capplet/gnome-bindings-prop.c:216 capplet/main.c:245
+#: capplet/gnome-bindings-prop.c:216 capplet/main.c:252
 #: components/html-editor/cell.c:385 components/html-editor/rule.c:315
 #: components/html-editor/table.c:528 components/html-editor/table.c:619
-#: components/html-editor/template.c:243
+#: components/html-editor/template.c:244
 msgid "Could not load glade file."
 msgstr "Ne peut charger le fichier glade."
 
@@ -239,7 +239,7 @@ msgid "Check spelling of the document"
 msgstr "Vérifie l'orthographe du document"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:385
+#: components/html-editor/popup.c:398
 msgid "Copy"
 msgstr "Copier"
 
@@ -256,7 +256,7 @@ msgid "Cu_t"
 msgstr "Co_uper"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:386
+#: components/html-editor/popup.c:399
 msgid "Cut"
 msgstr "Couper"
 
@@ -269,7 +269,7 @@ msgid "Cut the selection"
 msgstr "Coupe la sélection"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
-#: components/html-editor/search.c:69 components/html-editor/search.c:112
+#: components/html-editor/search.c:69 components/html-editor/search.c:110
 msgid "Find"
 msgstr "Rechercher"
 
@@ -331,7 +331,7 @@ msgstr "En-tête _6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:161
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
 msgid "Image"
 msgstr "Image"
 
@@ -364,7 +364,7 @@ msgstr "Justifie à gauche les paragraphes"
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:175
+#: components/html-editor/popup.c:178
 msgid "Link"
 msgstr "Lien"
 
@@ -432,9 +432,8 @@ msgid "Numbered List"
 msgstr "Liste numérotée"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
-#, fuzzy
 msgid "Numbered _List"
-msgstr "Liste numérotée"
+msgstr "Liste _numérotée"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:60
 msgid "Orange"
@@ -445,7 +444,7 @@ msgid "Other..."
 msgstr "Autre..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:392
+#: components/html-editor/popup.c:405
 msgid "Paste"
 msgstr "Coller"
 
@@ -504,7 +503,7 @@ msgstr "Liste numérotée à chiffres romain"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:189
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
 msgid "Rule"
 msgstr "Règle"
 
@@ -539,8 +538,8 @@ msgstr "Exposant"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:196
-#: components/html-editor/popup.c:445 components/html-editor/popup.c:454
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
+#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
 msgid "Table"
 msgstr "Tableau"
 
@@ -721,7 +720,7 @@ msgstr "Couleurs"
 
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:154
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
 msgid "Text"
 msgstr "Texte"
 
@@ -736,25 +735,25 @@ msgid "Automatic"
 msgstr "Automatique"
 
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:146
+#: components/html-editor/popup.c:149
 msgid "Properties"
 msgstr "Propriétés"
 
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:168
+#: components/html-editor/popup.c:171
 msgid "Paragraph"
 msgstr "Paragraphe"
 
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:182
+#: components/html-editor/popup.c:185
 msgid "Page"
 msgstr "Page"
 
-#: components/html-editor/editor-control-factory.c:840
+#: components/html-editor/editor-control-factory.c:843
 msgid "Could not initialize GNORBA"
 msgstr "Ne peut initialiser GNORBA"
 
-#: components/html-editor/editor-control-factory.c:853
+#: components/html-editor/editor-control-factory.c:856
 msgid "Could not initialize Bonobo"
 msgstr "Ne peut initialiser Bonobo"
 
@@ -787,7 +786,7 @@ msgid "Bottom"
 msgstr "Bas"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:203
+#: components/html-editor/popup.c:206
 msgid "Cell"
 msgstr "Cellule"
 
@@ -801,7 +800,7 @@ msgid "Color:"
 msgstr "Couleur :"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:456
+#: components/html-editor/popup.c:469
 msgid "Column"
 msgstr "Colonne"
 
@@ -884,7 +883,7 @@ msgid "Right"
 msgstr "Droite"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:455
+#: components/html-editor/popup.c:468
 msgid "Row"
 msgstr "Rangée"
 
@@ -974,11 +973,11 @@ msgstr "Rembourrage"
 msgid "height"
 msgstr "hauteur"
 
-#: components/html-editor/link.c:73
+#: components/html-editor/link.c:85
 msgid "Clear"
 msgstr "Effacer"
 
-#: components/html-editor/link.c:76
+#: components/html-editor/link.c:88
 msgid "URL"
 msgstr "URL"
 
@@ -1045,92 +1044,92 @@ msgstr "Élément alphabétique"
 msgid "Align"
 msgstr "Aligner"
 
-#: components/html-editor/popup.c:348
+#: components/html-editor/popup.c:361
 #, c-format
 msgid "Check '%s' spelling..."
 msgstr "Vérifier l'orthographe de « %s »..."
 
-#: components/html-editor/popup.c:351
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr "Ajouter « %s » au dictionnaire"
 
-#: components/html-editor/popup.c:354
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Ignore '%s'"
 msgstr "Ignorer « %s »"
 
-#: components/html-editor/popup.c:357 components/html-editor/spell.c:402
+#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
 msgid "Spell checker"
 msgstr "Vérificateur orthographique"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:374
 msgid "Suggest word"
 msgstr "Suggérer un mot"
 
-#: components/html-editor/popup.c:380
+#: components/html-editor/popup.c:393
 msgid "Remove link"
 msgstr "Enlever lien"
 
-#: components/html-editor/popup.c:396 components/html-editor/popup.c:422
+#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
 msgid "Text..."
 msgstr "Texte..."
 
-#: components/html-editor/popup.c:398 components/html-editor/popup.c:413
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
+#: components/html-editor/popup.c:437
 msgid "Paragraph..."
 msgstr "Paragraphe..."
 
-#: components/html-editor/popup.c:400 components/html-editor/popup.c:415
-#: components/html-editor/popup.c:426
+#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
+#: components/html-editor/popup.c:439
 msgid "Link..."
 msgstr "Lien..."
 
-#: components/html-editor/popup.c:406
+#: components/html-editor/popup.c:419
 msgid "Rule..."
 msgstr "Règle..."
 
-#: components/html-editor/popup.c:411
+#: components/html-editor/popup.c:424
 msgid "Image..."
 msgstr "Image..."
 
-#: components/html-editor/popup.c:431 components/html-editor/popup.c:441
+#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
 msgid "Table..."
 msgstr "Tableau..."
 
-#: components/html-editor/popup.c:438
+#: components/html-editor/popup.c:451
 msgid "Cell..."
 msgstr "Cellule..."
 
-#: components/html-editor/popup.c:444
+#: components/html-editor/popup.c:457
 msgid "Table insert"
 msgstr "Insérer un tableau"
 
-#: components/html-editor/popup.c:447
+#: components/html-editor/popup.c:460
 msgid "Row above"
 msgstr "Rangée au-dessus"
 
-#: components/html-editor/popup.c:448
+#: components/html-editor/popup.c:461
 msgid "Row below"
 msgstr "Rangée au-dessous"
 
-#: components/html-editor/popup.c:450
+#: components/html-editor/popup.c:463
 msgid "Column before"
 msgstr "Colonne avant"
 
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:464
 msgid "Column after"
 msgstr "Colonne aprés"
 
-#: components/html-editor/popup.c:453
+#: components/html-editor/popup.c:466
 msgid "Table delete"
 msgstr "Supprimer le tableau"
 
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:470
 msgid "Cell contents"
 msgstr "Contenu de la cellule"
 
-#: components/html-editor/popup.c:465
+#: components/html-editor/popup.c:478
 msgid "Page..."
 msgstr "Page..."
 
@@ -1174,11 +1173,11 @@ msgstr "Jaune, fleurs"
 msgid "backward"
 msgstr "en arrière"
 
-#: components/html-editor/search.c:112
+#: components/html-editor/search.c:110
 msgid "Find Regular Expression"
 msgstr "Recherche une expression régulière"
 
-#: components/html-editor/spell.c:397
+#: components/html-editor/spell.c:411
 msgid "No misspelled word found"
 msgstr "Aucun mot mal orthographié trouvé"
 
@@ -1304,9 +1303,6 @@ msgstr "_Aperçu avant impression"
 msgid "Print preview"
 msgstr "Aperçu avant impression"
 
-#~ msgid "_Numbered List"
-#~ msgstr "Liste _numérotée"
-
 #~ msgid ""
 #~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
 #~ "here</td></tr></table></td></tr></table>"
@@ -1315,13 +1311,16 @@ msgstr "Aperçu avant impression"
 #~ "ici</td></tr></table></td></tr></table>"
 
 #~ msgid ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td>Image "
-#~ "1:&nbsp;<font size=\"3\"><b>description</b></font "
-#~ "size=\"3\"></td></tr></table></td></tr></table>"
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">Image 1: "
+#~ "<b>description</b></font></td></tr></table></td></tr></table>"
 #~ msgstr ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td>Image 1 "
-#~ ":&nbsp;<font size=\"3\"><b>description</b></font "
-#~ "size=\"3\"></td></tr></table></td></tr></table>"
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">Image 1 : "
+#~ "<b>description</b></font></td></tr></table></td></tr></table>"
+
+#~ msgid "_Numbered List"
+#~ msgstr "Liste _numérotée"
 
 #~ msgid "Check _spelling..."
 #~ msgstr "Vérification _orthographique..."

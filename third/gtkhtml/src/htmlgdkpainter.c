@@ -66,13 +66,13 @@ finalize (GtkObject *object)
 }
 
 static gint
-get_size (gchar *font_name)
+get_size (gchar *font_name, gboolean points)
 {
     gchar *s, *end;
     gint n;
 
     /* Search paramether */
-    for (s=font_name, n=7; n; n--,s++)
+    for (s=font_name, n=points ? 7 : 8; n; n--,s++)
 	    s = strchr (s,'-');
 
     if (s && *s != 0) {
@@ -89,7 +89,7 @@ get_size (gchar *font_name)
 }
 
 static gboolean
-find_font (gchar *font_name, gdouble req_size, gint *font_size, GtkHTMLFontStyle style)
+find_font (gchar *font_name, gdouble req_size, gint *font_size, gboolean points, GtkHTMLFontStyle style)
 {
 	gint n;
 	gdouble size, smaller, bigger;
@@ -102,7 +102,7 @@ find_font (gchar *font_name, gdouble req_size, gint *font_size, GtkHTMLFontStyle
 	/* look for right one */
 	while (n) {
 		n--;
-		size = get_size (list [n]);
+		size = get_size (list [n], points);
 		if ((gdouble) size == req_size) {
 			*font_size = size;
 			rv = TRUE;
@@ -174,7 +174,7 @@ font_name_substitute_attr (const gchar *name, gint nth, gchar *val)
 }
 
 static gpointer
-alloc_e_font_try (gchar *face, gdouble size, GtkHTMLFontStyle style,
+alloc_e_font_try (gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style,
 		  gchar *medium, gchar *bold, gchar *roman, gchar *italic, gboolean known_size)
 {
 	EFont *font;
@@ -187,10 +187,10 @@ alloc_e_font_try (gchar *face, gdouble size, GtkHTMLFontStyle style,
 
 		n1 = font_name_substitute_attr (face, 3, style & GTK_HTML_FONT_STYLE_BOLD ? bold : medium);
 		n2 = font_name_substitute_attr (n1,   4, style & GTK_HTML_FONT_STYLE_ITALIC ? italic : roman);
-		n3 = font_name_substitute_attr (n2,   7, "*");
+		n3 = font_name_substitute_attr (n2,   points ? 8 : 7, "*");
 
 		if (known_size) {
-			if (!find_font (n3, size, &tsize, style)) {
+			if (!find_font (n3, size, &tsize, points, style)) {
 				g_free (n1);
 				g_free (n2);
 				g_free (n3);
@@ -204,13 +204,13 @@ alloc_e_font_try (gchar *face, gdouble size, GtkHTMLFontStyle style,
 		g_free (n1);
 		g_free (n2);
 		s    = g_strdup_printf ("%d", tsize);
-		name = font_name_substitute_attr (n3,   7, s);
+		name = font_name_substitute_attr (n3, points ? 8 : 7, s);
 		g_free (n3);
 		g_free (s);
 
 		/* printf ("try: %s\n", name); */
 
-		gdk_font = gdk_font_load (name);
+		gdk_font = gdk_fontset_load (name);
 		if (gdk_font) {
 			font = e_font_from_gdk_name (name);
 			gdk_font_unref (gdk_font);
@@ -219,7 +219,7 @@ alloc_e_font_try (gchar *face, gdouble size, GtkHTMLFontStyle style,
 
 		g_free (name);
 	} else {
-		GdkFont *fixed = gdk_font_load ("fixed");
+		GdkFont *fixed = gdk_fontset_load ("fixed");
 
 		if (!fixed)
 			g_error (_("Can't load fixed font."));
@@ -246,49 +246,50 @@ alloc_e_font_try (gchar *face, gdouble size, GtkHTMLFontStyle style,
 }
 
 static EFont *
-try_font_possible_names (HTMLPainter *painter, gchar *face, gdouble size, GtkHTMLFontStyle style, gboolean known)
+try_font_possible_names (HTMLPainter *painter, gchar *face, gdouble size, gboolean points,
+			 GtkHTMLFontStyle style, gboolean known)
 {
 	EFont *font;
 
-	font = alloc_e_font_try (face, size, style, "medium", "bold", "r", "i", known);
+	font = alloc_e_font_try (face, size, points, style, "medium", "bold", "r", "i", known);
 	if (!font && style & GTK_HTML_FONT_STYLE_ITALIC)
-		font = alloc_e_font_try (face, size, style, "medium", "bold", "r", "o", known);
+		font = alloc_e_font_try (face, size, points, style, "medium", "bold", "r", "o", known);
 	if (!font)
-		font = alloc_e_font_try (face, size, style, "book",   "demi", "r", "i", known);
+		font = alloc_e_font_try (face, size, points, style, "book",   "demi", "r", "i", known);
 	if (!font && style & GTK_HTML_FONT_STYLE_ITALIC)
-		font = alloc_e_font_try (face, size, style, "book",   "demi", "r", "o", known);
+		font = alloc_e_font_try (face, size, points, style, "book",   "demi", "r", "o", known);
 	if (!font)
-		font = alloc_e_font_try (face, size, style, "light",   "demibold", "r", "i", known);
+		font = alloc_e_font_try (face, size, points, style, "light",   "demibold", "r", "i", known);
 	if (!font && style & GTK_HTML_FONT_STYLE_ITALIC)
-		font = alloc_e_font_try (face, size, style, "light",   "demibold", "r", "o", known);
+		font = alloc_e_font_try (face, size, points, style, "light",   "demibold", "r", "o", known);
 
 	return font;
 }
 
 static HTMLFont *
-alloc_e_font_do (HTMLPainter *painter, gchar *face, gdouble size, GtkHTMLFontStyle style)
+alloc_e_font_do (HTMLPainter *painter, gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style)
 {
 	EFont *font;
 
-	font = try_font_possible_names (painter, face, size, style, FALSE);
+	font = try_font_possible_names (painter, face, size, points, style, FALSE);
 	if (!font)
-		font = try_font_possible_names (painter, face, size, style, TRUE);
+		font = try_font_possible_names (painter, face, size, points, style, TRUE);
 
 	return font ? html_font_new (font, e_font_utf8_text_width (font, e_style (style), " ", 1)) : NULL;
 }
 
 static HTMLFont *
-alloc_e_font (HTMLPainter *painter, gchar *face, gdouble size, GtkHTMLFontStyle style)
+alloc_e_font (HTMLPainter *painter, gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style)
 {
 	HTMLFont *font;
 
-	font = alloc_e_font_do (painter, face, size, style);
+	font = alloc_e_font_do (painter, face, size, points, style);
 	if (!font && style & GTK_HTML_FONT_STYLE_BOLD)
-		font = alloc_e_font_do (painter, face, size, style & (~GTK_HTML_FONT_STYLE_BOLD));
+		font = alloc_e_font_do (painter, face, size, points, style & (~GTK_HTML_FONT_STYLE_BOLD));
 	if (!font && style & GTK_HTML_FONT_STYLE_ITALIC)
-		font = alloc_e_font_do (painter, face, size, style & (~GTK_HTML_FONT_STYLE_ITALIC));
+		font = alloc_e_font_do (painter, face, size, points, style & (~GTK_HTML_FONT_STYLE_ITALIC));
 	if (!font && style & GTK_HTML_FONT_STYLE_ITALIC && style & GTK_HTML_FONT_STYLE_BOLD)
-		font = alloc_e_font_do (painter, face, size,
+		font = alloc_e_font_do (painter, face, size, points,
 					style & ((~GTK_HTML_FONT_STYLE_ITALIC) & (~GTK_HTML_FONT_STYLE_BOLD)));
 
 	return font;
@@ -345,6 +346,8 @@ begin (HTMLPainter *painter, int x1, int y1, int x2, int y2)
 	HTMLGdkPainter *gdk_painter;
 	GdkVisual *visual;
 
+	/* printf ("painter begin %d,%d %d,%d\n", x1, y1, x2, y2); */
+
 	gdk_painter = HTML_GDK_PAINTER (painter);
 	visual = gdk_window_get_visual (gdk_painter->window);
 
@@ -381,6 +384,8 @@ static void
 end (HTMLPainter *painter)
 {
 	HTMLGdkPainter *gdk_painter;
+
+	/* printf ("painter end\n"); */
 
 	gdk_painter = HTML_GDK_PAINTER (painter);
 	
@@ -949,7 +954,7 @@ e_style (GtkHTMLFontStyle style)
 	return rv;
 }
 
-static void
+static gint
 draw_spell_error (HTMLPainter *painter, gint x, gint y, const gchar *text, gint len)
 {
 	HTMLGdkPainter *gdk_painter;
@@ -978,6 +983,8 @@ draw_spell_error (HTMLPainter *painter, gint x, gint y, const gchar *text, gint 
 	gdk_draw_line (gdk_painter->pixmap, gdk_painter->gc, x, y + 1, x + width, y + 1);
 	gdk_gc_set_line_attributes (gdk_painter->gc, values.line_width,
 				    values.line_style, values.cap_style, values.join_style);
+
+	return width;
 }
 
 static void
@@ -1102,15 +1109,20 @@ calc_text_width (HTMLPainter *painter,
 		 HTMLFontFace *face)
 {
 	HTMLGdkPainter *gdk_painter;
+	HTMLFont *font;
 	EFont *e_font;
 	gint width;
 
 	gdk_painter = HTML_GDK_PAINTER (painter);
-	e_font = html_painter_get_font (painter, face, style);
+	font = html_font_manager_get_font (&painter->font_manager, face, style);
+	e_font = font->data;
 
-	width = e_font_utf8_text_width (e_font, e_style (style),
-					text, g_utf8_offset_to_pointer (text, len) - text);
-
+	if (style & GTK_HTML_FONT_STYLE_FIXED) {
+		width = len * font->space_width;
+	} else {
+		width = e_font_utf8_text_width (e_font, e_style (style),
+						text, g_utf8_offset_to_pointer (text, len) - text);
+	}
 	/* printf ("calc_text_width text: %s len: %d\n", text, len);
 	{ gint i; printf ("["); for (i=0;i<g_utf8_offset_to_pointer (text, len)-text; i++) printf ("%c", text [i]); printf ("] ");}
 	printf ("%d (%p)\n", width, e_font); */

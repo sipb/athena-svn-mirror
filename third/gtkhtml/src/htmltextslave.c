@@ -171,8 +171,7 @@ slave_split_if_too_long (HTMLTextSlave *slave, HTMLPainter *painter, gint *width
 }
 
 static gboolean
-calc_size (HTMLObject *self,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLText *owner;
 	HTMLTextSlave *slave;
@@ -426,26 +425,35 @@ draw_spell_errors (HTMLTextSlave *slave, HTMLPainter *p, gint tx, gint ty, gint 
 	HTMLObject *obj = HTML_OBJECT (slave);
 	SpellError *se;
 	guint ma, mi;
+	gint x_off = 0;
+	gint last_off = 0;
+	gchar *text = html_text_get_text (HTML_TEXT (slave->owner), slave->posStart);
 
 	while (cur) {
+
 		se = (SpellError *) cur->data;
 		ma = MAX (se->off, slave->posStart);
 		mi = MIN (se->off + se->len, slave->posStart + slave->posLen);
 		if (ma < mi) {
 			guint off = ma - slave->posStart;
 			guint len = mi - ma;
-			gint x_off;
+			gint lo;
 
 			html_painter_set_pen (p, &html_colorset_get_color_allocated (p, HTMLSpellErrorColor)->color);
 			/* printf ("spell error: %s\n", html_text_get_text (slave->owner, off)); */
-			x_off = html_painter_calc_text_width (p, html_text_get_text (HTML_TEXT (slave->owner),
-										     slave->posStart), off, &line_offset,
-							      p->font_style,
-							      p->font_face);
-			html_painter_draw_spell_error (p, obj->x + tx + x_off,
-						       obj->y + ty + get_ys (HTML_TEXT (slave->owner), p),
-						       html_text_get_text (HTML_TEXT (slave->owner), slave->posStart + off),
-						       len);
+			lo = line_offset;
+			
+			x_off += html_painter_calc_text_width (p, text,
+							       off - last_off, &line_offset,
+							       p->font_style,
+							       p->font_face);
+			text = g_utf8_offset_to_pointer (text, off - last_off);
+			x_off += html_painter_draw_spell_error (p, obj->x + tx + x_off,
+								obj->y + ty + get_ys (HTML_TEXT (slave->owner), p),
+								text, len);
+			last_off = off + len;
+			line_offset += len;
+			text = g_utf8_offset_to_pointer (text, len);
 		}
 		if (se->off > slave->posStart + slave->posLen)
 			break;
@@ -567,6 +575,8 @@ draw (HTMLObject *o,
 	guint end;
 	ArtIRect paint;
 	gint line_offset;
+
+	/* printf ("slave draw %p\n", o); */
 
 	html_object_calc_intersection (o, &paint, x, y, width, height);
 	if (art_irect_empty (&paint))

@@ -54,7 +54,7 @@ struct _HTMLPainterClass {
 	void (* begin)            (HTMLPainter *painter, int x1, int y1, int x2, int y2);
 	void (* end)              (HTMLPainter *painter);
 
-        HTMLFont * (* alloc_font) (HTMLPainter *p, gchar *face_name, gdouble size, GtkHTMLFontStyle  style);
+        HTMLFont * (* alloc_font) (HTMLPainter *p, gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle  style);
 	void       (* ref_font)   (HTMLPainter *p, HTMLFont *font);
 	void       (* unref_font) (HTMLPainter *p, HTMLFont *font);
 
@@ -71,7 +71,7 @@ struct _HTMLPainterClass {
 	void (* draw_line)        (HTMLPainter *painter, gint x1, gint y1, gint x2, gint y2);
 	void (* draw_rect)        (HTMLPainter *painter, gint x, gint y, gint width, gint height);
 	void (* draw_text)        (HTMLPainter *painter, gint x, gint y, const gchar *text, gint len);
-	void (* draw_spell_error) (HTMLPainter *painter, gint x, gint y, const gchar *text, gint len);
+	gint (* draw_spell_error) (HTMLPainter *painter, gint x, gint y, const gchar *text, gint len);
 	void (* fill_rect)        (HTMLPainter *painter, gint x, gint y, gint width, gint height);
 	void (* draw_pixmap)      (HTMLPainter *painter, GdkPixbuf *pixbuf, 
 				   gint x, gint y,
@@ -219,7 +219,7 @@ void              html_painter_draw_background                         (HTMLPain
 									gint               tile_x,
 									gint               tile_y);
 guint             html_painter_get_pixel_size                          (HTMLPainter       *painter);
-void              html_painter_draw_spell_error                        (HTMLPainter       *painter,
+gint              html_painter_draw_spell_error                        (HTMLPainter       *painter,
 									gint               x,
 									gint               y,
 									const gchar       *text,
@@ -227,6 +227,7 @@ void              html_painter_draw_spell_error                        (HTMLPain
 HTMLFont         *html_painter_alloc_font                              (HTMLPainter       *painter,
 									gchar             *face_name,
 									gdouble            size,
+									gboolean           points,
 									GtkHTMLFontStyle   style);
 void              html_painter_ref_font                                (HTMLPainter       *painter,
 									HTMLFont          *font);

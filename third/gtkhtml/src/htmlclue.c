@@ -25,6 +25,7 @@
 #include "htmlclue.h"
 #include "htmlobject.h"
 #include "htmlsearch.h"
+#include "htmltextslave.h"
 #include "htmltype.h"
 
 
@@ -96,10 +97,13 @@ op_helper (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left,
 	if ((o == NULL) && (last == NULL))
 		return cc;
 
+	if (HTML_IS_TEXT_SLAVE (last))
+		last = html_object_prev_not_slave (last);
+
 	g_assert (o->parent == self);
 	g_assert (last->parent == self);
 
-	while (1) {
+	while (o) {
 		cnext = html_object_next_not_slave (o);
 		child = cut ? html_object_op_cut (o, e,
 					      html_object_get_bound_list (o, from),
@@ -144,7 +148,7 @@ op_cut (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left, GL
 }
 
 static gboolean
-merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList *left, GList *right)
+merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList **left, GList **right, HTMLCursor *cursor)
 {
 	HTMLClue   *clue1, *clue2;
 
@@ -186,6 +190,9 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 
 	if (self->parent && HTML_OBJECT_TYPE (self->parent) != HTML_TYPE_TABLE)
 		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
+
+	self->x = 0;
+	self->y = 0;
 
 	*left  = g_list_prepend (*left, self);
 	*right = g_list_prepend (*right, dup);
@@ -279,8 +286,7 @@ reset (HTMLObject *clue)
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	gboolean changed;
 
@@ -294,7 +300,7 @@ calc_size (HTMLObject *o,
 	changed = FALSE;
 
 	while (HTML_CLUE (o)->curr != NULL) {
-		changed |= html_object_calc_size (HTML_CLUE (o)->curr, painter);
+		changed |= html_object_calc_size (HTML_CLUE (o)->curr, painter, changed_objs);
 		HTML_CLUE (o)->curr = HTML_CLUE (o)->curr->next;
 	}
 
@@ -741,6 +747,8 @@ html_clue_append_after (HTMLClue *clue,
 	HTMLObject *tail;
 
 	g_return_if_fail (o != NULL);
+	g_return_if_fail (html_object_is_clue (HTML_OBJECT (clue)));
+
 	if (where == NULL) {
 		html_clue_prepend (clue, o);
 		return;
@@ -778,6 +786,7 @@ html_clue_append (HTMLClue *clue,
 	HTMLObject *tail;
 
 	g_return_if_fail (clue != NULL);
+	g_return_if_fail (html_object_is_clue (HTML_OBJECT (clue)));
 	g_return_if_fail (o != NULL);
 
 	html_object_change_set (HTML_OBJECT (clue), o->change);

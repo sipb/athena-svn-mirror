@@ -41,7 +41,7 @@
 
 HTMLFrameClass html_frame_class;
 static HTMLEmbeddedClass *parent_class = NULL;
-static gboolean calc_size (HTMLObject *o, HTMLPainter *painter);
+static gboolean calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs);
 
 static void
 frame_url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data)
@@ -307,8 +307,7 @@ check_page_split (HTMLObject *self, gint y)
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLFrame *frame;
 	HTMLEngine *e;
@@ -324,7 +323,7 @@ calc_size (HTMLObject *o,
 
 	if ((frame->width < 0) && (frame->height < 0)) {
 		e->width = o->max_width;
-		html_engine_calc_size (e);
+		html_engine_calc_size (e, changed_objs);
 
 		height = html_engine_get_doc_height (e);
 		width = html_engine_get_doc_width (e);
@@ -338,8 +337,7 @@ calc_size (HTMLObject *o,
 		o->ascent = height;
 		o->descent = 0;
 	} else
-		return (* HTML_OBJECT_CLASS (parent_class)->calc_size) 
-			(o, painter);
+		return (* HTML_OBJECT_CLASS (parent_class)->calc_size) (o, painter, changed_objs);
 
 	if (o->descent != old_descent
 	    || o->ascent != old_ascent
@@ -542,11 +540,11 @@ html_frame_init (HTMLFrame *frame,
 					border ? GTK_SHADOW_IN : GTK_SHADOW_NONE);
 
 #endif
-	  
-	new_tokenizer = html_tokenizer_clone (parent_html->engine->ht);
 
 	new_widget = gtk_html_new ();
 	new_html = GTK_HTML (new_widget);
+
+	new_tokenizer = html_tokenizer_clone (parent_html->engine->ht);
 
 	html_engine_set_tokenizer (new_html->engine, new_tokenizer);
 	gtk_object_unref (GTK_OBJECT (new_tokenizer));

@@ -790,8 +790,8 @@ table_insert_cb (GtkHTMLControlData *cd, gpointer get_data)
 
 	position = e->cursor->position + table_templates [d->template].offset;
 	html = get_sample_html (d, FALSE);
-	printf ("INSERT(%d):\n%s\n", d->template, html);
-	gtk_html_insert_html (cd->html, html);
+	/* printf ("INSERT(%d):\n%s\n", d->template, html); */
+	gtk_html_append_html (cd->html, html);
 	g_free (html);
 	html_cursor_jump_to_position (e->cursor, e, position);
 }

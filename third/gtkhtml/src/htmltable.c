@@ -31,6 +31,7 @@
 #include "htmlcolorset.h"
 #include "htmlengine.h"
 #include "htmlengine-edit.h"
+#include "htmlengine-edit-table.h"
 #include "htmlengine-save.h"
 #include "htmlimage.h"
 #include "htmlpainter.h"
@@ -39,7 +40,8 @@
 #include "htmltablepriv.h"
 #include "htmltablecell.h"
 
-
+/* #define GTKHTML_DEBUG_TABLE */
+
 #define COLUMN_MIN(table, i)				\
 	(g_array_index (table->columnMin, gint, i))
 
@@ -190,22 +192,31 @@ op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
 			HTMLTableCell *cell = t->cells [start->row + r][c + start_col];
 
 			if (!cell || (end->row != start->row
-				      && ((r == 0 && c < start_col) || (r == rows - 1 && c > end->col))))
-				continue;
-			if (cell->row == r + start->row && cell->col == c + start_col) {
-				HTMLTableCell *cell_copy;
-				cell_copy = HTML_TABLE_CELL
-					(html_object_op_copy (HTML_OBJECT (cell), e,
-							      html_object_get_bound_list (HTML_OBJECT (cell), from),
-							      html_object_get_bound_list (HTML_OBJECT (cell), to), len));
-				html_table_set_cell (nt, r, c, cell_copy);
-				html_table_cell_set_position (cell_copy, r, c);
-			} else
-				nt->cells [r][c] = nt->cells [cell->row - start->row][cell->col - start_col];
+				      && ((r == 0 && c < start->col) || (r == rows - 1 && c > end->col)))) {
+				html_table_set_cell (nt, r, c, html_engine_new_cell (e, nt));
+				html_table_cell_set_position (nt->cells [r][c], r, c);
+			} else {
+				if (cell->row == r + start->row && cell->col == c + start_col) {
+					HTMLTableCell *cell_copy;
+					cell_copy = HTML_TABLE_CELL
+						(html_object_op_copy (HTML_OBJECT (cell), e,
+								      html_object_get_bound_list (HTML_OBJECT (cell), from),
+								      html_object_get_bound_list (HTML_OBJECT (cell), to),
+								      len));
+					html_table_set_cell (nt, r, c, cell_copy);
+					html_table_cell_set_position (cell_copy, r, c);
+				} else {
+					if (cell->row - start->row >= 0 && cell->col - start_col >= 0) {
+						nt->cells [r][c] = nt->cells [cell->row - start->row][cell->col - start_col];
+					} else {
+						html_table_set_cell (nt, r, c, html_engine_new_cell (e, nt));
+						html_table_cell_set_position (nt->cells [r][c], r, c);
+					}
+				}
+			}
+			(*len) ++;
 		}
 	(*len) ++;
-	if (end->col - start_col < cols - 1)
-		do_cspan (nt, nt->totalRows - 1, end->col - start_col, nt->cells [nt->totalRows - 1][end->col - start_col]);
 
 #ifdef GTKHTML_DEBUG_TABLE
 	printf ("copy end: %d\n", *len);
@@ -236,15 +247,22 @@ remove_cell (HTMLTable *t, HTMLTableCell *cell)
 {
 	gint r, c;
 
+	g_return_if_fail (t);
+	g_return_if_fail (HTML_IS_TABLE (t));
+	g_return_if_fail (cell);
+	g_return_if_fail (HTML_IS_TABLE_CELL (cell));
+
 #ifdef GTKHTML_DEBUG_TABLE
-	printf ("remove cell %d,%d %d,%d %d,%d\n", cell->col, cell->row, cell->rspan, cell->cspan, t->totalCols, t->totalRows);
+	printf ("remove cell: %d,%d %d,%d %d,%d\n",
+		cell->row, cell->col, cell->rspan, cell->cspan, t->totalCols, t->totalRows);
 #endif
 
 	for (r = 0; r < cell->rspan && r + cell->row < t->totalRows; r++)
 		for (c = 0; c < cell->cspan && c + cell->col < t->totalCols; c++) {
 
 #ifdef GTKHTML_DEBUG_TABLE
-			printf ("clear: %d,%d (%d,%d) %d,%d\n", cell->row + r, cell->col + c, cell->rspan, cell->cspan, r, c);
+			printf ("clear:       %d,%d (%d,%d) %d,%d\n",
+				cell->row + r, cell->col + c, cell->rspan, cell->cspan, r, c);
 #endif
 
 			t->cells [cell->row + r][cell->col + c] = NULL;
@@ -259,8 +277,9 @@ cut_whole (HTMLObject *self, guint *len)
 		html_object_remove_child (self->parent, self);
 	*len = html_object_get_recursive_length (self) + 1;
 
+#ifdef GTKHTML_DEBUG_TABLE
 	printf ("removed whole table len: %d\n", *len);
-
+#endif
 	return self;
 }
 
@@ -271,12 +290,12 @@ cut_partial (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *lef
 
 	HTMLTableCell *start, *end, *cell;
 	HTMLTable *t, *nt;
-	gint r, c, rows, cols;
+	gint r, c;
 	gint start_row, start_col, end_row, end_col;
-	gboolean shrink;
 
+#ifdef GTKHTML_DEBUG_TABLE
 	printf ("partial cut\n");
-
+#endif
 	start = HTML_TABLE_CELL (from && from->next ? from->data : html_object_head (self));
 	end   = HTML_TABLE_CELL (to   && to->next   ? to->data   : html_object_tail (self));
 
@@ -286,59 +305,40 @@ cut_partial (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *lef
 	end_col   = end->col;
 
 	t    = HTML_TABLE (self);
-	rows = end_row - start_row + 1;
-	cols = end_row == start_row ? end_col - start_col + 1 : t->totalCols;
 	rv   = HTML_OBJECT (g_new0 (HTMLTable, 1));
 	nt   = HTML_TABLE (rv);
-	copy_sized (self, rv, rows, cols);
+	copy_sized (self, rv, t->totalRows, t->totalCols);
 
-	/* remove selected and move it to new one */
-	for (r = start_row; r <= end_row; r++)
+	for (r = 0; r < t->totalRows; r++) {
 		for (c = 0; c < t->totalCols; c++) {
 			cell = t->cells [r][c];
-			if (cell && (r > start_row || c >= start_col) && (r < end_row || c <= end_col)) {
-				HTMLTableCell *cell_cut;
-				gint row, col;
+			if (cell && cell->row == r && cell->col == c) {
+				if (((r == start_row && c < start_col) || r < start_row)
+				    || ((r == end_row && c > end_col) || r > end_row)) {
+					html_table_set_cell (nt, r, c, html_engine_new_cell (e, nt));
+					html_table_cell_set_position (nt->cells [r][c], r, c);
+				} else {
+					HTMLTableCell *cell_cut;
 
-				row = r - start_row;
-				col = end_row == start_row ? c - start_col : c;
+					cell_cut = HTML_TABLE_CELL
+						(html_object_op_cut
+						 (HTML_OBJECT (cell), e,
+						  html_object_get_bound_list (HTML_OBJECT (cell), from),
+						  html_object_get_bound_list (HTML_OBJECT (cell), to),
+						  left ? left->next : NULL, right ? right->next : NULL, len));
+					html_table_set_cell (nt, r, c, cell_cut);
+					html_table_cell_set_position (cell_cut, r, c);
 
-				cell_cut = HTML_TABLE_CELL
-					(html_object_op_cut
-					 (HTML_OBJECT (cell), e,
-					  html_object_get_bound_list (HTML_OBJECT (cell), from),
-					  html_object_get_bound_list (HTML_OBJECT (cell), to),
-					  left ? left->next : NULL, right ? right->next : NULL, len));
-				html_table_set_cell (nt, row, col, cell_cut);
-				html_table_cell_set_position (cell_cut, row, col);
+					if (t->cells [r][c] == NULL) {
+						html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
+						html_table_cell_set_position (t->cells [r][c], r, c);
+					}
+				}
+				(*len) ++;
 			}
 		}
-	(*len) ++;
-	shrink = start_row == 0 && end_row == t->totalRows - 1 && start_col != end_col;
-	/* move remaining cells in old table */
-	if (start_col > end_col)
-		start_row ++;
-	else if (start_col == end_col && start != end) {
-		html_object_merge_down (HTML_OBJECT (start), HTML_OBJECT (end), e);
 	}
-	if (start_row != end_row)
-		for (r = end_row; r < t->totalRows; r ++)
-			for (c = 0; c < t->totalCols; c ++) {
-				HTMLTableCell *cell;
-
-				cell = t->cells [r][c];
-				if (cell && (r > end_row || c >= end_col)) {
-					gint new_c = shrink ? c - end_col + start_col + 1: c;
-					if (cell->row == r && cell->col == c)
-						html_table_cell_set_position (cell, r - end_row + start_row,
-									      new_c);
-					t->cells [r - end_row + start_row][new_c] = cell;
-					t->cells [r][c] = NULL;
-				}
-			}
-	if (shrink)
-		t->totalCols -= end_col - start_col - 1;
-	t->totalRows -= end_row - start_row;
+	(*len) ++;
 
 #ifdef GTKHTML_DEBUG_TABLE
 	printf ("removed partial table len: %d\n", *len);
@@ -354,25 +354,32 @@ op_cut (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left, GL
 	if ((!from || !from->next) && (!to || !to->next))
 		return (*parent_class->op_cut) (self, e, from, to, left, right, len);
 
-	/* if ((to && !to->next && GPOINTER_TO_INT (to->data) == 0)
-	    || (from && !from->next && GPOINTER_TO_INT (from->data) == 1))
-	    return html_engine_new_text_empty (e); */
-
 	if (from || to)
 		return cut_partial (self, e, from, to, left, right, len);
 	else
 		return cut_whole (self, len);
 }
 
+static gboolean
+cell_is_empty (HTMLTableCell *cell)
+{
+	g_assert (HTML_IS_TABLE_CELL (cell));
+
+	if (HTML_CLUE (cell)->head && HTML_CLUE (cell)->head == HTML_CLUE (cell)->tail
+	    && HTML_IS_CLUEFLOW (HTML_CLUE (cell)->head) && html_clueflow_is_empty (HTML_CLUEFLOW (HTML_CLUE (cell)->head)))
+		return TRUE;
+	return FALSE;
+}
+
 static void
 split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint level, GList **left, GList **right)
 {
 	HTMLObject *dup;
-	HTMLTable *nt;
 	HTMLTable *t = HTML_TABLE (self);
+	HTMLTable *dup_table;
 	HTMLTableCell *dup_cell;
 	HTMLTableCell *cell;
-	gint r, c, rows, cols, start_col, dup_row, dup_col;
+	gint r, c;
 
 	if (*left == NULL && *right == NULL) {
 		(*parent_class->split)(self, e, child, offset, level, left, right);
@@ -391,43 +398,88 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 	printf ("-- child end --\n");
 #endif
 
-	rows      = t->totalRows - dup_cell->row;
-	cols      = t->totalRows - 1 == dup_cell->row ? t->totalCols - dup_cell->col : t->totalCols;
-	start_col = t->totalRows - 1 == dup_cell->row ? dup_cell->col : 0;
-	dup_row   = dup_cell->row;
-	dup_col   = dup_cell->col;
+	if (dup_cell->row == t->totalRows - 1 && dup_cell->col == t->totalCols - 1 && cell_is_empty (dup_cell)) {
+		html_object_destroy (HTML_OBJECT (dup_cell));
+		g_list_free (*right);
+		*right = NULL;
+		dup = html_engine_new_text_empty (e);
+		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
+		e->cursor->position --;
+	} else if (cell->col == 0 && cell->row == 0 && cell_is_empty (cell)) {
+		gint r, c;
 
-	dup = HTML_OBJECT (g_new0 (HTMLTable, 1));
-	copy_sized (self, dup, rows, cols);
-        nt = HTML_TABLE (dup);
+		r = cell->row;
+		c = cell->col;
+		remove_cell (t, cell);
+		html_object_destroy (HTML_OBJECT (cell));
+		html_table_set_cell (t, r, c, dup_cell);
+		html_table_cell_set_position (t->cells [r][c], r, c);
 
-	for (r = 0; r < nt->totalRows; r ++)
-		for (c = 0; c < t->totalCols; c ++) {
-			HTMLTableCell *act_cell;
+		g_list_free (*left);
+		*left = NULL;
+		dup = self;
+		self = html_engine_new_text_empty (e);
+		html_clue_append_after (HTML_CLUE (self->parent), self, dup);
+		html_clue_remove (HTML_CLUE (self->parent), dup);
+		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
+		e->cursor->object = self;
+		e->cursor->offset = 0;
+		e->cursor->position --;
+	} else {
+		dup = HTML_OBJECT (g_new0 (HTMLTable, 1));
+		dup_table = HTML_TABLE (dup);
+		copy_sized (self, dup, t->totalRows, t->totalCols);
+		for (r = 0; r < t->totalRows; r ++) {
+			for (c = 0; c < t->totalCols; c ++) {
+				HTMLTableCell *cc;
 
-			act_cell = t->cells [dup_row + r][start_col + c];
-			if (act_cell) {
-				if (act_cell->row == dup_row && act_cell->col == dup_col)
-					act_cell = dup_cell;
-				if ((act_cell->row == dup_row && act_cell->col >= dup_col)
-				    || act_cell->row > dup_row) {
-					html_table_set_cell (nt, r, c, act_cell);
-					if (dup_row + r == act_cell->row && start_col + c == act_cell->col)
-						html_table_cell_set_position (act_cell, r, c);
+				cc = t->cells [r][c];
+				if (cc && cc->row == r && cc->col == c) {
+					if ((r == cell->row && c < cell->col) || r < cell->row) {
+						/* empty cell in dup table */
+						html_table_set_cell (dup_table, r, c, html_engine_new_cell (e, dup_table));
+						html_table_cell_set_position (dup_table->cells [r][c], r, c);
+					} else if ((r == dup_cell->row && c > dup_cell->col) || r > dup_cell->row) {
+						/* move cc to dup table */
+						remove_cell (t, cc);
+						html_table_set_cell (dup_table, r, c, cc);
+						html_table_cell_set_position (dup_table->cells [r][c], r, c);
+						/* place empty cell in t table */
+						html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
+						html_table_cell_set_position (t->cells [r][c], r, c);
+
+					} else {
+						if (r == cell->row && c == cell->col) {
+							if (r != dup_cell->row || c != dup_cell->col) {
+								/* empty cell in dup table */
+								html_table_set_cell (dup_table, r, c,
+										     html_engine_new_cell (e, dup_table));
+								html_table_cell_set_position (dup_table->cells [r][c], r, c);
+							}
+
+						}
+						if (r == dup_cell->row && c == dup_cell->col) {
+							/* dup_cell to dup table */
+							if ((r != cell->row || c != cell->col)
+							    && HTML_OBJECT (dup_cell)->parent == self)
+								remove_cell (t, cell);
+
+							html_table_set_cell (dup_table, r, c, dup_cell);
+							html_table_cell_set_position (dup_table->cells [r][c], r, c);
+
+							if (r != cell->row || c != cell->col) {
+								/* empty cell in orig table */
+								html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
+								html_table_cell_set_position (t->cells [r][c], r, c);
+							}
+						}
+					}
 				}
-				if (r || start_col + c > cell->col)
-					t->cells [dup_row + r][start_col + c] = NULL;
-
 			}
-					
 		}
 
-	t->totalRows = cell->row + 1;
-	if (cell->row == 0)
-		t->totalCols = cell->col + 1;
-
-	if (self->parent && HTML_OBJECT_TYPE (self->parent) != HTML_TYPE_TABLE)
 		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
+	}
 
 	*left  = g_list_prepend (*left, self);
 	*right = g_list_prepend (*right, dup);
@@ -450,15 +502,11 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 }
 
 static gboolean
-merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList *left, GList *right)
+could_merge (HTMLTable *t1, HTMLTable *t2)
 {
-	HTMLTable *t1 = HTML_TABLE (self);
-	HTMLTable *t2 = HTML_TABLE (with);
-	HTMLTableCell *c1 = HTML_TABLE_CELL (left->data);
-	HTMLTableCell *c2 = HTML_TABLE_CELL (right->data);
-	gint r, c, end_col, end_row, start_col;
-	end_col = 0;
-	
+	gint r, c;
+	gboolean first = TRUE;
+
 	if (t1->specified_width != t2->specified_width
 	    || t1->spacing != t2->spacing
 	    || t1->padding != t2->padding
@@ -466,15 +514,83 @@ merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList *left, GList *ri
 	    || t1->capAlign != t2->capAlign
 	    || (t1->bgColor && t2->bgColor && !gdk_color_equal (t1->bgColor, t2->bgColor))
 	    || (t1->bgColor && !t2->bgColor) || (!t1->bgColor && t2->bgColor)
-	    || t1->bgPixmap != t2->bgPixmap)
+	    || t1->bgPixmap != t2->bgPixmap
+	    || t1->totalCols != t2->totalCols || t1->totalRows != t2->totalRows)
 		return FALSE;
+
+	for (r = 0; r < t1->totalRows; r ++) {
+		for (c = 0; c < t1->totalCols; c ++) {
+			HTMLTableCell *c1, *c2;
+
+			c1 = t1->cells [r][c];
+			c2 = t2->cells [r][c];
+			if (!c1 || !c2)
+				return FALSE;
+
+			if (first) {
+				if (!cell_is_empty (c2))
+					first = FALSE;
+			} else {
+				if (!cell_is_empty (c1))
+					return FALSE;
+			}
+		}
+	}
+
+	return TRUE;
+}
+
+static HTMLTableCell *
+object_get_parent_cell (HTMLObject *o, HTMLObject *parent_table)
+{
+	while (o) {
+		if (o->parent == parent_table)
+			return HTML_TABLE_CELL (o);
+		o = o->parent;
+	}
+
+	return NULL;
+}
+
+static void
+update_cursor (HTMLCursor *cursor, HTMLTableCell *c)
+{
+	cursor->object = html_object_get_head_leaf (HTML_OBJECT (c));
+	cursor->offset = 0;
+}
+
+static void
+move_cell (HTMLTable *t1, HTMLTable *t2, HTMLTableCell *c1, HTMLTableCell *c2,
+	   HTMLTableCell *cursor_cell_1, HTMLTableCell *cursor_cell_2, gint r, gint c,
+	   HTMLCursor *cursor_1, HTMLCursor *cursor_2)
+{
+	if (cursor_1 && cursor_cell_1 == c1)
+		update_cursor (cursor_1, c2);
+	if (cursor_2 && cursor_cell_2 == c1)
+		update_cursor (cursor_2, c2);
+	remove_cell (t1, c1);
+	html_object_destroy (HTML_OBJECT (c1));
+	remove_cell (t2, c2);
+	html_table_set_cell (t1, r, c, c2);
+	html_table_cell_set_position (t1->cells [r][c], r, c);
+}
+
+static gboolean
+merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList **left, GList **right, HTMLCursor *cursor)
+{
+	HTMLTable *t1 = HTML_TABLE (self);
+	HTMLTable *t2 = HTML_TABLE (with);
+	HTMLTableCell *cursor_cell_1 = NULL;
+	HTMLTableCell *cursor_cell_2 = NULL;
+	HTMLTableCell *cursor_cell_3 = NULL;
+	HTMLTableCell *prev_c1 = NULL;
+	HTMLTableCell *t1_tail = NULL;
+	gint r, c;
+	gboolean first = TRUE;
+	gboolean cursor_in_t2;
 
 #ifdef GTKHTML_DEBUG_TABLE
 	printf ("before merge\n");
-	printf ("left\n");
-	gtk_html_debug_dump_tree_simple (left->data, 0);
-	printf ("right\n");
-	gtk_html_debug_dump_tree_simple (right->data, 0);
 	printf ("-- self --\n");
 	gtk_html_debug_dump_tree_simple (self, 0);
 	printf ("-- with --\n");
@@ -482,68 +598,90 @@ merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList *left, GList *ri
 	printf ("-- end with --\n");
 #endif
 
-	if (t1->totalRows == 1) {
-		HTMLTableCell *head = HTML_TABLE_CELL (html_object_head (HTML_OBJECT (t2)));
+	if (!could_merge (t1, t2))
+		return FALSE;
 
-		if (head->col + 1 > t1->totalCols) {
-			gint inc_col = head->col - t1->totalCols + 1;
+	g_list_free (*left);
+	*left = NULL;
+	g_list_free (*right);
+	*right = NULL;
 
-			html_table_alloc_cell (t1, 0, head->col + 1);
-			for (c = t1->totalCols - 1; c >= 0; c--) {
-				HTMLTableCell *cell = t1->cells [0][c];
+	cursor_in_t2 = object_get_parent_cell (e->cursor->object, HTML_OBJECT (t2)) != NULL;
 
-				if (cell) {
-					if (cell->col == c)
-						html_table_cell_set_position (cell, 0, c + inc_col);
-					html_table_set_cell (t1, 0, c + inc_col, cell);
-					t1->cells [0][c] = NULL;
+	cursor_cell_1 = HTML_TABLE_CELL (object_get_parent_cell (e->cursor->object, HTML_OBJECT (t1)));
+	if (cursor)
+		cursor_cell_2 = HTML_TABLE_CELL (object_get_parent_cell (cursor->object, HTML_OBJECT (t1)));
+	cursor_cell_3 = HTML_TABLE_CELL (object_get_parent_cell (e->cursor->object, HTML_OBJECT (t2)));
+
+	for (r = 0; r < t1->totalRows; r ++) {
+		for (c = 0; c < t1->totalCols; c ++) {
+			HTMLTableCell *c1, *c2;
+
+			c1 = t1->cells [r][c];
+			c2 = t2->cells [r][c];
+
+			if (first) {
+				if (!cell_is_empty (c2)) {
+					t1_tail = prev_c1;
+					if (cell_is_empty (c1)) {
+						move_cell (t1, t2, c1, c2, cursor_cell_1, cursor_cell_2,
+							   r, c, e->cursor, cursor);
+						c1 = c2;
+					} else {
+						*left  = html_object_tails_list (HTML_OBJECT (c1));
+						*right = html_object_heads_list (HTML_OBJECT (c2));
+						html_object_remove_child (HTML_OBJECT (t2), HTML_OBJECT (c2));
+						if (e->cursor->object == HTML_OBJECT (t1)) {
+							GList *list;
+
+							e->cursor->object = html_object_get_tail_leaf (HTML_OBJECT (c1));
+							e->cursor->offset = html_object_get_length (e->cursor->object);
+							e->cursor->position -= (t1->totalRows - c1->row - 1)*t1->totalCols
+								+ (t1->totalCols - c1->col);
+							for (list = *left; list; list = list->next)
+								if (list->data && HTML_IS_TABLE (list->data))
+									e->cursor->position --;
+
+							/* printf ("3rd dec: %d t1_tail %d,%d\n",
+								(t1->totalRows - c1->row - 1)*t1->totalCols
+								+ (t1->totalCols - c1->col), c1->row, c1->col); */
+
+						}
+					}
+					first = FALSE;
+				} else {
+					if (cursor_cell_3 && cursor_cell_3 == c2)
+						e->cursor->object = html_object_get_head_leaf (HTML_OBJECT (c1));
 				}
+			} else {
+				move_cell (t1, t2, c1, c2, cursor_cell_1, cursor_cell_2,
+					   r, c, e->cursor, cursor);
+				c1 = c2;
 			}
+			prev_c1 = c1;
 		}
 	}
 
-	for (c = 0; c < t1->totalCols; c++)
-		if (t1->cells [t1->totalRows - 1][c])
-			end_col = c;
+	if (!t1_tail)
+		t1_tail = prev_c1;
 
-	end_row   = t1->totalRows - 1;
-	start_col = end_col;
-	if (t2->totalRows > 1) {
-		for (c = 0; c < MIN (end_col, t2->totalCols); c++)
-			if (t2->cells [0][c]) {
-				end_row ++;
-				start_col = 0;
-				break;
-			}
+	if (e->cursor->object == self && t1_tail) {
+		e->cursor->object = html_object_get_tail_leaf (HTML_OBJECT (t1_tail));
+		e->cursor->offset = html_object_get_length (HTML_OBJECT (e->cursor->object));
+		e->cursor->position -= (t1->totalRows - t1_tail->row - 1)*t1->totalCols
+			+ (t1->totalCols - t1_tail->col);
+		/* printf ("1st dec: %d t1_tail %d,%d\n", (t1->totalRows - t1_tail->row - 1)*t1->totalCols
+		   + (t1->totalCols - t1_tail->col), t1_tail->row, t1_tail->col); */
 	}
 
-	for (r = 0; r < t2->totalRows; r ++, end_row ++)
-		for (c = 0; c < t2->totalCols; c ++) {
-			HTMLTableCell *cell = t2->cells [r][c];
+	if (cursor_in_t2 && cursor && cursor_cell_2) {
+		e->cursor->position -= cursor_cell_2->row * t1->totalCols + cursor_cell_2->col + 1;
+		/* printf ("2nd dec: %d cell_2  %d,%d\n", cursor_cell_2->row * t1->totalCols + cursor_cell_2->col + 1,
+		   cursor_cell_2->row, cursor_cell_2->col); */
+	}
 
-			if (cell) {
-				if (cell->row == r && cell->col == c)
-					html_table_cell_set_position (cell, end_row, c);
-				html_table_alloc_cell (t1, end_row, c);
-				if (cell != c2 || c1->col != c2->col)
-					html_table_set_cell (t1, end_row, c, cell);
-				else
-					HTML_OBJECT (c2)->parent = NULL;
-
-				t2->cells [r][c] = NULL;
-			}
-		}
-
-	html_object_change_set (self, HTML_CHANGE_ALL_CALC);
-
-#ifdef GTKHTML_DEBUG_TABLE
-	printf ("after merge\n");
-	printf ("-- self --\n");
-	gtk_html_debug_dump_tree_simple (self, 0);
-	printf ("-- with --\n");
-	gtk_html_debug_dump_tree_simple (with, 0);
-	printf ("-- end merge --\n");
-#endif
+	if (cursor && cursor->object == with)
+		cursor->object = self;
 
 	return TRUE;
 }
@@ -791,6 +929,9 @@ void
 html_table_set_cell (HTMLTable *table, gint r, gint c, HTMLTableCell *cell)
 {
 	if (!table->cells [r][c]) {
+#ifdef GTKHTML_DEBUG_TABLE
+		printf ("set cell:    %d,%d %p\n", r, c, cell);
+#endif
 		table->cells [r][c] = cell;
 		HTML_OBJECT (cell)->parent = HTML_OBJECT (table);
 	}
@@ -838,7 +979,7 @@ calc_row_heights (HTMLTable *table,
 }
 
 static void
-calc_cells_size (HTMLTable *table, HTMLPainter *painter)
+calc_cells_size (HTMLTable *table, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLTableCell *cell;
 	gint r, c;
@@ -847,7 +988,7 @@ calc_cells_size (HTMLTable *table, HTMLPainter *painter)
 		for (c = 0; c < table->totalCols; c++) {
 			cell = table->cells[r][c];
 			if (cell && cell->col == c && cell->row == r)
-				html_object_calc_size (HTML_OBJECT (cell), painter);
+				html_object_calc_size (HTML_OBJECT (cell), painter, changed_objs);
 		}
 }
 
@@ -873,9 +1014,29 @@ html_table_set_cells_position (HTMLTable *table, HTMLPainter *painter)
 		}
 }
 
+static void
+add_clear_area (GList **changed_objs, HTMLObject *o, gint x, gint w)
+{
+	HTMLObjectClearRectangle *cr;
+
+	if (!changed_objs)
+		return;
+
+	cr = g_new (HTMLObjectClearRectangle, 1);
+
+	cr->object = o;
+	cr->x = x;
+	cr->y = 0;
+	cr->width = w;
+	cr->height = o->ascent + o->descent;
+
+	*changed_objs = g_list_prepend (*changed_objs, cr);
+	/* NULL meens: clear rectangle follows */
+	*changed_objs = g_list_prepend (*changed_objs, NULL);
+}
+
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLTable *table = HTML_TABLE (o);
 	gint old_width, old_ascent, pixel_size;
@@ -887,20 +1048,42 @@ calc_size (HTMLObject *o,
 	if (!table->columnOpt->data)
 		html_table_set_max_width (o, painter, o->max_width);
 
-	calc_cells_size (table, painter);
+	calc_cells_size (table, painter, changed_objs);
 	calc_row_heights (table, painter);
 	html_table_set_cells_position (table, painter);
 
 	o->ascent = ROW_HEIGHT (table, table->totalRows) + pixel_size * table->border;
 	o->width  = COLUMN_OPT (table, table->totalCols) + pixel_size * table->border;
 	
-	if (o->width != old_width || o->ascent != old_ascent)
+	if (o->width != old_width || o->ascent != old_ascent) {
+		html_object_add_to_changed (changed_objs, o);
+		if (o->width < old_width) {
+			if (o->parent && HTML_IS_CLUEFLOW (o->parent)) {
+				switch (HTML_CLUE (o->parent)->halign) {
+				case HTML_HALIGN_NONE:
+				case HTML_HALIGN_LEFT:
+					add_clear_area (changed_objs, o, o->width, old_width - o->width);
+					break;
+				case HTML_HALIGN_RIGHT:
+					add_clear_area (changed_objs, o, - (old_width - o->width), old_width - o->width);
+					break;
+				case HTML_HALIGN_CENTER:
+					/* FIXME +/-1 pixel */
+					add_clear_area (changed_objs, o, -(old_width - o->width)/2,
+							(old_width - o->width) / 2);
+					add_clear_area (changed_objs, o, o->width,
+							(old_width - o->width) / 2);
+					break;
+				}
+			}
+		}
 		return TRUE;
+	}
 
 	return FALSE;
 }
 
-#define NEW_INDEX(l,h) ((l+h) >> 1)
+#define NEW_INDEX(l,h) ((l+h) / 2)
 #undef  ARR
 #define ARR(i) g_array_index (a, gint, i)
 
@@ -931,6 +1114,9 @@ to_index (gint val, gint l, gint h)
 static void
 get_bounds (HTMLTable *table, gint x, gint y, gint width, gint height, gint *sc, gint *ec, gint *sr, gint *er)
 {
+	g_return_if_fail (table->rowHeights);
+	g_return_if_fail (table->columnOpt);
+
 	*sr = to_index (bin_search_index (table->rowHeights, 0, table->totalRows, y), 0, table->totalRows - 1);
 	if (y < ROW_HEIGHT (table, *sr) && (*sr) > 0)
 		(*sr)--;
@@ -1464,6 +1650,7 @@ html_table_set_max_width (HTMLObject *o,
 {
 	HTMLTable *table = HTML_TABLE (o);
 	gint *max_size, pixel_size, glue, border_extra = table->border ? 2 : 0;
+	gint min_width;
 
 	/* printf ("max_width: %d\n", max_width); */
 	pixel_size   = html_painter_get_pixel_size (painter);
@@ -1471,10 +1658,11 @@ html_table_set_max_width (HTMLObject *o,
 	max_width    = o->flags & HTML_OBJECT_FLAG_FIXEDWIDTH
 		? max_width = pixel_size * table->specified_width
 		: (o->percent
-		   ? MAX (((gdouble) MIN (100, o->percent) / 100 * max_width),
-			  html_object_calc_min_width (o, painter))
+		   ? ((gdouble) MIN (100, o->percent) / 100 * max_width)
 		   : MIN (html_object_calc_preferred_width (HTML_OBJECT (table), painter), max_width));
-
+	min_width = html_object_calc_min_width (o, painter);
+	if (max_width < min_width)
+		max_width = min_width;
 	/* printf ("corected to: %d\n", max_width); */
 	glue         = pixel_size * (table->border * 2 + (table->totalCols + 1) * table->spacing
 				     + (table->totalCols * border_extra));

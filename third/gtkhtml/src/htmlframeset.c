@@ -139,8 +139,7 @@ calc_dimension (GPtrArray *dim, gint *span, gint total)
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLFrameset *set = HTML_FRAMESET (o);
 	HTMLObject *frame = NULL;
@@ -185,7 +184,7 @@ calc_size (HTMLObject *o,
 					HTML_OBJECT (frame)->ascent = heights[r];
 					HTML_OBJECT (frame)->descent = 0;
 				}
-				html_object_calc_size (HTML_OBJECT (frame), painter);
+				html_object_calc_size (HTML_OBJECT (frame), painter, changed_objs);
 				
 				HTML_OBJECT (frame)->x = view_width - remain_x;
 				HTML_OBJECT (frame)->y = view_height + heights[r] - remain_y;

@@ -220,6 +220,8 @@ spell_add_to_session (GtkHTML *html, const gchar *word, gpointer data)
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) data;
 	CORBA_Environment   ev;
 
+	g_return_if_fail (word);
+
 	if (!cd->dict)
 		return;
 
@@ -233,6 +235,8 @@ spell_add_to_personal (GtkHTML *html, const gchar *word, gpointer data)
 {
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) data;
 	CORBA_Environment   ev;
+
+	g_return_if_fail (word);
 
 	if (!cd->dict)
 		return;
@@ -341,8 +345,13 @@ add_cb (BonoboListener    *listener,
 	gpointer           user_data)
 {
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
+	gchar *word;
 
-	GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, html_engine_get_word (cd->html->engine), ev);
+	word = html_engine_get_word (cd->html->engine);
+	g_return_if_fail (word);
+
+	GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, ev);
+	g_free (word);
 	check_next_word ((GtkHTMLControlData *) user_data, TRUE);
 }
 
@@ -354,8 +363,13 @@ ignore_cb (BonoboListener    *listener,
 	   gpointer           user_data)
 {
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
+	gchar *word;
 
-	GNOME_Spell_Dictionary_addWordToSession (cd->dict, html_engine_get_word (cd->html->engine), ev);
+	word = html_engine_get_word (cd->html->engine);
+	g_return_if_fail (word);
+
+	GNOME_Spell_Dictionary_addWordToSession (cd->dict, word, ev);
+	g_free (word);
 	check_next_word ((GtkHTMLControlData *) user_data, TRUE);
 }
 

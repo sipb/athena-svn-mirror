@@ -111,6 +111,8 @@
                                      pixtype="filename" pixname="@ICONSDIR@/16_copy.png"/>
 				     <menuitem name="EditPaste" verb="" accel="*Ctrl*V"
                                      pixtype="filename" pixname="@ICONSDIR@/16_paste.png"/>
+				     <separator/>
+				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
 			</placeholder>
 
 			<placeholder name="EditFindReplace">
@@ -123,8 +125,8 @@
 			</placeholder>
 
 			<placeholder name="EditMisc">
-				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
 				     <menuitem name="EditSpellCheck" verb=""/>
+				     <separator/>
 				     <menuitem name="EditProperties" verb=""
 				     pixtype="filename" pixname="@ICONSDIR@/properties-16.png"/>
 			</placeholder>

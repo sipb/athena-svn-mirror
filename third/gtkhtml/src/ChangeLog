@@ -1,3 +1,598 @@
+2001-11-05  Radek Doulik  <rodo@ximian.com>
+ 
+	* htmlengine-edit-cut-and-paste.c
+	(html_engine_cut_and_paste_begin): check for e->mark != NULL
+ 
+2001-11-05  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselection.h (html_selection_current_time): s/()/(void)/
+
+2001-11-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (get_cursor): if we are between two text objects, use
+	the second one fixes #14153
+
+2001-11-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-print.c (html_engine_print_with_header_footer): set
+	font manager defaults before we do test for fixed font
+
+2001-11-01  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_replace_word_with): disable selection,
+	don't store selection across replace
+
+	* htmlembedded.c (destroy): if changed_id > 0 then disconnect it
+
+	* htmlembedded.h: added changed_id, where we store handler id from
+	connected html_embedded_object_changed
+
+	* htmlembedded.c (html_embedded_object_changed): moved from
+	htmlengine.c and renamed
+
+2001-10-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* htmliframe.c (html_iframe_init): Set ->scroll before calling
+	`html_iframe_set_scrolling()'.  Fixes #14098.
+
+2001-10-30  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselection.c (html_selection_current_time): add helper
+	function.
+
+	* htmlselection.h (html_selection_current_time): add prototype.
+
+	* gtkhtml.c (gtk_html_set_base): add call to set the document
+	base.
+	(gtk_html_get_base): get the document base.
+	(gtk_html_cut): html_selection_current_time.
+	(gtk_html_copy): html_selection_current_time.
+	(gtk_html_paste): html_selection_current_time.
+	
+	* gtkhtml.h: add *_base prototypes.
+
+	* gtkhtml-private.h: add base_url member.
+
+	* htmliframe.c (html_iframe_init): use set_scrolling.
+	(html_iframe_set_scrolling): add.
+	(calc_size): use set_scrolling.
+
+	* htmliframe.h (html_iframe_set_scrolling): add helper function.
+
+	* htmlengine.c (block_end_div): set e->divAlign too.  Fixes 
+	Ximian #9167.
+	
+2001-10-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (html_table_set_max_width): set max_width to
+	min_width if min_width > max_width
+
+	* htmlengine-edit-cut-and-paste.c (insert_empty_paragraph): move
+	undo level end to wrap event
+	(html_engine_insert_text): added event emitting, it need to be
+	fixed later to have new event type for it, now it uses command
+	insert-paragraph
+	(html_engine_insert_text): wrap it in undo level
+
+	* gtkhtml.c (gtk_html_editor_event_command): added 'before' flag
+
+	* gtkhtml-enums.h: split GTK_HTML_EDITOR_EVENT_COMMAND in
+	GTK_HTML_EDITOR_EVENT_COMMAND_BEFORE and
+	GTK_HTML_EDITOR_EVENT_COMMAND_AFTER
+
+	* htmlimage.c (get_actual_width): fix scale for pixel size
+
+2001-10-30  Larry Ewing  <lewing@ximian.com>
+
+	* htmlcluev.c (do_layout): shut up compiler.
+
+	* htmltokenizer.c: get rid of cut & pasted functions they are in
+	gal now.
+
+2001-10-29  Larry Ewing  <lewing@ximian.com>
+
+	* htmltable.c (merge): shut up the compiler.
+
+	* htmlengine.c (parse_c): tweak reseting center.
+	
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+ 
+ 	* htmlengine.c (html_engine_init): Init `->pAlign' and
+ 	`->divAlign' to `HTML_ALIGN_NONE'.
+ 	(new_flow): Use `->pAlign' instead of `->divAlign'.
+ 	(block_end_clueflow_style): Likewise.
+ 	(block_end_div): Likewise.
+ 	(parse_table): Likewise.
+ 	(parse_a): Likewise.
+ 	(parse_c): Likewise.
+ 	(parse_d): Likewise.
+ 	(parse_h): Likewise.
+ 	(parse_p): Likewise.
+ 	(parse_p): Set the pAlign to be the same as the divAlign by
+ 	default when starting a new paragraph.  When closing a paragraph,
+ 	set pAlign to be the same as divAlign.
+ 	(parse_d): Set both pAlign and divAlign for `<div>'.
+
+2001-10-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (set_color): remove call to relayout
+
+	* htmlengine-edit-fontstyle.c (object_set_font_style): use
+	html_object_prev_not_slave
+	(set_color): ditto
+	(set_empty_flow_color): new function + undo
+	(set_empty_flow_style): ditto
+
+2001-10-29  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_destroy): timers live in the selection
+	updater too, clear it before we destroy the objects.
+
+	* htmlgdkpainter.c (alloc_e_font_try): use gdk_fontset_load (patch
+	from  Kjartan Maraas <kmaraas@gnome.org>).  see Ximian #11883.
+
+2001-10-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c: use gnome_font_get_width_utf8_sized
+
+	* htmlobject.c (html_object_cursor_backward): handle aligned clues
+
+	* htmlengine.c (html_engine_calc_min_width): use pixel_size
+
+	* htmlprinter.c (get_font_size): new helper function
+	(alloc_font): use get_font_size, which uses scale attribute
+
+	* htmlengine-print.c (html_engine_print_with_header_footer): set
+	scale
+
+	* htmlprinter.c: use scale attribute
+
+	* htmlprinter.h: added scale attribute
+
+	* htmlpainter.c (html_painter_get_font): check if font is non-NULL
+	before dereferencing
+
+	* htmlprinter.c (alloc_font): if we can't allocate selected face
+	and even Courier or Helvetica, fallback to first font from
+	gnome_font_family_list
+
+	* htmlfontmanager.c (html_font_manager_get_font): replace g_error
+	with g_warning and test if font is non-NULL when setting to font
+	manager
+
+	* htmlprinter.c (begin): added call to gnome_print_beginpage
+
+	* htmlengine-print.c (do_we_have_default_font): new helper
+	function
+	(html_engine_print_with_header_footer): don't print if we are
+	unable to allocate default font
+
+	* htmlcluev.c (check_point): check align_right_list too
+	(check_point): translate aligned clues coordinates
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* htmlselection.c (html_engine_select_interval): Peek the time
+	from `gtk_get_current_event()'.
+
+	* gtkhtml.c (get_current_time): New function to get the current
+	time from `gtk_get_current_event()' [if the latter fails, it just
+	resorts to `GDK_CURRENT_TIME'].
+	(gtk_html_paste): Use it instead of just `GDK_CURRENT_TIME' as the
+	timestamp.
+	(gtk_html_copy): Likewise.
+	(gtk_html_cut): Likewise.
+
+2001-10-29  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (command): check if word is non-NULL, don't leak it
+
+2001-10-28  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (command): stop insertion links on new paragraphs.
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_cut_line): wrap cut
+	line in an undo level.
+	(html_engine_set_insertion_link): set the insertion color if there
+	is a url.
+	(insert_empty_paragraph): the command resets the link for us now.
+	
+	* htmlimage.c (stop_anim): remove the stall timeout here as well.
+	(html_image_pointer_remove_stall): helper function.
+	(html_image_pointer_unref): use remove_stall.
+	(check_point): go before or after by splitting in the middle.
+	This is at least more usable that the old method.
+
+	* htmlengine.c (html_engine_destroy): stop all animations and
+	destroy stall timers before we enter the destroy processing.
+	
+	* gtkhtml.c: add accessor to the allow_frameset disable code.
+
+	* gtkhtml.h: add prototypes.
+
+2001-10-27  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (scroll_by_amount): fix this so that we never scroll
+	farther down the page than we want to (adj->val -
+	adj->page_size). Fixes Ximian #2504.
+
+	* htmltokenizer.c (in_entity): always collapse the entity even in
+	tags and element names.
+
+	* htmlengine.c (html_engine_destroy): make the engine safe for
+	reentrant calls that could result from destroying embedded objects
+	that might iterate the main loop. Fixes ximian #13699.
+
+2001-10-26  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (op_copy): handle cspan, rspan
+	added few g_return_if_fail's
+
+	* htmlclueflow.c (calc_size): if width_left < 0 and ! firstRun,
+	then break line here
+	(draw_background): don't call html_object_draw for parent as this
+	means we draw itself too (so when flow is drawed from drawing
+	queue, it's rendered twice which means uglyness for gdkxft) I've
+	tried to reproduce bug #6, for which this was intended as fix, but
+	can't reproduce it, so I hope #6 is fixed properly now.
+
+	* htmlobject.c (html_object_is_clue): added HTML_TYPE_CLUEALIGNED,
+	which Larry probably forgot commit
+
+2001-10-25  Larry Ewing  <lewing@ximian.com>
+
+        * htmlembedded.c (destroy): clean up the signals and unset the
+        object data so that even if the widget lives on if doesn't kill
+        us.
+        (html_embedded_allocate): rename for the fun of it.
+        (html_embedded_new_widget): pass em as object data so that the
+        signal will be removed when we destroy.
+
+	* htmltokenizer.c (flush_entity): don't add the TAG_ESCAPE to the
+	output when fluhing the entity.
+	(in_entity): don't collapse entities in tags or attributes.
+
+	* htmlimage.c (image_update_url): don't do anything if there is no
+	map.
+	(get_url): return the image->url if final->url is NULL.
+
+2001-10-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (insert_object): use
+	html_cursor_jump_to_position_no_spell
+	(insert_object_do): ditto
+	(insert_object): ditto
+
+	* htmlcursor.c (html_cursor_jump_to_position_no_spell): new
+	function, preserves engine's need_spell_check flag while jumps
+
+	* htmlengine-edit-cut-and-paste.c (append_object): remember
+	position when empty flow is already prepared
+
+	* htmlengine.c (check_cursor): new function, checks if cursor
+	position is valid
+
+	* htmlengine-edit-cut-and-paste.c (insert_object_do): save orig
+	cursor after split
+	(insert_object_do): preserve position before for orig
+	(isolate_tables): rewritten once more
+	(insert_undo_action): update to isolate_tables changes
+	(insert_setup_undo): ditto
+	(insert_object): ditto
+
+	* htmlobject.c (move_object_cursor): allow cursor moves in flow
+	where containers are mixed with leaf objects
+
+2001-10-24  Larry Ewing  <lewing@ximian.com>
+
+	* htmlobject.c (html_object_is_clue): add HTML_TYPE_CLUEALIGNED to
+	the type list.
+
+	* htmlimage.c (html_image_animation_new): initialize some
+	variables that were missed.
+
+	* htmlengine.c (html_engine_destroy): remove the thaw idle if we
+	are destroyed.
+
+2001-10-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (insert_empty_paragraph): added
+	add_undo parameter which specifies, if undo action should be added
+	(delete_object): ditto
+	(isolate_tables): rewritten
+	(insert_object): updated to new isolate_tables
+
+	* htmltable.c (op_copy): fill empty cells with cells with empty
+	texts, fix copying start condition
+
+2001-10-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (split): redo splits on table boundaries
+
+	* htmltokenizer.c (g_utf8_get_char_validated): make it static to
+	avoid compiler warning
+
+	* htmltable.c (merge): take care of prev_c1 when moving cells
+	handle case when merging two cells better - fix cursor position
+
+	* htmlclue.c (html_clue_append_after): be more carefull
+	(html_clue_append): ditto
+
+	* htmlengine-edit-cut-and-paste.c (insert_object_do): check for
+	clue
+
+	* htmlobject.c (html_object_is_clue): new function
+
+	* htmlclueflow.c (merge): merge always
+
+	* htmltable.c (split): add dup to parent clue
+	(merge): c1 = c2 to be sure c1_prev is valid
+
+2001-10-22  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclue.c (op_helper): don't do anything to last until we've
+	checked to make sure the clue isn't empty and last is not NULL.
+
+2001-10-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit.c (html_engine_select_word_editable): use
+	html_selection_word
+
+	* htmlselection.c (html_selection_word): new method
+	(word_interval): use html_selection_word
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_delete_container):
+	reorder selection related method calls
+	(html_engine_delete_n): ditto + added freeze/thaw
+
+	* htmlpainter.c (html_painter_draw_spell_error): return width of
+	spell error underline (which is width of underlined text)
+
+	* htmltextslave.c (draw_spell_errors): fixed misplaced
+	misspell-underlines, optimized
+
+2001-10-21  Larry Ewing  <lewing@ximian.com>
+
+	* htmldrawqueue.c (html_draw_queue_clear): take care of
+	pending_frees here this way we don't leak if when the queue is
+	cleared.
+	(html_draw_queue_flush): don't free free_pending obects here, just
+	don't draw them.
+
+	* htmlobject.c (destroy): make sure cleanup everything even if
+	redraw is pending, otherwise the drwaqueue code will leak this.
+
+2001-10-20  Larry Ewing  <lewing@ximian.com>
+
+	* htmliframe.c (copy): add a partial copy implementation to
+	make things slightly less prone to breaking.
+	(html_iframe_class_init): use copy.
+
+2001-10-19  Dan Winship  <danw@frotz.mysterion.org>
+
+	* gtkhtml-stream.c (gtk_html_stream_vprintf): Fix another
+	ppc-breaking stdarg buglet.
+
+2001-10-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlinterval.c (unselect_object): queue draw only if engine is
+	not frozen
+	(select_object): ditto
+
+	* htmlimage.c (update_or_redraw): use html_engine_flush_draw_queue
+	instead of html_draw_queue_flush and html_engine_queue_draw
+	instead of html_draw_queue_add
+
+	* htmlengine.c (html_engine_flush_draw_queue): flush only if not
+	frozen
+	(html_engine_freeze): flush draw queue before freeze
+
+	* htmlengine-edit-cut-and-paste.c (set_cursor_at_end_of_object):
+	preserve need_spell_check flag
+
+	* gtkhtml.c (expose): do simple draw as engine now handles frozen
+	state by itself
+
+	* htmlengine.c (html_engine_draw_real): renamed from
+	html_engine_draw
+	(html_engine_draw): handle frozen draws
+
+	* htmlclueflow.c (op_helper): remove slaves only when cut or in
+	copy result
+
+	* htmlclue.c (op_helper): make it work even when containing slaves
+
+	* htmlengine.c (html_engine_add_expose): new method, stores expose
+	rectangle in SList to be processed in thaw
+	(thaw_idle): call do_pending_expose, clear and reset
+	pending_expose list
+	(do_pending_expose): do pending exposes
+
+	* gtkhtml.c (expose): if engine is frozen, then add expose to
+	pending to be processed in final thaw
+
+	* htmlengine.c (thaw_idle): check for freeze_count if we aren't
+	frozen again
+	(html_engine_thaw): don't decrease freeze_count if it equals to 1,
+	do it in thaw_idle
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_copy_object): don't
+	freeze and thaw in copy, copy should not modify our tree, so we
+	don't need to update it after
+
+2001-10-18  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (update_embedded): go ahead and draw the
+	background.  This cuts down on flashing when switching pages
+	quickly.
+
+2001-10-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmltablecell.c (calc_size): fix rendering
+
+2001-10-18  Larry Ewing  <lewing@ximian.com>
+
+	* htmltokenizer.c: fix to guarantee no invalid utf8 sequences can
+	make it past any part of the tokenizer into the tokens.  This is
+	critical to prevent looping in g_utf8* on certain input.
+
+2001-10-17  Larry Ewing  <lewing@ximian.com>
+
+	* htmltext.c (html_text_set_text): update the text_len when we set
+	the text.
+
+	* htmlembedded.c (destroy): sink any widget that hasn't been
+	parented yet.
+
+2001-10-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (html_object_add_to_changed): new function, adds
+	object to changed list and tries to minimalize repeated drawing
+
+	* htmlengine-edit-cut-and-paste.c (delete_object_do): flush queue
+	before delete to avoid deleted object drawing
+
+	* htmlengine.c (html_engine_flush_draw_queue): make it possible
+	flush draw queue when engine is frozen
+
+	* htmltext.c (html_text_op_cut_helper): fix rendering
+
+2001-10-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselect.c (copy): implement enough of copy that it no longer
+	crashes when copied.
+
+2001-10-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (calc_size): fix rendering issues
+
+2001-10-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_nb_width): fix for case where more
+	than 2 non-breakable texts are in line, use get_next_nb_width
+	(get_next_nb_width): new helper function
+
+2001-10-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c: include <stdlib.h> for abs definition.
+
+	* htmlengine.h: add allow_frameset boolean.
+
+	* htmlengine.c (html_engine_init): add allow_frameset paramter.
+	(parse_f): only parse the frameset and frames if allow_frameset is
+	true.
+	(parse_n): only discard the noframes body if allow_frameset is
+	true.
+	(html_engine_init): initialize allow_frameset.
+
+	* htmltokenizer.c (add_byte): discard '\0' on input, it just
+	confuses the rest of the tokenizer and serves no purpose.
+
+2001-10-15  Radek Doulik  <rodo@ximian.com>
+
+	* handle "font size points" attribute everywhere
+
+	* gtkhtml-properties.h: added points attributes
+
+	* gtkhtml.c (selection_received): automagic links when pasting
+	text from selection
+
+	* htmlclueflow.c (add_clear_area): new helper function
+	(calc_size): use add_clear_area in case we need to erase area
+	behind flow, which has just shrinked
+
+	* htmlcluev.c (add_clear_area_behind): set width and height to
+	HTMLObjectClearRectangle
+
+	* htmlengine.c (clear_changed_area): use width and height from
+	HTMLObjectClearRectangle
+
+	* htmlobject.h: added width and height to HTMLObjectClearRectangle
+
+2001-10-14  Larry Ewing  <lewing@ximian.com>
+
+	* htmlimage.c (render_cur_frame): add hack to turn off alpha
+	blending durring an animation.  Since gifs are the only animation
+	type gdk-pixbuf supports it breaks nothing an makes for a big
+	spead increase.
+
+2001-10-14  Jon Trowbridge  <trow@ximian.com>
+
+	* htmlframe.c (html_frame_init): On second thought, maybe sharing
+	the tokenizers isn't such a good idea after all...
+
+	* htmliframe.c (html_iframe_init): Ditto.
+
+2001-10-13  Jon Trowbridge  <trow@ximian.com>
+
+	* htmliframe.c (html_iframe_init): The iframe's HTMLEngine needs
+	to share the parent's HTMLTokenizer, not a copy. (Bug #11638)
+
+	* htmlframe.c (html_frame_init): Likewise, the frame's HTMLEngine
+	needs to share the parent's HTMLTokenizer, not a copy. (also Bug
+	#11638)
+
+2001-10-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (draw_changed_objects): test if we already have
+	window
+
+	* htmlobject.c (html_object_engine_intersection): new function,
+	extracted
+	(html_object_engine_translation): ditto
+
+	* htmldrawqueue.c (draw_obj): refactorize, extracted few functions
+
+	* htmlcluev.c (do_layout): handle case where width is > max_width
+	and schedule area clear to changed_objs
+	also store changed objs to local list which is prepend to global
+	one on end
+
+	* htmlengine.c (draw_changed_objects): handle area clears
+	(clear_changed_area): do area clear here
+	(html_engine_intersection): new extracted function
+
+	* gtkhtml.c (gtk_html_begin): return NULL to avoid compiler
+	warning
+
+	* htmlclue.c (split): reset self::x,y to get right redraw in plain
+	text mode
+
+	* htmltext.c (get_tags): don't use </FONT size=...>, but just
+	</FONT>
+	(get_tags): join <tag> and </tag> additions together
+
+	* htmlclueflow.c (save): in case of PRE paragraph, write final \n
+	just after content
+	(write_pre_tags): don't write \n for PRE here
+	(save): don't put \n after <DIV>, </DIV>
+	(save): put alignment tags inside
+
+2001-10-12  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (gtk_html_private_calc_scrollbars): don't clip the
+	page width it leads to bad things.
+	(gtk_html_begin): add a precondition to try to see
+
+2001-10-09  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (get_pre_padding): fixed pre/post padding between
+	list and non list paragraphs
+	(need_list_begin): fix for list/non-list
+	(need_list_end): ditto
+
+	* htmlengine.c (parse_l): close flow on </li>
+
+	* htmlclueflow.c: fixed pre/post padding (was wrong between pre
+	and non-pre paragraphs with different indentation levels)
+	fixed list indentation (was wrong for indented lists and for inner
+	lists with longer indentation)
+	fixed pre/post padding on end of list
+	prettyfied save output
+	(write_pre_tags): fix list, nonlist paragraph on the same level
+
+	* htmlengine-save.c (get_body): add new line after <BODY>
+
 2001-10-09  Larry Ewing  <lewing@ximian.com>
 
 	* htmltextslave.c (get_offset_for_bounded_width): remove redundant

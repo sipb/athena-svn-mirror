@@ -293,6 +293,11 @@
 	    <class>GnomeFontPicker</class>
 	    <name>print_variable</name>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>font_set</name>
+	      <handler>changed</handler>
+	      <last_modification_time>Mon, 15 Oct 2001 18:13:14 GMT</last_modification_time>
+	    </signal>
 	    <title>Select HTML variable width font for printing</title>
 	    <preview_text>AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz</preview_text>
 	    <mode>GNOME_FONT_PICKER_MODE_FONT_INFO</mode>

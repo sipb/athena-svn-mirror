@@ -395,7 +395,7 @@ rule_insert_cb (GtkHTMLControlData *cd, gpointer get_data)
 	gchar *html;
 
 	html = get_sample_html (d, TRUE);
-	gtk_html_insert_html (d->cd->html, html);
+	gtk_html_append_html (d->cd->html, html);
 	g_free (html);
 	/* html_engine_insert_rule (cd->html->engine,
 				 d->length, d->length_percent ? d->length : 0, d->width,

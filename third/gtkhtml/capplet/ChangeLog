@@ -1,3 +1,10 @@
+2001-10-15  Radek Doulik  <rodo@ximian.com>
+
+	* main.c (APPLY): handle points attribute
+
+	* gtkhtml-capplet.glade: added change handler to print variable
+	font picker
+
 2001-09-12  Radek Doulik  <rodo@ximian.com>
 
 	* main.c (picker_clicked): set filter only for mono spaced fonts,

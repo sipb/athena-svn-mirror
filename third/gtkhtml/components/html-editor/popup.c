@@ -32,6 +32,7 @@
 #include "htmlcursor.h"
 #include "htmlengine.h"
 #include "htmllinktext.h"
+#include "htmlengine-edit.h"
 #include "htmlengine-edit-cut-and-paste.h"
 #include "htmlengine-edit-table.h"
 #include "htmlengine-edit-tablecell.h"
@@ -78,9 +79,11 @@ paste (GtkWidget *mi, GtkHTMLControlData *cd)
 static void
 remove_link (GtkWidget *mi, GtkHTMLControlData *cd)
 {
+	html_engine_selection_push (cd->html->engine);
 	if (!html_engine_is_selection_active (cd->html->engine))
-		html_engine_select_word (cd->html->engine);
+		html_engine_select_word_editable (cd->html->engine);
 	html_engine_insert_link (cd->html->engine, NULL, NULL);
+	html_engine_selection_pop (cd->html->engine);
 }
 
 static void
@@ -242,8 +245,13 @@ static void
 spell_add (GtkWidget *mi, GtkHTMLControlData *cd)
 {
 	HTMLEngine *e = cd->html->engine;
+	gchar *word;
 
-	spell_add_to_personal (cd->html, html_engine_get_word (e), cd);
+	word = html_engine_get_word (e);
+	if (word) {
+		spell_add_to_personal (cd->html, word, cd);
+		g_free (word);
+	}
 	html_engine_spell_check (e);
 }
 
@@ -251,8 +259,13 @@ static void
 spell_ignore (GtkWidget *mi, GtkHTMLControlData *cd)
 {
 	HTMLEngine *e = cd->html->engine;
+	gchar *word;
 
-	spell_add_to_session (cd->html, html_engine_get_word (e), cd);
+	word = html_engine_get_word (e);
+	if (word) {
+		spell_add_to_session (cd->html, word, cd);
+		g_free (word);
+	}
 	html_engine_spell_check (e);
 }
 

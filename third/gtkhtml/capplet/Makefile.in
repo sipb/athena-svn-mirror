@@ -388,6 +388,11 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gnome-bindings-prop.o: gnome-bindings-prop.c ../config.h \
+	gnome-bindings-prop.h
+main.o: main.c ../config.h ../src/gtkhtml-properties.h \
+	../src/gtkhtml-types.h ../src/gtkhtml-enums.h ../src/gtkhtml.h \
+	../src/htmltypes.h ../src/htmlenums.h gnome-bindings-prop.h
 
 info-am:
 info: info-am

@@ -148,7 +148,7 @@ static void add_undo (HTMLEngine *engine, ClueFlowStyleOperation *op);
 static void add_redo (HTMLEngine *engine, ClueFlowStyleOperation *op);
 
 static void
-undo_or_redo (HTMLEngine *engine, HTMLUndoData *data, HTMLUndoDirection dir)
+undo_or_redo (HTMLEngine *engine, HTMLUndoData *data, HTMLUndoDirection dir, guint position_after)
 {
 	ClueFlowStyleOperation *op, *new_op;
 	ClueFlowProps *props, *orig_props;
@@ -231,6 +231,7 @@ undo_action_from_op (HTMLEngine *engine,
 {
 	return html_undo_action_new ("paragraph style change",
 				     undo_or_redo, HTML_UNDO_DATA (op),
+				     html_cursor_get_position (engine->cursor),
 				     html_cursor_get_position (engine->cursor));
 }
 

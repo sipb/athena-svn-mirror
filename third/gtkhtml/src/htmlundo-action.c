@@ -25,7 +25,8 @@
 
 
 HTMLUndoAction *
-html_undo_action_new (const gchar *description, HTMLUndoFunc function, HTMLUndoData *data, guint position)
+html_undo_action_new (const gchar *description, HTMLUndoFunc function, HTMLUndoData *data,
+		      guint position, guint position_after)
 {
 	HTMLUndoAction *action;
 
@@ -34,12 +35,13 @@ html_undo_action_new (const gchar *description, HTMLUndoFunc function, HTMLUndoD
 
 	action = g_new (HTMLUndoAction, 1);
 
-	action->description = g_strdup (description);
-	action->function    = function;
-	action->data        = data;
-	action->position    = position;
+	action->description    = g_strdup (description);
+	action->function       = function;
+	action->data           = data;
+	action->position       = position;
+	action->position_after = position_after;
 #ifdef UNDO_DEBUG
-	action->is_level    = FALSE;
+	action->is_level       = FALSE;
 #endif
 	return action;
 }

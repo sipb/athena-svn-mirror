@@ -108,7 +108,8 @@ action_do_and_destroy_redo (HTMLEngine *engine, HTMLUndo *undo, GList **stack, H
 	action = HTML_UNDO_ACTION (first->data);
 
 	html_cursor_jump_to_position (engine->cursor, engine, action->position);
-	(* action->function) (engine, action->data, dir);
+	(* action->function) (engine, action->data, dir, action->position_after);
+	html_cursor_jump_to_position (engine->cursor, engine, action->position_after);
 
 	*stack = g_list_remove (first, first->data);
 	if (undo->level == 0) {
@@ -130,7 +131,8 @@ action_do_and_destroy_undo (HTMLEngine *engine, HTMLUndo *undo, HTMLUndoDirectio
 	action = HTML_UNDO_ACTION (first->data);
 
 	html_cursor_jump_to_position (engine->cursor, engine, action->position);
-	(* action->function) (engine, action->data, dir);
+	(* action->function) (engine, action->data, dir, action->position_after);
+	html_cursor_jump_to_position (engine->cursor, engine, action->position_after);
 
 	undo->undo.stack = g_list_remove (first, first->data);
 	if (undo->level == 0)
@@ -292,7 +294,7 @@ struct _HTMLUndoLevel {
 };
 typedef struct _HTMLUndoLevel HTMLUndoLevel;
 
-static void undo_step_action (HTMLEngine *e, HTMLUndoData *data, HTMLUndoDirection dir);
+static void undo_step_action (HTMLEngine *e, HTMLUndoData *data, HTMLUndoDirection dir, guint position_after);
 static void redo_level_begin (HTMLUndo *undo, const gchar *redo_desription, const gchar *undo_desription);
 static void redo_level_end   (HTMLUndo *undo);
 
@@ -380,7 +382,8 @@ redo_level_end (HTMLUndo *undo)
 		action = (HTMLUndoAction *) save_redo.stack->data;
 		html_undo_add_redo_action (undo, action = html_undo_action_new (level->description [HTML_UNDO_REDO],
 										undo_step_action,
-										HTML_UNDO_DATA (level), action->position));
+										HTML_UNDO_DATA (level),
+										action->position, action->position_after));
 #ifdef UNDO_DEBUG
 		action->is_level = TRUE;
 #endif
@@ -423,7 +426,8 @@ html_undo_level_end (HTMLUndo *undo)
 		action = html_undo_action_new (level->description [HTML_UNDO_UNDO],
 					       undo_step_action,
 					       HTML_UNDO_DATA (level),
-					       HTML_UNDO_ACTION (save_undo.stack->data)->position);
+					       HTML_UNDO_ACTION (save_undo.stack->data)->position,
+					       HTML_UNDO_ACTION (save_undo.stack->data)->position_after);
 #ifdef UNDO_DEBUG
 		action->is_level = TRUE;
 #endif
@@ -437,7 +441,7 @@ html_undo_level_end (HTMLUndo *undo)
 }
 
 static void
-undo_step_action (HTMLEngine *e, HTMLUndoData *data, HTMLUndoDirection dir)
+undo_step_action (HTMLEngine *e, HTMLUndoData *data, HTMLUndoDirection dir, guint position_after)
 {
 	HTMLUndo      *undo;
 	HTMLUndoLevel *level;

@@ -33,9 +33,6 @@ html_stream_mem_write (BonoboStream *stream,
 	
 	if (bhtml->html_stream) {
 		if (ev->_major == CORBA_NO_EXCEPTION) {
-			fwrite (buffer->_buffer, 1, buffer->_length, stdout);
-			fflush (stdout);
-			g_warning ("BATMAN");
 			gtk_html_stream_write (bhtml->html_stream, buffer->_buffer, buffer->_length);
 		} else {
 			gtk_html_stream_close (bhtml->html_stream, GTK_HTML_STREAM_OK);

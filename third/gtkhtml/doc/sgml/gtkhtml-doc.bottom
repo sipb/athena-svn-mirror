@@ -1,0 +1,5 @@
+    &gtkhtml-GtkHTMLEmbedded;
+    &GtkHTML;
+    &gtkhtml-gtkhtml-enums;
+    &gtkhtml-gtkhtml-stream;
+    &gtkhtml-gtkhtml-types;

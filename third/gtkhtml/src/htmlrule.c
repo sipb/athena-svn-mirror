@@ -91,8 +91,7 @@ fit_line (HTMLObject *o,
 }
 
 static gboolean
-calc_size (HTMLObject *self,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLRule *rule;
 	gint ascent, descent;

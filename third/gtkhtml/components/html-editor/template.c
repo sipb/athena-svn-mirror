@@ -139,6 +139,7 @@ get_sample_html (GtkHTMLEditTemplateProperties *d)
 	body   = html_engine_save_get_sample_body (d->cd->html->engine, NULL);
 	html   = g_strconcat (body, template, NULL);
 
+	g_free (template);
 	g_free (width);
 	g_free (align);
 	g_free (body);	
@@ -289,7 +290,7 @@ template_insert_cb (GtkHTMLControlData *cd, gpointer get_data)
 
 	position = e->cursor->position + template_templates [d->template].offset;
 	html = get_sample_html (d);
-	gtk_html_insert_html (d->cd->html, html);
+	gtk_html_append_html (d->cd->html, html);
 	g_free (html);
 	if (template_templates [d->template].offset >= 0)
 		html_cursor_jump_to_position (e->cursor, e, position);

@@ -68,22 +68,19 @@ ps_impl_load (BonoboPersistStream *ps,
 	do {
 		Bonobo_Stream_read (stream, READ_CHUNK_SIZE,
 				    &buffer, ev);
-		if (ev->_major != CORBA_NO_EXCEPTION)
+		if ((ev->_major != CORBA_NO_EXCEPTION)
+		    || (buffer->_length <= 0)) {
+		        CORBA_free (buffer);
 			break;
+		}
 
-		if (buffer->_length <= 0)
-			break;
 		gtk_html_write (html, handle, buffer->_buffer, buffer->_length);
 		CORBA_free (buffer);
 	} while (1);
 
-	if (ev->_major != CORBA_NO_EXCEPTION) {
-		gtk_html_end (html, handle, GTK_HTML_STREAM_ERROR);
-		bonobo_persist_stream_set_dirty (ps, TRUE);
-	} else {
-		CORBA_free (buffer);
-		gtk_html_end (html, handle, GTK_HTML_STREAM_OK);
-	}
+	bonobo_persist_stream_set_dirty (ps, TRUE);
+	gtk_html_end (html, handle, 
+		      (ev->_major == CORBA_NO_EXCEPTION) ? GTK_HTML_STREAM_OK : GTK_HTML_STREAM_ERROR);
 
 	if (was_editable)
 		gtk_html_set_editable (html, TRUE);
