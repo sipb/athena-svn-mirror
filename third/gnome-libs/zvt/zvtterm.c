@@ -1485,7 +1485,7 @@ request_paste (GtkWidget *widget, int type, gint32 time)
   GdkAtom string_atom;
 #ifdef ZVT_UTF
 #ifdef ZVT_MB
-  char *types[] = {"UTF-8", "COMPOUND_TEXT"};
+  char *types[] = {"UTF-8", "COMPOUND_TEXT", "STRING"};
 #else
   char *types[] = {"UTF-8", "STRING"};
 #endif /* ZVT_MB */
