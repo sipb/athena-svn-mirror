@@ -7,7 +7,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.11 1991-01-01 11:40:11 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.12 1991-01-08 16:46:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -217,7 +217,10 @@ main(argc,argv)
     if (len >= -256)
       switch (len) {
       case ERR_NO_SUCH_Q:
-	fprintf(stderr,"No such question\n");
+	if (i_show)
+	  fprintf(stderr,"No new messages\n");
+	else
+	  fprintf(stderr,"No such question\n");
 	break;
       case ERR_SERV:
 	fprintf(stderr,"Error on the server\n");
@@ -230,7 +233,7 @@ main(argc,argv)
         fprintf(stderr,"Don't use the -n option if you really want to be nosy.\n");
 	break;
       case ERR_NOT_HERE:
-	fprintf(stderr,"Uknown request\n");
+	fprintf(stderr,"Unknown request\n");
 	break;
       default:
 	fprintf(stderr,"%s\n",krb_err_txt[-len]);
