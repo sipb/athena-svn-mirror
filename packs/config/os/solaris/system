@@ -78,8 +78,12 @@ forceload: misc/obpsym
 *		set test_module:debug = 0x13
 
 
-set shmsys:shminfo_shmmax=16777216
-set shmsys:shminfo_shmseg=8
+* Change shared memory settings to improve gtk performance, per Sun's
+* release notes for Netscape 7.
+* (See http://docs.sun.com/source/817-0807/index.html).
+set shmsys:shminfo_shmmax=0x2000000
+set shmsys:shminfo_shmmni=0x1000
+set shmsys:shminfo_shmseg=0x100
 
 * Zero dosynctodr so that ntpd doesn't compete with the hardware time
 * of day clock for synchronization.
