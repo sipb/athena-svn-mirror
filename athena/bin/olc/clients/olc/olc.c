@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.8 1989-08-07 13:59:37 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.9 1989-08-07 14:31:40 tjcoppet Exp $";
 #endif 
 
 
@@ -343,7 +343,7 @@ olc_init()
 	  printf("the Massachusetts Institute of Technology.\n\n");
 	  if(OLC)
 	    {
-	      printf("Some commands are: \n\n");
+	      printf("Some common OLC commands are: \n\n");
 	      printf("\tsend  - send a message\n");
 	      printf("\tshow  - show new messages\n");
               printf("\tdone  - mark your question resolved\n");
