@@ -16,8 +16,8 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: raeburn $
- *      $Id: olcd.h,v 1.16 1990-02-20 05:51:19 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Id: olcd.h,v 1.17 1990-04-26 08:41:59 vanharen Exp $
  */
 
 #ifndef __olcd_h
@@ -440,9 +440,88 @@ extern "C" {
 #if is_cplusplus
 };
 #endif
-#else
-extern char * get_next_word ();
-extern void init_dbinfo ();
-extern void log_error ();
+
+#else /* __STDC__ */
+extern int	get_knuckle ();
+extern int	insert_knuckle ();
+extern int	insert_knuckle_in_user ();
+extern void	init_dbinfo ();
+extern void	load_user ();
+extern int	verify_topic ();
+extern ERRCODE	init_log ();
+extern int	is_topic ();
+extern int	owns_question ();
+extern int	insert_topic ();
+extern void	get_list_info ();
+extern int	load_db ();
+extern void	load_data ();
+extern ERRCODE	read_request ();
+extern int	authenticate ();
+extern int	find_knuckle ();
+extern int	get_user ();
+extern void	dump_data ();
+extern void	dump_request_stats ();
+extern void	dump_question_stats ();
+extern int	save_user_info ();
+extern int	match_knuckle ();
+extern int	match_maker ();
+extern int	send_person ();
+extern int	verify_instance ();
+extern int	get_instance ();
+extern int	send_list ();
+extern ERRCODE	terminate_log_answered ();
+extern ERRCODE	terminate_log_unanswered ();
+extern void	new_message ();
+extern int	list_user_knuckles ();
+extern int	list_queue ();
+extern int	connect_knuckles ();
+extern int	init_question ();
+extern void	free_new_messages ();
+
+/* notifications */
+extern ERRCODE	write_message_to_user ();
+extern ERRCODE	olc_broadcast_message ();
+
+/* user/question logs */
+extern void	log_message ();
+extern void	log_comment ();
+extern void	log_description ();
+extern void	log_mail ();
+extern void	log_daemon ();
+
+/* OLCD system logs */
+extern void	log_error ();
+extern void	log_status ();
+extern void	log_admin ();
+extern void	log_debug ();
+
+extern char *get_next_word();
+
+/* other libraries */
+/* Kerberos */
+#ifdef KERBEROS
+extern int krb_get_lrealm ();
+extern int krb_rd_req ();
+extern int dest_tkt ();
+extern int krb_get_svc_in_tkt ();
+
+#endif
+
+/* Zephyr */
+#if defined (ZEPHYR) && defined (ZVERSIONHDR)
+extern Code_t	ZInitialize ();
+/* This is inconsistent between Code_t and int for return types, but
+ * that's the way it goes...  */
+typedef int	(*OZMagicFunction) ();
+extern Code_t	ZSendNotice ();
+extern Code_t	ZIfNotice ();
+extern void	ZFreeNotice ();
+#endif /* Zephyr */
+
+/* Acl library */
+extern int	acl_check ();
+extern int	acl_add ();
+extern int	acl_delete ();
+
 #endif /* __STDC__ */
 #endif /* __olcd_h */
