@@ -1,4 +1,4 @@
-# $Id: packages,v 1.285 2004-10-04 20:51:20 ghudson Exp $
+# $Id: packages,v 1.286 2004-10-04 20:55:35 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -188,7 +188,7 @@ third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,libxklav
 third/gnome-audio
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
-third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
+third/gnome-libs		requires gtk,imlib,db,ORBit,esound
 third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
 third/gnome-mime-data		requires gettext
 third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
@@ -301,7 +301,6 @@ third/x11-ssh-askpass
 third/x3270
 third/xmh
 third/xntp			package ntp
-third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
 third/yelp			requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
 third/zenity			requires gtk2,libglade2,GConf2,libgnomecanvas,scrollkeeper,gettext
