@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.1 1989-11-17 14:17:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.2 1989-12-22 16:03:04 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -47,7 +47,11 @@ OInitialize()
 #ifdef HESIOD
   char **hp;
 
+#ifdef OLZ
+  if ((hp = hes_resolve("olz",OLC_SERV_NAME)) == NULL)
+#else
   if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
+#endif
     {	
 
       fprintf(stderr,
