@@ -1,4 +1,4 @@
-# $Id: packages,v 1.122 2001-03-09 20:31:04 ghudson Exp $
+# $Id: packages,v 1.123 2001-03-19 21:06:16 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -120,18 +120,14 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
 third/afsbin			package afs
-third/ammonite			requires gnome-libs,libxml,GConf,oaf,openssl
 third/audiofile			except linux
 third/bash
 third/bind
-third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
 third/bzip2			except linux
 third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf
 third/emacs			requires hesiod,krb5
 third/esound			except linux requires audiofile
-third/freetype
-third/GConf			requires gtk,oaf,ORBit
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
 third/gettext			except linux
@@ -140,7 +136,6 @@ third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf
-third/gnome-vfs			requires gnome-libs,control-center,oaf,GConf,bzip2
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
@@ -154,7 +149,6 @@ third/krb5			requires et package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
-third/libghttp
 third/libglade			requires gtk,gnome-libs,libxml
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
@@ -167,10 +161,8 @@ third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
 third/motif			on linux
 third/motif/clients/mwm		on solaris
-third/nautilus			requires freetype,ammonite,bonobo,gnome-vfs,libghttp
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
-third/oaf			requires libxml,ORBit,popt
 third/openssl
 third/ORBit			requires glib,gettext
 third/patch			on solaris
