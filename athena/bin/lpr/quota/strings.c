@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.2 1990-04-25 11:52:51 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.3 1990-07-03 16:17:42 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -14,6 +14,10 @@
 #include <krb.h>
 #include "quota_limits.h"
 #include <strings.h>
+#ifdef ultrix
+/* 'cause their broken */
+#undef NULL
+#endif
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
