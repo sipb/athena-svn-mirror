@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.19 1993-09-24 16:31:06 probe Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.20 1993-10-16 20:33:52 probe Exp $";
 #endif /* lint */
 
 /*
@@ -296,6 +296,7 @@ long nmins;
 		bother(slp4, msg4);
 
 	bother(0L, "That was the last time I'll tell you. Bye.");
+	(void) unlink(tempfile);
 	exit(0);
 }
 
