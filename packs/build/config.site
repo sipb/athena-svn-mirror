@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.25 1999-02-22 17:53:20 danw Exp $
+# $Id: config.site,v 1.26 1999-02-26 23:07:27 danw Exp $
 #
 
 athena=true
@@ -8,15 +8,9 @@ athena=true
 case "$HOSTTYPE" in
 	sun4)
 		CC=/usr/gcc/bin/gcc
-		WARN_CPPFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes -Werror"
 		;;
-	sgi)
+	*)
 		CC=cc
-		WARN_CPPFLAGS="-fullwarn -w2"
-		;;
-	linux)
-		CC=cc
-		WARN_CPPFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes -Werror"
 		;;
 esac
 

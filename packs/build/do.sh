@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.27 1999-02-19 17:29:07 danw Exp $
+# $Id: do.sh,v 1.28 1999-02-26 23:07:28 danw Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -100,18 +100,25 @@ SunOS)
 	PATH=/usr/ccs/bin:$athtoolroot/usr/athena/bin:/usr/bin:/usr/ucb
 	PATH=${PATH}:/usr/openwin/bin
 	compiler="/usr/gcc/bin/gcc -DSOLARIS"
+	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
+	ERROR_CFLAGS=-Werror
 	;;
 IRIX)
 	OS=irix
 	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
 	compiler=cc
+	WARN_CFLAGS=-fullwarn
+	ERROR_CFLAGS=-w2
 	;;
 Linux)
 	OS=linux
 	PATH=$athtoolroot/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
 	compiler=cc
+	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
+	ERROR_CFLAGS=-Werror
 	;;
 esac
+export WARN_CFLAGS ERROR_CFLAGS
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
