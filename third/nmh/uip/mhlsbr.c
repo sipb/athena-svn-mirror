@@ -2,7 +2,7 @@
 /*
  * mhlsbr.c -- main routines for nmh message lister
  *
- * $Id: mhlsbr.c,v 1.1.1.1 1999-02-07 18:14:14 danw Exp $
+ * $Id: mhlsbr.c,v 1.2 1999-04-20 20:03:28 danw Exp $
  */
 
 #include <h/mh.h>
@@ -434,6 +434,7 @@ mhl (int argc, char **argv)
 		SIGNAL (SIGINT, SIG_IGN);
 		SIGNAL2 (SIGQUIT, quitser);
 	    }
+	    SIGNAL2 (SIGPIPE, pipeser);
 	    m_popen (moreproc);
 	    ontty = PITTY;
 	} else {
