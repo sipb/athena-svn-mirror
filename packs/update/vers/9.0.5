@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	if [ sun4u = "$SUNPLATFORM" ]; then
+	    echo "SUNW1394x"			>> $LOCALPACKAGES
+	    echo "SUNWfwdcu"                    >> $LOCALPACKAGES
+	    echo "SUNWfwdcx"                    >> $LOCALPACKAGES
+	    echo "SUNWpiclr"                    >> $LOCALPACKAGES
+	    echo "SUNWpiclu"                    >> $LOCALPACKAGES
+	    echo "SUNWpiclx"                    >> $LOCALPACKAGES
+	    echo "SUNWusx.u"                    >> $LOCALPACKAGES
+	    echo "TSIpgx.u"                     >> $LOCALPACKAGES
+	    echo "TSIpgx.us"                    >> $LOCALPACKAGES
+	    echo "TSIpgxw"                      >> $LOCALPACKAGES
+	    echo "TSIpgxx.u"                    >> $LOCALPACKAGES
+	    echo "TSIpgxx.us"                   >> $LOCALPACKAGES
+	fi
+	;;
+sgi)
+	;;
+esac
