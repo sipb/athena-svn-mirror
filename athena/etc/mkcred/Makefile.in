@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1.4.1 1999-11-09 02:57:25 tb Exp $
+# $Id: Makefile.in,v 1.1.4.2 1999-11-09 03:04:34 tb Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -13,10 +13,11 @@ sbindir=@sbindir@
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
+DEFS=@DEFS@
 CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 all: mkcred
 
