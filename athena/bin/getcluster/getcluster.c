@@ -255,7 +255,8 @@ static void die(const char *fmt, ...)
  * There may be multiple records for the same variable, but not
  * multiple entries with the same variable and version.  There may be
  * at most one entry for a given variable that does not list a
- * version.
+ * version.  Records with a version less than the current workstation
+ * version are ignored.
  *
  * Discard records if they have a version greater than the current
  * workstation version and any of the following is true:
@@ -338,6 +339,8 @@ static void shellenv(char **hp, const char *ws_version, int bourneshell)
 	   * value. */
 	  if (!*compvers)
 	    strcpy(defaultval, compval);
+	  else if (vercmp(compvers, ws_version) < 0)
+	    continue;
 	  else if (((autoupdate && !strchr(flags, 't')) ||
 		    (vercmp(compvers, ws_version) == 0)))
 	    {
