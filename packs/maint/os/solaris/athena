@@ -1,4 +1,4 @@
-# $Id: athena,v 1.3 1999-02-09 20:26:54 ghudson Exp $
+# $Id: athena,v 1.4 1999-02-10 17:34:06 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -336,9 +336,6 @@ echo "Ending Athena startup tasks"
 
 	;;
 'stop')
-	if [ -s /var/athena/snmpd.pid ]; then
-		kill `cat /var/athena/snmpd.pid`
-	fi
 	if [ -s /var/athena/zhm.pid ]; then
 		kill `cat /var/athena/zhm.pid`
 	fi
