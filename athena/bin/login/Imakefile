@@ -7,4 +7,4 @@ MACHDEP=-DPOSIX -DSYSLOG42
 MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
 #endif
 build_program(login,login.c,,-lknet -lkrb -ldes -lhesiod)
-install_program(login,-o root -m 4555 login,/bin/login)
+install_program(login,-o root -m 4555,/bin/login)
