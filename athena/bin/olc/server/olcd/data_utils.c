@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.20 1990-08-20 04:47:46 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.21 1990-08-26 15:54:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.20 1990-08-20 04:47:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.21 1990-08-26 15:54:48 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -63,12 +63,10 @@ extern PROC         Proc_List[];
 static int validate_instance (KNUCKLE *);
 static int assign_instance (USER *);
 static int was_connected (KNUCKLE *, KNUCKLE *);
-void disconnect_knuckles (KNUCKLE *, KNUCKLE *);
 #else
 static int validate_instance ();
 static int assign_instance ();
 static int was_connected ();
-void disconnect_knuckles ();
 #endif /* STDC */
 
 
@@ -610,6 +608,7 @@ init_question(k,topic,text, machinfo)
   k->question->seen[0] = -1;
   k->question->comment[0] = '\0';
   k->question->topic_code = verify_topic(topic);
+  k->question->logfile_timestamp = 0L;
   (void) strcpy(k->title,k->user->title1);
   (void) strcpy(k->question->topic,topic);
   init_log(k, text, machinfo);
@@ -920,7 +919,7 @@ verify_instance(knuckle,instance)
 
   k = knuckle->user->knuckles;
    
-  for(i=0; i<= knuckle->user->no_knuckles; i++)
+  for(i=0; i< knuckle->user->no_knuckles; i++)
     if(((*(k+i))->instance == instance) && is_active((*(k+i))))
       return(SUCCESS);
   return(FAILURE);
