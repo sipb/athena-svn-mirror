@@ -36,10 +36,6 @@
 #include <sys/mkdev.h>
 #endif
 
-#ifndef SOLARIS
-#define SETPAG 
-#endif
-
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define file_exists(f) (access((f), F_OK) == 0)
 
@@ -63,6 +59,9 @@
 #endif
 #ifndef NOATTACH
 #define NOATTACH "/etc/noattach"
+#endif
+#ifndef NOCRACK
+#define NOCRACK "/etc/nocrack"
 #endif
 
 #define ATTACH "/bin/athena/attach"
@@ -359,7 +358,7 @@ struct passwd *p;
     }
     fprintf(etc_passwd, "%s:%s:%d:%d:%s:%s:%s\n",
 	    p->pw_name,
-	    p->pw_passwd,
+	    file_exists(NOCRACK) ? "*" : p->pw_passwd,
 	    p->pw_uid,
 	    p->pw_gid,
 	    p->pw_gecos,
@@ -509,7 +508,7 @@ char *athena_authenticate(user, passwd)
   signal(SIGCHLD, SIG_IGN);
 #endif
 #else
-  (void)wait(&status);
+  (void)waitpid(child, &status, 0);
 #endif
   memset(passwd, 0, strlen(passwd));
 
@@ -611,13 +610,13 @@ char *athena_attach(pw, dir, auth)
 #endif
   (void)waitpid(child, &status, 0);
 #ifdef POSIX
-  act.sa_handler= (void (*)()) SIG_DFL;
+  act.sa_handler= (void (*)()) SIG_IGN;
   (void) sigaction (SIGCHLD, &act, NULL);
 #else
   signal(SIGCHLD, SIG_IGN);
 #endif
 #else
-  (void)wait(&status);
+  (void)waitpid(child, &status, 0);
 #endif
 
 #ifdef POSIX
@@ -828,7 +827,7 @@ fork_dest_tkt(pw)
   signal(SIGCHLD, SIG_IGN);
 #endif
 #else
-  (void)wait(&status);
+  (void)waitpid(child, &status, 0);
 #endif
 }
 
