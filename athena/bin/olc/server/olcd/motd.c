@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.10 1991-04-10 22:09:30 lwvanels Exp $
+ *	$Id: motd.c,v 1.11 1991-09-22 11:54:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.10 1991-04-10 22:09:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.11 1991-09-22 11:54:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -29,6 +29,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/time.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#if defined(_AIX) && defined(_IBMR2)
+#include <time.h>
+#endif
 
 #ifdef DISCUSS
 #include <lumberjack.h>
@@ -251,7 +254,7 @@ char *buf;
 
   when = -1;
   gettimeofday(&tv,0);
-  now = localtime(&tv.tv_sec);
+  now = localtime((time_t *)&tv.tv_sec);
   
   p = index(buf,'\n');
   if (p != NULL) *p = '\0';
