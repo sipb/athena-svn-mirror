@@ -1,0 +1,948 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# We set GPATH here; this gives us semantics for GNU make
+# which are more like other make's VPATH.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+CC = @CC@
+CXX = @CXX@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
+FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
+FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
+FREETYPE_LIBS = @FREETYPE_LIBS@
+FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
+FRIBIDI_LIBS = @FRIBIDI_LIBS@
+FRIBIDI_PC = @FRIBIDI_PC@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
+INCLUDED_FT2_MODULES = @INCLUDED_FT2_MODULES@
+INCLUDED_WIN32_MODULES = @INCLUDED_WIN32_MODULES@
+INCLUDED_XFT_MODULES = @INCLUDED_XFT_MODULES@
+INCLUDED_X_MODULES = @INCLUDED_X_MODULES@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
+LT_VERSION_INFO = @LT_VERSION_INFO@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PANGO_API_VERSION = @PANGO_API_VERSION@
+PANGO_BINARY_AGE = @PANGO_BINARY_AGE@
+PANGO_INTERFACE_AGE = @PANGO_INTERFACE_AGE@
+PANGO_MAJOR_VERSION = @PANGO_MAJOR_VERSION@
+PANGO_MICRO_VERSION = @PANGO_MICRO_VERSION@
+PANGO_MINOR_VERSION = @PANGO_MINOR_VERSION@
+PANGO_MODULE_VERSION = @PANGO_MODULE_VERSION@
+PANGO_VERSION = @PANGO_VERSION@
+PERL = @PERL@
+PKGCONFIG_FREETYPE_LIBS = @PKGCONFIG_FREETYPE_LIBS@
+PKGCONFIG_XFT_LIBS = @PKGCONFIG_XFT_LIBS@
+PKGCONFIG_X_LIBS = @PKGCONFIG_X_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
+QTDIR = @QTDIR@
+RANLIB = @RANLIB@
+REBUILD = @REBUILD@
+STRIP = @STRIP@
+USP10_H = @USP10_H@
+VERSION = @VERSION@
+WIN32_LIBS = @WIN32_LIBS@
+XFT_CFLAGS = @XFT_CFLAGS@
+XFT_LIBS = @XFT_LIBS@
+ms_librarian = @ms_librarian@
+
+GPATH = $(srcdir)
+
+@HAVE_FREETYPE_TRUE@OPENTYPE_SUBDIR = @HAVE_FREETYPE_TRUE@opentype
+
+@HAVE_FRIBIDI_FALSE@FRIBIDI_SUBDIR = @HAVE_FRIBIDI_FALSE@mini-fribidi
+
+SUBDIRS = $(OPENTYPE_SUBDIR) $(FRIBIDI_SUBDIR)
+
+DIST_SUBDIRS = mini-fribidi opentype
+
+INCLUDES = \
+	-DPANGO_ENABLE_BACKEND				\
+	-DPANGO_ENABLE_ENGINE				\
+	-DSYSCONFDIR=\"$(sysconfdir)\"			\
+	-DLIBDIR=\"$(libdir)\"				\
+	-DMODULE_VERSION=\"$(PANGO_MODULE_VERSION)\"	\
+	-DG_DISABLE_DEPRECATED				\
+	$(GLIB_CFLAGS)					\
+	$(XFT_CFLAGS)					\
+	$(FONTCONFIG_CFLAGS)				\
+	$(FREETYPE_CFLAGS)				\
+	$(X_CFLAGS)					\
+	-I$(top_srcdir)
+
+@HAVE_X_TRUE@X_HFILES = @HAVE_X_TRUE@pangox.h
+@HAVE_X_FALSE@X_HFILES = 
+@HAVE_X_TRUE@X_BUILD_LIBS = @HAVE_X_TRUE@libpangox-1.0.la
+@HAVE_X_FALSE@X_BUILD_LIBS = 
+@HAVE_WIN32_TRUE@WIN32_HFILES = @HAVE_WIN32_TRUE@pangowin32.h
+@HAVE_WIN32_FALSE@WIN32_HFILES = 
+@HAVE_WIN32_TRUE@WIN32_BUILD_LIBS = @HAVE_WIN32_TRUE@libpangowin32-1.0.la
+@HAVE_WIN32_FALSE@WIN32_BUILD_LIBS = 
+@HAVE_XFT_TRUE@XFT_HFILES = @HAVE_XFT_TRUE@pangoxft.h pango-ot.h
+@HAVE_XFT_FALSE@XFT_HFILES = 
+@HAVE_XFT_TRUE@XFT_BUILD_LIBS = @HAVE_XFT_TRUE@libpangoxft-1.0.la
+@HAVE_XFT_FALSE@XFT_BUILD_LIBS = 
+@HAVE_FREETYPE_TRUE@FT2_HFILES = @HAVE_FREETYPE_TRUE@pangoft2.h pango-ot.h
+@HAVE_FREETYPE_FALSE@FT2_HFILES = 
+@HAVE_FREETYPE_TRUE@FT2_BUILD_LIBS = @HAVE_FREETYPE_TRUE@libpangoft2-1.0.la
+@HAVE_FREETYPE_FALSE@FT2_BUILD_LIBS = 
+
+@PLATFORM_WIN32_TRUE@no_undefined = @PLATFORM_WIN32_TRUE@-no-undefined
+
+@OS_WIN32_TRUE@pango_export_symbols = @OS_WIN32_TRUE@-export-symbols pango.def
+@OS_WIN32_TRUE@pangowin32_export_symbols = @OS_WIN32_TRUE@-export-symbols pangowin32.def
+@OS_WIN32_TRUE@pangoft2_export_symbols = @OS_WIN32_TRUE@-export-symbols pangoft2.def
+
+@OS_WIN32_TRUE@pango_win32res = @OS_WIN32_TRUE@pango-win32res.lo
+@OS_WIN32_TRUE@pangowin32_win32res = @OS_WIN32_TRUE@pangowin32-win32res.lo
+@OS_WIN32_TRUE@pangoft2_win32res = @OS_WIN32_TRUE@pangoft2-win32res.lo
+
+lib_LTLIBRARIES = libpango-1.0.la $(X_BUILD_LIBS) $(WIN32_BUILD_LIBS) $(XFT_BUILD_LIBS) $(FT2_BUILD_LIBS)
+
+@MS_LIB_AVAILABLE_TRUE@noinst_DATA = @MS_LIB_AVAILABLE_TRUE@pango-$(PANGO_API_VERSION).lib pangoft2-$(PANGO_API_VERSION).lib pangowin32-$(PANGO_API_VERSION).lib
+
+bin_PROGRAMS = pango-querymodules
+
+pango_built_headers = pango-enum-types.h
+pango_built_cfiles = pango-enum-types.c
+
+libpango_1_0_la_SOURCES = \
+	break.c 	   \
+	fonts.c 	   \
+	glyphstring.c 	   \
+	mapping.c 	   \
+	modules.c 	   \
+	pango-attributes.c \
+	pango-color.c	   \
+	pango-context.c    \
+	pango-coverage.c   \
+	pango-fontmap.c	   \
+	pango-fontset.c	   \
+	pango-glyph-item.c \
+	pango-intset.c	   \
+	pango-intset.h	   \
+	pango-item.c	   \
+	pango-layout.c	   \
+	pango-markup.c	   \
+	pango-tabs.c	   \
+	pango-utils.c	   \
+	reorder-items.c    \
+	shape.c	           \
+	$(pango_built_cfiles)
+
+
+libpangox_1_0_la_SOURCES = \
+	modules.h 	   \
+	module-defs-x.c	   \
+	pangox.c	   \
+	pangox-private.h   \
+	pangox-fontcache.c \
+	pangox-fontmap.c   \
+	pango-indic.c
+
+
+libpango_1_0_la_LDFLAGS = \
+	-version-info $(LT_VERSION_INFO)	\
+	$(GLIB_LIBS)				\
+	$(no_undefined) $(pango_export_symbols)
+
+@HAVE_FRIBIDI_TRUE@libpango_1_0_la_LIBADD = @HAVE_FRIBIDI_TRUE@$(pango_win32res)
+@HAVE_FRIBIDI_FALSE@libpango_1_0_la_LIBADD = @HAVE_FRIBIDI_FALSE@mini-fribidi/libmini-fribidi.la $(pango_win32res)
+libpango_1_0_la_DEPENDENCIES = $(pango_win32res)
+
+libpangox_1_0_la_LDFLAGS = -version-info $(LT_VERSION_INFO)
+libpangox_1_0_la_LIBADD = libpango-$(PANGO_API_VERSION).la $(INCLUDED_X_MODULES) $(X_LIBS) $(X_EXTRA_LIBS)
+libpangox_1_0_la_DEPENDENCIES = $(INCLUDED_X_MODULES) libpango-$(PANGO_API_VERSION).la
+
+libpangowin32_1_0_la_SOURCES = \
+	pangowin32.h		\
+	pangowin32.c		\
+	pangowin32-private.h	\
+	pangowin32-fontcache.c	\
+	pangowin32-fontmap.c	\
+	module-defs-win32.c
+
+
+libpangowin32_1_0_la_LDFLAGS = -version-info $(LT_VERSION_INFO)	\
+	$(GLIB_LIBS)						\
+	$(no_undefined) $(pangowin32_export_symbols)
+
+libpangowin32_1_0_la_LIBADD = libpango-$(PANGO_API_VERSION).la $(INCLUDED_WIN32_MODULES) $(WIN32_LIBS) $(pangowin32_win32res)
+libpangowin32_1_0_la_DEPENDENCIES = $(INCLUDED_WIN32_MODULES) libpango-$(PANGO_API_VERSION).la $(pangowin32_win32res)
+
+libpangoxft_1_0_la_SOURCES = \
+	pangoxft-font.c		\
+	pangoxft-fontmap.c      \
+	pangoxft-private.h	\
+	module-defs-xft.c
+
+
+libpangoxft_1_0_la_LDFLAGS = -version-info $(LT_VERSION_INFO)
+libpangoxft_1_0_la_LIBADD = opentype/libpango-ot.la libpango-$(PANGO_API_VERSION).la $(INCLUDED_XFT_MODULES) $(XFT_LIBS) 
+libpangoxft_1_0_la_DEPENDENCIES = $(INCLUDED_XFT_MODULES) libpango-$(PANGO_API_VERSION).la
+
+libpangoft2_1_0_la_SOURCES = \
+	pangoft2.h		\
+	pangoft2.c		\
+	pangoft2-private.h	\
+	pangoft2-fontmap.c	\
+	module-defs-ft2.c
+
+
+libpangoft2_1_0_la_LDFLAGS = -version-info $(LT_VERSION_INFO)	\
+	$(GLIB_LIBS)						\
+	$(no_undefined) $(pangoft2_export_symbols)
+
+libpangoft2_1_0_la_LIBADD = opentype/libpango-ot.la libpango-$(PANGO_API_VERSION).la $(INCLUDED_FT2_MODULES) $(FONTCONFIG_LIBS) $(pangoft2_win32res)
+libpangoft2_1_0_la_DEPENDENCIES = $(INCLUDED_FT2_MODULES) libpango-$(PANGO_API_VERSION).la
+
+pangoincludedir = $(includedir)/pango-1.0/pango
+
+pango_headers = \
+	pango.h		   \
+	pango-attributes.h \
+	pango-break.h	   \
+	pango-context.h	   \
+	pango-coverage.h   \
+	pango-engine.h	   \
+	pango-font.h       \
+	pango-fontmap.h	   \
+	pango-fontset.h    \
+	pango-glyph.h	   \
+	pango-glyph-item.h \
+	pango-indic.h	   \
+	pango-item.h	   \
+	pango-layout.h	   \
+	pango-modules.h	   \
+	pango-tabs.h	   \
+	pango-types.h	   \
+	pango-utils.h
+
+
+pangoinclude_HEADERS = \
+	$(pango_headers)   	\
+	$(pango_built_headers)	\
+	$(X_HFILES)		\
+	$(XFT_HFILES)           \
+	$(FT2_HFILES)		\
+	$(WIN32_HFILES)
+
+
+#
+# As a temporary hack, we pull in libpangox here so that we can link
+#
+pango_querymodules_SOURCES = \
+	querymodules.c
+
+@HAVE_XFT_TRUE@pango_querymodules_LDADD = @HAVE_XFT_TRUE@$(FT2_BUILD_LIBS) $(X_BUILD_LIBS) libpangoxft-$(PANGO_API_VERSION).la $(GLIB_LIBS) $(FRIBIDI_LIBS) $(XFT_LIBS) $(FONTCONFIG_LIBS)
+@HAVE_XFT_FALSE@pango_querymodules_LDADD = @HAVE_XFT_FALSE@$(FT2_BUILD_LIBS) $(X_BUILD_LIBS) $(WIN32_BUILD_LIBS) $(GLIB_LIBS) $(FRIBIDI_LIBS) $(X_LIBS) $(FONTCONFIG_LIBS) $(X_EXTRA_LIBS)
+@HAVE_XFT_TRUE@pango_querymodules_DEPENDENCIES = @HAVE_XFT_TRUE@$(FT2_BUILD_LIBS) $(X_BUILD_LIBS) libpangoxft-$(PANGO_API_VERSION).la libpango-$(PANGO_API_VERSION).la
+@HAVE_XFT_FALSE@pango_querymodules_DEPENDENCIES = @HAVE_XFT_FALSE@$(FT2_BUILD_LIBS) $(X_BUILD_LIBS) $(WIN32_BUILD_LIBS) libpango-$(PANGO_API_VERSION).la
+
+EXTRA_DIST = \
+	$(pango_built_headers)			\
+	module-defs-ft2.c.win32			\
+	module-defs-win32.c.win32		\
+	module-defs.h				\
+	pangofc-fontmap.cI			\
+	pango.def				\
+	pangowin32.def				\
+	pangoft2.def				\
+	makefile.msc				\
+	pango.rc				\
+	pango.rc.in				\
+	pangoft2.rc				\
+	pangoft2.rc.in				\
+	pangowin32.rc				\
+	pangowin32.rc.in
+
+
+CLEANFILES = \
+	pango-enum-types.h			\
+	s-enum-types-h				\
+	pango-enum-types.c			\
+	s-enum-types-c
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES =  pango.rc pangoft2.rc pangowin32.rc
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+libpango_1_0_la_OBJECTS =  break.lo fonts.lo glyphstring.lo mapping.lo \
+modules.lo pango-attributes.lo pango-color.lo pango-context.lo \
+pango-coverage.lo pango-fontmap.lo pango-fontset.lo pango-glyph-item.lo \
+pango-intset.lo pango-item.lo pango-layout.lo pango-markup.lo \
+pango-tabs.lo pango-utils.lo reorder-items.lo shape.lo \
+pango-enum-types.lo
+libpangox_1_0_la_OBJECTS =  module-defs-x.lo pangox.lo \
+pangox-fontcache.lo pangox-fontmap.lo pango-indic.lo
+libpangowin32_1_0_la_OBJECTS =  pangowin32.lo pangowin32-fontcache.lo \
+pangowin32-fontmap.lo module-defs-win32.lo
+libpangoxft_1_0_la_OBJECTS =  pangoxft-font.lo pangoxft-fontmap.lo \
+module-defs-xft.lo
+libpangoft2_1_0_la_OBJECTS =  pangoft2.lo pangoft2-fontmap.lo \
+module-defs-ft2.lo
+bin_PROGRAMS =  pango-querymodules$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+pango_querymodules_OBJECTS =  querymodules.$(OBJEXT)
+pango_querymodules_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(noinst_DATA)
+
+HEADERS =  $(pangoinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in pango.rc.in pangoft2.rc.in \
+pangowin32.rc.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libpango_1_0_la_SOURCES) $(libpangox_1_0_la_SOURCES) $(libpangowin32_1_0_la_SOURCES) $(libpangoxft_1_0_la_SOURCES) $(libpangoft2_1_0_la_SOURCES) $(pango_querymodules_SOURCES)
+OBJECTS = $(libpango_1_0_la_OBJECTS) $(libpangox_1_0_la_OBJECTS) $(libpangowin32_1_0_la_OBJECTS) $(libpangoxft_1_0_la_OBJECTS) $(libpangoft2_1_0_la_OBJECTS) $(pango_querymodules_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps pango/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+pango.rc: $(top_builddir)/config.status pango.rc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+pangoft2.rc: $(top_builddir)/config.status pangoft2.rc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+pangowin32.rc: $(top_builddir)/config.status pangowin32.rc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libpango-1.0.la: $(libpango_1_0_la_OBJECTS) $(libpango_1_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libpango_1_0_la_LDFLAGS) $(libpango_1_0_la_OBJECTS) $(libpango_1_0_la_LIBADD) $(LIBS)
+
+libpangox-1.0.la: $(libpangox_1_0_la_OBJECTS) $(libpangox_1_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libpangox_1_0_la_LDFLAGS) $(libpangox_1_0_la_OBJECTS) $(libpangox_1_0_la_LIBADD) $(LIBS)
+
+libpangowin32-1.0.la: $(libpangowin32_1_0_la_OBJECTS) $(libpangowin32_1_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libpangowin32_1_0_la_LDFLAGS) $(libpangowin32_1_0_la_OBJECTS) $(libpangowin32_1_0_la_LIBADD) $(LIBS)
+
+libpangoxft-1.0.la: $(libpangoxft_1_0_la_OBJECTS) $(libpangoxft_1_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libpangoxft_1_0_la_LDFLAGS) $(libpangoxft_1_0_la_OBJECTS) $(libpangoxft_1_0_la_LIBADD) $(LIBS)
+
+libpangoft2-1.0.la: $(libpangoft2_1_0_la_OBJECTS) $(libpangoft2_1_0_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libpangoft2_1_0_la_LDFLAGS) $(libpangoft2_1_0_la_OBJECTS) $(libpangoft2_1_0_la_LIBADD) $(LIBS)
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+pango-querymodules$(EXEEXT): $(pango_querymodules_OBJECTS) $(pango_querymodules_DEPENDENCIES)
+	@rm -f pango-querymodules$(EXEEXT)
+	$(LINK) $(pango_querymodules_LDFLAGS) $(pango_querymodules_OBJECTS) $(pango_querymodules_LDADD) $(LIBS)
+
+install-pangoincludeHEADERS: $(pangoinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pangoincludedir)
+	@list='$(pangoinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pangoincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pangoincludedir)/$$p; \
+	done
+
+uninstall-pangoincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(pangoinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pangoincludedir)/$$p; \
+	done
+
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
+
+@SET_MAKE@
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = pango
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	for subdir in $(DIST_SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
+break.lo break.o : break.c pango-break.h pango-item.h pango-types.h \
+	pango-modules.h pango-engine.h pango-font.h pango-coverage.h \
+	pango-glyph.h
+fonts.lo fonts.o : fonts.c pango-types.h pango-font.h pango-coverage.h \
+	pango-types.h pango-fontmap.h pango-font.h pango-fontset.h \
+	pango-utils.h
+glyphstring.lo glyphstring.o : glyphstring.c pango-glyph.h pango-types.h \
+	pango-item.h pango-font.h pango-coverage.h
+mapping.lo mapping.o : mapping.c pango-glyph.h pango-types.h \
+	pango-item.h
+module-defs-ft2.lo module-defs-ft2.o : module-defs-ft2.c module-defs.h \
+	modules.h pango-engine.h pango-types.h pango-item.h \
+	pango-font.h pango-coverage.h pango-glyph.h pango-modules.h
+module-defs-x.lo module-defs-x.o : module-defs-x.c module-defs.h \
+	modules.h pango-engine.h pango-types.h pango-item.h \
+	pango-font.h pango-coverage.h pango-glyph.h pango-modules.h
+module-defs-xft.lo module-defs-xft.o : module-defs-xft.c module-defs.h \
+	modules.h pango-engine.h pango-types.h pango-item.h \
+	pango-font.h pango-coverage.h pango-glyph.h pango-modules.h
+modules.lo modules.o : modules.c ../config.h pango-modules.h \
+	pango-engine.h pango-types.h pango-item.h pango-font.h \
+	pango-coverage.h pango-glyph.h pango-utils.h
+pango-attributes.lo pango-attributes.o : pango-attributes.c \
+	pango-attributes.h pango-font.h pango-coverage.h pango-types.h \
+	pango-utils.h
+pango-color.lo pango-color.o : pango-color.c pango-attributes.h \
+	pango-font.h pango-coverage.h pango-types.h
+pango-context.lo pango-context.o : pango-context.c pango-context.h \
+	pango-font.h pango-coverage.h pango-types.h pango-fontmap.h \
+	pango-fontset.h pango-attributes.h pango-utils.h \
+	pango-modules.h pango-engine.h pango-item.h pango-glyph.h
+pango-coverage.lo pango-coverage.o : pango-coverage.c pango-coverage.h
+pango-enum-types.lo pango-enum-types.o : pango-enum-types.c pango.h \
+	pango-attributes.h pango-font.h pango-coverage.h pango-types.h \
+	pango-break.h pango-item.h pango-context.h pango-fontmap.h \
+	pango-fontset.h pango-engine.h pango-glyph.h pango-enum-types.h \
+	pango-layout.h pango-glyph-item.h pango-tabs.h
+pango-fontmap.lo pango-fontmap.o : pango-fontmap.c pango-fontmap.h \
+	pango-font.h pango-coverage.h pango-types.h pango-fontset.h \
+	pango-utils.h
+pango-fontset.lo pango-fontset.o : pango-fontset.c pango-types.h \
+	pango-font.h pango-coverage.h pango-types.h pango-fontset.h \
+	pango-utils.h pango-font.h
+pango-glyph-item.lo pango-glyph-item.o : pango-glyph-item.c \
+	pango-glyph-item.h pango-attributes.h pango-font.h \
+	pango-coverage.h pango-types.h pango-item.h pango-glyph.h
+pango-indic.lo pango-indic.o : pango-indic.c pango-glyph.h pango-types.h \
+	pango-item.h pango-indic.h
+pango-intset.lo pango-intset.o : pango-intset.c pango-intset.h
+pango-item.lo pango-item.o : pango-item.c pango-attributes.h \
+	pango-font.h pango-coverage.h pango-types.h pango-item.h
+pango-layout.lo pango-layout.o : pango-layout.c pango-glyph.h \
+	pango-types.h pango-item.h pango-layout.h pango-attributes.h \
+	pango-font.h pango-coverage.h pango-context.h pango-fontmap.h \
+	pango-fontset.h pango-glyph-item.h pango-tabs.h pango-break.h \
+	pango-engine.h
+pango-markup.lo pango-markup.o : pango-markup.c pango-attributes.h \
+	pango-font.h pango-coverage.h pango-types.h pango-utils.h
+pango-tabs.lo pango-tabs.o : pango-tabs.c pango-tabs.h pango-types.h
+pango-utils.lo pango-utils.o : pango-utils.c ../config.h pango-font.h \
+	pango-coverage.h pango-types.h pango-utils.h pango-font.h
+pangoft2-fontmap.lo pangoft2-fontmap.o : pangoft2-fontmap.c ../config.h \
+	pango-fontmap.h pango-font.h pango-coverage.h pango-types.h \
+	pango-fontset.h pango-utils.h pangoft2-private.h \
+	pango-modules.h pango-engine.h pango-item.h pango-glyph.h \
+	pangoft2.h pango-layout.h pango-attributes.h pango-context.h \
+	pango-fontmap.h pango-glyph-item.h pango-tabs.h modules.h \
+	pango-modules.h pangofc-fontmap.cI
+pangoft2.lo pangoft2.o : pangoft2.c ../config.h pango-utils.h \
+	pango-font.h pango-coverage.h pango-types.h pangoft2.h \
+	pango-layout.h pango-attributes.h pango-context.h \
+	pango-fontmap.h pango-fontset.h pango-glyph-item.h pango-item.h \
+	pango-glyph.h pango-tabs.h pangoft2-private.h pango-modules.h \
+	pango-engine.h
+pangox-fontcache.lo pangox-fontcache.o : pangox-fontcache.c pangox.h \
+	pango-layout.h pango-attributes.h pango-font.h pango-coverage.h \
+	pango-types.h pango-context.h pango-fontmap.h pango-fontset.h \
+	pango-glyph-item.h pango-item.h pango-glyph.h pango-tabs.h
+pangox-fontmap.lo pangox-fontmap.o : pangox-fontmap.c pango-fontmap.h \
+	pango-font.h pango-coverage.h pango-types.h pango-fontset.h \
+	pango-utils.h pangox-private.h pango-modules.h pango-engine.h \
+	pango-item.h pango-glyph.h pangox.h pango-layout.h \
+	pango-attributes.h pango-context.h pango-fontmap.h \
+	pango-glyph-item.h pango-tabs.h
+pangox.lo pangox.o : pangox.c pangox.h pango-layout.h pango-attributes.h \
+	pango-font.h pango-coverage.h pango-types.h pango-context.h \
+	pango-fontmap.h pango-fontset.h pango-glyph-item.h pango-item.h \
+	pango-glyph.h pango-tabs.h pango-utils.h pangox-private.h \
+	pango-modules.h pango-engine.h pango-intset.h modules.h \
+	pango-modules.h ../config.h
+pangoxft-font.lo pangoxft-font.o : pangoxft-font.c ../config.h \
+	pangoxft-private.h pangoxft.h pango-context.h pango-font.h \
+	pango-coverage.h pango-types.h pango-fontmap.h pango-fontset.h \
+	pango-attributes.h pango-ot.h pango-glyph.h pango-item.h \
+	pango-ot.h pango-layout.h pango-glyph-item.h pango-tabs.h \
+	pango-modules.h pango-engine.h pango-utils.h
+pangoxft-fontmap.lo pangoxft-fontmap.o : pangoxft-fontmap.c \
+	pango-fontmap.h pango-font.h pango-coverage.h pango-types.h \
+	pango-fontset.h pangoxft.h pango-context.h pango-fontmap.h \
+	pango-attributes.h pango-ot.h pango-glyph.h pango-item.h \
+	pangoxft-private.h pango-ot.h modules.h pango-engine.h \
+	pango-modules.h pangofc-fontmap.cI
+querymodules.o: querymodules.c ../config.h pango-break.h pango-item.h \
+	pango-types.h pango-context.h pango-font.h pango-coverage.h \
+	pango-fontmap.h pango-fontset.h pango-attributes.h \
+	pango-utils.h pango-engine.h pango-glyph.h
+reorder-items.lo reorder-items.o : reorder-items.c pango-glyph.h \
+	pango-types.h pango-item.h
+shape.lo shape.o : shape.c pango-glyph.h pango-types.h pango-item.h \
+	pango-engine.h pango-font.h pango-coverage.h
+
+info-am:
+info: info-recursive
+dvi-am:
+dvi: dvi-recursive
+check-am: all-am
+check: check-recursive
+installcheck-am:
+installcheck: installcheck-recursive
+install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
+install-exec: install-exec-recursive
+
+install-data-am: install-pangoincludeHEADERS install-data-local
+install-data: install-data-recursive
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-recursive
+uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+		uninstall-pangoincludeHEADERS uninstall-local
+uninstall: uninstall-recursive
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+all-redirect: all-recursive
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs: installdirs-recursive
+installdirs-am:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(pangoincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-binPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-recursive
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-binPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-recursive
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-binPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-recursive
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-binPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-recursive
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS uninstall-pangoincludeHEADERS \
+install-pangoincludeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-local uninstall-am uninstall all-redirect all-am all \
+installdirs-am installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
+
+
+@OS_WIN32_TRUE@install-libtool-import-lib:
+@OS_WIN32_TRUE@	$(INSTALL) .libs/libpango-$(PANGO_API_VERSION).dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@@HAVE_FREETYPE_TRUE@	$(INSTALL) .libs/libpangoft2-$(PANGO_API_VERSION).dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@	$(INSTALL) .libs/libpangowin32-$(PANGO_API_VERSION).dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@uninstall-libtool-import-lib:
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libpango-$(PANGO_API_VERSION).dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libpangoft2-$(PANGO_API_VERSION).dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libpangowin32-$(PANGO_API_VERSION).dll.a
+@OS_WIN32_FALSE@install-libtool-import-lib:
+@OS_WIN32_FALSE@uninstall-libtool-import-lib:
+
+@MS_LIB_AVAILABLE_TRUE@install-ms-lib:
+@MS_LIB_AVAILABLE_TRUE@	$(INSTALL) pango-$(PANGO_API_VERSION).lib $(DESTDIR)$(libdir)
+@MS_LIB_AVAILABLE_TRUE@@HAVE_FREETYPE_TRUE@	$(INSTALL) pangoft2-$(PANGO_API_VERSION).lib $(DESTDIR)$(libdir)
+@MS_LIB_AVAILABLE_TRUE@	$(INSTALL) pangowin32-$(PANGO_API_VERSION).lib $(DESTDIR)$(libdir)
+
+@MS_LIB_AVAILABLE_TRUE@uninstall-ms-lib:
+@MS_LIB_AVAILABLE_TRUE@	-rm $(DESTDIR)$(libdir)/pango-$(PANGO_API_VERSION).lib
+@MS_LIB_AVAILABLE_TRUE@	-rm $(DESTDIR)$(libdir)/pangoft2-$(PANGO_API_VERSION).lib
+@MS_LIB_AVAILABLE_TRUE@	-rm $(DESTDIR)$(libdir)/pangowin32-$(PANGO_API_VERSION).lib
+@MS_LIB_AVAILABLE_FALSE@install-ms-lib:
+@MS_LIB_AVAILABLE_FALSE@uninstall-ms-lib:
+
+$(OBJECTS) $(libpango_1_0_la_OBJECTS): $(pango_built_headers)
+
+pango-win32res.lo : pango.rc
+	$(top_srcdir)/../glib/build/win32/lt-compile-resource pango.rc pango-win32res.lo
+
+pangowin32-win32res.lo : pangowin32.rc
+	$(top_srcdir)/../glib/build/win32/lt-compile-resource pangowin32.rc pangowin32-win32res.lo
+
+pangoft2-win32res.lo : pangoft2.rc
+	$(top_srcdir)/../glib/build/win32/lt-compile-resource pangoft2.rc pangoft2-win32res.lo
+
+pango-enum-types.h: s-enum-types-h
+	@true
+
+s-enum-types-h: @REBUILD@ $(pango_headers) Makefile
+	( cd $(srcdir) && glib-mkenums \
+			--fhead "#ifndef __PANGO_ENUM_TYPES_H__\n#define __PANGO_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+			--fprod "/* enumerations from \"@filename@\" */\n" \
+			--vhead "GType @enum_name@_get_type (void);\n#define PANGO_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" 	\
+			--ftail "G_END_DECLS\n\n#endif /* __PANGO_ENUM_TYPES_H__ */" \
+		$(pango_headers) ) > tmp-pango-enum-types.h \
+	&& (cmp -s tmp-pango-enum-types.h $(srcdir)/pango-enum-types.h || cp tmp-pango-enum-types.h $(srcdir)/pango-enum-types.h ) \
+	&& rm -f tmp-pango-enum-types.h	\
+	&& echo timestamp > $(@F)
+
+pango-enum-types.c: s-enum-types-c
+	@true
+
+s-enum-types-c: @REBUILD@ $(pango_headers) Makefile
+	( cd $(srcdir) && glib-mkenums \
+			--fhead "#include <pango.h>" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" 	\
+			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+		$(pango_headers) ) > tmp-pango-enum-types.c \
+	&& (cmp -s tmp-pango-enum-types.c $(srcdir)/pango-enum-types.c || cp tmp-pango-enum-types.c $(srcdir)/pango-enum-types.c ) \
+	&& rm -f tmp-pango-enum-types.c \
+	&& echo timestamp > $(@F)
+
+@HAVE_INCLUDED_MODULES_TRUE@included-modules:
+@HAVE_INCLUDED_MODULES_TRUE@	@cd $(top_builddir)/modules && $(MAKE) $(AM_MAKEFLAGS) included-modules
+
+@HAVE_INCLUDED_MODULES_TRUE@$(INCLUDED_X_MODULES) $(INCLUDED_XFT_MODULES) $(INCLUDED_FT2_MODULES) $(INCLUDED_WIN32_MODULES): included-modules
+@HAVE_INCLUDED_MODULES_TRUE@	@true
+
+@HAVE_INCLUDED_MODULES_TRUE@.PHONY: included-modules
+
+pango-$(PANGO_API_VERSION).lib: libpango-$(PANGO_API_VERSION).la pango.def
+	lib -name:libpango-$(PANGO_API_VERSION)-@LT_CURRENT_MINUS_AGE@.dll -def:pango.def -out:$@
+
+pangoft2-$(PANGO_API_VERSION).lib: libpangoft2-$(PANGO_API_VERSION).la pangoft2.def
+	lib -name:libpangoft2-$(PANGO_API_VERSION)-@LT_CURRENT_MINUS_AGE@.dll -def:pangoft2.def -out:$@
+
+pangowin32-$(PANGO_API_VERSION).lib: libpangowin32-$(PANGO_API_VERSION).la pangowin32.def
+	lib -name:libpangowin32-$(PANGO_API_VERSION)-@LT_CURRENT_MINUS_AGE@.dll -def:pangowin32.def -out:$@
+
+install-data-local: install-ms-lib install-libtool-import-lib
+
+install-exec-hook: 
+@DISABLE_EXPLICIT_DEPS_TRUE@	-for i in libpangoft2-$(PANGO_API_VERSION).la libpangoxft-$(PANGO_API_VERSION).la libpangox-$(PANGO_API_VERSION).la libpangowin32-$(PANGO_API_VERSION).la; do \
+@DISABLE_EXPLICIT_DEPS_TRUE@	  test -f $(DESTDIR)$(libdir)/$$i && $(SHELL) $(top_srcdir)/sanitize-la.sh $(DESTDIR)$(libdir)/$$i ; \
+@DISABLE_EXPLICIT_DEPS_TRUE@	done
+
+uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

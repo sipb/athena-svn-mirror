@@ -1,0 +1,960 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns="http://www.devhelp.net/book" title="Pango Reference Manual" link="index.html" author="" name="pango">
+<chapters>
+<sub name="Basic Pango Interfaces" link="pango.html">
+<sub name="Rendering" link="pango-Text-Processing.html">
+<sub name="Object Hierarchy" link="pango-Text-Processing.html#id2772601"/>
+<sub name="Description" link="pango-Text-Processing.html#id2772626"/>
+<sub name="Details" link="pango-Text-Processing.html#id2772641">
+<sub name="struct PangoContext" link="pango-Text-Processing.html#PangoContext-struct"/>
+<sub name="struct PangoItem" link="pango-Text-Processing.html#PangoItem"/>
+<sub name="struct PangoAnalysis" link="pango-Text-Processing.html#PangoAnalysis"/>
+<sub name="enum PangoDirection" link="pango-Text-Processing.html#PangoDirection"/>
+<sub name="PANGO_TYPE_DIRECTION" link="pango-Text-Processing.html#PANGO-TYPE-DIRECTION-CAPS"/>
+<sub name="pango_itemize ()" link="pango-Text-Processing.html#pango-itemize"/>
+<sub name="pango_item_free ()" link="pango-Text-Processing.html#pango-item-free"/>
+<sub name="pango_item_copy ()" link="pango-Text-Processing.html#pango-item-copy"/>
+<sub name="pango_item_new ()" link="pango-Text-Processing.html#pango-item-new"/>
+<sub name="pango_item_split ()" link="pango-Text-Processing.html#pango-item-split"/>
+<sub name="pango_reorder_items ()" link="pango-Text-Processing.html#pango-reorder-items"/>
+<sub name="pango_context_new ()" link="pango-Text-Processing.html#pango-context-new"/>
+<sub name="pango_context_set_font_map ()" link="pango-Text-Processing.html#pango-context-set-font-map"/>
+<sub name="pango_context_get_font_description ()" link="pango-Text-Processing.html#pango-context-get-font-description"/>
+<sub name="pango_context_set_font_description ()" link="pango-Text-Processing.html#pango-context-set-font-description"/>
+<sub name="pango_context_get_language ()" link="pango-Text-Processing.html#pango-context-get-language"/>
+<sub name="pango_context_set_language ()" link="pango-Text-Processing.html#pango-context-set-language"/>
+<sub name="pango_context_get_base_dir ()" link="pango-Text-Processing.html#pango-context-get-base-dir"/>
+<sub name="pango_context_set_base_dir ()" link="pango-Text-Processing.html#pango-context-set-base-dir"/>
+<sub name="pango_context_load_font ()" link="pango-Text-Processing.html#pango-context-load-font"/>
+<sub name="pango_context_load_fontset ()" link="pango-Text-Processing.html#pango-context-load-fontset"/>
+<sub name="pango_context_get_metrics ()" link="pango-Text-Processing.html#pango-context-get-metrics"/>
+<sub name="pango_context_list_families ()" link="pango-Text-Processing.html#pango-context-list-families"/>
+<sub name="pango_break ()" link="pango-Text-Processing.html#pango-break"/>
+<sub name="pango_get_log_attrs ()" link="pango-Text-Processing.html#pango-get-log-attrs"/>
+<sub name="pango_find_paragraph_boundary ()" link="pango-Text-Processing.html#pango-find-paragraph-boundary"/>
+<sub name="pango_default_break ()" link="pango-Text-Processing.html#pango-default-break"/>
+<sub name="struct PangoLogAttr" link="pango-Text-Processing.html#PangoLogAttr"/>
+<sub name="pango_shape ()" link="pango-Text-Processing.html#pango-shape"/>
+</sub>
+</sub>
+<sub name="Glyph Storage" link="pango-Glyph-Storage.html">
+<sub name="Description" link="pango-Glyph-Storage.html#id2837361"/>
+<sub name="Details" link="pango-Glyph-Storage.html#id2837384">
+<sub name="PANGO_SCALE" link="pango-Glyph-Storage.html#PANGO-SCALE-CAPS"/>
+<sub name="PANGO_PIXELS()" link="pango-Glyph-Storage.html#PANGO-PIXELS-CAPS"/>
+<sub name="struct PangoRectangle" link="pango-Glyph-Storage.html#PangoRectangle"/>
+<sub name="PANGO_ASCENT()" link="pango-Glyph-Storage.html#PANGO-ASCENT-CAPS"/>
+<sub name="PANGO_DESCENT()" link="pango-Glyph-Storage.html#PANGO-DESCENT-CAPS"/>
+<sub name="PANGO_LBEARING()" link="pango-Glyph-Storage.html#PANGO-LBEARING-CAPS"/>
+<sub name="PANGO_RBEARING()" link="pango-Glyph-Storage.html#PANGO-RBEARING-CAPS"/>
+<sub name="PangoGlyph" link="pango-Glyph-Storage.html#PangoGlyph"/>
+<sub name="struct PangoGlyphInfo" link="pango-Glyph-Storage.html#PangoGlyphInfo"/>
+<sub name="struct PangoGlyphGeometry" link="pango-Glyph-Storage.html#PangoGlyphGeometry"/>
+<sub name="PangoGlyphUnit" link="pango-Glyph-Storage.html#PangoGlyphUnit"/>
+<sub name="struct PangoGlyphVisAttr" link="pango-Glyph-Storage.html#PangoGlyphVisAttr"/>
+<sub name="struct PangoGlyphString" link="pango-Glyph-Storage.html#PangoGlyphString"/>
+<sub name="struct PangoGlyphItem" link="pango-Glyph-Storage.html#PangoGlyphItem"/>
+<sub name="PANGO_TYPE_GLYPH_STRING" link="pango-Glyph-Storage.html#PANGO-TYPE-GLYPH-STRING-CAPS"/>
+<sub name="pango_glyph_string_new ()" link="pango-Glyph-Storage.html#pango-glyph-string-new"/>
+<sub name="pango_glyph_string_copy ()" link="pango-Glyph-Storage.html#pango-glyph-string-copy"/>
+<sub name="pango_glyph_string_set_size ()" link="pango-Glyph-Storage.html#pango-glyph-string-set-size"/>
+<sub name="pango_glyph_string_free ()" link="pango-Glyph-Storage.html#pango-glyph-string-free"/>
+<sub name="pango_glyph_string_extents ()" link="pango-Glyph-Storage.html#pango-glyph-string-extents"/>
+<sub name="pango_glyph_string_extents_range ()" link="pango-Glyph-Storage.html#pango-glyph-string-extents-range"/>
+<sub name="pango_glyph_string_index_to_x ()" link="pango-Glyph-Storage.html#pango-glyph-string-index-to-x"/>
+<sub name="pango_glyph_string_x_to_index ()" link="pango-Glyph-Storage.html#pango-glyph-string-x-to-index"/>
+<sub name="pango_glyph_string_get_logical_widths ()" link="pango-Glyph-Storage.html#pango-glyph-string-get-logical-widths"/>
+<sub name="pango_glyph_item_split ()" link="pango-Glyph-Storage.html#pango-glyph-item-split"/>
+<sub name="pango_glyph_item_apply_attrs ()" link="pango-Glyph-Storage.html#pango-glyph-item-apply-attrs"/>
+</sub>
+</sub>
+<sub name="Fonts" link="pango-Fonts.html">
+<sub name="Object Hierarchy" link="pango-Fonts.html#id2842314"/>
+<sub name="Description" link="pango-Fonts.html#id2842421"/>
+<sub name="Details" link="pango-Fonts.html#id2842446">
+<sub name="struct PangoFontDescription" link="pango-Fonts.html#PangoFontDescription"/>
+<sub name="PANGO_TYPE_FONT_DESCRIPTION" link="pango-Fonts.html#PANGO-TYPE-FONT-DESCRIPTION-CAPS"/>
+<sub name="enum PangoStyle" link="pango-Fonts.html#PangoStyle"/>
+<sub name="PANGO_TYPE_STYLE" link="pango-Fonts.html#PANGO-TYPE-STYLE-CAPS"/>
+<sub name="enum PangoWeight" link="pango-Fonts.html#PangoWeight"/>
+<sub name="PANGO_TYPE_WEIGHT" link="pango-Fonts.html#PANGO-TYPE-WEIGHT-CAPS"/>
+<sub name="enum PangoVariant" link="pango-Fonts.html#PangoVariant"/>
+<sub name="PANGO_TYPE_VARIANT" link="pango-Fonts.html#PANGO-TYPE-VARIANT-CAPS"/>
+<sub name="enum PangoStretch" link="pango-Fonts.html#PangoStretch"/>
+<sub name="PANGO_TYPE_STRETCH" link="pango-Fonts.html#PANGO-TYPE-STRETCH-CAPS"/>
+<sub name="enum PangoFontMask" link="pango-Fonts.html#PangoFontMask"/>
+<sub name="PANGO_TYPE_FONT_MASK" link="pango-Fonts.html#PANGO-TYPE-FONT-MASK-CAPS"/>
+<sub name="pango_font_description_new ()" link="pango-Fonts.html#pango-font-description-new"/>
+<sub name="pango_font_description_copy ()" link="pango-Fonts.html#pango-font-description-copy"/>
+<sub name="pango_font_description_copy_static ()" link="pango-Fonts.html#pango-font-description-copy-static"/>
+<sub name="pango_font_description_hash ()" link="pango-Fonts.html#pango-font-description-hash"/>
+<sub name="pango_font_description_equal ()" link="pango-Fonts.html#pango-font-description-equal"/>
+<sub name="pango_font_description_free ()" link="pango-Fonts.html#pango-font-description-free"/>
+<sub name="pango_font_descriptions_free ()" link="pango-Fonts.html#pango-font-descriptions-free"/>
+<sub name="pango_font_description_set_family ()" link="pango-Fonts.html#pango-font-description-set-family"/>
+<sub name="pango_font_description_set_family_static ()" link="pango-Fonts.html#pango-font-description-set-family-static"/>
+<sub name="pango_font_description_get_family ()" link="pango-Fonts.html#pango-font-description-get-family"/>
+<sub name="pango_font_description_set_style ()" link="pango-Fonts.html#pango-font-description-set-style"/>
+<sub name="pango_font_description_get_style ()" link="pango-Fonts.html#pango-font-description-get-style"/>
+<sub name="pango_font_description_set_variant ()" link="pango-Fonts.html#pango-font-description-set-variant"/>
+<sub name="pango_font_description_get_variant ()" link="pango-Fonts.html#pango-font-description-get-variant"/>
+<sub name="pango_font_description_set_weight ()" link="pango-Fonts.html#pango-font-description-set-weight"/>
+<sub name="pango_font_description_get_weight ()" link="pango-Fonts.html#pango-font-description-get-weight"/>
+<sub name="pango_font_description_set_stretch ()" link="pango-Fonts.html#pango-font-description-set-stretch"/>
+<sub name="pango_font_description_get_stretch ()" link="pango-Fonts.html#pango-font-description-get-stretch"/>
+<sub name="pango_font_description_set_size ()" link="pango-Fonts.html#pango-font-description-set-size"/>
+<sub name="pango_font_description_get_size ()" link="pango-Fonts.html#pango-font-description-get-size"/>
+<sub name="pango_font_description_get_set_fields ()" link="pango-Fonts.html#pango-font-description-get-set-fields"/>
+<sub name="pango_font_description_unset_fields ()" link="pango-Fonts.html#pango-font-description-unset-fields"/>
+<sub name="pango_font_description_merge ()" link="pango-Fonts.html#pango-font-description-merge"/>
+<sub name="pango_font_description_merge_static ()" link="pango-Fonts.html#pango-font-description-merge-static"/>
+<sub name="pango_font_description_better_match ()" link="pango-Fonts.html#pango-font-description-better-match"/>
+<sub name="pango_font_description_from_string ()" link="pango-Fonts.html#pango-font-description-from-string"/>
+<sub name="pango_font_description_to_string ()" link="pango-Fonts.html#pango-font-description-to-string"/>
+<sub name="pango_font_description_to_filename ()" link="pango-Fonts.html#pango-font-description-to-filename"/>
+<sub name="struct PangoFontMetrics" link="pango-Fonts.html#PangoFontMetrics"/>
+<sub name="PANGO_TYPE_FONT_METRICS" link="pango-Fonts.html#PANGO-TYPE-FONT-METRICS-CAPS"/>
+<sub name="pango_font_metrics_ref ()" link="pango-Fonts.html#pango-font-metrics-ref"/>
+<sub name="pango_font_metrics_unref ()" link="pango-Fonts.html#pango-font-metrics-unref"/>
+<sub name="pango_font_metrics_get_ascent ()" link="pango-Fonts.html#pango-font-metrics-get-ascent"/>
+<sub name="pango_font_metrics_get_descent ()" link="pango-Fonts.html#pango-font-metrics-get-descent"/>
+<sub name="pango_font_metrics_get_approximate_char_width ()" link="pango-Fonts.html#pango-font-metrics-get-approximate-char-width"/>
+<sub name="pango_font_metrics_get_approximate_digit_width ()" link="pango-Fonts.html#pango-font-metrics-get-approximate-digit-width"/>
+<sub name="struct PangoFont" link="pango-Fonts.html#PangoFont-struct"/>
+<sub name="PANGO_TYPE_FONT" link="pango-Fonts.html#PANGO-TYPE-FONT-CAPS"/>
+<sub name="PANGO_FONT()" link="pango-Fonts.html#PANGO-FONT-CAPS"/>
+<sub name="PANGO_IS_FONT()" link="pango-Fonts.html#PANGO-IS-FONT-CAPS"/>
+<sub name="pango_font_find_shaper ()" link="pango-Fonts.html#pango-font-find-shaper"/>
+<sub name="pango_font_describe ()" link="pango-Fonts.html#pango-font-describe"/>
+<sub name="pango_font_get_coverage ()" link="pango-Fonts.html#pango-font-get-coverage"/>
+<sub name="pango_font_get_glyph_extents ()" link="pango-Fonts.html#pango-font-get-glyph-extents"/>
+<sub name="pango_font_get_metrics ()" link="pango-Fonts.html#pango-font-get-metrics"/>
+<sub name="struct PangoFontFamily" link="pango-Fonts.html#PangoFontFamily-struct"/>
+<sub name="PANGO_TYPE_FONT_FAMILY" link="pango-Fonts.html#PANGO-TYPE-FONT-FAMILY-CAPS"/>
+<sub name="PANGO_FONT_FAMILY()" link="pango-Fonts.html#PANGO-FONT-FAMILY-CAPS"/>
+<sub name="PANGO_IS_FONT_FAMILY()" link="pango-Fonts.html#PANGO-IS-FONT-FAMILY-CAPS"/>
+<sub name="pango_font_family_get_name ()" link="pango-Fonts.html#pango-font-family-get-name"/>
+<sub name="pango_font_family_list_faces ()" link="pango-Fonts.html#pango-font-family-list-faces"/>
+<sub name="struct PangoFontFace" link="pango-Fonts.html#PangoFontFace-struct"/>
+<sub name="PANGO_TYPE_FONT_FACE" link="pango-Fonts.html#PANGO-TYPE-FONT-FACE-CAPS"/>
+<sub name="PANGO_FONT_FACE()" link="pango-Fonts.html#PANGO-FONT-FACE-CAPS"/>
+<sub name="PANGO_IS_FONT_FACE()" link="pango-Fonts.html#PANGO-IS-FONT-FACE-CAPS"/>
+<sub name="pango_font_face_get_face_name ()" link="pango-Fonts.html#pango-font-face-get-face-name"/>
+<sub name="pango_font_face_describe ()" link="pango-Fonts.html#pango-font-face-describe"/>
+<sub name="struct PangoFontMap" link="pango-Fonts.html#PangoFontMap-struct"/>
+<sub name="PANGO_TYPE_FONT_MAP" link="pango-Fonts.html#PANGO-TYPE-FONT-MAP-CAPS"/>
+<sub name="PANGO_FONT_MAP()" link="pango-Fonts.html#PANGO-FONT-MAP-CAPS"/>
+<sub name="PANGO_IS_FONT_MAP()" link="pango-Fonts.html#PANGO-IS-FONT-MAP-CAPS"/>
+<sub name="struct PangoFontMapClass" link="pango-Fonts.html#PangoFontMapClass"/>
+<sub name="PANGO_FONT_MAP_CLASS()" link="pango-Fonts.html#PANGO-FONT-MAP-CLASS-CAPS"/>
+<sub name="PANGO_IS_FONT_MAP_CLASS()" link="pango-Fonts.html#PANGO-IS-FONT-MAP-CLASS-CAPS"/>
+<sub name="PANGO_FONT_MAP_GET_CLASS()" link="pango-Fonts.html#PANGO-FONT-MAP-GET-CLASS-CAPS"/>
+<sub name="pango_font_map_load_font ()" link="pango-Fonts.html#pango-font-map-load-font"/>
+<sub name="pango_font_map_load_fontset ()" link="pango-Fonts.html#pango-font-map-load-fontset"/>
+<sub name="pango_font_map_list_families ()" link="pango-Fonts.html#pango-font-map-list-families"/>
+<sub name="struct PangoFontset" link="pango-Fonts.html#PangoFontset-struct"/>
+<sub name="PANGO_TYPE_FONTSET" link="pango-Fonts.html#PANGO-TYPE-FONTSET-CAPS"/>
+<sub name="struct PangoFontsetClass" link="pango-Fonts.html#PangoFontsetClass"/>
+<sub name="pango_fontset_get_font ()" link="pango-Fonts.html#pango-fontset-get-font"/>
+<sub name="pango_fontset_get_metrics ()" link="pango-Fonts.html#pango-fontset-get-metrics"/>
+<sub name="struct PangoFontsetSimple" link="pango-Fonts.html#PangoFontsetSimple-struct"/>
+<sub name="PANGO_TYPE_FONTSET_SIMPLE" link="pango-Fonts.html#PANGO-TYPE-FONTSET-SIMPLE-CAPS"/>
+<sub name="pango_fontset_simple_new ()" link="pango-Fonts.html#pango-fontset-simple-new"/>
+<sub name="pango_fontset_simple_append ()" link="pango-Fonts.html#pango-fontset-simple-append"/>
+<sub name="pango_fontset_simple_size ()" link="pango-Fonts.html#pango-fontset-simple-size"/>
+</sub>
+</sub>
+<sub name="Text Attributes" link="pango-Text-Attributes.html">
+<sub name="Description" link="pango-Text-Attributes.html#id2852847"/>
+<sub name="Details" link="pango-Text-Attributes.html#id2852871">
+<sub name="enum PangoAttrType" link="pango-Text-Attributes.html#PangoAttrType"/>
+<sub name="PANGO_TYPE_ATTR_TYPE" link="pango-Text-Attributes.html#PANGO-TYPE-ATTR-TYPE-CAPS"/>
+<sub name="struct PangoAttrClass" link="pango-Text-Attributes.html#PangoAttrClass"/>
+<sub name="struct PangoAttribute" link="pango-Text-Attributes.html#PangoAttribute"/>
+<sub name="struct PangoAttrString" link="pango-Text-Attributes.html#PangoAttrString"/>
+<sub name="struct PangoAttrLanguage" link="pango-Text-Attributes.html#PangoAttrLanguage"/>
+<sub name="struct PangoAttrColor" link="pango-Text-Attributes.html#PangoAttrColor"/>
+<sub name="struct PangoAttrInt" link="pango-Text-Attributes.html#PangoAttrInt"/>
+<sub name="struct PangoAttrFloat" link="pango-Text-Attributes.html#PangoAttrFloat"/>
+<sub name="struct PangoAttrFontDesc" link="pango-Text-Attributes.html#PangoAttrFontDesc"/>
+<sub name="struct PangoAttrShape" link="pango-Text-Attributes.html#PangoAttrShape"/>
+<sub name="pango_parse_markup ()" link="pango-Text-Attributes.html#pango-parse-markup"/>
+<sub name="pango_attr_type_register ()" link="pango-Text-Attributes.html#pango-attr-type-register"/>
+<sub name="pango_attribute_copy ()" link="pango-Text-Attributes.html#pango-attribute-copy"/>
+<sub name="pango_attribute_equal ()" link="pango-Text-Attributes.html#pango-attribute-equal"/>
+<sub name="pango_attribute_destroy ()" link="pango-Text-Attributes.html#pango-attribute-destroy"/>
+<sub name="pango_attr_language_new ()" link="pango-Text-Attributes.html#pango-attr-language-new"/>
+<sub name="pango_attr_family_new ()" link="pango-Text-Attributes.html#pango-attr-family-new"/>
+<sub name="pango_attr_style_new ()" link="pango-Text-Attributes.html#pango-attr-style-new"/>
+<sub name="pango_attr_variant_new ()" link="pango-Text-Attributes.html#pango-attr-variant-new"/>
+<sub name="pango_attr_stretch_new ()" link="pango-Text-Attributes.html#pango-attr-stretch-new"/>
+<sub name="pango_attr_weight_new ()" link="pango-Text-Attributes.html#pango-attr-weight-new"/>
+<sub name="pango_attr_size_new ()" link="pango-Text-Attributes.html#pango-attr-size-new"/>
+<sub name="pango_attr_font_desc_new ()" link="pango-Text-Attributes.html#pango-attr-font-desc-new"/>
+<sub name="pango_attr_foreground_new ()" link="pango-Text-Attributes.html#pango-attr-foreground-new"/>
+<sub name="pango_attr_background_new ()" link="pango-Text-Attributes.html#pango-attr-background-new"/>
+<sub name="pango_attr_strikethrough_new ()" link="pango-Text-Attributes.html#pango-attr-strikethrough-new"/>
+<sub name="pango_attr_underline_new ()" link="pango-Text-Attributes.html#pango-attr-underline-new"/>
+<sub name="enum PangoUnderline" link="pango-Text-Attributes.html#PangoUnderline"/>
+<sub name="PANGO_TYPE_UNDERLINE" link="pango-Text-Attributes.html#PANGO-TYPE-UNDERLINE-CAPS"/>
+<sub name="pango_attr_shape_new ()" link="pango-Text-Attributes.html#pango-attr-shape-new"/>
+<sub name="pango_attr_scale_new ()" link="pango-Text-Attributes.html#pango-attr-scale-new"/>
+<sub name="PANGO_SCALE_XX_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-XX-SMALL-CAPS"/>
+<sub name="PANGO_SCALE_X_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-X-SMALL-CAPS"/>
+<sub name="PANGO_SCALE_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-SMALL-CAPS"/>
+<sub name="PANGO_SCALE_MEDIUM" link="pango-Text-Attributes.html#PANGO-SCALE-MEDIUM-CAPS"/>
+<sub name="PANGO_SCALE_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-LARGE-CAPS"/>
+<sub name="PANGO_SCALE_X_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-X-LARGE-CAPS"/>
+<sub name="PANGO_SCALE_XX_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-XX-LARGE-CAPS"/>
+<sub name="pango_attr_rise_new ()" link="pango-Text-Attributes.html#pango-attr-rise-new"/>
+<sub name="struct PangoColor" link="pango-Text-Attributes.html#PangoColor"/>
+<sub name="PANGO_TYPE_COLOR" link="pango-Text-Attributes.html#PANGO-TYPE-COLOR-CAPS"/>
+<sub name="pango_color_free ()" link="pango-Text-Attributes.html#pango-color-free"/>
+<sub name="pango_color_parse ()" link="pango-Text-Attributes.html#pango-color-parse"/>
+<sub name="pango_color_copy ()" link="pango-Text-Attributes.html#pango-color-copy"/>
+<sub name="struct PangoLanguage" link="pango-Text-Attributes.html#PangoLanguage"/>
+<sub name="PANGO_TYPE_LANGUAGE" link="pango-Text-Attributes.html#PANGO-TYPE-LANGUAGE-CAPS"/>
+<sub name="pango_language_from_string ()" link="pango-Text-Attributes.html#pango-language-from-string"/>
+<sub name="pango_language_to_string()" link="pango-Text-Attributes.html#pango-language-to-string"/>
+<sub name="pango_language_matches ()" link="pango-Text-Attributes.html#pango-language-matches"/>
+<sub name="struct PangoAttrList" link="pango-Text-Attributes.html#PangoAttrList"/>
+<sub name="PANGO_TYPE_ATTR_LIST" link="pango-Text-Attributes.html#PANGO-TYPE-ATTR-LIST-CAPS"/>
+<sub name="pango_attr_list_new ()" link="pango-Text-Attributes.html#pango-attr-list-new"/>
+<sub name="pango_attr_list_ref ()" link="pango-Text-Attributes.html#pango-attr-list-ref"/>
+<sub name="pango_attr_list_unref ()" link="pango-Text-Attributes.html#pango-attr-list-unref"/>
+<sub name="pango_attr_list_copy ()" link="pango-Text-Attributes.html#pango-attr-list-copy"/>
+<sub name="pango_attr_list_insert ()" link="pango-Text-Attributes.html#pango-attr-list-insert"/>
+<sub name="pango_attr_list_insert_before ()" link="pango-Text-Attributes.html#pango-attr-list-insert-before"/>
+<sub name="pango_attr_list_change ()" link="pango-Text-Attributes.html#pango-attr-list-change"/>
+<sub name="pango_attr_list_splice ()" link="pango-Text-Attributes.html#pango-attr-list-splice"/>
+<sub name="pango_attr_list_filter ()" link="pango-Text-Attributes.html#pango-attr-list-filter"/>
+<sub name="PangoAttrFilterFunc ()" link="pango-Text-Attributes.html#PangoAttrFilterFunc"/>
+<sub name="pango_attr_list_get_iterator ()" link="pango-Text-Attributes.html#pango-attr-list-get-iterator"/>
+<sub name="struct PangoAttrIterator" link="pango-Text-Attributes.html#PangoAttrIterator"/>
+<sub name="pango_attr_iterator_copy ()" link="pango-Text-Attributes.html#pango-attr-iterator-copy"/>
+<sub name="pango_attr_iterator_next ()" link="pango-Text-Attributes.html#pango-attr-iterator-next"/>
+<sub name="pango_attr_iterator_range ()" link="pango-Text-Attributes.html#pango-attr-iterator-range"/>
+<sub name="pango_attr_iterator_get ()" link="pango-Text-Attributes.html#pango-attr-iterator-get"/>
+<sub name="pango_attr_iterator_get_font ()" link="pango-Text-Attributes.html#pango-attr-iterator-get-font"/>
+<sub name="pango_attr_iterator_get_attrs ()" link="pango-Text-Attributes.html#pango-attr-iterator-get-attrs"/>
+<sub name="pango_attr_iterator_destroy ()" link="pango-Text-Attributes.html#pango-attr-iterator-destroy"/>
+</sub>
+</sub>
+<sub name="Tab Stops" link="pango-Tab-Stops.html">
+<sub name="Description" link="pango-Tab-Stops.html#id2860394"/>
+<sub name="Details" link="pango-Tab-Stops.html#id2860407">
+<sub name="struct PangoTabArray" link="pango-Tab-Stops.html#PangoTabArray"/>
+<sub name="PANGO_TYPE_TAB_ARRAY" link="pango-Tab-Stops.html#PANGO-TYPE-TAB-ARRAY-CAPS"/>
+<sub name="enum PangoTabAlign" link="pango-Tab-Stops.html#PangoTabAlign"/>
+<sub name="PANGO_TYPE_TAB_ALIGN" link="pango-Tab-Stops.html#PANGO-TYPE-TAB-ALIGN-CAPS"/>
+<sub name="pango_tab_array_new ()" link="pango-Tab-Stops.html#pango-tab-array-new"/>
+<sub name="pango_tab_array_new_with_positions ()" link="pango-Tab-Stops.html#pango-tab-array-new-with-positions"/>
+<sub name="pango_tab_array_copy ()" link="pango-Tab-Stops.html#pango-tab-array-copy"/>
+<sub name="pango_tab_array_free ()" link="pango-Tab-Stops.html#pango-tab-array-free"/>
+<sub name="pango_tab_array_get_size ()" link="pango-Tab-Stops.html#pango-tab-array-get-size"/>
+<sub name="pango_tab_array_resize ()" link="pango-Tab-Stops.html#pango-tab-array-resize"/>
+<sub name="pango_tab_array_set_tab ()" link="pango-Tab-Stops.html#pango-tab-array-set-tab"/>
+<sub name="pango_tab_array_get_tab ()" link="pango-Tab-Stops.html#pango-tab-array-get-tab"/>
+<sub name="pango_tab_array_get_tabs ()" link="pango-Tab-Stops.html#pango-tab-array-get-tabs"/>
+<sub name="pango_tab_array_get_positions_in_pixels ()" link="pango-Tab-Stops.html#pango-tab-array-get-positions-in-pixels"/>
+</sub>
+</sub>
+<sub name="Pango Text Attribute Markup" link="PangoMarkupFormat.html">
+<sub name="Pango Text Attribute Markup Language" link="PangoMarkupFormat.html#id2860001"/>
+</sub>
+<sub name="Layout Objects" link="pango-Layout-Objects.html">
+<sub name="Object Hierarchy" link="pango-Layout-Objects.html#id2864126"/>
+<sub name="Description" link="pango-Layout-Objects.html#id2864149"/>
+<sub name="Details" link="pango-Layout-Objects.html#id2864167">
+<sub name="struct PangoLayout" link="pango-Layout-Objects.html#PangoLayout-struct"/>
+<sub name="struct PangoLayoutIter" link="pango-Layout-Objects.html#PangoLayoutIter"/>
+<sub name="pango_layout_new ()" link="pango-Layout-Objects.html#pango-layout-new"/>
+<sub name="pango_layout_copy ()" link="pango-Layout-Objects.html#pango-layout-copy"/>
+<sub name="pango_layout_get_context ()" link="pango-Layout-Objects.html#pango-layout-get-context"/>
+<sub name="pango_layout_context_changed ()" link="pango-Layout-Objects.html#pango-layout-context-changed"/>
+<sub name="pango_layout_set_text ()" link="pango-Layout-Objects.html#pango-layout-set-text"/>
+<sub name="pango_layout_get_text ()" link="pango-Layout-Objects.html#pango-layout-get-text"/>
+<sub name="pango_layout_set_markup ()" link="pango-Layout-Objects.html#pango-layout-set-markup"/>
+<sub name="pango_layout_set_markup_with_accel ()" link="pango-Layout-Objects.html#pango-layout-set-markup-with-accel"/>
+<sub name="pango_layout_set_attributes ()" link="pango-Layout-Objects.html#pango-layout-set-attributes"/>
+<sub name="pango_layout_get_attributes ()" link="pango-Layout-Objects.html#pango-layout-get-attributes"/>
+<sub name="pango_layout_set_font_description ()" link="pango-Layout-Objects.html#pango-layout-set-font-description"/>
+<sub name="pango_layout_set_width ()" link="pango-Layout-Objects.html#pango-layout-set-width"/>
+<sub name="pango_layout_get_width ()" link="pango-Layout-Objects.html#pango-layout-get-width"/>
+<sub name="pango_layout_set_wrap ()" link="pango-Layout-Objects.html#pango-layout-set-wrap"/>
+<sub name="pango_layout_get_wrap ()" link="pango-Layout-Objects.html#pango-layout-get-wrap"/>
+<sub name="enum PangoWrapMode" link="pango-Layout-Objects.html#PangoWrapMode"/>
+<sub name="PANGO_TYPE_WRAP_MODE" link="pango-Layout-Objects.html#PANGO-TYPE-WRAP-MODE-CAPS"/>
+<sub name="pango_layout_set_indent ()" link="pango-Layout-Objects.html#pango-layout-set-indent"/>
+<sub name="pango_layout_get_indent ()" link="pango-Layout-Objects.html#pango-layout-get-indent"/>
+<sub name="pango_layout_get_spacing ()" link="pango-Layout-Objects.html#pango-layout-get-spacing"/>
+<sub name="pango_layout_set_spacing ()" link="pango-Layout-Objects.html#pango-layout-set-spacing"/>
+<sub name="pango_layout_set_justify ()" link="pango-Layout-Objects.html#pango-layout-set-justify"/>
+<sub name="pango_layout_get_justify ()" link="pango-Layout-Objects.html#pango-layout-get-justify"/>
+<sub name="pango_layout_set_alignment ()" link="pango-Layout-Objects.html#pango-layout-set-alignment"/>
+<sub name="pango_layout_get_alignment ()" link="pango-Layout-Objects.html#pango-layout-get-alignment"/>
+<sub name="pango_layout_set_tabs ()" link="pango-Layout-Objects.html#pango-layout-set-tabs"/>
+<sub name="pango_layout_get_tabs ()" link="pango-Layout-Objects.html#pango-layout-get-tabs"/>
+<sub name="pango_layout_set_single_paragraph_mode ()" link="pango-Layout-Objects.html#pango-layout-set-single-paragraph-mode"/>
+<sub name="pango_layout_get_single_paragraph_mode ()" link="pango-Layout-Objects.html#pango-layout-get-single-paragraph-mode"/>
+<sub name="enum PangoAlignment" link="pango-Layout-Objects.html#PangoAlignment"/>
+<sub name="PANGO_TYPE_ALIGNMENT" link="pango-Layout-Objects.html#PANGO-TYPE-ALIGNMENT-CAPS"/>
+<sub name="pango_layout_get_log_attrs ()" link="pango-Layout-Objects.html#pango-layout-get-log-attrs"/>
+<sub name="pango_layout_xy_to_index ()" link="pango-Layout-Objects.html#pango-layout-xy-to-index"/>
+<sub name="pango_layout_index_to_pos ()" link="pango-Layout-Objects.html#pango-layout-index-to-pos"/>
+<sub name="pango_layout_get_cursor_pos ()" link="pango-Layout-Objects.html#pango-layout-get-cursor-pos"/>
+<sub name="pango_layout_move_cursor_visually ()" link="pango-Layout-Objects.html#pango-layout-move-cursor-visually"/>
+<sub name="pango_layout_get_extents ()" link="pango-Layout-Objects.html#pango-layout-get-extents"/>
+<sub name="pango_layout_get_pixel_extents ()" link="pango-Layout-Objects.html#pango-layout-get-pixel-extents"/>
+<sub name="pango_layout_get_size ()" link="pango-Layout-Objects.html#pango-layout-get-size"/>
+<sub name="pango_layout_get_pixel_size ()" link="pango-Layout-Objects.html#pango-layout-get-pixel-size"/>
+<sub name="pango_layout_get_line_count ()" link="pango-Layout-Objects.html#pango-layout-get-line-count"/>
+<sub name="pango_layout_get_line ()" link="pango-Layout-Objects.html#pango-layout-get-line"/>
+<sub name="pango_layout_get_lines ()" link="pango-Layout-Objects.html#pango-layout-get-lines"/>
+<sub name="pango_layout_get_iter ()" link="pango-Layout-Objects.html#pango-layout-get-iter"/>
+<sub name="pango_layout_iter_free ()" link="pango-Layout-Objects.html#pango-layout-iter-free"/>
+<sub name="pango_layout_iter_next_run ()" link="pango-Layout-Objects.html#pango-layout-iter-next-run"/>
+<sub name="pango_layout_iter_next_char ()" link="pango-Layout-Objects.html#pango-layout-iter-next-char"/>
+<sub name="pango_layout_iter_next_cluster ()" link="pango-Layout-Objects.html#pango-layout-iter-next-cluster"/>
+<sub name="pango_layout_iter_next_line ()" link="pango-Layout-Objects.html#pango-layout-iter-next-line"/>
+<sub name="pango_layout_iter_at_last_line ()" link="pango-Layout-Objects.html#pango-layout-iter-at-last-line"/>
+<sub name="pango_layout_iter_get_index ()" link="pango-Layout-Objects.html#pango-layout-iter-get-index"/>
+<sub name="pango_layout_iter_get_baseline ()" link="pango-Layout-Objects.html#pango-layout-iter-get-baseline"/>
+<sub name="pango_layout_iter_get_run ()" link="pango-Layout-Objects.html#pango-layout-iter-get-run"/>
+<sub name="pango_layout_iter_get_line ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line"/>
+<sub name="pango_layout_iter_get_char_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-char-extents"/>
+<sub name="pango_layout_iter_get_cluster_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-cluster-extents"/>
+<sub name="pango_layout_iter_get_run_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-run-extents"/>
+<sub name="pango_layout_iter_get_line_yrange ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line-yrange"/>
+<sub name="pango_layout_iter_get_line_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line-extents"/>
+<sub name="pango_layout_iter_get_layout_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-layout-extents"/>
+<sub name="struct PangoLayoutLine" link="pango-Layout-Objects.html#PangoLayoutLine"/>
+<sub name="PangoLayoutRun" link="pango-Layout-Objects.html#PangoLayoutRun"/>
+<sub name="pango_layout_line_ref ()" link="pango-Layout-Objects.html#pango-layout-line-ref"/>
+<sub name="pango_layout_line_unref ()" link="pango-Layout-Objects.html#pango-layout-line-unref"/>
+<sub name="pango_layout_line_get_extents ()" link="pango-Layout-Objects.html#pango-layout-line-get-extents"/>
+<sub name="pango_layout_line_get_pixel_extents ()" link="pango-Layout-Objects.html#pango-layout-line-get-pixel-extents"/>
+<sub name="pango_layout_line_index_to_x ()" link="pango-Layout-Objects.html#pango-layout-line-index-to-x"/>
+<sub name="pango_layout_line_x_to_index ()" link="pango-Layout-Objects.html#pango-layout-line-x-to-index"/>
+<sub name="pango_layout_line_get_x_ranges ()" link="pango-Layout-Objects.html#pango-layout-line-get-x-ranges"/>
+</sub>
+</sub>
+</sub>
+<sub name="Rendering with Pango" link="rendering.html">
+<sub name="X Fonts and Rendering" link="pango-X-Fonts-and-Rendering.html">
+<sub name="Description" link="pango-X-Fonts-and-Rendering.html#id2873294"/>
+<sub name="Details" link="pango-X-Fonts-and-Rendering.html#id2873317">
+<sub name="PANGO_RENDER_TYPE_X" link="pango-X-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-X-CAPS"/>
+<sub name="pango_x_get_context ()" link="pango-X-Fonts-and-Rendering.html#pango-x-get-context"/>
+<sub name="pango_x_context_set_funcs ()" link="pango-X-Fonts-and-Rendering.html#pango-x-context-set-funcs"/>
+<sub name="PangoGetGCFunc ()" link="pango-X-Fonts-and-Rendering.html#PangoGetGCFunc"/>
+<sub name="PangoFreeGCFunc ()" link="pango-X-Fonts-and-Rendering.html#PangoFreeGCFunc"/>
+<sub name="pango_x_render ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render"/>
+<sub name="pango_x_render_layout_line ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render-layout-line"/>
+<sub name="pango_x_render_layout ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render-layout"/>
+<sub name="PangoXSubfont" link="pango-X-Fonts-and-Rendering.html#PangoXSubfont"/>
+<sub name="PANGO_X_MAKE_GLYPH()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-MAKE-GLYPH-CAPS"/>
+<sub name="PANGO_X_GLYPH_SUBFONT()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-GLYPH-SUBFONT-CAPS"/>
+<sub name="PANGO_X_GLYPH_INDEX()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-GLYPH-INDEX-CAPS"/>
+<sub name="pango_x_load_font ()" link="pango-X-Fonts-and-Rendering.html#pango-x-load-font"/>
+<sub name="pango_x_get_unknown_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-get-unknown-glyph"/>
+<sub name="pango_x_has_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-has-glyph"/>
+<sub name="pango_x_list_subfonts ()" link="pango-X-Fonts-and-Rendering.html#pango-x-list-subfonts"/>
+<sub name="pango_x_font_map_for_display ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-map-for-display"/>
+<sub name="pango_x_shutdown_display ()" link="pango-X-Fonts-and-Rendering.html#pango-x-shutdown-display"/>
+<sub name="pango_x_font_map_get_font_cache ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-map-get-font-cache"/>
+<sub name="pango_x_font_subfont_xlfd ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-subfont-xlfd"/>
+<sub name="pango_x_find_first_subfont ()" link="pango-X-Fonts-and-Rendering.html#pango-x-find-first-subfont"/>
+<sub name="pango_x_font_get_unknown_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-get-unknown-glyph"/>
+<sub name="pango_x_apply_ligatures ()" link="pango-X-Fonts-and-Rendering.html#pango-x-apply-ligatures"/>
+<sub name="pango_x_fallback_shape ()" link="pango-X-Fonts-and-Rendering.html#pango-x-fallback-shape"/>
+<sub name="struct PangoXFontCache" link="pango-X-Fonts-and-Rendering.html#PangoXFontCache"/>
+<sub name="pango_x_font_cache_new ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-new"/>
+<sub name="pango_x_font_cache_free ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-free"/>
+<sub name="pango_x_font_cache_load ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-load"/>
+<sub name="pango_x_font_cache_unload ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-unload"/>
+</sub>
+</sub>
+<sub name="Win32 Fonts and Rendering" link="pango-Win32-Fonts-and-Rendering.html">
+<sub name="Description" link="pango-Win32-Fonts-and-Rendering.html#id2877321"/>
+<sub name="Details" link="pango-Win32-Fonts-and-Rendering.html#id2877334">
+<sub name="PANGO_RENDER_TYPE_WIN32" link="pango-Win32-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-WIN32-CAPS"/>
+<sub name="pango_win32_get_context ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-context"/>
+<sub name="pango_win32_render ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render"/>
+<sub name="pango_win32_render_layout_line ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render-layout-line"/>
+<sub name="pango_win32_render_layout ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render-layout"/>
+<sub name="pango_win32_get_unknown_glyph ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-unknown-glyph"/>
+<sub name="pango_win32_font_get_glyph_index ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-get-glyph-index"/>
+<sub name="pango_win32_get_debug_flag ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-debug-flag"/>
+<sub name="pango_win32_get_dc ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-dc"/>
+<sub name="struct PangoWin32FontCache" link="pango-Win32-Fonts-and-Rendering.html#PangoWin32FontCache"/>
+<sub name="pango_win32_font_cache_new ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-new"/>
+<sub name="pango_win32_font_cache_free ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-free"/>
+<sub name="pango_win32_font_cache_load ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-load"/>
+<sub name="pango_win32_font_cache_unload ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-unload"/>
+<sub name="pango_win32_font_map_for_display ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-map-for-display"/>
+<sub name="pango_win32_shutdown_display ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-shutdown-display"/>
+<sub name="pango_win32_font_map_get_font_cache ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-map-get-font-cache"/>
+<sub name="pango_win32_font_logfont ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-logfont"/>
+</sub>
+</sub>
+<sub name="FreeType Fonts and Rendering" link="pango-FreeType-Fonts-and-Rendering.html">
+<sub name="Description" link="pango-FreeType-Fonts-and-Rendering.html#id2879587"/>
+<sub name="Details" link="pango-FreeType-Fonts-and-Rendering.html#id2879600">
+<sub name="struct PangoFT2FontMap" link="pango-FreeType-Fonts-and-Rendering.html#PangoFT2FontMap"/>
+<sub name="PANGO_RENDER_TYPE_FT2" link="pango-FreeType-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-FT2-CAPS"/>
+<sub name="pango_ft2_font_map_new ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-new"/>
+<sub name="pango_ft2_font_map_set_resolution ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-set-resolution"/>
+<sub name="pango_ft2_font_map_create_context ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-create-context"/>
+<sub name="PangoFT2SubstituteFunc ()" link="pango-FreeType-Fonts-and-Rendering.html#PangoFT2SubstituteFunc"/>
+<sub name="pango_ft2_font_map_set_default_substitute ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-set-default-substitute"/>
+<sub name="pango_ft2_font_map_substitute_changed ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-substitute-changed"/>
+<sub name="pango_ft2_get_context ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-get-context"/>
+<sub name="pango_ft2_render ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render"/>
+<sub name="pango_ft2_render_layout_line ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render-layout-line"/>
+<sub name="pango_ft2_render_layout ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render-layout"/>
+<sub name="pango_ft2_get_unknown_glyph ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-get-unknown-glyph"/>
+<sub name="pango_ft2_font_get_kerning ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-kerning"/>
+<sub name="pango_ft2_font_get_face ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-face"/>
+<sub name="pango_ft2_font_get_coverage ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-coverage"/>
+<sub name="pango_ft2_font_map_for_display ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-for-display"/>
+<sub name="pango_ft2_shutdown_display ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-shutdown-display"/>
+</sub>
+</sub>
+<sub name="Xft Fonts and Rendering" link="pango-Xft-Fonts-and-Rendering.html">
+<sub name="Description" link="pango-Xft-Fonts-and-Rendering.html#id2882144"/>
+<sub name="Details" link="pango-Xft-Fonts-and-Rendering.html#id2882157">
+<sub name="PANGO_RENDER_TYPE_XFT" link="pango-Xft-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-XFT-CAPS"/>
+<sub name="pango_xft_get_context ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-context"/>
+<sub name="pango_xft_get_font_map ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-font-map"/>
+<sub name="pango_xft_set_default_substitute ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-set-default-substitute"/>
+<sub name="PangoXftSubstituteFunc ()" link="pango-Xft-Fonts-and-Rendering.html#PangoXftSubstituteFunc"/>
+<sub name="pango_xft_substitute_changed ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-substitute-changed"/>
+<sub name="pango_xft_shutdown_display ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-shutdown-display"/>
+<sub name="pango_xft_render ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-render"/>
+<sub name="pango_xft_picture_render ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-picture-render"/>
+<sub name="pango_xft_font_get_font ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-font"/>
+<sub name="pango_xft_font_get_display ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-display"/>
+<sub name="pango_xft_font_has_char ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-has-char"/>
+<sub name="pango_xft_font_lock_face ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-lock-face"/>
+<sub name="pango_xft_font_unlock_face ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-unlock-face"/>
+<sub name="pango_xft_font_get_glyph ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-glyph"/>
+<sub name="pango_xft_font_get_unknown_glyph ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-unknown-glyph"/>
+</sub>
+</sub>
+</sub>
+<sub name="Low Level Functionality" link="lowlevel.html">
+<sub name="OpenType Font Handling" link="pango-OpenType-Font-Handling.html">
+<sub name="Description" link="pango-OpenType-Font-Handling.html#id2884737"/>
+<sub name="Details" link="pango-OpenType-Font-Handling.html#id2884750">
+<sub name="PangoOTTag" link="pango-OpenType-Font-Handling.html#PangoOTTag"/>
+<sub name="struct PangoOTInfo" link="pango-OpenType-Font-Handling.html#PangoOTInfo"/>
+<sub name="struct PangoOTRuleset" link="pango-OpenType-Font-Handling.html#PangoOTRuleset"/>
+<sub name="enum PangoOTTableType" link="pango-OpenType-Font-Handling.html#PangoOTTableType"/>
+<sub name="pango_ot_info_get ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-get"/>
+<sub name="pango_ot_info_find_script ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-script"/>
+<sub name="pango_ot_info_find_language ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-language"/>
+<sub name="pango_ot_info_find_feature ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-feature"/>
+<sub name="pango_ot_info_list_scripts ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-scripts"/>
+<sub name="pango_ot_info_list_languages ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-languages"/>
+<sub name="pango_ot_info_list_features ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-features"/>
+<sub name="pango_ot_ruleset_new ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-new"/>
+<sub name="pango_ot_ruleset_add_feature ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-add-feature"/>
+<sub name="pango_ot_ruleset_shape ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-shape"/>
+</sub>
+</sub>
+<sub name="Coverage Maps" link="pango-Coverage-Maps.html">
+<sub name="Description" link="pango-Coverage-Maps.html#id2886990"/>
+<sub name="Details" link="pango-Coverage-Maps.html#id2887015">
+<sub name="enum PangoCoverageLevel" link="pango-Coverage-Maps.html#PangoCoverageLevel"/>
+<sub name="PANGO_TYPE_COVERAGE_LEVEL" link="pango-Coverage-Maps.html#PANGO-TYPE-COVERAGE-LEVEL-CAPS"/>
+<sub name="struct PangoCoverage" link="pango-Coverage-Maps.html#PangoCoverage"/>
+<sub name="pango_coverage_new ()" link="pango-Coverage-Maps.html#pango-coverage-new"/>
+<sub name="pango_coverage_ref ()" link="pango-Coverage-Maps.html#pango-coverage-ref"/>
+<sub name="pango_coverage_unref ()" link="pango-Coverage-Maps.html#pango-coverage-unref"/>
+<sub name="pango_coverage_copy ()" link="pango-Coverage-Maps.html#pango-coverage-copy"/>
+<sub name="pango_coverage_get ()" link="pango-Coverage-Maps.html#pango-coverage-get"/>
+<sub name="pango_coverage_max ()" link="pango-Coverage-Maps.html#pango-coverage-max"/>
+<sub name="pango_coverage_set ()" link="pango-Coverage-Maps.html#pango-coverage-set"/>
+<sub name="pango_coverage_to_bytes ()" link="pango-Coverage-Maps.html#pango-coverage-to-bytes"/>
+<sub name="pango_coverage_from_bytes ()" link="pango-Coverage-Maps.html#pango-coverage-from-bytes"/>
+</sub>
+</sub>
+<sub name="Engines" link="pango-Engines.html">
+<sub name="Description" link="pango-Engines.html#id2888392"/>
+<sub name="Details" link="pango-Engines.html#id2888458">
+<sub name="struct PangoEngineInfo" link="pango-Engines.html#PangoEngineInfo"/>
+<sub name="struct PangoEngineRange" link="pango-Engines.html#PangoEngineRange"/>
+<sub name="struct PangoEngine" link="pango-Engines.html#PangoEngine"/>
+<sub name="struct PangoEngineLang" link="pango-Engines.html#PangoEngineLang"/>
+<sub name="struct PangoEngineShape" link="pango-Engines.html#PangoEngineShape"/>
+<sub name="PANGO_ENGINE_TYPE_LANG" link="pango-Engines.html#PANGO-ENGINE-TYPE-LANG-CAPS"/>
+<sub name="PANGO_ENGINE_TYPE_SHAPE" link="pango-Engines.html#PANGO-ENGINE-TYPE-SHAPE-CAPS"/>
+<sub name="PANGO_RENDER_TYPE_NONE" link="pango-Engines.html#PANGO-RENDER-TYPE-NONE-CAPS"/>
+<sub name="script_engine_list ()" link="pango-Engines.html#script-engine-list"/>
+<sub name="script_engine_load ()" link="pango-Engines.html#script-engine-load"/>
+<sub name="script_engine_unload ()" link="pango-Engines.html#script-engine-unload"/>
+</sub>
+</sub>
+<sub name="Indic Engine Support" link="pango-Indic-Engine-Support.html">
+<sub name="Description" link="pango-Indic-Engine-Support.html#id2889663"/>
+<sub name="Details" link="pango-Indic-Engine-Support.html#id2889686">
+<sub name="PANGO_ZERO_WIDTH_NON_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-NON-JOINER-CAPS"/>
+<sub name="PANGO_ZERO_WIDTH_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-JOINER-CAPS"/>
+<sub name="struct PangoIndicScript" link="pango-Indic-Engine-Support.html#PangoIndicScript"/>
+<sub name="pango_indic_shift_vowels ()" link="pango-Indic-Engine-Support.html#pango-indic-shift-vowels"/>
+<sub name="pango_indic_compact ()" link="pango-Indic-Engine-Support.html#pango-indic-compact"/>
+<sub name="pango_indic_convert_vowels ()" link="pango-Indic-Engine-Support.html#pango-indic-convert-vowels"/>
+<sub name="pango_indic_split_out_characters ()" link="pango-Indic-Engine-Support.html#pango-indic-split-out-characters"/>
+</sub>
+</sub>
+<sub name="Modules" link="pango-Modules.html">
+<sub name="Description" link="pango-Modules.html#id2890909"/>
+<sub name="Details" link="pango-Modules.html#id2890920">
+<sub name="struct PangoIncludedModule" link="pango-Modules.html#PangoIncludedModule"/>
+<sub name="struct PangoMap" link="pango-Modules.html#PangoMap"/>
+<sub name="struct PangoMapEntry" link="pango-Modules.html#PangoMapEntry"/>
+<sub name="pango_find_map ()" link="pango-Modules.html#pango-find-map"/>
+<sub name="pango_map_get_entry ()" link="pango-Modules.html#pango-map-get-entry"/>
+<sub name="pango_map_get_engine ()" link="pango-Modules.html#pango-map-get-engine"/>
+<sub name="pango_module_register ()" link="pango-Modules.html#pango-module-register"/>
+</sub>
+</sub>
+</sub>
+</chapters>
+<functions>
+<function name="struct PangoContext" link="pango-Text-Processing.html#PangoContext-struct"/>
+<function name="struct PangoItem" link="pango-Text-Processing.html#PangoItem"/>
+<function name="struct PangoAnalysis" link="pango-Text-Processing.html#PangoAnalysis"/>
+<function name="enum PangoDirection" link="pango-Text-Processing.html#PangoDirection"/>
+<function name="PANGO_TYPE_DIRECTION" link="pango-Text-Processing.html#PANGO-TYPE-DIRECTION-CAPS"/>
+<function name="pango_itemize ()" link="pango-Text-Processing.html#pango-itemize"/>
+<function name="pango_item_free ()" link="pango-Text-Processing.html#pango-item-free"/>
+<function name="pango_item_copy ()" link="pango-Text-Processing.html#pango-item-copy"/>
+<function name="pango_item_new ()" link="pango-Text-Processing.html#pango-item-new"/>
+<function name="pango_item_split ()" link="pango-Text-Processing.html#pango-item-split"/>
+<function name="pango_reorder_items ()" link="pango-Text-Processing.html#pango-reorder-items"/>
+<function name="pango_context_new ()" link="pango-Text-Processing.html#pango-context-new"/>
+<function name="pango_context_set_font_map ()" link="pango-Text-Processing.html#pango-context-set-font-map"/>
+<function name="pango_context_get_font_description ()" link="pango-Text-Processing.html#pango-context-get-font-description"/>
+<function name="pango_context_set_font_description ()" link="pango-Text-Processing.html#pango-context-set-font-description"/>
+<function name="pango_context_get_language ()" link="pango-Text-Processing.html#pango-context-get-language"/>
+<function name="pango_context_set_language ()" link="pango-Text-Processing.html#pango-context-set-language"/>
+<function name="pango_context_get_base_dir ()" link="pango-Text-Processing.html#pango-context-get-base-dir"/>
+<function name="pango_context_set_base_dir ()" link="pango-Text-Processing.html#pango-context-set-base-dir"/>
+<function name="pango_context_load_font ()" link="pango-Text-Processing.html#pango-context-load-font"/>
+<function name="pango_context_load_fontset ()" link="pango-Text-Processing.html#pango-context-load-fontset"/>
+<function name="pango_context_get_metrics ()" link="pango-Text-Processing.html#pango-context-get-metrics"/>
+<function name="pango_context_list_families ()" link="pango-Text-Processing.html#pango-context-list-families"/>
+<function name="pango_break ()" link="pango-Text-Processing.html#pango-break"/>
+<function name="pango_get_log_attrs ()" link="pango-Text-Processing.html#pango-get-log-attrs"/>
+<function name="pango_find_paragraph_boundary ()" link="pango-Text-Processing.html#pango-find-paragraph-boundary"/>
+<function name="pango_default_break ()" link="pango-Text-Processing.html#pango-default-break"/>
+<function name="struct PangoLogAttr" link="pango-Text-Processing.html#PangoLogAttr"/>
+<function name="pango_shape ()" link="pango-Text-Processing.html#pango-shape"/>
+<function name="PANGO_SCALE" link="pango-Glyph-Storage.html#PANGO-SCALE-CAPS"/>
+<function name="PANGO_PIXELS()" link="pango-Glyph-Storage.html#PANGO-PIXELS-CAPS"/>
+<function name="struct PangoRectangle" link="pango-Glyph-Storage.html#PangoRectangle"/>
+<function name="PANGO_ASCENT()" link="pango-Glyph-Storage.html#PANGO-ASCENT-CAPS"/>
+<function name="PANGO_DESCENT()" link="pango-Glyph-Storage.html#PANGO-DESCENT-CAPS"/>
+<function name="PANGO_LBEARING()" link="pango-Glyph-Storage.html#PANGO-LBEARING-CAPS"/>
+<function name="PANGO_RBEARING()" link="pango-Glyph-Storage.html#PANGO-RBEARING-CAPS"/>
+<function name="PangoGlyph" link="pango-Glyph-Storage.html#PangoGlyph"/>
+<function name="struct PangoGlyphInfo" link="pango-Glyph-Storage.html#PangoGlyphInfo"/>
+<function name="struct PangoGlyphGeometry" link="pango-Glyph-Storage.html#PangoGlyphGeometry"/>
+<function name="PangoGlyphUnit" link="pango-Glyph-Storage.html#PangoGlyphUnit"/>
+<function name="struct PangoGlyphVisAttr" link="pango-Glyph-Storage.html#PangoGlyphVisAttr"/>
+<function name="struct PangoGlyphString" link="pango-Glyph-Storage.html#PangoGlyphString"/>
+<function name="struct PangoGlyphItem" link="pango-Glyph-Storage.html#PangoGlyphItem"/>
+<function name="PANGO_TYPE_GLYPH_STRING" link="pango-Glyph-Storage.html#PANGO-TYPE-GLYPH-STRING-CAPS"/>
+<function name="pango_glyph_string_new ()" link="pango-Glyph-Storage.html#pango-glyph-string-new"/>
+<function name="pango_glyph_string_copy ()" link="pango-Glyph-Storage.html#pango-glyph-string-copy"/>
+<function name="pango_glyph_string_set_size ()" link="pango-Glyph-Storage.html#pango-glyph-string-set-size"/>
+<function name="pango_glyph_string_free ()" link="pango-Glyph-Storage.html#pango-glyph-string-free"/>
+<function name="pango_glyph_string_extents ()" link="pango-Glyph-Storage.html#pango-glyph-string-extents"/>
+<function name="pango_glyph_string_extents_range ()" link="pango-Glyph-Storage.html#pango-glyph-string-extents-range"/>
+<function name="pango_glyph_string_index_to_x ()" link="pango-Glyph-Storage.html#pango-glyph-string-index-to-x"/>
+<function name="pango_glyph_string_x_to_index ()" link="pango-Glyph-Storage.html#pango-glyph-string-x-to-index"/>
+<function name="pango_glyph_string_get_logical_widths ()" link="pango-Glyph-Storage.html#pango-glyph-string-get-logical-widths"/>
+<function name="pango_glyph_item_split ()" link="pango-Glyph-Storage.html#pango-glyph-item-split"/>
+<function name="pango_glyph_item_apply_attrs ()" link="pango-Glyph-Storage.html#pango-glyph-item-apply-attrs"/>
+<function name="struct PangoFontDescription" link="pango-Fonts.html#PangoFontDescription"/>
+<function name="PANGO_TYPE_FONT_DESCRIPTION" link="pango-Fonts.html#PANGO-TYPE-FONT-DESCRIPTION-CAPS"/>
+<function name="enum PangoStyle" link="pango-Fonts.html#PangoStyle"/>
+<function name="PANGO_TYPE_STYLE" link="pango-Fonts.html#PANGO-TYPE-STYLE-CAPS"/>
+<function name="enum PangoWeight" link="pango-Fonts.html#PangoWeight"/>
+<function name="PANGO_TYPE_WEIGHT" link="pango-Fonts.html#PANGO-TYPE-WEIGHT-CAPS"/>
+<function name="enum PangoVariant" link="pango-Fonts.html#PangoVariant"/>
+<function name="PANGO_TYPE_VARIANT" link="pango-Fonts.html#PANGO-TYPE-VARIANT-CAPS"/>
+<function name="enum PangoStretch" link="pango-Fonts.html#PangoStretch"/>
+<function name="PANGO_TYPE_STRETCH" link="pango-Fonts.html#PANGO-TYPE-STRETCH-CAPS"/>
+<function name="enum PangoFontMask" link="pango-Fonts.html#PangoFontMask"/>
+<function name="PANGO_TYPE_FONT_MASK" link="pango-Fonts.html#PANGO-TYPE-FONT-MASK-CAPS"/>
+<function name="pango_font_description_new ()" link="pango-Fonts.html#pango-font-description-new"/>
+<function name="pango_font_description_copy ()" link="pango-Fonts.html#pango-font-description-copy"/>
+<function name="pango_font_description_copy_static ()" link="pango-Fonts.html#pango-font-description-copy-static"/>
+<function name="pango_font_description_hash ()" link="pango-Fonts.html#pango-font-description-hash"/>
+<function name="pango_font_description_equal ()" link="pango-Fonts.html#pango-font-description-equal"/>
+<function name="pango_font_description_free ()" link="pango-Fonts.html#pango-font-description-free"/>
+<function name="pango_font_descriptions_free ()" link="pango-Fonts.html#pango-font-descriptions-free"/>
+<function name="pango_font_description_set_family ()" link="pango-Fonts.html#pango-font-description-set-family"/>
+<function name="pango_font_description_set_family_static ()" link="pango-Fonts.html#pango-font-description-set-family-static"/>
+<function name="pango_font_description_get_family ()" link="pango-Fonts.html#pango-font-description-get-family"/>
+<function name="pango_font_description_set_style ()" link="pango-Fonts.html#pango-font-description-set-style"/>
+<function name="pango_font_description_get_style ()" link="pango-Fonts.html#pango-font-description-get-style"/>
+<function name="pango_font_description_set_variant ()" link="pango-Fonts.html#pango-font-description-set-variant"/>
+<function name="pango_font_description_get_variant ()" link="pango-Fonts.html#pango-font-description-get-variant"/>
+<function name="pango_font_description_set_weight ()" link="pango-Fonts.html#pango-font-description-set-weight"/>
+<function name="pango_font_description_get_weight ()" link="pango-Fonts.html#pango-font-description-get-weight"/>
+<function name="pango_font_description_set_stretch ()" link="pango-Fonts.html#pango-font-description-set-stretch"/>
+<function name="pango_font_description_get_stretch ()" link="pango-Fonts.html#pango-font-description-get-stretch"/>
+<function name="pango_font_description_set_size ()" link="pango-Fonts.html#pango-font-description-set-size"/>
+<function name="pango_font_description_get_size ()" link="pango-Fonts.html#pango-font-description-get-size"/>
+<function name="pango_font_description_get_set_fields ()" link="pango-Fonts.html#pango-font-description-get-set-fields"/>
+<function name="pango_font_description_unset_fields ()" link="pango-Fonts.html#pango-font-description-unset-fields"/>
+<function name="pango_font_description_merge ()" link="pango-Fonts.html#pango-font-description-merge"/>
+<function name="pango_font_description_merge_static ()" link="pango-Fonts.html#pango-font-description-merge-static"/>
+<function name="pango_font_description_better_match ()" link="pango-Fonts.html#pango-font-description-better-match"/>
+<function name="pango_font_description_from_string ()" link="pango-Fonts.html#pango-font-description-from-string"/>
+<function name="pango_font_description_to_string ()" link="pango-Fonts.html#pango-font-description-to-string"/>
+<function name="pango_font_description_to_filename ()" link="pango-Fonts.html#pango-font-description-to-filename"/>
+<function name="struct PangoFontMetrics" link="pango-Fonts.html#PangoFontMetrics"/>
+<function name="PANGO_TYPE_FONT_METRICS" link="pango-Fonts.html#PANGO-TYPE-FONT-METRICS-CAPS"/>
+<function name="pango_font_metrics_ref ()" link="pango-Fonts.html#pango-font-metrics-ref"/>
+<function name="pango_font_metrics_unref ()" link="pango-Fonts.html#pango-font-metrics-unref"/>
+<function name="pango_font_metrics_get_ascent ()" link="pango-Fonts.html#pango-font-metrics-get-ascent"/>
+<function name="pango_font_metrics_get_descent ()" link="pango-Fonts.html#pango-font-metrics-get-descent"/>
+<function name="pango_font_metrics_get_approximate_char_width ()" link="pango-Fonts.html#pango-font-metrics-get-approximate-char-width"/>
+<function name="pango_font_metrics_get_approximate_digit_width ()" link="pango-Fonts.html#pango-font-metrics-get-approximate-digit-width"/>
+<function name="struct PangoFont" link="pango-Fonts.html#PangoFont-struct"/>
+<function name="PANGO_TYPE_FONT" link="pango-Fonts.html#PANGO-TYPE-FONT-CAPS"/>
+<function name="PANGO_FONT()" link="pango-Fonts.html#PANGO-FONT-CAPS"/>
+<function name="PANGO_IS_FONT()" link="pango-Fonts.html#PANGO-IS-FONT-CAPS"/>
+<function name="pango_font_find_shaper ()" link="pango-Fonts.html#pango-font-find-shaper"/>
+<function name="pango_font_describe ()" link="pango-Fonts.html#pango-font-describe"/>
+<function name="pango_font_get_coverage ()" link="pango-Fonts.html#pango-font-get-coverage"/>
+<function name="pango_font_get_glyph_extents ()" link="pango-Fonts.html#pango-font-get-glyph-extents"/>
+<function name="pango_font_get_metrics ()" link="pango-Fonts.html#pango-font-get-metrics"/>
+<function name="struct PangoFontFamily" link="pango-Fonts.html#PangoFontFamily-struct"/>
+<function name="PANGO_TYPE_FONT_FAMILY" link="pango-Fonts.html#PANGO-TYPE-FONT-FAMILY-CAPS"/>
+<function name="PANGO_FONT_FAMILY()" link="pango-Fonts.html#PANGO-FONT-FAMILY-CAPS"/>
+<function name="PANGO_IS_FONT_FAMILY()" link="pango-Fonts.html#PANGO-IS-FONT-FAMILY-CAPS"/>
+<function name="pango_font_family_get_name ()" link="pango-Fonts.html#pango-font-family-get-name"/>
+<function name="pango_font_family_list_faces ()" link="pango-Fonts.html#pango-font-family-list-faces"/>
+<function name="struct PangoFontFace" link="pango-Fonts.html#PangoFontFace-struct"/>
+<function name="PANGO_TYPE_FONT_FACE" link="pango-Fonts.html#PANGO-TYPE-FONT-FACE-CAPS"/>
+<function name="PANGO_FONT_FACE()" link="pango-Fonts.html#PANGO-FONT-FACE-CAPS"/>
+<function name="PANGO_IS_FONT_FACE()" link="pango-Fonts.html#PANGO-IS-FONT-FACE-CAPS"/>
+<function name="pango_font_face_get_face_name ()" link="pango-Fonts.html#pango-font-face-get-face-name"/>
+<function name="pango_font_face_describe ()" link="pango-Fonts.html#pango-font-face-describe"/>
+<function name="struct PangoFontMap" link="pango-Fonts.html#PangoFontMap-struct"/>
+<function name="PANGO_TYPE_FONT_MAP" link="pango-Fonts.html#PANGO-TYPE-FONT-MAP-CAPS"/>
+<function name="PANGO_FONT_MAP()" link="pango-Fonts.html#PANGO-FONT-MAP-CAPS"/>
+<function name="PANGO_IS_FONT_MAP()" link="pango-Fonts.html#PANGO-IS-FONT-MAP-CAPS"/>
+<function name="struct PangoFontMapClass" link="pango-Fonts.html#PangoFontMapClass"/>
+<function name="PANGO_FONT_MAP_CLASS()" link="pango-Fonts.html#PANGO-FONT-MAP-CLASS-CAPS"/>
+<function name="PANGO_IS_FONT_MAP_CLASS()" link="pango-Fonts.html#PANGO-IS-FONT-MAP-CLASS-CAPS"/>
+<function name="PANGO_FONT_MAP_GET_CLASS()" link="pango-Fonts.html#PANGO-FONT-MAP-GET-CLASS-CAPS"/>
+<function name="pango_font_map_load_font ()" link="pango-Fonts.html#pango-font-map-load-font"/>
+<function name="pango_font_map_load_fontset ()" link="pango-Fonts.html#pango-font-map-load-fontset"/>
+<function name="pango_font_map_list_families ()" link="pango-Fonts.html#pango-font-map-list-families"/>
+<function name="struct PangoFontset" link="pango-Fonts.html#PangoFontset-struct"/>
+<function name="PANGO_TYPE_FONTSET" link="pango-Fonts.html#PANGO-TYPE-FONTSET-CAPS"/>
+<function name="struct PangoFontsetClass" link="pango-Fonts.html#PangoFontsetClass"/>
+<function name="pango_fontset_get_font ()" link="pango-Fonts.html#pango-fontset-get-font"/>
+<function name="pango_fontset_get_metrics ()" link="pango-Fonts.html#pango-fontset-get-metrics"/>
+<function name="struct PangoFontsetSimple" link="pango-Fonts.html#PangoFontsetSimple-struct"/>
+<function name="PANGO_TYPE_FONTSET_SIMPLE" link="pango-Fonts.html#PANGO-TYPE-FONTSET-SIMPLE-CAPS"/>
+<function name="pango_fontset_simple_new ()" link="pango-Fonts.html#pango-fontset-simple-new"/>
+<function name="pango_fontset_simple_append ()" link="pango-Fonts.html#pango-fontset-simple-append"/>
+<function name="pango_fontset_simple_size ()" link="pango-Fonts.html#pango-fontset-simple-size"/>
+<function name="enum PangoAttrType" link="pango-Text-Attributes.html#PangoAttrType"/>
+<function name="PANGO_TYPE_ATTR_TYPE" link="pango-Text-Attributes.html#PANGO-TYPE-ATTR-TYPE-CAPS"/>
+<function name="struct PangoAttrClass" link="pango-Text-Attributes.html#PangoAttrClass"/>
+<function name="struct PangoAttribute" link="pango-Text-Attributes.html#PangoAttribute"/>
+<function name="struct PangoAttrString" link="pango-Text-Attributes.html#PangoAttrString"/>
+<function name="struct PangoAttrLanguage" link="pango-Text-Attributes.html#PangoAttrLanguage"/>
+<function name="struct PangoAttrColor" link="pango-Text-Attributes.html#PangoAttrColor"/>
+<function name="struct PangoAttrInt" link="pango-Text-Attributes.html#PangoAttrInt"/>
+<function name="struct PangoAttrFloat" link="pango-Text-Attributes.html#PangoAttrFloat"/>
+<function name="struct PangoAttrFontDesc" link="pango-Text-Attributes.html#PangoAttrFontDesc"/>
+<function name="struct PangoAttrShape" link="pango-Text-Attributes.html#PangoAttrShape"/>
+<function name="pango_parse_markup ()" link="pango-Text-Attributes.html#pango-parse-markup"/>
+<function name="pango_attr_type_register ()" link="pango-Text-Attributes.html#pango-attr-type-register"/>
+<function name="pango_attribute_copy ()" link="pango-Text-Attributes.html#pango-attribute-copy"/>
+<function name="pango_attribute_equal ()" link="pango-Text-Attributes.html#pango-attribute-equal"/>
+<function name="pango_attribute_destroy ()" link="pango-Text-Attributes.html#pango-attribute-destroy"/>
+<function name="pango_attr_language_new ()" link="pango-Text-Attributes.html#pango-attr-language-new"/>
+<function name="pango_attr_family_new ()" link="pango-Text-Attributes.html#pango-attr-family-new"/>
+<function name="pango_attr_style_new ()" link="pango-Text-Attributes.html#pango-attr-style-new"/>
+<function name="pango_attr_variant_new ()" link="pango-Text-Attributes.html#pango-attr-variant-new"/>
+<function name="pango_attr_stretch_new ()" link="pango-Text-Attributes.html#pango-attr-stretch-new"/>
+<function name="pango_attr_weight_new ()" link="pango-Text-Attributes.html#pango-attr-weight-new"/>
+<function name="pango_attr_size_new ()" link="pango-Text-Attributes.html#pango-attr-size-new"/>
+<function name="pango_attr_font_desc_new ()" link="pango-Text-Attributes.html#pango-attr-font-desc-new"/>
+<function name="pango_attr_foreground_new ()" link="pango-Text-Attributes.html#pango-attr-foreground-new"/>
+<function name="pango_attr_background_new ()" link="pango-Text-Attributes.html#pango-attr-background-new"/>
+<function name="pango_attr_strikethrough_new ()" link="pango-Text-Attributes.html#pango-attr-strikethrough-new"/>
+<function name="pango_attr_underline_new ()" link="pango-Text-Attributes.html#pango-attr-underline-new"/>
+<function name="enum PangoUnderline" link="pango-Text-Attributes.html#PangoUnderline"/>
+<function name="PANGO_TYPE_UNDERLINE" link="pango-Text-Attributes.html#PANGO-TYPE-UNDERLINE-CAPS"/>
+<function name="pango_attr_shape_new ()" link="pango-Text-Attributes.html#pango-attr-shape-new"/>
+<function name="pango_attr_scale_new ()" link="pango-Text-Attributes.html#pango-attr-scale-new"/>
+<function name="PANGO_SCALE_XX_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-XX-SMALL-CAPS"/>
+<function name="PANGO_SCALE_X_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-X-SMALL-CAPS"/>
+<function name="PANGO_SCALE_SMALL" link="pango-Text-Attributes.html#PANGO-SCALE-SMALL-CAPS"/>
+<function name="PANGO_SCALE_MEDIUM" link="pango-Text-Attributes.html#PANGO-SCALE-MEDIUM-CAPS"/>
+<function name="PANGO_SCALE_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-LARGE-CAPS"/>
+<function name="PANGO_SCALE_X_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-X-LARGE-CAPS"/>
+<function name="PANGO_SCALE_XX_LARGE" link="pango-Text-Attributes.html#PANGO-SCALE-XX-LARGE-CAPS"/>
+<function name="pango_attr_rise_new ()" link="pango-Text-Attributes.html#pango-attr-rise-new"/>
+<function name="struct PangoColor" link="pango-Text-Attributes.html#PangoColor"/>
+<function name="PANGO_TYPE_COLOR" link="pango-Text-Attributes.html#PANGO-TYPE-COLOR-CAPS"/>
+<function name="pango_color_free ()" link="pango-Text-Attributes.html#pango-color-free"/>
+<function name="pango_color_parse ()" link="pango-Text-Attributes.html#pango-color-parse"/>
+<function name="pango_color_copy ()" link="pango-Text-Attributes.html#pango-color-copy"/>
+<function name="struct PangoLanguage" link="pango-Text-Attributes.html#PangoLanguage"/>
+<function name="PANGO_TYPE_LANGUAGE" link="pango-Text-Attributes.html#PANGO-TYPE-LANGUAGE-CAPS"/>
+<function name="pango_language_from_string ()" link="pango-Text-Attributes.html#pango-language-from-string"/>
+<function name="pango_language_to_string()" link="pango-Text-Attributes.html#pango-language-to-string"/>
+<function name="pango_language_matches ()" link="pango-Text-Attributes.html#pango-language-matches"/>
+<function name="struct PangoAttrList" link="pango-Text-Attributes.html#PangoAttrList"/>
+<function name="PANGO_TYPE_ATTR_LIST" link="pango-Text-Attributes.html#PANGO-TYPE-ATTR-LIST-CAPS"/>
+<function name="pango_attr_list_new ()" link="pango-Text-Attributes.html#pango-attr-list-new"/>
+<function name="pango_attr_list_ref ()" link="pango-Text-Attributes.html#pango-attr-list-ref"/>
+<function name="pango_attr_list_unref ()" link="pango-Text-Attributes.html#pango-attr-list-unref"/>
+<function name="pango_attr_list_copy ()" link="pango-Text-Attributes.html#pango-attr-list-copy"/>
+<function name="pango_attr_list_insert ()" link="pango-Text-Attributes.html#pango-attr-list-insert"/>
+<function name="pango_attr_list_insert_before ()" link="pango-Text-Attributes.html#pango-attr-list-insert-before"/>
+<function name="pango_attr_list_change ()" link="pango-Text-Attributes.html#pango-attr-list-change"/>
+<function name="pango_attr_list_splice ()" link="pango-Text-Attributes.html#pango-attr-list-splice"/>
+<function name="pango_attr_list_filter ()" link="pango-Text-Attributes.html#pango-attr-list-filter"/>
+<function name="PangoAttrFilterFunc ()" link="pango-Text-Attributes.html#PangoAttrFilterFunc"/>
+<function name="pango_attr_list_get_iterator ()" link="pango-Text-Attributes.html#pango-attr-list-get-iterator"/>
+<function name="struct PangoAttrIterator" link="pango-Text-Attributes.html#PangoAttrIterator"/>
+<function name="pango_attr_iterator_copy ()" link="pango-Text-Attributes.html#pango-attr-iterator-copy"/>
+<function name="pango_attr_iterator_next ()" link="pango-Text-Attributes.html#pango-attr-iterator-next"/>
+<function name="pango_attr_iterator_range ()" link="pango-Text-Attributes.html#pango-attr-iterator-range"/>
+<function name="pango_attr_iterator_get ()" link="pango-Text-Attributes.html#pango-attr-iterator-get"/>
+<function name="pango_attr_iterator_get_font ()" link="pango-Text-Attributes.html#pango-attr-iterator-get-font"/>
+<function name="pango_attr_iterator_get_attrs ()" link="pango-Text-Attributes.html#pango-attr-iterator-get-attrs"/>
+<function name="pango_attr_iterator_destroy ()" link="pango-Text-Attributes.html#pango-attr-iterator-destroy"/>
+<function name="struct PangoTabArray" link="pango-Tab-Stops.html#PangoTabArray"/>
+<function name="PANGO_TYPE_TAB_ARRAY" link="pango-Tab-Stops.html#PANGO-TYPE-TAB-ARRAY-CAPS"/>
+<function name="enum PangoTabAlign" link="pango-Tab-Stops.html#PangoTabAlign"/>
+<function name="PANGO_TYPE_TAB_ALIGN" link="pango-Tab-Stops.html#PANGO-TYPE-TAB-ALIGN-CAPS"/>
+<function name="pango_tab_array_new ()" link="pango-Tab-Stops.html#pango-tab-array-new"/>
+<function name="pango_tab_array_new_with_positions ()" link="pango-Tab-Stops.html#pango-tab-array-new-with-positions"/>
+<function name="pango_tab_array_copy ()" link="pango-Tab-Stops.html#pango-tab-array-copy"/>
+<function name="pango_tab_array_free ()" link="pango-Tab-Stops.html#pango-tab-array-free"/>
+<function name="pango_tab_array_get_size ()" link="pango-Tab-Stops.html#pango-tab-array-get-size"/>
+<function name="pango_tab_array_resize ()" link="pango-Tab-Stops.html#pango-tab-array-resize"/>
+<function name="pango_tab_array_set_tab ()" link="pango-Tab-Stops.html#pango-tab-array-set-tab"/>
+<function name="pango_tab_array_get_tab ()" link="pango-Tab-Stops.html#pango-tab-array-get-tab"/>
+<function name="pango_tab_array_get_tabs ()" link="pango-Tab-Stops.html#pango-tab-array-get-tabs"/>
+<function name="pango_tab_array_get_positions_in_pixels ()" link="pango-Tab-Stops.html#pango-tab-array-get-positions-in-pixels"/>
+<function name="struct PangoLayout" link="pango-Layout-Objects.html#PangoLayout-struct"/>
+<function name="struct PangoLayoutIter" link="pango-Layout-Objects.html#PangoLayoutIter"/>
+<function name="pango_layout_new ()" link="pango-Layout-Objects.html#pango-layout-new"/>
+<function name="pango_layout_copy ()" link="pango-Layout-Objects.html#pango-layout-copy"/>
+<function name="pango_layout_get_context ()" link="pango-Layout-Objects.html#pango-layout-get-context"/>
+<function name="pango_layout_context_changed ()" link="pango-Layout-Objects.html#pango-layout-context-changed"/>
+<function name="pango_layout_set_text ()" link="pango-Layout-Objects.html#pango-layout-set-text"/>
+<function name="pango_layout_get_text ()" link="pango-Layout-Objects.html#pango-layout-get-text"/>
+<function name="pango_layout_set_markup ()" link="pango-Layout-Objects.html#pango-layout-set-markup"/>
+<function name="pango_layout_set_markup_with_accel ()" link="pango-Layout-Objects.html#pango-layout-set-markup-with-accel"/>
+<function name="pango_layout_set_attributes ()" link="pango-Layout-Objects.html#pango-layout-set-attributes"/>
+<function name="pango_layout_get_attributes ()" link="pango-Layout-Objects.html#pango-layout-get-attributes"/>
+<function name="pango_layout_set_font_description ()" link="pango-Layout-Objects.html#pango-layout-set-font-description"/>
+<function name="pango_layout_set_width ()" link="pango-Layout-Objects.html#pango-layout-set-width"/>
+<function name="pango_layout_get_width ()" link="pango-Layout-Objects.html#pango-layout-get-width"/>
+<function name="pango_layout_set_wrap ()" link="pango-Layout-Objects.html#pango-layout-set-wrap"/>
+<function name="pango_layout_get_wrap ()" link="pango-Layout-Objects.html#pango-layout-get-wrap"/>
+<function name="enum PangoWrapMode" link="pango-Layout-Objects.html#PangoWrapMode"/>
+<function name="PANGO_TYPE_WRAP_MODE" link="pango-Layout-Objects.html#PANGO-TYPE-WRAP-MODE-CAPS"/>
+<function name="pango_layout_set_indent ()" link="pango-Layout-Objects.html#pango-layout-set-indent"/>
+<function name="pango_layout_get_indent ()" link="pango-Layout-Objects.html#pango-layout-get-indent"/>
+<function name="pango_layout_get_spacing ()" link="pango-Layout-Objects.html#pango-layout-get-spacing"/>
+<function name="pango_layout_set_spacing ()" link="pango-Layout-Objects.html#pango-layout-set-spacing"/>
+<function name="pango_layout_set_justify ()" link="pango-Layout-Objects.html#pango-layout-set-justify"/>
+<function name="pango_layout_get_justify ()" link="pango-Layout-Objects.html#pango-layout-get-justify"/>
+<function name="pango_layout_set_alignment ()" link="pango-Layout-Objects.html#pango-layout-set-alignment"/>
+<function name="pango_layout_get_alignment ()" link="pango-Layout-Objects.html#pango-layout-get-alignment"/>
+<function name="pango_layout_set_tabs ()" link="pango-Layout-Objects.html#pango-layout-set-tabs"/>
+<function name="pango_layout_get_tabs ()" link="pango-Layout-Objects.html#pango-layout-get-tabs"/>
+<function name="pango_layout_set_single_paragraph_mode ()" link="pango-Layout-Objects.html#pango-layout-set-single-paragraph-mode"/>
+<function name="pango_layout_get_single_paragraph_mode ()" link="pango-Layout-Objects.html#pango-layout-get-single-paragraph-mode"/>
+<function name="enum PangoAlignment" link="pango-Layout-Objects.html#PangoAlignment"/>
+<function name="PANGO_TYPE_ALIGNMENT" link="pango-Layout-Objects.html#PANGO-TYPE-ALIGNMENT-CAPS"/>
+<function name="pango_layout_get_log_attrs ()" link="pango-Layout-Objects.html#pango-layout-get-log-attrs"/>
+<function name="pango_layout_xy_to_index ()" link="pango-Layout-Objects.html#pango-layout-xy-to-index"/>
+<function name="pango_layout_index_to_pos ()" link="pango-Layout-Objects.html#pango-layout-index-to-pos"/>
+<function name="pango_layout_get_cursor_pos ()" link="pango-Layout-Objects.html#pango-layout-get-cursor-pos"/>
+<function name="pango_layout_move_cursor_visually ()" link="pango-Layout-Objects.html#pango-layout-move-cursor-visually"/>
+<function name="pango_layout_get_extents ()" link="pango-Layout-Objects.html#pango-layout-get-extents"/>
+<function name="pango_layout_get_pixel_extents ()" link="pango-Layout-Objects.html#pango-layout-get-pixel-extents"/>
+<function name="pango_layout_get_size ()" link="pango-Layout-Objects.html#pango-layout-get-size"/>
+<function name="pango_layout_get_pixel_size ()" link="pango-Layout-Objects.html#pango-layout-get-pixel-size"/>
+<function name="pango_layout_get_line_count ()" link="pango-Layout-Objects.html#pango-layout-get-line-count"/>
+<function name="pango_layout_get_line ()" link="pango-Layout-Objects.html#pango-layout-get-line"/>
+<function name="pango_layout_get_lines ()" link="pango-Layout-Objects.html#pango-layout-get-lines"/>
+<function name="pango_layout_get_iter ()" link="pango-Layout-Objects.html#pango-layout-get-iter"/>
+<function name="pango_layout_iter_free ()" link="pango-Layout-Objects.html#pango-layout-iter-free"/>
+<function name="pango_layout_iter_next_run ()" link="pango-Layout-Objects.html#pango-layout-iter-next-run"/>
+<function name="pango_layout_iter_next_char ()" link="pango-Layout-Objects.html#pango-layout-iter-next-char"/>
+<function name="pango_layout_iter_next_cluster ()" link="pango-Layout-Objects.html#pango-layout-iter-next-cluster"/>
+<function name="pango_layout_iter_next_line ()" link="pango-Layout-Objects.html#pango-layout-iter-next-line"/>
+<function name="pango_layout_iter_at_last_line ()" link="pango-Layout-Objects.html#pango-layout-iter-at-last-line"/>
+<function name="pango_layout_iter_get_index ()" link="pango-Layout-Objects.html#pango-layout-iter-get-index"/>
+<function name="pango_layout_iter_get_baseline ()" link="pango-Layout-Objects.html#pango-layout-iter-get-baseline"/>
+<function name="pango_layout_iter_get_run ()" link="pango-Layout-Objects.html#pango-layout-iter-get-run"/>
+<function name="pango_layout_iter_get_line ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line"/>
+<function name="pango_layout_iter_get_char_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-char-extents"/>
+<function name="pango_layout_iter_get_cluster_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-cluster-extents"/>
+<function name="pango_layout_iter_get_run_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-run-extents"/>
+<function name="pango_layout_iter_get_line_yrange ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line-yrange"/>
+<function name="pango_layout_iter_get_line_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-line-extents"/>
+<function name="pango_layout_iter_get_layout_extents ()" link="pango-Layout-Objects.html#pango-layout-iter-get-layout-extents"/>
+<function name="struct PangoLayoutLine" link="pango-Layout-Objects.html#PangoLayoutLine"/>
+<function name="PangoLayoutRun" link="pango-Layout-Objects.html#PangoLayoutRun"/>
+<function name="pango_layout_line_ref ()" link="pango-Layout-Objects.html#pango-layout-line-ref"/>
+<function name="pango_layout_line_unref ()" link="pango-Layout-Objects.html#pango-layout-line-unref"/>
+<function name="pango_layout_line_get_extents ()" link="pango-Layout-Objects.html#pango-layout-line-get-extents"/>
+<function name="pango_layout_line_get_pixel_extents ()" link="pango-Layout-Objects.html#pango-layout-line-get-pixel-extents"/>
+<function name="pango_layout_line_index_to_x ()" link="pango-Layout-Objects.html#pango-layout-line-index-to-x"/>
+<function name="pango_layout_line_x_to_index ()" link="pango-Layout-Objects.html#pango-layout-line-x-to-index"/>
+<function name="pango_layout_line_get_x_ranges ()" link="pango-Layout-Objects.html#pango-layout-line-get-x-ranges"/>
+<function name="PANGO_RENDER_TYPE_X" link="pango-X-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-X-CAPS"/>
+<function name="pango_x_get_context ()" link="pango-X-Fonts-and-Rendering.html#pango-x-get-context"/>
+<function name="pango_x_context_set_funcs ()" link="pango-X-Fonts-and-Rendering.html#pango-x-context-set-funcs"/>
+<function name="PangoGetGCFunc ()" link="pango-X-Fonts-and-Rendering.html#PangoGetGCFunc"/>
+<function name="PangoFreeGCFunc ()" link="pango-X-Fonts-and-Rendering.html#PangoFreeGCFunc"/>
+<function name="pango_x_render ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render"/>
+<function name="pango_x_render_layout_line ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render-layout-line"/>
+<function name="pango_x_render_layout ()" link="pango-X-Fonts-and-Rendering.html#pango-x-render-layout"/>
+<function name="PangoXSubfont" link="pango-X-Fonts-and-Rendering.html#PangoXSubfont"/>
+<function name="PANGO_X_MAKE_GLYPH()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-MAKE-GLYPH-CAPS"/>
+<function name="PANGO_X_GLYPH_SUBFONT()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-GLYPH-SUBFONT-CAPS"/>
+<function name="PANGO_X_GLYPH_INDEX()" link="pango-X-Fonts-and-Rendering.html#PANGO-X-GLYPH-INDEX-CAPS"/>
+<function name="pango_x_load_font ()" link="pango-X-Fonts-and-Rendering.html#pango-x-load-font"/>
+<function name="pango_x_get_unknown_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-get-unknown-glyph"/>
+<function name="pango_x_has_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-has-glyph"/>
+<function name="pango_x_list_subfonts ()" link="pango-X-Fonts-and-Rendering.html#pango-x-list-subfonts"/>
+<function name="pango_x_font_map_for_display ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-map-for-display"/>
+<function name="pango_x_shutdown_display ()" link="pango-X-Fonts-and-Rendering.html#pango-x-shutdown-display"/>
+<function name="pango_x_font_map_get_font_cache ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-map-get-font-cache"/>
+<function name="pango_x_font_subfont_xlfd ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-subfont-xlfd"/>
+<function name="pango_x_find_first_subfont ()" link="pango-X-Fonts-and-Rendering.html#pango-x-find-first-subfont"/>
+<function name="pango_x_font_get_unknown_glyph ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-get-unknown-glyph"/>
+<function name="pango_x_apply_ligatures ()" link="pango-X-Fonts-and-Rendering.html#pango-x-apply-ligatures"/>
+<function name="pango_x_fallback_shape ()" link="pango-X-Fonts-and-Rendering.html#pango-x-fallback-shape"/>
+<function name="struct PangoXFontCache" link="pango-X-Fonts-and-Rendering.html#PangoXFontCache"/>
+<function name="pango_x_font_cache_new ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-new"/>
+<function name="pango_x_font_cache_free ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-free"/>
+<function name="pango_x_font_cache_load ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-load"/>
+<function name="pango_x_font_cache_unload ()" link="pango-X-Fonts-and-Rendering.html#pango-x-font-cache-unload"/>
+<function name="PANGO_RENDER_TYPE_WIN32" link="pango-Win32-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-WIN32-CAPS"/>
+<function name="pango_win32_get_context ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-context"/>
+<function name="pango_win32_render ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render"/>
+<function name="pango_win32_render_layout_line ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render-layout-line"/>
+<function name="pango_win32_render_layout ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render-layout"/>
+<function name="pango_win32_get_unknown_glyph ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-unknown-glyph"/>
+<function name="pango_win32_font_get_glyph_index ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-get-glyph-index"/>
+<function name="pango_win32_get_debug_flag ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-debug-flag"/>
+<function name="pango_win32_get_dc ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-dc"/>
+<function name="struct PangoWin32FontCache" link="pango-Win32-Fonts-and-Rendering.html#PangoWin32FontCache"/>
+<function name="pango_win32_font_cache_new ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-new"/>
+<function name="pango_win32_font_cache_free ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-free"/>
+<function name="pango_win32_font_cache_load ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-load"/>
+<function name="pango_win32_font_cache_unload ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-cache-unload"/>
+<function name="pango_win32_font_map_for_display ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-map-for-display"/>
+<function name="pango_win32_shutdown_display ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-shutdown-display"/>
+<function name="pango_win32_font_map_get_font_cache ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-map-get-font-cache"/>
+<function name="pango_win32_font_logfont ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-font-logfont"/>
+<function name="struct PangoFT2FontMap" link="pango-FreeType-Fonts-and-Rendering.html#PangoFT2FontMap"/>
+<function name="PANGO_RENDER_TYPE_FT2" link="pango-FreeType-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-FT2-CAPS"/>
+<function name="pango_ft2_font_map_new ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-new"/>
+<function name="pango_ft2_font_map_set_resolution ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-set-resolution"/>
+<function name="pango_ft2_font_map_create_context ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-create-context"/>
+<function name="PangoFT2SubstituteFunc ()" link="pango-FreeType-Fonts-and-Rendering.html#PangoFT2SubstituteFunc"/>
+<function name="pango_ft2_font_map_set_default_substitute ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-set-default-substitute"/>
+<function name="pango_ft2_font_map_substitute_changed ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-substitute-changed"/>
+<function name="pango_ft2_get_context ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-get-context"/>
+<function name="pango_ft2_render ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render"/>
+<function name="pango_ft2_render_layout_line ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render-layout-line"/>
+<function name="pango_ft2_render_layout ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-render-layout"/>
+<function name="pango_ft2_get_unknown_glyph ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-get-unknown-glyph"/>
+<function name="pango_ft2_font_get_kerning ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-kerning"/>
+<function name="pango_ft2_font_get_face ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-face"/>
+<function name="pango_ft2_font_get_coverage ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-get-coverage"/>
+<function name="pango_ft2_font_map_for_display ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-for-display"/>
+<function name="pango_ft2_shutdown_display ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-shutdown-display"/>
+<function name="PANGO_RENDER_TYPE_XFT" link="pango-Xft-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-XFT-CAPS"/>
+<function name="pango_xft_get_context ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-context"/>
+<function name="pango_xft_get_font_map ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-font-map"/>
+<function name="pango_xft_set_default_substitute ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-set-default-substitute"/>
+<function name="PangoXftSubstituteFunc ()" link="pango-Xft-Fonts-and-Rendering.html#PangoXftSubstituteFunc"/>
+<function name="pango_xft_substitute_changed ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-substitute-changed"/>
+<function name="pango_xft_shutdown_display ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-shutdown-display"/>
+<function name="pango_xft_render ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-render"/>
+<function name="pango_xft_picture_render ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-picture-render"/>
+<function name="pango_xft_font_get_font ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-font"/>
+<function name="pango_xft_font_get_display ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-display"/>
+<function name="pango_xft_font_has_char ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-has-char"/>
+<function name="pango_xft_font_lock_face ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-lock-face"/>
+<function name="pango_xft_font_unlock_face ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-unlock-face"/>
+<function name="pango_xft_font_get_glyph ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-glyph"/>
+<function name="pango_xft_font_get_unknown_glyph ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-font-get-unknown-glyph"/>
+<function name="PangoOTTag" link="pango-OpenType-Font-Handling.html#PangoOTTag"/>
+<function name="struct PangoOTInfo" link="pango-OpenType-Font-Handling.html#PangoOTInfo"/>
+<function name="struct PangoOTRuleset" link="pango-OpenType-Font-Handling.html#PangoOTRuleset"/>
+<function name="enum PangoOTTableType" link="pango-OpenType-Font-Handling.html#PangoOTTableType"/>
+<function name="pango_ot_info_get ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-get"/>
+<function name="pango_ot_info_find_script ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-script"/>
+<function name="pango_ot_info_find_language ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-language"/>
+<function name="pango_ot_info_find_feature ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-find-feature"/>
+<function name="pango_ot_info_list_scripts ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-scripts"/>
+<function name="pango_ot_info_list_languages ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-languages"/>
+<function name="pango_ot_info_list_features ()" link="pango-OpenType-Font-Handling.html#pango-ot-info-list-features"/>
+<function name="pango_ot_ruleset_new ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-new"/>
+<function name="pango_ot_ruleset_add_feature ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-add-feature"/>
+<function name="pango_ot_ruleset_shape ()" link="pango-OpenType-Font-Handling.html#pango-ot-ruleset-shape"/>
+<function name="enum PangoCoverageLevel" link="pango-Coverage-Maps.html#PangoCoverageLevel"/>
+<function name="PANGO_TYPE_COVERAGE_LEVEL" link="pango-Coverage-Maps.html#PANGO-TYPE-COVERAGE-LEVEL-CAPS"/>
+<function name="struct PangoCoverage" link="pango-Coverage-Maps.html#PangoCoverage"/>
+<function name="pango_coverage_new ()" link="pango-Coverage-Maps.html#pango-coverage-new"/>
+<function name="pango_coverage_ref ()" link="pango-Coverage-Maps.html#pango-coverage-ref"/>
+<function name="pango_coverage_unref ()" link="pango-Coverage-Maps.html#pango-coverage-unref"/>
+<function name="pango_coverage_copy ()" link="pango-Coverage-Maps.html#pango-coverage-copy"/>
+<function name="pango_coverage_get ()" link="pango-Coverage-Maps.html#pango-coverage-get"/>
+<function name="pango_coverage_max ()" link="pango-Coverage-Maps.html#pango-coverage-max"/>
+<function name="pango_coverage_set ()" link="pango-Coverage-Maps.html#pango-coverage-set"/>
+<function name="pango_coverage_to_bytes ()" link="pango-Coverage-Maps.html#pango-coverage-to-bytes"/>
+<function name="pango_coverage_from_bytes ()" link="pango-Coverage-Maps.html#pango-coverage-from-bytes"/>
+<function name="struct PangoEngineInfo" link="pango-Engines.html#PangoEngineInfo"/>
+<function name="struct PangoEngineRange" link="pango-Engines.html#PangoEngineRange"/>
+<function name="struct PangoEngine" link="pango-Engines.html#PangoEngine"/>
+<function name="struct PangoEngineLang" link="pango-Engines.html#PangoEngineLang"/>
+<function name="struct PangoEngineShape" link="pango-Engines.html#PangoEngineShape"/>
+<function name="PANGO_ENGINE_TYPE_LANG" link="pango-Engines.html#PANGO-ENGINE-TYPE-LANG-CAPS"/>
+<function name="PANGO_ENGINE_TYPE_SHAPE" link="pango-Engines.html#PANGO-ENGINE-TYPE-SHAPE-CAPS"/>
+<function name="PANGO_RENDER_TYPE_NONE" link="pango-Engines.html#PANGO-RENDER-TYPE-NONE-CAPS"/>
+<function name="script_engine_list ()" link="pango-Engines.html#script-engine-list"/>
+<function name="script_engine_load ()" link="pango-Engines.html#script-engine-load"/>
+<function name="script_engine_unload ()" link="pango-Engines.html#script-engine-unload"/>
+<function name="PANGO_ZERO_WIDTH_NON_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-NON-JOINER-CAPS"/>
+<function name="PANGO_ZERO_WIDTH_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-JOINER-CAPS"/>
+<function name="struct PangoIndicScript" link="pango-Indic-Engine-Support.html#PangoIndicScript"/>
+<function name="pango_indic_shift_vowels ()" link="pango-Indic-Engine-Support.html#pango-indic-shift-vowels"/>
+<function name="pango_indic_compact ()" link="pango-Indic-Engine-Support.html#pango-indic-compact"/>
+<function name="pango_indic_convert_vowels ()" link="pango-Indic-Engine-Support.html#pango-indic-convert-vowels"/>
+<function name="pango_indic_split_out_characters ()" link="pango-Indic-Engine-Support.html#pango-indic-split-out-characters"/>
+<function name="struct PangoIncludedModule" link="pango-Modules.html#PangoIncludedModule"/>
+<function name="struct PangoMap" link="pango-Modules.html#PangoMap"/>
+<function name="struct PangoMapEntry" link="pango-Modules.html#PangoMapEntry"/>
+<function name="pango_find_map ()" link="pango-Modules.html#pango-find-map"/>
+<function name="pango_map_get_entry ()" link="pango-Modules.html#pango-map-get-entry"/>
+<function name="pango_map_get_engine ()" link="pango-Modules.html#pango-map-get-engine"/>
+<function name="pango_module_register ()" link="pango-Modules.html#pango-module-register"/>
+</functions>
+</book>
