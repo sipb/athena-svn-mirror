@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.26 2003-04-30 20:08:04 ghudson Exp $
+/* $Id: dm.c,v 1.27 2003-07-02 20:19:31 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -65,7 +65,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.26 2003-04-30 20:08:04 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.27 2003-07-02 20:19:31 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -126,6 +126,7 @@ static int openpty(int *amaster, int *aslave, char *name,
 static int termsetup(int fd, struct termios *termp, struct winsize *winp);
 #endif
 
+static int handle_xioerror(Display *dpy);
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -137,12 +138,13 @@ static int termsetup(int fd, struct termios *termp, struct winsize *winp);
 #endif
 
 static int max_fd;
+static char *conf;
 
 /* Setup signals, start X, start console, start login, wait */
 
 int main(int argc, char **argv)
 {
-  char *consoletty, *conf, *p;
+  char *consoletty, *p;
   char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
   char xpidf[256], line[16], buf[256];
   fd_set readfds;
@@ -162,6 +164,7 @@ int main(int argc, char **argv)
   int fd;
   char loginttyname[256];
   int ttyfd;
+  XIOErrorHandler xioerror_handler;
 
   logintty = &loginttyname[5]; /* skip over the /dev/ */
 
@@ -428,7 +431,12 @@ int main(int argc, char **argv)
 
   sprintf(dpyacl, xhosts, dpynum);
   sprintf(dpyname, ":%d", dpynum);
+
+  /* Put in our own error handler, open the display, then reset the handler. */
+  xioerror_handler = XSetIOErrorHandler(handle_xioerror);
   dpy = XOpenDisplay(dpyname);
+  XSetIOErrorHandler(xioerror_handler);
+
   if (dpy != NULL && (stat(dpyacl, &hostsinfo) || hostsinfo.st_size == 0))
     {
       hosts = XListHosts(dpy, &nhosts, &state);
@@ -1303,3 +1311,10 @@ static int termsetup(int fd, struct termios *termp, struct winsize *winp)
   return(0);
 }
 #endif
+
+/* Xlib calls this handler if there is an error on XOpenDisplay. */
+static int handle_xioerror(Display *dpy)
+{
+  console_login(conf, "\nXIOError failure opening display...  "
+		"Starting console login.\n");
+}
