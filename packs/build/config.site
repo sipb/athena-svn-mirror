@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.36 2002-03-08 16:55:45 ghudson Exp $
+# $Id: config.site,v 1.37 2003-05-06 22:25:42 rbasch Exp $
 #
 
 athena=true
@@ -16,9 +16,9 @@ esac
 
 # Compile programs with debugging and without optimization, for ease
 # of maintenance.  Use headers and libraries from /usr/athena.
-[ -n "$CFLAGS" ]   || CFLAGS=-g
-[ -n "$LDFLAGS" ]  || LDFLAGS="-L/usr/athena/lib $SHARED_LDFLAGS"
-[ -n "$CPPFLAGS" ] || CPPFLAGS="-I/usr/athena/include -D_REENTRANT"
+: ${CFLAGS=-g}
+: ${LDFLAGS="-L/usr/athena/lib $SHARED_LDFLAGS"}
+: ${CPPFLAGS="-I/usr/athena/include -D_REENTRANT"}
 
 # Set location of X and Motif includes and libraries.
 case "$ATHENA_HOSTTYPE" in
