@@ -367,6 +367,10 @@ grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
 # know to ignore.
 rm -f /etc/sysconfig/network-scripts/*.saved
 
+# Mozilla is now in the release.  Remove the locally cached copy from
+# earlier releases.
+rm -rf /var/athena/infoagents /var/athena/rconf.infoagents
+
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-ws
