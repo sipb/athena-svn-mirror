@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.10 1995-12-28 17:43:48 cfields Exp $
+# $Id: config_afs.sh,v 1.11 1996-03-25 18:36:36 ghudson Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -39,23 +39,14 @@ chmod 644 ${SUIDDB}
 
 echo "Only allowing setuid/setgid programs from the following cells:"
 
-(awk '/^>/ {print $1}' ${CELLDB}; cat ${SUIDDB}) | awk '\
-	/^>/ {i++; cells[i]=substr($1,2,length($1)-1);suid[i]=0;next}; \
-	/^-/ {for (j=1;j<=i;j++) {if (substr($1,2,length($1)-1)==cells[j]) \
-		{suid[j]=0;next;}}}; \
-	{for (j=1;j<=i;j++) {if ($1==cells[j]) {suid[j]=1;next}}}; \
-	END {	ns=0; nn=0; \
-		for (j=1;j<=i;j++) { \
-		  if (suid[j]){ns++;scmd=scmd" "cells[j];\
-				print "echo",cells[j];}\
-		  else {nn++;ncmd=ncmd" "cells[j];};\
-		  if (ns>20) \
-		    {printf("fs setcell %s -suid\n", scmd);scmd="";ns=0;};\
-		  if (nn>20) \
-		    {printf("fs setcell %s -nosuid\n",ncmd);ncmd="";nn=0;};\
-		} \
-		if (ns) {printf("fs setcell %s -suid\n", scmd)};\
-		if (nn) {printf("fs setcell %s -nosuid\n",ncmd)};\
-	}' | sh
+/etc/athena/listsuidcells | xargs -icellname fs setcell cellname -nosuid
+cat ${SUIDDB} | awk '
+	/^-/	{ suid[substr($1,2,length($1-1))] = 0; }
+		{ suid[$1] = 1;
+		  cells[numcells++] = $1; }
+	END	{ for (i = 0; i < numcells; i++) {
+			if (suid[cells[i]]) {
+				printf("fs setcell %s -suid\n", cells[i]);
+				printf("echo %s\n", cells[i]); } } }' | sh
 
 exit 0
