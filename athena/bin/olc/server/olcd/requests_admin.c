@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.6 1990-02-06 03:50:47 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.7 1990-02-07 00:23:45 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -120,7 +120,7 @@ olc_dump_req_stats(fd,request,auth)
   
   send_response(fd,SUCCESS);
   make_temp_name(file);
-  dump_server_stats(file);
+  dump_request_stats(file);
   write_file_to_fd(fd,file);
   unlink(file);
   return(SUCCESS);
