@@ -43,7 +43,7 @@
  */
  
 #include <stdio.h>
-#ifdef ibm032
+#ifndef ultrix
 #include <sys/time.h>
 #else
 #include <time.h>
