@@ -6,16 +6,19 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <syslog.h>
 #include <errno.h>
 #include "pc_bsd.h"
 
-pc_state *pc_init(void)
+long pc_init(pc_state **ps)
 {
   pc_state *ret;
 
+  initialize_pc_error_table();
+
   ret = malloc(sizeof(pc_state));
   if (ret == NULL)
-    return NULL;
+    return PCerrNoMem;
 
   ret->numports = 0;
 
@@ -23,42 +26,47 @@ pc_state *pc_init(void)
   FD_ZERO(&(ret->readfds));
   FD_ZERO(&(ret->writefds));
 
-  return ret;
+  *ps = ret;
+  return 0L;
 }
 
-int pc_freemessage(pc_message *m)
+long pc_freemessage(pc_message *m)
 {
   if (m == NULL)
-    return 0;
+    return 0L;
 
   if (m->type == PC_DATA)
     free(m->data);
 
   free(m);
+  return 0L;
 }
 
 /*
  * Add a port to a state structure.
  */
-int pc_addport(pc_state *s, pc_port *p)
+long pc_addport(pc_state *s, pc_port *p)
 {
   if (s == NULL || p == NULL)
-    return 1;
+    return PCerrNullArg;
 
   if (s->numports == PC_MAXPORTS)
-    return 1;
+    return PCerrMaxPortsUsed;
 
   s->ports[s->numports++] = p;
 
   FD_SET(p->fd, &(s->readfds));
   s->nfds = MAX(s->nfds, p->fd + 1);
 
-  return 0;
+  return 0L;
 }
 
-int pc_removeport(pc_state *s, pc_port *p)
+long pc_removeport(pc_state *s, pc_port *p)
 {
   int i;
+
+  if (s == NULL || p == NULL)
+    return PCerrNullArg;
 
   for (i = 0; i < s->numports; i++)
     if (s->ports[i] == p)
@@ -67,16 +75,16 @@ int pc_removeport(pc_state *s, pc_port *p)
 	for (; i < s->numports; i++)
 	  s->ports[i] = s->ports[i+1];
 	FD_CLR(p->fd, &(s->readfds)); /* should adjust nfds someday */
-	return 0;
+	return 0L;
       }
 
-  return 1;
+  return PCerrNoSuchPort;
 }
 
-int pc_addfd(pc_state *s, pc_fd *fd)
+long pc_addfd(pc_state *s, pc_fd *fd)
 {
-  if (fd == NULL)
-    return 1;
+  if (s == NULL || fd == NULL)
+    return PCerrNullArg;
 
   if (fd->events & PC_READ)
     FD_SET(fd->fd, &(s->readfds));
@@ -87,13 +95,13 @@ int pc_addfd(pc_state *s, pc_fd *fd)
   if (fd->events & (PC_READ | PC_WRITE))
     s->nfds = MAX(s->nfds, fd->fd + 1);
 
-  return 0;
+  return 0L;
 }
 
-int pc_removefd(pc_state *s, pc_fd *fd)
+long pc_removefd(pc_state *s, pc_fd *fd)
 {
-  if (fd == NULL)
-    return 1;
+  if (s == NULL || fd == NULL)
+    return PCerrNullArg;
 
   if (fd->events & PC_READ)
     FD_CLR(fd->fd, &(s->readfds));
@@ -101,22 +109,22 @@ int pc_removefd(pc_state *s, pc_fd *fd)
   if (fd->events & PC_WRITE)
     FD_CLR(fd->fd, &(s->writefds));
 
-  return 0;
+  return 0L;
 }
 
 /* Should probably make it fail if chown or chmod fail. */
-pc_port *pc_makeport(char *name, int flags,
-		     uid_t owner, gid_t group, mode_t mode)
+long pc_makeport(pc_port **pp, char *name, int flags,
+		 uid_t owner, gid_t group, mode_t mode)
 {
   pc_port *p;
   struct sockaddr_un n;
 
-  if (name == NULL)
-    return NULL;
+  if (pp == NULL || name == NULL)
+    return PCerrNullArg;
 
   p = malloc(sizeof(pc_port));
   if (p == NULL)
-    return NULL;
+    return PCerrNoMem;
 
   p->parent = NULL;
   p->type = PC_LISTENER;
@@ -124,7 +132,7 @@ pc_port *pc_makeport(char *name, int flags,
   if (p->path == NULL)
     {
       free(p);
-      return NULL;
+      return PCerrNoMem;
     }
   strcpy(p->path, name);
 
@@ -133,7 +141,7 @@ pc_port *pc_makeport(char *name, int flags,
     {
       free(p->path);
       free(p);
-      return NULL;
+      return PCerrSocketFailed;
     }
 
   if (flags & PC_GRAB)
@@ -145,7 +153,7 @@ pc_port *pc_makeport(char *name, int flags,
       close(p->fd);
       free(p->path);
       free(p);
-      return NULL;
+      return PCerrBindFailed;
     }
 
   /* Does listening after the ch* avoid a hole for us? */
@@ -156,34 +164,36 @@ pc_port *pc_makeport(char *name, int flags,
 
   listen(p->fd, 5);
 
-  return p;
+  *pp = p;
+  return 0L;
 }
 
-int pc_chprot(pc_port *p, uid_t owner, gid_t group, mode_t mode)
+long pc_chprot(pc_port *p, uid_t owner, gid_t group, mode_t mode)
 {
   if (p == NULL)
-    return 1;
+    return PCerrNullArg;
 
   if (p->type != PC_LISTENER)
-    return 1;
+    return PCerrBadType;
 
   chown(p->path, owner, group);
   chmod(p->path, mode);
 
-  return 0;
+  return 0L;
 }
 
-pc_port *pc_openport(char *name)
+long pc_openport(pc_port **pp, char *name)
 {
   pc_port *p;
   struct sockaddr_un n;
+  int errcopy;
 
-  if (name == NULL)
-    return NULL;
+  if (pp == NULL || name == NULL)
+    return PCerrNullArg;
 
   p = malloc(sizeof(pc_port));
   if (p == NULL)
-    return NULL;
+    return PCerrNoMem;
 
   p->parent = NULL;
   p->type = PC_REGULAR;
@@ -191,7 +201,7 @@ pc_port *pc_openport(char *name)
   if (p->path == NULL)
     {
       free(p);
-      return NULL;
+      return PCerrNoMem;
     }
   strcpy(p->path, name);
 
@@ -200,27 +210,38 @@ pc_port *pc_openport(char *name)
     {
       free(p->path);
       free(p);
-      return NULL;
+      return PCerrSocketFailed;
     }
 
   n.sun_family = PF_UNIX;
   strcpy(n.sun_path, p->path);
 
+  /* XXX Need to set an alarm here. If a nanny has run and died
+     (not ever observed) and leaves its socket lying about, under
+     Irix at least, this connect will block forever. Or several
+     minutes at least. */
   if (connect(p->fd, &n, sizeof(struct sockaddr_un)) == -1)
     {
+      errcopy = errno;
       close(p->fd);
       free(p->path);
       free(p);
-      return NULL;
+      if (errcopy == EACCES)
+	return PCerrNotAllowed;
+      if (errcopy == ENOENT)
+	return PCerrNoListener;
+      syslog(LOG_ERR, "connect returned %d\n", errcopy);
+      return PCerrConnectFailed;
     }
 
-  return p;
+  *pp = p;
+  return 0L;
 }
 
-int pc_close(pc_port *p)
+long pc_close(pc_port *p)
 {
   if (p == NULL)
-    return 0;
+    return PCerrNullArg;
 
   close(p->fd);
   if (p->type == PC_LISTENER)
@@ -231,58 +252,58 @@ int pc_close(pc_port *p)
 
   free(p);
 
-  return 0;
+  return 0L;
 }
 
-int pc_send(pc_message *m)
+long pc_send(pc_message *m)
 {
   int l = 0, r;
 
   if (m == NULL)
-    return 1;
+    return PCerrNullArg;
 
   if (m->source == NULL)
-    return 1;
+    return PCerrNoDestination;
 
   if (m->data == NULL || m->length < 1)
-    return 1;
+    return PCerrNoData;
 
   while (l < m->length)
     {
       r = write(m->source->fd, m->data, m->length);
       if (r == -1)
-	return 1;
+	return PCerrWriteFailed;
       l += r;
     }
 
-  return 0;
+  return 0L;
 }
 
-pc_message *pc_receive(pc_port *p)
+long pc_receive(pc_message **mm, pc_port *p)
 {
   char buf[2048];
   pc_message *m;
   int len;
 
-  if (p == NULL)
-    return NULL;
+  if (p == NULL || mm == NULL)
+    return PCerrNullArg;
 
   m = malloc(sizeof(pc_message));
   if (m == NULL)
-    return NULL;
+    return PCerrNoMem;
 
   len = read(p->fd, buf, sizeof(buf) - 1);
   if (len == -1)
     {
       free(m);
-      return NULL;
+      return PCerrReadFailed;
     }
 
   m->data = malloc(len + 1);
   if (m->data == NULL)
     {
       free(m);
-      return NULL;
+      return PCerrNoMem;
     }
 
   m->type = PC_DATA;
@@ -291,10 +312,11 @@ pc_message *pc_receive(pc_port *p)
   memcpy(m->data, buf, len + 1);
   m->length = len;
 
-  return m;
+  *mm = m;
+  return 0L;
 }
 
-fd_print(fd_set *r)
+static fd_print(fd_set *r)
 {
   int i;
 
@@ -305,7 +327,7 @@ fd_print(fd_set *r)
   printf("\n");
 }
 
-pc_message *pc_wait(pc_state *s)
+long pc_wait(pc_message **mm, pc_state *s)
 {
   int i, j;
   fd_set r, w;
@@ -313,12 +335,15 @@ pc_message *pc_wait(pc_state *s)
   pc_message *m;
   pc_port *p;
 
+  if (mm == NULL || s == NULL)
+    return PCerrNullArg;
+
   r = s->readfds;
   w = s->writefds;
 
   m = malloc(sizeof(pc_message));
   if (m == NULL)
-    return NULL;
+    return PCerrNoMem;
 
   ret = select(s->nfds, &r, &w, NULL, NULL);
   if (ret == -1)
@@ -327,7 +352,8 @@ pc_message *pc_wait(pc_state *s)
 	m->type = PC_SIGNAL;
       else
 	m->type = PC_BROKEN;
-      return m;
+      *mm = m;
+      return 0L;
     }
 
   for (i = 0; i < s->nfds; i++)
@@ -342,7 +368,7 @@ pc_message *pc_wait(pc_state *s)
 		  if (p == NULL)
 		    {
 		      free(m);
-		      return NULL;
+		      return PCerrNoMem;
 		    }
 
 		  p->fd = accept(s->ports[j]->fd, NULL, 0);
@@ -350,7 +376,7 @@ pc_message *pc_wait(pc_state *s)
 		    {
 		      free(m);
 		      free(p);
-		      return NULL;
+		      return PCerrAcceptFailed;
 		    }
 		  p->parent = s->ports[j];
 		  p->type = PC_LISTENEE;
@@ -359,12 +385,13 @@ pc_message *pc_wait(pc_state *s)
 		  m->type = PC_NEWCONN;
 		  m->source = s->ports[j];
 		  m->data = p;
-		  return m;
+		  *mm = m;
+		  return 0L;
 		}
 	      else
 		{
 		  free(m);
-		  return pc_receive(s->ports[j]);
+		  return pc_receive(mm, s->ports[j]);
 		}
 	    }
 
@@ -376,6 +403,7 @@ pc_message *pc_wait(pc_state *s)
 	else
 	  m->event = PC_WRITE;
 	m->fd = i;
-	return m;
+	*mm = m;
+	return 0L;
       }
 }
