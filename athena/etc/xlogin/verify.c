@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.3 1999-10-30 11:59:58 kcr Exp $ */
+/* $Id: verify.c,v 1.4 1999-12-07 21:48:10 danw Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,6 +89,8 @@ int al_pid;
 #ifdef NANNY
 extern FILE *xdmstream;
 #endif
+
+extern char *audio_devices[];
 
 pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
@@ -589,6 +591,9 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (netspy)
     chown(NETDEV, pwd->pw_uid, SYS);
 #endif
+
+  for (i = 0; audio_devices[i]; i++)
+    chown(audio_devices[i], pwd->pw_uid, SYS);
 
 #ifdef HAVE_SETLOGIN
   i = setlogin(pwd->pw_name);

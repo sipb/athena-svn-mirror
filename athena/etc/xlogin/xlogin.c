@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.2 1999-10-28 15:56:02 kcr Exp $ */
+/* $Id: xlogin.c,v 1.3 1999-12-07 21:48:10 danw Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -235,6 +235,12 @@ sigset_t sig_zero;
 int netspy = FALSE;
 #endif
 
+#ifdef SOLARIS
+char *audio_devices[] = { "/dev/audio", "/dev/audioctl", NULL };
+#else
+char *audio_devices[] = { NULL };
+#endif
+
 /* Local Globals */
 
 static struct sigaction sigact, osigact;
@@ -362,6 +368,13 @@ int main(argc, argv)
       chmod(NETDEV, 0600);
     }
 #endif
+
+  /* Ditto for audio devices. */
+  for (i = 0; audio_devices[i]; i++)
+    {
+      chown(audio_devices[i], ROOT, SYS);
+      chmod(audio_devices[i], 0600);
+    }
 
   /* Call reactivate with the -prelogin option. This restores /etc/passwd,
    * blows away stray processes, runs access_off, and a couple of other
