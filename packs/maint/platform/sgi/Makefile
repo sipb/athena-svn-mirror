@@ -1,6 +1,7 @@
-# $Id: Makefile,v 1.2 1996-12-27 21:42:51 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-01-21 20:08:40 ghudson Exp $
 
 SHELL=/bin/sh
+ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
@@ -10,6 +11,7 @@ all:
 check:
 
 install:
+	-mkdir -p ${DESTDIR}${ATHRETCDIR}
 	-mkdir -p ${DESTDIR}${INITD}
 	-mkdir -p ${DESTDIR}${RC0}
 	-mkdir -p ${DESTDIR}${RC2}
@@ -19,6 +21,7 @@ install:
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 network ${DESTDIR}${INITD}
+	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	rm -f ${DESTDIR}${RC0}/K02axdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02axdm
 	rm -f ${DESTDIR}${RC0}/K07athena
