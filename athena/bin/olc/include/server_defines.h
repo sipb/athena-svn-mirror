@@ -9,10 +9,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_defines.h,v $
- *	$Id: server_defines.h,v 1.3 1992-02-05 02:53:44 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: server_defines.h,v 1.4 1993-10-08 13:10:04 cfields Exp $
+ *	$Author: cfields $
  */
+/*  NEED to change /usr/athena/lib to something like /var/server/olc/....  
 
+*/
 #include <mit-copyright.h>
 
 #ifndef __server_defines_h
@@ -24,11 +26,14 @@
 #define LOG_DIR 		"/usr/spool/olc"
 #define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
 #define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
+#define BACKUP_FILE_ASCII 	"/usr/spool/olc/backup.ascii"
+#define BACKUP_TEMP_ASCII	"/usr/spool/olc/backup.ascii.temp"
 #define ERROR_LOG 		"/usr/adm/olc/errors"
 #define STATUS_LOG 		"/usr/adm/olc/status"
 #define ADMIN_LOG 		"/usr/adm/olc/admin"
 #define STDERR_LOG 		"/usr/adm/olc/errors"
 #define TOPIC_FILE 		"/usr/athena/lib/olc/topics"
+#define SERVICES_FILE 		"/usr/athena/lib/olc/services"
 #define MOTD_FILE 		"/usr/athena/lib/olc/motd"
 #define MOTD_TIMEOUT_FILE	"/usr/athena/lib/olc/motd_timeout"
 #define MOTD_HOLD_FILE 		"/usr/athena/lib/olc/motd_hold"
