@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/tty_filter.c,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.11 1990-11-08 18:01:35 raeburn Exp $";
+static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.12 1991-12-30 19:01:54 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -195,6 +195,7 @@ typedef struct _tty_str_info {
     int bold_p : 1;
     int italic_p : 1;
     int bell_p : 1;
+    int ignore: 1;
 } tty_str_info;
 
 static void free_info(info)
@@ -239,6 +240,12 @@ static int do_mode_change(current_mode_p, text, text_length)
 	current_mode_p->bell_p = 1;
 	return 1;
     }
+
+    /* commands ignored in tty mode: */
+    else if (fixed_string_eq("color", text, text_length) ||
+	     fixed_string_eq("font", text, text_length)) {
+	current_mode_p->ignore = 1;
+    } 
     return 0;
 }
 
@@ -251,7 +258,7 @@ static tty_str_info *convert_desc_to_tty_str_info(desc)
     int isbeep, did_beep = 0;
 
 #if !defined(SABER) && defined(__STDC__)
-    tty_str_info current_mode = { NULL, "", 0, 'l', 0 , 0, 0};
+    tty_str_info current_mode = { NULL, "", 0, 'l', 0 , 0, 0, 0};
 #else
     /* This is needed due to a bug in saber, and lack of pre-ANSI support. */
     tty_str_info current_mode;
@@ -263,6 +270,7 @@ static tty_str_info *convert_desc_to_tty_str_info(desc)
     current_mode.bold_p = 0;
     current_mode.italic_p = 0;
     current_mode.bell_p = 0;
+    current_mode.ignore = 0;
 #endif
 
     for (; desc->code!=DT_EOF; desc=desc->next) {
@@ -434,7 +442,12 @@ string tty_filter(text, use_fonts)
 	right = string_Copy("");
 
 	for (; info && info->alignment!=' '; info=info->next) {
-	    string item = string_Copy("");
+	    string item;
+
+	    if (info->ignore)
+		continue;
+
+	    item = string_Copy("");
 	    
 	    if (info->bold_p && use_fonts) {
 		if (temp = string_dictionary_Fetch(termcap_dict, "B.bold"))
