@@ -1,5 +1,5 @@
-#ifndef _PCP_H_
-#define _PCP_H_
+#ifndef _PC_BSD_H_
+#define _PC_BSD_H_
 
 #define PC_LISTENER 1
 #define PC_LISTENEE 2
@@ -27,4 +27,4 @@ typedef struct _pc_state {
 
 #include "pc.h"
 
-#endif /* _PCP_H_ */
+#endif /* _PC_BSD_H_ */

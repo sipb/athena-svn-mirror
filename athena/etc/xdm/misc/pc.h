@@ -2,10 +2,10 @@
 #define _PC_H_
 #include <sys/types.h>
 
-#ifndef _PCP_H_
+#ifndef _PC_BSD_H_
 typedef struct _pc_port pc_port;
 typedef struct _pc_state pc_state;
-#endif /* _PCP_H_ */
+#endif /* _PC_BSD_H_ */
 
 #define PC_READ 1
 #define PC_WRITE 2
