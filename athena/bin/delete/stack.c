@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.4 1989-12-10 15:45:31 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.5 1989-12-11 03:32:37 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -73,10 +73,14 @@ int op, bytes;
 	       return error_code;
 	  }
 	  else {
+	       int newblocks, newsize;
+
 	       count -= bytes;
 	       bcopy(stack + count, data, bytes);
-	       if (count % STACK_INC == 0) {
-		    size -= STACK_INC;
+	       newblocks = count / STACK_INC + ((count % STACK_INC) ? 1 : 0);
+	       newsize = newblocks * STACK_INC;
+	       if (newsize < size) {
+		    size = newsize;
 		    stack = (caddr_t) realloc((char *) stack, (unsigned) size);
 		    if (! stack) {
 			 set_error(errno);
