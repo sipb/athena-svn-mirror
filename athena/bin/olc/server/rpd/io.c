@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.2 1990-12-02 23:40:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.3 1990-12-31 20:51:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -23,27 +23,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/errno.h>
+#include <ctype.h>
 
-#ifndef i386
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-/* system */
-int bzero P((void *b, int length));
-int select P((int nfds, fd_set *readfds, fd_set *writefds, 
-	      fd_set *exceptfds, struct timeval *timeout));
-int perror P((char *s));
-int read P((int d, void *buf, int nbytes));
-int write P((int d, void *buf, int nbytes));
-
-#undef P
-#else
-extern int errno;
-#endif
-
+#include "system.h"
 
 int
 sread(fd, buf, nbytes)
@@ -129,3 +111,41 @@ swrite(fd, buf, nbytes)
   return(n_wrote);
 }
 
+
+void
+expand_hostname(hostname, instance, realm)
+     char *hostname;
+     char *instance;
+     char *realm;
+{
+  char *p;
+  int i;
+
+  realm[0] = '\0';
+  p = index(hostname, '.');
+  
+  if(p == NULL)
+    {
+      (void) strcpy(instance, hostname);
+
+#ifdef KERBEROS
+      krb_get_lrealm(realm,1);
+#endif /* KERBEROS */
+
+    }
+  else
+    {
+      i = p-hostname;
+      (void) strncpy(instance,hostname,i);
+      instance[i] = '\0';
+      p = krb_realmofhost(hostname);
+      strcpy(realm,p);
+    }
+
+  for(i=0; instance[i] != '\0'; i++)
+    if(isupper(instance[i]))
+      instance[i] = tolower(instance[i]);
+
+  
+  return;
+}
