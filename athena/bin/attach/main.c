@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.12 1990-07-20 14:50:29 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.13 1990-11-13 18:40:19 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -299,8 +299,9 @@ nfsidcmd(argc, argv)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
 			} else
-				printf("%s: %s ignored (not NFS)\n",
-				       progname, atp->hesiodname);
+				if (verbose)
+				    printf("%s: %s ignored (not NFS)\n",
+					   progname, atp->hesiodname);
 			atp = atp->next;
 		}
 		free_attachtab();
