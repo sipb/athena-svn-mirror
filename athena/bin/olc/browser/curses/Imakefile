@@ -8,7 +8,7 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
 #	$Author: ghudson $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.7 1997-04-30 17:23:57 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.7.2.1 1997-06-02 17:29:38 ghudson Exp $
 #
 
 SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c \
@@ -31,6 +31,8 @@ SYS_LIBRARIES = $(CursesLib) $(EXTRA_LIBRARIES)
 
 NormalProgramTarget($(PROGRAM),$(OBJS),,$(LOCAL_LIBS),$(SYS_LIBRARIES))
 SaberProgramTarget($(PROGRAM),$(SRCS),$(OBJS),$(LOCAL_LIBS),$(SYS_LIBRARIES))
+
+InstallProgramTarget($(PROGRAM),$(DESTDIR)/usr/athena/bin)
 
 DependTarget()
 LintTarget()
