@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.4 1991-06-30 15:39:08 epeisach Exp $
+ * $Id: Imakefile,v 1.5 1991-08-13 16:02:34 epeisach Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -59,18 +59,18 @@ SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 #define ISUBDIRS filters quota transcript-v2.1 man
 
 
-LPRSimpleProgram(lpd,lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
+LPRGSimpleProgram(lpd,lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
 	lpdchar.o s_common.o printcap.o tcp_conn.o,$(LIBS),$(LIBDIR))
 
 
 LPRSimpleProgram(lpr,lpr.o printcap.o netsend.o common.o,$(LIBS),$(BINDIR))
-LPRSimpleProgram(s_lpr,s_lpr.o startdaemon.o printcap.o ,$(LIBS),$(BINDIR))
 LPRSimpleProgram(lpq,lpq.o displayq.o common.o printcap.o,\
 		$(LIBS) -ltermcap,$(BINDIR))
-LPRSimpleProgram(s_lpq,s_lpq.o s_displayq.o s_common.o printcap.o\
-		startdaemon.o,-ltermcap $(LIBS),$(BINDIR))
 LPRSimpleProgram(lprm,lprm.o rmjob.o common.o printcap.o,$(LIBS),$(BINDIR))
-LPRSimpleProgram(s_lprm,s_lprm.o s_rmjob.o startdaemon.o s_common.o \
+LPRGSimpleProgram(s_lpr,s_lpr.o startdaemon.o printcap.o ,$(LIBS),$(BINDIR))
+LPRGSimpleProgram(s_lpq,s_lpq.o s_displayq.o s_common.o printcap.o\
+		startdaemon.o,-ltermcap $(LIBS),$(BINDIR))
+LPRGSimpleProgram(s_lprm,s_lprm.o s_rmjob.o startdaemon.o s_common.o \
 	 printcap.o,$(LIBS),$(BINDIR))
 /* note that following is setgid only */
 LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o startdaemon.o s_common.o \
