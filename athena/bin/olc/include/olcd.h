@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.41 1992-02-05 02:55:07 lwvanels Exp $
+ *	$Id: olcd.h,v 1.42 1992-03-16 15:37:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -55,8 +55,8 @@
 /* useful macros */
 
 #define is_allowed(u,a)         (u->permissions & a)
-#define is_connected(k)         k->connected
-#define has_question(k)         k->question
+#define is_connected(k)         (k->connected != (KNUCKLE *) NULL)
+#define has_question(k)         (k->question != (QUESTION *) NULL)
 #define is_signed_on(k)         (k->status & SIGNED_ON)
 #define sign_on(k,code)         k->status |= code
 #define sign_off(k)             k->status = 0
