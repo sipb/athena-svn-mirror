@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.48 1999-03-11 04:15:59 danw Exp $
+# $Id: Imakefile,v 1.49 1999-03-21 20:58:51 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -28,8 +28,8 @@ AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad \
 SRCS = xlogin.c verify.c SmeBSB.c StringToPixel.c Clock.c
 OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o
 LIBS = -lWc -lXp -lXmu -lXaw -lXt -lXext -lX11 -lal -llocker -lzephyr \
-	-llarv -lkrb4 -ldes425 -lkrb5 -lcrypto -lhesiod \
-	$(AFSLIBS) $(MACHLIBS) -lcom_err -lm
+	-llarv $(AFSLIBS) -lkrb4 -ldes425 -lkrb5 -lcrypto -lhesiod \
+	$(MACHLIBS) -lcom_err -lm
 
 #ifdef SOLARIS
 PRESOURCES=Xlogin.sun4.presed
@@ -46,8 +46,7 @@ create_dir(/etc/athena/login/bitmaps)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
 
 static_program(xlogin,$(OBJS),,$(LIBS))
-install_program(xlogin,-s,$(ATHRETCDIR)/xlogin)
-install_program(xlogin,,$(ATHRETCDIR)/xlogin.unstripped)
+install_program(xlogin,,$(ATHRETCDIR)/xlogin)
 
 all::	Xlogin
 install:: Xlogin
