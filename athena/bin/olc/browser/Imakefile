@@ -1,0 +1,7 @@
+#
+# $Id: Imakefile,v 1.1 1991-03-21 15:59:08 lwvanels Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/Imakefile,v $
+#
+
+#define IHaveSubdirs
+SUBDIRS= curses motif
