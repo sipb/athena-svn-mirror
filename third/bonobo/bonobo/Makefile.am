@@ -167,6 +167,10 @@ noinst_HEADERS =				\
 	bonobo-activation-context.h		\
 	bonobo-ui-engine-config.h		\
 	bonobo-ui-engine-private.h		\
+	bonobo-ui-icon.h			\
+	bonobo-ui-icon-modify.h			\
+	bonobo-ui-pixmap-cache.h		\
+	bonobo-ui-state-cache.h			\
 	bonobo-ui-sync-menu.h			\
 	bonobo-ui-sync-keys.h			\
 	bonobo-ui-sync-status.h			\
@@ -200,7 +204,11 @@ libbonobox_la_SOURCES =				\
 	bonobo-ui-container.c            	\
 	bonobo-ui-engine.c			\
 	bonobo-ui-engine-config.c		\
+	bonobo-ui-icon.c			\
+	bonobo-ui-icon-modify.c			\
 	bonobo-ui-node.c                 	\
+	bonobo-ui-pixmap-cache.c		\
+	bonobo-ui-state-cache.c			\
 	bonobo-ui-sync.c			\
 	bonobo-ui-sync-menu.c			\
 	bonobo-ui-sync-keys.c			\
