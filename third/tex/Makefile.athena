@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1996-10-25 21:53:53 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-11-14 15:40:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -16,7 +16,7 @@ clean:
 	cd web2c && ${MAKE} clean
 	cd xdvi && ${MAKE} clean
 	cd dvips/dvips && ${MAKE} clean
-	cd lib/tex/fonts && ${MAKE} clean
+	cd lib && ${MAKE} clean
 
 all:
 	cd web2c && ${MAKE} programs
