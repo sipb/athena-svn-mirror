@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.38 1991-01-21 11:50:41 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.39 1991-01-22 13:26:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.38 1991-01-21 11:50:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.39 1991-01-22 13:26:02 lwvanels Exp $";
 #endif
 #endif
 
@@ -1963,11 +1963,13 @@ olc_chtopic(fd, request)
   else
     target = requester->connected;
 
+#ifdef TEST
   sprintf(msg_buf,"%d %d %d %d\n",is_connected_to(requester,target),
 	  is_allowed(requester->user,CONSULT_ACL),
 	  owns_question(target),
 	  is_allowed(requester->user,GCHTOPIC_ACL));
   log_status(msg_buf);
+#endif
 
   if(!((is_me(requester,target) || is_connected_to(requester,target)) &&
        (is_allowed(requester->user, CONSULT_ACL))) &&
