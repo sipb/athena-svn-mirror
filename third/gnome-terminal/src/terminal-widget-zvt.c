@@ -358,6 +358,12 @@ terminal_widget_match_add (GtkWidget            *widget,
                       VTATTR_UNDERLINE, NULL);  
 }
 
+void
+terminal_widget_skey_match_add (GtkWidget            *widget,
+				const char           *regexp)
+{
+}
+
 char*
 terminal_widget_check_match (GtkWidget            *widget,
                              int                   column,
@@ -365,6 +371,19 @@ terminal_widget_check_match (GtkWidget            *widget,
 {
   return g_strdup (zvt_term_match_check (ZVT_TERM (widget),
                                          column, row, 0));
+}
+
+char*
+terminal_widget_skey_check_match (GtkWidget            *widget,
+				  int                   column,
+				  int                   row)
+{
+	return NULL;
+}
+
+void
+terminal_widget_skey_match_remove (GtkWidget            *widget)
+{
 }
 
 void
@@ -791,6 +810,22 @@ terminal_widget_disconnect_selection_changed (GtkWidget *widget,
   zvt_data_remove_callback (zd, CB_SELECTION_CHANGED, callback, data);
 }
 
+void
+terminal_widget_connect_encoding_changed      (GtkWidget *widget,
+                                               GCallback  callback,
+                                               void      *data)
+{
+  ; /* does nothing */
+}
+
+void
+terminal_widget_disconnect_encoding_changed   (GtkWidget *widget,
+                                               GCallback  callback,
+                                               void      *data)
+{
+  ; /* does nothing */
+}
+
 const char*
 terminal_widget_get_title (GtkWidget *widget)
 {
@@ -1097,11 +1132,39 @@ void
 terminal_widget_set_pango_font (GtkWidget                  *widget,
                                 const PangoFontDescription *font_desc)
 {
-  ; /* does nothing */
+  g_return_if_fail (font_desc != NULL);
+  zvt_term_set_pango_font (ZVT_TERM (widget), font_desc);
 }
 
 gboolean
 terminal_widget_supports_pango_fonts (void)
 {
+  return TRUE;
+}
+
+const char*
+terminal_widget_get_encoding (GtkWidget *widget)
+{
+  const char *charset = NULL;
+  g_get_charset (&charset);
+  return charset;
+}
+
+void
+terminal_widget_set_encoding (GtkWidget  *widget,
+                              const char *encoding)
+{
+  ; /* does nothing */
+}
+
+gboolean
+terminal_widget_supports_dynamic_encoding (void)
+{
   return FALSE;
+}
+
+void
+terminal_widget_im_append_menuitems(GtkWidget *widget, GtkMenuShell *menushell)
+{
+  ; /* does nothing */
 }

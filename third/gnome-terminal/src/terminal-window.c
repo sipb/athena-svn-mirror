@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2002 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,6 +25,7 @@
 #include "terminal-widget.h"
 #include "terminal-window.h"
 #include "terminal.h"
+#include "encoding.h"
 #include <string.h>
 #include <stdlib.h>
 #include <libgnome/gnome-program.h>
@@ -33,6 +35,7 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <eel/eel-ellipsizing-label.h>
+#include <libsn/sn-launchee.h>
 
 struct _TerminalWindowPrivate
 {  
@@ -51,12 +54,16 @@ struct _TerminalWindowPrivate
   GtkWidget *copy_menuitem;
   GtkWidget *paste_menuitem;
   GtkWidget *fullscreen_menuitem;
+  GtkWidget *zoom_in_menuitem;
+  GtkWidget *zoom_out_menuitem;
+  GtkWidget *zoom_normal_menuitem;
   GtkWidget *edit_config_menuitem;
   GtkWidget *delete_config_menuitem;
   GtkWidget *choose_config_menuitem;
   GtkWidget *next_tab_menuitem;
   GtkWidget *previous_tab_menuitem;
   GtkWidget *go_menu;
+  GtkWidget *encoding_menuitem;
   GList *tab_menuitems;
   GList *terms;
   TerminalScreen *active_term;
@@ -66,6 +73,7 @@ struct _TerminalWindowPrivate
   void *old_geometry_widget; /* only used for pointer value as it may be freed */
   GConfClient *conf;
   guint notify_id;
+  char *startup_id;
   guint menubar_visible : 1;
   guint use_default_menubar_visibility : 1;
   guint use_mnemonics : 1;   /* config key value */
@@ -143,7 +151,17 @@ static void toggle_menubar_callback         (GtkWidget      *menuitem,
                                            TerminalWindow *window);
 static void fullscreen_callback           (GtkWidget      *menuitem,
                                            TerminalWindow *window);
+static void zoom_in_callback              (GtkWidget      *menuitem,
+                                           TerminalWindow *window);
+static void zoom_out_callback             (GtkWidget      *menuitem,
+                                           TerminalWindow *window);
+static void zoom_normal_callback          (GtkWidget      *menuitem,
+                                           TerminalWindow *window);
 static void set_title_callback            (GtkWidget      *menuitem,
+                                           TerminalWindow *window);
+static void change_encoding_callback      (GtkWidget      *menu_item,
+                                           TerminalWindow *window);
+static void add_encoding_callback         (GtkWidget      *menu_item,
                                            TerminalWindow *window);
 static void reset_callback                (GtkWidget      *menuitem,
                                            TerminalWindow *window);
@@ -163,6 +181,16 @@ static void about_callback                (GtkWidget      *menuitem,
 static void set_menuitem_text (GtkWidget  *mi,
                                const char *text,
                                gboolean    strip_mnemonic);
+
+static void terminal_menu_opened_callback (GtkWidget      *menuitem,
+                                           TerminalWindow *window);
+
+static gboolean find_larger_zoom_factor  (double  current,
+                                          double *found);
+static gboolean find_smaller_zoom_factor (double  current,
+                                          double *found);
+
+static void terminal_window_show (GtkWidget *widget);
 
 static gpointer parent_class;
 
@@ -190,7 +218,7 @@ terminal_window_get_type (void)
       
       object_type = g_type_register_static (GTK_TYPE_WINDOW,
                                             "TerminalWindow",
-                                            &object_info, 0);
+                                            &object_info, 0);      
     }
   
   return object_type;
@@ -478,7 +506,139 @@ fill_in_new_term_submenus (TerminalWindow *window)
       tmp = tmp->next;
     }
 
-  g_list_free (profiles);  
+  g_list_free (profiles);
+}
+
+static void
+update_active_encoding_name (TerminalWindow *window)
+{
+  GtkWidget *w;
+  const char *charset;
+  char *name;
+  
+  w = terminal_screen_get_widget (window->priv->active_term);
+  charset = terminal_widget_get_encoding (w);
+
+  name = terminal_encoding_get_name (charset);
+
+#if 0
+  /* doesn't make sense anymore */
+  gtk_label_set_text (GTK_LABEL (gtk_bin_get_child (GTK_BIN (window->priv->encoding_menuitem))),
+                      name);
+#endif
+  
+  g_free (name);
+}
+
+static void
+fill_in_encoding_menu (TerminalWindow *window)
+{
+  GtkWidget *menu;
+  GtkWidget *menu_item;
+  GSList *group;
+  GSList *encodings;
+  GSList *tmp;
+  const char *charset;
+  GtkWidget *w;
+
+  if (!terminal_widget_supports_dynamic_encoding ())
+    return;
+  
+  if (window->priv->active_term == NULL)
+    {
+      gtk_widget_set_sensitive (window->priv->encoding_menuitem, FALSE);
+      gtk_menu_item_set_submenu (GTK_MENU_ITEM (window->priv->encoding_menuitem),
+                                 NULL);
+      return;
+    }
+  
+  gtk_widget_set_sensitive (window->priv->encoding_menuitem, TRUE);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (window->priv->encoding_menuitem),
+                             menu);
+
+  w = terminal_screen_get_widget (window->priv->active_term);
+  charset = terminal_widget_get_encoding (w);
+
+  update_active_encoding_name (window);
+  
+  group = NULL;
+  encodings = terminal_get_active_encodings ();
+  tmp = encodings;
+  while (tmp != NULL)
+    {
+      TerminalEncoding *e;
+      char *name;
+      
+      e = tmp->data;
+
+      name = g_strdup_printf ("%s (%s)", e->name, e->charset);
+      
+      menu_item = gtk_radio_menu_item_new_with_label (group, name);
+
+      g_free (name);
+
+      group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (menu_item));
+      gtk_widget_show (menu_item);
+      gtk_menu_shell_append (GTK_MENU_SHELL (menu),
+                             menu_item);
+      
+      if (strcmp (e->charset, charset) == 0)
+        gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item),
+                                        TRUE);
+      
+      g_signal_connect (G_OBJECT (menu_item),
+                        "toggled",
+                        G_CALLBACK (change_encoding_callback),
+                        window);
+
+      g_object_set_data_full (G_OBJECT (menu_item),
+                              "encoding",
+                              g_strdup (e->charset),
+                              (GDestroyNotify) g_free);
+      
+      tmp = tmp->next;
+    }
+
+  g_slist_foreach (encodings,
+                   (GFunc) terminal_encoding_free,
+                   NULL);
+  g_slist_free (encodings);
+
+  menu_item = gtk_separator_menu_item_new ();
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+  gtk_widget_show (menu_item);
+  
+  append_menuitem (menu, _("_Add or Remove..."), NULL,
+                   G_CALLBACK (add_encoding_callback),
+                   window);
+}
+
+static void
+terminal_menu_opened_callback (GtkWidget      *menuitem,
+                               TerminalWindow *window)
+{
+  fill_in_encoding_menu (window);
+}
+
+static void
+update_zoom_items (TerminalWindow *window)
+{
+  TerminalScreen *screen;
+  double ignored;
+  double current_zoom;
+  
+  screen = window->priv->active_term;
+  if (screen == NULL)
+    return;
+
+  current_zoom = terminal_screen_get_font_scale (screen);
+
+  gtk_widget_set_sensitive (window->priv->zoom_out_menuitem,
+                            find_smaller_zoom_factor (current_zoom, &ignored));
+  gtk_widget_set_sensitive (window->priv->zoom_in_menuitem,
+                            find_larger_zoom_factor (current_zoom, &ignored));
 }
 
 static void
@@ -609,11 +769,29 @@ terminal_window_init (TerminalWindow *window)
   mi = append_menuitem (menu, _("_Full Screen"), ACCEL_PATH_FULL_SCREEN,
                         G_CALLBACK (fullscreen_callback), window);
   window->priv->fullscreen_menuitem = mi;
+
+  mi = append_menuitem (menu, _("_Zoom In"), ACCEL_PATH_ZOOM_IN,
+                        G_CALLBACK (zoom_in_callback), window);
+  window->priv->zoom_in_menuitem = mi;
+
+  mi = append_menuitem (menu, _("Zoom _Out"), ACCEL_PATH_ZOOM_OUT,
+                        G_CALLBACK (zoom_out_callback), window);
+  window->priv->zoom_out_menuitem = mi;
+
+  mi = append_menuitem (menu, _("_Normal Size"), ACCEL_PATH_ZOOM_NORMAL,
+                        G_CALLBACK (zoom_normal_callback), window);
+  window->priv->zoom_normal_menuitem = mi;
+  
+  update_zoom_items (window);
   
   mi = append_menuitem (window->priv->menubar,
                         "", NULL,
                         NULL, NULL);
   window->priv->terminal_menuitem = mi;  
+
+  g_signal_connect (G_OBJECT (mi), "activate",
+                    G_CALLBACK (terminal_menu_opened_callback),
+                    window);
   
   menu = gtk_menu_new ();
   gtk_menu_set_accel_group (GTK_MENU (menu),
@@ -627,7 +805,18 @@ terminal_window_init (TerminalWindow *window)
   
   append_menuitem (menu, _("_Set Title..."), ACCEL_PATH_SET_TERMINAL_TITLE,
                    G_CALLBACK (set_title_callback), window);
-  
+
+  if (terminal_widget_supports_dynamic_encoding ())
+    {
+      window->priv->encoding_menuitem =
+        append_menuitem (menu,
+                         _("_Character Coding"), NULL, NULL, NULL);
+    }
+  else
+    {
+      window->priv->encoding_menuitem = NULL;
+    }
+
   append_menuitem (menu, _("_Reset"), ACCEL_PATH_RESET,
                    G_CALLBACK (reset_callback), window);
 
@@ -679,7 +868,7 @@ terminal_window_init (TerminalWindow *window)
                               G_CALLBACK (about_callback), window);
   set_menuitem_text (mi, _("_About"),
                      FALSE);
-
+  
   terminal_window_reread_profile_list (window);
   
   terminal_window_set_menubar_visible (window, TRUE);
@@ -695,11 +884,13 @@ terminal_window_class_init (TerminalWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   
   parent_class = g_type_class_peek_parent (klass);
   
   object_class->finalize = terminal_window_finalize;
   gtk_object_class->destroy = terminal_window_destroy;
+  widget_class->show = terminal_window_show;
 }
 
 static void
@@ -718,6 +909,8 @@ terminal_window_finalize (GObject *object)
   
   if (window->priv->icon)
     g_object_unref (G_OBJECT (window->priv->icon));
+
+  g_free (window->priv->startup_id);
   
   g_free (window->priv);
   
@@ -748,8 +941,70 @@ terminal_window_destroy (GtkObject *object)
   window->priv->paste_menuitem = NULL;
   window->priv->edit_config_menuitem = NULL;
   window->priv->choose_config_menuitem = NULL;
+  window->priv->encoding_menuitem = NULL;
   
   GTK_OBJECT_CLASS (parent_class)->destroy (object);  
+}
+
+static void
+sn_error_trap_push (SnDisplay *display,
+                    Display   *xdisplay)
+{
+  gdk_error_trap_push ();
+}
+
+static void
+sn_error_trap_pop (SnDisplay *display,
+                   Display   *xdisplay)
+{
+  gdk_error_trap_pop ();
+}
+
+static void
+terminal_window_show (GtkWidget *widget)
+{
+  TerminalWindow *window;
+  SnDisplay *sn_display;
+  SnLauncheeContext *context;
+  GdkScreen *screen;
+  GdkDisplay *display;
+  
+  window = TERMINAL_WINDOW (widget);
+
+  if (!GTK_WIDGET_REALIZED (widget))
+    gtk_widget_realize (widget);
+  
+  context = NULL;
+  sn_display = NULL;
+  if (window->priv->startup_id != NULL)
+    {
+      /* Set up window for launch notification */
+      /* FIXME In principle all transient children of this
+       * window should get the same startup_id
+       */
+      
+      screen = gtk_window_get_screen (GTK_WINDOW (window));
+      display = gdk_screen_get_display (screen);
+      
+      sn_display = sn_display_new (gdk_x11_display_get_xdisplay (display),
+                                   sn_error_trap_push,
+                                   sn_error_trap_pop);
+      
+      context = sn_launchee_context_new (sn_display,
+                                         gdk_screen_get_number (screen),
+                                         window->priv->startup_id);
+      sn_launchee_context_setup_window (context,
+                                        GDK_WINDOW_XWINDOW (widget->window));
+    }
+  
+  GTK_WIDGET_CLASS (parent_class)->show (widget);
+
+  if (context != NULL)
+    {
+      sn_launchee_context_complete (context);
+      sn_launchee_context_unref (context);
+      sn_display_unref (sn_display);
+    }
 }
 
 TerminalWindow*
@@ -900,6 +1155,13 @@ selection_changed_callback (TerminalScreen *screen,
   update_copy_sensitivity (window);
 }
 
+static void
+encoding_changed_callback (TerminalScreen *screen,
+			  TerminalWindow *window)
+{
+  update_active_encoding_name (window);
+}
+
 void
 terminal_window_add_screen (TerminalWindow *window,
                             TerminalScreen *screen)
@@ -951,6 +1213,11 @@ terminal_window_add_screen (TerminalWindow *window,
   g_signal_connect (G_OBJECT (screen),
                     "selection_changed",
                     G_CALLBACK (selection_changed_callback),
+                    window);
+  
+  g_signal_connect (G_OBJECT (screen),
+                    "encoding_changed",
+                    G_CALLBACK (encoding_changed_callback),
                     window);
   
   term = terminal_screen_get_widget (screen);
@@ -1264,6 +1531,7 @@ terminal_window_set_active (TerminalWindow *window,
 
   fill_in_config_picker_submenu (window);
   fill_in_new_term_submenus (window);
+  update_zoom_items (window);
 }
 
 TerminalScreen*
@@ -1777,7 +2045,10 @@ terminal_window_set_fullscreen (TerminalWindow *window,
                                 gboolean        setting)
 {
   g_return_if_fail (GTK_WIDGET_REALIZED (window));
-  
+
+  /* FIXME the menuitem text needs to key off the event
+   * from the window manager. Easy with GTK 2.2
+   */
   if (setting)
     set_menuitem_text (window->priv->fullscreen_menuitem,
                        _("_Restore normal size"), FALSE);
@@ -1819,10 +2090,17 @@ new_window_callback (GtkWidget      *menuitem,
 
   if (!terminal_profile_get_forgotten (profile))
     {
+      char *name;
+      
+      name = gdk_screen_make_display_name (gtk_widget_get_screen (menuitem));
+
       terminal_app_new_terminal (terminal_app_get (),
                                  profile,
                                  NULL,
-                                 FALSE, FALSE, NULL, NULL, NULL, NULL);
+                                 FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                                 NULL, name, -1);
+
+      g_free (name);
     }
 }
 
@@ -1842,7 +2120,8 @@ new_tab_callback (GtkWidget      *menuitem,
       terminal_app_new_terminal (terminal_app_get (),
                                  profile,
                                  window,
-                                 FALSE, FALSE, NULL, NULL, NULL, NULL);
+                                 FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                                 NULL, NULL, -1);
     }
 }
 
@@ -1991,6 +2270,126 @@ fullscreen_callback (GtkWidget      *menuitem,
                                   !terminal_window_get_fullscreen (window));
 }
 
+static double zoom_factors[] = {
+  TERMINAL_SCALE_MINIMUM,
+  TERMINAL_SCALE_XXXXX_SMALL,
+  TERMINAL_SCALE_XXXX_SMALL,
+  TERMINAL_SCALE_XXX_SMALL,
+  PANGO_SCALE_XX_SMALL,
+  PANGO_SCALE_X_SMALL,
+  PANGO_SCALE_SMALL,
+  PANGO_SCALE_MEDIUM,
+  PANGO_SCALE_LARGE,
+  PANGO_SCALE_X_LARGE,
+  PANGO_SCALE_XX_LARGE,
+  TERMINAL_SCALE_XXX_LARGE,
+  TERMINAL_SCALE_XXXX_LARGE,
+  TERMINAL_SCALE_XXXXX_LARGE,
+  TERMINAL_SCALE_MAXIMUM
+};
+
+static gboolean
+find_larger_zoom_factor (double  current,
+                         double *found)
+{
+  int i;
+  
+  i = 0;
+  while (i < (int) G_N_ELEMENTS (zoom_factors))
+    {
+      /* Find a font that's larger than this one */
+      if ((zoom_factors[i] - current) > 1e-6)
+        {
+          *found = zoom_factors[i];
+          return TRUE;
+        }
+      
+      ++i;
+    }
+  
+  return FALSE;
+}
+
+static gboolean
+find_smaller_zoom_factor (double  current,
+                          double *found)
+{
+  int i;
+  
+  i = (int) G_N_ELEMENTS (zoom_factors) - 1;
+  while (i >= 0)
+    {
+      /* Find a font that's smaller than this one */
+      if ((current - zoom_factors[i]) > 1e-6)
+        {
+          *found = zoom_factors[i];
+          return TRUE;
+        }
+      
+      --i;
+    }
+
+  return FALSE;
+}
+
+static void
+zoom_in_callback (GtkWidget      *menuitem,
+                  TerminalWindow *window)
+{
+  double current;
+  TerminalScreen *screen;
+  
+  screen = window->priv->active_term;
+
+  if (screen == NULL)
+    return;
+  
+  current = terminal_screen_get_font_scale (screen);
+
+  if (find_larger_zoom_factor (current, &current))
+    {
+      terminal_screen_set_font_scale (screen, current);
+      update_zoom_items (window);
+    }
+}
+
+static void
+zoom_out_callback (GtkWidget      *menuitem,
+                   TerminalWindow *window)
+{
+  double current;
+  TerminalScreen *screen;
+  
+  screen = window->priv->active_term;
+
+  if (screen == NULL)
+    return;
+  
+  current = terminal_screen_get_font_scale (screen);
+
+  if (find_smaller_zoom_factor (current, &current))
+    {
+      terminal_screen_set_font_scale (screen, current);
+      update_zoom_items (window);
+    }
+}
+
+static void
+zoom_normal_callback (GtkWidget      *menuitem,
+                      TerminalWindow *window)
+{
+  TerminalScreen *screen;
+  
+  screen = window->priv->active_term;
+
+  if (screen == NULL)
+    return;
+
+  terminal_screen_set_font_scale (screen,
+                                  PANGO_SCALE_MEDIUM);
+  update_zoom_items (window);
+}
+
 static void
 set_title_callback (GtkWidget      *menuitem,
                     TerminalWindow *window)
@@ -1998,6 +2397,38 @@ set_title_callback (GtkWidget      *menuitem,
   if (window->priv->active_term)
     terminal_screen_edit_title (window->priv->active_term,
                                 GTK_WINDOW (window));
+}
+
+static void
+change_encoding_callback (GtkWidget      *menu_item,
+                          TerminalWindow *window)
+{
+  const char *charset;
+  GtkWidget *widget;
+  
+  if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menu_item)))
+    return;
+
+  if (window->priv->active_term == NULL)
+    return;
+
+  charset = g_object_get_data (G_OBJECT (menu_item),
+                               "encoding");
+
+  g_assert (charset);
+
+  widget = terminal_screen_get_widget (window->priv->active_term);
+  terminal_widget_set_encoding (widget, charset);
+
+  update_active_encoding_name (window);
+}
+
+static void
+add_encoding_callback (GtkWidget      *menu_item,
+                       TerminalWindow *window)
+{
+  terminal_app_edit_encodings (terminal_app_get (),
+                               GTK_WINDOW (window));
 }
 
 static void
@@ -2119,7 +2550,7 @@ about_callback (GtkWidget      *menuitem,
   g_free(file);
 
   about = gnome_about_new (PACKAGE, VERSION,
-                           _("Copyright 2002 Havoc Pennington"),
+                           "Copyright \xc2\xa9 2002 Havoc Pennington",
                            _("GNOME Terminal"),
                            (const char **)authors,
                            (const char **)documenters,
@@ -2135,9 +2566,9 @@ about_callback (GtkWidget      *menuitem,
 
 
 static void
-default_profile_changed (TerminalProfile    *profile,
-                         TerminalSettingMask mask,
-                         void               *data)
+default_profile_changed (TerminalProfile           *profile,
+                         const TerminalSettingMask *mask,
+                         void                      *data)
 {
   /* This no longer applies, since our "new window" item
    * is based on the current profile, not the default profile
@@ -2195,4 +2626,12 @@ terminal_window_reread_profile_list (TerminalWindow *window)
   
   fill_in_config_picker_submenu (window);
   fill_in_new_term_submenus (window);
+}
+
+void
+terminal_window_set_startup_id (TerminalWindow *window,
+                                const char     *startup_id)
+{
+  g_free (window->priv->startup_id);
+  window->priv->startup_id = g_strdup (startup_id);
 }

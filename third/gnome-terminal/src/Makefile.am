@@ -1,7 +1,7 @@
 
 EFENCE=
 
-SUBDIRS=eel
+SUBDIRS=eel skey
 
 INCLUDES=@TERM_CFLAGS@								\
 	-DTERM_LOCALEDIR=\"$(datadir)/locale\" -DEXECUTABLE_NAME=\"gnome-terminal\"	\
@@ -13,7 +13,8 @@ INCLUDES=@TERM_CFLAGS@								\
 	-DTERM_SYSCONFDIR=\"$(sysconfdir)\"						\
 	-DTERM_PKGDATADIR=\"$(pkgdatadir)\"						\
 	-DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED 	\
-	-DGNOME_DISABLE_DEPRECATED
+	-DGNOME_DISABLE_DEPRECATED							\
+	-DSN_API_NOT_YET_FROZEN
 
 bin_PROGRAMS=gnome-terminal
 
@@ -31,8 +32,12 @@ endif
 
 ## Terminal
 gnome_terminal_SOURCES=				\
+	encoding.c				\
+	encoding.h				\
 	profile-editor.c			\
 	profile-editor.h			\
+	skey-popup.c				\
+	skey-popup.h				\
 	terminal.c				\
 	terminal.h				\
 	terminal-accels.c			\
@@ -52,7 +57,7 @@ gnome_terminal_SOURCES=				\
 	simple-x-font-selector.h		\
 	$(EGGFILES)
 
-gnome_terminal_LDADD= $(EFENCE) @TERM_LIBS@ @TERMINAL_WIDGET_LIBS@ eel/libeelcnp.la
+gnome_terminal_LDADD= $(EFENCE) @TERM_LIBS@ @TERMINAL_WIDGET_LIBS@ eel/libeelcnp.la skey/libskey.la
 
 gladedir   = $(pkgdatadir)/glade
 glade_DATA = gnome-terminal.glade2

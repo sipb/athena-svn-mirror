@@ -1,18 +1,20 @@
 # Greek translation of profterm.
-# Copyright (C) 2002 Free Software Foundation.
+# Copyright (C) 2002, 2003 Free Software Foundation.
 # Simos Xenitellis <simos@hellug.gr>, 2002.
-# Kostas Papadimas <pkst@gmx.net>, 2002.
+# Kostas Papadimas <pkst@gmx.net>, 2002,2003.
 #
 # simos: 136 messages, 22Apr2002, initial translation for profterm.
 # kostas: 345 messages, 04Nov2002, completed translation.
 # simos: 345 messages, 05Nov2002, full review of translation.
+# kostas: 64 messages, updated the translation for Gnome 2.1x
+# kostas: 414 messages, 07Jan2003, updated translation
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal 2.0.1\n"
-"POT-Creation-Date: 2002-11-26 10:33+0000\n"
-"PO-Revision-Date: 2002-11-05 00:54+0000\n"
-"Last-Translator: Simos Xenitellis <simos74@gmx.net>\n"
+"POT-Creation-Date: 2003-01-20 22:18-0500\n"
+"PO-Revision-Date: 2003-01-07 14:45+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,8 +25,8 @@ msgstr ""
 msgid "Command line"
 msgstr "Γραμμή εντολών"
 
-#: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:162
-#: src/terminal-profile.c:272 src/terminal-window.c:491 src/terminal.c:928
+#: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:172
+#: src/terminal-profile.c:275 src/terminal-window.c:651 src/terminal.c:1076
 msgid "Terminal"
 msgstr "Τερματικό"
 
@@ -37,8 +39,8 @@ msgid "Accelerator modifiers"
 msgstr "Τροποποιητές συντομεύσεων"
 
 #: src/eggcellrendererkeys.c:180
-msgid "Accel Mode"
-msgstr "Κατάσταση Συντόμευσης"
+msgid "Accelerator Mode"
+msgstr "Λειτουργία συντόμευσης"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
@@ -49,62 +51,267 @@ msgstr "Το είδος της συντόμευσης."
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:18
-#: src/terminal-accels.c:707
+#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:28
+#: src/terminal-accels.c:717
 msgid "Disabled"
 msgstr "Ανενεργό"
 
-#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:563
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
 msgstr "Πληκτρολογήστε μια νέα συντόμευση ή πιέστε Backspace για εκκαθάριση"
 
-#: src/eggcellrendererkeys.c:566
+#: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
 msgstr "Πληκτρολογήστε μια νέα συντόμευση"
+
+#: src/encoding.c:57
+msgid "Current Locale"
+msgstr "Τρέχον Locale"
+
+#: src/encoding.c:60 src/encoding.c:86 src/encoding.c:129 src/encoding.c:177
+#: src/encoding.c:201
+msgid "Western"
+msgstr "Δυτική"
+
+#: src/encoding.c:62 src/encoding.c:131 src/encoding.c:157 src/encoding.c:197
+msgid "Central European"
+msgstr "Κεντρικής Ευρώπης"
+
+#: src/encoding.c:64
+msgid "South European"
+msgstr "Νότιας Ευρώπης"
+
+#
+#: src/encoding.c:66 src/encoding.c:82 src/encoding.c:211
+msgid "Baltic"
+msgstr "Βαλτικής"
+
+#: src/encoding.c:68 src/encoding.c:133 src/encoding.c:146 src/encoding.c:150
+#: src/encoding.c:161 src/encoding.c:199
+msgid "Cyrillic"
+msgstr "Κυριλλική"
+
+#: src/encoding.c:70 src/encoding.c:139 src/encoding.c:155 src/encoding.c:209
+msgid "Arabic"
+msgstr "Αραβική"
+
+#: src/encoding.c:72 src/encoding.c:167 src/encoding.c:203
+msgid "Greek"
+msgstr "Ελληνική"
+
+#: src/encoding.c:74
+msgid "Hebrew Visual"
+msgstr "Hebrew Visual"
+
+#: src/encoding.c:76 src/encoding.c:137 src/encoding.c:173 src/encoding.c:207
+msgid "Hebrew"
+msgstr "Hebrew"
+
+#: src/encoding.c:78 src/encoding.c:135 src/encoding.c:181 src/encoding.c:205
+msgid "Turkish"
+msgstr "Τουρκική"
+
+#: src/encoding.c:80
+msgid "Nordic"
+msgstr "Nordic"
+
+#
+#: src/encoding.c:84
+msgid "Celtic"
+msgstr "Κελτικά"
+
+#
+#: src/encoding.c:88 src/encoding.c:179
+msgid "Romanian"
+msgstr "Romanian"
+
+#: src/encoding.c:91 src/encoding.c:93 src/encoding.c:95 src/encoding.c:97
+#: src/encoding.c:99
+msgid "Unicode"
+msgstr "Unicode"
+
+#
+#: src/encoding.c:102
+msgid "Armenian"
+msgstr "Αρμενική"
+
+#: src/encoding.c:104 src/encoding.c:106 src/encoding.c:115
+msgid "Chinese Traditional"
+msgstr "Chinese Traditional"
+
+#: src/encoding.c:108
+msgid "Cyrillic/Russian"
+msgstr "Cyrillic/Russian"
+
+#: src/encoding.c:111 src/encoding.c:142 src/encoding.c:186
+msgid "Japanese"
+msgstr "Japanese"
+
+#: src/encoding.c:113 src/encoding.c:144 src/encoding.c:148 src/encoding.c:192
+msgid "Korean"
+msgstr "Korean"
+
+#: src/encoding.c:118 src/encoding.c:120 src/encoding.c:122 src/encoding.c:126
+msgid "Chinese Simplified"
+msgstr "Chinese Simplified"
+
+#: src/encoding.c:124
+msgid "Georgian"
+msgstr "Γεωργιανή"
+
+#: src/encoding.c:152 src/encoding.c:183
+msgid "Cyrillic/Ukrainian"
+msgstr "Cyrillic/Ukrainian"
+
+#
+#: src/encoding.c:159
+msgid "Croatian"
+msgstr "Croatian"
+
+#: src/encoding.c:163
+msgid "Hindi"
+msgstr "Hindi"
+
+#: src/encoding.c:165
+msgid "Farsi"
+msgstr "Farsi"
+
+#: src/encoding.c:169
+msgid "Gujarati"
+msgstr "Gujarati"
+
+#: src/encoding.c:171
+msgid "Gurmukhi"
+msgstr "Gurmukhi"
+
+#: src/encoding.c:175
+msgid "Icelandic"
+msgstr "Icelandic"
+
+#: src/encoding.c:188 src/encoding.c:194 src/encoding.c:213
+msgid "Vietnamese"
+msgstr "Vietnamese"
+
+#: src/encoding.c:190
+msgid "Thai"
+msgstr "Ταϊλανδέζικη"
+
+#: src/encoding.c:379
+msgid "User Defined"
+msgstr "Καθορισμένο από το χρήστη"
+
+#: src/encoding.c:442 src/profile-editor.c:889 src/terminal-window.c:2510
+#: src/terminal.c:2735
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Σφάλμα κατά την προβολή βοήθειας: %s"
+
+#: src/encoding.c:764 src/encoding.c:828
+msgid "_Description"
+msgstr "_Περιγραφή"
+
+#: src/encoding.c:773 src/encoding.c:837
+msgid "_Encoding"
+msgstr "_Κωδικοποίηση"
+
+#: src/encoding.c:1006
+#, c-format
+msgid ""
+"There was an error subscribing to notification of terminal encoding list "
+"changes. (%s)\n"
+msgstr ""
+"Σφάλμα συνδρομής στην ειδοποίηση για αλλαγές στη λίστα  αλλαγών "
+"κωδικοποίησης τερματικού. (%s)\n"
 
 #
 #: src/gnome-terminal.glade2.h:1 src/x-font-selector.c:883
 msgid "*"
 msgstr "*"
 
+# #-#-#-#-#  memory.el.po (abiword 1.0)  #-#-#-#-#
+# #-#-#-#-#  gimp-el.po (gimp 1.3.2)  #-#-#-#-#
+# #-#-#-#-#  gtop-el.po (gtop 1.0.9)  #-#-#-#-##
+# #-#-#-#-#  achtung-el.po (achtung 0.99.0)  #-#-#-#-##
+# #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-##
 #: src/gnome-terminal.glade2.h:2
+msgid "<b>Background</b>"
+msgstr "<b>Παρασκήνιο</b>"
+
+# #-#-#-#-#  anjuta-el.po (anjuta 0.1.9)  #-#-#-#-#
+# #-#-#-#-#  gnome-db-el.po (gnome-db 0.0.91)  #-#-#-#-##
+# #-#-#-#-#  gtkhtml-el.po (gtkhtml 0.8.1)  #-#-#-#-##
+# #-#-#-#-#  gtop-el.po (gtop 1.0.9)  #-#-#-#-##
+# #-#-#-#-#  libgda-el.po (gnome-db 0.0.91)  #-#-#-#-##
+# #-#-#-#-#  toutdoux-el.po (toutdoux 1.0)  #-#-#-#-##
+#: src/gnome-terminal.glade2.h:3
+msgid "<b>Command</b>"
+msgstr "<b>Εντολή</b>"
+
+#: src/gnome-terminal.glade2.h:4
+msgid "<b>Compatibility</b>"
+msgstr "<b>Συμβατότητα</b>"
+
+#: src/gnome-terminal.glade2.h:5
+msgid "<b>Foreground and Background</b>"
+msgstr "<b>Προσκήνιο και Παρασκήνιο</b>"
+
+#: src/gnome-terminal.glade2.h:6
+msgid "<b>General</b>"
+msgstr "<b>Γενικά</b>"
+
+#: src/gnome-terminal.glade2.h:7
+msgid "<b>Palette</b>"
+msgstr "<b>Παλέτα</b>"
+
+#: src/gnome-terminal.glade2.h:8
+msgid "<b>Scrolling</b>"
+msgstr "<b>Κύλιση</b>"
+
+#: src/gnome-terminal.glade2.h:9
+msgid "<b>Title</b>"
+msgstr "<b>Τίτλος</b>"
+
+#: src/gnome-terminal.glade2.h:10
+msgid "<big>S/Key Challenge Response</big>"
+msgstr "<big>S/Key Challenge Response</big>"
+
+#: src/gnome-terminal.glade2.h:11
+msgid "<small><i>Maximum</i></small>"
+msgstr "<small><i>Μέγιστο</i></small>"
+
+#: src/gnome-terminal.glade2.h:12
+msgid "<small><i>None</i></small>"
+msgstr "<small><i>Κανένα</i></small>"
+
+#: src/gnome-terminal.glade2.h:13
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-# #-#-#-#-#  memory.el.po (abiword 1.0)  #-#-#-#-#
-# #-#-#-#-#  gimp-el.po (gimp 1.3.2)  #-#-#-#-#
-#
-# #-#-#-#-#  gtop-el.po (gtop 1.0.9)  #-#-#-#-#
-#
-# #-#-#-#-#  achtung-el.po (achtung 0.99.0)  #-#-#-#-#
-#
-# #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
-#
-#: src/gnome-terminal.glade2.h:3
-msgid "Background"
-msgstr "Παρασκηνίο"
+#: src/gnome-terminal.glade2.h:14
+msgid "A_vailable encodings:"
+msgstr "Δια_θέσιμες κωδικοποιήσεις:"
 
-#: src/gnome-terminal.glade2.h:4
+#: src/gnome-terminal.glade2.h:15
 msgid "Background image _scrolls"
 msgstr "_Κύλιση εικόνας παρασκηνίου"
 
-#: src/gnome-terminal.glade2.h:5
+#: src/gnome-terminal.glade2.h:16
 msgid "Built-_in schemes:"
 msgstr "Ενσωμα_τωμένα σχήματα:"
 
-#: src/gnome-terminal.glade2.h:6
+#: src/gnome-terminal.glade2.h:17
 msgid "Built-in _schemes:"
 msgstr "Ενσωματωμένα _σχήματα:"
 
-#: src/gnome-terminal.glade2.h:7
+#: src/gnome-terminal.glade2.h:18
 msgid "Choose terminal background color"
 msgstr "Επιλογή χρώματος παρασκηνίου τερματικού"
 
-#: src/gnome-terminal.glade2.h:8
+#: src/gnome-terminal.glade2.h:19
 msgid "Choose terminal text color"
 msgstr "Επιλογή χρώματος κειμένου τερματικού"
 
-#: src/gnome-terminal.glade2.h:9
+#: src/gnome-terminal.glade2.h:20
 msgid "Color _palette:"
 msgstr "Παλέτα _χρωμάτων:"
 
@@ -120,228 +327,216 @@ msgstr "Παλέτα _χρωμάτων:"
 #
 # #-#-#-#-#  toutdoux-el.po (toutdoux 1.0)  #-#-#-#-#
 #
-#: src/gnome-terminal.glade2.h:10
+#: src/gnome-terminal.glade2.h:21
 msgid "Colors"
 msgstr "Χρώματα"
 
-# #-#-#-#-#  anjuta-el.po (anjuta 0.1.9)  #-#-#-#-#
-#
-# #-#-#-#-#  gnome-db-el.po (gnome-db 0.0.91)  #-#-#-#-#
-#
-# #-#-#-#-#  gtkhtml-el.po (gtkhtml 0.8.1)  #-#-#-#-#
-#
-# #-#-#-#-#  gtop-el.po (gtop 1.0.9)  #-#-#-#-#
-#
-# #-#-#-#-#  libgda-el.po (gnome-db 0.0.91)  #-#-#-#-#
-#
-# #-#-#-#-#  toutdoux-el.po (toutdoux 1.0)  #-#-#-#-#
-#
-#: src/gnome-terminal.glade2.h:11
-msgid "Command"
-msgstr "Εντολή"
-
-#: src/gnome-terminal.glade2.h:12
+#: src/gnome-terminal.glade2.h:22
 msgid "Compatibility"
 msgstr "Συμβατότητα"
 
-#: src/gnome-terminal.glade2.h:13
+#: src/gnome-terminal.glade2.h:23
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/gnome-terminal.glade2.h:14
+#: src/gnome-terminal.glade2.h:24
 msgid "Cursor _blinks"
 msgstr "Αναβόσβημα _δρομέα"
 
-#: src/gnome-terminal.glade2.h:15
+#: src/gnome-terminal.glade2.h:25
 msgid "Custom co_mmand:"
 msgstr "Προσαρμοσμένη εν_τολή:"
 
-#: src/gnome-terminal.glade2.h:16
+#: src/gnome-terminal.glade2.h:26
 msgid "Disable all menu m_nemonics (such as Alt+f to open File menu)"
 msgstr ""
 "Απενεργοποίηση όλων των μνημο_νικών μενού (όπως Alt+f για το άνοιγμα μενού "
 "Αρχείο)"
 
-#: src/gnome-terminal.glade2.h:17
+#: src/gnome-terminal.glade2.h:27
 msgid "Disable menu acc_ess key (F10 by default)"
 msgstr "Απενεργοποίηση όλων των πλήκτρων πρόσβασης μενού (F10 εξ ορισμού)"
 
-#: src/gnome-terminal.glade2.h:19
+#: src/gnome-terminal.glade2.h:29
+msgid "E_ncodings shown in menu:"
+msgstr "Κω_δικοποιήσεις που εμφανίζονται στα μενού:"
+
+#: src/gnome-terminal.glade2.h:30
 msgid "Effects"
 msgstr "Εφφέ"
 
-#: src/gnome-terminal.glade2.h:20
+#: src/gnome-terminal.glade2.h:31
 msgid "Escape sequence"
 msgstr "Ακολουθία διαφυγής"
 
-#: src/gnome-terminal.glade2.h:21
+#: src/gnome-terminal.glade2.h:32
 msgid "Exit the terminal"
 msgstr "Έξοδος από το τερματικό"
 
-#: src/gnome-terminal.glade2.h:22
-msgid "Foreground and Background"
-msgstr "Προσκήνιο και Παρασκήνιο"
-
-#: src/gnome-terminal.glade2.h:23
+#: src/gnome-terminal.glade2.h:33
 msgid "General"
 msgstr "Γενικά"
 
-#: src/gnome-terminal.glade2.h:24
+#: src/gnome-terminal.glade2.h:34
 msgid "Goes after initial title"
 msgstr "Πηγαίνει μετά τον αρχικό τίτλο"
 
-#: src/gnome-terminal.glade2.h:25
+#: src/gnome-terminal.glade2.h:35
 msgid "Goes before initial title"
 msgstr "Πηγαίνει πριν τον αρχικό τίτλο"
 
-#: src/gnome-terminal.glade2.h:26
+#: src/gnome-terminal.glade2.h:36
 msgid "Initial _title:"
 msgstr "Αρχικός _τίτλος:"
 
-#: src/gnome-terminal.glade2.h:27
+#: src/gnome-terminal.glade2.h:37
 msgid "Isn't displayed"
 msgstr "Δεν προβάλλεται"
 
-#: src/gnome-terminal.glade2.h:28
+#: src/gnome-terminal.glade2.h:38
 msgid "Keybindings Editor"
 msgstr "Επεξεργαστής Συνδυασμών Πλήκτρων"
 
-#: src/gnome-terminal.glade2.h:29
+#: src/gnome-terminal.glade2.h:39
 msgid "On the left side"
 msgstr "Στην αριστερή πλευρά"
 
-#: src/gnome-terminal.glade2.h:30
+#: src/gnome-terminal.glade2.h:40
 msgid "On the right side"
 msgstr "Στη δεξιά πλευρά"
 
-#: src/gnome-terminal.glade2.h:31
-msgid "Palette"
-msgstr "Παλέτα"
-
-#: src/gnome-terminal.glade2.h:32
+#: src/gnome-terminal.glade2.h:41
 msgid "Palette entry 1"
 msgstr "Καταχώρηση παλέτας 1"
 
-#: src/gnome-terminal.glade2.h:33
+#: src/gnome-terminal.glade2.h:42
 msgid "Palette entry 10"
 msgstr "Καταχώρηση παλέτας 10"
 
-#: src/gnome-terminal.glade2.h:34
+#: src/gnome-terminal.glade2.h:43
 msgid "Palette entry 11"
 msgstr "Καταχώρηση παλέτας 11"
 
-#: src/gnome-terminal.glade2.h:35
+#: src/gnome-terminal.glade2.h:44
 msgid "Palette entry 12"
 msgstr "Καταχώρηση παλέτας 12"
 
-#: src/gnome-terminal.glade2.h:36
+#: src/gnome-terminal.glade2.h:45
 msgid "Palette entry 13"
 msgstr "Καταχώρηση παλέτας 13"
 
-#: src/gnome-terminal.glade2.h:37
+#: src/gnome-terminal.glade2.h:46
 msgid "Palette entry 14"
 msgstr "Καταχώρηση παλέτας 14"
 
-#: src/gnome-terminal.glade2.h:38
+#: src/gnome-terminal.glade2.h:47
 msgid "Palette entry 15"
 msgstr "Καταχώρηση παλέτας 15"
 
-#: src/gnome-terminal.glade2.h:39
+#: src/gnome-terminal.glade2.h:48
 msgid "Palette entry 16"
 msgstr "Καταχώρηση παλέτας 16"
 
-#: src/gnome-terminal.glade2.h:40
+#: src/gnome-terminal.glade2.h:49
 msgid "Palette entry 2"
 msgstr "Καταχώρηση παλέτας 2"
 
-#: src/gnome-terminal.glade2.h:41
+#: src/gnome-terminal.glade2.h:50
 msgid "Palette entry 3"
 msgstr "Καταχώρηση παλέτας 3"
 
-#: src/gnome-terminal.glade2.h:42
+#: src/gnome-terminal.glade2.h:51
 msgid "Palette entry 4"
 msgstr "Καταχώρηση παλέτας 4"
 
-#: src/gnome-terminal.glade2.h:43
+#: src/gnome-terminal.glade2.h:52
 msgid "Palette entry 5"
 msgstr "Καταχώρηση παλέτας 5"
 
-#: src/gnome-terminal.glade2.h:44
+#: src/gnome-terminal.glade2.h:53
 msgid "Palette entry 6"
 msgstr "Καταχώρηση παλέτας 6"
 
-#: src/gnome-terminal.glade2.h:45
+#: src/gnome-terminal.glade2.h:54
 msgid "Palette entry 7"
 msgstr "Καταχώρηση παλέτας 7"
 
-#: src/gnome-terminal.glade2.h:46
+#: src/gnome-terminal.glade2.h:55
 msgid "Palette entry 8"
 msgstr "Καταχώρηση παλέτας 8"
 
-#: src/gnome-terminal.glade2.h:47
+#: src/gnome-terminal.glade2.h:56
 msgid "Palette entry 9"
 msgstr "Καταχώρηση παλέτας 9"
 
-#: src/gnome-terminal.glade2.h:48
+#: src/gnome-terminal.glade2.h:57
+msgid "Password:"
+msgstr "Κωδικός:"
+
+#: src/gnome-terminal.glade2.h:58
 msgid "Profile Editor"
 msgstr "Επεξεργαστής Προφίλ"
 
-#: src/gnome-terminal.glade2.h:49
+#: src/gnome-terminal.glade2.h:59
 msgid "Profile _icon:"
 msgstr "Εικο_νίδιο προφίλ:"
 
-#: src/gnome-terminal.glade2.h:50
+#: src/gnome-terminal.glade2.h:60
 msgid "R_un a custom command instead of my shell"
 msgstr "Ε_κτέλεση μια προσαρμοσμένης εντολής αντί για το κέλυφος"
 
-#: src/gnome-terminal.glade2.h:51
+#: src/gnome-terminal.glade2.h:61
 msgid "Replaces initial title"
 msgstr "Αντικαθιστά τον αρχικό τίτλο"
 
-#: src/gnome-terminal.glade2.h:52
+#: src/gnome-terminal.glade2.h:62
 msgid "Restart the command"
 msgstr "Επανεκκίνηση της εντολής"
 
-#: src/gnome-terminal.glade2.h:53
+#: src/gnome-terminal.glade2.h:63
 msgid "S_croll on keystroke"
 msgstr "Κ_ύλιση στο πάτημα πλήκτρου"
 
-#: src/gnome-terminal.glade2.h:54
+#: src/gnome-terminal.glade2.h:64
 msgid "Sc_roll on output"
 msgstr "Κ_ύλιση στο αποτέλεσμα εντολών"
 
-#: src/gnome-terminal.glade2.h:55
+#: src/gnome-terminal.glade2.h:65
 msgid "Scr_ollback:"
 msgstr "_Κύλιση πίσω:"
 
-#: src/gnome-terminal.glade2.h:56
+#: src/gnome-terminal.glade2.h:66
 msgid "Scrolling"
 msgstr "Κύλιση"
 
-#: src/gnome-terminal.glade2.h:57
+#: src/gnome-terminal.glade2.h:67
 msgid "Select-by-_word characters:"
 msgstr "Χαρακτήρες για επιλογή βάσει λέξης:"
 
-#: src/gnome-terminal.glade2.h:58
+#: src/gnome-terminal.glade2.h:68
 msgid "Show _menubar by default in new terminals"
 msgstr "Εξ ορισμού προβολή _μενού σε νέα τερματικά"
 
-#: src/gnome-terminal.glade2.h:59
+#: src/gnome-terminal.glade2.h:69
+msgid "Terminal Encodings"
+msgstr "Κωδικοποιήσεις τερματικού"
+
+#: src/gnome-terminal.glade2.h:70
 msgid "Terminal _bell"
 msgstr "Κουδούνι _τερματικού"
 
-#: src/gnome-terminal.glade2.h:60
+#: src/gnome-terminal.glade2.h:71
 msgid "Terminal applications have these colors available to them."
 msgstr "Οι εφαρμογές τερματικού έχουν αυτά τα χρώματα διαθέσιμα."
 
-#: src/gnome-terminal.glade2.h:61
+#: src/gnome-terminal.glade2.h:72
 msgid ""
 "The command running inside the terminal may dynamically set a new title."
 msgstr ""
 "Η εντολή που εκτελείται μέσα στο τερματικό μπορεί να ορίσει δυναμικά ένα νέο "
 "τίτλο."
 
-#: src/gnome-terminal.glade2.h:62
+#: src/gnome-terminal.glade2.h:73
 msgid ""
 "These options may cause some applications to behave incorrectly.\n"
 "They are only here to allow you to work around certain applications\n"
@@ -352,131 +547,131 @@ msgstr ""
 "Υπάρχουν εδώ για να σας επιτρέπουν να δουλεύετε με συγκεκριμένες εφαρμογές\n"
 "και λειτουργικά συστήματα που αναμένουν διαφορετική συμπεριφορά τερματικού."
 
-#: src/gnome-terminal.glade2.h:65
-msgid "Title"
-msgstr "Τίτλος"
-
-#: src/gnome-terminal.glade2.h:66
+#: src/gnome-terminal.glade2.h:76
 msgid "Title and Command"
 msgstr "Τίτλος και Εντολή"
 
-#: src/gnome-terminal.glade2.h:67
+#: src/gnome-terminal.glade2.h:77
 msgid "Use colors from s_ystem theme"
 msgstr "Χρήση χρωμάτων από το θέμα συσ_τήματος"
 
-#: src/gnome-terminal.glade2.h:68
+#: src/gnome-terminal.glade2.h:78
 msgid "When command _exits:"
 msgstr "Κατά τη έ_ξοδο εντολής:"
 
-#: src/gnome-terminal.glade2.h:69
+#: src/gnome-terminal.glade2.h:79
 msgid "_Accelerators:"
 msgstr "_Συντομεύσεις:"
 
-#: src/gnome-terminal.glade2.h:70
+#: src/gnome-terminal.glade2.h:80
 msgid "_Allow bold text"
 msgstr "_Να επιτρέπεται έντονο κείμενο"
 
-#: src/gnome-terminal.glade2.h:71
+#: src/gnome-terminal.glade2.h:81
 msgid "_Background color:"
 msgstr "_Χρώμα παρασκηνίου:"
 
-#: src/gnome-terminal.glade2.h:72
+#: src/gnome-terminal.glade2.h:82
 msgid "_Background image"
 msgstr "Εικόνα _παρασκηνίου"
 
-#: src/gnome-terminal.glade2.h:73
+#: src/gnome-terminal.glade2.h:83
 msgid "_Backspace key generates:"
 msgstr "_Το πλήκτρο Backspace προκαλεί:"
 
-#: src/gnome-terminal.glade2.h:74
+#: src/gnome-terminal.glade2.h:84
 msgid "_Delete key generates:"
 msgstr "_Το πλήκτρο Delete προκαλεί:"
 
-#: src/gnome-terminal.glade2.h:75
+#: src/gnome-terminal.glade2.h:85
 msgid "_Dynamically-set title:"
 msgstr "_Δυναμικός καθορισμός τίτλου:"
 
-#: src/gnome-terminal.glade2.h:76
+#: src/gnome-terminal.glade2.h:86
 msgid "_Image file:"
 msgstr "Αρ_χείο εικόνας:"
 
-#: src/gnome-terminal.glade2.h:77
+#: src/gnome-terminal.glade2.h:87
 msgid "_None (use solid color)"
 msgstr "_Δίχως (χρήση στερεού χρώματος)"
 
-#: src/gnome-terminal.glade2.h:78
+#: src/gnome-terminal.glade2.h:88
 msgid "_Profile name:"
 msgstr "Όνομα _προφίλ:"
 
-#: src/gnome-terminal.glade2.h:79
+#: src/gnome-terminal.glade2.h:89
 msgid "_Reset compatibility options to defaults"
 msgstr "_Επαναφορά επιλογών συμβατότητας σε εξ ορισμού"
 
-#: src/gnome-terminal.glade2.h:80
+#: src/gnome-terminal.glade2.h:90
 msgid "_Run command as a login shell"
 msgstr "_Εκτέλεση εντολής ως κέλυφος εισόδου"
 
-#: src/gnome-terminal.glade2.h:81
+#: src/gnome-terminal.glade2.h:91
 msgid "_Scrollbar is:"
 msgstr "_Η μπάρα κύλισης είναι:"
 
-#: src/gnome-terminal.glade2.h:82
+#: src/gnome-terminal.glade2.h:92
 msgid "_Shade transparent or image background:"
 msgstr "_Σκίαση διαφάνειας ή εικόνας παρασκηνίου:"
 
-#: src/gnome-terminal.glade2.h:83
+#: src/gnome-terminal.glade2.h:93
 msgid "_Text color:"
 msgstr "_Χρώμα κειμένου:"
 
-#: src/gnome-terminal.glade2.h:84
+#: src/gnome-terminal.glade2.h:94
 msgid "_Transparent background"
 msgstr "_Διάφανο παρασκήνιο"
 
-#: src/gnome-terminal.glade2.h:85
+#: src/gnome-terminal.glade2.h:95
 msgid "_Update utmp/wtmp records when command is launched"
 msgstr "_Ενημέρωση εγγραφών utmp/wtmp κατά την εκκίνηση εντολής"
 
-#: src/gnome-terminal.glade2.h:86
-msgid "_Use the same font as other applications"
+#: src/gnome-terminal.glade2.h:96
+msgid "_Use the same size font as other applications"
 msgstr "_Χρήση της ίδιας γραμματοσειράς όπως στις άλλες εφαρμογές"
 
-#: src/gnome-terminal.glade2.h:87
+#: src/gnome-terminal.glade2.h:97
 msgid "_kilobytes"
 msgstr "_kilobyte"
 
-#: src/gnome-terminal.glade2.h:88
+#: src/gnome-terminal.glade2.h:98
 msgid "_lines"
 msgstr "_γραμμές"
 
-#: src/gnome-terminal.glade2.h:89
+#: src/gnome-terminal.glade2.h:99
 msgid "kilobytes"
 msgstr "kilobyte"
 
-#: src/profile-editor.c:47
+#: src/profile-editor.c:50
 msgid "Black on light yellow"
 msgstr "Μαύρο σε ανοιχτό κίτρινο"
 
-#: src/profile-editor.c:49
-msgid "White on black"
-msgstr "Λευκό σε μαύρο"
-
-#: src/profile-editor.c:51
+#: src/profile-editor.c:52
 msgid "Black on white"
 msgstr "Μαύρο σε λευκό"
 
-#: src/profile-editor.c:53
+#: src/profile-editor.c:54
+msgid "Gray on black"
+msgstr "Γκρί σε μαύρο"
+
+#: src/profile-editor.c:56
 msgid "Green on black"
 msgstr "Πράσινο σε μαύρο"
 
-#: src/profile-editor.c:66
+#: src/profile-editor.c:58
+msgid "White on black"
+msgstr "Λευκό σε μαύρο"
+
+#: src/profile-editor.c:71
 msgid "Linux console"
 msgstr "Κονσόλα Linux"
 
-#: src/profile-editor.c:67
+#: src/profile-editor.c:72
 msgid "XTerm"
 msgstr "XTerm"
 
-#: src/profile-editor.c:68
+#: src/profile-editor.c:73
 msgid "Rxvt"
 msgstr "Rxvt"
 
@@ -495,36 +690,22 @@ msgstr "Rxvt"
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
 # #-#-#-#-#  gturing-el.po (gnome-games 1.2.0)  #-#-#-#-#
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
-#: src/profile-editor.c:807 src/profile-editor.c:837
+#: src/profile-editor.c:813 src/profile-editor.c:843
 msgid "Custom"
 msgstr "Παραμετροποιημένο"
 
-#: src/profile-editor.c:883 src/terminal-window.c:2079 src/terminal.c:2262
-#, c-format
-msgid "There was an error displaying help: %s"
-msgstr "Σφάλμα κατά την προβολή βοήθειας: %s"
-
-#: src/profile-editor.c:947
-#, c-format
-msgid ""
-"The file \"%s\" is missing. This indicates that the application is installed "
-"incorrectly, so the profile editor can't be displayed."
-msgstr ""
-"Το αρχείο \"%s\"  λείπει. Αυτό σημαίνει ότι η εφαρμογή δεν εγκαταστάθηκε "
-"σωστά και έτσι ο επεξεργαστής προφίλ δε μπορεί να εμφανιστεί."
-
-#: src/profile-editor.c:1253
+#: src/profile-editor.c:1230
 msgid "Choose a terminal font"
 msgstr "Επιλογή γραμμματοσειράς τερματικού"
 
-#: src/profile-editor.c:1518
+#: src/profile-editor.c:1240 src/simple-x-font-selector.c:327
+msgid "_Font:"
+msgstr "_Γραμματοσειρά:"
+
+#: src/profile-editor.c:1515
 #, c-format
 msgid "Editing profile \"%s\""
 msgstr "Επεξεργασία προφίλ \"%s\""
-
-#: src/simple-x-font-selector.c:327
-msgid "_Font:"
-msgstr "_Γραμματοσειρά:"
 
 #: src/simple-x-font-selector.c:332
 msgid "Si_ze:"
@@ -540,12 +721,12 @@ msgstr "Επιλογή τύπου γραμματοσειράς"
 
 #: src/simple-x-font-selector.c:348
 msgid "Click to choose font size"
-msgstr "Κάντε κλικ για να επιλέξeτε το μέγεθος γραμματοσειράς"
+msgstr "Κάντε κλικ για να επιλέξετε το μέγεθος γραμματοσειράς"
 
 #
 #: src/simple-x-font-selector.c:659 src/x-font-selector.c:1964
 msgid "roman"
-msgstr "ρωμαϊκά"
+msgstr "roman"
 
 #
 #: src/simple-x-font-selector.c:660 src/x-font-selector.c:1213
@@ -599,23 +780,23 @@ msgstr "κελί χαρακτήρα"
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
 msgstr "Υπέρβαση ορίου MAX_FONTS. Πιθανό να λείπουν μερικές γραμματοσειρές."
 
-#: src/terminal-accels.c:71
+#: src/terminal-accels.c:75
 msgid "New Tab"
 msgstr "Νέα Στήλη"
 
-#: src/terminal-accels.c:73
+#: src/terminal-accels.c:77
 msgid "New Window"
 msgstr "Νέο Παράθυρο"
 
-#: src/terminal-accels.c:75 src/terminal.c:1686
+#: src/terminal-accels.c:79 src/terminal.c:2159
 msgid "New Profile"
 msgstr "Νέο Προφίλ"
 
-#: src/terminal-accels.c:77
+#: src/terminal-accels.c:81
 msgid "Close Tab"
 msgstr "Κλείσιμο Στήλης"
 
-#: src/terminal-accels.c:79
+#: src/terminal-accels.c:83
 msgid "Close Window"
 msgstr "Κλείσιμο Παραθύρου"
 
@@ -642,7 +823,7 @@ msgstr "Κλείσιμο Παραθύρου"
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/terminal-accels.c:85
+#: src/terminal-accels.c:89
 msgid "Copy"
 msgstr "Αντιγραφή"
 
@@ -664,87 +845,99 @@ msgstr "Αντιγραφή"
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/terminal-accels.c:87
+#: src/terminal-accels.c:91
 msgid "Paste"
 msgstr "Επικόλληση"
 
-#: src/terminal-accels.c:93
+#: src/terminal-accels.c:97
 msgid "Hide and Show menubar"
 msgstr "Απόκρυψη και Προβολή μπάρας μενού"
 
-#: src/terminal-accels.c:95
+#: src/terminal-accels.c:99
 msgid "Full Screen"
 msgstr "Πλήρης Οθόνη"
 
 #: src/terminal-accels.c:101
+msgid "Zoom In"
+msgstr "Μεγέθυνση"
+
+#: src/terminal-accels.c:103
+msgid "Zoom Out"
+msgstr "Σμίκρυνση"
+
+#: src/terminal-accels.c:105
+msgid "Normal Size"
+msgstr "Κανονικό Μέγεθος"
+
+#: src/terminal-accels.c:111
 msgid "Set Title"
 msgstr "Καθορισμός Τίτλου"
 
-#: src/terminal-accels.c:103
+#: src/terminal-accels.c:113
 msgid "Reset"
 msgstr "Αρχικοποίηση"
 
-#: src/terminal-accels.c:105
+#: src/terminal-accels.c:115
 msgid "Reset and Clear"
 msgstr "Αρχικοποίηση και Καθαρισμός"
 
-#: src/terminal-accels.c:111
+#: src/terminal-accels.c:121
 msgid "Switch to Previous Tab"
 msgstr "Μετάβαση στην Προηγούμενη Στήλη"
 
-#: src/terminal-accels.c:113
+#: src/terminal-accels.c:123
 msgid "Switch to Next Tab"
 msgstr "Μετάβαση στην Επόμενη Στήλη"
 
-#: src/terminal-accels.c:115
+#: src/terminal-accels.c:125
 msgid "Switch to Tab 1"
 msgstr "Αλλαγή στη Στήλη 1"
 
-#: src/terminal-accels.c:118
+#: src/terminal-accels.c:128
 msgid "Switch to Tab 2"
 msgstr "Αλλαγή στη Στήλη 2"
 
-#: src/terminal-accels.c:121
+#: src/terminal-accels.c:131
 msgid "Switch to Tab 3"
 msgstr "Αλλαγή στη Στήλη 3"
 
-#: src/terminal-accels.c:124
+#: src/terminal-accels.c:134
 msgid "Switch to Tab 4"
 msgstr "Αλλαγή στη Στήλη 4"
 
-#: src/terminal-accels.c:127
+#: src/terminal-accels.c:137
 msgid "Switch to Tab 5"
 msgstr "Αλλαγή στη Στήλη 5"
 
-#: src/terminal-accels.c:130
+#: src/terminal-accels.c:140
 msgid "Switch to Tab 6"
 msgstr "Αλλαγή στη Στήλη 6"
 
-#: src/terminal-accels.c:133
+#: src/terminal-accels.c:143
 msgid "Switch to Tab 7"
 msgstr "Αλλαγή στη Στήλη 7"
 
-#: src/terminal-accels.c:136
+#: src/terminal-accels.c:146
 msgid "Switch to Tab 8"
 msgstr "Αλλαγή στη Στήλη 8"
 
-#: src/terminal-accels.c:139
+#: src/terminal-accels.c:149
 msgid "Switch to Tab 9"
 msgstr "Αλλαγή στη Στήλη 9"
 
-#: src/terminal-accels.c:142
+#: src/terminal-accels.c:152
 msgid "Switch to Tab 10"
 msgstr "Αλλαγή στη Στήλη 10"
 
-#: src/terminal-accels.c:145
+#: src/terminal-accels.c:155
 msgid "Switch to Tab 11"
 msgstr "Αλλαγή στη Στήλη 11"
 
-#: src/terminal-accels.c:148
+#: src/terminal-accels.c:158
 msgid "Switch to Tab 12"
 msgstr "Αλλαγή στη Στήλη 12"
 
-#: src/terminal-accels.c:154
+#: src/terminal-accels.c:164
 msgid "Contents"
 msgstr "Περιεχόμενα"
 
@@ -764,7 +957,7 @@ msgstr "Περιεχόμενα"
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/terminal-accels.c:159
+#: src/terminal-accels.c:169
 msgid "File"
 msgstr "Αρχείο"
 
@@ -793,7 +986,7 @@ msgstr "Αρχείο"
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/terminal-accels.c:160
+#: src/terminal-accels.c:170
 msgid "Edit"
 msgstr "Επεξεργασία"
 
@@ -810,11 +1003,11 @@ msgstr "Επεξεργασία"
 #
 # #-#-#-#-#  screem-el.po (screem 1.0)  #-#-#-#-#
 #
-#: src/terminal-accels.c:161
+#: src/terminal-accels.c:171
 msgid "View"
 msgstr "Προβολή"
 
-#: src/terminal-accels.c:163
+#: src/terminal-accels.c:173
 msgid "Go"
 msgstr "Μετάβαση"
 
@@ -832,16 +1025,16 @@ msgstr "Μετάβαση"
 #
 # #-#-#-#-#  gnomemeeting-el.po (gnomemeeting 0.12.2)  #-#-#-#-#
 #
-#: src/terminal-accels.c:164
+#: src/terminal-accels.c:174
 msgid "Help"
 msgstr "Βοήθεια"
 
-#: src/terminal-accels.c:254 src/terminal-profile.c:388 src/terminal.c:1158
+#: src/terminal-accels.c:264 src/terminal-profile.c:391 src/terminal.c:1465
 #, c-format
 msgid "There was an error loading config from %s. (%s)\n"
 msgstr "Σφάλμα κατά την φόρτωση ρυθμίσεων από το %s. (%s)\n"
 
-#: src/terminal-accels.c:268
+#: src/terminal-accels.c:278
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal keybinding "
@@ -850,17 +1043,17 @@ msgstr ""
 "Σφάλμα συνδρομής στην ειδοποίηση των αλλαγών συνδυασμών πλήκτρων τερματικού. "
 "(%s)\n"
 
-#: src/terminal-accels.c:309
+#: src/terminal-accels.c:319
 #, c-format
 msgid "There was an error loading a terminal keybinding. (%s)\n"
 msgstr "Σφάλμα φόρτωσης συνδυασμού πλήκτρων τερματικού. (%s)\n"
 
-#: src/terminal-accels.c:325
+#: src/terminal-accels.c:335
 #, c-format
 msgid "The value of configuration key %s is not valid; value is \"%s\"\n"
 msgstr "Η τιμή στο κλειδί ρύθμισης %s δεν είναι έγκυρη, η τιμή είναι \"%s\"\n"
 
-#: src/terminal-accels.c:348 src/terminal-window.c:773
+#: src/terminal-accels.c:358 src/terminal-window.c:1028
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -868,12 +1061,12 @@ msgstr ""
 "Σφάλμα κατά την φόρτωση τιμής ρυθμίσεων για το αν θα χρησιμοποιηθούν "
 "μνημονικά. (%s)\n"
 
-#: src/terminal-accels.c:362
+#: src/terminal-accels.c:372
 #, c-format
 msgid "There was an error subscribing to notification for use_mnemonics (%s)\n"
 msgstr "Σφάλμα συνδρομής στην ειδοποίηση για τη χρήση_μνημονικών. (%s)\n"
 
-#: src/terminal-accels.c:373
+#: src/terminal-accels.c:383
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use menu "
@@ -882,52 +1075,43 @@ msgstr ""
 "Σφάλμα φόρτωσης τιμής ρυθμίσεων για αν θα χρησιμοποιηθούν συντομεύσεις "
 "μενού. (%s)\n"
 
-#: src/terminal-accels.c:389
+#: src/terminal-accels.c:399
 #, c-format
 msgid ""
 "There was an error subscribing to notification for use_menu_accelerators (%"
 "s)\n"
 msgstr "Σφάλμα συνδρομής στην ειδοποίηση για χρήση_συντομεύσεων_μενού (%s)\n"
 
-#: src/terminal-accels.c:767
+#: src/terminal-accels.c:777
 #, c-format
 msgid "Error propagating accelerator change to configuration database: %s\n"
 msgstr ""
 "Σφάλμα αναπαραγωγής αλλαγής συντόμευσης στη βάση δεδομένων ρυθμίσεων: %s\n"
 
-#: src/terminal-accels.c:937
+#: src/terminal-accels.c:947
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr "Σφάλμα ορισμού νέας συντόμευσης στη βάση δεδομένων ρύθμισης: %s\n"
 
-#: src/terminal-accels.c:968
+#: src/terminal-accels.c:978
 #, c-format
 msgid "Error setting use_mnemonics key: %s\n"
 msgstr "Σφάλμα ρύθμισης χρήσης_μνημονικού πλήκτρου: %s\n"
 
-#: src/terminal-accels.c:998
+#: src/terminal-accels.c:1008
 #, c-format
 msgid "Error setting use_menu_accelerators key: %s\n"
 msgstr "Σφάλμα ορισμού κλειδιού χρήσης_συντομεύσεων_ μενού: %s\n"
 
-#: src/terminal-accels.c:1099
-#, c-format
-msgid ""
-"The file \"%s\" is missing. This indicates that the application is installed "
-"incorrectly, so the keybindings dialog can't be displayed."
-msgstr ""
-"Το αρχείο \"%s\" λείπει. Αυτό σημαίνει ότι η εφαρμογή δεν έχει εγκατασταθεί "
-"σωστά, έτσι ο διάλογος συνδυασμών πλήκτρων δε μπορεί να εμφανιστεί."
-
-#: src/terminal-accels.c:1154
+#: src/terminal-accels.c:1127
 msgid "_Action"
 msgstr "_Ενέργεια"
 
-#: src/terminal-accels.c:1174
+#: src/terminal-accels.c:1147
 msgid "Accelerator _Key"
 msgstr "Πλήκτρο _Συντόμευσης"
 
-#: src/terminal-profile.c:403
+#: src/terminal-profile.c:406
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile changes. "
@@ -936,21 +1120,21 @@ msgstr ""
 "Σφάλμα συνδρομής στην ειδοποίηση των αλλαγών των προφίλ του τερματικού. (%"
 "s)\n"
 
-#: src/terminal-profile.c:998
+#: src/terminal-profile.c:1001
 #, c-format
 msgid "Could not find an icon called \"%s\" for terminal profile \"%s\"\n"
 msgstr ""
 "Αδυναμία εύρεσης εικονιδίου που ονομάζεται \"%s\" για το προφίλ τερματικού "
 "\"%s\"\n"
 
-#: src/terminal-profile.c:1012
+#: src/terminal-profile.c:1015
 #, c-format
 msgid "Failed to load icon \"%s\" for terminal profile \"%s\": %s\n"
 msgstr ""
 "Αποτυχία φόρτωσης εικονιδίου που ονομάζεται \"%s\" για το προφίλ τερματικού "
 "\"%s\": %s\n"
 
-#: src/terminal-profile.c:1189
+#: src/terminal-profile.c:1192
 #, c-format
 msgid ""
 "Could not find a background image called \"%s\" for terminal profile \"%s\"\n"
@@ -958,7 +1142,7 @@ msgstr ""
 "Αδυναμία εύρεσης εικόνας παρασκηνίου που ονομάζεται \"%s\" για το προφίλ "
 "τερματικού \"%s\"\n"
 
-#: src/terminal-profile.c:1203
+#: src/terminal-profile.c:1206
 #, c-format
 msgid ""
 "Failed to load background image \"%s\" for terminal profile \"%s\": %s\n"
@@ -966,7 +1150,7 @@ msgstr ""
 "Αποτυχία φόρτωσης εικόνας παρασκηνίου που ονομάζεται \"%s\" για το προφίλ "
 "τερματικού \"%s\": %s\n"
 
-#: src/terminal-profile.c:1830
+#: src/terminal-profile.c:1860
 #, c-format
 msgid ""
 "GNOME Terminal: font name \"%s\" set in configuration database is not valid\n"
@@ -974,67 +1158,67 @@ msgstr ""
 "Τερματικό GNOME: το όνομα της γραμματοσειράς \"%s\" που έχει ορισθεί στη "
 "βάση δεδομένων ρυθμίσεων δεν είναι έγκυρο\n"
 
-#: src/terminal-profile.c:2913
+#: src/terminal-profile.c:2161
 #, c-format
 msgid "Error getting default value of %s: %s\n"
 msgstr "Σφάλμα λήψης εξ ορισμού τιμής του %s: %s\n"
 
-#: src/terminal-profile.c:2919
+#: src/terminal-profile.c:2167
 #, c-format
 msgid "There wasn't a default value for %s\n"
 msgstr "Δεν υπάρχει εξ ορισμού τιμή για %s\n"
 
-#: src/terminal-profile.c:2934
+#: src/terminal-profile.c:2182
 #, c-format
 msgid "Error setting key %s back to default: %s\n"
 msgstr "Σφάλμα επαναφοράς κλειδιού %s πίσω στο εξ ορισμού: %s\n"
 
-#: src/terminal-profile.c:3127
+#: src/terminal-profile.c:2385
 #, c-format
 msgid "There was an error forgetting profile dir %s. (%s)\n"
 msgstr "Σφάλμα λησμόνησης καταλόγου προφίλ %s. (%s)\n"
 
-#: src/terminal-profile.c:3184
+#: src/terminal-profile.c:2442
 #, c-format
 msgid ""
 "There was an error subscribing to notification of changes to default "
 "profile. (%s)\n"
 msgstr "Σφάλμα συνδρομής στην ειδοποίηση αλλαγών στο εξ ορισμού προφίλ. (%s)\n"
 
-#: src/terminal-profile.c:3229
+#: src/terminal-profile.c:2487
 msgid "_Details"
 msgstr "_Λεπτομέρειες"
 
-#: src/terminal-profile.c:3664
+#: src/terminal-profile.c:2922
 #, c-format
 msgid "There was an error creating the profile \"%s\""
 msgstr "Σφάλμα δημιουργίας του προφίλ \"%s\""
 
-#: src/terminal-profile.c:3744
+#: src/terminal-profile.c:3002
 msgid "There was an error deleting the profiles"
 msgstr "Σφάλμα κατά την διαγραφή των προφίλ"
 
-#: src/terminal-profile.c:3813
+#: src/terminal-profile.c:3071
 #, c-format
 msgid "Could not parse string \"%s\" as a color palette\n"
 msgstr "Αδυναμία ανάλυσης αλφαριθμητικού \"%s\" ως παλέτα χρώματος\n"
 
-#: src/terminal-profile.c:3822
+#: src/terminal-profile.c:3080
 #, c-format
 msgid "Palette had %d entries instead of %d\n"
 msgstr "Η παλέτα είχε %d καταχωρήσεις αντί για %d\n"
 
-#: src/terminal-screen.c:616
+#: src/terminal-screen.c:663
 #, c-format
 msgid "Could not load font \"%s\"\n"
 msgstr "Αδυναμία φόρτωσης γραμματοσειράς \"%s\"\n"
 
-#: src/terminal-screen.c:773
+#: src/terminal-screen.c:820
 #, c-format
 msgid "There was a problem with the command for this terminal: %s"
 msgstr "Υπήρξε πρόβλημα με την εντολή για αυτό το τερματικό: %s"
 
-#: src/terminal-screen.c:1088
+#: src/terminal-screen.c:1143
 #, c-format
 msgid ""
 "Could not open the address \"%s\":\n"
@@ -1043,76 +1227,80 @@ msgstr ""
 "Αδυναμία ανοίγματος της διεύθυνσης \"%s\":\n"
 "%s"
 
-#: src/terminal-screen.c:1209 src/terminal-window.c:539
+#: src/terminal-screen.c:1265 src/terminal-window.c:699
 msgid "_New Window"
 msgstr "_Νέο Παράθυρο"
 
-#: src/terminal-screen.c:1216 src/terminal-window.c:542
+#: src/terminal-screen.c:1272 src/terminal-window.c:702
 msgid "New _Tab"
 msgstr "Νέα _Στήλη"
 
-#: src/terminal-screen.c:1240 src/terminal-window.c:625
+#: src/terminal-screen.c:1296 src/terminal-window.c:803
 msgid "_Profile"
 msgstr "_Προφίλ"
 
-#: src/terminal-screen.c:1290
+#: src/terminal-screen.c:1346
 msgid "_Edit Current Profile..."
 msgstr "_Επεξεργασία Τρέχοντος Προφίλ..."
 
-#: src/terminal-screen.c:1297
+#: src/terminal-screen.c:1352
+msgid "_Input Methods"
+msgstr "Μέθοδοι ε_ισαγωγής"
+
+#: src/terminal-screen.c:1368
 msgid "Hide _Menubar"
 msgstr "Απόκρυψη _Μπάρας μενού"
 
-#: src/terminal-screen.c:1302
+#: src/terminal-screen.c:1373
 msgid "Show _Menubar"
 msgstr "Εμφάνιση _Μπάρας μενού"
 
-#: src/terminal-screen.c:1311
+#: src/terminal-screen.c:1382
 msgid "Secure _Keyboard"
 msgstr "Ασφαλές _Πληκτρολόγιο"
 
-#: src/terminal-screen.c:1317
+#: src/terminal-screen.c:1388
 msgid "_Open Link"
 msgstr "_Άνοιγμα Συνδέσμου"
 
-#: src/terminal-screen.c:1324
+#: src/terminal-screen.c:1395
 msgid "_Copy Link Address"
 msgstr "Αντιγρα_φή Διεύθυνσης Συνδέσμου"
 
-#: src/terminal-screen.c:1577
+#: src/terminal-screen.c:1757
 msgid "Change terminal title"
 msgstr "Αλλαγή τίτλου τερματικού"
 
-#: src/terminal-screen.c:1604
+#: src/terminal-screen.c:1784
 msgid "_Title:"
 msgstr "_Τίτλος:"
 
-#: src/terminal-screen.c:1722
+#: src/terminal-screen.c:1902
 #, c-format
 msgid "text/plain dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "το text/plain που στάλθηκε στο τερματικό είχε λάθος μορφή (%d) ή μήκος (%d)\n"
 
-#: src/terminal-screen.c:1745
+#: src/terminal-screen.c:1925
 #, c-format
 msgid "Color dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Το χρώμα που στάλθηκε στο τερματικό είχε λάθος μορφή (%d) ή μήκος (%d)\n"
 
-#: src/terminal-screen.c:1788
+#: src/terminal-screen.c:1968
 #, c-format
 msgid "Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Το Mozilla url που στάλθηκε στο τερματικό είχε λάθος μορφή (%d) ή μήκος (%"
 "d)\n"
 
-#: src/terminal-screen.c:1837
+#: src/terminal-screen.c:2017
 #, c-format
 msgid "URI list dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Η λίστα URI που στάλθηκε στο τερματικό είχε λάθος μορφή (%d) ή μάκρος (%d)\n"
 
-#: src/terminal-screen.c:1891
+#: src/terminal-screen.c:2071
 #, c-format
 msgid ""
 "Image filename dropped on terminal had wrong format (%d) or length (%d)\n"
@@ -1120,102 +1308,122 @@ msgstr ""
 "Το όνομα αρχείου εικόνας που δόθηκε στο τερματικό είχε λάθος μορφή (%d) ή "
 "μήκος (%d)\n"
 
-#: src/terminal-screen.c:1917
+#: src/terminal-screen.c:2097
 #, c-format
 msgid "Error converting URI \"%s\" into filename: %s\n"
 msgstr "Σφάλμα μετατροπής URI \"%s\" σε όνομα αρχείου: %s\n"
 
-#: src/terminal-widget-zvt.c:1034
+#: src/terminal-widget-zvt.c:1069
 #, c-format
 msgid "There was an error creating the child process for this terminal: %s"
 msgstr ""
 "Σφάλμα κατά την δημιουργία της θυγατρικής διεργασίας για αυτό το τερματικό: %"
 "s"
 
-#: src/terminal-widget-zvt.c:1050
+#: src/terminal-widget-zvt.c:1085
 #, c-format
 msgid "Could not set working directory to \"%s\": %s\n"
 msgstr "Δεν ήταν δυνατός ο καθορισμός καταλόγου εργασίας σε \"%s\": %s\n"
 
-#: src/terminal-widget-zvt.c:1056
+#: src/terminal-widget-zvt.c:1091
 #, c-format
 msgid "Could not execute command %s: %s\n"
 msgstr "Αδυναμία εκτέλεσης εντολής %s: %s\n"
 
-#: src/terminal-window.c:438
+#: src/terminal-window.c:466
 #, c-format
 msgid "_%d. %s"
 msgstr "_%d. %s"
 
-#: src/terminal-window.c:441
+#: src/terminal-window.c:469
 #, c-format
 msgid "_%c. %s"
 msgstr "_%c. %s"
 
+#: src/terminal-window.c:613
+msgid "_Add or Remove..."
+msgstr "_Προσθήκη ή Διαγραφή..."
+
 #. This is fairly bogus to have here but I don't know
 #. * where else to put it really
 #.
-#: src/terminal-window.c:547
+#: src/terminal-window.c:707
 msgid "New _Profile..."
 msgstr "Νέο _Προφίλ..."
 
-#: src/terminal-window.c:553
+#: src/terminal-window.c:713
 msgid "_Close Window"
 msgstr "_Κλείσιμο παραθύρου"
 
-#: src/terminal-window.c:558
+#: src/terminal-window.c:718
 msgid "C_lose Tab"
 msgstr "_Κλείσιμο Στήλης"
 
-#: src/terminal-window.c:587
+#: src/terminal-window.c:747
 msgid "C_urrent Profile..."
 msgstr "_Τρέχων Προφίλ..."
 
-#: src/terminal-window.c:590
+#: src/terminal-window.c:750
 msgid "_Keybindings..."
 msgstr "_Αντιστοιχίσεις πλήκτρων..."
 
-#: src/terminal-window.c:593
+#: src/terminal-window.c:753
 msgid "P_rofiles..."
 msgstr "Προ_φίλ..."
 
-#: src/terminal-window.c:606
+#: src/terminal-window.c:766
 msgid "Hide Menu_bar"
 msgstr "Απόκρυψη _Μπάρας Μενού"
 
-#: src/terminal-window.c:609
+#: src/terminal-window.c:769
 msgid "_Full Screen"
 msgstr "_Πλήρης Οθόνη"
 
-#: src/terminal-window.c:628
+#: src/terminal-window.c:773
+msgid "_Zoom In"
+msgstr "_Μεγέθυνση"
+
+#: src/terminal-window.c:777
+msgid "Zoom _Out"
+msgstr "Σ_μίκρυνση"
+
+#: src/terminal-window.c:781
+msgid "_Normal Size"
+msgstr "Κα_νονικό Μέγεθος"
+
+#: src/terminal-window.c:806
 msgid "_Set Title..."
 msgstr "_Ορισμός Τίτλου..."
 
-#: src/terminal-window.c:631
+#: src/terminal-window.c:813
+msgid "_Character Coding"
+msgstr "Κωδικοποίηση  _Χαρακτήρα"
+
+#: src/terminal-window.c:820
 msgid "_Reset"
 msgstr "_Αρχικοποίηση"
 
-#: src/terminal-window.c:634
+#: src/terminal-window.c:823
 msgid "Reset and C_lear"
 msgstr "Αρχικοποίηση και Καθαρι_σμός"
 
-#: src/terminal-window.c:648
+#: src/terminal-window.c:837
 msgid "_Previous Tab"
 msgstr "_Προηγούμενη Στήλη"
 
-#: src/terminal-window.c:652
+#: src/terminal-window.c:841
 msgid "_Next Tab"
 msgstr "Ε_πόμενη Στήλη"
 
-#: src/terminal-window.c:671
+#: src/terminal-window.c:860
 msgid "_Contents"
 msgstr "_Περιεχόμενα"
 
-#: src/terminal-window.c:680
+#: src/terminal-window.c:869
 msgid "_About"
 msgstr "_Περί"
 
-#: src/terminal-window.c:792
+#: src/terminal-window.c:1047
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -1242,7 +1450,7 @@ msgstr ""
 #
 # #-#-#-#-#  gnomemeeting-el.po (gnomemeeting 0.12.2)  #-#-#-#-#
 #
-#: src/terminal-window.c:1654
+#: src/terminal-window.c:1922
 msgid "_File"
 msgstr "_Αρχείο"
 
@@ -1256,7 +1464,7 @@ msgstr "_Αρχείο"
 #
 # #-#-#-#-#  mrproject-el.po (mrproject 0.5)  #-#-#-#-#
 #
-#: src/terminal-window.c:1656 src/terminal.c:2293
+#: src/terminal-window.c:1924 src/terminal.c:2766
 msgid "_Edit"
 msgstr "_Επεξεργασία"
 
@@ -1270,15 +1478,15 @@ msgstr "_Επεξεργασία"
 #
 # #-#-#-#-#  gnomemeeting-el.po (gnomemeeting 0.12.2)  #-#-#-#-#
 #
-#: src/terminal-window.c:1658
+#: src/terminal-window.c:1926
 msgid "_View"
 msgstr "_Προβολή"
 
-#: src/terminal-window.c:1660
+#: src/terminal-window.c:1928
 msgid "_Terminal"
 msgstr "_Τερματικό"
 
-#: src/terminal-window.c:1662
+#: src/terminal-window.c:1930
 msgid "_Go"
 msgstr "_Πήγαινε"
 
@@ -1296,19 +1504,19 @@ msgstr "_Πήγαινε"
 #
 # #-#-#-#-#  gnomemeeting-el.po (gnomemeeting 0.12.2)  #-#-#-#-#
 #
-#: src/terminal-window.c:1664
+#: src/terminal-window.c:1932
 msgid "_Help"
 msgstr "_Βοήθεια"
 
-#: src/terminal-window.c:1783
+#: src/terminal-window.c:2054
 msgid "_Restore normal size"
 msgstr "_Επαναφορά κανονικού μεγέθους"
 
-#: src/terminal-window.c:1787
+#: src/terminal-window.c:2058
 msgid "_Full screen"
 msgstr "_Πλήρης οθόνη"
 
-#: src/terminal-window.c:1975
+#: src/terminal-window.c:2254
 msgid ""
 "Your current desktop environment does not support the full screen feature.\n"
 " (In technical terms, you need a window manager with support for the "
@@ -1319,29 +1527,25 @@ msgstr ""
 ")με τεχνικούς όρους χρειάζεστε ένα διαχειριστή παραθύρων με υποστήριξη για "
 "την ιδιότητα  _NET_WM_STATE_FULLSCREEN.)"
 
-#: src/terminal-window.c:2109
+#: src/terminal-window.c:2540
 msgid "translator_credits"
 msgstr ""
 "Συμεών (σίμος) Ξενιτέλλης <simos@hellug.gr>\n"
 "Κώστας Παπαδήμας <pkst@gmx.net>"
 
-#: src/terminal-window.c:2122
-msgid "Copyright 2002 Havoc Pennington"
-msgstr "Πνευματικά Δικαιώματα 2002 Χάβοκ Πένιγκτον"
-
-#: src/terminal-window.c:2123
+#: src/terminal-window.c:2554
 msgid "GNOME Terminal"
 msgstr "Τερματικό GNOME"
 
-#: src/terminal.c:166
+#: src/terminal.c:177
 msgid "Execute the argument to this option inside the terminal."
 msgstr "Εκτέλεση του ορίσματος αυτής της επιλογής μέσα στο τερματικό."
 
-#: src/terminal.c:175
+#: src/terminal.c:186
 msgid "Execute the remainder of the command line inside the terminal."
 msgstr "Εκτέλεση του υπολοίπου της εντολής μέσα στο τερματικό."
 
-#: src/terminal.c:184
+#: src/terminal.c:195
 msgid ""
 "Open a new window containing a tab with the given profile. More than one of "
 "these options can be provided."
@@ -1349,11 +1553,11 @@ msgstr ""
 "Άνοιγμα ενός νέου παραθύρου που περιέχει μια νέα στήλη με το δοθέν προφίλ. "
 "Περισσότερες από μία από αυτές τις επιλογές μπορεί να καθοριστούν."
 
-#: src/terminal.c:185 src/terminal.c:194
+#: src/terminal.c:196 src/terminal.c:205
 msgid "PROFILENAME"
 msgstr "ΌΝΟΜΑΠΡΟΦΊΛ"
 
-#: src/terminal.c:193
+#: src/terminal.c:204
 msgid ""
 "Open a new tab in the last-opened window with the given profile. More than "
 "one of these options can be provided."
@@ -1361,7 +1565,7 @@ msgstr ""
 "Άνοιγμα νέας στήλης στο τελευταίο παράθυρο που ανοίχθηκε με το δοθέν προφίλ. "
 "Περισσότερες από μία από αυτές τις επιλογές μπορεί να καθοριστούν."
 
-#: src/terminal.c:202
+#: src/terminal.c:213
 msgid ""
 "Open a new window containing a tab with the given profile ID. Used "
 "internally to save sessions."
@@ -1369,11 +1573,11 @@ msgstr ""
 "Άνοιγμα ενός νέου παράθυρου που περιέχει μια στήλη με την καθορισμένη "
 "ταυτότητα προφίλ. Χρησιμοποιείται εσωτερικά για την αποθήκευση συνεδριών."
 
-#: src/terminal.c:203 src/terminal.c:212
+#: src/terminal.c:214 src/terminal.c:223
 msgid "PROFILEID"
 msgstr "ΤΑΥΤΌΤΗΤΑΠΡΟΦΊΛ"
 
-#: src/terminal.c:211
+#: src/terminal.c:222
 msgid ""
 "Open a new tab in the last-opened window with the given profile ID. Used "
 "internally to save sessions."
@@ -1382,7 +1586,20 @@ msgstr ""
 "καθορισμένη ταυτότητα προφίλ. Χρησιμοποιήθηκε εσωτερικά για την αποθήκευση "
 "συνεδριών,"
 
-#: src/terminal.c:220
+#: src/terminal.c:231
+msgid ""
+"Set the role for the last-specified window; applies to only one window; can "
+"be specified once for each window you create from the command line."
+msgstr ""
+"Ορισμού του ρόλου για το τελευταίο καθορισμένο παράθυρο, εφαρμόζεται μόνο σε "
+"ένα παράθυρο και μπορεί να καθοριστεί μια φορά για κάθε παράθυρο που "
+"δημιουργείται από τη γραμμή εντολών."
+
+#: src/terminal.c:232
+msgid "ROLE"
+msgstr "ΡΟΛΟΣ"
+
+#: src/terminal.c:240
 msgid ""
 "Turn on the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
@@ -1392,7 +1609,7 @@ msgstr ""
 "εφαρμόζεται μόνο σε ένα παράθυρο και μπορεί να καθοριστεί μια φορά για κάθε "
 "παράθυρο που δημιουργείται από τη γραμμή εντολών."
 
-#: src/terminal.c:229
+#: src/terminal.c:249
 msgid ""
 "Turn off the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
@@ -1402,7 +1619,7 @@ msgstr ""
 "εφαρμόζεται μόνο σε ένα παράθυρο και μπορεί να καθοριστεί μια φορά για κάθε "
 "παράθυρο που δημιουργείται από την γραμμή εντολών."
 
-#: src/terminal.c:238
+#: src/terminal.c:258
 msgid ""
 "X geometry specification (see \"X\" man page), can be specified once per "
 "window to be opened."
@@ -1421,11 +1638,11 @@ msgstr ""
 #
 # #-#-#-#-#  achtung-el.po (achtung 0.99.0)  #-#-#-#-#
 #
-#: src/terminal.c:239
+#: src/terminal.c:259
 msgid "GEOMETRY"
 msgstr "ΓΕΩΜΕΤΡΊΑ"
 
-#: src/terminal.c:247
+#: src/terminal.c:267
 msgid ""
 "Do not register with the activation nameserver, do not re-use an active "
 "terminal"
@@ -1433,15 +1650,19 @@ msgstr ""
 "Να μη γίνει συνδρομή με τον εξυπηρετητή ονομάτων ενεργοποίησης, να μην "
 "επαναχρησιμοποιηθεί ένα ενεργό τερματικό"
 
-#: src/terminal.c:256
+#: src/terminal.c:276
+msgid "ID for startup notification protocol."
+msgstr "ID για εκκίνηση πρωτοκόλου ειδοποίησης"
+
+#: src/terminal.c:285
 msgid "Set the terminal's title"
 msgstr "Καθορισμός του τίτλου του τερματικού"
 
-#: src/terminal.c:257
+#: src/terminal.c:286
 msgid "TITLE"
 msgstr "ΤΊΤΛΟΣ"
 
-#: src/terminal.c:265
+#: src/terminal.c:294
 msgid "Set the terminal's working directory"
 msgstr "Καθορισμός του καταλόγου εργασίας του τερματικού"
 
@@ -1449,33 +1670,41 @@ msgstr "Καθορισμός του καταλόγου εργασίας του �
 #
 # #-#-#-#-#  gnome-libs-el.po (gnome-libs 1.2.12)  #-#-#-#-#
 #
-#: src/terminal.c:266
+#: src/terminal.c:295
 msgid "DIRNAME"
 msgstr "ΌΝΟΜΑΚΑΤΑΛΌΓΟΥ"
 
-#: src/terminal.c:603
+#: src/terminal.c:304
+msgid "Set the terminal's zoom factor (1.0 = normal size)"
+msgstr "Ορισμός του παράγοντα μεγέθυνσης τερματικού (1.0 = κανονικό μέγεθος)"
+
+#: src/terminal.c:305
+msgid "ZOOMFACTOR"
+msgstr "ZOOMFACTOR"
+
+#: src/terminal.c:649
 #, c-format
 msgid "Could not load icon \"%s\": %s\n"
 msgstr "Αδυναμία φόρτωσης εικονιδίου \"%s\": %s\n"
 
-#: src/terminal.c:668
+#: src/terminal.c:714
 msgid "Option --command/-e requires specifying the command to run\n"
 msgstr ""
 "Η επιλογή  --command/-e  απαιτεί να καθοριστεί η εντολή που θα εκτελεστεί\n"
 
-#: src/terminal.c:676
+#: src/terminal.c:722
 #, c-format
 msgid "Argument to --command/-e is not a valid command: %s\n"
 msgstr "Το επιχείρημα σε -command/-e δεν είναι έγκυρη εντολή: %s\n"
 
-#: src/terminal.c:686 src/terminal.c:708
+#: src/terminal.c:732 src/terminal.c:754
 msgid ""
 "--command/-e/--execute/-x specified more than once for the same window or "
 "tab\n"
 msgstr ""
 "--command/-e/--execute/-x έχει δοθεί δυό φορές για το ίδιο παράθυρο ή στήλη\n"
 
-#: src/terminal.c:700
+#: src/terminal.c:746
 msgid ""
 "Option --execute/-x requires specifying the command to run on the rest of "
 "the command line\n"
@@ -1483,7 +1712,7 @@ msgstr ""
 "Η επιλογή  --execute/-x απαιτεί να καθοριστεί η εντολή που θα εκτελεστεί στο "
 "υπόλοιπο της γραμμής εντολών\n"
 
-#: src/terminal.c:725
+#: src/terminal.c:771
 msgid ""
 "Option --window-with-profile requires an argument specifying what profile to "
 "use\n"
@@ -1491,7 +1720,7 @@ msgstr ""
 "Η επιλογή --window-with-profile απαιτεί ένα όρισμα που να καθορίζει ποιο "
 "προφίλ θα χρησιμοποιηθεί\n"
 
-#: src/terminal.c:742
+#: src/terminal.c:788
 msgid ""
 "Option --tab-with-profile requires an argument specifying what profile to "
 "use\n"
@@ -1499,40 +1728,72 @@ msgstr ""
 "Η επιλογή --tab-with-profile απαιτεί ένα όρισμα που να καθορίζει ποιο προφίλ "
 "θα χρησιμοποιηθεί\n"
 
-#: src/terminal.c:773
+#: src/terminal.c:819
 msgid "--show-menubar option given twice for the same window\n"
 msgstr "Η επιλογή --show-menubar έχει δοθεί δύο φορές για το ίδιο παράθυρο\n"
 
-#: src/terminal.c:799
+#: src/terminal.c:845
 msgid "--hide-menubar option given twice for the same window\n"
 msgstr "Η επιλογή --hide-menubar έχει δοθεί δύο φορές για το ίδιο παράθυρο\n"
 
-#: src/terminal.c:822
+#: src/terminal.c:868
+msgid "Option --role requires an argument giving the role\n"
+msgstr "Η επιλογή --role απαιτεί ένα επιχείρημα που δίνει τον ρόλο\n"
+
+#: src/terminal.c:877
+msgid "Two roles given for one window\n"
+msgstr "Έχουν δοθεί δύο ρόλο για ένα παράθυρο\n"
+
+#: src/terminal.c:893
 msgid "Option --geometry requires an argument giving the geometry\n"
 msgstr "Η επιλογή --geometry απαιτεί ένα όρισμα που δίνει τη γεωμετρία\n"
 
-#: src/terminal.c:831 src/terminal.c:841
+#: src/terminal.c:902 src/terminal.c:912
 msgid "Two geometries given for one window\n"
 msgstr "Έχουν δοθεί δύο γεωμετρίες για ένα παράθυρο\n"
 
-#: src/terminal.c:863
+#: src/terminal.c:934
 msgid "Option --title requires an argument giving the title\n"
 msgstr "Η επιλογή --title απαιτεί ένα επιχείρημα που δίνει τον τίτλο\n"
 
-#: src/terminal.c:871
+#: src/terminal.c:942
 msgid "Two titles given for one tab\n"
 msgstr "Έχουν δοθεί δύο τίτλοι για μια στήλη\n"
 
-#: src/terminal.c:886
+#: src/terminal.c:957
 msgid "Option --working-directory requires an argument giving the directory\n"
 msgstr ""
 "Η επιλογή --working-directory απαιτεί ένα όρισμα που δίνει τον κατάλογο\n"
 
-#: src/terminal.c:894
+#: src/terminal.c:965
 msgid "Two working directories given for one tab\n"
 msgstr "Δόθηκαν δύο κατάλογοι εργασίας για μια στήλη\n"
 
-#: src/terminal.c:903
+#: src/terminal.c:981
+msgid "Option --zoom requires an argument giving the zoom factor\n"
+msgstr ""
+"Η επιλογή --zoom απαιτεί ένα όρισμα που δίνει τον παράγοντα μεγένθυσης\n"
+
+#: src/terminal.c:989
+msgid "Two zoom factors given for one tab\n"
+msgstr "Δόθηκαν δύο παράγοντες μεγένθυνσης για μια στήλη\n"
+
+#: src/terminal.c:1004
+#, c-format
+msgid "\"%s\" is not a valid zoom factor\n"
+msgstr "Το \"%s\" δεν είναι έγκυρος παράγοντας μεγένθυσης\n"
+
+#: src/terminal.c:1012
+#, c-format
+msgid "Zoom factor \"%g\" is too small, using %g\n"
+msgstr "Ο παράγοντας μεγένθυνσης \"%g\" είναι πολύ μικρός, γίνεται χρήση %g\n"
+
+#: src/terminal.c:1019
+#, c-format
+msgid "Zoom factor \"%g\" is too large, using %g\n"
+msgstr "Ο παράγοντας μεγένθυνσης \"%g\" είναι πολύ μεγάλος, γίνεται χρήση %g\n"
+
+#: src/terminal.c:1031
 msgid ""
 "Option given which is no longer supported in this version of gnome-terminal; "
 "you might want to create a profile with the desired setting, and use the new "
@@ -1542,17 +1803,33 @@ msgstr ""
 "terminal, να δημιουργήσετε ένα νέο προφίλ με την επιθυμητή ρύθμιση και να "
 "χρησιμοποιήσετε τη νέα επιλογή --window-with-profile\n"
 
-#: src/terminal.c:1023
+#: src/terminal.c:1037
+msgid "--startup-id option given twice\n"
+msgstr "--startup-id option έχει δοθεί δύο φορές\n"
+
+#: src/terminal.c:1042
+msgid "--startup-id option requires an argument\n"
+msgstr "--startup-id option απαιτεί ένα argument\n"
+
+#: src/terminal.c:1159
+msgid "No argument given to --display option\n"
+msgstr "Δεν δόθηκε επιχείρημα στο --display option\n"
+
+#: src/terminal.c:1181
+msgid "No argument given to --screen option\n"
+msgstr "Δεν δόθηκε επιχείρημα στο --screen option\n"
+
+#: src/terminal.c:1265
 #, c-format
 msgid "No such profile '%s', using default profile\n"
 msgstr "Δεν υπάρχει τέτοιο προφίλ '%s', χρήση εξ ορισμού προφίλ\n"
 
-#: src/terminal.c:1132
+#: src/terminal.c:1427
 #, c-format
 msgid "Invalid argument: \"%s\"\n"
 msgstr "Μη έγκυρο όρισμα: \"%s\"\n"
 
-#: src/terminal.c:1174
+#: src/terminal.c:1481
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile list "
@@ -1561,107 +1838,116 @@ msgstr ""
 "Σφάλμα συνδρομής στην ειδοποίηση για αλλαγές στη λίστα προφίλ τερματικού. (%"
 "s)\n"
 
-#: src/terminal.c:1287
+#: src/terminal.c:1714
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
 msgstr "Μη έγκυρο αλφαριθμητικό γεωμετρίας \"%s\"\n"
 
-#: src/terminal.c:1347
+#: src/terminal.c:1774
 #, c-format
 msgid "There was an error getting the list of terminal profiles. (%s)\n"
 msgstr "Σφάλμα λήψης της λίστας προφίλ τερματικού. (%s)\n"
 
-#: src/terminal.c:1580
+#: src/terminal.c:2053
 msgid "You have to name your profile."
 msgstr "Θα πρέπει να ονομάσετε το προφίλ σας."
 
-#: src/terminal.c:1590
+#: src/terminal.c:2063
 #, c-format
 msgid "You already have a profile called \"%s\""
 msgstr "Έχετε ήδη ένα προφίλ που ονομάζεται \"%s\""
 
-#: src/terminal.c:1627
+#: src/terminal.c:2100
 msgid ""
 "The profile you selected as a base for your new profile no longer exists"
 msgstr "Το προφίλ που επιλέξατε ως βάση για το νέο σας προφίλ δεν υπάρχει"
 
-#: src/terminal.c:1691
+#: src/terminal.c:2164
 msgid "C_reate"
 msgstr "Δημιουρ_γία"
 
-#: src/terminal.c:1716
+#: src/terminal.c:2189
 msgid "Profile _name:"
 msgstr "Όνομα _προφίλ:"
 
-#: src/terminal.c:1720
+#: src/terminal.c:2193
 msgid "Enter profile name"
 msgstr "Εισάγετε όνομα προφίλ"
 
-#: src/terminal.c:1735
+#: src/terminal.c:2208
 msgid "_Base on:"
 msgstr "_Βασίζεται σε:"
 
-#: src/terminal.c:1883
+#: src/terminal.c:2356
 msgid "Profile list"
 msgstr "Λίστα από προφίλ"
 
-#: src/terminal.c:1956
+#: src/terminal.c:2429
 msgid "You must select one or more profiles to delete."
 msgstr "Θα πρέπει να επιλέξετε ένα ή περισσότερα προφίλ για διαγραφή."
 
-#: src/terminal.c:1979
+#: src/terminal.c:2452
 msgid "You must have at least one profile; you can't delete all of them."
 msgstr ""
 "Θα πρέπει να έχετε τουλάχιστον ένα προφίλ, δε μπορείτε να τα διαγράψετε όλα."
 
-#: src/terminal.c:1997
+#: src/terminal.c:2470
 msgid "Delete these two profiles?\n"
 msgstr "Διαγραφή αυτών των δύο προφίλ;\n"
 
-#: src/terminal.c:1999
+#: src/terminal.c:2472
 #, c-format
 msgid "Delete these %d profiles?\n"
 msgstr "Διαγραφή αυτών των %d προφίλ;\n"
 
-#: src/terminal.c:2017
+#: src/terminal.c:2490
 #, c-format
 msgid "Delete profile \"%s\"?"
 msgstr "Διαγραφή προφίλ \"%s\";"
 
-#: src/terminal.c:2039
+#: src/terminal.c:2512
 msgid "Delete Profile"
 msgstr "Διαγραφή Προφίλ"
 
-#: src/terminal.c:2326
+#: src/terminal.c:2799
 msgid "Edit Profiles"
 msgstr "Επεξεργασία Προφίλ"
 
-#: src/terminal.c:2366
+#: src/terminal.c:2839
 msgid "Profile _used when launching a new terminal:"
 msgstr "Προφίλ _που χρησιμοποιείται κατά την εκκίνηση ενός νέου τερματικού:"
 
-#: src/terminal.c:2388
+#: src/terminal.c:2861
 msgid "_Profiles:"
 msgstr "_Προφίλ:"
 
-#: src/terminal.c:2437
+#: src/terminal.c:2910
 msgid "Click to open new profile dialog"
 msgstr "Κλικ για να ανοίξετε ένα νέο διάλογο προφίλ"
 
-#: src/terminal.c:2450
+#: src/terminal.c:2923
 msgid "Click to open edit profile dialog"
 msgstr "Κλίκ για να ανοίξετε ένα νέο διάλογο επεξεργασίας προφίλ"
 
 #
-#: src/terminal.c:2460
+#: src/terminal.c:2933
 msgid "Click to delete selected profile"
 msgstr "Κάντε κλικ για να διαγράψετε το επιλεγμένο προφίλ"
 
-#: src/terminal.c:2509
+#: src/terminal.c:2982
 msgid "Click button to choose profile"
 msgstr "Κλίκ στο κουμπί για την επιλογή προφίλ"
 
-#: src/terminal.c:2955
+#: src/terminal.c:3403
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+"Το αρχείο \"%s\" λείπει. Αυτό σημαίνει ότι η εφαρμογή δεν έχει εγκατασταθεί "
+"σωστά, έτσι ο διάλογος δε μπορεί να εμφανιστεί."
+
+#: src/terminal.c:3537
 msgid ""
 "It appears that you do not have gnome-terminal.server installed in a valid "
 "location. Factory mode disabled.\n"
@@ -1669,7 +1955,7 @@ msgstr ""
 "Φαίνεται ότι δεν έχετε εγκαταστήσει το gnome-terminal.server σε έγκυρη "
 "τοποθεσία. Απενεργοποιήθηκε η κατάσταση εργοστασίου.\n"
 
-#: src/terminal.c:2958
+#: src/terminal.c:3540
 msgid ""
 "Error registering terminal with the activation service; factory mode "
 "disabled.\n"
@@ -1677,7 +1963,7 @@ msgstr ""
 "Σφάλμα συνδρομής τερματικού με την υπηρεσία ενεργοποίησης, απενεργοποιήθηκε "
 "η κατάσταση εργοστασίου.\n"
 
-#: src/terminal.c:2993
+#: src/terminal.c:3576
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr ""
 "Αποτυχία ανάληψης εξυπηρετητή τερματικού από τον εξυπηρετητή ενεργοποίησης\n"
@@ -1964,3 +2250,27 @@ msgstr "Επιλογή Γραμματοσειράς"
 #: src/x-font-selector.c:3598
 msgid "Select a font"
 msgstr "Επιλογή γραμματοσειράς"
+
+#~ msgid "Copyright 2002 Havoc Pennington"
+#~ msgstr "Πνευματικά Δικαιώματα 2002 Χάβοκ Πένιγκτον"
+
+#~ msgid "Title"
+#~ msgstr "Τίτλος"
+
+#~ msgid ""
+#~ "The file \"%s\" is missing. This indicates that the application is "
+#~ "installed incorrectly, so the profile editor can't be displayed."
+#~ msgstr ""
+#~ "Το αρχείο \"%s\"  λείπει. Αυτό σημαίνει ότι η εφαρμογή δεν εγκαταστάθηκε "
+#~ "σωστά και έτσι ο επεξεργαστής προφίλ δε μπορεί να εμφανιστεί."
+
+#~ msgid ""
+#~ "The file \"%s\" is missing. This indicates that the application is "
+#~ "installed incorrectly, so the keybindings dialog can't be displayed."
+#~ msgstr ""
+#~ "Το αρχείο \"%s\" λείπει. Αυτό σημαίνει ότι η εφαρμογή δεν έχει "
+#~ "εγκατασταθεί σωστά, έτσι ο διάλογος συνδυασμών πλήκτρων δε μπορεί να "
+#~ "εμφανιστεί."
+
+#~ msgid "Accel Mode"
+#~ msgstr "Κατάσταση Συντόμευσης"

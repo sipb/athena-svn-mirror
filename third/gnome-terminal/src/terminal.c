@@ -1,6 +1,8 @@
 /* terminal program */
 /*
- * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2001, 2002 Havoc Pennington
+ * Copyright (C) 2002 Red Hat, Inc.
+ * Copyright (C) 2002 Sun Microsystems
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,6 +25,7 @@
 #include "terminal-accels.h"
 #include "terminal-window.h"
 #include "profile-editor.h"
+#include "encoding.h"
 #include <gconf/gconf-client.h>
 #include <bonobo-activation/bonobo-activation-activate.h>
 #include <bonobo-activation/bonobo-activation-register.h>
@@ -35,6 +38,7 @@
 #include <popt.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include <gdk/gdkx.h>
 
 
@@ -64,6 +68,7 @@ struct _TerminalApp
 {
   GList *windows;
   GtkWidget *edit_keys_dialog;
+  GtkWidget *edit_encodings_dialog;
   GtkWidget *new_profile_dialog;
   GtkWidget *new_profile_name_entry;
   GtkWidget *new_profile_base_menu;
@@ -82,6 +87,9 @@ static gboolean terminal_factory_disabled = FALSE;
 #define TERMINAL_STOCK_EDIT "terminal-edit"
 typedef struct
 {
+  char *startup_id;
+  char *display_name;
+  int screen_number;
   GList *initial_windows;
   gboolean default_window_menubar_forced;
   gboolean default_window_menubar_state;
@@ -137,12 +145,15 @@ enum {
   OPTION_TAB_WITH_PROFILE,
   OPTION_WINDOW_WITH_PROFILE_ID,
   OPTION_TAB_WITH_PROFILE_ID,
+  OPTION_ROLE,
   OPTION_SHOW_MENUBAR,
   OPTION_HIDE_MENUBAR,
   OPTION_GEOMETRY,
   OPTION_DISABLE_FACTORY,
+  OPTION_STARTUP_ID,
   OPTION_TITLE,
   OPTION_WORKING_DIRECTORY,
+  OPTION_ZOOM,
   OPTION_COMPAT,
   OPTION_LAST
 };  
@@ -212,6 +223,15 @@ struct poptOption options[] = {
     N_("PROFILEID")
   },
   {
+    "role",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_ROLE,
+    N_("Set the role for the last-specified window; applies to only one window; can be specified once for each window you create from the command line."),
+    N_("ROLE")
+  },
+  {
     "show-menubar",
     '\0',
     POPT_ARG_NONE,
@@ -248,6 +268,15 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "startup-id",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_STARTUP_ID,
+    N_("ID for startup notification protocol."),
+    NULL
+  },
+  {
     "title",
     't',
     POPT_ARG_STRING,
@@ -266,6 +295,16 @@ struct poptOption options[] = {
     N_("DIRNAME")
   },
 
+  {
+    "zoom",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_ZOOM,
+    N_("Set the terminal's zoom factor (1.0 = normal size)"),
+    N_("ZOOMFACTOR")
+  },
+  
   /*
    * Crappy old compat args
    */
@@ -464,6 +503,8 @@ typedef struct
   char **exec_argv;
   char *title;
   char *working_dir;
+  double zoom;
+  guint zoom_set : 1;
 } InitialTab;
 
 typedef struct
@@ -474,6 +515,7 @@ typedef struct
   gboolean menubar_state;
 
   char *geometry;
+  char *role;
   
 } InitialWindow;
 
@@ -490,6 +532,8 @@ initial_tab_new (const char *profile,
   it->exec_argv = NULL;
   it->title = NULL;
   it->working_dir = NULL;
+  it->zoom = 1.0;
+  it->zoom_set = FALSE;
   
   return it;
 }
@@ -516,6 +560,7 @@ initial_window_new (const char *profile,
   iw->force_menubar_state = FALSE;
   iw->menubar_state = FALSE;
   iw->geometry = NULL;
+  iw->role = NULL;
   
   return iw;
 }
@@ -526,6 +571,7 @@ initial_window_free (InitialWindow *iw)
   g_list_foreach (iw->tabs, (GFunc) initial_tab_free, NULL);
   g_list_free (iw->tabs);
   g_free (iw->geometry);
+  g_free (iw->role);
   g_free (iw);
 }
 
@@ -812,6 +858,31 @@ parse_options_callback (poptContext              ctx,
       }
       break;
 
+    case OPTION_ROLE:
+      {
+        InitialWindow *iw;
+
+
+        if (arg == NULL)
+          {
+            g_printerr (_("Option --role requires an argument giving the role\n"));
+            exit (1);
+          }
+            
+        if (results->initial_windows)
+          {
+            iw = g_list_last (results->initial_windows)->data;
+            if (iw->role)
+              {
+                g_printerr (_("Two roles given for one window\n"));
+                exit (1);
+              }
+
+            iw->role = g_strdup (arg);
+          }
+      }
+      break;
+
     case OPTION_GEOMETRY:
       {
         InitialWindow *iw;
@@ -899,14 +970,88 @@ parse_options_callback (poptContext              ctx,
       }
       break;
 
+    case OPTION_ZOOM:
+      {
+        InitialTab *it;            
+        double val;
+        char *end;
+        
+        if (arg == NULL)
+          {
+            g_printerr (_("Option --zoom requires an argument giving the zoom factor\n"));
+            exit (1);
+          }
+
+        it = ensure_top_tab (results);
+
+        if (it->zoom_set)
+          {
+            g_printerr (_("Two zoom factors given for one tab\n"));
+            exit (1);
+          }
+
+        /* Try reading a locale-style double first, in case it was
+         * typed by a person, then fall back to ascii_strtod (we
+         * always save session in C locale format)
+         */
+        end = NULL;
+        val = g_strtod (arg, &end);
+        if (end == NULL || *end != '\0')
+          {
+            val = g_ascii_strtod (arg, &end);
+            if (end == NULL || *end != '\0')
+              {
+                g_printerr (_("\"%s\" is not a valid zoom factor\n"),
+                            arg);
+                exit (1);
+              }
+          }
+
+        if (val < (TERMINAL_SCALE_MINIMUM + 1e-6))
+          {
+            g_printerr (_("Zoom factor \"%g\" is too small, using %g\n"),
+                        val, TERMINAL_SCALE_MINIMUM);
+            val = TERMINAL_SCALE_MINIMUM;
+          }
+
+        if (val > (TERMINAL_SCALE_MAXIMUM - 1e-6))
+          {
+            g_printerr (_("Zoom factor \"%g\" is too large, using %g\n"),
+                        val, TERMINAL_SCALE_MAXIMUM);
+            val = TERMINAL_SCALE_MAXIMUM;
+          }
+        
+        it->zoom = val;
+        it->zoom_set = TRUE;
+      }
+      break;
+
+      
     case OPTION_COMPAT:
       g_printerr (_("Option given which is no longer supported in this version of gnome-terminal; you might want to create a profile with the desired setting, and use the new --window-with-profile option\n"));
       break;
-          
-    case OPTION_LAST:          
-    default:
+
+    case OPTION_STARTUP_ID:
+      if (results->startup_id != NULL)
+        {
+          g_printerr (_("--startup-id option given twice\n"));
+          exit (1);
+        }
+      else if (arg == NULL)
+        {
+          g_printerr (_("--startup-id option requires an argument\n"));
+          exit (1);
+        }
+      else
+        {
+          results->startup_id = g_strdup (arg);
+        }
+      break;
+      
+    case OPTION_LAST:
       g_assert_not_reached ();
       break;
+      /* no default so we get warnings on missing items */
     }
 }
 
@@ -920,6 +1065,9 @@ option_parsing_results_free (OptionParsingResults *results)
 
   if (results->post_execute_args)
     g_strfreev (results->post_execute_args);
+
+  g_free (results->display_name);
+  g_free (results->startup_id);
   
   g_free (results);
 }
@@ -944,6 +1092,7 @@ option_parsing_results_init (int *argc, char **argv)
   OptionParsingResults *results;
 
   results = g_new0 (OptionParsingResults, 1);
+  results->screen_number = -1;
   
   /* pre-scan for -x and --execute options (code from old gnome-terminal) */
   results->post_execute_args = NULL;
@@ -980,6 +1129,99 @@ option_parsing_results_init (int *argc, char **argv)
     }
 
   return results;
+}
+
+static void
+option_parsing_results_check_for_display_name (OptionParsingResults *results,
+                                               int *argc, char **argv)
+{
+  int i;
+  
+  /* The point here is to strip --display, in the case where we
+   * aren't going via gtk_init()
+   */
+  i = 1;
+  while (i < *argc)
+    {
+      gboolean remove_two = FALSE;
+      
+      if (strcmp (argv[i], "-x") == 0 ||
+          strcmp (argv[i], "--execute") == 0)
+        {
+          return; /* We can't have --display or --screen past here,
+                   * unless intended for the child process.
+                   */
+        }
+      else if (strcmp (argv[i], "--display") == 0)
+        {          
+          if ((i + 1) >= *argc)
+            {
+              g_printerr (_("No argument given to --display option\n"));
+              return; /* popt will die on this later, plus it shouldn't happen
+                       * because normally gtk_init() parses --display
+                       * when not using factory mode.
+                       */
+            }
+          
+          if (results->display_name)
+            g_free (results->display_name);
+
+          g_assert (i+1 < *argc);
+          results->display_name = g_strdup (argv[i+1]);
+          
+          remove_two = TRUE;
+        }
+      else if (strcmp (argv[i], "--screen") == 0)
+        {
+          int n;
+          char *end;
+          
+          if ((i + 1) >= *argc)
+            {
+              g_printerr (_("No argument given to --screen option\n"));
+              return; /* popt will die on this later, plus it shouldn't happen
+                       * because normally gtk_init() parses --display
+                       * when not using factory mode.
+                       */
+            }
+
+          g_assert (i+1 < *argc);
+          
+          errno = 0;
+          end = argv[i+1];
+          n = strtoul (argv[i+1], &end, 0);
+          if (errno == 0 && argv[i+1] != end)
+            results->screen_number = n;
+          
+          remove_two = TRUE;
+        }
+
+      if (remove_two)
+        {
+          int n_to_move;
+          
+          n_to_move = *argc - i - 2;
+          g_assert (n_to_move >= 0);
+          
+          if (n_to_move > 0)
+            {
+              g_memmove (&argv[i], &argv[i+2],
+                         sizeof (argv[0]) * n_to_move);
+              argv[*argc-1] = NULL;
+              argv[*argc-2] = NULL;
+            }
+          else
+            {
+              argv[i] = NULL;
+            }
+
+          *argc -= 2;
+        }
+      else
+        {
+          ++i;
+        }
+    }
 }
 
 static int
@@ -1037,7 +1279,13 @@ new_terminal_with_options (OptionParsingResults *results)
                                          it->exec_argv,
                                          iw->geometry,
                                          it->title,
-                                         it->working_dir);
+                                         it->working_dir,
+                                         iw->role,
+                                         it->zoom_set ?
+                                         it->zoom : 1.0,
+                                         results->startup_id,
+                                         results->display_name,
+                                         results->screen_number);
 
               current_window = g_list_last (app->windows)->data;
             }
@@ -1050,7 +1298,11 @@ new_terminal_with_options (OptionParsingResults *results)
                                          it->exec_argv,
                                          NULL,
                                          it->title,
-                                         it->working_dir);
+                                         it->working_dir,
+                                         NULL,
+                                         it->zoom_set ?
+                                         it->zoom : 1.0,
+                                         NULL, NULL, -1);
             }
           
           tmp2 = tmp2->next;
@@ -1062,6 +1314,31 @@ new_terminal_with_options (OptionParsingResults *results)
   return 0;
 }
 
+/* This assumes that argv already has room for the args,
+ * and inserts them just after argv[0]
+ */
+static void
+insert_args (int        *argc,
+             char      **argv,
+             const char *arg1,
+             const char *arg2)
+{
+  int i;
+
+  i = *argc;
+  while (i >= 1)
+    {
+      argv[i+2] = argv[i];
+      --i;
+    }
+
+  /* fill in 1 and 2 */
+  argv[1] = g_strdup (arg1);
+  argv[2] = g_strdup (arg2);
+  *argc += 2;
+  argv[*argc] = NULL;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1071,8 +1348,11 @@ main (int argc, char **argv)
   int argc_copy;
   char **argv_copy;
   const char **args;
+  const char *startup_id;
+  const char *display_name;
+  GdkDisplay *display;
   GnomeModuleRequirement reqs[] = {
-    { "1.102.0", LIBGNOMEUI_MODULE },
+    { "2.0.0", LIBGNOMEUI_MODULE },
     { NULL, NULL }
   };
   GnomeClient *sm_client;
@@ -1097,14 +1377,29 @@ main (int argc, char **argv)
   textdomain (GETTEXT_PACKAGE);
 
   argc_copy = argc;
-  argv_copy = g_new (char *, argc_copy + 1);
+  /* we leave empty slots, for --startup-id and --display */
+  argv_copy = g_new0 (char *, argc_copy + 5);
   for (i = 0; i < argc_copy; i++)
     argv_copy [i] = g_strdup (argv [i]);
   argv_copy [i] = NULL;
 
   results = option_parsing_results_init (&argc, argv);
-
+  startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+  if (startup_id != NULL && *startup_id != '\0')
+    {
+      results->startup_id = g_strdup (startup_id);
+      putenv ("DESKTOP_STARTUP_ID=");
+    }
+  
+  gtk_window_set_auto_startup_notification (FALSE); /* we'll do it ourselves due
+                                                     * to complicated factory setup
+                                                     */
+  
   gtk_init (&argc, &argv);
+
+  display = gdk_display_get_default ();
+  display_name = gdk_display_get_name (display);
+  results->display_name = g_strdup (display_name);
   
   module_info.requirements = reqs;
 
@@ -1136,6 +1431,18 @@ main (int argc, char **argv)
   
   if (!terminal_factory_disabled)
     {
+      
+      if (results->startup_id != NULL)
+        {
+          /* we allocated argv_copy with extra space so we could do this */
+          insert_args (&argc_copy, argv_copy,
+                       "--startup-id", results->startup_id);
+        }
+
+      /* Forward our display to the child */
+      insert_args (&argc_copy, argv_copy,
+                   "--display", results->display_name);
+      
       if (terminal_invoke_factory (argc_copy, argv_copy))
         return 0;
     }
@@ -1177,6 +1484,7 @@ main (int argc, char **argv)
     }  
 
   terminal_accels_init (conf);
+  terminal_encoding_init (conf);
   
   terminal_profile_initialize (conf);
   sync_profile_list (FALSE, NULL);
@@ -1190,7 +1498,6 @@ main (int argc, char **argv)
   g_signal_connect (G_OBJECT (sm_client), "die",
                     G_CALLBACK (client_die_cb),
                     NULL);
-
 
   if (new_terminal_with_options (results))
     return 1;
@@ -1226,6 +1533,91 @@ terminal_window_destroyed (TerminalWindow *window,
     gtk_main_quit ();
 }
 
+static GdkScreen*
+find_screen_by_display_name (const char *display_name,
+                             int         screen_number)
+{
+  GdkScreen *screen;
+  
+  /* --screen=screen_number overrides --display */
+  
+  screen = NULL;
+  
+  if (display_name == NULL)
+    {
+      if (screen_number >= 0)
+        screen = gdk_display_get_screen (gdk_display_get_default (), screen_number);
+
+      if (screen == NULL)
+        screen = gdk_screen_get_default ();
+
+      g_object_ref (G_OBJECT (screen));
+    }
+  else
+    {
+      GSList *displays;
+      GSList *tmp;
+      const char *period;
+      GdkDisplay *display;
+        
+      period = strrchr (display_name, '.');
+      if (period)
+        {
+          unsigned long n;
+          char *end;
+          
+          errno = 0;
+          end = (char*) period + 1;
+          n = strtoul (period + 1, &end, 0);
+          if (errno == 0 && (period + 1) != end)
+            screen_number = n;
+        }
+      
+      displays = gdk_display_manager_list_displays (gdk_display_manager_get ());
+
+      display = NULL;
+      tmp = displays;
+      while (tmp != NULL)
+        {
+          const char *this_name;
+
+          display = tmp->data;
+          this_name = gdk_display_get_name (display);
+          
+          /* compare without the screen number part */
+          if (strncmp (this_name, display_name, period - display_name) == 0)
+            break;
+
+          tmp = tmp->next;
+        }
+      
+      g_slist_free (displays);
+
+      if (display == NULL)
+        display = gdk_display_open (display_name); /* FIXME we never close displays */
+      
+      if (display != NULL)
+        {
+          if (screen_number >= 0)
+            screen = gdk_display_get_screen (display, screen_number);
+          
+          if (screen == NULL)
+            screen = gdk_display_get_default_screen (display);
+
+          if (screen)
+            g_object_ref (G_OBJECT (screen));
+        }
+    }
+
+  if (screen == NULL)
+    {
+      screen = gdk_screen_get_default ();
+      g_object_ref (G_OBJECT (screen));
+    }
+  
+  return screen;
+}
+
 void
 terminal_app_new_terminal (TerminalApp     *app,
                            TerminalProfile *profile,
@@ -1235,25 +1627,58 @@ terminal_app_new_terminal (TerminalApp     *app,
                            char           **override_command,
                            const char      *geometry,
                            const char      *title,
-                           const char      *working_dir)
+                           const char      *working_dir,
+                           const char      *role,
+                           double           zoom,
+                           const char      *startup_id,
+                           const char      *display_name,
+                           int              screen_number)
 {
   TerminalScreen *screen;
   gboolean window_created;
+  char *new_role;
   
   g_return_if_fail (profile);
 
   window_created = FALSE;
   if (window == NULL)
     {
+      GdkScreen *screen;
+      
       window_created = TRUE;
       window = terminal_window_new (conf);
       g_object_ref (G_OBJECT (window));
-
+      
       g_signal_connect (G_OBJECT (window), "destroy",
                         G_CALLBACK (terminal_window_destroyed),
                         app);
       
       app->windows = g_list_append (app->windows, window);
+
+      screen = find_screen_by_display_name (display_name, screen_number);
+      if (screen != NULL)
+        {
+          gtk_window_set_screen (GTK_WINDOW (window), screen);
+          g_object_unref (G_OBJECT (screen));
+        }
+
+      if (startup_id != NULL)
+        terminal_window_set_startup_id (window, startup_id);
+      
+      if (role == NULL)
+        {
+          /* Invent a unique-enough number for the role */
+          new_role = g_strdup_printf ("gnome-terminal-%d-%d-%d",
+                                      getpid (),
+                                      g_random_int (),
+                                      (int) time (NULL));
+          gtk_window_set_role (GTK_WINDOW (window), new_role);
+          g_free (new_role);
+        }
+      else
+        {
+          gtk_window_set_role (GTK_WINDOW (window), role);
+        }
     }
 
   if (force_menubar_state)
@@ -1273,6 +1698,8 @@ terminal_app_new_terminal (TerminalApp     *app,
   
   if (override_command)    
     terminal_screen_set_override_command (screen, override_command);
+
+  terminal_screen_set_font_scale (screen, zoom);
   
   terminal_window_add_screen (window, screen);
 
@@ -1551,6 +1978,52 @@ terminal_app_edit_keybindings (TerminalApp     *app,
   gtk_window_present (GTK_WINDOW (app->edit_keys_dialog));
 }
 
+static void
+edit_encodings_destroyed_callback (GtkWidget   *new_profile_dialog,
+                                   TerminalApp *app)
+{
+  app->edit_encodings_dialog = NULL;
+}
+
+void
+terminal_app_edit_encodings (TerminalApp     *app,
+                             GtkWindow       *transient_parent)
+{
+  GtkWindow *old_transient_parent;
+
+  if (app->edit_encodings_dialog == NULL)
+    {      
+      old_transient_parent = NULL;      
+
+      /* passing in transient_parent here purely for the
+       * glade error dialog
+       */
+      app->edit_encodings_dialog =
+        terminal_encoding_dialog_new (transient_parent);
+
+      if (app->edit_encodings_dialog == NULL)
+        return; /* glade file missing */
+      
+      g_signal_connect (G_OBJECT (app->edit_encodings_dialog),
+                        "destroy",
+                        G_CALLBACK (edit_encodings_destroyed_callback),
+                        app);
+    }
+  else 
+    {
+      old_transient_parent = gtk_window_get_transient_for (GTK_WINDOW (app->edit_encodings_dialog));
+    }
+  
+  if (old_transient_parent != transient_parent)
+    {
+      gtk_window_set_transient_for (GTK_WINDOW (app->edit_encodings_dialog),
+                                    transient_parent);
+      gtk_widget_hide (app->edit_encodings_dialog); /* re-show the window on its new parent */
+    }
+  
+  gtk_widget_show_all (app->edit_encodings_dialog);
+  gtk_window_present (GTK_WINDOW (app->edit_encodings_dialog));
+}
 
 enum
 {
@@ -2114,11 +2587,11 @@ default_menu_changed (GtkWidget   *option_menu,
 }
 
 static void
-default_profile_changed (TerminalProfile    *profile,
-                         TerminalSettingMask mask,
-                         void               *profile_optionmenu)
+default_profile_changed (TerminalProfile           *profile,
+                         const TerminalSettingMask *mask,
+                         void                      *profile_optionmenu)
 {
-  if (mask & TERMINAL_SETTING_IS_DEFAULT)
+  if (mask->is_default)
     {
       if (terminal_profile_get_is_default (profile))
         profile_optionmenu_set_selected (GTK_WIDGET (profile_optionmenu),
@@ -2644,6 +3117,7 @@ terminal_app_get_clone_command (TerminalApp *app,
                       */
   argc += n_windows; /* one --show-menubar or --hide-menubar per window */
 
+  argc += n_windows; /* one --role per window */
 
   argc += n_tabs - n_windows; /* one --with-tab-profile-internal-id
                                * per extra tab
@@ -2654,6 +3128,8 @@ terminal_app_get_clone_command (TerminalApp *app,
   argc += n_tabs * 2; /* one "--title foo" per tab */
 
   argc += n_tabs * 2; /* one "--working-directory foo" per tab */
+
+  argc += n_tabs * 2; /* one "--zoom" per tab */
   
   argv = g_new0 (char*, argc + 1);
 
@@ -2683,6 +3159,7 @@ terminal_app_get_clone_command (TerminalApp *app,
           const char *profile_id;
           const char **override_command;
           const char *title;
+          double zoom;
           
           profile_id = terminal_profile_get_name (terminal_screen_get_profile (screen));
           
@@ -2695,6 +3172,9 @@ terminal_app_get_clone_command (TerminalApp *app,
                 argv[i] = g_strdup ("--show-menubar");
               else
                 argv[i] = g_strdup ("--hide-menubar");
+              ++i;
+              argv[i] = g_strdup_printf ("--role=%s",
+                                         gtk_window_get_role (GTK_WINDOW (window)));
               ++i;
             }
           else
@@ -2715,8 +3195,6 @@ terminal_app_get_clone_command (TerminalApp *app,
               flattened = g_strjoinv (" ", (char**) override_command);
               argv[i] = flattened;
               ++i;
-
-              g_free (flattened);
             }
 
           title = terminal_screen_get_dynamic_title (screen);
@@ -2728,10 +3206,32 @@ terminal_app_get_clone_command (TerminalApp *app,
               ++i;
             }
 
-          argv[i] = g_strdup ("--working-directory");
-          ++i;
-          argv[i] = g_strdup (terminal_screen_get_working_dir (screen));
-          ++i;
+          {
+            const char *dir;
+
+            dir = terminal_screen_get_working_dir (screen);
+
+            if (dir != NULL && *dir != '\0') /* should always be TRUE anyhow */
+              {
+                argv[i] = g_strdup ("--working-directory");
+                ++i;
+                argv[i] = g_strdup (dir);
+                ++i;
+              }
+          }
+
+          zoom = terminal_screen_get_font_scale (screen);
+          if (zoom < -1e-6 || zoom > 1e-6) /* if not 1.0 */
+            {
+              char buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+              g_ascii_dtostr (buf, sizeof (buf), zoom);
+              
+              argv[i] = g_strdup ("--zoom");
+              ++i;
+              argv[i] = g_strdup (buf);
+              ++i;
+            }
           
           tmp2 = tmp2->next;
         }
@@ -2857,6 +3357,68 @@ terminal_util_set_atk_name_description (GtkWidget  *widget,
     atk_object_set_name (obj, name);
 }
 
+GladeXML*
+terminal_util_load_glade_file (const char *filename,
+                               const char *widget_root,
+                               GtkWindow  *error_dialog_parent)
+{
+  char *path;
+  GladeXML *xml;
+
+  xml = NULL;
+  path = g_strconcat ("./", filename, NULL);
+  
+  if (g_file_test (path,
+                   G_FILE_TEST_EXISTS))
+    {
+      /* Try current dir, for debugging */
+      xml = glade_xml_new (path,
+                           widget_root,
+                           GETTEXT_PACKAGE);
+    }
+  
+  if (xml == NULL)
+    {
+      g_free (path);
+      
+      path = g_build_filename (TERM_GLADE_DIR, filename, NULL);
+
+      xml = glade_xml_new (path,
+                           widget_root,
+                           GETTEXT_PACKAGE);
+    }
+
+  if (xml == NULL)
+    {
+      static GtkWidget *no_glade_dialog = NULL;
+
+      if (no_glade_dialog != NULL)
+        gtk_widget_destroy (no_glade_dialog);
+      
+      no_glade_dialog =
+        gtk_message_dialog_new (error_dialog_parent,
+                                GTK_DIALOG_DESTROY_WITH_PARENT,
+                                GTK_MESSAGE_ERROR,
+                                GTK_BUTTONS_CLOSE,
+                                _("The file \"%s\" is missing. This indicates that the application is installed incorrectly, so the dialog can't be displayed."),
+                                path);
+      
+      g_signal_connect (G_OBJECT (no_glade_dialog),
+                        "response",
+                        G_CALLBACK (gtk_widget_destroy),
+                        NULL);
+      
+      g_object_add_weak_pointer (G_OBJECT (no_glade_dialog),
+                                 (void**)&no_glade_dialog);
+  
+      gtk_window_present (GTK_WINDOW (no_glade_dialog));
+    }
+
+  g_free (path);
+
+  return xml;
+}
+
 /* Factory stuff */
 
 
@@ -2871,13 +3433,15 @@ terminal_new_event (BonoboListener    *listener,
 		    CORBA_Environment *ev,
 		    gpointer           user_data)
 {
-  int argc;
   int nextopt;
   poptContext ctx;
   const void *store;
   OptionParsingResults *results;
   CORBA_sequence_CORBA_string *args;
-
+  char **tmp_argv;
+  int tmp_argc;
+  int i;
+  
   if (strcmp (event_name, "new_terminal"))
     {
       g_warning ("Unknown event '%s' on terminal",
@@ -2886,15 +3450,31 @@ terminal_new_event (BonoboListener    *listener,
     }
 
   args = any->_value;
-  argc = args->_length;
-  results = option_parsing_results_init (&argc, args->_buffer);
-
+  
+  tmp_argv = g_new0 (char*, args->_length + 1);
+  i = 0;
+  while (i < args->_length)
+    {
+      tmp_argv[i] = g_strdup (((const char**)args->_buffer)[i]);
+      ++i;
+    }
+  tmp_argv[i] = NULL;
+  tmp_argc = i;
+  
+  results = option_parsing_results_init (&tmp_argc, tmp_argv);
+  
+  /* Find and parse --display */
+  option_parsing_results_check_for_display_name (results,
+                                                 &tmp_argc,
+                                                 tmp_argv);
+  
   store = options[0].descrip;
   options[0].descrip = (void*) results; /* I hate GnomeProgram, popt, and their
                                          * mutant spawn
                                          */
-  ctx = poptGetContext (PACKAGE, argc,
-			(const char **)args->_buffer,
+  ctx = poptGetContext (PACKAGE,
+                        tmp_argc,
+                        (const char**)tmp_argv,
 			options, 0);
   
   g_return_if_fail (app != NULL);
@@ -2914,6 +3494,8 @@ terminal_new_event (BonoboListener    *listener,
   new_terminal_with_options (results);
 
   option_parsing_results_free (results);
+
+  g_strfreev (tmp_argv);
 }
 
 #define ACT_IID "OAFIID:GNOME_Terminal_Factory"
@@ -2979,6 +3561,7 @@ terminal_invoke_factory (int argc, char **argv)
 
       args._length = argc;
       args._buffer = g_newa (CORBA_char *, args._length);
+
       for (i = 0; i < args._length; i++)
         args._buffer [i] = argv [i];
       
