@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: zephyr.rules,v 1.9 1994-11-11 20:11:21 ghudson Exp $
+/**/#	$Id: zephyr.rules,v 1.10 1994-11-14 15:03:57 ghudson Exp $
 
 /* General system configuration */
 #define KERBEROS	/* Has Kerberos installed */
@@ -62,7 +62,7 @@ ZLIBDES = $(PTOP)/libdes/libdes.a
 ZLIBS = $(ZLIB_KRB) $(LIB_ET) $(ZLIB_HES)
 DYN_LIB = $(PTOP)/libdyn/libdyn.a
 
-DEFINES = $(XDEFS) -I$(BINC) \
+DEFINES = $(XDEFS) -DX11 -I$(BINC) \
 	$(CDEFS_KRB) $(CDEFS_HES) $(CDEFS_ET) $(CDEFS_SS) \
 	$(MACHDEFS)
 
