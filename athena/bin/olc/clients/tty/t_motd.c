@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.2 1989-08-04 11:12:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.3 1989-08-10 03:11:52 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -43,7 +43,7 @@ t_get_motd(Request,type,file,display_opts)
       if(display_opts)
 	display_file(file,TRUE);
       else
-	display_file(file,FALSE);
+	cat_file(file);
       break;
 
     default:
