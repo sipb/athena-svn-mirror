@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.3 1997-03-14 21:21:06 ghudson Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.4 1997-12-20 21:40:57 ghudson Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -39,6 +39,9 @@ static const char rcsid[] = "$Id: desync.c,v 1.3 1997-03-14 21:21:06 ghudson Exp
 #endif
 
 #define CONF SYSCONFDIR "/rc.conf"
+
+extern int optind;
+extern char *optarg;
 
 static char *progname;
 
