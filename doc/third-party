@@ -106,15 +106,15 @@ Distribution sites for software under third
 	perl		ftp.gnu.org:pub/gnu/perl
 	rcs		ftp.gnu.org:pub/gnu/rcs
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
-	sendmail	ftp.sendmail.org:pub/sendmail
-	ssh		ftp.cs.hut.fi:pub/ssh
+	sendmail*	ftp.sendmail.org:pub/sendmail
+	ssh*		ftp.cs.hut.fi:pub/ssh
 	sysinfo		http://www.magnicomp.com/
 	talk		From NetBSD (ftp.netbsd.org)
 			usr.bin/talk goes in the talk subdirectory
 			libexec/talkd goes in the talkd subdirectory
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
-	tcp_wrappers	ftp.porcupine.org:/pub/security
+	tcp_wrappers*	ftp.porcupine.org:/pub/security
 	tcsh		ftp.astron.com:pub/tcsh
 			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
@@ -128,6 +128,27 @@ Distribution sites for software under third
 	x3270		ftp.x.org:contrib/applications
 	xmh		From X11R5
 	xscreensaver	http://www.jwz.org/xscreensaver/
+
+PGP Signatures
+--------------
+
+The (*)ed packages above come PGP-signed. Note that some packages have
+signatures of the .tar.gz files, and others have signatures of the .tar
+files themselves even though you can only download the .tar.gz files.
+
+Local copies of the PGP signing keys, are kept in doc/pgpkeys. You can
+add them to your PGP keyring by doing:
+
+	pgp -ka pgpkeys	[PGP 2.6]
+	pgpk -a pgpkeys [PGP 5]
+
+And you can verify the signature of a package with
+
+	pgp sigfile  [PGP 2.6]
+	pgpv sigfile [PGP 5]
+
+(You will be prompted for the name of the file to compare the
+signature against.)
 
 AFS Binaries
 ------------
