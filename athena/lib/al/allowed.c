@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.7 1998-05-05 21:56:02 ghudson Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.8 1998-05-07 17:11:01 ghudson Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -32,10 +32,9 @@ static const char rcsid[] = "$Id: allowed.c,v 1.7 1998-05-05 21:56:02 ghudson Ex
 #include "al.h"
 #include "al_private.h"
 
-static int try_access(const char *username, int isremote, int haslocalpwd,
-		      int *local_acct, char **text, int *retval);
+static int try_access(const char *username, int isremote, int *local_acct,
+		      char **text, int *retval);
 static int good_hesiod(const char *username, int *retval);
-static int first_field_match(const char *line, const char *s);
 
 /* The al_login_allowed() function determines whether a user is allowed
  * to log in.  The calling process provides an indication of whether the
@@ -101,8 +100,7 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
     goto cleanup;
 
   /* Try the access control file. */
-  if (try_access(username, isremote, (local_pwd != NULL), local_acct, text,
-		 &retval))
+  if (try_access(username, isremote, local_acct, text, &retval))
     goto cleanup;
 
   /* There is no access control file.  Look at the nocreate and noremote
@@ -150,78 +148,45 @@ cleanup:
   return retval;
 }
 
-static int try_access(const char *username, int isremote, int haslocalpwd,
-		      int *local_acct, char **text, int *retval)
+/* Using the access file, determine whether username has permission to
+ * log in and whether username has a local account.  On unsuccessful
+ * return, *text may be set to contain explanatory information from the
+ * access file. */
+static int try_access(const char *username, int isremote, int *local_acct,
+		      char **text, int *retval)
 {
-  FILE *fp;
-  int linesize;
-  char *line = NULL;
+  char *bits, *accesstext;
   const char *p;
+  int status;
 
-  fp = fopen(PATH_ACCESS, "r");
-  if (!fp)
+  status = al_get_access(username, &bits, &accesstext);
+  if (status == AL_ENOENT)
     return 0;
 
-  /* Lines in the access file are of the form:
-   *
-   *	username	access-bits	text
-   *
-   * Where "*" matches any username, "*inpasswd" matches any username with
-   * local password information, the access bits 'l' and 'r' set local and
-   * remote access, and text (if specified) gives a message to return if
-   * the user is denied access.
-   */
   *retval = AL_ENOCREATE;
-  while (al__read_line(fp, &line, &linesize) == 0)
+  if (status == AL_ENOUSER)
+    return 1;
+  for (p = bits; *p; p++)
     {
-      p = line;
-
-      /* Ignore comment lines and lines which don't match the username. */
-      if (*p == '#' || (!first_field_match(p, username)
-			&& !(first_field_match(p, "*inpasswd") && haslocalpwd)
-			&& !first_field_match(p, "*")))
-	continue;
-
-      while (*p && !isspace(*p))
-	p++;
-      while (isspace(*p))
-	p++;
-
-      /* Read the access bits to determine if this user is allowed to
-       * log in.
-       */
-      for (; *p && !isspace(*p); p++)
-	{
-	  if ((*p == 'l' && !isremote) || (*p == 'r' && isremote))
-	    *retval = AL_SUCCESS;
-	  if (*p == 'l' && isremote && *retval == AL_ENOCREATE)
-	    *retval = AL_ENOREMOTE;
-	  if (*p == 'L')
-	    *local_acct = 1;
-	}
-
-      /* If the user is not allowed to log in and there is text specified,
-       * set text.  Add a newline so that it's consistent with text one
-       * might read from a file.
-       */
-      if (*retval != AL_SUCCESS && text)
-	{
-	  while (isspace(*p))
-	    p++;
-	  if (*p)
-	    {
-	      *text = malloc(strlen(p) + 2);
-	      if (*text)
-		{
-		  strcpy(*text, p);
-		  strcat(*text, "\n");
-		}
-	    }
-	}
-      break;
+      if ((*p == 'l' && !isremote) || (*p == 'r' && isremote))
+	*retval = AL_SUCCESS;
+      if (*p == 'l' && isremote && *retval == AL_ENOCREATE)
+	*retval = AL_ENOREMOTE;
+      if (*p == 'L')
+	*local_acct = 1;
     }
-  free(line);
-  fclose(fp);
+  free(bits);
+  if (*retval != AL_SUCCESS && accesstext && text)
+    {
+      *text = malloc(strlen(accesstext) + 2);
+      if (*text)
+	{
+	  strcpy(*text, accesstext);
+	  strcat(*text, "\n");
+	}
+    }
+  if (accesstext)
+    free(accesstext);
   return 1;
 }
 
@@ -256,14 +221,4 @@ static int good_hesiod(const char *username, int *retval)
   else
     *retval = (errno == ENOMEM) ? AL_ENOMEM : AL_ENOUSER;
   return ok;
-}
-
-/* Return true if the first field of line (terminated by whitespace or the
- * end of the string) matches s.
- */
-static int first_field_match(const char *line, const char *s)
-{
-  int len = strlen(s);
-
-  return (strncmp(line, s, len) == 0 && (isspace(line[len]) || !line[len]));
 }
