@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.13 1990-11-30 14:47:27 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.14 1990-12-13 12:40:13 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.13 1990-11-30 14:47:27 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.14 1990-12-13 12:40:13 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -625,7 +625,7 @@ char *tty;
 		strncpy(login, utmp.ut_name, 8);
 		login[8] = 0;
 		if (utmp.ut_name[0]) {
-		    utmp.ut_name[0] = 0;
+		    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
 		    lseek(file, (long) -sizeof(utmp), L_INCR);
 		    write(file, (char *) &utmp, sizeof(utmp));
 		    found = 1;
@@ -637,9 +637,9 @@ char *tty;
     }
     if (found) {
 	if ((file = open(wtmpf, O_WRONLY|O_APPEND, 0644)) >= 0) {
-	    strcpy(utmp.ut_line, tty);
-	    utmp.ut_name[0] = 0;
-	    utmp.ut_host[0] = 0;
+	    strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
+	    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
+	    strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
 	    time(&utmp.ut_time);
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
