@@ -2,8 +2,12 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.6 1990-05-23 12:25:41 jnrees Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.7 1990-05-24 10:58:11 jnrees Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.6  90/05/23  12:25:41  jnrees
+ * Changed output format.  '-i' flag no longer needed.
+ * Added a usage message if command line is improper.
+ * 
  * Revision 1.5  90/05/22  12:12:09  jnrees
  * Fixup of permissions, plus fallback to old rpc call
  * if the first call fails because the rpc server is not
@@ -34,7 +38,7 @@
 #include <rpcsvc/rquota.h>
 #include <rpcsvc/rcquota.h>
 
-static char *warningstring;
+static char *warningstring = NULL;
 
 static int	vflag, localflag, gflag;
 #define QFNAME	"quotas"
@@ -198,7 +202,7 @@ showquotas(id, name)
     else warn(mntp, &qvalues);
   }
   endmntent(mtab);
-  if (warningstring[0]) printf("\n%s\n", warningstring);
+  if (warningstring) printf("\n%s\n", warningstring);
   
 }
 
