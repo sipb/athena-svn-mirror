@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.58 1994-07-13 07:30:23 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.59 1994-07-25 04:43:50 cfields Exp $
  */
 
 #include <stdio.h>
@@ -62,13 +62,8 @@
 #define HOSTTYPE "sun4"
 #endif
 
-
-#ifdef SOLARIS
+#undef NGROUPS
 #define NGROUPS 16
-#endif
-#ifdef _IBMR2
-#define NGROUPS 16
-#endif
 
 #ifndef SOLARIS
 #define SETPAG
