@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.9 1998-04-09 22:51:45 ghudson Exp $
+ * $Id: auth-passwd.c,v 1.10 1998-05-13 20:18:46 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  1998/04/09 22:51:45  ghudson
+ * Support local accounts as determined by libal.
+ *
  * Revision 1.8  1998/03/08 17:52:01  danw
  * From nathanw: use same krb5 options (proxy+forward) as other programs.
  * Use krb_set_tkt_string before get_pw_in_tkt in case the krb4 lib has
@@ -47,6 +50,20 @@ the password is valid for the user.
  *
  * Revision 1.1.1.2  1998/01/24 01:25:19  danw
  * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1998/05/13 19:11:11  danw
+ * Import of ssh 1.2.23
+ *
+ * Revision 1.15  1998/05/11 21:27:47  kivinen
+ * 	Set correct_passwd to contain 255...255 so even if some
+ * 	function doesn't set it, it cannot contain empty password.
+ *
+ * Revision 1.14  1998/04/30 01:50:20  kivinen
+ * 	Added code that will force /bin/passwd command if password is
+ * 	expired.
+ *
+ * Revision 1.13  1998/03/27 16:53:09  kivinen
+ * 	Added aix authenticate function support.
  *
  * Revision 1.12  1998/01/02 06:14:31  kivinen
  * 	Fixed kerberos ticket name handling. Added OSF C2 account
@@ -483,6 +500,21 @@ int auth_password(const char *server_user, const char *password,
 int auth_password(const char *server_user, const char *password)
 #endif /* KERBEROS */
 {
+#if defined(_AIX) && defined(HAVE_AUTHENTICATE)
+  char *message;
+  int reenter;
+
+  reenter = 1;
+  if (authenticate(server_user, password, &reenter, &message) == 0)
+    {
+      return 1;
+    }
+  else
+    {
+      return 0;
+    }
+#else /* _AIX41 && HAVE_AUTHENTICATE */
+
 #ifdef KERBEROS
   krb5_error_code problem;
   int krb5_options = KDC_OPT_PROXIABLE | KDC_OPT_FORWARDABLE;
@@ -501,6 +533,7 @@ int auth_password(const char *server_user, const char *password)
   char correct_passwd[200];
   char *saved_pw_name, *saved_pw_passwd;
 
+  memset(correct_passwd, 255, sizeof(correct_passwd));
   if (*password == '\0' && options.permit_empty_passwd == 0)
   {
       packet_send_debug("Server does not permit empty password login.");
@@ -745,9 +778,12 @@ int auth_password(const char *server_user, const char *password)
       return 0;
       break;
     case 2:
-      packet_disconnect("\n\tYour password expired ...\n");
-      return 0;
-      break;
+      {
+	extern char *forced_command;
+	forced_command = "/bin/passwd";
+	packet_send_debug("Password expired, forcing it to be changed.");
+	break;
+      }
     }
 #else /* HAVE_OSF1_C2_SECURITY */
   /* If we have shadow passwords, lookup the real encrypted password from
@@ -883,4 +919,5 @@ int auth_password(const char *server_user, const char *password)
 
   /* Authentication is accepted if the encrypted passwords are identical. */
   return strcmp(encrypted_password, correct_passwd) == 0;
+#endif /* _AIX && HAVE_AUTHENTICATE */
 }
