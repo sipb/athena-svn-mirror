@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.3 1990-04-19 12:59:38 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.4 1990-04-21 17:39:21 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -99,10 +99,17 @@ retry:
 		printf("%s: Already attached", name);
 #ifdef NFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_NFS) {
+		int ret;
 		if (!print_path)
 		    printf("...mapping\n");
-		return (nfsid(atp->host, atp->hostaddr,
-			      MOUNTPROC_KUIDMAP, 1, name, 1, real_uid));
+		
+		ret = nfsid(atp->host, atp->hostaddr,
+			    MOUNTPROC_KUIDMAP, 1, name, 1, real_uid);
+		if(atp->mode != 'm')
+		  return ret;
+		error_status = 0;
+		clear_errored(atp->hostaddr);
+		return SUCCESS;
 	    }
 #endif
 #ifdef AFS
@@ -301,10 +308,14 @@ try_attach(name, hesline, errorout)
 	else
 		strcpy(tmp, at.hostdir);
 	if (verbose)
-		printf("%s: %s mounted %s on %s (%s)\n",
-		       at.hesiodname, at.fs->name, tmp,
-		       at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
-		       "read-write");
+		if(at.fs->type == TYPE_AFS)
+		  printf("%s: %s linked to %s\n", at.hesiodname,
+			 tmp, at.mntpt);
+		else
+		  printf("%s: %s mounted %s on %s (%s)\n",
+			 at.hesiodname, at.fs->name, tmp,
+			 at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
+			 "read-write");
 	if (print_path)
 		printf("%s\n", at.mntpt);
 	at.status = STATUS_ATTACHED;
