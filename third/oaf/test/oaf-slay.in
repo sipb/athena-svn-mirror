@@ -43,7 +43,7 @@ if ($usage_error == 1 || $opt_h) {
 
 # Build ps command.
 #
-$username = $ENV{'USER'};
+$username = $ENV{USER} || $ENV{LOGNAME} || `logname`;
 chomp($username);
 
 @IF_POSIX_PS@ $ps_cmd = "@PS_PATH@ -U $username -opid,args";

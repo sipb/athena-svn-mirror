@@ -7,6 +7,7 @@
 		</oaf_attribute>
 		<oaf_attribute name="name" type="string" value="Name service"/>
 		<oaf_attribute name="name-az" type="string" value="Ad xidm&#201;&#153;ti"/>
+		<oaf_attribute name="name-bg" type="string" value="&#211;&#241;&#235;&#243;&#227;&#224; &#231;&#224; &#232;&#236;&#229;&#237;&#224;"/>
 		<oaf_attribute name="name-da" type="string" value="Navne-tjeneste"/>
 		<oaf_attribute name="name-de" type="string" value="Namensdienst"/>
 		<oaf_attribute name="name-el" type="string" value="&#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225; &#239;&#237;&#239;&#236;&#225;&#243;&#223;&#225;&#242;."/>
@@ -28,9 +29,11 @@
 		<oaf_attribute name="name-sv" type="string" value="Namntj&#228;nst"/>
 		<oaf_attribute name="name-tr" type="string" value="&#221;sim servisi"/>
 		<oaf_attribute name="name-uk" type="string" value="&#238;&#193;&#218;&#215;&#193; &#211;&#197;&#210;&#215;&#166;&#211;&#213;"/>
+		<oaf_attribute name="name-zh_CN" type="string" value="&#229;&#144;&#141;&#229;&#173;&#151;&#230;&#156;&#141;&#229;&#138;&#161;"/>
 		<oaf_attribute name="name-zh_TW" type="string" value="&#169;R&#166;W&#170;A&#176;&#200;"/>
 		<oaf_attribute name="description" type="string" value="CORBA CosNaming service."/>
 		<oaf_attribute name="description-az" type="string" value="CORBA CosNaming xidm&#201;&#153;ti"/>
+		<oaf_attribute name="description-bg" type="string" value="&#211;&#241;&#235;&#243;&#227;&#224; &#231;&#224; CORBA CosNaming"/>
 		<oaf_attribute name="description-da" type="string" value="CORBA CosNaming-tjeneste."/>
 		<oaf_attribute name="description-de" type="string" value="CORBA CosNaming-Dienst."/>
 		<oaf_attribute name="description-el" type="string" value="&#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225; CosNaming CORBA."/>
@@ -52,6 +55,7 @@
 		<oaf_attribute name="description-sv" type="string" value="CORBA CosNaming-tj&#228;nst."/>
 		<oaf_attribute name="description-tr" type="string" value="CORBA Cos Adland&#253;rma servisi."/>
 		<oaf_attribute name="description-uk" type="string" value="&#243;&#197;&#210;&#215;&#166;&#211; CosNaming CORBA."/>
+		<oaf_attribute name="description-zh_CN" type="string" value="CORBA CosNaming &#230;&#156;&#141;&#229;&#138;&#161;&#227;&#128;&#130;"/>
 		<oaf_attribute name="description-zh_TW" type="string" value="CORBA &#169;R&#166;W&#170;A&#176;&#200;&#161;C"/>
 	</oaf_server>
 

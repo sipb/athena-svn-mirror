@@ -430,6 +430,7 @@ impl_OAF_ObjectDirectory_activate (impl_POA_OAF_ObjectDirectory * servant,
 	ODActivationInfo ai;
         OAF_GeneralError *errval;
         char *error_description;
+        CORBA_Environment retry_ev;
 
 	retval = CORBA_OBJECT_NIL;
 
@@ -455,6 +456,31 @@ impl_OAF_ObjectDirectory_activate (impl_POA_OAF_ObjectDirectory * servant,
 
 	if (si != NULL) {
 		retval = od_server_activate (si, &ai, servant->self, ev);
+                /* If we failed to activate - it may be because our
+                 * request re-entered _during_ the activation
+                 * process resulting in a second process being started
+                 * but failing to register - so we'll look up again here
+                 * to see if we can get it.
+                 * FIXME: we should not be forking redundant processes
+                 * while an activation of that same process is on the
+                 * stack.
+                 * FIXME: we only get away with this hack because we
+                 * try and fork another process & thus allow the reply
+                 * from the initial process to be handled in the event
+                 * loop.
+                 */
+
+                if (ev->_major != CORBA_NO_EXCEPTION) {
+                        CORBA_exception_init (&retry_ev);
+
+                        retval = od_get_active_server (servant, iid, ctx, &retry_ev);
+
+                        CORBA_exception_free (&retry_ev);
+
+                        if (retval != CORBA_OBJECT_NIL) {
+                                CORBA_exception_free (ev);
+                        }
+                }
         } else {
                 errval = OAF_GeneralError__alloc ();
 

@@ -1,3 +1,24 @@
+2002-01-18  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* NEWS, configure.in: Updated for 0.6.8.
+
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+        * configure.in: Added "eu" to ALL_LINGUAS
+
+2001-12-07  Laszlo Peter  <laca@ireland.sun.com>
+
+	* configure.in, test/oaf-slay.in: fix detection of the username.
+
+2001-11-16  Michael Meeks  <michael@ximian.com>
+
+	* oafd/od-corba.c (impl_OAF_ObjectDirectory_activate):
+	fix for mutliple activations causing grief issues ...
+
+2001-11-09  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Added zh_CN.
+
 2001-10-26  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* NEWS, configure.in: Updated for 0.6.7

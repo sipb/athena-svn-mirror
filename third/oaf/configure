@@ -719,7 +719,7 @@ fi
 
 OAF_MAJOR_VERSION=0
 OAF_MINOR_VERSION=6
-OAF_MICRO_VERSION=7
+OAF_MICRO_VERSION=8
 OAF_VERSION="$OAF_MAJOR_VERSION.$OAF_MINOR_VERSION.$OAF_MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -5849,7 +5849,7 @@ fi
   
 
 
-ALL_LINGUAS="az da de el es fi fr ga gl hu it ja ko nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
+ALL_LINGUAS="az bg da de el es eu fi fr ga gl hu it ja ko nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_CN zh_TW"
 # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
@@ -8951,6 +8951,7 @@ if eval "test \"`echo '$''{'ac_cv_prog_ps_posix'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
+		USER=${USER:-${LOGNAME:-`logname`}}
 		if $PS_PATH -U $USER -opid,args >/dev/null 2>&1; then
 			ac_cv_prog_ps_posix=yes
 		else

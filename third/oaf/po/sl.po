@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: balsa\n"
-"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"POT-Creation-Date: 2002-01-17 19:59-0800\n"
 "PO-Revision-Date: 2000-09-04 21:51+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -124,9 +124,8 @@ msgid "Could not activate server: "
 msgstr "Nisem mogel aktivirati stre¾nika: "
 
 #: oafd/main.c:62
-#, fuzzy
 msgid "Directory to read .oaf files from"
-msgstr "Imenik iz katerega naj se preberejo .oafinfo datoteke"
+msgstr "Imenik iz katerega naj se preberejo datoteke .oaf"
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -160,12 +159,14 @@ msgstr "IZRAZ"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Ne znamo ¹e aktivirati shlib predmetov v oddaljenem procesu"
 
-#: oafd/od-corba.c:462
+#: oafd/od-corba.c:488
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "
 "missing or incorrectly installed .oaf file."
 msgstr ""
+"Nisem na¹el aktivacijskega vnosa za stre¾nik '%s'. Verjeten razlog je "
+"manjkajoèa ali napaèno name¹èena datoteka .oaf."
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
