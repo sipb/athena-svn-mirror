@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.4 1990-11-28 22:24:04 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.5 1990-11-29 12:11:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -142,6 +142,9 @@ get_log(username,instance,result)
     }
     
     /* Add to the head of the linked list */
+    /* Need to re-set head, since we may have deleted initial bucket when we */
+    /* allocated a new cache entry */
+    head = buckets[hash];
     cache[new].next = head;
     if (head != NULL)
       head->prev = &cache[new];
